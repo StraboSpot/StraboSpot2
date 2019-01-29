@@ -56,6 +56,6 @@ buck-out/
 *.jsbundle
 
 # Added by developers
-src/config.js
+src/Config.js
 ios/
 android/
