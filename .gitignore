@@ -30,7 +30,7 @@ build/
 local.properties
 *.iml
 
-# node.js
+# nodeButtonWithBackground.js
 #
 node_modules/
 npm-debug.log
@@ -53,9 +53,9 @@ buck-out/
 */fastlane/screenshots
 
 # Bundle artifact
-*.jsbundle
+*ButtonWithBackground.jsbundle
 
 # Added by developers
-src/Config.js
-ios/
-android/
+/src/Config.js
+/android
+/ios
