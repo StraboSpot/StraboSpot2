@@ -12,7 +12,7 @@ export default class Screen2 extends React.Component {
     return {
       topBar: {
         title: {
-          text: 'Screen 2'
+          text: 'Images'
         },
       }
     };

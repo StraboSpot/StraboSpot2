@@ -1,6 +1,6 @@
 import React from 'react'
 import {View, Button, TextInput, StyleSheet} from 'react-native'
-import {goHome} from "../navigation";
+import {goHome} from "../Navigation";
 
 export default class SignUp extends React.Component {
   state = {

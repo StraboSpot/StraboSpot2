@@ -1,6 +1,6 @@
 [ignore]
 ; We fork some components by platform
-.*/*[.]android.js
+.*/*[.]androidButtonWithBackground.js
 
 ; Ignore "BUCK" generated dirs
 <PROJECT_ROOT>/\.buckd/
@@ -11,7 +11,7 @@
 ; Ignore duplicate module providers
 ; For RN Apps installed via npm, "Libraries" folder is inside
 ; "node_modules/react-native" but in the source repo it is in the root
-.*/Libraries/react-native/React.js
+.*/Libraries/react-native/ReactButtonWithBackground.js
 
 ; Ignore polyfills
 .*/Libraries/polyfills/.*
@@ -22,7 +22,7 @@
 [include]
 
 [libs]
-node_modules/react-native/Libraries/react-native/react-native-interface.js
+node_modules/react-native/Libraries/react-native/react-native-interfaceButtonWithBackground.js
 node_modules/react-native/flow/
 node_modules/react-native/flow-github/
 
@@ -35,9 +35,9 @@ esproposal.nullish_coalescing=enable
 module.system=haste
 module.system.haste.use_name_reducers=true
 # get basename
-module.system.haste.name_reducers='^.*/\([a-zA-Z0-9$_.-]+\.js\(\.flow\)?\)$' -> '\1'
-# strip .js or .js.flow suffix
-module.system.haste.name_reducers='^\(.*\)\.js\(\.flow\)?$' -> '\1'
+module.system.haste.name_reducers='^.*/\([a-zA-Z0-9$_.-]+\ButtonWithBackground.js\(\.flow\)?\)$' -> '\1'
+# strip ButtonWithBackground.js or ButtonWithBackground.js.flow suffix
+module.system.haste.name_reducers='^\(.*\)\ButtonWithBackground.js\(\.flow\)?$' -> '\1'
 # strip .ios suffix
 module.system.haste.name_reducers='^\(.*\)\.ios$' -> '\1'
 module.system.haste.name_reducers='^\(.*\)\.android$' -> '\1'
@@ -51,10 +51,10 @@ munge_underscores=true
 
 module.name_mapper='^[./a-zA-Z0-9$_-]+\.\(bmp\|gif\|jpg\|jpeg\|png\|psd\|svg\|webp\|m4v\|mov\|mp4\|mpeg\|mpg\|webm\|aac\|aiff\|caf\|m4a\|mp3\|wav\|html\|pdf\)$' -> 'RelativeImageStub'
 
-module.file_ext=.js
-module.file_ext=.jsx
-module.file_ext=.json
-module.file_ext=.native.js
+module.file_ext=ButtonWithBackground.js
+module.file_ext=ButtonWithBackground.jsx
+module.file_ext=ButtonWithBackground.json
+module.file_ext=.nativeButtonWithBackground.js
 
 suppress_type=$FlowIssue
 suppress_type=$FlowFixMe

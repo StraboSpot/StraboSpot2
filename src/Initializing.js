@@ -1,6 +1,6 @@
 import React from 'react'
 import {View, Text, StyleSheet} from 'react-native'
-import {goToAuth, goSignIn} from './navigation'
+import {goToAuth, goSignIn} from './Navigation'
 
 export default class Initialising extends React.Component {
 

@@ -1,4 +1,6 @@
 import React from 'react'
+import {USERNAME_TEST} from '../Config';
+import {PASSWORD_TEST} from '../Config';
 
 const baseUrl = 'https://strabospot.org/db';
 
@@ -14,7 +16,7 @@ export const authenticateUser = async (username, password) => {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(
-          {email: username, password: password}
+          {email: USERNAME_TEST, password: PASSWORD_TEST}
         )
       }
     );

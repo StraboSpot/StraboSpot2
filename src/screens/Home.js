@@ -1,51 +1,47 @@
 import React from 'react'
-import {View, Text, Button, StyleSheet, ScrollView} from 'react-native'
-import {goToAuth, goSignIn} from '../navigation'
-import {Navigation} from 'react-native-navigation';
+import {View, Text, Button, Platform, StyleSheet, ScrollView, TouchableOpacity} from 'react-native'
+import {goToAuth, goSignIn} from '../Navigation'
 import MapView from '../components/map/MapView';
-
+import Icon from 'react-native-vector-icons/Ionicons';
+import {Navigation} from 'react-native-navigation';
 
 export default class Home extends React.Component {
-
-  static
-  get options() {
-    return {
-      topBar: {
-        title: {
-          text: 'Home'
-        },
-      }
-    };
+  componentDidMount() {
+    Icon.getImageSource("pin", 30)
   }
-
-  logout = async () => {
+ logout = () => {
     goSignIn();
   };
 
   render() {
     return (
-      <ScrollView>
-        <MapView/>
-        <View style={styles.container}>
-          <Text>Hello from Home screen.</Text>
-          <View style={styles.button}>
-            <Button
-              onPress={this.logout}
-              title="Sign Out"
-            />
+      <View style={styles.container}>
+          <MapView/>
+        {/*<View style={styles.button}>*/}
+        <TouchableOpacity onPress={this.logout}>
+          <View style={styles.drawerItem}>
+            <Icon
+              style={styles.drawerItemIcon}
+              name={Platform.OS === 'android' ? "md-log-out" : "ios-log-out"}
+              size={30}
+              color={"#aaa"}/>
+            <Text style={styles.drawerItemText}
+            >Sign Out</Text>
           </View>
+        </TouchableOpacity>
+
+          {/*</View>*/}
           <Button
             onPress={() => {
               Navigation.push(this.props.componentId, {
                 component: {
-                  name: 'Screen2',
+                  name: 'Images',
                 }
               });
             }}
-            title="View next screen"
+            title="Go To Images"
           />
-        </View>
-      </ScrollView>
+      </View>
     )
   }
 }
@@ -66,7 +62,22 @@ const styles = StyleSheet.create({
     height: "80%"
   },
   mapContainer: {
-    width: '90%',
-    height: 500
+    flex: 1,
+    width: '100%',
+    // height: 500,
+  },
+  drawerItem: {
+    color: "white",
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 10,
+    backgroundColor: "blue",
+    borderRadius: 50
+    },
+  drawerItemIcon: {
+    margin: 10
+  },
+  drawerItemText: {
+    color: "white"
   }
 });

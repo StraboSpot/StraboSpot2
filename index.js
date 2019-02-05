@@ -4,6 +4,13 @@ import {registerScreens} from './src/Screens';
 registerScreens();
 
 Navigation.events().registerAppLaunchedListener(() => {
+  Navigation.setDefaultOptions({
+    topBar: {
+      visible: false,
+      _height: 0,
+      drawBehind: true
+    }
+  });
   Navigation.setRoot({
     root: {
       component: {
