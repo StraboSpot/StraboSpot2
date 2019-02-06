@@ -10,7 +10,7 @@ const buttonWithBackground = props => {
 
   if (Platform.OS === 'android') {
     return(
-      <TouchableNativeFeedback>
+      <TouchableNativeFeedback onPress={props.onPress}>
         {content}
       </TouchableNativeFeedback>
     );

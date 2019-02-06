@@ -64,19 +64,17 @@ export default class SignIn extends React.Component {
         />
         <View style={styles.button}>
 
-        {/*<ButtonWithBackground*/}
-          {/*color={"#407ad9"}*/}
-          {/*onPress={this.signIn}*/}
-          {/*style={styles.buttonText}*/}
-        {/*>Sign In*/}
-        {/*</ButtonWithBackground>*/}
-        <Button color={"red"} title={"Log In"} onPress={this.signIn}/>
-        {/*<ButtonWithBackground*/}
-          {/*color={"#407ad9"}*/}
-          {/*onPress={this.createAccount}*/}
-        {/*>Create an Account*/}
-        {/*</ButtonWithBackground>*/}
-          <Button color={"red"} title={"Create Account"} onPress={this.createAccount}/>
+        <ButtonWithBackground
+          color={"#407ad9"}
+          onPress={this.signIn}
+          style={styles.buttonText}
+        >Sign In
+        </ButtonWithBackground>
+        <ButtonWithBackground
+          color={"#407ad9"}
+          onPress={this.createAccount}
+        >Create an Account
+        </ButtonWithBackground>
         </View>
       </View>
       </ImageBackground>
