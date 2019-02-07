@@ -59,3 +59,18 @@ export const goToImages = () => Navigation.setRoot({
     }
   }
 });
+
+export const goToDownloadMap = () => Navigation.setRoot({
+  root: {
+    stack: {
+      id: 'MapDownload',
+      children: [
+        {
+          component: {
+            name: 'MapDownload'
+          }
+        }
+      ]
+    }
+  }
+});

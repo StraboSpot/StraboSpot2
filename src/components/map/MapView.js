@@ -3,7 +3,7 @@ import {StyleSheet} from "react-native";
 import Mapbox from '@mapbox/react-native-mapbox-gl';
 import {FloatingAction} from 'react-native-floating-action';
 import {getImages} from '../../images/ImageDownload';
-import {goToImages} from '../../Navigation';
+import {goToImages, goToDownloadMap} from '../../Navigation';
 import {Navigation} from "react-native-navigation";
 
 Mapbox.setAccessToken(
@@ -21,7 +21,7 @@ class mapView extends Component {
     switch (name) {
       case "Download Map":
         console.log("Download map selected");
-        getImages();
+        goToDownloadMap();
         break;
       case "Track":
         console.log("Tracked selected");
