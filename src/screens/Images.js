@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Text, View, Image,Dimensions, FlatList, Button, StyleSheet} from 'react-native';
+import {Text, View, Image, Dimensions, FlatList, Button, StyleSheet} from 'react-native';
 import {Navigation} from "react-native-navigation";
 import {getRemoteImages, getImages} from '../images/ImageDownload';
 import ImageView from '../components/imageView/ImageView';
@@ -7,11 +7,11 @@ import ImageView from '../components/imageView/ImageView';
 const w = Dimensions.get('window');
 
 export default class Images extends Component {
-  state= {
+  state = {
     imagesToDisplay: []
   };
 
-  componentDidMount()  {
+  componentDidMount() {
     getRemoteImages().then(() => {
       console.log("Finished getting images!");
       this.setState({
@@ -28,19 +28,18 @@ export default class Images extends Component {
         <FlatList
           style={styles.imageList}
           data={this.state.imagesToDisplay}
-          numColumns={3}
           renderItem={({item}) =>
             <ImageView
-            thumbnailSource={{ uri: item}}
-            style={styles.images}
-            resizeMode="cover"
-          />}
-         />
+              thumbnailSource={{uri: item}}
+              style={styles.images}
+              resizeMode="cover"
+            />}
+        />
         <Button
           onPress={() => Navigation.push(this.props.componentId, {
-              component: {
-                name: 'Home'
-              }
+            component: {
+              name: 'Home'
+            }
           })}
           title="Go Back"
         />
