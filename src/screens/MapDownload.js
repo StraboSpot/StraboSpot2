@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {Text, View, Image,Dimensions, FlatList, Button, StyleSheet} from 'react-native';
 import {getMapTiles} from '../maps/MapDownload';
+import {Navigation} from "react-native-navigation";
 
 const w = Dimensions.get('window');
 
@@ -17,6 +18,14 @@ export default class MapDownload extends Component {
     return (
       <View style={styles.container}>
         <Text>Map Download</Text>
+        <Button
+          onPress={() => Navigation.push(this.props.componentId, {
+            component: {
+              name: 'Home'
+            }
+          })}
+          title="Go Back"
+        />
       </View>
     )
   }
