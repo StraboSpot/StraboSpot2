@@ -26,4 +26,3 @@ export const authenticateUser = async (username, password) => {
     console.error(error);
   }
 };
-

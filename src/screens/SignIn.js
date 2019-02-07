@@ -18,7 +18,6 @@ export default class SignIn extends React.Component {
   }
 
   signIn = async () => {
-    console.log("ASASKJA:KSJFAKSFAKJSDFAJKSD")
     const {username, password} = this.state;
     try {
       // login with provider

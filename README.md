@@ -8,3 +8,7 @@ Running for development:
 
       export const USERNAME_TEST = 'your username/email';
       export const PASSWORD_TEST = 'your password';
+
+- Run `npm install`
+- Run `react-native link`
+- Run `npm run ios` or `npm run android` 

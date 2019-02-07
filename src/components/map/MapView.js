@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {StyleSheet} from "react-native";
 import Mapbox from '@mapbox/react-native-mapbox-gl';
 import {FloatingAction} from 'react-native-floating-action';
-import {getImages, downloadToDevice} from '../../images/ImageDownload';
+import {getImages} from '../../images/ImageDownload';
 import {goToImages} from '../../Navigation';
 import {Navigation} from "react-native-navigation";
 
@@ -38,9 +38,7 @@ class mapView extends Component {
     const imageURI = downloadedImages.map(res => res.URI);
     this.setState({images: imageURI});
     // console.log("State", this.state.images)
-    downloadToDevice();
   };
-
 
   render() {
 
@@ -70,7 +68,7 @@ class mapView extends Component {
     return (
       <React.Fragment>
         <Mapbox.MapView
-          styleURL={Mapbox.StyleURL.Light}
+          styleURL={Mapbox.StyleURL.Street}
           zoomLevel={15}
           centerCoordinate={[this.state.lng, this.state.lat]}
           style={styles.mapContainer}
