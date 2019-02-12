@@ -14,7 +14,7 @@ export const getRemoteImages = async () => {
   let response = await fetch(url);
   let responseJson = await response.json();
   let imageURIs = responseJson.images.map(imageUris => imageUris.URI);
-  for (let i = 0; i < imageURIs.length - 480; i++) {
+  for (let i = 0; i < imageURIs.length - 490; i++) {
     await saveFile(imageURIs[i]);
   }
   return Promise.resolve();
@@ -33,8 +33,9 @@ const saveFile = async (imageURI) => {
       .fetch('GET', imageURI, {});
     imageCount++;
     console.log(imageCount, 'File saved to', res.path());
-    if (Platform.OS === "ios") imagePaths.push(res.path());
-    else imagePaths.push('file://' + res.path());
+    let imageId = imageName.split(".")[0];
+    if (Platform.OS === "ios") imagePaths.push({id: imageId, src: res.path()});
+    else imagePaths.push({id: imageId, src: 'file://' + res.path()});
   } catch (err) {
     imageCount++;
     console.log(imageCount, 'Error on', imageName, ':', err);

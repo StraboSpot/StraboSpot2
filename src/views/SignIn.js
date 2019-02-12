@@ -4,6 +4,7 @@ import {goHome, goSignUp} from '../Navigation'
 import {authenticateUser} from '../user/UserAuth';
 import {backgroundImage} from '../../assets/background.jpg';
 import ButtonWithBackground from '../ui/ButtonWithBackground';
+import Icon from "react-native-vector-icons/Ionicons";
 
 export default class SignIn extends React.Component {
 
@@ -41,7 +42,7 @@ export default class SignIn extends React.Component {
 
   render() {
     return (
-      <ImageBackground source={require('../../assets/background.jpg')} style={styles.backgroundImage}>
+      <ImageBackground source={require('../assets/images/background.jpg')} style={styles.backgroundImage}>
       <View style={styles.container}>
         <TextInput
           style={styles.input}
