@@ -19,11 +19,11 @@ class ImageView extends React.Component {
           source={thumbnailSource}
           style={style}
         />
-        <Image
-          {...props}
-          source={source}
-          style={[styles.imageOverlay, style]}
-        />
+        {/*<Image*/}
+          {/*{...props}*/}
+          {/*source={source}*/}
+          {/*style={[styles.imageOverlay, style]}*/}
+        {/*/>*/}
       </View>
     )
   }
@@ -31,13 +31,14 @@ class ImageView extends React.Component {
 
 const styles = StyleSheet.create({
   imageOverlay: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
-    top: 0,
+    // position: 'absolute',
+    // left: 0,
+    // right: 0,
+    // bottom: 0,
+    // top: 0,
   },
   container: {
+    width: "100%",
     backgroundColor: '#e1e4e8',
   },
 });

@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Text, View, Image,Dimensions, FlatList, Button, StyleSheet} from 'react-native';
-import {getMapTiles} from '../maps/MapDownload';
+import {getMapTiles} from '../services/maps/MapDownload';
 import {Navigation} from "react-native-navigation";
 
 const w = Dimensions.get('window');

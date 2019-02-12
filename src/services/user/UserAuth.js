@@ -1,6 +1,6 @@
 import React from 'react'
-import {USERNAME_TEST} from '../Config';
-import {PASSWORD_TEST} from '../Config';
+import {USERNAME_TEST} from '../../Config';
+import {PASSWORD_TEST} from '../../Config';
 
 const baseUrl = 'https://strabospot.org/db';
 
