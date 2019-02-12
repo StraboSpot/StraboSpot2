@@ -2,9 +2,7 @@ import React, {Component} from 'react';
 import {StyleSheet} from "react-native";
 import Mapbox from '@mapbox/react-native-mapbox-gl';
 import {FloatingAction} from 'react-native-floating-action';
-import {getImages} from '../../images/ImageDownload';
-import {goToImages, goToDownloadMap} from '../../Navigation';
-import {Navigation} from "react-native-navigation";
+import {goToImages, goSignIn, goToDownloadMap} from '../../routes/Navigation';
 
 Mapbox.setAccessToken(
   'pk.eyJ1Ijoic3RyYWJvLWdlb2xvZ3kiLCJhIjoiY2lpYzdhbzEwMDA1ZnZhbTEzcTV3Z3ZnOSJ9.myyChr6lmmHfP8LYwhH5Sg');
@@ -30,39 +28,42 @@ class mapView extends Component {
         console.log("images selected");
         goToImages();
         break;
+      case "Signout":
+        goSignIn();
+        break;
     }
-  };
-
-  getImages = async () => {
-    const downloadedImages = await getImages();
-    const imageURI = downloadedImages.map(res => res.URI);
-    this.setState({images: imageURI});
-    // console.log("State", this.state.images)
   };
 
   render() {
 
     const actions = [{
       text: 'Download Map',
-      icon: require('../../../assets/download.png'),
+      icon: require('../../assets/icons/download.png'),
       name: 'Download Map',
       position: 1,
       color: "white"
     },
       {
         text: 'Track',
-        icon: require('../../../assets/logout.png'),
+        icon: require('../../assets/icons/logout.png'),
         name: 'Track',
         position: 2,
         color: "white"
       },
       {
         text: 'Images',
-        icon: require('../../../assets/images.png'),
+        icon: require('../../assets/icons/images.png'),
         name: 'Images',
         position: 3,
         color: "white"
-      }
+      },
+      {
+        text: 'Signout',
+        icon: require('../../assets/icons/logout.png'),
+        name: 'Signout',
+        position: 4,
+        color: "white"
+      },
     ];
 
     return (
