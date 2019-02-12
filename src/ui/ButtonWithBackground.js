@@ -1,39 +1,49 @@
 import React from 'react';
 import {TouchableOpacity, TouchableNativeFeedback, Text, View, StyleSheet, Platform} from "react-native";
+import Icon from "react-native-vector-icons/Ionicons";
 
 const buttonWithBackground = props => {
   const content = (
     <View style={[styles.button, {backgroundColor: props.color}]}>
+      <Icon
+        style={styles.itemIcon}
+        name={props.name}
+        size={30}
+        color={"white"}/>
       <Text style={styles.buttonText}>{props.children}</Text>
     </View>
   );
 
-  if (Platform.OS === 'android') {
-    return(
-      <TouchableNativeFeedback onPress={props.onPress}>
+  if (Platform.OS === 'ios') {
+    return (
+      <TouchableOpacity onPress={props.onPress}>
         {content}
-      </TouchableNativeFeedback>
+      </TouchableOpacity>
     );
   }
-  return(
-    <TouchableOpacity onPress={props.onPress}>
+  return (
+    <TouchableNativeFeedback onPress={props.onPress}>
       {content}
-    </TouchableOpacity>
+    </TouchableNativeFeedback>
   );
 
 };
 
 const styles = StyleSheet.create({
   button: {
-    padding: 10,
-    margin: 5,
-    borderRadius: 35,
     paddingLeft: 50,
     paddingRight: 50,
-    alignItems: 'center'
+    margin: 10,
+    borderRadius: 35,
+    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "center"
   },
   buttonText: {
     color: "white",
+  },
+  itemIcon: {
+    paddingRight: 15
   }
 });
 

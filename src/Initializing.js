@@ -1,8 +1,13 @@
-import React from 'react'
-import {View, Text, StyleSheet} from 'react-native'
-import {goToAuth, goSignIn} from './Navigation'
+import React, {Component} from 'react'
+import {
+  Image,
+  Text,
+  StyleSheet,
+  View} from 'react-native'
+import {goToAuth, goSignIn} from './routes/Navigation'
+import splash from "./assets/images/splash.png";
 
-export default class Initialising extends React.Component {
+export default class Initialising extends Component {
 
   async componentDidMount() {
     goSignIn();

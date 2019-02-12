@@ -1,14 +1,15 @@
 import React from 'react'
 import {View, StyleSheet, TextInput, Button, Alert, ImageBackground} from 'react-native'
-import {goHome, goSignUp} from '../Navigation'
-import {authenticateUser} from '../user/UserAuth';
-import {backgroundImage} from '../../assets/background.jpg';
+import {goHome, goSignUp} from '../routes/Navigation'
+import {authenticateUser} from '../services/user/UserAuth';
+import {backgroundImage} from '../assets/images/background.jpg';
 import ButtonWithBackground from '../ui/ButtonWithBackground';
 import Icon from "react-native-vector-icons/Ionicons";
 
 export default class SignIn extends React.Component {
-
-
+  // componentDidMount() {
+  //   Icon.getImageSource("pin", 30)
+  // }
 
   constructor(props) {
     super(props);
@@ -68,11 +69,13 @@ export default class SignIn extends React.Component {
           color={"#407ad9"}
           onPress={this.signIn}
           style={styles.buttonText}
+          name={"ios-log-in"}
         >Sign In
         </ButtonWithBackground>
         <ButtonWithBackground
           color={"#407ad9"}
           onPress={this.createAccount}
+          name={"ios-add"}
         >Create an Account
         </ButtonWithBackground>
         </View>
