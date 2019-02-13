@@ -12,14 +12,18 @@ class mapView extends Component {
   state = {
     lng: -110.867528,
     lat: 32.299329,
-    images: []
+    images: [],
+    map: {}
   };
 
   handlePress = async (name) => {
     switch (name) {
       case "Download Map":
         console.log("Download map selected");
-        goToDownloadMap();
+        console.log('this.map', this.map);
+        const visibleBounds = await this.map.getVisibleBounds();
+        console.log('first bounds', visibleBounds);
+        goToDownloadMap(visibleBounds);
         break;
       case "Track":
         console.log("Tracked selected");
@@ -68,6 +72,7 @@ class mapView extends Component {
           centerCoordinate={[this.state.lng, this.state.lat]}
           style={styles.mapContainer}
           showUserLocation={true}
+          ref={ref => this.map = ref}
         >
         </Mapbox.MapView>
         <FloatingAction

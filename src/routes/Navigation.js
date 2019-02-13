@@ -1,4 +1,4 @@
-import { Navigation } from 'react-native-navigation'
+import {Navigation} from 'react-native-navigation'
 
 export const goHome = () => Navigation.setRoot({
   root: {
@@ -60,14 +60,15 @@ export const goToImages = () => Navigation.setRoot({
   }
 });
 
-export const goToDownloadMap = () => Navigation.setRoot({
+export const goToDownloadMap = (mapBounds) => Navigation.setRoot({
   root: {
     stack: {
       id: 'MapDownload',
       children: [
         {
           component: {
-            name: 'MapDownload'
+            name: 'MapDownload',
+            passProps: {mapBounds: mapBounds}
           }
         }
       ]

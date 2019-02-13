@@ -9,7 +9,8 @@ export default class MapDownload extends Component {
   state= {};
 
   componentDidMount()  {
-    getMapTiles().then(() => {
+    console.log('props', this.props);
+    getMapTiles(this.props.mapBounds).then(() => {
       console.log("Finished getting map tiles!");
     });
   }
