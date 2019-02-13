@@ -36,18 +36,12 @@ class mapView extends Component {
 
   render() {
 
-    const actions = [{
-      text: 'Download Map',
-      icon: require('../../assets/icons/download.png'),
-      name: 'Download Map',
-      position: 1,
-      color: "white"
-    },
+    const actions = [
       {
-        text: 'Track',
-        icon: require('../../assets/icons/logout.png'),
-        name: 'Track',
-        position: 2,
+        text: 'Download Map',
+        icon: require('../../assets/icons/download.png'),
+        name: 'Download Map',
+        position: 1,
         color: "white"
       },
       {
@@ -74,12 +68,11 @@ class mapView extends Component {
           centerCoordinate={[this.state.lng, this.state.lat]}
           style={styles.mapContainer}
           showUserLocation={true}
-          compassEnabled={true}
         >
         </Mapbox.MapView>
         <FloatingAction
-          position={"left"}
-          distanceToEdge={30}
+          position={"center"}
+          distanceToEdge={10}
           actions={actions}
           onPressItem={this.handlePress}
         />
@@ -96,7 +89,6 @@ const styles = StyleSheet.create({
   mapContainer: {
     flex: 1,
     width: '100%',
-    height: 700,
   }
 });
 

@@ -1,12 +1,13 @@
 import {TouchableOpacity, TouchableNativeFeedback, Text, View, StyleSheet, Platform, Image} from "react-native";
 import React from "react";
 
-const squareIconButton = props => {
+const iconButton = props => {
   const content = (
     <View
       activeOpacity={0.7}
       style={styles.TouchableOpacityStyle}>
       <Image
+        target={props.name}
         source={props.source}
         style={styles.FloatingButtonStyle}
       />
@@ -35,19 +36,20 @@ const styles = StyleSheet.create({
   },
   TouchableOpacityStyle: {
     position: 'absolute',
-    // width: 50,
-    // height: 50,
-    // alignItems: 'center',
-    // justifyContent: 'center',
-    right: "5%",
-    bottom: "0%",
+    right: "1%",
+    // bottom: "0%",
+    margin: 10,
+    shadowOffset: {width: 3, height: 3},
+    shadowColor: "black",
+    shadowOpacity: .5,
+
   },
   FloatingButtonStyle: {
     resizeMode: 'contain',
-    width: 70,
-    height: 70,
-    //backgroundColor:'black'
+    width: 55,
+    height: 55,
+
   },
 });
 
-export default squareIconButton;
+export default iconButton;

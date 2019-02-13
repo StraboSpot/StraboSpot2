@@ -11,46 +11,180 @@ import {goToAuth, goSignIn} from '../routes/Navigation'
 import MapView from '../components/map/MapView';
 import Icon from 'react-native-vector-icons/Ionicons';
 import ButtonWithBackground from '../ui/ButtonWithBackground';
-import SquareIconButton from '../ui/SquareIconButton';
+import IconButton from '../ui/IconButton';
 
 export default class Home extends React.Component {
   componentDidMount() {
     Icon.getImageSource("pin", 30)
   }
+
   logout = () => {
     goSignIn();
   };
 
-  clickHandler = () => {
-    //function to handle click on floating Action Button
-    Alert.alert('Floating Button Clicked');
+  clickHandler = (name) => {
+    switch (name) {
+      case "search":
+        console.log(`${name}`, " was clicked");
+        break;
+      case "tag":
+        console.log(`${name}`, " was clicked");
+        break;
+      case "measurement":
+        console.log(`${name}`, " was clicked");
+        break;
+      case "sample":
+        console.log(`${name}`, " was clicked");
+        break;
+      case "note":
+        console.log(`${name}`, " was clicked");
+        break;
+      case "photo":
+        console.log(`${name}`, " was clicked");
+        break;
+      case "sketch":
+        console.log(`${name}`, " was clicked");
+        break;
+      case "notebook":
+        console.log(`${name}`, " was clicked");
+        break;
+      case "point":
+        console.log(`${name}`, " was clicked");
+        break;
+      case "line":
+        console.log(`${name}`, " was clicked");
+        break;
+      case "polygon":
+        console.log(`${name}`, " was clicked");
+        break;
+      case "settings":
+        console.log(`${name}`, " was clicked");
+        goSignIn();
+        break;
+      case "mapActions":
+        console.log(`${name}`, " was clicked");
+        break;
+      case "mapSymbols":
+        console.log(`${name}`, " was clicked");
+        break;
+      case "mapLayers":
+        console.log(`${name}`, " was clicked");
+        break;
+      case "currentLocation":
+        console.log(`${name}`, " was clicked");
+        break;
+    }
   };
 
   render() {
     return (
       <View style={styles.container}>
         <MapView/>
-        <View style={styles.squareIcon}>
-        <SquareIconButton
-          source={require('../assets/icons/Note.png')}
-          onPress={this.clickHandler}
-          style={{width: 30}}
-        />
+        <View style={styles.rightsideIcons}>
+          <View style={styles.searchAndSettingsIcons}>
+            <IconButton
+              source={require('../assets/icons/SearchButton.png')}
+              onPress={this.clickHandler.bind(this, "search")}
+            />
+          </View>
+          <View style={styles.tagIcon}>
+            <IconButton
+              source={require('../assets/icons/TagButton.png')}
+              onPress={this.clickHandler.bind(this, "tag")}
+            />
+          </View>
+          <View style={styles.sideIconsGroup}>
+            <IconButton
+              source={require('../assets/icons/MeasurementButton.png')}
+              onPress={this.clickHandler.bind(this, "measurement")}
+            />
+          </View>
+          <View style={styles.sideIconsGroup}>
+            <IconButton
+              source={require('../assets/icons/SampleButton.png')}
+              onPress={this.clickHandler.bind(this, "sample")}
+            />
+          </View>
+          <View style={styles.sideIconsGroup}>
+            <IconButton
+              name={"Note"}
+              source={require('../assets/icons/NoteButton.png')}
+              onPress={this.clickHandler.bind(this, "note")}
+            />
+          </View>
+          <View style={styles.sideIconsGroup}>
+            <IconButton
+              source={require('../assets/icons/PhotoButton.png')}
+              onPress={this.clickHandler.bind(this, "photo")}
+            />
+          </View>
+          <View style={styles.sideIconsGroup}>
+            <IconButton
+              source={require('../assets/icons/SketchButton.png')}
+              onPress={this.clickHandler.bind(this, "sketch")}
+            />
+          </View>
+          <View style={styles.notebookViewIcon}>
+            <IconButton
+              source={require('../assets/icons/NotebookViewButton.png')}
+              onPress={this.clickHandler.bind(this, "notebook")}
+            />
+          </View>
         </View>
-        <View style={styles.squareIcon}>
-        <SquareIconButton
-          source={require('../assets/icons/Note.png')}
-          onPress={this.clickHandler}
-          style={{width: 30}}
-        />
+        <View style={styles.bottomRightIcons}>
+          <View style={styles.pointIcon}>
+            <IconButton
+              source={require('../assets/icons/PointButton.png')}
+              onPress={this.clickHandler.bind(this, "point")}
+            />
+          </View>
+          <View style={styles.lineIcon}>
+            <IconButton
+              source={require('../assets/icons/LineButton.png')}
+              onPress={this.clickHandler.bind(this, "line")}
+            />
+          </View>
+          <View style={styles.polygonIcon}>
+            <IconButton
+              source={require('../assets/icons/PolygonButton.png')}
+              onPress={this.clickHandler.bind(this, "polygon")}
+            />
+          </View>
         </View>
-
-        {/*<ButtonWithBackground*/}
-          {/*color={"#407ad9"}*/}
-          {/*onPress={this.logout}*/}
-          {/*name={Platform.OS === 'android' ? "md-log-out" : "ios-log-out"}*/}
-        {/*>Sign Out*/}
-        {/*</ButtonWithBackground>*/}
+        <View style={styles.leftsideIcons}>
+          <View style={styles.searchAndSettingsIcons}>
+            <IconButton
+              source={require('../assets/icons/SettingsButton.png')}
+              onPress={this.clickHandler.bind(this, "settings")}
+            />
+          </View>
+          <View style={styles.mapActionsIcon}>
+            <IconButton
+              source={require('../assets/icons/MapActionsButton.png')}
+              onPress={this.clickHandler.bind(this, "mapActions")}
+            />
+          </View>
+          <View style={styles.sideIconsGroup}>
+            <IconButton
+              source={require('../assets/icons/SymbolsButton.png')}
+              onPress={this.clickHandler.bind(this, "mapSymbols")}
+            />
+          </View>
+          <View style={styles.sideIconsGroup}>
+            <IconButton
+              source={require('../assets/icons/LayersButton.png')}
+              onPress={this.clickHandler.bind(this, "mapLayers")}
+            />
+          </View>
+        </View>
+        <View style={styles.bottomLeftIcons}>
+          <View style={styles.currentLocationIcon}>
+            <IconButton
+              source={require('../assets/icons/MyLocationButton.png')}
+              onPress={this.clickHandler.bind(this, "currentLocation")}
+            />
+          </View>
+        </View>
       </View>
     )
   }
@@ -59,49 +193,63 @@ export default class Home extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // alignItems: 'center'
   },
-  button: {
-    margin: 25,
-  },
-  placeholder: {
-    borderWidth: 1,
-    borderColor: "black",
-    backgroundColor: "#eee",
-    width: "100%",
-    height: "80%"
-  },
-  mapContainer: {
-    flex: 1,
-    width: '100%',
-    // height: 500,
-  },
-  // drawerItem: {
-  //   // color: "green",
-  //   // flexDirection: "row",
-  //   alignItems: "baseline",
-  //   paddingLeft: 20,
-  //   paddingRight: 20,
-  //   backgroundColor: "blue",
-  //   borderRadius: 50
-  //   },
-  drawerItemIcon: {
-    margin: 10,
-  },
-  drawerItemText: {
-    color: "white"
-  },
-  TouchableOpacityStyle: {
-    position: 'absolute',
-    width: 0,
-    height: 0,
-    alignItems: 'center',
-    justifyContent: 'center',
-    right: "20%",
-    bottom: "25%",
-  },
-  squareIcon : {
-    paddingBottom: 20
 
+  // --- Left and right icon absolute positions from top ---
+  leftsideIcons: {
+    position: 'absolute',
+    left: 70
+  },
+  rightsideIcons: {
+    position: "absolute",
+    right: 10
+  },
+
+  // --- All icons with group spacings (margins of 55) on left and right sides ---
+  sideIconsGroup: {
+    marginTop: 60
+  },
+
+  // --- Bottom icons (line, polygon, and point) ---
+
+  bottomRightIcons: {
+    position: "absolute",
+    bottom: 100,
+    right: 45
+  },
+  lineIcon: {
+    marginRight: 155
+  },
+  pointIcon: {
+
+    marginRight: 95
+  },
+  polygonIcon: {
+
+    marginRight: 35
+  },
+
+  // --- Bottom Left Icon (current location) ---
+  bottomLeftIcons: {
+    position: 'absolute',
+    bottom: 100,
+    left: 70
+  },
+  currentLocation: {
+    marginBottom: 55
+  },
+
+  // --- Icons with specialized margins ---
+  mapActionsIcon: {
+    marginTop: 415
+  },
+  notebookViewIcon: {
+    marginTop: 105
+  },
+  searchAndSettingsIcons: {
+    marginTop: 35
+  },
+  tagIcon: {
+    marginTop: 145
   }
 });
