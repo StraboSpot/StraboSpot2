@@ -15,6 +15,7 @@
     "react-native-floating-action": "^1.14.1",
     "react-native-image-grid": "^1.0.0",
     "react-native-navigation": "2.7.1-snapshot.163",
+    "react-native-popup-dialog": "^0.17.0",
     "react-native-vector-icons": "^6.2.0",
     "react-native-zip-archive": "^3.0.1",
     "rn-fetch-blob": "^0.10.15"
