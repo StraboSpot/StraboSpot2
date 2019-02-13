@@ -6,6 +6,7 @@ import com.RNFetchBlob.RNFetchBlobPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.mapbox.rctmgl.RCTMGLPackage;
 import com.facebook.react.ReactApplication;
+import com.rnziparchive.RNZipArchivePackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
@@ -42,7 +43,8 @@ public class MainApplication extends NavigationApplication {
         return Arrays.<ReactPackage>asList(
             new RCTMGLPackage(),
             new VectorIconsPackage(),
-            new RNFetchBlobPackage()
+            new RNFetchBlobPackage(),
+            new RNZipArchivePackage()
         );
     }
 
