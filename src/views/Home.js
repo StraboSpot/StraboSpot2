@@ -12,11 +12,16 @@ import MapView from '../components/map/MapView';
 import Icon from 'react-native-vector-icons/Ionicons';
 import ButtonWithBackground from '../ui/ButtonWithBackground';
 import IconButton from '../ui/IconButton';
+import Dialog, {DialogButton, DialogTitle, DialogContent} from 'react-native-popup-dialog';
 
 export default class Home extends React.Component {
   componentDidMount() {
     Icon.getImageSource("pin", 30)
   }
+
+  state = {
+    mapActionsMenuVisible: false
+  };
 
   logout = () => {
     goSignIn();
@@ -73,13 +78,61 @@ export default class Home extends React.Component {
       case "currentLocation":
         console.log(`${name}`, " was clicked");
         break;
+      case "zoom":
+        console.log(`${name}`, " was clicked");
+        break;
+      case "saveMap":
+        console.log(`${name}`, " was clicked");
+        break;
+      case "addTag":
+        console.log(`${name}`, " was clicked");
+        break;
+      case "stereonet":
+        console.log(`${name}`, " was clicked");
+        break;
     }
+    this.setState({mapActionsMenuVisible: false});
   };
 
   render() {
     return (
       <View style={styles.container}>
         <MapView/>
+        <Dialog dialogStyle={{position: 'absolute', bottom: 10, left: 70}}
+                visible={this.state.mapActionsMenuVisible}
+                dialogTitle={<DialogTitle title="Map Actions"/>}
+                onTouchOutside={() => {
+                  this.setState({mapActionsMenuVisible: false});
+                }}
+        >
+          <DialogContent>
+            <DialogButton
+              text="Zoom to Extent of Spots"
+              onPress={() => {
+                this.clickHandler("zoom")
+              }}
+            />
+            <DialogButton
+              text="Save Map for Offline Use"
+              onPress={() => {
+                this.clickHandler("saveMap")
+              }}
+            />
+            <DialogButton
+              text="Add Tag(s) to Spot(s)"
+              onPress={() => {
+                this.clickHandler("addTag")
+              }}
+            />
+            <DialogButton
+              text="Lasso Spots for Stereonet"
+              onPress={() => {
+                this.clickHandler("stereonet")
+              }}
+            />
+          </DialogContent>
+        </Dialog>
+
         <View style={styles.rightsideIcons}>
           <View style={styles.searchAndSettingsIcons}>
             <IconButton
@@ -161,7 +214,9 @@ export default class Home extends React.Component {
           <View style={styles.mapActionsIcon}>
             <IconButton
               source={require('../assets/icons/MapActionsButton.png')}
-              onPress={this.clickHandler.bind(this, "mapActions")}
+              onPress={() => {
+                this.setState({mapActionsMenuVisible: true});
+              }}
             />
           </View>
           <View style={styles.sideIconsGroup}>
@@ -251,5 +306,10 @@ const styles = StyleSheet.create({
   },
   tagIcon: {
     marginTop: 145
+  },
+
+  dialog: {
+    position: 'absolute',
+    bottom: 10
   }
 });
