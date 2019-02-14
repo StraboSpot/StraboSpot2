@@ -4,15 +4,14 @@ import {
   Image,
   View,
   Platform,
-  StyleSheet,
-  TouchableOpacity
+  StyleSheet
 } from 'react-native'
 import {goToAuth, goSignIn} from '../routes/Navigation'
 import MapView from '../components/map/MapView';
 import Icon from 'react-native-vector-icons/Ionicons';
-import ButtonWithBackground from '../ui/ButtonWithBackground';
 import IconButton from '../ui/IconButton';
-import Dialog, {DialogButton, DialogTitle, DialogContent} from 'react-native-popup-dialog';
+import MapActionsDialog from '../components/modals/map-actions/MapActionsDialogBox';
+import MapSymbolsDialog from "../components/modals/map-symbols/MapSymbolsDialogBox";
 
 export default class Home extends React.Component {
   componentDidMount() {
@@ -20,7 +19,8 @@ export default class Home extends React.Component {
   }
 
   state = {
-    mapActionsMenuVisible: false
+      mapActionsMenuVisible: false,
+      mapSymbolsMenuVisible: false
   };
 
   logout = () => {
@@ -98,46 +98,12 @@ export default class Home extends React.Component {
     return (
       <View style={styles.container}>
         <MapView/>
-        <Dialog dialogStyle={{position: 'absolute', bottom: 10, left: 70}}
-                visible={this.state.mapActionsMenuVisible}
-                dialogTitle={<DialogTitle title="Map Actions"/>}
-                onTouchOutside={() => {
-                  this.setState({mapActionsMenuVisible: false});
-                }}
-        >
-          <DialogContent>
-            <DialogButton
-              text="Zoom to Extent of Spots"
-              onPress={() => {
-                this.clickHandler("zoom")
-              }}
-            />
-            <DialogButton
-              text="Save Map for Offline Use"
-              onPress={() => {
-                this.clickHandler("saveMap")
-              }}
-            />
-            <DialogButton
-              text="Add Tag(s) to Spot(s)"
-              onPress={() => {
-                this.clickHandler("addTag")
-              }}
-            />
-            <DialogButton
-              text="Lasso Spots for Stereonet"
-              onPress={() => {
-                this.clickHandler("stereonet")
-              }}
-            />
-          </DialogContent>
-        </Dialog>
 
         <View style={styles.rightsideIcons}>
           <View style={styles.searchAndSettingsIcons}>
             <IconButton
               source={require('../assets/icons/SearchButton.png')}
-              onPress={this.clickHandler.bind(this, "search")}
+              // onPress={this.clickHandler.bind(this, "search")}
             />
           </View>
           <View style={styles.tagIcon}>
@@ -214,15 +180,16 @@ export default class Home extends React.Component {
           <View style={styles.mapActionsIcon}>
             <IconButton
               source={require('../assets/icons/MapActionsButton.png')}
-              onPress={() => {
-                this.setState({mapActionsMenuVisible: true});
-              }}
+              onPress={() => this.setState({mapActionsMenuVisible: true})
+              }
             />
           </View>
           <View style={styles.sideIconsGroup}>
             <IconButton
               source={require('../assets/icons/SymbolsButton.png')}
-              onPress={this.clickHandler.bind(this, "mapSymbols")}
+              // onPress={this.clickHandler.bind(this, "mapSymbols")}
+              onPress={() => this.setState( {mapSymbolsMenuVisible: true})
+              }
             />
           </View>
           <View style={styles.sideIconsGroup}>
@@ -240,6 +207,24 @@ export default class Home extends React.Component {
             />
           </View>
         </View>
+        <MapActionsDialog
+          visible={this.state.mapActionsMenuVisible}
+          onPress={(name) => {
+            this.clickHandler(name)
+          }}
+          onTouchOutside={() => {
+            this.setState({mapActionsMenuVisible: false});
+          }}
+        />
+        <MapSymbolsDialog
+          visible={this.state.mapSymbolsMenuVisible}
+          onPress={(name) => {
+            this.clickHandler(name)
+          }}
+          onTouchOutside={() => {
+            this.setState({mapSymbolsMenuVisible: false});
+          }}
+        />
       </View>
     )
   }
