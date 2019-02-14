@@ -6,6 +6,7 @@ import com.RNFetchBlob.RNFetchBlobPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.mapbox.rctmgl.RCTMGLPackage;
 import com.facebook.react.ReactApplication;
+import com.airbnb.android.react.maps.MapsPackage;
 import com.rnziparchive.RNZipArchivePackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -44,7 +45,8 @@ public class MainApplication extends NavigationApplication {
             new RCTMGLPackage(),
             new VectorIconsPackage(),
             new RNFetchBlobPackage(),
-            new RNZipArchivePackage()
+            new RNZipArchivePackage(),
+            new MapsPackage()
         );
     }
 
