@@ -22,10 +22,10 @@ let tryCount = 0;
 export const getMapTiles = async (mapBounds) => {
   console.log('mapBounds', mapBounds);
 
-  let right = mapBounds[0][0];
-  let top = mapBounds[0][1];
-  let left = mapBounds[1][0];
-  let bottom = mapBounds[1][1];
+  let right = mapBounds.northEast.longitude;
+  let top = mapBounds.northEast.latitude;
+  let left = mapBounds.southWest.longitude;
+  let bottom = mapBounds.southWest.latitude;
   let extentString = left + ',' + bottom + ',' + right + ',' + top;
 
   const mapID = '2a542a65-ab88-fc7d-c35e-961cd23339d4';
