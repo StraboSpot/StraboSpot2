@@ -1,8 +1,7 @@
 import React from 'react';
 import {StyleSheet} from 'react-native';
 import Dialog, {DialogButton, DialogContent, DialogTitle} from "react-native-popup-dialog";
-import buttonWithBackground from "../../../ui/ButtonWithBackground";
-import {FadeAnimation, ScaleAnimation, SlideAnimation} from "react-native-popup-dialog/src";
+import {ScaleAnimation} from "react-native-popup-dialog/src";
 
 const scaleAnimation = new ScaleAnimation({
   useNativeDriver: true
@@ -10,6 +9,7 @@ const scaleAnimation = new ScaleAnimation({
 
 const MapSymbolsDialog = props => (
   <Dialog
+    width={.3}
     dialogAnimation={scaleAnimation}
     dialogStyle={styles.dialogBox}
     visible={props.visible}

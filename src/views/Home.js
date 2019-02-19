@@ -1,30 +1,36 @@
 import React from 'react'
 import {
-  Alert,
-  Image,
   View,
-  Platform,
   StyleSheet
 } from 'react-native'
 import {goToAuth, goSignIn} from '../routes/Navigation'
-import MapView from '../components/map/MapView';
+import MapView, {getCurrentLocation} from '../components/map/MapView';
 import Icon from 'react-native-vector-icons/Ionicons';
 import IconButton from '../ui/IconButton';
 import MapActionsDialog from '../components/modals/map-actions/MapActionsDialogBox';
 import MapSymbolsDialog from "../components/modals/map-symbols/MapSymbolsDialogBox";
+import BaseMapDialog from "../components/modals/base-maps/BaseMapDialogBox";
+// import {Navigation} from "react-native-navigation";
+import SettingsSideMenu from '../views/SettingsSideMenu';
+import {Drawer} from "native-base";
 
 export default class Home extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.mapViewElement = React.createRef();
+  }
+
   componentDidMount() {
     Icon.getImageSource("pin", 30)
   }
 
   state = {
+    dialogs: {
       mapActionsMenuVisible: false,
-      mapSymbolsMenuVisible: false
-  };
-
-  logout = () => {
-    goSignIn();
+      mapSymbolsMenuVisible: false,
+      baseMapMenuVisible: false
+    },
   };
 
   clickHandler = (name) => {
@@ -77,7 +83,10 @@ export default class Home extends React.Component {
         break;
       case "currentLocation":
         console.log(`${name}`, " was clicked");
+        this.getLocation();
         break;
+
+      // Map Actions
       case "zoom":
         console.log(`${name}`, " was clicked");
         break;
@@ -90,14 +99,52 @@ export default class Home extends React.Component {
       case "stereonet":
         console.log(`${name}`, " was clicked");
         break;
+
+      // Map Layers
+      case "satellite":
+        // console.log(`${name}`, " was clicked");
+        this.newBasemapDisplay(name);
+        break;
+      case "topo":
+        // console.log(`${name}`, " was clicked");
+        this.newBasemapDisplay(name);
+        break;
+      case "streets":
+        // console.log(`${name}`, " was clicked");
+        this.newBasemapDisplay(name);
+        break;
+      case "macrostrat":
+        // console.log(`${name}`, " was clicked");
+        this.newBasemapDisplay(name);
+        break;
+      case "geo&roads":
+        // console.log(`${name}`, " was clicked");
+        this.newBasemapDisplay(name);
+        break;
     }
-    this.setState({mapActionsMenuVisible: false});
+    // this.setState({mapActionsMenuVisible: false});
+  };
+
+  newBasemapDisplay = (name) => {
+    console.log(name)
+    this.mapViewElement.current.changeMap(name);
+  };
+
+  getLocation =  () => {
+    this.mapViewElement.current.getCurrentLocation();
+  };
+
+  closeDrawer = () => {
+    this.drawer._root.close()
+  };
+  openDrawer = () => {
+    this.drawer._root.open()
   };
 
   render() {
     return (
       <View style={styles.container}>
-        <MapView/>
+        <MapView ref={this.mapViewElement}/>
 
         <View style={styles.rightsideIcons}>
           <View style={styles.searchAndSettingsIcons}>
@@ -177,7 +224,9 @@ export default class Home extends React.Component {
               onPress={this.clickHandler.bind(this, "settings")}
             />
           </View>
-          <View style={styles.mapActionsIcon}>
+        </View>
+        <View style={styles.bottomLeftIcons}>
+          <View style={styles.sideIconsGroup}>
             <IconButton
               source={require('../assets/icons/MapActionsButton.png')}
               onPress={() => this.setState({mapActionsMenuVisible: true})
@@ -188,19 +237,17 @@ export default class Home extends React.Component {
             <IconButton
               source={require('../assets/icons/SymbolsButton.png')}
               // onPress={this.clickHandler.bind(this, "mapSymbols")}
-              onPress={() => this.setState( {mapSymbolsMenuVisible: true})
+              onPress={() => this.setState({mapSymbolsMenuVisible: true})
               }
             />
           </View>
-          <View style={styles.sideIconsGroup}>
+          <View style={styles.layersIcon}>
             <IconButton
               source={require('../assets/icons/LayersButton.png')}
-              onPress={this.clickHandler.bind(this, "mapLayers")}
+              onPress={() => this.setState({baseMapMenuVisible: true})}
             />
           </View>
-        </View>
-        <View style={styles.bottomLeftIcons}>
-          <View style={styles.currentLocationIcon}>
+          <View style={styles.sideIconsGroup}>
             <IconButton
               source={require('../assets/icons/MyLocationButton.png')}
               onPress={this.clickHandler.bind(this, "currentLocation")}
@@ -225,6 +272,15 @@ export default class Home extends React.Component {
             this.setState({mapSymbolsMenuVisible: false});
           }}
         />
+        <BaseMapDialog
+          visible={this.state.baseMapMenuVisible}
+          onPress={(name) => {
+            this.clickHandler(name)
+          }}
+          onTouchOutside={() => {
+            this.setState({baseMapMenuVisible: false});
+          }}
+        />
       </View>
     )
   }
@@ -242,19 +298,19 @@ const styles = StyleSheet.create({
   },
   rightsideIcons: {
     position: "absolute",
-    right: 10
+    right: -5
   },
 
   // --- All icons with group spacings (margins of 55) on left and right sides ---
   sideIconsGroup: {
-    marginTop: 60
+    marginBottom: 65
   },
 
   // --- Bottom icons (line, polygon, and point) ---
 
   bottomRightIcons: {
     position: "absolute",
-    bottom: 100,
+    bottom: 90,
     right: 45
   },
   lineIcon: {
@@ -272,11 +328,11 @@ const styles = StyleSheet.create({
   // --- Bottom Left Icon (current location) ---
   bottomLeftIcons: {
     position: 'absolute',
-    bottom: 100,
+    bottom: 30,
     left: 70
   },
-  currentLocation: {
-    marginBottom: 55
+  layersIcon: {
+    marginBottom: 105
   },
 
   // --- Icons with specialized margins ---
@@ -287,7 +343,7 @@ const styles = StyleSheet.create({
     marginTop: 105
   },
   searchAndSettingsIcons: {
-    marginTop: 35
+    marginTop: 20
   },
   tagIcon: {
     marginTop: 145

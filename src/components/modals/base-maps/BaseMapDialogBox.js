@@ -1,21 +1,30 @@
 import React from 'react';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, Switch, View} from 'react-native';
 import Dialog, {DialogButton, DialogContent, DialogTitle} from "react-native-popup-dialog";
 import {ScaleAnimation} from "react-native-popup-dialog/src";
+
+clickHandler = (name) => {
+  switch (name) {
+    case name:
+      console.log(`${name}`, " was clicked");
+      break;
+
+  }
+};
 
 const slideAnimation = new ScaleAnimation({
   useNativeDriver: true
 });
 
-const MapActionsDialog = props => (
+const BaseMapDialog = props => (
   <Dialog
     width={.3}
     dialogAnimation={slideAnimation}
     dialogStyle={styles.dialogBox}
-    visible={props.show}
+    visible={props.visible}
     dialogTitle={
       <DialogTitle
-        title="Map Actions"
+        title="Base Maps"
         style={styles.dialogTitle}
         textStyle={
           {
@@ -30,26 +39,37 @@ const MapActionsDialog = props => (
     <DialogContent>
       <DialogButton
         style={styles.dialogContent}
-        text="Zoom to Extent of Spots"
-        onPress={this.clickHandler.bind(this,"zoom")}
+        text="Mapbox Satellite"
+        onPress={() => props.onPress("satellite")}
       />
       <DialogButton
         style={styles.dialogContent}
-        text="Save Map for Offline Use"
-        onPress={() => props.onPress("saveMap")}
+        text="Mapbox Topo"
+        onPress={() => props.onPress("topo")}
       />
       <DialogButton
         style={styles.dialogContent}
-        text="Add Tag(s) to Spot(s)"
-        onPress={() => props.onPress("addTag")}
-
+        text="OSM Streets"
+        onPress={() => props.onPress("streets")}
       />
       <DialogButton
         style={styles.dialogContent}
-        text="Lasso Spots for Stereonet"
-        onPress={() => props.onPress("stereonet")}
-
+        text="Geology from Macrostrat"
+        onPress={() => props.onPress("macrostrat")}
       />
+      <DialogButton
+        style={styles.dialogContent}
+        text="Geology + Roads (Custom)"
+        onPress={() => props.onPress("geo&roads")}
+      />
+      {/*<DialogButton*/}
+        {/*style={styles.dialogContent}*/}
+        {/*text="Geologic Map"*/}
+      {/*/>*/}
+      {/*<DialogButton*/}
+        {/*style={styles.dialogContent}*/}
+        {/*text="Roads"*/}
+      {/*/>*/}
     </DialogContent>
   </Dialog>
 );
@@ -70,4 +90,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default MapActionsDialog;
+export default BaseMapDialog;

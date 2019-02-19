@@ -35,7 +35,12 @@ class mapView extends Component {
         latitudeDelta: LATITUDE_DELTA,
         longitudeDelta: LONGITUDE_DELTA,
       },
-      images: []
+      currentBaseMap: {
+        url: 'http://tiles.strabospot.org/v5/mapbox.outdoors/{z}/{x}/{y}.png?access_token=' + MAPBOX_KEY,
+        maxZoom: 19
+      },
+      images: [],
+      location: false,
     };
 
     this.basemaps = {
@@ -61,7 +66,7 @@ class mapView extends Component {
   get mapType() {
     // MapKit does not support 'none' as a base map
     return this.props.provider === PROVIDER_DEFAULT ?
-      MAP_TYPES.STANDARD : MAP_TYPES.NONE;
+      MAP_TYPES.STANDARD : MAP_TYPES.MUTEDSTANDARD;
   }
 
   handlePress = async (name) => {
@@ -84,6 +89,79 @@ class mapView extends Component {
         goSignIn();
         break;
     }
+  };
+
+
+  // To add a spot pin. Location is selected when user picks point on map
+  pickLocationHandler = event => {
+    const coords = event.nativeEvent.coordinate;
+    console.log(coords)
+  };
+
+  changeMap = (mapName) => {
+    if (mapName === "satellite") {
+      this.setState({
+        currentBaseMap: {
+          url: this.basemaps.mapboxSatellite.url,
+          maxZoom: this.basemaps.mapboxSatellite.maxZoom
+        }
+      })
+    }
+    if (mapName === "topo") {
+      this.setState({
+        currentBaseMap: {
+          url: this.basemaps.mapboxOutdoors.url,
+          maxZoom: this.basemaps.mapboxOutdoors.maxZoom
+        }
+      })
+    }
+    if (mapName === "streets") {
+      this.setState({
+        currentBaseMap: {
+          url: this.basemaps.osm.url,
+          maxZoom: this.basemaps.osm.maxZoom
+        }
+      })
+    }
+    if (mapName === "macrostrat") {
+      console.log("MAP 4", mapName)
+    }
+    if (mapName === "geo&roads") {
+      console.log("MAP 5", mapName)
+    }
+  };
+
+  getCurrentLocation = () => {
+    navigator.geolocation.getCurrentPosition(
+      pos => {
+        const coordsEvent = {
+          nativeEvent: {
+            coordinate: {
+              latitude: pos.coords.latitude,
+              longitude: pos.coords.longitude,
+              latitudeDelta: 0.1229,
+            }
+          }
+        };
+        const coords = coordsEvent.nativeEvent.coordinate;
+        this.map.animateToRegion({
+          ...this.state.region,
+          latitude: coords.latitude,
+          longitude: coords.longitude
+        });
+        this.setState(prevState => {
+          return {
+            region: {
+              ...prevState.region,
+              latitude: coords.latitude,
+              longitude: coords.longitude,
+              longitudeDelta: .0122,
+              latitudeDelta: LATITUDE_DELTA,
+            },
+            locationChosen: true
+          };
+        });
+      })
   };
 
   render() {
@@ -125,12 +203,13 @@ class mapView extends Component {
             style={styles.map}
             initialRegion={this.state.region}
             rotateEnabled={false}
-            showsUserLocation
+            showsUserLocation={true}
             ref={ref => this.map = ref}
+            onPress={this.pickLocationHandler}
           >
             <UrlTile
-              urlTemplate={basemap.url}
-              maximumZ={basemap.maxZoom}
+              urlTemplate={this.state.currentBaseMap.url}
+              maximumZ={this.state.currentBaseMap.maxZoom}
             />
           </MapView>
         </View>
