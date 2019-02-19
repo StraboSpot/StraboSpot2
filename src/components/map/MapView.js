@@ -65,8 +65,14 @@ class mapView extends Component {
 
   get mapType() {
     // MapKit does not support 'none' as a base map
-    return this.props.provider === PROVIDER_DEFAULT ?
-      MAP_TYPES.STANDARD : MAP_TYPES.MUTEDSTANDARD;
+    if (Platform.OS === 'ios'){
+      return this.props.provider === PROVIDER_DEFAULT ?
+        MAP_TYPES.STANDARD : MAP_TYPES.MUTEDSTANDARD;
+    } else {
+      return this.props.provider === PROVIDER_DEFAULT ?
+        MAP_TYPES.STANDARD : MAP_TYPES.NONE;
+    }
+
   }
 
   handlePress = async (name) => {
