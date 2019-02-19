@@ -12,7 +12,7 @@ const MapActionsDialog = props => (
     width={.3}
     dialogAnimation={slideAnimation}
     dialogStyle={styles.dialogBox}
-    visible={props.show}
+    visible={props.visible}
     dialogTitle={
       <DialogTitle
         title="Map Actions"
@@ -31,7 +31,7 @@ const MapActionsDialog = props => (
       <DialogButton
         style={styles.dialogContent}
         text="Zoom to Extent of Spots"
-        onPress={this.clickHandler.bind(this,"zoom")}
+        onPress={() => props.onPress("zoom")}
       />
       <DialogButton
         style={styles.dialogContent}

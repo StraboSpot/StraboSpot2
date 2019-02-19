@@ -165,11 +165,6 @@ class mapView extends Component {
   };
 
   render() {
-    const basemap = {
-      url: this.basemaps.mapboxOutdoors.url,
-      maxZoom: this.basemaps.mapboxOutdoors.maxZoom
-    };
-
     const actions = [
       {
         text: 'Download Map',

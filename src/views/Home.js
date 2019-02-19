@@ -19,19 +19,18 @@ export default class Home extends React.Component {
   constructor(props) {
     super(props);
     this.mapViewElement = React.createRef();
+    this.state = {
+      dialogs: {
+        mapActionsMenuVisible: false,
+        mapSymbolsMenuVisible: false,
+        baseMapMenuVisible: false
+      },
+    };
   }
 
   componentDidMount() {
     Icon.getImageSource("pin", 30)
   }
-
-  state = {
-    dialogs: {
-      mapActionsMenuVisible: false,
-      mapSymbolsMenuVisible: false,
-      baseMapMenuVisible: false
-    },
-  };
 
   clickHandler = (name) => {
     switch (name) {
@@ -122,7 +121,6 @@ export default class Home extends React.Component {
         this.newBasemapDisplay(name);
         break;
     }
-    // this.setState({mapActionsMenuVisible: false});
   };
 
   newBasemapDisplay = (name) => {
@@ -139,6 +137,20 @@ export default class Home extends React.Component {
   };
   openDrawer = () => {
     this.drawer._root.open()
+  };
+
+  toggleDialog = (dialog) => {
+    this.setState(prevState =>{
+      return {dialogs: {
+          ...prevState.dialogs,
+          [dialog]: !prevState.dialogs[dialog]
+        }}
+    })
+  };
+
+  dialogClickHandler = (dialog, name) => {
+    this.clickHandler(name);
+    this.toggleDialog(dialog);
   };
 
   render() {
@@ -229,22 +241,19 @@ export default class Home extends React.Component {
           <View style={styles.sideIconsGroup}>
             <IconButton
               source={require('../assets/icons/MapActionsButton.png')}
-              onPress={() => this.setState({mapActionsMenuVisible: true})
-              }
+              onPress={() => this.toggleDialog("mapActionsMenuVisible")}
             />
           </View>
           <View style={styles.sideIconsGroup}>
             <IconButton
               source={require('../assets/icons/SymbolsButton.png')}
-              // onPress={this.clickHandler.bind(this, "mapSymbols")}
-              onPress={() => this.setState({mapSymbolsMenuVisible: true})
-              }
+              onPress={() => this.toggleDialog("mapSymbolsMenuVisible")}
             />
           </View>
           <View style={styles.layersIcon}>
             <IconButton
               source={require('../assets/icons/LayersButton.png')}
-              onPress={() => this.setState({baseMapMenuVisible: true})}
+              onPress={() => this.toggleDialog("baseMapMenuVisible")}
             />
           </View>
           <View style={styles.sideIconsGroup}>
@@ -255,31 +264,19 @@ export default class Home extends React.Component {
           </View>
         </View>
         <MapActionsDialog
-          visible={this.state.mapActionsMenuVisible}
-          onPress={(name) => {
-            this.clickHandler(name)
-          }}
-          onTouchOutside={() => {
-            this.setState({mapActionsMenuVisible: false});
-          }}
+          visible={this.state.dialogs.mapActionsMenuVisible}
+          onPress={(name) => this.dialogClickHandler("mapActionsMenuVisible", name)}
+          onTouchOutside={() => this.toggleDialog("mapActionsMenuVisible")}
         />
         <MapSymbolsDialog
-          visible={this.state.mapSymbolsMenuVisible}
-          onPress={(name) => {
-            this.clickHandler(name)
-          }}
-          onTouchOutside={() => {
-            this.setState({mapSymbolsMenuVisible: false});
-          }}
+          visible={this.state.dialogs.mapSymbolsMenuVisible}
+          onPress={(name) => this.dialogClickHandler("mapSymbolsMenuVisible", name)}
+          onTouchOutside={() => this.toggleDialog("mapSymbolsMenuVisible")}
         />
         <BaseMapDialog
-          visible={this.state.baseMapMenuVisible}
-          onPress={(name) => {
-            this.clickHandler(name)
-          }}
-          onTouchOutside={() => {
-            this.setState({baseMapMenuVisible: false});
-          }}
+          visible={this.state.dialogs.baseMapMenuVisible }
+          onPress={(name) => this.dialogClickHandler("baseMapMenuVisible", name)}
+          onTouchOutside={() => this.toggleDialog("baseMapMenuVisible")}
         />
       </View>
     )
