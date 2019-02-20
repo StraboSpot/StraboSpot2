@@ -107,35 +107,50 @@ class mapView extends Component {
 
   changeMap = (mapName) => {
     if (mapName === "satellite") {
-      this.setState({
-        currentBaseMap: {
-          url: this.basemaps.mapboxSatellite.url,
-          maxZoom: this.basemaps.mapboxSatellite.maxZoom
+      this.setState(prevState => {
+        return {
+          ...prevState,
+          currentBaseMap: {
+            url: this.basemaps.mapboxSatellite.url,
+            maxZoom: this.basemaps.mapboxSatellite.maxZoom
+          }
         }
-      })
+      });
     }
-    if (mapName === "topo") {
-      this.setState({
-        currentBaseMap: {
-          url: this.basemaps.mapboxOutdoors.url,
-          maxZoom: this.basemaps.mapboxOutdoors.maxZoom
+    else if (mapName === "topo") {
+      this.setState(prevState =>{
+        return {
+          ...prevState,
+          currentBaseMap: {
+            url: this.basemaps.mapboxOutdoors.url,
+            maxZoom: this.basemaps.mapboxOutdoors.maxZoom
+          }
         }
-      })
+      });
     }
-    if (mapName === "streets") {
-      this.setState({
-        currentBaseMap: {
-          url: this.basemaps.osm.url,
-          maxZoom: this.basemaps.osm.maxZoom
+    else if (mapName === "streets") {
+      this.setState(prevState => {
+        return {
+          ...prevState,
+          currentBaseMap: {
+            url: this.basemaps.osm.url,
+            maxZoom: this.basemaps.osm.maxZoom
+          }
         }
-      })
+      });
     }
-    if (mapName === "macrostrat") {
-      console.log("MAP 4", mapName)
+    else if (mapName === "macrostrat") {
+      this.setState(prevState =>{
+        return {
+          ...prevState,
+          currentBaseMap: {
+            url: this.basemaps.macrostrat.url,
+            maxZoom: this.basemaps.macrostrat.maxZoom
+          }
+        }
+      });
     }
-    if (mapName === "geo&roads") {
-      console.log("MAP 5", mapName)
-    }
+    else console.log("Geo and Roads", mapName);
   };
 
   getCurrentLocation = () => {
