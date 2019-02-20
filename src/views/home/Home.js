@@ -148,6 +148,18 @@ export default class Home extends React.Component {
     })
   };
 
+  openNotebookPanel = () => {
+    this.setState({
+      noteBookPanelVisible: true
+    })
+  };
+
+  closeNotebookPanel = () => {
+    this.setState({
+      noteBookPanelVisible: false
+    })
+  };
+
   dialogClickHandler = (dialog, name) => {
     this.clickHandler(name);
     this.toggleDialog(dialog);
@@ -157,7 +169,11 @@ export default class Home extends React.Component {
     return (
       <View style={styles.container}>
         <MapView ref={this.mapViewElement}/>
-
+        {this.state.noteBookPanelVisible ?
+          <NotebookPanel
+            close={() => this.closeNotebookPanel()}
+        />
+        : null}
         <View style={styles.rightsideIcons}>
           <View style={styles.searchAndSettingsIcons}>
             <IconButton
@@ -204,8 +220,8 @@ export default class Home extends React.Component {
           </View>
           <View style={styles.notebookViewIcon}>
             <IconButton
-              source={require('../assets/icons/NotebookViewButton.png')}
-              onPress={this.clickHandler.bind(this, "notebook")}
+              source={require('../../assets/icons/NotebookViewButton.png')}
+              onPress={() => this.openNotebookPanel()}
             />
           </View>
         </View>
