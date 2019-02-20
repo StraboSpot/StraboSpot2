@@ -39,9 +39,9 @@ const styles = StyleSheet.create({
     right: "1%",
     // bottom: "0%",
     margin: 10,
-    shadowOffset: {width: 3, height: 3},
-    shadowColor: "black",
-    shadowOpacity: .5,
+    // shadowOffset: {width: 3, height: 3},
+    // shadowColor: "black",
+    // shadowOpacity: .5,
 
   },
   FloatingButtonStyle: {
