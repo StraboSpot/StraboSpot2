@@ -1,5 +1,5 @@
 import {Navigation} from 'react-native-navigation';
-import Home from "../views/Home";
+import Home from "../views/home/Home";
 import Initialising from "../Initializing";
 import SignIn from "../views/SignIn";
 import SignUp from "../views/SignUp";

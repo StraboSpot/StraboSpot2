@@ -1,17 +1,15 @@
 import React from 'react'
-import {
-  View,
-  StyleSheet
-} from 'react-native'
-import {goToAuth, goSignIn} from '../routes/Navigation'
-import MapView, {getCurrentLocation} from '../components/map/MapView';
+import {Text, View} from 'react-native'
+import styles from './Styles';
+import {goToAuth, goSignIn, splitView} from '../../routes/Navigation'
+import MapView, {getCurrentLocation} from '../../components/map/MapView';
 import Icon from 'react-native-vector-icons/Ionicons';
-import IconButton from '../ui/IconButton';
-import MapActionsDialog from '../components/modals/map-actions/MapActionsDialogBox';
-import MapSymbolsDialog from "../components/modals/map-symbols/MapSymbolsDialogBox";
-import BaseMapDialog from "../components/modals/base-maps/BaseMapDialogBox";
-// import {Navigation} from "react-native-navigation";
-import SettingsSideMenu from '../views/SettingsSideMenu';
+import IconButton from '../../ui/IconButton';
+import MapActionsDialog from '../../components/modals/map-actions/MapActionsDialogBox';
+import MapSymbolsDialog from "../../components/modals/map-symbols/MapSymbolsDialogBox";
+import BaseMapDialog from "../../components/modals/base-maps/BaseMapDialogBox";
+import NotebookPanel from '../../components/sidebar-views/notebook-panel/NotebookPanel';
+import SettingsSideMenu from '../../components/sidebar-views/SettingsSideMenu/SettingsSideMenu';
 import {Drawer} from "native-base";
 
 export default class Home extends React.Component {
@@ -25,6 +23,7 @@ export default class Home extends React.Component {
         mapSymbolsMenuVisible: false,
         baseMapMenuVisible: false
       },
+      noteBookPanelVisible: false
     };
   }
 
@@ -101,23 +100,18 @@ export default class Home extends React.Component {
 
       // Map Layers
       case "satellite":
-        // console.log(`${name}`, " was clicked");
         this.newBasemapDisplay(name);
         break;
       case "topo":
-        // console.log(`${name}`, " was clicked");
         this.newBasemapDisplay(name);
         break;
       case "streets":
-        // console.log(`${name}`, " was clicked");
         this.newBasemapDisplay(name);
         break;
       case "macrostrat":
-        // console.log(`${name}`, " was clicked");
         this.newBasemapDisplay(name);
         break;
       case "geo&roads":
-        // console.log(`${name}`, " was clicked");
         this.newBasemapDisplay(name);
         break;
     }
@@ -128,7 +122,7 @@ export default class Home extends React.Component {
     this.mapViewElement.current.changeMap(name);
   };
 
-  getLocation =  () => {
+  getLocation = () => {
     this.mapViewElement.current.getCurrentLocation();
   };
 
@@ -140,11 +134,13 @@ export default class Home extends React.Component {
   };
 
   toggleDialog = (dialog) => {
-    this.setState(prevState =>{
-      return {dialogs: {
+    this.setState(prevState => {
+      return {
+        dialogs: {
           ...prevState.dialogs,
           [dialog]: !prevState.dialogs[dialog]
-        }}
+        }
+      }
     })
   };
 
@@ -177,44 +173,44 @@ export default class Home extends React.Component {
         <View style={styles.rightsideIcons}>
           <View style={styles.searchAndSettingsIcons}>
             <IconButton
-              source={require('../assets/icons/SearchButton.png')}
+              source={require('../../assets/icons/SearchButton.png')}
               // onPress={this.clickHandler.bind(this, "search")}
             />
           </View>
           <View style={styles.tagIcon}>
             <IconButton
-              source={require('../assets/icons/TagButton.png')}
+              source={require('../../assets/icons/TagButton.png')}
               onPress={this.clickHandler.bind(this, "tag")}
             />
           </View>
           <View style={styles.sideIconsGroup}>
             <IconButton
-              source={require('../assets/icons/MeasurementButton.png')}
+              source={require('../../assets/icons/MeasurementButton.png')}
               onPress={this.clickHandler.bind(this, "measurement")}
             />
           </View>
           <View style={styles.sideIconsGroup}>
             <IconButton
-              source={require('../assets/icons/SampleButton.png')}
+              source={require('../../assets/icons/SampleButton.png')}
               onPress={this.clickHandler.bind(this, "sample")}
             />
           </View>
           <View style={styles.sideIconsGroup}>
             <IconButton
               name={"Note"}
-              source={require('../assets/icons/NoteButton.png')}
+              source={require('../../assets/icons/NoteButton.png')}
               onPress={this.clickHandler.bind(this, "note")}
             />
           </View>
           <View style={styles.sideIconsGroup}>
             <IconButton
-              source={require('../assets/icons/PhotoButton.png')}
+              source={require('../../assets/icons/PhotoButton.png')}
               onPress={this.clickHandler.bind(this, "photo")}
             />
           </View>
           <View style={styles.sideIconsGroup}>
             <IconButton
-              source={require('../assets/icons/SketchButton.png')}
+              source={require('../../assets/icons/SketchButton.png')}
               onPress={this.clickHandler.bind(this, "sketch")}
             />
           </View>
@@ -228,19 +224,19 @@ export default class Home extends React.Component {
         <View style={styles.bottomRightIcons}>
           <View style={styles.pointIcon}>
             <IconButton
-              source={require('../assets/icons/PointButton.png')}
+              source={require('../../assets/icons/PointButton.png')}
               onPress={this.clickHandler.bind(this, "point")}
             />
           </View>
           <View style={styles.lineIcon}>
             <IconButton
-              source={require('../assets/icons/LineButton.png')}
+              source={require('../../assets/icons/LineButton.png')}
               onPress={this.clickHandler.bind(this, "line")}
             />
           </View>
           <View style={styles.polygonIcon}>
             <IconButton
-              source={require('../assets/icons/PolygonButton.png')}
+              source={require('../../assets/icons/PolygonButton.png')}
               onPress={this.clickHandler.bind(this, "polygon")}
             />
           </View>
@@ -248,7 +244,7 @@ export default class Home extends React.Component {
         <View style={styles.leftsideIcons}>
           <View style={styles.searchAndSettingsIcons}>
             <IconButton
-              source={require('../assets/icons/SettingsButton.png')}
+              source={require('../../assets/icons/SettingsButton.png')}
               onPress={this.clickHandler.bind(this, "settings")}
             />
           </View>
@@ -256,25 +252,25 @@ export default class Home extends React.Component {
         <View style={styles.bottomLeftIcons}>
           <View style={styles.sideIconsGroup}>
             <IconButton
-              source={require('../assets/icons/MapActionsButton.png')}
+              source={require('../../assets/icons/MapActionsButton.png')}
               onPress={() => this.toggleDialog("mapActionsMenuVisible")}
             />
           </View>
           <View style={styles.sideIconsGroup}>
             <IconButton
-              source={require('../assets/icons/SymbolsButton.png')}
+              source={require('../../assets/icons/SymbolsButton.png')}
               onPress={() => this.toggleDialog("mapSymbolsMenuVisible")}
             />
           </View>
           <View style={styles.layersIcon}>
             <IconButton
-              source={require('../assets/icons/LayersButton.png')}
+              source={require('../../assets/icons/LayersButton.png')}
               onPress={() => this.toggleDialog("baseMapMenuVisible")}
             />
           </View>
           <View style={styles.sideIconsGroup}>
             <IconButton
-              source={require('../assets/icons/MyLocationButton.png')}
+              source={require('../../assets/icons/MyLocationButton.png')}
               onPress={this.clickHandler.bind(this, "currentLocation")}
             />
           </View>
@@ -290,7 +286,7 @@ export default class Home extends React.Component {
           onTouchOutside={() => this.toggleDialog("mapSymbolsMenuVisible")}
         />
         <BaseMapDialog
-          visible={this.state.dialogs.baseMapMenuVisible }
+          visible={this.state.dialogs.baseMapMenuVisible}
           onPress={(name) => this.dialogClickHandler("baseMapMenuVisible", name)}
           onTouchOutside={() => this.toggleDialog("baseMapMenuVisible")}
         />
@@ -298,72 +294,3 @@ export default class Home extends React.Component {
     )
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-
-  // --- Left and right icon absolute positions from top ---
-  leftsideIcons: {
-    position: 'absolute',
-    left: 70
-  },
-  rightsideIcons: {
-    position: "absolute",
-    right: -5
-  },
-
-  // --- All icons with group spacings (margins of 55) on left and right sides ---
-  sideIconsGroup: {
-    marginBottom: 65
-  },
-
-  // --- Bottom icons (line, polygon, and point) ---
-
-  bottomRightIcons: {
-    position: "absolute",
-    bottom: 90,
-    right: 45
-  },
-  lineIcon: {
-    marginRight: 155
-  },
-  pointIcon: {
-
-    marginRight: 95
-  },
-  polygonIcon: {
-
-    marginRight: 35
-  },
-
-  // --- Bottom Left Icon (current location) ---
-  bottomLeftIcons: {
-    position: 'absolute',
-    bottom: 30,
-    left: 70
-  },
-  layersIcon: {
-    marginBottom: 105
-  },
-
-  // --- Icons with specialized margins ---
-  mapActionsIcon: {
-    marginTop: 415
-  },
-  notebookViewIcon: {
-    marginTop: 105
-  },
-  searchAndSettingsIcons: {
-    marginTop: 20
-  },
-  tagIcon: {
-    marginTop: 145
-  },
-
-  dialog: {
-    position: 'absolute',
-    bottom: 10
-  }
-});
