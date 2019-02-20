@@ -37,8 +37,8 @@ class mapView extends Component {
         longitudeDelta: LONGITUDE_DELTA,
       },
       currentBaseMap: {
-        url: 'http://tiles.strabospot.org/v5/mapbox.outdoors/{z}/{x}/{y}.png?access_token=' + MAPBOX_KEY,
-        maxZoom: 19
+        // url: 'http://tiles.strabospot.org/v5/mapbox.outdoors/{z}/{x}/{y}.png?access_token=' + MAPBOX_KEY,
+        // maxZoom: 19
       },
       images: [],
       location: false,
@@ -66,14 +66,10 @@ class mapView extends Component {
 
   get mapType() {
     // MapKit does not support 'none' as a base map
-    if (Platform.OS === 'ios'){
-      return this.props.provider === PROVIDER_DEFAULT ?
-        MAP_TYPES.STANDARD : MAP_TYPES.MUTEDSTANDARD;
-    } else {
-      return this.props.provider === PROVIDER_DEFAULT ?
-        MAP_TYPES.STANDARD : MAP_TYPES.NONE;
+    if (Platform.OS === 'ios') {
+      return this.props.provider === PROVIDER_DEFAULT ? MAP_TYPES.HYBRID : MAP_TYPES.SATELLITE;
     }
-
+    else return this.props.provider === PROVIDER_DEFAULT ? MAP_TYPES.STANDARD : MAP_TYPES.NONE;
   }
 
   handlePress = async (name) => {
@@ -224,10 +220,11 @@ class mapView extends Component {
             ref={ref => this.map = ref}
             onPress={this.pickLocationHandler}
           >
-            <UrlTile
-              urlTemplate={this.state.currentBaseMap.url}
-              maximumZ={this.state.currentBaseMap.maxZoom}
-            />
+            {!this.state.currentBaseMap.url ? null :
+              <UrlTile
+                urlTemplate={this.state.currentBaseMap.url}
+                maximumZ={this.state.currentBaseMap.maxZoom}
+              />}
           </MapView>
         </View>
         {/*        <MapboxGL.MapView
