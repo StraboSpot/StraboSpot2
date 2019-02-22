@@ -9,10 +9,11 @@ import MapActionsDialog from '../../components/modals/map-actions/MapActionsDial
 import MapSymbolsDialog from "../../components/modals/map-symbols/MapSymbolsDialogBox";
 import BaseMapDialog from "../../components/modals/base-maps/BaseMapDialogBox";
 import NotebookPanel from '../../components/sidebar-views/notebook-panel/NotebookPanel';
-import SettingsSideMenu from '../../components/sidebar-views/SettingsSideMenu/SettingsSideMenu';
-import {Drawer} from "native-base";
+//import SettingsSideMenu from '../../components/sidebar-views/SettingsSideMenu/SettingsSideMenu';
+//import {Drawer} from "native-base";
 
 export default class Home extends React.Component {
+  _isMounted = false;
 
   constructor(props) {
     super(props);
@@ -28,7 +29,12 @@ export default class Home extends React.Component {
   }
 
   componentDidMount() {
+    this._isMounted = true;
     Icon.getImageSource("pin", 30)
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   clickHandler = (name) => {
@@ -70,15 +76,6 @@ export default class Home extends React.Component {
         console.log(`${name}`, " was clicked");
         goSignIn();
         break;
-      case "mapActions":
-        console.log(`${name}`, " was clicked");
-        break;
-      case "mapSymbols":
-        console.log(`${name}`, " was clicked");
-        break;
-      case "mapLayers":
-        console.log(`${name}`, " was clicked");
-        break;
       case "currentLocation":
         console.log(`${name}`, " was clicked");
         this.getLocation();
@@ -98,27 +95,26 @@ export default class Home extends React.Component {
         console.log(`${name}`, " was clicked");
         break;
 
-      // Map Layers
-      case "satellite":
+      // Map Basemap Layers
+      case "mapboxSatellite":
         this.newBasemapDisplay(name);
         break;
-      case "topo":
+      case "mapboxOutdoors":
         this.newBasemapDisplay(name);
         break;
-      case "streets":
+      case "osm":
         this.newBasemapDisplay(name);
         break;
       case "macrostrat":
         this.newBasemapDisplay(name);
         break;
-      case "geo&roads":
+      case "custom":
         this.newBasemapDisplay(name);
         break;
     }
   };
 
   newBasemapDisplay = (name) => {
-    console.log(name)
     this.mapViewElement.current.changeMap(name);
   };
 
@@ -126,22 +122,26 @@ export default class Home extends React.Component {
     this.mapViewElement.current.getCurrentLocation();
   };
 
-  closeDrawer = () => {
+  /*closeDrawer = () => {
     this.drawer._root.close()
   };
   openDrawer = () => {
     this.drawer._root.open()
-  };
+  };*/
 
   toggleDialog = (dialog) => {
-    this.setState(prevState => {
-      return {
-        dialogs: {
-          ...prevState.dialogs,
-          [dialog]: !prevState.dialogs[dialog]
+    console.log('Toggle', dialog);
+    if (this._isMounted) {
+      this.setState(prevState => {
+        return {
+          dialogs: {
+            ...prevState.dialogs,
+            [dialog]: !prevState.dialogs[dialog]
+          }
         }
-      }
-    })
+      });
+    }
+    else console.log('Attempting to toggle', dialog, 'but Home Component not mounted.');
   };
 
   openNotebookPanel = () => {
@@ -168,8 +168,8 @@ export default class Home extends React.Component {
         {this.state.noteBookPanelVisible ?
           <NotebookPanel
             close={() => this.closeNotebookPanel()}
-        />
-        : null}
+          />
+          : null}
         <View style={styles.rightsideIcons}>
           <View style={styles.searchAndSettingsIcons}>
             <IconButton

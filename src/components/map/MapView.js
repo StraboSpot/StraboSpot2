@@ -6,15 +6,14 @@ import {
   Text,
   Dimensions,
 } from 'react-native';
-//import MapboxGL from '@mapbox/react-native-mapbox-gl';
+import MapboxGL from '@mapbox/react-native-mapbox-gl';
 import {FloatingAction} from 'react-native-floating-action';
 import {goToImages, goSignIn, goToDownloadMap} from '../../routes/Navigation';
 import MapView, {MAP_TYPES, PROVIDER_DEFAULT, ProviderPropType, UrlTile} from 'react-native-maps';
+import {MAPBOX_KEY} from '../../MapboxConfig'
+import {MapboxOutdoorsBasemap, MapboxSatelliteBasemap, OSMBasemap, MacrostratBasemap} from "./Basemaps";
 
-/*MapboxGL.setAccessToken(
-  'pk.eyJ1Ijoic3RyYWJvLWdlb2xvZ3kiLCJhIjoiY2lpYzdhbzEwMDA1ZnZhbTEzcTV3Z3ZnOSJ9.myyChr6lmmHfP8LYwhH5Sg');*/
-
-const MAPBOX_KEY = 'pk.eyJ1Ijoic3RyYWJvLWdlb2xvZ3kiLCJhIjoiY2lpYzdhbzEwMDA1ZnZhbTEzcTV3Z3ZnOSJ9.myyChr6lmmHfP8LYwhH5Sg';
+MapboxGL.setAccessToken(MAPBOX_KEY);
 
 const {width, height} = Dimensions.get('window');
 
@@ -25,6 +24,7 @@ const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
 class mapView extends Component {
+  _isMounted = false;
 
   constructor(props, context) {
     super(props, context);
@@ -36,32 +36,58 @@ class mapView extends Component {
         latitudeDelta: LATITUDE_DELTA,
         longitudeDelta: LONGITUDE_DELTA,
       },
-      currentBaseMap: {
-        // url: 'http://tiles.strabospot.org/v5/mapbox.outdoors/{z}/{x}/{y}.png?access_token=' + MAPBOX_KEY,
-        // maxZoom: 19
-      },
+      currentBasemap: {},
       images: [],
-      location: false,
+      location: false
     };
+
+    this.map = {};
 
     this.basemaps = {
       osm: {
+        id: 'osm',
+        layerId: 'osmLayer',
         url: 'https://a.tile.openstreetmap.org/{z}/{x}/{y}.png',
         maxZoom: 16
       },
       macrostrat: {
+        id: 'macrostrat',
+        layerId: 'macrostratLayer',
         url: 'http://tiles.strabospot.org/v5/macrostrat/{z}/{x}/{y}.png',
         maxZoom: 19
       },
       mapboxOutdoors: {
+        id: 'mapboxOutdoors',
+        layerId: 'mapboxOutdoorsLayer',
         url: 'http://tiles.strabospot.org/v5/mapbox.outdoors/{z}/{x}/{y}.png?access_token=' + MAPBOX_KEY,
         maxZoom: 19
       },
       mapboxSatellite: {
+        id: 'mapboxSatellite',
+        layerId: 'mapboxSatelliteLayer',
         url: 'http://tiles.strabospot.org/v5/mapbox.satellite/{z}/{x}/{y}.png?access_token=' + MAPBOX_KEY,
         maxZoom: 19
       }
     }
+  }
+
+  componentDidMount() {
+    this._isMounted = true;
+
+    // Set the default basemap
+    console.log('Setting initial basemap ...');
+    this.setState(prevState => {
+      return {
+        ...prevState,
+        currentBasemap: this.basemaps.mapboxOutdoors
+      }
+    }, () => {
+      console.log('Finished setting initial basemap to:', this.state.currentBasemap);
+    });
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   get mapType() {
@@ -69,7 +95,6 @@ class mapView extends Component {
     if (Platform.OS === 'ios') {
       return this.props.provider === PROVIDER_DEFAULT ? MAP_TYPES.HYBRID : MAP_TYPES.SATELLITE;
     }
-    else return this.props.provider === PROVIDER_DEFAULT ? MAP_TYPES.STANDARD : MAP_TYPES.NONE;
   }
 
   handlePress = async (name) => {
@@ -77,7 +102,8 @@ class mapView extends Component {
       case "Download Map":
         console.log("Download map selected");
         console.log('this.map', this.map);
-        const visibleBounds = await this.map.getMapBoundaries();
+        const visibleBounds = await this.map.getVisibleBounds();      // Mapbox
+        //const visibleBounds = await this.map.getMapBoundaries();    // RN Maps
         console.log('first bounds', visibleBounds);
         goToDownloadMap(visibleBounds);
         break;
@@ -94,59 +120,33 @@ class mapView extends Component {
     }
   };
 
-
-  // To add a spot pin. Location is selected when user picks point on map
+  // RN Maps: To add a spot pin. Location is selected when user picks point on map
   pickLocationHandler = event => {
     const coords = event.nativeEvent.coordinate;
     console.log(coords)
   };
 
+  // Mapbox
+  pressMapHandler = event => {
+    console.log(event.geometry.coordinates);
+  };
+
   changeMap = (mapName) => {
-    if (mapName === "satellite") {
-      this.setState(prevState => {
-        return {
-          ...prevState,
-          currentBaseMap: {
-            url: this.basemaps.mapboxSatellite.url,
-            maxZoom: this.basemaps.mapboxSatellite.maxZoom
+    if (this._isMounted) {
+      if (mapName === 'mapboxSatellite' || mapName === 'mapboxOutdoors' || mapName === 'osm' || mapName === 'macrostrat') {
+        console.log('Switching basemap to:', mapName);
+        this.setState(prevState => {
+          return {
+            ...prevState,
+            currentBasemap: this.basemaps[mapName]
           }
-        }
-      });
+        }, () => {
+          console.log('Current basemap:', this.state.currentBasemap);
+        });
+      }
+      else console.log('Cancel switching basemaps. Basemap', mapName, 'still needs to be setup.');
     }
-    else if (mapName === "topo") {
-      this.setState(prevState =>{
-        return {
-          ...prevState,
-          currentBaseMap: {
-            url: this.basemaps.mapboxOutdoors.url,
-            maxZoom: this.basemaps.mapboxOutdoors.maxZoom
-          }
-        }
-      });
-    }
-    else if (mapName === "streets") {
-      this.setState(prevState => {
-        return {
-          ...prevState,
-          currentBaseMap: {
-            url: this.basemaps.osm.url,
-            maxZoom: this.basemaps.osm.maxZoom
-          }
-        }
-      });
-    }
-    else if (mapName === "macrostrat") {
-      this.setState(prevState =>{
-        return {
-          ...prevState,
-          currentBaseMap: {
-            url: this.basemaps.macrostrat.url,
-            maxZoom: this.basemaps.macrostrat.maxZoom
-          }
-        }
-      });
-    }
-    else console.log("Geo and Roads", mapName);
+    else console.log('Attempting to switch basemap to', mapName, 'but MapView Component not mounted.');
   };
 
   getCurrentLocation = () => {
@@ -207,9 +207,43 @@ class mapView extends Component {
       },
     ];
 
+    const centerCoordinate = [this.state.region.longitude, this.state.region.latitude];
+
     return (
       <React.Fragment>
-        <View style={styles.container}>
+        {this.state.currentBasemap.id === 'mapboxSatellite' ?
+          <MapboxSatelliteBasemap
+            basemap={this.state.currentBasemap}
+            centerCoordinate={centerCoordinate}
+            onPress={this.pressMapHandler}
+            ref={ref => this.map = ref}
+          /> : null
+        }
+        {this.state.currentBasemap.id === 'mapboxOutdoors' ?
+          <MapboxOutdoorsBasemap
+            basemap={this.state.currentBasemap}
+            centerCoordinate={centerCoordinate}
+            onPress={this.pressMapHandler}
+            ref={ref => this.map = ref}
+          /> : null
+        }
+        {this.state.currentBasemap.id === 'osm' ?
+          <OSMBasemap
+            basemap={this.state.currentBasemap}
+            centerCoordinate={centerCoordinate}
+            onPress={this.pressMapHandler}
+            ref={ref => this.map = ref}
+          /> : null
+        }
+        {this.state.currentBasemap.id === 'macrostrat' ?
+          <MacrostratBasemap
+            basemap={this.state.currentBasemap}
+            centerCoordinate={centerCoordinate}
+            onPress={this.pressMapHandler}
+            ref={ref => this.map = ref}
+          /> : null
+        }
+        {/*        <View style={styles.container}>
           <MapView
             provider={this.props.provider}
             mapType={this.mapType}
@@ -220,22 +254,13 @@ class mapView extends Component {
             ref={ref => this.map = ref}
             onPress={this.pickLocationHandler}
           >
-            {!this.state.currentBaseMap.url ? null :
+            {!this.state.currentBasemap.url ? null :
               <UrlTile
-                urlTemplate={this.state.currentBaseMap.url}
-                maximumZ={this.state.currentBaseMap.maxZoom}
+                urlTemplate={this.state.currentBasemap.url}
+                maximumZ={this.state.currentBasemap.maxZoom}
               />}
           </MapView>
-        </View>
-        {/*        <MapboxGL.MapView
-          styleURL={MapboxGL.StyleURL.Street}
-          zoomLevel={15}
-          centerCoordinate={[this.state.lng, this.state.lat]}
-          style={styles.mapContainer}
-          showUserLocation={true}
-          ref={ref => this.map = ref}
-        >
-        </MapboxGL.MapView>*/}
+        </View>*/}
         <FloatingAction
           position={"center"}
           distanceToEdge={10}

@@ -3,15 +3,6 @@ import {StyleSheet, Switch, View} from 'react-native';
 import Dialog, {DialogButton, DialogContent, DialogTitle} from "react-native-popup-dialog";
 import {ScaleAnimation} from "react-native-popup-dialog/src";
 
-clickHandler = (name) => {
-  switch (name) {
-    case name:
-      console.log(`${name}`, " was clicked");
-      break;
-
-  }
-};
-
 const slideAnimation = new ScaleAnimation({
   useNativeDriver: true
 });
@@ -40,17 +31,17 @@ const BaseMapDialog = props => (
       <DialogButton
         style={styles.dialogContent}
         text="Mapbox Satellite"
-        onPress={() => props.onPress("satellite")}
+        onPress={() => props.onPress("mapboxSatellite")}
       />
       <DialogButton
         style={styles.dialogContent}
         text="Mapbox Topo"
-        onPress={() => props.onPress("topo")}
+        onPress={() => props.onPress("mapboxOutdoors")}
       />
       <DialogButton
         style={styles.dialogContent}
         text="OSM Streets"
-        onPress={() => props.onPress("streets")}
+        onPress={() => props.onPress("osm")}
       />
       <DialogButton
         style={styles.dialogContent}
@@ -60,7 +51,7 @@ const BaseMapDialog = props => (
       <DialogButton
         style={styles.dialogContent}
         text="Geology + Roads (Custom)"
-        onPress={() => props.onPress("geo&roads")}
+        onPress={() => props.onPress("custom")}
       />
       {/*<DialogButton*/}
         {/*style={styles.dialogContent}*/}
