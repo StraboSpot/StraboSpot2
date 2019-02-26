@@ -33,17 +33,17 @@ function Basemap(props) {
 }
 
 export const MapboxOutdoorsBasemap = React.forwardRef((props, ref) => (
-  <Basemap {...props} forwardedRef={ref}></Basemap>
+  <Basemap {...props} forwardedRef={ref}/>
 ));
 
 export const MapboxSatelliteBasemap = React.forwardRef((props, ref) => (
-  <Basemap {...props} forwardedRef={ref}></Basemap>
+  <Basemap {...props} forwardedRef={ref}/>
 ));
 
 export const MacrostratBasemap = React.forwardRef((props, ref) => (
-  <Basemap {...props} forwardedRef={ref}></Basemap>
+  <Basemap {...props} forwardedRef={ref}/>
 ));
 
 export const OSMBasemap = React.forwardRef((props, ref) => (
-  <Basemap {...props} forwardedRef={ref}></Basemap>
+  <Basemap {...props} forwardedRef={ref}/>
 ));

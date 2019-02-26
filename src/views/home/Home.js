@@ -5,11 +5,11 @@ import {goToAuth, goSignIn, splitView} from '../../routes/Navigation'
 import MapView, {getCurrentLocation} from '../../components/map/MapView';
 import Icon from 'react-native-vector-icons/Ionicons';
 import IconButton from '../../ui/IconButton';
-import MapActionsDialog from '../../components/modals/map-actions/MapActionsDialogBox';
-import MapSymbolsDialog from "../../components/modals/map-symbols/MapSymbolsDialogBox";
-import BaseMapDialog from "../../components/modals/base-maps/BaseMapDialogBox";
-import NotebookPanel from '../../components/sidebar-views/notebook-panel/NotebookPanel';
-//import SettingsSideMenu from '../../components/sidebar-views/SettingsSideMenu/SettingsSideMenu';
+import MapActionsDialog from '../../components/modals/MapActionsDialogBox';
+import MapSymbolsDialog from "../../components/modals/MapSymbolsDialogBox";
+import BaseMapDialog from "../../components/modals/BaseMapDialogBox";
+import NotebookPanel from '../../components/sidebars/notebook-panel/NotebookPanel';
+//import SettingsSideMenu from '../../components/sidebars/SettingsSideMenu/SettingsSideMenu';
 //import {Drawer} from "native-base";
 
 export default class Home extends React.Component {
@@ -78,7 +78,7 @@ export default class Home extends React.Component {
         break;
       case "currentLocation":
         console.log(`${name}`, " was clicked");
-        this.getLocation();
+        // this.getLocation();
         break;
 
       // Map Actions
@@ -118,9 +118,10 @@ export default class Home extends React.Component {
     this.mapViewElement.current.changeMap(name);
   };
 
-  getLocation = () => {
-    this.mapViewElement.current.getCurrentLocation();
-  };
+  //RN Maps ***
+  // getLocation = () => {
+  //   this.mapViewElement.current.getCurrentLocation();
+  // };
 
   /*closeDrawer = () => {
     this.drawer._root.close()

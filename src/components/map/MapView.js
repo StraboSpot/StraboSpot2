@@ -149,38 +149,39 @@ class mapView extends Component {
     else console.log('Attempting to switch basemap to', mapName, 'but MapView Component not mounted.');
   };
 
-  getCurrentLocation = () => {
-    navigator.geolocation.getCurrentPosition(
-      pos => {
-        const coordsEvent = {
-          nativeEvent: {
-            coordinate: {
-              latitude: pos.coords.latitude,
-              longitude: pos.coords.longitude,
-              latitudeDelta: 0.1229,
-            }
-          }
-        };
-        const coords = coordsEvent.nativeEvent.coordinate;
-        this.map.animateToRegion({
-          ...this.state.region,
-          latitude: coords.latitude,
-          longitude: coords.longitude
-        });
-        this.setState(prevState => {
-          return {
-            region: {
-              ...prevState.region,
-              latitude: coords.latitude,
-              longitude: coords.longitude,
-              longitudeDelta: .0122,
-              latitudeDelta: LATITUDE_DELTA,
-            },
-            locationChosen: true
-          };
-        });
-      })
-  };
+  // RN Maps******
+  // getCurrentLocation = () => {
+  //   navigator.geolocation.getCurrentPosition(
+  //     pos => {
+  //       const coordsEvent = {
+  //         nativeEvent: {
+  //           coordinate: {
+  //             latitude: pos.coords.latitude,
+  //             longitude: pos.coords.longitude,
+  //             latitudeDelta: 0.1229,
+  //           }
+  //         }
+  //       };
+  //       const coords = coordsEvent.nativeEvent.coordinate;
+  //       this.map.animateToRegion({
+  //         ...this.state.region,
+  //         latitude: coords.latitude,
+  //         longitude: coords.longitude
+  //       });
+  //       this.setState(prevState => {
+  //         return {
+  //           region: {
+  //             ...prevState.region,
+  //             latitude: coords.latitude,
+  //             longitude: coords.longitude,
+  //             longitudeDelta: .0122,
+  //             latitudeDelta: LATITUDE_DELTA,
+  //           },
+  //           locationChosen: true
+  //         };
+  //       });
+  //     })
+  // };
 
   render() {
     const actions = [
