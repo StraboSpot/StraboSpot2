@@ -38,7 +38,23 @@ class mapView extends Component {
       },
       currentBasemap: {},
       images: [],
-      location: false
+      location: false,
+      //  featureCollection: MapboxGL.geoUtils.makeFeatureCollection(),
+      featureCollection: {
+        type: 'FeatureCollection',
+        features: [
+          {
+            geometry: {
+              coordinates: [-110.8675951829166, 32.29774994537918],
+              type: "Point"
+            },
+            id: "23435234234234",
+            properties: {},
+            type: "Feature"
+          }
+        ],
+      },
+      drawType: undefined
     };
 
     this.map = {};
@@ -68,7 +84,10 @@ class mapView extends Component {
         url: 'http://tiles.strabospot.org/v5/mapbox.satellite/{z}/{x}/{y}.png?access_token=' + MAPBOX_KEY,
         maxZoom: 19
       }
-    }
+    };
+
+    this.onMapPress = this.onMapPress.bind(this);
+    this.onSourceLayerPress = this.onSourceLayerPress.bind(this);
   }
 
   componentDidMount() {
@@ -127,9 +146,27 @@ class mapView extends Component {
   };
 
   // Mapbox
-  pressMapHandler = event => {
-    console.log(event.geometry.coordinates);
-  };
+  async onMapPress(e) {
+    console.log('in ON press', e);
+    if (this.state.drawType === 'point') {
+      let feature = MapboxGL.geoUtils.makeFeature(e.geometry);
+      feature.id = '' + Date.now();
+      console.log('New feature:', feature);
+      this.setState({
+        featureCollection: MapboxGL.geoUtils.addToFeatureCollection(
+          this.state.featureCollection,
+          feature,
+        ),
+      }, () => {
+        console.log('Created new feature:', this.state);
+      });
+    }
+  }
+
+  onSourceLayerPress(e) {
+    const feature = e.nativeEvent.payload;
+    console.log('You pressed a layer here is your feature', feature); // eslint-disable-line
+  }
 
   changeMap = (mapName) => {
     if (this._isMounted) {
@@ -183,6 +220,18 @@ class mapView extends Component {
   //     })
   // };
 
+  setDrawType = drawType => {
+    this.setState(prevState => {
+      if (prevState.drawType === drawType) drawType = undefined;
+      return {
+        ...prevState,
+        drawType: drawType
+      }
+    }, () => {
+      console.log('Set draw type to:', drawType);
+    });
+  };
+
   render() {
     const actions = [
       {
@@ -210,40 +259,21 @@ class mapView extends Component {
 
     const centerCoordinate = [this.state.region.longitude, this.state.region.latitude];
 
+    const mapProps = {
+      basemap: this.state.currentBasemap,
+      centerCoordinate: centerCoordinate,
+      onMapPress: this.onMapPress,
+      onSourcePress: this.onSourceLayerPress,
+      shape: this.state.featureCollection,
+      ref: ref => this.map = ref
+    };
+
     return (
       <React.Fragment>
-        {this.state.currentBasemap.id === 'mapboxSatellite' ?
-          <MapboxSatelliteBasemap
-            basemap={this.state.currentBasemap}
-            centerCoordinate={centerCoordinate}
-            onPress={this.pressMapHandler}
-            ref={ref => this.map = ref}
-          /> : null
-        }
-        {this.state.currentBasemap.id === 'mapboxOutdoors' ?
-          <MapboxOutdoorsBasemap
-            basemap={this.state.currentBasemap}
-            centerCoordinate={centerCoordinate}
-            onPress={this.pressMapHandler}
-            ref={ref => this.map = ref}
-          /> : null
-        }
-        {this.state.currentBasemap.id === 'osm' ?
-          <OSMBasemap
-            basemap={this.state.currentBasemap}
-            centerCoordinate={centerCoordinate}
-            onPress={this.pressMapHandler}
-            ref={ref => this.map = ref}
-          /> : null
-        }
-        {this.state.currentBasemap.id === 'macrostrat' ?
-          <MacrostratBasemap
-            basemap={this.state.currentBasemap}
-            centerCoordinate={centerCoordinate}
-            onPress={this.pressMapHandler}
-            ref={ref => this.map = ref}
-          /> : null
-        }
+        {this.state.currentBasemap.id === 'mapboxSatellite' ? <MapboxSatelliteBasemap {...mapProps}/> : null}
+        {this.state.currentBasemap.id === 'mapboxOutdoors' ? <MapboxOutdoorsBasemap {...mapProps}/> : null}
+        {this.state.currentBasemap.id === 'osm' ? <OSMBasemap {...mapProps}/> : null}
+        {this.state.currentBasemap.id === 'macrostrat' ? <MacrostratBasemap {...mapProps}/> : null}
         {/*        <View style={styles.container}>
           <MapView
             provider={this.props.provider}

@@ -1,5 +1,6 @@
 import React from 'react';
 import MapboxGL from '@mapbox/react-native-mapbox-gl';
+import pointSymbol from "../../assets/symbols/point.png";
 
 function Basemap(props) {
   return <MapboxGL.MapView
@@ -15,7 +16,7 @@ function Basemap(props) {
     compassEnabled={false}
     centerCoordinate={props.centerCoordinate}
     zoomLevel={16}
-    onPress={props.onPress}
+    onPress={props.onMapPress}
   >
     <MapboxGL.RasterSource
       id={props.basemap.id}
@@ -29,6 +30,17 @@ function Basemap(props) {
         style={{rasterOpacity: 1}}
       />
     </MapboxGL.RasterSource>
+    <MapboxGL.ShapeSource
+      id="symbolLocationSource"
+      hitbox={{ width: 20, height: 20 }}
+      onPress={props.onSourcePress}
+      shape={props.shape}>
+      <MapboxGL.SymbolLayer
+        id="symbolLocationSymbols"
+        minZoomLevel={1}
+        style={mapStyles.icon}
+      />
+    </MapboxGL.ShapeSource>
   </MapboxGL.MapView>
 }
 
@@ -47,3 +59,11 @@ export const MacrostratBasemap = React.forwardRef((props, ref) => (
 export const OSMBasemap = React.forwardRef((props, ref) => (
   <Basemap {...props} forwardedRef={ref}/>
 ));
+
+const mapStyles = MapboxGL.StyleSheet.create({
+  icon: {
+    iconImage: pointSymbol,
+    iconAllowOverlap: true,
+    iconSize: 0.15,
+  },
+});

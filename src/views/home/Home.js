@@ -65,12 +65,15 @@ export default class Home extends React.Component {
         break;
       case "point":
         console.log(`${name}`, " was clicked");
+        this.setDrawType(name);
         break;
       case "line":
         console.log(`${name}`, " was clicked");
+        this.setDrawType(name);
         break;
       case "polygon":
         console.log(`${name}`, " was clicked");
+        this.setDrawType(name);
         break;
       case "settings":
         console.log(`${name}`, " was clicked");
@@ -116,6 +119,10 @@ export default class Home extends React.Component {
 
   newBasemapDisplay = (name) => {
     this.mapViewElement.current.changeMap(name);
+  };
+
+  setDrawType = drawType => {
+    this.mapViewElement.current.setDrawType(drawType);
   };
 
   //RN Maps ***
