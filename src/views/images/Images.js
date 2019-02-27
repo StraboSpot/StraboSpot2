@@ -9,8 +9,8 @@ import {
   StyleSheet,
 } from 'react-native';
 import {Navigation} from "react-native-navigation";
-import {getRemoteImages, getImages} from '../services/images/ImageDownload';
-import ImageView from '../components/images/ImageView';
+import {getRemoteImages, getImages} from '../../services/images/ImageDownload';
+import ImageView from '../../components/images/ImageView';
 import PhotoGrid from 'react-native-image-grid';
 
 

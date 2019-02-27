@@ -1,9 +1,7 @@
 import React, {Component} from 'react'
-import {View, StyleSheet, TextInput, Button, Alert, ImageBackground, Text} from 'react-native'
-import ButtonNoBackground from '../ui/ButtonNoBackround';
-import {goSignIn} from "../routes/Navigation";
-import {getUserProfile} from '../services/user/UserProfile';
-import { Avatar, Divider } from 'react-native-elements';
+import {View, StyleSheet, Text} from 'react-native'
+// import {getUserProfile} from '../services/user/UserProfile';
+import { Avatar } from 'react-native-elements';
 
 class UserProfileComponent extends Component {
 constructor(props) {
