@@ -12,6 +12,7 @@ import {goToImages, goSignIn, goToDownloadMap} from '../../routes/Navigation';
 import MapView, {MAP_TYPES, PROVIDER_DEFAULT, ProviderPropType, UrlTile} from 'react-native-maps';
 import {MAPBOX_KEY} from '../../MapboxConfig'
 import {MapboxOutdoorsBasemap, MapboxSatelliteBasemap, OSMBasemap, MacrostratBasemap} from "./Basemaps";
+import turfHelpers from '@turf/helpers';
 
 MapboxGL.setAccessToken(MAPBOX_KEY);
 
@@ -86,6 +87,8 @@ class mapView extends Component {
       }
     };
 
+    this.linePoints = [];
+
     this.onMapPress = this.onMapPress.bind(this);
     this.onSourceLayerPress = this.onSourceLayerPress.bind(this);
   }
@@ -147,21 +150,43 @@ class mapView extends Component {
 
   // Mapbox
   async onMapPress(e) {
-    console.log('in ON press', e);
+    console.log('Map pressed', e);
+    this.startTime = new Date().getTime();
     if (this.state.drawType === 'point') {
+      console.log('Map point', e);
       let feature = MapboxGL.geoUtils.makeFeature(e.geometry);
-      feature.id = '' + Date.now();
-      console.log('New feature:', feature);
+      this.createFeature(feature);
+    }
+    else if (this.state.drawType === 'line') {
+      console.log('Map line', e);
+      this.linePoints.push(e.geometry.coordinates);
+      console.log(this.linePoints);
+      if (this.linePoints.length === 1) {
+        let feature = MapboxGL.geoUtils.makeFeature(e.geometry);
+        this.createFeature(feature);
+      }
+      else if (this.linePoints.length >= 2) {
+        this.state.featureCollection.features.pop();
+        let feature = turfHelpers.lineString(this.linePoints);
+        this.createFeature(feature);
+      }
+    }
+  }
+
+  createFeature = feature => {
+    feature.properties.id = '' + Date.now();
+    console.log('Creating new feature:', feature);
+    if (this._isMounted) {
       this.setState({
         featureCollection: MapboxGL.geoUtils.addToFeatureCollection(
           this.state.featureCollection,
           feature,
         ),
       }, () => {
-        console.log('Created new feature:', this.state);
+        console.log('State with new feature:', this.state);
       });
     }
-  }
+  };
 
   onSourceLayerPress(e) {
     const feature = e.nativeEvent.payload;
@@ -221,15 +246,27 @@ class mapView extends Component {
   // };
 
   setDrawType = drawType => {
-    this.setState(prevState => {
-      if (prevState.drawType === drawType) drawType = undefined;
-      return {
-        ...prevState,
-        drawType: drawType
-      }
-    }, () => {
-      console.log('Set draw type to:', drawType);
-    });
+    if (this._isMounted) {
+      this.setState(prevState => {
+        if (prevState.drawType === drawType) {
+          drawType = undefined;
+          if (prevState.drawType === 'line') this.state.featureCollection.features.pop();
+        }
+        return {
+          ...prevState,
+          drawType: drawType
+        }
+      }, () => {
+        console.log('Set draw type to:', drawType);
+        if (this.state.drawType === undefined || this.state.drawType === "point") this.linePoints = [];
+      });
+    }
+    else console.log('Attempting to set the draw type to', drawType, 'but MapView Component not mounted.');
+  };
+
+  endDraw = () => {
+    this.linePoints = [];
+    this.setDrawType(undefined);
   };
 
   render() {

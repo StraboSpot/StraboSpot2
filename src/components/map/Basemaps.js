@@ -38,7 +38,14 @@ function Basemap(props) {
       <MapboxGL.SymbolLayer
         id="symbolLocationSymbols"
         minZoomLevel={1}
+        filter={['==', '$type', 'Point']}
         style={mapStyles.icon}
+      />
+      <MapboxGL.LineLayer
+        id="lineLayer"
+        minZoomLevel={1}
+        filter={['==', '$type', 'LineString']}
+        style={mapStyles.route}
       />
     </MapboxGL.ShapeSource>
   </MapboxGL.MapView>
@@ -65,5 +72,9 @@ const mapStyles = MapboxGL.StyleSheet.create({
     iconImage: pointSymbol,
     iconAllowOverlap: true,
     iconSize: 0.15,
+  },
+  route: {
+    lineColor: 'black',
+    lineWidth: 3
   },
 });

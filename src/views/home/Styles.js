@@ -15,6 +15,12 @@ const styles = StyleSheet.create({
     right: -5
   },
 
+  topCenter: {
+    position: "absolute",
+    top: 20,
+    left: 70
+  },
+
   // --- All icons with group spacings (margins of 55) on left and right sides ---
   sideIconsGroup: {
     marginBottom: 65
