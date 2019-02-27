@@ -4,7 +4,7 @@ import Initialising from "../Initializing";
 import SignIn from "../views/SignIn";
 import SignUp from "../views/SignUp";
 import Screen2 from "../views/Screen2";
-import Images from "../views/Images";
+import Images from "../views/images/Images";
 import MapDownload from "../views/MapDownload";
 
 
