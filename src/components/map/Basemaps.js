@@ -45,7 +45,13 @@ function Basemap(props) {
         id="lineLayer"
         minZoomLevel={1}
         filter={['==', '$type', 'LineString']}
-        style={mapStyles.route}
+        style={mapStyles.line}
+      />
+      <MapboxGL.FillLayer
+        id="polygonLayer"
+        minZoomLevel={1}
+        filter={['==', '$type', 'Polygon']}
+        style={mapStyles.polygon}
       />
     </MapboxGL.ShapeSource>
   </MapboxGL.MapView>
@@ -73,8 +79,12 @@ const mapStyles = MapboxGL.StyleSheet.create({
     iconAllowOverlap: true,
     iconSize: 0.15,
   },
-  route: {
+  line: {
     lineColor: 'black',
     lineWidth: 3
   },
+  polygon: {
+    fillColor: 'blue',
+    fillOpacity: .4
+  }
 });

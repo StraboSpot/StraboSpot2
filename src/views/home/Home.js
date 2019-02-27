@@ -73,26 +73,20 @@ export default class Home extends React.Component {
         break;
 
       // Map Actions
-      case "point":
-        console.log(`${name}`, " was clicked");
-        this.setDrawButtonOn(name);
-        if (this.state.buttons.endDrawButtonVisible) this.toggleButton('endDrawButtonVisible');
-        this.setDrawType(name);
-        break;
-      case "line":
-        console.log(`${name}`, " was clicked");
-        this.setDrawButtonOn(name);
-        this.toggleButton('endDrawButtonVisible');
-        this.setDrawType(name);
-        break;
-      case "polygon":
-        console.log(`${name}`, " was clicked");
+      case 'point':
+      case 'line':
+      case 'polygon':
+        console.log(`${name}`, 'selected');
+        if (!this.state.buttons.drawButtonOn || this.state.buttons.drawButtonOn === name) {
+          this.toggleButton('endDrawButtonVisible');
+        }
         this.setDrawButtonOn(name);
         this.setDrawType(name);
         break;
       case "endDraw":
         this.setDrawButtonOn(undefined);
         this.endDraw();
+        break;
       case "currentLocation":
         console.log(`${name}`, " was clicked");
         // this.getLocation();
@@ -144,6 +138,7 @@ export default class Home extends React.Component {
     this.toggleButton('endDrawButtonVisible');
   };
 
+  // Toggle given button between true (on) and false (off)
   toggleButton = (button) => {
     console.log('Toggle Button', button);
     if (this._isMounted) {
@@ -160,9 +155,9 @@ export default class Home extends React.Component {
     else console.log('Attempting to toggle', button, 'but Home Component not mounted.');
   };
 
+  // Set the state for the draw button that is turned on: 'point', 'line', 'polygon' or undefined if all off.
   setDrawButtonOn = button => {
     if (this._isMounted) {
-      console.log('Set', button, 'draw button pressed to ON');
       this.setState(prevState => {
         if (prevState.buttons.drawButtonOn === button) button = undefined;
         return {
@@ -172,9 +167,11 @@ export default class Home extends React.Component {
             drawButtonOn: button
           }
         }
+      }, () => {
+        console.log('drawButtonOn set to:', button);
       });
     }
-    else console.log('Attempting to toggle', button, 'but Home Component not mounted.');
+    else console.log('Attempting to set the state for drawButtonOn but Home Component not mounted.');
   };
 
   //RN Maps ***
@@ -183,15 +180,16 @@ export default class Home extends React.Component {
   // };
 
   closeDrawer = () => {
-    this.drawer.close()
+    this.drawer.close();
     console.log("Drawer Close")
 
   };
   openDrawer = () => {
-    this.drawer.open()
+    this.drawer.open();
     console.log("Drawer Open")
   };
 
+  // Toggle given dialog between true (visible) and false (hidden)
   toggleDialog = (dialog) => {
     console.log('Toggle', dialog);
     if (this._isMounted) {
@@ -226,150 +224,150 @@ export default class Home extends React.Component {
 
   render() {
     return (
-     <Drawer
+      <Drawer
         type={'displace'}
         ref={ref => this.drawer = ref}
         openDrawerOffset={.70}
         tapToClose={true}
         content={<SettingsPanel close={this.closeDrawer}/>}
-     >
-      <View style={styles.container}>
-        <MapView ref={this.mapViewElement}/>
-        {this.state.noteBookPanelVisible ?
-          <NotebookPanel
-            close={() => this.closeNotebookPanel()}
-          />
-          : null}
-        <View style={styles.topCenter}>
-          {this.state.buttons.endDrawButtonVisible ?
-            <Button title={'End Draw'} onPress={this.clickHandler.bind(this, "endDraw")}/> : null}
-        </View>
-        <View style={styles.rightsideIcons}>
-          <View style={styles.searchAndSettingsIcons}>
-            <IconButton
-              source={require('../../assets/icons/SearchButton.png')}
-              // onPress={this.clickHandler.bind(this, "search")}
+      >
+        <View style={styles.container}>
+          <MapView ref={this.mapViewElement}/>
+          {this.state.noteBookPanelVisible ?
+            <NotebookPanel
+              close={() => this.closeNotebookPanel()}
             />
+            : null}
+          <View style={styles.topCenter}>
+            {this.state.buttons.endDrawButtonVisible ?
+              <Button title={'End Draw'} onPress={this.clickHandler.bind(this, "endDraw")}/> : null}
           </View>
-          <View style={styles.tagIcon}>
-            <IconButton
-              source={require('../../assets/icons/TagButton.png')}
-              onPress={this.clickHandler.bind(this, "tag")}
-            />
+          <View style={styles.rightsideIcons}>
+            <View style={styles.searchAndSettingsIcons}>
+              <IconButton
+                source={require('../../assets/icons/SearchButton.png')}
+                // onPress={this.clickHandler.bind(this, "search")}
+              />
+            </View>
+            <View style={styles.tagIcon}>
+              <IconButton
+                source={require('../../assets/icons/TagButton.png')}
+                onPress={this.clickHandler.bind(this, "tag")}
+              />
+            </View>
+            <View style={styles.sideIconsGroup}>
+              <IconButton
+                source={require('../../assets/icons/MeasurementButton.png')}
+                onPress={this.clickHandler.bind(this, "measurement")}
+              />
+            </View>
+            <View style={styles.sideIconsGroup}>
+              <IconButton
+                source={require('../../assets/icons/SampleButton.png')}
+                onPress={this.clickHandler.bind(this, "sample")}
+              />
+            </View>
+            <View style={styles.sideIconsGroup}>
+              <IconButton
+                name={"Note"}
+                source={require('../../assets/icons/NoteButton.png')}
+                onPress={this.clickHandler.bind(this, "note")}
+              />
+            </View>
+            <View style={styles.sideIconsGroup}>
+              <IconButton
+                source={require('../../assets/icons/PhotoButton.png')}
+                onPress={this.clickHandler.bind(this, "photo")}
+              />
+            </View>
+            <View style={styles.sideIconsGroup}>
+              <IconButton
+                source={require('../../assets/icons/SketchButton.png')}
+                onPress={this.clickHandler.bind(this, "sketch")}
+              />
+            </View>
+            <View style={styles.notebookViewIcon}>
+              <IconButton
+                source={require('../../assets/icons/NotebookViewButton.png')}
+                onPress={() => this.openNotebookPanel()}
+              />
+            </View>
           </View>
-          <View style={styles.sideIconsGroup}>
-            <IconButton
-              source={require('../../assets/icons/MeasurementButton.png')}
-              onPress={this.clickHandler.bind(this, "measurement")}
-            />
+          <View style={styles.bottomRightIcons}>
+            <View style={styles.pointIcon}>
+              <IconButton
+                source={this.state.buttons.drawButtonOn === 'point' ?
+                  require('../../assets/icons/PointButton_pressed.png') : require('../../assets/icons/PointButton.png')}
+                onPress={this.clickHandler.bind(this, "point")}
+              />
+            </View>
+            <View style={styles.lineIcon}>
+              <IconButton
+                source={this.state.buttons.drawButtonOn === 'line' ?
+                  require('../../assets/icons/LineButton_pressed.png') : require('../../assets/icons/LineButton.png')}
+                onPress={this.clickHandler.bind(this, "line")}
+              />
+            </View>
+            <View style={styles.polygonIcon}>
+              <IconButton
+                source={this.state.buttons.drawButtonOn === 'polygon' ?
+                  require('../../assets/icons/PolygonButton_pressed.png') :
+                  require('../../assets/icons/PolygonButton.png')}
+                onPress={this.clickHandler.bind(this, "polygon")}
+              />
+            </View>
           </View>
-          <View style={styles.sideIconsGroup}>
-            <IconButton
-              source={require('../../assets/icons/SampleButton.png')}
-              onPress={this.clickHandler.bind(this, "sample")}
-            />
+          <View style={styles.leftsideIcons}>
+            <View style={styles.searchAndSettingsIcons}>
+              <IconButton
+                source={require('../../assets/icons/SettingsButton.png')}
+                onPress={this.clickHandler.bind(this, "settings")}
+              />
+            </View>
           </View>
-          <View style={styles.sideIconsGroup}>
-            <IconButton
-              name={"Note"}
-              source={require('../../assets/icons/NoteButton.png')}
-              onPress={this.clickHandler.bind(this, "note")}
-            />
+          <View style={styles.bottomLeftIcons}>
+            <View style={styles.sideIconsGroup}>
+              <IconButton
+                source={require('../../assets/icons/MapActionsButton.png')}
+                onPress={() => this.toggleDialog("mapActionsMenuVisible")}
+              />
+            </View>
+            <View style={styles.sideIconsGroup}>
+              <IconButton
+                source={require('../../assets/icons/SymbolsButton.png')}
+                onPress={() => this.toggleDialog("mapSymbolsMenuVisible")}
+              />
+            </View>
+            <View style={styles.layersIcon}>
+              <IconButton
+                source={require('../../assets/icons/LayersButton.png')}
+                onPress={() => this.toggleDialog("baseMapMenuVisible")}
+              />
+            </View>
+            <View style={styles.sideIconsGroup}>
+              <IconButton
+                source={require('../../assets/icons/MyLocationButton.png')}
+                onPress={this.clickHandler.bind(this, "currentLocation")}
+              />
+            </View>
           </View>
-          <View style={styles.sideIconsGroup}>
-            <IconButton
-              source={require('../../assets/icons/PhotoButton.png')}
-              onPress={this.clickHandler.bind(this, "photo")}
-            />
-          </View>
-          <View style={styles.sideIconsGroup}>
-            <IconButton
-              source={require('../../assets/icons/SketchButton.png')}
-              onPress={this.clickHandler.bind(this, "sketch")}
-            />
-          </View>
-          <View style={styles.notebookViewIcon}>
-            <IconButton
-              source={require('../../assets/icons/NotebookViewButton.png')}
-              onPress={() => this.openNotebookPanel()}
-            />
-          </View>
-        </View>
-        <View style={styles.bottomRightIcons}>
-          <View style={styles.pointIcon}>
-            <IconButton
-              source={this.state.buttons.drawButtonOn === 'point' ?
-                require('../../assets/icons/PointButton_pressed.png') : require('../../assets/icons/PointButton.png')}
-              onPress={this.clickHandler.bind(this, "point")}
-            />
-          </View>
-          <View style={styles.lineIcon}>
-            <IconButton
-              source={this.state.buttons.drawButtonOn === 'line' ?
-                require('../../assets/icons/LineButton_pressed.png') : require('../../assets/icons/LineButton.png')}
-              onPress={this.clickHandler.bind(this, "line")}
-            />
-          </View>
-          <View style={styles.polygonIcon}>
-            <IconButton
-              source={this.state.buttons.drawButtonOn === 'polygon' ?
-                require('../../assets/icons/PolygonButton_pressed.png') :
-                require('../../assets/icons/PolygonButton.png')}
-              onPress={this.clickHandler.bind(this, "polygon")}
-            />
-          </View>
-        </View>
-        <View style={styles.leftsideIcons}>
-          <View style={styles.searchAndSettingsIcons}>
-            <IconButton
-              source={require('../../assets/icons/SettingsButton.png')}
-              onPress={this.clickHandler.bind(this, "settings")}
-            />
-          </View>
-        </View>
-        <View style={styles.bottomLeftIcons}>
-          <View style={styles.sideIconsGroup}>
-            <IconButton
-              source={require('../../assets/icons/MapActionsButton.png')}
-              onPress={() => this.toggleDialog("mapActionsMenuVisible")}
-            />
-          </View>
-          <View style={styles.sideIconsGroup}>
-            <IconButton
-              source={require('../../assets/icons/SymbolsButton.png')}
-              onPress={() => this.toggleDialog("mapSymbolsMenuVisible")}
-            />
-          </View>
-          <View style={styles.layersIcon}>
-            <IconButton
-              source={require('../../assets/icons/LayersButton.png')}
-              onPress={() => this.toggleDialog("baseMapMenuVisible")}
-            />
-          </View>
-          <View style={styles.sideIconsGroup}>
-            <IconButton
-              source={require('../../assets/icons/MyLocationButton.png')}
-              onPress={this.clickHandler.bind(this, "currentLocation")}
-            />
-          </View>
-        </View>
 
-        <MapActionsDialog
-          visible={this.state.dialogs.mapActionsMenuVisible}
-          onPress={(name) => this.dialogClickHandler("mapActionsMenuVisible", name)}
-          onTouchOutside={() => this.toggleDialog("mapActionsMenuVisible")}
-        />
-        <MapSymbolsDialog
-          visible={this.state.dialogs.mapSymbolsMenuVisible}
-          onPress={(name) => this.dialogClickHandler("mapSymbolsMenuVisible", name)}
-          onTouchOutside={() => this.toggleDialog("mapSymbolsMenuVisible")}
-        />
-        <BaseMapDialog
-          visible={this.state.dialogs.baseMapMenuVisible}
-          onPress={(name) => this.dialogClickHandler("baseMapMenuVisible", name)}
-          onTouchOutside={() => this.toggleDialog("baseMapMenuVisible")}
-        />
-      </View>
+          <MapActionsDialog
+            visible={this.state.dialogs.mapActionsMenuVisible}
+            onPress={(name) => this.dialogClickHandler("mapActionsMenuVisible", name)}
+            onTouchOutside={() => this.toggleDialog("mapActionsMenuVisible")}
+          />
+          <MapSymbolsDialog
+            visible={this.state.dialogs.mapSymbolsMenuVisible}
+            onPress={(name) => this.dialogClickHandler("mapSymbolsMenuVisible", name)}
+            onTouchOutside={() => this.toggleDialog("mapSymbolsMenuVisible")}
+          />
+          <BaseMapDialog
+            visible={this.state.dialogs.baseMapMenuVisible}
+            onPress={(name) => this.dialogClickHandler("baseMapMenuVisible", name)}
+            onTouchOutside={() => this.toggleDialog("baseMapMenuVisible")}
+          />
+        </View>
       </Drawer>
     )
   }

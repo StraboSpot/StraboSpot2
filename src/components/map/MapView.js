@@ -12,7 +12,7 @@ import {goToImages, goSignIn, goToDownloadMap} from '../../routes/Navigation';
 import MapView, {MAP_TYPES, PROVIDER_DEFAULT, ProviderPropType, UrlTile} from 'react-native-maps';
 import {MAPBOX_KEY} from '../../MapboxConfig'
 import {MapboxOutdoorsBasemap, MapboxSatelliteBasemap, OSMBasemap, MacrostratBasemap} from "./Basemaps";
-import turfHelpers from '@turf/helpers';
+import {lineString as makeLineString, polygon as makePolygon} from '@turf/helpers';
 
 MapboxGL.setAccessToken(MAPBOX_KEY);
 
@@ -38,27 +38,10 @@ class mapView extends Component {
         longitudeDelta: LONGITUDE_DELTA,
       },
       currentBasemap: {},
-      images: [],
       location: false,
-      //  featureCollection: MapboxGL.geoUtils.makeFeatureCollection(),
-      featureCollection: {
-        type: 'FeatureCollection',
-        features: [
-          {
-            geometry: {
-              coordinates: [-110.8675951829166, 32.29774994537918],
-              type: "Point"
-            },
-            id: "23435234234234",
-            properties: {},
-            type: "Feature"
-          }
-        ],
-      },
+      featureCollection: MapboxGL.geoUtils.makeFeatureCollection(),
       drawType: undefined
     };
-
-    this.map = {};
 
     this.basemaps = {
       osm: {
@@ -88,6 +71,7 @@ class mapView extends Component {
     };
 
     this.linePoints = [];
+    this.map = {};
 
     this.onMapPress = this.onMapPress.bind(this);
     this.onSourceLayerPress = this.onSourceLayerPress.bind(this);
@@ -112,12 +96,13 @@ class mapView extends Component {
     this._isMounted = false;
   }
 
-  get mapType() {
-    // MapKit does not support 'none' as a base map
-    if (Platform.OS === 'ios') {
-      return this.props.provider === PROVIDER_DEFAULT ? MAP_TYPES.HYBRID : MAP_TYPES.SATELLITE;
-    }
-  }
+  // For RN Maps
+  /*  get mapType() {
+      // MapKit does not support 'none' as a base map
+      if (Platform.OS === 'ios') {
+        return this.props.provider === PROVIDER_DEFAULT ? MAP_TYPES.HYBRID : MAP_TYPES.SATELLITE;
+      }
+    }*/
 
   handlePress = async (name) => {
     switch (name) {
@@ -143,49 +128,88 @@ class mapView extends Component {
   };
 
   // RN Maps: To add a spot pin. Location is selected when user picks point on map
-  pickLocationHandler = event => {
-    const coords = event.nativeEvent.coordinate;
-    console.log(coords)
-  };
+  /*  pickLocationHandler = event => {
+      const coords = event.nativeEvent.coordinate;
+      console.log(coords)
+    };*/
 
-  // Mapbox
+  // Mapbox: Handle map press
   async onMapPress(e) {
-    console.log('Map pressed', e);
-    this.startTime = new Date().getTime();
     if (this.state.drawType === 'point') {
-      console.log('Map point', e);
+      console.log('Map pressed to create a point', e);
       let feature = MapboxGL.geoUtils.makeFeature(e.geometry);
       this.createFeature(feature);
     }
-    else if (this.state.drawType === 'line') {
-      console.log('Map line', e);
+    else if (this.state.drawType === 'line' || this.state.drawType === 'polygon') {
+      console.log('Map pressed to create a line or polygon', e);
       this.linePoints.push(e.geometry.coordinates);
       console.log(this.linePoints);
       if (this.linePoints.length === 1) {
         let feature = MapboxGL.geoUtils.makeFeature(e.geometry);
         this.createFeature(feature);
       }
-      else if (this.linePoints.length >= 2) {
-        this.state.featureCollection.features.pop();
-        let feature = turfHelpers.lineString(this.linePoints);
+      else if (this.linePoints.length === 2) {
+        await this.deleteLastFeature();     // Delete placeholder point at end of line/polygon
+        let feature = makeLineString(this.linePoints);
+        console.log('feature', feature);
+        this.createFeature(feature);
+        feature = MapboxGL.geoUtils.makeFeature(e.geometry);
+        this.createFeature(feature);
+      }
+      else if (this.linePoints.length > 2 && this.state.drawType === 'line') {
+        await this.deleteLastFeature();     // Delete placeholder point at end of line/polygon
+        await this.deleteLastFeature();     // Delete line/polygon
+        let feature = makeLineString(this.linePoints);
+        console.log('feature', feature);
+        this.createFeature(feature);
+        feature = MapboxGL.geoUtils.makeFeature(e.geometry);
+        this.createFeature(feature);
+      }
+      else if (this.linePoints.length > 2 && this.state.drawType === 'polygon') {
+        console.log('Creating polygon ...');
+        await this.deleteLastFeature();     // Delete placeholder point at end of line/polygon
+        await this.deleteLastFeature();     // Delete line/polygon
+        let feature = makePolygon([[...this.linePoints, this.linePoints[0]]]);
+        console.log('feature', feature);
+        this.createFeature(feature);
+        feature = MapboxGL.geoUtils.makeFeature(e.geometry);
         this.createFeature(feature);
       }
     }
+    else console.log('Map pressed but no draw type set:', e);
   }
 
+  // Create a new feature in the feature collection
   createFeature = feature => {
-    feature.properties.id = '' + Date.now();
+    feature.properties.id = '' + Date.now();        // ToDo: Generate unique string id here
     console.log('Creating new feature:', feature);
     if (this._isMounted) {
-      this.setState({
-        featureCollection: MapboxGL.geoUtils.addToFeatureCollection(
-          this.state.featureCollection,
-          feature,
-        ),
+      this.setState(prevState => {
+        return {
+          ...prevState,
+          featureCollection: MapboxGL.geoUtils.addToFeatureCollection(this.state.featureCollection, feature)
+        }
       }, () => {
-        console.log('State with new feature:', this.state);
+        console.log('Finished creating new feature. Features: ', this.state.featureCollection.features);
       });
     }
+    else console.log('Attempting to create a new feature but Map View Component not mounted.');
+  };
+
+  // Delete the last feature  in the feature collection
+  deleteLastFeature = () => {
+    if (this._isMounted) {
+      console.log('Deleting last feature from', this.state.featureCollection.features);
+      this.setState(prevState => {
+        prevState.featureCollection.features.pop();
+        return {
+          ...prevState
+        }
+      }, () => {
+        console.log('Finished deleting last feature. Features:', this.state.featureCollection.features);
+      });
+    }
+    else console.log('Attempting to delete the last feature but Map View Component not mounted.');
   };
 
   onSourceLayerPress(e) {
@@ -245,13 +269,20 @@ class mapView extends Component {
   //     })
   // };
 
-  setDrawType = drawType => {
+  // Set the draw type state to 'point', 'line' or 'polygon' or undefined if none
+  setDrawType = async drawType => {
     if (this._isMounted) {
-      this.setState(prevState => {
-        if (prevState.drawType === drawType) {
-          drawType = undefined;
-          if (prevState.drawType === 'line') this.state.featureCollection.features.pop();
+      // If draw types match, drawing canceled
+      if (this.state.drawType !== undefined) {
+        console.log('Draw canceled');
+        if (this.state.drawType === 'line' || this.state.drawType === 'polygon') {
+          if (this.linePoints.length >= 1) await this.deleteLastFeature();// Delete placeholder point at end of line/polygon
+          if (this.linePoints.length >= 2) await this.deleteLastFeature();// Delete line/polygon
+          this.linePoints = [];
         }
+        if (this.state.drawType === drawType) drawType = undefined;
+      }
+      this.setState(prevState => {
         return {
           ...prevState,
           drawType: drawType
@@ -264,7 +295,11 @@ class mapView extends Component {
     else console.log('Attempting to set the draw type to', drawType, 'but MapView Component not mounted.');
   };
 
-  endDraw = () => {
+  endDraw = async () => {
+    if (this.state.drawType === 'line' || this.state.drawType === 'polygon') {
+      await this.deleteLastFeature();// Delete placeholder point at end of line/polygon
+      if (this.linePoints.length === 2 && this.state.drawType === 'polygon') await this.deleteLastFeature();// Delete line/polygon
+    }
     this.linePoints = [];
     this.setDrawType(undefined);
   };
