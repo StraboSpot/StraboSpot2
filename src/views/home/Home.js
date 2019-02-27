@@ -9,8 +9,8 @@ import MapActionsDialog from '../../components/modals/map-actions/MapActionsDial
 import MapSymbolsDialog from "../../components/modals/map-symbols/MapSymbolsDialogBox";
 import BaseMapDialog from "../../components/modals/base-maps/BaseMapDialogBox";
 import NotebookPanel from '../../components/sidebar-views/notebook-panel/NotebookPanel';
-//import SettingsSideMenu from '../../components/sidebars/SettingsSideMenu/SettingsSideMenu';
-//import {Drawer} from "native-base";
+import Drawer from 'react-native-drawer';
+import SettingsPanel from '../../components/sidebar-views/settings-panel/SettingsPanel';
 
 export default class Home extends React.Component {
   _isMounted = false;
@@ -69,7 +69,7 @@ export default class Home extends React.Component {
         break;
       case "settings":
         console.log(`${name}`, " was clicked");
-        goSignIn();
+        this.openDrawer();
         break;
 
       // Map Actions
@@ -184,12 +184,15 @@ export default class Home extends React.Component {
   //   this.mapViewElement.current.getCurrentLocation();
   // };
 
-  /*closeDrawer = () => {
-    this.drawer._root.close()
+  closeDrawer = () => {
+    this.drawer.close()
+    console.log("Drawer Close")
+
   };
   openDrawer = () => {
-    this.drawer._root.open()
-  };*/
+    this.drawer.open()
+    console.log("Drawer Open")
+  };
 
   toggleDialog = (dialog) => {
     console.log('Toggle', dialog);
@@ -225,6 +228,13 @@ export default class Home extends React.Component {
 
   render() {
     return (
+     <Drawer
+        type={'displace'}
+        ref={ref => this.drawer = ref}
+        openDrawerOffset={.70}
+        tapToClose={true}
+        content={<SettingsPanel close={this.closeDrawer}/>}
+     >
       <View style={styles.container}>
         <MapView ref={this.mapViewElement}/>
         {this.state.noteBookPanelVisible ?
@@ -361,6 +371,7 @@ export default class Home extends React.Component {
           onTouchOutside={() => this.toggleDialog("baseMapMenuVisible")}
         />
       </View>
+      </Drawer>
     )
   }
 }
