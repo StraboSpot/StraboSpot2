@@ -5,7 +5,6 @@ import ButtonNoBackground from '../../../ui/ButtonNoBackround';
 import {goSignIn} from '../../../routes/Navigation';
 import UserProfileComponent from '../../../user/UserProfileComponent';
 
-
 const SettingsPanel = props => (
 
 <View style={styles.container}>
@@ -83,10 +82,22 @@ const SettingsPanel = props => (
         </ButtonNoBackground>
       </View>
     </View>
+    <View>
+      <View style={styles.sectionHeading}>
+        <Text style={styles.sectionHeadingTextStyle}>User Preferences</Text>
+      </View>
+      <View style={styles.navSectionStyle}>
+        <ButtonNoBackground
+          style={{flexDirection: 'row', justifyContent: 'space-around'}}
+          onPress={() => goSignIn()}
+          name={"ios-log-out"}
+          size={25}>
+          Sign Out
+        </ButtonNoBackground>
+    </View>
+    </View>
   </ScrollView>
 </View>
-
-
 );
 
 export default SettingsPanel;

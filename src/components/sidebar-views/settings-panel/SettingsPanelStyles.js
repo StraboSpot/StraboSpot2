@@ -8,7 +8,7 @@ const styles = StyleSheet.create({
   },
   profile: {
     width: '100%',
-    height: 150,
+    height: 125,
     backgroundColor: 'white',
     borderWidth: 2,
     borderColor: 'black'
@@ -26,7 +26,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     marginLeft: 20,
     paddingBottom:10,
-    borderBottomWidth: 1
+    borderBottomWidth: 1,
+    flex: 1,
   },
   sectionHeading : {
     alignItems: 'flex-start',
