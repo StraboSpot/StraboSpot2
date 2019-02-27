@@ -13,6 +13,7 @@
     "@turf/turf": "^5.1.6",
     "react": "16.6.3",
     "react-native": "0.57.8",
+    "react-native-drawer": "^2.5.1",
     "react-native-floating-action": "^1.14.1",
     "react-native-image-grid": "^1.0.0",
     "react-native-maps": "^0.23.0",
