@@ -3,6 +3,7 @@ import {View, StyleSheet, TextInput, Button, Alert, ImageBackground, Text} from 
 import ButtonNoBackground from '../ui/ButtonNoBackround';
 import {goSignIn} from "../routes/Navigation";
 import {getUserProfile} from '../services/user/UserProfile';
+import { Avatar, Divider } from 'react-native-elements';
 
 class UserProfileComponent extends Component {
 constructor(props) {
@@ -43,31 +44,69 @@ constructor(props) {
   render () {
   return (
     <React.Fragment>
-      <Text>Profile</Text>
-      <ButtonNoBackground
-        style={styles.profileButtons}
-        onPress={() => goSignIn()}
-        name={"ios-home"}
-      >
-        Home
-      </ButtonNoBackground>
-    <Button
-      title={"User"}
-      onPress={this.user}
-    />
+      <View style={styles.container}>
+
+      <View style={styles.avatar}>
+        <Avatar
+          containerStyle={styles.avatarImage}
+          source={require('../assets/images/Chuck-norris.jpg')}
+          showEditButton={false}
+          rounded={true}
+          size={'large'}
+          onPress={() => console.log('Avatar Pressed')}
+        />
+        <Text style={styles.avatarLabel}>Chuck Norris</Text>
+      </View>
+        <View style={styles.projectName}>
+            <Text>Project</Text>
+        </View>
+    {/*<Button*/}
+      {/*title={"User"}*/}
+      {/*onPress={this.user}*/}
+    {/*/>*/}
+      {/*</View>*/}
+      </View>
     </React.Fragment>
   )
 }
 }
 
 const styles = StyleSheet.create({
+  buttons: {
+    // alignItems: 'flex-end',
+
+  },
+  container: {
+    flex: 1,
+    flexDirection: 'row',
+    alignContent: 'center',
+    justifyContent: 'space-around'
+  },
   profileButtons: {
-    alignItems: 'flex-end',
-    marginTop: 20
+    marginTop: 0
   },
   userButton: {
     alignItems: 'flex-end',
-    marginTop: 10
+    marginTop: 10,
+    paddingLeft: 25
+  },
+  avatar: {
+    // flex:1,
+    marginTop: 12,
+    marginLeft: 0
+  },
+  avatarImage: {
+    marginLeft: 15
+  },
+  avatarLabel: {
+    paddingTop: 5,
+    fontWeight: 'bold',
+    fontSize: 18
+  },
+  projectName: {
+    // flex: 2,
+    // alignContent: 'center',
+    // justifyContent: 'center'
   }
 });
 
