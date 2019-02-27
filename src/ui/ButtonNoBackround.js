@@ -2,14 +2,14 @@ import React from 'react';
 import {TouchableOpacity, TouchableNativeFeedback, Text, View, StyleSheet, Platform} from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 
-const buttonWithBackground = props => {
+const buttonNoBackground = props => {
   const content = (
-    <View style={[styles.button, {backgroundColor: props.color}]}>
+    <View style={[styles.button, props.style]}>
       <Icon
         style={styles.itemIcon}
         name={props.name}
-        size={30}
-        color={"white"}/>
+        size={20}
+        color={"black"}/>
       <Text style={styles.buttonText}>{props.children}</Text>
     </View>
   );
@@ -31,20 +31,16 @@ const buttonWithBackground = props => {
 
 const styles = StyleSheet.create({
   button: {
-    paddingLeft: 50,
-    paddingRight: 50,
-    margin: 10,
-    borderRadius: 35,
-    alignItems: 'center',
-    flexDirection: "row",
-    justifyContent: "center"
+    paddingLeft: 15,
+    paddingRight: 15,
   },
   buttonText: {
-    color: "white",
+    color: "black",
+    fontSize: 16
   },
   itemIcon: {
     paddingRight: 15
   }
 });
 
-export default buttonWithBackground;
+export default buttonNoBackground;
