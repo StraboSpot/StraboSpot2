@@ -8,7 +8,7 @@ const buttonNoBackground = props => {
       <Icon
         style={styles.itemIcon}
         name={props.name}
-        size={20}
+        size={props.size}
         color={"black"}/>
       <Text style={styles.buttonText}>{props.children}</Text>
     </View>
