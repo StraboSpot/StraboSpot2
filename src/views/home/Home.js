@@ -1,5 +1,5 @@
 import React from 'react'
-import {Text, View, Button} from 'react-native'
+import {View, Button} from 'react-native'
 import styles from './Styles';
 import {goToAuth, goSignIn, splitView} from '../../routes/Navigation'
 import MapView, {getCurrentLocation} from '../../components/map/MapView';
@@ -91,10 +91,8 @@ export default class Home extends React.Component {
         this.setDrawType(name);
         break;
       case "endDraw":
-        console.log(`${name}`, " was clicked");
         this.setDrawButtonOn(undefined);
         this.endDraw();
-        break;
       case "currentLocation":
         console.log(`${name}`, " was clicked");
         // this.getLocation();
@@ -355,6 +353,7 @@ export default class Home extends React.Component {
             />
           </View>
         </View>
+
         <MapActionsDialog
           visible={this.state.dialogs.mapActionsMenuVisible}
           onPress={(name) => this.dialogClickHandler("mapActionsMenuVisible", name)}
