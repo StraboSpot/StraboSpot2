@@ -11,6 +11,7 @@ import BaseMapDialog from "../../components/modals/base-maps/BaseMapDialogBox";
 import NotebookPanel from '../../components/sidebar-views/notebook-panel/NotebookPanel';
 import Drawer from 'react-native-drawer';
 import SettingsPanel from '../../components/sidebar-views/settings-panel/SettingsPanel';
+import {MapModes} from '../../components/map/Map.constants';
 
 export default class Home extends React.Component {
   _isMounted = false;
@@ -28,6 +29,7 @@ export default class Home extends React.Component {
         endDrawButtonVisible: false,
         drawButtonOn: undefined,
       },
+      mapMode: MapModes.VIEW,
       noteBookPanelVisible: false
     };
   }
@@ -73,18 +75,17 @@ export default class Home extends React.Component {
         break;
 
       // Map Actions
-      case 'point':
-      case 'line':
-      case 'polygon':
-        console.log(`${name}`, 'selected');
-        if (!this.state.buttons.drawButtonOn || this.state.buttons.drawButtonOn === name) {
+      case MapModes.DRAW.POINT:
+      case MapModes.DRAW.LINE:
+      case MapModes.DRAW.POLYGON:
+        console.log('Selected', name);
+        if (this.state.mapMode === MapModes.VIEW) {
+          this.setMapMode(name);
           this.toggleButton('endDrawButtonVisible');
         }
-        this.setDrawButtonOn(name);
-        this.setDrawType(name);
+        else this.cancelDraw(name);
         break;
       case "endDraw":
-        this.setDrawButtonOn(undefined);
         this.endDraw();
         break;
       case "currentLocation":
@@ -129,12 +130,31 @@ export default class Home extends React.Component {
     this.mapViewElement.current.changeMap(name);
   };
 
-  setDrawType = drawType => {
-    this.mapViewElement.current.setDrawType(drawType);
+  setMapMode = mapMode => {
+    if (this._isMounted) {
+      this.setState(prevState => {
+        if (prevState.mapMode === mapMode) mapMode = MapModes.VIEW;
+        return {
+          ...prevState,
+          mapMode: mapMode
+        }
+      }, () => {
+        console.log('Map Mode set to:', mapMode);
+      });
+    }
+    else console.log('Attempting to set the state for the map mode but Home Component not mounted.');
+
   };
 
-  endDraw = () => {
-    this.mapViewElement.current.endDraw();
+  cancelDraw = async (name) => {
+    await this.mapViewElement.current.cancelDraw();
+    this.setMapMode(name);
+    if (this.state.mapMode === MapModes.VIEW) this.toggleButton('endDrawButtonVisible');
+  };
+
+  endDraw = async () => {
+    await this.mapViewElement.current.endDraw();
+    this.setMapMode(MapModes.VIEW);
     this.toggleButton('endDrawButtonVisible');
   };
 
@@ -154,30 +174,6 @@ export default class Home extends React.Component {
     }
     else console.log('Attempting to toggle', button, 'but Home Component not mounted.');
   };
-
-  // Set the state for the draw button that is turned on: 'point', 'line', 'polygon' or undefined if all off.
-  setDrawButtonOn = button => {
-    if (this._isMounted) {
-      this.setState(prevState => {
-        if (prevState.buttons.drawButtonOn === button) button = undefined;
-        return {
-          ...prevState,
-          buttons: {
-            ...prevState.buttons,
-            drawButtonOn: button
-          }
-        }
-      }, () => {
-        console.log('drawButtonOn set to:', button);
-      });
-    }
-    else console.log('Attempting to set the state for drawButtonOn but Home Component not mounted.');
-  };
-
-  //RN Maps ***
-  // getLocation = () => {
-  //   this.mapViewElement.current.getCurrentLocation();
-  // };
 
   closeDrawer = () => {
     this.drawer.close();
@@ -232,7 +228,7 @@ export default class Home extends React.Component {
         content={<SettingsPanel close={this.closeDrawer}/>}
       >
         <View style={styles.container}>
-          <MapView ref={this.mapViewElement}/>
+          <MapView ref={this.mapViewElement} mapMode={this.state.mapMode}/>
           {this.state.noteBookPanelVisible ?
             <NotebookPanel
               close={() => this.closeNotebookPanel()}
@@ -296,24 +292,24 @@ export default class Home extends React.Component {
           <View style={styles.bottomRightIcons}>
             <View style={styles.pointIcon}>
               <IconButton
-                source={this.state.buttons.drawButtonOn === 'point' ?
+                source={this.state.mapMode === MapModes.DRAW.POINT ?
                   require('../../assets/icons/PointButton_pressed.png') : require('../../assets/icons/PointButton.png')}
-                onPress={this.clickHandler.bind(this, "point")}
+                onPress={this.clickHandler.bind(this, MapModes.DRAW.POINT)}
               />
             </View>
             <View style={styles.lineIcon}>
               <IconButton
-                source={this.state.buttons.drawButtonOn === 'line' ?
+                source={this.state.mapMode === MapModes.DRAW.LINE ?
                   require('../../assets/icons/LineButton_pressed.png') : require('../../assets/icons/LineButton.png')}
-                onPress={this.clickHandler.bind(this, "line")}
+                onPress={this.clickHandler.bind(this, MapModes.DRAW.LINE)}
               />
             </View>
             <View style={styles.polygonIcon}>
               <IconButton
-                source={this.state.buttons.drawButtonOn === 'polygon' ?
+                source={this.state.mapMode === MapModes.DRAW.POLYGON ?
                   require('../../assets/icons/PolygonButton_pressed.png') :
                   require('../../assets/icons/PolygonButton.png')}
-                onPress={this.clickHandler.bind(this, "polygon")}
+                onPress={this.clickHandler.bind(this, MapModes.DRAW.POLYGON)}
               />
             </View>
           </View>

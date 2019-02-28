@@ -32,7 +32,7 @@ function Basemap(props) {
       />
     </MapboxGL.RasterSource>
     <MapboxGL.ShapeSource
-      id="featureLayer"
+      id="shapeSource"
       hitbox={{ width: 20, height: 20 }}
       onPress={props.onSourcePress}
       shape={props.shape}>
