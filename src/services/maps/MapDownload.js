@@ -1,7 +1,7 @@
 import React from 'react';
 import {Platform} from 'react-native';
 import RNFetchBlob from 'rn-fetch-blob';
-import {unzip} from 'react-native-zip-archive'
+import {unzip} from 'react-native-zip-archive'; /*TODO  react-native-zip-archive@3.0.1 requires a peer of react@^15.4.2 || <= 16.3.1 but none is installed */
 
 const tilehost = 'http://tiles.strabospot.org';
 const url = 'https://strabospot.org/testimages/images.json';
@@ -22,10 +22,16 @@ let tryCount = 0;
 export const getMapTiles = async (mapBounds) => {
   console.log('mapBounds', mapBounds);
 
-  let right = mapBounds.northEast.longitude;
+  // RN Maps
+/*  let right = mapBounds.northEast.longitude;
   let top = mapBounds.northEast.latitude;
   let left = mapBounds.southWest.longitude;
-  let bottom = mapBounds.southWest.latitude;
+  let bottom = mapBounds.southWest.latitude;*/
+
+  let right = mapBounds[0][0];
+  let top = mapBounds[0][1];
+  let left = mapBounds[1][0];
+  let bottom = mapBounds[1][1];
   let extentString = left + ',' + bottom + ',' + right + ',' + top;
 
   const mapID = '2a542a65-ab88-fc7d-c35e-961cd23339d4';
