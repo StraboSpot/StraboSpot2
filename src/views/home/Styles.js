@@ -5,6 +5,14 @@ const styles = StyleSheet.create({
     flex: 1
   },
 
+  // --- Drawer Styles ---
+  drawerStyles: {
+    shadowColor: '#000000',
+    shadowOpacity: 0.8,
+    shadowRadius: 3,
+    borderTopRightRadius: .30
+  },
+
   // --- Left and right icon absolute positions from top ---
   leftsideIcons: {
     position: 'absolute',
@@ -34,15 +42,15 @@ const styles = StyleSheet.create({
     right: 45
   },
   lineIcon: {
-    marginRight: 155
+    marginRight: 65
   },
   pointIcon: {
 
-    marginRight: 95
+    marginRight: 0
   },
   polygonIcon: {
 
-    marginRight: 35
+    marginRight: 135
   },
 
   // --- Bottom Left Icon (current location) ---

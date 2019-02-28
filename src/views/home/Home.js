@@ -12,6 +12,7 @@ import NotebookPanel from '../../components/sidebar-views/notebook-panel/Noteboo
 import Drawer from 'react-native-drawer';
 import SettingsPanel from '../../components/sidebar-views/settings-panel/SettingsPanel';
 import {MapModes} from '../../components/map/Map.constants';
+import ShortcutMenu from '../../components/sidebar-views/settings-panel/shortcutsMenu/ShortcutsMenu';
 
 export default class Home extends React.Component {
   _isMounted = false;
@@ -30,7 +31,9 @@ export default class Home extends React.Component {
         drawButtonOn: undefined,
       },
       mapMode: MapModes.VIEW,
-      noteBookPanelVisible: false
+      noteBookPanelVisible: false,
+      settingsMenuVisible: 'settingsMain',
+      drawerVisible: false
     };
   }
 
@@ -71,7 +74,7 @@ export default class Home extends React.Component {
         break;
       case "settings":
         console.log(`${name}`, " was clicked");
-        this.openDrawer();
+        this.openSettingsDrawer();
         break;
 
       // Map Actions
@@ -201,6 +204,45 @@ export default class Home extends React.Component {
     else console.log('Attempting to toggle', dialog, 'but Home Component not mounted.');
   };
 
+  toggleDrawer = () => {
+    // console.log('Toggle drawer');
+    if (this._isMounted) {
+      this.setState(prevState => {
+        return {
+          ...prevState,
+          drawerVisible: !prevState.drawerVisible
+        }
+      }, () => {
+        console.log("DrawerVisible state",this.state.drawerVisible)
+      });
+    }
+    else console.log('Attempting to toggle', dialog, 'but Home Component not mounted.');
+  };
+
+  setVisibleMenuState = (state) => {
+      this.setState(prevState => {
+        return {
+          ...prevState,
+          settingsMenuVisible: state
+        }
+      }, () => {
+        console.log('State updated:', this.state);
+      })
+    };
+
+  closeSettingsDrawer = () => {
+    this.toggleDrawer();
+    this.drawer.close();
+    this.setVisibleMenuState('settingsMain');
+    console.log("Drawer Closed");
+  };
+
+  openSettingsDrawer = () => {
+    this.toggleDrawer();
+    this.drawer.open();
+    console.log("Drawer Opened");
+  };
+
   openNotebookPanel = () => {
     this.setState({
       noteBookPanelVisible: true
@@ -218,15 +260,39 @@ export default class Home extends React.Component {
     this.toggleDialog(dialog);
   };
 
+  settingsClickHandler = (name) => {
+    console.log(name)
+    switch (name) {
+      case "Shortcut Menu":
+        console.log(name);
+        this.setVisibleMenuState('Shortcut Menu');
+        break;
+      case 'Sign Out':
+
+    }
+  };
+
   render() {
+    let content = null;
+
+    if (this.state.settingsMenuVisible === 'settingsMain') {
+      content = <SettingsPanel onPress={(name) => this.settingsClickHandler(name)}/>
+    }
+    else if (this.state.settingsMenuVisible === 'Shortcut Menu') {
+      content = <ShortcutMenu onPress={() => this.setVisibleMenuState('settingsMain')}/>
+    }
     return (
       <Drawer
+        tweenHandler={(ratio) => ({
+          main: { opacity:(2-ratio)/2 }
+        })}
         type={'displace'}
         ref={ref => this.drawer = ref}
         openDrawerOffset={.70}
         tapToClose={true}
-        content={<SettingsPanel close={this.closeDrawer}/>}
-      >
+        onClose={this.closeSettingsDrawer}
+        content={content}
+        >
         <View style={styles.container}>
           <MapView ref={this.mapViewElement} mapMode={this.state.mapMode}/>
           {this.state.noteBookPanelVisible ?

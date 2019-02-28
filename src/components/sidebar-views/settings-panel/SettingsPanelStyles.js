@@ -7,10 +7,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'lightgrey',
   },
   profile: {
-    width: '100%',
+    width: '90%',
     height: 125,
     backgroundColor: 'white',
-    borderWidth: 2,
+    borderBottomWidth: 1,
     borderColor: 'black'
   },
 
@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'lightgrey',
   },
   sectionHeadingTextStyle: {
-    paddingTop: 10,
+    paddingTop: 15,
     fontWeight: 'bold',
     fontSize: 18,
   },

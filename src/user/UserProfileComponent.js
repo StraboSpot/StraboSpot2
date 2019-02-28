@@ -50,13 +50,13 @@ constructor(props) {
           source={require('../assets/images/Chuck-norris.jpg')}
           showEditButton={false}
           rounded={true}
-          size={'large'}
+          size={65}
           onPress={() => console.log('Avatar Pressed')}
         />
         <Text style={styles.avatarLabel}>Chuck Norris</Text>
       </View>
         <View style={styles.projectName}>
-            <Text>Project</Text>
+            <Text style={styles.projectNameText}>Project</Text>
         </View>
     {/*<Button*/}
       {/*title={"User"}*/}
@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignContent: 'center',
-    justifyContent: 'space-around'
+    justifyContent: 'flex-start'
   },
   profileButtons: {
     marginTop: 0
@@ -90,21 +90,27 @@ const styles = StyleSheet.create({
   },
   avatar: {
     // flex:1,
-    marginTop: 12,
+    marginTop: 20,
     marginLeft: 0
   },
   avatarImage: {
-    marginLeft: 15
+    marginLeft: 30,
   },
   avatarLabel: {
     paddingTop: 5,
     fontWeight: 'bold',
-    fontSize: 18
+    fontSize: 18,
+    marginLeft: 10
   },
   projectName: {
+    paddingTop: 15,
+    marginLeft: 30,
     // flex: 2,
     // alignContent: 'center',
     // justifyContent: 'center'
+  },
+  projectNameText: {
+    fontSize: 18
   }
 });
 
