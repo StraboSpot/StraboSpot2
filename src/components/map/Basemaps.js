@@ -17,6 +17,7 @@ function Basemap(props) {
     centerCoordinate={props.centerCoordinate}
     zoomLevel={16}
     onPress={props.onMapPress}
+    onLongPress={props.onMapLongPress}
   >
     <MapboxGL.RasterSource
       id={props.basemap.id}
@@ -31,12 +32,12 @@ function Basemap(props) {
       />
     </MapboxGL.RasterSource>
     <MapboxGL.ShapeSource
-      id="symbolLocationSource"
+      id="featureLayer"
       hitbox={{ width: 20, height: 20 }}
       onPress={props.onSourcePress}
       shape={props.shape}>
       <MapboxGL.SymbolLayer
-        id="symbolLocationSymbols"
+        id="pointLayer"
         minZoomLevel={1}
         filter={['==', '$type', 'Point']}
         style={mapStyles.icon}

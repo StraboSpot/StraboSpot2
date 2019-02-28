@@ -71,9 +71,10 @@ class mapView extends Component {
     };
 
     this.linePoints = [];
-    this.map = {};
+    this._map = {};
 
     this.onMapPress = this.onMapPress.bind(this);
+    this.onMapLongPress = this.onMapLongPress.bind(this);
     this.onSourceLayerPress = this.onSourceLayerPress.bind(this);
   }
 
@@ -108,9 +109,9 @@ class mapView extends Component {
     switch (name) {
       case "Download Map":
         console.log("Download map selected");
-        console.log('this.map', this.map);
-        const visibleBounds = await this.map.getVisibleBounds();      // Mapbox
-        //const visibleBounds = await this.map.getMapBoundaries();    // RN Maps
+        console.log('this._map', this._map);
+        const visibleBounds = await this._map.getVisibleBounds();      // Mapbox
+        //const visibleBounds = await this._map.getMapBoundaries();    // RN Maps
         console.log('first bounds', visibleBounds);
         goToDownloadMap(visibleBounds);
         break;
@@ -135,13 +136,14 @@ class mapView extends Component {
 
   // Mapbox: Handle map press
   async onMapPress(e) {
+    console.log('Map press detected:', e);
     if (this.state.drawType === 'point') {
-      console.log('Map pressed to create a point', e);
+      console.log('Creating point ...');
       let feature = MapboxGL.geoUtils.makeFeature(e.geometry);
       this.createFeature(feature);
     }
     else if (this.state.drawType === 'line' || this.state.drawType === 'polygon') {
-      console.log('Map pressed to create a line or polygon', e);
+      console.log('Creating', this.state.drawType, '...');
       this.linePoints.push(e.geometry.coordinates);
       console.log(this.linePoints);
       if (this.linePoints.length === 1) {
@@ -176,7 +178,7 @@ class mapView extends Component {
         this.createFeature(feature);
       }
     }
-    else console.log('Map pressed but no draw type set:', e);
+    else console.log('No draw type set. No feature created.');
   }
 
   // Create a new feature in the feature collection
@@ -249,7 +251,7 @@ class mapView extends Component {
   //         }
   //       };
   //       const coords = coordsEvent.nativeEvent.coordinate;
-  //       this.map.animateToRegion({
+  //       this._map.animateToRegion({
   //         ...this.state.region,
   //         latitude: coords.latitude,
   //         longitude: coords.longitude
@@ -304,6 +306,17 @@ class mapView extends Component {
     this.setDrawType(undefined);
   };
 
+  async onMapLongPress (e) {
+    console.log('Map long press detected:', e);
+    const { screenPointX, screenPointY } = e.properties;
+    const featureCollection = await this._map.queryRenderedFeaturesAtPoint(
+      [screenPointX, screenPointY],
+      null,
+      ['pointLayer', 'lineLayer', 'polygonLayer'],
+    );
+    console.log('Selected features:', featureCollection.features);
+  }
+
   render() {
     const actions = [
       {
@@ -335,9 +348,10 @@ class mapView extends Component {
       basemap: this.state.currentBasemap,
       centerCoordinate: centerCoordinate,
       onMapPress: this.onMapPress,
+      onMapLongPress: this.onMapLongPress,
       onSourcePress: this.onSourceLayerPress,
       shape: this.state.featureCollection,
-      ref: ref => this.map = ref
+      ref: ref => this._map = ref
     };
 
     return (
@@ -354,7 +368,7 @@ class mapView extends Component {
             initialRegion={this.state.region}
             rotateEnabled={false}
             showsUserLocation={true}
-            ref={ref => this.map = ref}
+            ref={ref => this._map = ref}
             onPress={this.pickLocationHandler}
           >
             {!this.state.currentBasemap.url ? null :
@@ -375,9 +389,10 @@ class mapView extends Component {
   }
 }
 
-mapView.propTypes = {
+// RN Maps
+/*mapView.propTypes = {
   provider: ProviderPropType,
-};
+};*/
 
 const styles = StyleSheet.create({
   container: {
