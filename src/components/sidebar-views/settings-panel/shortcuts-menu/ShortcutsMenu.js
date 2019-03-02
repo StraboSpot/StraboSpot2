@@ -1,5 +1,5 @@
 import React from 'react';
-import {Image, Text, View} from 'react-native';
+import {Image, Text, Switch, View} from 'react-native';
 import styles from './ShortcutsMenuStyles';
 import {ListItem} from 'react-native-elements';
 import ButtonNoBackground from '../../../../ui/ButtonNoBackround';
@@ -30,6 +30,9 @@ const ShortcutMenu = props => (
             <View style={styles.itemContainer}>
               <Image style={styles.icons} source={Buttons[key].ICON}/>
               <Text style={styles.itemTextStyle}>{Buttons[key].NAME}</Text>
+              <View style={styles.switch}>
+              <Switch style={{justifyContent: 'flex-end'}} />
+              </View>
             </View>}
         />
       ))}

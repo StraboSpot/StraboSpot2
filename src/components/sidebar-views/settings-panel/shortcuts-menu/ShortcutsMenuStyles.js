@@ -37,6 +37,10 @@ const styles = StyleSheet.create({
   itemTextStyle: {
     fontSize: 20,
     marginLeft: 15,
+  },
+  switch: {
+    flex: 1,
+    alignItems: 'flex-end'
   }
 });
 
