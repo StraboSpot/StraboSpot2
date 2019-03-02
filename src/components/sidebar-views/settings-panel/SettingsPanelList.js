@@ -60,15 +60,16 @@ const SettingsPanelList = props => (
       </View>
       <View style={styles.navSectionStyle}>
         {Object.keys(SettingsMenuItems.USER_PREFERENCES).map(key =>
-          <ButtonNoBackground
-            key={key}
-            style={{flexDirection: 'row', marginLeft: 10, marginTop: 10}}
-            onPress={() => goSignIn()}
-            name={'ios-log-out'}
-            size={25}
-          >
-            {SettingsMenuItems.USER_PREFERENCES[key]}
-          </ButtonNoBackground>
+          <View key={key} style={{marginTop: 10}}>
+            <ButtonNoBackground
+              style={{flexDirection: 'row'}}
+              onPress={() => goSignIn()}
+              name={'ios-log-out'}
+              color={'black'}
+              size={25}>
+              {SettingsMenuItems.USER_PREFERENCES[key]}
+            </ButtonNoBackground>
+          </View>
         )}
       </View>
     </View>
@@ -86,8 +87,6 @@ const styles = StyleSheet.create({
   sectionHeading: {
     alignItems: 'flex-start',
     marginLeft: 10,
-    // borderBottomWidth: 3,
-    // borderBottomColor: 'black',
     backgroundColor: 'lightgrey',
   },
   sectionHeadingTextStyle: {

@@ -12,7 +12,7 @@ import NotebookPanel from '../../components/sidebar-views/notebook-panel/Noteboo
 import Drawer from 'react-native-drawer';
 import SettingsPanel from '../../components/sidebar-views/settings-panel/SettingsPanel';
 import {MapModes} from '../../components/map/Map.constants';
-import ShortcutMenu from '../../components/sidebar-views/settings-panel/shortcutsMenu/ShortcutsMenu';
+import ShortcutMenu from '../../components/sidebar-views/settings-panel/shortcuts-menu/ShortcutsMenu';
 
 export default class Home extends React.Component {
   _isMounted = false;

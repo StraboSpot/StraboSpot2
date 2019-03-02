@@ -6,10 +6,10 @@ const buttonNoBackground = props => {
   const content = (
     <View style={[styles.button, props.style]}>
       <Icon
-        style={styles.itemIcon}
+        style={[styles.itemIcon, props.style]}
         name={props.name}
         size={props.size}
-        color={"black"}/>
+        color={props.color}/>
       <Text style={styles.buttonText}>{props.children}</Text>
     </View>
   );
@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     fontSize: 16
   },
   itemIcon: {
-    paddingRight: 15
+    paddingRight: 15,
   }
 });
 
