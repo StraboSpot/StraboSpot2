@@ -33,6 +33,9 @@ const styles = StyleSheet.create({
   sideIconsGroup: {
     marginBottom: 65
   },
+  sideIconsGroupContainer: {
+    marginTop: 125
+  },
 
   // --- Bottom icons (line, polygon, and point) ---
 
@@ -68,7 +71,7 @@ const styles = StyleSheet.create({
     marginTop: 415
   },
   notebookViewIcon: {
-    marginTop: 105
+    marginTop: 50
   },
   searchAndSettingsIcons: {
     marginTop: 20

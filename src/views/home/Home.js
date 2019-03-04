@@ -311,7 +311,8 @@ export default class Home extends React.Component {
                 // onPress={this.clickHandler.bind(this, "search")}
               />
             </View>
-            <View style={styles.tagIcon}>
+            <View style={styles.sideIconsGroupContainer}>
+            <View style={styles.sideIconsGroup}>
               <IconButton
                 source={require('../../assets/icons/TagButton.png')}
                 onPress={this.clickHandler.bind(this, "tag")}
@@ -347,6 +348,7 @@ export default class Home extends React.Component {
                 source={require('../../assets/icons/SketchButton.png')}
                 onPress={this.clickHandler.bind(this, "sketch")}
               />
+            </View>
             </View>
             <View style={styles.notebookViewIcon}>
               <IconButton
