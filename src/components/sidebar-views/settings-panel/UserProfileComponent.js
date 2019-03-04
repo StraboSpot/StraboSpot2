@@ -47,7 +47,7 @@ constructor(props) {
       <View style={styles.avatar}>
         <Avatar
           containerStyle={styles.avatarImage}
-          source={require('../assets/images/Chuck-norris.jpg')}
+          source={require('../../../assets/images/Chuck-norris.jpg')}
           showEditButton={false}
           rounded={true}
           size={65}

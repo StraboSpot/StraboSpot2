@@ -2,7 +2,7 @@ import React from 'react';
 import {View} from 'react-native';
 import styles from "./SettingsPanelStyles";
 import SettingsPanelList from './SettingsPanelList';
-import UserProfileComponent from '../../../user/UserProfileComponent';
+import UserProfileComponent from './UserProfileComponent';
 
 const SettingsPanel = props => {
   return (
