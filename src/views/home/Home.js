@@ -229,7 +229,7 @@ export default class Home extends React.Component {
           drawerVisible: !prevState.drawerVisible
         }
       }, () => {
-        console.log("DrawerVisible state",this.state.drawerVisible)
+        console.log("DrawerVisible state", this.state.drawerVisible)
       });
     }
     else console.log('Attempting to toggle', dialog, 'but Home Component not mounted.');
@@ -323,7 +323,7 @@ export default class Home extends React.Component {
     return (
       <Drawer
         tweenHandler={(ratio) => ({
-          main: { opacity:(2-ratio)/2 }
+          main: {opacity: (2 - ratio) / 2}
         })}
         type={'displace'}
         ref={ref => this.drawer = ref}
@@ -331,7 +331,7 @@ export default class Home extends React.Component {
         tapToClose={true}
         onClose={this.closeSettingsDrawer}
         content={content}
-        >
+      >
         <View style={styles.container}>
           <MapView ref={this.mapViewElement} mapMode={this.state.mapMode}/>
           {this.state.noteBookPanelVisible ?

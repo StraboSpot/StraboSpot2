@@ -16,6 +16,3 @@ const SettingsPanel = props => {
 };
 
 export default SettingsPanel;
-
-
-
