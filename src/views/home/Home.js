@@ -33,7 +33,23 @@ export default class Home extends React.Component {
       mapMode: MapModes.VIEW,
       noteBookPanelVisible: false,
       settingsMenuVisible: 'settingsMain',
-      drawerVisible: false
+      drawerVisible: false,
+      shortcutSwitchPosition: {
+        Tag: false,
+        Measurement: false,
+        Sample: false,
+        Note: false,
+        Photo: false,
+        Sketch: false
+      },
+      isShortcutButtonVisible: {
+        Tag: false,
+        Measurement: false,
+        Sample: false,
+        Note: false,
+        Photo: false,
+        Sketch: false
+      }
     };
   }
 
@@ -219,16 +235,34 @@ export default class Home extends React.Component {
     else console.log('Attempting to toggle', dialog, 'but Home Component not mounted.');
   };
 
-  setVisibleMenuState = (state) => {
-      this.setState(prevState => {
-        return {
-          ...prevState,
-          settingsMenuVisible: state
+  toggleSwitch = (switchName) => {
+    console.log('Switch', switchName);
+    this.setState(prevState => {
+      return {
+        shortcutSwitchPosition: {
+          ...prevState.shortcutSwitchPosition,
+          [switchName]: !prevState.shortcutSwitchPosition[switchName]
+        },
+        isShortcutButtonVisible: {
+          ...prevState.isShortcutButtonVisible,
+          [switchName]: !prevState.shortcutSwitchPosition[switchName]
         }
-      }, () => {
-        console.log('State updated:', this.state);
-      })
-    };
+      }
+    }, () => {
+      console.log('Switch Position', this.state.shortcutSwitchPosition);
+    });
+  };
+
+  setVisibleMenuState = (state) => {
+    this.setState(prevState => {
+      return {
+        ...prevState,
+        settingsMenuVisible: state
+      }
+    }, () => {
+      console.log('State updated:', this.state);
+    })
+  };
 
   closeSettingsDrawer = () => {
     this.toggleDrawer();
@@ -279,7 +313,12 @@ export default class Home extends React.Component {
       content = <SettingsPanel onPress={(name) => this.settingsClickHandler(name)}/>
     }
     else if (this.state.settingsMenuVisible === 'Shortcut Menu') {
-      content = <ShortcutMenu onPress={() => this.setVisibleMenuState('settingsMain')}/>
+      content =
+        <ShortcutMenu
+          onPress={() => this.setVisibleMenuState('settingsMain')}
+          toggleSwitch={(switchName) => this.toggleSwitch(switchName)}
+          shortcutSwitchPosition={this.state.shortcutSwitchPosition}
+        />
     }
     return (
       <Drawer
@@ -312,43 +351,49 @@ export default class Home extends React.Component {
               />
             </View>
             <View style={styles.sideIconsGroupContainer}>
-            <View style={styles.sideIconsGroup}>
-              <IconButton
-                source={require('../../assets/icons/TagButton.png')}
-                onPress={this.clickHandler.bind(this, "tag")}
-              />
-            </View>
-            <View style={styles.sideIconsGroup}>
-              <IconButton
-                source={require('../../assets/icons/MeasurementButton.png')}
-                onPress={this.clickHandler.bind(this, "measurement")}
-              />
-            </View>
-            <View style={styles.sideIconsGroup}>
-              <IconButton
-                source={require('../../assets/icons/SampleButton.png')}
-                onPress={this.clickHandler.bind(this, "sample")}
-              />
-            </View>
-            <View style={styles.sideIconsGroup}>
-              <IconButton
-                name={"Note"}
-                source={require('../../assets/icons/NoteButton.png')}
-                onPress={this.clickHandler.bind(this, "note")}
-              />
-            </View>
-            <View style={styles.sideIconsGroup}>
-              <IconButton
-                source={require('../../assets/icons/PhotoButton.png')}
-                onPress={this.clickHandler.bind(this, "photo")}
-              />
-            </View>
-            <View style={styles.sideIconsGroup}>
-              <IconButton
-                source={require('../../assets/icons/SketchButton.png')}
-                onPress={this.clickHandler.bind(this, "sketch")}
-              />
-            </View>
+              <View style={styles.sideIconsGroup}>
+                {this.state.isShortcutButtonVisible.Tag ?
+                  <IconButton
+                    source={require('../../assets/icons/TagButton.png')}
+                    onPress={this.clickHandler.bind(this, "tag")}
+                  /> : null}
+              </View>
+              <View style={styles.sideIconsGroup}>
+                {this.state.isShortcutButtonVisible.Measurement ?
+                  <IconButton
+                    source={require('../../assets/icons/MeasurementButton.png')}
+                    onPress={this.clickHandler.bind(this, "measurement")}
+                  /> : null}
+              </View>
+              <View style={styles.sideIconsGroup}>
+                {this.state.isShortcutButtonVisible.Sample ?
+                  <IconButton
+                    source={require('../../assets/icons/SampleButton.png')}
+                    onPress={this.clickHandler.bind(this, "sample")}
+                  /> : null}
+              </View>
+              <View style={styles.sideIconsGroup}>
+                {this.state.isShortcutButtonVisible.Note ?
+                  <IconButton
+                    name={"Note"}
+                    source={require('../../assets/icons/NoteButton.png')}
+                    onPress={this.clickHandler.bind(this, "note")}
+                  /> : null}
+              </View>
+              <View style={styles.sideIconsGroup}>
+                {this.state.isShortcutButtonVisible.Photo ?
+                  <IconButton
+                    source={require('../../assets/icons/PhotoButton.png')}
+                    onPress={this.clickHandler.bind(this, "photo")}
+                  /> : null}
+              </View>
+              <View style={styles.sideIconsGroup}>
+                {this.state.isShortcutButtonVisible.Sketch ?
+                  <IconButton
+                    source={require('../../assets/icons/SketchButton.png')}
+                    onPress={this.clickHandler.bind(this, "sketch")}
+                  /> : null}
+              </View>
             </View>
             <View style={styles.notebookViewIcon}>
               <IconButton
