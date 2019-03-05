@@ -3,7 +3,7 @@ import {StyleSheet} from 'react-native';
 import MapboxGL from '@mapbox/react-native-mapbox-gl';
 import {FloatingAction} from 'react-native-floating-action';
 import {goToImages, goSignIn, goToDownloadMap} from '../../routes/Navigation';
-import MapView, {MAP_TYPES, PROVIDER_DEFAULT, ProviderPropType, UrlTile} from 'react-native-maps';
+//import MapView, {MAP_TYPES, PROVIDER_DEFAULT, ProviderPropType, UrlTile} from 'react-native-maps';
 import {MAPBOX_KEY} from '../../MapboxConfig'
 import {MapboxOutdoorsBasemap, MapboxSatelliteBasemap, OSMBasemap, MacrostratBasemap} from "./Basemaps";
 import {lineString as makeLineString, polygon as makePolygon} from '@turf/helpers';
@@ -18,12 +18,14 @@ class mapView extends Component {
     super(props, context);
 
     this.state = {
-      region: {
-        latitude: LATITUDE,
-        longitude: LONGITUDE,
-        latitudeDelta: LATITUDE_DELTA,
-        longitudeDelta: LONGITUDE_DELTA,
-      },
+      latitude: LATITUDE,
+      longitude: LONGITUDE,
+      /* region: {                                         // RN Maps
+         latitude: LATITUDE,
+         longitude: LONGITUDE,
+         latitudeDelta: LATITUDE_DELTA,
+         longitudeDelta: LONGITUDE_DELTA,
+       },*/
       currentBasemap: {},
       location: false,
       featureCollection: MapboxGL.geoUtils.makeFeatureCollection()
@@ -123,7 +125,7 @@ class mapView extends Component {
   // Mapbox: Handle map press
   async onMapPress(e) {
     console.log('Map press detected:', e);
-    if (this.props.mapMode === MapModes.DRAW.POINT) {
+    if (this.props.mapMode === MapModes.DRAW.POINT) {     // ToDo Not actually being used bc point set to current location
       console.log('Creating point ...');
       let feature = MapboxGL.geoUtils.makeFeature(e.geometry);
       this.createFeature(feature);
@@ -223,39 +225,85 @@ class mapView extends Component {
     else console.log('Attempting to switch basemap to', mapName, 'but MapView Component not mounted.');
   };
 
-  // RN Maps******
-  // getCurrentLocation = () => {
-  //   navigator.geolocation.getCurrentPosition(
-  //     pos => {
-  //       const coordsEvent = {
-  //         nativeEvent: {
-  //           coordinate: {
-  //             latitude: pos.coords.latitude,
-  //             longitude: pos.coords.longitude,
-  //             latitudeDelta: 0.1229,
-  //           }
-  //         }
-  //       };
-  //       const coords = coordsEvent.nativeEvent.coordinate;
-  //       this._map.animateToRegion({
-  //         ...this.state.region,
-  //         latitude: coords.latitude,
-  //         longitude: coords.longitude
-  //       });
-  //       this.setState(prevState => {
-  //         return {
-  //           region: {
-  //             ...prevState.region,
-  //             latitude: coords.latitude,
-  //             longitude: coords.longitude,
-  //             longitudeDelta: .0122,
-  //             latitudeDelta: LATITUDE_DELTA,
-  //           },
-  //           locationChosen: true
-  //         };
-  //       });
-  //     })
-  // };
+  // Create a point feature at the current location
+  setPointAtCurrentLocation = async () => {
+    try {
+      await this.setCurrentLocation();
+      let feature = MapboxGL.geoUtils.makePoint([this.state.longitude, this.state.latitude]);
+      this.createFeature(feature);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // Get the current location then fly the map to that location
+  goToCurrentLocation = async () => {
+    try {
+      await this.setCurrentLocation();
+      console.log('flying');
+      this._map.flyTo([this.state.longitude, this.state.latitude]);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // Get the current location from the device and set it in the State
+  setCurrentLocation = async () => {
+    const geolocationOptions = {timeout: 5000, maximumAge: 0, enableHighAccuracy: true};
+    return new Promise((resolve, reject) => {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          if (this._isMounted) {
+            this.setState(prevState => {
+              return {
+                ...prevState,
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude
+              }
+            }, () => {
+              console.log('Got Current Location:', this.state.latitude, ',', this.state.longitude);
+              resolve();
+            });
+          }
+          else reject('Attempting to set the current location but MapView Component not mounted.');
+        },
+        (error) => reject('Error getting current location:', error),
+        geolocationOptions
+      );
+    });
+
+    // RN Maps
+    /*    navigator.geolocation.getCurrentPosition(
+          pos => {
+            const coordsEvent = {
+              nativeEvent: {
+                coordinate: {
+                  latitude: pos.coords.latitude,
+                  longitude: pos.coords.longitude,
+                  latitudeDelta: 0.1229,
+                }
+              }
+            };
+            const coords = coordsEvent.nativeEvent.coordinate;
+            this._map.animateToRegion({
+              ...this.state.region,
+              latitude: coords.latitude,
+              longitude: coords.longitude
+            });
+            this.setState(prevState => {
+              return {
+                region: {
+                  ...prevState.region,
+                  latitude: coords.latitude,
+                  longitude: coords.longitude,
+                  longitudeDelta: .0122,
+                  latitudeDelta: LATITUDE_DELTA,
+                },
+                locationChosen: true
+              };
+            });
+          })*/
+  };
 
   endDraw = async () => {
     if (this.linePoints.length > 0 &&
@@ -311,7 +359,8 @@ class mapView extends Component {
       },
     ];
 
-    const centerCoordinate = [this.state.region.longitude, this.state.region.latitude];
+    //const centerCoordinate = [this.state.region.longitude, this.state.region.latitude];  // RN Maps
+    const centerCoordinate = [this.state.longitude, this.state.latitude];
 
     const mapProps = {
       basemap: this.state.currentBasemap,

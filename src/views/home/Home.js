@@ -2,7 +2,7 @@ import React from 'react'
 import {View, Button} from 'react-native'
 import styles from './Styles';
 import {goToAuth, goSignIn, splitView} from '../../routes/Navigation'
-import MapView, {getCurrentLocation} from '../../components/map/MapView';
+import MapView from '../../components/map/MapView';
 import Icon from 'react-native-vector-icons/Ionicons';
 import IconButton from '../../ui/IconButton';
 import MapActionsDialog from '../../components/modals/map-actions/MapActionsDialogBox';
@@ -95,6 +95,8 @@ export default class Home extends React.Component {
 
       // Map Actions
       case MapModes.DRAW.POINT:
+        this.mapViewElement.current.setPointAtCurrentLocation();
+        break;
       case MapModes.DRAW.LINE:
       case MapModes.DRAW.POLYGON:
         console.log('Selected', name);
@@ -109,7 +111,7 @@ export default class Home extends React.Component {
         break;
       case "currentLocation":
         console.log(`${name}`, " was clicked");
-        // this.getLocation();
+        this.mapViewElement.current.goToCurrentLocation();
         break;
 
       // Map Actions
@@ -280,13 +282,13 @@ export default class Home extends React.Component {
   openNotebookPanel = () => {
     this.setState({
       noteBookPanelVisible: true
-    })
+    });
   };
 
   closeNotebookPanel = () => {
     this.setState({
       noteBookPanelVisible: false
-    })
+    });
   };
 
   dialogClickHandler = (dialog, name) => {
@@ -295,7 +297,7 @@ export default class Home extends React.Component {
   };
 
   settingsClickHandler = (name) => {
-    console.log(name)
+    console.log(name);
     switch (name) {
       case "Shortcut Menu":
         console.log(name);
