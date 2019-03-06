@@ -348,7 +348,7 @@ export default class Home extends React.Component {
           <View style={styles.rightsideIcons}>
             <View style={styles.searchAndSettingsIcons}>
               <IconButton
-                source={require('../../assets/icons/SearchButton.png')}
+                source={require('../../assets/icons/app-icons/SearchButton.png')}
                 // onPress={this.clickHandler.bind(this, "search")}
               />
             </View>
@@ -356,21 +356,21 @@ export default class Home extends React.Component {
               <View style={styles.sideIconsGroup}>
                 {this.state.isShortcutButtonVisible.Tag ?
                   <IconButton
-                    source={require('../../assets/icons/TagButton.png')}
+                    source={require('../../assets/icons/app-icons/TagButton.png')}
                     onPress={this.clickHandler.bind(this, "tag")}
                   /> : null}
               </View>
               <View style={styles.sideIconsGroup}>
                 {this.state.isShortcutButtonVisible.Measurement ?
                   <IconButton
-                    source={require('../../assets/icons/MeasurementButton.png')}
+                    source={require('../../assets/icons/app-icons/MeasurementButton.png')}
                     onPress={this.clickHandler.bind(this, "measurement")}
                   /> : null}
               </View>
               <View style={styles.sideIconsGroup}>
                 {this.state.isShortcutButtonVisible.Sample ?
                   <IconButton
-                    source={require('../../assets/icons/SampleButton.png')}
+                    source={require('../../assets/icons/app-icons/SampleButton.png')}
                     onPress={this.clickHandler.bind(this, "sample")}
                   /> : null}
               </View>
@@ -378,28 +378,28 @@ export default class Home extends React.Component {
                 {this.state.isShortcutButtonVisible.Note ?
                   <IconButton
                     name={"Note"}
-                    source={require('../../assets/icons/NoteButton.png')}
+                    source={require('../../assets/icons/app-icons/NoteButton.png')}
                     onPress={this.clickHandler.bind(this, "note")}
                   /> : null}
               </View>
               <View style={styles.sideIconsGroup}>
                 {this.state.isShortcutButtonVisible.Photo ?
                   <IconButton
-                    source={require('../../assets/icons/PhotoButton.png')}
+                    source={require('../../assets/icons/app-icons/PhotoButton.png')}
                     onPress={this.clickHandler.bind(this, "photo")}
                   /> : null}
               </View>
               <View style={styles.sideIconsGroup}>
                 {this.state.isShortcutButtonVisible.Sketch ?
                   <IconButton
-                    source={require('../../assets/icons/SketchButton.png')}
+                    source={require('../../assets/icons/app-icons/SketchButton.png')}
                     onPress={this.clickHandler.bind(this, "sketch")}
                   /> : null}
               </View>
             </View>
             <View style={styles.notebookViewIcon}>
               <IconButton
-                source={require('../../assets/icons/NotebookViewButton.png')}
+                source={require('../../assets/icons/app-icons/NotebookViewButton.png')}
                 onPress={() => this.openNotebookPanel()}
               />
             </View>
@@ -408,22 +408,22 @@ export default class Home extends React.Component {
             <View style={styles.pointIcon}>
               <IconButton
                 source={this.state.mapMode === MapModes.DRAW.POINT ?
-                  require('../../assets/icons/PointButton_pressed.png') : require('../../assets/icons/PointButton.png')}
+                  require('../../assets/icons/app-icons/PointButton_pressed.png') : require('../../assets/icons/app-icons/PointButton.png')}
                 onPress={this.clickHandler.bind(this, MapModes.DRAW.POINT)}
               />
             </View>
             <View style={styles.lineIcon}>
               <IconButton
                 source={this.state.mapMode === MapModes.DRAW.LINE ?
-                  require('../../assets/icons/LineButton_pressed.png') : require('../../assets/icons/LineButton.png')}
+                  require('../../assets/icons/app-icons/LineButton_pressed.png') : require('../../assets/icons/app-icons/LineButton.png')}
                 onPress={this.clickHandler.bind(this, MapModes.DRAW.LINE)}
               />
             </View>
             <View style={styles.polygonIcon}>
               <IconButton
                 source={this.state.mapMode === MapModes.DRAW.POLYGON ?
-                  require('../../assets/icons/PolygonButton_pressed.png') :
-                  require('../../assets/icons/PolygonButton.png')}
+                  require('../../assets/icons/app-icons/PolygonButton_pressed.png') :
+                  require('../../assets/icons/app-icons/PolygonButton.png')}
                 onPress={this.clickHandler.bind(this, MapModes.DRAW.POLYGON)}
               />
             </View>
@@ -431,7 +431,7 @@ export default class Home extends React.Component {
           <View style={styles.leftsideIcons}>
             <View style={styles.searchAndSettingsIcons}>
               <IconButton
-                source={require('../../assets/icons/SettingsButton.png')}
+                source={require('../../assets/icons/app-icons/SettingsButton.png')}
                 onPress={this.clickHandler.bind(this, "settings")}
               />
             </View>
@@ -439,25 +439,25 @@ export default class Home extends React.Component {
           <View style={styles.bottomLeftIcons}>
             <View style={styles.sideIconsGroup}>
               <IconButton
-                source={require('../../assets/icons/MapActionsButton.png')}
+                source={require('../../assets/icons/app-icons/MapActionsButton.png')}
                 onPress={() => this.toggleDialog("mapActionsMenuVisible")}
               />
             </View>
             <View style={styles.sideIconsGroup}>
               <IconButton
-                source={require('../../assets/icons/SymbolsButton.png')}
+                source={require('../../assets/icons/app-icons/SymbolsButton.png')}
                 onPress={() => this.toggleDialog("mapSymbolsMenuVisible")}
               />
             </View>
             <View style={styles.layersIcon}>
               <IconButton
-                source={require('../../assets/icons/LayersButton.png')}
+                source={require('../../assets/icons/app-icons/LayersButton.png')}
                 onPress={() => this.toggleDialog("baseMapMenuVisible")}
               />
             </View>
             <View style={styles.sideIconsGroup}>
               <IconButton
-                source={require('../../assets/icons/MyLocationButton.png')}
+                source={require('../../assets/icons/app-icons/MyLocationButton.png')}
                 onPress={this.clickHandler.bind(this, "currentLocation")}
               />
             </View>
