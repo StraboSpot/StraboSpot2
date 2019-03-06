@@ -28,7 +28,9 @@ class mapView extends Component {
        },*/
       currentBasemap: {},
       location: false,
-      featureCollection: MapboxGL.geoUtils.makeFeatureCollection()
+      featureCollection: MapboxGL.geoUtils.makeFeatureCollection(),
+      featureCollectionSelected: MapboxGL.geoUtils.makeFeatureCollection(),
+      isEditFeature: false
     };
 
     this.basemaps = {
@@ -125,62 +127,91 @@ class mapView extends Component {
   // Mapbox: Handle map press
   async onMapPress(e) {
     console.log('Map press detected:', e);
-    if (this.props.mapMode === MapModes.DRAW.POINT) {     // ToDo Not actually being used bc point set to current location
-      console.log('Creating point ...');
-      let feature = MapboxGL.geoUtils.makeFeature(e.geometry);
-      this.createFeature(feature);
-    }
-    else if (this.props.mapMode === MapModes.DRAW.LINE || this.props.mapMode === MapModes.DRAW.POLYGON) {
-      console.log('Creating', this.props.mapMode, '...');
-      this.linePoints.push(e.geometry.coordinates);
-      console.log(this.linePoints);
-      if (this.linePoints.length === 1) {
+    if (!this.state.isEditFeature) {
+      if (this.props.mapMode === MapModes.DRAW.POINT) {     // ToDo Not actually being used bc point set to current location
+        console.log('Creating point ...');
         let feature = MapboxGL.geoUtils.makeFeature(e.geometry);
         this.createFeature(feature);
       }
-      else if (this.linePoints.length === 2) {
-        await this.deleteLastFeature();     // Delete placeholder point at end of line/polygon
-        let feature = makeLineString(this.linePoints);
-        console.log('feature', feature);
-        this.createFeature(feature);
-        feature = MapboxGL.geoUtils.makeFeature(e.geometry);
-        this.createFeature(feature);
+      else if (this.props.mapMode === MapModes.DRAW.LINE || this.props.mapMode === MapModes.DRAW.POLYGON) {
+        console.log('Creating', this.props.mapMode, '...');
+        this.linePoints.push(e.geometry.coordinates);
+        console.log(this.linePoints);
+        if (this.linePoints.length === 1) {
+          let feature = MapboxGL.geoUtils.makeFeature(e.geometry);
+          this.createFeature(feature);
+        }
+        else if (this.linePoints.length === 2) {
+          await this.deleteLastFeature();     // Delete placeholder point at end of line/polygon
+          let feature = makeLineString(this.linePoints);
+          console.log('feature', feature);
+          this.createFeature(feature);
+          feature = MapboxGL.geoUtils.makeFeature(e.geometry);
+          this.createFeature(feature);
+        }
+        else if (this.linePoints.length > 2 && this.props.mapMode === MapModes.DRAW.LINE) {
+          await this.deleteLastFeature();     // Delete placeholder point at end of line/polygon
+          await this.deleteLastFeature();     // Delete line/polygon
+          let feature = makeLineString(this.linePoints);
+          console.log('feature', feature);
+          this.createFeature(feature);
+          feature = MapboxGL.geoUtils.makeFeature(e.geometry);
+          this.createFeature(feature);
+        }
+        else if (this.linePoints.length > 2 && this.props.mapMode === MapModes.DRAW.POLYGON) {
+          console.log('Creating polygon ...');
+          await this.deleteLastFeature();     // Delete placeholder point at end of line/polygon
+          await this.deleteLastFeature();     // Delete line/polygon
+          let feature = makePolygon([[...this.linePoints, this.linePoints[0]]]);
+          console.log('feature', feature);
+          this.createFeature(feature);
+          feature = MapboxGL.geoUtils.makeFeature(e.geometry);
+          this.createFeature(feature);
+        }
       }
-      else if (this.linePoints.length > 2 && this.props.mapMode === MapModes.DRAW.LINE) {
-        await this.deleteLastFeature();     // Delete placeholder point at end of line/polygon
-        await this.deleteLastFeature();     // Delete line/polygon
-        let feature = makeLineString(this.linePoints);
-        console.log('feature', feature);
-        this.createFeature(feature);
-        feature = MapboxGL.geoUtils.makeFeature(e.geometry);
-        this.createFeature(feature);
-      }
-      else if (this.linePoints.length > 2 && this.props.mapMode === MapModes.DRAW.POLYGON) {
-        console.log('Creating polygon ...');
-        await this.deleteLastFeature();     // Delete placeholder point at end of line/polygon
-        await this.deleteLastFeature();     // Delete line/polygon
-        let feature = makePolygon([[...this.linePoints, this.linePoints[0]]]);
-        console.log('feature', feature);
-        this.createFeature(feature);
-        feature = MapboxGL.geoUtils.makeFeature(e.geometry);
-        this.createFeature(feature);
+      else console.log('No draw type set. No feature created.');
+    }
+    else this.editFeatureCoordinates(e.geometry);
+  }
+
+  // Edit the coordinates of a selected feature
+  editFeatureCoordinates = (geometry) => {
+    if (this._isMounted) {
+      let featureToEdit = this.state.featureCollectionSelected.features[0];
+      if (featureToEdit.geometry.type === 'Point') {
+        let tempFeature = MapboxGL.geoUtils.makeFeature(geometry);
+        featureToEdit.geometry = tempFeature.geometry;
+        this.setState(prevState => {
+          let otherFeatures = prevState.featureCollection.features.filter(
+            feature => feature.properties.id !== featureToEdit.properties.id);
+          let editedFeatureCollection = MapboxGL.geoUtils.makeFeatureCollection();
+          editedFeatureCollection.features = otherFeatures;
+          return {
+            ...prevState,
+            featureCollection: MapboxGL.geoUtils.addToFeatureCollection(editedFeatureCollection, featureToEdit),
+            featureCollectionSelected: MapboxGL.geoUtils.makeFeatureCollection(),
+            isEditFeature: false,
+          }
+        }, () => {
+          console.log('Finished editing feature. Features: ', this.state.featureCollection);
+        });
       }
     }
-    else console.log('No draw type set. No feature created.');
-  }
+    else console.log('Attempting to edit feature coordinates but Map View Component not mounted.');
+  };
 
   // Create a new feature in the feature collection
   createFeature = feature => {
-    feature.properties.id = '' + Date.now();        // ToDo: Generate unique string id here
-    console.log('Creating new feature:', feature);
     if (this._isMounted) {
+      feature.properties.id = '' + Date.now();        // ToDo: Generate unique string id here
+      console.log('Creating new feature:', feature);
       this.setState(prevState => {
         return {
           ...prevState,
-          featureCollection: MapboxGL.geoUtils.addToFeatureCollection(this.state.featureCollection, feature)
+          featureCollection: MapboxGL.geoUtils.addToFeatureCollection(prevState.featureCollection, feature)
         }
       }, () => {
-        console.log('Finished creating new feature. Features: ', this.state.featureCollection.features);
+        console.log('Finished creating new feature. Features: ', this.state.featureCollection);
       });
     }
     else console.log('Attempting to create a new feature but Map View Component not mounted.');
@@ -196,7 +227,7 @@ class mapView extends Component {
           ...prevState
         }
       }, () => {
-        console.log('Finished deleting last feature. Features:', this.state.featureCollection.features);
+        console.log('Finished deleting last feature. Features:', this.state.featureCollection);
       });
     }
     else console.log('Attempting to delete the last feature but Map View Component not mounted.');
@@ -326,12 +357,28 @@ class mapView extends Component {
   async onMapLongPress(e) {
     console.log('Map long press detected:', e);
     const {screenPointX, screenPointY} = e.properties;
-    const featureCollection = await this._map.queryRenderedFeaturesAtPoint(
+    const featureCollectionAtPoint = await this._map.queryRenderedFeaturesAtPoint(
       [screenPointX, screenPointY],
       null,
       ['pointLayer', 'lineLayer', 'polygonLayer'],
     );
-    console.log('Selected features:', featureCollection.features);
+    console.log('Features at Point:', featureCollectionAtPoint);
+    let feature = featureCollectionAtPoint.features[0]; // Just use first feature, if more than one
+    if (feature) {
+      if (this._isMounted) {
+        this.setState(prevState => {
+          let featureCollectionSelected = MapboxGL.geoUtils.makeFeatureCollection();
+          return {
+            ...prevState,
+            featureCollectionSelected: MapboxGL.geoUtils.addToFeatureCollection(featureCollectionSelected, feature),
+            isEditFeature: true
+          }
+        }, () => {
+          console.log('Set selected feature collection:', this.state.featureCollectionSelected);
+        });
+      }
+      else console.log('Attempting to set the selected feature but MapView Component not mounted.');
+    }
   }
 
   render() {
@@ -363,13 +410,14 @@ class mapView extends Component {
     const centerCoordinate = [this.state.longitude, this.state.latitude];
 
     const mapProps = {
+      ref: ref => this._map = ref,
       basemap: this.state.currentBasemap,
       centerCoordinate: centerCoordinate,
       onMapPress: this.onMapPress,
       onMapLongPress: this.onMapLongPress,
       onSourcePress: this.onSourceLayerPress,
-      shape: this.state.featureCollection,
-      ref: ref => this._map = ref
+      features: this.state.featureCollection,
+      selectedFeatures: this.state.featureCollectionSelected
     };
 
     return (

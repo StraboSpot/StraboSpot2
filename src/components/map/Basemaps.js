@@ -9,7 +9,7 @@ function Basemap(props) {
     style={{flex: 1}}
     animated={true}
     localizeLabels={true}
-    showUserLocation={true}
+    //showUserLocation={true}
     logoEnabled={false}
     rotateEnabled={false}
     attributionEnabled={false}
@@ -18,6 +18,7 @@ function Basemap(props) {
     zoomLevel={16}
     onPress={props.onMapPress}
     onLongPress={props.onMapLongPress}
+    scrollEnabled={false}
   >
     <MapboxGL.RasterSource
       id={props.basemap.id}
@@ -35,12 +36,12 @@ function Basemap(props) {
       id="shapeSource"
       hitbox={{ width: 20, height: 20 }}
       onPress={props.onSourcePress}
-      shape={props.shape}>
+      shape={props.features}>
       <MapboxGL.SymbolLayer
         id="pointLayer"
         minZoomLevel={1}
         filter={['==', '$type', 'Point']}
-        style={mapStyles.icon}
+        style={mapStyles.point}
       />
       <MapboxGL.LineLayer
         id="lineLayer"
@@ -50,6 +51,28 @@ function Basemap(props) {
       />
       <MapboxGL.FillLayer
         id="polygonLayer"
+        minZoomLevel={1}
+        filter={['==', '$type', 'Polygon']}
+        style={mapStyles.polygon}
+      />
+    </MapboxGL.ShapeSource>
+    <MapboxGL.ShapeSource
+      id="selectedFeaturseSource"
+      shape={props.selectedFeatures}>
+      <MapboxGL.CircleLayer
+        id="pointLayerSelected"
+        minZoomLevel={1}
+        filter={['==', '$type', 'Point']}
+        style={mapStyles.pointSelected}
+        />
+      <MapboxGL.LineLayer
+        id="lineLayerSelected"
+        minZoomLevel={1}
+        filter={['==', '$type', 'LineString']}
+        style={mapStyles.line}
+      />
+      <MapboxGL.FillLayer
+        id="polygonLayerSelected"
         minZoomLevel={1}
         filter={['==', '$type', 'Polygon']}
         style={mapStyles.polygon}
@@ -75,7 +98,7 @@ export const OSMBasemap = React.forwardRef((props, ref) => (
 ));
 
 const mapStyles = MapboxGL.StyleSheet.create({
-  icon: {
+  point: {
     iconImage: pointSymbol,
     iconAllowOverlap: true,
     iconSize: 0.15,
@@ -87,5 +110,18 @@ const mapStyles = MapboxGL.StyleSheet.create({
   polygon: {
     fillColor: 'blue',
     fillOpacity: .4
-  }
+  },
+  pointSelected: {
+    circleRadius: 30,
+    circleColor: 'orange',
+    circleOpacity: .4
+  },
+  lineSelected: {
+    lineColor: 'orange',
+    lineWidth: 3
+  },
+  polygonSelected: {
+    fillColor: 'orange',
+    fillOpacity: .4
+  },
 });
