@@ -307,6 +307,13 @@
 			remoteGlobalIDString = 358F4ED71D1E81A9004DF814;
 			remoteInfo = RCTBlob;
 		};
+		D65024CE22302B82000BE040 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D650249F22302B82000BE040 /* RNZipArchive.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D061F22A1E4887C4000350B4;
+			remoteInfo = RNZipArchive;
+		};
 		D6AD6C3522249CCD00568180 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = D6AD6C0B22249CCD00568180 /* ReactNativeNavigation.xcodeproj */;
@@ -457,6 +464,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D65024D022302B9A000BE040 /* libRNZipArchive.a in Frameworks */,
 				D6AD6C982224A3DE00568180 /* libRNVectorIcons.a in Frameworks */,
 				D6AD6C8E2224A13A00568180 /* libRNFetchBlob.a in Frameworks */,
 				D6AD6C8422249FDD00568180 /* libRCTMGL.a in Frameworks */,
@@ -652,6 +660,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				D650249F22302B82000BE040 /* RNZipArchive.xcodeproj */,
 				D6AD6C8F2224A26900568180 /* RNVectorIcons.xcodeproj */,
 				D6AD6C882224A10700568180 /* RNFetchBlob.xcodeproj */,
 				D6AD6C7E22249FCD00568180 /* RCTMGL.xcodeproj */,
@@ -714,6 +723,14 @@
 			children = (
 				ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */,
 				2D16E6721FA4F8DC00B85C8A /* libRCTBlob-tvOS.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		D65024A022302B82000BE040 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D65024CF22302B82000BE040 /* libRNZipArchive.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -953,6 +970,10 @@
 				{
 					ProductGroup = D6AD6C902224A26900568180 /* Products */;
 					ProjectRef = D6AD6C8F2224A26900568180 /* RNVectorIcons.xcodeproj */;
+				},
+				{
+					ProductGroup = D65024A022302B82000BE040 /* Products */;
+					ProjectRef = D650249F22302B82000BE040 /* RNZipArchive.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -1195,6 +1216,13 @@
 			fileType = archive.ar;
 			path = libRCTBlob.a;
 			remoteRef = ADBDB9261DFEBF0700ED6528 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		D65024CF22302B82000BE040 /* libRNZipArchive.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNZipArchive.a;
+			remoteRef = D65024CE22302B82000BE040 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		D6AD6C3622249CCD00568180 /* libReactNativeNavigation.a */ = {
