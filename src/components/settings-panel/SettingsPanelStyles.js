@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
   },
 
   navItemStyle: {
-    padding: 10
+    padding: 3,
   },
   navSectionStyle: {
     backgroundColor: 'transparent',
@@ -32,8 +32,6 @@ const styles = StyleSheet.create({
   sectionHeading : {
     alignItems: 'flex-start',
     marginLeft: 10,
-    // borderBottomWidth: 3,
-    // borderBottomColor: 'black',
     backgroundColor: 'lightgrey',
   },
   sectionHeadingTextStyle: {

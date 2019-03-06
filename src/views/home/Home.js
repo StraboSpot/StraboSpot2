@@ -10,9 +10,9 @@ import MapSymbolsDialog from "../../components/modals/map-symbols/MapSymbolsDial
 import BaseMapDialog from "../../components/modals/base-maps/BaseMapDialogBox";
 import NotebookPanel from '../../components/notebook-panel/NotebookPanel';
 import Drawer from 'react-native-drawer';
-import SettingsPanel from '../../components/sidebar-views/settings-panel/SettingsPanel';
+import SettingsPanel from '../../components/settings-panel/SettingsPanel';
 import {MapModes} from '../../components/map/Map.constants';
-import ShortcutMenu from '../../components/sidebar-views/settings-panel/shortcuts-menu/ShortcutsMenu';
+import ShortcutMenu from '../../components/settings-panel/shortcuts-menu/ShortcutsMenu';
 
 export default class Home extends React.Component {
   _isMounted = false;
