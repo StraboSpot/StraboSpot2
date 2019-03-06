@@ -1,16 +1,16 @@
 import React from 'react';
 import {TouchableOpacity, TouchableNativeFeedback, Text, View, StyleSheet, Platform} from "react-native";
-import Icon from "react-native-vector-icons/Ionicons";
+// import Icon from "react-native-vector-icons/Ionicons";
 
 const buttonNoBackground = props => {
   const content = (
     <View style={[styles.button, props.style]}>
-      <Icon
-        style={[styles.itemIcon, props.style]}
-        name={props.name}
-        size={props.size}
-        color={props.color}/>
-      <Text style={styles.buttonText}>{props.children}</Text>
+      {/*<MaterialCommunityIcons.Ionicon*/}
+        {/*style={[styles.itemIcon, props.style]}*/}
+        {/*name={props.name}*/}
+        {/*size={props.size}*/}
+        {/*color={props.color}/>*/}
+      <Text style={[styles.buttonText, props.style]}>{props.children}</Text>
     </View>
   );
 

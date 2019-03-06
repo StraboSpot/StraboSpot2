@@ -8,7 +8,7 @@ import IconButton from '../../ui/IconButton';
 import MapActionsDialog from '../../components/modals/map-actions/MapActionsDialogBox';
 import MapSymbolsDialog from "../../components/modals/map-symbols/MapSymbolsDialogBox";
 import BaseMapDialog from "../../components/modals/base-maps/BaseMapDialogBox";
-import NotebookPanel from '../../components/sidebar-views/notebook-panel/NotebookPanel';
+import NotebookPanel from '../../components/notebook-panel/NotebookPanel';
 import Drawer from 'react-native-drawer';
 import SettingsPanel from '../../components/sidebar-views/settings-panel/SettingsPanel';
 import {MapModes} from '../../components/map/Map.constants';

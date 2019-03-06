@@ -9,7 +9,7 @@ const iconButton = props => {
       <Image
         target={props.name}
         source={props.source}
-        style={styles.FloatingButtonStyle}
+        style={[styles.FloatingButtonStyle, props.style]}
       />
     </View>
   );
