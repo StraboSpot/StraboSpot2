@@ -34,9 +34,10 @@ function Basemap(props) {
     </MapboxGL.RasterSource>
     <MapboxGL.ShapeSource
       id="shapeSource"
-      hitbox={{ width: 20, height: 20 }}
-      onPress={props.onSourcePress}
-      shape={props.features}>
+      //hitbox={{ width: 20, height: 20 }}
+      //onPress={props.onSourcePress}
+      shape={props.features}
+    >
       <MapboxGL.SymbolLayer
         id="pointLayer"
         minZoomLevel={1}
@@ -58,13 +59,14 @@ function Basemap(props) {
     </MapboxGL.ShapeSource>
     <MapboxGL.ShapeSource
       id="selectedFeaturseSource"
-      shape={props.selectedFeatures}>
+      shape={props.selectedFeatures}
+    >
       <MapboxGL.CircleLayer
         id="pointLayerSelected"
         minZoomLevel={1}
         filter={['==', '$type', 'Point']}
         style={mapStyles.pointSelected}
-        />
+      />
       <MapboxGL.LineLayer
         id="lineLayerSelected"
         minZoomLevel={1}

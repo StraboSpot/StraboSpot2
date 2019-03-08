@@ -29,6 +29,7 @@ export default class Home extends React.Component {
       buttons: {
         endDrawButtonVisible: false,
         drawButtonOn: undefined,
+        cancelEditButtonVisible: false
       },
       mapMode: MapModes.VIEW,
       noteBookPanelVisible: false,
@@ -51,6 +52,7 @@ export default class Home extends React.Component {
         Sketch: false
       }
     };
+    this.toggleCancelEditButton = this.toggleCancelEditButton.bind(this);
   }
 
   componentDidMount() {
@@ -108,6 +110,9 @@ export default class Home extends React.Component {
         break;
       case "endDraw":
         this.endDraw();
+        break;
+      case "cancelEdit":
+        this.cancelEdit();
         break;
       case "currentLocation":
         console.log(`${name}`, " was clicked");
@@ -179,6 +184,12 @@ export default class Home extends React.Component {
     this.toggleButton('endDrawButtonVisible');
   };
 
+  cancelEdit = async () => {
+    await this.mapViewElement.current.cancelEdit();
+    this.setMapMode(MapModes.VIEW);
+    this.toggleButton('cancelEditButtonVisible');
+  };
+
   // Toggle given button between true (on) and false (off)
   toggleButton = (button) => {
     console.log('Toggle Button', button);
@@ -194,6 +205,11 @@ export default class Home extends React.Component {
       });
     }
     else console.log('Attempting to toggle', button, 'but Home Component not mounted.');
+  };
+
+  toggleCancelEditButton = () => {
+    this.setMapMode(MapModes.VIEW);
+    this.toggleButton('cancelEditButtonVisible');
   };
 
   closeDrawer = () => {
@@ -335,7 +351,8 @@ export default class Home extends React.Component {
         content={content}
       >
         <View style={styles.container}>
-          <MapView ref={this.mapViewElement} mapMode={this.state.mapMode}/>
+          <MapView ref={this.mapViewElement} mapMode={this.state.mapMode}
+                   toggleCancelEditButton={this.toggleCancelEditButton}/>
           {this.state.noteBookPanelVisible ?
             <NotebookPanel
               close={() => this.closeNotebookPanel()}
@@ -344,6 +361,8 @@ export default class Home extends React.Component {
           <View style={styles.topCenter}>
             {this.state.buttons.endDrawButtonVisible ?
               <Button title={'End Draw'} onPress={this.clickHandler.bind(this, "endDraw")}/> : null}
+            {this.state.buttons.cancelEditButtonVisible ?
+              <Button title={'Cancel Edit'} onPress={this.clickHandler.bind(this, "cancelEdit")}/> : null}
           </View>
           <View style={styles.rightsideIcons}>
             <View style={styles.searchAndSettingsIcons}>
