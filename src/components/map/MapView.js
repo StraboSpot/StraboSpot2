@@ -59,7 +59,7 @@ class mapView extends Component {
 
     this.onMapPress = this.onMapPress.bind(this);
     this.onMapLongPress = this.onMapLongPress.bind(this);
-    this.onSourceLayerPress = this.onSourceLayerPress.bind(this);
+    //this.onSourceLayerPress = this.onSourceLayerPress.bind(this);
   }
 
   componentDidMount() {
@@ -376,7 +376,7 @@ class mapView extends Component {
       centerCoordinate: centerCoordinate,
       onMapPress: this.onMapPress,
       onMapLongPress: this.onMapLongPress,
-      onSourcePress: this.onSourceLayerPress,
+      //onSourcePress: this.onSourceLayerPress,
       features: this.state.featureCollection,
       selectedFeatures: this.state.featureCollectionSelected
     };
