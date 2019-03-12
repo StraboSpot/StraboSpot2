@@ -68,7 +68,7 @@ export default class SignIn extends React.Component {
         <ButtonWithBackground
           color={"#407ad9"}
           onPress={this.signIn}
-          style={styles.buttonText}
+          // style={styles.buttonText}
           name={"ios-log-in"}
         >Sign In
         </ButtonWithBackground>

@@ -4,6 +4,7 @@ import styles from './Styles';
 import {goToAuth,goToImages, goSignIn, splitView} from '../../routes/Navigation'
 import MapView from '../../components/map/MapView';
 import Icon from 'react-native-vector-icons/Ionicons';
+import MaterialCommunityIcons from '../../shared/Icons';
 import IconButton from '../../ui/IconButton';
 import MapActionsDialog from '../../components/modals/map-actions/MapActionsDialogBox';
 import MapSymbolsDialog from "../../components/modals/map-symbols/MapSymbolsDialogBox";
@@ -297,14 +298,16 @@ export default class Home extends React.Component {
   };
 
   setVisibleMenuState = (state) => {
-    this.setState(prevState => {
-      return {
-        ...prevState,
-        settingsMenuVisible: state
-      }
-    }, () => {
-      console.log('State updated:', this.state);
-    })
+    if (this._isMounted) {
+      this.setState(prevState => {
+        return {
+          ...prevState,
+          settingsMenuVisible: state
+        }
+      }, () => {
+        console.log('State updated:', this.state);
+      })
+    }
   };
 
   closeSettingsDrawer = () => {
@@ -321,15 +324,19 @@ export default class Home extends React.Component {
   };
 
   openNotebookPanel = () => {
-    this.setState({
-      noteBookPanelVisible: true
-    });
+    if (this._isMounted) {
+      this.setState({
+        noteBookPanelVisible: true
+      });
+    }
   };
 
   closeNotebookPanel = () => {
-    this.setState({
-      noteBookPanelVisible: false
-    });
+    if (this._isMounted) {
+      this.setState({
+        noteBookPanelVisible: false
+      });
+    }
   };
 
   dialogClickHandler = (dialog, name) => {
@@ -385,9 +392,26 @@ export default class Home extends React.Component {
             : null}
           <View style={styles.topCenter}>
             {this.state.buttons.endDrawButtonVisible ?
-              <Button title={'End Draw'} onPress={this.clickHandler.bind(this, "endDraw")}/> : null}
+              <ButtonWithBackground
+                color={'yellow'}
+                style={styles.buttonWithBackground}
+                onPress={this.clickHandler.bind(this, "endDraw")}
+              >
+                <MaterialCommunityIcons.FontAwesome5
+                name={'user-edit'}
+                size={15}
+              />
+                End Draw</ButtonWithBackground>
+              // <Button title={'End Draw'} onPress={this.clickHandler.bind(this, "endDraw")}/>
+              : null}
             {this.state.buttons.cancelEditButtonVisible ?
-              <Button title={'Cancel Edit'} onPress={this.clickHandler.bind(this, "cancelEdit")}/> : null}
+              <ButtonWithBackground
+                color={'yellow'}
+                style={styles.buttonWithBackground}
+                onPress={this.clickHandler.bind(this, "cancelEdit")}
+              >Cancel Edit</ButtonWithBackground>
+              // <Button title={'Cancel Edit'} onPress={this.clickHandler.bind(this, "cancelEdit")}
+              : null}
           </View>
           <View style={styles.rightsideIcons}>
             <View style={styles.searchAndSettingsIcons}>

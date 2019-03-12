@@ -5,6 +5,14 @@ const styles = StyleSheet.create({
     flex: 1
   },
 
+  buttonWithBackground: {
+    color: 'black',
+    fontSize: 16,
+    // paddingTop: 5,
+    // paddingBottom: 5,
+    marginTop: 5,
+    marginBottom: 5
+  },
   // --- Drawer Styles ---
   drawerStyles: {
     shadowColor: '#000000',
@@ -26,7 +34,7 @@ const styles = StyleSheet.create({
   topCenter: {
     position: "absolute",
     top: 20,
-    left: 70
+    left: '40%'
   },
 
   // --- All icons with group spacings (margins of 55) on left and right sides ---

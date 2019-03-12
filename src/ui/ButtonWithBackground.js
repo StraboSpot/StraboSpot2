@@ -4,13 +4,13 @@ import Icon from "react-native-vector-icons/Ionicons";
 
 const buttonWithBackground = props => {
   const content = (
-    <View style={[styles.button, {backgroundColor: props.color}]}>
+    <View style={[styles.button, {backgroundColor: props.color}, props.style]}>
       <Icon
         style={styles.itemIcon}
         name={props.name}
         size={30}
         color={"white"}/>
-      <Text style={styles.buttonText}>{props.children}</Text>
+      <Text style={[styles.buttonText, props.style]}>{props.children}</Text>
     </View>
   );
 
@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
     color: "white",
   },
   itemIcon: {
-    paddingRight: 15
+    paddingRight: 20
   }
 });
 
