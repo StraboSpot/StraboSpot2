@@ -2,7 +2,7 @@ import React from 'react'
 import {View, Button} from 'react-native'
 import styles from './Styles';
 import {goToAuth,goToImages, goSignIn, splitView} from '../../routes/Navigation'
-import MapView from '../../components/map/MapView';
+import MapView from '../../maps/map/MapView';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from '../../shared/Icons';
 import IconButton from '../../ui/IconButton';
@@ -12,9 +12,8 @@ import BaseMapDialog from "../../components/modals/base-maps/BaseMapDialogBox";
 import NotebookPanel from '../../components/notebook-panel/NotebookPanel';
 import Drawer from 'react-native-drawer';
 import SettingsPanel from '../../components/settings-panel/SettingsPanel';
-import {MapModes} from '../../components/map/Map.constants';
+import {MapModes} from '../../maps/map/Map.constants';
 import ShortcutMenu from '../../components/settings-panel/shortcuts-menu/ShortcutsMenu';
-// import {saveMap} from '../../maps/offline-maps/OfflineMapUtility';
 import ButtonWithBackground from '../../ui/ButtonWithBackground';
 import Modal from "react-native-modal";
 import SaveMapModal from '../../components/modals/map-actions/SaveMapsModal';

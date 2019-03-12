@@ -5,7 +5,7 @@ import {MAPBOX_KEY} from '../../MapboxConfig'
 import {MapboxOutdoorsBasemap, MapboxSatelliteBasemap, OSMBasemap, MacrostratBasemap} from "./Basemaps";
 import * as turf from '@turf/turf'
 import {LATITUDE, LONGITUDE, LATITUDE_DELTA, LONGITUDE_DELTA, MapModes} from './Map.constants';
-import {getMapTiles} from "../../maps/offline-maps/OfflineMapUtility";
+import {getMapTiles} from "../offline-maps/OfflineMapUtility";
 
 MapboxGL.setAccessToken(MAPBOX_KEY);
 
