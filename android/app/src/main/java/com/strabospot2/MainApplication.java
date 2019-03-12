@@ -1,7 +1,6 @@
 package com.strabospot2;
 
 import android.app.Application;
-import com.airbnb.android.react.maps.MapsPackage;
 import com.facebook.react.ReactApplication;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.facebook.react.ReactNativeHost;
@@ -45,8 +44,7 @@ public class MainApplication extends NavigationApplication {
             new RCTMGLPackage(),
             new VectorIconsPackage(),
             new RNFetchBlobPackage(),
-            new RNZipArchivePackage(),
-            new MapsPackage()
+            new RNZipArchivePackage()
         );
     }
 
