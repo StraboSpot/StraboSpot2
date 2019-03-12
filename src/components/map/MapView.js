@@ -7,9 +7,7 @@ import {MAPBOX_KEY} from '../../MapboxConfig'
 import {MapboxOutdoorsBasemap, MapboxSatelliteBasemap, OSMBasemap, MacrostratBasemap} from "./Basemaps";
 import * as turf from '@turf/turf'
 import {LATITUDE, LONGITUDE, LATITUDE_DELTA, LONGITUDE_DELTA, MapModes} from './Map.constants';
-import {getVisibleBounds} from "../../maps/offline-maps/OfflineMapUtility";
-import {getMapTiles} from "../../services/maps/MapDownload";
-
+import {getMapTiles} from "../../maps/offline-maps/OfflineMapUtility";
 
 MapboxGL.setAccessToken(MAPBOX_KEY);
 
@@ -101,19 +99,12 @@ class mapView extends Component {
 
   saveMap = async () => {
 
-    let visibleBounds = await getVisibleBounds(this._map);
-
-    // const visibleBounds = await this._map.getVisibleBounds();      // Mapbox
+    const visibleBounds = await this._map.getVisibleBounds();      // Mapbox
     //const visibleBounds = await this._map.getMapBoundaries();    // RN Maps
     // console.log('first bounds', visibleBounds);                 // COMMENT OUT LOGS BEFORE RELEASE HERE
-
-    // goToDownloadMap(visibleBounds);
-
-    console.log('props', this.props);
     getMapTiles(visibleBounds).then(() => {
       console.log("Finished getting map tiles!");
       Alert.alert("Finished getting map tiles!")
-
     });
   };
 
@@ -186,10 +177,10 @@ class mapView extends Component {
           const coords = turf.getCoords(prevState.editFeature);
           console.log(coords, prevState.editFeatureCoord);
           for (let i = 0; i < coords.length; i++) {
-              if (coords[i][0] === prevState.editFeatureCoord[0] && coords[i][1] === prevState.editFeatureCoord[1]) {
-                prevState.editFeature.geometry.coordinates[i] = turf.getCoord(newGeometry);
-              }
+            if (coords[i][0] === prevState.editFeatureCoord[0] && coords[i][1] === prevState.editFeatureCoord[1]) {
+              prevState.editFeature.geometry.coordinates[i] = turf.getCoord(newGeometry);
             }
+          }
         }
         else if (turf.getType(prevState.editFeature) === 'Polygon') {
           const coords = turf.getCoords(prevState.editFeature);

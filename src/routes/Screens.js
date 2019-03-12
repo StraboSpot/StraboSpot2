@@ -5,8 +5,6 @@ import SignIn from "../views/SignIn";
 import SignUp from "../views/SignUp";
 import Screen2 from "../views/Screen2";
 import Images from "../views/images/Images";
-import MapDownload from "../views/MapDownload";
-
 
 export function registerScreens() {
   Navigation.registerComponent('Home', () => Home);
@@ -15,5 +13,4 @@ export function registerScreens() {
   Navigation.registerComponent('SignUp', () => SignUp);
   Navigation.registerComponent('Screen2', () => Screen2);
   Navigation.registerComponent('Images', () => Images);
-  Navigation.registerComponent('MapDownload', () => MapDownload)
 }

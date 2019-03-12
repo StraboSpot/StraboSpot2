@@ -59,19 +59,3 @@ export const goToImages = () => Navigation.setRoot({
     }
   }
 });
-
-export const goToDownloadMap = (mapBounds) => Navigation.setRoot({
-  root: {
-    stack: {
-      id: 'MapDownload',
-      children: [
-        {
-          component: {
-            name: 'MapDownload',
-            passProps: {mapBounds: mapBounds}
-          }
-        }
-      ]
-    }
-  }
-});
