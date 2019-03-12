@@ -1,7 +1,7 @@
 import React from 'react'
 import {View, Button} from 'react-native'
 import styles from './Styles';
-import {goToAuth, goSignIn, splitView} from '../../routes/Navigation'
+import {goToAuth,goToImages, goSignIn, splitView} from '../../routes/Navigation'
 import MapView from '../../components/map/MapView';
 import Icon from 'react-native-vector-icons/Ionicons';
 import IconButton from '../../ui/IconButton';
@@ -82,7 +82,8 @@ export default class Home extends React.Component {
         console.log(`${name}`, " was clicked");
         break;
       case "photo":
-        console.log(`${name}`, " was clicked");
+        // console.log(`${name}`, " was clicked");
+        goToImages();
         break;
       case "sketch":
         console.log(`${name}`, " was clicked");

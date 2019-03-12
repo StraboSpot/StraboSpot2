@@ -1,13 +1,15 @@
 import React, {Component} from 'react';
-import {StyleSheet} from 'react-native';
+import {Alert, StyleSheet} from 'react-native';
 import MapboxGL from '@mapbox/react-native-mapbox-gl';
-import {FloatingAction} from 'react-native-floating-action';
-import {goToImages, goSignIn, goToDownloadMap} from '../../routes/Navigation';
+import {goToDownloadMap} from '../../routes/Navigation';
 //import MapView, {MAP_TYPES, PROVIDER_DEFAULT, ProviderPropType, UrlTile} from 'react-native-maps';
 import {MAPBOX_KEY} from '../../MapboxConfig'
 import {MapboxOutdoorsBasemap, MapboxSatelliteBasemap, OSMBasemap, MacrostratBasemap} from "./Basemaps";
 import * as turf from '@turf/turf'
 import {LATITUDE, LONGITUDE, LATITUDE_DELTA, LONGITUDE_DELTA, MapModes} from './Map.constants';
+import {getVisibleBounds} from "../../maps/offline-maps/OfflineMapUtility";
+import {getMapTiles} from "../../services/maps/MapDownload";
+
 
 MapboxGL.setAccessToken(MAPBOX_KEY);
 
@@ -97,27 +99,22 @@ class mapView extends Component {
       }
     }*/
 
-  handlePress = async (name) => {
-    switch (name) {
-      case "Download Map":
-        console.log("Download map selected");
-        console.log('this._map', this._map);
-        const visibleBounds = await this._map.getVisibleBounds();      // Mapbox
-        //const visibleBounds = await this._map.getMapBoundaries();    // RN Maps
-        console.log('first bounds', visibleBounds);
-        goToDownloadMap(visibleBounds);
-        break;
-      case "Track":
-        console.log("Tracked selected");
-        break;
-      case "Images":
-        console.log("images selected");
-        goToImages();
-        break;
-      case "Signout":
-        goSignIn();
-        break;
-    }
+  saveMap = async () => {
+
+    let visibleBounds = await getVisibleBounds(this._map);
+
+    // const visibleBounds = await this._map.getVisibleBounds();      // Mapbox
+    //const visibleBounds = await this._map.getMapBoundaries();    // RN Maps
+    // console.log('first bounds', visibleBounds);                 // COMMENT OUT LOGS BEFORE RELEASE HERE
+
+    // goToDownloadMap(visibleBounds);
+
+    console.log('props', this.props);
+    getMapTiles(visibleBounds).then(() => {
+      console.log("Finished getting map tiles!");
+      Alert.alert("Finished getting map tiles!")
+
+    });
   };
 
   // RN Maps: To add a spot pin. Location is selected when user picks point on map
@@ -433,29 +430,6 @@ class mapView extends Component {
   };
 
   render() {
-    const actions = [
-      {
-        text: 'Download Map',
-        icon: require('../../assets/icons/download.png'),
-        name: 'Download Map',
-        position: 1,
-        color: "white"
-      },
-      {
-        text: 'Images',
-        icon: require('../../assets/icons/images.png'),
-        name: 'Images',
-        position: 3,
-        color: "white"
-      },
-      {
-        text: 'Signout',
-        icon: require('../../assets/icons/logout.png'),
-        name: 'Signout',
-        position: 4,
-        color: "white"
-      },
-    ];
 
     //const centerCoordinate = [this.state.region.longitude, this.state.region.latitude];  // RN Maps
     const centerCoordinate = [this.state.longitude, this.state.latitude];
@@ -495,12 +469,6 @@ class mapView extends Component {
               />}
           </MapView>
         </View>*/}
-        <FloatingAction
-          position={"center"}
-          distanceToEdge={10}
-          actions={actions}
-          onPressItem={this.handlePress}
-        />
       </React.Fragment>
     );
   }
