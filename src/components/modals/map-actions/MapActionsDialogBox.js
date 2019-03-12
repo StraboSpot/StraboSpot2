@@ -1,7 +1,8 @@
 import React from 'react';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import Dialog, {DialogButton, DialogContent, DialogTitle} from "react-native-popup-dialog";
 import {ScaleAnimation} from "react-native-popup-dialog/src";
+// import {Switch} from "react-native-switch";
 
 const slideAnimation = new ScaleAnimation({
   useNativeDriver: true
@@ -42,19 +43,38 @@ const MapActionsDialog = props => (
         style={styles.dialogContent}
         text="Add Tag(s) to Spot(s)"
         onPress={() => props.onPress("addTag")}
-
       />
       <DialogButton
         style={styles.dialogContent}
         text="Lasso Spots for Stereonet"
         onPress={() => props.onPress("stereonet")}
-
       />
+      {/*<View style={styles.container}>*/}
+        {/*<Text style={styles.textStyle}>Edit Mode</Text>*/}
+        {/*<Switch*/}
+          {/*style={{justifyContent: 'flex-end'}}*/}
+          {/*circleSize={25}*/}
+          {/*barHeight={20}*/}
+          {/*circleBorderWidth={3}*/}
+          {/*backgroundActive={'#407ad9'}*/}
+          {/*backgroundInactive={'gray'}*/}
+          {/*circleActiveColor={'#000000'}*/}
+          {/*circleInActiveColor={'#000000'}*/}
+          {/*changeValueImmediately={true} // if rendering inside circle, change state immediately or wait for animation to complete*/}
+          {/*innerCircleStyle={{ alignItems: "center", justifyContent: "center" }}*/}
+        {/*/>*/}
+      {/*</View>*/}
     </DialogContent>
   </Dialog>
 );
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    paddingTop: 10
+  },
   dialogBox: {
     position: 'absolute',
     bottom: 70,
@@ -67,7 +87,12 @@ const styles = StyleSheet.create({
   },
   dialogContent: {
     borderBottomWidth: 2
-  }
+  },
+  textStyle: {
+    fontSize: 18,
+    color: 'black',
+    paddingRight: 45
+  },
 });
 
 export default MapActionsDialog;

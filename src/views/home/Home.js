@@ -278,20 +278,22 @@ export default class Home extends React.Component {
 
   toggleSwitch = (switchName) => {
     console.log('Switch', switchName);
-    this.setState(prevState => {
-      return {
-        shortcutSwitchPosition: {
-          ...prevState.shortcutSwitchPosition,
-          [switchName]: !prevState.shortcutSwitchPosition[switchName]
-        },
-        isShortcutButtonVisible: {
-          ...prevState.isShortcutButtonVisible,
-          [switchName]: !prevState.shortcutSwitchPosition[switchName]
+    if (this._isMounted) {
+      this.setState(prevState => {
+        return {
+          shortcutSwitchPosition: {
+            ...prevState.shortcutSwitchPosition,
+            [switchName]: !prevState.shortcutSwitchPosition[switchName]
+          },
+          isShortcutButtonVisible: {
+            ...prevState.isShortcutButtonVisible,
+            [switchName]: !prevState.shortcutSwitchPosition[switchName]
+          }
         }
-      }
-    }, () => {
-      console.log('Switch Position', this.state.shortcutSwitchPosition);
-    });
+      }, () => {
+        console.log('Switch Position', this.state.shortcutSwitchPosition);
+      });
+    }
   };
 
   setVisibleMenuState = (state) => {
