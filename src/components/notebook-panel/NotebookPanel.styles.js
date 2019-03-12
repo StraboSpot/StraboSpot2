@@ -14,10 +14,15 @@ const styles = StyleSheet.create({
     right: 0,
     zIndex: 1,
   },
-  // Inside Header container
-  spotContainer: {
-    paddingLeft: 10,
-    paddingTop: 5
+
+  // Inside Footer container
+  footerContainer: {
+    width: 470,
+    height: 70,
+    backgroundColor: 'white',
+    // justifyContent: 'space-between',
+    padding: 10,
+    // flexDirection: 'row',
   },
   footerIconContainer: {
     flex: 1,
@@ -29,6 +34,9 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40
   },
+
+
+  // Inside Header container
   headerContainer: {
     width: 470,
     height: 80,
@@ -39,27 +47,25 @@ const styles = StyleSheet.create({
     borderBottomColor: '#747474',
     flexDirection: 'row',
   },
-  headerImage: {
-    width: 60,
-    height: 60,
-  },
-  footerContainer: {
-    width: 470,
-    height: 70,
-    backgroundColor: 'white',
-    // justifyContent: 'space-between',
-    padding: 10,
-    // flexDirection: 'row',
-  },
-  headerSpotName: {
-    fontSize: 24,
-    fontWeight: 'bold'
-  },
   headerCoords: {
     paddingLeft: 0,
     marginTop: 3,
     color: 'blue'
   },
+  headerImage: {
+    width: 60,
+    height: 60,
+  },
+  headerSpotContainer: {
+    paddingLeft: 10,
+    paddingTop: 5
+  },
+  headerSpotName: {
+    fontSize: 24,
+    fontWeight: 'bold'
+  },
+
+
   iconButton: {
     height: 25,
     width: 25,
@@ -72,34 +78,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 10
   },
-  listStyle: {
-    backgroundColor: 'transparent',
-    margin: 0,
-    padding: 5,
-    // alignItems: 'flex-start',
-  },
-  listContent: {
-    backgroundColor: 'transparent',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-  },
-  sectionStyle: {
-    flexDirection: 'row',
-    // flexWrap: 'wrap',
-    borderTopWidth: 1,
-    width: 470,
-    height: 100
-  },
   subContainer: {
     flex: 1,
     width: 470,
     alignItems: 'flex-start',
-  },
-  textStyle: {
-    fontSize: 20,
-    color: '#000000',
-    fontWeight: 'bold',
-    paddingTop: 10
   },
 });
 

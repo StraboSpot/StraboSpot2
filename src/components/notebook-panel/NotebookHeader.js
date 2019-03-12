@@ -14,7 +14,7 @@ const NotebookHeader = props => (
         style={styles.headerImage}
       />
     </View>
-    <View style={styles.spotContainer}>
+    <View style={styles.headerSpotContainer}>
       <Text style={styles.headerSpotName}>{props.spot}</Text>
       <ButtonNoBackground
         style={styles.headerCoords}

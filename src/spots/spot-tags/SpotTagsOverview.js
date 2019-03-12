@@ -1,10 +1,9 @@
 import React, {Component} from 'react';
 import {ScrollView, Text, View} from 'react-native';
 import { ListItem } from 'react-native-elements'
+import spotStyles from '../SpotStyles';
 
-import styles from './NotebookPanel.styles';
-
-const NotebookTag = props => (
+const SpotTag = props => (
 
     <View style={{width: '100%'}}>
       <View>
@@ -19,8 +18,8 @@ const NotebookTag = props => (
               key={l.id}
               title={l.name}
               onPress={() => console.log('Tag item pressed', l.id, l.name)}
-              containerStyle={styles.listStyle}
-              contentContainerStyle={styles.listContent}
+              containerStyle={spotStyles.listStyle}
+              contentContainerStyle={spotStyles.listContent}
 
             />
           ))
@@ -84,4 +83,4 @@ const data = [
   {"id":50,"name":"Bohor reedbuck","description":"Balistreri-Jerde"}
   ];
 
-export default NotebookTag;
+export default SpotTag;

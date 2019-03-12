@@ -1,8 +1,7 @@
 import React, {Component} from 'react';
 import {ScrollView, Text, View} from 'react-native';
-import styles from './NotebookPanel.styles';
 
-const NotebookMeasurements = props => (
+const SpotMeasurementsOverview = props => (
   <View>
     <View>
       <Text style={props.style}>{props.measurements}</Text>
@@ -10,4 +9,4 @@ const NotebookMeasurements = props => (
   </View>
 );
 
-export default NotebookMeasurements;
+export default SpotMeasurementsOverview;

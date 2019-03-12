@@ -1,8 +1,7 @@
 import React, {Component} from 'react';
 import {Text, View} from 'react-native';
-import styles from './NotebookPanel.styles';
 
-const NotebookNotes = props => (
+const SpotNotesOverview = props => (
   <View>
     <View>
       <Text style={props.style}>{props.notes}</Text>
@@ -10,4 +9,4 @@ const NotebookNotes = props => (
   </View>
 );
 
-export default NotebookNotes;
+export default SpotNotesOverview;
