@@ -83,6 +83,13 @@ const styles = StyleSheet.create({
   dialog: {
     position: 'absolute',
     bottom: 10
+  },
+
+  // --- Modal Style ---
+  modal: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
   }
 });
 

@@ -13,6 +13,11 @@ import Drawer from 'react-native-drawer';
 import SettingsPanel from '../../components/settings-panel/SettingsPanel';
 import {MapModes} from '../../components/map/Map.constants';
 import ShortcutMenu from '../../components/settings-panel/shortcuts-menu/ShortcutsMenu';
+// import {saveMap} from '../../maps/offline-maps/OfflineMapUtility';
+import ButtonWithBackground from '../../ui/ButtonWithBackground';
+import Modal from "react-native-modal";
+import SaveMapModal from '../../components/modals/map-actions/SaveMapsModal';
+
 
 export default class Home extends React.Component {
   _isMounted = false;
@@ -35,6 +40,7 @@ export default class Home extends React.Component {
       noteBookPanelVisible: false,
       settingsMenuVisible: 'settingsMain',
       drawerVisible: false,
+      isOfflineMapModalVisible: false,
       shortcutSwitchPosition: {
         Tag: false,
         Measurement: false,
@@ -125,7 +131,10 @@ export default class Home extends React.Component {
         console.log(`${name}`, " was clicked");
         break;
       case "saveMap":
-        console.log(`${name}`, " was clicked");
+        // Alert.alert('Hi buddy from Home Page')
+        this.toggleModal()
+        // this.mapViewElement.current.saveMap();
+        // saveMap();
         break;
       case "addTag":
         console.log(`${name}`, " was clicked");
@@ -252,6 +261,19 @@ export default class Home extends React.Component {
       });
     }
     else console.log('Attempting to toggle', dialog, 'but Home Component not mounted.');
+  };
+
+  toggleModal = () => {
+    if (this._isMounted) {
+      this.setState(prevState => {
+        return {
+          ...prevState,
+          isOfflineMapModalVisible: !prevState.isOfflineMapModalVisible
+        }
+      }, () => {
+        console.log('Modal state', this.state.isOfflineMapModalVisible)
+      })
+    }
   };
 
   toggleSwitch = (switchName) => {
@@ -498,6 +520,20 @@ export default class Home extends React.Component {
             onPress={(name) => this.dialogClickHandler("baseMapMenuVisible", name)}
             onTouchOutside={() => this.toggleDialog("baseMapMenuVisible")}
           />
+          <Modal
+            isVisible={this.state.isOfflineMapModalVisible}
+            useNativeDriver={true}
+          >
+            <View style={styles.modal}>
+              <SaveMapModal
+                close={this.toggleModal}
+                saveMap={() => {
+                  this.mapViewElement.current.saveMap();
+                  this.toggleModal();
+                }}
+              />
+             </View>
+          </Modal>
         </View>
       </Drawer>
     )

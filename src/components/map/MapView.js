@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Alert, StyleSheet} from 'react-native';
 import MapboxGL from '@mapbox/react-native-mapbox-gl';
-import {goToDownloadMap} from '../../routes/Navigation';
+// import {goToDownloadMap} from '../../routes/Navigation';
 //import MapView, {MAP_TYPES, PROVIDER_DEFAULT, ProviderPropType, UrlTile} from 'react-native-maps';
 import {MAPBOX_KEY} from '../../MapboxConfig'
 import {MapboxOutdoorsBasemap, MapboxSatelliteBasemap, OSMBasemap, MacrostratBasemap} from "./Basemaps";
