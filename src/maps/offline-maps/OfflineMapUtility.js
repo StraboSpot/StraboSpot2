@@ -22,12 +22,6 @@ let tryCount = 0;
 export const getMapTiles = async (mapBounds) => {
   console.log('mapBounds', mapBounds);
 
-  // RN Maps
-  /*  let right = mapBounds.northEast.longitude;
-    let top = mapBounds.northEast.latitude;
-    let left = mapBounds.southWest.longitude;
-    let bottom = mapBounds.southWest.latitude;*/
-
   let right = mapBounds[0][0];
   let top = mapBounds[0][1];
   let left = mapBounds[1][0];

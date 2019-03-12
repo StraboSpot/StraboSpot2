@@ -1,8 +1,6 @@
 import React, {Component} from 'react';
 import {Alert, StyleSheet} from 'react-native';
 import MapboxGL from '@mapbox/react-native-mapbox-gl';
-// import {goToDownloadMap} from '../../routes/Navigation';
-//import MapView, {MAP_TYPES, PROVIDER_DEFAULT, ProviderPropType, UrlTile} from 'react-native-maps';
 import {MAPBOX_KEY} from '../../MapboxConfig'
 import {MapboxOutdoorsBasemap, MapboxSatelliteBasemap, OSMBasemap, MacrostratBasemap} from "./Basemaps";
 import * as turf from '@turf/turf'
@@ -20,12 +18,6 @@ class mapView extends Component {
     this.state = {
       latitude: LATITUDE,
       longitude: LONGITUDE,
-      /* region: {                                         // RN Maps
-         latitude: LATITUDE,
-         longitude: LONGITUDE,
-         latitudeDelta: LATITUDE_DELTA,
-         longitudeDelta: LONGITUDE_DELTA,
-       },*/
       currentBasemap: {},
       location: false,
       featureCollection: MapboxGL.geoUtils.makeFeatureCollection(),
@@ -89,18 +81,9 @@ class mapView extends Component {
     this._isMounted = false;
   }
 
-  // For RN Maps
-  /*  get mapType() {
-      // MapKit does not support 'none' as a base map
-      if (Platform.OS === 'ios') {
-        return this.props.provider === PROVIDER_DEFAULT ? MAP_TYPES.HYBRID : MAP_TYPES.SATELLITE;
-      }
-    }*/
-
   saveMap = async () => {
 
     const visibleBounds = await this._map.getVisibleBounds();      // Mapbox
-    //const visibleBounds = await this._map.getMapBoundaries();    // RN Maps
     // console.log('first bounds', visibleBounds);                 // COMMENT OUT LOGS BEFORE RELEASE HERE
     getMapTiles(visibleBounds).then(() => {
       console.log("Finished getting map tiles!");
@@ -108,11 +91,6 @@ class mapView extends Component {
     });
   };
 
-  // RN Maps: To add a spot pin. Location is selected when user picks point on map
-  /*  pickLocationHandler = event => {
-      const coords = event.nativeEvent.coordinate;
-      console.log(coords)
-    };*/
 
   // Mapbox: Handle map press
   async onMapPress(e) {
@@ -313,38 +291,6 @@ class mapView extends Component {
         geolocationOptions
       );
     });
-
-    // RN Maps
-    /*    navigator.geolocation.getCurrentPosition(
-          pos => {
-            const coordsEvent = {
-              nativeEvent: {
-                coordinate: {
-                  latitude: pos.coords.latitude,
-                  longitude: pos.coords.longitude,
-                  latitudeDelta: 0.1229,
-                }
-              }
-            };
-            const coords = coordsEvent.nativeEvent.coordinate;
-            this._map.animateToRegion({
-              ...this.state.region,
-              latitude: coords.latitude,
-              longitude: coords.longitude
-            });
-            this.setState(prevState => {
-              return {
-                region: {
-                  ...prevState.region,
-                  latitude: coords.latitude,
-                  longitude: coords.longitude,
-                  longitudeDelta: .0122,
-                  latitudeDelta: LATITUDE_DELTA,
-                },
-                locationChosen: true
-              };
-            });
-          })*/
   };
 
   endDraw = async () => {
@@ -422,7 +368,6 @@ class mapView extends Component {
 
   render() {
 
-    //const centerCoordinate = [this.state.region.longitude, this.state.region.latitude];  // RN Maps
     const centerCoordinate = [this.state.longitude, this.state.latitude];
 
     const mapProps = {
@@ -442,33 +387,10 @@ class mapView extends Component {
         {this.state.currentBasemap.id === 'mapboxOutdoors' ? <MapboxOutdoorsBasemap {...mapProps}/> : null}
         {this.state.currentBasemap.id === 'osm' ? <OSMBasemap {...mapProps}/> : null}
         {this.state.currentBasemap.id === 'macrostrat' ? <MacrostratBasemap {...mapProps}/> : null}
-        {/*        <View style={styles.container}>
-          <MapView
-            provider={this.props.provider}
-            mapType={this.mapType}
-            style={styles.map}
-            initialRegion={this.state.region}
-            rotateEnabled={false}
-            showsUserLocation={true}
-            ref={ref => this._map = ref}
-            onPress={this.pickLocationHandler}
-          >
-            {!this.state.currentBasemap.url ? null :
-              <UrlTile
-                urlTemplate={this.state.currentBasemap.url}
-                maximumZ={this.state.currentBasemap.maxZoom}
-              />}
-          </MapView>
-        </View>*/}
       </React.Fragment>
     );
   }
 }
-
-// RN Maps
-/*mapView.propTypes = {
-  provider: ProviderPropType,
-};*/
 
 const styles = StyleSheet.create({
   container: {
