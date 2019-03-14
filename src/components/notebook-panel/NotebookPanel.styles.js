@@ -4,8 +4,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: 500,
-    height:'98%',
-    borderBottomLeftRadius:30,
+    height: '98%',
+    borderBottomLeftRadius: 30,
     borderTopLeftRadius: 30,
     backgroundColor: '#d4d4d4',
     alignItems: 'flex-end',
@@ -30,13 +30,23 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginLeft: 60
   },
-  footerIcon:{
+  footerIcon: {
     width: 40,
     height: 40
   },
 
 
   // Inside Header container
+  headerButtonsContainer: {
+    flex: 1,
+    paddingLeft: 50,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  headerButtons: {
+    width: 20,
+    height: 20
+  },
   headerContainer: {
     width: 470,
     height: 80,

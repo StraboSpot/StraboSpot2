@@ -1,16 +1,15 @@
 import React, {Component} from 'react';
 import {Text, View} from 'react-native';
 import {Image} from 'react-native-elements';
-import pointIcon from '../../assets/icons/PointButton_pressed.png';
 import styles from './NotebookPanel.styles';
 import ButtonNoBackground from '../../ui/ButtonNoBackround';
-import MaterialCommunityIcons from '../../shared/Icons';
+import IconButton from '../../ui/IconButton';
 
 const NotebookHeader = props => (
   <View style={styles.headerContainer}>
     <View>
       <Image
-        source={pointIcon}
+        source={require('../../assets/icons/PointButton_pressed.png')}
         style={styles.headerImage}
       />
     </View>
@@ -23,25 +22,21 @@ const NotebookHeader = props => (
         {props.spotCoords}
       </ButtonNoBackground>
     </View>
-    <View>
-      <ButtonNoBackground
-        onPress={() => console.log('Header upload button pressed')}
-      >
-        <MaterialCommunityIcons.FontAwesome5
-          name={'arrow-alt-circle-up'}
-          size={20}
+    <View style={styles.headerButtonsContainer}>
+      <View>
+        <IconButton
+          onPress={() => console.log('Header upload button pressed')}
+          source={require('../../assets/icons/app-icons-shaded/V2-58.png')}
+          style={styles.headerButtons}
         />
-      </ButtonNoBackground>
-    </View>
-    <View>
-      <ButtonNoBackground
-        onPress={props.close}
-      >
-        <MaterialCommunityIcons.FontAwesome5
-          name={'ellipsis-v'}
-          size={20}
+      </View>
+      <View>
+        <IconButton
+          onPress={props.close}
+          source={require('../../assets/icons/app-icons-shaded/V2-56.png')}
+          style={styles.headerButtons}
         />
-      </ButtonNoBackground>
+      </View>
     </View>
   </View>
 );
