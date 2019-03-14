@@ -92,7 +92,7 @@ class mapView extends Component {
       }
     }, () => {
       console.log('Finished setting initial basemap to:', this.state.currentBasemap);
-      console.log('Finished loading spots from:', this.state.featureCollection);
+      console.log('Finished loading spots:', this.state.featureCollection);
     });
   }
 
@@ -155,7 +155,14 @@ class mapView extends Component {
           this.createFeature(feature);
         }
       }
-      else console.log('No draw type set. No feature created.');
+      else {
+        const {screenPointX, screenPointY} = e.properties;
+        const featureSelected = await this.getFeatureAtPress(screenPointX, screenPointY);
+        if (featureSelected) {
+          console.log('Feature selected:', featureSelected)
+        }
+        else console.log('No feature selected. No draw type set. No feature created.');
+      }
     }
     else this.editFeatureCoordinates(e.geometry);
   }
@@ -359,15 +366,10 @@ class mapView extends Component {
   onMapLongPress = async (e) => {
     console.log('Map long press detected:', e);
     const {screenPointX, screenPointY} = e.properties;
-    const r = 10; // half the width (in pixels?) of bounding box to create
-    const bbox = [screenPointY + r, screenPointX + r, screenPointY - r, screenPointX - r];
-    const featureCollectionInRect = await this._map.queryRenderedFeaturesInRect(
-      bbox, null, ['pointLayer', 'lineLayer', 'polygonLayer']);
-    console.log('Features where pressed:', featureCollectionInRect);
-    if (featureCollectionInRect.features.length > 0) {
+    const featureSelected = await this.getFeatureAtPress(screenPointX, screenPointY);
+    if (featureSelected) {
       this.props.toggleCancelEditButton();
       const coordinatePressed = await this._map.getCoordinateFromView([screenPointX, screenPointY]);
-      const featureSelected = featureCollectionInRect.features[0]; // Just use first feature, if more than one
       const explodedFeatureCollection = turf.explode(featureSelected);
       const nearestPointSelected = turf.nearestPoint(coordinatePressed, explodedFeatureCollection);
       let featureCollectionSelected = MapboxGL.geoUtils.makeFeatureCollection();
@@ -391,6 +393,21 @@ class mapView extends Component {
       else console.log('Attempting to set the selected feature but MapView Component not mounted.');
     }
     else console.log('No feature at selected coordinate.');
+  };
+
+  // Selects features within the bounding box and returns the first on if there are more then one
+  getFeatureAtPress = async (screenPointX, screenPointY) => {
+    const r = 10; // half the width (in pixels?) of bounding box to create
+    const bbox = [screenPointY + r, screenPointX + r, screenPointY - r, screenPointX - r];
+    const featureCollectionInRect = await this._map.queryRenderedFeaturesInRect(
+      bbox, null, ['pointLayer', 'lineLayer', 'polygonLayer']);
+    console.log('Feature collection where pressed:', featureCollectionInRect);
+    let featureSelected = undefined;
+    if (featureCollectionInRect.features.length > 0) {
+      featureSelected = featureCollectionInRect.features[0]; // Just use first feature, if more than one
+    }
+    console.log('Feature pressed:', featureSelected);
+    return featureSelected;
   };
 
   render() {
