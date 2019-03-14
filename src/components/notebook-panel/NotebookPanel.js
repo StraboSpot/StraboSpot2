@@ -9,8 +9,8 @@ import SpotOverview from '../../spots/SpotOverview';
 const NotebookPanel = props => (
   <View style={styles.container}>
     <NotebookHeader
-      spot={'Pilbara2018-Spot207'}
-      spotCoords={'119.734222° East, -20.992911° North'}
+      spot={props.spotName}
+      spotCoords={props.spotCoords}
       close={props.close}
     />
     <View style={styles.subContainer}>

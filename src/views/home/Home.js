@@ -386,6 +386,8 @@ export default class Home extends React.Component {
                    toggleCancelEditButton={this.toggleCancelEditButton}/>
           {this.state.noteBookPanelVisible ?
             <NotebookPanel
+              spotName={'Pilbara2018-Spot207'}
+              spotCoords={'119.734222° East, -20.992911° North'}
               close={() => this.closeNotebookPanel()}
             />
             : null}
