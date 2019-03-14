@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Alert, StyleSheet} from 'react-native';
+import {Alert, AsyncStorage, StyleSheet} from 'react-native';
 import MapboxGL from '@mapbox/react-native-mapbox-gl';
 import {MAPBOX_KEY} from '../../MapboxConfig'
 import {MapboxOutdoorsBasemap, MapboxSatelliteBasemap, OSMBasemap, MacrostratBasemap} from "./Basemaps";
@@ -62,18 +62,37 @@ class mapView extends Component {
     //this.onSourceLayerPress = this.onSourceLayerPress.bind(this);
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this._isMounted = true;
-
-    // Set the default basemap
+    let featureCollection = MapboxGL.geoUtils.makeFeatureCollection();
+    const featureIds = await AsyncStorage.getAllKeys(keys => {
+      return keys
+    });
+    await AsyncStorage.multiGet(featureIds, (err, keys) => {
+      console.log(keys);
+      return keys.map((store) => {
+        // featureCollection = store[1];
+        // MapboxGL.geoUtils.addToFeatureCollection(featureCollection, store[1])
+        try {
+          console.log(store[1])
+          console.log(JSON.parse(store[1]))
+          MapboxGL.geoUtils.addToFeatureCollection(featureCollection, JSON.parse(store[1]))
+        } catch (e) {
+          console.log('Errored on', store[1])
+        }
+      })
+    });
+    console.log('feature', featureCollection);
     console.log('Setting initial basemap ...');
     this.setState(prevState => {
       return {
         ...prevState,
-        currentBasemap: this.basemaps.mapboxOutdoors
+        currentBasemap: this.basemaps.mapboxOutdoors,
+        featureCollection: featureCollection
       }
     }, () => {
       console.log('Finished setting initial basemap to:', this.state.currentBasemap);
+      console.log('Finished loading spots from:', this.state.featureCollection);
     });
   }
 
@@ -82,7 +101,6 @@ class mapView extends Component {
   }
 
   saveMap = async () => {
-
     const visibleBounds = await this._map.getVisibleBounds();      // Mapbox
     // console.log('first bounds', visibleBounds);                 // COMMENT OUT LOGS BEFORE RELEASE HERE
     getMapTiles(visibleBounds).then(() => {
@@ -189,20 +207,29 @@ class mapView extends Component {
   };
 
   // Create a new feature in the feature collection
-  createFeature = feature => {
+  createFeature = async feature => {
     if (this._isMounted) {
       feature.properties.id = '' + Date.now();        // ToDo: Generate unique string id here
       console.log('Creating new feature:', feature);
       this.setState(prevState => {
-        return {
-          ...prevState,
-          featureCollection: MapboxGL.geoUtils.addToFeatureCollection(prevState.featureCollection, feature)
+          return {
+            ...prevState,
+            featureCollection: MapboxGL.geoUtils.addToFeatureCollection(prevState.featureCollection, feature)
+          }
+        }, async () => {
+          console.log('Finished creating new feature. Features: ', this.state.featureCollection);
+          this.saveSpot(feature);
         }
-      }, () => {
-        console.log('Finished creating new feature. Features: ', this.state.featureCollection);
-      });
+      );
     }
     else console.log('Attempting to create a new feature but Map View Component not mounted.');
+  };
+
+  saveSpot = async (feature) => {
+    console.log(feature);
+    await AsyncStorage.setItem(feature.properties.id, JSON.stringify(feature), () => {
+      console.log('saved item to storage')
+    })
   };
 
   // Delete the last feature  in the feature collection
