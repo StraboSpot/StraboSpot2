@@ -10,7 +10,7 @@ const buttonNoBackground = props => {
         {/*name={props.name}*/}
         {/*size={props.size}*/}
         {/*color={props.color}/>*/}
-      <Text style={[styles.buttonText, props.style]}>{props.children}</Text>
+      <Text style={[styles.buttonText, props.textStyle]}>{props.children}</Text>
     </View>
   );
 

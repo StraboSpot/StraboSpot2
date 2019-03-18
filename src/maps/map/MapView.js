@@ -159,7 +159,15 @@ class mapView extends Component {
         const {screenPointX, screenPointY} = e.properties;
         const featureSelected = await this.getFeatureAtPress(screenPointX, screenPointY);
         if (featureSelected) {
-          console.log('Feature selected:', featureSelected)
+          console.log('Feature selected:', featureSelected);
+          let featureCollectionSelected = MapboxGL.geoUtils.makeFeatureCollection();
+          MapboxGL.geoUtils.addToFeatureCollection(featureCollectionSelected, featureSelected);
+          this.setState(prevState => {
+            return {
+              ...prevState,
+              featureCollectionSelected: featureCollectionSelected
+            }
+          })
         }
         else console.log('No feature selected. No draw type set. No feature created.');
       }
@@ -213,10 +221,16 @@ class mapView extends Component {
     else console.log('Attempting to edit feature coordinates but Map View Component not mounted.');
   };
 
+  getSelectedFeature = () => {
+    console.log(this.state.featureCollectionSelected);
+    return this.state.featureCollectionSelected.features[0];
+  };
+
   // Create a new feature in the feature collection
   createFeature = async feature => {
     if (this._isMounted) {
       feature.properties.id = '' + Date.now();        // ToDo: Generate unique string id here
+      feature.properties.name = feature.properties.id;
       console.log('Creating new feature:', feature);
       this.setState(prevState => {
           return {

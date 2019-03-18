@@ -56,7 +56,8 @@ export default class Home extends React.Component {
         Note: false,
         Photo: false,
         Sketch: false
-      }
+      },
+      currentSpot: undefined
     };
     this.toggleCancelEditButton = this.toggleCancelEditButton.bind(this);
   }
@@ -314,8 +315,21 @@ export default class Home extends React.Component {
 
   openNotebookPanel = () => {
     if (this._isMounted) {
-      this.setState({
-        noteBookPanelVisible: true
+      this.setState(prevState => {
+        return {
+          ...prevState,
+          noteBookPanelVisible: true
+        }
+      }, () => {
+        console.log('Noteboook panel open');
+        const selectedFeature = this.mapViewElement.current.getSelectedFeature();
+        console.log('Selected feature:', selectedFeature);
+        this.setState(prevState => {
+          return {
+            ...prevState,
+            currentSpot: selectedFeature
+          }
+        }, () => {console.log('Current spot state:', this.state.currentSpot)})
       });
     }
   };
@@ -345,8 +359,56 @@ export default class Home extends React.Component {
     }
   };
 
+  // converts the lat and lng from decimal form to minutes and seconds
+  toDegreesMinutesAndSeconds = (coordinate) => {
+    var absolute = Math.abs(coordinate);
+    var degrees = Math.floor(absolute);
+    var minutesNotTruncated = (absolute - degrees) * 60;
+    var minutes = Math.floor(minutesNotTruncated);
+    var seconds = Math.floor((minutesNotTruncated - minutes) * 60);
+
+    return degrees + " " + minutes + " " + seconds;
+  };
+
+  // adds cardinal points to coordinates -- only works with single points
+  convertDMS = (lat, lng) => {
+    // var latitude = this.toDegreesMinutesAndSeconds(lat);
+    const latitude = lat.toFixed(6);
+    let latitudeCardinal = Math.sign(lat) >= 0 ? "North" : "South";
+
+    // var longitude = this.toDegreesMinutesAndSeconds(lng);
+    const longitude = lng.toFixed(6);
+    let longitudeCardinal = Math.sign(lng) >= 0 ? "East" : "West";
+
+    return (<Text>
+            {latitude}&#176; {latitudeCardinal}, {longitude}&#176; {longitudeCardinal}
+           </Text>)
+  };
+
+  getSpotCoords = () => {
+    console.log('FU', this.state.currentSpot);
+    if (this.state.currentSpot) {
+      const spotLat = this.state.currentSpot.geometry.coordinates[0];
+      const spotLng = this.state.currentSpot.geometry.coordinates[1];
+      const convertedLatLng = this.convertDMS(spotLat, spotLng);
+      console.log('converted w direction', convertedLatLng);
+      return convertedLatLng
+    }
+    return 'no spot coordinates'
+  };
+
+  getSpotName = () => {
+    console.log('Spot name', this.state.currentSpot);
+    if (this.state.currentSpot){
+      return this.state.currentSpot.properties.name;
+    }
+    return 'No Spot Selected';
+  };
+
   render() {
     let content = null;
+    let spotName = this.getSpotName();
+    let spotCoords = this.getSpotCoords();
 
     if (this.state.settingsMenuVisible === 'settingsMain') {
       content = <SettingsPanel onPress={(name) => this.settingsClickHandler(name)}/>
@@ -376,8 +438,9 @@ export default class Home extends React.Component {
                    toggleCancelEditButton={this.toggleCancelEditButton}/>
           {this.state.noteBookPanelVisible ?
             <NotebookPanel
-              spotName={'Pilbara2018-Spot207'}
-              spotCoords={'119.734222° East, -20.992911° North'}
+              spotName={spotName}
+              spotCoords={spotCoords}
+              textStyle={{fontWeight: 'bold', fontSize: 12}}
               close={() => this.closeNotebookPanel()}
             />
             : null}

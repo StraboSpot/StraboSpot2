@@ -17,6 +17,7 @@ const NotebookHeader = props => (
       <Text style={styles.headerSpotName}>{props.spot}</Text>
       <ButtonNoBackground
         style={styles.headerCoords}
+        textStyle={[{color: 'blue' }, props.textStyle]}
         onPress={() => console.log('Spot Coords Pressed!')}
       >
         {props.spotCoords}
