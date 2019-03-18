@@ -1,5 +1,5 @@
 import React from 'react'
-import {View, Button} from 'react-native'
+import {Text, View, Button} from 'react-native'
 import styles from './Styles';
 import {goToAuth,goToImages, goSignIn, splitView} from '../../routes/Navigation'
 import MapView from '../../maps/map/MapView';
