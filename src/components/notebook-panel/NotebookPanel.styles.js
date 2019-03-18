@@ -39,13 +39,15 @@ const styles = StyleSheet.create({
   // Inside Header container
   headerButtonsContainer: {
     flex: 1,
-    paddingLeft: 50,
+    // paddingLeft: 50,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
+    marginLeft: 10
   },
   headerButtons: {
-    width: 20,
-    height: 20
+    marginLeft: 50,
+    // width: 20,
+    // height: 20,
   },
   headerContainer: {
     width: 470,

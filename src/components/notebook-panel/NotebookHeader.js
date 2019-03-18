@@ -23,18 +23,18 @@ const NotebookHeader = props => (
       </ButtonNoBackground>
     </View>
     <View style={styles.headerButtonsContainer}>
-      <View>
+      <View style={styles.headerButtons}>
         <IconButton
           onPress={() => console.log('Header upload button pressed')}
           source={require('../../assets/icons/app-icons-shaded/V2-58.png')}
-          style={styles.headerButtons}
+          style={{width: 20, height: 20}}
         />
       </View>
-      <View>
+      <View style={styles.headerButtons}>
         <IconButton
           onPress={props.close}
           source={require('../../assets/icons/app-icons-shaded/V2-56.png')}
-          style={styles.headerButtons}
+          style={{width: 20, height: 20}}
         />
       </View>
     </View>
