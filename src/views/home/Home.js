@@ -9,7 +9,6 @@ import IconButton from '../../ui/IconButton';
 import MapActionsDialog from '../../components/modals/map-actions/MapActionsDialogBox';
 import MapSymbolsDialog from "../../components/modals/map-symbols/MapSymbolsDialogBox";
 import BaseMapDialog from "../../components/modals/base-maps/BaseMapDialogBox";
-import NotebookPanelMenu from '../../components/notebook-panel/NotebookPanelMenu';
 import NotebookPanel from '../../components/notebook-panel/NotebookPanel';
 import Drawer from 'react-native-drawer';
 import SettingsPanel from '../../components/settings-panel/SettingsPanel';
@@ -18,6 +17,7 @@ import ShortcutMenu from '../../components/settings-panel/shortcuts-menu/Shortcu
 import ButtonWithBackground from '../../ui/ButtonWithBackground';
 import Modal from "react-native-modal";
 import SaveMapModal from '../../components/modals/map-actions/SaveMapsModal';
+import NotebookPanelMenu from '../../components/notebook-panel/NotebookPanelMenu';
 
 
 export default class Home extends React.Component {
@@ -104,8 +104,16 @@ export default class Home extends React.Component {
         console.log(`${name}`, " was clicked");
         this.openSettingsDrawer();
         break;
+
+      // Notebook Panel three-dot menu
       case "closeNotebook":
         this.closeNotebookPanel();
+        break;
+      case 'copySpot':
+        console.log('Spot Copied!');
+        break;
+      case 'deleteSpot':
+        console.log('Spot Deleted!');
         break;
 
       // Map Actions
@@ -248,7 +256,7 @@ export default class Home extends React.Component {
             [dialog]: !prevState.dialogs[dialog]
           }
         }
-      }, () => console.log([dialog], 'is set to', this.state.dialogs[dialog]));
+      }, () => console.log(dialog, 'is set to', this.state.dialogs[dialog]));
     }
     else console.log('Attempting to toggle', dialog, 'but Home Component not mounted.');
   };
@@ -343,7 +351,9 @@ export default class Home extends React.Component {
             ...prevState,
             currentSpot: selectedFeature
           }
-        }, () => {console.log('Current spot state:', this.state.currentSpot)})
+        }, () => {
+          console.log('Current spot state:', this.state.currentSpot)
+        })
       });
     }
   };

@@ -32,7 +32,19 @@ const NotebookPanelMenu = props => (
     <DialogContent>
       <DialogButton
         style={styles.dialogContent}
+        text="Copy this Spot"
+        textStyle={{fontSize: 12}}
+        onPress={() => props.onPress('copySpot')}
+      /><DialogButton
+      style={styles.dialogContent}
+      text="Delete this Spot"
+      textStyle={{fontSize: 12}}
+      onPress={() => props.onPress('deleteSpot')}
+    />
+      <DialogButton
+        style={styles.dialogContent}
         text="Close Notebook"
+        textStyle={{fontSize: 12}}
         onPress={() => props.onPress('closeNotebook')}
       />
     </DialogContent>
@@ -52,7 +64,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#474242",
   },
   dialogContent: {
-    borderBottomWidth: 2
+    borderBottomWidth: 1
   }
 });
 
