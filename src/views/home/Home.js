@@ -1,7 +1,7 @@
 import React from 'react'
 import {Text, View, Button} from 'react-native'
 import styles from './Styles';
-import {goToAuth,goToImages, goSignIn, splitView} from '../../routes/Navigation'
+import {goToAuth, goToImages, goSignIn, splitView} from '../../routes/Navigation'
 import MapView from '../../maps/map/MapView';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from '../../shared/Icons';
@@ -404,9 +404,11 @@ export default class Home extends React.Component {
     const longitude = lng.toFixed(6);
     let longitudeCardinal = Math.sign(lng) >= 0 ? "East" : "West";
 
-    return (<Text>
-            {latitude}&#176; {latitudeCardinal}, {longitude}&#176; {longitudeCardinal}
-           </Text>)
+    return (
+      <Text>
+      {latitude}&#176; {latitudeCardinal}, {longitude}&#176; {longitudeCardinal}
+      </Text>
+    )
   };
 
   getSpotCoords = () => {
@@ -423,7 +425,7 @@ export default class Home extends React.Component {
 
   getSpotName = () => {
     console.log('Spot name', this.state.currentSpot);
-    if (this.state.currentSpot){
+    if (this.state.currentSpot) {
       return this.state.currentSpot.properties.name;
     }
     return 'No Spot Selected';
@@ -477,9 +479,9 @@ export default class Home extends React.Component {
                 onPress={this.clickHandler.bind(this, "endDraw")}
               >
                 <MaterialCommunityIcons.FontAwesome5
-                name={'user-edit'}
-                size={15}
-              />
+                  name={'user-edit'}
+                  size={15}
+                />
                 End Draw</ButtonWithBackground>
               // <Button title={'End Draw'} onPress={this.clickHandler.bind(this, "endDraw")}/>
               : null}
@@ -555,14 +557,16 @@ export default class Home extends React.Component {
             <View style={styles.pointIcon}>
               <IconButton
                 source={this.state.mapMode === MapModes.DRAW.POINT ?
-                  require('../../assets/icons/app-icons-shaded/PointButton_pressed.png') : require('../../assets/icons/app-icons-shaded/PointButton.png')}
+                  require('../../assets/icons/app-icons-shaded/PointButton_pressed.png') : require(
+                    '../../assets/icons/app-icons-shaded/PointButton.png')}
                 onPress={this.clickHandler.bind(this, MapModes.DRAW.POINT)}
               />
             </View>
             <View style={styles.lineIcon}>
               <IconButton
                 source={this.state.mapMode === MapModes.DRAW.LINE ?
-                  require('../../assets/icons/app-icons-shaded/LineButton_pressed.png') : require('../../assets/icons/app-icons-shaded/LineButton.png')}
+                  require('../../assets/icons/app-icons-shaded/LineButton_pressed.png') : require(
+                    '../../assets/icons/app-icons-shaded/LineButton.png')}
                 onPress={this.clickHandler.bind(this, MapModes.DRAW.LINE)}
               />
             </View>
