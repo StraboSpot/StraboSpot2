@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React from 'react'
 import {View} from 'react-native'
 import styles from "./NotebookPanel.styles";
 import NotebookHeader from './NotebookHeader';
@@ -11,7 +11,7 @@ const NotebookPanel = props => (
     <NotebookHeader
       spot={props.spotName}
       spotCoords={props.spotCoords}
-      close={props.close}
+      onPress={props.onPress}
     />
     <View style={styles.subContainer}>
     <SpotOverview/>

@@ -39,7 +39,8 @@ const styles = StyleSheet.create({
 
   // --- All icons with group spacings (margins of 55) on left and right sides ---
   sideIconsGroup: {
-    marginBottom: 65
+    marginBottom: 65,
+    marginLeft: 10
   },
   sideIconsGroupContainer: {
     marginTop: 125
@@ -82,7 +83,8 @@ const styles = StyleSheet.create({
     marginTop: 50
   },
   searchAndSettingsIcons: {
-    marginTop: 20
+    marginTop: 20,
+    marginLeft: 10
   },
   tagIcon: {
     marginTop: 145

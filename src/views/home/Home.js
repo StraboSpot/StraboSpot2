@@ -9,6 +9,7 @@ import IconButton from '../../ui/IconButton';
 import MapActionsDialog from '../../components/modals/map-actions/MapActionsDialogBox';
 import MapSymbolsDialog from "../../components/modals/map-symbols/MapSymbolsDialogBox";
 import BaseMapDialog from "../../components/modals/base-maps/BaseMapDialogBox";
+import NotebookPanelMenu from '../../components/notebook-panel/NotebookPanelMenu';
 import NotebookPanel from '../../components/notebook-panel/NotebookPanel';
 import Drawer from 'react-native-drawer';
 import SettingsPanel from '../../components/settings-panel/SettingsPanel';
@@ -29,7 +30,8 @@ export default class Home extends React.Component {
       dialogs: {
         mapActionsMenuVisible: false,
         mapSymbolsMenuVisible: false,
-        baseMapMenuVisible: false
+        baseMapMenuVisible: false,
+        notebookPanelMenuVisible: false
       },
       buttons: {
         endDrawButtonVisible: false,
@@ -37,7 +39,7 @@ export default class Home extends React.Component {
         cancelEditButtonVisible: false
       },
       mapMode: MapModes.VIEW,
-      noteBookPanelVisible: false,
+      notebookPanelVisible: false,
       settingsMenuVisible: 'settingsMain',
       drawerVisible: false,
       isOfflineMapModalVisible: false,
@@ -101,6 +103,9 @@ export default class Home extends React.Component {
       case "settings":
         console.log(`${name}`, " was clicked");
         this.openSettingsDrawer();
+        break;
+      case "closeNotebook":
+        this.closeNotebookPanel();
         break;
 
       // Map Actions
@@ -201,6 +206,15 @@ export default class Home extends React.Component {
     this.toggleButton('cancelEditButtonVisible');
   };
 
+  notebookClickHandler = name => {
+    if(name === 'menu') {
+      this.toggleDialog('notebookPanelMenuVisible')
+    }
+    else if (name === 'export') {
+      console.log('Export button was pressed')
+    }
+  };
+
   // Toggle given button between true (on) and false (off)
   toggleButton = (button) => {
     console.log('Toggle Button', button);
@@ -234,7 +248,7 @@ export default class Home extends React.Component {
             [dialog]: !prevState.dialogs[dialog]
           }
         }
-      });
+      }, () => console.log([dialog], 'is set to', this.state.dialogs[dialog]));
     }
     else console.log('Attempting to toggle', dialog, 'but Home Component not mounted.');
   };
@@ -318,7 +332,7 @@ export default class Home extends React.Component {
       this.setState(prevState => {
         return {
           ...prevState,
-          noteBookPanelVisible: true
+          notebookPanelVisible: true
         }
       }, () => {
         console.log('Noteboook panel open');
@@ -337,7 +351,7 @@ export default class Home extends React.Component {
   closeNotebookPanel = () => {
     if (this._isMounted) {
       this.setState({
-        noteBookPanelVisible: false
+        notebookPanelVisible: false
       });
     }
   };
@@ -436,12 +450,13 @@ export default class Home extends React.Component {
         <View style={styles.container}>
           <MapView ref={this.mapViewElement} mapMode={this.state.mapMode}
                    toggleCancelEditButton={this.toggleCancelEditButton}/>
-          {this.state.noteBookPanelVisible ?
+          {this.state.notebookPanelVisible ?
             <NotebookPanel
               spotName={spotName}
               spotCoords={spotCoords}
               textStyle={{fontWeight: 'bold', fontSize: 12}}
-              close={() => this.closeNotebookPanel()}
+              onPress={(name) => this.notebookClickHandler(name)}
+              onTouchOutside={() => this.toggleDialog("notebookPanelMenuVisible")}
             />
             : null}
           <View style={styles.topCenter}>
@@ -599,6 +614,11 @@ export default class Home extends React.Component {
             visible={this.state.dialogs.baseMapMenuVisible}
             onPress={(name) => this.dialogClickHandler("baseMapMenuVisible", name)}
             onTouchOutside={() => this.toggleDialog("baseMapMenuVisible")}
+          />
+          <NotebookPanelMenu
+            visible={this.state.dialogs.notebookPanelMenuVisible}
+            onPress={(name) => this.dialogClickHandler("notebookPanelMenuVisible", name)}
+            onTouchOutside={() => this.toggleDialog("notebookPanelMenuVisible")}
           />
           <Modal
             isVisible={this.state.isOfflineMapModalVisible}
