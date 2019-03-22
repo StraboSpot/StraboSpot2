@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     marginLeft: 10
   },
   headerButtons: {
-    marginLeft: 50,
+    marginLeft: 40,
     // width: 20,
     // height: 20,
   },

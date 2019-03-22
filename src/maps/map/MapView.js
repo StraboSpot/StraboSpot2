@@ -69,13 +69,12 @@ class mapView extends Component {
       return keys
     });
     await AsyncStorage.multiGet(featureIds, (err, keys) => {
-      console.log(keys);
       return keys.map((store) => {
         // featureCollection = store[1];
         // MapboxGL.geoUtils.addToFeatureCollection(featureCollection, store[1])
         try {
-          console.log(store[1])
-          console.log(JSON.parse(store[1]))
+          // console.log(store[1])
+          // console.log(JSON.parse(store[1]))
           MapboxGL.geoUtils.addToFeatureCollection(featureCollection, JSON.parse(store[1]))
         } catch (e) {
           console.log('Errored on', store[1])

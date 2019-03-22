@@ -215,7 +215,7 @@ export default class Home extends React.Component {
   };
 
   notebookClickHandler = name => {
-    if(name === 'menu') {
+    if (name === 'menu') {
       this.toggleDialog('notebookPanelMenuVisible')
     }
     else if (name === 'export') {
