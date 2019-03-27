@@ -3,13 +3,27 @@ import {Navigation} from 'react-native-navigation'
 export const goHome = () => Navigation.setRoot({
   root: {
     stack: {
-      // id: 'App',
+      id: 'App',
       children: [
         {
           component: {
-            name: 'Home',
+            name: 'SpotPage',
+            id: 'spotPage',
+            options: {
+              topBar: {
+                title: {
+                  text: 'Spot Page'
+                }
+              }
+            }
           }
-        }
+        },
+        {
+          component: {
+            name: 'Home',
+            id: 'home'
+          }
+        },
       ],
     }
   }
@@ -59,3 +73,20 @@ export const goToImages = () => Navigation.setRoot({
     }
   }
 });
+
+export const goToSpotPage = () => Navigation.setRoot({
+  root: {
+    stack: {
+      id: 'SpotPage',
+      children: [
+        {
+          component: {
+            name: 'SpotPage',
+            id: 'spotPage',
+          }
+        }
+      ]
+    }
+  }
+});
+

@@ -1,7 +1,8 @@
 import React from 'react'
 import {Text, View, Button} from 'react-native'
 import styles from './Styles';
-import {goToAuth, goToImages, goSignIn, splitView} from '../../routes/Navigation'
+import {goToAuth, goToImages, goSignIn, goToSpotPage} from '../../routes/Navigation'
+import {Navigation} from 'react-native-navigation';
 import MapView from '../../maps/map/MapView';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from '../../shared/Icons';
@@ -221,6 +222,14 @@ export default class Home extends React.Component {
     else if (name === 'export') {
       console.log('Export button was pressed')
     }
+    else if (name === 'spotPage') {
+      // goToSpotPage();
+      Navigation.push(this.props.componentId, {
+        component: {
+          name: 'SpotPage'
+        }
+      });
+  }
   };
 
   // Toggle given button between true (on) and false (off)

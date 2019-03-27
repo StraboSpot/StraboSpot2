@@ -3,7 +3,7 @@ import Home from "../views/home/Home";
 import Initialising from "../Initializing";
 import SignIn from "../views/SignIn";
 import SignUp from "../views/SignUp";
-import Screen2 from "../views/Screen2";
+import SpotPage from "../views/SpotPage";
 import Images from "../views/images/Images";
 
 export function registerScreens() {
@@ -11,6 +11,6 @@ export function registerScreens() {
   Navigation.registerComponent('Initializing', () => Initialising);
   Navigation.registerComponent('SignIn', () => SignIn);
   Navigation.registerComponent('SignUp', () => SignUp);
-  Navigation.registerComponent('Screen2', () => Screen2);
+  Navigation.registerComponent('SpotPage', () => SpotPage);
   Navigation.registerComponent('Images', () => Images);
 }

@@ -14,12 +14,30 @@ Navigation.events().registerAppLaunchedListener(() => {
       drawBehind: true
     }
   });
+  // Navigation.setRoot({
+  //   root: {
+  //     component: {
+  //       name: 'Home',
+  //     }
+  //   },
+  // });
   Navigation.setRoot({
     root: {
-      component: {
-        name: 'Home'
+      stack: {
+        children: [
+          {
+            component: {
+              name: 'SpotPage',
+            }
+          },
+          {
+            component: {
+              name: 'Home',
+            }
+          }
+        ]
       }
-    },
+    }
   });
 });
 
