@@ -15,6 +15,7 @@ import Drawer from 'react-native-drawer';
 import SettingsPanel from '../../components/settings-panel/SettingsPanel';
 import {MapModes} from '../../maps/map/Map.constants';
 import ShortcutMenu from '../../components/settings-panel/shortcuts-menu/ShortcutsMenu';
+import ManageOfflineMapsMenu from '../../components/settings-panel/Manage-Offline-Maps-Menu/ManageOfflineMapsMenu';
 import ButtonWithBackground from '../../ui/ButtonWithBackground';
 import Modal from "react-native-modal";
 import SaveMapModal from '../../components/modals/map-actions/SaveMapsModal';
@@ -388,7 +389,10 @@ export default class Home extends React.Component {
         this.setVisibleMenuState('Shortcut Menu');
         break;
       case 'Sign Out':
-
+        break;
+      case 'Manage Offline Maps':
+        this.setVisibleMenuState('Manage Offline Maps');
+        break;
     }
   };
 
@@ -455,7 +459,13 @@ export default class Home extends React.Component {
           toggleSwitch={(switchName) => this.toggleSwitch(switchName)}
           shortcutSwitchPosition={this.state.shortcutSwitchPosition}
         />
-    }
+      }else if (this.state.settingsMenuVisible === 'Manage Offline Maps') {
+        content =
+        <ManageOfflineMapsMenu
+          onPress={() => this.setVisibleMenuState('settingsMain')}
+          toggleSwitch={(switchName) => this.toggleSwitch(switchName)}
+        />
+      }
     return (
       <Drawer
         tweenHandler={(ratio) => ({
@@ -648,14 +658,11 @@ export default class Home extends React.Component {
             useNativeDriver={true}
           >
             <View style={styles.modal}>
-              <SaveMapModal
-                close={this.toggleModal}
-                saveMap={() => {
-                  this.mapViewElement.current.saveMap();
-                  this.toggleModal();
-                }}
-              />
-             </View>
+            <SaveMapModal
+              close={this.toggleModal}
+              map={this.mapViewElement.current}
+            />
+            </View>
           </Modal>
         </View>
       </Drawer>
