@@ -5,7 +5,6 @@ import {MAPBOX_KEY} from '../../MapboxConfig'
 import {MapboxOutdoorsBasemap, MapboxSatelliteBasemap, OSMBasemap, MacrostratBasemap} from "./Basemaps";
 import * as turf from '@turf/turf'
 import {LATITUDE, LONGITUDE, LATITUDE_DELTA, LONGITUDE_DELTA, MapModes} from './Map.constants';
-import {getMapTiles} from "../offline-maps/OfflineMapUtility";
 
 MapboxGL.setAccessToken(MAPBOX_KEY);
 
@@ -31,24 +30,32 @@ class mapView extends Component {
       osm: {
         id: 'osm',
         layerId: 'osmLayer',
+        layerLabel: 'OSM Streets',
+        layerSaveId: 'osm',
         url: 'https://a.tile.openstreetmap.org/{z}/{x}/{y}.png',
         maxZoom: 16
       },
       macrostrat: {
         id: 'macrostrat',
         layerId: 'macrostratLayer',
+        layerLabel: 'Geology from Macrostrat',
+        layerSaveId: 'macrostrat',
         url: 'http://tiles.strabospot.org/v5/macrostrat/{z}/{x}/{y}.png',
         maxZoom: 19
       },
       mapboxOutdoors: {
         id: 'mapboxOutdoors',
         layerId: 'mapboxOutdoorsLayer',
+        layerLabel: 'Mapbox Topo',
+        layerSaveId: 'mapbox.outdoors',
         url: 'http://tiles.strabospot.org/v5/mapbox.outdoors/{z}/{x}/{y}.png?access_token=' + MAPBOX_KEY,
         maxZoom: 19
       },
       mapboxSatellite: {
         id: 'mapboxSatellite',
         layerId: 'mapboxSatelliteLayer',
+        layerLabel: 'Mapbox Satellite',
+        layerSaveId: 'mapbox.satellite',
         url: 'http://tiles.strabospot.org/v5/mapbox.satellite/{z}/{x}/{y}.png?access_token=' + MAPBOX_KEY,
         maxZoom: 19
       }
@@ -98,16 +105,6 @@ class mapView extends Component {
   componentWillUnmount() {
     this._isMounted = false;
   }
-
-  saveMap = async () => {
-    const visibleBounds = await this._map.getVisibleBounds();      // Mapbox
-    // console.log('first bounds', visibleBounds);                 // COMMENT OUT LOGS BEFORE RELEASE HERE
-    getMapTiles(visibleBounds).then(() => {
-      console.log("Finished getting map tiles!");
-      Alert.alert("Finished getting map tiles!")
-    });
-  };
-
 
   // Mapbox: Handle map press
   async onMapPress(e) {
@@ -224,6 +221,43 @@ class mapView extends Component {
     console.log(this.state.featureCollectionSelected);
     return this.state.featureCollectionSelected.features[0];
   };
+
+  getCurrentBasemap = () => {
+    return this.state.currentBasemap;
+  }
+
+  getExtentString  = async () => {
+    const mapBounds = await this._map.getVisibleBounds();
+
+    let right = mapBounds[0][0];
+    let top = mapBounds[0][1];
+    let left = mapBounds[1][0];
+    let bottom = mapBounds[1][1];
+    let extentString = left + ',' + bottom + ',' + right + ',' + top;
+
+    return extentString;
+  }
+
+  getCurrentZoom = async () => {
+    const currentZoom = await this._map.getZoom();
+    return currentZoom;
+  }
+
+  getTileCount = async (zoomLevel) => {
+    var tileCount = null;
+    var extentString = await this.getExtentString();
+    try {
+        //Assign the promise unresolved first then get the data using the json method.
+        console.log("sending this extent to server: ", extentString);
+        console.log("sending zoom to server: ", zoomLevel);
+        const tileCountApiCall = await fetch('http://tiles.strabospot.org/zipcount?extent='+extentString+'&zoom='+zoomLevel);
+        const tileCount = await tileCountApiCall.json();
+        console.log("got count from server: ",tileCount);
+        return tileCount.count;
+    } catch(err) {
+        console.log("Error fetching data from tile count service.", err);
+    }
+  }
 
   // Create a new feature in the feature collection
   createFeature = async feature => {
