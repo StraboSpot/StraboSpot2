@@ -1,6 +1,6 @@
 import {Navigation} from 'react-native-navigation';
-import {registerScreens} from './src/routes/Screens';
-import { YellowBox } from "react-native";
+import registerScreens from './src/routes/Screens';
+import {YellowBox} from "react-native";
 
 YellowBox.ignoreWarnings(["Require cycle:", "Remote debugger"]);
 

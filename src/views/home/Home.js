@@ -20,9 +20,11 @@ import ButtonWithBackground from '../../ui/ButtonWithBackground';
 import Modal from "react-native-modal";
 import SaveMapModal from '../../components/modals/map-actions/SaveMapsModal';
 import NotebookPanelMenu from '../../components/notebook-panel/NotebookPanelMenu';
+import SpotName from '../../components/notebook-panel/SpotName';
+import SpotCoords from '../../components/notebook-panel/SpotCoords';
+import {connect} from 'react-redux';
 
-
-export default class Home extends React.Component {
+class Home extends React.Component {
   _isMounted = false;
 
   constructor(props) {
@@ -354,7 +356,8 @@ export default class Home extends React.Component {
         }
       }, () => {
         console.log('Noteboook panel open');
-        const selectedFeature = this.mapViewElement.current.getSelectedFeature();
+        // const selectedFeature = this.mapViewElement.current.getSelectedFeature();
+        const selectedFeature = this.props.feature;
         console.log('Selected feature:', selectedFeature);
         this.setState(prevState => {
           return {
@@ -425,23 +428,42 @@ export default class Home extends React.Component {
   };
 
   getSpotCoords = () => {
-    console.log('FU', this.state.currentSpot);
-    if (this.state.currentSpot) {
-      const spotLat = this.state.currentSpot.geometry.coordinates[0];
-      const spotLng = this.state.currentSpot.geometry.coordinates[1];
+    return this.props.feature.features.map(x => {
+      const spotLat = x.geometry.coordinates[0];
+      const spotLng = x.geometry.coordinates[1];
       const convertedLatLng = this.convertDMS(spotLat, spotLng);
-      console.log('converted w direction', convertedLatLng);
-      return convertedLatLng
-    }
-    return 'no spot coordinates'
+      return (
+        <SpotCoords
+          key={x.properties.id}
+          coords={convertedLatLng}/>
+      );
+    });
+    // console.log('FU', this.state.currentSpot);
+    // if (this.state.currentSpot) {
+    //   const spotLat = this.state.currentSpot.geometry.coordinates[0];
+    //   const spotLng = this.state.currentSpot.geometry.coordinates[1];
+    //   const convertedLatLng = this.convertDMS(spotLat, spotLng);
+    //   console.log('converted w direction', convertedLatLng);
+    //   return convertedLatLng
+    // }
+    // return 'no spot coordinates'
   };
 
   getSpotName = () => {
-    console.log('Spot name', this.state.currentSpot);
-    if (this.state.currentSpot) {
-      return this.state.currentSpot.properties.name;
-    }
-    return 'No Spot Selected';
+    return this.props.feature.features.map(x => {
+      return(
+        <SpotName
+          key={x.properties.id}
+          name={x.properties.name}
+        />
+      );
+    });
+    // return this.props.selectedSpot;
+    // console.log('Spot name', this.state.currentSpot);
+    // if (this.state.currentSpot) {
+    //   return this.state.currentSpot.properties.name;
+    // }
+    // return 'No Spot Selected';
   };
 
   render() {
@@ -669,3 +691,12 @@ export default class Home extends React.Component {
     )
   }
 }
+
+function mapStateToProps(state) {
+  return {
+    selectedSpot: state.currentSpot,
+    feature: state.home.featureCollectionSelected
+  }
+}
+
+export default connect(mapStateToProps)(Home);

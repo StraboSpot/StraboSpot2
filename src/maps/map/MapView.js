@@ -5,6 +5,9 @@ import {MAPBOX_KEY} from '../../MapboxConfig'
 import {MapboxOutdoorsBasemap, MapboxSatelliteBasemap, OSMBasemap, MacrostratBasemap} from "./Basemaps";
 import * as turf from '@turf/turf'
 import {LATITUDE, LONGITUDE, LATITUDE_DELTA, LONGITUDE_DELTA, MapModes} from './Map.constants';
+import {connect} from 'react-redux';
+import {featureSelected, spotSelected} from "../../store/actions/ActionIndex";
+import {FEATURE_SELECTED} from '../../store/Constants';
 
 MapboxGL.setAccessToken(MAPBOX_KEY);
 
@@ -158,12 +161,14 @@ class mapView extends Component {
           console.log('Feature selected:', featureSelected);
           let featureCollectionSelected = MapboxGL.geoUtils.makeFeatureCollection();
           MapboxGL.geoUtils.addToFeatureCollection(featureCollectionSelected, featureSelected);
-          this.setState(prevState => {
-            return {
-              ...prevState,
-              featureCollectionSelected: featureCollectionSelected
-            }
-          })
+          this.props.onFeatureSelected(featureCollectionSelected)
+          // console.log('FEATURECOLLECTIONSEL',featureCollectionSelected)
+          // this.setState(prevState => {
+          //   return {
+          //     ...prevState,
+          //     featureCollectionSelected: featureCollectionSelected
+          //   }
+          // })
         }
         else console.log('No feature selected. No draw type set. No feature created.');
       }
@@ -219,7 +224,8 @@ class mapView extends Component {
 
   getSelectedFeature = () => {
     console.log(this.state.featureCollectionSelected);
-    return this.state.featureCollectionSelected.features[0];
+    return this.props.feature
+    // return this.state.featureCollectionSelected.features[0];
   };
 
   getCurrentBasemap = () => {
@@ -502,4 +508,15 @@ const styles = StyleSheet.create({
   },
 });
 
-export default mapView;
+const mapStateToProps= (state) => {
+  return {
+    selectedSpot: state.currentSpot,
+    feature: state.home.featureCollectionSelected
+  }
+};
+
+const mapDispatchToProps = {
+  onFeatureSelected: (featureCollectionSelected) => ({type: FEATURE_SELECTED, feature: featureCollectionSelected})
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(mapView);
