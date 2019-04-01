@@ -40,4 +40,3 @@ Navigation.events().registerAppLaunchedListener(() => {
     }
   });
 });
-

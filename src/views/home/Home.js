@@ -501,7 +501,8 @@ class Home extends React.Component {
         content={content}
       >
         <View style={styles.container}>
-          <MapView ref={this.mapViewElement} mapMode={this.state.mapMode}
+          <MapView ref={this.mapViewElement}
+                   mapMode={this.state.mapMode}
                    toggleCancelEditButton={this.toggleCancelEditButton}/>
           {this.state.notebookPanelVisible ?
             <NotebookPanel
