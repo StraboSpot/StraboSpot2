@@ -78,7 +78,9 @@ class mapView extends Component {
     const featureIds = await AsyncStorage.getAllKeys(keys => {
       return keys
     });
-    await AsyncStorage.multiGet(featureIds, (err, keys) => {
+    await AsyncStorage.multiRemove(featureIds);
+
+      await AsyncStorage.multiGet(featureIds, (err, keys) => {
       return keys.map((store) => {
         // featureCollection = store[1];
         // MapboxGL.geoUtils.addToFeatureCollection(featureCollection, store[1])
