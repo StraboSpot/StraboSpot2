@@ -26,6 +26,8 @@
     "react-native-zip-archive": "^3.0.1",
     "react-redux": "^6.0.1",
     "redux": "^4.0.1",
+    "redux-logger": "^3.0.6",
+    "redux-persist": "^5.10.0",
     "rn-fetch-blob": "^0.10.15"
   },
   "devDependencies": {
