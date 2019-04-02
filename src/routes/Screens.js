@@ -1,6 +1,8 @@
 import React from 'react';
 import {Navigation} from 'react-native-navigation';
 import {Provider} from 'react-redux';
+import configureStore from '../store/ConfigureStore';
+import {PersistGate} from 'redux-persist/integration/react';
 import {
   HOME,
   INITALIZING,
@@ -15,17 +17,20 @@ import SignIn from "../views/SignIn";
 import SignUp from "../views/SignUp";
 import SpotPage from "../views/SpotPage";
 import Images from "../views/images/Images";
-import configureStore from '../store/ConfigureStore';
+import Loading from '../ui/Loading'
 
-const store = configureStore();
+
+const {store, persistor} = configureStore();
 
 function WrappedComponent(Component) {
   return function inject(props) {
     const EnhancedComponent = () => (
       <Provider store={store}>
+        <PersistGate loading={<Loading/>} persistor={persistor}>
         <Component
           {...props}
         />
+        </PersistGate>
       </Provider>
     );
 

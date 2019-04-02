@@ -75,24 +75,24 @@ class mapView extends Component {
     this.props.onRef(this);
     this._isMounted = true;
     let featureCollection = MapboxGL.geoUtils.makeFeatureCollection();
-    const featureIds = await AsyncStorage.getAllKeys(keys => {
-      return keys
-    });
-    await AsyncStorage.multiRemove(featureIds);
-
-      await AsyncStorage.multiGet(featureIds, (err, keys) => {
-      return keys.map((store) => {
-        // featureCollection = store[1];
-        // MapboxGL.geoUtils.addToFeatureCollection(featureCollection, store[1])
-        try {
-          // console.log(store[1])
-          // console.log(JSON.parse(store[1]))
-          MapboxGL.geoUtils.addToFeatureCollection(featureCollection, JSON.parse(store[1]))
-        } catch (e) {
-          console.log('Errored on', store[1])
-        }
-      })
-    });
+    // const featureIds = await AsyncStorage.getAllKeys(keys => {
+    //   return keys
+    // });
+    // await AsyncStorage.multiRemove(featureIds);
+    //
+    //   await AsyncStorage.multiGet(featureIds, (err, keys) => {
+    //   return keys.map((store) => {
+    //     // featureCollection = store[1];
+    //     // MapboxGL.geoUtils.addToFeatureCollection(featureCollection, store[1])
+    //     try {
+    //       // console.log(store[1])
+    //       // console.log(JSON.parse(store[1]))
+    //       MapboxGL.geoUtils.addToFeatureCollection(featureCollection, JSON.parse(store[1]))
+    //     } catch (e) {
+    //       console.log('Errored on', store[1])
+    //     }
+    //   })
+    // });
     console.log('feature', featureCollection);
     console.log('Setting initial basemap ...');
     this.setState(prevState => {
@@ -291,12 +291,12 @@ class mapView extends Component {
     else console.log('Attempting to create a new feature but Map View Component not mounted.');
   };
 
-  saveSpot = async (feature) => {
+  // saveSpot = async (feature) => {
     // console.log(feature);
-    await AsyncStorage.setItem(feature.properties.id, JSON.stringify(feature), () => {
-      console.log('saved item to storage')
-    })
-  };
+  //   await AsyncStorage.setItem(feature.properties.id, JSON.stringify(feature), () => {
+  //     console.log('saved item to storage')
+  //   })
+  // };
 
   // Delete the last feature  in the feature collection
   deleteLastFeature = () => {
