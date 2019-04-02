@@ -434,14 +434,23 @@ class Home extends React.Component {
 
   getSpotCoords = () => {
     return this.props.feature.features.map(x => {
-      const spotLat = x.geometry.coordinates[0];
-      const spotLng = x.geometry.coordinates[1];
-      const convertedLatLng = this.convertDMS(spotLat, spotLng);
-      return (
-        <SpotCoords
-          key={x.properties.id}
-          coords={convertedLatLng}/>
-      );
+      if (x.type === 'Point') {
+        const spotLat = x.geometry.coordinates[0];
+        const spotLng = x.geometry.coordinates[1];
+        const convertedLatLng = this.convertDMS(spotLat, spotLng);
+        return (
+          <SpotCoords
+            key={x.properties.id}
+            coords={convertedLatLng}/>
+        );
+      }
+      else {
+        return (
+          <SpotCoords
+            key={x.properties.id}
+            coords={x.geometry.type}/>
+        );
+      }
     });
     // console.log('FU', this.state.currentSpot);
     // if (this.state.currentSpot) {
