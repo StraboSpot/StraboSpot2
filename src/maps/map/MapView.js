@@ -6,8 +6,7 @@ import {MapboxOutdoorsBasemap, MapboxSatelliteBasemap, OSMBasemap, MacrostratBas
 import * as turf from '@turf/turf'
 import {LATITUDE, LONGITUDE, LATITUDE_DELTA, LONGITUDE_DELTA, MapModes} from './Map.constants';
 import {connect} from 'react-redux';
-import {featureSelected, spotSelected} from "../../store/actions/ActionIndex";
-import {FEATURE_SELECTED} from '../../store/Constants';
+import {FEATURE_SELECTED, FEATURE_ADD} from '../../store/Constants';
 
 MapboxGL.setAccessToken(MAPBOX_KEY);
 
@@ -272,16 +271,20 @@ class mapView extends Component {
       feature.properties.id = '' + Date.now();        // ToDo: Generate unique string id here
       feature.properties.name = feature.properties.id;
       console.log('Creating new feature:', feature);
-      this.setState(prevState => {
-          return {
-            ...prevState,
-            featureCollection: MapboxGL.geoUtils.addToFeatureCollection(prevState.featureCollection, feature)
-          }
-        }, async () => {
-          console.log('Finished creating new feature. Features: ', this.state.featureCollection);
-          this.saveSpot(feature);
-        }
-      );
+      await this.props.onFeatureAdd(feature);
+          console.log('Finished creating new feature. Features: ', this.props.featureCollection);
+      // this.saveSpot(feature);
+      // this.setState(prevState => {
+      //     return {
+      //       ...prevState,
+      //       featureCollection: MapboxGL.geoUtils.addToFeatureCollection(prevState.featureCollection, feature)
+      //     }
+      //   }
+      //   // , async () => {
+      //   //   console.log('Finished creating new feature. Features: ', this.state.featureCollection);
+      //   //   this.saveSpot(feature);
+      //   // }
+      // );
     }
     else console.log('Attempting to create a new feature but Map View Component not mounted.');
   };
@@ -475,8 +478,8 @@ class mapView extends Component {
       onMapPress: this.onMapPress,
       onMapLongPress: this.onMapLongPress,
       //onSourcePress: this.onSourceLayerPress,
-      features: this.state.featureCollection,
-      selectedFeatures: this.state.featureCollectionSelected
+      features: this.props.featureCollection,
+      selectedFeatures: this.props.featureCollectionSelected
     };
 
     return (
@@ -512,12 +515,14 @@ const styles = StyleSheet.create({
 const mapStateToProps= (state) => {
   return {
     selectedSpot: state.currentSpot,
-    feature: state.home.featureCollectionSelected
+    featureCollectionSelected: state.home.featureCollectionSelected,
+    featureCollection: state.home.featureCollection
   }
 };
 
 const mapDispatchToProps = {
-  onFeatureSelected: (featureCollectionSelected) => ({type: FEATURE_SELECTED, feature: featureCollectionSelected})
+  onFeatureSelected: (featureCollectionSelected) => ({type: FEATURE_SELECTED, feature: featureCollectionSelected}),
+  onFeatureAdd: (feature) => ({type: FEATURE_ADD, feature: feature})
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(mapView);

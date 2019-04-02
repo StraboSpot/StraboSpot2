@@ -1,1 +1,2 @@
 export const FEATURE_SELECTED = 'FEATURE_SELECTED';
+export const FEATURE_ADD = 'FEATURE_ADD';
