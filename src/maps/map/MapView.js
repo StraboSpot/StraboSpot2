@@ -73,6 +73,7 @@ class mapView extends Component {
   }
 
   async componentDidMount() {
+    this.props.onRef(this);
     this._isMounted = true;
     let featureCollection = MapboxGL.geoUtils.makeFeatureCollection();
     const featureIds = await AsyncStorage.getAllKeys(keys => {
@@ -286,7 +287,7 @@ class mapView extends Component {
   };
 
   saveSpot = async (feature) => {
-    console.log(feature);
+    // console.log(feature);
     await AsyncStorage.setItem(feature.properties.id, JSON.stringify(feature), () => {
       console.log('saved item to storage')
     })

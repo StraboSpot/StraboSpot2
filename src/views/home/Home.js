@@ -122,7 +122,8 @@ class Home extends React.Component {
 
       // Map Actions
       case MapModes.DRAW.POINT:
-        this.mapViewElement.current.setPointAtCurrentLocation();
+        // this.mapViewElement.current.setPointAtCurrentLocation();
+        this.map.setPointAtCurrentLocation();
         break;
       case MapModes.DRAW.LINE:
       case MapModes.DRAW.POLYGON:
@@ -141,7 +142,8 @@ class Home extends React.Component {
         break;
       case "currentLocation":
         console.log(`${name}`, " was clicked");
-        this.mapViewElement.current.goToCurrentLocation();
+        // this.mapViewElement.current.goToCurrentLocation();
+        this.map.goToCurrentLocation();
         break;
 
       // Map Actions
@@ -201,19 +203,22 @@ class Home extends React.Component {
   };
 
   cancelDraw = async (name) => {
-    await this.mapViewElement.current.cancelDraw();
+    // await this.mapViewElement.current.cancelDraw();
+    await this.map.cancelDraw();
     this.setMapMode(name);
     if (this.state.mapMode === MapModes.VIEW) this.toggleButton('endDrawButtonVisible');
   };
 
   endDraw = async () => {
-    await this.mapViewElement.current.endDraw();
+    // await this.mapViewElement.current.endDraw();
+    await this.map.endDraw();
     this.setMapMode(MapModes.VIEW);
     this.toggleButton('endDrawButtonVisible');
   };
 
   cancelEdit = async () => {
-    await this.mapViewElement.current.cancelEdit();
+    // await this.mapViewElement.current.cancelEdit();
+    await this.map.cancelEdit();
     this.setMapMode(MapModes.VIEW);
     this.toggleButton('cancelEditButtonVisible');
   };
@@ -502,6 +507,7 @@ class Home extends React.Component {
       >
         <View style={styles.container}>
           <MapView ref={this.mapViewElement}
+                   onRef={ref => (this.map = ref)}
                    mapMode={this.state.mapMode}
                    toggleCancelEditButton={this.toggleCancelEditButton}/>
           {this.state.notebookPanelVisible ?
