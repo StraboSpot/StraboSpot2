@@ -464,7 +464,7 @@ class Home extends React.Component {
   };
 
   getSpotName = () => {
-    return this.props.feature.features.map(x => {
+    return this.props.featureCollectionSelected.features.map(x => {
       return(
         <SpotName
           key={x.properties.id}
@@ -711,7 +711,7 @@ class Home extends React.Component {
 function mapStateToProps(state) {
   return {
     selectedSpot: state.currentSpot,
-    feature: state.home.featureCollectionSelected
+    featureCollectionSelected: state.home.featureCollectionSelected
   }
 }
 
