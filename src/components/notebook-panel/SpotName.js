@@ -1,6 +1,6 @@
 import React from 'react';
 import {Text} from 'react-native';
-import Aux from '../../HOC/Aux/Aux';
+import Aux from '../../shared/AuxWrapper';
 
 const spotName = (props) => {
   return (
