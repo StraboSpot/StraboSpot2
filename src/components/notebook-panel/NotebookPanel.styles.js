@@ -76,7 +76,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold'
   },
 
-
   iconButton: {
     height: 25,
     width: 25,

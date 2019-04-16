@@ -521,11 +521,11 @@ class Home extends React.Component {
                    toggleCancelEditButton={this.toggleCancelEditButton}/>
           {this.state.notebookPanelVisible ?
             <NotebookPanel
+              closeNotebook={this.closeNotebookPanel}
               spotName={spotName}
               spotCoords={spotCoords}
               textStyle={{fontWeight: 'bold', fontSize: 12}}
               onPress={(name) => this.notebookClickHandler(name)}
-              onTouchOutside={() => this.toggleDialog("notebookPanelMenuVisible")}
             />
             : null}
           <View style={styles.topCenter}>
