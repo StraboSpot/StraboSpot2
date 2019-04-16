@@ -95,7 +95,6 @@ class Home extends React.Component {
         console.log(`${name}`, " was clicked");
         break;
       case "photo":
-        // console.log(`${name}`, " was clicked");
         goToImages();
         break;
       case "sketch":
@@ -142,7 +141,6 @@ class Home extends React.Component {
         break;
       case "currentLocation":
         console.log(`${name}`, " was clicked");
-        // this.mapViewElement.current.goToCurrentLocation();
         this.map.goToCurrentLocation();
         break;
 
@@ -151,7 +149,6 @@ class Home extends React.Component {
         console.log(`${name}`, " was clicked");
         break;
       case "saveMap":
-        // Alert.alert('Hi buddy from Home Page')
         this.toggleModal()
         // this.mapViewElement.current.saveMap();
         // saveMap();
@@ -203,21 +200,18 @@ class Home extends React.Component {
   };
 
   cancelDraw = async (name) => {
-    // await this.mapViewElement.current.cancelDraw();
     await this.map.cancelDraw();
     this.setMapMode(name);
     if (this.state.mapMode === MapModes.VIEW) this.toggleButton('endDrawButtonVisible');
   };
 
   endDraw = async () => {
-    // await this.mapViewElement.current.endDraw();
     await this.map.endDraw();
     this.setMapMode(MapModes.VIEW);
     this.toggleButton('endDrawButtonVisible');
   };
 
   cancelEdit = async () => {
-    // await this.mapViewElement.current.cancelEdit();
     await this.map.cancelEdit();
     this.setMapMode(MapModes.VIEW);
     this.toggleButton('cancelEditButtonVisible');
@@ -279,7 +273,6 @@ class Home extends React.Component {
   };
 
   toggleDrawer = () => {
-    // console.log('Toggle drawer');
     if (this._isMounted) {
       this.setState(prevState => {
         return {
@@ -361,17 +354,6 @@ class Home extends React.Component {
         }
       }, () => {
         console.log('Noteboook panel open');
-        // const selectedFeature = this.mapViewElement.current.getSelectedFeature();
-        // const selectedFeature = this.props.featureCollectionSelected;
-        // console.log('Selected feature:', selectedFeature);
-        // this.setState(prevState => {
-        //   return {
-        //     ...prevState,
-        //     currentSpot: selectedFeature
-        //   }
-        // }, () => {
-        //   console.log('Current spot state:', this.state.currentSpot)
-        // })
       });
     }
   };
@@ -417,17 +399,15 @@ class Home extends React.Component {
 
   // adds cardinal points to coordinates -- only works with single points
   convertDMS = (lat, lng) => {
-    // var latitude = this.toDegreesMinutesAndSeconds(lat);
     const latitude = lat.toFixed(6);
     let latitudeCardinal = Math.sign(lat) >= 0 ? "North" : "South";
 
-    // var longitude = this.toDegreesMinutesAndSeconds(lng);
     const longitude = lng.toFixed(6);
     let longitudeCardinal = Math.sign(lng) >= 0 ? "East" : "West";
 
     return (
       <Text>
-      {latitude}&#176; {latitudeCardinal}, {longitude}&#176; {longitudeCardinal}
+        {latitude}&#176; {latitudeCardinal}, {longitude}&#176; {longitudeCardinal}
       </Text>
     )
   };
@@ -451,34 +431,6 @@ class Home extends React.Component {
           coords={spot.geometry.type}/>
       );
     }
-    // return this.props.featureCollectionSelected.features.map(x => {
-    //   if (x.geometry.type === 'Point') {
-    //     const spotLng = x.geometry.coordinates[0];
-    //     const spotLat = x.geometry.coordinates[1];
-    //     const convertedLatLng = this.convertDMS(spotLat, spotLng);
-    //     return (
-    //       <SpotCoords
-    //         key={x.properties.id}
-    //         coords={convertedLatLng}/>
-    //     );
-    //   }
-    //   else {
-    //     return (
-    //       <SpotCoords
-    //         key={x.properties.id}
-    //         coords={x.geometry.type}/>
-    //     );
-    //   }
-    // });
-    // console.log('FU', this.state.currentSpot);
-    // if (this.state.currentSpot) {
-    //   const spotLat = this.state.currentSpot.geometry.coordinates[0];
-    //   const spotLng = this.state.currentSpot.geometry.coordinates[1];
-    //   const convertedLatLng = this.convertDMS(spotLat, spotLng);
-    //   console.log('converted w direction', convertedLatLng);
-    //   return convertedLatLng
-    // }
-    // return 'no spot coordinates'
   };
 
   getSpotName = () => {
@@ -491,11 +443,6 @@ class Home extends React.Component {
         />
       );
     }
-    // return this.props.selectedSpot;
-    // console.log('Spot name', this.state.currentSpot);
-    // if (this.state.currentSpot) {
-    //   return this.state.currentSpot.properties.name;
-    // }
     return undefined;
   };
 
@@ -514,13 +461,14 @@ class Home extends React.Component {
           toggleSwitch={(switchName) => this.toggleSwitch(switchName)}
           shortcutSwitchPosition={this.state.shortcutSwitchPosition}
         />
-      }else if (this.state.settingsMenuVisible === 'Manage Offline Maps') {
-        content =
+    }
+    else if (this.state.settingsMenuVisible === 'Manage Offline Maps') {
+      content =
         <ManageOfflineMapsMenu
           onPress={() => this.setVisibleMenuState('settingsMain')}
           toggleSwitch={(switchName) => this.toggleSwitch(switchName)}
         />
-      }
+    }
     return (
       <Drawer
         tweenHandler={(ratio) => ({
@@ -715,10 +663,10 @@ class Home extends React.Component {
             useNativeDriver={true}
           >
             <View style={styles.modal}>
-            <SaveMapModal
-              close={this.toggleModal}
-              map={this.mapViewElement.current}
-            />
+              <SaveMapModal
+                close={this.toggleModal}
+                map={this.mapViewElement.current}
+              />
             </View>
           </Modal>
         </View>
