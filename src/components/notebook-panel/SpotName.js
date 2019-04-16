@@ -3,9 +3,9 @@ import {Text} from 'react-native';
 
 const spotName = (props) => {
   return (
-    <React.Fragment>
-      <Text>{props.name}</Text>
-    </React.Fragment>
+    <Aux >
+      <Text style={props.style}>{props.name}</Text>
+    </Aux>
   );
 };
 
