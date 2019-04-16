@@ -163,7 +163,7 @@ class mapView extends Component {
           console.log('Feature selected:', featureSelected);
           let featureCollectionSelected = MapboxGL.geoUtils.makeFeatureCollection();
           MapboxGL.geoUtils.addToFeatureCollection(featureCollectionSelected, featureSelected);
-          this.props.onFeatureSelected(featureCollectionSelected)
+          this.props.onFeaturesSelected(featureCollectionSelected)
           // console.log('FEATURECOLLECTIONSEL',featureCollectionSelected)
           // this.setState(prevState => {
           //   return {
@@ -516,14 +516,14 @@ const styles = StyleSheet.create({
 
 const mapStateToProps= (state) => {
   return {
-    // selectedSpot: state.currentSpot,
+    // selectedSpot: state.home.selectedSpot,
     featureCollectionSelected: state.home.featureCollectionSelected,
     featureCollection: state.home.featureCollection
   }
 };
 
 const mapDispatchToProps = {
-  onFeatureSelected: (featureCollectionSelected) => ({type: FEATURE_SELECTED, feature: featureCollectionSelected}),
+  onFeaturesSelected: (featureCollectionSelected) => ({type: FEATURE_SELECTED, feature: featureCollectionSelected}),
   onFeatureAdd: (feature) => ({type: FEATURE_ADD, feature: feature})
 };
 

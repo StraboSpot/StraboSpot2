@@ -2,7 +2,7 @@ import {FEATURE_SELECTED, FEATURE_ADD} from '../Constants';
 import MapboxGL from "@mapbox/react-native-mapbox-gl";
 
 const initialState = {
-  // currentSpot: [],
+  selectedSpot: {},
   featureCollectionSelected: MapboxGL.geoUtils.makeFeatureCollection(),
   featureCollection: MapboxGL.geoUtils.makeFeatureCollection(),
 };
@@ -16,6 +16,7 @@ function homeReducer(state = initialState, action){
 
       return {
         ...state,
+        selectedSpot: updatedFeature.features[0],
         featureCollectionSelected: updatedFeature
       };
     case FEATURE_ADD:

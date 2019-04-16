@@ -433,25 +433,43 @@ class Home extends React.Component {
   };
 
   getSpotCoords = () => {
-    return this.props.featureCollectionSelected.features.map(x => {
-      if (x.geometry.type === 'Point') {
-        const spotLng = x.geometry.coordinates[0];
-        const spotLat = x.geometry.coordinates[1];
-        const convertedLatLng = this.convertDMS(spotLat, spotLng);
-        return (
-          <SpotCoords
-            key={x.properties.id}
-            coords={convertedLatLng}/>
-        );
-      }
-      else {
-        return (
-          <SpotCoords
-            key={x.properties.id}
-            coords={x.geometry.type}/>
-        );
-      }
-    });
+    const spot = this.props.selectedSpot;
+    if (spot.geometry.type === 'Point') {
+      const spotLng = spot.geometry.coordinates[0];
+      const spotLat = spot.geometry.coordinates[1];
+      const convertedLatLng = this.convertDMS(spotLat, spotLng);
+      return (
+        <SpotCoords
+          key={spot.properties.id}
+          coords={convertedLatLng}/>
+      );
+    }
+    else {
+      return (
+        <SpotCoords
+          key={spot.properties.id}
+          coords={spot.geometry.type}/>
+      );
+    }
+    // return this.props.featureCollectionSelected.features.map(x => {
+    //   if (x.geometry.type === 'Point') {
+    //     const spotLng = x.geometry.coordinates[0];
+    //     const spotLat = x.geometry.coordinates[1];
+    //     const convertedLatLng = this.convertDMS(spotLat, spotLng);
+    //     return (
+    //       <SpotCoords
+    //         key={x.properties.id}
+    //         coords={convertedLatLng}/>
+    //     );
+    //   }
+    //   else {
+    //     return (
+    //       <SpotCoords
+    //         key={x.properties.id}
+    //         coords={x.geometry.type}/>
+    //     );
+    //   }
+    // });
     // console.log('FU', this.state.currentSpot);
     // if (this.state.currentSpot) {
     //   const spotLat = this.state.currentSpot.geometry.coordinates[0];
@@ -464,20 +482,21 @@ class Home extends React.Component {
   };
 
   getSpotName = () => {
-    return this.props.featureCollectionSelected.features.map(x => {
-      return(
+    const spot = this.props.selectedSpot;
+    if (Object.getOwnPropertyNames(spot).length !== 0) {
+      return (
         <SpotName
-          key={x.properties.id}
-          name={x.properties.name}
+          key={spot.properties.id}
+          name={spot.properties.name}
         />
       );
-    });
+    }
     // return this.props.selectedSpot;
     // console.log('Spot name', this.state.currentSpot);
     // if (this.state.currentSpot) {
     //   return this.state.currentSpot.properties.name;
     // }
-    // return 'No Spot Selected';
+    return undefined;
   };
 
   render() {
@@ -710,7 +729,7 @@ class Home extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    // selectedSpot: state.currentSpot,
+    selectedSpot: state.home.selectedSpot,
     featureCollectionSelected: state.home.featureCollectionSelected
   }
 }
