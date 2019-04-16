@@ -516,7 +516,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps= (state) => {
   return {
-    selectedSpot: state.currentSpot,
+    // selectedSpot: state.currentSpot,
     featureCollectionSelected: state.home.featureCollectionSelected,
     featureCollection: state.home.featureCollection
   }

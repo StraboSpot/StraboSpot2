@@ -2,7 +2,7 @@ import {FEATURE_SELECTED, FEATURE_ADD} from '../Constants';
 import MapboxGL from "@mapbox/react-native-mapbox-gl";
 
 const initialState = {
-  currentSpot: [],
+  // currentSpot: [],
   featureCollectionSelected: MapboxGL.geoUtils.makeFeatureCollection(),
   featureCollection: MapboxGL.geoUtils.makeFeatureCollection(),
 };

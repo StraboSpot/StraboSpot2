@@ -362,16 +362,16 @@ class Home extends React.Component {
       }, () => {
         console.log('Noteboook panel open');
         // const selectedFeature = this.mapViewElement.current.getSelectedFeature();
-        const selectedFeature = this.props.feature;
-        console.log('Selected feature:', selectedFeature);
-        this.setState(prevState => {
-          return {
-            ...prevState,
-            currentSpot: selectedFeature
-          }
-        }, () => {
-          console.log('Current spot state:', this.state.currentSpot)
-        })
+        // const selectedFeature = this.props.featureCollectionSelected;
+        // console.log('Selected feature:', selectedFeature);
+        // this.setState(prevState => {
+        //   return {
+        //     ...prevState,
+        //     currentSpot: selectedFeature
+        //   }
+        // }, () => {
+        //   console.log('Current spot state:', this.state.currentSpot)
+        // })
       });
     }
   };
@@ -710,7 +710,7 @@ class Home extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    selectedSpot: state.currentSpot,
+    // selectedSpot: state.currentSpot,
     featureCollectionSelected: state.home.featureCollectionSelected
   }
 }
