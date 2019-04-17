@@ -21,6 +21,7 @@ class mapView extends Component {
       longitude: LONGITUDE,
       currentBasemap: {},
       location: false,
+      drawFeatures: [],
       featureCollection: MapboxGL.geoUtils.makeFeatureCollection(),
       featureCollectionSelected: MapboxGL.geoUtils.makeFeatureCollection(),
       isEditFeature: false,
@@ -63,7 +64,6 @@ class mapView extends Component {
       }
     };
 
-    this.linePoints = [];
     this._map = {};
 
     this.onMapPress = this.onMapPress.bind(this);
@@ -115,48 +115,46 @@ class mapView extends Component {
   async onMapPress(e) {
     console.log('Map press detected:', e);
     if (!this.state.isEditFeature) {
-      if (this.props.mapMode === MapModes.DRAW.POINT) {     // ToDo Not actually being used bc point set to current location
-        console.log('Creating point ...');
-        let feature = MapboxGL.geoUtils.makeFeature(e.geometry);
-        this.createFeature(feature);
+      // Draw a feature
+      if (this.props.mapMode === MapModes.DRAW.POINT || this.props.mapMode === MapModes.DRAW.LINE
+        || this.props.mapMode === MapModes.DRAW.POLYGON) {
+        console.log('Drawing', this.props.mapMode, '...');
+        let feature = {};
+        const newCoord = turf.getCoord(e);
+        // Draw a line given a point and a new point
+        if (this.state.drawFeatures.length === 1) {
+          const pointCoord = turf.getCoord(this.state.drawFeatures[0]);
+          let feature = turf.lineString([pointCoord, newCoord]);
+          this.drawFeature(feature);
+        }
+        // Draw a line given a line and a new point
+        else if (this.state.drawFeatures.length > 1 && this.props.mapMode === MapModes.DRAW.LINE) {
+          const lineCoords = turf.getCoords(this.state.drawFeatures[1]);
+          let feature = turf.lineString([...lineCoords, newCoord]);
+          this.drawFeature(feature);
+        }
+        else if (this.state.drawFeatures.length > 1 && this.props.mapMode === MapModes.DRAW.POLYGON) {
+          const firstCoord = turf.getCoord(this.state.drawFeatures[0]);
+          // Draw a polygon given a line and a new point
+          if (turf.getType(this.state.drawFeatures[1]) === 'LineString') {
+            const lineCoords = turf.getCoords(this.state.drawFeatures[1]);
+            feature = turf.polygon([[...lineCoords, newCoord, firstCoord]]);
+          }
+          // Draw a polygon given a polygon and a new point
+          else {
+            let polyCoords = turf.getCoords(this.state.drawFeatures[1])[0];
+            polyCoords.pop();
+            feature = turf.polygon([[...polyCoords, newCoord, firstCoord]]);
+          }
+          this.drawFeature(feature);
+        }
+        // Draw a point for the last coordinate touched
+        feature = MapboxGL.geoUtils.makeFeature(e.geometry);
+        this.drawFeature(feature);
       }
-      else if (this.props.mapMode === MapModes.DRAW.LINE || this.props.mapMode === MapModes.DRAW.POLYGON) {
-        console.log('Creating', this.props.mapMode, '...');
-        this.linePoints.push(e.geometry.coordinates);
-        console.log(this.linePoints);
-        if (this.linePoints.length === 1) {
-          let feature = MapboxGL.geoUtils.makeFeature(e.geometry);
-          this.createFeature(feature);
-        }
-        else if (this.linePoints.length === 2) {
-          await this.deleteLastFeature();     // Delete placeholder point at end of line/polygon
-          let feature = turf.lineString(this.linePoints);
-          console.log('feature', feature);
-          this.createFeature(feature);
-          feature = MapboxGL.geoUtils.makeFeature(e.geometry);
-          this.createFeature(feature);
-        }
-        else if (this.linePoints.length > 2 && this.props.mapMode === MapModes.DRAW.LINE) {
-          await this.deleteLastFeature();     // Delete placeholder point at end of line/polygon
-          await this.deleteLastFeature();     // Delete line/polygon
-          let feature = turf.lineString(this.linePoints);
-          console.log('feature', feature);
-          this.createFeature(feature);
-          feature = MapboxGL.geoUtils.makeFeature(e.geometry);
-          this.createFeature(feature);
-        }
-        else if (this.linePoints.length > 2 && this.props.mapMode === MapModes.DRAW.POLYGON) {
-          console.log('Creating polygon ...');
-          await this.deleteLastFeature();     // Delete placeholder point at end of line/polygon
-          await this.deleteLastFeature();     // Delete line/polygon
-          let feature = turf.polygon([[...this.linePoints, this.linePoints[0]]]);
-          console.log('feature', feature);
-          this.createFeature(feature);
-          feature = MapboxGL.geoUtils.makeFeature(e.geometry);
-          this.createFeature(feature);
-        }
-      }
+      // Select a feature
       else {
+        console.log('Selecting feature');
         const {screenPointX, screenPointY} = e.properties;
         const featureSelected = await this.getFeatureAtPress(screenPointX, screenPointY);
         if (featureSelected) {
@@ -175,8 +173,42 @@ class mapView extends Component {
         else console.log('No feature selected. No draw type set. No feature created.');
       }
     }
+    // Edit a feature
     else this.editFeatureCoordinates(e.geometry);
   }
+
+  clearDrawFeature = () => {
+    if (this._isMounted) {
+      this.setState(prevState => {
+        return {
+          ...prevState,
+          drawFeatures: []
+        }
+      }, () => {
+        console.log('Draw features cleared:', this.state.drawFeatures);
+      });
+    }
+    else console.log('Attempting to clear the draw feature but Map View Component not mounted.');
+  };
+
+  drawFeature = (feature) => {
+    if (this._isMounted) {
+      this.setState(prevState => {
+        // Remove the feature itself and the last coordinate
+        if (prevState.drawFeatures.length > 2) {
+          prevState.drawFeatures.pop();
+          prevState.drawFeatures.pop();
+        }
+        return {
+          ...prevState,
+          drawFeatures: prevState.drawFeatures.concat(feature)
+        }
+      }, () => {
+        console.log('New draw feature added:', this.state.drawFeatures);
+      });
+    }
+    else console.log('Attempting to draw feature but Map View Component not mounted.');
+  };
 
   // Edit the coordinates of a selected feature
   editFeatureCoordinates = (newGeometry) => {
@@ -232,9 +264,9 @@ class mapView extends Component {
 
   getCurrentBasemap = () => {
     return this.state.currentBasemap;
-  }
+  };
 
-  getExtentString  = async () => {
+  getExtentString = async () => {
     const mapBounds = await this._map.getVisibleBounds();
 
     let right = mapBounds[0][0];
@@ -244,28 +276,28 @@ class mapView extends Component {
     let extentString = left + ',' + bottom + ',' + right + ',' + top;
 
     return extentString;
-  }
+  };
 
   getCurrentZoom = async () => {
     const currentZoom = await this._map.getZoom();
     return currentZoom;
-  }
+  };
 
   getTileCount = async (zoomLevel) => {
     var tileCount = null;
     var extentString = await this.getExtentString();
     try {
-        //Assign the promise unresolved first then get the data using the json method.
-        console.log("sending this extent to server: ", extentString);
-        console.log("sending zoom to server: ", zoomLevel);
-        const tileCountApiCall = await fetch('http://tiles.strabospot.org/zipcount?extent='+extentString+'&zoom='+zoomLevel);
-        const tileCount = await tileCountApiCall.json();
-        console.log("got count from server: ",tileCount);
-        return tileCount.count;
-    } catch(err) {
-        console.log("Error fetching data from tile count service.", err);
+      //Assign the promise unresolved first then get the data using the json method.
+      console.log("sending this extent to server: ", extentString);
+      console.log("sending zoom to server: ", zoomLevel);
+      const tileCountApiCall = await fetch('http://tiles.strabospot.org/zipcount?extent=' + extentString + '&zoom=' + zoomLevel);
+      const tileCount = await tileCountApiCall.json();
+      console.log("got count from server: ", tileCount);
+      return tileCount.count;
+    } catch (err) {
+      console.log("Error fetching data from tile count service.", err);
     }
-  }
+  };
 
   // Create a new feature in the feature collection
   createFeature = async feature => {
@@ -274,45 +306,17 @@ class mapView extends Component {
       feature.properties.name = feature.properties.id;
       console.log('Creating new feature:', feature);
       await this.props.onFeatureAdd(feature);
-          console.log('Finished creating new feature. Features: ', this.props.featureCollection);
-      // this.saveSpot(feature);
-      // this.setState(prevState => {
-      //     return {
-      //       ...prevState,
-      //       featureCollection: MapboxGL.geoUtils.addToFeatureCollection(prevState.featureCollection, feature)
-      //     }
-      //   }
-      //   // , async () => {
-      //   //   console.log('Finished creating new feature. Features: ', this.state.featureCollection);
-      //   //   this.saveSpot(feature);
-      //   // }
-      // );
+      console.log('Finished creating new feature. Features: ', this.props.featureCollection);
     }
     else console.log('Attempting to create a new feature but Map View Component not mounted.');
   };
 
   // saveSpot = async (feature) => {
-    // console.log(feature);
+  // console.log(feature);
   //   await AsyncStorage.setItem(feature.properties.id, JSON.stringify(feature), () => {
   //     console.log('saved item to storage')
   //   })
   // };
-
-  // Delete the last feature  in the feature collection
-  deleteLastFeature = () => {
-    if (this._isMounted) {
-      console.log('Deleting last feature from', this.state.featureCollection.features);
-      this.setState(prevState => {
-        prevState.featureCollection.features.pop();
-        return {
-          ...prevState
-        }
-      }, () => {
-        console.log('Finished deleting last feature. Features:', this.state.featureCollection);
-      });
-    }
-    else console.log('Attempting to delete the last feature but Map View Component not mounted.');
-  };
 
   // Handle pressing on a feature
   /*onSourceLayerPress = (e) => {
@@ -386,21 +390,14 @@ class mapView extends Component {
     });
   };
 
-  endDraw = async () => {
-    if (this.linePoints.length > 0 &&
-      (this.props.mapMode === MapModes.DRAW.LINE || this.props.mapMode === MapModes.DRAW.POLYGON)) {
-      this.deleteLastFeature();       // Delete placeholder point at end of line/polygon
-    }
-    this.linePoints = [];
+  endDraw = () => {
+    this.createFeature(this.state.drawFeatures.splice(1, 1)[0]);
+    this.clearDrawFeature();
     console.log('Draw ended.');
   };
 
-  cancelDraw = async () => {
-    if (this.props.mapMode === MapModes.DRAW.LINE || this.props.mapMode === MapModes.DRAW.POLYGON) {
-      if (this.linePoints.length >= 1) await this.deleteLastFeature();// Delete placeholder point at end of line/polygon
-      if (this.linePoints.length >= 2) await this.deleteLastFeature();// Delete line/polygon
-    }
-    this.linePoints = [];
+  cancelDraw =  () => {
+    this.clearDrawFeature();
     console.log('Draw canceled.');
   };
 
@@ -470,9 +467,7 @@ class mapView extends Component {
   };
 
   render() {
-
     const centerCoordinate = [this.state.longitude, this.state.latitude];
-
     const mapProps = {
       ref: ref => this._map = ref,
       basemap: this.state.currentBasemap,
@@ -481,7 +476,8 @@ class mapView extends Component {
       onMapLongPress: this.onMapLongPress,
       //onSourcePress: this.onSourceLayerPress,
       features: this.props.featureCollection,
-      selectedFeatures: this.props.featureCollectionSelected
+      selectedFeatures: this.props.featureCollectionSelected,
+      drawFeatures: turf.featureCollection(this.state.drawFeatures)
     };
 
     return (
@@ -514,7 +510,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps= (state) => {
+const mapStateToProps = (state) => {
   return {
     // selectedSpot: state.home.selectedSpot,
     featureCollectionSelected: state.home.featureCollectionSelected,

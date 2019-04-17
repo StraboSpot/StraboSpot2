@@ -80,6 +80,29 @@ function Basemap(props) {
         style={mapStyles.polygon}
       />
     </MapboxGL.ShapeSource>
+    <MapboxGL.ShapeSource
+      id="drawFeatures"
+      shape={props.drawFeatures}
+    >
+      <MapboxGL.CircleLayer
+        id="pointLayerDraw"
+        minZoomLevel={1}
+        filter={['==', '$type', 'Point']}
+        style={mapStyles.pointDraw}
+      />
+      <MapboxGL.LineLayer
+        id="lineLayerDraw"
+        minZoomLevel={1}
+        filter={['==', '$type', 'LineString']}
+        style={mapStyles.lineDraw}
+      />
+      <MapboxGL.FillLayer
+        id="polygonLayerDraw"
+        minZoomLevel={1}
+        filter={['==', '$type', 'Polygon']}
+        style={mapStyles.polygonDraw}
+      />
+    </MapboxGL.ShapeSource>
   </MapboxGL.MapView>
 }
 
@@ -123,6 +146,21 @@ const mapStyles = MapboxGL.StyleSheet.create({
     lineWidth: 3
   },
   polygonSelected: {
+    fillColor: 'orange',
+    fillOpacity: .4
+  },
+  pointDraw: {
+    circleRadius: 5,
+    circleColor: 'orange',
+    circleStrokeColor: 'white',
+    circleStrokeWidth: 2
+  },
+  lineDraw: {
+    lineColor: 'orange',
+    lineWidth: 3,
+    lineDasharray: [2, 2]
+  },
+  polygonDraw: {
     fillColor: 'orange',
     fillOpacity: .4
   },

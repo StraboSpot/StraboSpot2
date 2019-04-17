@@ -121,17 +121,10 @@ class Home extends React.Component {
 
       // Map Actions
       case MapModes.DRAW.POINT:
-        // this.mapViewElement.current.setPointAtCurrentLocation();
-        this.map.setPointAtCurrentLocation();
-        break;
       case MapModes.DRAW.LINE:
       case MapModes.DRAW.POLYGON:
         console.log('Selected', name);
-        if (this.state.mapMode === MapModes.VIEW) {
-          this.setMapMode(name);
-          this.toggleButton('endDrawButtonVisible');
-        }
-        else this.cancelDraw(name);
+        this.setDraw(name);
         break;
       case "endDraw":
         this.endDraw();
@@ -149,7 +142,7 @@ class Home extends React.Component {
         console.log(`${name}`, " was clicked");
         break;
       case "saveMap":
-        this.toggleModal()
+        this.toggleModal();
         // this.mapViewElement.current.saveMap();
         // saveMap();
         break;
@@ -183,10 +176,22 @@ class Home extends React.Component {
     this.mapViewElement.current.changeMap(name);
   };
 
-  setMapMode = mapMode => {
+  setDraw = async mapMode => {
+    this.map.cancelDraw();
+    if (this.state.mapMode === MapModes.VIEW) this.toggleButton('endDrawButtonVisible');
+    else if (this.state.mapMode === mapMode) mapMode = MapModes.VIEW;
+    await this.setMapMode(mapMode);
+    if (this.state.mapMode === MapModes.DRAW.POINT) {
+      await this.map.setPointAtCurrentLocation();
+      await this.setMapMode(MapModes.VIEW);
+      this.toggleButton('endDrawButtonVisible');
+    }
+    if (mapMode === MapModes.VIEW) this.toggleButton('endDrawButtonVisible');
+  };
+
+  setMapMode = async mapMode => {
     if (this._isMounted) {
       this.setState(prevState => {
-        if (prevState.mapMode === mapMode) mapMode = MapModes.VIEW;
         return {
           ...prevState,
           mapMode: mapMode
@@ -196,17 +201,10 @@ class Home extends React.Component {
       });
     }
     else console.log('Attempting to set the state for the map mode but Home Component not mounted.');
-
   };
 
-  cancelDraw = async (name) => {
-    await this.map.cancelDraw();
-    this.setMapMode(name);
-    if (this.state.mapMode === MapModes.VIEW) this.toggleButton('endDrawButtonVisible');
-  };
-
-  endDraw = async () => {
-    await this.map.endDraw();
+  endDraw = () => {
+    this.map.endDraw();
     this.setMapMode(MapModes.VIEW);
     this.toggleButton('endDrawButtonVisible');
   };
@@ -231,7 +229,7 @@ class Home extends React.Component {
           name: 'SpotPage'
         }
       });
-  }
+    }
   };
 
   // Toggle given button between true (on) and false (off)
