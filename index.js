@@ -25,11 +25,11 @@ Navigation.events().registerAppLaunchedListener(() => {
     root: {
       stack: {
         children: [
-          {
-            component: {
-              name: 'SpotPage',
-            }
-          },
+          // {
+          //   component: {
+          //     name: 'SpotPage',
+          //   }
+          // },
           {
             component: {
               name: 'Home',
