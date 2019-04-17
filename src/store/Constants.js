@@ -1,2 +1,5 @@
 export const FEATURE_SELECTED = 'FEATURE_SELECTED';
 export const FEATURE_ADD = 'FEATURE_ADD';
+export const FEATURE_DELETE = 'FEATURE_DELETE';
+export const CURRENT_BASEMAP = 'CURRENT_BASEMAP';
+export const MAP = 'MAP';

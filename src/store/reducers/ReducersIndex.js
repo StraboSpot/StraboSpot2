@@ -1,7 +1,9 @@
-import {FEATURE_SELECTED, FEATURE_ADD} from '../Constants';
+import {FEATURE_SELECTED, FEATURE_ADD, FEATURE_DELETE, CURRENT_BASEMAP, MAP} from '../Constants';
 import MapboxGL from "@mapbox/react-native-mapbox-gl";
 
 const initialState = {
+  map: {},
+  currentBasemap: {},
   selectedSpot: {},
   featureCollectionSelected: MapboxGL.geoUtils.makeFeatureCollection(),
   featureCollection: MapboxGL.geoUtils.makeFeatureCollection(),
@@ -30,5 +32,22 @@ export const homeReducer = (state = initialState, action) => {
   }
   return state;
 }
+
+export const mapReducer = (state = initialState, action) => {
+  switch (action.type) {
+    case CURRENT_BASEMAP:
+      console.log('Current Basemap in Reducer', action.basemap)
+      return {
+        ...state.map,
+        currentBasemap: action.basemap
+      }
+    case MAP:
+      return {
+        ...state.map,
+        map: action
+      }
+  }
+  return state;
+};
 
 // export default homeReducer;
