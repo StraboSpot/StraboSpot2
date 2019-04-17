@@ -7,13 +7,11 @@ const initialState = {
   featureCollection: MapboxGL.geoUtils.makeFeatureCollection(),
 };
 
-function homeReducer(state = initialState, action){
-  switch(action.type){
+export const homeReducer = (state = initialState, action) => {
+  switch (action.type) {
     case FEATURE_SELECTED:
-      console.log('FEATURE_SELECTED', action.feature);
+      // console.log('FEATURE_SELECTED', action.feature);
       const updatedFeature = action.feature;
-      console.log('FEATURE_SELECTED', updatedFeature);
-
       return {
         ...state,
         selectedSpot: updatedFeature.features[0],
@@ -33,4 +31,4 @@ function homeReducer(state = initialState, action){
   return state;
 }
 
-export default homeReducer;
+// export default homeReducer;
