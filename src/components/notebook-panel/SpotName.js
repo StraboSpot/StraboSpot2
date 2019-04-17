@@ -2,7 +2,7 @@ import React from 'react';
 import {Text} from 'react-native';
 import Aux from '../../shared/AuxWrapper';
 
-const spotName = (props) => {
+const SpotName = (props) => {
   return (
     <Aux >
       <Text style={props.style}>{props.name}</Text>
@@ -10,4 +10,4 @@ const spotName = (props) => {
   );
 };
 
-export default spotName;
+export default SpotName;
