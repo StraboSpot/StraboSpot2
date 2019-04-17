@@ -412,8 +412,7 @@ class Home extends React.Component {
     )
   };
 
-  getSpotCoords = () => {
-    const spot = this.props.selectedSpot;
+  getSpotCoordsComponent = (spot) => {
     if (spot.geometry.type === 'Point') {
       const spotLng = spot.geometry.coordinates[0];
       const spotLat = spot.geometry.coordinates[1];
@@ -433,23 +432,20 @@ class Home extends React.Component {
     }
   };
 
-  getSpotName = () => {
-    const spot = this.props.selectedSpot;
-    if (Object.getOwnPropertyNames(spot).length !== 0) {
-      return (
-        <SpotName
-          key={spot.properties.id}
-          name={spot.properties.name}
-        />
-      );
-    }
-    return undefined;
+  getSpotNameComponent = (spot) => {
+    return (
+      <SpotName
+        key={spot.properties.id}
+        name={spot.properties.name}
+      />
+    );
   };
 
   render() {
+    const spot = this.props.selectedSpot;
     let content = null;
-    let spotName = this.getSpotName();
-    let spotCoords = this.getSpotCoords();
+    let spotName = Object.getOwnPropertyNames(spot).length !== 0 ? this.getSpotNameComponent(spot) : undefined;
+    let spotCoords = Object.getOwnPropertyNames(spot).length !== 0 ? this.getSpotCoordsComponent(spot) : undefined;
 
     if (this.state.settingsMenuVisible === 'settingsMain') {
       content = <SettingsPanel onPress={(name) => this.settingsClickHandler(name)}/>
