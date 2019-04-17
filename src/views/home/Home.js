@@ -440,6 +440,10 @@ class Home extends React.Component {
     );
   };
 
+  mapPress = () => {
+    return this.mapViewComponent.getCurrentBasemap();
+  }
+
   render() {
     const spot = this.props.selectedSpot;
     let content = null;
@@ -660,7 +664,7 @@ class Home extends React.Component {
             <View style={styles.modal}>
               <SaveMapModal
                 close={this.toggleModal}
-                map={this.mapViewElement.current}
+                map={this.mapPress}
               />
             </View>
           </Modal>
