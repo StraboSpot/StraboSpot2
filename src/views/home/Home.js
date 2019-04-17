@@ -116,7 +116,8 @@ class Home extends React.Component {
         console.log('Spot Copied!');
         break;
       case 'deleteSpot':
-        console.log('Spot Deleted!');
+        // console.log('Spot Deleted!');
+        this.mapViewComponent.deleteLastFeature(this.props.selectedSpot)
         break;
 
       // Map Actions
@@ -134,7 +135,7 @@ class Home extends React.Component {
         break;
       case "currentLocation":
         console.log(`${name}`, " was clicked");
-        this.map.goToCurrentLocation();
+        this.mapViewComponent.goToCurrentLocation();
         break;
 
       // Map Actions
@@ -173,16 +174,16 @@ class Home extends React.Component {
   };
 
   newBasemapDisplay = (name) => {
-    this.mapViewElement.current.changeMap(name);
+    this.mapViewComponent.changeMap(name);
   };
 
   setDraw = async mapMode => {
-    this.map.cancelDraw();
+    this.mapViewComponent.cancelDraw();
     if (this.state.mapMode === MapModes.VIEW) this.toggleButton('endDrawButtonVisible');
     else if (this.state.mapMode === mapMode) mapMode = MapModes.VIEW;
     await this.setMapMode(mapMode);
     if (this.state.mapMode === MapModes.DRAW.POINT) {
-      await this.map.setPointAtCurrentLocation();
+      await this.mapViewComponent.setPointAtCurrentLocation();
       await this.setMapMode(MapModes.VIEW);
       this.toggleButton('endDrawButtonVisible');
     }
@@ -204,13 +205,13 @@ class Home extends React.Component {
   };
 
   endDraw = () => {
-    this.map.endDraw();
+    this.mapViewComponent.endDraw();
     this.setMapMode(MapModes.VIEW);
     this.toggleButton('endDrawButtonVisible');
   };
 
   cancelEdit = async () => {
-    await this.map.cancelEdit();
+    await this.mapViewComponent.cancelEdit();
     this.setMapMode(MapModes.VIEW);
     this.toggleButton('cancelEditButtonVisible');
   };
@@ -477,7 +478,7 @@ class Home extends React.Component {
       >
         <View style={styles.container}>
           <MapView ref={this.mapViewElement}
-                   onRef={ref => (this.map = ref)}
+                   onRef={ref => (this.mapViewComponent = ref)}
                    mapMode={this.state.mapMode}
                    toggleCancelEditButton={this.toggleCancelEditButton}/>
           {this.state.notebookPanelVisible ?
