@@ -75,24 +75,6 @@ class mapView extends Component {
     this.props.onRef(this);
     this._isMounted = true;
     let featureCollection = MapboxGL.geoUtils.makeFeatureCollection();
-    // const featureIds = await AsyncStorage.getAllKeys(keys => {
-    //   return keys
-    // });
-    // await AsyncStorage.multiRemove(featureIds);
-    //
-    //   await AsyncStorage.multiGet(featureIds, (err, keys) => {
-    //   return keys.map((store) => {
-    //     // featureCollection = store[1];
-    //     // MapboxGL.geoUtils.addToFeatureCollection(featureCollection, store[1])
-    //     try {
-    //       // console.log(store[1])
-    //       // console.log(JSON.parse(store[1]))
-    //       MapboxGL.geoUtils.addToFeatureCollection(featureCollection, JSON.parse(store[1]))
-    //     } catch (e) {
-    //       console.log('Errored on', store[1])
-    //     }
-    //   })
-    // });
     console.log('feature', featureCollection);
     console.log('Setting initial basemap ...', this.basemaps.mapboxOutdoors);
     this.props.onCurrentBasemap(this.basemaps.mapboxOutdoors);
@@ -100,6 +82,7 @@ class mapView extends Component {
 
   componentWillUnmount() {
     this._isMounted = false;
+    this.props.onRef(undefined)
   }
 
   // Mapbox: Handle map press
@@ -153,13 +136,6 @@ class mapView extends Component {
           let featureCollectionSelected = MapboxGL.geoUtils.makeFeatureCollection();
           MapboxGL.geoUtils.addToFeatureCollection(featureCollectionSelected, featureSelected);
           this.props.onFeaturesSelected(featureCollectionSelected)
-          // console.log('FEATURECOLLECTIONSEL',featureCollectionSelected)
-          // this.setState(prevState => {
-          //   return {
-          //     ...prevState,
-          //     featureCollectionSelected: featureCollectionSelected
-          //   }
-          // })
         }
         else console.log('No feature selected. No draw type set. No feature created.');
       }
@@ -302,14 +278,7 @@ class mapView extends Component {
     else console.log('Attempting to create a new feature but Map View Component not mounted.');
   };
 
-  // saveSpot = async (feature) => {
-  // console.log(feature);
-  //   await AsyncStorage.setItem(feature.properties.id, JSON.stringify(feature), () => {
-  //     console.log('saved item to storage')
-  //   })
-  // };
-
-  // Handle pressing on a feature
+   // Handle pressing on a feature
   /*onSourceLayerPress = (e) => {
     const feature = e.nativeEvent.payload;
     console.log('You pressed a layer here is your feature', feature); // eslint-disable-line
