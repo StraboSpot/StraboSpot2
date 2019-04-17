@@ -6,7 +6,7 @@ import {MapboxOutdoorsBasemap, MapboxSatelliteBasemap, OSMBasemap, MacrostratBas
 import * as turf from '@turf/turf'
 import {LATITUDE, LONGITUDE, LATITUDE_DELTA, LONGITUDE_DELTA, MapModes} from './Map.constants';
 import {connect} from 'react-redux';
-import {FEATURE_SELECTED, FEATURE_ADD} from '../../store/Constants';
+import {FEATURE_SELECTED, FEATURE_ADD, FEATURE_DELETE, CURRENT_BASEMAP} from '../../store/Constants';
 
 MapboxGL.setAccessToken(MAPBOX_KEY);
 
@@ -94,17 +94,8 @@ class mapView extends Component {
     //   })
     // });
     console.log('feature', featureCollection);
-    console.log('Setting initial basemap ...');
-    this.setState(prevState => {
-      return {
-        ...prevState,
-        currentBasemap: this.basemaps.mapboxOutdoors,
-        featureCollection: featureCollection
-      }
-    }, () => {
-      console.log('Finished setting initial basemap to:', this.state.currentBasemap);
-      console.log('Finished loading spots:', this.state.featureCollection);
-    });
+    console.log('Setting initial basemap ...', this.basemaps.mapboxOutdoors);
+    this.props.onCurrentBasemap(this.basemaps.mapboxOutdoors);
   }
 
   componentWillUnmount() {
@@ -328,14 +319,7 @@ class mapView extends Component {
     if (this._isMounted) {
       if (mapName === 'mapboxSatellite' || mapName === 'mapboxOutdoors' || mapName === 'osm' || mapName === 'macrostrat') {
         console.log('Switching basemap to:', mapName);
-        this.setState(prevState => {
-          return {
-            ...prevState,
-            currentBasemap: this.basemaps[mapName]
-          }
-        }, () => {
-          console.log('Current basemap:', this.state.currentBasemap);
-        });
+        this.props.onCurrentBasemap(this.basemaps[mapName])
       }
       else console.log('Cancel switching basemaps. Basemap', mapName, 'still needs to be setup.');
     }
@@ -470,7 +454,7 @@ class mapView extends Component {
     const centerCoordinate = [this.state.longitude, this.state.latitude];
     const mapProps = {
       ref: ref => this._map = ref,
-      basemap: this.state.currentBasemap,
+      basemap: this.props.currentBasemap,
       centerCoordinate: centerCoordinate,
       onMapPress: this.onMapPress,
       onMapLongPress: this.onMapLongPress,
@@ -482,10 +466,10 @@ class mapView extends Component {
 
     return (
       <React.Fragment>
-        {this.state.currentBasemap.id === 'mapboxSatellite' ? <MapboxSatelliteBasemap {...mapProps}/> : null}
-        {this.state.currentBasemap.id === 'mapboxOutdoors' ? <MapboxOutdoorsBasemap {...mapProps}/> : null}
-        {this.state.currentBasemap.id === 'osm' ? <OSMBasemap {...mapProps}/> : null}
-        {this.state.currentBasemap.id === 'macrostrat' ? <MacrostratBasemap {...mapProps}/> : null}
+        {this.props.currentBasemap.id === 'mapboxSatellite' ? <MapboxSatelliteBasemap {...mapProps}/> : null}
+        {this.props.currentBasemap.id === 'mapboxOutdoors' ? <MapboxOutdoorsBasemap {...mapProps}/> : null}
+        {this.props.currentBasemap.id === 'osm' ? <OSMBasemap {...mapProps}/> : null}
+        {this.props.currentBasemap.id === 'macrostrat' ? <MacrostratBasemap {...mapProps}/> : null}
       </React.Fragment>
     );
   }
@@ -514,13 +498,17 @@ const mapStateToProps = (state) => {
   return {
     // selectedSpot: state.home.selectedSpot,
     featureCollectionSelected: state.home.featureCollectionSelected,
-    featureCollection: state.home.featureCollection
+    featureCollection: state.home.featureCollection,
+    currentBasemap: state.map.currentBasemap,
+    map: state.map.map
   }
 };
 
 const mapDispatchToProps = {
   onFeaturesSelected: (featureCollectionSelected) => ({type: FEATURE_SELECTED, feature: featureCollectionSelected}),
-  onFeatureAdd: (feature) => ({type: FEATURE_ADD, feature: feature})
+  onFeatureAdd: (feature) => ({type: FEATURE_ADD, feature: feature}),
+  onFeatureDelete: (id) => ({type: FEATURE_DELETE, id: id}),
+  onCurrentBasemap: (basemap) => ({type: CURRENT_BASEMAP, basemap: basemap })
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(mapView);
