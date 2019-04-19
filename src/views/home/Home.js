@@ -40,7 +40,7 @@ class Home extends React.Component {
       buttons: {
         endDrawButtonVisible: false,
         drawButtonOn: undefined,
-        cancelEditButtonVisible: false
+        editButtonsVisible: false
       },
       mapMode: MapModes.VIEW,
       notebookPanelVisible: false,
@@ -65,7 +65,6 @@ class Home extends React.Component {
       },
       currentSpot: undefined
     };
-    this.toggleCancelEditButton = this.toggleCancelEditButton.bind(this);
   }
 
   componentDidMount() {
@@ -117,7 +116,6 @@ class Home extends React.Component {
         break;
       case 'deleteSpot':
         // console.log('Spot Deleted!');
-        this.mapViewComponent.deleteLastFeature(this.props.selectedSpot)
         break;
 
       // Map Actions
@@ -130,8 +128,11 @@ class Home extends React.Component {
       case "endDraw":
         this.endDraw();
         break;
-      case "cancelEdit":
-        this.cancelEdit();
+      case "cancelEdits":
+        this.cancelEdits();
+        break;
+      case "saveEdits":
+        this.saveEdits();
         break;
       case "currentLocation":
         console.log(`${name}`, " was clicked");
@@ -190,7 +191,7 @@ class Home extends React.Component {
     if (mapMode === MapModes.VIEW) this.toggleButton('endDrawButtonVisible');
   };
 
-  setMapMode = async mapMode => {
+  setMapMode = async (mapMode) => {
     if (this._isMounted) {
       this.setState(prevState => {
         return {
@@ -210,13 +211,24 @@ class Home extends React.Component {
     this.toggleButton('endDrawButtonVisible');
   };
 
-  cancelEdit = async () => {
-    await this.mapViewComponent.cancelEdit();
+  cancelEdits = async () => {
+    await this.mapViewComponent.cancelEdits();
     this.setMapMode(MapModes.VIEW);
-    this.toggleButton('cancelEditButtonVisible');
+    this.toggleButton('editButtonsVisible', false);
   };
 
-  notebookClickHandler = name => {
+  saveEdits = async () => {
+    this.mapViewComponent.saveEdits();
+    this.cancelEdits();
+  };
+
+  startEdit = () => {
+    this.setMapMode(MapModes.EDIT);
+    console.log('here');
+    this.toggleButton('editButtonsVisible', true);
+  };
+
+  notebookClickHandler = (name) => {
     if (name === 'menu') {
       this.toggleDialog('notebookPanelMenuVisible')
     }
@@ -234,25 +246,20 @@ class Home extends React.Component {
   };
 
   // Toggle given button between true (on) and false (off)
-  toggleButton = (button) => {
-    console.log('Toggle Button', button);
+  toggleButton = (button, isVisible) => {
+    console.log('Toggle Button', button, isVisible || !this.state.buttons[button]);
     if (this._isMounted) {
       this.setState(prevState => {
         return {
           ...prevState,
           buttons: {
             ...prevState.buttons,
-            [button]: !prevState.buttons[button]
+            [button]: isVisible ? isVisible : !prevState.buttons[button]
           }
         }
       });
     }
     else console.log('Attempting to toggle', button, 'but Home Component not mounted.');
-  };
-
-  toggleCancelEditButton = () => {
-    this.setMapMode(MapModes.VIEW);
-    this.toggleButton('cancelEditButtonVisible');
   };
 
   // Toggle given dialog between true (visible) and false (hidden)
@@ -442,7 +449,7 @@ class Home extends React.Component {
 
   mapPress = () => {
     return this.mapViewComponent.getCurrentBasemap();
-  }
+  };
 
   render() {
     const spot = this.props.selectedSpot;
@@ -484,7 +491,7 @@ class Home extends React.Component {
           <MapView ref={this.mapViewElement}
                    onRef={ref => (this.mapViewComponent = ref)}
                    mapMode={this.state.mapMode}
-                   toggleCancelEditButton={this.toggleCancelEditButton}/>
+                   startEdit={this.startEdit}/>
           {this.state.notebookPanelVisible ?
             <NotebookPanel
               closeNotebook={this.closeNotebookPanel}
@@ -503,18 +510,25 @@ class Home extends React.Component {
               >
                 <MaterialCommunityIcons.FontAwesome5
                   name={'user-edit'}
-                  size={15}
-                />
-                End Draw</ButtonWithBackground>
-              // <Button title={'End Draw'} onPress={this.clickHandler.bind(this, "endDraw")}/>
+                  size={15}/>
+                End Draw
+              </ButtonWithBackground>
               : null}
-            {this.state.buttons.cancelEditButtonVisible ?
-              <ButtonWithBackground
-                color={'yellow'}
-                style={styles.buttonWithBackground}
-                onPress={this.clickHandler.bind(this, "cancelEdit")}
-              >Cancel Edit</ButtonWithBackground>
-              // <Button title={'Cancel Edit'} onPress={this.clickHandler.bind(this, "cancelEdit")}
+            {this.state.buttons.editButtonsVisible ?
+              <View>
+                <ButtonWithBackground
+                  color={'yellow'}
+                  style={styles.buttonWithBackground}
+                  onPress={this.clickHandler.bind(this, "saveEdits")}>
+                  Save Edits
+                </ButtonWithBackground>
+                <ButtonWithBackground
+                  color={'yellow'}
+                  style={styles.buttonWithBackground}
+                  onPress={this.clickHandler.bind(this, "cancelEdits")}>
+                  Cancel Edits
+                </ButtonWithBackground>
+              </View>
               : null}
           </View>
           <View style={styles.rightsideIcons}>

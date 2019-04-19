@@ -1,46 +1,60 @@
-import {FEATURE_SELECTED, FEATURE_ADD, FEATURE_DELETE, CURRENT_BASEMAP, MAP} from '../Constants';
-import MapboxGL from "@mapbox/react-native-mapbox-gl";
+import {
+  CURRENT_BASEMAP,
+  FEATURE_ADD,
+  FEATURE_DELETE,
+  FEATURE_SELECTED,
+  FEATURES_SELECTED_CLEARED,
+  FEATURES_UPDATED,
+  MAP
+} from '../Constants';
 
 const initialState = {
   map: {},
   currentBasemap: {},
-  selectedSpot: {},
-  featureCollectionSelected: MapboxGL.geoUtils.makeFeatureCollection(),
-  featureCollection: MapboxGL.geoUtils.makeFeatureCollection(),
+  features: [],
+  featuresSelected: [],
+  selectedSpot: {}
 };
 
 export const homeReducer = (state = initialState, action) => {
   switch (action.type) {
     case FEATURE_SELECTED:
-      // console.log('FEATURE_SELECTED', action.feature);
-      const updatedFeature = action.feature;
       return {
         ...state,
-        selectedSpot: updatedFeature.features[0],
-        featureCollectionSelected: updatedFeature
+        featuresSelected: [action.feature],
+        selectedSpot: action.feature
+      };
+    case FEATURES_SELECTED_CLEARED:
+      console.log('FEATURES_SELECTED_CLEARED');
+      return {
+        ...state,
+        featuresSelected: [],
+        selectedSpot: {}
       };
     case FEATURE_ADD:
       console.log('ADDED', action.feature);
-      const featureCollectionUpdated = {
-        // ...state,
-        ...state.featureCollection
-      }
       return {
         ...state,
-        featureCollection: MapboxGL.geoUtils.addToFeatureCollection(featureCollectionUpdated, action.feature)
+        features: [...state.features, action.feature]
+      };
+    case FEATURES_UPDATED:
+      console.log('FEATURES UPDATED', action.features);
+      return {
+        ...state,
+        features: action.features
       }
   }
   return state;
-}
+};
 
 export const mapReducer = (state = initialState, action) => {
   switch (action.type) {
     case CURRENT_BASEMAP:
-      console.log('Current Basemap in Reducer', action.basemap)
+      console.log('Current Basemap in Reducer', action.basemap);
       return {
         ...state.map,
         currentBasemap: action.basemap
-      }
+      };
     case MAP:
       return {
         ...state.map,

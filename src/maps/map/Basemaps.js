@@ -32,10 +32,9 @@ function Basemap(props) {
         style={{rasterOpacity: 1}}
       />
     </MapboxGL.RasterSource>
+    {/* Feature Layer */}
     <MapboxGL.ShapeSource
       id="shapeSource"
-      //hitbox={{ width: 20, height: 20 }}
-      //onPress={props.onSourcePress}
       shape={props.features}
     >
       <MapboxGL.SymbolLayer
@@ -57,8 +56,9 @@ function Basemap(props) {
         style={mapStyles.polygon}
       />
     </MapboxGL.ShapeSource>
+    {/* Selected Features Layer */}
     <MapboxGL.ShapeSource
-      id="selectedFeaturseSource"
+      id="selectedFeaturesSource"
       shape={props.selectedFeatures}
     >
       <MapboxGL.CircleLayer
@@ -71,15 +71,16 @@ function Basemap(props) {
         id="lineLayerSelected"
         minZoomLevel={1}
         filter={['==', '$type', 'LineString']}
-        style={mapStyles.line}
+        style={mapStyles.lineSelected}
       />
       <MapboxGL.FillLayer
         id="polygonLayerSelected"
         minZoomLevel={1}
         filter={['==', '$type', 'Polygon']}
-        style={mapStyles.polygon}
+        style={mapStyles.polygonSelected}
       />
     </MapboxGL.ShapeSource>
+    {/* Draw Layer */}
     <MapboxGL.ShapeSource
       id="drawFeatures"
       shape={props.drawFeatures}
@@ -101,6 +102,18 @@ function Basemap(props) {
         minZoomLevel={1}
         filter={['==', '$type', 'Polygon']}
         style={mapStyles.polygonDraw}
+      />
+    </MapboxGL.ShapeSource>
+    {/* Edit Layer */}
+    <MapboxGL.ShapeSource
+      id="editFeatureVertex"
+      shape={props.editFeatureVertex}
+    >
+      <MapboxGL.CircleLayer
+        id="pointLayerEdit"
+        minZoomLevel={1}
+        filter={['==', '$type', 'Point']}
+        style={mapStyles.pointEdit}
       />
     </MapboxGL.ShapeSource>
   </MapboxGL.MapView>
@@ -137,7 +150,7 @@ const mapStyles = MapboxGL.StyleSheet.create({
     fillOpacity: .4
   },
   pointSelected: {
-    circleRadius: 30,
+    circleRadius: 20,
     circleColor: 'orange',
     circleOpacity: .4
   },
@@ -147,7 +160,7 @@ const mapStyles = MapboxGL.StyleSheet.create({
   },
   polygonSelected: {
     fillColor: 'orange',
-    fillOpacity: .4
+    fillOpacity: .7
   },
   pointDraw: {
     circleRadius: 5,
@@ -163,5 +176,11 @@ const mapStyles = MapboxGL.StyleSheet.create({
   polygonDraw: {
     fillColor: 'orange',
     fillOpacity: .4
+  },
+  pointEdit: {
+    circleRadius: 10,
+    circleColor: 'orange',
+    circleStrokeColor: 'white',
+    circleStrokeWidth: 2
   },
 });

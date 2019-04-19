@@ -6,7 +6,14 @@ import {MapboxOutdoorsBasemap, MapboxSatelliteBasemap, OSMBasemap, MacrostratBas
 import * as turf from '@turf/turf'
 import {LATITUDE, LONGITUDE, LATITUDE_DELTA, LONGITUDE_DELTA, MapModes} from './Map.constants';
 import {connect} from 'react-redux';
-import {FEATURE_SELECTED, FEATURE_ADD, FEATURE_DELETE, CURRENT_BASEMAP} from '../../store/Constants';
+import {
+  CURRENT_BASEMAP,
+  FEATURE_ADD,
+  FEATURE_DELETE,
+  FEATURE_SELECTED,
+  FEATURES_SELECTED_CLEARED,
+  FEATURES_UPDATED
+} from '../../store/Constants';
 
 MapboxGL.setAccessToken(MAPBOX_KEY);
 
@@ -22,11 +29,9 @@ class mapView extends Component {
       currentBasemap: {},
       location: false,
       drawFeatures: [],
-      featureCollection: MapboxGL.geoUtils.makeFeatureCollection(),
-      featureCollectionSelected: MapboxGL.geoUtils.makeFeatureCollection(),
-      isEditFeature: false,
-      editFeature: {},
-      editFeatureCoord: {}
+      isEditingFeature: false,
+      featuresNotEditing: [],
+      vertexToEdit: {}
     };
 
     this.basemaps = {
@@ -68,14 +73,11 @@ class mapView extends Component {
 
     this.onMapPress = this.onMapPress.bind(this);
     this.onMapLongPress = this.onMapLongPress.bind(this);
-    //this.onSourceLayerPress = this.onSourceLayerPress.bind(this);
   }
 
   async componentDidMount() {
     this.props.onRef(this);
     this._isMounted = true;
-    let featureCollection = MapboxGL.geoUtils.makeFeatureCollection();
-    console.log('feature', featureCollection);
     console.log('Setting initial basemap ...', this.basemaps.mapboxOutdoors);
     this.props.onCurrentBasemap(this.basemaps.mapboxOutdoors);
   }
@@ -88,7 +90,7 @@ class mapView extends Component {
   // Mapbox: Handle map press
   async onMapPress(e) {
     console.log('Map press detected:', e);
-    if (!this.state.isEditFeature) {
+    if (!this.state.isEditingFeature) {
       // Draw a feature
       if (this.props.mapMode === MapModes.DRAW.POINT || this.props.mapMode === MapModes.DRAW.LINE
         || this.props.mapMode === MapModes.DRAW.POLYGON) {
@@ -126,18 +128,12 @@ class mapView extends Component {
         feature = MapboxGL.geoUtils.makeFeature(e.geometry);
         this.drawFeature(feature);
       }
-      // Select a feature
+      // Select/Unselect a feature
       else {
-        console.log('Selecting feature');
         const {screenPointX, screenPointY} = e.properties;
         const featureSelected = await this.getFeatureAtPress(screenPointX, screenPointY);
-        if (featureSelected) {
-          console.log('Feature selected:', featureSelected);
-          let featureCollectionSelected = MapboxGL.geoUtils.makeFeatureCollection();
-          MapboxGL.geoUtils.addToFeatureCollection(featureCollectionSelected, featureSelected);
-          this.props.onFeaturesSelected(featureCollectionSelected)
-        }
-        else console.log('No feature selected. No draw type set. No feature created.');
+        if (Object.getOwnPropertyNames(featureSelected).length > 0) this.props.onFeatureSelected(featureSelected);
+        else this.props.onFeaturesSelectedCleared();
       }
     }
     // Edit a feature
@@ -179,54 +175,48 @@ class mapView extends Component {
 
   // Edit the coordinates of a selected feature
   editFeatureCoordinates = (newGeometry) => {
-    if (this._isMounted) {
-      let featuresNotEditing = this.state.featureCollection.features.filter(
-        feature => feature.properties.id !== this.state.editFeature.properties.id);
-      let editedFeatureCollection = MapboxGL.geoUtils.makeFeatureCollection();
-      editedFeatureCollection.features = featuresNotEditing;
-      this.setState(prevState => {
-        if (turf.getType(prevState.editFeature) === 'Point') prevState.editFeature.geometry = newGeometry;
-        else if (turf.getType(prevState.editFeature) === 'LineString') {
-          const coords = turf.getCoords(prevState.editFeature);
-          console.log(coords, prevState.editFeatureCoord);
-          for (let i = 0; i < coords.length; i++) {
-            if (coords[i][0] === prevState.editFeatureCoord[0] && coords[i][1] === prevState.editFeatureCoord[1]) {
-              prevState.editFeature.geometry.coordinates[i] = turf.getCoord(newGeometry);
+    if (this.props.featuresSelected.length > 0) {
+      console.log('Editing Coordinate');
+      let featureEditing = this.props.featuresSelected[0];
+      console.log('Feature Editing:', featureEditing);
+      const coords = turf.getCoords(featureEditing);
+      const coordToEdit = turf.getCoords(this.state.vertexToEdit);
+      const newCoord = turf.getCoord(newGeometry);
+      console.log('Original coords:', coords, 'Coord to edit:', coordToEdit, 'New coord:', newCoord);
+      if (turf.getType(featureEditing) === 'Point') featureEditing.geometry = newGeometry;
+      else if (turf.getType(featureEditing) === 'LineString') {
+        for (let i = 0; i < coords.length; i++) {
+          if (coords[i][0] === coordToEdit[0] && coords[i][1] === coordToEdit[1]) {
+            featureEditing.geometry.coordinates[i] = turf.getCoord(newGeometry);
+          }
+        }
+      }
+      else if (turf.getType(featureEditing) === 'Polygon') {
+        for (let i = 0; i < coords.length; i++) {
+          for (let j = 0; j < coords[i].length; j++) {
+            if (coords[i][j][0] === coordToEdit[0] && coords[i][j][1] === coordToEdit[1]) {
+              featureEditing.geometry.coordinates[i][j] = turf.getCoord(newGeometry);
             }
           }
         }
-        else if (turf.getType(prevState.editFeature) === 'Polygon') {
-          const coords = turf.getCoords(prevState.editFeature);
-          console.log(coords, prevState.editFeatureCoord);
-          for (let i = 0; i < coords.length; i++) {
-            for (let j = 0; j < coords[i].length; j++) {
-              if (coords[i][j][0] === prevState.editFeatureCoord[0] && coords[i][j][1] === prevState.editFeatureCoord[1]) {
-                prevState.editFeature.geometry.coordinates[i][j] = turf.getCoord(newGeometry);
-              }
-            }
+      }
+      console.log('Edited coords:', turf.getCoords(featureEditing));
+      this.props.onFeaturesSelectedCleared();
+      if (this._isMounted) {
+        this.setState(prevState => {
+          return {
+            ...prevState,
+            drawFeatures: [],
+            featuresNotEditing: [...prevState.featuresNotEditing, featureEditing],
+            vertexToEdit: {}
           }
-        }
-        console.log('Edited Feature:', prevState.editFeature);
-        return {
-          ...prevState,
-          featureCollection: MapboxGL.geoUtils.addToFeatureCollection(editedFeatureCollection, prevState.editFeature),
-          featureCollectionSelected: MapboxGL.geoUtils.makeFeatureCollection(),
-          isEditFeature: false,
-          editFeature: {},
-          editFeatureCoord: {}
-        }
-      }, () => {
-        this.props.toggleCancelEditButton();
-        console.log('Finished editing feature. Features: ', this.state.featureCollection);
-      });
+        }, () => {
+          console.log('Finished editing feature. Features: ', this.props.features);
+        });
+      }
+      else console.log('Attempting to edit feature coordinates but Map View Component not mounted.');
     }
-    else console.log('Attempting to edit feature coordinates but Map View Component not mounted.');
-  };
-
-  getSelectedFeature = () => {
-    console.log(this.state.featureCollectionSelected);
-    return this.props.feature
-    // return this.state.featureCollectionSelected.features[0];
+    else console.log('No feature selected');
   };
 
   getCurrentBasemap = () => {
@@ -257,7 +247,8 @@ class mapView extends Component {
       //Assign the promise unresolved first then get the data using the json method.
       console.log("sending this extent to server: ", extentString);
       console.log("sending zoom to server: ", zoomLevel);
-      const tileCountApiCall = await fetch('http://tiles.strabospot.org/zipcount?extent=' + extentString + '&zoom=' + zoomLevel);
+      const tileCountApiCall = await fetch(
+        'http://tiles.strabospot.org/zipcount?extent=' + extentString + '&zoom=' + zoomLevel);
       const tileCount = await tileCountApiCall.json();
       console.log("got count from server: ", tileCount);
       return tileCount.count;
@@ -267,22 +258,16 @@ class mapView extends Component {
   };
 
   // Create a new feature in the feature collection
-  createFeature = async feature => {
+  createFeature = async (feature) => {
     if (this._isMounted) {
       feature.properties.id = '' + Date.now();        // ToDo: Generate unique string id here
       feature.properties.name = feature.properties.id;
       console.log('Creating new feature:', feature);
       await this.props.onFeatureAdd(feature);
-      console.log('Finished creating new feature. Features: ', this.props.featureCollection);
+      console.log('Finished creating new feature. Features: ', this.props.features);
     }
     else console.log('Attempting to create a new feature but Map View Component not mounted.');
   };
-
-   // Handle pressing on a feature
-  /*onSourceLayerPress = (e) => {
-    const feature = e.nativeEvent.payload;
-    console.log('You pressed a layer here is your feature', feature); // eslint-disable-line
-  };*/
 
   changeMap = (mapName) => {
     if (this._isMounted) {
@@ -303,6 +288,7 @@ class mapView extends Component {
       this.createFeature(feature);
     } catch (error) {
       console.log(error);
+      Alert.alert("Geolocation Error", "Error getting current location.");
     }
   };
 
@@ -349,54 +335,62 @@ class mapView extends Component {
     console.log('Draw ended.');
   };
 
-  cancelDraw =  () => {
+  cancelDraw = () => {
     this.clearDrawFeature();
     console.log('Draw canceled.');
   };
 
-  cancelEdit = () => {
+  cancelEdits = () => {
     if (this._isMounted) {
+      this.props.onFeaturesSelectedCleared();
       this.setState(prevState => {
         return {
           ...prevState,
-          featureCollectionSelected: MapboxGL.geoUtils.makeFeatureCollection(),
-          isEditFeature: false,
-          editFeature: {},
-          editFeatureCoord: {}
+          isEditingFeature: false,
+          drawFeatures: [],
+          featuresNotEditing: [],
+          vertexToEdit: {}
         }
       }, () => {
-        console.log('Edit canceled.');
+        console.log('Edit canceled. State updated:', this.state);
       });
     }
     else console.log('Attempting to cancel editing but MapView Component not mounted.');
+  };
+
+  saveEdits = () => {
+    this.props.onFeaturesUpdated(this.state.featuresNotEditing);
   };
 
   // Handle a long press on the map by making the point or vertex at the point "selected"
   onMapLongPress = async (e) => {
     console.log('Map long press detected:', e);
     const {screenPointX, screenPointY} = e.properties;
-    const featureSelected = await this.getFeatureAtPress(screenPointX, screenPointY);
-    if (featureSelected) {
-      this.props.toggleCancelEditButton();
+    const editFeatureSelected = await this.getFeatureAtPress(screenPointX, screenPointY);
+    if (Object.getOwnPropertyNames(editFeatureSelected).length > 0) {
+      this.props.startEdit();
       const coordinatePressed = await this._map.getCoordinateFromView([screenPointX, screenPointY]);
-      const explodedFeatureCollection = turf.explode(featureSelected);
-      const nearestPointSelected = turf.nearestPoint(coordinatePressed, explodedFeatureCollection);
-      let featureCollectionSelected = MapboxGL.geoUtils.makeFeatureCollection();
-      MapboxGL.geoUtils.addToFeatureCollection(featureCollectionSelected, featureSelected);
-      if (turf.getType(featureSelected) === 'LineString' || turf.getType(featureSelected) === 'Polygon') {
-        MapboxGL.geoUtils.addToFeatureCollection(featureCollectionSelected, nearestPointSelected);
-      }
+      let explodedFeatureCollection = turf.explode(editFeatureSelected);
+      const nearestPoint = turf.nearestPoint(coordinatePressed, explodedFeatureCollection);
+      delete nearestPoint.properties.distanceToPoint;
+      delete nearestPoint.properties.featureIndex;
+      this.props.onFeatureSelected(editFeatureSelected);
+      if (turf.getType(editFeatureSelected) === 'Point') explodedFeatureCollection = turf.featureCollection([]);
+      const featuresNotEditing = this.state.featuresNotEditing.length === 0 ? this.props.features.filter(
+        feature => feature.properties.id !== this.props.featuresSelected[0].properties.id) : this.state.featuresNotEditing.filter(
+        feature => feature.properties.id !== this.props.featuresSelected[0].properties.id);
       if (this._isMounted) {
         this.setState(prevState => {
           return {
             ...prevState,
-            featureCollectionSelected: featureCollectionSelected,
-            isEditFeature: true,
-            editFeature: featureSelected,
-            editFeatureCoord: turf.getCoord(nearestPointSelected),
+            drawFeatures: explodedFeatureCollection.features,
+            isEditingFeature: true,
+            vertexToEdit: nearestPoint,
+            featuresNotEditing: featuresNotEditing
           }
         }, () => {
-          console.log('Set selected feature collection:', this.state.featureCollectionSelected);
+          console.log('Set feature to edit:', editFeatureSelected);
+          console.log('Set feature vertex to edit:', nearestPoint)
         });
       }
       else console.log('Attempting to set the selected feature but MapView Component not mounted.');
@@ -406,31 +400,42 @@ class mapView extends Component {
 
   // Selects features within the bounding box and returns the first on if there are more then one
   getFeatureAtPress = async (screenPointX, screenPointY) => {
-    const r = 10; // half the width (in pixels?) of bounding box to create
+    const r = 20; // half the width (in pixels?) of bounding box to create
     const bbox = [screenPointY + r, screenPointX + r, screenPointY - r, screenPointX - r];
     const featureCollectionInRect = await this._map.queryRenderedFeaturesInRect(
       bbox, null, ['pointLayer', 'lineLayer', 'polygonLayer']);
-    console.log('Feature collection where pressed:', featureCollectionInRect);
-    let featureSelected = undefined;
+    let featureSelected = {};
     if (featureCollectionInRect.features.length > 0) {
+      if (featureCollectionInRect.features.length > 1) {
+        console.log('Multiple features where pressed:', featureCollectionInRect);
+      }
       featureSelected = featureCollectionInRect.features[0]; // Just use first feature, if more than one
+      delete featureSelected.id;          // Extra empty id field created from queryRenderedFeaturesInRect so delete it
+      console.log('Feature selected:', featureSelected);
     }
-    console.log('Feature pressed:', featureSelected);
+    else console.log('No feature selected.');
     return featureSelected;
   };
 
   render() {
     const centerCoordinate = [this.state.longitude, this.state.latitude];
+
+    // If in Edit mode only display the features that aren't currently being edited in the main feature layer
+    // The feature currently being edited will be displayed in the selected features layer
+    const displayFeatures = this.props.mapMode === MapModes.EDIT ? this.state.featuresNotEditing : this.props.features;
+
     const mapProps = {
       ref: ref => this._map = ref,
       basemap: this.props.currentBasemap,
       centerCoordinate: centerCoordinate,
       onMapPress: this.onMapPress,
       onMapLongPress: this.onMapLongPress,
-      //onSourcePress: this.onSourceLayerPress,
-      features: this.props.featureCollection,
-      selectedFeatures: this.props.featureCollectionSelected,
-      drawFeatures: turf.featureCollection(this.state.drawFeatures)
+      features: turf.featureCollection(displayFeatures),
+      selectedFeatures: turf.featureCollection(this.props.featuresSelected),
+      drawFeatures: turf.featureCollection(this.state.drawFeatures),
+      //editFeatureVertex: turf.featureCollection([this.state.vertexToEdit])  // ToDo Why doesn't this work?
+      editFeatureVertex: Object.getOwnPropertyNames(this.state.vertexToEdit).length > 0 ?
+        turf.featureCollection([this.state.vertexToEdit]) : MapboxGL.geoUtils.makeFeatureCollection()
     };
 
     return (
@@ -465,19 +470,21 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => {
   return {
-    // selectedSpot: state.home.selectedSpot,
-    featureCollectionSelected: state.home.featureCollectionSelected,
-    featureCollection: state.home.featureCollection,
+    selectedSpot: state.home.selectedSpot,
+    features: state.home.features,
+    featuresSelected: state.home.featuresSelected,
     currentBasemap: state.map.currentBasemap,
     map: state.map.map
   }
 };
 
 const mapDispatchToProps = {
-  onFeaturesSelected: (featureCollectionSelected) => ({type: FEATURE_SELECTED, feature: featureCollectionSelected}),
+  onFeaturesSelectedCleared: () => ({type: FEATURES_SELECTED_CLEARED}),
+  onFeatureSelected: (featureSelected) => ({type: FEATURE_SELECTED, feature: featureSelected}),
   onFeatureAdd: (feature) => ({type: FEATURE_ADD, feature: feature}),
   onFeatureDelete: (id) => ({type: FEATURE_DELETE, id: id}),
-  onCurrentBasemap: (basemap) => ({type: CURRENT_BASEMAP, basemap: basemap })
+  onFeaturesUpdated: (features) => ({type: FEATURES_UPDATED, features: features}),
+  onCurrentBasemap: (basemap) => ({type: CURRENT_BASEMAP, basemap: basemap})
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(mapView);
