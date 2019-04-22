@@ -18,7 +18,14 @@ const NotebookHeader = props => {
         />
       </View>
       <View style={styles.headerSpotContainer}>
+        <View style={{flex:1, flexDirection: 'row'}}>
         <Text style={styles.headerSpotName}>{props.spot}</Text>
+        <ButtonNoBackground
+        iconName={'create'}
+        onPress={() => props.onPress('spotPage')}
+        style={[styles.headerButton, {marginLeft: 15}]}
+      />
+        </View>
         <ButtonNoBackground
           style={styles.headerCoords}
           textStyle={[{color: 'blue'}, props.textStyle]}
@@ -28,12 +35,8 @@ const NotebookHeader = props => {
         </ButtonNoBackground>
       </View>
       <View style={styles.headerButtonsContainer}>
-        <ButtonNoBackground
-          onPress={() => props.onPress('spotPage')}
-          style={[styles.headerButton, {paddingTop: 10}]}
-        >
-          {editIcon}
-        </ButtonNoBackground>
+
+          {/*{editIcon}*/}
         <View style={styles.headerButtons}>
           <IconButton
             onPress={() => props.onPress('export')}
