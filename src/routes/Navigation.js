@@ -9,13 +9,6 @@ export const goHome = () => Navigation.setRoot({
           component: {
             name: 'SpotPage',
             id: 'spotPage',
-            options: {
-              topBar: {
-                title: {
-                  text: 'Spot Page'
-                }
-              }
-            }
           }
         },
         {
