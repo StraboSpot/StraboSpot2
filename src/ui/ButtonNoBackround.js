@@ -1,5 +1,7 @@
 import React from 'react';
 import {TouchableOpacity, TouchableNativeFeedback, Text, View, StyleSheet, Platform} from "react-native";
+import {Icon} from 'react-native-elements';
+
 // import Icon from "react-native-vector-icons/Ionicons";
 
 const buttonNoBackground = props => {
@@ -10,6 +12,13 @@ const buttonNoBackground = props => {
         {/*name={props.name}*/}
         {/*size={props.size}*/}
         {/*color={props.color}/>*/}
+      <Icon
+        name={props.iconName}
+        type={props.iconType}
+        color={props.iconColor}
+        iconStyle={props.iconStyle}
+        size={props.size}
+      />
       <Text style={[styles.buttonText, props.textStyle]}>{props.children}</Text>
     </View>
   );
