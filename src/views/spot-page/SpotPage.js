@@ -5,25 +5,27 @@ import {
   Button,
   Dimensions,
   Text,
+  TextInput,
   View,
   StyleSheet
 } from 'react-native'
-//import * as actions from "../../store/actions";
 import {
   CURRENT_BASEMAP,
   FEATURES_UPDATED,
   FEATURE_ADD,
   FEATURE_DELETE,
   FEATURE_SELECTED,
-  EDIT_SPOT
+  EDIT_SPOT,
+  EDIT_SPOT_PROPERTIES
 } from '../../store/Constants';
-import {Header, Divider, Input} from 'react-native-elements';
+import {Card, Header, Divider, Input} from 'react-native-elements';
 import {connect} from 'react-redux';
 import {Navigation} from 'react-native-navigation/lib/dist/index';
 import ButtonNoBackground from '../../ui/ButtonNoBackround';
+import * as helper from '../../shared/HelperFunctions/SpotHelperFunctions';
 import Loading from '../../ui/Loading';
 
-const width = Dimensions.get('window').width
+const width = Dimensions.get('window').width;
 
 class SpotPage extends React.Component {
   _isMounted = false;
@@ -55,6 +57,16 @@ class SpotPage extends React.Component {
   }
 
   render() {
+    const spot = this.props.selectedSpot;
+    let selectedSpotName = null
+    let getSpotCoords = this.getSpotConvertedCoords(spot);
+    // console.log("AAAA", spot)
+    if (spot.properties.name) {
+      selectedSpotName = spot.properties.name
+    }
+    else {
+      selectedSpotName = "Name Not Found"
+    }
 
     const images = {
       component: {
@@ -92,8 +104,7 @@ class SpotPage extends React.Component {
             <Text
               style={{marginBottom: 15, fontSize: 24}}
             >
-              {/*{this.state.text}*/}
-              {this.props.selectedSpot.properties.name}
+              {selectedSpotName}
             </Text>
             <View style={{flexDirection: 'row'}}>
               <ButtonNoBackground
@@ -114,13 +125,22 @@ class SpotPage extends React.Component {
           </Header>
         </View>
         <View style={classes.spotContainer}>
-          <Text>Spot Name:</Text>
-          <Input
-            placeholder={this.props.selectedSpot.properties.name}
-            // style={{height: 40, borderColor: 'gray', borderWidth: 10}}
-            onChangeText={(text) => this.props.onSpotEdit('name', text)}
-            // onChangeText={(text) => this.setState({text})}
-            // value={this.props.selectedSpot.properties.name}
+          <View>
+            {/*<Button*/}
+            {/*  title={'Save'}*/}
+            {/*  onPress={(value) => this.props.onSpotEdit('[0]', value)}*/}
+            {/*/>*/}
+          </View>
+          <Card
+            containerStyle={classes.cardContainer}
+            title={'Spot Info'}>
+            <Text style={classes.spotFieldTitles}>Name:</Text>
+            <Input
+              placeholder={selectedSpotName}
+              // style={{height: 40, borderColor: 'gray', borderWidth: 10}}
+              onChangeText={(text) => this.props.onSpotEdit('name', text)}
+              // onChangeText={(text) => this.setState({text})}
+              // value={this.props.selectedSpot.properties.name}
             />
           <Button
             title={'Save'}
@@ -137,13 +157,13 @@ class SpotPage extends React.Component {
 function mapStateToProps(state) {
   return {
     selectedSpot: state.home.selectedSpot,
-    featureCollectionSelected: state.home.featureCollectionSelected
+    featuresSelected: state.home.featuresSelected
   }
 }
 
 const mapDispatchToProps = {
-    onFeatureAdd: (feature) => ({type: FEATURE_ADD, feature: feature}),
-    onSpotEdit: (field, value) => ({type: EDIT_SPOT, field: field, value: value})
-}
+  onFeatureAdd: (feature) => ({type: FEATURE_ADD, feature: feature}),
+  onSpotEdit: (field, value) => ({type: EDIT_SPOT_PROPERTIES, field: field, value: value})
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(SpotPage);
