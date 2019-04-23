@@ -8,7 +8,7 @@ import {
   View,
   StyleSheet
 } from 'react-native'
-import * as actions from "../../store/actions";
+//import * as actions from "../../store/actions";
 import {
   CURRENT_BASEMAP,
   FEATURES_UPDATED,
@@ -36,7 +36,7 @@ class SpotPage extends React.Component {
   }
 
   async componentDidMount() {
-    console.log('SpotPage mounted', actions);
+   // console.log('SpotPage mounted', actions);
     this._isMounted = true;
     // console.log('SpotPage Mounted', this.props.featureCollectionSelected)
     // const spotData = await this.props.featureCollectionSelected.features.map(spot => {
