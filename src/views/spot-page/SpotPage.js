@@ -142,10 +142,26 @@ class SpotPage extends React.Component {
               // onChangeText={(text) => this.setState({text})}
               // value={this.props.selectedSpot.properties.name}
             />
-          <Button
-            title={'Save'}
-            onPress={() => this.setState(this.state.text)}
-          />
+            <Text style={classes.spotFieldTitles}>Geometry:</Text>
+            <Text style={classes.spotFieldValues}>{spot.geometry.type}</Text>
+            <View>
+              <Text style={classes.spotFieldTitles}>Location:</Text>
+              <View style={classes.locationContainer}>
+              <Text>Latitude:</Text>
+              <TextInput
+                keyboardType={'decimal-pad'}
+                onChangeText={(text) => this.changeLat(text)}
+                value={this.state.Lat}
+              />
+              <Text>Longitude:</Text>
+              <TextInput
+                keyboardType={'decimal-pad'}
+                onChangeText={(text) => this.changeLat(text)}
+                value={this.state.Lat}
+              />
+              </View>
+            </View>
+          </Card>
         </View>
 
       </View>
