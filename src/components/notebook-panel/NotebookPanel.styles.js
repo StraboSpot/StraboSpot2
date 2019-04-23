@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
   },
   headerCoords: {
     paddingLeft: 0,
-    marginTop: 3,
+    marginTop: -9,
   },
   headerImage: {
     width: 60,

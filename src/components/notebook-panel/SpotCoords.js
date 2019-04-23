@@ -1,11 +1,12 @@
 import React from 'react';
 import {Text} from 'react-native';
+import Aux from '../../shared/AuxWrapper';
 
 const spotCoords = (props) => {
   return (
-    <React.Fragment>
+    <Aux>
       <Text>{props.coords}</Text>
-    </React.Fragment>
+    </Aux>
   );
 };
 

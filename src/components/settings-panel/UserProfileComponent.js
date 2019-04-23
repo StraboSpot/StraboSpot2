@@ -13,18 +13,6 @@ constructor(props) {
   }
 }
 
- async componentWillMount() {
-  // const {username, MB_Token} = this.state;
-  // try{
-  //   let userData = await getUserProfile(username, MB_Token);
-  //   console.log(userData)
-  // }
-  // catch (err) {
-  //   console.log(err)
-  // }
-
-}
-
   user = async (username) => {
     const baseUrl = 'https://strabospot.org/db';
 

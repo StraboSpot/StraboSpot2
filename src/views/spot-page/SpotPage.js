@@ -30,13 +30,14 @@ class SpotPage extends React.Component {
 
   constructor(props) {
     super(props);
+    // console.log('PROPS', this.props)
     this.state = {
       text: null
     }
   }
 
   async componentDidMount() {
-   // console.log('SpotPage mounted', actions);
+    // console.log('SpotPage mounted', actions);
     this._isMounted = true;
     // console.log('SpotPage Mounted', this.props.featureCollectionSelected)
     // const spotData = await this.props.featureCollectionSelected.features.map(spot => {
@@ -71,7 +72,7 @@ class SpotPage extends React.Component {
           text: 'Pushed screen'
         },
       }
-    }
+    };
 
     return (
       <View>
@@ -126,7 +127,7 @@ class SpotPage extends React.Component {
             onPress={() => this.setState(this.state.text)}
           />
         </View>
-        {/*<Divider style={{width: width, height: 15, backgroundColor: 'lightgrey'}}/>*/}
+
       </View>
     )
   }
