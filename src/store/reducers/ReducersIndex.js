@@ -1,5 +1,7 @@
 import {
   CURRENT_BASEMAP,
+  EDIT_SPOT_PROPERTIES,
+  EDIT_SPOT_GEOMETRY,
   FEATURE_ADD,
   FEATURE_DELETE,
   FEATURE_SELECTED,
@@ -42,6 +44,36 @@ export const homeReducer = (state = initialState, action) => {
       return {
         ...state,
         features: action.features
+      };
+    case EDIT_SPOT_PROPERTIES:
+      console.log('EDITSPOT', action);
+      const selectedFeatureID = state.selectedSpot.properties.id;
+      // console.log('ID', selectedFeatureID);
+      const updatedSpot = {
+        ...state.selectedSpot,
+        properties: {
+          ...state.selectedSpot.properties,
+          [action.field]: action.value
+        }
+      };
+      let filteredSpots = state.features.filter(el => el.properties.id !== selectedFeatureID);
+      filteredSpots.push(updatedSpot);
+      return {
+        ...state,
+        selectedSpot: updatedSpot,
+        features: filteredSpots
+      };
+    case EDIT_SPOT_GEOMETRY:
+      console.log('EDITSPOT Geometry', action);
+      return {
+        ...state,
+        selectedSpot: {
+          ...state.selectedSpot,
+          geometry: {
+            ...state.selected.geometry,
+            [action.field]: action.value
+          }
+        }
       }
   }
   return state;
@@ -63,5 +95,3 @@ export const mapReducer = (state = initialState, action) => {
   }
   return state;
 };
-
-// export default homeReducer;
