@@ -105,15 +105,6 @@ class SpotPage extends React.Component {
 
     return (
         <View style={styles.spotContainer}>
-          <ButtonNoBackground
-            iconName={'ios-arrow-back'}
-            iconType={'ionicon'}
-            iconStyle={{color: 'black'}}
-            style={{flexDirection: 'row'}}
-            textStyle={{marginLeft: 10, paddingTop: 1, fontSize: 18}}
-            onPress={() => Navigation.pop(this.props.componentId)}>
-            Back
-          </ButtonNoBackground>
             <View>
               <Divider style={styles.divider}>
                 <Text style={styles.spotFieldTitles}>Name:</Text>
