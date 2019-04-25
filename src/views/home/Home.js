@@ -237,14 +237,6 @@ class Home extends React.Component {
     else if (name === 'export') {
       console.log('Export button was pressed')
     }
-    else if (name === 'spotPage') {
-      // goToSpotPage();
-      Navigation.push(this.props.componentId, {
-        component: {
-          name: 'SpotPage'
-        }
-      });
-    }
   };
 
   // Toggle given button between true (on) and false (off)
