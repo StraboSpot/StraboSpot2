@@ -1,4 +1,5 @@
 import {Dimensions, StyleSheet} from 'react-native';
+import * as themes from '../../themes/ColorThemes';
 
 const width = Dimensions.get('window').width * .75;
 
@@ -19,9 +20,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   spotContainer: {
-    // marginTop: 100,
-    backgroundColor: '#d7e7ff',
-    flex:1,
+    backgroundColor: themes.LIGHTGREY,
+    flex: 1,
     width: '100%',
     height: '95%',
   },
