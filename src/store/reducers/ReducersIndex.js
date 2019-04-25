@@ -82,7 +82,7 @@ export const homeReducer = (state = initialState, action) => {
 export const mapReducer = (state = initialState, action) => {
   switch (action.type) {
     case CURRENT_BASEMAP:
-      console.log('Current Basemap in Reducer', action.basemap);
+      // console.log('Current Basemap in Reducer', action.basemap);
       return {
         ...state.map,
         currentBasemap: action.basemap
