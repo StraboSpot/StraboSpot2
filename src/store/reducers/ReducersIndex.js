@@ -7,7 +7,8 @@ import {
   FEATURE_SELECTED,
   FEATURES_SELECTED_CLEARED,
   FEATURES_UPDATED,
-  MAP
+  MAP,
+  SPOTPAGE_VISIBLE
 } from '../Constants';
 
 const initialState = {
@@ -15,7 +16,8 @@ const initialState = {
   currentBasemap: {},
   features: [],
   featuresSelected: [],
-  selectedSpot: {}
+  selectedSpot: {},
+  isSpotPageVisible: false
 };
 
 export const homeReducer = (state = initialState, action) => {
@@ -74,6 +76,12 @@ export const homeReducer = (state = initialState, action) => {
             [action.field]: action.value
           }
         }
+      }
+    case SPOTPAGE_VISIBLE:
+      console.log('Spot Page Visible is set to:', action.visible )
+      return {
+        ...state,
+        isSpotPageVisible: action.visible
       }
   }
   return state;

@@ -1,4 +1,5 @@
 import {StyleSheet} from 'react-native';
+import * as themes from '../../themes/ColorThemes';
 
 const styles = StyleSheet.create({
   container: {
@@ -7,7 +8,7 @@ const styles = StyleSheet.create({
     height: '98%',
     borderBottomLeftRadius: 30,
     borderTopLeftRadius: 30,
-    backgroundColor: '#d4d4d4',
+    backgroundColor: themes.LIGHTGREY,
     alignItems: 'flex-end',
     position: 'absolute', //Here is the trick
     bottom: 0, //Here is the trick

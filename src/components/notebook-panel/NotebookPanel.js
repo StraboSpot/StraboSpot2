@@ -1,20 +1,22 @@
 import React, {useState} from 'react'
 import {Text, View} from 'react-native'
+import {connect} from 'react-redux';
 import styles from "./NotebookPanel.styles";
 import NotebookHeader from './NotebookHeader';
 import NotebookFooter from './NotebookFooter';
 import SpotOverview from '../../spots/SpotOverview';
 import ButtonNoBackground from '../../ui/ButtonNoBackround';
 import SpotPage from '../../spots/spot-page/SpotPage';
+import {SPOTPAGE_VISIBLE} from "../../store/Constants";
 
 const NotebookPanel = props => {
 
-  const [isSpotPageVisible, setIsSpotPageVisible] = useState(false);
-  console.log(isSpotPageVisible)
+  // const [isSpotPageVisible, setIsSpotPageVisible] = useState(false);
+  // console.log(isSpotPageVisible)
   if (props.spotName) {
 
     const spotsPageOpen = () => {
-      setIsSpotPageVisible(!isSpotPageVisible);
+      props.isSpotPageVisible(true)
     };
 
     return (
@@ -26,7 +28,7 @@ const NotebookPanel = props => {
           spotPageOpen={() => spotsPageOpen()}
         />
         <View style={styles.subContainer}>
-          {isSpotPageVisible ? <SpotPage/> : <SpotOverview/>}
+          {props.spotPageVisible ? <SpotPage/> : <SpotOverview/>}
         </View>
         <NotebookFooter/>
       </View>
@@ -45,4 +47,16 @@ const NotebookPanel = props => {
   }
 };
 
-export default NotebookPanel;
+function mapStateToProps(state) {
+  return {
+    selectedSpot: state.home.selectedSpot,
+    featuresSelected: state.home.featuresSelected,
+    spotPageVisible: state.home.isSpotPageVisible
+  }
+}
+
+const mapDispatchToProps = {
+  isSpotPageVisible: (visible) => ({type: SPOTPAGE_VISIBLE, visible: visible})
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(NotebookPanel);

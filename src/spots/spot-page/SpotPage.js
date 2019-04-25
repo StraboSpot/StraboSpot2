@@ -9,9 +9,10 @@ import {
 } from 'react-native'
 import {
   FEATURE_ADD,
-  EDIT_SPOT_PROPERTIES
+  EDIT_SPOT_PROPERTIES,
+  SPOTPAGE_VISIBLE
 } from '../../store/Constants';
-import {Divider, Input} from 'react-native-elements/src/index';
+import {Button, Divider, Input} from 'react-native-elements';
 import {connect} from 'react-redux';
 import {Navigation} from 'react-native-navigation/lib/dist/index';
 import ButtonNoBackground from '../../ui/ButtonNoBackround';
@@ -24,18 +25,18 @@ class SpotPage extends React.Component {
 
   constructor(props) {
     super(props);
-    let latCoords = this.props.selectedSpot.geometry.coordinates[0];
-    let lngCoords = this.props.selectedSpot.geometry.coordinates[1];
     // console.log('PROPS', this.props)
     this.state = {
-      text: null,
-      lat: latCoords,
-      lng: lngCoords
+      spotName: null,
+      lat: this.props.selectedSpot.geometry.coordinates[0],
+      lng: this.props.selectedSpot.geometry.coordinates[1]
     }
   }
 
   componentDidMount() {
     this._isMounted = true;
+    console.log('SpotPage Mounted');
+
     // console.log('SpotPage Mounted', this.props.featureCollectionSelected)
     // const spotData = await this.props.featureCollectionSelected.features.map(spot => {
     //   return {
@@ -47,8 +48,8 @@ class SpotPage extends React.Component {
   }
 
   componentWillUnmount() {
-    console.log('SpotPage Unmounted');
     this._isMounted = false;
+    console.log('SpotPage Unmounted');
   }
 
   changeCoords = (field, value) => {
@@ -61,9 +62,29 @@ class SpotPage extends React.Component {
     }
   };
 
+  spotNameEdit = (text) => {
+    this.setState(prevState => {
+      return {
+        ...prevState,
+        spotName: text
+      }
+    }, () => console.log('spotName state:', this.state.spotName))
+    // this.props.onSpotEdit('name', text)
+  };
+
+  saveSpotName = () => {
+    this.props.onSpotEdit('name', this.state.spotName);
+    this.setState(prevState => {
+      return {
+        ...prevState,
+        spotName: ''
+      }
+    })
+  };
+
   render() {
-    let inputValueLat = this.state.lat;
-    let inputValueLng = this.state.lng;
+    // let inputValueLat = this.state.lat;
+    // let inputValueLng = this.state.lng;
     let spotCoords = null;
     const spot = this.props.selectedSpot;
 
@@ -138,13 +159,15 @@ class SpotPage extends React.Component {
 function mapStateToProps(state) {
   return {
     selectedSpot: state.home.selectedSpot,
-    featuresSelected: state.home.featuresSelected
+    featuresSelected: state.home.featuresSelected,
+    isSpotPageVisible: state.home.isSpotPageVisible
   }
 }
 
 const mapDispatchToProps = {
   onFeatureAdd: (feature) => ({type: FEATURE_ADD, feature: feature}),
-  onSpotEdit: (field, value) => ({type: EDIT_SPOT_PROPERTIES, field: field, value: value})
+  onSpotEdit: (field, value) => ({type: EDIT_SPOT_PROPERTIES, field: field, value: value}),
+  isSpotPageVisible: (visible) => ({type: SPOTPAGE_VISIBLE, visible: visible})
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(SpotPage);

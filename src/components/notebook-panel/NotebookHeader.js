@@ -5,6 +5,7 @@ import styles from './NotebookPanel.styles';
 import ButtonNoBackground from '../../ui/ButtonNoBackround';
 import IconButton from '../../ui/IconButton';
 import Icon from 'react-native-vector-icons/Ionicons';
+import {connect} from 'react-redux';
 
 const editIcon = <Icon name={'ios-create'} size={20} color={'blue'}/>;
 
@@ -20,11 +21,11 @@ const NotebookHeader = props => {
       <View style={styles.headerSpotContainer}>
         <View style={{flex:1, flexDirection: 'row'}}>
         <Text style={styles.headerSpotName}>{props.spot}</Text>
-        <ButtonNoBackground
+          {props.spotPageVisible ? null : <ButtonNoBackground
         iconName={'create'}
         onPress={props.spotPageOpen}
         style={[styles.headerButton, {marginLeft: 15, flexDirection: 'row'}]}
-        >Toggle</ButtonNoBackground>
+        />}
         </View>
         <ButtonNoBackground
           style={styles.headerCoords}
@@ -56,5 +57,11 @@ const NotebookHeader = props => {
   )
 };
 
-export default NotebookHeader;
+function mapStateToProps(state) {
+  return {
+    spotPageVisible: state.home.isSpotPageVisible
+  }
+}
+
+export default connect(mapStateToProps)(NotebookHeader) ;
 
