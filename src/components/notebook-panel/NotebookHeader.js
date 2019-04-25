@@ -22,9 +22,9 @@ const NotebookHeader = props => {
         <Text style={styles.headerSpotName}>{props.spot}</Text>
         <ButtonNoBackground
         iconName={'create'}
-        onPress={() => props.onPress('spotPage')}
-        style={[styles.headerButton, {marginLeft: 15}]}
-      />
+        onPress={props.spotPageOpen}
+        style={[styles.headerButton, {marginLeft: 15, flexDirection: 'row'}]}
+        >Toggle</ButtonNoBackground>
         </View>
         <ButtonNoBackground
           style={styles.headerCoords}

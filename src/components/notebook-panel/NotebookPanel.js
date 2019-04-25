@@ -1,23 +1,32 @@
-import React from 'react'
+import React, {useState} from 'react'
 import {Text, View} from 'react-native'
 import styles from "./NotebookPanel.styles";
 import NotebookHeader from './NotebookHeader';
 import NotebookFooter from './NotebookFooter';
 import SpotOverview from '../../spots/SpotOverview';
 import ButtonNoBackground from '../../ui/ButtonNoBackround';
+import SpotPage from '../../spots/spot-page/SpotPage';
 
 const NotebookPanel = props => {
 
+  const [isSpotPageVisible, setIsSpotPageVisible] = useState(false);
+  console.log(isSpotPageVisible)
   if (props.spotName) {
+
+    const spotsPageOpen = () => {
+      setIsSpotPageVisible(!isSpotPageVisible);
+    };
+
     return (
       <View style={styles.container}>
         <NotebookHeader
-          spot={props.spotName}
+          spot={props.spotName.props.name}
           spotCoords={props.spotCoords}
           onPress={props.onPress}
+          spotPageOpen={() => spotsPageOpen()}
         />
         <View style={styles.subContainer}>
-          <SpotOverview/>
+          {isSpotPageVisible ? <SpotPage/> : <SpotOverview/>}
         </View>
         <NotebookFooter/>
       </View>
