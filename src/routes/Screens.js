@@ -15,7 +15,7 @@ import Home from "../views/home/Home";
 import Initialising from "../Initializing";
 import SignIn from "../views/SignIn";
 import SignUp from "../views/SignUp";
-import SpotPage from "../views/spot-page/SpotPage";
+import SpotPage from "../spots/spot-page/SpotPage";
 import Images from "../views/images/Images";
 import Loading from '../ui/Loading'
 
