@@ -386,16 +386,16 @@ class Home extends React.Component {
     }
   };
 
-  // converts the lat and lng from decimal form to minutes and seconds
-  toDegreesMinutesAndSeconds = (coordinate) => {
-    var absolute = Math.abs(coordinate);
-    var degrees = Math.floor(absolute);
-    var minutesNotTruncated = (absolute - degrees) * 60;
-    var minutes = Math.floor(minutesNotTruncated);
-    var seconds = Math.floor((minutesNotTruncated - minutes) * 60);
-
-    return degrees + " " + minutes + " " + seconds;
-  };
+  // // converts the lat and lng from decimal form to minutes and seconds
+  // toDegreesMinutesAndSeconds = (coordinate) => {
+  //   var absolute = Math.abs(coordinate);
+  //   var degrees = Math.floor(absolute);
+  //   var minutesNotTruncated = (absolute - degrees) * 60;
+  //   var minutes = Math.floor(minutesNotTruncated);
+  //   var seconds = Math.floor((minutesNotTruncated - minutes) * 60);
+  //
+  //   return degrees + " " + minutes + " " + seconds;
+  // };
 
   // adds cardinal points to coordinates -- only works with single points
   convertDMS = (lat, lng) => {

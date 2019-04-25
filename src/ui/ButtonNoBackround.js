@@ -7,11 +7,6 @@ import {Icon} from 'react-native-elements';
 const buttonNoBackground = props => {
   const content = (
     <View style={[styles.button, props.style]}>
-      {/*<MaterialCommunityIcons.Ionicon*/}
-        {/*style={[styles.itemIcon, props.style]}*/}
-        {/*name={props.name}*/}
-        {/*size={props.size}*/}
-        {/*color={props.color}/>*/}
       <Icon
         name={props.iconName}
         type={props.iconType}
@@ -45,7 +40,8 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: "black",
-    fontSize: 16
+    fontSize: 18,
+    paddingRight: 10
   },
   itemIcon: {
     paddingRight: 15,
