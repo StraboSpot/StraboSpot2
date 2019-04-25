@@ -14,6 +14,7 @@ import {
   FEATURES_SELECTED_CLEARED,
   FEATURES_UPDATED
 } from '../../store/Constants';
+import {truncDecimal} from "../../shared/Helpers";
 
 MapboxGL.setAccessToken(MAPBOX_KEY);
 
@@ -30,7 +31,8 @@ class mapView extends Component {
       location: false,
       drawFeatures: [],
       isEditingFeature: false,
-      featuresNotEditing: [],
+      featuresNotSelected: [],
+      featuresSelected: [],
       vertexToEdit: {}
     };
 
@@ -90,55 +92,170 @@ class mapView extends Component {
   // Mapbox: Handle map press
   async onMapPress(e) {
     console.log('Map press detected:', e);
-    if (!this.state.isEditingFeature) {
-      // Draw a feature
-      if (this.props.mapMode === MapModes.DRAW.POINT || this.props.mapMode === MapModes.DRAW.LINE
-        || this.props.mapMode === MapModes.DRAW.POLYGON) {
-        console.log('Drawing', this.props.mapMode, '...');
-        let feature = {};
-        const newCoord = turf.getCoord(e);
-        // Draw a line given a point and a new point
-        if (this.state.drawFeatures.length === 1) {
-          const pointCoord = turf.getCoord(this.state.drawFeatures[0]);
-          let feature = turf.lineString([pointCoord, newCoord]);
-          this.drawFeature(feature);
-        }
-        // Draw a line given a line and a new point
-        else if (this.state.drawFeatures.length > 1 && this.props.mapMode === MapModes.DRAW.LINE) {
-          const lineCoords = turf.getCoords(this.state.drawFeatures[1]);
-          let feature = turf.lineString([...lineCoords, newCoord]);
-          this.drawFeature(feature);
-        }
-        else if (this.state.drawFeatures.length > 1 && this.props.mapMode === MapModes.DRAW.POLYGON) {
-          const firstCoord = turf.getCoord(this.state.drawFeatures[0]);
-          // Draw a polygon given a line and a new point
-          if (turf.getType(this.state.drawFeatures[1]) === 'LineString') {
-            const lineCoords = turf.getCoords(this.state.drawFeatures[1]);
-            feature = turf.polygon([[...lineCoords, newCoord, firstCoord]]);
-          }
-          // Draw a polygon given a polygon and a new point
-          else {
-            let polyCoords = turf.getCoords(this.state.drawFeatures[1])[0];
-            polyCoords.pop();
-            feature = turf.polygon([[...polyCoords, newCoord, firstCoord]]);
-          }
-          this.drawFeature(feature);
-        }
-        // Draw a point for the last coordinate touched
-        feature = MapboxGL.geoUtils.makeFeature(e.geometry);
+    console.log('Map mode:', this.props.mapMode);
+    // Select/Unselect a feature
+    if (this.props.mapMode === MapModes.VIEW) {
+      const {screenPointX, screenPointY} = e.properties;
+      const featureSelected = await this.getFeatureAtPress(screenPointX, screenPointY);
+      if (Object.getOwnPropertyNames(featureSelected).length > 0) this.props.onFeatureSelected(featureSelected);
+      else this.props.onFeaturesSelectedCleared();
+    }
+    // Draw a feature
+    else if (this.props.mapMode === MapModes.DRAW.POINT || this.props.mapMode === MapModes.DRAW.LINE
+      || this.props.mapMode === MapModes.DRAW.POLYGON) {
+      console.log('Drawing', this.props.mapMode, '...');
+      let feature = {};
+      const newCoord = turf.getCoord(e);
+      // Draw a line given a point and a new point
+      if (this.state.drawFeatures.length === 1) {
+        const pointCoord = turf.getCoord(this.state.drawFeatures[0]);
+        let feature = turf.lineString([pointCoord, newCoord]);
         this.drawFeature(feature);
       }
-      // Select/Unselect a feature
-      else {
-        const {screenPointX, screenPointY} = e.properties;
-        const featureSelected = await this.getFeatureAtPress(screenPointX, screenPointY);
-        if (Object.getOwnPropertyNames(featureSelected).length > 0) this.props.onFeatureSelected(featureSelected);
-        else this.props.onFeaturesSelectedCleared();
+      // Draw a line given a line and a new point
+      else if (this.state.drawFeatures.length > 1 && this.props.mapMode === MapModes.DRAW.LINE) {
+        const lineCoords = turf.getCoords(this.state.drawFeatures[1]);
+        let feature = turf.lineString([...lineCoords, newCoord]);
+        this.drawFeature(feature);
       }
+      else if (this.state.drawFeatures.length > 1 && this.props.mapMode === MapModes.DRAW.POLYGON) {
+        const firstCoord = turf.getCoord(this.state.drawFeatures[0]);
+        // Draw a polygon given a line and a new point
+        if (turf.getType(this.state.drawFeatures[1]) === 'LineString') {
+          const lineCoords = turf.getCoords(this.state.drawFeatures[1]);
+          feature = turf.polygon([[...lineCoords, newCoord, firstCoord]]);
+        }
+        // Draw a polygon given a polygon and a new point
+        else {
+          let polyCoords = turf.getCoords(this.state.drawFeatures[1])[0];
+          polyCoords.pop();
+          feature = turf.polygon([[...polyCoords, newCoord, firstCoord]]);
+        }
+        this.drawFeature(feature);
+      }
+      // Draw a point for the last coordinate touched
+      feature = MapboxGL.geoUtils.makeFeature(e.geometry);
+      this.drawFeature(feature);
     }
     // Edit a feature
-    else this.editFeatureCoordinates(e.geometry);
+    else if (this.props.mapMode === MapModes.EDIT) {
+      // Select/Unselect new vertex to edit
+      const {screenPointX, screenPointY} = e.properties;
+      console.log('Select/Unselect vertex (and thus feature with the vertex) to edit');
+      console.log('Selecting feature to edit...');
+
+      // If we don't have a selected feature, check to see if point pressed was at a feature
+      //   If not, do nothing
+      //   If so, set that feature to the selected feature and set all other features as features-not-selected and
+      //   explode the vertices of the selected feature if the feature is a line or polygon and add to draw layer
+      // If we already have a selected feature check to see if we also already have a selected vertex
+      // If not, and there is a different feature at the point pressed, set that feature as the selected feature
+      // If not, and there is a vertex of the selected feature at the point pressed, set that as the selected vertex
+      // If not, and there is no feature at the point pressed, unselect the selected feature
+      // If so, check to see if point pressed was at another vertex of the selected feature
+      //     If not edit vertex coords to those of pressed point
+      //     If so switch selected vertex to vertex at pressed point
+      const editFeatureSelected = await this.getFeatureAtPress(screenPointX, screenPointY);
+      if (this.state.featuresSelected.length === 0) {
+        //const editFeatureSelected = await this.getFeatureAtPress(screenPointX, screenPointY);
+        if (Object.getOwnPropertyNames(editFeatureSelected).length === 0) console.log('No feature selected.');
+        else this.setSelectedFeatureToEdit(editFeatureSelected);
+      }
+      else {
+        if (Object.getOwnPropertyNames(this.state.vertexToEdit).length === 0) {
+          if (Object.getOwnPropertyNames(editFeatureSelected).length === 0) this.clearSelectedFeatureToEdit();
+          else {
+            const vertexSelected = await this.getDrawFeatureAtPoint(screenPointX, screenPointY);
+            if (Object.getOwnPropertyNames(vertexSelected).length === 0) {
+              if (this.state.featuresSelected[0].properties.id === editFeatureSelected.properties.id) {
+                this.clearSelectedFeatureToEdit();
+              }
+              else this.setSelectedFeatureToEdit(editFeatureSelected);
+            }
+            else this.setSelectedVertexToEdit(vertexSelected);
+          }
+        }
+        else {
+          const vertexSelected = await this.getDrawFeatureAtPoint(screenPointX, screenPointY);
+          if (Object.getOwnPropertyNames(vertexSelected).length === 0) this.editFeatureCoordinates(e.geometry);
+          else {
+            if (this.state.vertexToEdit.properties.id === vertexSelected.properties.id) {
+              this.clearSelectedVertexToEdit();
+            }
+            else this.setSelectedVertexToEdit(vertexSelected);
+          }
+        }
+      }
+    }
+    else {
+      console.log('Error. Unknown map mode:', this.props.mapMode);
+    }
   }
+
+  setSelectedFeatureToEdit = (feature) => {
+    this.props.onFeatureSelected(feature);
+    let featuresNotSelected = [];
+    if (this.state.featuresNotSelected.length === 0 && this.state.featuresSelected.length === 0) {
+      featuresNotSelected = this.props.features.filter(
+        featureInFilter => featureInFilter.properties.id !== feature.properties.id);
+    }
+    else {
+      featuresNotSelected = this.state.featuresNotSelected.filter(
+        featureInFilter => featureInFilter.properties.id !== feature.properties.id);
+    }
+    let drawFeatures = turf.explode(feature).features;
+    // If polygon remove last exploded point because it is the same as the first
+    if (turf.getType(feature) === 'Polygon') drawFeatures.pop();
+    this.setState(prevState => {
+      return {
+        ...prevState,
+        drawFeatures: drawFeatures,
+        featuresNotSelected: [...featuresNotSelected, ...prevState.featuresSelected],
+        featuresSelected: [feature]
+      }
+    }, () => {
+      console.log('Set feature to edit:', feature);
+      if (turf.getType(feature) === 'Point') this.setSelectedVertexToEdit(feature);
+    });
+  };
+
+  clearSelectedFeatureToEdit = () => {
+    this.props.onFeaturesSelectedCleared();
+    this.setState(prevState => {
+      return {
+        ...prevState,
+        drawFeatures: [],
+        featuresSelected: [],
+        featuresNotSelected: [...prevState.featuresNotSelected, ...prevState.featuresSelected],
+        vertexToEdit: {}                              // Not really needed here
+      }
+    }, () => {
+      console.log('Cleared selected feature.');
+    });
+  };
+
+  setSelectedVertexToEdit = (vertex) => {
+    this.setState(prevState => {
+      return {
+        ...prevState,
+        vertexToEdit: vertex
+      }
+    }, () => {
+      console.log('Set vertex to edit:', vertex);
+    });
+  };
+
+  clearSelectedVertexToEdit = () => {
+    this.setState(prevState => {
+      return {
+        ...prevState,
+        vertexToEdit: {}
+      }
+    }, () => {
+      console.log('Cleared selected vertex to edit.');
+      if (turf.getType(this.state.featuresSelected[0]) === 'Point') this.clearSelectedFeatureToEdit();
+    });
+  };
 
   clearDrawFeature = () => {
     if (this._isMounted) {
@@ -175,9 +292,9 @@ class mapView extends Component {
 
   // Edit the coordinates of a selected feature
   editFeatureCoordinates = (newGeometry) => {
-    if (this.props.featuresSelected.length > 0) {
+    if (this.state.featuresSelected.length > 0) {
       console.log('Editing Coordinate');
-      let featureEditing = this.props.featuresSelected[0];
+      let featureEditing = this.state.featuresSelected[0];
       console.log('Feature Editing:', featureEditing);
       const coords = turf.getCoords(featureEditing);
       const coordToEdit = turf.getCoords(this.state.vertexToEdit);
@@ -186,7 +303,8 @@ class mapView extends Component {
       if (turf.getType(featureEditing) === 'Point') featureEditing.geometry = newGeometry;
       else if (turf.getType(featureEditing) === 'LineString') {
         for (let i = 0; i < coords.length; i++) {
-          if (coords[i][0] === coordToEdit[0] && coords[i][1] === coordToEdit[1]) {
+          if (truncDecimal(coords[i][0]) === truncDecimal(coordToEdit[0])
+            && truncDecimal(coords[i][1]) === truncDecimal(coordToEdit[1])) {
             featureEditing.geometry.coordinates[i] = turf.getCoord(newGeometry);
           }
         }
@@ -194,24 +312,28 @@ class mapView extends Component {
       else if (turf.getType(featureEditing) === 'Polygon') {
         for (let i = 0; i < coords.length; i++) {
           for (let j = 0; j < coords[i].length; j++) {
-            if (coords[i][j][0] === coordToEdit[0] && coords[i][j][1] === coordToEdit[1]) {
+            if (truncDecimal(coords[i][j][0]) === truncDecimal(coordToEdit[0])
+              && truncDecimal(coords[i][j][1]) === truncDecimal(coordToEdit[1])) {
               featureEditing.geometry.coordinates[i][j] = turf.getCoord(newGeometry);
             }
           }
         }
       }
       console.log('Edited coords:', turf.getCoords(featureEditing));
-      this.props.onFeaturesSelectedCleared();
+      let drawFeatures = turf.explode(featureEditing).features;
+      // If polygon remove last exploded point because it is the same as the first
+      if (turf.getType(featureEditing) === 'Polygon') drawFeatures.pop();
       if (this._isMounted) {
         this.setState(prevState => {
           return {
             ...prevState,
-            drawFeatures: [],
-            featuresNotEditing: [...prevState.featuresNotEditing, featureEditing],
+            drawFeatures: drawFeatures,
+            featuresSelected: [featureEditing],
             vertexToEdit: {}
           }
         }, () => {
-          console.log('Finished editing feature. Features: ', this.props.features);
+          console.log('Finished editing feature. Selected Feature: ', this.state.featuresSelected);
+          if (turf.getType(featureEditing) === 'Point') this.clearSelectedFeatureToEdit();
         });
       }
       else console.log('Attempting to edit feature coordinates but Map View Component not mounted.');
@@ -348,7 +470,8 @@ class mapView extends Component {
           ...prevState,
           isEditingFeature: false,
           drawFeatures: [],
-          featuresNotEditing: [],
+          featuresNotSelected: [],
+          featuresSelected: [],
           vertexToEdit: {}
         }
       }, () => {
@@ -359,7 +482,7 @@ class mapView extends Component {
   };
 
   saveEdits = () => {
-    this.props.onFeaturesUpdated(this.state.featuresNotEditing);
+    this.props.onFeaturesUpdated([...this.state.featuresNotSelected, ...this.state.featuresSelected]);
   };
 
   // Handle a long press on the map by making the point or vertex at the point "selected"
@@ -367,49 +490,93 @@ class mapView extends Component {
     console.log('Map long press detected:', e);
     const {screenPointX, screenPointY} = e.properties;
     const editFeatureSelected = await this.getFeatureAtPress(screenPointX, screenPointY);
-    if (Object.getOwnPropertyNames(editFeatureSelected).length > 0) {
+    if (this.props.mapMode === MapModes.VIEW) {
       this.props.startEdit();
-      const coordinatePressed = await this._map.getCoordinateFromView([screenPointX, screenPointY]);
-      let explodedFeatureCollection = turf.explode(editFeatureSelected);
-      const nearestPoint = turf.nearestPoint(coordinatePressed, explodedFeatureCollection);
-      delete nearestPoint.properties.distanceToPoint;
-      delete nearestPoint.properties.featureIndex;
-      this.props.onFeatureSelected(editFeatureSelected);
-      if (turf.getType(editFeatureSelected) === 'Point') explodedFeatureCollection = turf.featureCollection([]);
-      const featuresNotEditing = this.state.featuresNotEditing.length === 0 ? this.props.features.filter(
-        feature => feature.properties.id !== this.props.featuresSelected[0].properties.id) : this.state.featuresNotEditing.filter(
-        feature => feature.properties.id !== this.props.featuresSelected[0].properties.id);
-      if (this._isMounted) {
+      if (Object.getOwnPropertyNames(editFeatureSelected).length === 0) {
         this.setState(prevState => {
           return {
             ...prevState,
-            drawFeatures: explodedFeatureCollection.features,
-            isEditingFeature: true,
-            vertexToEdit: nearestPoint,
-            featuresNotEditing: featuresNotEditing
+            drawFeatures: [],
+            featuresNotSelected: this.props.features,
+            featuresSelected: []
           }
-        }, () => {
-          console.log('Set feature to edit:', editFeatureSelected);
-          console.log('Set feature vertex to edit:', nearestPoint)
+        }, async () => {
+          console.log('No features set feature to edit.');
         });
       }
-      else console.log('Attempting to set the selected feature but MapView Component not mounted.');
+      else this.setSelectedFeatureToEdit(editFeatureSelected);
     }
-    else console.log('No feature at selected coordinate.');
+    else if (this.props.mapMode === MapModes.EDIT) {
+      if (this.state.featuresSelected.length > 0) {
+        let featureSelected = this.state.featuresSelected[0];
+        if (turf.getType(featureSelected) === 'LineString' || turf.getType(featureSelected) === 'Polygon') {
+          const vertexSelected = await this.getDrawFeatureAtPoint(screenPointX, screenPointY);
+          let drawFeatures = this.state.drawFeatures;
+          if (Object.getOwnPropertyNames(vertexSelected).length === 0) {
+            console.log('Adding vertex to selected feature...');
+            console.log('Still need code to add vertex. No action for now.');
+            Alert.alert("Incomplete Feature", "Adding a vertex does not work yet.");
+          }
+          else {
+            console.log('Deleting selected vertex...');
+            const coords = turf.getCoords(featureSelected);
+            const coordToEdit = turf.getCoord(vertexSelected);
+            if (turf.getType(featureSelected) === 'LineString' && coords.length > 3) {
+              for (let i = 0; i < coords.length; i++) {
+                if (truncDecimal(coords[i][0]) === truncDecimal(coordToEdit[0])
+                  && truncDecimal(coords[i][1]) === truncDecimal(coordToEdit[1])) {
+                  featureSelected.geometry.coordinates.splice(i, 1);
+                }
+              }
+              drawFeatures = turf.explode(featureSelected).features;
+            }
+            else if (turf.getType(featureSelected) === 'Polygon' && coords[0].length > 4) {
+              for (let i = 0; i < coords.length; i++) {
+                for (let j = 0; j < coords[i].length; j++) {
+                  if (truncDecimal(coords[i][j][0]) === truncDecimal(coordToEdit[0])
+                    && truncDecimal(coords[i][j][1]) === truncDecimal(coordToEdit[1])) {
+                    featureSelected.geometry.coordinates[i].splice(j, 1);
+                  }
+                }
+              }
+              drawFeatures = turf.explode(featureSelected).features;
+            }
+            else console.log('Not enough vertices in selected feature to delete one.');
+          }
+          this.setState(prevState => {
+            return {
+              ...prevState,
+              drawFeatures: drawFeatures,
+              featuresSelected: [featureSelected]
+            }
+          }, () => {
+             console.log('Set selected feature:', featureSelected);
+          });
+        }
+        else console.log('Selected feature is not a line or polygon. No action taken.');
+      }
+      else console.log('No feature selected. No action taken.');
+    }
+    else console.log('Not in View or Edit modes. No action taken.');
   };
 
-  // Selects features within the bounding box and returns the first on if there are more then one
-  getFeatureAtPress = async (screenPointX, screenPointY) => {
-    const r = 20; // half the width (in pixels?) of bounding box to create
+  // Get the feature at a point from the draw layer
+  getDrawFeatureAtPoint = async (screenPointX, screenPoint) => {
+    return await this.getFeatureAtPress(screenPointX, screenPoint, ['pointLayerDraw']);
+  };
+
+  // Get the feature within a bounding box from a given layer, returning only the first one if there is more than one
+  // If no layer is provided use the main feature layers and the selected layers
+  getFeatureAtPress = async (screenPointX, screenPointY, layers) => {
+    const r = 30; // half the width (in pixels?) of bounding box to create
     const bbox = [screenPointY + r, screenPointX + r, screenPointY - r, screenPointX - r];
-    const featureCollectionInRect = await this._map.queryRenderedFeaturesInRect(
-      bbox, null, ['pointLayer', 'lineLayer', 'polygonLayer']);
+    if (!layers) layers = ['pointLayer', 'lineLayer', 'polygonLayer', 'pointLayerSelected', 'lineLayerSelected', 'polygonLayerSelected'];
+    const featureCollectionInRect = await this._map.queryRenderedFeaturesInRect(bbox, null, layers);
+    const featuresInRect = featureCollectionInRect.features;
     let featureSelected = {};
-    if (featureCollectionInRect.features.length > 0) {
-      if (featureCollectionInRect.features.length > 1) {
-        console.log('Multiple features where pressed:', featureCollectionInRect);
-      }
-      featureSelected = featureCollectionInRect.features[0]; // Just use first feature, if more than one
+    if (featuresInRect.length > 0) {
+      if (featuresInRect.length > 1) console.log('Multiple features where pressed:', featuresInRect);
+      featureSelected = featuresInRect[0]; // Just use first feature, if more than one
       delete featureSelected.id;          // Extra empty id field created from queryRenderedFeaturesInRect so delete it
       console.log('Feature selected:', featureSelected);
     }
@@ -421,8 +588,9 @@ class mapView extends Component {
     const centerCoordinate = [this.state.longitude, this.state.latitude];
 
     // If in Edit mode only display the features that aren't currently being edited in the main feature layer
-    // The feature currently being edited will be displayed in the selected features layer
-    const displayFeatures = this.props.mapMode === MapModes.EDIT ? this.state.featuresNotEditing : this.props.features;
+    // and display the feature currently being edited in the selected feature layer
+    const displayFeatures = this.props.mapMode === MapModes.EDIT ? this.state.featuresNotSelected : this.props.features;
+    const displaySelectedFeatures = this.props.mapMode === MapModes.EDIT ? this.state.featuresSelected : this.props.featuresSelected;
 
     const mapProps = {
       ref: ref => this._map = ref,
@@ -431,7 +599,7 @@ class mapView extends Component {
       onMapPress: this.onMapPress,
       onMapLongPress: this.onMapLongPress,
       features: turf.featureCollection(displayFeatures),
-      selectedFeatures: turf.featureCollection(this.props.featuresSelected),
+      selectedFeatures: turf.featureCollection(displaySelectedFeatures),
       drawFeatures: turf.featureCollection(this.state.drawFeatures),
       //editFeatureVertex: turf.featureCollection([this.state.vertexToEdit])  // ToDo Why doesn't this work?
       editFeatureVertex: Object.getOwnPropertyNames(this.state.vertexToEdit).length > 0 ?

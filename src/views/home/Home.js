@@ -40,6 +40,7 @@ class Home extends React.Component {
       buttons: {
         endDrawButtonVisible: false,
         drawButtonOn: undefined,
+        drawButtonsVisible: true,
         editButtonsVisible: false
       },
       mapMode: MapModes.VIEW,
@@ -215,6 +216,7 @@ class Home extends React.Component {
     await this.mapViewComponent.cancelEdits();
     this.setMapMode(MapModes.VIEW);
     this.toggleButton('editButtonsVisible', false);
+    this.toggleButton('drawButtonsVisible', true);
   };
 
   saveEdits = async () => {
@@ -224,8 +226,8 @@ class Home extends React.Component {
 
   startEdit = () => {
     this.setMapMode(MapModes.EDIT);
-    console.log('here');
     this.toggleButton('editButtonsVisible', true);
+    this.toggleButton('drawButtonsVisible', false);
   };
 
   notebookClickHandler = (name) => {
@@ -591,30 +593,34 @@ class Home extends React.Component {
             </View>
           </View>
           <View style={styles.bottomRightIcons}>
-            <View style={styles.pointIcon}>
-              <IconButton
-                source={this.state.mapMode === MapModes.DRAW.POINT ?
-                  require('../../assets/icons/app-icons-shaded/PointButton_pressed.png') : require(
-                    '../../assets/icons/app-icons-shaded/PointButton.png')}
-                onPress={this.clickHandler.bind(this, MapModes.DRAW.POINT)}
-              />
-            </View>
-            <View style={styles.lineIcon}>
-              <IconButton
-                source={this.state.mapMode === MapModes.DRAW.LINE ?
-                  require('../../assets/icons/app-icons-shaded/LineButton_pressed.png') : require(
-                    '../../assets/icons/app-icons-shaded/LineButton.png')}
-                onPress={this.clickHandler.bind(this, MapModes.DRAW.LINE)}
-              />
-            </View>
-            <View style={styles.polygonIcon}>
-              <IconButton
-                source={this.state.mapMode === MapModes.DRAW.POLYGON ?
-                  require('../../assets/icons/app-icons-shaded/PolygonButton_pressed.png') :
-                  require('../../assets/icons/app-icons-shaded/PolygonButton.png')}
-                onPress={this.clickHandler.bind(this, MapModes.DRAW.POLYGON)}
-              />
-            </View>
+            {this.state.buttons.drawButtonsVisible ?
+              <View>
+                <View style={styles.pointIcon}>
+                  <IconButton
+                    source={this.state.mapMode === MapModes.DRAW.POINT ?
+                      require('../../assets/icons/app-icons-shaded/PointButton_pressed.png') : require(
+                        '../../assets/icons/app-icons-shaded/PointButton.png')}
+                    onPress={this.clickHandler.bind(this, MapModes.DRAW.POINT)}
+                  />
+                </View>
+                <View style={styles.lineIcon}>
+                  <IconButton
+                    source={this.state.mapMode === MapModes.DRAW.LINE ?
+                      require('../../assets/icons/app-icons-shaded/LineButton_pressed.png') : require(
+                        '../../assets/icons/app-icons-shaded/LineButton.png')}
+                    onPress={this.clickHandler.bind(this, MapModes.DRAW.LINE)}
+                  />
+                </View>
+                <View style={styles.polygonIcon}>
+                  <IconButton
+                    source={this.state.mapMode === MapModes.DRAW.POLYGON ?
+                      require('../../assets/icons/app-icons-shaded/PolygonButton_pressed.png') :
+                      require('../../assets/icons/app-icons-shaded/PolygonButton.png')}
+                    onPress={this.clickHandler.bind(this, MapModes.DRAW.POLYGON)}
+                  />
+                </View>
+              </View>
+              : null}
           </View>
           <View style={styles.leftsideIcons}>
             <View style={styles.searchAndSettingsIcons}>
