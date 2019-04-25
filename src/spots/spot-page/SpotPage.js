@@ -55,10 +55,20 @@ class SpotPage extends React.Component {
   changeCoords = (field, value) => {
     console.log(field, value)
     if (field === 'lat') {
-      this.setState({lat: value})
+      this.setState(prevState => {
+        return {
+          ...prevState,
+          lat: value
+        }
+      })
     }
     else if (field === 'lng') {
-      this.setState({lng: value})
+      this.setState(prevState => {
+        return {
+          ...prevState,
+          lng: value
+        }
+      })
     }
   };
 
@@ -91,22 +101,20 @@ class SpotPage extends React.Component {
     if (spot.geometry.type === 'Point') {
       spotCoords =
         <Aux>
-          <View >
-            <Text style={[styles.spotFieldTitles, {paddingTop:15, fontSize: 14}]}>Latitude:</Text>
+          <View>
+            <Text style={styles.spotFieldValues}>Latitude:</Text>
             <TextInput
-              style={{height: 25, width: 150, borderColor: 'gray', borderBottomWidth: 1}}
               keyboardType={'decimal-pad'}
               onChangeText={(text) => this.changeCoords('lat', text)}
-              value={inputValueLat.toString()}
+              value={JSON.stringify(this.state.lat)}
             />
           </View>
-          <View >
-            <Text style={[styles.spotFieldTitles, {paddingTop:15, fontSize: 14}]}>Longitude:</Text>
+          <View>
+            <Text style={styles.spotFieldValues}>Longitude:</Text>
             <TextInput
-              style={{height: 25, width: 150, borderColor: 'gray', borderBottomWidth: 1}}
               keyboardType={'decimal-pad'}
               onChangeText={(text) => this.changeCoords('lng', text)}
-              value={inputValueLng.toString()}
+              value={JSON.stringify(this.state.lng)}
             />
           </View>
         </Aux>
@@ -125,33 +133,55 @@ class SpotPage extends React.Component {
     }
 
     return (
-        <View style={styles.spotContainer}>
-            <View>
-              <Divider style={styles.divider}>
-                <Text style={styles.spotFieldTitles}>Name:</Text>
-              </Divider>
-              <Input
-                inputContainerStyle={{borderColor: 'transparent'}}
-                placeholder={'No Name'}
-                // style={{height: 40, borderColor: 'gray', borderWidth: 10}}
-                onChangeText={(text) => this.props.onSpotEdit('name', text)}
-                // onChangeText={(text) => this.setState({text})}
-                value={this.props.selectedSpot.properties.name}
-              />
-            </View>
-            <Divider style={styles.divider}>
-              <Text style={styles.spotFieldTitles}>Geometry:</Text>
-            </Divider>
-            <Text style={styles.spotFieldValues}>{spot.geometry.type}</Text>
-            <View>
-              <Divider style={styles.divider}>
-                <Text style={styles.spotFieldTitles}>Location:</Text>
-              </Divider>
-              <View style={styles.locationContainer}>
-                {spotCoords}
-              </View>
-            </View>
+      <View style={styles.spotContainer}>
+        <View style={{flexDirection: 'row', alignContent: 'space-between'}}>
+          <Button
+            icon={{
+              name: 'arrow-back',
+              size: 20,
+              color: 'black'
+            }}
+            containerStyle={{marginTop: 10}}
+            titleStyle={{color: 'blue'}}
+            title={'Return to Overview'}
+            type={'clear'}
+            onPress={() => this.props.isSpotPageVisible(false)}
+          />
+          <Button
+            containerStyle={{marginTop: 10, marginLeft: 125}}
+            iconRight
+            titleStyle={{color: 'blue'}}
+            title={'Save Changes'}
+            type={'clear'}
+            onPress={() => this.saveSpotName()}
+          />
         </View>
+          <Divider style={styles.divider}>
+            <Text style={styles.spotDivider}>Name</Text>
+          </Divider>
+          <Input
+            inputStyle={styles.spotFieldValues}
+            inputContainerStyle={{borderColor: 'transparent'}}
+            placeholder={this.props.selectedSpot.properties.name}
+            // style={{height: 40, borderColor: 'gray', borderWidth: 10}}
+            onChangeText={(text) => this.spotNameEdit(text)}
+            // onChangeText={(text) => this.setState({text})}
+            value={this.state.spotName}
+          />
+        <Divider style={styles.divider}>
+          <Text style={styles.spotDivider}>Geography</Text>
+        </Divider>
+        <View style={{borderBottomWidth: 1, borderBottomColor: 'black'}}>
+          <Text style={styles.spotFieldTitles}>Geometry:</Text>
+          <Text style={[styles.spotFieldValues]}> {spot.geometry.type}</Text>
+        </View>
+        <View>
+          <Text style={styles.spotFieldTitles}>Location:</Text>
+          <View style={styles.locationContainer}>
+            {spotCoords}
+          </View>
+        </View>
+      </View>
     )
   }
 }

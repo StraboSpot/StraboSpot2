@@ -1,22 +1,17 @@
 import {Dimensions, StyleSheet} from 'react-native';
 
-const width = Dimensions.get('window').width*.75;
+const width = Dimensions.get('window').width * .75;
 
 const styles = StyleSheet.create({
-  cardContainer: {
-    flex:1,
-    width: '50%',
-    height: '95%',
-    // alignContent: 'center'
-  },
   container: {
     flex: 1,
-    // justifyContent: 'center',
     alignItems: 'flex-start'
   },
   divider: {
     height: 30,
     justifyContent: 'center',
+    alignItems: 'center'
+
   },
   header: {
     fontSize: 100,
@@ -30,25 +25,37 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '95%',
   },
-  spotFieldTitles: {
-    fontSize: 18,
+  spotDivider: {
+    fontSize: 22,
     marginLeft: 15,
     fontWeight: 'bold',
-    // marginTop: 10
+  },
+  spotFieldTitles: {
+    fontWeight: 'bold',
+    fontSize: 20,
+    marginLeft: 15,
+    paddingTop: 5,
   },
   spotFieldValues: {
     fontWeight: 'bold',
-    fontSize: 16,
-    marginLeft: 15,
-    paddingTop: 15,
-    paddingBottom: 15,
+    fontSize: 18,
+    marginLeft: 35,
+    paddingTop: 5,
+    paddingBottom: 10,
   },
   locationContainer: {
-    // width: '100%',
     flexDirection: 'row',
     alignContent: 'center',
     justifyContent: 'space-around',
-    paddingTop: 0
+    borderBottomWidth: 1,
+    borderBottomColor: 'black',
+    paddingBottom: 10,
+  },
+  button: {
+    marginTop: 10,
+    marginBottom: 10,
+    marginRight: 0,
+    flexDirection: 'row'
   }
 });
 
