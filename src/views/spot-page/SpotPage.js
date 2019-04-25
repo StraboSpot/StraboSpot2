@@ -22,7 +22,7 @@ import {Card, Header, Divider, Input} from 'react-native-elements';
 import {connect} from 'react-redux';
 import {Navigation} from 'react-native-navigation/lib/dist/index';
 import ButtonNoBackground from '../../ui/ButtonNoBackround';
-import * as helper from '../../shared/HelperFunctions/SpotHelperFunctions';
+//import * as helper from '../../shared/HelperFunctions/SpotHelperFunctions';
 import Loading from '../../ui/Loading';
 
 const width = Dimensions.get('window').width;
