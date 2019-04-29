@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Picker, Text, StyleSheet, View, TouchableOpacity} from 'react-native';
+import {AsyncStorage, Picker, Text, StyleSheet, View, TouchableOpacity} from 'react-native';
 import ButtonWithBackground from '../../../ui/ButtonWithBackground';
 import ButtonNoBackground from '../../../ui/ButtonNoBackround';
 import {Header} from 'react-native-elements';
@@ -8,6 +8,8 @@ import {Platform} from 'react-native';
 import RNFetchBlob from 'rn-fetch-blob';
 import {unzip} from 'react-native-zip-archive'; /*TODO  react-native-zip-archive@3.0.1 requires a peer of react@^15.4.2 || <= 16.3.1 but none is installed */
 import ProgressBar from 'react-native-progress/Bar';
+var RNFS = require('react-native-fs');
+
 
 class SaveMapModal extends Component {
   _isMounted = false;
@@ -23,6 +25,7 @@ class SaveMapModal extends Component {
     this.tilesDirectory = '/StraboSpotTiles';
     this.tileZipsDirectory = this.devicePath + this.tilesDirectory + '/TileZips';
     this.tileCacheDirectory = this.devicePath + this.tilesDirectory + '/TileCache';
+    this.tileTempDirectory = this.devicePath + this.tilesDirectory + '/TileTemp';
     this.mapID = '2a542a65-ab88-fc7d-c35e-961cd23339d4';
     this.zipError = '';
     this.tryCount = 0;
@@ -40,10 +43,12 @@ class SaveMapModal extends Component {
     };
 
     this.currentBasemap = props.map.getCurrentBasemap();
+    this.saveId = this.currentBasemap.layerSaveId;
     this.currentMapName = this.currentBasemap.layerLabel;
     this.maxZoom = this.currentBasemap.maxZoom;
     this.saveLayerId = this.currentBasemap.layerSaveId;
     this.zoomLevels = [];
+    this.offlineMapsData = [];
 
     props.map.getCurrentZoom().then((zoom) => { //get current zoom and then calculate zoom levels to display
 
@@ -93,6 +98,15 @@ class SaveMapModal extends Component {
 
   async componentDidMount() {
     this._isMounted = true;
+
+    await AsyncStorage.getItem("offlineMapsData", (err, offlineMapsData) => {
+      console.log("offlineMapsData: ", offlineMapsData);
+      offlineMapsData = JSON.parse(offlineMapsData);
+      if(offlineMapsData){
+        this.offlineMapsData = offlineMapsData;
+      }
+
+    });
   }
 
   componentWillUnmount() {
@@ -153,6 +167,20 @@ class SaveMapModal extends Component {
   downloadZip = async (zipUID) => {
     try {
       const downloadZipURL = this.tilehost + '/ziptemp/' + zipUID + '/' + zipUID + '.zip';
+
+      //first try to delete from temp directories
+      let fileExists = await RNFS.exists(this.tileZipsDirectory + '/' + zipUID + '.zip');
+      if(fileExists){
+        //delete
+        await RNFS.unlink(this.tileZipsDirectory + '/' + zipUID + '.zip');
+      }
+
+      let folderExists = await RNFS.exists(this.tileTempDirectory + '/' + zipUID);
+      if(folderExists){
+        //delete
+        await RNFS.unlink(this.tileTempDirectory + '/' + zipUID);
+      }
+
       let res = await RNFetchBlob
         .config({path: this.tileZipsDirectory + '/' + zipUID + '.zip'})
         .fetch('GET', downloadZipURL, {})
@@ -167,6 +195,65 @@ class SaveMapModal extends Component {
     }
   };
 
+  tileMove = async (tilearray,zipUID) => {
+      for (const tile of tilearray) {
+        let fileExists = await RNFS.exists(this.tileCacheDirectory + '/' + this.saveId + '/tiles/' + tile.name);
+        console.log("foo exists: ", tile.name + ' ' + fileExists);
+        if(!fileExists){
+          await RNFS.moveFile(this.tileTempDirectory + '/' + zipUID + '/tiles/' + tile.name, this.tileCacheDirectory + '/'+this.saveId + '/tiles/' + tile.name);
+          console.log(tile);
+        }
+      }
+  }
+
+  moveFiles = async (zipUID) => {
+    let folderexists = await RNFS.exists(this.tileCacheDirectory+'/'+this.saveId);
+    if(!folderexists){
+      console.log("FOLDER DOESN'T EXIST! "+this.saveId);
+      await RNFS.mkdir(this.tileCacheDirectory+'/'+this.saveId);
+      await RNFS.mkdir(this.tileCacheDirectory+'/'+this.saveId+'/tiles');
+    }
+
+    //now move files to correct location
+    let result = await RNFS.readDir(this.tileTempDirectory + '/' + zipUID + '/tiles') //MainBundlePath // On Android, use "RNFS.DocumentDirectoryPath" (MainBundlePath is not defined)
+
+    console.log('GOT RESULT', result);
+    await this.tileMove(result,zipUID);
+
+    console.log('update counts here.');
+    let tileCount = await RNFS.readDir(this.tileCacheDirectory+'/'+this.saveId+'/tiles');
+    tileCount = tileCount.length;
+    console.log('newCount: ', tileCount);
+
+    //now check for existence of AsyncStorage offlineMapsData and store new count
+    if(!this.offlineMapsData){
+      this.offlineMapsData=[];
+    }
+
+    let newOfflineMapsData = [];
+    let thisMap = {};
+    thisMap.name = this.saveId;
+    thisMap.count = tileCount;
+    newOfflineMapsData.push(thisMap);
+
+    //loop over offlineMapsData and add any other maps (not current)
+    for(let i = 0; i < this.offlineMapsData.length; i++){
+      if(this.offlineMapsData[i].name){
+        if(this.offlineMapsData[i].name != this.saveId){
+          //Add it to new array for Async Storage
+          newOfflineMapsData.push(this.offlineMapsData[i]);
+        }
+      }
+    }
+
+    offlineMapsString = JSON.stringify(newOfflineMapsData);
+
+    await AsyncStorage.setItem('offlineMapsData', offlineMapsString)
+      .then(json => console.log('saved offlineMapsData: ', newOfflineMapsData));
+
+
+  }
+
   doUnzip = async (zipUID) => {
     // hide progress bar
     this.setState({showLoadingBar: false});
@@ -174,18 +261,22 @@ class SaveMapModal extends Component {
     this.setState({progressMessage: 'Installing Tiles in StraboSpot...'});
 
     const sourcePath = this.tileZipsDirectory + '/' + zipUID + '.zip';
-    const targetPath = this.tileCacheDirectory;
+    const targetPath = this.tileTempDirectory;
 
     try {
-      let path = await unzip(sourcePath, targetPath);
-      console.log(`unzip completed at ${path}`)
+
+      await unzip(sourcePath, targetPath);
+      console.log('unzip completed')
+
+      await this.moveFiles(zipUID); //move files to the correct folder based on saveId
+      console.log('move done.');
+
     } catch (err) {
       console.log('Unzip Error:', err);
     }
 
     return Promise.resolve();
   };
-
 
   render() { //return whole modal here
     return (

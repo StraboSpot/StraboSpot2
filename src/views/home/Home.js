@@ -676,7 +676,7 @@ class Home extends React.Component {
             <View style={styles.modal}>
               <SaveMapModal
                 close={this.toggleModal}
-                map={this.mapPress}
+                map={this.mapViewComponent}
               />
             </View>
           </Modal>

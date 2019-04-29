@@ -342,7 +342,7 @@ class mapView extends Component {
   };
 
   getCurrentBasemap = () => {
-    return this.state.currentBasemap;
+    return this.props.currentBasemap;
   };
 
   getExtentString = async () => {

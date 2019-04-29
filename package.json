@@ -16,6 +16,7 @@
     "react-native-drawer": "^2.5.1",
     "react-native-elements": "^1.1.0",
     "react-native-floating-action": "^1.14.1",
+    "react-native-fs": "^2.13.3",
     "react-native-image-grid": "^1.0.0",
     "react-native-modal": "^9.0.0",
     "react-native-navigation": "^2.18.1",
