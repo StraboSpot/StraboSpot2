@@ -8,12 +8,8 @@ import {
   FEATURES_SELECTED_CLEARED,
   FEATURES_UPDATED,
   MAP,
-<<<<<<< HEAD
   OFFLINE_MAPS,
-  SPOTPAGE_VISIBLE
-=======
   SET_SPOT_PAGE_VISIBLE
->>>>>>> 816b7e0b2152e93db3b13bf66014553ede683856
 } from '../Constants';
 import {SpotPages} from "../../components/notebook-panel/Notebook.constants";
 
@@ -84,6 +80,12 @@ export const homeReducer = (state = initialState, action) => {
           }
         }
       }
+    case OFFLINE_MAPS:
+      console.log('Setting offline maps: ', action.offlineMaps);
+      return {
+        ...state,
+        offlineMaps: action.offlineMaps,
+      };
   }
   return state;
 };
@@ -95,12 +97,6 @@ export const notebookReducer = (state = initialState, action) => {
         ...state,
         visiblePage: action.page
       }
-    case OFFLINE_MAPS:
-      console.log('Setting offline maps: ', action.offlineMaps);
-      return {
-        ...state,
-        offlineMaps: action.offlineMaps,
-      };
   }
   return state;
 };
