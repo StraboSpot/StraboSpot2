@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {Text, View} from 'react-native';
 import IconButton from '../../ui/IconButton';
 import styles from "./NotebookPanel.styles";
+import {SpotPages} from "./Notebook.constants";
 
 const NotebookFooter = props => (
   <View style={styles.footerContainer}>
@@ -13,6 +14,7 @@ const NotebookFooter = props => (
     <IconButton
         source={require('../../assets/icons/Measurement.png')}
         style={styles.footerIcon}
+        onPress={() => props.onPress(SpotPages.MEASUREMENT)}
       />
       <IconButton
         source={require('../../assets/icons/Sample.png')}

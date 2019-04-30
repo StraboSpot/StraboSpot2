@@ -6,17 +6,17 @@ import NotebookHeader from './NotebookHeader';
 import NotebookFooter from './NotebookFooter';
 import SpotOverview from '../../spots/SpotOverview';
 import ButtonNoBackground from '../../ui/ButtonNoBackround';
-import SpotPage from '../../spots/spot-page/SpotPage';
-import {SPOTPAGE_VISIBLE} from "../../store/Constants";
+import SpotBasics from '../../spots/spot-page/SpotBasics';
+import MeasurementPage from '../../spots/spot-measurements/Measurements';
+import {SpotPages} from "./Notebook.constants";
+import {SET_SPOT_PAGE_VISIBLE} from "../../store/Constants";
 
 const NotebookPanel = props => {
 
-  // const [isSpotPageVisible, setIsSpotPageVisible] = useState(false);
-  // console.log(isSpotPageVisible)
   if (props.spotName) {
 
-    const spotsPageOpen = () => {
-      props.isSpotPageVisible(true)
+     const pageDisplay = async (page) => {
+       props.setPageVisible(page)
     };
 
     return (
@@ -25,12 +25,16 @@ const NotebookPanel = props => {
           spot={props.spotName.props.name}
           spotCoords={props.spotCoords}
           onPress={props.onPress}
-          spotPageOpen={() => spotsPageOpen()}
+          spotPageOpen={() => props.setPageVisible(SpotPages.BASIC)}
         />
         <View style={styles.subContainer}>
-          {props.spotPageVisible ? <SpotPage/> : <SpotOverview/>}
+          {props.spotPageVisible === SpotPages.OVERVIEW ? <SpotOverview/> : null}
+          {props.spotPageVisible === SpotPages.BASIC ? <SpotBasics/> : null}
+          {props.spotPageVisible === SpotPages.MEASUREMENT ? <MeasurementPage/> : null}
+          {props.spotPageVisible === undefined ? <SpotOverview/> : null}
         </View>
-        <NotebookFooter/>
+        <NotebookFooter
+        onPress={(page) => pageDisplay(page)}/>
       </View>
     )
   }
@@ -51,12 +55,12 @@ function mapStateToProps(state) {
   return {
     selectedSpot: state.home.selectedSpot,
     featuresSelected: state.home.featuresSelected,
-    spotPageVisible: state.home.isSpotPageVisible
+    spotPageVisible: state.notebook.visiblePage
   }
 }
 
 const mapDispatchToProps = {
-  isSpotPageVisible: (visible) => ({type: SPOTPAGE_VISIBLE, visible: visible})
+  setPageVisible: (page) => ({type: SET_SPOT_PAGE_VISIBLE, page: page })
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(NotebookPanel);

@@ -2,6 +2,7 @@ import React from 'react'
 import Aux from '../../shared/AuxWrapper';
 import styles from './SpotPageStyles';
 import {
+  Platform,
   Dimensions,
   Text,
   TextInput,
@@ -10,17 +11,15 @@ import {
 import {
   FEATURE_ADD,
   EDIT_SPOT_PROPERTIES,
-  SPOTPAGE_VISIBLE
+  SET_SPOT_PAGE_VISIBLE
 } from '../../store/Constants';
+import {SpotPages} from "../../components/notebook-panel/Notebook.constants";
 import {Button, Divider, Input} from 'react-native-elements';
 import {connect} from 'react-redux';
-import {Navigation} from 'react-native-navigation/lib/dist/index';
-import ButtonNoBackground from '../../ui/ButtonNoBackround';
-//import * as helper from '../../shared/HelperFunctions/SpotHelperFunctions';
 
 const width = Dimensions.get('window').width;
 
-class SpotPage extends React.Component {
+class SpotBasics extends React.Component {
   _isMounted = false;
 
   constructor(props) {
@@ -35,9 +34,9 @@ class SpotPage extends React.Component {
 
   componentDidMount() {
     this._isMounted = true;
-    console.log('SpotPage Mounted');
+    console.log('SpotBasics Mounted', Platform);
 
-    // console.log('SpotPage Mounted', this.props.featureCollectionSelected)
+    // console.log('SpotBasics Mounted', this.props.featureCollectionSelected)
     // const spotData = await this.props.featureCollectionSelected.features.map(spot => {
     //   return {
     //     name: spot.properties.name,
@@ -49,7 +48,7 @@ class SpotPage extends React.Component {
 
   componentWillUnmount() {
     this._isMounted = false;
-    console.log('SpotPage Unmounted');
+    console.log('SpotBasics Unmounted');
   }
 
   changeCoords = (field, value) => {
@@ -93,8 +92,6 @@ class SpotPage extends React.Component {
   };
 
   render() {
-    // let inputValueLat = this.state.lat;
-    // let inputValueLng = this.state.lng;
     let spotCoords = null;
     const spot = this.props.selectedSpot;
 
@@ -104,7 +101,7 @@ class SpotPage extends React.Component {
           <View>
             <Text style={styles.spotFieldValues}>Latitude:</Text>
             <TextInput
-              keyboardType={'decimal-pad'}
+              keyboardType={Platform.OS === 'ios' ? 'numbers-and-punctuation' : 'decimal-pad'}
               onChangeText={(text) => this.changeCoords('lat', text)}
               value={JSON.stringify(this.state.lat)}
             />
@@ -112,7 +109,7 @@ class SpotPage extends React.Component {
           <View>
             <Text style={styles.spotFieldValues}>Longitude:</Text>
             <TextInput
-              keyboardType={'decimal-pad'}
+              keyboardType={'numbers-and-punctuation'}
               onChangeText={(text) => this.changeCoords('lng', text)}
               value={JSON.stringify(this.state.lng)}
             />
@@ -145,7 +142,7 @@ class SpotPage extends React.Component {
             titleStyle={{color: 'blue'}}
             title={'Return to Overview'}
             type={'clear'}
-            onPress={() => this.props.isSpotPageVisible(false)}
+            onPress={() => this.props.setPageVisible(SpotPages.OVERVIEW)}
           />
           <Button
             containerStyle={{marginTop: 10, marginLeft: 125}}
@@ -157,7 +154,7 @@ class SpotPage extends React.Component {
           />
         </View>
           <Divider style={styles.divider}>
-            <Text style={styles.spotDivider}>Name</Text>
+            <Text style={styles.spotDivider}>{this.props.spotPageVisible}</Text>
           </Divider>
           <Input
             inputStyle={styles.spotFieldValues}
@@ -190,14 +187,15 @@ function mapStateToProps(state) {
   return {
     selectedSpot: state.home.selectedSpot,
     featuresSelected: state.home.featuresSelected,
-    isSpotPageVisible: state.home.isSpotPageVisible
+    spotPageVisible: state.notebook.visiblePage
+
   }
 }
 
 const mapDispatchToProps = {
   onFeatureAdd: (feature) => ({type: FEATURE_ADD, feature: feature}),
   onSpotEdit: (field, value) => ({type: EDIT_SPOT_PROPERTIES, field: field, value: value}),
-  isSpotPageVisible: (visible) => ({type: SPOTPAGE_VISIBLE, visible: visible})
+  setPageVisible: (page) => ({type: SET_SPOT_PAGE_VISIBLE, page: page })
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(SpotPage);
+export default connect(mapStateToProps, mapDispatchToProps)(SpotBasics);
