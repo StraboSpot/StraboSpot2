@@ -8,6 +8,13 @@ import {Platform} from 'react-native';
 import RNFetchBlob from 'rn-fetch-blob';
 import {unzip} from 'react-native-zip-archive'; /*TODO  react-native-zip-archive@3.0.1 requires a peer of react@^15.4.2 || <= 16.3.1 but none is installed */
 import ProgressBar from 'react-native-progress/Bar';
+import {connect} from 'react-redux';
+
+import {
+  CURRENT_BASEMAP,
+  OFFLINE_MAPS
+} from '../../../store/Constants';
+
 var RNFS = require('react-native-fs');
 
 
@@ -18,7 +25,6 @@ class SaveMapModal extends Component {
     super(props, context);
 
     this.tilehost = 'http://tiles.strabospot.org';
-    this.url = 'https://strabospot.org/testimages/images.json';
 
     let dirs = RNFetchBlob.fs.dirs;
     this.devicePath = Platform.OS === 'ios' ? dirs.DocumentDir : dirs.SDCardDir; // ios : android
@@ -37,12 +43,15 @@ class SaveMapModal extends Component {
       showMainMenu: true,
       showLoadingMenu: false,
       showLoadingBar: false,
-      progressMessage: 'foo bar',
+      progressMessage: '',
       percentDone: 0,
       downloadZoom: 0
     };
 
-    this.currentBasemap = props.map.getCurrentBasemap();
+    console.log("Props: ", props);
+
+    //this.currentBasemap = props.map.getCurrentBasemap();
+    this.currentBasemap = props.currentBasemap;
     this.saveId = this.currentBasemap.layerSaveId;
     this.currentMapName = this.currentBasemap.layerLabel;
     this.maxZoom = this.currentBasemap.maxZoom;
@@ -99,14 +108,6 @@ class SaveMapModal extends Component {
   async componentDidMount() {
     this._isMounted = true;
 
-    await AsyncStorage.getItem("offlineMapsData", (err, offlineMapsData) => {
-      console.log("offlineMapsData: ", offlineMapsData);
-      offlineMapsData = JSON.parse(offlineMapsData);
-      if(offlineMapsData){
-        this.offlineMapsData = offlineMapsData;
-      }
-
-    });
   }
 
   componentWillUnmount() {
@@ -217,17 +218,16 @@ class SaveMapModal extends Component {
     //now move files to correct location
     let result = await RNFS.readDir(this.tileTempDirectory + '/' + zipUID + '/tiles') //MainBundlePath // On Android, use "RNFS.DocumentDirectoryPath" (MainBundlePath is not defined)
 
-    console.log('GOT RESULT', result);
     await this.tileMove(result,zipUID);
 
-    console.log('update counts here.');
     let tileCount = await RNFS.readDir(this.tileCacheDirectory+'/'+this.saveId+'/tiles');
     tileCount = tileCount.length;
-    console.log('newCount: ', tileCount);
+
+    currentOfflineMaps = this.props.offlineMaps;
 
     //now check for existence of AsyncStorage offlineMapsData and store new count
-    if(!this.offlineMapsData){
-      this.offlineMapsData=[];
+    if(!currentOfflineMaps){
+      currentOfflineMaps=[];
     }
 
     let newOfflineMapsData = [];
@@ -237,20 +237,17 @@ class SaveMapModal extends Component {
     newOfflineMapsData.push(thisMap);
 
     //loop over offlineMapsData and add any other maps (not current)
-    for(let i = 0; i < this.offlineMapsData.length; i++){
-      if(this.offlineMapsData[i].name){
-        if(this.offlineMapsData[i].name != this.saveId){
-          //Add it to new array for Async Storage
-          newOfflineMapsData.push(this.offlineMapsData[i]);
+    for(let i = 0; i < currentOfflineMaps.length; i++){
+      if(currentOfflineMaps[i].name){
+        if(currentOfflineMaps[i].name != this.saveId){
+          //Add it to new array for Redux Storage
+          newOfflineMapsData.push(currentOfflineMaps[i]);
         }
       }
     }
 
-    offlineMapsString = JSON.stringify(newOfflineMapsData);
-
-    await AsyncStorage.setItem('offlineMapsData', offlineMapsString)
-      .then(json => console.log('saved offlineMapsData: ', newOfflineMapsData));
-
+    await this.props.onOfflineMaps(newOfflineMapsData);
+    console.log("Saved offlineMaps to Redux.");
 
   }
 
@@ -386,4 +383,15 @@ const styles = StyleSheet.create({
   }
 });
 
-export default SaveMapModal;
+const mapStateToProps = (state) => {
+  return {
+    currentBasemap: state.map.currentBasemap,
+    offlineMaps: state.home.offlineMaps
+  }
+};
+
+const mapDispatchToProps = {
+  onOfflineMaps: (offlineMaps) => ({type: OFFLINE_MAPS, offlineMaps: offlineMaps})
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(SaveMapModal);

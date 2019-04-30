@@ -8,6 +8,7 @@ import {
   FEATURES_SELECTED_CLEARED,
   FEATURES_UPDATED,
   MAP,
+  OFFLINE_MAPS,
   SPOTPAGE_VISIBLE
 } from '../Constants';
 
@@ -16,6 +17,7 @@ const initialState = {
   currentBasemap: {},
   features: [],
   featuresSelected: [],
+  offlineMaps: [],
   selectedSpot: {},
   isSpotPageVisible: false
 };
@@ -83,6 +85,12 @@ export const homeReducer = (state = initialState, action) => {
         ...state,
         isSpotPageVisible: action.visible
       }
+    case OFFLINE_MAPS:
+      console.log('Setting offline maps: ', action.offlineMaps);
+      return {
+        ...state,
+        offlineMaps: action.offlineMaps,
+      };
   }
   return state;
 };
@@ -99,7 +107,7 @@ export const mapReducer = (state = initialState, action) => {
       return {
         ...state.map,
         map: action
-      }
+      };
   }
   return state;
 };
