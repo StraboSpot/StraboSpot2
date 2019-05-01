@@ -514,9 +514,14 @@ class mapView extends Component {
           const vertexSelected = await this.getDrawFeatureAtPoint(screenPointX, screenPointY);
           let drawFeatures = this.state.drawFeatures;
           if (Object.getOwnPropertyNames(vertexSelected).length === 0) {
-            console.log('Adding vertex to selected feature...');
-            console.log('Still need code to add vertex. No action for now.');
-            Alert.alert("Incomplete Feature", "Adding a vertex does not work yet.");
+            // To add a vertex to a line the new point selected must be on the line
+            if (turf.getType(featureSelected) === 'LineString' && Object.getOwnPropertyNames(
+              editFeatureSelected).length !== 0 && featureSelected.properties.id === editFeatureSelected.properties.id) {
+              featureSelected = this.addVertexToLine(featureSelected, e.geometry);
+            }
+            else if (turf.getType(featureSelected) === 'Polygon') {
+              featureSelected = this.addVertexToPolygon(featureSelected, e.geometry);
+            }
           }
           else {
             console.log('Deleting selected vertex...');
@@ -529,7 +534,6 @@ class mapView extends Component {
                   featureSelected.geometry.coordinates.splice(i, 1);
                 }
               }
-              drawFeatures = turf.explode(featureSelected).features;
             }
             else if (turf.getType(featureSelected) === 'Polygon' && coords[0].length > 4) {
               for (let i = 0; i < coords.length; i++) {
@@ -540,18 +544,17 @@ class mapView extends Component {
                   }
                 }
               }
-              drawFeatures = turf.explode(featureSelected).features;
             }
             else console.log('Not enough vertices in selected feature to delete one.');
           }
           this.setState(prevState => {
             return {
               ...prevState,
-              drawFeatures: drawFeatures,
+              drawFeatures: turf.explode(featureSelected).features,
               featuresSelected: [featureSelected]
             }
           }, () => {
-             console.log('Set selected feature:', featureSelected);
+            console.log('Set selected feature:', featureSelected);
           });
         }
         else console.log('Selected feature is not a line or polygon. No action taken.');
@@ -583,6 +586,30 @@ class mapView extends Component {
     }
     else console.log('No feature selected.');
     return featureSelected;
+  };
+
+  // Add a new vertex to a polygon by creating a new feature for each possible place to insert the
+  // new vertex into the feature polygon coordiantes then taking the union of those features
+  addVertexToPolygon = (polygon, newVertexGeom) => {
+    console.log('Adding vertex to selected polygon feature...');
+    let possiblePolys = [];
+    for (let j = 1; j < polygon.geometry.coordinates[0].length; j++) {
+      let cloned = JSON.parse(JSON.stringify(polygon));
+      cloned.geometry.coordinates[0].splice(j, 0, newVertexGeom.coordinates);
+      possiblePolys.push(cloned);
+    }
+    const possiblePolysFC = turf.featureCollection(possiblePolys);
+    const unkinkedPolys = turf.unkinkPolygon(possiblePolysFC).features;
+    return turf.union(...unkinkedPolys);
+  };
+
+  // Add a new vertex to a line
+  addVertexToLine = (line, newVertexGeom) => {
+    console.log('Adding vertex to selected line feature...');
+    const newPointOnLine = turf.nearestPointOnLine(line, newVertexGeom);
+    const i = newPointOnLine.properties.index;
+    line.geometry.coordinates.splice(i + 1, 0, newPointOnLine.geometry.coordinates);
+    return line;
   };
 
   render() {
