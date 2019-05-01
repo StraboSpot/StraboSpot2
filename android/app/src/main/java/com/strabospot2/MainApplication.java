@@ -11,7 +11,6 @@ import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
 import com.mapbox.rctmgl.RCTMGLPackage;
-import com.oblador.vectoricons.VectorIconsPackage;
 import com.RNFetchBlob.RNFetchBlobPackage;
 import com.rnziparchive.RNZipArchivePackage;
 
@@ -47,7 +46,8 @@ public class MainApplication extends NavigationApplication {
             new RCTMGLPackage(),
             new VectorIconsPackage(),
             new RNFetchBlobPackage(),
-            new RNZipArchivePackage()
+            new RNZipArchivePackage(),
+            new RNFSPackage()
         );
     }
 
