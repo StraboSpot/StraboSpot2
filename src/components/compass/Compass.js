@@ -1,7 +1,7 @@
 import RNSimpleCompass from 'react-native-simple-compass';
 
 
-const degree_update_rate = 3; // Number of degrees changed before the callback is triggered
+const degree_update_rate = 2; // Number of degrees changed before the callback is triggered
 
 
 import React, {Component} from 'react';
@@ -132,11 +132,20 @@ export default class Compass extends Component {
 
     return (
 
-      <View style={{zIndex: -1}}>
+      <View style={{zIndex: 0}}>
          <View>
-        <Text>{this.state.magnetometer}</Text>
+           <Text style={{
+             color: '#fff',
+             fontSize: height / 29,
+             width: width,
+             position: 'absolute',
+             textAlign: 'center',
+             paddingRight: 200
+           }}>
+             {this._degree(this.state.magnetometer).toFixed(2)}°
+           </Text>
          </View>
-        <Grid style={{backgroundColor: 'lightgrey'}}>
+        <Grid style={{backgroundColor: 'transparent', width: 500, height: 300}}>
 
 
           <Row style={{alignItems: 'center', flex: 0}} size={.5}>
@@ -163,27 +172,34 @@ export default class Compass extends Component {
           </Row>
 
           <Row style={{alignItems: 'center'}} size={4}>
-            <Text style={{
-              color: '#fff',
-              fontSize: height / 27,
-              width: width,
-              position: 'absolute',
-              textAlign: 'center'
-            }}>
-              {this._degree(this.state.magnetometer)}°
-            </Text>
+            {/*<Text style={{*/}
+            {/*  color: '#fff',*/}
+            {/*  fontSize: height / 29,*/}
+            {/*  width: width,*/}
+            {/*  position: 'absolute',*/}
+            {/*  textAlign: 'center',*/}
+            {/*}}>*/}
+            {/*  {this._degree(this.state.magnetometer)}°*/}
+            {/*</Text>*/}
 
-            <Col style={{alignItems: 'center', flex: 0}}>
-
-              <Image source={require("../../assets/images/compass/compass_bg.png")} style={{
-                height: width - 80,
+            <View style={{alignItems: 'center', flex: 1, paddingTop: 70}}>
+              <Image source={require("../../assets/images/compass/compass.png")} style={{
+                height: 250,
                 justifyContent: 'center',
                 alignItems: 'center',
                 resizeMode: 'contain',
-                transform: [{rotate: 360 - this.state.magnetometer + 'deg'}]
+                transform: [{rotate: 90 - this.state.magnetometer + 'deg'}]
               }}/>
-
-            </Col>
+              <Image source={require("../../assets/images/compass/StrikeDip.png")} style={{
+                height: 150,
+                position: 'absolute',
+                top: 120,
+                // justifyContent: 'center',
+                // alignItems: 'center',
+                resizeMode: 'contain',
+                transform: [{rotate: 180 - this.state.magnetometer + 'deg'}]
+              }}/>
+            </View>
           </Row>
         </Grid>
       </View>
