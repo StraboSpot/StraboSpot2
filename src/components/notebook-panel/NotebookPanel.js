@@ -7,7 +7,7 @@ import NotebookFooter from './NotebookFooter';
 import SpotOverview from '../../spots/SpotOverview';
 import ButtonNoBackground from '../../ui/ButtonNoBackround';
 import SpotBasics from '../../spots/spot-page/SpotBasics';
-//import MeasurementPage from '../../spots/spot-measurements/Measurementss';
+import MeasurementPage from '../../spots/spot-measurements/Measurements';
 import {SpotPages} from "./Notebook.constants";
 import {SET_SPOT_PAGE_VISIBLE} from "../../store/Constants";
 
