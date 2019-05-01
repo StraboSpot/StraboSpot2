@@ -512,12 +512,13 @@ class mapView extends Component {
         let featureSelected = this.state.featuresSelected[0];
         if (turf.getType(featureSelected) === 'LineString' || turf.getType(featureSelected) === 'Polygon') {
           const vertexSelected = await this.getDrawFeatureAtPoint(screenPointX, screenPointY);
+          let vertexToEdit = {};
           let drawFeatures = this.state.drawFeatures;
           if (Object.getOwnPropertyNames(vertexSelected).length === 0) {
             // To add a vertex to a line the new point selected must be on the line
             if (turf.getType(featureSelected) === 'LineString' && Object.getOwnPropertyNames(
               editFeatureSelected).length !== 0 && featureSelected.properties.id === editFeatureSelected.properties.id) {
-              featureSelected = this.addVertexToLine(featureSelected, e.geometry);
+              [featureSelected, vertexToEdit] = this.addVertexToLine(featureSelected, e.geometry);
             }
             else if (turf.getType(featureSelected) === 'Polygon') {
               featureSelected = this.addVertexToPolygon(featureSelected, e.geometry);
@@ -551,7 +552,8 @@ class mapView extends Component {
             return {
               ...prevState,
               drawFeatures: turf.explode(featureSelected).features,
-              featuresSelected: [featureSelected]
+              featuresSelected: [featureSelected],
+              vertexToEdit: vertexToEdit
             }
           }, () => {
             console.log('Set selected feature:', featureSelected);
@@ -609,7 +611,7 @@ class mapView extends Component {
     const newPointOnLine = turf.nearestPointOnLine(line, newVertexGeom);
     const i = newPointOnLine.properties.index;
     line.geometry.coordinates.splice(i + 1, 0, newPointOnLine.geometry.coordinates);
-    return line;
+    return [line, newPointOnLine];
   };
 
   render() {
