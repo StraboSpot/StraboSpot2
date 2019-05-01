@@ -8,6 +8,7 @@ import {
   FEATURES_SELECTED_CLEARED,
   FEATURES_UPDATED,
   MAP,
+  OFFLINE_MAPS,
   SET_SPOT_PAGE_VISIBLE
 } from '../Constants';
 import {SpotPages} from "../../components/notebook-panel/Notebook.constants";
@@ -17,6 +18,7 @@ const initialState = {
   currentBasemap: {},
   features: [],
   featuresSelected: [],
+  offlineMaps: [],
   selectedSpot: {},
   visiblePage: SpotPages.OVERVIEW
 };
@@ -78,6 +80,12 @@ export const homeReducer = (state = initialState, action) => {
           }
         }
       }
+    case OFFLINE_MAPS:
+      console.log('Setting offline maps: ', action.offlineMaps);
+      return {
+        ...state,
+        offlineMaps: action.offlineMaps,
+      };
   }
   return state;
 };
@@ -105,7 +113,7 @@ export const mapReducer = (state = initialState, action) => {
       return {
         ...state.map,
         map: action
-      }
+      };
   }
   return state;
 };
