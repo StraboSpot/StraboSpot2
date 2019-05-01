@@ -5,6 +5,7 @@
 	};
 	objectVersion = 46;
 	objects = {
+
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -52,6 +53,8 @@
 		CB22663DEC944FB48EB21CCD /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2B1B232B189E483D8D1ECCC0 /* Entypo.ttf */; };
 		D60BE40722691CCA004C7C40 /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D60BE3DA22691CCA004C7C40 /* Foundation.ttf */; };
 		D60BE40922691CD7004C7C40 /* AntDesign.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D60BE40822691CD7004C7C40 /* AntDesign.ttf */; };
+		D60BE5162278CEE0004C7C40 /* libRNSensors.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D60BE5152278CCBB004C7C40 /* libRNSensors.a */; };
+		D60BE5172278CEEC004C7C40 /* libRNFS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D60BE4CE227756E2004C7C40 /* libRNFS.a */; };
 		D65024D022302B9A000BE040 /* libRNZipArchive.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D65024CF22302B82000BE040 /* libRNZipArchive.a */; };
 		D6AD6C3922249CDC00568180 /* libReactNativeNavigation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D6AD6C3622249CCD00568180 /* libReactNativeNavigation.a */; };
 		D6AD6C7B22249FB300568180 /* Mapbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D6AD6C5322249FB300568180 /* Mapbox.framework */; };
@@ -60,9 +63,9 @@
 		D6AD6C872224A07400568180 /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D6AD6C862224A07000568180 /* Ionicons.ttf */; };
 		D6AD6C8E2224A13A00568180 /* libRNFetchBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D6AD6C8D2224A10B00568180 /* libRNFetchBlob.a */; };
 		D6AD6C982224A3DE00568180 /* libRNVectorIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D6AD6C952224A26900568180 /* libRNVectorIcons.a */; };
+		DCF14B8E4B5147FAA6EF904C /* libRNSimpleCompass.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04DB764EC4AD457AA71F4775 /* libRNSimpleCompass.a */; };
 		ED297163215061F000B7C4FE /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED297162215061F000B7C4FE /* JavaScriptCore.framework */; };
 		ED2971652150620600B7C4FE /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED2971642150620600B7C4FE /* JavaScriptCore.framework */; };
-		50B188535A8942B4A457AADF /* libRNFS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 852854E5E01742D1AF8110AB /* libRNFS.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -339,6 +342,34 @@
 			remoteGlobalIDString = ED296FEE214C9CF800B7C4FE;
 			remoteInfo = "jsiexecutor-tvOS";
 		};
+		D60BE4CD227756E2004C7C40 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D5C55E3CC99647FC8BBE9BDC /* RNFS.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = F12AFB9B1ADAF8F800E0535D;
+			remoteInfo = RNFS;
+		};
+		D60BE4CF227756E2004C7C40 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D5C55E3CC99647FC8BBE9BDC /* RNFS.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 6456441F1EB8DA9100672408;
+			remoteInfo = "RNFS-tvOS";
+		};
+		D60BE5142278CCBB004C7C40 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 58A2FF871B9446EB89AB6CFC /* RNSensors.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = RNSensors;
+		};
+		D60BE55D22793C31004C7C40 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 706BC331908E4ECD81255CC8 /* RNSimpleCompass.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = RNSimpleCompass;
+		};
 		D65024CE22302B82000BE040 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = D650249F22302B82000BE040 /* RNZipArchive.xcodeproj */;
@@ -414,6 +445,7 @@
 		00E356EE1AD99517003FC87E /* StraboSpot2Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = StraboSpot2Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* StraboSpot2Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = StraboSpot2Tests.m; sourceTree = "<group>"; };
+		04DB764EC4AD457AA71F4775 /* libRNSimpleCompass.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNSimpleCompass.a; sourceTree = "<group>"; };
 		1162084032804B239D37E72F /* AntDesign.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = AntDesign.ttf; path = "../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf"; sourceTree = "<group>"; };
 		139105B61AF99BAD00B5F7CC /* RCTSettings.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTSettings.xcodeproj; path = "../node_modules/react-native/Libraries/Settings/RCTSettings.xcodeproj"; sourceTree = "<group>"; };
 		139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTWebSocket.xcodeproj; path = "../node_modules/react-native/Libraries/WebSocket/RCTWebSocket.xcodeproj"; sourceTree = "<group>"; };
@@ -434,16 +466,21 @@
 		2D16E6891FA4F8E400B85C8A /* libReact.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libReact.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		431DC9B2FD3A4AAD9B631979 /* Feather.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Feather.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Feather.ttf"; sourceTree = "<group>"; };
 		56B10F7ED45D4878850D7408 /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
+		58A2FF871B9446EB89AB6CFC /* RNSensors.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNSensors.xcodeproj; path = "../node_modules/react-native-sensors/ios/RNSensors.xcodeproj"; sourceTree = "<group>"; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
+		5F042B2BB10B4B1EAA0442D3 /* libRNSensors.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNSensors.a; sourceTree = "<group>"; };
 		647B15581C104A57BD942E07 /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
 		6A9A8D43193748AFB33EF312 /* EvilIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = EvilIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; };
+		706BC331908E4ECD81255CC8 /* RNSimpleCompass.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNSimpleCompass.xcodeproj; path = "../node_modules/react-native-simple-compass/ios/RNSimpleCompass.xcodeproj"; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		805A335DACBB4E7BB7B85FF2 /* FontAwesome5_Solid.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Solid.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
+		852854E5E01742D1AF8110AB /* libRNFS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNFS.a; sourceTree = "<group>"; };
 		9603FAF595F840198501733F /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; };
 		ADBDB91F1DFEBF0600ED6528 /* RCTBlob.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTBlob.xcodeproj; path = "../node_modules/react-native/Libraries/Blob/RCTBlob.xcodeproj"; sourceTree = "<group>"; };
 		AFC70AF859EC448EAC973069 /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
 		CE1DFF55F587492099B840B9 /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = SimpleLineIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; };
+		D5C55E3CC99647FC8BBE9BDC /* RNFS.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNFS.xcodeproj; path = "../node_modules/react-native-fs/RNFS.xcodeproj"; sourceTree = "<group>"; };
 		D60BE3DA22691CCA004C7C40 /* Foundation.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
 		D60BE40822691CD7004C7C40 /* AntDesign.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = AntDesign.ttf; path = "../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf"; sourceTree = "<group>"; };
 		D650249F22302B82000BE040 /* RNZipArchive.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNZipArchive.xcodeproj; path = "../node_modules/react-native-zip-archive/ios/RNZipArchive.xcodeproj"; sourceTree = "<group>"; };
@@ -456,8 +493,6 @@
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
 		F62E92907AED47BE993B1A19 /* FontAwesome5_Brands.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Brands.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Brands.ttf"; sourceTree = "<group>"; };
-		D5C55E3CC99647FC8BBE9BDC /* RNFS.xcodeproj */ = {isa = PBXFileReference; name = "RNFS.xcodeproj"; path = "../node_modules/react-native-fs/RNFS.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
-		852854E5E01742D1AF8110AB /* libRNFS.a */ = {isa = PBXFileReference; name = "libRNFS.a"; path = "libRNFS.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -473,6 +508,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D60BE5172278CEEC004C7C40 /* libRNFS.a in Frameworks */,
+				D60BE5162278CEE0004C7C40 /* libRNSensors.a in Frameworks */,
 				D65024D022302B9A000BE040 /* libRNZipArchive.a in Frameworks */,
 				D6AD6C982224A3DE00568180 /* libRNVectorIcons.a in Frameworks */,
 				D6AD6C8E2224A13A00568180 /* libRNFetchBlob.a in Frameworks */,
@@ -492,7 +529,7 @@
 				00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */,
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
 				D6AD6C7B22249FB300568180 /* Mapbox.framework in Frameworks */,
-				50B188535A8942B4A457AADF /* libRNFS.a in Frameworks */,
+				DCF14B8E4B5147FAA6EF904C /* libRNSimpleCompass.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -709,6 +746,8 @@
 				00C302DF1ABCB9EE00DB3ED1 /* RCTVibration.xcodeproj */,
 				139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */,
 				D5C55E3CC99647FC8BBE9BDC /* RNFS.xcodeproj */,
+				58A2FF871B9446EB89AB6CFC /* RNSensors.xcodeproj */,
+				706BC331908E4ECD81255CC8 /* RNSimpleCompass.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -762,9 +801,37 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		D60BE4C9227756E2004C7C40 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D60BE4CE227756E2004C7C40 /* libRNFS.a */,
+				D60BE4D0227756E2004C7C40 /* libRNFS.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		D60BE5112278CCBB004C7C40 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D60BE5152278CCBB004C7C40 /* libRNSensors.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		D60BE55A22793C31004C7C40 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D60BE55E22793C31004C7C40 /* libRNSimpleCompass.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		D620D9A7223695A7001771A7 /* Recovered References */ = {
 			isa = PBXGroup;
 			children = (
+				852854E5E01742D1AF8110AB /* libRNFS.a */,
+				5F042B2BB10B4B1EAA0442D3 /* libRNSensors.a */,
+				04DB764EC4AD457AA71F4775 /* libRNSimpleCompass.a */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -987,6 +1054,18 @@
 				{
 					ProductGroup = D6AD6C892224A10700568180 /* Products */;
 					ProjectRef = D6AD6C882224A10700568180 /* RNFetchBlob.xcodeproj */;
+				},
+				{
+					ProductGroup = D60BE4C9227756E2004C7C40 /* Products */;
+					ProjectRef = D5C55E3CC99647FC8BBE9BDC /* RNFS.xcodeproj */;
+				},
+				{
+					ProductGroup = D60BE5112278CCBB004C7C40 /* Products */;
+					ProjectRef = 58A2FF871B9446EB89AB6CFC /* RNSensors.xcodeproj */;
+				},
+				{
+					ProductGroup = D60BE55A22793C31004C7C40 /* Products */;
+					ProjectRef = 706BC331908E4ECD81255CC8 /* RNSimpleCompass.xcodeproj */;
 				},
 				{
 					ProductGroup = D6AD6C902224A26900568180 /* Products */;
@@ -1267,6 +1346,34 @@
 			remoteRef = D60BE3C12268CB7B004C7C40 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		D60BE4CE227756E2004C7C40 /* libRNFS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNFS.a;
+			remoteRef = D60BE4CD227756E2004C7C40 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		D60BE4D0227756E2004C7C40 /* libRNFS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNFS.a;
+			remoteRef = D60BE4CF227756E2004C7C40 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		D60BE5152278CCBB004C7C40 /* libRNSensors.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNSensors.a;
+			remoteRef = D60BE5142278CCBB004C7C40 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		D60BE55E22793C31004C7C40 /* libRNSimpleCompass.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNSimpleCompass.a;
+			remoteRef = D60BE55D22793C31004C7C40 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		D65024CF22302B82000BE040 /* libRNZipArchive.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1491,12 +1598,16 @@
 					"$(SRCROOT)/../node_modules/react-native-maps/lib/ios/**",
 					"$(SRCROOT)/../node_modules/react-native/React",
 					"$(SRCROOT)/../node_modules/react-native-fs/**",
+					"$(SRCROOT)/../node_modules/react-native-sensors/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-simple-compass/ios",
 				);
 				INFOPLIST_FILE = StraboSpot2Tests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
@@ -1518,12 +1629,16 @@
 					"$(SRCROOT)/../node_modules/react-native-maps/lib/ios/**",
 					"$(SRCROOT)/../node_modules/react-native/React",
 					"$(SRCROOT)/../node_modules/react-native-fs/**",
+					"$(SRCROOT)/../node_modules/react-native-sensors/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-simple-compass/ios",
 				);
 				INFOPLIST_FILE = StraboSpot2Tests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
@@ -1551,6 +1666,8 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-fs/**",
+					"$(SRCROOT)/../node_modules/react-native-sensors/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-simple-compass/ios",
 				);
 				INFOPLIST_FILE = StraboSpot2/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1580,6 +1697,8 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-fs/**",
+					"$(SRCROOT)/../node_modules/react-native-sensors/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-simple-compass/ios",
 				);
 				INFOPLIST_FILE = StraboSpot2/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1610,11 +1729,15 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-fs/**",
+					"$(SRCROOT)/../node_modules/react-native-sensors/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-simple-compass/ios",
 				);
 				INFOPLIST_FILE = "StraboSpot2-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
@@ -1644,11 +1767,15 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-fs/**",
+					"$(SRCROOT)/../node_modules/react-native-sensors/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-simple-compass/ios",
 				);
 				INFOPLIST_FILE = "StraboSpot2-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
@@ -1677,11 +1804,15 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-fs/**",
+					"$(SRCROOT)/../node_modules/react-native-sensors/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-simple-compass/ios",
 				);
 				INFOPLIST_FILE = "StraboSpot2-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
@@ -1710,11 +1841,15 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-fs/**",
+					"$(SRCROOT)/../node_modules/react-native-sensors/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-simple-compass/ios",
 				);
 				INFOPLIST_FILE = "StraboSpot2-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (

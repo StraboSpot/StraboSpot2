@@ -145,6 +145,8 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-simple-compass')
+    implementation project(':react-native-sensors')
     implementation project(':react-native-fs')
     implementation project(':react-native-zip-archive')
     implementation project(':rn-fetch-blob')

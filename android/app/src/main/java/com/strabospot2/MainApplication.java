@@ -2,6 +2,8 @@ package com.strabospot2;
 
 import android.app.Application;
 import com.facebook.react.ReactApplication;
+import com.reactlibrary.RNSimpleCompassPackage;
+import com.sensors.RNSensorsPackage;
 import com.rnfs.RNFSPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.facebook.react.ReactNativeHost;
