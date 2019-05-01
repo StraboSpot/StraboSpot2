@@ -23,6 +23,9 @@ import NotebookPanelMenu from '../../components/notebook-panel/NotebookPanelMenu
 import SpotName from '../../components/notebook-panel/SpotName';
 import SpotCoords from '../../components/notebook-panel/SpotCoords';
 import {connect} from 'react-redux';
+import {SET_SPOT_PAGE_VISIBLE} from "../../store/Constants";
+import {SpotPages} from "../../components/notebook-panel/Notebook.constants";
+import {IMAGES} from "../../routes/ScreenNameConstants";
 
 class Home extends React.Component {
   _isMounted = false;
@@ -354,6 +357,7 @@ class Home extends React.Component {
         }
       }, () => {
         console.log('Noteboook panel open');
+        this.props.setPageVisible(SpotPages.OVERVIEW)
       });
     }
   };
@@ -383,6 +387,8 @@ class Home extends React.Component {
       case 'Manage Offline Maps':
         this.setVisibleMenuState('Manage Offline Maps');
         break;
+      case 'Image Gallery':
+       goToImages();
     }
   };
 
@@ -693,4 +699,8 @@ function mapStateToProps(state) {
   }
 }
 
-export default connect(mapStateToProps)(Home);
+const mapDispatchToProps = {
+  setPageVisible: (page) => ({type: SET_SPOT_PAGE_VISIBLE, page: page })
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home);
