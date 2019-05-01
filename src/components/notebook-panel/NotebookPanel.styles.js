@@ -5,7 +5,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: 500,
-    height: '98%',
+    height: '100%',
     borderBottomLeftRadius: 30,
     borderTopLeftRadius: 30,
     backgroundColor: themes.LIGHTGREY,
@@ -53,10 +53,11 @@ const styles = StyleSheet.create({
   headerContainer: {
     zIndex: 100,
     width: 470,
-    height: 80,
+    height: 100,
     backgroundColor: 'white',
     justifyContent: 'flex-start',
     padding: 10,
+    paddingTop: 20,
     borderBottomWidth: 1,
     borderBottomColor: '#747474',
     flexDirection: 'row',

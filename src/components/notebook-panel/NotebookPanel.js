@@ -34,7 +34,9 @@ const NotebookPanel = props => {
           {props.spotPageVisible === undefined ? <SpotOverview/> : null}
         </View>
         <NotebookFooter
-        onPress={(page) => pageDisplay(page)}/>
+        openPage={(page) => pageDisplay(page)}
+        camera={(camera) => console.log(camera)}
+        />
       </View>
     )
   }
