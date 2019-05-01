@@ -232,14 +232,15 @@ class SaveMapModal extends Component {
 
     let newOfflineMapsData = [];
     let thisMap = {};
-    thisMap.name = this.saveId;
+    thisMap.saveId = this.saveId;
+    thisMap.name = this.currentMapName;
     thisMap.count = tileCount;
     newOfflineMapsData.push(thisMap);
 
     //loop over offlineMapsData and add any other maps (not current)
     for(let i = 0; i < currentOfflineMaps.length; i++){
-      if(currentOfflineMaps[i].name){
-        if(currentOfflineMaps[i].name != this.saveId){
+      if(currentOfflineMaps[i].saveId){
+        if(currentOfflineMaps[i].saveId != this.saveId){
           //Add it to new array for Redux Storage
           newOfflineMapsData.push(currentOfflineMaps[i]);
         }
