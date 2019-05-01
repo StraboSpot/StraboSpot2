@@ -13,6 +13,8 @@ import com.facebook.soloader.SoLoader;
 import com.mapbox.rctmgl.RCTMGLPackage;
 import com.RNFetchBlob.RNFetchBlobPackage;
 import com.rnziparchive.RNZipArchivePackage;
+import com.reactlibrary.RNSimpleCompassPackage;
+import com.sensors.RNSensorsPackage;
 
 import com.reactnativenavigation.NavigationApplication;
 import com.reactnativenavigation.react.NavigationReactNativeHost;
@@ -47,7 +49,9 @@ public class MainApplication extends NavigationApplication {
             new VectorIconsPackage(),
             new RNFetchBlobPackage(),
             new RNZipArchivePackage(),
-            new RNFSPackage()
+            new RNFSPackage(),
+            new RNSimpleCompassPackage(),
+            new RNSensorsPackage()
         );
     }
 
