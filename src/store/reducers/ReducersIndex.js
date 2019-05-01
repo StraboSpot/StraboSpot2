@@ -1,5 +1,6 @@
 import {
   CURRENT_BASEMAP,
+  DELETE_OFFLINE_MAP,
   EDIT_SPOT_PROPERTIES,
   EDIT_SPOT_GEOMETRY,
   FEATURE_ADD,
@@ -86,6 +87,11 @@ export const homeReducer = (state = initialState, action) => {
         ...state,
         offlineMaps: action.offlineMaps,
       };
+    case DELETE_OFFLINE_MAP:
+      console.log('Deleting Offline Map: ', action.offlineMap);
+      return {
+        state
+      }
   }
   return state;
 };
