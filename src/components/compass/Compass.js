@@ -15,8 +15,8 @@ const {height, width} = Dimensions.get('window');
 export default class Compass extends Component {
   _isMounted = false;
 
-  constructor() {
-    super();
+  constructor(props, context) {
+    super(props, context);
 
     setUpdateIntervalForType(SensorTypes.accelerometer, 100);
     setUpdateIntervalForType(SensorTypes.magnetometer, 100);
@@ -41,7 +41,6 @@ export default class Compass extends Component {
         rake: null,
         rake_calculated: 'no'
       },
-
     };
   }
 
@@ -51,7 +50,7 @@ export default class Compass extends Component {
 
   componentDidMount() {
     this._isMounted = true;
-    // this._toggle();
+    this.subscribe();
     RNSimpleCompass.start(degree_update_rate, (degree) => {
       console.log('You are facing', degree);
       this.setState(prevState => {
@@ -71,13 +70,8 @@ export default class Compass extends Component {
     this._isMounted = false;
   };
 
-  toggle = () => {
-    if (this._subscription) {
-      this.unsubscribe();
-    }
-    else {
-      this.subscribe();
-    }
+  grabMeasurement = () => {
+    this.props.addMeasurement(this.state.compassData);
   };
 
   subscribe = async () => {
@@ -268,7 +262,7 @@ export default class Compass extends Component {
               </Col>
             </Row>
 
-            <Row style={{alignItems: 'center'}} size={4} onPress={() => this.toggle()}>
+            <Row style={{alignItems: 'center'}} size={4} onPress={() => this.grabMeasurement()}>
               {/*<Text style={{*/}
               {/*  color: '#fff',*/}
               {/*  fontSize: height / 29,*/}
