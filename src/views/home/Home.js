@@ -82,6 +82,13 @@ class Home extends React.Component {
     this._isMounted = false;
   }
 
+  cancelEdits = async () => {
+    await this.mapViewComponent.cancelEdits();
+    this.setMapMode(MapModes.VIEW);
+    this.toggleButton('editButtonsVisible', false);
+    this.toggleButton('drawButtonsVisible', true);
+  };
+
   clickHandler = (name) => {
     switch (name) {
       case "search":
@@ -180,8 +187,143 @@ class Home extends React.Component {
     }
   };
 
+  closeNotebookPanel = () => {
+    if (this._isMounted) {
+      this.setState({
+        notebookPanelVisible: false
+      });
+    }
+  };
+
+  closeSettingsDrawer = () => {
+    this.toggleDrawer();
+    this.drawer.close();
+    this.setVisibleMenuState('settingsMain');
+    console.log("Drawer Closed");
+  };
+
+  convertDMS = (lat, lng) => {
+    const latitude = lat.toFixed(6);
+    let latitudeCardinal = Math.sign(lat) >= 0 ? "North" : "South";
+
+    const longitude = lng.toFixed(6);
+    let longitudeCardinal = Math.sign(lng) >= 0 ? "East" : "West";
+
+    return (
+      <Text>
+        {latitude}&#176; {latitudeCardinal}, {longitude}&#176; {longitudeCardinal}
+      </Text>
+    )
+  };
+
+  dialogClickHandler = (dialog, name) => {
+    this.clickHandler(name);
+    this.toggleDialog(dialog);
+  };
+
+  endDraw = () => {
+    this.mapViewComponent.endDraw();
+    this.setMapMode(MapModes.VIEW);
+    this.toggleButton('endDrawButtonVisible');
+  };
+
+  getSpotCoordsComponent = (spot) => {
+    if (spot.geometry.type === 'Point') {
+      const spotLng = spot.geometry.coordinates[0];
+      const spotLat = spot.geometry.coordinates[1];
+      const convertedLatLng = this.convertDMS(spotLat, spotLng);
+      return (
+        <SpotCoords
+          key={spot.properties.id}
+          coords={convertedLatLng}/>
+      );
+    }
+    else {
+      return (
+        <SpotCoords
+          key={spot.properties.id}
+          coords={spot.geometry.type}/>
+      );
+    }
+  };
+
+  getSpotNameComponent = (spot) => {
+    return (
+      <SpotName
+        key={spot.properties.id}
+        name={spot.properties.name}
+      />
+    );
+  };
+
+  mapPress = () => {
+    return this.mapViewComponent.getCurrentBasemap();
+  };
+
   newBasemapDisplay = (name) => {
     this.mapViewComponent.changeMap(name);
+  };
+
+  notebookClickHandler = (name) => {
+    switch (name) {
+      case 'menu':
+        this.toggleDialog('notebookPanelMenuVisible');
+        break;
+      case  'export':
+        console.log('Export button was pressed');
+        break;
+      case 'camera':
+        // console.log('Camera button was pressed');
+        this.pictureSelectDialog();
+        break;
+    }
+    // if (name === 'menu') {
+    //   this.toggleDialog('notebookPanelMenuVisible')
+    // }
+    // else if (name === 'export') {
+    //   console.log('Export button was pressed')
+    // }
+  };
+
+  openSettingsDrawer = () => {
+    this.toggleDrawer();
+    this.drawer.open();
+    console.log("Drawer Opened");
+  };
+
+  openNotebookPanel = () => {
+    if (this._isMounted) {
+      this.setState(prevState => {
+        return {
+          ...prevState,
+          notebookPanelVisible: true
+        }
+      }, () => {
+        console.log('Noteboook panel open');
+        this.props.setPageVisible(SpotPages.OVERVIEW)
+      });
+    }
+  };
+
+  pictureSelectDialog = () => {
+    ImagePicker.showImagePicker(imageOptions, async (response) => {
+      console.log('Response = ', response);
+
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      } else {
+        const source = { uri: response.uri };
+        const savedPhoto = await saveFile(response.uri);
+        console.log('Saved Photo = ', savedPhoto);
+
+        // You can also display the image using data:
+        // const source = { uri: 'data:image/jpeg;base64,' + response.data };
+
+        this.props.addPhoto(savedPhoto)
+      }
+    });
   };
 
   setDraw = async mapMode => {
@@ -211,17 +353,34 @@ class Home extends React.Component {
     else console.log('Attempting to set the state for the map mode but Home Component not mounted.');
   };
 
-  endDraw = () => {
-    this.mapViewComponent.endDraw();
-    this.setMapMode(MapModes.VIEW);
-    this.toggleButton('endDrawButtonVisible');
+  settingsClickHandler = (name) => {
+    console.log(name);
+    switch (name) {
+      case "Shortcut Menu":
+        console.log(name);
+        this.setVisibleMenuState('Shortcut Menu');
+        break;
+      case 'Sign Out':
+        break;
+      case 'Manage Offline Maps':
+        this.setVisibleMenuState('Manage Offline Maps');
+        break;
+      case 'Image Gallery':
+        goToImages();
+    }
   };
 
-  cancelEdits = async () => {
-    await this.mapViewComponent.cancelEdits();
-    this.setMapMode(MapModes.VIEW);
-    this.toggleButton('editButtonsVisible', false);
-    this.toggleButton('drawButtonsVisible', true);
+  setVisibleMenuState = (state) => {
+    if (this._isMounted) {
+      this.setState(prevState => {
+        return {
+          ...prevState,
+          settingsMenuVisible: state
+        }
+      }, () => {
+        console.log('State updated:', this.state);
+      })
+    }
   };
 
   saveEdits = async () => {
@@ -235,35 +394,8 @@ class Home extends React.Component {
     this.toggleButton('drawButtonsVisible', false);
   };
 
-  notebookClickHandler = (name) => {
-    switch (name) {
-      case 'menu':
-        this.toggleDialog('notebookPanelMenuVisible');
-        break;
-      case  'export':
-        console.log('Export button was pressed');
-        break;
-      case 'camera':
-        // console.log('Camera button was pressed');
-        this.takePicture();
-        break;
-    }
-    // if (name === 'menu') {
-    //   this.toggleDialog('notebookPanelMenuVisible')
-    // }
-    // else if (name === 'export') {
-    //   console.log('Export button was pressed')
-    // }
-  };
-
   takePicture =  () => {
-    const options = {
-      storageOptions: {
-        skipBackup: true,
-        path: 'StraboSpot/Images'
-      }
-    };
-    ImagePicker.launchCamera(options, async (res)   => {
+    ImagePicker.launchCamera(imageOptions, async (res)   => {
       console.log(res);
       const savedPhoto = await saveFile(res.uri);
       console.log(savedPhoto);
@@ -351,77 +483,7 @@ class Home extends React.Component {
     }
   };
 
-  setVisibleMenuState = (state) => {
-    if (this._isMounted) {
-      this.setState(prevState => {
-        return {
-          ...prevState,
-          settingsMenuVisible: state
-        }
-      }, () => {
-        console.log('State updated:', this.state);
-      })
-    }
-  };
-
-  closeSettingsDrawer = () => {
-    this.toggleDrawer();
-    this.drawer.close();
-    this.setVisibleMenuState('settingsMain');
-    console.log("Drawer Closed");
-  };
-
-  openSettingsDrawer = () => {
-    this.toggleDrawer();
-    this.drawer.open();
-    console.log("Drawer Opened");
-  };
-
-  openNotebookPanel = () => {
-    if (this._isMounted) {
-      this.setState(prevState => {
-        return {
-          ...prevState,
-          notebookPanelVisible: true
-        }
-      }, () => {
-        console.log('Noteboook panel open');
-        this.props.setPageVisible(SpotPages.OVERVIEW)
-      });
-    }
-  };
-
-  closeNotebookPanel = () => {
-    if (this._isMounted) {
-      this.setState({
-        notebookPanelVisible: false
-      });
-    }
-  };
-
-  dialogClickHandler = (dialog, name) => {
-    this.clickHandler(name);
-    this.toggleDialog(dialog);
-  };
-
-  settingsClickHandler = (name) => {
-    console.log(name);
-    switch (name) {
-      case "Shortcut Menu":
-        console.log(name);
-        this.setVisibleMenuState('Shortcut Menu');
-        break;
-      case 'Sign Out':
-        break;
-      case 'Manage Offline Maps':
-        this.setVisibleMenuState('Manage Offline Maps');
-        break;
-      case 'Image Gallery':
-        goToImages();
-    }
-  };
-
-  // // converts the lat and lng from decimal form to minutes and seconds
+    // // converts the lat and lng from decimal form to minutes and seconds
   // toDegreesMinutesAndSeconds = (coordinate) => {
   //   var absolute = Math.abs(coordinate);
   //   var degrees = Math.floor(absolute);
@@ -433,52 +495,6 @@ class Home extends React.Component {
   // };
 
   // adds cardinal points to coordinates -- only works with single points
-  convertDMS = (lat, lng) => {
-    const latitude = lat.toFixed(6);
-    let latitudeCardinal = Math.sign(lat) >= 0 ? "North" : "South";
-
-    const longitude = lng.toFixed(6);
-    let longitudeCardinal = Math.sign(lng) >= 0 ? "East" : "West";
-
-    return (
-      <Text>
-        {latitude}&#176; {latitudeCardinal}, {longitude}&#176; {longitudeCardinal}
-      </Text>
-    )
-  };
-
-  getSpotCoordsComponent = (spot) => {
-    if (spot.geometry.type === 'Point') {
-      const spotLng = spot.geometry.coordinates[0];
-      const spotLat = spot.geometry.coordinates[1];
-      const convertedLatLng = this.convertDMS(spotLat, spotLng);
-      return (
-        <SpotCoords
-          key={spot.properties.id}
-          coords={convertedLatLng}/>
-      );
-    }
-    else {
-      return (
-        <SpotCoords
-          key={spot.properties.id}
-          coords={spot.geometry.type}/>
-      );
-    }
-  };
-
-  getSpotNameComponent = (spot) => {
-    return (
-      <SpotName
-        key={spot.properties.id}
-        name={spot.properties.name}
-      />
-    );
-  };
-
-  mapPress = () => {
-    return this.mapViewComponent.getCurrentBasemap();
-  };
 
   render() {
     const spot = this.props.selectedSpot;
