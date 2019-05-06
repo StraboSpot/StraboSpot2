@@ -2,6 +2,7 @@ package com.strabospot2;
 
 import android.app.Application;
 import com.facebook.react.ReactApplication;
+import com.imagepicker.ImagePickerPackage;
 import com.reactlibrary.RNSimpleCompassPackage;
 import com.sensors.RNSensorsPackage;
 import com.rnfs.RNFSPackage;
@@ -13,8 +14,6 @@ import com.facebook.soloader.SoLoader;
 import com.mapbox.rctmgl.RCTMGLPackage;
 import com.RNFetchBlob.RNFetchBlobPackage;
 import com.rnziparchive.RNZipArchivePackage;
-import com.reactlibrary.RNSimpleCompassPackage;
-import com.sensors.RNSensorsPackage;
 
 import com.reactnativenavigation.NavigationApplication;
 import com.reactnativenavigation.react.NavigationReactNativeHost;
@@ -51,7 +50,8 @@ public class MainApplication extends NavigationApplication {
             new RNZipArchivePackage(),
             new RNFSPackage(),
             new RNSimpleCompassPackage(),
-            new RNSensorsPackage()
+            new RNSensorsPackage(),
+            new ImagePickerPackage()
         );
     }
 
