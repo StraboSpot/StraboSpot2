@@ -37,6 +37,6 @@ const configureStore = () => {
 export default () => {
   const store = createStore(persistedReducer, composeEnhancers(applyMiddleware(loggerMiddleware)));
   const persistor = persistStore(store);
-  //const persistorPurge = persistStore(store).purge(); // Use this to clear persistStore completely
+  // const persistorPurge = persistStore(store).purge(); // Use this to clear persistStore completely
   return {store, persistor}
 }
