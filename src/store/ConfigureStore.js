@@ -1,5 +1,5 @@
 import {applyMiddleware ,createStore, compose, combineReducers} from "redux";
-import {homeReducer, mapReducer, notebookReducer} from './reducers/ReducersIndex';
+import {homeReducer, mapReducer, notebookReducer, imageReducer} from './reducers/ReducersIndex';
 import {createLogger} from 'redux-logger';
 import {persistStore, persistReducer} from 'redux-persist'
 import storage from 'redux-persist/lib/storage' // defaults to localStorage for web and AsyncStorage for react-native
@@ -18,7 +18,8 @@ const loggerMiddleware = createLogger({
 const rootReducer = combineReducers({
   home: homeReducer,
   map: mapReducer,
-  notebook: notebookReducer
+  notebook: notebookReducer,
+  images: imageReducer
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

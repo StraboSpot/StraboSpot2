@@ -1,8 +1,9 @@
 import {
+  ADD_PHOTOS,
   CURRENT_BASEMAP,
   DELETE_OFFLINE_MAP,
-  EDIT_SPOT_PROPERTIES,
   EDIT_SPOT_GEOMETRY,
+  EDIT_SPOT_PROPERTIES,
   FEATURE_ADD,
   FEATURE_DELETE,
   FEATURE_SELECTED,
@@ -10,7 +11,7 @@ import {
   FEATURES_UPDATED,
   MAP,
   OFFLINE_MAPS,
-  SET_SPOT_PAGE_VISIBLE
+  SET_SPOT_PAGE_VISIBLE,
 } from '../Constants';
 import {SpotPages} from "../../components/notebook-panel/Notebook.constants";
 
@@ -22,6 +23,10 @@ const initialState = {
   offlineMaps: [],
   selectedSpot: {},
   visiblePage: SpotPages.OVERVIEW
+};
+
+const initialImageState = {
+  imagePaths: []
 };
 
 export const homeReducer = (state = initialState, action) => {
@@ -120,6 +125,19 @@ export const mapReducer = (state = initialState, action) => {
         ...state.map,
         map: action
       };
+  }
+  return state;
+};
+
+export const imageReducer = (state = initialImageState, action) => {
+  switch (action.type) {
+    case ADD_PHOTOS:
+      console.log('photo in reducer', action.image.id, action.image.src);
+      const {id, src} = action.image;
+      return {
+        ...state,
+        imagePaths: [...state.imagePaths, {id: id, src: src}]
+      }
   }
   return state;
 };
