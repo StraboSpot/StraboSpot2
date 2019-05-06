@@ -1,8 +1,14 @@
 rootProject.name = 'StraboSpot2'
+
+include ':react-native-image-picker'
+project(':react-native-image-picker').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-image-picker/android')
+
 include ':react-native-simple-compass'
 project(':react-native-simple-compass').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-simple-compass/android')
+
 include ':react-native-sensors'
 project(':react-native-sensors').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-sensors/android')
+
 include ':react-native-fs'
 project(':react-native-fs').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-fs/android')
 
@@ -20,11 +26,5 @@ project(':react-native-navigation').projectDir = new File(rootProject.projectDir
 
 include ':mapbox-react-native-mapbox-gl'
 project(':mapbox-react-native-mapbox-gl').projectDir = new File(rootProject.projectDir, '../node_modules/@mapbox/react-native-mapbox-gl/android/rctmgl')
-
-include ':react-native-simple-compass'
-project(':react-native-simple-compass').projectDir = new File(rootProject.projectDir, 	'../node_modules/react-native-simple-compass/android')
-
-include ':react-native-sensors'
-project(':react-native-sensors').projectDir = new File(rootProject.projectDir,  '../node_modules/react-native-sensors/android')
 
 include ':app'

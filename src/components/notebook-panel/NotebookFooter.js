@@ -28,7 +28,7 @@ const NotebookFooter = props => (
       <IconButton
         source={require('../../assets/icons/Photo.png')}
         style={styles.footerIcon}
-        onPress={() => props.camera(IconButtons.CAMERA)}
+        onPress={() => props.onPress(IconButtons.CAMERA)}
       />
       <IconButton
         source={require('../../assets/icons/Sketch.png')}
