@@ -1,15 +1,19 @@
 import React, {Component} from 'react';
-import {Image, Text, View} from 'react-native';
+import {Alert, Image, Text, View} from 'react-native';
 import styles from './ManageOfflineStyles';
 import {ListItem} from 'react-native-elements';
 import ButtonNoBackground from '../../../ui/ButtonNoBackround';
 import {ShortcutToggleButtons as Buttons} from '../SettingsMenu.constants';
 import {Switch} from 'react-native-switch';
 import {connect} from 'react-redux';
+import RNFetchBlob from 'rn-fetch-blob';
+import {Platform} from 'react-native';
 
 import {
   OFFLINE_MAPS
 } from '../../../store/Constants';
+
+var RNFS = require('react-native-fs');
 
 class ManageOfflineMapsMenu extends Component {
   _isMounted = false;
@@ -18,6 +22,11 @@ class ManageOfflineMapsMenu extends Component {
     super(props, context);
 
     console.log("Props: ", props);
+
+    let dirs = RNFetchBlob.fs.dirs;
+    this.devicePath = Platform.OS === 'ios' ? dirs.DocumentDir : dirs.SDCardDir; // ios : android
+    this.tilesDirectory = '/StraboSpotTiles';
+    this.tileCacheDirectory = this.devicePath + this.tilesDirectory + '/TileCache';
 
   }
 
@@ -46,22 +55,97 @@ class ManageOfflineMapsMenu extends Component {
           </ButtonNoBackground>
         </View>
         <View style={{alignItems: 'center'}}>
-          <Text style={styles.headingText}>Manage Offline BaseMaps</Text>
+          <Text style={styles.headingText}>Manage Offline Maps</Text>
         </View>
         <View>
           {
             this.props.offlineMaps.map((item,i) => <ListItem
               containerStyle={{backgroundColor: 'transparent', padding: 0}}
-              key="foo"
+              key={item.saveId}
               title={
                 <View style={styles.itemContainer}>
-                  <Text style={styles.itemTextStyle}>{item.name} ({item.count} tiles)</Text>
-                </View>}
+                  <Text style={styles.itemTextStyle}>{item.name}</Text>
+                </View>
+              }
+              subtitle={
+                <View style={styles.itemSubContainer}>
+                  <Text style={styles.itemSubTextStyle}>
+                    <Text>
+                      ({item.count} tiles)
+                    </Text>
+                    <Text style={styles.buttonPadding}>
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;View
+                    </Text>
+                    <Text onPress={() => this.confirmDeleteMap({item})} style={styles.buttonPadding}>
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Delete
+                    </Text>
+                  </Text>
+                </View>
+              }
             />)
           }
         </View>
       </View>
     );
+  }
+
+  //await RNFS.unlink(this.tileTempDirectory + '/' + zipUID);
+  //onPress: () => console.log('OK Pressed')},
+
+  confirmDeleteMap = async (map) => {
+    console.log(map);
+    Alert.alert(
+      'Delete Offline Map',
+      'Are your sure you want to delete ' + map.item.name + '?',
+      [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {
+          text: 'OK',
+          onPress: () => this.deleteMap(map.item.saveId)
+        },
+      ],
+      {cancelable: false},
+    );
+  };
+
+  deleteMap = async (map) => {
+    console.log('Deleting Map Here');
+    console.log("map: ",map);
+    console.log("directory: ", this.tileCacheDirectory + '/' + map);
+    let folderExists = await RNFS.exists(this.tileCacheDirectory + '/' + map);
+
+    //first, delete folder with tiles
+    if(folderExists){
+      await RNFS.unlink(this.tileCacheDirectory + '/' + map);
+    }
+
+    //now, delete map from Redux
+    currentOfflineMaps = this.props.offlineMaps;
+
+    //now check for existence of AsyncStorage offlineMapsData and store new count
+    if(!currentOfflineMaps){
+      currentOfflineMaps=[];
+    }
+
+    let newOfflineMapsData = [];
+
+    //loop over offlineMapsData and add any other maps (not current)
+    for(let i = 0; i < currentOfflineMaps.length; i++){
+      if(currentOfflineMaps[i].saveId){
+        if(currentOfflineMaps[i].saveId != map){
+          //Add it to new array for Redux Storage
+          newOfflineMapsData.push(currentOfflineMaps[i]);
+        }
+      }
+    }
+
+    await this.props.onOfflineMaps(newOfflineMapsData);
+    console.log("Saved offlineMaps to Redux.");
+
   }
 }
 
@@ -74,7 +158,7 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = {
-  onDeleteOfflineMap: (offlineMap) => ({type: DELETE_OFFLINE_MAP, offlineMaps: offlineMaps})
+  onOfflineMaps: (offlineMaps) => ({type: OFFLINE_MAPS, offlineMaps: offlineMaps})
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ManageOfflineMapsMenu);

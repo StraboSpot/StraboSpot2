@@ -49,6 +49,7 @@ class SaveMapModal extends Component {
     };
 
     console.log("Props: ", props);
+    console.log("tile cache directory:", this.tileCacheDirectory);
 
     //this.currentBasemap = props.map.getCurrentBasemap();
     this.currentBasemap = props.currentBasemap;

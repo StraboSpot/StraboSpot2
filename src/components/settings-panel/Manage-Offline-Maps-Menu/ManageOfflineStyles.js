@@ -31,12 +31,27 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderTopWidth: 1,
     paddingTop: 7,
+    paddingBottom: 3,
+    paddingLeft: 10
+  },
+  itemSubContainer: {
+    width: '90%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingTop: 3,
     paddingBottom: 7,
-    paddingLeft: 15
+    paddingLeft: 20
   },
   itemTextStyle: {
-    fontSize: 20,
+    fontSize: 18,
     marginLeft: 15,
+  },
+  itemSubTextStyle: {
+    fontSize: 14,
+    marginLeft: 15,
+  },
+  buttonPadding: {
+    paddingLeft: 10
   },
   switch: {
     flex: 1,
