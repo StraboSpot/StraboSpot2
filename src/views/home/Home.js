@@ -1,5 +1,6 @@
 import React from 'react'
 import {Text, View, Button} from 'react-native'
+import ImagePicker from 'react-native-image-picker';
 import styles from './Styles';
 import {goToAuth, goToImages, goSignIn, goToSpotPage} from '../../routes/Navigation'
 import {Navigation} from 'react-native-navigation';
@@ -23,8 +24,9 @@ import NotebookPanelMenu from '../../components/notebook-panel/NotebookPanelMenu
 import SpotName from '../../components/notebook-panel/SpotName';
 import SpotCoords from '../../components/notebook-panel/SpotCoords';
 import {connect} from 'react-redux';
-import {SET_SPOT_PAGE_VISIBLE} from "../../store/Constants";
+import {ADD_PHOTOS, SET_SPOT_PAGE_VISIBLE} from "../../store/Constants";
 import {SpotPages} from "../../components/notebook-panel/Notebook.constants";
+import {saveFile} from '../../services/images/ImageDownload';
 import {IMAGES} from "../../routes/ScreenNameConstants";
 
 class Home extends React.Component {
@@ -98,7 +100,7 @@ class Home extends React.Component {
         console.log(`${name}`, " was clicked");
         break;
       case "photo":
-        goToImages();
+        this.takePicture();
         break;
       case "sketch":
         console.log(`${name}`, " was clicked");
@@ -234,12 +236,39 @@ class Home extends React.Component {
   };
 
   notebookClickHandler = (name) => {
-    if (name === 'menu') {
-      this.toggleDialog('notebookPanelMenuVisible')
+    switch (name) {
+      case 'menu':
+        this.toggleDialog('notebookPanelMenuVisible');
+        break;
+      case  'export':
+        console.log('Export button was pressed');
+        break;
+      case 'camera':
+        // console.log('Camera button was pressed');
+        this.takePicture();
+        break;
     }
-    else if (name === 'export') {
-      console.log('Export button was pressed')
-    }
+    // if (name === 'menu') {
+    //   this.toggleDialog('notebookPanelMenuVisible')
+    // }
+    // else if (name === 'export') {
+    //   console.log('Export button was pressed')
+    // }
+  };
+
+  takePicture =  () => {
+    const options = {
+      storageOptions: {
+        skipBackup: true,
+        path: 'StraboSpot/Images'
+      }
+    };
+    ImagePicker.launchCamera(options, async (res)   => {
+      console.log(res);
+      const savedPhoto = await saveFile(res.uri);
+      console.log(savedPhoto);
+      this.props.addPhoto(savedPhoto);
+    });
   };
 
   // Toggle given button between true (on) and false (off)
@@ -388,7 +417,7 @@ class Home extends React.Component {
         this.setVisibleMenuState('Manage Offline Maps');
         break;
       case 'Image Gallery':
-       goToImages();
+        goToImages();
     }
   };
 
@@ -700,7 +729,8 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-  setPageVisible: (page) => ({type: SET_SPOT_PAGE_VISIBLE, page: page })
+  setPageVisible: (page) => ({type: SET_SPOT_PAGE_VISIBLE, page: page}),
+  addPhoto: (image) => ({type: ADD_PHOTOS, image: image})
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);
