@@ -35,7 +35,7 @@ const NotebookPanel = props => {
         </View>
         <NotebookFooter
         openPage={(page) => pageDisplay(page)}
-        camera={(camera) => console.log(camera)}
+        onPress={(camera) => props.onPress(camera)}
         />
       </View>
     )
