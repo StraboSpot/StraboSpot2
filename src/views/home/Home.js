@@ -1,5 +1,6 @@
 import React from 'react'
 import {Text, View, Button} from 'react-native'
+import NetInfo from "@react-native-community/netinfo";
 import ImagePicker from 'react-native-image-picker';
 import styles from './Styles';
 import {goToAuth, goToImages, goSignIn, goToSpotPage} from '../../routes/Navigation'
@@ -24,7 +25,7 @@ import NotebookPanelMenu from '../../components/notebook-panel/NotebookPanelMenu
 import SpotName from '../../components/notebook-panel/SpotName';
 import SpotCoords from '../../components/notebook-panel/SpotCoords';
 import {connect} from 'react-redux';
-import {ADD_PHOTOS, SET_SPOT_PAGE_VISIBLE} from "../../store/Constants";
+import {ADD_PHOTOS, SET_ISONLINE, SET_SPOT_PAGE_VISIBLE} from "../../store/Constants";
 import {SpotPages} from "../../components/notebook-panel/Notebook.constants";
 import {saveFile} from '../../services/images/ImageDownload';
 import {IMAGES} from "../../routes/ScreenNameConstants";
@@ -75,7 +76,8 @@ class Home extends React.Component {
 
   componentDidMount() {
     this._isMounted = true;
-    Icon.getImageSource("pin", 30)
+    Icon.getImageSource("pin", 30);
+    NetInfo.isConnected.addEventListener('connectionChange', this.handleConnectivityChange);
   }
 
   componentWillUnmount() {
@@ -255,6 +257,11 @@ class Home extends React.Component {
       />
     );
   };
+
+  //function for online/offline state change event handler
+  handleConnectivityChange = (isConnected) => {
+    this.props.setIsOnline( isConnected );
+  }
 
   mapPress = () => {
     return this.mapViewComponent.getCurrentBasemap();
@@ -498,6 +505,9 @@ class Home extends React.Component {
 
   render() {
     const spot = this.props.selectedSpot;
+
+    const isOnline = this.props.isOnline;
+
     let content = null;
     let spotName = Object.getOwnPropertyNames(spot).length !== 0 ? this.getSpotNameComponent(spot) : undefined;
     let spotCoords = Object.getOwnPropertyNames(spot).length !== 0 ? this.getSpotCoordsComponent(spot) : undefined;
@@ -740,11 +750,13 @@ class Home extends React.Component {
 function mapStateToProps(state) {
   return {
     selectedSpot: state.home.selectedSpot,
-    featureCollectionSelected: state.home.featureCollectionSelected
+    featureCollectionSelected: state.home.featureCollectionSelected,
+    isOnline: state.home.isOnline
   }
 }
 
 const mapDispatchToProps = {
+  setIsOnline: (online) => ({type: SET_ISONLINE, online: online}),
   setPageVisible: (page) => ({type: SET_SPOT_PAGE_VISIBLE, page: page}),
   addPhoto: (image) => ({type: ADD_PHOTOS, image: image})
 };

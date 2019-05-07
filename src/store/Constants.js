@@ -9,5 +9,6 @@ export const MAP = 'MAP';
 export const OFFLINE_MAPS = 'OFFLINE_MAPS';
 export const EDIT_SPOT_PROPERTIES = 'EDIT_SPOT_PROPERTIES';
 export const EDIT_SPOT_GEOMETRY = 'EDIT_SPOT_GEOMETRY';
+export const SET_ISONLINE = 'SET_ISONLINE';
 export const SET_SPOT_PAGE_VISIBLE = 'SPOT_PAGE_VISIBLE';
 export const ADD_PHOTOS = 'ADD_PHOTOS';

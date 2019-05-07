@@ -12,6 +12,7 @@ import {
   MAP,
   OFFLINE_MAPS,
   SET_SPOT_PAGE_VISIBLE,
+  SET_ISONLINE,
 } from '../Constants';
 import {SpotPages} from "../../components/notebook-panel/Notebook.constants";
 
@@ -96,6 +97,11 @@ export const homeReducer = (state = initialState, action) => {
       console.log('Deleting Offline Map: ', action.offlineMap);
       return {
         state
+      }
+    case SET_ISONLINE:
+      return {
+        ...state,
+        isOnline: action.online
       }
   }
   return state;

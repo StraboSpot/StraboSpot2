@@ -2,6 +2,7 @@ package com.strabospot2;
 
 import android.app.Application;
 import com.facebook.react.ReactApplication;
+import com.reactnativecommunity.netinfo.NetInfoPackage;
 import com.imagepicker.ImagePickerPackage;
 import com.reactlibrary.RNSimpleCompassPackage;
 import com.sensors.RNSensorsPackage;
