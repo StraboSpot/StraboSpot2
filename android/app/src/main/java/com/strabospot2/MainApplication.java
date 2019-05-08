@@ -52,7 +52,8 @@ public class MainApplication extends NavigationApplication {
             new RNFSPackage(),
             new RNSimpleCompassPackage(),
             new RNSensorsPackage(),
-            new ImagePickerPackage()
+            new ImagePickerPackage(),
+            new NetInfoPackage()
         );
     }
 
