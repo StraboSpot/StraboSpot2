@@ -37,7 +37,6 @@ class SaveMapModal extends Component {
     this.tryCount = 0;
 
     this.state = {
-      downloadZoom: null,
       tileCount: 0,
       showComplete: false,
       showMainMenu: true,
