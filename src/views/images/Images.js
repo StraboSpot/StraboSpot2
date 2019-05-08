@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import {
+  Alert,
   Button,
+  Dimensions,
   Image,
   TouchableOpacity,
   FlatList,
@@ -10,10 +12,12 @@ import {
   StyleSheet,
 } from 'react-native';
 import {Navigation} from "react-native-navigation";
-import {getRemoteImages, getImages} from '../../services/images/ImageDownload';
+import {getRemoteImages, getImages, saveFile} from '../../services/images/ImageDownload';
 import ImageView from '../../components/images/ImageView';
 import PhotoGrid from 'react-native-image-grid';
 import {connect} from 'react-redux';
+import ImagePicker from "react-native-image-picker";
+import {ADD_PHOTOS, SET_SPOT_PAGE_VISIBLE} from "../../store/Constants";
 
 
 // const w = Dimensions.get('window');
@@ -25,19 +29,14 @@ class Images extends Component {
     console.log(props)
     super(props);
     this.state = {
-      imageuri: '',
-      ModalVisibleStatus: false
-    }
-    this.state = {
-      // imagesToDisplay: []
-      items: []
+      allPhotosSaved: [],
+      ModalVisibleStatus: false,
     };
   }
 
 
   async componentDidMount() {
     this._isMounted = true;
-
     // const images = await this.props.getImages;
     // this.setState({items: images}, () => console.log('Image State:', this.state.items))
     // getRemoteImages().then(() => {
@@ -78,7 +77,7 @@ class Images extends Component {
     //and close button on modal
     this.setState({
       ModalVisibleStatus: visible,
-      imageuri: imageURL,
+      imageURI: imageURL,
     });
   }
 
@@ -103,6 +102,46 @@ class Images extends Component {
     //   </TouchableOpacity>
     // );
   }
+  pictureSelectDialog = () => {
+    const imageOptions = {
+      storageOptions: {
+        skipBackup: true,
+      },
+      title: 'Choose Photo Source'
+    };
+
+    ImagePicker.showImagePicker(imageOptions, async (response) => {
+      console.log('Response = ', response);
+
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+        if (this.state.allPhotosSaved.length > 0) {
+          console.log('ALL PHOTOS SAVED', this.state.allPhotosSaved);
+          this.props.addPhoto(this.state.allPhotosSaved);
+          this.state.allPhotosSaved = [];
+          Alert.alert('Photo Saved!', 'Thank you!')
+        }
+        else {
+          Alert.alert('No Photos To Save', 'please try again...')
+        }
+      }
+      else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      }
+      else {
+        const savedPhoto = await saveFile(response.uri);
+        this.setState(prevState => {
+          return {
+            ...prevState,
+          allPhotosSaved: [...this.state.allPhotosSaved, savedPhoto]
+            }
+        }, () => {
+          console.log('Saved Photo in imageURI= ', this.state.allPhotosSaved);
+          this.pictureSelectDialog();
+        });
+      }
+    });
+  };
 
   render() {
     //   if (this.state.ModalVisibleStatus) {
@@ -118,7 +157,7 @@ class Images extends Component {
     //         <View style={styles.modelStyle}>
     //           <Image
     //             style={styles.fullImageStyle}
-    //             source={{uri: this.state.imageuri}}
+    //             source={{uri: this.state.imageURI}}
     //           />
     //           <TouchableOpacity
     //             activeOpacity={0.5}
@@ -178,9 +217,9 @@ class Images extends Component {
         <Text>Images Page</Text>
           <FlatList
             data={this.props.getImages}
-            renderItem={({item}) => <Image style={styles.imageList} source={{uri: item.src}}/>}
-            // style={styles.imageList}
-            numColumns={3}
+            renderItem={({item}) => <Image style={styles.image} source={{uri: item.src}}/>}
+            style={styles.flatListStyle}
+            numColumns={2}
             keyExtractor={(item, index) => index.toString()}
           />
 
@@ -192,6 +231,10 @@ class Images extends Component {
           })}
           title="Go Back"
         />
+        <Button
+          onPress={() => this.pictureSelectDialog()}
+          title="Picture"
+        />
       </View>
     )
   }
@@ -201,6 +244,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     // justifyContent: 'center',
+    backgroundColor: '#f3e0d2',
+
     alignItems: 'center',
   },
   // images: {
@@ -208,14 +253,18 @@ const styles = StyleSheet.create({
   //   height: 200,
   //   margin: 10
   // },
-  imageList: {
+  image: {
     // flex: 1,
-    height: 200,
-    width: 200,
-    margin: 15
+    height: 300,
+    width: (Dimensions.get('window').width / 2) - 40,
+    // width: 200,
+    margin: 10
     // paddingTop: 50,
   },
 
+  flatListStyle : {
+    flex: 1
+  },
   containerStyle: {
     justifyContent: 'center',
     flex: 1,
@@ -224,7 +273,7 @@ const styles = StyleSheet.create({
   fullImageStyle: {
     justifyContent: 'center',
     alignItems: 'center',
-    height: '100%',
+    height: '50%',
     width: '98%',
     resizeMode: 'contain',
   },
@@ -250,4 +299,8 @@ const mapStateToProps = (state) => {
   }
 };
 
-export default connect(mapStateToProps)(Images);
+const mapDispatchToProps = {
+  addPhoto: (image) => ({type: ADD_PHOTOS, image: image})
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Images);

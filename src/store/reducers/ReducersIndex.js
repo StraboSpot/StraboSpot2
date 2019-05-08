@@ -138,11 +138,18 @@ export const mapReducer = (state = initialState, action) => {
 export const imageReducer = (state = initialImageState, action) => {
   switch (action.type) {
     case ADD_PHOTOS:
-      console.log('photo in reducer', action.image.id, action.image.src);
-      const {id, src} = action.image;
+      let updatedImages = null;
+      let imagePathsTemp = [];
+      console.log(action.image);
+      action.image.map(data => {
+        console.log('photo in reducer', data.id, data.src);
+        // const {id, src} = data;
+        imagePathsTemp.push({id: data.id, src: data.src});
+        updatedImages = state.imagePaths.concat(imagePathsTemp)
+      });
       return {
         ...state,
-        imagePaths: [...state.imagePaths, {id: id, src: src}]
+        imagePaths: updatedImages
       }
   }
   return state;

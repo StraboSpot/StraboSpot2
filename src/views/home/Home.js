@@ -1,5 +1,5 @@
 import React from 'react'
-import {Text, View, Button} from 'react-native'
+import {Alert, Text, View, Button} from 'react-native'
 import NetInfo from "@react-native-community/netinfo";
 import ImagePicker from 'react-native-image-picker';
 import styles from './Styles';
@@ -28,7 +28,17 @@ import {connect} from 'react-redux';
 import {ADD_PHOTOS, SET_ISONLINE, SET_SPOT_PAGE_VISIBLE} from "../../store/Constants";
 import {SpotPages} from "../../components/notebook-panel/Notebook.constants";
 import {saveFile} from '../../services/images/ImageDownload';
+import {takePicture} from '../../shared/HelperFunctions/ImageHelperFunctions';
 import {IMAGES} from "../../routes/ScreenNameConstants";
+
+const imageOptions = {
+  storageOptions: {
+    skipBackup: true,
+    // path: 'StraboSpot/Images',
+    takePhotoButtonTitle: 'Take Photo Buddy!',
+    chooseFromLibraryButtonTitle: 'choose photo from library'
+  }
+};
 
 class Home extends React.Component {
   _isMounted = false;
@@ -70,7 +80,8 @@ class Home extends React.Component {
         Photo: false,
         Sketch: false
       },
-      currentSpot: undefined
+      currentSpot: undefined,
+      allPhotosSaved: []
     };
   }
 
@@ -281,15 +292,9 @@ class Home extends React.Component {
         break;
       case 'camera':
         // console.log('Camera button was pressed');
-        this.pictureSelectDialog();
+        this.launchCamera();
         break;
     }
-    // if (name === 'menu') {
-    //   this.toggleDialog('notebookPanelMenuVisible')
-    // }
-    // else if (name === 'export') {
-    //   console.log('Export button was pressed')
-    // }
   };
 
   openSettingsDrawer = () => {
@@ -312,25 +317,61 @@ class Home extends React.Component {
     }
   };
 
-  pictureSelectDialog = () => {
-    ImagePicker.showImagePicker(imageOptions, async (response) => {
-      console.log('Response = ', response);
+  launchCamera = async () => {
+    const savedPhoto = await takePicture();
+    // console.log('savedPhoto res', savedPhoto);
 
-      if (response.didCancel) {
-        console.log('User cancelled image picker');
-      } else if (response.error) {
-        console.log('ImagePicker Error: ', response.error);
-      } else {
-        const source = { uri: response.uri };
-        const savedPhoto = await saveFile(response.uri);
-        console.log('Saved Photo = ', savedPhoto);
-
-        // You can also display the image using data:
-        // const source = { uri: 'data:image/jpeg;base64,' + response.data };
-
-        this.props.addPhoto(savedPhoto)
+    if (savedPhoto === 'cancelled') {
+      if (this.state.allPhotosSaved.length > 0) {
+        console.log('ALL PHOTOS SAVED', this.state.allPhotosSaved);
+        this.props.addPhoto(this.state.allPhotosSaved);
+        this.state.allPhotosSaved = [];
+        Alert.alert('Photo Saved!', 'Thank you!')
       }
-    });
+      else {
+        Alert.alert('No Photos To Save', 'please try again...')
+      }
+
+    }
+    else {
+      this.setState(prevState => {
+        return {
+          ...prevState,
+          allPhotosSaved: [...this.state.allPhotosSaved, savedPhoto]
+        }
+      }, () => {
+        console.log('All Photos Saved:', this.state.allPhotosSaved);
+        this.launchCamera();
+      });
+    }
+
+
+    // ImagePicker.showImagePicker(imageOptions, async (response) => {
+    //   console.log('Response = ', response);
+    //
+    //   if (response.didCancel) {
+    //     console.log('User cancelled image picker');
+    //     this.props.addPhoto(this.state.allPhotosSaved);
+    //     alert('Photo Saved!', savedPhoto.id)
+    //   } else if (response.error) {
+    //     console.log('ImagePicker Error: ', response.error);
+    //   } else {
+    //     // const source = { uri: response.uri };
+    //     const savedPhoto = await saveFile(response.uri);
+    //     console.log('Saved Photo = ', savedPhoto);
+    //     // You can also display the image using data:
+    //     // const source = { uri: 'data:image/jpeg;base64,' + response.data };
+    //       this.setState(prevState => {
+    //         return {
+    //          ...prevState,
+    //           allPhotosSaved: [...this.state.allPhotosSaved, savedPhoto]
+    //         }
+    //       }, () => {
+    //         console.log('All Photos Saved:', this.state.allPhotosSaved);
+    //         this.takePicture(savedPhoto);
+    //       })
+    //   }
+    // });
   };
 
   setDraw = async mapMode => {
@@ -401,12 +442,33 @@ class Home extends React.Component {
     this.toggleButton('drawButtonsVisible', false);
   };
 
-  takePicture =  () => {
-    ImagePicker.launchCamera(imageOptions, async (res)   => {
-      console.log(res);
-      const savedPhoto = await saveFile(res.uri);
-      console.log(savedPhoto);
-      this.props.addPhoto(savedPhoto);
+  takePicture = async (photo) => {
+    // let savedPhoto = await takePicture(photo)
+
+    ImagePicker.launchCamera(imageOptions, async (response) => {
+
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+        await this.props.addPhoto(this.state.allPhotosSaved);
+        alert('Photos Saved!')
+      }
+      else if (response.error) console.log('ImagePicker Error: ', response.error);
+      else {
+        console.log('takePicture()', response);
+        const savedPhoto = await saveFile(response.uri);
+        this.setState(prevState => {
+          return {
+            ...prevState,
+            allPhotosSaved: [...this.state.allPhotosSaved, savedPhoto]
+          }
+        }, () => {
+          console.log('All Photos Saved:', this.state.allPhotosSaved);
+          this.takePicture();
+        })
+      }
+      // const savedPhoto = await saveFile(res.uri);
+      // console.log(savedPhoto);
+      // this.props.addPhoto(savedPhoto);
     });
   };
 
@@ -646,6 +708,9 @@ class Home extends React.Component {
             </View>
           </View>
           <View style={styles.bottomRightIcons}>
+            {/* displays the Online boolean in text*/}
+            {/*<View><Text>Online: {this.props.isOnline.toString()}</Text></View> */}
+
             {this.state.buttons.drawButtonsVisible ?
               <View>
                 <View style={styles.pointIcon}>
