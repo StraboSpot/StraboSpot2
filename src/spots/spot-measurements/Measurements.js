@@ -17,6 +17,29 @@ const MeasurementPage = (props) => {
     setMeasurements([...measurements, data]);
   };
 
+  // Render an individual measurement block in a list
+  const renderItem = ({item}) => {
+    return (
+      <View style={styles.measurementsListItem}>
+        <View style={[styles.textBubble, styles.mainText]}>
+          {item.strike && item.dip ?
+            <Text onPress={() => console.log('item', item)}>
+              {item.strike}/{item.dip}
+            </Text> : null}
+          {item.trend && item.plunge ?
+            <Text onPress={() => console.log('item', item)}>
+              {item.trend}/{item.plunge}
+            </Text> : null}
+        </View>
+        <View style={[styles.textBubble, styles.propertyText]}>
+          <Text>
+            Some property of the measurement here.
+          </Text>
+        </View>
+      </View>
+    );
+  };
+
   return (
     <React.Fragment>
       <Button
@@ -32,7 +55,6 @@ const MeasurementPage = (props) => {
         onPress={() => props.setPageVisible(SpotPages.OVERVIEW)}
       />
       <ScrollView>
-        {/*<Text>This is the measurements page</Text>*/}
         <View style={styles.compassContainer}>
           <Compass
             addMeasurement={addMeasurement}/>
@@ -40,13 +62,11 @@ const MeasurementPage = (props) => {
         <Divider style={spotPageStyles.divider}>
           <Text style={spotPageStyles.spotDivider}>Measurements</Text>
         </Divider>
-        <View>
-          <FlatList
-            data={measurements}
-            renderItem={({item}) => <Text>{item.strike}/{item.dip}</Text>}
-            keyExtractor={(item, index) => index.toString()}
-          />
-        </View>
+        <FlatList
+          data={measurements}
+          renderItem={renderItem}
+          keyExtractor={(item, index) => index.toString()}
+        />
       </ScrollView>
     </React.Fragment>
   );

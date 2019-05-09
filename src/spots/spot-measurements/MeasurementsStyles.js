@@ -7,6 +7,24 @@ const styles = StyleSheet.create({
     //top: 50
     // width: 200,
     // height: 200
+  },
+  measurementsListItem: {
+    flex: 1,
+    flexDirection: 'row',
+  },
+  textBubble: {
+    borderRadius:10,
+    borderWidth: 3,
+    padding: 4,
+    margin: 4
+  },
+  mainText: {
+    borderColor: 'darkgray',
+    backgroundColor: 'darkgray',
+  },
+  propertyText: {
+    borderColor: 'white',
+    backgroundColor: 'white'
   }
 });
 
