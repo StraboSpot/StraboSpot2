@@ -30,7 +30,7 @@ const NotebookPanel = props => {
         <View style={styles.subContainer}>
           {props.spotPageVisible === SpotPages.OVERVIEW ? <SpotOverview/> : null}
           {props.spotPageVisible === SpotPages.BASIC ? <SpotBasics/> : null}
-          {props.spotPageVisible === SpotPages.MEASUREMENT ? <MeasurementPage spot={props.selectedSpot}/> : null}
+          {props.spotPageVisible === SpotPages.MEASUREMENT ? <MeasurementPage/> : null}
           {props.spotPageVisible === undefined ? <SpotOverview/> : null}
         </View>
         <NotebookFooter

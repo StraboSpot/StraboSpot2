@@ -1,43 +1,31 @@
-import React, {useState} from 'react';
-import {Alert, FlatList, ScrollView, Text, View} from 'react-native';
+import React from 'react';
+import {FlatList, ScrollView, Text, View, TouchableOpacity} from 'react-native';
 import {connect} from 'react-redux';
 import Compass from '../../components/compass/Compass';
 import styles from './MeasurementsStyles';
 import {SpotPages} from "../../components/notebook-panel/Notebook.constants";
 import {Button, Divider} from "react-native-elements";
-import {EDIT_SPOT_PROPERTIES, FEATURE_ADD, SET_SPOT_PAGE_VISIBLE} from "../../store/Constants";
+import {SET_SPOT_PAGE_VISIBLE} from "../../store/Constants";
 import spotPageStyles from '../spot-page/SpotPageStyles';
 
 const MeasurementPage = (props) => {
 
-  const [measurements, setMeasurements] = useState(props.spot.properties.orientations);
-
-  const addMeasurement = (data) => {
-    if (data.length > 0) {
-      console.log('New measurement:', data);
-      let newOrientation = data[0];
-      if (data.length > 1) newOrientation.associated_orientation = [data[1]];
-      const orientations = (typeof measurements === 'undefined') ? [newOrientation] : [...measurements, newOrientation];
-      setMeasurements(orientations);
-      props.onSpotEdit('orientations', orientations);
-    }
-    else Alert.alert('No Measurement Type', 'Pleas select a measurement type using the toggles.')
+  const openMeasurementDetail = (item) => {
+    console.log('item', item);
   };
 
-  const openMeasurementDetail = () => {
-
-  };
   // Render an individual measurement
   const renderMeasurement = ({item}) => {
     return (
-      <View style={styles.measurementsListItem}>
+      <TouchableOpacity style={styles.measurementsListItem}
+                        onPress={() => openMeasurementDetail(item)}>
         <View style={[styles.textBubble, styles.mainText]}>
           {'strike' in item && 'dip' in item ?
-            <Text onPress={() => console.log('item', item)}>
+            <Text>
               {item.strike}/{item.dip}
             </Text> : null}
           {'trend' in item && 'plunge' in item ?
-            <Text onPress={() => console.log('item', item)}>
+            <Text>
               {item.trend}/{item.plunge}
             </Text> : null}
         </View>
@@ -46,7 +34,7 @@ const MeasurementPage = (props) => {
             {item.type}
           </Text>
         </View>
-      </View>
+      </TouchableOpacity>
     );
   };
 
@@ -85,14 +73,13 @@ const MeasurementPage = (props) => {
       />
       <ScrollView>
         <View style={styles.compassContainer}>
-          <Compass
-            addMeasurement={addMeasurement}/>
+          <Compass/>
         </View>
         <Divider style={spotPageStyles.divider}>
           <Text style={spotPageStyles.spotDivider}>Measurements</Text>
         </Divider>
         <FlatList
-          data={measurements}
+          data={props.spot.properties.orientations}
           renderItem={renderItem}
           keyExtractor={(item, index) => index.toString()}
         />
@@ -101,9 +88,14 @@ const MeasurementPage = (props) => {
   );
 };
 
+function mapStateToProps(state) {
+  return {
+    spot: state.home.selectedSpot
+  }
+}
+
 const mapDispatchToProps = {
-  setPageVisible: (page) => ({type: SET_SPOT_PAGE_VISIBLE, page: page}),
-  onSpotEdit: (field, value) => ({type: EDIT_SPOT_PROPERTIES, field: field, value: value}),
+  setPageVisible: (page) => ({type: SET_SPOT_PAGE_VISIBLE, page: page})
 };
 
-export default connect(null, mapDispatchToProps)(MeasurementPage);
+export default connect(mapStateToProps, mapDispatchToProps)(MeasurementPage);

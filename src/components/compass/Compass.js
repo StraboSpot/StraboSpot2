@@ -5,7 +5,8 @@ const degree_update_rate = 2; // Number of degrees changed before the callback i
 
 
 import React, {Component} from 'react';
-import {Image, View, Text, Dimensions} from 'react-native';
+import {Alert, Image, View, Text, Dimensions} from 'react-native';
+import {connect} from "react-redux";
 import {Grid, Col, Row} from 'react-native-easy-grid';
 import {setUpdateIntervalForType, SensorTypes, magnetometer, accelerometer} from 'react-native-sensors';
 import {mod, toRadians, toDegrees, roundToDecimalPlaces} from "../../shared/Helpers";
@@ -14,10 +15,11 @@ import {ListItem} from "react-native-elements";
 import {Switch} from "react-native-switch";
 
 import styles from './CompassStyles';
+import {EDIT_SPOT_PROPERTIES} from "../../store/Constants";
 
 const {height, width} = Dimensions.get('window');
 
-export default class Compass extends Component {
+class Compass extends Component {
   _isMounted = false;
 
   constructor(props, context) {
@@ -95,7 +97,14 @@ export default class Compass extends Component {
         type: 'linear_orientation'
       });
     }
-    this.props.addMeasurement(measurements);
+
+    if (measurements.length > 0) {
+      let newOrientation = measurements[0];
+      if (measurements.length > 1) newOrientation.associated_orientation = [measurements[1]];
+      const orientations = (typeof this.props.spot.properties.orientations === 'undefined') ? [newOrientation] : [...this.props.spot.properties.orientations, newOrientation];
+      this.props.onSpotEdit('orientations', orientations);
+    }
+    else Alert.alert('No Measurement Type', 'Pleas select a measurement type using the toggles.');
   };
 
   subscribe = async () => {
@@ -381,3 +390,15 @@ export default class Compass extends Component {
     );
   };
 }
+
+function mapStateToProps(state) {
+  return {
+    spot: state.home.selectedSpot
+  }
+}
+
+const mapDispatchToProps = {
+  onSpotEdit: (field, value) => ({type: EDIT_SPOT_PROPERTIES, field: field, value: value}),
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Compass);
