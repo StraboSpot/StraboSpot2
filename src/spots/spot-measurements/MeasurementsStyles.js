@@ -25,6 +25,11 @@ const styles = StyleSheet.create({
   propertyText: {
     borderColor: 'white',
     backgroundColor: 'white'
+  },
+  horizontalLine: {
+    borderBottomColor: 'black',
+    borderBottomWidth: 1,
+    width: '100%'
   }
 });
 

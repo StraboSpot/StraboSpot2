@@ -58,7 +58,7 @@ export default class Compass extends Component {
     this._isMounted = true;
     this.subscribe();
     RNSimpleCompass.start(degree_update_rate, (degree) => {
-      console.log('You are facing', degree);
+      // console.log('You are facing', degree);
       this.setState(prevState => {
         return {
           ...prevState,
@@ -77,17 +77,23 @@ export default class Compass extends Component {
   };
 
   grabMeasurements = () => {
-    let measurements = {};
+    let measurements = [];
     if (this.state.toggles.includes(CompassToggleButtons.PLANAR)) {
-      measurements.strike = this.state.compassData.strike;
-      measurements.dipdir = this.state.compassData.dipdir;
-      measurements.dip = this.state.compassData.dip;
+      measurements.push({
+        strike: this.state.compassData.strike,
+        dip_direction: this.state.compassData.dipdir,
+        dip: this.state.compassData.dip,
+        type: 'planar_orientation'
+      });
     }
     if (this.state.toggles.includes(CompassToggleButtons.LINEAR)) {
-      measurements.trend = this.state.compassData.trend;
-      measurements.plunge = this.state.compassData.plunge;
-      measurements.rake = this.state.compassData.rake;
-      measurements.rake_calculated = 'yes';
+      measurements.push({
+        trend: this.state.compassData.trend,
+        plunge: this.state.compassData.plunge,
+        rake: this.state.compassData.rake,
+        rake_calculated: 'yes',
+        type: 'linear_orientation'
+      });
     }
     this.props.addMeasurement(measurements);
   };
@@ -248,8 +254,8 @@ export default class Compass extends Component {
         <Text>x: {this.state.accelerometer.x}</Text>
         <Text>y: {this.state.accelerometer.y}</Text>
         <Text>z: {this.state.accelerometer.z}</Text>{
-        Object.keys(this.state.compassData).map((key) => (
-          <Text>{key}: {this.state.compassData[key]}</Text>
+        Object.keys(this.state.compassData).map((key, i) => (
+          <Text key={i}>{key}: {this.state.compassData[key]}</Text>
         ))}
       </View>
     );
