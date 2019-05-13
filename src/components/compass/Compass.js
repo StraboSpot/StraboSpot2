@@ -22,8 +22,8 @@ class Compass extends Component {
   constructor(props, context) {
     super(props, context);
 
-    setUpdateIntervalForType(SensorTypes.accelerometer, 100);
-    setUpdateIntervalForType(SensorTypes.magnetometer, 100);
+    setUpdateIntervalForType(SensorTypes.accelerometer, 300);
+    setUpdateIntervalForType(SensorTypes.magnetometer, 300);
 
     this.state = {
       magnetometer: 0,
@@ -217,8 +217,10 @@ class Compass extends Component {
 
     // Calculate trend, plunge and rake (in degrees)
     let trend, plunge, rake;
-    if (y > 0) trend = mod(diry + 180, 360);
-    if (y <= 0) trend = diry;
+    if (y > 0) trend = mod(diry, 360);
+    // if (y > 0) trend = diry;
+    // if (y > 0) trend = mod(diry, 360);
+    if (y <= 0) trend = mod(diry - 180, 360);
     plunge = toDegrees(Math.asin(Math.abs(y) / g));
     rake = toDegrees(R);
 
@@ -334,6 +336,29 @@ class Compass extends Component {
         toggles: has ? prevState.toggles.filter(i => i !== switchType) : prevState.toggles.concat(switchType)
       }
     }, () => console.log('toggles', this.state.toggles));
+  };
+
+  startsMeasurements = () => {
+    this.subscribe();
+    RNSimpleCompass.start(degree_update_rate, (degree) => {
+      degreeFacing = (<Text>{degree}</Text>);
+      console.log('You are facing', degree);
+      this.setState(prevState => {
+          return {
+            ...prevState,
+            magnetometer: mod(degree - 90, 360)
+          }
+        },
+        // () => console.log('magnetometer reading:', this.state.magnetometer)
+      );
+      // RNSimpleCompass.stop();
+    });
+  };
+
+  stopsMeasurements = () => {
+    this.unsubscribe();
+    RNSimpleCompass.stop();
+    console.log('Compass unsubscribed');
   };
 
   render() {
