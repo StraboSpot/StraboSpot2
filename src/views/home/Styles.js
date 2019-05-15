@@ -8,14 +8,12 @@ const styles = StyleSheet.create({
   buttonWithBackground: {
     color: 'black',
     fontSize: 16,
-    // paddingTop: 5,
-    // paddingBottom: 5,
     marginTop: 5,
     marginBottom: 5
   },
   // --- Drawer Styles ---
   drawToolsContainer: {
-    flex: 1,
+    // flex: 3,
     flexDirection: 'row'
   },
   drawerStyles: {
@@ -43,18 +41,7 @@ const styles = StyleSheet.create({
     left: '40%'
   },
 
-  // --- All icons with group spacings (margins of 55) on left and right sides ---
-  sideIconsGroup: {
-    // marginBottom: 65,
-    // marginLeft: 10
-  },
-  sideIconsGroupContainer: {
-
-    // marginTop: 100
-  },
-
   // --- Bottom icons (line, polygon, and point) ---
-
   bottomRightIcons: {
     position: "absolute",
     bottom: 10,
@@ -70,23 +57,15 @@ const styles = StyleSheet.create({
   layersIcon: {
     marginBottom: 105
   },
-
-  // --- Icons with specialized margins ---
-  mapActionsIcon: {
-    // marginTop: 415
-  },
   notebookViewIcon: {
     position: 'absolute',
     bottom: 150,
     right: 10
-    // marginTop: 50
   },
   settingsIconContainer: {
     position: 'absolute',
     right: 10,
     top: 20
-    // marginTop: 20,
-    // marginLeft: 10
   },
   searchIconContainer: {
     position: 'absolute',

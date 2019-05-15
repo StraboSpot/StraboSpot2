@@ -22,8 +22,6 @@ import ButtonWithBackground from '../../ui/ButtonWithBackground';
 import Modal from "react-native-modal";
 import SaveMapModal from '../../components/modals/map-actions/SaveMapsModal';
 import NotebookPanelMenu from '../../components/notebook-panel/NotebookPanelMenu';
-import SpotName from '../../components/notebook-panel/SpotName';
-import SpotCoords from '../../components/notebook-panel/SpotCoords';
 import {connect} from 'react-redux';
 import {ADD_PHOTOS, FEATURE_DELETE, SET_ISONLINE, SET_SPOT_PAGE_VISIBLE} from "../../store/Constants";
 import {SpotPages} from "../../components/notebook-panel/Notebook.constants";
@@ -265,35 +263,6 @@ class Home extends React.Component {
     this.toggleButton('endDrawButtonVisible');
   };
 
-  getSpotCoordsComponent = (spot) => {
-    if (spot.geometry.type === 'Point') {
-      const spotLng = spot.geometry.coordinates[0];
-      const spotLat = spot.geometry.coordinates[1];
-      const convertedLatLng = this.convertDMS(spotLat, spotLng);
-      return (
-        <SpotCoords
-          key={spot.properties.id}
-          coords={convertedLatLng}/>
-      );
-    }
-    else {
-      return (
-        <SpotCoords
-          key={spot.properties.id}
-          coords={spot.geometry.type}/>
-      );
-    }
-  };
-
-  getSpotNameComponent = (spot) => {
-    return (
-      <SpotName
-        key={spot.properties.id}
-        name={spot.properties.name}
-      />
-    );
-  };
-
   //function for online/offline state change event handler
   handleConnectivityChange = (isConnected) => {
     this.props.setIsOnline( isConnected );
@@ -440,8 +409,6 @@ class Home extends React.Component {
   };
 
   takePicture = async (photo) => {
-    // let savedPhoto = await takePicture(photo)
-
     ImagePicker.launchCamera(imageOptions, async (response) => {
 
       if (response.didCancel) {
@@ -463,9 +430,6 @@ class Home extends React.Component {
           this.takePicture();
         })
       }
-      // const savedPhoto = await saveFile(res.uri);
-      // console.log(savedPhoto);
-      // this.props.addPhoto(savedPhoto);
     });
   };
 
@@ -555,8 +519,6 @@ class Home extends React.Component {
     const isOnline = this.props.isOnline;
 
     let content = null;
-    let spotName = Object.getOwnPropertyNames(spot).length !== 0 ? this.getSpotNameComponent(spot) : undefined;
-    let spotCoords = Object.getOwnPropertyNames(spot).length !== 0 ? this.getSpotCoordsComponent(spot) : undefined;
 
     if (this.state.settingsMenuVisible === 'settingsMain') {
       content = <SettingsPanel onPress={(name) => this.settingsClickHandler(name)}/>
@@ -596,8 +558,6 @@ class Home extends React.Component {
           {this.state.notebookPanelVisible ?
             <NotebookPanel
               closeNotebook={this.closeNotebookPanel}
-              spotName={spotName}
-              spotCoords={spotCoords}
               textStyle={{fontWeight: 'bold', fontSize: 12}}
               onPress={(name) => this.notebookClickHandler(name)}
             />
