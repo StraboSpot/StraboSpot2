@@ -9,92 +9,34 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 30,
     borderTopLeftRadius: 30,
     backgroundColor: themes.LIGHTGREY,
-    alignItems: 'flex-end',
     position: 'absolute', //Here is the trick
-    bottom: 0, //Here is the trick
     right: 0,
     zIndex: 1,
   },
 
   // Inside Footer container
   footerContainer: {
-    width: 470,
     height: 70,
-    backgroundColor: 'white',
-    // justifyContent: 'space-between',
+    borderTopWidth: 2,
     padding: 10,
-    // flexDirection: 'row',
+    flexDirection: 'row',
   },
   footerIconContainer: {
     flex: 1,
-    justifyContent: 'space-between',
+    justifyContent: 'space-evenly',
     flexDirection: 'row',
-    marginLeft: 60
   },
   footerIcon: {
     width: 40,
     height: 40
   },
-
-
-  // Inside Header container
-  headerButtonsContainer: {
-    flex: 1,
-    // paddingLeft: 50,
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    marginLeft: 10
-  },
-  headerButtons: {
-    marginLeft: 40,
-    // width: 20,
-    // height: 20,
-  },
-  headerContainer: {
-    zIndex: 100,
-    width: 470,
-    height: 100,
-    backgroundColor: 'white',
-    justifyContent: 'flex-start',
-    padding: 10,
-    paddingTop: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#747474',
-    flexDirection: 'row',
-  },
-  headerCoords: {
-    paddingLeft: 0,
-    marginTop: -9,
-  },
-  headerImage: {
-    width: 60,
-    height: 60,
-  },
-  headerSpotContainer: {
-    paddingLeft: 10,
-    paddingTop: 5
-  },
-  headerSpotName: {
-    fontSize: 24,
-    fontWeight: 'bold'
-  },
-
-  iconButton: {
-    height: 25,
-    width: 25,
-    // padding: 20
-  },
   imageContainer: {
     flex: 1,
-    flexDirection: 'row',
     padding: 10,
-    justifyContent: 'space-between',
     paddingHorizontal: 10
   },
-  subContainer: {
+  viewContainer: {
     flex: 1,
-    width: 470,
-    alignItems: 'flex-start',
   },
 });
 

@@ -12,30 +12,24 @@ const slideAnimation = new SlideAnimation({
 const NotebookPanelMenu = props => (
   <Dialog
     width={.15}
-    // dialogAnimation={slideAnimation}
     dialogStyle={styles.dialogBox}
     visible={props.visible}
-    // dialogTitle={
-    //   <DialogTitle
-    //     title="Menu"
-    //     style={styles.dialogTitle}
-    //     textStyle={
-    //       {
-    //         color: "white",
-    //         fontSize: 18,
-    //         fontWeight: "bold"
-    //       }
-    //     }
-    //   />}
     onTouchOutside={props.onTouchOutside}
   >
     <DialogContent>
       <DialogButton
         style={styles.dialogContent}
-        text="Copy this Spot"
+        text="Copy this feature"
         textStyle={{fontSize: 12}}
-        onPress={() => props.onPress('copySpot')}
-      /><DialogButton
+        onPress={() => props.onPress('copyFeature')}
+      />
+      <DialogButton
+        style={styles.dialogContent}
+        text="Edit this feature"
+        textStyle={{fontSize: 12}}
+        onPress={() => props.onPress('editFeature')}
+      />
+      <DialogButton
       style={styles.dialogContent}
       text="Delete this Feature"
       textStyle={{fontSize: 12}}

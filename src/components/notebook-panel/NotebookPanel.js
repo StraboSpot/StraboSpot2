@@ -1,9 +1,11 @@
-import React, {useState} from 'react'
+import React from 'react'
 import {Text, View} from 'react-native'
 import {connect} from 'react-redux';
 import styles from "./NotebookPanel.styles";
-import NotebookHeader from './NotebookHeader';
-import NotebookFooter from './NotebookFooter';
+import headerStyle from './notebook-header/NotebookHeader.styles';
+import footerStyle from './notebook-footer/NotebookFooter.styles';
+import NotebookHeader from './notebook-header/NotebookHeader';
+import NotebookFooter from './notebook-footer/NotebookFooter';
 import SpotOverview from '../../spots/SpotOverview';
 import ButtonNoBackground from '../../ui/ButtonNoBackround';
 import SpotBasics from '../../spots/spot-page/SpotBasics';
@@ -12,7 +14,6 @@ import {SpotPages} from "./Notebook.constants";
 import {SET_SPOT_PAGE_VISIBLE} from "../../store/Constants";
 
 const NotebookPanel = props => {
-  console.log('Spot', props.selectedSpot);
 
   if (props.spotName) {
     const pageDisplay = async (page) => {
@@ -21,22 +22,23 @@ const NotebookPanel = props => {
 
     return (
       <View style={styles.container}>
-        <NotebookHeader
-          spot={props.spotName.props.name}
-          spotCoords={props.spotCoords}
-          onPress={props.onPress}
-          spotPageOpen={() => props.setPageVisible(SpotPages.BASIC)}
-        />
-        <View style={styles.subContainer}>
+        <View style={headerStyle.headerContainer}>
+          <NotebookHeader
+            onPress={props.onPress}
+          />
+        </View>
+        <View style={styles.viewContainer}>
           {props.spotPageVisible === SpotPages.OVERVIEW ? <SpotOverview/> : null}
           {props.spotPageVisible === SpotPages.BASIC ? <SpotBasics/> : null}
           {props.spotPageVisible === SpotPages.MEASUREMENT ? <MeasurementPage/> : null}
           {props.spotPageVisible === undefined ? <SpotOverview/> : null}
         </View>
-        <NotebookFooter
-          openPage={(page) => pageDisplay(page)}
-          onPress={(camera) => props.onPress(camera)}
-        />
+        <View style={footerStyle.footerContainer}>
+          <NotebookFooter
+            openPage={(page) => pageDisplay(page)}
+            onPress={(camera) => props.onPress(camera)}
+          />
+        </View>
       </View>
     )
   }
