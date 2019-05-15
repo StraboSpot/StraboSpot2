@@ -211,7 +211,9 @@ class Compass extends Component {
     else if (y <= 0 && x >= 0) dipdir = diry - 90 + toDegrees(b);
     else if (y <= 0 && x <= 0) dipdir = diry + 90 - toDegrees(b);
     else if (x <= 0 && y >= 0) dipdir = diry + 90 + toDegrees(b);
-    dipdir = mod(dipdir, 360);
+    if (z > 0) dipdir = mod(dipdir, 360);
+    else if (z < 0) dipdir = mod(dipdir - 180, 360);
+
     strike = mod(dipdir - 90, 360);
     dip = toDegrees(d);
 
@@ -220,7 +222,8 @@ class Compass extends Component {
     if (y > 0) trend = mod(diry, 360);
     // if (y > 0) trend = diry;
     // if (y > 0) trend = mod(diry, 360);
-    if (y <= 0) trend = mod(diry - 180, 360);
+    else if (y <= 0) trend = mod(diry - 180, 360);
+    if (z>0) trend = mod(trend-180, 360);
     plunge = toDegrees(Math.asin(Math.abs(y) / g));
     rake = toDegrees(R);
 
@@ -252,7 +255,7 @@ class Compass extends Component {
           justifyContent: 'center',
           alignItems: 'center',
           resizeMode: 'contain',
-          transform: [{rotate: 360 - this.state.magnetometer + 'deg'}]
+          // transform: [{rotate: 360 - this.state.magnetometer + 'deg'}]
         }}/>
         {'dip' in this.state.compassData ? this.renderStrikeDipSymbol() : null}
       </View>
