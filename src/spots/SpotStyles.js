@@ -6,36 +6,33 @@ const spotStyles = StyleSheet.create({
     flexDirection: 'row',
     padding: 10,
     justifyContent: 'space-between',
-    paddingHorizontal: 10
+    marginLeft: 30
   },
   iconButton: {
     height: 25,
     width: 25,
-    // padding: 20
   },
   listStyle: {
     backgroundColor: 'transparent',
     margin: 0,
     padding: 5,
-    // alignItems: 'flex-start',
+    alignItems: 'flex-start',
   },
   listContent: {
-    backgroundColor: 'transparent',
+    backgroundColor: 'white',
     flexDirection: 'row',
-    flexWrap: 'wrap',
+    alignContent: 'flex-start',
   },
   sectionStyle: {
     flexDirection: 'row',
-    // flexWrap: 'wrap',
-    borderTopWidth: 1,
-    width: 470,
     height: 100
   },
   textStyle: {
     fontSize: 20,
     color: '#000000',
     fontWeight: 'bold',
-    paddingTop: 10
+    paddingTop: 10,
+    marginLeft: 15,
   },
 });
 

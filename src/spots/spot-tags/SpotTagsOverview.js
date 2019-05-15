@@ -9,8 +9,7 @@ const SpotTag = props => (
       <View>
         <Text style={props.style}>{props.tag}</Text>
       </View>
-      <ScrollView>
-      {/*<View >*/}
+      <ScrollView style={{margin: 15}}>
         {
           data.map((l, i) => (
 
@@ -24,7 +23,6 @@ const SpotTag = props => (
             />
           ))
         }
-      {/*</View>*/}
       </ScrollView>
     </View>
   );

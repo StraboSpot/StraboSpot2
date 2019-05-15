@@ -15,19 +15,19 @@ const SpotOverview = props => (
       >
       </SpotTag>
     </View>
-    <View style={spotStyles.sectionStyle}>
+    <View style={[spotStyles.sectionStyle, {borderTopWidth: 1}]}>
       <SpotNotesOverview
         notes={'Notes'}
         style={spotStyles.textStyle}
       />
     </View>
-    <View style={spotStyles.sectionStyle}>
+    <View style={[spotStyles.sectionStyle, {borderTopWidth: 1}]}>
       <NotebookMeasurments
         measurements={'Measurements'}
         style={spotStyles.textStyle}
       />
     </View>
-    <View style={spotStyles.sectionStyle}>
+    <View style={[spotStyles.sectionStyle, {borderTopWidth: 1}]}>
       <PhotosAndSketches
         photosAndSketches={'Photos and Sketches'}
         style={spotStyles.textStyle}

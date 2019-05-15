@@ -11,6 +11,7 @@ const styles = StyleSheet.create({
   divider: {
     height: 30,
     justifyContent: 'center',
+    marginTop: 15,
     alignItems: 'center'
 
   },
