@@ -37,9 +37,9 @@ const NotebookPanelMenu = props => (
         onPress={() => props.onPress('copySpot')}
       /><DialogButton
       style={styles.dialogContent}
-      text="Delete this Spot"
+      text="Delete this Feature"
       textStyle={{fontSize: 12}}
-      onPress={() => props.onPress('deleteSpot')}
+      onPress={() => props.onPress('deleteFeature')}
     />
       <DialogButton
         style={styles.dialogContent}

@@ -51,6 +51,18 @@ export const homeReducer = (state = initialState, action) => {
         ...state,
         features: [...state.features, action.feature]
       };
+    case FEATURE_DELETE:
+      console.log('DELETED', action.id);
+      const updatedFeatures = state.features.filter((feature) => {
+        return feature.properties.id !== action.id;
+      });
+      // console.log('Deleted Feature', deletedFeature);
+      return {
+        ...state,
+        features: updatedFeatures,
+        selectedSpot: {},
+        featuresSelected: []
+      };
     case FEATURES_UPDATED:
       console.log('FEATURES UPDATED', action.features);
       return {
@@ -97,7 +109,7 @@ export const homeReducer = (state = initialState, action) => {
       console.log('Deleting Offline Map: ', action.offlineMap);
       return {
         state
-      }
+      };
     case SET_ISONLINE:
       return {
         ...state,

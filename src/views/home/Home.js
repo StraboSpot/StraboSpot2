@@ -25,7 +25,7 @@ import NotebookPanelMenu from '../../components/notebook-panel/NotebookPanelMenu
 import SpotName from '../../components/notebook-panel/SpotName';
 import SpotCoords from '../../components/notebook-panel/SpotCoords';
 import {connect} from 'react-redux';
-import {ADD_PHOTOS, SET_ISONLINE, SET_SPOT_PAGE_VISIBLE} from "../../store/Constants";
+import {ADD_PHOTOS, FEATURE_DELETE, SET_ISONLINE, SET_SPOT_PAGE_VISIBLE} from "../../store/Constants";
 import {SpotPages} from "../../components/notebook-panel/Notebook.constants";
 import {saveFile} from '../../services/images/ImageDownload';
 import {takePicture} from '../../shared/HelperFunctions/ImageHelperFunctions';
@@ -140,8 +140,9 @@ class Home extends React.Component {
       case 'copySpot':
         console.log('Spot Copied!');
         break;
-      case 'deleteSpot':
-        // console.log('Spot Deleted!');
+      case 'deleteFeature':
+        console.log('Feature Deleted!', this.props.selectedSpot.properties.id);
+        this.deleteSelectedFeature(this.props.selectedSpot.properties.id);
         break;
 
       // Map Actions
@@ -227,6 +228,28 @@ class Home extends React.Component {
         {latitude}&#176; {latitudeCardinal}, {longitude}&#176; {longitudeCardinal}
       </Text>
     )
+  };
+
+  deleteSelectedFeature = (id) => {
+    const featureName= this.props.selectedSpot.properties.name;
+    Alert.alert(
+      'Delete Feature?',
+      `Are you sure you want to delete feature: \n ${featureName}`,
+      [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Presed'),
+          style: 'cancel'
+        },
+        {
+          text: 'Delete',
+          onPress: () => {
+            this.props.deleteFeature(id);
+            this.closeNotebookPanel()
+          }
+        }
+      ]
+    );
   };
 
   dialogClickHandler = (dialog, name) => {
@@ -823,7 +846,8 @@ function mapStateToProps(state) {
 const mapDispatchToProps = {
   setIsOnline: (online) => ({type: SET_ISONLINE, online: online}),
   setPageVisible: (page) => ({type: SET_SPOT_PAGE_VISIBLE, page: page}),
-  addPhoto: (image) => ({type: ADD_PHOTOS, image: image})
+  addPhoto: (image) => ({type: ADD_PHOTOS, image: image}),
+  deleteFeature: (id) => ({type: FEATURE_DELETE, id: id})
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);
