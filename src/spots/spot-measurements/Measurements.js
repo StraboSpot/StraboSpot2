@@ -2,16 +2,17 @@ import React from 'react';
 import {FlatList, ScrollView, Text, View, TouchableOpacity} from 'react-native';
 import {connect} from 'react-redux';
 import Compass from '../../components/compass/Compass';
-import styles from './MeasurementsStyles';
-import {SpotPages} from "../../components/notebook-panel/Notebook.constants";
 import {Button, Divider} from "react-native-elements";
+import {SpotPages} from "../../components/notebook-panel/Notebook.constants";
 import {SET_SPOT_PAGE_VISIBLE} from "../../store/Constants";
+import styles from './MeasurementsStyles';
 import spotPageStyles from '../spot-page/SpotPageStyles';
 
 const MeasurementPage = (props) => {
 
   const openMeasurementDetail = (item) => {
     console.log('item', item);
+    props.setPageVisible(SpotPages.MEASUREMENTDETAIL);
   };
 
   // Render an individual measurement
@@ -66,7 +67,7 @@ const MeasurementPage = (props) => {
           size: 20,
           color: 'black'
         }}
-        containerStyle={{marginTop: 10, alignItems: 'flex-start'}}
+        containerStyle={styles.backButton}
         titleStyle={{color: 'blue'}}
         title={'Return to Overview'}
         type={'clear'}

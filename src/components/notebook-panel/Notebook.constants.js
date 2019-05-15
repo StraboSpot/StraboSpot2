@@ -1,5 +1,6 @@
 export const SpotPages = {
   OVERVIEW: 'Overview',
   BASIC: 'Basic',
-  MEASUREMENT: 'Measurements'
+  MEASUREMENT: 'Measurements',
+  MEASUREMENTDETAIL: 'Measurement Detail'
 };

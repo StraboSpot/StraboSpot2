@@ -6,15 +6,12 @@ const notebookHeaderStyles = StyleSheet.create({
       flexDirection: 'row',
     },
     headerButtons: {
-      // padding: 15,
       paddingTop: 20
     },
     headerContainer: {
-      zIndex: 100,
       borderBottomWidth: 1,
       height: 100,
       padding: 10,
-      flexDirection: 'row',
     },
     headerCoords: {
       color: 'blue',

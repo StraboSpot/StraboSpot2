@@ -10,6 +10,7 @@ import SpotOverview from '../../spots/SpotOverview';
 import ButtonNoBackground from '../../ui/ButtonNoBackround';
 import SpotBasics from '../../spots/spot-page/SpotBasics';
 import MeasurementPage from '../../spots/spot-measurements/Measurements';
+import MeasurementDetailPage from '../../spots/spot-measurements/MeasurementDetail';
 import {SpotPages} from "./Notebook.constants";
 import {SET_SPOT_PAGE_VISIBLE} from "../../store/Constants";
 
@@ -31,6 +32,7 @@ const NotebookPanel = props => {
           {props.spotPageVisible === SpotPages.OVERVIEW ? <SpotOverview/> : null}
           {props.spotPageVisible === SpotPages.BASIC ? <SpotBasics/> : null}
           {props.spotPageVisible === SpotPages.MEASUREMENT ? <MeasurementPage/> : null}
+          {props.spotPageVisible === SpotPages.MEASUREMENTDETAIL ? <MeasurementDetailPage/> : null}
           {props.spotPageVisible === undefined ? <SpotOverview/> : null}
         </View>
         <View style={footerStyle.footerContainer}>

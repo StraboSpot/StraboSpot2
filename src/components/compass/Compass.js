@@ -211,6 +211,7 @@ class Compass extends Component {
     else if (y <= 0 && x >= 0) dipdir = diry - 90 + toDegrees(b);
     else if (y <= 0 && x <= 0) dipdir = diry + 90 - toDegrees(b);
     else if (x <= 0 && y >= 0) dipdir = diry + 90 + toDegrees(b);
+
     if (z > 0) dipdir = mod(dipdir, 360);
     else if (z < 0) dipdir = mod(dipdir - 180, 360);
 
