@@ -15,7 +15,7 @@ import {SET_SPOT_PAGE_VISIBLE} from "../../store/Constants";
 
 const NotebookPanel = props => {
 
-  if (props.spotName) {
+  if (Object.getOwnPropertyNames(props.spot).length !== 0) {
     const pageDisplay = async (page) => {
       props.setPageVisible(page)
     };
@@ -57,7 +57,7 @@ const NotebookPanel = props => {
 
 function mapStateToProps(state) {
   return {
-    selectedSpot: state.home.selectedSpot,
+    spot: state.home.selectedSpot,
     featuresSelected: state.home.featuresSelected,
     spotPageVisible: state.notebook.visiblePage
   }
