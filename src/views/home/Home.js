@@ -137,13 +137,15 @@ class Home extends React.Component {
       case "closeNotebook":
         this.closeNotebookPanel();
         break;
-      case 'copySpot':
+      case 'copyFeature':
         console.log('Spot Copied!');
         break;
       case 'deleteFeature':
         console.log('Feature Deleted!', this.props.selectedSpot.properties.id);
         this.deleteSelectedFeature(this.props.selectedSpot.properties.id);
         break;
+      case 'editFeature':
+        this.props.setPageVisible(SpotPages.BASIC);
 
       // Map Actions
       case MapModes.DRAW.POINT:
@@ -231,7 +233,7 @@ class Home extends React.Component {
   };
 
   deleteSelectedFeature = (id) => {
-    const featureName= this.props.selectedSpot.properties.name;
+    const featureName = this.props.selectedSpot.properties.name;
     Alert.alert(
       'Delete Feature?',
       `Are you sure you want to delete feature: \n ${featureName}`,
@@ -367,34 +369,6 @@ class Home extends React.Component {
         this.launchCamera();
       });
     }
-
-
-    // ImagePicker.showImagePicker(imageOptions, async (response) => {
-    //   console.log('Response = ', response);
-    //
-    //   if (response.didCancel) {
-    //     console.log('User cancelled image picker');
-    //     this.props.addPhoto(this.state.allPhotosSaved);
-    //     alert('Photo Saved!', savedPhoto.id)
-    //   } else if (response.error) {
-    //     console.log('ImagePicker Error: ', response.error);
-    //   } else {
-    //     // const source = { uri: response.uri };
-    //     const savedPhoto = await saveFile(response.uri);
-    //     console.log('Saved Photo = ', savedPhoto);
-    //     // You can also display the image using data:
-    //     // const source = { uri: 'data:image/jpeg;base64,' + response.data };
-    //       this.setState(prevState => {
-    //         return {
-    //          ...prevState,
-    //           allPhotosSaved: [...this.state.allPhotosSaved, savedPhoto]
-    //         }
-    //       }, () => {
-    //         console.log('All Photos Saved:', this.state.allPhotosSaved);
-    //         this.takePicture(savedPhoto);
-    //       })
-    //   }
-    // });
   };
 
   setDraw = async mapMode => {
@@ -575,19 +549,6 @@ class Home extends React.Component {
     }
   };
 
-    // // converts the lat and lng from decimal form to minutes and seconds
-  // toDegreesMinutesAndSeconds = (coordinate) => {
-  //   var absolute = Math.abs(coordinate);
-  //   var degrees = Math.floor(absolute);
-  //   var minutesNotTruncated = (absolute - degrees) * 60;
-  //   var minutes = Math.floor(minutesNotTruncated);
-  //   var seconds = Math.floor((minutesNotTruncated - minutes) * 60);
-  //
-  //   return degrees + " " + minutes + " " + seconds;
-  // };
-
-  // adds cardinal points to coordinates -- only works with single points
-
   render() {
     const spot = this.props.selectedSpot;
 
@@ -671,13 +632,13 @@ class Home extends React.Component {
               </View>
               : null}
           </View>
+          <View style={styles.settingsIconContainer}>
+            <IconButton
+              source={require('../../assets/icons/app-icons-shaded/SearchButton.png')}
+              // onPress={this.clickHandler.bind(this, "search")}
+            />
+          </View>
           <View style={styles.rightsideIcons}>
-            <View style={styles.searchAndSettingsIcons}>
-              <IconButton
-                source={require('../../assets/icons/app-icons-shaded/SearchButton.png')}
-                // onPress={this.clickHandler.bind(this, "search")}
-              />
-            </View>
             <View style={styles.sideIconsGroupContainer}>
               <View style={styles.sideIconsGroup}>
                 {this.state.isShortcutButtonVisible.Tag ?
@@ -723,79 +684,66 @@ class Home extends React.Component {
                   /> : null}
               </View>
             </View>
-            <View style={styles.notebookViewIcon}>
-              <IconButton
-                source={require('../../assets/icons/app-icons-shaded/NotebookViewButton.png')}
-                onPress={() => this.openNotebookPanel()}
-              />
-            </View>
+
+          </View>
+          <View style={styles.notebookViewIcon}>
+            <IconButton
+              source={require('../../assets/icons/app-icons-shaded/NotebookViewButton.png')}
+              onPress={() => this.openNotebookPanel()}
+            />
           </View>
           <View style={styles.bottomRightIcons}>
             {/* displays the Online boolean in text*/}
             {/*<View><Text>Online: {this.props.isOnline.toString()}</Text></View> */}
 
             {this.state.buttons.drawButtonsVisible ?
-              <View>
-                <View style={styles.pointIcon}>
-                  <IconButton
-                    source={this.state.mapMode === MapModes.DRAW.POINT ?
-                      require('../../assets/icons/app-icons-shaded/PointButton_pressed.png') : require(
-                        '../../assets/icons/app-icons-shaded/PointButton.png')}
-                    onPress={this.clickHandler.bind(this, MapModes.DRAW.POINT)}
-                  />
-                </View>
-                <View style={styles.lineIcon}>
-                  <IconButton
-                    source={this.state.mapMode === MapModes.DRAW.LINE ?
-                      require('../../assets/icons/app-icons-shaded/LineButton_pressed.png') : require(
-                        '../../assets/icons/app-icons-shaded/LineButton.png')}
-                    onPress={this.clickHandler.bind(this, MapModes.DRAW.LINE)}
-                  />
-                </View>
-                <View style={styles.polygonIcon}>
-                  <IconButton
-                    source={this.state.mapMode === MapModes.DRAW.POLYGON ?
-                      require('../../assets/icons/app-icons-shaded/PolygonButton_pressed.png') :
-                      require('../../assets/icons/app-icons-shaded/PolygonButton.png')}
-                    onPress={this.clickHandler.bind(this, MapModes.DRAW.POLYGON)}
-                  />
-                </View>
+              <View style={styles.drawToolsContainer}>
+                <IconButton
+                  source={this.state.mapMode === MapModes.DRAW.POLYGON ?
+                    require('../../assets/icons/app-icons-shaded/PolygonButton_pressed.png') :
+                    require('../../assets/icons/app-icons-shaded/PolygonButton.png')}
+                  onPress={this.clickHandler.bind(this, MapModes.DRAW.POLYGON)}
+                />
+                <IconButton
+                  source={this.state.mapMode === MapModes.DRAW.LINE ?
+                    require('../../assets/icons/app-icons-shaded/LineButton_pressed.png') : require(
+                      '../../assets/icons/app-icons-shaded/LineButton.png')}
+                  onPress={this.clickHandler.bind(this, MapModes.DRAW.LINE)}
+                />
+                <IconButton
+                  source={this.state.mapMode === MapModes.DRAW.POINT ?
+                    require('../../assets/icons/app-icons-shaded/PointButton_pressed.png') : require(
+                      '../../assets/icons/app-icons-shaded/PointButton.png')}
+                  onPress={this.clickHandler.bind(this, MapModes.DRAW.POINT)}
+                />
               </View>
               : null}
           </View>
-          <View style={styles.leftsideIcons}>
-            <View style={styles.searchAndSettingsIcons}>
-              <IconButton
-                source={require('../../assets/icons/app-icons-shaded/SettingsButton.png')}
-                onPress={this.clickHandler.bind(this, "settings")}
-              />
-            </View>
+          <View style={styles.searchIconContainer}>
+            <IconButton
+              source={require('../../assets/icons/app-icons-shaded/SettingsButton.png')}
+              onPress={this.clickHandler.bind(this, "settings")}
+            />
           </View>
-          <View style={styles.bottomLeftIcons}>
-            <View style={styles.sideIconsGroup}>
+          <View style={styles.leftsideIcons}>
               <IconButton
                 source={require('../../assets/icons/app-icons-shaded/MapActionsButton.png')}
                 onPress={() => this.toggleDialog("mapActionsMenuVisible")}
               />
-            </View>
-            <View style={styles.sideIconsGroup}>
               <IconButton
                 source={require('../../assets/icons/app-icons-shaded/SymbolsButton.png')}
                 onPress={() => this.toggleDialog("mapSymbolsMenuVisible")}
               />
-            </View>
-            <View style={styles.layersIcon}>
               <IconButton
                 source={require('../../assets/icons/app-icons-shaded/LayersButton.png')}
                 onPress={() => this.toggleDialog("baseMapMenuVisible")}
               />
-            </View>
-            <View style={styles.sideIconsGroup}>
+          </View>
+          <View style={styles.bottomLeftIcons}>
               <IconButton
                 source={require('../../assets/icons/app-icons-shaded/MyLocationButton.png')}
                 onPress={this.clickHandler.bind(this, "currentLocation")}
               />
-            </View>
           </View>
 
           <MapActionsDialog

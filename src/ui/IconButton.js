@@ -16,7 +16,7 @@ const iconButton = props => {
 
   if (Platform.OS === "ios") {
     return (
-      <TouchableOpacity style={styles.container} onPress={props.onPress}>
+      <TouchableOpacity onPress={props.onPress}>
         {content}
       </TouchableOpacity>
     );
@@ -35,14 +35,11 @@ const styles = StyleSheet.create({
     // alignItems: 'center'
   },
   TouchableOpacityStyle: {
-    position: 'absolute',
-    right: "1%",
+    flex: 1,
+    // position: 'absolute',
+    // right: "1%",
     // bottom: "0%",
-    margin: 10,
-    // shadowOffset: {width: 3, height: 3},
-    // shadowColor: "black",
-    // shadowOpacity: .5,
-
+    // margin: 10,
   },
   FloatingButtonStyle: {
     resizeMode: 'contain',
