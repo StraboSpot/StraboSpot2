@@ -59,13 +59,14 @@ const MeasurementPage = (props) => {
 
   return (
     <React.Fragment>
+       {/*TODO: Make back button into UI component */}
       <Button
         icon={{
           name: 'arrow-back',
           size: 20,
           color: 'black'
         }}
-        containerStyle={{marginTop: 10}}
+        containerStyle={{marginTop: 10, alignItems: 'flex-start'}}
         titleStyle={{color: 'blue'}}
         title={'Return to Overview'}
         type={'clear'}

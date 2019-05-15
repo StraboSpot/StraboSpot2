@@ -6,7 +6,11 @@ const styles = StyleSheet.create({
     //position: 'absolute',
     //top: 50
     // width: 200,
-    // height: 200
+    // height: 200,
+    marginBottom: 25
+  },
+  backButton: {
+
   },
   measurementsListItem: {
     flex: 1,
