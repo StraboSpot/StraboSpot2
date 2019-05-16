@@ -1,7 +1,8 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {FlatList, ScrollView, Text, View, TouchableOpacity} from 'react-native';
+import Modal from 'react-native-modal'
 import {connect} from 'react-redux';
-import Compass from '../../components/compass/Compass';
+import CompassModal from '../../components/modals/compass-modal/CompassModal';
 import {Button, Divider} from "react-native-elements";
 import {SpotPages} from "../../components/notebook-panel/Notebook.constants";
 import {SET_SPOT_PAGE_VISIBLE} from "../../store/Constants";
@@ -9,6 +10,7 @@ import styles from './MeasurementsStyles';
 import spotPageStyles from '../spot-page/SpotPageStyles';
 
 const MeasurementPage = (props) => {
+  const [isModalVisible, setIsModalVisible] = useState(true);
 
   const openMeasurementDetail = (item) => {
     console.log('item', item);
@@ -58,9 +60,13 @@ const MeasurementPage = (props) => {
     );
   };
 
+  const toggleModal = () => {
+    setIsModalVisible(!isModalVisible);
+  };
+
   return (
     <React.Fragment>
-       {/*TODO: Make back button into UI component */}
+      {/*TODO: Make back button into UI component */}
       <Button
         icon={{
           name: 'arrow-back',
@@ -73,10 +79,34 @@ const MeasurementPage = (props) => {
         type={'clear'}
         onPress={() => props.setPageVisible(SpotPages.OVERVIEW)}
       />
+      <Button
+        // icon={{
+        //   name: 'arrow-back',
+        //   size: 20,
+        //   color: 'black'
+        // }}
+        containerStyle={styles.backButton}
+        titleStyle={{color: 'blue'}}
+        title={'Open Compass'}
+        type={'clear'}
+        onPress={() => toggleModal()}
+      />
       <ScrollView>
-        <View style={styles.compassContainer}>
-          <Compass/>
-        </View>
+        {/*<View style={styles.compassContainer}>*/}
+        {/*  <Compass/>*/}
+        {/*</View>*/}
+          <Modal
+            onBackdropPress={() => setIsModalVisible(false)}
+            backdropOpacity={.50}
+            isVisible={isModalVisible}
+            style={styles.modalContainer}
+            useNativeDriver={true}
+            animationOut={'slideOutDown'}
+          >
+            <CompassModal
+              close={() => toggleModal()}
+            />
+          </Modal>
         <Divider style={spotPageStyles.divider}>
           <Text style={spotPageStyles.spotDividerText}>Measurements</Text>
         </Divider>

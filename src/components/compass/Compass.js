@@ -1,7 +1,7 @@
 import RNSimpleCompass from 'react-native-simple-compass';
 import React, {Component} from 'react';
 import {connect} from "react-redux";
-import {Button, Alert, Image, View, Text, Dimensions} from 'react-native';
+import {Animated, Easing, Button, Alert, Image, View, Text, Dimensions, TouchableOpacity} from 'react-native';
 import {Grid, Col, Row} from 'react-native-easy-grid';
 import {setUpdateIntervalForType, SensorTypes, magnetometer, accelerometer} from 'react-native-sensors';
 import {mod, toRadians, toDegrees, roundToDecimalPlaces} from "../../shared/Helpers";
@@ -45,7 +45,8 @@ class Compass extends Component {
         rake: null,
         rake_calculated: 'no'
       },
-      toggles: [CompassToggleButtons.PLANAR]
+      toggles: [CompassToggleButtons.PLANAR],
+      spinValue: new Animated.Value(0)
     };
   }
 
@@ -250,23 +251,48 @@ class Compass extends Component {
   // Render the compass
   renderCompass = () => {
     return (
-      <View style={{alignItems: 'center', flex: 1, paddingTop: 70}}>
-        <Image source={require("../../assets/images/compass/compass.png")} style={{
-          height: 250,
-          justifyContent: 'center',
-          alignItems: 'center',
-          resizeMode: 'contain',
-          // transform: [{rotate: 360 - this.state.magnetometer + 'deg'}]
-        }}/>
-        {'dip' in this.state.compassData ? this.renderStrikeDipSymbol() : null}
-      </View>
+      <TouchableOpacity style={styles.compassContainer} onPress={() => this.grabMeasurements()}>
+        <Image source={require("../../assets/images/compass/compass.png")}
+               style={{
+                 height: 175,
+                 justifyContent: 'center',
+                 alignItems: 'center',
+                 resizeMode: 'contain',
+                 // transform: [{rotate: 360 - this.state.magnetometer + 'deg'}]
+               }}
+        />
+        {this.renderCompassSymbols()}
+      </TouchableOpacity>
     );
+  };
+
+  renderCompassSymbols = () => {
+    console.log('Strike', this.state.compassData.strike + '\n' + 'Trend', this.state.compassData.trend);
+    const linearInToggleOn = this.state.toggles.includes(CompassToggleButtons.LINEAR);
+    const plannerInToggleOn = this.state.toggles.includes(CompassToggleButtons.PLANAR);
+
+    if (linearInToggleOn && plannerInToggleOn && this.state.compassData.trend !== null && this.state.compassData.strike !== null) {
+      console.log("LINEAR AND PLANNER")
+      return (
+        [this.renderTrendSymbol(), this.renderStrikeDipSymbol()]
+      );
+    }
+    else if (linearInToggleOn && this.state.compassData.trend !== null) {
+      console.log("LINEAR")
+      return this.renderTrendSymbol();
+
+    }
+    else if (plannerInToggleOn && this.state.compassData.strike !== null) {
+      console.log('PLANNER')
+      return this.renderStrikeDipSymbol();
+    }
+
   };
 
   // Render magnetometer heading, x, y, z from accelerometer and calculated measurements
   renderMeasurements = () => {
     return (
-      <View style={{flex: 1, flexDirection: 'column'}}>
+      <View style={styles.measurementsContainer}>
         {/*<Text>heading: {this.state.magnetometer}</Text>*/}
         <Text>x: {this.state.accelerometer.x}</Text>
         <Text>y: {this.state.accelerometer.y}</Text>
@@ -281,20 +307,57 @@ class Compass extends Component {
 
   // Render the strike and dip symbol inside the compass
   renderStrikeDipSymbol = () => {
-    let image = require("../../assets/images/compass/StrikeDip.png");
+    // this.state = {spinValue: new Animated.Value(0)};
+    let image = require("../../assets/images/compass/StrikeDipCentered.png");
+    const spin = this.state.spinValue.interpolate({
+      inputRange: [0, this.state.compassData.strike],
+      outputRange: ['0deg', this.state.compassData.strike + 'deg']
+    });
+// First set up animation
+    Animated.timing(
+      this.state.spinValue,
+      {
+        toValue: this.state.compassData.strike,
+        easing: Easing.linear,
+        useNativeDriver: true
+      }
+    ).start();
+
     return (
-      <Image
+      <Animated.Image
         source={image}
-        style={{
-          height: 150,
-          position: 'absolute',
-          top: 120,
-          // justifyContent: 'center',
-          // alignItems: 'center',
-          resizeMode: 'contain',
-          // transform: [{rotate: mod(this.state.compassData.strike, 360) + 'deg'}]
-          transform: [{rotate: '90deg'}]
-        }}/>
+        style={
+          [styles.strikeAndDipLine,
+            {transform: [{rotate: spin}]}
+          ]}/>
+    );
+  };
+
+  // Render the strike and dip symbol inside the compass
+  renderTrendSymbol = () => {
+    // this.state = {spinValue: new Animated.Value(0)};
+    let image = require("../../assets/images/compass/TrendLine.png");
+    const spin = this.state.spinValue.interpolate({
+      inputRange: [0, this.state.compassData.trend],
+      outputRange: ['180deg', this.state.compassData.trend + 'deg']
+    });
+// First set up animation
+    Animated.timing(
+      this.state.spinValue,
+      {
+        toValue: this.state.compassData.trend,
+        easing: Easing.linear,
+        useNativeDriver: true
+      }
+    ).start();
+
+    return (
+      <Animated.Image
+        source={image}
+        style={
+          [styles.trendLine,
+            {transform: [{rotate: spin}]}
+          ]}/>
     );
   };
 
@@ -302,14 +365,14 @@ class Compass extends Component {
     return (
       Object.keys(CompassToggleButtons).map((key, i) => (
         <ListItem
-          containerStyle={{backgroundColor: 'transparent', padding: 0}}
+          containerStyle={styles.toggleButtonsContainer}
           key={key}
           title={
             <View style={styles.itemContainer}>
               <Text style={styles.itemTextStyle}>{CompassToggleButtons[key]}</Text>
-              <View style={styles.switch}>
+              <View style={styles.switchContainer}>
                 <Switch
-                  style={{justifyContent: 'flex-end'}}
+                  style={styles.switch}
                   value={this.state.toggles.includes(CompassToggleButtons[key])}
                   onValueChange={(val) => this.toggleSwitch(CompassToggleButtons[key])}
                   circleSize={25}
@@ -366,67 +429,38 @@ class Compass extends Component {
   };
 
   render() {
+    // return (
+    //   <View style={styles.container}>
+    //     <Grid style={styles.gridContainer}>
+    //       <Col>
+    //         <Row style={styles.compassRowContainer} size={4} onPress={() => this.grabMeasurements()}>
+    //           {this.renderCompass()}
+    //         </Row>
+    //       </Col>
+    //       <Col>
+    //         {/*<Button title={'Start'} onPress={this.startsMeasurements}/>*/}
+    //         {/*<Button title={'Stop'} onPress={this.stopsMeasurements}/>*/}
+    //         <Row style={styles.toggleButtonsRowContainer}>
+    //           {this.renderToggles()}
+    //         </Row>
+    //         <Row style={styles.measurementsRowContainer}>
+    //           {this.renderMeasurements()}
+    //         </Row>
+    //       </Col>
+    //     </Grid>
+    //   </View>
+    // );
 
     return (
-
-      <View style={{flex: 1, zIndex: 0}}>
-        {/*<View>*/}
-        {/*  <Text style={{*/}
-        {/*    color: '#fff',*/}
-        {/*    fontSize: height / 29,*/}
-        {/*    width: width,*/}
-        {/*    position: 'absolute',*/}
-        {/*    textAlign: 'center',*/}
-        {/*    paddingRight: 200*/}
-        {/*  }}>*/}
-        {/*    {this._degree(this.state.magnetometer).toFixed(2)}°*/}
-        {/*  </Text>*/}
-        {/*</View>*/}
-        <Grid style={{backgroundColor: 'transparent', width: 500, height: 300}}>
-
-          <Col>
-
-            {/*<Row style={{alignItems: 'center', flex: 0}} size={.5}>*/}
-            {/*  <Col style={{alignItems: 'center'}}>*/}
-            {/*    <Text*/}
-            {/*      style={{*/}
-            {/*        color: '#fff',*/}
-            {/*        fontSize: height / 26,*/}
-            {/*        fontWeight: 'bold'*/}
-            {/*      }}>{this._direction(this._degree(this.state.magnetometer))}*/}
-            {/*    </Text>*/}
-            {/*  </Col>*/}
-            {/*</Row>*/}
-
-            {/*<Row style={{alignItems: 'center'}} size={.1}>*/}
-            {/*  <Col style={{alignItems: 'center'}}>*/}
-            {/*    <View style={{position: 'absolute', width: width, alignItems: 'center', top: 0}}>*/}
-            {/*      <Image source={require('../../assets/images/compass/compass_pointer.png')} style={{*/}
-            {/*        height: height / 26,*/}
-            {/*        resizeMode: 'contain'*/}
-            {/*      }}/>*/}
-            {/*    </View>*/}
-            {/*  </Col>*/}
-            {/*</Row>*/}
-
-            <Row style={{alignItems: 'center'}} size={4} onPress={() => this.grabMeasurements()}>
-              {this.renderCompass()}
-            </Row>
-          </Col>
-          <Col>
-            {/*<Button title={'Start'} onPress={this.startsMeasurements}/>*/}
-            {/*<Button title={'Stop'} onPress={this.stopsMeasurements}/>*/}
-            <Row style={{flexDirection: 'column'}}>
-              {this.renderToggles()}
-            </Row>
-            <Row style={{flexDirection: 'column'}}>
-              {this.renderMeasurements()}
-            </Row>
-          </Col>
-
-        </Grid>
+      <View style={{flex: 1}}>
+        <View style={styles.renderCompassContainer}>
+          {this.renderCompass()}
+        </View>
+        <View style={styles.toggleButtonsRowContainer}>
+          {this.renderToggles()}
+        </View>
       </View>
-    );
+    )
   };
 }
 

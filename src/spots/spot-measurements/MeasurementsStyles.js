@@ -3,12 +3,13 @@ import * as themes from '../../themes/ColorThemes';
 
 const styles = StyleSheet.create({
   compassContainer: {
-    //flex: 1,
+    flex: 6,
+    backgroundColor: 'white',
     //position: 'absolute',
     //top: 50
     // width: 200,
     // height: 200,
-    marginBottom: 25
+    // marginBottom: 25
   },
   backButton: {
     marginTop: 10,
@@ -67,7 +68,29 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 10,
     borderColor: themes.BLUE
-  }
+  },
+  modalTop: {
+    zIndex: 100,
+    flex: 1,
+    backgroundColor: themes.COMPASS_MODAL,
+    borderTopRightRadius: 20,
+    borderTopLeftRadius: 20
+  },
+  modalBottom: {
+    flex: 1,
+    backgroundColor: themes.COMPASS_MODAL,
+    borderBottomRightRadius: 20,
+    borderBottomLeftRadius: 20
+  },
+  modalContainer: {
+    // flex: 1,
+    position: 'absolute',
+    bottom: 75,
+    left: 150,
+    width: 400,
+    height: 400,
+    backgroundColor: 'transparent',
+  },
 });
 
 export default styles;

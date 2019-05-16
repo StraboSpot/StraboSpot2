@@ -1,6 +1,30 @@
 import {StyleSheet} from 'react-native';
+import * as themes from '../../themes/ColorThemes';
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    zIndex: 0
+  },
+  compassContainer: {
+    alignItems: 'center',
+    flex: 70,
+    justifyContent: 'center',
+    // paddingTop: 70
+  },
+  renderCompassContainer: {
+    flex: 70,
+    backgroundColor: themes.COMPASS_MODAL
+  },
+  compassRowContainer: {
+    alignItems: 'center'
+  },
+  gridContainer: {
+    backgroundColor: 'transparent',
+    width: '100%',
+    height: 300,
+    flexDirection: 'column'
+  },
   itemContainer: {
     width: '90%',
     flexDirection: 'row',
@@ -11,12 +35,50 @@ const styles = StyleSheet.create({
     paddingLeft: 15
   },
   itemTextStyle: {
-    fontSize: 20,
-    marginLeft: 15,
+    fontSize: 14,
+    marginLeft: 10,
   },
-  switch: {
+  measurementsContainer: {
+    flex: 1,
+    flexDirection: 'column'
+  },
+  measurementsRowContainer: {
+    flexDirection: 'column'
+  },
+  switchContainer: {
     flex: 1,
     alignItems: 'flex-end'
+  },
+  switch: {
+    justifyContent: 'flex-end'
+  },
+  strikeAndDipLine: {
+    zIndex: 10,
+    height: 120,
+    position: 'absolute',
+    // top: 39.25,
+    // justifyContent: 'center',
+    // alignItems: 'center',
+    resizeMode: 'contain',
+    // transform: [{rotate: '90deg'}]
+  },
+  toggleButtonsContainer: {
+    backgroundColor: 'transparent',
+    padding: 0
+  },
+  toggleButtonsRowContainer: {
+    flex: 35,
+    flexDirection: 'column',
+    paddingTop: 15
+  },
+  trendLine: {
+    height: 100,
+    position: 'absolute',
+    // top: 40,
+    // justifyContent: 'center',
+    // alignItems: 'center',
+    resizeMode: 'contain',
+    // transform: [{rotate: '90deg'}]
   }
 });
 
