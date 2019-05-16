@@ -1,4 +1,5 @@
 import {StyleSheet} from 'react-native';
+import * as themes from '../../themes/ColorThemes';
 
 const styles = StyleSheet.create({
   compassContainer: {
@@ -49,16 +50,23 @@ const styles = StyleSheet.create({
   leftContainer: {
     flex: 1,
     flexDirection: 'row',
-    justifyContent: 'flex-start'
+    justifyContent: 'flex-start',
+    paddingLeft: 10
   },
   rightContainer: {
     flex: 1,
     flexDirection: 'row',
-    justifyContent: 'flex-end'
+    justifyContent: 'flex-end',
+    paddingRight: 10
+  },
+  measurementDetailSwitchesContainer: {
+    backgroundColor: themes.WHITE,
+    height: 50
   },
   measurementDetailSwitches: {
-    backgroundColor: 'skyblue',
-    height: 40
+    height: 40,
+    borderRadius: 10,
+    borderColor: themes.BLUE
   }
 });
 
