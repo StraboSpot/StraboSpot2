@@ -11,9 +11,7 @@ const styles = StyleSheet.create({
   divider: {
     height: 30,
     justifyContent: 'center',
-    marginTop: 15,
-    alignItems: 'center'
-
+    backgroundColor: themes.LIGHTGREY
   },
   header: {
     fontSize: 100,
@@ -26,10 +24,11 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '95%',
   },
-  spotDivider: {
-    fontSize: 22,
-    marginLeft: 15,
-    fontWeight: 'bold',
+  spotDividerText: {
+    fontSize: 20,
+    paddingLeft: 10,
+    textTransform: 'uppercase',
+    color: themes.DARKGREY
   },
   spotFieldTitles: {
     fontWeight: 'bold',

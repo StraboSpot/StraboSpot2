@@ -78,7 +78,7 @@ const MeasurementPage = (props) => {
           <Compass/>
         </View>
         <Divider style={spotPageStyles.divider}>
-          <Text style={spotPageStyles.spotDivider}>Measurements</Text>
+          <Text style={spotPageStyles.spotDividerText}>Measurements</Text>
         </Divider>
         <FlatList
           data={props.spot.properties.orientations}

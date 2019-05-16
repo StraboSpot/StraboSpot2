@@ -154,7 +154,7 @@ class SpotBasics extends React.Component {
           />
         </View>
           <Divider style={styles.divider}>
-            <Text style={styles.spotDivider}>{this.props.spotPageVisible}</Text>
+            <Text style={styles.spotDividerText}>{this.props.spotPageVisible}</Text>
           </Divider>
           <Input
             inputStyle={styles.spotFieldValues}
@@ -166,7 +166,7 @@ class SpotBasics extends React.Component {
             value={this.state.spotName}
           />
         <Divider style={styles.divider}>
-          <Text style={styles.spotDivider}>Geography</Text>
+          <Text style={styles.spotDividerText}>Geography</Text>
         </Divider>
         <View style={{borderBottomWidth: 1, borderBottomColor: 'black'}}>
           <Text style={styles.spotFieldTitles}>Geometry:</Text>
