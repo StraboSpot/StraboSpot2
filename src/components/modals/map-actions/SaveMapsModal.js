@@ -53,6 +53,7 @@ class SaveMapModal extends Component {
     //this.currentBasemap = props.map.getCurrentBasemap();
     this.currentBasemap = props.currentBasemap;
     this.saveId = this.currentBasemap.layerSaveId;
+    this.appId = this.currentBasemap.id;
     this.currentMapName = this.currentBasemap.layerLabel;
     this.maxZoom = this.currentBasemap.maxZoom;
     this.saveLayerId = this.currentBasemap.layerSaveId;
@@ -233,6 +234,7 @@ class SaveMapModal extends Component {
     let newOfflineMapsData = [];
     let thisMap = {};
     thisMap.saveId = this.saveId;
+    thisMap.appId = this.appId;
     thisMap.name = this.currentMapName;
     thisMap.count = tileCount;
     newOfflineMapsData.push(thisMap);
