@@ -10,7 +10,8 @@ import RNFetchBlob from 'rn-fetch-blob';
 import {Platform} from 'react-native';
 
 import {
-  OFFLINE_MAPS
+  OFFLINE_MAPS,
+  CURRENT_BASEMAP
 } from '../../../store/Constants';
 
 var RNFS = require('react-native-fs');
@@ -27,6 +28,8 @@ class ManageOfflineMapsMenu extends Component {
     this.devicePath = Platform.OS === 'ios' ? dirs.DocumentDir : dirs.SDCardDir; // ios : android
     this.tilesDirectory = '/StraboSpotTiles';
     this.tileCacheDirectory = this.devicePath + this.tilesDirectory + '/TileCache';
+
+    console.log("tileCacheDirectory: ", this.tileCacheDirectory);
 
   }
 
@@ -73,10 +76,10 @@ class ManageOfflineMapsMenu extends Component {
                     <Text>
                       ({item.count} tiles)
                     </Text>
-                    <Text style={styles.buttonPadding}>
+                    <Text onPress={() => this.viewOfflineMap(item)} style={styles.buttonPadding}>
                       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;View
                     </Text>
-                    <Text onPress={() => this.confirmDeleteMap({item})} style={styles.buttonPadding}>
+                    <Text onPress={() => this.confirmDeleteMap(item)} style={styles.buttonPadding}>
                       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Delete
                     </Text>
                   </Text>
@@ -89,14 +92,34 @@ class ManageOfflineMapsMenu extends Component {
     );
   }
 
-  //await RNFS.unlink(this.tileTempDirectory + '/' + zipUID);
-  //onPress: () => console.log('OK Pressed')},
+  viewOfflineMap = async (map) => {
+
+    console.log('viewOfflineMap: ', map);
+
+    tileJSON = 'file://' + this.tileCacheDirectory + '/' + map.saveId + '/tiles/{z}_{x}_{y}.png';
+
+    console.log("tileJSON: ", tileJSON);
+
+    tempCurrentBasemap =
+    {
+      id: map.appId,
+      layerId: map.saveId,
+      layerLabel: map.name,
+      layerSaveId: map.saveId,
+      url: tileJSON,
+      maxZoom: 19
+    };
+
+    console.log('tempCurrentBasemap: ', tempCurrentBasemap);
+    await this.props.onCurrentBasemap(tempCurrentBasemap);
+    this.props.closeSettingsDrawer();
+  }
 
   confirmDeleteMap = async (map) => {
     console.log(map);
     Alert.alert(
       'Delete Offline Map',
-      'Are your sure you want to delete ' + map.item.name + '?',
+      'Are your sure you want to delete ' + map.name + '?',
       [
         {
           text: 'Cancel',
@@ -105,7 +128,7 @@ class ManageOfflineMapsMenu extends Component {
         },
         {
           text: 'OK',
-          onPress: () => this.deleteMap(map.item.saveId)
+          onPress: () => this.deleteMap(map.saveId)
         },
       ],
       {cancelable: false},
@@ -149,21 +172,16 @@ class ManageOfflineMapsMenu extends Component {
   }
 }
 
-
-
 const mapStateToProps = (state) => {
   return {
-    offlineMaps: state.home.offlineMaps
+    offlineMaps: state.home.offlineMaps,
+    currentBasemap: state.map.currentBasemap
   }
 };
 
 const mapDispatchToProps = {
-  onOfflineMaps: (offlineMaps) => ({type: OFFLINE_MAPS, offlineMaps: offlineMaps})
+  onOfflineMaps: (offlineMaps) => ({type: OFFLINE_MAPS, offlineMaps: offlineMaps}),
+  onCurrentBasemap: (basemap) => ({type: CURRENT_BASEMAP, basemap: basemap})
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ManageOfflineMapsMenu);
-
-
-
-
-//export default ManageOfflineMapsMenu;

@@ -536,6 +536,7 @@ class Home extends React.Component {
         <ManageOfflineMapsMenu
           onPress={() => this.setVisibleMenuState('settingsMain')}
           toggleSwitch={(switchName) => this.toggleSwitch(switchName)}
+          closeSettingsDrawer={() => this.closeSettingsDrawer()}
         />
     }
     return (
