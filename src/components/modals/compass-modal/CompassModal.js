@@ -10,7 +10,7 @@ import Compass from '../../../components/compass/Compass';
 const CompassModal = (props) => {
 
   return (
-    <View style={{ height: 400, width: 250}}>
+    <View style={{ height: 400, width: '100%'}}>
       <View style={styles.modalTop}>
         <View style={styles.navButtonsContainer}>
           <View style={styles.rightContainer}>

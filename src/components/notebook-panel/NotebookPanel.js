@@ -18,7 +18,11 @@ const NotebookPanel = props => {
 
   if (Object.getOwnPropertyNames(props.spot).length !== 0) {
     const pageDisplay = async (page) => {
-      props.setPageVisible(page)
+      const pageVisible = props.setPageVisible(page);
+      if (pageVisible.page === SpotPages.MEASUREMENT) {
+          props.showCompass(true)
+      }
+      if (pageVisible.page !== SpotPages.MEASUREMENT) props.showCompass(false);
     };
 
     return (
@@ -31,7 +35,7 @@ const NotebookPanel = props => {
         <View style={styles.viewContainer}>
           {props.spotPageVisible === SpotPages.OVERVIEW ? <SpotOverview/> : null}
           {props.spotPageVisible === SpotPages.BASIC ? <SpotBasics/> : null}
-          {props.spotPageVisible === SpotPages.MEASUREMENT ? <MeasurementPage/> : null}
+          {props.spotPageVisible === SpotPages.MEASUREMENT ? <MeasurementPage showCompass={props.showCompass}/> : null}
           {props.spotPageVisible === SpotPages.MEASUREMENTDETAIL ? <MeasurementDetailPage/> : null}
           {props.spotPageVisible === undefined ? <SpotOverview/> : null}
         </View>
@@ -39,6 +43,7 @@ const NotebookPanel = props => {
           <NotebookFooter
             openPage={(page) => pageDisplay(page)}
             onPress={(camera) => props.onPress(camera)}
+            showCompass={props.showCompass}
           />
         </View>
       </View>
