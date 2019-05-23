@@ -19,7 +19,7 @@ class CustomMapsMenu extends Component {
 
   constructor(props, context) {
     super(props, context);
-    console.log("Props: ", props);
+    // console.log("Props: ", props);
 
   }
 
