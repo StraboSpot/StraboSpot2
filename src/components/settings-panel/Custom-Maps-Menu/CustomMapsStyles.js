@@ -56,6 +56,27 @@ const styles = StyleSheet.create({
   switch: {
     flex: 1,
     alignItems: 'flex-end'
+  },
+  centertext: {
+    alignItems: 'center',
+    paddingTop: 10
+  },
+  rightlink: {
+    width: '90%',
+    textAlign: "right",
+    paddingTop: 20,
+    fontSize: 14,
+    color: '#407ad9'
+  },
+  dividerText: {
+    fontSize: 15,
+    paddingLeft: 10,
+    textTransform: 'uppercase',
+    fontWeight: 'bold'
+  },
+  divider: {
+    height: 30,
+    justifyContent: 'center'
   }
 });
 
