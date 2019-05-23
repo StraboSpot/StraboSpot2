@@ -18,6 +18,7 @@ import SettingsPanel from '../../components/settings-panel/SettingsPanel';
 import {MapModes} from '../../maps/map/Map.constants';
 import ShortcutMenu from '../../components/settings-panel/shortcuts-menu/ShortcutsMenu';
 import ManageOfflineMapsMenu from '../../components/settings-panel/Manage-Offline-Maps-Menu/ManageOfflineMapsMenu';
+import CustomMapsMenu from '../../components/settings-panel/Custom-Maps-Menu/CustomMapsMenu';
 import ButtonWithBackground from '../../ui/ButtonWithBackground';
 import Modal from "react-native-modal";
 import SaveMapModal from '../../components/modals/map-actions/SaveMapsModal';
@@ -379,6 +380,9 @@ class Home extends React.Component {
       case 'Manage Offline Maps':
         this.setVisibleMenuState('Manage Offline Maps');
         break;
+      case 'Custom Maps':
+        this.setVisibleMenuState('Custom Maps');
+        break;
       case 'Image Gallery':
         goToImages();
     }
@@ -534,6 +538,13 @@ class Home extends React.Component {
     else if (this.state.settingsMenuVisible === 'Manage Offline Maps') {
       content =
         <ManageOfflineMapsMenu
+          onPress={() => this.setVisibleMenuState('settingsMain')}
+          toggleSwitch={(switchName) => this.toggleSwitch(switchName)}
+          closeSettingsDrawer={() => this.closeSettingsDrawer()}
+        />
+    }else if (this.state.settingsMenuVisible === 'Custom Maps') {
+      content =
+        <CustomMapsMenu
           onPress={() => this.setVisibleMenuState('settingsMain')}
           toggleSwitch={(switchName) => this.toggleSwitch(switchName)}
           closeSettingsDrawer={() => this.closeSettingsDrawer()}
