@@ -8,9 +8,9 @@ import {mod, toRadians, toDegrees, roundToDecimalPlaces} from "../../shared/Help
 import {CompassToggleButtons} from "./Compass.constants";
 import {ListItem} from "react-native-elements";
 import {Switch} from "react-native-switch";
-
 import styles from './CompassStyles';
 import {EDIT_SPOT_PROPERTIES} from "../../store/Constants";
+import Orientation from 'react-native-orientation-locker';
 
 const {height, width} = Dimensions.get('window');
 const degree_update_rate = 2; // Number of degrees changed before the callback is triggered
@@ -56,6 +56,8 @@ class Compass extends Component {
 
   componentDidMount() {
     this._isMounted = true;
+    Orientation.lockToPortrait();
+    //this allows to check if the system autolock is enabled or not.
     this.subscribe();
     RNSimpleCompass.start(degree_update_rate, (degree) => {
       degreeFacing = (<Text>{degree}</Text>);
@@ -73,10 +75,25 @@ class Compass extends Component {
   };
 
   componentWillUnmount() {
+    Orientation.unlockAllOrientations();
     this.unsubscribe();
     RNSimpleCompass.stop();
     console.log('Compass unsubscribed');
     this._isMounted = false;
+  };
+
+  _onOrientationDidChange = (orientation) => {
+    if (orientation == 'PORTRAIT') {
+      console.log('AAAA', orientation)
+      orientationChange = <Text>{orientation}</Text>
+      Orientation.lockToLandscapeRight();
+      this.calculateOrientationLandscape()
+
+    } else {
+      console.log('BBBB', orientation)
+      orientationChange = <Text>{orientation}</Text>
+
+    }
   };
 
   grabMeasurements = () => {
@@ -149,32 +166,32 @@ class Compass extends Component {
       return Math.round(angle);
     };*/
 
-  _direction = (degree) => {
-    if (degree >= 22.5 && degree < 67.5) {
-      return 'NE';
-    }
-    else if (degree >= 67.5 && degree < 112.5) {
-      return 'E';
-    }
-    else if (degree >= 112.5 && degree < 157.5) {
-      return 'SE';
-    }
-    else if (degree >= 157.5 && degree < 202.5) {
-      return 'S';
-    }
-    else if (degree >= 202.5 && degree < 247.5) {
-      return 'SW';
-    }
-    else if (degree >= 247.5 && degree < 292.5) {
-      return 'W';
-    }
-    else if (degree >= 292.5 && degree < 337.5) {
-      return 'NW';
-    }
-    else {
-      return 'N';
-    }
-  };
+  // _direction = (degree) => {
+  //   if (degree >= 22.5 && degree < 67.5) {
+  //     return 'NE';
+  //   }
+  //   else if (degree >= 67.5 && degree < 112.5) {
+  //     return 'E';
+  //   }
+  //   else if (degree >= 112.5 && degree < 157.5) {
+  //     return 'SE';
+  //   }
+  //   else if (degree >= 157.5 && degree < 202.5) {
+  //     return 'S';
+  //   }
+  //   else if (degree >= 202.5 && degree < 247.5) {
+  //     return 'SW';
+  //   }
+  //   else if (degree >= 247.5 && degree < 292.5) {
+  //     return 'W';
+  //   }
+  //   else if (degree >= 292.5 && degree < 337.5) {
+  //     return 'NW';
+  //   }
+  //   else {
+  //     return 'N';
+  //   }
+  // };
 
   // Match the device top with pointer 0° degree. (By default 0° starts from the right of the device.)
   _degree = (magnetometer) => {
@@ -248,6 +265,74 @@ class Compass extends Component {
     );
   };
 
+  calculateOrientationLandscape = (orientation) => {
+    console.log('Orientation', orientation);
+    const x = this.state.accelerometer.x;
+    const y = this.state.accelerometer.y;
+    const z = this.state.accelerometer.z;
+    //let actualHeading = mod(vm.result.magneticHeading + vm.magneticDeclination, 360);
+    let actualHeading = mod(this.state.magnetometer - 90, 360);  // ToDo: adjust for declination
+
+    // Calculate base values given the x, y, and z from the device. The x-axis runs side-to-side across
+    // the mobile phone screen, or the laptop keyboard, and is positive towards the right side. The y-axis
+    // runs front-to-back across the mobile phone screen, or the laptop keyboard, and is positive towards as
+    // it moves away from you. The z-axis comes straight up out of the mobile phone screen, or the laptop
+    // keyboard, and is positive as it moves up.
+    // All results in this section are in radians
+    let g = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2) + Math.pow(z, 2));
+    let s = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+    let B = Math.acos(Math.abs(y) / s);
+    let R = toRadians(90 - toDegrees(B));
+    let d = Math.acos(Math.abs(z) / g);
+    let b = Math.atan(Math.tan(R) * Math.cos(d));
+
+    // Calculate dip direction, strike and dip (in degrees)
+    let dipdir, strike, dip;
+    let diry = actualHeading;
+    if (x === 0 && y === 0) {
+      d = 0;
+      dipdir = 180;
+    }
+    else if (x >= 0 && y >= 0) dipdir = diry - 90 - toDegrees(b);
+    else if (y <= 0 && x >= 0) dipdir = diry - 90 + toDegrees(b);
+    else if (y <= 0 && x <= 0) dipdir = diry + 90 - toDegrees(b);
+    else if (x <= 0 && y >= 0) dipdir = diry + 90 + toDegrees(b);
+
+    if (z > 0) dipdir = mod(dipdir, 360);
+    else if (z < 0) dipdir = mod(dipdir - 180, 360);
+
+    strike = mod(dipdir, 360);
+    dip = toDegrees(d);
+
+    // Calculate trend, plunge and rake (in degrees)
+    let trend, plunge, rake;
+    if (y > 0) trend = mod(diry -90, 360); //<---- This is what changed with trend
+    // if (y > 0) trend = diry;
+    // if (y > 0) trend = mod(diry, 360);
+    else if (y <= 0) trend = mod(diry - 90, 360);
+    if (z>0) trend = mod(trend - 180, 360);
+    plunge = toDegrees(Math.asin(Math.abs(y) / g));
+    rake = toDegrees(R);
+
+    this.setState(prevState => {
+        return {
+          ...prevState,
+          compassData: {
+            actualHeading: roundToDecimalPlaces(actualHeading, 4),
+            strike: roundToDecimalPlaces(strike, 0),
+            dipdir: roundToDecimalPlaces(dipdir, 0),
+            dip: roundToDecimalPlaces(dip, 0),
+            trend: roundToDecimalPlaces(trend, 0),
+            plunge: roundToDecimalPlaces(plunge, 0),
+            rake: roundToDecimalPlaces(rake, 0),
+            rake_calculated: 'yes'
+          }
+        }
+      },
+      () => console.log('Calculated Data:', this.state.compassData)
+    );
+  };
+
   // Render the compass
   renderCompass = () => {
     return (
@@ -267,23 +352,20 @@ class Compass extends Component {
   };
 
   renderCompassSymbols = () => {
-    console.log('Strike', this.state.compassData.strike + '\n' + 'Trend', this.state.compassData.trend);
+    // console.log('Strike', this.state.compassData.strike + '\n' + 'Trend', this.state.compassData.trend);
     const linearInToggleOn = this.state.toggles.includes(CompassToggleButtons.LINEAR);
     const plannerInToggleOn = this.state.toggles.includes(CompassToggleButtons.PLANAR);
 
     if (linearInToggleOn && plannerInToggleOn && this.state.compassData.trend !== null && this.state.compassData.strike !== null) {
-      console.log("LINEAR AND PLANNER")
       return (
         [this.renderTrendSymbol(), this.renderStrikeDipSymbol()]
       );
     }
     else if (linearInToggleOn && this.state.compassData.trend !== null) {
-      console.log("LINEAR")
       return this.renderTrendSymbol();
 
     }
     else if (plannerInToggleOn && this.state.compassData.strike !== null) {
-      console.log('PLANNER')
       return this.renderStrikeDipSymbol();
     }
 
@@ -339,14 +421,14 @@ class Compass extends Component {
     let image = require("../../assets/images/compass/TrendLine.png");
     const spin = this.state.spinValue.interpolate({
       inputRange: [0, this.state.compassData.trend],
-      outputRange: ['180deg', this.state.compassData.trend + 'deg']
+      outputRange: ['0deg', this.state.compassData.trend + 'deg']
     });
 // First set up animation
     Animated.timing(
       this.state.spinValue,
       {
         toValue: this.state.compassData.trend,
-        easing: Easing.linear,
+        easing: Easing.linear(),
         useNativeDriver: true
       }
     ).start();
@@ -458,6 +540,7 @@ class Compass extends Component {
         </View>
         <View style={styles.toggleButtonsRowContainer}>
           {this.renderToggles()}
+           {this.renderMeasurements()}
         </View>
       </View>
     )

@@ -7,7 +7,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     //position: 'absolute',
     //top: 50
-    // width: 200,
+    width: '100%',
     // height: 200,
     // marginBottom: 25
   },
@@ -71,6 +71,7 @@ const styles = StyleSheet.create({
   },
   modalTop: {
     zIndex: 100,
+    width: '100%',
     flex: 1,
     backgroundColor: themes.COMPASS_MODAL,
     borderTopRightRadius: 20,
@@ -78,18 +79,28 @@ const styles = StyleSheet.create({
   },
   modalBottom: {
     flex: 1,
-    backgroundColor: themes.COMPASS_MODAL,
+    // backgroundColor: themes.COMPASS_MODAL,
+    width: '100%',
     borderBottomRightRadius: 20,
     borderBottomLeftRadius: 20
   },
   modalContainer: {
     // flex: 1,
-    position: 'absolute',
-    bottom: 75,
-    left: 150,
-    width: 400,
-    height: 400,
-    backgroundColor: 'transparent',
+    // position: 'absolute',
+    // bottom: 75,
+    // left: 150,
+    // width: 400,
+    // height: 400,
+    // backgroundColor: 'transparent',
+    flex: 1,
+    width: '100%',
+    height: 300,
+    borderBottomLeftRadius: 30,
+    borderTopLeftRadius: 30,
+    backgroundColor: themes.LIGHTGREY,
+    position: 'absolute', //Here is the trick
+    right: 10,
+    zIndex: 1,
   },
 });
 

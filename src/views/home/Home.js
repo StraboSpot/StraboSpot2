@@ -29,6 +29,7 @@ import {SpotPages} from "../../components/notebook-panel/Notebook.constants";
 import {saveFile} from '../../services/images/ImageDownload';
 import {takePicture} from '../../shared/HelperFunctions/ImageHelperFunctions';
 import {IMAGES} from "../../routes/ScreenNameConstants";
+import CompassModal from "../../components/modals/compass-modal/CompassModal";
 
 const imageOptions = {
   storageOptions: {
@@ -80,7 +81,8 @@ class Home extends React.Component {
         Sketch: false
       },
       currentSpot: undefined,
-      allPhotosSaved: []
+      allPhotosSaved: [],
+      isCompassVisible: false
     };
   }
 
@@ -204,8 +206,12 @@ class Home extends React.Component {
 
   closeNotebookPanel = () => {
     if (this._isMounted) {
-      this.setState({
-        notebookPanelVisible: false
+      this.setState(prevState => {
+        return {
+          ...prevState,
+          notebookPanelVisible: false,
+          isCompassVisible: false
+        }
       });
     }
   };
@@ -217,19 +223,19 @@ class Home extends React.Component {
     console.log("Drawer Closed");
   };
 
-  convertDMS = (lat, lng) => {
-    const latitude = lat.toFixed(6);
-    let latitudeCardinal = Math.sign(lat) >= 0 ? "North" : "South";
-
-    const longitude = lng.toFixed(6);
-    let longitudeCardinal = Math.sign(lng) >= 0 ? "East" : "West";
-
-    return (
-      <Text>
-        {latitude}&#176; {latitudeCardinal}, {longitude}&#176; {longitudeCardinal}
-      </Text>
-    )
-  };
+  // convertDMS = (lat, lng) => {
+  //   const latitude = lat.toFixed(6);
+  //   let latitudeCardinal = Math.sign(lat) >= 0 ? "North" : "South";
+  //
+  //   const longitude = lng.toFixed(6);
+  //   let longitudeCardinal = Math.sign(lng) >= 0 ? "East" : "West";
+  //
+  //   return (
+  //     <Text>
+  //       {latitude}&#176; {latitudeCardinal}, {longitude}&#176; {longitudeCardinal}
+  //     </Text>
+  //   )
+  // };
 
   deleteSelectedFeature = (id) => {
     const featureName = this.props.selectedSpot.properties.name;
@@ -266,7 +272,7 @@ class Home extends React.Component {
 
   //function for online/offline state change event handler
   handleConnectivityChange = (isConnected) => {
-    this.props.setIsOnline( isConnected );
+    this.props.setIsOnline(isConnected);
   }
 
   mapPress = () => {
@@ -517,12 +523,44 @@ class Home extends React.Component {
     }
   };
 
+  toggleCompass = (isCompassVisible) => {
+    if (this._isMounted) {
+        this.setState(prevState => {
+          return {
+            ...prevState,
+            isCompassVisible: isCompassVisible ? isCompassVisible : !prevState.isCompassVisible
+          }
+        }, () => {
+          console.log('Compass state', this.state.isCompassVisible)
+        })
+      }
+  };
+
   render() {
     const spot = this.props.selectedSpot;
 
     const isOnline = this.props.isOnline;
 
     let content = null;
+    let compassModal =  <View style={styles.modalContainer}>
+      <CompassModal
+        // showCompass={() => this.toggleCompass}
+        close={() => this.toggleCompass()}
+        style={{justifyContent: 'center'}}
+      />
+    </View>;
+
+    // if (this.props.visiblePage === SpotPages.MEASUREMENT) {
+    //   this.toggleCompass();
+    //   // compassModal =
+    //   //   <View style={styles.modalContainer}>
+    //   //   <CompassModal
+    //   //     compass={() => this.toggleCompass}
+    //   //     close={() => this.toggleCompass()}
+    //   //     // style={styles.modalContainer}
+    //   //   />
+    //   // </View>;
+    // }
 
     if (this.state.settingsMenuVisible === 'settingsMain') {
       content = <SettingsPanel onPress={(name) => this.settingsClickHandler(name)}/>
@@ -550,6 +588,15 @@ class Home extends React.Component {
           closeSettingsDrawer={() => this.closeSettingsDrawer()}
         />
     }
+    //
+    // if (this.state.isCompassVisible) {
+    //   compassModal = <CompassModal
+    //     compass={() => this.toggleCompass}
+    //     close={() => this.toggleCompass()}
+    //     style={styles.modalContainer}
+    //   />
+    // }
+
     return (
       <Drawer
         tweenHandler={(ratio) => ({
@@ -572,8 +619,10 @@ class Home extends React.Component {
               closeNotebook={this.closeNotebookPanel}
               textStyle={{fontWeight: 'bold', fontSize: 12}}
               onPress={(name) => this.notebookClickHandler(name)}
+              showCompass={(showCompass) => this.toggleCompass(showCompass)}
             />
             : null}
+          {this.state.isCompassVisible ? compassModal : null}
           <View style={styles.topCenter}>
             {this.state.buttons.endDrawButtonVisible ?
               <ButtonWithBackground
@@ -698,24 +747,24 @@ class Home extends React.Component {
             />
           </View>
           <View style={styles.leftsideIcons}>
-              <IconButton
-                source={require('../../assets/icons/app-icons-shaded/MapActionsButton.png')}
-                onPress={() => this.toggleDialog("mapActionsMenuVisible")}
-              />
-              <IconButton
-                source={require('../../assets/icons/app-icons-shaded/SymbolsButton.png')}
-                onPress={() => this.toggleDialog("mapSymbolsMenuVisible")}
-              />
-              <IconButton
-                source={require('../../assets/icons/app-icons-shaded/LayersButton.png')}
-                onPress={() => this.toggleDialog("baseMapMenuVisible")}
-              />
+            <IconButton
+              source={require('../../assets/icons/app-icons-shaded/MapActionsButton.png')}
+              onPress={() => this.toggleDialog("mapActionsMenuVisible")}
+            />
+            <IconButton
+              source={require('../../assets/icons/app-icons-shaded/SymbolsButton.png')}
+              onPress={() => this.toggleDialog("mapSymbolsMenuVisible")}
+            />
+            <IconButton
+              source={require('../../assets/icons/app-icons-shaded/LayersButton.png')}
+              onPress={() => this.toggleDialog("baseMapMenuVisible")}
+            />
           </View>
           <View style={styles.bottomLeftIcons}>
-              <IconButton
-                source={require('../../assets/icons/app-icons-shaded/MyLocationButton.png')}
-                onPress={this.clickHandler.bind(this, "currentLocation")}
-              />
+            <IconButton
+              source={require('../../assets/icons/app-icons-shaded/MyLocationButton.png')}
+              onPress={this.clickHandler.bind(this, "currentLocation")}
+            />
           </View>
 
           <MapActionsDialog
@@ -759,7 +808,8 @@ function mapStateToProps(state) {
   return {
     selectedSpot: state.home.selectedSpot,
     featureCollectionSelected: state.home.featureCollectionSelected,
-    isOnline: state.home.isOnline
+    isOnline: state.home.isOnline,
+    // visiblePage: state.notebook.visiblePage
   }
 }
 

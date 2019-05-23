@@ -23,6 +23,7 @@
     "react-native-image-picker": "^0.28.1",
     "react-native-modal": "^9.0.0",
     "react-native-navigation": "^2.18.1",
+    "react-native-orientation-locker": "^1.1.6",
     "react-native-popup-dialog": "^0.17.0",
     "react-native-progress": "^3.6.0",
     "react-native-sensors": "^5.1.8",

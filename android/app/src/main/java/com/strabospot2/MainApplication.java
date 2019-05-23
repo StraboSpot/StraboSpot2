@@ -2,6 +2,7 @@ package com.strabospot2;
 
 import android.app.Application;
 import com.facebook.react.ReactApplication;
+import org.wonday.orientation.OrientationPackage;
 import com.reactnativecommunity.netinfo.NetInfoPackage;
 import com.imagepicker.ImagePickerPackage;
 import com.reactlibrary.RNSimpleCompassPackage;
@@ -53,7 +54,8 @@ public class MainApplication extends NavigationApplication {
             new RNSimpleCompassPackage(),
             new RNSensorsPackage(),
             new ImagePickerPackage(),
-            new NetInfoPackage()
+            new NetInfoPackage(),
+            new OrientationPackage()
         );
     }
 

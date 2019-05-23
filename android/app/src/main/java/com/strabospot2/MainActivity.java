@@ -8,6 +8,8 @@ import com.reactlibrary.RNSimpleCompassPackage;
 import com.sensors.RNSensorsPackage;
 import com.imagepicker.permissions.OnImagePickerPermissionsCallback;
 import com.facebook.react.modules.core.PermissionListener;
+import android.content.Intent;
+import android.content.res.Configuration;
 
 import java.util.Arrays;
 import java.util.List;
@@ -31,13 +33,21 @@ public class MainActivity extends NavigationActivity implements OnImagePickerPer
         this.listener = listener;
       }
 
-      @Override
-      public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults)
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults)
+    {
+      if (listener != null)
       {
-        if (listener != null)
-        {
-          listener.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        listener.onRequestPermissionsResult(requestCode, permissions, grantResults);
       }
+      super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        Intent intent = new Intent("onConfigurationChanged");
+        intent.putExtra("newConfig", newConfig);
+        this.sendBroadcast(intent);
+    }
 }
