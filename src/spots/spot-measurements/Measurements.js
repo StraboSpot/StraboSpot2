@@ -77,7 +77,10 @@ const MeasurementPage = (props) => {
         titleStyle={{color: 'blue'}}
         title={'Return to Overview'}
         type={'clear'}
-        onPress={() => props.setPageVisible(SpotPages.OVERVIEW)}
+        onPress={ () =>  {
+          const pageVisible = props.setPageVisible(SpotPages.OVERVIEW)
+          if (pageVisible.page !== SpotPages.MEASUREMENT) props.showCompass(false);
+        }}
       />
       <Button
         // icon={{
@@ -89,24 +92,29 @@ const MeasurementPage = (props) => {
         titleStyle={{color: 'blue'}}
         title={'Open Compass'}
         type={'clear'}
-        onPress={() => toggleModal()}
+        onPress={props.showCompass}
       />
       <ScrollView>
         {/*<View style={styles.compassContainer}>*/}
         {/*  <Compass/>*/}
         {/*</View>*/}
-          <Modal
-            onBackdropPress={() => setIsModalVisible(false)}
-            backdropOpacity={.50}
-            isVisible={isModalVisible}
-            style={styles.modalContainer}
-            useNativeDriver={true}
-            animationOut={'slideOutDown'}
-          >
-            <CompassModal
-              close={() => toggleModal()}
-            />
-          </Modal>
+        {/*  <Modal*/}
+        {/*    onBackdropPress={() => setIsModalVisible(false)}*/}
+        {/*    backdropOpacity={.50}*/}
+        {/*    isVisible={isModalVisible}*/}
+        {/*    style={styles.modalContainer}*/}
+        {/*    useNativeDriver={true}*/}
+        {/*    animationOut={'slideOutDown'}*/}
+        {/*  >*/}
+        {/*    <CompassModal*/}
+        {/*      close={() => toggleModal()}*/}
+        {/*    />*/}
+        {/*  </Modal>*/}
+        {/*<View>*/}
+        {/*  {isModalVisible ? <CompassModal*/}
+        {/*    style={styles.modalContainer}*/}
+        {/*  close={() => toggleModal()}/> : null}*/}
+        {/*</View>*/}
         <Divider style={spotPageStyles.divider}>
           <Text style={spotPageStyles.spotDividerText}>Measurements</Text>
         </Divider>

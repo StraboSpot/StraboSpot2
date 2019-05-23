@@ -7,7 +7,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     //position: 'absolute',
     //top: 50
-    // width: 200,
+    width: '100%',
     // height: 200,
     // marginBottom: 25
   },
