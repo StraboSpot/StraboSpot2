@@ -1,4 +1,5 @@
 import {StyleSheet} from "react-native";
+import * as themes from "../../themes/ColorThemes";
 
 const styles = StyleSheet.create({
   container: {
@@ -86,7 +87,27 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center'
-  }
+  },
+  modalContainer: {
+    // flex: 1,
+    // position: 'absolute',
+    // bottom: 75,
+    // left: 150,
+    // width: 400,
+    // height: 400,
+    // backgroundColor: 'transparent',
+    flex: 1,
+    width: 200,
+    height: 300,
+    borderBottomLeftRadius: 30,
+    borderTopLeftRadius: 30,
+    backgroundColor: themes.LIGHTGREY,
+    position: 'absolute', //Here is the trick
+    left: 80,
+    // bottom: 150,
+    top: 250,
+    // zIndex: 1,
+  },
 });
 
 export default styles;
