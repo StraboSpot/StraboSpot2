@@ -10,8 +10,7 @@ import RNFetchBlob from 'rn-fetch-blob';
 import {Platform} from 'react-native';
 
 import {
-  OFFLINE_MAPS,
-  CURRENT_BASEMAP
+  CUSTOM_MAPS
 } from '../../../store/Constants';
 
 
@@ -34,6 +33,7 @@ class CustomMapsMenu extends Component {
   }
 
   render() { //return whole modal here
+    console.log("PROPS: ",this.props);
     return (
 
       <View style={styles.container}>
@@ -53,7 +53,7 @@ class CustomMapsMenu extends Component {
         </View>
         <View>
           <Text>
-            
+
           </Text>
         </View>
       </View>
@@ -64,14 +64,12 @@ class CustomMapsMenu extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    offlineMaps: state.home.offlineMaps,
-    currentBasemap: state.map.currentBasemap
+    customMaps: state.home.customMaps
   }
 };
 
 const mapDispatchToProps = {
-  onOfflineMaps: (offlineMaps) => ({type: OFFLINE_MAPS, offlineMaps: offlineMaps}),
-  onCurrentBasemap: (basemap) => ({type: CURRENT_BASEMAP, basemap: basemap})
+  onCustomMaps: (customMaps) => ({type: CUSTOM_MAPS, customMaps: customMaps})
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(CustomMapsMenu);

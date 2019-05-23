@@ -1,6 +1,7 @@
 import {
   ADD_PHOTOS,
   CURRENT_BASEMAP,
+  CUSTOM_MAPS,
   DELETE_OFFLINE_MAP,
   EDIT_SPOT_GEOMETRY,
   EDIT_SPOT_PROPERTIES,
@@ -99,6 +100,12 @@ export const homeReducer = (state = initialState, action) => {
           }
         }
       }
+    case CUSTOM_MAPS:
+      console.log('Setting custom maps: ', action.customMaps);
+      return {
+        ...state,
+        customMaps: action.customMaps,
+      };
     case OFFLINE_MAPS:
       console.log('Setting offline maps: ', action.offlineMaps);
       return {
