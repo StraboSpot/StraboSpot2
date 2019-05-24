@@ -12,6 +12,8 @@
     "@mapbox/react-native-mapbox-gl": "github:nitaliano/react-native-mapbox-gl#master",
     "@react-native-community/netinfo": "^2.0.9",
     "@turf/turf": "^5.1.6",
+    "formik": "^1.5.4",
+    "prop-types": "^15.7.2",
     "react": "16.8.6",
     "react-native": "^0.59.6",
     "react-native-drawer": "^2.5.1",

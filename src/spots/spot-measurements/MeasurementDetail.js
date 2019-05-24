@@ -7,6 +7,8 @@ import {SET_SPOT_PAGE_VISIBLE} from "../../store/Constants";
 import styles from './MeasurementsStyles';
 import * as themes from '../../themes/ColorThemes';
 import spotPageStyles from "../spot-page/SpotPageStyles";
+import {Formik} from 'formik';
+import FormView from "../../components/form/FormView";
 
 const MeasurementDetailPage = (props) => {
 
@@ -21,6 +23,11 @@ const MeasurementDetailPage = (props) => {
   const updateFeatureTypeIndex = (i) => {
     console.log(i);
     setFeatureTypeIndex(i);
+  };
+
+  const onSubmitForm = ({firstName, lastName}) => {
+    console.log(`firstName: ${firstName}`);
+    console.log(`lastName: ${lastName}`);
   };
 
   // Render the switches to select a feature type
@@ -69,10 +76,38 @@ const MeasurementDetailPage = (props) => {
     );
   };
 
+  const renderCancelSaveButtons = () => {
+    return (
+      <View style={styles.navButtonsContainer}>
+        <View style={styles.leftContainer}>
+          <Button
+            titleStyle={{color: themes.BLUE}}
+            title={'Cancel'}
+            type={'clear'}
+            onPress={() => cancelFormAndGo(SpotPages.MEASUREMENT)}
+          />
+        </View>
+        <View style={styles.rightContainer}>
+          <Button
+            titleStyle={{color: themes.BLUE}}
+            title={'Save'}
+            type={'clear'}
+            onPress={() => saveFormAndGo(SpotPages.MEASUREMENT)}
+          />
+        </View>
+      </View>
+    );
+  };
+
   const renderPlanarLinearFields = () => {
     return (
       <View>
-        <Text>Planar and Linear form goes here</Text>
+        <Formik
+          ref={node => (this.form = node)}
+          onSubmit={onSubmitForm}
+          validate={validateForm}
+          component={FormView}
+        />
       </View>
     );
   };
@@ -93,28 +128,35 @@ const MeasurementDetailPage = (props) => {
     );
   };
 
+  const cancelFormAndGo = (pageToGoTo) => {
+    props.setPageVisible(pageToGoTo);
+  };
+
+  const saveFormAndGo = (pageToGoTo) => {
+    props.setPageVisible(pageToGoTo);
+  };
+
+  const validateForm = ({firstName, lastName}) => {
+    const errors = {};
+    if (firstName === undefined) {
+      errors.firstName = 'Required';
+    }
+    else if (firstName.trim() === '') {
+      errors.firstName = 'Must not be blank';
+    }
+    if (lastName === undefined) {
+      errors.lastName = 'Required';
+    }
+    else if (lastName.trim() === '') {
+      errors.lastName = 'Must not be blank';
+    }
+    return errors;
+  };
+
   return (
     <React.Fragment>
-
       <View style={styles.measurementDetailContainer}>
-        <View style={styles.navButtonsContainer}>
-          <View style={styles.leftContainer}>
-            <Button
-              titleStyle={{color: themes.BLUE}}
-              title={'Cancel'}
-              type={'clear'}
-              onPress={() => props.setPageVisible(SpotPages.MEASUREMENT)}
-            />
-          </View>
-          <View style={styles.rightContainer}>
-            <Button
-              titleStyle={{color: themes.BLUE}}
-              title={'Save'}
-              type={'clear'}
-              onPress={() => props.setPageVisible(SpotPages.MEASUREMENT)}
-            />
-          </View>
-        </View>
+        {renderCancelSaveButtons()}
         <View style={styles.measurementDetailSwitchesContainer}>
           {renderTypeSwitches()}
         </View>
@@ -123,7 +165,6 @@ const MeasurementDetailPage = (props) => {
           {renderFormFields()}
         </ScrollView>
       </View>
-
     </React.Fragment>
   );
 };
