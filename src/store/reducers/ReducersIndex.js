@@ -2,6 +2,7 @@ import {
   ADD_PHOTOS,
   CURRENT_BASEMAP,
   CUSTOM_MAPS,
+  DELETE_PHOTOS,
   DELETE_OFFLINE_MAP,
   EDIT_SPOT_GEOMETRY,
   EDIT_SPOT_PROPERTIES,
@@ -161,9 +162,9 @@ export const imageReducer = (state = initialImageState, action) => {
       let imagePathsTemp = [];
       console.log(action.image);
       action.image.map(data => {
-        console.log('photo in reducer', data.id, data.src);
+        console.log('photo in reducer\n', 'ID:', data.id,'\nSRC:', data.src, '\nNAME:', data.name);
         // const {id, src} = data;
-        imagePathsTemp.push({id: data.id, src: data.src});
+        imagePathsTemp.push({id: data.id, name: data.name, src: data.src});
         updatedImages = state.imagePaths.concat(imagePathsTemp)
       });
       return {

@@ -326,6 +326,7 @@ class Home extends React.Component {
       if (this.state.allPhotosSaved.length > 0) {
         console.log('ALL PHOTOS SAVED', this.state.allPhotosSaved);
         this.props.addPhoto(this.state.allPhotosSaved);
+        this.props.onSpotEdit('image', this.state.allPhotosSaved);
         this.state.allPhotosSaved = [];
         Alert.alert('Photo Saved!', 'Thank you!')
       }
@@ -338,7 +339,7 @@ class Home extends React.Component {
       this.setState(prevState => {
         return {
           ...prevState,
-          allPhotosSaved: [...this.state.allPhotosSaved, savedPhoto]
+          allPhotosSaved: [...this.state.allPhotosSaved, {id: savedPhoto.id, name: savedPhoto.id, src: savedPhoto.src}]
         }
       }, () => {
         console.log('All Photos Saved:', this.state.allPhotosSaved);
