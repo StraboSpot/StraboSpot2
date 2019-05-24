@@ -11,7 +11,8 @@ import {Platform} from 'react-native';
 import {Button, Divider, Input} from 'react-native-elements';
 
 import {
-  CUSTOM_MAPS
+  CUSTOM_MAPS,
+  CURRENT_BASEMAP
 } from '../../../store/Constants';
 
 
@@ -20,7 +21,7 @@ class CustomMapsMenu extends Component {
 
   constructor(props, context) {
     super(props, context);
-    // console.log("Props: ", props);
+    console.log("Props: ", props);
 
     this.state = {
       showFrontPage: true,
@@ -54,6 +55,16 @@ class CustomMapsMenu extends Component {
   showMapPicker = () => {
     this.setState({showFrontPage: false});
     this.setState({showNewMapSelect: true});
+  }
+
+  showHome = () => {
+    this.setState({showFrontPage: true});
+    this.setState({showForm: false});
+    this.setState({mapIdLabel: ''});
+    this.setState({mapId: ''});
+    this.setState({mapTitle: ''});
+    this.setState({accessToken: ''});
+    this.setState({chosenForm: ''});
   }
 
   updateForm = (chosenForm) => {
@@ -105,6 +116,201 @@ class CustomMapsMenu extends Component {
     }, () => console.log('accessToken state:', this.state.accessToken))
   };
 
+
+
+  checkMap = async () => {
+
+    switch(this.state.chosenForm){
+      case 'Mapbox Style':
+        //jasonash/cjl3xdv9h22j12tqfmyce22zq
+        //pk.eyJ1IjoiamFzb25hc2giLCJhIjoiY2l2dTUycmNyMDBrZjJ5bzBhaHgxaGQ1diJ9.O2UUsedIcg1U7w473A5UHA
+        url = 'https://api.mapbox.com/styles/v1/' + this.state.mapId + '/tiles/256/0/0/0?access_token=' + this.state.accessToken;
+        saveUrl = 'https://api.mapbox.com/styles/v1/' + this.state.mapId + '/tiles/256/{z}/{x}/{y}?access_token=' + this.state.accessToken;
+        break;
+      case 'Map Warper':
+        url = 'https://www.strabospot.org/mwproxy/' + this.state.mapId + '/0/0/0.png';
+        saveUrl = 'https://www.strabospot.org/mwproxy/' + this.state.mapId + '/{z}/{x}/{y}.png';
+        break;
+      case 'StraboSpot MyMaps':
+        //5b7597c754016
+        //https://strabospot.org/geotiff/tiles/5b7597c754016/0/0/0.png
+        url = 'https://strabospot.org/geotiff/tiles/' + this.state.mapId + '/0/0/0.png';
+        saveUrl = 'https://strabospot.org/geotiff/tiles/' + this.state.mapId + '/{z}/{x}/{y}.png';
+        break;
+      default:
+        url = 'na';
+        saveUrl = 'na';
+    }
+
+    fetch(url).then(response => {
+        const statusCode = response.status;
+        console.log("statusCode", statusCode);
+        if(statusCode=='200'){
+
+          //check to see if it already exists in Redux
+          mapExists = false;
+
+          for(let i = 0; i < this.props.customMaps; i++){
+            if(customMaps[i].mapId==this.state.mapId){
+              mapExists = true;
+            }
+          }
+
+          if(!mapExists){
+            //add map to Redux here...
+
+            let newReduxMaps = [];
+            for(let i = 0; i < this.props.customMaps; i++){
+              newReduxMaps.push(this.props.customMaps[i]);
+            }
+
+            let newMap = {};
+            newMap.id = this.makeMapId();
+            newMap.mapType = this.state.chosenForm;
+            newMap.mapId = this.state.mapId;
+            newMap.mapTitle = this.state.mapTitle;
+            if(this.state.accessToken){
+              newMap.accessToken = this.state.accessToken;
+            }
+            newMap.url = saveUrl;
+
+            newReduxMaps.push(newMap);
+
+            this.props.onCustomMaps(newReduxMaps);
+
+            Alert.alert(
+              'Success!',
+              'Map has been added successfully.',
+              [
+                {
+                  text: 'OK',
+                  onPress: () => this.showHome()
+                },
+              ],
+              {cancelable: false},
+            );
+          }else{
+            Alert.alert(
+              'Failure!',
+              'You have already added this map.',
+              [
+                {
+                  text: 'OK',
+                  onPress: () => this.showHome()
+                },
+              ],
+              {cancelable: false},
+            );
+          }
+
+
+
+
+        }else{
+          Alert.alert(
+            'Failure!',
+            'Provided map is not valid.',
+            [
+              {
+                text: 'OK'
+              },
+            ],
+            {cancelable: false},
+          );
+        }
+      })
+      .catch(error => {
+        Alert.alert(
+          'Failure!',
+          'Provided map is not valid.',
+          [
+            {
+              text: 'OK'
+            },
+          ],
+          {cancelable: false},
+        );
+    });
+
+  }
+
+  makeMapId = () => {
+     var result           = '';
+     var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+     var charactersLength = characters.length;
+     for ( var i = 0; i < 10; i++ ) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+     }
+     return result;
+  }
+
+  confirmDeleteMap = async (map) => {
+    console.log(map);
+    Alert.alert(
+      'Delete Custom Map',
+      'Are your sure you want to delete ' + map.mapTitle + '?',
+      [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {
+          text: 'OK',
+          onPress: () => this.deleteMap(map.id)
+        },
+      ],
+      {cancelable: false},
+    );
+  };
+
+  deleteMap = async (mapid) => {
+    console.log('Deleting Map Here');
+    console.log("map: ",mapid);
+
+    //now, delete map from Redux
+    currentCustomMaps = this.props.customMaps;
+
+    if(!currentCustomMaps){
+      currentCustomMaps=[];
+    }
+
+    let newCustomMapsData = [];
+
+    //loop over offlineMapsData and add any other maps (not current)
+    for(let i = 0; i < currentCustomMaps.length; i++){
+      if(currentCustomMaps[i].id){
+        if(currentCustomMaps[i].id != mapid){
+          //Add it to new array for Redux Storage
+          newCustomMapsData.push(currentCustomMaps[i]);
+        }
+      }
+    }
+
+    await this.props.onCustomMaps(newCustomMapsData);
+    console.log("Saved customMaps to Redux.");
+
+  }
+
+  viewCustomMap = async (map) => {
+
+    console.log('viewCustomMap: ', map);
+
+    tempCurrentBasemap =
+    {
+      id: map.appId,
+      layerId: map.saveId,
+      layerLabel: map.name,
+      layerSaveId: map.saveId,
+      url: map.url,
+      maxZoom: 19
+    };
+
+    console.log('tempCurrentBasemap: ', tempCurrentBasemap);
+    await this.props.onCurrentBasemap(tempCurrentBasemap);
+    this.props.closeSettingsDrawer();
+  }
+
   render() { //return whole modal here
     return (
 
@@ -130,9 +336,32 @@ class CustomMapsMenu extends Component {
 
         { this.state.showFrontPage && this.props.customMaps &&
           <View>
-            <Text>
-              custom maps exist.
-            </Text>
+            {
+              this.props.customMaps.map((item,i) => <ListItem
+                containerStyle={{backgroundColor: 'transparent', padding: 0}}
+                key={item.id}
+                title={
+                  <View style={styles.itemContainer}>
+                    <Text style={styles.itemTextStyle}>{item.mapTitle}</Text>
+                  </View>
+                }
+                subtitle={
+                  <View style={styles.itemSubContainer}>
+                    <Text style={styles.itemSubTextStyle}>
+                      <Text>
+                        ({item.mapId})
+                      </Text>
+                      <Text onPress={() => this.viewCustomMap(item)} style={styles.buttonPadding}>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;View
+                      </Text>
+                      <Text onPress={() => this.confirmDeleteMap(item)} style={styles.buttonPadding}>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Delete
+                      </Text>
+                    </Text>
+                  </View>
+                }
+              />)
+            }
           </View>
         }
 
@@ -211,10 +440,10 @@ class CustomMapsMenu extends Component {
           </View>
         }
 
-        { this.state.mapTitle != '' && this.state.mapId != '' &&
+        { this.state.mapTitle != '' && this.state.mapId != '' && ( this.state.chosenForm != 'Mapbox Style' || this.state.accessToken != '' ) &&
           <View>
-            <Text>
-              Put Button Here
+            <Text style={styles.submitButton} onPress={this.checkMap}>
+              Submit
             </Text>
           </View>
         }
@@ -244,12 +473,14 @@ class CustomMapsMenu extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    customMaps: state.home.customMaps
+    customMaps: state.home.customMaps,
+    currentBasemap: state.map.currentBasemap
   }
 };
 
 const mapDispatchToProps = {
-  onCustomMaps: (customMaps) => ({type: CUSTOM_MAPS, customMaps: customMaps})
+  onCustomMaps: (customMaps) => ({type: CUSTOM_MAPS, customMaps: customMaps}),
+  onCurrentBasemap: (basemap) => ({type: CURRENT_BASEMAP, basemap: basemap})
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(CustomMapsMenu);

@@ -77,6 +77,13 @@ const styles = StyleSheet.create({
   divider: {
     height: 30,
     justifyContent: 'center'
+  },
+  submitButton: {
+    width: '90%',
+    textAlign: "center",
+    paddingTop: 20,
+    fontSize: 14,
+    color: '#407ad9'
   }
 });
 
