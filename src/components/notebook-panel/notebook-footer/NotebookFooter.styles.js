@@ -5,6 +5,9 @@ const notebookFooterStyles = StyleSheet.create({
     height: 70,
     borderTopWidth: 1,
     padding: 10,
+    backgroundColor: 'lightgrey',
+    borderBottomLeftRadius: 30
+
   },
   footerIconContainer: {
     flex: 1,
