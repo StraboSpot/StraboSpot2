@@ -13,11 +13,11 @@ const styles = StyleSheet.create({
     right: 0,
     zIndex: 1,
   },
-  imageContainer: {
-    flex: 1,
-    padding: 10,
-    paddingHorizontal: 10
-  },
+  // imageContainer: {
+  //   flex: 1,
+  //   padding: 10,
+  //   paddingHorizontal: 10
+  // },
   viewContainer: {
     flex: 1,
   },

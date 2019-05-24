@@ -1,13 +1,7 @@
 import {StyleSheet} from 'react-native';
 
 const spotStyles = StyleSheet.create({
-  imageContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    padding: 10,
-    justifyContent: 'space-between',
-    marginLeft: 30
-  },
+
   iconButton: {
     height: 25,
     width: 25,
@@ -25,7 +19,7 @@ const spotStyles = StyleSheet.create({
   },
   sectionStyle: {
     flexDirection: 'row',
-    height: 100
+    height: 150
   },
   textStyle: {
     fontSize: 20,

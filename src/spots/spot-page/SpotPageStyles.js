@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
     height: '95%',
   },
   spotDividerText: {
-    fontSize: 20,
+    fontSize: 16,
     paddingLeft: 10,
     textTransform: 'uppercase',
     color: themes.DARKGREY

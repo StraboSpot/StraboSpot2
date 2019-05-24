@@ -5,28 +5,25 @@ import spotStyles from '../SpotStyles';
 
 const SpotTag = props => (
 
-    <View style={{width: '100%'}}>
+    <View style={{width: '100%', height: 150}}>
       <View>
         <Text style={props.style}>{props.tag}</Text>
       </View>
-      <ScrollView style={{margin: 15}}>
+      <ScrollView>
         {
           data.map((l, i) => (
-
             <ListItem
               key={l.id}
               title={l.name}
               onPress={() => console.log('Tag item pressed', l.id, l.name)}
               containerStyle={spotStyles.listStyle}
               contentContainerStyle={spotStyles.listContent}
-
             />
           ))
         }
       </ScrollView>
     </View>
   );
-
 
 const data = [
   {id:1, name:"Blue racer", description:"Crona, Rodriguez and Kovacek"},
