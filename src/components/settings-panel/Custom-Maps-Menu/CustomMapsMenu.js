@@ -307,6 +307,18 @@ class CustomMapsMenu extends Component {
 
     tempCurrentBasemap =
     {
+      id: 'osm',
+      layerId: map.id,
+      layerLabel: map.mapTitle,
+      layerSaveId: map.id,
+      url: map.url,
+      maxZoom: 19
+    };
+
+    await this.props.onCurrentBasemap(tempCurrentBasemap);
+
+    tempCurrentBasemap =
+    {
       id: 'custom',
       layerId: map.id,
       layerLabel: map.mapTitle,
