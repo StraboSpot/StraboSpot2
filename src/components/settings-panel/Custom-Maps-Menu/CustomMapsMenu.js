@@ -32,7 +32,8 @@ class CustomMapsMenu extends Component {
       maptitle: '',
       mapIdLabel: '',
       mapId: '',
-      accessToken: ''
+      accessToken: '',
+      showSubmitButton: true
     };
 
     this.mapTypes = [
@@ -90,6 +91,7 @@ class CustomMapsMenu extends Component {
   }
 
   mapTitleEdit = (text) => {
+    this.setState({showSubmitButton: true});
     this.setState(prevState => {
       return {
         ...prevState,
@@ -99,6 +101,7 @@ class CustomMapsMenu extends Component {
   };
 
   mapIdEdit = (text) => {
+    this.setState({showSubmitButton: true});
     this.setState(prevState => {
       return {
         ...prevState,
@@ -119,6 +122,8 @@ class CustomMapsMenu extends Component {
 
 
   checkMap = async () => {
+
+    this.setState({showSubmitButton: false});
 
     switch(this.state.chosenForm){
       case 'Mapbox Style':
@@ -145,13 +150,16 @@ class CustomMapsMenu extends Component {
     fetch(url).then(response => {
         const statusCode = response.status;
         console.log("statusCode", statusCode);
+
+        console.log("customMaps: ", this.props.customMaps);
+
         if(statusCode=='200'){
 
           //check to see if it already exists in Redux
           mapExists = false;
 
-          for(let i = 0; i < this.props.customMaps; i++){
-            if(customMaps[i].mapId==this.state.mapId){
+          for(let i = 0; i < this.props.customMaps.length; i++){
+            if(this.props.customMaps[i].mapId==this.state.mapId){
               mapExists = true;
             }
           }
@@ -160,7 +168,7 @@ class CustomMapsMenu extends Component {
             //add map to Redux here...
 
             let newReduxMaps = [];
-            for(let i = 0; i < this.props.customMaps; i++){
+            for(let i = 0; i < this.props.customMaps.length; i++){
               newReduxMaps.push(this.props.customMaps[i]);
             }
 
@@ -220,9 +228,10 @@ class CustomMapsMenu extends Component {
         }
       })
       .catch(error => {
+        console.log('Error!: ',error);
         Alert.alert(
           'Failure!',
-          'Provided map is not valid.',
+          'Provided map is not valid...',
           [
             {
               text: 'OK'
@@ -298,10 +307,10 @@ class CustomMapsMenu extends Component {
 
     tempCurrentBasemap =
     {
-      id: map.appId,
-      layerId: map.saveId,
-      layerLabel: map.name,
-      layerSaveId: map.saveId,
+      id: 'custom',
+      layerId: map.id,
+      layerLabel: map.mapTitle,
+      layerSaveId: map.id,
       url: map.url,
       maxZoom: 19
     };
@@ -349,7 +358,7 @@ class CustomMapsMenu extends Component {
                   <View style={styles.itemSubContainer}>
                     <Text style={styles.itemSubTextStyle}>
                       <Text>
-                        ({item.mapId})
+                        ({item.mapType})
                       </Text>
                       <Text onPress={() => this.viewCustomMap(item)} style={styles.buttonPadding}>
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;View
@@ -440,7 +449,7 @@ class CustomMapsMenu extends Component {
           </View>
         }
 
-        { this.state.mapTitle != '' && this.state.mapId != '' && ( this.state.chosenForm != 'Mapbox Style' || this.state.accessToken != '' ) &&
+        { this.state.showSubmitButton && this.state.mapTitle != '' && this.state.mapId != '' && ( this.state.chosenForm != 'Mapbox Style' || this.state.accessToken != '' ) &&
           <View>
             <Text style={styles.submitButton} onPress={this.checkMap}>
               Submit

@@ -135,6 +135,10 @@ export const OSMBasemap = React.forwardRef((props, ref) => (
   <Basemap {...props} forwardedRef={ref}/>
 ));
 
+export const CustomBasemap = React.forwardRef((props, ref) => (
+  <Basemap {...props} forwardedRef={ref}/>
+));
+
 const mapStyles = MapboxGL.StyleSheet.create({
   point: {
     iconImage: pointSymbol,

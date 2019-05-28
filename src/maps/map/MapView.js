@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {Alert, AsyncStorage, StyleSheet} from 'react-native';
 import MapboxGL from '@mapbox/react-native-mapbox-gl';
 import {MAPBOX_KEY} from '../../MapboxConfig'
-import {MapboxOutdoorsBasemap, MapboxSatelliteBasemap, OSMBasemap, MacrostratBasemap} from "./Basemaps";
+import {CustomBasemap, MapboxOutdoorsBasemap, MapboxSatelliteBasemap, OSMBasemap, MacrostratBasemap} from "./Basemaps";
 import * as turf from '@turf/turf'
 import {LATITUDE, LONGITUDE, LATITUDE_DELTA, LONGITUDE_DELTA, MapModes} from './Map.constants';
 import {connect} from 'react-redux';
@@ -642,6 +642,7 @@ class mapView extends Component {
         {this.props.currentBasemap.id === 'mapboxOutdoors' ? <MapboxOutdoorsBasemap {...mapProps}/> : null}
         {this.props.currentBasemap.id === 'osm' ? <OSMBasemap {...mapProps}/> : null}
         {this.props.currentBasemap.id === 'macrostrat' ? <MacrostratBasemap {...mapProps}/> : null}
+        {this.props.currentBasemap.id === 'custom' ? <CustomBasemap {...mapProps}/> : null}
       </React.Fragment>
     );
   }
