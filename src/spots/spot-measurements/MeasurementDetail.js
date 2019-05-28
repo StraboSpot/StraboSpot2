@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {ScrollView, Text, View} from 'react-native';
+import React, {useState, useRef} from 'react';
+import {Alert, ScrollView, Text, View} from 'react-native';
 import {connect} from 'react-redux';
 import {SpotPages} from "../../components/notebook-panel/Notebook.constants";
 import {Button, ButtonGroup, Divider, Input} from "react-native-elements";
@@ -9,6 +9,7 @@ import * as themes from '../../themes/ColorThemes';
 import spotPageStyles from "../spot-page/SpotPageStyles";
 import {Formik} from 'formik';
 import FormView from "../../components/form/FormView";
+import {isEmpty} from "../../shared/Helpers";
 
 const MeasurementDetailPage = (props) => {
 
@@ -19,6 +20,7 @@ const MeasurementDetailPage = (props) => {
   };
 
   const [selectedFeatureTypeIndex, setFeatureTypeIndex] = useState(0);
+  const form = useRef(null);
 
   const updateFeatureTypeIndex = (i) => {
     console.log(i);
@@ -26,8 +28,11 @@ const MeasurementDetailPage = (props) => {
   };
 
   const onSubmitForm = ({firstName, lastName}) => {
-    console.log(`firstName: ${firstName}`);
-    console.log(`lastName: ${lastName}`);
+    if (!isEmpty(form.current.state.errors)) Alert.alert('Errors in Form', JSON.stringify(form.current.state.errors));
+    else {
+      console.log(`firstName: ${firstName}`);
+      console.log(`lastName: ${lastName}`);
+    }
   };
 
   // Render the switches to select a feature type
@@ -103,7 +108,7 @@ const MeasurementDetailPage = (props) => {
     return (
       <View>
         <Formik
-          ref={node => (this.form = node)}
+          ref={form}
           onSubmit={onSubmitForm}
           validate={validateForm}
           component={FormView}
@@ -133,6 +138,7 @@ const MeasurementDetailPage = (props) => {
   };
 
   const saveFormAndGo = (pageToGoTo) => {
+    form.current.executeSubmit();
     props.setPageVisible(pageToGoTo);
   };
 
