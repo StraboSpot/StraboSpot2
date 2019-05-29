@@ -1,11 +1,13 @@
 import {StyleSheet} from 'react-native';
+import * as themes from '../../../themes/ColorThemes';
 
 const notebookFooterStyles = StyleSheet.create({
   footerContainer: {
-    height: 70,
+    flex:5,
+    // height: 70,
     borderTopWidth: 1,
     padding: 10,
-    backgroundColor: 'lightgrey',
+    backgroundColor: themes.LIGHTGREY,
     borderBottomLeftRadius: 30
 
   },

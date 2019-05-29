@@ -1,12 +1,12 @@
 import React, {useState, Component} from 'react';
-import {Button, Text, ScrollView, StyleSheet, View} from 'react-native';
+import {Text, ScrollView, TouchableOpacity, View} from 'react-native';
 import spotStyles from "./SpotStyles";
 import SpotTag from './spot-tags/SpotTagsOverview';
 import SpotNotesOverview from './spot-notes/SpotNotesOverview';
 import NotebookMeasurments from './spot-measurements/SpotMeasurementsOverview';
 import PhotosAndSketches from './spot-photo-and-sketches/SpotPhotosAndSketchesOverview';
-import Accordion from 'react-native-collapsible/Accordion';
 import Collapsible from 'react-native-collapsible';
+import {Icon} from 'react-native-elements'
 
 const SECTIONS = [
   {
@@ -28,139 +28,104 @@ const SECTIONS = [
 ];
 
 const SpotOverview = props => {
+  const expandedIcon = <Icon
+    name='ios-add'
+    type='ionicon'
+    color='#b2b2b7'
+    containerStyle={{paddingRight: 10}}/>;
 
-  const [activeSections, setActiveSections] = useState([]);
+  const collapseIcon = <Icon
+    name='ios-remove'
+    type='ionicon'
+    color='#b2b2b7'
+    containerStyle={{paddingRight: 10}}/>;
 
-  const _renderHeader = section => {
-    return (
-      <View style={styles.header}>
-        <Text style={styles.headerText}>{section.title}</Text>
-      </View>
-    );
+  // const [collapsedTag, setCollapsedTag] = useState(false);
+  // const [collapsedNotes, setCollapsedNotes] = useState(false);
+  // const [collapsedMeasurements, setCollapsedMeasurements] = useState(false);
+  // const [collapsedPhotos, setCollapsedPhotos] = useState(false);
+  // const [isExpanded, setIsExpanded] = useState(minimizedIcon);
+  const [collapsedSections, setCollapsedSections] = useState([]);
+
+  // useEffect(() => console.log('Collapsed', collapsedSections))
+
+  const toggleCollapsed = (name) => {
+    if (collapsedSections.includes(name)) {
+      setCollapsedSections(collapsedSections.filter((val) => val !== name))
+    }
+    else setCollapsedSections(collapsedSections.concat(name));
+    // switch (name) {
+    //   case ('tags'):
+    //     setCollapsedTag(!collapsedTag);
+    //     setIsExpanded(!isExpanded);
+    //     break;
+    //   case ('notes'):
+    //     setCollapsedNotes(!collapsedNotes);
+    //     setIsExpanded(!isExpanded);
+    //     break;
+    //   case ('measurements'):
+    //     setCollapsedMeasurements(!collapsedMeasurements);
+    //     setIsExpanded(!isExpanded);
+    //     break;
+    //   case ('photos'):
+    //     setCollapsedPhotos(!collapsedPhotos);
+    //     setIsExpanded(!isExpanded);
+    //     break;
+    // }
   };
 
-  const _renderContent = section => {
-    return (
-      <View style={{flex:1}}>
-      <ScrollView style={styles.content}>
-        {section.content}
-      </ScrollView>
-      </View>
-    );
+  const isSectionCollapsed = (name) => {
+    return collapsedSections.includes(name)
   };
 
-  const _updateSections = activeSections => {
-    setActiveSections(activeSections)
-  };
-
-
-    return (
-      <View style={styles.container}>
-        <Text style={spotStyles.textStyle}>OVERVIEW</Text>
-        <Text>Tap on the section title to expand</Text>
-        <View style={{flex:2}}>
-        <Accordion
-          containerStyle={{height: 100}}
-          sections={SECTIONS}
-          activeSections={activeSections}
-          expandMultiple={true}
-          renderHeader={_renderHeader}
-          renderContent={_renderContent}
-          onChange={_updateSections}
-        />
+  return (
+    <ScrollView style={spotStyles.container}>
+      <TouchableOpacity onPress={() => toggleCollapsed('tags')}>
+        <View style={spotStyles.header}>
+          {collapsedSections.includes('tags') ?  collapseIcon : expandedIcon}
+          <Text style={spotStyles.headerText}>{SECTIONS[0].title}</Text>
         </View>
-        {/*<View style={{flex:2}}>*/}
-        {/*  <PhotosAndSketches/>*/}
-        {/*</View>*/}
-      </View>
-    );
-  }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'lightgrey',
-  },
-
-  header: {
-    backgroundColor: 'lightgrey',
-    padding: 10,
-    borderTopWidth: 1,
-  },
-  headerText: {
-    textAlign: 'left',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  content: {
-    padding: 0,
-    backgroundColor: 'lightgrey',
-  },
-  active: {
-    backgroundColor: 'rgba(255,255,255,1)',
-  },
-  inactive: {
-    backgroundColor: 'green',
-  },
-  selectors: {
-    marginBottom: 10,
-    flexDirection: 'row',
-    justifyContent: 'center',
-  },
-  selector: {
-    backgroundColor: '#F5FCFF',
-    padding: 10,
-  },
-  activeSelector: {
-    fontWeight: 'bold',
-  },
-  selectTitle: {
-    fontSize: 14,
-    fontWeight: '500',
-    padding: 10,
-  },
-  multipleToggle: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginVertical: 30,
-    alignItems: 'center',
-  },
-  multipleToggle__title: {
-    fontSize: 16,
-    marginRight: 8,
-  },
-});
-// const SpotOverview = props => {
-
-// return (
-//   <View>
-//     <View style={spotStyles.sectionStyle}>
-//       <SpotTag
-//         tag={'Tags'}
-//         style={spotStyles.textStyle}
-//       >
-//       </SpotTag>
-//     </View>
-//     <View style={[spotStyles.sectionStyle, {borderTopWidth: 1}]}>
-//       <SpotNotesOverview
-//         notes={'Notes'}
-//         style={spotStyles.textStyle}
-//       />
-//     </View>
-//     <View style={[spotStyles.sectionStyle, {borderTopWidth: 1}]}>
-//       <NotebookMeasurments
-//         measurements={'Measurements'}
-//         style={spotStyles.textStyle}
-//       />
-//     </View>
-//     <View style={[spotStyles.sectionStyle, {borderTopWidth: 1}]}>
-//       <PhotosAndSketches
-//         photosAndSketches={'Photos and Sketches'}
-//         style={spotStyles.textStyle}
-//       />
-//     </View>
-//   </View>
-// )
-// };
+      </TouchableOpacity>
+      <Collapsible collapsed={isSectionCollapsed('tags')} align="center">
+        <View style={spotStyles.content}>
+          {SECTIONS[0].content}
+        </View>
+      </Collapsible>
+      <TouchableOpacity onPress={() => toggleCollapsed('notes')}>
+        <View style={spotStyles.header}>
+          {collapsedSections.includes('notes') ?  collapseIcon : expandedIcon}
+          <Text style={spotStyles.headerText}>{SECTIONS[1].title}</Text>
+        </View>
+      </TouchableOpacity>
+      <Collapsible collapsed={isSectionCollapsed('notes')} align="center">
+        <View style={spotStyles.content}>
+          {SECTIONS[1].content}
+        </View>
+      </Collapsible>
+      <TouchableOpacity onPress={() => toggleCollapsed('measurements')}>
+        <View style={spotStyles.header}>
+          {collapsedSections.includes('measurements') ?  collapseIcon : expandedIcon}
+          <Text style={spotStyles.headerText}>{SECTIONS[2].title}</Text>
+        </View>
+      </TouchableOpacity>
+      <Collapsible collapsed={isSectionCollapsed('measurements')} align="center">
+        <View style={spotStyles.content}>
+          {SECTIONS[2].content}
+        </View>
+      </Collapsible>
+      <TouchableOpacity onPress={() => toggleCollapsed('photos')}>
+        <View style={spotStyles.header}>
+          {collapsedSections.includes('photos') ?  collapseIcon : expandedIcon}
+          <Text style={spotStyles.headerText}>{SECTIONS[3].title}</Text>
+        </View>
+      </TouchableOpacity>
+      <Collapsible collapsed={isSectionCollapsed('photos')} align="center">
+        <View style={spotStyles.content}>
+          {SECTIONS[3].content}
+        </View>
+      </Collapsible>
+    </ScrollView>
+  );
+};
 
 export default SpotOverview;

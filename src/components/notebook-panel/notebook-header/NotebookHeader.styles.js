@@ -2,7 +2,7 @@ import {StyleSheet} from 'react-native';
 
 const notebookHeaderStyles = StyleSheet.create({
     headerContentContainer: {
-      flex: 1,
+      flex: 15,
       flexDirection: 'row',
     },
     headerButtons: {

@@ -24,7 +24,7 @@ import Modal from "react-native-modal";
 import SaveMapModal from '../../components/modals/map-actions/SaveMapsModal';
 import NotebookPanelMenu from '../../components/notebook-panel/NotebookPanelMenu';
 import {connect} from 'react-redux';
-import {ADD_PHOTOS, FEATURE_DELETE, SET_ISONLINE, SET_SPOT_PAGE_VISIBLE} from "../../store/Constants";
+import {ADD_PHOTOS, FEATURE_DELETE, SET_ISONLINE, SET_SPOT_PAGE_VISIBLE, EDIT_SPOT_PROPERTIES, EDIT_SPOT_IMAGES} from "../../store/Constants";
 import {SpotPages} from "../../components/notebook-panel/Notebook.constants";
 import {saveFile} from '../../services/images/ImageDownload';
 import {takePicture} from '../../shared/HelperFunctions/ImageHelperFunctions';
@@ -293,7 +293,7 @@ class Home extends React.Component {
         break;
       case 'camera':
         // console.log('Camera button was pressed');
-        this.launchCamera();
+        this.launchCameraFromNotebook();
         break;
     }
   };
@@ -318,7 +318,7 @@ class Home extends React.Component {
     }
   };
 
-  launchCamera = async () => {
+  launchCameraFromNotebook = async () => {
     const savedPhoto = await takePicture();
     // console.log('savedPhoto res', savedPhoto);
 
@@ -326,6 +326,7 @@ class Home extends React.Component {
       if (this.state.allPhotosSaved.length > 0) {
         console.log('ALL PHOTOS SAVED', this.state.allPhotosSaved);
         this.props.addPhoto(this.state.allPhotosSaved);
+        this.props.onSpotEditImageObj(this.state.allPhotosSaved);
         this.state.allPhotosSaved = [];
         Alert.alert('Photo Saved!', 'Thank you!')
       }
@@ -338,11 +339,11 @@ class Home extends React.Component {
       this.setState(prevState => {
         return {
           ...prevState,
-          allPhotosSaved: [...this.state.allPhotosSaved, savedPhoto]
+          allPhotosSaved: [...this.state.allPhotosSaved, {id: savedPhoto.id, name: savedPhoto.id, src: savedPhoto.src}]
         }
       }, () => {
         console.log('All Photos Saved:', this.state.allPhotosSaved);
-        this.launchCamera();
+        this.launchCameraFromNotebook();
       });
     }
   };
@@ -817,7 +818,9 @@ const mapDispatchToProps = {
   setIsOnline: (online) => ({type: SET_ISONLINE, online: online}),
   setPageVisible: (page) => ({type: SET_SPOT_PAGE_VISIBLE, page: page}),
   addPhoto: (image) => ({type: ADD_PHOTOS, image: image}),
-  deleteFeature: (id) => ({type: FEATURE_DELETE, id: id})
+  deleteFeature: (id) => ({type: FEATURE_DELETE, id: id}),
+  onSpotEdit: (field, value) => ({type: EDIT_SPOT_PROPERTIES, field: field, value: value}),
+  onSpotEditImageObj: (image) => ({type: EDIT_SPOT_IMAGES, image: image})
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);
