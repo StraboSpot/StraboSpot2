@@ -43,7 +43,7 @@ const PhotosAndSketches = props => {
   );
 
   return (
-    <View style={{height: 400}}>
+    <View >
       <View>
         <Text style={props.style}>{props.photosAndSketches}</Text>
       </View>

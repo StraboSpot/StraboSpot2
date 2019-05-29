@@ -1,21 +1,41 @@
 import {StyleSheet} from 'react-native';
+import * as themes from '../themes/ColorThemes';
 
 const spotStyles = StyleSheet.create({
-
+  container: {
+    flex: 1,
+    backgroundColor: themes.LIGHTGREY,
+  },
+  content: {
+    padding: 0,
+    backgroundColor: themes.LIGHTGREY,
+  },
+  header: {
+    backgroundColor: themes.LIGHTGREY,
+    padding: 10,
+    flexDirection: 'row'
+  },
+  headerText: {
+    textAlign: 'left',
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#b2b2b7'
+  },
   iconButton: {
     height: 25,
     width: 25,
   },
+  listContainer: {
+    backgroundColor: themes.LIGHTGREY
+  },
   listStyle: {
-    backgroundColor: 'transparent',
-    margin: 0,
-    padding: 5,
-    alignItems: 'flex-start',
+    backgroundColor: 'white',
+    marginTop: 5,
+    marginBottom: 5,
   },
   listContent: {
-    backgroundColor: 'white',
+    flex: 2,
     flexDirection: 'row',
-    alignContent: 'flex-start',
   },
   sectionStyle: {
     flexDirection: 'row',
