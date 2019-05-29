@@ -100,6 +100,19 @@ class ManageOfflineMapsMenu extends Component {
 
     console.log("tileJSON: ", tileJSON);
 
+    //change id to force layer reload
+    tempCurrentBasemap =
+    {
+      id: 'null',
+      layerId: map.saveId,
+      layerLabel: map.name,
+      layerSaveId: map.saveId,
+      url: tileJSON,
+      maxZoom: 19
+    };
+    await this.props.onCurrentBasemap(tempCurrentBasemap);
+
+
     tempCurrentBasemap =
     {
       id: map.appId,
