@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
   //   paddingHorizontal: 10
   // },
   viewContainer: {
-    flex: 1,
+    flex: 75,
   },
 });
 
