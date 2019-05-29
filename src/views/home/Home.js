@@ -528,7 +528,7 @@ class Home extends React.Component {
         this.setState(prevState => {
           return {
             ...prevState,
-            isCompassVisible: isCompassVisible ? isCompassVisible : !prevState.isCompassVisible
+            isCompassVisible: isCompassVisible !== undefined ? isCompassVisible : !prevState.isCompassVisible
           }
         }, () => {
           console.log('Compass state', this.state.isCompassVisible)
@@ -542,7 +542,7 @@ class Home extends React.Component {
     const isOnline = this.props.isOnline;
 
     let content = null;
-    let compassModal =  <View style={styles.modalContainer}>
+    let compassModal =  <View style={styles.compassModalContainer}>
       <CompassModal
         // showCompass={() => this.toggleCompass}
         close={() => this.toggleCompass()}
