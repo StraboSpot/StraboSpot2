@@ -2,12 +2,12 @@ import React, {useState} from 'react';
 import {FlatList, ScrollView, Text, View, TouchableOpacity} from 'react-native';
 import Modal from 'react-native-modal'
 import {connect} from 'react-redux';
-import CompassModal from '../../components/modals/compass-modal/CompassModal';
+import CompassModal from '../../modals/compass-modal/CompassModal';
 import {Button, Divider} from "react-native-elements";
-import {SpotPages} from "../../components/notebook-panel/Notebook.constants";
-import {SET_SPOT_PAGE_VISIBLE} from "../../store/Constants";
+import {SpotPages} from "../Notebook.constants";
+import {SET_SPOT_PAGE_VISIBLE} from "../../../store/Constants";
 import styles from './MeasurementsStyles';
-import spotPageStyles from '../spot-page/SpotPageStyles';
+import spotPageStyles from '../SpotPageStyles';
 
 const MeasurementPage = (props) => {
   const [isModalVisible, setIsModalVisible] = useState(true);

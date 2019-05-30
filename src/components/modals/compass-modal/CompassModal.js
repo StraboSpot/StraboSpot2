@@ -3,7 +3,7 @@ import {Text, View} from 'react-native';
 import {Button} from 'react-native-elements';
 import Aux from '../../../shared/AuxWrapper';
 import Modal from "react-native-modal";
-import styles from "../../../spots/spot-measurements/MeasurementsStyles";
+import styles from "../../notebook-panel/notebook-measurements/MeasurementsStyles";
 import Compass from '../../../components/compass/Compass';
 
 

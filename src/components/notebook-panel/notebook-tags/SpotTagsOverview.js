@@ -1,23 +1,41 @@
 import React, {Component} from 'react';
 import {ScrollView, Text, View} from 'react-native';
-import { ListItem } from 'react-native-elements'
+import { ListItem, Icon } from 'react-native-elements'
 import spotStyles from '../SpotStyles';
+
+const icon = <Icon
+  name='information-circle-outline'
+  type='ionicon'
+  color='blue'
+/>
 
 const SpotTag = props => (
 
-    <View style={{width: '100%', height: 150}}>
+    <View style={{width: '100%', height: 300}}>
       <View>
         <Text style={props.style}>{props.tag}</Text>
       </View>
-      <ScrollView>
+      <ScrollView style={spotStyles.listContainer}>
         {
           data.map((l, i) => (
             <ListItem
               key={l.id}
               title={l.name}
-              onPress={() => console.log('Tag item pressed', l.id, l.name)}
               containerStyle={spotStyles.listStyle}
-              contentContainerStyle={spotStyles.listContent}
+              rightIcon={ <View style={{flexDirection: 'row'}}>
+                <Icon
+                  name='ios-information-circle-outline'
+                  type='ionicon'
+                  color='blue'
+                  iconStyle={{paddingRight: 5}}
+                  onPress={() => console.log('Tag item pressed', l.id, l.name)}
+              />
+                <Icon
+                  name='ios-arrow-forward'
+                  type='ionicon'
+                  color='lightgrey'
+                />
+              </View>}
             />
           ))
         }
