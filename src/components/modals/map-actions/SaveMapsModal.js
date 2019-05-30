@@ -12,11 +12,11 @@ import {connect} from 'react-redux';
 
 import {
   CURRENT_BASEMAP,
+  CUSTOM_MAPS,
   OFFLINE_MAPS
 } from '../../../store/Constants';
 
 var RNFS = require('react-native-fs');
-
 
 class SaveMapModal extends Component {
   _isMounted = false;
@@ -32,7 +32,6 @@ class SaveMapModal extends Component {
     this.tileZipsDirectory = this.devicePath + this.tilesDirectory + '/TileZips';
     this.tileCacheDirectory = this.devicePath + this.tilesDirectory + '/TileCache';
     this.tileTempDirectory = this.devicePath + this.tilesDirectory + '/TileTemp';
-    this.mapID = '2a542a65-ab88-fc7d-c35e-961cd23339d4';
     this.zipError = '';
     this.tryCount = 0;
 
@@ -82,7 +81,7 @@ class SaveMapModal extends Component {
     this.setState({showMainMenu: false});
     this.setState({showLoadingMenu: true});
     this.setState({showLoadingBar: true});
-    this.getMapTiles(this.extentString, this.saveLayerId, this.state.downloadZoom).then(() => {
+    this.getMapTiles(this.extentString, this.state.downloadZoom).then(() => {
       this.setState({showMainMenu: false});
       this.setState({showLoadingMenu: false});
       this.setState({showLoadingBar: false});
@@ -113,9 +112,53 @@ class SaveMapModal extends Component {
   }
 
   // Start getting the tiles to download by creating a zip url
-  getMapTiles = async (extentString, layerID, zoomLevel) => {
+  getMapTiles = async (extentString, zoomLevel) => {
     this.setState({progressMessage: 'Starting Download...'});
-    let startZipURL = this.tilehost + '/asynczip?mapid=' + this.mapID + '&layer=' + layerID + '&extent=' + extentString + '&zoom=' + zoomLevel;
+
+    layerID = this.currentBasemap.id;
+
+    //let startZipURL = this.tilehost + '/asynczip?mapid=' + this.mapID + '&layer=' + layerID + '&extent=' + extentString + '&zoom=' + zoomLevel;
+
+    startZipURL = "unset";
+
+    if(layerID == "custom"){
+      //configure advanced URL for custom map types here.
+      //first, figure out what kind of map we are downloading...
+
+      downloadMap = "{}";
+
+      for(let i = 0; i < this.props.customMaps.length; i++){
+        if(this.props.customMaps[i].id == this.props.currentBasemap.layerId){
+          downloadMap = this.props.customMaps[i];
+        }
+      }
+
+      console.log('DownloadMap: ', downloadMap);
+
+      if(downloadMap.mapType=="Mapbox Style"){
+        layer = "mapboxstyles";
+        parts = downloadMap.mapId.split("/");
+        username = parts[0];
+        id = parts[1];
+        accessToken = downloadMap.accessToken;
+        startZipURL = this.tilehost + '/asynczip?layer=' + layer + '&extent=' + extentString + '&zoom=' + zoomLevel + '&username=' + username + '&id=' + id + '&access_token=' + accessToken;
+      }else if(downloadMap.mapType=="Map Warper"){
+        layer = "mapwarper";
+        id = downloadMap.mapId;
+        startZipURL = this.tilehost + '/asynczip?layer=' + layer + '&extent=' + extentString + '&zoom=' + zoomLevel + '&id=' + id;
+      }else if(downloadMap.mapType=="StraboSpot MyMaps"){
+        layer = "strabomymaps";
+        id = downloadMap.mapId;
+        startZipURL = this.tilehost + '/asynczip?layer=' + layer + '&extent=' + extentString + '&zoom=' + zoomLevel + '&id=' + id;
+      }
+
+    }else{
+      layer = this.props.currentBasemap.layerSaveId;
+      startZipURL = this.tilehost + '/asynczip?layer=' + layer + '&extent=' + extentString + '&zoom=' + zoomLevel;
+    }
+
+    console.log("startZipURL: ", startZipURL);
+
     await this.saveZipMap(startZipURL);
     return Promise.resolve();
   };
@@ -276,6 +319,10 @@ class SaveMapModal extends Component {
   };
 
   render() { //return whole modal here
+
+    console.log("PROPS: ", this.props);
+    console.log("Tile Dir: ", this.tileCacheDirectory);
+
     return (
 
       <View style={styles.modalContainer}>
@@ -386,6 +433,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => {
   return {
     currentBasemap: state.map.currentBasemap,
+    customMaps: state.home.customMaps,
     offlineMaps: state.home.offlineMaps
   }
 };
