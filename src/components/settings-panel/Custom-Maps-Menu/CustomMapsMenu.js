@@ -373,10 +373,10 @@ class CustomMapsMenu extends Component {
                         ({item.mapType})
                       </Text>
                       <Text onPress={() => this.viewCustomMap(item)} style={styles.buttonPadding}>
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;View
+                        &nbsp;&nbsp;&nbsp;View
                       </Text>
                       <Text onPress={() => this.confirmDeleteMap(item)} style={styles.buttonPadding}>
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Delete
+                        &nbsp;&nbsp;&nbsp;Delete
                       </Text>
                     </Text>
                   </View>

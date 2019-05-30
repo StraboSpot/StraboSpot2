@@ -40,15 +40,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingTop: 3,
     paddingBottom: 7,
-    paddingLeft: 20
+    paddingLeft: 10
   },
   itemTextStyle: {
     fontSize: 18,
-    marginLeft: 15,
+    marginLeft: 10,
   },
   itemSubTextStyle: {
     fontSize: 14,
-    marginLeft: 15,
+    marginLeft: 10,
   },
   buttonPadding: {
     paddingLeft: 10
