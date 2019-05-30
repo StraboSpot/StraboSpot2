@@ -3,7 +3,7 @@ import {ActivityIndicator, Button, FlatList, ScrollView, Text, View} from 'react
 import {connect} from 'react-redux';
 import {Image} from 'react-native-elements';
 import styles from './SpotPhotosAndSketchesOverviewStyles';
-import IconButton from '../../ui/IconButton';
+import IconButton from '../../../ui/IconButton';
 
 const PhotosAndSketches = props => {
   const [photosArr, setPhotosArr] = useState(null);

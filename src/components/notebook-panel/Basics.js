@@ -13,13 +13,13 @@ import {
   EDIT_SPOT_PROPERTIES,
   SET_SPOT_PAGE_VISIBLE
 } from '../../store/Constants';
-import {SpotPages} from "../../components/notebook-panel/Notebook.constants";
+import {SpotPages} from "./Notebook.constants";
 import {Button, Divider, Input} from 'react-native-elements';
 import {connect} from 'react-redux';
 
 const width = Dimensions.get('window').width;
 
-class SpotBasics extends React.Component {
+class Basics extends React.Component {
   _isMounted = false;
 
   constructor(props) {
@@ -34,9 +34,9 @@ class SpotBasics extends React.Component {
 
   componentDidMount() {
     this._isMounted = true;
-    console.log('SpotBasics Mounted', Platform);
+    console.log('Basics Mounted', Platform);
 
-    // console.log('SpotBasics Mounted', this.props.featureCollectionSelected)
+    // console.log('Basics Mounted', this.props.featureCollectionSelected)
     // const spotData = await this.props.featureCollectionSelected.features.map(spot => {
     //   return {
     //     name: spot.properties.name,
@@ -48,11 +48,11 @@ class SpotBasics extends React.Component {
 
   componentWillUnmount() {
     this._isMounted = false;
-    console.log('SpotBasics Unmounted');
+    console.log('Basics Unmounted');
   }
 
   changeCoords = (field, value) => {
-    console.log(field, value)
+    console.log(field, value);
     if (field === 'lat') {
       this.setState(prevState => {
         return {
@@ -198,4 +198,4 @@ const mapDispatchToProps = {
   setPageVisible: (page) => ({type: SET_SPOT_PAGE_VISIBLE, page: page })
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(SpotBasics);
+export default connect(mapStateToProps, mapDispatchToProps)(Basics);

@@ -1,12 +1,12 @@
 import React, {useState, Component} from 'react';
 import {Text, ScrollView, TouchableOpacity, View} from 'react-native';
 import spotStyles from "./SpotStyles";
-import SpotTag from './spot-tags/SpotTagsOverview';
-import SpotNotesOverview from './spot-notes/SpotNotesOverview';
-import NotebookMeasurments from './spot-measurements/SpotMeasurementsOverview';
-import PhotosAndSketches from './spot-photo-and-sketches/SpotPhotosAndSketchesOverview';
+import SpotTag from './notebook-tags/SpotTagsOverview';
+import SpotNotesOverview from './SpotNotesOverview';
+import NotebookMeasurments from './notebook-measurements/SpotMeasurementsOverview';
+import PhotosAndSketches from './notebook-photo-and-sketches/SpotPhotosAndSketchesOverview';
 import Collapsible from 'react-native-collapsible';
-import {Icon} from 'react-native-elements'
+import {Icon} from 'react-native-elements';
 
 const SECTIONS = [
   {
@@ -27,7 +27,7 @@ const SECTIONS = [
   },
 ];
 
-const SpotOverview = props => {
+const Overview = props => {
   const expandedIcon = <Icon
     name='ios-add'
     type='ionicon'
@@ -128,4 +128,4 @@ const SpotOverview = props => {
   );
 };
 
-export default SpotOverview;
+export default Overview;

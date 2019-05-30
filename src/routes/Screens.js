@@ -15,7 +15,6 @@ import Home from "../views/home/Home";
 import Initialising from "../Initializing";
 import SignIn from "../views/SignIn";
 import SignUp from "../views/SignUp";
-import SpotPage from "../spots/spot-page/SpotBasics";
 import Images from "../views/images/Images";
 import Loading from '../ui/Loading'
 
@@ -43,7 +42,6 @@ export default function() {
   Navigation.registerComponent(INITALIZING, () => WrappedComponent(Initialising));
   Navigation.registerComponent(SIGN_IN, () => WrappedComponent(SignIn));
   Navigation.registerComponent(SIGN_UP, () => WrappedComponent(SignUp));
-  Navigation.registerComponent(SPOT_PAGE, () => WrappedComponent(SpotPage));
   Navigation.registerComponent(IMAGES, () => WrappedComponent(Images));
   console.log("All screens have been registered...")
 }

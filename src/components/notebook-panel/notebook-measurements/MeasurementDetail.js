@@ -1,15 +1,15 @@
 import React, {useState, useRef} from 'react';
 import {Alert, ScrollView, Text, View} from 'react-native';
 import {connect} from 'react-redux';
-import {SpotPages} from "../../components/notebook-panel/Notebook.constants";
+import {SpotPages} from "../Notebook.constants";
 import {Button, ButtonGroup, Divider, Input} from "react-native-elements";
-import {SET_SPOT_PAGE_VISIBLE} from "../../store/Constants";
+import {SET_SPOT_PAGE_VISIBLE} from "../../../store/Constants";
 import styles from './MeasurementsStyles';
-import * as themes from '../../themes/ColorThemes';
-import spotPageStyles from "../spot-page/SpotPageStyles";
+import * as themes from '../../../themes/ColorThemes';
+import spotPageStyles from "../SpotPageStyles";
 import {Formik} from 'formik';
-import FormView from "../../components/form/FormView";
-import {isEmpty} from "../../shared/Helpers";
+import FormView from "../../form/FormView";
+import {isEmpty} from "../../../shared/Helpers";
 
 const MeasurementDetailPage = (props) => {
 

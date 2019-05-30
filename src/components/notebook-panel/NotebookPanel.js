@@ -6,11 +6,11 @@ import headerStyle from './notebook-header/NotebookHeader.styles';
 import footerStyle from './notebook-footer/NotebookFooter.styles';
 import NotebookHeader from './notebook-header/NotebookHeader';
 import NotebookFooter from './notebook-footer/NotebookFooter';
-import SpotOverview from '../../spots/SpotOverview';
+import Overview from './Overview';
 import ButtonNoBackground from '../../ui/ButtonNoBackround';
-import SpotBasics from '../../spots/spot-page/SpotBasics';
-import MeasurementPage from '../../spots/spot-measurements/Measurements';
-import MeasurementDetailPage from '../../spots/spot-measurements/MeasurementDetail';
+import Basics from './Basics';
+import MeasurementPage from './notebook-measurements/Measurements';
+import MeasurementDetailPage from './notebook-measurements/MeasurementDetail';
 import {SpotPages} from "./Notebook.constants";
 import {SET_SPOT_PAGE_VISIBLE} from "../../store/Constants";
 
@@ -33,11 +33,11 @@ const NotebookPanel = props => {
           />
         </View>
         <View style={styles.viewContainer}>
-          {props.spotPageVisible === SpotPages.OVERVIEW ? <SpotOverview/> : null}
-          {props.spotPageVisible === SpotPages.BASIC ? <SpotBasics/> : null}
+          {props.spotPageVisible === SpotPages.OVERVIEW ? <Overview/> : null}
+          {props.spotPageVisible === SpotPages.BASIC ? <Basics/> : null}
           {props.spotPageVisible === SpotPages.MEASUREMENT ? <MeasurementPage showCompass={props.showCompass}/> : null}
           {props.spotPageVisible === SpotPages.MEASUREMENTDETAIL ? <MeasurementDetailPage/> : null}
-          {props.spotPageVisible === undefined ? <SpotOverview/> : null}
+          {props.spotPageVisible === undefined ? <Overview/> : null}
         </View>
         <View style={footerStyle.footerContainer}>
           <NotebookFooter

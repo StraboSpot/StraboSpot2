@@ -1,8 +1,7 @@
 import React, {Component} from 'react';
 import {ScrollView, Text, View} from 'react-native';
-import { ListItem } from 'react-native-elements'
+import { ListItem, Icon } from 'react-native-elements'
 import spotStyles from '../SpotStyles';
-import {Icon} from 'react-native-elements';
 
 const icon = <Icon
   name='information-circle-outline'
