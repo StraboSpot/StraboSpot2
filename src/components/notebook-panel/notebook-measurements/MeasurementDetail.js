@@ -4,12 +4,14 @@ import {connect} from 'react-redux';
 import {SpotPages} from "../Notebook.constants";
 import {Button, ButtonGroup, Divider, Input} from "react-native-elements";
 import {SET_SPOT_PAGE_VISIBLE} from "../../../store/Constants";
-import styles from './MeasurementsStyles';
-import * as themes from '../../../themes/ColorThemes';
-import spotPageStyles from "../SpotPageStyles";
 import {Formik} from 'formik';
 import FormView from "../../form/FormView";
 import {isEmpty} from "../../../shared/Helpers";
+
+// Styles
+import commonStyles from '../../../themes/common.styles';
+import styles from './MeasurementsStyles';
+import * as themes from '../../../themes/ColorThemes';
 
 const MeasurementDetailPage = (props) => {
 
@@ -53,8 +55,8 @@ const MeasurementDetailPage = (props) => {
   const renderNotesField = () => {
     return (
       <View>
-        <Divider style={spotPageStyles.divider}>
-          <Text style={spotPageStyles.spotDividerText}>Notes</Text>
+        <Divider style={commonStyles.sectionDivider}>
+          <Text style={commonStyles.sectionDividerText}>Notes</Text>
         </Divider>
         <Input
           placeholder='Enter your notes here'
@@ -71,8 +73,8 @@ const MeasurementDetailPage = (props) => {
   const renderFormFields = () => {
     return (
       <View>
-        <Divider style={spotPageStyles.divider}>
-          <Text style={spotPageStyles.spotDividerText}>Feature Type</Text>
+        <Divider style={commonStyles.sectionDivider}>
+          <Text style={commonStyles.sectionDividerText}>Feature Type</Text>
         </Divider>
         {selectedFeatureTypeIndex === 0 ? renderPlanarLinearFields() : null}
         {selectedFeatureTypeIndex === 1 ? render3DStructuresFields() : null}

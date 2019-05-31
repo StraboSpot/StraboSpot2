@@ -10,11 +10,6 @@ const spotStyles = StyleSheet.create({
     padding: 0,
     backgroundColor: themes.LIGHTGREY,
   },
-  header: {
-    backgroundColor: themes.LIGHTGREY,
-    padding: 10,
-    flexDirection: 'row'
-  },
   headerText: {
     textAlign: 'left',
     fontSize: 18,
@@ -24,9 +19,6 @@ const spotStyles = StyleSheet.create({
   iconButton: {
     height: 25,
     width: 25,
-  },
-  listContainer: {
-    backgroundColor: themes.LIGHTGREY
   },
   listStyle: {
     backgroundColor: 'white',

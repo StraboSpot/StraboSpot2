@@ -8,11 +8,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'flex-start'
   },
-  divider: {
-    height: 30,
-    justifyContent: 'center',
-    backgroundColor: themes.LIGHTGREY
-  },
   header: {
     fontSize: 100,
     color: 'green',
@@ -23,12 +18,6 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     height: '95%',
-  },
-  spotDividerText: {
-    fontSize: 16,
-    paddingLeft: 10,
-    textTransform: 'uppercase',
-    color: themes.DARKGREY
   },
   spotFieldTitles: {
     fontWeight: 'bold',

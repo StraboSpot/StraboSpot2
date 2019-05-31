@@ -1,24 +1,26 @@
 import React, {useState, Component} from 'react';
 import {Text, ScrollView, TouchableOpacity, View} from 'react-native';
-import spotStyles from "./SpotStyles";
-import SpotTag from './notebook-tags/SpotTagsOverview';
-import SpotNotesOverview from './SpotNotesOverview';
-import NotebookMeasurments from './notebook-measurements/SpotMeasurementsOverview';
+
+import TagsOverview from './notebook-tags/TagsOverview';
+import NotesOverview from './NotesOverview';
+import MeasurementsOverview from './notebook-measurements/MeasurementsOverview';
 import PhotosAndSketches from './notebook-photo-and-sketches/SpotPhotosAndSketchesOverview';
 import Collapsible from 'react-native-collapsible';
 import {Icon} from 'react-native-elements';
-import spotPageStyles from './SpotPageStyles';
+
+// Styles
+import notebookStyles from "./NotebookPanel.styles";
 
 const SECTIONS = [
   {
     title: 'Tags',
-    content: <SpotTag/>
+    content: <TagsOverview/>
   }, {
     title: 'Notes',
-    content: <SpotNotesOverview/>
+    content: <NotesOverview/>
   }, {
     title: 'Measurements',
-    content: <NotebookMeasurments/>
+    content: <MeasurementsOverview/>
   }, {
     title: 'Photos and Sketches',
     content: <PhotosAndSketches/>
@@ -45,18 +47,18 @@ const Overview = props => {
   };
 
   return (
-    <ScrollView style={spotStyles.container}>
+    <ScrollView>
       {SECTIONS.map((section, index) => {
         return (
-          <View>
+          <View key={section.title}>
             <TouchableOpacity onPress={() => toggleCollapsed(section.title)}>
-              <View style={spotStyles.header}>
+              <View style={notebookStyles.collapsibleSectionHeaderContainer}>
                 {collapsedSections.includes(section.title) ? expandedIcon : collapseIcon}
-                <Text style={spotPageStyles.spotDividerText}>{section.title}</Text>
+                <Text style={notebookStyles.collapsibleSectionHeaderText}>{section.title}</Text>
               </View>
             </TouchableOpacity>
             <Collapsible collapsed={collapsedSections.includes(section.title)} align="center">
-              <View style={spotStyles.content}>
+              <View>
                 {section.content}
               </View>
             </Collapsible>

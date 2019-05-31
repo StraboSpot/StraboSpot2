@@ -1,11 +1,19 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Text, View} from 'react-native';
-import {Image} from 'react-native-elements/src/index';
-import headerStyles from './/NotebookHeader.styles';
-import IconButton from '../../../ui/IconButton';
+import {Image} from 'react-native-elements';
 import {connect} from 'react-redux';
+import {TextInput} from 'react-native';
+
+import IconButton from '../../../ui/IconButton';
+
+// Styles
+import headerStyles from './NotebookHeader.styles';
+import {EDIT_SPOT_PROPERTIES} from "../../../store/Constants";
 
 const NotebookHeader = props => {
+
+  const [spotName, setSpotName] = useState(props.spot.properties.name);
+
   // Creates DMS string for coordinates
   const getSpotCoordText = () => {
     if (props.spot.geometry.type === 'Point') {
@@ -23,6 +31,11 @@ const NotebookHeader = props => {
     return props.spot.geometry.type;
   };
 
+  const onChangeText = (text) => {
+    setSpotName(text);
+    props.onSpotEdit('name', text);
+  };
+
   return (
     <View style={headerStyles.headerContentContainer}>
       <View style={headerStyles.headerSymbolIcon}>
@@ -33,7 +46,7 @@ const NotebookHeader = props => {
       </View>
       <View style={headerStyles.headerSpotNameAndCoordsContainer}>
         <View style={headerStyles.headerSpotNameContainer}>
-          <Text style={headerStyles.headerSpotName}>{props.spot.properties.name}</Text>
+          <TextInput value={spotName} onChangeText={onChangeText} style={headerStyles.headerSpotName}/>
         </View>
         <View style={headerStyles.headerCoordsContainer}>
           <Text style={headerStyles.headerCoords}>{getSpotCoordText()}</Text>
@@ -43,7 +56,7 @@ const NotebookHeader = props => {
         <IconButton
           onPress={() => props.onPress('menu')}
           source={require('../../../assets/icons/app-icons-shaded/V2-56.png')}
-          style={{width: 20, height: 25}}
+          style={{width: 20, height: 20}}
         />
       </View>
     </View>
@@ -56,5 +69,9 @@ function mapStateToProps(state) {
   }
 }
 
-export default connect(mapStateToProps)(NotebookHeader);
+const mapDispatchToProps = {
+  onSpotEdit: (field, value) => ({type: EDIT_SPOT_PROPERTIES, field: field, value: value}),
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(NotebookHeader);
 

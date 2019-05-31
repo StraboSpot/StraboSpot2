@@ -8,11 +8,6 @@ const notebookHeaderStyles = StyleSheet.create({
     headerButtons: {
       paddingTop: 20
     },
-    headerContainer: {
-      borderBottomWidth: 1,
-      height: 100,
-      padding: 10,
-    },
     headerCoords: {
       color: 'blue',
       fontSize: 16
@@ -21,15 +16,15 @@ const notebookHeaderStyles = StyleSheet.create({
       resizeMode: 'contain',
     },
     headerCoordsContainer: {
-      height: 30
+      height: 30,
+      marginLeft: 5
     },
     headerSpotName: {
-      fontSize: 32,
+      fontSize: 35,
       fontWeight: 'bold'
     },
     headerSpotNameContainer: {
-      height: 50,
-      paddingTop: 10
+      height: 50
     },
     headerSymbolIcon: {
       padding: 5
