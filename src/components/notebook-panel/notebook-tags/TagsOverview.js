@@ -14,21 +14,14 @@ const SpotTag = props => (
           title={l.name}
           titleStyle={commonStyles.listItemTitle}
           containerStyle={commonStyles.listItem}
-          contentContainerStyle={{height: 10}}
-          rightIcon={<View style={{flexDirection: 'row'}}>
-            <Icon
-              name='ios-information-circle-outline'
-              type='ionicon'
-              color='blue'
-              iconStyle={{paddingRight: 5}}
-              onPress={() => console.log('Tag item pressed', l.id, l.name)}
-            />
-            <Icon
-              name='ios-arrow-forward'
-              type='ionicon'
-              color='lightgrey'
-            />
-          </View>}
+          chevron={true}
+          rightIcon={
+          <Icon
+            name='ios-information-circle-outline'
+            type='ionicon'
+            color='blue'
+            onPress={() => console.log('Tag item pressed', l.id, l.name)}
+          />}
         />
       ))}
     </ScrollView>

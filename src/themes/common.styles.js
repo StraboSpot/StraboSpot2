@@ -15,7 +15,6 @@ const commonStyles = StyleSheet.create({
     color: themes.DARKGREY
   },
   listItem: {
-    height: 40,
     borderBottomWidth: .5,
     borderColor: themes.MEDIUMGREY,
   },
