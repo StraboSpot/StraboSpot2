@@ -60,6 +60,10 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     paddingRight: 10
   },
+  slider: {
+    paddingRight: 10,
+    paddingLeft: 10
+  },
   measurementDetailSwitchesContainer: {
     backgroundColor: themes.WHITE,
     height: 50
@@ -79,8 +83,9 @@ const styles = StyleSheet.create({
   },
   modalBottom: {
     flex: 1,
-    // backgroundColor: themes.COMPASS_MODAL,
-    width: '100%',
+    backgroundColor: themes.COMPASS_MODAL,
+    // width: '100%',
+    padding: 20,
     borderBottomRightRadius: 20,
     borderBottomLeftRadius: 20
   },

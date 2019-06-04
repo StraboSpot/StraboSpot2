@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   },
-  modalContainer: {
+  compassModalContainer: {
     // flex: 1,
     // position: 'absolute',
     // bottom: 75,
@@ -103,10 +103,10 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 30,
     backgroundColor: themes.LIGHTGREY,
     position: 'absolute', //Here is the trick
-    left: 80,
+    left: 60,
     // bottom: 150,
     top: 250,
-    // zIndex: 1,
+    // zIndex: 100,
   },
 });
 

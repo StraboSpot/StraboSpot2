@@ -5,6 +5,7 @@ import Aux from '../../../shared/AuxWrapper';
 import Modal from "react-native-modal";
 import styles from "../../notebook-panel/notebook-measurements/MeasurementsStyles";
 import Compass from '../../../components/compass/Compass';
+import Slider from '../../../ui/Slider';
 
 
 const CompassModal = (props) => {
@@ -37,7 +38,9 @@ const CompassModal = (props) => {
       <View style={styles.compassContainer}>
         <Compass/>
       </View>
-      <View style={styles.modalBottom}/>
+      <View style={styles.modalBottom}>
+        <Slider style={styles.slider}/>
+      </View>
     </View>
   );
 };
