@@ -42,18 +42,18 @@ const MeasurementPage = (props) => {
   // Render a measurement block in a list
   const renderItem = ({item}) => {
     return (
-      <View>
-        {typeof (item) !== 'undefined' ?
-          <View>
-            {renderMeasurement({item})}
-            {'associated_orientation' in item && item.associated_orientation.length > 0 ?
-              <FlatList
-                data={item.associated_orientation}
-                renderItem={renderMeasurement}
-                keyExtractor={(aoItem, aoIndex) => aoIndex.toString()}
-              /> : null}
-            <View style={styles.horizontalLine}/>
-          </View> : null}
+      <View style={{backgroundColor: 'white', paddingTop: 20}}>
+        {typeof (item) !== 'undefined' &&
+        <View >
+          {renderMeasurement({item})}
+          {'associated_orientation' in item && item.associated_orientation.length > 0 &&
+          <FlatList
+            data={item.associated_orientation}
+            renderItem={renderMeasurement}
+            keyExtractor={(aoItem, aoIndex) => aoIndex.toString()}
+          /> }
+          {/*<View style={styles.horizontalLine}/>*/}
+        </View>}
       </View>
     );
   };

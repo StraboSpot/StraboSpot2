@@ -73,6 +73,11 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderColor: themes.BLUE
   },
+  measurementsOverviewContainer: {
+    flex: 1,
+    width: 500,
+    padding: 10
+  },
   modalTop: {
     zIndex: 100,
     width: '100%',
