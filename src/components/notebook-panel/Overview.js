@@ -2,7 +2,7 @@ import React, {useState, Component} from 'react';
 import {Text, ScrollView, TouchableOpacity, View} from 'react-native';
 
 import TagsOverview from './notebook-tags/TagsOverview';
-import NotesOverview from './NotesOverview';
+import NotesOverview from './notebook-notes/NotesOverview';
 import MeasurementsOverview from './notebook-measurements/MeasurementsOverview';
 import PhotosAndSketches from './notebook-photo-and-sketches/SpotPhotosAndSketchesOverview';
 import Collapsible from 'react-native-collapsible';
