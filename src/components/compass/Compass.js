@@ -339,7 +339,8 @@ class Compass extends Component {
       <TouchableOpacity style={styles.compassContainer} onPress={() => this.grabMeasurements()}>
         <Image source={require("../../assets/images/compass/compass.png")}
                style={{
-                 height: 175,
+                 marginTop: 25,
+                 height: 155,
                  justifyContent: 'center',
                  alignItems: 'center',
                  resizeMode: 'contain',
@@ -438,7 +439,7 @@ class Compass extends Component {
         source={image}
         style={
           [styles.trendLine,
-            {transform: [{rotate: spin}]}
+            {transform: [{rotate: this.state.compassData.trend + 'deg'}]}
           ]}/>
     );
   };
@@ -540,7 +541,7 @@ class Compass extends Component {
         </View>
         <View style={styles.toggleButtonsRowContainer}>
           {this.renderToggles()}
-           {this.renderMeasurements()}
+          {/*{this.renderMeasurements()}*/}
         </View>
       </View>
     )
