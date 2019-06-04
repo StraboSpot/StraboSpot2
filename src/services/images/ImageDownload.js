@@ -25,18 +25,18 @@ export const getImages = () => {
 };
 
 export const saveFile = async (imageURI) => {
-  let uriParts = imageURI.split('/');
+  let uriParts = imageURI.uri.split('/');
   let imageName = uriParts[uriParts.length - 1];
   try {
     let res = await RNFetchBlob
       .config({path: imagesDirectory + '/' + imageName})
-      .fetch('GET', imageURI, {});
+      .fetch('GET', imageURI.uri, {});
     imageCount++;
     console.log(imageCount, 'File saved to', res.path());
     let imageId = imageName.split(".")[0];
     let imageData = {};
-    if (Platform.OS === "ios") imageData = {id: imageId, src: res.path()};
-    else imageData ={id: imageId, src: 'file://' + res.path()};
+    if (Platform.OS === "ios") imageData = {id: imageId, src: res.path(), height: imageURI.height, width: imageURI.width};
+    else imageData ={id: imageId, src: 'file://' + res.path(), height: imageURI.height, width: imageURI.width};
     return imageData;
   } catch (err) {
     imageCount++;
