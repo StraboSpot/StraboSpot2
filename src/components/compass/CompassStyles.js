@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
     zIndex: 10,
     height: 120,
     position: 'absolute',
-    // top: 39.25,
+    top: 39.5,
     // justifyContent: 'center',
     // alignItems: 'center',
     resizeMode: 'contain',
@@ -67,14 +67,14 @@ const styles = StyleSheet.create({
     padding: 0
   },
   toggleButtonsRowContainer: {
-    flex: 35,
+    flex:25,
     flexDirection: 'column',
-    paddingTop: 15
+    paddingTop: 25
   },
   trendLine: {
     height: 100,
     position: 'absolute',
-    // top: 40,
+    top: 50,
     // justifyContent: 'center',
     // alignItems: 'center',
     resizeMode: 'contain',
