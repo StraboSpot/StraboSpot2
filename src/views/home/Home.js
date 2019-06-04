@@ -319,14 +319,15 @@ class Home extends React.Component {
   };
 
   launchCameraFromNotebook = async () => {
+    let imageArr = this.state.allPhotosSaved;
     const savedPhoto = await takePicture();
     // console.log('savedPhoto res', savedPhoto);
 
     if (savedPhoto === 'cancelled') {
       if (this.state.allPhotosSaved.length > 0) {
         console.log('ALL PHOTOS SAVED', this.state.allPhotosSaved);
-        this.props.addPhoto(this.state.allPhotosSaved);
-        this.props.onSpotEditImageObj(this.state.allPhotosSaved);
+        this.props.addPhoto(imageArr);
+        this.props.onSpotEditImageObj(imageArr);
         this.state.allPhotosSaved = [];
         Alert.alert('Photo Saved!', 'Thank you!')
       }
@@ -339,7 +340,7 @@ class Home extends React.Component {
       this.setState(prevState => {
         return {
           ...prevState,
-          allPhotosSaved: [...this.state.allPhotosSaved, {id: savedPhoto.id, name: savedPhoto.id, src: savedPhoto.src}]
+          allPhotosSaved: [...this.state.allPhotosSaved, {id: savedPhoto.id, src: savedPhoto.src, image_type: 'photo', height: savedPhoto.height, width: savedPhoto.width}]
         }
       }, () => {
         console.log('All Photos Saved:', this.state.allPhotosSaved);
@@ -817,7 +818,7 @@ function mapStateToProps(state) {
 const mapDispatchToProps = {
   setIsOnline: (online) => ({type: SET_ISONLINE, online: online}),
   setPageVisible: (page) => ({type: SET_SPOT_PAGE_VISIBLE, page: page}),
-  addPhoto: (image) => ({type: ADD_PHOTOS, image: image}),
+  addPhoto: (imageData) => ({type: ADD_PHOTOS, images: imageData}),
   deleteFeature: (id) => ({type: FEATURE_DELETE, id: id}),
   onSpotEdit: (field, value) => ({type: EDIT_SPOT_PROPERTIES, field: field, value: value}),
   onSpotEditImageObj: (image) => ({type: EDIT_SPOT_IMAGES, image: image})

@@ -30,7 +30,7 @@ const initialState = {
 };
 
 const initialImageState = {
-  imagePaths: []
+  imagePaths: {}
 };
 
 export const homeReducer = (state = initialState, action) => {
@@ -76,15 +76,32 @@ export const homeReducer = (state = initialState, action) => {
         };
       case EDIT_SPOT_PROPERTIES:
         console.log('EDITSPOT', action);
+        let updatedSpot = null;
+        // let notesArr = [];
         selectedFeatureID = state.selectedSpot.properties.id;
         // console.log('ID', selectedFeatureID);
-        const updatedSpot = {
+        // if (action.field === 'notes') {
+        //   notesArr.push(action.value);
+        //   updatedSpot = {
+        //     ...state.selectedSpot,
+        //     properties: {
+        //       ...state.selectedSpot.properties,
+        //       notes: {
+        //         ...state.selectedSpot.properties.notes,
+        //         [action.field]: notesArr
+        //       }
+        //     }
+        //   };
+        // }
+        // else {
+        updatedSpot = {
           ...state.selectedSpot,
           properties: {
             ...state.selectedSpot.properties,
             [action.field]: action.value
           }
         };
+        // }
         let filteredSpots = state.features.filter(el => el.properties.id !== selectedFeatureID);
         filteredSpots.push(updatedSpot);
         return {
@@ -92,33 +109,26 @@ export const homeReducer = (state = initialState, action) => {
           selectedSpot: updatedSpot,
           features: filteredSpots
         };
+      // break;
       case EDIT_SPOT_IMAGES:
-        console.log('EDITSPOT Image', action, 'ID', selectedFeatureID);
         let combinedImageArr = [];
         let updatedSpotImages = null;
         selectedFeatureID = state.selectedSpot.properties.id;
-        if (state.selectedSpot.properties.image) {
-          combinedImageArr = state.selectedSpot.properties.image.concat(action.image);
-          console.log('Combined', combinedImageArr);
-          updatedSpotImages = {
-            ...state.selectedSpot,
-            properties: {
-              ...state.selectedSpot.properties,
-              // ...state.selectedSpot.properties.image,
-              image: combinedImageArr
-            }
+        console.log('EDITSPOT Image', action.image, 'ID', selectedFeatureID);
+        let tempImages = [];
+        if (state.selectedSpot.properties.images) tempImages = state.selectedSpot.properties.images;
+
+        const updatedSpotObj = action.image.map(image => {
+          return {id: image.id, height: image.height, width: image.width, image_type: image.image_type}
+        });
+        tempImages = [...tempImages, ...updatedSpotObj];
+        updatedSpotImages = {
+          ...state.selectedSpot,
+          properties: {
+            ...state.selectedSpot.properties,
+            images: tempImages
           }
-        }
-        else {
-          updatedSpotImages = {
-            ...state.selectedSpot,
-            properties: {
-              ...state.selectedSpot.properties,
-              // ...state.selectedSpot.properties.image,
-              image: action.image
-            }
-          }
-        }
+        };
         let filteredSpots1 = state.features.filter(el => el.properties.id !== selectedFeatureID);
         filteredSpots1.push(updatedSpotImages);
         return {
@@ -201,18 +211,21 @@ export const mapReducer = (state = initialState, action) => {
 export const imageReducer = (state = initialImageState, action) => {
   switch (action.type) {
     case ADD_PHOTOS:
+      console.log('ADD_PHOTOS', action);
       let updatedImages = null;
-      let imagePathsTemp = [];
-      console.log(action.image);
-      action.image.map(data => {
+      let imagePathsTemp = {};
+      console.log(action.images);
+      action.images.map(data => {
+        imagePathsTemp[data.id] = data.src;
         // console.log('photo in reducer\n', 'ID:', data.id, '\nSRC:', data.src, '\nNAME:', data.name);
         // const {id, src} = data;
-        imagePathsTemp.push({id: data.id, name: data.name, src: data.src});
-        updatedImages = state.imagePaths.concat(imagePathsTemp)
+
+        // updatedImages = state.imagePaths.concat(imagePathsTemp)
       });
+      console.log(state.imagePaths, '\n', imagePathsTemp)
       return {
         ...state,
-        imagePaths: updatedImages
+        imagePaths: {...state.imagePaths, ...imagePathsTemp}
       }
   }
   return state;

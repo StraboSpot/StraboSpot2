@@ -6,147 +6,62 @@ import styles from './SpotPhotosAndSketchesOverviewStyles';
 import IconButton from '../../../ui/IconButton';
 
 const PhotosAndSketches = props => {
-  const [photosArr, setPhotosArr] = useState(null);
-  let images = null;
 
-  // useEffect(() => {
-  //   console.log('render!')
-  //
-  //   async function fetchData() {
-  //     // You can await here
-  //     const response = await props.getImages;
-  //     console.log('RES', response)
-  //     setPhotosArr(response)
-  //   }
-  //
-  //   images = fetchData()
-  //
-  //   // const photos =  props.getImages;
-  //   // setPhotosArr(photos)
-  // });
+  const getImageSrc = (id) => {
+    // console.log(props.imagePaths[id])
+    // console.log(id)
+    // const imageId = props.images.map(image => {
+    //   // console.log(image);
+    //   return image.id
+    // })
+    // for (let i = 0; i < imageId.length; i++) {
+    //   // console.log('ImageId[i]', imageId[i])
+    //   imageSrc = props.getImageSrc.filter(image => {
+    //     return image.id === imageId[i]
+    //   })
+    // }
+    // console.log('imageSrc', imageSrc[0].src)
+    return props.imagePaths[id]
+  };
 
-  const keyExtractor = (item, index) => item.id;
+  const renderImage = (image) => {
+    console.log('IMAGE', image)
 
-  const image = (images) => (
-    <View style={styles.imageContainer}>
-      <Image
-        source={{uri: images.item.src}}
-        style={styles.image}
-        PlaceholderContent={<ActivityIndicator/>}
-      />
-      <Button
-        title={'Edit'}
-        onPress={() => console.log("Image Id: ", images.item.id)}
-        style={styles.editButton}
-      />
-    </View>
-  );
+    return (
+      <View style={styles.imageContainer}>
+        <Image
+          // source={{uri: images.item.src}}
+          source={{uri: getImageSrc(image.id)}}
+          style={styles.image}
+          PlaceholderContent={<ActivityIndicator/>}
+        />
+        <Button
+          title={'Edit'}
+          onPress={() => console.log("Image Id: ", image.id)}
+          style={styles.editButton}
+        />
+      </View>
+    )
+  };
 
   return (
-    <View >
+    <View>
       <View>
         <Text style={props.style}>{props.photosAndSketches}</Text>
       </View>
       <FlatList
-        keyExtractor={keyExtractor}
-        data={props.getImages}
-        renderItem={image}
+        data={props.images}
+        renderItem={({item}) => renderImage(item)}
+        keyExtractor={(item) => item.id}
       />
-
-
-      {/*<View style={styles.imageContainer}>*/
-      }
-      {/*<Image*/
-      }
-      {/*  source={require('../../assets/images/geological_placeholder_resized.jpg')}*/
-      }
-      {/*  style={{width: 150, height: 150}}*/
-      }
-      {/*  PlaceholderContent={<ActivityIndicator />}*/
-      }
-      {/*  containerStyle={{marginRight: 40}}*/
-      }
-      {/*/>*/
-      }
-      {/*<View style={[spotStyles.imageContainer]}>*/
-      }
-      {/*  <IconButton*/
-      }
-      {/*    source={require('../../assets/icons/SetBaseMapButton.png')}*/
-      }
-      {/*    style={spotStyles.iconButton}*/
-      }
-      {/*  />*/
-      }
-      {/*  <IconButton*/
-      }
-      {/*    source={require('../../assets/icons/SketchButton.png')}*/
-      }
-      {/*    style={spotStyles.iconButton}*/
-      }
-      {/*  />*/
-      }
-      {/*  <IconButton*/
-      }
-      {/*    source={require('../../assets/icons/NoteButton.png')}*/
-      }
-      {/*    style={spotStyles.iconButton}*/
-      }
-      {/*  />*/
-      }
-      {/*</View>*/
-      }
-      {/*<View>*/
-      }
-      {/*<Image*/
-      }
-      {/*  source={{uri: 'https://f4.bcbits.com/img/a0561741859_10.jpg'}}*/
-      }
-      {/*  style={{width: 125, height: 150}}*/
-      }
-      {/*  PlaceholderContent={<ActivityIndicator />}*/
-      }
-      {/*/>*/
-      }
-      {/*<View style={[spotStyles.imageContainer]}>*/
-      }
-      {/*  <IconButton*/
-      }
-      {/*    source={require('../../assets/icons/SetBaseMapButton.png')}*/
-      }
-      {/*    style={spotStyles.iconButton}*/
-      }
-      {/*  />*/
-      }
-      {/*  <IconButton*/
-      }
-      {/*    source={require('../../assets/icons/SketchButton.png')}*/
-      }
-      {/*    style={spotStyles.iconButton}*/
-      }
-      {/*  />*/
-      }
-      {/*  <IconButton*/
-      }
-      {/*    source={require('../../assets/icons/NoteButton.png')}*/
-      }
-      {/*    style={spotStyles.iconButton}*/
-      }
-      {/*  />*/
-      }
-      {/*</View>*/
-      }
-      {/*</View>*/
-      }
-      {/*</View>*/
-      }
     </View>
   )
 };
 const mapStateToProps = (state) => {
   console.log('MP to P', state)
   return {
-    getImages: state.home.selectedSpot.properties.image
+    images: state.home.selectedSpot.properties.images,
+    imagePaths: state.images.imagePaths
   }
 };
 
