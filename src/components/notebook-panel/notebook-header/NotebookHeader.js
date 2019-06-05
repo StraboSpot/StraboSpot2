@@ -42,8 +42,6 @@ const NotebookHeader = props => {
       <View style={headerStyles.headerSpotNameAndCoordsContainer}>
         <View style={headerStyles.headerSpotNameContainer}>
           <TextInput
-            // value={spotName}
-            clearTextOnFocus={true}
             defaultValue={props.spot.properties.name}
             onChangeText={() => setSpotName(text)}
             onBlur={() => props.onSpotEdit('name', spotName)}
