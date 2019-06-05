@@ -6,14 +6,14 @@ const styles = StyleSheet.create({
     flex: 1,
     zIndex: 0
   },
-  compassContainer: {
+  compassImageContainer: {
     alignItems: 'center',
     flex: 70,
     justifyContent: 'center',
     // paddingTop: 70
   },
   renderCompassContainer: {
-    flex: 70,
+    flex: 60,
     backgroundColor: themes.COMPASS_MODAL
   },
   compassRowContainer: {
@@ -44,6 +44,9 @@ const styles = StyleSheet.create({
   },
   measurementsRowContainer: {
     flexDirection: 'column'
+  },
+  sliderContainer: {
+    flex: 30
   },
   switchContainer: {
     flex: 1,

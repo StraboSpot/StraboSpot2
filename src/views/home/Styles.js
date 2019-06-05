@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     // height: 400,
     // backgroundColor: 'transparent',
     flex: 1,
-    width: 200,
+    width: 275,
     height: 300,
     borderBottomLeftRadius: 30,
     borderTopLeftRadius: 30,

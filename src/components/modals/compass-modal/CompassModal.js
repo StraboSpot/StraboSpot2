@@ -1,15 +1,12 @@
 import React from 'react';
 import {Text, View} from 'react-native';
 import {Button} from 'react-native-elements';
-import Aux from '../../../shared/AuxWrapper';
-import Modal from "react-native-modal";
 import styles from "../../notebook-panel/notebook-measurements/MeasurementsStyles";
 import Compass from '../../../components/compass/Compass';
 import Slider from '../../../ui/Slider';
 
 
 const CompassModal = (props) => {
-
   return (
     <View style={{ height: 400, width: '100%'}}>
       <View style={styles.modalTop}>
@@ -38,9 +35,7 @@ const CompassModal = (props) => {
       <View style={styles.compassContainer}>
         <Compass/>
       </View>
-      <View style={styles.modalBottom}>
-        <Slider style={styles.slider}/>
-      </View>
+      {/*<View style={styles.modalBottom}/>*/}
     </View>
   );
 };

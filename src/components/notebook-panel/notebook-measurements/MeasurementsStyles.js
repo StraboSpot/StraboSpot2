@@ -6,6 +6,8 @@ const styles = StyleSheet.create({
     flex: 6,
     backgroundColor: 'white',
     //position: 'absolute',
+    borderBottomRightRadius: 20,
+    borderBottomLeftRadius: 20,
     //top: 50
     width: '100%',
     // height: 200,
@@ -60,10 +62,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     paddingRight: 10
   },
-  slider: {
-    paddingRight: 10,
-    paddingLeft: 10
-  },
   measurementDetailSwitchesContainer: {
     backgroundColor: themes.WHITE,
     height: 50
@@ -87,10 +85,10 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20
   },
   modalBottom: {
-    flex: 1,
+    // flex: 25,
     backgroundColor: themes.COMPASS_MODAL,
     // width: '100%',
-    padding: 20,
+    // padding: 10,
     borderBottomRightRadius: 20,
     borderBottomLeftRadius: 20
   },

@@ -11,6 +11,8 @@ import {Switch} from "react-native-switch";
 import styles from './CompassStyles';
 import {EDIT_SPOT_PROPERTIES} from "../../store/Constants";
 import Orientation from 'react-native-orientation-locker';
+import Slider from '../../ui/Slider';
+
 
 const {height, width} = Dimensions.get('window');
 const degree_update_rate = 2; // Number of degrees changed before the callback is triggered
@@ -46,7 +48,8 @@ class Compass extends Component {
         rake_calculated: 'no'
       },
       toggles: [CompassToggleButtons.PLANAR],
-      spinValue: new Animated.Value(0)
+      spinValue: new Animated.Value(0),
+      sliderValue: 0
     };
   }
 
@@ -336,11 +339,11 @@ class Compass extends Component {
   // Render the compass
   renderCompass = () => {
     return (
-      <TouchableOpacity style={styles.compassContainer} onPress={() => this.grabMeasurements()}>
+      <TouchableOpacity style={styles.compassImageContainer} onPress={() => this.grabMeasurements()}>
         <Image source={require("../../assets/images/compass/compass.png")}
                style={{
                  marginTop: 25,
-                 height: 155,
+                 height: 175,
                  justifyContent: 'center',
                  alignItems: 'center',
                  resizeMode: 'contain',
@@ -488,29 +491,6 @@ class Compass extends Component {
     }, () => console.log('toggles', this.state.toggles));
   };
 
-  startsMeasurements = () => {
-    this.subscribe();
-    RNSimpleCompass.start(degree_update_rate, (degree) => {
-      degreeFacing = (<Text>{degree}</Text>);
-      console.log('You are facing', degree);
-      this.setState(prevState => {
-          return {
-            ...prevState,
-            magnetometer: mod(degree - 90, 360)
-          }
-        },
-        // () => console.log('magnetometer reading:', this.state.magnetometer)
-      );
-      // RNSimpleCompass.stop();
-    });
-  };
-
-  stopsMeasurements = () => {
-    this.unsubscribe();
-    RNSimpleCompass.stop();
-    console.log('Compass unsubscribed');
-  };
-
   render() {
     // return (
     //   <View style={styles.container}>
@@ -542,6 +522,15 @@ class Compass extends Component {
         <View style={styles.toggleButtonsRowContainer}>
           {this.renderToggles()}
           {/*{this.renderMeasurements()}*/}
+        </View>
+        <View style={styles.sliderContainer}>
+          <Slider
+            // style={styles.slider}
+            setSliderValue={(value) => this.setState({sliderValue: value})}
+            sliderValue={this.state.sliderValue}
+          >
+            {this.state.sliderValue}
+          </Slider>
         </View>
       </View>
     )
