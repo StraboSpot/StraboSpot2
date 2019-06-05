@@ -1,6 +1,6 @@
 import React from 'react';
 import MapboxGL from '@mapbox/react-native-mapbox-gl';
-import pointSymbol from "../../assets/symbols/point.png";
+import pointSymbol from "../../assets/symbols/point-resizeimage.png";
 
 function Basemap(props) {
   return <MapboxGL.MapView
@@ -143,7 +143,7 @@ const mapStyles = MapboxGL.StyleSheet.create({
   point: {
     iconImage: pointSymbol,
     iconAllowOverlap: true,
-    iconSize: 0.15,
+    iconSize: 0.5,
   },
   line: {
     lineColor: 'black',
@@ -154,7 +154,7 @@ const mapStyles = MapboxGL.StyleSheet.create({
     fillOpacity: .4
   },
   pointSelected: {
-    circleRadius: 20,
+    circleRadius: 30,
     circleColor: 'orange',
     circleOpacity: .4
   },
