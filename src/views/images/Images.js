@@ -14,7 +14,6 @@ import {
 } from 'react-native';
 import {Navigation} from "react-native-navigation";
 import {getRemoteImages, getImages, saveFile} from '../../services/images/ImageDownload';
-import ImageView from '../../components/images/ImageView';
 import {connect} from 'react-redux';
 import ImagePicker from "react-native-image-picker";
 import {ADD_PHOTOS, SET_SPOT_PAGE_VISIBLE} from "../../store/Constants";

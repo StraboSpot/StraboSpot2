@@ -431,7 +431,7 @@ class Home extends React.Component {
       else if (response.error) console.log('ImagePicker Error: ', response.error);
       else {
         console.log('takePicture()', response);
-        const savedPhoto = await saveFile(response.uri);
+        const savedPhoto = await saveFile(response);
         this.setState(prevState => {
           return {
             ...prevState,

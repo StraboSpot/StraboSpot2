@@ -23,7 +23,7 @@ export const takePicture = async () => {
         console.log('ImagePicker Error: ', response.error);
       }
       else {
-        const savedPhoto = await saveFile(response.uri);
+        const savedPhoto = await saveFile(response);
         console.log('Saved Photo = ', savedPhoto);
         resolve(savedPhoto);
       }
