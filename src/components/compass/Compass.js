@@ -49,7 +49,7 @@ class Compass extends Component {
       },
       toggles: [CompassToggleButtons.PLANAR],
       spinValue: new Animated.Value(0),
-      sliderValue: 0
+      sliderValue: props.spot.properties.quality ? this.props.spot.properties.quality : 0
     };
   }
 
@@ -528,9 +528,11 @@ class Compass extends Component {
             // style={styles.slider}
             setSliderValue={(value) => this.setState({sliderValue: value})}
             sliderValue={this.state.sliderValue}
-          >
-            {this.state.sliderValue}
-          </Slider>
+          />
+          <View style={{flexDirection: 'row'}}>
+            <Text style={{paddingRight: 10}}>Value: {this.state.sliderValue}</Text>
+            <Text>Saved Value: {this.props.spot.properties.quality}</Text>
+          </View>
         </View>
       </View>
     )

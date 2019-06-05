@@ -9,7 +9,6 @@ const slider = (props) => {
 
   return (
     <React.Fragment>
-      <Text>Value: {props.children}</Text>
       <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'
       }}>
         <View style={styles.sliderTextContainer}>
