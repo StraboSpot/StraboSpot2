@@ -49,7 +49,7 @@ class Compass extends Component {
       },
       toggles: [CompassToggleButtons.PLANAR],
       spinValue: new Animated.Value(0),
-      sliderValue: props.spot.properties.quality ? this.props.spot.properties.quality : 0
+      sliderValue: 5
     };
   }
 
@@ -106,7 +106,8 @@ class Compass extends Component {
         strike: this.state.compassData.strike,
         dip_direction: this.state.compassData.dipdir,
         dip: this.state.compassData.dip,
-        type: 'planar_orientation'
+        type: 'planar_orientation',
+        quality: this.state.sliderValue
       });
     }
     if (this.state.toggles.includes(CompassToggleButtons.LINEAR)) {
@@ -115,7 +116,8 @@ class Compass extends Component {
         plunge: this.state.compassData.plunge,
         rake: this.state.compassData.rake,
         rake_calculated: 'yes',
-        type: 'linear_orientation'
+        type: 'linear_orientation',
+        quality: this.state.sliderValue
       });
     }
 
@@ -531,7 +533,6 @@ class Compass extends Component {
           />
           <View style={{flexDirection: 'row'}}>
             <Text style={{paddingRight: 10}}>Value: {this.state.sliderValue}</Text>
-            <Text>Saved Value: {this.props.spot.properties.quality}</Text>
           </View>
         </View>
       </View>

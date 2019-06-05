@@ -19,6 +19,7 @@ const slider = (props) => {
             value={props.sliderValue}
             onValueChange={value => props.setSliderValue(value)}
             maximumValue={5}
+            minimumValue={1}
             style={styles.slider}
             step={1}
             thumbStyle={{borderWidth: 1, borderColor: 'grey'}}
