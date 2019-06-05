@@ -31,11 +31,6 @@ const NotebookHeader = props => {
     return props.spot.geometry.type;
   };
 
-  const onChangeText = (text) => {
-    setSpotName(text);
-    props.onSpotEdit('name', text);
-  };
-
   return (
     <View style={headerStyles.headerContentContainer}>
       <View style={headerStyles.headerSymbolIcon}>
@@ -46,7 +41,13 @@ const NotebookHeader = props => {
       </View>
       <View style={headerStyles.headerSpotNameAndCoordsContainer}>
         <View style={headerStyles.headerSpotNameContainer}>
-          <TextInput value={spotName} onChangeText={onChangeText} style={headerStyles.headerSpotName}/>
+          <TextInput
+            // value={spotName}
+            clearTextOnFocus={true}
+            defaultValue={props.spot.properties.name}
+            onChangeText={() => setSpotName(text)}
+            onBlur={() => props.onSpotEdit('name', spotName)}
+            style={headerStyles.headerSpotName}/>
         </View>
         <View style={headerStyles.headerCoordsContainer}>
           <Text style={headerStyles.headerCoords}>{getSpotCoordText()}</Text>
