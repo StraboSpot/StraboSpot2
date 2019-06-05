@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {Button, Text, TextInput, View} from 'react-native';
 import {Input} from 'react-native-elements/src/index'
-import noteStyles from './notes.styles';
+import noteStyles from '../../../themes/common.styles';
 import {connect} from "react-redux";
 import {EDIT_SPOT_PROPERTIES} from "../../../store/Constants";
 
@@ -21,7 +21,7 @@ const SpotNotesOverview = props => {
 
   // const date = new Date.now();
   return (
-    <View >
+    <View style={noteStyles.notesOverview}>
       <Text style={props.style}>{props.notes}{date}</Text>
       {savedNote !== '' ? <Text style={ props.style}>- {savedNote}</Text> : null}
       <Input

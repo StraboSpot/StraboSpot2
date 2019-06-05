@@ -722,10 +722,10 @@ class Home extends React.Component {
             {this.state.buttons.drawButtonsVisible ?
               <View style={styles.drawToolsContainer}>
                 <IconButton
-                  source={this.state.mapMode === MapModes.DRAW.POLYGON ?
-                    require('../../assets/icons/app-icons-shaded/PolygonButton_pressed.png') :
-                    require('../../assets/icons/app-icons-shaded/PolygonButton.png')}
-                  onPress={this.clickHandler.bind(this, MapModes.DRAW.POLYGON)}
+                  source={this.state.mapMode === MapModes.DRAW.POINT ?
+                    require('../../assets/icons/app-icons-shaded/PointButton_pressed.png') : require(
+                      '../../assets/icons/app-icons-shaded/PointButton.png')}
+                  onPress={this.clickHandler.bind(this, MapModes.DRAW.POINT)}
                 />
                 <IconButton
                   source={this.state.mapMode === MapModes.DRAW.LINE ?
@@ -734,10 +734,10 @@ class Home extends React.Component {
                   onPress={this.clickHandler.bind(this, MapModes.DRAW.LINE)}
                 />
                 <IconButton
-                  source={this.state.mapMode === MapModes.DRAW.POINT ?
-                    require('../../assets/icons/app-icons-shaded/PointButton_pressed.png') : require(
-                      '../../assets/icons/app-icons-shaded/PointButton.png')}
-                  onPress={this.clickHandler.bind(this, MapModes.DRAW.POINT)}
+                  source={this.state.mapMode === MapModes.DRAW.POLYGON ?
+                    require('../../assets/icons/app-icons-shaded/PolygonButton_pressed.png') :
+                    require('../../assets/icons/app-icons-shaded/PolygonButton.png')}
+                  onPress={this.clickHandler.bind(this, MapModes.DRAW.POLYGON)}
                 />
               </View>
               : null}

@@ -118,9 +118,6 @@ class Images extends Component {
             {Object.values(this.props.imagePaths).map(image => {
               return <Image key={image} style={styles.image} source={{uri: image}}/>
             })}
-            {/*<View style={{width: 50, height: 50, margin: 10, backgroundColor: 'powderblue'}} />*/}
-            {/*<View style={{width: 50, height: 50, margin: 10,backgroundColor: 'skyblue'}} />*/}
-            {/*<View style={{width: 50, height: 50, margin: 10,backgroundColor: 'steelblue'}} />*/}
           </View>
         </ScrollView>
 

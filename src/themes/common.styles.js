@@ -15,12 +15,17 @@ const commonStyles = StyleSheet.create({
     color: themes.DARKGREY
   },
   listItem: {
+    padding: 10,
     borderBottomWidth: .5,
     borderColor: themes.MEDIUMGREY,
   },
   listItemTitle: {
     color: 'black',
     fontSize: 20,
+  },
+  notesOverview: {
+    backgroundColor: 'white',
+    margin: 10
   }
 });
 
