@@ -15,7 +15,7 @@ import Home from "../views/home/Home";
 import Initialising from "../Initializing";
 import SignIn from "../views/SignIn";
 import SignUp from "../views/SignUp";
-import Images from "../views/images/Images";
+import Images from "../components/images/ImageGallery.view";
 import Loading from '../ui/Loading'
 
 
