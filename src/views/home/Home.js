@@ -27,7 +27,7 @@ import {connect} from 'react-redux';
 import {ADD_PHOTOS, FEATURE_DELETE, SET_ISONLINE, SET_SPOT_PAGE_VISIBLE, EDIT_SPOT_PROPERTIES, EDIT_SPOT_IMAGES} from "../../store/Constants";
 import {SpotPages} from "../../components/notebook-panel/Notebook.constants";
 import {saveFile} from '../../services/images/ImageDownload';
-import {takePicture} from '../../shared/HelperFunctions/ImageHelperFunctions';
+import {takePicture} from '../../components/images/Images.container';
 import {IMAGES} from "../../routes/ScreenNameConstants";
 import CompassModal from "../../components/modals/compass-modal/CompassModal";
 

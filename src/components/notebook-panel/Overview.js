@@ -4,7 +4,7 @@ import {Text, ScrollView, TouchableOpacity, View} from 'react-native';
 import TagsOverview from './notebook-tags/TagsOverview';
 import NotesOverview from './notebook-notes/NotesOverview';
 import MeasurementsOverview from './notebook-measurements/MeasurementsOverview';
-import PhotosAndSketches from './notebook-photo-and-sketches/SpotPhotosAndSketchesOverview';
+import NotebookImages from '../images/ImageNotebook.view';
 import Collapsible from 'react-native-collapsible';
 import {Icon} from 'react-native-elements';
 
@@ -23,7 +23,7 @@ const SECTIONS = [
     content: <MeasurementsOverview/>
   }, {
     title: 'Photos and Sketches',
-    content: <PhotosAndSketches/>
+    content: <NotebookImages/>
   }];
 
 const Overview = props => {
