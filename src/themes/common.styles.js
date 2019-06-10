@@ -23,10 +23,8 @@ const commonStyles = StyleSheet.create({
     color: 'black',
     fontSize: 20,
   },
-  notesOverview: {
-    backgroundColor: 'white',
-    margin: 10
-  }
+
+
 });
 
 export default commonStyles;
