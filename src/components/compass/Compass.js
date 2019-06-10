@@ -382,9 +382,9 @@ class Compass extends Component {
     return (
       <View style={styles.measurementsContainer}>
         {/*<Text>heading: {this.state.magnetometer}</Text>*/}
-        <Text>x: {this.state.accelerometer.x}</Text>
-        <Text>y: {this.state.accelerometer.y}</Text>
-        <Text>z: {this.state.accelerometer.z}</Text>
+        {/*<Text>x: {this.state.accelerometer.x}</Text>*/}
+        {/*<Text>y: {this.state.accelerometer.y}</Text>*/}
+        {/*<Text>z: {this.state.accelerometer.z}</Text>*/}
         {
           Object.keys(this.state.compassData).map((key, i) => (
             <Text key={i}>{key}: {this.state.compassData[key]}</Text>
@@ -406,7 +406,7 @@ class Compass extends Component {
       this.state.spinValue,
       {
         toValue: this.state.compassData.strike,
-        easing: Easing.linear,
+        easing: Easing.linear(),
         useNativeDriver: true
       }
     ).start();
@@ -426,15 +426,15 @@ class Compass extends Component {
     // this.state = {spinValue: new Animated.Value(0)};
     let image = require("../../assets/images/compass/TrendLine.png");
     const spin = this.state.spinValue.interpolate({
-      inputRange: [0, this.state.compassData.trend],
-      outputRange: ['0deg', this.state.compassData.trend + 'deg']
+      inputRange: [0, 360],
+      outputRange: [this.state.compassData.trend +'deg', this.state.compassData.trend + 'deg']
     });
 // First set up animation
     Animated.timing(
       this.state.spinValue,
       {
-        toValue: this.state.compassData.trend,
-        easing: Easing.linear(),
+        toValue: this.state.spinValue,
+        easing: Easing.linear,
         useNativeDriver: true
       }
     ).start();
@@ -444,7 +444,8 @@ class Compass extends Component {
         source={image}
         style={
           [styles.trendLine,
-            {transform: [{rotate: this.state.compassData.trend + 'deg'}]}
+            // {transform: [{rotate: this.state.compassData.trend + 'deg'}]}
+            {transform: [{rotate: spin}]}
           ]}/>
     );
   };
@@ -523,7 +524,6 @@ class Compass extends Component {
         </View>
         <View style={styles.toggleButtonsRowContainer}>
           {this.renderToggles()}
-          {/*{this.renderMeasurements()}*/}
         </View>
         <View style={styles.sliderContainer}>
           <Slider
@@ -531,6 +531,8 @@ class Compass extends Component {
             setSliderValue={(value) => this.setState({sliderValue: value})}
             sliderValue={this.state.sliderValue}
           />
+          {this.renderMeasurements()}
+
           <View style={{flexDirection: 'row'}}>
             <Text style={{paddingRight: 10}}>Value: {this.state.sliderValue}</Text>
           </View>

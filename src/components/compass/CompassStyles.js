@@ -40,10 +40,10 @@ const styles = StyleSheet.create({
   },
   measurementsContainer: {
     flex: 1,
-    flexDirection: 'column'
+    // flexDirection: 'row',
   },
   measurementsRowContainer: {
-    flexDirection: 'column'
+    // flexDirection: 'column'
   },
   sliderContainer: {
     flex: 30
@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     padding: 0
   },
   toggleButtonsRowContainer: {
-    flex:25,
+    flex: 25,
     flexDirection: 'column',
     paddingTop: 25
   },
