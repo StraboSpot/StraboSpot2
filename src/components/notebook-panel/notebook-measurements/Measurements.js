@@ -6,6 +6,7 @@ import {SpotPages} from "../Notebook.constants";
 import {SET_SPOT_PAGE_VISIBLE} from "../../../store/Constants";
 import styles from './MeasurementsStyles';
 import spotPageStyles from '../SpotPageStyles';
+import NotebookBackButton from '../../../themes/NotebookBackButton';
 
 const MeasurementPage = (props) => {
   const [isModalVisible, setIsModalVisible] = useState(true);
@@ -64,18 +65,8 @@ const MeasurementPage = (props) => {
 
   return (
     <React.Fragment>
-      {/*TODO: Make back button into UI component */}
-      <Button
-        icon={{
-          name: 'arrow-back',
-          size: 20,
-          color: 'black'
-        }}
-        containerStyle={styles.backButton}
-        titleStyle={{color: 'blue'}}
-        title={'Return to Overview'}
-        type={'clear'}
-        onPress={ () =>  {
+      <NotebookBackButton
+        onPress={() => {
           const pageVisible = props.setPageVisible(SpotPages.OVERVIEW)
           if (pageVisible.page !== SpotPages.MEASUREMENT) props.showCompass(false);
         }}
