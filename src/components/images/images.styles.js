@@ -5,12 +5,27 @@ const imageStyles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f3e0d2',
   },
-  imageContainer: {
-    // // flex: 1,
-    // flexDirection: 'row',
-    // flexWrap: 'wrap', alignContent: 'center', justifyContent: 'center'
+  editButton: {
+    textAlign: 'center'
   },
-  image: {
+  imageContainer: {
+    backgroundColor: 'white',
+    padding: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  galleryImageContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignContent: 'center',
+    justifyContent: 'space-around'
+  },
+  notebookImage: {
+    width: 135,
+    height: 100,
+  },
+  galleryImage: {
     height: 300,
     width: (Dimensions.get('window').width / 2) - 40,
     // width: 200,

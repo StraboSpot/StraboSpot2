@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {Alert, Button, Image, ScrollView, Text, View} from 'react-native';
 import {Navigation} from "react-native-navigation";
 import {pictureSelectDialog, saveFile} from './Images.container';
@@ -7,7 +7,7 @@ import {connect} from "react-redux";
 import imageStyles from './images.styles'
 
 const imageGallery = (props) => {
-let savedArray = [];
+  let savedArray = [];
 
   const imageSave = async () => {
 
@@ -36,39 +36,18 @@ let savedArray = [];
     }
   };
 
-
   return (
     <View style={imageStyles.container}>
       <Text style={{
         margin: 30,
       }}>Images Page</Text>
-      <ScrollView contentContainerstyle={imageStyles.imageContainer}>
-        <View style={{
-          flex: 1,
-          flexDirection: 'row',
-          flexWrap: 'wrap',
-          alignContent: 'center',
-          justifyContent: 'space-around'
-        }}>
+      <ScrollView >
+        <View style={imageStyles.galleryImageContainer}>
           {Object.values(props.imagePaths).map(image => {
-            return <Image key={image} style={imageStyles.image} source={{uri: image}}/>
+            return <Image key={image} style={imageStyles.galleryImage} source={{uri: image}}/>
           })}
         </View>
       </ScrollView>
-      {/*<View style={imageStyles.imageContainer}>*/}
-      {/*<ScrollView >*/}
-      {/*{   Object.values(this.props.imagePaths).map(image => {*/}
-      {/*    return <Image key={image} style={imageStyles.image} source={{uri: image}}/>*/}
-      {/*})}*/}
-      {/*</ScrollView>*/}
-      {/*</View>*/}
-      {/*<FlatList*/}
-      {/*  data={Object.values(this.props.imagePaths)}*/}
-      {/*  renderItem={this.renderImage}*/}
-      {/*  style={imageStyles.flatListStyle}*/}
-      {/*  numColumns={2}*/}
-      {/*  keyExtractor={(item) => item.item}*/}
-      {/*/>*/}
       <Button
         onPress={() => Navigation.push(props.componentId, {
           component: {

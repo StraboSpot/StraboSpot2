@@ -1,7 +1,6 @@
-import React, {useState, useEffect} from 'react'
+import React from 'react'
 import {Alert, Image, Platform, View} from "react-native";
 import ImagePicker from "react-native-image-picker";
-import imageStyles from './images.styles'
 import RNFetchBlob from "rn-fetch-blob";
 
 
@@ -11,8 +10,6 @@ import RNFetchBlob from "rn-fetch-blob";
 // })};
 // const imageContainer = props => {
 
-let allPhotosSaved = [];
-let imagePaths = [];
 let imageCount = 0;
 let dirs = RNFetchBlob.fs.dirs;
 const url = 'https://strabospot.org/testimages/images.json';
@@ -20,18 +17,18 @@ const devicePath = Platform.OS === 'ios' ? dirs.DocumentDir : dirs.SDCardDir; //
 const appDirectory = '/StraboSpot';
 const imagesDirectory = devicePath + appDirectory + '/Images';
 
-const imageOptions = {
-  storageOptions: {
-    skipBackup: true,
-  },
-  title: 'Choose Photo Source'
-};
-
+// Called from Image Gallery and displays image source picker
 export const pictureSelectDialog = async () => {
+  const imageOptionsPicker = {
+    storageOptions: {
+      skipBackup: true,
+    },
+    title: 'Choose Photo Source'
+  };
   console.log('ALLPHOTOSSAVEDARR')
 
   return new Promise((resolve, reject) => {
-    ImagePicker.showImagePicker(imageOptions, async (response) => {
+    ImagePicker.showImagePicker(imageOptionsPicker, async (response) => {
       console.log('Response = ', response);
 
       if (response.didCancel) {
@@ -75,3 +72,35 @@ export const saveFile = async (imageURI) => {
     console.log(imageCount, 'Error on', imageName, ':', err);
   }
 };
+
+// Called from Notebook Panel Footer and opens camera only
+export const takePicture = async () => {
+  const imageOptionsCamera = {
+    storageOptions: {
+      skipBackup: true,
+      takePhotoButtonTitle: 'Take Photo Buddy!',
+      chooseFromLibraryButtonTitle: 'choose photo from library'
+    }
+  };
+
+  console.log('aassaasswwww')
+  return new Promise((resolve, reject) => {
+    ImagePicker.launchCamera(imageOptionsCamera, async (response) => {
+      console.log('Response = ', response);
+
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+        resolve('cancelled')
+      }
+      else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      }
+      else {
+        const savedPhoto = await saveFile(response);
+        console.log('Saved Photo = ', savedPhoto);
+        resolve(savedPhoto);
+      }
+    });
+  })
+};
+
