@@ -30,10 +30,6 @@ if(__DEV__) {
   composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 }
 
-const configureStore = () => {
-  return createStore(persistedReducer, composeEnhancers(applyMiddleware(loggerMiddleware)))
-};
-
 export default () => {
   const store = createStore(persistedReducer, composeEnhancers(applyMiddleware(loggerMiddleware)));
   const persistor = persistStore(store);
