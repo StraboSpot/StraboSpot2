@@ -25,6 +25,7 @@ import SaveMapModal from '../../components/modals/map-actions/SaveMapsModal';
 import NotebookPanelMenu from '../../components/notebook-panel/NotebookPanelMenu';
 import {connect} from 'react-redux';
 import {ADD_PHOTOS, FEATURE_DELETE, SET_ISONLINE, SET_SPOT_PAGE_VISIBLE, EDIT_SPOT_PROPERTIES, EDIT_SPOT_IMAGES} from "../../store/Constants";
+import * as actionCreators from '../../store/actions/index';
 import {SpotPages} from "../../components/notebook-panel/Notebook.constants";
 import {saveFile} from '../../services/images/ImageDownload';
 import {takePicture} from '../../components/images/Images.container';
@@ -818,10 +819,11 @@ function mapStateToProps(state) {
 const mapDispatchToProps = {
   setIsOnline: (online) => ({type: SET_ISONLINE, online: online}),
   setPageVisible: (page) => ({type: SET_SPOT_PAGE_VISIBLE, page: page}),
-  addPhoto: (imageData) => ({type: ADD_PHOTOS, images: imageData}),
-  deleteFeature: (id) => ({type: FEATURE_DELETE, id: id}),
-  onSpotEdit: (field, value) => ({type: EDIT_SPOT_PROPERTIES, field: field, value: value}),
-  onSpotEditImageObj: (image) => ({type: EDIT_SPOT_IMAGES, image: image})
+  addPhoto: (imageData) => (actionCreators.addPhoto(imageData)),
+  deleteFeature: (id) => (actionCreators.deleteFeature(id)),
+  onSpotEdit: (field, value) => (actionCreators.editSpotProperties(field, value)),
+  // onSpotEdit: (field, value) => ({type: EDIT_SPOT_PROPERTIES, field: field, value: value}),
+  onSpotEditImageObj: (images) => (actionCreators.editSpotImage(images))
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

@@ -3,7 +3,8 @@ import {FlatList, ScrollView, Text, View, TouchableOpacity} from 'react-native';
 import {connect} from 'react-redux';
 import {Button, Divider} from "react-native-elements";
 import {SpotPages} from "../Notebook.constants";
-import {SET_SPOT_PAGE_VISIBLE} from "../../../store/Constants";
+import * as actionCreators from '../../../store/actions/index';
+// import {SET_SPOT_PAGE_VISIBLE} from "../../../store/Constants";
 import styles from './MeasurementsStyles';
 import spotPageStyles from '../SpotPageStyles';
 import NotebookBackButton from '../../../themes/NotebookBackButton';
@@ -124,7 +125,7 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-  setPageVisible: (page) => ({type: SET_SPOT_PAGE_VISIBLE, page: page})
+  setPageVisible: (page) => (actionCreators.setSpotPageVisible(page))
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(MeasurementPage);

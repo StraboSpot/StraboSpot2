@@ -13,6 +13,7 @@ import {
   EDIT_SPOT_PROPERTIES,
   SET_SPOT_PAGE_VISIBLE
 } from '../../store/Constants';
+import * as actionCreators from '../../store/actions/index';
 import {SpotPages} from "./Notebook.constants";
 import {Button, Divider, Input} from 'react-native-elements';
 import {connect} from 'react-redux';
@@ -194,7 +195,8 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
   onFeatureAdd: (feature) => ({type: FEATURE_ADD, feature: feature}),
-  onSpotEdit: (field, value) => ({type: EDIT_SPOT_PROPERTIES, field: field, value: value}),
+  onSpotEdit: (field, value) => (actionCreators.addFeature(field, value)),
+  // onSpotEdit: (field, value) => ({type: EDIT_SPOT_PROPERTIES, field: field, value: value}),
   setPageVisible: (page) => ({type: SET_SPOT_PAGE_VISIBLE, page: page })
 };
 

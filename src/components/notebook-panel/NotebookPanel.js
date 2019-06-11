@@ -10,6 +10,7 @@ import Basics from './Basics';
 import MeasurementPage from './notebook-measurements/Measurements';
 import MeasurementDetailPage from './notebook-measurements/MeasurementDetail';
 import {SpotPages} from "./Notebook.constants";
+import * as actionCreators from '../../store/actions/index';
 import {SET_SPOT_PAGE_VISIBLE} from "../../store/Constants";
 import {isEmpty} from "../../shared/Helpers";
 
@@ -73,7 +74,7 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-  setPageVisible: (page) => ({type: SET_SPOT_PAGE_VISIBLE, page: page})
+  setPageVisible: (page) => (actionCreators.setSpotPageVisible(page))
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(NotebookPanel);

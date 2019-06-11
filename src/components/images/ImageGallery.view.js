@@ -2,7 +2,7 @@ import React from 'react';
 import {Alert, Button, Image, ScrollView, Text, View} from 'react-native';
 import {Navigation} from "react-native-navigation";
 import {pictureSelectDialog, saveFile} from './Images.container';
-import {ADD_PHOTOS} from "../../store/Constants";
+import * as actionCreators from '../../store/actions/index';
 import {connect} from "react-redux";
 import imageStyles from './images.styles'
 
@@ -72,7 +72,7 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = {
-  addPhoto: (image) => ({type: ADD_PHOTOS, images: image})
+  addPhoto: (image) => (actionCreators.addPhoto(image))
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(imageGallery);
