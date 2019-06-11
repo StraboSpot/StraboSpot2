@@ -4,7 +4,7 @@ import {Image} from 'react-native-elements';
 import {connect} from 'react-redux';
 import {TextInput} from 'react-native';
 
-import IconButton from '../../../ui/IconButton';
+import IconButton from '../../../shared/ui/IconButton';
 
 // Styles
 import headerStyles from './NotebookHeader.styles';

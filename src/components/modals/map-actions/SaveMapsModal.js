@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {AsyncStorage, Picker, Text, StyleSheet, View, TouchableOpacity} from 'react-native';
-import ButtonWithBackground from '../../../ui/ButtonWithBackground';
-import ButtonNoBackground from '../../../ui/ButtonNoBackround';
+import ButtonWithBackground from '../../../shared/ui/ButtonWithBackground';
+import ButtonNoBackground from '../../../shared/ui/ButtonNoBackround';
 import {Header} from 'react-native-elements';
 import MaterialCommunityIcons from '../../../shared/Icons';
 import {Platform} from 'react-native';

@@ -1,6 +1,6 @@
 import React from 'react'
 import {Text, ScrollView, View} from 'react-native'
-import ButtonNoBackground from '../../ui/ButtonNoBackround';
+import ButtonNoBackground from '../../shared/ui/ButtonNoBackround';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {SettingsMenuItems} from './SettingsMenu.constants';
 import {goSignIn} from '../../routes/Navigation';

@@ -16,7 +16,7 @@ import Initialising from "../Initializing";
 import SignIn from "../views/SignIn";
 import SignUp from "../views/SignUp";
 import Images from "../components/images/ImageGallery.view";
-import Loading from '../ui/Loading'
+import Loading from '../shared/ui/Loading'
 
 
 const {store, persistor} = configureStore();

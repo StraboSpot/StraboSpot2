@@ -5,7 +5,7 @@ import {connect} from 'react-redux';
 import NotebookHeader from './notebook-header/NotebookHeader';
 import NotebookFooter from './notebook-footer/NotebookFooter';
 import Overview from './Overview';
-import ButtonNoBackground from '../../ui/ButtonNoBackround';
+import ButtonNoBackground from '../../shared/ui/ButtonNoBackround';
 import Basics from './Basics';
 import MeasurementPage from './notebook-measurements/Measurements';
 import MeasurementDetailPage from './notebook-measurements/MeasurementDetail';

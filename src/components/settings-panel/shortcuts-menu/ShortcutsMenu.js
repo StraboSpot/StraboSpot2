@@ -2,7 +2,7 @@ import React from 'react';
 import {Image, Text, View} from 'react-native';
 import styles from './ShortcutsMenuStyles';
 import {ListItem} from 'react-native-elements';
-import ButtonNoBackground from '../../../ui/ButtonNoBackround';
+import ButtonNoBackground from '../../../shared/ui/ButtonNoBackround';
 import {ShortcutToggleButtons as Buttons} from '../SettingsMenu.constants';
 import {Switch} from 'react-native-switch';
 

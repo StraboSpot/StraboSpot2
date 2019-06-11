@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {Alert, Image, Text, View} from 'react-native';
 import styles from './ManageOfflineStyles';
 import {ListItem} from 'react-native-elements';
-import ButtonNoBackground from '../../../ui/ButtonNoBackround';
+import ButtonNoBackground from '../../../shared/ui/ButtonNoBackround';
 import {ShortcutToggleButtons as Buttons} from '../SettingsMenu.constants';
 import {Switch} from 'react-native-switch';
 import {connect} from 'react-redux';

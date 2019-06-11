@@ -11,7 +11,7 @@ import {Switch} from "react-native-switch";
 import styles from './CompassStyles';
 import {EDIT_SPOT_PROPERTIES} from "../../store/Constants";
 import Orientation from 'react-native-orientation-locker';
-import Slider from '../../ui/Slider';
+import Slider from '../../shared/ui/Slider';
 
 
 const {height, width} = Dimensions.get('window');

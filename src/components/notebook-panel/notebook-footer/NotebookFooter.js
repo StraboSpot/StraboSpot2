@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Text, View} from 'react-native';
-import IconButton from '../../../ui/IconButton';
+import IconButton from '../../../shared/ui/IconButton';
 import footerStyle from './NotebookFooter.styles';
 import {SpotPages} from "../Notebook.constants";
 import {IconButtons} from '../../../shared/app.constants';

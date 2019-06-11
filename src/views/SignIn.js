@@ -3,7 +3,7 @@ import {View, StyleSheet, TextInput, Button, Alert, ImageBackground} from 'react
 import {goHome, goSignUp} from '../routes/Navigation'
 import {authenticateUser} from '../services/user/UserAuth';
 import {backgroundImage} from '../assets/images/background.jpg';
-import ButtonWithBackground from '../ui/ButtonWithBackground';
+import ButtonWithBackground from '../shared/ui/ButtonWithBackground';
 import Icon from "react-native-vector-icons/Ionicons";
 
 export default class SignIn extends React.Component {
