@@ -1,6 +1,6 @@
 import React from 'react';
 import {TouchableOpacity, TouchableNativeFeedback, Text, View, StyleSheet, Platform} from "react-native";
-import {Icon} from 'react-native-elements';
+import {Icon} from 'react-native-elements/src/index';
 
 // import Icon from "react-native-vector-icons/Ionicons";
 

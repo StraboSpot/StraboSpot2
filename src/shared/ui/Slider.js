@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
 import {Text, View} from 'react-native';
-import {Slider} from 'react-native-elements';
+import {Slider} from 'react-native-elements/src/index';
 import styles from './ui.styles';
-import * as themes from '../themes/ColorThemes';
+import * as themes from '../../themes/ColorThemes';
 
 
 const slider = (props) => {
