@@ -118,7 +118,7 @@ export const homeReducer = (state = initialState, action) => {
         let tempImages = [];
         if (state.selectedSpot.properties.images) tempImages = state.selectedSpot.properties.images;
 
-        const updatedSpotObj = action.image.map(image => {
+        const updatedSpotObj = action.images.map(image => {
           return {id: image.id, height: image.height, width: image.width, image_type: image.image_type}
         });
         tempImages = [...tempImages, ...updatedSpotObj];
@@ -214,7 +214,7 @@ export const imageReducer = (state = initialImageState, action) => {
       console.log('ADD_PHOTOS', action);
       let updatedImages = null;
       let imagePathsTemp = {};
-      console.log(action.images);
+      // console.log(action.images);
       action.images.map(data => {
         imagePathsTemp[data.id] = data.src;
         // console.log('photo in reducer\n', 'ID:', data.id, '\nSRC:', data.src, '\nNAME:', data.name);
