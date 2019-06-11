@@ -30,7 +30,7 @@ import {SpotPages} from "../../components/notebook-panel/Notebook.constants";
 import {saveFile} from '../../services/images/ImageDownload';
 import {takePicture} from '../../components/images/Images.container';
 import {IMAGES} from "../../routes/ScreenNameConstants";
-import CompassModal from "../../components/modals/compass-modal/CompassModal";
+import CompassModal from "../../components/compass/CompassModal";
 
 const imageOptions = {
   storageOptions: {
