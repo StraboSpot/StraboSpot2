@@ -47,10 +47,13 @@ const NotebookFooter = props => {
       <IconButton
         source={getPageIcon(SpotPages.SAMPLE)}
         style={footerStyle.footerIcon}
+        onPress={() => props.openPage(SpotPages.SAMPLE)}
       />
       <IconButton
         source={getPageIcon(SpotPages.NOTE)}
         style={footerStyle.footerIcon}
+        onPress={() => props.openPage(SpotPages.NOTE)}
+
       />
       <IconButton
         source={getPageIcon(SpotPages.PHOTO)}
