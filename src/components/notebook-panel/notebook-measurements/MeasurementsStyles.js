@@ -45,23 +45,23 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'flex-start'
   },
-  navButtonsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start'
-  },
+  // navButtonsContainer: {
+  //   flexDirection: 'row',
+  //   justifyContent: 'space-between',
+  //   alignItems: 'flex-start'
+  // },
   leftContainer: {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-start',
     paddingLeft: 10
   },
-  rightContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    paddingRight: 10
-  },
+  // rightContainer: {
+  //   flex: 1,
+  //   flexDirection: 'row',
+  //   justifyContent: 'flex-end',
+  //   paddingRight: 10
+  // },
   measurementDetailSwitchesContainer: {
     backgroundColor: themes.WHITE,
     height: 50
@@ -76,14 +76,14 @@ const styles = StyleSheet.create({
     width: 500,
     padding: 10
   },
-  modalTop: {
-    zIndex: 100,
-    width: '100%',
-    flex: 1,
-    backgroundColor: themes.COMPASS_MODAL,
-    borderTopRightRadius: 20,
-    borderTopLeftRadius: 20
-  },
+  // modalTop: {
+  //   zIndex: 100,
+  //   width: '100%',
+  //   flex: 1,
+  //   backgroundColor: themes.COMPASS_MODAL,
+  //   borderTopRightRadius: 20,
+  //   borderTopLeftRadius: 20
+  // },
   modalBottom: {
     // flex: 25,
     backgroundColor: themes.COMPASS_MODAL,
