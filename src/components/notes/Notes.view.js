@@ -7,7 +7,7 @@ import {Button, Input} from "react-native-elements";
 import styles from "../notebook-panel/notebook-measurements/MeasurementsStyles";
 import {SpotPages} from "../notebook-panel/Notebook.constants";
 import {SET_SPOT_PAGE_VISIBLE} from "../../store/Constants";
-import NotebookButton from '../../shared/ui/NotebookBackButton';
+import ReturnToOverview from '../notebook-panel/ui/ReturnToOverviewButton';
 
 const notesView = (props) => {
 
@@ -21,7 +21,7 @@ const notesView = (props) => {
     // const date = new Date.now();
     return (
       <View >
-        <NotebookButton
+        <ReturnToOverview
           onPress={() => props.setPageVisible(SpotPages.OVERVIEW)}
         />
         {/*<Button*/}
