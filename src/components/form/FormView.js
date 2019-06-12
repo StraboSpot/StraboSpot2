@@ -6,7 +6,7 @@ import TextInputField from './TextInputField';
 import NumberInputField from './NumberInputField';
 import SelectInputField from './SelectInputField';
 import styles from './form.styles';
-import Papa from 'papaparse';
+// import Papa from 'papaparse';
 import {isEmpty} from "../../shared/Helpers";
 
 import survey from './form-fields/planar-orientation-survey';
