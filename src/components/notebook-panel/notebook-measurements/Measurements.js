@@ -69,7 +69,10 @@ const MeasurementPage = (props) => {
       <NotebookBackButton
         onPress={() => {
           const pageVisible = props.setPageVisible(SpotPages.OVERVIEW)
-          if (pageVisible.page !== SpotPages.MEASUREMENT) props.showCompass(false);
+          if (pageVisible.page !== SpotPages.MEASUREMENT ) {
+            props.showModal('isCompassModalVisible', false);
+          }
+           // (pageVisible.page !== SpotPages.SAMPLE) props.showModal('isSamplesModalVisible', false);
         }}
       />
       <Button
