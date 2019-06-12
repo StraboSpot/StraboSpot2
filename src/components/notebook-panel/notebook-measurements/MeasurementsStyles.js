@@ -45,25 +45,24 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'flex-start'
   },
-  // navButtonsContainer: {
-  //   flexDirection: 'row',
-  //   justifyContent: 'space-between',
-  //   alignItems: 'flex-start'
-  // },
+  navButtonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start'
+  },
   leftContainer: {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-start',
     paddingLeft: 10
   },
-  // rightContainer: {
-  //   flex: 1,
-  //   flexDirection: 'row',
-  //   justifyContent: 'flex-end',
-  //   paddingRight: 10
-  // },
+  rightContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    paddingRight: 10
+  },
   measurementDetailSwitchesContainer: {
-    backgroundColor: themes.WHITE,
     height: 50
   },
   measurementDetailSwitches: {

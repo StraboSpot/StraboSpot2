@@ -8,6 +8,8 @@ import {Formik} from 'formik';
 import FormView from "../../form/FormView";
 import {isEmpty} from "../../../shared/Helpers";
 
+import survey from '../../form/form-fields/planar-orientation-survey';
+
 // Styles
 import commonStyles from '../../../themes/common.styles';
 import styles from './MeasurementsStyles';
@@ -27,14 +29,6 @@ const MeasurementDetailPage = (props) => {
   const updateFeatureTypeIndex = (i) => {
     console.log(i);
     setFeatureTypeIndex(i);
-  };
-
-  const onSubmitForm = ({firstName, lastName}) => {
-    if (!isEmpty(form.current.state.errors)) Alert.alert('Errors in Form', JSON.stringify(form.current.state.errors));
-    else {
-      console.log(`firstName: ${firstName}`);
-      console.log(`lastName: ${lastName}`);
-    }
   };
 
   // Render the switches to select a feature type
@@ -107,13 +101,16 @@ const MeasurementDetailPage = (props) => {
   };
 
   const renderPlanarLinearFields = () => {
+    console.log('spot', props.spot);
     return (
       <View>
         <Formik
           ref={form}
-          onSubmit={onSubmitForm}
+          //onSubmit={onSubmitForm}
           validate={validateForm}
           component={FormView}
+          initialValues={props.spot.properties.orientations[0]}
+          validateOnChange={false}
         />
       </View>
     );
@@ -140,24 +137,70 @@ const MeasurementDetailPage = (props) => {
   };
 
   const saveFormAndGo = (pageToGoTo) => {
-    form.current.executeSubmit();
-    props.setPageVisible(pageToGoTo);
+    form.current.submitForm().then(() => {
+      if (!isEmpty(form.current.state.errors)) {
+        Alert.alert('Errors in Form', JSON.stringify(form.current.state.errors));
+      }
+      else {
+        console.log('form data', form.current.state.values);
+        props.setPageVisible(pageToGoTo);
+      }
+    });
   };
 
-  const validateForm = ({firstName, lastName}) => {
+  const validateForm = (data) => {
+    console.log('Validating Form with', data);
     const errors = {};
-    if (firstName === undefined) {
-      errors.firstName = 'Required';
-    }
-    else if (firstName.trim() === '') {
-      errors.firstName = 'Must not be blank';
-    }
-    if (lastName === undefined) {
-      errors.lastName = 'Required';
-    }
-    else if (lastName.trim() === '') {
-      errors.lastName = 'Must not be blank';
-    }
+
+    survey.forEach(fieldModel => {
+      const key = fieldModel.name;
+      const value = data[key];
+      if (value && typeof value === 'string') data[key] = value.trim();
+      if (data.hasOwnProperty(key) && isEmpty(value)) delete data[key];
+      if (!value && fieldModel.required) errors[key] = 'Required';
+      else if (value) {
+        if (fieldModel.type === 'integer') data[key] = parseInt(value);
+        else if (fieldModel.type === 'decimal') data[key] = parseFloat(value);
+        if (fieldModel.constraint) {
+          // Max constraint
+          // Look for <= in constraint, followed by a space and then any number of digits (- preceding the digits is optional)
+          let regexMax = /<=\s(-?\d*)/i;
+          let parsedConstraint = fieldModel.constraint.match(regexMax);
+          if (parsedConstraint) {
+            let max = parseFloat(parsedConstraint[1]);
+            if (!isEmpty(max) && !(value <= max)) errors[key] = fieldModel.constraint_message;
+          }
+          else {
+            // Look for < in constraint
+            regexMax = /<\s(-?\d*)/i;
+            let parsedConstraint = fieldModel.constraint.match(regexMax);
+            if (parsedConstraint) {
+              let max = parseFloat(parsedConstraint[1]);
+              if (!isEmpty(max) && !(value < max)) errors[key] = fieldModel.constraint_message;
+            }
+          }
+          // Min constraint
+          // Look for <= in constraint, followed by a space and then any number of digits (- preceding the digits is optional)
+          let regexMin = />=\s(-?\d*)/i;
+          parsedConstraint = fieldModel.constraint.match(regexMin);
+          if (parsedConstraint) {
+            let min = parseFloat(parsedConstraint[1]);
+            if (!isEmpty(min) && !(value >= min)) errors[key] = fieldModel.constraint_message;
+          }
+          else {
+            // Look for < in constraint
+            regexMin = />\s(-?\d*)/i;
+            let parsedConstraint = fieldModel.constraint.match(regexMin);
+            if (parsedConstraint) {
+              let min = parseFloat(parsedConstraint[1]);
+              if (!isEmpty(min) && !(value > min)) errors[key] = fieldModel.constraint_message;
+            }
+          }
+        }
+      }
+    });
+
+    console.log('Data after validation:', data, 'Errors:', errors);
     return errors;
   };
 
@@ -165,12 +208,14 @@ const MeasurementDetailPage = (props) => {
     <React.Fragment>
       <View style={styles.measurementDetailContainer}>
         {renderCancelSaveButtons()}
-        <View style={styles.measurementDetailSwitchesContainer}>
-          {renderTypeSwitches()}
-        </View>
         <ScrollView style={{backgroundColor: themes.WHITE}}>
-          {renderNotesField()}
-          {renderFormFields()}
+          <View style={styles.measurementDetailSwitchesContainer}>
+            {renderTypeSwitches()}
+          </View>
+          <View>
+            {renderNotesField()}
+            {renderFormFields()}
+          </View>
         </ScrollView>
       </View>
     </React.Fragment>

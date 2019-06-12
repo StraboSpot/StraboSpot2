@@ -3,16 +3,16 @@ import React from 'react';
 import {Text, TextInput, View} from 'react-native';
 import styles from './form.styles';
 
-const TextInputField = ({
-                          field: {name, onBlur, onChange, value},
-                          form: {errors, touched},
-                          ...props
-                        }) => {
+const NumberInputField = ({
+                            field: {name, onBlur, onChange, value},
+                            form: {errors, touched},
+                            ...props
+                          }) => {
 
-  // const getDisplayValue = value => {
-  //   if (value) return value.toString();
-  //   return value;
-  // };
+  const getDisplayValue = value => {
+    if (value) return value.toString();
+    return value;
+  };
 
   return (
     <View>
@@ -25,8 +25,8 @@ const TextInputField = ({
             onChangeText={onChange(name)}
             onBlur={onBlur(name)}
             style={styles.fieldValue}
-            value={value}
-            // value={getDisplayValue(value)}
+            value={getDisplayValue(value)}
+            keyboardType={'numeric'}
           />
         </View>
       </View>
@@ -35,12 +35,12 @@ const TextInputField = ({
   );
 };
 
-TextInputField.propTypes = {
+NumberInputField.propTypes = {
   field: PropTypes.shape({
     name: PropTypes.string.isRequired,
     onBlur: PropTypes.func.isRequired,
     onChange: PropTypes.func.isRequired,
-    value: PropTypes.string,
+    // value: PropTypes.number,
   }).isRequired,
   form: PropTypes.shape({
     errors: PropTypes.object.isRequired,
@@ -48,4 +48,4 @@ TextInputField.propTypes = {
   }).isRequired,
 };
 
-export default TextInputField;
+export default NumberInputField;
