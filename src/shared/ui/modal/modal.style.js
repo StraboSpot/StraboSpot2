@@ -3,33 +3,30 @@ import * as themes from "../../../themes/ColorThemes";
 
 const modalStyle = StyleSheet.create({
   modalContainer: {
-    height: 400
+    height: 400,
+  },
+  modalBottom: {
+    backgroundColor: themes.COMPASS_MODAL,
+    borderBottomRightRadius: 20,
+    borderBottomLeftRadius: 20
   },
   modalTop: {
     zIndex: 100,
     width: '100%',
     flex: 1,
+    alignItems: 'flex-start',
     backgroundColor: themes.COMPASS_MODAL,
     borderTopRightRadius: 20,
     borderTopLeftRadius: 20
-  },
-  navButtonsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start'
-  },
-  rightContainer: {
-    // flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    paddingRight: 10
   },
   textStyle: {
     fontSize: 12,
     paddingLeft: 10
   },
   textContainer: {
-    alignItems: 'center'
+    alignItems: 'center',
+    paddingBottom: 10,
+    backgroundColor: themes.COMPASS_MODAL,
   }
 });
 
