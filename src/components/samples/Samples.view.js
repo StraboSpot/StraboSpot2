@@ -1,6 +1,6 @@
 import React from 'react';
 import {Text, View} from 'react-native';
-import NotebookBackButton from '../../shared/ui/NotebookBackButton';
+import NotebookBackButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import {SpotPages} from "../notebook-panel/Notebook.constants";
 import * as actionCreators from "../../store/actions";
 import {connect} from "react-redux";
