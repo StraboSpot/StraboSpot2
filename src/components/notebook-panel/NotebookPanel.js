@@ -25,9 +25,13 @@ const NotebookPanel = props => {
     const setPageVisible = page => {
       const pageVisible = props.setPageVisible(page);
       if (pageVisible.page === SpotPages.MEASUREMENT || pageVisible === SpotPages.MEASUREMENTDETAIL) {
-        props.showCompass(true);
+        props.showModal('isCompassModalVisible', true);
       }
-      else props.showCompass(false);
+      else props.showModal('isCompassModalVisible', false);
+      if (pageVisible.page === SpotPages.SAMPLE) {
+        props.showModal('isSamplesModalVisible' ,true);
+      }
+      else props.showModal('isSamplesModalVisible', false);
     };
 
     return (
@@ -40,17 +44,18 @@ const NotebookPanel = props => {
         <View style={notebookStyles.centerContainer}>
           {props.spotPageVisible === SpotPages.OVERVIEW ? <Overview/> : null}
           {props.spotPageVisible === SpotPages.BASIC ? <Basics/> : null}
-          {props.spotPageVisible === SpotPages.MEASUREMENT ? <MeasurementPage showCompass={props.showCompass}/> : null}
+          {props.spotPageVisible === SpotPages.MEASUREMENT ? <MeasurementPage showModal={props.showModal}/> : null}
           {props.spotPageVisible === SpotPages.MEASUREMENTDETAIL ? <MeasurementDetailPage/> : null}
           {props.spotPageVisible === SpotPages.NOTE ? <NotesPage/> : null}
-          {props.spotPageVisible === SpotPages.SAMPLE ? <SamplesPage/> : null}
+          {props.spotPageVisible === SpotPages.SAMPLE ? <SamplesPage showModal={props.showModal}/> : null}
           {props.spotPageVisible === undefined ? <Overview/> : null}
         </View>
         <View style={notebookStyles.footerContainer}>
           <NotebookFooter
             openPage={(page) => setPageVisible(page)}
             onPress={(camera) => props.onPress(camera)}
-            showCompass={props.showCompass}
+            // showCompass={props.showCompass}
+            showModal={props.showModal}
           />
         </View>
       </View>

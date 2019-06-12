@@ -9,7 +9,7 @@ const CompassModal = (props) => {
     <Modal
       component={<Compass/>}
       style={styles.compassContainer}
-      close={props.close}
+      close={() => props.close('isCompassModalVisible')}
       textStyle={{fontWeight: 'bold' }}
     >Tap Compass to record a measurement</Modal>
   )

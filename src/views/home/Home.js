@@ -31,6 +31,8 @@ import {saveFile} from '../../services/images/ImageDownload';
 import {takePicture} from '../../components/images/Images.container';
 import {IMAGES} from "../../routes/ScreenNameConstants";
 import CompassModal from "../../components/compass/CompassModal";
+import SamplesModal from '../../components/samples/SamplesModal.view';
+
 
 const imageOptions = {
   storageOptions: {
@@ -83,7 +85,8 @@ class Home extends React.Component {
       },
       currentSpot: undefined,
       allPhotosSaved: [],
-      isCompassVisible: false
+      isCompassModalVisible: false,
+      isSamplesModalVisible: false
     };
   }
 
@@ -211,7 +214,8 @@ class Home extends React.Component {
         return {
           ...prevState,
           notebookPanelVisible: false,
-          isCompassVisible: false
+          isCompassModalVisible: false,
+          isSamplesModalVisible: false
         }
       });
     }
@@ -493,7 +497,7 @@ class Home extends React.Component {
     else console.log('Attempting to toggle', dialog, 'but Home Component not mounted.');
   };
 
-  toggleModal = () => {
+  toggleOfflineMapModal = () => {
     if (this._isMounted) {
       this.setState(prevState => {
         return {
@@ -526,18 +530,30 @@ class Home extends React.Component {
     }
   };
 
-  toggleCompass = (isCompassVisible) => {
+  // toggleCompass = (isCompassModalVisible) => {
+  //   if (this._isMounted) {
+  //       this.setState(prevState => {
+  //         return {
+  //           ...prevState,
+  //           isCompassModalVisible: isCompassModalVisible !== undefined ? isCompassModalVisible : !prevState.isCompassModalVisible
+  //         }
+  //       }, () => {
+  //         console.log('Compass state', this.state.isCompassModalVisible)
+  //       })
+  //     }
+  // };
+
+  toggleModal = (modal, value) => {
     if (this._isMounted) {
-        this.setState(prevState => {
-          return {
-            ...prevState,
-            isCompassVisible: isCompassVisible !== undefined ? isCompassVisible : !prevState.isCompassVisible
-          }
-        }, () => {
-          console.log('Compass state', this.state.isCompassVisible)
-        })
-      }
+      this.setState(prevState => {
+        return {
+          ...prevState,
+          [modal]: value !== undefined ? value : !prevState[modal]
+        }
+      }, () => console.log(`state of ${modal}`, this.state[modal]))
+    }
   };
+
 
   render() {
     const spot = this.props.selectedSpot;
@@ -548,22 +564,16 @@ class Home extends React.Component {
     let compassModal =  <View style={styles.compassModalContainer}>
       <CompassModal
         // showCompass={() => this.toggleCompass}
-        close={() => this.toggleCompass()}
-        style={{justifyContent: 'center'}}
+        close={(modalName) => this.toggleModal(modalName)}
       />
     </View>;
 
-    // if (this.props.visiblePage === SpotPages.MEASUREMENT) {
-    //   this.toggleCompass();
-    //   // compassModal =
-    //   //   <View style={styles.modalContainer}>
-    //   //   <CompassModal
-    //   //     compass={() => this.toggleCompass}
-    //   //     close={() => this.toggleCompass()}
-    //   //     // style={styles.modalContainer}
-    //   //   />
-    //   // </View>;
-    // }
+    let samplesModal =  <View style={styles.compassModalContainer}>
+      <SamplesModal
+      close={(modalName) => this.toggleModal(modalName)}
+      style={{justifyContent: 'center'}}
+      />
+    </View>;
 
     if (this.state.settingsMenuVisible === 'settingsMain') {
       content = <SettingsPanel onPress={(name) => this.settingsClickHandler(name)}/>
@@ -592,7 +602,7 @@ class Home extends React.Component {
         />
     }
     //
-    // if (this.state.isCompassVisible) {
+    // if (this.state.isCompassModalVisible) {
     //   compassModal = <CompassModal
     //     compass={() => this.toggleCompass}
     //     close={() => this.toggleCompass()}
@@ -622,10 +632,12 @@ class Home extends React.Component {
               closeNotebook={this.closeNotebookPanel}
               textStyle={{fontWeight: 'bold', fontSize: 12}}
               onPress={(name) => this.notebookClickHandler(name)}
-              showCompass={(showCompass) => this.toggleCompass(showCompass)}
+              // showCompass={(showCompass) => this.toggleCompass(showCompass)}
+              showModal={(modalName, value) => this.toggleModal(modalName, value)}
             />
             : null}
-          {this.state.isCompassVisible ? compassModal : null}
+          {this.state.isCompassModalVisible ? compassModal : null}
+          {this.state.isSamplesModalVisible ? samplesModal : null}
           <View style={styles.topCenter}>
             {this.state.buttons.endDrawButtonVisible ?
               <ButtonWithBackground
@@ -796,7 +808,7 @@ class Home extends React.Component {
           >
             <View style={styles.modal}>
               <SaveMapModal
-                close={this.toggleModal}
+                close={this.toggleOfflineMapModal}
                 map={this.mapViewComponent}
               />
             </View>
