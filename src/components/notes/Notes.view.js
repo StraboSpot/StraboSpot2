@@ -7,7 +7,7 @@ import {Button, Input} from "react-native-elements";
 import styles from "../notebook-panel/notebook-measurements/MeasurementsStyles";
 import {SpotPages} from "../notebook-panel/Notebook.constants";
 import {SET_SPOT_PAGE_VISIBLE} from "../../store/Constants";
-import NotebookButton from '../../themes/NotebookBackButton';
+import NotebookButton from '../../shared/ui/NotebookBackButton';
 
 const notesView = (props) => {
 

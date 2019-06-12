@@ -1,6 +1,6 @@
-import styles from "../components/notebook-panel/notebook-measurements/MeasurementsStyles";
-import {SpotPages} from "../components/notebook-panel/Notebook.constants";
-import {Button} from "react-native-elements";
+import styles from "../../components/notebook-panel/notebook-measurements/MeasurementsStyles";
+import {SpotPages} from "../../components/notebook-panel/Notebook.constants";
+import {Button} from "react-native-elements/src/index";
 import React from "react";
 
 const notebookBackButton = props => {
