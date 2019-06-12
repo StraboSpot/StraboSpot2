@@ -85,19 +85,19 @@ class Compass extends Component {
     this._isMounted = false;
   };
 
-  _onOrientationDidChange = (orientation) => {
-    if (orientation == 'PORTRAIT') {
-      console.log('AAAA', orientation)
-      orientationChange = <Text>{orientation}</Text>
-      Orientation.lockToLandscapeRight();
-      this.calculateOrientationLandscape()
-
-    } else {
-      console.log('BBBB', orientation)
-      orientationChange = <Text>{orientation}</Text>
-
-    }
-  };
+  // _onOrientationDidChange = (orientation) => {
+  //   if (orientation === 'PORTRAIT') {
+  //     console.log('AAAA', orientation)
+  //     orientationChange = <Text>{orientation}</Text>
+  //     Orientation.lockToLandscapeRight();
+  //     this.calculateOrientationLandscape()
+  //
+  //   } else {
+  //     console.log('BBBB', orientation)
+  //     orientationChange = <Text>{orientation}</Text>
+  //
+  //   }
+  // };
 
   grabMeasurements = () => {
     let measurements = [];
@@ -107,7 +107,7 @@ class Compass extends Component {
         dip_direction: this.state.compassData.dipdir,
         dip: this.state.compassData.dip,
         type: 'planar_orientation',
-        quality: this.state.sliderValue
+        quality: this.state.sliderValue.toString()
       });
     }
     if (this.state.toggles.includes(CompassToggleButtons.LINEAR)) {
@@ -117,7 +117,7 @@ class Compass extends Component {
         rake: this.state.compassData.rake,
         rake_calculated: 'yes',
         type: 'linear_orientation',
-        quality: this.state.sliderValue
+        quality: this.state.sliderValue.toString()
       });
     }
 
@@ -152,7 +152,6 @@ class Compass extends Component {
     //   this._subscription && this._subscription.remove();
     if (this._subscription) this._subscription.unsubscribe();
     this._subscription = null;
-    console.log('Unsubscribed');
   };
 
   /*  _angle = (magnetometer) => {
@@ -531,7 +530,7 @@ class Compass extends Component {
             setSliderValue={(value) => this.setState({sliderValue: value})}
             sliderValue={this.state.sliderValue}
           />
-          {this.renderMeasurements()}
+          {/*{this.renderMeasurements()}*/}
 
           <View style={{flexDirection: 'row'}}>
             <Text style={{paddingRight: 10}}>Value: {this.state.sliderValue}</Text>

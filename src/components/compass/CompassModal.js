@@ -1,6 +1,6 @@
 import React from 'react';
 import Modal from '../../shared/ui/modal/Modal.view';
-import styles from "../notebook-panel/notebook-measurements/MeasurementsStyles";
+import styles from './CompassStyles';
 import Compass from './Compass';
 
 

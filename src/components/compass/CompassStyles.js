@@ -6,11 +6,18 @@ const styles = StyleSheet.create({
     flex: 1,
     zIndex: 0
   },
+  compassContainer: {
+    flex: 6,
+    backgroundColor: 'white',
+    borderBottomRightRadius: 20,
+    borderBottomLeftRadius: 20,
+    width: '100%',
+  },
   compassImageContainer: {
     alignItems: 'center',
     flex: 70,
     justifyContent: 'center',
-    // paddingTop: 70
+    paddingBottom: 10
   },
   renderCompassContainer: {
     flex: 60,
@@ -59,11 +66,8 @@ const styles = StyleSheet.create({
     zIndex: 10,
     height: 120,
     position: 'absolute',
-    top: 39.5,
-    // justifyContent: 'center',
-    // alignItems: 'center',
+    top: 30,
     resizeMode: 'contain',
-    // transform: [{rotate: '90deg'}]
   },
   toggleButtonsContainer: {
     backgroundColor: 'transparent',
@@ -77,11 +81,8 @@ const styles = StyleSheet.create({
   trendLine: {
     height: 100,
     position: 'absolute',
-    top: 50,
-    // justifyContent: 'center',
-    // alignItems: 'center',
+    top: 40,
     resizeMode: 'contain',
-    // transform: [{rotate: '90deg'}]
   }
 });
 
