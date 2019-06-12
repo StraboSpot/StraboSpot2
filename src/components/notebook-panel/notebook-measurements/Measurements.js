@@ -7,7 +7,7 @@ import * as actionCreators from '../../../store/actions/index';
 // import {SET_SPOT_PAGE_VISIBLE} from "../../../store/Constants";
 import styles from './MeasurementsStyles';
 import spotPageStyles from '../SpotPageStyles';
-import NotebookBackButton from '../../../shared/ui/NotebookBackButton';
+import ReturnToOverview from '../ui/ReturnToOverviewButton';
 
 const MeasurementPage = (props) => {
   const [isModalVisible, setIsModalVisible] = useState(true);
@@ -60,13 +60,9 @@ const MeasurementPage = (props) => {
     );
   };
 
-  const toggleModal = () => {
-    setIsModalVisible(!isModalVisible);
-  };
-
-  return (
+   return (
     <React.Fragment>
-      <NotebookBackButton
+      <ReturnToOverview
         onPress={() => {
           const pageVisible = props.setPageVisible(SpotPages.OVERVIEW)
           if (pageVisible.page !== SpotPages.MEASUREMENT ) {
@@ -76,38 +72,13 @@ const MeasurementPage = (props) => {
         }}
       />
       <Button
-        // icon={{
-        //   name: 'arrow-back',
-        //   size: 20,
-        //   color: 'black'
-        // }}
         containerStyle={styles.backButton}
         titleStyle={{color: 'blue'}}
         title={'Open Compass'}
         type={'clear'}
-        onPress={props.showCompass}
+        onPress={() => props.showModal('isCompassModalVisible', true)}
       />
       <ScrollView>
-        {/*<View style={styles.compassContainer}>*/}
-        {/*  <Compass/>*/}
-        {/*</View>*/}
-        {/*  <Modal*/}
-        {/*    onBackdropPress={() => setIsModalVisible(false)}*/}
-        {/*    backdropOpacity={.50}*/}
-        {/*    isVisible={isModalVisible}*/}
-        {/*    style={styles.modalContainer}*/}
-        {/*    useNativeDriver={true}*/}
-        {/*    animationOut={'slideOutDown'}*/}
-        {/*  >*/}
-        {/*    <CompassModal*/}
-        {/*      close={() => toggleModal()}*/}
-        {/*    />*/}
-        {/*  </Modal>*/}
-        {/*<View>*/}
-        {/*  {isModalVisible ? <CompassModal*/}
-        {/*    style={styles.modalContainer}*/}
-        {/*  close={() => toggleModal()}/> : null}*/}
-        {/*</View>*/}
         <Divider style={spotPageStyles.divider}>
           <Text style={spotPageStyles.spotDividerText}>Measurements</Text>
         </Divider>

@@ -45,23 +45,23 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'flex-start'
   },
-  navButtonsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start'
-  },
-  leftContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    paddingLeft: 10
-  },
-  rightContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    paddingRight: 10
-  },
+  // navButtonsContainer: {
+  //   flexDirection: 'row',
+  //   justifyContent: 'space-between',
+  //   alignItems: 'flex-start'
+  // },
+  // leftContainer: {
+  //   flex: 1,
+  //   flexDirection: 'row',
+  //   justifyContent: 'flex-start',
+  //   paddingLeft: 10
+  // },
+  // rightContainer: {
+  //   flex: 1,
+  //   flexDirection: 'row',
+  //   justifyContent: 'flex-end',
+  //   paddingRight: 10
+  // },
   measurementDetailSwitchesContainer: {
     height: 50
   },
@@ -83,14 +83,14 @@ const styles = StyleSheet.create({
   //   borderTopRightRadius: 20,
   //   borderTopLeftRadius: 20
   // },
-  modalBottom: {
-    // flex: 25,
-    backgroundColor: themes.COMPASS_MODAL,
-    // width: '100%',
-    // padding: 10,
-    borderBottomRightRadius: 20,
-    borderBottomLeftRadius: 20
-  },
+  // modalBottom: {
+  //   // flex: 25,
+  //   backgroundColor: themes.COMPASS_MODAL,
+  //   // width: '100%',
+  //   // padding: 10,
+  //   borderBottomRightRadius: 20,
+  //   borderBottomLeftRadius: 20
+  // },
   modalContainer: {
     // flex: 1,
     // position: 'absolute',

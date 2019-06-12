@@ -7,6 +7,7 @@ import {SET_SPOT_PAGE_VISIBLE} from "../../../store/Constants";
 import {Formik} from 'formik';
 import FormView from "../../form/FormView";
 import {isEmpty} from "../../../shared/Helpers";
+import SaveAndCloseButton from '../ui/SaveAndCloseButtons';
 
 import survey from '../../form/form-fields/planar-orientation-survey';
 
@@ -79,25 +80,54 @@ const MeasurementDetailPage = (props) => {
 
   const renderCancelSaveButtons = () => {
     return (
-      <View style={styles.navButtonsContainer}>
-        <View style={styles.leftContainer}>
-          <Button
-            titleStyle={{color: themes.BLUE}}
-            title={'Cancel'}
-            type={'clear'}
-            onPress={() => cancelFormAndGo(SpotPages.MEASUREMENT)}
-          />
-        </View>
-        <View style={styles.rightContainer}>
-          <Button
-            titleStyle={{color: themes.BLUE}}
-            title={'Save'}
-            type={'clear'}
-            onPress={() => saveFormAndGo(SpotPages.MEASUREMENT)}
-          />
-        </View>
+      <View>
+        <SaveAndCloseButton
+          cancel={() => cancelFormAndGo(SpotPages.MEASUREMENT)}
+          save={() => saveFormAndGo(SpotPages.MEASUREMENT)}
+        />
       </View>
-    );
+
+    )
+
+
+    // return (
+    {/*<View style={styles.navButtonsContainer}>*/
+    }
+    {/*  <View style={styles.leftContainer}>*/
+    }
+    {/*    <Button*/
+    }
+    {/*      titleStyle={{color: themes.BLUE}}*/
+    }
+    {/*      title={'Cancel'}*/
+    }
+    {/*      type={'clear'}*/
+    }
+    {/*      onPress={() => cancelFormAndGo(SpotPages.MEASUREMENT)}*/
+    }
+    {/*    />*/
+    }
+    {/*  </View>*/
+    }
+    {/*  <View style={styles.rightContainer}>*/
+    }
+    {/*    <Button*/
+    }
+    {/*      titleStyle={{color: themes.BLUE}}*/
+    }
+    {/*      title={'Save'}*/
+    }
+    {/*      type={'clear'}*/
+    }
+    {/*      onPress={() => saveFormAndGo(SpotPages.MEASUREMENT)}*/
+    }
+    {/*    />*/
+    }
+    {/*  </View>*/
+    }
+    {/*</View>*/
+    }
+    // );
   };
 
   const renderPlanarLinearFields = () => {
