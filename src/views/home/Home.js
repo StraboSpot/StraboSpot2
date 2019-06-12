@@ -278,7 +278,7 @@ class Home extends React.Component {
   //function for online/offline state change event handler
   handleConnectivityChange = (isConnected) => {
     this.props.setIsOnline(isConnected);
-  }
+  };
 
   mapPress = () => {
     return this.mapViewComponent.getCurrentBasemap();
@@ -626,7 +626,8 @@ class Home extends React.Component {
           <MapView ref={this.mapViewElement}
                    onRef={ref => (this.mapViewComponent = ref)}
                    mapMode={this.state.mapMode}
-                   startEdit={this.startEdit}/>
+                   startEdit={this.startEdit}
+                   showModal={(modalName, value) => this.toggleModal(modalName, value)}/>
           {this.state.notebookPanelVisible ?
             <NotebookPanel
               closeNotebook={this.closeNotebookPanel}

@@ -99,7 +99,11 @@ class mapView extends Component {
       const {screenPointX, screenPointY} = e.properties;
       const featureSelected = await this.getFeatureAtPress(screenPointX, screenPointY);
       if (Object.getOwnPropertyNames(featureSelected).length > 0) this.props.onFeatureSelected(featureSelected);
-      else this.props.onFeaturesSelectedCleared();
+      else {
+        this.props.onFeaturesSelectedCleared();
+        this.props.showModal('isCompassModalVisible', false);
+        this.props.showModal('isSamplesModalVisible', false);
+      }
     }
     // Draw a feature
     else if (this.props.mapMode === MapModes.DRAW.POINT || this.props.mapMode === MapModes.DRAW.LINE
