@@ -178,7 +178,7 @@ class Home extends React.Component {
         console.log(`${name}`, " was clicked");
         break;
       case "saveMap":
-        this.toggleModal();
+        this.toggleOfflineMapModal();
         // this.mapViewElement.current.saveMap();
         // saveMap();
         break;
