@@ -3,13 +3,14 @@ import {Alert, ScrollView, Text, View} from 'react-native';
 import {connect} from 'react-redux';
 import {SpotPages} from "../Notebook.constants";
 import {Button, ButtonGroup, Divider, Input} from "react-native-elements";
-import {SET_SPOT_PAGE_VISIBLE} from "../../../store/Constants";
+import {EDIT_SPOT_PROPERTIES, SET_SPOT_PAGE_VISIBLE} from "../../../store/Constants";
 import {Formik} from 'formik';
 import FormView from "../../form/FormView";
 import {isEmpty} from "../../../shared/Helpers";
 import SaveAndCloseButton from '../ui/SaveAndCloseButtons';
 
 import survey from '../../form/form-fields/planar-orientation-survey';
+import choices from '../../form/form-fields/planar-orientation-choices';
 
 // Styles
 import commonStyles from '../../../themes/common.styles';
@@ -27,6 +28,21 @@ const MeasurementDetailPage = (props) => {
 
   const [selectedFeatureTypeIndex, setFeatureTypeIndex] = useState(0);
   const form = useRef(null);
+
+  const createDefaultLabel = (data) => {
+    let label = getFeatureTypeLabel(data.feature_type);
+    if (isEmpty(label) && data.type) label = data.type.split('_')[0] + ' feature';
+    if (data.strike) label += ' ' + data.strike.toString();
+    else if (data.trend) label += ' ' + data.trend.toString();
+    return label;
+  };
+
+  const getFeatureTypeLabel = (featureType) => {
+    const choiceMatched = choices.find(choice => {
+      return choice.name === featureType;
+    });
+    return choiceMatched.label;
+  };
 
   // This function doesn't do anything but is needed
   // What happens after submitting the form is handled in saveFormAndGo
@@ -94,7 +110,7 @@ const MeasurementDetailPage = (props) => {
         />
       </View>
 
-    )
+    );
 
 
     // return (
@@ -180,7 +196,10 @@ const MeasurementDetailPage = (props) => {
         Alert.alert('Errors in Form', JSON.stringify(form.current.state.errors));
       }
       else {
-        console.log('form data', form.current.state.values);
+        let orientations = props.spot.properties.orientations;
+        const i = orientations.findIndex(orientation => orientation.id === form.current.state.values.id);
+        orientations[i] = form.current.state.values;
+        props.onSpotEdit('orientations', orientations);
         props.setPageVisible(pageToGoTo);
       }
     });
@@ -195,7 +214,7 @@ const MeasurementDetailPage = (props) => {
       const value = data[key];
       if (value && typeof value === 'string') data[key] = value.trim();
       if (data.hasOwnProperty(key) && isEmpty(value)) delete data[key];
-      if (!value && fieldModel.required) errors[key] = 'Required';
+      //if (!value && fieldModel.required) errors[key] = 'Required';
       else if (value) {
         if (fieldModel.type === 'integer') data[key] = parseInt(value);
         else if (fieldModel.type === 'decimal') data[key] = parseFloat(value);
@@ -238,6 +257,7 @@ const MeasurementDetailPage = (props) => {
       }
     });
 
+    if (isEmpty(data.label)) data.label = createDefaultLabel(data);
     console.log('Data after validation:', data, 'Errors:', errors);
     return errors;
   };
@@ -268,6 +288,7 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
+  onSpotEdit: (field, value) => ({type: EDIT_SPOT_PROPERTIES, field: field, value: value}),
   setPageVisible: (page) => ({type: SET_SPOT_PAGE_VISIBLE, page: page}),
   setFormData: (formData) => (actionCreators.setFormData(formData))
 };
