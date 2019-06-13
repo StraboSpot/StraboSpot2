@@ -1,6 +1,7 @@
 import {PropTypes} from 'prop-types';
 import React from 'react';
-import {Picker, Text, View} from 'react-native';
+import {Text, View} from 'react-native';
+import Picker from 'react-native-picker-select'
 import styles from './form.styles';
 
 const SelectInputField = ({
@@ -8,6 +9,16 @@ const SelectInputField = ({
                             form: {errors, touched},
                             ...props
                           }) => {
+  const placeholder = {
+    label: `-- Select ${props.label} --`,
+    value: null,
+    color: 'black',
+  };
+
+  const pickerStyle = {
+    inputIOS: styles.pickerStyle,
+    inputAndroid: styles.pickerStyle
+  };
 
   return (
     <View>
@@ -17,15 +28,11 @@ const SelectInputField = ({
         </View>
         <View style={styles.fieldValueContainer}>
           <Picker
+            placeholder={placeholder}
             onValueChange={onChange(name)}
-            // onBlur={onBlur(name)}
-            selectedValue={value}
-            itemStyle={styles.fieldValue}
-          >
-            {props.choices.map((choice) => {
-              return <Picker.Item key={choice.name} label={choice.label} value={choice.name}/>
-            })}
-          </Picker>
+            items={props.choices}
+            style={pickerStyle}
+          />
         </View>
       </View>
     </View>

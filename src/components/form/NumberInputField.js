@@ -2,6 +2,7 @@ import {PropTypes} from 'prop-types';
 import React from 'react';
 import {Text, TextInput, View} from 'react-native';
 import styles from './form.styles';
+import {isEmpty} from "../../shared/Helpers";
 
 const NumberInputField = ({
                             field: {name, onBlur, onChange, value},
@@ -10,7 +11,7 @@ const NumberInputField = ({
                           }) => {
 
   const getDisplayValue = value => {
-    if (value) return value.toString();
+    if (!isEmpty(value)) return value.toString();
     return value;
   };
 

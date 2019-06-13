@@ -59,16 +59,20 @@ const FormView = ({handleSubmit, isValid, setFieldValue, values}) => {
   };
 
   const renderSelectInput = (field, choicesList) => {
-    const selectLabel = '-- Select ' + field.label + ' --';
-    let fieldChoices = [{name: '', label: selectLabel}];
-    fieldChoices.push(...choices.filter(choice => choice.list_name === choicesList));
+    const fieldChoices = choices.filter(choice => choice.list_name === choicesList);
+    const fieldChoicesCopy = JSON.parse(JSON.stringify(fieldChoices));
+    fieldChoicesCopy.map((choice) => {
+      choice.value = choice.name;
+      delete choice.name;
+      return choice
+    });
     return (
       <Field
         component={SelectInputField}
         name={field.name}
         label={field.label}
         key={field.name}
-        choices={fieldChoices}
+        choices={fieldChoicesCopy}
       />
     );
   };

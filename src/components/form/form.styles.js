@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
   },
   fieldValueContainer: {
     width: '100%',
-   // justifyContent: 'center'      // Doesn't seem to work with TextInput, see below for hack
+   justifyContent: 'center'      // Doesn't seem to work with TextInput, see below for hack
   },
   fieldValue: {
     paddingLeft: 20,
@@ -32,7 +32,12 @@ const styles = StyleSheet.create({
   },
   fieldError: {
     color: 'red',
+  },
+  pickerStyle: {
+    fontSize: 25,
+    paddingHorizontal: 10,
+    color: themes.MEDIUMGREY,
+    paddingRight: 30, // to ensure the text is never behind the icon
   }
 });
-
 export default styles;
