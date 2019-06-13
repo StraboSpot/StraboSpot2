@@ -32,6 +32,7 @@ const SelectInputField = ({
             onValueChange={onChange(name)}
             items={props.choices}
             style={pickerStyle}
+            value={value}
           />
         </View>
       </View>
