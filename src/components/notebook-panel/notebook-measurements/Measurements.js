@@ -14,6 +14,7 @@ const MeasurementPage = (props) => {
 
   const openMeasurementDetail = (item) => {
     console.log('item', item);
+    props.setFormData(item);
     props.setPageVisible(SpotPages.MEASUREMENTDETAIL);
   };
 
@@ -64,7 +65,7 @@ const MeasurementPage = (props) => {
     <React.Fragment>
       <ReturnToOverview
         onPress={() => {
-          const pageVisible = props.setPageVisible(SpotPages.OVERVIEW)
+          const pageVisible = props.setPageVisible(SpotPages.OVERVIEW);
           if (pageVisible.page !== SpotPages.MEASUREMENT ) {
             props.showModal('isCompassModalVisible', false);
           }
@@ -99,7 +100,8 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-  setPageVisible: (page) => (actionCreators.setSpotPageVisible(page))
+  setPageVisible: (page) => (actionCreators.setSpotPageVisible(page)),
+  setFormData: (formData) => (actionCreators.setFormData(formData))
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(MeasurementPage);

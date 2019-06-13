@@ -16,6 +16,7 @@ import {
   SET_SPOT_PAGE_VISIBLE,
   SET_ISONLINE,
   EDIT_SPOT_IMAGES,
+  SET_FORM_DATA
 } from '../Constants';
 import {SpotPages} from "../../components/notebook-panel/Notebook.constants";
 
@@ -31,6 +32,10 @@ const initialState = {
 
 const initialImageState = {
   imagePaths: {}
+};
+
+const initialFormState = {
+  formData: {}
 };
 
 export const homeReducer = (state = initialState, action) => {
@@ -148,7 +153,7 @@ export const homeReducer = (state = initialState, action) => {
               [action.field]: action.value
             }
           }
-        }
+        };
       case
       CUSTOM_MAPS:
         console.log('Setting custom maps: ', action.customMaps);
@@ -222,10 +227,22 @@ export const imageReducer = (state = initialImageState, action) => {
 
         // updatedImages = state.imagePaths.concat(imagePathsTemp)
       });
-      console.log(state.imagePaths, '\n', imagePathsTemp)
+      console.log(state.imagePaths, '\n', imagePathsTemp);
       return {
         ...state,
         imagePaths: {...state.imagePaths, ...imagePathsTemp}
+      }
+  }
+  return state;
+};
+
+export const formReducer = (state = initialFormState, action) => {
+  switch (action.type) {
+    case SET_FORM_DATA:
+      console.log('SET_FORM_DATA', action);
+      return {
+        ...state,
+        formData: action.formData
       }
   }
   return state;

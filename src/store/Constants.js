@@ -15,3 +15,4 @@ export const SET_SPOT_PAGE_VISIBLE = 'SPOT_PAGE_VISIBLE';
 export const ADD_PHOTOS = 'ADD_PHOTOS';
 export const DELETE_PHOTOS = 'DELETE_PHOTOS';
 export const EDIT_SPOT_IMAGES = 'EDIT_SPOT_IMAGES';
+export const SET_FORM_DATA = 'SET_FORM_DATA';

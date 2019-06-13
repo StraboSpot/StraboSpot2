@@ -15,6 +15,7 @@ import survey from '../../form/form-fields/planar-orientation-survey';
 import commonStyles from '../../../themes/common.styles';
 import styles from './MeasurementsStyles';
 import * as themes from '../../../themes/ColorThemes';
+import * as actionCreators from "../../../store/actions";
 
 const MeasurementDetailPage = (props) => {
 
@@ -26,6 +27,12 @@ const MeasurementDetailPage = (props) => {
 
   const [selectedFeatureTypeIndex, setFeatureTypeIndex] = useState(0);
   const form = useRef(null);
+
+  // This function doesn't do anything but is needed
+  // What happens after submitting the form is handled in saveFormAndGo
+  const onSubmitForm = () => {
+    console.log('In onSubmitForm');
+  };
 
   const updateFeatureTypeIndex = (i) => {
     console.log(i);
@@ -136,10 +143,10 @@ const MeasurementDetailPage = (props) => {
       <View>
         <Formik
           ref={form}
-          //onSubmit={onSubmitForm}
+          onSubmit={onSubmitForm}
           validate={validateForm}
           component={FormView}
-          initialValues={props.spot.properties.orientations[0]}
+          initialValues={props.formData}
           validateOnChange={false}
         />
       </View>
@@ -168,6 +175,7 @@ const MeasurementDetailPage = (props) => {
 
   const saveFormAndGo = (pageToGoTo) => {
     form.current.submitForm().then(() => {
+      console.log('In promise in saveFormAndGo');
       if (!isEmpty(form.current.state.errors)) {
         Alert.alert('Errors in Form', JSON.stringify(form.current.state.errors));
       }
@@ -254,12 +262,14 @@ const MeasurementDetailPage = (props) => {
 
 function mapStateToProps(state) {
   return {
-    spot: state.home.selectedSpot
+    spot: state.home.selectedSpot,
+    formData: state.form.formData
   }
 }
 
 const mapDispatchToProps = {
-  setPageVisible: (page) => ({type: SET_SPOT_PAGE_VISIBLE, page: page})
+  setPageVisible: (page) => ({type: SET_SPOT_PAGE_VISIBLE, page: page}),
+  setFormData: (formData) => (actionCreators.setFormData(formData))
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(MeasurementDetailPage);
