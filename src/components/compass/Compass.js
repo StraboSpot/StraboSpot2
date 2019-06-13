@@ -2,7 +2,6 @@ import RNSimpleCompass from 'react-native-simple-compass';
 import React, {Component} from 'react';
 import {connect} from "react-redux";
 import {Animated, Easing, Button, Alert, Image, View, Text, Dimensions, TouchableOpacity} from 'react-native';
-import {Grid, Col, Row} from 'react-native-easy-grid';
 import {setUpdateIntervalForType, SensorTypes, magnetometer, accelerometer} from 'react-native-sensors';
 import {getNewId, mod, toRadians, toDegrees, roundToDecimalPlaces} from "../../shared/Helpers";
 import {CompassToggleButtons} from "./Compass.constants";
