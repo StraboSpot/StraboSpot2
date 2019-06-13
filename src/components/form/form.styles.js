@@ -1,4 +1,4 @@
-import {StyleSheet} from 'react-native';
+import {StyleSheet, Platform} from 'react-native';
 import * as themes from '../../themes/ColorThemes';
 
 const styles = StyleSheet.create({
@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
   },
   fieldValueContainer: {
     width: '100%',
-   justifyContent: 'center'      // Doesn't seem to work with TextInput, see below for hack
+   justifyContent: Platform.OS === 'ios' ? 'center' : null  // Doesn't seem to work with TextInput, see below for hack
   },
   fieldValue: {
     paddingLeft: 20,
@@ -35,9 +35,9 @@ const styles = StyleSheet.create({
   },
   pickerStyle: {
     fontSize: 25,
-    paddingHorizontal: 10,
+    paddingLeft: 20,
     color: themes.MEDIUMGREY,
-    paddingRight: 30, // to ensure the text is never behind the icon
+    height: 45
   }
 });
 export default styles;

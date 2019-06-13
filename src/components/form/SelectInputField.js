@@ -30,6 +30,7 @@ const SelectInputField = ({
           <Picker
             placeholder={placeholder}
             onValueChange={onChange(name)}
+            useNativeAndroidPickerStyle={false}
             items={props.choices}
             style={pickerStyle}
             value={value}
