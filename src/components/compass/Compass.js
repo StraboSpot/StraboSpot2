@@ -4,7 +4,7 @@ import {connect} from "react-redux";
 import {Animated, Easing, Button, Alert, Image, View, Text, Dimensions, TouchableOpacity} from 'react-native';
 import {Grid, Col, Row} from 'react-native-easy-grid';
 import {setUpdateIntervalForType, SensorTypes, magnetometer, accelerometer} from 'react-native-sensors';
-import {mod, toRadians, toDegrees, roundToDecimalPlaces} from "../../shared/Helpers";
+import {getNewId, mod, toRadians, toDegrees, roundToDecimalPlaces} from "../../shared/Helpers";
 import {CompassToggleButtons} from "./Compass.constants";
 import {ListItem} from "react-native-elements";
 import {Switch} from "react-native-switch";
@@ -123,6 +123,7 @@ class Compass extends Component {
 
     if (measurements.length > 0) {
       let newOrientation = measurements[0];
+      newOrientation.id = getNewId();
       if (measurements.length > 1) newOrientation.associated_orientation = [measurements[1]];
       const orientations = (typeof this.props.spot.properties.orientations === 'undefined') ? [newOrientation] : [...this.props.spot.properties.orientations, newOrientation];
       this.props.onSpotEdit('orientations', orientations);

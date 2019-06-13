@@ -6,6 +6,7 @@ import {CustomBasemap, MapboxOutdoorsBasemap, MapboxSatelliteBasemap, OSMBasemap
 import * as turf from '@turf/turf'
 import {LATITUDE, LONGITUDE, LATITUDE_DELTA, LONGITUDE_DELTA, MapModes} from './Map.constants';
 import {connect} from 'react-redux';
+import {getNewId} from "../../shared/Helpers";
 
 import {
   CURRENT_BASEMAP,
@@ -387,8 +388,8 @@ class mapView extends Component {
   // Create a new feature in the feature collection
   createFeature = async (feature) => {
     if (this._isMounted) {
-      feature.properties.id = '' + Date.now();        // ToDo: Generate unique string id here
-      feature.properties.name = feature.properties.id;
+      feature.properties.id = getNewId();
+      feature.properties.name = 'Spot ' + this.props.features.length;
       console.log('Creating new feature:', feature);
       await this.props.onFeatureAdd(feature);
       console.log('Finished creating new feature. Features: ', this.props.features);
