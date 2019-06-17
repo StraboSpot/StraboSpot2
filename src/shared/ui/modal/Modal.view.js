@@ -7,16 +7,20 @@ const modalView = (props) => {
   return (
     <View style={[modalStyle.modalContainer]}>
       <View style={modalStyle.modalTop}>
-            <Button
-              titleStyle={{color: 'blue', fontSize: 14}}
-              title={'Close'}
-              type={'clear'}
-              onPress={props.close}
-            />
-          </View>
-        <View style={modalStyle.textContainer}>
-          <Text style={[modalStyle.textStyle, props.textStyle]}>{props.children}</Text>
-        </View>
+        <Button
+          titleStyle={{color: 'blue', fontSize: 16}}
+          title={props.buttonTitleRight}
+          type={'clear'}
+          onPress={props.onPress}
+        />
+        <Text style={[modalStyle.textStyle, props.textStyle]}>{props.children}</Text>
+        <Button
+          titleStyle={{color: 'blue', fontSize: 16}}
+          title={'Close'}
+          type={'clear'}
+          onPress={props.close}
+        />
+      </View>
       <View style={props.style}>
         {props.component}
       </View>

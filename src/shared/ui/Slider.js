@@ -9,11 +9,9 @@ const slider = (props) => {
 
   return (
     <React.Fragment>
-      <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'
-      }}>
-        <View style={styles.sliderTextContainer}>
-          <Text style={styles.sliderText}>Low Quality</Text>
-        </View>
+      {/*<View style={{flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center'*/}
+      {/*}}>*/}
+
         <View style={styles.sliderContainer} >
           <Slider
             value={props.sliderValue}
@@ -28,10 +26,16 @@ const slider = (props) => {
             thumbTintColor={themes.LIGHTGREY}
           />
         </View>
-        <View style={styles.sliderTextContainer} >
-          <Text style={styles.sliderText}>High Quality</Text>
+
+        <View style={styles.sliderTextContainer}>
+          {/*<View style={styles.sliderTextContainer}>*/}
+            <Text style={styles.sliderText}>{props.leftText}</Text>
+          {/*</View>*/}
+          {/*<View style={styles.sliderTextContainer} >*/}
+            <Text style={styles.sliderText}>{props.rightText}</Text>
+          {/*</View>*/}
         </View>
-      </View>
+      {/*</View>*/}
     </React.Fragment>
   );
 };

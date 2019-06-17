@@ -3,7 +3,7 @@ import * as themes from "../../../themes/ColorThemes";
 
 const modalStyle = StyleSheet.create({
   modalContainer: {
-    height: 400,
+    height: 550,
   },
   modalBottom: {
     backgroundColor: themes.COMPASS_MODAL,
@@ -12,15 +12,20 @@ const modalStyle = StyleSheet.create({
   },
   modalTop: {
     zIndex: 100,
-    width: '100%',
+    // width: '100%',
     flex: 1,
-    alignItems: 'flex-start',
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingTop:0,
+    paddingLeft: 10,
+    paddingRight: 10,
     backgroundColor: themes.COMPASS_MODAL,
     borderTopRightRadius: 20,
     borderTopLeftRadius: 20
   },
   textStyle: {
-    fontSize: 12,
+    fontSize: 18,
     paddingLeft: 10
   },
   textContainer: {
