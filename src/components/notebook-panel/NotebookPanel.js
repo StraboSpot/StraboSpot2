@@ -10,7 +10,7 @@ import Basics from './Basics';
 import MeasurementPage from './notebook-measurements/Measurements';
 import MeasurementDetailPage from './notebook-measurements/MeasurementDetail';
 import NotesPage from '../notes/Notes.view';
-import SamplesPage from '../samples/Samples.view';
+import SamplesPage from '../samples/SamplesNotebook.view';
 import {SpotPages} from "./Notebook.constants";
 import * as actionCreators from '../../store/actions/index';
 import {SET_SPOT_PAGE_VISIBLE} from "../../store/Constants";
