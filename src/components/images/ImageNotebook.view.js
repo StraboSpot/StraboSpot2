@@ -12,7 +12,7 @@ const imageNotebook = (props) => {
   };
 
   const renderImage = (image) => {
-    console.log('IMAGE', image);
+    // console.log('IMAGE', image);
     return (
       <View style={imageStyles.imageContainer}>
         <Image

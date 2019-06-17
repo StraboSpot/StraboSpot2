@@ -10,7 +10,7 @@ const CompassModal = (props) => {
       component={<Compass/>}
       style={styles.compassContainer}
       close={() => props.close('isCompassModalVisible')}
-      buttonTitle={'Undo last'}
+      buttonTitleRight={'Undo last'}
       textStyle={{fontWeight: 'bold'}}
     />
   )

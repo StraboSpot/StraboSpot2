@@ -6,7 +6,7 @@ const imageStyles = StyleSheet.create({
     backgroundColor: '#f3e0d2',
   },
   editButton: {
-    textAlign: 'center'
+    // textAlign: 'center'
   },
   imageContainer: {
     backgroundColor: 'white',

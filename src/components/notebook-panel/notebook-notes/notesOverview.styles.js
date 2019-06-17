@@ -2,9 +2,10 @@ import {StyleSheet} from 'react-native'
 import * as themes from '../../../themes/ColorThemes';
 
 const noteStyles = StyleSheet.create({
-  noteInputBox: {
+  noteBox: {
     margin: 10,
-    backgroundColor: 'white'
+    backgroundColor: 'white',
+    padding: 10
   },
   timestampText: {
     color: themes.MEDIUMGREY
