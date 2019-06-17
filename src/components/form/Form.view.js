@@ -1,40 +1,17 @@
-import {Field} from 'formik';
-//import {PropTypes} from 'prop-types';
-import React, {useState, useRef} from 'react';
+import React from 'react';
 import {Button, View, Text} from 'react-native';
+//import {PropTypes} from 'prop-types';
+import {Field} from 'formik';
+
 import TextInputField from './TextInputField';
 import NumberInputField from './NumberInputField';
 import SelectInputField from './SelectInputField';
-import styles from './form.styles';
-// import Papa from 'papaparse';
-import {isEmpty} from "../../shared/Helpers";
+import {getChoices, getSurvey, isRelevant} from "./form.container";
 
-import survey from './form-fields/planar-orientation-survey';
-import choices from './form-fields/planar-orientation-choices';
+// Styles
+import styles from './form.styles';
 
 const FormView = ({handleSubmit, isValid, setFieldValue, values}) => {
-
-  // Determine if the field should be shown or not by looking at the relevant key-value pair
-  const isRelevant = field => {
-    //console.log('values', values);
-    if (isEmpty(field.relevant)) return true;
-    let relevant = field.relevant;
-    relevant = relevant.replace(/selected\(\$/g, '.includes(');
-    relevant = relevant.replace(/\$/g, '');
-    relevant = relevant.replace(/{/g, 'values.');
-    relevant = relevant.replace(/}/g, '');
-    relevant = relevant.replace(/''/g, 'undefined');
-    relevant = relevant.replace(/ = /g, ' == ');
-    relevant = relevant.replace(/ or /g, ' || ');
-    relevant = relevant.replace(/ and /g, ' && ');
-    //console.log(field.name, 'relevant:', relevant);
-
-    try {
-      return eval(relevant);
-    } catch (e) {
-      return false;
-    }
-  };
 
   const renderTextInput = field => {
     return (
@@ -59,7 +36,7 @@ const FormView = ({handleSubmit, isValid, setFieldValue, values}) => {
   };
 
   const renderSelectInput = (field, choicesList) => {
-    const fieldChoices = choices.filter(choice => choice.list_name === choicesList);
+    const fieldChoices = getChoices().filter(choice => choice.list_name === choicesList);
     const fieldChoicesCopy = JSON.parse(JSON.stringify(fieldChoices));
     fieldChoicesCopy.map((choice) => {
       choice.value = choice.name;
@@ -86,8 +63,8 @@ const FormView = ({handleSubmit, isValid, setFieldValue, values}) => {
 
   return (
     <View style={styles.formContainer}>
-      {survey.map((field, i) => {
-        if (isRelevant(field)) return renderField(field);
+      {getSurvey().map((field, i) => {
+        if (isRelevant(field, values)) return renderField(field);
       })}
     </View>
   );
