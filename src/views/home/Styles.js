@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 30,
     backgroundColor: themes.LIGHTGREY,
     position: 'absolute', //Here is the trick
-    left: 60,
+    left: 80,
     // bottom: 150,
     top: 250,
     // zIndex: 100,

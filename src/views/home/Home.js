@@ -151,7 +151,7 @@ class Home extends React.Component {
         break;
       case 'editFeature':
         this.props.setPageVisible(SpotPages.BASIC);
-
+        break;
       // Map Actions
       case MapModes.DRAW.POINT:
       case MapModes.DRAW.LINE:
@@ -354,6 +354,10 @@ class Home extends React.Component {
     }
   };
 
+  samplesModalCancel = () => {
+    console.log('Samples Modal Cancel Selected')
+  };
+
   setDraw = async mapMode => {
     this.mapViewComponent.cancelDraw();
     if (this.state.mapMode === MapModes.VIEW) this.toggleButton('endDrawButtonVisible');
@@ -550,7 +554,7 @@ class Home extends React.Component {
           ...prevState,
           [modal]: value !== undefined ? value : !prevState[modal]
         }
-      }, () => console.log(`state of ${modal}`, this.state[modal]))
+      })
     }
   };
 
@@ -571,6 +575,7 @@ class Home extends React.Component {
     let samplesModal =  <View style={styles.compassModalContainer}>
       <SamplesModal
       close={(modalName) => this.toggleModal(modalName)}
+      cancel={() => this.samplesModalCancel()}
       style={{justifyContent: 'center'}}
       />
     </View>;
