@@ -20,6 +20,7 @@ const FormView = ({handleSubmit, isValid, setFieldValue, values}) => {
         name={field.name}
         label={field.label}
         key={field.name}
+        appearance={field.appearance}
       />
     );
   };

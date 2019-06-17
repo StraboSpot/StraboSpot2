@@ -13,6 +13,11 @@ const styles = StyleSheet.create({
     borderBottomWidth: .5,
     borderColor: themes.MEDIUMGREY
   },
+  fieldContainerNotes: {
+    borderBottomWidth: .5,
+    borderColor: themes.MEDIUMGREY,
+    paddingTop: 5
+  },
   fieldLabelContainer: {
     justifyContent: 'center'
   },
@@ -22,13 +27,20 @@ const styles = StyleSheet.create({
   },
   fieldValueContainer: {
     width: '100%',
-   justifyContent: Platform.OS === 'ios' ? 'center' : null  // Doesn't seem to work with TextInput, see below for hack
+    justifyContent: Platform.OS === 'ios' ? 'center' : null  // 'center' doesn't seem to work with TextInput on Android, see below for hack
   },
   fieldValue: {
     paddingLeft: 20,
     fontSize: 25,
     color: themes.MEDIUMGREY,
     height: 45                      // Hack used to center text vertically
+  },
+  fieldValueNotes: {
+    textAlignVertical: 'top',
+    paddingLeft: 10,
+    fontSize: 25,
+    color: themes.MEDIUMGREY,
+    height: 90
   },
   fieldError: {
     color: 'red',
