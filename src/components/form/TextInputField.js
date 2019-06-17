@@ -30,7 +30,7 @@ const TextInputField = ({
           />
         </View>
       </View>
-      {errors[name] && touched[name] && <Text style={styles.fieldError}>{errors[name]}</Text>}
+      {errors[name] && <Text style={styles.fieldError}>{errors[name]}</Text>}
     </View>
   );
 };

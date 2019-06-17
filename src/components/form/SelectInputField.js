@@ -37,6 +37,7 @@ const SelectInputField = ({
           />
         </View>
       </View>
+      {errors[name] && <Text style={styles.fieldError}>{errors[name]}</Text>}
     </View>
   );
 };
