@@ -7,7 +7,7 @@ const styles = StyleSheet.create({
     zIndex: 0
   },
   compassContainer: {
-    flex: 6,
+    flex: 8,
     backgroundColor: 'white',
     borderBottomRightRadius: 20,
     borderBottomLeftRadius: 20,
@@ -53,7 +53,8 @@ const styles = StyleSheet.create({
     // flexDirection: 'column'
   },
   sliderContainer: {
-    flex: 30
+    flex: 30,
+    alignItems: 'center'
   },
   switchContainer: {
     flex: 1,
@@ -66,7 +67,7 @@ const styles = StyleSheet.create({
     zIndex: 10,
     height: 120,
     position: 'absolute',
-    top: 30,
+    top: 65,
     resizeMode: 'contain',
   },
   toggleButtonsContainer: {
@@ -81,7 +82,7 @@ const styles = StyleSheet.create({
   trendLine: {
     height: 100,
     position: 'absolute',
-    top: 40,
+    top: 75,
     resizeMode: 'contain',
   }
 });

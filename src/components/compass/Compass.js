@@ -11,6 +11,7 @@ import styles from './CompassStyles';
 import {EDIT_SPOT_PROPERTIES} from "../../store/Constants";
 import Orientation from 'react-native-orientation-locker';
 import Slider from '../../shared/ui/Slider';
+import Modal from "../../shared/ui/modal/Modal.view";
 
 
 const {height, width} = Dimensions.get('window');
@@ -518,6 +519,7 @@ class Compass extends Component {
 
     return (
       <View style={{flex: 1}}>
+        <Text>Tap compass to take a measurement</Text>
         <View style={styles.renderCompassContainer}>
           {this.renderCompass()}
         </View>
@@ -526,9 +528,10 @@ class Compass extends Component {
         </View>
         <View style={styles.sliderContainer}>
           <Slider
-            // style={styles.slider}
             setSliderValue={(value) => this.setState({sliderValue: value})}
             sliderValue={this.state.sliderValue}
+            leftText={'Low Quality'}
+            rightText={'High Quality'}
           />
           {/*{this.renderMeasurements()}*/}
 
