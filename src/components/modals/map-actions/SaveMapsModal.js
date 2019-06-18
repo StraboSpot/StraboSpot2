@@ -320,8 +320,8 @@ class SaveMapModal extends Component {
 
   render() { //return whole modal here
 
-    console.log("PROPS: ", this.props);
-    console.log("Tile Dir: ", this.tileCacheDirectory);
+    //console.log("PROPS: ", this.props);
+    //console.log("Tile Dir: ", this.tileCacheDirectory);
 
     return (
 
