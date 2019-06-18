@@ -15,8 +15,9 @@ import {
 } from '../../store/Constants';
 import * as actionCreators from '../../store/actions/index';
 import {SpotPages} from "./Notebook.constants";
-import {Button, Divider, Input} from 'react-native-elements';
+import {Button, Input} from 'react-native-elements';
 import {connect} from 'react-redux';
+import SectionDivider from '../../shared/ui/SectionDivider';
 
 const width = Dimensions.get('window').width;
 
@@ -154,21 +155,17 @@ class Basics extends React.Component {
             onPress={() => this.saveSpotName()}
           />
         </View>
-          <Divider style={styles.divider}>
-            <Text style={styles.spotDividerText}>{this.props.spotPageVisible}</Text>
-          </Divider>
-          <Input
-            inputStyle={styles.spotFieldValues}
-            inputContainerStyle={{borderColor: 'transparent'}}
-            placeholder={this.props.selectedSpot.properties.name}
-            // style={{height: 40, borderColor: 'gray', borderWidth: 10}}
-            onChangeText={(text) => this.spotNameEdit(text)}
-            // onChangeText={(text) => this.setState({text})}
-            value={this.state.spotName}
-          />
-        <Divider style={styles.divider}>
-          <Text style={styles.spotDividerText}>Geography</Text>
-        </Divider>
+        <SectionDivider dividerText={this.props.spotPageVisible}/>
+        <Input
+          inputStyle={styles.spotFieldValues}
+          inputContainerStyle={{borderColor: 'transparent'}}
+          placeholder={this.props.selectedSpot.properties.name}
+          // style={{height: 40, borderColor: 'gray', borderWidth: 10}}
+          onChangeText={(text) => this.spotNameEdit(text)}
+          // onChangeText={(text) => this.setState({text})}
+          value={this.state.spotName}
+        />
+        <SectionDivider dividerText='Geography'/>
         <View style={{borderBottomWidth: 1, borderBottomColor: 'black'}}>
           <Text style={styles.spotFieldTitles}>Geometry:</Text>
           <Text style={[styles.spotFieldValues]}> {spot.geometry.type}</Text>
@@ -197,7 +194,7 @@ const mapDispatchToProps = {
   onFeatureAdd: (feature) => ({type: FEATURE_ADD, feature: feature}),
   onSpotEdit: (field, value) => (actionCreators.addFeature(field, value)),
   // onSpotEdit: (field, value) => ({type: EDIT_SPOT_PROPERTIES, field: field, value: value}),
-  setPageVisible: (page) => ({type: SET_SPOT_PAGE_VISIBLE, page: page })
+  setPageVisible: (page) => ({type: SET_SPOT_PAGE_VISIBLE, page: page})
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Basics);
