@@ -1,41 +1,57 @@
-import React, {useState} from 'react';
-import {Text, TextInput, View} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {Alert, Text, TextInput, View} from 'react-native';
 import {connect} from "react-redux";
-import {ButtonGroup, Input} from "react-native-elements";
+import {Button, ButtonGroup, Input} from "react-native-elements";
 import styles from './samples.style';
 import Slider from '../../shared/ui/Slider';
 import {EDIT_SPOT_PROPERTIES} from "../../store/Constants";
+import {getNewId} from "../../shared/Helpers";
 
 const samplesModalView = (props) => {
   let count = 0;
-  // const [count, setCount] = useState(0);
+
+    // const [count, setCount] = useState(0);
   // const [sliderValue, setSliderValue] = useState(3);
   const [selectedButton, setSelectedButton] = useState(null);
 
-  const [sampleOrientedValue, setSampleOrientedValue] = useState(0);
-  const [inplaceness, setInplaceness] = useState(null);
-  const [label, setLabel] = useState('sample');
+  const [sampleOrientedValue, setSampleOrientedValue] = useState(null);
+  const [inplaceness, setInplaceness] = useState(0);
+  const [label, setLabel] = useState(null);
   const [name, setName] = useState(null);
   const [note, setNote] = useState(null);
-  const [description, setDescription] = useState(label);
+  const [description, setDescription] = useState(null);
 
   const buttonNames = ['Oriented', 'Unoriented'];
 
   const buttonSelected = (selectedButton) => {
-   setSelectedButton(selectedButton);
+    setSelectedButton(selectedButton);
     let sampleOriented = selectedButton === 0 ? 'yes' : 'no';
-    setInplaceness(sampleOriented)
+    setSampleOrientedValue(sampleOriented)
   };
 
   const saveSample = () => {
     sample = [];
     sample.push({
       inplaceness_of_sample: inplaceness,
-      lable: label,
+      label: label,
+      oriented_sample: sampleOrientedValue,
       sample_id_name: name,
       sample_notes: note,
-      sample_description: name
+      sample_description: description
     })
+    if (sample.length > 0) {
+      let newSample = sample[0];
+      newSample.id = getNewId();
+      const samples = (typeof props.spot.properties.samples === 'undefined' ? [newSample] : [...props.spot.properties.samples, newSample])
+      props.onSpotEdit('samples', samples)
+      setName(null);
+      setLabel(null);
+      setNote('');
+      setDescription('');
+      setSampleOrientedValue(null);
+      setInplaceness(0);
+    }
+    else Alert.alert('No Sample Type', 'Please select a samples.');
   };
 
   return (
@@ -45,12 +61,15 @@ const samplesModalView = (props) => {
           placeholder={'Name'}
           inputContainerStyle={styles.inputContainer}
           inputStyle={styles.inputText}
-          onChangeText={(text) => setName({text})}
+          onChangeText={(text) => setName(text)}
+          value={name}
         />
         <Input
           placeholder={'Label'}
           inputContainerStyle={styles.inputContainer}
           inputStyle={styles.inputText}
+          onChangeText={(text) => setLabel(text)}
+          value={label}
         />
         <View style={styles.textboxContainer}>
           <TextInput
@@ -59,16 +78,18 @@ const samplesModalView = (props) => {
             multiline={true}
             numberOfLines={4}
             style={styles.textbox}
+            onChangeText={(text) => setDescription(text)}
+            value={description}
           />
         </View>
       </View>
-      <View style={{flex: 15, paddingBottom: 10, alignItems: 'center'}}>
-        <View style={{alignItems: 'center'}}>
+      <View style={{flex: 15, paddingBottom: 20, alignItems: 'center'}}>
+        <View style={{paddingTop: 20}}>
           <Text style={styles.text}>Inplaceness of Sample</Text>
         </View>
         <Slider
-          sliderValue={sampleOrientedValue}
-          setSliderValue={value => setSampleOrientedValue(value)}
+          sliderValue={inplaceness}
+          setSliderValue={value => setInplaceness(value)}
           leftText={'Float'}
           rightText={'In Place'}
         />
@@ -80,22 +101,44 @@ const samplesModalView = (props) => {
           buttons={buttonNames}
         />
       </View>
-      <View style={[styles.textboxContainer ,{flex: 20}]}>
+      <View style={[styles.textboxContainer, {flex: 20}]}>
         <TextInput
-          placeholder={'Description'}
+          placeholder={'Orientation Notes'}
           maxLength={120}
           multiline={true}
           numberOfLines={4}
           style={styles.textbox}
+          onChangeText={(text) => setNote(text)}
+          value={note}
         />
-        <Text>{name}</Text>
+      </View>
+      <View style={styles.button}>
+        <Button
+          title={'Save Sample'}
+          type={'solid'}
+          color={'red'}
+          containerStyle={{width: 200, paddingBottom: 10, paddingTop: 0}}
+          buttonStyle={{borderRadius: 10, backgroundColor: 'red',}}
+          onPress={() => saveSample()}
+        />
+        <Button
+          title={'View In Shortcut Mode'}
+          type={'clear'}
+          titleStyle={{color: 'blue', fontSize: 16}}
+        />
       </View>
     </React.Fragment>
   );
 };
 
+const mapStateToProps = (state) => {
+  return {
+    spot: state.home.selectedSpot
+  }
+}
+
 const mapDispatchToProps = {
   onSpotEdit: (field, value) => ({type: EDIT_SPOT_PROPERTIES, field: field, value: value}),
 };
 
-export default connect()(samplesModalView);
+export default connect(mapStateToProps, mapDispatchToProps)(samplesModalView);

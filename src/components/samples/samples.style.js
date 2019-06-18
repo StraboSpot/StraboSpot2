@@ -2,6 +2,18 @@ import {StyleSheet} from 'react-native';
 import * as themes from "../../themes/ColorThemes";
 
 const samplesStyle = StyleSheet.create({
+  button: {
+    flex: 15,
+    alignItems: 'center',
+    paddingBottom: 10
+  },
+  header: {
+    justifyContent: 'center',
+    alignContent: 'center',
+    padding: 15,
+    color: themes.MEDIUMGREY,
+    fontSize: 18
+  },
   samplesContainer: {
     flex: 8,
     backgroundColor: 'white',
@@ -10,9 +22,6 @@ const samplesStyle = StyleSheet.create({
   },
   input: {
     flex: 30,
-    // padding: 10,
-    // justifyContent: 'center',
-    // alignContent: 'center'
   },
   inputContainer: {
     borderBottomWidth: 0,
@@ -24,12 +33,26 @@ const samplesStyle = StyleSheet.create({
     paddingLeft: 10,
     fontSize: 16
   },
+  listLabel: {
+    marginLeft: 10,
+    // paddingBottom: 10,
+  },
+  listText: {
+    marginLeft: 5,
+    color: themes.MEDIUMGREY
+  },
+  notebookListContainer: {
+    flex: 1,
+    backgroundColor: 'white',
+    marginBottom: 3,
+    padding: 5
+  },
   text: {
-    fontSize: 14,
-    paddingTop: 10
+    fontSize: 16,
+    textAlign: 'center'
   },
   textbox: {
-    fontSize: 16,
+    fontSize: 14,
     paddingLeft: 10,
     borderWidth: 1,
     height: 75,

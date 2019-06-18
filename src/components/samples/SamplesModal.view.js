@@ -4,7 +4,6 @@ import styles from './samples.style';
 import Samples from './Samples.view';
 
 const samplesModalView = (props) => {
-  console.log('SampleModal props', props)
   return (
     <Modal
       component={<Samples/>}
