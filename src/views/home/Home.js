@@ -565,14 +565,14 @@ class Home extends React.Component {
     const isOnline = this.props.isOnline;
 
     let content = null;
-    let compassModal =  <View style={styles.compassModalContainer}>
+    let compassModal =  <View style={styles.modalPosition}>
       <CompassModal
         // showCompass={() => this.toggleCompass}
         close={(modalName) => this.toggleModal(modalName)}
       />
     </View>;
 
-    let samplesModal =  <View style={styles.compassModalContainer}>
+    let samplesModal =  <View style={styles.modalPosition}>
       <SamplesModal
       close={(modalName) => this.toggleModal(modalName)}
       cancel={() => this.samplesModalCancel()}
@@ -606,14 +606,6 @@ class Home extends React.Component {
           closeSettingsDrawer={() => this.closeSettingsDrawer()}
         />
     }
-    //
-    // if (this.state.isCompassModalVisible) {
-    //   compassModal = <CompassModal
-    //     compass={() => this.toggleCompass}
-    //     close={() => this.toggleCompass()}
-    //     style={styles.modalContainer}
-    //   />
-    // }
 
     return (
       <Drawer

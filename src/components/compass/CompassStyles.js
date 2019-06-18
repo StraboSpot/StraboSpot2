@@ -2,6 +2,9 @@ import {StyleSheet} from 'react-native';
 import * as themes from '../../themes/ColorThemes';
 
 const styles = StyleSheet.create({
+  buttonContainer: {
+    paddingTop: 15
+  },
   container: {
     flex: 1,
     zIndex: 0
@@ -21,16 +24,10 @@ const styles = StyleSheet.create({
   },
   renderCompassContainer: {
     flex: 60,
-    backgroundColor: themes.COMPASS_MODAL
+    backgroundColor: themes.MODAL
   },
   compassRowContainer: {
     alignItems: 'center'
-  },
-  gridContainer: {
-    backgroundColor: 'transparent',
-    width: '100%',
-    height: 300,
-    flexDirection: 'column'
   },
   itemContainer: {
     width: '90%',
@@ -45,13 +42,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginLeft: 10,
   },
-  measurementsContainer: {
-    flex: 1,
-    // flexDirection: 'row',
-  },
-  measurementsRowContainer: {
-    // flexDirection: 'column'
-  },
   sliderContainer: {
     flex: 30,
     alignItems: 'center'
@@ -65,14 +55,14 @@ const styles = StyleSheet.create({
   },
   strikeAndDipLine: {
     zIndex: 10,
-    height: 120,
+    height: 170,
     position: 'absolute',
-    top: 65,
+    top: 50,
     resizeMode: 'contain',
   },
   toggleButtonsContainer: {
     backgroundColor: 'transparent',
-    padding: 0
+    padding: 10
   },
   toggleButtonsRowContainer: {
     flex: 25,
@@ -80,9 +70,9 @@ const styles = StyleSheet.create({
     paddingTop: 25
   },
   trendLine: {
-    height: 100,
+    height: 150,
     position: 'absolute',
-    top: 75,
+    top: 60,
     resizeMode: 'contain',
   }
 });

@@ -3,10 +3,13 @@ import * as themes from "../../../themes/ColorThemes";
 
 const modalStyle = StyleSheet.create({
   modalContainer: {
-    height: 550,
+    height: 600,
+    width: 275,
+
   },
   modalBottom: {
-    backgroundColor: themes.COMPASS_MODAL,
+    flex: 8,
+    backgroundColor: themes.MODAL,
     borderBottomRightRadius: 20,
     borderBottomLeftRadius: 20
   },
@@ -20,7 +23,7 @@ const modalStyle = StyleSheet.create({
     paddingTop:0,
     paddingLeft: 10,
     paddingRight: 10,
-    backgroundColor: themes.COMPASS_MODAL,
+    backgroundColor: themes.MODAL,
     borderTopRightRadius: 20,
     borderTopLeftRadius: 20
   },

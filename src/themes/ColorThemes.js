@@ -6,4 +6,4 @@ export const DARKGREY = 'dimgray';
 //export const BLUE = 'blue';  // (#0000ff)
 export const BLUE = 'dodgerblue'; // (#1e90ff)
 export const WHITE = 'white';
-export const COMPASS_MODAL = '#ffffff';
+export const MODAL = '#ffffff';

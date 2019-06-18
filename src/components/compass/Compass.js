@@ -1,11 +1,11 @@
 import RNSimpleCompass from 'react-native-simple-compass';
 import React, {Component} from 'react';
 import {connect} from "react-redux";
-import {Animated, Easing, Button, Alert, Image, View, Text, Dimensions, TouchableOpacity} from 'react-native';
+import {Animated, Easing, Alert, Image, View, Text, Dimensions, TouchableOpacity} from 'react-native';
 import {setUpdateIntervalForType, SensorTypes, magnetometer, accelerometer} from 'react-native-sensors';
 import {getNewId, mod, toRadians, toDegrees, roundToDecimalPlaces} from "../../shared/Helpers";
 import {CompassToggleButtons} from "./Compass.constants";
-import {ListItem} from "react-native-elements";
+import {Button, ListItem} from "react-native-elements";
 import {Switch} from "react-native-switch";
 import styles from './CompassStyles';
 import {EDIT_SPOT_PROPERTIES} from "../../store/Constants";
@@ -345,7 +345,7 @@ class Compass extends Component {
         <Image source={require("../../assets/images/compass/compass.png")}
                style={{
                  marginTop: 25,
-                 height: 175,
+                 height: 220,
                  justifyContent: 'center',
                  alignItems: 'center',
                  resizeMode: 'contain',
@@ -519,7 +519,7 @@ class Compass extends Component {
 
     return (
       <View style={{flex: 1}}>
-        <Text>Tap compass to take a measurement</Text>
+        <Text style={{textAlign: 'center'}}>Tap compass to take a measurement</Text>
         <View style={styles.renderCompassContainer}>
           {this.renderCompass()}
         </View>
@@ -534,10 +534,17 @@ class Compass extends Component {
             rightText={'High Quality'}
           />
           {/*{this.renderMeasurements()}*/}
-
-          <View style={{flexDirection: 'row'}}>
-            <Text style={{paddingRight: 10}}>Value: {this.state.sliderValue}</Text>
+          <View style={styles.buttonContainer}>
+            <Button
+              title={'View In Shortcut Mode'}
+              type={'clear'}
+              titleStyle={{color: 'blue', fontSize: 16}}
+            />
           </View>
+
+          {/*<View style={{flexDirection: 'row'}}>*/}
+          {/*  <Text style={{paddingRight: 10}}>Value: {this.state.sliderValue}</Text>*/}
+          {/*</View>*/}
         </View>
       </View>
     )
