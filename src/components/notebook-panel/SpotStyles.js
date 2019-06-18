@@ -20,11 +20,11 @@ const spotStyles = StyleSheet.create({
     height: 25,
     width: 25,
   },
-  listStyle: {
-    backgroundColor: 'white',
-    marginTop: 5,
-    marginBottom: 5,
-  },
+  // listStyle: {
+  //   backgroundColor: 'white',
+  //   marginTop: 5,
+  //   marginBottom: 5,
+  // },
   listContent: {
     flex: 2,
     flexDirection: 'row',

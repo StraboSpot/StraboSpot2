@@ -1,22 +1,22 @@
-import buttonStyles from "../ui/ui.styles";
-import {SpotPages} from "../Notebook.constants";
-import {Button} from "react-native-elements/src/index";
 import React from "react";
 import {View} from "react-native";
-import * as themes from "../../../themes/ColorThemes";
+import {Button} from "react-native-elements";
+
+// Styles
+import styles from "./ui.styles";
 
 const saveAndClose = (props) => {
   return (
-    <View style={buttonStyles.navButtonsContainer}>
-      <View style={buttonStyles.leftContainer}>
+    <View style={styles.navButtonsContainer}>
+      <View style={styles.leftContainer}>
         <Button
-          titleStyle={{color: themes.BLUE}}
+          titleStyle={styles.buttonText}
           title={'Cancel'}
           type={'clear'}
           onPress={props.cancel}
         />
         <Button
-          titleStyle={{color: themes.BLUE}}
+          titleStyle={styles.buttonText}
           title={'Save'}
           type={'clear'}
           onPress={props.save}

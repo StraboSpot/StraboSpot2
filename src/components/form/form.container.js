@@ -1,25 +1,44 @@
-import survey from '../form/form-fields/planar-orientation-survey';
-import choices from '../form/form-fields/planar-orientation-choices';
+import * as forms from './forms/forms.index';
 import {isEmpty} from "../../shared/Helpers";
 
-/*const createDefaultLabel = (data) => {
+let survey = undefined;
+let choices = undefined;
+
+export const getForm = () => {
+  return survey;
+};
+
+export const setForm = (form, child) => {
+  if (child) {
+    console.log('Setting form', form, ':', child);
+    survey = forms.default[form][child].survey;
+    choices = forms.default[form][child].choices;
+  }
+  else {
+    console.log('Setting form', form);
+    survey = forms.default[form].survey;
+    choices = forms.default[form].choices;
+  }
+};
+
+const createDefaultLabel = (data) => {
   let label = getFeatureTypeLabel(data.feature_type);
   if (isEmpty(label) && data.type) label = data.type.split('_')[0] + ' feature';
   if (data.strike) label += ' ' + data.strike.toString();
   else if (data.trend) label += ' ' + data.trend.toString();
   return label;
-};*/
+};
 
 export const getChoices = () => {
   return choices;
 };
 
-/*const getFeatureTypeLabel = (featureType) => {
+const getFeatureTypeLabel = (featureType) => {
   const choiceMatched = choices.find(choice => {
     return choice.name === featureType;
   });
   return choiceMatched.label;
-};*/
+};
 
 export const getSurvey = () => {
   return survey;

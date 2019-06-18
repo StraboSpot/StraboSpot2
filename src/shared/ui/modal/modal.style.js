@@ -5,7 +5,6 @@ const modalStyle = StyleSheet.create({
   modalContainer: {
     height: 600,
     width: 275,
-
   },
   modalBottom: {
     flex: 8,
@@ -25,7 +24,7 @@ const modalStyle = StyleSheet.create({
     paddingRight: 10,
     backgroundColor: themes.MODAL,
     borderTopRightRadius: 20,
-    borderTopLeftRadius: 20
+    borderTopLeftRadius: 20,
   },
   textStyle: {
     fontSize: 18,

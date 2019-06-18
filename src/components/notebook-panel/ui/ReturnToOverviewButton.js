@@ -1,21 +1,26 @@
-import buttonStyles from "../ui/ui.styles";
-import {Button} from "react-native-elements/src/index";
 import React from "react";
+import {View} from "react-native";
+import {Button} from "react-native-elements";
+
+//Styles
+import styles from "./ui.styles";
 
 const returnToOverviewButton = props => {
   return (
+    <View style={styles.navButtonsContainer}>
     <Button
       icon={{
         name: 'arrow-back',
         size: 20,
         color: 'black'
       }}
-      containerStyle={buttonStyles.backButton}
-      titleStyle={{color: 'blue'}}
+      containerStyle={styles.backButton}
+      titleStyle={styles.buttonText}
       title={'Return to Overview'}
       type={'clear'}
       onPress={() => props.onPress()}
     />
+    </View>
   )
 };
 

@@ -5,9 +5,13 @@ import {Button, Divider} from "react-native-elements";
 import {SpotPages} from "../Notebook.constants";
 import * as actionCreators from '../../../store/actions/index';
 // import {SET_SPOT_PAGE_VISIBLE} from "../../../store/Constants";
-import styles from './MeasurementsStyles';
-import spotPageStyles from '../SpotPageStyles';
+
 import ReturnToOverview from '../ui/ReturnToOverviewButton';
+import SectionDivider from "../../../shared/ui/SectionDivider";
+
+// Styles
+import styles from './MeasurementsStyles';
+import * as themes from '../../../themes/ColorThemes';
 
 const MeasurementPage = (props) => {
   const [isModalVisible, setIsModalVisible] = useState(true);
@@ -21,21 +25,24 @@ const MeasurementPage = (props) => {
   // Render an individual measurement
   const renderMeasurement = ({item}) => {
     return (
-      <TouchableOpacity style={styles.measurementsListItem}
-                        onPress={() => openMeasurementDetail(item)}>
-        <View style={[styles.textBubble, styles.mainText]}>
-          {'strike' in item && 'dip' in item ?
-            <Text>
-              {item.strike}/{item.dip}
-            </Text> : null}
-          {'trend' in item && 'plunge' in item ?
-            <Text>
-              {item.trend}/{item.plunge}
-            </Text> : null}
+      <TouchableOpacity
+        style={styles.measurementsListItem}
+        onPress={() => openMeasurementDetail(item)}>
+        <View>
+          {'strike' in item && 'dip' in item &&
+          <Text style={styles.mainText}>
+            {item.strike}/{item.dip}
+          </Text>}
+          {'trend' in item && 'plunge' in item &&
+          <Text style={styles.mainText}>
+            {item.trend}/{item.plunge}
+          </Text>}
         </View>
-        <View style={[styles.textBubble, styles.propertyText]}>
-          <Text>
-            {item.type}
+        <View>
+          <Text style={styles.propertyText}>
+            {item.type === 'linear_orientation' && !item.associated_orientation && 'Linear Feature'}
+            {item.type === 'planar_orientation' && !item.associated_orientation && 'Planar Feature'}
+            {item.type === 'planar_orientation' && item.associated_orientation && 'Linear Feature   Planar Feature'}
           </Text>
         </View>
       </TouchableOpacity>
@@ -45,50 +52,111 @@ const MeasurementPage = (props) => {
   // Render a measurement block in a list
   const renderItem = ({item}) => {
     return (
-      <View style={{backgroundColor: 'white', paddingTop: 20}}>
+      <View>
         {typeof (item) !== 'undefined' &&
-        <View >
+        <View>
           {renderMeasurement({item})}
           {'associated_orientation' in item && item.associated_orientation.length > 0 &&
           <FlatList
             data={item.associated_orientation}
             renderItem={renderMeasurement}
             keyExtractor={(aoItem, aoIndex) => aoIndex.toString()}
-          /> }
+          />}
           {/*<View style={styles.horizontalLine}/>*/}
         </View>}
       </View>
     );
   };
 
-   return (
-    <React.Fragment>
-      <ReturnToOverview
-        onPress={() => {
-          const pageVisible = props.setPageVisible(SpotPages.OVERVIEW);
-          if (pageVisible.page !== SpotPages.MEASUREMENT ) {
-            props.showModal('isCompassModalVisible', false);
-          }
-           // (pageVisible.page !== SpotPages.SAMPLE) props.showModal('isSamplesModalVisible', false);
-        }}
-      />
-      <Button
-        containerStyle={styles.backButton}
-        titleStyle={{color: 'blue'}}
-        title={'Open Compass'}
-        type={'clear'}
-        onPress={() => props.showModal('isCompassModalVisible', true)}
-      />
-      <ScrollView>
-        <Divider style={spotPageStyles.divider}>
-          <Text style={spotPageStyles.spotDividerText}>Measurements</Text>
-        </Divider>
+  const renderLinearMeasurements = () => {
+    let data = props.spot.properties.orientations.filter(measurement => {
+      return measurement.type === 'linear_orientation' && !measurement.associated_orientation
+    });
+    return (
+      <View>
+        {renderSectionDivider('Linear Measurements')}
         <FlatList
-          data={props.spot.properties.orientations}
+          data={data}
           renderItem={renderItem}
           keyExtractor={(item, index) => index.toString()}
         />
-      </ScrollView>
+      </View>
+    );
+  };
+
+  const renderPlanarMeasurements = () => {
+    let data = props.spot.properties.orientations.filter(measurement => {
+      return measurement.type === 'planar_orientation' && !measurement.associated_orientation
+    });
+    return (
+      <View>
+        {renderSectionDivider('Planar Measurements')}
+        <FlatList
+          data={data}
+          renderItem={renderItem}
+          keyExtractor={(item, index) => index.toString()}
+        />
+      </View>
+    );
+  };
+
+  const renderPlanarLinearMeasurements = () => {
+    let data = props.spot.properties.orientations.filter(measurement => {
+      return (measurement.type === 'planar_orientation' || measurement.type === 'linear_orientation') && measurement.associated_orientation
+    });
+    return (
+      <View>
+        {renderSectionDivider('Planar + Linear Measurements')}
+        <FlatList
+          data={data}
+          renderItem={renderItem}
+          keyExtractor={(item, index) => index.toString()}
+        />
+      </View>
+    );
+  };
+
+  const renderSectionDivider = (dividerText) => {
+    return (
+      <View style={styles.measurementsSectionDividerContainer}>
+        <SectionDivider dividerText={dividerText}/>
+        <View style={styles.measurementsSectionDividerButtonContainer}>
+          <Button
+            titleStyle={themes.BLUE}
+            title={'Add'}
+            type={'clear'}
+            onPress={() => props.showModal('isCompassModalVisible', true)}
+          />
+        </View>
+        <View style={styles.measurementsSectionDividerButtonContainer}>
+          <Button
+            titleStyle={themes.BLUE}
+            title={'Select'}
+            type={'clear'}
+          />
+        </View>
+      </View>
+    );
+  };
+
+  return (
+    <React.Fragment>
+      <View>
+        <ReturnToOverview
+          onPress={() => {
+            const pageVisible = props.setPageVisible(SpotPages.OVERVIEW);
+            if (pageVisible.page !== SpotPages.MEASUREMENT) {
+              props.showModal('isCompassModalVisible', false);
+            }
+            // (pageVisible.page !== SpotPages.SAMPLE) props.showModal('isSamplesModalVisible', false);
+          }}
+        />
+        <ScrollView>
+          {renderPlanarMeasurements()}
+          {renderLinearMeasurements()}
+          {renderPlanarLinearMeasurements()}
+        </ScrollView>
+      </View>
     </React.Fragment>
   );
 };

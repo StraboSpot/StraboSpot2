@@ -40,6 +40,9 @@ const styles = StyleSheet.create({
     paddingRight: 10,
     paddingLeft: 10,
   },
+  buttonText: {
+    color: themes.BLUE
+  }
 });
 
 export default styles;

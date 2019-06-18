@@ -8,7 +8,7 @@ const notebookStyles = StyleSheet.create({
     height: '100%',
     borderBottomLeftRadius: 30,
     borderTopLeftRadius: 30,
-    backgroundColor: themes.LIGHTGREY,
+    backgroundColor: themes.WHITE,
     position: 'absolute', //Here is the trick
     right: 0,
     zIndex: 1,
@@ -17,6 +17,7 @@ const notebookStyles = StyleSheet.create({
     borderBottomWidth: 1,
     height: 90,
     padding: 10,
+    backgroundColor: themes.LIGHTGREY
   },
   centerContainer: {
     flex: 1,
@@ -25,7 +26,8 @@ const notebookStyles = StyleSheet.create({
     height: 60,
     borderTopWidth: 1,
     padding: 10,
-    borderBottomLeftRadius: 30
+    borderBottomLeftRadius: 30,
+    backgroundColor: themes.LIGHTGREY
   },
   noSpotContent: {
     flex: 1,
@@ -39,7 +41,8 @@ const notebookStyles = StyleSheet.create({
     paddingTop: 15,
     paddingLeft: 10,
     paddingRight: 10,
-    lineHeight: 30
+    lineHeight: 30,
+    backgroundColor: themes.LIGHTGREY
   },
   collapsibleSectionHeaderText: {
     fontSize: 16,

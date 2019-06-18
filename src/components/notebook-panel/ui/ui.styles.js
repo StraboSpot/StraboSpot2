@@ -1,10 +1,13 @@
 import {StyleSheet} from 'react-native';
+import * as themes from '../../../themes/ColorThemes';
+import ui from '../../../shared/ui/ui.styles';
 
 const buttonStyles = StyleSheet.create({
   navButtonsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'flex-start'
+    alignItems: 'flex-start',
+    backgroundColor: themes.LIGHTGREY
   },
   leftContainer: {
     flex: 1,
@@ -17,6 +20,7 @@ const buttonStyles = StyleSheet.create({
     marginTop: 10,
     alignItems: 'flex-start'
   },
-})
+  buttonText: ui.buttonText
+});
 
 export default buttonStyles;
