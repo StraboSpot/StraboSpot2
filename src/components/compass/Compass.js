@@ -128,7 +128,7 @@ class Compass extends Component {
       const orientations = (typeof this.props.spot.properties.orientations === 'undefined') ? [newOrientation] : [...this.props.spot.properties.orientations, newOrientation];
       this.props.onSpotEdit('orientations', orientations);
     }
-    else Alert.alert('No Measurement Type', 'Pleas select a measurement type using the toggles.');
+    else Alert.alert('No Measurement Type', 'Please select a measurement type using the toggles.');
   };
 
   subscribe = async () => {

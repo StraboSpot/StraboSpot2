@@ -43,7 +43,9 @@ const samplesStyle = StyleSheet.create({
   },
   notebookListContainer: {
     flex: 1,
-    backgroundColor: 'white',
+    // backgroundColor: 'white',
+    borderBottomWidth: .5,
+    borderColor: themes.MEDIUMGREY,
     marginBottom: 3,
     padding: 5
   },

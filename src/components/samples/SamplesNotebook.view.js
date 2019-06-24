@@ -6,6 +6,7 @@ import NotebookBackButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import {SpotPages} from "../notebook-panel/Notebook.constants";
 import * as actionCreators from "../../store/actions";
 import {connect} from "react-redux";
+import SectionDivider from "../../shared/ui/SectionDivider";
 
 const samplesNotebookView = (props) => {
 
@@ -29,24 +30,8 @@ const samplesNotebookView = (props) => {
   //   );
   // };
 
-  return (
-    <React.Fragment>
-      <NotebookBackButton
-        onPress={() => {
-          const pageVisible = props.setPageVisible(SpotPages.OVERVIEW);
-          if (pageVisible.page !== SpotPages.SAMPLE) {
-            props.showModal('isSamplesModalVisible', false);
-          }
-        }}
-      />
-      <Text style={styles.header}>SAMPLES</Text>
-      {/*<FlatList*/}
-      {/*  keyExtractor={(item, index) => index.toString()}*/}
-      {/*  data={props.spot}*/}
-      {/*  renderItem={renderItem}*/}
-      {/*/>*/}
-      <ScrollView>
-        {props.spot.map(item => {
+  const renderSampleList = () => {
+       return props.spot.properties.samples.map(item => {
           // console.log('LIST', item);
           let oriented = item.oriented_sample === 'yes' ? 'Oriented' : 'Unoriented';
           return (
@@ -67,15 +52,35 @@ const samplesNotebookView = (props) => {
                 />}
             />
           )
-        })}
-      </ScrollView>
-    </React.Fragment>
-  );
+        })
+    };
+
+return (
+  <React.Fragment>
+    <NotebookBackButton
+      onPress={() => {
+        const pageVisible = props.setPageVisible(SpotPages.OVERVIEW);
+        if (pageVisible.page !== SpotPages.SAMPLE) {
+          props.showModal('isSamplesModalVisible', false);
+        }
+      }}
+    />
+    <SectionDivider dividerText='Samples'/>
+    {/*<FlatList*/}
+    {/*  keyExtractor={(item, index) => index.toString()}*/}
+    {/*  data={props.spot}*/}
+    {/*  renderItem={renderItem}*/}
+    {/*/>*/}
+    <ScrollView>
+    {renderSampleList()}
+    </ScrollView>
+  </React.Fragment>
+);
 };
 
 const mapStateToProps = (state) => {
   return {
-    spot: state.home.selectedSpot.properties.samples
+    spot: state.home.selectedSpot
   }
 }
 

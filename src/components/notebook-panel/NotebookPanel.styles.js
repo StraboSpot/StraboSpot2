@@ -8,7 +8,7 @@ const notebookStyles = StyleSheet.create({
     height: '100%',
     borderBottomLeftRadius: 30,
     borderTopLeftRadius: 30,
-    backgroundColor: themes.WHITE,
+    backgroundColor: themes.LIGHTGREY,
     position: 'absolute', //Here is the trick
     right: 0,
     zIndex: 1,

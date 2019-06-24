@@ -152,9 +152,9 @@ const MeasurementPage = (props) => {
           }}
         />
         <ScrollView>
-          {renderPlanarMeasurements()}
-          {renderLinearMeasurements()}
-          {renderPlanarLinearMeasurements()}
+          {props.spot.properties.orientations ? renderPlanarMeasurements() : null}
+          {props.spot.properties.orientations ? renderLinearMeasurements(): null}
+          {props.spot.properties.orientations ?renderPlanarLinearMeasurements(): null}
         </ScrollView>
       </View>
     </React.Fragment>
