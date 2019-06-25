@@ -8,11 +8,12 @@ import {Switch} from 'react-native-switch';
 import {connect} from 'react-redux';
 import RNFetchBlob from 'rn-fetch-blob';
 import {Platform} from 'react-native';
-
 import {
   OFFLINE_MAPS,
   CURRENT_BASEMAP
 } from '../../../store/Constants';
+import {mapReducers} from "../../maps/Map.constants";
+import {isEmpty} from "../../../shared/Helpers";
 
 var RNFS = require('react-native-fs');
 
@@ -187,14 +188,14 @@ class ManageOfflineMapsMenu extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    offlineMaps: state.home.offlineMaps,
+    offlineMaps: state.map.offlineMaps,
     currentBasemap: state.map.currentBasemap
   }
 };
 
 const mapDispatchToProps = {
-  onOfflineMaps: (offlineMaps) => ({type: OFFLINE_MAPS, offlineMaps: offlineMaps}),
-  onCurrentBasemap: (basemap) => ({type: CURRENT_BASEMAP, basemap: basemap})
+  onOfflineMaps: (offlineMaps) => ({type: mapReducers.OFFLINE_MAPS, offlineMaps: offlineMaps}),
+  onCurrentBasemap: (basemap) => ({type: mapReducers.CURRENT_BASEMAP, basemap: basemap})
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ManageOfflineMapsMenu);

@@ -10,7 +10,7 @@ const MeasurementsOverview = props => (
 
 function mapStateToProps(state) {
   return {
-    spot: state.home.selectedSpot
+    spot: state.spot.selectedSpot
   }
 }
 

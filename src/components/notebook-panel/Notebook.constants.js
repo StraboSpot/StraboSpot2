@@ -9,3 +9,8 @@ export const SpotPages = {
   PHOTO: 'Photo',
   SKETCH: 'Sketch'
 };
+
+export const notebookReducers = {
+  SET_NOTEBOOK_PAGE_VISIBLE: 'SET_NOTEBOOK_PAGE_VISIBLE',
+  SET_SPOT_PAGE_VISIBLE: 'SPOT_PAGE_VISIBLE'
+};

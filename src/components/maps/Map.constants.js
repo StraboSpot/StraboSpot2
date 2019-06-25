@@ -17,3 +17,11 @@ export const MapModes = {
   },
   EDIT: 'edit'
 };
+
+export const mapReducers = {
+ CURRENT_BASEMAP: 'CURRENT_BASEMAP',
+ CUSTOM_MAPS:'CUSTOM_MAPS',
+ DELETE_OFFLINE_MAP: 'DELETE_OFFLINE_MAP',
+ MAP: 'MAP',
+ OFFLINE_MAPS: 'OFFLINE_MAPS'
+};

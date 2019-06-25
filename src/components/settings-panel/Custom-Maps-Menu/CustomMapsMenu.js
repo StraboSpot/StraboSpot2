@@ -9,7 +9,7 @@ import {connect} from 'react-redux';
 import RNFetchBlob from 'rn-fetch-blob';
 import {Platform} from 'react-native';
 import {Button, Divider, Input} from 'react-native-elements';
-
+import {mapReducers} from "../../maps/Map.constants";
 import {
   CUSTOM_MAPS,
   CURRENT_BASEMAP
@@ -494,14 +494,14 @@ class CustomMapsMenu extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    customMaps: state.home.customMaps,
+    customMaps: state.spot.customMaps,
     currentBasemap: state.map.currentBasemap
   }
 };
 
 const mapDispatchToProps = {
-  onCustomMaps: (customMaps) => ({type: CUSTOM_MAPS, customMaps: customMaps}),
-  onCurrentBasemap: (basemap) => ({type: CURRENT_BASEMAP, basemap: basemap})
+  onCustomMaps: (customMaps) => ({type: mapReducers.CUSTOM_MAPS, customMaps: customMaps}),
+  onCurrentBasemap: (basemap) => ({type: mapReducers.CURRENT_BASEMAP, basemap: basemap})
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(CustomMapsMenu);

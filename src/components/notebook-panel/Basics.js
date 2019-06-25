@@ -13,6 +13,7 @@ import {
   EDIT_SPOT_PROPERTIES,
   SET_SPOT_PAGE_VISIBLE
 } from '../../store/Constants';
+import {spotReducers} from "../../spots/Spot.constants";
 import * as actionCreators from '../../store/actions/index';
 import {SpotPages} from "./Notebook.constants";
 import {Button, Input} from 'react-native-elements';
@@ -183,18 +184,18 @@ class Basics extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    selectedSpot: state.home.selectedSpot,
-    featuresSelected: state.home.featuresSelected,
+    selectedSpot: state.spot.selectedSpot,
+    featuresSelected: state.spot.featuresSelected,
     spotPageVisible: state.notebook.visiblePage
 
   }
 }
 
 const mapDispatchToProps = {
-  onFeatureAdd: (feature) => ({type: FEATURE_ADD, feature: feature}),
+  onFeatureAdd: (feature) => ({type: spotReducers.FEATURE_ADD, feature: feature}),
   onSpotEdit: (field, value) => (actionCreators.addFeature(field, value)),
   // onSpotEdit: (field, value) => ({type: EDIT_SPOT_PROPERTIES, field: field, value: value}),
-  setPageVisible: (page) => ({type: SET_SPOT_PAGE_VISIBLE, page: page})
+  setPageVisible: (page) => ({type: spotReducers.SET_SPOT_PAGE_VISIBLE, page: page})
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Basics);

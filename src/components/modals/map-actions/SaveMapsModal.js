@@ -9,7 +9,7 @@ import RNFetchBlob from 'rn-fetch-blob';
 import {unzip} from 'react-native-zip-archive'; /*TODO  react-native-zip-archive@3.0.1 requires a peer of react@^15.4.2 || <= 16.3.1 but none is installed */
 import ProgressBar from 'react-native-progress/Bar';
 import {connect} from 'react-redux';
-
+import {mapReducers} from '../../maps/Map.constants';
 import {
   CURRENT_BASEMAP,
   CUSTOM_MAPS,
@@ -433,13 +433,13 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => {
   return {
     currentBasemap: state.map.currentBasemap,
-    customMaps: state.home.customMaps,
-    offlineMaps: state.home.offlineMaps
+    customMaps: state.map.customMaps,
+    offlineMaps: state.map.offlineMaps
   }
 };
 
 const mapDispatchToProps = {
-  onOfflineMaps: (offlineMaps) => ({type: OFFLINE_MAPS, offlineMaps: offlineMaps})
+  onOfflineMaps: (offlineMaps) => ({type: mapReducers.OFFLINE_MAPS, offlineMaps: offlineMaps})
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(SaveMapModal);

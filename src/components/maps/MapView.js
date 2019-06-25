@@ -7,9 +7,10 @@ import * as turf from '@turf/turf/index'
 import {LATITUDE, LONGITUDE, LATITUDE_DELTA, LONGITUDE_DELTA, MapModes} from './Map.constants';
 import {connect} from 'react-redux';
 import {getNewId} from "../../shared/Helpers";
-
+import {mapReducers} from "./Map.constants";
+import {spotReducers} from "../../spots/Spot.constants";
 import {
-  CURRENT_BASEMAP,
+  // CURRENT_BASEMAP,
   FEATURE_ADD,
   FEATURE_DELETE,
   FEATURE_SELECTED,
@@ -674,21 +675,21 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => {
   return {
-    selectedSpot: state.home.selectedSpot,
-    features: state.home.features,
-    featuresSelected: state.home.featuresSelected,
+    selectedSpot: state.spot.selectedSpot,
+    features: state.spot.features,
+    featuresSelected: state.spot.featuresSelected,
     currentBasemap: state.map.currentBasemap,
     map: state.map.map
   }
 };
 
 const mapDispatchToProps = {
-  onFeaturesSelectedCleared: () => ({type: FEATURES_SELECTED_CLEARED}),
-  onFeatureSelected: (featureSelected) => ({type: FEATURE_SELECTED, feature: featureSelected}),
-  onFeatureAdd: (feature) => ({type: FEATURE_ADD, feature: feature}),
-  onFeatureDelete: (id) => ({type: FEATURE_DELETE, id: id}),
-  onFeaturesUpdated: (features) => ({type: FEATURES_UPDATED, features: features}),
-  onCurrentBasemap: (basemap) => ({type: CURRENT_BASEMAP, basemap: basemap})
+  onFeaturesSelectedCleared: () => ({type: spotReducers.FEATURES_SELECTED_CLEARED}),
+  onFeatureSelected: (featureSelected) => ({type: spotReducers.FEATURE_SELECTED, feature: featureSelected}),
+  onFeatureAdd: (feature) => ({type: spotReducers.FEATURE_ADD, feature: feature}),
+  onFeatureDelete: (id) => ({type: spotReducers.FEATURE_DELETE, id: id}),
+  onFeaturesUpdated: (features) => ({type: spotReducers.FEATURES_UPDATED, features: features}),
+  onCurrentBasemap: (basemap) => ({type: mapReducers.CURRENT_BASEMAP, basemap: basemap})
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(mapView);

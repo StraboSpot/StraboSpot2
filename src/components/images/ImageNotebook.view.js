@@ -42,7 +42,7 @@ const imageNotebook = (props) => {
 const mapStateToProps = (state) => {
   // console.log('MP to P', state)
   return {
-    images: state.home.selectedSpot.properties.images,
+    images: state.spot.selectedSpot.properties.images,
     imagePaths: state.images.imagePaths
   }
 };
