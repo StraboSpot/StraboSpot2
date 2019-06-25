@@ -1,10 +1,16 @@
-import React, {Component} from 'react';
-import {FlatList, ScrollView, Text, View} from 'react-native';
+import React from 'react';
+import {FlatList, View} from 'react-native';
 import {connect} from "react-redux";
 
+import MeasurementItem from "./MeasurementItem";
+
 const MeasurementsOverview = props => (
-  <View style={{height: 100, backgroundColor: 'white'}}>
-    <Text style={props.style}>{props.orientations}</Text>
+  <View>
+    <FlatList
+      data={props.spot.properties.orientations}
+      renderItem={item => <MeasurementItem item={item}/>}
+      keyExtractor={(item, index) => index.toString()}
+    />
   </View>
 );
 

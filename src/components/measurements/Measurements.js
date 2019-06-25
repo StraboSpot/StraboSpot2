@@ -1,88 +1,20 @@
 import React, {useState} from 'react';
 import {FlatList, ScrollView, Text, View, TouchableOpacity} from 'react-native';
 import {connect} from 'react-redux';
-import {Button, Divider, Icon} from "react-native-elements";
+import {Button} from "react-native-elements";
 import {SpotPages} from "../notebook-panel/Notebook.constants";
 import * as actionCreators from '../../store/actions';
-// import {SET_SPOT_PAGE_VISIBLE} from "../../../store/Constants";
 
 import ReturnToOverview from '../notebook-panel/ui/ReturnToOverviewButton';
 import SectionDivider from "../../shared/ui/SectionDivider";
+import MeasurementItem from './MeasurementItem';
 
 // Styles
 import styles from './measurements.styles';
 import * as themes from '../../themes/ColorThemes';
 
-const MeasurementPage = (props) => {
+const MeasurementsPage = (props) => {
   const [isModalVisible, setIsModalVisible] = useState(true);
-
-  const openMeasurementDetail = (item) => {
-    console.log('item', item);
-    props.setFormData(item);
-    props.setPageVisible(SpotPages.MEASUREMENTDETAIL);
-  };
-
-  // Render an individual measurement
-  const renderMeasurement = ({item}) => {
-    return (
-      <TouchableOpacity
-        style={styles.measurementsListItem}
-        onPress={() => openMeasurementDetail(item)}>
-        <View>
-          {'strike' in item && 'dip' in item &&
-          <Text style={styles.mainText}>
-            {item.strike}/{item.dip}
-          </Text>}
-          {'trend' in item && 'plunge' in item &&
-          <Text style={styles.mainText}>
-            {item.trend}/{item.plunge}
-          </Text>}
-        </View>
-        <View>
-          <Text style={styles.propertyText}>
-            {item.type === 'linear_orientation' && !item.associated_orientation && 'Linear Feature'}
-            {item.type === 'planar_orientation' && !item.associated_orientation && 'Planar Feature'}
-            {item.type === 'planar_orientation' && item.associated_orientation && 'Linear Feature   Planar Feature'}
-          </Text>
-        </View>
-      </TouchableOpacity>
-    );
-  };
-
-  // Render a measurement block in a list
-  const renderItem = ({item}) => {
-    return (
-      <View style={styles.measurementsRenderListContainer}>
-        {typeof (item) !== 'undefined' &&
-        <View>
-          {renderMeasurement({item})}
-          {'associated_orientation' in item && item.associated_orientation.length > 0 &&
-          <FlatList
-            data={item.associated_orientation}
-            renderItem={renderMeasurement}
-            keyExtractor={(aoItem, aoIndex) => aoIndex.toString()}
-          />}
-          {/*<View style={styles.horizontalLine}/>*/}
-        </View>}
-        <View style={{flexDirection: 'row'}}>
-        <Icon
-          name='ios-information-circle-outline'
-          containerStyle={{justifyContent: 'center', paddingRight: 10}}
-          type='ionicon'
-          color='blue'
-          onPress={() => openMeasurementDetail(item)}
-        />
-        <Icon
-          name='right'
-          containerStyle={{justifyContent: 'center', paddingRight: 5}}
-          type='antdesign'
-          color= 'lightgrey'
-          size={13}
-        />
-        </View>
-      </View>
-    );
-  };
 
   const renderLinearMeasurements = () => {
     let data = props.spot.properties.orientations.filter(measurement => {
@@ -90,10 +22,9 @@ const MeasurementPage = (props) => {
     });
     return (
       <View>
-        {renderSectionDivider('Linear Measurements')}
         <FlatList
           data={data}
-          renderItem={renderItem}
+          renderItem={item => <MeasurementItem item={item}/>}
           keyExtractor={(item, index) => index.toString()}
         />
       </View>
@@ -106,10 +37,9 @@ const MeasurementPage = (props) => {
     });
     return (
       <View>
-        {renderSectionDivider('Planar Measurements')}
         <FlatList
           data={data}
-          renderItem={renderItem}
+          renderItem={item => <MeasurementItem item={item}/>}
           keyExtractor={(item, index) => index.toString()}
         />
       </View>
@@ -122,10 +52,9 @@ const MeasurementPage = (props) => {
     });
     return (
       <View>
-        {renderSectionDivider('Planar + Linear Measurements')}
         <FlatList
           data={data}
-          renderItem={renderItem}
+          renderItem={item => <MeasurementItem item={item}/>}
           keyExtractor={(item, index) => index.toString()}
         />
       </View>
@@ -168,9 +97,12 @@ const MeasurementPage = (props) => {
           }}
         />
         <ScrollView>
-          {props.spot.properties.orientations ? renderPlanarMeasurements() : null}
-          {props.spot.properties.orientations ? renderLinearMeasurements(): null}
-          {props.spot.properties.orientations ?renderPlanarLinearMeasurements(): null}
+          {renderSectionDivider('Planar Measurements')}
+          {props.spot.properties.orientations && renderPlanarMeasurements()}
+          {renderSectionDivider('Linear Measurements')}
+          {props.spot.properties.orientations && renderLinearMeasurements()}
+          {renderSectionDivider('Planar + Linear Measurements')}
+          {props.spot.properties.orientations && renderPlanarLinearMeasurements()}
         </ScrollView>
       </View>
     </React.Fragment>
@@ -184,8 +116,7 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-  setPageVisible: (page) => (actionCreators.setSpotPageVisible(page)),
-  setFormData: (formData) => (actionCreators.setFormData(formData))
+  setPageVisible: (page) => (actionCreators.setSpotPageVisible(page))
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(MeasurementPage);
+export default connect(mapStateToProps, mapDispatchToProps)(MeasurementsPage);
