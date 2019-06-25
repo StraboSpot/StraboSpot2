@@ -3,7 +3,7 @@ import {Alert, AsyncStorage, StyleSheet} from 'react-native';
 import MapboxGL from '@mapbox/react-native-mapbox-gl';
 import {MAPBOX_KEY} from '../../MapboxConfig'
 import {CustomBasemap, MapboxOutdoorsBasemap, MapboxSatelliteBasemap, OSMBasemap, MacrostratBasemap} from "./Basemaps";
-import * as turf from '@turf/turf'
+import * as turf from '@turf/turf/index'
 import {LATITUDE, LONGITUDE, LATITUDE_DELTA, LONGITUDE_DELTA, MapModes} from './Map.constants';
 import {connect} from 'react-redux';
 import {getNewId} from "../../shared/Helpers";
