@@ -5,6 +5,12 @@ const imageStyles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f3e0d2',
   },
+  closeInfoView: {
+    fontWeight: 'bold',
+    position: "absolute",
+    right: 20,
+    top: 30,
+  },
   editButton: {
     // textAlign: 'center'
   },
@@ -13,6 +19,14 @@ const imageStyles = StyleSheet.create({
     padding: 10,
     flexDirection: 'row',
     justifyContent: 'space-between'
+  },
+  imageInfoButtons: {
+    marginTop: 20
+  },
+  rightsideIcons: {
+    position: "absolute",
+    right: 10,
+    bottom: 50,
   },
   galleryImageContainer: {
     flex: 1,

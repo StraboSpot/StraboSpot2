@@ -4,6 +4,7 @@ import {ActivityIndicator, Button, FlatList, Text, View} from 'react-native';
 import {connect} from 'react-redux';
 import imageStyles from "./images.styles";
 import {Image} from "react-native-elements";
+import {goToImageInfo} from "../../routes/Navigation";
 
 const imageNotebook = (props) => {
 
@@ -22,7 +23,7 @@ const imageNotebook = (props) => {
         />
         <Button
           title={'Edit'}
-          onPress={() => console.log(image.id)}
+          onPress={() => goToImageInfo(image.id)}
           style={imageStyles.editButton}
         />
       </View>

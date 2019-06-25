@@ -9,13 +9,15 @@ import {
   SIGN_IN,
   SIGN_UP,
   SPOT_PAGE,
-  IMAGES
+  IMAGEGALLERY,
+  IMAGEINFO
 } from './ScreenNameConstants';
 import Home from "../views/home/Home";
 import Initialising from "../Initializing";
 import SignIn from "../views/SignIn";
 import SignUp from "../views/SignUp";
-import Images from "../components/images/ImageGallery.view";
+import ImageGallery from "../components/images/ImageGallery.view";
+import ImageInfo from "../components/images/ImageInfo.view";
 import Loading from '../shared/ui/Loading'
 
 
@@ -42,6 +44,7 @@ export default function() {
   Navigation.registerComponent(INITALIZING, () => WrappedComponent(Initialising));
   Navigation.registerComponent(SIGN_IN, () => WrappedComponent(SignIn));
   Navigation.registerComponent(SIGN_UP, () => WrappedComponent(SignUp));
-  Navigation.registerComponent(IMAGES, () => WrappedComponent(Images));
+  Navigation.registerComponent(IMAGEGALLERY, () => WrappedComponent(ImageGallery));
+  Navigation.registerComponent(IMAGEINFO, () => WrappedComponent(ImageInfo));
   console.log("All screens have been registered...")
 }

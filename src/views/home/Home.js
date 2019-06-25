@@ -3,7 +3,7 @@ import {Alert, Text, View, Button} from 'react-native'
 import NetInfo from "@react-native-community/netinfo";
 import ImagePicker from 'react-native-image-picker';
 import styles from './Styles';
-import {goToAuth, goToImages, goSignIn, goToSpotPage} from '../../routes/Navigation'
+import {goToAuth, goSignIn, goToSpotPage, goToImageGallery} from '../../routes/Navigation'
 import {Navigation} from 'react-native-navigation';
 import MapView from '../../maps/map/MapView';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -401,7 +401,7 @@ class Home extends React.Component {
         this.setVisibleMenuState('Custom Maps');
         break;
       case 'Image Gallery':
-        goToImages();
+        goToImageGallery();
     }
   };
 
