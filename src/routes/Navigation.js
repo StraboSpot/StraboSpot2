@@ -1,4 +1,5 @@
 import {Navigation} from 'react-native-navigation'
+import {IMAGEGALLERY, IMAGEINFO} from "./ScreenNameConstants";
 
 export const goHome = () => Navigation.setRoot({
   root: {
