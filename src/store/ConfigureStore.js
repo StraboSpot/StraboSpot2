@@ -1,5 +1,9 @@
 import {applyMiddleware ,createStore, compose, combineReducers} from "redux";
-import {homeReducer, mapReducer, notebookReducer, imageReducer, formReducer} from './reducers/ReducersIndex';
+import {notebookReducer} from "../components/notebook-panel/notebook.reducers";
+import {mapReducer} from "../components/maps/maps.reducer";
+import {spotReducer} from "../spots/spot.reducers";
+import {imageReducer} from "../components/images/image.reducers";
+import {formReducer} from "../components/form/form.reducers";
 import {createLogger} from 'redux-logger';
 import {persistStore, persistReducer} from 'redux-persist'
 import storage from 'redux-persist/lib/storage' // defaults to localStorage for web and AsyncStorage for react-native
@@ -16,7 +20,7 @@ const loggerMiddleware = createLogger({
 });
 
 const rootReducer = combineReducers({
-  home: homeReducer,
+  spot: spotReducer,
   map: mapReducer,
   notebook: notebookReducer,
   images: imageReducer,

@@ -80,7 +80,7 @@ return (
 
 const mapStateToProps = (state) => {
   return {
-    spot: state.home.selectedSpot
+    spot: state.spot.selectedSpot
   }
 }
 

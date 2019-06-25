@@ -74,7 +74,7 @@ const notesView = (props) => {
 
 const mapStateToProps = (state) => {
   return {
-    selectedSpot: state.home.selectedSpot
+    selectedSpot: state.spot.selectedSpot
   }
 };
 

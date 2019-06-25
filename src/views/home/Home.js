@@ -26,7 +26,8 @@ import NotebookPanelMenu from '../../components/notebook-panel/NotebookPanelMenu
 import {connect} from 'react-redux';
 import {ADD_PHOTOS, FEATURE_DELETE, SET_ISONLINE, SET_SPOT_PAGE_VISIBLE, EDIT_SPOT_PROPERTIES, EDIT_SPOT_IMAGES} from "../../store/Constants";
 import * as actionCreators from '../../store/actions/index';
-import {SpotPages} from "../../components/notebook-panel/Notebook.constants";
+import {notebookReducers, SpotPages} from "../../components/notebook-panel/Notebook.constants";
+import {spotReducers} from "../../spots/Spot.constants";
 import {saveFile} from '../../services/images/ImageDownload';
 import {takePicture} from '../../components/images/Images.container';
 import {IMAGES} from "../../routes/ScreenNameConstants";
@@ -819,16 +820,17 @@ class Home extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    selectedSpot: state.home.selectedSpot,
-    featureCollectionSelected: state.home.featureCollectionSelected,
-    isOnline: state.home.isOnline,
+    selectedSpot: state.spot.selectedSpot,
+    featureCollectionSelected: state.spot.featureCollectionSelected,
+    isOnline: state.spot.isOnline,
     // visiblePage: state.notebook.visiblePage
   }
 }
 
 const mapDispatchToProps = {
-  setIsOnline: (online) => ({type: SET_ISONLINE, online: online}),
-  setPageVisible: (page) => ({type: SET_SPOT_PAGE_VISIBLE, page: page}),
+  setIsOnline: (online) => ({type: spotReducers.SET_ISONLINE, online: online}),
+  setPageVisible: (page) => ({type: notebookReducers.SET_SPOT_PAGE_VISIBLE, page: page}),
+  // setNotebookPageVisible:(page) => ({type: }),
   addPhoto: (imageData) => (actionCreators.addPhoto(imageData)),
   deleteFeature: (id) => (actionCreators.deleteFeature(id)),
   onSpotEdit: (field, value) => (actionCreators.editSpotProperties(field, value)),

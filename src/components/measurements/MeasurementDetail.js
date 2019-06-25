@@ -3,6 +3,8 @@ import {Alert, ScrollView, Text, View} from 'react-native';
 import {connect} from 'react-redux';
 import {SpotPages} from "../notebook-panel/Notebook.constants";
 import {ButtonGroup} from "react-native-elements";
+import {spotReducers} from "../../spots/Spot.constants";
+import {notebookReducers} from "../notebook-panel/Notebook.constants";
 import {EDIT_SPOT_PROPERTIES, SET_SPOT_PAGE_VISIBLE} from "../../store/Constants";
 import {Formik} from 'formik';
 import FormView from "../form/Form.view";
@@ -196,14 +198,14 @@ const MeasurementDetailPage = (props) => {
 
 function mapStateToProps(state) {
   return {
-    spot: state.home.selectedSpot,
+    spot: state.spot.selectedSpot,
     formData: state.form.formData
   }
 }
 
 const mapDispatchToProps = {
-  onSpotEdit: (field, value) => ({type: EDIT_SPOT_PROPERTIES, field: field, value: value}),
-  setPageVisible: (page) => ({type: SET_SPOT_PAGE_VISIBLE, page: page}),
+  onSpotEdit: (field, value) => ({type: spotReducers.EDIT_SPOT_PROPERTIES, field: field, value: value}),
+  setPageVisible: (page) => ({type: notebookReducers.SET_SPOT_PAGE_VISIBLE, page: page}),
   setFormData: (formData) => (actionCreators.setFormData(formData))
 };
 

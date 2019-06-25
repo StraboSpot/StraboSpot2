@@ -1,8 +1,8 @@
-import {SET_FORM_DATA} from "../Constants";
+import {formReducers} from "../../components/form/Form.constant";
 
 export const setFormData = (formData) => {
   return {
-    type: SET_FORM_DATA,
+    type: formReducers.SET_FORM_DATA,
     formData: formData
   }
 };

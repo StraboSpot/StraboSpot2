@@ -13,7 +13,7 @@ import NotesPage from '../notes/Notes.view';
 import SamplesPage from '../samples/SamplesNotebook.view';
 import {SpotPages} from "./Notebook.constants";
 import * as actionCreators from '../../store/actions/index';
-import {SET_SPOT_PAGE_VISIBLE} from "../../store/Constants";
+// import {SET_SPOT_PAGE_VISIBLE} from "../../store/Constants";
 import {isEmpty} from "../../shared/Helpers";
 
 // Styles
@@ -76,8 +76,8 @@ const NotebookPanel = props => {
 
 function mapStateToProps(state) {
   return {
-    spot: state.home.selectedSpot,
-    featuresSelected: state.home.featuresSelected,
+    spot: state.spot.selectedSpot,
+    featuresSelected: state.spot.featuresSelected,
     spotPageVisible: state.notebook.visiblePage
   }
 }

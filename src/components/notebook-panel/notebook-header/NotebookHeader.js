@@ -8,6 +8,7 @@ import IconButton from '../../../shared/ui/IconButton';
 
 // Styles
 import headerStyles from './NotebookHeader.styles';
+import {spotReducers} from "../../../spots/Spot.constants";
 import {EDIT_SPOT_PROPERTIES} from "../../../store/Constants";
 
 const NotebookHeader = props => {
@@ -64,12 +65,12 @@ const NotebookHeader = props => {
 
 function mapStateToProps(state) {
   return {
-    spot: state.home.selectedSpot
+    spot: state.spot.selectedSpot
   }
 }
 
 const mapDispatchToProps = {
-  onSpotEdit: (field, value) => ({type: EDIT_SPOT_PROPERTIES, field: field, value: value}),
+  onSpotEdit: (field, value) => ({type: spotReducers.EDIT_SPOT_PROPERTIES, field: field, value: value}),
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(NotebookHeader);

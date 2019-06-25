@@ -1,15 +1,16 @@
-import * as actionTypes from "../Constants";
+import {spotReducers} from "../../spots/Spot.constants";
+import {imageReducers} from "../../components/images/Image.constants";
 
 export const addPhoto = (image) => {
   return {
-    type: actionTypes.ADD_PHOTOS,
+    type: imageReducers.ADD_PHOTOS,
     images: image
   }
 };
 
 export const editSpotImage = (image) => {
   return {
-    type: actionTypes.EDIT_SPOT_IMAGES,
+    type: spotReducers.EDIT_SPOT_IMAGES,
     images: image
   }
 };

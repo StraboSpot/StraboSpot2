@@ -8,6 +8,7 @@ import {CompassToggleButtons} from "./Compass.constants";
 import {Button, ListItem} from "react-native-elements";
 import {Switch} from "react-native-switch";
 import styles from './CompassStyles';
+import {spotReducers} from "../../spots/Spot.constants";
 import {EDIT_SPOT_PROPERTIES} from "../../store/Constants";
 import Orientation from 'react-native-orientation-locker';
 import Slider from '../../shared/ui/Slider';
@@ -555,12 +556,12 @@ class Compass extends Component {
 
 function mapStateToProps(state) {
   return {
-    spot: state.home.selectedSpot
+    spot: state.spot.selectedSpot
   }
 }
 
 const mapDispatchToProps = {
-  onSpotEdit: (field, value) => ({type: EDIT_SPOT_PROPERTIES, field: field, value: value}),
+  onSpotEdit: (field, value) => ({type: spotReducers.EDIT_SPOT_PROPERTIES, field: field, value: value}),
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Compass);

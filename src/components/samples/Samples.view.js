@@ -4,6 +4,7 @@ import {connect} from "react-redux";
 import {Button, ButtonGroup, Input} from "react-native-elements";
 import styles from './samples.style';
 import Slider from '../../shared/ui/Slider';
+import {spotReducers} from "../../spots/Spot.constants";
 import {EDIT_SPOT_PROPERTIES} from "../../store/Constants";
 import {getNewId} from "../../shared/Helpers";
 
@@ -133,12 +134,12 @@ const samplesModalView = (props) => {
 
 const mapStateToProps = (state) => {
   return {
-    spot: state.home.selectedSpot
+    spot: state.spot.selectedSpot
   }
 }
 
 const mapDispatchToProps = {
-  onSpotEdit: (field, value) => ({type: EDIT_SPOT_PROPERTIES, field: field, value: value}),
+  onSpotEdit: (field, value) => ({type: spotReducers.EDIT_SPOT_PROPERTIES, field: field, value: value}),
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(samplesModalView);
