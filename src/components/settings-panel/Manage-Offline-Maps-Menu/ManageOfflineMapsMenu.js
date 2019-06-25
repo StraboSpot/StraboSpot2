@@ -61,8 +61,7 @@ class ManageOfflineMapsMenu extends Component {
           <Text style={styles.headingText}>Manage Offline Maps</Text>
         </View>
         <View>
-          {
-            this.props.offlineMaps.map((item,i) => <ListItem
+          {!isEmpty(this.props.offlineMaps) ? (this.props.offlineMaps.map((item,i) => <ListItem
               containerStyle={{backgroundColor: 'transparent', padding: 0}}
               key={item.saveId}
               title={
@@ -85,8 +84,7 @@ class ManageOfflineMapsMenu extends Component {
                   </Text>
                 </View>
               }
-            />)
-          }
+            />)) : null}
         </View>
       </View>
     );

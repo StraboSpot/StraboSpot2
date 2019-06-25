@@ -441,6 +441,7 @@ class Compass extends Component {
 
     return (
       <Animated.Image
+        key={image}
         source={image}
         style={
           [styles.trendLine,

@@ -5,7 +5,7 @@ import ImagePicker from 'react-native-image-picker';
 import styles from './Styles';
 import {goToAuth, goSignIn, goToSpotPage, goToImageGallery} from '../../routes/Navigation'
 import {Navigation} from 'react-native-navigation';
-import MapView from '../../maps/map/MapView';
+import MapView from '../../components/maps/MapView';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from '../../shared/Icons';
 import IconButton from '../../shared/ui/IconButton';
@@ -15,7 +15,7 @@ import BaseMapDialog from "../../components/modals/base-maps/BaseMapDialogBox";
 import NotebookPanel from '../../components/notebook-panel/NotebookPanel';
 import Drawer from 'react-native-drawer';
 import SettingsPanel from '../../components/settings-panel/SettingsPanel';
-import {MapModes} from '../../maps/map/Map.constants';
+import {MapModes} from '../../components/maps/Map.constants';
 import ShortcutMenu from '../../components/settings-panel/shortcuts-menu/ShortcutsMenu';
 import ManageOfflineMapsMenu from '../../components/settings-panel/Manage-Offline-Maps-Menu/ManageOfflineMapsMenu';
 import CustomMapsMenu from '../../components/settings-panel/Custom-Maps-Menu/CustomMapsMenu';
