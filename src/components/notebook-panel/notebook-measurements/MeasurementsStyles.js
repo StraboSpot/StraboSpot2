@@ -2,14 +2,23 @@ import {StyleSheet} from 'react-native';
 import * as themes from '../../../themes/ColorThemes';
 
 const styles = StyleSheet.create({
+  measurementsRenderListContainer: {
+    flexDirection: 'row',
+    backgroundColor: 'white',
+    justifyContent: 'space-between',
+    borderBottomColor: themes.MEDIUMGREY,
+    borderBottomWidth: .5
+  },
   measurementsSectionDividerContainer: {
     flex: 1,
     flexDirection: 'row',
-    backgroundColor: themes.LIGHTGREY
+    justifyContent: 'space-between',
+    backgroundColor: themes.LIGHTGREY,
+    paddingTop: 45
   },
   measurementsSectionDividerButtonContainer: {
-    height: 30,
-    justifyContent: 'center'
+    // height: 35,
+    justifyContent: 'space-between',
   },
   measurementsListItem: {
     flex: 1,
@@ -17,17 +26,15 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     paddingRight: 10,
     height: 40,
-    borderBottomColor: themes.MEDIUMGREY,
-    borderBottomWidth: .5,
     alignItems: 'center'
   },
   mainText: {
     color: 'black',
-    fontSize: 25
+    fontSize: 18
   },
   propertyText: {
     paddingLeft: 20,
-    fontSize: 25,
+    fontSize: 18,
     color: themes.MEDIUMGREY,
   },
   horizontalLine: {

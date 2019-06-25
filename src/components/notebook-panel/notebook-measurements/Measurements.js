@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {FlatList, ScrollView, Text, View, TouchableOpacity} from 'react-native';
 import {connect} from 'react-redux';
-import {Button, Divider} from "react-native-elements";
+import {Button, Divider, Icon} from "react-native-elements";
 import {SpotPages} from "../Notebook.constants";
 import * as actionCreators from '../../../store/actions/index';
 // import {SET_SPOT_PAGE_VISIBLE} from "../../../store/Constants";
@@ -52,7 +52,7 @@ const MeasurementPage = (props) => {
   // Render a measurement block in a list
   const renderItem = ({item}) => {
     return (
-      <View>
+      <View style={styles.measurementsRenderListContainer}>
         {typeof (item) !== 'undefined' &&
         <View>
           {renderMeasurement({item})}
@@ -64,6 +64,22 @@ const MeasurementPage = (props) => {
           />}
           {/*<View style={styles.horizontalLine}/>*/}
         </View>}
+        <View style={{flexDirection: 'row'}}>
+        <Icon
+          name='ios-information-circle-outline'
+          containerStyle={{justifyContent: 'center', paddingRight: 10}}
+          type='ionicon'
+          color='blue'
+          onPress={() => openMeasurementDetail(item)}
+        />
+        <Icon
+          name='right'
+          containerStyle={{justifyContent: 'center', paddingRight: 5}}
+          type='antdesign'
+          color= 'lightgrey'
+          size={13}
+        />
+        </View>
       </View>
     );
   };
