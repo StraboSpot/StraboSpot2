@@ -21,9 +21,9 @@ const ImageInfoView = (props) => {
   return (
     <View>
       <Image
-      source={{uri: getImageSrc(props.id)}}
-      style={{width: '100%', height: '100%'}}
-      PlaceholderContent={<ActivityIndicator/>}
+        source={{uri: getImageSrc(props.id)}}
+        style={{width: '100%', height: '100%'}}
+        PlaceholderContent={<ActivityIndicator/>}
       />
       <View style={styles.closeInfoView}>
         <Icon
@@ -33,13 +33,13 @@ const ImageInfoView = (props) => {
           size={42}
           onPress={() => Navigation.push(props.componentId, {
             component: {
-            name: 'Home'
-          }
+              name: 'Home'
+            }
           })}
         />
       </View>
       <View style={styles.rightsideIcons}>
-      <IconButton
+        <IconButton
           style={styles.imageInfoButtons}
           source={require('../../assets/icons/app-icons-shaded/NoteButton.png')}
           onPress={() => clickHandler('note')}
@@ -49,21 +49,13 @@ const ImageInfoView = (props) => {
           source={require('../../assets/icons/app-icons-shaded/SketchButton.png')}
           onPress={() => clickHandler('sketch')}
         />
-      {/*<Button*/}
-      {/*  onPress={() => Navigation.push(props.componentId, {*/}
-      {/*    component: {*/}
-      {/*      name: 'Home'*/}
-      {/*    }*/}
-      {/*  })}*/}
-      {/*  title="Go Back"*/}
-      {/*/>*/}
       </View>
     </View>
   );
 };
 
 const mapStateToProps = (state) => {
-  console.log('MP to P', state);
+  // console.log('MP to P', state);
   return {
     imagePaths: state.images.imagePaths
   }
