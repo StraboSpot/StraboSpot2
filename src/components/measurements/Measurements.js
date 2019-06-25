@@ -2,16 +2,16 @@ import React, {useState} from 'react';
 import {FlatList, ScrollView, Text, View, TouchableOpacity} from 'react-native';
 import {connect} from 'react-redux';
 import {Button, Divider, Icon} from "react-native-elements";
-import {SpotPages} from "../Notebook.constants";
-import * as actionCreators from '../../../store/actions/index';
+import {SpotPages} from "../notebook-panel/Notebook.constants";
+import * as actionCreators from '../../store/actions';
 // import {SET_SPOT_PAGE_VISIBLE} from "../../../store/Constants";
 
-import ReturnToOverview from '../ui/ReturnToOverviewButton';
-import SectionDivider from "../../../shared/ui/SectionDivider";
+import ReturnToOverview from '../notebook-panel/ui/ReturnToOverviewButton';
+import SectionDivider from "../../shared/ui/SectionDivider";
 
 // Styles
-import styles from './MeasurementsStyles';
-import * as themes from '../../../themes/ColorThemes';
+import styles from './measurements.styles';
+import * as themes from '../../themes/ColorThemes';
 
 const MeasurementPage = (props) => {
   const [isModalVisible, setIsModalVisible] = useState(true);
