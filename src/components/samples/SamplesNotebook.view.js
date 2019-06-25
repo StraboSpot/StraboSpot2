@@ -48,7 +48,7 @@ const samplesNotebookView = (props) => {
                   name='ios-information-circle-outline'
                   type='ionicon'
                   color='blue'
-                  onPress={() => console.log('Tag item pressed', item.id, item.label)}
+                  onPress={() => console.log('Samples item pressed', item.id, item.label)}
                 />}
             />
           )
@@ -72,7 +72,7 @@ return (
     {/*  renderItem={renderItem}*/}
     {/*/>*/}
     <ScrollView>
-    {renderSampleList()}
+    {props.spot.properties.samples ? renderSampleList() : null}
     </ScrollView>
   </React.Fragment>
 );
