@@ -3,7 +3,7 @@ import {Text, ScrollView, TouchableOpacity, View} from 'react-native';
 
 import TagsOverview from './notebook-tags/TagsOverview';
 import NotesOverview from '../notes/NotesOverview';
-import MeasurementsOverview from './notebook-measurements/MeasurementsOverview';
+import MeasurementsOverview from '../measurements/MeasurementsOverview';
 import NotebookImages from '../images/ImageNotebook.view';
 import Collapsible from 'react-native-collapsible';
 import {Icon} from 'react-native-elements';

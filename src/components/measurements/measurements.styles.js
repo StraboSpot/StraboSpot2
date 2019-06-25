@@ -1,5 +1,5 @@
 import {StyleSheet} from 'react-native';
-import * as themes from '../../../themes/ColorThemes';
+import * as themes from '../../themes/ColorThemes';
 
 const styles = StyleSheet.create({
   measurementsRenderListContainer: {

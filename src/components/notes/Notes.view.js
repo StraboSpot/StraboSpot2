@@ -4,7 +4,6 @@ import noteStyles from "./notes.style";
 import {connect} from "react-redux";
 import * as actionCreators from '../../store/actions/index';
 import {Button, Input} from "react-native-elements";
-import styles from "../notebook-panel/notebook-measurements/MeasurementsStyles";
 import {SpotPages} from "../notebook-panel/Notebook.constants";
 import {SET_SPOT_PAGE_VISIBLE} from "../../store/Constants";
 import ReturnToOverview from '../notebook-panel/ui/ReturnToOverviewButton';

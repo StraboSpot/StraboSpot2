@@ -1,20 +1,20 @@
 import React, {useState, useRef} from 'react';
 import {Alert, ScrollView, Text, View} from 'react-native';
 import {connect} from 'react-redux';
-import {SpotPages} from "../Notebook.constants";
+import {SpotPages} from "../notebook-panel/Notebook.constants";
 import {ButtonGroup} from "react-native-elements";
-import {EDIT_SPOT_PROPERTIES, SET_SPOT_PAGE_VISIBLE} from "../../../store/Constants";
+import {EDIT_SPOT_PROPERTIES, SET_SPOT_PAGE_VISIBLE} from "../../store/Constants";
 import {Formik} from 'formik';
-import FormView from "../../form/Form.view";
-import {isEmpty} from "../../../shared/Helpers";
-import SectionDivider from '../../../shared/ui/SectionDivider';
-import SaveAndCloseButton from '../ui/SaveAndCloseButtons';
-import {getSurveyFieldLabel, getForm, setForm, validateForm} from "../../form/form.container";
+import FormView from "../form/Form.view";
+import {isEmpty} from "../../shared/Helpers";
+import SectionDivider from '../../shared/ui/SectionDivider';
+import SaveAndCloseButton from '../notebook-panel/ui/SaveAndCloseButtons';
+import {getSurveyFieldLabel, getForm, setForm, validateForm} from "../form/form.container";
 
 // Styles
-import styles from './MeasurementsStyles';
-import * as themes from '../../../themes/ColorThemes';
-import * as actionCreators from "../../../store/actions";
+import styles from './measurements.styles';
+import * as themes from '../../themes/ColorThemes';
+import * as actionCreators from "../../store/actions";
 
 const MeasurementDetailPage = (props) => {
 
