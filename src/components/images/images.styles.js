@@ -1,6 +1,12 @@
 import {Dimensions, StyleSheet} from "react-native";
+import * as themes from "../../themes/ColorThemes";
 
 const imageStyles = StyleSheet.create({
+  button: {
+    flex: 15,
+    alignItems: 'center',
+    paddingBottom: 10
+  },
   container: {
     flex: 1,
     backgroundColor: '#f3e0d2',
@@ -46,7 +52,6 @@ const imageStyles = StyleSheet.create({
     margin: 10
     // paddingTop: 50,
   },
-
   flatListStyle: {
     flex: 1
   },
@@ -62,12 +67,12 @@ const imageStyles = StyleSheet.create({
     width: '98%',
     resizeMode: 'contain',
   },
-  modelStyle: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.4)',
-  },
+  // modelStyle: {
+  //   flex: 1,
+  //   justifyContent: 'center',
+  //   alignItems: 'center',
+  //   backgroundColor: 'green',
+  // },
   closeButtonStyle: {
     width: 25,
     height: 25,
@@ -75,6 +80,48 @@ const imageStyles = StyleSheet.create({
     right: 9,
     position: 'absolute',
   },
+  modalPosition: {
+    position: 'absolute', //Here is the trick
+    right: 100,
+    bottom: 20,
+  },
+  modalContainer: {
+    flex: 8,
+    // height: 800,
+    backgroundColor: 'white',
+    // borderTopRightRadius: 20,
+    // borderTopLeftRadius: 20,
+    borderBottomRightRadius: 20,
+    borderBottomLeftRadius: 20,
+  },
+  inputContainer: {
+    borderBottomWidth: 0,
+    borderRadius: 10,
+    backgroundColor: themes.LIGHTGREY,
+    marginBottom: 10
+  },
+  inputText: {
+    paddingLeft: 10,
+    fontSize: 16
+  },
+  textbox: {
+    fontSize: 14,
+    paddingLeft: 10,
+    height: 75,
+    borderRadius: 10,
+    backgroundColor: themes.LIGHTGREY,
+    marginBottom: 10
+  },
+  textboxContainer: {
+    paddingLeft: 10,
+    paddingRight: 10
+  },
+  switch: {
+    flexDirection: 'row',
+    padding: 15,
+    alignItems: 'center',
+    justifyContent: 'space-between'
+  }
 });
 
 export default imageStyles;
