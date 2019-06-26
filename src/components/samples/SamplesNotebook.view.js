@@ -84,7 +84,7 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = {
-  setPageVisible: (page) => (actionCreators.setSpotPageVisible(page))
+  setPageVisible: (page) => ({type: notebookReducers.SET_SPOT_PAGE_VISIBLE, page: page})
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(samplesNotebookView);
