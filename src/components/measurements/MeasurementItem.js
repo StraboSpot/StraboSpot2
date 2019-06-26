@@ -2,7 +2,7 @@ import React from "react";
 import {Text, TouchableOpacity, View} from "react-native";
 import {Icon} from "react-native-elements";
 import {connect} from "react-redux";
-import {notebookReducers, SpotPages} from "../notebook-panel/Notebook.constants";
+import {notebookReducers, NotebookPages} from "../notebook-panel/Notebook.constants";
 import {formReducers} from "../form/Form.constant";
 
 // Styles
@@ -14,7 +14,7 @@ const MeasurementItem = (props) => {
   const openMeasurementDetail = (item) => {
     console.log('item', item);
     props.setFormData(item);
-    props.setPageVisible(SpotPages.MEASUREMENTDETAIL);
+    props.setNotebookPageVisible(NotebookPages.MEASUREMENTDETAIL);
   };
 
 // Render an individual measurement
@@ -82,7 +82,7 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-  setPageVisible: (page) => ({type: notebookReducers.SET_SPOT_PAGE_VISIBLE, page: page}),
+  setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),
   setFormData: (formData) => ({type: formReducers.SET_FORM_DATA, formData: formData})
 };
 

@@ -2,7 +2,7 @@ import React from 'react';
 import {Button, Text, TextInput, View} from 'react-native';
 import noteStyles from './notes.style';
 import {connect} from "react-redux";
-import {notebookReducers, SpotPages} from "../notebook-panel/Notebook.constants";
+import {notebookReducers, NotebookPages} from "../notebook-panel/Notebook.constants";
 
 const SpotNotesOverview = props => {
 
@@ -17,7 +17,7 @@ const SpotNotesOverview = props => {
         <View style={noteStyles.editButton}>
           <Button
             title={'Edit'}
-            onPress={() => props.setPageVisible(SpotPages.NOTE)}
+            onPress={() => props.setNotebookPageVisible(NotebookPages.NOTE)}
             style={noteStyles.editButton}
           />
         </View>
@@ -33,7 +33,7 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = {
-  setPageVisible: (page) => ({type: notebookReducers.SET_SPOT_PAGE_VISIBLE, page: page})
+  setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page})
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(SpotNotesOverview);

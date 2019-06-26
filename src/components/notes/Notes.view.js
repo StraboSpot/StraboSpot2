@@ -3,9 +3,9 @@ import {Text, View} from 'react-native';
 import noteStyles from "./notes.style";
 import {connect} from "react-redux";
 import {Button, Input} from "react-native-elements";
-import {notebookReducers, SpotPages} from "../notebook-panel/Notebook.constants";
+import {notebookReducers, NotebookPages} from "../notebook-panel/Notebook.constants";
 import {spotReducers} from "../../spots/Spot.constants";
-import ReturnToOverview from '../notebook-panel/ui/ReturnToOverviewButton';
+import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 
 const notesView = (props) => {
 
@@ -19,8 +19,8 @@ const notesView = (props) => {
     // const date = new Date.now();
     return (
       <View >
-        <ReturnToOverview
-          onPress={() => props.setPageVisible(SpotPages.OVERVIEW)}
+        <ReturnToOverviewButton
+          onPress={() => props.setNotebookPageVisible(NotebookPages.OVERVIEW)}
         />
         {/*<Button*/}
         {/*  icon={{*/}
@@ -33,7 +33,7 @@ const notesView = (props) => {
         {/*  title={'Return to Overview'}*/}
         {/*  type={'clear'}*/}
         {/*  onPress={ () =>  {*/}
-        {/*     props.setPageVisible(SpotPages.OVERVIEW)*/}
+        {/*     props.setNotebookPageVisible(NotebookPages.OVERVIEW)*/}
         {/*  }}*/}
         {/*/>*/}
         {/*<View>*/}
@@ -79,7 +79,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = {
   onSpotEdit: (field, value) => ({type: spotReducers.EDIT_SPOT_PROPERTIES, field: field, value: value}),
-  setPageVisible: (page) => ({type: notebookReducers.SET_SPOT_PAGE_VISIBLE, page: page}),
+  setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(notesView);

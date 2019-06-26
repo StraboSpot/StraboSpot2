@@ -1,17 +1,32 @@
-import {notebookReducers, SpotPages} from './Notebook.constants';
+import {notebookReducers} from './Notebook.constants';
+import {isEmpty} from '../../shared/Helpers';
 
 const initialState = {
-  visiblePage: SpotPages.OVERVIEW,
-  notebookPanelMenuVisible: false
+  visibleNotebookPagesStack: []
 };
 
 export const notebookReducer = (state = initialState, action) => {
   switch (action.type) {
-    case notebookReducers.SET_SPOT_PAGE_VISIBLE:
+    case notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE: {
+      let visibleNotebookPagesStack = state.visibleNotebookPagesStack;
+      if (isEmpty(visibleNotebookPagesStack)) visibleNotebookPagesStack = [action.page];
+      else if (visibleNotebookPagesStack.length > 1 && state.visibleNotebookPagesStack.slice(-2)[0] === action.page) {
+        visibleNotebookPagesStack = state.visibleNotebookPagesStack.slice(0, -1);
+      }
+      else if (state.visibleNotebookPagesStack.slice(-1)[0] !== action.page) {
+        visibleNotebookPagesStack = [...visibleNotebookPagesStack, action.page];
+      }
       return {
         ...state,
-        visiblePage: action.page
+        visibleNotebookPagesStack: visibleNotebookPagesStack
       }
+    }
+    case notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE_TO_PREV: {
+      return {
+        ...state,
+        visibleNotebookPagesStack: state.visibleNotebookPagesStack.slice(0, -1),
+      };
+    }
   }
   return state;
 };

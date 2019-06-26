@@ -2,8 +2,8 @@ import React, {useState} from 'react';
 import {FlatList, ScrollView, Text, View, TouchableOpacity} from 'react-native';
 import {connect} from 'react-redux';
 import {Button} from "react-native-elements";
-import {notebookReducers, SpotPages} from "../notebook-panel/Notebook.constants";
-import ReturnToOverview from '../notebook-panel/ui/ReturnToOverviewButton';
+import {notebookReducers, NotebookPages} from "../notebook-panel/Notebook.constants";
+import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import SectionDivider from "../../shared/ui/SectionDivider";
 import MeasurementItem from './MeasurementItem';
 
@@ -85,13 +85,10 @@ const MeasurementsPage = (props) => {
   return (
     <React.Fragment>
       <View>
-        <ReturnToOverview
+        <ReturnToOverviewButton
           onPress={() => {
-            const pageVisible = props.setPageVisible(SpotPages.OVERVIEW);
-            if (pageVisible.page !== SpotPages.MEASUREMENT) {
-              props.showModal('isCompassModalVisible', false);
-            }
-            // (pageVisible.page !== SpotPages.SAMPLE) props.showModal('isSamplesModalVisible', false);
+            props.setNotebookPageVisible(NotebookPages.OVERVIEW);
+            props.showModal('isCompassModalVisible', false);
           }}
         />
         <ScrollView>
@@ -114,7 +111,7 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-  setPageVisible: (page) => ({type: notebookReducers.SET_SPOT_PAGE_VISIBLE, page: page})
+  setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page})
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(MeasurementsPage);

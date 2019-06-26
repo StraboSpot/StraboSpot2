@@ -1,34 +1,35 @@
-import React, {Component} from 'react';
-import {Text, View} from 'react-native';
+import React from 'react';
+import {View} from 'react-native';
 import IconButton from '../../../shared/ui/IconButton';
 import footerStyle from './NotebookFooter.styles';
-import {SpotPages} from "../Notebook.constants";
+import {NotebookPages} from "../Notebook.constants";
 import {IconButtons} from '../../../shared/app.constants';
 import {connect} from "react-redux";
+import {isEmpty} from "../../../shared/Helpers";
 
 const NotebookFooter = props => {
 
   const getPageIcon = (page) => {
     switch(page) {
-      case SpotPages.TAG:
-        if (props.spotPageVisible === SpotPages.TAG) return require('../../../assets/icons/Tag_pressed.png');
+      case NotebookPages.TAG:
+        if (props.notebookPageVisible === NotebookPages.TAG) return require('../../../assets/icons/Tag_pressed.png');
         else return require('../../../assets/icons/Tag.png');
-      case SpotPages.MEASUREMENT:
-        if (props.spotPageVisible === SpotPages.MEASUREMENT || props.spotPageVisible === SpotPages.MEASUREMENTDETAIL) {
+      case NotebookPages.MEASUREMENT:
+        if (props.notebookPageVisible === NotebookPages.MEASUREMENT || props.notebookPageVisible === NotebookPages.MEASUREMENTDETAIL) {
           return require('../../../assets/icons/Measurement_pressed.png');
         }
         else return require('../../../assets/icons/Measurement.png');
-      case SpotPages.SAMPLE:
-        if (props.spotPageVisible === SpotPages.SAMPLE) return require('../../../assets/icons/Sample_pressed.png');
+      case NotebookPages.SAMPLE:
+        if (props.notebookPageVisible === NotebookPages.SAMPLE) return require('../../../assets/icons/Sample_pressed.png');
         else return require('../../../assets/icons/Sample.png');
-      case SpotPages.NOTE:
-        if (props.spotPageVisible === SpotPages.NOTE) return require('../../../assets/icons/Note_pressed.png');
+      case NotebookPages.NOTE:
+        if (props.notebookPageVisible === NotebookPages.NOTE) return require('../../../assets/icons/Note_pressed.png');
         else return require('../../../assets/icons/Note.png');
-      case SpotPages.PHOTO:
-        if (props.spotPageVisible === SpotPages.PHOTO) return require('../../../assets/icons/Photo_pressed.png');
+      case NotebookPages.PHOTO:
+        if (props.notebookPageVisible === NotebookPages.PHOTO) return require('../../../assets/icons/Photo_pressed.png');
         else return require('../../../assets/icons/Photo.png');
-      case SpotPages.SKETCH:
-        if (props.spotPageVisible === SpotPages.SKETCH) return require('../../../assets/icons/Sketch_pressed.png');
+      case NotebookPages.SKETCH:
+        if (props.notebookPageVisible === NotebookPages.SKETCH) return require('../../../assets/icons/Sketch_pressed.png');
         else return require('../../../assets/icons/Sketch.png');
     }
   };
@@ -36,42 +37,41 @@ const NotebookFooter = props => {
   return (
     <View style={footerStyle.footerIconContainer}>
       <IconButton
-        source={getPageIcon(SpotPages.TAG)}
+        source={getPageIcon(NotebookPages.TAG)}
         style={footerStyle.footerIcon}
       />
       <IconButton
-        source={getPageIcon(SpotPages.MEASUREMENT)}
+        source={getPageIcon(NotebookPages.MEASUREMENT)}
         style={footerStyle.footerIcon}
-        onPress={() => props.openPage(SpotPages.MEASUREMENT)}
+        onPress={() => props.openPage(NotebookPages.MEASUREMENT)}
       />
       <IconButton
-        source={getPageIcon(SpotPages.SAMPLE)}
+        source={getPageIcon(NotebookPages.SAMPLE)}
         style={footerStyle.footerIcon}
-        onPress={() => props.openPage(SpotPages.SAMPLE)}
+        onPress={() => props.openPage(NotebookPages.SAMPLE)}
       />
       <IconButton
-        source={getPageIcon(SpotPages.NOTE)}
+        source={getPageIcon(NotebookPages.NOTE)}
         style={footerStyle.footerIcon}
-        onPress={() => props.openPage(SpotPages.NOTE)}
+        onPress={() => props.openPage(NotebookPages.NOTE)}
 
       />
       <IconButton
-        source={getPageIcon(SpotPages.PHOTO)}
+        source={getPageIcon(NotebookPages.PHOTO)}
         style={footerStyle.footerIcon}
         onPress={() => props.onPress(IconButtons.CAMERA)}
       />
       <IconButton
-        source={getPageIcon(SpotPages.SKETCH)}
+        source={getPageIcon(NotebookPages.SKETCH)}
         style={footerStyle.footerIcon}
       />
     </View>
   );
 };
 
-
 function mapStateToProps(state) {
   return {
-    spotPageVisible: state.notebook.visiblePage
+    notebookPageVisible: isEmpty(state.notebook.visibleNotebookPagesStack) ? null : state.notebook.visibleNotebookPagesStack.slice(-1)[0]
   }
 }
 

@@ -24,7 +24,7 @@ import Modal from "react-native-modal";
 import SaveMapModal from '../../components/modals/map-actions/SaveMapsModal';
 import NotebookPanelMenu from '../../components/notebook-panel/NotebookPanelMenu';
 import {connect} from 'react-redux';
-import {notebookReducers, SpotPages} from "../../components/notebook-panel/Notebook.constants";
+import {notebookReducers, NotebookPages} from "../../components/notebook-panel/Notebook.constants";
 import {spotReducers} from "../../spots/Spot.constants";
 import {imageReducers} from "../../components/images/Image.constants";
 import {saveFile} from '../../services/images/ImageDownload';
@@ -314,7 +314,7 @@ class Home extends React.Component {
         }
       }, () => {
         console.log('Noteboook panel open');
-        this.props.setPageVisible(SpotPages.OVERVIEW)
+        this.props.setNotebookPageVisible(NotebookPages.OVERVIEW)
       });
     }
   };
@@ -824,8 +824,7 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
   setIsOnline: (online) => ({type: spotReducers.SET_ISONLINE, online: online}),
-  setPageVisible: (page) => ({type: notebookReducers.SET_SPOT_PAGE_VISIBLE, page: page}),
-  // setNotebookPageVisible:(page) => ({type: }),
+  setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),
   addPhoto: (imageData) => ({type: imageReducers.ADD_PHOTOS, images: imageData}),
   deleteFeature: (id) => ({type: spotReducers.FEATURE_DELETE, id: id}),
   onSpotEdit: (field, value) => ({type: spotReducers.EDIT_SPOT_PROPERTIES, field: field, value: value}),

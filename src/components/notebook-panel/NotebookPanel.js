@@ -10,7 +10,7 @@ import MeasurementsPage from '../measurements/Measurements';
 import MeasurementDetailPage from '../measurements/MeasurementDetail';
 import NotesPage from '../notes/Notes.view';
 import SamplesPage from '../samples/SamplesNotebook.view';
-import {notebookReducers, SpotPages} from "./Notebook.constants";
+import {notebookReducers, NotebookPages} from "./Notebook.constants";
 import {isEmpty} from "../../shared/Helpers";
 
 // Styles
@@ -18,18 +18,19 @@ import notebookStyles from "./NotebookPanel.styles";
 
 const NotebookPanel = props => {
 
+  const setNotebookPageVisible = page => {
+    const pageVisible = props.setNotebookPageVisible(page);
+    if (pageVisible.page === NotebookPages.MEASUREMENT || pageVisible === NotebookPages.MEASUREMENTDETAIL) {
+      props.showModal('isCompassModalVisible', true);
+    }
+    else props.showModal('isCompassModalVisible', false);
+    if (pageVisible.page === NotebookPages.SAMPLE) {
+      props.showModal('isSamplesModalVisible' ,true);
+    }
+    else props.showModal('isSamplesModalVisible', false);
+  };
+
   if (!isEmpty(props.spot)) {
-    const setPageVisible = page => {
-      const pageVisible = props.setPageVisible(page);
-      if (pageVisible.page === SpotPages.MEASUREMENT || pageVisible === SpotPages.MEASUREMENTDETAIL) {
-        props.showModal('isCompassModalVisible', true);
-      }
-      else props.showModal('isCompassModalVisible', false);
-      if (pageVisible.page === SpotPages.SAMPLE) {
-        props.showModal('isSamplesModalVisible' ,true);
-      }
-      else props.showModal('isSamplesModalVisible', false);
-    };
     return (
       <View style={notebookStyles.panel}>
         <View style={notebookStyles.headerContainer}>
@@ -38,16 +39,16 @@ const NotebookPanel = props => {
           />
         </View>
         <View style={notebookStyles.centerContainer}>
-          {props.spotPageVisible === SpotPages.OVERVIEW ? <Overview/> : null}
-          {props.spotPageVisible === SpotPages.MEASUREMENT ? <MeasurementsPage showModal={props.showModal}/> : null}
-          {props.spotPageVisible === SpotPages.MEASUREMENTDETAIL ? <MeasurementDetailPage/> : null}
-          {props.spotPageVisible === SpotPages.NOTE ? <NotesPage/> : null}
-          {props.spotPageVisible === SpotPages.SAMPLE ? <SamplesPage showModal={props.showModal}/> : null}
-          {props.spotPageVisible === undefined ? <Overview/> : null}
+          {props.notebookPageVisible === NotebookPages.OVERVIEW ? <Overview/> : null}
+          {props.notebookPageVisible === NotebookPages.MEASUREMENT ? <MeasurementsPage showModal={props.showModal}/> : null}
+          {props.notebookPageVisible === NotebookPages.MEASUREMENTDETAIL ? <MeasurementDetailPage/> : null}
+          {props.notebookPageVisible === NotebookPages.NOTE ? <NotesPage/> : null}
+          {props.notebookPageVisible === NotebookPages.SAMPLE ? <SamplesPage showModal={props.showModal}/> : null}
+          {props.notebookPageVisible === undefined ? <Overview/> : null}
         </View>
         <View style={notebookStyles.footerContainer}>
           <NotebookFooter
-            openPage={(page) => setPageVisible(page)}
+            openPage={(page) => setNotebookPageVisible(page)}
             onPress={(camera) => props.onPress(camera)}
             // showCompass={props.showCompass}
             showModal={props.showModal}
@@ -73,12 +74,12 @@ function mapStateToProps(state) {
   return {
     spot: state.spot.selectedSpot,
     featuresSelected: state.spot.featuresSelected,
-    spotPageVisible: state.notebook.visiblePage
+    notebookPageVisible: isEmpty(state.notebook.visibleNotebookPagesStack) ? null : state.notebook.visibleNotebookPagesStack.slice(-1)[0]
   }
 }
 
 const mapDispatchToProps = {
-  setPageVisible: (page) => ({type: notebookReducers.SET_SPOT_PAGE_VISIBLE, page: page })
+  setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page })
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(NotebookPanel);

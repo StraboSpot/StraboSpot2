@@ -1,7 +1,7 @@
 import React, {useState, useRef} from 'react';
 import {Alert, ScrollView, Text, View} from 'react-native';
 import {connect} from 'react-redux';
-import {SpotPages} from "../notebook-panel/Notebook.constants";
+import {NotebookPages} from "../notebook-panel/Notebook.constants";
 import {ButtonGroup} from "react-native-elements";
 import {spotReducers} from "../../spots/Spot.constants";
 import {notebookReducers} from "../notebook-panel/Notebook.constants";
@@ -146,18 +146,18 @@ const MeasurementDetailPage = (props) => {
     return (
       <View>
         <SaveAndCloseButton
-          cancel={() => cancelFormAndGo(SpotPages.MEASUREMENT)}
-          save={() => saveFormAndGo(SpotPages.MEASUREMENT)}
+          cancel={() => cancelFormAndGo()}
+          save={() => saveFormAndGo()}
         />
       </View>
     );
   };
 
-  const cancelFormAndGo = (pageToGoTo) => {
-    props.setPageVisible(pageToGoTo);
+  const cancelFormAndGo = () => {
+    props.setNotebookPageVisibleToPrev();
   };
 
-  const saveFormAndGo = (pageToGoTo) => {
+  const saveFormAndGo = () => {
     if (!isEmpty(getForm())) {
       form.current.submitForm().then(() => {
         console.log('In promise in saveFormAndGo');
@@ -173,7 +173,7 @@ const MeasurementDetailPage = (props) => {
           const i = orientations.findIndex(orientation => orientation.id === form.current.state.values.id);
           orientations[i] = form.current.state.values;
           props.onSpotEdit('orientations', orientations);
-          props.setPageVisible(pageToGoTo);
+          props.setNotebookPageVisibleToPrev();
         }
       });
     }
@@ -204,7 +204,7 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
   onSpotEdit: (field, value) => ({type: spotReducers.EDIT_SPOT_PROPERTIES, field: field, value: value}),
-  setPageVisible: (page) => ({type: notebookReducers.SET_SPOT_PAGE_VISIBLE, page: page}),
+  setNotebookPageVisibleToPrev: () => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE_TO_PREV}),
   setFormData: (formData) => ({type: formReducers.SET_FORM_DATA, formData: formData})
 };
 
