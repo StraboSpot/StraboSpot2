@@ -3,16 +3,17 @@ import * as themes from "../../../themes/ColorThemes";
 
 const modalStyle = StyleSheet.create({
   modalContainer: {
-    height: 600,
+    // height: 600,
     width: 275,
     opacity: .90
   },
-  modalBottom: {
-    flex: 8,
-    backgroundColor: themes.MODAL,
-    borderBottomRightRadius: 20,
-    borderBottomLeftRadius: 20
-  },
+  // modalBottom: {
+  //   flex: 8,
+  //   paddingBottom: 20,
+  //   backgroundColor: themes.MODAL,
+  //   borderBottomRightRadius: 20,
+  //   borderBottomLeftRadius: 20
+  // },
   modalTop: {
     zIndex: 100,
     // width: '100%',
@@ -20,9 +21,7 @@ const modalStyle = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingTop:0,
-    paddingLeft: 10,
-    paddingRight: 10,
+    padding: 10,
     backgroundColor: themes.MODAL,
     borderTopRightRadius: 20,
     borderTopLeftRadius: 20,

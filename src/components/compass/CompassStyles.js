@@ -3,7 +3,8 @@ import * as themes from '../../themes/ColorThemes';
 
 const styles = StyleSheet.create({
   buttonContainer: {
-    paddingTop: 15
+    paddingTop: 15,
+    paddingBottom: 10
   },
   container: {
     flex: 1,

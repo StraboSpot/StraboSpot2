@@ -25,8 +25,6 @@ export const pictureSelectDialog = async () => {
     },
     title: 'Choose Photo Source'
   };
-  console.log('ALLPHOTOSSAVEDARR')
-
   return new Promise((resolve, reject) => {
     ImagePicker.showImagePicker(imageOptionsPicker, async (response) => {
       console.log('Response = ', response);
@@ -82,12 +80,10 @@ export const takePicture = async () => {
       chooseFromLibraryButtonTitle: 'choose photo from library'
     }
   };
-
-  console.log('aassaasswwww')
+  // console.log('aassaasswwww')
   return new Promise((resolve, reject) => {
     ImagePicker.launchCamera(imageOptionsCamera, async (response) => {
       console.log('Response = ', response);
-
       if (response.didCancel) {
         console.log('User cancelled image picker');
         resolve('cancelled')

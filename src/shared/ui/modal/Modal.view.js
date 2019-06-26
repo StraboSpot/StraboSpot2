@@ -5,7 +5,7 @@ import modalStyle from "./modal.style";
 
 const modalView = (props) => {
   return (
-    <View style={[modalStyle.modalContainer]}>
+    <View style={[modalStyle.modalContainer, props.modalStyle]}>
       <View style={modalStyle.modalTop}>
         <Button
           titleStyle={{color: 'blue', fontSize: 16}}

@@ -56,7 +56,6 @@ const samplesStyle = StyleSheet.create({
   textbox: {
     fontSize: 14,
     paddingLeft: 10,
-    borderWidth: 1,
     height: 75,
     borderRadius: 10,
     backgroundColor: themes.LIGHTGREY,
