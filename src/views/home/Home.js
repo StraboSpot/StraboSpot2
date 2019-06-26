@@ -150,9 +150,6 @@ class Home extends React.Component {
         console.log('Feature Deleted!', this.props.selectedSpot.properties.id);
         this.deleteSelectedFeature(this.props.selectedSpot.properties.id);
         break;
-      case 'editFeature':
-        this.props.setPageVisible(SpotPages.BASIC);
-        break;
       // Map Actions
       case MapModes.DRAW.POINT:
       case MapModes.DRAW.LINE:

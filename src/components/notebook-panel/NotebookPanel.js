@@ -6,7 +6,6 @@ import NotebookHeader from './notebook-header/NotebookHeader';
 import NotebookFooter from './notebook-footer/NotebookFooter';
 import Overview from './Overview';
 import ButtonNoBackground from '../../shared/ui/ButtonNoBackround';
-import Basics from './Basics';
 import MeasurementsPage from '../measurements/Measurements';
 import MeasurementDetailPage from '../measurements/MeasurementDetail';
 import NotesPage from '../notes/Notes.view';
@@ -33,7 +32,6 @@ const NotebookPanel = props => {
       }
       else props.showModal('isSamplesModalVisible', false);
     };
-
     return (
       <View style={notebookStyles.panel}>
         <View style={notebookStyles.headerContainer}>
@@ -43,7 +41,6 @@ const NotebookPanel = props => {
         </View>
         <View style={notebookStyles.centerContainer}>
           {props.spotPageVisible === SpotPages.OVERVIEW ? <Overview/> : null}
-          {props.spotPageVisible === SpotPages.BASIC ? <Basics/> : null}
           {props.spotPageVisible === SpotPages.MEASUREMENT ? <MeasurementsPage showModal={props.showModal}/> : null}
           {props.spotPageVisible === SpotPages.MEASUREMENTDETAIL ? <MeasurementDetailPage/> : null}
           {props.spotPageVisible === SpotPages.NOTE ? <NotesPage/> : null}

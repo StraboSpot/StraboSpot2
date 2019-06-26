@@ -24,12 +24,6 @@ const NotebookPanelMenu = props => (
         onPress={() => props.onPress('copyFeature')}
       />
       <DialogButton
-        style={styles.dialogContent}
-        text="Edit this feature"
-        textStyle={{fontSize: 12}}
-        onPress={() => props.onPress('editFeature')}
-      />
-      <DialogButton
       style={styles.dialogContent}
       text="Delete this Feature"
       textStyle={{fontSize: 12}}
