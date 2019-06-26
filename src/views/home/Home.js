@@ -29,7 +29,6 @@ import {spotReducers} from "../../spots/Spot.constants";
 import {imageReducers} from "../../components/images/Image.constants";
 import {saveFile} from '../../services/images/ImageDownload';
 import {takePicture} from '../../components/images/Images.container';
-import {IMAGES} from "../../routes/ScreenNameConstants";
 import CompassModal from "../../components/compass/CompassModal";
 import SamplesModal from '../../components/samples/SamplesModal.view';
 

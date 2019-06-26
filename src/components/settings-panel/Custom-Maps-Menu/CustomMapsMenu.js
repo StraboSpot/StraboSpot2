@@ -3,11 +3,7 @@ import {Alert, Image, Picker, Text, View} from 'react-native';
 import styles from './CustomMapsStyles';
 import {ListItem} from 'react-native-elements';
 import ButtonNoBackground from '../../../shared/ui/ButtonNoBackround';
-import {ShortcutToggleButtons as Buttons} from '../SettingsMenu.constants';
-import {Switch} from 'react-native-switch';
 import {connect} from 'react-redux';
-import RNFetchBlob from 'rn-fetch-blob';
-import {Platform} from 'react-native';
 import {Button, Divider, Input} from 'react-native-elements';
 import {mapReducers} from "../../maps/Map.constants";
 
