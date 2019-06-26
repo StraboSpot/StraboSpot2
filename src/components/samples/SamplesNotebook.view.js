@@ -3,8 +3,7 @@ import {FlatList, ScrollView, Text, View} from 'react-native';
 import {Icon, ListItem} from "react-native-elements";
 import styles from './samples.style';
 import NotebookBackButton from '../notebook-panel/ui/ReturnToOverviewButton';
-import {SpotPages} from "../notebook-panel/Notebook.constants";
-import * as actionCreators from "../../store/actions";
+import {notebookReducers, SpotPages} from "../notebook-panel/Notebook.constants";
 import {connect} from "react-redux";
 import SectionDivider from "../../shared/ui/SectionDivider";
 

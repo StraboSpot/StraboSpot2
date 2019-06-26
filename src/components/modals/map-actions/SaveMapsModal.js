@@ -10,11 +10,6 @@ import {unzip} from 'react-native-zip-archive'; /*TODO  react-native-zip-archive
 import ProgressBar from 'react-native-progress/Bar';
 import {connect} from 'react-redux';
 import {mapReducers} from '../../maps/Map.constants';
-import {
-  CURRENT_BASEMAP,
-  CUSTOM_MAPS,
-  OFFLINE_MAPS
-} from '../../../store/Constants';
 
 var RNFS = require('react-native-fs');
 

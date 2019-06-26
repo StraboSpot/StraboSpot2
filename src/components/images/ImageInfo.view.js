@@ -4,8 +4,8 @@ import styles from './images.styles';
 import {connect} from "react-redux";
 import {Icon, Image} from "react-native-elements";
 import {Navigation} from "react-native-navigation";
-import * as actionCreators from "../../store/actions";
 import IconButton from '../../shared/ui/IconButton';
+import {imageReducers} from "./Image.constants";
 
 const ImageInfoView = (props) => {
   console.log('Image Info', props)
@@ -62,6 +62,6 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = {
-  addPhoto: (image) => (actionCreators.addPhoto(image))
+  addPhoto: (image) => ({type: imageReducers.ADD_PHOTOS, images: image})
 };
 export default connect(mapStateToProps, mapDispatchToProps)(ImageInfoView);

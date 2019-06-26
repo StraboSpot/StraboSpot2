@@ -5,18 +5,17 @@ import {SpotPages} from "../notebook-panel/Notebook.constants";
 import {ButtonGroup} from "react-native-elements";
 import {spotReducers} from "../../spots/Spot.constants";
 import {notebookReducers} from "../notebook-panel/Notebook.constants";
-import {EDIT_SPOT_PROPERTIES, SET_SPOT_PAGE_VISIBLE} from "../../store/Constants";
 import {Formik} from 'formik';
 import FormView from "../form/Form.view";
 import {isEmpty} from "../../shared/Helpers";
 import SectionDivider from '../../shared/ui/SectionDivider';
 import SaveAndCloseButton from '../notebook-panel/ui/SaveAndCloseButtons';
 import {getSurveyFieldLabel, getForm, setForm, validateForm} from "../form/form.container";
+import {formReducers} from "../form/Form.constant";
 
 // Styles
 import styles from './measurements.styles';
 import * as themes from '../../themes/ColorThemes';
-import * as actionCreators from "../../store/actions";
 
 const MeasurementDetailPage = (props) => {
 
@@ -206,7 +205,7 @@ function mapStateToProps(state) {
 const mapDispatchToProps = {
   onSpotEdit: (field, value) => ({type: spotReducers.EDIT_SPOT_PROPERTIES, field: field, value: value}),
   setPageVisible: (page) => ({type: notebookReducers.SET_SPOT_PAGE_VISIBLE, page: page}),
-  setFormData: (formData) => (actionCreators.setFormData(formData))
+  setFormData: (formData) => ({type: formReducers.SET_FORM_DATA, formData: formData})
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(MeasurementDetailPage);

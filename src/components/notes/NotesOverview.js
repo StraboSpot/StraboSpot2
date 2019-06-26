@@ -3,10 +3,7 @@ import {Button, Text, TextInput, View} from 'react-native';
 import {Input} from 'react-native-elements/src/index'
 import noteStyles from './notes.style';
 import {connect} from "react-redux";
-import {EDIT_SPOT_PROPERTIES, SET_SPOT_PAGE_VISIBLE} from "../../store/Constants";
-import  * as actionCreators from '../../store/actions/index';
-import imageStyles from "../images/images.styles";
-import {SpotPages} from "../notebook-panel/Notebook.constants";
+import {notebookReducers, SpotPages} from "../notebook-panel/Notebook.constants";
 
 const SpotNotesOverview = props => {
 
@@ -37,7 +34,7 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = {
-  setPageVisible: (page) => (actionCreators.setSpotPageVisible(page))
+  setPageVisible: (page) => ({type: notebookReducers.SET_SPOT_PAGE_VISIBLE, page: page})
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(SpotNotesOverview);

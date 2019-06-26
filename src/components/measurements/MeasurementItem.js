@@ -1,10 +1,9 @@
 import React from "react";
 import {Text, TouchableOpacity, View} from "react-native";
 import {Icon} from "react-native-elements";
-import * as actionCreators from "../../store/actions";
 import {connect} from "react-redux";
-
-import {SpotPages} from "../notebook-panel/Notebook.constants";
+import {notebookReducers, SpotPages} from "../notebook-panel/Notebook.constants";
+import {formReducers} from "../form/Form.constant";
 
 // Styles
 import styles from "./measurements.styles";
@@ -83,11 +82,8 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-  setPageVisible: (page) => (actionCreators.setSpotPageVisible(page)),
-  setFormData: (formData) => (actionCreators.setFormData(formData))
+  setPageVisible: (page) => ({type: notebookReducers.SET_SPOT_PAGE_VISIBLE, page: page}),
+  setFormData: (formData) => ({type: formReducers.SET_FORM_DATA, formData: formData})
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(MeasurementItem);
-
-
-//export default MeasurementItem;

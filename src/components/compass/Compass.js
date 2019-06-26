@@ -9,7 +9,6 @@ import {Button, ListItem} from "react-native-elements";
 import {Switch} from "react-native-switch";
 import styles from './CompassStyles';
 import {spotReducers} from "../../spots/Spot.constants";
-import {EDIT_SPOT_PROPERTIES} from "../../store/Constants";
 import Orientation from 'react-native-orientation-locker';
 import Slider from '../../shared/ui/Slider';
 import Modal from "../../shared/ui/modal/Modal.view";

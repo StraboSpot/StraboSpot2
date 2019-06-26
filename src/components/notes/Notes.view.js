@@ -2,10 +2,9 @@ import React, {useState} from 'react';
 import {Text, View} from 'react-native';
 import noteStyles from "./notes.style";
 import {connect} from "react-redux";
-import * as actionCreators from '../../store/actions/index';
 import {Button, Input} from "react-native-elements";
-import {SpotPages} from "../notebook-panel/Notebook.constants";
-import {SET_SPOT_PAGE_VISIBLE} from "../../store/Constants";
+import {notebookReducers, SpotPages} from "../notebook-panel/Notebook.constants";
+import {spotReducers} from "../../spots/Spot.constants";
 import ReturnToOverview from '../notebook-panel/ui/ReturnToOverviewButton';
 
 const notesView = (props) => {
@@ -79,10 +78,8 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = {
-  onSpotEdit: (field, value) => (actionCreators.editSpotProperties(field, value)),
-  setPageVisible: (page) => (actionCreators.setSpotPageVisible(page)),
-  // setNoteTimestamp: (timestamp) => (actionCreators.notebookTimestamp(timestamp))
-
+  onSpotEdit: (field, value) => ({type: spotReducers.EDIT_SPOT_PROPERTIES, field: field, value: value}),
+  setPageVisible: (page) => ({type: notebookReducers.SET_SPOT_PAGE_VISIBLE, page: page}),
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(notesView);

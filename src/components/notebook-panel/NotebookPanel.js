@@ -10,9 +10,7 @@ import MeasurementsPage from '../measurements/Measurements';
 import MeasurementDetailPage from '../measurements/MeasurementDetail';
 import NotesPage from '../notes/Notes.view';
 import SamplesPage from '../samples/SamplesNotebook.view';
-import {SpotPages} from "./Notebook.constants";
-import * as actionCreators from '../../store/actions/index';
-// import {SET_SPOT_PAGE_VISIBLE} from "../../store/Constants";
+import {notebookReducers, SpotPages} from "./Notebook.constants";
 import {isEmpty} from "../../shared/Helpers";
 
 // Styles
@@ -80,7 +78,7 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-  setPageVisible: (page) => (actionCreators.setSpotPageVisible(page))
+  setPageVisible: (page) => ({type: notebookReducers.SET_SPOT_PAGE_VISIBLE, page: page })
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(NotebookPanel);

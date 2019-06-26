@@ -10,11 +10,6 @@ import RNFetchBlob from 'rn-fetch-blob';
 import {Platform} from 'react-native';
 import {Button, Divider, Input} from 'react-native-elements';
 import {mapReducers} from "../../maps/Map.constants";
-import {
-  CUSTOM_MAPS,
-  CURRENT_BASEMAP
-} from '../../../store/Constants';
-
 
 class CustomMapsMenu extends Component {
   _isMounted = false;

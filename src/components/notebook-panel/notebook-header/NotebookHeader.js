@@ -9,7 +9,6 @@ import IconButton from '../../../shared/ui/IconButton';
 // Styles
 import headerStyles from './NotebookHeader.styles';
 import {spotReducers} from "../../../spots/Spot.constants";
-import {EDIT_SPOT_PROPERTIES} from "../../../store/Constants";
 
 const NotebookHeader = props => {
 

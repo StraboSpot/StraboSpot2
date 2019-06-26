@@ -9,14 +9,6 @@ import {connect} from 'react-redux';
 import {getNewId} from "../../shared/Helpers";
 import {mapReducers} from "./Map.constants";
 import {spotReducers} from "../../spots/Spot.constants";
-import {
-  // CURRENT_BASEMAP,
-  FEATURE_ADD,
-  FEATURE_DELETE,
-  FEATURE_SELECTED,
-  FEATURES_SELECTED_CLEARED,
-  FEATURES_UPDATED
-} from '../../store/Constants';
 import {truncDecimal} from "../../shared/Helpers";
 
 MapboxGL.setAccessToken(MAPBOX_KEY);

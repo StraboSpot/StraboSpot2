@@ -8,10 +8,6 @@ import {Switch} from 'react-native-switch';
 import {connect} from 'react-redux';
 import RNFetchBlob from 'rn-fetch-blob';
 import {Platform} from 'react-native';
-import {
-  OFFLINE_MAPS,
-  CURRENT_BASEMAP
-} from '../../../store/Constants';
 import {mapReducers} from "../../maps/Map.constants";
 import {isEmpty} from "../../../shared/Helpers";
 

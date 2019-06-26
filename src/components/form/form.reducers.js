@@ -1,5 +1,4 @@
 import {formReducers} from "./Form.constant";
-import {SET_FORM_DATA} from "../../store/Constants";
 
 const initialFormState = {
   formData: {}

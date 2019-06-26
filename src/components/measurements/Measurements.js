@@ -2,9 +2,7 @@ import React, {useState} from 'react';
 import {FlatList, ScrollView, Text, View, TouchableOpacity} from 'react-native';
 import {connect} from 'react-redux';
 import {Button} from "react-native-elements";
-import {SpotPages} from "../notebook-panel/Notebook.constants";
-import * as actionCreators from '../../store/actions';
-
+import {notebookReducers, SpotPages} from "../notebook-panel/Notebook.constants";
 import ReturnToOverview from '../notebook-panel/ui/ReturnToOverviewButton';
 import SectionDivider from "../../shared/ui/SectionDivider";
 import MeasurementItem from './MeasurementItem';
@@ -116,7 +114,7 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-  setPageVisible: (page) => (actionCreators.setSpotPageVisible(page))
+  setPageVisible: (page) => ({type: notebookReducers.SET_SPOT_PAGE_VISIBLE, page: page})
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(MeasurementsPage);

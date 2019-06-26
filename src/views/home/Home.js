@@ -24,10 +24,9 @@ import Modal from "react-native-modal";
 import SaveMapModal from '../../components/modals/map-actions/SaveMapsModal';
 import NotebookPanelMenu from '../../components/notebook-panel/NotebookPanelMenu';
 import {connect} from 'react-redux';
-import {ADD_PHOTOS, FEATURE_DELETE, SET_ISONLINE, SET_SPOT_PAGE_VISIBLE, EDIT_SPOT_PROPERTIES, EDIT_SPOT_IMAGES} from "../../store/Constants";
-import * as actionCreators from '../../store/actions/index';
 import {notebookReducers, SpotPages} from "../../components/notebook-panel/Notebook.constants";
 import {spotReducers} from "../../spots/Spot.constants";
+import {imageReducers} from "../../components/images/Image.constants";
 import {saveFile} from '../../services/images/ImageDownload';
 import {takePicture} from '../../components/images/Images.container';
 import {IMAGES} from "../../routes/ScreenNameConstants";
@@ -828,11 +827,11 @@ const mapDispatchToProps = {
   setIsOnline: (online) => ({type: spotReducers.SET_ISONLINE, online: online}),
   setPageVisible: (page) => ({type: notebookReducers.SET_SPOT_PAGE_VISIBLE, page: page}),
   // setNotebookPageVisible:(page) => ({type: }),
-  addPhoto: (imageData) => (actionCreators.addPhoto(imageData)),
-  deleteFeature: (id) => (actionCreators.deleteFeature(id)),
-  onSpotEdit: (field, value) => (actionCreators.editSpotProperties(field, value)),
+  addPhoto: (imageData) => ({type: imageReducers.ADD_PHOTOS, images: imageData}),
+  deleteFeature: (id) => ({type: spotReducers.FEATURE_DELETE, id: id}),
+  onSpotEdit: (field, value) => ({type: spotReducers.EDIT_SPOT_PROPERTIES, field: field, value: value}),
   // onSpotEdit: (field, value) => ({type: EDIT_SPOT_PROPERTIES, field: field, value: value}),
-  onSpotEditImageObj: (images) => (actionCreators.editSpotImage(images))
+  onSpotEditImageObj: (images) => ({type: spotReducers.EDIT_SPOT_IMAGES, images: images})
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

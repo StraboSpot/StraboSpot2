@@ -5,7 +5,6 @@ import {Button, ButtonGroup, Input} from "react-native-elements";
 import styles from './samples.style';
 import Slider from '../../shared/ui/Slider';
 import {spotReducers} from "../../spots/Spot.constants";
-import {EDIT_SPOT_PROPERTIES} from "../../store/Constants";
 import {getNewId} from "../../shared/Helpers";
 
 const samplesModalView = (props) => {

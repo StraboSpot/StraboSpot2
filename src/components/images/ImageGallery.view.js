@@ -2,9 +2,9 @@ import React from 'react';
 import {Alert, Button, Image, ScrollView, Text, View} from 'react-native';
 import {Navigation} from "react-native-navigation";
 import {pictureSelectDialog, saveFile} from './Images.container';
-import * as actionCreators from '../../store/actions/index';
 import {connect} from "react-redux";
 import imageStyles from './images.styles'
+import {imageReducers} from "./Image.constants";
 
 const imageGallery = (props) => {
   let savedArray = [];
@@ -72,7 +72,7 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = {
-  addPhoto: (image) => (actionCreators.addPhoto(image))
+  addPhoto: (image) => ({type: imageReducers.ADD_PHOTOS, images: image})
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(imageGallery);
