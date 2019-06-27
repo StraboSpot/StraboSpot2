@@ -4,7 +4,8 @@ import * as themes from '../../shared/styles.constants';
 const styles = StyleSheet.create({
   formContainer: {
     paddingLeft: 10,
-    paddingRight: 10
+    paddingRight: 10,
+    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR
   },
   fieldContainer: {
     flex: 1,
