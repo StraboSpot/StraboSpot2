@@ -7,6 +7,8 @@ import {formReducers} from "../form/Form.constant";
 
 // Styles
 import styles from "./measurements.styles";
+import stylesCommon from "../../shared/common.styles";
+import * as themes from '../../shared/styles.constants';
 
 // Render a measurement item in a list
 const MeasurementItem = (props) => {
@@ -20,9 +22,9 @@ const MeasurementItem = (props) => {
 // Render an individual measurement
   const renderMeasurementText = (item) => {
     return (
-      <TouchableOpacity
+      <View
         style={styles.measurementsListItem}
-        onPress={() => openMeasurementDetail(item)}>
+      >
         <View>
           {'strike' in item && 'dip' in item &&
           <Text style={styles.mainText}>
@@ -41,38 +43,39 @@ const MeasurementItem = (props) => {
             {item.type === 'linear_orientation' && item.associated_orientation && 'Linear Feature   Planar Feature'}
           </Text>
         </View>
-      </TouchableOpacity>
+      </View>
     );
   };
 
   return (
     <View style={styles.measurementsRenderListContainer}>
       {typeof (props.item.item) !== 'undefined' &&
-      <View>
-        {renderMeasurementText(props.item.item)}
-        {/*          {'associated_orientation' in item && item.associated_orientation.length > 0 &&
-          <FlatList
-            data={item.associated_orientation}
-            MeasurementItem={renderMeasurement}
-            keyExtractor={(aoItem, aoIndex) => aoIndex.toString()}
-          />}*/}
-      </View>}
-      <View style={{flexDirection: 'row'}}>
-        <Icon
-          name='ios-information-circle-outline'
-          containerStyle={{justifyContent: 'center', paddingRight: 10}}
-          type='ionicon'
-          color='blue'
-          onPress={() => openMeasurementDetail(props.item)}
-        />
-        <Icon
-          name='right'
-          containerStyle={{justifyContent: 'center', paddingRight: 5}}
-          type='antdesign'
-          color='lightgrey'
-          size={13}
-        />
-      </View>
+      <TouchableOpacity
+        style={stylesCommon.rowContainer}
+        onPress={() => openMeasurementDetail(props.item.item)}>
+        <View style={stylesCommon.row}>
+          <View style={stylesCommon.itemLeftTextContainer}>
+            {renderMeasurementText(props.item.item)}
+          </View>
+          <View style={stylesCommon.itemRightIconsContainer}>
+            <Icon
+              name='ios-information-circle-outline'
+              containerStyle={{justifyContent: 'center', paddingRight: 10}}
+              type='ionicon'
+              color={themes.PRIMARY_ACCENT_COLOR}
+              onPress={() => openMeasurementDetail(props.item)}
+            />
+            <Icon
+              name='right'
+              containerStyle={{justifyContent: 'center', paddingRight: 10}}
+              type='antdesign'
+              color={themes.PRIMARY_BACKGROUND_COLOR}
+              size={13}
+            />
+          </View>
+        </View>
+      </TouchableOpacity>
+      }
     </View>
   );
 };
