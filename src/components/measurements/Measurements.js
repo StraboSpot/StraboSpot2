@@ -9,7 +9,7 @@ import MeasurementItem from './MeasurementItem';
 
 // Styles
 import styles from './measurements.styles';
-import * as themes from '../../themes/ColorThemes';
+import * as themes from '../../shared/styles.constants';
 
 const MeasurementsPage = (props) => {
   const [isModalVisible, setIsModalVisible] = useState(true);

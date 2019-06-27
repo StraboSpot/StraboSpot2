@@ -1,5 +1,5 @@
 import {StyleSheet} from 'react-native';
-import * as themes from './ColorThemes';
+import * as themes from './styles.constants';
 
 const commonStyles = StyleSheet.create({
   listItem: {

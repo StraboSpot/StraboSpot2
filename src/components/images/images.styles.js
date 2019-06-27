@@ -1,5 +1,5 @@
 import {Dimensions, StyleSheet} from "react-native";
-import * as themes from "../../themes/ColorThemes";
+import * as themes from "../../shared/styles.constants";
 
 const imageStyles = StyleSheet.create({
   button: {

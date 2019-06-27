@@ -3,7 +3,7 @@ import {ScrollView, Text, View} from 'react-native';
 import {ListItem, Icon} from 'react-native-elements'
 
 // Styles
-import commonStyles from '../../../themes/common.styles';
+import commonStyles from '../../../shared/common.styles';
 
 const SpotTag = props => (
   <View style={{height: 300}}>

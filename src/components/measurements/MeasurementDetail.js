@@ -15,7 +15,7 @@ import {formReducers} from "../form/Form.constant";
 
 // Styles
 import styles from './measurements.styles';
-import * as themes from '../../themes/ColorThemes';
+import * as themes from '../../shared/styles.constants';
 
 const MeasurementDetailPage = (props) => {
 
