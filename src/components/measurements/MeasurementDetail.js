@@ -32,16 +32,10 @@ const MeasurementDetailPage = (props) => {
   const [selectedFeatureTypeIndex, setFeatureTypeIndex] = useState(getDefaultSwitchIndex());
   const form = useRef(null);
 
+  // What happens after submitting the form is handled in saveFormAndGo since we want to show
+  // an alert message if there are errors but this function won't be called if form is invalid
   const onSubmitForm = () => {
-    if (hasErrors(form)) showErrors(form);
-    else {
-      console.log('Saving form data to Spot ...');
-      let orientations = props.spot.properties.orientations;
-      const i = orientations.findIndex(orientation => orientation.id === form.current.state.values.id);
-      orientations[i] = form.current.state.values;
-      props.onSpotEdit('orientations', orientations);
-      props.setNotebookPageVisibleToPrev();
-    }
+    console.log('In onSubmitForm');
   };
 
   const onSwitchPress = (i) => {
@@ -164,7 +158,17 @@ const MeasurementDetailPage = (props) => {
   };
 
   const saveFormAndGo = () => {
-    if (!isEmpty(getForm())) form.current.submitForm();
+    if (!isEmpty(getForm())) form.current.submitForm().then(() =>{
+      if (hasErrors(form)) showErrors(form);
+      else {
+        console.log('Saving form data to Spot ...');
+        let orientations = props.spot.properties.orientations;
+        const i = orientations.findIndex(orientation => orientation.id === form.current.state.values.id);
+        orientations[i] = form.current.state.values;
+        props.onSpotEdit('orientations', orientations);
+        props.setNotebookPageVisibleToPrev();
+      }
+    });
   };
 
   return (
