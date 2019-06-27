@@ -10,7 +10,7 @@ import FormView from "../form/Form.view";
 import {isEmpty} from "../../shared/Helpers";
 import SectionDivider from '../../shared/ui/SectionDivider';
 import SaveAndCloseButton from '../notebook-panel/ui/SaveAndCloseButtons';
-import {getSurveyFieldLabel, getForm, setForm, validateForm} from "../form/form.container";
+import {getForm, hasErrors, setForm, showErrors, validateForm} from "../form/form.container";
 import {formReducers} from "../form/Form.constant";
 
 // Styles
@@ -32,10 +32,16 @@ const MeasurementDetailPage = (props) => {
   const [selectedFeatureTypeIndex, setFeatureTypeIndex] = useState(getDefaultSwitchIndex());
   const form = useRef(null);
 
-  // This function doesn't do anything but is needed
-  // What happens after submitting the form is handled in saveFormAndGo
   const onSubmitForm = () => {
-    console.log('In onSubmitForm');
+    if (hasErrors(form)) showErrors(form);
+    else {
+      console.log('Saving form data to Spot ...');
+      let orientations = props.spot.properties.orientations;
+      const i = orientations.findIndex(orientation => orientation.id === form.current.state.values.id);
+      orientations[i] = form.current.state.values;
+      props.onSpotEdit('orientations', orientations);
+      props.setNotebookPageVisibleToPrev();
+    }
   };
 
   const onSwitchPress = (i) => {
@@ -158,25 +164,7 @@ const MeasurementDetailPage = (props) => {
   };
 
   const saveFormAndGo = () => {
-    if (!isEmpty(getForm())) {
-      form.current.submitForm().then(() => {
-        console.log('In promise in saveFormAndGo');
-        if (!isEmpty(form.current.state.errors)) {
-          let errorMessages = [];
-          for (const [name, error] of Object.entries(form.current.state.errors)) {
-            errorMessages.push(getSurveyFieldLabel(name) + ': ' + error);
-          }
-          Alert.alert('Please Fix the Following Errors', errorMessages.join('\n'));
-        }
-        else {
-          let orientations = props.spot.properties.orientations;
-          const i = orientations.findIndex(orientation => orientation.id === form.current.state.values.id);
-          orientations[i] = form.current.state.values;
-          props.onSpotEdit('orientations', orientations);
-          props.setNotebookPageVisibleToPrev();
-        }
-      });
-    }
+    if (!isEmpty(getForm())) form.current.submitForm();
   };
 
   return (

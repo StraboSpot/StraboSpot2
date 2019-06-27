@@ -1,3 +1,4 @@
+import {Alert} from "react-native";
 import * as forms from './forms/forms.index';
 import {isEmpty} from "../../shared/Helpers";
 
@@ -8,26 +9,13 @@ export const getForm = () => {
   return survey;
 };
 
-export const setForm = (form, child) => {
-  if (child) {
-    console.log('Setting form', form, ':', child);
-    survey = forms.default[form][child].survey;
-    choices = forms.default[form][child].choices;
-  }
-  else {
-    console.log('Setting form', form);
-    survey = forms.default[form].survey;
-    choices = forms.default[form].choices;
-  }
-};
-
-const createDefaultLabel = (data) => {
-  let label = getFeatureTypeLabel(data.feature_type);
+/*const createDefaultLabel = (data) => {
+  let label = data.feature_type ? getFeatureTypeLabel(data.feature_type) : '';
   if (isEmpty(label) && data.type) label = data.type.split('_')[0] + ' feature';
   if (data.strike) label += ' ' + data.strike.toString();
   else if (data.trend) label += ' ' + data.trend.toString();
   return label;
-};
+};*/
 
 export const getChoices = () => {
   return choices;
@@ -46,6 +34,10 @@ export const getSurvey = () => {
 
 export const getSurveyFieldLabel = name => {
   return survey.find(field => field.name === name).label;
+};
+
+export const hasErrors = (form) => {
+  return !isEmpty(form.current.state.errors);
 };
 
 // Determine if the field should be shown or not by looking at the relevant key-value pair
@@ -68,6 +60,28 @@ export const isRelevant = (field, values) => {
   } catch (e) {
     return false;
   }
+};
+
+export const setForm = (form, child) => {
+  if (child) {
+    console.log('Setting form', form, ':', child);
+    survey = forms.default[form][child].survey;
+    choices = forms.default[form][child].choices;
+  }
+  else {
+    console.log('Setting form', form);
+    survey = forms.default[form].survey;
+    choices = forms.default[form].choices;
+  }
+};
+
+export const showErrors = (form) => {
+  const errors = form.current.state.errors;
+  let errorMessages = [];
+  for (const [name, error] of Object.entries(errors)) {
+    errorMessages.push(getSurveyFieldLabel(name) + ': ' + error);
+  }
+  Alert.alert('Please Fix the Following Errors', errorMessages.join('\n'));
 };
 
 export const validateForm = (data) => {
@@ -122,7 +136,7 @@ export const validateForm = (data) => {
       }
     }
   });
-  if (isEmpty(data.label)) data.label = createDefaultLabel(data);
+  //if (isEmpty(data.label)) data.label = createDefaultLabel(data);  // ToDo: Do we even need to autogenerate label in v2? Label not used anywhere yet.
   console.log('Data after validation:', data, 'Errors:', errors);
   return errors;
 };
