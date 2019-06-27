@@ -11,12 +11,12 @@ const samplesStyle = StyleSheet.create({
     justifyContent: 'center',
     alignContent: 'center',
     padding: 15,
-    color: themes.MEDIUMGREY,
+    color: themes.SECONDARY_HEADER_TEXT_COLOR,
     fontSize: 18
   },
   samplesContainer: {
     flex: 8,
-    backgroundColor: 'white',
+    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
     borderBottomRightRadius: 20,
     borderBottomLeftRadius: 20,
   },
@@ -26,7 +26,7 @@ const samplesStyle = StyleSheet.create({
   inputContainer: {
     borderBottomWidth: 0,
     borderRadius: 10,
-    backgroundColor: themes.LIGHTGREY,
+    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
     marginBottom: 10
   },
   inputText: {
@@ -39,13 +39,13 @@ const samplesStyle = StyleSheet.create({
   },
   listText: {
     marginLeft: 5,
-    color: themes.MEDIUMGREY
+    color: themes.SECONDARY_ITEM_TEXT_COLOR
   },
   notebookListContainer: {
     flex: 1,
     // backgroundColor: 'white',
     borderBottomWidth: .5,
-    borderColor: themes.MEDIUMGREY,
+    borderColor: themes.LIST_BORDER_COLOR,
     marginBottom: 3,
     padding: 5
   },
@@ -58,7 +58,7 @@ const samplesStyle = StyleSheet.create({
     paddingLeft: 10,
     height: 75,
     borderRadius: 10,
-    backgroundColor: themes.LIGHTGREY,
+    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
     marginBottom: 10
   },
   textboxContainer: {

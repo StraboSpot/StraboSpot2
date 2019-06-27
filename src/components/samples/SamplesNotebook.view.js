@@ -1,11 +1,14 @@
 import React from 'react';
 import {FlatList, ScrollView, Text, View} from 'react-native';
 import {Icon, ListItem} from "react-native-elements";
-import styles from './samples.style';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import {notebookReducers, NotebookPages} from "../notebook-panel/Notebook.constants";
 import {connect} from "react-redux";
 import SectionDivider from "../../shared/ui/SectionDivider";
+
+// Styles
+import styles from './samples.style';
+import * as themes from '../../shared/styles.constants';
 
 const samplesNotebookView = (props) => {
 
@@ -46,7 +49,7 @@ const samplesNotebookView = (props) => {
             <Icon
               name='ios-information-circle-outline'
               type='ionicon'
-              color='blue'
+              color={themes.PRIMARY_ACCENT_COLOR}
               onPress={() => console.log('Samples item pressed', item.id, item.label)}
             />}
         />

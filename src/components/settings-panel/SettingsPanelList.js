@@ -4,7 +4,10 @@ import ButtonNoBackground from '../../shared/ui/ButtonNoBackround';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {SettingsMenuItems} from './SettingsMenu.constants';
 import {goSignIn} from '../../routes/Navigation';
+
+// Styles
 import styles from './SettingsPanelStyles';
+import * as themes from '../../shared/styles.constants';
 
 const SettingsPanelList = props => (
   <ScrollView>
@@ -86,7 +89,7 @@ const SettingsPanelList = props => (
             <Icon.Button
               name={'ios-log-out'}
               onPress={() => goSignIn()}
-              backgroundColor={'lightgrey'}
+              backgroundColor={themes.PRIMARY_BACKGROUND_COLOR}
               color={'black'}
             >
                 <Text>{SettingsMenuItems.USER_PREFERENCES[key]}</Text>

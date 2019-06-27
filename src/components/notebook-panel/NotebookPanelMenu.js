@@ -1,7 +1,9 @@
 import React from 'react';
-import {StyleSheet, Switch, View} from 'react-native';
 import Dialog, {DialogButton, DialogContent, DialogTitle} from "react-native-popup-dialog";
 import {ScaleAnimation, SlideAnimation} from "react-native-popup-dialog/src";
+
+// Styles
+import styles from "./NotebookPanel.styles";
 
 const slideAnimation = new SlideAnimation({
   useNativeDriver: true,
@@ -38,22 +40,5 @@ const NotebookPanelMenu = props => (
     </DialogContent>
   </Dialog>
 );
-
-const styles = StyleSheet.create({
-  dialogBox: {
-    position: 'absolute',
-    top: 25,
-    right: 25,
-    backgroundColor: "#eee",
-    borderRadius: 20,
-    zIndex: 10
-  },
-  dialogTitle: {
-    backgroundColor: "#474242",
-  },
-  dialogContent: {
-    borderBottomWidth: 1
-  }
-});
 
 export default NotebookPanelMenu;

@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {Text, View} from 'react-native';
-import noteStyles from "./notes.style";
+import noteStyles from "./notes.styles";
 import {connect} from "react-redux";
 import {Button, Input} from "react-native-elements";
 import {notebookReducers, NotebookPages} from "../notebook-panel/Notebook.constants";

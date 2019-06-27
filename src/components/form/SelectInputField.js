@@ -2,7 +2,10 @@ import {PropTypes} from 'prop-types';
 import React from 'react';
 import {Text, View} from 'react-native';
 import Picker from 'react-native-picker-select'
+
+// Styles
 import styles from './form.styles';
+import * as themes from '../../shared/styles.constants';
 
 const SelectInputField = ({
                             field: {name, onBlur, onChange, value},
@@ -12,7 +15,7 @@ const SelectInputField = ({
   const placeholder = {
     label: `-- Select ${props.label} --`,
     value: null,
-    color: 'black',
+    color: themes.PRIMARY_ITEM_TEXT_COLOR,
   };
 
   const pickerStyle = {

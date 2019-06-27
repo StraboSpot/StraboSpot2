@@ -4,6 +4,7 @@ import {ListItem, Icon} from 'react-native-elements'
 
 // Styles
 import commonStyles from '../../../shared/common.styles';
+import * as themes from '../../../shared/styles.constants';
 
 const SpotTag = props => (
   <View style={{height: 300}}>
@@ -19,7 +20,7 @@ const SpotTag = props => (
           <Icon
             name='ios-information-circle-outline'
             type='ionicon'
-            color='blue'
+            color={themes.PRIMARY_ACCENT_COLOR}
             onPress={() => console.log('Tag item pressed', l.id, l.name)}
           />}
         />

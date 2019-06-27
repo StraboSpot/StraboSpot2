@@ -15,6 +15,7 @@ import {isEmpty} from "../../shared/Helpers";
 
 // Styles
 import notebookStyles from "./NotebookPanel.styles";
+import * as themes from '../../shared/styles.constants';
 
 const NotebookPanel = props => {
 
@@ -63,7 +64,7 @@ const NotebookPanel = props => {
         <Text style={{fontSize: 30}}>No Spot Selected</Text>
         <ButtonNoBackground
           style={{marginTop: 40}}
-          textStyle={{color: 'blue'}}
+          textStyle={{color: themes.PRIMARY_ACCENT_COLOR}}
           onPress={props.closeNotebook}>Close Notebook</ButtonNoBackground>
       </View>
     )

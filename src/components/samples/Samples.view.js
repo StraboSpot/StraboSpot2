@@ -2,10 +2,13 @@ import React, {useState, useEffect} from 'react';
 import {Alert, Text, TextInput, View} from 'react-native';
 import {connect} from "react-redux";
 import {Button, ButtonGroup, Input} from "react-native-elements";
-import styles from './samples.style';
 import Slider from '../../shared/ui/Slider';
 import {spotReducers} from "../../spots/Spot.constants";
 import {getNewId} from "../../shared/Helpers";
+
+// Styles
+import styles from './samples.style';
+import * as themes from '../../shared/styles.constants';
 
 const samplesModalView = (props) => {
   let count = 0;
@@ -124,7 +127,7 @@ const samplesModalView = (props) => {
         <Button
           title={'View In Shortcut Mode'}
           type={'clear'}
-          titleStyle={{color: 'blue', fontSize: 16}}
+          titleStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 16}}
         />
       </View>
     </React.Fragment>

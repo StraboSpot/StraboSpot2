@@ -89,8 +89,8 @@ const MeasurementDetailPage = (props) => {
         selectedIndex={selectedFeatureTypeIndex}
         buttons={Object.values(featureTypes)}
         containerStyle={styles.measurementDetailSwitches}
-        selectedButtonStyle={{backgroundColor: themes.BLUE}}
-        textStyle={{color: themes.BLUE}}
+        selectedButtonStyle={{backgroundColor: themes.PRIMARY_ACCENT_COLOR}}
+        textStyle={{color: themes.PRIMARY_ACCENT_COLOR}}
       />
     );
   };

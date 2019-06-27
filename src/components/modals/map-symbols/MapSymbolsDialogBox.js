@@ -3,6 +3,9 @@ import {StyleSheet} from 'react-native';
 import Dialog, {DialogButton, DialogContent, DialogTitle} from "react-native-popup-dialog";
 import {ScaleAnimation} from "react-native-popup-dialog/src";
 
+// Styles
+import * as themes from '../../../shared/styles.constants';
+
 const scaleAnimation = new ScaleAnimation({
   useNativeDriver: true
 });
@@ -62,11 +65,11 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 70,
     left: 100,
-    backgroundColor: "#eee",
+    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
     borderRadius: 20
   },
   dialogTitle: {
-    backgroundColor: "#474242",
+    backgroundColor: themes.PRIMARY_HEADER_TEXT_COLOR,
   },
   dialogContent: {
     borderBottomWidth: 2

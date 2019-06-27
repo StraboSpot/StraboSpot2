@@ -21,7 +21,7 @@ const imageStyles = StyleSheet.create({
     // textAlign: 'center'
   },
   imageContainer: {
-    backgroundColor: 'white',
+    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
     padding: 10,
     flexDirection: 'row',
     justifyContent: 'space-between'
@@ -88,7 +88,7 @@ const imageStyles = StyleSheet.create({
   modalContainer: {
     flex: 8,
     // height: 800,
-    backgroundColor: 'white',
+    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
     // borderTopRightRadius: 20,
     // borderTopLeftRadius: 20,
     borderBottomRightRadius: 20,
@@ -97,7 +97,7 @@ const imageStyles = StyleSheet.create({
   inputContainer: {
     borderBottomWidth: 0,
     borderRadius: 10,
-    backgroundColor: themes.LIGHTGREY,
+    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
     marginBottom: 10
   },
   inputText: {
@@ -109,7 +109,7 @@ const imageStyles = StyleSheet.create({
     paddingLeft: 10,
     height: 75,
     borderRadius: 10,
-    backgroundColor: themes.LIGHTGREY,
+    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
     marginBottom: 10
   },
   textboxContainer: {

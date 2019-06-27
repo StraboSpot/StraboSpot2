@@ -2,6 +2,8 @@ import React from 'react'
 import {View, Button, TextInput, StyleSheet} from 'react-native'
 import {goHome} from "../routes/Navigation";
 
+import * as themes from '../shared/styles.constants';
+
 export default class SignUp extends React.Component {
   state = {
     username: '', password: '', email: '', phone_number: ''
@@ -66,7 +68,7 @@ const styles = StyleSheet.create({
   input: {
     width: 350,
     height: 55,
-    backgroundColor: '#42A5F5',
+    backgroundColor: themes.PRIMARY_ACCENT_COLOR,
     margin: 10,
     padding: 8,
     color: 'white',

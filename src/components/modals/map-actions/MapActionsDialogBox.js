@@ -4,6 +4,8 @@ import Dialog, {DialogButton, DialogContent, DialogTitle} from "react-native-pop
 import {ScaleAnimation} from "react-native-popup-dialog/src";
 // import {Switch} from "react-native-switch";
 
+import * as themes from '../../../shared/styles.constants';
+
 const slideAnimation = new ScaleAnimation({
   useNativeDriver: true
 });
@@ -79,11 +81,11 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 70,
     left: 100,
-    backgroundColor: "#eee",
+    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
     borderRadius: 20
   },
   dialogTitle: {
-    backgroundColor: "#474242",
+    backgroundColor: themes.PRIMARY_HEADER_TEXT_COLOR,
   },
   dialogContent: {
     borderBottomWidth: 2

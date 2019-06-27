@@ -7,12 +7,14 @@ import {getNewId, mod, toRadians, toDegrees, roundToDecimalPlaces} from "../../s
 import {CompassToggleButtons} from "./Compass.constants";
 import {Button, ListItem} from "react-native-elements";
 import {Switch} from "react-native-switch";
-import styles from './CompassStyles';
 import {spotReducers} from "../../spots/Spot.constants";
 import Orientation from 'react-native-orientation-locker';
 import Slider from '../../shared/ui/Slider';
 import Modal from "../../shared/ui/modal/Modal.view";
 
+// Styles
+import styles from './CompassStyles';
+import * as themes from '../../shared/styles.constants';
 
 const {height, width} = Dimensions.get('window');
 const degree_update_rate = 2; // Number of degrees changed before the callback is triggered
@@ -540,7 +542,7 @@ class Compass extends Component {
             <Button
               title={'View In Shortcut Mode'}
               type={'clear'}
-              titleStyle={{color: 'blue', fontSize: 16}}
+              titleStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 16}}
             />
           </View>
 

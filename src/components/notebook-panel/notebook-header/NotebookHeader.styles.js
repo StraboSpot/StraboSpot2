@@ -1,4 +1,5 @@
 import {StyleSheet} from 'react-native';
+import * as themes from '../../../shared/styles.constants';
 
 const notebookHeaderStyles = StyleSheet.create({
     headerContentContainer: {
@@ -9,7 +10,7 @@ const notebookHeaderStyles = StyleSheet.create({
       paddingTop: 20
     },
     headerCoords: {
-      color: 'blue',
+      color: themes.PRIMARY_ACCENT_COLOR,
       fontSize: 16
     },
     headerImage: {

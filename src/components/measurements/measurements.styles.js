@@ -4,16 +4,15 @@ import * as themes from '../../shared/styles.constants';
 const styles = StyleSheet.create({
   measurementsRenderListContainer: {
     flexDirection: 'row',
-    backgroundColor: 'white',
+    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
     justifyContent: 'space-between',
-    borderBottomColor: themes.MEDIUMGREY,
+    borderBottomColor: themes.LIST_BORDER_COLOR,
     borderBottomWidth: .5
   },
   measurementsSectionDividerContainer: {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    backgroundColor: themes.LIGHTGREY,
     paddingTop: 45
   },
   measurementsSectionDividerButtonContainer: {
@@ -29,18 +28,13 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   mainText: {
-    color: 'black',
+    color: themes.PRIMARY_ITEM_TEXT_COLOR,
     fontSize: 18
   },
   propertyText: {
     paddingLeft: 20,
     fontSize: 18,
-    color: themes.MEDIUMGREY,
-  },
-  horizontalLine: {
-    borderBottomColor: 'black',
-    borderBottomWidth: 1,
-    width: '100%'
+    color: themes.SECONDARY_ITEM_TEXT_COLOR,
   },
   measurementDetailContainer: {
     flex: 1,
@@ -53,7 +47,7 @@ const styles = StyleSheet.create({
   measurementDetailSwitches: {
     height: 40,
     borderRadius: 10,
-    borderColor: themes.BLUE
+    borderColor: themes.PRIMARY_ACCENT_COLOR
   },
   measurementsOverviewContainer: {
     flex: 1,

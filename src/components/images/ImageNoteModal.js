@@ -4,6 +4,9 @@ import {Button, Input} from "react-native-elements";
 import styles from './images.styles';
 import Modal from '../../shared/ui/modal/Modal.view';
 
+// Styles
+import * as themes from '../../shared/styles.constants';
+
 const imageNoteModal = (props) => {
 
   const [name, setName] = useState(null);
@@ -30,7 +33,7 @@ const imageNoteModal = (props) => {
       <Button
         title={'Show fewer fields'}
         type={'clear'}
-        titleStyle={{color: 'blue', fontSize: 14}}
+        titleStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 14}}
         onPress={() => fieldButtonHandler()}
       />
     </View>
@@ -41,7 +44,7 @@ const imageNoteModal = (props) => {
       <Button
         title={'Show more fields'}
         type={'clear'}
-        titleStyle={{color: 'blue', fontSize: 14}}
+        titleStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 14}}
         onPress={() => fieldButtonHandler()}
       />
     </View>

@@ -4,11 +4,11 @@ import * as themes from '../../shared/styles.constants';
 const notebookStyles = StyleSheet.create({
   panel: {
     flex: 1,
-    width: 400,
+    width: 500,
     height: '100%',
     borderBottomLeftRadius: 30,
     borderTopLeftRadius: 30,
-    backgroundColor: themes.LIGHTGREY,
+    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
     position: 'absolute', //Here is the trick
     right: 0,
     zIndex: 1,
@@ -16,8 +16,7 @@ const notebookStyles = StyleSheet.create({
   headerContainer: {
     borderBottomWidth: 1,
     height: 90,
-    padding: 10,
-    backgroundColor: themes.LIGHTGREY
+    padding: 10
   },
   centerContainer: {
     flex: 1,
@@ -26,8 +25,7 @@ const notebookStyles = StyleSheet.create({
     height: 60,
     borderTopWidth: 1,
     padding: 10,
-    borderBottomLeftRadius: 30,
-    backgroundColor: themes.LIGHTGREY
+    borderBottomLeftRadius: 30
   },
   noSpotContent: {
     flex: 1,
@@ -41,14 +39,24 @@ const notebookStyles = StyleSheet.create({
     paddingTop: 15,
     paddingLeft: 10,
     paddingRight: 10,
-    lineHeight: 30,
-    backgroundColor: themes.LIGHTGREY
+    lineHeight: 30
   },
   collapsibleSectionHeaderText: {
     fontSize: 16,
     lineHeight: 30,
     textTransform: 'uppercase',
-    color: themes.DARKGREY
+    color: themes.SECONDARY_HEADER_TEXT_COLOR
+  },
+  dialogBox: {
+    position: 'absolute',
+    top: 25,
+    right: 25,
+    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
+    borderRadius: 20,
+    zIndex: 10
+  },
+  dialogContent: {
+    borderBottomWidth: 1
   }
 });
 

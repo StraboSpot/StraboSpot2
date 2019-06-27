@@ -6,6 +6,8 @@ import {backgroundImage} from '../assets/images/background.jpg';
 import ButtonWithBackground from '../shared/ui/ButtonWithBackground';
 import Icon from "react-native-vector-icons/Ionicons";
 
+import * as themes from '../shared/styles.constants';
+
 export default class SignIn extends React.Component {
   // componentDidMount() {
   //   Icon.getImageSource("pin", 30)
@@ -91,7 +93,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '500',
     height: 55,
-    backgroundColor: 'white',
+    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
     margin: 10,
     color: 'black',
     padding: 8,

@@ -11,6 +11,9 @@ import ProgressBar from 'react-native-progress/Bar';
 import {connect} from 'react-redux';
 import {mapReducers} from '../../maps/Map.constants';
 
+// Styles
+import * as themes from '../../../shared/styles.constants';
+
 var RNFS = require('react-native-fs');
 
 class SaveMapModal extends Component {
@@ -322,7 +325,7 @@ class SaveMapModal extends Component {
 
       <View style={styles.modalContainer}>
         <Header
-          backgroundColor={'lightgrey'}
+          backgroundColor={themes.PRIMARY_BACKGROUND_COLOR}
           containerStyle={{height: 50}}
           leftComponent={<ButtonNoBackground
             onPress={this.props.close}>
@@ -365,7 +368,7 @@ class SaveMapModal extends Component {
           <ButtonWithBackground
             onPress={this.saveMap} //pass in zoom
             style={styles.buttonText}
-            color={'blue'}
+            color={themes.PRIMARY_ACCENT_COLOR}
           >Download {this.state.tileCount} Tiles</ButtonWithBackground>
         }
 
@@ -397,7 +400,7 @@ class SaveMapModal extends Component {
           <ButtonWithBackground
             onPress={this.props.close}
             style={styles.buttonText}
-            color={'blue'}
+            color={themes.PRIMARY_ACCENT_COLOR}
           >Continue</ButtonWithBackground>
         }
 
@@ -411,7 +414,7 @@ const styles = StyleSheet.create({
   modalContainer: {
     flex: 1,
     width: 400,
-    backgroundColor: 'white',
+    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
     alignItems: 'center'
   },
   buttonText: {

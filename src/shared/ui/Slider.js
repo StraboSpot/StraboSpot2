@@ -21,9 +21,9 @@ const slider = (props) => {
             style={styles.slider}
             step={1}
             thumbStyle={{borderWidth: 1, borderColor: 'grey'}}
-            minimumTrackTintColor={themes.BLUE}
-            maximumTrackTintColor={themes.LIGHTGREY}
-            thumbTintColor={themes.LIGHTGREY}
+            minimumTrackTintColor={themes.PRIMARY_ACCENT_COLOR}
+            maximumTrackTintColor={themes.PRIMARY_BACKGROUND_COLOR}
+            thumbTintColor={themes.PRIMARY_BACKGROUND_COLOR}
           />
         </View>
 

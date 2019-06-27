@@ -6,8 +6,7 @@ const buttonStyles = StyleSheet.create({
   navButtonsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    backgroundColor: themes.LIGHTGREY
+    alignItems: 'flex-start'
   },
   leftContainer: {
     flex: 1,

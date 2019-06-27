@@ -65,7 +65,7 @@ const MeasurementsPage = (props) => {
         <SectionDivider dividerText={dividerText}/>
         <View style={styles.measurementsSectionDividerButtonContainer}>
           <Button
-            titleStyle={themes.BLUE}
+            titleStyle={themes.PRIMARY_ACCENT_COLOR}
             title={'Add'}
             type={'clear'}
             onPress={() => props.showModal('isCompassModalVisible', true)}
@@ -73,7 +73,7 @@ const MeasurementsPage = (props) => {
         </View>
         <View style={styles.measurementsSectionDividerButtonContainer}>
           <Button
-            titleStyle={themes.BLUE}
+            titleStyle={themes.PRIMARY_ACCENT_COLOR}
             title={'Select'}
             type={'clear'}
           />

@@ -1,24 +1,19 @@
 import {StyleSheet} from 'react-native';
+import * as themes from '../../shared/styles.constants';
 
 const styles = StyleSheet.create({
   container: {
     paddingTop: 20,
     flex: 1,
-    backgroundColor: 'lightgrey',
+    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
   },
   profile: {
     width: '90%',
     height: 125,
-    backgroundColor: 'white',
+    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
     borderBottomWidth: 1,
     borderColor: 'black'
   },
-
-  textStyle: {
-    fontSize: 22,
-    color: 'lightgrey'
-  },
-
   navItemStyle: {
     padding: 3,
   },
@@ -32,7 +27,7 @@ const styles = StyleSheet.create({
   sectionHeading : {
     alignItems: 'flex-start',
     marginLeft: 10,
-    backgroundColor: 'lightgrey',
+    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
   },
   sectionHeadingTextStyle: {
     paddingTop: 15,
@@ -41,7 +36,7 @@ const styles = StyleSheet.create({
   },
   footerContainer: {
     padding: 20,
-    backgroundColor: 'lightgrey'
+    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR
   }
 });
 

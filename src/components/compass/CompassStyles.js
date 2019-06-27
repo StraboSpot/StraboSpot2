@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
   },
   compassContainer: {
     flex: 8,
-    backgroundColor: 'white',
+    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
     borderBottomRightRadius: 20,
     borderBottomLeftRadius: 20,
     width: '100%',
@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
   },
   renderCompassContainer: {
     flex: 60,
-    backgroundColor: themes.MODAL
+    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR
   },
   compassRowContainer: {
     alignItems: 'center'

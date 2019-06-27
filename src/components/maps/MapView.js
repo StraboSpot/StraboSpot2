@@ -357,8 +357,9 @@ class mapView extends Component {
   };
 
   getCurrentZoom = async () => {
-    const currentZoom = await this._map.getZoom();
-    return currentZoom;
+    //const currentZoom = await this._map.getZoom();
+    //return currentZoom;
+    return 16;
   };
 
   getTileCount = async (zoomLevel) => {

@@ -1,4 +1,5 @@
 import {StyleSheet} from 'react-native';
+import * as themes from "../../shared/styles.constants";
 
 const noteStyle = StyleSheet.create({
   container: {
@@ -6,16 +7,15 @@ const noteStyle = StyleSheet.create({
   },
   inputContainer: {
     height: 300,
-    backgroundColor: 'white',
     borderWidth: 1,
     // paddingTop: 25
   },
   notesOverviewContainer: {
-    backgroundColor: 'white',
     padding: 10,
     flex: 1,
     flexDirection: 'row',
-    // justifyContent: 'space-between'
+    // justifyContent: 'space-between',
+    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR
   },
   buttonContainer: {
     // flexDirection: 'row',

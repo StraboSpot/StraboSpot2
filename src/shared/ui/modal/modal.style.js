@@ -22,7 +22,7 @@ const modalStyle = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     padding: 10,
-    backgroundColor: themes.MODAL,
+    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
     borderTopRightRadius: 20,
     borderTopLeftRadius: 20,
   },
@@ -33,7 +33,7 @@ const modalStyle = StyleSheet.create({
   textContainer: {
     alignItems: 'center',
     paddingBottom: 10,
-    backgroundColor: themes.COMPASS_MODAL,
+    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
   }
 });
 

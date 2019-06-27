@@ -6,13 +6,13 @@ const styles = StyleSheet.create({
     height: 30,
     paddingLeft: 10,
     justifyContent: 'center',
-    backgroundColor: themes.LIGHTGREY
+    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR
   },
   sectionDividerText: {
     fontSize: 16,
     lineHeight: 30,
     textTransform: 'uppercase',
-    color: themes.DARKGREY
+    color: themes.SECONDARY_HEADER_TEXT_COLOR
   },
   sliderTextContainer: {
     width: '100%',
@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row'
   },
   sliderText: {
-    color: themes.MEDIUMGREY,
+    color: themes.SECONDARY_ITEM_TEXT_COLOR,
     fontSize: 16
   },
   sliderContainer: {
@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
   },
   buttonText: {
-    color: themes.BLUE
+    color: themes.PRIMARY_ACCENT_COLOR
   }
 });
 
