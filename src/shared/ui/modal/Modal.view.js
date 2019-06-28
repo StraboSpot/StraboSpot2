@@ -9,7 +9,7 @@ import * as themes from '../../styles.constants';
 const modalView = (props) => {
   return (
     <View style={[modalStyle.modalContainer, props.modalStyle]}>
-      <View style={modalStyle.modalTop}>
+      <View style={[modalStyle.modalTop, props.modalStyle]}>
         <Button
           titleStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 16}}
           title={props.buttonTitleRight}

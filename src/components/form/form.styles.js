@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
   fieldContainer: {
     flex: 1,
     flexDirection: 'row',
-    height: 40,
+    height: 30,
     borderBottomWidth: .5,
     borderColor: themes.LIST_BORDER_COLOR
   },
@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
   },
   fieldLabel: {
     color: themes.PRIMARY_ITEM_TEXT_COLOR,
-    fontSize: 25
+    fontSize: 16
   },
   fieldValueContainer: {
     width: '100%',
@@ -32,14 +32,14 @@ const styles = StyleSheet.create({
   },
   fieldValue: {
     paddingLeft: 20,
-    fontSize: 25,
+    fontSize: 16,
     color: themes.SECONDARY_ITEM_TEXT_COLOR,
     height: 45                      // Hack used to center text vertically
   },
   fieldValueNotes: {
     textAlignVertical: 'top',
     paddingLeft: 10,
-    fontSize: 25,
+    fontSize: 16,
     color: themes.SECONDARY_ITEM_TEXT_COLOR,
     height: 90
   },
@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
     color: 'red',
   },
   pickerStyle: {
-    fontSize: 25,
+    fontSize: 16,
     paddingLeft: 20,
     color: themes.SECONDARY_ITEM_TEXT_COLOR,
     height: 45

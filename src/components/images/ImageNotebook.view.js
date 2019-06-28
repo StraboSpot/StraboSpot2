@@ -1,15 +1,24 @@
 import React from 'react';
 import {ActivityIndicator, Button, FlatList, Text, View} from 'react-native';
 // import {deleteImageFromSpot, getImageSrc} from './Images.container';
+import {setForm} from "../form/form.container";
 import {connect} from 'react-redux';
 import imageStyles from "./images.styles";
 import {Image} from "react-native-elements";
 import {goToImageInfo} from "../../routes/Navigation";
+import {notebookReducers} from "../notebook-panel/Notebook.constants";
+import {formReducers} from "../form/Form.constant";
 
 const imageNotebook = (props) => {
 
   const getImageSrc = (id) => {
     return props.imagePaths[id]
+  };
+
+  const editImage = (image) => {
+    props.setFormData(image);
+    setForm('images');
+    goToImageInfo(image.id);
   };
 
   const renderImage = (image) => {
@@ -23,7 +32,7 @@ const imageNotebook = (props) => {
         />
         <Button
           title={'Edit'}
-          onPress={() => goToImageInfo(image.id)}
+          onPress={() => editImage(image)}
           style={imageStyles.editButton}
         />
       </View>
@@ -47,4 +56,8 @@ const mapStateToProps = (state) => {
   }
 };
 
-export default connect(mapStateToProps)(imageNotebook);
+const mapDispatchToProps = {
+  setFormData: (formData) => ({type: formReducers.SET_FORM_DATA, formData: formData})
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(imageNotebook);

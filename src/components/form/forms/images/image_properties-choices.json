@@ -1,0 +1,284 @@
+[
+ {
+   "list_name": "cs3xd00",
+   "name": "photo",
+   "label": "photo",
+   "order": null
+ },
+ {
+   "list_name": "cs3xd00",
+   "name": "sketch",
+   "label": "sketch",
+   "order": 1
+ },
+ {
+   "list_name": "cs3xd00",
+   "name": "geological_cs",
+   "label": "geological cross section",
+   "order": 2
+ },
+ {
+   "list_name": "cs3xd00",
+   "name": "geophysical_cs",
+   "label": "geophysical cross section",
+   "order": 3
+ },
+ {
+   "list_name": "cs3xd00",
+   "name": "strat_section",
+   "label": "stratigraphic section",
+   "order": 4
+ },
+ {
+   "list_name": "cs3xd00",
+   "name": "micrograph_ref",
+   "label": "micrograph reference",
+   "order": 5
+ },
+ {
+   "list_name": "cs3xd00",
+   "name": "micrograph",
+   "label": "micrograph",
+   "order": 6
+ },
+ {
+   "list_name": "cs3xd00",
+   "name": "sample",
+   "label": "sample",
+   "order": 7
+ },
+ {
+   "list_name": "cs3xd00",
+   "name": "subsample",
+   "label": "subsample",
+   "order": 8
+ },
+ {
+   "list_name": "cs3xd00",
+   "name": "undef_sample",
+   "label": "undeformed sample",
+   "order": 9
+ },
+ {
+   "list_name": "cs3xd00",
+   "name": "exp_setup",
+   "label": "experimental setup",
+   "order": 10
+ },
+ {
+   "list_name": "cs3xd00",
+   "name": "def_sample",
+   "label": "deformed sample",
+   "order": 11
+ },
+ {
+   "list_name": "cs3xd00",
+   "name": "exp_apparatus",
+   "label": "experimental apparatus",
+   "order": 12
+ },
+ {
+   "list_name": "cs3xd00",
+   "name": "other_image_ty",
+   "label": "other",
+   "order": 13
+ },
+ {
+   "list_name": "fx9ay49",
+   "name": "light",
+   "label": "Light",
+   "order": null
+ },
+ {
+   "list_name": "fx9ay49",
+   "name": "bse",
+   "label": "BSE",
+   "order": null
+ },
+ {
+   "list_name": "fx9ay49",
+   "name": "se",
+   "label": "SE",
+   "order": null
+ },
+ {
+   "list_name": "fx9ay49",
+   "name": "eds",
+   "label": "EDS",
+   "order": null
+ },
+ {
+   "list_name": "fx9ay49",
+   "name": "ebsd",
+   "label": "EBSD",
+   "order": null
+ },
+ {
+   "list_name": "fx9ay49",
+   "name": "xrf",
+   "label": "XRF",
+   "order": null
+ },
+ {
+   "list_name": "fx9ay49",
+   "name": "cl",
+   "label": "CL",
+   "order": null
+ },
+ {
+   "list_name": "fx9ay49",
+   "name": "fib",
+   "label": "FIB",
+   "order": null
+ },
+ {
+   "list_name": "fx9ay49",
+   "name": "sims",
+   "label": "SIMS",
+   "order": null
+ },
+ {
+   "list_name": "fx9ay49",
+   "name": "confocal",
+   "label": "Confocal",
+   "order": null
+ },
+ {
+   "list_name": "fx9ay49",
+   "name": "tem",
+   "label": "TEM",
+   "order": null
+ },
+ {
+   "list_name": "fx9ay49",
+   "name": "synchotron",
+   "label": "Synchotron",
+   "order": null
+ },
+ {
+   "list_name": "fx9ay49",
+   "name": "micro_ct",
+   "label": "Micro CT",
+   "order": null
+ },
+ {
+   "list_name": "fx9ay49",
+   "name": "sct",
+   "label": "sCT",
+   "order": null
+ },
+ {
+   "list_name": "fx9ay49",
+   "name": "other_microgra",
+   "label": "Other",
+   "order": null
+ },
+ {
+   "list_name": "oc3xw76",
+   "name": "reflected",
+   "label": "Reflected",
+   "order": null
+ },
+ {
+   "list_name": "oc3xw76",
+   "name": "transmitted",
+   "label": "Transmitted",
+   "order": null
+ },
+ {
+   "list_name": "gx5mp47",
+   "name": "plane_polarize",
+   "label": "Plane Polarized",
+   "order": null
+ },
+ {
+   "list_name": "gx5mp47",
+   "name": "cross_polarize",
+   "label": "Cross Polarized",
+   "order": null
+ },
+ {
+   "list_name": "gx5mp47",
+   "name": "partial_polari",
+   "label": "Partial Polarized",
+   "order": null
+ },
+ {
+   "list_name": "xc4hd43",
+   "name": "none",
+   "label": "None",
+   "order": null
+ },
+ {
+   "list_name": "xc4hd43",
+   "name": "quartz",
+   "label": "Quartz",
+   "order": null
+ },
+ {
+   "list_name": "xc4hd43",
+   "name": "gypsum",
+   "label": "Gypsum",
+   "order": null
+ },
+ {
+   "list_name": "vt86z05",
+   "name": "km",
+   "label": "km",
+   "order": null
+ },
+ {
+   "list_name": "vt86z05",
+   "name": "m",
+   "label": "m",
+   "order": null
+ },
+ {
+   "list_name": "vt86z05",
+   "name": "cm",
+   "label": "cm",
+   "order": null
+ },
+ {
+   "list_name": "vt86z05",
+   "name": "mm",
+   "label": "mm",
+   "order": null
+ },
+ {
+   "list_name": "vt86z05",
+   "name": "_m",
+   "label": "um",
+   "order": null
+ },
+ {
+   "list_name": "bn1hn18",
+   "name": "field",
+   "label": "field",
+   "order": null
+ },
+ {
+   "list_name": "bn1hn18",
+   "name": "sample",
+   "label": "sample",
+   "order": null
+ },
+ {
+   "list_name": "bn1hn18",
+   "name": "subsample",
+   "label": "subsample",
+   "order": null
+ },
+ {
+   "list_name": "bn1hn18",
+   "name": "micrograph",
+   "label": "micrograph",
+   "order": null
+ },
+ {
+   "list_name": "bn1hn18",
+   "name": "other",
+   "label": "other",
+   "order": null
+ }
+]
