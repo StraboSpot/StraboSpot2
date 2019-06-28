@@ -6,20 +6,20 @@ import {Icon, Image} from "react-native-elements";
 import {Navigation} from "react-native-navigation";
 import IconButton from '../../shared/ui/IconButton';
 import {imageReducers} from "./Image.constants";
-import ImageNoteModal from './ImageNoteModal';
+import ImagePropertiesModal from './ImagePropertiesModal';
 
 const ImageInfoView = (props) => {
-  console.log('Image Info', props);
+  // console.log('Image Info', props);
 
   const [imageNoteModal, setImageNoteModal] = useState(false);
 
   let noteModal = (
     <View style={styles.modalPosition}>
-      <ImageNoteModal
+      <ImagePropertiesModal
         close={() => closeModal()}
       >
         Image Info
-      </ImageNoteModal>
+      </ImagePropertiesModal>
     </View>
   );
 
