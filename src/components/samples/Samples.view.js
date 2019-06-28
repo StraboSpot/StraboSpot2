@@ -138,7 +138,7 @@ const mapStateToProps = (state) => {
   return {
     spot: state.spot.selectedSpot
   }
-}
+};
 
 const mapDispatchToProps = {
   onSpotEdit: (field, value) => ({type: spotReducers.EDIT_SPOT_PROPERTIES, field: field, value: value}),

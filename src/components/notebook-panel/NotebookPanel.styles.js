@@ -4,7 +4,7 @@ import * as themes from '../../shared/styles.constants';
 const notebookStyles = StyleSheet.create({
   panel: {
     flex: 1,
-    width: 500,
+    width: 400,
     height: '100%',
     borderBottomLeftRadius: 30,
     borderTopLeftRadius: 30,
