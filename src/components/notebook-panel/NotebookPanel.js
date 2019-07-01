@@ -23,6 +23,7 @@ const NotebookPanel = props => {
     const pageVisible = props.setNotebookPageVisible(page);
     if (pageVisible.page === NotebookPages.MEASUREMENT || pageVisible === NotebookPages.MEASUREMENTDETAIL) {
       props.showModal('isCompassModalVisible', true);
+      props.isCompassShortcutViewVisible(false)
     }
     else props.showModal('isCompassModalVisible', false);
     if (pageVisible.page === NotebookPages.SAMPLE) {
@@ -80,7 +81,8 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-  setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page })
+  setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page }),
+  isCompassShortcutViewVisible: (value) => ({type: notebookReducers.SET_COMPASS_SHORTCUT_VISIBLE, value: value}),
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(NotebookPanel);

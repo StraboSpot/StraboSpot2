@@ -2,7 +2,7 @@ import React from 'react';
 import {View} from 'react-native';
 import IconButton from '../../../shared/ui/IconButton';
 import footerStyle from './NotebookFooter.styles';
-import {NotebookPages} from "../Notebook.constants";
+import {NotebookPages, notebookReducers} from "../Notebook.constants";
 import {IconButtons} from '../../../shared/app.constants';
 import {connect} from "react-redux";
 import {isEmpty} from "../../../shared/Helpers";
@@ -71,10 +71,14 @@ const NotebookFooter = props => {
 
 function mapStateToProps(state) {
   return {
-    notebookPageVisible: isEmpty(state.notebook.visibleNotebookPagesStack) ? null : state.notebook.visibleNotebookPagesStack.slice(-1)[0]
+    notebookPageVisible: isEmpty(state.notebook.visibleNotebookPagesStack) ? null :
+      state.notebook.visibleNotebookPagesStack.slice(-1)[0],
+    compassShortcutView: state.notebook.isCompassShortcutVisible,
   }
 }
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = {
+  isCompassShortcutViewVisible: (value) => ({type: notebookReducers.SET_COMPASS_SHORTCUT_VISIBLE, value: value}),
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(NotebookFooter);

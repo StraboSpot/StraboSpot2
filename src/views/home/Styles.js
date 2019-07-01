@@ -93,6 +93,11 @@ const styles = StyleSheet.create({
     left: 80,
     top: 150,
   },
+  modalPositionShortcutView: {
+    position: 'absolute', //Here is the trick
+    right: 80,
+    top: 20,
+  }
 });
 
 export default styles;

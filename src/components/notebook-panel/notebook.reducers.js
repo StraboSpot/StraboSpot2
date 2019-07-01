@@ -2,7 +2,9 @@ import {notebookReducers} from './Notebook.constants';
 import {isEmpty} from '../../shared/Helpers';
 
 const initialState = {
-  visibleNotebookPagesStack: []
+  visibleNotebookPagesStack: [],
+  isCompassShortcutVisible: false,
+  isNotebookPanelVisible: false
 };
 
 export const notebookReducer = (state = initialState, action) => {
@@ -27,6 +29,16 @@ export const notebookReducer = (state = initialState, action) => {
         visibleNotebookPagesStack: state.visibleNotebookPagesStack.slice(0, -1),
       };
     }
+    case notebookReducers.SET_COMPASS_SHORTCUT_VISIBLE:
+      return {
+        ...state,
+        isCompassShortcutVisible: action.value
+      };
+    case notebookReducers.SET_NOTEBOOK_PANEL_VISIBLE:
+      return {
+        ...state,
+        isNotebookPanelVisible: action.value
+      }
   }
   return state;
 };

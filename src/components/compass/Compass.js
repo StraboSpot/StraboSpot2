@@ -10,11 +10,13 @@ import {Switch} from "react-native-switch";
 import {spotReducers} from "../../spots/Spot.constants";
 import Orientation from 'react-native-orientation-locker';
 import Slider from '../../shared/ui/Slider';
+import Measurements from '../measurements/Measurements';
 import Modal from "../../shared/ui/modal/Modal.view";
 
 // Styles
 import styles from './CompassStyles';
 import * as themes from '../../shared/styles.constants';
+import {notebookReducers} from "../notebook-panel/Notebook.constants";
 
 const {height, width} = Dimensions.get('window');
 const degree_update_rate = 2; // Number of degrees changed before the callback is triggered
@@ -156,49 +158,6 @@ class Compass extends Component {
     if (this._subscription) this._subscription.unsubscribe();
     this._subscription = null;
   };
-
-  /*  _angle = (magnetometer) => {
-      let angle = null;
-      if (magnetometer) {
-        let {x, y, z} = magnetometer;
-
-        if (Math.atan2(y, x) >= 0) {
-          angle = Math.atan2(y, x) * (180 / Math.PI);
-        }
-        else {
-          angle = (Math.atan2(y, x) + 2 * Math.PI) * (180 / Math.PI);
-        }
-      }
-
-      return Math.round(angle);
-    };*/
-
-  // _direction = (degree) => {
-  //   if (degree >= 22.5 && degree < 67.5) {
-  //     return 'NE';
-  //   }
-  //   else if (degree >= 67.5 && degree < 112.5) {
-  //     return 'E';
-  //   }
-  //   else if (degree >= 112.5 && degree < 157.5) {
-  //     return 'SE';
-  //   }
-  //   else if (degree >= 157.5 && degree < 202.5) {
-  //     return 'S';
-  //   }
-  //   else if (degree >= 202.5 && degree < 247.5) {
-  //     return 'SW';
-  //   }
-  //   else if (degree >= 247.5 && degree < 292.5) {
-  //     return 'W';
-  //   }
-  //   else if (degree >= 292.5 && degree < 337.5) {
-  //     return 'NW';
-  //   }
-  //   else {
-  //     return 'N';
-  //   }
-  // };
 
   // Match the device top with pointer 0° degree. (By default 0° starts from the right of the device.)
   _degree = (magnetometer) => {
@@ -499,27 +458,37 @@ class Compass extends Component {
   };
 
   render() {
-    // return (
-    //   <View style={styles.container}>
-    //     <Grid style={styles.gridContainer}>
-    //       <Col>
-    //         <Row style={styles.compassRowContainer} size={4} onPress={() => this.grabMeasurements()}>
-    //           {this.renderCompass()}
-    //         </Row>
-    //       </Col>
-    //       <Col>
-    //         {/*<Button title={'Start'} onPress={this.startsMeasurements}/>*/}
-    //         {/*<Button title={'Stop'} onPress={this.stopsMeasurements}/>*/}
-    //         <Row style={styles.toggleButtonsRowContainer}>
-    //           {this.renderToggles()}
-    //         </Row>
-    //         <Row style={styles.measurementsRowContainer}>
-    //           {this.renderMeasurements()}
-    //         </Row>
-    //       </Col>
-    //     </Grid>
-    //   </View>
-    // );
+    let shortcutView = null;
+
+    if(this.props.shortcutView) {
+      shortcutView =   <View>
+        <View style={{height: 350}}>
+        <Measurements/>
+        </View>
+        <Button
+          title={`Go to ${this.props.spot.properties.name}`}
+          type={'clear'}
+          titleStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 16}}
+          onPress={() => {
+            this.props.isShortcutViewVisible(false);
+            this.props.setNotebookPanelVisible(true)
+          }}
+        />
+      </View>
+    }
+    else {
+      shortcutView =  <View>
+        <Button
+          title={'View In Shortcut Mode'}
+          type={'clear'}
+          titleStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 16}}
+          onPress={() => {
+            this.props.isShortcutViewVisible(true);
+            this.props.setNotebookPanelVisible(false)
+          }}
+        />
+      </View>
+    }
 
     return (
       <View style={{flex: 1}}>
@@ -538,17 +507,9 @@ class Compass extends Component {
             rightText={'High Quality'}
           />
           {/*{this.renderMeasurements()}*/}
-          <View style={styles.buttonContainer}>
-            <Button
-              title={'View In Shortcut Mode'}
-              type={'clear'}
-              titleStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 16}}
-            />
-          </View>
-
-          {/*<View style={{flexDirection: 'row'}}>*/}
-          {/*  <Text style={{paddingRight: 10}}>Value: {this.state.sliderValue}</Text>*/}
-          {/*</View>*/}
+        </View>
+        <View style={styles.buttonContainer}>
+          {shortcutView}
         </View>
       </View>
     )
@@ -557,12 +518,16 @@ class Compass extends Component {
 
 function mapStateToProps(state) {
   return {
-    spot: state.spot.selectedSpot
+    spot: state.spot.selectedSpot,
+    shortcutView: state.notebook.isCompassShortcutVisible,
+    isNotebookPanelVisible: state.notebook.isNotebookPanelVisible
   }
 }
 
 const mapDispatchToProps = {
   onSpotEdit: (field, value) => ({type: spotReducers.EDIT_SPOT_PROPERTIES, field: field, value: value}),
+  isShortcutViewVisible: (value) => ({type: notebookReducers.SET_COMPASS_SHORTCUT_VISIBLE, value: value}),
+  setNotebookPanelVisible: (value) => ({type: notebookReducers.SET_NOTEBOOK_PANEL_VISIBLE, value: value}),
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Compass);

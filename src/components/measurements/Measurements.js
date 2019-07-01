@@ -82,8 +82,16 @@ const MeasurementsPage = (props) => {
     );
   };
 
-  return (
-    <React.Fragment>
+  const renderSectionDividerShortcutView = (dividerText) => {
+    return (
+      <View style={styles.measurementsSectionDividerShortcutContainer}>
+        <SectionDivider dividerText={dividerText}/>
+      </View>
+    )
+  };
+
+  const renderMeasurementsNotebookView = () => {
+    return (
       <View>
         <ReturnToOverviewButton
           onPress={() => {
@@ -100,18 +108,42 @@ const MeasurementsPage = (props) => {
           {props.spot.properties.orientations && renderPlanarLinearMeasurements()}
         </ScrollView>
       </View>
+    )
+  };
+
+  const renderMeasurementsShortcutView = () => {
+    return (
+      <View>
+        <ScrollView>
+          {renderSectionDividerShortcutView('Plans')}
+          {props.spot.properties.orientations && renderPlanarMeasurements()}
+          {renderSectionDividerShortcutView('Lines')}
+          {props.spot.properties.orientations && renderLinearMeasurements()}
+          {/*{renderSectionDividerShortcutView('Planar + Linear Measurements')}*/}
+          {/*{props.spot.properties.orientations && renderPlanarLinearMeasurements()}*/}
+        </ScrollView>
+      </View>
+    )
+  };
+
+  return (
+    <React.Fragment>
+      {props.isCompassShortcutViewVisible ? renderMeasurementsShortcutView() :
+        renderMeasurementsNotebookView()}
     </React.Fragment>
   );
 };
 
 function mapStateToProps(state) {
   return {
-    spot: state.spot.selectedSpot
+    spot: state.spot.selectedSpot,
+    isCompassShortcutViewVisible: state.notebook.isCompassShortcutVisible
   }
 }
 
 const mapDispatchToProps = {
   setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page})
+
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(MeasurementsPage);

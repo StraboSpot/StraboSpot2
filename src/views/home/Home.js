@@ -62,7 +62,6 @@ class Home extends React.Component {
         editButtonsVisible: false
       },
       mapMode: MapModes.VIEW,
-      notebookPanelVisible: false,
       settingsMenuVisible: 'settingsMain',
       drawerVisible: false,
       isOfflineMapModalVisible: false,
@@ -93,6 +92,7 @@ class Home extends React.Component {
     this._isMounted = true;
     Icon.getImageSource("pin", 30);
     NetInfo.isConnected.addEventListener('connectionChange', this.handleConnectivityChange);
+    this.props.setNotebookPanelVisible(false);
   }
 
   componentWillUnmount() {
@@ -206,10 +206,10 @@ class Home extends React.Component {
 
   closeNotebookPanel = () => {
     if (this._isMounted) {
+      this.props.setNotebookPanelVisible(false);
       this.setState(prevState => {
         return {
           ...prevState,
-          notebookPanelVisible: false,
           isCompassModalVisible: false,
           isSamplesModalVisible: false
         }
@@ -307,14 +307,15 @@ class Home extends React.Component {
 
   openNotebookPanel = () => {
     if (this._isMounted) {
+      this.props.setNotebookPanelVisible(true);
+      this.props.isCompassShortcutViewVisible(false);
+      this.props.setNotebookPageVisible(NotebookPages.OVERVIEW);
       this.setState(prevState => {
         return {
           ...prevState,
-          notebookPanelVisible: true
+          isCompassModalVisible: false,
+          isSamplesModalVisible: false
         }
-      }, () => {
-        console.log('Noteboook panel open');
-        this.props.setNotebookPageVisible(NotebookPages.OVERVIEW)
       });
     }
   };
@@ -341,7 +342,13 @@ class Home extends React.Component {
       this.setState(prevState => {
         return {
           ...prevState,
-          allPhotosSaved: [...this.state.allPhotosSaved, {id: savedPhoto.id, src: savedPhoto.src, image_type: 'photo', height: savedPhoto.height, width: savedPhoto.width}]
+          allPhotosSaved: [...this.state.allPhotosSaved, {
+            id: savedPhoto.id,
+            src: savedPhoto.src,
+            image_type: 'photo',
+            height: savedPhoto.height,
+            width: savedPhoto.width
+          }]
         }
       }, () => {
         console.log('All Photos Saved:', this.state.allPhotosSaved);
@@ -554,14 +561,15 @@ class Home extends React.Component {
     }
   };
 
-
   render() {
     const spot = this.props.selectedSpot;
 
     const isOnline = this.props.isOnline;
 
     let content = null;
-    let compassModal =  <View style={styles.modalPosition}>
+    let compassModal =  <View style={this.props.compassShortcutView && !this.props.isNotebookPanelVisible ?
+      styles.modalPositionShortcutView :
+      styles.modalPosition}>
       <CompassModal
         // showCompass={() => this.toggleCompass}
         close={(modalName) => this.toggleModal(modalName)}
@@ -570,9 +578,9 @@ class Home extends React.Component {
 
     let samplesModal =  <View style={styles.modalPosition}>
       <SamplesModal
-      close={(modalName) => this.toggleModal(modalName)}
-      cancel={() => this.samplesModalCancel()}
-      style={{justifyContent: 'center'}}
+        close={(modalName) => this.toggleModal(modalName)}
+        cancel={() => this.samplesModalCancel()}
+        style={{justifyContent: 'center'}}
       />
     </View>;
 
@@ -594,7 +602,8 @@ class Home extends React.Component {
           toggleSwitch={(switchName) => this.toggleSwitch(switchName)}
           closeSettingsDrawer={() => this.closeSettingsDrawer()}
         />
-    }else if (this.state.settingsMenuVisible === 'Custom Maps') {
+    }
+    else if (this.state.settingsMenuVisible === 'Custom Maps') {
       content =
         <CustomMapsMenu
           onPress={() => this.setVisibleMenuState('settingsMain')}
@@ -621,7 +630,7 @@ class Home extends React.Component {
                    mapMode={this.state.mapMode}
                    startEdit={this.startEdit}
                    showModal={(modalName, value) => this.toggleModal(modalName, value)}/>
-          {this.state.notebookPanelVisible ?
+          {this.props.isNotebookPanelVisible ?
             <NotebookPanel
               closeNotebook={this.closeNotebookPanel}
               textStyle={{fontWeight: 'bold', fontSize: 12}}
@@ -630,7 +639,7 @@ class Home extends React.Component {
               showModal={(modalName, value) => this.toggleModal(modalName, value)}
             />
             : null}
-          {this.state.isCompassModalVisible ? compassModal : null}
+          {this.state.isCompassModalVisible ? compassModal: null}
           {this.state.isSamplesModalVisible ? samplesModal : null}
           <View style={styles.topCenter}>
             {this.state.buttons.endDrawButtonVisible ?
@@ -818,6 +827,8 @@ function mapStateToProps(state) {
     selectedSpot: state.spot.selectedSpot,
     featureCollectionSelected: state.spot.featureCollectionSelected,
     isOnline: state.spot.isOnline,
+    compassShortcutView: state.notebook.isCompassShortcutVisible,
+    isNotebookPanelVisible: state.notebook.isNotebookPanelVisible
     // visiblePage: state.notebook.visiblePage
   }
 }
@@ -825,11 +836,13 @@ function mapStateToProps(state) {
 const mapDispatchToProps = {
   setIsOnline: (online) => ({type: spotReducers.SET_ISONLINE, online: online}),
   setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),
+  setNotebookPanelVisible: (value) => ({type: notebookReducers.SET_NOTEBOOK_PANEL_VISIBLE, value: value}),
   addPhoto: (imageData) => ({type: imageReducers.ADD_PHOTOS, images: imageData}),
   deleteFeature: (id) => ({type: spotReducers.FEATURE_DELETE, id: id}),
   onSpotEdit: (field, value) => ({type: spotReducers.EDIT_SPOT_PROPERTIES, field: field, value: value}),
   // onSpotEdit: (field, value) => ({type: EDIT_SPOT_PROPERTIES, field: field, value: value}),
-  onSpotEditImageObj: (images) => ({type: spotReducers.EDIT_SPOT_IMAGES, images: images})
+  onSpotEditImageObj: (images) => ({type: spotReducers.EDIT_SPOT_IMAGES, images: images}),
+  isCompassShortcutViewVisible: (value) => ({type: notebookReducers.SET_COMPASS_SHORTCUT_VISIBLE, value: value}),
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);
