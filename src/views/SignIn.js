@@ -90,7 +90,7 @@ export default class SignIn extends React.Component {
 const styles = StyleSheet.create({
   input: {
     width: 350,
-    fontSize: 18,
+    fontSize: themes.PRIMARY_TEXT_SIZE,
     fontWeight: '500',
     height: 55,
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,

@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     paddingLeft: 20
   },
   itemTextStyle: {
-    fontSize: 18,
+    fontSize: themes.PRIMARY_TEXT_SIZE,
     marginLeft: 15,
   },
   itemSubTextStyle: {

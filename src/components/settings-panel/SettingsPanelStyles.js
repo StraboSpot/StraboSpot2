@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
   sectionHeadingTextStyle: {
     paddingTop: 15,
     fontWeight: 'bold',
-    fontSize: 18,
+    fontSize: themes.PRIMARY_TEXT_SIZE,
   },
   footerContainer: {
     padding: 20,

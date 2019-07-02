@@ -23,7 +23,7 @@ const MapActionsDialog = props => (
         textStyle={
           {
             color: "white",
-            fontSize: 18,
+            fontSize: themes.PRIMARY_TEXT_SIZE,
             fontWeight: "bold"
           }
         }
@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 2
   },
   textStyle: {
-    fontSize: 18,
+    fontSize: themes.PRIMARY_TEXT_SIZE,
     color: 'black',
     paddingRight: 45
   },

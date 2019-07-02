@@ -12,7 +12,7 @@ const samplesStyle = StyleSheet.create({
     alignContent: 'center',
     padding: 15,
     color: themes.SECONDARY_HEADER_TEXT_COLOR,
-    fontSize: 18
+    fontSize: themes.PRIMARY_TEXT_SIZE
   },
   samplesContainer: {
     flex: 8,

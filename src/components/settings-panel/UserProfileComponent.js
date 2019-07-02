@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import {View, StyleSheet, Text} from 'react-native'
 // import {getUserProfile} from '../services/user/UserProfile';
 import { Avatar } from 'react-native-elements';
+import * as themes from "../../shared/styles.constants";
 
 class UserProfileComponent extends Component {
 constructor(props) {
@@ -87,7 +88,7 @@ const styles = StyleSheet.create({
   avatarLabel: {
     paddingTop: 5,
     fontWeight: 'bold',
-    fontSize: 18,
+    fontSize: themes.PRIMARY_TEXT_SIZE,
     marginLeft: 10
   },
   projectName: {
@@ -98,7 +99,7 @@ const styles = StyleSheet.create({
     // justifyContent: 'center'
   },
   projectNameText: {
-    fontSize: 18
+    fontSize: themes.PRIMARY_TEXT_SIZE
   }
 });
 

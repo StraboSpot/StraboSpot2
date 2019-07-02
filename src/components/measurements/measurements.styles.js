@@ -29,11 +29,11 @@ const styles = StyleSheet.create({
   },
   mainText: {
     color: themes.PRIMARY_ITEM_TEXT_COLOR,
-    fontSize: 18
+    fontSize: themes.PRIMARY_TEXT_SIZE
   },
   propertyText: {
     paddingLeft: 20,
-    fontSize: 18,
+    fontSize: themes.PRIMARY_TEXT_SIZE,
     color: themes.SECONDARY_ITEM_TEXT_COLOR,
   },
   measurementDetailContainer: {

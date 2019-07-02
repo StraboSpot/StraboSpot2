@@ -27,7 +27,7 @@ const modalStyle = StyleSheet.create({
     borderTopLeftRadius: 20,
   },
   textStyle: {
-    fontSize: 18,
+    fontSize: themes.PRIMARY_TEXT_SIZE,
     paddingLeft: 10
   },
   textContainer: {

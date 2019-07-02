@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     padding: 8,
     color: 'white',
     borderRadius: 14,
-    fontSize: 18,
+    fontSize: themes.PRIMARY_TEXT_SIZE,
     fontWeight: '500',
   },
   container: {

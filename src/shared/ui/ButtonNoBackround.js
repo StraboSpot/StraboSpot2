@@ -1,6 +1,7 @@
 import React from 'react';
 import {TouchableOpacity, TouchableNativeFeedback, Text, View, StyleSheet, Platform} from "react-native";
-import {Icon} from 'react-native-elements/src/index';
+import {Icon} from 'react-native-elements';
+import * as themes from "../styles.constants";
 
 // import Icon from "react-native-vector-icons/Ionicons";
 
@@ -40,7 +41,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: "black",
-    fontSize: 18,
+    fontSize: themes.PRIMARY_TEXT_SIZE,
     paddingRight: 10
   },
   itemIcon: {

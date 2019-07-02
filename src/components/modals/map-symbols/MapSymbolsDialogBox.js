@@ -23,7 +23,7 @@ const MapSymbolsDialog = props => (
         textStyle={
           {
             color: "white",
-            fontSize: 18,
+            fontSize: themes.PRIMARY_TEXT_SIZE,
             fontWeight: "bold"
           }
         }
