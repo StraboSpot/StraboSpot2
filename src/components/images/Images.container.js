@@ -38,9 +38,13 @@ export const pictureSelectDialog = async () => {
         return reject('Error', response.error)
       }
       else {
-        const savedPhoto = await saveFile(response);
-        console.log('Saved Photo = ', savedPhoto);
-        resolve(savedPhoto)
+        try {
+          const savedPhoto = await saveFile(response);
+          console.log('Saved Photo = ', savedPhoto);
+          resolve(savedPhoto);
+        } catch (e) {
+          reject();
+        }
       }
     });
   })
@@ -49,26 +53,30 @@ export const pictureSelectDialog = async () => {
 export const saveFile = async (imageURI) => {
   let uriParts = imageURI.uri.split('/');
   let imageName = uriParts[uriParts.length - 1];
-  try {
-    let res = await RNFetchBlob
+  return new Promise((resolve, reject) => {
+    RNFetchBlob
       .config({path: imagesDirectory + '/' + imageName})
-      .fetch('GET', imageURI.uri, {});
-    imageCount++;
-    console.log(imageCount, 'File saved to', res.path());
-    let imageId = imageName.split(".")[0];
-    let imageData = {};
-    if (Platform.OS === "ios") imageData = {
-      id: imageId,
-      src: res.path(),
-      height: imageURI.height,
-      width: imageURI.width
-    };
-    else imageData = {id: imageId, src: 'file://' + res.path(), height: imageURI.height, width: imageURI.width};
-    return imageData;
-  } catch (err) {
-    imageCount++;
-    console.log(imageCount, 'Error on', imageName, ':', err);
-  }
+      .fetch('GET', imageURI.uri, {})
+      .then((res) => {
+        imageCount++;
+        console.log(imageCount, 'File saved to', res.path());
+        let imageId = imageName.split(".")[0];
+        let imageData = {};
+        if (Platform.OS === "ios") imageData = {
+          id: imageId,
+          src: res.path(),
+          height: imageURI.height,
+          width: imageURI.width
+        };
+        else imageData = {id: imageId, src: 'file://' + res.path(), height: imageURI.height, width: imageURI.width};
+        resolve(imageData);
+      })
+      .catch((errorMessage, statusCode) => {
+        imageCount++;
+        console.log('Error on', imageName, ':', errorMessage, statusCode);  // Android Error: RNFetchBlob request error: url == nullnull
+        reject();
+      });
+  });
 };
 
 // Called from Notebook Panel Footer and opens camera only
@@ -77,8 +85,10 @@ export const takePicture = async () => {
     storageOptions: {
       skipBackup: true,
       takePhotoButtonTitle: 'Take Photo Buddy!',
-      chooseFromLibraryButtonTitle: 'choose photo from library'
-    }
+      chooseFromLibraryButtonTitle: 'choose photo from library',
+      waitUntilSaved: true
+    },
+    noData: true
   };
   // console.log('aassaasswwww')
   return new Promise((resolve, reject) => {
@@ -92,9 +102,13 @@ export const takePicture = async () => {
         console.log('ImagePicker Error: ', response.error);
       }
       else {
-        const savedPhoto = await saveFile(response);
-        console.log('Saved Photo = ', savedPhoto);
-        resolve(savedPhoto);
+        try {
+          const savedPhoto = await saveFile(response);
+          console.log('Saved Photo = ', savedPhoto);
+          resolve(savedPhoto);
+        } catch (e) {
+          reject();
+        }
       }
     });
   })

@@ -322,38 +322,43 @@ class Home extends React.Component {
 
   launchCameraFromNotebook = async () => {
     let imageArr = this.state.allPhotosSaved;
-    const savedPhoto = await takePicture();
-    // console.log('savedPhoto res', savedPhoto);
+    try {
+      const savedPhoto = await takePicture();
 
-    if (savedPhoto === 'cancelled') {
-      if (this.state.allPhotosSaved.length > 0) {
-        console.log('ALL PHOTOS SAVED', this.state.allPhotosSaved);
-        this.props.addPhoto(imageArr);
-        this.props.onSpotEditImageObj(imageArr);
-        this.state.allPhotosSaved = [];
-        Alert.alert('Photo Saved!', 'Thank you!')
+      // console.log('savedPhoto res', savedPhoto);
+
+      if (savedPhoto === 'cancelled') {
+        if (this.state.allPhotosSaved.length > 0) {
+          console.log('ALL PHOTOS SAVED', this.state.allPhotosSaved);
+          this.props.addPhoto(imageArr);
+          this.props.onSpotEditImageObj(imageArr);
+          this.state.allPhotosSaved = [];
+          Alert.alert('Photo Saved!', 'Thank you!')
+        }
+        else {
+          Alert.alert('No Photos To Save', 'please try again...')
+        }
+
       }
       else {
-        Alert.alert('No Photos To Save', 'please try again...')
+        this.setState(prevState => {
+          return {
+            ...prevState,
+            allPhotosSaved: [...this.state.allPhotosSaved, {
+              id: savedPhoto.id,
+              src: savedPhoto.src,
+              image_type: 'photo',
+              height: savedPhoto.height,
+              width: savedPhoto.width
+            }]
+          }
+        }, () => {
+          console.log('All Photos Saved:', this.state.allPhotosSaved);
+          this.launchCameraFromNotebook();
+        });
       }
-
-    }
-    else {
-      this.setState(prevState => {
-        return {
-          ...prevState,
-          allPhotosSaved: [...this.state.allPhotosSaved, {
-            id: savedPhoto.id,
-            src: savedPhoto.src,
-            image_type: 'photo',
-            height: savedPhoto.height,
-            width: savedPhoto.width
-          }]
-        }
-      }, () => {
-        console.log('All Photos Saved:', this.state.allPhotosSaved);
-        this.launchCameraFromNotebook();
-      });
+    } catch (e) {
+      Alert.alert('Error Getting Photo!');
     }
   };
 
@@ -567,7 +572,7 @@ class Home extends React.Component {
     const isOnline = this.props.isOnline;
 
     let content = null;
-    let compassModal =  <View style={this.props.compassShortcutView && !this.props.isNotebookPanelVisible ?
+    let compassModal = <View style={this.props.compassShortcutView && !this.props.isNotebookPanelVisible ?
       styles.modalPositionShortcutView :
       styles.modalPosition}>
       <CompassModal
@@ -576,7 +581,7 @@ class Home extends React.Component {
       />
     </View>;
 
-    let samplesModal =  <View style={styles.modalPosition}>
+    let samplesModal = <View style={styles.modalPosition}>
       <SamplesModal
         close={(modalName) => this.toggleModal(modalName)}
         cancel={() => this.samplesModalCancel()}
@@ -639,7 +644,7 @@ class Home extends React.Component {
               showModal={(modalName, value) => this.toggleModal(modalName, value)}
             />
             : null}
-          {this.state.isCompassModalVisible ? compassModal: null}
+          {this.state.isCompassModalVisible ? compassModal : null}
           {this.state.isSamplesModalVisible ? samplesModal : null}
           <View style={styles.topCenter}>
             {this.state.buttons.endDrawButtonVisible ?
