@@ -1,8 +1,11 @@
 import {PropTypes} from 'prop-types';
 import React from 'react';
 import {Text, TextInput, View} from 'react-native';
-import styles from './form.styles';
 import {isEmpty} from "../../shared/Helpers";
+
+// Styles
+import styles from './form.styles';
+import stylesCommon from "../../shared/common.styles";
 
 const NumberInputField = ({
                             field: {name, onBlur, onChange, value},
@@ -16,12 +19,12 @@ const NumberInputField = ({
   };
 
   return (
-    <View>
-      <View style={styles.fieldContainer}>
-        <View style={styles.fieldLabelContainer}>
+    <View style={stylesCommon.rowContainer}>
+      <View style={stylesCommon.row}>
+        <View style={stylesCommon.fixedWidthSide}>
           <Text style={styles.fieldLabel}>{props.label}</Text>
         </View>
-        <View style={styles.fieldValueContainer}>
+        <View style={stylesCommon.fillWidthSide}>
           <TextInput
             onChangeText={onChange(name)}
             onBlur={onBlur(name)}

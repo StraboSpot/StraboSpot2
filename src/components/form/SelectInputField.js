@@ -5,6 +5,7 @@ import Picker from 'react-native-picker-select'
 
 // Styles
 import styles from './form.styles';
+import stylesCommon from "../../shared/common.styles";
 import * as themes from '../../shared/styles.constants';
 
 const SelectInputField = ({
@@ -24,12 +25,12 @@ const SelectInputField = ({
   };
 
   return (
-    <View>
-      <View style={styles.fieldContainer}>
-        <View style={styles.fieldLabelContainer}>
+    <View style={stylesCommon.rowContainer}>
+      <View style={stylesCommon.row}>
+        <View style={stylesCommon.fixedWidthSide}>
           <Text style={styles.fieldLabel}>{props.label}</Text>
         </View>
-        <View style={styles.fieldValueContainer}>
+        <View style={stylesCommon.fillWidthSide}>
           <Picker
             placeholder={placeholder}
             onValueChange={onChange(name)}

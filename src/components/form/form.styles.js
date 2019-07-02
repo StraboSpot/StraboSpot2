@@ -7,50 +7,42 @@ const styles = StyleSheet.create({
     paddingRight: 10,
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR
   },
-  fieldContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    height: 30,
-    borderBottomWidth: .5,
-    borderColor: themes.LIST_BORDER_COLOR
+  fieldLabel: {
+    color: themes.PRIMARY_ITEM_TEXT_COLOR,
+    fontSize: themes.PRIMARY_TEXT_SIZE
   },
-  fieldContainerNotes: {
+  fieldValue: {
+    paddingLeft: 10,
+    fontSize: themes.PRIMARY_TEXT_SIZE,
+    color: themes.SECONDARY_ITEM_TEXT_COLOR,
+  },
+  notesFieldContainer: {
     borderBottomWidth: .5,
     borderColor: themes.LIST_BORDER_COLOR,
     paddingTop: 5
   },
-  fieldLabelContainer: {
-    justifyContent: 'center'
+  notesFieldLabelContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center'
   },
-  fieldLabel: {
-    color: themes.PRIMARY_ITEM_TEXT_COLOR,
-    fontSize: 16
-  },
-  fieldValueContainer: {
-    width: '100%',
-    justifyContent: Platform.OS === 'ios' ? 'center' : null  // 'center' doesn't seem to work with TextInput on Android, see below for hack
-  },
-  fieldValue: {
-    paddingLeft: 20,
-    fontSize: 16,
-    color: themes.SECONDARY_ITEM_TEXT_COLOR,
-    height: 45                      // Hack used to center text vertically
+  notesFieldValueContainer: {
+    justifyContent: 'center',
+    height: 90
   },
   fieldValueNotes: {
     textAlignVertical: 'top',
     paddingLeft: 10,
-    fontSize: 16,
-    color: themes.SECONDARY_ITEM_TEXT_COLOR,
-    height: 90
+    fontSize: themes.PRIMARY_TEXT_SIZE,
+    color: themes.SECONDARY_ITEM_TEXT_COLOR
   },
   fieldError: {
     color: 'red',
   },
   pickerStyle: {
-    fontSize: 16,
-    paddingLeft: 20,
-    color: themes.SECONDARY_ITEM_TEXT_COLOR,
-    height: 45
+    fontSize: themes.PRIMARY_TEXT_SIZE,
+    paddingLeft: 10,
+    color: themes.SECONDARY_ITEM_TEXT_COLOR
   }
 });
 export default styles;

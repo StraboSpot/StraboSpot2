@@ -55,7 +55,7 @@ const MeasurementItem = (props) => {
         style={stylesCommon.rowContainer}
         onPress={() => openMeasurementDetail(props.item.item)}>
         <View style={stylesCommon.row}>
-          <View style={stylesCommon.itemLeftTextContainer}>
+          <View style={stylesCommon.fillWidthSide}>
             {renderMeasurementText(props.item.item)}
           </View>
           <View style={stylesCommon.itemRightIconsContainer}>

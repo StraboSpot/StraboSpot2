@@ -9,10 +9,13 @@ const commonStyles = StyleSheet.create({
     borderColor: themes.LIST_BORDER_COLOR
   },
   row: {
-    flexDirection:'row'
+    flexDirection: 'row',
+    height: themes.ROW_HEIGHT
   },
-  itemLeftTextContainer: {
-    justifyContent: 'center',
+  fixedWidthSide: {
+    justifyContent: 'center'
+  },
+  fillWidthSide: {
     flex: 1
   },
   itemRightIconsContainer: {
@@ -25,7 +28,7 @@ const commonStyles = StyleSheet.create({
   },
   listItemTitle: {
     color: themes.PRIMARY_ITEM_TEXT_COLOR,
-    fontSize: 20,
+    fontSize: themes.PRIMARY_TEXT_SIZE,
   },
 });
 
