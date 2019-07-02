@@ -7,7 +7,7 @@ import MeasurementItem from "./MeasurementItem";
 const MeasurementsOverview = props => (
   <View>
     <FlatList
-      data={props.spot.properties.orientations}
+      data={props.spot.properties.orientation_data}
       renderItem={item => <MeasurementItem item={item}/>}
       keyExtractor={(item, index) => index.toString()}
     />

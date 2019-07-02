@@ -15,7 +15,7 @@ const MeasurementsPage = (props) => {
   const [isModalVisible, setIsModalVisible] = useState(true);
 
   const renderLinearMeasurements = () => {
-    let data = props.spot.properties.orientations.filter(measurement => {
+    let data = props.spot.properties.orientation_data.filter(measurement => {
       return measurement.type === 'linear_orientation' && !measurement.associated_orientation
     });
     return (
@@ -30,7 +30,7 @@ const MeasurementsPage = (props) => {
   };
 
   const renderPlanarMeasurements = () => {
-    let data = props.spot.properties.orientations.filter(measurement => {
+    let data = props.spot.properties.orientation_data.filter(measurement => {
       return measurement.type === 'planar_orientation' && !measurement.associated_orientation
     });
     return (
@@ -45,7 +45,7 @@ const MeasurementsPage = (props) => {
   };
 
   const renderPlanarLinearMeasurements = () => {
-    let data = props.spot.properties.orientations.filter(measurement => {
+    let data = props.spot.properties.orientation_data.filter(measurement => {
       return (measurement.type === 'planar_orientation' || measurement.type === 'linear_orientation') && measurement.associated_orientation
     });
     return (
@@ -101,11 +101,11 @@ const MeasurementsPage = (props) => {
         />
         <ScrollView>
           {renderSectionDivider('Planar Measurements')}
-          {props.spot.properties.orientations && renderPlanarMeasurements()}
+          {props.spot.properties.orientation_data && renderPlanarMeasurements()}
           {renderSectionDivider('Linear Measurements')}
-          {props.spot.properties.orientations && renderLinearMeasurements()}
+          {props.spot.properties.orientation_data && renderLinearMeasurements()}
           {renderSectionDivider('Planar + Linear Measurements')}
-          {props.spot.properties.orientations && renderPlanarLinearMeasurements()}
+          {props.spot.properties.orientation_data && renderPlanarLinearMeasurements()}
         </ScrollView>
       </View>
     )
@@ -116,11 +116,11 @@ const MeasurementsPage = (props) => {
       <View>
         <ScrollView>
           {renderSectionDividerShortcutView('Plans')}
-          {props.spot.properties.orientations && renderPlanarMeasurements()}
+          {props.spot.properties.orientation_data && renderPlanarMeasurements()}
           {renderSectionDividerShortcutView('Lines')}
-          {props.spot.properties.orientations && renderLinearMeasurements()}
+          {props.spot.properties.orientation_data && renderLinearMeasurements()}
           {/*{renderSectionDividerShortcutView('Planar + Linear Measurements')}*/}
-          {/*{props.spot.properties.orientations && renderPlanarLinearMeasurements()}*/}
+          {/*{props.spot.properties.orientation_data && renderPlanarLinearMeasurements()}*/}
         </ScrollView>
       </View>
     )

@@ -129,8 +129,8 @@ class Compass extends Component {
       let newOrientation = measurements[0];
       newOrientation.id = getNewId();
       if (measurements.length > 1) newOrientation.associated_orientation = [measurements[1]];
-      const orientations = (typeof this.props.spot.properties.orientations === 'undefined') ? [newOrientation] : [...this.props.spot.properties.orientations, newOrientation];
-      this.props.onSpotEdit('orientations', orientations);
+      const orientations = (typeof this.props.spot.properties.orientation_data === 'undefined') ? [newOrientation] : [...this.props.spot.properties.orientation_data, newOrientation];
+      this.props.onSpotEdit('orientation_data', orientations);
     }
     else Alert.alert('No Measurement Type', 'Please select a measurement type using the toggles.');
   };

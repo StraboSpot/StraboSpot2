@@ -162,10 +162,10 @@ const MeasurementDetailPage = (props) => {
       if (hasErrors(form)) showErrors(form);
       else {
         console.log('Saving form data to Spot ...');
-        let orientations = props.spot.properties.orientations;
+        let orientations = props.spot.properties.orientation_data;
         const i = orientations.findIndex(orientation => orientation.id === form.current.state.values.id);
         orientations[i] = form.current.state.values;
-        props.onSpotEdit('orientations', orientations);
+        props.onSpotEdit('orientation_data', orientations);
         props.setNotebookPageVisibleToPrev();
       }
     });
