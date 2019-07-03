@@ -5,12 +5,13 @@ const iconButton = props => {
   const content = (
     <View
       activeOpacity={0.7}
-      style={styles.TouchableOpacityStyle}>
+      style={[styles.TouchableOpacityStyle, props.style]}>
       <Image
         target={props.name}
         source={props.source}
         style={[styles.FloatingButtonStyle, props.style]}
       />
+      <Text style={props.textStyle}>{props.children}</Text>
     </View>
   );
 
