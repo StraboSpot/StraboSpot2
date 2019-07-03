@@ -846,7 +846,6 @@ function mapStateToProps(state) {
     selectedSpot: state.spot.selectedSpot,
     featureCollectionSelected: state.spot.featureCollectionSelected,
     isOnline: state.spot.isOnline,
-    shortcutPanelView: state.shortcut.isShortcutPanelVisible,
     isNotebookPanelVisible: state.notebook.isNotebookPanelVisible,
     isCompassModalVisible: state.notebook.isCompassModalVisible,
     modalVisible: state.home.modalVisible

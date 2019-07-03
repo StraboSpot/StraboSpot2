@@ -117,11 +117,11 @@ const MeasurementsPage = (props) => {
       <View>
         <ScrollView>
           {renderSectionDividerShortcutView('Planar')}
-          {props.spot.properties.orientations && renderPlanarMeasurements()}
+          {props.spot.properties.orientation_data && renderPlanarMeasurements()}
           {renderSectionDividerShortcutView('Linear')}
-          {props.spot.properties.orientations && renderLinearMeasurements()}
+          {props.spot.properties.orientation_data && renderLinearMeasurements()}
           {renderSectionDividerShortcutView('Planar + Linear')}
-          {props.spot.properties.orientations && renderPlanarLinearMeasurements()}
+          {props.spot.properties.orientation_data && renderPlanarLinearMeasurements()}
         </ScrollView>
       </View>
     )
@@ -137,7 +137,6 @@ const MeasurementsPage = (props) => {
 function mapStateToProps(state) {
   return {
     spot: state.spot.selectedSpot,
-    shortcutPanelView: state.shortcut.isShortcutPanelVisible,
     modalVisible: state.home.modalVisible
   }
 }
