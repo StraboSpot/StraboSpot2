@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
     fontSize: themes.PRIMARY_TEXT_SIZE,
     color: themes.SECONDARY_ITEM_TEXT_COLOR,
   },
-  measurementDetailContainer: {
+  measurementsContentContainer: {
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'flex-start',

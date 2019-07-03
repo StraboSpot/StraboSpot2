@@ -92,7 +92,7 @@ const MeasurementsPage = (props) => {
 
   const renderMeasurementsNotebookView = () => {
     return (
-      <View>
+      <View style={styles.measurementsContentContainer}>
         <ReturnToOverviewButton
           onPress={() => {
             props.setNotebookPageVisible(NotebookPages.OVERVIEW);

@@ -173,7 +173,7 @@ const MeasurementDetailPage = (props) => {
 
   return (
     <React.Fragment>
-      <View style={styles.measurementDetailContainer}>
+      <View style={styles.measurementsContentContainer}>
         {renderCancelSaveButtons()}
         <ScrollView>
           {renderSwitches()}
