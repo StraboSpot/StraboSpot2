@@ -194,7 +194,8 @@ const MeasurementDetailPage = (props) => {
 function mapStateToProps(state) {
   return {
     spot: state.spot.selectedSpot,
-    formData: state.form.formData
+    formData: state.form.formData,
+    modalVisible: state.home.modalVisible
   }
 }
 
