@@ -60,6 +60,21 @@ const MeasurementsPage = (props) => {
     );
   };
 
+  const renderTabularMeasurements = () => {
+    let data = props.spot.properties.orientation_data.filter(measurement => {
+      return (measurement.type === 'tabular_orientation')
+    });
+    return (
+      <View>
+        <FlatList
+          data={data}
+          renderItem={item => <MeasurementItem item={item}/>}
+          keyExtractor={(item, index) => index.toString()}
+        />
+      </View>
+    );
+  };
+
   const renderSectionDivider = (dividerText) => {
     return (
       <View style={styles.measurementsSectionDividerContainer}>
@@ -107,6 +122,8 @@ const MeasurementsPage = (props) => {
           {props.spot.properties.orientation_data && renderLinearMeasurements()}
           {renderSectionDivider('Planar + Linear Measurements')}
           {props.spot.properties.orientation_data && renderPlanarLinearMeasurements()}
+          {renderSectionDivider('Tabular Zone Measurements')}
+          {props.spot.properties.orientation_data && renderTabularMeasurements()}
         </ScrollView>
       </View>
     )

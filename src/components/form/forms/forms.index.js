@@ -18,7 +18,7 @@ const forms = {
       'survey': planarOrientationSurvey,
       'choices': planarOrientationChoices
     },
-    'tabular_zone_orientation': {
+    'tabular_orientation': {
       'survey': tabularZoneOrientationSurvey,
       'choices': tabularZoneOrientationChoices
     }

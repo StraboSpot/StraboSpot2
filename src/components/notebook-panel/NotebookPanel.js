@@ -33,6 +33,7 @@ const NotebookPanel = props => {
   };
 
   if (!isEmpty(props.spot)) {
+    console.log('Selected Spot:', props.spot);
     return (
       <View style={notebookStyles.panel}>
         <View style={notebookStyles.headerContainer}>

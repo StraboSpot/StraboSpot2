@@ -19,6 +19,7 @@ const MeasurementItem = (props) => {
     props.setNotebookPanelVisible(true);
     props.setNotebookPageVisible(NotebookPages.MEASUREMENTDETAIL);
   };
+
 // Render an individual measurement
   const renderMeasurementText = (item) => {
     return (
@@ -41,6 +42,7 @@ const MeasurementItem = (props) => {
             {item.type === 'planar_orientation' && !item.associated_orientation && 'Planar Feature'}
             {item.type === 'planar_orientation' && item.associated_orientation && 'Planar Feature   Linear Feature'}
             {item.type === 'linear_orientation' && item.associated_orientation && 'Linear Feature   Planar Feature'}
+            {item.type === 'tabular_orientation' && 'Tabular Zone Feature'}
           </Text>
         </View>
       </View>

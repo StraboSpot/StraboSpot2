@@ -1,7 +1,6 @@
 import React, {useState, useRef} from 'react';
-import {Alert, ScrollView, Text, View} from 'react-native';
+import {Alert, ScrollView, View} from 'react-native';
 import {connect} from 'react-redux';
-import {NotebookPages} from "../notebook-panel/Notebook.constants";
 import {ButtonGroup} from "react-native-elements";
 import {spotReducers} from "../../spots/Spot.constants";
 import {notebookReducers} from "../notebook-panel/Notebook.constants";
@@ -27,7 +26,7 @@ const MeasurementDetailPage = (props) => {
 
   const getDefaultSwitchIndex = () => {
     if (props.formData.type === 'planar_orientation' || props.formData.type === 'linear_orientation') return 0;
-    else if (props.formData.type === 'tabular_zone_orientation') return 1;
+    else if (props.formData.type === 'tabular_orientation') return 1;
   };
 
   const [selectedFeatureTypeIndex, setFeatureTypeIndex] = useState(getDefaultSwitchIndex());
@@ -41,10 +40,10 @@ const MeasurementDetailPage = (props) => {
 
   const onSwitchPress = (i) => {
     console.log(i);
-    if (i === 1 && props.formData.type === 'planar_orientation') {
-      Alert.alert('Switch to Tabular Zone',
-        'Are you sure you want to switch this measurement to a Tabular Zone? You will lose all data for ' +
-        'this measurement except strike, dip direction, dip.',
+    if (i === 0 && form.current.state.values.type === 'tabular_orientation') {
+      Alert.alert('Switch to Planar Orientation',
+        'Are you sure you want to switch this measurement to a Planar Orientation? You will lose all ' +
+        'non-relevant data for this measurement.',
         [
           {
             text: 'Cancel',
@@ -52,16 +51,17 @@ const MeasurementDetailPage = (props) => {
             style: 'cancel',
           },
           {
-            text: 'OK', onPress: () => onSwitchToTabularZone()
+            text: 'OK', onPress: () => onSwitchToPlanar()
           },
         ],
         {cancelable: false}
       );
     }
-    else if (i === 1 && props.formData.type === 'linear_orientation') {
+    else if (i === 1 && (form.current.state.values.type === 'planar_orientation' ||
+      form.current.state.values.type === 'linear_orientation')) {
       Alert.alert('Switch to Tabular Zone',
-        'Are you sure you want to switch this measurement to a Tabular Zone? You will lose all data for ' +
-        'this measurement.',
+        'Are you sure you want to switch this measurement to a Tabular Zone? You will lose all ' +
+        'non-relevant data for this measurement.',
         [
           {
             text: 'Cancel',
@@ -77,9 +77,18 @@ const MeasurementDetailPage = (props) => {
     }
   };
 
+  const onSwitchToPlanar = () => {
+    setFeatureTypeIndex(0);
+    setForm('measurement', 'planar_orientation');
+    form.current.setFieldValue('type', 'planar_orientation', false);
+    form.current.validateForm();
+  };
+
   const onSwitchToTabularZone = () => {
     setFeatureTypeIndex(1);
-    Alert.alert('To Do', 'This will switch to Tabular Zone');
+    setForm('measurement', 'tabular_orientation');
+    form.current.setFieldValue('type', 'tabular_orientation', false);
+    form.current.validateForm();
   };
 
   // Render the switches to select a feature type or 3D Structure type
@@ -114,16 +123,8 @@ const MeasurementDetailPage = (props) => {
 
   const renderFormFields = () => {
     console.log('form-data', props.formData);
-    if (props.formData.type === 'planar_orientation') {
-      setForm('measurement', 'planar_orientation');
-    }
-    else if (props.formData.type === 'linear_orientation') {
-      setForm('measurement', 'linear_orientation');
-    }
-    else if (props.formData.type === 'tabular_zone_orientation') {
-      setForm('measurement', 'tabular_zone_orientation');
-    }
 
+    setForm('measurement', props.formData.type);
     if (!isEmpty(getForm())) {
       return (
         <View>
@@ -162,7 +163,7 @@ const MeasurementDetailPage = (props) => {
   };
 
   const saveFormAndGo = () => {
-    if (!isEmpty(getForm())) form.current.submitForm().then(() =>{
+    if (!isEmpty(getForm())) form.current.submitForm().then(() => {
       if (hasErrors(form)) showErrors(form);
       else {
         console.log('Saving form data to Spot ...');
@@ -202,7 +203,6 @@ function mapStateToProps(state) {
 const mapDispatchToProps = {
   onSpotEdit: (field, value) => ({type: spotReducers.EDIT_SPOT_PROPERTIES, field: field, value: value}),
   setNotebookPageVisibleToPrev: () => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE_TO_PREV}),
-  setFormData: (formData) => ({type: formReducers.SET_FORM_DATA, formData: formData}),
   setModalVisible: (modal) => ({type: homeReducers.SET_MODAL_VISIBLE, modal: modal}),
 };
 

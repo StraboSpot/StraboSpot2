@@ -21,12 +21,12 @@ export const getChoices = () => {
   return choices;
 };
 
-const getFeatureTypeLabel = (featureType) => {
+/*const getFeatureTypeLabel = (featureType) => {
   const choiceMatched = choices.find(choice => {
     return choice.name === featureType;
   });
   return choiceMatched.label;
-};
+};*/
 
 export const getSurvey = () => {
   return survey;
@@ -90,47 +90,49 @@ export const validateForm = (data) => {
 
   survey.forEach(fieldModel => {
     const key = fieldModel.name;
-    const value = data[key];
-    const label = fieldModel.label;
-    if (value && typeof value === 'string') data[key] = value.trim();
-    if (data.hasOwnProperty(key) && isEmpty(value)) delete data[key];
-    if (isEmpty(value) && fieldModel.required && isRelevant(fieldModel, data)) errors[key] = 'Required';
-    else if (value) {
-      if (fieldModel.type === 'integer') data[key] = parseInt(value);
-      else if (fieldModel.type === 'decimal') data[key] = parseFloat(value);
-      if (fieldModel.constraint) {
-        // Max constraint
-        // Look for <= in constraint, followed by a space and then any number of digits (- preceding the digits is optional)
-        let regexMax = /<=\s(-?\d*)/i;
-        let parsedConstraint = fieldModel.constraint.match(regexMax);
-        if (parsedConstraint) {
-          let max = parseFloat(parsedConstraint[1]);
-          if (!isEmpty(max) && !(value <= max)) errors[key] = fieldModel.constraint_message;
-        }
-        else {
-          // Look for < in constraint
-          regexMax = /<\s(-?\d*)/i;
+    if (data.hasOwnProperty(key)) {
+      const value = data[key];
+      const label = fieldModel.label;
+      if (value && typeof value === 'string') data[key] = value.trim();
+      if (isEmpty(value) || !isRelevant(fieldModel, data)) delete data[key];
+      if (isEmpty(value) && fieldModel.required && isRelevant(fieldModel, data)) errors[key] = 'Required';
+      else if (value) {
+        if (fieldModel.type === 'integer') data[key] = parseInt(value);
+        else if (fieldModel.type === 'decimal') data[key] = parseFloat(value);
+        if (fieldModel.constraint) {
+          // Max constraint
+          // Look for <= in constraint, followed by a space and then any number of digits (- preceding the digits is optional)
+          let regexMax = /<=\s(-?\d*)/i;
           let parsedConstraint = fieldModel.constraint.match(regexMax);
           if (parsedConstraint) {
             let max = parseFloat(parsedConstraint[1]);
-            if (!isEmpty(max) && !(value < max)) errors[key] = fieldModel.constraint_message;
+            if (!isEmpty(max) && !(value <= max)) errors[key] = fieldModel.constraint_message;
           }
-        }
-        // Min constraint
-        // Look for <= in constraint, followed by a space and then any number of digits (- preceding the digits is optional)
-        let regexMin = />=\s(-?\d*)/i;
-        parsedConstraint = fieldModel.constraint.match(regexMin);
-        if (parsedConstraint) {
-          let min = parseFloat(parsedConstraint[1]);
-          if (!isEmpty(min) && !(value >= min)) errors[key] = fieldModel.constraint_message;
-        }
-        else {
-          // Look for < in constraint
-          regexMin = />\s(-?\d*)/i;
-          let parsedConstraint = fieldModel.constraint.match(regexMin);
+          else {
+            // Look for < in constraint
+            regexMax = /<\s(-?\d*)/i;
+            let parsedConstraint = fieldModel.constraint.match(regexMax);
+            if (parsedConstraint) {
+              let max = parseFloat(parsedConstraint[1]);
+              if (!isEmpty(max) && !(value < max)) errors[key] = fieldModel.constraint_message;
+            }
+          }
+          // Min constraint
+          // Look for <= in constraint, followed by a space and then any number of digits (- preceding the digits is optional)
+          let regexMin = />=\s(-?\d*)/i;
+          parsedConstraint = fieldModel.constraint.match(regexMin);
           if (parsedConstraint) {
             let min = parseFloat(parsedConstraint[1]);
-            if (!isEmpty(min) && !(value > min)) errors[key] = fieldModel.constraint_message;
+            if (!isEmpty(min) && !(value >= min)) errors[key] = fieldModel.constraint_message;
+          }
+          else {
+            // Look for < in constraint
+            regexMin = />\s(-?\d*)/i;
+            let parsedConstraint = fieldModel.constraint.match(regexMin);
+            if (parsedConstraint) {
+              let min = parseFloat(parsedConstraint[1]);
+              if (!isEmpty(min) && !(value > min)) errors[key] = fieldModel.constraint_message;
+            }
           }
         }
       }
