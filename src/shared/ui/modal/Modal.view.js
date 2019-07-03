@@ -21,7 +21,7 @@ const modalView = (props) => {
           titleStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 16}}
           title={'Close'}
           type={'clear'}
-          onPress={props.close}
+          onPress={() => props.close()}
         />
       </View>
       <View style={props.style}>

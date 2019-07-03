@@ -3,8 +3,8 @@ import {isEmpty} from '../../shared/Helpers';
 
 const initialState = {
   visibleNotebookPagesStack: [],
-  isCompassShortcutVisible: false,
-  isNotebookPanelVisible: false
+  isNotebookPanelVisible: false,
+  isSamplesModalVisible: false
 };
 
 export const notebookReducer = (state = initialState, action) => {

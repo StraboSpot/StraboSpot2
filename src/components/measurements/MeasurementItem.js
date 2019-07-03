@@ -16,7 +16,6 @@ const MeasurementItem = (props) => {
   const openMeasurementDetail = (item) => {
     console.log('item', item);
     props.setFormData(item);
-    props.isCompassShortcutViewVisible(false);
     props.setNotebookPanelVisible(true);
     props.setNotebookPageVisible(NotebookPages.MEASUREMENTDETAIL);
   };
@@ -89,7 +88,6 @@ const mapDispatchToProps = {
   setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),
   setFormData: (formData) => ({type: formReducers.SET_FORM_DATA, formData: formData}),
   setNotebookPanelVisible: (value) => ({type: notebookReducers.SET_NOTEBOOK_PANEL_VISIBLE, value: value}),
-  isCompassShortcutViewVisible: (value) => ({type: notebookReducers.SET_COMPASS_SHORTCUT_VISIBLE, value: value}),
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(MeasurementItem);

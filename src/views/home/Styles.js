@@ -87,16 +87,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center'
-  },
-  modalPosition: {
-    position: 'absolute', //Here is the trick
-    left: 80,
-    top: 150,
-  },
-  modalPositionShortcutView: {
-    position: 'absolute', //Here is the trick
-    right: 80,
-    top: 20,
   }
 });
 

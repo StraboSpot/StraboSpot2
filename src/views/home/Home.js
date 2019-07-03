@@ -29,9 +29,10 @@ import {spotReducers} from "../../spots/Spot.constants";
 import {imageReducers} from "../../components/images/Image.constants";
 import {saveFile} from '../../services/images/ImageDownload';
 import {takePicture} from '../../components/images/Images.container';
-import CompassModal from "../../components/compass/CompassModal";
+import NotebookCompassModal from "../../components/compass/NotebookCompassModal";
+import ShortcutCompassModal from '../../components/compass/ShortcutCompassModal';
 import SamplesModal from '../../components/samples/SamplesModal.view';
-
+import {homeReducers, Modals} from "./Home.constants";
 
 const imageOptions = {
   storageOptions: {
@@ -93,6 +94,7 @@ class Home extends React.Component {
     Icon.getImageSource("pin", 30);
     NetInfo.isConnected.addEventListener('connectionChange', this.handleConnectivityChange);
     this.props.setNotebookPanelVisible(false);
+    this.props.setModalVisible(null);
   }
 
   componentWillUnmount() {
@@ -207,10 +209,10 @@ class Home extends React.Component {
   closeNotebookPanel = () => {
     if (this._isMounted) {
       this.props.setNotebookPanelVisible(false);
+      this.props.setModalVisible(null);
       this.setState(prevState => {
         return {
           ...prevState,
-          isCompassModalVisible: false,
           isSamplesModalVisible: false
         }
       });
@@ -308,12 +310,10 @@ class Home extends React.Component {
   openNotebookPanel = () => {
     if (this._isMounted) {
       this.props.setNotebookPanelVisible(true);
-      this.props.isCompassShortcutViewVisible(false);
       this.props.setNotebookPageVisible(NotebookPages.OVERVIEW);
       this.setState(prevState => {
         return {
           ...prevState,
-          isCompassModalVisible: false,
           isSamplesModalVisible: false
         }
       });
@@ -555,16 +555,23 @@ class Home extends React.Component {
   //     }
   // };
 
-  toggleModal = (modal, value) => {
-    if (this._isMounted) {
-      this.setState(prevState => {
-        return {
-          ...prevState,
-          [modal]: value !== undefined ? value : !prevState[modal]
-        }
-      })
-    }
-  };
+  // toggleModal = (modal, value) => {
+  //   if (this._isMounted) {
+  //     // this.setState(prevState => {
+  //     //   return {
+  //     //     ...prevState,
+  //     //     [modal]: value !== undefined ? value : !prevState[modal]
+  //     //   }
+  //     // })
+  //   }
+  // };
+
+  // renderShortcutPanel = () => {
+  //   return (
+  //     <View style={styles.modalPositionShortcutView}>
+  //     <ShortcutPanel/>
+  //   </View>);
+  // };
 
   render() {
     const spot = this.props.selectedSpot;
@@ -572,14 +579,20 @@ class Home extends React.Component {
     const isOnline = this.props.isOnline;
 
     let content = null;
-    let compassModal = <View style={this.props.compassShortcutView && !this.props.isNotebookPanelVisible ?
-      styles.modalPositionShortcutView :
-      styles.modalPosition}>
-      <CompassModal
-        // showCompass={() => this.toggleCompass}
-        close={(modalName) => this.toggleModal(modalName)}
-      />
-    </View>;
+    let compassModal =null;
+
+    if (this.props.modalVisible === Modals.NOTEBOOK_MODALS.COMPASS) {
+      compassModal =
+        <NotebookCompassModal
+          close={() => this.props.setModalVisible(null)}
+        />;
+    }
+    else if (this.props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {
+      compassModal =
+        <ShortcutCompassModal
+          close={() => this.props.setModalVisible(null)}
+        />;
+    }
 
     let samplesModal = <View style={styles.modalPosition}>
       <SamplesModal
@@ -641,10 +654,11 @@ class Home extends React.Component {
               textStyle={{fontWeight: 'bold', fontSize: 12}}
               onPress={(name) => this.notebookClickHandler(name)}
               // showCompass={(showCompass) => this.toggleCompass(showCompass)}
-              showModal={(modalName, value) => this.toggleModal(modalName, value)}
+              // showModal={(modalName, value) => this.toggleModal(modalName, value)}
             />
             : null}
-          {this.state.isCompassModalVisible ? compassModal : null}
+          {(this.props.modalVisible === Modals.NOTEBOOK_MODALS.COMPASS ||
+            this.props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS) && compassModal}
           {this.state.isSamplesModalVisible ? samplesModal : null}
           <View style={styles.topCenter}>
             {this.state.buttons.endDrawButtonVisible ?
@@ -731,10 +745,10 @@ class Home extends React.Component {
 
           </View>
           <View style={styles.notebookViewIcon}>
-            <IconButton
+            {this.props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS ? null : <IconButton
               source={require('../../assets/icons/app-icons-shaded/NotebookViewButton.png')}
               onPress={() => this.openNotebookPanel()}
-            />
+            />}
           </View>
           <View style={styles.bottomRightIcons}>
             {/* displays the Online boolean in text*/}
@@ -832,8 +846,10 @@ function mapStateToProps(state) {
     selectedSpot: state.spot.selectedSpot,
     featureCollectionSelected: state.spot.featureCollectionSelected,
     isOnline: state.spot.isOnline,
-    compassShortcutView: state.notebook.isCompassShortcutVisible,
-    isNotebookPanelVisible: state.notebook.isNotebookPanelVisible
+    shortcutPanelView: state.shortcut.isShortcutPanelVisible,
+    isNotebookPanelVisible: state.notebook.isNotebookPanelVisible,
+    isCompassModalVisible: state.notebook.isCompassModalVisible,
+    modalVisible: state.home.modalVisible
     // visiblePage: state.notebook.visiblePage
   }
 }
@@ -845,9 +861,9 @@ const mapDispatchToProps = {
   addPhoto: (imageData) => ({type: imageReducers.ADD_PHOTOS, images: imageData}),
   deleteFeature: (id) => ({type: spotReducers.FEATURE_DELETE, id: id}),
   onSpotEdit: (field, value) => ({type: spotReducers.EDIT_SPOT_PROPERTIES, field: field, value: value}),
+  setModalVisible: (modal) => ({type: homeReducers.SET_MODAL_VISIBLE, modal: modal}),
   // onSpotEdit: (field, value) => ({type: EDIT_SPOT_PROPERTIES, field: field, value: value}),
   onSpotEditImageObj: (images) => ({type: spotReducers.EDIT_SPOT_IMAGES, images: images}),
-  isCompassShortcutViewVisible: (value) => ({type: notebookReducers.SET_COMPASS_SHORTCUT_VISIBLE, value: value}),
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

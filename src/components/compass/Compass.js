@@ -3,20 +3,22 @@ import React, {Component} from 'react';
 import {connect} from "react-redux";
 import {Animated, Easing, Alert, Image, View, Text, Dimensions, TouchableOpacity} from 'react-native';
 import {setUpdateIntervalForType, SensorTypes, magnetometer, accelerometer} from 'react-native-sensors';
-import {getNewId, mod, toRadians, toDegrees, roundToDecimalPlaces} from "../../shared/Helpers";
+import {getNewId, mod, toRadians, toDegrees, roundToDecimalPlaces, isEmpty} from "../../shared/Helpers";
 import {CompassToggleButtons} from "./Compass.constants";
 import {Button, ListItem} from "react-native-elements";
 import {Switch} from "react-native-switch";
 import {spotReducers} from "../../spots/Spot.constants";
+import {homeReducers, Modals} from "../../views/home/Home.constants";
+import {NotebookPages, notebookReducers} from "../notebook-panel/Notebook.constants";
 import Orientation from 'react-native-orientation-locker';
 import Slider from '../../shared/ui/Slider';
 import Measurements from '../measurements/Measurements';
+import IconButton from '../../shared/ui/IconButton';
 import Modal from "../../shared/ui/modal/Modal.view";
 
 // Styles
 import styles from './CompassStyles';
 import * as themes from '../../shared/styles.constants';
-import {notebookReducers} from "../notebook-panel/Notebook.constants";
 
 const {height, width} = Dimensions.get('window');
 const degree_update_rate = 2; // Number of degrees changed before the callback is triggered
@@ -208,7 +210,7 @@ class Compass extends Component {
     // if (y > 0) trend = diry;
     // if (y > 0) trend = mod(diry, 360);
     else if (y <= 0) trend = mod(diry - 180, 360);
-    if (z>0) trend = mod(trend-180, 360);
+    if (z > 0) trend = mod(trend - 180, 360);
     plunge = toDegrees(Math.asin(Math.abs(y) / g));
     rake = toDegrees(R);
 
@@ -272,11 +274,11 @@ class Compass extends Component {
 
     // Calculate trend, plunge and rake (in degrees)
     let trend, plunge, rake;
-    if (y > 0) trend = mod(diry -90, 360); //<---- This is what changed with trend
+    if (y > 0) trend = mod(diry - 90, 360); //<---- This is what changed with trend
     // if (y > 0) trend = diry;
     // if (y > 0) trend = mod(diry, 360);
     else if (y <= 0) trend = mod(diry - 90, 360);
-    if (z>0) trend = mod(trend - 180, 360);
+    if (z > 0) trend = mod(trend - 180, 360);
     plunge = toDegrees(Math.asin(Math.abs(y) / g));
     rake = toDegrees(R);
 
@@ -389,7 +391,7 @@ class Compass extends Component {
     let image = require("../../assets/images/compass/TrendLine.png");
     const spin = this.state.spinValue.interpolate({
       inputRange: [0, 360],
-      outputRange: [this.state.compassData.trend +'deg', this.state.compassData.trend + 'deg']
+      outputRange: [this.state.compassData.trend + 'deg', this.state.compassData.trend + 'deg']
     });
 // First set up animation
     Animated.timing(
@@ -458,33 +460,37 @@ class Compass extends Component {
   };
 
   render() {
-    let shortcutView = null;
+    let modalView = null;
 
-    if(this.props.shortcutView) {
-      shortcutView =   <View>
-        <View style={{height: 350}}>
-        <Measurements/>
+    if (this.props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {
+      if (!isEmpty(this.props.spot)) {
+        modalView = <View>
+          <View style={{height: 320}}>
+            <Measurements/>
+          </View>
+          <IconButton
+            source={require('../../assets/icons/NotebookView_pressed.png')}
+            style={{marginTop: 10, flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-end', height: 25}}
+            textStyle={{color: themes.BLUE, fontSize: 16, textAlign: 'center'}}
+            onPress={() => {
+              // this.props.setShortcutPanelVisible(false);
+              this.props.setNotebookPanelVisible(true);
+              this.props.setModalVisible(Modals.NOTEBOOK_MODALS.COMPASS);
+            }
+            }
+          > Go to {this.props.spot.properties.name}</IconButton>
         </View>
-        <Button
-          title={`Go to ${this.props.spot.properties.name}`}
-          type={'clear'}
-          titleStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 16}}
-          onPress={() => {
-            this.props.isShortcutViewVisible(false);
-            this.props.setNotebookPanelVisible(true)
-          }}
-        />
-      </View>
+      }
     }
-    else {
-      shortcutView =  <View>
+    else if (this.props.modalVisible === Modals.NOTEBOOK_MODALS.COMPASS) {
+      modalView = <View>
         <Button
           title={'View In Shortcut Mode'}
           type={'clear'}
           titleStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 16}}
           onPress={() => {
-            this.props.isShortcutViewVisible(true);
-            this.props.setNotebookPanelVisible(false)
+            this.props.setModalVisible(Modals.SHORTCUT_MODALS.COMPASS);
+            this.props.setNotebookPanelVisible(false);
           }}
         />
       </View>
@@ -509,7 +515,16 @@ class Compass extends Component {
           {/*{this.renderMeasurements()}*/}
         </View>
         <View style={styles.buttonContainer}>
-          {shortcutView}
+          {modalView}
+          {/*<Button*/}
+          {/*  title={'View In Shortcut Mode'}*/}
+          {/*  type={'clear'}*/}
+          {/*  titleStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 16}}*/}
+          {/*  onPress={() => {*/}
+          {/*    this.props.setNotebookPanelVisible(false);*/}
+          {/*    this.props.setShortcutPanelVisible(true);*/}
+          {/*  }}*/}
+          {/*/>*/}
         </View>
       </View>
     )
@@ -519,15 +534,16 @@ class Compass extends Component {
 function mapStateToProps(state) {
   return {
     spot: state.spot.selectedSpot,
-    shortcutView: state.notebook.isCompassShortcutVisible,
-    isNotebookPanelVisible: state.notebook.isNotebookPanelVisible
+    isNotebookPanelVisible: state.notebook.isNotebookPanelVisible,
+    modalVisible: state.home.modalVisible
   }
 }
 
 const mapDispatchToProps = {
   onSpotEdit: (field, value) => ({type: spotReducers.EDIT_SPOT_PROPERTIES, field: field, value: value}),
-  isShortcutViewVisible: (value) => ({type: notebookReducers.SET_COMPASS_SHORTCUT_VISIBLE, value: value}),
   setNotebookPanelVisible: (value) => ({type: notebookReducers.SET_NOTEBOOK_PANEL_VISIBLE, value: value}),
+  setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),
+  setModalVisible: (modal) => ({type: homeReducers.SET_MODAL_VISIBLE, modal: modal}),
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Compass);

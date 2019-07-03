@@ -12,6 +12,7 @@ import SectionDivider from '../../shared/ui/SectionDivider';
 import SaveAndCloseButton from '../notebook-panel/ui/SaveAndCloseButtons';
 import {getForm, hasErrors, setForm, showErrors, validateForm} from "../form/form.container";
 import {formReducers} from "../form/Form.constant";
+import {homeReducers, Modals} from "../../views/home/Home.constants";
 
 // Styles
 import styles from './measurements.styles';
@@ -154,6 +155,9 @@ const MeasurementDetailPage = (props) => {
   };
 
   const cancelFormAndGo = () => {
+    if (props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS ) {
+      props.setModalVisible(Modals.NOTEBOOK_MODALS.COMPASS)
+    }
     props.setNotebookPageVisibleToPrev();
   };
 
@@ -197,7 +201,8 @@ function mapStateToProps(state) {
 const mapDispatchToProps = {
   onSpotEdit: (field, value) => ({type: spotReducers.EDIT_SPOT_PROPERTIES, field: field, value: value}),
   setNotebookPageVisibleToPrev: () => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE_TO_PREV}),
-  setFormData: (formData) => ({type: formReducers.SET_FORM_DATA, formData: formData})
+  setFormData: (formData) => ({type: formReducers.SET_FORM_DATA, formData: formData}),
+  setModalVisible: (modal) => ({type: homeReducers.SET_MODAL_VISIBLE, modal: modal}),
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(MeasurementDetailPage);

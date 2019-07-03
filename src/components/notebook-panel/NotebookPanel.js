@@ -11,6 +11,7 @@ import MeasurementDetailPage from '../measurements/MeasurementDetail';
 import NotesPage from '../notes/Notes.view';
 import SamplesPage from '../samples/SamplesNotebook.view';
 import {notebookReducers, NotebookPages} from "./Notebook.constants";
+import {homeReducers, Modals} from "../../views/home/Home.constants";
 import {isEmpty} from "../../shared/Helpers";
 
 // Styles
@@ -22,14 +23,13 @@ const NotebookPanel = props => {
   const setNotebookPageVisible = page => {
     const pageVisible = props.setNotebookPageVisible(page);
     if (pageVisible.page === NotebookPages.MEASUREMENT || pageVisible === NotebookPages.MEASUREMENTDETAIL) {
-      props.showModal('isCompassModalVisible', true);
-      props.isCompassShortcutViewVisible(false)
+      props.setModalVisible(Modals.NOTEBOOK_MODALS.COMPASS)
     }
-    else props.showModal('isCompassModalVisible', false);
-    if (pageVisible.page === NotebookPages.SAMPLE) {
-      props.showModal('isSamplesModalVisible' ,true);
-    }
-    else props.showModal('isSamplesModalVisible', false);
+    else props.setModalVisible(null)
+    // if (pageVisible.page === NotebookPages.SAMPLE) {
+    //   props.showModal('isSamplesModalVisible' ,true);
+    // }
+    // else props.showModal('isSamplesModalVisible', false);
   };
 
   if (!isEmpty(props.spot)) {
@@ -82,7 +82,7 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
   setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page }),
-  isCompassShortcutViewVisible: (value) => ({type: notebookReducers.SET_COMPASS_SHORTCUT_VISIBLE, value: value}),
+  setModalVisible: (modal) => ({type: homeReducers.SET_MODAL_VISIBLE, modal: modal}),
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(NotebookPanel);

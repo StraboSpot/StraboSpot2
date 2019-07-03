@@ -77,8 +77,6 @@ function mapStateToProps(state) {
   }
 }
 
-const mapDispatchToProps = {
-  isCompassShortcutViewVisible: (value) => ({type: notebookReducers.SET_COMPASS_SHORTCUT_VISIBLE, value: value}),
-};
+const mapDispatchToProps = {};
 
 export default connect(mapStateToProps, mapDispatchToProps)(NotebookFooter);

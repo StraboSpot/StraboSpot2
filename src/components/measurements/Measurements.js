@@ -6,6 +6,7 @@ import {notebookReducers, NotebookPages} from "../notebook-panel/Notebook.consta
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import SectionDivider from "../../shared/ui/SectionDivider";
 import MeasurementItem from './MeasurementItem';
+import {homeReducers, Modals} from "../../views/home/Home.constants";
 
 // Styles
 import styles from './measurements.styles';
@@ -68,7 +69,7 @@ const MeasurementsPage = (props) => {
             titleStyle={themes.PRIMARY_ACCENT_COLOR}
             title={'Add'}
             type={'clear'}
-            onPress={() => props.showModal('isCompassModalVisible', true)}
+            onPress={() => props.setModalVisible(Modals.NOTEBOOK_MODALS.COMPASS)}
           />
         </View>
         <View style={styles.measurementsSectionDividerButtonContainer}>
@@ -96,7 +97,7 @@ const MeasurementsPage = (props) => {
         <ReturnToOverviewButton
           onPress={() => {
             props.setNotebookPageVisible(NotebookPages.OVERVIEW);
-            props.showModal('isCompassModalVisible', false);
+            props.setModalVisible(null);
           }}
         />
         <ScrollView>
@@ -115,12 +116,12 @@ const MeasurementsPage = (props) => {
     return (
       <View>
         <ScrollView>
-          {renderSectionDividerShortcutView('Plans')}
-          {props.spot.properties.orientation_data && renderPlanarMeasurements()}
-          {renderSectionDividerShortcutView('Lines')}
-          {props.spot.properties.orientation_data && renderLinearMeasurements()}
-          {/*{renderSectionDividerShortcutView('Planar + Linear Measurements')}*/}
-          {/*{props.spot.properties.orientation_data && renderPlanarLinearMeasurements()}*/}
+          {renderSectionDividerShortcutView('Planar')}
+          {props.spot.properties.orientations && renderPlanarMeasurements()}
+          {renderSectionDividerShortcutView('Linear')}
+          {props.spot.properties.orientations && renderLinearMeasurements()}
+          {renderSectionDividerShortcutView('Planar + Linear')}
+          {props.spot.properties.orientations && renderPlanarLinearMeasurements()}
         </ScrollView>
       </View>
     )
@@ -128,8 +129,7 @@ const MeasurementsPage = (props) => {
 
   return (
     <React.Fragment>
-      {props.isCompassShortcutViewVisible ? renderMeasurementsShortcutView() :
-        renderMeasurementsNotebookView()}
+      {props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS ? renderMeasurementsShortcutView() : renderMeasurementsNotebookView()}
     </React.Fragment>
   );
 };
@@ -137,13 +137,14 @@ const MeasurementsPage = (props) => {
 function mapStateToProps(state) {
   return {
     spot: state.spot.selectedSpot,
-    isCompassShortcutViewVisible: state.notebook.isCompassShortcutVisible
+    shortcutPanelView: state.shortcut.isShortcutPanelVisible,
+    modalVisible: state.home.modalVisible
   }
 }
 
 const mapDispatchToProps = {
-  setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page})
-
+  setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),
+  setModalVisible: (modal) => ({type: homeReducers.SET_MODAL_VISIBLE, modal: modal}),
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(MeasurementsPage);
