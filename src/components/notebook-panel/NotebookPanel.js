@@ -25,11 +25,10 @@ const NotebookPanel = props => {
     if (pageVisible.page === NotebookPages.MEASUREMENT || pageVisible === NotebookPages.MEASUREMENTDETAIL) {
       props.setModalVisible(Modals.NOTEBOOK_MODALS.COMPASS)
     }
-    else props.setModalVisible(null)
-    // if (pageVisible.page === NotebookPages.SAMPLE) {
-    //   props.showModal('isSamplesModalVisible' ,true);
-    // }
-    // else props.showModal('isSamplesModalVisible', false);
+    else if (pageVisible.page === NotebookPages.SAMPLE) {
+      props.setModalVisible(Modals.NOTEBOOK_MODALS.SAMPLE)
+    }
+    else props.setModalVisible(null);
   };
 
   if (!isEmpty(props.spot)) {
@@ -43,10 +42,10 @@ const NotebookPanel = props => {
         </View>
         <View style={notebookStyles.centerContainer}>
           {props.notebookPageVisible === NotebookPages.OVERVIEW ? <Overview/> : null}
-          {props.notebookPageVisible === NotebookPages.MEASUREMENT ? <MeasurementsPage showModal={props.showModal}/> : null}
+          {props.notebookPageVisible === NotebookPages.MEASUREMENT ? <MeasurementsPage /> : null}
           {props.notebookPageVisible === NotebookPages.MEASUREMENTDETAIL ? <MeasurementDetailPage/> : null}
           {props.notebookPageVisible === NotebookPages.NOTE ? <NotesPage/> : null}
-          {props.notebookPageVisible === NotebookPages.SAMPLE ? <SamplesPage showModal={props.showModal}/> : null}
+          {props.notebookPageVisible === NotebookPages.SAMPLE ? <SamplesPage/> : null}
           {props.notebookPageVisible === undefined ? <Overview/> : null}
         </View>
         <View style={notebookStyles.footerContainer}>

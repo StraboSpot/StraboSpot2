@@ -43,6 +43,17 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginLeft: 10,
   },
+  noSpotContent: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 700
+  },
+  compassContentContainer: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+  },
   sliderContainer: {
     flex: 30,
     alignItems: 'center'

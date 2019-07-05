@@ -10,6 +10,7 @@ import {getNewId} from "../../shared/Helpers";
 import {mapReducers} from "./Map.constants";
 import {spotReducers} from "../../spots/Spot.constants";
 import {truncDecimal} from "../../shared/Helpers";
+import {homeReducers} from "../../views/home/Home.constants";
 
 MapboxGL.setAccessToken(MAPBOX_KEY);
 
@@ -95,8 +96,9 @@ class mapView extends Component {
       if (Object.getOwnPropertyNames(featureSelected).length > 0) this.props.onFeatureSelected(featureSelected);
       else {
         this.props.onFeaturesSelectedCleared();
-        this.props.showModal('isCompassModalVisible', false);
-        this.props.showModal('isSamplesModalVisible', false);
+        // this.props.setModalVisible(null);
+        // this.props.showModal('isCompassModalVisible', false);
+        // this.props.showModal('isSamplesModalVisible', false);
       }
     }
     // Draw a feature
@@ -682,7 +684,8 @@ const mapDispatchToProps = {
   onFeatureAdd: (feature) => ({type: spotReducers.FEATURE_ADD, feature: feature}),
   onFeatureDelete: (id) => ({type: spotReducers.FEATURE_DELETE, id: id}),
   onFeaturesUpdated: (features) => ({type: spotReducers.FEATURES_UPDATED, features: features}),
-  onCurrentBasemap: (basemap) => ({type: mapReducers.CURRENT_BASEMAP, basemap: basemap})
+  onCurrentBasemap: (basemap) => ({type: mapReducers.CURRENT_BASEMAP, basemap: basemap}),
+  setModalVisible: (modal) => ({type: homeReducers.SET_MODAL_VISIBLE, modal: modal}),
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(mapView);

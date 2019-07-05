@@ -4,17 +4,20 @@ import {connect} from "react-redux";
 import {Button, ButtonGroup, Input} from "react-native-elements";
 import Slider from '../../shared/ui/Slider';
 import {spotReducers} from "../../spots/Spot.constants";
-import {getNewId} from "../../shared/Helpers";
+import {notebookReducers} from "../notebook-panel/Notebook.constants";
+import {getNewId, isEmpty} from "../../shared/Helpers";
+import {homeReducers, Modals} from "../../views/home/Home.constants";
+import Samples from './SamplesNotebook.view';
 
 // Styles
 import styles from './samples.style';
 import * as themes from '../../shared/styles.constants';
+import IconButton from "../../shared/ui/IconButton";
 
 const samplesModalView = (props) => {
   let count = 0;
+  let modalView = null;
 
-    // const [count, setCount] = useState(0);
-  // const [sliderValue, setSliderValue] = useState(3);
   const [selectedButton, setSelectedButton] = useState(null);
 
   const [sampleOrientedValue, setSampleOrientedValue] = useState(null);
@@ -57,6 +60,53 @@ const samplesModalView = (props) => {
     else Alert.alert('No Sample Type', 'Please select a samples.');
   };
 
+  const shortcutVisible = () => {
+    if (props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE) {
+      if (!isEmpty(props.spot)) {
+        return (
+          modalView = <View>
+            <View style={{height: 320,}}>
+              <Samples/>
+            </View>
+            <IconButton
+              source={require('../../assets/icons/NotebookView_pressed.png')}
+              style={{
+                marginTop: 20,
+                flexDirection: 'row',
+                justifyContent: 'center',
+                height: 25,
+                alignItems: 'flex-end'
+              }}
+              textStyle={{color: themes.BLUE, fontSize: 16, textAlign: 'center'}}
+              onPress={() => {
+                props.setNotebookPanelVisible(true);
+                props.setModalVisible(Modals.NOTEBOOK_MODALS.SAMPLE);
+              }
+              }
+            > Go to {props.spot.properties.name}</IconButton>
+          </View>
+        )
+      }
+    }
+    else if (props.modalVisible === Modals.NOTEBOOK_MODALS.SAMPLE) {
+      return modalView = <Button
+        title={'View In Shortcut Mode'}
+        type={'clear'}
+        titleStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 16}}
+        onPress={() => {
+          props.setModalVisible(Modals.SHORTCUT_MODALS.SAMPLE);
+          props.setNotebookPanelVisible(false);
+        }
+        }
+      />
+    }
+  };
+
+  if (isEmpty(props.spot)) {
+    return <View style={[styles.samplesContainer, styles.noSpotContent]}>
+      <Text style={{fontSize: 30}}>No Spot Selected</Text>
+    </View>
+  }
   return (
     <React.Fragment>
       <View style={styles.input}>
@@ -120,15 +170,13 @@ const samplesModalView = (props) => {
           title={'Save Sample'}
           type={'solid'}
           color={'red'}
-          containerStyle={{width: 200, paddingBottom: 10, paddingTop: 0}}
+          containerStyle={{paddingBottom: 10, paddingTop: 0}}
           buttonStyle={{borderRadius: 10, backgroundColor: 'red',}}
           onPress={() => saveSample()}
         />
-        <Button
-          title={'View In Shortcut Mode'}
-          type={'clear'}
-          titleStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 16}}
-        />
+        <View style={{width: '100%',}}>
+          {shortcutVisible()}
+        </View>
       </View>
     </React.Fragment>
   );
@@ -136,12 +184,16 @@ const samplesModalView = (props) => {
 
 const mapStateToProps = (state) => {
   return {
-    spot: state.spot.selectedSpot
+    spot: state.spot.selectedSpot,
+    modalVisible: state.home.modalVisible
   }
 };
 
 const mapDispatchToProps = {
   onSpotEdit: (field, value) => ({type: spotReducers.EDIT_SPOT_PROPERTIES, field: field, value: value}),
+  setModalVisible: (modal) => ({type: homeReducers.SET_MODAL_VISIBLE, modal: modal}),
+  setNotebookPanelVisible: (value) => ({type: notebookReducers.SET_NOTEBOOK_PANEL_VISIBLE, value: value}),
+  setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(samplesModalView);

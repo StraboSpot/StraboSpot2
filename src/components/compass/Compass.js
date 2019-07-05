@@ -496,6 +496,11 @@ class Compass extends Component {
       </View>
     }
 
+    if (isEmpty(this.props.spot)) {
+      return   <View style={[styles.samplesContainer, styles.noSpotContent]}>
+        <Text style={{fontSize: 30}}>No Spot Selected</Text>
+      </View>
+    }
     return (
       <View style={{flex: 1}}>
         <Text style={{textAlign: 'center'}}>Tap compass to take a measurement</Text>

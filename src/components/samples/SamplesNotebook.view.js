@@ -9,6 +9,7 @@ import SectionDivider from "../../shared/ui/SectionDivider";
 // Styles
 import styles from './samples.style';
 import * as themes from '../../shared/styles.constants';
+import {homeReducers, Modals} from "../../views/home/Home.constants";
 
 const samplesNotebookView = (props) => {
 
@@ -37,6 +38,7 @@ const samplesNotebookView = (props) => {
       // console.log('LIST', item);
       let oriented = item.oriented_sample === 'yes' ? 'Oriented' : 'Unoriented';
       return (
+        <View key={item.id}>
         <ListItem
           key={item.id}
           containerStyle={styles.notebookListContainer}
@@ -53,39 +55,61 @@ const samplesNotebookView = (props) => {
               onPress={() => console.log('Samples item pressed', item.id, item.label)}
             />}
         />
+        </View>
       )
     })
   };
 
+  const renderNotebookView = () => {
+    return (
+      <View>
+        <ReturnToOverviewButton
+          onPress={() => {
+            props.setNotebookPageVisible(NotebookPages.OVERVIEW);
+            props.setModalVisible(null);
+          }}
+        />
+        <SectionDivider dividerText='Samples'/>
+        {/*<FlatList*/}
+        {/*  keyExtractor={(item, index) => index.toString()}*/}
+        {/*  data={props.spot}*/}
+        {/*  renderItem={renderItem}*/}
+        {/*/>*/}
+        <ScrollView>
+          {props.spot.properties.samples ? renderSampleList() : null}
+        </ScrollView>
+      </View>
+    )
+  };
+
+  const renderShortcutView = () => {
+    return (
+      <View style={styles.sampleContentContainer}>
+        <SectionDivider dividerText='Samples'/>
+        <ScrollView>
+          {props.spot.properties.samples ? renderSampleList() : null}
+        </ScrollView>
+      </View>
+    )
+  };
+
   return (
     <React.Fragment>
-      <ReturnToOverviewButton
-        onPress={() => {
-          props.setNotebookPageVisible(NotebookPages.OVERVIEW);
-          props.showModal('isSamplesModalVisible', false);
-        }}
-      />
-      <SectionDivider dividerText='Samples'/>
-      {/*<FlatList*/}
-      {/*  keyExtractor={(item, index) => index.toString()}*/}
-      {/*  data={props.spot}*/}
-      {/*  renderItem={renderItem}*/}
-      {/*/>*/}
-      <ScrollView>
-        {props.spot.properties.samples ? renderSampleList() : null}
-      </ScrollView>
+      {props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE ? renderShortcutView() : renderNotebookView()}
     </React.Fragment>
   );
 };
 
 const mapStateToProps = (state) => {
   return {
-    spot: state.spot.selectedSpot
+    spot: state.spot.selectedSpot,
+    modalVisible: state.home.modalVisible
   }
 };
 
 const mapDispatchToProps = {
-  setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page})
+  setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),
+  setModalVisible: (modal) => ({type: homeReducers.SET_MODAL_VISIBLE, modal: modal}),
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(samplesNotebookView);

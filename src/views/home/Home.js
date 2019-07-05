@@ -31,7 +31,8 @@ import {saveFile} from '../../services/images/ImageDownload';
 import {takePicture} from '../../components/images/Images.container';
 import NotebookCompassModal from "../../components/compass/NotebookCompassModal";
 import ShortcutCompassModal from '../../components/compass/ShortcutCompassModal';
-import SamplesModal from '../../components/samples/SamplesModal.view';
+import NotebookSamplesModal from '../../components/samples/NotebookSamplesModal.view';
+import ShortcutSamplesModal from '../../components/samples/ShortcutSamplesModal.view';
 import {homeReducers, Modals} from "./Home.constants";
 
 const imageOptions = {
@@ -579,7 +580,8 @@ class Home extends React.Component {
     const isOnline = this.props.isOnline;
 
     let content = null;
-    let compassModal =null;
+    let compassModal = null;
+    let samplesModal = null;
 
     if (this.props.modalVisible === Modals.NOTEBOOK_MODALS.COMPASS) {
       compassModal =
@@ -594,13 +596,21 @@ class Home extends React.Component {
         />;
     }
 
-    let samplesModal = <View style={styles.modalPosition}>
-      <SamplesModal
-        close={(modalName) => this.toggleModal(modalName)}
+    if (this.props.modalVisible === Modals.NOTEBOOK_MODALS.SAMPLE) {
+      samplesModal =
+        <NotebookSamplesModal
+          close={() => this.props.setModalVisible(null)}
+          cancel={() => this.samplesModalCancel()}
+          style={{justifyContent: 'center'}}
+        />;
+    }
+    else if (this.props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE) {
+      samplesModal = <ShortcutSamplesModal
+        close={() => this.props.setModalVisible(null)}
         cancel={() => this.samplesModalCancel()}
         style={{justifyContent: 'center'}}
-      />
-    </View>;
+      />;
+    }
 
     if (this.state.settingsMenuVisible === 'settingsMain') {
       content = <SettingsPanel onPress={(name) => this.settingsClickHandler(name)}/>
@@ -647,7 +657,7 @@ class Home extends React.Component {
                    onRef={ref => (this.mapViewComponent = ref)}
                    mapMode={this.state.mapMode}
                    startEdit={this.startEdit}
-                   showModal={(modalName, value) => this.toggleModal(modalName, value)}/>
+          />
           {this.props.isNotebookPanelVisible ?
             <NotebookPanel
               closeNotebook={this.closeNotebookPanel}
@@ -659,7 +669,8 @@ class Home extends React.Component {
             : null}
           {(this.props.modalVisible === Modals.NOTEBOOK_MODALS.COMPASS ||
             this.props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS) && compassModal}
-          {this.state.isSamplesModalVisible ? samplesModal : null}
+          {this.props.modalVisible === Modals.NOTEBOOK_MODALS.SAMPLE ||
+          this.props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE ? samplesModal : null}
           <View style={styles.topCenter}>
             {this.state.buttons.endDrawButtonVisible ?
               <ButtonWithBackground
@@ -745,7 +756,8 @@ class Home extends React.Component {
 
           </View>
           <View style={styles.notebookViewIcon}>
-            {this.props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS ? null : <IconButton
+            {this.props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS ||
+            this.props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE ? null : <IconButton
               source={require('../../assets/icons/app-icons-shaded/NotebookViewButton.png')}
               onPress={() => this.openNotebookPanel()}
             />}

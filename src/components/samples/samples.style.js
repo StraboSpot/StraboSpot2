@@ -49,6 +49,12 @@ const samplesStyle = StyleSheet.create({
     marginBottom: 3,
     padding: 5
   },
+  noSpotContent: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 700
+  },
   text: {
     fontSize: 16,
     textAlign: 'center'
@@ -64,6 +70,21 @@ const samplesStyle = StyleSheet.create({
   textboxContainer: {
     paddingLeft: 10,
     paddingRight: 10
+  },
+  modalPosition: {
+    position: 'absolute', //Here is the trick
+    left: 80,
+    top: 150,
+  },
+  modalPositionShortcutView: {
+    position: 'absolute',
+    right: 80,
+    top: 20,
+  },
+  sampleContentContainer: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
   }
 });
 

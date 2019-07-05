@@ -73,7 +73,6 @@ function mapStateToProps(state) {
   return {
     notebookPageVisible: isEmpty(state.notebook.visibleNotebookPagesStack) ? null :
       state.notebook.visibleNotebookPagesStack.slice(-1)[0],
-    compassShortcutView: state.notebook.isCompassShortcutVisible,
   }
 }
 
