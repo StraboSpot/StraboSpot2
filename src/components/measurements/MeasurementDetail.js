@@ -171,6 +171,9 @@ const MeasurementDetailPage = (props) => {
         const i = orientations.findIndex(orientation => orientation.id === form.current.state.values.id);
         orientations[i] = form.current.state.values;
         props.onSpotEdit('orientation_data', orientations);
+        if (props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS ) {
+          props.setModalVisible(Modals.NOTEBOOK_MODALS.COMPASS)
+        }
         props.setNotebookPageVisibleToPrev();
       }
     });
