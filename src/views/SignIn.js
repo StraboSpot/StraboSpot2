@@ -1,5 +1,5 @@
 import React from 'react'
-import {View, StyleSheet, TextInput, Button, Alert, ImageBackground} from 'react-native'
+import {View, StyleSheet, TextInput, Button, Alert, ImageBackground, KeyboardAvoidingView} from 'react-native'
 import {goHome, goSignUp} from '../routes/Navigation'
 import {authenticateUser} from '../services/user/UserAuth';
 import {backgroundImage} from '../assets/images/background.jpg';
@@ -46,42 +46,55 @@ export default class SignIn extends React.Component {
   render() {
     return (
       <ImageBackground source={require('../assets/images/background.jpg')} style={styles.backgroundImage}>
-      <View style={styles.container}>
-        <TextInput
-          style={styles.input}
-          placeholder='Username'
-          autoCapitalize="none"
-          autoCorrect={false}
-          placeholderTextColor='#6a777e'
-          onChangeText={val => this.setState({username: val.toLowerCase()})}
-          value={this.state.username}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder='Password'
-          autoCapitalize="none"
-          secureTextEntry={true}
-          placeholderTextColor='#6a777e'
-          onChangeText={val => this.setState({password: val})}
-          value={this.state.password}
-        />
-        <View style={styles.button}>
+        <View style={styles.container}>
+          <KeyboardAvoidingView
+            behavior={'padding'}
+            contentContainerStyle={{
+              flex: 1,
+              justifyContent: 'space-between'
+            }}
+            keyboardVerticalOffset={150}
+          >
+            <TextInput
+              style={styles.input}
+              placeholder='Username'
+              autoCapitalize="none"
+              autoCorrect={false}
+              placeholderTextColor='#6a777e'
+              onChangeText={val => this.setState({username: val.toLowerCase()})}
+              value={this.state.username}
+              keyboardType="email-address"
+              returnKeyType="go"
+            />
+            <TextInput
+              style={styles.input}
+              placeholder='Password'
+              autoCapitalize="none"
+              secureTextEntry={true}
+              placeholderTextColor='#6a777e'
+              onChangeText={val => this.setState({password: val})}
+              value={this.state.password}
+              returnKeyType="go"
+              onSubmitEditing={this.signIn}
+            />
+            <View style={styles.button}>
 
-        <ButtonWithBackground
-          color={"#407ad9"}
-          onPress={this.signIn}
-          // style={styles.buttonText}
-          name={"ios-log-in"}
-        >Sign In
-        </ButtonWithBackground>
-        <ButtonWithBackground
-          color={"#407ad9"}
-          onPress={this.createAccount}
-          name={"ios-add"}
-        >Create an Account
-        </ButtonWithBackground>
+              <ButtonWithBackground
+                color={"#407ad9"}
+                onPress={this.signIn}
+                // style={styles.buttonText}
+                name={"ios-log-in"}
+              >Sign In
+              </ButtonWithBackground>
+              <ButtonWithBackground
+                color={"#407ad9"}
+                onPress={this.createAccount}
+                name={"ios-add"}
+              >Create an Account
+              </ButtonWithBackground>
+            </View>
+          </KeyboardAvoidingView>
         </View>
-      </View>
       </ImageBackground>
     )
   }

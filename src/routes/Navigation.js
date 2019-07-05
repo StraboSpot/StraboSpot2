@@ -8,12 +8,6 @@ export const goHome = () => Navigation.setRoot({
       children: [
         {
           component: {
-            name: 'SpotPage',
-            id: 'spotPage',
-          }
-        },
-        {
-          component: {
             name: 'Home',
             id: 'home'
           }
@@ -79,22 +73,6 @@ export const goToImageInfo = (id) => Navigation.setRoot({
             passProps: {
               id: id
             }
-          }
-        }
-      ]
-    }
-  }
-});
-
-export const goToSpotPage = () => Navigation.setRoot({
-  root: {
-    stack: {
-      id: 'SpotPage',
-      children: [
-        {
-          component: {
-            name: 'SpotPage',
-            id: 'spotPage',
           }
         }
       ]
