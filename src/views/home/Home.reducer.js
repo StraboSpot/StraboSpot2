@@ -18,10 +18,7 @@ export const homeReducer = (state = initialState, action) => {
       // console.log('REDUX DIMS ACTION', action)
       return {
         ...state,
-        deviceDimensions: {
-          height: action.height,
-          width: action.width
-        }
+        deviceDimensions: action.dims
       }
 
 

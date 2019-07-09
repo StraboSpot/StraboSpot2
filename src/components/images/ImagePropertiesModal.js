@@ -13,6 +13,7 @@ import {notebookReducers} from "../notebook-panel/Notebook.constants";
 import {formReducers} from "../form/Form.constant";
 import {isEmpty} from "../../shared/Helpers";
 import SectionDivider from "../../shared/ui/SectionDivider";
+import {homeReducers} from "../../views/home/Home.constants";
 
 const imagePropertiesModal = (props) => {
 
@@ -22,20 +23,39 @@ const imagePropertiesModal = (props) => {
   const [showMoreFields, setShowMoreFields] = useState(false);
   const form = useRef(null);
 
-  const renderMoreFields = () => (
-    <View>
-      <ScrollView>
-        {renderFormFields()}
-      </ScrollView>
-      <Button
-        title={'Show fewer fields'}
-        type={'clear'}
-        titleStyle={{color: 'blue', fontSize: 14}}
-        onPress={() => fieldButtonHandler()}
-      />
-    </View>
-
-  );
+  const renderMoreFields = () =>{
+    const {width, height} = props.getDeviceDims;
+    if (width > height) {
+      return (
+        <View>
+          <ScrollView style={{height: 425}}>
+            {renderFormFields()}
+          </ScrollView>
+          <Button
+            title={'Show fewer fields'}
+            type={'clear'}
+            titleStyle={{color: 'blue', fontSize: 14}}
+            onPress={() => fieldButtonHandler()}
+          />
+        </View>
+      );
+    }
+    else {
+      return (
+        <View>
+          <ScrollView>
+            {renderFormFields()}
+          </ScrollView>
+          <Button
+            title={'Show fewer fields'}
+            type={'clear'}
+            titleStyle={{color: 'blue', fontSize: 14}}
+            onPress={() => fieldButtonHandler()}
+          />
+        </View>
+      );
+    }
+  };
 
 
   const renderLessFields = () => (
@@ -159,14 +179,16 @@ const imagePropertiesModal = (props) => {
 function mapStateToProps(state) {
   return {
     spot: state.spot.selectedSpot,
-    formData: state.form.formData
+    formData: state.form.formData,
+    getDeviceDims: state.home.deviceDimensions
   }
 }
 
 const mapDispatchToProps = {
   onSpotEdit: (field, value) => ({type: spotReducers.EDIT_SPOT_PROPERTIES, field: field, value: value}),
   setNotebookPageVisibleToPrev: () => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE_TO_PREV}),
-  setFormData: (formData) => ({type: formReducers.SET_FORM_DATA, formData: formData})
+  setFormData: (formData) => ({type: formReducers.SET_FORM_DATA, formData: formData}),
+  setDeviceDims: (height, width) => ({type: homeReducers.DEVICE_DIMENSIONS, height: height, width: width}),
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(imagePropertiesModal);

@@ -1,5 +1,5 @@
 import React from 'react'
-import {Alert, Text, View, Button, Dimensions} from 'react-native'
+import {Alert, Text, View, Button, Dimensions, Platform} from 'react-native'
 import NetInfo from "@react-native-community/netinfo";
 import ImagePicker from 'react-native-image-picker';
 import styles from './Styles';
@@ -36,7 +36,7 @@ import ShortcutSamplesModal from '../../components/samples/ShortcutSamplesModal.
 import {homeReducers, Modals} from "./Home.constants";
 import sampleStyles from '../../components/samples/samples.style';
 
-
+const platformType = Platform.OS === 'ios' ? 'window': 'screen';
 const imageOptions = {
   storageOptions: {
     skipBackup: true,
@@ -48,7 +48,7 @@ const imageOptions = {
 
 class Home extends React.Component {
   _isMounted = false;
-  dimensions = null;
+  dimensions = Dimensions.get(platformType);
 
   constructor(props) {
     super(props);
@@ -97,6 +97,7 @@ class Home extends React.Component {
     this._isMounted = true;
     Icon.getImageSource("pin", 30);
     NetInfo.isConnected.addEventListener('connectionChange', this.handleConnectivityChange);
+    this.props.setDeviceDims(this.dimensions);
     Dimensions.addEventListener('change', this.deviceOrientation);
     this.props.setNotebookPanelVisible(false);
     this.props.setModalVisible(null);
@@ -109,9 +110,9 @@ class Home extends React.Component {
   }
 
   deviceOrientation = () => {
-    const height = Dimensions.get('window').height;
-    const width = Dimensions.get('window').width;
-    this.props.setDeviceDims(height, width);
+   const dimensions = Dimensions.get(platformType);
+    this.props.setDeviceDims(dimensions);
+    console.log(this.props.deviceDimensions)
   };
 
   cancelEdits = async () => {
@@ -550,8 +551,8 @@ class Home extends React.Component {
     }
 
     if (this.props.modalVisible === Modals.NOTEBOOK_MODALS.SAMPLE) {
-      const {width, height} = this.props.deviceDimensions;
-      console.log('This.props.deviceDimensions Width:', width, '\nHeight', height);
+      const dimensions = this.props.deviceDimensions;
+      console.log('This.props.deviceDimensions', dimensions);
       samplesModal = (
         <View
           style={sampleStyles.modalPosition}>
@@ -564,11 +565,11 @@ class Home extends React.Component {
       )
     }
     else if (this.props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE) {
-      const {width, height} = this.props.deviceDimensions;
-      console.log('This.props.deviceDimensions \nWidth:', width, '\nHeight', height);
+      const dimensions = this.props.deviceDimensions;
+      console.log('This.props.deviceDimensions', dimensions);
       samplesModal =
         <View
-          style={width > height ? sampleStyles.modalPositionShortcutViewLandscape : sampleStyles.modalPositionShortcutViewPortrait}>
+          style={dimensions.width > dimensions.height ? sampleStyles.modalPositionShortcutViewLandscape : sampleStyles.modalPositionShortcutViewPortrait}>
           <ShortcutSamplesModal
             close={() => this.props.setModalVisible(null)}
             cancel={() => this.samplesModalCancel()}
@@ -841,7 +842,7 @@ const mapDispatchToProps = {
   deleteFeature: (id) => ({type: spotReducers.FEATURE_DELETE, id: id}),
   onSpotEdit: (field, value) => ({type: spotReducers.EDIT_SPOT_PROPERTIES, field: field, value: value}),
   setModalVisible: (modal) => ({type: homeReducers.SET_MODAL_VISIBLE, modal: modal}),
-  setDeviceDims: (height, width) => ({type: homeReducers.DEVICE_DIMENSIONS, height: height, width: width}),
+  setDeviceDims: (dims) => ({type: homeReducers.DEVICE_DIMENSIONS, dims: dims}),
   onSpotEditImageObj: (images) => ({type: spotReducers.EDIT_SPOT_IMAGES, images: images}),
 };
 
