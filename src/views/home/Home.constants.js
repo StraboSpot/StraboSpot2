@@ -10,5 +10,6 @@ export const Modals = {
 };
 
 export const homeReducers = {
-  SET_MODAL_VISIBLE: 'SET_MODAL_VISIBLE'
+  SET_MODAL_VISIBLE: 'SET_MODAL_VISIBLE',
+  DEVICE_DIMENSIONS: 'DEVICE_DIMENSIONS'
 };

@@ -6,7 +6,6 @@ import Samples from './Samples.view';
 
 const shortcutSamplesModalView = (props) => {
   return (
-    <View style={styles.modalPositionShortcutView}>
       <Modal
         component={<Samples/>}
         close={props.close}
@@ -14,7 +13,6 @@ const shortcutSamplesModalView = (props) => {
         onPress={props.cancel}
         style={styles.samplesContainer}
       />
-    </View>
   );
 };
 

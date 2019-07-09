@@ -65,7 +65,7 @@ const samplesModalView = (props) => {
       if (!isEmpty(props.spot)) {
         return (
           modalView = <View>
-            <View style={{height: 320,}}>
+            <View style={{height: 150}} >
               <Samples/>
             </View>
             <IconButton

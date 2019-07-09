@@ -1,5 +1,5 @@
 import React from 'react'
-import {Alert, Text, View, Button} from 'react-native'
+import {Alert, Text, View, Button, Dimensions} from 'react-native'
 import NetInfo from "@react-native-community/netinfo";
 import ImagePicker from 'react-native-image-picker';
 import styles from './Styles';
@@ -34,6 +34,8 @@ import ShortcutCompassModal from '../../components/compass/ShortcutCompassModal'
 import NotebookSamplesModal from '../../components/samples/NotebookSamplesModal.view';
 import ShortcutSamplesModal from '../../components/samples/ShortcutSamplesModal.view';
 import {homeReducers, Modals} from "./Home.constants";
+import sampleStyles from '../../components/samples/samples.style';
+
 
 const imageOptions = {
   storageOptions: {
@@ -46,6 +48,7 @@ const imageOptions = {
 
 class Home extends React.Component {
   _isMounted = false;
+  dimensions = null;
 
   constructor(props) {
     super(props);
@@ -94,13 +97,22 @@ class Home extends React.Component {
     this._isMounted = true;
     Icon.getImageSource("pin", 30);
     NetInfo.isConnected.addEventListener('connectionChange', this.handleConnectivityChange);
+    Dimensions.addEventListener('change', this.deviceOrientation);
     this.props.setNotebookPanelVisible(false);
     this.props.setModalVisible(null);
   }
 
   componentWillUnmount() {
     this._isMounted = false;
+    Dimensions.removeEventListener('change', this.deviceOrientation);
+    console.log('All listeners removed')
   }
+
+  deviceOrientation = () => {
+    const height = Dimensions.get('window').height;
+    const width = Dimensions.get('window').width;
+    this.props.setDeviceDims(height, width);
+  };
 
   cancelEdits = async () => {
     await this.mapViewComponent.cancelEdits();
@@ -538,19 +550,31 @@ class Home extends React.Component {
     }
 
     if (this.props.modalVisible === Modals.NOTEBOOK_MODALS.SAMPLE) {
-      samplesModal =
-        <NotebookSamplesModal
-          close={() => this.props.setModalVisible(null)}
-          cancel={() => this.samplesModalCancel()}
-          style={{justifyContent: 'center'}}
-        />;
+      const {width, height} = this.props.deviceDimensions;
+      console.log('This.props.deviceDimensions Width:', width, '\nHeight', height);
+      samplesModal = (
+        <View
+          style={sampleStyles.modalPosition}>
+          <NotebookSamplesModal
+            close={() => this.props.setModalVisible(null)}
+            cancel={() => this.samplesModalCancel()}
+            // style={{justifyContent: 'center'}}
+          />
+        </View>
+      )
     }
     else if (this.props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE) {
-      samplesModal = <ShortcutSamplesModal
-        close={() => this.props.setModalVisible(null)}
-        cancel={() => this.samplesModalCancel()}
-        style={{justifyContent: 'center'}}
-      />;
+      const {width, height} = this.props.deviceDimensions;
+      console.log('This.props.deviceDimensions \nWidth:', width, '\nHeight', height);
+      samplesModal =
+        <View
+          style={width > height ? sampleStyles.modalPositionShortcutViewLandscape : sampleStyles.modalPositionShortcutViewPortrait}>
+          <ShortcutSamplesModal
+            close={() => this.props.setModalVisible(null)}
+            cancel={() => this.samplesModalCancel()}
+            style={{justifyContent: 'center'}}
+          />
+        </View>
     }
 
     if (this.state.settingsMenuVisible === 'settingsMain') {
@@ -658,14 +682,18 @@ class Home extends React.Component {
               <View style={styles.sideIconsGroup}>
                 {this.state.isShortcutButtonVisible.Measurement ?
                   <IconButton
-                    source={require('../../assets/icons/app-icons-shaded/MeasurementButton.png')}
+                    source={this.props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS ? require(
+                      '../../assets/icons/app-icons-shaded/MeasurementButton_pressed.png')
+                      : require('../../assets/icons/app-icons-shaded/MeasurementButton.png')}
                     onPress={this.clickHandler.bind(this, "measurement")}
                   /> : null}
               </View>
               <View style={styles.sideIconsGroup}>
                 {this.state.isShortcutButtonVisible.Sample ?
                   <IconButton
-                    source={require('../../assets/icons/app-icons-shaded/SampleButton.png')}
+                    source={this.props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE ? require(
+                      '../../assets/icons/app-icons-shaded/SampleButton_pressed.png')
+                      : require('../../assets/icons/app-icons-shaded/SampleButton.png')}
                     onPress={this.clickHandler.bind(this, "sample")}
                   /> : null}
               </View>
@@ -799,7 +827,8 @@ function mapStateToProps(state) {
     isOnline: state.spot.isOnline,
     isNotebookPanelVisible: state.notebook.isNotebookPanelVisible,
     isCompassModalVisible: state.notebook.isCompassModalVisible,
-    modalVisible: state.home.modalVisible
+    modalVisible: state.home.modalVisible,
+    deviceDimensions: state.home.deviceDimensions
     // visiblePage: state.notebook.visiblePage
   }
 }
@@ -812,7 +841,7 @@ const mapDispatchToProps = {
   deleteFeature: (id) => ({type: spotReducers.FEATURE_DELETE, id: id}),
   onSpotEdit: (field, value) => ({type: spotReducers.EDIT_SPOT_PROPERTIES, field: field, value: value}),
   setModalVisible: (modal) => ({type: homeReducers.SET_MODAL_VISIBLE, modal: modal}),
-  // onSpotEdit: (field, value) => ({type: EDIT_SPOT_PROPERTIES, field: field, value: value}),
+  setDeviceDims: (height, width) => ({type: homeReducers.DEVICE_DIMENSIONS, height: height, width: width}),
   onSpotEditImageObj: (images) => ({type: spotReducers.EDIT_SPOT_IMAGES, images: images}),
 };
 

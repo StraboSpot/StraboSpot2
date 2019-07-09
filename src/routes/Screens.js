@@ -20,7 +20,6 @@ import ImageGallery from "../components/images/ImageGallery.view";
 import ImageInfo from "../components/images/ImageInfo.view";
 import Loading from '../shared/ui/Loading'
 
-
 const {store, persistor} = configureStore();
 
 function WrappedComponent(Component) {
