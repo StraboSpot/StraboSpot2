@@ -15,7 +15,6 @@ const samplesStyle = StyleSheet.create({
     fontSize: themes.PRIMARY_TEXT_SIZE
   },
   samplesContainer: {
-    flex: 8,
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
     borderBottomRightRadius: 20,
     borderBottomLeftRadius: 20,

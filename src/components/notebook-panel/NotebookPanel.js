@@ -52,8 +52,6 @@ const NotebookPanel = props => {
           <NotebookFooter
             openPage={(page) => setNotebookPageVisible(page)}
             onPress={(camera) => props.onPress(camera)}
-            // showCompass={props.showCompass}
-            showModal={props.showModal}
           />
         </View>
       </View>

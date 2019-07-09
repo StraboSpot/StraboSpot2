@@ -118,10 +118,10 @@ class Home extends React.Component {
         console.log(`${name}`, " was clicked");
         break;
       case "measurement":
-        console.log(`${name}`, " was clicked");
+        this.props.setModalVisible(Modals.SHORTCUT_MODALS.COMPASS);
         break;
       case "sample":
-        console.log(`${name}`, " was clicked");
+        this.props.setModalVisible(Modals.SHORTCUT_MODALS.SAMPLE);
         break;
       case "note":
         console.log(`${name}`, " was clicked");
@@ -136,7 +136,6 @@ class Home extends React.Component {
         console.log(`${name}`, " was clicked");
         break;
       case "settings":
-        console.log(`${name}`, " was clicked");
         this.openSettingsDrawer();
         break;
 
@@ -155,7 +154,6 @@ class Home extends React.Component {
       case MapModes.DRAW.POINT:
       case MapModes.DRAW.LINE:
       case MapModes.DRAW.POLYGON:
-        console.log('Selected', name);
         this.setDraw(name);
         break;
       case "endDraw":
@@ -168,7 +166,6 @@ class Home extends React.Component {
         this.saveEdits();
         break;
       case "currentLocation":
-        console.log(`${name}`, " was clicked");
         this.mapViewComponent.goToCurrentLocation();
         break;
 
@@ -178,8 +175,6 @@ class Home extends React.Component {
         break;
       case "saveMap":
         this.toggleOfflineMapModal();
-        // this.mapViewElement.current.saveMap();
-        // saveMap();
         break;
       case "addTag":
         console.log(`${name}`, " was clicked");
@@ -224,22 +219,7 @@ class Home extends React.Component {
     this.toggleDrawer();
     this.drawer.close();
     this.setVisibleMenuState('settingsMain');
-    console.log("Drawer Closed");
   };
-
-  // convertDMS = (lat, lng) => {
-  //   const latitude = lat.toFixed(6);
-  //   let latitudeCardinal = Math.sign(lat) >= 0 ? "North" : "South";
-  //
-  //   const longitude = lng.toFixed(6);
-  //   let longitudeCardinal = Math.sign(lng) >= 0 ? "East" : "West";
-  //
-  //   return (
-  //     <Text>
-  //       {latitude}&#176; {latitudeCardinal}, {longitude}&#176; {longitudeCardinal}
-  //     </Text>
-  //   )
-  // };
 
   deleteSelectedFeature = (id) => {
     const featureName = this.props.selectedSpot.properties.name;
@@ -296,7 +276,6 @@ class Home extends React.Component {
         console.log('Export button was pressed');
         break;
       case 'camera':
-        // console.log('Camera button was pressed');
         this.launchCameraFromNotebook();
         break;
     }
@@ -305,7 +284,6 @@ class Home extends React.Component {
   openSettingsDrawer = () => {
     this.toggleDrawer();
     this.drawer.open();
-    console.log("Drawer Opened");
   };
 
   openNotebookPanel = () => {
@@ -325,9 +303,6 @@ class Home extends React.Component {
     let imageArr = this.state.allPhotosSaved;
     try {
       const savedPhoto = await takePicture();
-
-      // console.log('savedPhoto res', savedPhoto);
-
       if (savedPhoto === 'cancelled') {
         if (this.state.allPhotosSaved.length > 0) {
           console.log('ALL PHOTOS SAVED', this.state.allPhotosSaved);
@@ -440,7 +415,6 @@ class Home extends React.Component {
 
   takePicture = async (photo) => {
     ImagePicker.launchCamera(imageOptions, async (response) => {
-
       if (response.didCancel) {
         console.log('User cancelled image picker');
         await this.props.addPhoto(this.state.allPhotosSaved);
@@ -543,42 +517,9 @@ class Home extends React.Component {
     }
   };
 
-  // toggleCompass = (isCompassModalVisible) => {
-  //   if (this._isMounted) {
-  //       this.setState(prevState => {
-  //         return {
-  //           ...prevState,
-  //           isCompassModalVisible: isCompassModalVisible !== undefined ? isCompassModalVisible : !prevState.isCompassModalVisible
-  //         }
-  //       }, () => {
-  //         console.log('Compass state', this.state.isCompassModalVisible)
-  //       })
-  //     }
-  // };
-
-  // toggleModal = (modal, value) => {
-  //   if (this._isMounted) {
-  //     // this.setState(prevState => {
-  //     //   return {
-  //     //     ...prevState,
-  //     //     [modal]: value !== undefined ? value : !prevState[modal]
-  //     //   }
-  //     // })
-  //   }
-  // };
-
-  // renderShortcutPanel = () => {
-  //   return (
-  //     <View style={styles.modalPositionShortcutView}>
-  //     <ShortcutPanel/>
-  //   </View>);
-  // };
-
   render() {
     const spot = this.props.selectedSpot;
-
     const isOnline = this.props.isOnline;
-
     let content = null;
     let compassModal = null;
     let samplesModal = null;
@@ -663,8 +604,6 @@ class Home extends React.Component {
               closeNotebook={this.closeNotebookPanel}
               textStyle={{fontWeight: 'bold', fontSize: 12}}
               onPress={(name) => this.notebookClickHandler(name)}
-              // showCompass={(showCompass) => this.toggleCompass(showCompass)}
-              // showModal={(modalName, value) => this.toggleModal(modalName, value)}
             />
             : null}
           {(this.props.modalVisible === Modals.NOTEBOOK_MODALS.COMPASS ||
