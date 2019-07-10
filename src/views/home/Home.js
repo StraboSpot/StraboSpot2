@@ -33,6 +33,7 @@ import NotebookCompassModal from "../../components/compass/NotebookCompassModal"
 import ShortcutCompassModal from '../../components/compass/ShortcutCompassModal';
 import NotebookSamplesModal from '../../components/samples/NotebookSamplesModal.view';
 import ShortcutSamplesModal from '../../components/samples/ShortcutSamplesModal.view';
+import AllSpotsView from '../../components/notebook-panel/AllSpots.view';
 import {homeReducers, Modals} from "./Home.constants";
 import sampleStyles from '../../components/samples/samples.style';
 
@@ -89,7 +90,8 @@ class Home extends React.Component {
       currentSpot: undefined,
       allPhotosSaved: [],
       isCompassModalVisible: false,
-      isSamplesModalVisible: false
+      isSamplesModalVisible: false,
+      isAllSpotsPanelVisible: false
     };
   }
 
@@ -163,6 +165,9 @@ class Home extends React.Component {
         console.log('Feature Deleted!', this.props.selectedSpot.properties.id);
         this.deleteSelectedFeature(this.props.selectedSpot.properties.id);
         break;
+      case 'showAllSpotsPanel':
+        this.openAllSpotsPanel();
+        break;
       // Map Actions
       case MapModes.DRAW.POINT:
       case MapModes.DRAW.LINE:
@@ -215,6 +220,15 @@ class Home extends React.Component {
     }
   };
 
+  closeAllSpotsPanel = () => {
+    this.setState(prevState => {
+      return {
+        ...prevState,
+        isAllSpotsPanelVisible: false
+      }
+    })
+  };
+
   closeNotebookPanel = () => {
     if (this._isMounted) {
       this.props.setNotebookPanelVisible(false);
@@ -222,7 +236,8 @@ class Home extends React.Component {
       this.setState(prevState => {
         return {
           ...prevState,
-          isSamplesModalVisible: false
+          isSamplesModalVisible: false,
+          isAllSpotsPanelVisible: false
         }
       });
     }
@@ -292,6 +307,16 @@ class Home extends React.Component {
         this.launchCameraFromNotebook();
         break;
     }
+  };
+
+  openAllSpotsPanel = () => {
+    // this.props.setNotebookPanelVisible(false);
+    this.setState(prevState => {
+      return{
+        ...prevState,
+        isAllSpotsPanelVisible: true
+      }
+    })
   };
 
   openSettingsDrawer = () => {
@@ -536,6 +561,24 @@ class Home extends React.Component {
     let content = null;
     let compassModal = null;
     let samplesModal = null;
+    let notebookPanel = null;
+
+    if (this.state.isAllSpotsPanelVisible) {
+      notebookPanel =
+        <NotebookPanel
+        style={{right: 125}}
+        closeNotebook={this.closeNotebookPanel}
+        textStyle={{fontWeight: 'bold', fontSize: 12}}
+        onPress={(name) => this.notebookClickHandler(name)}
+      />
+    }
+    else {
+      notebookPanel =  <NotebookPanel
+        closeNotebook={this.closeNotebookPanel}
+        textStyle={{fontWeight: 'bold', fontSize: 12}}
+        onPress={(name) => this.notebookClickHandler(name)}
+      />
+    }
 
     if (this.props.modalVisible === Modals.NOTEBOOK_MODALS.COMPASS) {
       compassModal =
@@ -624,13 +667,7 @@ class Home extends React.Component {
                    mapMode={this.state.mapMode}
                    startEdit={this.startEdit}
           />
-          {this.props.isNotebookPanelVisible ?
-            <NotebookPanel
-              closeNotebook={this.closeNotebookPanel}
-              textStyle={{fontWeight: 'bold', fontSize: 12}}
-              onPress={(name) => this.notebookClickHandler(name)}
-            />
-            : null}
+          {this.props.isNotebookPanelVisible && notebookPanel}
           {(this.props.modalVisible === Modals.NOTEBOOK_MODALS.COMPASS ||
             this.props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS) && compassModal}
           {this.props.modalVisible === Modals.NOTEBOOK_MODALS.SAMPLE ||
@@ -804,6 +841,10 @@ class Home extends React.Component {
             onPress={(name) => this.dialogClickHandler("notebookPanelMenuVisible", name)}
             onTouchOutside={() => this.toggleDialog("notebookPanelMenuVisible")}
           />
+          {this.state.isAllSpotsPanelVisible ?
+            <AllSpotsView
+              close={() => this.closeAllSpotsPanel()}
+            /> : null}
           <Modal
             isVisible={this.state.isOfflineMapModalVisible}
             useNativeDriver={true}

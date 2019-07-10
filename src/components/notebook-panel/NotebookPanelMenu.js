@@ -33,6 +33,12 @@ const NotebookPanelMenu = props => (
     />
       <DialogButton
         style={styles.dialogContent}
+        text="Show All Spots Panel"
+        textStyle={{fontSize: 12}}
+        onPress={() => props.onPress('showAllSpotsPanel')}
+      />
+      <DialogButton
+        style={styles.dialogContent}
         text="Close Notebook"
         textStyle={{fontSize: 12}}
         onPress={() => props.onPress('closeNotebook')}

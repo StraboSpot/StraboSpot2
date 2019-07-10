@@ -13,6 +13,18 @@ const notebookStyles = StyleSheet.create({
     right: 0,
     zIndex: 1,
   },
+  allSpotsPanel: {
+    flex: 1,
+    justifyContent: 'center',
+    width: 125,
+    height: '100%',
+    // borderBottomLeftRadius: 30,
+    // borderTopLeftRadius: 30,
+    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
+    position: 'absolute', //Here is the trick
+    right: 0,
+    zIndex: 1,
+  },
   headerContainer: {
     borderBottomWidth: 1,
     height: 90,
