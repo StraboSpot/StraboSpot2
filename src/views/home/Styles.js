@@ -5,7 +5,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1
   },
-
   buttonWithBackground: {
     color: 'black',
     fontSize: 16,

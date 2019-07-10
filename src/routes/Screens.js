@@ -27,9 +27,9 @@ function WrappedComponent(Component) {
     const EnhancedComponent = () => (
       <Provider store={store}>
         <PersistGate loading={<Loading/>} persistor={persistor}>
-        <Component
-          {...props}
-        />
+          <Component
+            {...props}
+          />
         </PersistGate>
       </Provider>
     );

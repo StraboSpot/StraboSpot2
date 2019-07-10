@@ -515,8 +515,6 @@ class Home extends React.Component {
           ...prevState,
           drawerVisible: !prevState.drawerVisible
         }
-      }, () => {
-        console.log("DrawerVisible state", this.state.drawerVisible)
       });
     }
     else console.log('Attempting to toggle', dialog, 'but Home Component not mounted.');
