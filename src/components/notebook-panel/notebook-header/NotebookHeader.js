@@ -54,7 +54,7 @@ const NotebookHeader = props => {
       <View style={headerStyles.headerButtons}>
         <IconButton
           onPress={() => props.onPress('menu')}
-          source={require('../../../assets/icons/app-icons-shaded/V2-56.png')}
+          source={require('../../../assets/icons/three-dot-menu.png')}
           style={{width: 20, height: 20}}
         />
       </View>

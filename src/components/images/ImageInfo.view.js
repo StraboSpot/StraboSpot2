@@ -78,7 +78,7 @@ const ImageInfoView = (props) => {
       <View style={styles.rightsideIcons}>
         <IconButton
           style={styles.imageInfoButtons}
-          source={require('../../assets/icons/app-icons-shaded/NoteButton.png')}
+          source={require('../../assets/icons/NoteButton.png')}
           onPress={() => setImageNoteModal(true)}
         />
         <IconButton
