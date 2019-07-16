@@ -10,7 +10,7 @@ import {spotReducers} from "../../spots/Spot.constants";
 const allSpotsView = (props) => {
 
   const pressHandler = (id) => {
-    console.log(id)
+    console.log(id);
     const spot = props.allSpots.filter(selectedSpot => {
       return selectedSpot.properties.id === id;
     });
@@ -19,12 +19,12 @@ const allSpotsView = (props) => {
   };
 
   return (
-    <View style={styles.allSpotsPanel}>
-      <Text style={{textAlign: 'center'}}>All Spots</Text>
-      <ButtonNoBackground
-        style={{marginTop: 10, marginBottom: 5}}
-        textStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 18}}
-        onPress={props.close}>Close</ButtonNoBackground>
+    <React.Fragment>
+      {/*<Text style={{textAlign: 'center'}}>All Spots</Text>*/}
+      {/*<ButtonNoBackground*/}
+      {/*  style={{marginTop: 10, marginBottom: 5}}*/}
+      {/*  textStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 18}}*/}
+      {/*  onPress={props.close}>Close</ButtonNoBackground>*/}
       <ScrollView>
       {props.allSpots.map(spot => {
         console.log(spot);
@@ -37,15 +37,18 @@ const allSpotsView = (props) => {
               subtitleStyle={{fontSize: 12}}
               contentContainerStyle={{
                 justifyContent: 'center',
+                alignItems: 'center',
                 backgroundColor: themes.LIGHTGREY,
                 padding: 10,
+                paddingTop: 20,
+                paddingBottom: 20
               }}
               onPress={() => pressHandler(spot.properties.id)}
             />
         )
       })}
       </ScrollView>
-    </View>
+    </React.Fragment>
   );
 };
 
