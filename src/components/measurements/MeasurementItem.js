@@ -15,35 +15,60 @@ const MeasurementItem = (props) => {
 
   const openMeasurementDetail = (item) => {
     console.log('item', item);
-    props.setFormData(item);
-    props.setNotebookPanelVisible(true);
-    props.setNotebookPageVisible(NotebookPages.MEASUREMENTDETAIL);
+    if (props.isAssociatedList && props.selectedId !== item.id) {
+      props.setFormData(item);
+      props.setSelected(item.id);
+    }
+    else {
+      props.setFormData(item);
+      props.setNotebookPanelVisible(true);
+      props.setNotebookPageVisible(NotebookPages.MEASUREMENTDETAIL);
+    }
+  };
+
+  const getTypeText = (item) => {
+    if (props.isAssociatedList && props.isAssociatedItem) {
+      if (item.feature_type) return 'Associated ' + item.feature_type;
+      else if (item.type === 'linear_orientation') return 'Associated Linear Feature';
+      else if (props.isAssociatedList && item.type === 'planar_orientation') return 'Associated Planar Feature';
+      else if (props.isAssociatedList && item.type === 'tabular_orientation') return 'Associated Planar Feature (Tabular Zone)';
+    }
+    else if (props.isAssociatedList && !props.isAssociatedItem) {
+      if (item.feature_type) return item.feature_type;
+      else if (item.type === 'linear_orientation') return 'Linear Feature';
+      else if (props.isAssociatedList && item.type === 'planar_orientation') return 'Planar Feature';
+      else if (props.isAssociatedList && item.type === 'tabular_orientation') return 'Planar Feature (Tabular Zone)';
+    }
+    else {
+      if (item.type === 'linear_orientation' && !item.associated_orientation) return 'Linear Feature';
+      else if (item.type === 'planar_orientation' && !item.associated_orientation) return 'Planar Feature';
+      else if (item.type === 'tabular_orientation' && !item.associated_orientation) return 'Planar Feature (Tabular Zone)';
+      else if (item.type === 'planar_orientation' && item.associated_orientation) return 'Planar Feature   Linear Feature';
+      else if (item.type === 'linear_orientation' && item.associated_orientation) return 'Linear Feature   Planar Feature';
+      else if (item.type === 'tabular_orientation' && item.associated_orientation) return 'Planar Feature (Tabular Zone)   Linear Feature';
+    }
+  };
+
+  const getMeasurementText = (item) => {
+    if (item.type === 'planar_orientation' || item.type === 'tabular_orientation') {
+      return (item.strike || '?') + '/' + (item.dip || '?');
+    }
+    if (item.type === 'linear_orientation') return (item.trend || '?') + '/' + (item.plunge || '?');
+    return '?';
   };
 
 // Render an individual measurement
   const renderMeasurementText = (item) => {
     return (
-      <View
-        style={styles.measurementsListItem}
-      >
+      <View style={styles.measurementsListItem}>
         <View>
-          {'strike' in item && 'dip' in item &&
-          <Text style={styles.mainText}>
-            {item.strike}/{item.dip}
-          </Text>}
-          {'trend' in item && 'plunge' in item &&
-          <Text style={styles.mainText}>
-            {item.trend}/{item.plunge}
-          </Text>}
+          <Text style={props.selectedId === props.item.item.id ? styles.mainTextInverse : styles.mainText}>
+            {getMeasurementText(item)}
+          </Text>
         </View>
         <View>
-          <Text style={styles.propertyText}>
-            {item.type === 'linear_orientation' && !item.associated_orientation && 'Linear Feature'}
-            {item.type === 'planar_orientation' && !item.associated_orientation && 'Planar Feature'}
-            {item.type === 'tabular_orientation' && !item.associated_orientation && 'Planar Feature (Tabular Zone)'}
-            {item.type === 'planar_orientation' && item.associated_orientation && 'Planar Feature   Linear Feature'}
-            {item.type === 'linear_orientation' && item.associated_orientation && 'Linear Feature   Planar Feature'}
-            {item.type === 'tabular_orientation' && item.associated_orientation && 'Planar Feature (Tabular Zone)   Linear Feature'}
+          <Text style={props.selectedId === props.item.item.id ? styles.propertyTextInverse : styles.propertyText}>
+            {getTypeText(item)}
           </Text>
         </View>
       </View>
@@ -54,7 +79,7 @@ const MeasurementItem = (props) => {
     <View style={styles.measurementsRenderListContainer}>
       {typeof (props.item.item) !== 'undefined' &&
       <TouchableOpacity
-        style={stylesCommon.rowContainer}
+        style={props.selectedId === props.item.item.id ? stylesCommon.rowContainerInverse : stylesCommon.rowContainer}
         onPress={() => openMeasurementDetail(props.item.item)}>
         <View style={stylesCommon.row}>
           <View style={stylesCommon.fillWidthSide}>
@@ -65,7 +90,7 @@ const MeasurementItem = (props) => {
               name='ios-information-circle-outline'
               containerStyle={{justifyContent: 'center', paddingRight: 10}}
               type='ionicon'
-              color={themes.PRIMARY_ACCENT_COLOR}
+              color={props.selectedId === props.item.item.id ? themes.SECONDARY_BACKGROUND_COLOR : themes.PRIMARY_ACCENT_COLOR}
               onPress={() => openMeasurementDetail(props.item)}
             />
             <Icon

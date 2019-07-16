@@ -30,10 +30,19 @@ const styles = StyleSheet.create({
     color: themes.PRIMARY_ITEM_TEXT_COLOR,
     fontSize: themes.PRIMARY_TEXT_SIZE
   },
+  mainTextInverse: {
+    color: themes.SECONDARY_BACKGROUND_COLOR,
+    fontSize: themes.PRIMARY_TEXT_SIZE
+  },
   propertyText: {
     paddingLeft: 20,
     fontSize: themes.PRIMARY_TEXT_SIZE,
     color: themes.SECONDARY_ITEM_TEXT_COLOR,
+  },
+  propertyTextInverse: {
+    paddingLeft: 20,
+    fontSize: themes.PRIMARY_TEXT_SIZE,
+    color: themes.PRIMARY_BACKGROUND_COLOR,
   },
   measurementsContentContainer: {
     flex: 1,

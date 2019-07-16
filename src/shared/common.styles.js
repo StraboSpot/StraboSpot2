@@ -8,6 +8,12 @@ const commonStyles = StyleSheet.create({
     borderBottomWidth: 0.5,
     borderColor: themes.LIST_BORDER_COLOR
   },
+  rowContainerInverse: {
+    flex: 1,
+    borderBottomWidth: 0.5,
+    borderColor: themes.LIST_BORDER_COLOR,
+    backgroundColor: themes.PRIMARY_ACCENT_COLOR
+  },
   row: {
     flexDirection: 'row',
     height: themes.ROW_HEIGHT

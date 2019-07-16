@@ -131,7 +131,11 @@ class Compass extends Component {
     if (measurements.length > 0) {
       let newOrientation = measurements[0];
       newOrientation.id = getNewId();
-      if (measurements.length > 1) newOrientation.associated_orientation = [measurements[1]];
+      if (measurements.length > 1) {
+        let newAssociatedOrientation = measurements[1];
+        newAssociatedOrientation.id = getNewId();
+        newOrientation.associated_orientation = [newAssociatedOrientation];
+      }
       const orientations = (typeof this.props.spot.properties.orientation_data === 'undefined') ? [newOrientation] : [...this.props.spot.properties.orientation_data, newOrientation];
       this.props.onSpotEdit('orientation_data', orientations);
     }

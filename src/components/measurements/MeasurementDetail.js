@@ -1,17 +1,18 @@
 import React, {useState, useRef} from 'react';
-import {Alert, ScrollView, View} from 'react-native';
+import {Alert, FlatList, ScrollView, View} from 'react-native';
 import {connect} from 'react-redux';
-import {ButtonGroup} from "react-native-elements";
+import {Button, ButtonGroup} from "react-native-elements";
 import {spotReducers} from "../../spots/Spot.constants";
 import {notebookReducers} from "../notebook-panel/Notebook.constants";
 import {Formik} from 'formik';
 import FormView from "../form/Form.view";
-import {isEmpty} from "../../shared/Helpers";
+import {getNewId, isEmpty} from "../../shared/Helpers";
 import SectionDivider from '../../shared/ui/SectionDivider';
 import SaveAndCloseButton from '../notebook-panel/ui/SaveAndCloseButtons';
 import {getForm, hasErrors, setForm, showErrors, validateForm} from "../form/form.container";
 import {formReducers} from "../form/Form.constant";
 import {homeReducers, Modals} from "../../views/home/Home.constants";
+import MeasurementItem from "./MeasurementItem";
 
 // Styles
 import styles from './measurements.styles';
@@ -30,6 +31,7 @@ const MeasurementDetailPage = (props) => {
   };
 
   const [selectedFeatureTypeIndex, setFeatureTypeIndex] = useState(getDefaultSwitchIndex());
+  const [selectedFeatureId, setSelectedFeatureId] = useState(props.formData.id);
   const form = useRef(null);
 
   // What happens after submitting the form is handled in saveFormAndGo since we want to show
@@ -136,6 +138,7 @@ const MeasurementDetailPage = (props) => {
               component={FormView}
               initialValues={props.formData}
               validateOnChange={false}
+              enableReinitialize={true}
             />
           </View>
         </View>
@@ -154,6 +157,76 @@ const MeasurementDetailPage = (props) => {
     );
   };
 
+  const renderAssociatedFeatures = () => {
+    const selectedOrientation = getSelectedOrientationInfo();
+    return (
+      <View>
+        {selectedOrientation.associatedOrientations &&
+        <FlatList
+          data={selectedOrientation.associatedOrientations}
+          renderItem={item => <MeasurementItem item={item}
+                                               selectedId={selectedFeatureId}
+                                               isAssociatedList={true}
+                                               isAssociatedItem={item.item.id !== selectedOrientation.data.id}
+                                               setSelected={setSelectedFeatureId}/>}
+          keyExtractor={(item, index) => index.toString()}
+        />}
+        {selectedOrientation.data.type === 'linear_orientation' &&
+        <Button
+          titleStyle={styles.buttonText}
+          title={'+ Add Associated Plane'}
+          type={'clear'}
+          onPress={() => addAssociatedFeature('planar_orientation')}
+        />}
+        {(selectedOrientation.data.type === 'planar_orientation' || selectedOrientation.data.type === 'tabular_orientation') &&
+        <Button
+          titleStyle={styles.buttonText}
+          title={'+ Add Associated Line'}
+          type={'clear'}
+          onPress={() => addAssociatedFeature('linear_orientation')}
+        />}
+      </View>
+    );
+  };
+
+  const addAssociatedFeature = (type) => {
+    console.log(props.formData);
+    const newId = getNewId();
+    const newAssociatedOrientation= {type: type, id: newId};
+    const selectedOrientation = getSelectedOrientationInfo();
+    let orientations = props.spot.properties.orientation_data;
+    if (!orientations[selectedOrientation.i].associated_orientation) {
+      orientations[selectedOrientation.i].associated_orientation = [];
+    }
+    orientations[selectedOrientation.i].associated_orientation.push(newAssociatedOrientation);
+    props.onSpotEdit('orientation_data', orientations);
+    props.setFormData(newAssociatedOrientation);
+    setSelectedFeatureId(newId);
+  };
+
+  // Get the data for the selected orientation, and whether it's a main orientation or an associated orientation.
+  // Get applicable index (or indexes if an associate orientation).
+  // Get all the associated orientations (main orientation and associated orientations).
+  const getSelectedOrientationInfo = () => {
+    let orientations = props.spot.properties.orientation_data;
+    let iO = undefined;
+    let iAO = undefined;
+    orientations.forEach((orientation, i) => {
+      if (!iO && orientation.id === props.formData.id) iO = i;
+      else if (!iO && orientation.associated_orientation) {
+        orientation.associated_orientation.forEach((associatedOrientation, j) => {
+          if (associatedOrientation.id === props.formData.id) {
+            iO = i;
+            iAO = j;
+          }
+        });
+      }
+    });
+    if (!iO) iO = 0;
+    let associatedOrientations = orientations[iO].associated_orientation ? [orientations[iO], ...orientations[iO].associated_orientation] : undefined;
+    return {data: orientations[iO], i: iO, iAssociated: iAO, associatedOrientations: associatedOrientations};
+  };
+
   const cancelFormAndGo = () => {
     if (props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {
       props.setModalVisible(Modals.NOTEBOOK_MODALS.COMPASS)
@@ -167,8 +240,11 @@ const MeasurementDetailPage = (props) => {
       else {
         console.log('Saving form data to Spot ...');
         let orientations = props.spot.properties.orientation_data;
-        const i = orientations.findIndex(orientation => orientation.id === form.current.state.values.id);
-        orientations[i] = form.current.state.values;
+        const selectedOrientation = getSelectedOrientationInfo();
+        if (!isEmpty(selectedOrientation.i) && !isEmpty(selectedOrientation.iAssociated)) {
+          orientations[selectedOrientation.i].associated_orientation[selectedOrientation.iAssociated] = form.current.state.values;
+        }
+        else orientations[selectedOrientation.i] = form.current.state.values;
         props.onSpotEdit('orientation_data', orientations);
         if (props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {
           props.setModalVisible(Modals.NOTEBOOK_MODALS.COMPASS)
@@ -183,6 +259,7 @@ const MeasurementDetailPage = (props) => {
       <View style={styles.measurementsContentContainer}>
         {renderCancelSaveButtons()}
         <ScrollView>
+          {renderAssociatedFeatures()}
           {(props.formData.type === 'planar_orientation' || props.formData.type === 'tabular_orientation') && renderSwitches()}
           <View>
             {/*{renderNotesField()}*/}
@@ -204,6 +281,7 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
   onSpotEdit: (field, value) => ({type: spotReducers.EDIT_SPOT_PROPERTIES, field: field, value: value}),
+  setFormData: (formData) => ({type: formReducers.SET_FORM_DATA, formData: formData}),
   setNotebookPageVisibleToPrev: () => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE_TO_PREV}),
   setModalVisible: (modal) => ({type: homeReducers.SET_MODAL_VISIBLE, modal: modal}),
 };
