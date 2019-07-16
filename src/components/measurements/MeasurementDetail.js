@@ -20,12 +20,12 @@ import * as themes from '../../shared/styles.constants';
 const MeasurementDetailPage = (props) => {
 
   const featureTypes = {
-    PLANARLINEAR: 'Planar/Linear',
+    PLANAR: 'Planar Feature',
     TABULAR: 'Tabular Zone',
   };
 
   const getDefaultSwitchIndex = () => {
-    if (props.formData.type === 'planar_orientation' || props.formData.type === 'linear_orientation') return 0;
+    if (props.formData.type === 'planar_orientation') return 0;
     else if (props.formData.type === 'tabular_orientation') return 1;
   };
 
@@ -57,8 +57,7 @@ const MeasurementDetailPage = (props) => {
         {cancelable: false}
       );
     }
-    else if (i === 1 && (form.current.state.values.type === 'planar_orientation' ||
-      form.current.state.values.type === 'linear_orientation')) {
+    else if (i === 1 && form.current.state.values.type === 'planar_orientation') {
       Alert.alert('Switch to Tabular Zone',
         'Are you sure you want to switch this measurement to a Tabular Zone? You will lose all ' +
         'non-relevant data for this measurement.',
@@ -156,7 +155,7 @@ const MeasurementDetailPage = (props) => {
   };
 
   const cancelFormAndGo = () => {
-    if (props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS ) {
+    if (props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {
       props.setModalVisible(Modals.NOTEBOOK_MODALS.COMPASS)
     }
     props.setNotebookPageVisibleToPrev();
@@ -171,7 +170,7 @@ const MeasurementDetailPage = (props) => {
         const i = orientations.findIndex(orientation => orientation.id === form.current.state.values.id);
         orientations[i] = form.current.state.values;
         props.onSpotEdit('orientation_data', orientations);
-        if (props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS ) {
+        if (props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {
           props.setModalVisible(Modals.NOTEBOOK_MODALS.COMPASS)
         }
         props.setNotebookPageVisibleToPrev();
@@ -184,7 +183,7 @@ const MeasurementDetailPage = (props) => {
       <View style={styles.measurementsContentContainer}>
         {renderCancelSaveButtons()}
         <ScrollView>
-          {renderSwitches()}
+          {(props.formData.type === 'planar_orientation' || props.formData.type === 'tabular_orientation') && renderSwitches()}
           <View>
             {/*{renderNotesField()}*/}
             {renderFormFields()}

@@ -32,7 +32,7 @@ const MeasurementsPage = (props) => {
 
   const renderPlanarMeasurements = () => {
     let data = props.spot.properties.orientation_data.filter(measurement => {
-      return measurement.type === 'planar_orientation' && !measurement.associated_orientation
+      return (measurement.type === 'planar_orientation' || measurement.type === 'tabular_orientation') && !measurement.associated_orientation
     });
     return (
       <View>
@@ -47,22 +47,7 @@ const MeasurementsPage = (props) => {
 
   const renderPlanarLinearMeasurements = () => {
     let data = props.spot.properties.orientation_data.filter(measurement => {
-      return (measurement.type === 'planar_orientation' || measurement.type === 'linear_orientation') && measurement.associated_orientation
-    });
-    return (
-      <View>
-        <FlatList
-          data={data}
-          renderItem={item => <MeasurementItem item={item}/>}
-          keyExtractor={(item, index) => index.toString()}
-        />
-      </View>
-    );
-  };
-
-  const renderTabularMeasurements = () => {
-    let data = props.spot.properties.orientation_data.filter(measurement => {
-      return (measurement.type === 'tabular_orientation')
+      return (measurement.type === 'planar_orientation' || measurement.type === 'linear_orientation' || measurement.type === 'tabular_orientation') && measurement.associated_orientation
     });
     return (
       <View>
@@ -122,8 +107,6 @@ const MeasurementsPage = (props) => {
           {props.spot.properties.orientation_data && renderLinearMeasurements()}
           {renderSectionDivider('Planar + Linear Measurements')}
           {props.spot.properties.orientation_data && renderPlanarLinearMeasurements()}
-          {renderSectionDivider('Tabular Zone Measurements')}
-          {props.spot.properties.orientation_data && renderTabularMeasurements()}
         </ScrollView>
       </View>
     )

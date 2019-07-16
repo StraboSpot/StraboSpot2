@@ -40,9 +40,10 @@ const MeasurementItem = (props) => {
           <Text style={styles.propertyText}>
             {item.type === 'linear_orientation' && !item.associated_orientation && 'Linear Feature'}
             {item.type === 'planar_orientation' && !item.associated_orientation && 'Planar Feature'}
+            {item.type === 'tabular_orientation' && !item.associated_orientation && 'Planar Feature (Tabular Zone)'}
             {item.type === 'planar_orientation' && item.associated_orientation && 'Planar Feature   Linear Feature'}
             {item.type === 'linear_orientation' && item.associated_orientation && 'Linear Feature   Planar Feature'}
-            {item.type === 'tabular_orientation' && 'Tabular Zone Feature'}
+            {item.type === 'tabular_orientation' && item.associated_orientation && 'Planar Feature (Tabular Zone)   Linear Feature'}
           </Text>
         </View>
       </View>
