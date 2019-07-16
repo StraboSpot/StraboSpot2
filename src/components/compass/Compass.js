@@ -55,7 +55,8 @@ class Compass extends Component {
       },
       toggles: [CompassToggleButtons.PLANAR],
       spinValue: new Animated.Value(0),
-      sliderValue: 5
+      sliderValue: 5,
+      showDataModal: false
     };
   }
 
@@ -459,8 +460,23 @@ class Compass extends Component {
     }, () => console.log('toggles', this.state.toggles));
   };
 
+  viewData = () => {
+    this.setState(prevState => {
+      return {
+        ...prevState,
+        showDataModal: !prevState.showDataModal
+      }
+    }, () => console.log('DataModal', this.state.showDataModal))
+  };
+
   render() {
     let modalView = null;
+    let dataModal =
+     <View style={{alignItems: 'center'}}>
+      {this.renderMeasurements()}
+    </View>;
+
+
 
     if (this.props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {
       if (!isEmpty(this.props.spot)) {
@@ -493,6 +509,14 @@ class Compass extends Component {
             this.props.setNotebookPanelVisible(false);
           }}
         />
+        <Button
+          title={'Toggle data view'}
+          type={'clear'}
+          titleStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 16}}
+          onPress={() => {
+           this.viewData()
+          }}
+        />
       </View>
     }
 
@@ -517,10 +541,10 @@ class Compass extends Component {
             leftText={'Low Quality'}
             rightText={'High Quality'}
           />
-          {/*{this.renderMeasurements()}*/}
         </View>
         <View style={styles.buttonContainer}>
           {modalView}
+          {this.state.showDataModal ? dataModal : null}
           {/*<Button*/}
           {/*  title={'View In Shortcut Mode'}*/}
           {/*  type={'clear'}*/}

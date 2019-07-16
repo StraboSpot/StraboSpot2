@@ -96,6 +96,13 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 80,
     top: 20,
+  },
+  dataModalPosition: {
+    position: 'absolute',
+    left: 80,
+    top: 20,
+    backgroundColor: 'white',
+
   }
 });
 
