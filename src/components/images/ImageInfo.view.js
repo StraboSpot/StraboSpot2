@@ -83,7 +83,7 @@ const ImageInfoView = (props) => {
         />
         <IconButton
           style={styles.imageInfoButtons}
-          source={require('../../assets/icons/app-icons-shaded/SketchButton.png')}
+          source={require('../../assets/icons/SketchButton.png')}
           onPress={() => clickHandler('sketch')}
         />
       </View>
