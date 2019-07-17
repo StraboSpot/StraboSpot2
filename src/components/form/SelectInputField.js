@@ -15,7 +15,6 @@ const SelectInputField = ({
                           }) => {
   const placeholder = {
     label: `-- Select ${props.label} --`,
-    value: null,
     color: themes.PRIMARY_ITEM_TEXT_COLOR,
   };
 

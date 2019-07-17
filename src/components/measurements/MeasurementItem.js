@@ -15,10 +15,7 @@ const MeasurementItem = (props) => {
 
   const openMeasurementDetail = (item) => {
     console.log('item', item);
-    if (props.isAssociatedList && props.selectedId !== item.id) {
-      props.setFormData(item);
-      props.setSelected(item.id);
-    }
+    if (props.isAssociatedList && props.selectedId !== item.id) props.switchFeature(item);
     else {
       props.setFormData(item);
       props.setNotebookPanelVisible(true);

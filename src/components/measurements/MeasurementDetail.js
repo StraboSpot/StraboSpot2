@@ -40,6 +40,36 @@ const MeasurementDetailPage = (props) => {
     console.log('In onSubmitForm');
   };
 
+  const onSwitchFeature = (item) => {
+    if (form.current.getFormikBag().dirty) {
+      Alert.alert('Unsaved Changes',
+        'Would you like to save your data before continuing?',
+        [
+          {
+            text: 'No',
+            onPress: () => switchFeature(item),
+            style: 'cancel',
+          },
+          {
+            text: 'Yes',
+            onPress: () => {
+              saveForm().then(() => {
+                switchFeature(item)
+              });
+            },
+          },
+        ],
+        {cancelable: false}
+      );
+    }
+    else switchFeature(item)
+  };
+
+  const switchFeature = (item) => {
+    props.setFormData(item);
+    setSelectedFeatureId(item.id)
+  };
+
   const onSwitchPress = (i) => {
     console.log(i);
     if (i === 0 && form.current.state.values.type === 'tabular_orientation') {
@@ -79,17 +109,13 @@ const MeasurementDetailPage = (props) => {
   };
 
   const onSwitchToPlanar = () => {
+    props.setFormData({...form.current.state.values, type: 'planar_orientation'});
     setFeatureTypeIndex(0);
-    setForm('measurement', 'planar_orientation');
-    form.current.setFieldValue('type', 'planar_orientation', false);
-    form.current.validateForm();
   };
 
   const onSwitchToTabularZone = () => {
+    props.setFormData({...form.current.state.values, type: 'tabular_orientation'});
     setFeatureTypeIndex(1);
-    setForm('measurement', 'tabular_orientation');
-    form.current.setFieldValue('type', 'tabular_orientation', false);
-    form.current.validateForm();
   };
 
   // Render the switches to select a feature type or 3D Structure type
@@ -168,7 +194,7 @@ const MeasurementDetailPage = (props) => {
                                                selectedId={selectedFeatureId}
                                                isAssociatedList={true}
                                                isAssociatedItem={item.item.id !== selectedOrientation.data.id}
-                                               setSelected={setSelectedFeatureId}/>}
+                                               switchFeature={() => onSwitchFeature(item.item)}/>}
           keyExtractor={(item, index) => index.toString()}
         />}
         {selectedOrientation.data.type === 'linear_orientation' &&
@@ -192,7 +218,7 @@ const MeasurementDetailPage = (props) => {
   const addAssociatedFeature = (type) => {
     console.log(props.formData);
     const newId = getNewId();
-    const newAssociatedOrientation= {type: type, id: newId};
+    const newAssociatedOrientation = {type: type, id: newId};
     const selectedOrientation = getSelectedOrientationInfo();
     let orientations = props.spot.properties.orientation_data;
     if (!orientations[selectedOrientation.i].associated_orientation) {
@@ -234,23 +260,44 @@ const MeasurementDetailPage = (props) => {
     props.setNotebookPageVisibleToPrev();
   };
 
+  const saveForm = async () => {
+    if (!isEmpty(getForm())) {
+      return form.current.submitForm().then(() => {
+        if (hasErrors(form)) {
+          showErrors(form);
+          return Promise.reject();
+        }
+        else {
+          console.log('Saving form data to Spot ...');
+          let orientations = props.spot.properties.orientation_data;
+          const selectedOrientation = getSelectedOrientationInfo();
+          if (!isEmpty(selectedOrientation.i) && !isEmpty(selectedOrientation.iAssociated)) {
+            orientations[selectedOrientation.i].associated_orientation[selectedOrientation.iAssociated] = form.current.state.values;
+          }
+          else orientations[selectedOrientation.i] = form.current.state.values;
+          props.onSpotEdit('orientation_data', orientations);
+          return Promise.resolve();
+        }
+      }, (e) => {
+        console.log('Error submitting form', e);
+        return Promise.reject();
+      });
+    }
+    else {
+      console.log('No form to save');
+      return Promise.reject();
+    }
+  };
+
   const saveFormAndGo = () => {
-    if (!isEmpty(getForm())) form.current.submitForm().then(() => {
-      if (hasErrors(form)) showErrors(form);
-      else {
-        console.log('Saving form data to Spot ...');
-        let orientations = props.spot.properties.orientation_data;
-        const selectedOrientation = getSelectedOrientationInfo();
-        if (!isEmpty(selectedOrientation.i) && !isEmpty(selectedOrientation.iAssociated)) {
-          orientations[selectedOrientation.i].associated_orientation[selectedOrientation.iAssociated] = form.current.state.values;
-        }
-        else orientations[selectedOrientation.i] = form.current.state.values;
-        props.onSpotEdit('orientation_data', orientations);
-        if (props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {
-          props.setModalVisible(Modals.NOTEBOOK_MODALS.COMPASS)
-        }
-        props.setNotebookPageVisibleToPrev();
+    saveForm().then(() => {
+      console.log('Finished saving form data to Spot');
+      if (props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {
+        props.setModalVisible(Modals.NOTEBOOK_MODALS.COMPASS)
       }
+      props.setNotebookPageVisibleToPrev();
+    }, () => {
+      console.log('Error saving form data to Spot');
     });
   };
 
