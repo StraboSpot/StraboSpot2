@@ -104,7 +104,7 @@ class Home extends React.Component {
     NetInfo.isConnected.addEventListener('connectionChange', this.handleConnectivityChange);
     this.props.setDeviceDims(this.dimensions);
     Dimensions.addEventListener('change', this.deviceOrientation);
-    // this.props.setNotebookPanelVisible(false);
+    this.props.setNotebookPanelVisible(false);
     this.props.setModalVisible(null);
   }
 
@@ -224,11 +224,11 @@ class Home extends React.Component {
   };
 
   closeAllSpotsPanel = () => {
-    Animated.spring(this.state.allSpotsViewAnimation, {
-      toValue: 125,
-      speed: 8,
-      useNativeDriver: true
-    }).start();
+      // Animated.timing(this.state.allSpotsViewAnimation, {
+      //   toValue: 125,
+      //   duration: 350,
+      //   useNativeDriver: true
+      // }).start();
     this.setState(prevState => {
       return {
         ...prevState,
@@ -239,16 +239,18 @@ class Home extends React.Component {
 
   closeNotebookPanel = () => {
     if (this._isMounted) {
-      Animated.spring(this.state.animation, {
-        toValue: 400,
-        speed: 4,
-        useNativeDriver: true
-      }).start();
-      if (this.state.isAllSpotsPanelVisible) {
-          this.closeAllSpotsPanel();
-      }
-      // this.props.setNotebookPanelVisible(false);
+      this.props.setNotebookPanelVisible(false);
       this.props.setModalVisible(null);
+      // if (this.state.isAllSpotsPanelVisible) {
+      //   this.closeAllSpotsPanel();
+      // }
+      // this.doAnimation();
+      // Animated.timing(this.state.animation, {
+      //   toValue: 400,
+      //   duration: 350,
+      //   easing: Easing.linear,
+      //   useNativeDriver: true
+      // }).start();
       this.setState(prevState => {
         return {
           ...prevState,
@@ -292,10 +294,25 @@ class Home extends React.Component {
     this.toggleDialog(dialog);
   };
 
-  endDraw = () => {
+  doAnimation = () => {
+    // let toValue = 400;
+    let toValue = 400;
+    if (!this.props.isNotebookPanelVisible) {
+      toValue = 0;
+    }
+      Animated.timing(this.state.animation, {
+        toValue: toValue,
+        duration: 250,
+        easing: Easing.linear,
+        useNativeDriver: true
+      }).start();
+  };
+
+  endDraw = async () => {
     this.mapViewComponent.endDraw();
     this.setMapMode(MapModes.VIEW);
     this.toggleButton('endDrawButtonVisible');
+    // this.doAnimation();
   };
 
   //function for online/offline state change event handler
@@ -327,12 +344,12 @@ class Home extends React.Component {
 
   openAllSpotsPanel = () => {
     // this.props.setNotebookPanelVisible(false);
-    Animated.spring(this.state.allSpotsViewAnimation, {
-      toValue: 0,
-      // speed: 3,
-      bounciness: 2,
-      useNativeDriver: true
-    }).start();
+    // Animated.spring(this.state.allSpotsViewAnimation, {
+    //   toValue: 0,
+    //   // speed: 3,
+    //   bounciness: 2,
+    //   useNativeDriver: true
+    // }).start();
     this.setState(prevState => {
       return{
         ...prevState,
@@ -348,23 +365,21 @@ class Home extends React.Component {
 
   openNotebookPanel = () => {
     if (this._isMounted) {
-      Animated.spring(this.state.animation, {
-          toValue: 0,
-        // speed: 3,
-        bounciness: 2,
-        useNativeDriver: true
-      }).start();
-      // this.props.setNotebookPanelVisible(true);
-      this.props.setNotebookPageVisible(NotebookPages.OVERVIEW);
-      // this.slide()
-          // this.props.setNotebookPanelVisible(true);
-          // this.props.setNotebookPageVisible(NotebookPages.OVERVIEW);
-          this.setState(prevState => {
-            return {
-              ...prevState,
-              isSamplesModalVisible: false
-            }
-          });
+        this.props.setNotebookPanelVisible(true);
+        // this.doAnimation();
+        // Animated.timing(this.state.animation, {
+        //   toValue: 0,
+        //   duration: 350,
+        //   // easing: Easing.linear,
+        //   useNativeDriver: true
+        // }).start();
+        this.props.setNotebookPageVisible(NotebookPages.OVERVIEW);
+        this.setState(prevState => {
+          return {
+            ...prevState,
+            isSamplesModalVisible: false
+          }
+        });
     }
   };
 
@@ -600,24 +615,24 @@ class Home extends React.Component {
 
     if (this.state.isAllSpotsPanelVisible) {
       notebookPanel =
-        <Animated.View style={[ notebookStyles.panel, animateAllSpotsMenu]}>
+        <View style={[ notebookStyles.panel, ]}>
         <NotebookPanel
         style={{right: 125}}
         closeNotebook={this.closeNotebookPanel}
         textStyle={{fontWeight: 'bold', fontSize: 12}}
         onPress={(name) => this.notebookClickHandler(name)}
       />
-        </Animated.View>
+        </View>
     }
     else {
       notebookPanel =
-        <Animated.View style={[ notebookStyles.panel, animateNotebookMenu]}>
+        <View style={[ notebookStyles.panel,  ]}>
         <NotebookPanel
         closeNotebook={this.closeNotebookPanel}
         textStyle={{fontWeight: 'bold', fontSize: 12}}
         onPress={(name) => this.notebookClickHandler(name)}
       />
-        </Animated.View>
+        </View>
     }
 
     if (this.props.modalVisible === Modals.NOTEBOOK_MODALS.COMPASS) {
@@ -707,7 +722,7 @@ class Home extends React.Component {
                    mapMode={this.state.mapMode}
                    startEdit={this.startEdit}
           />
-          { notebookPanel}
+          {this.props.isNotebookPanelVisible && notebookPanel}
           {(this.props.modalVisible === Modals.NOTEBOOK_MODALS.COMPASS ||
             this.props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS) && compassModal}
           {this.props.modalVisible === Modals.NOTEBOOK_MODALS.SAMPLE ||
@@ -881,15 +896,11 @@ class Home extends React.Component {
             onPress={(name) => this.dialogClickHandler("notebookPanelMenuVisible", name)}
             onTouchOutside={() => this.toggleDialog("notebookPanelMenuVisible")}
           />
-          {/*{this.state.isAllSpotsPanelVisible ?*/}
-          {/*  <AllSpotsView*/}
-          {/*    close={() => this.closeAllSpotsPanel()}*/}
-          {/*  /> : null}*/}
-          <Animated.View style={[notebookStyles.allSpotsPanel ,animateAllSpotsMenu]}>
-          <AllSpotsView
+          { this.state.isAllSpotsPanelVisible ? <View style={[notebookStyles.allSpotsPanel ,]}>
+            <AllSpotsView
             close={() => this.closeAllSpotsPanel()}
           />
-          </Animated.View>
+          </View> : null}
           <Modal
             isVisible={this.state.isOfflineMapModalVisible}
             useNativeDriver={true}
@@ -915,7 +926,8 @@ function mapStateToProps(state) {
     isNotebookPanelVisible: state.notebook.isNotebookPanelVisible,
     isCompassModalVisible: state.notebook.isCompassModalVisible,
     modalVisible: state.home.modalVisible,
-    deviceDimensions: state.home.deviceDimensions
+    deviceDimensions: state.home.deviceDimensions,
+    spot: state.spot.features
     // visiblePage: state.notebook.visiblePage
   }
 }
@@ -930,6 +942,7 @@ const mapDispatchToProps = {
   setModalVisible: (modal) => ({type: homeReducers.SET_MODAL_VISIBLE, modal: modal}),
   setDeviceDims: (dims) => ({type: homeReducers.DEVICE_DIMENSIONS, dims: dims}),
   onSpotEditImageObj: (images) => ({type: spotReducers.EDIT_SPOT_IMAGES, images: images}),
+  onFeatureSelected: (featureSelected) => ({type: spotReducers.FEATURE_SELECTED, feature: featureSelected}),
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);
