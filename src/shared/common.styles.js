@@ -22,7 +22,8 @@ const commonStyles = StyleSheet.create({
     justifyContent: 'center'
   },
   fillWidthSide: {
-    flex: 1
+    flex: 1,
+    justifyContent: 'center'
   },
   itemRightIconsContainer: {
     flexDirection: 'row'
