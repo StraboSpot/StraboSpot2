@@ -9,6 +9,26 @@ export const getForm = () => {
   return survey;
 };
 
+// Get all the choices over all the forms
+const getAllChoices = (object, allChoices) => {
+  Object.keys(object).forEach(formType => {
+    if (object[formType].hasOwnProperty('choices')) {
+      allChoices = [...allChoices, ...object[formType].choices];
+    }
+    else {
+      allChoices = getAllChoices(object[formType], allChoices);
+    }
+  });
+  return allChoices;
+};
+
+// Given a name, get the label for it
+export const getLabel = (name) => {
+  let allChoices = [];
+  allChoices = getAllChoices(forms.default, allChoices);
+  return allChoices.find(choice => choice.name === name).label || name.replace(/_/g, " ");
+};
+
 /*const createDefaultLabel = (data) => {
   let label = data.feature_type ? getFeatureTypeLabel(data.feature_type) : '';
   if (isEmpty(label) && data.type) label = data.type.split('_')[0] + ' feature';

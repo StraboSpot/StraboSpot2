@@ -4,6 +4,8 @@ import {Icon} from "react-native-elements";
 import {connect} from "react-redux";
 import {notebookReducers, NotebookPages} from "../notebook-panel/Notebook.constants";
 import {formReducers} from "../form/Form.constant";
+import {getLabel} from "../form/form.container";
+import {toTitleCase} from "../../shared/Helpers";
 
 // Styles
 import styles from "./measurements.styles";
@@ -25,13 +27,13 @@ const MeasurementItem = (props) => {
 
   const getTypeText = (item) => {
     if (props.isAssociatedList && props.isAssociatedItem) {
-      if (item.feature_type) return 'Associated ' + item.feature_type;
+      if (item.feature_type) return 'Associated ' + toTitleCase(getLabel(item.feature_type));
       else if (item.type === 'linear_orientation') return 'Associated Linear Feature';
       else if (props.isAssociatedList && item.type === 'planar_orientation') return 'Associated Planar Feature';
       else if (props.isAssociatedList && item.type === 'tabular_orientation') return 'Associated Planar Feature (Tabular Zone)';
     }
     else if (props.isAssociatedList && !props.isAssociatedItem) {
-      if (item.feature_type) return item.feature_type;
+      if (item.feature_type) return toTitleCase(getLabel(item.feature_type));
       else if (item.type === 'linear_orientation') return 'Linear Feature';
       else if (props.isAssociatedList && item.type === 'planar_orientation') return 'Planar Feature';
       else if (props.isAssociatedList && item.type === 'tabular_orientation') return 'Planar Feature (Tabular Zone)';
