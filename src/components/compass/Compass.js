@@ -314,9 +314,10 @@ class Compass extends Component {
                style={{
                  marginTop: 25,
                  height: 220,
+                 width: 220,
                  justifyContent: 'center',
                  alignItems: 'center',
-                 resizeMode: 'contain',
+                 // resizeMode: 'contain',
                  // transform: [{rotate: 360 - this.state.magnetometer + 'deg'}]
                }}
         />

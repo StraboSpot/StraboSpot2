@@ -16,19 +16,17 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 20,
     borderBottomLeftRadius: 20,
     width: '100%',
+    zIndex: 100,
   },
   compassImageContainer: {
     alignItems: 'center',
-    flex: 70,
+    // flex: 30,
     justifyContent: 'center',
-    paddingBottom: 10
+    paddingBottom: 10,
   },
   renderCompassContainer: {
     flex: 60,
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR
-  },
-  compassRowContainer: {
-    alignItems: 'center'
   },
   itemContainer: {
     width: '90%',
@@ -68,6 +66,7 @@ const styles = StyleSheet.create({
   strikeAndDipLine: {
     zIndex: 10,
     height: 170,
+    width: 170,
     position: 'absolute',
     top: 50,
     resizeMode: 'contain',
@@ -83,27 +82,22 @@ const styles = StyleSheet.create({
   },
   trendLine: {
     height: 150,
+    width: 150,
     position: 'absolute',
     top: 60,
     resizeMode: 'contain',
   },
   modalPosition: {
     position: 'absolute', //Here is the trick
-    left: 80,
+    left: 40,
     bottom: 40,
+    zIndex: 1
   },
   modalPositionShortcutView: {
     position: 'absolute',
     right: 80,
     top: 20,
   },
-  dataModalPosition: {
-    position: 'absolute',
-    left: 80,
-    top: 20,
-    backgroundColor: 'white',
-
-  }
 });
 
 export default styles;
