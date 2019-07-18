@@ -1,16 +1,14 @@
-import {StyleSheet} from 'react-native';
+import {Platform, StyleSheet} from 'react-native';
 import * as themes from '../styles.constants';
 
 const styles = StyleSheet.create({
   sectionDivider: {
-    height: 30,
     paddingLeft: 10,
     justifyContent: 'center',
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR
   },
   sectionDividerText: {
-    fontSize: 16,
-    lineHeight: 30,
+    fontSize: Platform.OS === 'ios' ? 13 : 16,
     textTransform: 'uppercase',
     color: themes.SECONDARY_HEADER_TEXT_COLOR
   },

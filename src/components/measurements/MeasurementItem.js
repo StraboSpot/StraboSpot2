@@ -30,21 +30,21 @@ const MeasurementItem = (props) => {
       if (item.feature_type) return 'Associated ' + toTitleCase(getLabel(item.feature_type));
       else if (item.type === 'linear_orientation') return 'Associated Linear Feature';
       else if (props.isAssociatedList && item.type === 'planar_orientation') return 'Associated Planar Feature';
-      else if (props.isAssociatedList && item.type === 'tabular_orientation') return 'Associated Planar Feature (Tabular Zone)';
+      else if (props.isAssociatedList && item.type === 'tabular_orientation') return 'Associated Planar Feature (TZ)';
     }
     else if (props.isAssociatedList && !props.isAssociatedItem) {
       if (item.feature_type) return toTitleCase(getLabel(item.feature_type));
       else if (item.type === 'linear_orientation') return 'Linear Feature';
       else if (props.isAssociatedList && item.type === 'planar_orientation') return 'Planar Feature';
-      else if (props.isAssociatedList && item.type === 'tabular_orientation') return 'Planar Feature (Tabular Zone)';
+      else if (props.isAssociatedList && item.type === 'tabular_orientation') return 'Planar Feature (TZ)';
     }
     else {
       if (item.type === 'linear_orientation' && !item.associated_orientation) return 'Linear Feature';
       else if (item.type === 'planar_orientation' && !item.associated_orientation) return 'Planar Feature';
-      else if (item.type === 'tabular_orientation' && !item.associated_orientation) return 'Planar Feature (Tabular Zone)';
+      else if (item.type === 'tabular_orientation' && !item.associated_orientation) return 'Planar Feature (TZ)';
       else if (item.type === 'planar_orientation' && item.associated_orientation) return 'Planar Feature   Linear Feature';
       else if (item.type === 'linear_orientation' && item.associated_orientation) return 'Linear Feature   Planar Feature';
-      else if (item.type === 'tabular_orientation' && item.associated_orientation) return 'Planar Feature (Tabular Zone)   Linear Feature';
+      else if (item.type === 'tabular_orientation' && item.associated_orientation) return 'Planar Feature (TZ)   Linear Feature';
     }
   };
 

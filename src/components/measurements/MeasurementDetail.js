@@ -155,7 +155,9 @@ const MeasurementDetailPage = (props) => {
     if (!isEmpty(getForm())) {
       return (
         <View>
+          <View style={styles.measurementsSectionDividerContainer}>
           <SectionDivider dividerText='Feature Type'/>
+        </View>
           <View>
             <Formik
               ref={form}

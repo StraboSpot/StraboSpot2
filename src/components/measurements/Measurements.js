@@ -62,19 +62,25 @@ const MeasurementsPage = (props) => {
 
   const renderSectionDivider = (dividerText) => {
     return (
-      <View style={styles.measurementsSectionDividerContainer}>
-        <SectionDivider dividerText={dividerText}/>
+      <View style={styles.measurementsSectionDividerWithButtonsContainer}>
+        <View style={styles.measurementsSectionDividerTextContainer}>
+          <SectionDivider dividerText={dividerText}/>
+        </View>
         <View style={styles.measurementsSectionDividerButtonContainer}>
           <Button
-            titleStyle={themes.PRIMARY_ACCENT_COLOR}
+            titleStyle={styles.measurementsSectionDividerButtonText}
             title={'Add'}
             type={'clear'}
             onPress={() => props.setModalVisible(Modals.NOTEBOOK_MODALS.COMPASS)}
           />
-        </View>
-        <View style={styles.measurementsSectionDividerButtonContainer}>
           <Button
-            titleStyle={themes.PRIMARY_ACCENT_COLOR}
+            titleStyle={styles.measurementsSectionDividerButtonText}
+            title={'Identify All'}
+            type={'clear'}
+            onPress={() => props.setModalVisible(Modals.NOTEBOOK_MODALS.COMPASS)}
+          />
+          <Button
+            titleStyle={styles.measurementsSectionDividerButtonText}
             title={'Select'}
             type={'clear'}
           />
@@ -85,7 +91,7 @@ const MeasurementsPage = (props) => {
 
   const renderSectionDividerShortcutView = (dividerText) => {
     return (
-      <View style={styles.measurementsSectionDividerShortcutContainer}>
+      <View style={styles.measurementsSectionDividerContainer}>
         <SectionDivider dividerText={dividerText}/>
       </View>
     )
@@ -114,13 +120,13 @@ const MeasurementsPage = (props) => {
 
   const renderMeasurementsShortcutView = () => {
     return (
-      <View>
+      <View style={{backgroundColor: themes.PRIMARY_BACKGROUND_COLOR}}>
         <ScrollView>
-          {renderSectionDividerShortcutView('Planar')}
+          {renderSectionDividerShortcutView('Planar Measurements')}
           {props.spot.properties.orientation_data && renderPlanarMeasurements()}
-          {renderSectionDividerShortcutView('Linear')}
+          {renderSectionDividerShortcutView('Linear Measurements')}
           {props.spot.properties.orientation_data && renderLinearMeasurements()}
-          {renderSectionDividerShortcutView('Planar + Linear')}
+          {renderSectionDividerShortcutView('Planar + Linear Measurements')}
           {props.spot.properties.orientation_data && renderPlanarLinearMeasurements()}
         </ScrollView>
       </View>

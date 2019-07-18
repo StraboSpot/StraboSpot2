@@ -1,4 +1,4 @@
-import {StyleSheet} from 'react-native';
+import {Platform, StyleSheet} from 'react-native';
 import * as themes from '../../shared/styles.constants';
 
 const styles = StyleSheet.create({
@@ -12,12 +12,26 @@ const styles = StyleSheet.create({
   measurementsSectionDividerContainer: {
     flex: 1,
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingTop: 45
+    paddingTop: 20,
+    paddingBottom: 9
+  },
+  measurementsSectionDividerWithButtonsContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    paddingTop: 20
+  },
+  measurementsSectionDividerTextContainer: {
+    justifyContent: 'center'
   },
   measurementsSectionDividerButtonContainer: {
-    // height: 35,
-    justifyContent: 'space-between',
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    paddingRight: 10,
+  },
+  measurementsSectionDividerButtonText: {
+    color: themes.PRIMARY_ACCENT_COLOR,
+    fontSize: Platform.OS === 'ios' ? 11 : 15
   },
   measurementsListItem: {
     flex: 1,
