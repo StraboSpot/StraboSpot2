@@ -23,7 +23,7 @@ const ImageInfoView = (props) => {
     function dimsChange() {
       getDims = Dimensions.get(platformType);
       props.setDeviceDims(getDims);
-    };
+    }
     Dimensions.addEventListener('change', dimsChange);
     return () => {
       Dimensions.removeEventListener('change', dimsChange);
