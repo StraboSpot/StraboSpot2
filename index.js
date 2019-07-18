@@ -29,7 +29,12 @@ Navigation.events().registerAppLaunchedListener(() => {
         children: [
           // {
           //   component: {
-          //     name: 'SpotPage',
+          //     name: 'ImageGallery',
+          //   }
+          // },
+          // {
+          //   component: {
+          //     name: 'ImageInfo',
           //   }
           // },
           {

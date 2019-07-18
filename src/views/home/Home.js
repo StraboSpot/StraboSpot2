@@ -104,7 +104,7 @@ class Home extends React.Component {
     NetInfo.isConnected.addEventListener('connectionChange', this.handleConnectivityChange);
     this.props.setDeviceDims(this.dimensions);
     Dimensions.addEventListener('change', this.deviceOrientation);
-    this.props.setNotebookPanelVisible(false);
+    // this.props.setNotebookPanelVisible(false);
     this.props.setModalVisible(null);
   }
 

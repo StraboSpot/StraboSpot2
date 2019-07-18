@@ -27,7 +27,7 @@ const allSpotsView = (props) => {
         onPress={props.close}>Close</ButtonNoBackground>
       <ScrollView>
       {props.allSpots.map(spot => {
-        console.log(spot);
+        // console.log(spot);
         return (
             <ListItem
               key={spot.properties.id}
