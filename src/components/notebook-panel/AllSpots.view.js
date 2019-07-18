@@ -35,6 +35,7 @@ const allSpotsView = (props) => {
               titleStyle={{fontSize: 14}}
               subtitle={spot.geometry.type}
               subtitleStyle={{fontSize: 12}}
+              containerStyle={{paddingTop: 5}}
               contentContainerStyle={{
                 justifyContent: 'center',
                 alignItems: 'center',

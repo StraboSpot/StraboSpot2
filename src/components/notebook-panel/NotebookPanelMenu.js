@@ -1,6 +1,7 @@
 import React from 'react';
 import Dialog, {DialogButton, DialogContent, DialogTitle} from "react-native-popup-dialog";
 import {ScaleAnimation, SlideAnimation} from "react-native-popup-dialog/src";
+import {menuButtons} from "../../shared/app.constants";
 
 // Styles
 import styles from "./NotebookPanel.styles";
@@ -23,25 +24,25 @@ const NotebookPanelMenu = props => (
         style={styles.dialogContent}
         text="Copy this feature"
         textStyle={{fontSize: 12}}
-        onPress={() => props.onPress('copyFeature')}
+        onPress={() => props.onPress(menuButtons.notebookMenu.COPY_FEATURE)}
       />
       <DialogButton
       style={styles.dialogContent}
       text="Delete this Feature"
       textStyle={{fontSize: 12}}
-      onPress={() => props.onPress('deleteFeature')}
+      onPress={() => props.onPress(menuButtons.notebookMenu.DELETE_FEATURE)}
     />
       <DialogButton
         style={styles.dialogContent}
         text="Show All Spots Panel"
         textStyle={{fontSize: 12}}
-        onPress={() => props.onPress('showAllSpotsPanel')}
+        onPress={() => props.onPress(menuButtons.notebookMenu.SHOW_ALL_SPOTS_PANEL)}
       />
       <DialogButton
         style={styles.dialogContent}
         text="Close Notebook"
         textStyle={{fontSize: 12}}
-        onPress={() => props.onPress('closeNotebook')}
+        onPress={() => props.onPress(menuButtons.notebookMenu.CLOSE_NOTEBOOK)}
       />
     </DialogContent>
   </Dialog>

@@ -18,17 +18,18 @@ const notebookStyles = StyleSheet.create({
     justifyContent: 'center',
     width: 125,
     height: '100%',
-    // borderBottomLeftRadius: 30,
-    // borderTopLeftRadius: 30,
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
-    position: 'absolute', //Here is the trick
+    borderWidth: 1,
+    position: 'absolute',
     right: 0,
     zIndex: 1,
   },
   headerContainer: {
     borderBottomWidth: 1,
-    height: 90,
-    padding: 10
+    height: 70,
+    padding: 10,
+    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
+    borderTopLeftRadius: 30,
   },
   centerContainer: {
     flex: 1,
@@ -37,7 +38,8 @@ const notebookStyles = StyleSheet.create({
     height: 60,
     borderTopWidth: 1,
     padding: 10,
-    borderBottomLeftRadius: 30
+    borderBottomLeftRadius: 30,
+    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
   },
   noSpotContent: {
     flex: 1,
