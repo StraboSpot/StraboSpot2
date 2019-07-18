@@ -33,29 +33,23 @@ const NotebookHeader = props => {
 
   return (
     <View style={headerStyles.headerContentContainer}>
-      <View style={headerStyles.headerSymbolIcon}>
-        <Image
-          source={require('../../../assets/icons/PointButton_pressed_resized1.png')}
-          style={headerStyles.headerImage}
-        />
-      </View>
+      <Image
+        source={require('../../../assets/icons/Notebook_Header_Point_resizeimage.png')}
+        style={headerStyles.headerImage}
+      />
       <View style={headerStyles.headerSpotNameAndCoordsContainer}>
-        <View style={headerStyles.headerSpotNameContainer}>
-          <TextInput
-            defaultValue={props.spot.properties.name}
-            onChangeText={(text) => setSpotName(text)}
-            onBlur={() => props.onSpotEdit('name', spotName)}
-            style={headerStyles.headerSpotName}/>
-        </View>
-        <View style={headerStyles.headerCoordsContainer}>
-          <Text style={headerStyles.headerCoords}>{getSpotCoordText()}</Text>
-        </View>
+        <TextInput
+          defaultValue={props.spot.properties.name}
+          onChangeText={(text) => setSpotName(text)}
+          onBlur={() => props.onSpotEdit('name', spotName)}
+          style={headerStyles.headerSpotName}/>
+        <Text style={headerStyles.headerCoords}>{getSpotCoordText()}</Text>
       </View>
       <View style={headerStyles.headerButtons}>
         <IconButton
           onPress={() => props.onPress('menu')}
           source={require('../../../assets/icons/three-dot-menu.png')}
-          style={{width: 20, height: 20}}
+          style={headerStyles.threeDotMenu}
         />
       </View>
     </View>
