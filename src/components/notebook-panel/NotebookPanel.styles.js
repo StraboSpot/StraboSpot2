@@ -6,10 +6,16 @@ import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-nativ
 const platformType = Platform.OS === 'ios' ? 'window' : 'screen';
 const width = Dimensions.get(platformType).width;
 
+const deviceWidth = () => {
+  if (width < 500) return wp('95%');
+  if (width >= 500 && width <= 1000) return wp('50%');
+  if (width > 1000) return wp('40%');
+};
+
 const notebookStyles = StyleSheet.create({
   panel: {
     // flex: 1,
-    width: wp('50%'),
+    width: deviceWidth(),
     height: '100%',
     borderBottomLeftRadius: 30,
     borderTopLeftRadius: 30,
