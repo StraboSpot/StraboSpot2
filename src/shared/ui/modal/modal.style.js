@@ -1,10 +1,20 @@
-import {StyleSheet} from 'react-native';
+import {Dimensions, Platform, StyleSheet} from 'react-native';
 import * as themes from "../../styles.constants";
+import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 
+const platformType = Platform.OS === 'ios' ? 'window' : 'screen';
+const width = Dimensions.get(platformType).width;
+const height = Dimensions.get(platformType).height;
+
+const deviceWidth = () => {
+  if (width < 500) return wp('30%');
+  if (width >= 500 && width <= 1000) return wp('30%');
+  if (width > 1000) return wp('40%');
+};
 const modalStyle = StyleSheet.create({
   modalContainer: {
     // height: 600,
-    width: 275,
+    width: wp('27%'),
     opacity: .90
   },
   // modalBottom: {

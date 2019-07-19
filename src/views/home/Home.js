@@ -90,8 +90,6 @@ class Home extends React.Component {
       },
       currentSpot: undefined,
       allPhotosSaved: [],
-      isCompassModalVisible: false,
-      isSamplesModalVisible: false,
       isAllSpotsPanelVisible: false,
       animation: new Animated.Value(400),
       allSpotsViewAnimation: new Animated.Value(125)
@@ -254,7 +252,6 @@ class Home extends React.Component {
       this.setState(prevState => {
         return {
           ...prevState,
-          isSamplesModalVisible: false,
           isAllSpotsPanelVisible: false
         }
       });
@@ -374,12 +371,12 @@ class Home extends React.Component {
         //   useNativeDriver: true
         // }).start();
         this.props.setNotebookPageVisible(NotebookPages.OVERVIEW);
-        this.setState(prevState => {
-          return {
-            ...prevState,
-            isSamplesModalVisible: false
-          }
-        });
+        // this.setState(prevState => {
+        //   return {
+        //     ...prevState,
+        //     isSamplesModalVisible: false
+        //   }
+        // });
     }
   };
 
@@ -648,18 +645,15 @@ class Home extends React.Component {
         />;
     }
 
+    // Renders Samples modals in either shortcut or notebook view
     if (this.props.modalVisible === Modals.NOTEBOOK_MODALS.SAMPLE) {
       const dimensions = this.props.deviceDimensions;
       console.log('This.props.deviceDimensions', dimensions);
       samplesModal = (
-        <View
-          style={sampleStyles.modalPosition}>
           <NotebookSamplesModal
             close={() => this.props.setModalVisible(null)}
             cancel={() => this.samplesModalCancel()}
-            // style={{justifyContent: 'center'}}
           />
-        </View>
       )
     }
     else if (this.props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE) {
@@ -667,7 +661,7 @@ class Home extends React.Component {
       console.log('This.props.deviceDimensions', dimensions);
       samplesModal =
         <View
-          style={dimensions.width > dimensions.height ? sampleStyles.modalPositionShortcutViewLandscape : sampleStyles.modalPositionShortcutViewPortrait}>
+          style={sampleStyles.modalPositionShortcutView}>
           <ShortcutSamplesModal
             close={() => this.props.setModalVisible(null)}
             cancel={() => this.samplesModalCancel()}
