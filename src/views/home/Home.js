@@ -632,6 +632,7 @@ class Home extends React.Component {
         </View>
     }
 
+    // Renders Compass modals in either shortcut or notebook view
     if (this.props.modalVisible === Modals.NOTEBOOK_MODALS.COMPASS) {
       compassModal =
         <NotebookCompassModal
