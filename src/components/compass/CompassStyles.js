@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
   },
   modalPosition: {
     position: 'absolute', //Here is the trick
-    left: 40,
+    left: 10,
     bottom: 40,
     zIndex: 1
   },

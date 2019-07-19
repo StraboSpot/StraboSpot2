@@ -82,6 +82,7 @@ class Compass extends Component {
       );
       // RNSimpleCompass.stop();
     });
+    console.log('Compass subscribed');
   };
 
   componentWillUnmount() {
@@ -484,6 +485,7 @@ class Compass extends Component {
 
 
     if (this.props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {
+      Orientation.lockToPortrait();
       if (!isEmpty(this.props.spot)) {
         modalView = <View>
           <View style={{height: 320}}>
@@ -504,6 +506,7 @@ class Compass extends Component {
       }
     }
     else if (this.props.modalVisible === Modals.NOTEBOOK_MODALS.COMPASS) {
+      Orientation.lockToPortrait();
       modalView = <View>
         <Button
           title={'View In Shortcut Mode'}
