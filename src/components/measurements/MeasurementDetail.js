@@ -25,12 +25,12 @@ const MeasurementDetailPage = (props) => {
     TABULAR: 'Tabular Zone',
   };
 
-  const getDefaultSwitchIndex = () => {
-    if (props.formData.type === 'planar_orientation') return 0;
-    else if (props.formData.type === 'tabular_orientation') return 1;
+  // Set type switch to Planar Feature (0) or Tabular Feature (1)
+  const getTypeSwitchIndex = (type) => {
+    return type === 'planar_orientation' ? 0 : 1;
   };
 
-  const [selectedFeatureTypeIndex, setFeatureTypeIndex] = useState(getDefaultSwitchIndex());
+  const [selectedFeatureTypeIndex, setFeatureTypeIndex] = useState(getTypeSwitchIndex(props.formData.type));
   const [selectedFeatureId, setSelectedFeatureId] = useState(props.formData.id);
   const form = useRef(null);
 
@@ -65,9 +65,13 @@ const MeasurementDetailPage = (props) => {
     else switchFeature(item)
   };
 
+  // If the item clicked is not equal to one not being displayed already then switch to that feature
   const switchFeature = (item) => {
-    props.setFormData(item);
-    setSelectedFeatureId(item.id)
+    if (item.id !== selectedFeatureId) {
+      props.setFormData(item);
+      setSelectedFeatureId(item.id);
+      setFeatureTypeIndex(getTypeSwitchIndex(item.type));
+    }
   };
 
   const onSwitchPress = (i) => {
@@ -156,8 +160,8 @@ const MeasurementDetailPage = (props) => {
       return (
         <View>
           <View style={styles.measurementsSectionDividerContainer}>
-          <SectionDivider dividerText='Feature Type'/>
-        </View>
+            <SectionDivider dividerText='Feature Type'/>
+          </View>
           <View>
             <Formik
               ref={form}
@@ -193,10 +197,9 @@ const MeasurementDetailPage = (props) => {
         <FlatList
           data={selectedOrientation.associatedOrientations}
           renderItem={item => <MeasurementItem item={item}
-                                               selectedId={selectedFeatureId}
-                                               isAssociatedList={true}
+                                               selectedIds={[selectedFeatureId]}
                                                isAssociatedItem={item.item.id !== selectedOrientation.data.id}
-                                               switchFeature={() => onSwitchFeature(item.item)}/>}
+                                               onPress={() => onSwitchFeature(item.item)}/>}
           keyExtractor={(item, index) => index.toString()}
         />}
         {selectedOrientation.data.type === 'linear_orientation' &&

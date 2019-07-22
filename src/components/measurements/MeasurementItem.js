@@ -1,9 +1,6 @@
 import React from "react";
 import {Text, TouchableOpacity, View} from "react-native";
 import {Icon} from "react-native-elements";
-import {connect} from "react-redux";
-import {notebookReducers, NotebookPages} from "../notebook-panel/Notebook.constants";
-import {formReducers} from "../form/Form.constant";
 import {getLabel} from "../form/form.container";
 import {toTitleCase} from "../../shared/Helpers";
 
@@ -14,16 +11,6 @@ import * as themes from '../../shared/styles.constants';
 
 // Render a measurement item in a list
 const MeasurementItem = (props) => {
-
-  const openMeasurementDetail = (item) => {
-    console.log('item', item);
-    if (props.isAssociatedList && props.selectedId !== item.id) props.switchFeature(item);
-    else {
-      props.setFormData(item);
-      props.setNotebookPanelVisible(true);
-      props.setNotebookPageVisible(NotebookPages.MEASUREMENTDETAIL);
-    }
-  };
 
   const getTypeText = (item) => {
     if (props.isAssociatedList && props.isAssociatedItem) {
@@ -61,12 +48,12 @@ const MeasurementItem = (props) => {
     return (
       <View style={styles.measurementsListItem}>
         <View>
-          <Text style={props.selectedId === props.item.item.id ? styles.mainTextInverse : styles.mainText}>
+          <Text style={props.selectedIds.includes(props.item.item.id) ? styles.mainTextInverse : styles.mainText}>
             {getMeasurementText(item)}
           </Text>
         </View>
         <View>
-          <Text style={props.selectedId === props.item.item.id ? styles.propertyTextInverse : styles.propertyText}>
+          <Text style={props.selectedIds.includes(props.item.item.id) ? styles.propertyTextInverse : styles.propertyText}>
             {getTypeText(item)}
           </Text>
         </View>
@@ -78,8 +65,8 @@ const MeasurementItem = (props) => {
     <View style={styles.measurementsRenderListContainer}>
       {typeof (props.item.item) !== 'undefined' &&
       <TouchableOpacity
-        style={props.selectedId === props.item.item.id ? stylesCommon.rowContainerInverse : stylesCommon.rowContainer}
-        onPress={() => openMeasurementDetail(props.item.item)}>
+        style={props.selectedIds.includes(props.item.item.id) ? stylesCommon.rowContainerInverse : stylesCommon.rowContainer}
+        onPress={() => props.onPress()}>
         <View style={stylesCommon.row}>
           <View style={stylesCommon.fillWidthSide}>
             {renderMeasurementText(props.item.item)}
@@ -89,8 +76,7 @@ const MeasurementItem = (props) => {
               name='ios-information-circle-outline'
               containerStyle={{justifyContent: 'center', paddingRight: 10}}
               type='ionicon'
-              color={props.selectedId === props.item.item.id ? themes.SECONDARY_BACKGROUND_COLOR : themes.PRIMARY_ACCENT_COLOR}
-              onPress={() => openMeasurementDetail(props.item)}
+              color={props.selectedIds.includes(props.item.item.id) ? themes.SECONDARY_BACKGROUND_COLOR : themes.PRIMARY_ACCENT_COLOR}
             />
             <Icon
               name='right'
@@ -107,14 +93,4 @@ const MeasurementItem = (props) => {
   );
 };
 
-function mapStateToProps(state) {
-  return {}
-}
-
-const mapDispatchToProps = {
-  setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),
-  setFormData: (formData) => ({type: formReducers.SET_FORM_DATA, formData: formData}),
-  setNotebookPanelVisible: (value) => ({type: notebookReducers.SET_NOTEBOOK_PANEL_VISIBLE, value: value}),
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(MeasurementItem);
+export default MeasurementItem;
