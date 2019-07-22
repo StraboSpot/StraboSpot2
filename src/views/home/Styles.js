@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     position: "absolute",
     bottom: 0,
-    right: 10,
+    right: 0,
   },
   drawerStyles: {
     shadowColor: '#000000',
