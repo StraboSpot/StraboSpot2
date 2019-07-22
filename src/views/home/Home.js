@@ -37,6 +37,7 @@ import AllSpotsView from '../../components/notebook-panel/AllSpots.view';
 import {homeReducers, Modals} from "./Home.constants";
 import sampleStyles from '../../components/samples/samples.style';
 import notebookStyles from '../../components/notebook-panel/NotebookPanel.styles';
+import Orientation from "react-native-orientation-locker";
 
 const platformType = Platform.OS === 'ios' ? 'window' : 'screen';
 const imageOptions = {
@@ -85,7 +86,7 @@ class Home extends React.Component {
     Icon.getImageSource("pin", 30);
     Orientation.lockToLandscapeLeft();
     NetInfo.isConnected.addEventListener('connectionChange', this.handleConnectivityChange);
-    this.props.setDeviceDims(this.dimensions);
+    // this.props.setDeviceDims(this.dimensions);
     Dimensions.addEventListener('change', this.deviceOrientation);
     // this.props.setNotebookPanelVisible(false);
     this.props.setModalVisible(null);
@@ -625,8 +626,6 @@ class Home extends React.Component {
 
     // Renders Samples modals in either shortcut or notebook view
     if (this.props.modalVisible === Modals.NOTEBOOK_MODALS.SAMPLE) {
-      const dimensions = this.props.deviceDimensions;
-      console.log('This.props.deviceDimensions', dimensions);
       samplesModal = (
         <NotebookSamplesModal
           close={() => this.props.setModalVisible(null)}
@@ -635,8 +634,6 @@ class Home extends React.Component {
       )
     }
     else if (this.props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE) {
-      const dimensions = this.props.deviceDimensions;
-      console.log('This.props.deviceDimensions', dimensions);
       samplesModal =
         <View
           style={sampleStyles.modalPositionShortcutView}>
@@ -785,7 +782,9 @@ class Home extends React.Component {
           {/*<View><Text>Online: {this.props.isOnline.toString()}</Text></View> */}
 
           {this.state.buttons.drawButtonsVisible ?
-            <View style={this.props.isNotebookPanelVisible ? [styles.drawToolsContainer, {right: 410}]
+            <View style={this.props.isNotebookPanelVisible ||
+            (this.props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE && this.props.deviceDimensions.width > 768)
+              ? [styles.drawToolsContainer, {right: 410}]
               : styles.drawToolsContainer}>
               <IconButton
                 style={{top: 5}}
