@@ -38,7 +38,7 @@ import {homeReducers, Modals} from "./Home.constants";
 import sampleStyles from '../../components/samples/samples.style';
 import notebookStyles from '../../components/notebook-panel/NotebookPanel.styles';
 
-const platformType = Platform.OS === 'ios' ? 'window': 'screen';
+const platformType = Platform.OS === 'ios' ? 'window' : 'screen';
 const imageOptions = {
   storageOptions: {
     skipBackup: true,
