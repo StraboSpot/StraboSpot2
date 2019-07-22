@@ -22,8 +22,8 @@ class mapView extends Component {
     super(props, context);
 
     this.state = {
-      latitude: LATITUDE,
-      longitude: LONGITUDE,
+      latitude: 0,
+      longitude: 0,
       currentBasemap: {},
       location: false,
       drawFeatures: [],
@@ -77,6 +77,7 @@ class mapView extends Component {
   async componentDidMount() {
     this.props.onRef(this);
     this._isMounted = true;
+    await this.setCurrentLocation();
     console.log('Setting initial basemap ...', this.basemaps.mapboxOutdoors);
     this.props.onCurrentBasemap(this.basemaps.mapboxOutdoors);
   }

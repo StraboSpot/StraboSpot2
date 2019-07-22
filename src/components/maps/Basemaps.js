@@ -9,7 +9,7 @@ function Basemap(props) {
     style={{flex: 1}}
     animated={true}
     localizeLabels={true}
-    //showUserLocation={true}
+    showUserLocation={true}
     logoEnabled={false}
     rotateEnabled={false}
     attributionEnabled={false}
