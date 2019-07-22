@@ -72,22 +72,22 @@ class Home extends React.Component {
       settingsMenuVisible: 'settingsMain',
       drawerVisible: false,
       isOfflineMapModalVisible: false,
-      shortcutSwitchPosition: {
-        Tag: false,
-        Measurement: false,
-        Sample: false,
-        Note: false,
-        Photo: false,
-        Sketch: false
-      },
-      isShortcutButtonVisible: {
-        Tag: false,
-        Measurement: false,
-        Sample: false,
-        Note: false,
-        Photo: false,
-        Sketch: false
-      },
+      // shortcutSwitchPosition: {
+      //   Tag: false,
+      //   Measurement: false,
+      //   Sample: false,
+      //   Note: false,
+      //   Photo: false,
+      //   Sketch: false
+      // },
+      // isShortcutButtonVisible: {
+      //   Tag: false,
+      //   Measurement: false,
+      //   Sample: false,
+      //   Note: false,
+      //   Photo: false,
+      //   Sketch: false
+      // },
       currentSpot: undefined,
       allPhotosSaved: [],
       isAllSpotsPanelVisible: false,
@@ -579,20 +579,22 @@ class Home extends React.Component {
   toggleSwitch = (switchName) => {
     console.log('Switch', switchName);
     if (this._isMounted) {
-      this.setState(prevState => {
-        return {
-          shortcutSwitchPosition: {
-            ...prevState.shortcutSwitchPosition,
-            [switchName]: !prevState.shortcutSwitchPosition[switchName]
-          },
-          isShortcutButtonVisible: {
-            ...prevState.isShortcutButtonVisible,
-            [switchName]: !prevState.shortcutSwitchPosition[switchName]
-          }
-        }
-      }, () => {
-        console.log('Switch Position', this.state.shortcutSwitchPosition);
-      });
+      this.props.onShortcutSwitchChange(switchName);
+      console.log(this.props.shortcutSwitchPosition);
+      // this.setState(prevState => {
+      //   return {
+          // shortcutSwitchPosition: {
+          //   ...prevState.shortcutSwitchPosition,
+          //   [switchName]: !prevState.shortcutSwitchPosition[switchName]
+          // },
+      //     isShortcutButtonVisible: {
+      //       ...prevState.isShortcutButtonVisible,
+      //       [switchName]: this.props.shortcutSwitchPosition[switchName]
+      //     }
+      //   }
+      // }, () => {
+      //   console.log('Switch Position', this.state.shortcutSwitchPosition);
+      // });
     }
   };
 
@@ -759,56 +761,41 @@ class Home extends React.Component {
             />
           </View>
           <View style={styles.rightsideIcons}>
-            <View style={styles.sideIconsGroupContainer}>
-              <View style={styles.sideIconsGroup}>
-                {this.state.isShortcutButtonVisible.Tag ?
-                  <IconButton
-                    source={require('../../assets/icons/TagButton.png')}
-                    onPress={this.clickHandler.bind(this, "tag")}
-                  /> : null}
-              </View>
-              <View style={styles.sideIconsGroup}>
-                {this.state.isShortcutButtonVisible.Measurement ?
-                  <IconButton
-                    source={this.props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS ? require(
-                      '../../assets/icons/MeasurementButton_pressed.png')
-                      : require('../../assets/icons/MeasurementButton.png')}
-                    onPress={this.clickHandler.bind(this, "measurement")}
-                  /> : null}
-              </View>
-              <View style={styles.sideIconsGroup}>
-                {this.state.isShortcutButtonVisible.Sample ?
-                  <IconButton
-                    source={this.props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE ? require(
-                      '../../assets/icons/SampleButton_pressed.png')
-                      : require('../../assets/icons/SampleButton.png')}
-                    onPress={this.clickHandler.bind(this, "sample")}
-                  /> : null}
-              </View>
-              <View style={styles.sideIconsGroup}>
-                {this.state.isShortcutButtonVisible.Note ?
-                  <IconButton
-                    name={"Note"}
-                    source={require('../../assets/icons/NoteButton.png')}
-                    onPress={this.clickHandler.bind(this, "note")}
-                  /> : null}
-              </View>
-              <View style={styles.sideIconsGroup}>
-                {this.state.isShortcutButtonVisible.Photo ?
-                  <IconButton
-                    source={require('../../assets/icons/PhotoButton.png')}
-                    onPress={this.clickHandler.bind(this, "photo")}
-                  /> : null}
-              </View>
-              <View style={styles.sideIconsGroup}>
-                {this.state.isShortcutButtonVisible.Sketch ?
-                  <IconButton
-                    source={require('../../assets/icons/SketchButton.png')}
-                    onPress={this.clickHandler.bind(this, "sketch")}
-                  /> : null}
-              </View>
-            </View>
-
+            {this.props.shortcutSwitchPosition.Tag ?
+              <IconButton
+                source={require('../../assets/icons/TagButton.png')}
+                onPress={this.clickHandler.bind(this, "tag")}
+              /> : null}
+            {this.props.shortcutSwitchPosition.Measurement ?
+              <IconButton
+                source={this.props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS ? require(
+                  '../../assets/icons/MeasurementButton_pressed.png')
+                  : require('../../assets/icons/MeasurementButton.png')}
+                onPress={this.clickHandler.bind(this, "measurement")}
+              /> : null}
+            {this.props.shortcutSwitchPosition.Sample ?
+              <IconButton
+                source={this.props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE ? require(
+                  '../../assets/icons/SampleButton_pressed.png')
+                  : require('../../assets/icons/SampleButton.png')}
+                onPress={this.clickHandler.bind(this, "sample")}
+              /> : null}
+            {this.props.shortcutSwitchPosition.Note ?
+              <IconButton
+                name={"Note"}
+                source={require('../../assets/icons/NoteButton.png')}
+                onPress={this.clickHandler.bind(this, "note")}
+              /> : null}
+            {this.props.shortcutSwitchPosition.Photo ?
+              <IconButton
+                source={require('../../assets/icons/PhotoButton.png')}
+                onPress={this.clickHandler.bind(this, "photo")}
+              /> : null}
+            {this.props.shortcutSwitchPosition.Sketch ?
+              <IconButton
+                source={require('../../assets/icons/SketchButton.png')}
+                onPress={this.clickHandler.bind(this, "sketch")}
+              /> : null}
           </View>
           <View style={styles.notebookViewIcon}>
             {this.props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS ||
@@ -922,7 +909,8 @@ function mapStateToProps(state) {
     isCompassModalVisible: state.notebook.isCompassModalVisible,
     modalVisible: state.home.modalVisible,
     deviceDimensions: state.home.deviceDimensions,
-    spot: state.spot.features
+    spot: state.spot.features,
+    shortcutSwitchPosition: state.home.shortcutSwitchPosition
     // visiblePage: state.notebook.visiblePage
   }
 }

@@ -3,7 +3,15 @@ import {Dimensions, Platform} from 'react-native';
 
 const initialState = {
   modalVisible: null,
-  deviceDimensions: Dimensions.get(Platform.OS === 'ios' ? 'window' : 'screen')
+  deviceDimensions: Dimensions.get(Platform.OS === 'ios' ? 'window' : 'screen'),
+  shortcutSwitchPosition: {
+    Tag: false,
+    Measurement: false,
+    Sample: false,
+    Note: false,
+    Photo: false,
+    Sketch: false
+  }
 };
 
 export const homeReducer = (state = initialState, action) => {
@@ -20,9 +28,14 @@ export const homeReducer = (state = initialState, action) => {
         ...state,
         deviceDimensions: action.dims
       }
-
-
-
+    case homeReducers.SHORTCUT_SWITCH_POSITION:
+      return {
+        ...state,
+        shortcutSwitchPosition: {
+          ...state.shortcutSwitchPosition,
+          [action.switchName]: !state.shortcutSwitchPosition[action.switchName]
+        }
+      }
   }
   return state;
 };
