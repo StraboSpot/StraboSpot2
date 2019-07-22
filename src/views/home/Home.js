@@ -681,7 +681,7 @@ class Home extends React.Component {
         <ShortcutMenu
           onPress={() => this.setVisibleMenuState('settingsMain')}
           toggleSwitch={(switchName) => this.toggleSwitch(switchName)}
-          shortcutSwitchPosition={this.state.shortcutSwitchPosition}
+          shortcutSwitchPosition={this.props.shortcutSwitchPosition}
         />
     }
     else if (this.state.settingsMenuVisible === 'Manage Offline Maps') {
