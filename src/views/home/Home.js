@@ -72,22 +72,6 @@ class Home extends React.Component {
       settingsMenuVisible: 'settingsMain',
       drawerVisible: false,
       isOfflineMapModalVisible: false,
-      // shortcutSwitchPosition: {
-      //   Tag: false,
-      //   Measurement: false,
-      //   Sample: false,
-      //   Note: false,
-      //   Photo: false,
-      //   Sketch: false
-      // },
-      // isShortcutButtonVisible: {
-      //   Tag: false,
-      //   Measurement: false,
-      //   Sample: false,
-      //   Note: false,
-      //   Photo: false,
-      //   Sketch: false
-      // },
       currentSpot: undefined,
       allPhotosSaved: [],
       isAllSpotsPanelVisible: false,
@@ -99,6 +83,7 @@ class Home extends React.Component {
   componentDidMount() {
     this._isMounted = true;
     Icon.getImageSource("pin", 30);
+    Orientation.lockToLandscapeLeft();
     NetInfo.isConnected.addEventListener('connectionChange', this.handleConnectivityChange);
     this.props.setDeviceDims(this.dimensions);
     Dimensions.addEventListener('change', this.deviceOrientation);
@@ -581,20 +566,6 @@ class Home extends React.Component {
     if (this._isMounted) {
       this.props.onShortcutSwitchChange(switchName);
       console.log(this.props.shortcutSwitchPosition);
-      // this.setState(prevState => {
-      //   return {
-          // shortcutSwitchPosition: {
-          //   ...prevState.shortcutSwitchPosition,
-          //   [switchName]: !prevState.shortcutSwitchPosition[switchName]
-          // },
-      //     isShortcutButtonVisible: {
-      //       ...prevState.isShortcutButtonVisible,
-      //       [switchName]: this.props.shortcutSwitchPosition[switchName]
-      //     }
-      //   }
-      // }, () => {
-      //   console.log('Switch Position', this.state.shortcutSwitchPosition);
-      // });
     }
   };
 

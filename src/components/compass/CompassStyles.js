@@ -88,9 +88,9 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   modalPosition: {
-    position: 'absolute', //Here is the trick
+    position: 'absolute',
     left: 10,
-    bottom: 100,
+    bottom: 70,
     zIndex: 1
   },
   modalPositionShortcutView: {
