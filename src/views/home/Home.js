@@ -93,7 +93,7 @@ class Home extends React.Component {
       isAllSpotsPanelVisible: false,
       animation: new Animated.Value(400),
       allSpotsViewAnimation: new Animated.Value(125)
-  };
+    };
   }
 
   componentDidMount() {
@@ -113,7 +113,7 @@ class Home extends React.Component {
   }
 
   deviceOrientation = () => {
-   const dimensions = Dimensions.get(platformType);
+    const dimensions = Dimensions.get(platformType);
     this.props.setDeviceDims(dimensions);
     console.log(this.props.deviceDimensions)
   };
@@ -222,11 +222,11 @@ class Home extends React.Component {
   };
 
   closeAllSpotsPanel = () => {
-      // Animated.timing(this.state.allSpotsViewAnimation, {
-      //   toValue: 125,
-      //   duration: 350,
-      //   useNativeDriver: true
-      // }).start();
+    // Animated.timing(this.state.allSpotsViewAnimation, {
+    //   toValue: 125,
+    //   duration: 350,
+    //   useNativeDriver: true
+    // }).start();
     this.setState(prevState => {
       return {
         ...prevState,
@@ -297,12 +297,12 @@ class Home extends React.Component {
     if (!this.props.isNotebookPanelVisible) {
       toValue = 0;
     }
-      Animated.timing(this.state.animation, {
-        toValue: toValue,
-        duration: 250,
-        easing: Easing.linear,
-        useNativeDriver: true
-      }).start();
+    Animated.timing(this.state.animation, {
+      toValue: toValue,
+      duration: 250,
+      easing: Easing.linear,
+      useNativeDriver: true
+    }).start();
   };
 
   endDraw = async () => {
@@ -348,7 +348,7 @@ class Home extends React.Component {
     //   useNativeDriver: true
     // }).start();
     this.setState(prevState => {
-      return{
+      return {
         ...prevState,
         isAllSpotsPanelVisible: true
       }
@@ -362,21 +362,21 @@ class Home extends React.Component {
 
   openNotebookPanel = () => {
     if (this._isMounted) {
-        this.props.setNotebookPanelVisible(true);
-        // this.doAnimation();
-        // Animated.timing(this.state.animation, {
-        //   toValue: 0,
-        //   duration: 350,
-        //   // easing: Easing.linear,
-        //   useNativeDriver: true
-        // }).start();
-        this.props.setNotebookPageVisible(NotebookPages.OVERVIEW);
-        // this.setState(prevState => {
-        //   return {
-        //     ...prevState,
-        //     isSamplesModalVisible: false
-        //   }
-        // });
+      this.props.setNotebookPanelVisible(true);
+      // this.doAnimation();
+      // Animated.timing(this.state.animation, {
+      //   toValue: 0,
+      //   duration: 350,
+      //   // easing: Easing.linear,
+      //   useNativeDriver: true
+      // }).start();
+      this.props.setNotebookPageVisible(NotebookPages.OVERVIEW);
+      // this.setState(prevState => {
+      //   return {
+      //     ...prevState,
+      //     isSamplesModalVisible: false
+      //   }
+      // });
     }
   };
 
@@ -601,12 +601,16 @@ class Home extends React.Component {
   render() {
     const spot = this.props.selectedSpot;
     const isOnline = this.props.isOnline;
-    const animateNotebookMenu = {transform: [
-      {translateX: this.state.animation }
-    ]};
-    const animateAllSpotsMenu= {transform: [
-        {translateX: this.state.allSpotsViewAnimation }
-        ]};
+    const animateNotebookMenu = {
+      transform: [
+        {translateX: this.state.animation}
+      ]
+    };
+    const animateAllSpotsMenu = {
+      transform: [
+        {translateX: this.state.allSpotsViewAnimation}
+      ]
+    };
     let content = null;
     let compassModal = null;
     let samplesModal = null;
@@ -614,23 +618,23 @@ class Home extends React.Component {
 
     if (this.state.isAllSpotsPanelVisible) {
       notebookPanel =
-        <View style={[ notebookStyles.panel, ]}>
-        <NotebookPanel
-        style={{right: 125}}
-        closeNotebook={this.closeNotebookPanel}
-        textStyle={{fontWeight: 'bold', fontSize: 12}}
-        onPress={(name) => this.notebookClickHandler(name)}
-      />
+        <View style={[notebookStyles.panel,]}>
+          <NotebookPanel
+            style={{right: 125}}
+            closeNotebook={this.closeNotebookPanel}
+            textStyle={{fontWeight: 'bold', fontSize: 12}}
+            onPress={(name) => this.notebookClickHandler(name)}
+          />
         </View>
     }
     else {
       notebookPanel =
-        <View style={[ notebookStyles.panel,  ]}>
-        <NotebookPanel
-        closeNotebook={this.closeNotebookPanel}
-        textStyle={{fontWeight: 'bold', fontSize: 12}}
-        onPress={(name) => this.notebookClickHandler(name)}
-      />
+        <View style={[notebookStyles.panel,]}>
+          <NotebookPanel
+            closeNotebook={this.closeNotebookPanel}
+            textStyle={{fontWeight: 'bold', fontSize: 12}}
+            onPress={(name) => this.notebookClickHandler(name)}
+          />
         </View>
     }
 
@@ -653,10 +657,10 @@ class Home extends React.Component {
       const dimensions = this.props.deviceDimensions;
       console.log('This.props.deviceDimensions', dimensions);
       samplesModal = (
-          <NotebookSamplesModal
-            close={() => this.props.setModalVisible(null)}
-            cancel={() => this.samplesModalCancel()}
-          />
+        <NotebookSamplesModal
+          close={() => this.props.setModalVisible(null)}
+          cancel={() => this.samplesModalCancel()}
+        />
       )
     }
     else if (this.props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE) {
@@ -754,7 +758,7 @@ class Home extends React.Component {
               </View>
               : null}
           </View>
-          <View style={styles.settingsIconContainer}>
+          <View style={styles.searchIconContainer}>
             <IconButton
               source={require('../../assets/icons/SearchButton.png')}
               onPress={this.clickHandler.bind(this, "search")}
@@ -804,34 +808,39 @@ class Home extends React.Component {
               onPress={() => this.openNotebookPanel()}
             />}
           </View>
-          <View style={styles.bottomRightIcons}>
-            {/* displays the Online boolean in text*/}
-            {/*<View><Text>Online: {this.props.isOnline.toString()}</Text></View> */}
+          {/*<View style={this.props.isNotebookPanelVisible ? styles.bottomRightIconsShortcutModal*/}
+          {/*: styles.bottomRightIcons}>*/}
+          {/* displays the Online boolean in text*/}
+          {/*<View><Text>Online: {this.props.isOnline.toString()}</Text></View> */}
 
-            {this.state.buttons.drawButtonsVisible ?
-              <View style={styles.drawToolsContainer}>
-                <IconButton
-                  source={this.state.mapMode === MapModes.DRAW.POINT ?
-                    require('../../assets/icons/PointButton_pressed.png') : require(
-                      '../../assets/icons/PointButton.png')}
-                  onPress={this.clickHandler.bind(this, MapModes.DRAW.POINT)}
-                />
-                <IconButton
-                  source={this.state.mapMode === MapModes.DRAW.LINE ?
-                    require('../../assets/icons/LineButton_pressed.png') : require(
-                      '../../assets/icons/LineButton.png')}
-                  onPress={this.clickHandler.bind(this, MapModes.DRAW.LINE)}
-                />
-                <IconButton
-                  source={this.state.mapMode === MapModes.DRAW.POLYGON ?
-                    require('../../assets/icons/PolygonButton_pressed.png') :
-                    require('../../assets/icons/PolygonButton.png')}
-                  onPress={this.clickHandler.bind(this, MapModes.DRAW.POLYGON)}
-                />
-              </View>
-              : null}
-          </View>
-          <View style={styles.searchIconContainer}>
+          {this.state.buttons.drawButtonsVisible ?
+            <View style={this.props.isNotebookPanelVisible ? [styles.drawToolsContainer, {right: 410}]
+              : styles.drawToolsContainer}>
+              <IconButton
+                style={{top: 5}}
+                source={this.state.mapMode === MapModes.DRAW.POINT ?
+                  require('../../assets/icons/PointButton_pressed.png') : require(
+                    '../../assets/icons/PointButton.png')}
+                onPress={this.clickHandler.bind(this, MapModes.DRAW.POINT)}
+              />
+              <IconButton
+                style={{top: 5}}
+                source={this.state.mapMode === MapModes.DRAW.LINE ?
+                  require('../../assets/icons/LineButton_pressed.png') : require(
+                    '../../assets/icons/LineButton.png')}
+                onPress={this.clickHandler.bind(this, MapModes.DRAW.LINE)}
+              />
+              <IconButton
+                style={{top: 5}}
+                source={this.state.mapMode === MapModes.DRAW.POLYGON ?
+                  require('../../assets/icons/PolygonButton_pressed.png') :
+                  require('../../assets/icons/PolygonButton.png')}
+                onPress={this.clickHandler.bind(this, MapModes.DRAW.POLYGON)}
+              />
+            </View>
+            : null}
+          {/*</View>*/}
+          <View style={styles.settingsIconContainer}>
             <IconButton
               source={require('../../assets/icons/SettingsButton.png')}
               onPress={this.clickHandler.bind(this, "settings")}
@@ -853,6 +862,7 @@ class Home extends React.Component {
           </View>
           <View style={styles.bottomLeftIcons}>
             <IconButton
+              style={{top: 5}}
               source={require('../../assets/icons/MyLocationButton.png')}
               onPress={this.clickHandler.bind(this, "currentLocation")}
             />
@@ -878,10 +888,10 @@ class Home extends React.Component {
             onPress={(name) => this.dialogClickHandler("notebookPanelMenuVisible", name)}
             onTouchOutside={() => this.toggleDialog("notebookPanelMenuVisible")}
           />
-          { this.state.isAllSpotsPanelVisible ? <View style={[notebookStyles.allSpotsPanel ,]}>
+          {this.state.isAllSpotsPanelVisible ? <View style={[notebookStyles.allSpotsPanel,]}>
             <AllSpotsView
-            close={() => this.closeAllSpotsPanel()}
-          />
+              close={() => this.closeAllSpotsPanel()}
+            />
           </View> : null}
           <Modal
             isVisible={this.state.isOfflineMapModalVisible}

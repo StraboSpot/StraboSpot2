@@ -12,9 +12,13 @@ const styles = StyleSheet.create({
     marginBottom: 5
   },
   // --- Drawer Styles ---
+  // --- Bottom icons (line, polygon, and point) ---
   drawToolsContainer: {
-    // flex: 3,
-    flexDirection: 'row'
+    flex: 1,
+    flexDirection: 'row',
+    position: "absolute",
+    bottom: 0,
+    right: 10,
   },
   drawerStyles: {
     shadowColor: '#000000',
@@ -26,33 +30,24 @@ const styles = StyleSheet.create({
   // --- Left and right icon absolute positions from top ---
   leftsideIcons: {
     position: 'absolute',
-    left: 10,
     bottom: 150
   },
   rightsideIcons: {
     position: "absolute",
-    right: 10,
+    right: 0,
     top: 150
   },
 
   topCenter: {
     position: "absolute",
     top: 20,
-    left: '40%'
-  },
-
-  // --- Bottom icons (line, polygon, and point) ---
-  bottomRightIcons: {
-    position: "absolute",
-    bottom: 10,
-    right: 10
+    left: '20%'
   },
 
   // --- Bottom Left Icon (current location) ---
   bottomLeftIcons: {
     position: 'absolute',
-    bottom: 10,
-    left: 10
+    bottom: 0,
   },
   layersIcon: {
     marginBottom: 105
@@ -60,17 +55,17 @@ const styles = StyleSheet.create({
   notebookViewIcon: {
     position: 'absolute',
     bottom: 150,
-    right: 10
+    right: 0
   },
   settingsIconContainer: {
     position: 'absolute',
-    right: 10,
+    left: 0,
     top: 20
   },
   searchIconContainer: {
     position: 'absolute',
-    left: 10,
-    top: 20
+    right: 0,
+    top: 20,
   },
   tagIcon: {
     marginTop: 145

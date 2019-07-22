@@ -5,7 +5,7 @@ const iconButton = props => {
   const content = (
     <View
       activeOpacity={0.7}
-      style={[styles.TouchableOpacityStyle, props.style]}>
+      style={props.style}>
       <Image
         target={props.name}
         source={props.source}
@@ -17,7 +17,7 @@ const iconButton = props => {
 
   if (Platform.OS === "ios") {
     return (
-      <TouchableOpacity onPress={props.onPress}>
+      <TouchableOpacity style={props.style} onPress={props.onPress}>
         {content}
       </TouchableOpacity>
     );
@@ -29,24 +29,11 @@ const iconButton = props => {
   );
 };
 
-
 const styles = StyleSheet.create({
-  container: {
-    // flex: 1,
-    // alignItems: 'center'
-  },
-  TouchableOpacityStyle: {
-    flex: 1,
-    // position: 'absolute',
-    // right: "1%",
-    // bottom: "0%",
-    // margin: 10,
-  },
   FloatingButtonStyle: {
     resizeMode: 'contain',
     width: 65,
     height: 65,
-
   },
 });
 

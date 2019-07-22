@@ -14,7 +14,7 @@ const deviceWidth = () => {
 const modalStyle = StyleSheet.create({
   modalContainer: {
     // height: 600,
-    width: wp('27%'),
+    width: wp('35%'),
     opacity: .90
   },
   // modalBottom: {
