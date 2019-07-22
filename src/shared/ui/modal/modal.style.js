@@ -16,7 +16,7 @@ const deviceWidth = () => {
     )
   }
   // if (width >= 500 && width < 1000) return wp('30%');
-  if (width >= 500) return wp('25%');
+  if (width >= 500) return wp('30%');
 };
 const modalStyle = StyleSheet.create({
   modalContainer: {
