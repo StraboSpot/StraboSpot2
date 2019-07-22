@@ -575,7 +575,8 @@ function mapStateToProps(state) {
   return {
     spot: state.spot.selectedSpot,
     isNotebookPanelVisible: state.notebook.isNotebookPanelVisible,
-    modalVisible: state.home.modalVisible
+    modalVisible: state.home.modalVisible,
+    deviceDimensions: state.home.deviceDimensions,
   }
 }
 
