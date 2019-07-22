@@ -64,11 +64,11 @@ class Compass extends Component {
   //   ScreenOrientation.allow(ScreenOrientation.Orientation.PORTRAIT_UP);
   // };
 
-  componentDidMount() {
+  async componentDidMount() {
     this._isMounted = true;
     Orientation.lockToPortrait();
     //this allows to check if the system autolock is enabled or not.
-    this.subscribe();
+    await this.subscribe();
     RNSimpleCompass.start(degree_update_rate, (degree) => {
       degreeFacing = (<Text>{degree}</Text>);
       // console.log('You are facing', degree);
@@ -85,12 +85,12 @@ class Compass extends Component {
     console.log('Compass subscribed');
   };
 
-  componentWillUnmount() {
+  async componentWillUnmount() {
     if (this.props.deviceDimensions.width < 500){
       Orientation.unlockAllOrientations()
     }
     else Orientation.lockToLandscapeLeft();
-    this.unsubscribe();
+    await this.unsubscribe();
     RNSimpleCompass.stop();
     console.log('Compass unsubscribed');
     this._isMounted = false;
@@ -148,7 +148,7 @@ class Compass extends Component {
 
   subscribe = async () => {
     let angle = null;
-    this._subscription = accelerometer.subscribe((data) => {
+     this._subscription = await accelerometer.subscribe((data) => {
       // console.log(data);
       // angle = this._angle(data);
       this.setState(prevState => {
