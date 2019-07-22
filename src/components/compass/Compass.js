@@ -86,7 +86,10 @@ class Compass extends Component {
   };
 
   componentWillUnmount() {
-    Orientation.lockToLandscapeLeft();
+    if (this.props.deviceDimensions.width < 500){
+      Orientation.unlockAllOrientations()
+    }
+    else Orientation.lockToLandscapeLeft();
     this.unsubscribe();
     RNSimpleCompass.stop();
     console.log('Compass unsubscribed');

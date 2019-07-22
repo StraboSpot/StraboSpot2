@@ -84,7 +84,6 @@ class Home extends React.Component {
   componentDidMount() {
     this._isMounted = true;
     Icon.getImageSource("pin", 30);
-    Orientation.lockToLandscapeLeft();
     NetInfo.isConnected.addEventListener('connectionChange', this.handleConnectivityChange);
     // this.props.setDeviceDims(this.dimensions);
     Dimensions.addEventListener('change', this.deviceOrientation);
@@ -101,6 +100,10 @@ class Home extends React.Component {
   deviceOrientation = () => {
     const dimensions = Dimensions.get(platformType);
     this.props.setDeviceDims(dimensions);
+    if (this.props.deviceDimensions.width < 500){
+      Orientation.unlockAllOrientations()
+    }
+    else Orientation.lockToLandscapeLeft();
     console.log(this.props.deviceDimensions)
   };
 
