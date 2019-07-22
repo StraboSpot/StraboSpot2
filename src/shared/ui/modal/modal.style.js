@@ -12,7 +12,7 @@ const deviceWidth = () => {
   if (width < 500) {
     return(
       Orientation.lockToPortrait &&
-      wp('95%')
+      wp('75%')
     )
   }
   // if (width >= 500 && width < 1000) return wp('30%');

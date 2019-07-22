@@ -101,7 +101,7 @@ class Home extends React.Component {
     const dimensions = Dimensions.get(platformType);
     this.props.setDeviceDims(dimensions);
     if (this.props.deviceDimensions.width < 500){
-      Orientation.unlockAllOrientations()
+      Orientation.unlockAllOrientations();
     }
     else Orientation.lockToLandscapeLeft();
     console.log(this.props.deviceDimensions)
