@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 20,
     borderBottomLeftRadius: 20,
     width: '100%',
-    zIndex: 100,
+    // zIndex: 100,
   },
   compassImageContainer: {
     alignItems: 'center',
@@ -90,13 +90,12 @@ const styles = StyleSheet.create({
   modalPosition: {
     position: 'absolute',
     left: 10,
-    bottom: 70,
-    zIndex: 1
+    bottom: 10,
   },
   modalPositionShortcutView: {
     position: 'absolute',
-    right: 80,
-    top: 20,
+    right: 70,
+    bottom: 70
   },
 });
 

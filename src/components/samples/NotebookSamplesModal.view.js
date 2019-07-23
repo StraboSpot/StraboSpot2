@@ -1,12 +1,12 @@
 import React from 'react';
-import {KeyboardAvoidingView, View} from "react-native";
 import Modal from '../../shared/ui/modal/Modal.view';
 import styles from './samples.style';
 import Samples from './Samples.view';
+import DragAnimation from '../../shared/ui/DragAmination';
 
 const notebookSamplesModalView = (props) => {
   return (
-    <View style={styles.modalPosition}>
+    <DragAnimation style={styles.modalPosition}>
       <Modal
         component={<Samples/>}
         close={props.close}
@@ -14,7 +14,7 @@ const notebookSamplesModalView = (props) => {
         onPress={props.cancel}
         style={styles.samplesContainer}
       />
-    </View>
+    </DragAnimation>
   );
 };
 

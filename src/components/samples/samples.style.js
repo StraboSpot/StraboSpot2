@@ -72,20 +72,14 @@ const samplesStyle = StyleSheet.create({
   },
   modalPosition: {
     position: 'absolute', //Here is the trick
-    left: 10,
-    bottom: 70,
+    left: 70,
+    bottom: 10,
     zIndex: 1
   },
-  // modalPositionShortcutViewPortrait: {
-  //   position: 'absolute',
-  //   right: 30,
-  //   top: 40,
-  // },
   modalPositionShortcutView: {
     position: 'absolute',
-    right: 40,
-    top: 10,
-    zIndex: 1
+    right: 35,
+    top: 5,
   },
   sampleContentContainer: {
     flex: 1,
