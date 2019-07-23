@@ -2,6 +2,8 @@ package com.strabospot2;
 
 import android.app.Application;
 import com.facebook.react.ReactApplication;
+import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
+import com.swmansion.reanimated.ReanimatedPackage;
 import org.wonday.orientation.OrientationPackage;
 import com.reactnativecommunity.netinfo.NetInfoPackage;
 import com.imagepicker.ImagePickerPackage;
