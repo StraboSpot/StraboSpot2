@@ -4,11 +4,11 @@ import {connect} from "react-redux";
 
 import MeasurementItem from "./MeasurementItem";
 import {NotebookPages, notebookReducers} from "../notebook-panel/Notebook.constants";
-import {formReducers} from "../form/Form.constant";
+import {spotReducers} from "../../spots/Spot.constants";
 
 const MeasurementsOverview = (props) => {
   const onMeasurementPressed = (item) => {
-    props.setFormData(item);
+    props.setSelectedAttributes([item]);
     props.setNotebookPanelVisible(true);
     props.setNotebookPageVisible(NotebookPages.MEASUREMENTDETAIL);
   };
@@ -33,7 +33,7 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-  setFormData: (formData) => ({type: formReducers.SET_FORM_DATA, formData: formData}),
+  setSelectedAttributes: (attributes) => ({type: spotReducers.SET_SELECTED_ATTRIBUTES, attributes: attributes}),
   setNotebookPanelVisible: (value) => ({type: notebookReducers.SET_NOTEBOOK_PANEL_VISIBLE, value: value}),
   setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),
 };

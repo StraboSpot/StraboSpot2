@@ -8,6 +8,11 @@ import tabularZoneOrientationChoices from './measurement/tabular-zone-orienation
 import imagePropertiesSurvey from './images/image_properties-survey';
 import imagePropertiesChoices from './images/image_properties-choices';
 
+const getMeasurementSurveyForBulkInput = (form) => {
+  const fieldsToExclude = ['label', 'strike', 'dip_direction', 'dip', 'quality', 'trend', 'plunge', 'rake', 'rake_calculated'];
+  return form.filter(field => !fieldsToExclude.includes(field.name));
+};
+
 const forms = {
   'measurement': {
     'linear_orientation': {
@@ -20,6 +25,20 @@ const forms = {
     },
     'tabular_orientation': {
       'survey': tabularZoneOrientationSurvey,
+      'choices': tabularZoneOrientationChoices
+    }
+  },
+  'measurement_bulk': {
+    'linear_orientation': {
+      'survey': getMeasurementSurveyForBulkInput(linearOrientationSurvey),
+      'choices': linearOrientationChoices
+    },
+    'planar_orientation': {
+      'survey': getMeasurementSurveyForBulkInput(planarOrientationSurvey),
+      'choices': planarOrientationChoices
+    },
+    'tabular_orientation': {
+      'survey': getMeasurementSurveyForBulkInput(tabularZoneOrientationSurvey),
       'choices': tabularZoneOrientationChoices
     }
   },

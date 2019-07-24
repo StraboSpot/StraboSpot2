@@ -75,6 +75,11 @@ const styles = StyleSheet.create({
     flex: 1,
     width: 500,
     padding: 10
+  },
+  basicText: {
+    paddingLeft: 10,
+    fontSize: themes.SMALL_TEXT_SIZE,
+    color: themes.SECONDARY_ITEM_TEXT_COLOR,
   }
 });
 

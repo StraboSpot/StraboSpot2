@@ -7,7 +7,6 @@ import imageStyles from "./images.styles";
 import {Image} from "react-native-elements";
 import {goToImageInfo} from "../../routes/Navigation";
 import {notebookReducers} from "../notebook-panel/Notebook.constants";
-import {formReducers} from "../form/Form.constant";
 
 const imageNotebook = (props) => {
 
@@ -57,7 +56,6 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = {
-  setFormData: (formData) => ({type: formReducers.SET_FORM_DATA, formData: formData})
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(imageNotebook);

@@ -7,17 +7,15 @@ import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton'
 import SectionDivider from "../../shared/ui/SectionDivider";
 import MeasurementItem from './MeasurementItem';
 import {homeReducers, Modals} from "../../views/home/Home.constants";
-import {formReducers} from "../form/Form.constant";
+import {spotReducers} from "../../spots/Spot.constants";
 
 // Styles
 import styles from './measurements.styles';
 import * as themes from '../../shared/styles.constants';
 
 const MeasurementsPage = (props) => {
-  const [isModalVisible, setIsModalVisible] = useState(true);
-  const [isMultiSelectMode, setMultiSelectMode] = useState(false);
-  const [multiSelectModeType, setMultiSelectModeType] = useState();
-  const [selectedFeatures, setSelectedFeatures] = useState([]);
+  const [multiSelectMode, setMultiSelectMode] = useState();
+  const [selectedFeaturesTemp, setSelectedFeaturesTemp] = useState([]);
 
   const sectionTypes = {
     PLANAR: 'Planar Measurements',
@@ -44,16 +42,16 @@ const MeasurementsPage = (props) => {
   };
 
   const getIdsOfSelected = () => {
-    return selectedFeatures.map(value => value.id);
+    return selectedFeaturesTemp.map(value => value.id);
   };
 
   const onMeasurementPressed = (item, type) => {
-    if (!isMultiSelectMode) viewMeasurementDetail(item);
+    if (!multiSelectMode) viewMeasurementDetail(item);
     else {
-      if (type === multiSelectModeType) {
-        const i = selectedFeatures.find(selectedFeature => selectedFeature.id === item.id);
-        if (i) setSelectedFeatures(selectedFeatures.filter(selectedFeature => selectedFeature.id !== item.id));
-        else setSelectedFeatures([...selectedFeatures, item]);
+      if (type === multiSelectMode) {
+        const i = selectedFeaturesTemp.find(selectedFeature => selectedFeature.id === item.id);
+        if (i) setSelectedFeaturesTemp(selectedFeaturesTemp.filter(selectedFeature => selectedFeature.id !== item.id));
+        else setSelectedFeaturesTemp([...selectedFeaturesTemp, item]);
         console.log('Adding selected feature to identify group ...');
       }
       else {
@@ -63,7 +61,7 @@ const MeasurementsPage = (props) => {
   };
 
   const viewMeasurementDetail = (item) => {
-    props.setFormData(item);
+    props.setSelectedAttributes([item]);
     props.setNotebookPanelVisible(true);
     props.setNotebookPageVisible(NotebookPages.MEASUREMENTDETAIL);
   };
@@ -71,24 +69,27 @@ const MeasurementsPage = (props) => {
 
   const identifyAll = (type) => {
     const data = getSectionData(type);
-    setMultiSelectMode(false);
     console.log(data);
+    setMultiSelectMode();
+    props.setSelectedAttributes(data);
+    props.setNotebookPageVisible(NotebookPages.MEASUREMENTDETAIL);
   };
 
   const startSelecting = (type) => {
     console.log('Start Selecting for', type, ' ...');
-    setSelectedFeatures([]);
-    setMultiSelectMode(true);
-    setMultiSelectModeType(type);
+    setSelectedFeaturesTemp([]);
+    setMultiSelectMode(type);
   };
 
   const cancelSelecting = () => {
-    setSelectedFeatures([]);
-    setMultiSelectMode(false);
+    setSelectedFeaturesTemp([]);
+    setMultiSelectMode();
   };
 
   const endSelecting = () => {
-    console.log('Identify Selected:', selectedFeatures);
+    console.log('Identify Selected:', selectedFeaturesTemp);
+    props.setSelectedAttributes(selectedFeaturesTemp);
+    props.setNotebookPageVisible(NotebookPages.MEASUREMENTDETAIL);
   };
 
   const renderMeasurements = (type) => {
@@ -109,27 +110,27 @@ const MeasurementsPage = (props) => {
 
   const renderSectionDivider = (dividerText) => {
     return (
-      <View style={((isMultiSelectMode && dividerText === multiSelectModeType) || !isMultiSelectMode) ?
+      <View style={((multiSelectMode && dividerText === multiSelectMode) || !multiSelectMode) ?
         styles.measurementsSectionDividerWithButtonsContainer : styles.measurementsSectionDividerContainer}>
         <View style={styles.measurementsSectionDividerTextContainer}>
           <SectionDivider dividerText={dividerText}/>
         </View>
         <View style={styles.measurementsSectionDividerButtonContainer}>
-          {isMultiSelectMode && dividerText === multiSelectModeType &&
+          {multiSelectMode && dividerText === multiSelectMode &&
           <Button
             titleStyle={styles.measurementsSectionDividerButtonText}
             title={'Cancel'}
             type={'clear'}
             onPress={() => cancelSelecting()}
           />}
-          {isMultiSelectMode && selectedFeatures.length >= 1 && dividerText === multiSelectModeType &&
+          {multiSelectMode && selectedFeaturesTemp.length >= 1 && dividerText === multiSelectMode &&
           <Button
             titleStyle={styles.measurementsSectionDividerButtonText}
             title={'Identify Selected'}
             type={'clear'}
             onPress={() => endSelecting()}
           />}
-          {!isMultiSelectMode &&
+          {!multiSelectMode &&
           <React.Fragment>
             <Button
               titleStyle={styles.measurementsSectionDividerButtonText}
@@ -214,10 +215,10 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-  setFormData: (formData) => ({type: formReducers.SET_FORM_DATA, formData: formData}),
   setNotebookPanelVisible: (value) => ({type: notebookReducers.SET_NOTEBOOK_PANEL_VISIBLE, value: value}),
   setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),
   setModalVisible: (modal) => ({type: homeReducers.SET_MODAL_VISIBLE, modal: modal}),
+  setSelectedAttributes: (attributes) => ({type: spotReducers.SET_SELECTED_ATTRIBUTES, attributes: attributes})
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(MeasurementsPage);

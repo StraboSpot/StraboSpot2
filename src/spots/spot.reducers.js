@@ -4,6 +4,7 @@ const initialState = {
   features: [],
   featuresSelected: [],
   selectedSpot: {},
+  selectedAttributes: []
 };
 
 export const spotReducer = (state = initialState, action) => {
@@ -82,7 +83,11 @@ export const spotReducer = (state = initialState, action) => {
         selectedSpot: updatedSpot,
         features: filteredSpots
       };
-    // break;
+    case spotReducers.SET_SELECTED_ATTRIBUTES:
+      return {
+        ...state,
+        selectedAttributes: action.attributes
+      };
     case spotReducers.EDIT_SPOT_IMAGES:
       let combinedImageArr = [];
       let updatedSpotImages = null;

@@ -10,15 +10,14 @@ import styles from './images.styles';
 import Modal from '../../shared/ui/modal/Modal.view';
 import {spotReducers} from "../../spots/Spot.constants";
 import {notebookReducers} from "../notebook-panel/Notebook.constants";
-import {formReducers} from "../form/Form.constant";
 import {isEmpty} from "../../shared/Helpers";
 import SectionDivider from "../../shared/ui/SectionDivider";
 import {homeReducers} from "../../views/home/Home.constants";
 
 const imagePropertiesModal = (props) => {
 
-  const [name, setName] = useState(props.formData.title);
-  const [description, setDescription] = useState(props.formData.caption);
+  const [name, setName] = useState(props.selectedImage.title);
+  const [description, setDescription] = useState(props.selectedImage.caption);
   const [switchPosition, setSwitchPosition] = useState(false);
   const [showMoreFields, setShowMoreFields] = useState(false);
   const form = useRef(null);
@@ -86,7 +85,7 @@ const imagePropertiesModal = (props) => {
   };
 
   const renderFormFields = () => {
-    console.log('form-data', props.formData);
+    console.log('Selected Image:', props.selectedImage);
     if (!isEmpty(getForm())) {
       return (
         <View>
@@ -97,7 +96,7 @@ const imagePropertiesModal = (props) => {
               onSubmit={onSubmitForm}
               validate={validateForm}
               component={FormView}
-              initialValues={props.formData}
+              initialValues={props.selectedImage}
               validateOnChange={false}
             />
           </View>
@@ -107,16 +106,16 @@ const imagePropertiesModal = (props) => {
   };
 
   const saveFormAndGo = () => {
-    if (isEmpty(name) && props.formData.hasOwnProperty('title')) delete props.formData.title;
-    else if (!isEmpty(name)) props.formData.title = name;
-    if (isEmpty(description) && props.formData.hasOwnProperty('caption')) delete props.formData.caption;
-    else if (!isEmpty(description)) props.formData.caption = description;
-    console.log('Saving form data to Spot ...', props.formData);
+    if (isEmpty(name) && props.selectedImage.hasOwnProperty('title')) delete props.selectedImage.title;
+    else if (!isEmpty(name)) props.selectedImage.title = name;
+    if (isEmpty(description) && props.selectedImage.hasOwnProperty('caption')) delete props.selectedImage.caption;
+    else if (!isEmpty(description)) props.selectedImage.caption = description;
+    console.log('Saving form data to Spot ...', props.selectedImage);
     let images = props.spot.properties.images;
-    const i = images.findIndex(imageId => imageId.id === props.formData.id);
-    images[i] = props.formData;
+    const i = images.findIndex(img => img.id === props.selectedImage.id);
+    images[i] = props.selectedImage;
     props.onSpotEdit('images', images);
-    props.setFormData(images[i]);
+    props.setSelectedAttributes([images[i]]);
 
     if (form.current !== null) {
       if (!isEmpty(getForm())) form.current.submitForm()
@@ -125,10 +124,10 @@ const imagePropertiesModal = (props) => {
             else {
               console.log('Saving form data to Spot ...', form.current.state.values);
               let images = props.spot.properties.images;
-              const i = images.findIndex(imageId => imageId.id === form.current.state.values.id);
+              const i = images.findIndex(img => img.id === form.current.state.values.id);
               images[i] = form.current.state.values;
               props.onSpotEdit('images', images);
-              props.setFormData(images[i]);
+              props.setSelectedAttributes([images[i]]);
               props.close();
             }
           }
@@ -179,7 +178,7 @@ const imagePropertiesModal = (props) => {
 function mapStateToProps(state) {
   return {
     spot: state.spot.selectedSpot,
-    formData: state.form.formData,
+    selectedImage: state.spot.selectedAttributes[0],
     getDeviceDims: state.home.deviceDimensions
   }
 }
@@ -187,7 +186,7 @@ function mapStateToProps(state) {
 const mapDispatchToProps = {
   onSpotEdit: (field, value) => ({type: spotReducers.EDIT_SPOT_PROPERTIES, field: field, value: value}),
   setNotebookPageVisibleToPrev: () => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE_TO_PREV}),
-  setFormData: (formData) => ({type: formReducers.SET_FORM_DATA, formData: formData}),
+  setSelectedAttributes: (attributes) => ({type: spotReducers.SET_SELECTED_ATTRIBUTES, attributes: attributes}),
   setDeviceDims: (height, width) => ({type: homeReducers.DEVICE_DIMENSIONS, height: height, width: width}),
 };
 

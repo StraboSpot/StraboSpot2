@@ -20,5 +20,6 @@ export const PRIMARY_ACCENT_COLOR = BLUE;
 export const LIST_BORDER_COLOR = MEDIUMGREY;
 
 export const PRIMARY_TEXT_SIZE = 18;
+export const SMALL_TEXT_SIZE = 14;
 
 export const ROW_HEIGHT = 40;
