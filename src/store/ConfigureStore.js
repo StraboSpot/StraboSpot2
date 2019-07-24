@@ -3,7 +3,6 @@ import {notebookReducer} from "../components/notebook-panel/notebook.reducers";
 import {mapReducer} from "../components/maps/maps.reducer";
 import {spotReducer} from "../spots/spot.reducers";
 import {imageReducer} from "../components/images/image.reducers";
-import {formReducer} from "../components/form/form.reducers";
 import {homeReducer} from "../views/home/Home.reducer";
 import {createLogger} from 'redux-logger';
 import {persistStore, persistReducer} from 'redux-persist'
@@ -25,8 +24,7 @@ const rootReducer = combineReducers({
   spot: spotReducer,
   map: mapReducer,
   notebook: notebookReducer,
-  images: imageReducer,
-  form: formReducer
+  images: imageReducer
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
