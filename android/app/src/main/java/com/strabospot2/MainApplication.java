@@ -57,7 +57,9 @@ public class MainApplication extends NavigationApplication {
             new RNSensorsPackage(),
             new ImagePickerPackage(),
             new NetInfoPackage(),
-            new OrientationPackage()
+            new OrientationPackage(),
+            new ReanimatedPackage(),
+            new RNGestureHandlerPackage()
         );
     }
 
