@@ -10,6 +10,8 @@ import com.imagepicker.permissions.OnImagePickerPermissionsCallback;
 import com.facebook.react.modules.core.PermissionListener;
 import android.content.Intent;
 import android.content.res.Configuration;
+import com.swmansion.gesturehandler.react.RNGestureHandlerEnabledRootView;
+
 
 import java.util.Arrays;
 import java.util.List;
@@ -50,4 +52,5 @@ public class MainActivity extends NavigationActivity implements OnImagePickerPer
         intent.putExtra("newConfig", newConfig);
         this.sendBroadcast(intent);
     }
-}
+
+  }
