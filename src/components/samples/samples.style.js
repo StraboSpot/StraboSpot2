@@ -80,6 +80,7 @@ const samplesStyle = StyleSheet.create({
     position: 'absolute',
     right: 35,
     top: 5,
+    zIndex: 1
   },
   sampleContentContainer: {
     flex: 1,

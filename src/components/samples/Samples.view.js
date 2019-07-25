@@ -88,7 +88,8 @@ const samplesModalView = (props) => {
         )
       }
     }
-    else if (props.modalVisible === Modals.NOTEBOOK_MODALS.SAMPLE) {
+    else if (props.modalVisible === Modals.NOTEBOOK_MODALS.SAMPLE
+      && props.deviceDimensions.width > 700) {
       return modalView = <Button
         title={'View In Shortcut Mode'}
         type={'clear'}
@@ -185,7 +186,8 @@ const samplesModalView = (props) => {
 const mapStateToProps = (state) => {
   return {
     spot: state.spot.selectedSpot,
-    modalVisible: state.home.modalVisible
+    modalVisible: state.home.modalVisible,
+    deviceDimensions: state.home.deviceDimensions,
   }
 };
 

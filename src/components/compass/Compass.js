@@ -511,7 +511,7 @@ class Compass extends Component {
     else if (this.props.modalVisible === Modals.NOTEBOOK_MODALS.COMPASS) {
       Orientation.lockToPortrait();
       modalView = <View>
-        <Button
+        {this.props.deviceDimensions.width > 700 ? <Button
           title={'View In Shortcut Mode'}
           type={'clear'}
           titleStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 16}}
@@ -519,7 +519,7 @@ class Compass extends Component {
             this.props.setModalVisible(Modals.SHORTCUT_MODALS.COMPASS);
             this.props.setNotebookPanelVisible(false);
           }}
-        />
+        /> : null}
         <Button
           title={'Toggle data view'}
           type={'clear'}
