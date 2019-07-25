@@ -17,19 +17,19 @@ const ImageInfoView = (props) => {
 
   const [imageNoteModal, setImageNoteModal] = useState(false);
 
-  useEffect(() => {
-    getDims = Dimensions.get(platformType);
-    props.setDeviceDims(getDims);
-    function dimsChange() {
-      getDims = Dimensions.get(platformType);
-      props.setDeviceDims(getDims);
-    }
-    Dimensions.addEventListener('change', dimsChange);
-    return () => {
-      Dimensions.removeEventListener('change', dimsChange);
-      console.log('Dims listener removed')
-    }
-  },[props.getDeviceDims]);
+  // useEffect(() => {
+  //   getDims = Dimensions.get(platformType);
+  //   props.setDeviceDims(getDims);
+  //   function dimsChange() {
+  //     getDims = Dimensions.get(platformType);
+  //     props.setDeviceDims(getDims);
+  //   }
+  //   Dimensions.addEventListener('change', dimsChange);
+  //   return () => {
+  //     Dimensions.removeEventListener('change', dimsChange);
+  //     console.log('Dims listener removed')
+  //   }
+  // },[props.getDeviceDims]);
 
   let noteModal = (
     <View style={styles.modalPosition}>

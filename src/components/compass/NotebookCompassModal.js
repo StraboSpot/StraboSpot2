@@ -8,7 +8,7 @@ import DragAnimation from '../../shared/ui/DragAmination';
 const NotebookCompassModal = (props) => {
   if (Platform.OS === 'android'){
     return (
-      <View style={styles.modalPosition}>
+      <View style={[styles.modalPosition, {zIndex: 100}]}>
         <Modal
           component={<Compass/>}
           style={styles.compassContainer}

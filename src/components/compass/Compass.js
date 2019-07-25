@@ -501,6 +501,7 @@ class Compass extends Component {
             onPress={() => {
               // this.props.setShortcutPanelVisible(false);
               this.props.setNotebookPanelVisible(true);
+              this.props.setNotebookPageVisible(NotebookPages.MEASUREMENT);
               this.props.setModalVisible(Modals.NOTEBOOK_MODALS.COMPASS);
             }
             }

@@ -1,4 +1,4 @@
-import {applyMiddleware ,createStore, compose, combineReducers} from "redux";
+import {applyMiddleware, createStore, compose, combineReducers} from "redux";
 import {notebookReducer} from "../components/notebook-panel/notebook.reducers";
 import {mapReducer} from "../components/maps/maps.reducer";
 import {spotReducer} from "../spots/spot.reducers";

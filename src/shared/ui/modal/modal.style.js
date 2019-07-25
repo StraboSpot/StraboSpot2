@@ -8,13 +8,7 @@ const width = Dimensions.get(platformType).width;
 const height = Dimensions.get(platformType).height;
 
 const deviceWidth = () => {
-  // console.log('Width', width);
-  if (width < 500) {
-    return(
-      Orientation.lockToPortrait &&
-      wp('75%')
-    )
-  }
+  if (width < 500) return wp('75%');
   // if (width >= 500 && width < 1000) return wp('30%');
   if (width >= 500) return wp('30%');
 };

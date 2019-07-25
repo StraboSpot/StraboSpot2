@@ -74,7 +74,6 @@ const samplesStyle = StyleSheet.create({
     position: 'absolute', //Here is the trick
     left: 70,
     bottom: 10,
-    zIndex: 1
   },
   modalPositionShortcutView: {
     position: 'absolute',
