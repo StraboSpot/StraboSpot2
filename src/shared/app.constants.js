@@ -6,7 +6,7 @@ export const menuButtons = {
   notebookMenu: {
     COPY_FEATURE: 'copyFeature',
     DELETE_FEATURE: 'deleteFeature',
-    SHOW_ALL_SPOTS_PANEL: 'showAllSpotsPanel',
+    TOGGLE_ALL_SPOTS_PANEL: 'toggleAllSpotsPanel',
     CLOSE_NOTEBOOK: 'closeNotebook'
   }
 };

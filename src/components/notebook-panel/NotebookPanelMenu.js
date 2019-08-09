@@ -34,9 +34,9 @@ const NotebookPanelMenu = props => (
     />
       <DialogButton
         style={styles.dialogContent}
-        text="Show All Spots Panel"
+        text="Toggle All Spots Panel"
         textStyle={{fontSize: 12}}
-        onPress={() => props.onPress(menuButtons.notebookMenu.SHOW_ALL_SPOTS_PANEL)}
+        onPress={() => props.onPress(menuButtons.notebookMenu.TOGGLE_ALL_SPOTS_PANEL)}
       />
       <DialogButton
         style={styles.dialogContent}

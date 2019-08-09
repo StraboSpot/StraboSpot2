@@ -21,10 +21,10 @@ const allSpotsView = (props) => {
   return (
     <React.Fragment>
       {/*<Text style={{textAlign: 'center'}}>All Spots</Text>*/}
-      <ButtonNoBackground
-        style={{marginTop: 10, marginBottom: 5}}
-        textStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 18}}
-        onPress={props.close}>Close</ButtonNoBackground>
+      {/*<ButtonNoBackground*/}
+      {/*  style={{marginTop: 10, marginBottom: 5}}*/}
+      {/*  textStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 18}}*/}
+      {/*  onPress={props.close}>Close</ButtonNoBackground>*/}
       <ScrollView>
       {props.allSpots.map(spot => {
         // console.log(spot);
