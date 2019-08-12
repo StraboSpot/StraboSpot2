@@ -19,6 +19,7 @@ import SignUp from "../views/SignUp";
 import ImageGallery from "../components/images/ImageGallery.view";
 import ImageInfo from "../components/images/ImageInfo.view";
 import Loading from '../shared/ui/Loading'
+import {gestureHandlerRootHOC} from 'react-native-gesture-handler';
 
 const {store, persistor} = configureStore();
 
@@ -39,7 +40,7 @@ function WrappedComponent(Component) {
 }
 
 export default function() {
-  Navigation.registerComponent(HOME, () => WrappedComponent(Home));
+  Navigation.registerComponent(HOME, () => gestureHandlerRootHOC(WrappedComponent(Home)));
   Navigation.registerComponent(INITALIZING, () => WrappedComponent(Initialising));
   Navigation.registerComponent(SIGN_IN, () => WrappedComponent(SignIn));
   Navigation.registerComponent(SIGN_UP, () => WrappedComponent(SignUp));
