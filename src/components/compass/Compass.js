@@ -69,7 +69,7 @@ class Compass extends Component {
     //this allows to check if the system autolock is enabled or not.
     await this.subscribe();
     RNSimpleCompass.start(degree_update_rate, (degree) => {
-      degreeFacing = (<Text>{degree}</Text>);
+      // degreeFacing = (<Text>{degree}</Text>);
       // console.log('You are facing', degree);
       this.setState(prevState => {
           return {
@@ -179,7 +179,7 @@ class Compass extends Component {
     const y = this.state.accelerometer.y;
     const z = this.state.accelerometer.z;
     //let actualHeading = mod(vm.result.magneticHeading + vm.magneticDeclination, 360);
-    let actualHeading = mod(this.state.magnetometer, 360);  // ToDo: adjust for declination
+    let actualHeading = this.state.magnetometer;  // ToDo: adjust for declination
 
     // Calculate base values given the x, y, and z from the device. The x-axis runs side-to-side across
     // the mobile phone screen, or the laptop keyboard, and is positive towards the right side. The y-axis
@@ -242,7 +242,7 @@ class Compass extends Component {
   };
 
   calculateOrientationLandscape = (orientation) => {
-    console.log('Orientation', orientation);
+    // console.log('Orientation', orientation);
     const x = this.state.accelerometer.x;
     const y = this.state.accelerometer.y;
     const z = this.state.accelerometer.z;
@@ -305,7 +305,7 @@ class Compass extends Component {
           }
         }
       },
-      () => console.log('Calculated Data:', this.state.compassData)
+      // () => console.log('Calculated Data:', this.state.compassData)
     );
   };
 
