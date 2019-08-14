@@ -13,7 +13,7 @@ function Basemap(props) {
     logoEnabled={false}
     rotateEnabled={false}
     attributionEnabled={false}
-    compassEnabled={false}
+    compassEnabled={true}
     centerCoordinate={props.centerCoordinate}
     zoomLevel={16}
     onPress={props.onMapPress}
