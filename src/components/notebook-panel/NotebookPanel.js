@@ -1,7 +1,6 @@
-import React from 'react'
-import {Text, View} from 'react-native'
+import React, {useState} from 'react'
+import {Animated, Easing, Text, View} from 'react-native'
 import {connect} from 'react-redux';
-
 import NotebookHeader from './notebook-header/NotebookHeader';
 import NotebookFooter from './notebook-footer/NotebookFooter';
 import Overview from './Overview';
@@ -14,12 +13,17 @@ import {notebookReducers, NotebookPages} from "./Notebook.constants";
 import {homeReducers, Modals} from "../../views/home/Home.constants";
 import {isEmpty} from "../../shared/Helpers";
 import {FlingGestureHandler, Directions, State} from 'react-native-gesture-handler'
+import {openAllSpotsPanelFromMenu, closeAllSpotsPanelFromMenu} from '../../shared/Helpers';
 
 // Styles
 import notebookStyles from "./NotebookPanel.styles";
 import * as themes from '../../shared/styles.constants';
+import AllSpotsView from "./AllSpots.view";
 
 const NotebookPanel = props => {
+
+  const [animation, setAnimation] = useState(new Animated.Value(125));
+
 
   const setNotebookPageVisible = page => {
     const pageVisible = props.setNotebookPageVisible(page);
@@ -35,56 +39,80 @@ const NotebookPanel = props => {
   const _onRightFlingHandlerStateChange = ({nativeEvent}) => {
     if (nativeEvent.oldState === State.ACTIVE) {
       console.log('FLING RIGHT!', nativeEvent);
-      props.setAllSpotsPanelVisible(false)
+      props.setAllSpotsPanelVisible(false);
+      closeAllSpotsPanelFromMenu(animation)
     }
   };
 
   const _onLeftFlingHandlerStateChange = ({nativeEvent}) => {
     if (nativeEvent.oldState === State.ACTIVE) {
       console.log('FLING LEFT!', nativeEvent);
-      props.setAllSpotsPanelVisible(true)
+      props.setAllSpotsPanelVisible(true);
+      openAllSpotsPanelFromMenu(animation)
     }
   };
 
-  const _onTwoFingerFlingHandlerStateChange = ({nativeEvent}) => {
-    if (nativeEvent.oldState === State.ACTIVE) {
-      console.log('FLING TO CLOSE NOTEBOOK!', nativeEvent);
-      Animated.timing(animation, {
-        toValue: 0,
-        duration: 500,
-        easing: Easing.linear,
-        useNativeDriver: true
-      }).start();
-      props.setAllSpotsPanelVisible(false);
-      // props.setNotebookPanelVisible(false);
-      // Animated.spring(this._touchX, {
-      //   toValue: this._touchX._value + offset,
-      //   useNativeDriver: true,
-      // }).start();
-    }
+  // const openAllSpotsPanel = () => {
+  //   // this.props.setNotebookPanelVisible(false);
+  //   // this.props.setAllSpotsPanelVisible(!this.props.isAllSpotsPanelVisible);
+  //   if (props.isAllSpotsPanelVisible) {
+  //     props.setAllSpotsPanelVisible(false);
+  //     // Animated.timing(this.state.allSpotsViewAnimation, {
+  //     //   toValue: 125,
+  //     //   duration: 200,
+  //     //   easing: Easing.linear,
+  //     //   useNativeDriver: true
+  //     // }).start();
+  //     closeAllSpotsPanelFromMenu(animation);
+  //   }
+  //   else{
+  //     props.setAllSpotsPanelVisible(true);
+  //     // Animated.timing(this.state.allSpotsViewAnimation, {
+  //     //   toValue: 0,
+  //     //   duration: 200,
+  //     //   easing: Easing.linear,
+  //     //   useNativeDriver: true
+  //     // }).start();
+  //     openAllSpotsPanelFromMenu(animation)
+  //   }
+  // };
+
+  const animateAllSpotsMenu = {
+    transform: [
+      {translateX: animation}
+    ],
+    backgroundColor: 'red'
   };
 
   if (!isEmpty(props.spot)) {
     console.log('Selected Spot:', props.spot);
+
+    const allSpotsPanel = <Animated.View style={[notebookStyles.allSpotsPanel, animateAllSpotsMenu]}>
+      <AllSpotsView />
+    </Animated.View>;
+
     return (
 
         <FlingGestureHandler
           direction={Directions.RIGHT}
-          numberOfPointers={1}
+          numberOfPointers={2}
           onHandlerStateChange={(ev) => _onRightFlingHandlerStateChange(ev)}
         >
           <FlingGestureHandler
             direction={Directions.LEFT}
-            numberOfPointers={1}
+            numberOfPointers={2}
             onHandlerStateChange={(ev) => _onLeftFlingHandlerStateChange(ev)}
           >
-            <Animated.View style={[notebookStyles.panel, props.style]}>
-              <View style={notebookStyles.headerContainer}>
+            <Animated.View
+              // style={props.isAllSpotsPanelVisible ? [notebookStyles.panel, {marginRight: 125}] : notebookStyles.panel}
+              style={notebookStyles.panel}
+            >
+              <View style={props.isAllSpotsPanelVisible ? [notebookStyles.headerContainer, {marginRight: 125}] : notebookStyles.headerContainer}>
                 <NotebookHeader
                   onPress={props.onPress}
                 />
               </View>
-              <View style={notebookStyles.centerContainer}>
+              <View style={props.isAllSpotsPanelVisible ? [notebookStyles.centerContainer, {paddingRight: 125}] : notebookStyles.centerContainer}>
                 {props.notebookPageVisible === NotebookPages.OVERVIEW ? <Overview/> : null}
                 {props.notebookPageVisible === NotebookPages.MEASUREMENT ? <MeasurementsPage/> : null}
                 {props.notebookPageVisible === NotebookPages.MEASUREMENTDETAIL ? <MeasurementDetailPage/> : null}
@@ -92,12 +120,15 @@ const NotebookPanel = props => {
                 {props.notebookPageVisible === NotebookPages.SAMPLE ? <SamplesPage/> : null}
                 {props.notebookPageVisible === undefined ? <Overview/> : null}
               </View>
-              <View style={notebookStyles.footerContainer}>
+              <View  style={props.isAllSpotsPanelVisible ? [notebookStyles.footerContainer, {marginRight: 125}] :
+                notebookStyles.footerContainer}>
                 <NotebookFooter
                   openPage={(page) => setNotebookPageVisible(page)}
                   onPress={(camera) => props.onPress(camera)}
                 />
               </View>
+              {/*{props.isAllSpotsPanelVisible ? allSpotsPanel : null}*/}
+              {allSpotsPanel}
             </Animated.View>
           </FlingGestureHandler>
         </FlingGestureHandler>
@@ -120,6 +151,7 @@ function mapStateToProps(state) {
   return {
     spot: state.spot.selectedSpot,
     featuresSelected: state.spot.featuresSelected,
+    isAllSpotsPanelVisible: state.home.isAllSpotsPanelVisible,
     notebookPageVisible: isEmpty(state.notebook.visibleNotebookPagesStack) ?
       null : state.notebook.visibleNotebookPagesStack.slice(-1)[0]
   }

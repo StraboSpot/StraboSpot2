@@ -24,7 +24,7 @@ import Modal from "react-native-modal";
 import SaveMapModal from '../../components/modals/map-actions/SaveMapsModal';
 import NotebookPanelMenu from '../../components/notebook-panel/NotebookPanelMenu';
 import {connect} from 'react-redux';
-import {notebookReducers, NotebookPages} from "../../components/notebook-panel/Notebook.constants";
+import {NotebookPages, notebookReducers} from "../../components/notebook-panel/Notebook.constants";
 import {spotReducers} from "../../spots/Spot.constants";
 import {imageReducers} from "../../components/images/Image.constants";
 import {saveFile} from '../../services/images/ImageDownload';
@@ -161,7 +161,7 @@ class Home extends React.Component {
 
       // Notebook Panel three-dot menu
       case "closeNotebook":
-        this.closeNotebookPanel();
+        this.closeWholeNotebookPanel();
         break;
       case 'copyFeature':
         console.log('Spot Copied!');
@@ -226,70 +226,64 @@ class Home extends React.Component {
   };
 
   closeAllSpotsPanel = () => {
-    // Animated.timing(this.state.allSpotsViewAnimation, {
-    //   toValue: 125,
-    //   duration: 350,
-    //   useNativeDriver: true
-    // }).start();
-    // this.setState(prevState => {
-    //   return {
-    //     ...prevState,
-    //     isAllSpotsPanelVisible: false
-    //   }
-    // })
     this.props.setAllSpotsPanelVisible(false);
   };
 
-  flingHandler = ({nativeEvent}, name) => {
+  flingHandler = ({nativeEvent}) => {
     if (this._isMounted) {
       if (nativeEvent.oldState === State.ACTIVE) {
-        // switch (name) {
-        //   case 'closeNotebook':
-            console.log('FLING TO CLOSE NOTEBOOK!', nativeEvent);
-            this.props.setNotebookPanelVisible(false);
-            this.props.setModalVisible(null);
-            // if (this.state.isAllSpotsPanelVisible) {
-            //   this.closeAllSpotsPanel();
-            // }
-            // this.doAnimation();
-            Animated.timing(this.state.animation, {
-              // toValue: wp('40%'),
-              toValue: this.deviceWidth(),
-              duration: 350,
-              easing: Easing.linear,
-              useNativeDriver: true
-            }).start();
-          //   break;
-          // case 'closeAllSpotsPanel':
-          //   if (nativeEvent.oldState === State.ACTIVE) {
-          //     console.log('FLING RIGHT!', nativeEvent);
-          //     this.props.setAllSpotsPanelVisible(false)
-          //   }
-          //   break;
-          // case 'openAllSpotsPanel':
-          //   if (nativeEvent.oldState === State.ACTIVE) {
-          //     console.log('FLING LEFT!', nativeEvent);
-          //     this.props.setAllSpotsPanelVisible(true)
-          //   }
-          //   break;
-          // default:
-          //   alert('Nothing Happened')
-        // }
+        console.log('FLING TO CLOSE NOTEBOOK!', nativeEvent);
+        this.props.setAllSpotsPanelVisible(false);
+        Animated.timing(this.state.animation, {
+          toValue: this.deviceWidth(),
+          duration: 200,
+          easing: Easing.linear,
+          useNativeDriver: true
+        }).start(() => {
+          // this.props.setNotebookPanelVisible(false);
+          // this.props.setModalVisible(null);
+          this.closeWholeNotebookPanel();
+        });
+        Animated.timing(this.state.allSpotsViewAnimation, {
+          toValue: 125,
+          duration: 200,
+          easing: Easing.linear,
+          useNativeDriver: true
+        }).start();
       }
     }
   };
 
   closeNotebookPanel = () => {
     if (this._isMounted) {
-      this.doAnimation();
-      // this.setState(prevState => {
-      //   return {
-      //     ...prevState,
-      //     isAllSpotsPanelVisible: false
-      //   }
-      // });
-      this.props.setNotebookPanelVisible(false);
-      this.props.setAllSpotsPanelVisible(false);
+      console.log('closing notebook');
+      Animated.timing(this.state.animation, {
+        toValue: this.deviceWidth(),
+        duration: 200,
+        easing: Easing.linear,
+        useNativeDriver: true
+      }).start(() => {
+          this.props.setNotebookPanelVisible(false);
+          this.props.setAllSpotsPanelVisible(false);
+        }
+      )
+    }
+  };
+
+  closeWholeNotebookPanel = () => {
+    if (this._isMounted) {
+      console.log('closing Whole notebook');
+      this.props.setModalVisible(null);
+      Animated.timing(this.state.animation, {
+        toValue: this.deviceWidth(),
+        duration: 200,
+        easing: Easing.linear,
+        useNativeDriver: true
+      }).start(() => {
+          this.props.setNotebookPanelVisible(false);
+          this.props.setAllSpotsPanelVisible(false);
+        }
+      )
     }
   };
 
@@ -326,19 +320,6 @@ class Home extends React.Component {
     this.toggleDialog(dialog);
   };
 
-  doAnimation = () => {
-    let toValue = deviceWidth();
-    if (!this.props.isNotebookPanelVisible) {
-      toValue = wp('0%');
-    }
-    return Animated.timing(this.state.animation, {
-      toValue: toValue,
-      duration: 250,
-      easing: Easing.linear,
-      useNativeDriver: true
-    }).start()
-  };
-
   endDraw = async () => {
     this.mapViewComponent.endDraw();
     this.setMapMode(MapModes.VIEW);
@@ -373,33 +354,49 @@ class Home extends React.Component {
     }
   };
 
-  openAllSpotsPanel = () => {
-    // this.props.setNotebookPanelVisible(false);
-    Animated.spring(this.state.allSpotsViewAnimation, {
-      toValue: 0,
-      // speed: 3,
-      bounciness: 2,
-      useNativeDriver: true
-    }).start();
-    this.props.setAllSpotsPanelVisible(!this.props.isAllSpotsPanelVisible);
-  };
+  // openAllSpotsPanel = () => {
+  //   // this.props.setNotebookPanelVisible(false);
+  //   // this.props.setAllSpotsPanelVisible(!this.props.isAllSpotsPanelVisible);
+  //   if (this.props.isAllSpotsPanelVisible) {
+  //     this.props.setAllSpotsPanelVisible(false);
+  //     // Animated.timing(this.state.allSpotsViewAnimation, {
+  //     //   toValue: 125,
+  //     //   duration: 200,
+  //     //   easing: Easing.linear,
+  //     //   useNativeDriver: true
+  //     // }).start();
+  //     closeAllSpotsPanelFromMenu(this.state.allSpotsViewAnimation);
+  //   }
+  //  else{
+  //     this.props.setAllSpotsPanelVisible(true);
+  //     // Animated.timing(this.state.allSpotsViewAnimation, {
+  //     //   toValue: 0,
+  //     //   duration: 200,
+  //     //   easing: Easing.linear,
+  //     //   useNativeDriver: true
+  //     // }).start();
+  //     openAllSpotsPanelFromMenu(this.state.allSpotsViewAnimation)
+  //   }
+  // };
 
   openSettingsDrawer = () => {
     this.toggleDrawer();
     this.drawer.open();
   };
 
-  openNotebookPanel = () => {
+  openNotebookPanel = (pageView) => {
     if (this._isMounted) {
-      this.props.setNotebookPanelVisible(true);
-      this.props.setNotebookPageVisible(NotebookPages.OVERVIEW);
-       this.doAnimation();
-      // Animated.timing(this.state.animation, {
-      //   toValue: wp('0%'),
-      //   duration: 350,
-      //   easing: Easing.linear,
-      //   useNativeDriver: true
-      // }).start();
+      console.log('notebook opening', pageView);
+      this.props.setNotebookPageVisible(pageView);
+      this.props.setAllSpotsPanelVisible(false);
+      Animated.timing(this.state.animation, {
+        toValue: wp('0%'),
+        duration: 350,
+        easing: Easing.linear,
+        useNativeDriver: true
+      }).start(() => {
+        this.props.setNotebookPanelVisible(true);
+      });
     }
   };
 
@@ -618,6 +615,19 @@ class Home extends React.Component {
     }
   };
 
+  modalHandler = (page, modalType) => {
+    if (this.props.isNotebookPanelVisible) {
+      console.log('NBS NBModal press in SampleOnPress', page);
+      this.closeNotebookPanel();
+      this.props.setModalVisible(modalType);
+
+    }
+    else {
+      this.openNotebookPanel(page);
+      this.props.setModalVisible(modalType);
+    }
+  };
+
   render() {
     const spot = this.props.selectedSpot;
     const isOnline = this.props.isOnline;
@@ -636,47 +646,50 @@ class Home extends React.Component {
     let samplesModal = null;
     let notebookPanel = null;
 
-    if (this.props.isNotebookPanelVisible && this.props.isAllSpotsPanelVisible) {
-      notebookPanel =
+    // if (this.props.isNotebookPanelVisible && this.props.isAllSpotsPanelVisible) {
+    //   notebookPanel =
+    //     <Animated.View style={[notebookStyles.panel,]}>
+    //       <NotebookPanel
+    //         // style={{right: 125}}
+    //         closeNotebook={this.closeNotebookPanel}
+    //         textStyle={{fontWeight: 'bold', fontSize: 12}}
+    //         onPress={(name) => this.notebookClickHandler(name)}
+    //       />
+    //     </Animated.View>
+    // }
+    // else {
+    notebookPanel =
+      <FlingGestureHandler
+        direction={Directions.RIGHT}
+        numberOfPointers={1}
+        // onHandlerStateChange={ev => _onTwoFingerFlingHandlerStateChange(ev)}
+        onHandlerStateChange={(ev) => this.flingHandler(ev)}
+      >
         <Animated.View style={[notebookStyles.panel, animateNotebookMenu]}>
           <NotebookPanel
-            style={{right: 125}}
-            closeNotebook={this.closeNotebookPanel}
-            textStyle={{fontWeight: 'bold', fontSize: 12}}
-            onPress={(name) => this.notebookClickHandler(name)}
-          />
-        </Animated.View>
-    }
-    else {
-      notebookPanel =
-        <FlingGestureHandler
-          direction={Directions.RIGHT}
-          numberOfPointers={2}
-          // onHandlerStateChange={ev => _onTwoFingerFlingHandlerStateChange(ev)}
-          onHandlerStateChange={(ev) => this.flingHandler(ev)}
-        >
-         <Animated.View style={[notebookStyles.panel, animateNotebookMenu]}>
-          <NotebookPanel
             onHandlerStateChange={(ev, name) => this.flingHandler(ev, name)}
-            closeNotebook={this.closeNotebookPanel}
+            closeNotebook={this.closeWholeNotebookPanel}
             textStyle={{fontWeight: 'bold', fontSize: 12}}
             onPress={(name) => this.notebookClickHandler(name)}
-          />
+          >
+            <AllSpotsView/>
+          </NotebookPanel>
         </Animated.View>
-        </FlingGestureHandler>
-    }
+      </FlingGestureHandler>;
 
     // Renders Compass modals in either shortcut or notebook view
     if (this.props.modalVisible === Modals.NOTEBOOK_MODALS.COMPASS) {
       compassModal =
         <NotebookCompassModal
           close={() => this.props.setModalVisible(null)}
+          onPress={(page) => this.modalHandler(page, Modals.SHORTCUT_MODALS.COMPASS)}
         />;
     }
     else if (this.props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {
       compassModal =
         <ShortcutCompassModal
           close={() => this.props.setModalVisible(null)}
+          onPress={(page) => this.modalHandler(page, Modals.NOTEBOOK_MODALS.COMPASS)}
         />;
     }
 
@@ -686,6 +699,7 @@ class Home extends React.Component {
         <NotebookSamplesModal
           close={() => this.props.setModalVisible(null)}
           cancel={() => this.samplesModalCancel()}
+          onPress={(page) => this.modalHandler(page, Modals.SHORTCUT_MODALS.SAMPLE)}
         />
       )
     }
@@ -697,6 +711,7 @@ class Home extends React.Component {
             close={() => this.props.setModalVisible(null)}
             cancel={() => this.samplesModalCancel()}
             style={{justifyContent: 'center'}}
+            onPress={(page) => this.modalHandler(page, Modals.NOTEBOOK_MODALS.SAMPLE)}
           />
         </View>
     }
@@ -915,16 +930,16 @@ class Home extends React.Component {
             onPress={(name) => this.dialogClickHandler("notebookPanelMenuVisible", name)}
             onTouchOutside={() => this.toggleDialog("notebookPanelMenuVisible")}
           />
-          {this.props.isAllSpotsPanelVisible ? <View style={[notebookStyles.allSpotsPanel,]}>
-            <AllSpotsView
-              close={() => this.closeAllSpotsPanel()}
-            />
-          </View> : null}
-          {/*<Animated.View style={[notebookStyles.allSpotsPanel, animateAllSpotsMenu]}>*/}
+          {/*{this.props.isAllSpotsPanelVisible ? <Animated.View style={[notebookStyles.allSpotsPanel, animateAllSpotsMenu]}>*/}
           {/*  <AllSpotsView*/}
           {/*    close={() => this.closeAllSpotsPanel()}*/}
           {/*  />*/}
-          {/*</Animated.View>*/}
+          {/*</Animated.View> : null}*/}
+          <Animated.View style={[notebookStyles.allSpotsPanel, animateAllSpotsMenu]}>
+            <AllSpotsView
+              close={() => this.closeAllSpotsPanel()}
+            />
+          </Animated.View>
           <Modal
             isVisible={this.state.isOfflineMapModalVisible}
             useNativeDriver={true}

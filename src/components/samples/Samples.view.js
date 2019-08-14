@@ -4,7 +4,7 @@ import {connect} from "react-redux";
 import {Button, ButtonGroup, Input} from "react-native-elements";
 import Slider from '../../shared/ui/Slider';
 import {spotReducers} from "../../spots/Spot.constants";
-import {notebookReducers} from "../notebook-panel/Notebook.constants";
+import {NotebookPages, notebookReducers} from "../notebook-panel/Notebook.constants";
 import {getNewId, isEmpty} from "../../shared/Helpers";
 import {homeReducers, Modals} from "../../views/home/Home.constants";
 import Samples from './SamplesNotebook.view';
@@ -78,11 +78,7 @@ const samplesModalView = (props) => {
                 alignItems: 'flex-end'
               }}
               textStyle={{color: themes.BLUE, fontSize: 16, textAlign: 'center'}}
-              onPress={() => {
-                props.setNotebookPanelVisible(true);
-                props.setModalVisible(Modals.NOTEBOOK_MODALS.SAMPLE);
-              }
-              }
+              onPress={() => props.onPress(NotebookPages.SAMPLE)}
             > Go to {props.spot.properties.name}</IconButton>
           </View>
         )
@@ -94,11 +90,7 @@ const samplesModalView = (props) => {
         title={'View In Shortcut Mode'}
         type={'clear'}
         titleStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 16}}
-        onPress={() => {
-          props.setModalVisible(Modals.SHORTCUT_MODALS.SAMPLE);
-          props.setNotebookPanelVisible(false);
-        }
-        }
+        onPress={() => props.onPress(NotebookPages.SAMPLE)}
       />
     }
   };

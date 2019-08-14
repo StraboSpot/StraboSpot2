@@ -1,4 +1,7 @@
+import React from 'react'
 // Return UUID
+import {Animated, Easing} from "react-native";
+
 export const getNewId = () => {
   return Math.floor((new Date().getTime() + Math.random()) * 10);
   // return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
@@ -47,3 +50,23 @@ export function toTitleCase(str) {
     return t.toUpperCase()
   });
 }
+
+export const closeAllSpotsPanelFromMenu = (animationState) => {
+  return Animated.timing(animationState, {
+    toValue: 125,
+    duration: 200,
+    easing: Easing.linear,
+    useNativeDriver: true
+  }).start();
+};
+
+export const openAllSpotsPanelFromMenu = (animationState) => {
+  return Animated.timing(animationState, {
+    toValue: 0,
+    duration: 200,
+    easing: Easing.linear,
+    useNativeDriver: true
+  }).start();
+};
+
+

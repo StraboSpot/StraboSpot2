@@ -24,6 +24,16 @@ const notebookStyles = StyleSheet.create({
     right: 0,
     zIndex: 1,
   },
+  panelWithAllSpotsPanel: {
+    width: deviceWidth()  + 125,
+    height: '100%',
+    borderBottomLeftRadius: 30,
+    borderTopLeftRadius: 30,
+    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
+    position: 'absolute',
+    right: 0,
+    zIndex: 1,
+  },
   allSpotsPanel: {
     flex: 1,
     justifyContent: 'center',

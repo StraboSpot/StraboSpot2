@@ -8,7 +8,7 @@ const shortcutSamplesModalView = (props) => {
   return (
     <DragAnimation style={styles.modalPositionShortcutView}>
       <Modal
-        component={<Samples/>}
+        component={<Samples onPress={props.onPress}/>}
         close={props.close}
         buttonTitleRight={'Cancel'}
         onPress={props.cancel}

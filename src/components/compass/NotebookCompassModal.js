@@ -10,7 +10,7 @@ const NotebookCompassModal = (props) => {
     return (
       <View style={[styles.modalPosition, {zIndex: 100}]}>
         <Modal
-          component={<Compass/>}
+          component={<Compass onPress={props.onPress}/>}
           style={styles.compassContainer}
           close={props.close}
           buttonTitleRight={'Undo last'}
@@ -23,7 +23,7 @@ else {
     return (
       <DragAnimation style={styles.modalPosition}>
         <Modal
-          component={<Compass/>}
+          component={<Compass onPress={props.onPress}/>}
           style={styles.compassContainer}
           close={props.close}
           buttonTitleRight={'Undo last'}

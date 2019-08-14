@@ -10,7 +10,7 @@ const ShortcutCompassModal = (props) => {
     return (
       <View style={styles.modalPositionShortcutView}>
         <Modal
-          component={<Compass/>}
+          component={<Compass onPress={props.onPress}/>}
           style={styles.compassContainer}
           close={props.close}
           buttonTitleRight={'Undo last'}
@@ -23,7 +23,7 @@ const ShortcutCompassModal = (props) => {
     return (
       <DragAnimation style={styles.modalPositionShortcutView}>
         <Modal
-          component={<Compass/>}
+          component={<Compass onPress={props.onPress}/>}
           style={styles.compassContainer}
           close={props.close}
           buttonTitleRight={'Undo last'}

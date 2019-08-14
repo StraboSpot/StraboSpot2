@@ -14,7 +14,6 @@ import Orientation from 'react-native-orientation-locker';
 import Slider from '../../shared/ui/Slider';
 import Measurements from '../measurements/Measurements';
 import IconButton from '../../shared/ui/IconButton';
-import Modal from "../../shared/ui/modal/Modal.view";
 
 // Styles
 import styles from './CompassStyles';
@@ -498,13 +497,7 @@ class Compass extends Component {
             source={require('../../assets/icons/NotebookView_pressed.png')}
             style={{marginTop: 10, flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-end', height: 25}}
             textStyle={{color: themes.BLUE, fontSize: 16, textAlign: 'center'}}
-            onPress={() => {
-              // this.props.setShortcutPanelVisible(false);
-              this.props.setNotebookPanelVisible(true);
-              this.props.setNotebookPageVisible(NotebookPages.MEASUREMENT);
-              this.props.setModalVisible(Modals.NOTEBOOK_MODALS.COMPASS);
-            }
-            }
+            onPress={() => this.props.onPress(NotebookPages.MEASUREMENT)}
           > Go to {this.props.spot.properties.name}</IconButton>
         </View>
       }
@@ -516,10 +509,7 @@ class Compass extends Component {
           title={'View In Shortcut Mode'}
           type={'clear'}
           titleStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 16}}
-          onPress={() => {
-            this.props.setModalVisible(Modals.SHORTCUT_MODALS.COMPASS);
-            this.props.setNotebookPanelVisible(false);
-          }}
+          onPress={() => this.props.onPress(NotebookPages.MEASUREMENT)}
         /> : null}
         <Button
           title={'Toggle data view'}

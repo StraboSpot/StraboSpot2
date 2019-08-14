@@ -13,7 +13,7 @@ const notebookSamplesModalView = (props) => {
     return (
       <View style={[styles.modalPosition, {zIndex: 100}]}>
         <Modal
-          component={<Samples/>}
+          component={<Samples onPress={props.onPress}/>}
           close={props.close}
           buttonTitleRight={'Cancel'}
           onPress={props.cancel}
@@ -26,7 +26,7 @@ const notebookSamplesModalView = (props) => {
     return (
       <DragAnimation style={styles.modalPosition}>
         <Modal
-          component={<Samples/>}
+          component={<Samples onPress={props.onPress}/>}
           close={props.close}
           buttonTitleRight={'Go Back'}
           onPress={props.cancel}
