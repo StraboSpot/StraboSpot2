@@ -4,8 +4,6 @@ import Animated from 'react-native-reanimated';
 import {PanGestureHandler, State} from 'react-native-gesture-handler';
 
 const {width} = Dimensions.get('window');
-import CompassModal from '../../components/compass/NotebookCompassModal';
-
 const {cond, eq, add, call, set, Value, event} = Animated;
 
 export default class Example extends React.Component {
@@ -39,10 +37,6 @@ export default class Example extends React.Component {
       set(this.offsetY, this.addY),
     ]);
   }
-
-  onDrop = ([x, y]) => {
-    alert(`You dropped at x: ${x} and y: ${y}!`);
-  };
 
   render() {
     return (
@@ -82,19 +76,9 @@ export default class Example extends React.Component {
   }
 }
 
-const CIRCLE_SIZE = 70;
-
 const styles = StyleSheet.create({
   container: {
-    // flex: 1,
     zIndex: 100,
     backgroundColor: 'tomato',
-  },
-  // box: {
-  //   backgroundColor: 'green',
-  //   position: 'absolute',
-  //   // left: 50,
-  //   right: 50,
-  //   bottom: 10,
-  // }
+  }
 });
