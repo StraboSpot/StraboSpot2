@@ -3,8 +3,7 @@ import {Alert, Animated, Dimensions, Easing, Platform, View} from 'react-native'
 import NetInfo from "@react-native-community/netinfo";
 import ImagePicker from 'react-native-image-picker';
 import styles from './Styles';
-import {goToAuth, goSignIn, goToSpotPage, goToImageGallery} from '../../routes/Navigation'
-import {Navigation} from 'react-native-navigation';
+import {goToImageGallery} from '../../routes/Navigation'
 import MapView from '../../components/maps/MapView';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from '../../shared/Icons';
@@ -94,7 +93,7 @@ class Home extends React.Component {
     Icon.getImageSource("pin", 30);
     NetInfo.isConnected.addEventListener('connectionChange', this.handleConnectivityChange);
     // this.props.setDeviceDims(this.dimensions);
-    if (this.props.deviceDimensions.width < 500){
+    if (this.props.deviceDimensions.width < 500) {
       Orientation.unlockAllOrientations();
     }
     else Orientation.lockToLandscapeLeft();
@@ -327,7 +326,7 @@ class Home extends React.Component {
     this.openNotebookPanel()
   };
 
-  //function for online/offline state change event handler
+//function for online/offline state change event handler
   handleConnectivityChange = (isConnected) => {
     this.props.setIsOnline(isConnected);
   };
@@ -549,7 +548,7 @@ class Home extends React.Component {
     });
   };
 
-  // Toggle given button between true (on) and false (off)
+// Toggle given button between true (on) and false (off)
   toggleButton = (button, isVisible) => {
     console.log('Toggle Button', button, isVisible || !this.state.buttons[button]);
     if (this._isMounted) {
@@ -566,7 +565,7 @@ class Home extends React.Component {
     else console.log('Attempting to toggle', button, 'but Home Component not mounted.');
   };
 
-  // Toggle given dialog between true (visible) and false (hidden)
+// Toggle given dialog between true (visible) and false (hidden)
   toggleDialog = (dialog) => {
     console.log('Toggle', dialog);
     if (this._isMounted) {
