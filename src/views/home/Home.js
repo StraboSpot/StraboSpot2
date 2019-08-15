@@ -482,26 +482,6 @@ class Home extends React.Component {
     else console.log('Attempting to set the state for the map mode but Home Component not mounted.');
   };
 
-  settingsClickHandler = (name) => {
-    console.log(name);
-    switch (name) {
-      case "Shortcut Menu":
-        console.log(name);
-        this.setVisibleMenuState('Shortcut Menu');
-        break;
-      case 'Sign Out':
-        break;
-      case 'Manage Offline Maps':
-        this.setVisibleMenuState('Manage Offline Maps');
-        break;
-      case 'Custom Maps':
-        this.setVisibleMenuState('Custom Maps');
-        break;
-      case 'Image Gallery':
-        goToImageGallery();
-    }
-  };
-
   setVisibleMenuState = (state) => {
     if (this._isMounted) {
       this.setState(prevState => {
@@ -744,6 +724,12 @@ class Home extends React.Component {
           closeSettingsDrawer={() => this.closeSettingsDrawer()}
         />
     }
+    else if (this.state.settingsMenuVisible === SettingsMenuItems.ATTRIBUTES.IMAGE_GALLERY) {
+      content =
+        <ImageGallery
+          onPress={() => this.setVisibleMenuState('settingsMain')}
+      />
+    }
 
     return (
       <Drawer
@@ -752,7 +738,7 @@ class Home extends React.Component {
         })}
         type={'displace'}
         ref={ref => this.drawer = ref}
-        openDrawerOffset={.70}
+        openDrawerOffset={.65}
         tapToClose={true}
         onClose={this.closeSettingsDrawer}
         content={content}
