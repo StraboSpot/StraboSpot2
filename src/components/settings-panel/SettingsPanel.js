@@ -6,11 +6,13 @@ import UserProfileComponent from './UserProfileComponent';
 
 const SettingsPanel = props => {
   return (
-    <View style={styles.container}>
-      <View style={styles.profile}>
-        <UserProfileComponent/>
+    <View style={{ flex:1}}>
+      <View style={styles.container} >
+          <UserProfileComponent/>
       </View>
-      <SettingsPanelList onPress={(name) => props.onPress(name)}/>
+      <View style={styles.listContainer} >
+        <SettingsPanelList onPress={(name) => props.onPress(name)}/>
+      </View>
     </View>
   );
 };

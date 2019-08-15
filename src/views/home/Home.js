@@ -1,5 +1,5 @@
 import React from 'react'
-import {Alert, Animated, Dimensions, Easing, Platform, View} from 'react-native'
+import {Alert, Animated, Dimensions, Easing, Platform, Text, View} from 'react-native'
 import NetInfo from "@react-native-community/netinfo";
 import ImagePicker from 'react-native-image-picker';
 import styles from './Styles';
@@ -15,6 +15,8 @@ import NotebookPanel from '../../components/notebook-panel/NotebookPanel';
 import Drawer from 'react-native-drawer';
 import SettingsPanel from '../../components/settings-panel/SettingsPanel';
 import {MapModes} from '../../components/maps/Map.constants';
+import {SettingsMenuItems} from '../../components/settings-panel/SettingsMenu.constants';
+import ImageGallery from '../../components/images/ImageGallery.view';
 import ShortcutMenu from '../../components/settings-panel/shortcuts-menu/ShortcutsMenu';
 import ManageOfflineMapsMenu from '../../components/settings-panel/Manage-Offline-Maps-Menu/ManageOfflineMapsMenu';
 import CustomMapsMenu from '../../components/settings-panel/Custom-Maps-Menu/CustomMapsMenu';
@@ -716,7 +718,7 @@ class Home extends React.Component {
     }
 
     if (this.state.settingsMenuVisible === 'settingsMain') {
-      content = <SettingsPanel onPress={(name) => this.settingsClickHandler(name)}/>
+      content = <SettingsPanel onPress={(name) => this.setVisibleMenuState(name)}/>
     }
     else if (this.state.settingsMenuVisible === 'Shortcut Menu') {
       content =
