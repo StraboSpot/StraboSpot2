@@ -16,7 +16,7 @@ import Home from "../views/home/Home";
 import Initialising from "../Initializing";
 import SignIn from "../views/SignIn";
 import SignUp from "../views/SignUp";
-import ImageGallery from "../components/images/ImageGallery.view";
+// import ImageGallery from "../components/images/ImageGallery.view";
 import ImageInfo from "../components/images/ImageInfo.view";
 import Loading from '../shared/ui/Loading'
 import {gestureHandlerRootHOC} from 'react-native-gesture-handler';
@@ -44,7 +44,7 @@ export default function() {
   Navigation.registerComponent(INITALIZING, () => WrappedComponent(Initialising));
   Navigation.registerComponent(SIGN_IN, () => WrappedComponent(SignIn));
   Navigation.registerComponent(SIGN_UP, () => WrappedComponent(SignUp));
-  Navigation.registerComponent(IMAGEGALLERY, () => WrappedComponent(ImageGallery));
+  // Navigation.registerComponent(IMAGEGALLERY, () => WrappedComponent(ImageGallery));
   Navigation.registerComponent(IMAGEINFO, () => WrappedComponent(ImageInfo));
   console.log("All screens have been registered...")
 }

@@ -47,20 +47,20 @@ export const goSignIn = () => Navigation.setRoot({
   }
 });
 
-export const goToImageGallery = () => Navigation.setRoot({
-  root: {
-    stack: {
-      id: 'ImageGallery',
-      children: [
-        {
-          component: {
-            name: IMAGEGALLERY
-          }
-        }
-      ]
-    }
-  }
-});
+// export const goToImageGallery = () => Navigation.setRoot({
+//   root: {
+//     stack: {
+//       id: 'ImageGallery',
+//       children: [
+//         {
+//           component: {
+//             name: IMAGEGALLERY
+//           }
+//         }
+//       ]
+//     }
+//   }
+// });
 
 export const goToImageInfo = (id) => Navigation.setRoot({
   root: {
