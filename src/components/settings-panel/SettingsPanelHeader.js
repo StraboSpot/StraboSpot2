@@ -26,13 +26,14 @@ const SettingsPanelHeader = (props) => {
   {/*);*/}
   return (
     <Header
-      backgroundColor={themes.SECONDARY_BACKGROUND_COLOR}
+      backgroundColor={themes.PRIMARY_BACKGROUND_COLOR}
       leftComponent={
             <Icon
             name={'ios-arrow-back'}
             type={'ionicon'}
             color={'black'}
             iconStyle={styles.buttons}
+            // containerStyle={{backgroundColor: 'red', paddingRight: 20, paddingLeft: 20}}
             onPress={() => props.onPress()}
             size={30}
           />}

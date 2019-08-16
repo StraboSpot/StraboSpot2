@@ -41,6 +41,8 @@ import notebookStyles from '../../components/notebook-panel/NotebookPanel.styles
 import Orientation from "react-native-orientation-locker";
 import {Directions, FlingGestureHandler, State} from "react-native-gesture-handler";
 import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
+// import {SettingsPanel,  ShortcutMenu} from '../../components/settings-panel/index';
+import SettingsPanelHeader from '../../components/settings-panel/SettingsPanelHeader';
 
 const deviceWidth = () => {
   if (width < 500) return wp('95%');
@@ -79,7 +81,7 @@ class Home extends React.Component {
         editButtonsVisible: false
       },
       mapMode: MapModes.VIEW,
-      settingsMenuVisible: 'settingsMain',
+      settingsMenuVisible: SettingsMenuItems.SETTINGS_MAIN,
       drawerVisible: false,
       isOfflineMapModalVisible: false,
       currentSpot: undefined,
@@ -291,7 +293,7 @@ class Home extends React.Component {
   closeSettingsDrawer = () => {
     this.toggleDrawer();
     this.drawer.close();
-    this.setVisibleMenuState('settingsMain');
+    this.setVisibleMenuState(SettingsMenuItems.SETTINGS_MAIN);
   };
 
   deleteSelectedFeature = (id) => {
@@ -697,38 +699,109 @@ class Home extends React.Component {
         </View>
     }
 
-    if (this.state.settingsMenuVisible === 'settingsMain') {
-      content = <SettingsPanel onPress={(name) => this.setVisibleMenuState(name)}/>
-    }
-    else if (this.state.settingsMenuVisible === 'Shortcut Menu') {
-      content =
-        <ShortcutMenu
-          onPress={() => this.setVisibleMenuState('settingsMain')}
-          toggleSwitch={(switchName) => this.toggleSwitch(switchName)}
-          shortcutSwitchPosition={this.props.shortcutSwitchPosition}
-        />
-    }
-    else if (this.state.settingsMenuVisible === 'Manage Offline Maps') {
-      content =
-        <ManageOfflineMapsMenu
-          onPress={() => this.setVisibleMenuState('settingsMain')}
-          toggleSwitch={(switchName) => this.toggleSwitch(switchName)}
-          closeSettingsDrawer={() => this.closeSettingsDrawer()}
-        />
-    }
-    else if (this.state.settingsMenuVisible === 'Custom Maps') {
-      content =
-        <CustomMapsMenu
-          onPress={() => this.setVisibleMenuState('settingsMain')}
-          toggleSwitch={(switchName) => this.toggleSwitch(switchName)}
-          closeSettingsDrawer={() => this.closeSettingsDrawer()}
-        />
-    }
-    else if (this.state.settingsMenuVisible === SettingsMenuItems.ATTRIBUTES.IMAGE_GALLERY) {
-      content =
-        <ImageGallery
-          onPress={() => this.setVisibleMenuState('settingsMain')}
-      />
+    // if (this.state.settingsMenuVisible === SettingsMenuItems.SETTINGS_MAIN) {
+    //   content = <SettingsPanel onPress={(name) => this.setVisibleMenuState(name)}/>
+    // }
+    // else if (this.state.settingsMenuVisible === SettingsMenuItems.APP_PREFERENCES.SHORTCUTS) {
+    //   content =
+    //     <View style={{flex: 1}}>
+    //       <SettingsPanelHeader onPress={() => this.setVisibleMenuState(SettingsMenuItems.SETTINGS_MAIN)}>
+    //         {this.state.settingsMenuVisible}
+    //       </SettingsPanelHeader>
+    //       <ShortcutMenu
+    //         toggleSwitch={(switchName) => this.toggleSwitch(switchName)}
+    //         shortcutSwitchPosition={this.props.shortcutSwitchPosition}
+    //       />
+    //     </View>
+    // }
+    // else if (this.state.settingsMenuVisible === SettingsMenuItems.MAPS.MANAGE_OFFLINE_MAPS) {
+    //   content =
+    //     <View style={{flex: 1}}>
+    //       <SettingsPanelHeader onPress={() => this.setVisibleMenuState(SettingsMenuItems.SETTINGS_MAIN)}>
+    //         {this.state.settingsMenuVisible}
+    //       </SettingsPanelHeader>
+    //       <ManageOfflineMapsMenu
+    //         toggleSwitch={(switchName) => this.toggleSwitch(switchName)}
+    //         closeSettingsDrawer={() => this.closeSettingsDrawer()}
+    //       />
+    //     </View>
+    //
+    // }
+    // else if (this.state.settingsMenuVisible === SettingsMenuItems.MAPS.CUSTOM) {
+    //   content =
+    //     <View style={{flex: 1}}>
+    //       <SettingsPanelHeader onPress={() => this.setVisibleMenuState(SettingsMenuItems.SETTINGS_MAIN)}>
+    //         {this.state.settingsMenuVisible}
+    //       </SettingsPanelHeader>
+    //       <CustomMapsMenu
+    //         toggleSwitch={(switchName) => this.toggleSwitch(switchName)}
+    //         closeSettingsDrawer={() => this.closeSettingsDrawer()}
+    //       />
+    //     </View>
+    // }
+    // else if (this.state.settingsMenuVisible === SettingsMenuItems.ATTRIBUTES.IMAGE_GALLERY) {
+    //   content =
+    //     <View style={{flex: 1}}>
+    //       <ImageGallery
+    //         onPress={() => console.log('HELLO THERE ')}
+    //         backToSettings={() => this.setVisibleMenuState(SettingsMenuItems.SETTINGS_MAIN)}
+    //       >{this.state.settingsMenuVisible}
+    //       </ImageGallery>
+    //     </View>
+    // }
+
+    switch (this.state.settingsMenuVisible) {
+      case SettingsMenuItems.SETTINGS_MAIN:
+        content = <SettingsPanel onPress={(name) => this.setVisibleMenuState(name)}/>;
+        break;
+      case SettingsMenuItems.APP_PREFERENCES.SHORTCUTS:
+        content =
+          <View style={{flex: 1}}>
+            <SettingsPanelHeader onPress={() => this.setVisibleMenuState(SettingsMenuItems.SETTINGS_MAIN)}>
+              {this.state.settingsMenuVisible}
+            </SettingsPanelHeader>
+            <ShortcutMenu
+              toggleSwitch={(switchName) => this.toggleSwitch(switchName)}
+              shortcutSwitchPosition={this.props.shortcutSwitchPosition}
+            />
+          </View>;
+        break;
+      case SettingsMenuItems.MAPS.MANAGE_OFFLINE_MAPS:
+        content =
+          <View style={{flex: 1}}>
+            <SettingsPanelHeader onPress={() => this.setVisibleMenuState(SettingsMenuItems.SETTINGS_MAIN)}>
+              {this.state.settingsMenuVisible}
+            </SettingsPanelHeader>
+            <ManageOfflineMapsMenu
+              toggleSwitch={(switchName) => this.toggleSwitch(switchName)}
+              closeSettingsDrawer={() => this.closeSettingsDrawer()}
+            />
+          </View>;
+        break;
+      case SettingsMenuItems.MAPS.CUSTOM:
+        content =
+          <View style={{flex: 1}}>
+            <SettingsPanelHeader onPress={() => this.setVisibleMenuState(SettingsMenuItems.SETTINGS_MAIN)}>
+              {this.state.settingsMenuVisible}
+            </SettingsPanelHeader>
+            <CustomMapsMenu
+              toggleSwitch={(switchName) => this.toggleSwitch(switchName)}
+              closeSettingsDrawer={() => this.closeSettingsDrawer()}
+            />
+          </View>;
+        break;
+      case SettingsMenuItems.ATTRIBUTES.IMAGE_GALLERY:
+        content =
+          <View style={{flex: 1}}>
+            <ImageGallery
+              onPress={() => console.log('HELLO THERE ')}
+              backToSettings={() => this.setVisibleMenuState(SettingsMenuItems.SETTINGS_MAIN)}
+            >{this.state.settingsMenuVisible}
+            </ImageGallery>
+          </View>;
+        break;
+      default:
+        content = <SettingsPanel onPress={(name) => this.setVisibleMenuState(name)}/>
     }
 
     return (

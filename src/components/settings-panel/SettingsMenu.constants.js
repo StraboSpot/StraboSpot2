@@ -1,4 +1,5 @@
 export const SettingsMenuItems = {
+  SETTINGS_MAIN: 'settingsMain',
   ATTRIBUTES: {
     SPOTS_LIST: 'Spots List',
     IMAGE_GALLERY: 'Image Gallery',

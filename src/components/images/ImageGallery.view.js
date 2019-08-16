@@ -5,6 +5,7 @@ import {pictureSelectDialog, saveFile} from './Images.container';
 import {connect} from "react-redux";
 import imageStyles from './images.styles'
 import {imageReducers} from "./Image.constants";
+import SettingsPanelHeader from "../settings-panel/SettingsPanelHeader";
 
 const imageGallery = (props) => {
   let savedArray = [];
@@ -37,10 +38,11 @@ const imageGallery = (props) => {
   };
 
   return (
+    <React.Fragment>
+    <SettingsPanelHeader onPress={() => props.backToSettings()}>
+      {props.children}
+    </SettingsPanelHeader>
     <View style={imageStyles.container}>
-      <Text style={{
-        margin: 30,
-      }}>Images Page</Text>
       <ScrollView >
         <View style={imageStyles.galleryImageContainer}>
           {Object.values(props.imagePaths).map(image => {
@@ -48,24 +50,20 @@ const imageGallery = (props) => {
           })}
         </View>
       </ScrollView>
-      <Button
-        onPress={() => Navigation.push(props.componentId, {
-          component: {
-            name: 'Home'
-          }
-        })}
-        title="Go Back"
-      />
+      {/*<Button*/}
+      {/*  onPress={() => props.onPress()}*/}
+      {/*  title="Go Back"*/}
+      {/*/>*/}
       <Button
         onPress={() => imageSave()}
         title="Picture"
       />
     </View>
+    </React.Fragment>
   );
 };
 
 const mapStateToProps = (state) => {
-  console.log('MP to P', state);
   return {
     imagePaths: state.images.imagePaths
   }
