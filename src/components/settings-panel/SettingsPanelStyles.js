@@ -4,15 +4,8 @@ import * as themes from '../../shared/styles.constants';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    marginTop: 10,
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
-  },
-  profile: {
-    width: '100%',
-    height: 125,
-    flex: 25,
-    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
-    borderBottomWidth: 1,
-    borderColor: 'black',
   },
   navItemStyle: {
     padding: 3,
@@ -24,7 +17,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   listContainer: {
-    flex: 5,
+    flex: 8,
   },
   sectionHeading: {
     alignItems: 'flex-start',
@@ -48,7 +41,7 @@ const styles = StyleSheet.create({
   },
   headingText: {
     fontWeight: 'bold',
-    fontSize: 20,
+    fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,
   },
   profileContainer: {
     flex: 1,
@@ -69,7 +62,7 @@ const styles = StyleSheet.create({
   },
   avatarImageContainer: {
     flex:2,
-    justifyContent: 'flex-end',
+    justifyContent: 'center',
   },
   avatarLabelContainer: {
     flex: 1,
@@ -83,12 +76,12 @@ const styles = StyleSheet.create({
     marginRight: 10
   },
   projectName: {
-    paddingTop: 15,
     flex: 2,
     alignContent: 'center',
   },
   projectNameText: {
-    fontSize: themes.PRIMARY_TEXT_SIZE,
+    fontSize: themes.PRIMARY_HEADER_TEXT_SIZE + 5,
+    fontWeight: 'bold',
     textAlign: 'center'
   }
 });

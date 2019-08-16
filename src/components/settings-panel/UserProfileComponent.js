@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 import {View, Text} from 'react-native'
+import {Button} from "react-native-elements";
 // import {getUserProfile} from '../services/user/UserProfile';
 import {Avatar} from 'react-native-elements';
 import styles from './SettingsPanelStyles';
@@ -38,17 +39,23 @@ constructor(props) {
                 source={require('../../assets/images/Chuck-norris.jpg')}
                 showEditButton={false}
                 rounded={true}
-                size={65}
+                size={70}
                 onPress={() => this.user()}
               />
             </View>
-            <View style={styles.avatarLabelContainer}>
-              <Text style={styles.avatarLabel}>Chuck</Text>
-              <Text style={styles.avatarLabel}>Norris</Text>
-            </View>
+            {/*<View style={styles.avatarLabelContainer}>*/}
+            {/*  <Text style={styles.avatarLabel}>Chuck</Text>*/}
+            {/*  <Text style={styles.avatarLabel}>Norris</Text>*/}
+            {/*</View>*/}
           </View>
           <View style={styles.projectName}>
             <Text style={styles.projectNameText}>Project</Text>
+            <Button
+              title={'Switch Projects'}
+              type={'clear'}
+              titleStyle={{fontSize: 16}}
+              onPress={() => console.log('switching projects')}
+            />
           </View>
           {/*<Button*/}
           {/*  title={"User"}*/}
