@@ -9,19 +9,21 @@ const styles = StyleSheet.create({
   },
   button: {
     flexDirection: 'row',
-    paddingLeft: 7,
-    paddingRight: 5
+    marginRight: 0,
+    // backgroundColor: 'orange'
+    // paddingLeft: 7,
+    // paddingRight: 5
   },
-  textStyle: {
-    fontSize: 14,
-    color: '#407ad9',
-  },
-  headingText: {
-    alignItems: 'center',
-    fontWeight: 'bold',
-    fontSize: 20,
-    marginLeft: 20
-  },
+  // textStyle: {
+  //   fontSize: 22,
+  //   color: '#407ad9',
+  // },
+  // headingText: {
+  //   // alignItems: 'center',
+  //   fontWeight: 'bold',
+  //   fontSize: 25,
+  //   // marginLeft: 20
+  // },
   icons: {
     height: 50,
     width: 40,

@@ -8,20 +8,20 @@ import {Switch} from 'react-native-switch';
 
 const ShortcutMenu = props => (
   <View style={styles.container}>
-    <View>
-      <ButtonNoBackground
-        style={styles.button}
-        onPress={props.onPress}
-        name={'ios-arrow-back'}
-        size={20}
-        color={'#407ad9'}
-      >
-        <Text style={styles.textStyle}>Settings</Text>
-      </ButtonNoBackground>
-    </View>
-    <View style={{alignItems: 'center'}}>
-      <Text style={styles.headingText}>Shortcuts</Text>
-    </View>
+    {/*<View>*/}
+    {/*  <ButtonNoBackground*/}
+    {/*    style={styles.button}*/}
+    {/*    onPress={props.onPress}*/}
+    {/*    name={'ios-arrow-back'}*/}
+    {/*    size={20}*/}
+    {/*    color={'#407ad9'}*/}
+    {/*  >*/}
+    {/*    <Text style={styles.textStyle}>Settings</Text>*/}
+    {/*  </ButtonNoBackground>*/}
+    {/*</View>*/}
+    {/*<View style={{alignItems: 'center'}}>*/}
+    {/*  <Text style={styles.headingText}>Shortcuts</Text>*/}
+    {/*</View>*/}
     <View>
       {Object.keys(Buttons).map((key, i) => (
         <ListItem
