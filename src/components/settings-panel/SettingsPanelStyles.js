@@ -16,6 +16,7 @@ const styles = StyleSheet.create({
   },
   navItemStyle: {
     padding: 3,
+    marginLeft: 5
   },
   navSectionStyle: {
     paddingBottom: 10,
@@ -23,7 +24,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   listContainer: {
-    flex: 5
+    flex: 5,
   },
   sectionHeading: {
     alignItems: 'flex-start',
@@ -41,7 +42,12 @@ const styles = StyleSheet.create({
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR
   },
   buttons: {
-    // alignItems: 'flex-end',
+    paddingLeft: 10,
+    color: themes.BLUE
+  },
+  headingText: {
+    fontWeight: 'bold',
+    fontSize: 20,
   },
   profileContainer: {
     flex: 1,
