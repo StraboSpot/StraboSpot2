@@ -1,6 +1,5 @@
 import React from 'react';
-import {Alert, Button, Image, ScrollView, Text, View} from 'react-native';
-import {Navigation} from "react-native-navigation";
+import {ActivityIndicator, Alert, Button, Image, FlatList, ScrollView, Text, View} from 'react-native';
 import {pictureSelectDialog, saveFile} from './Images.container';
 import {connect} from "react-redux";
 import imageStyles from './images.styles'
