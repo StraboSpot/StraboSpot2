@@ -9,7 +9,7 @@ const imageStyles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: '#f3e0d2',
+    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
   },
   closeInfoView: {
     fontWeight: 'bold',
@@ -22,7 +22,7 @@ const imageStyles = StyleSheet.create({
   },
   imageContainer: {
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
-    padding: 10,
+    padding: 5,
     flexDirection: 'row',
     justifyContent: 'space-between'
   },
@@ -41,16 +41,27 @@ const imageStyles = StyleSheet.create({
     alignContent: 'center',
     justifyContent: 'space-around'
   },
+  galleryImageListContainer: {
+    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
+    padding: 5,
+    // flexDirection: 'column',
+    justifyContent: 'space-between'
+  },
   notebookImage: {
     width: 135,
     height: 100,
   },
   galleryImage: {
-    height: 300,
-    width: (Dimensions.get('window').width / 2) - 40,
-    // width: 200,
-    margin: 10
+    height: 100,
+    // width: (Dimensions.get('window').width / 2) - 40,
+    width: 100,
+    // margin: 0
     // paddingTop: 50,
+  },
+  headingText: {
+    marginLeft: 30,
+    fontWeight: '600',
+    fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,
   },
   flatListStyle: {
     flex: 1
@@ -67,12 +78,6 @@ const imageStyles = StyleSheet.create({
     width: '98%',
     resizeMode: 'contain',
   },
-  // modelStyle: {
-  //   flex: 1,
-  //   justifyContent: 'center',
-  //   alignItems: 'center',
-  //   backgroundColor: 'green',
-  // },
   closeButtonStyle: {
     width: 25,
     height: 25,
