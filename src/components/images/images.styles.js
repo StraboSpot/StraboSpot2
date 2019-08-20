@@ -37,7 +37,7 @@ const imageStyles = StyleSheet.create({
   galleryImageContainer: {
     flex: 1,
     flexDirection: 'row',
-    flexWrap: 'wrap',
+    // flexWrap: 'wrap',
     alignContent: 'center',
     justifyContent: 'space-around'
   },
@@ -50,6 +50,11 @@ const imageStyles = StyleSheet.create({
   notebookImage: {
     width: 135,
     height: 100,
+  },
+  noImageContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   galleryImage: {
     height: 100,

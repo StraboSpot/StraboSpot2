@@ -1,14 +1,17 @@
-import React from 'react';
-import {ActivityIndicator, Alert, Button, Image, FlatList, ScrollView, Text, View} from 'react-native';
+import React, {useState} from 'react';
+import {ActivityIndicator, Alert, Image, FlatList, ScrollView, Text, View} from 'react-native';
 import {pictureSelectDialog, saveFile} from './Images.container';
 import {connect} from "react-redux";
 import imageStyles from './images.styles'
+import {Button, ButtonGroup} from "react-native-elements";
 import {imageReducers} from "./Image.constants";
 import SettingsPanelHeader from "../settings-panel/SettingsPanelHeader";
 import ImageButton from '../../shared/ui/ImageButton';
+import {isEmpty} from '../../shared/Helpers';
 
 
 const imageGallery = (props) => {
+  const [selectedButtonIndex, setSelectedButtonIndex] = useState(0);
   let savedArray = [];
 
   const imageSave = async () => {
@@ -46,7 +49,11 @@ const imageGallery = (props) => {
           <Text style={imageStyles.headingText}>
             {item.properties.name}
           </Text>
-          <Button title={'View In Spot'} onPress={() => console.log('View In Spot pressed\n', item.properties.id, '\n', item.properties.name)}/>
+          <Button
+            title={'View In Spot'}
+            type={'clear'}
+            onPress={() => console.log('View In Spot pressed\n', item.properties.id, '\n', item.properties.name)}
+          />
         </View>
         <FlatList
           keyExtractor={(item) => item.id}
@@ -75,12 +82,38 @@ const imageGallery = (props) => {
     return props.imagePaths[id]
   };
 
+  // used with the button group to select active button
+  const updateIndex = (selectedButtonIndex) => {
+    setSelectedButtonIndex(selectedButtonIndex);
+    switch (selectedButtonIndex) {
+      case 0:
+        console.log('Chronological Selected');
+        break;
+      case 1:
+        console.log('Map Extent Selected');
+        break;
+      case 2:
+        console.log('Recent Views Selected');
+        break;
+    }
+  };
+
+if (!isEmpty(props.spot)){
+  const buttons = ['Chronological', 'Map Extent', 'Recent Views'];
   return (
     <React.Fragment>
       <SettingsPanelHeader onPress={() => props.backToSettings()}>
         {props.children}
       </SettingsPanelHeader>
       <View style={imageStyles.container}>
+        <ButtonGroup
+          selectedIndex={selectedButtonIndex}
+          buttons={buttons}
+          containerStyle={{height: 40}}
+          buttonStyle={{padding: 10}}
+          textStyle={{fontSize: 14}}
+          onPress={(selected) => updateIndex(selected)}
+        />
         <ScrollView>
           <View style={imageStyles.galleryImageContainer}>
             <FlatList
@@ -91,11 +124,36 @@ const imageGallery = (props) => {
         </ScrollView>
         <Button
           onPress={() => imageSave()}
-          title="Picture"
+          title="Take or Select Picture"
+          type={'outline'}
+          raised
         />
       </View>
     </React.Fragment>
   );
+}
+else {
+  return (
+    <React.Fragment>
+      <SettingsPanelHeader onPress={() => props.backToSettings()}>
+        {props.children}
+      </SettingsPanelHeader>
+      <View style={imageStyles.noImageContainer}>
+        {/*<Text>There are no images available</Text>*/}
+        <Image
+        source={require('../../assets/images/noimage.jpg')}
+        />
+        <Button
+          onPress={() => imageSave()}
+          title="Take or Select Picture"
+          type={'outline'}
+          raised
+        />
+      </View>
+    </React.Fragment>
+  );
+}
+
 };
 
 const mapStateToProps = (state) => {
