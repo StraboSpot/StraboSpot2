@@ -387,6 +387,9 @@ class mapView extends Component {
   createFeature = async (feature) => {
     if (this._isMounted) {
       feature.properties.id = getNewId();
+      let d = new Date(Date.now());
+      d.setMilliseconds(0);
+      feature.properties.date = d.toISOString();
       feature.properties.name = 'Spot ' + this.props.features.length;
       console.log('Creating new feature:', feature);
       await this.props.onFeatureAdd(feature);
