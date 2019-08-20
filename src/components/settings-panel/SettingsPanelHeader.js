@@ -6,24 +6,6 @@ import {Icon, Header} from "react-native-elements";
 import * as themes from '../../shared/styles.constants';
 
 const SettingsPanelHeader = (props) => {
-  // return (
-  {/*  <View style={{ flexDirection: 'row', marginTop: 15, backgroundColor: 'pink', justifyContent: 'space-evenly'*/}
-  {/*  }}>*/}
-  {/*    <View style={{justifyContent: 'center'}}>*/}
-  {/*      <Icon*/}
-  {/*        name={'ios-arrow-back'}*/}
-  {/*        type={'ionicon'}*/}
-  {/*        color={themes.BLUE}*/}
-  {/*        iconStyle={[styles.buttons]}*/}
-  {/*        onPress={() => props.onPress()}*/}
-  {/*        size={30}*/}
-  {/*      />*/}
-  {/*    </View>*/}
-  {/*    <View style>*/}
-  {/*        <Text style={styles.headingText}>{props.children}</Text>*/}
-  {/*    </View>*/}
-  {/*  </View>*/}
-  {/*);*/}
   return (
     <Header
       backgroundColor={themes.PRIMARY_BACKGROUND_COLOR}

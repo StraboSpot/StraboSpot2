@@ -85,7 +85,7 @@ const NotebookPanel = props => {
   };
 
   if (!isEmpty(props.spot)) {
-    console.log('Selected Spot:', props.spot);
+    // console.log('Selected Spot:', props.spot);
 
     const allSpotsPanel = <Animated.View style={[notebookStyles.allSpotsPanel, animateAllSpotsMenu]}>
       <AllSpotsView />
