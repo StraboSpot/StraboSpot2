@@ -96,12 +96,7 @@ class mapView extends Component {
       const {screenPointX, screenPointY} = e.properties;
       const featureSelected = await this.getFeatureAtPress(screenPointX, screenPointY);
       if (Object.getOwnPropertyNames(featureSelected).length > 0) this.props.onFeatureSelected(featureSelected);
-      else {
-        this.props.onFeaturesSelectedCleared();
-        // this.props.setModalVisible(null);
-        // this.props.showModal('isCompassModalVisible', false);
-        // this.props.showModal('isSamplesModalVisible', false);
-      }
+      else this.props.onFeaturesSelectedCleared();
     }
     // Draw a feature
     else if (this.props.mapMode === MapModes.DRAW.POINT || this.props.mapMode === MapModes.DRAW.LINE
@@ -390,6 +385,9 @@ class mapView extends Component {
       let d = new Date(Date.now());
       d.setMilliseconds(0);
       feature.properties.date = d.toISOString();
+      // Sets modified and viewed timestamps in milliseconds
+      feature.properties.modified_timestamp = Date.now();
+      feature.properties.viewed_timestamp = Date.now();
       feature.properties.name = 'Spot ' + this.props.features.length;
       console.log('Creating new feature:', feature);
       await this.props.onFeatureAdd(feature);

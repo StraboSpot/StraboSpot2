@@ -50,32 +50,19 @@ export const spotReducer = (state = initialState, action) => {
       };
     case spotReducers.EDIT_SPOT_PROPERTIES:
       console.log('EDITSPOT', action);
-      let updatedSpot = null;
-      // let notesArr = [];
+      let updatedSpot = state.selectedSpot;
       selectedFeatureID = state.selectedSpot.properties.id;
-      // console.log('ID', selectedFeatureID);
-      // if (action.field === 'notes') {
-      //   notesArr.push(action.value);
-      //   updatedSpot = {
-      //     ...state.selectedSpot,
-      //     properties: {
-      //       ...state.selectedSpot.properties,
-      //       notes: {
-      //         ...state.selectedSpot.properties.notes,
-      //         [action.field]: notesArr
-      //       }
-      //     }
-      //   };
-      // }
-      // else {
-      updatedSpot = {
-        ...state.selectedSpot,
-        properties: {
-          ...state.selectedSpot.properties,
-          [action.field]: action.value
-        }
-      };
-      // }
+      if (((action.value !== typeof({}) || !Array.isArray(action.value))  && !isEqual(action.value, state.selectedSpot.properties[action.field]))
+        || ((action.value === typeof({}) || Array.isArray(action.value)) && !isEqual(action.value, state.selectedSpot.properties[action.field]))) {
+          updatedSpot = {
+            ...state.selectedSpot,
+            properties: {
+              ...state.selectedSpot.properties,
+              [action.field]: action.value,
+              modified_timestamp: Date.now()
+            }
+          };
+      }
       let filteredSpots = state.features.filter(el => el.properties.id !== selectedFeatureID);
       filteredSpots.push(updatedSpot);
       return {
