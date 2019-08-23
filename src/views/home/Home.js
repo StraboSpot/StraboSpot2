@@ -699,57 +699,6 @@ class Home extends React.Component {
         </View>
     }
 
-    // if (this.state.settingsMenuVisible === SettingsMenuItems.SETTINGS_MAIN) {
-    //   content = <SettingsPanel onPress={(name) => this.setVisibleMenuState(name)}/>
-    // }
-    // else if (this.state.settingsMenuVisible === SettingsMenuItems.APP_PREFERENCES.SHORTCUTS) {
-    //   content =
-    //     <View style={{flex: 1}}>
-    //       <SettingsPanelHeader onPress={() => this.setVisibleMenuState(SettingsMenuItems.SETTINGS_MAIN)}>
-    //         {this.state.settingsMenuVisible}
-    //       </SettingsPanelHeader>
-    //       <ShortcutMenu
-    //         toggleSwitch={(switchName) => this.toggleSwitch(switchName)}
-    //         shortcutSwitchPosition={this.props.shortcutSwitchPosition}
-    //       />
-    //     </View>
-    // }
-    // else if (this.state.settingsMenuVisible === SettingsMenuItems.MAPS.MANAGE_OFFLINE_MAPS) {
-    //   content =
-    //     <View style={{flex: 1}}>
-    //       <SettingsPanelHeader onPress={() => this.setVisibleMenuState(SettingsMenuItems.SETTINGS_MAIN)}>
-    //         {this.state.settingsMenuVisible}
-    //       </SettingsPanelHeader>
-    //       <ManageOfflineMapsMenu
-    //         toggleSwitch={(switchName) => this.toggleSwitch(switchName)}
-    //         closeSettingsDrawer={() => this.closeSettingsDrawer()}
-    //       />
-    //     </View>
-    //
-    // }
-    // else if (this.state.settingsMenuVisible === SettingsMenuItems.MAPS.CUSTOM) {
-    //   content =
-    //     <View style={{flex: 1}}>
-    //       <SettingsPanelHeader onPress={() => this.setVisibleMenuState(SettingsMenuItems.SETTINGS_MAIN)}>
-    //         {this.state.settingsMenuVisible}
-    //       </SettingsPanelHeader>
-    //       <CustomMapsMenu
-    //         toggleSwitch={(switchName) => this.toggleSwitch(switchName)}
-    //         closeSettingsDrawer={() => this.closeSettingsDrawer()}
-    //       />
-    //     </View>
-    // }
-    // else if (this.state.settingsMenuVisible === SettingsMenuItems.ATTRIBUTES.IMAGE_GALLERY) {
-    //   content =
-    //     <View style={{flex: 1}}>
-    //       <ImageGallery
-    //         onPress={() => console.log('HELLO THERE ')}
-    //         backToSettings={() => this.setVisibleMenuState(SettingsMenuItems.SETTINGS_MAIN)}
-    //       >{this.state.settingsMenuVisible}
-    //       </ImageGallery>
-    //     </View>
-    // }
-
     switch (this.state.settingsMenuVisible) {
       case SettingsMenuItems.SETTINGS_MAIN:
         content = <SettingsPanel onPress={(name) => this.setVisibleMenuState(name)}/>;
