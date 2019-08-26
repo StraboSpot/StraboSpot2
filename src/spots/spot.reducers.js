@@ -4,18 +4,36 @@ const initialState = {
   features: [],
   featuresSelected: [],
   selectedSpot: {},
-  selectedAttributes: []
+  selectedAttributes: [],
+  recentViews: []
 };
 
 export const spotReducer = (state = initialState, action) => {
   let selectedFeatureID = undefined;
+  const isEqual = require('lodash.isequal');
 
   switch (action.type) {
     case spotReducers.FEATURE_SELECTED:
+      let recentViewsArr = state.recentViews;
+      if (state.recentViews.length < 5) {
+        recentViewsArr = [...state.recentViews, action.feature.properties.id]
+        recentViewsArr = Array.from(new Set(recentViewsArr));
+      }
+      else {
+        if(recentViewsArr.includes(action.feature.properties.id)) {
+          recentViewsArr = Array.from(new Set(recentViewsArr));
+        }
+        else {
+          recentViewsArr = recentViewsArr.shift();
+          recentViewsArr = [...state.recentViews, action.feature.properties.id];
+          console.log(recentViewsArr);
+        }
+      }
       return {
         ...state,
         featuresSelected: [action.feature],
-        selectedSpot: action.feature
+        selectedSpot: action.feature,
+        recentViews: recentViewsArr
       };
     case spotReducers.FEATURES_SELECTED_CLEARED:
       console.log('FEATURES_SELECTED_CLEARED');
