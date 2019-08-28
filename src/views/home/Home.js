@@ -40,9 +40,11 @@ import sampleStyles from '../../components/samples/samples.style';
 import notebookStyles from '../../components/notebook-panel/NotebookPanel.styles';
 import Orientation from "react-native-orientation-locker";
 import {Directions, FlingGestureHandler, State} from "react-native-gesture-handler";
-import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
+import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 // import {SettingsPanel,  ShortcutMenu} from '../../components/settings-panel/index';
 import SettingsPanelHeader from '../../components/settings-panel/SettingsPanelHeader';
+import {Button, Image} from "react-native-elements";
+import * as Helper from '../../shared/Helpers';
 
 const deviceWidth = () => {
   if (width < 500) return wp('95%');
@@ -88,6 +90,7 @@ class Home extends React.Component {
       allPhotosSaved: [],
       // isAllSpotsPanelVisible: false,
       animation: new Animated.Value(deviceWidth()),
+      settingsPanelAnimation: new Animated.Value(-deviceWidth()),
       allSpotsViewAnimation: new Animated.Value(125)
     };
   }
@@ -230,6 +233,21 @@ class Home extends React.Component {
 
   closeAllSpotsPanel = () => {
     this.props.setAllSpotsPanelVisible(false);
+  };
+
+  flingHandlerSettingsPanel = ({nativeEvent}) => {
+    if (this._isMounted) {
+      if (nativeEvent.oldState === State.ACTIVE) {
+        console.log('FLING TO CLOSE Settings Panel!', nativeEvent);
+        Animated.timing(this.state.settingsPanelAnimation, {
+          toValue: -deviceWidth(),
+          duration: 200,
+          easing: Easing.linear,
+          useNativeDriver: true
+        }).start(() => {
+        });
+      }
+    }
   };
 
   flingHandler = ({nativeEvent}) => {
@@ -383,8 +401,17 @@ class Home extends React.Component {
   // };
 
   openSettingsDrawer = () => {
-    this.toggleDrawer();
-    this.drawer.open();
+    if (this._isMounted) {
+      this.setVisibleMenuState(SettingsMenuItems.SETTINGS_MAIN)
+      Animated.timing(this.state.settingsPanelAnimation, {
+        toValue: 0,
+        duration: 200,
+        easing: Easing.linear,
+        useNativeDriver: true
+      }).start(() => {
+        this.props.setNotebookPanelVisible(true);
+      });
+    }
   };
 
   openNotebookPanel = (pageView) => {
@@ -619,6 +646,11 @@ class Home extends React.Component {
         {translateX: this.state.animation}
       ]
     };
+    const animateSettingsPanel = {
+      transform: [
+        {translateX: this.state.settingsPanelAnimation}
+      ]
+    };
     const animateAllSpotsMenu = {
       transform: [
         {translateX: this.state.allSpotsViewAnimation}
@@ -628,6 +660,7 @@ class Home extends React.Component {
     let compassModal = null;
     let samplesModal = null;
     let notebookPanel = null;
+    let settingsDrawer = null;
 
     // if (this.props.isNotebookPanelVisible && this.props.isAllSpotsPanelVisible) {
     //   notebookPanel =
@@ -641,6 +674,7 @@ class Home extends React.Component {
     //     </Animated.View>
     // }
     // else {
+
     notebookPanel =
       <FlingGestureHandler
         direction={Directions.RIGHT}
@@ -753,18 +787,19 @@ class Home extends React.Component {
         content = <SettingsPanel onPress={(name) => this.setVisibleMenuState(name)}/>
     }
 
-    return (
-      <Drawer
-        tweenHandler={(ratio) => ({
-          main: {opacity: (2 - ratio) / 2}
-        })}
-        type={'displace'}
-        ref={ref => this.drawer = ref}
-        openDrawerOffset={.65}
-        tapToClose={true}
-        onClose={this.closeSettingsDrawer}
-        content={content}
+    settingsDrawer =
+      <FlingGestureHandler
+        direction={Directions.LEFT}
+        numberOfPointers={1}
+        // onHandlerStateChange={ev => _onTwoFingerFlingHandlerStateChange(ev)}
+        onHandlerStateChange={(ev) => this.flingHandlerSettingsPanel(ev)}
       >
+        <Animated.View style={[styles.settingsDrawer, animateSettingsPanel]}>
+          {content}
+        </Animated.View>
+      </FlingGestureHandler>;
+
+    return (
         <View style={styles.container}>
           <MapView ref={this.mapViewElement}
                    onRef={ref => (this.mapViewComponent = ref)}
@@ -773,6 +808,7 @@ class Home extends React.Component {
           />
           {/*{this.props.isNotebookPanelVisible && notebookPanel}*/}
           {notebookPanel}
+          {settingsDrawer}
           {(this.props.modalVisible === Modals.NOTEBOOK_MODALS.COMPASS ||
             this.props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS) && compassModal}
           {this.props.modalVisible === Modals.NOTEBOOK_MODALS.SAMPLE ||
@@ -961,7 +997,6 @@ class Home extends React.Component {
             </View>
           </Modal>
         </View>
-      </Drawer>
     )
   }
 }

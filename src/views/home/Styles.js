@@ -1,7 +1,28 @@
-import {StyleSheet} from "react-native";
+import {Dimensions, Platform, StyleSheet} from "react-native";
 import * as themes from "../../shared/styles.constants";
+import {widthPercentageToDP as wp} from "react-native-responsive-screen";
+
+const platformType = Platform.OS === 'ios' ? 'window' : 'screen';
+const width = Dimensions.get(platformType).width;
+
+const deviceWidth = () => {
+  if (width < 500) return wp('95%');
+  if (width >= 500 && width <= 1000) return wp('40%');
+  if (width > 1000) return wp('30%');
+};
 
 const styles = StyleSheet.create({
+  settingsDrawer: {
+    // flex: 1,
+    width: deviceWidth(),
+    height: '100%',
+    // borderBottomRightRadius: 30,
+    // borderTopRightRadius: 30,
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    zIndex: 1,
+  },
   container: {
     flex: 1
   },
