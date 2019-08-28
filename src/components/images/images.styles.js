@@ -57,9 +57,9 @@ const imageStyles = StyleSheet.create({
     justifyContent: 'center',
   },
   galleryImage: {
-    height: 100,
+    height: 85,
     // width: (Dimensions.get('window').width / 2) - 40,
-    width: 100,
+    width: 85,
     // margin: 0
     // paddingTop: 50,
   },

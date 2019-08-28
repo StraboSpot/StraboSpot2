@@ -348,6 +348,10 @@ class Home extends React.Component {
     this.openNotebookPanel()
   };
 
+  getImageSrc = (id) => {
+    return this.props.imagePaths[id]
+  };
+
 //function for online/offline state change event handler
   handleConnectivityChange = (isConnected) => {
     this.props.setIsOnline(isConnected);
@@ -375,31 +379,6 @@ class Home extends React.Component {
     }
   };
 
-  // openAllSpotsPanel = () => {
-  //   // this.props.setNotebookPanelVisible(false);
-  //   // this.props.setAllSpotsPanelVisible(!this.props.isAllSpotsPanelVisible);
-  //   if (this.props.isAllSpotsPanelVisible) {
-  //     this.props.setAllSpotsPanelVisible(false);
-  //     // Animated.timing(this.state.allSpotsViewAnimation, {
-  //     //   toValue: 125,
-  //     //   duration: 200,
-  //     //   easing: Easing.linear,
-  //     //   useNativeDriver: true
-  //     // }).start();
-  //     closeAllSpotsPanelFromMenu(this.state.allSpotsViewAnimation);
-  //   }
-  //  else{
-  //     this.props.setAllSpotsPanelVisible(true);
-  //     // Animated.timing(this.state.allSpotsViewAnimation, {
-  //     //   toValue: 0,
-  //     //   duration: 200,
-  //     //   easing: Easing.linear,
-  //     //   useNativeDriver: true
-  //     // }).start();
-  //     openAllSpotsPanelFromMenu(this.state.allSpotsViewAnimation)
-  //   }
-  // };
-
   openSettingsDrawer = () => {
     if (this._isMounted) {
       this.setVisibleMenuState(SettingsMenuItems.SETTINGS_MAIN)
@@ -421,7 +400,7 @@ class Home extends React.Component {
       this.props.setAllSpotsPanelVisible(false);
       Animated.timing(this.state.animation, {
         toValue: wp('0%'),
-        duration: 350,
+        duration: 200,
         easing: Easing.linear,
         useNativeDriver: true
       }).start(() => {
@@ -440,7 +419,7 @@ class Home extends React.Component {
           this.props.addPhoto(imageArr);
           this.props.onSpotEditImageObj(imageArr);
           this.state.allPhotosSaved = [];
-          Alert.alert('Photo Saved!', 'Thank you!')
+          // Alert.alert('Photo Saved!', 'Thank you!')
         }
         else {
           Alert.alert('No Photos To Save', 'please try again...')
@@ -540,7 +519,7 @@ class Home extends React.Component {
       if (response.didCancel) {
         console.log('User cancelled image picker');
         await this.props.addPhoto(this.state.allPhotosSaved);
-        alert('Photos Saved!')
+        // alert('Photos Saved!')
       }
       else if (response.error) console.log('ImagePicker Error: ', response.error);
       else {
@@ -602,6 +581,12 @@ class Home extends React.Component {
       });
     }
     else console.log('Attempting to toggle', dialog, 'but Home Component not mounted.');
+  };
+
+  toggleImageModal = () => {
+    if (this._isMounted) {
+      this.props.setIsImageModalVisible(!this.props.isImageModalVisible);
+    }
   };
 
   toggleOfflineMapModal = () => {
@@ -996,6 +981,20 @@ class Home extends React.Component {
               />
             </View>
           </Modal>
+          <Modal
+            isVisible={this.props.isImageModalVisible}
+            useNativeDriver={true}
+            style={{flex: 1}}
+          >
+            <View style={styles.modal} >
+              <Button type={'clear'} titleProps={{color: 'white'}} title="Hide modal" onPress={() => this.toggleImageModal()} />
+              <Image
+                source={this.props.selectedImage ? {uri: this.getImageSrc(this.props.selectedImage.id)}:
+                  {uri: require('../../assets/images/noimage.jpg')}}
+                style={{width: wp('90%'), height: hp('90%')  }}
+              />
+            </View>
+          </Modal>
         </View>
     )
   }
@@ -1004,6 +1003,9 @@ class Home extends React.Component {
 function mapStateToProps(state) {
   return {
     selectedSpot: state.spot.selectedSpot,
+    selectedImage: state.spot.selectedAttributes[0],
+    isImageModalVisible: state.home.isImageModalVisible,
+    imagePaths: state.images.imagePaths,
     featureCollectionSelected: state.spot.featureCollectionSelected,
     isOnline: state.spot.isOnline,
     isNotebookPanelVisible: state.notebook.isNotebookPanelVisible,
@@ -1020,6 +1022,7 @@ const mapDispatchToProps = {
   setIsOnline: (online) => ({type: spotReducers.SET_ISONLINE, online: online}),
   setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),
   setNotebookPanelVisible: (value) => ({type: notebookReducers.SET_NOTEBOOK_PANEL_VISIBLE, value: value}),
+  setIsImageModalVisible: (value) => ({type: homeReducers.TOGGLE_IMAGE_MODAL, value: value}),
   setAllSpotsPanelVisible: (value) => ({type: homeReducers.SET_ALLSPOTS_PANEL_VISIBLE, value: value}),
   addPhoto: (imageData) => ({type: imageReducers.ADD_PHOTOS, images: imageData}),
   deleteFeature: (id) => ({type: spotReducers.FEATURE_DELETE, id: id}),

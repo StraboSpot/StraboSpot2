@@ -3,6 +3,7 @@ import {Dimensions, Platform} from 'react-native';
 
 const initialState = {
   modalVisible: null,
+  isImageModalVisible: false,
   isAllSpotsPanelVisible: false,
   deviceDimensions: Dimensions.get(Platform.OS === 'ios' ? 'window' : 'screen'),
   shortcutSwitchPosition: {
@@ -36,11 +37,16 @@ export const homeReducer = (state = initialState, action) => {
           ...state.shortcutSwitchPosition,
           [action.switchName]: !state.shortcutSwitchPosition[action.switchName]
         }
-      }
+      };
     case homeReducers.SET_ALLSPOTS_PANEL_VISIBLE:
       return {
         ...state,
         isAllSpotsPanelVisible: action.value
+      };
+    case homeReducers.TOGGLE_IMAGE_MODAL:
+      return {
+        ...state,
+        isImageModalVisible: action.value,
       }
   }
   return state;

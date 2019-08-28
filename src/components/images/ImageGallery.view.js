@@ -1,13 +1,15 @@
 import React, {useState, useEffect} from 'react';
-import {ActivityIndicator, Alert, Image, FlatList, ScrollView, Text, View} from 'react-native';
+import {ActivityIndicator, Alert, FlatList, ScrollView, Text, View} from 'react-native';
 import {pictureSelectDialog, saveFile} from './Images.container';
 import {connect} from "react-redux";
 import imageStyles from './images.styles'
-import {Button, ButtonGroup} from "react-native-elements";
+import {Button, ButtonGroup, Image} from "react-native-elements";
 import {imageReducers, SortedViews} from "./Image.constants";
 import SettingsPanelHeader from "../settings-panel/SettingsPanelHeader";
 import ImageButton from '../../shared/ui/ImageButton';
 import {isEmpty} from '../../shared/Helpers';
+import {spotReducers} from "../../spots/Spot.constants";
+import {homeReducers} from "../../views/home/Home.constants";
 
 const imageGallery = (props) => {
   const [selectedButtonIndex, setSelectedButtonIndex] = useState(0);
@@ -16,18 +18,12 @@ const imageGallery = (props) => {
   const [sortedListView, setSortedListView] = useState(SortedViews.CHRONOLOGICAL);
 
   let savedArray = [];
-  // let sortedChronoList = sortedList;
-
   useEffect(() => {
-    // setSelectedButtonIndex(0);
-    updateIndex(selectedButtonIndex)
+    updateIndex(selectedButtonIndex);
     console.log('render!')
   }, []);
 
   const imageSave = async () => {
-
-    console.log('JJAJAJ', savedArray);
-
     const savedPhoto = await pictureSelectDialog();
     console.log('imageObj', savedPhoto);
 
@@ -75,14 +71,13 @@ const imageGallery = (props) => {
   };
 
   const renderImage = (image) => {
-
     return (
       <View style={imageStyles.galleryImageListContainer}>
         <ImageButton
           source={{uri: getImageSrc(image.id)}}
           style={imageStyles.galleryImage}
           PlaceholderContent={<ActivityIndicator/>}
-          onPress={() => console.log(image.id, '\n was pressed!')}
+          onPress={() => renderImageModal(image)}
         />
       </View>
     );
@@ -90,8 +85,8 @@ const imageGallery = (props) => {
 
   const renderRecentView = (item) => {
     const spotName = props.spot.filter(spot => {
-        return spot.properties.id === item
-    })
+      return spot.properties.id === item
+    });
     return (
       <View style={imageStyles.galleryImageListContainer}>
         <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
@@ -103,13 +98,18 @@ const imageGallery = (props) => {
     )
   };
 
+  const renderImageModal = (image) => {
+    console.log(image.id, '\n was pressed!');
+    props.setSelectedAttributes([image]);
+    props.setIsImageModalVisible(true)
+  };
+
   const getImageSrc = (id) => {
     return props.imagePaths[id]
   };
 
   // used with the button group to select active button
   const updateIndex = (selectedButtonIndex) => {
-
     setSelectedButtonIndex(selectedButtonIndex);
     switch (selectedButtonIndex) {
       case 0:
@@ -138,7 +138,7 @@ const imageGallery = (props) => {
 
   if (!isEmpty(props.spot)) {
     let sortedView = null;
-    const buttons = ['Chronological', 'Map Extent', 'Recent Views'];
+    const buttons = ['Chronological', 'Map Extent', 'Recent \n Views'];
 
     if (sortedListView === SortedViews.CHRONOLOGICAL) {
       sortedView = <FlatList
@@ -180,19 +180,15 @@ const imageGallery = (props) => {
           <ButtonGroup
             selectedIndex={selectedButtonIndex}
             buttons={buttons}
-            containerStyle={{height: 40}}
-            buttonStyle={{padding: 10}}
-            textStyle={{fontSize: 14}}
+            containerStyle={{height: 50}}
+            buttonStyle={{padding: 5}}
+            textStyle={{fontSize: 12}}
             onPress={(selected) => updateIndex(selected)}
           />
           <ScrollView>
             <View style={imageStyles.galleryImageContainer}>
               {sortedView}
-              {/*{recentViewsSelected ? <FlatList*/}
-              {/*  keyExtractor={(item) => item.toString()}*/}
-              {/*  extraData={refresh}*/}
-              {/*  data={recentViews}*/}
-              {/*  renderItem={({item}) => renderRecentView(item)}/> : null}*/}
+
             </View>
           </ScrollView>
           <Button
@@ -215,12 +211,7 @@ const imageGallery = (props) => {
           {/*<Text>There are no images available</Text>*/}
           <Image
             source={require('../../assets/images/noimage.jpg')}
-          />
-          <Button
-            onPress={() => imageSave()}
-            title="Take or Select Picture"
-            type={'outline'}
-            raised
+            style={{height: '70%', width: 400}}
           />
         </View>
       </React.Fragment>
@@ -234,13 +225,15 @@ const mapStateToProps = (state) => {
     imagePaths: state.images.imagePaths,
     spot: state.spot.features,
     recentViews: state.spot.recentViews,
-    sortedView: state.images.sortedView
+    sortedView: state.images.sortedView,
+    selectedImage: state.spot.selectedAttributes[0],
   }
 };
 
 const mapDispatchToProps = {
   addPhoto: (image) => ({type: imageReducers.ADD_PHOTOS, images: image}),
-  setSortedView: (view) => ({type: imageReducers.SET_SORTED_VIEW, view: view})
+  setSelectedAttributes: (attributes) => ({type: spotReducers.SET_SELECTED_ATTRIBUTES, attributes: attributes}),
+  setIsImageModalVisible: (value) => ({type: homeReducers.TOGGLE_IMAGE_MODAL, value: value})
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(imageGallery);

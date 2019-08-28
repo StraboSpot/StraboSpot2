@@ -56,7 +56,7 @@ const ImageInfoView = (props) => {
   return (
     <View>
       <Image
-        source={{uri: getImageSrc(props.id)}}
+        source={{uri: getImageSrc(props.image.id)}}
         style={{width: '100%', height: '100%'}}
         PlaceholderContent={<ActivityIndicator/>}
       />
