@@ -14,7 +14,7 @@ import {homeReducers} from "../../views/home/Home.constants";
 const imageGallery = (props) => {
   const [selectedButtonIndex, setSelectedButtonIndex] = useState(0);
   const [refresh, setRefresh] = useState(false);
-  const [sortedList, setSortedList] = useState(props.spot);
+  const [sortedList, setSortedList] = useState(props.spots);
   const [sortedListView, setSortedListView] = useState(SortedViews.CHRONOLOGICAL);
 
   let savedArray = [];
@@ -22,6 +22,11 @@ const imageGallery = (props) => {
     updateIndex(selectedButtonIndex);
     console.log('render!')
   }, []);
+
+  useEffect(() => {
+    setRefresh(!refresh);
+    console.log('render Recent Views!')
+  }, [props]);
 
   const imageSave = async () => {
     const savedPhoto = await pictureSelectDialog();
@@ -60,11 +65,14 @@ const imageGallery = (props) => {
             onPress={() => console.log('View In Spot pressed\n', item.properties.id, '\n', item.properties.name)}
           />
         </View>
-        {item.properties.images !== undefined ? <FlatList
-            keyExtractor={(item) => item.id}
+        {item.properties.images !== undefined ?
+          <FlatList
+            keyExtractor={(image) => image.id}
             data={item.properties.images}
             numColumns={3}
-            renderItem={({item}) => renderImage(item)}/> :
+            renderItem={({item}) => renderImage(item)}
+          />
+          :
           <Text style={{textAlign: 'center'}}>No images available for this spot</Text>}
       </View>
     )
@@ -83,16 +91,33 @@ const imageGallery = (props) => {
     );
   };
 
-  const renderRecentView = (item) => {
-    const spotName = props.spot.filter(spot => {
-      return spot.properties.id === item
+  const renderRecentView = (spotID) => {
+    const spot = props.spots.find(spot => {
+      return spot.properties.id === spotID
     });
     return (
       <View style={imageStyles.galleryImageListContainer}>
-        <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+        <View style={{justifyContent: 'space-between', alignItems: 'center'}}>
           <Text style={imageStyles.headingText}>
-            {spotName[0].properties.name}
+            {spot.properties.name}
           </Text>
+          {spot.properties.images !== undefined ?
+            <FlatList
+              data={spot.properties.images}
+              keyExtractor={(image) => image.id}
+              numColumns={3}
+              renderItem={({item}) => renderImage(item)}
+            />
+            :
+            <Text style={{textAlign: 'center'}}>No images available for this spot</Text>}
+          {/*<View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>*/}
+          {/*  {spot[0].properties.images !== undefined ? <FlatList*/}
+          {/*  keyExtractor={spot => spot.id}*/}
+          {/*  data={spot[0].properties.images}*/}
+          {/*  renderItem={spot => renderImage(spot.item)}*/}
+          {/*  numColumns={3}*/}
+          {/*  /> : <Text style={{textAlign: 'center'}}>No images available for this spot</Text>}*/}
+          {/*</View>*/}
         </View>
       </View>
     )
@@ -116,7 +141,7 @@ const imageGallery = (props) => {
         console.log('Chronological Selected');
         // props.setSortedView(SortedViews.CHRONOLOGICAL);
         setSortedListView(SortedViews.CHRONOLOGICAL);
-        setSortedList(props.spot.sort(((a, b) => a.properties.date > b.properties.date)));
+        setSortedList(props.spots.sort(((a, b) => a.properties.date > b.properties.date)));
         setRefresh(!refresh);
         console.log(refresh)
         break;
@@ -124,7 +149,7 @@ const imageGallery = (props) => {
         console.log('Map Extent Selected')
         // props.setSortedView(SortedViews.MAP_EXTENT);
         setSortedListView(SortedViews.MAP_EXTENT);
-        setSortedList(props.spot.sort(((a, b) => a.properties.date < b.properties.date)));
+        setSortedList(props.spots.sort(((a, b) => a.properties.date < b.properties.date)));
         setRefresh(!refresh);
         console.log(refresh)
         break;
@@ -136,7 +161,7 @@ const imageGallery = (props) => {
     }
   };
 
-  if (!isEmpty(props.spot)) {
+  if (!isEmpty(props.spots)) {
     let sortedView = null;
     const buttons = ['Chronological', 'Map Extent', 'Recent \n Views'];
 
@@ -159,13 +184,14 @@ const imageGallery = (props) => {
         keyExtractor={(item) => item.toString()}
         extraData={refresh}
         data={props.recentViews}
+        inverted={true}
         renderItem={({item}) => renderRecentView(item)}/>
     }
     else {
       sortedView = <FlatList
         keyExtractor={(item) => item.properties.id.toString()}
         extraData={refresh}
-        data={props.spot}
+        data={props.spots}
         renderItem={({item}) => renderName(item)}/>
     }
 
@@ -191,12 +217,6 @@ const imageGallery = (props) => {
 
             </View>
           </ScrollView>
-          <Button
-            onPress={() => imageSave()}
-            title="Take or Select Picture"
-            type={'outline'}
-            raised
-          />
         </View>
       </React.Fragment>
     );
@@ -223,7 +243,7 @@ const imageGallery = (props) => {
 const mapStateToProps = (state) => {
   return {
     imagePaths: state.images.imagePaths,
-    spot: state.spot.features,
+    spots: state.spot.features,
     recentViews: state.spot.recentViews,
     sortedView: state.images.sortedView,
     selectedImage: state.spot.selectedAttributes[0],

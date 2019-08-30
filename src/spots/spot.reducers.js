@@ -15,20 +15,10 @@ export const spotReducer = (state = initialState, action) => {
   switch (action.type) {
     case spotReducers.FEATURE_SELECTED:
       let recentViewsArr = state.recentViews;
-      if (state.recentViews.length < 5) {
-        recentViewsArr = [...state.recentViews, action.feature.properties.id]
-        recentViewsArr = Array.from(new Set(recentViewsArr));
-      }
-      else {
-        if(recentViewsArr.includes(action.feature.properties.id)) {
-          recentViewsArr = Array.from(new Set(recentViewsArr));
-        }
-        else {
-          recentViewsArr = recentViewsArr.shift();
-          recentViewsArr = [...state.recentViews, action.feature.properties.id];
-          console.log(recentViewsArr);
-        }
-      }
+      const index = recentViewsArr.indexOf(action.feature.properties.id);
+      if (index !== -1) recentViewsArr.splice(index,1);
+      recentViewsArr.push(action.feature.properties.id);
+      if (state.recentViews.length > 5) recentViewsArr.shift();
       return {
         ...state,
         featuresSelected: [action.feature],
@@ -53,12 +43,16 @@ export const spotReducer = (state = initialState, action) => {
       const updatedFeatures = state.features.filter((feature) => {
         return feature.properties.id !== action.id;
       });
+      const updatedRecentViews = state.recentViews.filter(id => {
+        return id !== action.id
+      });
       // console.log('Deleted Feature', deletedFeature);
       return {
         ...state,
         features: updatedFeatures,
         selectedSpot: {},
-        featuresSelected: []
+        featuresSelected: [],
+        recentViews: updatedRecentViews
       };
     case spotReducers.FEATURES_UPDATED:
       console.log('FEATURES UPDATED', action.features);
@@ -70,16 +64,18 @@ export const spotReducer = (state = initialState, action) => {
       console.log('EDITSPOT', action);
       let updatedSpot = state.selectedSpot;
       selectedFeatureID = state.selectedSpot.properties.id;
-      if (((action.value !== typeof({}) || !Array.isArray(action.value))  && !isEqual(action.value, state.selectedSpot.properties[action.field]))
-        || ((action.value === typeof({}) || Array.isArray(action.value)) && !isEqual(action.value, state.selectedSpot.properties[action.field]))) {
-          updatedSpot = {
-            ...state.selectedSpot,
-            properties: {
-              ...state.selectedSpot.properties,
-              [action.field]: action.value,
-              modified_timestamp: Date.now()
-            }
-          };
+      if (((action.value !== typeof ({}) || !Array.isArray(action.value)) && !isEqual(action.value,
+        state.selectedSpot.properties[action.field]))
+        || ((action.value === typeof ({}) || Array.isArray(action.value)) && !isEqual(action.value,
+          state.selectedSpot.properties[action.field]))) {
+        updatedSpot = {
+          ...state.selectedSpot,
+          properties: {
+            ...state.selectedSpot.properties,
+            [action.field]: action.value,
+            modified_timestamp: Date.now()
+          }
+        };
       }
       let filteredSpots = state.features.filter(el => el.properties.id !== selectedFeatureID);
       filteredSpots.push(updatedSpot);
