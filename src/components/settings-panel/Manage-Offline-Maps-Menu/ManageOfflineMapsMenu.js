@@ -39,25 +39,10 @@ class ManageOfflineMapsMenu extends Component {
 
   render() { //return whole modal here
     return (
-
-      <View style={styles.container}>
-        <View>
-          <ButtonNoBackground
-            style={styles.button}
-            onPress={this.props.onPress}
-            name={'ios-arrow-back'}
-            size={20}
-            color={'#407ad9'}
-          >
-            <Text style={styles.textStyle}>Settings</Text>
-          </ButtonNoBackground>
-        </View>
-        <View style={{alignItems: 'center'}}>
-          <Text style={styles.headingText}>Manage Offline Maps</Text>
-        </View>
-        <View>
-          {!isEmpty(this.props.offlineMaps) ? (this.props.offlineMaps.map((item,i) => <ListItem
-              containerStyle={{backgroundColor: 'transparent', padding: 0}}
+        <React.Fragment>
+          {!isEmpty(this.props.offlineMaps) ? (this.props.offlineMaps.map((item,i) =>
+              <ListItem
+              containerStyle={{backgroundColor: 'transparent', padding: 0, borderBottomWidth: 1}}
               key={item.saveId}
               title={
                 <View style={styles.itemContainer}>
@@ -79,20 +64,18 @@ class ManageOfflineMapsMenu extends Component {
                   </Text>
                 </View>
               }
-            />)) : null}
-        </View>
-      </View>
+            />)) :
+            <View style={{ alignItems: 'center', paddingTop: 20}}>
+              <Text >No Offline Maps</Text>
+            </View>}
+        </React.Fragment>
     );
   }
 
   viewOfflineMap = async (map) => {
-
     console.log('viewOfflineMap: ', map);
-
     tileJSON = 'file://' + this.tileCacheDirectory + '/' + map.saveId + '/tiles/{z}_{x}_{y}.png';
-
     console.log("tileJSON: ", tileJSON);
-
     //change id to force layer reload
     tempCurrentBasemap =
     {
@@ -104,8 +87,6 @@ class ManageOfflineMapsMenu extends Component {
       maxZoom: 19
     };
     await this.props.onCurrentBasemap(tempCurrentBasemap);
-
-
     tempCurrentBasemap =
     {
       id: map.appId,
@@ -119,8 +100,7 @@ class ManageOfflineMapsMenu extends Component {
     console.log('tempCurrentBasemap: ', tempCurrentBasemap);
     await this.props.onCurrentBasemap(tempCurrentBasemap);
     this.props.closeSettingsDrawer();
-  }
-
+  };
   confirmDeleteMap = async (map) => {
     console.log(map);
     Alert.alert(
@@ -174,7 +154,6 @@ class ManageOfflineMapsMenu extends Component {
 
     await this.props.onOfflineMaps(newOfflineMapsData);
     console.log("Saved offlineMaps to Redux.");
-
   }
 }
 

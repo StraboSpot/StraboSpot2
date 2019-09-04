@@ -2,11 +2,11 @@ import {StyleSheet} from 'react-native';
 import * as themes from '../../../shared/styles.constants';
 
 const styles = StyleSheet.create({
-  container: {
-    paddingTop: 20,
-    flex: 1,
-    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
-  },
+  // container: {
+  //   paddingTop: 20,
+  //   flex: 1,
+  //   backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
+  // },
   button: {
     flexDirection: 'row',
     paddingLeft: 7,
@@ -27,10 +27,9 @@ const styles = StyleSheet.create({
     width: 40,
   },
   itemContainer: {
-    width: '90%',
+    width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
-    borderTopWidth: 1,
     paddingTop: 7,
     paddingBottom: 3,
     paddingLeft: 10
