@@ -6,7 +6,7 @@ import ButtonNoBackground from '../../../shared/ui/ButtonNoBackround';
 import {connect} from 'react-redux';
 import RNFetchBlob from 'rn-fetch-blob';
 import {Platform} from 'react-native';
-import {mapReducers} from "../../maps/Map.constants";
+import {mapReducers} from "../Map.constants";
 import {isEmpty} from "../../../shared/Helpers";
 
 var RNFS = require('react-native-fs');

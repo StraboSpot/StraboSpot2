@@ -5,7 +5,7 @@ import {ListItem} from 'react-native-elements';
 import ButtonNoBackground from '../../../shared/ui/ButtonNoBackround';
 import {connect} from 'react-redux';
 import {Button, Divider, Input} from 'react-native-elements';
-import {mapReducers} from "../../maps/Map.constants";
+import {mapReducers} from "../Map.constants";
 
 class CustomMapsMenu extends Component {
   _isMounted = false;
