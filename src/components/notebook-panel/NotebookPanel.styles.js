@@ -9,7 +9,7 @@ const width = Dimensions.get(platformType).width;
 const deviceWidth = () => {
   if (width < 500) return wp('95%');
   if (width >= 500 && width <= 1000) return wp('50%');
-  if (width > 1000) return wp('40%');
+  if (width > 1000) return wp('35%');
 };
 
 const notebookStyles = StyleSheet.create({
