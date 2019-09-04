@@ -3,10 +3,10 @@ import {ActivityIndicator, Alert, FlatList, ScrollView, Text, View} from 'react-
 import {pictureSelectDialog, saveFile} from './Images.container';
 import {connect} from "react-redux";
 import imageStyles from './images.styles'
-import {Button, ButtonGroup, Image} from "react-native-elements";
+import {Button, Image} from "react-native-elements";
 import {imageReducers, SortedViews} from "./Image.constants";
 import SettingsPanelHeader from "../settings-panel/SettingsPanelHeader";
-import ImageButton from '../../shared/ui/ImageButton';
+import * as SharedUI from '../../shared/ui/index';
 import {isEmpty} from '../../shared/Helpers';
 import {spotReducers} from "../../spots/Spot.constants";
 import {homeReducers} from "../../views/home/Home.constants";
@@ -83,7 +83,7 @@ const imageGallery = (props) => {
   const renderImage = (image) => {
     return (
       <View style={imageStyles.galleryImageListContainer}>
-        <ImageButton
+        <SharedUI.ImageButton
           source={{uri: getImageSrc(image.id)}}
           style={imageStyles.galleryImage}
           PlaceholderContent={<ActivityIndicator/>}
@@ -182,13 +182,13 @@ const imageGallery = (props) => {
 
     return (
       <React.Fragment>
-          <ButtonGroup
-            selectedIndex={selectedButtonIndex}
-            buttons={buttons}
-            containerStyle={{height: 50}}
-            buttonStyle={{padding: 5}}
-            textStyle={{fontSize: 12}}
-            onPress={(selected) => updateIndex(selected)}
+          <SharedUI.ButtonGroup
+              selectedIndex={selectedButtonIndex}
+              buttons={buttons}
+              containerStyle={{height: 50}}
+              buttonStyle={{padding: 5}}
+              textStyle={{fontSize: 12}}
+              onPress={(selected) => updateIndex(selected)}
           />
           <ScrollView>
             <View style={imageStyles.galleryImageContainer}>

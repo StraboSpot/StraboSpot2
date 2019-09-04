@@ -2,9 +2,9 @@ import React, {Component} from 'react';
 import {Alert, Image, Picker, Text, View} from 'react-native';
 import styles from './CustomMapsStyles';
 import {ListItem} from 'react-native-elements';
-import ButtonNoBackground from '../../../shared/ui/ButtonNoBackround';
+import * as SharedUI from '../../../shared/ui/index'
 import {connect} from 'react-redux';
-import {Button, Divider, Input} from 'react-native-elements';
+import {Divider, Input} from 'react-native-elements';
 import {mapReducers} from "../Map.constants";
 
 class CustomMapsMenu extends Component {
@@ -412,7 +412,7 @@ class CustomMapsMenu extends Component {
         }
         {this.state.showFrontPage &&
         <View style={{flex: 1}}>
-          <ButtonNoBackground
+          <SharedUI.ButtonNoBackground
             onPress={this.showMapPicker}
             name={'ios-arrow-back'}
             size={20}
@@ -421,7 +421,7 @@ class CustomMapsMenu extends Component {
             <Text style={styles.rightlink}>
               Add New Map
             </Text>
-          </ButtonNoBackground>
+          </SharedUI.ButtonNoBackground>
         </View>
         }
       </React.Fragment>
