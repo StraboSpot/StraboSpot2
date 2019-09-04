@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {AsyncStorage, Picker, Text, StyleSheet, View, TouchableOpacity} from 'react-native';
 import ButtonWithBackground from '../../../shared/ui/ButtonWithBackground';
-import ButtonNoBackground from '../../../shared/ui/ButtonNoBackround';
+import * as SharedUI from '../../../shared/ui/index';
 import {Header} from 'react-native-elements';
 import MaterialCommunityIcons from '../../../shared/Icons';
 import {Platform} from 'react-native';
@@ -327,13 +327,13 @@ class SaveMapModal extends Component {
         <Header
           backgroundColor={themes.PRIMARY_BACKGROUND_COLOR}
           containerStyle={{height: 50}}
-          leftComponent={<ButtonNoBackground
+          leftComponent={<SharedUI.ButtonNoBackground
             onPress={this.props.close}>
             <MaterialCommunityIcons.FontAwesome5
               name={'times'}
               size={20}
             />
-          </ButtonNoBackground>}
+          </SharedUI.ButtonNoBackground>}
         />
         <View style={{height: 40, justifyContent: 'center'}}>
         <Text style={{fontSize: 20}}>{this.currentMapName}</Text>

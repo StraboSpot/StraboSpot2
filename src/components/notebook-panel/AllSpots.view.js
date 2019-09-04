@@ -1,8 +1,6 @@
 import React from 'react';
-import {Text, View, ScrollView} from 'react-native';
+import {ScrollView} from 'react-native';
 import {connect} from "react-redux";
-import styles from './NotebookPanel.styles';
-import ButtonNoBackground from "../../shared/ui/ButtonNoBackround";
 import * as themes from "../../shared/styles.constants";
 import {ListItem} from "react-native-elements";
 import {spotReducers} from "../../spots/Spot.constants";
@@ -20,14 +18,8 @@ const allSpotsView = (props) => {
 
   return (
     <React.Fragment>
-      {/*<Text style={{textAlign: 'center'}}>All Spots</Text>*/}
-      {/*<ButtonNoBackground*/}
-      {/*  style={{marginTop: 10, marginBottom: 5}}*/}
-      {/*  textStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 18}}*/}
-      {/*  onPress={props.close}>Close</ButtonNoBackground>*/}
       <ScrollView>
       {props.allSpots.map(spot => {
-        // console.log(spot);
         return (
             <ListItem
               key={spot.properties.id}

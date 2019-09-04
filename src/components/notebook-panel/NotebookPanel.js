@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 import NotebookHeader from './notebook-header/NotebookHeader';
 import NotebookFooter from './notebook-footer/NotebookFooter';
 import Overview from './Overview';
-import ButtonNoBackground from '../../shared/ui/ButtonNoBackround';
+import * as SharedUI from '../../shared/ui/index'
 import MeasurementsPage from '../measurements/Measurements';
 import MeasurementDetailPage from '../measurements/MeasurementDetail';
 import NotesPage from '../notes/Notes.view';
@@ -138,10 +138,10 @@ const NotebookPanel = props => {
     return (
       <View style={[notebookStyles.panel, notebookStyles.noSpotContent]}>
         <Text style={{fontSize: 30}}>No Spot Selected</Text>
-        <ButtonNoBackground
+        <SharedUI.ButtonNoBackground
           style={{marginTop: 40}}
           textStyle={{color: themes.PRIMARY_ACCENT_COLOR}}
-          onPress={props.closeNotebook}>Close Notebook</ButtonNoBackground>
+          onPress={props.closeNotebook}>Close Notebook</SharedUI.ButtonNoBackground>
       </View>
     )
   }

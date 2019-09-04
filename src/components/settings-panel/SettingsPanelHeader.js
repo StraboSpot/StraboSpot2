@@ -1,6 +1,4 @@
 import React from 'react';
-import {Text, View} from 'react-native';
-import ButtonNoBackground from "../../shared/ui/ButtonNoBackround";
 import styles from "./SettingsPanelStyles";
 import {Icon, Header} from "react-native-elements";
 import * as themes from '../../shared/styles.constants';
