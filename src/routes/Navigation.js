@@ -62,7 +62,7 @@ export const goSignIn = () => Navigation.setRoot({
 //   }
 // });
 
-export const goToImageInfo = (id) => Navigation.setRoot({
+export const goToImageInfo = (image) => Navigation.setRoot({
   root: {
     stack: {
       id: 'ImageInfo',
@@ -71,7 +71,7 @@ export const goToImageInfo = (id) => Navigation.setRoot({
           component: {
             name: IMAGEINFO,
             passProps: {
-              id: id
+              image: image
             }
           }
         }
