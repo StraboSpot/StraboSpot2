@@ -1,12 +1,11 @@
 import React from 'react';
 import {ActivityIndicator, Button, FlatList, Text, View} from 'react-native';
-// import {deleteImageFromSpot, getImageSrc} from './Images.container';
 import {setForm} from "../form/form.container";
 import {connect} from 'react-redux';
 import imageStyles from "./images.styles";
 import {Image} from "react-native-elements";
 import {goToImageInfo} from "../../routes/Navigation";
-import {notebookReducers} from "../notebook-panel/Notebook.constants";
+import {spotReducers} from "../../spots/Spot.constants";
 
 const imageNotebook = (props) => {
 
@@ -15,9 +14,9 @@ const imageNotebook = (props) => {
   };
 
   const editImage = (image) => {
-    props.setFormData(image);
+    props.setSelectedAttributes([image]);
     setForm('images');
-    goToImageInfo(image.id);
+    goToImageInfo(image);
   };
 
   const renderImage = (image) => {
@@ -48,7 +47,6 @@ const imageNotebook = (props) => {
 };
 
 const mapStateToProps = (state) => {
-  // console.log('MP to P', state)
   return {
     images: state.spot.selectedSpot.properties.images,
     imagePaths: state.images.imagePaths
@@ -56,6 +54,7 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = {
+  setSelectedAttributes: (attributes) => ({type: spotReducers.SET_SELECTED_ATTRIBUTES, attributes: attributes}),
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(imageNotebook);

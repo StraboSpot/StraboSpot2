@@ -17,7 +17,7 @@ import {homeReducers} from "../../views/home/Home.constants";
 const imagePropertiesModal = (props) => {
 
   const [name, setName] = useState(props.selectedImage.title);
-  const [description, setDescription] = useState(props.selectedImage.caption);
+  const [description, setDescription] = useState(props.selectedImage.title);
   const [switchPosition, setSwitchPosition] = useState(false);
   const [showMoreFields, setShowMoreFields] = useState(false);
   const form = useRef(null);

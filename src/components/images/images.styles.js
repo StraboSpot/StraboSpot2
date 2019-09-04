@@ -1,4 +1,4 @@
-import {Dimensions, StyleSheet} from "react-native";
+import {StyleSheet} from "react-native";
 import * as themes from "../../shared/styles.constants";
 
 const imageStyles = StyleSheet.create({
@@ -7,18 +7,11 @@ const imageStyles = StyleSheet.create({
     alignItems: 'center',
     paddingBottom: 10
   },
-  container: {
-    flex: 1,
-    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
-  },
   closeInfoView: {
     fontWeight: 'bold',
     position: "absolute",
     right: 20,
     top: 30,
-  },
-  editButton: {
-    // textAlign: 'center'
   },
   imageContainer: {
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
@@ -37,14 +30,12 @@ const imageStyles = StyleSheet.create({
   galleryImageContainer: {
     flex: 1,
     flexDirection: 'row',
-    // flexWrap: 'wrap',
     alignContent: 'center',
     justifyContent: 'space-around'
   },
   galleryImageListContainer: {
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
     padding: 5,
-    // flexDirection: 'column',
     justifyContent: 'space-between'
   },
   notebookImage: {
@@ -58,10 +49,7 @@ const imageStyles = StyleSheet.create({
   },
   galleryImage: {
     height: 85,
-    // width: (Dimensions.get('window').width / 2) - 40,
     width: 85,
-    // margin: 0
-    // paddingTop: 50,
   },
   headingText: {
     marginLeft: 30,
@@ -91,16 +79,13 @@ const imageStyles = StyleSheet.create({
     position: 'absolute',
   },
   modalPosition: {
-    position: 'absolute', //Here is the trick
+    position: 'absolute',
     right: 100,
     bottom: 20,
   },
   modalContainer: {
     flex: 8,
-    // height: 800,
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
-    // borderTopRightRadius: 20,
-    // borderTopLeftRadius: 20,
     borderBottomRightRadius: 20,
     borderBottomLeftRadius: 20,
   },

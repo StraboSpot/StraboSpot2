@@ -10,20 +10,22 @@ import ImageButton from '../../shared/ui/ImageButton';
 import {isEmpty} from '../../shared/Helpers';
 import {spotReducers} from "../../spots/Spot.constants";
 import {homeReducers} from "../../views/home/Home.constants";
+import {notebookReducers} from "../notebook-panel/Notebook.constants";
 
 const imageGallery = (props) => {
   const [selectedButtonIndex, setSelectedButtonIndex] = useState(0);
   const [refresh, setRefresh] = useState(false);
   const [sortedList, setSortedList] = useState(props.spots);
   const [sortedListView, setSortedListView] = useState(SortedViews.CHRONOLOGICAL);
-
   let savedArray = [];
+
   useEffect(() => {
     updateIndex(selectedButtonIndex);
     console.log('render!')
   }, []);
 
   useEffect(() => {
+    setSortedList(props.spots);
     setRefresh(!refresh);
     console.log('render Recent Views!')
   }, [props]);
@@ -62,7 +64,7 @@ const imageGallery = (props) => {
           <Button
             title={'View In Spot'}
             type={'clear'}
-            onPress={() => console.log('View In Spot pressed\n', item.properties.id, '\n', item.properties.name)}
+            onPress={() => props.getSpotData(item.properties.id)}
           />
         </View>
         {item.properties.images !== undefined ?
@@ -110,14 +112,6 @@ const imageGallery = (props) => {
             />
             :
             <Text style={{textAlign: 'center'}}>No images available for this spot</Text>}
-          {/*<View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>*/}
-          {/*  {spot[0].properties.images !== undefined ? <FlatList*/}
-          {/*  keyExtractor={spot => spot.id}*/}
-          {/*  data={spot[0].properties.images}*/}
-          {/*  renderItem={spot => renderImage(spot.item)}*/}
-          {/*  numColumns={3}*/}
-          {/*  /> : <Text style={{textAlign: 'center'}}>No images available for this spot</Text>}*/}
-          {/*</View>*/}
         </View>
       </View>
     )
@@ -139,24 +133,15 @@ const imageGallery = (props) => {
     switch (selectedButtonIndex) {
       case 0:
         console.log('Chronological Selected');
-        // props.setSortedView(SortedViews.CHRONOLOGICAL);
         setSortedListView(SortedViews.CHRONOLOGICAL);
         setSortedList(props.spots.sort(((a, b) => a.properties.date > b.properties.date)));
         setRefresh(!refresh);
-        console.log(refresh)
         break;
       case 1:
-        console.log('Map Extent Selected')
-        // props.setSortedView(SortedViews.MAP_EXTENT);
-        setSortedListView(SortedViews.MAP_EXTENT);
-        setSortedList(props.spots.sort(((a, b) => a.properties.date < b.properties.date)));
-        setRefresh(!refresh);
-        console.log(refresh)
+        console.log('Map Extent Selected');
         break;
       case 2:
-        // console.log('Recent Views Selected');
         setSortedListView(SortedViews.RECENT_VIEWS);
-        // props.setSortedView(SortedViews.RECENT_VIEWS);
         break;
     }
   };
@@ -197,12 +182,6 @@ const imageGallery = (props) => {
 
     return (
       <React.Fragment>
-        <SettingsPanelHeader onPress={() => {
-          props.backToSettings()
-        }}>
-          {props.children}
-        </SettingsPanelHeader>
-        <View style={imageStyles.container}>
           <ButtonGroup
             selectedIndex={selectedButtonIndex}
             buttons={buttons}
@@ -217,7 +196,6 @@ const imageGallery = (props) => {
 
             </View>
           </ScrollView>
-        </View>
       </React.Fragment>
     );
   }
@@ -228,7 +206,6 @@ const imageGallery = (props) => {
           {props.children}
         </SettingsPanelHeader>
         <View style={imageStyles.noImageContainer}>
-          {/*<Text>There are no images available</Text>*/}
           <Image
             source={require('../../assets/images/noimage.jpg')}
             style={{height: '70%', width: 400}}
@@ -253,7 +230,9 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = {
   addPhoto: (image) => ({type: imageReducers.ADD_PHOTOS, images: image}),
   setSelectedAttributes: (attributes) => ({type: spotReducers.SET_SELECTED_ATTRIBUTES, attributes: attributes}),
-  setIsImageModalVisible: (value) => ({type: homeReducers.TOGGLE_IMAGE_MODAL, value: value})
+  setIsImageModalVisible: (value) => ({type: homeReducers.TOGGLE_IMAGE_MODAL, value: value}),
+  setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),
+  setNotebookPanelVisible: (value) => ({type: notebookReducers.SET_NOTEBOOK_PANEL_VISIBLE, value: value}),
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(imageGallery);
