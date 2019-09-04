@@ -3,21 +3,21 @@ import React, {Component} from 'react';
 import {connect} from "react-redux";
 import {Animated, Easing, Alert, Image, View, Text, Dimensions, TouchableOpacity} from 'react-native';
 import {setUpdateIntervalForType, SensorTypes, magnetometer, accelerometer} from 'react-native-sensors';
-import {getNewId, mod, toRadians, toDegrees, roundToDecimalPlaces, isEmpty} from "../../shared/Helpers";
+import {getNewId, mod, toRadians, toDegrees, roundToDecimalPlaces, isEmpty} from "../../../shared/Helpers";
 import {CompassToggleButtons} from "./Compass.constants";
 import {Button, ListItem} from "react-native-elements";
 import {Switch} from "react-native-switch";
-import {spotReducers} from "../../spots/Spot.constants";
-import {homeReducers, Modals} from "../../views/home/Home.constants";
-import {NotebookPages, notebookReducers} from "../notebook-panel/Notebook.constants";
-import Orientation from 'react-native-orientation-locker';
-import Slider from '../../shared/ui/Slider';
-import Measurements from '../measurements/Measurements';
-import IconButton from '../../shared/ui/IconButton';
+import {spotReducers} from "../../../spots/Spot.constants";
+import {homeReducers, Modals} from "../../../views/home/Home.constants";
+import {NotebookPages, notebookReducers} from "../../notebook-panel/Notebook.constants";
+// import Orientation from 'react-native-orientation-locker';
+import Slider from '../../../shared/ui/Slider';
+import Measurements from '../Measurements';
+import IconButton from '../../../shared/ui/IconButton';
 
 // Styles
 import styles from './CompassStyles';
-import * as themes from '../../shared/styles.constants';
+import * as themes from '../../../shared/styles.constants';
 
 const {height, width} = Dimensions.get('window');
 const degree_update_rate = 2; // Number of degrees changed before the callback is triggered
@@ -65,16 +65,16 @@ class Compass extends Component {
 
   async componentDidMount() {
     this._isMounted = true;
-    Orientation.lockToPortrait();
+    // Orientation.lockToPortrait();
     //this allows to check if the system autolock is enabled or not.
     await this.subscribe();
     RNSimpleCompass.start(degree_update_rate, (degree) => {
       // degreeFacing = (<Text>{degree}</Text>);
-      // console.log('You are facing', degree);
+      console.log('You are facing', degree);
       this.setState(prevState => {
           return {
             ...prevState,
-            magnetometer: mod(degree, 360)
+            magnetometer: degree
           }
         },
         // () => console.log('magnetometer reading:', this.state.magnetometer)
@@ -86,9 +86,9 @@ class Compass extends Component {
 
   async componentWillUnmount() {
     if (this.props.deviceDimensions.width < 500){
-      Orientation.unlockAllOrientations()
+      // Orientation.unlockAllOrientations()
     }
-    else Orientation.lockToLandscapeLeft();
+    // else Orientation.lockToLandscapeLeft();
     await this.unsubscribe();
     RNSimpleCompass.stop();
     console.log('Compass unsubscribed');
@@ -179,7 +179,7 @@ class Compass extends Component {
     const y = this.state.accelerometer.y;
     const z = this.state.accelerometer.z;
     //let actualHeading = mod(vm.result.magneticHeading + vm.magneticDeclination, 360);
-    let actualHeading = this.state.magnetometer;  // ToDo: adjust for declination
+    let actualHeading = mod(this.state.magnetometer - 270, 360);  // ToDo: adjust for declination
 
     // Calculate base values given the x, y, and z from the device. The x-axis runs side-to-side across
     // the mobile phone screen, or the laptop keyboard, and is positive towards the right side. The y-axis
@@ -209,7 +209,7 @@ class Compass extends Component {
     if (z > 0) dipdir = mod(dipdir, 360);
     else if (z < 0) dipdir = mod(dipdir - 180, 360);
 
-    strike = mod(dipdir - 90, 360);
+    strike = mod(dipdir + 180, 360);
     dip = toDegrees(d);
 
     // Calculate trend, plunge and rake (in degrees)
@@ -217,7 +217,7 @@ class Compass extends Component {
     if (y > 0) trend = mod(diry, 360);
     // if (y > 0) trend = diry;
     // if (y > 0) trend = mod(diry, 360);
-    else if (y <= 0) trend = mod(diry - 180, 360);
+    else if (y <= 0) trend = mod(diry + 180, 360);
     if (z > 0) trend = mod(trend - 180, 360);
     plunge = toDegrees(Math.asin(Math.abs(y) / g));
     rake = toDegrees(R);
@@ -313,7 +313,7 @@ class Compass extends Component {
   renderCompass = () => {
     return (
       <TouchableOpacity style={styles.compassImageContainer} onPress={() => this.grabMeasurements()}>
-        <Image source={require("../../assets/images/compass/compass.png")}
+        <Image source={require("../../../assets/images/compass/compass.png")}
                style={{
                  marginTop: 25,
                  height: 220,
@@ -354,9 +354,9 @@ class Compass extends Component {
     return (
       <View style={styles.measurementsContainer}>
         {/*<Text>heading: {this.state.magnetometer}</Text>*/}
-        {/*<Text>x: {this.state.accelerometer.x}</Text>*/}
-        {/*<Text>y: {this.state.accelerometer.y}</Text>*/}
-        {/*<Text>z: {this.state.accelerometer.z}</Text>*/}
+        <Text>x: {this.state.accelerometer.x}</Text>
+        <Text>y: {this.state.accelerometer.y}</Text>
+        <Text>z: {this.state.accelerometer.z}</Text>
         {
           Object.keys(this.state.compassData).map((key, i) => (
             <Text key={i}>{key}: {this.state.compassData[key]}</Text>
@@ -368,7 +368,7 @@ class Compass extends Component {
   // Render the strike and dip symbol inside the compass
   renderStrikeDipSymbol = () => {
     // this.state = {spinValue: new Animated.Value(0)};
-    let image = require("../../assets/images/compass/StrikeDipCentered.png");
+    let image = require("../../../assets/images/compass/StrikeDipCentered.png");
     const spin = this.state.spinValue.interpolate({
       inputRange: [0, this.state.compassData.strike],
       outputRange: ['0deg', this.state.compassData.strike + 'deg']
@@ -397,7 +397,7 @@ class Compass extends Component {
   // Render the strike and dip symbol inside the compass
   renderTrendSymbol = () => {
     // this.state = {spinValue: new Animated.Value(0)};
-    let image = require("../../assets/images/compass/TrendLine.png");
+    let image = require("../../../assets/images/compass/TrendLine.png");
     const spin = this.state.spinValue.interpolate({
       inputRange: [0, 360],
       outputRange: [this.state.compassData.trend + 'deg', this.state.compassData.trend + 'deg']
@@ -474,7 +474,7 @@ class Compass extends Component {
         ...prevState,
         showDataModal: !prevState.showDataModal
       }
-    }, () => console.log('DataModal', this.state.showDataModal))
+    })
   };
 
   render() {
@@ -487,14 +487,14 @@ class Compass extends Component {
 
 
     if (this.props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {
-      Orientation.lockToPortrait();
+      // Orientation.lockToPortrait();
       if (!isEmpty(this.props.spot)) {
         modalView = <View>
           <View style={{height: 320}}>
             <Measurements/>
           </View>
           <IconButton
-            source={require('../../assets/icons/NotebookView_pressed.png')}
+            source={require('../../../assets/icons/NotebookView_pressed.png')}
             style={{marginTop: 10, flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-end', height: 25}}
             textStyle={{color: themes.BLUE, fontSize: 16, textAlign: 'center'}}
             onPress={() => this.props.onPress(NotebookPages.MEASUREMENT)}
@@ -503,7 +503,7 @@ class Compass extends Component {
       }
     }
     else if (this.props.modalVisible === Modals.NOTEBOOK_MODALS.COMPASS) {
-      Orientation.lockToPortrait();
+      // Orientation.lockToPortrait();
       modalView = <View>
         {this.props.deviceDimensions.width > 700 ? <Button
           title={'View In Shortcut Mode'}
