@@ -110,13 +110,9 @@ class CustomMapsMenu extends Component {
     }, () => console.log('accessToken state:', this.state.accessToken))
   };
 
-
-
   checkMap = async () => {
-
     this.setState({showSubmitButton: false});
-
-    switch(this.state.chosenForm){
+    switch (this.state.chosenForm) {
       case 'Mapbox Style':
         //jasonash/cjl3xdv9h22j12tqfmyce22zq
         //pk.eyJ1IjoiamFzb25hc2giLCJhIjoiY2l2dTUycmNyMDBrZjJ5bzBhaHgxaGQ1diJ9.O2UUsedIcg1U7w473A5UHA
@@ -139,87 +135,75 @@ class CustomMapsMenu extends Component {
     }
 
     fetch(url).then(response => {
-        const statusCode = response.status;
-        console.log("statusCode", statusCode);
-
-        console.log("customMaps: ", this.props.customMaps);
-
-        if(statusCode=='200'){
-
-          //check to see if it already exists in Redux
-          mapExists = false;
-
-          for(let i = 0; i < this.props.customMaps.length; i++){
-            if(this.props.customMaps[i].mapId==this.state.mapId){
-              mapExists = true;
-            }
+      const statusCode = response.status;
+      console.log("statusCode", statusCode);
+      console.log("customMaps: ", this.props.customMaps);
+      if (statusCode == '200') {
+        //check to see if it already exists in Redux
+        mapExists = false;
+        for (let i = 0; i < this.props.customMaps.length; i++) {
+          if (this.props.customMaps[i].mapId == this.state.mapId) {
+            mapExists = true;
           }
-
-          if(!mapExists){
-            //add map to Redux here...
-
-            let newReduxMaps = [];
-            for(let i = 0; i < this.props.customMaps.length; i++){
-              newReduxMaps.push(this.props.customMaps[i]);
-            }
-
-            let newMap = {};
-            newMap.id = this.makeMapId();
-            newMap.mapType = this.state.chosenForm;
-            newMap.mapId = this.state.mapId;
-            newMap.mapTitle = this.state.mapTitle;
-            if(this.state.accessToken){
-              newMap.accessToken = this.state.accessToken;
-            }
-            newMap.url = saveUrl;
-
-            newReduxMaps.push(newMap);
-
-            this.props.onCustomMaps(newReduxMaps);
-
-            Alert.alert(
-              'Success!',
-              'Map has been added successfully.',
-              [
-                {
-                  text: 'OK',
-                  onPress: () => this.showHome()
-                },
-              ],
-              {cancelable: false},
-            );
-          }else{
-            Alert.alert(
-              'Failure!',
-              'You have already added this map.',
-              [
-                {
-                  text: 'OK',
-                  onPress: () => this.showHome()
-                },
-              ],
-              {cancelable: false},
-            );
+        }
+        if (!mapExists) {
+          //add map to Redux here...
+          let newReduxMaps = [];
+          for (let i = 0; i < this.props.customMaps.length; i++) {
+            newReduxMaps.push(this.props.customMaps[i]);
           }
-
-
-
-
-        }else{
+          let newMap = {};
+          newMap.id = this.makeMapId();
+          newMap.mapType = this.state.chosenForm;
+          newMap.mapId = this.state.mapId;
+          newMap.mapTitle = this.state.mapTitle;
+          if (this.state.accessToken) {
+            newMap.accessToken = this.state.accessToken;
+          }
+          newMap.url = saveUrl;
+          newReduxMaps.push(newMap);
+          this.props.onCustomMaps(newReduxMaps);
           Alert.alert(
-            'Failure!',
-            'Provided map is not valid.',
+            'Success!',
+            'Map has been added successfully.',
             [
               {
-                text: 'OK'
+                text: 'OK',
+                onPress: () => this.showHome()
               },
             ],
             {cancelable: false},
           );
         }
-      })
+        else {
+          Alert.alert(
+            'Failure!',
+            'You have already added this map.',
+            [
+              {
+                text: 'OK',
+                onPress: () => this.showHome()
+              },
+            ],
+            {cancelable: false},
+          );
+        }
+      }
+      else {
+        Alert.alert(
+          'Failure!',
+          'Provided map is not valid.',
+          [
+            {
+              text: 'OK'
+            },
+          ],
+          {cancelable: false},
+        );
+      }
+    })
       .catch(error => {
-        console.log('Error!: ',error);
+        console.log('Error!: ', error);
         Alert.alert(
           'Failure!',
           'Provided map is not valid...',
@@ -230,19 +214,18 @@ class CustomMapsMenu extends Component {
           ],
           {cancelable: false},
         );
-    });
-
-  }
+      });
+  };
 
   makeMapId = () => {
-     var result           = '';
-     var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-     var charactersLength = characters.length;
-     for ( var i = 0; i < 10; i++ ) {
-        result += characters.charAt(Math.floor(Math.random() * charactersLength));
-     }
-     return result;
-  }
+    var result = '';
+    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var charactersLength = characters.length;
+    for (var i = 0; i < 10; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+  };
 
   confirmDeleteMap = async (map) => {
     console.log(map);
@@ -266,21 +249,21 @@ class CustomMapsMenu extends Component {
 
   deleteMap = async (mapid) => {
     console.log('Deleting Map Here');
-    console.log("map: ",mapid);
+    console.log("map: ", mapid);
 
     //now, delete map from Redux
     currentCustomMaps = this.props.customMaps;
 
-    if(!currentCustomMaps){
-      currentCustomMaps=[];
+    if (!currentCustomMaps) {
+      currentCustomMaps = [];
     }
 
     let newCustomMapsData = [];
 
     //loop over offlineMapsData and add any other maps (not current)
-    for(let i = 0; i < currentCustomMaps.length; i++){
-      if(currentCustomMaps[i].id){
-        if(currentCustomMaps[i].id != mapid){
+    for (let i = 0; i < currentCustomMaps.length; i++) {
+      if (currentCustomMaps[i].id) {
+        if (currentCustomMaps[i].id != mapid) {
           //Add it to new array for Redux Storage
           newCustomMapsData.push(currentCustomMaps[i]);
         }
@@ -297,26 +280,26 @@ class CustomMapsMenu extends Component {
     console.log('viewCustomMap: ', map);
 
     tempCurrentBasemap =
-    {
-      id: 'osm',
-      layerId: map.id,
-      layerLabel: map.mapTitle,
-      layerSaveId: map.id,
-      url: map.url,
-      maxZoom: 19
-    };
+      {
+        id: 'osm',
+        layerId: map.id,
+        layerLabel: map.mapTitle,
+        layerSaveId: map.id,
+        url: map.url,
+        maxZoom: 19
+      };
 
     await this.props.onCurrentBasemap(tempCurrentBasemap);
 
     tempCurrentBasemap =
-    {
-      id: 'custom',
-      layerId: map.id,
-      layerLabel: map.mapTitle,
-      layerSaveId: map.id,
-      url: map.url,
-      maxZoom: 19
-    };
+      {
+        id: 'custom',
+        layerId: map.id,
+        layerLabel: map.mapTitle,
+        layerSaveId: map.id,
+        url: map.url,
+        maxZoom: 19
+      };
 
     console.log('tempCurrentBasemap: ', tempCurrentBasemap);
     await this.props.onCurrentBasemap(tempCurrentBasemap);
@@ -326,98 +309,70 @@ class CustomMapsMenu extends Component {
   render() { //return whole modal here
     return (
 
-      <View style={styles.container}>
+      <React.Fragment>
+        {this.state.showFrontPage && this.props.customMaps &&
         <View>
-          <ButtonNoBackground
-            style={styles.button}
-            onPress={this.props.onPress}
-            name={'ios-arrow-back'}
-            size={20}
-            color={'#407ad9'}
-          >
-            <Text style={styles.textStyle}>Settings</Text>
-          </ButtonNoBackground>
-        </View>
-
-
-        { this.state.showFrontPage &&
-        <View style={{alignItems: 'center'}}>
-          <Text style={styles.headingText}>Custom Maps</Text>
-        </View>
-        }
-
-        { this.state.showFrontPage && this.props.customMaps &&
-          <View>
-            {
-              this.props.customMaps.map((item,i) => <ListItem
-                containerStyle={{backgroundColor: 'transparent', padding: 0}}
-                key={item.id}
-                title={
-                  <View style={styles.itemContainer}>
-                    <Text style={styles.itemTextStyle}>{item.mapTitle}</Text>
-                  </View>
-                }
-                subtitle={
-                  <View style={styles.itemSubContainer}>
-                    <Text style={styles.itemSubTextStyle}>
-                      <Text>
-                        ({item.mapType})
-                      </Text>
-                      <Text onPress={() => this.viewCustomMap(item)} style={styles.buttonPadding}>
-                        &nbsp;&nbsp;&nbsp;View
-                      </Text>
-                      <Text onPress={() => this.confirmDeleteMap(item)} style={styles.buttonPadding}>
-                        &nbsp;&nbsp;&nbsp;Delete
-                      </Text>
+          {
+            this.props.customMaps.map((item, i) => <ListItem
+              containerStyle={{backgroundColor: 'transparent', padding: 0}}
+              key={item.id}
+              title={
+                <View style={styles.itemContainer}>
+                  <Text style={styles.itemTextStyle}>{item.mapTitle}</Text>
+                </View>
+              }
+              subtitle={
+                <View style={styles.itemSubContainer}>
+                  <Text style={styles.itemSubTextStyle}>
+                    <Text>
+                      ({item.mapType})
                     </Text>
-                  </View>
-                }
-              />)
-            }
-          </View>
+                    <Text onPress={() => this.viewCustomMap(item)} style={styles.buttonPadding}>
+                      &nbsp;&nbsp;&nbsp;View
+                    </Text>
+                    <Text onPress={() => this.confirmDeleteMap(item)} style={styles.buttonPadding}>
+                      &nbsp;&nbsp;&nbsp;Delete
+                    </Text>
+                  </Text>
+                </View>
+              }
+            />)
+          }
+        </View>
         }
-
-        { this.state.showFrontPage && !this.props.customMaps &&
-          <View style={styles.centertext}>
-            <Text>
-              No custom maps yet.
-            </Text>
-          </View>
+        {this.state.showFrontPage && !this.props.customMaps &&
+        <View style={styles.centertext}>
+          <Text>
+            No custom maps yet.
+          </Text>
+        </View>
         }
-
-        { this.state.showNewMapSelect &&
+        {this.state.showNewMapSelect &&
         <View>
-
           <View style={{alignItems: 'center'}}>
             <Text style={styles.headingText}>Select Map Type:</Text>
           </View>
-
           <Picker
             selectedValue=""
             onValueChange={(mapSelectorType) => this.updateForm(mapSelectorType)}
             style={styles.picker}>
             {
-          		this.mapTypes.map(function(i){
-          		return     <Picker.Item
-                                label={i}
-                                value={i}
-                                key={i}
-                            />
-          		})
-        		}
+              this.mapTypes.map(function (i) {
+                return <Picker.Item
+                  label={i}
+                  value={i}
+                  key={i}
+                />
+              })
+            }
           </Picker>
-
         </View>
         }
-
-
-
-        { this.state.showForm &&
+        {this.state.showForm &&
         <View>
           <View style={{alignItems: 'center', paddingBottom: 10}}>
             <Text style={styles.headingText}>New {this.state.chosenForm}:</Text>
           </View>
-
           <Divider style={styles.divider}>
             <Text style={styles.dividerText}>My Map Title</Text>
           </Divider>
@@ -426,7 +381,6 @@ class CustomMapsMenu extends Component {
             onChangeText={(text) => this.mapTitleEdit(text)}
             value={this.state.mapTitle}
           />
-
           <Divider style={styles.divider}>
             <Text style={styles.dividerText}>{this.state.mapIdLabel}</Text>
           </Divider>
@@ -437,10 +391,8 @@ class CustomMapsMenu extends Component {
           />
         </View>
         }
-
-
-        { this.state.chosenForm == 'Mapbox Style' &&
-          <View>
+        {this.state.chosenForm == 'Mapbox Style' &&
+        <View>
           <Divider style={styles.divider}>
             <Text style={styles.dividerText}>Access Token</Text>
           </Divider>
@@ -449,38 +401,32 @@ class CustomMapsMenu extends Component {
             onChangeText={(text) => this.accessTokenEdit(text)}
             value={this.state.accessToken}
           />
-          </View>
+        </View>
         }
-
-        { this.state.showSubmitButton && this.state.mapTitle != '' && this.state.mapId != '' && ( this.state.chosenForm != 'Mapbox Style' || this.state.accessToken != '' ) &&
-          <View>
-            <Text style={styles.submitButton} onPress={this.checkMap}>
-              Submit
-            </Text>
-          </View>
+        {this.state.showSubmitButton && this.state.mapTitle != '' && this.state.mapId != '' && (this.state.chosenForm != 'Mapbox Style' || this.state.accessToken != '') &&
+        <View>
+          <Text style={styles.submitButton} onPress={this.checkMap}>
+            Submit
+          </Text>
+        </View>
         }
-
-        { this.state.showFrontPage &&
-          <View style={{flex: 1}}>
-            <ButtonNoBackground
-              onPress={this.showMapPicker}
-              name={'ios-arrow-back'}
-              size={20}
-              color={'#407ad9'}
-            >
+        {this.state.showFrontPage &&
+        <View style={{flex: 1}}>
+          <ButtonNoBackground
+            onPress={this.showMapPicker}
+            name={'ios-arrow-back'}
+            size={20}
+            color={'#407ad9'}
+          >
             <Text style={styles.rightlink}>
               Add New Map
             </Text>
-            </ButtonNoBackground>
-          </View>
+          </ButtonNoBackground>
+        </View>
         }
-
-
-
-      </View>
+      </React.Fragment>
     );
   }
-
 }
 
 const mapStateToProps = (state) => {

@@ -2,11 +2,6 @@ import {StyleSheet} from 'react-native';
 import * as themes from '../../../shared/styles.constants';
 
 const styles = StyleSheet.create({
-  container: {
-    paddingTop: 20,
-    flex: 1,
-    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
-  },
   button: {
     flexDirection: 'row',
     paddingLeft: 7,
