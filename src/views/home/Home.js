@@ -3,23 +3,21 @@ import {Alert, Animated, Dimensions, Easing, Platform, Text, View} from 'react-n
 import NetInfo from "@react-native-community/netinfo";
 import ImagePicker from 'react-native-image-picker';
 import styles from './Styles';
-import {goToImageGallery} from '../../routes/Navigation'
 import MapView from '../../components/maps/MapView';
-import Icon from 'react-native-vector-icons/Ionicons';
+import vectorIcon from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from '../../shared/Icons';
 import IconButton from '../../shared/ui/IconButton';
 import MapActionsDialog from '../../components/modals/map-actions/MapActionsDialogBox';
 import MapSymbolsDialog from "../../components/modals/map-symbols/MapSymbolsDialogBox";
 import BaseMapDialog from "../../components/modals/base-maps/BaseMapDialogBox";
 import NotebookPanel from '../../components/notebook-panel/NotebookPanel';
-import Drawer from 'react-native-drawer';
 import SettingsPanel from '../../components/settings-panel/SettingsPanel';
 import {MapModes} from '../../components/maps/Map.constants';
 import {SettingsMenuItems} from '../../components/settings-panel/SettingsMenu.constants';
 import ImageGallery from '../../components/images/ImageGallery.view';
 import ShortcutMenu from '../../components/settings-panel/shortcuts-menu/ShortcutsMenu';
-import ManageOfflineMapsMenu from '../../components/settings-panel/Manage-Offline-Maps-Menu/ManageOfflineMapsMenu';
-import CustomMapsMenu from '../../components/settings-panel/Custom-Maps-Menu/CustomMapsMenu';
+import ManageOfflineMapsMenu from '../../components/maps/Manage-Offline-Maps-Menu/ManageOfflineMapsMenu';
+import CustomMapsMenu from '../../components/maps/Custom-Maps-Menu/CustomMapsMenu';
 import ButtonWithBackground from '../../shared/ui/ButtonWithBackground';
 import Modal from "react-native-modal";
 import SaveMapModal from '../../components/modals/map-actions/SaveMapsModal';
@@ -30,10 +28,11 @@ import {spotReducers} from "../../spots/Spot.constants";
 import {imageReducers} from "../../components/images/Image.constants";
 import {saveFile} from '../../services/images/ImageDownload';
 import {takePicture} from '../../components/images/Images.container';
-import NotebookCompassModal from "../../components/compass/NotebookCompassModal";
-import ShortcutCompassModal from '../../components/compass/ShortcutCompassModal';
+import NotebookCompassModal from "../../components/measurements/compass/NotebookCompassModal";
+import ShortcutCompassModal from '../../components/measurements/compass/ShortcutCompassModal';
 import NotebookSamplesModal from '../../components/samples/NotebookSamplesModal.view';
 import ShortcutSamplesModal from '../../components/samples/ShortcutSamplesModal.view';
+import SpotsList from '../../spots/SpotsList';
 import AllSpotsView from '../../components/notebook-panel/AllSpots.view';
 import {homeReducers, Modals} from "./Home.constants";
 import sampleStyles from '../../components/samples/samples.style';
@@ -44,7 +43,6 @@ import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-nativ
 // import {SettingsPanel,  ShortcutMenu} from '../../components/settings-panel/index';
 import SettingsPanelHeader from '../../components/settings-panel/SettingsPanelHeader';
 import {Button, Image} from "react-native-elements";
-import * as Helper from '../../shared/Helpers';
 
 const deviceWidth = () => {
   if (width < 500) return wp('95%');
@@ -97,7 +95,7 @@ class Home extends React.Component {
 
   componentDidMount() {
     this._isMounted = true;
-    Icon.getImageSource("pin", 30);
+    vectorIcon.getImageSource("pin", 30);
     NetInfo.isConnected.addEventListener('connectionChange', this.handleConnectivityChange);
     // this.props.setDeviceDims(this.dimensions);
     if (this.props.deviceDimensions.width < 500) {
@@ -350,6 +348,15 @@ class Home extends React.Component {
 
   getImageSrc = (id) => {
     return this.props.imagePaths[id]
+  };
+
+  getSpotFromId = (spotId) => {
+    const spot = this.props.spot.find((spot) => {
+      return spot.properties.id === spotId
+    });
+    // console.log('Aaaaaaaa', spot);
+    this.props.onFeatureSelected(spot);
+    this.openNotebookPanel()
   };
 
 //function for online/offline state change event handler
@@ -641,24 +648,14 @@ class Home extends React.Component {
         {translateX: this.state.allSpotsViewAnimation}
       ]
     };
+    let settingsPanelHeader = <SettingsPanelHeader onPress={() => this.setVisibleMenuState(SettingsMenuItems.SETTINGS_MAIN)}>
+      {this.state.settingsMenuVisible}
+    </SettingsPanelHeader>;
     let content = null;
     let compassModal = null;
     let samplesModal = null;
     let notebookPanel = null;
     let settingsDrawer = null;
-
-    // if (this.props.isNotebookPanelVisible && this.props.isAllSpotsPanelVisible) {
-    //   notebookPanel =
-    //     <Animated.View style={[notebookStyles.panel,]}>
-    //       <NotebookPanel
-    //         // style={{right: 125}}
-    //         closeNotebook={this.closeNotebookPanel}
-    //         textStyle={{fontWeight: 'bold', fontSize: 12}}
-    //         onPress={(name) => this.notebookClickHandler(name)}
-    //       />
-    //     </Animated.View>
-    // }
-    // else {
 
     notebookPanel =
       <FlingGestureHandler
@@ -719,15 +716,10 @@ class Home extends React.Component {
     }
 
     switch (this.state.settingsMenuVisible) {
-      case SettingsMenuItems.SETTINGS_MAIN:
-        content = <SettingsPanel onPress={(name) => this.setVisibleMenuState(name)}/>;
-        break;
       case SettingsMenuItems.APP_PREFERENCES.SHORTCUTS:
         content =
-          <View style={{flex: 1}}>
-            <SettingsPanelHeader onPress={() => this.setVisibleMenuState(SettingsMenuItems.SETTINGS_MAIN)}>
-              {this.state.settingsMenuVisible}
-            </SettingsPanelHeader>
+          <View style={styles.settingsPanelContainer}>
+            {settingsPanelHeader}
             <ShortcutMenu
               toggleSwitch={(switchName) => this.toggleSwitch(switchName)}
               shortcutSwitchPosition={this.props.shortcutSwitchPosition}
@@ -736,10 +728,8 @@ class Home extends React.Component {
         break;
       case SettingsMenuItems.MAPS.MANAGE_OFFLINE_MAPS:
         content =
-          <View style={{flex: 1}}>
-            <SettingsPanelHeader onPress={() => this.setVisibleMenuState(SettingsMenuItems.SETTINGS_MAIN)}>
-              {this.state.settingsMenuVisible}
-            </SettingsPanelHeader>
+          <View style={styles.settingsPanelContainer}>
+            {settingsPanelHeader}
             <ManageOfflineMapsMenu
               toggleSwitch={(switchName) => this.toggleSwitch(switchName)}
               closeSettingsDrawer={() => this.closeSettingsDrawer()}
@@ -748,10 +738,8 @@ class Home extends React.Component {
         break;
       case SettingsMenuItems.MAPS.CUSTOM:
         content =
-          <View style={{flex: 1}}>
-            <SettingsPanelHeader onPress={() => this.setVisibleMenuState(SettingsMenuItems.SETTINGS_MAIN)}>
-              {this.state.settingsMenuVisible}
-            </SettingsPanelHeader>
+          <View style={styles.settingsPanelContainer}>
+            {settingsPanelHeader}
             <CustomMapsMenu
               toggleSwitch={(switchName) => this.toggleSwitch(switchName)}
               closeSettingsDrawer={() => this.closeSettingsDrawer()}
@@ -760,12 +748,20 @@ class Home extends React.Component {
         break;
       case SettingsMenuItems.ATTRIBUTES.IMAGE_GALLERY:
         content =
-          <View style={{flex: 1}}>
+          <View style={styles.settingsPanelContainer}>
+            {settingsPanelHeader}
             <ImageGallery
-              onPress={() => console.log('HELLO THERE ')}
-              backToSettings={() => this.setVisibleMenuState(SettingsMenuItems.SETTINGS_MAIN)}
-            >{this.state.settingsMenuVisible}
-            </ImageGallery>
+              getSpotData={(spotId) => this.getSpotFromId(spotId)}
+            />
+          </View>;
+        break;
+      case SettingsMenuItems.ATTRIBUTES.SPOTS_LIST:
+        content =
+          <View style={styles.settingsPanelContainer}>
+          {settingsPanelHeader}
+          <SpotsList
+            getSpotData={(spotId) => this.getSpotFromId(spotId)}
+          />
           </View>;
         break;
       default:
