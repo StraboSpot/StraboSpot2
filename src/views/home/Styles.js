@@ -13,15 +13,16 @@ const deviceWidth = () => {
 
 const styles = StyleSheet.create({
   settingsDrawer: {
-    // flex: 1,
     width: deviceWidth(),
     height: '100%',
-    // borderBottomRightRadius: 30,
-    // borderTopRightRadius: 30,
     position: 'absolute',
     left: 0,
     right: 0,
     zIndex: 1,
+  },
+  settingsPanelContainer: {
+    flex: 1,
+    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
   },
   container: {
     flex: 1
@@ -101,7 +102,7 @@ const styles = StyleSheet.create({
   modal: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'flex-end'
   }
 });
 

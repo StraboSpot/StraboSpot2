@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     paddingRight: 10,
     color: themes.BLUE
   },
-  headingText: {
+  headerText: {
     fontWeight: 'bold',
     fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,
   },

@@ -350,7 +350,7 @@ class CustomMapsMenu extends Component {
         {this.state.showNewMapSelect &&
         <View>
           <View style={{alignItems: 'center'}}>
-            <Text style={styles.headingText}>Select Map Type:</Text>
+            <Text style={styles.headerText}>Select Map Type:</Text>
           </View>
           <Picker
             selectedValue=""
@@ -371,7 +371,7 @@ class CustomMapsMenu extends Component {
         {this.state.showForm &&
         <View>
           <View style={{alignItems: 'center', paddingBottom: 10}}>
-            <Text style={styles.headingText}>New {this.state.chosenForm}:</Text>
+            <Text style={styles.headerText}>New {this.state.chosenForm}:</Text>
           </View>
           <Divider style={styles.divider}>
             <Text style={styles.dividerText}>My Map Title</Text>
