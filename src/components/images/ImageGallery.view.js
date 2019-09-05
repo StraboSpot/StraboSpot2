@@ -4,19 +4,22 @@ import {pictureSelectDialog, saveFile} from './Images.container';
 import {connect} from "react-redux";
 import imageStyles from './images.styles'
 import {Button, Image} from "react-native-elements";
-import {imageReducers, SortedViews} from "./Image.constants";
+import {imageReducers} from "./Image.constants";
 import SettingsPanelHeader from "../settings-panel/SettingsPanelHeader";
 import * as SharedUI from '../../shared/ui/index';
 import {isEmpty} from '../../shared/Helpers';
 import {spotReducers} from "../../spots/Spot.constants";
 import {homeReducers} from "../../views/home/Home.constants";
 import {notebookReducers} from "../notebook-panel/Notebook.constants";
+import { SortedViews} from "../settings-panel/settingsPanel.constants";
 
 const imageGallery = (props) => {
   const [selectedButtonIndex, setSelectedButtonIndex] = useState(0);
   const [refresh, setRefresh] = useState(false);
   const [sortedList, setSortedList] = useState(props.spots);
   const [sortedListView, setSortedListView] = useState(SortedViews.CHRONOLOGICAL);
+  const {selectedSpot} = props;
+  const {spots} = props;
   let savedArray = [];
 
   useEffect(() => {
@@ -25,10 +28,10 @@ const imageGallery = (props) => {
   }, []);
 
   useEffect(() => {
-    setSortedList(props.spots);
+    setSortedList(spots);
     setRefresh(!refresh);
     console.log('render Recent Views!')
-  }, [props]);
+  }, [selectedSpot, spots]);
 
   const imageSave = async () => {
     const savedPhoto = await pictureSelectDialog();
@@ -57,25 +60,23 @@ const imageGallery = (props) => {
   const renderName = (item) => {
     return (
       <View style={imageStyles.galleryImageListContainer}>
-        <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
-          <Text style={imageStyles.headingText}>
+        <View style={imageStyles.listHeading}>
+          <Text style={[imageStyles.headingText]}>
             {item.properties.name}
           </Text>
           <Button
+            titleStyle={{fontSize: 16}}
             title={'View In Spot'}
             type={'clear'}
             onPress={() => props.getSpotData(item.properties.id)}
           />
         </View>
-        {item.properties.images !== undefined ?
           <FlatList
             keyExtractor={(image) => image.id}
             data={item.properties.images}
             numColumns={3}
             renderItem={({item}) => renderImage(item)}
           />
-          :
-          <Text style={{textAlign: 'center'}}>No images available for this spot</Text>}
       </View>
     )
   };
@@ -97,24 +98,29 @@ const imageGallery = (props) => {
     const spot = props.spots.find(spot => {
       return spot.properties.id === spotID
     });
-    return (
-      <View style={imageStyles.galleryImageListContainer}>
-        <View style={{justifyContent: 'space-between', alignItems: 'center'}}>
-          <Text style={imageStyles.headingText}>
-            {spot.properties.name}
-          </Text>
-          {spot.properties.images !== undefined ?
-            <FlatList
-              data={spot.properties.images}
-              keyExtractor={(image) => image.id}
-              numColumns={3}
-              renderItem={({item}) => renderImage(item)}
-            />
-            :
-            <Text style={{textAlign: 'center'}}>No images available for this spot</Text>}
-        </View>
-      </View>
-    )
+     if (spot.properties.images && !isEmpty(spot.properties.images)) {
+       return (
+         <View style={imageStyles.galleryImageListContainer}>
+           <View style={imageStyles.listHeading}>
+           <Text style={imageStyles.headingText}>
+               {spot.properties.name}
+             </Text>
+           <Button
+             titleStyle={{fontSize: 16}}
+             title={'View In Spot'}
+             type={'clear'}
+             onPress={() => props.getSpotData(spot.properties.id)}
+           />
+           </View>
+               <FlatList
+                 data={spot.properties.images === undefined ? null : spot.properties.images}
+                 keyExtractor={(image) => image.id}
+                 numColumns={3}
+                 renderItem={({item}) => renderImage(item)}
+               />
+         </View>
+       )
+     }
   };
 
   const renderImageModal = (image) => {
@@ -138,7 +144,7 @@ const imageGallery = (props) => {
         setRefresh(!refresh);
         break;
       case 1:
-        console.log('Map Extent Selected');
+        setSortedListView(SortedViews.MAP_EXTENT);
         break;
       case 2:
         setSortedListView(SortedViews.RECENT_VIEWS);
@@ -148,20 +154,22 @@ const imageGallery = (props) => {
 
   if (!isEmpty(props.spots)) {
     let sortedView = null;
-    const buttons = ['Chronological', 'Map Extent', 'Recent \n Views'];
+    const filteredList = sortedList.filter(spot => {
+      return spot.properties.images && !isEmpty(spot.properties.images)
+    });
 
     if (sortedListView === SortedViews.CHRONOLOGICAL) {
       sortedView = <FlatList
         keyExtractor={(item) => item.properties.id.toString()}
         extraData={refresh}
-        data={sortedList}
+        data={filteredList}
         renderItem={({item}) => renderName(item)}/>
     }
     else if (sortedListView === SortedViews.MAP_EXTENT) {
       sortedView = <FlatList
         keyExtractor={(item) => item.properties.id.toString()}
         extraData={refresh}
-        data={sortedList}
+        data={filteredList}
         renderItem={({item}) => renderName(item)}/>
     }
     else if (sortedListView === SortedViews.RECENT_VIEWS) {
@@ -184,7 +192,7 @@ const imageGallery = (props) => {
       <React.Fragment>
           <SharedUI.ButtonGroup
               selectedIndex={selectedButtonIndex}
-              buttons={buttons}
+              buttons={['Chronological', 'Map Extent', 'Recent \n Views']}
               containerStyle={{height: 50}}
               buttonStyle={{padding: 5}}
               textStyle={{fontSize: 12}}
@@ -193,7 +201,6 @@ const imageGallery = (props) => {
           <ScrollView>
             <View style={imageStyles.galleryImageContainer}>
               {sortedView}
-
             </View>
           </ScrollView>
       </React.Fragment>
@@ -202,9 +209,6 @@ const imageGallery = (props) => {
   else {
     return (
       <React.Fragment>
-        <SettingsPanelHeader onPress={() => props.backToSettings()}>
-          {props.children}
-        </SettingsPanelHeader>
         <View style={imageStyles.noImageContainer}>
           <Image
             source={require('../../assets/images/noimage.jpg')}
@@ -224,6 +228,7 @@ const mapStateToProps = (state) => {
     recentViews: state.spot.recentViews,
     sortedView: state.images.sortedView,
     selectedImage: state.spot.selectedAttributes[0],
+    selectedSpot: state.spot.selectedSpot,
   }
 };
 

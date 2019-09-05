@@ -1,11 +1,4 @@
 export const imageReducers = {
   ADD_PHOTOS: 'ADD_PHOTOS',
   DELETE_PHOTOS: 'DELETE_PHOTOS',
-  SET_SORTED_VIEW: ' SET_SORTED_VIEW'
-};
-
-export const SortedViews= {
-  CHRONOLOGICAL: 'CHRONOLOGICAL',
-  MAP_EXTENT: 'MAP_EXTENT',
-  RECENT_VIEWS: 'RECENT_VIEWS'
 };

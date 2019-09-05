@@ -36,6 +36,7 @@ const imageStyles = StyleSheet.create({
   galleryImageListContainer: {
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
     padding: 5,
+    paddingTop: 0,
     justifyContent: 'space-between'
   },
   notebookImage: {
@@ -52,9 +53,14 @@ const imageStyles = StyleSheet.create({
     width: 85,
   },
   headingText: {
-    marginLeft: 30,
+    marginLeft: 10,
     fontWeight: '600',
-    fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,
+    fontSize: themes.PRIMARY_HEADER_TEXT_SIZE - 2,
+  },
+  listHeading: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   flatListStyle: {
     flex: 1
