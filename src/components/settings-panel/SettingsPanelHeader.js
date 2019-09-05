@@ -18,7 +18,7 @@ const SettingsPanelHeader = (props) => {
             size={30}
           />}
       containerStyle={{alignItems: 'flex-start', justifyContent: 'center'}}
-      centerComponent={{text: props.children, style: styles.headingText}}
+      centerComponent={{text: props.children, style: styles.headerText}}
     />
   )
 };
