@@ -17,9 +17,9 @@ export const spotReducer = (state = initialState, action) => {
       let recentViewsArr = state.recentViews;
       const index = recentViewsArr.indexOf(action.feature.properties.id);
       if (index !== -1) recentViewsArr.splice(index,1);
-      recentViewsArr.push(action.feature.properties.id);
-      if (state.recentViews.length > 5) recentViewsArr.shift();
-      return {
+        recentViewsArr.push(action.feature.properties.id);
+        if (state.recentViews.length > 20) recentViewsArr.shift();
+        return {
         ...state,
         featuresSelected: [action.feature],
         selectedSpot: action.feature,
