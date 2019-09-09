@@ -33,6 +33,7 @@ class Compass extends Component {
     setUpdateIntervalForType(SensorTypes.magnetometer, 300);
 
     this.state = {
+      headingAvgArr: [],
       magnetometer: 0,
       accelerometer: {
         x: 0,
@@ -53,7 +54,8 @@ class Compass extends Component {
         rake_calculated: 'no'
       },
       toggles: [CompassToggleButtons.PLANAR],
-      spinValue: new Animated.Value(0),
+      strikeSpinValue: new Animated.Value(0),
+      trendSpinValue: new Animated.Value(0),
       sliderValue: 5,
       showDataModal: false
     };
@@ -178,9 +180,15 @@ class Compass extends Component {
     const x = this.state.accelerometer.x;
     const y = this.state.accelerometer.y;
     const z = this.state.accelerometer.z;
+    let {headingAvgArr} = this.state;
+
     //let actualHeading = mod(vm.result.magneticHeading + vm.magneticDeclination, 360);
     let actualHeading = mod(this.state.magnetometer - 270, 360);  // ToDo: adjust for declination
-
+    headingAvgArr.push(actualHeading);
+    if (headingAvgArr.length > 10) headingAvgArr.shift();
+    let sum = headingAvgArr.reduce((prev, current) => current + prev);
+    let avgHeading = sum / headingAvgArr.length;
+    console.log('Average', avg);
     // Calculate base values given the x, y, and z from the device. The x-axis runs side-to-side across
     // the mobile phone screen, or the laptop keyboard, and is positive towards the right side. The y-axis
     // runs front-to-back across the mobile phone screen, or the laptop keyboard, and is positive towards as
@@ -226,7 +234,7 @@ class Compass extends Component {
         return {
           ...prevState,
           compassData: {
-            actualHeading: roundToDecimalPlaces(actualHeading, 4),
+            actualHeading: roundToDecimalPlaces(avgHeading, 4),
             strike: roundToDecimalPlaces(strike, 0),
             dipdir: roundToDecimalPlaces(dipdir, 0),
             dip: roundToDecimalPlaces(dip, 0),
@@ -367,16 +375,16 @@ class Compass extends Component {
 
   // Render the strike and dip symbol inside the compass
   renderStrikeDipSymbol = () => {
-    // this.state = {spinValue: new Animated.Value(0)};
     let image = require("../../../assets/images/compass/StrikeDipCentered.png");
-    const spin = this.state.spinValue.interpolate({
+    const spin = this.state.strikeSpinValue.interpolate({
       inputRange: [0, this.state.compassData.strike],
       outputRange: ['0deg', this.state.compassData.strike + 'deg']
     });
 // First set up animation
     Animated.timing(
-      this.state.spinValue,
+      this.state.strikeSpinValue,
       {
+        duration: 300,
         toValue: this.state.compassData.strike,
         easing: Easing.linear(),
         useNativeDriver: true
@@ -396,17 +404,17 @@ class Compass extends Component {
 
   // Render the strike and dip symbol inside the compass
   renderTrendSymbol = () => {
-    // this.state = {spinValue: new Animated.Value(0)};
     let image = require("../../../assets/images/compass/TrendLine.png");
-    const spin = this.state.spinValue.interpolate({
-      inputRange: [0, 360],
-      outputRange: [this.state.compassData.trend + 'deg', this.state.compassData.trend + 'deg']
+    const spin = this.state.trendSpinValue.interpolate({
+      inputRange: [0, this.state.compassData.trend],
+      outputRange: ['0deg', this.state.compassData.trend + 'deg']
     });
 // First set up animation
     Animated.timing(
-      this.state.spinValue,
+      this.state.trendSpinValue,
       {
-        toValue: this.state.spinValue,
+        duration: 300,
+        toValue: this.state.compassData.trend,
         easing: Easing.linear,
         useNativeDriver: true
       }
