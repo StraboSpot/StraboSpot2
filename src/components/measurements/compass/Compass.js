@@ -10,6 +10,9 @@ import {Switch} from "react-native-switch";
 import {spotReducers} from "../../../spots/Spot.constants";
 import {homeReducers, Modals} from "../../../views/home/Home.constants";
 import {NotebookPages, notebookReducers} from "../../notebook-panel/Notebook.constants";
+import {DeviceMotion} from "expo-sensors";
+import mapKeys from 'lodash.mapkeys'
+
 // import Orientation from 'react-native-orientation-locker';
 import Slider from '../../../shared/ui/Slider';
 import Measurements from '../Measurements';
@@ -42,7 +45,30 @@ class Compass extends Component {
         timestamp: null
       },
       subscriptions: {
-        accelerometer: null
+        accelerometer: null,
+      },
+      deviceMotion: {
+        // acceleration: {
+        accelerationX: null,
+        accelerationY: null,
+        accelerationZ: null,
+        // },
+        // accelerationIncludingGravity: {
+        accelerationIncludingGravityX: null,
+        accelerationIncludingGravityY: null,
+        accelerationIncludingGravityZ: null,
+        // },
+        // rotation: {
+        rotationAlpha: null,
+        rotationBeta: null,
+        rotationGamma: null,
+        // },
+        // rotationRate: {
+        rotationRateAlpha: null,
+        rotationRateBeta: null,
+        rotationRateGamma: null,
+        // },
+        orientation: null
       },
       compassData: {
         strike: null,
@@ -57,7 +83,8 @@ class Compass extends Component {
       strikeSpinValue: new Animated.Value(0),
       trendSpinValue: new Animated.Value(0),
       sliderValue: 5,
-      showDataModal: false
+      showDataModal: false,
+      // showDeviceMotionModal: false
     };
   }
 
@@ -69,14 +96,27 @@ class Compass extends Component {
     this._isMounted = true;
     // Orientation.lockToPortrait();
     //this allows to check if the system autolock is enabled or not.
-    await this.subscribe();
-    RNSimpleCompass.start(degree_update_rate, (degree) => {
-      // degreeFacing = (<Text>{degree}</Text>);
-      console.log('You are facing', degree);
+    const deviceIsAvailable = DeviceMotion.isAvailableAsync();
+    console.log('deviceIsAvailable', deviceIsAvailable);
+    DeviceMotion.addListener((deviceMotionData) => {
+      // console.log('listener CB', deviceMotionData);
       this.setState(prevState => {
-          return {
-            ...prevState,
-            magnetometer: degree
+        return {
+          ...prevState,
+          deviceMotion: {
+            accelerationX: roundToDecimalPlaces(deviceMotionData.acceleration.x, 6),
+            accelerationY: roundToDecimalPlaces(deviceMotionData.acceleration.y,6),
+            accelerationZ: roundToDecimalPlaces(deviceMotionData.acceleration.z,6),
+            accelerationIncludingGravityX: roundToDecimalPlaces(deviceMotionData.accelerationIncludingGravity.x,6),
+            accelerationIncludingGravityY: roundToDecimalPlaces(deviceMotionData.accelerationIncludingGravity.y,6),
+            accelerationIncludingGravityZ: roundToDecimalPlaces(deviceMotionData.accelerationIncludingGravity.z,6),
+            rotationAlpha:roundToDecimalPlaces(deviceMotionData.rotation.alpha,6),
+            rotationBeta: roundToDecimalPlaces(deviceMotionData.rotation.beta,6),
+            rotationGamma: roundToDecimalPlaces(deviceMotionData.rotation.gamma,6),
+            rotationRateAlpha:roundToDecimalPlaces(deviceMotionData.rotationRate.alpha,6),
+            rotationRateBeta: roundToDecimalPlaces(deviceMotionData.rotationRate.beta,6),
+            rotationRateGamma: roundToDecimalPlaces(deviceMotionData.rotationRate.gamma,6),
+            orientation: roundToDecimalPlaces(deviceMotionData.orientation, 6),
           }
         },
         // () => console.log('magnetometer reading:', this.state.magnetometer)
@@ -91,6 +131,8 @@ class Compass extends Component {
       // Orientation.unlockAllOrientations()
     }
     // else Orientation.lockToLandscapeLeft();
+    DeviceMotion.removeAllListeners();
+    console.log('Listeners removed');
     await this.unsubscribe();
     RNSimpleCompass.stop();
     console.log('Compass unsubscribed');
@@ -373,6 +415,37 @@ class Compass extends Component {
     );
   };
 
+  renderDeviceMotion = () => {
+    return (
+      Object.keys(this.state.deviceMotion).map((key, i) => (
+        <Text key={i}>{key}: {this.state.deviceMotion[key]}</Text>
+      ))
+    )
+    // return this.state.deviceMotion.map(data => {
+    //  return mapKeys(this.state.deviceMotion, (value, key) => {
+    //        return (
+    //          <Text>key: {key}, value: {value}</Text>
+    //        )
+    //   });
+    //   return (
+    //     <View>
+    //       <Text>accelerationX: {this.state.deviceMotion.accelerationX}</Text>
+    //       <Text>accelerationY: {this.state.deviceMotion.accelerationY}</Text>
+    //       <Text>accelerationZ: {this.state.deviceMotion.accelerationZ}</Text>
+    //     </View>
+    //     // Object.keys(this.state.deviceMotion).map((key, i) => {
+    //     // console.log('key', key, 'i', i)
+    //     //   return <Text>{}</Text>
+    //     // if (typeof this.state.deviceMotion[key] === 'object') {
+    //     //   Object.keys(this.state.deviceMotion[key].map(subKey => {
+    //     //     return <Text>Hi</Text>
+    //     //   })
+    //     // )
+    //     // }
+    //     // else return <Text key={i}>{key} : Ho</Text>
+    //   )
+  };
+
   // Render the strike and dip symbol inside the compass
   renderStrikeDipSymbol = () => {
     let image = require("../../../assets/images/compass/StrikeDipCentered.png");
@@ -485,13 +558,26 @@ class Compass extends Component {
     })
   };
 
+  viewDeviceMotionModal = () => {
+    this.setState(prevState => {
+      return {
+        ...prevState,
+        showDeviceMotionModal: !prevState.showDeviceMotionModal
+      }
+    }, () => console.log('Device Motion Modal set to:', this.state.showDeviceMotionModal));
+
+  };
+
   render() {
     let modalView = null;
     let dataModal =
-     <View style={{alignItems: 'center'}}>
-      {this.renderMeasurements()}
-    </View>;
-
+      <View style={{alignItems: 'center'}}>
+        {this.renderMeasurements()}
+      </View>;
+    let deviceMotionModal =
+      <View style={{alignItems: 'flex-start'}}>
+        {this.renderDeviceMotion()}
+      </View>;
 
 
     if (this.props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {
@@ -524,7 +610,15 @@ class Compass extends Component {
           type={'clear'}
           titleStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 16}}
           onPress={() => {
-           this.viewData()
+            this.viewData()
+          }}
+        />
+        <Button
+          title={'Toggle device motion modal'}
+          type={'clear'}
+          titleStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 16}}
+          onPress={() => {
+            this.viewDeviceMotionModal()
           }}
         />
       </View>
@@ -554,7 +648,8 @@ class Compass extends Component {
         </View>
         <View style={styles.buttonContainer}>
           {modalView}
-          {this.state.showDataModal ? dataModal : null}
+          {this.state.showDeviceMotionModal && deviceMotionModal}
+          {/*{this.state.showDataModal ? dataModal : null}*/}
           {/*<Button*/}
           {/*  title={'View In Shortcut Mode'}*/}
           {/*  type={'clear'}*/}

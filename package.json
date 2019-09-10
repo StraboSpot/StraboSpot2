@@ -12,6 +12,7 @@
     "@mapbox/react-native-mapbox-gl": "github:nitaliano/react-native-mapbox-gl#master",
     "@react-native-community/netinfo": "^2.0.9",
     "@turf/turf": "^5.1.6",
+    "expo-sensors": "^6.0.0",
     "formik": "^1.5.4",
     "lodash.isequal": "^4.5.0",
     "prop-types": "^15.7.2",

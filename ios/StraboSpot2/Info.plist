@@ -4,6 +4,8 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
+	<key>NSMotionUsageDescription</key>
+	<string>$(PRODUCT_NAME) to access device's accelerometer</string>
 	<key>CFBundleDisplayName</key>
 	<string>$(PRODUCT_NAME)</string>
 	<key>CFBundleExecutable</key>
@@ -40,7 +42,7 @@
 		</dict>
 	</dict>
 	<key>NSAppleEventsUsageDescription</key>
-	<string></string>
+	<string/>
 	<key>NSCameraUsageDescription</key>
 	<string>$(PRODUCT_NAME) would like to use your camera</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
@@ -54,7 +56,7 @@
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>$(PRODUCT_NAME) would like access to your photo gallery</string>
 	<key>NSPrefPaneIconFile</key>
-	<string></string>
+	<string/>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Ionicons.ttf</string>
