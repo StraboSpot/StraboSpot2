@@ -104,12 +104,12 @@ class Compass extends Component {
         return {
           ...prevState,
           deviceMotion: {
-            accelerationX: roundToDecimalPlaces(deviceMotionData.acceleration.x, 6),
-            accelerationY: roundToDecimalPlaces(deviceMotionData.acceleration.y,6),
-            accelerationZ: roundToDecimalPlaces(deviceMotionData.acceleration.z,6),
-            accelerationIncludingGravityX: roundToDecimalPlaces(deviceMotionData.accelerationIncludingGravity.x,6),
-            accelerationIncludingGravityY: roundToDecimalPlaces(deviceMotionData.accelerationIncludingGravity.y,6),
-            accelerationIncludingGravityZ: roundToDecimalPlaces(deviceMotionData.accelerationIncludingGravity.z,6),
+            // accelerationX: roundToDecimalPlaces(deviceMotionData.acceleration.x, 6),
+            // accelerationY: roundToDecimalPlaces(deviceMotionData.acceleration.y,6),
+            // accelerationZ: roundToDecimalPlaces(deviceMotionData.acceleration.z,6),
+            // accelerationIncludingGravityX: roundToDecimalPlaces(deviceMotionData.accelerationIncludingGravity.x,6),
+            // accelerationIncludingGravityY: roundToDecimalPlaces(deviceMotionData.accelerationIncludingGravity.y,6),
+            // accelerationIncludingGravityZ: roundToDecimalPlaces(deviceMotionData.accelerationIncludingGravity.z,6),
             rotationAlpha:roundToDecimalPlaces(deviceMotionData.rotation.alpha,6),
             rotationBeta: roundToDecimalPlaces(deviceMotionData.rotation.beta,6),
             rotationGamma: roundToDecimalPlaces(deviceMotionData.rotation.gamma,6),
