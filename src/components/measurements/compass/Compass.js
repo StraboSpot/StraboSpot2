@@ -113,28 +113,28 @@ class Compass extends Component {
             rotationAlpha:roundToDecimalPlaces(deviceMotionData.rotation.alpha,6),
             rotationBeta: roundToDecimalPlaces(deviceMotionData.rotation.beta,6),
             rotationGamma: roundToDecimalPlaces(deviceMotionData.rotation.gamma,6),
-            rotationRateAlpha:roundToDecimalPlaces(deviceMotionData.rotationRate.alpha,6),
-            rotationRateBeta: roundToDecimalPlaces(deviceMotionData.rotationRate.beta,6),
-            rotationRateGamma: roundToDecimalPlaces(deviceMotionData.rotationRate.gamma,6),
+            // rotationRateAlpha:roundToDecimalPlaces(deviceMotionData.rotationRate.alpha,6),
+            // rotationRateBeta: roundToDecimalPlaces(deviceMotionData.rotationRate.beta,6),
+            // rotationRateGamma: roundToDecimalPlaces(deviceMotionData.rotationRate.gamma,6),
             orientation: roundToDecimalPlaces(deviceMotionData.orientation, 6),
           }
         }
       })
     });
-    // await this.subscribe();
-    // RNSimpleCompass.start(degree_update_rate, (degree) => {
-    //   // degreeFacing = (<Text>{degree}</Text>);
-    //   // console.log('You are facing', degree);
-    //   this.setState(prevState => {
-    //       return {
-    //         ...prevState,
-    //         magnetometer: degree
-    //       }
-    //     },
-    //     // () => console.log('magnetometer reading:', this.state.magnetometer)
-    //   );
-    //   // RNSimpleCompass.stop();
-    // });
+    await this.subscribe();
+    RNSimpleCompass.start(degree_update_rate, (degree) => {
+      // degreeFacing = (<Text>{degree}</Text>);
+      // console.log('You are facing', degree);
+      this.setState(prevState => {
+          return {
+            ...prevState,
+            magnetometer: degree
+          }
+        },
+        // () => console.log('magnetometer reading:', this.state.magnetometer)
+      );
+      // RNSimpleCompass.stop();
+    });
     console.log('Compass subscribed');
   };
 
@@ -661,7 +661,7 @@ class Compass extends Component {
         <View style={styles.buttonContainer}>
           {modalView}
           {this.state.showDeviceMotionModal && deviceMotionModal}
-          {/*{this.state.showDataModal ? dataModal : null}*/}
+          {this.state.showDataModal ? dataModal : null}
           {/*<Button*/}
           {/*  title={'View In Shortcut Mode'}*/}
           {/*  type={'clear'}*/}
