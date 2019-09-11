@@ -4,6 +4,7 @@ import {mapReducer} from "../components/maps/maps.reducer";
 import {spotReducer} from "../spots/spot.reducers";
 import {imageReducer} from "../components/images/image.reducers";
 import {homeReducer} from "../views/home/Home.reducer";
+import {settingsPanelReducer} from "../components/settings-panel/settingsPanel.reducer";
 import {createLogger} from 'redux-logger';
 import {persistStore, persistReducer} from 'redux-persist'
 import storage from 'redux-persist/lib/storage' // defaults to localStorage for web and AsyncStorage for react-native
@@ -24,6 +25,7 @@ const rootReducer = combineReducers({
   spot: spotReducer,
   map: mapReducer,
   notebook: notebookReducer,
+  settingsPanel: settingsPanelReducer,
   images: imageReducer
 });
 
