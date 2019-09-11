@@ -57,6 +57,9 @@ const imageStyles = StyleSheet.create({
     fontWeight: '600',
     fontSize: themes.PRIMARY_HEADER_TEXT_SIZE - 2,
   },
+  text: {
+    fontSize: themes.PRIMARY_HEADER_TEXT_SIZE + 5,
+  },
   listHeading: {
     flexDirection: 'row',
     justifyContent: 'space-between',

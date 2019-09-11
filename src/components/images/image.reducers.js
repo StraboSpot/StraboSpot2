@@ -19,12 +19,7 @@ export const imageReducer = (state = initialImageState, action) => {
       return {
         ...state,
         imagePaths: {...state.imagePaths, ...imagePathsTemp}
-      }
-    case imageReducers.SET_SORTED_VIEW:
-      return {
-        ...state,
-        sortedView: action.view
-      }
+      };
   }
   return state;
 };

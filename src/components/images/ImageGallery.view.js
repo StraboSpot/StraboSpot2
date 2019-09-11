@@ -152,73 +152,73 @@ const imageGallery = (props) => {
     }
   };
 
-  if (!isEmpty(props.spots)) {
     let sortedView = null;
     const filteredList = sortedList.filter(spot => {
-      return spot.properties.images && !isEmpty(spot.properties.images)
+      return !isEmpty(spot.properties.images)
     });
+    if (!isEmpty(filteredList)) {
 
-    if (sortedListView === SortedViews.CHRONOLOGICAL) {
-      sortedView = <FlatList
-        keyExtractor={(item) => item.properties.id.toString()}
-        extraData={refresh}
-        data={filteredList}
-        renderItem={({item}) => renderName(item)}/>
-    }
-    else if (sortedListView === SortedViews.MAP_EXTENT) {
-      sortedView = <FlatList
-        keyExtractor={(item) => item.properties.id.toString()}
-        extraData={refresh}
-        data={filteredList}
-        renderItem={({item}) => renderName(item)}/>
-    }
-    else if (sortedListView === SortedViews.RECENT_VIEWS) {
-      sortedView = <FlatList
-        keyExtractor={(item) => item.toString()}
-        extraData={refresh}
-        data={props.recentViews}
-        inverted={true}
-        renderItem={({item}) => renderRecentView(item)}/>
-    }
-    else {
-      sortedView = <FlatList
-        keyExtractor={(item) => item.properties.id.toString()}
-        extraData={refresh}
-        data={props.spots}
-        renderItem={({item}) => renderName(item)}/>
-    }
 
-    return (
-      <React.Fragment>
+      if (sortedListView === SortedViews.CHRONOLOGICAL) {
+        sortedView = <FlatList
+          keyExtractor={(item) => item.properties.id.toString()}
+          extraData={refresh}
+          data={filteredList}
+          renderItem={({item}) => renderName(item)}/>
+      }
+      else if (sortedListView === SortedViews.MAP_EXTENT) {
+        sortedView = <FlatList
+          keyExtractor={(item) => item.properties.id.toString()}
+          extraData={refresh}
+          data={filteredList}
+          renderItem={({item}) => renderName(item)}/>
+      }
+      else if (sortedListView === SortedViews.RECENT_VIEWS) {
+        sortedView = <FlatList
+          keyExtractor={(item) => item.toString()}
+          extraData={refresh}
+          data={props.recentViews}
+          inverted={true}
+          renderItem={({item}) => renderRecentView(item)}/>
+      }
+      else {
+        sortedView = <FlatList
+          keyExtractor={(item) => item.properties.id.toString()}
+          extraData={refresh}
+          data={props.spots}
+          renderItem={({item}) => renderName(item)}/>
+      }
+      return (
+        <React.Fragment>
           <SharedUI.ButtonGroup
-              selectedIndex={selectedButtonIndex}
-              buttons={['Chronological', 'Map Extent', 'Recent \n Views']}
-              containerStyle={{height: 50}}
-              buttonStyle={{padding: 5}}
-              textStyle={{fontSize: 12}}
-              onPress={(selected) => updateIndex(selected)}
+            selectedIndex={selectedButtonIndex}
+            buttons={['Chronological', 'Map Extent', 'Recent \n Views']}
+            containerStyle={{height: 50}}
+            buttonStyle={{padding: 5}}
+            textStyle={{fontSize: 12}}
+            onPress={(selected) => updateIndex(selected)}
           />
           <ScrollView>
             <View style={imageStyles.galleryImageContainer}>
               {sortedView}
             </View>
           </ScrollView>
-      </React.Fragment>
-    );
-  }
-  else {
-    return (
-      <React.Fragment>
-        <View style={imageStyles.noImageContainer}>
-          <Image
-            source={require('../../assets/images/noimage.jpg')}
-            style={{height: '70%', width: 400}}
-          />
-        </View>
-      </React.Fragment>
-    );
-  }
-
+        </React.Fragment>
+      );
+    }
+    else {
+      return (
+        <React.Fragment>
+          <View style={imageStyles.noImageContainer}>
+            <Text style={imageStyles.text}>No Images Found</Text>
+            {/*<Image*/}
+            {/*  source={require('../../assets/images/No-Image-resized.jpg')}*/}
+            {/*  style={{height: '70%', width: 300}}*/}
+            {/*/>*/}
+          </View>
+        </React.Fragment>
+      );
+    }
 };
 
 const mapStateToProps = (state) => {
