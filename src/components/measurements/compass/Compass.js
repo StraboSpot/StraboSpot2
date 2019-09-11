@@ -118,11 +118,23 @@ class Compass extends Component {
             rotationRateGamma: roundToDecimalPlaces(deviceMotionData.rotationRate.gamma,6),
             orientation: roundToDecimalPlaces(deviceMotionData.orientation, 6),
           }
-        },
-        // () => console.log('magnetometer reading:', this.state.magnetometer)
-      );
-      // RNSimpleCompass.stop();
+        }
+      })
     });
+    // await this.subscribe();
+    // RNSimpleCompass.start(degree_update_rate, (degree) => {
+    //   // degreeFacing = (<Text>{degree}</Text>);
+    //   // console.log('You are facing', degree);
+    //   this.setState(prevState => {
+    //       return {
+    //         ...prevState,
+    //         magnetometer: degree
+    //       }
+    //     },
+    //     // () => console.log('magnetometer reading:', this.state.magnetometer)
+    //   );
+    //   // RNSimpleCompass.stop();
+    // });
     console.log('Compass subscribed');
   };
 
@@ -230,7 +242,7 @@ class Compass extends Component {
     if (headingAvgArr.length > 10) headingAvgArr.shift();
     let sum = headingAvgArr.reduce((prev, current) => current + prev);
     let avgHeading = sum / headingAvgArr.length;
-    console.log('Average', avg);
+    // console.log('Average', avg);
     // Calculate base values given the x, y, and z from the device. The x-axis runs side-to-side across
     // the mobile phone screen, or the laptop keyboard, and is positive towards the right side. The y-axis
     // runs front-to-back across the mobile phone screen, or the laptop keyboard, and is positive towards as
@@ -276,7 +288,7 @@ class Compass extends Component {
         return {
           ...prevState,
           compassData: {
-            actualHeading: roundToDecimalPlaces(avgHeading, 4),
+            actualHeading: roundToDecimalPlaces(actualHeading, 4),
             strike: roundToDecimalPlaces(strike, 0),
             dipdir: roundToDecimalPlaces(dipdir, 0),
             dip: roundToDecimalPlaces(dip, 0),
@@ -297,7 +309,7 @@ class Compass extends Component {
     const y = this.state.accelerometer.y;
     const z = this.state.accelerometer.z;
     //let actualHeading = mod(vm.result.magneticHeading + vm.magneticDeclination, 360);
-    let actualHeading = mod(this.state.magnetometer - 90, 360);  // ToDo: adjust for declination
+    let actualHeading = mod(this.state.magnetometer - 270, 360);  // ToDo: adjust for declination
 
     // Calculate base values given the x, y, and z from the device. The x-axis runs side-to-side across
     // the mobile phone screen, or the laptop keyboard, and is positive towards the right side. The y-axis
@@ -625,7 +637,7 @@ class Compass extends Component {
     }
 
     if (isEmpty(this.props.spot)) {
-      return   <View style={[styles.samplesContainer, styles.noSpotContent]}>
+      return <View style={[styles.samplesContainer, styles.noSpotContent]}>
         <Text style={{fontSize: 30}}>No Spot Selected</Text>
       </View>
     }
