@@ -43,7 +43,7 @@ import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-nativ
 // import {SettingsPanel,  ShortcutMenu} from '../../components/settings-panel/index';
 import SettingsPanelHeader from '../../components/settings-panel/SettingsPanelHeader';
 import {Button, Image} from "react-native-elements";
-import {DotIndicator} from 'react-native-indicators'
+import {BallIndicator, DotIndicator} from 'react-native-indicators'
 import Toast from 'react-native-root-toast';
 
 const deviceWidth = () => {
@@ -643,22 +643,23 @@ class Home extends React.Component {
     const loader = (
       <View style={{
         position: 'absolute',
-        right: hp('55'),
+        right: hp('60'),
         bottom: hp('50'),
-        backgroundColor: 'white',
+        backgroundColor: 'transparent',
         padding: 25,
         borderRadius: 30
       }}>
-        <Text style={{
-          color: 'black',
-          textAlign: 'center',
-          paddingBottom: 7
-        }}>{this.state.allPhotosSaved.length === 1 ? <Text> Saving {this.state.allPhotosSaved.length} Picture </Text> :
-          <Text>Saving {this.state.allPhotosSaved.length} Pictures</Text>}</Text>
-        <DotIndicator
-          color={'blue'}
-          count={6}
-          size={8}
+        {/*<Text style={{*/}
+        {/*  color: 'black',*/}
+        {/*  textAlign: 'center',*/}
+        {/*  paddingBottom: 7*/}
+        {/*}}>{*/}
+        {/*  this.state.allPhotosSaved.length === 1 ? <Text> Saving {this.state.allPhotosSaved.length} Picture </Text> :*/}
+        {/*  <Text>Saving {this.state.allPhotosSaved.length} Pictures</Text>}</Text>*/}
+        <BallIndicator
+          color={'darkgrey'}
+          count={8}
+          size={40}
         />
       </View>
     );
