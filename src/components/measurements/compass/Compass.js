@@ -11,7 +11,6 @@ import {spotReducers} from "../../../spots/Spot.constants";
 import {homeReducers, Modals} from "../../../views/home/Home.constants";
 import {NotebookPages, notebookReducers} from "../../notebook-panel/Notebook.constants";
 import {DeviceMotion} from "expo-sensors";
-import mapKeys from 'lodash.mapkeys'
 
 // import Orientation from 'react-native-orientation-locker';
 import Slider from '../../../shared/ui/Slider';
@@ -84,7 +83,7 @@ class Compass extends Component {
       trendSpinValue: new Animated.Value(0),
       sliderValue: 5,
       showDataModal: false,
-      // showDeviceMotionModal: false
+      showDeviceMotionModal: true
     };
   }
 
@@ -228,6 +227,82 @@ class Compass extends Component {
   // Match the device top with pointer 0° degree. (By default 0° starts from the right of the device.)
   _degree = (magnetometer) => {
     return magnetometer - 90 >= 0 ? magnetometer - 90 : magnetometer + 271;
+  };
+
+  calculateRotationMatrix = () => {
+    const yaw = this.state.deviceMotion.rotationAlpha;
+    const pitch = this.state.deviceMotion.rotationBeta;
+    const roll = this.state.deviceMotion.rotationGamma;
+    const r11 = Math.cos(roll) * Math.cos(yaw) - Math.sin(roll) * Math.sin(pitch) * Math.sin(yaw);
+    const r12 = Math.cos(yaw) * Math.sin(roll) * Math.sin(pitch) + Math.cos(roll) * Math.sin(yaw);
+    const r13 = -Math.sin(roll) * Math.cos(pitch);
+    const r21 = -Math.cos(pitch) * Math.sin(yaw);
+    const r22 = Math.cos(pitch) * Math.cos(yaw);
+    const r23 = Math.sin(pitch);
+    const r31 = Math.cos(roll) * Math.sin(pitch) * Math.sin(yaw) + Math.cos(yaw) * Math.sin(pitch);
+    const r32 = Math.sin(yaw) * Math.sin(roll) - Math.cos(roll) * Math.cos(yaw) * Math.sin(pitch);
+    const r33 = Math.cos(roll) * Math.cos(pitch);
+    const NED_r3x = this.cartesianToSpherical(r31, r32, r33);
+    const NED_r2x = this.cartesianToSpherical(r21, r22, r23);
+    const strikeAndDip = this.strikeAndDip(NED_r3x);
+    const trendAndPlunge = this.trendAndPlunge(NED_r2x);
+
+    return (
+      <View>
+        {/*<Text>Yaw = {yaw}</Text>*/}
+        {/*<Text>Pitch = {pitch}</Text>*/}
+        {/*<Text>Roll = {roll}</Text>*/}
+        <Text>Strike = {strikeAndDip[0]}</Text>
+        <Text>Dip = {strikeAndDip[1]}</Text>
+        <Text>Trend = {trendAndPlunge[0]}</Text>
+        <Text>Plunge = {trendAndPlunge[1]}</Text>
+      </View>
+    )
+  };
+
+  strikeAndDip = (NED) => {
+    const phi = NED[1];
+    const theta = NED[2];
+    let strikeDeg = 0;
+    let dipDeg = null;
+    if (phi <= Math.PI/2) {
+      strikeDeg = mod(360 - theta * (180/Math.PI), 360);
+      dipDeg = phi * (180/Math.PI);
+    } else {
+      strikeDeg = mod(360 - (theta - Math.PI) * (180/Math.PI), 360);
+      dipDeg = (Math.PI - phi) * (180/Math.PI);
+    }
+    return [roundToDecimalPlaces(strikeDeg,0), roundToDecimalPlaces(dipDeg,0)];
+  };
+
+  trendAndPlunge = (NED) => {
+    const phi = NED[1];
+    const theta = NED[2];
+    const trendDeg = mod(90 - theta * (180/Math.PI), 360);
+    const plungeDeg = phi * (180/Math.PI) -90;
+    return [roundToDecimalPlaces(trendDeg, 2), roundToDecimalPlaces(plungeDeg, 2)];
+  };
+
+  cartesianToSpherical = (r1, r2, r3) => {
+    const rho = Math.sqrt(Math.pow(r1, 2) + Math.pow(r2, 2) + Math.pow(r3, 2));
+    let phi = 0;
+    let theta = null;
+    if (rho === 0) {
+      phi = 0;
+      theta = 0;
+    } else {
+      phi = Math.acos(r3/rho);
+      if (rho * Math.sin(phi) === 0) {
+        if (r3 >= 0){
+          theta = r3;
+        } else {
+          theta = -r3;
+        }
+      } else {
+        theta = Math.atan2(r1, r2)
+      }
+    }
+    return [rho, phi, theta]
   };
 
   calculateOrientation = () => {
@@ -588,7 +663,7 @@ class Compass extends Component {
       </View>;
     let deviceMotionModal =
       <View style={{alignItems: 'flex-start'}}>
-        {this.renderDeviceMotion()}
+        {this.calculateRotationMatrix()}
       </View>;
 
 
