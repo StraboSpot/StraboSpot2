@@ -1025,8 +1025,12 @@ class Home extends React.Component {
             useNativeDriver={true}
             style={{flex: 1}}
           >
-            <View style={styles.modal} >
-              <Button type={'clear'} titleProps={{color: 'white'}} title="Hide modal" onPress={() => this.toggleImageModal()} />
+            <View style={styles.modal}>
+              <Button
+                type={'clear'}
+                titleProps={{color: 'white'}}
+                title="Hide modal"
+                onPress={() => this.toggleImageModal()}/>
               <Image
                 source={this.props.selectedImage ? {uri: this.getImageSrc(this.props.selectedImage.id)}:
                   {uri: require('../../assets/images/noimage.jpg')}}
