@@ -11,7 +11,6 @@ import {spotReducers} from "../../../spots/Spot.constants";
 import {homeReducers, Modals} from "../../../views/home/Home.constants";
 import {NotebookPages, notebookReducers} from "../../notebook-panel/Notebook.constants";
 import {DeviceMotion} from "expo-sensors";
-import mapKeys from 'lodash.mapkeys'
 
 // import Orientation from 'react-native-orientation-locker';
 import Slider from '../../../shared/ui/Slider';
