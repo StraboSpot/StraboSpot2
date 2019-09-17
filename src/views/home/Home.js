@@ -26,8 +26,8 @@ import {connect} from 'react-redux';
 import {NotebookPages, notebookReducers} from "../../components/notebook-panel/Notebook.constants";
 import {spotReducers} from "../../spots/Spot.constants";
 import {imageReducers} from "../../components/images/Image.constants";
-import {saveFile} from '../../services/images/ImageDownload';
-import {takePicture} from '../../components/images/Images.container';
+// import {saveFile} from '../../services/images/ImageDownload';
+import * as ImageHelper from '../../components/images/Images.container';
 import NotebookCompassModal from "../../components/measurements/compass/NotebookCompassModal";
 import ShortcutCompassModal from '../../components/measurements/compass/ShortcutCompassModal';
 import NotebookSamplesModal from '../../components/samples/NotebookSamplesModal.view';
@@ -43,6 +43,8 @@ import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-nativ
 // import {SettingsPanel,  ShortcutMenu} from '../../components/settings-panel/index';
 import SettingsPanelHeader from '../../components/settings-panel/SettingsPanelHeader';
 import {Button, Image} from "react-native-elements";
+import {DotIndicator} from 'react-native-indicators'
+import Toast from 'react-native-root-toast';
 
 const deviceWidth = () => {
   if (width < 500) return wp('95%');
@@ -89,7 +91,9 @@ class Home extends React.Component {
       // isAllSpotsPanelVisible: false,
       animation: new Animated.Value(deviceWidth()),
       settingsPanelAnimation: new Animated.Value(-deviceWidth()),
-      allSpotsViewAnimation: new Animated.Value(125)
+      allSpotsViewAnimation: new Animated.Value(125),
+      loading: false,
+      toastVisible: false
     };
   }
 
@@ -419,19 +423,19 @@ class Home extends React.Component {
   launchCameraFromNotebook = async () => {
     let imageArr = this.state.allPhotosSaved;
     try {
-      const savedPhoto = await takePicture();
+      const savedPhoto = await ImageHelper.takePicture();
+      this.toggleLoading(true);
       if (savedPhoto === 'cancelled') {
         if (this.state.allPhotosSaved.length > 0) {
           console.log('ALL PHOTOS SAVED', this.state.allPhotosSaved);
           this.props.addPhoto(imageArr);
           this.props.onSpotEditImageObj(imageArr);
-          this.state.allPhotosSaved = [];
-          // Alert.alert('Photo Saved!', 'Thank you!')
+          this.toggleToast();
         }
         else {
+          this.toggleLoading(false);
           Alert.alert('No Photos To Save', 'please try again...')
         }
-
       }
       else {
         this.setState(prevState => {
@@ -446,7 +450,7 @@ class Home extends React.Component {
             }]
           }
         }, () => {
-          console.log('All Photos Saved:', this.state.allPhotosSaved);
+          console.log('Photos Saved:', this.state.allPhotosSaved);
           this.launchCameraFromNotebook();
         });
       }
@@ -521,30 +525,6 @@ class Home extends React.Component {
     this.toggleButton('drawButtonsVisible', false);
   };
 
-  takePicture = async (photo) => {
-    ImagePicker.launchCamera(imageOptions, async (response) => {
-      if (response.didCancel) {
-        console.log('User cancelled image picker');
-        await this.props.addPhoto(this.state.allPhotosSaved);
-        // alert('Photos Saved!')
-      }
-      else if (response.error) console.log('ImagePicker Error: ', response.error);
-      else {
-        console.log('takePicture()', response);
-        const savedPhoto = await saveFile(response);
-        this.setState(prevState => {
-          return {
-            ...prevState,
-            allPhotosSaved: [...this.state.allPhotosSaved, savedPhoto]
-          }
-        }, () => {
-          console.log('All Photos Saved:', this.state.allPhotosSaved);
-          this.takePicture();
-        })
-      }
-    });
-  };
-
 // Toggle given button between true (on) and false (off)
   toggleButton = (button, isVisible) => {
     console.log('Toggle Button', button, isVisible || !this.state.buttons[button]);
@@ -578,21 +558,20 @@ class Home extends React.Component {
     else console.log('Attempting to toggle', dialog, 'but Home Component not mounted.');
   };
 
-  toggleDrawer = () => {
+  toggleImageModal = () => {
+    if (this._isMounted) {
+      this.props.setIsImageModalVisible(!this.props.isImageModalVisible);
+    }
+  };
+
+  toggleLoading = (bool) => {
     if (this._isMounted) {
       this.setState(prevState => {
         return {
           ...prevState,
-          drawerVisible: !prevState.drawerVisible
+          loading: bool
         }
-      });
-    }
-    else console.log('Attempting to toggle', dialog, 'but Home Component not mounted.');
-  };
-
-  toggleImageModal = () => {
-    if (this._isMounted) {
-      this.props.setIsImageModalVisible(!this.props.isImageModalVisible);
+      }, () => console.log('Loading', this.state.loading));
     }
   };
 
@@ -614,6 +593,19 @@ class Home extends React.Component {
     if (this._isMounted) {
       this.props.onShortcutSwitchChange(switchName);
       console.log(this.props.shortcutSwitchPosition);
+    }
+  };
+
+  toggleToast = () => {
+    if (this._isMounted) {
+      this.setState(prevState => {
+        return {
+          ...prevState,
+          toastVisible: !prevState.toastVisible,
+        }
+      }, () => {
+        console.log('Modal state', this.state.toastVisible)
+      })
     }
   };
 
@@ -648,7 +640,56 @@ class Home extends React.Component {
         {translateX: this.state.allSpotsViewAnimation}
       ]
     };
-    let settingsPanelHeader = <SettingsPanelHeader onPress={() => this.setVisibleMenuState(SettingsMenuItems.SETTINGS_MAIN)}>
+    const loader = (
+      <View style={{
+        position: 'absolute',
+        right: hp('55'),
+        bottom: hp('50'),
+        backgroundColor: 'white',
+        padding: 25,
+        borderRadius: 30
+      }}>
+        <Text style={{
+          color: 'black',
+          textAlign: 'center',
+          paddingBottom: 7
+        }}>{this.state.allPhotosSaved.length === 1 ? <Text> Saving {this.state.allPhotosSaved.length} Picture </Text> :
+          <Text>Saving {this.state.allPhotosSaved.length} Pictures</Text>}</Text>
+        <DotIndicator
+          color={'blue'}
+          count={6}
+          size={8}
+        />
+      </View>
+    );
+    const toast = (
+      <Toast
+        visible={this.state.toastVisible}
+        animation={true}
+        hideOnPress={true}
+        backgroundColor={'white'}
+        textColor={'black'}
+        position={hp('40%')}
+        onShow={() => {
+          this.toggleLoading(false);
+          setTimeout(() => {
+            this.toggleToast();
+            this.setState(prevState => {
+              return {
+                ...prevState,
+                allPhotosSaved: []
+              }
+            })
+          }, 2000);
+        }}
+      >
+        {this.state.allPhotosSaved.length === 1 ?
+          <Text >{this.state.allPhotosSaved.length} Picture Saved!</Text> :
+          <Text >{this.state.allPhotosSaved.length} Pictures Saved!</Text>}
+      </Toast>
+    );
+    let settingsPanelHeader = <SettingsPanelHeader
+      onPress={() => this.setVisibleMenuState(SettingsMenuItems.SETTINGS_MAIN)}>
       {this.state.settingsMenuVisible}
     </SettingsPanelHeader>;
     let content = null;
@@ -790,6 +831,8 @@ class Home extends React.Component {
           {/*{this.props.isNotebookPanelVisible && notebookPanel}*/}
           {notebookPanel}
           {settingsDrawer}
+        {this.state.loading && loader}
+        {this.state.toastVisible && toast}
           {(this.props.modalVisible === Modals.NOTEBOOK_MODALS.COMPASS ||
             this.props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS) && compassModal}
           {this.props.modalVisible === Modals.NOTEBOOK_MODALS.SAMPLE ||
