@@ -1,10 +1,7 @@
 import React from 'react';
-import {View, Alert, ActivityIndicator, StyleSheet} from 'react-native';
-
-class loading extends React.Component {
-  state = {
-    animating: true
-  };
+import {View} from 'react-native';
+import styles from './ui.styles';
+import {BallIndicator} from "react-native-indicators";
 
 const Loading = props => {
 

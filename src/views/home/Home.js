@@ -1,12 +1,8 @@
 import React from 'react'
 import {Alert, Animated, Dimensions, Easing, Platform, Text, View} from 'react-native'
 import NetInfo from "@react-native-community/netinfo";
-import ImagePicker from 'react-native-image-picker';
-import styles from './Styles';
+// import ImagePicker from 'react-native-image-picker';
 import MapView from '../../components/maps/MapView';
-import vectorIcon from 'react-native-vector-icons/Ionicons';
-import MaterialCommunityIcons from '../../shared/Icons';
-import IconButton from '../../shared/ui/IconButton';
 import MapActionsDialog from '../../components/modals/map-actions/MapActionsDialogBox';
 import MapSymbolsDialog from "../../components/modals/map-symbols/MapSymbolsDialogBox";
 import BaseMapDialog from "../../components/modals/base-maps/BaseMapDialogBox";
@@ -39,7 +35,6 @@ import sampleStyles from '../../components/samples/samples.style';
 import notebookStyles from '../../components/notebook-panel/NotebookPanel.styles';
 import Orientation from "react-native-orientation-locker";
 import {Directions, FlingGestureHandler, State} from "react-native-gesture-handler";
-import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 // import {SettingsPanel,  ShortcutMenu} from '../../components/settings-panel/index';
 import SettingsPanelHeader from '../../components/settings-panel/SettingsPanelHeader';
 
@@ -48,8 +43,11 @@ import LoadingSpinner from '../../shared/ui/Loading';
 import ToastPopup from '../../shared/ui/Toast';
 // import Toast from 'react-native-root-toast';
 import {Button, Image} from "react-native-elements";
-import {BallIndicator, DotIndicator} from 'react-native-indicators'
-import Toast from 'react-native-root-toast';
+import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
+import styles from './Styles';
+import vectorIcon from 'react-native-vector-icons/Ionicons';
+import MaterialCommunityIcons from '../../shared/Icons';
+import IconButton from '../../shared/ui/IconButton';
 
 const deviceWidth = () => {
   if (width < 500) return wp('95%');
@@ -89,7 +87,7 @@ class Home extends React.Component {
       },
       mapMode: MapModes.VIEW,
       settingsMenuVisible: SettingsMenuItems.SETTINGS_MAIN,
-      drawerVisible: false,
+      // drawerVisible: false,
       isOfflineMapModalVisible: false,
       currentSpot: undefined,
       allPhotosSaved: [],
@@ -619,7 +617,6 @@ class Home extends React.Component {
       console.log('NBS NBModal press in SampleOnPress', page);
       this.closeNotebookPanel();
       this.props.setModalVisible(modalType);
-
     }
     else {
       this.openNotebookPanel(page);
