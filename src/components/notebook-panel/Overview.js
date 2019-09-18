@@ -1,7 +1,7 @@
 import React, {useState, Component} from 'react';
 import {Text, ScrollView, TouchableOpacity, View} from 'react-native';
 
-import TagsOverview from './notebook-tags/TagsOverview';
+import TagsOverview from '../tags/TagsOverview';
 import NotesOverview from '../notes/NotesOverview';
 import MeasurementsOverview from '../measurements/MeasurementsOverview';
 import NotebookImages from '../images/ImageNotebook.view';
@@ -11,22 +11,23 @@ import {Icon} from 'react-native-elements';
 // Styles
 import notebookStyles from "./NotebookPanel.styles";
 
-const SECTIONS = [
-  {
-    title: 'Tags',
-    content: <TagsOverview/>
-  }, {
-    title: 'Notes',
-    content: <NotesOverview/>
-  }, {
-    title: 'Measurements',
-    content: <MeasurementsOverview/>
-  }, {
-    title: 'Photos and Sketches',
-    content: <NotebookImages/>
-  }];
-
 const Overview = props => {
+
+  const SECTIONS = [
+    {
+      title: 'Tags',
+      content: <TagsOverview/>
+    }, {
+      title: 'Notes',
+      content: <NotesOverview/>
+    }, {
+      title: 'Measurements',
+      content: <MeasurementsOverview/>
+    }, {
+      title: 'Photos and Sketches',
+      content: <NotebookImages/>
+    }];
+
   const expandedIcon = <Icon
     name='ios-add'
     type='ionicon'

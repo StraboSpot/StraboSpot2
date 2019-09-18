@@ -113,12 +113,12 @@ const NotebookPanel = props => {
                 />
               </View>
               <View style={props.isAllSpotsPanelVisible ? [notebookStyles.centerContainer, {paddingRight: 125}] : notebookStyles.centerContainer}>
-                {props.notebookPageVisible === NotebookPages.OVERVIEW ? <Overview/> : null}
+                {props.notebookPageVisible === NotebookPages.OVERVIEW ||
+                  props.notebookPageVisible === undefined ? <Overview/> : null}
                 {props.notebookPageVisible === NotebookPages.MEASUREMENT ? <MeasurementsPage/> : null}
                 {props.notebookPageVisible === NotebookPages.MEASUREMENTDETAIL ? <MeasurementDetailPage/> : null}
                 {props.notebookPageVisible === NotebookPages.NOTE ? <NotesPage/> : null}
                 {props.notebookPageVisible === NotebookPages.SAMPLE ? <SamplesPage/> : null}
-                {props.notebookPageVisible === undefined ? <Overview/> : null}
               </View>
               <View  style={props.isAllSpotsPanelVisible ? [notebookStyles.footerContainer, {marginRight: 125}] :
                 notebookStyles.footerContainer}>
