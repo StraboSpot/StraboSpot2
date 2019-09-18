@@ -1,7 +1,23 @@
 import {Platform, StyleSheet} from 'react-native';
 import * as themes from '../styles.constants';
+import {heightPercentageToDP as hp} from "react-native-responsive-screen";
 
 const styles = StyleSheet.create({
+  backdrop: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'rgba(0, 0, 0, 0.75)',
+    zIndex: 50,
+  },
+  loadingContainer: {
+    position: 'absolute',
+    right: hp('60'),
+    bottom: hp('50'),
+    backgroundColor: 'transparent',
+  },
   sectionDivider: {
     paddingLeft: 10,
     justifyContent: 'center',

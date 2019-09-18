@@ -42,6 +42,11 @@ import {Directions, FlingGestureHandler, State} from "react-native-gesture-handl
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 // import {SettingsPanel,  ShortcutMenu} from '../../components/settings-panel/index';
 import SettingsPanelHeader from '../../components/settings-panel/SettingsPanelHeader';
+
+// shared UI and styles
+import LoadingSpinner from '../../shared/ui/Loading';
+import ToastPopup from '../../shared/ui/Toast';
+// import Toast from 'react-native-root-toast';
 import {Button, Image} from "react-native-elements";
 import {BallIndicator, DotIndicator} from 'react-native-indicators'
 import Toast from 'react-native-root-toast';
@@ -622,6 +627,19 @@ class Home extends React.Component {
     }
   };
 
+  onToastShow = () => {
+    this.toggleLoading(false);
+    setTimeout(() => {
+      this.toggleToast();
+      this.setState(prevState => {
+        return {
+          ...prevState,
+          allPhotosSaved: []
+        }
+      })
+    }, 2000);
+  };
+
   render() {
     const spot = this.props.selectedSpot;
     const isOnline = this.props.isOnline;
@@ -640,55 +658,6 @@ class Home extends React.Component {
         {translateX: this.state.allSpotsViewAnimation}
       ]
     };
-    const loader = (
-      <View style={{
-        position: 'absolute',
-        right: hp('60'),
-        bottom: hp('50'),
-        backgroundColor: 'transparent',
-        padding: 25,
-        borderRadius: 30
-      }}>
-        {/*<Text style={{*/}
-        {/*  color: 'black',*/}
-        {/*  textAlign: 'center',*/}
-        {/*  paddingBottom: 7*/}
-        {/*}}>{*/}
-        {/*  this.state.allPhotosSaved.length === 1 ? <Text> Saving {this.state.allPhotosSaved.length} Picture </Text> :*/}
-        {/*  <Text>Saving {this.state.allPhotosSaved.length} Pictures</Text>}</Text>*/}
-        <BallIndicator
-          color={'darkgrey'}
-          count={8}
-          size={40}
-        />
-      </View>
-    );
-    const toast = (
-      <Toast
-        visible={this.state.toastVisible}
-        animation={true}
-        hideOnPress={true}
-        backgroundColor={'white'}
-        textColor={'black'}
-        position={hp('40%')}
-        onShow={() => {
-          this.toggleLoading(false);
-          setTimeout(() => {
-            this.toggleToast();
-            this.setState(prevState => {
-              return {
-                ...prevState,
-                allPhotosSaved: []
-              }
-            })
-          }, 2000);
-        }}
-      >
-        {this.state.allPhotosSaved.length === 1 ?
-          <Text >{this.state.allPhotosSaved.length} Picture Saved!</Text> :
-          <Text >{this.state.allPhotosSaved.length} Pictures Saved!</Text>}
-      </Toast>
-    );
     let settingsPanelHeader = <SettingsPanelHeader
       onPress={() => this.setVisibleMenuState(SettingsMenuItems.SETTINGS_MAIN)}>
       {this.state.settingsMenuVisible}
@@ -832,8 +801,16 @@ class Home extends React.Component {
           {/*{this.props.isNotebookPanelVisible && notebookPanel}*/}
           {notebookPanel}
           {settingsDrawer}
-        {this.state.loading && loader}
-        {this.state.toastVisible && toast}
+        {this.state.loading && <LoadingSpinner/>}
+        {this.state.toastVisible &&
+        <ToastPopup
+          visible={this.state.toastVisible}
+          onShow={() => this.onToastShow()}
+        >
+          {this.state.allPhotosSaved.length === 1 ?
+                  <Text >{this.state.allPhotosSaved.length} Picture Saved!</Text> :
+                  <Text >{this.state.allPhotosSaved.length} Pictures Saved!</Text>}
+        </ToastPopup>}
           {(this.props.modalVisible === Modals.NOTEBOOK_MODALS.COMPASS ||
             this.props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS) && compassModal}
           {this.props.modalVisible === Modals.NOTEBOOK_MODALS.SAMPLE ||
