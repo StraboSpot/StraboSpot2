@@ -394,6 +394,7 @@ class mapView extends Component {
       this.props.onFeatureSelected(feature);
       this.props.setNotebookPanelVisible(true);
       this.props.setNotebookPageVisible(NotebookPages.OVERVIEW);
+      this.props.setModalVisible(null);
       console.log('Finished creating new feature. Features: ', this.props.features);
     }
     else console.log('Attempting to create a new feature but Map View Component not mounted.');
