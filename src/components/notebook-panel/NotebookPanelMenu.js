@@ -1,5 +1,6 @@
 import React from 'react';
 import Dialog, {DialogButton, DialogContent, DialogTitle} from "react-native-popup-dialog";
+import {connect} from 'react-redux';
 import {ScaleAnimation, SlideAnimation} from "react-native-popup-dialog/src";
 import {menuButtons} from "../../shared/app.constants";
 
@@ -32,13 +33,18 @@ const NotebookPanelMenu = props => (
       textStyle={{fontSize: 12}}
       onPress={() => props.onPress(menuButtons.notebookMenu.DELETE_FEATURE)}
     />
-      <DialogButton
+      {props.isAllSpotsPanelVisible ? <DialogButton
         style={styles.dialogContent}
-        text="Toggle All Spots Panel"
+        text="Close All Spots Panel"
         textStyle={{fontSize: 12}}
-        onPress={() => props.onPress(menuButtons.notebookMenu.TOGGLE_ALL_SPOTS_PANEL)}
-      />
-      <DialogButton
+        onPress={() => props.onPress(menuButtons.notebookMenu.TOGGLE_ALL_SPOTS_PANEL, 'close')}
+      /> : <DialogButton
+        style={styles.dialogContent}
+        text="Open All Spots Panel"
+        textStyle={{fontSize: 12}}
+        onPress={() => props.onPress(menuButtons.notebookMenu.TOGGLE_ALL_SPOTS_PANEL, 'open')}
+      /> }
+       <DialogButton
         style={styles.dialogContent}
         text="Close Notebook"
         textStyle={{fontSize: 12}}
@@ -48,4 +54,10 @@ const NotebookPanelMenu = props => (
   </Dialog>
 );
 
-export default NotebookPanelMenu;
+const mapStateToProps =(state) => {
+return {
+  isAllSpotsPanelVisible: state.home.isAllSpotsPanelVisible
+}
+};
+
+export default connect(mapStateToProps)(NotebookPanelMenu);

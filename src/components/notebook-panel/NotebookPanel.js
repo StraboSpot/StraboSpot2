@@ -81,7 +81,6 @@ const NotebookPanel = props => {
     transform: [
       {translateX: animation}
     ],
-    backgroundColor: 'red'
   };
 
   if (!isEmpty(props.spot)) {
