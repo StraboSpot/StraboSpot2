@@ -140,13 +140,13 @@ class Home extends React.Component {
     this.toggleButton('drawButtonsVisible', true);
   };
 
-  clickHandler = (name) => {
+  clickHandler = (name, position) => {
     switch (name) {
       case "search":
-        console.log(`${name}`, " was clicked");
+        Alert.alert('Still in the works', `The ${name.toUpperCase()} Shortcut button in the  will be functioning soon!`);
         break;
       case "tag":
-        console.log(`${name}`, " was clicked");
+        Alert.alert('Still in the works', `The ${name.toUpperCase()} Shortcut button in the  will be functioning soon!`);
         break;
       case "measurement":
         this.props.setModalVisible(Modals.SHORTCUT_MODALS.COMPASS);
@@ -155,17 +155,18 @@ class Home extends React.Component {
         this.props.setModalVisible(Modals.SHORTCUT_MODALS.SAMPLE);
         break;
       case "note":
-        console.log(`${name}`, " was clicked");
+        Alert.alert('Still in the works', `The ${name.toUpperCase()} Shortcut button in the  will be functioning soon!`);
         break;
       case "photo":
-        this.takePicture();
+        // this.takePicture();
+        Alert.alert('Still in the works', `The ${name.toUpperCase()} Shortcut button in the  will be functioning soon!`);
         break;
       case "sketch":
-        console.log(`${name}`, " was clicked");
+        Alert.alert('Still in the works', `The ${name.toUpperCase()} Shortcut button in the  will be functioning soon!`);
         break;
-      case "notebook":
-        console.log(`${name}`, " was clicked");
-        break;
+      // case "notebook":
+      //   console.log(`${name}`, " was clicked");
+      //   break;
       case "settings":
         this.openSettingsDrawer();
         break;
@@ -182,7 +183,13 @@ class Home extends React.Component {
         this.deleteSelectedFeature(this.props.selectedSpot.properties.id);
         break;
       case 'toggleAllSpotsPanel':
-        this.openAllSpotsPanel();
+        if (position === 'open') {
+          Alert.alert('Opening All-Spots Panel', 'With TWO fingers swipe LEFT inside the Notebook Panel');
+        } else if (position === 'close') {
+          Alert.alert('Closing All-Spots Panel', 'With TWO fingers swipe RIGHT inside the Notebook Panel');
+        }
+        // this.props.setAllSpotsPanelVisible(false);
+        // closeAllSpotsPanelFromMenu(this.state.allSpotsViewAnimation);
         break;
       // Map Actions
       case MapModes.DRAW.POINT:
@@ -211,7 +218,7 @@ class Home extends React.Component {
         this.toggleOfflineMapModal();
         break;
       case "addTag":
-        console.log(`${name}`, " was clicked");
+        Alert.alert('Still in the works', `The ${name.toUpperCase()} button in the  will be functioning soon!`);
         break;
       case "stereonet":
         console.log(`${name}`, " was clicked");
@@ -341,8 +348,8 @@ class Home extends React.Component {
     );
   };
 
-  dialogClickHandler = (dialog, name) => {
-    this.clickHandler(name);
+  dialogClickHandler = (dialog, name, position) => {
+    this.clickHandler(name, position);
     this.toggleDialog(dialog);
   };
 
@@ -350,7 +357,8 @@ class Home extends React.Component {
     this.mapViewComponent.endDraw();
     this.setMapMode(MapModes.VIEW);
     this.toggleButton('endDrawButtonVisible');
-    this.openNotebookPanel()
+    this.openNotebookPanel();
+    this.props.setModalVisible(null)
   };
 
   getImageSrc = (id) => {
@@ -402,7 +410,7 @@ class Home extends React.Component {
         easing: Easing.linear,
         useNativeDriver: true
       }).start(() => {
-        this.props.setNotebookPanelVisible(true);
+        // this.props.setNotebookPanelVisible(true);
       });
     }
   };
@@ -899,7 +907,8 @@ class Home extends React.Component {
 
           {this.state.buttons.drawButtonsVisible ?
             <View style={this.props.isNotebookPanelVisible ||
-            (this.props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE && this.props.deviceDimensions.width > 768)
+            (this.props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE && this.props.deviceDimensions.width > 768) ||
+            (this.props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS && this.props.deviceDimensions.width > 768)
               ? [styles.drawToolsContainer, {right: deviceWidth()}]
               : styles.drawToolsContainer}>
               <IconButton
@@ -971,7 +980,7 @@ class Home extends React.Component {
           />
           <NotebookPanelMenu
             visible={this.state.dialogs.notebookPanelMenuVisible}
-            onPress={(name) => this.dialogClickHandler("notebookPanelMenuVisible", name)}
+            onPress={(name, position) => this.dialogClickHandler("notebookPanelMenuVisible", name, position)}
             onTouchOutside={() => this.toggleDialog("notebookPanelMenuVisible")}
           />
           {/*{this.props.isAllSpotsPanelVisible ? <Animated.View style={[notebookStyles.allSpotsPanel, animateAllSpotsMenu]}>*/}

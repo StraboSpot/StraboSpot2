@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
   },
   notebookViewIcon: {
     position: 'absolute',
-    bottom: 150,
+    bottom: 75,
     right: 0
   },
   settingsIconContainer: {
