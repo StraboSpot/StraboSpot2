@@ -4,27 +4,29 @@ import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-nativ
 import Orientation from "react-native-orientation-locker";
 
 const platformType = Platform.OS === 'ios' ? 'window' : 'screen';
-const width = Dimensions.get(platformType).width;
-const height = Dimensions.get(platformType).height;
+const {width, height} = Dimensions.get(platformType);
 
 const deviceWidth = () => {
   if (width < 500) return wp('75%');
-  // if (width >= 500 && width < 1000) return wp('30%');
-  if (width >= 500) return wp('30%');
+  if (width >= 500 && width < 1099) return wp('25%');
+  if (width >= 1100) return wp('20%');
 };
 const modalStyle = StyleSheet.create({
   modalContainer: {
     // height: 600,
     width: deviceWidth(),
-    opacity: .90
+    opacity: .90,
+    // backgroundColor: 'pink',
+    borderBottomRightRadius: 20,
+    borderBottomLeftRadius: 20
   },
-  // modalBottom: {
-  //   flex: 8,
-  //   paddingBottom: 20,
-  //   backgroundColor: themes.MODAL,
-  //   borderBottomRightRadius: 20,
-  //   borderBottomLeftRadius: 20
-  // },
+  modalBottom: {
+    // flex: 8,
+    paddingBottom: 20,
+    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
+    borderBottomRightRadius: 20,
+    borderBottomLeftRadius: 20
+  },
   modalTop: {
     zIndex: 100,
     // width: '100%',
@@ -32,7 +34,9 @@ const modalStyle = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    padding: 10,
+    paddingLeft: 10,
+    paddingRight: 10,
+    // backgroundColor: 'red',
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
     borderTopRightRadius: 20,
     borderTopLeftRadius: 20,
