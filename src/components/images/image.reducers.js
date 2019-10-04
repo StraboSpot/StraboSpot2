@@ -1,7 +1,7 @@
 import {imageReducers} from "./Image.constants";
 
 const initialImageState = {
-  imagePaths: {},
+  imagePaths: [],
   sortedView: null
 };
 
