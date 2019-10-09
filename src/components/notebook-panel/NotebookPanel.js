@@ -134,6 +134,7 @@ const NotebookPanel = props => {
     )
   }
   else {
+    props.setModalVisible(null);
     return (
       <View style={[notebookStyles.panel, notebookStyles.noSpotContent]}>
         <Text style={{fontSize: 30}}>No Spot Selected</Text>

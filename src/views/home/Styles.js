@@ -25,7 +25,8 @@ const styles = StyleSheet.create({
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
   },
   container: {
-    flex: 1
+    flex: 1,
+    backgroundColor: themes.LIGHTGREY
   },
   buttonWithBackground: {
     color: 'black',
@@ -39,7 +40,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     position: "absolute",
-    bottom: 0,
+    bottom: 20,
     right: 0,
   },
   drawerStyles: {
@@ -69,7 +70,7 @@ const styles = StyleSheet.create({
   // --- Bottom Left Icon (current location) ---
   bottomLeftIcons: {
     position: 'absolute',
-    bottom: 0,
+    bottom: 20,
   },
   layersIcon: {
     marginBottom: 105

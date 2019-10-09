@@ -39,7 +39,7 @@ const MeasurementItem = (props) => {
     if (item.type === 'planar_orientation' || item.type === 'tabular_orientation') {
       return (item.strike || '?') + '/' + (item.dip || '?');
     }
-    if (item.type === 'linear_orientation') return (item.trend || '?') + '/' + (item.plunge || '?');
+    if (item.type === 'linear_orientation') return (item.trend || '?') + '/' + (item.plunge === 0 ? 0 : item.plunge || '?');
     return '?';
   };
 
