@@ -1,11 +1,23 @@
 import React, {useState, useEffect, useCallback} from 'react';
 import {connect} from "react-redux";
-import {Animated, Switch, Easing, Alert, Image, View, Text, Dimensions, TouchableOpacity} from 'react-native';
-import RNSimpleCompass from 'react-native-simple-compass';
+import {
+  Animated,
+  Switch,
+  Easing,
+  Alert,
+  Image,
+  View,
+  Text,
+  Dimensions,
+  TouchableOpacity,
+  NativeModules,
+  NativeEventEmitter
+} from 'react-native';
 // import {setUpdateIntervalForType, SensorTypes, magnetometer, accelerometer} from 'react-native-sensors';
 import {getNewId, mod, toRadians, toDegrees, roundToDecimalPlaces, isEmpty} from "../../../shared/Helpers";
 import {CompassToggleButtons} from "./Compass.constants";
 import {Button, ListItem} from "react-native-elements";
+import RNSimpleCompass from 'react-native-simple-compass';
 // import {Switch} from "react-native-switch";
 import {spotReducers} from "../../../spots/Spot.constants";
 import {homeReducers, Modals} from "../../../views/home/Home.constants";
@@ -15,73 +27,65 @@ import * as Location from 'expo-location';
 
 // import Orientation from 'react-native-orientation-locker';
 import Slider from '../../../shared/ui/Slider';
-import Measurements from '../Measurements';
-import IconButton from '../../../shared/ui/IconButton';
+// import Measurements from '../Measurements';
+// import IconButton from '../../../shared/ui/IconButton';
 // Styles
 import styles from './CompassStyles';
 import * as themes from '../../../shared/styles.constants';
+import Measurements from "../Measurements";
+import IconButton from "../../../shared/ui/IconButton";
 
 const {height, width} = Dimensions.get('window');
 
 const RNCompass = (props) => {
 
   let dataView = null;
+  let modalView = null;
   // const [magnetometer, setMagnetometer] = useState(0);
   const [accelerometerWithGravity, setAccelerometerWithGravity] = useState(null);
   // const [heading, setHeading] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
-  const [deviceMotion, setDeviceMotion] = useState({
-    rotationAlpha: null,
-    rotationBeta: null,
-    rotationGamma: null,
-    accelerometerIncludingGravityX: null,
-    accelerometerIncludingGravityY: null,
-    accelerometerIncludingGravityZ: null,
-    orientation: null
-  });
   const [compassData, setCompassData] = useState({
-    heading: null,
-    strike: 0,
-    dip: 0,
-    //   // dipdir: null,
-    trend: 0,
-    plunge: 0,
+    strike: null,
+    dip: null,
+    // dipdir: null,
+    trend: null,
+    plunge: null,
     //   // rake: null,
     //   // rake_calculated: 'no'
   });
+  const [heading, setHeading] = useState(null);
   const [toggles, setToggles] = useState([CompassToggleButtons.PLANAR]);
   const [sliderValue, setSliderValue] = useState(5);
   const [strikeSpinValue, setStrikeSpinValue] = useState(new Animated.Value(0));
   const [trendSpinValue, setTrendSpinValue] = useState(new Animated.Value(0));
-  const [showData, setShowData] = useState(true);
+  const [showData, setShowData] = useState(false);
+  const CompassEvents = new NativeEventEmitter(NativeModules.Compass);
+  const degree_update_rate = 1; // Number of degrees changed before the callback is triggered
 
-  useEffect(() => {
+  useEffect(() =>  {
     let isSubscribed = true;
-    console.log(`Is device available: ${DeviceMotion.isAvailableAsync()}`);
-    DeviceMotion.addListener(DMData => {
-      if (isSubscribed) {
-        // calculateRotationMatrix(DMData);
-        setDeviceMotion({
-          rotationAlpha: DMData.rotation.alpha,
-          rotationBeta: DMData.rotation.beta,
-          rotationGamma: DMData.rotation.gamma,
-          orientation: DMData.orientation,
-          accelerometerIncludingGravityX: DMData.accelerationIncludingGravity.x,
-          accelerometerIncludingGravityY: DMData.accelerationIncludingGravity.y,
-          accelerometerIncludingGravityZ: DMData.accelerationIncludingGravity.z
-        });
-      }
-    });
+    // console.log(`Is device available: ${DeviceMotion.isAvailableAsync()}`);
+    displayCompassData();
     return () => {
       isSubscribed = false;
-      // DeviceMotion.removeAllListeners();
+      NativeModules.Compass.stopObserving();
       console.log(`subscription cancelled`)
     }
   }, []);
 
   useEffect(() => {
-    // let isSubscribed = true;
-    getLocation();
+     let isSubscribed = true;
+     RNSimpleCompass.start(degree_update_rate, heading => {
+       heading = roundToDecimalPlaces(mod(heading - 270, 360), 0);
+       setHeading(heading);
+     });
+    // NativeModules.Compass.getHeading();
+    // CompassEvents.addListener("getHeading", res => {
+    //   console.log(res)
+    // })
+     // getHeading();
+    // getLocation();
     // const locationEnabled = isLocationEnabled();
     // console.log(locationEnabled)
     // if (isSubscribed) {
@@ -89,227 +93,164 @@ const RNCompass = (props) => {
     //     console.log(heading.trueHeading);
     //   });
     // }
-    // return () => {
-    //   isSubscribed = false;
-    //   console.log(`Heading subscription cancelled`)
-    // }
     return () => {
-      Location.watchHeadingAsync(console.log('expired'))
+      isSubscribed = false;
+      console.log(`Heading subscription cancelled`)
     }
-  }, []);
+  }, [RNSimpleCompass]);
 
-  const getLocation = async () => {
-    const degree_update_rate = 2; // Number of degrees changed before the callback is triggered
-    RNSimpleCompass.start(degree_update_rate, (degree) => {
-      // degreeFacing = (<Text>{degree}</Text>);
-      // console.log('You are facing', degree);
+  const displayCompassData = () => {
+    NativeModules.Compass.myDeviceRotation();
+    CompassEvents.addListener('rotationMatrix', res => {
       setCompassData({
-        ...compassData,
-        heading: degree
+        strike: res.strike,
+        dip: res.dip,
+        trend: res.trend,
+        plunge: res.plunge,
       });
     });
-    console.log('Compass subscribed');
-  };
-  // const isLocationEnabled =  () => {
-  //   const locationEnabled = Location.hasServicesEnabledAsync();
-  //     if (locationEnabled) {
-  //       console.log(`Is location enabled: ${locationEnabled}`);
-  //     } else console.log(`location NOT enabled: ${locationEnabled}`);
-  //
-  //   return locationEnabled
-  // };
-
-  const calculateRotationMatrix = () => {
-    let yaw, pitch, roll, accelerometerX, accelerometerY, accelerometerZ, deviceOrientation;
-    let {rotationAlpha, rotationBeta, rotationGamma, accelerometerIncludingGravityX, accelerometerIncludingGravityY, accelerometerIncludingGravityZ, orientation} = deviceMotion;
-    yaw = mod(compassData.heading * (Math.PI / 180), 360);
-    // yaw = rotationAlpha;
-    pitch = rotationBeta;
-    roll = rotationGamma;
-    accelerometerX = accelerometerIncludingGravityX;
-    accelerometerY = accelerometerIncludingGravityY;
-    accelerometerZ = accelerometerIncludingGravityZ;
-    deviceOrientation = orientation;
-    const r11 = Math.cos(roll) * Math.cos(yaw) - Math.sin(roll) * Math.sin(pitch) * Math.sin(yaw);
-    const r12 = Math.cos(yaw) * Math.sin(roll) * Math.sin(pitch) + Math.cos(roll) * Math.sin(yaw);
-    const r13 = -Math.sin(roll) * Math.cos(pitch);
-    const r21 = -Math.cos(pitch) * Math.sin(yaw);
-    const r22 = Math.cos(pitch) * Math.cos(yaw);
-    const r23 = Math.sin(pitch);
-    const r31 = Math.cos(roll) * Math.sin(pitch) * Math.sin(yaw) + Math.cos(yaw) * Math.sin(roll);
-    const r32 = Math.sin(yaw) * Math.sin(roll) - Math.cos(roll) * Math.cos(yaw) * Math.sin(pitch);
-    const r33 = Math.cos(roll) * Math.cos(pitch);
-    const NED_pole = cartesianToSpherical(r32, -r31, r33);
-    const NED_TP = cartesianToSpherical(r22, -r21, r23);
-    const strikeAndDip1 = strikeAndDip(NED_pole);
-    const trendAndPlunge1 = trendAndPlunge(NED_TP);
-
-    let text = 'Waiting';
-    if (errorMessage) {
-      text = errorMessage
-    }
-    else if (compassData.heading) {
-      text = roundToDecimalPlaces(mod(compassData.heading - 270, 360), 0);
-    }
-
-    return (
-      <View style={{alignItems: 'flex-start'}}>
-        <Text style={{fontWeight: 'bold'}}>Roll (rotationGamma):</Text>
-        <Text style={{color: 'green'}}>{roll}</Text>
-        <Text style={{fontWeight: 'bold'}}>Pitch (rotationBeta):</Text>
-        <Text style={{color: 'green'}}>{pitch}</Text>
-        <Text style={{fontWeight: 'bold'}}>Yaw (rotationAlpha):</Text>
-        <Text style={{color: 'green'}}>{yaw}</Text>
-        <Text>---------------------</Text>
-        <Text style={{fontWeight: 'bold'}}>NED_pole:</Text>
-        <Text style={{color: 'red'}}>{NED_pole[0]}</Text>
-        <Text style={{color: 'red'}}>{NED_pole[1]}</Text>
-        <Text style={{color: 'red'}}>{NED_pole[2]}</Text>
-        <Text style={{fontWeight: 'bold'}}>NED_TP:</Text>
-        <Text style={{color: 'red'}}>{NED_TP[0]}</Text>
-        <Text style={{color: 'red'}}>{NED_TP[1]}</Text>
-        <Text style={{color: 'red'}}>{NED_TP[2]}</Text>
-
-        {/*<Text style={{fontWeight: 'bold'}}>Accelerometer w/ gravity X:</Text>*/}
-        {/*<Text style={{color: 'red'}}>{accelerometerX}</Text>*/}
-        {/*<Text style={{fontWeight: 'bold'}}>Accelerometer w/ gravity Y:</Text>*/}
-        {/*<Text style={{color: 'red'}}>{accelerometerY}</Text>*/}
-        {/*<Text style={{fontWeight: 'bold'}}>Accelerometer w/ gravity Z:</Text>*/}
-        {/*<Text style={{color: 'red'}}>{accelerometerZ}</Text>*/}
-        <Text>---------------------</Text>
-        <Text>Orientation: {deviceOrientation}</Text>
-
-        <Text>Device Heading: {text}</Text>
-        <Text>Strike: {strikeAndDip1[0]}</Text>
-        <Text>Dip: {strikeAndDip1[1]}</Text>
-        <Text>Trend: {trendAndPlunge1[0]}</Text>
-        <Text>Plunge: {trendAndPlunge1[1]}</Text>
-      </View>
-    );
   };
 
-  const strikeAndDip = (NED) => {
-    const phi = NED[1];
-    const theta = -NED[2];
-    let strikeDeg = compassData.heading;
-    let dipDeg = null;
-    if (phi <= Math.PI / 2) {
-      strikeDeg = mod(360 - (theta * (180 / Math.PI)), 360);
-      // strikeDeg = mod(360 - theta * (180 / Math.PI), 360);
-      dipDeg = phi * (180 / Math.PI);
+  const grabMeasurements = () => {
+    let measurements = [];
+    if (toggles.includes(CompassToggleButtons.PLANAR)) {
+      measurements.push({
+        strike: compassData.strike,
+        // dip_direction: compassData.dipdir,
+        dip: compassData.dip,
+        type: 'planar_orientation',
+        quality: sliderValue.toString()
+      });
     }
-    else {
-      strikeDeg = mod(360 - (theta - Math.PI) * (180 / Math.PI), 360);
-      dipDeg = (Math.PI - phi) * (180 / Math.PI);
+    if (toggles.includes(CompassToggleButtons.LINEAR)) {
+      measurements.push({
+        trend: compassData.trend,
+        plunge: compassData.plunge,
+        rake: compassData.rake,
+        rake_calculated: 'yes',
+        type: 'linear_orientation',
+        quality: sliderValue.toString()
+      });
     }
-    return [roundToDecimalPlaces(strikeDeg, 0), roundToDecimalPlaces(dipDeg, 0)];
-  };
 
-  const trendAndPlunge = (NED) => {
-    const phi = NED[1];
-    const theta = NED[2];
-    let trendDeg = mod(theta * (180 / Math.PI), 360);
-    let plungeDeg = phi * (180 / Math.PI) - 90;
-    if (plungeDeg < 0) {
-      trendDeg = mod(trendDeg + 180, 360);
-      plungeDeg = -plungeDeg
-    }
-    return [roundToDecimalPlaces(trendDeg, 2), roundToDecimalPlaces(plungeDeg, 2)];
-  };
-
-  const cartesianToSpherical = (r1, r2, r3) => {
-    let rho = Math.sqrt(Math.pow(r1, 2) + Math.pow(r2, 2) + Math.pow(r3, 2));
-    let phi = 0;
-    let theta = 0;
-    if (rho === 0) {
-      phi = 0;
-      theta = 0;
-    }
-    else {
-      phi = Math.acos(r3 / rho);
-      if (rho * Math.sin(phi) === 0) {
-        if (r3 >= 0) {
-          rho = r3;
-          phi = 0;
-          theta = 0;
-        }
-        else {
-          rho = -r3;
-          phi = Math.PI;
-          theta = 0;
-        }
+    if (measurements.length > 0) {
+      let newOrientation = measurements[0];
+      newOrientation.id = getNewId();
+      if (measurements.length > 1) {
+        let newAssociatedOrientation = measurements[1];
+        newAssociatedOrientation.id = getNewId();
+        newOrientation.associated_orientation = [newAssociatedOrientation];
       }
-      else {
-        theta = Math.atan2(r2, r1)
-      }
+      const orientations = (typeof props.spot.properties.orientation_data === 'undefined') ? [newOrientation] : [...props.spot.properties.orientation_data, newOrientation];
+      props.onSpotEdit('orientation_data', orientations);
     }
-    return [rho, phi, theta]
+    else Alert.alert('No Measurement Type', 'Please select a measurement type using the toggles.');
   };
 
   const viewData = () => {
     setShowData(!showData)
   };
 
+  const renderCompass = () => {
+    return (
+      <TouchableOpacity style={styles.compassImageContainer} onPress={() => grabMeasurements()}>
+        <Image source={require("../../../assets/images/compass/compass.png")}
+               style={{
+                 marginTop: 15,
+                 height: 220,
+                 width: 220,
+                 justifyContent: 'center',
+                 alignItems: 'center',
+                 // resizeMode: 'contain',
+                 // transform: [{rotate: 360 - magnetometer + 'deg'}]
+               }}
+        />
+        {renderCompassSymbols()}
+      </TouchableOpacity>
+    );
+  };
 
-  let modalView = <View>
-    <Button
-      title={'View In Shortcut Mode'}
-      type={'clear'}
-      titleStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 16}}
-      onPress={() => props.onPress(NotebookPages.MEASUREMENT)}
-    />
-    <Button
-      title={'Toggle data view'}
-      type={'clear'}
-      titleStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 16}}
-      onPress={() => {
-        viewData()
-      }}
-    />
+  const renderCompassSymbols = () => {
+    // console.log('Strike', compassData.strike + '\n' + 'Trend', compassData.trend);
+    const linearInToggleOn = toggles.includes(CompassToggleButtons.LINEAR);
+    const plannerInToggleOn = toggles.includes(CompassToggleButtons.PLANAR);
 
-    {/*<Button*/}
-    {/*  title={'Toggle device motion modal'}*/}
-    {/*  type={'clear'}*/}
-    {/*  containerStyle={{margin: 0, padding: 0}}*/}
-    {/*  titleStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 16}}*/}
-    {/*  onPress={() => {*/}
-    {/*    this.viewDeviceMotionModal()*/}
-    {/*  }}*/}
-    {/*/>*/}
-  </View>;
+    if (linearInToggleOn && plannerInToggleOn && compassData.trend !== null && compassData.strike !== null) {
+      return (
+        [renderTrendSymbol(), renderStrikeDipSymbol()]
+      );
+    }
+    else if (linearInToggleOn && compassData.trend !== null) {
+      return renderTrendSymbol();
+
+    }
+    else if (plannerInToggleOn && compassData.strike !== null) {
+      return renderStrikeDipSymbol();
+    }
+
+  };
 
   const renderDataView = () => {
-    let text = 'Waiting';
-    if (errorMessage) {
-      text = errorMessage
-    }
-    else if (compassData.heading) {
-      text = mod(compassData.heading - 270, 360);
-    }
-    if (compassData === null) {
-      dataView =
-        <View style={{alignItems: 'flex-start'}}>
-          <Text>Spinner</Text>
-        </View>;
-    }
-    else {
+    // let text = 'Waiting';
+    // if (errorMessage) {
+    //   text = errorMessage
+    // }
+    // else if (compassData.heading) {
+    //   text = mod(compassData.heading - 270, 360);
+    // }
+    // if (compassData === null) {
+    //   dataView =
+    //     <View style={{alignItems: 'flex-start'}}>
+    //       <Text>Spinner</Text>
+    //     </View>;
+    // }
+    // else {
       return (
         <View style={{alignItems: 'flex-start'}}>
-          {/*<Text>Heading: {heading}</Text>*/}
-          <Text>{text}</Text>
+          <Text>Heading: {heading}</Text>
+          {/*<Text>{text}</Text>*/}
           <Text>Strike: {compassData.strike}</Text>
           <Text>Dip: {compassData.dip}</Text>
           <Text>Trend: {compassData.trend}</Text>
           <Text>Plunge: {compassData.plunge}</Text>
         </View>
       );
-    }
+    // }
+  };
+
+  // Render the strike and dip symbol inside the compass
+  const renderStrikeDipSymbol = () => {
+    let image = require("../../../assets/images/compass/StrikeDipCentered.png");
+    const spin = strikeSpinValue.interpolate({
+      inputRange: [0, compassData.strike],
+      outputRange: ['0deg', compassData.strike + 'deg']
+    });
+// First set up animation
+    Animated.timing(
+      strikeSpinValue,
+      {
+        duration: 300,
+        toValue: compassData.strike,
+        easing: Easing.linear(),
+        useNativeDriver: true
+      }
+    ).start();
+
+    return (
+      <Animated.Image
+        key={image}
+        source={image}
+        style={
+          [styles.strikeAndDipLine,
+            {transform: [{rotate: spin}]}
+          ]}/>
+    );
   };
 
   const renderSlider = () => {
     return (
       <Slider
-        // setSliderValue={(value) => this.sliderValueChange(value)}
+        // setSliderValue={(value) => sliderValueChange(value)}
         onSlidingComplete={(value) => setSliderValue(value)}
         sliderValue={sliderValue}
         thumbTouchSize={{width: 80, height: 80}}
@@ -331,28 +272,11 @@ const RNCompass = (props) => {
               <View style={styles.switchContainer}>
                 <Switch
                   // style={styles.switch}
-                  trackColor={{false: themes.SECONDARY_BACKGROUND_COLOR, true: 'red'}}
+                  trackColor={{false: themes.SECONDARY_BACKGROUND_COLOR, true: 'green'}}
                   // ios_backgroundColor={'lightgrey'}
                   onValueChange={() => toggleSwitch(CompassToggleButtons[key])}
                   value={toggles.includes(CompassToggleButtons[key])}
                 />
-                {/*<Switch*/}
-                {/*  style={styles.switch}*/}
-                {/*  value={toggles.includes(CompassToggleButtons[key])}*/}
-                {/*  onValueChange={(val) => toggleSwitch(CompassToggleButtons[key])}*/}
-                {/*  circleSize={25}*/}
-                {/*  barHeight={20}*/}
-                {/*  circleBorderWidth={3}*/}
-                {/*  backgroundActive={'#407ad9'}*/}
-                {/*  backgroundInactive={'gray'}*/}
-                {/*  circleActiveColor={'#000000'}*/}
-                {/*  circleInActiveColor={'#000000'}*/}
-                {/*  changeValueImmediately={true} // if rendering inside circle, change state immediately or wait for animation to complete*/}
-                {/*  innerCircleStyle={{*/}
-                {/*    alignItems: "center",*/}
-                {/*    justifyContent: "center"*/}
-                {/*  }} // style for inner animated circle for what you (may) be rendering inside the circle*/}
-                {/*/>*/}
               </View>
             </View>}
         />
@@ -362,13 +286,83 @@ const RNCompass = (props) => {
 
   const toggleSwitch = (switchType) => {
     const has = toggles.includes(switchType);
-    console.log(toggles, has)
+    console.log(toggles, has);
     setToggles(has ? toggles.filter(i => i !== switchType) : toggles.concat(switchType));
   };
 
+  // Render the strike and dip symbol inside the compass
+ const  renderTrendSymbol = () => {
+    let image = require("../../../assets/images/compass/TrendLine.png");
+    const spin = trendSpinValue.interpolate({
+      inputRange: [0, compassData.trend],
+      outputRange: ['0deg', compassData.trend + 'deg']
+    });
+// First set up animation
+    Animated.timing(
+      trendSpinValue,
+      {
+        duration: 300,
+        toValue: compassData.trend,
+        easing: Easing.linear,
+        useNativeDriver: true
+      }
+    ).start();
+
+    return (
+      <Animated.Image
+        key={image}
+        source={image}
+        style={
+          [styles.trendLine,
+            // {transform: [{rotate: compassData.trend + 'deg'}]}
+            {transform: [{rotate: spin}]}
+          ]}/>
+    );
+  };
+
+ if (props.modalVisible === Modals.NOTEBOOK_MODALS.COMPASS){
+   if (!isEmpty(props.spot)) {
+     modalView =  <View>
+       <Button
+         title={'View In Shortcut Mode'}
+         type={'clear'}
+         titleStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 16}}
+         onPress={() => props.onPress(NotebookPages.MEASUREMENT)}
+       />
+       <Button
+         title={'Toggle data view'}
+         type={'clear'}
+         titleStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 16}}
+         onPress={() => {
+           viewData()
+         }}
+       />
+     </View>;
+   }
+ } else if (props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS){
+   if (!isEmpty(props.spot)){
+     modalView =   <View >
+       <View style={height <= 1000 ? {height: 200} : {height: 350}}>
+         <Measurements/>
+       </View>
+       <IconButton
+         source={require('../../../assets/icons/NotebookView_pressed.png')}
+         style={{marginTop: 10, flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-end', height: 25}}
+         textStyle={{color: themes.BLUE, fontSize: 16, textAlign: 'center'}}
+         onPress={() => props.onPress(NotebookPages.MEASUREMENT)}
+       > Go to {props.spot.properties.name}</IconButton>
+     </View>
+   }
+ }
+
   return (
     <React.Fragment>
-      <View>
+      <View style={{flex: 1}}>
+        <View style={styles.renderCompassContainer}>
+          <Text style={{textAlign: 'center', fontSize: 12}}>Tap compass to take a measurement</Text>
+          {/*<View style={{ height: 50, backgroundColor: 'powderblue'}} />*/}
+          {renderCompass()}
+        </View>
         <View style={styles.toggleButtonsRowContainer}>
           {renderToggles()}
         </View>
@@ -379,8 +373,8 @@ const RNCompass = (props) => {
       </View>
       <View style={styles.buttonContainer}>
         {modalView}
-        {/*{this.state.showDeviceMotionModal && deviceMotionModal}*/}
-        {showData ? calculateRotationMatrix() : null}
+        {/*{showDeviceMotionModal && deviceMotionModal}*/}
+        {showData ?  renderDataView(): null}
       </View>
     </React.Fragment>
   );

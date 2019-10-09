@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
   renderCompassContainer: {
     // flex: 50,
     // backgroundColor: themes.SECONDARY_BACKGROUND_COLOR
-    backgroundColor: 'skyblue'
+    // backgroundColor: 'skyblue'
   },
   itemContainer: {
     width: '90%',
@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
   sliderContainer: {
     // flex: 30,
     alignItems: 'center',
-    backgroundColor: 'red'
+    // backgroundColor: 'red'
   },
     switchContainer: {
     flex: 1,
@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
     height: 170,
     width: 170,
     position: 'absolute',
-    top: 50,
+    top: 40,
     resizeMode: 'contain',
   },
   toggleButtonsContainer: {
@@ -102,13 +102,13 @@ const styles = StyleSheet.create({
     // flex: 25,
     flexDirection: 'column',
     // paddingTop: 10,
-    backgroundColor: 'powderblue'
+    // backgroundColor: 'powderblue'
   },
   trendLine: {
     height: 150,
     width: 150,
     position: 'absolute',
-    top: 60,
+    top: 50,
     resizeMode: 'contain',
   },
   modalPosition: {
