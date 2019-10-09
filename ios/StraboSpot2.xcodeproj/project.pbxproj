@@ -71,6 +71,8 @@
 		D6AD6C872224A07400568180 /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D6AD6C862224A07000568180 /* Ionicons.ttf */; };
 		D6AD6C8E2224A13A00568180 /* libRNFetchBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D6AD6C8D2224A10B00568180 /* libRNFetchBlob.a */; };
 		D6AD6C982224A3DE00568180 /* libRNVectorIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D6AD6C952224A26900568180 /* libRNVectorIcons.a */; };
+		D6EFC754234CEB600005635E /* Compass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6EFC753234CEB600005635E /* Compass.swift */; };
+		D6EFC78F234CEC400005635E /* Compass.m in Sources */ = {isa = PBXBuildFile; fileRef = D6EFC78E234CEC400005635E /* Compass.m */; };
 		DA2653DC96A64056885DF113 /* libRNCNetInfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E775546917BC4C9787E71EB1 /* libRNCNetInfo.a */; };
 		DCF14B8E4B5147FAA6EF904C /* libRNSimpleCompass.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04DB764EC4AD457AA71F4775 /* libRNSimpleCompass.a */; };
 		E31C186673694A1EA24C1FBC /* libRNGestureHandler-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 805E26DA62D3408384563BA9 /* libRNGestureHandler-tvOS.a */; };
@@ -583,6 +585,9 @@
 		D6AD6C862224A07000568180 /* Ionicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Ionicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
 		D6AD6C882224A10700568180 /* RNFetchBlob.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNFetchBlob.xcodeproj; path = "../node_modules/rn-fetch-blob/ios/RNFetchBlob.xcodeproj"; sourceTree = "<group>"; };
 		D6AD6C8F2224A26900568180 /* RNVectorIcons.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNVectorIcons.xcodeproj; path = "../node_modules/react-native-vector-icons/RNVectorIcons.xcodeproj"; sourceTree = "<group>"; };
+		D6EFC752234CEB5F0005635E /* StraboSpot2-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "StraboSpot2-Bridging-Header.h"; sourceTree = "<group>"; };
+		D6EFC753234CEB600005635E /* Compass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Compass.swift; sourceTree = "<group>"; };
+		D6EFC78E234CEC400005635E /* Compass.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Compass.m; sourceTree = "<group>"; };
 		D7267CBE28EA8784695EC062 /* Pods-StraboSpot2-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StraboSpot2-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-StraboSpot2-tvOSTests/Pods-StraboSpot2-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
 		DC91C38D8C8D9FFF064311CC /* Pods-StraboSpot2-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StraboSpot2-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-StraboSpot2-tvOS/Pods-StraboSpot2-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
 		E345FCE9C60DB16D975C3592 /* libPods-StraboSpot2-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-StraboSpot2-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -751,6 +756,7 @@
 		13B07FAE1A68108700A75B9A /* StraboSpot2 */ = {
 			isa = PBXGroup;
 			children = (
+				D6EFC753234CEB600005635E /* Compass.swift */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -758,6 +764,8 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
 				13B07FB71A68108700A75B9A /* main.m */,
+				D6EFC752234CEB5F0005635E /* StraboSpot2-Bridging-Header.h */,
+				D6EFC78E234CEC400005635E /* Compass.m */,
 			);
 			name = StraboSpot2;
 			sourceTree = "<group>";
@@ -930,7 +938,6 @@
 				D7267CBE28EA8784695EC062 /* Pods-StraboSpot2-tvOSTests.debug.xcconfig */,
 				BAF08DF164637913052A8A7A /* Pods-StraboSpot2-tvOSTests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -1159,6 +1166,7 @@
 					};
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = 7WNF3AUFF8;
+						LastSwiftMigration = 1100;
 					};
 					2D02E47A1E0B4A5D006451C7 = {
 						CreatedOnToolsVersion = 8.2.1;
@@ -1876,6 +1884,8 @@
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
+				D6EFC78F234CEC400005635E /* Compass.m in Sources */,
+				D6EFC754234CEB600005635E /* Compass.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1927,6 +1937,7 @@
 		00E356F61AD99517003FC87E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -1965,6 +1976,7 @@
 		00E356F71AD99517003FC87E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
 				HEADER_SEARCH_PATHS = (
@@ -2002,6 +2014,7 @@
 			baseConfigurationReference = 948D5EED17BF7954F5396F85 /* Pods-StraboSpot2.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = 7WNF3AUFF8;
@@ -2031,6 +2044,9 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.example.StraboSpot2;
 				PRODUCT_NAME = StraboSpot2;
+				SWIFT_OBJC_BRIDGING_HEADER = "StraboSpot2-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -2041,6 +2057,7 @@
 			baseConfigurationReference = 8C73F4511CCE76A9839864A4 /* Pods-StraboSpot2.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 7WNF3AUFF8;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2069,6 +2086,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.example.StraboSpot2;
 				PRODUCT_NAME = StraboSpot2;
+				SWIFT_OBJC_BRIDGING_HEADER = "StraboSpot2-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
