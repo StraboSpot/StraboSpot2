@@ -9,13 +9,15 @@
     "ios": "react-native run-ios"
   },
   "dependencies": {
-    "@mapbox/react-native-mapbox-gl": "github:nitaliano/react-native-mapbox-gl#master",
     "@react-native-community/netinfo": "^2.0.9",
+    "@react-native-mapbox-gl/maps": "^7.0.7",
     "@turf/turf": "^5.1.6",
     "expo-location": "^7.0.0",
     "expo-sensors": "^6.0.0",
     "formik": "^1.5.4",
+    "install": "^0.13.0",
     "lodash.isequal": "^4.5.0",
+    "npm": "^6.12.0",
     "prop-types": "^15.7.2",
     "react": "16.8.6",
     "react-native": "^0.59.10",
