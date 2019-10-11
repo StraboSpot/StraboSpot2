@@ -15,7 +15,8 @@ const slider = (props) => {
         <View style={styles.sliderContainer} >
           <Slider
             value={props.sliderValue}
-            onValueChange={value => props.setSliderValue(value)}
+            // onValueChange={value => props.setSliderValue(value)}
+            onSlidingComplete={props.onSlidingComplete}
             maximumValue={5}
             minimumValue={1}
             style={styles.slider}
