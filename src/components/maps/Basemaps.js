@@ -186,5 +186,5 @@ const mapStyles = MapboxGL.StyleSheet.create({
     circleColor: 'orange',
     circleStrokeColor: 'white',
     circleStrokeWidth: 2
-  },
+  }
 });
