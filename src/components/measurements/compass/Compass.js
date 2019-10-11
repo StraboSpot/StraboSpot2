@@ -1,8 +1,8 @@
-import RNSimpleCompass from 'react-native-simple-compass';
+// import RNSimpleCompass from 'react-native-simple-compass';
 import React, {Component} from 'react';
 import {connect} from "react-redux";
 import {Animated, Easing, Alert, Image, View, Text, Dimensions, TouchableOpacity} from 'react-native';
-import {setUpdateIntervalForType, SensorTypes, magnetometer, accelerometer} from 'react-native-sensors';
+// import {setUpdateIntervalForType, SensorTypes, magnetometer, accelerometer} from 'react-native-sensors';
 import {getNewId, mod, toRadians, toDegrees, roundToDecimalPlaces, isEmpty} from "../../../shared/Helpers";
 import {CompassToggleButtons} from "./Compass.constants";
 import {Button, ListItem} from "react-native-elements";
@@ -10,7 +10,9 @@ import {Switch} from "react-native-switch";
 import {spotReducers} from "../../../spots/Spot.constants";
 import {homeReducers, Modals} from "../../../views/home/Home.constants";
 import {NotebookPages, notebookReducers} from "../../notebook-panel/Notebook.constants";
-import {DeviceMotion} from "expo-sensors";
+import {DeviceMotion, Accelerometer, Magnetometer} from "expo-sensors";
+// import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
+
 
 // import Orientation from 'react-native-orientation-locker';
 import Slider from '../../../shared/ui/Slider';
@@ -31,8 +33,8 @@ class Compass extends Component {
   constructor(props, context) {
     super(props, context);
 
-    setUpdateIntervalForType(SensorTypes.accelerometer, 300);
-    setUpdateIntervalForType(SensorTypes.magnetometer, 300);
+    // setUpdateIntervalForType(SensorTypes.accelerometer, 300);
+    // setUpdateIntervalForType(SensorTypes.magnetometer, 300);
 
     this.state = {
       headingAvgArr: [],
@@ -45,29 +47,6 @@ class Compass extends Component {
       },
       subscriptions: {
         accelerometer: null,
-      },
-      deviceMotion: {
-        // acceleration: {
-        accelerationX: null,
-        accelerationY: null,
-        accelerationZ: null,
-        // },
-        // accelerationIncludingGravity: {
-        accelerationIncludingGravityX: null,
-        accelerationIncludingGravityY: null,
-        accelerationIncludingGravityZ: null,
-        // },
-        // rotation: {
-        rotationAlpha: null,
-        rotationBeta: null,
-        rotationGamma: null,
-        // },
-        // rotationRate: {
-        rotationRateAlpha: null,
-        rotationRateBeta: null,
-        rotationRateGamma: null,
-        // },
-        orientation: null
       },
       compassData: {
         strike: null,
@@ -95,31 +74,29 @@ class Compass extends Component {
     this._isMounted = true;
     // Orientation.lockToPortrait();
     //this allows to check if the system autolock is enabled or not.
-    const deviceIsAvailable = DeviceMotion.isAvailableAsync();
-    console.log('deviceIsAvailable', deviceIsAvailable);
-    DeviceMotion.addListener((deviceMotionData) => {
+    // DeviceMotion.addListener((deviceMotionData) => {
       // console.log('listener CB', deviceMotionData);
-      this.setState(prevState => {
-        return {
-          ...prevState,
-          deviceMotion: {
-            // accelerationX: roundToDecimalPlaces(deviceMotionData.acceleration.x, 6),
-            // accelerationY: roundToDecimalPlaces(deviceMotionData.acceleration.y,6),
-            // accelerationZ: roundToDecimalPlaces(deviceMotionData.acceleration.z,6),
-            // accelerationIncludingGravityX: roundToDecimalPlaces(deviceMotionData.accelerationIncludingGravity.x,6),
-            // accelerationIncludingGravityY: roundToDecimalPlaces(deviceMotionData.accelerationIncludingGravity.y,6),
-            // accelerationIncludingGravityZ: roundToDecimalPlaces(deviceMotionData.accelerationIncludingGravity.z,6),
-            rotationAlpha:roundToDecimalPlaces(deviceMotionData.rotation.alpha,6),
-            rotationBeta: roundToDecimalPlaces(deviceMotionData.rotation.beta,6),
-            rotationGamma: roundToDecimalPlaces(deviceMotionData.rotation.gamma,6),
-            // rotationRateAlpha:roundToDecimalPlaces(deviceMotionData.rotationRate.alpha,6),
-            // rotationRateBeta: roundToDecimalPlaces(deviceMotionData.rotationRate.beta,6),
-            // rotationRateGamma: roundToDecimalPlaces(deviceMotionData.rotationRate.gamma,6),
-            orientation: roundToDecimalPlaces(deviceMotionData.orientation, 6),
-          }
-        }
-      })
-    });
+    //   this.setState(prevState => {
+    //     return {
+    //       ...prevState,
+    //       deviceMotion: {
+    //         // accelerationX: roundToDecimalPlaces(deviceMotionData.acceleration.x, 6),
+    //         // accelerationY: roundToDecimalPlaces(deviceMotionData.acceleration.y,6),
+    //         // accelerationZ: roundToDecimalPlaces(deviceMotionData.acceleration.z,6),
+    //         // accelerationIncludingGravityX: roundToDecimalPlaces(deviceMotionData.accelerationIncludingGravity.x,6),
+    //         // accelerationIncludingGravityY: roundToDecimalPlaces(deviceMotionData.accelerationIncludingGravity.y,6),
+    //         // accelerationIncludingGravityZ: roundToDecimalPlaces(deviceMotionData.accelerationIncludingGravity.z,6),
+    //         rotationAlpha:roundToDecimalPlaces(deviceMotionData.rotation.alpha,6),
+    //         rotationBeta: roundToDecimalPlaces(deviceMotionData.rotation.beta,6),
+    //         rotationGamma: roundToDecimalPlaces(deviceMotionData.rotation.gamma,6),
+    //         // rotationRateAlpha:roundToDecimalPlaces(deviceMotionData.rotationRate.alpha,6),
+    //         // rotationRateBeta: roundToDecimalPlaces(deviceMotionData.rotationRate.beta,6),
+    //         // rotationRateGamma: roundToDecimalPlaces(deviceMotionData.rotationRate.gamma,6),
+    //         orientation: roundToDecimalPlaces(deviceMotionData.orientation, 6),
+    //       }
+    //     }
+    //   })
+    // });
     await this.subscribe();
     RNSimpleCompass.start(degree_update_rate, (degree) => {
       // degreeFacing = (<Text>{degree}</Text>);
@@ -132,7 +109,6 @@ class Compass extends Component {
         },
         // () => console.log('magnetometer reading:', this.state.magnetometer)
       );
-      // RNSimpleCompass.stop();
     });
     console.log('Compass subscribed');
   };
@@ -212,7 +188,6 @@ class Compass extends Component {
           }
         },
         () => {
-          // console.log('Accelerometer state:', this.state.accelerometer);
           this.calculateOrientation();
         });
     });
@@ -227,82 +202,6 @@ class Compass extends Component {
   // Match the device top with pointer 0° degree. (By default 0° starts from the right of the device.)
   _degree = (magnetometer) => {
     return magnetometer - 90 >= 0 ? magnetometer - 90 : magnetometer + 271;
-  };
-
-  calculateRotationMatrix = () => {
-    const yaw = this.state.deviceMotion.rotationAlpha;
-    const pitch = this.state.deviceMotion.rotationBeta;
-    const roll = this.state.deviceMotion.rotationGamma;
-    const r11 = Math.cos(roll) * Math.cos(yaw) - Math.sin(roll) * Math.sin(pitch) * Math.sin(yaw);
-    const r12 = Math.cos(yaw) * Math.sin(roll) * Math.sin(pitch) + Math.cos(roll) * Math.sin(yaw);
-    const r13 = -Math.sin(roll) * Math.cos(pitch);
-    const r21 = -Math.cos(pitch) * Math.sin(yaw);
-    const r22 = Math.cos(pitch) * Math.cos(yaw);
-    const r23 = Math.sin(pitch);
-    const r31 = Math.cos(roll) * Math.sin(pitch) * Math.sin(yaw) + Math.cos(yaw) * Math.sin(pitch);
-    const r32 = Math.sin(yaw) * Math.sin(roll) - Math.cos(roll) * Math.cos(yaw) * Math.sin(pitch);
-    const r33 = Math.cos(roll) * Math.cos(pitch);
-    const NED_r3x = this.cartesianToSpherical(r31, r32, r33);
-    const NED_r2x = this.cartesianToSpherical(r21, r22, r23);
-    const strikeAndDip = this.strikeAndDip(NED_r3x);
-    const trendAndPlunge = this.trendAndPlunge(NED_r2x);
-
-    return (
-      <View>
-        {/*<Text>Yaw = {yaw}</Text>*/}
-        {/*<Text>Pitch = {pitch}</Text>*/}
-        {/*<Text>Roll = {roll}</Text>*/}
-        <Text>Strike = {strikeAndDip[0]}</Text>
-        <Text>Dip = {strikeAndDip[1]}</Text>
-        <Text>Trend = {trendAndPlunge[0]}</Text>
-        <Text>Plunge = {trendAndPlunge[1]}</Text>
-      </View>
-    )
-  };
-
-  strikeAndDip = (NED) => {
-    const phi = NED[1];
-    const theta = NED[2];
-    let strikeDeg = 0;
-    let dipDeg = null;
-    if (phi <= Math.PI/2) {
-      strikeDeg = mod(360 - theta * (180/Math.PI), 360);
-      dipDeg = phi * (180/Math.PI);
-    } else {
-      strikeDeg = mod(360 - (theta - Math.PI) * (180/Math.PI), 360);
-      dipDeg = (Math.PI - phi) * (180/Math.PI);
-    }
-    return [roundToDecimalPlaces(strikeDeg,0), roundToDecimalPlaces(dipDeg,0)];
-  };
-
-  trendAndPlunge = (NED) => {
-    const phi = NED[1];
-    const theta = NED[2];
-    const trendDeg = mod(90 - theta * (180/Math.PI), 360);
-    const plungeDeg = phi * (180/Math.PI) -90;
-    return [roundToDecimalPlaces(trendDeg, 2), roundToDecimalPlaces(plungeDeg, 2)];
-  };
-
-  cartesianToSpherical = (r1, r2, r3) => {
-    const rho = Math.sqrt(Math.pow(r1, 2) + Math.pow(r2, 2) + Math.pow(r3, 2));
-    let phi = 0;
-    let theta = null;
-    if (rho === 0) {
-      phi = 0;
-      theta = 0;
-    } else {
-      phi = Math.acos(r3/rho);
-      if (rho * Math.sin(phi) === 0) {
-        if (r3 >= 0){
-          theta = r3;
-        } else {
-          theta = -r3;
-        }
-      } else {
-        theta = Math.atan2(r1, r2)
-      }
-    }
-    return [rho, phi, theta]
   };
 
   calculateOrientation = () => {
@@ -378,78 +277,11 @@ class Compass extends Component {
     );
   };
 
-  calculateOrientationLandscape = (orientation) => {
-    // console.log('Orientation', orientation);
-    const x = this.state.accelerometer.x;
-    const y = this.state.accelerometer.y;
-    const z = this.state.accelerometer.z;
-    //let actualHeading = mod(vm.result.magneticHeading + vm.magneticDeclination, 360);
-    let actualHeading = mod(this.state.magnetometer - 270, 360);  // ToDo: adjust for declination
-
-    // Calculate base values given the x, y, and z from the device. The x-axis runs side-to-side across
-    // the mobile phone screen, or the laptop keyboard, and is positive towards the right side. The y-axis
-    // runs front-to-back across the mobile phone screen, or the laptop keyboard, and is positive towards as
-    // it moves away from you. The z-axis comes straight up out of the mobile phone screen, or the laptop
-    // keyboard, and is positive as it moves up.
-    // All results in this section are in radians
-    let g = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2) + Math.pow(z, 2));
-    let s = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
-    let B = Math.acos(Math.abs(y) / s);
-    let R = toRadians(90 - toDegrees(B));
-    let d = Math.acos(Math.abs(z) / g);
-    let b = Math.atan(Math.tan(R) * Math.cos(d));
-
-    // Calculate dip direction, strike and dip (in degrees)
-    let dipdir, strike, dip;
-    let diry = actualHeading;
-    if (x === 0 && y === 0) {
-      d = 0;
-      dipdir = 180;
-    }
-    else if (x >= 0 && y >= 0) dipdir = diry - 90 - toDegrees(b);
-    else if (y <= 0 && x >= 0) dipdir = diry - 90 + toDegrees(b);
-    else if (y <= 0 && x <= 0) dipdir = diry + 90 - toDegrees(b);
-    else if (x <= 0 && y >= 0) dipdir = diry + 90 + toDegrees(b);
-
-    if (z > 0) dipdir = mod(dipdir, 360);
-    else if (z < 0) dipdir = mod(dipdir - 180, 360);
-
-    strike = mod(dipdir, 360);
-    dip = toDegrees(d);
-
-    // Calculate trend, plunge and rake (in degrees)
-    let trend, plunge, rake;
-    if (y > 0) trend = mod(diry - 90, 360); //<---- This is what changed with trend
-    // if (y > 0) trend = diry;
-    // if (y > 0) trend = mod(diry, 360);
-    else if (y <= 0) trend = mod(diry - 90, 360);
-    if (z > 0) trend = mod(trend - 180, 360);
-    plunge = toDegrees(Math.asin(Math.abs(y) / g));
-    rake = toDegrees(R);
-
-    this.setState(prevState => {
-        return {
-          ...prevState,
-          compassData: {
-            actualHeading: roundToDecimalPlaces(actualHeading, 4),
-            strike: roundToDecimalPlaces(strike, 0),
-            dipdir: roundToDecimalPlaces(dipdir, 0),
-            dip: roundToDecimalPlaces(dip, 0),
-            trend: roundToDecimalPlaces(trend, 0),
-            plunge: roundToDecimalPlaces(plunge, 0),
-            rake: roundToDecimalPlaces(rake, 0),
-            rake_calculated: 'yes'
-          }
-        }
-      },
-      // () => console.log('Calculated Data:', this.state.compassData)
-    );
-  };
-
   // Render the compass
   renderCompass = () => {
     return (
       <TouchableOpacity style={styles.compassImageContainer} onPress={() => this.grabMeasurements()}>
+        {/*<Text style={{textAlign: 'center'}}>Tap compass to take a measurement</Text>*/}
         <Image source={require("../../../assets/images/compass/compass.png")}
                style={{
                  marginTop: 25,
@@ -491,46 +323,15 @@ class Compass extends Component {
     return (
       <View style={styles.measurementsContainer}>
         {/*<Text>heading: {this.state.magnetometer}</Text>*/}
-        <Text>x: {this.state.accelerometer.x}</Text>
-        <Text>y: {this.state.accelerometer.y}</Text>
-        <Text>z: {this.state.accelerometer.z}</Text>
+        {/*<Text>x: {this.state.accelerometer.x}</Text>*/}
+        {/*<Text>y: {this.state.accelerometer.y}</Text>*/}
+        {/*<Text>z: {this.state.accelerometer.z}</Text>*/}
         {
           Object.keys(this.state.compassData).map((key, i) => (
             <Text key={i}>{key}: {this.state.compassData[key]}</Text>
           ))}
       </View>
     );
-  };
-
-  renderDeviceMotion = () => {
-    return (
-      Object.keys(this.state.deviceMotion).map((key, i) => (
-        <Text key={i}>{key}: {this.state.deviceMotion[key]}</Text>
-      ))
-    )
-    // return this.state.deviceMotion.map(data => {
-    //  return mapKeys(this.state.deviceMotion, (value, key) => {
-    //        return (
-    //          <Text>key: {key}, value: {value}</Text>
-    //        )
-    //   });
-    //   return (
-    //     <View>
-    //       <Text>accelerationX: {this.state.deviceMotion.accelerationX}</Text>
-    //       <Text>accelerationY: {this.state.deviceMotion.accelerationY}</Text>
-    //       <Text>accelerationZ: {this.state.deviceMotion.accelerationZ}</Text>
-    //     </View>
-    //     // Object.keys(this.state.deviceMotion).map((key, i) => {
-    //     // console.log('key', key, 'i', i)
-    //     //   return <Text>{}</Text>
-    //     // if (typeof this.state.deviceMotion[key] === 'object') {
-    //     //   Object.keys(this.state.deviceMotion[key].map(subKey => {
-    //     //     return <Text>Hi</Text>
-    //     //   })
-    //     // )
-    //     // }
-    //     // else return <Text key={i}>{key} : Ho</Text>
-    //   )
   };
 
   // Render the strike and dip symbol inside the compass
@@ -592,6 +393,19 @@ class Compass extends Component {
     );
   };
 
+  renderSlider = () => {
+    return (
+      <Slider
+        // setSliderValue={(value) => this.sliderValueChange(value)}
+        onSlidingComplete={(value) =>  this.setState({sliderValue: value}, () => console.log('New Value', value))}
+        sliderValue={this.state.sliderValue}
+        thumbTouchSize={{width: 80, height: 80}}
+        leftText={'Low Quality'}
+        rightText={'High Quality'}
+      />
+    );
+  };
+
   renderToggles = () => {
     return (
       Object.keys(CompassToggleButtons).map((key, i) => (
@@ -645,33 +459,20 @@ class Compass extends Component {
     })
   };
 
-  viewDeviceMotionModal = () => {
-    this.setState(prevState => {
-      return {
-        ...prevState,
-        showDeviceMotionModal: !prevState.showDeviceMotionModal
-      }
-    }, () => console.log('Device Motion Modal set to:', this.state.showDeviceMotionModal));
-
-  };
-
   render() {
     let modalView = null;
     let dataModal =
       <View style={{alignItems: 'center'}}>
         {this.renderMeasurements()}
       </View>;
-    let deviceMotionModal =
-      <View style={{alignItems: 'flex-start'}}>
-        {this.calculateRotationMatrix()}
-      </View>;
-
 
     if (this.props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {
       // Orientation.lockToPortrait();
       if (!isEmpty(this.props.spot)) {
-        modalView = <View>
-          <View style={{height: 320}}>
+        // console.log('Height', height, 'Width', width)
+        modalView =
+          <View >
+          <View style={height <= 1000 ? {height: 200} : {height: 350}}>
             <Measurements/>
           </View>
           <IconButton
@@ -700,14 +501,6 @@ class Compass extends Component {
             this.viewData()
           }}
         />
-        <Button
-          title={'Toggle device motion modal'}
-          type={'clear'}
-          titleStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 16}}
-          onPress={() => {
-            this.viewDeviceMotionModal()
-          }}
-        />
       </View>
     }
 
@@ -717,35 +510,23 @@ class Compass extends Component {
       </View>
     }
     return (
+      <View>
       <View style={{flex: 1}}>
-        <Text style={{textAlign: 'center'}}>Tap compass to take a measurement</Text>
         <View style={styles.renderCompassContainer}>
+          {/*<View style={{ height: 50, backgroundColor: 'powderblue'}} />*/}
           {this.renderCompass()}
         </View>
         <View style={styles.toggleButtonsRowContainer}>
           {this.renderToggles()}
         </View>
         <View style={styles.sliderContainer}>
-          <Slider
-            setSliderValue={(value) => this.setState({sliderValue: value})}
-            sliderValue={this.state.sliderValue}
-            leftText={'Low Quality'}
-            rightText={'High Quality'}
-          />
+          <Text>Current Set Value: {this.state.sliderValue}</Text>
+          {this.renderSlider()}
         </View>
+      </View>
         <View style={styles.buttonContainer}>
           {modalView}
-          {this.state.showDeviceMotionModal && deviceMotionModal}
-          {this.state.showDataModal ? dataModal : null}
-          {/*<Button*/}
-          {/*  title={'View In Shortcut Mode'}*/}
-          {/*  type={'clear'}*/}
-          {/*  titleStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 16}}*/}
-          {/*  onPress={() => {*/}
-          {/*    this.props.setNotebookPanelVisible(false);*/}
-          {/*    this.props.setShortcutPanelVisible(true);*/}
-          {/*  }}*/}
-          {/*/>*/}
+          {this.state.showDataModal && dataModal}
         </View>
       </View>
     )
