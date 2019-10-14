@@ -15,18 +15,22 @@ const Overview = props => {
 
   const SECTIONS = [
     {
-      title: 'Tags',
-      content: <TagsOverview/>
-    }, {
-      title: 'Notes',
-      content: <NotesOverview/>
-    }, {
       title: 'Measurements',
       content: <MeasurementsOverview/>
-    }, {
+    },
+    {
       title: 'Photos and Sketches',
       content: <NotebookImages/>
-    }];
+    },
+    {
+      title: 'Tags',
+      content: <TagsOverview/>
+    },
+    {
+      title: 'Notes',
+      content: <NotesOverview/>
+    }
+    ];
 
   const expandedIcon = <Icon
     name='ios-add'
@@ -40,7 +44,7 @@ const Overview = props => {
     color='#b2b2b7'
     containerStyle={{paddingRight: 10}}/>;
 
-  const [collapsedSections, setCollapsedSections] = useState([]);
+  const [collapsedSections, setCollapsedSections] = useState(["Tags", "Notes"]);
 
   const toggleCollapsed = (name) => {
     if (collapsedSections.includes(name)) setCollapsedSections(collapsedSections.filter((val) => val !== name));
@@ -58,6 +62,7 @@ const Overview = props => {
                 <Text style={notebookStyles.collapsibleSectionHeaderText}>{section.title}</Text>
               </View>
             </TouchableOpacity>
+            {/*<Collapsible collapsed={false} align="center">*/}
             <Collapsible collapsed={collapsedSections.includes(section.title)} align="center">
               <View>
                 {section.content}
