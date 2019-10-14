@@ -131,7 +131,7 @@ const samplesModalView = (props) => {
       </View>
       <View style={{flex: 15, paddingBottom: 20, alignItems: 'center'}}>
         <View style={{paddingTop: 20}}>
-          <Text style={styles.text}>Inplaceness of Sample: {inplaceness}</Text>
+          <Text style={styles.headingText}>Inplaceness of Sample: {inplaceness}</Text>
         </View>
         <Slider
           sliderValue={inplaceness}
