@@ -54,9 +54,11 @@ const samplesStyle = StyleSheet.create({
     alignItems: 'center',
     height: 700
   },
-  text: {
-    fontSize: 16,
-    textAlign: 'center'
+  headingText: {
+    fontSize: themes.PRIMARY_TEXT_SIZE - 3,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: themes.SECONDARY_ITEM_TEXT_COLOR
   },
   textbox: {
     fontSize: 14,

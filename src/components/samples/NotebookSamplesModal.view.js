@@ -28,7 +28,7 @@ const notebookSamplesModalView = (props) => {
         <Modal
           component={<Samples onPress={props.onPress}/>}
           close={props.close}
-          buttonTitleRight={'Go Back'}
+          // buttonTitleRight={'Go Back'}
           onPress={props.cancel}
           style={styles.samplesContainer}
         />

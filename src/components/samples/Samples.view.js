@@ -21,7 +21,7 @@ const samplesModalView = (props) => {
   const [selectedButton, setSelectedButton] = useState(null);
 
   const [sampleOrientedValue, setSampleOrientedValue] = useState(null);
-  const [inplaceness, setInplaceness] = useState(0);
+  const [inplaceness, setInplaceness] = useState(5);
   const [label, setLabel] = useState(null);
   const [name, setName] = useState(null);
   const [note, setNote] = useState(null);

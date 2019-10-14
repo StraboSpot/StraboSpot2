@@ -10,7 +10,7 @@ const shortcutSamplesModalView = (props) => {
       <Modal
         component={<Samples onPress={props.onPress}/>}
         close={props.close}
-        buttonTitleRight={'Cancel'}
+        // buttonTitleRight={'Cancel'}
         onPress={props.cancel}
         style={styles.samplesContainer}
       />
