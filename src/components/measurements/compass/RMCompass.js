@@ -38,8 +38,6 @@ import IconButton from "../../../shared/ui/IconButton";
 const {height, width} = Dimensions.get('window');
 
 const RNCompass = (props) => {
-
-  let dataView = null;
   let modalView = null;
   const [errorMessage, setErrorMessage] = useState(null);
   const [compassData, setCompassData] = useState({
@@ -213,7 +211,7 @@ const RNCompass = (props) => {
     Animated.timing(
       strikeSpinValue,
       {
-        duration: 300,
+        duration: 100,
         toValue: compassData.strike,
         easing: Easing.linear(),
         useNativeDriver: true
@@ -237,8 +235,8 @@ const RNCompass = (props) => {
         onSlidingComplete={(value) => setSliderValue(value)}
         sliderValue={sliderValue}
         thumbTouchSize={{width: 80, height: 80}}
-        leftText={'Low Quality'}
-        rightText={'High Quality'}
+        leftText={'Low'}
+        rightText={'High'}
       />
     );
   };
@@ -284,7 +282,7 @@ const RNCompass = (props) => {
     Animated.timing(
       trendSpinValue,
       {
-        duration: 300,
+        duration: 100,
         toValue: compassData.trend,
         easing: Easing.linear,
         useNativeDriver: true
@@ -342,7 +340,7 @@ const RNCompass = (props) => {
     <React.Fragment>
       <View style={{flex: 1}}>
         <View >
-          <Text style={{textAlign: 'center', fontSize: 12}}>Tap compass to take a measurement</Text>
+          <Text style={{textAlign: 'center', fontSize: 12}}>Tap compass to record</Text>
           {/*<View style={{ height: 50, backgroundColor: 'powderblue'}} />*/}
           {renderCompass()}
         </View>
@@ -350,7 +348,7 @@ const RNCompass = (props) => {
           {renderToggles()}
         </View>
         <View style={styles.sliderContainer}>
-          <Text>Current Set Value: {sliderValue}</Text>
+          <Text style={styles.sliderHeading}>Quality of Measurement</Text>
           {renderSlider()}
         </View>
       </View>

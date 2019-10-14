@@ -52,9 +52,6 @@ const styles = StyleSheet.create({
     width: '90%',
     flexDirection: 'row',
     alignItems: 'center',
-    borderTopWidth: 1,
-    paddingTop: 7,
-    paddingBottom: 7,
     paddingLeft: 15
   },
   itemTextStyle: {
@@ -73,9 +70,14 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   sliderContainer: {
-    // flex: 30,
     alignItems: 'center',
+    paddingTop: 10
     // backgroundColor: 'red'
+  },
+  sliderHeading: {
+    fontWeight: 'bold',
+    fontSize: themes.PRIMARY_TEXT_SIZE - 3,
+    color: themes.SECONDARY_ITEM_TEXT_COLOR
   },
     switchContainer: {
     flex: 1,
@@ -96,12 +98,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     padding: 10
   },
-  // toggleButtonsRowContainer: {
-  //   // flex: 25,
-  //   // flexDirection: 'column',
-  //   // paddingTop: 10,
-  //   // backgroundColor: 'powderblue'
-  // },
+  toggleButtonsRowContainer: {
+    borderBottomWidth: 1,
+  },
   trendLine: {
     height: 150,
     width: 150,
