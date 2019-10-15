@@ -644,17 +644,21 @@ class Home extends React.Component {
         {translateX: this.state.allSpotsViewAnimation}
       ]
     };
-    let settingsPanelHeader = <SettingsPanelHeader
-      onPress={() => this.setVisibleMenuState(SettingsMenuItems.SETTINGS_MAIN)}>
-      {this.state.settingsMenuVisible}
-    </SettingsPanelHeader>;
-    let content = null;
     let compassModal = null;
     let samplesModal = null;
-    let notebookPanel = null;
-    let settingsDrawer = null;
+    const settingsDrawer =
+      <FlingGestureHandler
+        direction={Directions.LEFT}
+        numberOfPointers={1}
+        // onHandlerStateChange={ev => _onTwoFingerFlingHandlerStateChange(ev)}
+        onHandlerStateChange={(ev) => this.flingHandlerSettingsPanel(ev)}
+      >
+        <Animated.View style={[styles.settingsDrawer, animateSettingsPanel]}>
+          <SettingsPanel openNotebookPanel={(pageView) => this.openNotebookPanel(pageView)}/>
+        </Animated.View>
+      </FlingGestureHandler>;
 
-    notebookPanel =
+    const notebookPanel =
       <FlingGestureHandler
         direction={Directions.RIGHT}
         numberOfPointers={1}
@@ -957,7 +961,8 @@ function mapStateToProps(state) {
     deviceDimensions: state.home.deviceDimensions,
     spot: state.spot.features,
     shortcutSwitchPosition: state.home.shortcutSwitchPosition,
-    isAllSpotsPanelVisible: state.home.isAllSpotsPanelVisible
+    isAllSpotsPanelVisible: state.home.isAllSpotsPanelVisible,
+    settingsPageVisible: state.settingsPanel.settingsPageVisible,
   }
 }
 
@@ -965,6 +970,7 @@ const mapDispatchToProps = {
   setIsOnline: (online) => ({type: spotReducers.SET_ISONLINE, online: online}),
   setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),
   setNotebookPanelVisible: (value) => ({type: notebookReducers.SET_NOTEBOOK_PANEL_VISIBLE, value: value}),
+  setSettingsPanelPageVisible: (name) => ({type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: name}),
   setIsImageModalVisible: (value) => ({type: homeReducers.TOGGLE_IMAGE_MODAL, value: value}),
   setAllSpotsPanelVisible: (value) => ({type: homeReducers.SET_ALLSPOTS_PANEL_VISIBLE, value: value}),
   addPhoto: (imageData) => ({type: imageReducers.ADD_PHOTOS, images: imageData}),
