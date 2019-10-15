@@ -128,7 +128,7 @@ const SpotsList = (props) => {
         </ScrollView>
       </React.Fragment>
     );
-  }
+  } else return <Text>No Spots Found</Text>
 };
 
 const mapStateToProps = (state) => {

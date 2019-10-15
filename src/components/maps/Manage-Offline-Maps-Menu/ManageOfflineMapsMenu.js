@@ -98,7 +98,7 @@ class ManageOfflineMapsMenu extends Component {
 
     console.log('tempCurrentBasemap: ', tempCurrentBasemap);
     await this.props.onCurrentBasemap(tempCurrentBasemap);
-    this.props.closeSettingsDrawer();
+    // this.props.closeSettingsDrawer();
   };
   confirmDeleteMap = async (map) => {
     console.log(map);
