@@ -9,7 +9,6 @@ import {spotReducers} from "../../spots/Spot.constants";
 const MeasurementsOverview = (props) => {
   const onMeasurementPressed = (item) => {
     props.setSelectedAttributes([item]);
-    props.setNotebookPanelVisible(true);
     props.setNotebookPageVisible(NotebookPages.MEASUREMENTDETAIL);
   };
 
@@ -34,7 +33,6 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
   setSelectedAttributes: (attributes) => ({type: spotReducers.SET_SELECTED_ATTRIBUTES, attributes: attributes}),
-  setNotebookPanelVisible: (value) => ({type: notebookReducers.SET_NOTEBOOK_PANEL_VISIBLE, value: value}),
   setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),
 };
 

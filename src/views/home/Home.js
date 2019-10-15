@@ -20,6 +20,7 @@ import SaveMapModal from '../../components/modals/map-actions/SaveMapsModal';
 import NotebookPanelMenu from '../../components/notebook-panel/NotebookPanelMenu';
 import {connect} from 'react-redux';
 import {NotebookPages, notebookReducers} from "../../components/notebook-panel/Notebook.constants";
+import {settingPanelReducers} from "../../components/settings-panel/settingsPanel.constants";
 import {spotReducers} from "../../spots/Spot.constants";
 import {imageReducers} from "../../components/images/Image.constants";
 // import {saveFile} from '../../services/images/ImageDownload';
@@ -257,6 +258,7 @@ class Home extends React.Component {
           easing: Easing.linear,
           useNativeDriver: true
         }).start(() => {
+          this.props.setSettingsPanelPageVisible(SettingsMenuItems.SETTINGS_MAIN);
         });
       }
     }
@@ -318,12 +320,6 @@ class Home extends React.Component {
         }
       )
     }
-  };
-
-  closeSettingsDrawer = () => {
-    this.toggleDrawer();
-    this.drawer.close();
-    this.setVisibleMenuState(SettingsMenuItems.SETTINGS_MAIN);
   };
 
   deleteSelectedFeature = (id) => {
@@ -403,14 +399,12 @@ class Home extends React.Component {
 
   openSettingsDrawer = () => {
     if (this._isMounted) {
-      this.setVisibleMenuState(SettingsMenuItems.SETTINGS_MAIN)
       Animated.timing(this.state.settingsPanelAnimation, {
         toValue: 0,
         duration: 200,
         easing: Easing.linear,
         useNativeDriver: true
       }).start(() => {
-        // this.props.setNotebookPanelVisible(true);
       });
     }
   };
@@ -510,19 +504,6 @@ class Home extends React.Component {
       });
     }
     else console.log('Attempting to set the state for the map mode but Home Component not mounted.');
-  };
-
-  setVisibleMenuState = (state) => {
-    if (this._isMounted) {
-      this.setState(prevState => {
-        return {
-          ...prevState,
-          settingsMenuVisible: state
-        }
-      }, () => {
-        console.log('State updated:', this.state);
-      })
-    }
   };
 
   saveEdits = async () => {
@@ -730,71 +711,6 @@ class Home extends React.Component {
           />
         </View>
     }
-
-    switch (this.state.settingsMenuVisible) {
-      case SettingsMenuItems.APP_PREFERENCES.SHORTCUTS:
-        content =
-          <View style={styles.settingsPanelContainer}>
-            {settingsPanelHeader}
-            <ShortcutMenu
-              toggleSwitch={(switchName) => this.toggleSwitch(switchName)}
-              shortcutSwitchPosition={this.props.shortcutSwitchPosition}
-            />
-          </View>;
-        break;
-      case SettingsMenuItems.MAPS.MANAGE_OFFLINE_MAPS:
-        content =
-          <View style={styles.settingsPanelContainer}>
-            {settingsPanelHeader}
-            <ManageOfflineMapsMenu
-              toggleSwitch={(switchName) => this.toggleSwitch(switchName)}
-              closeSettingsDrawer={() => this.closeSettingsDrawer()}
-            />
-          </View>;
-        break;
-      case SettingsMenuItems.MAPS.CUSTOM:
-        content =
-          <View style={styles.settingsPanelContainer}>
-            {settingsPanelHeader}
-            <CustomMapsMenu
-              toggleSwitch={(switchName) => this.toggleSwitch(switchName)}
-              closeSettingsDrawer={() => this.closeSettingsDrawer()}
-            />
-          </View>;
-        break;
-      case SettingsMenuItems.ATTRIBUTES.IMAGE_GALLERY:
-        content =
-          <View style={styles.settingsPanelContainer}>
-            {settingsPanelHeader}
-            <ImageGallery
-              getSpotData={(spotId) => this.getSpotFromId(spotId)}
-            />
-          </View>;
-        break;
-      case SettingsMenuItems.ATTRIBUTES.SPOTS_LIST:
-        content =
-          <View style={styles.settingsPanelContainer}>
-          {settingsPanelHeader}
-          <SpotsList
-            getSpotData={(spotId) => this.getSpotFromId(spotId)}
-          />
-          </View>;
-        break;
-      default:
-        content = <SettingsPanel onPress={(name) => this.setVisibleMenuState(name)}/>
-    }
-
-    settingsDrawer =
-      <FlingGestureHandler
-        direction={Directions.LEFT}
-        numberOfPointers={1}
-        // onHandlerStateChange={ev => _onTwoFingerFlingHandlerStateChange(ev)}
-        onHandlerStateChange={(ev) => this.flingHandlerSettingsPanel(ev)}
-      >
-        <Animated.View style={[styles.settingsDrawer, animateSettingsPanel]}>
-          {content}
-        </Animated.View>
-      </FlingGestureHandler>;
 
     return (
         <View style={styles.container}>

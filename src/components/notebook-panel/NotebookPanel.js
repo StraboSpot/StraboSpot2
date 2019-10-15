@@ -38,7 +38,6 @@ const NotebookPanel = props => {
 
   const _onRightFlingHandlerStateChange = ({nativeEvent}) => {
     if (nativeEvent.oldState === State.ACTIVE) {
-      console.log('FLING RIGHT!', nativeEvent);
       props.setAllSpotsPanelVisible(false);
       closeAllSpotsPanelFromMenu(animation)
     }
@@ -46,36 +45,10 @@ const NotebookPanel = props => {
 
   const _onLeftFlingHandlerStateChange = ({nativeEvent}) => {
     if (nativeEvent.oldState === State.ACTIVE) {
-      console.log('FLING LEFT!', nativeEvent);
       props.setAllSpotsPanelVisible(true);
       openAllSpotsPanelFromMenu(animation)
     }
   };
-
-  // const openAllSpotsPanel = () => {
-  //   // this.props.setNotebookPanelVisible(false);
-  //   // this.props.setAllSpotsPanelVisible(!this.props.isAllSpotsPanelVisible);
-  //   if (props.isAllSpotsPanelVisible) {
-  //     props.setAllSpotsPanelVisible(false);
-  //     // Animated.timing(this.state.allSpotsViewAnimation, {
-  //     //   toValue: 125,
-  //     //   duration: 200,
-  //     //   easing: Easing.linear,
-  //     //   useNativeDriver: true
-  //     // }).start();
-  //     closeAllSpotsPanelFromMenu(animation);
-  //   }
-  //   else{
-  //     props.setAllSpotsPanelVisible(true);
-  //     // Animated.timing(this.state.allSpotsViewAnimation, {
-  //     //   toValue: 0,
-  //     //   duration: 200,
-  //     //   easing: Easing.linear,
-  //     //   useNativeDriver: true
-  //     // }).start();
-  //     openAllSpotsPanelFromMenu(animation)
-  //   }
-  // };
 
   const animateAllSpotsMenu = {
     transform: [
@@ -159,7 +132,6 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
   setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),
-  setNotebookPanelVisible: (value) => ({type: notebookReducers.SET_NOTEBOOK_PANEL_VISIBLE, value: value}),
   setModalVisible: (modal) => ({type: homeReducers.SET_MODAL_VISIBLE, modal: modal}),
   setAllSpotsPanelVisible: (value) => ({type: homeReducers.SET_ALLSPOTS_PANEL_VISIBLE, value: value}),
 };

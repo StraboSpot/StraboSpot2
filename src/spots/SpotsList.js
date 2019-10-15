@@ -148,8 +148,6 @@ const mapDispatchToProps = {
   setSelectedAttributes: (attributes) => ({type: spotReducers.SET_SELECTED_ATTRIBUTES, attributes: attributes}),
   setIsImageModalVisible: (value) => ({type: homeReducers.TOGGLE_IMAGE_MODAL, value: value}),
   setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),
-  setNotebookPanelVisible: (value) => ({type: notebookReducers.SET_NOTEBOOK_PANEL_VISIBLE, value: value}),
-  // setSortedListView: (view) => ({type: SET_SORTED_VIEW, view: view}),
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(SpotsList);

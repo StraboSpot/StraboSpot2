@@ -62,7 +62,6 @@ const MeasurementsPage = (props) => {
 
   const viewMeasurementDetail = (item) => {
     props.setSelectedAttributes([item]);
-    props.setNotebookPanelVisible(true);
     props.setNotebookPageVisible(NotebookPages.MEASUREMENTDETAIL);
   };
 
@@ -215,7 +214,6 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-  setNotebookPanelVisible: (value) => ({type: notebookReducers.SET_NOTEBOOK_PANEL_VISIBLE, value: value}),
   setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),
   setModalVisible: (modal) => ({type: homeReducers.SET_MODAL_VISIBLE, modal: modal}),
   setSelectedAttributes: (attributes) => ({type: spotReducers.SET_SELECTED_ATTRIBUTES, attributes: attributes})

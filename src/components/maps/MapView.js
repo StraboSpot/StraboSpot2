@@ -392,7 +392,6 @@ class mapView extends Component {
       console.log('Creating new feature:', feature);
       await this.props.onFeatureAdd(feature);
       this.props.onFeatureSelected(feature);
-      this.props.setNotebookPanelVisible(true);
       this.props.setNotebookPageVisible(NotebookPages.OVERVIEW);
       this.props.setModalVisible(null);
       console.log('Finished creating new feature. Features: ', this.props.features);
@@ -693,7 +692,6 @@ const mapDispatchToProps = {
   onFeaturesUpdated: (features) => ({type: spotReducers.FEATURES_UPDATED, features: features}),
   onCurrentBasemap: (basemap) => ({type: mapReducers.CURRENT_BASEMAP, basemap: basemap}),
   setModalVisible: (modal) => ({type: homeReducers.SET_MODAL_VISIBLE, modal: modal}),
-  setNotebookPanelVisible: (value) => ({type: notebookReducers.SET_NOTEBOOK_PANEL_VISIBLE, value: value}),
   setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),
 };
 
