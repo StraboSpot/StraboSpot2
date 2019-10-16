@@ -1,7 +1,7 @@
-import {settingPanelReducers} from './settingsPanel.constants';
+import {settingPanelReducers, SortedViews} from './settingsPanel.constants';
 
 const initialState = {
-  sortedView: null,
+  sortedView: SortedViews.CHRONOLOGICAL,
   selectedButtonIndex: 0,
   settingsPageVisible: null
 };

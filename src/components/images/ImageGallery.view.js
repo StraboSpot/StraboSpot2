@@ -5,33 +5,36 @@ import {connect} from "react-redux";
 import imageStyles from './images.styles'
 import {Button, Image} from "react-native-elements";
 import {imageReducers} from "./Image.constants";
-import SettingsPanelHeader from "../settings-panel/SettingsPanelHeader";
+// import SettingsPanelHeader from "../settings-panel/SettingsPanelHeader";
+import SortingButtons from '../settings-panel/Sorting';
 import * as SharedUI from '../../shared/ui/index';
 import {isEmpty} from '../../shared/Helpers';
 import {spotReducers} from "../../spots/Spot.constants";
 import {homeReducers} from "../../views/home/Home.constants";
 import {notebookReducers} from "../notebook-panel/Notebook.constants";
-import { SortedViews} from "../settings-panel/settingsPanel.constants";
+import {settingPanelReducers, SortedViews} from "../settings-panel/settingsPanel.constants";
 
 const imageGallery = (props) => {
-  const [selectedButtonIndex, setSelectedButtonIndex] = useState(0);
   const [refresh, setRefresh] = useState(false);
   const [sortedList, setSortedList] = useState(props.spots);
-  const [sortedListView, setSortedListView] = useState(SortedViews.CHRONOLOGICAL);
   const {selectedSpot} = props;
-  const {spots} = props;
+  const {spots, sortedListView} = props;
   let savedArray = [];
 
   useEffect(() => {
-    updateIndex(selectedButtonIndex);
-    console.log('render!')
+    console.log('ImageView render!');
+    return function cleanUp() {
+      props.setSortedListView(SortedViews.CHRONOLOGICAL);
+      props.setSelectedButtonIndex(0);
+      console.log('CLEANUP!')
+    }
   }, []);
 
   useEffect(() => {
     setSortedList(spots);
     setRefresh(!refresh);
-    console.log('render Recent Views!')
-  }, [selectedSpot, spots]);
+    console.log('render Recent Views in ImageGallery.js!')
+  }, [selectedSpot, spots, sortedListView]);
 
   const imageSave = async () => {
     const savedPhoto = await pictureSelectDialog();
@@ -134,91 +137,83 @@ const imageGallery = (props) => {
   };
 
   // used with the button group to select active button
-  const updateIndex = (selectedButtonIndex) => {
-    setSelectedButtonIndex(selectedButtonIndex);
-    switch (selectedButtonIndex) {
-      case 0:
-        console.log('Chronological Selected');
-        setSortedListView(SortedViews.CHRONOLOGICAL);
-        setSortedList(props.spots.sort(((a, b) => a.properties.date > b.properties.date)));
-        setRefresh(!refresh);
-        break;
-      case 1:
-        setSortedListView(SortedViews.MAP_EXTENT);
-        break;
-      case 2:
-        setSortedListView(SortedViews.RECENT_VIEWS);
-        break;
+  // const updateIndex = (selectedButtonIndex) => {
+  //   setSelectedButtonIndex(selectedButtonIndex);
+  //   switch (selectedButtonIndex) {
+  //     case 0:
+  //       console.log('Chronological Selected');
+  //       setSortedListView(SortedViews.CHRONOLOGICAL);
+  //       setSortedList(props.spots.sort(((a, b) => a.properties.date > b.properties.date)));
+  //       setRefresh(!refresh);
+  //       break;
+  //     case 1:
+  //       setSortedListView(SortedViews.MAP_EXTENT);
+  //       break;
+  //     case 2:
+  //       setSortedListView(SortedViews.RECENT_VIEWS);
+  //       break;
+  //   }
+  // };
+
+  let sortedView = null;
+  const filteredList = sortedList.filter(spot => {
+    return !isEmpty(spot.properties.images)
+  });
+  if (!isEmpty(filteredList)) {
+
+
+    if (props.sortedListView === SortedViews.CHRONOLOGICAL) {
+      sortedView = <FlatList
+        keyExtractor={(item) => item.properties.id.toString()}
+        extraData={refresh}
+        data={filteredList}
+        renderItem={({item}) => renderName(item)}/>
     }
-  };
-
-    let sortedView = null;
-    const filteredList = sortedList.filter(spot => {
-      return !isEmpty(spot.properties.images)
-    });
-    if (!isEmpty(filteredList)) {
-
-
-      if (sortedListView === SortedViews.CHRONOLOGICAL) {
-        sortedView = <FlatList
-          keyExtractor={(item) => item.properties.id.toString()}
-          extraData={refresh}
-          data={filteredList}
-          renderItem={({item}) => renderName(item)}/>
-      }
-      else if (sortedListView === SortedViews.MAP_EXTENT) {
-        sortedView = <FlatList
-          keyExtractor={(item) => item.properties.id.toString()}
-          extraData={refresh}
-          data={filteredList}
-          renderItem={({item}) => renderName(item)}/>
-      }
-      else if (sortedListView === SortedViews.RECENT_VIEWS) {
-        sortedView = <FlatList
-          keyExtractor={(item) => item.toString()}
-          extraData={refresh}
-          data={props.recentViews}
-          inverted={true}
-          renderItem={({item}) => renderRecentView(item)}/>
-      }
-      else {
-        sortedView = <FlatList
-          keyExtractor={(item) => item.properties.id.toString()}
-          extraData={refresh}
-          data={props.spots}
-          renderItem={({item}) => renderName(item)}/>
-      }
-      return (
-        <React.Fragment>
-          <SharedUI.ButtonGroup
-            selectedIndex={selectedButtonIndex}
-            buttons={['Chronological', 'Map Extent', 'Recent \n Views']}
-            containerStyle={{height: 50}}
-            buttonStyle={{padding: 5}}
-            textStyle={{fontSize: 12}}
-            onPress={(selected) => updateIndex(selected)}
-          />
-          <ScrollView>
-            <View style={imageStyles.galleryImageContainer}>
-              {sortedView}
-            </View>
-          </ScrollView>
-        </React.Fragment>
-      );
+    else if (props.sortedListView === SortedViews.MAP_EXTENT) {
+      sortedView = <FlatList
+        keyExtractor={(item) => item.properties.id.toString()}
+        extraData={refresh}
+        data={filteredList}
+        renderItem={({item}) => renderName(item)}/>
+    }
+    else if (props.sortedListView === SortedViews.RECENT_VIEWS) {
+      sortedView = <FlatList
+        keyExtractor={(item) => item.toString()}
+        extraData={refresh}
+        data={props.recentViews}
+        inverted={true}
+        renderItem={({item}) => renderRecentView(item)}/>
     }
     else {
-      return (
-        <React.Fragment>
-          <View style={imageStyles.noImageContainer}>
-            <Text style={imageStyles.text}>No Images Found</Text>
-            {/*<Image*/}
-            {/*  source={require('../../assets/images/No-Image-resized.jpg')}*/}
-            {/*  style={{height: '70%', width: 300}}*/}
-            {/*/>*/}
-          </View>
-        </React.Fragment>
-      );
+      sortedView = <FlatList
+        keyExtractor={(item) => item.properties.id.toString()}
+        extraData={refresh}
+        data={props.spots}
+        renderItem={({item}) => renderName(item)}/>
     }
+    return (
+      <React.Fragment>
+        <SortingButtons/>
+        {/*<SharedUI.ButtonGroup*/}
+        {/*  selectedIndex={selectedButtonIndex}*/}
+        {/*  buttons={['Chronological', 'Map Extent', 'Recent \n Views']}*/}
+        {/*  containerStyle={{height: 50}}*/}
+        {/*  buttonStyle={{padding: 5}}*/}
+        {/*  textStyle={{fontSize: 12}}*/}
+        {/*  onPress={(selected) => updateIndex(selected)}*/}
+        {/*/>*/}
+        <ScrollView>
+          <View style={imageStyles.galleryImageContainer}>
+            {sortedView}
+          </View>
+        </ScrollView>
+      </React.Fragment>
+    );
+  }
+  else {
+    return <Text style={imageStyles.text}>No Images Found</Text>
+
+  }
 };
 
 const mapStateToProps = (state) => {
@@ -226,7 +221,7 @@ const mapStateToProps = (state) => {
     imagePaths: state.images.imagePaths,
     spots: state.spot.features,
     recentViews: state.spot.recentViews,
-    sortedView: state.images.sortedView,
+    sortedListView: state.settingsPanel.sortedView,
     selectedImage: state.spot.selectedAttributes[0],
     selectedSpot: state.spot.selectedSpot,
   }
@@ -237,7 +232,8 @@ const mapDispatchToProps = {
   setSelectedAttributes: (attributes) => ({type: spotReducers.SET_SELECTED_ATTRIBUTES, attributes: attributes}),
   setIsImageModalVisible: (value) => ({type: homeReducers.TOGGLE_IMAGE_MODAL, value: value}),
   setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),
-  // setNotebookPanelVisible: (value) => ({type: notebookReducers.SET_NOTEBOOK_PANEL_VISIBLE, value: value}),
+  setSortedListView: (view) => ({type: settingPanelReducers.SET_SORTED_VIEW, view: view}),
+  setSelectedButtonIndex: (index) => ({type: settingPanelReducers.SET_SELECTED_BUTTON_INDEX, index: index})
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(imageGallery);
