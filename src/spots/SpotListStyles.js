@@ -14,11 +14,8 @@ const spotListStyle = StyleSheet.create({
     alignItems: 'center',
   },
   spotListListContainer: {
+    flex:1,
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
-    padding: 5,
-    paddingTop: 0,
-    // paddingBottom:3,
-    justifyContent: 'space-between'
   },
 });
 

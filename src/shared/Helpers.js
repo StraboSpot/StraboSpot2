@@ -1,6 +1,7 @@
 import React from 'react'
 // Return UUID
 import {Animated, Easing} from "react-native";
+// import {SettingsMenuItems} from "../components/settings-panel/SettingsMenu.constants";
 
 export const getNewId = () => {
   return Math.floor((new Date().getTime() + Math.random()) * 10);
@@ -50,25 +51,8 @@ export function toTitleCase(str) {
     return t.toUpperCase()
   });
 }
-//
-// export const closeAllSpotsPanelFromMenu = (animationState) => {
-//   return Animated.timing(animationState, {
-//     toValue: 125,
-//     duration: 200,
-//     easing: Easing.linear,
-//     useNativeDriver: true
-//   }).start();
-// };
-//
-// export const openAllSpotsPanelFromMenu = (animationState) => {
-//   return Animated.timing(animationState, {
-//     toValue: 0,
-//     duration: 200,
-//     easing: Easing.linear,
-//     useNativeDriver: true
-//   }).start();
-// };
 
+// Used to animate open and close of Settings Panel and Notebook Panel
 export const animatePanels = (animatedState, toValue) => {
   Animated.timing(animatedState, {
     toValue: toValue,

@@ -21,8 +21,8 @@ const SpotsList = (props) => {
   useEffect(() => {
     console.log('render in SpotList!');
     return function cleanUp() {
-      props.setSortedListView(SortedViews.CHRONOLOGICAL)
-      props.setSelectedButtonIndex(0)
+      props.setSortedListView(SortedViews.CHRONOLOGICAL);
+      props.setSelectedButtonIndex(0);
       console.log('CLEANUP!')
     }
   }, []);
@@ -31,11 +31,11 @@ const SpotsList = (props) => {
     setSortedList(spots);
     setRefresh(!refresh);
     console.log('render Recent Views in SpotList!')
-  }, [selectedSpot, sortedListView]);
+  }, [selectedSpot, spots, sortedListView, sortedList]);
 
   const renderName = (item) => {
     return (
-      <View style={spotListStyles.spotListListContainer}>
+      <View >
         <ListItem
           key={item.properties.id}
           title={item.properties.name}
@@ -51,7 +51,7 @@ const SpotsList = (props) => {
       return spot.properties.id === spotID
     });
     return (
-      <View style={spotListStyles.spotListListContainer}>
+      <View >
         <ListItem
           key={spot.properties.id}
           title={spot.properties.name}
@@ -104,7 +104,6 @@ const SpotsList = (props) => {
           keyExtractor={(item) => item.toString()}
           extraData={refresh}
           data={props.recentViews}
-          inverted={true}
           renderItem={({item}) => renderRecentView(item)}/>
     }
     else {
@@ -115,23 +114,13 @@ const SpotsList = (props) => {
         renderItem={({item}) => renderName(item)}/>
     }
     return (
-      <React.Fragment>
+      <View style={{flex: 1}} >
         <SortingButtons/>
-
-        {/*<SharedUI.ButtonGroup*/}
-        {/*  selectedIndex={selectedButtonIndex}*/}
-        {/*  buttons={['Chronological', 'Map Extent', 'Recent \n Views']}*/}
-        {/*  containerStyle={{height: 50}}*/}
-        {/*  buttonStyle={{padding: 5}}*/}
-        {/*  textStyle={{fontSize: 12}}*/}
-        {/*  onPress={(selected) => updateIndex(selected)}*/}
-        {/*/>*/}
-        <ScrollView>
-          <View style={spotListStyles.spotListListContainer}>
+        <View style={spotListStyles.spotListListContainer}>
             {sortedView}
-          </View>
-        </ScrollView>
-      </React.Fragment>
+        </View>
+      </View>
+
     );
   } else return <Text>No Spots Found</Text>
 };
