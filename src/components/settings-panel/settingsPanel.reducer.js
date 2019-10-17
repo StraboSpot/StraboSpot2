@@ -3,7 +3,8 @@ import {settingPanelReducers, SortedViews} from './settingsPanel.constants';
 const initialState = {
   sortedView: SortedViews.CHRONOLOGICAL,
   selectedButtonIndex: 0,
-  settingsPageVisible: null
+  settingsPageVisible: null,
+  sortedList: null
 };
 
 export const settingsPanelReducer = (state = initialState, action) => {
@@ -12,6 +13,11 @@ export const settingsPanelReducer = (state = initialState, action) => {
       return {
         ...state,
         sortedView: action.view
+      };
+    case settingPanelReducers.SET_SORTED_LIST:
+      return {
+        ...state,
+        sortedList: action.sortedList
       };
     case settingPanelReducers.SET_SELECTED_BUTTON_INDEX:
       return {

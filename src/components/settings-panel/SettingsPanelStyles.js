@@ -4,7 +4,9 @@ import * as themes from '../../shared/styles.constants';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR
+    borderBottomRightRadius: 30,
+    borderTopRightRadius: 30,
+    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
   },
   navItemStyle: {
     padding: 3,
@@ -15,7 +17,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   listContainer: {
-    flex: 8,
+    flex: 6,
   },
   sectionHeading: {
     alignItems: 'flex-start',

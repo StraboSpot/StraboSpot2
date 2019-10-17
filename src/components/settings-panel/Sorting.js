@@ -16,8 +16,8 @@ import {settingPanelReducers} from "../../components/settings-panel/settingsPane
 // import {settingsPanelReducer} from "./settingsPanel.reducer";
 
 const sortButtons = (props) => {
-  const [refresh, setRefresh] = useState(false);
-  const [sortedList, setSortedList] = useState(props.spots);
+  // const [refresh, setRefresh] = useState(false);
+  // const [sortedList, setSortedList] = useState(props.spots);
   const {selectedSpot} = props;
   const {spots} = props;
 
@@ -27,8 +27,8 @@ const sortButtons = (props) => {
   }, []);
 
   useEffect(() => {
-    setSortedList(spots);
-    setRefresh(!refresh);
+    // props.setSortedList(spots);
+    // setRefresh(!refresh);
     console.log('render Recent Views!')
   }, [selectedSpot, spots]);
 
@@ -38,8 +38,9 @@ const sortButtons = (props) => {
       case 0:
         console.log('Chronological Selected');
         props.setSortedListView(SortedViews.CHRONOLOGICAL);
-        setSortedList(props.spots.sort(((a, b) => a.properties.date > b.properties.date)));
-        setRefresh(!refresh);
+        props.setSortedList(props.spots.sort(((a, b) => {
+          return new Date(a.properties.date) - new Date(b.properties.date)
+        })));
         break;
       case 1:
         console.log('Map Extent Selected');
@@ -75,6 +76,7 @@ const mapStateToProps = (state) => {
     settingsPageVisible: state.settingsPanel.settingsPageVisible,
     selectedImage: state.spot.selectedAttributes[0],
     selectedSpot: state.spot.selectedSpot,
+    sortedList: state.settingsPanel.sortedList
   }
 };
 
@@ -84,8 +86,8 @@ const mapDispatchToProps = {
   setIsImageModalVisible: (value) => ({type: homeReducers.TOGGLE_IMAGE_MODAL, value: value}),
   setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),
   setSortedListView: (view) => ({type: settingPanelReducers.SET_SORTED_VIEW, view: view}),
-  setSelectedButtonIndex: (index) => ({type: settingPanelReducers.SET_SELECTED_BUTTON_INDEX, index: index})
-  // setNotebookPanelVisible: (value) => ({type: notebookReducers.SET_NOTEBOOK_PANEL_VISIBLE, value: value}),
+  setSelectedButtonIndex: (index) => ({type: settingPanelReducers.SET_SELECTED_BUTTON_INDEX, index: index}),
+  setSortedList: (type) => ({type: settingPanelReducers.SET_SORTED_LIST, sortedList: type})
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(sortButtons);

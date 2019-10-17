@@ -76,7 +76,7 @@ const SettingsPanel = props => {
       break;
     case SettingsMenuItems.ATTRIBUTES.SPOTS_LIST:
       page =
-          <View style={styles.settingsPanelContainer}>
+          <View style={styles.listContainer}>
             {settingsPanelHeader}
             <SpotsList
               getSpotData={(spotId) => getSpotFromId(spotId)}
@@ -85,7 +85,7 @@ const SettingsPanel = props => {
       break;
     case SettingsMenuItems.ATTRIBUTES.IMAGE_GALLERY:
       page =
-          <View style={styles.settingsPanelContainer}>
+          <View style={styles.listContainer}>
             {settingsPanelHeader}
             <ImageGallery
               getSpotData={(spotId) => getSpotFromId(spotId)}
@@ -94,7 +94,7 @@ const SettingsPanel = props => {
       break;
     case SettingsMenuItems.ATTRIBUTES.SAMPLES:
       page =
-        <View style={styles.settingsPanelContainer}>
+        <View style={styles.listContainer}>
           {settingsPanelHeader}
         </View>;
       break;
