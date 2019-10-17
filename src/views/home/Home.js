@@ -49,6 +49,7 @@ import styles from './Styles';
 import vectorIcon from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from '../../shared/Icons';
 import IconButton from '../../shared/ui/IconButton';
+import {animatePanels} from '../../shared/Helpers';
 
 const deviceWidth = () => {
   if (width < 500) return wp('95%');
@@ -174,7 +175,7 @@ class Home extends React.Component {
 
       // Notebook Panel three-dot menu
       case "closeNotebook":
-        this.closeWholeNotebookPanel();
+        this.closeNotebookPanel();
         break;
       case 'copyFeature':
         console.log('Spot Copied!');
@@ -186,13 +187,9 @@ class Home extends React.Component {
       case 'toggleAllSpotsPanel':
         if (position === 'open') {
           this.props.setAllSpotsPanelVisible(true)
-          // Alert.alert('Opening All-Spots Panel', 'With TWO fingers swipe LEFT inside the Notebook Panel');
         } else if (position === 'close') {
           this.props.setAllSpotsPanelVisible(false)
-          // Alert.alert('Closing All-Spots Panel', 'With TWO fingers swipe RIGHT inside the Notebook Panel');
         }
-        // this.props.setAllSpotsPanelVisible(false);
-        // closeAllSpotsPanelFromMenu(this.state.allSpotsViewAnimation);
         break;
       // Map Actions
       case MapModes.DRAW.POINT:
@@ -246,47 +243,23 @@ class Home extends React.Component {
     }
   };
 
-  closeAllSpotsPanel = () => {
-    this.props.setAllSpotsPanelVisible(false);
-  };
-
   flingHandlerSettingsPanel = ({nativeEvent}) => {
     if (this._isMounted) {
       if (nativeEvent.oldState === State.ACTIVE) {
         console.log('FLING TO CLOSE Settings Panel!', nativeEvent);
-        Animated.timing(this.state.settingsPanelAnimation, {
-          toValue: -deviceWidth(),
-          duration: 200,
-          easing: Easing.linear,
-          useNativeDriver: true
-        }).start(() => {
-          this.props.setSettingsPanelPageVisible(SettingsMenuItems.SETTINGS_MAIN);
-        });
+        animatePanels(this.state.settingsPanelAnimation, -deviceWidth());
+        this.props.setSettingsPanelPageVisible(SettingsMenuItems.SETTINGS_MAIN);
       }
     }
   };
 
-  flingHandler = ({nativeEvent}) => {
+  flingHandlerNotebook = ({nativeEvent}) => {
     if (this._isMounted) {
       if (nativeEvent.oldState === State.ACTIVE) {
         console.log('FLING TO CLOSE NOTEBOOK!', nativeEvent);
+        animatePanels(this.state.animation, deviceWidth());
+        this.props.setNotebookPanelVisible(false);
         this.props.setAllSpotsPanelVisible(false);
-        Animated.timing(this.state.animation, {
-          toValue: this.deviceWidth(),
-          duration: 200,
-          easing: Easing.linear,
-          useNativeDriver: true
-        }).start(() => {
-          // this.props.setNotebookPanelVisible(false);
-          // this.props.setModalVisible(null);
-          this.closeWholeNotebookPanel();
-        });
-        Animated.timing(this.state.allSpotsViewAnimation, {
-          toValue: 125,
-          duration: 200,
-          easing: Easing.linear,
-          useNativeDriver: true
-        }).start();
       }
     }
   };
@@ -294,33 +267,9 @@ class Home extends React.Component {
   closeNotebookPanel = () => {
     if (this._isMounted) {
       console.log('closing notebook');
-      Animated.timing(this.state.animation, {
-        toValue: this.deviceWidth(),
-        duration: 200,
-        easing: Easing.linear,
-        useNativeDriver: true
-      }).start(() => {
-          this.props.setNotebookPanelVisible(false);
-          this.props.setAllSpotsPanelVisible(false);
-        }
-      )
-    }
-  };
-
-  closeWholeNotebookPanel = () => {
-    if (this._isMounted) {
-      console.log('closing Whole notebook');
-      this.props.setModalVisible(null);
-      Animated.timing(this.state.animation, {
-        toValue: this.deviceWidth(),
-        duration: 200,
-        easing: Easing.linear,
-        useNativeDriver: true
-      }).start(() => {
-          this.props.setNotebookPanelVisible(false);
-          this.props.setAllSpotsPanelVisible(false);
-        }
-      )
+      animatePanels(this.state.animation, deviceWidth());
+      this.props.setNotebookPanelVisible(false);
+      this.props.setAllSpotsPanelVisible(false);
     }
   };
 
@@ -401,13 +350,7 @@ class Home extends React.Component {
 
   openSettingsDrawer = () => {
     if (this._isMounted) {
-      Animated.timing(this.state.settingsPanelAnimation, {
-        toValue: 0,
-        duration: 200,
-        easing: Easing.linear,
-        useNativeDriver: true
-      }).start(() => {
-      });
+      animatePanels(this.state.settingsPanelAnimation, 0)
     }
   };
 
@@ -415,15 +358,8 @@ class Home extends React.Component {
     if (this._isMounted) {
       console.log('notebook opening', pageView);
       this.props.setNotebookPageVisible(pageView);
-      this.props.setAllSpotsPanelVisible(false);
-      Animated.timing(this.state.animation, {
-        toValue: wp('0%'),
-        duration: 200,
-        easing: Easing.linear,
-        useNativeDriver: true
-      }).start(() => {
-        this.props.setNotebookPanelVisible(true);
-      });
+      animatePanels(this.state.animation, wp('0%'));
+      this.props.setNotebookPanelVisible(true);
     }
   };
 
@@ -665,12 +601,12 @@ class Home extends React.Component {
         direction={Directions.RIGHT}
         numberOfPointers={1}
         // onHandlerStateChange={ev => _onTwoFingerFlingHandlerStateChange(ev)}
-        onHandlerStateChange={(ev) => this.flingHandler(ev)}
+        onHandlerStateChange={(ev) => this.flingHandlerNotebook(ev)}
       >
         <Animated.View style={[notebookStyles.panel, animateNotebookMenu]}>
           <NotebookPanel
-            onHandlerStateChange={(ev, name) => this.flingHandler(ev, name)}
-            closeNotebook={this.closeWholeNotebookPanel}
+            onHandlerStateChange={(ev, name) => this.flingHandlerNotebook(ev, name)}
+            closeNotebook={this.closeNotebookPanel}
             textStyle={{fontWeight: 'bold', fontSize: 12}}
             onPress={(name) => this.notebookClickHandler(name)}
           >

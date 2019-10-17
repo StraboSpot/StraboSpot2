@@ -50,22 +50,31 @@ export function toTitleCase(str) {
     return t.toUpperCase()
   });
 }
+//
+// export const closeAllSpotsPanelFromMenu = (animationState) => {
+//   return Animated.timing(animationState, {
+//     toValue: 125,
+//     duration: 200,
+//     easing: Easing.linear,
+//     useNativeDriver: true
+//   }).start();
+// };
+//
+// export const openAllSpotsPanelFromMenu = (animationState) => {
+//   return Animated.timing(animationState, {
+//     toValue: 0,
+//     duration: 200,
+//     easing: Easing.linear,
+//     useNativeDriver: true
+//   }).start();
+// };
 
-export const closeAllSpotsPanelFromMenu = (animationState) => {
-  return Animated.timing(animationState, {
-    toValue: 125,
+export const animatePanels = (animatedState, toValue) => {
+  Animated.timing(animatedState, {
+    toValue: toValue,
     duration: 200,
     easing: Easing.linear,
-    useNativeDriver: true
-  }).start();
-};
-
-export const openAllSpotsPanelFromMenu = (animationState) => {
-  return Animated.timing(animationState, {
-    toValue: 0,
-    duration: 200,
-    easing: Easing.linear,
-    useNativeDriver: true
+    useNativeDriver: true,
   }).start();
 };
 
