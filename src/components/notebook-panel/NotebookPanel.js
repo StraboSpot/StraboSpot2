@@ -13,7 +13,7 @@ import {notebookReducers, NotebookPages} from "./Notebook.constants";
 import {homeReducers, Modals} from "../../views/home/Home.constants";
 import {isEmpty} from "../../shared/Helpers";
 import {FlingGestureHandler, Directions, State} from 'react-native-gesture-handler'
-import {openAllSpotsPanelFromMenu, closeAllSpotsPanelFromMenu} from '../../shared/Helpers';
+// import {openAllSpotsPanelFromMenu, closeAllSpotsPanelFromMenu, animatePanels} from '../../shared/Helpers';
 
 // Styles
 import notebookStyles from "./NotebookPanel.styles";
@@ -22,7 +22,7 @@ import AllSpotsView from "./AllSpots.view";
 
 const NotebookPanel = props => {
 
-  const [animation, setAnimation] = useState(new Animated.Value(125));
+  // const [animation, setAnimation] = useState(new Animated.Value(250));
 
 
   const setNotebookPageVisible = page => {
@@ -39,29 +39,29 @@ const NotebookPanel = props => {
   const _onRightFlingHandlerStateChange = ({nativeEvent}) => {
     if (nativeEvent.oldState === State.ACTIVE) {
       props.setAllSpotsPanelVisible(false);
-      closeAllSpotsPanelFromMenu(animation)
+      // animatePanels(animation, 250)
     }
   };
 
   const _onLeftFlingHandlerStateChange = ({nativeEvent}) => {
     if (nativeEvent.oldState === State.ACTIVE) {
       props.setAllSpotsPanelVisible(true);
-      openAllSpotsPanelFromMenu(animation)
+      // animatePanels(animation, 125)
     }
   };
 
-  const animateAllSpotsMenu = {
-    transform: [
-      {translateX: animation}
-    ],
-  };
+  // const animateAllSpotsMenu = {
+  //   transform: [
+  //     {translateX: animation}
+  //   ],
+  // };
 
   if (!isEmpty(props.spot)) {
     // console.log('Selected Spot:', props.spot);
 
-    const allSpotsPanel = <Animated.View style={[notebookStyles.allSpotsPanel, animateAllSpotsMenu]}>
+    const allSpotsPanel = <View style={[notebookStyles.allSpotsPanel,]}>
       <AllSpotsView />
-    </Animated.View>;
+    </View>;
 
     return (
 
@@ -100,7 +100,7 @@ const NotebookPanel = props => {
                 />
               </View>
               {/*{props.isAllSpotsPanelVisible ? allSpotsPanel : null}*/}
-              {allSpotsPanel}
+              {props.isAllSpotsPanelVisible ? allSpotsPanel : null}
             </Animated.View>
           </FlingGestureHandler>
         </FlingGestureHandler>

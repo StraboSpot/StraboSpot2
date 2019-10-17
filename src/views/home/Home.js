@@ -10,10 +10,10 @@ import NotebookPanel from '../../components/notebook-panel/NotebookPanel';
 import SettingsPanel from '../../components/settings-panel/SettingsPanel';
 import {MapModes} from '../../components/maps/Map.constants';
 import {SettingsMenuItems} from '../../components/settings-panel/SettingsMenu.constants';
-import ImageGallery from '../../components/images/ImageGallery.view';
-import ShortcutMenu from '../../components/settings-panel/shortcuts-menu/ShortcutsMenu';
-import ManageOfflineMapsMenu from '../../components/maps/Manage-Offline-Maps-Menu/ManageOfflineMapsMenu';
-import CustomMapsMenu from '../../components/maps/Custom-Maps-Menu/CustomMapsMenu';
+// import ImageGallery from '../../components/images/ImageGallery.view';
+// import ShortcutMenu from '../../components/settings-panel/shortcuts-menu/ShortcutsMenu';
+// import ManageOfflineMapsMenu from '../../components/maps/Manage-Offline-Maps-Menu/ManageOfflineMapsMenu';
+// import CustomMapsMenu from '../../components/maps/Custom-Maps-Menu/CustomMapsMenu';
 import ButtonWithBackground from '../../shared/ui/ButtonWithBackground';
 import Modal from "react-native-modal";
 import SaveMapModal from '../../components/modals/map-actions/SaveMapsModal';
@@ -29,15 +29,15 @@ import NotebookCompassModal from "../../components/measurements/compass/Notebook
 import ShortcutCompassModal from '../../components/measurements/compass/ShortcutCompassModal';
 import NotebookSamplesModal from '../../components/samples/NotebookSamplesModal.view';
 import ShortcutSamplesModal from '../../components/samples/ShortcutSamplesModal.view';
-import SpotsList from '../../spots/SpotsList';
-import AllSpotsView from '../../components/notebook-panel/AllSpots.view';
+// import SpotsList from '../../spots/SpotsList';
+// import AllSpotsView from '../../components/notebook-panel/AllSpots.view';
 import {homeReducers, Modals} from "./Home.constants";
 import sampleStyles from '../../components/samples/samples.style';
 import notebookStyles from '../../components/notebook-panel/NotebookPanel.styles';
 import Orientation from "react-native-orientation-locker";
 import {Directions, FlingGestureHandler, State} from "react-native-gesture-handler";
 // import {SettingsPanel,  ShortcutMenu} from '../../components/settings-panel/index';
-import SettingsPanelHeader from '../../components/settings-panel/SettingsPanelHeader';
+// import SettingsPanelHeader from '../../components/settings-panel/SettingsPanelHeader';
 
 // shared UI and styles
 import LoadingSpinner from '../../shared/ui/Loading';
@@ -185,9 +185,11 @@ class Home extends React.Component {
         break;
       case 'toggleAllSpotsPanel':
         if (position === 'open') {
-          Alert.alert('Opening All-Spots Panel', 'With TWO fingers swipe LEFT inside the Notebook Panel');
+          this.props.setAllSpotsPanelVisible(true)
+          // Alert.alert('Opening All-Spots Panel', 'With TWO fingers swipe LEFT inside the Notebook Panel');
         } else if (position === 'close') {
-          Alert.alert('Closing All-Spots Panel', 'With TWO fingers swipe RIGHT inside the Notebook Panel');
+          this.props.setAllSpotsPanelVisible(false)
+          // Alert.alert('Closing All-Spots Panel', 'With TWO fingers swipe RIGHT inside the Notebook Panel');
         }
         // this.props.setAllSpotsPanelVisible(false);
         // closeAllSpotsPanelFromMenu(this.state.allSpotsViewAnimation);
@@ -672,7 +674,7 @@ class Home extends React.Component {
             textStyle={{fontWeight: 'bold', fontSize: 12}}
             onPress={(name) => this.notebookClickHandler(name)}
           >
-            <AllSpotsView/>
+            {/*<AllSpotsView/>*/}
           </NotebookPanel>
         </Animated.View>
       </FlingGestureHandler>;
@@ -908,11 +910,11 @@ class Home extends React.Component {
           {/*    close={() => this.closeAllSpotsPanel()}*/}
           {/*  />*/}
           {/*</Animated.View> : null}*/}
-          <Animated.View style={[notebookStyles.allSpotsPanel, animateAllSpotsMenu]}>
-            <AllSpotsView
-              close={() => this.closeAllSpotsPanel()}
-            />
-          </Animated.View>
+          {/*<Animated.View style={[notebookStyles.allSpotsPanel, animateAllSpotsMenu]}>*/}
+          {/*  <AllSpotsView*/}
+          {/*    close={() => this.closeAllSpotsPanel()}*/}
+          {/*  />*/}
+          {/*</Animated.View>*/}
           <Modal
             isVisible={this.state.isOfflineMapModalVisible}
             useNativeDriver={true}
