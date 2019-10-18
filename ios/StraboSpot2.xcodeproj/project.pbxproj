@@ -57,6 +57,7 @@
 		C213D4419D5544EB9B13FF16 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9603FAF595F840198501733F /* Zocial.ttf */; };
 		C51957B0F2CC4117A6BE90C8 /* FontAwesome5_Solid.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 805A335DACBB4E7BB7B85FF2 /* FontAwesome5_Solid.ttf */; };
 		C664BF2B44604F4789BBD846 /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 56B10F7ED45D4878850D7408 /* Octicons.ttf */; };
+		C9D2DA69FE8D467DA6913458 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 36F86AE5815847FBB024E5FD /* libz.tbd */; };
 		CB22663DEC944FB48EB21CCD /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2B1B232B189E483D8D1ECCC0 /* Entypo.ttf */; };
 		D60BE40722691CCA004C7C40 /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D60BE3DA22691CCA004C7C40 /* Foundation.ttf */; };
 		D60BE40922691CD7004C7C40 /* AntDesign.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D60BE40822691CD7004C7C40 /* AntDesign.ttf */; };
@@ -543,6 +544,7 @@
 		2D02E4901E0B4A5D006451C7 /* StraboSpot2-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "StraboSpot2-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D16E6891FA4F8E400B85C8A /* libReact.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libReact.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		32132A2C1FE39DFBFF2E8B6E /* libPods-StraboSpot2-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-StraboSpot2-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		36F86AE5815847FBB024E5FD /* libz.tbd */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		3F9880E980DD47D4A1C50ADD /* libPods-StraboSpot2Tests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-StraboSpot2Tests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		431DC9B2FD3A4AAD9B631979 /* Feather.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Feather.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Feather.ttf"; sourceTree = "<group>"; };
 		54B7E3B8C47DCCEE974BB285 /* Pods-StraboSpot2-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StraboSpot2-tvOS.release.xcconfig"; path = "Target Support Files/Pods-StraboSpot2-tvOS/Pods-StraboSpot2-tvOS.release.xcconfig"; sourceTree = "<group>"; };
@@ -641,6 +643,7 @@
 				7568199AE9EB4294A3E21F49 /* libRNReanimated.a in Frameworks */,
 				352A5901F8844AED96942F2C /* libRNGestureHandler.a in Frameworks */,
 				FE064EDC2958EB7A93A7DE7D /* libPods-StraboSpot2.a in Frameworks */,
+				C9D2DA69FE8D467DA6913458 /* libz.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -807,6 +810,7 @@
 				E345FCE9C60DB16D975C3592 /* libPods-StraboSpot2-tvOS.a */,
 				32132A2C1FE39DFBFF2E8B6E /* libPods-StraboSpot2-tvOSTests.a */,
 				3F9880E980DD47D4A1C50ADD /* libPods-StraboSpot2Tests.a */,
+				36F86AE5815847FBB024E5FD /* libz.tbd */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1107,6 +1111,7 @@
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				D6F280592350F35700919B56 /* Embed Frameworks */,
 				D6F280612350F5BD00919B56 /* ShellScript */,
+				9BE3FAC0804D42E799AE15F7 /* Upload Debug Symbols to Sentry */,
 			);
 			buildRules = (
 			);
@@ -1772,7 +1777,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
+			shellScript = "export SENTRY_PROPERTIES=sentry.properties\nexport NODE_BINARY=node\n../node_modules/@sentry/cli/bin/sentry-cli react-native xcode ../node_modules/react-native/scripts/react-native-xcode.sh";
 		};
 		2D02E4CB1E0B4B27006451C7 /* Bundle React Native Code And Images */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1786,7 +1791,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
+			shellScript = "export SENTRY_PROPERTIES=sentry.properties\nexport NODE_BINARY=node\n../node_modules/@sentry/cli/bin/sentry-cli react-native xcode ../node_modules/react-native/scripts/react-native-xcode.sh";
 		};
 		44EBD73C8831F4C880D02A5A /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1831,6 +1836,20 @@
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
+		};
+		9BE3FAC0804D42E799AE15F7 /* Upload Debug Symbols to Sentry */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Upload Debug Symbols to Sentry";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "export SENTRY_PROPERTIES=sentry.properties\n../node_modules/@sentry/cli/bin/sentry-cli upload-dsym";
 		};
 		B1D86E2BB9AF001802A1096D /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;

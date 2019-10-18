@@ -1,6 +1,13 @@
 import {Navigation} from 'react-native-navigation';
 import registerScreens from './src/routes/Screens';
 import {YellowBox} from "react-native";
+import * as Sentry from '@sentry/react-native';
+import {SENTRY_DSN} from "./src/Config";
+
+Sentry.init({
+  dsn: SENTRY_DSN,
+  enableNative: false,
+});
 
 YellowBox.ignoreWarnings(["Require cycle:", "Remote debugger", "Warning:",
   'Module RNSimpleCompass requires main queue setup since it overrides `init` but doesn\'t implement `requiresMainQueueSetup`.'
