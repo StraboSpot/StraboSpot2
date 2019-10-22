@@ -8,6 +8,8 @@ import SettingsPanelHeader from "./SettingsPanelHeader";
 import {SettingsMenuItems} from "./SettingsMenu.constants";
 import SpotsList from "../../spots/SpotsList";
 import ImageGallery from "../images/ImageGallery.view";
+import SamplesList from '../samples/SamplesList.view';
+import ManageDatasets from '../../project/ManageDatasets';
 import ShortcutMenu from "./shortcuts-menu/ShortcutsMenu";
 import ManageOfflineMapsMenu from "../maps/Manage-Offline-Maps-Menu/ManageOfflineMapsMenu";
 import CustomMapsMenu from "../maps/Custom-Maps-Menu/CustomMapsMenu";
@@ -31,12 +33,14 @@ const SettingsPanel = props => {
   }, []);
 
 
-  const getSpotFromId = (spotId) => {
+  const getSpotFromId = (spotId, page) => {
     const spotID = props.spot.find(spot => {
       return spot.properties.id === spotId
     });
+    if (page === NotebookPages.SAMPLE) {
+      props.openNotebookPanel(NotebookPages.SAMPLE);
+    } else props.openNotebookPanel(NotebookPages.OVERVIEW);
     props.onFeatureSelected(spotID);
-    props.openNotebookPanel(NotebookPages.OVERVIEW);
   };
 
   const setVisibleMenu = (name) => {
@@ -96,8 +100,17 @@ const SettingsPanel = props => {
       page =
         <View style={styles.listContainer}>
           {settingsPanelHeader}
+          <SamplesList
+            getSpotData={(spotId, page) => getSpotFromId(spotId, page)}
+          />
         </View>;
       break;
+     case SettingsMenuItems.APP_PREFERENCES.MANAGE_DATASETS:
+       page = <View>
+         {settingsPanelHeader}
+         <ManageDatasets/>
+       </View>;
+    break;
     default:
       page =
         <React.Fragment>
