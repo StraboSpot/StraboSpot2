@@ -1,5 +1,6 @@
 import {StyleSheet} from "react-native";
 import * as themes from "../../shared/styles.constants";
+import {widthPercentageToDP as wp} from "react-native-responsive-screen";
 
 const imageStyles = StyleSheet.create({
   button: {
@@ -34,13 +35,10 @@ const imageStyles = StyleSheet.create({
     justifyContent: 'space-around'
   },
   galleryImageListContainer: {
-    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
-    padding: 5,
-    paddingTop: 0,
-    justifyContent: 'space-between'
+    paddingLeft: 5,
   },
   notebookImage: {
-    width: 135,
+    width: 145,
     height: 100,
   },
   noImageContainer: {
@@ -49,21 +47,11 @@ const imageStyles = StyleSheet.create({
     justifyContent: 'center',
   },
   galleryImage: {
-    height: 85,
-    width: 85,
-  },
-  headingText: {
-    marginLeft: 10,
-    fontWeight: '600',
-    fontSize: themes.PRIMARY_HEADER_TEXT_SIZE - 2,
+    height: wp('8%') ,
+    width: wp('8%'),
   },
   text: {
     fontSize: themes.PRIMARY_HEADER_TEXT_SIZE + 5,
-  },
-  listHeading: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
   },
   flatListStyle: {
     flex: 1
