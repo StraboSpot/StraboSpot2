@@ -60,6 +60,14 @@ const samplesStyle = StyleSheet.create({
     textAlign: 'center',
     color: themes.SECONDARY_ITEM_TEXT_COLOR
   },
+  listHeading: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  text: {
+    fontSize: themes.PRIMARY_HEADER_TEXT_SIZE + 5,
+  },
   textbox: {
     fontSize: 14,
     paddingLeft: 10,
@@ -87,6 +95,12 @@ const samplesStyle = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'flex-start',
+  },
+  samplesListContainer: {
+    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
+    padding: 5,
+    paddingTop: 0,
+    justifyContent: 'space-between'
   }
 });
 

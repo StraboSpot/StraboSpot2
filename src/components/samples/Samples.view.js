@@ -35,16 +35,27 @@ const samplesModalView = (props) => {
     setSampleOrientedValue(sampleOriented)
   };
 
-  const saveSample = () => {
+  // const checkProperties = () => {
+  //   return props.spot.properties.samples.map((sample) => {
+  //     if (!sample.name) {
+  //       return 'No Sample Name'
+  //     } else {
+  //      return name
+  //     }
+  //   });
+  // };
+
+  const saveSample = async () => {
     sample = [];
+    // const propertyNameValidation = await checkProperties();
     sample.push({
+      sample_id_name: name,
       inplaceness_of_sample: inplaceness,
       label: label,
       oriented_sample: sampleOrientedValue,
-      sample_id_name: name,
       sample_notes: note,
       sample_description: description
-    })
+    });
     if (sample.length > 0) {
       let newSample = sample[0];
       newSample.id = getNewId();
