@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
     paddingLeft: 25
   },
   profileNameAndImageContainer: {
-    flex: 1,
+    flex: 2,
     alignItems: 'center',
     marginLeft: 0,
   },
@@ -68,13 +68,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   avatarLabelContainer: {
-    flex: 1,
+    // flex: .75,
+// backgroundColor: 'pink',
     width: '100%',
     alignItems: 'center',
+    marginBottom: 5
   },
   avatarLabel: {
     fontWeight: 'bold',
-    fontSize: 16,
+    fontSize: 18,
     marginLeft: 10,
     marginRight: 10
   },

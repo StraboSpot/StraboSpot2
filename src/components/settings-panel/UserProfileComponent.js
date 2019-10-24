@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import {View, Text} from 'react-native'
 import {Button} from "react-native-elements";
+import {connect} from 'react-redux';
 // import {getUserProfile} from '../services/user/UserProfile';
 import {Avatar} from 'react-native-elements';
 import styles from './SettingsPanelStyles';
@@ -15,19 +16,6 @@ constructor(props) {
   }
 }
 
-  user = async (username) => {
-    const baseUrl = 'https://strabospot.org/db';
-
-    const userProfileBaseUrl = baseUrl + '/profile';
-    console.log(userProfileBaseUrl);
-    try {
-      let response = await fetch(userProfileBaseUrl + '/profile');
-      console.log(response);
-    } catch (e) {
-      console.log("Error", e)
-    }
-  };
-
   render() {
     return (
       <React.Fragment>
@@ -36,17 +24,17 @@ constructor(props) {
             <View style={styles.avatarImageContainer}>
               <Avatar
                 // containerStyle={styles.avatarImage}
-                source={require('../../assets/images/Chuck-norris.jpg')}
+                source={{uri: this.props.userProfile.image}}
                 showEditButton={false}
                 rounded={true}
                 size={70}
                 onPress={() => this.user()}
               />
             </View>
-            {/*<View style={styles.avatarLabelContainer}>*/}
-            {/*  <Text style={styles.avatarLabel}>Chuck</Text>*/}
-            {/*  <Text style={styles.avatarLabel}>Norris</Text>*/}
-            {/*</View>*/}
+            <View style={styles.avatarLabelContainer}>
+              <Text style={styles.avatarLabel}>{this.props.userProfile.name}</Text>
+              {/*<Text style={styles.avatarLabel}>Norris</Text>*/}
+            </View>
           </View>
           <View style={styles.projectName}>
             <Text style={styles.projectNameText}>Project</Text>
@@ -67,4 +55,10 @@ constructor(props) {
   }
 }
 
-export default UserProfileComponent;
+const mapStateToProps = (state) => {
+  return {
+    userProfile: state.user.userData
+  }
+};
+
+export default connect(mapStateToProps)(UserProfileComponent);

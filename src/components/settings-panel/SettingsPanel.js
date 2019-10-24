@@ -17,6 +17,8 @@ import {homeReducers} from "../../views/home/Home.constants";
 import {settingPanelReducers} from "./settingsPanel.constants";
 import {spotReducers} from "../../spots/Spot.constants";
 import {NotebookPages, notebookReducers} from "../notebook-panel/Notebook.constants";
+import {goSignIn} from '../../routes/Navigation';
+import {USER_DATA, USER_IMAGE, USER_DATA_CLEARED} from "../../services/user/User.constants";
 
 const SettingsPanel = props => {
   const {settingsPageVisible, setSettingsPanelPageVisible} = props;
@@ -32,7 +34,6 @@ const SettingsPanel = props => {
     console.log('PAGE:', settingsPageVisible)
   }, []);
 
-
   const getSpotFromId = (spotId, page) => {
     const spotID = props.spot.find(spot => {
       return spot.properties.id === spotId
@@ -41,6 +42,11 @@ const SettingsPanel = props => {
       props.openNotebookPanel(NotebookPages.SAMPLE);
     } else props.openNotebookPanel(NotebookPages.OVERVIEW);
     props.onFeatureSelected(spotID);
+  };
+
+  const logout = () => {
+    props.clearUserData();
+    goSignIn();
   };
 
   const setVisibleMenu = (name) => {
@@ -116,7 +122,10 @@ const SettingsPanel = props => {
         <React.Fragment>
           <UserProfileComponent/>
           <View style={styles.listContainer}>
-            <SettingsPanelList onPress={(name) => setVisibleMenu(name)}/>
+            <SettingsPanelList
+              onPress={(name) => setVisibleMenu(name)}
+              signout={() => logout()}
+            />
           </View>
         </React.Fragment>
   }
@@ -140,6 +149,8 @@ const mapDispatchToProps = {
   setSettingsPanelPageVisible: (name) => ({type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: name}),
   onShortcutSwitchChange: (switchName) => ({type: homeReducers.SHORTCUT_SWITCH_POSITION, switchName: switchName}),
   onFeatureSelected: (featureSelected) => ({type: spotReducers.FEATURE_SELECTED, feature: featureSelected}),
+  setUserData: (userData) => ({type: USER_DATA, userData: userData}),
+  clearUserData: () => ({type: USER_DATA_CLEARED})
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(SettingsPanel);
