@@ -9,7 +9,8 @@ import {notebookReducers} from "../components/notebook-panel/Notebook.constants"
 import {settingPanelReducers, SortedViews} from "../components/settings-panel/settingsPanel.constants";
 import {isEmpty} from "../shared/Helpers";
 import {Button, ListItem} from "react-native-elements";
-import spotListStyles from "../spots/SpotListStyles";
+// import spotListStyles from "../spots/SpotListStyles";
+import attributesStyles from '../components/settings-panel/settingsPanelSectionStyles/Attributes.styles';
 import SortingButtons from "../components/settings-panel/Sorting";
 
 const SpotsList = (props) => {
@@ -35,7 +36,7 @@ const SpotsList = (props) => {
 
   const renderName = (item) => {
     return (
-      <View >
+      <View>
         <ListItem
           key={item.properties.id}
           title={item.properties.name}
@@ -51,7 +52,7 @@ const SpotsList = (props) => {
       return spot.properties.id === spotID
     });
     return (
-      <View >
+      <View>
         <ListItem
           key={spot.properties.id}
           title={spot.properties.name}
@@ -114,15 +115,20 @@ const SpotsList = (props) => {
         renderItem={({item}) => renderName(item)}/>
     }
     return (
-      <View style={{flex: 1}} >
+      <View style={{flex: 1}}>
         <SortingButtons/>
-        <View style={spotListStyles.spotListListContainer}>
-            {sortedView}
+        <View style={attributesStyles.spotsListContainer}>
+          {sortedView}
         </View>
       </View>
 
     );
-  } else return <Text>No Spots Found</Text>
+  }
+  else return (
+    <View style={attributesStyles.textContainer}>
+      <Text style={attributesStyles.text}>No Spots Found</Text>
+    </View>
+  )
 };
 
 const mapStateToProps = (state) => {
@@ -138,9 +144,6 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = {
-  addPhoto: (image) => ({type: imageReducers.ADD_PHOTOS, images: image}),
-  setSelectedAttributes: (attributes) => ({type: spotReducers.SET_SELECTED_ATTRIBUTES, attributes: attributes}),
-  setIsImageModalVisible: (value) => ({type: homeReducers.TOGGLE_IMAGE_MODAL, value: value}),
   setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),
   setSortedListView: (view) => ({type: settingPanelReducers.SET_SORTED_VIEW, view: view}),
   setSelectedButtonIndex: (index) => ({type: settingPanelReducers.SET_SELECTED_BUTTON_INDEX, index: index})
