@@ -6,7 +6,7 @@ import {SENTRY_DSN} from "./src/Config";
 
 Sentry.init({
   dsn: SENTRY_DSN,
-  enableNative: false,
+  enableNative: true,
 });
 
 YellowBox.ignoreWarnings(["Require cycle:", "Remote debugger", "Warning:",
@@ -46,7 +46,7 @@ Navigation.events().registerAppLaunchedListener(() => {
           // },
           {
             component: {
-              name: 'Home',
+              name: 'SignIn',
             }
           }
         ]
