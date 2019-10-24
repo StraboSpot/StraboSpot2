@@ -1,34 +1,47 @@
 import React from 'react'
 import {View, StyleSheet, TextInput, Button, Alert, ImageBackground, KeyboardAvoidingView} from 'react-native'
 import {goHome, goSignUp} from '../routes/Navigation'
+import {connect} from 'react-redux';
 import {authenticateUser} from '../services/user/UserAuth';
-import {backgroundImage} from '../assets/images/background.jpg';
 import ButtonWithBackground from '../shared/ui/ButtonWithBackground';
-import Icon from "react-native-vector-icons/Ionicons";
-
+import * as RemoteServer from '../services/Remote-server.factory';
 import * as themes from '../shared/styles.constants';
+import {USER_DATA, USER_IMAGE} from '../services/user/User.constants';
+import {PASSWORD_TEST, USERNAME_TEST} from "../Config";
+import {isEmpty} from "../shared/Helpers";
 
-export default class SignIn extends React.Component {
-  // componentDidMount() {
-  //   Icon.getImageSource("pin", 30)
-  // }
+const base64 = require('../../node_modules/base-64/base64');
+
+let user = null;
+class SignIn extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      username: '',
-      password: '',
+      username: USERNAME_TEST,
+      password: PASSWORD_TEST,
     };
+  }
+
+  componentDidMount() {
+    if (!isEmpty(this.props.userData)) {
+      goHome()
+    }
   }
 
   signIn = async () => {
     const {username, password} = this.state;
+    user = await authenticateUser(username, password);
     try {
       // login with provider
-      const user = await authenticateUser(username, password);
       if (user === 'true') {
-        console.log('user successfully signed in!', user);
-        goHome();
+        user = {
+          email: username,
+          encoded_login: base64.encode(username + ':' + password)
+        };
+        console.log(`${user.email} is successfully logged in!`);
+        this.updateUser().then(() => goHome())
+        // goHome();
       }
       else {
         Alert.alert("Login Failure", "Incorrect username and/or password");
@@ -37,6 +50,30 @@ export default class SignIn extends React.Component {
     } catch (err) {
       console.log('error:', err);
     }
+  };
+
+  updateUser = async () => {
+    RemoteServer.getProfile(user.encoded_login).then((profileResponse) => {
+      console.log('Profile Res', profileResponse);
+      this.props.setUserData(profileResponse);
+      RemoteServer.getProfileImage(user.encoded_login).then((profileImageResponse) => {
+        console.log('Profile Image Res', profileImageResponse);
+        if (profileImageResponse.data) {
+          this.readDataUrl(profileImageResponse, async (base64Image) => {
+            this.props.setUserImage(base64Image)
+          })
+        }
+      })
+    });
+  };
+
+  readDataUrl = (file, callback) => {
+    const reader = new FileReader();
+    reader.onloadend = function (evt) {
+      // console.log(evt.target.result);
+      callback(evt.target.result);
+      };
+    reader.readAsDataURL(file);
   };
 
   createAccount = () => {
@@ -99,6 +136,19 @@ export default class SignIn extends React.Component {
     )
   }
 }
+
+const mapStateToProps = (state) => {
+  return {
+    userData: state.user.userData
+  }
+};
+
+const mapDispatchToProps = {
+  setUserData: (userData) => ({type: USER_DATA, userData: userData}),
+  setUserImage: (userImage) => ({type: USER_IMAGE, userImage: userImage})
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(SignIn);
 
 const styles = StyleSheet.create({
   input: {
