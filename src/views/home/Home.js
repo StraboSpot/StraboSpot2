@@ -28,10 +28,6 @@ import sampleStyles from '../../components/samples/samples.style';
 import notebookStyles from '../../components/notebook-panel/NotebookPanel.styles';
 import Orientation from "react-native-orientation-locker";
 import {Directions, FlingGestureHandler, State} from "react-native-gesture-handler";
-// import {SettingsPanel,  ShortcutMenu} from '../../components/settings-panel/index';
-// import SettingsPanelHeader from '../../components/settings-panel/SettingsPanelHeader';
-
-// shared UI and styles
 import LoadingSpinner from '../../shared/ui/Loading';
 import ToastPopup from '../../shared/ui/Toast';
 import {Button, Image} from "react-native-elements";
