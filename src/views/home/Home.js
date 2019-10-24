@@ -1,7 +1,6 @@
 import React from 'react'
 import {Alert, Animated, Dimensions, Easing, Platform, Text, View} from 'react-native'
 import NetInfo from "@react-native-community/netinfo";
-// import ImagePicker from 'react-native-image-picker';
 import MapView from '../../components/maps/MapView';
 import MapActionsDialog from '../../components/modals/map-actions/MapActionsDialogBox';
 import MapSymbolsDialog from "../../components/modals/map-symbols/MapSymbolsDialogBox";
@@ -10,10 +9,6 @@ import NotebookPanel from '../../components/notebook-panel/NotebookPanel';
 import SettingsPanel from '../../components/settings-panel/SettingsPanel';
 import {MapModes} from '../../components/maps/Map.constants';
 import {SettingsMenuItems} from '../../components/settings-panel/SettingsMenu.constants';
-// import ImageGallery from '../../components/images/ImageGallery.view';
-// import ShortcutMenu from '../../components/settings-panel/shortcuts-menu/ShortcutsMenu';
-// import ManageOfflineMapsMenu from '../../components/maps/Manage-Offline-Maps-Menu/ManageOfflineMapsMenu';
-// import CustomMapsMenu from '../../components/maps/Custom-Maps-Menu/CustomMapsMenu';
 import ButtonWithBackground from '../../shared/ui/ButtonWithBackground';
 import Modal from "react-native-modal";
 import SaveMapModal from '../../components/modals/map-actions/SaveMapsModal';
@@ -23,14 +18,11 @@ import {NotebookPages, notebookReducers} from "../../components/notebook-panel/N
 import {settingPanelReducers} from "../../components/settings-panel/settingsPanel.constants";
 import {spotReducers} from "../../spots/Spot.constants";
 import {imageReducers} from "../../components/images/Image.constants";
-// import {saveFile} from '../../services/images/ImageDownload';
 import * as ImageHelper from '../../components/images/Images.container';
 import NotebookCompassModal from "../../components/measurements/compass/NotebookCompassModal";
 import ShortcutCompassModal from '../../components/measurements/compass/ShortcutCompassModal';
 import NotebookSamplesModal from '../../components/samples/NotebookSamplesModal.view';
 import ShortcutSamplesModal from '../../components/samples/ShortcutSamplesModal.view';
-// import SpotsList from '../../spots/SpotsList';
-// import AllSpotsView from '../../components/notebook-panel/AllSpots.view';
 import {homeReducers, Modals} from "./Home.constants";
 import sampleStyles from '../../components/samples/samples.style';
 import notebookStyles from '../../components/notebook-panel/NotebookPanel.styles';
@@ -42,7 +34,6 @@ import {Directions, FlingGestureHandler, State} from "react-native-gesture-handl
 // shared UI and styles
 import LoadingSpinner from '../../shared/ui/Loading';
 import ToastPopup from '../../shared/ui/Toast';
-// import Toast from 'react-native-root-toast';
 import {Button, Image} from "react-native-elements";
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import styles from './Styles';
@@ -58,14 +49,14 @@ const deviceWidth = () => {
 };
 const platformType = Platform.OS === 'ios' ? 'window' : 'screen';
 const width = Dimensions.get(platformType).width;
-const imageOptions = {
-  storageOptions: {
-    skipBackup: true,
-    // path: 'StraboSpot/Images',
-    takePhotoButtonTitle: 'Take Photo Buddy!',
-    chooseFromLibraryButtonTitle: 'choose photo from library'
-  }
-};
+// const imageOptions = {
+//   storageOptions: {
+//     skipBackup: true,
+//     // path: 'StraboSpot/Images',
+//     takePhotoButtonTitle: 'Take Photo Buddy!',
+//     chooseFromLibraryButtonTitle: 'choose photo from library'
+//   }
+// };
 
 class Home extends React.Component {
   _isMounted = false;
@@ -129,11 +120,11 @@ class Home extends React.Component {
     console.log(this.props.deviceDimensions)
   };
 
-  deviceWidth = () => {
-    if (width < 500) return wp('95%');
-    if (width >= 500 && width <= 1000) return wp('50%');
-    if (width > 1000) return wp('40%');
-  };
+  // deviceWidth = () => {
+  //   if (width < 500) return wp('95%');
+  //   if (width >= 500 && width <= 1000) return wp('50%');
+  //   if (width > 1000) return wp('40%');
+  // };
 
   cancelEdits = async () => {
     await this.mapViewComponent.cancelEdits();
@@ -281,7 +272,7 @@ class Home extends React.Component {
       [
         {
           text: 'Cancel',
-          onPress: () => console.log('Cancel Presed'),
+          onPress: () => console.log('Cancel Pressed'),
           style: 'cancel'
         },
         {
