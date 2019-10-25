@@ -83,6 +83,8 @@ class Home extends React.Component {
       // isAllSpotsPanelVisible: false,
       animation: new Animated.Value(deviceWidth()),
       settingsPanelAnimation: new Animated.Value(-deviceWidth()),
+      leftsideIconAnimation: new Animated.Value(0),
+      rightsideIconAnimation: new Animated.Value(0),
       allSpotsViewAnimation: new Animated.Value(125),
       loading: false,
       toastVisible: false
@@ -232,11 +234,15 @@ class Home extends React.Component {
 
   flingHandlerSettingsPanel = ({nativeEvent}) => {
     if (this._isMounted) {
-      if (nativeEvent.oldState === State.ACTIVE) {
-        console.log('FLING TO CLOSE Settings Panel!', nativeEvent);
-        animatePanels(this.state.settingsPanelAnimation, -deviceWidth());
-        this.props.setSettingsPanelPageVisible(SettingsMenuItems.SETTINGS_MAIN);
-      }
+      if (this.props.settingsPanelVisible) {
+        if (nativeEvent.oldState === State.ACTIVE) {
+          console.log('FLING TO CLOSE Settings Panel!', nativeEvent);
+          animatePanels(this.state.settingsPanelAnimation, -deviceWidth());
+          this.props.setSettingsPanelPageVisible(SettingsMenuItems.SETTINGS_MAIN);
+          this.props.setSettingsPanelVisible(false);
+          animatePanels(this.state.leftsideIconAnimation, 0)
+        }
+      } else this.props.setSettingsPanelVisible(true);
     }
   };
 
@@ -245,6 +251,7 @@ class Home extends React.Component {
       if (nativeEvent.oldState === State.ACTIVE) {
         console.log('FLING TO CLOSE NOTEBOOK!', nativeEvent);
         animatePanels(this.state.animation, deviceWidth());
+        animatePanels(this.state.rightsideIconAnimation, 0);
         this.props.setNotebookPanelVisible(false);
         this.props.setAllSpotsPanelVisible(false);
       }
@@ -255,6 +262,7 @@ class Home extends React.Component {
     if (this._isMounted) {
       console.log('closing notebook');
       animatePanels(this.state.animation, deviceWidth());
+      animatePanels(this.state.rightsideIconAnimation, 0);
       this.props.setNotebookPanelVisible(false);
       this.props.setAllSpotsPanelVisible(false);
     }
@@ -337,7 +345,9 @@ class Home extends React.Component {
 
   openSettingsDrawer = () => {
     if (this._isMounted) {
-      animatePanels(this.state.settingsPanelAnimation, 0)
+      this.props.setSettingsPanelVisible(true);
+      animatePanels(this.state.settingsPanelAnimation, 0);
+      animatePanels(this.state.leftsideIconAnimation, wp('30%'))
     }
   };
 
@@ -346,6 +356,7 @@ class Home extends React.Component {
       console.log('notebook opening', pageView);
       this.props.setNotebookPageVisible(pageView);
       animatePanels(this.state.animation, wp('0%'));
+      animatePanels(this.state.rightsideIconAnimation, wp('-35%'));
       this.props.setNotebookPanelVisible(true);
     }
   };
@@ -564,9 +575,14 @@ class Home extends React.Component {
         {translateX: this.state.settingsPanelAnimation}
       ]
     };
-    const animateAllSpotsMenu = {
+    const leftsideIconAnimation = {
       transform: [
-        {translateX: this.state.allSpotsViewAnimation}
+        {translateX: this.state.leftsideIconAnimation}
+      ]
+    };
+    const rightsideIconAnimation = {
+      transform: [
+        {translateX: this.state.rightsideIconAnimation}
       ]
     };
     let compassModal = null;
@@ -603,7 +619,7 @@ class Home extends React.Component {
       </FlingGestureHandler>;
 
     // Renders Compass modals in either shortcut or notebook view
-    if (this.props.modalVisible === Modals.NOTEBOOK_MODALS.COMPASS) {
+    if (this.props.modalVisible === Modals.NOTEBOOK_MODALS.COMPASS && this.props.isNotebookPanelVisible) {
       compassModal =
         <NotebookCompassModal
           close={() => this.props.setModalVisible(null)}
@@ -618,8 +634,8 @@ class Home extends React.Component {
         />;
     }
 
-    // Renders Samples modals in either shortcut or notebook view
-    if (this.props.modalVisible === Modals.NOTEBOOK_MODALS.SAMPLE) {
+    // Renders samples modals in either shortcut or notebook view
+    if (this.props.modalVisible === Modals.NOTEBOOK_MODALS.SAMPLE && this.props.isNotebookPanelVisible) {
       samplesModal = (
         <NotebookSamplesModal
           close={() => this.props.setModalVisible(null)}
@@ -630,15 +646,11 @@ class Home extends React.Component {
     }
     else if (this.props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE) {
       samplesModal =
-        <View
-          style={sampleStyles.modalPositionShortcutView}>
           <ShortcutSamplesModal
             close={() => this.props.setModalVisible(null)}
             cancel={() => this.samplesModalCancel()}
-            style={{justifyContent: 'center'}}
             onPress={(page) => this.modalHandler(page, Modals.NOTEBOOK_MODALS.SAMPLE)}
           />
-        </View>
     }
 
     return (
@@ -661,10 +673,13 @@ class Home extends React.Component {
                   <Text >{this.state.allPhotosSaved.length} Picture Saved!</Text> :
                   <Text >{this.state.allPhotosSaved.length} Pictures Saved!</Text>}
         </ToastPopup>}
-          {(this.props.modalVisible === Modals.NOTEBOOK_MODALS.COMPASS ||
+          <Animated.View style={leftsideIconAnimation}>
+            {(this.props.modalVisible === Modals.NOTEBOOK_MODALS.COMPASS ||
             this.props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS) && compassModal}
-          {this.props.modalVisible === Modals.NOTEBOOK_MODALS.SAMPLE ||
-          this.props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE ? samplesModal : null}
+
+            {(this.props.modalVisible === Modals.NOTEBOOK_MODALS.SAMPLE ||
+              this.props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE) && samplesModal}
+          </Animated.View>
           <View style={styles.topCenter}>
             {this.state.buttons.endDrawButtonVisible ?
               <ButtonWithBackground
@@ -695,13 +710,13 @@ class Home extends React.Component {
               </View>
               : null}
           </View>
-          <View style={styles.searchIconContainer}>
+          <Animated.View style={[styles.searchIconContainer, rightsideIconAnimation]}>
             <IconButton
               source={require('../../assets/icons/SearchButton.png')}
               onPress={this.clickHandler.bind(this, "search")}
             />
-          </View>
-          <View style={styles.rightsideIcons}>
+          </Animated.View>
+          <Animated.View style={[styles.rightsideIcons, rightsideIconAnimation]}>
             {this.props.shortcutSwitchPosition.Tag ?
               <IconButton
                 source={require('../../assets/icons/TagButton.png')}
@@ -737,7 +752,7 @@ class Home extends React.Component {
                 source={require('../../assets/icons/SketchButton.png')}
                 onPress={this.clickHandler.bind(this, "sketch")}
               /> : null}
-          </View>
+          </Animated.View>
           <View style={styles.notebookViewIcon}>
             {this.props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS ||
             this.props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE ? null : <IconButton
@@ -751,11 +766,7 @@ class Home extends React.Component {
           {/*<View><Text>Online: {this.props.isOnline.toString()}</Text></View> */}
 
           {this.state.buttons.drawButtonsVisible ?
-            <View style={this.props.isNotebookPanelVisible ||
-            (this.props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE && this.props.deviceDimensions.width > 768) ||
-            (this.props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS && this.props.deviceDimensions.width > 768)
-              ? [styles.drawToolsContainer, {right: deviceWidth()}]
-              : styles.drawToolsContainer}>
+            <Animated.View style={[styles.drawToolsContainer, rightsideIconAnimation]}>
               <IconButton
                 style={{top: 5}}
                 source={this.state.mapMode === MapModes.DRAW.POINT ?
@@ -777,7 +788,7 @@ class Home extends React.Component {
                   require('../../assets/icons/PolygonButton.png')}
                 onPress={this.clickHandler.bind(this, MapModes.DRAW.POLYGON)}
               />
-            </View>
+            </Animated.View>
             : null}
           {/*</View>*/}
           <View style={styles.settingsIconContainer}>
@@ -786,7 +797,7 @@ class Home extends React.Component {
               onPress={this.clickHandler.bind(this, "settings")}
             />
           </View>
-          <View style={styles.leftsideIcons}>
+          <Animated.View style={[styles.leftsideIcons, leftsideIconAnimation]}>
             <IconButton
               source={require('../../assets/icons/MapActionsButton.png')}
               onPress={() => this.toggleDialog("mapActionsMenuVisible")}
@@ -799,14 +810,14 @@ class Home extends React.Component {
               source={require('../../assets/icons/LayersButton.png')}
               onPress={() => this.toggleDialog("baseMapMenuVisible")}
             />
-          </View>
-          <View style={styles.bottomLeftIcons}>
+          </Animated.View>
+          <Animated.View style={[styles.bottomLeftIcons, leftsideIconAnimation]}>
             <IconButton
               style={{top: 5}}
               source={require('../../assets/icons/MyLocationButton.png')}
               onPress={this.clickHandler.bind(this, "currentLocation")}
             />
-          </View>
+          </Animated.View>
 
           <MapActionsDialog
             visible={this.state.dialogs.mapActionsMenuVisible}
@@ -888,6 +899,7 @@ function mapStateToProps(state) {
     shortcutSwitchPosition: state.home.shortcutSwitchPosition,
     isAllSpotsPanelVisible: state.home.isAllSpotsPanelVisible,
     settingsPageVisible: state.settingsPanel.settingsPageVisible,
+    settingsPanelVisible: state.home.isSettingsPanelVisible
   }
 }
 
@@ -895,6 +907,7 @@ const mapDispatchToProps = {
   setIsOnline: (online) => ({type: spotReducers.SET_ISONLINE, online: online}),
   setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),
   setNotebookPanelVisible: (value) => ({type: notebookReducers.SET_NOTEBOOK_PANEL_VISIBLE, value: value}),
+  setSettingsPanelVisible: (value) => ({type: homeReducers.SET_SETTINGS_PANEL_VISIBLE, value: value}),
   setSettingsPanelPageVisible: (name) => ({type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: name}),
   setIsImageModalVisible: (value) => ({type: homeReducers.TOGGLE_IMAGE_MODAL, value: value}),
   setAllSpotsPanelVisible: (value) => ({type: homeReducers.SET_ALLSPOTS_PANEL_VISIBLE, value: value}),

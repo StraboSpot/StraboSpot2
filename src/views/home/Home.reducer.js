@@ -5,6 +5,7 @@ const initialState = {
   modalVisible: null,
   isImageModalVisible: false,
   isAllSpotsPanelVisible: false,
+  isSettingsPanelVisible: false,
   deviceDimensions: Dimensions.get(Platform.OS === 'ios' ? 'window' : 'screen'),
   shortcutSwitchPosition: {
     Tag: false,
@@ -42,6 +43,11 @@ export const homeReducer = (state = initialState, action) => {
       return {
         ...state,
         isAllSpotsPanelVisible: action.value
+      };
+    case homeReducers.SET_SETTINGS_PANEL_VISIBLE:
+      return {
+        ...state,
+        isSettingsPanelVisible: action.value
       };
     case homeReducers.TOGGLE_IMAGE_MODAL:
       return {

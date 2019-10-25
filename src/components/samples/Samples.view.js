@@ -10,7 +10,7 @@ import {homeReducers, Modals} from "../../views/home/Home.constants";
 import Samples from './SamplesNotebook.view';
 
 // Styles
-import styles from './samples.style';
+import styles from './samplesStyles/samples.style';
 import * as themes from '../../shared/styles.constants';
 import IconButton from "../../shared/ui/IconButton";
 
@@ -170,7 +170,7 @@ const samplesModalView = (props) => {
           value={note}
         />
       </View>
-      <View style={styles.button}>
+      <View style={styles.buttonContainer}>
         <Button
           title={'Save Sample'}
           type={'solid'}

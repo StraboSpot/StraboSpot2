@@ -472,12 +472,17 @@ class Compass extends Component {
         // console.log('Height', height, 'Width', width)
         modalView =
           <View >
-          <View style={height <= 1000 ? {height: 200} : {height: 350}}>
+          <View style={{height: 150}}>
             <Measurements/>
           </View>
           <IconButton
             source={require('../../../assets/icons/NotebookView_pressed.png')}
-            style={{marginTop: 10, flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-end', height: 25}}
+            style={{
+              marginTop: 20,
+              flexDirection: 'row',
+              justifyContent: 'center',
+              alignItems: 'flex-end',
+              height: 25}}
             textStyle={{color: themes.BLUE, fontSize: 16, textAlign: 'center'}}
             onPress={() => this.props.onPress(NotebookPages.MEASUREMENT)}
           > Go to {this.props.spot.properties.name}</IconButton>

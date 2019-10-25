@@ -27,7 +27,7 @@ const modalView = (props) => {
       <View style={props.style}>
         {props.component}
       </View>
-      <View style={modalStyle.modalBottom}/>
+      {/*<View style={modalStyle.modalBottom}/>*/}
     </View>
   )
 };

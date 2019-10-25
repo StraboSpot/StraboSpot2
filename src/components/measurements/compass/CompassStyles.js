@@ -23,7 +23,9 @@ const trendLinePosition = () => {
 
 const styles = StyleSheet.create({
   buttonContainer: {
-    paddingTop: 10,
+    // paddingTop: 10,
+    paddingBottom: 10,
+
   },
   container: {
     flex: 1,
@@ -32,8 +34,8 @@ const styles = StyleSheet.create({
   compassContainer: {
     flex: 8,
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
-    // borderBottomRightRadius: 20,
-    // borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+    borderBottomLeftRadius: 20,
     width: '100%',
     // zIndex: 100,
   },
@@ -115,7 +117,7 @@ const styles = StyleSheet.create({
   },
   modalPositionShortcutView: {
     position: 'absolute',
-    right: 70,
+    left: 70,
     bottom: 70
   },
 });

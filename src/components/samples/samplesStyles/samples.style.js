@@ -2,7 +2,7 @@ import {StyleSheet} from 'react-native';
 import * as themes from "../../shared/styles.constants";
 
 const samplesStyle = StyleSheet.create({
-  button: {
+  buttonContainer: {
     flex: 15,
     alignItems: 'center',
     paddingBottom: 10
@@ -81,15 +81,15 @@ const samplesStyle = StyleSheet.create({
     paddingRight: 10
   },
   modalPosition: {
-    position: 'absolute', //Here is the trick
+    position: 'absolute',
     left: 70,
     bottom: 10,
   },
   modalPositionShortcutView: {
     position: 'absolute',
-    right: 35,
-    top: 5,
-    zIndex: 1
+    left: 70,
+    bottom: 70
+    // zIndex: 1
   },
   sampleContentContainer: {
     flex: 1,
