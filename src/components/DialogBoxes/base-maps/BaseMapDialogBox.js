@@ -4,6 +4,7 @@ import Dialog, {DialogButton, DialogContent, DialogTitle} from "react-native-pop
 import {ScaleAnimation} from "react-native-popup-dialog/src";
 
 import * as themes from '../../../shared/styles.constants';
+import styles from '../Dialog.styles';
 
 const slideAnimation = new ScaleAnimation({
   useNativeDriver: true
@@ -33,26 +34,31 @@ const BaseMapDialog = props => (
       <DialogButton
         style={styles.dialogContent}
         text="Mapbox Satellite"
+        textStyle={styles.dialogText}
         onPress={() => props.onPress("mapboxSatellite")}
       />
       <DialogButton
         style={styles.dialogContent}
         text="Mapbox Topo"
+        textStyle={styles.dialogText}
         onPress={() => props.onPress("mapboxOutdoors")}
       />
       <DialogButton
         style={styles.dialogContent}
         text="OSM Streets"
+        textStyle={styles.dialogText}
         onPress={() => props.onPress("osm")}
       />
       <DialogButton
         style={styles.dialogContent}
         text="Geology from Macrostrat"
+        textStyle={styles.dialogText}
         onPress={() => props.onPress("macrostrat")}
       />
       <DialogButton
         style={styles.dialogContent}
         text="Geology + Roads (Custom)"
+        textStyle={styles.dialogText}
         onPress={() => props.onPress("custom")}
       />
       {/*<DialogButton*/}
@@ -66,21 +72,5 @@ const BaseMapDialog = props => (
     </DialogContent>
   </Dialog>
 );
-
-const styles = StyleSheet.create({
-  dialogBox: {
-    position: 'absolute',
-    bottom: 70,
-    left: 100,
-    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
-    borderRadius: 20
-  },
-  dialogTitle: {
-    backgroundColor: themes.PRIMARY_HEADER_TEXT_COLOR,
-  },
-  dialogContent: {
-    borderBottomWidth: 2
-  }
-});
 
 export default BaseMapDialog;

@@ -2,16 +2,16 @@ import React from 'react'
 import {Alert, Animated, Dimensions, Easing, Platform, Text, View} from 'react-native'
 import NetInfo from "@react-native-community/netinfo";
 import MapView from '../../components/maps/MapView';
-import MapActionsDialog from '../../components/modals/map-actions/MapActionsDialogBox';
-import MapSymbolsDialog from "../../components/modals/map-symbols/MapSymbolsDialogBox";
-import BaseMapDialog from "../../components/modals/base-maps/BaseMapDialogBox";
+import MapActionsDialog from '../../components/DialogBoxes/map-actions/MapActionsDialogBox';
+import MapSymbolsDialog from "../../components/DialogBoxes/map-symbols/MapSymbolsDialogBox";
+import BaseMapDialog from "../../components/DialogBoxes/base-maps/BaseMapDialogBox";
 import NotebookPanel from '../../components/notebook-panel/NotebookPanel';
 import SettingsPanel from '../../components/settings-panel/SettingsPanel';
 import {MapModes} from '../../components/maps/Map.constants';
 import {SettingsMenuItems} from '../../components/settings-panel/SettingsMenu.constants';
 import ButtonWithBackground from '../../shared/ui/ButtonWithBackground';
 import Modal from "react-native-modal";
-import SaveMapModal from '../../components/modals/map-actions/SaveMapsModal';
+import SaveMapModal from '../../components/DialogBoxes/map-actions/SaveMapsModal';
 import NotebookPanelMenu from '../../components/notebook-panel/NotebookPanelMenu';
 import {connect} from 'react-redux';
 import {NotebookPages, notebookReducers} from "../../components/notebook-panel/Notebook.constants";

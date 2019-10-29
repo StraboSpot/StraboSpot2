@@ -5,6 +5,7 @@ import {ScaleAnimation} from "react-native-popup-dialog/src";
 
 // Styles
 import * as themes from '../../../shared/styles.constants';
+import styles from '../Dialog.styles';
 
 const scaleAnimation = new ScaleAnimation({
   useNativeDriver: true
@@ -34,46 +35,35 @@ const MapSymbolsDialog = props => (
       <DialogButton
         style={styles.dialogContent}
         text="Foliations"
+        textStyle={styles.dialogText}
         onPress={() => props.onPress("foliations")}
       />
       <DialogButton
         style={styles.dialogContent}
         text="Bedding"
+        textStyle={styles.dialogText}
         onPress={() => props.onPress("bedding")}
       />
       <DialogButton
         style={styles.dialogContent}
         text="Faults"
+        textStyle={styles.dialogText}
         onPress={() => props.onPress("faults")}
       />
       <DialogButton
       style={styles.dialogContent}
       text="Fold Hinges"
+      textStyle={styles.dialogText}
       onPress={() => props.onPress("fold-hinges")}
     />
       <DialogButton
         style={styles.dialogContent}
         text="Fractures"
+        textStyle={styles.dialogText}
         onPress={() => props.onPress("fractures")}
       />
     </DialogContent>
   </Dialog>
 );
-
-const styles = StyleSheet.create({
-  dialogBox: {
-    position: 'absolute',
-    bottom: 70,
-    left: 100,
-    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
-    borderRadius: 20
-  },
-  dialogTitle: {
-    backgroundColor: themes.PRIMARY_HEADER_TEXT_COLOR,
-  },
-  dialogContent: {
-    borderBottomWidth: 2
-  }
-});
 
 export default MapSymbolsDialog;
