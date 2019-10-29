@@ -9,7 +9,6 @@ import {SettingsMenuItems} from "./SettingsMenu.constants";
 import SpotsList from "../../spots/SpotsList";
 import ImageGallery from "../images/ImageGallery.view";
 import SamplesList from '../samples/SamplesList.view';
-import ManageDatasets from '../../project/ManageDatasets';
 import ShortcutMenu from "./shortcuts-menu/ShortcutsMenu";
 import ManageOfflineMapsMenu from "../maps/Manage-Offline-Maps-Menu/ManageOfflineMapsMenu";
 import CustomMapsMenu from "../maps/Custom-Maps-Menu/CustomMapsMenu";
@@ -19,8 +18,16 @@ import {spotReducers} from "../../spots/Spot.constants";
 import {NotebookPages, notebookReducers} from "../notebook-panel/Notebook.constants";
 import {goSignIn} from '../../routes/Navigation';
 import {USER_DATA, USER_IMAGE, USER_DATA_CLEARED} from "../../services/user/User.constants";
+import SignIn from '../../views/SignIn';
+import {isEmpty} from "../../shared/Helpers";
 
 const SettingsPanel = props => {
+  let buttonTitle = null;
+
+  const [isSignModalVisible, setIsSignInModalVisible] = useState(false);
+  const [animated, setAnimated] = useState(new Animated.Value(-300));
+
+
   const {settingsPageVisible, setSettingsPanelPageVisible} = props;
   let settingsPanelHeader = <SettingsPanelHeader
     onPress={() => setSettingsPanelPageVisible(SettingsMenuItems.SETTINGS_MAIN)}>
@@ -45,8 +52,14 @@ const SettingsPanel = props => {
   };
 
   const logout = () => {
-    props.clearUserData();
-    goSignIn();
+    if (!isEmpty(props.userProfile)) {
+
+      props.clearStorage();
+      goSignIn()
+    }
+    else {
+        setIsSignInModalVisible(true)
+    }
   };
 
   const setVisibleMenu = (name) => {
@@ -58,6 +71,9 @@ const SettingsPanel = props => {
       props.onShortcutSwitchChange(switchName);
       console.log(props.shortcutSwitchPosition);
   };
+
+  if (isEmpty(props.userProfile)) buttonTitle = 'Sign In';
+  else buttonTitle = 'Sign Out';
 
   switch (settingsPageVisible) {
     case SettingsMenuItems.APP_PREFERENCES.SHORTCUTS:
@@ -125,6 +141,7 @@ const SettingsPanel = props => {
             <SettingsPanelList
               onPress={(name) => setVisibleMenu(name)}
               signout={() => logout()}
+              title={buttonTitle}
             />
           </View>
         </React.Fragment>
@@ -141,7 +158,8 @@ const mapStateToProps = (state) => {
   return {
     settingsPageVisible: state.settingsPanel.settingsPageVisible,
     shortcutSwitchPosition: state.home.shortcutSwitchPosition,
-    spot: state.spot.features
+    spot: state.spot.features,
+    userProfile: state.user.userData
   }
 };
 
@@ -150,7 +168,8 @@ const mapDispatchToProps = {
   onShortcutSwitchChange: (switchName) => ({type: homeReducers.SHORTCUT_SWITCH_POSITION, switchName: switchName}),
   onFeatureSelected: (featureSelected) => ({type: spotReducers.FEATURE_SELECTED, feature: featureSelected}),
   setUserData: (userData) => ({type: USER_DATA, userData: userData}),
-  clearUserData: () => ({type: USER_DATA_CLEARED})
+  clearUserData: () => ({type: USER_DATA_CLEARED}),
+  clearStorage: () => ({type: 'USER_LOGOUT'})
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(SettingsPanel);

@@ -1,6 +1,7 @@
 import React from 'react'
 import {Text, ScrollView, View} from 'react-native'
 import * as SharedUI from '../../shared/ui/index'
+import {Button} from "react-native-elements";
 import Icon from 'react-native-vector-icons/Ionicons';
 import {SettingsMenuItems} from './SettingsMenu.constants';
 
@@ -68,7 +69,7 @@ const SettingsPanelList = props => {
       </View>
       <View style={styles.navSectionStyle}>
         {Object.keys(SettingsMenuItems.USER_PREFERENCES).map(key =>
-          <View key={key} style={{marginTop: 10, flexDirection: 'row'}}>
+          <View key={key} style={[styles.navItemStyle, {}]}>
             {/*<SharedUI.ButtonNoBackground*/}
             {/*onPress={() => goSignIn()}*/}
             {/*// name={'ios-log-out'}*/}
@@ -77,14 +78,28 @@ const SettingsPanelList = props => {
             {/*>*/}
             {/*{SettingsMenuItems.USER_PREFERENCES[key]}*/}
             {/*</SharedUI.ButtonNoBackground>*/}
-            <Icon.Button
-              name={'ios-log-out'}
+            <Button
+              icon={
+                <Icon
+                  name={'ios-log-out'}
+                  size={30}
+                  color={themes.PRIMARY_ITEM_TEXT_COLOR}
+                />
+              }
+              iconRight
+              raised
               onPress={props.signout}
-              backgroundColor={themes.PRIMARY_BACKGROUND_COLOR}
-              color={'black'}
-            >
-              <Text>{SettingsMenuItems.USER_PREFERENCES[key]}</Text>
-            </Icon.Button>
+              title={props.title}
+              buttonStyle={{backgroundColor: themes.LIGHTGREY}}
+              containerStyle={{marginLeft: 20, marginRight: 20, marginTop: 10 }}
+              titleStyle={{paddingRight: 20, color: themes.PRIMARY_ITEM_TEXT_COLOR}}
+              // type={'solid'}
+              // name={'ios-log-out'}
+              // onPress={props.signout}
+              // backgroundColor={themes.PRIMARY_BACKGROUND_COLOR}
+              // color={'black'}
+            />
+              {/*<Text>{SettingsMenuItems.USER_PREFERENCES[key]}</Text>*/}
           </View>
         )}
       </View>

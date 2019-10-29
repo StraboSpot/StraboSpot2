@@ -4,6 +4,7 @@ import styles from './ShortcutsMenuStyles';
 import {ListItem} from 'react-native-elements';
 import {ShortcutToggleButtons as Buttons} from '../SettingsMenu.constants';
 import {Switch} from 'react-native-switch';
+import * as themes from '../../../shared/styles.constants'
 
 const ShortcutMenu = props => (
     <React.Fragment>
@@ -23,7 +24,7 @@ const ShortcutMenu = props => (
                 circleSize={25}
                 barHeight={20}
                 circleBorderWidth={3}
-                backgroundActive={'#407ad9'}
+                backgroundActive={themes.BLUE}
                 backgroundInactive={'gray'}
                 circleActiveColor={'#000000'}
                 circleInActiveColor={'#000000'}

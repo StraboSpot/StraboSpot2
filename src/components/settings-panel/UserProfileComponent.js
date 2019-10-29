@@ -17,22 +17,40 @@ constructor(props) {
 }
 
   render() {
+  let avatarImage = null;
+  if (this.props.userProfile.image) {
+    avatarImage = (
+      <Avatar
+        // containerStyle={styles.avatarImage}
+        source={{uri: this.props.userProfile.image}}
+        showEditButton={false}
+        rounded={true}
+        size={70}
+        onPress={() => this.user()}
+      />
+    )
+  } else {
+    avatarImage = (
+      <Avatar
+        // containerStyle={styles.avatarImage}
+        icon={{name: 'user', type: 'font-awesome'}}
+        showEditButton={false}
+        rounded={true}
+        size={70}
+        onPress={() => this.user()}
+      />
+    )
+  }
     return (
       <React.Fragment>
         <View style={styles.profileContainer}>
           <View style={styles.profileNameAndImageContainer}>
             <View style={styles.avatarImageContainer}>
-              <Avatar
-                // containerStyle={styles.avatarImage}
-                source={{uri: this.props.userProfile.image}}
-                showEditButton={false}
-                rounded={true}
-                size={70}
-                onPress={() => this.user()}
-              />
+              {avatarImage}
             </View>
             <View style={styles.avatarLabelContainer}>
-              <Text style={styles.avatarLabel}>{this.props.userProfile.name}</Text>
+              <Text style={styles.avatarLabel}>{this.props.userProfile.name ? this.props.userProfile.name
+              : 'Guest'}</Text>
               {/*<Text style={styles.avatarLabel}>Norris</Text>*/}
             </View>
           </View>
