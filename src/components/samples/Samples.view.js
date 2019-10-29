@@ -80,7 +80,7 @@ const samplesModalView = (props) => {
               <Samples/>
             </View>
             <IconButton
-              source={require('../../assets/icons/NotebookView_pressed.png')}
+              source={require('../../assets/icons/StraboIcons_Oct2019/NotebookView_pressed.png')}
               style={{
                 marginTop: 20,
                 flexDirection: 'row',

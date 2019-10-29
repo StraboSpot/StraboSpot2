@@ -327,7 +327,7 @@ const RNCompass = (props) => {
          <Measurements/>
        </View>
        <IconButton
-         source={require('../../../assets/icons/NotebookView_pressed.png')}
+         source={require('../../../assets/icons/StraboIcons_Oct2019/NotebookView_pressed.png')}
          style={{marginTop: 10, flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-end', height: 25}}
          textStyle={{color: themes.BLUE, fontSize: 16, textAlign: 'center'}}
          onPress={() => props.onPress(NotebookPages.MEASUREMENT)}

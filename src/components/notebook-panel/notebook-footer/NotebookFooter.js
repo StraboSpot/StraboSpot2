@@ -12,25 +12,25 @@ const NotebookFooter = props => {
   const getPageIcon = (page) => {
     switch(page) {
       case NotebookPages.TAG:
-        if (props.notebookPageVisible === NotebookPages.TAG) return require('../../../assets/icons/Tag_pressed.png');
-        else return require('../../../assets/icons/Tag.png');
+        if (props.notebookPageVisible === NotebookPages.TAG) return require('../../../assets/icons/StraboIcons_Oct2019/Tag_pressed.png');
+        else return require('../../../assets/icons/StraboIcons_Oct2019/Tag.png');
       case NotebookPages.MEASUREMENT:
         if (props.notebookPageVisible === NotebookPages.MEASUREMENT || props.notebookPageVisible === NotebookPages.MEASUREMENTDETAIL) {
-          return require('../../../assets/icons/Measurement_pressed.png');
+          return require('../../../assets/icons/StraboIcons_Oct2019/Measurement_pressed.png');
         }
-        else return require('../../../assets/icons/Measurement.png');
+        else return require('../../../assets/icons/StraboIcons_Oct2019/Measurement.png');
       case NotebookPages.SAMPLE:
-        if (props.notebookPageVisible === NotebookPages.SAMPLE) return require('../../../assets/icons/Sample_pressed.png');
-        else return require('../../../assets/icons/Sample.png');
+        if (props.notebookPageVisible === NotebookPages.SAMPLE) return require('../../../assets/icons/StraboIcons_Oct2019/Sample_pressed.png');
+        else return require('../../../assets/icons/StraboIcons_Oct2019/Sample.png');
       case NotebookPages.NOTE:
-        if (props.notebookPageVisible === NotebookPages.NOTE) return require('../../../assets/icons/Note_pressed.png');
-        else return require('../../../assets/icons/Note.png');
+        if (props.notebookPageVisible === NotebookPages.NOTE) return require('../../../assets/icons/StraboIcons_Oct2019/Note_pressed.png');
+        else return require('../../../assets/icons/StraboIcons_Oct2019/Note.png');
       case NotebookPages.PHOTO:
-        if (props.notebookPageVisible === NotebookPages.PHOTO) return require('../../../assets/icons/Photo_pressed.png');
-        else return require('../../../assets/icons/Photo.png');
+        if (props.notebookPageVisible === NotebookPages.PHOTO) return require('../../../assets/icons/StraboIcons_Oct2019/Photo_pressed.png');
+        else return require('../../../assets/icons/StraboIcons_Oct2019/Photo.png');
       case NotebookPages.SKETCH:
-        if (props.notebookPageVisible === NotebookPages.SKETCH) return require('../../../assets/icons/Sketch_pressed.png');
-        else return require('../../../assets/icons/Sketch.png');
+        if (props.notebookPageVisible === NotebookPages.SKETCH) return require('../../../assets/icons/StraboIcons_Oct2019/Sketch_pressed.png');
+        else return require('../../../assets/icons/StraboIcons_Oct2019/Sketch.png');
     }
   };
 

@@ -78,12 +78,12 @@ const ImageInfoView = (props) => {
       <View style={styles.rightsideIcons}>
         <IconButton
           style={styles.imageInfoButtons}
-          source={require('../../assets/icons/NoteButton.png')}
+          source={require('../../assets/icons/StraboIcons_Oct2019/NoteButton.png')}
           onPress={() => setImageNoteModal(true)}
         />
         <IconButton
           style={styles.imageInfoButtons}
-          source={require('../../assets/icons/SketchButton.png')}
+          source={require('../../assets/icons/StraboIcons_Oct2019/SketchButton.png')}
           onPress={() => clickHandler('sketch')}
         />
       </View>

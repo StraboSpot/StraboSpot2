@@ -30,26 +30,26 @@ export const SettingsMenuItems = {
 export const ShortcutToggleButtons = {
   TAG: {
     NAME: 'Tag',
-    ICON: require('../../assets/icons/TagButton.png')
+    ICON: require('../../assets/icons/StraboIcons_Oct2019/TagButton.png')
   },
   MEASUREMENT: {
     NAME: 'Measurement',
-    ICON: require('../../assets/icons/MeasurementButton.png')
+    ICON: require('../../assets/icons/StraboIcons_Oct2019/MeasurementButton.png')
   },
   SAMPLE: {
     NAME: 'Sample',
-    ICON: require('../../assets/icons/SampleButton.png')
+    ICON: require('../../assets/icons/StraboIcons_Oct2019/SampleButton.png')
   },
   NOTE: {
     NAME: 'Note',
-    ICON: require('../../assets/icons/NoteButton.png')
+    ICON: require('../../assets/icons/StraboIcons_Oct2019/NoteButton.png')
   },
   PHOTO: {
     NAME: 'Photo',
-    ICON: require('../../assets/icons/PhotoButton.png')
+    ICON: require('../../assets/icons/StraboIcons_Oct2019/PhotoButton.png')
   },
   SKETCH: {
     NAME: 'Sketch',
-    ICON: require('../../assets/icons/SketchButton.png')
+    ICON: require('../../assets/icons/StraboIcons_Oct2019/SketchButton.png')
   }
 };

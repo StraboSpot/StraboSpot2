@@ -719,44 +719,44 @@ class Home extends React.Component {
           <Animated.View style={[styles.rightsideIcons, rightsideIconAnimation]}>
             {this.props.shortcutSwitchPosition.Tag ?
               <IconButton
-                source={require('../../assets/icons/TagButton.png')}
+                source={require('../../assets/icons/StraboIcons_Oct2019/TagButton.png')}
                 onPress={this.clickHandler.bind(this, "tag")}
               /> : null}
             {this.props.shortcutSwitchPosition.Measurement ?
               <IconButton
                 source={this.props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS ? require(
-                  '../../assets/icons/MeasurementButton_pressed.png')
-                  : require('../../assets/icons/MeasurementButton.png')}
+                  '../../assets/icons/StraboIcons_Oct2019/MeasurementButton_pressed.png')
+                  : require('../../assets/icons/StraboIcons_Oct2019/MeasurementButton.png')}
                 onPress={this.clickHandler.bind(this, "measurement")}
               /> : null}
             {this.props.shortcutSwitchPosition.Sample ?
               <IconButton
                 source={this.props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE ? require(
-                  '../../assets/icons/SampleButton_pressed.png')
-                  : require('../../assets/icons/SampleButton.png')}
+                  '../../assets/icons/StraboIcons_Oct2019/SampleButton_pressed.png')
+                  : require('../../assets/icons/StraboIcons_Oct2019/SampleButton.png')}
                 onPress={this.clickHandler.bind(this, "sample")}
               /> : null}
             {this.props.shortcutSwitchPosition.Note ?
               <IconButton
                 name={"Note"}
-                source={require('../../assets/icons/NoteButton.png')}
+                source={require('../../assets/icons/StraboIcons_Oct2019/NoteButton.png')}
                 onPress={this.clickHandler.bind(this, "note")}
               /> : null}
             {this.props.shortcutSwitchPosition.Photo ?
               <IconButton
-                source={require('../../assets/icons/PhotoButton.png')}
+                source={require('../../assets/icons/StraboIcons_Oct2019/PhotoButton.png')}
                 onPress={this.clickHandler.bind(this, "photo")}
               /> : null}
             {this.props.shortcutSwitchPosition.Sketch ?
               <IconButton
-                source={require('../../assets/icons/SketchButton.png')}
+                source={require('../../assets/icons/StraboIcons_Oct2019/SketchButton.png')}
                 onPress={this.clickHandler.bind(this, "sketch")}
               /> : null}
           </Animated.View>
           <View style={styles.notebookViewIcon}>
             {this.props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS ||
             this.props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE ? null : <IconButton
-              source={require('../../assets/icons/NotebookViewButton.png')}
+              source={require('../../assets/icons/StraboIcons_Oct2019/NotebookViewButton.png')}
               onPress={() => this.openNotebookPanel()}
             />}
           </View>
@@ -770,22 +770,22 @@ class Home extends React.Component {
               <IconButton
                 style={{top: 5}}
                 source={this.state.mapMode === MapModes.DRAW.POINT ?
-                  require('../../assets/icons/PointButton_pressed.png') : require(
-                    '../../assets/icons/PointButton.png')}
+                  require('../../assets/icons/StraboIcons_Oct2019/PointButton_pressed.png') : require(
+                    '../../assets/icons/StraboIcons_Oct2019/PointButton.png')}
                 onPress={this.clickHandler.bind(this, MapModes.DRAW.POINT)}
               />
               <IconButton
                 style={{top: 5}}
                 source={this.state.mapMode === MapModes.DRAW.LINE ?
-                  require('../../assets/icons/LineButton_pressed.png') : require(
-                    '../../assets/icons/LineButton.png')}
+                  require('../../assets/icons/StraboIcons_Oct2019/LineButton_pressed.png') : require(
+                    '../../assets/icons/StraboIcons_Oct2019/LineButton.png')}
                 onPress={this.clickHandler.bind(this, MapModes.DRAW.LINE)}
               />
               <IconButton
                 style={{top: 5}}
                 source={this.state.mapMode === MapModes.DRAW.POLYGON ?
-                  require('../../assets/icons/PolygonButton_pressed.png') :
-                  require('../../assets/icons/PolygonButton.png')}
+                  require('../../assets/icons/StraboIcons_Oct2019/PolygonButton_pressed.png') :
+                  require('../../assets/icons/StraboIcons_Oct2019/PolygonButton.png')}
                 onPress={this.clickHandler.bind(this, MapModes.DRAW.POLYGON)}
               />
             </Animated.View>
@@ -793,28 +793,28 @@ class Home extends React.Component {
           {/*</View>*/}
           <View style={styles.settingsIconContainer}>
             <IconButton
-              source={require('../../assets/icons/SettingsButton.png')}
+              source={require('../../assets/icons/StraboIcons_Oct2019/HomeButton.png')}
               onPress={this.clickHandler.bind(this, "settings")}
             />
           </View>
           <Animated.View style={[styles.leftsideIcons, leftsideIconAnimation]}>
             <IconButton
-              source={require('../../assets/icons/MapActionsButton.png')}
+              source={require('../../assets/icons/StraboIcons_Oct2019/MapActionsButton.png')}
               onPress={() => this.toggleDialog("mapActionsMenuVisible")}
             />
             <IconButton
-              source={require('../../assets/icons/SymbolsButton.png')}
+              source={require('../../assets/icons/StraboIcons_Oct2019/SymbolsButton.png')}
               onPress={() => this.toggleDialog("mapSymbolsMenuVisible")}
             />
             <IconButton
-              source={require('../../assets/icons/LayersButton.png')}
+              source={require('../../assets/icons/StraboIcons_Oct2019/layersButton.png')}
               onPress={() => this.toggleDialog("baseMapMenuVisible")}
             />
           </Animated.View>
           <Animated.View style={[styles.bottomLeftIcons, leftsideIconAnimation]}>
             <IconButton
               style={{top: 5}}
-              source={require('../../assets/icons/MyLocationButton.png')}
+              source={require('../../assets/icons/StraboIcons_Oct2019/MyLocationButton.svg')}
               onPress={this.clickHandler.bind(this, "currentLocation")}
             />
           </Animated.View>

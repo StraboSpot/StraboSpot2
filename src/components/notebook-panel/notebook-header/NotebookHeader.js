@@ -34,7 +34,7 @@ const NotebookHeader = props => {
   return (
     <View style={headerStyles.headerContentContainer}>
       <Image
-        source={require('../../../assets/icons/Notebook_Header_Point_resizeimage.png')}
+        source={require('../../../assets/NotebookHeaderPoint.png')}
         style={headerStyles.headerImage}
       />
       <View style={headerStyles.headerSpotNameAndCoordsContainer}>
@@ -48,7 +48,7 @@ const NotebookHeader = props => {
       <View style={headerStyles.headerButtons}>
         <IconButton
           onPress={() => props.onPress('menu')}
-          source={require('../../../assets/icons/three-dot-menu.png')}
+          source={require('../../../assets/icons/StraboIcons_Oct2019/three-dot-menu.png')}
           style={headerStyles.threeDotMenu}
         />
       </View>
