@@ -11,17 +11,16 @@ import {persistStore, persistReducer} from 'redux-persist'
 import storage from 'redux-persist/lib/storage' // defaults to localStorage for web and AsyncStorage for react-native
 
 // Redux Persist
-const persistConfig = {
+export const persistConfig = {
   key: 'root',
   storage
 };
-
 
 const loggerMiddleware = createLogger({
   predicate: () => process.env.NODE_ENV === 'development',
 });
 
-const rootReducer = combineReducers({
+const appReducer = combineReducers({
   home: homeReducer,
   spot: spotReducer,
   map: mapReducer,
@@ -30,6 +29,14 @@ const rootReducer = combineReducers({
   images: imageReducer,
   user: userReducer
 });
+
+const rootReducer = (state, action) => {
+  if (action.type === 'USER_LOGOUT') {
+    storage.removeItem('root');
+    state = undefined
+  }
+  return appReducer(state, action)
+};
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
