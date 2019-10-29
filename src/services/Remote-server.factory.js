@@ -27,6 +27,7 @@ const buildGetRequest = async (urlPart, login) => {
 };
 
 export const getProfileImage = async (encodedLogin) => {
+  let imageBlob = null;
   try {
     let imageResponse = await fetch(baseUrl + '/profileimage', {
       method: 'GET',
@@ -35,10 +36,13 @@ export const getProfileImage = async (encodedLogin) => {
       headers: {
         Authorization: 'Basic ' + encodedLogin
       }
-    })
-    let imageBlob = imageResponse.blob();
-    return imageBlob
-    // return imageResponse
+    });
+    if (imageResponse.status === 200) {
+      imageBlob = imageResponse.blob();
+      return imageBlob
+    } else {
+      imageBlob = null;
+    }
   } catch (error) {
     console.error(error)
   }

@@ -8,7 +8,7 @@ import * as RemoteServer from '../services/Remote-server.factory';
 import * as themes from '../shared/styles.constants';
 import {USER_DATA, USER_IMAGE} from '../services/user/User.constants';
 import {PASSWORD_TEST, USERNAME_TEST} from "../Config";
-import {isEmpty} from "../shared/Helpers";
+import {isEmpty, readDataUrl} from "../shared/Helpers";
 
 const base64 = require('../../node_modules/base-64/base64');
 
@@ -28,6 +28,9 @@ class SignIn extends React.Component {
       goHome()
     }
   }
+  guestSignIn = () => {
+    goHome()
+  };
 
   signIn = async () => {
     const {username, password} = this.state;
@@ -39,8 +42,10 @@ class SignIn extends React.Component {
           email: username,
           encoded_login: base64.encode(username + ':' + password)
         };
-        console.log(`${user.email} is successfully logged in!`);
-        this.updateUser().then(() => goHome())
+        this.updateUserResponse().then(() => {
+          console.log(`${user.email} is successfully logged in!`);
+          goHome()
+        })
         // goHome();
       }
       else {
@@ -52,28 +57,15 @@ class SignIn extends React.Component {
     }
   };
 
-  updateUser = async () => {
-    RemoteServer.getProfile(user.encoded_login).then((profileResponse) => {
-      console.log('Profile Res', profileResponse);
-      this.props.setUserData(profileResponse);
-      RemoteServer.getProfileImage(user.encoded_login).then((profileImageResponse) => {
-        console.log('Profile Image Res', profileImageResponse);
-        if (profileImageResponse.data) {
-          this.readDataUrl(profileImageResponse, async (base64Image) => {
-            this.props.setUserImage(base64Image)
-          })
-        }
-      })
-    });
-  };
-
-  readDataUrl = (file, callback) => {
-    const reader = new FileReader();
-    reader.onloadend = function (evt) {
-      // console.log(evt.target.result);
-      callback(evt.target.result);
-      };
-    reader.readAsDataURL(file);
+  updateUserResponse = async () => {
+    const userProfile = await RemoteServer.getProfile(user.encoded_login);
+    const userProfileImage = await RemoteServer.getProfileImage(user.encoded_login);
+    if (userProfileImage.data) {
+      readDataUrl(userProfileImage, (base64Image) => {
+        this.props.setUserImage(base64Image);
+      });
+      this.props.setUserData(userProfile);
+    }
   };
 
   createAccount = () => {
@@ -92,43 +84,50 @@ class SignIn extends React.Component {
             }}
             keyboardVerticalOffset={150}
           >
-            <TextInput
-              style={styles.input}
-              placeholder='Username'
-              autoCapitalize="none"
-              autoCorrect={false}
-              placeholderTextColor='#6a777e'
-              onChangeText={val => this.setState({username: val.toLowerCase()})}
-              value={this.state.username}
-              keyboardType="email-address"
-              returnKeyType="go"
-            />
-            <TextInput
-              style={styles.input}
-              placeholder='Password'
-              autoCapitalize="none"
-              secureTextEntry={true}
-              placeholderTextColor='#6a777e'
-              onChangeText={val => this.setState({password: val})}
-              value={this.state.password}
-              returnKeyType="go"
-              onSubmitEditing={this.signIn}
-            />
-            <View style={styles.button}>
+            <View style={{alignItems: 'center'}}>
+              <TextInput
+                style={styles.input}
+                placeholder='Username'
+                autoCapitalize="none"
+                autoCorrect={false}
+                placeholderTextColor='#6a777e'
+                onChangeText={val => this.setState({username: val.toLowerCase()})}
+                value={this.state.username}
+                keyboardType="email-address"
+                returnKeyType="go"
+              />
+              <TextInput
+                style={styles.input}
+                placeholder='Password'
+                autoCapitalize="none"
+                secureTextEntry={true}
+                placeholderTextColor='#6a777e'
+                onChangeText={val => this.setState({password: val})}
+                value={this.state.password}
+                returnKeyType="go"
+                onSubmitEditing={this.signIn}
+              />
+              <View style={styles.button}>
 
-              <ButtonWithBackground
-                color={"#407ad9"}
-                onPress={this.signIn}
-                // style={styles.buttonText}
-                name={"ios-log-in"}
-              >Sign In
-              </ButtonWithBackground>
-              <ButtonWithBackground
-                color={"#407ad9"}
-                onPress={this.createAccount}
-                name={"ios-add"}
-              >Create an Account
-              </ButtonWithBackground>
+                <ButtonWithBackground
+                  title={'Sign In'}
+                  // color={"#407ad9"}
+                  onPress={() => this.signIn()}
+                  name={"ios-log-in"}
+                />
+                <ButtonWithBackground
+                  title={'Create an Account'}
+                  // color={"#407ad9"}
+                  onPress={() => this.createAccount()}
+                  name={"ios-add"}
+                />
+                <ButtonWithBackground
+                  title={'Continue as Guest'}
+                  // color={"#407ad9"}
+                  onPress={() => this.guestSignIn()}
+                  name={"ios-people"}
+                />
+              </View>
             </View>
           </KeyboardAvoidingView>
         </View>
@@ -171,7 +170,7 @@ const styles = StyleSheet.create({
     flex: 1,
     // width: null,
     // height: '100%',
-    marginTop: 20,
+    // marginTop: 20,
     resizeMode: 'cover'
   },
   button: {

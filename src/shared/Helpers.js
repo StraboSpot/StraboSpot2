@@ -62,4 +62,14 @@ export const animatePanels = (animatedState, toValue) => {
   }).start();
 };
 
+export const readDataUrl = (file, callback) => {
+  const reader = new FileReader();
+  reader.onloadend = function (evt) {
+    // console.log(evt.target.result);
+    callback(evt.target.result);
+  };
+  reader.readAsDataURL(file);
+};
+
+
 

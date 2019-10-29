@@ -16,7 +16,7 @@ export const authenticateUser = async (username, password) => {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(
-          {email: USERNAME_TEST, password: PASSWORD_TEST}
+          {email: username, password: password}
         )
       }
     );
