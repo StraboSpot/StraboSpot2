@@ -7,7 +7,7 @@ import {connect} from "react-redux";
 import SectionDivider from "../../shared/ui/SectionDivider";
 
 // Styles
-import styles from './samples.style';
+import styles from './samplesStyles/samples.style';
 import * as themes from '../../shared/styles.constants';
 import {homeReducers, Modals} from "../../views/home/Home.constants";
 
