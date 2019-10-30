@@ -42,6 +42,16 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 20,
     right: 0,
+    alignItems: 'center',
+    // backgroundColor: 'pink'
+  },
+  drawToolsButtons: {
+    borderRadius: 30,
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingTop: 3,
+    paddingBottom: 3,
+    backgroundColor: 'yellow'
   },
   drawerStyles: {
     shadowColor: '#000000',
@@ -63,8 +73,13 @@ const styles = StyleSheet.create({
 
   topCenter: {
     position: "absolute",
-    top: 20,
-    left: '20%'
+    bottom: 20,
+    right: '45%'
+  },
+  onlineStatus: {
+    position: 'absolute',
+    right: 0,
+    top: 40,
   },
 
   // --- Bottom Left Icon (current location) ---

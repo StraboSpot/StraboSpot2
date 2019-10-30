@@ -681,35 +681,32 @@ class Home extends React.Component {
           </Animated.View>
           <View style={styles.topCenter}>
             {this.state.buttons.endDrawButtonVisible ?
-              <ButtonWithBackground
-                color={'yellow'}
-                style={styles.buttonWithBackground}
+              <Button
+                containerStyle={{alignContent: 'center', }}
+                buttonStyle={styles.drawToolsButtons}
+                titleStyle={{color: 'black'}}
+                title={'End Draw'}
                 onPress={this.clickHandler.bind(this, "endDraw")}
-              >
-                <MaterialCommunityIcons.FontAwesome5
-                  name={'user-edit'}
-                  size={15}/>
-                End Draw
-              </ButtonWithBackground>
+              />
               : null}
             {this.state.buttons.editButtonsVisible ?
               <View>
-                <ButtonWithBackground
-                  color={'yellow'}
-                  style={styles.buttonWithBackground}
-                  onPress={this.clickHandler.bind(this, "saveEdits")}>
-                  Save Edits
-                </ButtonWithBackground>
-                <ButtonWithBackground
-                  color={'yellow'}
-                  style={styles.buttonWithBackground}
-                  onPress={this.clickHandler.bind(this, "cancelEdits")}>
-                  Cancel Edits
-                </ButtonWithBackground>
+                <Button
+                  buttonStyle={styles.drawToolsButtons}
+                  titleStyle={{color: 'black'}}
+                  title={'Save Edits'}
+                  onPress={this.clickHandler.bind(this, "saveEdits")}
+                />
+                <Button
+                  buttonStyle={[styles.drawToolsButtons, {marginTop: 5}]}
+                  titleStyle={{color: 'black'}}
+                  title={'Cancel Edits'}
+                  onPress={this.clickHandler.bind(this, "cancelEdits")}
+                />
               </View>
               : null}
           </View>
-          <Animated.View style={[styles.isOnline, rightsideIconAnimation]}>
+          <Animated.View style={[styles.onlineStatus, rightsideIconAnimation]}>
             <IconButton
               source={this.props.isOnline ? this.online : this.offline}
               // onPress={this.clickHandler.bind(this, "search")}
