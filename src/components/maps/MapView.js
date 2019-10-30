@@ -22,8 +22,8 @@ class mapView extends Component {
     super(props, context);
 
     this.state = {
-      latitude: 0,
-      longitude: 0,
+      latitude: 39.828175,       // Geographic center of US
+      longitude: -98.5795,      // Geographic center of US
       currentBasemap: {},
       location: false,
       drawFeatures: [],
@@ -77,7 +77,8 @@ class mapView extends Component {
   async componentDidMount() {
     this.props.onRef(this);
     this._isMounted = true;
-    await this.setCurrentLocation();
+    await this.setCurrentLocation()
+      .catch(err => console.log(err));
     console.log('Setting initial basemap ...', this.basemaps.mapboxOutdoors);
     this.props.onCurrentBasemap(this.basemaps.mapboxOutdoors);
   }
@@ -435,7 +436,7 @@ class mapView extends Component {
 
   // Get the current location from the device and set it in the State
   setCurrentLocation = async () => {
-    const geolocationOptions = {timeout: 5000, maximumAge: 0, enableHighAccuracy: true};
+    const geolocationOptions = {timeout: 15000, maximumAge: 10000, enableHighAccuracy: true};
     return new Promise((resolve, reject) => {
       navigator.geolocation.getCurrentPosition(
         (position) => {
