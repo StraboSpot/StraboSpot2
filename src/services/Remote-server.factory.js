@@ -52,4 +52,22 @@ export const getProfile = async (encodedLogin) => {
   return await buildGetRequest('/profile', encodedLogin)
 };
 
+export const getMyProjects = async (encodedLogin) => {
+  // return await buildGetRequest('/myProjects', encodedLogin)
+  try{
+    let request = await fetch(baseUrl + '/myProjects',{
+      method: 'GET',
+      headers: {
+        Authorization: 'Basic ' + encodedLogin + '\'',
+        'Content-Type': 'application/json'
+      }
+    });
+    // console.log(request);
+    if (request.status === 200) {
+      return await request.json();
+    }
+  } catch (error) {
+    console.log('ERROR', error)
+  }
+};
 

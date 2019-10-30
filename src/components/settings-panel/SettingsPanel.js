@@ -125,12 +125,12 @@ const SettingsPanel = props => {
           />
         </View>;
       break;
-     case SettingsMenuItems.APP_PREFERENCES.MANAGE_DATASETS:
-       page = <View>
-         {settingsPanelHeader}
-         <ManageDatasets/>
-       </View>;
-    break;
+    case SettingsMenuItems.APP_PREFERENCES.MANAGE_DATASETS:
+      page = <View>
+        {settingsPanelHeader}
+        <ProjectList/>
+      </View>;
+      break;
     default:
       page =
         <React.Fragment>
