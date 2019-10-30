@@ -1,5 +1,5 @@
 import React from 'react'
-import {View, StyleSheet, TextInput, Button, Alert, ImageBackground, KeyboardAvoidingView} from 'react-native'
+import {View, StyleSheet, TextInput, Alert, ImageBackground, KeyboardAvoidingView} from 'react-native'
 import {goHome, goSignUp} from '../routes/Navigation'
 import {connect} from 'react-redux';
 import {authenticateUser} from '../services/user/UserAuth';
@@ -10,6 +10,8 @@ import {USER_DATA, USER_IMAGE, ENCODED_LOGIN} from '../services/user/User.consta
 import {PASSWORD_TEST, USERNAME_TEST} from "../Config";
 import * as Sentry from '@sentry/react-native';
 import {isEmpty, readDataUrl} from "../shared/Helpers";
+import Icon from "react-native-vector-icons/Ionicons";
+import {Button} from "react-native-elements";
 
 const base64 = require('../../node_modules/base-64/base64');
 
@@ -45,7 +47,7 @@ class SignIn extends React.Component {
         user = {
           email: username,
           encoded_login: base64.encode(username + ':' + password)
-        }
+        };
         this.props.setEncodedLogin(user.encoded_login);
         this.updateUserResponse().then(() => {
           console.log(`${user.email} is successfully logged in!`);
@@ -54,7 +56,6 @@ class SignIn extends React.Component {
           });
           goHome()
         })
-        // goHome();
       }
       else {
         Alert.alert("Login Failure", "Incorrect username and/or password");
@@ -93,6 +94,7 @@ class SignIn extends React.Component {
             keyboardVerticalOffset={150}
           >
             <View style={{alignItems: 'center'}}>
+              <View style={styles.signInContainer}>
               <TextInput
                 style={styles.input}
                 placeholder='Username'
@@ -115,25 +117,47 @@ class SignIn extends React.Component {
                 returnKeyType="go"
                 onSubmitEditing={this.signIn}
               />
-              <View style={styles.button}>
-
-                <ButtonWithBackground
-                  title={'Sign In'}
-                  // color={"#407ad9"}
+                <Button
+                  icon={
+                    <Icon
+                      style={styles.icon}
+                      name={"ios-log-in"}
+                      size={30}
+                      color={"white"}/>
+                  }
+                  type={'solid'}
+                  containerStyle={{marginTop: 30}}
                   onPress={() => this.signIn()}
-                  name={"ios-log-in"}
+                  buttonStyle={styles.buttonStyle}
+                  title={'Sign In'}
                 />
-                <ButtonWithBackground
-                  title={'Create an Account'}
-                  // color={"#407ad9"}
+                <Button
+                  icon={
+                    <Icon
+                      style={styles.icon}
+                      name={"ios-add"}
+                      size={30}
+                      color={"white"}/>
+                  }
+                  type={'solid'}
+                  containerStyle={{marginTop: 10}}
                   onPress={() => this.createAccount()}
-                  name={"ios-add"}
+                  buttonStyle={styles.buttonStyle}
+                  title={'Create an Account'}
                 />
-                <ButtonWithBackground
-                  title={'Continue as Guest'}
-                  // color={"#407ad9"}
+                <Button
+                  icon={
+                    <Icon
+                      style={styles.icon}
+                      name={"ios-people"}
+                      size={30}
+                      color={"white"}/>
+                  }
+                  type={'solid'}
                   onPress={() => this.guestSignIn()}
-                  name={"ios-people"}
+                  containerStyle={{marginTop: 10}}
+                  buttonStyle={styles.buttonStyle}
+                  title={'Continue as Guest'}
                 />
               </View>
             </View>
@@ -182,8 +206,17 @@ const styles = StyleSheet.create({
     // marginTop: 20,
     resizeMode: 'cover'
   },
-  button: {
-    marginTop: 50
+  signInContainer: {
+    // marginTop: 30,
+    alignItems: 'center',
+  },
+  buttonStyle: {
+    borderRadius: 30,
+    paddingRight: 50,
+    paddingLeft: 50
+  },
+  icon: {
+    paddingRight: 15
   }
 
 });
