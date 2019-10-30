@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View} from 'react-native';
 import {connect} from 'react-redux';
 import styles from "./SettingsPanelStyles";
@@ -17,15 +17,14 @@ import {settingPanelReducers} from "./settingsPanel.constants";
 import {spotReducers} from "../../spots/Spot.constants";
 import {NotebookPages, notebookReducers} from "../notebook-panel/Notebook.constants";
 import {goSignIn} from '../../routes/Navigation';
-import {USER_DATA, USER_IMAGE, USER_DATA_CLEARED} from "../../services/user/User.constants";
-import SignIn from '../../views/SignIn';
+import {USER_DATA, USER_DATA_CLEARED} from "../../services/user/User.constants";
 import {isEmpty} from "../../shared/Helpers";
+import ProjectList from '../../project/ProjectList';
 
 const SettingsPanel = props => {
   let buttonTitle = null;
 
   const [isSignModalVisible, setIsSignInModalVisible] = useState(false);
-  const [animated, setAnimated] = useState(new Animated.Value(-300));
 
 
   const {settingsPageVisible, setSettingsPanelPageVisible} = props;
@@ -36,10 +35,10 @@ const SettingsPanel = props => {
 
   let page = null;
 
-  useEffect(() => {
-    setSettingsPanelPageVisible(SettingsMenuItems.SETTINGS_MAIN);
-    console.log('PAGE:', settingsPageVisible)
-  }, []);
+  // useEffect(() => {
+    // setSettingsPanelPageVisible(SettingsMenuItems.SETTINGS_MAIN);
+    // console.log('PAGE:', settingsPageVisible)
+  // }, []);
 
   const getSpotFromId = (spotId, page) => {
     const spotID = props.spot.find(spot => {
@@ -53,12 +52,11 @@ const SettingsPanel = props => {
 
   const logout = () => {
     if (!isEmpty(props.userProfile)) {
-
       props.clearStorage();
       goSignIn()
     }
     else {
-        setIsSignInModalVisible(true)
+        goSignIn()
     }
   };
 
