@@ -100,15 +100,9 @@ const styles = StyleSheet.create({
     left: 0,
     top: 20
   },
-  searchIconContainer: {
-    position: 'absolute',
-    right: 0,
-    top: 20,
-  },
   tagIcon: {
     marginTop: 145
   },
-
   dialog: {
     position: 'absolute',
     bottom: 10
