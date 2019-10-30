@@ -1,8 +1,7 @@
 import React, {Component} from 'react';
 import {AsyncStorage, Picker, Text, StyleSheet, View, TouchableOpacity} from 'react-native';
-import ButtonWithBackground from '../../../shared/ui/ButtonWithBackground';
 import * as SharedUI from '../../../shared/ui/index';
-import {Header} from 'react-native-elements';
+import {Button, Header} from 'react-native-elements';
 import MaterialCommunityIcons from '../../../shared/Icons';
 import {Platform} from 'react-native';
 import RNFetchBlob from 'rn-fetch-blob';
@@ -365,11 +364,12 @@ class SaveMapModal extends Component {
         }
 
         { this.state.showMainMenu &&
-          <ButtonWithBackground
-            onPress={this.saveMap} //pass in zoom
-            style={styles.buttonText}
-            color={themes.PRIMARY_ACCENT_COLOR}
-          >Download {this.state.tileCount} Tiles</ButtonWithBackground>
+        <Button
+          onPress={this.saveMap}
+          type={'clear'}
+          buttonStyle={{borderRadius: 30, paddingRight: 50, paddingLeft: 50}}
+          title={`Download ${this.state.tileCount} Tiles`}
+        />
         }
 
         { this.state.showLoadingMenu &&
@@ -397,13 +397,13 @@ class SaveMapModal extends Component {
         }
 
         { this.state.showComplete &&
-          <ButtonWithBackground
-            onPress={this.props.close}
-            style={styles.buttonText}
-            color={themes.PRIMARY_ACCENT_COLOR}
-          >Continue</ButtonWithBackground>
+        <Button
+          onPress={this.props.close}
+          type={'clear'}
+          buttonStyle={{borderRadius: 30, paddingRight: 50, paddingLeft: 50}}
+          title={'Continue'}
+          />
         }
-
       </View>
 
     );

@@ -3,7 +3,6 @@ import {View, StyleSheet, TextInput, Alert, ImageBackground, KeyboardAvoidingVie
 import {goHome, goSignUp} from '../routes/Navigation'
 import {connect} from 'react-redux';
 import {authenticateUser} from '../services/user/UserAuth';
-import ButtonWithBackground from '../shared/ui/ButtonWithBackground';
 import * as RemoteServer from '../services/Remote-server.factory';
 import * as themes from '../shared/styles.constants';
 import {USER_DATA, USER_IMAGE, ENCODED_LOGIN} from '../services/user/User.constants';
