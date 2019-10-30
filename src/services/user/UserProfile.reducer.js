@@ -13,6 +13,7 @@ export const userReducer = (state = initialState, action) => {
       return {
         ...state,
         userData: {
+          ...state.userData,
           name: action.userData.name,
           email: action.userData.email,
           mapboxToken: action.userData.mapboxToken,
@@ -23,6 +24,13 @@ export const userReducer = (state = initialState, action) => {
       return {
         ...state,
         userData: {}
+      };
+    case UserInfo.ENCODED_LOGIN:
+      return {
+        ...state,
+        userData: {
+          encoded_login: action.value
+        }
       };
     case UserInfo.USER_IMAGE:
       return {
