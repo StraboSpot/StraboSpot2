@@ -2,16 +2,15 @@ import React from 'react'
 import {Alert, Animated, Dimensions, Easing, Platform, Text, View} from 'react-native'
 import NetInfo from "@react-native-community/netinfo";
 import MapView from '../../components/maps/MapView';
-import MapActionsDialog from '../../components/DialogBoxes/map-actions/MapActionsDialogBox';
-import MapSymbolsDialog from "../../components/DialogBoxes/map-symbols/MapSymbolsDialogBox";
-import BaseMapDialog from "../../components/DialogBoxes/base-maps/BaseMapDialogBox";
+import MapActionsDialog from '../../components/dialog-boxes/map-actions/MapActionsDialogBox';
+import MapSymbolsDialog from "../../components/dialog-boxes/map-symbols/MapSymbolsDialogBox";
+import BaseMapDialog from "../../components/dialog-boxes/base-maps/BaseMapDialogBox";
 import NotebookPanel from '../../components/notebook-panel/NotebookPanel';
 import SettingsPanel from '../../components/settings-panel/SettingsPanel';
 import {MapModes} from '../../components/maps/Map.constants';
 import {SettingsMenuItems} from '../../components/settings-panel/SettingsMenu.constants';
-import ButtonWithBackground from '../../shared/ui/ButtonWithBackground';
 import Modal from "react-native-modal";
-import SaveMapModal from '../../components/DialogBoxes/map-actions/SaveMapsModal';
+import SaveMapModal from '../../components/dialog-boxes/map-actions/SaveMapsModal';
 import NotebookPanelMenu from '../../components/notebook-panel/NotebookPanelMenu';
 import {connect} from 'react-redux';
 import {NotebookPages, notebookReducers} from "../../components/notebook-panel/Notebook.constants";
@@ -24,7 +23,6 @@ import ShortcutCompassModal from '../../components/measurements/compass/Shortcut
 import NotebookSamplesModal from '../../components/samples/NotebookSamplesModal.view';
 import ShortcutSamplesModal from '../../components/samples/ShortcutSamplesModal.view';
 import {homeReducers, Modals} from "./Home.constants";
-import sampleStyles from '../../components/samples/samples.style';
 import notebookStyles from '../../components/notebook-panel/NotebookPanel.styles';
 import Orientation from "react-native-orientation-locker";
 import {Directions, FlingGestureHandler, State} from "react-native-gesture-handler";
@@ -34,7 +32,6 @@ import {Button, Image} from "react-native-elements";
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import styles from './Styles';
 import vectorIcon from 'react-native-vector-icons/Ionicons';
-import MaterialCommunityIcons from '../../shared/Icons';
 import IconButton from '../../shared/ui/IconButton';
 import {animatePanels} from '../../shared/Helpers';
 
@@ -814,7 +811,7 @@ class Home extends React.Component {
           <Animated.View style={[styles.bottomLeftIcons, leftsideIconAnimation]}>
             <IconButton
               style={{top: 5}}
-              source={require('../../assets/icons/StraboIcons_Oct2019/MyLocationButton.svg')}
+              source={require('../../assets/icons/StraboIcons_Oct2019/MyLocationButton.png')}
               onPress={this.clickHandler.bind(this, "currentLocation")}
             />
           </Animated.View>
