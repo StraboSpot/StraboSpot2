@@ -127,11 +127,6 @@ export const spotReducer = (state = initialState, action) => {
           }
         }
       };
-    case spotReducers.SET_ISONLINE:
-      return {
-        ...state,
-        isOnline: action.online
-      }
   }
   return state;
 };

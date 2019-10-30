@@ -890,7 +890,7 @@ function mapStateToProps(state) {
     isImageModalVisible: state.home.isImageModalVisible,
     imagePaths: state.images.imagePaths,
     featureCollectionSelected: state.spot.featureCollectionSelected,
-    isOnline: state.spot.isOnline,
+    isOnline: state.home.isOnline,
     isNotebookPanelVisible: state.notebook.isNotebookPanelVisible,
     isCompassModalVisible: state.notebook.isCompassModalVisible,
     modalVisible: state.home.modalVisible,
@@ -904,7 +904,7 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-  setIsOnline: (online) => ({type: spotReducers.SET_ISONLINE, online: online}),
+  setIsOnline: (online) => ({type: homeReducers.SET_ISONLINE, online: online}),
   setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),
   setNotebookPanelVisible: (value) => ({type: notebookReducers.SET_NOTEBOOK_PANEL_VISIBLE, value: value}),
   setSettingsPanelVisible: (value) => ({type: homeReducers.SET_SETTINGS_PANEL_VISIBLE, value: value}),

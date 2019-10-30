@@ -53,6 +53,11 @@ export const homeReducer = (state = initialState, action) => {
       return {
         ...state,
         isImageModalVisible: action.value,
+      };
+    case homeReducers.SET_ISONLINE:
+      return {
+        ...state,
+        isOnline: action.online
       }
   }
   return state;
