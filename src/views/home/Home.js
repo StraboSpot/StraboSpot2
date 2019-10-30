@@ -54,6 +54,8 @@ const width = Dimensions.get(platformType).width;
 class Home extends React.Component {
   _isMounted = false;
   dimensions = Dimensions.get(platformType);
+  online = require('../../assets/icons/StraboIcons_Oct2019/ConnectionStatusButton_connected.png');
+  offline = require('../../assets/icons/StraboIcons_Oct2019/ConnectionStatusButton_offline.png');
 
   constructor(props) {
     super(props);
@@ -707,10 +709,10 @@ class Home extends React.Component {
               </View>
               : null}
           </View>
-          <Animated.View style={[styles.searchIconContainer, rightsideIconAnimation]}>
+          <Animated.View style={[styles.isOnline, rightsideIconAnimation]}>
             <IconButton
-              source={require('../../assets/icons/SearchButton.png')}
-              onPress={this.clickHandler.bind(this, "search")}
+              source={this.props.isOnline ? this.online : this.offline}
+              // onPress={this.clickHandler.bind(this, "search")}
             />
           </Animated.View>
           <Animated.View style={[styles.rightsideIcons, rightsideIconAnimation]}>
