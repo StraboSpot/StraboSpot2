@@ -6,7 +6,7 @@ import {authenticateUser} from '../services/user/UserAuth';
 import ButtonWithBackground from '../shared/ui/ButtonWithBackground';
 import * as RemoteServer from '../services/Remote-server.factory';
 import * as themes from '../shared/styles.constants';
-import {USER_DATA, USER_IMAGE} from '../services/user/User.constants';
+import {USER_DATA, USER_IMAGE, ENCODED_LOGIN} from '../services/user/User.constants';
 import {PASSWORD_TEST, USERNAME_TEST} from "../Config";
 import {isEmpty, readDataUrl} from "../shared/Helpers";
 
@@ -41,7 +41,8 @@ class SignIn extends React.Component {
         user = {
           email: username,
           encoded_login: base64.encode(username + ':' + password)
-        };
+        }
+        this.props.setEncodedLogin(user.encoded_login);
         this.updateUserResponse().then(() => {
           console.log(`${user.email} is successfully logged in!`);
           goHome()
@@ -144,6 +145,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = {
   setUserData: (userData) => ({type: USER_DATA, userData: userData}),
+  setEncodedLogin: (value) => ({type: ENCODED_LOGIN, value: value}),
   setUserImage: (userImage) => ({type: USER_IMAGE, userImage: userImage})
 };
 
