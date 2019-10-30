@@ -60,7 +60,8 @@ public class MainApplication extends NavigationApplication {
             new NetInfoPackage(),
             new OrientationPackage(),
             new ReanimatedPackage(),
-            new RNGestureHandlerPackage()
+            new RNGestureHandlerPackage(),
+            new RNSentryPackage()
         );
     }
 
