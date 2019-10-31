@@ -22,7 +22,7 @@ const notebookStyles = StyleSheet.create({
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
     position: 'absolute',
     right: 0,
-    zIndex: 1,
+    zIndex: -1,
   },
   panelWithAllSpotsPanel: {
     width: deviceWidth()  + 125,
@@ -43,7 +43,6 @@ const notebookStyles = StyleSheet.create({
     borderWidth: 1,
     position: 'absolute',
     right: 0,
-    zIndex: 1,
   },
   headerContainer: {
     borderBottomWidth: 1,

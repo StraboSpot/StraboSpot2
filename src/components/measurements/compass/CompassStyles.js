@@ -37,7 +37,6 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 20,
     borderBottomLeftRadius: 20,
     width: '100%',
-    // zIndex: 100,
   },
   compassImageContainer: {
     alignItems: 'center',

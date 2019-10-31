@@ -654,11 +654,13 @@ class Home extends React.Component {
 
     return (
         <View style={styles.container}>
-          <MapView ref={this.mapViewElement}
+          <View style={{flex:1, zIndex: -1}}>
+            <MapView ref={this.mapViewElement}
                    onRef={ref => (this.mapViewComponent = ref)}
                    mapMode={this.state.mapMode}
                    startEdit={this.startEdit}
-          />
+            />
+          </View>
           {/*{this.props.isNotebookPanelVisible && notebookPanel}*/}
           {notebookPanel}
           {settingsDrawer}

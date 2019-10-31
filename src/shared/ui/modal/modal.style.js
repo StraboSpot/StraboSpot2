@@ -27,8 +27,6 @@ const modalStyle = StyleSheet.create({
     borderBottomLeftRadius: 20
   },
   modalTop: {
-    zIndex: 100,
-    // width: '100%',
     flex: 1,
     alignItems: 'center',
     flexDirection: 'row',

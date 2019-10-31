@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
     bottom: 20,
     right: 0,
     alignItems: 'center',
-    // backgroundColor: 'pink'
+    zIndex: -1
   },
   drawToolsButtons: {
     borderRadius: 30,
@@ -63,12 +63,14 @@ const styles = StyleSheet.create({
   // --- Left and right icon absolute positions from top ---
   leftsideIcons: {
     position: 'absolute',
-    bottom: 150
+    bottom: 150,
+    zIndex: -1
   },
   rightsideIcons: {
     position: "absolute",
     right: 0,
-    top: 150
+    top: 150,
+    zIndex: -1
   },
 
   topCenter: {
@@ -80,12 +82,14 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 0,
     top: 40,
+    zIndex: -1
   },
 
   // --- Bottom Left Icon (current location) ---
   bottomLeftIcons: {
     position: 'absolute',
     bottom: 20,
+    zIndex: -1
   },
   layersIcon: {
     marginBottom: 105
@@ -93,12 +97,14 @@ const styles = StyleSheet.create({
   notebookViewIcon: {
     position: 'absolute',
     bottom: 75,
-    right: 0
+    right: 0,
+    zIndex: -1
   },
   settingsIconContainer: {
     position: 'absolute',
     left: 0,
-    top: 20
+    top: 20,
+    zIndex: -1
   },
   tagIcon: {
     marginTop: 145
