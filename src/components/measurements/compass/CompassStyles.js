@@ -1,35 +1,29 @@
 import {Dimensions, Platform, StyleSheet} from 'react-native';
 import * as themes from '../../../shared/styles.constants';
-import {widthPercentageToDP as wp} from "react-native-responsive-screen";
+// import {widthPercentageToDP as wp} from "react-native-responsive-screen";
 
-const platformType = Platform.OS === 'ios' ? 'window' : 'screen';
-const {width, height} = Dimensions.get(platformType);
-   let strikeLineFromTop = null;
-   let trendLineFromTop = null;
+// const platformType = Platform.OS === 'ios' ? 'window' : 'screen';
+// const {width, height} = Dimensions.get(platformType);
+//    let strikeLineFromTop = null;
+//    let trendLineFromTop = null;
 
 
-const strikeLinePosition = () => {
-    if (width < 500) return wp('75%');
-    // if (width >= 1000 && width < 1099) return strikeLineFromTop= 62;
-  if (width >= 1100 && width < 1199) return strikeLineFromTop= 79;
-  if (width >= 1200 || (width >= 1000 && width < 1099)) return strikeLineFromTop= 62;
-};
-const trendLinePosition = () => {
-  if (width < 500) return wp('55%');
-  // if (width >= 1000 && width < 1099) return strikeLineFromTop= 67;
-  if (width >= 1100 && width < 1199) return trendLineFromTop= 84;
-  if (width >= 1200 || (width >= 1000 && width < 1099)) return trendLineFromTop= 67;
-};
+// const strikeLinePosition = () => {
+//     if (width < 500) return wp('75%');
+//     // if (width >= 1000 && width < 1099) return strikeLineFromTop= 62;
+//   if (width >= 1100 && width < 1199) return strikeLineFromTop= 79;
+//   if (width >= 1200 || (width >= 1000 && width < 1099)) return strikeLineFromTop= 62;
+// };
+// const trendLinePosition = () => {
+//   if (width < 500) return wp('55%');
+//   // if (width >= 1000 && width < 1099) return strikeLineFromTop= 67;
+//   if (width >= 1100 && width < 1199) return trendLineFromTop= 84;
+//   if (width >= 1200 || (width >= 1000 && width < 1099)) return trendLineFromTop= 67;
+// };
 
 const styles = StyleSheet.create({
   buttonContainer: {
-    // paddingTop: 10,
     paddingBottom: 10,
-
-  },
-  container: {
-    flex: 1,
-    zIndex: 0
   },
   compassContainer: {
     flex: 8,
@@ -40,15 +34,8 @@ const styles = StyleSheet.create({
   },
   compassImageContainer: {
     alignItems: 'center',
-    // flex: 30,
     justifyContent: 'center',
-    // paddingBottom: 10,
   },
-  // renderCompassContainer: {
-  //   // flex: 50,
-  //   // backgroundColor: themes.SECONDARY_BACKGROUND_COLOR
-  //   // backgroundColor: 'skyblue'
-  // },
   itemContainer: {
     width: '90%',
     flexDirection: 'row',
@@ -73,7 +60,6 @@ const styles = StyleSheet.create({
   sliderContainer: {
     alignItems: 'center',
     paddingTop: 10
-    // backgroundColor: 'red'
   },
   sliderHeading: {
     fontWeight: 'bold',
@@ -112,7 +98,7 @@ const styles = StyleSheet.create({
   modalPosition: {
     position: 'absolute',
     left: 70,
-    bottom: 10,
+    bottom: 10
   },
   modalPositionShortcutView: {
     position: 'absolute',
