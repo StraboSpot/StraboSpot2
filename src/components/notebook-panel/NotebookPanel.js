@@ -59,7 +59,7 @@ const NotebookPanel = props => {
   if (!isEmpty(props.spot)) {
     // console.log('Selected Spot:', props.spot);
 
-    const allSpotsPanel = <View style={[notebookStyles.allSpotsPanel,]}>
+    const allSpotsPanel = <View style={notebookStyles.allSpotsPanel}>
       <AllSpotsView />
     </View>;
 

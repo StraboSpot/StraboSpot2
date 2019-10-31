@@ -13,30 +13,11 @@ import {homeReducers, Modals} from "../../views/home/Home.constants";
 
 const samplesNotebookView = (props) => {
 
-  // const renderItem = ({item}) => {
-  //   // console.log('ITEM', item)
-  //
-  //   let oriented = item.oriented_sample === 'yes' ? 'Oriented' : 'Unoriented';
-  //   // return (
-  //   //   <View style={styles.notebookListContainer}>
-  //   //     {/*<Text style={styles.listText}>{item.label}</Text>*/}
-  //   //     {/*<Text>{oriented}</Text>*/}
-  //   //   </View>
-  //   // );
-  //
-  //   return (
-  //     <View style={styles.notebookListContainer}>
-  //       <Text style={styles.listLabel}>{item.label}</Text>
-  //       <Text numberOfLines={1} style={styles.listText}>{oriented} - {item.sample_description}</Text>
-  //
-  //     </View>
-  //   );
-  // };
-
   const renderSampleList = () => {
     return props.spot.properties.samples.map(item => {
       // console.log('LIST', item);
       let oriented = item.oriented_sample === 'yes' ? 'Oriented' : 'Unoriented';
+
       return (
         <View key={item.id}>
         <ListItem
