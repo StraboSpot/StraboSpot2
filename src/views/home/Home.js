@@ -586,7 +586,7 @@ class Home extends React.Component {
     };
     let compassModal = null;
     let samplesModal = null;
-    const settingsDrawer =
+    const homeDrawer =
       <FlingGestureHandler
         direction={Directions.LEFT}
         numberOfPointers={1}
@@ -662,8 +662,6 @@ class Home extends React.Component {
             />
           </View>
           {/*{this.props.isNotebookPanelVisible && notebookPanel}*/}
-          {notebookPanel}
-          {settingsDrawer}
         {this.state.loading && <LoadingSpinner/>}
         {this.state.toastVisible &&
         <ToastPopup
@@ -789,7 +787,7 @@ class Home extends React.Component {
             </Animated.View>
             : null}
           {/*</View>*/}
-          <View style={styles.settingsIconContainer}>
+          <View style={styles.homeIconContainer}>
             <IconButton
               source={require('../../assets/icons/StraboIcons_Oct2019/HomeButton.png')}
               onPress={this.clickHandler.bind(this, "settings")}
@@ -816,7 +814,6 @@ class Home extends React.Component {
               onPress={this.clickHandler.bind(this, "currentLocation")}
             />
           </Animated.View>
-
           <MapActionsDialog
             visible={this.state.dialogs.mapActionsMenuVisible}
             onPress={(name) => this.dialogClickHandler("mapActionsMenuVisible", name)}
@@ -876,6 +873,8 @@ class Home extends React.Component {
               />
             </View>
           </Modal>
+          {notebookPanel}
+          {homeDrawer}
         </View>
     )
   }
