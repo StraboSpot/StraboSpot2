@@ -72,7 +72,6 @@ const styles = StyleSheet.create({
     top: 150,
     zIndex: -1
   },
-
   topCenter: {
     position: "absolute",
     bottom: 20,
@@ -100,7 +99,7 @@ const styles = StyleSheet.create({
     right: 0,
     zIndex: -1
   },
-  settingsIconContainer: {
+  homeIconContainer: {
     position: 'absolute',
     left: 0,
     top: 20,
