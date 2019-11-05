@@ -20,6 +20,23 @@ const buildGetRequest = async (urlPart, login) => {
   }
 };
 
+const timeoutPromise = (ms, promise) => {
+  return new Promise((resolve, reject) => {
+    const timeout = setTimeout(() => {
+      reject(new Error('promise timeout'))
+    }, ms);
+    promise.then((res) => {
+        clearTimeout(timeout);
+        resolve(res);
+      },
+      (err) => {
+        clearTimeout(timeout);
+        reject(err);
+      }
+    );
+  })
+};
+
 export const getProfileImage = async (encodedLogin) => {
   let imageBlob = null;
   try {
@@ -33,22 +50,22 @@ export const getProfileImage = async (encodedLogin) => {
     if (imageResponse.status === 200) {
       imageBlob = imageResponse.blob();
       return imageBlob
-    } else {
+    }
+    else {
       imageBlob = null;
     }
   } catch (error) {
     console.error(error)
   }
-  };
+};
 
 export const getProfile = async (encodedLogin) => {
   return await buildGetRequest('/profile', encodedLogin)
 };
 
 export const getMyProjects = async (encodedLogin) => {
-  // return await buildGetRequest('/myProjects', encodedLogin)
-  try{
-    let request = await fetch(baseUrl + '/myProjects',{
+  try {
+    let request = await timeoutPromise(10000, fetch(baseUrl + '/myProjects', {
       method: 'GET',
       headers: {
         Authorization: 'Basic ' + encodedLogin + '\'',
@@ -60,6 +77,7 @@ export const getMyProjects = async (encodedLogin) => {
     if (request.status === 200) {
       return await request.json();
     }
+    else return request.status
   } catch (error) {
     console.log('ERROR', error)
   }
