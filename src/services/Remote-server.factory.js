@@ -1,5 +1,4 @@
 import React from 'react';
-import {Text, View} from 'react-native';
 
 const baseUrl = 'https://strabospot.org/db';
 
@@ -19,11 +18,6 @@ const buildGetRequest = async (urlPart, login) => {
   } catch (error) {
     console.error(error)
   }
-
-    // .then(response => console.log(response.json()))
-    // .then(responseJson => {
-    //   console.log(responseJson)
-    // })
 };
 
 export const getProfileImage = async (encodedLogin) => {
@@ -31,7 +25,6 @@ export const getProfileImage = async (encodedLogin) => {
   try {
     let imageResponse = await fetch(baseUrl + '/profileimage', {
       method: 'GET',
-      // 'url': baseUrl + '/profileimage',
       responseType: 'blob',
       headers: {
         Authorization: 'Basic ' + encodedLogin
@@ -61,8 +54,9 @@ export const getMyProjects = async (encodedLogin) => {
         Authorization: 'Basic ' + encodedLogin + '\'',
         'Content-Type': 'application/json'
       }
-    });
-    // console.log(request);
+    })
+    );
+    console.log('REQ Status', request.status);
     if (request.status === 200) {
       return await request.json();
     }
