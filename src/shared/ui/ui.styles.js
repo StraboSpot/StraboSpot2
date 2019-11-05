@@ -13,6 +13,7 @@ const styles = StyleSheet.create({
     zIndex: 50,
   },
   loadingContainer: {
+    flex:1,
     position: 'absolute',
     right: hp('60'),
     bottom: hp('50'),

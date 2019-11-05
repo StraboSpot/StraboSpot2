@@ -13,10 +13,11 @@ const getModalWidth = () => {
 
 const modalStyle = StyleSheet.create({
   modalContainer: {
-    width: getModalWidth(),
+    width: 275,
     opacity: .90,
     borderBottomRightRadius: 20,
-    borderBottomLeftRadius: 20
+    borderBottomLeftRadius: 20,
+    zIndex: 1
   },
   modalBottom: {
     paddingBottom: 20,

@@ -7,15 +7,15 @@ const Loading = props => {
 
   return (
     <React.Fragment>
-    <View style={styles.backdrop}>
-    <View style={styles.loadingContainer}>
+    <View style={[styles.backdrop, props.style]}>
+    {/*<View style={styles.loadingContainer}>*/}
       <BallIndicator
         color={'darkgrey'}
         count={8}
         size={40}
       />
     </View>
-    </View>
+    {/*</View>*/}
     </React.Fragment>
   )
 };
