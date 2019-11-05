@@ -4,8 +4,6 @@ import * as themes from '../../shared/styles.constants';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    borderBottomRightRadius: 30,
-    borderTopRightRadius: 30,
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
   },
   navItemStyle: {

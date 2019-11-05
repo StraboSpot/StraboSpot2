@@ -17,8 +17,6 @@ const notebookStyles = StyleSheet.create({
     // flex: 1,
     width: deviceWidth(),
     height: '100%',
-    borderBottomLeftRadius: 30,
-    borderTopLeftRadius: 30,
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
     position: 'absolute',
     right: 0,
@@ -49,7 +47,6 @@ const notebookStyles = StyleSheet.create({
     height: 70,
     padding: 10,
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
-    borderTopLeftRadius: 30,
   },
   centerContainer: {
     flex: 1,
@@ -58,7 +55,6 @@ const notebookStyles = StyleSheet.create({
     height: 60,
     borderTopWidth: 1,
     padding: 10,
-    borderBottomLeftRadius: 30,
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
   },
   noSpotContent: {
