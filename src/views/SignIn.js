@@ -11,12 +11,16 @@ import * as Sentry from '@sentry/react-native';
 import {isEmpty, readDataUrl} from "../shared/Helpers";
 import Icon from "react-native-vector-icons/Ionicons";
 import {Button} from "react-native-elements";
+import NetInfo from "@react-native-community/netinfo";
+import {homeReducers} from "./home/Home.constants";
+import IconButton from "../shared/ui/IconButton";
 
 const base64 = require('../../node_modules/base-64/base64');
 
 let user = null;
 class SignIn extends React.Component {
-
+  online = require('../assets/icons/StraboIcons_Oct2019/ConnectionStatusButton_connected.png');
+  offline = require('../assets/icons/StraboIcons_Oct2019/ConnectionStatusButton_offline.png');
   constructor(props) {
     super(props);
     this.state = {
@@ -26,14 +30,23 @@ class SignIn extends React.Component {
   }
 
   componentDidMount() {
+    NetInfo.isConnected.addEventListener('connectionChange', this.handleConnectivityChange);
     if (!isEmpty(this.props.userData)) {
+      console.log('Loading user:', this.props.userData.name);
       goHome()
     }
   }
+
+  //function for online/offline state change event handler
+  handleConnectivityChange = (isConnected) => {
+    this.props.setIsOnline(isConnected);
+  };
+
   guestSignIn = () => {
     Sentry.configureScope((scope) => {
       scope.setUser({'id': 'GUEST'})
     });
+    console.log('Loading user: GUEST');
     goHome()
   };
 
@@ -65,6 +78,57 @@ class SignIn extends React.Component {
     }
   };
 
+  renderButtons = () => {
+      return (
+        <View>
+          <Button
+            icon={
+              <Icon
+                style={styles.icon}
+                name={"ios-log-in"}
+                size={30}
+                color={"white"}/>
+            }
+            type={'solid'}
+            containerStyle={{marginTop: 30}}
+            onPress={() => this.signIn()}
+            buttonStyle={styles.buttonStyle}
+            disabled={!this.props.isOnline}
+            title={'Sign In'}
+          />
+          <Button
+            icon={
+              <Icon
+                style={styles.icon}
+                name={"ios-add"}
+                size={30}
+                color={"white"}/>
+            }
+            type={'solid'}
+            containerStyle={{marginTop: 10}}
+            onPress={() => this.createAccount()}
+            buttonStyle={styles.buttonStyle}
+            disabled={!this.props.isOnline}
+            title={'Create an Account'}
+          />
+          <Button
+            icon={
+              <Icon
+                style={styles.icon}
+                name={"ios-people"}
+                size={30}
+                color={"white"}/>
+            }
+            type={'solid'}
+            onPress={() => this.guestSignIn()}
+            containerStyle={{marginTop: 10}}
+            buttonStyle={styles.buttonStyle}
+            title={'Continue as Guest'}
+          />
+        </View>
+      )
+  };
+
   updateUserResponse = async () => {
     const userProfile = await RemoteServer.getProfile(user.encoded_login);
     const userProfileImage = await RemoteServer.getProfileImage(user.encoded_login);
@@ -84,6 +148,15 @@ class SignIn extends React.Component {
     return (
       <ImageBackground source={require('../assets/images/background.jpg')} style={styles.backgroundImage}>
         <View style={styles.container}>
+          <View style={{
+            position: 'absolute',
+            right: 0,
+            top: 40,
+            zIndex: -1}}>
+          <IconButton
+            source={this.props.isOnline ? this.online : this.offline}
+          />
+          </View>
           <KeyboardAvoidingView
             behavior={'padding'}
             contentContainerStyle={{
@@ -116,48 +189,7 @@ class SignIn extends React.Component {
                 returnKeyType="go"
                 onSubmitEditing={this.signIn}
               />
-                <Button
-                  icon={
-                    <Icon
-                      style={styles.icon}
-                      name={"ios-log-in"}
-                      size={30}
-                      color={"white"}/>
-                  }
-                  type={'solid'}
-                  containerStyle={{marginTop: 30}}
-                  onPress={() => this.signIn()}
-                  buttonStyle={styles.buttonStyle}
-                  title={'Sign In'}
-                />
-                <Button
-                  icon={
-                    <Icon
-                      style={styles.icon}
-                      name={"ios-add"}
-                      size={30}
-                      color={"white"}/>
-                  }
-                  type={'solid'}
-                  containerStyle={{marginTop: 10}}
-                  onPress={() => this.createAccount()}
-                  buttonStyle={styles.buttonStyle}
-                  title={'Create an Account'}
-                />
-                <Button
-                  icon={
-                    <Icon
-                      style={styles.icon}
-                      name={"ios-people"}
-                      size={30}
-                      color={"white"}/>
-                  }
-                  type={'solid'}
-                  onPress={() => this.guestSignIn()}
-                  containerStyle={{marginTop: 10}}
-                  buttonStyle={styles.buttonStyle}
-                  title={'Continue as Guest'}
-                />
+                {this.renderButtons()}
               </View>
             </View>
           </KeyboardAvoidingView>
@@ -169,11 +201,13 @@ class SignIn extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    userData: state.user.userData
+    userData: state.user.userData,
+    isOnline: state.home.isOnline
   }
 };
 
 const mapDispatchToProps = {
+  setIsOnline: (online) => ({type: homeReducers.SET_ISONLINE, online: online}),
   setUserData: (userData) => ({type: USER_DATA, userData: userData}),
   setEncodedLogin: (value) => ({type: ENCODED_LOGIN, value: value}),
   setUserImage: (userImage) => ({type: USER_IMAGE, userImage: userImage})
