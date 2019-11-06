@@ -18,15 +18,15 @@ constructor(props) {
 
   render() {
   let avatarImage = null;
-  if (this.props.userProfile.image) {
+  if (this.props.userData.image) {
     avatarImage = (
       <Avatar
         // containerStyle={styles.avatarImage}
-        source={{uri: this.props.userProfile.image}}
+        source={{uri: this.props.userData.image}}
         showEditButton={false}
         rounded={true}
         size={70}
-        onPress={() => this.user()}
+        onPress={() => console.log(this.props.userData.name)}
       />
     )
   } else {
@@ -37,7 +37,7 @@ constructor(props) {
         showEditButton={false}
         rounded={true}
         size={70}
-        onPress={() => this.user()}
+        onPress={() => console.log('GUEST')}
       />
     )
   }
@@ -49,9 +49,8 @@ constructor(props) {
               {avatarImage}
             </View>
             <View style={styles.avatarLabelContainer}>
-              <Text style={styles.avatarLabel}>{this.props.userProfile.name ? this.props.userProfile.name
+              <Text style={styles.avatarLabel}>{this.props.userData.name ? this.props.userData.name
               : 'Guest'}</Text>
-              {/*<Text style={styles.avatarLabel}>Norris</Text>*/}
             </View>
           </View>
           <View style={styles.projectName}>
@@ -63,10 +62,6 @@ constructor(props) {
               onPress={() => console.log('switching projects')}
             />
           </View>
-          {/*<Button*/}
-          {/*  title={"User"}*/}
-          {/*  onPress={this.user}*/}
-          {/*/>*/}
         </View>
       </React.Fragment>
     )
@@ -75,7 +70,7 @@ constructor(props) {
 
 const mapStateToProps = (state) => {
   return {
-    userProfile: state.user.userData
+    userData: state.user.userData
   }
 };
 
