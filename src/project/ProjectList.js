@@ -74,8 +74,7 @@ const ProjectList = (props) => {
             key={item.id}
             title={item.name}
             containerStyle={{width: '100%'}}
-            onPress={() => console.log(item.id)}
-            onLongPress={() => selectProject(item)}
+            onPress={() => selectProject(item)}
             chevron
             bottomDivider
           />

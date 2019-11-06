@@ -9,7 +9,7 @@ const DialogBox = (props) => {
     <React.Fragment>
       <Dialog
         dialogStyle={styles.dialogBox}
-        width={0.35}
+        width={275}
         visible={props.visible}
         dialogAnimation={new SlideAnimation({
           slideFrom: 'top',
