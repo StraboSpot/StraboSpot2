@@ -20,11 +20,9 @@ const ProjectList = (props) => {
 
   useEffect(() => {
       getAllProjects();
-    Alert.alert('Render!')
   }, []);
 
   const getAllProjects = async () => {
-    if (props.isOnline) {
       setLoading(true);
       const projects = await RemoteServer.getMyProjects(props.userData.encoded_login);
       if (projects === 401) {
@@ -35,7 +33,6 @@ const ProjectList = (props) => {
         setProjectsArr(projects);
         setLoading(false);
       }
-    }
   };
 
   const getSelectedProject = () => {
@@ -102,8 +99,7 @@ const ProjectList = (props) => {
   return (
     <View style={{flex: 1}}>
       <View style={{flex: 1}}>
-        {props.isOnline && loading ? <Loading style={{backgroundColor: themes.PRIMARY_BACKGROUND_COLOR}}/> && renderProjects()
-          : <Text>Not Online</Text>}
+        {loading ? <Loading style={{backgroundColor: themes.PRIMARY_BACKGROUND_COLOR}}/> : renderProjects()}
       </View>
       {renderDialog()}
     </View>
