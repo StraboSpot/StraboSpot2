@@ -73,8 +73,13 @@ constructor(props) {
 
 const mapStateToProps = (state) => {
   return {
-    userData: state.user.userData
+    userData: state.user.userData,
+    isOnline: state.home.isOnline
   }
 };
 
-export default connect(mapStateToProps)(UserProfileComponent);
+const mapDispatchToProps = {
+    setSettingsPanelPageVisible: (name) => ({type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: name}),
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(UserProfileComponent);
