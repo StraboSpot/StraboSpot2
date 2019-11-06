@@ -9,6 +9,7 @@ Running for development:
       USERNAME_TEST = 'your username/email'
       PASSWORD_TEST = 'your password'
 
+     **Any changes to the .env file must be accompanied by a change in the JS files to be recognized.*
 - Run `npm install`
 - Run `npm run ios` or `npm run android`
 - react-native-fs may not link properly. In the event of `RNFSFileTypeRegular` error, run this command: `react-native link react-native-fs`
