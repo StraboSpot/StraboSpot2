@@ -125,7 +125,7 @@ const SettingsPanel = props => {
           />
         </View>;
       break;
-    case SettingsMenuItems.APP_PREFERENCES.MANAGE_DATASETS:
+    case SettingsMenuItems.PROJECT.SWITCH_PROJECT:
       page = <View style={styles.listContainer}>
         {settingsPanelHeader}
         <ProjectList/>

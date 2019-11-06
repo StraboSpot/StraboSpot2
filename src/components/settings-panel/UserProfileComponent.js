@@ -5,6 +5,9 @@ import {connect} from 'react-redux';
 // import {getUserProfile} from '../services/user/UserProfile';
 import {Avatar} from 'react-native-elements';
 import styles from './SettingsPanelStyles';
+import {settingPanelReducers} from "./settingsPanel.constants";
+import {SettingsMenuItems} from "./SettingsMenu.constants";
+
 
 class UserProfileComponent extends Component {
 constructor(props) {
@@ -55,12 +58,12 @@ constructor(props) {
           </View>
           <View style={styles.projectName}>
             <Text style={styles.projectNameText}>Project</Text>
-            <Button
+            {this.props.isOnline ? <Button
               title={'Switch Projects'}
               type={'clear'}
               titleStyle={{fontSize: 16}}
-              onPress={() => console.log('switching projects')}
-            />
+              onPress={() => this.props.setSettingsPanelPageVisible(SettingsMenuItems.PROJECT.SWITCH_PROJECT)}
+            /> : null}
           </View>
         </View>
       </React.Fragment>

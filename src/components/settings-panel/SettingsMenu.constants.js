@@ -24,6 +24,9 @@ export const SettingsMenuItems = {
   },
   USER_PREFERENCES: {
     SIGN_OUT: 'Sign Out'
+  },
+  PROJECT: {
+    SWITCH_PROJECT:'Switch Project'
   }
 };
 
