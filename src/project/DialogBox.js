@@ -21,28 +21,28 @@ const DialogBox = (props) => {
                 titleStyle={styles.dialogButtonText}
                 type={'clear'}
                 onPress={props.continue}
-                style={styles.dialogButton}
+                buttonStyle={styles.dialogButton}
             />
             <Button
               title={`Backup "${props.projectName}" \nto Server`}
               titleStyle={styles.dialogButtonText}
               type={'clear'}
               onPress={props.continue}
-              style={styles.dialogButton}
+              buttonStyle={styles.dialogButton}
             />
             <Button
               title={`Overwrite \n"${props.projectName}"`}
               titleStyle={styles.dialogButtonText}
               type={'clear'}
               onPress={props.continue}
-              style={styles.dialogButton}
+              buttonStyle={styles.dialogButton}
             />
             <Button
               title={`CANCEL`}
               titleStyle={{color: 'red'}}
               type={'clear'}
               onPress={props.continue}
-              style={styles.dialogButton}
+              buttonStyle={styles.dialogButton}
             />
             {/*<DialogButton*/}
             {/*  text={`Backup ${props.projectName} to Device`}*/}
