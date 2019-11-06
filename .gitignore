@@ -56,5 +56,4 @@ buck-out/
 *ButtonWithBackground.jsbundle
 
 # Added by developers
-src/Config.js
 .env
