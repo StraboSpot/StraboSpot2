@@ -31,10 +31,10 @@ class SignIn extends React.Component {
 
   componentDidMount() {
     NetInfo.isConnected.addEventListener('connectionChange', this.handleConnectivityChange);
-    if (!isEmpty(this.props.userData)) {
-      console.log('Loading user:', this.props.userData.name);
-      goHome()
-    }
+      if (!isEmpty(this.props.userData) && this.props.isOnline) {
+        console.log('Loading user:', this.props.userData.name);
+        goHome()
+      }
   }
 
   //function for online/offline state change event handler
