@@ -51,6 +51,7 @@ const ProjectList = (props) => {
       <DialogBox
         dialogTitle={'Delete Local Project Warning!'}
         visible={showDialog}
+        isOnline={props.isOnline}
         cancel={() => setShowDialog(false)}
         continue={() => getSelectedProject(id)}
         projectName={selectedProject.name}
