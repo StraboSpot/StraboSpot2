@@ -1,60 +1,111 @@
 import React, {useState, useEffect} from 'react';
-import {ActivityIndicator, Text, Button, TouchableOpacity, View, FlatList} from 'react-native';
+import {Text, View, Alert} from 'react-native';
 import {connect} from 'react-redux';
 import * as RemoteServer from '../services/Remote-server.factory';
 import {settingPanelReducers} from "../components/settings-panel/settingsPanel.constants";
 import {USER_DATA} from "../services/user/User.constants";
 import Loading from '../shared/ui/Loading';
-import {ListItem} from "react-native-elements";
+import {ListItem, Button} from "react-native-elements";
+import {isEmpty} from "../shared/Helpers";
+import * as themes from '../shared/styles.constants';
+import DialogBox from './DialogBox';
+import {goSignIn} from "../routes/Navigation";
+import styles from './Project.styles';
 
 const ProjectList = (props) => {
-
-  const [projects, setProjects] = useState([]);
+  const [projectsArr, setProjectsArr] = useState([]);
+  const [selectedProject, setSelectedProject] = useState({});
   const [loading, setLoading] = useState(false);
+  const [showDialog, setShowDialog] = useState(false);
 
-  useEffect( () =>  {
-     getProject();
+  useEffect(() => {
+      getAllProjects();
+    Alert.alert('Render!')
   }, []);
 
-  const getProject = async () => {
-
-    setLoading(true);
-    const projects = await RemoteServer.getMyProjects(props.userProfile.encoded_login);
-    console.log('Projects', projects.projects);
-    setProjects(projects);
-    setLoading(false);
+  const getAllProjects = async () => {
+    if (props.isOnline) {
+      setLoading(true);
+      const projects = await RemoteServer.getMyProjects(props.userData.encoded_login);
+      if (projects === 401) {
+        setLoading(false);
+      }
+      else {
+        console.log('Projects', projects.projects);
+        setProjectsArr(projects);
+        setLoading(false);
+      }
+    }
   };
 
-  const renderProjects = (data) => {
+  const getSelectedProject = () => {
+    setShowDialog(false);
+    console.log(selectedProject.id)
+  };
+
+  const selectProject = (project) => {
+    console.log('Selected ID:', project);
+    setSelectedProject(project);
+    setShowDialog(true);
+  };
+
+  const renderDialog = (id) => {
     return (
-      <View>
-        <Text>{data.name}</Text>
-        <Text>{data.id}</Text>
-      </View>
-      )
+      <DialogBox
+        dialogTitle={'Delete Local Project Warning!'}
+        visible={showDialog}
+        cancel={() => setShowDialog(false)}
+        continue={() => getSelectedProject(id)}
+        projectName={selectedProject.name}
+      >
+        <Text>Switching projects will <Text style={{color: 'red'}}>DELETE </Text>
+          the local copy of the current project: </Text>
+        <Text style={{color: 'red', textTransform: 'uppercase', marginTop: 5, marginBottom: 10, textAlign: 'center'}}>
+          {selectedProject.name}
+        </Text>
+        <Text>Including all datasets and Spots contained within this project. Make sure you have already
+          uploaded the project to the server if you wish to preserve the data. Continue?</Text>
+      </DialogBox>
+    )
+  };
+
+  const renderProjects = () => {
+      if (!isEmpty(projectsArr) && !isEmpty(props.userData)) {
+        // console.log(projectsArr.projects);
+        return projectsArr.projects.map(item => {
+          return <ListItem
+            key={item.id}
+            title={item.name}
+            containerStyle={{width: '100%'}}
+            onPress={() => console.log(item.id)}
+            onLongPress={() => selectProject(item)}
+            chevron
+            bottomDivider
+          />
+        })
+      }
+      else {
+        return (
+          <View style={styles.signInContainer}>
+            <Text style={styles.signInText}>
+              Sign in to download {'\n'} projects
+            </Text>
+            <Button
+              title={'Sign In'}
+              onPress={() => goSignIn()}
+            />
+          </View>
+        )
+      }
   };
 
   return (
-    <View style={{}}>
-      <Text>Project List</Text>
-      <Button
-        title={'Get Project'}
-        onPress={() => getProject()}/>
-      <View style={{alignItems: 'center'}}>
-        <Text>LIST</Text>
-        {loading ?
-          <View >
-            <ActivityIndicator size="large" color="#0c9"/>
-          </View> :
-          <FlatList
-            keyExtractor={item => item.id.toString()}
-            data={projects.projects}
-            renderItem={({item}) => renderProjects(item)}/>
-        }
-        {/*{projects.map((data, i) => {*/}
-        {/*  console.log(data,' ', i)*/}
-        {/*})}*/}
+    <View style={{flex: 1}}>
+      <View style={{flex: 1}}>
+        {props.isOnline && loading ? <Loading style={{backgroundColor: themes.PRIMARY_BACKGROUND_COLOR}}/> && renderProjects()
+          : <Text>Not Online</Text>}
       </View>
+      {renderDialog()}
     </View>
   );
 };
@@ -62,7 +113,7 @@ const ProjectList = (props) => {
 const mapStateToProps = (state) => {
   return {
     settingsPageVisible: state.settingsPanel.settingsPageVisible,
-    userProfile: state.user.userData,
+    userData: state.user.userData,
     isOnline: state.home.isOnline
   }
 };
