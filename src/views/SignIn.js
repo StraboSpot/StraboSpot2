@@ -6,7 +6,6 @@ import {authenticateUser} from '../services/user/UserAuth';
 import * as RemoteServer from '../services/Remote-server.factory';
 import * as themes from '../shared/styles.constants';
 import {USER_DATA, USER_IMAGE, ENCODED_LOGIN} from '../services/user/User.constants';
-import {PASSWORD_TEST, USERNAME_TEST} from "../Config";
 import * as Sentry from '@sentry/react-native';
 import {isEmpty, readDataUrl} from "../shared/Helpers";
 import Icon from "react-native-vector-icons/Ionicons";
@@ -14,6 +13,7 @@ import {Button} from "react-native-elements";
 import NetInfo from "@react-native-community/netinfo";
 import {homeReducers} from "./home/Home.constants";
 import IconButton from "../shared/ui/IconButton";
+import {USERNAME_TEST, PASSWORD_TEST} from 'react-native-dotenv';
 
 const base64 = require('../../node_modules/base-64/base64');
 
@@ -24,8 +24,8 @@ class SignIn extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: USERNAME_TEST,
-      password: PASSWORD_TEST,
+      username: __DEV__ ? USERNAME_TEST : '',
+      password: __DEV__ ? PASSWORD_TEST : '',
     };
   }
 

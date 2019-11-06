@@ -2,7 +2,7 @@ import {Navigation} from 'react-native-navigation';
 import registerScreens from './src/routes/Screens';
 import {YellowBox} from "react-native";
 import * as Sentry from '@sentry/react-native';
-import {SENTRY_DSN} from "./src/Config";
+import {SENTRY_DSN} from "react-native-dotenv";
 
 Sentry.init({
   dsn: SENTRY_DSN,
