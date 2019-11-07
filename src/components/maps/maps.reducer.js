@@ -4,8 +4,8 @@ const initialState = {
   map: {},
   currentBasemap: {},
   offlineMaps: [],
-  vertexSelectedCoordinates: undefined,
-  vertexDropPoints: undefined
+  vertexStartCoords: undefined,
+  vertexEndCoords: undefined
 };
 
 export const mapReducer = (state = initialState, action) => {
@@ -38,16 +38,17 @@ export const mapReducer = (state = initialState, action) => {
       return {
         state
       };
-    case mapReducers.VERTEX_SELECTED:
-      console.log('Vertex Selected: ', action.vertexSelectedCoordinates);
+    case mapReducers.VERTEX_START_COORDS:
+      console.log('Vertex Selected Start Coords: ', action.vertexStartCoords);
       return {
         ...state,
-        vertexSelectedCoordinates: action.vertexSelectedCoordinates,
+        vertexStartCoords: action.vertexStartCoords,
       };
-    case mapReducers.VERTEX_DROP_POINTS:
+    case mapReducers.VERTEX_END_COORDS:
+      console.log('Vertex Selected End Coords: ', action.vertexEndCoords);
       return {
         ...state,
-        vertexDropPoints: action.points
+        vertexEndCoords: action.vertexEndCoords
       }
   }
   return state;

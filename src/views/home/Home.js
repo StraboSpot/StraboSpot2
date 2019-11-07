@@ -545,11 +545,6 @@ class Home extends React.Component {
     }
   };
 
-  onDrop = (coords) => {
-    console.log('x!!!', coords[0], 'y!!!', coords[1]);
-    this.props.setVertexDropPoints(coords)
-  };
-
   onToastShow = () => {
     this.toggleLoading(false);
     setTimeout(() => {
@@ -664,26 +659,7 @@ class Home extends React.Component {
                  mapMode={this.state.mapMode}
                  startEdit={this.startEdit}
         />
-        {this.props.vertexSelectedCoordinates && <VertexDrag/>}
-        <View
-          style={[{
-            backgroundColor: 'white',
-            // borderRadius: 50,
-            borderWidth: 2,
-            borderColor: 'white',
-            height: 100,
-            width: 100,
-            // opacity: 0.4,
-            position: 'absolute',
-            top: 100,
-            left: 100,
-          },
-          ]}
-        >
-          {/*{this.addY}*/}
-          <Text>Hello</Text>
-          <Text>Hello</Text>
-        </View>
+        {this.props.vertexStartCoords && <VertexDrag/>}
         {this.state.loading && <LoadingSpinner/>}
         {this.state.toastVisible &&
         <ToastPopup
@@ -928,7 +904,7 @@ function mapStateToProps(state) {
     isAllSpotsPanelVisible: state.home.isAllSpotsPanelVisible,
     settingsPageVisible: state.settingsPanel.settingsPageVisible,
     settingsPanelVisible: state.home.isSettingsPanelVisible,
-    vertexSelectedCoordinates: state.map.vertexSelectedCoordinates
+    vertexStartCoords: state.map.vertexStartCoords
   }
 }
 
@@ -948,7 +924,6 @@ const mapDispatchToProps = {
   onSpotEditImageObj: (images) => ({type: spotReducers.EDIT_SPOT_IMAGES, images: images}),
   onFeatureSelected: (featureSelected) => ({type: spotReducers.FEATURE_SELECTED, feature: featureSelected}),
   onShortcutSwitchChange: (switchName) => ({type: homeReducers.SHORTCUT_SWITCH_POSITION, switchName: switchName}),
-  setVertexDropPoints: (points) => ({type: mapReducers.VERTEX_DROP_POINTS, points: points})
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

@@ -30,7 +30,7 @@ export const homeReducer = (state = initialState, action) => {
       return {
         ...state,
         deviceDimensions: action.dims
-      }
+      };
     case homeReducers.SHORTCUT_SWITCH_POSITION:
       return {
         ...state,

@@ -28,7 +28,7 @@ const vertexDrag = (props) => {
   );
   const transY = cond(
     eq(gestureState, State.ACTIVE),
-    addY,[
+    addY, [
       set(offsetY, addY)
     ]
   );
@@ -43,54 +43,56 @@ const vertexDrag = (props) => {
     },
   ]);
 
-  const  onDrop = (coords) => {
-    console.log('x from comp', coords[0], 'y from comp', coords[1]);
-    props.setVertexDropPoints(coords)
+  const onDrop = (coords) => {
+    let endCoords = [props.vertexStartCoords[0] + coords[0], props.vertexStartCoords[1] + coords[1]];
+    console.log('x from comp', coords[0], 'y from comp', coords[1], 'endCoords:', endCoords);
+    props.setVertexEndCoords(endCoords)
   };
 
   return (
     <React.Fragment>
-        <AnimatedPoint.Code>
-          {() =>
-            cond(
-              eq(gestureState, State.END),
-              call([transX, transY], onDrop)
-            )
-          }
-        </AnimatedPoint.Code>
-        <PanGestureHandler
-          maxPointers={1}
-          onGestureEvent={onGestureEvent}
-          onHandlerStateChange={onGestureEvent}
+      <AnimatedPoint.Code>
+        {() =>
+          cond(
+            eq(gestureState, State.END),
+            call([transX, transY], onDrop)
+          )
+        }
+      </AnimatedPoint.Code>
+      <PanGestureHandler
+        maxPointers={1}
+        onGestureEvent={onGestureEvent}
+        onHandlerStateChange={onGestureEvent}
+      >
+        <AnimatedPoint.View
+          style={[
+            mapStyles.vertexEditPoint,
+            {
+              bottom: props.vertexStartCoords ? height - props.vertexStartCoords[1] - 10 : 0,
+              left: props.vertexStartCoords ? props.vertexStartCoords[0] - 10 : 0
+            },
+            {
+              transform: [
+                {translateX: transX},
+                {translateY: transY},
+              ],
+            },
+          ]}
         >
-          <AnimatedPoint.View
-            style={[
-              mapStyles.vertexEditPoint,
-              {bottom:props.vertexSelectedCoordinates ? height -props.vertexSelectedCoordinates[1] - 10 : 0,
-                left:props.vertexSelectedCoordinates ?props.vertexSelectedCoordinates[0] - 10 : 0
-              },
-              {
-                transform: [
-                  {translateX: transX},
-                  {translateY: transY},
-                ],
-              },
-            ]}
-          >
-          </AnimatedPoint.View>
-        </PanGestureHandler>
+        </AnimatedPoint.View>
+      </PanGestureHandler>
     </React.Fragment>
   );
 };
 
 const mapStateToProps = (state) => {
   return {
-    vertexSelectedCoordinates: state.map.vertexSelectedCoordinates
+    vertexStartCoords: state.map.vertexStartCoords
   }
 };
 
 const mapDispatchToProps = {
-  setVertexDropPoints: (points) => ({type: mapReducers.VERTEX_DROP_POINTS, points: points})
+  setVertexEndCoords: (coords) => ({type: mapReducers.VERTEX_END_COORDS, vertexEndCoords: coords})
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(vertexDrag);

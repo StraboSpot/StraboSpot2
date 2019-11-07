@@ -12,11 +12,6 @@ import {spotReducers} from "../../spots/Spot.constants";
 import {truncDecimal} from "../../shared/Helpers";
 import {homeReducers} from "../../views/home/Home.constants";
 import {NotebookPages, notebookReducers} from "../notebook-panel/Notebook.constants";
-import {
-  PanGestureHandler,
-  ScrollView,
-  State,
-} from 'react-native-gesture-handler';
 
 MapboxGL.setAccessToken(MAPBOX_KEY);
 
@@ -25,27 +20,6 @@ class mapView extends Component {
 
   constructor(props, context) {
     super(props, context);
-    // const panResponder = PanResponder.create({
-    //   onStartShouldSetPanResponder: () => true,
-    //   onPanResponderMove: (event, gesture) => {
-    //     console.log(gesture);
-    //   }
-    // });
-
-    this._translateX = new Animated.Value(0);
-    this._translateY = new Animated.Value(0);
-    this._lastOffset = { x: 0, y: 0 };
-    this._onGestureEvent = Animated.event(
-      [
-        {
-          nativeEvent: {
-            translationX: this._translateX,
-            translationY: this._translateY,
-          },
-        },
-      ],
-      { useNativeDriver: true }
-    );
 
     this.state = {
       latitude: 39.828175,       // Geographic center of US
@@ -56,8 +30,7 @@ class mapView extends Component {
       isEditingFeature: false,
       featuresNotSelected: [],
       featuresSelected: [],
-      vertexToEdit: {},
-      // panResponder
+      vertexToEdit: {}
     };
 
     this.basemaps = {
@@ -115,16 +88,14 @@ class mapView extends Component {
     this.props.onRef(undefined)
   }
 
-  _onHandlerStateChange = event => {
-    if (event.nativeEvent.oldState === State.ACTIVE) {
-      this._lastOffset.x += event.nativeEvent.translationX;
-      this._lastOffset.y += event.nativeEvent.translationY;
-      this._translateX.setOffset(this._lastOffset.x);
-      this._translateX.setValue(0);
-      this._translateY.setOffset(this._lastOffset.y);
-      this._translateY.setValue(0);
-    }
-  };
+  componentDidUpdate(prevProps) {
+    if (this.props.vertexEndCoords && this.props.mapMode === MapModes.EDIT) this.moveVertex();
+  }
+
+  async moveVertex () {
+    const vertexCoords = await this._map.getCoordinateFromView(this.props.vertexEndCoords);
+    console.log('Move vertex to:', vertexCoords);
+  }
 
   // Mapbox: Handle map press
   async onMapPress(e) {
@@ -280,7 +251,7 @@ class mapView extends Component {
     }, async () => {
       console.log('Set vertex to edit:', vertex);
       const vertexCoordinates = await this._map.getPointInView(vertex.geometry.coordinates);
-      this.props.onVertexSelected(vertexCoordinates);
+      this.props.onSetVertexStartCoords(vertexCoordinates);
     });
   };
 
@@ -290,9 +261,10 @@ class mapView extends Component {
         ...prevState,
         vertexToEdit: {}
       }
-    }, () => {
+    }, async () => {
       console.log('Cleared selected vertex to edit.');
       if (turf.getType(this.state.featuresSelected[0]) === 'Point') this.clearSelectedFeatureToEdit();
+      this.props.onSetVertexStartCoords(undefined);
     });
   };
 
@@ -722,7 +694,8 @@ const mapStateToProps = (state) => {
     features: state.spot.features,
     featuresSelected: state.spot.featuresSelected,
     currentBasemap: state.map.currentBasemap,
-    map: state.map.map
+    map: state.map.map,
+    vertexEndCoords: state.map.vertexEndCoords
   }
 };
 
@@ -733,7 +706,7 @@ const mapDispatchToProps = {
   onFeatureDelete: (id) => ({type: spotReducers.FEATURE_DELETE, id: id}),
   onFeaturesUpdated: (features) => ({type: spotReducers.FEATURES_UPDATED, features: features}),
   onCurrentBasemap: (basemap) => ({type: mapReducers.CURRENT_BASEMAP, basemap: basemap}),
-  onVertexSelected: (vertexCoordinates) => ({type: mapReducers.VERTEX_SELECTED, vertexSelectedCoordinates: vertexCoordinates}),
+  onSetVertexStartCoords: (coords) => ({type: mapReducers.VERTEX_START_COORDS, vertexStartCoords: coords}),
   setModalVisible: (modal) => ({type: homeReducers.SET_MODAL_VISIBLE, modal: modal}),
   setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),
 };
