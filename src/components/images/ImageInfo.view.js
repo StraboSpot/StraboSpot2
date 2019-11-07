@@ -9,19 +9,16 @@ import {imageReducers} from "./Image.constants";
 import ImagePropertiesModal from './ImagePropertiesModal';
 import {homeReducers} from "../../views/home/Home.constants";
 
-const platformType = Platform.OS === 'ios' ? 'window': 'screen';
-let getDims = Dimensions.get(platformType);
-
 const ImageInfoView = (props) => {
   // console.log('Image Info', props);
 
   const [imageNoteModal, setImageNoteModal] = useState(false);
 
   // useEffect(() => {
-  //   getDims = Dimensions.get(platformType);
+  //   getDims = Dimensions.get('window');
   //   props.setDeviceDims(getDims);
   //   function dimsChange() {
-  //     getDims = Dimensions.get(platformType);
+  //     getDims = Dimensions.get('window');
   //     props.setDeviceDims(getDims);
   //   }
   //   Dimensions.addEventListener('change', dimsChange);

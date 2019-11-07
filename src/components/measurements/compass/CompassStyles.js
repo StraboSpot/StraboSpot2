@@ -2,8 +2,7 @@ import {Dimensions, Platform, StyleSheet} from 'react-native';
 import * as themes from '../../../shared/styles.constants';
 // import {widthPercentageToDP as wp} from "react-native-responsive-screen";
 
-// const platformType = Platform.OS === 'ios' ? 'window' : 'screen';
-// const {width, height} = Dimensions.get(platformType);
+// const {width, height} = Dimensions.get('window');
 //    let strikeLineFromTop = null;
 //    let trendLineFromTop = null;
 

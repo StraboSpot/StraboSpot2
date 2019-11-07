@@ -9,9 +9,7 @@ import {mapReducers} from "./Map.constants";
 import mapStyles from './Maps.styles';
 
 const {cond, eq, add, call, set, Value, event} = AnimatedPoint;
-const platformType = Platform.OS === 'ios' ? 'window' : 'screen';
-const width = Dimensions.get(platformType).width;
-const height = Dimensions.get(platformType).height;
+const {height, width} = Dimensions.get('window');
 
 const vertexDrag = (props) => {
 

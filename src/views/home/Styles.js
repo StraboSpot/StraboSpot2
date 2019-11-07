@@ -2,10 +2,8 @@ import {Dimensions, Platform, StyleSheet} from "react-native";
 import * as themes from "../../shared/styles.constants";
 import {widthPercentageToDP as wp} from "react-native-responsive-screen";
 
-const platformType = Platform.OS === 'ios' ? 'window' : 'screen';
-const width = Dimensions.get(platformType).width;
-
-const deviceWidth = () => {
+const {height, width} = Dimensions.get('window');
+const getWidthPercent = () => {
   if (width < 500) return wp('95%');
   if (width >= 500 && width <= 1000) return wp('40%');
   if (width > 1000) return wp('30%');
@@ -13,7 +11,7 @@ const deviceWidth = () => {
 
 const styles = StyleSheet.create({
   settingsDrawer: {
-    width: deviceWidth(),
+    width: getWidthPercent(),
     height: '100%',
     position: 'absolute',
     left: 0,

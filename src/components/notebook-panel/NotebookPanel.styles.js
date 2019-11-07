@@ -2,11 +2,8 @@ import {Dimensions, Platform,  StyleSheet} from 'react-native';
 import * as themes from '../../shared/styles.constants';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 
-
-const platformType = Platform.OS === 'ios' ? 'window' : 'screen';
-const width = Dimensions.get(platformType).width;
-
-const deviceWidth = () => {
+const {height, width} = Dimensions.get('window');
+const getWidthPercent = () => {
   if (width < 500) return wp('95%');
   if (width >= 500 && width <= 1000) return wp('50%');
   if (width > 1000) return wp('35%');
@@ -15,7 +12,7 @@ const deviceWidth = () => {
 const notebookStyles = StyleSheet.create({
   panel: {
     // flex: 1,
-    width: deviceWidth(),
+    width: getWidthPercent(),
     height: '100%',
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
     position: 'absolute',
@@ -23,7 +20,7 @@ const notebookStyles = StyleSheet.create({
     zIndex: -1,
   },
   panelWithAllSpotsPanel: {
-    width: deviceWidth()  + 125,
+    width: getWidthPercent()  + 125,
     height: '100%',
     borderBottomLeftRadius: 30,
     borderTopLeftRadius: 30,

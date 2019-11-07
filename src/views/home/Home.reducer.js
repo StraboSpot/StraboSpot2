@@ -6,7 +6,7 @@ const initialState = {
   isImageModalVisible: false,
   isAllSpotsPanelVisible: false,
   isSettingsPanelVisible: false,
-  deviceDimensions: Dimensions.get(Platform.OS === 'ios' ? 'window' : 'screen'),
+  deviceDimensions: Dimensions.get('window'),
   shortcutSwitchPosition: {
     Tag: false,
     Measurement: false,
