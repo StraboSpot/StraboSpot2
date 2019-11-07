@@ -277,8 +277,10 @@ class mapView extends Component {
         ...prevState,
         vertexToEdit: vertex
       }
-    }, () => {
+    }, async () => {
       console.log('Set vertex to edit:', vertex);
+      const vertexCoordinates = await this._map.getPointInView(vertex.geometry.coordinates);
+      this.props.onVertexSelected(vertexCoordinates);
     });
   };
 
@@ -731,6 +733,7 @@ const mapDispatchToProps = {
   onFeatureDelete: (id) => ({type: spotReducers.FEATURE_DELETE, id: id}),
   onFeaturesUpdated: (features) => ({type: spotReducers.FEATURES_UPDATED, features: features}),
   onCurrentBasemap: (basemap) => ({type: mapReducers.CURRENT_BASEMAP, basemap: basemap}),
+  onVertexSelected: (vertexCoordinates) => ({type: mapReducers.VERTEX_SELECTED, vertexSelectedCoordinates: vertexCoordinates}),
   setModalVisible: (modal) => ({type: homeReducers.SET_MODAL_VISIBLE, modal: modal}),
   setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),
 };

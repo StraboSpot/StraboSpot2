@@ -4,6 +4,9 @@ const initialState = {
   map: {},
   currentBasemap: {},
   offlineMaps: [],
+  draw: {
+    vertexSelectedCoordinates: {}
+  }
 };
 
 export const mapReducer = (state = initialState, action) => {
@@ -35,6 +38,14 @@ export const mapReducer = (state = initialState, action) => {
       console.log('Deleting Offline Map: ', action.offlineMap);
       return {
         state
+      };
+    case mapReducers.VERTEX_SELECTED:
+      console.log('Vertex Selected: ', action.vertexSelectedCoordinates);
+      return {
+        ...state,
+        draw: {
+          vertexSelectedCoordinates: action.vertexSelectedCoordinates
+        }
       };
   }
   return state;
