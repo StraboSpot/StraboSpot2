@@ -1,5 +1,5 @@
 import React from 'react'
-import {Alert, Animated, Dimensions, Easing, Platform, Text, View} from 'react-native'
+import {Alert, Animated, Dimensions, Easing, PanResponder, Platform, Text, View} from 'react-native'
 import NetInfo from "@react-native-community/netinfo";
 import MapView from '../../components/maps/MapView';
 import MapActionsDialog from '../../components/dialog-boxes/map-actions/MapActionsDialogBox';
@@ -25,7 +25,7 @@ import ShortcutSamplesModal from '../../components/samples/ShortcutSamplesModal.
 import {homeReducers, Modals} from "./Home.constants";
 import notebookStyles from '../../components/notebook-panel/NotebookPanel.styles';
 import Orientation from "react-native-orientation-locker";
-import {Directions, FlingGestureHandler, State} from "react-native-gesture-handler";
+import {Directions, FlingGestureHandler, State, PanGestureHandler, ScrollView} from "react-native-gesture-handler";
 import LoadingSpinner from '../../shared/ui/Loading';
 import ToastPopup from '../../shared/ui/Toast';
 import {Button, Image} from "react-native-elements";
@@ -42,6 +42,7 @@ const deviceWidth = () => {
 };
 const platformType = Platform.OS === 'ios' ? 'window' : 'screen';
 const width = Dimensions.get(platformType).width;
+const height = Dimensions.get(platformType).height;
 // const imageOptions = {
 //   storageOptions: {
 //     skipBackup: true,
@@ -50,8 +51,12 @@ const width = Dimensions.get(platformType).width;
 //     chooseFromLibraryButtonTitle: 'choose photo from library'
 //   }
 // };
+const circleRadius = 30;
 
 class Home extends React.Component {
+  _touchX = new Animated.Value(width / 2 - circleRadius);
+  _touchY = new Animated.Value(height / 2 - circleRadius);
+  _onPanGestureEvent = Animated.event([{nativeEvent: {x: this._touchX, y: this._touchY }}], { useNativeDriver: true });
   _isMounted = false;
   dimensions = Dimensions.get(platformType);
   online = require('../../assets/icons/StraboIcons_Oct2019/ConnectionStatusButton_connected.png');
@@ -59,6 +64,22 @@ class Home extends React.Component {
 
   constructor(props) {
     super(props);
+
+    this._translateX = new Animated.Value(0);
+    this._translateY = new Animated.Value(0);
+    this._lastOffset = { x: 0, y: 0 };
+    this._onGestureEvent = Animated.event(
+      [
+        {
+          nativeEvent: {
+            translationX: this._translateX,
+            translationY: this._translateY,
+          },
+        },
+      ],
+      { useNativeDriver: true }
+    );
+
     this.mapViewElement = React.createRef();
     this.state = {
       dialogs: {
@@ -110,6 +131,18 @@ class Home extends React.Component {
     Dimensions.removeEventListener('change', this.deviceOrientation);
     console.log('All listeners removed')
   }
+
+  _onHandlerStateChange = event => {
+    if (event.nativeEvent.oldState === State.ACTIVE) {
+      console.log('TranslateX:', this._translateX, 'TranslateY:', this._translateY, 'LastOffset', this._lastOffset);
+      this._lastOffset.x += event.nativeEvent.translationX;
+      this._lastOffset.y += event.nativeEvent.translationY;
+      this._translateX.setOffset(this._lastOffset.x);
+      this._translateX.setValue(0);
+      this._translateY.setOffset(this._lastOffset.y);
+      this._translateY.setValue(0);
+    }
+  };
 
   deviceOrientation = () => {
     const dimensions = Dimensions.get(platformType);
@@ -654,14 +687,28 @@ class Home extends React.Component {
 
     return (
         <View style={styles.container}>
-          <View style={{flex:1, zIndex: -1}}>
-            <MapView ref={this.mapViewElement}
+
+          {/*{this.props.isNotebookPanelVisible && notebookPanel}*/}
+          <MapView ref={this.mapViewElement}
                    onRef={ref => (this.mapViewComponent = ref)}
                    mapMode={this.state.mapMode}
                    startEdit={this.startEdit}
+          />
+          <PanGestureHandler
+            onGestureEvent={this._onGestureEvent}
+            onHandlerStateChange={this._onHandlerStateChange}
+            >
+          <Animated.View style={{position: 'absolute'}}>
+            <Animated.View
+              style={[{
+                backgroundColor: '#42a5f5', borderRadius: circleRadius, height: circleRadius * 2, width: circleRadius * 2,
+              }, {
+                transform: [{translateX: this._translateX}, { translateY: this._translateY },]
+              }]}
             />
-          </View>
-          {/*{this.props.isNotebookPanelVisible && notebookPanel}*/}
+          </Animated.View>
+          </PanGestureHandler>
+
         {this.state.loading && <LoadingSpinner/>}
         {this.state.toastVisible &&
         <ToastPopup

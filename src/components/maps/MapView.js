@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Alert, AsyncStorage, StyleSheet} from 'react-native';
+import {View, Animated, Alert, AsyncStorage, StyleSheet, PanResponder} from 'react-native';
 import MapboxGL from '@mapbox/react-native-mapbox-gl';
 import {MAPBOX_KEY} from '../../MapboxConfig'
 import {CustomBasemap, MapboxOutdoorsBasemap, MapboxSatelliteBasemap, OSMBasemap, MacrostratBasemap} from "./Basemaps";
@@ -12,6 +12,11 @@ import {spotReducers} from "../../spots/Spot.constants";
 import {truncDecimal} from "../../shared/Helpers";
 import {homeReducers} from "../../views/home/Home.constants";
 import {NotebookPages, notebookReducers} from "../notebook-panel/Notebook.constants";
+import {
+  PanGestureHandler,
+  ScrollView,
+  State,
+} from 'react-native-gesture-handler';
 
 MapboxGL.setAccessToken(MAPBOX_KEY);
 
@@ -20,6 +25,27 @@ class mapView extends Component {
 
   constructor(props, context) {
     super(props, context);
+    // const panResponder = PanResponder.create({
+    //   onStartShouldSetPanResponder: () => true,
+    //   onPanResponderMove: (event, gesture) => {
+    //     console.log(gesture);
+    //   }
+    // });
+
+    this._translateX = new Animated.Value(0);
+    this._translateY = new Animated.Value(0);
+    this._lastOffset = { x: 0, y: 0 };
+    this._onGestureEvent = Animated.event(
+      [
+        {
+          nativeEvent: {
+            translationX: this._translateX,
+            translationY: this._translateY,
+          },
+        },
+      ],
+      { useNativeDriver: true }
+    );
 
     this.state = {
       latitude: 39.828175,       // Geographic center of US
@@ -30,7 +56,8 @@ class mapView extends Component {
       isEditingFeature: false,
       featuresNotSelected: [],
       featuresSelected: [],
-      vertexToEdit: {}
+      vertexToEdit: {},
+      // panResponder
     };
 
     this.basemaps = {
@@ -87,6 +114,17 @@ class mapView extends Component {
     this._isMounted = false;
     this.props.onRef(undefined)
   }
+
+  _onHandlerStateChange = event => {
+    if (event.nativeEvent.oldState === State.ACTIVE) {
+      this._lastOffset.x += event.nativeEvent.translationX;
+      this._lastOffset.y += event.nativeEvent.translationY;
+      this._translateX.setOffset(this._lastOffset.x);
+      this._translateX.setValue(0);
+      this._translateY.setOffset(this._lastOffset.y);
+      this._translateY.setValue(0);
+    }
+  };
 
   // Mapbox: Handle map press
   async onMapPress(e) {
@@ -645,13 +683,14 @@ class mapView extends Component {
     };
 
     return (
-      <React.Fragment>
+
+      <View style={{flex:1, zIndex: -1}} >
         {this.props.currentBasemap.id === 'mapboxSatellite' ? <MapboxSatelliteBasemap {...mapProps}/> : null}
         {this.props.currentBasemap.id === 'mapboxOutdoors' ? <MapboxOutdoorsBasemap {...mapProps}/> : null}
         {this.props.currentBasemap.id === 'osm' ? <OSMBasemap {...mapProps}/> : null}
         {this.props.currentBasemap.id === 'macrostrat' ? <MacrostratBasemap {...mapProps}/> : null}
         {this.props.currentBasemap.id === 'custom' ? <CustomBasemap {...mapProps}/> : null}
-      </React.Fragment>
+      </View>
     );
   }
 }
