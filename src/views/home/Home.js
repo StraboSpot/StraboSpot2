@@ -1,5 +1,5 @@
 import React from 'react'
-import {Alert, Animated, Dimensions, Easing, PanResponder, Platform, Text, View} from 'react-native'
+import {Alert, Animated, Dimensions, Easing, Platform, Text, View} from 'react-native'
 import NetInfo from "@react-native-community/netinfo";
 import MapView from '../../components/maps/MapView';
 import MapActionsDialog from '../../components/dialog-boxes/map-actions/MapActionsDialogBox';
@@ -7,7 +7,7 @@ import MapSymbolsDialog from "../../components/dialog-boxes/map-symbols/MapSymbo
 import BaseMapDialog from "../../components/dialog-boxes/base-maps/BaseMapDialogBox";
 import NotebookPanel from '../../components/notebook-panel/NotebookPanel';
 import SettingsPanel from '../../components/settings-panel/SettingsPanel';
-import {MapModes} from '../../components/maps/Map.constants';
+import {MapModes, mapReducers} from '../../components/maps/Map.constants';
 import {SettingsMenuItems} from '../../components/settings-panel/SettingsMenu.constants';
 import Modal from "react-native-modal";
 import SaveMapModal from '../../components/dialog-boxes/map-actions/SaveMapsModal';
@@ -25,7 +25,7 @@ import ShortcutSamplesModal from '../../components/samples/ShortcutSamplesModal.
 import {homeReducers, Modals} from "./Home.constants";
 import notebookStyles from '../../components/notebook-panel/NotebookPanel.styles';
 import Orientation from "react-native-orientation-locker";
-import {Directions, FlingGestureHandler, State, PanGestureHandler, ScrollView} from "react-native-gesture-handler";
+import {Directions, FlingGestureHandler, State, PanGestureHandler} from "react-native-gesture-handler";
 import LoadingSpinner from '../../shared/ui/Loading';
 import ToastPopup from '../../shared/ui/Toast';
 import {Button, Image} from "react-native-elements";
@@ -34,7 +34,9 @@ import styles from './Styles';
 import vectorIcon from 'react-native-vector-icons/Ionicons';
 import IconButton from '../../shared/ui/IconButton';
 import {animatePanels} from '../../shared/Helpers';
-import Drag from '../../shared/ui/DragAmination';
+import AnimatedPoint from 'react-native-reanimated';
+
+const {cond, eq, add, call, set, Value, event} = AnimatedPoint;
 
 const deviceWidth = () => {
   if (width < 500) return wp('95%');
@@ -52,12 +54,8 @@ const height = Dimensions.get(platformType).height;
 //     chooseFromLibraryButtonTitle: 'choose photo from library'
 //   }
 // };
-const circleRadius = 20;
 
 class Home extends React.Component {
-  // _touchX = new Animated.Value(width / 2 - circleRadius);
-  // _touchY = new Animated.Value(height / 2 - circleRadius);
-  // _onPanGestureEvent = Animated.event([{nativeEvent: {x: this._touchX, y: this._touchY }}], { useNativeDriver: true });
   _isMounted = false;
   dimensions = Dimensions.get(platformType);
   online = require('../../assets/icons/StraboIcons_Oct2019/ConnectionStatusButton_connected.png');
@@ -65,21 +63,33 @@ class Home extends React.Component {
 
   constructor(props) {
     super(props);
+    this.dragX = new Value(0);
+    this.dragY = new Value(0);
+    this.offsetX = new Value(0);
+    this.offsetY = new Value(0);
+    this.gestureState = new Value(-1);
+    this.onGestureEvent = event([
+      {
+        nativeEvent: {
+          translationX: this.dragX,
+          translationY: this.dragY,
+          state: this.gestureState,
+        },
+      },
+    ]);
 
-    this._translateX = new Animated.Value(0);
-    this._translateY = new Animated.Value(0);
-    // this._lastOffset = { x: 0, y: 0 };
-    // this._onGestureEvent = Animated.event(
-    //   [
-    //     {
-    //       nativeEvent: {
-    //         translationX: this._translateX,
-    //         translationY: this._translateY,
-    //       },
-    //     },
-    //   ],
-    //   { useNativeDriver: true }
-    // );
+    this.addY = add(this.offsetY, this.dragY);
+    this.addX = add(this.offsetX, this.dragX);
+
+    this.transX = cond(
+      eq(this.gestureState, State.ACTIVE),
+      this.addX,
+      set(this.offsetX, this.addX)
+    );
+
+    this.transY = cond(eq(this.gestureState, State.ACTIVE), this.addY, [
+      set(this.offsetY, this.addY),
+    ]);
 
     this.mapViewElement = React.createRef();
     this.state = {
@@ -132,18 +142,6 @@ class Home extends React.Component {
     Dimensions.removeEventListener('change', this.deviceOrientation);
     console.log('All listeners removed')
   }
-
-  // _onHandlerStateChange = event => {
-  //   if (event.nativeEvent.oldState === State.ACTIVE) {
-  //     console.log('TranslateX:', this._translateX, 'TranslateY:', this._translateY, 'LastOffset', this._lastOffset);
-  //     this._lastOffset.x += event.nativeEvent.translationX;
-  //     this._lastOffset.y += event.nativeEvent.translationY;
-  //     this._translateX.setOffset(this._lastOffset.x);
-  //     this._translateX.setValue(0);
-  //     this._translateY.setOffset(this._lastOffset.y);
-  //     this._translateY.setValue(0);
-  //   }
-  // };
 
   deviceOrientation = () => {
     const dimensions = Dimensions.get(platformType);
@@ -583,7 +581,43 @@ class Home extends React.Component {
   };
 
   onDrop = (coords) => {
-    console.log('x', coords[0], 'y!!!', coords[1])
+    console.log('x!!!', coords[0], 'y!!!', coords[1]);
+    this.props.setVertexDropPoints(coords)
+  };
+
+  renderVertexDrag = () => {
+    return (
+      <View>
+        <AnimatedPoint.Code>
+          {() =>
+            cond(
+              eq(this.gestureState, State.END),
+              call([this.transX, this.transY], this.onDrop)
+            )
+          }
+        </AnimatedPoint.Code>
+        <PanGestureHandler
+          maxPointers={1}
+          onGestureEvent={this.onGestureEvent}
+          onHandlerStateChange={this.onGestureEvent}
+        >
+          <AnimatedPoint.View
+            style={[
+              styles.vertexEditPoint,
+              { bottom: this.props.vertexSelectedCoordinates ? height - this.props.vertexSelectedCoordinates[1] - 10 : 0,
+                left: this.props.vertexSelectedCoordinates ? this.props.vertexSelectedCoordinates[0] - 10 : 0 },
+              {
+                transform: [
+                  {translateX: this.transX},
+                  {translateY: this.transY},
+                ],
+              },
+            ]}
+          >
+          </AnimatedPoint.View>
+        </PanGestureHandler>
+      </View>
+  );
   };
 
   onToastShow = () => {
@@ -624,26 +658,6 @@ class Home extends React.Component {
     };
     let compassModal = null;
     let samplesModal = null;
-    const renderVertexDrag =
-      <Drag
-        onDrop={(coords) => this.onDrop(coords)}
-    >
-      <View
-        style={[{
-          backgroundColor: 'red',
-          borderRadius: circleRadius,
-          borderWidth: 2,
-          borderColor: 'white',
-          height: circleRadius,
-          width: circleRadius,
-          // opacity: 0.4,
-          position: 'absolute',
-          bottom: height - 679.531747304183 - 10,
-          left: 590.0272979111218-10
-        },
-        ]}
-      />
-    </Drag>;
 
     const homeDrawer =
       <FlingGestureHandler
@@ -720,22 +734,26 @@ class Home extends React.Component {
                    mapMode={this.state.mapMode}
                    startEdit={this.startEdit}
           />
-          {this.props.vertexSelectedCoordinates && renderVertexDrag}
+          {this.props.vertexSelectedCoordinates && this.renderVertexDrag()}
           <View
             style={[{
-              backgroundColor: 'green',
-              borderRadius: 50,
+              backgroundColor: 'white',
+              // borderRadius: 50,
               borderWidth: 2,
               borderColor: 'white',
-              height: circleRadius,
-              width: circleRadius,
+              height: 100,
+              width: 100,
               // opacity: 0.4,
               position: 'absolute',
               top: 100,
               left:100,
             },
             ]}
-          />
+          >
+            {/*{this.addY}*/}
+            <Text>Hello</Text>
+            <Text>Hello</Text>
+          </View>
         {this.state.loading && <LoadingSpinner/>}
         {this.state.toastVisible &&
         <ToastPopup
@@ -990,7 +1008,8 @@ const mapDispatchToProps = {
   setDeviceDims: (dims) => ({type: homeReducers.DEVICE_DIMENSIONS, dims: dims}),
   onSpotEditImageObj: (images) => ({type: spotReducers.EDIT_SPOT_IMAGES, images: images}),
   onFeatureSelected: (featureSelected) => ({type: spotReducers.FEATURE_SELECTED, feature: featureSelected}),
-  onShortcutSwitchChange: (switchName) => ({type: homeReducers.SHORTCUT_SWITCH_POSITION, switchName: switchName})
+  onShortcutSwitchChange: (switchName) => ({type: homeReducers.SHORTCUT_SWITCH_POSITION, switchName: switchName}),
+  setVertexDropPoints: (points) => ({type: mapReducers.VERTEX_DROP_POINTS, points: points})
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

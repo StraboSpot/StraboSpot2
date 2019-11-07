@@ -4,7 +4,8 @@ const initialState = {
   map: {},
   currentBasemap: {},
   offlineMaps: [],
-  vertexSelectedCoordinates: undefined
+  vertexSelectedCoordinates: undefined,
+  vertexDropPoints: undefined
 };
 
 export const mapReducer = (state = initialState, action) => {
@@ -41,10 +42,13 @@ export const mapReducer = (state = initialState, action) => {
       console.log('Vertex Selected: ', action.vertexSelectedCoordinates);
       return {
         ...state,
-        draw: {
-          vertexSelectedCoordinates: action.vertexSelectedCoordinates
-        }
+        vertexSelectedCoordinates: action.vertexSelectedCoordinates,
       };
+    case mapReducers.VERTEX_DROP_POINTS:
+      return {
+        ...state,
+        vertexDropPoints: action.points
+      }
   }
   return state;
 };
