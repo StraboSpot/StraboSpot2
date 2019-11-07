@@ -10,7 +10,6 @@ const deviceWidth = () => {
   if (width >= 500 && width <= 1000) return wp('40%');
   if (width > 1000) return wp('30%');
 };
-const circleRadius = 20;
 
 const styles = StyleSheet.create({
   settingsDrawer: {
@@ -119,17 +118,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'flex-end'
-  },
-
-  // --- MapPoint Style ---
-  vertexEditPoint: {
-    backgroundColor: 'red',
-    borderRadius: circleRadius,
-    borderWidth: 2,
-    borderColor: 'white',
-    height: circleRadius,
-    width: circleRadius,
-    position: 'absolute'
   }
 });
 

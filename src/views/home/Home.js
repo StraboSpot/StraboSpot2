@@ -25,7 +25,7 @@ import ShortcutSamplesModal from '../../components/samples/ShortcutSamplesModal.
 import {homeReducers, Modals} from "./Home.constants";
 import notebookStyles from '../../components/notebook-panel/NotebookPanel.styles';
 import Orientation from "react-native-orientation-locker";
-import {Directions, FlingGestureHandler, State, PanGestureHandler} from "react-native-gesture-handler";
+import {Directions, FlingGestureHandler, State} from "react-native-gesture-handler";
 import LoadingSpinner from '../../shared/ui/Loading';
 import ToastPopup from '../../shared/ui/Toast';
 import {Button, Image} from "react-native-elements";
@@ -34,9 +34,7 @@ import styles from './Styles';
 import vectorIcon from 'react-native-vector-icons/Ionicons';
 import IconButton from '../../shared/ui/IconButton';
 import {animatePanels} from '../../shared/Helpers';
-import AnimatedPoint from 'react-native-reanimated';
-
-const {cond, eq, add, call, set, Value, event} = AnimatedPoint;
+import VertexDrag from '../../components/maps/VertexDrag';
 
 const deviceWidth = () => {
   if (width < 500) return wp('95%');
@@ -63,34 +61,6 @@ class Home extends React.Component {
 
   constructor(props) {
     super(props);
-    this.dragX = new Value(0);
-    this.dragY = new Value(0);
-    this.offsetX = new Value(0);
-    this.offsetY = new Value(0);
-    this.gestureState = new Value(-1);
-    this.onGestureEvent = event([
-      {
-        nativeEvent: {
-          translationX: this.dragX,
-          translationY: this.dragY,
-          state: this.gestureState,
-        },
-      },
-    ]);
-
-    this.addY = add(this.offsetY, this.dragY);
-    this.addX = add(this.offsetX, this.dragX);
-
-    this.transX = cond(
-      eq(this.gestureState, State.ACTIVE),
-      this.addX,
-      set(this.offsetX, this.addX)
-    );
-
-    this.transY = cond(eq(this.gestureState, State.ACTIVE), this.addY, [
-      set(this.offsetY, this.addY),
-    ]);
-
     this.mapViewElement = React.createRef();
     this.state = {
       dialogs: {
@@ -585,41 +555,6 @@ class Home extends React.Component {
     this.props.setVertexDropPoints(coords)
   };
 
-  renderVertexDrag = () => {
-    return (
-      <View>
-        <AnimatedPoint.Code>
-          {() =>
-            cond(
-              eq(this.gestureState, State.END),
-              call([this.transX, this.transY], this.onDrop)
-            )
-          }
-        </AnimatedPoint.Code>
-        <PanGestureHandler
-          maxPointers={1}
-          onGestureEvent={this.onGestureEvent}
-          onHandlerStateChange={this.onGestureEvent}
-        >
-          <AnimatedPoint.View
-            style={[
-              styles.vertexEditPoint,
-              { bottom: this.props.vertexSelectedCoordinates ? height - this.props.vertexSelectedCoordinates[1] - 10 : 0,
-                left: this.props.vertexSelectedCoordinates ? this.props.vertexSelectedCoordinates[0] - 10 : 0 },
-              {
-                transform: [
-                  {translateX: this.transX},
-                  {translateY: this.transY},
-                ],
-              },
-            ]}
-          >
-          </AnimatedPoint.View>
-        </PanGestureHandler>
-      </View>
-  );
-  };
-
   onToastShow = () => {
     this.toggleLoading(false);
     setTimeout(() => {
@@ -734,7 +669,7 @@ class Home extends React.Component {
                    mapMode={this.state.mapMode}
                    startEdit={this.startEdit}
           />
-          {this.props.vertexSelectedCoordinates && this.renderVertexDrag()}
+          {this.props.vertexSelectedCoordinates && <VertexDrag/>}
           <View
             style={[{
               backgroundColor: 'white',
