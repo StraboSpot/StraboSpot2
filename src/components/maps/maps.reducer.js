@@ -4,9 +4,7 @@ const initialState = {
   map: {},
   currentBasemap: {},
   offlineMaps: [],
-  draw: {
-    vertexSelectedCoordinates: {}
-  }
+  vertexSelectedCoordinates: undefined
 };
 
 export const mapReducer = (state = initialState, action) => {

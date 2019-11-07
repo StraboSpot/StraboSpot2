@@ -34,6 +34,7 @@ import styles from './Styles';
 import vectorIcon from 'react-native-vector-icons/Ionicons';
 import IconButton from '../../shared/ui/IconButton';
 import {animatePanels} from '../../shared/Helpers';
+import Drag from '../../shared/ui/DragAmination';
 
 const deviceWidth = () => {
   if (width < 500) return wp('95%');
@@ -51,12 +52,12 @@ const height = Dimensions.get(platformType).height;
 //     chooseFromLibraryButtonTitle: 'choose photo from library'
 //   }
 // };
-const circleRadius = 30;
+const circleRadius = 20;
 
 class Home extends React.Component {
-  _touchX = new Animated.Value(width / 2 - circleRadius);
-  _touchY = new Animated.Value(height / 2 - circleRadius);
-  _onPanGestureEvent = Animated.event([{nativeEvent: {x: this._touchX, y: this._touchY }}], { useNativeDriver: true });
+  // _touchX = new Animated.Value(width / 2 - circleRadius);
+  // _touchY = new Animated.Value(height / 2 - circleRadius);
+  // _onPanGestureEvent = Animated.event([{nativeEvent: {x: this._touchX, y: this._touchY }}], { useNativeDriver: true });
   _isMounted = false;
   dimensions = Dimensions.get(platformType);
   online = require('../../assets/icons/StraboIcons_Oct2019/ConnectionStatusButton_connected.png');
@@ -67,18 +68,18 @@ class Home extends React.Component {
 
     this._translateX = new Animated.Value(0);
     this._translateY = new Animated.Value(0);
-    this._lastOffset = { x: 0, y: 0 };
-    this._onGestureEvent = Animated.event(
-      [
-        {
-          nativeEvent: {
-            translationX: this._translateX,
-            translationY: this._translateY,
-          },
-        },
-      ],
-      { useNativeDriver: true }
-    );
+    // this._lastOffset = { x: 0, y: 0 };
+    // this._onGestureEvent = Animated.event(
+    //   [
+    //     {
+    //       nativeEvent: {
+    //         translationX: this._translateX,
+    //         translationY: this._translateY,
+    //       },
+    //     },
+    //   ],
+    //   { useNativeDriver: true }
+    // );
 
     this.mapViewElement = React.createRef();
     this.state = {
@@ -132,17 +133,17 @@ class Home extends React.Component {
     console.log('All listeners removed')
   }
 
-  _onHandlerStateChange = event => {
-    if (event.nativeEvent.oldState === State.ACTIVE) {
-      console.log('TranslateX:', this._translateX, 'TranslateY:', this._translateY, 'LastOffset', this._lastOffset);
-      this._lastOffset.x += event.nativeEvent.translationX;
-      this._lastOffset.y += event.nativeEvent.translationY;
-      this._translateX.setOffset(this._lastOffset.x);
-      this._translateX.setValue(0);
-      this._translateY.setOffset(this._lastOffset.y);
-      this._translateY.setValue(0);
-    }
-  };
+  // _onHandlerStateChange = event => {
+  //   if (event.nativeEvent.oldState === State.ACTIVE) {
+  //     console.log('TranslateX:', this._translateX, 'TranslateY:', this._translateY, 'LastOffset', this._lastOffset);
+  //     this._lastOffset.x += event.nativeEvent.translationX;
+  //     this._lastOffset.y += event.nativeEvent.translationY;
+  //     this._translateX.setOffset(this._lastOffset.x);
+  //     this._translateX.setValue(0);
+  //     this._translateY.setOffset(this._lastOffset.y);
+  //     this._translateY.setValue(0);
+  //   }
+  // };
 
   deviceOrientation = () => {
     const dimensions = Dimensions.get(platformType);
@@ -581,6 +582,10 @@ class Home extends React.Component {
     }
   };
 
+  onDrop = (coords) => {
+    console.log('x', coords[0], 'y!!!', coords[1])
+  };
+
   onToastShow = () => {
     this.toggleLoading(false);
     setTimeout(() => {
@@ -619,6 +624,27 @@ class Home extends React.Component {
     };
     let compassModal = null;
     let samplesModal = null;
+    const renderVertexDrag =
+      <Drag
+        onDrop={(coords) => this.onDrop(coords)}
+    >
+      <View
+        style={[{
+          backgroundColor: 'red',
+          borderRadius: circleRadius,
+          borderWidth: 2,
+          borderColor: 'white',
+          height: circleRadius,
+          width: circleRadius,
+          // opacity: 0.4,
+          position: 'absolute',
+          bottom: height - 679.531747304183 - 10,
+          left: 590.0272979111218-10
+        },
+        ]}
+      />
+    </Drag>;
+
     const homeDrawer =
       <FlingGestureHandler
         direction={Directions.LEFT}
@@ -694,21 +720,22 @@ class Home extends React.Component {
                    mapMode={this.state.mapMode}
                    startEdit={this.startEdit}
           />
-          <PanGestureHandler
-            onGestureEvent={this._onGestureEvent}
-            onHandlerStateChange={this._onHandlerStateChange}
-            >
-          <Animated.View style={{position: 'absolute'}}>
-            <Animated.View
-              style={[{
-                backgroundColor: '#42a5f5', borderRadius: circleRadius, height: circleRadius * 2, width: circleRadius * 2,
-              }, {
-                transform: [{translateX: this._translateX}, { translateY: this._translateY },]
-              }]}
-            />
-          </Animated.View>
-          </PanGestureHandler>
-
+          {this.props.vertexSelectedCoordinates && renderVertexDrag}
+          <View
+            style={[{
+              backgroundColor: 'green',
+              borderRadius: 50,
+              borderWidth: 2,
+              borderColor: 'white',
+              height: circleRadius,
+              width: circleRadius,
+              // opacity: 0.4,
+              position: 'absolute',
+              top: 100,
+              left:100,
+            },
+            ]}
+          />
         {this.state.loading && <LoadingSpinner/>}
         {this.state.toastVisible &&
         <ToastPopup
@@ -943,7 +970,8 @@ function mapStateToProps(state) {
     shortcutSwitchPosition: state.home.shortcutSwitchPosition,
     isAllSpotsPanelVisible: state.home.isAllSpotsPanelVisible,
     settingsPageVisible: state.settingsPanel.settingsPageVisible,
-    settingsPanelVisible: state.home.isSettingsPanelVisible
+    settingsPanelVisible: state.home.isSettingsPanelVisible,
+    vertexSelectedCoordinates: state.map.vertexSelectedCoordinates
   }
 }
 

@@ -18,7 +18,7 @@ function Basemap(props) {
     zoomLevel={16}
     onPress={props.onMapPress}
     onLongPress={props.onMapLongPress}
-    scrollEnabled={false}
+    scrollEnabled={true}
   >
     <MapboxGL.RasterSource
       id={props.basemap.id}

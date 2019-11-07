@@ -38,6 +38,10 @@ export default class Example extends React.Component {
     ]);
   }
 
+  onDrop = (coords) => {
+    console.log('x', coords[0], 'y', coords[1])
+  };
+
   render() {
     return (
       <View style={styles.container}>
@@ -45,7 +49,7 @@ export default class Example extends React.Component {
           {() =>
             cond(
               eq(this.gestureState, State.END),
-              // call([this.addX, this.addY], this.onDrop)
+              call([this.addX, this.addY], this.onDrop)
             )
           }
         </Animated.Code>
