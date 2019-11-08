@@ -44,6 +44,7 @@ const vertexDrag = (props) => {
   ]);
 
   const onDrop = (coords) => {
+    // console.log(`You are at x: ${coords[0]} and y: ${coords[1]}!`);
     let endCoords = [props.vertexStartCoords[0] + coords[0], props.vertexStartCoords[1] + coords[1]];
     console.log('x from comp', coords[0], 'y from comp', coords[1], 'endCoords:', endCoords);
     props.setVertexEndCoords(endCoords)
@@ -54,6 +55,7 @@ const vertexDrag = (props) => {
       <AnimatedPoint.Code>
         {() =>
           cond(
+            // eq(gestureState, State.ACTIVE),
             eq(gestureState, State.END),
             call([transX, transY], onDrop)
           )
