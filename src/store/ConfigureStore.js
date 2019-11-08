@@ -5,6 +5,7 @@ import {spotReducer} from "../spots/spot.reducers";
 import {imageReducer} from "../components/images/image.reducers";
 import {homeReducer} from "../views/home/Home.reducer";
 import {userReducer} from '../services/user/UserProfile.reducer';
+import {projectsReducer} from '../project/Projects.reducer';
 import {settingsPanelReducer} from "../components/settings-panel/settingsPanel.reducer";
 import {createLogger} from 'redux-logger';
 import {persistStore, persistReducer} from 'redux-persist'
@@ -27,7 +28,8 @@ const appReducer = combineReducers({
   notebook: notebookReducer,
   settingsPanel: settingsPanelReducer,
   images: imageReducer,
-  user: userReducer
+  user: userReducer,
+  project: projectsReducer
 });
 
 const rootReducer = (state, action) => {
