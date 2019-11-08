@@ -103,6 +103,7 @@ class Home extends React.Component {
     this.props.setNotebookPanelVisible(false);
     this.props.setAllSpotsPanelVisible(false);
     this.props.setModalVisible(null);
+    this.onLoad();
   }
 
   componentWillUnmount() {
@@ -115,6 +116,17 @@ class Home extends React.Component {
     const dimensions = Dimensions.get(platformType);
     this.props.setDeviceDims(dimensions);
     console.log(this.props.deviceDimensions)
+  };
+
+ onLoad = () => {
+    if (isEmpty(this.props.getCurrentProject)) {
+      this.setState(prevState => {
+        return{
+          ...prevState,
+          isProjectModalVisible: true
+        }
+      })
+    }
   };
 
   // deviceWidth = () => {
@@ -682,6 +694,12 @@ class Home extends React.Component {
     }
 
     return (
+      // {renderMap()}
+      // {renderHomeButtons()}
+      // {renderHomeDialogs()}
+      // {renderNotebook()}
+      // {renderMainMenu()}
+      // {renderHomeActions()} // Spinner and Toast
         <View style={styles.container}>
           <View style={{flex:1, zIndex: -1}}>
             <MapView ref={this.mapViewElement}
