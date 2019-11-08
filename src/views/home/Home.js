@@ -132,6 +132,12 @@ class Home extends React.Component {
 
   clickHandler = (name, position) => {
     switch (name) {
+      case 'startProject':
+        this.startProject();
+        break;
+      case 'loadProject':
+        this.getProjectFromServer();
+        break;
       case "search":
         Alert.alert('Still in the works', `The ${name.toUpperCase()} Shortcut button in the  will be functioning soon!`);
         break;
@@ -320,6 +326,19 @@ class Home extends React.Component {
     this.props.setIsOnline(isConnected);
   };
 
+  getProjectFromServer = () => {
+    console.log('Loading Project...');
+    this.props.setSettingsPanelVisible(true);
+    this.props.setSettingsPanelPageVisible(SettingsMenuItems.PROJECT.SWITCH_PROJECT);
+    this.openSettingsDrawer();
+    this.setState(prevState => {
+      return {
+        ...prevState,
+        isProjectModalVisible: false
+      }
+    })
+  };
+
   mapPress = () => {
     return this.mapViewComponent.getCurrentBasemap();
   };
@@ -450,6 +469,16 @@ class Home extends React.Component {
     this.setMapMode(MapModes.EDIT);
     this.toggleButton('editButtonsVisible', true);
     this.toggleButton('drawButtonsVisible', false);
+  };
+
+  startProject = () => {
+    console.log('Starting Project...')
+    this.setState(prevState => {
+      return {
+        ...prevState,
+        isProjectModalVisible: false
+      }
+    })
   };
 
 // Toggle given button between true (on) and false (off)
@@ -893,6 +922,7 @@ function mapStateToProps(state) {
     modalVisible: state.home.modalVisible,
     deviceDimensions: state.home.deviceDimensions,
     spot: state.spot.features,
+    getCurrentProject: state.project.project,
     shortcutSwitchPosition: state.home.shortcutSwitchPosition,
     isAllSpotsPanelVisible: state.home.isAllSpotsPanelVisible,
     settingsPageVisible: state.settingsPanel.settingsPageVisible,
