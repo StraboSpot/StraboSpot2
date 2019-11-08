@@ -1,5 +1,6 @@
 import React from 'react';
 import Dialog, { DialogTitle, DialogContent, SlideAnimation, DialogFooter, DialogButton } from 'react-native-popup-dialog';
+import * as ProjectActions from './Project.constants';
 import styles from "./Project.styles";
 
 const DialogBox = (props) => {
@@ -17,25 +18,25 @@ const DialogBox = (props) => {
           <DialogFooter>
             <DialogButton
               text={'Backup Project to Device'}
-              onPress={props.continue}
+              onPress={() => props.onPress(ProjectActions.BACKUP_TO_DEVICE)}
               style={styles.dialogButton}
               textStyle={styles.dialogButtonText}
             />
             {props.isOnline && <DialogButton
               text={'Backup Project to Server'}
-              onPress={props.continue}
+              onPress={() => props.onPress(ProjectActions.BACKUP_TO_SERVER)}
               style={styles.dialogButton}
               textStyle={styles.dialogButtonText}
             />}
             <DialogButton
               text={'Overwrite Project'}
-              onPress={props.continue}
+              onPress={() => props.onPress(ProjectActions.OVERWRITE)}
               style={styles.dialogButton}
               textStyle={styles.dialogButtonText}
             />
             <DialogButton
               text="CANCEL"
-              onPress={props.cancel}
+              onPress={() => props.onPress(ProjectActions.CANCEL)}
               style={styles.dialogButton}
               textStyle={[styles.dialogButtonText, {color: 'red'}]}
             />

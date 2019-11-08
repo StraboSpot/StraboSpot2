@@ -10,6 +10,7 @@ import {isEmpty} from "../shared/Helpers";
 import * as themes from '../shared/styles.constants';
 import DialogBox from './DialogBox';
 import {goSignIn} from "../routes/Navigation";
+import * as ProjectActions from './Project.constants';
 import styles from './Project.styles';
 
 const ProjectList = (props) => {
@@ -29,7 +30,7 @@ const ProjectList = (props) => {
         setLoading(false);
       }
       else {
-        console.log('Projects', projects.projects);
+        // console.log('Projects', projects.projects);
         setProjectsArr(projects);
         setLoading(false);
       }
@@ -43,17 +44,32 @@ const ProjectList = (props) => {
   const selectProject = (project) => {
     console.log('Selected ID:', project);
     setSelectedProject(project);
-    setShowDialog(true);
+    if (!isEmpty(props.currentProject)) {
+      setShowDialog(true);
+    }
+    else console.log('Getting project from server...')
   };
 
-  const renderDialog = (id) => {
+  const switchProjectAction = (action) => {
+    if (action === ProjectActions.BACKUP_TO_SERVER || action === ProjectActions.BACKUP_TO_DEVICE) {
+      console.log('User wants to:', action);
+      getSelectedProject()
+    }
+    else if (action === ProjectActions.OVERWRITE) {
+      console.log('User wants to:', action);
+      setShowDialog(false);
+    }
+    else setShowDialog(false);
+  };
+
+  const renderDialog = () => {
     return (
       <DialogBox
         dialogTitle={'Delete Local Project Warning!'}
         visible={showDialog}
         isOnline={props.isOnline}
         cancel={() => setShowDialog(false)}
-        continue={() => getSelectedProject(id)}
+        onPress={(action) => switchProjectAction(action)}
         projectName={selectedProject.name}
       >
         <Text>Switching projects will <Text style={{color: 'red'}}>DELETE </Text>
@@ -110,7 +126,8 @@ const mapStateToProps = (state) => {
   return {
     settingsPageVisible: state.settingsPanel.settingsPageVisible,
     userData: state.user.userData,
-    isOnline: state.home.isOnline
+    isOnline: state.home.isOnline,
+    currentProject: state.project.project
   }
 };
 
