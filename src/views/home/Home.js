@@ -33,7 +33,7 @@ import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-nativ
 import styles from './Styles';
 import vectorIcon from 'react-native-vector-icons/Ionicons';
 import IconButton from '../../shared/ui/IconButton';
-import {animatePanels} from '../../shared/Helpers';
+import {animatePanels, isEmpty} from '../../shared/Helpers';
 
 const deviceWidth = () => {
   if (width < 500) return wp('95%');
