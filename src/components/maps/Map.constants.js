@@ -3,8 +3,8 @@ import {Dimensions} from "react-native";
 const {width, height} = Dimensions.get('window');
 
 const ASPECT_RATIO = width / height;
-export const LATITUDE = 32.299329;
-export const LONGITUDE = -110.867528;
+export const LATITUDE = 39.828175;       // Geographic center of US;
+export const LONGITUDE = -98.5795;      // Geographic center of US;
 export const LATITUDE_DELTA = 0.0922;
 export const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 

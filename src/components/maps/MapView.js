@@ -22,8 +22,8 @@ class mapView extends Component {
     super(props, context);
 
     this.state = {
-      latitude: 39.828175,       // Geographic center of US
-      longitude: -98.5795,      // Geographic center of US
+      latitude: LATITUDE,
+      longitude: LONGITUDE,
       currentBasemap: {},
       location: false,
       drawFeatures: [],
