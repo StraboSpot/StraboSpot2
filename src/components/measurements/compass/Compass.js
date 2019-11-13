@@ -10,9 +10,7 @@
 // import {spotReducers} from "../../../spots/Spot.constants";
 // import {homeReducers, Modals} from "../../../views/home/Home.constants";
 // import {NotebookPages, notebookReducers} from "../../notebook-panel/Notebook.constants";
-// import {DeviceMotion, Accelerometer, Magnetometer} from "expo-sensors";
 // // import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
-//
 //
 // // import Orientation from 'react-native-orientation-locker';
 // import Slider from '../../../shared/ui/Slider';

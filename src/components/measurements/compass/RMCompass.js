@@ -22,8 +22,6 @@ import RNSimpleCompass from 'react-native-simple-compass';
 import {spotReducers} from "../../../spots/Spot.constants";
 import {homeReducers, Modals} from "../../../views/home/Home.constants";
 import {NotebookPages, notebookReducers} from "../../notebook-panel/Notebook.constants";
-// import {DeviceMotion, Accelerometer, Magnetometer} from "expo-sensors";
-// import * as Location from 'expo-location';
 
 // import Orientation from 'react-native-orientation-locker';
 import Slider from '../../../shared/ui/Slider';

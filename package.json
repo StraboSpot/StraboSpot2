@@ -14,8 +14,6 @@
     "@sentry/react-native": "^1.0.9",
     "@sentry/wizard": "^1.0.1",
     "@turf/turf": "^5.1.6",
-    "expo-location": "^7.0.0",
-    "expo-sensors": "^6.0.0",
     "formik": "^1.5.4",
     "install": "^0.13.0",
     "lodash.isequal": "^4.5.0",
