@@ -11,6 +11,7 @@ import * as themes from '../shared/styles.constants';
 import DialogBox from './DialogBox';
 import {goSignIn} from "../routes/Navigation";
 import * as ProjectActions from './Project.constants';
+import * as Project from './project';
 import styles from './Project.styles';
 
 const ProjectList = (props) => {
@@ -41,16 +42,19 @@ const ProjectList = (props) => {
     console.log(selectedProject.id)
   };
 
-  const selectProject = (project) => {
+  const selectProject = async (project) => {
     console.log('Selected ID:', project);
     setSelectedProject(project);
     if (!isEmpty(props.currentProject)) {
       setShowDialog(true);
     }
-    else console.log('Getting project from server...')
+    else {
+      const projectData = await Project.loadProjectRemote(project.id, props.userData.encoded_login);
+      console.log('getProject', projectData)
+    }
   };
 
-  const switchProjectAction = (action) => {
+  const switchProject = (action) => {
     if (action === ProjectActions.BACKUP_TO_SERVER || action === ProjectActions.BACKUP_TO_DEVICE) {
       console.log('User wants to:', action);
       getSelectedProject()
@@ -69,7 +73,7 @@ const ProjectList = (props) => {
         visible={showDialog}
         isOnline={props.isOnline}
         cancel={() => setShowDialog(false)}
-        onPress={(action) => switchProjectAction(action)}
+        onPress={(action) => switchProject(action)}
         projectName={selectedProject.name}
       >
         <Text>Switching projects will <Text style={{color: 'red'}}>DELETE </Text>
@@ -83,7 +87,7 @@ const ProjectList = (props) => {
     )
   };
 
-  const renderProjects = () => {
+  const renderProjectsList = () => {
       if (!isEmpty(projectsArr) && !isEmpty(props.userData)) {
         // console.log(projectsArr.projects);
         return projectsArr.projects.map(item => {
@@ -115,7 +119,7 @@ const ProjectList = (props) => {
   return (
     <View style={{flex: 1}}>
       <View style={{flex: 1}}>
-        {loading ? <Loading style={{backgroundColor: themes.PRIMARY_BACKGROUND_COLOR}}/> : renderProjects()}
+        {loading ? <Loading style={{backgroundColor: themes.PRIMARY_BACKGROUND_COLOR}}/> : renderProjectsList()}
       </View>
       {renderDialog()}
     </View>
