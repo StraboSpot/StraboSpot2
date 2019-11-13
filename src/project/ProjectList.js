@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {Text, View, Alert} from 'react-native';
 import {connect} from 'react-redux';
-import * as RemoteServer from '../services/Remote-server.factory';
+import * as RemoteServer from '../services/server-requests';
 import {settingPanelReducers} from "../components/settings-panel/settingsPanel.constants";
 import {USER_DATA} from "../services/user/User.constants";
 import Loading from '../shared/ui/Loading';

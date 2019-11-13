@@ -5,6 +5,8 @@ import MapView from '../../components/maps/MapView';
 import MapActionsDialog from '../../components/dialog-boxes/map-actions/MapActionsDialogBox';
 import MapSymbolsDialog from "../../components/dialog-boxes/map-symbols/MapSymbolsDialogBox";
 import BaseMapDialog from "../../components/dialog-boxes/base-maps/BaseMapDialogBox";
+
+// <----- Home screen Panels ----->
 import NotebookPanel from '../../components/notebook-panel/NotebookPanel';
 import SettingsPanel from '../../components/settings-panel/SettingsPanel';
 import {MapModes} from '../../components/maps/Map.constants';
@@ -103,7 +105,7 @@ class Home extends React.Component {
     this.props.setNotebookPanelVisible(false);
     this.props.setAllSpotsPanelVisible(false);
     this.props.setModalVisible(null);
-    this.onLoad();
+    this.checkForOpenProject();
   }
 
   componentWillUnmount() {
@@ -118,7 +120,7 @@ class Home extends React.Component {
     console.log(this.props.deviceDimensions)
   };
 
- onLoad = () => {
+  checkForOpenProject = () => {
     if (isEmpty(this.props.getCurrentProject)) {
       this.setState(prevState => {
         return{
@@ -175,8 +177,8 @@ class Home extends React.Component {
       // case "notebook":
       //   console.log(`${name}`, " was clicked");
       //   break;
-      case "settings":
-        this.openSettingsDrawer();
+      case "home":
+        this.openHomeDrawer();
         break;
 
       // Notebook Panel three-dot menu
@@ -373,7 +375,7 @@ class Home extends React.Component {
     }
   };
 
-  openSettingsDrawer = () => {
+  openHomeDrawer = () => {
     if (this._isMounted) {
       this.props.setSettingsPanelVisible(true);
       animatePanels(this.state.settingsPanelAnimation, 0);
@@ -837,7 +839,7 @@ class Home extends React.Component {
           <View style={styles.homeIconContainer}>
             <IconButton
               source={require('../../assets/icons/StraboIcons_Oct2019/HomeButton.png')}
-              onPress={this.clickHandler.bind(this, "settings")}
+              onPress={this.clickHandler.bind(this, "home")}
             />
           </View>
           <Animated.View style={[styles.leftsideIcons, leftsideIconAnimation]}>

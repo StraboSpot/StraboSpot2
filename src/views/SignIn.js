@@ -3,7 +3,7 @@ import {View, StyleSheet, TextInput, Alert, ImageBackground, KeyboardAvoidingVie
 import {goHome, goSignUp} from '../routes/Navigation'
 import {connect} from 'react-redux';
 import {authenticateUser} from '../services/user/UserAuth';
-import * as RemoteServer from '../services/Remote-server.factory';
+import * as RemoteServer from '../services/server-requests';
 import * as themes from '../shared/styles.constants';
 import {USER_DATA, USER_IMAGE, ENCODED_LOGIN} from '../services/user/User.constants';
 import * as Sentry from '@sentry/react-native';
