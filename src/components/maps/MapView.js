@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {View, Animated, Alert, AsyncStorage, StyleSheet, PanResponder} from 'react-native';
-import MapboxGL from '@mapbox/react-native-mapbox-gl';
+import MapboxGL from '@react-native-mapbox-gl/maps';
 import {MAPBOX_KEY} from '../../MapboxConfig'
 import {CustomBasemap, MapboxOutdoorsBasemap, MapboxSatelliteBasemap, OSMBasemap, MacrostratBasemap} from "./Basemaps";
 import * as turf from '@turf/turf/index'
@@ -68,7 +68,8 @@ class mapView extends Component {
       }
     };
 
-    this._map = {};
+    this._map = React.createRef();
+    this.camera = React.createRef();
 
     this.onMapPress = this.onMapPress.bind(this);
     this.onMapLongPress = this.onMapLongPress.bind(this);
@@ -357,7 +358,7 @@ class mapView extends Component {
   };
 
   getExtentString = async () => {
-    const mapBounds = await this._map.getVisibleBounds();
+    const mapBounds = await this._map.current.getVisibleBounds();
 
     let right = mapBounds[0][0];
     let top = mapBounds[0][1];
@@ -369,7 +370,7 @@ class mapView extends Component {
   };
 
   getCurrentZoom = async () => {
-    //const currentZoom = await this._map.getZoom();
+    //const currentZoom = await this._map.current.getZoom();
     //return currentZoom;
     return 16;
   };
@@ -440,9 +441,10 @@ class mapView extends Component {
     try {
       await this.setCurrentLocation();
       console.log('flying');
-      this._map.flyTo([this.state.longitude, this.state.latitude]);
+      if (this.camera.current) this.camera.current.flyTo([this.state.longitude, this.state.latitude], 12000);
     } catch (error) {
       console.log(error);
+      Alert.alert('Location Error', 'Unable to get your current location.')
     }
   };
 
@@ -597,7 +599,7 @@ class mapView extends Component {
     const r = 30; // half the width (in pixels?) of bounding box to create
     const bbox = [screenPointY + r, screenPointX + r, screenPointY - r, screenPointX - r];
     if (!layers) layers = ['pointLayer', 'lineLayer', 'polygonLayer', 'pointLayerSelected', 'lineLayerSelected', 'polygonLayerSelected'];
-    const featureCollectionInRect = await this._map.queryRenderedFeaturesInRect(bbox, null, layers);
+    const featureCollectionInRect = await this._map.current.queryRenderedFeaturesInRect(bbox, null, layers);
     const featuresInRect = featureCollectionInRect.features;
     let featureSelected = {};
     if (featuresInRect.length > 0) {
@@ -643,7 +645,7 @@ class mapView extends Component {
     const displaySelectedFeatures = this.props.mapMode === MapModes.EDIT ? this.state.featuresSelected : this.props.featuresSelected;
 
     const mapProps = {
-      ref: ref => this._map = ref,
+      ref: {mapRef: this._map, cameraRef: this.camera},
       basemap: this.props.currentBasemap,
       centerCoordinate: centerCoordinate,
       onMapPress: this.onMapPress,

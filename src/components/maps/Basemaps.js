@@ -1,28 +1,34 @@
 import React from 'react';
-import MapboxGL from '@mapbox/react-native-mapbox-gl';
+import MapboxGL from '@react-native-mapbox-gl/maps';
 import pointSymbol from "../../assets/symbols/point-resizeimage.png";
 
 function Basemap(props) {
+  const {mapRef, cameraRef} = props.forwardedRef;
   return <MapboxGL.MapView
     id={props.basemap.id}
-    ref={props.forwardedRef}
+    ref={mapRef}
     style={{flex: 1}}
     animated={true}
     localizeLabels={true}
-    showUserLocation={true}
     logoEnabled={false}
     rotateEnabled={false}
     attributionEnabled={false}
     compassEnabled={true}
-    centerCoordinate={props.centerCoordinate}
-    zoomLevel={16}
     onPress={props.onMapPress}
     onLongPress={props.onMapLongPress}
     scrollEnabled={true}
   >
+    <MapboxGL.UserLocation/>
+    <MapboxGL.Camera
+      ref={cameraRef}
+      zoomLevel={16}
+      centerCoordinate={props.centerCoordinate}
+      followUserLocation={true}
+      followUserMode="normal"
+    />
     <MapboxGL.RasterSource
       id={props.basemap.id}
-      url={props.basemap.url}
+      tileUrlTemplates={[props.basemap.url]}
       maxZoomLevel={props.basemap.maxZoom}
       tileSize={256}
     >
@@ -139,7 +145,7 @@ export const CustomBasemap = React.forwardRef((props, ref) => (
   <Basemap {...props} forwardedRef={ref}/>
 ));
 
-const mapStyles = MapboxGL.StyleSheet.create({
+const mapStyles = {
   point: {
     iconImage: pointSymbol,
     iconAllowOverlap: true,
@@ -187,4 +193,4 @@ const mapStyles = MapboxGL.StyleSheet.create({
     circleStrokeColor: 'white',
     circleStrokeWidth: 2
   }
-});
+};
