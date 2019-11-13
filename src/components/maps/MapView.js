@@ -116,8 +116,13 @@ class mapView extends Component {
       console.log('Drawing', this.props.mapMode, '...');
       let feature = {};
       const newCoord = turf.getCoord(e);
+      // Draw a point (if set point to current location not working)
+      if (this.props.mapMode === MapModes.DRAW.POINT) {
+        let feature = MapboxGL.geoUtils.makeFeature(e.geometry);
+        this.createFeature(feature);
+      }
       // Draw a line given a point and a new point
-      if (this.state.drawFeatures.length === 1) {
+      else if (this.state.drawFeatures.length === 1) {
         const pointCoord = turf.getCoord(this.state.drawFeatures[0]);
         let feature = turf.lineString([pointCoord, newCoord]);
         this.drawFeature(feature);
@@ -434,26 +439,16 @@ class mapView extends Component {
 
   // Create a point feature at the current location
   setPointAtCurrentLocation = async () => {
-    try {
-      await this.setCurrentLocation();
-      let feature = MapboxGL.geoUtils.makePoint([this.state.longitude, this.state.latitude]);
-      this.createFeature(feature);
-    } catch (error) {
-      console.log(error);
-      Alert.alert("Geolocation Error", "Error getting current location.");
-    }
+    await this.setCurrentLocation();
+    let feature = MapboxGL.geoUtils.makePoint([this.state.longitude, this.state.latitude]);
+    this.createFeature(feature);
+    throw Error('Geolocation Error');
   };
 
-  // Get the current location then fly the map to that location
+  // Fly the map to the current location
   goToCurrentLocation = async () => {
-    try {
-      await this.setCurrentLocation();
-      console.log('flying');
-      if (this.camera.current) this.camera.current.flyTo([this.state.longitude, this.state.latitude], 12000);
-    } catch (error) {
-      console.log(error);
-      Alert.alert("Geolocation Error", "Error getting current location.");
-    }
+    if (this.camera.current) await this.camera.current.flyTo([this.state.longitude, this.state.latitude], 12000);
+    throw Error('Error Flying to Current Location');
   };
 
   // Get the current location from the device and set it in the State

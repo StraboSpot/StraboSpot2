@@ -127,7 +127,7 @@ class Home extends React.Component {
   checkForOpenProject = () => {
     if (isEmpty(this.props.getCurrentProject)) {
       this.setState(prevState => {
-        return{
+        return {
           ...prevState,
           isProjectLoadSelectionModalVisible: true
         }
@@ -214,7 +214,7 @@ class Home extends React.Component {
         this.saveEdits();
         break;
       case "currentLocation":
-        this.mapViewComponent.goToCurrentLocation();
+        this.goToCurrentLocation();
         break;
 
       // Map Actions
@@ -247,6 +247,18 @@ class Home extends React.Component {
       case "custom":
         this.newBasemapDisplay(name);
         break;
+    }
+  };
+
+  goToCurrentLocation = async () => {
+    this.toggleLoading(true);
+    try {
+      await this.mapViewComponent.setCurrentLocation();
+      this.toggleLoading(false);
+      await this.mapViewComponent.goToCurrentLocation();
+    } catch {
+      this.toggleLoading(false);
+      Alert.alert("Geolocation Error", "Error getting current location.");
     }
   };
 
@@ -344,12 +356,12 @@ class Home extends React.Component {
     this.props.setHomePanelVisible(true);
     this.props.setHomePanelPageVisible(SettingsMenuItems.PROJECT.SWITCH_PROJECT);
     this.openHomeDrawer();
-      this.setState(prevState => {
-        return {
-          ...prevState,
-          isProjectLoadSelectionModalVisible: false,
-        }
-      })
+    this.setState(prevState => {
+      return {
+        ...prevState,
+        isProjectLoadSelectionModalVisible: false,
+      }
+    })
   };
 
   mapPress = () => {
@@ -447,25 +459,34 @@ class Home extends React.Component {
 
   setDraw = async mapMode => {
     this.mapViewComponent.cancelDraw();
-    if (this.state.mapMode === MapModes.VIEW) this.toggleButton('endDrawButtonVisible');
+    if (this.state.mapMode === MapModes.VIEW && mapMode !== MapModes.DRAW.POINT) {
+      this.toggleButton('endDrawButtonVisible', true);
+    }
     else if (this.state.mapMode === mapMode) mapMode = MapModes.VIEW;
     await this.setMapMode(mapMode);
     if (this.state.mapMode === MapModes.DRAW.POINT) {
-      await this.mapViewComponent.setPointAtCurrentLocation();
-      await this.setMapMode(MapModes.VIEW);
-      this.toggleButton('endDrawButtonVisible');
-      // this.openNotebookPanel();
-      this.props.setNotebookPanelVisible(true);
-      this.props.setNotebookPageVisible(NotebookPages.OVERVIEW);
-      Animated.timing(this.state.animation, {
-        toValue: wp('0%'),
-        duration: 350,
-        easing: Easing.linear,
-        useNativeDriver: true
-      }).start();
+      this.toggleLoading(true);
+      try {
+        await this.mapViewComponent.setPointAtCurrentLocation();
+        this.toggleLoading(false);
+        await this.setMapMode(MapModes.VIEW);
+        // this.openNotebookPanel();
+        this.props.setNotebookPanelVisible(true);
+        this.props.setNotebookPageVisible(NotebookPages.OVERVIEW);
+        Animated.timing(this.state.animation, {
+          toValue: wp('0%'),
+          duration: 350,
+          easing: Easing.linear,
+          useNativeDriver: true
+        }).start();
+      } catch (err) {
+        this.toggleLoading(false);
+        Alert.alert("Geolocation Error", "Error getting current location. Set a point manually.");
+        this.toggleButton('endDrawButtonVisible', true);
+      }
     }
     if (mapMode === MapModes.VIEW) {
-      this.toggleButton('endDrawButtonVisible');
+      this.toggleButton('endDrawButtonVisible', false);
     }
   };
 
@@ -495,7 +516,7 @@ class Home extends React.Component {
   };
 
   startProject = () => {
-    console.log('Starting Project...')
+    console.log('Starting Project...');
     this.setState(prevState => {
       return {
         ...prevState,
@@ -823,122 +844,122 @@ class Home extends React.Component {
         {/* displays the Online boolean in text*/}
         {/*<View><Text>Online: {this.props.isOnline.toString()}</Text></View> */}
 
-          {this.state.buttons.drawButtonsVisible ?
-            <Animated.View style={[styles.drawToolsContainer, rightsideIconAnimation]}>
-              <IconButton
-                style={{top: 5}}
-                source={this.state.mapMode === MapModes.DRAW.POINT ?
-                  require('../../assets/icons/StraboIcons_Oct2019/PointButton_pressed.png') : require(
-                    '../../assets/icons/StraboIcons_Oct2019/PointButton.png')}
-                onPress={this.clickHandler.bind(this, MapModes.DRAW.POINT)}
-              />
-              <IconButton
-                style={{top: 5}}
-                source={this.state.mapMode === MapModes.DRAW.LINE ?
-                  require('../../assets/icons/StraboIcons_Oct2019/LineButton_pressed.png') : require(
-                    '../../assets/icons/StraboIcons_Oct2019/LineButton.png')}
-                onPress={this.clickHandler.bind(this, MapModes.DRAW.LINE)}
-              />
-              <IconButton
-                style={{top: 5}}
-                source={this.state.mapMode === MapModes.DRAW.POLYGON ?
-                  require('../../assets/icons/StraboIcons_Oct2019/PolygonButton_pressed.png') :
-                  require('../../assets/icons/StraboIcons_Oct2019/PolygonButton.png')}
-                onPress={this.clickHandler.bind(this, MapModes.DRAW.POLYGON)}
-              />
-            </Animated.View>
-            : null}
-          {/*</View>*/}
-          <View style={styles.homeIconContainer}>
-            <IconButton
-              source={require('../../assets/icons/StraboIcons_Oct2019/HomeButton.png')}
-              onPress={this.clickHandler.bind(this, "home")}
-            />
-          </View>
-          <Animated.View style={[styles.leftsideIcons, leftsideIconAnimation]}>
-            <IconButton
-              source={require('../../assets/icons/StraboIcons_Oct2019/MapActionsButton.png')}
-              onPress={() => this.toggleDialog("mapActionsMenuVisible")}
-            />
-            <IconButton
-              source={require('../../assets/icons/StraboIcons_Oct2019/SymbolsButton.png')}
-              onPress={() => this.toggleDialog("mapSymbolsMenuVisible")}
-            />
-            <IconButton
-              source={require('../../assets/icons/StraboIcons_Oct2019/layersButton.png')}
-              onPress={() => this.toggleDialog("baseMapMenuVisible")}
-            />
-          </Animated.View>
-          <Animated.View style={[styles.bottomLeftIcons, leftsideIconAnimation]}>
+        {this.state.buttons.drawButtonsVisible ?
+          <Animated.View style={[styles.drawToolsContainer, rightsideIconAnimation]}>
             <IconButton
               style={{top: 5}}
-              source={require('../../assets/icons/StraboIcons_Oct2019/MyLocationButton.png')}
-              onPress={this.clickHandler.bind(this, "currentLocation")}
+              source={this.state.mapMode === MapModes.DRAW.POINT ?
+                require('../../assets/icons/StraboIcons_Oct2019/PointButton_pressed.png') : require(
+                  '../../assets/icons/StraboIcons_Oct2019/PointButton.png')}
+              onPress={this.clickHandler.bind(this, MapModes.DRAW.POINT)}
+            />
+            <IconButton
+              style={{top: 5}}
+              source={this.state.mapMode === MapModes.DRAW.LINE ?
+                require('../../assets/icons/StraboIcons_Oct2019/LineButton_pressed.png') : require(
+                  '../../assets/icons/StraboIcons_Oct2019/LineButton.png')}
+              onPress={this.clickHandler.bind(this, MapModes.DRAW.LINE)}
+            />
+            <IconButton
+              style={{top: 5}}
+              source={this.state.mapMode === MapModes.DRAW.POLYGON ?
+                require('../../assets/icons/StraboIcons_Oct2019/PolygonButton_pressed.png') :
+                require('../../assets/icons/StraboIcons_Oct2019/PolygonButton.png')}
+              onPress={this.clickHandler.bind(this, MapModes.DRAW.POLYGON)}
             />
           </Animated.View>
-          <MapActionsDialog
-            visible={this.state.dialogs.mapActionsMenuVisible}
-            onPress={(name) => this.dialogClickHandler("mapActionsMenuVisible", name)}
-            onTouchOutside={() => this.toggleDialog("mapActionsMenuVisible")}
+          : null}
+        {/*</View>*/}
+        <View style={styles.homeIconContainer}>
+          <IconButton
+            source={require('../../assets/icons/StraboIcons_Oct2019/HomeButton.png')}
+            onPress={this.clickHandler.bind(this, "home")}
           />
-          <MapSymbolsDialog
-            visible={this.state.dialogs.mapSymbolsMenuVisible}
-            onPress={(name) => this.dialogClickHandler("mapSymbolsMenuVisible", name)}
-            onTouchOutside={() => this.toggleDialog("mapSymbolsMenuVisible")}
-          />
-          <BaseMapDialog
-            visible={this.state.dialogs.baseMapMenuVisible}
-            onPress={(name) => this.dialogClickHandler("baseMapMenuVisible", name)}
-            onTouchOutside={() => this.toggleDialog("baseMapMenuVisible")}
-          />
-          <NotebookPanelMenu
-            visible={this.state.dialogs.notebookPanelMenuVisible}
-            onPress={(name, position) => this.dialogClickHandler("notebookPanelMenuVisible", name, position)}
-            onTouchOutside={() => this.toggleDialog("notebookPanelMenuVisible")}
-          />
-          {/*{this.props.isAllSpotsPanelVisible ? <Animated.View style={[notebookStyles.allSpotsPanel, animateAllSpotsMenu]}>*/}
-          {/*  <AllSpotsView*/}
-          {/*    close={() => this.closeAllSpotsPanel()}*/}
-          {/*  />*/}
-          {/*</Animated.View> : null}*/}
-          {/*<Animated.View style={[notebookStyles.allSpotsPanel, animateAllSpotsMenu]}>*/}
-          {/*  <AllSpotsView*/}
-          {/*    close={() => this.closeAllSpotsPanel()}*/}
-          {/*  />*/}
-          {/*</Animated.View>*/}
-          <Modal
-            isVisible={this.state.isOfflineMapModalVisible}
-            useNativeDriver={true}
-          >
-            <View style={styles.modal}>
-              <SaveMapModal
-                close={this.toggleOfflineMapModal}
-                map={this.mapViewComponent}
-              />
-            </View>
-          </Modal>
-          <Modal
-            isVisible={this.props.isImageModalVisible}
-            useNativeDriver={true}
-            style={{flex: 1}}
-          >
-            <View style={styles.modal}>
-              <Button
-                type={'clear'}
-                titleProps={{color: 'white'}}
-                title="Hide modal"
-                onPress={() => this.toggleImageModal()}/>
-              <Image
-                source={this.props.selectedImage ? {uri: this.getImageSrc(this.props.selectedImage.id)}:
-                  {uri: require('../../assets/images/noimage.jpg')}}
-                style={{width: wp('90%'), height: hp('90%')  }}
-              />
-            </View>
-          </Modal>
-          {notebookPanel}
-          {homeDrawer}
-          {this.renderLoadProjectFromModal()}
         </View>
+        <Animated.View style={[styles.leftsideIcons, leftsideIconAnimation]}>
+          <IconButton
+            source={require('../../assets/icons/StraboIcons_Oct2019/MapActionsButton.png')}
+            onPress={() => this.toggleDialog("mapActionsMenuVisible")}
+          />
+          <IconButton
+            source={require('../../assets/icons/StraboIcons_Oct2019/SymbolsButton.png')}
+            onPress={() => this.toggleDialog("mapSymbolsMenuVisible")}
+          />
+          <IconButton
+            source={require('../../assets/icons/StraboIcons_Oct2019/layersButton.png')}
+            onPress={() => this.toggleDialog("baseMapMenuVisible")}
+          />
+        </Animated.View>
+        <Animated.View style={[styles.bottomLeftIcons, leftsideIconAnimation]}>
+          <IconButton
+            style={{top: 5}}
+            source={require('../../assets/icons/StraboIcons_Oct2019/MyLocationButton.png')}
+            onPress={this.clickHandler.bind(this, "currentLocation")}
+          />
+        </Animated.View>
+        <MapActionsDialog
+          visible={this.state.dialogs.mapActionsMenuVisible}
+          onPress={(name) => this.dialogClickHandler("mapActionsMenuVisible", name)}
+          onTouchOutside={() => this.toggleDialog("mapActionsMenuVisible")}
+        />
+        <MapSymbolsDialog
+          visible={this.state.dialogs.mapSymbolsMenuVisible}
+          onPress={(name) => this.dialogClickHandler("mapSymbolsMenuVisible", name)}
+          onTouchOutside={() => this.toggleDialog("mapSymbolsMenuVisible")}
+        />
+        <BaseMapDialog
+          visible={this.state.dialogs.baseMapMenuVisible}
+          onPress={(name) => this.dialogClickHandler("baseMapMenuVisible", name)}
+          onTouchOutside={() => this.toggleDialog("baseMapMenuVisible")}
+        />
+        <NotebookPanelMenu
+          visible={this.state.dialogs.notebookPanelMenuVisible}
+          onPress={(name, position) => this.dialogClickHandler("notebookPanelMenuVisible", name, position)}
+          onTouchOutside={() => this.toggleDialog("notebookPanelMenuVisible")}
+        />
+        {/*{this.props.isAllSpotsPanelVisible ? <Animated.View style={[notebookStyles.allSpotsPanel, animateAllSpotsMenu]}>*/}
+        {/*  <AllSpotsView*/}
+        {/*    close={() => this.closeAllSpotsPanel()}*/}
+        {/*  />*/}
+        {/*</Animated.View> : null}*/}
+        {/*<Animated.View style={[notebookStyles.allSpotsPanel, animateAllSpotsMenu]}>*/}
+        {/*  <AllSpotsView*/}
+        {/*    close={() => this.closeAllSpotsPanel()}*/}
+        {/*  />*/}
+        {/*</Animated.View>*/}
+        <Modal
+          isVisible={this.state.isOfflineMapModalVisible}
+          useNativeDriver={true}
+        >
+          <View style={styles.modal}>
+            <SaveMapModal
+              close={this.toggleOfflineMapModal}
+              map={this.mapViewComponent}
+            />
+          </View>
+        </Modal>
+        <Modal
+          isVisible={this.props.isImageModalVisible}
+          useNativeDriver={true}
+          style={{flex: 1}}
+        >
+          <View style={styles.modal}>
+            <Button
+              type={'clear'}
+              titleProps={{color: 'white'}}
+              title="Hide modal"
+              onPress={() => this.toggleImageModal()}/>
+            <Image
+              source={this.props.selectedImage ? {uri: this.getImageSrc(this.props.selectedImage.id)} :
+                {uri: require('../../assets/images/noimage.jpg')}}
+              style={{width: wp('90%'), height: hp('90%')}}
+            />
+          </View>
+        </Modal>
+        {notebookPanel}
+        {homeDrawer}
+        {this.renderLoadProjectFromModal()}
+      </View>
     )
   }
 }
