@@ -959,10 +959,10 @@ function mapStateToProps(state) {
     getCurrentProject: state.project.project,
     shortcutSwitchPosition: state.home.shortcutSwitchPosition,
     isAllSpotsPanelVisible: state.home.isAllSpotsPanelVisible,
-    vertexStartCoords: state.map.vertexStartCoords
+    vertexStartCoords: state.map.vertexStartCoords,
     userData: state.user.userData,
     homePageVisible: state.settingsPanel.settingsPageVisible,
-    homePanelVisible: state.home.isSettingsPanelVisible,
+    homePanelVisible: state.home.isSettingsPanelVisible
   }
 }
 
