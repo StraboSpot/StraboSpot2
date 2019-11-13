@@ -49,6 +49,13 @@ export const mapReducer = (state = initialState, action) => {
       return {
         ...state,
         vertexEndCoords: action.vertexEndCoords
+      };
+    case mapReducers.CLEAR_VERTEXES:
+      console.log('Clearing Start and End Vertexes...');
+      return {
+        ...state,
+        vertexStartCoords: undefined,
+        vertexEndCoords: undefined
       }
   }
   return state;
