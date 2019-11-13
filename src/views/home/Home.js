@@ -255,7 +255,7 @@ class Home extends React.Component {
       if (this.props.homePanelVisible) {
         if (nativeEvent.oldState === State.ACTIVE) {
           console.log('FLING TO CLOSE Settings Panel!', nativeEvent);
-          animatePanels(this.state.settingsPanelAnimation, -deviceWidth());
+          animatePanels(this.state.settingsPanelAnimation, -getWidthPercent());
           this.props.setHomePanelPageVisible(SettingsMenuItems.SETTINGS_MAIN);
           this.props.setHomePanelVisible(false);
           animatePanels(this.state.leftsideIconAnimation, 0)
