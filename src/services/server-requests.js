@@ -63,6 +63,11 @@ export const getProfile = async (encodedLogin) => {
   return await buildGetRequest('/profile', encodedLogin)
 };
 
+export const getProject = async (projectId, encoded_login) => {
+  console.log('Getting project...');
+  return await buildGetRequest(/project/ + projectId, encoded_login)
+};
+
 export const getMyProjects = async (encodedLogin) => {
   try {
     let request = await timeoutPromise(10000, fetch(baseUrl + '/myProjects', {
