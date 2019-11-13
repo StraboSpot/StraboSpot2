@@ -107,6 +107,7 @@ class Home extends React.Component {
     this.props.setNotebookPanelVisible(false);
     this.props.setAllSpotsPanelVisible(false);
     this.props.setModalVisible(null);
+    this.props.setHomePanelPageVisible(SettingsMenuItems.SETTINGS_MAIN);
     this.checkForOpenProject();
   }
 
@@ -255,15 +256,15 @@ class Home extends React.Component {
 
   flingHandlerSettingsPanel = ({nativeEvent}) => {
     if (this._isMounted) {
-      if (this.props.settingsPanelVisible) {
+      if (this.props.homePanelVisible) {
         if (nativeEvent.oldState === State.ACTIVE) {
           console.log('FLING TO CLOSE Settings Panel!', nativeEvent);
           animatePanels(this.state.settingsPanelAnimation, -deviceWidth());
-          this.props.setSettingsPanelPageVisible(SettingsMenuItems.SETTINGS_MAIN);
-          this.props.setSettingsPanelVisible(false);
+          this.props.setHomePanelPageVisible(SettingsMenuItems.SETTINGS_MAIN);
+          this.props.setHomePanelVisible(false);
           animatePanels(this.state.leftsideIconAnimation, 0)
         }
-      } else this.props.setSettingsPanelVisible(true);
+      } else this.props.setHomePanelVisible(true);
     }
   };
 
@@ -343,8 +344,8 @@ class Home extends React.Component {
   };
 
   getProjectFromServer = async () => {
-    this.props.setSettingsPanelVisible(true);
-    this.props.setSettingsPanelPageVisible(SettingsMenuItems.PROJECT.SWITCH_PROJECT);
+    this.props.setHomePanelVisible(true);
+    this.props.setHomePanelPageVisible(SettingsMenuItems.PROJECT.SWITCH_PROJECT);
     this.openHomeDrawer();
       this.setState(prevState => {
         return {
@@ -378,7 +379,7 @@ class Home extends React.Component {
 
   openHomeDrawer = () => {
     if (this._isMounted) {
-      this.props.setSettingsPanelVisible(true);
+      this.props.setHomePanelVisible(true);
       animatePanels(this.state.settingsPanelAnimation, 0);
       animatePanels(this.state.leftsideIconAnimation, wp('30%'))
     }
@@ -960,11 +961,15 @@ function mapStateToProps(state) {
     settingsPageVisible: state.settingsPanel.settingsPageVisible,
     settingsPanelVisible: state.home.isSettingsPanelVisible,
     userData: state.user.userData
+    homePageVisible: state.settingsPanel.settingsPageVisible,
+    homePanelVisible: state.home.isSettingsPanelVisible,
   }
 }
 
 const mapDispatchToProps = {
   setIsOnline: (online) => ({type: homeReducers.SET_ISONLINE, online: online}),
+  setHomePanelVisible: (value) => ({type: homeReducers.SET_SETTINGS_PANEL_VISIBLE, value: value}),
+  setHomePanelPageVisible: (name) => ({type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: name}),
   setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),
   setNotebookPanelVisible: (value) => ({type: notebookReducers.SET_NOTEBOOK_PANEL_VISIBLE, value: value}),
   setSettingsPanelVisible: (value) => ({type: homeReducers.SET_SETTINGS_PANEL_VISIBLE, value: value}),
