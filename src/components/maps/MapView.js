@@ -655,7 +655,8 @@ class mapView extends Component {
       drawFeatures: turf.featureCollection(this.state.drawFeatures),
       //editFeatureVertex: turf.featureCollection([this.state.vertexToEdit])  // ToDo Why doesn't this work?
       editFeatureVertex: Object.getOwnPropertyNames(this.state.vertexToEdit).length > 0 ?
-        turf.featureCollection([this.state.vertexToEdit]) : MapboxGL.geoUtils.makeFeatureCollection()
+        turf.featureCollection([this.state.vertexToEdit]) : MapboxGL.geoUtils.makeFeatureCollection(),
+      scrollEnabled: Object.getOwnPropertyNames(this.state.vertexToEdit).length === 0
     };
 
     return (

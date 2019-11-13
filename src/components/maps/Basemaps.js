@@ -16,7 +16,7 @@ function Basemap(props) {
     compassEnabled={true}
     onPress={props.onMapPress}
     onLongPress={props.onMapLongPress}
-    scrollEnabled={true}
+    scrollEnabled={props.scrollEnabled}
   >
     <MapboxGL.UserLocation/>
     <MapboxGL.Camera
