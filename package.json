@@ -9,8 +9,8 @@
     "ios": "react-native run-ios"
   },
   "dependencies": {
-    "@mapbox/react-native-mapbox-gl": "github:nitaliano/react-native-mapbox-gl#master",
     "@react-native-community/netinfo": "^2.0.9",
+    "@react-native-mapbox-gl/maps": "^7.0.8",
     "@sentry/react-native": "^1.0.9",
     "@sentry/wizard": "^1.0.1",
     "@turf/turf": "^5.1.6",

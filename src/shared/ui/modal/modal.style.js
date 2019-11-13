@@ -2,9 +2,7 @@ import {Dimensions, Platform, StyleSheet} from 'react-native';
 import * as themes from "../../styles.constants";
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 
-const platformType = Platform.OS === 'ios' ? 'window' : 'screen';
-const {width, height} = Dimensions.get(platformType);
-
+const {width, height} = Dimensions.get('window');
 const getModalWidth = () => {
   if (width < 500) return wp('75%');
   if (width >= 500 && width < 1099) return wp('25%');

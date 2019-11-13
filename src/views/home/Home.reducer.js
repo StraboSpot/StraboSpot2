@@ -6,7 +6,7 @@ const initialState = {
   isImageModalVisible: false,
   isAllSpotsPanelVisible: false,
   isSettingsPanelVisible: false,
-  deviceDimensions: Dimensions.get(Platform.OS === 'ios' ? 'window' : 'screen'),
+  deviceDimensions: Dimensions.get('window'),
   shortcutSwitchPosition: {
     Tag: false,
     Measurement: false,
@@ -30,7 +30,7 @@ export const homeReducer = (state = initialState, action) => {
       return {
         ...state,
         deviceDimensions: action.dims
-      }
+      };
     case homeReducers.SHORTCUT_SWITCH_POSITION:
       return {
         ...state,
