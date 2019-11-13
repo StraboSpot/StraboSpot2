@@ -34,6 +34,32 @@ const styles = StyleSheet.create({
     marginTop: 5,
     marginBottom: 5
   },
+
+  dialogBox: {
+    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
+    borderRadius: 10,
+  },
+  dialogTitle: {
+    backgroundColor: 'red',
+  },
+  dialogTitleText: {
+    fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,
+    fontWeight: 'bold'
+  },
+  dialogButton: {
+    borderTopWidth: 1,
+    borderColor: themes.LIST_BORDER_COLOR,
+    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
+  },
+  dialogButtonText: {
+    color: themes.BLUE,
+  },
+  dialogFooter: {
+    flexDirection: 'column',
+    // margin: 5,
+    height: 120
+  },
+
   // --- Drawer Styles ---
   // --- Bottom icons (line, polygon, and point) ---
   drawToolsContainer: {

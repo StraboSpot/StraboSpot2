@@ -2,6 +2,7 @@ import React from 'react'
 import {Alert, Animated, Dimensions, Easing, Platform, Text, View} from 'react-native'
 import NetInfo from "@react-native-community/netinfo";
 import MapView from '../../components/maps/MapView';
+import InitialProjectLoadModal from './ProjectSelectionTypeDialogBox';
 import MapActionsDialog from '../../components/dialog-boxes/map-actions/MapActionsDialogBox';
 import MapSymbolsDialog from "../../components/dialog-boxes/map-symbols/MapSymbolsDialogBox";
 import BaseMapDialog from "../../components/dialog-boxes/base-maps/BaseMapDialogBox";
@@ -79,6 +80,7 @@ class Home extends React.Component {
       settingsMenuVisible: SettingsMenuItems.SETTINGS_MAIN,
       // drawerVisible: false,
       isOfflineMapModalVisible: false,
+      isProjectLoadSelectionModalVisible: false,
       currentSpot: undefined,
       allPhotosSaved: [],
       // isAllSpotsPanelVisible: false,
@@ -125,9 +127,9 @@ class Home extends React.Component {
       this.setState(prevState => {
         return{
           ...prevState,
-          isProjectModalVisible: true
+          isProjectLoadSelectionModalVisible: true
         }
-      })
+      }, () => console.log('Project Select Modal is:', this.state.isProjectLoadSelectionModalVisible))
     }
   };
 
@@ -340,17 +342,16 @@ class Home extends React.Component {
     this.props.setIsOnline(isConnected);
   };
 
-  getProjectFromServer = () => {
-    console.log('Loading Project...');
+  getProjectFromServer = async () => {
     this.props.setSettingsPanelVisible(true);
     this.props.setSettingsPanelPageVisible(SettingsMenuItems.PROJECT.SWITCH_PROJECT);
-    this.openSettingsDrawer();
-    this.setState(prevState => {
-      return {
-        ...prevState,
-        isProjectModalVisible: false
-      }
-    })
+    this.openHomeDrawer();
+      this.setState(prevState => {
+        return {
+          ...prevState,
+          isProjectLoadSelectionModalVisible: false,
+        }
+      })
   };
 
   mapPress = () => {
@@ -436,6 +437,16 @@ class Home extends React.Component {
     console.log('Samples Modal Cancel Selected')
   };
 
+  renderLoadProjectFromModal = () => {
+    return (
+      <InitialProjectLoadModal
+        visible={this.state.isProjectLoadSelectionModalVisible}
+        onPress={(type) => this.clickHandler(type)}
+        children={undefined}
+      />
+    );
+  };
+
   setDraw = async mapMode => {
     this.mapViewComponent.cancelDraw();
     if (this.state.mapMode === MapModes.VIEW) this.toggleButton('endDrawButtonVisible');
@@ -490,7 +501,7 @@ class Home extends React.Component {
     this.setState(prevState => {
       return {
         ...prevState,
-        isProjectModalVisible: false
+        isProjectLoadSelectionModalVisible: false
       }
     })
   };
@@ -924,6 +935,7 @@ class Home extends React.Component {
           </Modal>
           {notebookPanel}
           {homeDrawer}
+          {this.renderLoadProjectFromModal()}
         </View>
     )
   }
@@ -946,7 +958,8 @@ function mapStateToProps(state) {
     shortcutSwitchPosition: state.home.shortcutSwitchPosition,
     isAllSpotsPanelVisible: state.home.isAllSpotsPanelVisible,
     settingsPageVisible: state.settingsPanel.settingsPageVisible,
-    settingsPanelVisible: state.home.isSettingsPanelVisible
+    settingsPanelVisible: state.home.isSettingsPanelVisible,
+    userData: state.user.userData
   }
 }
 
