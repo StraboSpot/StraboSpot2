@@ -3,14 +3,11 @@ Rewrite for native.
 
 Running for development:
 
-- Create a `.env` file at the root
+- Create a `Config.js` file at project root
 - Add
 
-      USERNAME_TEST = 'your username/email'
-      PASSWORD_TEST = 'your password'
+      export const USERNAME_TEST = 'your username/email';
+      export const PASSWORD_TEST = 'your password';
 
-     **Any changes to the .env file must be accompanied by a change in the JS files to be recognized.*
 - Run `npm install`
-- Run `npm run ios` or `npm run android`
-- react-native-fs may not link properly. In the event of `RNFSFileTypeRegular` error, run this command: `react-native link react-native-fs`
-- netinfo also needs to be linked using this command: `react-native link @react-native-community/netinfo`
+- Run `npx react-native run-ios` or `npx react-native run-android`
