@@ -12,11 +12,13 @@ function Basemap(props) {
     localizeLabels={true}
     logoEnabled={false}
     rotateEnabled={false}
+    pitchEnable={false}
     attributionEnabled={false}
     compassEnabled={true}
     onPress={props.onMapPress}
     onLongPress={props.onMapLongPress}
-    scrollEnabled={props.scrollEnabled}
+    scrollEnabled={props.allowMapViewMove}
+    zoomEnabled={props.allowMapViewMove}
   >
     <MapboxGL.UserLocation/>
     <MapboxGL.Camera

@@ -669,7 +669,7 @@ class mapView extends Component {
       //editFeatureVertex: turf.featureCollection([this.state.vertexToEdit])  // ToDo Why doesn't this work?
       editFeatureVertex: Object.getOwnPropertyNames(this.state.vertexToEdit).length > 0 ?
         turf.featureCollection([this.state.vertexToEdit]) : MapboxGL.geoUtils.makeFeatureCollection(),
-      scrollEnabled: Object.getOwnPropertyNames(this.state.vertexToEdit).length === 0
+      allowMapViewMove: Object.getOwnPropertyNames(this.state.vertexToEdit).length === 0
     };
 
     return (
