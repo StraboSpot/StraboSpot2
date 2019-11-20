@@ -1,72 +1,74 @@
 package com.strabospot2;
 
 import android.app.Application;
+import android.content.Context;
+import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
-import io.sentry.RNSentryPackage;
-import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
-import com.swmansion.reanimated.ReanimatedPackage;
-import org.wonday.orientation.OrientationPackage;
-import com.reactnativecommunity.netinfo.NetInfoPackage;
-import com.imagepicker.ImagePickerPackage;
-import com.reactlibrary.RNSimpleCompassPackage;
-import com.sensors.RNSensorsPackage;
-import com.rnfs.RNFSPackage;
-import com.oblador.vectoricons.VectorIconsPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
-import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
-import com.mapbox.rctmgl.RCTMGLPackage;
-import com.RNFetchBlob.RNFetchBlobPackage;
-import com.rnziparchive.RNZipArchivePackage;
-
-import com.reactnativenavigation.NavigationApplication;
-import com.reactnativenavigation.react.NavigationReactNativeHost;
-import com.reactnativenavigation.react.ReactGateway;
-
-import java.util.Arrays;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
-public class MainApplication extends NavigationApplication {
+public class MainApplication extends Application implements ReactApplication {
 
-    @Override
-    protected ReactGateway createReactGateway() {
-        ReactNativeHost host = new NavigationReactNativeHost(this, isDebug(), createAdditionalReactPackages()) {
-            @Override
-            protected String getJSMainModuleName() {
-                return "index";
-            }
-        };
-        return new ReactGateway(this, isDebug(), host);
-    }
+  private final ReactNativeHost mReactNativeHost =
+      new ReactNativeHost(this) {
+        @Override
+        public boolean getUseDeveloperSupport() {
+          return BuildConfig.DEBUG;
+        }
 
-    @Override
-    public boolean isDebug() {
-        return BuildConfig.DEBUG;
-    }
+        @Override
+        protected List<ReactPackage> getPackages() {
+          @SuppressWarnings("UnnecessaryLocalVariable")
+          List<ReactPackage> packages = new PackageList(this).getPackages();
+          // Packages that cannot be autolinked yet can be added manually here, for example:
+          // packages.add(new MyReactNativePackage());
+          return packages;
+        }
 
-    protected List<ReactPackage> getPackages() {
-        // Add additional packages you require here
-        // No need to add RnnPackage and MainReactPackage
-        return Arrays.<ReactPackage>asList(
-            new RCTMGLPackage(),
-            new VectorIconsPackage(),
-            new RNFetchBlobPackage(),
-            new RNZipArchivePackage(),
-            new RNFSPackage(),
-            new RNSimpleCompassPackage(),
-            new RNSensorsPackage(),
-            new ImagePickerPackage(),
-            new NetInfoPackage(),
-            new OrientationPackage(),
-            new ReanimatedPackage(),
-            new RNGestureHandlerPackage(),
-            new RNSentryPackage()
-        );
-    }
+        @Override
+        protected String getJSMainModuleName() {
+          return "index";
+        }
+      };
 
-    @Override
-    public List<ReactPackage> createAdditionalReactPackages() {
-        return getPackages();
+  @Override
+  public ReactNativeHost getReactNativeHost() {
+    return mReactNativeHost;
+  }
+
+  @Override
+  public void onCreate() {
+    super.onCreate();
+    SoLoader.init(this, /* native exopackage */ false);
+    initializeFlipper(this); // Remove this line if you don't want Flipper enabled
+  }
+
+  /**
+   * Loads Flipper in React Native templates.
+   *
+   * @param context
+   */
+  private static void initializeFlipper(Context context) {
+    if (BuildConfig.DEBUG) {
+      try {
+        /*
+         We use reflection here to pick up the class that initializes Flipper,
+        since Flipper library is not available in release mode
+        */
+        Class<?> aClass = Class.forName("com.facebook.flipper.ReactNativeFlipper");
+        aClass.getMethod("initializeFlipper", Context.class).invoke(null, context);
+      } catch (ClassNotFoundException e) {
+        e.printStackTrace();
+      } catch (NoSuchMethodException e) {
+        e.printStackTrace();
+      } catch (IllegalAccessException e) {
+        e.printStackTrace();
+      } catch (InvocationTargetException e) {
+        e.printStackTrace();
+      }
     }
+  }
 }

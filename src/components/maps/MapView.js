@@ -12,6 +12,7 @@ import {spotReducers} from "../../spots/Spot.constants";
 import {truncDecimal} from "../../shared/Helpers";
 import {homeReducers} from "../../views/home/Home.constants";
 import {NotebookPages, notebookReducers} from "../notebook-panel/Notebook.constants";
+import Geolocation from '@react-native-community/geolocation'
 
 MapboxGL.setAccessToken(MAPBOX_KEY);
 
@@ -447,15 +448,21 @@ class mapView extends Component {
 
   // Fly the map to the current location
   goToCurrentLocation = async () => {
-    if (this.camera.current) await this.camera.current.flyTo([this.state.longitude, this.state.latitude], 12000);
-    throw Error('Error Flying to Current Location');
+    if (this.camera.current) {
+      try {
+        await this.camera.current.flyTo([this.state.longitude, this.state.latitude], 12000);
+      } catch (err) {
+        throw Error('Error Flying to Current Location', err);
+      }
+    }
+    else throw Error('Error Flying to Current Location');
   };
 
   // Get the current location from the device and set it in the State
   setCurrentLocation = async () => {
     const geolocationOptions = {timeout: 15000, maximumAge: 10000, enableHighAccuracy: true};
     return new Promise((resolve, reject) => {
-      navigator.geolocation.getCurrentPosition(
+      Geolocation.getCurrentPosition(
         (position) => {
           if (this._isMounted) {
             this.setState(prevState => {

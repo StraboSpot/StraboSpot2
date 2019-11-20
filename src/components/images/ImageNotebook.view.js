@@ -4,7 +4,7 @@ import {setForm} from "../form/form.container";
 import {connect} from 'react-redux';
 import imageStyles from "./images.styles";
 import {Image} from "react-native-elements";
-import {goToImageInfo} from "../../routes/Navigation";
+import {withNavigation} from 'react-navigation';
 import {spotReducers} from "../../spots/Spot.constants";
 
 const imageNotebook = (props) => {
@@ -16,7 +16,7 @@ const imageNotebook = (props) => {
   const editImage = (image) => {
     props.setSelectedAttributes([image]);
     setForm('images');
-    goToImageInfo(image);
+    props.navigation.navigate('ImageInfo', {imageId: image.id});
   };
 
   const renderImage = (image) => {
@@ -57,4 +57,4 @@ const mapDispatchToProps = {
   setSelectedAttributes: (attributes) => ({type: spotReducers.SET_SELECTED_ATTRIBUTES, attributes: attributes}),
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(imageNotebook);
+export default connect(mapStateToProps, mapDispatchToProps)(withNavigation(imageNotebook));

@@ -2,6 +2,7 @@ import {homeReducers} from "./Home.constants";
 import {Dimensions, Platform} from 'react-native';
 
 const initialState = {
+  isOnline: null,
   modalVisible: null,
   isImageModalVisible: false,
   isAllSpotsPanelVisible: false,

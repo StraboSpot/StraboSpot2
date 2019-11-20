@@ -1,19 +1,20 @@
 import React from 'react'
 import {View, StyleSheet, TextInput, Alert, ImageBackground, KeyboardAvoidingView} from 'react-native'
-import {goHome, goSignUp} from '../routes/Navigation'
+import NavigationServices from '../routes/NavagationServices';
 import {connect} from 'react-redux';
 import {authenticateUser} from '../services/user/UserAuth';
 import * as RemoteServer from '../services/server-requests';
 import * as themes from '../shared/styles.constants';
 import {USER_DATA, USER_IMAGE, ENCODED_LOGIN} from '../services/user/User.constants';
-import * as Sentry from '@sentry/react-native';
+// import * as Sentry from '@sentry/react-native';
 import {isEmpty, readDataUrl} from "../shared/Helpers";
 import Icon from "react-native-vector-icons/Ionicons";
 import {Button} from "react-native-elements";
 import NetInfo from "@react-native-community/netinfo";
 import {homeReducers} from "./home/Home.constants";
 import IconButton from "../shared/ui/IconButton";
-import {USERNAME_TEST, PASSWORD_TEST} from 'react-native-dotenv';
+import {USERNAME_TEST, PASSWORD_TEST} from '../../Config';
+import {Base64} from 'js-base64'
 
 const base64 = require('../../node_modules/base-64/base64');
 
@@ -30,11 +31,21 @@ class SignIn extends React.Component {
   }
 
   componentDidMount() {
-    NetInfo.isConnected.addEventListener('connectionChange', this.handleConnectivityChange);
-      if (!isEmpty(this.props.userData) && this.props.isOnline) {
-        console.log('Loading user:', this.props.userData.name);
-        goHome()
-      }
+    NetInfo.fetch().then(state => {
+      this.handleConnectivityChange(state.isConnected)
+    });
+  }
+
+  componentDidUpdate(prevProps: Readonly<P>, prevState: Readonly<S>, snapshot: SS): void {
+    console.log(prevProps);
+    if (this.props.isOnline === null) {
+      NetInfo.fetch().then(state => {
+        this.props.setIsOnline(state.isConnected);
+      })
+        .catch(err => {
+          throw(err);
+        });
+    }
   }
 
   //function for online/offline state change event handler
@@ -43,11 +54,11 @@ class SignIn extends React.Component {
   };
 
   guestSignIn = () => {
-    Sentry.configureScope((scope) => {
-      scope.setUser({'id': 'GUEST'})
-    });
+    // Sentry.configureScope((scope) => {
+    //   scope.setUser({'id': 'GUEST'})
+    // });
     console.log('Loading user: GUEST');
-    goHome()
+    NavigationServices.navigate('HomeScreen')
   };
 
   signIn = async () => {
@@ -56,17 +67,18 @@ class SignIn extends React.Component {
     try {
       // login with provider
       if (user === 'true') {
+        const encodedLogin = Base64.encode(username + ':' + password);
         user = {
           email: username,
-          encoded_login: base64.encode(username + ':' + password)
+          encoded_login: encodedLogin, // creates encoded base64 login
         };
         this.props.setEncodedLogin(user.encoded_login);
         this.updateUserResponse().then(() => {
           console.log(`${user.email} is successfully logged in!`);
-          Sentry.configureScope((scope) => {
-            scope.setUser({'email': user.email})
-          });
-          goHome()
+          // Sentry.configureScope((scope) => {
+          //   scope.setUser({'email': user.email})
+          // });
+          this.props.navigation.navigate('HomeScreen');
         })
       }
       else {
@@ -141,7 +153,7 @@ class SignIn extends React.Component {
   };
 
   createAccount = () => {
-    goSignUp();
+    NavigationServices.navigate('SignUp');
   };
 
   render() {

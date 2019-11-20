@@ -5,11 +5,11 @@ import Modal from '../../shared/ui/modal/Modal.view';
 import styles from './samplesStyles/samples.style';
 import Samples from './Samples.view';
 import DragAnimation from '../../shared/ui/DragAmination';
-import Orientation from "react-native-orientation-locker";
+// import Orientation from "react-native-orientation-locker";
 
 const notebookSamplesModalView = (props) => {
   if (Platform.OS === 'android'){
-    Orientation.lockToPortrait();
+    // Orientation.lockToPortrait();
     return (
       <View style={[styles.modalPosition, {zIndex: 100}]}>
         <Modal

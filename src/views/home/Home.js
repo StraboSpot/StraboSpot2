@@ -27,7 +27,7 @@ import NotebookSamplesModal from '../../components/samples/NotebookSamplesModal.
 import ShortcutSamplesModal from '../../components/samples/ShortcutSamplesModal.view';
 import {homeReducers, Modals} from "./Home.constants";
 import notebookStyles from '../../components/notebook-panel/NotebookPanel.styles';
-import Orientation from "react-native-orientation-locker";
+// import Orientation from "react-native-orientation-locker";
 import {Directions, FlingGestureHandler, State} from "react-native-gesture-handler";
 import LoadingSpinner from '../../shared/ui/Loading';
 import ToastPopup from '../../shared/ui/Toast';
@@ -63,7 +63,6 @@ class Home extends React.Component {
 
   constructor(props) {
     super(props);
-    this.mapViewElement = React.createRef();
     this.state = {
       dialogs: {
         mapActionsMenuVisible: false,
@@ -98,12 +97,17 @@ class Home extends React.Component {
   componentDidMount() {
     this._isMounted = true;
     vectorIcon.getImageSource("pin", 30);
-    NetInfo.isConnected.addEventListener('connectionChange', this.handleConnectivityChange);
+    NetInfo.addEventListener(state => {
+      if (state.isConnected) {
+        this.handleConnectivityChange(state.isConnected)
+      }
+      else Alert.alert('Not Online!', 'Please check your internet source.')
+    });
     // this.props.setDeviceDims(this.dimensions);
-    if (this.props.deviceDimensions.width < 500) {
-      Orientation.unlockAllOrientations();
-    }
-    else Orientation.lockToLandscapeLeft();
+    // if (this.props.deviceDimensions.width < 500) {
+    //   Orientation.unlockAllOrientations();
+    // }
+    // else Orientation.lockToLandscapeLeft();
     Dimensions.addEventListener('change', this.deviceOrientation);
     this.props.setNotebookPanelVisible(false);
     this.props.setAllSpotsPanelVisible(false);
@@ -414,7 +418,8 @@ class Home extends React.Component {
           console.log('ALL PHOTOS SAVED', this.state.allPhotosSaved);
           this.props.addPhoto(imageArr);
           this.props.onSpotEditImageObj(imageArr);
-          this.toggleToast();
+          this.toggleLoading();
+          // this.toggleToast();
         }
         else {
           this.toggleLoading(false);
@@ -604,7 +609,7 @@ class Home extends React.Component {
           toastVisible: !prevState.toastVisible,
         }
       }, () => {
-        console.log('Modal state', this.state.toastVisible)
+        console.log('Toast state', this.state.toastVisible)
       })
     }
   };
@@ -730,10 +735,10 @@ class Home extends React.Component {
       <View style={styles.container}>
 
         {/*{this.props.isNotebookPanelVisible && notebookPanel}*/}
-        <MapView ref={this.mapViewElement}
-                 onRef={ref => (this.mapViewComponent = ref)}
-                 mapMode={this.state.mapMode}
-                 startEdit={this.startEdit}
+        <MapView
+          onRef={ref => (this.mapViewComponent = ref)}
+          mapMode={this.state.mapMode}
+          startEdit={this.startEdit}
         />
         {this.props.vertexStartCoords && <VertexDrag/>}
         {this.state.loading && <LoadingSpinner/>}

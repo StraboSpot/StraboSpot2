@@ -20,7 +20,6 @@ DerivedData
 *.hmap
 *.ipa
 *.xcuserstate
-project.xcworkspace
 
 # Android/IntelliJ
 #
@@ -30,7 +29,7 @@ build/
 local.properties
 *.iml
 
-# nodeButtonWithBackground.js
+# node.js
 #
 node_modules/
 npm-debug.log
@@ -40,6 +39,7 @@ yarn-error.log
 buck-out/
 \.buckd/
 *.keystore
+!debug.keystore
 
 # fastlane
 #
@@ -53,7 +53,10 @@ buck-out/
 */fastlane/screenshots
 
 # Bundle artifact
-*ButtonWithBackground.jsbundle
+*.jsbundle
 
-# Added by developers
-.env
+# CocoaPods
+/ios/Pods/
+
+# Added by Developers
+Config.js

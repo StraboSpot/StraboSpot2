@@ -3,7 +3,6 @@ import {ActivityIndicator, Button, Dimensions, Platform, Text, View} from 'react
 import styles from './images.styles';
 import {connect} from "react-redux";
 import {Icon, Image} from "react-native-elements";
-import {Navigation} from "react-native-navigation";
 import IconButton from '../../shared/ui/IconButton';
 import {imageReducers} from "./Image.constants";
 import ImagePropertiesModal from './ImagePropertiesModal';
@@ -53,7 +52,7 @@ const ImageInfoView = (props) => {
   return (
     <View>
       <Image
-        source={{uri: getImageSrc(props.image.id)}}
+        source={{uri: getImageSrc(props.navigation.getParam('imageId', 'No-ID'))}}
         style={{width: '100%', height: '100%'}}
         PlaceholderContent={<ActivityIndicator/>}
       />
@@ -65,11 +64,8 @@ const ImageInfoView = (props) => {
           color={'white'}
           size={42}
           onPress={() => {
-            Navigation.push(props.componentId, {
-            component: {
-              name: 'Home'
-            }
-          })}}
+            props.navigation.goBack()
+          }}
         />
       </View>
       <View style={styles.rightsideIcons}>

@@ -1,56 +1,16 @@
-import {Navigation} from 'react-native-navigation';
-import registerScreens from './src/routes/Screens';
-import {YellowBox} from "react-native";
-import * as Sentry from '@sentry/react-native';
-import {SENTRY_DSN} from "react-native-dotenv";
+import {AppRegistry, YellowBox} from 'react-native';
+import App from './App';
+import {name as appName} from './app.json';
+// import * as Sentry from '@sentry/react-native';
+// import {SENTRY_DSN} from "react-native-dotenv"; //Changed to come from Config.js
 
-Sentry.init({
-  dsn: SENTRY_DSN,
-  enableNative: true,
-});
+// Sentry.init({
+//   dsn: SENTRY_DSN,
+//   enableNative: true,
+// });
 
 YellowBox.ignoreWarnings(["Require cycle:", "Remote debugger", "Warning:",
   'Module RNSimpleCompass requires main queue setup since it overrides `init` but doesn\'t implement `requiresMainQueueSetup`.'
 ]);
 
-registerScreens();
-
-Navigation.events().registerAppLaunchedListener(() => {
-  Navigation.setDefaultOptions({
-    topBar: {
-      visible: false,
-      _height: 0,
-      drawBehind: true
-    }
-  });
-  // Navigation.setRoot({
-  //   root: {
-  //     component: {
-  //       name: 'Home',
-  //     }
-  //   },
-  // });
-  Navigation.setRoot({
-    root: {
-      stack: {
-        children: [
-          // {
-          //   component: {
-          //     name: 'ImageGallery',
-          //   }
-          // },
-          // {
-          //   component: {
-          //     name: 'ImageInfo',
-          //   }
-          // },
-          {
-            component: {
-              name: 'SignIn',
-            }
-          }
-        ]
-      }
-    }
-  });
-});
+AppRegistry.registerComponent(appName, () => App);

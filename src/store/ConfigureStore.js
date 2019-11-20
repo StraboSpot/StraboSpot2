@@ -9,12 +9,12 @@ import {projectsReducer} from '../project/Projects.reducer';
 import {settingsPanelReducer} from "../components/settings-panel/settingsPanel.reducer";
 import {createLogger} from 'redux-logger';
 import {persistStore, persistReducer} from 'redux-persist'
-import storage from 'redux-persist/lib/storage' // defaults to localStorage for web and AsyncStorage for react-native
+import AsyncStorage from '@react-native-community/async-storage';
 
 // Redux Persist
 export const persistConfig = {
   key: 'root',
-  storage
+  storage: AsyncStorage,
 };
 
 const loggerMiddleware = createLogger({
@@ -34,7 +34,7 @@ const appReducer = combineReducers({
 
 const rootReducer = (state, action) => {
   if (action.type === 'USER_LOGOUT') {
-    storage.removeItem('root');
+    AsyncStorage.removeItem('root');
     state = undefined
   }
   return appReducer(state, action)

@@ -16,7 +16,7 @@ import {homeReducers} from "../../views/home/Home.constants";
 import {settingPanelReducers} from "./settingsPanel.constants";
 import {spotReducers} from "../../spots/Spot.constants";
 import {NotebookPages, notebookReducers} from "../notebook-panel/Notebook.constants";
-import {goSignIn} from '../../routes/Navigation';
+import {withNavigation} from 'react-navigation';
 import {USER_DATA, USER_DATA_CLEARED} from "../../services/user/User.constants";
 import {isEmpty} from "../../shared/Helpers";
 import ProjectList from '../../project/ProjectList';
@@ -50,14 +50,9 @@ const SettingsPanel = props => {
     props.onFeatureSelected(spotID);
   };
 
-  const logout = () => {
-    if (!isEmpty(props.userProfile)) {
-      props.clearStorage();
-      goSignIn()
-    }
-    else {
-        goSignIn()
-    }
+  const logout = async () => {
+    if (!isEmpty(props.userProfile)) await props.clearStorage();
+    props.navigation.navigate('SignIn')
   };
 
   const setVisibleMenu = (name) => {
@@ -166,8 +161,7 @@ const mapDispatchToProps = {
   onShortcutSwitchChange: (switchName) => ({type: homeReducers.SHORTCUT_SWITCH_POSITION, switchName: switchName}),
   onFeatureSelected: (featureSelected) => ({type: spotReducers.FEATURE_SELECTED, feature: featureSelected}),
   setUserData: (userData) => ({type: USER_DATA, userData: userData}),
-  clearUserData: () => ({type: USER_DATA_CLEARED}),
   clearStorage: () => ({type: 'USER_LOGOUT'})
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(SettingsPanel);
+export default connect(mapStateToProps, mapDispatchToProps)(withNavigation(SettingsPanel));

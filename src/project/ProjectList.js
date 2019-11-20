@@ -9,7 +9,7 @@ import {ListItem, Button} from "react-native-elements";
 import {isEmpty} from "../shared/Helpers";
 import * as themes from '../shared/styles.constants';
 import DialogBox from './DialogBox';
-import {goSignIn} from "../routes/Navigation";
+import {withNavigation} from 'react-navigation';
 import * as ProjectActions from './Project.constants';
 import * as Project from './project';
 import styles from './Project.styles';
@@ -109,7 +109,7 @@ const ProjectList = (props) => {
             </Text>
             <Button
               title={'Sign In'}
-              onPress={() => goSignIn()}
+              onPress={() => props.navigation.navigate('SignIn')}
             />
           </View>
         )
@@ -140,4 +140,4 @@ const mapDispatchToProps = {
   setUserData: (userData) => ({type: USER_DATA, userData: userData}),
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProjectList);
+export default connect(mapStateToProps, mapDispatchToProps)(withNavigation(ProjectList));

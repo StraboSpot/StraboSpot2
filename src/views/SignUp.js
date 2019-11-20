@@ -1,7 +1,5 @@
 import React from 'react'
 import {View, Button, TextInput, StyleSheet} from 'react-native'
-import {goHome} from "../routes/Navigation";
-
 import * as themes from '../shared/styles.constants';
 
 export default class SignUp extends React.Component {
@@ -17,7 +15,7 @@ export default class SignUp extends React.Component {
     const { username, password, email, phone_number } = this.state;
     try {
       console.log('user successfully signed up!: ');
-      goHome();
+      this.props.navigation.navigate('HomeScreen')
     } catch (err) {
       console.log('error signing up: ', err)
     }
