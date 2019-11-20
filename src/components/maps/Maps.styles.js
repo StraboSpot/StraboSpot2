@@ -5,7 +5,7 @@ const circleRadius = 20;
 const mapStyles = StyleSheet.create({
   // --- MapPoint Style ---
   vertexEditPoint: {
-    backgroundColor: 'red',
+    backgroundColor: 'orange',
     borderRadius: circleRadius,
     borderWidth: 2,
     borderColor: 'white',

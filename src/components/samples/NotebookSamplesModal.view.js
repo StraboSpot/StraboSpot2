@@ -11,7 +11,7 @@ const notebookSamplesModalView = (props) => {
   if (Platform.OS === 'android'){
     // Orientation.lockToPortrait();
     return (
-      <View style={[styles.modalPosition, {zIndex: 100}]}>
+      <View style={styles.modalPosition}>
         <Modal
           component={<Samples onPress={props.onPress}/>}
           close={props.close}
