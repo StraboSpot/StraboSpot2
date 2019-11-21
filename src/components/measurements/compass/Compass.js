@@ -68,7 +68,7 @@ class Compass extends Component {
     // Orientation.lockToPortrait();
     //this allows to check if the system autolock is enabled or not.
     await this.subscribe();
-    RNSimpleCompass.start(degree_update_rate, (degree) => {
+    RNSimpleCompass.start(degree_update_rate, ({degree, accuracy}) => {
       // degreeFacing = (<Text>{degree}</Text>);
       console.log('You are facing', degree);
       this.setState(prevState => {

@@ -68,9 +68,8 @@ const RNCompass = (props) => {
   }, [displayCompassData]);
 
   useEffect(() => {
-    let isSubscribed = true;
-    RNSimpleCompass.start(degree_update_rate, data => {
-      const heading = roundToDecimalPlaces(mod(data.degree - 270, 360), 0);
+    RNSimpleCompass.start(degree_update_rate, ({degree, accuracy}) => {
+      const heading = roundToDecimalPlaces(mod(degree - 270, 360), 0);
       setHeading(heading);
     });
     return () => {
