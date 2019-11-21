@@ -1,8 +1,8 @@
 import RNSimpleCompass from 'react-native-simple-compass';
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {Animated, Easing, Alert, Image, View, Text, Dimensions, TouchableOpacity} from 'react-native';
-import {setUpdateIntervalForType, SensorTypes, magnetometer, accelerometer} from 'react-native-sensors';
+import {Animated, Easing, Alert, Image, View, Text, TouchableOpacity} from 'react-native';
+import {setUpdateIntervalForType, SensorTypes, accelerometer} from 'react-native-sensors';
 import {getNewId, mod, toRadians, toDegrees, roundToDecimalPlaces, isEmpty} from '../../../shared/Helpers';
 import {CompassToggleButtons} from './Compass.constants';
 import {Button, ListItem} from 'react-native-elements';
@@ -19,9 +19,7 @@ import IconButton from '../../../shared/ui/IconButton';
 import styles from './CompassStyles';
 import * as themes from '../../../shared/styles.constants';
 
-const {height, width} = Dimensions.get('window');
 const degree_update_rate = 2; // Number of degrees changed before the callback is triggered
-let degreeFacing = null;
 
 class Compass extends Component {
   _isMounted = false;
@@ -85,9 +83,9 @@ class Compass extends Component {
   }
 
   async componentWillUnmount() {
-    if (this.props.deviceDimensions.width < 500) {
-      // Orientation.unlockAllOrientations()
-    }
+    // if (this.props.deviceDimensions.width < 500) {
+    //   Orientation.unlockAllOrientations()
+    // }
     // else Orientation.lockToLandscapeLeft();
     await this.unsubscribe();
     RNSimpleCompass.stop();
@@ -146,7 +144,6 @@ class Compass extends Component {
   };
 
   subscribe = async () => {
-    let angle = null;
     this._subscription = await accelerometer.subscribe((data) => {
       // console.log(data);
       // angle = this._angle(data);

@@ -1,21 +1,16 @@
 import React, {useState, useEffect} from 'react';
 import {Alert, FlatList, ScrollView, Text, View} from 'react-native';
 import {connect} from 'react-redux';
-import {spotReducers} from '../../spots/Spot.constants';
-import {homeReducers} from '../../views/home/Home.constants';
 import SortingButtons from '../settings-panel/Sorting';
 import {NotebookPages, notebookReducers} from '../notebook-panel/Notebook.constants';
 import {settingPanelReducers, SortedViews} from '../settings-panel/settingsPanel.constants';
 import {Button, ListItem} from 'react-native-elements';
 import {isEmpty} from '../../shared/Helpers';
-// import sampleStyles from './samples.style';
 import attributesStyles from '../../components/settings-panel/settingsPanelSectionStyles/Attributes.styles';
-import imageStyles from '../images/images.styles';
 
 const SamplesList = (props) => {
   const [sortedList, setSortedList] = useState(props.spots);
   const [refresh, setRefresh] = useState(false);
-  // const {selectedSpot} = props;
   const {spots, sortedListView, selectedSpot} = props;
 
   useEffect(() => {

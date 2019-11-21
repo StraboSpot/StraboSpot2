@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {Text, View} from 'react-native';
 import noteStyles from './notes.styles';
 import {connect} from 'react-redux';
-import {Button, Input} from 'react-native-elements';
+import {Input} from 'react-native-elements';
 import {notebookReducers, NotebookPages} from '../notebook-panel/Notebook.constants';
 import {spotReducers} from '../../spots/Spot.constants';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
@@ -14,36 +14,15 @@ const notesView = (props) => {
 
   let timeStamp = Date();
 
-  const savedNote = props.selectedSpot.properties.notes;
-
   // const date = new Date.now();
   return (
     <View>
       <ReturnToOverviewButton
         onPress={() => props.setNotebookPageVisible(NotebookPages.OVERVIEW)}
       />
-      {/*<Button*/}
-      {/*  icon={{*/}
-      {/*    name: 'arrow-back',*/}
-      {/*    size: 20,*/}
-      {/*    color: 'black'*/}
-      {/*  }}*/}
-      {/*  containerStyle={styles.backButton}*/}
-      {/*  titleStyle={{color: 'blue'}}*/}
-      {/*  title={'Return to Overview'}*/}
-      {/*  type={'clear'}*/}
-      {/*  onPress={ () =>  {*/}
-      {/*     props.setNotebookPageVisible(NotebookPages.OVERVIEW)*/}
-      {/*  }}*/}
-      {/*/>*/}
-      {/*<View>*/}
-      {/*  <Text style={props.style}>{props.notes}{date}</Text>*/}
-      {/*  {savedNote !== '' ? <Text style={ props.style}>- {savedNote}</Text> : null}*/}
-      {/*</View>*/}
       <View style={noteStyles.container}>
         <View style={[noteStyles.inputContainer]}>
           <Text style={props.style}>{date}</Text>
-          {/*{savedNote !== '' ? <Text style={ props.style}>- {savedNote}</Text> : null}*/}
           <Input
             placeholder='Enter a note...'
             maxLength={300}
@@ -63,11 +42,6 @@ const notesView = (props) => {
     </View>
 
   );
-  // return (
-  //   <React.Fragment style={{justifyContent: 'center', alignContent: 'flex-start'}}>
-  //     <Text >NOTES PAGE</Text>
-  //   </React.Fragment>
-  // );
 };
 
 const mapStateToProps = (state) => {

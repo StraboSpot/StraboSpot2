@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {Alert, Text, TextInput, View} from 'react-native';
 import {connect} from 'react-redux';
 import {Button, ButtonGroup, Input} from 'react-native-elements';
@@ -15,7 +15,6 @@ import * as themes from '../../shared/styles.constants';
 import IconButton from '../../shared/ui/IconButton';
 
 const samplesModalView = (props) => {
-  let count = 0;
   let modalView = null;
 
   const [selectedButton, setSelectedButton] = useState(null);

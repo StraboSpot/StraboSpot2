@@ -1,4 +1,4 @@
-import {Dimensions, Platform, StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 
 const circleRadius = 20;
 

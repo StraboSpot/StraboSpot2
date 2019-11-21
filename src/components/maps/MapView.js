@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
-import {View, Animated, Alert, AsyncStorage, StyleSheet, PanResponder} from 'react-native';
+import {View, StyleSheet} from 'react-native';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import {MAPBOX_KEY} from '../../MapboxConfig';
 import {CustomBasemap, MapboxOutdoorsBasemap, MapboxSatelliteBasemap, OSMBasemap, MacrostratBasemap} from './Basemaps';
 import * as turf from '@turf/turf/index';
-import {LATITUDE, LONGITUDE, LATITUDE_DELTA, LONGITUDE_DELTA, MapModes} from './Map.constants';
+import {LATITUDE, LONGITUDE, MapModes} from './Map.constants';
 import {connect} from 'react-redux';
 import {getNewId} from '../../shared/Helpers';
 import {mapReducers} from './Map.constants';
@@ -549,7 +549,6 @@ class mapView extends Component {
         if (turf.getType(featureSelected) === 'LineString' || turf.getType(featureSelected) === 'Polygon') {
           const vertexSelected = await this.getDrawFeatureAtPoint(screenPointX, screenPointY);
           let vertexToEdit = {};
-          let drawFeatures = this.state.drawFeatures;
           if (Object.getOwnPropertyNames(vertexSelected).length === 0) {
             // To add a vertex to a line the new point selected must be on the line
             if (turf.getType(featureSelected) === 'LineString' && Object.getOwnPropertyNames(
@@ -686,25 +685,6 @@ class mapView extends Component {
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-  },
-  map: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-  },
-});
 
 const mapStateToProps = (state) => {
   return {

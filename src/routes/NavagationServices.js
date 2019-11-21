@@ -1,4 +1,3 @@
-import React, {Component} from 'react';
 import {NavigationActions} from 'react-navigation';
 
 let _navigator;

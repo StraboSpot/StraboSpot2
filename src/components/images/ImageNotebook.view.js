@@ -1,5 +1,5 @@
 import React from 'react';
-import {ActivityIndicator, Button, FlatList, Text, View} from 'react-native';
+import {ActivityIndicator, Button, FlatList, View} from 'react-native';
 import {setForm} from '../form/form.container';
 import {connect} from 'react-redux';
 import imageStyles from './images.styles';

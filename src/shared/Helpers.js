@@ -1,7 +1,4 @@
-import React from 'react';
-// Return UUID
 import {Animated, Easing} from 'react-native';
-// import {SettingsMenuItems} from "../components/settings-panel/SettingsMenu.constants";
 
 export const getNewId = () => {
   return Math.floor((new Date().getTime() + Math.random()) * 10);

@@ -9,7 +9,6 @@ export const imageReducer = (state = initialImageState, action) => {
   switch (action.type) {
     case imageReducers.ADD_PHOTOS:
       console.log('ADD_PHOTOS', action);
-      let updatedImages = null;
       let imagePathsTemp = {};
       // console.log(action.images);
       action.images.map(data => {

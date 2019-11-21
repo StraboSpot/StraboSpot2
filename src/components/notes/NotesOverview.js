@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, Text, TextInput, View} from 'react-native';
+import {Button, Text, View} from 'react-native';
 import noteStyles from './notes.styles';
 import {connect} from 'react-redux';
 import {notebookReducers, NotebookPages} from '../notebook-panel/Notebook.constants';

@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React from 'react';
 import {ScrollView, Text, View} from 'react-native';
 import {connect} from 'react-redux';
 import {ListItem, Icon} from 'react-native-elements';

@@ -90,7 +90,6 @@ export const spotReducer = (state = initialState, action) => {
         selectedAttributes: action.attributes,
       };
     case spotReducers.EDIT_SPOT_IMAGES:
-      let combinedImageArr = [];
       let updatedSpotImages = null;
       selectedFeatureID = state.selectedSpot.properties.id;
       console.log('EDITSPOT Image', action.image, 'ID', selectedFeatureID);

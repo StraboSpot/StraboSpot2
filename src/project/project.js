@@ -1,5 +1,3 @@
-import React from 'react';
-import {Text, View} from 'react-native';
 import * as RemoteServer from '../services/server-requests';
 
 const defaultTypes = ['geomorphic', 'hydrologic', 'paleontological', 'igneous', 'metamorphic', 'sedimentological',

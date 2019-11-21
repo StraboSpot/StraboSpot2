@@ -99,6 +99,7 @@ export const setForm = (form, child) => {
 export const showErrors = (form) => {
   const errors = form.current.state.errors;
   let errorMessages = [];
+  // eslint-disable-next-line no-unused-vars
   for (const [name, error] of Object.entries(errors)) {
     errorMessages.push(getSurveyFieldLabel(name) + ': ' + error);
   }
@@ -113,7 +114,6 @@ export const validateForm = (data) => {
     const key = fieldModel.name;
     if (data.hasOwnProperty(key)) {
       const value = data[key];
-      const label = fieldModel.label;
       if (value && typeof value === 'string') data[key] = value.trim();
       if (isEmpty(value) || !isRelevant(fieldModel, data)) delete data[key];
       if (isEmpty(value) && fieldModel.required && isRelevant(fieldModel, data)) errors[key] = 'Required';
@@ -159,7 +159,6 @@ export const validateForm = (data) => {
       }
     }
   });
-  //if (isEmpty(data.label)) data.label = createDefaultLabel(data);  // ToDo: Do we even need to autogenerate label in v2? Label not used anywhere yet.
   console.log('Data after validation:', data, 'Errors:', errors);
   return errors;
 };

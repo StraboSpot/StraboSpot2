@@ -1,5 +1,5 @@
 import React from 'react';
-import {FlatList, ScrollView, Text, View} from 'react-native';
+import {ScrollView, Text, View} from 'react-native';
 import {Icon, ListItem} from 'react-native-elements';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import {notebookReducers, NotebookPages} from '../notebook-panel/Notebook.constants';

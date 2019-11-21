@@ -1,6 +1,5 @@
 import React from 'react';
-import {Button, View, Text} from 'react-native';
-//import {PropTypes} from 'prop-types';
+import {View} from 'react-native';
 import {Field} from 'formik';
 
 import TextInputField from './TextInputField';

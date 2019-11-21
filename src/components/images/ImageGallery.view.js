@@ -1,11 +1,10 @@
 import React, {useState, useEffect} from 'react';
 import {ActivityIndicator, Alert, FlatList, ScrollView, Text, View} from 'react-native';
-import {pictureSelectDialog, saveFile} from './Images.container';
+import {pictureSelectDialog} from './Images.container';
 import {connect} from 'react-redux';
 import imageStyles from './images.styles';
-import {Button, Image} from 'react-native-elements';
+import {Button} from 'react-native-elements';
 import {imageReducers} from './Image.constants';
-// import SettingsPanelHeader from "../settings-panel/SettingsPanelHeader";
 import SortingButtons from '../settings-panel/Sorting';
 import * as SharedUI from '../../shared/ui/index';
 import {isEmpty} from '../../shared/Helpers';

@@ -3,7 +3,7 @@ import {Text, TextInput, Switch, ScrollView, View} from 'react-native';
 import {connect} from 'react-redux';
 import {Formik} from 'formik';
 import FormView from '../form/Form.view';
-import {getForm, hasErrors, setForm, showErrors, validateForm} from '../form/form.container';
+import {getForm, hasErrors, showErrors, validateForm} from '../form/form.container';
 
 import {Button, Input} from 'react-native-elements';
 import styles from './images.styles';

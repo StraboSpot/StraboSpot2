@@ -1,8 +1,7 @@
 import React, {useState, useEffect} from 'react';
-import {Button, Text, View, NativeModules, NativeEventEmitter, Animated} from 'react-native';
+import {Button, Text, View, NativeModules, NativeEventEmitter} from 'react-native';
 
 const RNCompassBridged = props => {
-  const [count, setCount] = useState(0);
   const [accelerometer, setAccelerometer] = useState({
     accelerationX: 0,
     accelerationY: 0,
@@ -14,56 +13,20 @@ const RNCompassBridged = props => {
     trend: 0,
     plunge: 0,
   });
-  const [error, setError] = useState(false);
   const CompassEvents = new NativeEventEmitter(NativeModules.Compass);
-
 
   useEffect(() => {
     console.log('UPDATED RENDER!');
-    // CompassEvents.addListener('onIncrement', res => {
-    //     setCount(res.count);
-    //     console.log('onIncrement event', res.count);
-    //     // console.log('Compass Native Module', NativeModules.Compass);
-    //   },
-    // );
-    // CompassEvents.addListener('acceleration', res => {
-    //     // setCount(res);
-    //     console.log('acceleration event', res);
-    //     // console.log('Compass Native Module', NativeModules.Compass);
-    //   },
-    // );
   }, []);
-
-  // NativeModules.Compass.getCount((first, ...others) => {
-  //   // console.log('count is: ', first);
-  //   // console.log('other arguments ', others);
-  // });
-
-  // NativeModules.Compass.getCount(value => {
-  //   console.log('count is ' + value);
-  // });
-
-  const getCount = () => {
-    NativeModules.Compass.getCount(value => {
-      // console.log('count is ' + value);
-      setCount(value);
-    });
-    return <Text>{count}</Text>;
-  };
 
   const getAcceleration = () => {
     // const increment = NativeModules.Compass.increment();
     NativeModules.Compass.myAccelermoter();
     CompassEvents.addListener('acceleration', res => {
-        // setCount(res);
         console.log('acceleration event', res);
         setAccelerometer(res);
-        // console.log('Compass Native Module', NativeModules.Compass);
       },
     );
-    // console.table(accelerometerData);
-    // setCount(increment);
-    setError(false);
   };
 
   const displayCompassData = () => {
@@ -77,20 +40,6 @@ const RNCompassBridged = props => {
       });
     });
   };
-
-  // Uses standard Promise (resolve/reject)
-  // NativeModules.Compass.decrement()
-  //   .then(res => {
-  //     // console.log(res);
-  //     setCount(res);
-  //     setError(false);
-  //   })
-  //   .catch(e => {
-  //     // console.log(e.message, e.code);
-  //     setError(true);
-  //     setErrorMessage(e.message);
-  //   });
-  // };
 
   const stopEvents = () => {
     NativeModules.Compass.stopObserving();
@@ -134,7 +83,6 @@ const RNCompassBridged = props => {
         <Text style={{fontSize: 18}}>
           Plunge: {compassData.plunge}
         </Text>
-        {/*<Text style={{textAlign: 'center'}}>{error ? errorMessage : null}</Text>*/}
       </View>
       <View style={{marginTop: 35}}>
         <Button
@@ -148,10 +96,8 @@ const RNCompassBridged = props => {
           onPress={() => displayCompassData()}
         />
       </View>
-      {/*<Button title={'Decrement'} type={'solid'} onPress={() => decrementCount()}/>*/}
       <Button title={'Stop All'} type={'solid'} onPress={() => stopEvents()}/>
       <Button title={'Clear'} type={'solid'} onPress={() => clearEvents()}/>
-      {/*<Text style={{textAlign: 'center'}}>Count: {getCount()}</Text>*/}
     </React.Fragment>
   );
 };

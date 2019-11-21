@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect} from 'react';
 import {connect} from 'react-redux';
 // import {Text, View, FlatList, ScrollView, ActivityIndicator} from 'react-native';
 import {SortedViews} from './settingsPanel.constants';

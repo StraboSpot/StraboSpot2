@@ -2,7 +2,7 @@ import React from 'react';
 import {View} from 'react-native';
 import IconButton from '../../../shared/ui/IconButton';
 import footerStyle from './NotebookFooter.styles';
-import {NotebookPages, notebookReducers} from '../Notebook.constants';
+import {NotebookPages} from '../Notebook.constants';
 import {IconButtons} from '../../../shared/app.constants';
 import {connect} from 'react-redux';
 import {isEmpty} from '../../../shared/Helpers';

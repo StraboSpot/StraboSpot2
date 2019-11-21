@@ -12,7 +12,6 @@ export default class SignUp extends React.Component {
   };
 
   signUp = async () => {
-    const {username, password, email, phone_number} = this.state;
     try {
       console.log('user successfully signed up!: ');
       this.props.navigation.navigate('HomeScreen');

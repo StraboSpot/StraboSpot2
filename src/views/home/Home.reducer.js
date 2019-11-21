@@ -1,5 +1,5 @@
 import {homeReducers} from './Home.constants';
-import {Dimensions, Platform} from 'react-native';
+import {Dimensions} from 'react-native';
 
 const initialState = {
   isOnline: null,

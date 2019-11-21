@@ -1,4 +1,4 @@
-import React, {useState, Component} from 'react';
+import React, {useState} from 'react';
 import {Text, ScrollView, TouchableOpacity, View} from 'react-native';
 
 import TagsOverview from '../tags/TagsOverview';

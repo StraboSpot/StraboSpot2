@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {View} from 'react-native';
 import {connect} from 'react-redux';
 import styles from './SettingsPanelStyles';
@@ -15,18 +15,14 @@ import CustomMapsMenu from '../maps/Custom-Maps-Menu/CustomMapsMenu';
 import {homeReducers} from '../../views/home/Home.constants';
 import {settingPanelReducers} from './settingsPanel.constants';
 import {spotReducers} from '../../spots/Spot.constants';
-import {NotebookPages, notebookReducers} from '../notebook-panel/Notebook.constants';
+import {NotebookPages} from '../notebook-panel/Notebook.constants';
 import {withNavigation} from 'react-navigation';
-import {USER_DATA, USER_DATA_CLEARED} from '../../services/user/User.constants';
+import {USER_DATA} from '../../services/user/User.constants';
 import {isEmpty} from '../../shared/Helpers';
 import ProjectList from '../../project/ProjectList';
 
 const SettingsPanel = props => {
   let buttonTitle = null;
-
-  const [isSignModalVisible, setIsSignInModalVisible] = useState(false);
-
-
   const {settingsPageVisible, setSettingsPanelPageVisible} = props;
   let settingsPanelHeader = <SettingsPanelHeader
     onPress={() => setSettingsPanelPageVisible(SettingsMenuItems.SETTINGS_MAIN)}>
@@ -34,11 +30,6 @@ const SettingsPanel = props => {
   </SettingsPanelHeader>;
 
   let page = null;
-
-  // useEffect(() => {
-  // setSettingsPanelPageVisible(SettingsMenuItems.SETTINGS_MAIN);
-  // console.log('PAGE:', settingsPageVisible)
-  // }, []);
 
   const getSpotFromId = (spotId, page) => {
     const spotID = props.spot.find(spot => {

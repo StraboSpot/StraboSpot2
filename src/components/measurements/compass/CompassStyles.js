@@ -1,4 +1,4 @@
-import {Dimensions, Platform, StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 import * as themes from '../../../shared/styles.constants';
 // import {widthPercentageToDP as wp} from "react-native-responsive-screen";
 
