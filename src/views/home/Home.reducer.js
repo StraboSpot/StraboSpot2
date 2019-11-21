@@ -1,4 +1,4 @@
-import {homeReducers} from "./Home.constants";
+import {homeReducers} from './Home.constants';
 import {Dimensions, Platform} from 'react-native';
 
 const initialState = {
@@ -14,8 +14,8 @@ const initialState = {
     Sample: false,
     Note: false,
     Photo: false,
-    Sketch: false
-  }
+    Sketch: false,
+  },
 };
 
 export const homeReducer = (state = initialState, action) => {
@@ -23,32 +23,32 @@ export const homeReducer = (state = initialState, action) => {
     case homeReducers.SET_MODAL_VISIBLE:
       return {
         ...state,
-        modalVisible: action.modal
+        modalVisible: action.modal,
       };
     case homeReducers.DEVICE_DIMENSIONS:
       // console.log('REDUX DEVICE DIMS', state.deviceDimensions);
       // console.log('REDUX DIMS ACTION', action)
       return {
         ...state,
-        deviceDimensions: action.dims
+        deviceDimensions: action.dims,
       };
     case homeReducers.SHORTCUT_SWITCH_POSITION:
       return {
         ...state,
         shortcutSwitchPosition: {
           ...state.shortcutSwitchPosition,
-          [action.switchName]: !state.shortcutSwitchPosition[action.switchName]
-        }
+          [action.switchName]: !state.shortcutSwitchPosition[action.switchName],
+        },
       };
     case homeReducers.SET_ALLSPOTS_PANEL_VISIBLE:
       return {
         ...state,
-        isAllSpotsPanelVisible: action.value
+        isAllSpotsPanelVisible: action.value,
       };
     case homeReducers.SET_SETTINGS_PANEL_VISIBLE:
       return {
         ...state,
-        isSettingsPanelVisible: action.value
+        isSettingsPanelVisible: action.value,
       };
     case homeReducers.TOGGLE_IMAGE_MODAL:
       return {
@@ -58,8 +58,8 @@ export const homeReducer = (state = initialState, action) => {
     case homeReducers.SET_ISONLINE:
       return {
         ...state,
-        isOnline: action.online
-      }
+        isOnline: action.online,
+      };
   }
   return state;
 };

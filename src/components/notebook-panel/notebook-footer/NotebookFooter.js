@@ -2,15 +2,15 @@ import React from 'react';
 import {View} from 'react-native';
 import IconButton from '../../../shared/ui/IconButton';
 import footerStyle from './NotebookFooter.styles';
-import {NotebookPages, notebookReducers} from "../Notebook.constants";
+import {NotebookPages, notebookReducers} from '../Notebook.constants';
 import {IconButtons} from '../../../shared/app.constants';
-import {connect} from "react-redux";
-import {isEmpty} from "../../../shared/Helpers";
+import {connect} from 'react-redux';
+import {isEmpty} from '../../../shared/Helpers';
 
 const NotebookFooter = props => {
 
   const getPageIcon = (page) => {
-    switch(page) {
+    switch (page) {
       case NotebookPages.TAG:
         if (props.notebookPageVisible === NotebookPages.TAG) return require('../../../assets/icons/StraboIcons_Oct2019/Tag_pressed.png');
         else return require('../../../assets/icons/StraboIcons_Oct2019/Tag.png');
@@ -73,7 +73,7 @@ function mapStateToProps(state) {
   return {
     notebookPageVisible: isEmpty(state.notebook.visibleNotebookPagesStack) ? null :
       state.notebook.visibleNotebookPagesStack.slice(-1)[0],
-  }
+  };
 }
 
 const mapDispatchToProps = {};

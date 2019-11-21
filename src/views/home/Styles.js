@@ -1,6 +1,6 @@
-import {Dimensions, Platform, StyleSheet} from "react-native";
-import * as themes from "../../shared/styles.constants";
-import {widthPercentageToDP as wp} from "react-native-responsive-screen";
+import {Dimensions, Platform, StyleSheet} from 'react-native';
+import * as themes from '../../shared/styles.constants';
+import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
 
 const {height, width} = Dimensions.get('window');
 const getWidthPercent = () => {
@@ -24,13 +24,13 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: themes.LIGHTGREY
+    backgroundColor: themes.LIGHTGREY,
   },
   buttonWithBackground: {
     color: 'black',
     fontSize: 16,
     marginTop: 5,
-    marginBottom: 5
+    marginBottom: 5,
   },
 
   dialogBox: {
@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
   },
   dialogTitleText: {
     fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   dialogButton: {
     borderTopWidth: 1,
@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
   dialogFooter: {
     flexDirection: 'column',
     // margin: 5,
-    height: 120
+    height: 120,
   },
 
   // --- Drawer Styles ---
@@ -63,11 +63,11 @@ const styles = StyleSheet.create({
   drawToolsContainer: {
     flex: 1,
     flexDirection: 'row',
-    position: "absolute",
+    position: 'absolute',
     bottom: 20,
     right: 0,
     alignItems: 'center',
-    zIndex: -1
+    zIndex: -1,
   },
   drawToolsButtons: {
     borderRadius: 30,
@@ -75,74 +75,74 @@ const styles = StyleSheet.create({
     paddingRight: 10,
     paddingTop: 3,
     paddingBottom: 3,
-    backgroundColor: 'yellow'
+    backgroundColor: 'yellow',
   },
   drawerStyles: {
     shadowColor: '#000000',
     shadowOpacity: 0.8,
     shadowRadius: 3,
-    borderTopRightRadius: .30
+    borderTopRightRadius: 0.30,
   },
 
   // --- Left and right icon absolute positions from top ---
   leftsideIcons: {
     position: 'absolute',
     bottom: 150,
-    zIndex: -1
+    zIndex: -1,
   },
   rightsideIcons: {
-    position: "absolute",
+    position: 'absolute',
     right: 0,
     top: 150,
-    zIndex: -1
+    zIndex: -1,
   },
   topCenter: {
-    position: "absolute",
+    position: 'absolute',
     bottom: 20,
-    right: '45%'
+    right: '45%',
   },
   onlineStatus: {
     position: 'absolute',
     right: 0,
     top: 40,
-    zIndex: -1
+    zIndex: -1,
   },
 
   // --- Bottom Left Icon (current location) ---
   bottomLeftIcons: {
     position: 'absolute',
     bottom: 20,
-    zIndex: -1
+    zIndex: -1,
   },
   layersIcon: {
-    marginBottom: 105
+    marginBottom: 105,
   },
   notebookViewIcon: {
     position: 'absolute',
     bottom: 75,
     right: 0,
-    zIndex: -1
+    zIndex: -1,
   },
   homeIconContainer: {
     position: 'absolute',
     left: 0,
     top: 20,
-    zIndex: -1
+    zIndex: -1,
   },
   tagIcon: {
-    marginTop: 145
+    marginTop: 145,
   },
   dialog: {
     position: 'absolute',
-    bottom: 10
+    bottom: 10,
   },
 
   // --- Modal Style ---
   modal: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'flex-end'
-  }
+    alignItems: 'flex-end',
+  },
 });
 
 export default styles;

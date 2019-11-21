@@ -6,31 +6,31 @@ const commonStyles = StyleSheet.create({
   rowContainer: {
     flex: 1,
     borderBottomWidth: 0.5,
-    borderColor: themes.LIST_BORDER_COLOR
+    borderColor: themes.LIST_BORDER_COLOR,
   },
   rowContainerInverse: {
     flex: 1,
     borderBottomWidth: 0.5,
     borderColor: themes.LIST_BORDER_COLOR,
-    backgroundColor: themes.PRIMARY_ACCENT_COLOR
+    backgroundColor: themes.PRIMARY_ACCENT_COLOR,
   },
   row: {
     flexDirection: 'row',
-    height: themes.ROW_HEIGHT
+    height: themes.ROW_HEIGHT,
   },
   fixedWidthSide: {
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   fillWidthSide: {
     flex: 1,
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   itemRightIconsContainer: {
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
   listItem: {
     padding: 10,
-    borderBottomWidth: .5,
+    borderBottomWidth: 0.5,
     borderColor: themes.LIST_BORDER_COLOR,
   },
   listItemTitle: {

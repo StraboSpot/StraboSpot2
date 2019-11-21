@@ -1,13 +1,13 @@
 import React, {useState} from 'react';
 import {FlatList, ScrollView, View} from 'react-native';
 import {connect} from 'react-redux';
-import {Button} from "react-native-elements";
-import {notebookReducers, NotebookPages} from "../notebook-panel/Notebook.constants";
+import {Button} from 'react-native-elements';
+import {notebookReducers, NotebookPages} from '../notebook-panel/Notebook.constants';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
-import SectionDivider from "../../shared/ui/SectionDivider";
+import SectionDivider from '../../shared/ui/SectionDivider';
 import MeasurementItem from './MeasurementItem';
-import {homeReducers, Modals} from "../../views/home/Home.constants";
-import {spotReducers} from "../../spots/Spot.constants";
+import {homeReducers, Modals} from '../../views/home/Home.constants';
+import {spotReducers} from '../../spots/Spot.constants';
 
 // Styles
 import styles from './measurements.styles';
@@ -20,23 +20,23 @@ const MeasurementsPage = (props) => {
   const sectionTypes = {
     PLANAR: 'Planar Measurements',
     LINEAR: 'Linear Measurements',
-    PLANARLINEAR: 'Planar + Linear Measurements'
+    PLANARLINEAR: 'Planar + Linear Measurements',
   };
 
   const getSectionData = (sectionType) => {
     if (sectionType === sectionTypes.PLANAR) {
       return props.spot.properties.orientation_data.filter(measurement => {
-        return (measurement.type === 'planar_orientation' || measurement.type === 'tabular_orientation') && !measurement.associated_orientation
+        return (measurement.type === 'planar_orientation' || measurement.type === 'tabular_orientation') && !measurement.associated_orientation;
       });
     }
     else if (sectionType === sectionTypes.LINEAR) {
       return props.spot.properties.orientation_data.filter(measurement => {
-        return measurement.type === 'linear_orientation' && !measurement.associated_orientation
+        return measurement.type === 'linear_orientation' && !measurement.associated_orientation;
       });
     }
     else if (sectionType === sectionTypes.PLANARLINEAR) {
       return props.spot.properties.orientation_data.filter(measurement => {
-        return (measurement.type === 'planar_orientation' || measurement.type === 'linear_orientation' || measurement.type === 'tabular_orientation') && measurement.associated_orientation
+        return (measurement.type === 'planar_orientation' || measurement.type === 'linear_orientation' || measurement.type === 'tabular_orientation') && measurement.associated_orientation;
       });
     }
   };
@@ -160,7 +160,7 @@ const MeasurementsPage = (props) => {
       <View style={styles.measurementsSectionDividerContainer}>
         <SectionDivider dividerText={dividerText}/>
       </View>
-    )
+    );
   };
 
   const renderMeasurementsNotebookView = () => {
@@ -181,7 +181,7 @@ const MeasurementsPage = (props) => {
           {props.spot.properties.orientation_data && renderMeasurements(sectionTypes.PLANARLINEAR)}
         </ScrollView>
       </View>
-    )
+    );
   };
 
   const renderMeasurementsShortcutView = () => {
@@ -196,7 +196,7 @@ const MeasurementsPage = (props) => {
           {props.spot.properties.orientation_data && renderMeasurements(sectionTypes.PLANARLINEAR)}
         </ScrollView>
       </View>
-    )
+    );
   };
 
   return (
@@ -209,14 +209,14 @@ const MeasurementsPage = (props) => {
 function mapStateToProps(state) {
   return {
     spot: state.spot.selectedSpot,
-    modalVisible: state.home.modalVisible
-  }
+    modalVisible: state.home.modalVisible,
+  };
 }
 
 const mapDispatchToProps = {
   setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),
   setModalVisible: (modal) => ({type: homeReducers.SET_MODAL_VISIBLE, modal: modal}),
-  setSelectedAttributes: (attributes) => ({type: spotReducers.SET_SELECTED_ATTRIBUTES, attributes: attributes})
+  setSelectedAttributes: (attributes) => ({type: spotReducers.SET_SELECTED_ATTRIBUTES, attributes: attributes}),
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(MeasurementsPage);

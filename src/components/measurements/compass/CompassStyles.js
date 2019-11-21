@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     width: '90%',
     flexDirection: 'row',
     alignItems: 'center',
-    paddingLeft: 15
+    paddingLeft: 15,
   },
   itemTextStyle: {
     fontSize: 14,
@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    height: 700
+    height: 700,
   },
   compassContentContainer: {
     flex: 1,
@@ -58,19 +58,19 @@ const styles = StyleSheet.create({
   },
   sliderContainer: {
     alignItems: 'center',
-    paddingTop: 10
+    paddingTop: 10,
   },
   sliderHeading: {
     fontWeight: 'bold',
     fontSize: themes.PRIMARY_TEXT_SIZE - 3,
-    color: themes.SECONDARY_ITEM_TEXT_COLOR
+    color: themes.SECONDARY_ITEM_TEXT_COLOR,
   },
-    switchContainer: {
+  switchContainer: {
     flex: 1,
-    alignItems: 'flex-end'
+    alignItems: 'flex-end',
   },
   switch: {
-    justifyContent: 'flex-end'
+    justifyContent: 'flex-end',
   },
   strikeAndDipLine: {
     zIndex: 10,
@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
   },
   toggleButtonsContainer: {
     backgroundColor: 'transparent',
-    padding: 10
+    padding: 10,
   },
   toggleButtonsRowContainer: {
     borderBottomWidth: 1,
@@ -97,12 +97,12 @@ const styles = StyleSheet.create({
   modalPosition: {
     position: 'absolute',
     left: 70,
-    bottom: 10
+    bottom: 10,
   },
   modalPositionShortcutView: {
     position: 'absolute',
     left: 70,
-    bottom: 70
+    bottom: 70,
   },
 });
 

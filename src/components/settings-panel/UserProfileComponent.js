@@ -1,49 +1,50 @@
-import React, {Component} from 'react'
-import {View, Text} from 'react-native'
-import {Button} from "react-native-elements";
+import React, {Component} from 'react';
+import {View, Text} from 'react-native';
+import {Button} from 'react-native-elements';
 import {connect} from 'react-redux';
 // import {getUserProfile} from '../services/user/UserProfile';
 import {Avatar} from 'react-native-elements';
 import styles from './SettingsPanelStyles';
-import {settingPanelReducers} from "./settingsPanel.constants";
-import {SettingsMenuItems} from "./SettingsMenu.constants";
+import {settingPanelReducers} from './settingsPanel.constants';
+import {SettingsMenuItems} from './SettingsMenu.constants';
 
 
 class UserProfileComponent extends Component {
-constructor(props) {
-  super(props);
-  this.state ={
-    username: '',
-    userImage: '',
-    MB_Token: ''
+  constructor(props) {
+    super(props);
+    this.state = {
+      username: '',
+      userImage: '',
+      MB_Token: '',
+    };
   }
-}
 
   render() {
-  let avatarImage = null;
-  if (this.props.userData.image) {
-    avatarImage = (
-      <Avatar
-        // containerStyle={styles.avatarImage}
-        source={{uri: this.props.userData.image}}
-        showEditButton={false}
-        rounded={true}
-        size={70}
-        onPress={() => console.log(this.props.userData.name)}
-      />
-    )
-  } else {
-    avatarImage = (
-      <Avatar
-        // containerStyle={styles.avatarImage}
-        icon={{name: 'user', type: 'font-awesome'}}
-        showEditButton={false}
-        rounded={true}
-        size={70}
-        onPress={() => console.log('GUEST')}
-      />
-    )
-  }
+    let avatarImage = null;
+    if (this.props.userData.image) {
+      avatarImage = (
+        <Avatar
+          // containerStyle={styles.avatarImage}
+          source={{uri: this.props.userData.image}}
+          showEditButton={false}
+          rounded={true}
+          size={70}
+          onPress={() => console.log(this.props.userData.name)}
+        />
+      );
+    }
+    else {
+      avatarImage = (
+        <Avatar
+          // containerStyle={styles.avatarImage}
+          icon={{name: 'user', type: 'font-awesome'}}
+          showEditButton={false}
+          rounded={true}
+          size={70}
+          onPress={() => console.log('GUEST')}
+        />
+      );
+    }
     return (
       <React.Fragment>
         <View style={styles.profileContainer}>
@@ -53,7 +54,7 @@ constructor(props) {
             </View>
             <View style={styles.avatarLabelContainer}>
               <Text style={styles.avatarLabel}>{this.props.userData.name ? this.props.userData.name
-              : 'Guest'}</Text>
+                : 'Guest'}</Text>
             </View>
           </View>
           <View style={styles.projectName}>
@@ -67,19 +68,19 @@ constructor(props) {
           </View>
         </View>
       </React.Fragment>
-    )
+    );
   }
 }
 
 const mapStateToProps = (state) => {
   return {
     userData: state.user.userData,
-    isOnline: state.home.isOnline
-  }
+    isOnline: state.home.isOnline,
+  };
 };
 
 const mapDispatchToProps = {
-    setSettingsPanelPageVisible: (name) => ({type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: name}),
+  setSettingsPanelPageVisible: (name) => ({type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: name}),
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserProfileComponent);

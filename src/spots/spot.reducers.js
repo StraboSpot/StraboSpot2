@@ -1,42 +1,42 @@
-import {spotReducers} from "./Spot.constants";
+import {spotReducers} from './Spot.constants';
 
 const initialState = {
   features: [],
   featuresSelected: [],
   selectedSpot: {},
   selectedAttributes: [],
-  recentViews: []
+  recentViews: [],
 };
 
 export const spotReducer = (state = initialState, action) => {
-  let selectedFeatureID = undefined;
+  let selectedFeatureID;
   const isEqual = require('lodash.isequal');
 
   switch (action.type) {
     case spotReducers.FEATURE_SELECTED:
       let recentViewsArr = state.recentViews;
       const index = recentViewsArr.indexOf(action.feature.properties.id);
-      if (index !== -1) recentViewsArr.splice(index,1);
-        recentViewsArr.unshift(action.feature.properties.id);
-        if (state.recentViews.length > 20) recentViewsArr.shift();
-        return {
+      if (index !== -1) recentViewsArr.splice(index, 1);
+      recentViewsArr.unshift(action.feature.properties.id);
+      if (state.recentViews.length > 20) recentViewsArr.shift();
+      return {
         ...state,
         featuresSelected: [action.feature],
         selectedSpot: action.feature,
-        recentViews: recentViewsArr
+        recentViews: recentViewsArr,
       };
     case spotReducers.FEATURES_SELECTED_CLEARED:
       console.log('FEATURES_SELECTED_CLEARED');
       return {
         ...state,
         featuresSelected: [],
-        selectedSpot: {}
+        selectedSpot: {},
       };
     case spotReducers.FEATURE_ADD:
       console.log('ADDED', action.feature);
       return {
         ...state,
-        features: [...state.features, action.feature]
+        features: [...state.features, action.feature],
       };
     case spotReducers.FEATURE_DELETE:
       console.log('DELETED', action.id);
@@ -44,7 +44,7 @@ export const spotReducer = (state = initialState, action) => {
         return feature.properties.id !== action.id;
       });
       const updatedRecentViews = state.recentViews.filter(id => {
-        return id !== action.id
+        return id !== action.id;
       });
       // console.log('Deleted Feature', deletedFeature);
       return {
@@ -52,13 +52,13 @@ export const spotReducer = (state = initialState, action) => {
         features: updatedFeatures,
         selectedSpot: {},
         featuresSelected: [],
-        recentViews: updatedRecentViews
+        recentViews: updatedRecentViews,
       };
     case spotReducers.FEATURES_UPDATED:
       console.log('FEATURES UPDATED', action.features);
       return {
         ...state,
-        features: action.features
+        features: action.features,
       };
     case spotReducers.EDIT_SPOT_PROPERTIES:
       console.log('EDITSPOT', action);
@@ -73,8 +73,8 @@ export const spotReducer = (state = initialState, action) => {
           properties: {
             ...state.selectedSpot.properties,
             [action.field]: action.value,
-            modified_timestamp: Date.now()
-          }
+            modified_timestamp: Date.now(),
+          },
         };
       }
       let filteredSpots = state.features.filter(el => el.properties.id !== selectedFeatureID);
@@ -82,12 +82,12 @@ export const spotReducer = (state = initialState, action) => {
       return {
         ...state,
         selectedSpot: updatedSpot,
-        features: filteredSpots
+        features: filteredSpots,
       };
     case spotReducers.SET_SELECTED_ATTRIBUTES:
       return {
         ...state,
-        selectedAttributes: action.attributes
+        selectedAttributes: action.attributes,
       };
     case spotReducers.EDIT_SPOT_IMAGES:
       let combinedImageArr = [];
@@ -98,22 +98,22 @@ export const spotReducer = (state = initialState, action) => {
       if (state.selectedSpot.properties.images) tempImages = state.selectedSpot.properties.images;
 
       const updatedSpotObj = action.images.map(image => {
-        return {id: image.id, height: image.height, width: image.width, image_type: image.image_type}
+        return {id: image.id, height: image.height, width: image.width, image_type: image.image_type};
       });
       tempImages = [...tempImages, ...updatedSpotObj];
       updatedSpotImages = {
         ...state.selectedSpot,
         properties: {
           ...state.selectedSpot.properties,
-          images: tempImages
-        }
+          images: tempImages,
+        },
       };
       let filteredSpots1 = state.features.filter(el => el.properties.id !== selectedFeatureID);
       filteredSpots1.push(updatedSpotImages);
       return {
         ...state,
         selectedSpot: updatedSpotImages,
-        features: filteredSpots1
+        features: filteredSpots1,
       };
     case spotReducers.EDIT_SPOT_GEOMETRY:
       console.log('EDITSPOT Geometry', action);
@@ -123,9 +123,9 @@ export const spotReducer = (state = initialState, action) => {
           ...state.selectedSpot,
           geometry: {
             ...state.selected.geometry,
-            [action.field]: action.value
-          }
-        }
+            [action.field]: action.value,
+          },
+        },
       };
   }
   return state;

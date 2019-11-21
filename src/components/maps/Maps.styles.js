@@ -1,4 +1,4 @@
-import {Dimensions, Platform, StyleSheet} from "react-native";
+import {Dimensions, Platform, StyleSheet} from 'react-native';
 
 const circleRadius = 20;
 
@@ -11,8 +11,8 @@ const mapStyles = StyleSheet.create({
     borderColor: 'white',
     height: circleRadius,
     width: circleRadius,
-    position: 'absolute'
-  }
+    position: 'absolute',
+  },
 });
 
 export default mapStyles;

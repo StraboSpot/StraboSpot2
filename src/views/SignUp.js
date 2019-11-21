@@ -1,23 +1,24 @@
-import React from 'react'
-import {View, Button, TextInput, StyleSheet} from 'react-native'
+import React from 'react';
+import {View, Button, TextInput, StyleSheet} from 'react-native';
 import * as themes from '../shared/styles.constants';
 
 export default class SignUp extends React.Component {
   state = {
-    username: '', password: '', email: '', phone_number: ''
+    username: '', password: '', email: '', phone_number: '',
   };
 
   onChangeText = (key, val) => {
-    this.setState({ [key]: val })
+    this.setState({[key]: val});
   };
 
   signUp = async () => {
-    const { username, password, email, phone_number } = this.state;
+    const {username, password, email, phone_number} = this.state;
     try {
       console.log('user successfully signed up!: ');
-      this.props.navigation.navigate('HomeScreen')
-    } catch (err) {
-      console.log('error signing up: ', err)
+      this.props.navigation.navigate('HomeScreen');
+    }
+    catch (err) {
+      console.log('error signing up: ', err);
     }
   };
 
@@ -27,7 +28,7 @@ export default class SignUp extends React.Component {
         <TextInput
           style={styles.input}
           placeholder='Username'
-          autoCapitalize="none"
+          autoCapitalize='none'
           placeholderTextColor='white'
           onChangeText={val => this.onChangeText('username', val)}
         />
@@ -35,21 +36,21 @@ export default class SignUp extends React.Component {
           style={styles.input}
           placeholder='Password'
           secureTextEntry={true}
-          autoCapitalize="none"
+          autoCapitalize='none'
           placeholderTextColor='white'
           onChangeText={val => this.onChangeText('password', val)}
         />
         <TextInput
           style={styles.input}
           placeholder='Email'
-          autoCapitalize="none"
+          autoCapitalize='none'
           placeholderTextColor='white'
           onChangeText={val => this.onChangeText('email', val)}
         />
         <TextInput
           style={styles.input}
           placeholder='Phone Number'
-          autoCapitalize="none"
+          autoCapitalize='none'
           placeholderTextColor='white'
           onChangeText={val => this.onChangeText('phone_number', val)}
         />
@@ -59,8 +60,8 @@ export default class SignUp extends React.Component {
         />
       </View>
     );
-  };
-};
+  }
+}
 
 const styles = StyleSheet.create({
   input: {
@@ -77,6 +78,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center'
-  }
+    alignItems: 'center',
+  },
 });

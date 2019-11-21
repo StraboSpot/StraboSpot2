@@ -1,7 +1,7 @@
 import React from 'react';
-import {TouchableOpacity, TouchableNativeFeedback, Text, View, StyleSheet, Platform} from "react-native";
+import {TouchableOpacity, TouchableNativeFeedback, Text, View, StyleSheet, Platform} from 'react-native';
 import {Icon} from 'react-native-elements';
-import * as themes from "../styles.constants";
+import * as themes from '../styles.constants';
 
 // import Icon from "react-native-vector-icons/Ionicons";
 
@@ -40,13 +40,13 @@ const styles = StyleSheet.create({
     paddingRight: 15,
   },
   buttonText: {
-    color: "black",
+    color: 'black',
     fontSize: themes.PRIMARY_TEXT_SIZE,
-    paddingRight: 10
+    paddingRight: 10,
   },
   itemIcon: {
     paddingRight: 15,
-  }
+  },
 });
 
 export default buttonNoBackground;

@@ -1,31 +1,31 @@
 import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
-import Dialog, {DialogButton, DialogContent, DialogTitle} from "react-native-popup-dialog";
-import {ScaleAnimation} from "react-native-popup-dialog/src";
+import Dialog, {DialogButton, DialogContent, DialogTitle} from 'react-native-popup-dialog';
+import {ScaleAnimation} from 'react-native-popup-dialog/src';
 // import {Switch} from "react-native-switch";
 
 import * as themes from '../../../shared/styles.constants';
 import styles from '../Dialog.styles';
 
 const slideAnimation = new ScaleAnimation({
-  useNativeDriver: true
+  useNativeDriver: true,
 });
 
 const MapActionsDialog = props => (
   <Dialog
-    width={.3}
+    width={0.3}
     dialogAnimation={slideAnimation}
     dialogStyle={styles.dialogBox}
     visible={props.visible}
     dialogTitle={
       <DialogTitle
-        title="Map Actions"
+        title='Map Actions'
         style={styles.dialogTitle}
         textStyle={
           {
-            color: "white",
+            color: 'white',
             fontSize: themes.PRIMARY_TEXT_SIZE,
-            fontWeight: "bold"
+            fontWeight: 'bold',
           }
         }
       />}
@@ -34,27 +34,27 @@ const MapActionsDialog = props => (
     <DialogContent>
       <DialogButton
         style={styles.dialogContent}
-        text="Zoom to Extent of Spots"
+        text='Zoom to Extent of Spots'
         textStyle={styles.dialogText}
-        onPress={() => props.onPress("zoom")}
+        onPress={() => props.onPress('zoom')}
       />
       <DialogButton
         style={styles.dialogContent}
-        text="Save Map for Offline Use"
+        text='Save Map for Offline Use'
         textStyle={styles.dialogText}
-        onPress={() => props.onPress("saveMap")}
+        onPress={() => props.onPress('saveMap')}
       />
       <DialogButton
         style={styles.dialogContent}
-        text="Add Tag(s) to Spot(s)"
+        text='Add Tag(s) to Spot(s)'
         textStyle={styles.dialogText}
-        onPress={() => props.onPress("addTag")}
+        onPress={() => props.onPress('addTag')}
       />
       <DialogButton
         style={styles.dialogContent}
-        text="Lasso Spots for Stereonet"
+        text='Lasso Spots for Stereonet'
         textStyle={styles.dialogText}
-        onPress={() => props.onPress("stereonet")}
+        onPress={() => props.onPress('stereonet')}
       />
     </DialogContent>
   </Dialog>

@@ -1,30 +1,30 @@
 import React from 'react';
 import {StyleSheet, Switch, View} from 'react-native';
-import Dialog, {DialogButton, DialogContent, DialogTitle} from "react-native-popup-dialog";
-import {ScaleAnimation} from "react-native-popup-dialog/src";
+import Dialog, {DialogButton, DialogContent, DialogTitle} from 'react-native-popup-dialog';
+import {ScaleAnimation} from 'react-native-popup-dialog/src';
 
 import * as themes from '../../../shared/styles.constants';
 import styles from '../Dialog.styles';
 
 const slideAnimation = new ScaleAnimation({
-  useNativeDriver: true
+  useNativeDriver: true,
 });
 
 const BaseMapDialog = props => (
   <Dialog
-    width={.3}
+    width={0.3}
     dialogAnimation={slideAnimation}
     dialogStyle={styles.dialogBox}
     visible={props.visible}
     dialogTitle={
       <DialogTitle
-        title="Base Maps"
+        title='Base Maps'
         style={styles.dialogTitle}
         textStyle={
           {
-            color: "white",
+            color: 'white',
             fontSize: themes.PRIMARY_TEXT_SIZE,
-            fontWeight: "bold"
+            fontWeight: 'bold',
           }
         }
       />}
@@ -33,41 +33,41 @@ const BaseMapDialog = props => (
     <DialogContent>
       <DialogButton
         style={styles.dialogContent}
-        text="Mapbox Satellite"
+        text='Mapbox Satellite'
         textStyle={styles.dialogText}
-        onPress={() => props.onPress("mapboxSatellite")}
+        onPress={() => props.onPress('mapboxSatellite')}
       />
       <DialogButton
         style={styles.dialogContent}
-        text="Mapbox Topo"
+        text='Mapbox Topo'
         textStyle={styles.dialogText}
-        onPress={() => props.onPress("mapboxOutdoors")}
+        onPress={() => props.onPress('mapboxOutdoors')}
       />
       <DialogButton
         style={styles.dialogContent}
-        text="OSM Streets"
+        text='OSM Streets'
         textStyle={styles.dialogText}
-        onPress={() => props.onPress("osm")}
+        onPress={() => props.onPress('osm')}
       />
       <DialogButton
         style={styles.dialogContent}
-        text="Geology from Macrostrat"
+        text='Geology from Macrostrat'
         textStyle={styles.dialogText}
-        onPress={() => props.onPress("macrostrat")}
+        onPress={() => props.onPress('macrostrat')}
       />
       <DialogButton
         style={styles.dialogContent}
-        text="Geology + Roads (Custom)"
+        text='Geology + Roads (Custom)'
         textStyle={styles.dialogText}
-        onPress={() => props.onPress("custom")}
+        onPress={() => props.onPress('custom')}
       />
       {/*<DialogButton*/}
-        {/*style={styles.dialogContent}*/}
-        {/*text="Geologic Map"*/}
+      {/*style={styles.dialogContent}*/}
+      {/*text="Geologic Map"*/}
       {/*/>*/}
       {/*<DialogButton*/}
-        {/*style={styles.dialogContent}*/}
-        {/*text="Roads"*/}
+      {/*style={styles.dialogContent}*/}
+      {/*text="Roads"*/}
       {/*/>*/}
     </DialogContent>
   </Dialog>

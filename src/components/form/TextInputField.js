@@ -4,7 +4,7 @@ import {Text, TextInput, View} from 'react-native';
 
 // Styles
 import styles from './form.styles';
-import stylesCommon from "../../shared/common.styles";
+import stylesCommon from '../../shared/common.styles';
 
 const TextInputField = ({
                           field: {name, onBlur, onChange, value},
@@ -15,18 +15,18 @@ const TextInputField = ({
   if (props.appearance === 'multiline') {
     return (
       <View style={styles.notesFieldContainer}>
-          <View style={styles.notesFieldLabelContainer}>
-            <Text style={styles.fieldLabel}>{props.label}</Text>
-          </View>
-          <View style={styles.notesFieldValueContainer}>
-            <TextInput
-              onChangeText={onChange(name)}
-              onBlur={onBlur(name)}
-              style={styles.fieldValueNotes}
-              value={value}
-              multiline={true}
-              numberOfLines={3}
-            />
+        <View style={styles.notesFieldLabelContainer}>
+          <Text style={styles.fieldLabel}>{props.label}</Text>
+        </View>
+        <View style={styles.notesFieldValueContainer}>
+          <TextInput
+            onChangeText={onChange(name)}
+            onBlur={onBlur(name)}
+            style={styles.fieldValueNotes}
+            value={value}
+            multiline={true}
+            numberOfLines={3}
+          />
         </View>
         {errors[name] && <Text style={styles.fieldError}>{errors[name]}</Text>}
       </View>

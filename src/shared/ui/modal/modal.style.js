@@ -1,5 +1,5 @@
 import {Dimensions, Platform, StyleSheet} from 'react-native';
-import * as themes from "../../styles.constants";
+import * as themes from '../../styles.constants';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 
 const {width, height} = Dimensions.get('window');
@@ -12,16 +12,16 @@ const getModalWidth = () => {
 const modalStyle = StyleSheet.create({
   modalContainer: {
     width: 275,
-    opacity: .90,
+    opacity: 0.90,
     borderBottomRightRadius: 20,
     borderBottomLeftRadius: 20,
-    zIndex: 1
+    zIndex: 1,
   },
   modalBottom: {
     paddingBottom: 20,
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
     borderBottomRightRadius: 20,
-    borderBottomLeftRadius: 20
+    borderBottomLeftRadius: 20,
   },
   modalTop: {
     flex: 1,
@@ -36,13 +36,13 @@ const modalStyle = StyleSheet.create({
   },
   textStyle: {
     fontSize: themes.PRIMARY_TEXT_SIZE,
-    paddingLeft: 10
+    paddingLeft: 10,
   },
   textContainer: {
     alignItems: 'center',
     paddingBottom: 10,
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
-  }
+  },
 });
 
 export default modalStyle;

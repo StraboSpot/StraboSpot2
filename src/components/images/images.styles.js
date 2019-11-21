@@ -1,16 +1,16 @@
-import {StyleSheet} from "react-native";
-import * as themes from "../../shared/styles.constants";
-import {widthPercentageToDP as wp} from "react-native-responsive-screen";
+import {StyleSheet} from 'react-native';
+import * as themes from '../../shared/styles.constants';
+import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
 
 const imageStyles = StyleSheet.create({
   button: {
     flex: 15,
     alignItems: 'center',
-    paddingBottom: 10
+    paddingBottom: 10,
   },
   closeInfoView: {
     fontWeight: 'bold',
-    position: "absolute",
+    position: 'absolute',
     right: 20,
     top: 30,
   },
@@ -18,13 +18,13 @@ const imageStyles = StyleSheet.create({
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
     padding: 5,
     flexDirection: 'row',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
   imageInfoButtons: {
-    marginTop: 20
+    marginTop: 20,
   },
   rightsideIcons: {
-    position: "absolute",
+    position: 'absolute',
     right: 10,
     bottom: 50,
   },
@@ -32,7 +32,7 @@ const imageStyles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignContent: 'center',
-    justifyContent: 'space-around'
+    justifyContent: 'space-around',
   },
   galleryImageListContainer: {
     paddingLeft: 5,
@@ -47,14 +47,14 @@ const imageStyles = StyleSheet.create({
     justifyContent: 'center',
   },
   galleryImage: {
-    height: wp('8%') ,
+    height: wp('8%'),
     width: wp('8%'),
   },
   text: {
     fontSize: themes.PRIMARY_HEADER_TEXT_SIZE + 5,
   },
   flatListStyle: {
-    flex: 1
+    flex: 1,
   },
   containerStyle: {
     justifyContent: 'center',
@@ -90,11 +90,11 @@ const imageStyles = StyleSheet.create({
     borderBottomWidth: 0,
     borderRadius: 10,
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
-    marginBottom: 10
+    marginBottom: 10,
   },
   inputText: {
     paddingLeft: 10,
-    fontSize: 16
+    fontSize: 16,
   },
   textbox: {
     fontSize: 14,
@@ -102,18 +102,18 @@ const imageStyles = StyleSheet.create({
     height: 75,
     borderRadius: 10,
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
-    marginBottom: 10
+    marginBottom: 10,
   },
   textboxContainer: {
     paddingLeft: 10,
-    paddingRight: 10
+    paddingRight: 10,
   },
   switch: {
     flexDirection: 'row',
     padding: 15,
     alignItems: 'center',
-    justifyContent: 'space-between'
-  }
+    justifyContent: 'space-between',
+  },
 });
 
 export default imageStyles;

@@ -1,18 +1,18 @@
 import React, {Component} from 'react';
 import {View, Animated, Alert, AsyncStorage, StyleSheet, PanResponder} from 'react-native';
 import MapboxGL from '@react-native-mapbox-gl/maps';
-import {MAPBOX_KEY} from '../../MapboxConfig'
-import {CustomBasemap, MapboxOutdoorsBasemap, MapboxSatelliteBasemap, OSMBasemap, MacrostratBasemap} from "./Basemaps";
-import * as turf from '@turf/turf/index'
+import {MAPBOX_KEY} from '../../MapboxConfig';
+import {CustomBasemap, MapboxOutdoorsBasemap, MapboxSatelliteBasemap, OSMBasemap, MacrostratBasemap} from './Basemaps';
+import * as turf from '@turf/turf/index';
 import {LATITUDE, LONGITUDE, LATITUDE_DELTA, LONGITUDE_DELTA, MapModes} from './Map.constants';
 import {connect} from 'react-redux';
-import {getNewId} from "../../shared/Helpers";
-import {mapReducers} from "./Map.constants";
-import {spotReducers} from "../../spots/Spot.constants";
-import {truncDecimal} from "../../shared/Helpers";
-import {homeReducers} from "../../views/home/Home.constants";
-import {NotebookPages, notebookReducers} from "../notebook-panel/Notebook.constants";
-import Geolocation from '@react-native-community/geolocation'
+import {getNewId} from '../../shared/Helpers';
+import {mapReducers} from './Map.constants';
+import {spotReducers} from '../../spots/Spot.constants';
+import {truncDecimal} from '../../shared/Helpers';
+import {homeReducers} from '../../views/home/Home.constants';
+import {NotebookPages, notebookReducers} from '../notebook-panel/Notebook.constants';
+import Geolocation from '@react-native-community/geolocation';
 
 MapboxGL.setAccessToken(MAPBOX_KEY);
 
@@ -31,7 +31,7 @@ class mapView extends Component {
       isEditingFeature: false,
       featuresNotSelected: [],
       featuresSelected: [],
-      vertexToEdit: {}
+      vertexToEdit: {},
     };
 
     this.basemaps = {
@@ -41,7 +41,7 @@ class mapView extends Component {
         layerLabel: 'OSM Streets',
         layerSaveId: 'osm',
         url: 'https://a.tile.openstreetmap.org/{z}/{x}/{y}.png',
-        maxZoom: 16
+        maxZoom: 16,
       },
       macrostrat: {
         id: 'macrostrat',
@@ -49,7 +49,7 @@ class mapView extends Component {
         layerLabel: 'Geology from Macrostrat',
         layerSaveId: 'macrostrat',
         url: 'http://tiles.strabospot.org/v5/macrostrat/{z}/{x}/{y}.png',
-        maxZoom: 19
+        maxZoom: 19,
       },
       mapboxOutdoors: {
         id: 'mapboxOutdoors',
@@ -57,7 +57,7 @@ class mapView extends Component {
         layerLabel: 'Mapbox Topo',
         layerSaveId: 'mapbox.outdoors',
         url: 'http://tiles.strabospot.org/v5/mapbox.outdoors/{z}/{x}/{y}.png?access_token=' + MAPBOX_KEY,
-        maxZoom: 19
+        maxZoom: 19,
       },
       mapboxSatellite: {
         id: 'mapboxSatellite',
@@ -65,8 +65,8 @@ class mapView extends Component {
         layerLabel: 'Mapbox Satellite',
         layerSaveId: 'mapbox.satellite',
         url: 'http://tiles.strabospot.org/v5/mapbox.satellite/{z}/{x}/{y}.png?access_token=' + MAPBOX_KEY,
-        maxZoom: 19
-      }
+        maxZoom: 19,
+      },
     };
 
     this._map = React.createRef();
@@ -87,7 +87,7 @@ class mapView extends Component {
 
   componentWillUnmount() {
     this._isMounted = false;
-    this.props.onRef(undefined)
+    this.props.onRef(undefined);
   }
 
   componentDidUpdate(prevProps) {
@@ -228,8 +228,8 @@ class mapView extends Component {
         ...prevState,
         drawFeatures: drawFeatures,
         featuresNotSelected: [...featuresNotSelected, ...prevState.featuresSelected],
-        featuresSelected: [feature]
-      }
+        featuresSelected: [feature],
+      };
     }, () => {
       console.log('Set feature to edit:', feature);
       if (turf.getType(feature) === 'Point') this.setSelectedVertexToEdit(feature);
@@ -245,8 +245,8 @@ class mapView extends Component {
         drawFeatures: [],
         featuresSelected: [],
         featuresNotSelected: [...prevState.featuresNotSelected, ...prevState.featuresSelected],
-        vertexToEdit: {}                              // Not really needed here
-      }
+        vertexToEdit: {},                              // Not really needed here
+      };
     }, () => {
       console.log('Cleared selected feature.');
     });
@@ -257,8 +257,8 @@ class mapView extends Component {
     this.setState(prevState => {
       return {
         ...prevState,
-        vertexToEdit: vertex
-      }
+        vertexToEdit: vertex,
+      };
     }, async () => {
       console.log('Set vertex to edit:', vertex);
       const vertexCoordinates = await this._map.current.getPointInView(vertex.geometry.coordinates);
@@ -270,8 +270,8 @@ class mapView extends Component {
     this.setState(prevState => {
       return {
         ...prevState,
-        vertexToEdit: {}
-      }
+        vertexToEdit: {},
+      };
     }, async () => {
       console.log('Cleared selected vertex to edit.');
       if (turf.getType(this.state.featuresSelected[0]) === 'Point') this.clearSelectedFeatureToEdit();
@@ -284,8 +284,8 @@ class mapView extends Component {
       this.setState(prevState => {
         return {
           ...prevState,
-          drawFeatures: []
-        }
+          drawFeatures: [],
+        };
       }, () => {
         console.log('Draw features cleared:', this.state.drawFeatures);
       });
@@ -303,8 +303,8 @@ class mapView extends Component {
         }
         return {
           ...prevState,
-          drawFeatures: prevState.drawFeatures.concat(feature)
-        }
+          drawFeatures: prevState.drawFeatures.concat(feature),
+        };
       }, () => {
         console.log('New draw feature added:', this.state.drawFeatures);
       });
@@ -354,8 +354,8 @@ class mapView extends Component {
             ...prevState,
             drawFeatures: drawFeatures,
             featuresSelected: [featureEditing],
-            vertexToEdit: {}
-          }
+            vertexToEdit: {},
+          };
         }, () => {
           console.log('Finished editing feature. Selected Feature: ', this.state.featuresSelected);
           this.props.clearVertexes();
@@ -394,15 +394,16 @@ class mapView extends Component {
     var extentString = await this.getExtentString();
     try {
       //Assign the promise unresolved first then get the data using the json method.
-      console.log("sending this extent to server: ", extentString);
-      console.log("sending zoom to server: ", zoomLevel);
+      console.log('sending this extent to server: ', extentString);
+      console.log('sending zoom to server: ', zoomLevel);
       const tileCountApiCall = await fetch(
         'http://tiles.strabospot.org/zipcount?extent=' + extentString + '&zoom=' + zoomLevel);
       const tileCount = await tileCountApiCall.json();
-      console.log("got count from server: ", tileCount);
+      console.log('got count from server: ', tileCount);
       return tileCount.count;
-    } catch (err) {
-      console.log("Error fetching data from tile count service.", err);
+    }
+    catch (err) {
+      console.log('Error fetching data from tile count service.', err);
     }
   };
 
@@ -431,7 +432,7 @@ class mapView extends Component {
     if (this._isMounted) {
       if (mapName === 'mapboxSatellite' || mapName === 'mapboxOutdoors' || mapName === 'osm' || mapName === 'macrostrat') {
         console.log('Switching basemap to:', mapName);
-        this.props.onCurrentBasemap(this.basemaps[mapName])
+        this.props.onCurrentBasemap(this.basemaps[mapName]);
       }
       else console.log('Cancel switching basemaps. Basemap', mapName, 'still needs to be setup.');
     }
@@ -451,7 +452,8 @@ class mapView extends Component {
     if (this.camera.current) {
       try {
         await this.camera.current.flyTo([this.state.longitude, this.state.latitude], 12000);
-      } catch (err) {
+      }
+      catch (err) {
         throw Error('Error Flying to Current Location', err);
       }
     }
@@ -469,8 +471,8 @@ class mapView extends Component {
               return {
                 ...prevState,
                 latitude: position.coords.latitude,
-                longitude: position.coords.longitude
-              }
+                longitude: position.coords.longitude,
+              };
             }, () => {
               console.log('Got Current Location:', this.state.latitude, ',', this.state.longitude);
               resolve();
@@ -479,7 +481,7 @@ class mapView extends Component {
           else reject('Attempting to set the current location but MapView Component not mounted.');
         },
         (error) => reject('Error getting current location:', error),
-        geolocationOptions
+        geolocationOptions,
       );
     });
   };
@@ -506,8 +508,8 @@ class mapView extends Component {
           drawFeatures: [],
           featuresNotSelected: [],
           featuresSelected: [],
-          vertexToEdit: {}
-        }
+          vertexToEdit: {},
+        };
       }, () => {
         console.log('Edit canceled. State updated:', this.state);
       });
@@ -533,8 +535,8 @@ class mapView extends Component {
             ...prevState,
             drawFeatures: [],
             featuresNotSelected: this.props.features,
-            featuresSelected: []
-          }
+            featuresSelected: [],
+          };
         }, async () => {
           console.log('No features set feature to edit.');
         });
@@ -587,8 +589,8 @@ class mapView extends Component {
               ...prevState,
               drawFeatures: turf.explode(featureSelected).features,
               featuresSelected: [featureSelected],
-              vertexToEdit: vertexToEdit
-            }
+              vertexToEdit: vertexToEdit,
+            };
           }, () => {
             console.log('Set selected feature:', featureSelected);
           });
@@ -669,7 +671,7 @@ class mapView extends Component {
       //editFeatureVertex: turf.featureCollection([this.state.vertexToEdit])  // ToDo Why doesn't this work?
       editFeatureVertex: Object.getOwnPropertyNames(this.state.vertexToEdit).length > 0 ?
         turf.featureCollection([this.state.vertexToEdit]) : MapboxGL.geoUtils.makeFeatureCollection(),
-      allowMapViewMove: Object.getOwnPropertyNames(this.state.vertexToEdit).length === 0
+      allowMapViewMove: Object.getOwnPropertyNames(this.state.vertexToEdit).length === 0,
     };
 
     return (
@@ -711,8 +713,8 @@ const mapStateToProps = (state) => {
     featuresSelected: state.spot.featuresSelected,
     currentBasemap: state.map.currentBasemap,
     map: state.map.map,
-    vertexEndCoords: state.map.vertexEndCoords
-  }
+    vertexEndCoords: state.map.vertexEndCoords,
+  };
 };
 
 const mapDispatchToProps = {
@@ -725,7 +727,7 @@ const mapDispatchToProps = {
   onCurrentBasemap: (basemap) => ({type: mapReducers.CURRENT_BASEMAP, basemap: basemap}),
   setModalVisible: (modal) => ({type: homeReducers.SET_MODAL_VISIBLE, modal: modal}),
   setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),
-  setVertexStartCoords: (coords) => ({type: mapReducers.VERTEX_START_COORDS, vertexStartCoords: coords})
+  setVertexStartCoords: (coords) => ({type: mapReducers.VERTEX_START_COORDS, vertexStartCoords: coords}),
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(mapView);

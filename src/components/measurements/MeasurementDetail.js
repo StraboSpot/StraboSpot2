@@ -1,22 +1,22 @@
 import React, {useState, useRef} from 'react';
 import {Alert, FlatList, ScrollView, Text, View} from 'react-native';
 import {connect} from 'react-redux';
-import {Button, ButtonGroup} from "react-native-elements";
-import {spotReducers} from "../../spots/Spot.constants";
-import {notebookReducers} from "../notebook-panel/Notebook.constants";
+import {Button, ButtonGroup} from 'react-native-elements';
+import {spotReducers} from '../../spots/Spot.constants';
+import {notebookReducers} from '../notebook-panel/Notebook.constants';
 import {Formik} from 'formik';
-import FormView from "../form/Form.view";
-import {getNewId, isEmpty} from "../../shared/Helpers";
+import FormView from '../form/Form.view';
+import {getNewId, isEmpty} from '../../shared/Helpers';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import SaveAndCloseButton from '../notebook-panel/ui/SaveAndCloseButtons';
-import {getForm, hasErrors, setForm, showErrors, validateForm} from "../form/form.container";
-import {homeReducers, Modals} from "../../views/home/Home.constants";
-import MeasurementItem from "./MeasurementItem";
+import {getForm, hasErrors, setForm, showErrors, validateForm} from '../form/form.container';
+import {homeReducers, Modals} from '../../views/home/Home.constants';
+import MeasurementItem from './MeasurementItem';
 
 // Styles
 import styles from './measurements.styles';
 import * as themes from '../../shared/styles.constants';
-import stylesCommon from "../../shared/common.styles";
+import stylesCommon from '../../shared/common.styles';
 
 const MeasurementDetailPage = (props) => {
 
@@ -55,15 +55,15 @@ const MeasurementDetailPage = (props) => {
             text: 'Yes',
             onPress: () => {
               saveForm().then(() => {
-                switchAssociatedMeasurement(measurement)
+                switchAssociatedMeasurement(measurement);
               });
             },
           },
         ],
-        {cancelable: false}
+        {cancelable: false},
       );
     }
-    else switchAssociatedMeasurement(measurement)
+    else switchAssociatedMeasurement(measurement);
   };
 
   // If the measurement clicked is not equal to one not being displayed already then switch to that feature
@@ -92,10 +92,10 @@ const MeasurementDetailPage = (props) => {
             style: 'cancel',
           },
           {
-            text: 'OK', onPress: () => switchFeatureType(switchedType)
+            text: 'OK', onPress: () => switchFeatureType(switchedType),
           },
         ],
-        {cancelable: false}
+        {cancelable: false},
       );
     }
   };
@@ -253,8 +253,8 @@ const MeasurementDetailPage = (props) => {
   // Get all the associated measurements (main measurement and associated measurements).
   const getSelectedOrientationInfo = (measurement) => {
     let orientations = props.spot.properties.orientation_data;
-    let iO = undefined;
-    let iAO = undefined;
+    let iO;
+    let iAO;
     orientations.forEach((orientation, i) => {
       if (!iO && orientation.id === measurement.id) iO = i;
       else if (!iO && orientation.associated_orientation) {
@@ -273,7 +273,7 @@ const MeasurementDetailPage = (props) => {
 
   const cancelFormAndGo = () => {
     if (props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {
-      props.setModalVisible(Modals.NOTEBOOK_MODALS.COMPASS)
+      props.setModalVisible(Modals.NOTEBOOK_MODALS.COMPASS);
     }
     props.setNotebookPageVisibleToPrev();
   };
@@ -327,7 +327,7 @@ const MeasurementDetailPage = (props) => {
     saveForm().then(() => {
       console.log('Finished saving form data to Spot');
       if (props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {
-        props.setModalVisible(Modals.NOTEBOOK_MODALS.COMPASS)
+        props.setModalVisible(Modals.NOTEBOOK_MODALS.COMPASS);
       }
       props.setNotebookPageVisibleToPrev();
     }, () => {
@@ -357,15 +357,15 @@ function mapStateToProps(state) {
   return {
     spot: state.spot.selectedSpot,
     selectedMeasurements: state.spot.selectedAttributes,
-    modalVisible: state.home.modalVisible
-  }
+    modalVisible: state.home.modalVisible,
+  };
 }
 
 const mapDispatchToProps = {
   onSpotEdit: (field, value) => ({type: spotReducers.EDIT_SPOT_PROPERTIES, field: field, value: value}),
   setNotebookPageVisibleToPrev: () => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE_TO_PREV}),
   setModalVisible: (modal) => ({type: homeReducers.SET_MODAL_VISIBLE, modal: modal}),
-  setSelectedAttributes: (attributes) => ({type: spotReducers.SET_SELECTED_ATTRIBUTES, attributes: attributes})
+  setSelectedAttributes: (attributes) => ({type: spotReducers.SET_SELECTED_ATTRIBUTES, attributes: attributes}),
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(MeasurementDetailPage);

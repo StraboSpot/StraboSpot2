@@ -4,7 +4,7 @@ const initialState = {
   sortedView: SortedViews.CHRONOLOGICAL,
   selectedButtonIndex: 0,
   settingsPageVisible: null,
-  sortedList: null
+  sortedList: null,
 };
 
 export const settingsPanelReducer = (state = initialState, action) => {
@@ -12,25 +12,25 @@ export const settingsPanelReducer = (state = initialState, action) => {
     case settingPanelReducers.SET_SORTED_VIEW:
       return {
         ...state,
-        sortedView: action.view
+        sortedView: action.view,
       };
     case settingPanelReducers.SET_SORTED_LIST:
       return {
         ...state,
-        sortedList: action.sortedList
+        sortedList: action.sortedList,
       };
     case settingPanelReducers.SET_SELECTED_BUTTON_INDEX:
       return {
         ...state,
-        selectedButtonIndex: action.index
+        selectedButtonIndex: action.index,
       };
     case settingPanelReducers.SET_MENU_SELECTION_PAGE:
       return {
         ...state,
-        settingsPageVisible: action.name
-      }
+        settingsPageVisible: action.name,
+      };
   }
-  return state
+  return state;
 };
 
 

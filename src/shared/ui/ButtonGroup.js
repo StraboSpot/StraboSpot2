@@ -1,5 +1,5 @@
 import React from 'react';
-import {ButtonGroup} from "react-native-elements";
+import {ButtonGroup} from 'react-native-elements';
 
 const buttonGroup = (props) => {
   return (

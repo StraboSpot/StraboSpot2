@@ -1,9 +1,9 @@
 import React from 'react';
 import {ScrollView} from 'react-native';
-import {connect} from "react-redux";
-import * as themes from "../../shared/styles.constants";
-import {ListItem} from "react-native-elements";
-import {spotReducers} from "../../spots/Spot.constants";
+import {connect} from 'react-redux';
+import * as themes from '../../shared/styles.constants';
+import {ListItem} from 'react-native-elements';
+import {spotReducers} from '../../spots/Spot.constants';
 
 const allSpotsView = (props) => {
 
@@ -13,14 +13,14 @@ const allSpotsView = (props) => {
       return selectedSpot.properties.id === id;
     });
     console.log(spot[0]);
-    props.onFeatureSelected(spot[0])
+    props.onFeatureSelected(spot[0]);
   };
 
   return (
     <React.Fragment>
       <ScrollView>
-      {props.allSpots.map(spot => {
-        return (
+        {props.allSpots.map(spot => {
+          return (
             <ListItem
               key={spot.properties.id}
               title={spot.properties.name}
@@ -34,12 +34,12 @@ const allSpotsView = (props) => {
                 backgroundColor: themes.LIGHTGREY,
                 padding: 10,
                 paddingTop: 20,
-                paddingBottom: 20
+                paddingBottom: 20,
               }}
               onPress={() => pressHandler(spot.properties.id)}
             />
-        )
-      })}
+          );
+        })}
       </ScrollView>
     </React.Fragment>
   );
@@ -47,8 +47,8 @@ const allSpotsView = (props) => {
 
 const mapStateToProps = state => {
   return {
-    allSpots: state.spot.features
-  }
+    allSpots: state.spot.features,
+  };
 };
 
 const mapDispatchToProps = {

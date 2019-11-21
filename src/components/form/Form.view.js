@@ -6,7 +6,7 @@ import {Field} from 'formik';
 import TextInputField from './TextInputField';
 import NumberInputField from './NumberInputField';
 import SelectInputField from './SelectInputField';
-import {getChoices, getSurvey, isRelevant} from "./form.container";
+import {getChoices, getSurvey, isRelevant} from './form.container';
 
 // Styles
 import styles from './form.styles';
@@ -42,7 +42,7 @@ const FormView = ({handleSubmit, isValid, setFieldValue, values}) => {
     fieldChoicesCopy.map((choice) => {
       choice.value = choice.name;
       delete choice.name;
-      return choice
+      return choice;
     });
     return (
       <Field
@@ -56,10 +56,10 @@ const FormView = ({handleSubmit, isValid, setFieldValue, values}) => {
   };
 
   const renderField = field => {
-    const fieldType = field.type.split(" ")[0];
+    const fieldType = field.type.split(' ')[0];
     if (fieldType === 'text') return renderTextInput(field);
     else if (fieldType === 'integer' || fieldType === 'decimal') return renderNumberInput(field);
-    else if (fieldType === 'select_one') return renderSelectInput(field, field.type.split(" ")[1])
+    else if (fieldType === 'select_one') return renderSelectInput(field, field.type.split(' ')[1]);
   };
 
   return (

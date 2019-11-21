@@ -1,15 +1,15 @@
 import React from 'react';
 import {FlatList, ScrollView, Text, View} from 'react-native';
-import {Icon, ListItem} from "react-native-elements";
+import {Icon, ListItem} from 'react-native-elements';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
-import {notebookReducers, NotebookPages} from "../notebook-panel/Notebook.constants";
-import {connect} from "react-redux";
-import SectionDivider from "../../shared/ui/SectionDivider";
+import {notebookReducers, NotebookPages} from '../notebook-panel/Notebook.constants';
+import {connect} from 'react-redux';
+import SectionDivider from '../../shared/ui/SectionDivider';
 
 // Styles
 import styles from './samplesStyles/samples.style';
 import * as themes from '../../shared/styles.constants';
-import {homeReducers, Modals} from "../../views/home/Home.constants";
+import {homeReducers, Modals} from '../../views/home/Home.constants';
 
 const samplesNotebookView = (props) => {
 
@@ -20,30 +20,30 @@ const samplesNotebookView = (props) => {
 
       return (
         <View key={item.id}>
-        <ListItem
-          key={item.id}
-          containerStyle={styles.notebookListContainer}
-          title={item.sample_id_name ? item.sample_id_name :
-            <Text style={{color: 'grey'}}>Sample id: {item.id}</Text>}
-          // contentContainerStyle={{ paddingBottom: 10}}
-          subtitleStyle={styles.listText}
-          subtitle={
-            <Text
-              numberOfLines={1}
-              style={styles.listText}>{oriented} - {item.sample_description ? item.sample_description
-              : 'No Description'}</Text>}
-          chevron={true}
-          rightIcon={
-            <Icon
-              name='ios-information-circle-outline'
-              type='ionicon'
-              color={themes.PRIMARY_ACCENT_COLOR}
-              onPress={() => console.log('Samples item pressed', item.id, item.label)}
-            />}
-        />
+          <ListItem
+            key={item.id}
+            containerStyle={styles.notebookListContainer}
+            title={item.sample_id_name ? item.sample_id_name :
+              <Text style={{color: 'grey'}}>Sample id: {item.id}</Text>}
+            // contentContainerStyle={{ paddingBottom: 10}}
+            subtitleStyle={styles.listText}
+            subtitle={
+              <Text
+                numberOfLines={1}
+                style={styles.listText}>{oriented} - {item.sample_description ? item.sample_description
+                : 'No Description'}</Text>}
+            chevron={true}
+            rightIcon={
+              <Icon
+                name='ios-information-circle-outline'
+                type='ionicon'
+                color={themes.PRIMARY_ACCENT_COLOR}
+                onPress={() => console.log('Samples item pressed', item.id, item.label)}
+              />}
+          />
         </View>
-      )
-    })
+      );
+    });
   };
 
   const renderNotebookView = () => {
@@ -65,7 +65,7 @@ const samplesNotebookView = (props) => {
           {props.spot.properties.samples ? renderSampleList() : null}
         </ScrollView>
       </View>
-    )
+    );
   };
 
   const renderShortcutView = () => {
@@ -76,7 +76,7 @@ const samplesNotebookView = (props) => {
           {props.spot.properties.samples ? renderSampleList() : null}
         </ScrollView>
       </View>
-    )
+    );
   };
 
   return (
@@ -89,8 +89,8 @@ const samplesNotebookView = (props) => {
 const mapStateToProps = (state) => {
   return {
     spot: state.spot.selectedSpot,
-    modalVisible: state.home.modalVisible
-  }
+    modalVisible: state.home.modalVisible,
+  };
 };
 
 const mapDispatchToProps = {

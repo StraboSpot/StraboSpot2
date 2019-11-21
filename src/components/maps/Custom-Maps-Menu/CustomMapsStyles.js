@@ -5,7 +5,7 @@ const styles = StyleSheet.create({
   button: {
     flexDirection: 'row',
     paddingLeft: 7,
-    paddingRight: 5
+    paddingRight: 5,
   },
   textStyle: {
     fontSize: 14,
@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     fontWeight: 'bold',
     fontSize: 20,
-    marginLeft: 0
+    marginLeft: 0,
   },
   icons: {
     height: 50,
@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     paddingTop: 7,
     paddingBottom: 3,
-    paddingLeft: 10
+    paddingLeft: 10,
   },
   itemSubContainer: {
     width: '90%',
@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingTop: 3,
     paddingBottom: 7,
-    paddingLeft: 10
+    paddingLeft: 10,
   },
   itemTextStyle: {
     fontSize: themes.PRIMARY_TEXT_SIZE,
@@ -47,40 +47,40 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   buttonPadding: {
-    paddingLeft: 10
+    paddingLeft: 10,
   },
   switch: {
     flex: 1,
-    alignItems: 'flex-end'
+    alignItems: 'flex-end',
   },
   centertext: {
     alignItems: 'center',
-    paddingTop: 10
+    paddingTop: 10,
   },
   rightlink: {
     width: '90%',
-    textAlign: "right",
+    textAlign: 'right',
     paddingTop: 20,
     fontSize: 14,
-    color: '#407ad9'
+    color: '#407ad9',
   },
   dividerText: {
     fontSize: 15,
     paddingLeft: 10,
     textTransform: 'uppercase',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   divider: {
     height: 30,
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   submitButton: {
     width: '90%',
-    textAlign: "center",
+    textAlign: 'center',
     paddingTop: 20,
     fontSize: 14,
-    color: '#407ad9'
-  }
+    color: '#407ad9',
+  },
 });
 
 export default styles;

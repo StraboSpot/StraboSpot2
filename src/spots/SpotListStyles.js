@@ -1,5 +1,5 @@
-import {StyleSheet} from "react-native";
-import * as themes from "../shared/styles.constants";
+import {StyleSheet} from 'react-native';
+import * as themes from '../shared/styles.constants';
 
 const spotListStyle = StyleSheet.create({
 
@@ -14,7 +14,7 @@ const spotListStyle = StyleSheet.create({
     alignItems: 'center',
   },
   spotListListContainer: {
-    flex:1,
+    flex: 1,
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
   },
 });

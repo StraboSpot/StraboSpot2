@@ -1,5 +1,5 @@
 export const IconButtons = {
-  CAMERA: 'camera'
+  CAMERA: 'camera',
 };
 
 export const menuButtons = {
@@ -7,6 +7,6 @@ export const menuButtons = {
     COPY_FEATURE: 'copyFeature',
     DELETE_FEATURE: 'deleteFeature',
     TOGGLE_ALL_SPOTS_PANEL: 'toggleAllSpotsPanel',
-    CLOSE_NOTEBOOK: 'closeNotebook'
-  }
+    CLOSE_NOTEBOOK: 'closeNotebook',
+  },
 };

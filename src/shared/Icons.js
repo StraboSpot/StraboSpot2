@@ -1,15 +1,15 @@
 // import MaterialCommunityIconsI from 'react-native-vector-icons/MaterialCommunityIcons'
 // import SimpleLineIconsI from 'react-native-vector-icons/SimpleLineIcons'
 // import MaterialIconsI from 'react-native-vector-icons/MaterialIcons'
-import FontAwesomeI from 'react-native-vector-icons/FontAwesome5'
+import FontAwesomeI from 'react-native-vector-icons/FontAwesome5';
 // import FoundationI from 'react-native-vector-icons/Foundation'
 // import EvilIconsI from 'react-native-vector-icons/EvilIcons'
-import OcticonsI from 'react-native-vector-icons/Octicons'
-import IoniconsI from 'react-native-vector-icons/Ionicons'
+import OcticonsI from 'react-native-vector-icons/Octicons';
+import IoniconsI from 'react-native-vector-icons/Ionicons';
 // import FeatherI from 'react-native-vector-icons/Feather'
 // import EntypoI from 'react-native-vector-icons/Entypo'
 // import ZocialI from 'react-native-vector-icons/Zocial'
-import React from 'react'
+import React from 'react';
 
 export const MaterialCommunityIcons = props => (
   <MaterialCommunityIconsI {...props} />
@@ -25,7 +25,7 @@ const Octicons = props => <OcticonsI {...props} />;
 // const Entypo = props => <EntypoI {...props} />;
 // const Zocial = props => <ZocialI {...props} />;
 
-export default  {
+export default {
   MaterialCommunityIcons,
   // SimpleLineIcons,
   // MaterialIcons,
@@ -37,4 +37,4 @@ export default  {
   // Feather,
   // Entypo,
   // Zocial
-}
+};

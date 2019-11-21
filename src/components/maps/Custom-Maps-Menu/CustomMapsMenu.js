@@ -2,17 +2,17 @@ import React, {Component} from 'react';
 import {Alert, Image, Picker, Text, View} from 'react-native';
 import styles from './CustomMapsStyles';
 import {ListItem} from 'react-native-elements';
-import * as SharedUI from '../../../shared/ui/index'
+import * as SharedUI from '../../../shared/ui/index';
 import {connect} from 'react-redux';
 import {Divider, Input} from 'react-native-elements';
-import {mapReducers} from "../Map.constants";
+import {mapReducers} from '../Map.constants';
 
 class CustomMapsMenu extends Component {
   _isMounted = false;
 
   constructor(props, context) {
     super(props, context);
-    console.log("Props: ", props);
+    console.log('Props: ', props);
 
     this.state = {
       showFrontPage: true,
@@ -24,15 +24,15 @@ class CustomMapsMenu extends Component {
       mapIdLabel: '',
       mapId: '',
       accessToken: '',
-      showSubmitButton: true
+      showSubmitButton: true,
     };
 
     this.mapTypes = [
-      "Select...",
-      "Mapbox Style",
-      "Map Warper",
-      "StraboSpot MyMaps"
-    ]
+      'Select...',
+      'Mapbox Style',
+      'Map Warper',
+      'StraboSpot MyMaps',
+    ];
   }
 
   async componentDidMount() {
@@ -47,7 +47,7 @@ class CustomMapsMenu extends Component {
   showMapPicker = () => {
     this.setState({showFrontPage: false});
     this.setState({showNewMapSelect: true});
-  }
+  };
 
   showHome = () => {
     this.setState({showFrontPage: true});
@@ -57,14 +57,14 @@ class CustomMapsMenu extends Component {
     this.setState({mapTitle: ''});
     this.setState({accessToken: ''});
     this.setState({chosenForm: ''});
-  }
+  };
 
   updateForm = (chosenForm) => {
-    console.log("chosen form: ", chosenForm);
+    console.log('chosen form: ', chosenForm);
     this.setState({showNewMapSelect: false});
     this.setState({chosenForm: chosenForm});
 
-    switch(chosenForm){
+    switch (chosenForm) {
       case 'Mapbox Style':
         this.setState({mapIdLabel: 'Style URL'});
         break;
@@ -79,16 +79,16 @@ class CustomMapsMenu extends Component {
     }
 
     this.setState({showForm: true});
-  }
+  };
 
   mapTitleEdit = (text) => {
     this.setState({showSubmitButton: true});
     this.setState(prevState => {
       return {
         ...prevState,
-        mapTitle: text
-      }
-    }, () => console.log('mapTitle state:', this.state.mapTitle))
+        mapTitle: text,
+      };
+    }, () => console.log('mapTitle state:', this.state.mapTitle));
   };
 
   mapIdEdit = (text) => {
@@ -96,18 +96,18 @@ class CustomMapsMenu extends Component {
     this.setState(prevState => {
       return {
         ...prevState,
-        mapId: text
-      }
-    }, () => console.log('mapId state:', this.state.mapId))
+        mapId: text,
+      };
+    }, () => console.log('mapId state:', this.state.mapId));
   };
 
   accessTokenEdit = (text) => {
     this.setState(prevState => {
       return {
         ...prevState,
-        accessToken: text
-      }
-    }, () => console.log('accessToken state:', this.state.accessToken))
+        accessToken: text,
+      };
+    }, () => console.log('accessToken state:', this.state.accessToken));
   };
 
   checkMap = async () => {
@@ -136,8 +136,8 @@ class CustomMapsMenu extends Component {
 
     fetch(url).then(response => {
       const statusCode = response.status;
-      console.log("statusCode", statusCode);
-      console.log("customMaps: ", this.props.customMaps);
+      console.log('statusCode', statusCode);
+      console.log('customMaps: ', this.props.customMaps);
       if (statusCode == '200') {
         //check to see if it already exists in Redux
         mapExists = false;
@@ -169,7 +169,7 @@ class CustomMapsMenu extends Component {
             [
               {
                 text: 'OK',
-                onPress: () => this.showHome()
+                onPress: () => this.showHome(),
               },
             ],
             {cancelable: false},
@@ -182,7 +182,7 @@ class CustomMapsMenu extends Component {
             [
               {
                 text: 'OK',
-                onPress: () => this.showHome()
+                onPress: () => this.showHome(),
               },
             ],
             {cancelable: false},
@@ -195,7 +195,7 @@ class CustomMapsMenu extends Component {
           'Provided map is not valid.',
           [
             {
-              text: 'OK'
+              text: 'OK',
             },
           ],
           {cancelable: false},
@@ -209,7 +209,7 @@ class CustomMapsMenu extends Component {
           'Provided map is not valid...',
           [
             {
-              text: 'OK'
+              text: 'OK',
             },
           ],
           {cancelable: false},
@@ -240,7 +240,7 @@ class CustomMapsMenu extends Component {
         },
         {
           text: 'OK',
-          onPress: () => this.deleteMap(map.id)
+          onPress: () => this.deleteMap(map.id),
         },
       ],
       {cancelable: false},
@@ -249,7 +249,7 @@ class CustomMapsMenu extends Component {
 
   deleteMap = async (mapid) => {
     console.log('Deleting Map Here');
-    console.log("map: ", mapid);
+    console.log('map: ', mapid);
 
     //now, delete map from Redux
     currentCustomMaps = this.props.customMaps;
@@ -271,9 +271,9 @@ class CustomMapsMenu extends Component {
     }
 
     await this.props.onCustomMaps(newCustomMapsData);
-    console.log("Saved customMaps to Redux.");
+    console.log('Saved customMaps to Redux.');
 
-  }
+  };
 
   viewCustomMap = async (map) => {
 
@@ -286,7 +286,7 @@ class CustomMapsMenu extends Component {
         layerLabel: map.mapTitle,
         layerSaveId: map.id,
         url: map.url,
-        maxZoom: 19
+        maxZoom: 19,
       };
 
     await this.props.onCurrentBasemap(tempCurrentBasemap);
@@ -298,13 +298,13 @@ class CustomMapsMenu extends Component {
         layerLabel: map.mapTitle,
         layerSaveId: map.id,
         url: map.url,
-        maxZoom: 19
+        maxZoom: 19,
       };
 
     console.log('tempCurrentBasemap: ', tempCurrentBasemap);
     await this.props.onCurrentBasemap(tempCurrentBasemap);
     this.props.closeSettingsDrawer();
-  }
+  };
 
   render() { //return whole modal here
     return (
@@ -353,7 +353,7 @@ class CustomMapsMenu extends Component {
             <Text style={styles.headerText}>Select Map Type:</Text>
           </View>
           <Picker
-            selectedValue=""
+            selectedValue=''
             onValueChange={(mapSelectorType) => this.updateForm(mapSelectorType)}
             style={styles.picker}>
             {
@@ -362,7 +362,7 @@ class CustomMapsMenu extends Component {
                   label={i}
                   value={i}
                   key={i}
-                />
+                />;
               })
             }
           </Picker>
@@ -391,7 +391,7 @@ class CustomMapsMenu extends Component {
           />
         </View>
         }
-        {this.state.chosenForm == 'Mapbox Style' &&
+        {this.state.chosenForm === 'Mapbox Style' &&
         <View>
           <Divider style={styles.divider}>
             <Text style={styles.dividerText}>Access Token</Text>
@@ -403,7 +403,8 @@ class CustomMapsMenu extends Component {
           />
         </View>
         }
-        {this.state.showSubmitButton && this.state.mapTitle != '' && this.state.mapId != '' && (this.state.chosenForm != 'Mapbox Style' || this.state.accessToken != '') &&
+        {this.state.showSubmitButton && this.state.mapTitle !== '' && this.state.mapId !== ''
+        && (this.state.chosenForm != 'Mapbox Style' || this.state.accessToken != '') &&
         <View>
           <Text style={styles.submitButton} onPress={this.checkMap}>
             Submit
@@ -432,13 +433,13 @@ class CustomMapsMenu extends Component {
 const mapStateToProps = (state) => {
   return {
     customMaps: state.spot.customMaps,
-    currentBasemap: state.map.currentBasemap
-  }
+    currentBasemap: state.map.currentBasemap,
+  };
 };
 
 const mapDispatchToProps = {
   onCustomMaps: (customMaps) => ({type: mapReducers.CUSTOM_MAPS, customMaps: customMaps}),
-  onCurrentBasemap: (basemap) => ({type: mapReducers.CURRENT_BASEMAP, basemap: basemap})
+  onCurrentBasemap: (basemap) => ({type: mapReducers.CURRENT_BASEMAP, basemap: basemap}),
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(CustomMapsMenu);

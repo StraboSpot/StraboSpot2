@@ -5,7 +5,7 @@ const initialState = {
   currentBasemap: {},
   offlineMaps: [],
   vertexStartCoords: undefined,
-  vertexEndCoords: undefined
+  vertexEndCoords: undefined,
 };
 
 export const mapReducer = (state = initialState, action) => {
@@ -14,12 +14,12 @@ export const mapReducer = (state = initialState, action) => {
       // console.log('Current Basemap in Reducer', action.basemap);
       return {
         ...state.map,
-        currentBasemap: action.basemap
+        currentBasemap: action.basemap,
       };
     case mapReducers.MAP:
       return {
         ...state.map,
-        map: action
+        map: action,
       };
     case mapReducers.CUSTOM_MAPS:
       console.log('Setting custom maps: ', action.customMaps);
@@ -36,7 +36,7 @@ export const mapReducer = (state = initialState, action) => {
     case mapReducers.DELETE_OFFLINE_MAP:
       console.log('Deleting Offline Map: ', action.offlineMap);
       return {
-        state
+        state,
       };
     case mapReducers.VERTEX_START_COORDS:
       console.log('Vertex Selected Start Coords: ', action.vertexStartCoords);
@@ -48,15 +48,15 @@ export const mapReducer = (state = initialState, action) => {
       console.log('Vertex Selected End Coords: ', action.vertexEndCoords);
       return {
         ...state,
-        vertexEndCoords: action.vertexEndCoords
+        vertexEndCoords: action.vertexEndCoords,
       };
     case mapReducers.CLEAR_VERTEXES:
       console.log('Clearing Start and End Vertexes...');
       return {
         ...state,
         vertexStartCoords: undefined,
-        vertexEndCoords: undefined
-      }
+        vertexEndCoords: undefined,
+      };
   }
   return state;
 };

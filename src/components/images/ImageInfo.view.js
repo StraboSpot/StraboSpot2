@@ -1,12 +1,12 @@
 import React, {useState, useEffect} from 'react';
 import {ActivityIndicator, Button, Dimensions, Platform, Text, View} from 'react-native';
 import styles from './images.styles';
-import {connect} from "react-redux";
-import {Icon, Image} from "react-native-elements";
+import {connect} from 'react-redux';
+import {Icon, Image} from 'react-native-elements';
 import IconButton from '../../shared/ui/IconButton';
-import {imageReducers} from "./Image.constants";
+import {imageReducers} from './Image.constants';
 import ImagePropertiesModal from './ImagePropertiesModal';
-import {homeReducers} from "../../views/home/Home.constants";
+import {homeReducers} from '../../views/home/Home.constants';
 
 const ImageInfoView = (props) => {
   // console.log('Image Info', props);
@@ -38,11 +38,11 @@ const ImageInfoView = (props) => {
   );
 
   const clickHandler = (name) => {
-    console.log(name)
+    console.log(name);
   };
 
   const closeModal = () => {
-    setImageNoteModal(false)
+    setImageNoteModal(false);
   };
 
   const getImageSrc = (id) => {
@@ -64,7 +64,7 @@ const ImageInfoView = (props) => {
           color={'white'}
           size={42}
           onPress={() => {
-            props.navigation.goBack()
+            props.navigation.goBack();
           }}
         />
       </View>
@@ -88,8 +88,8 @@ const mapStateToProps = (state) => {
   // console.log('MP to P', state);
   return {
     imagePaths: state.images.imagePaths,
-    getDeviceDims: state.home.deviceDimensions
-  }
+    getDeviceDims: state.home.deviceDimensions,
+  };
 };
 
 const mapDispatchToProps = {

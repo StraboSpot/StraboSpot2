@@ -3,7 +3,7 @@ import {Text, View} from 'react-native';
 import {Button} from 'react-native-elements/src/index';
 
 // Styles
-import modalStyle from "./modal.style";
+import modalStyle from './modal.style';
 import * as themes from '../../styles.constants';
 
 const modalView = (props) => {
@@ -29,7 +29,7 @@ const modalView = (props) => {
       </View>
       {/*<View style={modalStyle.modalBottom}/>*/}
     </View>
-  )
+  );
 };
 
 export default modalView;

@@ -52,7 +52,6 @@ const RNCompassBridged = props => {
   };
 
   const getAcceleration = () => {
-    // eslint-disable-next-line no-shadow
     // const increment = NativeModules.Compass.increment();
     NativeModules.Compass.myAccelermoter();
     CompassEvents.addListener('acceleration', res => {
@@ -137,7 +136,7 @@ const RNCompassBridged = props => {
         </Text>
         {/*<Text style={{textAlign: 'center'}}>{error ? errorMessage : null}</Text>*/}
       </View>
-      <View style={{ marginTop: 35}}>
+      <View style={{marginTop: 35}}>
         <Button
           title={'Start Accelerometer'}
           type={'solid'}

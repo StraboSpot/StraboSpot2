@@ -1,4 +1,4 @@
-import {Dimensions, Platform,  StyleSheet} from 'react-native';
+import {Dimensions, Platform, StyleSheet} from 'react-native';
 import * as themes from '../../shared/styles.constants';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 
@@ -20,7 +20,7 @@ const notebookStyles = StyleSheet.create({
     zIndex: -1,
   },
   panelWithAllSpotsPanel: {
-    width: getWidthPercent()  + 125,
+    width: getWidthPercent() + 125,
     height: '100%',
     borderBottomLeftRadius: 30,
     borderTopLeftRadius: 30,
@@ -57,7 +57,7 @@ const notebookStyles = StyleSheet.create({
   noSpotContent: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   collapsibleSectionHeaderContainer: {
     flex: 1,
@@ -66,13 +66,13 @@ const notebookStyles = StyleSheet.create({
     paddingTop: 15,
     paddingLeft: 10,
     paddingRight: 10,
-    lineHeight: 30
+    lineHeight: 30,
   },
   collapsibleSectionHeaderText: {
     fontSize: 14,
     lineHeight: 30,
     textTransform: 'uppercase',
-    color: themes.SECONDARY_HEADER_TEXT_COLOR
+    color: themes.SECONDARY_HEADER_TEXT_COLOR,
   },
   dialogBox: {
     position: 'absolute',
@@ -80,11 +80,11 @@ const notebookStyles = StyleSheet.create({
     right: 25,
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
     borderRadius: 20,
-    zIndex: 10
+    zIndex: 10,
   },
   dialogContent: {
-    borderBottomWidth: 1
-  }
+    borderBottomWidth: 1,
+  },
 });
 
 export default notebookStyles;

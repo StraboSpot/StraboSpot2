@@ -9,28 +9,28 @@ import Collapsible from 'react-native-collapsible';
 import {Icon} from 'react-native-elements';
 
 // Styles
-import notebookStyles from "./NotebookPanel.styles";
+import notebookStyles from './NotebookPanel.styles';
 
 const Overview = props => {
 
   const SECTIONS = [
     {
       title: 'Measurements',
-      content: <MeasurementsOverview/>
+      content: <MeasurementsOverview/>,
     },
     {
       title: 'Photos and Sketches',
-      content: <NotebookImages/>
+      content: <NotebookImages/>,
     },
     {
       title: 'Tags',
-      content: <TagsOverview/>
+      content: <TagsOverview/>,
     },
     {
       title: 'Notes',
-      content: <NotesOverview/>
-    }
-    ];
+      content: <NotesOverview/>,
+    },
+  ];
 
   const expandedIcon = <Icon
     name='ios-add'
@@ -44,7 +44,7 @@ const Overview = props => {
     color='#b2b2b7'
     containerStyle={{paddingRight: 10}}/>;
 
-  const [collapsedSections, setCollapsedSections] = useState(["Tags", "Notes"]);
+  const [collapsedSections, setCollapsedSections] = useState(['Tags', 'Notes']);
 
   const toggleCollapsed = (name) => {
     if (collapsedSections.includes(name)) setCollapsedSections(collapsedSections.filter((val) => val !== name));
@@ -63,13 +63,13 @@ const Overview = props => {
               </View>
             </TouchableOpacity>
             {/*<Collapsible collapsed={false} align="center">*/}
-            <Collapsible collapsed={collapsedSections.includes(section.title)} align="center">
+            <Collapsible collapsed={collapsedSections.includes(section.title)} align='center'>
               <View>
                 {section.content}
               </View>
             </Collapsible>
           </View>
-        )
+        );
       })}
     </ScrollView>
   );

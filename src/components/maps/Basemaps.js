@@ -1,6 +1,6 @@
 import React from 'react';
 import MapboxGL from '@react-native-mapbox-gl/maps';
-import pointSymbol from "../../assets/symbols/point-resizeimage.png";
+import pointSymbol from '../../assets/symbols/point-resizeimage.png';
 
 function Basemap(props) {
   const {mapRef, cameraRef} = props.forwardedRef;
@@ -26,7 +26,7 @@ function Basemap(props) {
       zoomLevel={16}
       centerCoordinate={props.centerCoordinate}
       followUserLocation={true}
-      followUserMode="normal"
+      followUserMode='normal'
     />
     <MapboxGL.RasterSource
       id={props.basemap.id}
@@ -42,23 +42,23 @@ function Basemap(props) {
     </MapboxGL.RasterSource>
     {/* Feature Layer */}
     <MapboxGL.ShapeSource
-      id="shapeSource"
+      id='shapeSource'
       shape={props.features}
     >
       <MapboxGL.SymbolLayer
-        id="pointLayer"
+        id='pointLayer'
         minZoomLevel={1}
         filter={['==', '$type', 'Point']}
         style={mapStyles.point}
       />
       <MapboxGL.LineLayer
-        id="lineLayer"
+        id='lineLayer'
         minZoomLevel={1}
         filter={['==', '$type', 'LineString']}
         style={mapStyles.line}
       />
       <MapboxGL.FillLayer
-        id="polygonLayer"
+        id='polygonLayer'
         minZoomLevel={1}
         filter={['==', '$type', 'Polygon']}
         style={mapStyles.polygon}
@@ -66,23 +66,23 @@ function Basemap(props) {
     </MapboxGL.ShapeSource>
     {/* Selected Features Layer */}
     <MapboxGL.ShapeSource
-      id="selectedFeaturesSource"
+      id='selectedFeaturesSource'
       shape={props.selectedFeatures}
     >
       <MapboxGL.CircleLayer
-        id="pointLayerSelected"
+        id='pointLayerSelected'
         minZoomLevel={1}
         filter={['==', '$type', 'Point']}
         style={mapStyles.pointSelected}
       />
       <MapboxGL.LineLayer
-        id="lineLayerSelected"
+        id='lineLayerSelected'
         minZoomLevel={1}
         filter={['==', '$type', 'LineString']}
         style={mapStyles.lineSelected}
       />
       <MapboxGL.FillLayer
-        id="polygonLayerSelected"
+        id='polygonLayerSelected'
         minZoomLevel={1}
         filter={['==', '$type', 'Polygon']}
         style={mapStyles.polygonSelected}
@@ -90,23 +90,23 @@ function Basemap(props) {
     </MapboxGL.ShapeSource>
     {/* Draw Layer */}
     <MapboxGL.ShapeSource
-      id="drawFeatures"
+      id='drawFeatures'
       shape={props.drawFeatures}
     >
       <MapboxGL.CircleLayer
-        id="pointLayerDraw"
+        id='pointLayerDraw'
         minZoomLevel={1}
         filter={['==', '$type', 'Point']}
         style={mapStyles.pointDraw}
       />
       <MapboxGL.LineLayer
-        id="lineLayerDraw"
+        id='lineLayerDraw'
         minZoomLevel={1}
         filter={['==', '$type', 'LineString']}
         style={mapStyles.lineDraw}
       />
       <MapboxGL.FillLayer
-        id="polygonLayerDraw"
+        id='polygonLayerDraw'
         minZoomLevel={1}
         filter={['==', '$type', 'Polygon']}
         style={mapStyles.polygonDraw}
@@ -114,17 +114,17 @@ function Basemap(props) {
     </MapboxGL.ShapeSource>
     {/* Edit Layer */}
     <MapboxGL.ShapeSource
-      id="editFeatureVertex"
+      id='editFeatureVertex'
       shape={props.editFeatureVertex}
     >
       <MapboxGL.CircleLayer
-        id="pointLayerEdit"
+        id='pointLayerEdit'
         minZoomLevel={1}
         filter={['==', '$type', 'Point']}
         style={mapStyles.pointEdit}
       />
     </MapboxGL.ShapeSource>
-  </MapboxGL.MapView>
+  </MapboxGL.MapView>;
 }
 
 export const MapboxOutdoorsBasemap = React.forwardRef((props, ref) => (
@@ -155,44 +155,44 @@ const mapStyles = {
   },
   line: {
     lineColor: 'black',
-    lineWidth: 3
+    lineWidth: 3,
   },
   polygon: {
     fillColor: 'blue',
-    fillOpacity: .4
+    fillOpacity: 0.4,
   },
   pointSelected: {
     circleRadius: 30,
     circleColor: 'orange',
-    circleOpacity: .4
+    circleOpacity: 0.4,
   },
   lineSelected: {
     lineColor: 'orange',
-    lineWidth: 3
+    lineWidth: 3,
   },
   polygonSelected: {
     fillColor: 'orange',
-    fillOpacity: .7
+    fillOpacity: 0.7,
   },
   pointDraw: {
     circleRadius: 5,
     circleColor: 'orange',
     circleStrokeColor: 'white',
-    circleStrokeWidth: 2
+    circleStrokeWidth: 2,
   },
   lineDraw: {
     lineColor: 'orange',
     lineWidth: 3,
-    lineDasharray: [2, 2]
+    lineDasharray: [2, 2],
   },
   polygonDraw: {
     fillColor: 'orange',
-    fillOpacity: .4
+    fillOpacity: 0.4,
   },
   pointEdit: {
     circleRadius: 10,
     circleColor: 'orange',
     circleStrokeColor: 'white',
-    circleStrokeWidth: 2
-  }
+    circleStrokeWidth: 2,
+  },
 };

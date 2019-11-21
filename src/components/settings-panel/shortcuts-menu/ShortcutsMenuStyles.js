@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     paddingTop: 7,
     paddingBottom: 7,
-    paddingLeft: 15
+    paddingLeft: 15,
   },
   itemTextStyle: {
     fontSize: 20,
@@ -43,8 +43,8 @@ const styles = StyleSheet.create({
   },
   switch: {
     flex: 1,
-    alignItems: 'flex-end'
-  }
+    alignItems: 'flex-end',
+  },
 });
 
 export default styles;

@@ -12,11 +12,11 @@ function navigate(routeName, params) {
     NavigationActions.navigate({
       routeName,
       params,
-    })
+    }),
   );
 }
 
 export default {
   navigate,
-  setTopLevelNavigator
-}
+  setTopLevelNavigator,
+};

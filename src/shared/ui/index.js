@@ -1,4 +1,3 @@
-
-export ButtonNoBackground from './ButtonNoBackround'
-export ButtonGroup from './ButtonGroup'
-export ImageButton from './ImageButton'
+export ButtonNoBackground from './ButtonNoBackround';
+export ButtonGroup from './ButtonGroup';
+export ImageButton from './ImageButton';

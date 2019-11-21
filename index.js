@@ -9,8 +9,11 @@ import {name as appName} from './app.json';
 //   enableNative: true,
 // });
 
-YellowBox.ignoreWarnings(["Require cycle:", "Remote debugger", "Warning:",
-  'Module RNSimpleCompass requires main queue setup since it overrides `init` but doesn\'t implement `requiresMainQueueSetup`.'
+YellowBox.ignoreWarnings([
+  'Require cycle:',
+  'Remote debugger',
+  'Warning:',
+  'Module RNSimpleCompass requires main queue setup since it overrides `init` but doesn\'t implement `requiresMainQueueSetup`.',
 ]);
 
 AppRegistry.registerComponent(appName, () => App);

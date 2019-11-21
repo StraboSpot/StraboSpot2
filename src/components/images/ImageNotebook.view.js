@@ -1,16 +1,16 @@
 import React from 'react';
 import {ActivityIndicator, Button, FlatList, Text, View} from 'react-native';
-import {setForm} from "../form/form.container";
+import {setForm} from '../form/form.container';
 import {connect} from 'react-redux';
-import imageStyles from "./images.styles";
-import {Image} from "react-native-elements";
+import imageStyles from './images.styles';
+import {Image} from 'react-native-elements';
 import {withNavigation} from 'react-navigation';
-import {spotReducers} from "../../spots/Spot.constants";
+import {spotReducers} from '../../spots/Spot.constants';
 
 const imageNotebook = (props) => {
 
   const getImageSrc = (id) => {
-    return props.imagePaths[id]
+    return props.imagePaths[id];
   };
 
   const editImage = (image) => {
@@ -34,7 +34,7 @@ const imageNotebook = (props) => {
           style={imageStyles.editButton}
         />
       </View>
-    )
+    );
   };
 
   return (
@@ -49,8 +49,8 @@ const imageNotebook = (props) => {
 const mapStateToProps = (state) => {
   return {
     images: state.spot.selectedSpot.properties.images,
-    imagePaths: state.images.imagePaths
-  }
+    imagePaths: state.images.imagePaths,
+  };
 };
 
 const mapDispatchToProps = {

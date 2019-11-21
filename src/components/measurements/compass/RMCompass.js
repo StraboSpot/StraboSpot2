@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useCallback} from 'react';
-import {connect} from "react-redux";
+import {connect} from 'react-redux';
 import {
   Animated,
   Switch,
@@ -11,17 +11,17 @@ import {
   Dimensions,
   TouchableOpacity,
   NativeModules,
-  NativeEventEmitter
+  NativeEventEmitter,
 } from 'react-native';
 // import {setUpdateIntervalForType, SensorTypes, magnetometer, accelerometer} from 'react-native-sensors';
-import {getNewId, mod, toRadians, toDegrees, roundToDecimalPlaces, isEmpty} from "../../../shared/Helpers";
-import {CompassToggleButtons} from "./Compass.constants";
-import {Button, ListItem} from "react-native-elements";
+import {getNewId, mod, toRadians, toDegrees, roundToDecimalPlaces, isEmpty} from '../../../shared/Helpers';
+import {CompassToggleButtons} from './Compass.constants';
+import {Button, ListItem} from 'react-native-elements';
 import RNSimpleCompass from 'react-native-simple-compass';
 // import {Switch} from "react-native-switch";
-import {spotReducers} from "../../../spots/Spot.constants";
-import {homeReducers, Modals} from "../../../views/home/Home.constants";
-import {NotebookPages, notebookReducers} from "../../notebook-panel/Notebook.constants";
+import {spotReducers} from '../../../spots/Spot.constants';
+import {homeReducers, Modals} from '../../../views/home/Home.constants';
+import {NotebookPages, notebookReducers} from '../../notebook-panel/Notebook.constants';
 
 // import Orientation from 'react-native-orientation-locker';
 import Slider from '../../../shared/ui/Slider';
@@ -30,8 +30,8 @@ import Slider from '../../../shared/ui/Slider';
 // Styles
 import styles from './CompassStyles';
 import * as themes from '../../../shared/styles.constants';
-import Measurements from "../Measurements";
-import IconButton from "../../../shared/ui/IconButton";
+import Measurements from '../Measurements';
+import IconButton from '../../../shared/ui/IconButton';
 
 const {height, width} = Dimensions.get('window');
 
@@ -56,28 +56,28 @@ const RNCompass = (props) => {
   const CompassEvents = new NativeEventEmitter(NativeModules.Compass);
   const degree_update_rate = 1; // Number of degrees changed before the callback is triggered
 
-  useEffect(() =>  {
+  useEffect(() => {
     let isSubscribed = true;
     // console.log(`Is device available: ${DeviceMotion.isAvailableAsync()}`);
     displayCompassData();
     return () => {
       isSubscribed = false;
       NativeModules.Compass.stopObserving();
-      console.log(`subscription cancelled`)
-    }
-  }, []);
+      console.log('subscription cancelled');
+    };
+  }, [displayCompassData]);
 
   useEffect(() => {
-     let isSubscribed = true;
-     RNSimpleCompass.start(degree_update_rate, data => {
-       const heading = roundToDecimalPlaces(mod(data.degree - 270, 360), 0);
-       setHeading(heading);
-     });
+    let isSubscribed = true;
+    RNSimpleCompass.start(degree_update_rate, data => {
+      const heading = roundToDecimalPlaces(mod(data.degree - 270, 360), 0);
+      setHeading(heading);
+    });
     return () => {
       isSubscribed = false;
-      console.log(`Heading subscription cancelled`)
-    }
-  }, [RNSimpleCompass]);
+      console.log('Heading subscription cancelled');
+    };
+  }, []);
 
   const displayCompassData = () => {
     NativeModules.Compass.myDeviceRotation();
@@ -99,7 +99,7 @@ const RNCompass = (props) => {
         // dip_direction: compassData.dipdir,
         dip: compassData.dip,
         type: 'planar_orientation',
-        quality: sliderValue.toString()
+        quality: sliderValue.toString(),
       });
     }
     if (toggles.includes(CompassToggleButtons.LINEAR)) {
@@ -109,7 +109,7 @@ const RNCompass = (props) => {
         rake: compassData.rake,
         rake_calculated: 'yes',
         type: 'linear_orientation',
-        quality: sliderValue.toString()
+        quality: sliderValue.toString(),
       });
     }
 
@@ -128,13 +128,13 @@ const RNCompass = (props) => {
   };
 
   const viewData = () => {
-    setShowData(!showData)
+    setShowData(!showData);
   };
 
   const renderCompass = () => {
     return (
       <TouchableOpacity style={styles.compassImageContainer} onPress={() => grabMeasurements()}>
-        <Image source={require("../../../assets/images/compass/compass.png")}
+        <Image source={require('../../../assets/images/compass/compass.png')}
                style={{
                  marginTop: 15,
                  height: 220,
@@ -185,35 +185,35 @@ const RNCompass = (props) => {
     //     </View>;
     // }
     // else {
-      return (
-        <View style={{alignItems: 'flex-start'}}>
-          <Text>Heading: {heading}</Text>
-          {/*<Text>{text}</Text>*/}
-          <Text>Strike: {compassData.strike}</Text>
-          <Text>Dip: {compassData.dip}</Text>
-          <Text>Trend: {compassData.trend}</Text>
-          <Text>Plunge: {compassData.plunge}</Text>
-        </View>
-      );
+    return (
+      <View style={{alignItems: 'flex-start'}}>
+        <Text>Heading: {heading}</Text>
+        {/*<Text>{text}</Text>*/}
+        <Text>Strike: {compassData.strike}</Text>
+        <Text>Dip: {compassData.dip}</Text>
+        <Text>Trend: {compassData.trend}</Text>
+        <Text>Plunge: {compassData.plunge}</Text>
+      </View>
+    );
     // }
   };
 
   // Render the strike and dip symbol inside the compass
   const renderStrikeDipSymbol = () => {
-    let image = require("../../../assets/images/compass/StrikeDipCentered.png");
+    let image = require('../../../assets/images/compass/StrikeDipCentered.png');
     const spin = strikeSpinValue.interpolate({
       inputRange: [0, compassData.strike],
-      outputRange: ['0deg', compassData.strike + 'deg']
+      outputRange: ['0deg', compassData.strike + 'deg'],
     });
-// First set up animation
+    // First set up animation
     Animated.timing(
       strikeSpinValue,
       {
         duration: 100,
         toValue: compassData.strike,
         easing: Easing.linear(),
-        useNativeDriver: true
-      }
+        useNativeDriver: true,
+      },
     ).start();
 
     return (
@@ -222,7 +222,7 @@ const RNCompass = (props) => {
         source={image}
         style={
           [styles.strikeAndDipLine,
-            {transform: [{rotate: spin}]}
+            {transform: [{rotate: spin}]},
           ]}/>
     );
   };
@@ -270,21 +270,21 @@ const RNCompass = (props) => {
   };
 
   // Render the strike and dip symbol inside the compass
- const  renderTrendSymbol = () => {
-    let image = require("../../../assets/images/compass/TrendLine.png");
+  const renderTrendSymbol = () => {
+    let image = require('../../../assets/images/compass/TrendLine.png');
     const spin = trendSpinValue.interpolate({
       inputRange: [0, compassData.trend],
-      outputRange: ['0deg', compassData.trend + 'deg']
+      outputRange: ['0deg', compassData.trend + 'deg'],
     });
-// First set up animation
+    // First set up animation
     Animated.timing(
       trendSpinValue,
       {
         duration: 100,
         toValue: compassData.trend,
         easing: Easing.linear,
-        useNativeDriver: true
-      }
+        useNativeDriver: true,
+      },
     ).start();
 
     return (
@@ -294,50 +294,51 @@ const RNCompass = (props) => {
         style={
           [styles.trendLine,
             // {transform: [{rotate: compassData.trend + 'deg'}]}
-            {transform: [{rotate: spin}]}
+            {transform: [{rotate: spin}]},
           ]}/>
     );
   };
 
- if (props.modalVisible === Modals.NOTEBOOK_MODALS.COMPASS){
-   if (!isEmpty(props.spot)) {
-     modalView =  <View>
-       <Button
-         title={'View In Shortcut Mode'}
-         type={'clear'}
-         titleStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 16}}
-         onPress={() => props.onPress(NotebookPages.MEASUREMENT)}
-       />
-       <Button
-         title={'Toggle data view'}
-         type={'clear'}
-         titleStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 16}}
-         onPress={() => {
-           viewData()
-         }}
-       />
-     </View>;
-   }
- } else if (props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS){
-   if (!isEmpty(props.spot)){
-     modalView =   <View >
-       <View style={height <= 1000 ? {height: 200} : {height: 350}}>
-         <Measurements/>
-       </View>
-       <IconButton
-         source={require('../../../assets/icons/StraboIcons_Oct2019/NotebookView_pressed.png')}
-         style={{marginTop: 10, flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-end', height: 25}}
-         textStyle={{color: themes.BLUE, fontSize: 16, textAlign: 'center'}}
-         onPress={() => props.onPress(NotebookPages.MEASUREMENT)}
-       > Go to {props.spot.properties.name}</IconButton>
-     </View>
-   }
- }
+  if (props.modalVisible === Modals.NOTEBOOK_MODALS.COMPASS) {
+    if (!isEmpty(props.spot)) {
+      modalView = <View>
+        <Button
+          title={'View In Shortcut Mode'}
+          type={'clear'}
+          titleStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 16}}
+          onPress={() => props.onPress(NotebookPages.MEASUREMENT)}
+        />
+        <Button
+          title={'Toggle data view'}
+          type={'clear'}
+          titleStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 16}}
+          onPress={() => {
+            viewData();
+          }}
+        />
+      </View>;
+    }
+  }
+  else if (props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {
+    if (!isEmpty(props.spot)) {
+      modalView = <View>
+        <View style={height <= 1000 ? {height: 200} : {height: 350}}>
+          <Measurements/>
+        </View>
+        <IconButton
+          source={require('../../../assets/icons/StraboIcons_Oct2019/NotebookView_pressed.png')}
+          style={{marginTop: 10, flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-end', height: 25}}
+          textStyle={{color: themes.BLUE, fontSize: 16, textAlign: 'center'}}
+          onPress={() => props.onPress(NotebookPages.MEASUREMENT)}
+        > Go to {props.spot.properties.name}</IconButton>
+      </View>;
+    }
+  }
 
   return (
     <React.Fragment>
       <View style={{flex: 1}}>
-        <View >
+        <View>
           <Text style={{textAlign: 'center', fontSize: 12}}>Tap compass to record</Text>
           {/*<View style={{ height: 50, backgroundColor: 'powderblue'}} />*/}
           {renderCompass()}
@@ -353,7 +354,7 @@ const RNCompass = (props) => {
       <View style={styles.buttonContainer}>
         {modalView}
         {/*{showDeviceMotionModal && deviceMotionModal}*/}
-        {showData ?  renderDataView(): null}
+        {showData ? renderDataView() : null}
       </View>
     </React.Fragment>
   );
@@ -365,8 +366,8 @@ const mapStateToProps = (state) => {
     isNotebookPanelVisible: state.notebook.isNotebookPanelVisible,
     modalVisible: state.home.modalVisible,
     deviceDimensions: state.home.deviceDimensions,
-  }
-}
+  };
+};
 
 const mapDispatchToProps = {
   onSpotEdit: (field, value) => ({type: spotReducers.EDIT_SPOT_PROPERTIES, field: field, value: value}),

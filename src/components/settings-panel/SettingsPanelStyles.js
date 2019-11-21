@@ -8,7 +8,7 @@ const styles = StyleSheet.create({
   },
   navItemStyle: {
     padding: 3,
-    marginLeft: 5
+    marginLeft: 5,
   },
   navSectionStyle: {
     paddingBottom: 10,
@@ -28,16 +28,16 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
     fontWeight: 'bold',
     fontSize: themes.PRIMARY_TEXT_SIZE,
-    color: themes.SECONDARY_ITEM_TEXT_COLOR
+    color: themes.SECONDARY_ITEM_TEXT_COLOR,
   },
   footerContainer: {
     padding: 20,
-    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR
+    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
   },
   buttons: {
     paddingLeft: 10,
     paddingRight: 10,
-    color: themes.BLUE
+    color: themes.BLUE,
   },
   headerText: {
     fontWeight: 'bold',
@@ -49,12 +49,12 @@ const styles = StyleSheet.create({
     paddingTop: 10,
   },
   profileButtons: {
-    marginTop: 0
+    marginTop: 0,
   },
   userButton: {
     alignItems: 'flex-end',
     marginTop: 10,
-    paddingLeft: 25
+    paddingLeft: 25,
   },
   profileNameAndImageContainer: {
     flex: 2,
@@ -62,21 +62,21 @@ const styles = StyleSheet.create({
     marginLeft: 0,
   },
   avatarImageContainer: {
-    flex:2,
+    flex: 2,
     justifyContent: 'center',
   },
   avatarLabelContainer: {
     // flex: .75,
-// backgroundColor: 'pink',
+    // backgroundColor: 'pink',
     width: '100%',
     alignItems: 'center',
-    marginBottom: 5
+    marginBottom: 5,
   },
   avatarLabel: {
     fontWeight: 'bold',
     fontSize: 18,
     marginLeft: 10,
-    marginRight: 10
+    marginRight: 10,
   },
   projectName: {
     flex: 2,
@@ -85,8 +85,8 @@ const styles = StyleSheet.create({
   projectNameText: {
     fontSize: themes.PRIMARY_HEADER_TEXT_SIZE + 5,
     fontWeight: 'bold',
-    textAlign: 'center'
-  }
+    textAlign: 'center',
+  },
 });
 
 export default styles;

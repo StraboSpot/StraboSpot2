@@ -1,13 +1,13 @@
 import React, {useState, useEffect} from 'react';
-import {connect} from "react-redux";
+import {connect} from 'react-redux';
 // import {Text, View, FlatList, ScrollView, ActivityIndicator} from 'react-native';
-import {SortedViews} from "./settingsPanel.constants";
-import * as SharedUI from "../../shared/ui";
-import {imageReducers} from "../images/Image.constants";
-import {spotReducers} from "../../spots/Spot.constants";
-import {homeReducers} from "../../views/home/Home.constants";
-import {notebookReducers} from "../notebook-panel/Notebook.constants";
-import {settingPanelReducers} from "../../components/settings-panel/settingsPanel.constants";
+import {SortedViews} from './settingsPanel.constants';
+import * as SharedUI from '../../shared/ui';
+import {imageReducers} from '../images/Image.constants';
+import {spotReducers} from '../../spots/Spot.constants';
+import {homeReducers} from '../../views/home/Home.constants';
+import {notebookReducers} from '../notebook-panel/Notebook.constants';
+import {settingPanelReducers} from '../../components/settings-panel/settingsPanel.constants';
 // import imageStyles from "../images/images.styles";
 // import {Button, ListItem} from "react-native-elements";
 // import {isEmpty} from '../../shared/Helpers';
@@ -23,13 +23,13 @@ const sortButtons = (props) => {
 
   useEffect(() => {
     updateIndex(props.selectedButtonIndex);
-    console.log('render is Sorting.js!')
+    console.log('render is Sorting.js!');
   }, []);
 
   useEffect(() => {
     // props.setSortedList(spots);
     // setRefresh(!refresh);
-    console.log('render Recent Views!')
+    console.log('render Recent Views!');
   }, [selectedSpot, spots]);
 
   const updateIndex = (selectedButtonIndex) => {
@@ -39,7 +39,7 @@ const sortButtons = (props) => {
         console.log('Chronological Selected');
         props.setSortedListView(SortedViews.CHRONOLOGICAL);
         props.setSortedList(props.spots.sort(((a, b) => {
-          return new Date(a.properties.date) - new Date(b.properties.date)
+          return new Date(a.properties.date) - new Date(b.properties.date);
         })));
         break;
       case 1:
@@ -76,8 +76,8 @@ const mapStateToProps = (state) => {
     settingsPageVisible: state.settingsPanel.settingsPageVisible,
     selectedImage: state.spot.selectedAttributes[0],
     selectedSpot: state.spot.selectedSpot,
-    sortedList: state.settingsPanel.sortedList
-  }
+    sortedList: state.settingsPanel.sortedList,
+  };
 };
 
 const mapDispatchToProps = {
@@ -87,7 +87,7 @@ const mapDispatchToProps = {
   setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),
   setSortedListView: (view) => ({type: settingPanelReducers.SET_SORTED_VIEW, view: view}),
   setSelectedButtonIndex: (index) => ({type: settingPanelReducers.SET_SELECTED_BUTTON_INDEX, index: index}),
-  setSortedList: (type) => ({type: settingPanelReducers.SET_SORTED_LIST, sortedList: type})
+  setSortedList: (type) => ({type: settingPanelReducers.SET_SORTED_LIST, sortedList: type}),
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(sortButtons);

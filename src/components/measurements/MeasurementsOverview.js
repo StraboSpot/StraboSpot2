@@ -1,10 +1,10 @@
 import React from 'react';
 import {FlatList, View} from 'react-native';
-import {connect} from "react-redux";
+import {connect} from 'react-redux';
 
-import MeasurementItem from "./MeasurementItem";
-import {NotebookPages, notebookReducers} from "../notebook-panel/Notebook.constants";
-import {spotReducers} from "../../spots/Spot.constants";
+import MeasurementItem from './MeasurementItem';
+import {NotebookPages, notebookReducers} from '../notebook-panel/Notebook.constants';
+import {spotReducers} from '../../spots/Spot.constants';
 
 const MeasurementsOverview = (props) => {
   const onMeasurementPressed = (item) => {
@@ -27,8 +27,8 @@ const MeasurementsOverview = (props) => {
 
 function mapStateToProps(state) {
   return {
-    spot: state.spot.selectedSpot
-  }
+    spot: state.spot.selectedSpot,
+  };
 }
 
 const mapDispatchToProps = {

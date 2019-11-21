@@ -1,15 +1,15 @@
 import RNSimpleCompass from 'react-native-simple-compass';
 import React, {Component} from 'react';
-import {connect} from "react-redux";
+import {connect} from 'react-redux';
 import {Animated, Easing, Alert, Image, View, Text, Dimensions, TouchableOpacity} from 'react-native';
 import {setUpdateIntervalForType, SensorTypes, magnetometer, accelerometer} from 'react-native-sensors';
-import {getNewId, mod, toRadians, toDegrees, roundToDecimalPlaces, isEmpty} from "../../../shared/Helpers";
-import {CompassToggleButtons} from "./Compass.constants";
-import {Button, ListItem} from "react-native-elements";
-import {Switch} from "react-native-switch";
-import {spotReducers} from "../../../spots/Spot.constants";
-import {homeReducers, Modals} from "../../../views/home/Home.constants";
-import {NotebookPages, notebookReducers} from "../../notebook-panel/Notebook.constants";
+import {getNewId, mod, toRadians, toDegrees, roundToDecimalPlaces, isEmpty} from '../../../shared/Helpers';
+import {CompassToggleButtons} from './Compass.constants';
+import {Button, ListItem} from 'react-native-elements';
+import {Switch} from 'react-native-switch';
+import {spotReducers} from '../../../spots/Spot.constants';
+import {homeReducers, Modals} from '../../../views/home/Home.constants';
+import {NotebookPages, notebookReducers} from '../../notebook-panel/Notebook.constants';
 // import Orientation from 'react-native-orientation-locker';
 import Slider from '../../../shared/ui/Slider';
 import Measurements from '../Measurements';
@@ -38,10 +38,10 @@ class Compass extends Component {
         x: 0,
         y: 0,
         z: 0,
-        timestamp: null
+        timestamp: null,
       },
       subscriptions: {
-        accelerometer: null
+        accelerometer: null,
       },
       compassData: {
         strike: null,
@@ -50,12 +50,12 @@ class Compass extends Component {
         trend: null,
         plunge: null,
         rake: null,
-        rake_calculated: 'no'
+        rake_calculated: 'no',
       },
       toggles: [CompassToggleButtons.PLANAR],
       spinValue: new Animated.Value(0),
       sliderValue: 5,
-      showDataModal: false
+      showDataModal: false,
     };
   }
 
@@ -74,18 +74,18 @@ class Compass extends Component {
       this.setState(prevState => {
           return {
             ...prevState,
-            magnetometer: degree
-          }
+            magnetometer: degree,
+          };
         },
         // () => console.log('magnetometer reading:', this.state.magnetometer)
       );
       // RNSimpleCompass.stop();
     });
     console.log('Compass subscribed');
-  };
+  }
 
   async componentWillUnmount() {
-    if (this.props.deviceDimensions.width < 500){
+    if (this.props.deviceDimensions.width < 500) {
       // Orientation.unlockAllOrientations()
     }
     // else Orientation.lockToLandscapeLeft();
@@ -93,7 +93,7 @@ class Compass extends Component {
     RNSimpleCompass.stop();
     console.log('Compass unsubscribed');
     this._isMounted = false;
-  };
+  }
 
   // _onOrientationDidChange = (orientation) => {
   //   if (orientation === 'PORTRAIT') {
@@ -117,7 +117,7 @@ class Compass extends Component {
         dip_direction: this.state.compassData.dipdir,
         dip: this.state.compassData.dip,
         type: 'planar_orientation',
-        quality: this.state.sliderValue.toString()
+        quality: this.state.sliderValue.toString(),
       });
     }
     if (this.state.toggles.includes(CompassToggleButtons.LINEAR)) {
@@ -127,7 +127,7 @@ class Compass extends Component {
         rake: this.state.compassData.rake,
         rake_calculated: 'yes',
         type: 'linear_orientation',
-        quality: this.state.sliderValue.toString()
+        quality: this.state.sliderValue.toString(),
       });
     }
 
@@ -153,8 +153,8 @@ class Compass extends Component {
       this.setState(prevState => {
           return {
             ...prevState,
-            accelerometer: {...data}
-          }
+            accelerometer: {...data},
+          };
         },
         () => {
           // console.log('Accelerometer state:', this.state.accelerometer);
@@ -233,9 +233,9 @@ class Compass extends Component {
             trend: roundToDecimalPlaces(trend, 0),
             plunge: roundToDecimalPlaces(plunge, 0),
             rake: roundToDecimalPlaces(rake, 0),
-            rake_calculated: 'yes'
-          }
-        }
+            rake_calculated: 'yes',
+          },
+        };
       },
       // () => console.log('Calculated Data:', this.state.compassData)
     );
@@ -301,9 +301,9 @@ class Compass extends Component {
             trend: roundToDecimalPlaces(trend, 0),
             plunge: roundToDecimalPlaces(plunge, 0),
             rake: roundToDecimalPlaces(rake, 0),
-            rake_calculated: 'yes'
-          }
-        }
+            rake_calculated: 'yes',
+          },
+        };
       },
       // () => console.log('Calculated Data:', this.state.compassData)
     );
@@ -313,7 +313,7 @@ class Compass extends Component {
   renderCompass = () => {
     return (
       <TouchableOpacity style={styles.compassImageContainer} onPress={() => this.grabMeasurements()}>
-        <Image source={require("../../../assets/images/compass/compass.png")}
+        <Image source={require('../../../assets/images/compass/compass.png')}
                style={{
                  marginTop: 25,
                  height: 220,
@@ -368,19 +368,19 @@ class Compass extends Component {
   // Render the strike and dip symbol inside the compass
   renderStrikeDipSymbol = () => {
     // this.state = {spinValue: new Animated.Value(0)};
-    let image = require("../../../assets/images/compass/StrikeDipCentered.png");
+    let image = require('../../../assets/images/compass/StrikeDipCentered.png');
     const spin = this.state.spinValue.interpolate({
       inputRange: [0, this.state.compassData.strike],
-      outputRange: ['0deg', this.state.compassData.strike + 'deg']
+      outputRange: ['0deg', this.state.compassData.strike + 'deg'],
     });
-// First set up animation
+    // First set up animation
     Animated.timing(
       this.state.spinValue,
       {
         toValue: this.state.compassData.strike,
         easing: Easing.linear(),
-        useNativeDriver: true
-      }
+        useNativeDriver: true,
+      },
     ).start();
 
     return (
@@ -389,7 +389,7 @@ class Compass extends Component {
         source={image}
         style={
           [styles.strikeAndDipLine,
-            {transform: [{rotate: spin}]}
+            {transform: [{rotate: spin}]},
           ]}/>
     );
   };
@@ -397,19 +397,19 @@ class Compass extends Component {
   // Render the strike and dip symbol inside the compass
   renderTrendSymbol = () => {
     // this.state = {spinValue: new Animated.Value(0)};
-    let image = require("../../../assets/images/compass/TrendLine.png");
+    let image = require('../../../assets/images/compass/TrendLine.png');
     const spin = this.state.spinValue.interpolate({
       inputRange: [0, 360],
-      outputRange: [this.state.compassData.trend + 'deg', this.state.compassData.trend + 'deg']
+      outputRange: [this.state.compassData.trend + 'deg', this.state.compassData.trend + 'deg'],
     });
-// First set up animation
+    // First set up animation
     Animated.timing(
       this.state.spinValue,
       {
         toValue: this.state.spinValue,
         easing: Easing.linear,
-        useNativeDriver: true
-      }
+        useNativeDriver: true,
+      },
     ).start();
 
     return (
@@ -419,7 +419,7 @@ class Compass extends Component {
         style={
           [styles.trendLine,
             // {transform: [{rotate: this.state.compassData.trend + 'deg'}]}
-            {transform: [{rotate: spin}]}
+            {transform: [{rotate: spin}]},
           ]}/>
     );
   };
@@ -447,8 +447,8 @@ class Compass extends Component {
                   circleInActiveColor={'#000000'}
                   changeValueImmediately={true} // if rendering inside circle, change state immediately or wait for animation to complete
                   innerCircleStyle={{
-                    alignItems: "center",
-                    justifyContent: "center"
+                    alignItems: 'center',
+                    justifyContent: 'center',
                   }} // style for inner animated circle for what you (may) be rendering inside the circle
                 />
               </View>
@@ -463,8 +463,8 @@ class Compass extends Component {
     this.setState(prevState => {
       return {
         ...prevState,
-        toggles: has ? prevState.toggles.filter(i => i !== switchType) : prevState.toggles.concat(switchType)
-      }
+        toggles: has ? prevState.toggles.filter(i => i !== switchType) : prevState.toggles.concat(switchType),
+      };
     }, () => console.log('toggles', this.state.toggles));
   };
 
@@ -472,9 +472,9 @@ class Compass extends Component {
     this.setState(prevState => {
       return {
         ...prevState,
-        showDataModal: !prevState.showDataModal
-      }
-    })
+        showDataModal: !prevState.showDataModal,
+      };
+    });
   };
 
   render() {
@@ -483,7 +483,6 @@ class Compass extends Component {
       <View style={{alignItems: 'center'}}>
         {this.renderMeasurements()}
       </View>;
-
 
 
     if (this.props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {
@@ -499,7 +498,7 @@ class Compass extends Component {
             textStyle={{color: themes.BLUE, fontSize: 16, textAlign: 'center'}}
             onPress={() => this.props.onPress(NotebookPages.MEASUREMENT)}
           > Go to {this.props.spot.properties.name}</IconButton>
-        </View>
+        </View>;
       }
     }
     else if (this.props.modalVisible === Modals.NOTEBOOK_MODALS.COMPASS) {
@@ -516,16 +515,16 @@ class Compass extends Component {
           type={'clear'}
           titleStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 16}}
           onPress={() => {
-            this.viewData()
+            this.viewData();
           }}
         />
-      </View>
+      </View>;
     }
 
     if (isEmpty(this.props.spot)) {
-      return   <View style={[styles.samplesContainer, styles.noSpotContent]}>
+      return <View style={[styles.samplesContainer, styles.noSpotContent]}>
         <Text style={{fontSize: 30}}>No Spot Selected</Text>
-      </View>
+      </View>;
     }
     return (
       <View style={{flex: 1}}>
@@ -558,8 +557,8 @@ class Compass extends Component {
           {/*/>*/}
         </View>
       </View>
-    )
-  };
+    );
+  }
 }
 
 function mapStateToProps(state) {
@@ -568,7 +567,7 @@ function mapStateToProps(state) {
     isNotebookPanelVisible: state.notebook.isNotebookPanelVisible,
     modalVisible: state.home.modalVisible,
     deviceDimensions: state.home.deviceDimensions,
-  }
+  };
 }
 
 const mapDispatchToProps = {

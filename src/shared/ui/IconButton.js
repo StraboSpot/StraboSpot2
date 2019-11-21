@@ -1,5 +1,5 @@
-import {TouchableOpacity, TouchableNativeFeedback, Text, View, StyleSheet, Platform, Image} from "react-native";
-import React from "react";
+import {TouchableOpacity, TouchableNativeFeedback, Text, View, StyleSheet, Platform, Image} from 'react-native';
+import React from 'react';
 
 const iconButton = props => {
   const content = (
@@ -15,7 +15,7 @@ const iconButton = props => {
     </View>
   );
 
-  if (Platform.OS === "ios") {
+  if (Platform.OS === 'ios') {
     return (
       <TouchableOpacity style={props.style} onPress={props.onPress}>
         {content}

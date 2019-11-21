@@ -1,5 +1,5 @@
-import {StyleSheet} from "react-native";
-import * as themes from "../../../shared/styles.constants";
+import {StyleSheet} from 'react-native';
+import * as themes from '../../../shared/styles.constants';
 
 const attributesStyles = StyleSheet.create({
   listHeading: {
@@ -12,7 +12,7 @@ const attributesStyles = StyleSheet.create({
   listContainer: {
     // padding: 5,
     paddingTop: 0,
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
   headingText: {
     marginLeft: 10,
@@ -20,7 +20,7 @@ const attributesStyles = StyleSheet.create({
     fontSize: themes.PRIMARY_HEADER_TEXT_SIZE - 2,
   },
   spotListListContainer: {
-    flex:1,
+    flex: 1,
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
   },
   text: {
@@ -29,7 +29,7 @@ const attributesStyles = StyleSheet.create({
   textContainer: {
     alignItems: 'center',
     paddingTop: 50,
-  }
+  },
 });
 
 export default attributesStyles;

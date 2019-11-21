@@ -1,24 +1,24 @@
-import React, {useState} from 'react'
-import {Animated, Easing, Text, View} from 'react-native'
+import React, {useState} from 'react';
+import {Animated, Easing, Text, View} from 'react-native';
 import {connect} from 'react-redux';
 import NotebookHeader from './notebook-header/NotebookHeader';
 import NotebookFooter from './notebook-footer/NotebookFooter';
 import Overview from './Overview';
-import * as SharedUI from '../../shared/ui/index'
+import * as SharedUI from '../../shared/ui/index';
 import MeasurementsPage from '../measurements/Measurements';
 import MeasurementDetailPage from '../measurements/MeasurementDetail';
 import NotesPage from '../notes/Notes.view';
 import SamplesPage from '../samples/SamplesNotebook.view';
-import {notebookReducers, NotebookPages} from "./Notebook.constants";
-import {homeReducers, Modals} from "../../views/home/Home.constants";
-import {isEmpty} from "../../shared/Helpers";
-import {FlingGestureHandler, Directions, State} from 'react-native-gesture-handler'
+import {notebookReducers, NotebookPages} from './Notebook.constants';
+import {homeReducers, Modals} from '../../views/home/Home.constants';
+import {isEmpty} from '../../shared/Helpers';
+import {FlingGestureHandler, Directions, State} from 'react-native-gesture-handler';
 // import {openAllSpotsPanelFromMenu, closeAllSpotsPanelFromMenu, animatePanels} from '../../shared/Helpers';
 
 // Styles
-import notebookStyles from "./NotebookPanel.styles";
+import notebookStyles from './NotebookPanel.styles';
 import * as themes from '../../shared/styles.constants';
-import AllSpotsView from "./AllSpots.view";
+import AllSpotsView from './AllSpots.view';
 
 const NotebookPanel = props => {
 
@@ -28,10 +28,10 @@ const NotebookPanel = props => {
   const setNotebookPageVisible = page => {
     const pageVisible = props.setNotebookPageVisible(page);
     if (pageVisible.page === NotebookPages.MEASUREMENT || pageVisible === NotebookPages.MEASUREMENTDETAIL) {
-      props.setModalVisible(Modals.NOTEBOOK_MODALS.COMPASS)
+      props.setModalVisible(Modals.NOTEBOOK_MODALS.COMPASS);
     }
     else if (pageVisible.page === NotebookPages.SAMPLE) {
-      props.setModalVisible(Modals.NOTEBOOK_MODALS.SAMPLE)
+      props.setModalVisible(Modals.NOTEBOOK_MODALS.SAMPLE);
     }
     else props.setModalVisible(null);
   };
@@ -60,51 +60,53 @@ const NotebookPanel = props => {
     // console.log('Selected Spot:', props.spot);
 
     const allSpotsPanel = <View style={notebookStyles.allSpotsPanel}>
-      <AllSpotsView />
+      <AllSpotsView/>
     </View>;
 
     return (
 
+      <FlingGestureHandler
+        direction={Directions.RIGHT}
+        numberOfPointers={2}
+        onHandlerStateChange={(ev) => _onRightFlingHandlerStateChange(ev)}
+      >
         <FlingGestureHandler
-          direction={Directions.RIGHT}
+          direction={Directions.LEFT}
           numberOfPointers={2}
-          onHandlerStateChange={(ev) => _onRightFlingHandlerStateChange(ev)}
+          onHandlerStateChange={(ev) => _onLeftFlingHandlerStateChange(ev)}
         >
-          <FlingGestureHandler
-            direction={Directions.LEFT}
-            numberOfPointers={2}
-            onHandlerStateChange={(ev) => _onLeftFlingHandlerStateChange(ev)}
+          <Animated.View
+            // style={props.isAllSpotsPanelVisible ? [notebookStyles.panel, {marginRight: 125}] : notebookStyles.panel}
+            style={notebookStyles.panel}
           >
-            <Animated.View
-              // style={props.isAllSpotsPanelVisible ? [notebookStyles.panel, {marginRight: 125}] : notebookStyles.panel}
-              style={notebookStyles.panel}
-            >
-              <View style={props.isAllSpotsPanelVisible ? [notebookStyles.headerContainer, {marginRight: 125}] : notebookStyles.headerContainer}>
-                <NotebookHeader
-                  onPress={props.onPress}
-                />
-              </View>
-              <View style={props.isAllSpotsPanelVisible ? [notebookStyles.centerContainer, {paddingRight: 125}] : notebookStyles.centerContainer}>
-                {props.notebookPageVisible === NotebookPages.OVERVIEW ||
-                  props.notebookPageVisible === undefined ? <Overview/> : null}
-                {props.notebookPageVisible === NotebookPages.MEASUREMENT ? <MeasurementsPage/> : null}
-                {props.notebookPageVisible === NotebookPages.MEASUREMENTDETAIL ? <MeasurementDetailPage/> : null}
-                {props.notebookPageVisible === NotebookPages.NOTE ? <NotesPage/> : null}
-                {props.notebookPageVisible === NotebookPages.SAMPLE ? <SamplesPage/> : null}
-              </View>
-              <View  style={props.isAllSpotsPanelVisible ? [notebookStyles.footerContainer, {marginRight: 125}] :
-                notebookStyles.footerContainer}>
-                <NotebookFooter
-                  openPage={(page) => setNotebookPageVisible(page)}
-                  onPress={(camera) => props.onPress(camera)}
-                />
-              </View>
-              {/*{props.isAllSpotsPanelVisible ? allSpotsPanel : null}*/}
-              {props.isAllSpotsPanelVisible ? allSpotsPanel : null}
-            </Animated.View>
-          </FlingGestureHandler>
+            <View
+              style={props.isAllSpotsPanelVisible ? [notebookStyles.headerContainer, {marginRight: 125}] : notebookStyles.headerContainer}>
+              <NotebookHeader
+                onPress={props.onPress}
+              />
+            </View>
+            <View
+              style={props.isAllSpotsPanelVisible ? [notebookStyles.centerContainer, {paddingRight: 125}] : notebookStyles.centerContainer}>
+              {props.notebookPageVisible === NotebookPages.OVERVIEW ||
+              props.notebookPageVisible === undefined ? <Overview/> : null}
+              {props.notebookPageVisible === NotebookPages.MEASUREMENT ? <MeasurementsPage/> : null}
+              {props.notebookPageVisible === NotebookPages.MEASUREMENTDETAIL ? <MeasurementDetailPage/> : null}
+              {props.notebookPageVisible === NotebookPages.NOTE ? <NotesPage/> : null}
+              {props.notebookPageVisible === NotebookPages.SAMPLE ? <SamplesPage/> : null}
+            </View>
+            <View style={props.isAllSpotsPanelVisible ? [notebookStyles.footerContainer, {marginRight: 125}] :
+              notebookStyles.footerContainer}>
+              <NotebookFooter
+                openPage={(page) => setNotebookPageVisible(page)}
+                onPress={(camera) => props.onPress(camera)}
+              />
+            </View>
+            {/*{props.isAllSpotsPanelVisible ? allSpotsPanel : null}*/}
+            {props.isAllSpotsPanelVisible ? allSpotsPanel : null}
+          </Animated.View>
         </FlingGestureHandler>
-    )
+      </FlingGestureHandler>
+    );
   }
   else {
     props.setModalVisible(null);
@@ -116,7 +118,7 @@ const NotebookPanel = props => {
           textStyle={{color: themes.PRIMARY_ACCENT_COLOR}}
           onPress={props.closeNotebook}>Close Notebook</SharedUI.ButtonNoBackground>
       </View>
-    )
+    );
   }
 };
 
@@ -126,8 +128,8 @@ function mapStateToProps(state) {
     featuresSelected: state.spot.featuresSelected,
     isAllSpotsPanelVisible: state.home.isAllSpotsPanelVisible,
     notebookPageVisible: isEmpty(state.notebook.visibleNotebookPagesStack) ?
-      null : state.notebook.visibleNotebookPagesStack.slice(-1)[0]
-  }
+      null : state.notebook.visibleNotebookPagesStack.slice(-1)[0],
+  };
 }
 
 const mapDispatchToProps = {

@@ -1,7 +1,7 @@
 import {projectReducers} from './Project.constants';
 
 const initialState = {
-  project: {}
+  project: {},
 };
 
 export const projectsReducer = (state = initialState, action) => {
@@ -9,8 +9,8 @@ export const projectsReducer = (state = initialState, action) => {
     case projectReducers.PROJECTS:
       return {
         ...state,
-        project: action.project
-      }
+        project: action.project,
+      };
   }
   return state;
 };

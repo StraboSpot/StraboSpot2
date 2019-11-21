@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
   button: {
     flexDirection: 'row',
     paddingLeft: 7,
-    paddingRight: 5
+    paddingRight: 5,
   },
   textStyle: {
     fontSize: 14,
@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     fontWeight: 'bold',
     fontSize: 20,
-    marginLeft: 20
+    marginLeft: 20,
   },
   icons: {
     height: 50,
@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingTop: 7,
     paddingBottom: 3,
-    paddingLeft: 10
+    paddingLeft: 10,
   },
   itemSubContainer: {
     width: '90%',
@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingTop: 3,
     paddingBottom: 7,
-    paddingLeft: 20
+    paddingLeft: 20,
   },
   itemTextStyle: {
     fontSize: themes.PRIMARY_TEXT_SIZE,
@@ -51,12 +51,12 @@ const styles = StyleSheet.create({
     marginLeft: 15,
   },
   buttonPadding: {
-    paddingLeft: 10
+    paddingLeft: 10,
   },
   switch: {
     flex: 1,
-    alignItems: 'flex-end'
-  }
+    alignItems: 'flex-end',
+  },
 });
 
 export default styles;

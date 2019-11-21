@@ -1,8 +1,8 @@
-import {imageReducers} from "./Image.constants";
+import {imageReducers} from './Image.constants';
 
 const initialImageState = {
   imagePaths: {},
-  sortedView: null
+  sortedView: null,
 };
 
 export const imageReducer = (state = initialImageState, action) => {
@@ -18,7 +18,7 @@ export const imageReducer = (state = initialImageState, action) => {
       // console.log(state.imagePaths, '\n', imagePathsTemp);
       return {
         ...state,
-        imagePaths: {...state.imagePaths, ...imagePathsTemp}
+        imagePaths: {...state.imagePaths, ...imagePathsTemp},
       };
   }
   return state;

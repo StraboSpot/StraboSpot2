@@ -1,14 +1,14 @@
 import React from 'react';
-import {ActivityIndicator, TouchableOpacity, TouchableNativeFeedback, Text, View, StyleSheet, Platform} from "react-native";
+import {ActivityIndicator, TouchableOpacity, TouchableNativeFeedback, Text, View, StyleSheet, Platform} from 'react-native';
 import {Image} from 'react-native-elements';
 
 const imageButton = props => {
   const content = (
-      <Image
+    <Image
       source={props.source}
       style={props.style}
       PlaceholderContent={<ActivityIndicator/>}
-      />
+    />
   );
 
   if (Platform.OS === 'ios') {

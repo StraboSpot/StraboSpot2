@@ -8,7 +8,7 @@ import IconButton from '../../../shared/ui/IconButton';
 
 // Styles
 import headerStyles from './NotebookHeader.styles';
-import {spotReducers} from "../../../spots/Spot.constants";
+import {spotReducers} from '../../../spots/Spot.constants';
 
 const NotebookHeader = props => {
 
@@ -21,10 +21,10 @@ const NotebookHeader = props => {
       const lat = props.spot.geometry.coordinates[1];
       const degreeSymbol = '\u00B0';
       const latitude = lat.toFixed(6);
-      let latitudeCardinal = Math.sign(lat) >= 0 ? "North" : "South";
+      let latitudeCardinal = Math.sign(lat) >= 0 ? 'North' : 'South';
 
       const longitude = lng.toFixed(6);
-      let longitudeCardinal = Math.sign(lng) >= 0 ? "East" : "West";
+      let longitudeCardinal = Math.sign(lng) >= 0 ? 'East' : 'West';
 
       return longitude + degreeSymbol + ' ' + longitudeCardinal + ', ' + latitude + degreeSymbol + ' ' + latitudeCardinal;
     }
@@ -53,13 +53,13 @@ const NotebookHeader = props => {
         />
       </View>
     </View>
-  )
+  );
 };
 
 function mapStateToProps(state) {
   return {
-    spot: state.spot.selectedSpot
-  }
+    spot: state.spot.selectedSpot,
+  };
 }
 
 const mapDispatchToProps = {

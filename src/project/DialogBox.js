@@ -1,7 +1,13 @@
 import React from 'react';
-import Dialog, { DialogTitle, DialogContent, SlideAnimation, DialogFooter, DialogButton } from 'react-native-popup-dialog';
+import Dialog, {
+  DialogTitle,
+  DialogContent,
+  SlideAnimation,
+  DialogFooter,
+  DialogButton,
+} from 'react-native-popup-dialog';
 import * as ProjectActions from './Project.constants';
-import styles from "./Project.styles";
+import styles from './Project.styles';
 
 const DialogBox = (props) => {
   return (
@@ -35,7 +41,7 @@ const DialogBox = (props) => {
               textStyle={styles.dialogButtonText}
             />
             <DialogButton
-              text="CANCEL"
+              text='CANCEL'
               onPress={() => props.onPress(ProjectActions.CANCEL)}
               style={styles.dialogButton}
               textStyle={[styles.dialogButtonText, {color: 'red'}]}
@@ -57,4 +63,4 @@ const DialogBox = (props) => {
   );
 };
 
-export default DialogBox ;
+export default DialogBox;

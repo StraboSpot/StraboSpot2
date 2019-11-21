@@ -5,6 +5,3 @@ export const SIGN_UP = 'SignUp';
 export const SPOT_PAGE = 'SpotPage';
 export const IMAGEGALLERY = 'ImageGallery';
 export const IMAGEINFO = 'ImageInfo';
-
-
-

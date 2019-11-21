@@ -30,7 +30,7 @@ export default class Example extends React.Component {
     this.transX = cond(
       eq(this.gestureState, State.ACTIVE),
       this.addX,
-      set(this.offsetX, this.addX)
+      set(this.offsetX, this.addX),
     );
 
     this.transY = cond(eq(this.gestureState, State.ACTIVE), this.addY, [
@@ -39,7 +39,7 @@ export default class Example extends React.Component {
   }
 
   onDrop = (coords) => {
-    console.log('x', coords[0], 'y', coords[1])
+    console.log('x', coords[0], 'y', coords[1]);
   };
 
   render() {
@@ -49,7 +49,7 @@ export default class Example extends React.Component {
           {() =>
             cond(
               eq(this.gestureState, State.END),
-              call([this.addX, this.addY], this.onDrop)
+              call([this.addX, this.addY], this.onDrop),
             )
           }
         </Animated.Code>
@@ -58,19 +58,7 @@ export default class Example extends React.Component {
           onGestureEvent={this.onGestureEvent}
           onHandlerStateChange={this.onGestureEvent}>
           <Animated.View
-            style={[
-              this.props.style,
-              {
-                transform: [
-                  {
-                    translateX: this.transX,
-                  },
-                  {
-                    translateY: this.transY,
-                  },
-                ],
-              },
-            ]}
+            style={[this.props.style, {transform: [{translateX: this.transX}, {translateY: this.transY}]}]}
           >
             {this.props.children}
           </Animated.View>
@@ -84,5 +72,5 @@ const styles = StyleSheet.create({
   container: {
     zIndex: 100,
     backgroundColor: 'tomato',
-  }
+  },
 });

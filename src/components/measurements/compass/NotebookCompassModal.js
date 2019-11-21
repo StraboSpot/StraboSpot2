@@ -1,5 +1,5 @@
 import React from 'react';
-import {Platform, View} from "react-native";
+import {Platform, View} from 'react-native';
 import Modal from '../../../shared/ui/modal/Modal.view';
 import styles from './CompassStyles';
 import Compass from './Compass';
@@ -7,7 +7,7 @@ import RMCompass from './RMCompass';
 import DragAnimation from '../../../shared/ui/DragAmination';
 
 const NotebookCompassModal = (props) => {
-  if (Platform.OS === 'android'){
+  if (Platform.OS === 'android') {
     return (
       <View style={styles.modalPosition}>
         <Modal
@@ -18,9 +18,9 @@ const NotebookCompassModal = (props) => {
           textStyle={{fontWeight: 'bold'}}
         />
       </View>
-    )
-}
-else {
+    );
+  }
+  else {
     return (
       <DragAnimation style={styles.modalPosition}>
         <Modal
@@ -31,7 +31,7 @@ else {
           textStyle={{fontWeight: 'bold'}}
         />
       </DragAnimation>
-    )
+    );
   }
 };
 

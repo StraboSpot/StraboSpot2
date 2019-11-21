@@ -1,6 +1,6 @@
-import React from 'react'
+import React from 'react';
 // Return UUID
-import {Animated, Easing} from "react-native";
+import {Animated, Easing} from 'react-native';
 // import {SettingsMenuItems} from "../components/settings-panel/SettingsMenu.constants";
 
 export const getNewId = () => {
@@ -48,7 +48,7 @@ export const isEmpty = (value) => {
 // Convert a string to title case
 export function toTitleCase(str) {
   return str.toLowerCase().replace(/\b[A-Z|a-z]/g, function (t) {
-    return t.toUpperCase()
+    return t.toUpperCase();
   });
 }
 

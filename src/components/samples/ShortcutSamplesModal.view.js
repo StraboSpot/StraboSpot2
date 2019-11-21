@@ -3,10 +3,10 @@ import Modal from '../../shared/ui/modal/Modal.view';
 import styles from './samplesStyles/samples.style';
 import Samples from './Samples.view';
 import DragAnimation from '../../shared/ui/DragAmination';
-import {Platform, View} from "react-native";
+import {Platform, View} from 'react-native';
 
 const shortcutSamplesModalView = (props) => {
-  if (Platform.OS === 'android'){
+  if (Platform.OS === 'android') {
     return (
       <View style={styles.modalPositionShortcutView}>
         <Modal
@@ -17,8 +17,9 @@ const shortcutSamplesModalView = (props) => {
           textStyle={{fontWeight: 'bold'}}
         />
       </View>
-    )
-  } else {
+    );
+  }
+  else {
     return (
       <DragAnimation style={styles.modalPositionShortcutView}>
         <Modal

@@ -2,8 +2,8 @@ import React, {useState} from 'react';
 import {Dimensions, Platform, Text, View} from 'react-native';
 import {connect} from 'react-redux';
 import AnimatedPoint from 'react-native-reanimated';
-import {State, PanGestureHandler} from "react-native-gesture-handler";
-import {mapReducers} from "./Map.constants";
+import {State, PanGestureHandler} from 'react-native-gesture-handler';
+import {mapReducers} from './Map.constants';
 
 //Styles
 import mapStyles from './Maps.styles';
@@ -23,14 +23,14 @@ const vertexDrag = (props) => {
   const transX = cond(
     eq(gestureState, State.ACTIVE),
     addX, [
-      set(offsetX, addX)
-    ]
+      set(offsetX, addX),
+    ],
   );
   const transY = cond(
     eq(gestureState, State.ACTIVE),
     addY, [
-      set(offsetY, addY)
-    ]
+      set(offsetY, addY),
+    ],
   );
 
   const onGestureEvent = event([
@@ -38,7 +38,7 @@ const vertexDrag = (props) => {
       nativeEvent: {
         translationX: dragX,
         translationY: dragY,
-        state: gestureState
+        state: gestureState,
       },
     },
   ]);
@@ -47,7 +47,7 @@ const vertexDrag = (props) => {
     // console.log(`You are at x: ${coords[0]} and y: ${coords[1]}!`);
     let endCoords = [props.vertexStartCoords[0] + coords[0], props.vertexStartCoords[1] + coords[1]];
     console.log('x from comp', coords[0], 'y from comp', coords[1], 'endCoords:', endCoords);
-    props.setVertexEndCoords(endCoords)
+    props.setVertexEndCoords(endCoords);
   };
 
   return (
@@ -57,7 +57,7 @@ const vertexDrag = (props) => {
           cond(
             // eq(gestureState, State.ACTIVE),
             eq(gestureState, State.END),
-            call([transX, transY], onDrop)
+            call([transX, transY], onDrop),
           )
         }
       </AnimatedPoint.Code>
@@ -89,12 +89,12 @@ const vertexDrag = (props) => {
 
 const mapStateToProps = (state) => {
   return {
-    vertexStartCoords: state.map.vertexStartCoords
-  }
+    vertexStartCoords: state.map.vertexStartCoords,
+  };
 };
 
 const mapDispatchToProps = {
-  setVertexEndCoords: (coords) => ({type: mapReducers.VERTEX_END_COORDS, vertexEndCoords: coords})
+  setVertexEndCoords: (coords) => ({type: mapReducers.VERTEX_END_COORDS, vertexEndCoords: coords}),
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(vertexDrag);

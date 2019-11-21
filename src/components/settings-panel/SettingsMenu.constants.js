@@ -4,7 +4,7 @@ export const SettingsMenuItems = {
     SPOTS_LIST: 'Spots List',
     IMAGE_GALLERY: 'Image Gallery',
     SAMPLES: 'Samples',
-    TAGS: 'Tags'
+    TAGS: 'Tags',
   },
   APP_PREFERENCES: {
     PROJECT_SETTINGS: 'Project Settings',
@@ -16,43 +16,43 @@ export const SettingsMenuItems = {
     CUSTOM: 'Custom Maps',
     IMAGE_BASEMAPS: 'Image Basemaps',
     MANAGE_OFFLINE_MAPS: 'Manage Offline Maps',
-    UNITS: 'Units'
+    UNITS: 'Units',
   },
   HELP: {
     ABOUT: 'About Strabo',
-    DOCUMENTATION: 'Documentation'
+    DOCUMENTATION: 'Documentation',
   },
   USER_PREFERENCES: {
-    SIGN_OUT: 'Sign Out'
+    SIGN_OUT: 'Sign Out',
   },
   PROJECT: {
-    SWITCH_PROJECT:'Projects'
-  }
+    SWITCH_PROJECT: 'Projects',
+  },
 };
 
 export const ShortcutToggleButtons = {
   TAG: {
     NAME: 'Tag',
-    ICON: require('../../assets/icons/StraboIcons_Oct2019/TagButton.png')
+    ICON: require('../../assets/icons/StraboIcons_Oct2019/TagButton.png'),
   },
   MEASUREMENT: {
     NAME: 'Measurement',
-    ICON: require('../../assets/icons/StraboIcons_Oct2019/MeasurementButton.png')
+    ICON: require('../../assets/icons/StraboIcons_Oct2019/MeasurementButton.png'),
   },
   SAMPLE: {
     NAME: 'Sample',
-    ICON: require('../../assets/icons/StraboIcons_Oct2019/SampleButton.png')
+    ICON: require('../../assets/icons/StraboIcons_Oct2019/SampleButton.png'),
   },
   NOTE: {
     NAME: 'Note',
-    ICON: require('../../assets/icons/StraboIcons_Oct2019/NoteButton.png')
+    ICON: require('../../assets/icons/StraboIcons_Oct2019/NoteButton.png'),
   },
   PHOTO: {
     NAME: 'Photo',
-    ICON: require('../../assets/icons/StraboIcons_Oct2019/PhotoButton.png')
+    ICON: require('../../assets/icons/StraboIcons_Oct2019/PhotoButton.png'),
   },
   SKETCH: {
     NAME: 'Sketch',
-    ICON: require('../../assets/icons/StraboIcons_Oct2019/SketchButton.png')
-  }
+    ICON: require('../../assets/icons/StraboIcons_Oct2019/SketchButton.png'),
+  },
 };

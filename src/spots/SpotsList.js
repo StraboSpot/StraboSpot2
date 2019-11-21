@@ -1,17 +1,17 @@
 import React, {useState, useEffect} from 'react';
 import {FlatList, ScrollView, Text, View} from 'react-native';
-import {connect} from "react-redux";
+import {connect} from 'react-redux';
 import * as SharedUI from '../shared/ui/index';
-import {imageReducers} from "../components/images/Image.constants";
-import {spotReducers} from "./Spot.constants";
-import {homeReducers} from "../views/home/Home.constants";
-import {notebookReducers} from "../components/notebook-panel/Notebook.constants";
-import {settingPanelReducers, SortedViews} from "../components/settings-panel/settingsPanel.constants";
-import {isEmpty} from "../shared/Helpers";
-import {Button, ListItem} from "react-native-elements";
+import {imageReducers} from '../components/images/Image.constants';
+import {spotReducers} from './Spot.constants';
+import {homeReducers} from '../views/home/Home.constants';
+import {notebookReducers} from '../components/notebook-panel/Notebook.constants';
+import {settingPanelReducers, SortedViews} from '../components/settings-panel/settingsPanel.constants';
+import {isEmpty} from '../shared/Helpers';
+import {Button, ListItem} from 'react-native-elements';
 // import spotListStyles from "../spots/SpotListStyles";
 import attributesStyles from '../components/settings-panel/settingsPanelSectionStyles/Attributes.styles';
-import SortingButtons from "../components/settings-panel/Sorting";
+import SortingButtons from '../components/settings-panel/Sorting';
 
 const SpotsList = (props) => {
   const [sortedList, setSortedList] = useState(props.spots);
@@ -24,15 +24,15 @@ const SpotsList = (props) => {
     return function cleanUp() {
       props.setSortedListView(SortedViews.CHRONOLOGICAL);
       props.setSelectedButtonIndex(0);
-      console.log('CLEANUP!')
-    }
-  }, []);
+      console.log('CLEANUP!');
+    };
+  }, [props]);
 
   useEffect(() => {
     setSortedList(spots);
     setRefresh(!refresh);
-    console.log('render Recent Views in SpotList!')
-  }, [selectedSpot, spots, sortedListView, sortedList]);
+    console.log('render Recent Views in SpotList!');
+  }, [selectedSpot, spots, sortedListView, sortedList, refresh]);
 
   const renderName = (item) => {
     return (
@@ -44,12 +44,12 @@ const SpotsList = (props) => {
           onPress={() => props.getSpotData(item.properties.id)}
         />
       </View>
-    )
+    );
   };
 
   const renderRecentView = (spotID) => {
     const spot = props.spots.find(spot => {
-      return spot.properties.id === spotID
+      return spot.properties.id === spotID;
     });
     return (
       <View>
@@ -60,7 +60,7 @@ const SpotsList = (props) => {
           onPress={() => props.getSpotData(spot.properties.id)}
         />
       </View>
-    )
+    );
   };
 
   // // used with the button group to select active button
@@ -90,14 +90,14 @@ const SpotsList = (props) => {
         keyExtractor={(item) => item.properties.id.toString()}
         extraData={refresh}
         data={sortedList}
-        renderItem={({item}) => renderName(item)}/>
+        renderItem={({item}) => renderName(item)}/>;
     }
     else if (props.sortedListView === SortedViews.MAP_EXTENT) {
       sortedView = <FlatList
         keyExtractor={(item) => item.properties.id.toString()}
         extraData={refresh}
         data={sortedList}
-        renderItem={({item}) => renderName(item)}/>
+        renderItem={({item}) => renderName(item)}/>;
     }
     else if (props.sortedListView === SortedViews.RECENT_VIEWS) {
       sortedView =
@@ -105,14 +105,14 @@ const SpotsList = (props) => {
           keyExtractor={(item) => item.toString()}
           extraData={refresh}
           data={props.recentViews}
-          renderItem={({item}) => renderRecentView(item)}/>
+          renderItem={({item}) => renderRecentView(item)}/>;
     }
     else {
       sortedView = <FlatList
         keyExtractor={(item) => item.properties.id.toString()}
         extraData={refresh}
         data={props.spots}
-        renderItem={({item}) => renderName(item)}/>
+        renderItem={({item}) => renderName(item)}/>;
     }
     return (
       <View style={{flex: 1}}>
@@ -124,11 +124,13 @@ const SpotsList = (props) => {
 
     );
   }
-  else return (
-    <View style={attributesStyles.textContainer}>
-      <Text style={attributesStyles.text}>No Spots Found</Text>
-    </View>
-  )
+  else {
+    return (
+      <View style={attributesStyles.textContainer}>
+        <Text style={attributesStyles.text}>No Spots Found</Text>
+      </View>
+    );
+  }
 };
 
 const mapStateToProps = (state) => {
@@ -140,13 +142,13 @@ const mapStateToProps = (state) => {
     selectedButtonIndex: state.settingsPanel.selectedButtonIndex,
     selectedImage: state.spot.selectedAttributes[0],
     selectedSpot: state.spot.selectedSpot,
-  }
+  };
 };
 
 const mapDispatchToProps = {
   setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),
   setSortedListView: (view) => ({type: settingPanelReducers.SET_SORTED_VIEW, view: view}),
-  setSelectedButtonIndex: (index) => ({type: settingPanelReducers.SET_SELECTED_BUTTON_INDEX, index: index})
+  setSelectedButtonIndex: (index) => ({type: settingPanelReducers.SET_SELECTED_BUTTON_INDEX, index: index}),
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(SpotsList);

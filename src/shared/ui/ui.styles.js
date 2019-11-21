@@ -1,6 +1,6 @@
 import {Platform, StyleSheet} from 'react-native';
 import * as themes from '../styles.constants';
-import {heightPercentageToDP as hp} from "react-native-responsive-screen";
+import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
 
 const styles = StyleSheet.create({
   backdrop: {
@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
     zIndex: 50,
   },
   loadingContainer: {
-    flex:1,
+    flex: 1,
     position: 'absolute',
     right: hp('60'),
     bottom: hp('50'),
@@ -22,12 +22,12 @@ const styles = StyleSheet.create({
   sectionDivider: {
     paddingLeft: 10,
     justifyContent: 'center',
-    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR
+    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
   },
   sectionDividerText: {
     fontSize: Platform.OS === 'ios' ? 13 : 16,
     textTransform: 'uppercase',
-    color: themes.SECONDARY_HEADER_TEXT_COLOR
+    color: themes.SECONDARY_HEADER_TEXT_COLOR,
   },
   sliderTextContainer: {
     width: '100%',
@@ -35,18 +35,18 @@ const styles = StyleSheet.create({
     // paddingBottom: 5,
     paddingRight: 10,
     paddingLeft: 10,
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
   sliderText: {
     color: themes.SECONDARY_ITEM_TEXT_COLOR,
-    fontSize: 16
+    fontSize: 16,
   },
   sliderContainer: {
     width: 150,
     // flex: 1,
     // flexDirection: 'column',
     // justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   slider: {
     width: 200,
@@ -56,8 +56,8 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
   },
   buttonText: {
-    color: themes.PRIMARY_ACCENT_COLOR
-  }
+    color: themes.PRIMARY_ACCENT_COLOR,
+  },
 });
 
 export default styles;

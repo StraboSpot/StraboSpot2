@@ -4,7 +4,7 @@ import {isEmpty} from '../../shared/Helpers';
 const initialState = {
   visibleNotebookPagesStack: [],
   isNotebookPanelVisible: false,
-  isSamplesModalVisible: false
+  isSamplesModalVisible: false,
 };
 
 export const notebookReducer = (state = initialState, action) => {
@@ -20,8 +20,8 @@ export const notebookReducer = (state = initialState, action) => {
       }
       return {
         ...state,
-        visibleNotebookPagesStack: visibleNotebookPagesStack
-      }
+        visibleNotebookPagesStack: visibleNotebookPagesStack,
+      };
     }
     case notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE_TO_PREV: {
       return {
@@ -32,8 +32,8 @@ export const notebookReducer = (state = initialState, action) => {
     case notebookReducers.SET_NOTEBOOK_PANEL_VISIBLE:
       return {
         ...state,
-        isNotebookPanelVisible: action.value
-      }
+        isNotebookPanelVisible: action.value,
+      };
   }
   return state;
 };

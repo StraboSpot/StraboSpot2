@@ -7,18 +7,18 @@ const notebookHeaderStyles = StyleSheet.create({
     flexDirection: 'row',
   },
   headerButtons: {
-    paddingTop: 20
+    paddingTop: 20,
   },
   headerCoords: {
     color: themes.PRIMARY_ACCENT_COLOR,
-    fontSize: 16
+    fontSize: 16,
   },
   headerImage: {
     resizeMode: 'contain',
   },
   headerSpotName: {
     fontSize: 30,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   headerSpotNameAndCoordsContainer: {
     paddingLeft: 10,
@@ -29,7 +29,7 @@ const notebookHeaderStyles = StyleSheet.create({
   threeDotMenu: {
     width: 25,
     height: 25,
-  }
+  },
 });
 
 export default notebookHeaderStyles;

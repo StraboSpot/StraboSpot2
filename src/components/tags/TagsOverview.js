@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import {ScrollView, Text, View} from 'react-native';
 import {connect} from 'react-redux';
-import {ListItem, Icon} from 'react-native-elements'
-import {isEmpty} from "../../shared/Helpers";
+import {ListItem, Icon} from 'react-native-elements';
+import {isEmpty} from '../../shared/Helpers';
 
 // Styles
 import commonStyles from '../../shared/common.styles';
@@ -36,33 +36,33 @@ const SpotTag = props => {
       <View>
         <Text style={{textAlign: 'center', fontSize: themes.PRIMARY_TEXT_SIZE}}>No Tags</Text>
       </View>
-    )
+    );
   }
 
 };
 
 const data = [
-  {id: 1, name: "Blue racer", description: "Crona, Rodriguez and Kovacek"},
-  {"id": 2, "name": "Western lowland gorilla", "description": "Hermiston LLC"},
-  {"id": 3, "name": "Beisa oryx", "description": "Effertz Group"},
-  {"id": 4, "name": "Grison", "description": "Beer, Eichmann and Corkery"},
-  {"id": 5, "name": "Rhinoceros, square-lipped", "description": "Krajcik LLC"},
-  {"id": 6, "name": "Grey fox", "description": "Hansen-Monahan"},
-  {"id": 7, "name": "Gerenuk", "description": "Hintz LLC"},
-  {"id": 8, "name": "Sloth, hoffman's", "description": "Leuschke-Rowe"},
-  {"id": 9, "name": "Cape white-eye", "description": "Beer, Mosciski and Reilly"},
-  {"id": 10, "name": "Red-tailed wambenger", "description": "Kunze, Gusikowski and Rath"},
-  {"id": 11, "name": "Common long-nosed armadillo", "description": "Fahey and Sons"},
-  {"id": 12, "name": "Blue fox", "description": "Lesch-Olson"},
-  {"id": 13, "name": "Otter, african clawless", "description": "Bauch and Sons"},
-  {"id": 14, "name": "Thomson's gazelle", "description": "O'Keefe-Marquardt"},
-  {"id": 15, "name": "Nuthatch, red-breasted", "description": "Jakubowski-Schimmel"},
+  {id: 1, name: 'Blue racer', description: 'Crona, Rodriguez and Kovacek'},
+  {'id': 2, 'name': 'Western lowland gorilla', 'description': 'Hermiston LLC'},
+  {'id': 3, 'name': 'Beisa oryx', 'description': 'Effertz Group'},
+  {'id': 4, 'name': 'Grison', 'description': 'Beer, Eichmann and Corkery'},
+  {'id': 5, 'name': 'Rhinoceros, square-lipped', 'description': 'Krajcik LLC'},
+  {'id': 6, 'name': 'Grey fox', 'description': 'Hansen-Monahan'},
+  {'id': 7, 'name': 'Gerenuk', 'description': 'Hintz LLC'},
+  {'id': 8, 'name': 'Sloth, hoffman\'s', 'description': 'Leuschke-Rowe'},
+  {'id': 9, 'name': 'Cape white-eye', 'description': 'Beer, Mosciski and Reilly'},
+  {'id': 10, 'name': 'Red-tailed wambenger', 'description': 'Kunze, Gusikowski and Rath'},
+  {'id': 11, 'name': 'Common long-nosed armadillo', 'description': 'Fahey and Sons'},
+  {'id': 12, 'name': 'Blue fox', 'description': 'Lesch-Olson'},
+  {'id': 13, 'name': 'Otter, african clawless', 'description': 'Bauch and Sons'},
+  {'id': 14, 'name': 'Thomson\'s gazelle', 'description': 'O\'Keefe-Marquardt'},
+  {'id': 15, 'name': 'Nuthatch, red-breasted', 'description': 'Jakubowski-Schimmel'},
 ];
 
 const mapStateToProps = (state) => {
   return {
-    spot: state.spot.selectedSpot.properties
-  }
+    spot: state.spot.selectedSpot.properties,
+  };
 };
 
 export default connect(mapStateToProps, null)(SpotTag);

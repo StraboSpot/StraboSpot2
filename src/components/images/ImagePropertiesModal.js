@@ -1,18 +1,18 @@
 import React, {useState, useRef} from 'react';
 import {Text, TextInput, Switch, ScrollView, View} from 'react-native';
-import {connect} from "react-redux";
+import {connect} from 'react-redux';
 import {Formik} from 'formik';
-import FormView from "../form/Form.view";
-import {getForm, hasErrors, setForm, showErrors, validateForm} from "../form/form.container";
+import FormView from '../form/Form.view';
+import {getForm, hasErrors, setForm, showErrors, validateForm} from '../form/form.container';
 
-import {Button, Input} from "react-native-elements";
+import {Button, Input} from 'react-native-elements';
 import styles from './images.styles';
 import Modal from '../../shared/ui/modal/Modal.view';
-import {spotReducers} from "../../spots/Spot.constants";
-import {notebookReducers} from "../notebook-panel/Notebook.constants";
-import {isEmpty} from "../../shared/Helpers";
-import SectionDivider from "../../shared/ui/SectionDivider";
-import {homeReducers} from "../../views/home/Home.constants";
+import {spotReducers} from '../../spots/Spot.constants';
+import {notebookReducers} from '../notebook-panel/Notebook.constants';
+import {isEmpty} from '../../shared/Helpers';
+import SectionDivider from '../../shared/ui/SectionDivider';
+import {homeReducers} from '../../views/home/Home.constants';
 
 const imagePropertiesModal = (props) => {
 
@@ -22,7 +22,7 @@ const imagePropertiesModal = (props) => {
   const [showMoreFields, setShowMoreFields] = useState(false);
   const form = useRef(null);
 
-  const renderMoreFields = () =>{
+  const renderMoreFields = () => {
     const {width, height} = props.getDeviceDims;
     if (width > height) {
       return (
@@ -118,8 +118,8 @@ const imagePropertiesModal = (props) => {
     props.setSelectedAttributes([images[i]]);
 
     if (form.current !== null) {
-      if (!isEmpty(getForm())) form.current.submitForm()
-        .then(() => {
+      if (!isEmpty(getForm())) {
+        form.current.submitForm().then(() => {
             if (hasErrors(form)) showErrors(form);
             else {
               console.log('Saving form data to Spot ...', form.current.state.values);
@@ -130,8 +130,9 @@ const imagePropertiesModal = (props) => {
               props.setSelectedAttributes([images[i]]);
               props.close();
             }
-          }
-        )
+          },
+        );
+      }
     }
     else props.close();
   };
@@ -179,8 +180,8 @@ function mapStateToProps(state) {
   return {
     spot: state.spot.selectedSpot,
     selectedImage: state.spot.selectedAttributes[0],
-    getDeviceDims: state.home.deviceDimensions
-  }
+    getDeviceDims: state.home.deviceDimensions,
+  };
 }
 
 const mapDispatchToProps = {

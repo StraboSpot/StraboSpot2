@@ -20,14 +20,14 @@ const RootStack = createStackNavigator(
       screen: SignIn,
     },
     SignUp: {
-      screen: SignUp
+      screen: SignUp,
     },
     HomeScreen: {
-      screen: Home
+      screen: Home,
     },
     ImageInfo: {
-      screen: ImageInfo
-    }
+      screen: ImageInfo,
+    },
   },
   {
     headerMode: 'none',
@@ -43,7 +43,7 @@ export default class App extends React.Component {
   render() {
     return (
       <Provider store={store}>
-        <PersistGate loading={<Loading />} persistor={persistor}>
+        <PersistGate loading={<Loading/>} persistor={persistor}>
           <Navigation
             ref={navigatorRef => NavigationServices.setTopLevelNavigator(navigatorRef)}
           />

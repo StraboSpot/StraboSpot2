@@ -1,11 +1,11 @@
 import {PropTypes} from 'prop-types';
 import React from 'react';
 import {Text, View} from 'react-native';
-import Picker from 'react-native-picker-select'
+import Picker from 'react-native-picker-select';
 
 // Styles
 import styles from './form.styles';
-import stylesCommon from "../../shared/common.styles";
+import stylesCommon from '../../shared/common.styles';
 import * as themes from '../../shared/styles.constants';
 
 const SelectInputField = ({
@@ -20,7 +20,7 @@ const SelectInputField = ({
 
   const pickerStyle = {
     inputIOS: styles.pickerStyle,
-    inputAndroid: styles.pickerStyle
+    inputAndroid: styles.pickerStyle,
   };
 
   return (

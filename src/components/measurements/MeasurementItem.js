@@ -1,12 +1,12 @@
-import React from "react";
-import {Text, TouchableOpacity, View} from "react-native";
-import {Icon} from "react-native-elements";
-import {getLabel} from "../form/form.container";
-import {toTitleCase} from "../../shared/Helpers";
+import React from 'react';
+import {Text, TouchableOpacity, View} from 'react-native';
+import {Icon} from 'react-native-elements';
+import {getLabel} from '../form/form.container';
+import {toTitleCase} from '../../shared/Helpers';
 
 // Styles
-import styles from "./measurements.styles";
-import stylesCommon from "../../shared/common.styles";
+import styles from './measurements.styles';
+import stylesCommon from '../../shared/common.styles';
 import * as themes from '../../shared/styles.constants';
 
 // Render a measurement item in a list
@@ -43,7 +43,7 @@ const MeasurementItem = (props) => {
     return '?';
   };
 
-// Render an individual measurement
+  // Render an individual measurement
   const renderMeasurementText = (item) => {
     return (
       <View style={styles.measurementsListItem}>

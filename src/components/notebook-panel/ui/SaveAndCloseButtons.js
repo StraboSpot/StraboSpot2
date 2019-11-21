@@ -1,9 +1,9 @@
-import React from "react";
-import {View} from "react-native";
-import {Button} from "react-native-elements";
+import React from 'react';
+import {View} from 'react-native';
+import {Button} from 'react-native-elements';
 
 // Styles
-import styles from "./ui.styles";
+import styles from './ui.styles';
 
 const saveAndClose = (props) => {
   return (
@@ -23,7 +23,7 @@ const saveAndClose = (props) => {
         />
       </View>
     </View>
-  )
+  );
 };
 
 export default saveAndClose;

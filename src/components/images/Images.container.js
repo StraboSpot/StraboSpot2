@@ -1,7 +1,7 @@
-import React from 'react'
-import {Alert, Image, Platform, View} from "react-native";
-import ImagePicker from "react-native-image-picker";
-import RNFetchBlob from "rn-fetch-blob";
+import React from 'react';
+import {Alert, Image, Platform, View} from 'react-native';
+import ImagePicker from 'react-native-image-picker';
+import RNFetchBlob from 'rn-fetch-blob';
 
 
 // export const imageMap = () => {
@@ -23,7 +23,7 @@ export const pictureSelectDialog = async () => {
     storageOptions: {
       skipBackup: true,
     },
-    title: 'Choose Photo Source'
+    title: 'Choose Photo Source',
   };
   return new Promise((resolve, reject) => {
     ImagePicker.showImagePicker(imageOptionsPicker, async (response) => {
@@ -31,23 +31,24 @@ export const pictureSelectDialog = async () => {
 
       if (response.didCancel) {
         console.log('User cancelled image picker');
-        resolve('cancelled')
+        resolve('cancelled');
       }
       else if (response.error) {
         console.log('ImagePicker Error: ', response.error);
-        return reject('Error', response.error)
+        return reject('Error', response.error);
       }
       else {
         try {
           const savedPhoto = await saveFile(response);
           console.log('Saved Photo = ', savedPhoto);
           resolve(savedPhoto);
-        } catch (e) {
+        }
+        catch (e) {
           reject();
         }
       }
     });
-  })
+  });
 };
 
 export const saveFile = async (imageURI) => {
@@ -60,14 +61,16 @@ export const saveFile = async (imageURI) => {
       .then((res) => {
         imageCount++;
         console.log(imageCount, 'File saved to', res.path());
-        let imageId = imageName.split(".")[0];
+        let imageId = imageName.split('.')[0];
         let imageData = {};
-        if (Platform.OS === "ios") imageData = {
-          id: imageId,
-          src: res.path(),
-          height: imageURI.height,
-          width: imageURI.width
-        };
+        if (Platform.OS === 'ios') {
+          imageData = {
+            id: imageId,
+            src: res.path(),
+            height: imageURI.height,
+            width: imageURI.width,
+          };
+        }
         else imageData = {id: imageId, src: 'file://' + res.path(), height: imageURI.height, width: imageURI.width};
         resolve(imageData);
       })
@@ -86,9 +89,9 @@ export const takePicture = async () => {
       skipBackup: true,
       takePhotoButtonTitle: 'Take Photo Buddy!',
       chooseFromLibraryButtonTitle: 'choose photo from library',
-      waitUntilSaved: true
+      waitUntilSaved: true,
     },
-    noData: true
+    noData: true,
   };
   // console.log('aassaasswwww')
   return new Promise((resolve, reject) => {
@@ -96,7 +99,7 @@ export const takePicture = async () => {
       console.log('Response = ', response);
       if (response.didCancel) {
         console.log('User cancelled image picker');
-        resolve('cancelled')
+        resolve('cancelled');
       }
       else if (response.error) {
         console.log('ImagePicker Error: ', response.error);
@@ -106,11 +109,12 @@ export const takePicture = async () => {
           const savedPhoto = await saveFile(response);
           console.log('Saved Photo = ', savedPhoto);
           resolve(savedPhoto);
-        } catch (e) {
+        }
+        catch (e) {
           reject();
         }
       }
     });
-  })
+  });
 };
 

@@ -40,7 +40,7 @@ class SaveMapModal extends Component {
       showLoadingBar: false,
       progressMessage: '',
       percentDone: 0,
-      downloadZoom: 0
+      downloadZoom: 0,
     };
 
     //this.currentBasemap = props.map.getCurrentBasemap();
@@ -60,17 +60,17 @@ class SaveMapModal extends Component {
 
       var numZoomLevels = this.maxZoom ? Math.min(this.maxZoom - this.currentZoom + 1, 5) : 5;
 
-      for(let i = 0; i < numZoomLevels; i++){
+      for (let i = 0; i < numZoomLevels; i++) {
         this.zoomLevels.push(this.currentZoom + i);
       }
 
       this.updateCount();
-    })
+    });
 
     props.map.getExtentString().then((ex) => {
-      console.log("Got extent String: ",ex);
+      console.log('Got extent String: ', ex);
       this.extentString = ex;
-    })
+    });
 
   }
 
@@ -84,24 +84,23 @@ class SaveMapModal extends Component {
       this.setState({showLoadingBar: false});
       this.setState({showComplete: true});
     });
-  }
+  };
 
   updateCount = async () => {
     this.props.map.getTileCount(this.state.downloadZoom).then((tileCount) => {
-      console.log("downloadZoom: ",this.state.downloadZoom);
-      this.setState({tileCount: tileCount})
-      console.log("return_from_mapview_getTileCount: ", tileCount);
-  	})
-  }
+      console.log('downloadZoom: ', this.state.downloadZoom);
+      this.setState({tileCount: tileCount});
+      console.log('return_from_mapview_getTileCount: ', tileCount);
+    });
+  };
 
   updatePicker = async (itemValue) => {
     await this.setState({downloadZoom: itemValue});
     this.updateCount();
-  }
+  };
 
   async componentDidMount() {
     this._isMounted = true;
-
   }
 
   componentWillUnmount() {
@@ -116,45 +115,47 @@ class SaveMapModal extends Component {
 
     //let startZipURL = this.tilehost + '/asynczip?mapid=' + this.mapID + '&layer=' + layerID + '&extent=' + extentString + '&zoom=' + zoomLevel;
 
-    startZipURL = "unset";
+    startZipURL = 'unset';
 
-    if(layerID == "custom"){
+    if (layerID == 'custom') {
       //configure advanced URL for custom map types here.
       //first, figure out what kind of map we are downloading...
 
-      downloadMap = "{}";
+      downloadMap = '{}';
 
-      for(let i = 0; i < this.props.customMaps.length; i++){
-        if(this.props.customMaps[i].id == this.props.currentBasemap.layerId){
+      for (let i = 0; i < this.props.customMaps.length; i++) {
+        if (this.props.customMaps[i].id == this.props.currentBasemap.layerId) {
           downloadMap = this.props.customMaps[i];
         }
       }
 
       console.log('DownloadMap: ', downloadMap);
 
-      if(downloadMap.mapType=="Mapbox Style"){
-        layer = "mapboxstyles";
-        parts = downloadMap.mapId.split("/");
+      if (downloadMap.mapType == 'Mapbox Style') {
+        layer = 'mapboxstyles';
+        parts = downloadMap.mapId.split('/');
         username = parts[0];
         id = parts[1];
         accessToken = downloadMap.accessToken;
         startZipURL = this.tilehost + '/asynczip?layer=' + layer + '&extent=' + extentString + '&zoom=' + zoomLevel + '&username=' + username + '&id=' + id + '&access_token=' + accessToken;
-      }else if(downloadMap.mapType=="Map Warper"){
-        layer = "mapwarper";
-        id = downloadMap.mapId;
-        startZipURL = this.tilehost + '/asynczip?layer=' + layer + '&extent=' + extentString + '&zoom=' + zoomLevel + '&id=' + id;
-      }else if(downloadMap.mapType=="StraboSpot MyMaps"){
-        layer = "strabomymaps";
+      }
+      else if (downloadMap.mapType == 'Map Warper') {
+        layer = 'mapwarper';
         id = downloadMap.mapId;
         startZipURL = this.tilehost + '/asynczip?layer=' + layer + '&extent=' + extentString + '&zoom=' + zoomLevel + '&id=' + id;
       }
-
-    }else{
+      else if (downloadMap.mapType == 'StraboSpot MyMaps') {
+        layer = 'strabomymaps';
+        id = downloadMap.mapId;
+        startZipURL = this.tilehost + '/asynczip?layer=' + layer + '&extent=' + extentString + '&zoom=' + zoomLevel + '&id=' + id;
+      }
+    }
+    else {
       layer = this.props.currentBasemap.layerSaveId;
       startZipURL = this.tilehost + '/asynczip?layer=' + layer + '&extent=' + extentString + '&zoom=' + zoomLevel;
     }
 
-    console.log("startZipURL: ", startZipURL);
+    console.log('startZipURL: ', startZipURL);
 
     await this.saveZipMap(startZipURL);
     return Promise.resolve();
@@ -186,7 +187,8 @@ class SaveMapModal extends Component {
         this.setState({progressMessage: responseJson.status});
         this.setState({percentDone: responseJson.percent / 100});
       }
-    } catch {
+    }
+    catch {
       console.log('Network Error');
     }
     this.tryCount++;
@@ -209,13 +211,13 @@ class SaveMapModal extends Component {
 
       //first try to delete from temp directories
       let fileExists = await RNFS.exists(this.tileZipsDirectory + '/' + zipUID + '.zip');
-      if(fileExists){
+      if (fileExists) {
         //delete
         await RNFS.unlink(this.tileZipsDirectory + '/' + zipUID + '.zip');
       }
 
       let folderExists = await RNFS.exists(this.tileTempDirectory + '/' + zipUID);
-      if(folderExists){
+      if (folderExists) {
         //delete
         await RNFS.unlink(this.tileTempDirectory + '/' + zipUID);
       }
@@ -224,48 +226,50 @@ class SaveMapModal extends Component {
         .config({path: this.tileZipsDirectory + '/' + zipUID + '.zip'})
         .fetch('GET', downloadZipURL, {})
         .progress((received, total) => {
-        console.log('progress', received / total);
-        this.setState({percentDone: received / total});
+          console.log('progress', received / total);
+          this.setState({percentDone: received / total});
         });
       console.log('Zip file saved to', res.path());
       this.setState({percentDone: 1});
-    } catch (err) {
+    }
+    catch (err) {
       console.log('Download Tile Zip Error :', err);
     }
   };
 
-  tileMove = async (tilearray,zipUID) => {
-      for (const tile of tilearray) {
-        let fileExists = await RNFS.exists(this.tileCacheDirectory + '/' + this.saveId + '/tiles/' + tile.name);
-        console.log("foo exists: ", tile.name + ' ' + fileExists);
-        if(!fileExists){
-          await RNFS.moveFile(this.tileTempDirectory + '/' + zipUID + '/tiles/' + tile.name, this.tileCacheDirectory + '/'+this.saveId + '/tiles/' + tile.name);
-          console.log(tile);
-        }
+  tileMove = async (tilearray, zipUID) => {
+    for (const tile of tilearray) {
+      let fileExists = await RNFS.exists(this.tileCacheDirectory + '/' + this.saveId + '/tiles/' + tile.name);
+      console.log('foo exists: ', tile.name + ' ' + fileExists);
+      if (!fileExists) {
+        await RNFS.moveFile(this.tileTempDirectory + '/' + zipUID + '/tiles/' + tile.name,
+          this.tileCacheDirectory + '/' + this.saveId + '/tiles/' + tile.name);
+        console.log(tile);
       }
-  }
+    }
+  };
 
   moveFiles = async (zipUID) => {
-    let folderexists = await RNFS.exists(this.tileCacheDirectory+'/'+this.saveId);
-    if(!folderexists){
-      console.log("FOLDER DOESN'T EXIST! "+this.saveId);
-      await RNFS.mkdir(this.tileCacheDirectory+'/'+this.saveId);
-      await RNFS.mkdir(this.tileCacheDirectory+'/'+this.saveId+'/tiles');
+    let folderexists = await RNFS.exists(this.tileCacheDirectory + '/' + this.saveId);
+    if (!folderexists) {
+      console.log('FOLDER DOESN\'T EXIST! ' + this.saveId);
+      await RNFS.mkdir(this.tileCacheDirectory + '/' + this.saveId);
+      await RNFS.mkdir(this.tileCacheDirectory + '/' + this.saveId + '/tiles');
     }
 
     //now move files to correct location
-    let result = await RNFS.readDir(this.tileTempDirectory + '/' + zipUID + '/tiles') //MainBundlePath // On Android, use "RNFS.DocumentDirectoryPath" (MainBundlePath is not defined)
+    let result = await RNFS.readDir(this.tileTempDirectory + '/' + zipUID + '/tiles'); //MainBundlePath // On Android, use "RNFS.DocumentDirectoryPath" (MainBundlePath is not defined)
 
-    await this.tileMove(result,zipUID);
+    await this.tileMove(result, zipUID);
 
-    let tileCount = await RNFS.readDir(this.tileCacheDirectory+'/'+this.saveId+'/tiles');
+    let tileCount = await RNFS.readDir(this.tileCacheDirectory + '/' + this.saveId + '/tiles');
     tileCount = tileCount.length;
 
     currentOfflineMaps = this.props.offlineMaps;
 
     //now check for existence of AsyncStorage offlineMapsData and store new count
-    if(!currentOfflineMaps){
-      currentOfflineMaps=[];
+    if (!currentOfflineMaps) {
+      currentOfflineMaps = [];
     }
 
     let newOfflineMapsData = [];
@@ -277,9 +281,9 @@ class SaveMapModal extends Component {
     newOfflineMapsData.push(thisMap);
 
     //loop over offlineMapsData and add any other maps (not current)
-    for(let i = 0; i < currentOfflineMaps.length; i++){
-      if(currentOfflineMaps[i].saveId){
-        if(currentOfflineMaps[i].saveId != this.saveId){
+    for (let i = 0; i < currentOfflineMaps.length; i++) {
+      if (currentOfflineMaps[i].saveId) {
+        if (currentOfflineMaps[i].saveId != this.saveId) {
           //Add it to new array for Redux Storage
           newOfflineMapsData.push(currentOfflineMaps[i]);
         }
@@ -287,9 +291,8 @@ class SaveMapModal extends Component {
     }
 
     await this.props.onOfflineMaps(newOfflineMapsData);
-    console.log("Saved offlineMaps to Redux.");
-
-  }
+    console.log('Saved offlineMaps to Redux.');
+  };
 
   doUnzip = async (zipUID) => {
     // hide progress bar
@@ -301,14 +304,13 @@ class SaveMapModal extends Component {
     const targetPath = this.tileTempDirectory;
 
     try {
-
       await unzip(sourcePath, targetPath);
-      console.log('unzip completed')
+      console.log('unzip completed');
 
       await this.moveFiles(zipUID); //move files to the correct folder based on saveId
       console.log('move done.');
-
-    } catch (err) {
+    }
+    catch (err) {
       console.log('Unzip Error:', err);
     }
 
@@ -321,7 +323,6 @@ class SaveMapModal extends Component {
     //console.log("Tile Dir: ", this.tileCacheDirectory);
 
     return (
-
       <View style={styles.modalContainer}>
         <Header
           backgroundColor={themes.PRIMARY_BACKGROUND_COLOR}
@@ -335,35 +336,35 @@ class SaveMapModal extends Component {
           </SharedUI.ButtonNoBackground>}
         />
         <View style={{height: 40, justifyContent: 'center'}}>
-        <Text style={{fontSize: 20}}>{this.currentMapName}</Text>
+          <Text style={{fontSize: 20}}>{this.currentMapName}</Text>
         </View>
 
-        { this.state.showMainMenu &&
-          <View style={{height: 20, width: '100%', paddingLeft: 5}}>
-            <Text>
+        {this.state.showMainMenu &&
+        <View style={{height: 20, width: '100%', paddingLeft: 5}}>
+          <Text>
             Select max zoom level to download:
-            </Text>
-          </View>
+          </Text>
+        </View>
         }
 
-        { this.state.showMainMenu &&
-          <Picker
-            selectedValue={this.state.downloadZoom}
-            onValueChange={(itemValue) => this.updatePicker(itemValue)}
-            style={styles.picker}>
-        		{
-          		this.zoomLevels.map(function(i){
-          		return     <Picker.Item
-                                label={i.toString()}
-                                value={i}
-                                key={i}
-                            />
-          		})
-        		}
-          </Picker>
+        {this.state.showMainMenu &&
+        <Picker
+          selectedValue={this.state.downloadZoom}
+          onValueChange={(itemValue) => this.updatePicker(itemValue)}
+          style={styles.picker}>
+          {
+            this.zoomLevels.map(function (i) {
+              return <Picker.Item
+                label={i.toString()}
+                value={i}
+                key={i}
+              />;
+            })
+          }
+        </Picker>
         }
 
-        { this.state.showMainMenu &&
+        {this.state.showMainMenu &&
         <Button
           onPress={this.saveMap}
           type={'clear'}
@@ -372,40 +373,39 @@ class SaveMapModal extends Component {
         />
         }
 
-        { this.state.showLoadingMenu &&
-          <View style={{height: 40, justifyContent: 'center'}}>
-            <Text style={{fontSize: 20}}>{this.state.progressMessage}</Text>
-          </View>
+        {this.state.showLoadingMenu &&
+        <View style={{height: 40, justifyContent: 'center'}}>
+          <Text style={{fontSize: 20}}>{this.state.progressMessage}</Text>
+        </View>
         }
 
-        { this.state.showLoadingBar &&
-          <View style={{height: 40, justifyContent: 'center'}}>
-            <ProgressBar progress={this.state.percentDone} width={200} />
-          </View>
+        {this.state.showLoadingBar &&
+        <View style={{height: 40, justifyContent: 'center'}}>
+          <ProgressBar progress={this.state.percentDone} width={200}/>
+        </View>
         }
 
-        { this.state.showComplete &&
-          <View style={{height: 40, justifyContent: 'center'}}>
-            <Text style={{fontSize: 20}}>Success!</Text>
-          </View>
+        {this.state.showComplete &&
+        <View style={{height: 40, justifyContent: 'center'}}>
+          <Text style={{fontSize: 20}}>Success!</Text>
+        </View>
         }
 
-        { this.state.showComplete &&
-          <View style={{height: 40, justifyContent: 'center'}}>
-            <Text>Your map has been successfully downloaded to this device.</Text>
-          </View>
+        {this.state.showComplete &&
+        <View style={{height: 40, justifyContent: 'center'}}>
+          <Text>Your map has been successfully downloaded to this device.</Text>
+        </View>
         }
 
-        { this.state.showComplete &&
+        {this.state.showComplete &&
         <Button
           onPress={this.props.close}
           type={'clear'}
           buttonStyle={{borderRadius: 30, paddingRight: 50, paddingLeft: 50}}
           title={'Continue'}
-          />
+        />
         }
       </View>
-
     );
   }
 }
@@ -415,29 +415,29 @@ const styles = StyleSheet.create({
     flex: 1,
     width: 400,
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
-    alignItems: 'center'
+    alignItems: 'center',
   },
   buttonText: {
     paddingLeft: 10,
-    paddingRight: 15
+    paddingRight: 15,
   },
   picker: {
     left: 0,
     right: 0,
-    width: '100%'
-  }
+    width: '100%',
+  },
 });
 
 const mapStateToProps = (state) => {
   return {
     currentBasemap: state.map.currentBasemap,
     customMaps: state.map.customMaps,
-    offlineMaps: state.map.offlineMaps
-  }
+    offlineMaps: state.map.offlineMaps,
+  };
 };
 
 const mapDispatchToProps = {
-  onOfflineMaps: (offlineMaps) => ({type: mapReducers.OFFLINE_MAPS, offlineMaps: offlineMaps})
+  onOfflineMaps: (offlineMaps) => ({type: mapReducers.OFFLINE_MAPS, offlineMaps: offlineMaps}),
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(SaveMapModal);

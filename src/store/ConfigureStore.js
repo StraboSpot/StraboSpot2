@@ -1,14 +1,14 @@
-import {applyMiddleware, createStore, compose, combineReducers} from "redux";
-import {notebookReducer} from "../components/notebook-panel/notebook.reducers";
-import {mapReducer} from "../components/maps/maps.reducer";
-import {spotReducer} from "../spots/spot.reducers";
-import {imageReducer} from "../components/images/image.reducers";
-import {homeReducer} from "../views/home/Home.reducer";
+import {applyMiddleware, createStore, compose, combineReducers} from 'redux';
+import {notebookReducer} from '../components/notebook-panel/notebook.reducers';
+import {mapReducer} from '../components/maps/maps.reducer';
+import {spotReducer} from '../spots/spot.reducers';
+import {imageReducer} from '../components/images/image.reducers';
+import {homeReducer} from '../views/home/Home.reducer';
 import {userReducer} from '../services/user/UserProfile.reducer';
 import {projectsReducer} from '../project/Projects.reducer';
-import {settingsPanelReducer} from "../components/settings-panel/settingsPanel.reducer";
+import {settingsPanelReducer} from '../components/settings-panel/settingsPanel.reducer';
 import {createLogger} from 'redux-logger';
-import {persistStore, persistReducer} from 'redux-persist'
+import {persistStore, persistReducer} from 'redux-persist';
 import AsyncStorage from '@react-native-community/async-storage';
 
 // Redux Persist
@@ -29,22 +29,22 @@ const appReducer = combineReducers({
   settingsPanel: settingsPanelReducer,
   images: imageReducer,
   user: userReducer,
-  project: projectsReducer
+  project: projectsReducer,
 });
 
 const rootReducer = (state, action) => {
   if (action.type === 'USER_LOGOUT') {
     AsyncStorage.removeItem('root');
-    state = undefined
+    state = undefined;
   }
-  return appReducer(state, action)
+  return appReducer(state, action);
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 let composeEnhancers = compose;
 
-if(__DEV__) {
+if (__DEV__) {
   composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 }
 
@@ -52,5 +52,5 @@ export default () => {
   const store = createStore(persistedReducer, composeEnhancers(applyMiddleware(loggerMiddleware)));
   const persistor = persistStore(store);
   // const persistorPurge = persistStore(store).purge(); // Use this to clear persistStore completely
-  return {store, persistor}
-}
+  return {store, persistor};
+};

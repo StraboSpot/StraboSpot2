@@ -1,24 +1,24 @@
 import React, {useEffect, useState} from 'react';
 import {View} from 'react-native';
 import {connect} from 'react-redux';
-import styles from "./SettingsPanelStyles";
+import styles from './SettingsPanelStyles';
 import SettingsPanelList from './SettingsPanelList';
 import UserProfileComponent from './UserProfileComponent';
-import SettingsPanelHeader from "./SettingsPanelHeader";
-import {SettingsMenuItems} from "./SettingsMenu.constants";
-import SpotsList from "../../spots/SpotsList";
-import ImageGallery from "../images/ImageGallery.view";
+import SettingsPanelHeader from './SettingsPanelHeader';
+import {SettingsMenuItems} from './SettingsMenu.constants';
+import SpotsList from '../../spots/SpotsList';
+import ImageGallery from '../images/ImageGallery.view';
 import SamplesList from '../samples/SamplesList.view';
-import ShortcutMenu from "./shortcuts-menu/ShortcutsMenu";
-import ManageOfflineMapsMenu from "../maps/Manage-Offline-Maps-Menu/ManageOfflineMapsMenu";
-import CustomMapsMenu from "../maps/Custom-Maps-Menu/CustomMapsMenu";
-import {homeReducers} from "../../views/home/Home.constants";
-import {settingPanelReducers} from "./settingsPanel.constants";
-import {spotReducers} from "../../spots/Spot.constants";
-import {NotebookPages, notebookReducers} from "../notebook-panel/Notebook.constants";
+import ShortcutMenu from './shortcuts-menu/ShortcutsMenu';
+import ManageOfflineMapsMenu from '../maps/Manage-Offline-Maps-Menu/ManageOfflineMapsMenu';
+import CustomMapsMenu from '../maps/Custom-Maps-Menu/CustomMapsMenu';
+import {homeReducers} from '../../views/home/Home.constants';
+import {settingPanelReducers} from './settingsPanel.constants';
+import {spotReducers} from '../../spots/Spot.constants';
+import {NotebookPages, notebookReducers} from '../notebook-panel/Notebook.constants';
 import {withNavigation} from 'react-navigation';
-import {USER_DATA, USER_DATA_CLEARED} from "../../services/user/User.constants";
-import {isEmpty} from "../../shared/Helpers";
+import {USER_DATA, USER_DATA_CLEARED} from '../../services/user/User.constants';
+import {isEmpty} from '../../shared/Helpers';
 import ProjectList from '../../project/ProjectList';
 
 const SettingsPanel = props => {
@@ -36,23 +36,24 @@ const SettingsPanel = props => {
   let page = null;
 
   // useEffect(() => {
-    // setSettingsPanelPageVisible(SettingsMenuItems.SETTINGS_MAIN);
-    // console.log('PAGE:', settingsPageVisible)
+  // setSettingsPanelPageVisible(SettingsMenuItems.SETTINGS_MAIN);
+  // console.log('PAGE:', settingsPageVisible)
   // }, []);
 
   const getSpotFromId = (spotId, page) => {
     const spotID = props.spot.find(spot => {
-      return spot.properties.id === spotId
+      return spot.properties.id === spotId;
     });
     if (page === NotebookPages.SAMPLE) {
       props.openNotebookPanel(NotebookPages.SAMPLE);
-    } else props.openNotebookPanel(NotebookPages.OVERVIEW);
+    }
+    else props.openNotebookPanel(NotebookPages.OVERVIEW);
     props.onFeatureSelected(spotID);
   };
 
   const logout = async () => {
     if (!isEmpty(props.userProfile)) await props.clearStorage();
-    props.navigation.navigate('SignIn')
+    props.navigation.navigate('SignIn');
   };
 
   const setVisibleMenu = (name) => {
@@ -61,8 +62,8 @@ const SettingsPanel = props => {
 
   const toggleSwitch = (switchName) => {
     console.log('Switch', switchName);
-      props.onShortcutSwitchChange(switchName);
-      console.log(props.shortcutSwitchPosition);
+    props.onShortcutSwitchChange(switchName);
+    console.log(props.shortcutSwitchPosition);
   };
 
   if (isEmpty(props.userProfile)) buttonTitle = 'Sign In';
@@ -83,33 +84,33 @@ const SettingsPanel = props => {
       page =
         <View style={styles.settingsPanelContainer}>
           {settingsPanelHeader}
-          <ManageOfflineMapsMenu />
+          <ManageOfflineMapsMenu/>
         </View>;
       break;
     case SettingsMenuItems.MAPS.CUSTOM:
       page =
         <View style={styles.settingsPanelContainer}>
           {settingsPanelHeader}
-          <CustomMapsMenu />
+          <CustomMapsMenu/>
         </View>;
       break;
     case SettingsMenuItems.ATTRIBUTES.SPOTS_LIST:
       page =
-          <View style={styles.listContainer}>
-            {settingsPanelHeader}
-            <SpotsList
-              getSpotData={(spotId) => getSpotFromId(spotId)}
-            />
-          </View>;
+        <View style={styles.listContainer}>
+          {settingsPanelHeader}
+          <SpotsList
+            getSpotData={(spotId) => getSpotFromId(spotId)}
+          />
+        </View>;
       break;
     case SettingsMenuItems.ATTRIBUTES.IMAGE_GALLERY:
       page =
-          <View style={styles.listContainer}>
-            {settingsPanelHeader}
-            <ImageGallery
-              getSpotData={(spotId) => getSpotFromId(spotId)}
-            />
-          </View>;
+        <View style={styles.listContainer}>
+          {settingsPanelHeader}
+          <ImageGallery
+            getSpotData={(spotId) => getSpotFromId(spotId)}
+          />
+        </View>;
       break;
     case SettingsMenuItems.ATTRIBUTES.SAMPLES:
       page =
@@ -137,10 +138,10 @@ const SettingsPanel = props => {
               title={buttonTitle}
             />
           </View>
-        </React.Fragment>
+        </React.Fragment>;
   }
 
-  return(
+  return (
     <View style={styles.container}>
       {page}
     </View>
@@ -152,8 +153,8 @@ const mapStateToProps = (state) => {
     settingsPageVisible: state.settingsPanel.settingsPageVisible,
     shortcutSwitchPosition: state.home.shortcutSwitchPosition,
     spot: state.spot.features,
-    userProfile: state.user.userData
-  }
+    userProfile: state.user.userData,
+  };
 };
 
 const mapDispatchToProps = {
@@ -161,7 +162,7 @@ const mapDispatchToProps = {
   onShortcutSwitchChange: (switchName) => ({type: homeReducers.SHORTCUT_SWITCH_POSITION, switchName: switchName}),
   onFeatureSelected: (featureSelected) => ({type: spotReducers.FEATURE_SELECTED, feature: featureSelected}),
   setUserData: (userData) => ({type: USER_DATA, userData: userData}),
-  clearStorage: () => ({type: 'USER_LOGOUT'})
+  clearStorage: () => ({type: 'USER_LOGOUT'}),
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withNavigation(SettingsPanel));

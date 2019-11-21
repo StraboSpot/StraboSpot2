@@ -1,5 +1,5 @@
-import {StyleSheet} from "react-native";
-import * as themes from "../../shared/styles.constants";
+import {StyleSheet} from 'react-native';
+import * as themes from '../../shared/styles.constants';
 
 const styles = StyleSheet.create({
   dialogBox: {
@@ -7,7 +7,7 @@ const styles = StyleSheet.create({
     bottom: 70,
     left: 100,
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
-    borderRadius: 20
+    borderRadius: 20,
   },
   dialogTitle: {
     backgroundColor: themes.BLUE,
@@ -16,8 +16,8 @@ const styles = StyleSheet.create({
     borderBottomWidth: 2,
   },
   dialogText: {
-    color: themes.BLUE
-  }
+    color: themes.BLUE,
+  },
 });
 
 export default styles;

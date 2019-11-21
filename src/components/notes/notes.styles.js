@@ -1,9 +1,9 @@
 import {StyleSheet} from 'react-native';
-import * as themes from "../../shared/styles.constants";
+import * as themes from '../../shared/styles.constants';
 
 const noteStyle = StyleSheet.create({
   container: {
-  paddingTop: 25
+    paddingTop: 25,
   },
   inputContainer: {
     height: 300,
@@ -15,15 +15,15 @@ const noteStyle = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     // justifyContent: 'space-between',
-    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR
+    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
   },
   buttonContainer: {
     // flexDirection: 'row',
   },
   editButton: {
-    padding: 0
+    padding: 0,
     // justifyContent: 'flex-start'
-  }
+  },
 });
 
 export default noteStyle;

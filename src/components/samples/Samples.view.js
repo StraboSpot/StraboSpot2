@@ -1,18 +1,18 @@
 import React, {useState, useEffect} from 'react';
 import {Alert, Text, TextInput, View} from 'react-native';
-import {connect} from "react-redux";
-import {Button, ButtonGroup, Input} from "react-native-elements";
+import {connect} from 'react-redux';
+import {Button, ButtonGroup, Input} from 'react-native-elements';
 import Slider from '../../shared/ui/Slider';
-import {spotReducers} from "../../spots/Spot.constants";
-import {NotebookPages, notebookReducers} from "../notebook-panel/Notebook.constants";
-import {getNewId, isEmpty} from "../../shared/Helpers";
-import {homeReducers, Modals} from "../../views/home/Home.constants";
+import {spotReducers} from '../../spots/Spot.constants';
+import {NotebookPages, notebookReducers} from '../notebook-panel/Notebook.constants';
+import {getNewId, isEmpty} from '../../shared/Helpers';
+import {homeReducers, Modals} from '../../views/home/Home.constants';
 import Samples from './SamplesNotebook.view';
 
 // Styles
 import styles from './samplesStyles/samples.style';
 import * as themes from '../../shared/styles.constants';
-import IconButton from "../../shared/ui/IconButton";
+import IconButton from '../../shared/ui/IconButton';
 
 const samplesModalView = (props) => {
   let count = 0;
@@ -32,7 +32,7 @@ const samplesModalView = (props) => {
   const buttonSelected = (selectedButton) => {
     setSelectedButton(selectedButton);
     let sampleOriented = selectedButton === 0 ? 'yes' : 'no';
-    setSampleOrientedValue(sampleOriented)
+    setSampleOrientedValue(sampleOriented);
   };
 
   // const checkProperties = () => {
@@ -54,13 +54,13 @@ const samplesModalView = (props) => {
       label: label,
       oriented_sample: sampleOrientedValue,
       sample_notes: note,
-      sample_description: description
+      sample_description: description,
     });
     if (sample.length > 0) {
       let newSample = sample[0];
       newSample.id = getNewId();
-      const samples = (typeof props.spot.properties.samples === 'undefined' ? [newSample] : [...props.spot.properties.samples, newSample])
-      props.onSpotEdit('samples', samples)
+      const samples = (typeof props.spot.properties.samples === 'undefined' ? [newSample] : [...props.spot.properties.samples, newSample]);
+      props.onSpotEdit('samples', samples);
       setName(null);
       setLabel(null);
       setNote('');
@@ -74,9 +74,9 @@ const samplesModalView = (props) => {
   const shortcutVisible = () => {
     if (props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE) {
       if (!isEmpty(props.spot)) {
-        return (
-          modalView = <View>
-            <View style={{height: 150}} >
+        modalView =
+          <View>
+            <View style={{height: 150}}>
               <Samples/>
             </View>
             <IconButton
@@ -86,30 +86,32 @@ const samplesModalView = (props) => {
                 flexDirection: 'row',
                 justifyContent: 'center',
                 height: 25,
-                alignItems: 'flex-end'
+                alignItems: 'flex-end',
               }}
               textStyle={{color: themes.BLUE, fontSize: 16, textAlign: 'center'}}
               onPress={() => props.onPress(NotebookPages.SAMPLE)}
             > Go to {props.spot.properties.name}</IconButton>
-          </View>
-        )
+          </View>;
+        return modalView;
       }
     }
     else if (props.modalVisible === Modals.NOTEBOOK_MODALS.SAMPLE
       && props.deviceDimensions.width > 700) {
-      return modalView = <Button
-        title={'View In Shortcut Mode'}
-        type={'clear'}
-        titleStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 16}}
-        onPress={() => props.onPress(NotebookPages.SAMPLE)}
-      />
+      modalView =
+        <Button
+          title={'View In Shortcut Mode'}
+          type={'clear'}
+          titleStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 16}}
+          onPress={() => props.onPress(NotebookPages.SAMPLE)}
+        />;
+      return modalView;
     }
   };
 
   if (isEmpty(props.spot)) {
     return <View style={[styles.samplesContainer, styles.noSpotContent]}>
       <Text style={{fontSize: 30}}>No Spot Selected</Text>
-    </View>
+    </View>;
   }
   return (
     <React.Fragment>
@@ -176,10 +178,10 @@ const samplesModalView = (props) => {
           type={'solid'}
           color={'red'}
           containerStyle={{paddingBottom: 10, paddingTop: 0}}
-          buttonStyle={{borderRadius: 10, backgroundColor: 'red',}}
+          buttonStyle={{borderRadius: 10, backgroundColor: 'red'}}
           onPress={() => saveSample()}
         />
-        <View style={{width: '100%',}}>
+        <View style={{width: '100%'}}>
           {shortcutVisible()}
         </View>
       </View>
@@ -192,7 +194,7 @@ const mapStateToProps = (state) => {
     spot: state.spot.selectedSpot,
     modalVisible: state.home.modalVisible,
     deviceDimensions: state.home.deviceDimensions,
-  }
+  };
 };
 
 const mapDispatchToProps = {

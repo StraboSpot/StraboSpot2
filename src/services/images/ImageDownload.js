@@ -33,12 +33,13 @@ export const saveFile = async (imageURI) => {
       .fetch('GET', imageURI.uri, {});
     imageCount++;
     console.log(imageCount, 'File saved to', res.path());
-    let imageId = imageName.split(".")[0];
+    let imageId = imageName.split('.')[0];
     let imageData = {};
-    if (Platform.OS === "ios") imageData = {id: imageId, src: res.path(), height: imageURI.height, width: imageURI.width};
-    else imageData ={id: imageId, src: 'file://' + res.path(), height: imageURI.height, width: imageURI.width};
+    if (Platform.OS === 'ios') imageData = {id: imageId, src: res.path(), height: imageURI.height, width: imageURI.width};
+    else imageData = {id: imageId, src: 'file://' + res.path(), height: imageURI.height, width: imageURI.width};
     return imageData;
-  } catch (err) {
+  }
+  catch (err) {
     imageCount++;
     console.log(imageCount, 'Error on', imageName, ':', err);
   }

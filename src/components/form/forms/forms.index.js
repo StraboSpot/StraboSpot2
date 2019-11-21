@@ -17,35 +17,35 @@ const forms = {
   'measurement': {
     'linear_orientation': {
       'survey': linearOrientationSurvey,
-      'choices': linearOrientationChoices
+      'choices': linearOrientationChoices,
     },
     'planar_orientation': {
       'survey': planarOrientationSurvey,
-      'choices': planarOrientationChoices
+      'choices': planarOrientationChoices,
     },
     'tabular_orientation': {
       'survey': tabularZoneOrientationSurvey,
-      'choices': tabularZoneOrientationChoices
-    }
+      'choices': tabularZoneOrientationChoices,
+    },
   },
   'measurement_bulk': {
     'linear_orientation': {
       'survey': getMeasurementSurveyForBulkInput(linearOrientationSurvey),
-      'choices': linearOrientationChoices
+      'choices': linearOrientationChoices,
     },
     'planar_orientation': {
       'survey': getMeasurementSurveyForBulkInput(planarOrientationSurvey),
-      'choices': planarOrientationChoices
+      'choices': planarOrientationChoices,
     },
     'tabular_orientation': {
       'survey': getMeasurementSurveyForBulkInput(tabularZoneOrientationSurvey),
-      'choices': tabularZoneOrientationChoices
-    }
+      'choices': tabularZoneOrientationChoices,
+    },
   },
   'images': {
     'survey': imagePropertiesSurvey,
-    'choices': imagePropertiesChoices
-  }
+    'choices': imagePropertiesChoices,
+  },
 };
 
 export default forms;

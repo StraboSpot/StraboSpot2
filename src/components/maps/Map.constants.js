@@ -1,4 +1,4 @@
-import {Dimensions} from "react-native";
+import {Dimensions} from 'react-native';
 
 const {width, height} = Dimensions.get('window');
 
@@ -15,7 +15,7 @@ export const MapModes = {
     LINE: 'line',
     POLYGON: 'polygon',
   },
-  EDIT: 'edit'
+  EDIT: 'edit',
 };
 
 export const mapReducers = {
@@ -26,5 +26,5 @@ export const mapReducers = {
   OFFLINE_MAPS: 'OFFLINE_MAPS',
   VERTEX_START_COORDS: 'VERTEX_START_COORDS',
   VERTEX_END_COORDS: 'VERTEX_END_COORDS',
-  CLEAR_VERTEXES: 'CLEAR_VERTEXES'
+  CLEAR_VERTEXES: 'CLEAR_VERTEXES',
 };

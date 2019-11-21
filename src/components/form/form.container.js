@@ -1,9 +1,9 @@
-import {Alert} from "react-native";
+import {Alert} from 'react-native';
 import * as forms from './forms/forms.index';
-import {isEmpty} from "../../shared/Helpers";
+import {isEmpty} from '../../shared/Helpers';
 
-let survey = undefined;
-let choices = undefined;
+let survey;
+let choices;
 
 export const getForm = () => {
   return survey;
@@ -26,7 +26,7 @@ const getAllChoices = (object, allChoices) => {
 export const getLabel = (name) => {
   let allChoices = [];
   allChoices = getAllChoices(forms.default, allChoices);
-  return allChoices.find(choice => choice.name === name).label || name.replace(/_/g, " ");
+  return allChoices.find(choice => choice.name === name).label || name.replace(/_/g, ' ');
 };
 
 /*const createDefaultLabel = (data) => {
@@ -77,7 +77,8 @@ export const isRelevant = (field, values) => {
 
   try {
     return eval(relevant);
-  } catch (e) {
+  }
+  catch (e) {
     return false;
   }
 };

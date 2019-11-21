@@ -1,11 +1,11 @@
 import {PropTypes} from 'prop-types';
 import React from 'react';
 import {Text, TextInput, View} from 'react-native';
-import {isEmpty} from "../../shared/Helpers";
+import {isEmpty} from '../../shared/Helpers';
 
 // Styles
 import styles from './form.styles';
-import stylesCommon from "../../shared/common.styles";
+import stylesCommon from '../../shared/common.styles';
 
 const NumberInputField = ({
                             field: {name, onBlur, onChange, value},

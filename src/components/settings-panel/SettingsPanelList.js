@@ -1,7 +1,7 @@
-import React from 'react'
-import {Text, ScrollView, View} from 'react-native'
-import * as SharedUI from '../../shared/ui/index'
-import {Button} from "react-native-elements";
+import React from 'react';
+import {Text, ScrollView, View} from 'react-native';
+import * as SharedUI from '../../shared/ui/index';
+import {Button} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {SettingsMenuItems} from './SettingsMenu.constants';
 
@@ -22,7 +22,7 @@ const SettingsPanelList = props => {
             style={styles.navItemStyle}
             onPress={() => props.onPress(SettingsMenuItems.ATTRIBUTES[key])}>
             {SettingsMenuItems.ATTRIBUTES[key]}
-          </SharedUI.ButtonNoBackground>
+          </SharedUI.ButtonNoBackground>,
         )}
       </View>
       <View style={styles.sectionHeading}>
@@ -35,7 +35,7 @@ const SettingsPanelList = props => {
             style={styles.navItemStyle}
             onPress={() => props.onPress(SettingsMenuItems.APP_PREFERENCES[key])}>
             {SettingsMenuItems.APP_PREFERENCES[key]}
-          </SharedUI.ButtonNoBackground>
+          </SharedUI.ButtonNoBackground>,
         )}
       </View>
       <View style={styles.sectionHeading}>
@@ -48,7 +48,7 @@ const SettingsPanelList = props => {
             style={styles.navItemStyle}
             onPress={() => props.onPress(SettingsMenuItems.MAPS[key])}>
             {SettingsMenuItems.MAPS[key]}
-          </SharedUI.ButtonNoBackground>
+          </SharedUI.ButtonNoBackground>,
         )}
       </View>
       <View style={styles.sectionHeading}>
@@ -61,7 +61,7 @@ const SettingsPanelList = props => {
             style={styles.navItemStyle}
             onPress={() => props.onPress(SettingsMenuItems.HELP[key])}>
             {SettingsMenuItems.HELP[key]}
-          </SharedUI.ButtonNoBackground>
+          </SharedUI.ButtonNoBackground>,
         )}
       </View>
       <View style={styles.sectionHeading}>
@@ -91,7 +91,7 @@ const SettingsPanelList = props => {
               onPress={props.signout}
               title={props.title}
               buttonStyle={{backgroundColor: themes.LIGHTGREY}}
-              containerStyle={{marginLeft: 20, marginRight: 20, marginTop: 10 }}
+              containerStyle={{marginLeft: 20, marginRight: 20, marginTop: 10}}
               titleStyle={{paddingRight: 20, color: themes.PRIMARY_ITEM_TEXT_COLOR}}
               // type={'solid'}
               // name={'ios-log-out'}
@@ -99,8 +99,8 @@ const SettingsPanelList = props => {
               // backgroundColor={themes.PRIMARY_BACKGROUND_COLOR}
               // color={'black'}
             />
-              {/*<Text>{SettingsMenuItems.USER_PREFERENCES[key]}</Text>*/}
-          </View>
+            {/*<Text>{SettingsMenuItems.USER_PREFERENCES[key]}</Text>*/}
+          </View>,
         )}
       </View>
     </ScrollView>

@@ -5,8 +5,8 @@ import {ListItem} from 'react-native-elements';
 import {connect} from 'react-redux';
 import RNFetchBlob from 'rn-fetch-blob';
 import {Platform} from 'react-native';
-import {mapReducers} from "../Map.constants";
-import {isEmpty} from "../../../shared/Helpers";
+import {mapReducers} from '../Map.constants';
+import {isEmpty} from '../../../shared/Helpers';
 
 var RNFS = require('react-native-fs');
 
@@ -16,14 +16,14 @@ class ManageOfflineMapsMenu extends Component {
   constructor(props, context) {
     super(props, context);
 
-    console.log("Props: ", props);
+    console.log('Props: ', props);
 
     let dirs = RNFetchBlob.fs.dirs;
     this.devicePath = Platform.OS === 'ios' ? dirs.DocumentDir : dirs.SDCardDir; // ios : android
     this.tilesDirectory = '/StraboSpotTiles';
     this.tileCacheDirectory = this.devicePath + this.tilesDirectory + '/TileCache';
 
-    console.log("tileCacheDirectory: ", this.tileCacheDirectory);
+    console.log('tileCacheDirectory: ', this.tileCacheDirectory);
 
   }
 
@@ -38,9 +38,9 @@ class ManageOfflineMapsMenu extends Component {
 
   render() { //return whole modal here
     return (
-        <React.Fragment>
-          {!isEmpty(this.props.offlineMaps) ? (this.props.offlineMaps.map((item,i) =>
-              <ListItem
+      <React.Fragment>
+        {!isEmpty(this.props.offlineMaps) ? (this.props.offlineMaps.map((item, i) =>
+            <ListItem
               containerStyle={{backgroundColor: 'transparent', padding: 0, borderBottomWidth: 1}}
               key={item.saveId}
               title={
@@ -64,37 +64,37 @@ class ManageOfflineMapsMenu extends Component {
                 </View>
               }
             />)) :
-            <View style={{ alignItems: 'center', paddingTop: 20}}>
-              <Text >No Offline Maps</Text>
-            </View>}
-        </React.Fragment>
+          <View style={{alignItems: 'center', paddingTop: 20}}>
+            <Text>No Offline Maps</Text>
+          </View>}
+      </React.Fragment>
     );
   }
 
   viewOfflineMap = async (map) => {
     console.log('viewOfflineMap: ', map);
     tileJSON = 'file://' + this.tileCacheDirectory + '/' + map.saveId + '/tiles/{z}_{x}_{y}.png';
-    console.log("tileJSON: ", tileJSON);
+    console.log('tileJSON: ', tileJSON);
     //change id to force layer reload
     tempCurrentBasemap =
-    {
-      id: 'null',
-      layerId: map.saveId,
-      layerLabel: map.name,
-      layerSaveId: map.saveId,
-      url: tileJSON,
-      maxZoom: 19
-    };
+      {
+        id: 'null',
+        layerId: map.saveId,
+        layerLabel: map.name,
+        layerSaveId: map.saveId,
+        url: tileJSON,
+        maxZoom: 19,
+      };
     await this.props.onCurrentBasemap(tempCurrentBasemap);
     tempCurrentBasemap =
-    {
-      id: map.appId,
-      layerId: map.saveId,
-      layerLabel: map.name,
-      layerSaveId: map.saveId,
-      url: tileJSON,
-      maxZoom: 19
-    };
+      {
+        id: map.appId,
+        layerId: map.saveId,
+        layerLabel: map.name,
+        layerSaveId: map.saveId,
+        url: tileJSON,
+        maxZoom: 19,
+      };
 
     console.log('tempCurrentBasemap: ', tempCurrentBasemap);
     await this.props.onCurrentBasemap(tempCurrentBasemap);
@@ -113,7 +113,7 @@ class ManageOfflineMapsMenu extends Component {
         },
         {
           text: 'OK',
-          onPress: () => this.deleteMap(map.saveId)
+          onPress: () => this.deleteMap(map.saveId),
         },
       ],
       {cancelable: false},
@@ -122,12 +122,12 @@ class ManageOfflineMapsMenu extends Component {
 
   deleteMap = async (map) => {
     console.log('Deleting Map Here');
-    console.log("map: ",map);
-    console.log("directory: ", this.tileCacheDirectory + '/' + map);
+    console.log('map: ', map);
+    console.log('directory: ', this.tileCacheDirectory + '/' + map);
     let folderExists = await RNFS.exists(this.tileCacheDirectory + '/' + map);
 
     //first, delete folder with tiles
-    if(folderExists){
+    if (folderExists) {
       await RNFS.unlink(this.tileCacheDirectory + '/' + map);
     }
 
@@ -135,16 +135,16 @@ class ManageOfflineMapsMenu extends Component {
     currentOfflineMaps = this.props.offlineMaps;
 
     //now check for existence of AsyncStorage offlineMapsData and store new count
-    if(!currentOfflineMaps){
-      currentOfflineMaps=[];
+    if (!currentOfflineMaps) {
+      currentOfflineMaps = [];
     }
 
     let newOfflineMapsData = [];
 
     //loop over offlineMapsData and add any other maps (not current)
-    for(let i = 0; i < currentOfflineMaps.length; i++){
-      if(currentOfflineMaps[i].saveId){
-        if(currentOfflineMaps[i].saveId != map){
+    for (let i = 0; i < currentOfflineMaps.length; i++) {
+      if (currentOfflineMaps[i].saveId) {
+        if (currentOfflineMaps[i].saveId != map) {
           //Add it to new array for Redux Storage
           newOfflineMapsData.push(currentOfflineMaps[i]);
         }
@@ -152,20 +152,20 @@ class ManageOfflineMapsMenu extends Component {
     }
 
     await this.props.onOfflineMaps(newOfflineMapsData);
-    console.log("Saved offlineMaps to Redux.");
-  }
+    console.log('Saved offlineMaps to Redux.');
+  };
 }
 
 const mapStateToProps = (state) => {
   return {
     offlineMaps: state.map.offlineMaps,
-    currentBasemap: state.map.currentBasemap
-  }
+    currentBasemap: state.map.currentBasemap,
+  };
 };
 
 const mapDispatchToProps = {
   onOfflineMaps: (offlineMaps) => ({type: mapReducers.OFFLINE_MAPS, offlineMaps: offlineMaps}),
-  onCurrentBasemap: (basemap) => ({type: mapReducers.CURRENT_BASEMAP, basemap: basemap})
+  onCurrentBasemap: (basemap) => ({type: mapReducers.CURRENT_BASEMAP, basemap: basemap}),
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ManageOfflineMapsMenu);
