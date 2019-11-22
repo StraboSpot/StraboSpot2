@@ -1,15 +1,10 @@
 import React, {useState, useEffect} from 'react';
-import {FlatList, ScrollView, Text, View} from 'react-native';
+import {FlatList, Text, View} from 'react-native';
 import {connect} from 'react-redux';
-import * as SharedUI from '../shared/ui/index';
-import {imageReducers} from '../components/images/Image.constants';
-import {spotReducers} from './Spot.constants';
-import {homeReducers} from '../views/home/Home.constants';
 import {notebookReducers} from '../components/notebook-panel/Notebook.constants';
 import {settingPanelReducers, SortedViews} from '../components/settings-panel/settingsPanel.constants';
 import {isEmpty} from '../shared/Helpers';
-import {Button, ListItem} from 'react-native-elements';
-// import spotListStyles from "../spots/SpotListStyles";
+import {ListItem} from 'react-native-elements';
 import attributesStyles from '../components/settings-panel/settingsPanelSectionStyles/Attributes.styles';
 import SortingButtons from '../components/settings-panel/Sorting';
 

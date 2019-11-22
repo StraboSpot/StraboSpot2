@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Dimensions, Platform, Text, View} from 'react-native';
+import {Dimensions} from 'react-native';
 import {connect} from 'react-redux';
 import AnimatedPoint from 'react-native-reanimated';
 import {State, PanGestureHandler} from 'react-native-gesture-handler';
@@ -9,6 +9,7 @@ import {mapReducers} from './Map.constants';
 import mapStyles from './Maps.styles';
 
 const {cond, eq, add, call, set, Value, event} = AnimatedPoint;
+// eslint-disable-next-line no-unused-vars
 const {height, width} = Dimensions.get('window');
 
 const vertexDrag = (props) => {

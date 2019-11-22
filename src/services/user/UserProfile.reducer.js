@@ -1,4 +1,3 @@
-import React from 'react';
 import * as UserInfo from './User.constants';
 
 const initialState = {

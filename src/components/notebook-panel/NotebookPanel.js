@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {Animated, Easing, Text, View} from 'react-native';
+import React from 'react';
+import {Animated, Text, View} from 'react-native';
 import {connect} from 'react-redux';
 import NotebookHeader from './notebook-header/NotebookHeader';
 import NotebookFooter from './notebook-footer/NotebookFooter';

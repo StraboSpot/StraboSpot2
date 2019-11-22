@@ -1,9 +1,8 @@
 import React from 'react';
-import {StyleSheet, View, Dimensions} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import Animated from 'react-native-reanimated';
 import {PanGestureHandler, State} from 'react-native-gesture-handler';
 
-const {width} = Dimensions.get('window');
 const {cond, eq, add, call, set, Value, event} = Animated;
 
 export default class Example extends React.Component {

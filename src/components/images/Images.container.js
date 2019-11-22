@@ -1,5 +1,4 @@
-import React from 'react';
-import {Alert, Image, Platform, View} from 'react-native';
+import {Platform} from 'react-native';
 import ImagePicker from 'react-native-image-picker';
 import RNFetchBlob from 'rn-fetch-blob';
 
@@ -12,7 +11,7 @@ import RNFetchBlob from 'rn-fetch-blob';
 
 let imageCount = 0;
 let dirs = RNFetchBlob.fs.dirs;
-const url = 'https://strabospot.org/testimages/images.json';
+// const url = 'https://strabospot.org/testimages/images.json';
 const devicePath = Platform.OS === 'ios' ? dirs.DocumentDir : dirs.SDCardDir; // ios : android
 const appDirectory = '/StraboSpot';
 const imagesDirectory = devicePath + appDirectory + '/Images';

@@ -1,5 +1,4 @@
 import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
 import Dialog, {DialogButton, DialogContent, DialogTitle} from 'react-native-popup-dialog';
 import {ScaleAnimation} from 'react-native-popup-dialog/src';
 // import {Switch} from "react-native-switch";

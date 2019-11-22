@@ -1,5 +1,3 @@
-import React from 'react';
-
 const baseUrl = 'https://strabospot.org/db';
 
 const buildGetRequest = async (urlPart, login) => {

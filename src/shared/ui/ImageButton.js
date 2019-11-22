@@ -1,5 +1,5 @@
 import React from 'react';
-import {ActivityIndicator, TouchableOpacity, TouchableNativeFeedback, Text, View, StyleSheet, Platform} from 'react-native';
+import {ActivityIndicator, TouchableOpacity, TouchableNativeFeedback, Platform} from 'react-native';
 import {Image} from 'react-native-elements';
 
 const imageButton = props => {

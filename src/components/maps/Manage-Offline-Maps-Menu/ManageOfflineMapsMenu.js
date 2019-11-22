@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Alert, Image, Text, View} from 'react-native';
+import {Alert, Text, View} from 'react-native';
 import styles from './ManageOfflineStyles';
 import {ListItem} from 'react-native-elements';
 import {connect} from 'react-redux';

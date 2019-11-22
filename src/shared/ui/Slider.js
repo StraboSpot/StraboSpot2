@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {Text, View} from 'react-native';
 import {Slider} from 'react-native-elements/src/index';
 import styles from './ui.styles';

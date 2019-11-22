@@ -1,5 +1,5 @@
-import React, {useState, useEffect} from 'react';
-import {ActivityIndicator, Button, Dimensions, Platform, Text, View} from 'react-native';
+import React, {useState} from 'react';
+import {ActivityIndicator, View} from 'react-native';
 import styles from './images.styles';
 import {connect} from 'react-redux';
 import {Icon, Image} from 'react-native-elements';

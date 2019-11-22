@@ -39,6 +39,7 @@ import IconButton from '../../shared/ui/IconButton';
 import VertexDrag from '../../components/maps/VertexDrag';
 import {animatePanels, isEmpty} from '../../shared/Helpers';
 
+// eslint-disable-next-line no-unused-vars
 const {height, width} = Dimensions.get('window');
 const getWidthPercent = () => {
   if (width < 500) return wp('95%');

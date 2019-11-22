@@ -1,13 +1,8 @@
-import {Dimensions, Platform, StyleSheet} from 'react-native';
+import {Dimensions, StyleSheet} from 'react-native';
 import * as themes from '../../styles.constants';
-import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 
+// eslint-disable-next-line no-unused-vars
 const {width, height} = Dimensions.get('window');
-const getModalWidth = () => {
-  if (width < 500) return wp('75%');
-  if (width >= 500 && width < 1099) return wp('25%');
-  if (width >= 1100) return wp('20%');
-};
 
 const modalStyle = StyleSheet.create({
   modalContainer: {

@@ -1,17 +1,10 @@
 import React from 'react';
-import Dialog, {DialogButton, DialogContent, DialogTitle} from 'react-native-popup-dialog';
+import Dialog, {DialogButton, DialogContent} from 'react-native-popup-dialog';
 import {connect} from 'react-redux';
-import {ScaleAnimation, SlideAnimation} from 'react-native-popup-dialog/src';
 import {menuButtons} from '../../shared/app.constants';
 
 // Styles
 import styles from './NotebookPanel.styles';
-
-const slideAnimation = new SlideAnimation({
-  useNativeDriver: true,
-  slideFrom: 'top',
-  toValue: 0,
-});
 
 const NotebookPanelMenu = props => (
   <Dialog

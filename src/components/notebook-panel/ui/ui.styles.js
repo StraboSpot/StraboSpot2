@@ -1,5 +1,4 @@
 import {StyleSheet} from 'react-native';
-import * as themes from '../../../shared/styles.constants';
 import ui from '../../../shared/ui/ui.styles';
 
 const buttonStyles = StyleSheet.create({

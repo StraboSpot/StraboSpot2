@@ -6,7 +6,7 @@ import * as RemoteServer from '../services/server-requests';
 import * as themes from '../shared/styles.constants';
 import {USER_DATA, USER_IMAGE, ENCODED_LOGIN} from '../services/user/User.constants';
 // import * as Sentry from '@sentry/react-native';
-import {isEmpty, readDataUrl} from '../shared/Helpers';
+import {readDataUrl} from '../shared/Helpers';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {Button} from 'react-native-elements';
 import NetInfo from '@react-native-community/netinfo';

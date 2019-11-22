@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {AsyncStorage, Picker, Text, StyleSheet, View, TouchableOpacity} from 'react-native';
+import {Picker, Text, StyleSheet, View} from 'react-native';
 import * as SharedUI from '../../../shared/ui/index';
 import {Button, Header} from 'react-native-elements';
 import MaterialCommunityIcons from '../../../shared/Icons';
@@ -238,6 +238,7 @@ class SaveMapModal extends Component {
   };
 
   tileMove = async (tilearray, zipUID) => {
+    // eslint-disable-next-line no-unused-vars
     for (const tile of tilearray) {
       let fileExists = await RNFS.exists(this.tileCacheDirectory + '/' + this.saveId + '/tiles/' + tile.name);
       console.log('foo exists: ', tile.name + ' ' + fileExists);

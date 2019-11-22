@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useCallback} from 'react';
+import React, {useState, useEffect} from 'react';
 import {connect} from 'react-redux';
 import {
   Animated,
@@ -13,31 +13,26 @@ import {
   NativeModules,
   NativeEventEmitter,
 } from 'react-native';
-// import {setUpdateIntervalForType, SensorTypes, magnetometer, accelerometer} from 'react-native-sensors';
-import {getNewId, mod, toRadians, toDegrees, roundToDecimalPlaces, isEmpty} from '../../../shared/Helpers';
+import {getNewId, mod, roundToDecimalPlaces, isEmpty} from '../../../shared/Helpers';
 import {CompassToggleButtons} from './Compass.constants';
 import {Button, ListItem} from 'react-native-elements';
 import RNSimpleCompass from 'react-native-simple-compass';
-// import {Switch} from "react-native-switch";
 import {spotReducers} from '../../../spots/Spot.constants';
 import {homeReducers, Modals} from '../../../views/home/Home.constants';
 import {NotebookPages, notebookReducers} from '../../notebook-panel/Notebook.constants';
-
-// import Orientation from 'react-native-orientation-locker';
 import Slider from '../../../shared/ui/Slider';
-// import Measurements from '../Measurements';
-// import IconButton from '../../../shared/ui/IconButton';
+
 // Styles
 import styles from './CompassStyles';
 import * as themes from '../../../shared/styles.constants';
 import Measurements from '../Measurements';
 import IconButton from '../../../shared/ui/IconButton';
 
+// eslint-disable-next-line no-unused-vars
 const {height, width} = Dimensions.get('window');
 
 const RNCompass = (props) => {
   let modalView = null;
-  const [errorMessage, setErrorMessage] = useState(null);
   const [compassData, setCompassData] = useState({
     strike: null,
     dip: null,
@@ -50,31 +45,27 @@ const RNCompass = (props) => {
   const [heading, setHeading] = useState(null);
   const [toggles, setToggles] = useState([CompassToggleButtons.PLANAR]);
   const [sliderValue, setSliderValue] = useState(5);
-  const [strikeSpinValue, setStrikeSpinValue] = useState(new Animated.Value(0));
-  const [trendSpinValue, setTrendSpinValue] = useState(new Animated.Value(0));
+  const [strikeSpinValue] = useState(new Animated.Value(0));
+  const [trendSpinValue] = useState(new Animated.Value(0));
   const [showData, setShowData] = useState(false);
   const CompassEvents = new NativeEventEmitter(NativeModules.Compass);
   const degree_update_rate = 1; // Number of degrees changed before the callback is triggered
 
   useEffect(() => {
-    let isSubscribed = true;
     // console.log(`Is device available: ${DeviceMotion.isAvailableAsync()}`);
     displayCompassData();
     return () => {
-      isSubscribed = false;
       NativeModules.Compass.stopObserving();
       console.log('subscription cancelled');
     };
   }, [displayCompassData]);
 
   useEffect(() => {
-    let isSubscribed = true;
-    RNSimpleCompass.start(degree_update_rate, data => {
-      const heading = roundToDecimalPlaces(mod(data.degree - 270, 360), 0);
+    RNSimpleCompass.start(degree_update_rate, ({degree, accuracy}) => {
+      const heading = roundToDecimalPlaces(mod(degree - 270, 360), 0);
       setHeading(heading);
     });
     return () => {
-      isSubscribed = false;
       console.log('Heading subscription cancelled');
     };
   }, []);
@@ -171,20 +162,6 @@ const RNCompass = (props) => {
   };
 
   const renderDataView = () => {
-    // let text = 'Waiting';
-    // if (errorMessage) {
-    //   text = errorMessage
-    // }
-    // else if (compassData.heading) {
-    //   text = mod(compassData.heading - 270, 360);
-    // }
-    // if (compassData === null) {
-    //   dataView =
-    //     <View style={{alignItems: 'flex-start'}}>
-    //       <Text>Spinner</Text>
-    //     </View>;
-    // }
-    // else {
     return (
       <View style={{alignItems: 'flex-start'}}>
         <Text>Heading: {heading}</Text>
@@ -195,7 +172,6 @@ const RNCompass = (props) => {
         <Text>Plunge: {compassData.plunge}</Text>
       </View>
     );
-    // }
   };
 
   // Render the strike and dip symbol inside the compass
