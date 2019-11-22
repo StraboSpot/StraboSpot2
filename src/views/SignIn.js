@@ -1,6 +1,5 @@
 import React from 'react';
 import {View, StyleSheet, TextInput, Alert, ImageBackground, KeyboardAvoidingView} from 'react-native';
-import NavigationServices from '../routes/NavagationServices';
 import {connect} from 'react-redux';
 import {authenticateUser} from '../services/user/UserAuth';
 import * as RemoteServer from '../services/server-requests';
@@ -51,6 +50,9 @@ class SignIn extends React.Component {
   //function for online/offline state change event handler
   handleConnectivityChange = (isConnected) => {
     this.props.setIsOnline(isConnected);
+    if (!isEmpty(this.props.userData) && this.props.isOnline) {
+        this.props.navigation.navigate('HomeScreen');
+    }
   };
 
   guestSignIn = () => {
@@ -58,7 +60,7 @@ class SignIn extends React.Component {
     //   scope.setUser({'id': 'GUEST'})
     // });
     console.log('Loading user: GUEST');
-    NavigationServices.navigate('HomeScreen');
+    this.props.navigation.navigate('HomeScreen');
   };
 
   signIn = async () => {
@@ -154,7 +156,7 @@ class SignIn extends React.Component {
   };
 
   createAccount = () => {
-    NavigationServices.navigate('SignUp');
+    this.props.navigation.navigate('SignUp');
   };
 
   render() {
