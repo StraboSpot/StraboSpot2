@@ -25,10 +25,11 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   },
   compassContainer: {
-    flex: 8,
+    flex: 15,
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
-    borderBottomRightRadius: 20,
-    borderBottomLeftRadius: 20,
+    // backgroundColor: 'red',
+    // borderBottomRightRadius: 20,
+    // borderBottomLeftRadius: 20,
     width: '100%',
   },
   compassImageContainer: {
@@ -74,8 +75,8 @@ const styles = StyleSheet.create({
   },
   strikeAndDipLine: {
     zIndex: 10,
-    height: 170,
-    width: 170,
+    height: 125,
+    width: 125,
     position: 'absolute',
     top: 40,
     resizeMode: 'contain',
@@ -88,8 +89,8 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
   },
   trendLine: {
-    height: 150,
-    width: 150,
+    height: 105,
+    width: 105,
     position: 'absolute',
     top: 50,
     resizeMode: 'contain',

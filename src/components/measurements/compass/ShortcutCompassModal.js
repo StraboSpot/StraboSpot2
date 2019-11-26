@@ -27,9 +27,12 @@ const ShortcutCompassModal = (props) => {
           component={<RMCompass onPress={props.onPress}/>}
           style={styles.compassContainer}
           close={props.close}
+          onPress={props.onPress}
+          // spotName={props.spotName}
           buttonTitleRight={'Undo last'}
           textStyle={{fontWeight: 'bold'}}
-        />
+          // bottom={props.bottom}
+        >{props.children}</Modal>
       </DragAnimation>
     );
   }

@@ -128,8 +128,8 @@ const RNCompass = (props) => {
         <Image source={require('../../../assets/images/compass/compass.png')}
                style={{
                  marginTop: 15,
-                 height: 220,
-                 width: 220,
+                 height: 175,
+                 width: 175,
                  justifyContent: 'center',
                  alignItems: 'center',
                  // resizeMode: 'contain',
@@ -297,23 +297,26 @@ const RNCompass = (props) => {
   }
   else if (props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {
     if (!isEmpty(props.spot)) {
-      modalView = <View>
-        <View style={height <= 1000 ? {height: 200} : {height: 350}}>
+      modalView =
+        <React.Fragment>
+          <View style={height <= 1000 ? {height: 300} : {height: 350}}>
           <Measurements/>
-        </View>
-        <IconButton
-          source={require('../../../assets/icons/StraboIcons_Oct2019/NotebookView_pressed.png')}
-          style={{marginTop: 10, flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-end', height: 25}}
-          textStyle={{color: themes.BLUE, fontSize: 16, textAlign: 'center'}}
-          onPress={() => props.onPress(NotebookPages.MEASUREMENT)}
-        > Go to {props.spot.properties.name}</IconButton>
-      </View>;
+          </View>
+        {/*<View >*/}
+        {/*<IconButton*/}
+        {/*  source={require('../../../assets/icons/StraboIcons_Oct2019/NotebookView_pressed.png')}*/}
+        {/*  style={{marginTop: 10, flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-end', height: 25}}*/}
+        {/*  textStyle={{color: themes.BLUE, fontSize: 16, textAlign: 'center'}}*/}
+        {/*  onPress={() => props.onPress(NotebookPages.MEASUREMENT)}*/}
+        {/*> Go to {props.spot.properties.name}</IconButton>*/}
+        {/*</View>*/}
+      </React.Fragment>;
     }
   }
 
   return (
-    <React.Fragment>
-      <View style={{flex: 1}}>
+    <View style={{}}>
+      <View style={{}}>
         <View>
           <Text style={{textAlign: 'center', fontSize: 12}}>Tap compass to record</Text>
           {/*<View style={{ height: 50, backgroundColor: 'powderblue'}} />*/}
@@ -332,7 +335,7 @@ const RNCompass = (props) => {
         {/*{showDeviceMotionModal && deviceMotionModal}*/}
         {showData ? renderDataView() : null}
       </View>
-    </React.Fragment>
+    </View>
   );
 };
 
