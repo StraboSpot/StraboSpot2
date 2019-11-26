@@ -6,10 +6,13 @@ const {width, height} = Dimensions.get('window');
 
 const modalStyle = StyleSheet.create({
   modalContainer: {
-    width: 275,
+    width: 250,
+    // height: 500,
     opacity: 0.90,
-    borderBottomRightRadius: 20,
-    borderBottomLeftRadius: 20,
+    // borderBottomRightRadius: 20,
+    // borderBottomLeftRadius: 20,
+    // borderBottomRightRadius: 20,
+    // borderBottomLeftRadius: 20,
     zIndex: 1,
   },
   modalBottom: {
