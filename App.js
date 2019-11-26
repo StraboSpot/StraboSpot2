@@ -4,7 +4,6 @@ import {PersistGate} from 'redux-persist/integration/react';
 import configureStore from './src/store/ConfigureStore';
 import {createAppContainer} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
-import NavigationServices from './src/routes/NavagationServices';
 import SignIn from './src/views/SignIn';
 import ImageInfo from './src/components/images/ImageInfo.view';
 import SignUp from './src/views/SignUp';
@@ -43,10 +42,8 @@ export default class App extends React.Component {
   render() {
     return (
       <Provider store={store}>
-        <PersistGate loading={<Loading/>} persistor={persistor}>
-          <Navigation
-            ref={navigatorRef => NavigationServices.setTopLevelNavigator(navigatorRef)}
-          />
+        <PersistGate loading={<Loading />} persistor={persistor}>
+          <Navigation />
         </PersistGate>
       </Provider>
     );
