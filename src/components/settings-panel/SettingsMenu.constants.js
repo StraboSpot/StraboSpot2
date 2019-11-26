@@ -1,5 +1,11 @@
 export const SettingsMenuItems = {
   SETTINGS_MAIN: 'settingsMain',
+  MANAGE: {
+    MY_STRABOSPOT: 'My StraboSpot',
+    ACTIVE_PROJECTS: 'Active Projects',
+    UPLOAD_BACKUP_EXPORT: 'Upload, Backup & Export',
+    DATABASE_DETAILS: 'Database Details',
+  },
   ATTRIBUTES: {
     SPOTS_LIST: 'Spots List',
     IMAGE_GALLERY: 'Image Gallery',
@@ -7,16 +13,18 @@ export const SettingsMenuItems = {
     TAGS: 'Tags',
   },
   APP_PREFERENCES: {
-    PROJECT_SETTINGS: 'Project Settings',
-    MANAGE_DATASETS: 'Manage Datasets',
-    SHORTCUTS: 'Shortcut Menu',
-    BACKUP_EXPORT: 'Backup & Export',
+    // PROJECT_SETTINGS: 'Project Settings',
+    // MANAGE_DATASETS: 'Manage Datasets',
+    SHORTCUTS: 'Shortcuts',
+    NOTEBOOK_BAR: 'Notebook Bar',
+    NAMING_CONVENTIONS: 'NamingConventions',
+    UNITS: 'Units',
+    // BACKUP_EXPORT: 'Backup & Export',
   },
   MAPS: {
     CUSTOM: 'Custom Maps',
     IMAGE_BASEMAPS: 'Image Basemaps',
     MANAGE_OFFLINE_MAPS: 'Manage Offline Maps',
-    UNITS: 'Units',
   },
   HELP: {
     ABOUT: 'About Strabo',

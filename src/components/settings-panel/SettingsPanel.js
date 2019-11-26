@@ -6,6 +6,7 @@ import SettingsPanelList from './SettingsPanelList';
 import UserProfileComponent from './UserProfileComponent';
 import SettingsPanelHeader from './SettingsPanelHeader';
 import {SettingsMenuItems} from './SettingsMenu.constants';
+import MyStraboSpot from '../../project/MyStraboSpot';
 import SpotsList from '../../spots/SpotsList';
 import ImageGallery from '../images/ImageGallery.view';
 import SamplesList from '../samples/SamplesList.view';
@@ -61,6 +62,13 @@ const SettingsPanel = props => {
   else buttonTitle = 'Sign Out';
 
   switch (settingsPageVisible) {
+    case SettingsMenuItems.MANAGE.MY_STRABOSPOT:
+      page =
+        <View style={styles.settingsPanelContainer}>
+          {settingsPanelHeader}
+          <MyStraboSpot/>
+        </View>;
+      break;
     case SettingsMenuItems.APP_PREFERENCES.SHORTCUTS:
       page =
         <View style={styles.settingsPanelContainer}>

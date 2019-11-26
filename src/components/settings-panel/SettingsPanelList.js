@@ -13,6 +13,19 @@ const SettingsPanelList = props => {
   return (
     <ScrollView>
       <View style={styles.sectionHeading}>
+        <Text style={styles.sectionHeadingTextStyle}>Manage</Text>
+      </View>
+      <View style={styles.navSectionStyle}>
+        {Object.keys(SettingsMenuItems.MANAGE).map(key =>
+          <SharedUI.ButtonNoBackground
+            key={key}
+            style={styles.navItemStyle}
+            onPress={() => props.onPress(SettingsMenuItems.MANAGE[key])}>
+            {SettingsMenuItems.MANAGE[key]}
+          </SharedUI.ButtonNoBackground>,
+        )}
+      </View>
+      <View style={styles.sectionHeading}>
         <Text style={styles.sectionHeadingTextStyle}>Attributes</Text>
       </View>
       <View style={styles.navSectionStyle}>
@@ -26,7 +39,7 @@ const SettingsPanelList = props => {
         )}
       </View>
       <View style={styles.sectionHeading}>
-        <Text style={styles.sectionHeadingTextStyle}>App Preferences</Text>
+        <Text style={styles.sectionHeadingTextStyle}>Preferences</Text>
       </View>
       <View style={styles.navSectionStyle}>
         {Object.keys(SettingsMenuItems.APP_PREFERENCES).map(key =>
