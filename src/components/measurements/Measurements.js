@@ -95,13 +95,15 @@ const MeasurementsPage = (props) => {
     const data = getSectionData(type);
     const selectedIds = getIdsOfSelected();
     return (
-      <View>
+      <View style={{height:'25%'}}>
         <FlatList
           data={data}
-          renderItem={item => <MeasurementItem item={item}
-                                               selectedIds={selectedIds}
-                                               onPress={() => onMeasurementPressed(item.item, type)}/>}
-          keyExtractor={(item, index) => index.toString()}
+          renderItem={item =>
+            <MeasurementItem
+              item={item}
+              selectedIds={selectedIds}
+              onPress={() => onMeasurementPressed(item.item, type)}/>}
+              keyExtractor={(item, index) => index.toString()}
         />
       </View>
     );
@@ -130,7 +132,7 @@ const MeasurementsPage = (props) => {
             onPress={() => endSelecting()}
           />}
           {!multiSelectMode &&
-          <React.Fragment>
+          <View style={{flexDirection: 'row'}}>
             <Button
               titleStyle={styles.measurementsSectionDividerButtonText}
               title={'Add'}
@@ -149,7 +151,7 @@ const MeasurementsPage = (props) => {
               type={'clear'}
               onPress={() => startSelecting(dividerText)}
             />
-          </React.Fragment>}
+          </View>}
         </View>
       </View>
     );
@@ -172,14 +174,14 @@ const MeasurementsPage = (props) => {
             props.setModalVisible(null);
           }}
         />
-        <ScrollView>
+        {/*<View>*/}
           {renderSectionDivider(sectionTypes.PLANAR)}
           {props.spot.properties.orientation_data && renderMeasurements(sectionTypes.PLANAR)}
           {renderSectionDivider(sectionTypes.LINEAR)}
           {props.spot.properties.orientation_data && renderMeasurements(sectionTypes.LINEAR)}
           {renderSectionDivider(sectionTypes.PLANARLINEAR)}
           {props.spot.properties.orientation_data && renderMeasurements(sectionTypes.PLANARLINEAR)}
-        </ScrollView>
+        {/*</View>*/}
       </View>
     );
   };
@@ -187,14 +189,12 @@ const MeasurementsPage = (props) => {
   const renderMeasurementsShortcutView = () => {
     return (
       <View style={{backgroundColor: themes.PRIMARY_BACKGROUND_COLOR}}>
-        <ScrollView>
           {renderSectionDividerShortcutView(sectionTypes.PLANAR)}
           {props.spot.properties.orientation_data && renderMeasurements(sectionTypes.PLANAR)}
           {renderSectionDividerShortcutView(sectionTypes.LINEAR)}
           {props.spot.properties.orientation_data && renderMeasurements(sectionTypes.LINEAR)}
           {renderSectionDividerShortcutView(sectionTypes.PLANARLINEAR)}
           {props.spot.properties.orientation_data && renderMeasurements(sectionTypes.PLANARLINEAR)}
-        </ScrollView>
       </View>
     );
   };

@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
     paddingBottom: 9,
   },
   measurementsSectionDividerWithButtonsContainer: {
-    flex: 1,
+    // flex: 1,
     flexDirection: 'row',
     paddingTop: 20,
   },
