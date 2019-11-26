@@ -14,6 +14,7 @@ import {homeReducers} from './home/Home.constants';
 import IconButton from '../shared/ui/IconButton';
 import {USERNAME_TEST, PASSWORD_TEST} from '../../Config';
 import {Base64} from 'js-base64';
+import {isEmpty} from '../shared/Helpers';
 
 let user = null;
 
