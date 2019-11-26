@@ -21,13 +21,13 @@ const SpotsList = (props) => {
       props.setSelectedButtonIndex(0);
       console.log('CLEANUP!');
     };
-  }, [props]);
+  }, []);
 
   useEffect(() => {
     setSortedList(spots);
-    setRefresh(!refresh);
+    // setRefresh(!refresh);
     console.log('render Recent Views in SpotList!');
-  }, [selectedSpot, spots, sortedListView, sortedList, refresh]);
+  }, [selectedSpot, spots, sortedListView, sortedList]);
 
   const renderName = (item) => {
     return (

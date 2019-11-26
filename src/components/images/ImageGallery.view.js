@@ -34,7 +34,7 @@ const imageGallery = (props) => {
 
   useEffect(() => {
     setSortedList(spots);
-    setRefresh(!refresh);
+    // setRefresh(!refresh);
     console.log('render Recent Views in ImageGallery.js!');
   }, [selectedSpot, spots, sortedListView, sortedList]);
 
