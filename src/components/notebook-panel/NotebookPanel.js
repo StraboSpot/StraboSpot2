@@ -112,11 +112,9 @@ const NotebookPanel = props => {
     props.setModalVisible(null);
     return (
       <View style={[notebookStyles.panel, notebookStyles.noSpotContent]}>
-        <Text style={{fontSize: 30}}>No Spot Selected</Text>
-        <SharedUI.ButtonNoBackground
-          style={{marginTop: 40}}
-          textStyle={{color: themes.PRIMARY_ACCENT_COLOR}}
-          onPress={props.closeNotebook}>Close Notebook</SharedUI.ButtonNoBackground>
+        <Text style={[notebookStyles.noSpotContentHeaderText]}>No Spot Selected</Text>
+        <Text style={notebookStyles.noSpotContentText}>Please select a spot.</Text>
+        <Text style={notebookStyles.noSpotContentText}>To close swipe RIGHT</Text>
       </View>
     );
   }

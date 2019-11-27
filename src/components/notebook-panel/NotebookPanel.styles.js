@@ -59,6 +59,14 @@ const notebookStyles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,
+  },
+  noSpotContentHeaderText: {
+    fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,
+    paddingBottom: 10,
+  },
+  noSpotContentText: {
+    fontSize: themes.PRIMARY_TEXT_SIZE,
   },
   collapsibleSectionHeaderContainer: {
     flex: 1,
