@@ -1,6 +1,5 @@
 import React from 'react';
-import {Text, ScrollView, View} from 'react-native';
-import * as SharedUI from '../../shared/ui/index';
+import {ScrollView, View, TouchableOpacity} from 'react-native';
 import {Button} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {SettingsMenuItems} from './SettingsMenu.constants';
@@ -10,75 +9,37 @@ import styles from './SettingsPanelStyles';
 import * as themes from '../../shared/styles.constants';
 
 const SettingsPanelList = props => {
+
+  const renderButtons = (name, key) => {
+    return (
+      <TouchableOpacity key={key} onPress={() => props.onPress(name)}>
+        <Button
+          title={name === SettingsMenuItems.MANAGE.ACTIVE_PROJECTS ?
+            SettingsMenuItems.MANAGE.ACTIVE_PROJECTS + ` (${props.activeProject})` : name}
+          type={'clear'}
+          containerStyle={styles.navItemStyle}
+          titleStyle={styles.navButtonText}
+        />
+      </TouchableOpacity>
+    );
+  };
+
   return (
     <ScrollView>
       <HomePanelDivider sectionText={'Manage'}/>
       <View style={styles.navSectionStyle}>
-        {Object.keys(SettingsMenuItems.MANAGE).map(key =>
-          <SharedUI.ButtonNoBackground
-            key={key}
-            style={styles.navItemStyle}
-            onPress={() => props.onPress(SettingsMenuItems.MANAGE[key])}>
-            {SettingsMenuItems.MANAGE[key]}
-          </SharedUI.ButtonNoBackground>,
-        )}
-      </View>
+        {Object.keys(SettingsMenuItems.MANAGE).map(key => renderButtons(SettingsMenuItems.MANAGE[key], key))}
       <HomePanelDivider sectionText={'Attributes'}/>
-      <View style={styles.navSectionStyle}>
-        {Object.keys(SettingsMenuItems.ATTRIBUTES).map(key =>
-          <SharedUI.ButtonNoBackground
-            key={key}
-            style={styles.navItemStyle}
-            onPress={() => props.onPress(SettingsMenuItems.ATTRIBUTES[key])}>
-            {SettingsMenuItems.ATTRIBUTES[key]}
-          </SharedUI.ButtonNoBackground>,
-        )}
-      </View>
+        {Object.keys(SettingsMenuItems.ATTRIBUTES).map(key => renderButtons(SettingsMenuItems.ATTRIBUTES[key], key))}
       <HomePanelDivider sectionText={'Maps'}/>
-      <View style={styles.navSectionStyle}>
-        {Object.keys(SettingsMenuItems.MAPS).map(key =>
-          <SharedUI.ButtonNoBackground
-            key={key}
-            style={styles.navItemStyle}
-            onPress={() => props.onPress(SettingsMenuItems.MAPS[key])}>
-            {SettingsMenuItems.MAPS[key]}
-          </SharedUI.ButtonNoBackground>,
-        )}
-      </View>
+        {Object.keys(SettingsMenuItems.MAPS).map(key => renderButtons(SettingsMenuItems.MAPS[key], key))}
       <HomePanelDivider sectionText={'Preferences'}/>
-      <View style={styles.navSectionStyle}>
-        {Object.keys(SettingsMenuItems.APP_PREFERENCES).map(key =>
-          <SharedUI.ButtonNoBackground
-            key={key}
-            style={styles.navItemStyle}
-            onPress={() => props.onPress(SettingsMenuItems.APP_PREFERENCES[key])}>
-            {SettingsMenuItems.APP_PREFERENCES[key]}
-          </SharedUI.ButtonNoBackground>,
-        )}
-      </View>
+        {Object.keys(SettingsMenuItems.APP_PREFERENCES).map(key => renderButtons(SettingsMenuItems.APP_PREFERENCES[key], key))}
       <HomePanelDivider sectionText={'Help'}/>
-      <View style={styles.navSectionStyle}>
-        {Object.keys(SettingsMenuItems.HELP).map(key =>
-          <SharedUI.ButtonNoBackground
-            key={key}
-            style={styles.navItemStyle}
-            onPress={() => props.onPress(SettingsMenuItems.HELP[key])}>
-            {SettingsMenuItems.HELP[key]}
-          </SharedUI.ButtonNoBackground>,
-        )}
-      </View>
-      <HomePanelDivider sectionText={'Manage'}/>
-      <View style={styles.navSectionStyle}>
+        {Object.keys(SettingsMenuItems.HELP).map(key => renderButtons(SettingsMenuItems.HELP[key], key))}
+      <HomePanelDivider sectionText={'User Preferences'}/>
         {Object.keys(SettingsMenuItems.USER_PREFERENCES).map(key =>
           <View key={key} style={[styles.navItemStyle, {}]}>
-            {/*<SharedUI.ButtonNoBackground*/}
-            {/*onPress={() => goSignIn()}*/}
-            {/*// name={'ios-log-out'}*/}
-            {/*// color={'black'}*/}
-            {/*// size={25}*/}
-            {/*>*/}
-            {/*{SettingsMenuItems.USER_PREFERENCES[key]}*/}
-            {/*</SharedUI.ButtonNoBackground>*/}
             <Button
               icon={
                 <Icon
@@ -93,14 +54,7 @@ const SettingsPanelList = props => {
               title={props.title}
               buttonStyle={{backgroundColor: themes.LIGHTGREY}}
               containerStyle={{marginLeft: 20, marginRight: 20, marginTop: 10}}
-              titleStyle={{paddingRight: 20, color: themes.PRIMARY_ITEM_TEXT_COLOR}}
-              // type={'solid'}
-              // name={'ios-log-out'}
-              // onPress={props.signout}
-              // backgroundColor={themes.PRIMARY_BACKGROUND_COLOR}
-              // color={'black'}
-            />
-            {/*<Text>{SettingsMenuItems.USER_PREFERENCES[key]}</Text>*/}
+              titleStyle={{paddingRight: 20, color: themes.PRIMARY_ITEM_TEXT_COLOR}}/>
           </View>,
         )}
       </View>

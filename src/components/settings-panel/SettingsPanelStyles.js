@@ -3,7 +3,7 @@ import * as themes from '../../shared/styles.constants';
 
 const styles = StyleSheet.create({
   settingsDrawer: {
-    width: 325,
+    width: 300,
     height: '100%',
     position: 'absolute',
     left: 0,
@@ -11,19 +11,21 @@ const styles = StyleSheet.create({
     zIndex: -1,
   },
   settingsPanelContainer: {
-    // flex: 1,
-    // backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
+    flex: 1,
+    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
   },
   container: {
     flex: 1,
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
   },
   navItemStyle: {
-    padding: 3,
-    marginLeft: 5,
+    alignItems: 'flex-start',
+    borderTopWidth: 1,
+  },
+  navButtonText: {
+    color: themes.PRIMARY_ITEM_TEXT_COLOR,
   },
   navSectionStyle: {
-    paddingBottom: 10,
     flex: 1,
   },
   listContainer: {
@@ -36,6 +38,7 @@ const styles = StyleSheet.create({
     backgroundColor: themes.LIST_HEADER_COLOR,
   },
   sectionHeadingTextStyle: {
+    textTransform: 'uppercase',
     paddingTop: 5,
     paddingBottom: 5,
     fontWeight: 'bold',

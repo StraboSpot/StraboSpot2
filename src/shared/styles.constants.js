@@ -20,7 +20,7 @@ export const PRIMARY_ACCENT_COLOR = BLUE;
 export const LIST_BORDER_COLOR = LIGHTGREY;
 export const LIST_HEADER_COLOR = 'rgb(239, 239, 244)';
 
-export const PRIMARY_TEXT_SIZE = 18;
+export const PRIMARY_TEXT_SIZE = 16;
 export const PRIMARY_HEADER_TEXT_SIZE = 20;
 export const SMALL_TEXT_SIZE = 14;
 
