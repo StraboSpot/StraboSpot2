@@ -34,6 +34,7 @@ import ToastPopup from '../../shared/ui/Toast';
 import {Button, Image} from 'react-native-elements';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import styles from './Styles';
+import settingPanelStyles from '../../components/settings-panel/SettingsPanelStyles';
 import vectorIcon from 'react-native-vector-icons/Ionicons';
 import IconButton from '../../shared/ui/IconButton';
 import VertexDrag from '../../components/maps/VertexDrag';
@@ -179,7 +180,7 @@ class Home extends React.Component {
       //   console.log(`${name}`, " was clicked");
       //   break;
       case 'home':
-        this.openHomeDrawer();
+        this.toggleHomeDrawerButton();
         break;
 
       // Notebook Panel three-dot menu
@@ -355,7 +356,7 @@ class Home extends React.Component {
   getProjectFromServer = async () => {
     this.props.setHomePanelVisible(true);
     this.props.setHomePanelPageVisible(SettingsMenuItems.PROJECT.SWITCH_PROJECT);
-    this.openHomeDrawer();
+    this.toggleHomeDrawerButton();
     this.setState(prevState => {
       return {
         ...prevState,
@@ -386,11 +387,18 @@ class Home extends React.Component {
     }
   };
 
-  openHomeDrawer = () => {
+  toggleHomeDrawerButton = () => {
     if (this._isMounted) {
-      this.props.setHomePanelVisible(true);
-      animatePanels(this.state.settingsPanelAnimation, 0);
-      animatePanels(this.state.leftsideIconAnimation, wp('30%'));
+      if (this.props.homePanelVisible){
+        this.props.setHomePanelVisible(false);
+        animatePanels(this.state.settingsPanelAnimation, -325);
+        animatePanels(this.state.leftsideIconAnimation, 0);
+      }
+      else {
+        this.props.setHomePanelVisible(true);
+        animatePanels(this.state.settingsPanelAnimation, 0);
+        animatePanels(this.state.leftsideIconAnimation, 325);
+      }
     }
   };
 
@@ -398,8 +406,8 @@ class Home extends React.Component {
     if (this._isMounted) {
       console.log('notebook opening', pageView);
       this.props.setNotebookPageVisible(pageView);
-      animatePanels(this.state.animation, wp('0%'));
-      animatePanels(this.state.rightsideIconAnimation, wp('-35%'));
+      animatePanels(this.state.animation, 0);
+      animatePanels(this.state.rightsideIconAnimation, -400);
       this.props.setNotebookPanelVisible(true);
     }
   };
@@ -646,7 +654,7 @@ class Home extends React.Component {
         // onHandlerStateChange={ev => _onTwoFingerFlingHandlerStateChange(ev)}
         onHandlerStateChange={(ev) => this.flingHandlerSettingsPanel(ev)}
       >
-        <Animated.View style={[styles.settingsDrawer, animateSettingsPanel]}>
+        <Animated.View style={[settingPanelStyles.settingsDrawer, animateSettingsPanel]}>
           <SettingsPanel openNotebookPanel={(pageView) => this.openNotebookPanel(pageView)}/>
         </Animated.View>
       </FlingGestureHandler>;
@@ -845,12 +853,12 @@ class Home extends React.Component {
           </Animated.View>
           : null}
         {/*</View>*/}
-        <View style={styles.homeIconContainer}>
+        <Animated.View style={[styles.homeIconContainer, leftsideIconAnimation]}>
           <IconButton
             source={require('../../assets/icons/StraboIcons_Oct2019/HomeButton.png')}
             onPress={this.clickHandler.bind(this, 'home')}
           />
-        </View>
+        </Animated.View>
         <Animated.View style={[styles.leftsideIcons, leftsideIconAnimation]}>
           <IconButton
             source={require('../../assets/icons/StraboIcons_Oct2019/MapActionsButton.png')}

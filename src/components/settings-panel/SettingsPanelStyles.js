@@ -2,6 +2,18 @@ import {StyleSheet} from 'react-native';
 import * as themes from '../../shared/styles.constants';
 
 const styles = StyleSheet.create({
+  settingsDrawer: {
+    width: 325,
+    height: '100%',
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    zIndex: -1,
+  },
+  settingsPanelContainer: {
+    // flex: 1,
+    // backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
+  },
   container: {
     flex: 1,
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,

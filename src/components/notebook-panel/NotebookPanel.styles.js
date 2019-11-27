@@ -13,7 +13,7 @@ const getWidthPercent = () => {
 const notebookStyles = StyleSheet.create({
   panel: {
     // flex: 1,
-    width: getWidthPercent(),
+    width: 400,
     height: '100%',
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
     position: 'absolute',
