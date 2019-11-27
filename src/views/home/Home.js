@@ -112,6 +112,7 @@ class Home extends React.Component {
     this.props.setNotebookPanelVisible(false);
     this.props.setAllSpotsPanelVisible(false);
     this.props.setModalVisible(null);
+    this.props.setHomePanelVisible(false);
     this.props.setHomePanelPageVisible(SettingsMenuItems.SETTINGS_MAIN);
     this.checkForOpenProject();
   }
