@@ -7,6 +7,7 @@ import UserProfileComponent from './UserProfileComponent';
 import SettingsPanelHeader from './SettingsPanelHeader';
 import {SettingsMenuItems} from './SettingsMenu.constants';
 import MyStraboSpot from '../../project/MyStraboSpot';
+import ActiveProject from '../../project/ActiveProjectPanel.view';
 import SpotsList from '../../spots/SpotsList';
 import ImageGallery from '../images/ImageGallery.view';
 import SamplesList from '../samples/SamplesList.view';
@@ -67,6 +68,13 @@ const SettingsPanel = props => {
         <View style={styles.settingsPanelContainer}>
           {settingsPanelHeader}
           <MyStraboSpot/>
+        </View>;
+      break;
+    case SettingsMenuItems.MANAGE.ACTIVE_PROJECTS:
+      page =
+        <View style={styles.settingsPanelContainer}>
+          {settingsPanelHeader}
+          <ActiveProject/>
         </View>;
       break;
     case SettingsMenuItems.APP_PREFERENCES.SHORTCUTS:
@@ -135,6 +143,7 @@ const SettingsPanel = props => {
               onPress={(name) => setVisibleMenu(name)}
               signout={() => logout()}
               title={buttonTitle}
+              activeProject={'Im a project'}
             />
           </View>
         </React.Fragment>;

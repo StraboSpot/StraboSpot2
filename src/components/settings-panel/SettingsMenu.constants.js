@@ -2,7 +2,7 @@ export const SettingsMenuItems = {
   SETTINGS_MAIN: 'settingsMain',
   MANAGE: {
     MY_STRABOSPOT: 'My StraboSpot',
-    ACTIVE_PROJECTS: 'Active Projects',
+    ACTIVE_PROJECTS: 'Active Project',
     UPLOAD_BACKUP_EXPORT: 'Upload, Backup & Export',
     DATABASE_DETAILS: 'Database Details',
   },
