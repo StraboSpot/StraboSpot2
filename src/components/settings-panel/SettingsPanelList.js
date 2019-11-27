@@ -4,7 +4,7 @@ import * as SharedUI from '../../shared/ui/index';
 import {Button} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {SettingsMenuItems} from './SettingsMenu.constants';
-
+import HomePanelDivider from './HomePanelDivider';
 // Styles
 import styles from './SettingsPanelStyles';
 import * as themes from '../../shared/styles.constants';
@@ -12,9 +12,7 @@ import * as themes from '../../shared/styles.constants';
 const SettingsPanelList = props => {
   return (
     <ScrollView>
-      <View style={styles.sectionHeading}>
-        <Text style={styles.sectionHeadingTextStyle}>Manage</Text>
-      </View>
+      <HomePanelDivider sectionText={'Manage'}/>
       <View style={styles.navSectionStyle}>
         {Object.keys(SettingsMenuItems.MANAGE).map(key =>
           <SharedUI.ButtonNoBackground
@@ -25,9 +23,7 @@ const SettingsPanelList = props => {
           </SharedUI.ButtonNoBackground>,
         )}
       </View>
-      <View style={styles.sectionHeading}>
-        <Text style={styles.sectionHeadingTextStyle}>Attributes</Text>
-      </View>
+      <HomePanelDivider sectionText={'Attributes'}/>
       <View style={styles.navSectionStyle}>
         {Object.keys(SettingsMenuItems.ATTRIBUTES).map(key =>
           <SharedUI.ButtonNoBackground
@@ -38,22 +34,7 @@ const SettingsPanelList = props => {
           </SharedUI.ButtonNoBackground>,
         )}
       </View>
-      <View style={styles.sectionHeading}>
-        <Text style={styles.sectionHeadingTextStyle}>Preferences</Text>
-      </View>
-      <View style={styles.navSectionStyle}>
-        {Object.keys(SettingsMenuItems.APP_PREFERENCES).map(key =>
-          <SharedUI.ButtonNoBackground
-            key={key}
-            style={styles.navItemStyle}
-            onPress={() => props.onPress(SettingsMenuItems.APP_PREFERENCES[key])}>
-            {SettingsMenuItems.APP_PREFERENCES[key]}
-          </SharedUI.ButtonNoBackground>,
-        )}
-      </View>
-      <View style={styles.sectionHeading}>
-        <Text style={styles.sectionHeadingTextStyle}>Maps</Text>
-      </View>
+      <HomePanelDivider sectionText={'Maps'}/>
       <View style={styles.navSectionStyle}>
         {Object.keys(SettingsMenuItems.MAPS).map(key =>
           <SharedUI.ButtonNoBackground
@@ -64,9 +45,18 @@ const SettingsPanelList = props => {
           </SharedUI.ButtonNoBackground>,
         )}
       </View>
-      <View style={styles.sectionHeading}>
-        <Text style={styles.sectionHeadingTextStyle}>Help</Text>
+      <HomePanelDivider sectionText={'Preferences'}/>
+      <View style={styles.navSectionStyle}>
+        {Object.keys(SettingsMenuItems.APP_PREFERENCES).map(key =>
+          <SharedUI.ButtonNoBackground
+            key={key}
+            style={styles.navItemStyle}
+            onPress={() => props.onPress(SettingsMenuItems.APP_PREFERENCES[key])}>
+            {SettingsMenuItems.APP_PREFERENCES[key]}
+          </SharedUI.ButtonNoBackground>,
+        )}
       </View>
+      <HomePanelDivider sectionText={'Help'}/>
       <View style={styles.navSectionStyle}>
         {Object.keys(SettingsMenuItems.HELP).map(key =>
           <SharedUI.ButtonNoBackground
@@ -77,9 +67,7 @@ const SettingsPanelList = props => {
           </SharedUI.ButtonNoBackground>,
         )}
       </View>
-      <View style={styles.sectionHeading}>
-        <Text style={styles.sectionHeadingTextStyle}>User Preferences</Text>
-      </View>
+      <HomePanelDivider sectionText={'Manage'}/>
       <View style={styles.navSectionStyle}>
         {Object.keys(SettingsMenuItems.USER_PREFERENCES).map(key =>
           <View key={key} style={[styles.navItemStyle, {}]}>
