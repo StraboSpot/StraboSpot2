@@ -37,6 +37,15 @@ const commonStyles = StyleSheet.create({
     color: themes.PRIMARY_ITEM_TEXT_COLOR,
     fontSize: themes.PRIMARY_TEXT_SIZE,
   },
+  standardButton: {
+    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
+    height: 50,
+    borderColor: themes.PRIMARY_BACKGROUND_COLOR,
+    borderWidth: 1,
+  },
+  standardButtonText: {
+    color: themes.PRIMARY_ACCENT_COLOR,
+  },
 });
 
 export default commonStyles;

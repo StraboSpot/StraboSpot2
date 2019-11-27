@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {Text, View} from 'react-native';
+import {ScrollView, Text, View} from 'react-native';
 import {connect} from 'react-redux';
 import * as RemoteServer from '../services/server-requests';
 import {settingPanelReducers} from '../components/settings-panel/settingsPanel.constants';
@@ -90,16 +90,19 @@ const ProjectList = (props) => {
   const renderProjectsList = () => {
     if (!isEmpty(projectsArr) && !isEmpty(props.userData)) {
       // console.log(projectsArr.projects);
-      return projectsArr.projects.map(item => {
-        return <ListItem
-          key={item.id}
-          title={item.name}
-          containerStyle={{width: '100%'}}
-          onPress={() => selectProject(item)}
-          chevron
-          bottomDivider
-        />;
-      });
+      return (
+        <ScrollView>
+          {projectsArr.projects.map(item => {
+            return <ListItem
+              key={item.id}
+              title={item.name}
+              containerStyle={{width: '100%'}}
+              onPress={() => selectProject(item)}
+              chevron
+              bottomDivider
+            />;
+          })}
+        </ScrollView>);
     }
     else {
       return (

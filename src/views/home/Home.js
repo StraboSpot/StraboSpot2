@@ -2,7 +2,7 @@ import React from 'react';
 import {Alert, Animated, Dimensions, Easing, Platform, Text, View} from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
 import MapView from '../../components/maps/MapView';
-import InitialProjectLoadModal from './ProjectSelectionTypeDialogBox';
+import InitialProjectLoadModal from '../../project/InitialProjectLoadModal';
 import MapActionsDialog from '../../components/dialog-boxes/map-actions/MapActionsDialogBox';
 import MapSymbolsDialog from '../../components/dialog-boxes/map-symbols/MapSymbolsDialogBox';
 import BaseMapDialog from '../../components/dialog-boxes/base-maps/BaseMapDialogBox';
@@ -149,12 +149,6 @@ class Home extends React.Component {
 
   clickHandler = (name, position) => {
     switch (name) {
-      case 'startProject':
-        this.startProject();
-        break;
-      case 'loadProject':
-        this.getProjectFromServer();
-        break;
       case 'search':
         Alert.alert('Still in the works', `The ${name.toUpperCase()} Shortcut button in the  will be functioning soon!`);
         break;
@@ -354,18 +348,6 @@ class Home extends React.Component {
     this.props.setIsOnline(isConnected);
   };
 
-  getProjectFromServer = async () => {
-    this.props.setHomePanelVisible(true);
-    this.props.setHomePanelPageVisible(SettingsMenuItems.PROJECT.SWITCH_PROJECT);
-    this.toggleHomeDrawerButton();
-    this.setState(prevState => {
-      return {
-        ...prevState,
-        isProjectLoadSelectionModalVisible: false,
-      };
-    });
-  };
-
   mapPress = () => {
     return this.mapViewComponent.getCurrentBasemap();
   };
@@ -462,8 +444,7 @@ class Home extends React.Component {
     return (
       <InitialProjectLoadModal
         visible={this.state.isProjectLoadSelectionModalVisible}
-        onPress={type => this.clickHandler(type)}
-        children={undefined}
+        closeModal={() => this.closeInitialProjectLoadModal()}
       />
     );
   };
@@ -525,7 +506,7 @@ class Home extends React.Component {
     this.toggleButton('drawButtonsVisible', false);
   };
 
-  startProject = () => {
+  closeInitialProjectLoadModal = () => {
     console.log('Starting Project...');
     this.setState(prevState => {
       return {

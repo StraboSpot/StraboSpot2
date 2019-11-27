@@ -26,8 +26,8 @@ const styles = StyleSheet.create({
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
     borderRadius: 10,
   },
-  dialogTitle: {
-    backgroundColor: 'red',
+  dialogTitleContainer: {
+    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
   },
   dialogTitleText: {
     fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,

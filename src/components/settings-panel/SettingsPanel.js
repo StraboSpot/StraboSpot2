@@ -3,7 +3,6 @@ import {View} from 'react-native';
 import {connect} from 'react-redux';
 import styles from './SettingsPanelStyles';
 import SettingsPanelList from './SettingsPanelList';
-import UserProfileComponent from './UserProfileComponent';
 import SettingsPanelHeader from './SettingsPanelHeader';
 import {SettingsMenuItems} from './SettingsMenu.constants';
 import MyStraboSpot from '../../project/MyStraboSpot';
@@ -18,7 +17,6 @@ import {homeReducers} from '../../views/home/Home.constants';
 import {settingPanelReducers} from './settingsPanel.constants';
 import {spotReducers} from '../../spots/Spot.constants';
 import {NotebookPages} from '../notebook-panel/Notebook.constants';
-import {withNavigation} from 'react-navigation';
 import {USER_DATA} from '../../services/user/User.constants';
 import {isEmpty} from '../../shared/Helpers';
 import ProjectList from '../../project/ProjectList';
@@ -42,11 +40,6 @@ const SettingsPanel = props => {
     }
     else props.openNotebookPanel(NotebookPages.OVERVIEW);
     props.onFeatureSelected(spotID);
-  };
-
-  const logout = async () => {
-    if (!isEmpty(props.userProfile)) await props.clearStorage();
-    props.navigation.navigate('SignIn');
   };
 
   const setVisibleMenu = (name) => {
@@ -135,13 +128,11 @@ const SettingsPanel = props => {
       </View>;
       break;
     default:
-      page =
+     page =
         <React.Fragment>
-          <UserProfileComponent/>
           <View style={styles.listContainer}>
             <SettingsPanelList
               onPress={(name) => setVisibleMenu(name)}
-              signout={() => logout()}
               title={buttonTitle}
               activeProject={'Im a project'}
             />
@@ -173,4 +164,4 @@ const mapDispatchToProps = {
   clearStorage: () => ({type: 'USER_LOGOUT'}),
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withNavigation(SettingsPanel));
+export default connect(mapStateToProps, mapDispatchToProps)(SettingsPanel);

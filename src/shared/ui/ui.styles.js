@@ -43,20 +43,28 @@ const styles = StyleSheet.create({
   },
   sliderContainer: {
     width: 150,
-    // flex: 1,
-    // flexDirection: 'column',
-    // justifyContent: 'center',
     alignItems: 'center',
   },
   slider: {
     width: 200,
-    // marginTop: 0,
-    // margin: 0,
     paddingRight: 10,
     paddingLeft: 10,
   },
   buttonText: {
     color: themes.PRIMARY_ACCENT_COLOR,
+  },
+  spacer: {
+    padding: 10,
+  },
+  headerContainer: {
+    height: 60,
+    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  headerText: {
+    fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,
+    fontWeight: 'bold',
   },
 });
 
