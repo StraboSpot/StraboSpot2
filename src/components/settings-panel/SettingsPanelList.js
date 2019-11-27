@@ -12,15 +12,14 @@ const SettingsPanelList = props => {
 
   const renderButtons = (name, key) => {
     return (
-      <TouchableOpacity key={key} onPress={() => props.onPress(name)}>
         <Button
           title={name === SettingsMenuItems.MANAGE.ACTIVE_PROJECTS ?
             SettingsMenuItems.MANAGE.ACTIVE_PROJECTS + ` (${props.activeProject})` : name}
           type={'clear'}
           containerStyle={styles.navItemStyle}
           titleStyle={styles.navButtonText}
+          onPress={() => props.onPress(name)}
         />
-      </TouchableOpacity>
     );
   };
 

@@ -19,11 +19,12 @@ const styles = StyleSheet.create({
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
   },
   navItemStyle: {
-    alignItems: 'flex-start',
     borderTopWidth: 1,
   },
   navButtonText: {
     color: themes.PRIMARY_ITEM_TEXT_COLOR,
+    width: '100%',
+    textAlign: 'left',
   },
   navSectionStyle: {
     flex: 1,
