@@ -1,27 +1,24 @@
 import React from 'react';
 import {TouchableOpacity, TouchableNativeFeedback, Text, View, StyleSheet, Platform} from 'react-native';
-import {Icon} from 'react-native-elements';
+import {Button, Icon} from 'react-native-elements';
 import * as themes from '../styles.constants';
 
 // import Icon from "react-native-vector-icons/Ionicons";
 
 const buttonNoBackground = props => {
   const content = (
-    <View style={[styles.button, props.style]}>
-      <Icon
-        name={props.iconName}
-        type={props.iconType}
-        color={props.iconColor}
-        iconStyle={props.iconStyle}
-        size={props.size}
-      />
-      <Text style={[styles.buttonText, props.textStyle]}>{props.children}</Text>
-    </View>
+    <Button
+      title={props.title}
+      type={'clear'}
+      containerStyle={[styles.button, props.style]}
+      titleStyle={[styles.buttonText, props.textStyle]}
+      onPress={props.onPress}
+  />
   );
 
   if (Platform.OS === 'ios') {
     return (
-      <TouchableOpacity onPress={props.onPress}>
+      <TouchableOpacity >
         {content}
       </TouchableOpacity>
     );
@@ -31,7 +28,6 @@ const buttonNoBackground = props => {
       {content}
     </TouchableNativeFeedback>
   );
-
 };
 
 const styles = StyleSheet.create({

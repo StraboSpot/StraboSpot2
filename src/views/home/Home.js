@@ -374,13 +374,13 @@ class Home extends React.Component {
     if (this._isMounted) {
       if (this.props.homePanelVisible){
         this.props.setHomePanelVisible(false);
-        animatePanels(this.state.settingsPanelAnimation, -325);
+        animatePanels(this.state.settingsPanelAnimation, -300);
         animatePanels(this.state.leftsideIconAnimation, 0);
       }
       else {
         this.props.setHomePanelVisible(true);
         animatePanels(this.state.settingsPanelAnimation, 0);
-        animatePanels(this.state.leftsideIconAnimation, 325);
+        animatePanels(this.state.leftsideIconAnimation, 300);
       }
     }
   };
