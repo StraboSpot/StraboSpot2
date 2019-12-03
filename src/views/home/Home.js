@@ -40,13 +40,8 @@ import IconButton from '../../shared/ui/IconButton';
 import VertexDrag from '../../components/maps/VertexDrag';
 import {animatePanels, isEmpty} from '../../shared/Helpers';
 
-// eslint-disable-next-line no-unused-vars
-const {height, width} = Dimensions.get('window');
-const getWidthPercent = () => {
-  if (width < 500) return wp('95%');
-  if (width >= 500 && width <= 1000) return wp('50%');
-  if (width > 1000) return wp('40%');
-};
+const homeMenuPanelWidth = 300;
+const notebookPanelWidth = 400;
 
 // const imageOptions = {
 //   storageOptions: {
@@ -86,8 +81,8 @@ class Home extends React.Component {
       currentSpot: undefined,
       allPhotosSaved: [],
       // isAllSpotsPanelVisible: false,
-      animation: new Animated.Value(getWidthPercent()),
-      settingsPanelAnimation: new Animated.Value(-getWidthPercent()),
+      animation: new Animated.Value(notebookPanelWidth),
+      settingsPanelAnimation: new Animated.Value(-homeMenuPanelWidth),
       leftsideIconAnimation: new Animated.Value(0),
       rightsideIconAnimation: new Animated.Value(0),
       allSpotsViewAnimation: new Animated.Value(125),
@@ -263,7 +258,7 @@ class Home extends React.Component {
       if (this.props.homePanelVisible) {
         if (nativeEvent.oldState === State.ACTIVE) {
           console.log('FLING TO CLOSE Settings Panel!', nativeEvent);
-          animatePanels(this.state.settingsPanelAnimation, -getWidthPercent());
+          animatePanels(this.state.settingsPanelAnimation, -homeMenuPanelWidth);
           this.props.setHomePanelPageVisible(SettingsMenuItems.SETTINGS_MAIN);
           this.props.setHomePanelVisible(false);
           animatePanels(this.state.leftsideIconAnimation, 0);
@@ -277,7 +272,7 @@ class Home extends React.Component {
     if (this._isMounted) {
       if (nativeEvent.oldState === State.ACTIVE) {
         console.log('FLING TO CLOSE NOTEBOOK!', nativeEvent);
-        animatePanels(this.state.animation, getWidthPercent());
+        animatePanels(this.state.animation, notebookPanelWidth);
         animatePanels(this.state.rightsideIconAnimation, 0);
         this.props.setNotebookPanelVisible(false);
         this.props.setAllSpotsPanelVisible(false);
@@ -288,7 +283,7 @@ class Home extends React.Component {
   closeNotebookPanel = () => {
     if (this._isMounted) {
       console.log('closing notebook');
-      animatePanels(this.state.animation, getWidthPercent());
+      animatePanels(this.state.animation, notebookPanelWidth);
       animatePanels(this.state.rightsideIconAnimation, 0);
       this.props.setNotebookPanelVisible(false);
       this.props.setAllSpotsPanelVisible(false);
@@ -374,13 +369,13 @@ class Home extends React.Component {
     if (this._isMounted) {
       if (this.props.homePanelVisible){
         this.props.setHomePanelVisible(false);
-        animatePanels(this.state.settingsPanelAnimation, -300);
+        animatePanels(this.state.settingsPanelAnimation, -homeMenuPanelWidth);
         animatePanels(this.state.leftsideIconAnimation, 0);
       }
       else {
         this.props.setHomePanelVisible(true);
         animatePanels(this.state.settingsPanelAnimation, 0);
-        animatePanels(this.state.leftsideIconAnimation, 300);
+        animatePanels(this.state.leftsideIconAnimation, homeMenuPanelWidth);
       }
     }
   };
@@ -390,7 +385,7 @@ class Home extends React.Component {
       console.log('notebook opening', pageView);
       this.props.setNotebookPageVisible(pageView);
       animatePanels(this.state.animation, 0);
-      animatePanels(this.state.rightsideIconAnimation, -400);
+      animatePanels(this.state.rightsideIconAnimation, -notebookPanelWidth);
       this.props.setNotebookPanelVisible(true);
     }
   };
