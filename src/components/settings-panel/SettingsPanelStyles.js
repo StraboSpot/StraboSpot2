@@ -56,6 +56,27 @@ const styles = StyleSheet.create({
     color: themes.BLUE,
   },
   headerText: {
+    flex: 3,
+    fontWeight: 'bold',
+    fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,
+    textAlign: 'center',
+  },
+  settingsPanelHeaderTextContainer: {
+    flex: 3,
+    alignItems: 'center',
+  },
+  settingsPanelIconContainer: {
+    flex: 1,
+    alignItems: 'flex-start',
+    justifyContent: 'center',
+  },
+  settingsPanelHeaderContainer: {
+    height: 70,
+    paddingTop: 20,
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  settingsPanelHeaderText: {
     fontWeight: 'bold',
     fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,
   },
