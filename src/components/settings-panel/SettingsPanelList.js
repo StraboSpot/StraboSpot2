@@ -13,6 +13,7 @@ const SettingsPanelList = props => {
   const renderButtons = (name, key) => {
     return (
       <Button
+        key={key}
         title={name === SettingsMenuItems.MANAGE.ACTIVE_PROJECTS ?
           SettingsMenuItems.MANAGE.ACTIVE_PROJECTS + ` (${props.activeProject})` : name}
         type={'clear'}

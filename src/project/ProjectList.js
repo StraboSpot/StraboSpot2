@@ -1,9 +1,9 @@
 import React, {useState, useEffect} from 'react';
 import {ScrollView, Text, View} from 'react-native';
-import {connect} from 'react-redux';
+import {connect, useSelector, useDispatch} from 'react-redux';
 import * as RemoteServer from '../services/server-requests';
 import {settingPanelReducers} from '../components/settings-panel/settingsPanel.constants';
-import {USER_DATA} from '../services/user/User.constants';
+// import {USER_DATA} from '../services/user/User.constants';
 import Loading from '../shared/ui/Loading';
 import {ListItem, Button} from 'react-native-elements';
 import {isEmpty} from '../shared/Helpers';
@@ -13,8 +13,14 @@ import {withNavigation} from 'react-navigation';
 import * as ProjectActions from './Project.constants';
 import * as Project from './project';
 import styles from './Project.styles';
+import {homeReducers} from '../views/home/Home.constants';
+import {SettingsMenuItems} from '../components/settings-panel/SettingsMenu.constants';
 
 const ProjectList = (props) => {
+  const currentProject = useSelector(state => state.project.project);
+  const isOnline = useSelector(state => state.home.isOnline);
+  const userData = useSelector(state => state.user.userData);
+  const dispatch = useDispatch();
   const [projectsArr, setProjectsArr] = useState([]);
   const [selectedProject, setSelectedProject] = useState({});
   const [loading, setLoading] = useState(false);
@@ -26,7 +32,7 @@ const ProjectList = (props) => {
 
   const getAllProjects = async () => {
     setLoading(true);
-    const projects = await RemoteServer.getMyProjects(props.userData.encoded_login);
+    const projects = await RemoteServer.getMyProjects(userData.encoded_login);
     if (projects === 401) {
       setLoading(false);
     }
@@ -43,25 +49,30 @@ const ProjectList = (props) => {
   };
 
   const selectProject = async (project) => {
-    console.log('Selected ID:', project);
+    console.log('Selected Project:', project);
     setSelectedProject(project);
-    if (!isEmpty(props.currentProject)) {
+    if (!isEmpty(currentProject)) {
       setShowDialog(true);
     }
     else {
-      const projectData = await Project.loadProjectRemote(project.id, props.userData.encoded_login);
+      const projectData = await Project.loadProjectRemote(project.id, userData.encoded_login);
       console.log('getProject', projectData);
+      dispatch({type: ProjectActions.projectReducers.PROJECTS, project: projectData});
     }
   };
 
-  const switchProject = (action) => {
+  const switchProject = async (action) => {
     if (action === ProjectActions.BACKUP_TO_SERVER || action === ProjectActions.BACKUP_TO_DEVICE) {
       console.log('User wants to:', action);
       getSelectedProject();
     }
     else if (action === ProjectActions.OVERWRITE) {
-      console.log('User wants to:', action);
+      console.log('User wants to:', action, 'and select', selectedProject.name);
+      const projectData = await Project.loadProjectRemote(selectedProject.id, userData.encoded_login);
+      dispatch({type: ProjectActions.projectReducers.PROJECTS, project: projectData});
       setShowDialog(false);
+      dispatch({type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: SettingsMenuItems.SETTINGS_MAIN});
+
     }
     else setShowDialog(false);
   };
@@ -71,15 +82,14 @@ const ProjectList = (props) => {
       <DialogBox
         dialogTitle={'Delete Local Project Warning!'}
         visible={showDialog}
-        isOnline={props.isOnline}
+        isOnline={isOnline}
         cancel={() => setShowDialog(false)}
         onPress={(action) => switchProject(action)}
-        projectName={selectedProject.name}
       >
         <Text>Switching projects will <Text style={{color: 'red'}}>DELETE </Text>
           the local copy of the current project: </Text>
         <Text style={{color: 'red', textTransform: 'uppercase', marginTop: 5, marginBottom: 10, textAlign: 'center'}}>
-          {selectedProject.name}
+          {!isEmpty(currentProject.description) ? currentProject.description.project_name : 'UN-NAMED'}
         </Text>
         <Text>Including all datasets and Spots contained within this project. Make sure you have already
           uploaded the project to the server if you wish to preserve the data. Continue?</Text>
@@ -88,7 +98,7 @@ const ProjectList = (props) => {
   };
 
   const renderProjectsList = () => {
-    if (!isEmpty(projectsArr) && !isEmpty(props.userData)) {
+    if (!isEmpty(projectsArr) && !isEmpty(userData)) {
       // console.log(projectsArr.projects);
       return (
         <ScrollView>
@@ -131,16 +141,16 @@ const ProjectList = (props) => {
 
 const mapStateToProps = (state) => {
   return {
-    settingsPageVisible: state.settingsPanel.settingsPageVisible,
-    userData: state.user.userData,
-    isOnline: state.home.isOnline,
-    currentProject: state.project.project,
+    // settingsPageVisible: state.settingsPanel.settingsPageVisible,
+    // userData: state.user.userData,
+    // isOnline: state.home.isOnline,
+    // currentProject: state.project.project,
   };
 };
 
 const mapDispatchToProps = {
-  setSettingsPanelPageVisible: (name) => ({type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: name}),
-  setUserData: (userData) => ({type: USER_DATA, userData: userData}),
+  // setSettingsPanelPageVisible: (name) => ({type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: name}),
+  // setUserData: (userData) => ({type: USER_DATA, userData: userData}),
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withNavigation(ProjectList));

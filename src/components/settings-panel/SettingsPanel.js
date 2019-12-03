@@ -1,6 +1,6 @@
 import React from 'react';
 import {View} from 'react-native';
-import {connect} from 'react-redux';
+import {connect, useSelector} from 'react-redux';
 import styles from './SettingsPanelStyles';
 import SettingsPanelList from './SettingsPanelList';
 import SettingsPanelHeader from './SettingsPanelHeader';
@@ -23,6 +23,7 @@ import ProjectList from '../../project/ProjectList';
 
 const SettingsPanel = props => {
   let buttonTitle = null;
+  const activeProject = useSelector(state => state.project.project);
   const {settingsPageVisible, setSettingsPanelPageVisible} = props;
   let settingsPanelHeader = <SettingsPanelHeader
     onPress={() => setSettingsPanelPageVisible(SettingsMenuItems.SETTINGS_MAIN)}>
@@ -67,7 +68,9 @@ const SettingsPanel = props => {
       page =
         <View style={styles.settingsPanelContainer}>
           {settingsPanelHeader}
-          <ActiveProject/>
+          <ActiveProject
+          title={activeProject.description.project_name}
+          />
         </View>;
       break;
     case SettingsMenuItems.APP_PREFERENCES.SHORTCUTS:
@@ -131,10 +134,11 @@ const SettingsPanel = props => {
      page =
         <React.Fragment>
           <View style={styles.listContainer}>
+            {settingsPanelHeader}
             <SettingsPanelList
               onPress={(name) => setVisibleMenu(name)}
               title={buttonTitle}
-              activeProject={'Im a project'}
+              activeProject={!isEmpty(activeProject.description)  ? activeProject.description.project_name : 'No Active Project'}
             />
           </View>
         </React.Fragment>;
