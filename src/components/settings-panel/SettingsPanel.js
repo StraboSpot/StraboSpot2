@@ -23,7 +23,7 @@ import ProjectList from '../../project/ProjectList';
 
 const SettingsPanel = props => {
   let buttonTitle = null;
-  const activeProject = useSelector(state => state.project.project);
+  const project = useSelector(state => state.project.project);
   const {settingsPageVisible, setSettingsPanelPageVisible} = props;
   let settingsPanelHeader = <SettingsPanelHeader
     onPress={() => setSettingsPanelPageVisible(SettingsMenuItems.SETTINGS_MAIN)}>
@@ -69,7 +69,7 @@ const SettingsPanel = props => {
         <View style={styles.settingsPanelContainer}>
           {settingsPanelHeader}
           <ActiveProject
-          title={activeProject.description.project_name}
+          title={!isEmpty(project) ? project.description.project_name : null}
           />
         </View>;
       break;
@@ -138,7 +138,7 @@ const SettingsPanel = props => {
             <SettingsPanelList
               onPress={(name) => setVisibleMenu(name)}
               title={buttonTitle}
-              activeProject={!isEmpty(activeProject.description)  ? activeProject.description.project_name : 'No Active Project'}
+              activeProject={!isEmpty(project)  ? project.description.project_name : 'No Active Project'}
             />
           </View>
         </React.Fragment>;
