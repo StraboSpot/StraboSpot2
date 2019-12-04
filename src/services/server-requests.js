@@ -68,6 +68,26 @@ export const getProject = async (projectId, encoded_login) => {
   return await buildGetRequest(/project/ + projectId, encoded_login);
 };
 
+export const getProjectDatasets = async (projectId, encodedLogin) => {
+  try {
+    let request = await fetch(baseUrl + '/projectDatasets/' + projectId , {
+        method: 'GET',
+        headers: {
+          Authorization: 'Basic ' + encodedLogin + '\'',
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      });
+    console.log('Dataset REQ Status', request);
+    if (request.status === 200) {
+      return request.json();
+    }
+    else return request.status;
+  }
+  catch (e) {
+    console.log('Dataset Error', e);
+  }
+};
+
 export const getMyProjects = async (encodedLogin) => {
   try {
     let request = await timeoutPromise(10000, fetch(baseUrl + '/myProjects', {
