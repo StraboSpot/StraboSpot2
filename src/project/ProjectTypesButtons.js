@@ -1,12 +1,13 @@
 import React from 'react';
 import {View} from 'react-native';
+import {useSelector} from 'react-redux';
 import {Button} from 'react-native-elements';
-import {connect} from 'react-redux';
 
 // Styles
 import commonStyles from '../shared/common.styles';
 
 const ProjectTypesButtons = (props) => {
+  const isOnline = useSelector(state => state.home.isOnline);
   return (
     <View>
       <Button
@@ -15,7 +16,7 @@ const ProjectTypesButtons = (props) => {
         titleStyle={commonStyles.standardButtonText}
         onPress={() => props.onStartNewProject()}
       />
-      {props.isOnline && <Button
+      {isOnline && <Button
         title={'Load a Project from Server'}
         buttonStyle={commonStyles.standardButton}
         titleStyle={commonStyles.standardButtonText}
@@ -25,10 +26,4 @@ const ProjectTypesButtons = (props) => {
   );
 };
 
-const mapStateToProps = (state) => {
-  return {
-    isOnline: state.home.isOnline,
-  };
-};
-
-export default connect(mapStateToProps)(ProjectTypesButtons);
+export default ProjectTypesButtons;
