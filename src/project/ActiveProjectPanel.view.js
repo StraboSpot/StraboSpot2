@@ -4,7 +4,6 @@ import {useSelector, useDispatch} from 'react-redux';
 import {ListItem} from 'react-native-elements';
 import Divider from '../components/settings-panel/HomePanelDivider';
 import styles from './Project.styles';
-import {projectReducers} from './Project.constants';
 import DatasetList from './DatasetList';
 
 const ActiveProjectPanel = (props) => {
@@ -19,7 +18,6 @@ const ActiveProjectPanel = (props) => {
       datasetsFiltered = projectDatasets.filter(dataset => dataset.switch === true);
       console.log(datasetsFiltered);
     }
-    dispatch({type: projectReducers.DATASETS.ACTIVE_DATASETS, value: datasetsFiltered});
   }, [projectDatasets]);
 
   return (
