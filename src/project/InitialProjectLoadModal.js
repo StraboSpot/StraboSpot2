@@ -1,28 +1,48 @@
 import React, {useState} from 'react';
 import {Text, View} from 'react-native';
+import {useSelector} from 'react-redux';
 import {Button} from 'react-native-elements';
 import {Dialog, DialogTitle, DialogContent, SlideAnimation} from 'react-native-popup-dialog';
 
 import ProjectList from './ProjectList';
+import DatasetList from './DatasetList';
 import ProjectTypesButtons from './ProjectTypesButtons';
 import Spacer from '../shared/ui/Spacer';
 
 // Styles
 import commonStyles from '../shared/common.styles';
 import homeStyles from '../views/home/Styles';
+import {isEmpty} from '../shared/Helpers';
 
 const InitialProjectLoadModal = (props) => {
+  const selectedProject = useSelector(state => state.project.project);
   const [showSection, setShowSection] = useState('none');
 
-  const renderListOfProjectsOnServer = () => {
+  const renderDatasetList = () => {
     return (
       <React.Fragment>
         <Spacer/>
         <View style={{height: 400}}>
-          <ProjectList/>
+          <DatasetList/>
         </View>
       </React.Fragment>
-    );
+      );
+  };
+
+  const renderListOfProjectsOnServer = () => {
+    if (!isEmpty(selectedProject)) {
+      return renderDatasetList();
+    }
+    else {
+      return (
+        <React.Fragment>
+          <Spacer/>
+          <View style={{height: 400}}>
+            <ProjectList/>
+          </View>
+        </React.Fragment>
+      );
+    }
   };
 
   const renderStartNewProject = () => {

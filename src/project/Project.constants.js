@@ -1,5 +1,8 @@
 export const projectReducers = {
   PROJECTS: 'PROJECTS',
+  DATASETS: {
+    PROJECT_DATASETS: 'PROJECT_DATASETS',
+  },
 };
 
 export const BACKUP_TO_DEVICE = 'BACKUP TO DEVICE';

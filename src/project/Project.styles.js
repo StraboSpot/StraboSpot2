@@ -2,6 +2,19 @@ import {StyleSheet} from 'react-native';
 import * as themes from '../shared/styles.constants';
 
 const dialogStyles = StyleSheet.create({
+  datasetsContainer: {
+    height: 300,
+    backgroundColor: 'white',
+    margin: 10,
+    // borderRadius: 30,
+  },
+  activeProjectButton: {
+    margin: 10,
+    borderRadius: 10,
+  },
+  activeDataSets: {
+    padding: 10,
+  },
   dialogBox: {
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
     borderRadius: 30,

@@ -43,6 +43,17 @@ const ProjectList = (props) => {
     }
   };
 
+  const getProjectDatasets = async (project) => {
+    const projectDatasetsFromServer = await RemoteServer.getProjectDatasets(project.id, userData.encoded_login);
+    if (projectDatasetsFromServer === 401) {
+      console.log('Uh Oh...');
+    }
+    else {
+      console.log('Saved datasets:', projectDatasetsFromServer);
+      dispatch({type: ProjectActions.projectReducers.DATASETS.PROJECT_DATASETS, datasets: projectDatasetsFromServer.datasets});
+    }
+  };
+
   const getSelectedProject = () => {
     setShowDialog(false);
     console.log(selectedProject.id);
@@ -56,8 +67,9 @@ const ProjectList = (props) => {
     }
     else {
       const projectData = await Project.loadProjectRemote(project.id, userData.encoded_login);
-      console.log('getProject', projectData);
+      console.log('Loaded project \n', projectData);
       dispatch({type: ProjectActions.projectReducers.PROJECTS, project: projectData});
+      await getProjectDatasets(project);
     }
   };
 
