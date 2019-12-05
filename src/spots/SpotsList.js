@@ -25,7 +25,6 @@ const SpotsList = (props) => {
 
   useEffect(() => {
     setSortedList(spots);
-    // setRefresh(!refresh);
     console.log('render Recent Views in SpotList!');
   }, [selectedSpot, spots, sortedListView, sortedList]);
 
@@ -58,25 +57,6 @@ const SpotsList = (props) => {
     );
   };
 
-  // // used with the button group to select active button
-  // const updateIndex = (selectedButtonIndex) => {
-  //   setSelectedButtonIndex(selectedButtonIndex);
-  //   switch (selectedButtonIndex) {
-  //     case 0:
-  //       console.log('Chronological Selected');
-  //       setSortedListView(SortedViews.CHRONOLOGICAL);
-  //       setSortedList(props.spots.sort(((a, b) => a.properties.date > b.properties.date)));
-  //       setRefresh(!refresh);
-  //       break;
-  //     case 1:
-  //       setSortedListView(SortedViews.MAP_EXTENT);
-  //       break;
-  //     case 2:
-  //       setSortedListView(SortedViews.RECENT_VIEWS);
-  //       break;
-  //   }
-  // };
-
   if (!isEmpty(props.spots)) {
     let sortedView = null;
 
@@ -90,7 +70,7 @@ const SpotsList = (props) => {
     else if (props.sortedListView === SortedViews.MAP_EXTENT) {
       sortedView = <FlatList
         keyExtractor={(item) => item.properties.id.toString()}
-        extraData={refresh}
+        extraData={true}
         data={sortedList}
         renderItem={({item}) => renderName(item)}/>;
     }
@@ -98,7 +78,6 @@ const SpotsList = (props) => {
       sortedView =
         <FlatList
           keyExtractor={(item) => item.toString()}
-          extraData={refresh}
           data={props.recentViews}
           renderItem={({item}) => renderRecentView(item)}/>;
     }
