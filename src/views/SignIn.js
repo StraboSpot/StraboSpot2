@@ -31,7 +31,7 @@ class SignIn extends React.Component {
   }
 
   componentDidMount() {
-    NetInfo.fetch().then(state => {
+    NetInfo.addEventListener(state => {
       this.handleConnectivityChange(state.isConnected);
     });
   }
