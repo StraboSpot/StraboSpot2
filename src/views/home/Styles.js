@@ -25,6 +25,7 @@ const styles = StyleSheet.create({
   dialogBox: {
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
     borderRadius: 10,
+    width: 300,
   },
   dialogTitleContainer: {
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
@@ -87,7 +88,7 @@ const styles = StyleSheet.create({
   },
   topCenter: {
     position: 'absolute',
-    bottom: 20,
+    bottom: 90,
     right: '45%',
   },
   onlineStatus: {

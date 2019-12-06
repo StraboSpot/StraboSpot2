@@ -96,7 +96,7 @@ class Home extends React.Component {
     vectorIcon.getImageSource('pin', 30);
     NetInfo.addEventListener(state => {
       if (state.isConnected) this.handleConnectivityChange(state.isConnected);
-      else Alert.alert('Not Online!', 'Please check your internet source.');
+      // else Alert.alert('Not Online!', 'Please check your internet source.');
     });
     // this.props.setDeviceDims(this.dimensions);
     // if (this.props.deviceDimensions.width < 500) {
