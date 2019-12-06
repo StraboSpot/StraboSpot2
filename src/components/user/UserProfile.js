@@ -50,8 +50,8 @@ const UserProfile = (props) => {
           {avatarImage}
         </View>
         <View style={userStyles.avatarLabelContainer}>
-          <Text style={userStyles.avatarLabel}>{props.userData.name ? props.userData.name : 'Guest'}</Text>
-          {props.userData.email && <Text style={userStyles.avatarLabel}>{props.userData.email}</Text>}
+          <Text style={userStyles.avatarLabelName}>{props.userData.name ? props.userData.name : 'Guest'}</Text>
+          {props.userData.email && <Text style={userStyles.avatarLabelEmail}>{props.userData.email}</Text>}
         </View>
       </View>
     );

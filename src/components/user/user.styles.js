@@ -30,9 +30,13 @@ const UserStyles = StyleSheet.create({
   avatarLabelContainer: {
     padding: 10,
   },
-  avatarLabel: {
+  avatarLabelName: {
     fontWeight: 'bold',
     fontSize: themes.PRIMARY_TEXT_SIZE,
+  },
+  avatarLabelEmail: {
+    fontSize: 12,
+    fontWeight: 'bold',
   },
   projectName: {
     // flex: 2,
