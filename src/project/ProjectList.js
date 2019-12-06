@@ -119,7 +119,10 @@ const ProjectList = (props) => {
               key={item.id}
               title={item.name}
               containerStyle={{width: '100%'}}
+              titleStyle={!isOnline && {color: themes.PRIMARY_ITEM_TEXT_COLOR}}
               onPress={() => selectProject(item)}
+              disabled={!isOnline}
+              disabledStyle={{backgroundColor: 'lightgrey'}}
               chevron
               bottomDivider
             />;
