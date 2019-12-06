@@ -34,8 +34,9 @@ const DatasetList = (props) => {
 
   const setSwitchValue = (val, ind) => {
     const tempData = JSON.parse(JSON.stringify(projectDatasets));
+    const i = projectDatasets.findIndex(data => data.current === true);
+    if (i === -1) tempData[ind].current = true;
     tempData[ind].active = val;
-    tempData[ind].current = false;
     dispatch({type: projectReducers.DATASETS.PROJECT_DATASETS, datasets: tempData});
   };
 
