@@ -3,7 +3,7 @@ import * as themes from '../shared/styles.constants';
 
 const dialogStyles = StyleSheet.create({
   datasetsContainer: {
-    height: 300,
+    height: 200,
     backgroundColor: 'white',
     margin: 10,
     // borderRadius: 30,

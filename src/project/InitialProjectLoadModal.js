@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {Text, View} from 'react-native';
-import {useSelector} from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
 import {Button} from 'react-native-elements';
 import {Dialog, DialogTitle, DialogContent, SlideAnimation} from 'react-native-popup-dialog';
 
@@ -14,11 +14,13 @@ import Spacer from '../shared/ui/Spacer';
 import commonStyles from '../shared/common.styles';
 import homeStyles from '../views/home/Styles';
 import {isEmpty} from '../shared/Helpers';
+import {projectReducers} from './Project.constants';
 
 const InitialProjectLoadModal = (props) => {
   const selectedProject = useSelector(state => state.project.project);
   const projectDatasets = useSelector(state => state.project.projectDatasets);
   const isOnline = useSelector(state => state.home.isOnline);
+  const dispatch = useDispatch();
   const [visibleProjectSection, setVisibleProjectSection] = useState('activeDatasetsList');
   const [visibleInitialSection, setVisibleInitialSection] = useState('none');
 
@@ -27,6 +29,18 @@ const InitialProjectLoadModal = (props) => {
     console.log('Rendered');
   }, [selectedProject, isOnline]);
 
+  const goBack = () => {
+    if (visibleProjectSection === 'activeDatasetsList') {
+      dispatch({type: projectReducers.PROJECTS, project: {}});
+      dispatch({type: projectReducers.DATASETS.PROJECT_DATASETS, datasets: null});
+      setVisibleInitialSection('serverProjects');
+    }
+    else if (visibleProjectSection === 'currentDatasetSelection') {
+      // projectDatasets.map(data => data.current = false);
+      setVisibleProjectSection('activeDatasetsList');
+    }
+  };
+
   const renderModalButtons = () => {
     if (!isEmpty(selectedProject)) {
       return (
@@ -34,7 +48,7 @@ const InitialProjectLoadModal = (props) => {
           onPress={() => setVisibleProjectSection('currentDatasetSelection')}
           title={'Continue'}
           disabled={isEmpty(projectDatasets) || isEmpty(projectDatasets.find(dataset => dataset.active === true))}
-          buttonStyle={[commonStyles.standardButton,]}
+          buttonStyle={[commonStyles.standardButton]}
           titleStyle={commonStyles.standardButtonText}
         />
       );
@@ -52,6 +66,12 @@ const InitialProjectLoadModal = (props) => {
   const renderCurrentDatasetSelection = () => {
     return (
       <React.Fragment>
+        <Button
+          onPress={() => goBack()}
+          title={'Go Back'}
+          buttonStyle={[commonStyles.standardButton]}
+          titleStyle={commonStyles.standardButtonText}
+        />
         <Button
           onPress={() => props.closeModal()}
           title={'Close'}
@@ -74,42 +94,42 @@ const InitialProjectLoadModal = (props) => {
     return (
       <React.Fragment>
         <Button
+          onPress={() => goBack()}
+          title={'Go Back'}
+          buttonStyle={[commonStyles.standardButton]}
+          titleStyle={commonStyles.standardButtonText}
+        />
+        <Button
           onPress={() => setVisibleProjectSection('currentDatasetSelection')}
           title={'Continue'}
           disabled={isEmpty(projectDatasets) || isEmpty(projectDatasets.find(dataset => dataset.active === true))}
-          buttonStyle={[commonStyles.standardButton,]}
+          buttonStyle={[commonStyles.standardButton]}
           titleStyle={commonStyles.standardButtonText}
         />
+        <Spacer/>
+        <View style={commonStyles.standardButtonText}>
+          <Text>  By default the first dataset selected will be made the current dataset. You can change this on the next
+            page and in the Active Project section of the Home Menu.</Text>
+        </View>
         <Spacer/>
         <View style={{height: 400}}>
           <DatasetList/>
         </View>
       </React.Fragment>
-      );
+    );
   };
 
   const renderListOfProjectsOnServer = () => {
-    if (isOnline){
-      if (!isEmpty(selectedProject)) {
-        return visibleProjectSection === 'activeDatasetsList' ? renderDatasetList() : renderCurrentDatasetSelection();
-      }
-      else {
-        return (
-          <React.Fragment>
-            {renderProjectTypesButtons()}
-            <Spacer/>
-            <View style={{height: 400}}>
-              <ProjectList/>
-            </View>
-          </React.Fragment>
-        );
-      }
+    if (!isEmpty(selectedProject)) {
+      return visibleProjectSection === 'activeDatasetsList' ? renderDatasetList() : renderCurrentDatasetSelection();
     }
     else {
       return (
         <React.Fragment>
-          <View style={{alignItems: 'center', justifyContent: 'center'}}>
-            <Text style={{fontWeight: 'bold', fontSize: 22, color: 'red'}}>Not Online!</Text>
+          {renderProjectTypesButtons()}
+          <Spacer/>
+          <View style={{height: 400}}>
+            <ProjectList/>
           </View>
         </React.Fragment>
       );
