@@ -1,23 +1,22 @@
-import React, {useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import {View} from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import {ListItem} from 'react-native-elements';
 import Divider from '../components/settings-panel/HomePanelDivider';
 import styles from './Project.styles';
 import DatasetList from './DatasetList';
+import ActiveDatasetsList from './ActiveDatasetsList';
+import {isEmpty} from '../shared/Helpers';
 
 const ActiveProjectPanel = (props) => {
-
+  const [activeDatasets, setActiveDatasets] = useState(null);
   const project = useSelector(state => state.project.project);
   const projectDatasets = useSelector(state => state.project.projectDatasets);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    let datasetsFiltered = null;
-    if (projectDatasets){
-      datasetsFiltered = projectDatasets.filter(dataset => dataset.switch === true);
-      console.log(datasetsFiltered);
-    }
+    const filteredDatasets = projectDatasets.filter(dataset => dataset.active === true);
+    setActiveDatasets(filteredDatasets);
   }, [projectDatasets]);
 
   return (
@@ -34,13 +33,7 @@ const ActiveProjectPanel = (props) => {
       </View>
       <Divider sectionText={'CURRENT DATASETS'}/>
       <View style={[styles.datasetsContainer, {height: 200}]}>
-        {/*{getActiveDatasets()}*/}
-        {/*<FlatList*/}
-        {/*  keyExtractor={(item, i) => item.id}*/}
-        {/*  // extraData={refresh}*/}
-        {/*  data={projectDatasets}*/}
-        {/*  renderItem={renderActiveDatasets}*/}
-        {/*/>*/}
+        {!isEmpty(activeDatasets) ? <ActiveDatasetsList/> : null}
       </View>
     </React.Fragment>
   );

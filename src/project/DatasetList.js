@@ -24,6 +24,7 @@ const DatasetList = (props) => {
                 <Switch
                   onValueChange={(value) => setSwitchValue(value, index)}
                   value={item.active}
+                  disabled={item.current}
                 />}
             />;
           })}
@@ -34,6 +35,7 @@ const DatasetList = (props) => {
   const setSwitchValue = (val, ind) => {
     const tempData = JSON.parse(JSON.stringify(projectDatasets));
     tempData[ind].active = val;
+    tempData[ind].current = false;
     dispatch({type: projectReducers.DATASETS.PROJECT_DATASETS, datasets: tempData});
   };
 
