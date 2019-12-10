@@ -6,6 +6,7 @@ const initialState = {
   selectedSpot: {},
   selectedAttributes: [],
   recentViews: [],
+  spots: {},
 };
 
 export const spotReducer = (state = initialState, action) => {
@@ -32,11 +33,21 @@ export const spotReducer = (state = initialState, action) => {
         featuresSelected: [],
         selectedSpot: {},
       };
+    case spotReducers.SPOTS_CLEARED:
+      return {
+        ...state,
+        spots: {},
+      };
     case spotReducers.FEATURE_ADD:
       console.log('ADDED', action.feature);
       return {
         ...state,
         features: [...state.features, action.feature],
+      };
+    case spotReducers.SPOT_ADD:
+      return {
+        ...state,
+        spots: {...state.spots, [action.spot.properties.id]: action.spot},
       };
     case spotReducers.FEATURE_DELETE:
       console.log('DELETED', action.id);
