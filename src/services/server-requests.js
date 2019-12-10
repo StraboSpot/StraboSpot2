@@ -10,30 +10,21 @@ const buildGetRequest = async (urlPart, login) => {
         'Content-Type': 'application/json',
       },
     });
-    let responseJson = await response.json();
-    // console.log('RESJSON', responseJson);
-    return responseJson;
+    if (response.status === 200) {
+      return await response.json();
+    }
   }
   catch (error) {
     console.error(error);
   }
 };
 
-const timeoutPromise = (ms, promise) => {
-  return new Promise((resolve, reject) => {
-    const timeout = setTimeout(() => {
-      reject(new Error('promise timeout'));
-    }, ms);
-    promise.then((res) => {
-        clearTimeout(timeout);
-        resolve(res);
-      },
-      (err) => {
-        clearTimeout(timeout);
-        reject(err);
-      },
-    );
-  });
+export const getDataset = async (datasetId, encodedLogin) => {
+  return await buildGetRequest('/dataset/' + datasetId, encodedLogin);
+};
+
+export const getDatasetSpots = (datasetId, encodedLogin) => {
+  return buildGetRequest('/datasetSpots/' + datasetId, encodedLogin);
 };
 
 export const getProfileImage = async (encodedLogin) => {
@@ -68,15 +59,16 @@ export const getProject = async (projectId, encoded_login) => {
   return await buildGetRequest(/project/ + projectId, encoded_login);
 };
 
-export const getProjectDatasets = async (projectId, encodedLogin) => {
+export const getDatasets = async (projectId, encodedLogin) => {
   try {
-    let request = await fetch(baseUrl + '/projectDatasets/' + projectId , {
+    let request = await timeoutPromise(10000,  fetch(baseUrl + '/projectDatasets/' + projectId , {
         method: 'GET',
         headers: {
           Authorization: 'Basic ' + encodedLogin + '\'',
           'Content-Type': 'application/json; charset=UTF-8',
         },
-      });
+      })
+  );
     console.log('Dataset REQ Status', request);
     if (request.status === 200) {
       return request.json();
@@ -107,5 +99,22 @@ export const getMyProjects = async (encodedLogin) => {
   catch (error) {
     console.log('ERROR', error);
   }
+};
+
+const timeoutPromise = (ms, promise) => {
+  return new Promise((resolve, reject) => {
+    const timeout = setTimeout(() => {
+      reject(new Error('promise timeout'));
+    }, ms);
+    promise.then((res) => {
+        clearTimeout(timeout);
+        resolve(res);
+      },
+      (err) => {
+        clearTimeout(timeout);
+        reject(err);
+      },
+    );
+  });
 };
 
