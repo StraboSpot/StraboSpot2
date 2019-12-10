@@ -35,6 +35,7 @@ const ProjectList = (props) => {
     const projects = await RemoteServer.getMyProjects(userData.encoded_login);
     if (projects === 401) {
       setLoading(false);
+      console.log('Error:', projects);
     }
     else {
       // console.log('Projects', projects.projects);
@@ -43,8 +44,8 @@ const ProjectList = (props) => {
     }
   };
 
-  const getProjectDatasets = async (project) => {
-    const projectDatasetsFromServer = await RemoteServer.getProjectDatasets(project.id, userData.encoded_login);
+  const getDatasets = async (project) => {
+    const projectDatasetsFromServer = await RemoteServer.getDatasets(project.id, userData.encoded_login);
     if (projectDatasetsFromServer === 401) {
       console.log('Uh Oh...');
     }
@@ -69,7 +70,7 @@ const ProjectList = (props) => {
       const projectData = await Project.loadProjectRemote(project.id, userData.encoded_login);
       console.log('Loaded project \n', projectData);
       dispatch({type: ProjectActions.projectReducers.PROJECTS, project: projectData});
-      await getProjectDatasets(project);
+      await getDatasets(project);
     }
   };
 
