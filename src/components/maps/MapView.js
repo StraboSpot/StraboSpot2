@@ -444,7 +444,7 @@ class mapView extends Component {
     await this.setCurrentLocation();
     let feature = MapboxGL.geoUtils.makePoint([this.state.longitude, this.state.latitude]);
     this.createFeature(feature);
-    throw Error('Geolocation Error');
+    // throw Error('Geolocation Error');
   };
 
   // Fly the map to the current location
