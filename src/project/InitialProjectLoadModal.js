@@ -27,7 +27,7 @@ const InitialProjectLoadModal = (props) => {
 
   useEffect(() => {
     console.log('Rendered');
-  }, [selectedProject, isOnline]);
+  }, [selectedProject, isOnline, datasets]);
 
   const goBack = () => {
     if (visibleProjectSection === 'activeDatasetsList') {
@@ -76,6 +76,34 @@ const InitialProjectLoadModal = (props) => {
     );
   };
 
+  const renderContinueOrCloseButton = () => {
+    const activeDatasets = Object.values(datasets).filter(dataset => dataset.active === true);
+    if (activeDatasets.length > 1) {
+      return (
+        <Button
+          onPress={() => setVisibleProjectSection('currentDatasetSelection')}
+          title={'Continue'}
+          // disabled={isEmpty(datasets) ||
+          // isEmpty(Object.keys(datasets).find(key =>  datasets[key].active === true))}
+          buttonStyle={[commonStyles.standardButton]}
+          titleStyle={commonStyles.standardButtonText}
+        />
+      );
+    }
+    else {
+      return (
+        <Button
+          onPress={() => props.closeModal()}
+          title={'Close'}
+          disabled={isEmpty(datasets) ||
+          isEmpty(Object.keys(datasets).find(key =>  datasets[key].active === true))}
+          buttonStyle={[commonStyles.standardButton]}
+          titleStyle={commonStyles.standardButtonText}
+        />
+      );
+    }
+  };
+
   const renderDatasetList = () => {
     return (
       <React.Fragment>
@@ -85,14 +113,7 @@ const InitialProjectLoadModal = (props) => {
           buttonStyle={[commonStyles.standardButton]}
           titleStyle={commonStyles.standardButtonText}
         />
-        <Button
-          onPress={() => setVisibleProjectSection('currentDatasetSelection')}
-          title={'Continue'}
-          disabled={isEmpty(datasets) ||
-          isEmpty(Object.keys(datasets).find(key =>  datasets[key].active === true))}
-          buttonStyle={[commonStyles.standardButton]}
-          titleStyle={commonStyles.standardButtonText}
-        />
+        {renderContinueOrCloseButton()}
         <Spacer/>
         <View style={commonStyles.standardButtonText}>
           <Text>  By default the first dataset selected will be made the current dataset. You can change this on the next
