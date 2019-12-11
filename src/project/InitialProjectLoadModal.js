@@ -15,10 +15,11 @@ import commonStyles from '../shared/common.styles';
 import homeStyles from '../views/home/Styles';
 import {isEmpty} from '../shared/Helpers';
 import {projectReducers} from './Project.constants';
+import {spotReducers} from '../spots/Spot.constants';
 
 const InitialProjectLoadModal = (props) => {
   const selectedProject = useSelector(state => state.project.project);
-  const projectDatasets = useSelector(state => state.project.projectDatasets);
+  const datasets = useSelector(state => state.project.datasets);
   const isOnline = useSelector(state => state.home.isOnline);
   const dispatch = useDispatch();
   const [visibleProjectSection, setVisibleProjectSection] = useState('activeDatasetsList');
@@ -32,11 +33,11 @@ const InitialProjectLoadModal = (props) => {
   const goBack = () => {
     if (visibleProjectSection === 'activeDatasetsList') {
       dispatch({type: projectReducers.PROJECTS, project: {}});
-      dispatch({type: projectReducers.DATASETS.PROJECT_DATASETS, datasets: null});
+      dispatch({type: projectReducers.DATASETS.DATASETS_UPDATE, datasets: null});
+      dispatch({type: spotReducers.SPOTS_CLEARED});
       setVisibleInitialSection('serverProjects');
     }
     else if (visibleProjectSection === 'currentDatasetSelection') {
-      // projectDatasets.map(data => data.current = false);
       setVisibleProjectSection('activeDatasetsList');
     }
   };
@@ -47,7 +48,7 @@ const InitialProjectLoadModal = (props) => {
         <Button
           onPress={() => setVisibleProjectSection('currentDatasetSelection')}
           title={'Continue'}
-          disabled={isEmpty(projectDatasets) || isEmpty(projectDatasets.find(dataset => dataset.active === true))}
+          // disabled={isEmpty(datasets) || isEmpty(datasets.find(dataset => dataset.active === true))}
           buttonStyle={[commonStyles.standardButton]}
           titleStyle={commonStyles.standardButtonText}
         />
@@ -75,7 +76,7 @@ const InitialProjectLoadModal = (props) => {
         <Button
           onPress={() => props.closeModal()}
           title={'Close'}
-          disabled={isEmpty(projectDatasets.find(dataset => dataset.current === true))}
+          disabled={isEmpty(Object.keys(datasets).find(key =>  datasets[key].current === true))}
           buttonStyle={commonStyles.standardButton}
           titleStyle={commonStyles.standardButtonText}
         />
@@ -102,7 +103,8 @@ const InitialProjectLoadModal = (props) => {
         <Button
           onPress={() => setVisibleProjectSection('currentDatasetSelection')}
           title={'Continue'}
-          disabled={isEmpty(projectDatasets) || isEmpty(projectDatasets.find(dataset => dataset.active === true))}
+          disabled={isEmpty(datasets) ||
+          isEmpty(Object.keys(datasets).find(key =>  datasets[key].active === true))}
           buttonStyle={[commonStyles.standardButton]}
           titleStyle={commonStyles.standardButtonText}
         />
