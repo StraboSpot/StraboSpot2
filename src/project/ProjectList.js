@@ -13,8 +13,9 @@ import {withNavigation} from 'react-navigation';
 import * as ProjectActions from './Project.constants';
 import * as Project from './project';
 import styles from './Project.styles';
-import {homeReducers} from '../views/home/Home.constants';
 import {SettingsMenuItems} from '../components/settings-panel/SettingsMenu.constants';
+import {projectReducers} from './Project.constants';
+import {spotReducers} from '../spots/Spot.constants';
 
 const ProjectList = (props) => {
   const currentProject = useSelector(state => state.project.project);
@@ -68,6 +69,7 @@ const ProjectList = (props) => {
     console.log('Selected Project:', project);
     setSelectedProject(project);
     if (!isEmpty(currentProject)) {
+      setSelectedProject(project);
       setShowDialog(true);
     }
     else {
@@ -85,13 +87,14 @@ const ProjectList = (props) => {
     }
     else if (action === ProjectActions.OVERWRITE) {
       console.log('User wants to:', action, 'and select', selectedProject.name);
+      await dispatch({type: spotReducers.SPOTS_CLEARED, spots: {}});
       const projectData = await Project.loadProjectRemote(selectedProject.id, userData.encoded_login);
       dispatch({type: ProjectActions.projectReducers.PROJECTS, project: projectData});
+      await getDatasets(selectedProject);
       setShowDialog(false);
-      dispatch({type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: SettingsMenuItems.SETTINGS_MAIN});
-
     }
     else setShowDialog(false);
+    dispatch({type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: SettingsMenuItems.SETTINGS_MAIN});
   };
 
   const renderDialog = () => {
