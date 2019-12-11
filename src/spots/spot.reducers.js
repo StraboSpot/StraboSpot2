@@ -49,6 +49,12 @@ export const spotReducer = (state = initialState, action) => {
         ...state,
         spots: {...state.spots, [action.spot.properties.id]: action.spot},
       };
+    case spotReducers.SPOTS_ADD:
+      const spots = Object.assign({}, ...action.spots.map(spot => ({[spot.properties.id]: spot})));
+      return {
+        ...state,
+        spots: {...state.spots, ...spots},
+      };
     case spotReducers.FEATURE_DELETE:
       console.log('DELETED', action.id);
       const updatedFeatures = state.features.filter((feature) => {
