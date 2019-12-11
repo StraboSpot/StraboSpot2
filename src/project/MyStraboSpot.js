@@ -5,6 +5,8 @@ import ProjectList from './ProjectList';
 import ProjectTypesButtons from './ProjectTypesButtons';
 import Spacer from '../shared/ui/Spacer';
 import UserProfile from '../components/user/UserProfile';
+import ActiveProjectList from './ActiveProjectList';
+import Divider from '../components/settings-panel/HomePanelDivider';
 
 const MyStraboSpot = props => {
   const [showSection, setShowSection] = useState('none');
@@ -20,6 +22,10 @@ const MyStraboSpot = props => {
             onStartNewProject={() => setShowSection('newProject')}/>
         </View> :
         showSection === 'serverProjects' ? <ProjectList/> : <Text>Need fields for a new project here.</Text>}
+        <View>
+          <Divider sectionText={'Active project'}/>
+          <ActiveProjectList/>
+        </View>
     </React.Fragment>
   );
 };

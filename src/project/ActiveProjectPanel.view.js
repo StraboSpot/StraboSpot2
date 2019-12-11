@@ -6,12 +6,12 @@ import Divider from '../components/settings-panel/HomePanelDivider';
 import styles from './Project.styles';
 import DatasetList from './DatasetList';
 import ActiveDatasetsList from './ActiveDatasetsList';
+import ActiveProjectList from './ActiveProjectList';
 import {isEmpty} from '../shared/Helpers';
 import commonStyles from '../shared/common.styles';
 
 const ActiveProjectPanel = (props) => {
   const [activeDatasets, setActiveDatasets] = useState(null);
-  const project = useSelector(state => state.project.project);
   const datasets = useSelector(state => state.project.datasets);
 
   useEffect(() => {
@@ -21,12 +21,7 @@ const ActiveProjectPanel = (props) => {
 
   return (
     <React.Fragment>
-      <ListItem
-        title={project ? project.description.project_name : 'No Project'}
-        containerStyle={styles.activeProjectButton}
-        chevron
-        onPress={props.onPress}
-      />
+      <ActiveProjectList/>
       <Divider sectionText={'PROJECT DATASETS'}/>
       <View style={styles.datasetsContainer}>
       <DatasetList/>
