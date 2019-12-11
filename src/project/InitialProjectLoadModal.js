@@ -26,7 +26,6 @@ const InitialProjectLoadModal = (props) => {
   const [visibleInitialSection, setVisibleInitialSection] = useState('none');
 
   useEffect(() => {
-    renderModalButtons();
     console.log('Rendered');
   }, [selectedProject, isOnline]);
 
@@ -39,20 +38,6 @@ const InitialProjectLoadModal = (props) => {
     }
     else if (visibleProjectSection === 'currentDatasetSelection') {
       setVisibleProjectSection('activeDatasetsList');
-    }
-  };
-
-  const renderModalButtons = () => {
-    if (!isEmpty(selectedProject)) {
-      return (
-        <Button
-          onPress={() => setVisibleProjectSection('currentDatasetSelection')}
-          title={'Continue'}
-          // disabled={isEmpty(datasets) || isEmpty(datasets.find(dataset => dataset.active === true))}
-          buttonStyle={[commonStyles.standardButton]}
-          titleStyle={commonStyles.standardButtonText}
-        />
-      );
     }
   };
 
@@ -80,8 +65,8 @@ const InitialProjectLoadModal = (props) => {
           buttonStyle={commonStyles.standardButton}
           titleStyle={commonStyles.standardButtonText}
         />
-        <View style={{alignItems: 'center'}}>
-          <Text>Please select a dataset to make active</Text>
+        <View style={{alignItems: 'center', paddingTop: 10}}>
+          <Text>Please verify of change the dataset to make active</Text>
         </View>
         <Spacer/>
         <View style={{height: 400}}>

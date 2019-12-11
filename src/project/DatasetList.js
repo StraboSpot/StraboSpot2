@@ -9,28 +9,23 @@ import Loading from '../shared/ui/Loading';
 import {isEmpty} from '../shared/Helpers';
 import {spotReducers} from '../spots/Spot.constants';
 
-const DatasetList = (props) => {
+const DatasetList = () => {
   const [loading, setLoading] = useState(false);
   const datasets = useSelector(state => state.project.datasets);
   const isOnline = useSelector(state => state.home.isOnline);
   const userData = useSelector(state => state.user.userData);
-  const spots = useSelector(state => state.spot.features);
   const dispatch = useDispatch();
 
   const downloadSpots = async (dataset) => {
-    const spotsInDatasetIdsArr = [];
     const datasetInfoFromServer = await RemoteServer.getDatasetSpots(dataset.id, userData.encoded_login);
+    const spots = datasetInfoFromServer.features;
     setLoading(false);
-    if (!isEmpty(datasetInfoFromServer) && datasetInfoFromServer.features) {
-      console.log(datasetInfoFromServer.features);
-      Object.values(datasetInfoFromServer.features).map(spot => {
-        console.table(spot);
-        spotsInDatasetIdsArr.push(spot.properties.id);
-        dispatch({type: spotReducers.SPOT_ADD, spot: spot});
-      });
-      dispatch({type: projectReducers.DATASETS.ADD_SPOTS_IDS_TO_DATASET, datasetId: dataset.id, spotIds: spotsInDatasetIdsArr});
+    if (!isEmpty(datasetInfoFromServer) && spots) {
+      console.log(spots);
+      dispatch({type: spotReducers.SPOTS_ADD, spots: spots});
+      const spotIds = Object.values(spots).map(spot => spot.properties.id);
+      dispatch({type: projectReducers.DATASETS.ADD_SPOTS_IDS_TO_DATASET, datasetId: dataset.id, spotIds: spotIds});
     }
-    console.table(spotsInDatasetIdsArr);
   };
 
   const initializeDownloadDataset = async (dataset) => {
