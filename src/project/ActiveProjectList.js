@@ -1,7 +1,10 @@
 import React from 'react';
-import styles from './Project.styles';
 import {ListItem} from 'react-native-elements';
 import {useSelector} from 'react-redux';
+
+import {isEmpty} from '../shared/Helpers';
+
+import styles from './Project.styles';
 
 
 const ActiveProjectList = (props) => {
@@ -11,7 +14,7 @@ const ActiveProjectList = (props) => {
   return (
     <React.Fragment>
       <ListItem
-        title={project ? project.description.project_name : 'No Project'}
+        title={isEmpty(project) ? 'No Project' : project.description.project_name}
         containerStyle={styles.activeProjectButton}
         chevron
         onPress={props.onPress}
