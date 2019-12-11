@@ -51,7 +51,11 @@ const ProjectList = (props) => {
     }
     else {
       console.log('Saved datasets:', projectDatasetsFromServer);
-      dispatch({type: ProjectActions.projectReducers.DATASETS.PROJECT_DATASETS, datasets: projectDatasetsFromServer.datasets});
+      projectDatasetsFromServer.datasets.map(dataset => {
+        dataset.active = false;
+      });
+      const datasets = Object.assign({}, ...projectDatasetsFromServer.datasets.map(item => ({[item.id]: item})));
+      dispatch({type: ProjectActions.projectReducers.DATASETS.DATASETS_UPDATE, datasets: datasets});
     }
   };
 
