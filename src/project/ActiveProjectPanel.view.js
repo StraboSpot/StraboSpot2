@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {Text, View} from 'react-native';
-import {useSelector, useDispatch} from 'react-redux';
+import {useSelector} from 'react-redux';
 import {ListItem} from 'react-native-elements';
 import Divider from '../components/settings-panel/HomePanelDivider';
 import styles from './Project.styles';
@@ -12,13 +12,12 @@ import commonStyles from '../shared/common.styles';
 const ActiveProjectPanel = (props) => {
   const [activeDatasets, setActiveDatasets] = useState(null);
   const project = useSelector(state => state.project.project);
-  const projectDatasets = useSelector(state => state.project.projectDatasets);
-  const dispatch = useDispatch();
+  const datasets = useSelector(state => state.project.datasets);
 
   useEffect(() => {
-    const filteredDatasets = projectDatasets.filter(dataset => dataset.active === true);
+    const filteredDatasets = Object.values(datasets).filter(dataset => dataset.active === true);
     setActiveDatasets(filteredDatasets);
-  }, [projectDatasets]);
+  }, [datasets]);
 
   return (
     <React.Fragment>
