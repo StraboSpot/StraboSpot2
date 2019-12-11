@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {ScrollView, Text, View} from 'react-native';
 import {connect, useSelector, useDispatch} from 'react-redux';
-import * as RemoteServer from '../services/server-requests';
+import * as RemoteServer from '../services/useServerRequests';
 import {settingPanelReducers} from '../components/settings-panel/settingsPanel.constants';
 // import {USER_DATA} from '../services/user/User.constants';
 import Loading from '../shared/ui/Loading';

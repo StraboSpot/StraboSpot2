@@ -1,4 +1,4 @@
-import * as RemoteServer from '../services/server-requests';
+import * as RemoteServer from '../services/useServerRequests';
 
 const defaultTypes = ['geomorphic', 'hydrologic', 'paleontological', 'igneous', 'metamorphic', 'sedimentological',
   'other'];

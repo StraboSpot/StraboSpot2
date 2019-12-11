@@ -3,7 +3,7 @@ import {Switch, ScrollView, Text, View} from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import {ListItem} from 'react-native-elements';
 import {projectReducers} from './Project.constants';
-import * as RemoteServer from '../services/server-requests';
+import * as RemoteServer from '../services/useServerRequests';
 import Loading from '../shared/ui/Loading';
 
 import {isEmpty} from '../shared/Helpers';

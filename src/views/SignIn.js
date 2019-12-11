@@ -2,7 +2,7 @@ import React from 'react';
 import {View, StyleSheet, TextInput, Alert, ImageBackground, KeyboardAvoidingView} from 'react-native';
 import {connect} from 'react-redux';
 import {authenticateUser} from '../services/user/UserAuth';
-import * as RemoteServer from '../services/server-requests';
+import * as RemoteServer from '../services/useServerRequests';
 import * as themes from '../shared/styles.constants';
 import {USER_DATA, USER_IMAGE, ENCODED_LOGIN} from '../services/user/User.constants';
 // import * as Sentry from '@sentry/react-native';
