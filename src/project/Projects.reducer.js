@@ -2,7 +2,7 @@ import {projectReducers} from './Project.constants';
 
 const initialState = {
   project: {},
-  projectDatasets: null,
+  datasets: {},
 };
 
 export const projectsReducer = (state = initialState, action) => {
@@ -12,11 +12,19 @@ export const projectsReducer = (state = initialState, action) => {
         ...state,
         project: action.project,
       };
-    case projectReducers.DATASETS.PROJECT_DATASETS:
+    case projectReducers.DATASETS.DATASETS_UPDATE: {
       return {
         ...state,
-        projectDatasets: action.datasets,
+        datasets: action.datasets,
       };
+    }
+    case projectReducers.DATASETS.ADD_SPOTS_IDS_TO_DATASET: {
+      const dataset = {...state.datasets[action.datasetId], spotIds: action.spotIds};
+      return {
+        ...state,
+        datasets: {...state.datasets, [action.datasetId]: dataset},
+      };
+    }
   }
   return state;
 };
