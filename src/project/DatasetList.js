@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Switch, ScrollView, Text, View} from 'react-native';
+import {Switch, ScrollView, Text, View, Alert} from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import {ListItem} from 'react-native-elements';
 import {projectReducers} from './Project.constants';
@@ -13,18 +13,24 @@ const DatasetList = () => {
   const [loading, setLoading] = useState(false);
   const datasets = useSelector(state => state.project.datasets);
   const isOnline = useSelector(state => state.home.isOnline);
-  const userData = useSelector(state => state.user.userData);
+  const userData = useSelector(state => state.user);
   const dispatch = useDispatch();
 
   const downloadSpots = async (dataset) => {
-    const datasetInfoFromServer = await RemoteServer.getDatasetSpots(dataset.id, userData.encoded_login);
-    const spots = datasetInfoFromServer.features;
-    setLoading(false);
-    if (!isEmpty(datasetInfoFromServer) && spots) {
-      console.log(spots);
-      dispatch({type: spotReducers.SPOTS_ADD, spots: spots});
-      const spotIds = Object.values(spots).map(spot => spot.properties.id);
-      dispatch({type: projectReducers.DATASETS.ADD_SPOTS_IDS_TO_DATASET, datasetId: dataset.id, spotIds: spotIds});
+    const datasetInfoFromServer = await serverRequests.getDatasetSpots(dataset.id, userData.encoded_login);
+    if (!isEmpty(datasetInfoFromServer) && datasetInfoFromServer.features) {
+      const spots = datasetInfoFromServer.features;
+      setLoading(false);
+      if (!isEmpty(datasetInfoFromServer) && spots) {
+        console.log(spots);
+        dispatch({type: spotReducers.SPOTS_ADD, spots: spots});
+        const spotIds = Object.values(spots).map(spot => spot.properties.id);
+        dispatch({type: projectReducers.DATASETS.ADD_SPOTS_IDS_TO_DATASET, datasetId: dataset.id, spotIds: spotIds});
+      }
+    }
+    else {
+      setLoading(false);
+      Alert.alert('No Spots in Dataset', `${dataset.name}`);
     }
   };
 
@@ -37,8 +43,6 @@ const DatasetList = () => {
     console.log(datasets.length)
 
   };
-
-
 
   const renderDatasets = () => {
     if (!isEmpty(datasets)) {

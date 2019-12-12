@@ -32,7 +32,7 @@ const InitialProjectLoadModal = (props) => {
   const goBack = () => {
     if (visibleProjectSection === 'activeDatasetsList') {
       dispatch({type: projectReducers.PROJECTS, project: {}});
-      dispatch({type: projectReducers.DATASETS.DATASETS_UPDATE, datasets: null});
+      dispatch({type: projectReducers.DATASETS.DATASETS_UPDATE, datasets: {}});
       dispatch({type: spotReducers.SPOTS_CLEARED});
       setVisibleInitialSection('serverProjects');
     }
@@ -170,7 +170,7 @@ const InitialProjectLoadModal = (props) => {
         })}
         dialogTitle={
           <DialogTitle
-            title={'My StraboSpot'}
+            title={'Welcome to StraboSpot!'}
             style={homeStyles.dialogTitleContainer}
             textStyle={homeStyles.dialogTitleText}
           />

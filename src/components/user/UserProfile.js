@@ -80,7 +80,7 @@ const UserProfile = (props) => {
 
 const mapStateToProps = (state) => {
   return {
-    userData: state.user.userData,
+    userData: state.user,
   };
 };
 

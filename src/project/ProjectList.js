@@ -20,7 +20,7 @@ import {spotReducers} from '../spots/Spot.constants';
 const ProjectList = (props) => {
   const currentProject = useSelector(state => state.project.project);
   const isOnline = useSelector(state => state.home.isOnline);
-  const userData = useSelector(state => state.user.userData);
+  const userData = useSelector(state => state.user);
   const dispatch = useDispatch();
   const [projectsArr, setProjectsArr] = useState([]);
   const [selectedProject, setSelectedProject] = useState({});
@@ -165,7 +165,7 @@ const ProjectList = (props) => {
 const mapStateToProps = (state) => {
   return {
     // settingsPageVisible: state.settingsPanel.settingsPageVisible,
-    // userData: state.user.userData,
+    // userData: state.user
     // isOnline: state.home.isOnline,
     // currentProject: state.project.project,
   };
