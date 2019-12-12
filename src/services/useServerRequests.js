@@ -59,15 +59,6 @@ const useServerRequests = () => {
 
   const getDatasets = async (projectId, encodedLogin) => {
     return request('GET', '/projectDatasets/' + projectId, encodedLogin);
-    // let response = await timeoutPromise(10000,  fetch(baseUrl + '/projectDatasets/' + projectId , {
-    //     method: 'GET',
-    //     headers: {
-    //       Authorization: 'Basic ' + encodedLogin + '\'',
-    //       'Content-Type': 'application/json; charset=UTF-8',
-    //     },
-    //   })
-    // );
-    // return handleResponse(response);
   };
 
   const getMyProjects = (encodedLogin) => {

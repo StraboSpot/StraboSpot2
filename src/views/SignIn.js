@@ -28,14 +28,6 @@ const SignIn = (props) => {
   const dispatch = useDispatch();
   const [serverRequests] = useServerRequests();
 
-  // constructor(props) {
-  //   super(props);
-  //   state = {
-  //     username: __DEV__ ? USERNAME_TEST : '',
-  //     password: __DEV__ ? PASSWORD_TEST : '',
-  //   };
-  // }
-
   useEffect(() => {
     NetInfo.addEventListener(state => {
       handleConnectivityChange(state.isConnected);
@@ -50,34 +42,9 @@ const SignIn = (props) => {
     }
   }, [isOnline, userData]);
 
-  // useEffect(() => {
-  //
-  // }, [isOnline, setIsOnline]);
-
-  // componentDidMount() {
-  //   NetInfo.addEventListener(state => {
-  //     handleConnectivityChange(state.isConnected);
-  //   });
-  // }
-
-  // componentDidUpdate(prevProps: Readonly<P>, prevState: Readonly<S>, snapshot: SS): void {
-  //   console.log(prevProps);
-  //   if (props.isOnline === null) {
-  //     NetInfo.fetch().then(state => {
-  //       props.setIsOnline(state.isConnected);
-  //     })
-  //       .catch(err => {
-  //         throw (err);
-  //       });
-  //   }
-  // }
-
   //function for online/offline state change event handler
   const handleConnectivityChange = (isConnected) => {
     dispatch({type: homeReducers.SET_ISONLINE, online: isConnected});
-    // if (!isEmpty(userData) && isOnline) {
-    //     props.navigation.navigate('HomeScreen');
-    // }
   };
 
   const guestSignIn = () => {
@@ -89,16 +56,11 @@ const SignIn = (props) => {
   };
 
   const signIn = async () => {
-    // const {username, password} = this.state;
     user = await authenticateUser(username, password);
     try {
       // login with provider
       if (user === 'true') {
         const encodedLogin = Base64.encode(username + ':' + password);
-        // user = {
-        //   email: username,
-        //   encoded_login: encodedLogin, // creates encoded base64 login
-        // };
         dispatch({type: ENCODED_LOGIN, value: encodedLogin});
         updateUserResponse(encodedLogin).then(() => {
           console.log(`${username} is successfully logged in!`);
@@ -110,7 +72,7 @@ const SignIn = (props) => {
       }
       else {
         Alert.alert('Login Failure', 'Incorrect username and/or password');
-       setPassword('');
+        setPassword('');
       }
     }
     catch (err) {
@@ -185,75 +147,60 @@ const SignIn = (props) => {
     props.navigation.navigate('SignUp');
   };
 
-    return (
-      <ImageBackground source={require('../assets/images/background.jpg')} style={styles.backgroundImage}>
-        <View style={styles.container}>
-          <View style={{
-            position: 'absolute',
-            right: 0,
-            top: 40,
-            zIndex: -1,
-          }}>
-            <IconButton
-              source={isOnline ? online : offline}
-            />
-          </View>
-          <KeyboardAvoidingView
-            behavior={'padding'}
-            contentContainerStyle={{
-              flex: 1,
-              justifyContent: 'space-between',
-            }}
-            keyboardVerticalOffset={150}
-          >
-            <View style={{alignItems: 'center'}}>
-              <View style={styles.signInContainer}>
-                <TextInput
-                  style={styles.input}
-                  placeholder='Username'
-                  autoCapitalize='none'
-                  autoCorrect={false}
-                  placeholderTextColor='#6a777e'
-                  onChangeText={val => setUsername(val.toLowerCase())}
-                  value={username}
-                  keyboardType='email-address'
-                  returnKeyType='go'
-                />
-                <TextInput
-                  style={styles.input}
-                  placeholder='Password'
-                  autoCapitalize='none'
-                  secureTextEntry={true}
-                  placeholderTextColor='#6a777e'
-                  onChangeText={val => setPassword(val)}
-                  value={password}
-                  returnKeyType='go'
-                  onSubmitEditing={signIn}
-                />
-                {renderButtons()}
-              </View>
-            </View>
-          </KeyboardAvoidingView>
+  return (
+    <ImageBackground source={require('../assets/images/background.jpg')} style={styles.backgroundImage}>
+      <View style={styles.container}>
+        <View style={{
+          position: 'absolute',
+          right: 0,
+          top: 40,
+          zIndex: -1,
+        }}>
+          <IconButton
+            source={isOnline ? online : offline}
+          />
         </View>
-      </ImageBackground>
-    );
+        <KeyboardAvoidingView
+          behavior={'padding'}
+          contentContainerStyle={{
+            flex: 1,
+            justifyContent: 'space-between',
+          }}
+          keyboardVerticalOffset={150}
+        >
+          <View style={{alignItems: 'center'}}>
+            <View style={styles.signInContainer}>
+              <TextInput
+                style={styles.input}
+                placeholder='Username'
+                autoCapitalize='none'
+                autoCorrect={false}
+                placeholderTextColor='#6a777e'
+                onChangeText={val => setUsername(val.toLowerCase())}
+                value={username}
+                keyboardType='email-address'
+                returnKeyType='go'
+              />
+              <TextInput
+                style={styles.input}
+                placeholder='Password'
+                autoCapitalize='none'
+                secureTextEntry={true}
+                placeholderTextColor='#6a777e'
+                onChangeText={val => setPassword(val)}
+                value={password}
+                returnKeyType='go'
+                onSubmitEditing={signIn}
+              />
+              {renderButtons()}
+            </View>
+          </View>
+        </KeyboardAvoidingView>
+      </View>
+    </ImageBackground>
+  );
 };
 
-// const mapStateToProps = (state) => {
-//   return {
-//     userData: state.user.userData,
-//     isOnline: state.home.isOnline,
-//   };
-// };
-
-// const mapDispatchToProps = {
-//   // setIsOnline: (online) => ({type: homeReducers.SET_ISONLINE, online: online}),
-//   // setUserData: (userData) => ({type: USER_DATA, userData: userData}),
-//   // setEncodedLogin: (value) => ({type: ENCODED_LOGIN, value: value}),
-//   // setUserImage: (userImage) => ({type: USER_IMAGE, userImage: userImage}),
-// };
-
-// export default connect(mapStateToProps, mapDispatchToProps)(SignIn);
 export default SignIn;
 
 const styles = StyleSheet.create({
@@ -275,13 +222,9 @@ const styles = StyleSheet.create({
   },
   backgroundImage: {
     flex: 1,
-    // width: null,
-    // height: '100%',
-    // marginTop: 20,
     resizeMode: 'cover',
   },
   signInContainer: {
-    // marginTop: 30,
     alignItems: 'center',
   },
   buttonStyle: {
@@ -292,5 +235,4 @@ const styles = StyleSheet.create({
   icon: {
     paddingRight: 15,
   },
-
 });
