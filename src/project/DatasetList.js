@@ -3,13 +3,14 @@ import {Switch, ScrollView, Text, View, Alert} from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import {ListItem} from 'react-native-elements';
 import {projectReducers} from './Project.constants';
-import * as RemoteServer from '../services/useServerRequests';
+import useServerRequests from '../services/useServerRequests';
 import Loading from '../shared/ui/Loading';
 
 import {isEmpty} from '../shared/Helpers';
 import {spotReducers} from '../spots/Spot.constants';
 
 const DatasetList = () => {
+  const [serverRequests] = useServerRequests();
   const [loading, setLoading] = useState(false);
   const datasets = useSelector(state => state.project.datasets);
   const isOnline = useSelector(state => state.home.isOnline);
@@ -35,7 +36,7 @@ const DatasetList = () => {
   };
 
   const initializeDownloadDataset = async (dataset) => {
-    const datasetInfo = await RemoteServer.getDataset(dataset.id, userData.encoded_login)
+    const datasetInfo = await serverRequests.getDataset(dataset.id, userData.encoded_login);
     console.log(datasetInfo);
   };
 

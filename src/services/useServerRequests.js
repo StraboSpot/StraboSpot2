@@ -1,120 +1,124 @@
-const baseUrl = 'https://strabospot.org/db';
+import {useSelector} from 'react-redux';
 
-const buildGetRequest = async (urlPart, login) => {
-  try {
-    let response = await fetch(baseUrl + urlPart, {
-      method: 'GET',
-      // url: baseUrl + urlPart,
+const useServerRequests = () => {
+  const user = useSelector(state => state.user);
+  const baseUrl = 'https://strabospot.org/db';
+
+  const request = async (method, urlPart, login) => {
+    console.table(user.encoded_login);
+    const response = await fetch(baseUrl + urlPart, {
+      method: method,
       headers: {
-        Authorization: 'Basic ' + login,
+        Authorization: 'Basic ' + login + '/',
         'Content-Type': 'application/json',
       },
     });
-    if (response.status === 200) {
-      return await response.json();
+    return handleResponse(response);
+
+  };
+
+  const getDataset = (datasetId) => {
+    return request('GET', '/dataset/' + datasetId);
+  };
+
+  const getDatasetSpots = (datasetId, encodedLogin) => {
+    return request('GET','/datasetSpots/' + datasetId, encodedLogin);
+  };
+
+  const getProfileImage = async (encodedLogin) => {
+    let imageBlob = null;
+    try {
+      let imageResponse = await fetch(baseUrl + '/profileimage', {
+        method: 'GET',
+        responseType: 'blob',
+        headers: {
+          Authorization: 'Basic ' + encodedLogin,
+        },
+      });
+      if (imageResponse.status === 200) {
+        imageBlob = imageResponse.blob();
+        return imageBlob;
+      }
+      else {
+        imageBlob = null;
+      }
     }
-  }
-  catch (error) {
-    console.error(error);
-  }
-};
+    catch (error) {
+      console.error(error);
+    }
+  };
 
-export const getDataset = async (datasetId, encodedLogin) => {
-  return await buildGetRequest('/dataset/' + datasetId, encodedLogin);
-};
+  const getProfile = (encodedLogin) => {
+    return request('GET', '/profile', encodedLogin);
+  };
 
-export const getDatasetSpots = (datasetId, encodedLogin) => {
-  return buildGetRequest('/datasetSpots/' + datasetId, encodedLogin);
-};
+  const getProject = async (projectId, encodedLogin) => {
+    console.log('Getting project...');
+    return await request('GET', '/project/' + projectId, encodedLogin);
+  };
 
-export const getProfileImage = async (encodedLogin) => {
-  let imageBlob = null;
-  try {
-    let imageResponse = await fetch(baseUrl + '/profileimage', {
-      method: 'GET',
-      responseType: 'blob',
-      headers: {
-        Authorization: 'Basic ' + encodedLogin,
-      },
+  const getDatasets = async (projectId, encodedLogin) => {
+    return request('GET', '/projectDatasets/' + projectId, encodedLogin);
+    // let response = await timeoutPromise(10000,  fetch(baseUrl + '/projectDatasets/' + projectId , {
+    //     method: 'GET',
+    //     headers: {
+    //       Authorization: 'Basic ' + encodedLogin + '\'',
+    //       'Content-Type': 'application/json; charset=UTF-8',
+    //     },
+    //   })
+    // );
+    // return handleResponse(response);
+  };
+
+  const getMyProjects = (encodedLogin) => {
+    return request('GET','/myProjects', encodedLogin);
+  };
+
+  const handleError = (response) => {
+    console.log(response);
+    if (!response.ok) {
+      return Promise.reject('Error Retrieving DataBLAH!');
+    }
+  };
+
+  const handleResponse = response => {
+    console.log('REQ Status', response.status);
+    if (response.ok) {
+      return response.json();
+    }
+    else return handleError(response);
+  };
+
+  const timeoutPromise = (ms, promise) => {
+    return new Promise((resolve, reject) => {
+      const timeout = setTimeout(() => {
+        reject(new Error('promise timeout'));
+      }, ms);
+      promise.then((res) => {
+          clearTimeout(timeout);
+          resolve(res);
+        },
+        (err) => {
+          clearTimeout(timeout);
+          reject(err);
+        },
+      );
     });
-    if (imageResponse.status === 200) {
-      imageBlob = imageResponse.blob();
-      return imageBlob;
-    }
-    else {
-      imageBlob = null;
-    }
-  }
-  catch (error) {
-    console.error(error);
-  }
+  };
+
+  const serverRequests = {
+    getMyProjects: getMyProjects,
+    getDatasets: getDatasets,
+    getDatasetSpots: getDatasetSpots,
+    getDataset: getDataset,
+    getProfile: getProfile,
+    getProject: getProject,
+    getProfileImage: getProfileImage,
+  };
+
+  return [serverRequests];
 };
 
-export const getProfile = async (encodedLogin) => {
-  return await buildGetRequest('/profile', encodedLogin);
-};
+export default useServerRequests;
 
-export const getProject = async (projectId, encoded_login) => {
-  console.log('Getting project...');
-  return await buildGetRequest(/project/ + projectId, encoded_login);
-};
-
-export const getDatasets = async (projectId, encodedLogin) => {
-  try {
-    let request = await timeoutPromise(10000,  fetch(baseUrl + '/projectDatasets/' + projectId , {
-        method: 'GET',
-        headers: {
-          Authorization: 'Basic ' + encodedLogin + '\'',
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-      })
-  );
-    console.log('Dataset REQ Status', request);
-    if (request.status === 200) {
-      return request.json();
-    }
-    else return request.status;
-  }
-  catch (e) {
-    console.log('Dataset Error', e);
-  }
-};
-
-export const getMyProjects = async (encodedLogin) => {
-  try {
-    let request = await timeoutPromise(10000, fetch(baseUrl + '/myProjects', {
-        method: 'GET',
-        headers: {
-          Authorization: 'Basic ' + encodedLogin + '\'',
-          'Content-Type': 'application/json',
-        },
-      }),
-    );
-    console.log('REQ Status', request.status);
-    if (request.status === 200) {
-      return await request.json();
-    }
-    else return request.status;
-  }
-  catch (error) {
-    console.log('ERROR', error);
-  }
-};
-
-const timeoutPromise = (ms, promise) => {
-  return new Promise((resolve, reject) => {
-    const timeout = setTimeout(() => {
-      reject(new Error('promise timeout'));
-    }, ms);
-    promise.then((res) => {
-        clearTimeout(timeout);
-        resolve(res);
-      },
-      (err) => {
-        clearTimeout(timeout);
-        reject(err);
-      },
-    );
-  });
-};
 

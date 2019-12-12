@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {ScrollView, Text, View} from 'react-native';
 import {connect, useSelector, useDispatch} from 'react-redux';
-import * as RemoteServer from '../services/useServerRequests';
+// import * as RemoteServer from '../services/useServerRequests';
 import {settingPanelReducers} from '../components/settings-panel/settingsPanel.constants';
 // import {USER_DATA} from '../services/user/User.constants';
 import Loading from '../shared/ui/Loading';
@@ -11,11 +11,11 @@ import * as themes from '../shared/styles.constants';
 import DialogBox from './DialogBox';
 import {withNavigation} from 'react-navigation';
 import * as ProjectActions from './Project.constants';
-import * as Project from './project';
+import useProjectHelpers from './project';
 import styles from './Project.styles';
 import {SettingsMenuItems} from '../components/settings-panel/SettingsMenu.constants';
-import {projectReducers} from './Project.constants';
 import {spotReducers} from '../spots/Spot.constants';
+import useServerRequests from '../services/useServerRequests';
 
 const ProjectList = (props) => {
   const currentProject = useSelector(state => state.project.project);
@@ -26,6 +26,10 @@ const ProjectList = (props) => {
   const [selectedProject, setSelectedProject] = useState({});
   const [loading, setLoading] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(false);
+  // Server calls
+  const [serverRequests] = useServerRequests();
+  const [projectHelpers] = useProjectHelpers();
 
   useEffect(() => {
     getAllProjects();
@@ -33,20 +37,21 @@ const ProjectList = (props) => {
 
   const getAllProjects = async () => {
     setLoading(true);
-    const projects = await RemoteServer.getMyProjects(userData.encoded_login);
-    if (projects === 401) {
-      setLoading(false);
-      console.log('Error:', projects);
+    try {
+      const projectsResponse = await serverRequests.getMyProjects(userData.encoded_login);
+        setProjectsArr(projectsResponse);
+        setLoading(false);
+        setErrorMessage(false);
     }
-    else {
-      // console.log('Projects', projects.projects);
-      setProjectsArr(projects);
+    catch (err) {
+      console.log(err);
       setLoading(false);
+      setErrorMessage(true);
     }
   };
 
   const getDatasets = async (project) => {
-    const projectDatasetsFromServer = await RemoteServer.getDatasets(project.id, userData.encoded_login);
+    const projectDatasetsFromServer = await serverRequests.getDatasets(project.id, userData.encoded_login);
     if (projectDatasetsFromServer === 401) {
       console.log('Uh Oh...');
     }
@@ -73,7 +78,7 @@ const ProjectList = (props) => {
       setShowDialog(true);
     }
     else {
-      const projectData = await Project.loadProjectRemote(project.id, userData.encoded_login);
+      const projectData = await projectHelpers.loadProjectRemote(project.id, userData.encoded_login);
       console.log('Loaded project \n', projectData);
       dispatch({type: ProjectActions.projectReducers.PROJECTS, project: projectData});
       await getDatasets(project);
@@ -88,7 +93,7 @@ const ProjectList = (props) => {
     else if (action === ProjectActions.OVERWRITE) {
       console.log('User wants to:', action, 'and select', selectedProject.name);
       await dispatch({type: spotReducers.SPOTS_CLEARED, spots: {}});
-      const projectData = await Project.loadProjectRemote(selectedProject.id, userData.encoded_login);
+      const projectData = await projectHelpers.loadProjectRemote(selectedProject.id, userData.encoded_login);
       dispatch({type: ProjectActions.projectReducers.PROJECTS, project: projectData});
       await getDatasets(selectedProject);
       setShowDialog(false);
@@ -115,6 +120,12 @@ const ProjectList = (props) => {
           uploaded the project to the server if you wish to preserve the data. Continue?</Text>
       </DialogBox>
     );
+  };
+
+  const renderErrorMessage = () => {
+    return (<View>
+      <Text style={{color: 'red'}}>Error Getting Data</Text>
+    </View>);
   };
 
   const renderProjectsList = () => {
@@ -158,6 +169,7 @@ const ProjectList = (props) => {
         {loading ? <Loading style={{backgroundColor: themes.PRIMARY_BACKGROUND_COLOR}}/> : renderProjectsList()}
       </View>
       {renderDialog()}
+      {errorMessage && renderErrorMessage()}
     </View>
   );
 };

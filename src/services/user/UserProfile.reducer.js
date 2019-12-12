@@ -29,7 +29,7 @@ export const userReducer = (state = initialState, action) => {
 
       return {
         ...state,
-        userData: {
+        // userData: {
           encoded_login: action.value,
         // },
       };
