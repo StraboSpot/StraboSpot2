@@ -1,8 +1,8 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, StyleSheet, TextInput, Alert, ImageBackground, KeyboardAvoidingView} from 'react-native';
-import {connect} from 'react-redux';
+import {connect, useSelector, useDispatch} from 'react-redux';
 import {authenticateUser} from '../services/user/UserAuth';
-import * as RemoteServer from '../services/useServerRequests';
+import useServerRequests from '../services/useServerRequests';
 import * as themes from '../shared/styles.constants';
 import {USER_DATA, USER_IMAGE, ENCODED_LOGIN} from '../services/user/User.constants';
 // import * as Sentry from '@sentry/react-native';
@@ -18,75 +18,99 @@ import {isEmpty} from '../shared/Helpers';
 
 let user = null;
 
-class SignIn extends React.Component {
-  online = require('../assets/icons/StraboIcons_Oct2019/ConnectionStatusButton_connected.png');
-  offline = require('../assets/icons/StraboIcons_Oct2019/ConnectionStatusButton_offline.png');
+const SignIn = (props) => {
+  const online = require('../assets/icons/StraboIcons_Oct2019/ConnectionStatusButton_connected.png');
+  const offline = require('../assets/icons/StraboIcons_Oct2019/ConnectionStatusButton_offline.png');
+  const [username, setUsername] = useState(__DEV__ ? USERNAME_TEST : '');
+  const [password, setPassword] = useState(__DEV__ ? PASSWORD_TEST : '');
+  const isOnline = useSelector(state => state.home.isOnline);
+  const userData = useSelector(state => state.user.userData);
+  const dispatch = useDispatch();
+  const [serverRequests] = useServerRequests();
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      username: __DEV__ ? USERNAME_TEST : '',
-      password: __DEV__ ? PASSWORD_TEST : '',
-    };
-  }
+  // constructor(props) {
+  //   super(props);
+  //   state = {
+  //     username: __DEV__ ? USERNAME_TEST : '',
+  //     password: __DEV__ ? PASSWORD_TEST : '',
+  //   };
+  // }
 
-  componentDidMount() {
+  useEffect(() => {
     NetInfo.addEventListener(state => {
-      this.handleConnectivityChange(state.isConnected);
+      handleConnectivityChange(state.isConnected);
     });
-  }
-
-  componentDidUpdate(prevProps: Readonly<P>, prevState: Readonly<S>, snapshot: SS): void {
-    console.log(prevProps);
-    if (this.props.isOnline === null) {
+    if (isOnline === null) {
       NetInfo.fetch().then(state => {
-        this.props.setIsOnline(state.isConnected);
+        dispatch({type: homeReducers.SET_ISONLINE, online: state.isConnected});
       })
         .catch(err => {
           throw (err);
         });
     }
-  }
+  }, [isOnline, userData]);
+
+  // useEffect(() => {
+  //
+  // }, [isOnline, setIsOnline]);
+
+  // componentDidMount() {
+  //   NetInfo.addEventListener(state => {
+  //     handleConnectivityChange(state.isConnected);
+  //   });
+  // }
+
+  // componentDidUpdate(prevProps: Readonly<P>, prevState: Readonly<S>, snapshot: SS): void {
+  //   console.log(prevProps);
+  //   if (props.isOnline === null) {
+  //     NetInfo.fetch().then(state => {
+  //       props.setIsOnline(state.isConnected);
+  //     })
+  //       .catch(err => {
+  //         throw (err);
+  //       });
+  //   }
+  // }
 
   //function for online/offline state change event handler
-  handleConnectivityChange = (isConnected) => {
-    this.props.setIsOnline(isConnected);
-    if (!isEmpty(this.props.userData) && this.props.isOnline) {
-        this.props.navigation.navigate('HomeScreen');
-    }
+  const handleConnectivityChange = (isConnected) => {
+    dispatch({type: homeReducers.SET_ISONLINE, online: isConnected});
+    // if (!isEmpty(userData) && isOnline) {
+    //     props.navigation.navigate('HomeScreen');
+    // }
   };
 
-  guestSignIn = () => {
+  const guestSignIn = () => {
     // Sentry.configureScope((scope) => {
     //   scope.setUser({'id': 'GUEST'})
     // });
     console.log('Loading user: GUEST');
-    this.props.navigation.navigate('HomeScreen');
+    props.navigation.navigate('HomeScreen');
   };
 
-  signIn = async () => {
-    const {username, password} = this.state;
+  const signIn = async () => {
+    // const {username, password} = this.state;
     user = await authenticateUser(username, password);
     try {
       // login with provider
       if (user === 'true') {
         const encodedLogin = Base64.encode(username + ':' + password);
-        user = {
-          email: username,
-          encoded_login: encodedLogin, // creates encoded base64 login
-        };
-        this.props.setEncodedLogin(user.encoded_login);
-        this.updateUserResponse().then(() => {
-          console.log(`${user.email} is successfully logged in!`);
+        // user = {
+        //   email: username,
+        //   encoded_login: encodedLogin, // creates encoded base64 login
+        // };
+        dispatch({type: ENCODED_LOGIN, value: encodedLogin});
+        updateUserResponse(encodedLogin).then(() => {
+          console.log(`${username} is successfully logged in!`);
           // Sentry.configureScope((scope) => {
           //   scope.setUser({'email': user.email})
           // });
-          this.props.navigation.navigate('HomeScreen');
+          props.navigation.navigate('HomeScreen');
         });
       }
       else {
         Alert.alert('Login Failure', 'Incorrect username and/or password');
-        this.setState({password: ''});
+       setPassword('');
       }
     }
     catch (err) {
@@ -94,7 +118,7 @@ class SignIn extends React.Component {
     }
   };
 
-  renderButtons = () => {
+  const renderButtons = () => {
     return (
       <View>
         <Button
@@ -107,9 +131,9 @@ class SignIn extends React.Component {
           }
           type={'solid'}
           containerStyle={{marginTop: 30}}
-          onPress={() => this.signIn()}
+          onPress={() => signIn()}
           buttonStyle={styles.buttonStyle}
-          disabled={!this.props.isOnline}
+          disabled={!isOnline}
           title={'Sign In'}
         />
         <Button
@@ -122,9 +146,9 @@ class SignIn extends React.Component {
           }
           type={'solid'}
           containerStyle={{marginTop: 10}}
-          onPress={() => this.createAccount()}
+          onPress={() => createAccount()}
           buttonStyle={styles.buttonStyle}
-          disabled={!this.props.isOnline}
+          disabled={!isOnline}
           title={'Create an Account'}
         />
         <Button
@@ -136,7 +160,7 @@ class SignIn extends React.Component {
               color={'white'}/>
           }
           type={'solid'}
-          onPress={() => this.guestSignIn()}
+          onPress={() => guestSignIn()}
           containerStyle={{marginTop: 10}}
           buttonStyle={styles.buttonStyle}
           title={'Continue as Guest'}
@@ -145,22 +169,22 @@ class SignIn extends React.Component {
     );
   };
 
-  updateUserResponse = async () => {
-    const userProfile = await RemoteServer.getProfile(user.encoded_login);
-    const userProfileImage = await RemoteServer.getProfileImage(user.encoded_login);
+  const updateUserResponse = async (encodedLogin) => {
+    let userProfile = await serverRequests.getProfile(encodedLogin);
+    console.table(userProfile);
+    const userProfileImage = await serverRequests.getProfileImage(encodedLogin);
     if (userProfileImage.data) {
       readDataUrl(userProfileImage, (base64Image) => {
-        this.props.setUserImage(base64Image);
+        dispatch({type: USER_IMAGE, userImage: base64Image});
       });
-      this.props.setUserData(userProfile);
+      dispatch({type: USER_DATA, userData: userProfile});
     }
   };
 
-  createAccount = () => {
-    this.props.navigation.navigate('SignUp');
+  const createAccount = () => {
+    props.navigation.navigate('SignUp');
   };
 
-  render() {
     return (
       <ImageBackground source={require('../assets/images/background.jpg')} style={styles.backgroundImage}>
         <View style={styles.container}>
@@ -171,7 +195,7 @@ class SignIn extends React.Component {
             zIndex: -1,
           }}>
             <IconButton
-              source={this.props.isOnline ? this.online : this.offline}
+              source={isOnline ? online : offline}
             />
           </View>
           <KeyboardAvoidingView
@@ -190,8 +214,8 @@ class SignIn extends React.Component {
                   autoCapitalize='none'
                   autoCorrect={false}
                   placeholderTextColor='#6a777e'
-                  onChangeText={val => this.setState({username: val.toLowerCase()})}
-                  value={this.state.username}
+                  onChangeText={val => setUsername(val.toLowerCase())}
+                  value={username}
                   keyboardType='email-address'
                   returnKeyType='go'
                 />
@@ -201,36 +225,36 @@ class SignIn extends React.Component {
                   autoCapitalize='none'
                   secureTextEntry={true}
                   placeholderTextColor='#6a777e'
-                  onChangeText={val => this.setState({password: val})}
-                  value={this.state.password}
+                  onChangeText={val => setPassword(val)}
+                  value={password}
                   returnKeyType='go'
-                  onSubmitEditing={this.signIn}
+                  onSubmitEditing={signIn}
                 />
-                {this.renderButtons()}
+                {renderButtons()}
               </View>
             </View>
           </KeyboardAvoidingView>
         </View>
       </ImageBackground>
     );
-  }
-}
-
-const mapStateToProps = (state) => {
-  return {
-    userData: state.user.userData,
-    isOnline: state.home.isOnline,
-  };
 };
 
-const mapDispatchToProps = {
-  setIsOnline: (online) => ({type: homeReducers.SET_ISONLINE, online: online}),
-  setUserData: (userData) => ({type: USER_DATA, userData: userData}),
-  setEncodedLogin: (value) => ({type: ENCODED_LOGIN, value: value}),
-  setUserImage: (userImage) => ({type: USER_IMAGE, userImage: userImage}),
-};
+// const mapStateToProps = (state) => {
+//   return {
+//     userData: state.user.userData,
+//     isOnline: state.home.isOnline,
+//   };
+// };
 
-export default connect(mapStateToProps, mapDispatchToProps)(SignIn);
+// const mapDispatchToProps = {
+//   // setIsOnline: (online) => ({type: homeReducers.SET_ISONLINE, online: online}),
+//   // setUserData: (userData) => ({type: USER_DATA, userData: userData}),
+//   // setEncodedLogin: (value) => ({type: ENCODED_LOGIN, value: value}),
+//   // setUserImage: (userImage) => ({type: USER_IMAGE, userImage: userImage}),
+// };
+
+// export default connect(mapStateToProps, mapDispatchToProps)(SignIn);
+export default SignIn;
 
 const styles = StyleSheet.create({
   input: {
