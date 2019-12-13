@@ -42,9 +42,12 @@ const commonStyles = StyleSheet.create({
     height: 50,
     borderColor: themes.PRIMARY_BACKGROUND_COLOR,
     borderWidth: 1,
+    marginLeft: 5,
+    marginRight: 5
   },
   standardButtonText: {
     color: themes.PRIMARY_ACCENT_COLOR,
+    fontSize: themes.PRIMARY_TEXT_SIZE,
   },
   standardDescriptionText: {
     color: themes.SECONDARY_ITEM_TEXT_COLOR,

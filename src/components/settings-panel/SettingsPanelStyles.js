@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
+    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
   },
   navItemStyle: {
     borderTopWidth: 1,
@@ -31,6 +31,8 @@ const styles = StyleSheet.create({
   },
   listContainer: {
     flex: 6,
+    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
+
   },
   sectionHeading: {
     alignItems: 'flex-start',
@@ -71,6 +73,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   settingsPanelHeaderContainer: {
+    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
     height: 70,
     paddingTop: 20,
     flexDirection: 'row',
