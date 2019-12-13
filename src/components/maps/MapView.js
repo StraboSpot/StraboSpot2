@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {useEffect, useImperativeHandle, useRef, useState} from 'react';
 import {View, StyleSheet} from 'react-native';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import {MAPBOX_KEY} from '../../MapboxConfig';
@@ -16,145 +16,138 @@ import Geolocation from '@react-native-community/geolocation';
 
 MapboxGL.setAccessToken(MAPBOX_KEY);
 
-class mapView extends Component {
-  _isMounted = false;
+const mapView = React.forwardRef((props, ref) => {
 
-  constructor(props, context) {
-    super(props, context);
+  const [latitude, setLatitude] = useState(LATITUDE);
+  const [longitude, setLongitude] = useState(LONGITUDE);
+  const [currentBasemap, setCurrentBasemap] = useState({});
+  const [drawFeatures, setDrawFeatures] = useState([]);
+  const [isEditingFeature, setIsEditingFeature] = useState(false);
+  const [featuresNotSelected, setFeaturesNotSelected] = useState([]);
+  const [featuresSelected, setFeaturesSelected] = useState([]);
+  const [vertexToEdit, setVertexToEdit] = useState({});
 
-    this.state = {
-      latitude: LATITUDE,
-      longitude: LONGITUDE,
-      currentBasemap: {},
-      location: false,
-      drawFeatures: [],
-      isEditingFeature: false,
-      featuresNotSelected: [],
-      featuresSelected: [],
-      vertexToEdit: {},
-    };
+  const basemaps = {
+    osm: {
+      id: 'osm',
+      layerId: 'osmLayer',
+      layerLabel: 'OSM Streets',
+      layerSaveId: 'osm',
+      url: 'https://a.tile.openstreetmap.org/{z}/{x}/{y}.png',
+      maxZoom: 16,
+    },
+    macrostrat: {
+      id: 'macrostrat',
+      layerId: 'macrostratLayer',
+      layerLabel: 'Geology from Macrostrat',
+      layerSaveId: 'macrostrat',
+      url: 'http://tiles.strabospot.org/v5/macrostrat/{z}/{x}/{y}.png',
+      maxZoom: 19,
+    },
+    mapboxOutdoors: {
+      id: 'mapboxOutdoors',
+      layerId: 'mapboxOutdoorsLayer',
+      layerLabel: 'Mapbox Topo',
+      layerSaveId: 'mapbox.outdoors',
+      url: 'http://tiles.strabospot.org/v5/mapbox.outdoors/{z}/{x}/{y}.png?access_token=' + MAPBOX_KEY,
+      maxZoom: 19,
+    },
+    mapboxSatellite: {
+      id: 'mapboxSatellite',
+      layerId: 'mapboxSatelliteLayer',
+      layerLabel: 'Mapbox Satellite',
+      layerSaveId: 'mapbox.satellite',
+      url: 'http://tiles.strabospot.org/v5/mapbox.satellite/{z}/{x}/{y}.png?access_token=' + MAPBOX_KEY,
+      maxZoom: 19,
+    },
+  };
 
-    this.basemaps = {
-      osm: {
-        id: 'osm',
-        layerId: 'osmLayer',
-        layerLabel: 'OSM Streets',
-        layerSaveId: 'osm',
-        url: 'https://a.tile.openstreetmap.org/{z}/{x}/{y}.png',
-        maxZoom: 16,
-      },
-      macrostrat: {
-        id: 'macrostrat',
-        layerId: 'macrostratLayer',
-        layerLabel: 'Geology from Macrostrat',
-        layerSaveId: 'macrostrat',
-        url: 'http://tiles.strabospot.org/v5/macrostrat/{z}/{x}/{y}.png',
-        maxZoom: 19,
-      },
-      mapboxOutdoors: {
-        id: 'mapboxOutdoors',
-        layerId: 'mapboxOutdoorsLayer',
-        layerLabel: 'Mapbox Topo',
-        layerSaveId: 'mapbox.outdoors',
-        url: 'http://tiles.strabospot.org/v5/mapbox.outdoors/{z}/{x}/{y}.png?access_token=' + MAPBOX_KEY,
-        maxZoom: 19,
-      },
-      mapboxSatellite: {
-        id: 'mapboxSatellite',
-        layerId: 'mapboxSatelliteLayer',
-        layerLabel: 'Mapbox Satellite',
-        layerSaveId: 'mapbox.satellite',
-        url: 'http://tiles.strabospot.org/v5/mapbox.satellite/{z}/{x}/{y}.png?access_token=' + MAPBOX_KEY,
-        maxZoom: 19,
-      },
-    };
+  const _map = useRef(null);
+  const camera = useRef(null);
 
-    this._map = React.createRef();
-    this.camera = React.createRef();
-
-    this.onMapPress = this.onMapPress.bind(this);
-    this.onMapLongPress = this.onMapLongPress.bind(this);
-  }
-
-  async componentDidMount() {
-    this.props.onRef(this);
-    this._isMounted = true;
-    await this.setCurrentLocation()
+  useEffect(() => {
+    setCurrentLocation()
       .catch(err => console.log(err));
-    console.log('Setting initial basemap ...', this.basemaps.mapboxOutdoors);
-    this.props.onCurrentBasemap(this.basemaps.mapboxOutdoors);
-  }
+    console.log('Setting initial basemap ...', basemaps.mapboxOutdoors);
+    props.onCurrentBasemap(basemaps.mapboxOutdoors);
+  }, []);
 
-  componentWillUnmount() {
-    this._isMounted = false;
-    this.props.onRef(undefined);
-  }
+  useEffect(() => {
+    console.log('use effect for props.vertexEndCoords');
+    moveVertex();
+  }, [props.vertexEndCoords]);
 
-  componentDidUpdate(prevProps) {
-    if (this.props.vertexEndCoords && this.props.mapMode === MapModes.EDIT) this.moveVertex();
-  }
+  useEffect(() => {
+    console.log('Draw Features', drawFeatures);
+  }, [drawFeatures]);
 
-  async moveVertex() {
-    const newVertexCoords = await this._map.current.getCoordinateFromView(this.props.vertexEndCoords);
-    console.log('Move vertex to:', newVertexCoords);
-    this.editFeatureCoordinates(newVertexCoords);
-  }
+  const moveVertex = async () => {
+    try {
+      const newVertexCoords = await _map.current.getCoordinateFromView(props.vertexEndCoords);
+      console.log('Move vertex to:', newVertexCoords);
+      editFeatureCoordinates(newVertexCoords);
+    }
+    catch {
+      console.log('Problem moving the vertex');
+    }
+  };
 
   // Mapbox: Handle map press
-  async onMapPress(e) {
+  const onMapPress = async (e) => {
     console.log('Map press detected:', e);
-    console.log('Map mode:', this.props.mapMode);
+    console.log('Map mode:', props.mapMode);
     // Select/Unselect a feature
-    if (this.props.mapMode === MapModes.VIEW) {
+    if (props.mapMode === MapModes.VIEW) {
       const {screenPointX, screenPointY} = e.properties;
-      const featureSelected = await this.getFeatureAtPress(screenPointX, screenPointY);
-      if (Object.getOwnPropertyNames(featureSelected).length > 0) this.props.onFeatureSelected(featureSelected);
-      else this.props.onFeaturesSelectedCleared();
+      const featureSelected = await getFeatureAtPress(screenPointX, screenPointY);
+      if (Object.getOwnPropertyNames(featureSelected).length > 0) props.onFeatureSelected(featureSelected);
+      else props.onFeaturesSelectedCleared();
     }
     // Draw a feature
-    else if (this.props.mapMode === MapModes.DRAW.POINT || this.props.mapMode === MapModes.DRAW.LINE
-      || this.props.mapMode === MapModes.DRAW.POLYGON) {
-      console.log('Drawing', this.props.mapMode, '...');
+    else if (props.mapMode === MapModes.DRAW.POINT || props.mapMode === MapModes.DRAW.LINE
+      || props.mapMode === MapModes.DRAW.POLYGON) {
+      console.log('Drawing', props.mapMode, '...');
       let feature = {};
       const newCoord = turf.getCoord(e);
+      // Draw a point for the last coordinate touched
+      const lastVertexPlaced = MapboxGL.geoUtils.makeFeature(e.geometry);
       // Draw a point (if set point to current location not working)
-      if (this.props.mapMode === MapModes.DRAW.POINT) {
-        let feature = MapboxGL.geoUtils.makeFeature(e.geometry);
-        this.createFeature(feature);
-      }
+      if (props.mapMode === MapModes.DRAW.POINT) setDrawFeatures([lastVertexPlaced]);
+      else if (drawFeatures.length === 0) setDrawFeatures([lastVertexPlaced]);
       // Draw a line given a point and a new point
-      else if (this.state.drawFeatures.length === 1) {
-        const pointCoord = turf.getCoord(this.state.drawFeatures[0]);
-        let feature = turf.lineString([pointCoord, newCoord]);
-        this.drawFeature(feature);
+      else if (drawFeatures.length === 1) {
+        const firstVertexPlaced = drawFeatures[0];
+        const firstVertexPlacedCoords = turf.getCoords(firstVertexPlaced);
+        feature = turf.lineString([firstVertexPlacedCoords, newCoord]);
+        setDrawFeatures([firstVertexPlaced, feature, lastVertexPlaced]);
       }
       // Draw a line given a line and a new point
-      else if (this.state.drawFeatures.length > 1 && this.props.mapMode === MapModes.DRAW.LINE) {
-        const lineCoords = turf.getCoords(this.state.drawFeatures[1]);
-        let feature = turf.lineString([...lineCoords, newCoord]);
-        this.drawFeature(feature);
+      else if (drawFeatures.length > 1 && props.mapMode === MapModes.DRAW.LINE) {
+        const firstVertexPlaced = drawFeatures[0];
+        const lineCoords = turf.getCoords(drawFeatures[1]);
+        feature = turf.lineString([...lineCoords, newCoord]);
+        setDrawFeatures([firstVertexPlaced, feature, lastVertexPlaced]);
       }
-      else if (this.state.drawFeatures.length > 1 && this.props.mapMode === MapModes.DRAW.POLYGON) {
-        const firstCoord = turf.getCoord(this.state.drawFeatures[0]);
+      else if (drawFeatures.length > 1 && props.mapMode === MapModes.DRAW.POLYGON) {
+        const firstVertexPlaced = drawFeatures[0];
+        const firstVertexPlacedCoords = turf.getCoords(firstVertexPlaced);
+
         // Draw a polygon given a line and a new point
-        if (turf.getType(this.state.drawFeatures[1]) === 'LineString') {
-          const lineCoords = turf.getCoords(this.state.drawFeatures[1]);
-          feature = turf.polygon([[...lineCoords, newCoord, firstCoord]]);
+        if (turf.getType(drawFeatures[1]) === 'LineString') {
+          const lineCoords = turf.getCoords(drawFeatures[1]);
+          feature = turf.polygon([[...lineCoords, newCoord, firstVertexPlacedCoords]]);
         }
         // Draw a polygon given a polygon and a new point
         else {
-          let polyCoords = turf.getCoords(this.state.drawFeatures[1])[0];
+          let polyCoords = turf.getCoords(drawFeatures[1])[0];
           polyCoords.pop();
-          feature = turf.polygon([[...polyCoords, newCoord, firstCoord]]);
+          feature = turf.polygon([[...polyCoords, newCoord, firstVertexPlacedCoords]]);
         }
-        this.drawFeature(feature);
+        setDrawFeatures([firstVertexPlaced, feature, lastVertexPlaced]);
       }
-      // Draw a point for the last coordinate touched
-      feature = MapboxGL.geoUtils.makeFeature(e.geometry);
-      this.drawFeature(feature);
     }
     // Edit a feature
-    else if (this.props.mapMode === MapModes.EDIT) {
+    else if (props.mapMode === MapModes.EDIT) {
       // Select/Unselect new vertex to edit
       const {screenPointX, screenPointY} = e.properties;
       console.log('Select/Unselect vertex (and thus feature with the vertex) to edit');
@@ -171,208 +164,154 @@ class mapView extends Component {
       // If so, check to see if point pressed was at another vertex of the selected feature
       //     If not edit vertex coords to those of pressed point
       //     If so switch selected vertex to vertex at pressed point
-      const editFeatureSelected = await this.getFeatureAtPress(screenPointX, screenPointY);
-      if (this.state.featuresSelected.length === 0) {
-        //const editFeatureSelected = await this.getFeatureAtPress(screenPointX, screenPointY);
+      const editFeatureSelected = await getFeatureAtPress(screenPointX, screenPointY);
+      if (featuresSelected.length === 0) {
+        //const editFeatureSelected = await getFeatureAtPress(screenPointX, screenPointY);
         if (Object.getOwnPropertyNames(editFeatureSelected).length === 0) console.log('No feature selected.');
-        else this.setSelectedFeatureToEdit(editFeatureSelected);
+        else setSelectedFeatureToEdit(editFeatureSelected);
       }
       else {
-        //if (Object.getOwnPropertyNames(this.state.vertexToEdit).length === 0) {
-        if (Object.getOwnPropertyNames(editFeatureSelected).length === 0) this.clearSelectedFeatureToEdit();
+        //if (Object.getOwnPropertyNames(vertexToEdit).length === 0) {
+        if (Object.getOwnPropertyNames(editFeatureSelected).length === 0) clearSelectedFeatureToEdit();
         else {
-          const vertexSelected = await this.getDrawFeatureAtPoint(screenPointX, screenPointY);
+          const vertexSelected = await getDrawFeatureAtPoint(screenPointX, screenPointY);
           if (Object.getOwnPropertyNames(vertexSelected).length === 0) {
-            if (this.state.featuresSelected[0].properties.id === editFeatureSelected.properties.id) {
-              this.clearSelectedFeatureToEdit();
+            if (featuresSelected[0].properties.id === editFeatureSelected.properties.id) {
+              clearSelectedFeatureToEdit();
             }
-            else this.setSelectedFeatureToEdit(editFeatureSelected);
+            else setSelectedFeatureToEdit(editFeatureSelected);
           }
-          else this.setSelectedVertexToEdit(vertexSelected);
+          else setSelectedVertexToEdit(vertexSelected);
         }
         /*}
-        else {
-          const vertexSelected = await this.getDrawFeatureAtPoint(screenPointX, screenPointY);
-          if (Object.getOwnPropertyNames(vertexSelected).length === 0) this.editFeatureCoordinates(e.geometry);
-          else {
-            if (this.state.vertexToEdit.properties.id === vertexSelected.properties.id) {
-              this.clearSelectedVertexToEdit();
-            }
-            else this.setSelectedVertexToEdit(vertexSelected);
-          }
-        }*/
+         else {
+         const vertexSelected = await getDrawFeatureAtPoint(screenPointX, screenPointY);
+         if (Object.getOwnPropertyNames(vertexSelected).length === 0) editFeatureCoordinates(e.geometry);
+         else {
+         if (vertexToEdit.properties.id === vertexSelected.properties.id) {
+         clearSelectedVertexToEdit();
+         }
+         else setSelectedVertexToEdit(vertexSelected);
+         }
+         }*/
       }
     }
     else {
-      console.log('Error. Unknown map mode:', this.props.mapMode);
+      console.log('Error. Unknown map mode:', props.mapMode);
     }
-  }
+  };
 
-  setSelectedFeatureToEdit = (feature) => {
-    this.props.clearVertexes();
-    this.props.onFeatureSelected(feature);
-    let featuresNotSelected = [];
-    if (this.state.featuresNotSelected.length === 0 && this.state.featuresSelected.length === 0) {
-      featuresNotSelected = this.props.features.filter(
+  const setSelectedFeatureToEdit = (feature) => {
+    props.clearVertexes();
+    props.onFeatureSelected(feature);
+    let featuresNotSelectedThisScope = [];
+    if (featuresNotSelected.length === 0 && featuresSelected.length === 0) {
+      featuresNotSelectedThisScope = props.features.filter(
         featureInFilter => featureInFilter.properties.id !== feature.properties.id);
     }
     else {
-      featuresNotSelected = this.state.featuresNotSelected.filter(
+      featuresNotSelectedThisScope = featuresNotSelected.filter(
         featureInFilter => featureInFilter.properties.id !== feature.properties.id);
     }
-    let drawFeatures = turf.explode(feature).features;
+    let drawFeaturesThisScope = turf.explode(feature).features;
     // If polygon remove last exploded point because it is the same as the first
-    if (turf.getType(feature) === 'Polygon') drawFeatures.pop();
-    this.setState(prevState => {
-      return {
-        ...prevState,
-        drawFeatures: drawFeatures,
-        featuresNotSelected: [...featuresNotSelected, ...prevState.featuresSelected],
-        featuresSelected: [feature],
-      };
-    }, () => {
-      console.log('Set feature to edit:', feature);
-      if (turf.getType(feature) === 'Point') this.setSelectedVertexToEdit(feature);
-    });
+    if (turf.getType(feature) === 'Polygon') drawFeaturesThisScope.pop();
+    setDrawFeatures(drawFeaturesThisScope);
+    setFeaturesNotSelected([...featuresNotSelectedThisScope, ...featuresSelected]);
+    setFeaturesSelected([feature]);
+    console.log('Set feature to edit:', feature);
+    if (turf.getType(feature) === 'Point') setSelectedVertexToEdit(feature);
   };
 
-  clearSelectedFeatureToEdit = () => {
-    this.props.clearVertexes();
-    this.props.onFeaturesSelectedCleared();
-    this.setState(prevState => {
-      return {
-        ...prevState,
-        drawFeatures: [],
-        featuresSelected: [],
-        featuresNotSelected: [...prevState.featuresNotSelected, ...prevState.featuresSelected],
-        vertexToEdit: {},                              // Not really needed here
-      };
-    }, () => {
-      console.log('Cleared selected feature.');
-    });
+  const clearSelectedFeatureToEdit = () => {
+    props.clearVertexes();
+    props.onFeaturesSelectedCleared();
+    setDrawFeatures([]);
+    setFeaturesNotSelected([...featuresNotSelected, ...featuresSelected]);
+    setFeaturesSelected([]);
+    setVertexToEdit({});                         // Not really needed here?
+    console.log('Cleared selected feature.');
   };
 
-  setSelectedVertexToEdit = (vertex) => {
-    this.props.clearVertexes();
-    this.setState(prevState => {
-      return {
-        ...prevState,
-        vertexToEdit: vertex,
-      };
-    }, async () => {
-      console.log('Set vertex to edit:', vertex);
-      const vertexCoordinates = await this._map.current.getPointInView(vertex.geometry.coordinates);
-      this.props.setVertexStartCoords(vertexCoordinates);
-    });
+  const setSelectedVertexToEdit = async vertex => {
+    props.clearVertexes();
+    setVertexToEdit(vertex);
+    console.log('Set vertex to edit:', vertex);
+    const vertexCoordinates = await _map.current.getPointInView(vertex.geometry.coordinates);
+    props.setVertexStartCoords(vertexCoordinates);
   };
 
-  clearSelectedVertexToEdit = () => {
-    this.setState(prevState => {
-      return {
-        ...prevState,
-        vertexToEdit: {},
-      };
-    }, async () => {
-      console.log('Cleared selected vertex to edit.');
-      if (turf.getType(this.state.featuresSelected[0]) === 'Point') this.clearSelectedFeatureToEdit();
-      this.props.clearVertexes();
-    });
+  const clearSelectedVertexToEdit = () => {
+    setVertexToEdit({});
+    console.log('Cleared selected vertex to edit.');
+    if (turf.getType(featuresSelected[0]) === 'Point') clearSelectedFeatureToEdit();
+    props.clearVertexes();
   };
 
-  clearDrawFeature = () => {
-    if (this._isMounted) {
-      this.setState(prevState => {
-        return {
-          ...prevState,
-          drawFeatures: [],
-        };
-      }, () => {
-        console.log('Draw features cleared:', this.state.drawFeatures);
-      });
+  const drawFeature = (feature) => {
+    if (drawFeatures.length > 2) {
+      drawFeatures.pop();
+      drawFeatures.pop();
     }
-    else console.log('Attempting to clear the draw feature but Map View Component not mounted.');
-  };
-
-  drawFeature = (feature) => {
-    if (this._isMounted) {
-      this.setState(prevState => {
-        // Remove the feature itself and the last coordinate
-        if (prevState.drawFeatures.length > 2) {
-          prevState.drawFeatures.pop();
-          prevState.drawFeatures.pop();
-        }
-        return {
-          ...prevState,
-          drawFeatures: prevState.drawFeatures.concat(feature),
-        };
-      }, () => {
-        console.log('New draw feature added:', this.state.drawFeatures);
-      });
-    }
-    else console.log('Attempting to draw feature but Map View Component not mounted.');
+    setDrawFeatures(drawFeatures.concat(feature));
   };
 
   // Edit the coordinates of a selected feature
-  editFeatureCoordinates = (newCoord) => {
-    if (this.state.featuresSelected.length > 0) {
-      console.log('Editing Coordinate');
-      let featureEditing = this.state.featuresSelected[0];
-      console.log('Feature Editing:', featureEditing);
-      const coords = turf.getCoords(featureEditing);
-      const coordToEdit = turf.getCoords(this.state.vertexToEdit);
-      // const newCoord = turf.getCoord(newGeometry);
-      // console.log('Original coords:', coords, 'Coord to edit:', coordToEdit, 'New coord:', newCoord);
-      // if (turf.getType(featureEditing) === 'Point') featureEditing.geometry = newGeometry;
-      if (turf.getType(featureEditing) === 'Point') featureEditing.geometry.coordinates = newCoord;
-      else if (turf.getType(featureEditing) === 'LineString') {
-        for (let i = 0; i < coords.length; i++) {
-          if (truncDecimal(coords[i][0]) === truncDecimal(coordToEdit[0])
-            && truncDecimal(coords[i][1]) === truncDecimal(coordToEdit[1])) {
-            // featureEditing.geometry.coordinates[i] = turf.getCoord(newGeometry);
-            featureEditing.geometry.coordinates[i] = newCoord;
-          }
-        }
-      }
-      else if (turf.getType(featureEditing) === 'Polygon') {
-        for (let i = 0; i < coords.length; i++) {
-          for (let j = 0; j < coords[i].length; j++) {
-            if (truncDecimal(coords[i][j][0]) === truncDecimal(coordToEdit[0])
-              && truncDecimal(coords[i][j][1]) === truncDecimal(coordToEdit[1])) {
-              // featureEditing.geometry.coordinates[i][j] = turf.getCoord(newGeometry);
-              featureEditing.geometry.coordinates[i][j] = turf.getCoord(newCoord);
+  const editFeatureCoordinates = (newCoord) => {
+    if (!featuresSelected || featuresSelected.length <= 0) console.log('No feature selected');
+    else {
+      if (!vertexToEdit) console.log('No vertex to edit selected');
+      else {
+        console.log('Editing Coordinate');
+        let featureEditing = featuresSelected[0];
+        console.log('Feature Editing:', featureEditing);
+        const coords = turf.getCoords(featureEditing);
+
+        const coordToEdit = turf.getCoords(vertexToEdit);
+        // const newCoord = turf.getCoord(newGeometry);
+        // console.log('Original coords:', coords, 'Coord to edit:', coordToEdit, 'New coord:', newCoord);
+        // if (turf.getType(featureEditing) === 'Point') featureEditing.geometry = newGeometry;
+        if (turf.getType(featureEditing) === 'Point') featureEditing.geometry.coordinates = newCoord;
+        else if (turf.getType(featureEditing) === 'LineString') {
+          for (let i = 0; i < coords.length; i++) {
+            if (truncDecimal(coords[i][0]) === truncDecimal(coordToEdit[0])
+              && truncDecimal(coords[i][1]) === truncDecimal(coordToEdit[1])) {
+              // featureEditing.geometry.coordinates[i] = turf.getCoord(newGeometry);
+              featureEditing.geometry.coordinates[i] = newCoord;
             }
           }
         }
+        else if (turf.getType(featureEditing) === 'Polygon') {
+          for (let i = 0; i < coords.length; i++) {
+            for (let j = 0; j < coords[i].length; j++) {
+              if (truncDecimal(coords[i][j][0]) === truncDecimal(coordToEdit[0])
+                && truncDecimal(coords[i][j][1]) === truncDecimal(coordToEdit[1])) {
+                // featureEditing.geometry.coordinates[i][j] = turf.getCoord(newGeometry);
+                featureEditing.geometry.coordinates[i][j] = turf.getCoord(newCoord);
+              }
+            }
+          }
+        }
+        console.log('Edited coords:', turf.getCoords(featureEditing));
+        let drawFeatures = turf.explode(featureEditing).features;
+        // If polygon remove last exploded point because it is the same as the first
+        if (turf.getType(featureEditing) === 'Polygon') drawFeatures.pop();
+        setDrawFeatures(drawFeatures);
+        setFeaturesSelected([featureEditing]);
+        setVertexToEdit({});
+        console.log('Finished editing feature. Selected Feature: ', featuresSelected);
+        props.clearVertexes();
+        if (turf.getType(featureEditing) === 'Point') clearSelectedFeatureToEdit();
       }
-      console.log('Edited coords:', turf.getCoords(featureEditing));
-      let drawFeatures = turf.explode(featureEditing).features;
-      // If polygon remove last exploded point because it is the same as the first
-      if (turf.getType(featureEditing) === 'Polygon') drawFeatures.pop();
-      if (this._isMounted) {
-        this.setState(prevState => {
-          return {
-            ...prevState,
-            drawFeatures: drawFeatures,
-            featuresSelected: [featureEditing],
-            vertexToEdit: {},
-          };
-        }, () => {
-          console.log('Finished editing feature. Selected Feature: ', this.state.featuresSelected);
-          this.props.clearVertexes();
-          if (turf.getType(featureEditing) === 'Point') this.clearSelectedFeatureToEdit();
-        });
-      }
-      else console.log('Attempting to edit feature coordinates but Map View Component not mounted.');
     }
-    else console.log('No feature selected');
   };
 
-  getCurrentBasemap = () => {
-    return this.props.currentBasemap;
+  const getCurrentBasemap = () => {
+    return props.currentBasemap;
   };
 
-  getExtentString = async () => {
-    const mapBounds = await this._map.current.getVisibleBounds();
+  const getExtentString = async () => {
+    const mapBounds = await _map.current.getVisibleBounds();
 
     let right = mapBounds[0][0];
     let top = mapBounds[0][1];
@@ -383,24 +322,23 @@ class mapView extends Component {
     return extentString;
   };
 
-  getCurrentZoom = async () => {
-    //const currentZoom = await this._map.current.getZoom();
+  const getCurrentZoom = async () => {
+    //const currentZoom = await _map.current.getZoom();
     //return currentZoom;
     return 16;
   };
 
-  getTileCount = async (zoomLevel) => {
-    var tileCount = null;
-    var extentString = await this.getExtentString();
+  const getTileCount = async (zoomLevel) => {
+    var extentString = await getExtentString();
     try {
       //Assign the promise unresolved first then get the data using the json method.
       console.log('sending this extent to server: ', extentString);
       console.log('sending zoom to server: ', zoomLevel);
       const tileCountApiCall = await fetch(
         'http://tiles.strabospot.org/zipcount?extent=' + extentString + '&zoom=' + zoomLevel);
-      const tileCount = await tileCountApiCall.json();
-      console.log('got count from server: ', tileCount);
-      return tileCount.count;
+      const tileCountThisScope = await tileCountApiCall.json();
+      console.log('got count from server: ', tileCountThisScope);
+      return tileCountThisScope.count;
     }
     catch (err) {
       console.log('Error fetching data from tile count service.', err);
@@ -408,50 +346,44 @@ class mapView extends Component {
   };
 
   // Create a new feature in the feature collection
-  createFeature = async (feature) => {
-    if (this._isMounted) {
-      feature.properties.id = getNewId();
-      let d = new Date(Date.now());
-      d.setMilliseconds(0);
-      feature.properties.date = d.toISOString();
-      // Sets modified and viewed timestamps in milliseconds
-      feature.properties.modified_timestamp = Date.now();
-      feature.properties.viewed_timestamp = Date.now();
-      feature.properties.name = 'Spot ' + this.props.features.length;
-      console.log('Creating new feature:', feature);
-      await this.props.onFeatureAdd(feature);
-      this.props.onFeatureSelected(feature);
-      this.props.setNotebookPageVisible(NotebookPages.OVERVIEW);
-      this.props.setModalVisible(null);
-      console.log('Finished creating new feature. Features: ', this.props.features);
-    }
-    else console.log('Attempting to create a new feature but Map View Component not mounted.');
+  const createFeature = async (feature) => {
+    feature.properties.id = getNewId();
+    let d = new Date(Date.now());
+    d.setMilliseconds(0);
+    feature.properties.date = d.toISOString();
+    // Sets modified and viewed timestamps in milliseconds
+    feature.properties.modified_timestamp = Date.now();
+    feature.properties.viewed_timestamp = Date.now();
+    feature.properties.name = 'Spot ' + props.features.length;
+    console.log('Creating new feature:', feature);
+    await props.onFeatureAdd(feature);
+    props.onFeatureSelected(feature);
+    props.setNotebookPageVisible(NotebookPages.OVERVIEW);
+    props.setModalVisible(null);
+    console.log('Finished creating new feature. Features: ', props.features);
   };
 
-  changeMap = (mapName) => {
-    if (this._isMounted) {
-      if (mapName === 'mapboxSatellite' || mapName === 'mapboxOutdoors' || mapName === 'osm' || mapName === 'macrostrat') {
-        console.log('Switching basemap to:', mapName);
-        this.props.onCurrentBasemap(this.basemaps[mapName]);
-      }
-      else console.log('Cancel switching basemaps. Basemap', mapName, 'still needs to be setup.');
+  const changeMap = (mapName) => {
+    if (mapName === 'mapboxSatellite' || mapName === 'mapboxOutdoors' || mapName === 'osm' || mapName === 'macrostrat') {
+      console.log('Switching basemap to:', mapName);
+      props.onCurrentBasemap(basemaps[mapName]);
     }
-    else console.log('Attempting to switch basemap to', mapName, 'but MapView Component not mounted.');
+    else console.log('Cancel switching basemaps. Basemap', mapName, 'still needs to be setup.');
   };
 
   // Create a point feature at the current location
-  setPointAtCurrentLocation = async () => {
-    await this.setCurrentLocation();
-    let feature = MapboxGL.geoUtils.makePoint([this.state.longitude, this.state.latitude]);
-    this.createFeature(feature);
+  const setPointAtCurrentLocation = async () => {
+    await setCurrentLocation();
+    let feature = MapboxGL.geoUtils.makePoint([longitude, latitude]);
+    createFeature(feature);
     // throw Error('Geolocation Error');
   };
 
   // Fly the map to the current location
-  goToCurrentLocation = async () => {
-    if (this.camera.current) {
+  const goToCurrentLocation = async () => {
+    if (camera.current) {
       try {
-        await this.camera.current.flyTo([this.state.longitude, this.state.latitude], 12000);
+        await camera.current.flyTo([longitude, latitude], 12000);
       }
       catch (err) {
         throw Error('Error Flying to Current Location', err);
@@ -460,25 +392,16 @@ class mapView extends Component {
     else throw Error('Error Flying to Current Location');
   };
 
-  // Get the current location from the device and set it in the State
-  setCurrentLocation = async () => {
+  // Get the current location from the device and set it in the state
+  const setCurrentLocation = async () => {
     const geolocationOptions = {timeout: 15000, maximumAge: 10000, enableHighAccuracy: true};
     return new Promise((resolve, reject) => {
       Geolocation.getCurrentPosition(
         (position) => {
-          if (this._isMounted) {
-            this.setState(prevState => {
-              return {
-                ...prevState,
-                latitude: position.coords.latitude,
-                longitude: position.coords.longitude,
-              };
-            }, () => {
-              console.log('Got Current Location:', this.state.latitude, ',', this.state.longitude);
-              resolve();
-            });
-          }
-          else reject('Attempting to set the current location but MapView Component not mounted.');
+          setLatitude(position.coords.latitude);
+          setLongitude(position.coords.longitude);
+          console.log('Got Current Location:', latitude, ',', longitude);
+          resolve();
         },
         (error) => reject('Error getting current location:', error),
         geolocationOptions,
@@ -486,77 +409,62 @@ class mapView extends Component {
     });
   };
 
-  endDraw = () => {
-    this.createFeature(this.state.drawFeatures.splice(1, 1)[0]);
-    this.clearDrawFeature();
+  const endDraw = () => {
+    createFeature(drawFeatures.splice(1, 1)[0]);
+    setDrawFeatures([]);
     console.log('Draw ended.');
   };
 
-  cancelDraw = () => {
-    this.clearDrawFeature();
+  const cancelDraw = () => {
+    setDrawFeatures([]);
     console.log('Draw canceled.');
   };
 
-  cancelEdits = () => {
-    if (this._isMounted) {
-      this.props.onFeaturesSelectedCleared();
-      this.props.clearVertexes();
-      this.setState(prevState => {
-        return {
-          ...prevState,
-          isEditingFeature: false,
-          drawFeatures: [],
-          featuresNotSelected: [],
-          featuresSelected: [],
-          vertexToEdit: {},
-        };
-      }, () => {
-        console.log('Edit canceled. State updated:', this.state);
-      });
-    }
-    else console.log('Attempting to cancel editing but MapView Component not mounted.');
+  const cancelEdits = () => {
+    props.onFeaturesSelectedCleared();
+    props.clearVertexes();
+    setIsEditingFeature(false);
+    setDrawFeatures([]);
+    setFeaturesNotSelected([]);
+    setFeaturesSelected([]);
+    setVertexToEdit({});
+    console.log('Edit canceled.');
   };
 
-  saveEdits = () => {
-    this.props.onFeaturesUpdated([...this.state.featuresNotSelected, ...this.state.featuresSelected]);
-    this.props.clearVertexes();
+  const saveEdits = () => {
+    props.onFeaturesUpdated([...featuresNotSelected, ...featuresSelected]);
+    props.clearVertexes();
   };
 
   // Handle a long press on the map by making the point or vertex at the point "selected"
-  onMapLongPress = async (e) => {
+  const onMapLongPress = async (e) => {
     console.log('Map long press detected:', e);
     const {screenPointX, screenPointY} = e.properties;
-    const editFeatureSelected = await this.getFeatureAtPress(screenPointX, screenPointY);
-    if (this.props.mapMode === MapModes.VIEW) {
-      this.props.startEdit();
+    const editFeatureSelected = await getFeatureAtPress(screenPointX, screenPointY);
+    if (props.mapMode === MapModes.VIEW) {
+      props.startEdit();
       if (Object.getOwnPropertyNames(editFeatureSelected).length === 0) {
-        this.setState(prevState => {
-          return {
-            ...prevState,
-            drawFeatures: [],
-            featuresNotSelected: this.props.features,
-            featuresSelected: [],
-          };
-        }, async () => {
-          console.log('No features set feature to edit.');
-        });
+        setDrawFeatures([]);
+        setFeaturesNotSelected(props.features);
+        setFeaturesSelected([]);
+        console.log('No features set feature to edit.');
       }
-      else this.setSelectedFeatureToEdit(editFeatureSelected);
+      else setSelectedFeatureToEdit(editFeatureSelected);
     }
-    else if (this.props.mapMode === MapModes.EDIT) {
-      if (this.state.featuresSelected.length > 0) {
-        let featureSelected = this.state.featuresSelected[0];
+    else if (props.mapMode === MapModes.EDIT) {
+      if (featuresSelected.length > 0) {
+        let featureSelected = featuresSelected[0];
         if (turf.getType(featureSelected) === 'LineString' || turf.getType(featureSelected) === 'Polygon') {
-          const vertexSelected = await this.getDrawFeatureAtPoint(screenPointX, screenPointY);
-          let vertexToEdit = {};
+          const vertexSelected = await getDrawFeatureAtPoint(screenPointX, screenPointY);
+          let vertexToEditThisScope = {};
           if (Object.getOwnPropertyNames(vertexSelected).length === 0) {
             // To add a vertex to a line the new point selected must be on the line
             if (turf.getType(featureSelected) === 'LineString' && Object.getOwnPropertyNames(
               editFeatureSelected).length !== 0 && featureSelected.properties.id === editFeatureSelected.properties.id) {
-              [featureSelected, vertexToEdit] = this.addVertexToLine(featureSelected, e.geometry);
+              [featureSelected, vertexToEditThisScope] = addVertexToLine(featureSelected, e.geometry);
             }
             else if (turf.getType(featureSelected) === 'Polygon') {
-              featureSelected = this.addVertexToPolygon(featureSelected, e.geometry);
+              featureSelected = addVertexToPolygon(featureSelected, e.geometry);
             }
           }
           else {
@@ -583,16 +491,10 @@ class mapView extends Component {
             }
             else console.log('Not enough vertices in selected feature to delete one.');
           }
-          this.setState(prevState => {
-            return {
-              ...prevState,
-              drawFeatures: turf.explode(featureSelected).features,
-              featuresSelected: [featureSelected],
-              vertexToEdit: vertexToEdit,
-            };
-          }, () => {
-            console.log('Set selected feature:', featureSelected);
-          });
+          setDrawFeatures(turf.explode(featureSelected).features);
+          setFeaturesSelected([featureSelected]);
+          setVertexToEdit(vertexToEditThisScope);
+          console.log('Set selected feature:', featureSelected);
         }
         else console.log('Selected feature is not a line or polygon. No action taken.');
       }
@@ -602,18 +504,18 @@ class mapView extends Component {
   };
 
   // Get the feature at a point from the draw layer
-  getDrawFeatureAtPoint = async (screenPointX, screenPoint) => {
-    return await this.getFeatureAtPress(screenPointX, screenPoint, ['pointLayerDraw']);
+  const getDrawFeatureAtPoint = async (screenPointX, screenPoint) => {
+    return await getFeatureAtPress(screenPointX, screenPoint, ['pointLayerDraw']);
   };
 
   // Get the feature within a bounding box from a given layer, returning only the first one if there is more than one
   // If no layer is provided use the main feature layers and the selected layers
-  getFeatureAtPress = async (screenPointX, screenPointY, layers) => {
+  const getFeatureAtPress = async (screenPointX, screenPointY, layers) => {
     console.log('screenpoints', screenPointX, screenPointY);
     const r = 30; // half the width (in pixels?) of bounding box to create
     const bbox = [screenPointY + r, screenPointX + r, screenPointY - r, screenPointX - r];
     if (!layers) layers = ['pointLayer', 'lineLayer', 'polygonLayer', 'pointLayerSelected', 'lineLayerSelected', 'polygonLayerSelected'];
-    const featureCollectionInRect = await this._map.current.queryRenderedFeaturesInRect(bbox, null, layers);
+    const featureCollectionInRect = await _map.current.queryRenderedFeaturesInRect(bbox, null, layers);
     const featuresInRect = featureCollectionInRect.features;
     let featureSelected = {};
     if (featuresInRect.length > 0) {
@@ -628,7 +530,7 @@ class mapView extends Component {
 
   // Add a new vertex to a polygon by creating a new feature for each possible place to insert the
   // new vertex into the feature polygon coordiantes then taking the union of those features
-  addVertexToPolygon = (polygon, newVertexGeom) => {
+  const addVertexToPolygon = (polygon, newVertexGeom) => {
     console.log('Adding vertex to selected polygon feature...');
     let possiblePolys = [];
     for (let j = 1; j < polygon.geometry.coordinates[0].length; j++) {
@@ -642,7 +544,7 @@ class mapView extends Component {
   };
 
   // Add a new vertex to a line
-  addVertexToLine = (line, newVertexGeom) => {
+  const addVertexToLine = (line, newVertexGeom) => {
     console.log('Adding vertex to selected line feature...');
     const newPointOnLine = turf.nearestPointOnLine(line, newVertexGeom);
     const i = newPointOnLine.properties.index;
@@ -650,41 +552,57 @@ class mapView extends Component {
     return [line, newPointOnLine];
   };
 
-  render() {
-    const centerCoordinate = [this.state.longitude, this.state.latitude];
 
-    // If in Edit mode only display the features that aren't currently being edited in the main feature layer
-    // and display the feature currently being edited in the selected feature layer
-    const displayFeatures = this.props.mapMode === MapModes.EDIT ? this.state.featuresNotSelected : this.props.features;
-    const displaySelectedFeatures = this.props.mapMode === MapModes.EDIT ? this.state.featuresSelected : this.props.featuresSelected;
+  const centerCoordinate = [longitude, latitude];
 
-    const mapProps = {
-      ref: {mapRef: this._map, cameraRef: this.camera},
-      basemap: this.props.currentBasemap,
-      centerCoordinate: centerCoordinate,
-      onMapPress: this.onMapPress,
-      onMapLongPress: this.onMapLongPress,
-      features: turf.featureCollection(displayFeatures),
-      selectedFeatures: turf.featureCollection(displaySelectedFeatures),
-      drawFeatures: turf.featureCollection(this.state.drawFeatures),
-      //editFeatureVertex: turf.featureCollection([this.state.vertexToEdit])  // ToDo Why doesn't this work?
-      editFeatureVertex: Object.getOwnPropertyNames(this.state.vertexToEdit).length > 0 ?
-        turf.featureCollection([this.state.vertexToEdit]) : MapboxGL.geoUtils.makeFeatureCollection(),
-      allowMapViewMove: Object.getOwnPropertyNames(this.state.vertexToEdit).length === 0,
+  // If in Edit mode only display the features that aren't currently being edited in the main feature layer
+  // and display the feature currently being edited in the selected feature layer
+  const displayFeatures = props.mapMode === MapModes.EDIT ? featuresNotSelected : props.features;
+  const displaySelectedFeatures = props.mapMode === MapModes.EDIT ? featuresSelected : props.featuresSelected;
+
+  const mapProps = {
+    ref: {mapRef: _map, cameraRef: camera},
+    basemap: props.currentBasemap,
+    centerCoordinate: centerCoordinate,
+    onMapPress: onMapPress,
+    onMapLongPress: onMapLongPress,
+    features: turf.featureCollection(displayFeatures),
+    selectedFeatures: turf.featureCollection(displaySelectedFeatures),
+    drawFeatures: turf.featureCollection(drawFeatures),
+    //editFeatureVertex: turf.featureCollection([vertexToEdit])  // ToDo Why doesn't this work?
+    editFeatureVertex: Object.getOwnPropertyNames(vertexToEdit).length > 0 ?
+      turf.featureCollection([vertexToEdit]) : MapboxGL.geoUtils.makeFeatureCollection(),
+    allowMapViewMove: Object.getOwnPropertyNames(vertexToEdit).length === 0,
+  };
+
+  useImperativeHandle(props.mapComponentRef, () => {
+    return {
+      cancelDraw: cancelDraw,
+      cancelEdits: cancelEdits,
+      changeMap: changeMap,
+      endDraw: endDraw,
+      getCurrentBasemap: getCurrentBasemap,
+      getCurrentZoom: getCurrentZoom,
+      getExtentString: getExtentString,
+      getTileCount: getTileCount,
+      goToCurrentLocation: goToCurrentLocation,
+      saveEdits: saveEdits,
+      setCurrentLocation: setCurrentLocation,
+      setPointAtCurrentLocation: setPointAtCurrentLocation,
     };
+  });
 
-    return (
+  return (
+    <View style={{flex: 1, zIndex: -1}}>
+      {props.currentBasemap.id === 'mapboxSatellite' ? <MapboxSatelliteBasemap {...mapProps}/> : null}
+      {props.currentBasemap.id === 'mapboxOutdoors' ? <MapboxOutdoorsBasemap {...mapProps}/> : null}
+      {props.currentBasemap.id === 'osm' ? <OSMBasemap {...mapProps}/> : null}
+      {props.currentBasemap.id === 'macrostrat' ? <MacrostratBasemap {...mapProps}/> : null}
+      {props.currentBasemap.id === 'custom' ? <CustomBasemap {...mapProps}/> : null}
+    </View>
+  );
 
-      <View style={{flex: 1, zIndex: -1}}>
-        {this.props.currentBasemap.id === 'mapboxSatellite' ? <MapboxSatelliteBasemap {...mapProps}/> : null}
-        {this.props.currentBasemap.id === 'mapboxOutdoors' ? <MapboxOutdoorsBasemap {...mapProps}/> : null}
-        {this.props.currentBasemap.id === 'osm' ? <OSMBasemap {...mapProps}/> : null}
-        {this.props.currentBasemap.id === 'macrostrat' ? <MacrostratBasemap {...mapProps}/> : null}
-        {this.props.currentBasemap.id === 'custom' ? <CustomBasemap {...mapProps}/> : null}
-      </View>
-    );
-  }
-}
+});
 
 const mapStateToProps = (state) => {
   return {

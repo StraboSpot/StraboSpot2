@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Alert, Animated, Dimensions, Easing, Platform, Text, View} from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
 import MapView from '../../components/maps/MapView';
@@ -52,159 +52,151 @@ const notebookPanelWidth = 400;
 //   }
 // };
 
-class Home extends React.Component {
-  _isMounted = false;
-  dimensions = Dimensions.get('window');
-  online = require('../../assets/icons/StraboIcons_Oct2019/ConnectionStatusButton_connected.png');
-  offline = require('../../assets/icons/StraboIcons_Oct2019/ConnectionStatusButton_offline.png');
+const Home = (props) => {
+  const online = require('../../assets/icons/StraboIcons_Oct2019/ConnectionStatusButton_connected.png');
+  const offline = require('../../assets/icons/StraboIcons_Oct2019/ConnectionStatusButton_offline.png');
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      dialogs: {
-        mapActionsMenuVisible: false,
-        mapSymbolsMenuVisible: false,
-        baseMapMenuVisible: false,
-        notebookPanelMenuVisible: false,
-      },
-      buttons: {
-        endDrawButtonVisible: false,
-        drawButtonOn: undefined,
-        drawButtonsVisible: true,
-        editButtonsVisible: false,
-      },
-      mapMode: MapModes.VIEW,
-      settingsMenuVisible: SettingsMenuItems.SETTINGS_MAIN,
-      // drawerVisible: false,
-      isOfflineMapModalVisible: false,
-      isProjectLoadSelectionModalVisible: false,
-      currentSpot: undefined,
-      allPhotosSaved: [],
-      // isAllSpotsPanelVisible: false,
-      animation: new Animated.Value(notebookPanelWidth),
-      settingsPanelAnimation: new Animated.Value(-homeMenuPanelWidth),
-      leftsideIconAnimation: new Animated.Value(0),
-      rightsideIconAnimation: new Animated.Value(0),
-      allSpotsViewAnimation: new Animated.Value(125),
-      loading: false,
-      toastVisible: false,
-    };
-  }
+  const [dialogs, setDialogs] = useState({
+    mapActionsMenuVisible: false,
+    mapSymbolsMenuVisible: false,
+    baseMapMenuVisible: false,
+    notebookPanelMenuVisible: false,
+  });
+  const [buttons, setButtons] = useState({
+    endDrawButtonVisible: false,
+    drawButtonOn: undefined,
+    drawButtonsVisible: true,
+    editButtonsVisible: false,
+  });
+  const [mapModeState, setMapModeState] = useState(MapModes.VIEW);
+  const [settingsMenuVisible, setSettingsMenuVisible] = useState(SettingsMenuItems.SETTINGS_MAIN);
+  // drawerVisible: false,
+  const [isOfflineMapModalVisible, setIsOfflineMapModalVisible] = useState(false);
+  const [isProjectLoadSelectionModalVisible, setIsProjectLoadSelectionModalVisible] = useState(false);
+  const [currentSpot, setCurrentSpot] = useState(undefined);
+  const [allPhotosSaved, setAllPhotosSaved] = useState([]);
+  // isAllSpotsPanelVisible: false,
+  const [animation, setAnimation] = useState(new Animated.Value(notebookPanelWidth));
+  const [settingsPanelAnimation, setSettingsPanelAnimation] = useState(new Animated.Value(-homeMenuPanelWidth));
+  const [leftsideIconAnimationValue, setLeftsideIconAnimationValue] = useState(new Animated.Value(0));
+  const [rightsideIconAnimationValue, setRightsideIconAnimationValue] = useState(new Animated.Value(0));
+  const [allSpotsViewAnimation, setAllSpotsViewAnimation] = useState(new Animated.Value(125));
+  const [loading, setLoading] = useState(false);
+  const [toastVisible, setToastVisible] = useState(false);
 
-  componentDidMount() {
-    this._isMounted = true;
+  const mapViewComponent = useRef(null);
+
+  useEffect(() => {
     vectorIcon.getImageSource('pin', 30);
     NetInfo.addEventListener(state => {
-      if (state.isConnected) this.handleConnectivityChange(state.isConnected);
+      if (state.isConnected) handleConnectivityChange(state.isConnected);
       // else Alert.alert('Not Online!', 'Please check your internet source.');
     });
-    // this.props.setDeviceDims(this.dimensions);
-    // if (this.props.deviceDimensions.width < 500) {
+    // props.setDeviceDims(dimensions);
+    // if (props.deviceDimensions.width < 500) {
     //   Orientation.unlockAllOrientations();
     // }
     // else Orientation.lockToLandscapeLeft();
-    Dimensions.addEventListener('change', this.deviceOrientation);
-    this.props.setNotebookPanelVisible(false);
-    this.props.setAllSpotsPanelVisible(false);
-    this.props.setModalVisible(null);
-    this.props.setHomePanelVisible(false);
-    this.props.setHomePanelPageVisible(SettingsMenuItems.SETTINGS_MAIN);
-    this.checkForOpenProject();
-  }
+    Dimensions.addEventListener('change', deviceOrientation);
+    props.setNotebookPanelVisible(false);
+    props.setAllSpotsPanelVisible(false);
+    props.setModalVisible(null);
+    props.setHomePanelVisible(false);
+    props.setHomePanelPageVisible(SettingsMenuItems.SETTINGS_MAIN);
+    checkForOpenProject();
+    return function cleanup() {
+      Dimensions.removeEventListener('change', deviceOrientation);
+    };
+  }, []);
 
-  componentWillUnmount() {
-    this._isMounted = false;
-    Dimensions.removeEventListener('change', this.deviceOrientation);
-    console.log('All listeners removed');
-  }
-
-  deviceOrientation = () => {
+  const deviceOrientation = () => {
     const dimensions = Dimensions.get('window');
-    this.props.setDeviceDims(dimensions);
-    console.log(this.props.deviceDimensions);
+    props.setDeviceDims(dimensions);
+    console.log(props.deviceDimensions);
   };
 
-  checkForOpenProject = () => {
-    if (isEmpty(this.props.getCurrentProject)) {
-      this.setState(prevState => {
-        return {
-          ...prevState,
-          isProjectLoadSelectionModalVisible: true,
-        };
-      }, () => console.log('Project Select Modal is:', this.state.isProjectLoadSelectionModalVisible));
+  const checkForOpenProject = () => {
+    if (isEmpty(props.getCurrentProject)) {
+      setIsProjectLoadSelectionModalVisible(true);
+      console.log('Project Select Modal is:', isProjectLoadSelectionModalVisible);
     }
   };
 
-  cancelEdits = async () => {
-    await this.mapViewComponent.cancelEdits();
-    this.setMapMode(MapModes.VIEW);
-    this.toggleButton('editButtonsVisible', false);
-    this.toggleButton('drawButtonsVisible', true);
+  const cancelEdits = async () => {
+    await mapViewComponent.current.cancelEdits();
+    setMapMode(MapModes.VIEW);
+    toggleButton('editButtonsVisible', false);
+    toggleButton('drawButtonsVisible', true);
   };
 
-  clickHandler = (name, position) => {
+  const clickHandler = (name, position) => {
     switch (name) {
       case 'search':
-        Alert.alert('Still in the works', `The ${name.toUpperCase()} Shortcut button in the  will be functioning soon!`);
+        Alert.alert('Still in the works',
+          `The ${name.toUpperCase()} Shortcut button in the  will be functioning soon!`);
         break;
       case 'tag':
-        Alert.alert('Still in the works', `The ${name.toUpperCase()} Shortcut button in the  will be functioning soon!`);
+        Alert.alert('Still in the works',
+          `The ${name.toUpperCase()} Shortcut button in the  will be functioning soon!`);
         break;
       case 'measurement':
-        this.props.setModalVisible(Modals.SHORTCUT_MODALS.COMPASS);
+        props.setModalVisible(Modals.SHORTCUT_MODALS.COMPASS);
         break;
       case 'sample':
-        this.props.setModalVisible(Modals.SHORTCUT_MODALS.SAMPLE);
+        props.setModalVisible(Modals.SHORTCUT_MODALS.SAMPLE);
         break;
       case 'note':
-        Alert.alert('Still in the works', `The ${name.toUpperCase()} Shortcut button in the  will be functioning soon!`);
+        Alert.alert('Still in the works',
+          `The ${name.toUpperCase()} Shortcut button in the  will be functioning soon!`);
         break;
       case 'photo':
-        // this.takePicture();
-        Alert.alert('Still in the works', `The ${name.toUpperCase()} Shortcut button in the  will be functioning soon!`);
+        // takePicture();
+        Alert.alert('Still in the works',
+          `The ${name.toUpperCase()} Shortcut button in the  will be functioning soon!`);
         break;
       case 'sketch':
-        Alert.alert('Still in the works', `The ${name.toUpperCase()} Shortcut button in the  will be functioning soon!`);
+        Alert.alert('Still in the works',
+          `The ${name.toUpperCase()} Shortcut button in the  will be functioning soon!`);
         break;
       // case "notebook":
       //   console.log(`${name}`, " was clicked");
       //   break;
       case 'home':
-        this.toggleHomeDrawerButton();
+        toggleHomeDrawerButton();
         break;
 
       // Notebook Panel three-dot menu
       case 'closeNotebook':
-        this.closeNotebookPanel();
+        closeNotebookPanel();
         break;
       case 'copyFeature':
         console.log('Spot Copied!');
         break;
       case 'deleteFeature':
-        console.log('Feature Deleted!', this.props.selectedSpot.properties.id);
-        this.deleteSelectedFeature(this.props.selectedSpot.properties.id);
+        console.log('Feature Deleted!', props.selectedSpot.properties.id);
+        deleteSelectedFeature(props.selectedSpot.properties.id);
         break;
       case 'toggleAllSpotsPanel':
-        if (position === 'open') this.props.setAllSpotsPanelVisible(true);
-        else if (position === 'close') this.props.setAllSpotsPanelVisible(false);
+        if (position === 'open') props.setAllSpotsPanelVisible(true);
+        else if (position === 'close') props.setAllSpotsPanelVisible(false);
         break;
       // Map Actions
       case MapModes.DRAW.POINT:
       case MapModes.DRAW.LINE:
       case MapModes.DRAW.POLYGON:
-        this.setDraw(name);
+        setDraw(name);
         break;
       case 'endDraw':
-        this.endDraw();
+        endDraw();
         break;
       case 'cancelEdits':
-        this.cancelEdits();
+        cancelEdits();
         break;
       case 'saveEdits':
-        this.saveEdits();
+        saveEdits();
         break;
       case 'currentLocation':
-        this.goToCurrentLocation();
+        goToCurrentLocation();
         break;
 
       // Map Actions
@@ -212,7 +204,7 @@ class Home extends React.Component {
         console.log(`${name}`, ' was clicked');
         break;
       case 'saveMap':
-        this.toggleOfflineMapModal();
+        toggleOfflineMapModal();
         break;
       case 'addTag':
         Alert.alert('Still in the works', `The ${name.toUpperCase()} button in the  will be functioning soon!`);
@@ -223,75 +215,69 @@ class Home extends React.Component {
 
       // Map Basemap Layers
       case 'mapboxSatellite':
-        this.newBasemapDisplay(name);
+        newBasemapDisplay(name);
         break;
       case 'mapboxOutdoors':
-        this.newBasemapDisplay(name);
+        newBasemapDisplay(name);
         break;
       case 'osm':
-        this.newBasemapDisplay(name);
+        newBasemapDisplay(name);
         break;
       case 'macrostrat':
-        this.newBasemapDisplay(name);
+        newBasemapDisplay(name);
         break;
       case 'custom':
-        this.newBasemapDisplay(name);
+        newBasemapDisplay(name);
         break;
     }
   };
 
-  goToCurrentLocation = async () => {
-    this.toggleLoading(true);
+  const goToCurrentLocation = async () => {
+    toggleLoading(true);
     try {
-      await this.mapViewComponent.setCurrentLocation();
-      this.toggleLoading(false);
-      await this.mapViewComponent.goToCurrentLocation();
+      await mapViewComponent.current.setCurrentLocation();
+      toggleLoading(false);
+      await mapViewComponent.current.goToCurrentLocation();
     }
     catch {
-      this.toggleLoading(false);
+      toggleLoading(false);
       Alert.alert('Geolocation Error', 'Error getting current location.');
     }
   };
 
-  flingHandlerSettingsPanel = ({nativeEvent}) => {
-    if (this._isMounted) {
-      if (this.props.homePanelVisible) {
-        if (nativeEvent.oldState === State.ACTIVE) {
-          console.log('FLING TO CLOSE Settings Panel!', nativeEvent);
-          animatePanels(this.state.settingsPanelAnimation, -homeMenuPanelWidth);
-          this.props.setHomePanelPageVisible(SettingsMenuItems.SETTINGS_MAIN);
-          this.props.setHomePanelVisible(false);
-          animatePanels(this.state.leftsideIconAnimation, 0);
-        }
-      }
-      else this.props.setHomePanelVisible(true);
-    }
-  };
-
-  flingHandlerNotebook = ({nativeEvent}) => {
-    if (this._isMounted) {
+  const flingHandlerSettingsPanel = ({nativeEvent}) => {
+    if (props.homePanelVisible) {
       if (nativeEvent.oldState === State.ACTIVE) {
-        console.log('FLING TO CLOSE NOTEBOOK!', nativeEvent);
-        animatePanels(this.state.animation, notebookPanelWidth);
-        animatePanels(this.state.rightsideIconAnimation, 0);
-        this.props.setNotebookPanelVisible(false);
-        this.props.setAllSpotsPanelVisible(false);
+        console.log('FLING TO CLOSE Settings Panel!', nativeEvent);
+        animatePanels(settingsPanelAnimation, -homeMenuPanelWidth);
+        props.setHomePanelPageVisible(SettingsMenuItems.SETTINGS_MAIN);
+        props.setHomePanelVisible(false);
+        animatePanels(leftsideIconAnimationValue, 0);
       }
     }
+    else props.setHomePanelVisible(true);
   };
 
-  closeNotebookPanel = () => {
-    if (this._isMounted) {
-      console.log('closing notebook');
-      animatePanels(this.state.animation, notebookPanelWidth);
-      animatePanels(this.state.rightsideIconAnimation, 0);
-      this.props.setNotebookPanelVisible(false);
-      this.props.setAllSpotsPanelVisible(false);
+  const flingHandlerNotebook = ({nativeEvent}) => {
+    if (nativeEvent.oldState === State.ACTIVE) {
+      console.log('FLING TO CLOSE NOTEBOOK!', nativeEvent);
+      animatePanels(animation, notebookPanelWidth);
+      animatePanels(rightsideIconAnimationValue, 0);
+      props.setNotebookPanelVisible(false);
+      props.setAllSpotsPanelVisible(false);
     }
   };
 
-  deleteSelectedFeature = id => {
-    const featureName = this.props.selectedSpot.properties.name;
+  const closeNotebookPanel = () => {
+    console.log('closing notebook');
+    animatePanels(animation, notebookPanelWidth);
+    animatePanels(rightsideIconAnimationValue, 0);
+    props.setNotebookPanelVisible(false);
+    props.setAllSpotsPanelVisible(false);
+  };
+
+  const deleteSelectedFeature = id => {
+    const featureName = props.selectedSpot.properties.name;
     Alert.alert(
       'Delete Feature?',
       `Are you sure you want to delete feature: \n ${featureName}`,
@@ -304,126 +290,117 @@ class Home extends React.Component {
         {
           text: 'Delete',
           onPress: () => {
-            this.props.deleteFeature(id);
-            this.closeNotebookPanel();
+            props.deleteFeature(id);
+            closeNotebookPanel();
           },
         },
       ],
     );
   };
 
-  dialogClickHandler = (dialog, name, position) => {
-    this.clickHandler(name, position);
-    this.toggleDialog(dialog);
+  const dialogClickHandler = (dialog, name, position) => {
+    clickHandler(name, position);
+    toggleDialog(dialog);
   };
 
-  endDraw = async () => {
-    this.mapViewComponent.endDraw();
-    this.setMapMode(MapModes.VIEW);
-    this.toggleButton('endDrawButtonVisible');
-    this.openNotebookPanel();
-    this.props.setModalVisible(null);
+  const endDraw = async () => {
+    mapViewComponent.current.endDraw();
+    setMapMode(MapModes.VIEW);
+    toggleButton('endDrawButtonVisible');
+    openNotebookPanel();
+    props.setModalVisible(null);
   };
 
-  getImageSrc = id => {
-    return this.props.imagePaths[id];
+  const getImageSrc = id => {
+    return props.imagePaths[id];
   };
 
-  getSpotFromId = spotId => {
-    const spot = this.props.spot.find(spot => {
+  const getSpotFromId = spotId => {
+    const spot = props.spot.find(spot => {
       return spot.properties.id === spotId;
     });
     // console.log('Aaaaaaaa', spot);
-    this.props.onFeatureSelected(spot);
-    this.openNotebookPanel();
+    props.onFeatureSelected(spot);
+    openNotebookPanel();
   };
 
   //function for online/offline state change event handler
-  handleConnectivityChange = isConnected => {
-    this.props.setIsOnline(isConnected);
+  const handleConnectivityChange = isConnected => {
+    props.setIsOnline(isConnected);
   };
 
-  mapPress = () => {
-    return this.mapViewComponent.getCurrentBasemap();
+  const mapPress = () => {
+    return mapViewComponent.current.getCurrentBasemap();
   };
 
-  newBasemapDisplay = name => {
-    this.mapViewComponent.changeMap(name);
+  const newBasemapDisplay = name => {
+    mapViewComponent.current.changeMap(name);
   };
 
-  notebookClickHandler = name => {
+  const notebookClickHandler = name => {
     switch (name) {
       case 'menu':
-        this.toggleDialog('notebookPanelMenuVisible');
+        toggleDialog('notebookPanelMenuVisible');
         break;
       case 'export':
         console.log('Export button was pressed');
         break;
       case 'camera':
-        this.launchCameraFromNotebook();
+        launchCameraFromNotebook();
         break;
     }
   };
 
-  toggleHomeDrawerButton = () => {
-    if (this._isMounted) {
-      if (this.props.homePanelVisible){
-        this.props.setHomePanelVisible(false);
-        animatePanels(this.state.settingsPanelAnimation, -homeMenuPanelWidth);
-        animatePanels(this.state.leftsideIconAnimation, 0);
-      }
-      else {
-        this.props.setHomePanelVisible(true);
-        animatePanels(this.state.settingsPanelAnimation, 0);
-        animatePanels(this.state.leftsideIconAnimation, homeMenuPanelWidth);
-      }
+  const toggleHomeDrawerButton = () => {
+    if (props.homePanelVisible) {
+      props.setHomePanelVisible(false);
+      animatePanels(settingsPanelAnimation, -homeMenuPanelWidth);
+      animatePanels(leftsideIconAnimationValue, 0);
+    }
+    else {
+      props.setHomePanelVisible(true);
+      animatePanels(settingsPanelAnimation, 0);
+      animatePanels(leftsideIconAnimationValue, homeMenuPanelWidth);
     }
   };
 
-  openNotebookPanel = pageView => {
-    if (this._isMounted) {
-      console.log('notebook opening', pageView);
-      this.props.setNotebookPageVisible(pageView);
-      animatePanels(this.state.animation, 0);
-      animatePanels(this.state.rightsideIconAnimation, -notebookPanelWidth);
-      this.props.setNotebookPanelVisible(true);
-    }
+  const openNotebookPanel = pageView => {
+    console.log('notebook opening', pageView);
+    props.setNotebookPageVisible(pageView);
+    animatePanels(animation, 0);
+    animatePanels(rightsideIconAnimationValue, -notebookPanelWidth);
+    props.setNotebookPanelVisible(true);
   };
 
-  launchCameraFromNotebook = async () => {
-    let imageArr = this.state.allPhotosSaved;
+  const launchCameraFromNotebook = async () => {
+    let imageArr = allPhotosSaved;
     try {
       const savedPhoto = await ImageHelper.takePicture();
-      this.toggleLoading(true);
+      toggleLoading(true);
       if (savedPhoto === 'cancelled') {
-        if (this.state.allPhotosSaved.length > 0) {
-          console.log('ALL PHOTOS SAVED', this.state.allPhotosSaved);
-          this.props.addPhoto(imageArr);
-          this.props.onSpotEditImageObj(imageArr);
-          this.toggleLoading();
-          // this.toggleToast();
+        if (allPhotosSaved.length > 0) {
+          console.log('ALL PHOTOS SAVED', allPhotosSaved);
+          props.addPhoto(imageArr);
+          props.onSpotEditImageObj(imageArr);
+          toggleLoading();
+          // toggleToast();
         }
         else {
-          this.toggleLoading(false);
+          toggleLoading(false);
           Alert.alert('No Photos To Save', 'please try again...');
         }
       }
       else {
-        this.setState(prevState => {
-          return {
-            ...prevState,
-            allPhotosSaved: [...this.state.allPhotosSaved, {
-              id: savedPhoto.id,
-              src: savedPhoto.src,
-              image_type: 'photo',
-              height: savedPhoto.height,
-              width: savedPhoto.width,
-            }],
-          };
-        }, () => {
-          console.log('Photos Saved:', this.state.allPhotosSaved);
-          this.launchCameraFromNotebook();
-        });
+        setAllPhotosSaved([...allPhotosSaved, {
+          id: savedPhoto.id,
+          src: savedPhoto.src,
+          image_type: 'photo',
+          height: savedPhoto.height,
+          width: savedPhoto.width,
+        }]);
+        console.log('Photos Saved:', allPhotosSaved);
+        launchCameraFromNotebook();
+
       }
     }
     catch (e) {
@@ -431,36 +408,36 @@ class Home extends React.Component {
     }
   };
 
-  samplesModalCancel = () => {
+  const samplesModalCancel = () => {
     console.log('Samples Modal Cancel Selected');
   };
 
-  renderLoadProjectFromModal = () => {
+  const renderLoadProjectFromModal = () => {
     return (
       <InitialProjectLoadModal
-        visible={this.state.isProjectLoadSelectionModalVisible}
-        closeModal={() => this.closeInitialProjectLoadModal()}
+        visible={isProjectLoadSelectionModalVisible}
+        closeModal={() => closeInitialProjectLoadModal()}
       />
     );
   };
 
-  setDraw = async mapMode => {
-    this.mapViewComponent.cancelDraw();
-    if (this.state.mapMode === MapModes.VIEW && mapMode !== MapModes.DRAW.POINT) {
-      this.toggleButton('endDrawButtonVisible', true);
+  const setDraw = async mapMode => {
+    mapViewComponent.current.cancelDraw();
+    if (mapModeState === MapModes.VIEW && mapMode !== MapModes.DRAW.POINT) {
+      toggleButton('endDrawButtonVisible', true);
     }
-    else if (this.state.mapMode === mapMode) mapMode = MapModes.VIEW;
-    await this.setMapMode(mapMode);
-    if (this.state.mapMode === MapModes.DRAW.POINT) {
-      this.toggleLoading(true);
+    else if (mapModeState === mapMode) mapMode = MapModes.VIEW;
+    await setMapMode(mapMode);
+    if (mapModeState === MapModes.DRAW.POINT) {
+      toggleLoading(true);
       try {
-        await this.mapViewComponent.setPointAtCurrentLocation();
-        this.toggleLoading(false);
-        await this.setMapMode(MapModes.VIEW);
-        // this.openNotebookPanel();
-        this.props.setNotebookPanelVisible(true);
-        this.props.setNotebookPageVisible(NotebookPages.OVERVIEW);
-        Animated.timing(this.state.animation, {
+        await mapViewComponent.current.setPointAtCurrentLocation();
+        toggleLoading(false);
+        await setMapMode(MapModes.VIEW);
+        // openNotebookPanel();
+        props.setNotebookPanelVisible(true);
+        props.setNotebookPageVisible(NotebookPages.OVERVIEW);
+        Animated.timing(animation, {
           toValue: wp('0%'),
           duration: 350,
           easing: Easing.linear,
@@ -468,461 +445,406 @@ class Home extends React.Component {
         }).start();
       }
       catch (err) {
-        this.toggleLoading(false);
+        toggleLoading(false);
         Alert.alert('Geolocation Error', 'Error getting current location. Set a point manually.');
-        this.toggleButton('endDrawButtonVisible', true);
+        toggleButton('endDrawButtonVisible', true);
       }
     }
     if (mapMode === MapModes.VIEW) {
-      this.toggleButton('endDrawButtonVisible', false);
+      toggleButton('endDrawButtonVisible', false);
     }
   };
 
-  setMapMode = async (mapMode) => {
-    if (this._isMounted) {
-      this.setState(prevState => {
-        return {
-          ...prevState,
-          mapMode: mapMode,
-        };
-      }, () => console.log('Map Mode set to:', mapMode));
-    }
-    else console.log('Attempting to set the state for the map mode but Home Component not mounted.');
+  const setMapMode = async (mapMode) => {
+    setMapModeState(mapMode);
+    console.log('Map Mode set to:', mapMode);
   };
 
-  saveEdits = async () => {
-    this.mapViewComponent.saveEdits();
-    this.cancelEdits();
+  const saveEdits = async () => {
+    mapViewComponent.current.saveEdits();
+    cancelEdits();
   };
 
-  startEdit = () => {
-    this.setMapMode(MapModes.EDIT);
-    this.toggleButton('editButtonsVisible', true);
-    this.toggleButton('drawButtonsVisible', false);
+  const startEdit = () => {
+    setMapMode(MapModes.EDIT);
+    toggleButton('editButtonsVisible', true);
+    toggleButton('drawButtonsVisible', false);
   };
 
-  closeInitialProjectLoadModal = () => {
+  const closeInitialProjectLoadModal = () => {
     console.log('Starting Project...');
-    this.setState(prevState => {
-      return {
-        ...prevState,
-        isProjectLoadSelectionModalVisible: false,
-      };
-    });
+    setIsProjectLoadSelectionModalVisible(false);
   };
 
   // Toggle given button between true (on) and false (off)
-  toggleButton = (button, isVisible) => {
-    console.log('Toggle Button', button, isVisible || !this.state.buttons[button]);
-    if (this._isMounted) {
-      this.setState(prevState => {
-        return {
-          ...prevState,
-          buttons: {
-            ...prevState.buttons,
-            [button]: isVisible ? isVisible : !prevState.buttons[button],
-          },
-        };
-      });
-    }
-    else console.log('Attempting to toggle', button, 'but Home Component not mounted.');
+  const toggleButton = (button, isVisible) => {
+    console.log('Toggle Button', button, isVisible || !buttons[button]);
+    setButtons({
+      ...buttons,
+      [button]: isVisible ? isVisible : !buttons[button],
+    });
   };
 
   // Toggle given dialog between true (visible) and false (hidden)
-  toggleDialog = dialog => {
+  const toggleDialog = dialog => {
     console.log('Toggle', dialog);
-    if (this._isMounted) {
-      this.setState(prevState => {
-        return {
-          dialogs: {
-            ...prevState.dialogs,
-            [dialog]: !prevState.dialogs[dialog],
-          },
-        };
-      }, () => console.log(dialog, 'is set to', this.state.dialogs[dialog]));
-    }
-    else console.log('Attempting to toggle', dialog, 'but Home Component not mounted.');
+    setDialogs({
+      ...dialogs,
+      [dialog]: !dialogs[dialog],
+    });
+    console.log(dialog, 'is set to', dialogs[dialog]);
   };
 
-  toggleImageModal = () => {
-    if (this._isMounted) {
-      this.props.setIsImageModalVisible(!this.props.isImageModalVisible);
-    }
+  const toggleImageModal = () => {
+    props.setIsImageModalVisible(!props.isImageModalVisible);
   };
 
-  toggleLoading = bool => {
-    if (this._isMounted) {
-      this.setState(prevState => {
-        return {
-          ...prevState,
-          loading: bool,
-        };
-      }, () => console.log('Loading', this.state.loading));
-    }
+  const toggleLoading = bool => {
+    setLoading(bool);
+    console.log('Loading', loading);
   };
 
-  toggleOfflineMapModal = () => {
-    if (this._isMounted) {
-      this.setState(prevState => {
-        return {
-          ...prevState,
-          isOfflineMapModalVisible: !prevState.isOfflineMapModalVisible,
-        };
-      }, () => console.log('Modal state', this.state.isOfflineMapModalVisible));
-    }
+  const toggleOfflineMapModal = () => {
+    setIsOfflineMapModalVisible(!isOfflineMapModalVisible);
+    console.log('Modal state', isOfflineMapModalVisible);
   };
 
-  toggleSwitch = switchName => {
+  const toggleSwitch = switchName => {
     console.log('Switch', switchName);
-    if (this._isMounted) {
-      this.props.onShortcutSwitchChange(switchName);
-      console.log(this.props.shortcutSwitchPosition);
-    }
+    props.onShortcutSwitchChange(switchName);
+    console.log(props.shortcutSwitchPosition);
   };
 
-  toggleToast = () => {
-    if (this._isMounted) {
-      this.setState(prevState => {
-        return {
-          ...prevState,
-          toastVisible: !prevState.toastVisible,
-        };
-      }, () => console.log('Toast state', this.state.toastVisible));
-    }
+  const toggleToast = () => {
+    setToastVisible(!toastVisible);
+    console.log('Toast state', toastVisible);
   };
 
-  modalHandler = (page, modalType) => {
-    if (this.props.isNotebookPanelVisible) {
+  const modalHandler = (page, modalType) => {
+    if (props.isNotebookPanelVisible) {
       console.log('NBS NBModal press in SampleOnPress', page);
-      this.closeNotebookPanel();
-      this.props.setModalVisible(modalType);
+      closeNotebookPanel();
+      props.setModalVisible(modalType);
     }
     else {
-      this.openNotebookPanel(page);
-      this.props.setModalVisible(modalType);
+      openNotebookPanel(page);
+      props.setModalVisible(modalType);
     }
   };
 
-  onToastShow = () => {
-    this.toggleLoading(false);
+  const onToastShow = () => {
+    toggleLoading(false);
     setTimeout(() => {
-      this.toggleToast();
-      this.setState(prevState => {
-        return {
-          ...prevState,
-          allPhotosSaved: [],
-        };
-      });
+      toggleToast();
+      setAllPhotosSaved([]);
     }, 2000);
   };
 
-  render() {
-    const animateNotebookMenu = {transform: [{translateX: this.state.animation}]};
-    const animateSettingsPanel = {transform: [{translateX: this.state.settingsPanelAnimation}]};
-    const leftsideIconAnimation = {transform: [{translateX: this.state.leftsideIconAnimation}]};
-    const rightsideIconAnimation = {transform: [{translateX: this.state.rightsideIconAnimation}]};
-    let compassModal = null;
-    let samplesModal = null;
+  const animateNotebookMenu = {transform: [{translateX: animation}]};
+  const animateSettingsPanel = {transform: [{translateX: settingsPanelAnimation}]};
+  const leftsideIconAnimation = {transform: [{translateX: leftsideIconAnimationValue}]};
+  const rightsideIconAnimation = {transform: [{translateX: rightsideIconAnimationValue}]};
+  let compassModal = null;
+  let samplesModal = null;
 
-    const homeDrawer =
-      <FlingGestureHandler
-        direction={Directions.LEFT}
-        numberOfPointers={1}
-        // onHandlerStateChange={ev => _onTwoFingerFlingHandlerStateChange(ev)}
-        onHandlerStateChange={(ev) => this.flingHandlerSettingsPanel(ev)}
+  const homeDrawer =
+    <FlingGestureHandler
+      direction={Directions.LEFT}
+      numberOfPointers={1}
+      // onHandlerStateChange={ev => _onTwoFingerFlingHandlerStateChange(ev)}
+      onHandlerStateChange={(ev) => flingHandlerSettingsPanel(ev)}
+    >
+      <Animated.View style={[settingPanelStyles.settingsDrawer, animateSettingsPanel]}>
+        <SettingsPanel openNotebookPanel={(pageView) => openNotebookPanel(pageView)}/>
+      </Animated.View>
+    </FlingGestureHandler>;
+
+  const notebookPanel =
+    <FlingGestureHandler
+      direction={Directions.RIGHT}
+      numberOfPointers={1}
+      // onHandlerStateChange={ev => _onTwoFingerFlingHandlerStateChange(ev)}
+      onHandlerStateChange={ev => flingHandlerNotebook(ev)}>
+      <Animated.View style={[notebookStyles.panel, animateNotebookMenu]}>
+        <NotebookPanel
+          onHandlerStateChange={(ev, name) => flingHandlerNotebook(ev, name)}
+          closeNotebook={closeNotebookPanel}
+          textStyle={{fontWeight: 'bold', fontSize: 12}}
+          onPress={name => notebookClickHandler(name)}>
+          {/*<AllSpotsView/>*/}
+        </NotebookPanel>
+      </Animated.View>
+    </FlingGestureHandler>;
+
+  // Renders Compass modals in either shortcut or notebook view
+  if (props.modalVisible === Modals.NOTEBOOK_MODALS.COMPASS && props.isNotebookPanelVisible) {
+    compassModal =
+      <NotebookCompassModal
+        close={() => props.setModalVisible(null)}
+        onPress={page => modalHandler(page, Modals.SHORTCUT_MODALS.COMPASS)}
+      />;
+  }
+  else if (props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {
+    compassModal =
+      <ShortcutCompassModal
+        close={() => props.setModalVisible(null)}
+        onPress={page => modalHandler(page, Modals.NOTEBOOK_MODALS.COMPASS)}
+      />;
+  }
+
+  // Renders samples modals in either shortcut or notebook view
+  if (props.modalVisible === Modals.NOTEBOOK_MODALS.SAMPLE && props.isNotebookPanelVisible) {
+    samplesModal =
+      <NotebookSamplesModal
+        close={() => props.setModalVisible(null)}
+        cancel={() => samplesModalCancel()}
+        onPress={(page) => modalHandler(page, Modals.SHORTCUT_MODALS.SAMPLE)}
+      />;
+  }
+  else if (props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE) {
+    samplesModal =
+      <ShortcutSamplesModal
+        close={() => props.setModalVisible(null)}
+        cancel={() => samplesModalCancel()}
+        onPress={(page) => modalHandler(page, Modals.NOTEBOOK_MODALS.SAMPLE)}
+      />;
+  }
+
+  return (
+    <View style={styles.container}>
+      {/*{props.isNotebookPanelVisible && notebookPanel}*/}
+      <MapView
+        mapComponentRef={mapViewComponent}
+        mapMode={mapModeState}
+        startEdit={startEdit}
+      />
+      {props.vertexStartCoords && <VertexDrag/>}
+      {loading && <LoadingSpinner/>}
+      {toastVisible &&
+      <ToastPopup
+        visible={toastVisible}
+        onShow={() => onToastShow()}
       >
-        <Animated.View style={[settingPanelStyles.settingsDrawer, animateSettingsPanel]}>
-          <SettingsPanel openNotebookPanel={(pageView) => this.openNotebookPanel(pageView)}/>
-        </Animated.View>
-      </FlingGestureHandler>;
+        {allPhotosSaved.length === 1 ?
+          <Text>{allPhotosSaved.length} Picture Saved!</Text> :
+          <Text>{allPhotosSaved.length} Pictures Saved!</Text>}
+      </ToastPopup>}
+      {Platform.OS === 'ios' &&
+      <Animated.View style={leftsideIconAnimation}>
+        {(props.modalVisible === Modals.NOTEBOOK_MODALS.COMPASS ||
+          props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS) && compassModal}
 
-    const notebookPanel =
-      <FlingGestureHandler
-        direction={Directions.RIGHT}
-        numberOfPointers={1}
-        // onHandlerStateChange={ev => _onTwoFingerFlingHandlerStateChange(ev)}
-        onHandlerStateChange={ev => this.flingHandlerNotebook(ev)}>
-        <Animated.View style={[notebookStyles.panel, animateNotebookMenu]}>
-          <NotebookPanel
-            onHandlerStateChange={(ev, name) => this.flingHandlerNotebook(ev, name)}
-            closeNotebook={this.closeNotebookPanel}
-            textStyle={{fontWeight: 'bold', fontSize: 12}}
-            onPress={name => this.notebookClickHandler(name)}>
-            {/*<AllSpotsView/>*/}
-          </NotebookPanel>
-        </Animated.View>
-      </FlingGestureHandler>;
+        {(props.modalVisible === Modals.NOTEBOOK_MODALS.SAMPLE ||
+          props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE) && samplesModal}
+      </Animated.View>}
+      {Platform.OS === 'android' &&
+      <View>
+        {(props.modalVisible === Modals.NOTEBOOK_MODALS.COMPASS ||
+          props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS) && compassModal}
 
-    // Renders Compass modals in either shortcut or notebook view
-    if (this.props.modalVisible === Modals.NOTEBOOK_MODALS.COMPASS && this.props.isNotebookPanelVisible) {
-      compassModal =
-        <NotebookCompassModal
-          close={() => this.props.setModalVisible(null)}
-          onPress={page => this.modalHandler(page, Modals.SHORTCUT_MODALS.COMPASS)}
-        />;
-    }
-    else if (this.props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {
-      compassModal =
-        <ShortcutCompassModal
-          close={() => this.props.setModalVisible(null)}
-          onPress={page => this.modalHandler(page, Modals.NOTEBOOK_MODALS.COMPASS)}
-        />;
-    }
-
-    // Renders samples modals in either shortcut or notebook view
-    if (this.props.modalVisible === Modals.NOTEBOOK_MODALS.SAMPLE && this.props.isNotebookPanelVisible) {
-      samplesModal =
-        <NotebookSamplesModal
-          close={() => this.props.setModalVisible(null)}
-          cancel={() => this.samplesModalCancel()}
-          onPress={(page) => this.modalHandler(page, Modals.SHORTCUT_MODALS.SAMPLE)}
-        />;
-    }
-    else if (this.props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE) {
-      samplesModal =
-        <ShortcutSamplesModal
-          close={() => this.props.setModalVisible(null)}
-          cancel={() => this.samplesModalCancel()}
-          onPress={(page) => this.modalHandler(page, Modals.NOTEBOOK_MODALS.SAMPLE)}
-        />;
-    }
-
-    return (
-      <View style={styles.container}>
-        {/*{this.props.isNotebookPanelVisible && notebookPanel}*/}
-        <MapView
-          onRef={ref => (this.mapViewComponent = ref)}
-          mapMode={this.state.mapMode}
-          startEdit={this.startEdit}
-        />
-        {this.props.vertexStartCoords && <VertexDrag/>}
-        {this.state.loading && <LoadingSpinner/>}
-        {this.state.toastVisible &&
-        <ToastPopup
-          visible={this.state.toastVisible}
-          onShow={() => this.onToastShow()}
-        >
-          {this.state.allPhotosSaved.length === 1 ?
-            <Text>{this.state.allPhotosSaved.length} Picture Saved!</Text> :
-            <Text>{this.state.allPhotosSaved.length} Pictures Saved!</Text>}
-        </ToastPopup>}
-        {Platform.OS === 'ios' &&
-        <Animated.View style={leftsideIconAnimation}>
-          {(this.props.modalVisible === Modals.NOTEBOOK_MODALS.COMPASS ||
-            this.props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS) && compassModal}
-
-          {(this.props.modalVisible === Modals.NOTEBOOK_MODALS.SAMPLE ||
-            this.props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE) && samplesModal}
-        </Animated.View>}
-        {Platform.OS === 'android' &&
-        <View>
-          {(this.props.modalVisible === Modals.NOTEBOOK_MODALS.COMPASS ||
-            this.props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS) && compassModal}
-
-          {(this.props.modalVisible === Modals.NOTEBOOK_MODALS.SAMPLE ||
-            this.props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE) && samplesModal}
-        </View>}
-        <View style={styles.topCenter}>
-          {this.state.buttons.endDrawButtonVisible ?
+        {(props.modalVisible === Modals.NOTEBOOK_MODALS.SAMPLE ||
+          props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE) && samplesModal}
+      </View>}
+      <View style={styles.topCenter}>
+        {buttons.endDrawButtonVisible ?
+          <Button
+            containerStyle={{alignContent: 'center'}}
+            buttonStyle={styles.drawToolsButtons}
+            titleStyle={{color: 'black'}}
+            title={'End Draw'}
+            onPress={clickHandler.bind(this, 'endDraw')}
+          />
+          : null}
+        {buttons.editButtonsVisible ?
+          <View>
             <Button
-              containerStyle={{alignContent: 'center'}}
               buttonStyle={styles.drawToolsButtons}
               titleStyle={{color: 'black'}}
-              title={'End Draw'}
-              onPress={this.clickHandler.bind(this, 'endDraw')}
+              title={'Save Edits'}
+              onPress={clickHandler.bind(this, 'saveEdits')}
             />
-            : null}
-          {this.state.buttons.editButtonsVisible ?
-            <View>
-              <Button
-                buttonStyle={styles.drawToolsButtons}
-                titleStyle={{color: 'black'}}
-                title={'Save Edits'}
-                onPress={this.clickHandler.bind(this, 'saveEdits')}
-              />
-              <Button
-                buttonStyle={[styles.drawToolsButtons, {marginTop: 5}]}
-                titleStyle={{color: 'black'}}
-                title={'Cancel Edits'}
-                onPress={this.clickHandler.bind(this, 'cancelEdits')}
-              />
-            </View>
-            : null}
-        </View>
-        <Animated.View style={[styles.onlineStatus, rightsideIconAnimation]}>
-          <IconButton
-            source={this.props.isOnline ? this.online : this.offline}
-            // onPress={this.clickHandler.bind(this, "search")}
-          />
-        </Animated.View>
-        <Animated.View style={[styles.rightsideIcons, rightsideIconAnimation]}>
-          {this.props.shortcutSwitchPosition.Tag ?
-            <IconButton
-              source={require('../../assets/icons/StraboIcons_Oct2019/TagButton.png')}
-              onPress={this.clickHandler.bind(this, 'tag')}
-            /> : null}
-          {this.props.shortcutSwitchPosition.Measurement ?
-            <IconButton
-              source={this.props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS ? require(
-                '../../assets/icons/StraboIcons_Oct2019/MeasurementButton_pressed.png')
-                : require('../../assets/icons/StraboIcons_Oct2019/MeasurementButton.png')}
-              onPress={this.clickHandler.bind(this, 'measurement')}
-            /> : null}
-          {this.props.shortcutSwitchPosition.Sample ?
-            <IconButton
-              source={this.props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE ? require(
-                '../../assets/icons/StraboIcons_Oct2019/SampleButton_pressed.png')
-                : require('../../assets/icons/StraboIcons_Oct2019/SampleButton.png')}
-              onPress={this.clickHandler.bind(this, 'sample')}
-            /> : null}
-          {this.props.shortcutSwitchPosition.Note ?
-            <IconButton
-              name={'Note'}
-              source={require('../../assets/icons/StraboIcons_Oct2019/NoteButton.png')}
-              onPress={this.clickHandler.bind(this, 'note')}
-            /> : null}
-          {this.props.shortcutSwitchPosition.Photo ?
-            <IconButton
-              source={require('../../assets/icons/StraboIcons_Oct2019/PhotoButton.png')}
-              onPress={this.clickHandler.bind(this, 'photo')}
-            /> : null}
-          {this.props.shortcutSwitchPosition.Sketch ?
-            <IconButton
-              source={require('../../assets/icons/StraboIcons_Oct2019/SketchButton.png')}
-              onPress={this.clickHandler.bind(this, 'sketch')}
-            /> : null}
-        </Animated.View>
-        <View style={styles.notebookViewIcon}>
-          {this.props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS ||
-          this.props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE ? null : <IconButton
-            source={require('../../assets/icons/StraboIcons_Oct2019/NotebookViewButton.png')}
-            onPress={() => this.openNotebookPanel()}
-          />}
-        </View>
-        {/*<View style={this.props.isNotebookPanelVisible ? styles.bottomRightIconsShortcutModal*/}
-        {/*: styles.bottomRightIcons}>*/}
-        {/* displays the Online boolean in text*/}
-        {/*<View><Text>Online: {this.props.isOnline.toString()}</Text></View> */}
-
-        {this.state.buttons.drawButtonsVisible ?
-          <Animated.View style={[styles.drawToolsContainer, rightsideIconAnimation]}>
-            <IconButton
-              style={{top: 5}}
-              source={this.state.mapMode === MapModes.DRAW.POINT ?
-                require('../../assets/icons/StraboIcons_Oct2019/PointButton_pressed.png') : require(
-                  '../../assets/icons/StraboIcons_Oct2019/PointButton.png')}
-              onPress={this.clickHandler.bind(this, MapModes.DRAW.POINT)}
+            <Button
+              buttonStyle={[styles.drawToolsButtons, {marginTop: 5}]}
+              titleStyle={{color: 'black'}}
+              title={'Cancel Edits'}
+              onPress={clickHandler.bind(this, 'cancelEdits')}
             />
-            <IconButton
-              style={{top: 5}}
-              source={this.state.mapMode === MapModes.DRAW.LINE ?
-                require('../../assets/icons/StraboIcons_Oct2019/LineButton_pressed.png') : require(
-                  '../../assets/icons/StraboIcons_Oct2019/LineButton.png')}
-              onPress={this.clickHandler.bind(this, MapModes.DRAW.LINE)}
-            />
-            <IconButton
-              style={{top: 5}}
-              source={this.state.mapMode === MapModes.DRAW.POLYGON ?
-                require('../../assets/icons/StraboIcons_Oct2019/PolygonButton_pressed.png') :
-                require('../../assets/icons/StraboIcons_Oct2019/PolygonButton.png')}
-              onPress={this.clickHandler.bind(this, MapModes.DRAW.POLYGON)}
-            />
-          </Animated.View>
+          </View>
           : null}
-        {/*</View>*/}
-        <Animated.View style={[styles.homeIconContainer, leftsideIconAnimation]}>
+      </View>
+      <Animated.View style={[styles.onlineStatus, rightsideIconAnimation]}>
+        <IconButton
+          source={props.isOnline ? online : offline}
+          // onPress={clickHandler.bind(this, "search")}
+        />
+      </Animated.View>
+      <Animated.View style={[styles.rightsideIcons, rightsideIconAnimation]}>
+        {props.shortcutSwitchPosition.Tag ?
           <IconButton
-            source={require('../../assets/icons/StraboIcons_Oct2019/HomeButton.png')}
-            onPress={this.clickHandler.bind(this, 'home')}
-          />
-        </Animated.View>
-        <Animated.View style={[styles.leftsideIcons, leftsideIconAnimation]}>
+            source={require('../../assets/icons/StraboIcons_Oct2019/TagButton.png')}
+            onPress={clickHandler.bind(this, 'tag')}
+          /> : null}
+        {props.shortcutSwitchPosition.Measurement ?
           <IconButton
-            source={require('../../assets/icons/StraboIcons_Oct2019/MapActionsButton.png')}
-            onPress={() => this.toggleDialog('mapActionsMenuVisible')}
-          />
+            source={props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS ? require(
+              '../../assets/icons/StraboIcons_Oct2019/MeasurementButton_pressed.png')
+              : require('../../assets/icons/StraboIcons_Oct2019/MeasurementButton.png')}
+            onPress={clickHandler.bind(this, 'measurement')}
+          /> : null}
+        {props.shortcutSwitchPosition.Sample ?
           <IconButton
-            source={require('../../assets/icons/StraboIcons_Oct2019/SymbolsButton.png')}
-            onPress={() => this.toggleDialog('mapSymbolsMenuVisible')}
-          />
+            source={props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE ? require(
+              '../../assets/icons/StraboIcons_Oct2019/SampleButton_pressed.png')
+              : require('../../assets/icons/StraboIcons_Oct2019/SampleButton.png')}
+            onPress={clickHandler.bind(this, 'sample')}
+          /> : null}
+        {props.shortcutSwitchPosition.Note ?
           <IconButton
-            source={require('../../assets/icons/StraboIcons_Oct2019/layersButton.png')}
-            onPress={() => this.toggleDialog('baseMapMenuVisible')}
-          />
-        </Animated.View>
-        <Animated.View style={[styles.bottomLeftIcons, leftsideIconAnimation]}>
+            name={'Note'}
+            source={require('../../assets/icons/StraboIcons_Oct2019/NoteButton.png')}
+            onPress={clickHandler.bind(this, 'note')}
+          /> : null}
+        {props.shortcutSwitchPosition.Photo ?
+          <IconButton
+            source={require('../../assets/icons/StraboIcons_Oct2019/PhotoButton.png')}
+            onPress={clickHandler.bind(this, 'photo')}
+          /> : null}
+        {props.shortcutSwitchPosition.Sketch ?
+          <IconButton
+            source={require('../../assets/icons/StraboIcons_Oct2019/SketchButton.png')}
+            onPress={clickHandler.bind(this, 'sketch')}
+          /> : null}
+      </Animated.View>
+      <View style={styles.notebookViewIcon}>
+        {props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS ||
+        props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE ? null : <IconButton
+          source={require('../../assets/icons/StraboIcons_Oct2019/NotebookViewButton.png')}
+          onPress={() => openNotebookPanel()}
+        />}
+      </View>
+      {/*<View style={props.isNotebookPanelVisible ? styles.bottomRightIconsShortcutModal*/}
+      {/*: styles.bottomRightIcons}>*/}
+      {/* displays the Online boolean in text*/}
+      {/*<View><Text>Online: {props.isOnline.toString()}</Text></View> */}
+
+      {buttons.drawButtonsVisible ?
+        <Animated.View style={[styles.drawToolsContainer, rightsideIconAnimation]}>
           <IconButton
             style={{top: 5}}
-            source={require('../../assets/icons/StraboIcons_Oct2019/MyLocationButton.png')}
-            onPress={this.clickHandler.bind(this, 'currentLocation')}
+            source={mapModeState === MapModes.DRAW.POINT ?
+              require('../../assets/icons/StraboIcons_Oct2019/PointButton_pressed.png') : require(
+                '../../assets/icons/StraboIcons_Oct2019/PointButton.png')}
+            onPress={clickHandler.bind(this, MapModes.DRAW.POINT)}
+          />
+          <IconButton
+            style={{top: 5}}
+            source={mapModeState === MapModes.DRAW.LINE ?
+              require('../../assets/icons/StraboIcons_Oct2019/LineButton_pressed.png') : require(
+                '../../assets/icons/StraboIcons_Oct2019/LineButton.png')}
+            onPress={clickHandler.bind(this, MapModes.DRAW.LINE)}
+          />
+          <IconButton
+            style={{top: 5}}
+            source={mapModeState === MapModes.DRAW.POLYGON ?
+              require('../../assets/icons/StraboIcons_Oct2019/PolygonButton_pressed.png') :
+              require('../../assets/icons/StraboIcons_Oct2019/PolygonButton.png')}
+            onPress={clickHandler.bind(this, MapModes.DRAW.POLYGON)}
           />
         </Animated.View>
-        <MapActionsDialog
-          visible={this.state.dialogs.mapActionsMenuVisible}
-          onPress={(name) => this.dialogClickHandler('mapActionsMenuVisible', name)}
-          onTouchOutside={() => this.toggleDialog('mapActionsMenuVisible')}
+        : null}
+      {/*</View>*/}
+      <Animated.View style={[styles.homeIconContainer, leftsideIconAnimation]}>
+        <IconButton
+          source={require('../../assets/icons/StraboIcons_Oct2019/HomeButton.png')}
+          onPress={clickHandler.bind(this, 'home')}
         />
-        <MapSymbolsDialog
-          visible={this.state.dialogs.mapSymbolsMenuVisible}
-          onPress={(name) => this.dialogClickHandler('mapSymbolsMenuVisible', name)}
-          onTouchOutside={() => this.toggleDialog('mapSymbolsMenuVisible')}
+      </Animated.View>
+      <Animated.View style={[styles.leftsideIcons, leftsideIconAnimation]}>
+        <IconButton
+          source={require('../../assets/icons/StraboIcons_Oct2019/MapActionsButton.png')}
+          onPress={() => toggleDialog('mapActionsMenuVisible')}
         />
-        <BaseMapDialog
-          visible={this.state.dialogs.baseMapMenuVisible}
-          onPress={(name) => this.dialogClickHandler('baseMapMenuVisible', name)}
-          onTouchOutside={() => this.toggleDialog('baseMapMenuVisible')}
+        <IconButton
+          source={require('../../assets/icons/StraboIcons_Oct2019/SymbolsButton.png')}
+          onPress={() => toggleDialog('mapSymbolsMenuVisible')}
         />
-        <NotebookPanelMenu
-          visible={this.state.dialogs.notebookPanelMenuVisible}
-          onPress={(name, position) => this.dialogClickHandler('notebookPanelMenuVisible', name, position)}
-          onTouchOutside={() => this.toggleDialog('notebookPanelMenuVisible')}
+        <IconButton
+          source={require('../../assets/icons/StraboIcons_Oct2019/layersButton.png')}
+          onPress={() => toggleDialog('baseMapMenuVisible')}
         />
-        {/*{this.props.isAllSpotsPanelVisible ? <Animated.View style={[notebookStyles.allSpotsPanel, animateAllSpotsMenu]}>*/}
-        {/*  <AllSpotsView*/}
-        {/*    close={() => this.closeAllSpotsPanel()}*/}
-        {/*  />*/}
-        {/*</Animated.View> : null}*/}
-        {/*<Animated.View style={[notebookStyles.allSpotsPanel, animateAllSpotsMenu]}>*/}
-        {/*  <AllSpotsView*/}
-        {/*    close={() => this.closeAllSpotsPanel()}*/}
-        {/*  />*/}
-        {/*</Animated.View>*/}
-        <Modal
-          isVisible={this.state.isOfflineMapModalVisible}
-          useNativeDriver={true}
-        >
-          <View style={styles.modal}>
-            <SaveMapModal
-              close={this.toggleOfflineMapModal}
-              map={this.mapViewComponent}
-            />
-          </View>
-        </Modal>
-        <Modal
-          isVisible={this.props.isImageModalVisible}
-          useNativeDriver={true}
-          style={{flex: 1}}
-        >
-          <View style={styles.modal}>
-            <Button
-              type={'clear'}
-              titleProps={{color: 'white'}}
-              title='Hide modal'
-              onPress={() => this.toggleImageModal()}/>
-            <Image
-              source={this.props.selectedImage ? {uri: this.getImageSrc(this.props.selectedImage.id)} :
-                {uri: require('../../assets/images/noimage.jpg')}}
-              style={{width: wp('90%'), height: hp('90%')}}
-            />
-          </View>
-        </Modal>
-        {notebookPanel}
-        {homeDrawer}
-        {this.renderLoadProjectFromModal()}
-      </View>
-    );
-  }
-}
+      </Animated.View>
+      <Animated.View style={[styles.bottomLeftIcons, leftsideIconAnimation]}>
+        <IconButton
+          style={{top: 5}}
+          source={require('../../assets/icons/StraboIcons_Oct2019/MyLocationButton.png')}
+          onPress={clickHandler.bind(this, 'currentLocation')}
+        />
+      </Animated.View>
+      <MapActionsDialog
+        visible={dialogs.mapActionsMenuVisible}
+        onPress={(name) => dialogClickHandler('mapActionsMenuVisible', name)}
+        onTouchOutside={() => toggleDialog('mapActionsMenuVisible')}
+      />
+      <MapSymbolsDialog
+        visible={dialogs.mapSymbolsMenuVisible}
+        onPress={(name) => dialogClickHandler('mapSymbolsMenuVisible', name)}
+        onTouchOutside={() => toggleDialog('mapSymbolsMenuVisible')}
+      />
+      <BaseMapDialog
+        visible={dialogs.baseMapMenuVisible}
+        onPress={(name) => dialogClickHandler('baseMapMenuVisible', name)}
+        onTouchOutside={() => toggleDialog('baseMapMenuVisible')}
+      />
+      <NotebookPanelMenu
+        visible={dialogs.notebookPanelMenuVisible}
+        onPress={(name, position) => dialogClickHandler('notebookPanelMenuVisible', name, position)}
+        onTouchOutside={() => toggleDialog('notebookPanelMenuVisible')}
+      />
+      {/*{props.isAllSpotsPanelVisible ? <Animated.View style={[notebookStyles.allSpotsPanel, animateAllSpotsMenu]}>*/}
+      {/*  <AllSpotsView*/}
+      {/*    close={() => closeAllSpotsPanel()}*/}
+      {/*  />*/}
+      {/*</Animated.View> : null}*/}
+      {/*<Animated.View style={[notebookStyles.allSpotsPanel, animateAllSpotsMenu]}>*/}
+      {/*  <AllSpotsView*/}
+      {/*    close={() => closeAllSpotsPanel()}*/}
+      {/*  />*/}
+      {/*</Animated.View>*/}
+      <Modal
+        isVisible={isOfflineMapModalVisible}
+        useNativeDriver={true}
+      >
+        <View style={styles.modal}>
+          <SaveMapModal
+            close={toggleOfflineMapModal}
+            map={mapViewComponent.current}
+          />
+        </View>
+      </Modal>
+      <Modal
+        isVisible={props.isImageModalVisible}
+        useNativeDriver={true}
+        style={{flex: 1}}
+      >
+        <View style={styles.modal}>
+          <Button
+            type={'clear'}
+            titleProps={{color: 'white'}}
+            title='Hide modal'
+            onPress={() => toggleImageModal()}/>
+          <Image
+            source={props.selectedImage ? {uri: getImageSrc(props.selectedImage.id)} :
+              {uri: require('../../assets/images/noimage.jpg')}}
+            style={{width: wp('90%'), height: hp('90%')}}
+          />
+        </View>
+      </Modal>
+      {notebookPanel}
+      {homeDrawer}
+      {renderLoadProjectFromModal()}
+    </View>
+  );
+};
 
 function mapStateToProps(state) {
   return {
