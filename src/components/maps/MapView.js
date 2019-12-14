@@ -26,6 +26,7 @@ const mapView = React.forwardRef((props, ref) => {
   const [featuresNotSelected, setFeaturesNotSelected] = useState([]);
   const [featuresSelected, setFeaturesSelected] = useState([]);
   const [vertexToEdit, setVertexToEdit] = useState({});
+  const {vertexEndCoords} = props;
 
   const basemaps = {
     osm: {
@@ -75,7 +76,7 @@ const mapView = React.forwardRef((props, ref) => {
   useEffect(() => {
     console.log('use effect for props.vertexEndCoords');
     moveVertex();
-  }, [props.vertexEndCoords]);
+  }, [vertexEndCoords]);
 
   useEffect(() => {
     console.log('Draw Features', drawFeatures);
@@ -83,7 +84,7 @@ const mapView = React.forwardRef((props, ref) => {
 
   const moveVertex = async () => {
     try {
-      const newVertexCoords = await _map.current.getCoordinateFromView(props.vertexEndCoords);
+      const newVertexCoords = await _map.current.getCoordinateFromView([100,100]);
       console.log('Move vertex to:', newVertexCoords);
       editFeatureCoordinates(newVertexCoords);
     }
@@ -586,6 +587,7 @@ const mapView = React.forwardRef((props, ref) => {
       getExtentString: getExtentString,
       getTileCount: getTileCount,
       goToCurrentLocation: goToCurrentLocation,
+      moveVertex: moveVertex,
       saveEdits: saveEdits,
       setCurrentLocation: setCurrentLocation,
       setPointAtCurrentLocation: setPointAtCurrentLocation,
