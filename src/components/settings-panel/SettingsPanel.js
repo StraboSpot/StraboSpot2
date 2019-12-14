@@ -7,6 +7,7 @@ import SettingsPanelHeader from './SettingsPanelHeader';
 import {SettingsMenuItems} from './SettingsMenu.constants';
 import MyStraboSpot from '../../project/MyStraboSpot';
 import ActiveProject from '../../project/ActiveProjectPanel.view';
+import UploadBackupAndExport from '../../project/UploadBackupExport';
 import SpotsList from '../../spots/SpotsList';
 import ImageGallery from '../images/ImageGallery.view';
 import SamplesList from '../samples/SamplesList.view';
@@ -73,6 +74,13 @@ const SettingsPanel = props => {
           />
         </View>;
       break;
+    case SettingsMenuItems.MANAGE.UPLOAD_BACKUP_EXPORT:
+      page =
+        <View style={styles.settingsPanelContainer}>
+          {settingsPanelHeader}
+          <UploadBackupAndExport/>
+      </View>
+        break;
     case SettingsMenuItems.APP_PREFERENCES.SHORTCUTS:
       page =
         <View style={styles.settingsPanelContainer}>
