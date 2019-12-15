@@ -2,7 +2,17 @@ import {StyleSheet} from 'react-native';
 import * as themes from '../shared/styles.constants';
 
 const dialogStyles = StyleSheet.create({
-  datasetsContainer: {
+  projectDescriptionPanel: {
+    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
+    borderLeftWidth: 1,
+    width: 300,
+    height: '100%',
+    position: 'absolute',
+    left: 300,
+    right: 0,
+    zIndex: -1,
+  },
+  listContainer: {
     height: 200,
     backgroundColor: 'white',
     margin: 10,
@@ -14,6 +24,11 @@ const dialogStyles = StyleSheet.create({
   },
   activeDataSets: {
     padding: 10,
+  },
+  buttons: {
+    // paddingLeft: 10,
+    // paddingRight: 10,
+    color: themes.BLUE,
   },
   dialogBox: {
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
@@ -33,6 +48,32 @@ const dialogStyles = StyleSheet.create({
   },
   dialogButtonText: {
     color: 'black',
+  },
+  headerText: {
+    flex: 3,
+    fontWeight: 'bold',
+    fontSize: 14,
+    paddingLeft: 10,
+    paddingBottom: 5,
+  },
+  sidePanelHeaderContainer: {
+    // backgroundColor: 'red',
+    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
+    height: 70,
+    paddingTop: 20,
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  sidePanelHeaderTextContainer: {
+    // flex: 1,
+    // backgroundColor: 'green',
+    flexDirection: 'row',
+    position: 'absolute',
+    left: 0,
+    top: 3,
+    // justifyContent: 'center',
+    // paddingLeft: 10,
+    // paddingTop: 10,
   },
   signInText: {
     paddingBottom: 20,

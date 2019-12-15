@@ -42,7 +42,7 @@ const DialogBox = (props) => {
             />
             <DialogButton
               text='CANCEL'
-              onPress={() => props.onPress(ProjectActions.CANCEL)}
+              onPress={props.cancel}
               style={styles.dialogButton}
               textStyle={[styles.dialogButtonText, {color: 'red'}]}
             />

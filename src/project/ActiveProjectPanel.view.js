@@ -46,7 +46,7 @@ const ActiveProjectPanel = (props) => {
     <React.Fragment>
       <ActiveProjectList onPress={() => openProjectDescription()}/>
       <Divider sectionText={'PROJECT DATASETS'}/>
-      <View style={styles.datasetsContainer}>
+      <View style={styles.listContainer}>
       <DatasetList/>
       </View>
       <Divider sectionText={'CURRENT DATASETS'}/>
@@ -54,7 +54,7 @@ const ActiveProjectPanel = (props) => {
         {!isEmpty(activeDatasets) ? <ActiveDatasetsList/> : null}
       </View>
       <View style={{alignItems: 'center', margin: 10, marginTop: 0}}>
-      <Text style={commonStyles.standardDescriptionText}>New Spots will be added to the current data set</Text>
+        <Text style={commonStyles.standardDescriptionText}>New Spots will be added to the current data set</Text>
       </View>
       {renderPanel()}
     </React.Fragment>
