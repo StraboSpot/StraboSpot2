@@ -24,7 +24,8 @@ const SignIn = (props) => {
   const [username, setUsername] = useState(__DEV__ ? USERNAME_TEST : '');
   const [password, setPassword] = useState(__DEV__ ? PASSWORD_TEST : '');
   const isOnline = useSelector(state => state.home.isOnline);
-  const userData = useSelector(state => state.user.userData);
+  const userData = useSelector(state => state.user);
+  const project = useSelector(state => state.project.project);
   const dispatch = useDispatch();
   const [serverRequests] = useServerRequests();
 
@@ -32,6 +33,12 @@ const SignIn = (props) => {
     NetInfo.addEventListener(state => {
       handleConnectivityChange(state.isConnected);
     });
+  }, []);
+
+  useEffect(() => {
+    if (isOnline && !isEmpty(userData) && !isEmpty(project)) {
+      props.navigation.navigate('HomeScreen');
+    }
     if (isOnline === null) {
       NetInfo.fetch().then(state => {
         dispatch({type: homeReducers.SET_ISONLINE, online: state.isConnected});
@@ -40,7 +47,7 @@ const SignIn = (props) => {
           throw (err);
         });
     }
-  }, [isOnline, userData]);
+  },[isOnline, userData, project]);
 
   //function for online/offline state change event handler
   const handleConnectivityChange = (isConnected) => {
