@@ -112,6 +112,7 @@ const useServerRequests = () => {
     getProfile: getProfile,
     getProject: getProject,
     getProfileImage: getProfileImage,
+    updateProject: updateProject,
   };
 
   return [serverRequests];
