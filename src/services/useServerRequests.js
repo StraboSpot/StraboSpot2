@@ -1,20 +1,22 @@
 import {useSelector} from 'react-redux';
+import {Alert} from 'react-native';
 
 const useServerRequests = () => {
   const user = useSelector(state => state.user);
   const baseUrl = 'https://strabospot.org/db';
 
-  const request = async (method, urlPart, login) => {
+  const request = async (method, urlPart, login, data) => {
     console.table(user.encoded_login);
-    const response = await fetch(baseUrl + urlPart, {
+    const response = await timeoutPromise(10000, fetch(baseUrl + urlPart, {
       method: method,
       headers: {
         Authorization: 'Basic ' + login + '/',
         'Content-Type': 'application/json',
       },
-    });
+      body: JSON.stringify(data),
+    }));
+    console.table(response);
     return handleResponse(response);
-
   };
 
   const getDataset = (datasetId) => {
@@ -68,7 +70,7 @@ const useServerRequests = () => {
   const handleError = (response) => {
     console.log(response);
     if (!response.ok) {
-      return Promise.reject('Error Retrieving DataBLAH!');
+      return Promise.reject('Error Retrieving Data!');
     }
   };
 
@@ -83,6 +85,7 @@ const useServerRequests = () => {
   const timeoutPromise = (ms, promise) => {
     return new Promise((resolve, reject) => {
       const timeout = setTimeout(() => {
+        Alert.alert('There was an error getting your request');
         reject(new Error('promise timeout'));
       }, ms);
       promise.then((res) => {
@@ -95,6 +98,10 @@ const useServerRequests = () => {
         },
       );
     });
+  };
+
+  const updateProject = (project, encodedLogin) => {
+    return request('POST', '/project1', encodedLogin, project,);
   };
 
   const serverRequests = {
