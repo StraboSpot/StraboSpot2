@@ -126,8 +126,12 @@ const Home = (props) => {
   const cancelEdits = async () => {
     await mapViewComponent.current.cancelEdits();
     setMapMode(MapModes.VIEW);
-    toggleButton('editButtonsVisible', false);
-    toggleButton('drawButtonsVisible', true);
+    setButtons({
+      'editButtonsVisible': false,
+      'drawButtonsVisible': true,
+    });
+    // toggleButton('editButtonsVisible', false);
+    // toggleButton('drawButtonsVisible', true);
   };
 
   const clickHandler = (name, position) => {
