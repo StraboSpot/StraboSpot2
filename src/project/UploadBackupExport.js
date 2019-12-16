@@ -5,15 +5,23 @@ import {Button, ListItem} from 'react-native-elements';
 import commonStyles from '../shared/common.styles';
 import {homeReducers} from '../views/home/Home.constants';
 import styles from './Project.styles';
-import {useSelector} from 'react-redux';
+import sharedDialogStyles from '../shared/common.styles';
+import {useDispatch, useSelector} from 'react-redux';
 import {isEmpty} from '../shared/Helpers';
 import UploadDialogBox from './UploadDialogBox';
+import StatusDialogBox from '../shared/ui/StatusDialogBox';
+import useServerRequests from '../services/useServerRequests';
 
 const UploadBackAndExport = (props) => {
-
+  const [serverRequests] = useServerRequests();
   const [uploadErrors, setUploadErrors] = useState(false);
+  const [uploadStatusMessage, setUploadStatusMessage] = useState(null);
   const [uploadConfirmText, setUploadConfirmText] = useState(null);
   const [isUploadDialogVisible, setIsUploadDialogVisible] = useState(false);
+  const [isUploadStatusDialogBoxVisible, setIsUploadStatusDialogVisible] = useState(false);
+  const dispatch = useDispatch();
+  const user = useSelector(state => state.user);
+  const project = useSelector(state => state.project.project);
   const datasets = useSelector(state => state.project.datasets);
 
   const onBackupProject = () => {
@@ -37,16 +45,11 @@ const UploadBackAndExport = (props) => {
     const activeDatasets = Object.values(datasets).filter(dataset => {
       return dataset.active === true;
     });
-  const namesList = Object.values(activeDatasets).map((l,i) => (
-    <ListItem
-      title={'LALALA'}
-    />
-  ));
     let ConfirmText = null;
     if (isEmpty(activeDatasets)) {
       ConfirmText = (
         <Text>No active datasets to upload! Only the project properties will be uploaded and will
-          <Text style={{color: 'red', fontWeight: 'bold', textAlign: 'center'}}> OVERWRITE </Text>
+          <Text style={styles.dialogContentText}> OVERWRITE </Text>
           <Text>the properties for this project on the server. Continue?'</Text>
         </Text>
       );
@@ -55,7 +58,7 @@ const UploadBackAndExport = (props) => {
       ConfirmText = (
         <View>
           <Text>The following project properties and the active datasets will be uploaded and will
-            <Text style={{color: 'red', fontWeight: 'bold'}}> OVERWRITE</Text> the project
+            <Text style={styles.dialogContentText}> OVERWRITE</Text> the project
           properties and selected datasets on the server. Continue? {'\n'}</Text>
           <View style={{alignItems: 'center'}}>
             <FlatList
@@ -71,9 +74,35 @@ const UploadBackAndExport = (props) => {
     setIsUploadDialogVisible(true);
   };
 
-  const onUploadProject = () => {
-    console.log('PROJECT UPLOADING');
-
+  const onUploadProject = async () => {
+    console.log('PROJECT UPLOADING...');
+    setIsUploadDialogVisible(false);
+    dispatch({type: homeReducers.SET_LOADING, bool: true});
+    // await serverRequests.updateProject(project, user.encoded_login).then((response) => {
+        try {
+          await serverRequests.updateProject(project, user.encoded_login)
+          console.log('Finished uploading project', project);
+          setUploadErrors(false);
+          // setIsUploadDialogVisible(false);
+          dispatch({type: homeReducers.SET_LOADING, bool: false});
+          setUploadStatusMessage(<Text>Uploaded project the properties for the project:
+            <Text style={[styles.dialogContentText, {color: 'black'}]}> {project.description.project_name}</Text>
+          </Text>);
+          setIsUploadStatusDialogVisible(true);
+        }
+        catch (err) {
+          setUploadErrors(true);
+          // setIsUploadDialogVisible(false);
+          dispatch({type: homeReducers.SET_LOADING, bool: false});
+          setUploadStatusMessage(
+            <Text style={{textAlign: 'center'}}>Error uploading project:
+              <Text style={[styles.dialogContentText, {color: 'black'}]}> {project.description.project_name}</Text>
+            </Text>);
+          setIsUploadStatusDialogVisible(true);
+          console.log('Error uploading project', project);
+        }
+      // }
+    // );
   };
 
   const renderUploadAndBackupButtons = () => {
@@ -93,6 +122,20 @@ const UploadBackAndExport = (props) => {
         />
       </View>
     );
+  };
+
+  const renderStatusDialogBox = () => {
+    return (
+      <StatusDialogBox
+        dialogTitle={uploadErrors ? 'ERROR!' : 'SUCCESS!'}
+        style={uploadErrors ? sharedDialogStyles.dialogTitleError : sharedDialogStyles.dialogTitleSuccess}
+        buttonText={'OK'}
+        visible={isUploadStatusDialogBoxVisible}
+        cancel={() => setIsUploadStatusDialogVisible(false)}
+      >
+        {uploadStatusMessage}
+      </StatusDialogBox>
+    )
   };
 
   const renderExportButtons = () => {
@@ -151,6 +194,7 @@ const UploadBackAndExport = (props) => {
       <View style={styles.listContainer}>
       </View>
       {renderUploadDialogBox()}
+      {renderStatusDialogBox()}
     </React.Fragment>
   );
 };

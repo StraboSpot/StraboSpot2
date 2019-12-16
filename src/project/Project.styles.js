@@ -34,6 +34,14 @@ const dialogStyles = StyleSheet.create({
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
     borderRadius: 30,
   },
+  dialogContent: {
+    marginTop: 15,
+  },
+  dialogContentText: {
+    color: 'red',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
   dialogTitle: {
     backgroundColor: 'red',
   },

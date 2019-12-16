@@ -1,4 +1,5 @@
 import React from 'react';
+import {Text, View} from 'react-native';
 import Dialog, {
   DialogTitle,
   DialogContent,
@@ -6,10 +7,10 @@ import Dialog, {
   DialogFooter,
   DialogButton,
 } from 'react-native-popup-dialog';
-import * as ProjectActions from './Project.constants';
-import styles from './Project.styles';
+import styles from '../../shared/common.styles';
+import * as ProjectActions from '../../project/Project.constants';
 
-const UploadDialogBox = (props) => {
+const StatusDialogBox = (props) => {
   return (
     <React.Fragment>
       <Dialog
@@ -23,22 +24,17 @@ const UploadDialogBox = (props) => {
         footer={
           <DialogFooter>
             <DialogButton
-              text='CANCEL'
+              align={'center'}
+              text={props.buttonText}
               onPress={props.cancel}
               style={styles.dialogButton}
-              textStyle={[styles.dialogButtonText, {color: 'red'}]}
-            />
-            <DialogButton
-              text={'OK'}
-              onPress={() => props.onPress(ProjectActions.BACKUP_TO_SERVER)}
-              style={[styles.dialogButton]}
               textStyle={styles.dialogButtonText}
             />
           </DialogFooter>
         }
         dialogTitle={
           <DialogTitle
-            style={styles.dialogTitle}
+            style={props.style}
             textStyle={styles.dialogTitleText}
             title={props.dialogTitle}/>
         }
@@ -51,4 +47,4 @@ const UploadDialogBox = (props) => {
   );
 };
 
-export default UploadDialogBox;
+export default StatusDialogBox;

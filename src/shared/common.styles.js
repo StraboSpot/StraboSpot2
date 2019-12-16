@@ -2,6 +2,35 @@ import {StyleSheet} from 'react-native';
 import * as themes from './styles.constants';
 
 const commonStyles = StyleSheet.create({
+  dialogContent: {
+    marginTop: 15,
+    alignItems: 'center',
+  },
+  dialogBox: {
+    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
+    borderRadius: 30,
+  },
+  // dialogTitle: {
+  //   backgroundColor: 'red',
+  // },
+  dialogTitleError: {
+    backgroundColor: 'red',
+  },
+  dialogTitleSuccess: {
+    backgroundColor: 'green',
+  },
+  dialogTitleText: {
+    fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,
+    fontWeight: 'bold',
+  },
+  dialogButton: {
+    borderTopWidth: 1,
+    borderColor: themes.LIST_BORDER_COLOR,
+    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
+  },
+  dialogButtonText: {
+    color: 'black',
+  },
   // List Styles
   rowContainer: {
     flex: 1,
