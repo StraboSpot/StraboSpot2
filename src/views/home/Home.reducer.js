@@ -3,6 +3,7 @@ import {Dimensions} from 'react-native';
 
 const initialState = {
   isOnline: null,
+  loading: false,
   modalVisible: null,
   isImageModalVisible: false,
   isAllSpotsPanelVisible: false,
@@ -59,6 +60,11 @@ export const homeReducer = (state = initialState, action) => {
       return {
         ...state,
         isOnline: action.online,
+      };
+    case homeReducers.SET_LOADING:
+      return {
+        ...state,
+        loading: action.bool,
       };
   }
   return state;

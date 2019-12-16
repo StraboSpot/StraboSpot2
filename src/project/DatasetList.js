@@ -4,14 +4,12 @@ import {useSelector, useDispatch} from 'react-redux';
 import {ListItem} from 'react-native-elements';
 import {projectReducers} from './Project.constants';
 import useServerRequests from '../services/useServerRequests';
-import Loading from '../shared/ui/Loading';
-
 import {isEmpty} from '../shared/Helpers';
 import {spotReducers} from '../spots/Spot.constants';
+import {homeReducers} from '../views/home/Home.constants';
 
 const DatasetList = () => {
   const [serverRequests] = useServerRequests();
-  const [loading, setLoading] = useState(false);
   const datasets = useSelector(state => state.project.datasets);
   const isOnline = useSelector(state => state.home.isOnline);
   const userData = useSelector(state => state.user);
@@ -21,7 +19,7 @@ const DatasetList = () => {
     const datasetInfoFromServer = await serverRequests.getDatasetSpots(dataset.id, userData.encoded_login);
     if (!isEmpty(datasetInfoFromServer) && datasetInfoFromServer.features) {
       const spots = datasetInfoFromServer.features;
-      setLoading(false);
+      dispatch({type: homeReducers.SET_LOADING, bool: false});
       if (!isEmpty(datasetInfoFromServer) && spots) {
         console.log(spots);
         dispatch({type: spotReducers.SPOTS_ADD, spots: spots});
@@ -30,7 +28,7 @@ const DatasetList = () => {
       }
     }
     else {
-      setLoading(false);
+      dispatch({type: homeReducers.SET_LOADING, bool: false});
       Alert.alert('No Spots in Dataset', `${dataset.name}`);
     }
   };
@@ -73,7 +71,7 @@ const DatasetList = () => {
     if (i === -1) datasetsToggled[id].current = true;
     datasetsToggled[id].active = val;
     if (isOnline && !isEmpty(userData) && !isEmpty(datasetsToggled[id]) && datasetsToggled[id].active) {
-      setLoading(true);
+      dispatch({type: homeReducers.SET_LOADING, bool: true});
       dispatch({type: projectReducers.DATASETS.DATASETS_UPDATE, datasets: datasetsToggled});
       await downloadSpots(datasetsToggled[id]);
     }
@@ -85,7 +83,6 @@ const DatasetList = () => {
   return (
     <View style={{flex: 1}}>
       {renderDatasets()}
-      {loading && <Loading style={{backgroundColor: 'transparent'}}/>}
     </View>
   );
 };

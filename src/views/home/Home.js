@@ -15,7 +15,7 @@ import {SettingsMenuItems} from '../../components/settings-panel/SettingsMenu.co
 import Modal from 'react-native-modal';
 import SaveMapModal from '../../components/dialog-boxes/map-actions/SaveMapsModal';
 import NotebookPanelMenu from '../../components/notebook-panel/NotebookPanelMenu';
-import {connect} from 'react-redux';
+import {connect, useDispatch} from 'react-redux';
 import {NotebookPages, notebookReducers} from '../../components/notebook-panel/Notebook.constants';
 import {settingPanelReducers} from '../../components/settings-panel/settingsPanel.constants';
 import {spotReducers} from '../../spots/Spot.constants';
@@ -56,6 +56,7 @@ const Home = (props) => {
   const online = require('../../assets/icons/StraboIcons_Oct2019/ConnectionStatusButton_connected.png');
   const offline = require('../../assets/icons/StraboIcons_Oct2019/ConnectionStatusButton_offline.png');
 
+  const dispatch = useDispatch();
   const [dialogs, setDialogs] = useState({
     mapActionsMenuVisible: false,
     mapSymbolsMenuVisible: false,
@@ -81,7 +82,6 @@ const Home = (props) => {
   const [leftsideIconAnimationValue, setLeftsideIconAnimationValue] = useState(new Animated.Value(0));
   const [rightsideIconAnimationValue, setRightsideIconAnimationValue] = useState(new Animated.Value(0));
   const [allSpotsViewAnimation, setAllSpotsViewAnimation] = useState(new Animated.Value(125));
-  const [loading, setLoading] = useState(false);
   const [toastVisible, setToastVisible] = useState(false);
 
   const mapViewComponent = useRef(null);
@@ -98,6 +98,7 @@ const Home = (props) => {
     // }
     // else Orientation.lockToLandscapeLeft();
     Dimensions.addEventListener('change', deviceOrientation);
+    dispatch({type: homeReducers.SET_LOADING, bool: false});
     props.setNotebookPanelVisible(false);
     props.setAllSpotsPanelVisible(false);
     props.setModalVisible(null);
@@ -500,8 +501,8 @@ const Home = (props) => {
   };
 
   const toggleLoading = bool => {
-    setLoading(bool);
-    console.log('Loading', loading);
+    props.setLoading(bool);
+    console.log('Loading', props.loading);
   };
 
   const toggleOfflineMapModal = () => {
@@ -619,7 +620,7 @@ const Home = (props) => {
         startEdit={startEdit}
       />
       {props.vertexStartCoords && <VertexDrag/>}
-      {loading && <LoadingSpinner/>}
+      {props.loading && <LoadingSpinner/>}
       {toastVisible &&
       <ToastPopup
         visible={toastVisible}
@@ -848,6 +849,7 @@ const Home = (props) => {
 
 function mapStateToProps(state) {
   return {
+    loading: state.home.loading,
     selectedSpot: state.spot.selectedSpot,
     selectedImage: state.spot.selectedAttributes[0],
     isImageModalVisible: state.home.isImageModalVisible,
@@ -870,6 +872,7 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
+  setLoading: (bool) => ({type: homeReducers.SET_LOADING, bool: bool}),
   setIsOnline: (online) => ({type: homeReducers.SET_ISONLINE, online: online}),
   setHomePanelVisible: (value) => ({type: homeReducers.SET_SETTINGS_PANEL_VISIBLE, value: value}),
   setHomePanelPageVisible: (name) => ({type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: name}),

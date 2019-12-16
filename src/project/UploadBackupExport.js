@@ -3,6 +3,7 @@ import {FlatList, ListView, Text, View} from 'react-native';
 import Divider from '../components/settings-panel/HomePanelDivider';
 import {Button, ListItem} from 'react-native-elements';
 import commonStyles from '../shared/common.styles';
+import {homeReducers} from '../views/home/Home.constants';
 import styles from './Project.styles';
 import {useSelector} from 'react-redux';
 import {isEmpty} from '../shared/Helpers';

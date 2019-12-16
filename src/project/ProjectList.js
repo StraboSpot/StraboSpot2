@@ -16,6 +16,7 @@ import styles from './Project.styles';
 import {SettingsMenuItems} from '../components/settings-panel/SettingsMenu.constants';
 import {spotReducers} from '../spots/Spot.constants';
 import useServerRequests from '../services/useServerRequests';
+import {homeReducers} from '../views/home/Home.constants';
 
 const ProjectList = (props) => {
   const currentProject = useSelector(state => state.project.project);
@@ -24,7 +25,6 @@ const ProjectList = (props) => {
   const dispatch = useDispatch();
   const [projectsArr, setProjectsArr] = useState([]);
   const [selectedProject, setSelectedProject] = useState({});
-  const [loading, setLoading] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
   const [errorMessage, setErrorMessage] = useState(false);
   // Server calls
@@ -36,16 +36,16 @@ const ProjectList = (props) => {
   }, []);
 
   const getAllProjects = async () => {
-    setLoading(true);
+    dispatch({type: homeReducers.SET_LOADING, bool: true});
     try {
       const projectsResponse = await serverRequests.getMyProjects(userData.encoded_login);
         setProjectsArr(projectsResponse);
-        setLoading(false);
+      dispatch({type: homeReducers.SET_LOADING, bool: false});
         setErrorMessage(false);
     }
     catch (err) {
       console.log(err);
-      setLoading(false);
+      dispatch({type: homeReducers.SET_LOADING, bool: false});
       setErrorMessage(true);
     }
   };
@@ -166,7 +166,7 @@ const ProjectList = (props) => {
   return (
     <View style={{flex: 1}}>
       <View style={{flex: 1}}>
-        {loading ? <Loading style={{backgroundColor: themes.PRIMARY_BACKGROUND_COLOR}}/> : renderProjectsList()}
+        {renderProjectsList()}
       </View>
       {renderDialog()}
       {errorMessage && renderErrorMessage()}
