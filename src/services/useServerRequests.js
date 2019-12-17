@@ -101,7 +101,7 @@ const useServerRequests = () => {
   };
 
   const updateProject = (project, encodedLogin) => {
-    return request('POST', '/project1', encodedLogin, project,);
+    return request('POST', '/project', encodedLogin, project,);
   };
 
   const serverRequests = {
