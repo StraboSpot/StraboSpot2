@@ -12,6 +12,7 @@
   "dependencies": {
     "@react-native-community/art": "^1.0.3",
     "@react-native-community/async-storage": "^1.6.3",
+    "@react-native-community/datetimepicker": "^2.1.0",
     "@react-native-community/geolocation": "^2.0.2",
     "@react-native-community/netinfo": "^4.6.0",
     "@react-native-mapbox-gl/maps": "^7.0.8",
@@ -19,7 +20,9 @@
     "formik": "^1.5.8",
     "js-base64": "^2.5.1",
     "lodash.isequal": "^4.5.0",
+    "moment": "^2.24.0",
     "react": "16.9.0",
+    "react-moment": "^0.9.7",
     "react-native": "0.61.4",
     "react-native-collapsible": "^1.5.1",
     "react-native-elements": "^1.2.7",
