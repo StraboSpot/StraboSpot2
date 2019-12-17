@@ -1,9 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {ScrollView, Text, View} from 'react-native';
-import {connect, useSelector, useDispatch} from 'react-redux';
-// import * as RemoteServer from '../services/useServerRequests';
+import {useSelector, useDispatch} from 'react-redux';
 import {settingPanelReducers} from '../components/settings-panel/settingsPanel.constants';
-// import {USER_DATA} from '../services/user/User.constants';
 import Loading from '../shared/ui/Loading';
 import {ListItem, Button} from 'react-native-elements';
 import {isEmpty} from '../shared/Helpers';
@@ -16,7 +14,6 @@ import styles from './Project.styles';
 import {SettingsMenuItems} from '../components/settings-panel/SettingsMenu.constants';
 import {spotReducers} from '../spots/Spot.constants';
 import useServerRequests from '../services/useServerRequests';
-import {homeReducers} from '../views/home/Home.constants';
 
 const ProjectList = (props) => {
   const currentProject = useSelector(state => state.project.project);
@@ -25,6 +22,7 @@ const ProjectList = (props) => {
   const dispatch = useDispatch();
   const [projectsArr, setProjectsArr] = useState([]);
   const [selectedProject, setSelectedProject] = useState({});
+  const [loading, setLoading] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
   const [errorMessage, setErrorMessage] = useState(false);
   // Server calls
@@ -36,16 +34,16 @@ const ProjectList = (props) => {
   }, []);
 
   const getAllProjects = async () => {
-    dispatch({type: homeReducers.SET_LOADING, bool: true});
+    setLoading(true);
     try {
       const projectsResponse = await serverRequests.getMyProjects(userData.encoded_login);
         setProjectsArr(projectsResponse);
-      dispatch({type: homeReducers.SET_LOADING, bool: false});
+        setLoading(false);
         setErrorMessage(false);
     }
     catch (err) {
       console.log(err);
-      dispatch({type: homeReducers.SET_LOADING, bool: false});
+      setLoading(false);
       setErrorMessage(true);
     }
   };
@@ -72,14 +70,17 @@ const ProjectList = (props) => {
 
   const selectProject = async (project) => {
     console.log('Selected Project:', project);
+    setLoading(true);
     setSelectedProject(project);
     if (!isEmpty(currentProject)) {
       setSelectedProject(project);
+      setLoading(false);
       setShowDialog(true);
     }
     else {
       const projectData = await projectHelpers.loadProjectRemote(project.id, userData.encoded_login);
       console.log('Loaded project \n', projectData);
+      setLoading(false);
       dispatch({type: ProjectActions.projectReducers.PROJECTS, project: projectData});
       await getDatasets(project);
     }
@@ -166,7 +167,7 @@ const ProjectList = (props) => {
   return (
     <View style={{flex: 1}}>
       <View style={{flex: 1}}>
-        {renderProjectsList()}
+        {loading ? <Loading style={{backgroundColor: themes.PRIMARY_BACKGROUND_COLOR}}/> : renderProjectsList()}
       </View>
       {renderDialog()}
       {errorMessage && renderErrorMessage()}
@@ -174,18 +175,4 @@ const ProjectList = (props) => {
   );
 };
 
-const mapStateToProps = (state) => {
-  return {
-    // settingsPageVisible: state.settingsPanel.settingsPageVisible,
-    // userData: state.user
-    // isOnline: state.home.isOnline,
-    // currentProject: state.project.project,
-  };
-};
-
-const mapDispatchToProps = {
-  // setSettingsPanelPageVisible: (name) => ({type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: name}),
-  // setUserData: (userData) => ({type: USER_DATA, userData: userData}),
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(withNavigation(ProjectList));
+export default withNavigation(ProjectList);

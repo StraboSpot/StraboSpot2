@@ -2,11 +2,37 @@ import React from 'react';
 import {Text, TextInput,  View} from 'react-native';
 import Divider from '../components/settings-panel/HomePanelDivider';
 import styles from './Project.styles';
-import {Icon, Button, Input} from 'react-native-elements';
+import {Icon, Button, Input, ListItem} from 'react-native-elements';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import {useSelector} from 'react-redux';
+import moment from 'moment';
+import {FlingGestureHandler} from "react-native-gesture-handler";
 
 const ProjectDescription = (props) => {
   const project = useSelector(state => state.project.project);
+  const [data, setData] = useState({
+    text: '',
+    endDate: '',
+    notes: '',
+  });
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
+  const [showStartPicker, setShowStartPicker] = useState(false);
+  const [showEndPicker, setShowEndPicker] = useState(false);
+
+  // useEffect(() => {
+  //   console.log('RENDER DATE')
+  // }, [startDate, endDate]);
+
+  const changeStartDate = (event, date) => {
+    date = date || startDate;
+    setStartDate(date);
+  };
+
+  const changeEndDate = (event, date) => {
+    date = date || endDate;
+    setEndDate(date);
+  };
 
   return (
     <React.Fragment>
@@ -33,26 +59,73 @@ const ProjectDescription = (props) => {
         {/*<View style={{flex: 1}}></View>*/}
       </View>
       <Divider sectionText={'basic info'}/>
-      <View style={{margin: 10, backgroundColor: 'white'}}>
-        {/*<Text>Project Name:</Text>*/}
-        <Input
-          placeholder='BASIC INPUT'
-          inputStyle={{fontSize: 18}}
-          label={'Project Name:'}
-          labelStyle={{fontSize: 12}}
-          containerStyle={{margin: 10}}
-          value={project.description.project_name}
-        />
-        <Input
-          placeholder='BASIC INPUT'
-          inputStyle={{fontSize: 18}}
-          label={'Project Name:'}
-          labelStyle={{fontSize: 12}}
-          containerStyle={{margin: 10}}
-          value={project.description.project_name}
-        />
+      <View style={{backgroundColor: 'white', borderRadius: 10, margin: 10}}>
+        <View style={styles.basicInfoContainer}>
+          <Text>Project Name:</Text>
+          <TextInput
+            placeholder={project.description.project_name}
+            style={styles.basicInfoInputText}
+            // inputStyle={{fontSize: 22}}
+            onChangeText={(text) => setData({text: text})}
+            value={data.text}
+          />
+        </View>
+        <View style={styles.basicInfoContainer}>
+          <Text>Start Date:</Text>
+          <View>
+            <ListItem
+              title={moment(startDate).format('MM/DD/YYYY')}
+              containerStyle={{width: 200, padding: 0}}
+              contentContainerStyle={styles.basicInfoListItemContent}
+              onPress={() => setShowStartPicker(true)}
+              onBlur={() => console.log('BLUR')}
+              chevron
+            />
+          </View>
+        </View>
+        <View style={styles.basicInfoContainer}>
+          <Text>End Date:</Text>
+          <ListItem
+            title={moment(endDate).format('MM/DD/YYYY')}
+            containerStyle={{width: 200, padding: 0}}
+            contentContainerStyle={styles.basicInfoListItemContent}
+            onPress={() => setShowEndPicker(true)}
+            chevron
+          />
+        </View>
+        {showStartPicker ?
+          <View>
+            <Button type={'clear'} title={'Start Date Done'} onPress={() => setShowStartPicker(false)}/>
+            <DateTimePicker
+              mode={'date'}
+              value={startDate}
+              onChange={changeStartDate}
+              display='default'
+            />
+          </View> : null}
+        {showEndPicker ?
+          <View>
+            <Button type={'clear'} title={'End Date Done'} onPress={() => setShowEndPicker(false)}/>
+            <DateTimePicker
+              mode={'date'}
+              value={endDate}
+              onChange={changeEndDate}
+              display='default'
+            />
+          </View> : null}
       </View>
       <Divider sectionText={'notes'}/>
+      <View style={styles.notesContainer}>
+        <TextInput
+          placeholder={'Notes'}
+          onChangeText={noteText => setData({notes: noteText})}
+          style={{height: 100}}
+          multiline={true}
+          numberOfLines={10}
+          inputStyle={{fontSize: 18}}
+          value={data.notes}
+        />
+    </View>
       <Divider sectionText={'technical details'}/>
       <Divider sectionText={'general details'}/>
     </React.Fragment>

@@ -2,6 +2,25 @@ import {StyleSheet} from 'react-native';
 import * as themes from '../shared/styles.constants';
 
 const dialogStyles = StyleSheet.create({
+  basicInfoContainer: {
+    marginTop: 5,
+    marginBottom: 5,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  basicInfoListItemContent: {
+    alignItems: 'flex-end',
+  },
+  basicInfoInputText: {
+    paddingRight: 10,
+    fontSize: 18,
+  },
+  notesContainer: {
+    margin: 10,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    // height: 200
+  },
   projectDescriptionPanel: {
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
     borderLeftWidth: 1,
