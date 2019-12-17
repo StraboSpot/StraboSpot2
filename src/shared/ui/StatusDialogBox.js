@@ -29,6 +29,7 @@ const StatusDialogBox = (props) => {
               onPress={props.cancel}
               style={styles.dialogButton}
               textStyle={styles.dialogButtonText}
+              disabled={props.disabled}
             />
           </DialogFooter>
         }

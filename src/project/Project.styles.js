@@ -64,6 +64,10 @@ const dialogStyles = StyleSheet.create({
     paddingLeft: 10,
     paddingBottom: 5,
   },
+  progressCircleContainer: {
+    alignItems: 'center',
+    paddingTop: 15,
+  },
   sidePanelHeaderContainer: {
     // backgroundColor: 'red',
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,

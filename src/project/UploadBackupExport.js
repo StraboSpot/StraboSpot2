@@ -11,9 +11,11 @@ import {isEmpty} from '../shared/Helpers';
 import UploadDialogBox from './UploadDialogBox';
 import StatusDialogBox from '../shared/ui/StatusDialogBox';
 import useServerRequests from '../services/useServerRequests';
+import ProgressCircle from '../shared/ui/ProgressCircle';
 
 const UploadBackAndExport = (props) => {
   const [serverRequests] = useServerRequests();
+  const [progress, setProgress] = useState(null);
   const [uploadErrors, setUploadErrors] = useState(false);
   const [uploadStatusMessage, setUploadStatusMessage] = useState(null);
   const [uploadConfirmText, setUploadConfirmText] = useState(null);
@@ -75,20 +77,23 @@ const UploadBackAndExport = (props) => {
   };
 
   const onUploadProject = async () => {
+    setProgress(0);
     console.log('PROJECT UPLOADING...');
     setIsUploadDialogVisible(false);
+    setIsUploadStatusDialogVisible(true);
     dispatch({type: homeReducers.SET_LOADING, bool: true});
     // await serverRequests.updateProject(project, user.encoded_login).then((response) => {
         try {
           await serverRequests.updateProject(project, user.encoded_login)
           console.log('Finished uploading project', project);
           setUploadErrors(false);
-          // setIsUploadDialogVisible(false);
           dispatch({type: homeReducers.SET_LOADING, bool: false});
           setUploadStatusMessage(<Text>Uploaded project the properties for the project:
             <Text style={[styles.dialogContentText, {color: 'black'}]}> {project.description.project_name}</Text>
           </Text>);
-          setIsUploadStatusDialogVisible(true);
+          setProgress(1);
+          // setIsUploadDialogVisible(false);
+          // setIsUploadStatusDialogVisible(true);
         }
         catch (err) {
           setUploadErrors(true);
@@ -132,10 +137,14 @@ const UploadBackAndExport = (props) => {
         buttonText={'OK'}
         visible={isUploadStatusDialogBoxVisible}
         cancel={() => setIsUploadStatusDialogVisible(false)}
+        disabled={progress !== 1}
       >
         {uploadStatusMessage}
+        <View style={styles.progressCircleContainer}>
+          <ProgressCircle progress={progress} />
+        </View>
       </StatusDialogBox>
-    )
+    );
   };
 
   const renderExportButtons = () => {
