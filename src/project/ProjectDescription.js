@@ -1,5 +1,5 @@
-import React from 'react';
-import {Text, TextInput,  View} from 'react-native';
+import React, {useState} from 'react';
+import {Text, TextInput, View} from 'react-native';
 import Divider from '../components/settings-panel/HomePanelDivider';
 import styles from './Project.styles';
 import {Icon, Button, Input, ListItem} from 'react-native-elements';
@@ -19,10 +19,6 @@ const ProjectDescription = (props) => {
   const [endDate, setEndDate] = useState(new Date());
   const [showStartPicker, setShowStartPicker] = useState(false);
   const [showEndPicker, setShowEndPicker] = useState(false);
-
-  // useEffect(() => {
-  //   console.log('RENDER DATE')
-  // }, [startDate, endDate]);
 
   const changeStartDate = (event, date) => {
     date = date || startDate;
