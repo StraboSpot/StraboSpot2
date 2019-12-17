@@ -21,11 +21,18 @@ const MyStraboSpot = props => {
             onLoadProjectsFromServer={() => setShowSection('serverProjects')}
             onStartNewProject={() => setShowSection('newProject')}/>
         </View> :
-        showSection === 'serverProjects' ? <ProjectList/> : <Text>Need fields for a new project here.</Text>}
-        <View>
-          <Divider sectionText={'Active project'}/>
-          <ActiveProjectList/>
-        </View>
+        showSection === 'serverProjects' ?
+          <View style={{paddingTop: 20, height: 600}}>
+            <UserProfile/>
+
+            <Divider sectionText={'Project List'}/>
+            <ProjectList/>
+          </View>
+           : <Text>Need fields for a new project here.</Text>}
+      <View>
+        <Divider sectionText={'Active project'}/>
+        <ActiveProjectList/>
+      </View>
     </React.Fragment>
   );
 };
