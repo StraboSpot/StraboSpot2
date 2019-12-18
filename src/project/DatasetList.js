@@ -6,13 +6,11 @@ import {projectReducers} from './Project.constants';
 import useServerRequests from '../services/useServerRequests';
 import {isEmpty} from '../shared/Helpers';
 import {spotReducers} from '../spots/Spot.constants';
-import {homeReducers} from '../views/home/Home.constants';
 import Loading from '../shared/ui/Loading';
 
 const DatasetList = () => {
   const [serverRequests] = useServerRequests();
   const [loading, setLoading] = useState(false);
-  // const loading = useSelector(state => state.home.loading);
   const datasets = useSelector(state => state.project.datasets);
   const isOnline = useSelector(state => state.home.isOnline);
   const userData = useSelector(state => state.user);
@@ -22,7 +20,6 @@ const DatasetList = () => {
     const datasetInfoFromServer = await serverRequests.getDatasetSpots(dataset.id, userData.encoded_login);
     if (!isEmpty(datasetInfoFromServer) && datasetInfoFromServer.features) {
       const spots = datasetInfoFromServer.features;
-      // dispatch({type: homeReducers.SET_LOADING, bool: false});
       setLoading(false);
       if (!isEmpty(datasetInfoFromServer) && spots) {
         console.log(spots);
@@ -32,10 +29,14 @@ const DatasetList = () => {
       }
     }
     else {
-      // dispatch({type: homeReducers.SET_LOADING, bool: false});
       setLoading(false);
       Alert.alert('No Spots in Dataset', `${dataset.name}`);
     }
+  };
+
+  const getIsDisabled = (id)=> {
+    const activeDatasets = Object.values(datasets).filter(dataset => dataset.active === true);
+    return activeDatasets.length === 1 && activeDatasets[0].id === id;
   };
 
   const initializeDownloadDataset = async (dataset) => {
@@ -62,7 +63,7 @@ const DatasetList = () => {
                 <Switch
                   onValueChange={(value) => setSwitchValue(value, item.id)}
                   value={item.active}
-                  disabled={item.current}
+                  disabled={getIsDisabled(item.id)}
                 />}
             />;
           })}
@@ -71,18 +72,26 @@ const DatasetList = () => {
   };
 
   const setSwitchValue = async (val, id) => {
-    const datasetsToggled = JSON.parse(JSON.stringify(datasets));
-    const i = Object.values(datasets).findIndex(data => data.current === true);
-    if (i === -1) datasetsToggled[id].current = true;
-    datasetsToggled[id].active = val;
-    if (isOnline && !isEmpty(userData) && !isEmpty(datasetsToggled[id]) && datasetsToggled[id].active) {
+    const datasetsCopy = {...datasets};
+    datasetsCopy[id].active = val;
+
+    // Check for a current dataset
+    const i = Object.values(datasetsCopy).findIndex(data => data.current === true);
+    if (val && i === -1) datasetsCopy[id].current = true;
+
+    else if (!val && datasetsCopy[id].current) {
+      datasetsCopy[id].current = false;
+      const datasetsActive = Object.values(datasetsCopy).filter(dataset => dataset.active === true);
+      datasetsCopy[datasetsActive[0].id].current = true;
+    }
+    if (isOnline && !isEmpty(userData) && !isEmpty(datasetsCopy[id]) && datasetsCopy[id].active) {
       // dispatch({type: homeReducers.SET_LOADING, bool: true});
       setLoading(true);
-      dispatch({type: projectReducers.DATASETS.DATASETS_UPDATE, datasets: datasetsToggled});
-      await downloadSpots(datasetsToggled[id]);
+      dispatch({type: projectReducers.DATASETS.DATASETS_UPDATE, datasets: datasetsCopy});
+      await downloadSpots(datasets[id]);
     }
     else {
-      dispatch({type: projectReducers.DATASETS.DATASETS_UPDATE, datasets: datasetsToggled});
+      dispatch({type: projectReducers.DATASETS.DATASETS_UPDATE, datasets: datasetsCopy});
     }
   };
 
