@@ -3,8 +3,9 @@ import * as themes from '../shared/styles.constants';
 
 const dialogStyles = StyleSheet.create({
   basicInfoContainer: {
-    marginTop: 5,
-    marginBottom: 5,
+    marginTop: 10,
+    marginBottom: 10,
+    marginLeft: 20,
     flexDirection: 'row',
     justifyContent: 'space-between',
   },

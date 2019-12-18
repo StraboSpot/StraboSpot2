@@ -6,7 +6,7 @@ import {Icon, Button, Input, ListItem} from 'react-native-elements';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {useSelector} from 'react-redux';
 import moment from 'moment';
-import {FlingGestureHandler} from "react-native-gesture-handler";
+import SaveAndCloseButtons from '../shared/ui/SaveAndCloseButtons';
 
 const ProjectDescription = (props) => {
   const project = useSelector(state => state.project.project);
@@ -30,6 +30,23 @@ const ProjectDescription = (props) => {
     setEndDate(date);
   };
 
+  const showDatPickerHandler = (type) => {
+    if (type === 'startDate') {
+      setShowStartPicker(!showStartPicker);
+      setShowEndPicker(false);
+    }
+    else if (type === 'endDate') {
+      setShowEndPicker(!showEndPicker);
+      setShowStartPicker(false);
+    }
+  };
+
+  const renderSaveAndCloseButtons = () => {
+    return (
+      <SaveAndCloseButtons cancel={props.onPress}/>
+    );
+  };
+
   return (
     <React.Fragment>
       <View style={styles.sidePanelHeaderContainer}>
@@ -48,20 +65,21 @@ const ProjectDescription = (props) => {
             type={'clear'}
             containerStyle={styles.sidePanelHeaderTextContainer}
             titleStyle={styles.headerText}
-            onPress={() => props.onPress()}
+            onPress={props.onPress}
           />
           {/*<Text style={styles.headerText}>Active Project</Text>*/}
         </View>
         {/*<View style={{flex: 1}}></View>*/}
       </View>
+      {renderSaveAndCloseButtons()}
       <Divider sectionText={'basic info'}/>
       <View style={{backgroundColor: 'white', borderRadius: 10, margin: 10}}>
         <View style={styles.basicInfoContainer}>
           <Text>Project Name:</Text>
           <TextInput
             placeholder={project.description.project_name}
+            placeholderTextColor={'dimgrey'}
             style={styles.basicInfoInputText}
-            // inputStyle={{fontSize: 22}}
             onChangeText={(text) => setData({text: text})}
             value={data.text}
           />
@@ -71,10 +89,9 @@ const ProjectDescription = (props) => {
           <View>
             <ListItem
               title={moment(startDate).format('MM/DD/YYYY')}
-              containerStyle={{width: 200, padding: 0}}
+              containerStyle={{width: 150, padding: 0,  paddingRight: 5,}}
               contentContainerStyle={styles.basicInfoListItemContent}
-              onPress={() => setShowStartPicker(true)}
-              onBlur={() => console.log('BLUR')}
+              onPress={() => showDatPickerHandler('startDate')}
               chevron
             />
           </View>
@@ -83,9 +100,9 @@ const ProjectDescription = (props) => {
           <Text>End Date:</Text>
           <ListItem
             title={moment(endDate).format('MM/DD/YYYY')}
-            containerStyle={{width: 200, padding: 0}}
+            containerStyle={{width: 150, padding: 0, paddingRight: 5}}
             contentContainerStyle={styles.basicInfoListItemContent}
-            onPress={() => setShowEndPicker(true)}
+            onPress={() => showDatPickerHandler('endDate')}
             chevron
           />
         </View>
