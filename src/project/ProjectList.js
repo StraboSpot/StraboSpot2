@@ -78,6 +78,7 @@ const ProjectList = (props) => {
       setShowDialog(true);
     }
     else {
+      console.log('Getting project...');
       const projectData = await projectHelpers.loadProjectRemote(project.id, userData.encoded_login);
       console.log('Loaded project \n', projectData);
       setLoading(false);

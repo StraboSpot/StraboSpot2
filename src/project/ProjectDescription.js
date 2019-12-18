@@ -67,9 +67,7 @@ const ProjectDescription = (props) => {
             titleStyle={styles.headerText}
             onPress={props.onPress}
           />
-          {/*<Text style={styles.headerText}>Active Project</Text>*/}
         </View>
-        {/*<View style={{flex: 1}}></View>*/}
       </View>
       {renderSaveAndCloseButtons()}
       <Divider sectionText={'basic info'}/>

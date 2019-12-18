@@ -49,12 +49,12 @@ const ActiveProjectPanel = (props) => {
       <View style={styles.listContainer}>
       <DatasetList/>
       </View>
-      <Divider sectionText={'CURRENT DATASETS'}/>
+      <Divider sectionText={'ACTIVE DATASETS'}/>
       <View style={[styles.listContainer, {height: 200}]}>
         {!isEmpty(activeDatasets) ? <ActiveDatasetsList/> : null}
       </View>
       <View style={{alignItems: 'center', margin: 10, marginTop: 0}}>
-        <Text style={commonStyles.standardDescriptionText}>New Spots will be added to the current data set</Text>
+        <Text style={commonStyles.standardDescriptionText}>New Spots will be added to the check marked data set</Text>
       </View>
       {renderPanel()}
     </React.Fragment>

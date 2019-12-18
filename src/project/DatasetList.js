@@ -30,7 +30,6 @@ const DatasetList = () => {
     }
     else {
       setLoading(false);
-      Alert.alert('No Spots in Dataset', `${dataset.name}`);
     }
   };
 
