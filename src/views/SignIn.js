@@ -1,7 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {View, StyleSheet, TextInput, Alert, ImageBackground, KeyboardAvoidingView} from 'react-native';
 import {connect, useSelector, useDispatch} from 'react-redux';
-import {authenticateUser} from '../services/user/UserAuth';
 import useServerRequests from '../services/useServerRequests';
 import * as themes from '../shared/styles.constants';
 import {USER_DATA, USER_IMAGE, ENCODED_LOGIN} from '../services/user/User.constants';
@@ -63,7 +62,7 @@ const SignIn = (props) => {
   };
 
   const signIn = async () => {
-    user = await authenticateUser(username, password);
+    user = await serverRequests.authenticateUser(username, password);
     try {
       // login with provider
       if (user === 'true') {
