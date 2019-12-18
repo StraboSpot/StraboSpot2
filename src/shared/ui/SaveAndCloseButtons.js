@@ -3,7 +3,7 @@ import {View} from 'react-native';
 import {Button} from 'react-native-elements';
 
 // Styles
-import styles from './ui.styles';
+import styles from '../../shared/ui/ui.styles';
 
 const saveAndClose = (props) => {
   return (

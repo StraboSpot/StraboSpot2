@@ -19,6 +19,22 @@ const styles = StyleSheet.create({
     bottom: hp('50'),
     backgroundColor: 'transparent',
   },
+  leftContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingLeft: 10,
+    paddingRight: 10,
+  },
+  backButton: {
+    marginTop: 10,
+    alignItems: 'flex-start',
+  },
+  navButtonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+  },
   sectionDivider: {
     paddingLeft: 10,
     justifyContent: 'center',

@@ -8,7 +8,7 @@ import {Formik} from 'formik';
 import FormView from '../form/Form.view';
 import {getNewId, isEmpty} from '../../shared/Helpers';
 import SectionDivider from '../../shared/ui/SectionDivider';
-import SaveAndCloseButton from '../notebook-panel/ui/SaveAndCloseButtons';
+import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import {getForm, hasErrors, setForm, showErrors, validateForm} from '../form/form.container';
 import {homeReducers, Modals} from '../../views/home/Home.constants';
 import MeasurementItem from './MeasurementItem';
