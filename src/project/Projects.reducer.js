@@ -12,6 +12,18 @@ export const projectsReducer = (state = initialState, action) => {
         ...state,
         project: action.project,
       };
+    case projectReducers.UPDATE_PROJECT:
+      console.log(action.field, action.value);
+      const updatedProject = {
+        ...state.project,
+        [action.field]: action.value,
+        modified_timestamp: Date.now(),
+        date: new Date(),
+      };
+      return {
+        ...state,
+        project: updatedProject,
+      };
     case projectReducers.DATASETS.DATASETS_UPDATE: {
       return {
         ...state,

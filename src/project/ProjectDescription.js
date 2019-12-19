@@ -4,11 +4,13 @@ import Divider from '../components/settings-panel/HomePanelDivider';
 import styles from './Project.styles';
 import {Icon, Button, Input, ListItem} from 'react-native-elements';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import moment from 'moment';
 import SaveAndCloseButtons from '../shared/ui/SaveAndCloseButtons';
+import {projectReducers} from './Project.constants';
 
 const ProjectDescription = (props) => {
+  const dispatch = useDispatch();
   const project = useSelector(state => state.project.project);
   const [data, setData] = useState({
     text: '',
@@ -45,6 +47,10 @@ const ProjectDescription = (props) => {
     return (
       <SaveAndCloseButtons cancel={props.onPress}/>
     );
+  };
+
+  const saveChanges =  () => {
+     dispatch({type: projectReducers.UPDATE_PROJECT, field: 'description', value: projectDescription});
   };
 
   return (
