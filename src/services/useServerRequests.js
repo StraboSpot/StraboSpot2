@@ -30,15 +30,27 @@ const useServerRequests = () => {
     }
   };
 
-  const request = async (method, urlPart, login, data) => {
+  const request = async (method, urlPart, login) => {
     const response = await timeoutPromise(10000, fetch(baseUrl + urlPart, {
       method: method,
       headers: {
         Authorization: 'Basic ' + login + '/',
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(data),
+      // body: JSON.stringify({data: data}),
     }));
+    return handleResponse(response);
+  };
+
+  const post = async (urlPart, login, data) => {
+    const response = await fetch(baseUrl + urlPart, {
+      method: 'POST',
+      body: JSON.stringify(data),
+      headers: {
+        Authorization: 'Basic ' + login,
+        'Content-Type': 'application/json',
+      },
+    });
     return handleResponse(response);
   };
 
@@ -121,7 +133,7 @@ const useServerRequests = () => {
   };
 
   const updateProject = (project, encodedLogin) => {
-    return request('POST', '/project', encodedLogin, project,);
+    return post('/project', encodedLogin, project,);
   };
 
   const serverRequests = {
