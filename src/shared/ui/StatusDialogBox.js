@@ -20,19 +20,20 @@ const StatusDialogBox = (props) => {
         dialogAnimation={new SlideAnimation({
           slideFrom: 'top',
         })}
+        onTouchOutside={props.onTouchOutside}
         useNativeDriver={true}
-        footer={
-          <DialogFooter>
-            <DialogButton
-              align={'center'}
-              text={props.buttonText}
-              onPress={props.cancel}
-              style={styles.dialogButton}
-              textStyle={styles.dialogButtonText}
-              disabled={props.disabled}
-            />
-          </DialogFooter>
-        }
+        // footer={
+        //   <DialogFooter>
+        //     <DialogButton
+        //       align={'center'}
+        //       text={props.buttonText}
+        //       onPress={props.cancel}
+        //       style={styles.dialogButton}
+        //       textStyle={styles.dialogButtonText}
+        //       disabled={props.disabled}
+        //     />
+        //   </DialogFooter>
+        // }
         dialogTitle={
           <DialogTitle
             style={props.style}

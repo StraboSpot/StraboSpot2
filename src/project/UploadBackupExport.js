@@ -84,8 +84,8 @@ const UploadBackAndExport = (props) => {
     dispatch({type: homeReducers.SET_LOADING, bool: true});
     // await serverRequests.updateProject(project, user.encoded_login).then((response) => {
         try {
-          await serverRequests.updateProject(project, user.encoded_login)
-          console.log('Finished uploading project', project);
+          const updatedProject = await serverRequests.updateProject(project, user.encoded_login);
+          console.log('Finished uploading project', updatedProject);
           setUploadErrors(false);
           dispatch({type: homeReducers.SET_LOADING, bool: false});
           setUploadStatusMessage(<Text>Uploaded project the properties for the project:
@@ -137,7 +137,8 @@ const UploadBackAndExport = (props) => {
         buttonText={'OK'}
         visible={isUploadStatusDialogBoxVisible}
         cancel={() => setIsUploadStatusDialogVisible(false)}
-        disabled={progress !== 1}
+        onTouchOutside={() => setIsUploadStatusDialogVisible(false)}
+        disabled={progress !== 1 && !uploadErrors}
       >
         {uploadStatusMessage}
         <View style={styles.progressCircleContainer}>
