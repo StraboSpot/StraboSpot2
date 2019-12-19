@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {Text, TextInput, View} from 'react-native';
 import Divider from '../components/settings-panel/HomePanelDivider';
 import styles from './Project.styles';
@@ -12,24 +12,29 @@ import {projectReducers} from './Project.constants';
 const ProjectDescription = (props) => {
   const dispatch = useDispatch();
   const project = useSelector(state => state.project.project);
-  const [data, setData] = useState({
-    text: '',
-    endDate: '',
-    notes: '',
+  const [projectDescription, setProjectDescription] = useState({
+    project_name: project.description.project_name,
+    start_date: project.description.start_date || new Date(),
+    end_date: project.description.end_date || new Date(),
+    notes: project.description.notes,
   });
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [showStartPicker, setShowStartPicker] = useState(false);
   const [showEndPicker, setShowEndPicker] = useState(false);
 
+  useEffect(() => {
+    console.log('Description Updated', projectDescription);
+  }, [projectDescription]);
+
   const changeStartDate = (event, date) => {
-    date = date || startDate;
-    setStartDate(date);
+    // date = date || projectDescription.start_date;
+    setProjectDescription({...projectDescription, start_date: date});
   };
 
   const changeEndDate = (event, date) => {
-    date = date || endDate;
-    setEndDate(date);
+    // date = date || projectDescription.end_date;
+    setProjectDescription({...projectDescription, end_date: date});
   };
 
   const showDatPickerHandler = (type) => {
@@ -45,7 +50,7 @@ const ProjectDescription = (props) => {
 
   const renderSaveAndCloseButtons = () => {
     return (
-      <SaveAndCloseButtons cancel={props.onPress}/>
+      <SaveAndCloseButtons cancel={props.onPress} save={() => {saveChanges(); props.onPress()}}/>
     );
   };
 
@@ -84,15 +89,15 @@ const ProjectDescription = (props) => {
             placeholder={project.description.project_name}
             placeholderTextColor={'dimgrey'}
             style={styles.basicInfoInputText}
-            onChangeText={(text) => setData({text: text})}
-            value={data.text}
+            onChangeText={(text) => setProjectDescription({...projectDescription, project_name: text})}
+            // value={projectDescription.project_name}
           />
         </View>
         <View style={styles.basicInfoContainer}>
           <Text>Start Date:</Text>
           <View>
             <ListItem
-              title={moment(startDate).format('MM/DD/YYYY')}
+              title={moment(projectDescription.start_date).format('MM/DD/YYYY')}
               containerStyle={{width: 150, padding: 0,  paddingRight: 5,}}
               contentContainerStyle={styles.basicInfoListItemContent}
               onPress={() => showDatPickerHandler('startDate')}
@@ -103,7 +108,7 @@ const ProjectDescription = (props) => {
         <View style={styles.basicInfoContainer}>
           <Text>End Date:</Text>
           <ListItem
-            title={moment(endDate).format('MM/DD/YYYY')}
+            title={moment(projectDescription.end_date).format('MM/DD/YYYY')}
             containerStyle={{width: 150, padding: 0, paddingRight: 5}}
             contentContainerStyle={styles.basicInfoListItemContent}
             onPress={() => showDatPickerHandler('endDate')}
@@ -115,7 +120,7 @@ const ProjectDescription = (props) => {
             <Button type={'clear'} title={'Start Date Done'} onPress={() => setShowStartPicker(false)}/>
             <DateTimePicker
               mode={'date'}
-              value={startDate}
+              value={projectDescription.start_date || new Date()}
               onChange={changeStartDate}
               display='default'
             />
@@ -125,7 +130,7 @@ const ProjectDescription = (props) => {
             <Button type={'clear'} title={'End Date Done'} onPress={() => setShowEndPicker(false)}/>
             <DateTimePicker
               mode={'date'}
-              value={endDate}
+              value={projectDescription.end_date || new Date()}
               onChange={changeEndDate}
               display='default'
             />
@@ -135,12 +140,12 @@ const ProjectDescription = (props) => {
       <View style={styles.notesContainer}>
         <TextInput
           placeholder={'Notes'}
-          onChangeText={noteText => setData({notes: noteText})}
+          onChangeText={noteText => setProjectDescription({...projectDescription, notes: noteText})}
           style={{height: 100}}
           multiline={true}
           numberOfLines={10}
           inputStyle={{fontSize: 18}}
-          value={data.notes}
+          value={projectDescription.notes}
         />
     </View>
       <Divider sectionText={'technical details'}/>
