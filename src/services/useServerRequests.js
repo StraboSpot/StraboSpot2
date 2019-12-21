@@ -5,6 +5,10 @@ const useServerRequests = () => {
   const user = useSelector(state => state.user);
   const baseUrl = 'https://strabospot.org/db';
 
+  const addDatasetToProject = (projectId, datasetId, encodedLogin) => {
+  return post('/projectDatasets/' + projectId, encodedLogin, {id: datasetId});
+  };
+
   const authenticateUser = async (username, password) => {
     const authenticationBaseUrl = baseUrl.slice(0, baseUrl.lastIndexOf('/')); //URL to send authentication API call
     try {
@@ -132,11 +136,17 @@ const useServerRequests = () => {
     });
   };
 
+  const updateDataset = (dataset, encodedLogin) => {
+    return post('/dataset', encodedLogin, dataset);
+  };
+
   const updateProject = (project, encodedLogin) => {
     return post('/project', encodedLogin, project,);
   };
 
   const serverRequests = {
+    addDatasetToProject:addDatasetToProject,
+    authenticateUser: authenticateUser,
     getMyProjects: getMyProjects,
     getDatasets: getDatasets,
     getDatasetSpots: getDatasetSpots,
@@ -144,8 +154,8 @@ const useServerRequests = () => {
     getProfile: getProfile,
     getProject: getProject,
     getProfileImage: getProfileImage,
+    updateDataset: updateDataset,
     updateProject: updateProject,
-    authenticateUser: authenticateUser,
   };
 
   return [serverRequests];

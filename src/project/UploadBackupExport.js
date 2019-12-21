@@ -76,7 +76,48 @@ const UploadBackAndExport = (props) => {
     setIsUploadDialogVisible(true);
   };
 
-  const onUploadProject = async () => {
+  const makeNextRequest = (activeDatasets, currentRequest) => {
+    return uploadDataset(activeDatasets[currentRequest]);
+  };
+
+  const upload = () => {
+    // dispatch({type: homeReducers.SET_LOADING, bool: true});
+    return uploadProject()
+      .then(uploadDatasets)
+      .catch(err => {
+        console.log('Upload Errors');
+        setUploadErrors(true);
+      });
+  };
+
+  const uploadDataset = async (dataset) => {
+    const response = await serverRequests.updateDataset(dataset, user.encoded_login);
+    console.log('Finished updating dataset', response);
+    const response2 = await serverRequests.addDatasetToProject(project.id, dataset.id, user.encoded_login);
+    console.log('Finished updating dataset', response2);
+    uploadSpots(dataset);
+  };
+
+  const uploadDatasets = async () => {
+    let currentRequest = 0;
+    const activeDatasets = Object.values(datasets).filter(dataset => dataset.active === true);
+    // Upload datasets synchronously
+    await makeNextRequest(activeDatasets, currentRequest);
+    currentRequest++;
+    if (currentRequest > 0 && currentRequest < activeDatasets.length) {
+      console.log('A');
+    }
+    if (currentRequest < activeDatasets.length) await makeNextRequest();
+    else {
+      dispatch({type: homeReducers.SET_LOADING, bool: false});
+      setTimeout(() => {
+        console.log('Finished Uploading Datasets');
+        setIsUploadStatusDialogVisible(false);
+      }, 2000);
+    }
+  };
+
+  const uploadProject = async () => {
     setProgress(0);
     console.log('PROJECT UPLOADING...');
     setIsUploadDialogVisible(false);
@@ -91,9 +132,9 @@ const UploadBackAndExport = (props) => {
           setUploadStatusMessage(<Text>Uploaded project the properties for the project:
             <Text style={[styles.dialogContentText, {color: 'black'}]}> {project.description.project_name}</Text>
           </Text>);
-          setProgress(1);
+          await setProgress(1);
           // setIsUploadDialogVisible(false);
-          // setIsUploadStatusDialogVisible(true);
+          console.log('Going to uploadDatasets next')
         }
         catch (err) {
           setUploadErrors(true);
@@ -108,6 +149,10 @@ const UploadBackAndExport = (props) => {
         }
       // }
     // );
+  };
+
+  const uploadSpots = () => {
+
   };
 
   const renderUploadAndBackupButtons = () => {
@@ -188,7 +233,7 @@ const UploadBackAndExport = (props) => {
       dialogTitle={'UPLOAD WARNING!'}
       visible={isUploadDialogVisible}
       cancel={() => setIsUploadDialogVisible(false)}
-      onPress={() => onUploadProject()}
+      onPress={() => upload()}
     >
       {uploadConfirmText}
     </UploadDialogBox>
