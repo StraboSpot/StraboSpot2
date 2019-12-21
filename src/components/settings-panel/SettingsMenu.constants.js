@@ -1,5 +1,6 @@
 export const SettingsMenuItems = {
   SETTINGS_MAIN: 'Settings & Preferences',
+  PROJECT_DESCRIPTION: 'Project Description',
   MANAGE: {
     MY_STRABOSPOT: 'My StraboSpot',
     ACTIVE_PROJECTS: 'Active Project',

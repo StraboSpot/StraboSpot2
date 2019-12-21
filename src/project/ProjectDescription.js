@@ -69,7 +69,7 @@ const ProjectDescription = (props) => {
                 type={'ionicon'}
                 color={'black'}
                 iconStyle={styles.buttons}
-                size={20}
+                size={30}
               />
             }
             title={'Active Project'}

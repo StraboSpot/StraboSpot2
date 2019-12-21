@@ -1,14 +1,16 @@
 import React, {useState, useEffect} from 'react';
 import {Text, View} from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
-import {ListItem} from 'react-native-elements';
+import {ListItem, Button} from 'react-native-elements';
 import Divider from '../components/settings-panel/HomePanelDivider';
-import styles from './Project.styles';
 import DatasetList from './DatasetList';
 import ActiveDatasetsList from './ActiveDatasetsList';
 import ActiveProjectList from './ActiveProjectList';
 import ProjectDescriptionPanel from './ProjectDescription';
 import {isEmpty} from '../shared/Helpers';
+import {SettingsMenuItems} from '../components/settings-panel/SettingsMenu.constants';
+// Styles
+import styles from './Project.styles';
 import commonStyles from '../shared/common.styles';
 
 const ActiveProjectPanel = (props) => {
@@ -24,14 +26,14 @@ const ActiveProjectPanel = (props) => {
   }, [datasets]);
 
   const openProjectDescription = () => {
-    setShowPanel('Project Description');
+    setShowPanel(SettingsMenuItems.MANAGE.PROJECT_DESCRIPTION);
 
     renderPanel();
   };
 
   const renderPanel = () => {
     switch (showPanel) {
-      case 'Project Description':
+      case SettingsMenuItems.MANAGE.PROJECT_DESCRIPTION:
         return (
           <View style={styles.projectDescriptionPanel}>
             <ProjectDescriptionPanel onPress={() => setShowPanel(null)}/>
@@ -39,7 +41,7 @@ const ActiveProjectPanel = (props) => {
         );
       default: return null;
     }
-  }
+  };
 
 
   return (
