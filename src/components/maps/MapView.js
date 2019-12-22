@@ -2,7 +2,7 @@ import React, {useCallback, useEffect, useImperativeHandle, useRef, useState} fr
 import {View} from 'react-native';
 
 import * as turf from '@turf/turf/index';
-import {connect} from 'react-redux';
+import {connect, useSelector} from 'react-redux';
 import Geolocation from '@react-native-community/geolocation';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 
@@ -12,47 +12,12 @@ import {MAPBOX_KEY} from '../../MapboxConfig';
 
 // Constants
 import {LATITUDE, LONGITUDE, MapModes} from './Map.constants';
-import {mapReducers} from './Map.constants';
+import {mapReducers, basemaps} from './Map.constants';
 import {spotReducers} from '../../spots/Spot.constants';
 
 MapboxGL.setAccessToken(MAPBOX_KEY);
-
 const mapView = React.forwardRef((props, ref) => {
-
-  const basemaps = {
-    osm: {
-      id: 'osm',
-      layerId: 'osmLayer',
-      layerLabel: 'OSM Streets',
-      layerSaveId: 'osm',
-      url: 'https://a.tile.openstreetmap.org/{z}/{x}/{y}.png',
-      maxZoom: 16,
-    },
-    macrostrat: {
-      id: 'macrostrat',
-      layerId: 'macrostratLayer',
-      layerLabel: 'Geology from Macrostrat',
-      layerSaveId: 'macrostrat',
-      url: 'http://tiles.strabospot.org/v5/macrostrat/{z}/{x}/{y}.png',
-      maxZoom: 19,
-    },
-    mapboxOutdoors: {
-      id: 'mapboxOutdoors',
-      layerId: 'mapboxOutdoorsLayer',
-      layerLabel: 'Mapbox Topo',
-      layerSaveId: 'mapbox.outdoors',
-      url: 'http://tiles.strabospot.org/v5/mapbox.outdoors/{z}/{x}/{y}.png?access_token=' + MAPBOX_KEY,
-      maxZoom: 19,
-    },
-    mapboxSatellite: {
-      id: 'mapboxSatellite',
-      layerId: 'mapboxSatelliteLayer',
-      layerLabel: 'Mapbox Satellite',
-      layerSaveId: 'mapbox.satellite',
-      url: 'http://tiles.strabospot.org/v5/mapbox.satellite/{z}/{x}/{y}.png?access_token=' + MAPBOX_KEY,
-      maxZoom: 19,
-    },
-  };
+  const currentBasemap = useSelector(state => state.map.currentBasemap);
 
   // Data needing to be tracked when in editing mode
   const initialEditingModeData = {
@@ -65,7 +30,6 @@ const mapView = React.forwardRef((props, ref) => {
   // Props that change that needed to pass to the map component
   const initialMapPropsMutable = {
     allowMapViewMove: true,
-    basemap: props.currentBasemap,
     centerCoordinate: [LONGITUDE, LATITUDE],
     drawFeatures: [],
     editFeatureVertex: [],
@@ -93,8 +57,6 @@ const mapView = React.forwardRef((props, ref) => {
     setCurrentLocation()
       .catch(err => console.log('Error setting current location:', err));
     props.clearVertexes();
-    console.log('Setting initial basemap ...', basemaps.mapboxOutdoors);
-    props.onCurrentBasemap(basemaps.mapboxOutdoors);
     setDisplayedSpots(isEmpty(props.selectedSpot) ? [] : [{...props.selectedSpot}]);
   }, []);
 
@@ -426,7 +388,7 @@ const mapView = React.forwardRef((props, ref) => {
   };
 
   const getCurrentBasemap = () => {
-    return props.currentBasemap;
+    return currentBasemap;
   };
 
   const getExtentString = async () => {
@@ -786,18 +748,17 @@ const mapView = React.forwardRef((props, ref) => {
 
   return (
     <View style={{flex: 1, zIndex: -1}}>
-      {props.currentBasemap.id === 'mapboxSatellite' ? <MapboxSatelliteBasemap {...mapProps}/> : null}
-      {props.currentBasemap.id === 'mapboxOutdoors' ? <MapboxOutdoorsBasemap {...mapProps}/> : null}
-      {props.currentBasemap.id === 'osm' ? <OSMBasemap {...mapProps}/> : null}
-      {props.currentBasemap.id === 'macrostrat' ? <MacrostratBasemap {...mapProps}/> : null}
-      {props.currentBasemap.id === 'custom' ? <CustomBasemap {...mapProps}/> : null}
+      {currentBasemap.id === 'mapboxSatellite' ? <MapboxSatelliteBasemap {...mapProps}/> : null}
+      {currentBasemap.id === 'mapboxOutdoors' ? <MapboxOutdoorsBasemap {...mapProps}/> : null}
+      {currentBasemap.id === 'osm' ? <OSMBasemap {...mapProps}/> : null}
+      {currentBasemap.id === 'macrostrat' ? <MacrostratBasemap {...mapProps}/> : null}
+      {currentBasemap.id === 'custom' ? <CustomBasemap {...mapProps}/> : null}
     </View>
   );
 });
 
 const mapStateToProps = (state) => {
   return {
-    currentBasemap: state.map.currentBasemap,
     selectedSpot: state.spot.selectedSpot,
     spots: state.spot.spots,
     vertexEndCoords: state.map.vertexEndCoords,

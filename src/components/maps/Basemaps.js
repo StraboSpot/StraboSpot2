@@ -1,12 +1,14 @@
 import React from 'react';
+import {useSelector} from 'react-redux';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import * as turf from '@turf/turf/index';
 import pointSymbol from '../../assets/symbols/point-resizeimage.png';
 
 function Basemap(props) {
+  const basemap = useSelector(state => state.map.currentBasemap);
   const {mapRef, cameraRef} = props.forwardedRef;
   return <MapboxGL.MapView
-    id={props.basemap.id}
+    id={basemap.id}
     ref={mapRef}
     style={{flex: 1}}
     animated={true}
@@ -30,14 +32,14 @@ function Basemap(props) {
       followUserMode='normal'
     />
     <MapboxGL.RasterSource
-      id={props.basemap.id}
-      tileUrlTemplates={[props.basemap.url]}
-      maxZoomLevel={props.basemap.maxZoom}
+      id={basemap.id}
+      tileUrlTemplates={[basemap.url]}
+      maxZoomLevel={basemap.maxZoom}
       tileSize={256}
     >
       <MapboxGL.RasterLayer
-        id={props.basemap.layerId}
-        sourceID={props.basemap.id}
+        id={basemap.layerId}
+        sourceID={basemap.id}
         style={{rasterOpacity: 1}}
       />
     </MapboxGL.RasterSource>

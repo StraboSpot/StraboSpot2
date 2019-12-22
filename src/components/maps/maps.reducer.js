@@ -1,7 +1,7 @@
-import {mapReducers} from './Map.constants';
+import {mapReducers, basemaps} from './Map.constants';
 
 const initialState = {
-  currentBasemap: {},
+  currentBasemap: basemaps.mapboxOutdoors,
   offlineMaps: [],
   vertexStartCoords: undefined,
   vertexEndCoords: undefined,
