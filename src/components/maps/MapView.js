@@ -62,7 +62,7 @@ const mapView = React.forwardRef((props, ref) => {
 
   useEffect(() => {
     console.log('Updating DOM on spots changed');
-    setDisplayedSpots(isEmpty(props.selectedSpot) ? [] : [{...props.selectedSpot}]);
+      setDisplayedSpots(isEmpty(props.selectedSpot) ? [] : [{...props.selectedSpot}]);
   }, [props.spots]);
 
   useEffect(() => {
@@ -532,13 +532,13 @@ const mapView = React.forwardRef((props, ref) => {
   const saveEdits = async () => {
     console.log('Saving edits...', 'spotsNotEdited', editingModeData.spotsNotEdited, 'spotsEdited',
       editingModeData.spotsEdited);
-    if (!isEmpty(editingModeData.spotsEdited)) {
-      await props.onAddSpots([...editingModeData.spotsNotEdited, ...editingModeData.spotsEdited]);
-    }
     if (isEmpty(editingModeData.spotEditing)) setDisplayedSpots([]);
     else {
       setDisplayedSpots([editingModeData.spotEditing]);
       await props.onSetSelectedSpot(editingModeData.spotEditing);
+    }
+    if (!isEmpty(editingModeData.spotsEdited)) {
+      await props.onAddSpots([...editingModeData.spotsNotEdited, ...editingModeData.spotsEdited]);
     }
     clearEditing();
   };
