@@ -94,7 +94,7 @@ const ProjectList = (props) => {
     }
     else if (action === ProjectActions.OVERWRITE) {
       console.log('User wants to:', action, 'and select', selectedProject.name);
-      await dispatch({type: spotReducers.SPOTS_CLEARED, spots: {}});
+      await dispatch({type: spotReducers.CLEAR_SPOTS, spots: {}});
       const projectData = await projectHelpers.loadProjectRemote(selectedProject.id, userData.encoded_login);
       dispatch({type: ProjectActions.projectReducers.PROJECTS, project: projectData});
       await getDatasets(selectedProject);

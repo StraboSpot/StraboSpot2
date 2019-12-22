@@ -69,19 +69,14 @@ const Home = (props) => {
     drawButtonsVisible: true,
     editButtonsVisible: false,
   });
-  const [mapModeState, setMapModeState] = useState(MapModes.VIEW);
-  const [settingsMenuVisible, setSettingsMenuVisible] = useState(SettingsMenuItems.SETTINGS_MAIN);
-  // drawerVisible: false,
+  const [mapMode, setMapMode] = useState(MapModes.VIEW);
   const [isOfflineMapModalVisible, setIsOfflineMapModalVisible] = useState(false);
   const [isProjectLoadSelectionModalVisible, setIsProjectLoadSelectionModalVisible] = useState(false);
-  const [currentSpot, setCurrentSpot] = useState(undefined);
   const [allPhotosSaved, setAllPhotosSaved] = useState([]);
-  // isAllSpotsPanelVisible: false,
   const [animation, setAnimation] = useState(new Animated.Value(notebookPanelWidth));
   const [settingsPanelAnimation, setSettingsPanelAnimation] = useState(new Animated.Value(-homeMenuPanelWidth));
   const [leftsideIconAnimationValue, setLeftsideIconAnimationValue] = useState(new Animated.Value(0));
   const [rightsideIconAnimationValue, setRightsideIconAnimationValue] = useState(new Animated.Value(0));
-  const [allSpotsViewAnimation, setAllSpotsViewAnimation] = useState(new Animated.Value(125));
   const [toastVisible, setToastVisible] = useState(false);
 
   const mapViewComponent = useRef(null);
@@ -177,9 +172,8 @@ const Home = (props) => {
       case 'copyFeature':
         console.log('Spot Copied!');
         break;
-      case 'deleteFeature':
-        console.log('Feature Deleted!', props.selectedSpot.properties.id);
-        deleteSelectedFeature(props.selectedSpot.properties.id);
+      case 'deleteSpot':
+        deleteSpot(props.selectedSpot.properties.id);
         break;
       case 'toggleAllSpotsPanel':
         if (position === 'open') props.setAllSpotsPanelVisible(true);
@@ -281,11 +275,11 @@ const Home = (props) => {
     props.setAllSpotsPanelVisible(false);
   };
 
-  const deleteSelectedFeature = id => {
-    const featureName = props.selectedSpot.properties.name;
+  const deleteSpot = id => {
+    const spot = props.spots[id];
     Alert.alert(
-      'Delete Feature?',
-      `Are you sure you want to delete feature: \n ${featureName}`,
+      'Delete Spot?',
+      'Are you sure you want to delete Spot: ' + spot.properties.name,
       [
         {
           text: 'Cancel',
@@ -295,7 +289,7 @@ const Home = (props) => {
         {
           text: 'Delete',
           onPress: () => {
-            props.deleteFeature(id);
+            props.deleteSpot(id);
             closeNotebookPanel();
           },
         },
@@ -309,33 +303,22 @@ const Home = (props) => {
   };
 
   const endDraw = async () => {
-    mapViewComponent.current.endDraw();
+    const newOrEditedSpot = await mapViewComponent.current.endDraw();
     setMapMode(MapModes.VIEW);
     toggleButton('endDrawButtonVisible');
-    openNotebookPanel();
-    props.setModalVisible(null);
+    if (!isEmpty(newOrEditedSpot)) {
+      openNotebookPanel(NotebookPages.OVERVIEW);
+      props.setModalVisible(null);
+    }
   };
 
   const getImageSrc = id => {
     return props.imagePaths[id];
   };
 
-  const getSpotFromId = spotId => {
-    const spot = props.spot.find(spot => {
-      return spot.properties.id === spotId;
-    });
-    // console.log('Aaaaaaaa', spot);
-    props.onFeatureSelected(spot);
-    openNotebookPanel();
-  };
-
   //function for online/offline state change event handler
   const handleConnectivityChange = isConnected => {
     props.setIsOnline(isConnected);
-  };
-
-  const mapPress = () => {
-    return mapViewComponent.current.getCurrentBasemap();
   };
 
   const newBasemapDisplay = name => {
@@ -426,19 +409,21 @@ const Home = (props) => {
     );
   };
 
-  const setDraw = async mapMode => {
+  const setDraw = async mapModeToSet => {
     mapViewComponent.current.cancelDraw();
-    if (mapModeState === MapModes.VIEW && mapMode !== MapModes.DRAW.POINT) {
+    if (mapMode === MapModes.VIEW && mapModeToSet !== MapModes.DRAW.POINT) {
       toggleButton('endDrawButtonVisible', true);
     }
-    else if (mapModeState === mapMode) mapMode = MapModes.VIEW;
-    await setMapMode(mapMode);
-    if (mapModeState === MapModes.DRAW.POINT) {
+    else if (mapMode === mapModeToSet) mapModeToSet = MapModes.VIEW;
+    setMapMode(mapModeToSet);
+    //props.setMapMode(mapModeToSet);
+    if (mapModeToSet === MapModes.DRAW.POINT) {
       toggleLoading(true);
       try {
         await mapViewComponent.current.setPointAtCurrentLocation();
         toggleLoading(false);
-        await setMapMode(MapModes.VIEW);
+        setMapMode(MapModes.VIEW);
+        //props.setMapMode(MapModes.VIEW);
         // openNotebookPanel();
         props.setNotebookPanelVisible(true);
         props.setNotebookPageVisible(NotebookPages.OVERVIEW);
@@ -455,25 +440,30 @@ const Home = (props) => {
         toggleButton('endDrawButtonVisible', true);
       }
     }
-    if (mapMode === MapModes.VIEW) {
+    if (mapModeToSet === MapModes.VIEW) {
       toggleButton('endDrawButtonVisible', false);
     }
-  };
-
-  const setMapMode = async (mapMode) => {
-    setMapModeState(mapMode);
-    console.log('Map Mode set to:', mapMode);
+    //props.setMapMode(mapModeToSet);
   };
 
   const saveEdits = async () => {
     mapViewComponent.current.saveEdits();
-    cancelEdits();
+    //cancelEdits();
+    setMapMode(MapModes.VIEW);
+    setButtons({
+      'editButtonsVisible': false,
+      'drawButtonsVisible': true,
+    });
   };
 
   const startEdit = () => {
     setMapMode(MapModes.EDIT);
-    toggleButton('editButtonsVisible', true);
-    toggleButton('drawButtonsVisible', false);
+    setButtons({
+      editButtonsVisible: true,
+      drawButtonsVisible: false,
+    });
+    //  toggleButton('editButtonsVisible', true);
+    //   toggleButton('drawButtonsVisible', false);
   };
 
   const closeInitialProjectLoadModal = () => {
@@ -620,7 +610,7 @@ const Home = (props) => {
       {/*{props.isNotebookPanelVisible && notebookPanel}*/}
       <MapView
         mapComponentRef={mapViewComponent}
-        mapMode={mapModeState}
+        mapMode={mapMode}
         startEdit={startEdit}
       />
       {props.vertexStartCoords && <VertexDrag/>}
@@ -736,21 +726,21 @@ const Home = (props) => {
         <Animated.View style={[styles.drawToolsContainer, rightsideIconAnimation]}>
           <IconButton
             style={{top: 5}}
-            source={mapModeState === MapModes.DRAW.POINT ?
+            source={mapMode === MapModes.DRAW.POINT ?
               require('../../assets/icons/StraboIcons_Oct2019/PointButton_pressed.png') : require(
                 '../../assets/icons/StraboIcons_Oct2019/PointButton.png')}
             onPress={clickHandler.bind(this, MapModes.DRAW.POINT)}
           />
           <IconButton
             style={{top: 5}}
-            source={mapModeState === MapModes.DRAW.LINE ?
+            source={mapMode === MapModes.DRAW.LINE ?
               require('../../assets/icons/StraboIcons_Oct2019/LineButton_pressed.png') : require(
                 '../../assets/icons/StraboIcons_Oct2019/LineButton.png')}
             onPress={clickHandler.bind(this, MapModes.DRAW.LINE)}
           />
           <IconButton
             style={{top: 5}}
-            source={mapModeState === MapModes.DRAW.POLYGON ?
+            source={mapMode === MapModes.DRAW.POLYGON ?
               require('../../assets/icons/StraboIcons_Oct2019/PolygonButton_pressed.png') :
               require('../../assets/icons/StraboIcons_Oct2019/PolygonButton.png')}
             onPress={clickHandler.bind(this, MapModes.DRAW.POLYGON)}
@@ -858,13 +848,12 @@ function mapStateToProps(state) {
     selectedImage: state.spot.selectedAttributes[0],
     isImageModalVisible: state.home.isImageModalVisible,
     imagePaths: state.images.imagePaths,
-    featureCollectionSelected: state.spot.featureCollectionSelected,
     isOnline: state.home.isOnline,
     isNotebookPanelVisible: state.notebook.isNotebookPanelVisible,
     isCompassModalVisible: state.notebook.isCompassModalVisible,
     modalVisible: state.home.modalVisible,
     deviceDimensions: state.home.deviceDimensions,
-    spot: state.spot.features,
+    spots: state.spot.spots,
     getCurrentProject: state.project.project,
     shortcutSwitchPosition: state.home.shortcutSwitchPosition,
     isAllSpotsPanelVisible: state.home.isAllSpotsPanelVisible,
@@ -887,12 +876,12 @@ const mapDispatchToProps = {
   setIsImageModalVisible: (value) => ({type: homeReducers.TOGGLE_IMAGE_MODAL, value: value}),
   setAllSpotsPanelVisible: (value) => ({type: homeReducers.SET_ALLSPOTS_PANEL_VISIBLE, value: value}),
   addPhoto: (imageData) => ({type: imageReducers.ADD_PHOTOS, images: imageData}),
-  deleteFeature: (id) => ({type: spotReducers.FEATURE_DELETE, id: id}),
+  deleteSpot: (id) => ({type: spotReducers.DELETE_SPOT, id: id}),
   onSpotEdit: (field, value) => ({type: spotReducers.EDIT_SPOT_PROPERTIES, field: field, value: value}),
   setModalVisible: (modal) => ({type: homeReducers.SET_MODAL_VISIBLE, modal: modal}),
   setDeviceDims: (dims) => ({type: homeReducers.DEVICE_DIMENSIONS, dims: dims}),
   onSpotEditImageObj: (images) => ({type: spotReducers.EDIT_SPOT_IMAGES, images: images}),
-  onFeatureSelected: (featureSelected) => ({type: spotReducers.FEATURE_SELECTED, feature: featureSelected}),
+  onSetSelectedSpot: (spot) => ({type: spotReducers.SET_SELECTED_SPOT, spot: spot}),
   onShortcutSwitchChange: (switchName) => ({type: homeReducers.SHORTCUT_SWITCH_POSITION, switchName: switchName}),
 };
 

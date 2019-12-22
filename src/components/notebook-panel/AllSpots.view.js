@@ -1,25 +1,26 @@
 import React from 'react';
-import {ScrollView} from 'react-native';
 import {connect} from 'react-redux';
-import * as themes from '../../shared/styles.constants';
+import {ScrollView} from 'react-native';
+
 import {ListItem} from 'react-native-elements';
 import {spotReducers} from '../../spots/Spot.constants';
+
+import * as themes from '../../shared/styles.constants';
 
 const allSpotsView = (props) => {
 
   const pressHandler = (id) => {
-    console.log(id);
-    const spot = props.allSpots.filter(selectedSpot => {
+    const spot = Object.values(props.spots).find(selectedSpot => {
       return selectedSpot.properties.id === id;
     });
-    console.log(spot[0]);
-    props.onFeatureSelected(spot[0]);
+    console.log('Switch Selected Spot', spot);
+    props.onSetSelectedSpot(spot);
   };
 
   return (
     <React.Fragment>
       <ScrollView>
-        {props.allSpots.map(spot => {
+        {Object.values(props.spots).map(spot => {
           return (
             <ListItem
               key={spot.properties.id}
@@ -47,12 +48,12 @@ const allSpotsView = (props) => {
 
 const mapStateToProps = state => {
   return {
-    allSpots: state.spot.features,
+    spots: state.spot.spots,
   };
 };
 
 const mapDispatchToProps = {
-  onFeatureSelected: (featureSelected) => ({type: spotReducers.FEATURE_SELECTED, feature: featureSelected}),
+  onSetSelectedSpot: (spot) => ({type: spotReducers.SET_SELECTED_SPOT, spot: spot}),
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(allSpotsView);

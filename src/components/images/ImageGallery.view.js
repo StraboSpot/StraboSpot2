@@ -5,7 +5,7 @@ import {connect} from 'react-redux';
 import imageStyles from './images.styles';
 import {Button} from 'react-native-elements';
 import {imageReducers} from './Image.constants';
-import SortingButtons from '../settings-panel/Sorting';
+import SortingButtons from '../settings-panel/SortingButtons';
 import * as SharedUI from '../../shared/ui/index';
 import {isEmpty} from '../../shared/Helpers';
 import {spotReducers} from '../../spots/Spot.constants';
@@ -18,7 +18,7 @@ import attributesStyles from '../../components/settings-panel/settingsPanelSecti
 
 const imageGallery = (props) => {
   const [refresh, setRefresh] = useState(false);
-  const [sortedList, setSortedList] = useState(props.spots);
+  const [sortedList, setSortedList] = useState(Object.values(props.spots));
   const {selectedSpot} = props;
   const {spots, sortedListView} = props;
   let savedArray = [];
@@ -101,9 +101,7 @@ const imageGallery = (props) => {
   };
 
   const renderRecentView = (spotID) => {
-    const spot = props.spots.find(spot => {
-      return spot.properties.id === spotID;
-    });
+    const spot = props.spots[spotID];
     if (spot.properties.images && !isEmpty(spot.properties.images)) {
       return (
         <View style={attributesStyles.listContainer}>
@@ -173,7 +171,7 @@ const imageGallery = (props) => {
       sortedView = <FlatList
         keyExtractor={(item) => item.properties.id.toString()}
         extraData={refresh}
-        data={props.spots}
+        data={Object.values(props.spots)}
         renderItem={({item}) => renderName(item)}/>;
     }
     return (
@@ -199,11 +197,11 @@ const imageGallery = (props) => {
 const mapStateToProps = (state) => {
   return {
     imagePaths: state.images.imagePaths,
-    spots: state.spot.features,
     recentViews: state.spot.recentViews,
-    sortedListView: state.settingsPanel.sortedView,
     selectedImage: state.spot.selectedAttributes[0],
     selectedSpot: state.spot.selectedSpot,
+    sortedListView: state.settingsPanel.sortedView,
+    spots: state.spot.spots,
   };
 };
 

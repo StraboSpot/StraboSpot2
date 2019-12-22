@@ -16,15 +16,15 @@ const NotebookPanelMenu = props => (
     <DialogContent>
       <DialogButton
         style={styles.dialogContent}
-        text='Copy this feature'
+        text='Copy this Spot'
         textStyle={{fontSize: 12}}
         onPress={() => props.onPress(menuButtons.notebookMenu.COPY_FEATURE)}
       />
       <DialogButton
         style={styles.dialogContent}
-        text='Delete this Feature'
+        text='Delete this Spot'
         textStyle={{fontSize: 12}}
-        onPress={() => props.onPress(menuButtons.notebookMenu.DELETE_FEATURE)}
+        onPress={() => props.onPress(menuButtons.notebookMenu.DELETE_SPOT)}
       />
       {props.isAllSpotsPanelVisible ? <DialogButton
         style={styles.dialogContent}

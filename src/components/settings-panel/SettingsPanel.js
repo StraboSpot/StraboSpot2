@@ -1,51 +1,47 @@
 import React from 'react';
-import {View} from 'react-native';
 import {connect, useSelector} from 'react-redux';
-import styles from './SettingsPanelStyles';
-import SettingsPanelList from './SettingsPanelList';
-import SettingsPanelHeader from './SettingsPanelHeader';
-import {SettingsMenuItems} from './SettingsMenu.constants';
-import MyStraboSpot from '../../project/MyStraboSpot';
-import ActiveProject from '../../project/ActiveProjectPanel.view';
-import UploadBackupAndExport from '../../project/UploadBackupExport';
-import SpotsList from '../../spots/SpotsList';
-import ImageGallery from '../images/ImageGallery.view';
-import SamplesList from '../samples/SamplesList.view';
-import ShortcutMenu from './shortcuts-menu/ShortcutsMenu';
-import ManageOfflineMapsMenu from '../maps/Manage-Offline-Maps-Menu/ManageOfflineMapsMenu';
-import CustomMapsMenu from '../maps/Custom-Maps-Menu/CustomMapsMenu';
+import {View} from 'react-native';
+
 import {homeReducers} from '../../views/home/Home.constants';
-import {settingPanelReducers} from './settingsPanel.constants';
-import {spotReducers} from '../../spots/Spot.constants';
-import {NotebookPages} from '../notebook-panel/Notebook.constants';
-import {USER_DATA} from '../../services/user/User.constants';
 import {isEmpty} from '../../shared/Helpers';
+import {NotebookPages} from '../notebook-panel/Notebook.constants';
+import {settingPanelReducers} from './settingsPanel.constants';
+import {SettingsMenuItems} from './SettingsMenu.constants';
+import {spotReducers} from '../../spots/Spot.constants';
+import ActiveProject from '../../project/ActiveProjectPanel.view';
+import CustomMapsMenu from '../maps/Custom-Maps-Menu/CustomMapsMenu';
+import ImageGallery from '../images/ImageGallery.view';
+import ManageOfflineMapsMenu from '../maps/Manage-Offline-Maps-Menu/ManageOfflineMapsMenu';
+import MyStraboSpot from '../../project/MyStraboSpot';
 import ProjectList from '../../project/ProjectList';
+import SamplesList from '../samples/SamplesList.view';
+import SettingsPanelHeader from './SettingsPanelHeader';
+import SettingsPanelList from './SettingsPanelList';
+import ShortcutMenu from './shortcuts-menu/ShortcutsMenu';
+import SpotsList from '../../spots/SpotsList';
+import UploadBackupAndExport from '../../project/UploadBackupExport';
+
+import styles from './SettingsPanelStyles';
 
 const SettingsPanel = props => {
   let buttonTitle = null;
   const project = useSelector(state => state.project.project);
-  const {settingsPageVisible, setSettingsPanelPageVisible} = props;
   let settingsPanelHeader = <SettingsPanelHeader
-    onPress={() => setSettingsPanelPageVisible(SettingsMenuItems.SETTINGS_MAIN)}>
-    {settingsPageVisible}
+    onPress={() => props.setSettingsPanelPageVisible(SettingsMenuItems.SETTINGS_MAIN)}>
+    {props.settingsPageVisible}
   </SettingsPanelHeader>;
 
   let page = null;
 
   const getSpotFromId = (spotId, page) => {
-    const spotID = props.spot.find(spot => {
-      return spot.properties.id === spotId;
-    });
-    if (page === NotebookPages.SAMPLE) {
-      props.openNotebookPanel(NotebookPages.SAMPLE);
-    }
+    const spot = props.spots[spotId];
+    if (page === NotebookPages.SAMPLE) props.openNotebookPanel(NotebookPages.SAMPLE);
     else props.openNotebookPanel(NotebookPages.OVERVIEW);
-    props.onFeatureSelected(spotID);
+    props.onSetSelectedSpot(spot);
   };
 
   const setVisibleMenu = (name) => {
-    setSettingsPanelPageVisible(name);
+    props.setSettingsPanelPageVisible(name);
   };
 
   const toggleSwitch = (switchName) => {
@@ -57,7 +53,7 @@ const SettingsPanel = props => {
   if (isEmpty(props.userProfile)) buttonTitle = 'Sign In';
   else buttonTitle = 'Sign Out';
 
-  switch (settingsPageVisible) {
+  switch (props.settingsPageVisible) {
     case SettingsMenuItems.MANAGE.MY_STRABOSPOT:
       page =
         <View style={styles.settingsPanelContainer}>
@@ -163,7 +159,7 @@ const mapStateToProps = (state) => {
   return {
     settingsPageVisible: state.settingsPanel.settingsPageVisible,
     shortcutSwitchPosition: state.home.shortcutSwitchPosition,
-    spot: state.spot.features,
+    spots: state.spot.spots,
     userProfile: state.user.userData,
   };
 };
@@ -171,9 +167,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = {
   setSettingsPanelPageVisible: (name) => ({type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: name}),
   onShortcutSwitchChange: (switchName) => ({type: homeReducers.SHORTCUT_SWITCH_POSITION, switchName: switchName}),
-  onFeatureSelected: (featureSelected) => ({type: spotReducers.FEATURE_SELECTED, feature: featureSelected}),
-  setUserData: (userData) => ({type: USER_DATA, userData: userData}),
-  clearStorage: () => ({type: 'USER_LOGOUT'}),
+  onSetSelectedSpot: (spot) => ({type: spotReducers.SET_SELECTED_SPOT, spot: spot}),
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(SettingsPanel);

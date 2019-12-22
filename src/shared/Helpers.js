@@ -1,4 +1,5 @@
 import {Animated, Easing} from 'react-native';
+const lodashIsEqual = require('lodash.isequal');
 
 export const getNewId = () => {
   return Math.floor((new Date().getTime() + Math.random()) * 10);
@@ -40,6 +41,10 @@ export const isEmpty = (value) => {
   else if (typeof value === 'number') return false;
   else if (!value) return true;
   return false;
+};
+
+export const isEqual = (a, b) => {
+  return lodashIsEqual(a, b);
 };
 
 // Convert a string to title case

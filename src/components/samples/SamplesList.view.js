@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {Alert, FlatList, ScrollView, Text, View} from 'react-native';
 import {connect} from 'react-redux';
-import SortingButtons from '../settings-panel/Sorting';
+import SortingButtons from '../settings-panel/SortingButtons';
 import {NotebookPages, notebookReducers} from '../notebook-panel/Notebook.constants';
 import {settingPanelReducers, SortedViews} from '../settings-panel/settingsPanel.constants';
 import {Button, ListItem} from 'react-native-elements';
@@ -9,7 +9,7 @@ import {isEmpty} from '../../shared/Helpers';
 import attributesStyles from '../../components/settings-panel/settingsPanelSectionStyles/Attributes.styles';
 
 const SamplesList = (props) => {
-  const [sortedList, setSortedList] = useState(props.spots);
+  const [sortedList, setSortedList] = useState(Object.values(props.spots));
   const [refresh, setRefresh] = useState(false);
   const {spots, sortedListView, selectedSpot} = props;
 
@@ -51,9 +51,7 @@ const SamplesList = (props) => {
   };
 
   const renderRecentView = (spotID) => {
-    const spot = props.spots.find(spot => {
-      return spot.properties.id === spotID;
-    });
+    const spot = props.spots[spotID];
     if (spot.properties.samples && !isEmpty(spot.properties.samples)) {
       return (
         <View style={attributesStyles.listContainer}>
@@ -123,7 +121,7 @@ const SamplesList = (props) => {
       sortedView = <FlatList
         keyExtractor={(item) => item.properties.id.toString()}
         extraData={refresh}
-        data={props.spots}
+        data={Object.values(props.spots)}
         renderItem={({item}) => renderName(item)}/>;
     }
 
@@ -149,12 +147,12 @@ const SamplesList = (props) => {
 
 const mapStateToProps = (state) => {
   return {
-    spots: state.spot.features,
     recentViews: state.spot.recentViews,
-    sortedListView: state.settingsPanel.sortedView,
     selectedButtonIndex: state.settingsPanel.selectedButtonIndex,
     selectedImage: state.spot.selectedAttributes[0],
     selectedSpot: state.spot.selectedSpot,
+    sortedListView: state.settingsPanel.sortedView,
+    spots: state.spot.spots,
   };
 };
 

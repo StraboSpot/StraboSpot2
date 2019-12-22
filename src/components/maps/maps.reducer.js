@@ -1,7 +1,6 @@
 import {mapReducers} from './Map.constants';
 
 const initialState = {
-  map: {},
   currentBasemap: {},
   offlineMaps: [],
   vertexStartCoords: undefined,
@@ -15,11 +14,6 @@ export const mapReducer = (state = initialState, action) => {
       return {
         ...state.map,
         currentBasemap: action.basemap,
-      };
-    case mapReducers.MAP:
-      return {
-        ...state.map,
-        map: action,
       };
     case mapReducers.CUSTOM_MAPS:
       console.log('Setting custom maps: ', action.customMaps);
@@ -39,13 +33,13 @@ export const mapReducer = (state = initialState, action) => {
         state,
       };
     case mapReducers.VERTEX_START_COORDS:
-      console.log('Vertex Selected Start Coords: ', action.vertexStartCoords);
+      console.log('Set vertex selected start coords: ', action.vertexStartCoords);
       return {
         ...state,
         vertexStartCoords: action.vertexStartCoords,
       };
     case mapReducers.VERTEX_END_COORDS:
-      console.log('Vertex Selected End Coords: ', action.vertexEndCoords);
+      console.log('Set vertex selected end coords: ', action.vertexEndCoords);
       return {
         ...state,
         vertexEndCoords: action.vertexEndCoords,

@@ -23,7 +23,7 @@ const DatasetList = () => {
       setLoading(false);
       if (!isEmpty(datasetInfoFromServer) && spots) {
         console.log(spots);
-        dispatch({type: spotReducers.SPOTS_ADD, spots: spots});
+        dispatch({type: spotReducers.ADD_SPOTS, spots: spots});
         const spotIds = Object.values(spots).map(spot => spot.properties.id);
         dispatch({type: projectReducers.DATASETS.ADD_SPOTS_IDS_TO_DATASET, datasetId: dataset.id, spotIds: spotIds});
       }

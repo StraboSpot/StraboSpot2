@@ -1,32 +1,28 @@
 import React, {useState, useEffect} from 'react';
 import {FlatList, Text, View} from 'react-native';
 import {connect} from 'react-redux';
-import {notebookReducers} from '../components/notebook-panel/Notebook.constants';
-import {settingPanelReducers, SortedViews} from '../components/settings-panel/settingsPanel.constants';
+
 import {isEmpty} from '../shared/Helpers';
 import {ListItem} from 'react-native-elements';
+import {settingPanelReducers, SortedViews} from '../components/settings-panel/settingsPanel.constants';
+import SortingButtons from '../components/settings-panel/SortingButtons';
+
 import attributesStyles from '../components/settings-panel/settingsPanelSectionStyles/Attributes.styles';
-import SortingButtons from '../components/settings-panel/Sorting';
 
 const SpotsList = (props) => {
-  const [sortedList, setSortedList] = useState(props.spots);
-  const [refresh, setRefresh] = useState(false);
-  const {selectedSpot} = props;
-  const {spots, sortedListView} = props;
+  const [sortedList, setSortedList] = useState(getSpotsSortedChronologically);
 
   useEffect(() => {
-    console.log('render in SpotList!');
-    return function cleanUp() {
-      props.setSortedListView(SortedViews.CHRONOLOGICAL);
-      props.setSelectedButtonIndex(0);
-      console.log('CLEANUP!');
-    };
-  }, []);
+    console.log('In SpotsList useEffect: Updating chronological sorting for Spots');
+    setSortedList(getSpotsSortedChronologically);
+  }, [props.spots]);
 
-  useEffect(() => {
-    setSortedList(spots);
-    console.log('render Recent Views in SpotList!');
-  }, [selectedSpot, spots, sortedListView, sortedList]);
+  // Reverse chronologically sort Spots
+  const getSpotsSortedChronologically = () => {
+    return Object.values(props.spots).sort(((a, b) => {
+      return new Date(b.properties.date) - new Date(a.properties.date);
+    }));
+  };
 
   const renderName = (item) => {
     return (
@@ -41,10 +37,8 @@ const SpotsList = (props) => {
     );
   };
 
-  const renderRecentView = (spotID) => {
-    const spot = props.spots.find(spot => {
-      return spot.properties.id === spotID;
-    });
+  const renderRecentView = (spotId) => {
+    const spot = props.spots[spotId];
     return (
       <View>
         <ListItem
@@ -63,16 +57,13 @@ const SpotsList = (props) => {
     if (props.sortedListView === SortedViews.CHRONOLOGICAL) {
       sortedView = <FlatList
         keyExtractor={(item) => item.properties.id.toString()}
-        extraData={refresh}
         data={sortedList}
         renderItem={({item}) => renderName(item)}/>;
     }
     else if (props.sortedListView === SortedViews.MAP_EXTENT) {
-      sortedView = <FlatList
-        keyExtractor={(item) => item.properties.id.toString()}
-        extraData={true}
-        data={sortedList}
-        renderItem={({item}) => renderName(item)}/>;
+      sortedView = <View style={attributesStyles.textContainer}>
+        <Text>Not Implemented Yet</Text>
+      </View>;
     }
     else if (props.sortedListView === SortedViews.RECENT_VIEWS) {
       sortedView =
@@ -84,8 +75,7 @@ const SpotsList = (props) => {
     else {
       sortedView = <FlatList
         keyExtractor={(item) => item.properties.id.toString()}
-        extraData={refresh}
-        data={props.spots}
+        data={Object.values(props.spots)}
         renderItem={({item}) => renderName(item)}/>;
     }
     return (
@@ -109,19 +99,14 @@ const SpotsList = (props) => {
 
 const mapStateToProps = (state) => {
   return {
-    imagePaths: state.images.imagePaths,
-    spots: state.spot.features,
     recentViews: state.spot.recentViews,
-    sortedListView: state.settingsPanel.sortedView,
-    selectedButtonIndex: state.settingsPanel.selectedButtonIndex,
-    selectedImage: state.spot.selectedAttributes[0],
     selectedSpot: state.spot.selectedSpot,
+    spots: state.spot.spots,
+    sortedListView: state.settingsPanel.sortedView,
   };
 };
 
 const mapDispatchToProps = {
-  setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),
-  setSortedListView: (view) => ({type: settingPanelReducers.SET_SORTED_VIEW, view: view}),
   setSelectedButtonIndex: (index) => ({type: settingPanelReducers.SET_SELECTED_BUTTON_INDEX, index: index}),
 };
 

@@ -123,7 +123,7 @@ const NotebookPanel = props => {
 function mapStateToProps(state) {
   return {
     spot: state.spot.selectedSpot,
-    featuresSelected: state.spot.featuresSelected,
+    selectedSpots: state.spot.selectedSpots,
     isAllSpotsPanelVisible: state.home.isAllSpotsPanelVisible,
     notebookPageVisible: isEmpty(state.notebook.visibleNotebookPagesStack) ?
       null : state.notebook.visibleNotebookPagesStack.slice(-1)[0],

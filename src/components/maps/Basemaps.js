@@ -1,5 +1,6 @@
 import React from 'react';
 import MapboxGL from '@react-native-mapbox-gl/maps';
+import * as turf from '@turf/turf/index';
 import pointSymbol from '../../assets/symbols/point-resizeimage.png';
 
 function Basemap(props) {
@@ -43,22 +44,22 @@ function Basemap(props) {
     {/* Feature Layer */}
     <MapboxGL.ShapeSource
       id='shapeSource'
-      shape={props.features}
+      shape={turf.featureCollection(props.spotsNotSelected)}
     >
       <MapboxGL.SymbolLayer
-        id='pointLayer'
+        id='pointLayerNotSelected'
         minZoomLevel={1}
         filter={['==', '$type', 'Point']}
         style={mapStyles.point}
       />
       <MapboxGL.LineLayer
-        id='lineLayer'
+        id='lineLayerNotSelected'
         minZoomLevel={1}
         filter={['==', '$type', 'LineString']}
         style={mapStyles.line}
       />
       <MapboxGL.FillLayer
-        id='polygonLayer'
+        id='polygonLayerNotSelected'
         minZoomLevel={1}
         filter={['==', '$type', 'Polygon']}
         style={mapStyles.polygon}
@@ -66,8 +67,8 @@ function Basemap(props) {
     </MapboxGL.ShapeSource>
     {/* Selected Features Layer */}
     <MapboxGL.ShapeSource
-      id='selectedFeaturesSource'
-      shape={props.selectedFeatures}
+      id='spotsNotSelectedSource'
+      shape={turf.featureCollection(props.spotsSelected)}
     >
       <MapboxGL.CircleLayer
         id='pointLayerSelected'
@@ -91,7 +92,7 @@ function Basemap(props) {
     {/* Draw Layer */}
     <MapboxGL.ShapeSource
       id='drawFeatures'
-      shape={props.drawFeatures}
+      shape={turf.featureCollection(props.drawFeatures)}
     >
       <MapboxGL.CircleLayer
         id='pointLayerDraw'
@@ -115,7 +116,7 @@ function Basemap(props) {
     {/* Edit Layer */}
     <MapboxGL.ShapeSource
       id='editFeatureVertex'
-      shape={props.editFeatureVertex}
+      shape={turf.featureCollection(props.editFeatureVertex)}
     >
       <MapboxGL.CircleLayer
         id='pointLayerEdit'

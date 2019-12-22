@@ -33,7 +33,7 @@ const InitialProjectLoadModal = (props) => {
     if (visibleProjectSection === 'activeDatasetsList') {
       dispatch({type: projectReducers.PROJECTS, project: {}});
       dispatch({type: projectReducers.DATASETS.DATASETS_UPDATE, datasets: {}});
-      dispatch({type: spotReducers.SPOTS_CLEARED});
+      dispatch({type: spotReducers.CLEAR_SPOTS});
       setVisibleInitialSection('serverProjects');
     }
     else if (visibleProjectSection === 'currentDatasetSelection') {
