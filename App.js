@@ -23,16 +23,19 @@ const RootStack = createStackNavigator(
     },
     HomeScreen: {
       screen: Home,
+      navigationOptions: {
+        gesturesEnabled: false,
+      },
     },
     ImageInfo: {
       screen: ImageInfo,
+      navigationOptions: {
+        gesturesEnabled: false,
+      },
     },
   },
   {
     headerMode: 'none',
-    navigationOptions: {
-      headerVisible: false,
-    },
   },
 );
 
