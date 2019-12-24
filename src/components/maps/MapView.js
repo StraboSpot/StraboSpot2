@@ -9,6 +9,7 @@ import MapboxGL from '@react-native-mapbox-gl/maps';
 import {CustomBasemap, MacrostratBasemap, MapboxOutdoorsBasemap, MapboxSatelliteBasemap, OSMBasemap} from './Basemaps';
 import {getNewId, isEmpty, truncDecimal} from '../../shared/Helpers';
 import {MAPBOX_KEY} from '../../MapboxConfig';
+import useSpotsHook from '../../spots/useSpots';
 
 // Constants
 import {LATITUDE, LONGITUDE, MapModes} from './Map.constants';
@@ -18,6 +19,7 @@ import {projectReducers} from '../../project/Project.constants';
 
 MapboxGL.setAccessToken(MAPBOX_KEY);
 const mapView = React.forwardRef((props, ref) => {
+  const useSpots = useSpotsHook();
   const currentBasemap = useSelector(state => state.map.currentBasemap);
 
   // Data needing to be tracked when in editing mode
@@ -63,7 +65,7 @@ const mapView = React.forwardRef((props, ref) => {
 
   useEffect(() => {
     console.log('Updating DOM on Spots or selected Spots changed');
-      setDisplayedSpots(isEmpty(props.selectedSpot) ? [] : [{...props.selectedSpot}]);
+    setDisplayedSpots(isEmpty(props.selectedSpot) ? [] : [{...props.selectedSpot}]);
   }, [props.spots, props.selectedSpot]);
 
   useEffect(() => {
@@ -84,9 +86,8 @@ const mapView = React.forwardRef((props, ref) => {
 
   // Set selected and not selected Spots to display when not editing
   const setDisplayedSpots = (selectedSpots) => {
-    const allSpotsCopy = JSON.parse(JSON.stringify(Object.values(props.spots)));
-    const mappableSpots = allSpotsCopy.filter(spot => spot.geometry);
-    console.log('Selected Spots', selectedSpots, 'All Spots', allSpotsCopy);
+    const mappableSpots = useSpots.getMappableSpots();
+    console.log('Selected Spots', selectedSpots, 'All Spots', Object.values(props.spots));
 
     // Filter selected Spots out of all Spots to get the not selected Spots
     const selectedIds = selectedSpots.map(sel => sel.properties.id);
@@ -559,9 +560,7 @@ const mapView = React.forwardRef((props, ref) => {
   const startEditing = (spotToEdit) => {
     props.startEdit();
     clearEditing();
-
-    const allSpotsCopy = JSON.parse(JSON.stringify(Object.values(props.spots)));
-    const mappableSpots = allSpotsCopy.filter(spot => spot.geometry);
+    const mappableSpots = useSpots.getMappableSpots();
     setEditingModeData(d => ({
       ...d,
       spotEditing: spotToEdit ? spotToEdit : {},
@@ -579,8 +578,7 @@ const mapView = React.forwardRef((props, ref) => {
     console.log('Map long press detected:', e);
     const {screenPointX, screenPointY} = e.properties;
     const spotToEdit = await getSpotAtPress(screenPointX, screenPointY);
-    const allSpotsCopy = JSON.parse(JSON.stringify(Object.values(props.spots)));
-    const mappableSpots = allSpotsCopy.filter(spot => spot.geometry);
+    const mappableSpots = useSpots.getMappableSpots();
     if (props.mapMode === MapModes.VIEW && !isEmpty(mappableSpots)) startEditing(spotToEdit);
     else if (props.mapMode === MapModes.EDIT) {
       if (isEmpty(spotToEdit)) console.log('Already in editing mode and no Spot found where pressed. No action taken.');
