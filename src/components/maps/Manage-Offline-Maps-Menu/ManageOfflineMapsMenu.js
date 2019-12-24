@@ -72,8 +72,9 @@ class ManageOfflineMapsMenu extends Component {
   }
 
   viewOfflineMap = async (map) => {
+    let tempCurrentBasemap;
     console.log('viewOfflineMap: ', map);
-    tileJSON = 'file://' + this.tileCacheDirectory + '/' + map.saveId + '/tiles/{z}_{x}_{y}.png';
+    let tileJSON = 'file://' + this.tileCacheDirectory + '/' + map.saveId + '/tiles/{z}_{x}_{y}.png';
     console.log('tileJSON: ', tileJSON);
     //change id to force layer reload
     tempCurrentBasemap =
@@ -100,6 +101,7 @@ class ManageOfflineMapsMenu extends Component {
     await this.props.onCurrentBasemap(tempCurrentBasemap);
     // this.props.closeSettingsDrawer();
   };
+
   confirmDeleteMap = async (map) => {
     console.log(map);
     Alert.alert(
@@ -132,7 +134,7 @@ class ManageOfflineMapsMenu extends Component {
     }
 
     //now, delete map from Redux
-    currentOfflineMaps = this.props.offlineMaps;
+    let currentOfflineMaps = this.props.offlineMaps;
 
     //now check for existence of AsyncStorage offlineMapsData and store new count
     if (!currentOfflineMaps) {
