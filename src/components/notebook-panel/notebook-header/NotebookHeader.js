@@ -16,19 +16,22 @@ const NotebookHeader = props => {
 
   // Creates DMS string for coordinates
   const getSpotCoordText = () => {
-    if (props.spot.geometry.type === 'Point') {
-      const lng = props.spot.geometry.coordinates[0];
-      const lat = props.spot.geometry.coordinates[1];
-      const degreeSymbol = '\u00B0';
-      const latitude = lat.toFixed(6);
-      let latitudeCardinal = Math.sign(lat) >= 0 ? 'North' : 'South';
+    if (props.spot.geometry) {
+      if (props.spot.geometry.type === 'Point') {
+        const lng = props.spot.geometry.coordinates[0];
+        const lat = props.spot.geometry.coordinates[1];
+        const degreeSymbol = '\u00B0';
+        const latitude = lat.toFixed(6);
+        let latitudeCardinal = Math.sign(lat) >= 0 ? 'North' : 'South';
 
-      const longitude = lng.toFixed(6);
-      let longitudeCardinal = Math.sign(lng) >= 0 ? 'East' : 'West';
+        const longitude = lng.toFixed(6);
+        let longitudeCardinal = Math.sign(lng) >= 0 ? 'East' : 'West';
 
-      return longitude + degreeSymbol + ' ' + longitudeCardinal + ', ' + latitude + degreeSymbol + ' ' + latitudeCardinal;
+        return longitude + degreeSymbol + ' ' + longitudeCardinal + ', ' + latitude + degreeSymbol + ' ' + latitudeCardinal;
+      }
+      return props.spot.geometry.type;
     }
-    return props.spot.geometry.type;
+    else return 'No Geometry';
   };
 
   return (

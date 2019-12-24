@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useImperativeHandle, useRef, useState} from 'react';
+import React, {useEffect, useImperativeHandle, useRef, useState} from 'react';
 import {View} from 'react-native';
 
 import * as turf from '@turf/turf/index';
@@ -62,7 +62,7 @@ const mapView = React.forwardRef((props, ref) => {
   }, []);
 
   useEffect(() => {
-    console.log('Updating DOM on spots changed');
+    console.log('Updating DOM on Spots or selected Spots changed');
       setDisplayedSpots(isEmpty(props.selectedSpot) ? [] : [{...props.selectedSpot}]);
   }, [props.spots, props.selectedSpot]);
 
@@ -83,23 +83,22 @@ const mapView = React.forwardRef((props, ref) => {
   };
 
   // Set selected and not selected Spots to display when not editing
-  const setDisplayedSpots = (selected) => {
-    console.log('mapMode', props.mapMode);
-    console.log('selected', selected, 'spots', props.spots);
-    let notSelected = JSON.parse(JSON.stringify(Object.values(props.spots)));
-    notSelected = notSelected.filter(spot => spot.geometry);
+  const setDisplayedSpots = (selectedSpots) => {
+    const allSpotsCopy = JSON.parse(JSON.stringify(Object.values(props.spots)));
+    const mappableSpots = allSpotsCopy.filter(spot => spot.geometry);
+    console.log('Selected Spots', selectedSpots, 'All Spots', allSpotsCopy);
 
     // Filter selected Spots out of all Spots to get the not selected Spots
-    if (!isEmpty(selected)) {
-      const selectedIds = selected.map(sel => sel.properties.id);
-      notSelected = Object.values(props.spots).filter(spot => !selectedIds.includes(spot.properties.id));
-    }
+    const selectedIds = selectedSpots.map(sel => sel.properties.id);
+    const selectedMappableSpots = mappableSpots.filter(spot => selectedIds.includes(spot.properties.id));
+    const notSelectedMappableSpots = mappableSpots.filter(spot => !selectedIds.includes(spot.properties.id));
+    console.log('Selected Mappable Spots', selectedMappableSpots, 'Not Selected Mappable Spots',
+      notSelectedMappableSpots);
 
-    console.log('Set displayed Spots while not editing. Selected:', selected, 'Not selected:', notSelected);
     setMapPropsMutable(m => ({
       ...m,
-      spotsSelected: [...selected],
-      spotsNotSelected: [...notSelected],
+      spotsSelected: [...selectedMappableSpots],
+      spotsNotSelected: [...notSelectedMappableSpots],
     }));
   };
 
@@ -560,14 +559,17 @@ const mapView = React.forwardRef((props, ref) => {
   const startEditing = (spotToEdit) => {
     props.startEdit();
     clearEditing();
+
+    const allSpotsCopy = JSON.parse(JSON.stringify(Object.values(props.spots)));
+    const mappableSpots = allSpotsCopy.filter(spot => spot.geometry);
     setEditingModeData(d => ({
       ...d,
       spotEditing: spotToEdit ? spotToEdit : {},
       spotsEdited: [],
-      spotsNotEdited: Object.values(props.spots),
+      spotsNotEdited: mappableSpots,
     }));
     spotToEdit ? console.log('Set Spot to edit:', spotToEdit) : console.log('No Spot selected to edit.');
-    setDisplayedSpotsWhileEditing(spotToEdit, [], Object.values(props.spots));
+    setDisplayedSpotsWhileEditing(spotToEdit, [], mappableSpots);
     setEditFeatures(spotToEdit);
     if (turf.getType(spotToEdit) === 'Point') setSelectedVertexToEdit(spotToEdit);
   };
@@ -577,7 +579,9 @@ const mapView = React.forwardRef((props, ref) => {
     console.log('Map long press detected:', e);
     const {screenPointX, screenPointY} = e.properties;
     const spotToEdit = await getSpotAtPress(screenPointX, screenPointY);
-    if (props.mapMode === MapModes.VIEW && !isEmpty(props.spots)) startEditing(spotToEdit);
+    const allSpotsCopy = JSON.parse(JSON.stringify(Object.values(props.spots)));
+    const mappableSpots = allSpotsCopy.filter(spot => spot.geometry);
+    if (props.mapMode === MapModes.VIEW && !isEmpty(mappableSpots)) startEditing(spotToEdit);
     else if (props.mapMode === MapModes.EDIT) {
       if (isEmpty(spotToEdit)) console.log('Already in editing mode and no Spot found where pressed. No action taken.');
       else if (!isEmpty(editingModeData.spotEditing)) {

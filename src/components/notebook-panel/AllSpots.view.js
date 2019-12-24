@@ -26,7 +26,7 @@ const allSpotsView = (props) => {
               key={spot.properties.id}
               title={spot.properties.name}
               titleStyle={{fontSize: 14}}
-              subtitle={spot.geometry.type}
+              subtitle={spot.geometry && spot.geometry.type || 'No Geometry'}
               subtitleStyle={{fontSize: 12}}
               containerStyle={{paddingTop: 5}}
               contentContainerStyle={{
