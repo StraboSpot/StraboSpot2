@@ -53,6 +53,7 @@ const notebookPanelWidth = 400;
 // };
 
 const Home = (props) => {
+  let imageArr = [];
   const online = require('../../assets/icons/StraboIcons_Oct2019/ConnectionStatusButton_connected.png');
   const offline = require('../../assets/icons/StraboIcons_Oct2019/ConnectionStatusButton_offline.png');
 
@@ -78,6 +79,7 @@ const Home = (props) => {
   const [leftsideIconAnimationValue, setLeftsideIconAnimationValue] = useState(new Animated.Value(0));
   const [rightsideIconAnimationValue, setRightsideIconAnimationValue] = useState(new Animated.Value(0));
   const [toastVisible, setToastVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const mapViewComponent = useRef(null);
 
@@ -361,16 +363,22 @@ const Home = (props) => {
   };
 
   const launchCameraFromNotebook = async () => {
-    let imageArr = allPhotosSaved;
     try {
       const savedPhoto = await ImageHelper.takePicture();
+      const photoProperties = {
+        id: savedPhoto.id,
+        src: savedPhoto.src,
+        image_type: 'photo',
+        height: savedPhoto.height,
+        width: savedPhoto.width,
+      };
       toggleLoading(true);
       if (savedPhoto === 'cancelled') {
-        if (allPhotosSaved.length > 0) {
-          console.log('ALL PHOTOS SAVED', allPhotosSaved);
+        if (imageArr.length > 0) {
+          console.log('ALL PHOTOS SAVED', imageArr);
           props.addPhoto(imageArr);
           props.onSpotEditImageObj(imageArr);
-          toggleLoading();
+          toggleLoading(false);
           // toggleToast();
         }
         else {
@@ -379,16 +387,10 @@ const Home = (props) => {
         }
       }
       else {
-        setAllPhotosSaved([...allPhotosSaved, {
-          id: savedPhoto.id,
-          src: savedPhoto.src,
-          image_type: 'photo',
-          height: savedPhoto.height,
-          width: savedPhoto.width,
-        }]);
-        console.log('Photos Saved:', allPhotosSaved);
-        launchCameraFromNotebook();
-
+        // setAllPhotosSaved(oldArray => ([...oldArray, photoProperties]));
+        imageArr.push(photoProperties);
+        console.log('Photos Saved:', imageArr);
+        await launchCameraFromNotebook();
       }
     }
     catch (e) {
@@ -614,16 +616,17 @@ const Home = (props) => {
         startEdit={startEdit}
       />
       {props.vertexStartCoords && <VertexDrag/>}
-      {props.loading && <LoadingSpinner/>}
-      {toastVisible &&
-      <ToastPopup
-        visible={toastVisible}
-        onShow={() => onToastShow()}
-      >
-        {allPhotosSaved.length === 1 ?
-          <Text>{allPhotosSaved.length} Picture Saved!</Text> :
-          <Text>{allPhotosSaved.length} Pictures Saved!</Text>}
-      </ToastPopup>}
+      {loading && <LoadingSpinner/>}
+
+      {/*{toastVisible &&*/}
+      {/*<ToastPopup*/}
+      {/*  visible={toastVisible}*/}
+      {/*  onShow={() => onToastShow()}*/}
+      {/*>*/}
+      {/*  {allPhotosSaved.length === 1 ?*/}
+      {/*    <Text>{allPhotosSaved.length} Picture Saved!</Text> :*/}
+      {/*    <Text>{allPhotosSaved.length} Pictures Saved!</Text>}*/}
+      {/*</ToastPopup>}*/}
       {Platform.OS === 'ios' &&
       <Animated.View style={leftsideIconAnimation}>
         {(props.modalVisible === Modals.NOTEBOOK_MODALS.COMPASS ||
