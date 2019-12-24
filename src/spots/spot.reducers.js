@@ -36,7 +36,10 @@ export const spotReducer = (state = initialState, action) => {
     case spotReducers.CLEAR_SPOTS:
       return {
         ...state,
+        selectedSpots: [],
+        selectedSpot: {},
         spots: {},
+        recentViews: [],
       };
     case spotReducers.DELETE_SPOT:
       const {[action.id]: deletedSpot, ...newSpots} = state.spots;  // Delete key with action.id from object
