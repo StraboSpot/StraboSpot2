@@ -19,6 +19,11 @@ export const imageReducer = (state = initialImageState, action) => {
         ...state,
         imagePaths: {...state.imagePaths, ...imagePathsTemp},
       };
+    case imageReducers.CLEAR_ALL_IMAGES:
+      return {
+        ...state,
+        imagePaths: {},
+      };
   }
   return state;
 };
