@@ -12,7 +12,7 @@ export const mapReducer = (state = initialState, action) => {
     case mapReducers.CURRENT_BASEMAP:
       // console.log('Current Basemap in Reducer', action.basemap);
       return {
-        ...state.map,
+        ...state,
         currentBasemap: action.basemap,
       };
     case mapReducers.CUSTOM_MAPS:
