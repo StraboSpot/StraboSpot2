@@ -1,8 +1,6 @@
 import React, {Component} from 'react';
 import {Picker, Text, StyleSheet, View} from 'react-native';
-import * as SharedUI from '../../../shared/ui/index';
-import {Button, Header} from 'react-native-elements';
-import MaterialCommunityIcons from '../../../shared/Icons';
+import {Button, Header, Icon} from 'react-native-elements';
 import {Platform} from 'react-native';
 import RNFetchBlob from 'rn-fetch-blob';
 import {unzip} from 'react-native-zip-archive'; /*TODO  react-native-zip-archive@3.0.1 requires a peer of react@^15.4.2 || <= 16.3.1 but none is installed */
@@ -327,15 +325,20 @@ class SaveMapModal extends Component {
       <View style={styles.modalContainer}>
         <Header
           backgroundColor={themes.PRIMARY_BACKGROUND_COLOR}
-          containerStyle={{height: 50}}
-          leftComponent={<SharedUI.ButtonNoBackground
-            onPress={this.props.close}>
-            <MaterialCommunityIcons.FontAwesome5
-              name={'times'}
-              size={20}
+          // containerStyle={{height: 50}}
+          leftComponent={
+            <Button
+              icon={
+                <Icon
+                  name='ios-close'
+                  type='ionicon'
+                  size={40}
+                />
+              }
+              type= {'clear'}
+              onPress={this.props.close}
             />
-          </SharedUI.ButtonNoBackground>}
-        />
+          }/>
         <View style={{height: 40, justifyContent: 'center'}}>
           <Text style={{fontSize: 20}}>{this.currentMapName}</Text>
         </View>
