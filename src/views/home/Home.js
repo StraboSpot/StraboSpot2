@@ -846,7 +846,7 @@ const Home = (props) => {
 
 function mapStateToProps(state) {
   return {
-    loading: state.home.loading,
+    currentBasemap: state.map.currentBasemap,
     selectedSpot: state.spot.selectedSpot,
     selectedImage: state.spot.selectedAttributes[0],
     isImageModalVisible: state.home.isImageModalVisible,

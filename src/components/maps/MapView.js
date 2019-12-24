@@ -14,6 +14,7 @@ import {MAPBOX_KEY} from '../../MapboxConfig';
 import {LATITUDE, LONGITUDE, MapModes} from './Map.constants';
 import {mapReducers, basemaps} from './Map.constants';
 import {spotReducers} from '../../spots/Spot.constants';
+import {projectReducers} from '../../project/Project.constants';
 
 MapboxGL.setAccessToken(MAPBOX_KEY);
 const mapView = React.forwardRef((props, ref) => {
@@ -86,6 +87,7 @@ const mapView = React.forwardRef((props, ref) => {
     console.log('mapMode', props.mapMode);
     console.log('selected', selected, 'spots', props.spots);
     let notSelected = JSON.parse(JSON.stringify(Object.values(props.spots)));
+    notSelected = notSelected.filter(spot => spot.geometry);
 
     // Filter selected Spots out of all Spots to get the not selected Spots
     if (!isEmpty(selected)) {
@@ -438,13 +440,17 @@ const mapView = React.forwardRef((props, ref) => {
     newSpot.properties.id = getNewId();
     let d = new Date(Date.now());
     d.setMilliseconds(0);
-    newSpot.properties.date = d.toISOString();
+    newSpot.properties.date = newSpot.properties.time = d.toISOString();
     // Sets modified and viewed timestamps in milliseconds
     newSpot.properties.modified_timestamp = Date.now();
     newSpot.properties.viewed_timestamp = Date.now();
     newSpot.properties.name = 'Spot ' + Object.keys(props.spots).length;
     console.log('Creating new Spot:', newSpot);
     await props.onAddSpot(newSpot);
+    const currentDataset = Object.values(props.datasets).find(dataset => dataset.current);
+    console.log('Active Dataset', currentDataset);
+    await props.addDatasetId(currentDataset.id, newSpot.properties.id);
+
     setSelectedSpot(newSpot);
     console.log('Finished creating new Spot. All Spots: ', props.spots);
     return Promise.resolve(newSpot);
@@ -766,12 +772,14 @@ const mapStateToProps = (state) => {
     selectedSpot: state.spot.selectedSpot,
     spots: state.spot.spots,
     vertexEndCoords: state.map.vertexEndCoords,
+    datasets: state.project.datasets,
   };
 };
 
 const mapDispatchToProps = {
   clearVertexes: () => ({type: mapReducers.CLEAR_VERTEXES}),
   onAddSpot: (spot) => ({type: spotReducers.ADD_SPOT, spot: spot}),
+  addDatasetId: (datasetId, spotId) => ({type: projectReducers.DATASETS.ADD_NEW_SPOT_ID_TO_DATASET, datasetId: datasetId, spotId: spotId}),
   onAddSpots: (spots) => ({type: spotReducers.ADD_SPOTS, spots: spots}),
   onClearSelectedSpots: () => ({type: spotReducers.CLEAR_SELECTED_SPOTS}),
   onCurrentBasemap: (basemap) => ({type: mapReducers.CURRENT_BASEMAP, basemap: basemap}),
