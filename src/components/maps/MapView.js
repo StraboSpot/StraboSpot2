@@ -92,7 +92,8 @@ const mapView = React.forwardRef((props, ref) => {
     // Filter selected Spots out of all Spots to get the not selected Spots
     const selectedIds = selectedSpots.map(sel => sel.properties.id);
     const selectedMappableSpots = mappableSpots.filter(spot => selectedIds.includes(spot.properties.id));
-    const notSelectedMappableSpots = mappableSpots.filter(spot => !selectedIds.includes(spot.properties.id));
+    const notSelectedMappableSpots = mappableSpots.filter(spot => !selectedIds.includes(spot.properties.id) ||
+      spot.geometry.type === 'Point');
     console.log('Selected Mappable Spots', selectedMappableSpots, 'Not Selected Mappable Spots',
       notSelectedMappableSpots);
 
@@ -105,9 +106,9 @@ const mapView = React.forwardRef((props, ref) => {
 
   // Set selected and not selected Spots to display while editing
   const setDisplayedSpotsWhileEditing = (spotEditingTmp, spotsEditedTmp, spotsNotEditedTmp) => {
+    spotsNotEditedTmp = spotsNotEditedTmp.filter(spot => spot.properties.id !== spotEditingTmp.properties.id);
     console.log('Set displayed Spots while editing. Editing:', spotEditingTmp, 'Edited:', spotsEditedTmp, 'Not edited:',
       spotsNotEditedTmp);
-    console.log('props.selectedSpot', props.selectedSpot);
     setMapPropsMutable(m => ({
       ...m,
       spotsSelected: isEmpty(spotEditingTmp) ? [] : [{...spotEditingTmp}],

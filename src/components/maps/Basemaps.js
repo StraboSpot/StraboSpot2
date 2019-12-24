@@ -2,7 +2,8 @@ import React from 'react';
 import {useSelector} from 'react-redux';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import * as turf from '@turf/turf/index';
-import pointSymbol from '../../assets/symbols/point-resizeimage.png';
+
+// import pointSymbol from '../../assets/symbols/point-resizeimage.png';
 
 function Basemap(props) {
   const basemap = useSelector(state => state.map.currentBasemap);
@@ -48,7 +49,13 @@ function Basemap(props) {
       id='shapeSource'
       shape={turf.featureCollection(props.spotsNotSelected)}
     >
-      <MapboxGL.SymbolLayer
+      {/*      <MapboxGL.SymbolLayer
+       id='pointLayerNotSelected'
+       minZoomLevel={1}
+       filter={['==', '$type', 'Point']}
+       style={mapStyles.point}
+       />*/}
+      <MapboxGL.CircleLayer
         id='pointLayerNotSelected'
         minZoomLevel={1}
         filter={['==', '$type', 'Point']}
@@ -152,9 +159,12 @@ export const CustomBasemap = React.forwardRef((props, ref) => (
 
 const mapStyles = {
   point: {
-    iconImage: pointSymbol,
-    iconAllowOverlap: true,
-    iconSize: 0.5,
+    circleRadius: 7,
+    circleColor: 'black',
+    circleOpacity: 1,
+    // iconImage: pointSymbol,
+    // iconAllowOverlap: true,
+    // iconSize: 0.5,
   },
   line: {
     lineColor: 'black',
@@ -165,7 +175,7 @@ const mapStyles = {
     fillOpacity: 0.4,
   },
   pointSelected: {
-    circleRadius: 30,
+    circleRadius: 20,
     circleColor: 'orange',
     circleOpacity: 0.4,
   },
