@@ -18,8 +18,10 @@ import {spotReducers} from '../../spots/Spot.constants';
 import {projectReducers} from '../../project/Project.constants';
 
 MapboxGL.setAccessToken(MAPBOX_KEY);
+
 const mapView = React.forwardRef((props, ref) => {
-  const useSpots = useSpotsHook();
+
+  const [useSpots] = useSpotsHook();
   const currentBasemap = useSelector(state => state.map.currentBasemap);
 
   // Data needing to be tracked when in editing mode
@@ -435,28 +437,6 @@ const mapView = React.forwardRef((props, ref) => {
     }
   };
 
-  // Create a new Spot
-  const createSpot = async (feature) => {
-    let newSpot = feature;
-    newSpot.properties.id = getNewId();
-    let d = new Date(Date.now());
-    d.setMilliseconds(0);
-    newSpot.properties.date = newSpot.properties.time = d.toISOString();
-    // Sets modified and viewed timestamps in milliseconds
-    newSpot.properties.modified_timestamp = Date.now();
-    newSpot.properties.viewed_timestamp = Date.now();
-    newSpot.properties.name = 'Spot ' + Object.keys(props.spots).length;
-    console.log('Creating new Spot:', newSpot);
-    await props.onAddSpot(newSpot);
-    const currentDataset = Object.values(props.datasets).find(dataset => dataset.current);
-    console.log('Active Dataset', currentDataset);
-    await props.addDatasetId(currentDataset.id, newSpot.properties.id);
-
-    setSelectedSpot(newSpot);
-    console.log('Finished creating new Spot. All Spots: ', props.spots);
-    return Promise.resolve(newSpot);
-  };
-
   const changeMap = (mapName) => {
     if (mapName === 'mapboxSatellite' || mapName === 'mapboxOutdoors' || mapName === 'osm' || mapName === 'macrostrat') {
       console.log('Switching basemap to:', mapName);
@@ -469,7 +449,8 @@ const mapView = React.forwardRef((props, ref) => {
   const setPointAtCurrentLocation = async () => {
     await setCurrentLocation();
     let feature = MapboxGL.geoUtils.makePoint(userLocationCoords);
-    await createSpot(feature);
+    const newSpot = await useSpots.createSpot(feature);
+    setSelectedSpot(newSpot);
     // throw Error('Geolocation Error');
   };
 
@@ -513,7 +494,8 @@ const mapView = React.forwardRef((props, ref) => {
       if (mapPropsMutable.drawFeatures.length >= 1) {
         newFeature = mapPropsMutable.drawFeatures.splice(1, 1)[0];
       }
-      newOrEditedSpot = await createSpot(newFeature);
+      newOrEditedSpot = await useSpots.createSpot(newFeature);
+      setSelectedSpot(newOrEditedSpot);
       setDrawFeatures([]);
     }
     console.log('Draw ended.');
