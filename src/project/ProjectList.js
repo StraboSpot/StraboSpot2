@@ -14,6 +14,11 @@ import styles from './Project.styles';
 import {SettingsMenuItems} from '../components/settings-panel/SettingsMenu.constants';
 import {spotReducers} from '../spots/Spot.constants';
 import useServerRequests from '../services/useServerRequests';
+// import DatasetList from './DatasetList';
+// import sharedDialogStyles from '../shared/common.styles';
+// import ProgressCircle from '../shared/ui/ProgressCircle';
+import {homeReducers} from '../views/home/Home.constants';
+import {imageReducers} from '../components/images/Image.constants';
 
 const ProjectList = (props) => {
   const currentProject = useSelector(state => state.project.project);
@@ -25,6 +30,7 @@ const ProjectList = (props) => {
   const [loading, setLoading] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
   const [errorMessage, setErrorMessage] = useState(false);
+  const [uploadErrors, setUploadErrors] = useState(false);
   // Server calls
   const [serverRequests] = useServerRequests();
   const [projectHelpers] = useProjectHelpers();
@@ -63,11 +69,6 @@ const ProjectList = (props) => {
     }
   };
 
-  const getSelectedProject = () => {
-    setShowDialog(false);
-    console.log(selectedProject.id);
-  };
-
   const selectProject = async (project) => {
     console.log('Selected Project:', project);
     setLoading(true);
@@ -79,7 +80,7 @@ const ProjectList = (props) => {
     }
     else {
       console.log('Getting project...');
-      const projectData = await projectHelpers.loadProjectRemote(project.id, userData.encoded_login);
+      const projectData = await serverRequests.getProject(project.id, userData.encoded_login);
       console.log('Loaded project \n', projectData);
       setLoading(false);
       dispatch({type: ProjectActions.projectReducers.PROJECTS, project: projectData});
@@ -88,19 +89,39 @@ const ProjectList = (props) => {
   };
 
   const switchProject = async (action) => {
-    if (action === ProjectActions.BACKUP_TO_SERVER || action === ProjectActions.BACKUP_TO_DEVICE) {
+    if (action === ProjectActions.BACKUP_TO_SERVER) {
+      dispatch({type: homeReducers.SET_LOADING, bool: true});
       console.log('User wants to:', action);
-      getSelectedProject();
+      try {
+        setShowDialog(false);
+        const project = await serverRequests.updateProject(currentProject, userData.encoded_login);
+        await dispatch({type: spotReducers.SPOTS_CLEARED, spots: {}});
+        console.log('Finished uploading project', project);
+        const projectData = await serverRequests.getProject(selectedProject.id, userData.encoded_login);
+        dispatch({type: ProjectActions.projectReducers.PROJECTS, project: projectData});
+        await getDatasets(selectedProject);
+        dispatch({type: homeReducers.SET_LOADING, bool: false});
+      }
+      catch (err) {
+        setUploadErrors(true);
+        console.error('Error', err);
+      }
+    }
+    else if (action === ProjectActions.BACKUP_TO_DEVICE) {
+      console.log('User wants to:', action);
     }
     else if (action === ProjectActions.OVERWRITE) {
       console.log('User wants to:', action, 'and select', selectedProject.name);
-      await dispatch({type: spotReducers.CLEAR_SPOTS, spots: {}});
+      await dispatch({type: spotReducers.CLEAR_SPOTS});
+      await dispatch({type: imageReducers.CLEAR_ALL_IMAGES});
       const projectData = await projectHelpers.loadProjectRemote(selectedProject.id, userData.encoded_login);
       dispatch({type: ProjectActions.projectReducers.PROJECTS, project: projectData});
       await getDatasets(selectedProject);
       setShowDialog(false);
     }
-    else setShowDialog(false);
+    else {
+      setShowDialog(false);
+    }
     dispatch({type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: SettingsMenuItems.SETTINGS_MAIN});
   };
 
@@ -165,12 +186,14 @@ const ProjectList = (props) => {
     }
   };
 
+
   return (
     <View style={{flex: 1}}>
       <View style={{flex: 1}}>
         {loading ? <Loading style={{backgroundColor: themes.PRIMARY_BACKGROUND_COLOR}}/> : renderProjectsList()}
       </View>
       {renderDialog()}
+      {/*{renderStatusDialog()}*/}
       {errorMessage && renderErrorMessage()}
     </View>
   );

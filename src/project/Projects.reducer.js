@@ -37,6 +37,18 @@ export const projectsReducer = (state = initialState, action) => {
         datasets: {...state.datasets, [action.datasetId]: dataset},
       };
     }
+    case projectReducers.DATASETS.ADD_NEW_SPOT_ID_TO_DATASET:
+
+      return {
+        ...state,
+        datasets: {
+          ...state.datasets,
+          [action.datasetId]: {
+            ...state.datasets[action.datasetId],
+            spotIds: [...state.datasets[action.datasetId].spotIds, action.spotId],
+          },
+        },
+      };
   }
   return state;
 };
