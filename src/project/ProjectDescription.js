@@ -128,9 +128,11 @@ const ProjectDescription = (props) => {
         {showEndPicker ?
           <View>
             <Button type={'clear'} title={'End Date Done'} onPress={() => setShowEndPicker(false)}/>
+            <Text style={{textAlign: 'center', fontSize: 12}}>End Date cannot be before Start Date</Text>
             <DateTimePicker
               mode={'date'}
               value={projectDescription.end_date || new Date()}
+              minimumDate={projectDescription.start_date}
               onChange={changeEndDate}
               display='default'
             />
