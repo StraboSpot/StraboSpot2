@@ -140,6 +140,10 @@ const useServerRequests = () => {
     return post('/dataset', encodedLogin, dataset);
   };
 
+  const updateDatasetSpots = (datasetId, spotCollection, encodedLogin) => {
+    return post('/datasetspots/' + datasetId, encodedLogin, spotCollection);
+  };
+
   const updateProject = (project, encodedLogin) => {
     return post('/project', encodedLogin, project,);
   };
@@ -155,6 +159,7 @@ const useServerRequests = () => {
     getProject: getProject,
     getProfileImage: getProfileImage,
     updateDataset: updateDataset,
+    updateDatasetSpots: updateDatasetSpots,
     updateProject: updateProject,
   };
 

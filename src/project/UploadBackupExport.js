@@ -12,9 +12,11 @@ import UploadDialogBox from './UploadDialogBox';
 import StatusDialogBox from '../shared/ui/StatusDialogBox';
 import useServerRequests from '../services/useServerRequests';
 import ProgressCircle from '../shared/ui/ProgressCircle';
+import useSpots from '../spots/useSpots';
 
 const UploadBackAndExport = (props) => {
   const [serverRequests] = useServerRequests();
+  const [spotFactory] = useSpots();
   const [progress, setProgress] = useState(null);
   const [uploadErrors, setUploadErrors] = useState(false);
   const [uploadStatusMessage, setUploadStatusMessage] = useState(null);
@@ -40,6 +42,23 @@ const UploadBackAndExport = (props) => {
 
   const onShareProjectAsShapefile = () => {
     console.log('onShareProjectAsShapefile');
+  };
+
+  const checkValidDateTime = (spots) => {
+    const checkedSpot = spots.forEach(spot => {
+      if (!spot.properties.date || !spot.properties.time) {
+        let date = spot.properties.date || spot.properties.time;
+        if (!date) {
+          date = new Date(Date.now());
+          date.setMilliseconds(0);
+        }
+        spot.properties.date = spot.properties.time = date.toISOString();
+        console.log('SPOT', spot);
+        // dispatch({type: spotReducers.EDIT_SPOT_PROPERTIES, field: 'date', value: date});
+      }
+    });
+    console.log('CheckedSpot', checkedSpot);
+    // return checkedSpot;
   };
 
   const initializeUpload = () => {
@@ -95,7 +114,8 @@ const UploadBackAndExport = (props) => {
     console.log('Finished updating dataset', response);
     const response2 = await serverRequests.addDatasetToProject(project.id, dataset.id, user.encoded_login);
     console.log('Finished updating dataset', response2);
-    uploadSpots(dataset);
+    await uploadSpots(dataset);
+    console.log('Spots Uploaded');
   };
 
   const uploadDatasets = async () => {
@@ -122,13 +142,12 @@ const UploadBackAndExport = (props) => {
     console.log('PROJECT UPLOADING...');
     setIsUploadDialogVisible(false);
     setIsUploadStatusDialogVisible(true);
-    dispatch({type: homeReducers.SET_LOADING, bool: true});
     // await serverRequests.updateProject(project, user.encoded_login).then((response) => {
         try {
           const updatedProject = await serverRequests.updateProject(project, user.encoded_login);
           console.log('Finished uploading project', updatedProject);
           setUploadErrors(false);
-          dispatch({type: homeReducers.SET_LOADING, bool: false});
+          // dispatch({type: homeReducers.SET_LOADING, bool: false});
           setUploadStatusMessage(<Text>Uploaded project the properties for the project:
             <Text style={[styles.dialogContentText, {color: 'black'}]}> {project.description.project_name}</Text>
           </Text>);
@@ -139,7 +158,6 @@ const UploadBackAndExport = (props) => {
         catch (err) {
           setUploadErrors(true);
           // setIsUploadDialogVisible(false);
-          dispatch({type: homeReducers.SET_LOADING, bool: false});
           setUploadStatusMessage(
             <Text style={{textAlign: 'center'}}>Error uploading project:
               <Text style={[styles.dialogContentText, {color: 'black'}]}> {project.description.project_name}</Text>
@@ -151,8 +169,20 @@ const UploadBackAndExport = (props) => {
     // );
   };
 
-  const uploadSpots = () => {
-
+  const uploadSpots = async (dataset) => {
+    let spots = await spotFactory.getSpotsByIds(dataset.spotIds);
+    console.log('Spot', spots);
+    // spots.forEach(spotValue => checkValidDateTime(spotValue));
+    if (isEmpty(spots)) {
+      Alert.alert('No Spots to Upload');
+    }
+    else {
+      const spotCollection = {
+        type: 'FeatureCollection',
+        features: Object.values(spots),
+      };
+      return serverRequests.updateDatasetSpots(dataset.id, spotCollection, user.encoded_login);
+    }
   };
 
   const renderUploadAndBackupButtons = () => {
@@ -225,7 +255,8 @@ const UploadBackAndExport = (props) => {
   const renderNames = (item) => {
     const name = item.name;
     const maxLength = 30;
-    return <Text>{name.length > maxLength ? `- ${name.substr(0, maxLength)}` : `- ${name}`}</Text>;
+    const truncated = name.substr(0, maxLength);
+    return <Text>{name.length > maxLength ? '- ' + truncated : '- ' + name}</Text>;
   };
 
   const renderUploadDialogBox = () => (
