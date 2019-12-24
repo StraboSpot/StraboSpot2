@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {FlatList, ListView, Text, View} from 'react-native';
+import {Alert, FlatList, ListView, Text, View} from 'react-native';
 import Divider from '../components/settings-panel/HomePanelDivider';
 import {Button, ListItem} from 'react-native-elements';
 import commonStyles from '../shared/common.styles';
