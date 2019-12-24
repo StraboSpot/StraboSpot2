@@ -27,6 +27,7 @@ const UploadBackAndExport = (props) => {
   const user = useSelector(state => state.user);
   const project = useSelector(state => state.project.project);
   const datasets = useSelector(state => state.project.datasets);
+  const isOnline = useSelector(state => state.home.isOnline);
 
   const onBackupProject = () => {
     console.log('onBackupProject');
@@ -189,10 +190,11 @@ const UploadBackAndExport = (props) => {
     return (
       <View>
         <Button
-          title={'Upload project to StraboSpot'}
+          title={isOnline ? 'Upload project to StraboSpot' : 'Need to be ONLINE to upload'}
           buttonStyle={commonStyles.standardButton}
           titleStyle={commonStyles.standardButtonText}
           onPress={() => initializeUpload()}
+          disabled={!isOnline}
         />
         <Button
           title={'Backup project to device'}

@@ -29,15 +29,15 @@ const SignIn = (props) => {
   const [serverRequests] = useServerRequests();
 
   useEffect(() => {
+    if (!isEmpty(userData) && !isEmpty(project)) {
+      props.navigation.navigate('HomeScreen');
+    }
     NetInfo.addEventListener(state => {
       handleConnectivityChange(state.isConnected);
     });
   }, []);
 
   useEffect(() => {
-    if (isOnline && !isEmpty(userData) && !isEmpty(project)) {
-      props.navigation.navigate('HomeScreen');
-    }
     if (isOnline === null) {
       NetInfo.fetch().then(state => {
         dispatch({type: homeReducers.SET_ISONLINE, online: state.isConnected});
@@ -46,7 +46,7 @@ const SignIn = (props) => {
           throw (err);
         });
     }
-  },[isOnline, userData, project]);
+  },[isOnline]);
 
   //function for online/offline state change event handler
   const handleConnectivityChange = (isConnected) => {
