@@ -11,38 +11,38 @@ import Home from './src/views/home/Home';
 import 'react-native-gesture-handler';
 import Loading from './src/shared/ui/Loading';
 
-const {store, persistor} = configureStore();
+const App = () => {
+   const {store, persistor} = configureStore();
 
-const RootStack = createStackNavigator(
-  {
-    SignIn: {
-      screen: SignIn,
-    },
-    SignUp: {
-      screen: SignUp,
-    },
-    HomeScreen: {
-      screen: Home,
-      navigationOptions: {
-        gesturesEnabled: false,
+    const RootStack = createStackNavigator(
+      {
+        HomeScreen: {
+          screen: Home,
+          navigationOptions: {
+            gesturesEnabled: false,
+          },
+        },
+        SignIn: {
+          screen: SignIn,
+        },
+        SignUp: {
+          screen: SignUp,
+        },
+        ImageInfo: {
+          screen: ImageInfo,
+          navigationOptions: {
+            gesturesEnabled: false,
+          },
+        },
       },
-    },
-    ImageInfo: {
-      screen: ImageInfo,
-      navigationOptions: {
-        gesturesEnabled: false,
+      {
+        initialRouteName: 'SignIn',
+        headerMode: 'none',
       },
-    },
-  },
-  {
-    headerMode: 'none',
-  },
-);
+    );
 
-let Navigation = createAppContainer(RootStack);
+    let Navigation = createAppContainer(RootStack);
 
-export default class App extends React.Component {
-  render() {
     return (
       <Provider store={store}>
         <PersistGate loading={<Loading />} persistor={persistor}>
@@ -50,5 +50,6 @@ export default class App extends React.Component {
         </PersistGate>
       </Provider>
     );
-  }
-}
+};
+
+ export default App;
