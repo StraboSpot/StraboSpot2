@@ -48,12 +48,12 @@ const useSpots = (props) => {
     return foundSpots;
   };
 
-  return {
+  return [{
     getMappableSpots: getMappableSpots,
     createSpot: createSpot,
     getSpotById: getSpotById,
     getSpotsByIds: getSpotsByIds,
-  };
+  }];
 };
 
 export default useSpots;
