@@ -31,24 +31,26 @@ export const projectsReducer = (state = initialState, action) => {
       };
     }
     case projectReducers.DATASETS.ADD_SPOTS_IDS_TO_DATASET: {
-      const dataset = {...state.datasets[action.datasetId], spotIds: action.spotIds};
+      const spotIds = state.datasets[action.datasetId].spotIds ? [...state.datasets[action.datasetId].spotIds,  ...action.spotIds] : action.spotIds;
+      const dataset = {...state.datasets[action.datasetId], spotIds: spotIds};
       return {
         ...state,
         datasets: {...state.datasets, [action.datasetId]: dataset},
       };
     }
-    case projectReducers.DATASETS.ADD_NEW_SPOT_ID_TO_DATASET:
-
-      return {
-        ...state,
-        datasets: {
-          ...state.datasets,
-          [action.datasetId]: {
-            ...state.datasets[action.datasetId],
-            spotIds: [...state.datasets[action.datasetId].spotIds, action.spotId],
-          },
-        },
-      };
+    // case projectReducers.DATASETS.ADD_NEW_SPOT_ID_TO_DATASET:
+    //   console.log(action.datasetId);
+    //   console.log(state.datasets);
+    //   return {
+    //     ...state,
+    //     datasets: {
+    //       ...state.datasets,
+    //       [action.datasetId]: {
+    //         ...state.datasets[action.datasetId],
+    //         spotIds: [...state.datasets[action.datasetId].spotIds, action.spotId],
+    //       },
+    //     },
+    //   };
   }
   return state;
 };

@@ -111,12 +111,20 @@ const UploadBackAndExport = (props) => {
   };
 
   const uploadDataset = async (dataset) => {
-    const response = await serverRequests.updateDataset(dataset, user.encoded_login);
+    let datasetCopy = JSON.parse(JSON.stringify(dataset));
+    delete datasetCopy.spotIds;
+    delete datasetCopy.current;
+    delete datasetCopy.active;
+    const response = await serverRequests.updateDataset(datasetCopy, user.encoded_login);
     console.log('Finished updating dataset', response);
     const response2 = await serverRequests.addDatasetToProject(project.id, dataset.id, user.encoded_login);
     console.log('Finished updating dataset', response2);
     await uploadSpots(dataset);
     console.log('Spots Uploaded');
+    setTimeout(() => {
+      console.log('Finished Uploading Datasets');
+      setIsUploadStatusDialogVisible(false);
+    }, 1000);
   };
 
   const uploadDatasets = async () => {
@@ -128,7 +136,10 @@ const UploadBackAndExport = (props) => {
     if (currentRequest > 0 && currentRequest < activeDatasets.length) {
       console.log('A');
     }
-    if (currentRequest < activeDatasets.length) await makeNextRequest();
+    if (currentRequest < activeDatasets.length) {
+      console.log('MakeNextRequest', currentRequest);
+      await makeNextRequest(activeDatasets, currentRequest);
+    }
     else {
       dispatch({type: homeReducers.SET_LOADING, bool: false});
       setTimeout(() => {
