@@ -31,8 +31,8 @@ const DatasetList = () => {
         dispatch({type: spotReducers.ADD_SPOTS, spots: spots});
         const spotIds = Object.values(spots).map(spot => spot.properties.id);
         dispatch({type: projectReducers.DATASETS.ADD_SPOTS_IDS_TO_DATASET, datasetId: dataset.id, spotIds: spotIds});
-        const gatheredImages = await gatherNeededImages(spots);
-        console.log(gatheredImages);
+        const imagesToDownload = await gatherNeededImages(spots);
+        console.table(imagesToDownload);
       }
     }
     else {
@@ -40,20 +40,20 @@ const DatasetList = () => {
     }
   };
 
-  const gatherNeededImages = (spots) => {
+  const gatherNeededImages = async (spots) => {
     let neededImagesIds = [];
     const promises = [];
-    spots.map( async spot  => {
+    spots.map( spot => {
       if (spot.properties.images) {
-        spot.properties.images.map( async (image)  =>  {
-          let promise = await useImages.doesImageExist(image.id);
-          console.log('PROMISE', promise);
+        spot.properties.images.map( (image) => {
+          const promise = useImages.doesImageExist(image.id).then((exists) => {
+            if (!exists) {
+              console.log('Need to download image', image.id);
+              neededImagesIds.push(image.id);
+            }
+            else console.log('Image', image.id, 'already exists on device. Not downloading.');
+          });
           promises.push(promise);
-          if (!promise) {
-            console.log('Need to download image', image.id);
-            neededImagesIds.push(image.id);
-          }
-          else console.log('Image', image.id, 'already exists on device. Not downloading.');
         });
       }
     });
