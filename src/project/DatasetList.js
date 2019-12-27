@@ -3,13 +3,18 @@ import {Switch, ScrollView, Text, View, Alert} from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import {ListItem} from 'react-native-elements';
 import {projectReducers} from './Project.constants';
-import useServerRequests from '../services/useServerRequests';
 import {isEmpty} from '../shared/Helpers';
 import {spotReducers} from '../spots/Spot.constants';
 import Loading from '../shared/ui/Loading';
 
+// Hooks
+import useServerRequests from '../services/useServerRequests';
+import useImagesHook from '../components/images/useImages';
+
+
 const DatasetList = () => {
   const [serverRequests] = useServerRequests();
+  const [useImages] = useImagesHook();
   const [loading, setLoading] = useState(false);
   const datasets = useSelector(state => state.project.datasets);
   const isOnline = useSelector(state => state.home.isOnline);
@@ -26,6 +31,8 @@ const DatasetList = () => {
         dispatch({type: spotReducers.ADD_SPOTS, spots: spots});
         const spotIds = Object.values(spots).map(spot => spot.properties.id);
         dispatch({type: projectReducers.DATASETS.ADD_SPOTS_IDS_TO_DATASET, datasetId: dataset.id, spotIds: spotIds});
+        const gatheredImages = await gatherNeededImages(spots);
+        console.log(gatheredImages);
       }
     }
     else {
@@ -33,7 +40,30 @@ const DatasetList = () => {
     }
   };
 
-  const getIsDisabled = (id)=> {
+  const gatherNeededImages = (spots) => {
+    let neededImagesIds = [];
+    const promises = [];
+    spots.map( async spot  => {
+      if (spot.properties.images) {
+        spot.properties.images.map( async (image)  =>  {
+          let promise = await useImages.doesImageExist(image.id);
+          console.log('PROMISE', promise);
+          promises.push(promise);
+          if (!promise) {
+            console.log('Need to download image', image.id);
+            neededImagesIds.push(image.id);
+          }
+          else console.log('Image', image.id, 'already exists on device. Not downloading.');
+        });
+      }
+    });
+    return Promise.all(promises).then(() => {
+      Alert.alert(`Images needed to download: ${neededImagesIds.length}`)
+      return Promise.resolve(neededImagesIds);
+    });
+  };
+
+  const isDisabled = (id)=> {
     const activeDatasets = Object.values(datasets).filter(dataset => dataset.active === true);
     return activeDatasets.length === 1 && activeDatasets[0].id === id;
   };
@@ -62,7 +92,7 @@ const DatasetList = () => {
                 <Switch
                   onValueChange={(value) => setSwitchValue(value, item.id)}
                   value={item.active}
-                  disabled={getIsDisabled(item.id)}
+                  disabled={isDisabled(item.id)}
                 />}
             />;
           })}
