@@ -31,8 +31,9 @@ const DatasetList = () => {
         dispatch({type: spotReducers.ADD_SPOTS, spots: spots});
         const spotIds = Object.values(spots).map(spot => spot.properties.id);
         dispatch({type: projectReducers.DATASETS.ADD_SPOTS_IDS_TO_DATASET, datasetId: dataset.id, spotIds: spotIds});
-        const imagesToDownload = await gatherNeededImages(spots);
-        console.table(imagesToDownload);
+        const neededImagesIds = await gatherNeededImages(spots);
+        console.table(neededImagesIds);
+        await downloadImages(neededImagesIds);
       }
     }
     else {
@@ -43,9 +44,9 @@ const DatasetList = () => {
   const gatherNeededImages = async (spots) => {
     let neededImagesIds = [];
     const promises = [];
-    spots.map( spot => {
+    spots.map(spot => {
       if (spot.properties.images) {
-        spot.properties.images.map( (image) => {
+        spot.properties.images.map((image) => {
           const promise = useImages.doesImageExist(image.id).then((exists) => {
             if (!exists) {
               console.log('Need to download image', image.id);
@@ -58,12 +59,47 @@ const DatasetList = () => {
       }
     });
     return Promise.all(promises).then(() => {
-      Alert.alert(`Images needed to download: ${neededImagesIds.length}`)
+      Alert.alert(`Images needed to download: ${neededImagesIds.length}`);
       return Promise.resolve(neededImagesIds);
     });
   };
 
-  const isDisabled = (id)=> {
+  const downloadImages = neededImageIds => {
+    let promises = [];
+    let imagesDownloadedCount = 0;
+    let imagesFailedCount = 0;
+    let savedImagesCount = 0;
+
+    neededImageIds.map(imageId => {
+      let promise = downloadImage(imageId).then(() => {
+        imagesDownloadedCount++;
+        savedImagesCount++;
+        console.log(
+          'NEW/MODIFIED Images Downloaded: ' + imagesDownloadedCount + ' of ' + neededImageIds.length +
+          ' NEW/MODIFIED Images Saved: ' + savedImagesCount + ' of ' + neededImageIds.length);
+      }, err => {
+        imagesFailedCount++;
+        console.warn('Error downloading Image', imageId, 'Error:', err);
+      });
+      promises.push(promise);
+    });
+    return Promise.all(promises).then(() => {
+      if (imagesFailedCount > 0) {
+        //downloadErrors = true;
+        console.warn('Image Downloads Failed: ' + imagesFailedCount);
+      }
+    });
+  };
+
+  const downloadImage = imageId => {
+    console.log('Download image', imageId);
+    return Promise.resolve();
+    //return serverRequests.downloadImage(imageId, userData.encoded_login).then(() => {
+
+    //});
+  };
+
+  const isDisabled = (id) => {
     const activeDatasets = Object.values(datasets).filter(dataset => dataset.active === true);
     return activeDatasets.length === 1 && activeDatasets[0].id === id;
   };
@@ -74,7 +110,7 @@ const DatasetList = () => {
   };
 
   const spotsQuantitiesInDataset = () => {
-    console.log(datasets.length)
+    console.log(datasets.length);
 
   };
 
@@ -82,7 +118,7 @@ const DatasetList = () => {
     if (!isEmpty(datasets)) {
       return (
         <ScrollView>
-          {Object.values(datasets).map( (item)=> {
+          {Object.values(datasets).map((item) => {
             return <ListItem
               key={item.id}
               title={item.name}

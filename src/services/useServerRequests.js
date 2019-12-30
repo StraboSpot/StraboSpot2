@@ -34,7 +34,7 @@ const useServerRequests = () => {
     }
   };
 
-  const request = async (method, urlPart, login) => {
+  const request = async (method, urlPart, login, ...otherParams) => {
     const response = await timeoutPromise(10000, fetch(baseUrl + urlPart, {
       method: method,
       headers: {
@@ -42,6 +42,7 @@ const useServerRequests = () => {
         'Content-Type': 'application/json',
       },
       // body: JSON.stringify({data: data}),
+      ...otherParams,
     }));
     return handleResponse(response);
   };
@@ -64,6 +65,10 @@ const useServerRequests = () => {
 
   const getDatasetSpots = (datasetId, encodedLogin) => {
     return request('GET','/datasetSpots/' + datasetId, encodedLogin);
+  };
+
+  const downloadImage = (imageId, encodedLogin) => {
+    return request('GET', '/image/' + imageId, encodedLogin, {responseType: 'blob'});
   };
 
   const getProfileImage = async (encodedLogin) => {
@@ -151,6 +156,7 @@ const useServerRequests = () => {
   const serverRequests = {
     addDatasetToProject:addDatasetToProject,
     authenticateUser: authenticateUser,
+    downloadImage: downloadImage,
     getMyProjects: getMyProjects,
     getDatasets: getDatasets,
     getDatasetSpots: getDatasetSpots,

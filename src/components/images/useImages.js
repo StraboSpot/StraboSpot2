@@ -15,9 +15,9 @@ const useImages = (props) => {
     const filePath = devicePath + imagesDirectory;
     const fileName = imageId.toString() + '.jpg';
     const fileURI = filePath + '/' + fileName;
-    console.log('File URI', fileURI);
+    console.log('Looking on device for file URI: ', fileURI);
     return await RNFetchBlob.fs.exists(fileURI).then(exist => {
-        console.log(`file ${exist ? '' : 'not'} exists`);
+        console.log(`File URI ${fileURI} does ${exist ? '' : 'not'} exist on device`);
         return exist;
       },
     )
