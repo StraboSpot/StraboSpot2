@@ -26,7 +26,7 @@ const InitialProjectLoadModal = (props) => {
   const [visibleInitialSection, setVisibleInitialSection] = useState('none');
 
   useEffect(() => {
-    console.log('Rendered');
+    // console.log('Rendered');
   }, [selectedProject, isOnline, datasets]);
 
   const goBack = () => {

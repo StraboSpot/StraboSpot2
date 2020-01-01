@@ -7,16 +7,18 @@ import {homeReducers} from '../views/home/Home.constants';
 import styles from './Project.styles';
 import sharedDialogStyles from '../shared/common.styles';
 import {useDispatch, useSelector} from 'react-redux';
-import {isEmpty} from '../shared/Helpers';
+import {isEmpty, readDataUrl} from '../shared/Helpers';
 import UploadDialogBox from './UploadDialogBox';
 import StatusDialogBox from '../shared/ui/StatusDialogBox';
 import useServerRequests from '../services/useServerRequests';
 import ProgressCircle from '../shared/ui/ProgressCircle';
 import useSpots from '../spots/useSpots';
+import useImagesHook from '../components/images/useImages';
 
 const UploadBackAndExport = (props) => {
   const [serverRequests] = useServerRequests();
   const [spotFactory] = useSpots();
+  const [useImages] = useImagesHook();
   const [progress, setProgress] = useState(null);
   const [uploadErrors, setUploadErrors] = useState(false);
   const [uploadStatusMessage, setUploadStatusMessage] = useState(null);
@@ -128,6 +130,7 @@ const UploadBackAndExport = (props) => {
   };
 
   const uploadDatasets = async () => {
+    await setProgress(0.25);
     let currentRequest = 0;
     const activeDatasets = Object.values(datasets).filter(dataset => dataset.active === true);
     // Upload datasets synchronously
@@ -142,10 +145,6 @@ const UploadBackAndExport = (props) => {
     }
     else {
       dispatch({type: homeReducers.SET_LOADING, bool: false});
-      setTimeout(() => {
-        console.log('Finished Uploading Datasets');
-        setIsUploadStatusDialogVisible(false);
-      }, 2000);
     }
   };
 
@@ -163,7 +162,6 @@ const UploadBackAndExport = (props) => {
           setUploadStatusMessage(<Text>Uploaded project the properties for the project:
             <Text style={[styles.dialogContentText, {color: 'black'}]}> {project.description.project_name}</Text>
           </Text>);
-          await setProgress(1);
           // setIsUploadDialogVisible(false);
           console.log('Going to uploadDatasets next')
         }
@@ -181,19 +179,30 @@ const UploadBackAndExport = (props) => {
     // );
   };
 
+  const uploadImages = async spots => {
+    setProgress(0.75);
+    const imageRes =  await useImages.uploadImages(spots);
+    console.log('ImageRes', imageRes);
+    await setProgress(1);
+  };
+
   const uploadSpots = async (dataset) => {
     let spots = await spotFactory.getSpotsByIds(dataset.spotIds);
     console.log('Spot', spots);
+    setProgress(0.50);
     // spots.forEach(spotValue => checkValidDateTime(spotValue));
     if (isEmpty(spots)) {
       Alert.alert('No Spots to Upload');
+      setProgress(1);
     }
     else {
       const spotCollection = {
         type: 'FeatureCollection',
         features: Object.values(spots),
       };
-      return serverRequests.updateDatasetSpots(dataset.id, spotCollection, user.encoded_login);
+      return serverRequests.updateDatasetSpots(dataset.id, spotCollection, user.encoded_login).then(() => {
+        return uploadImages(spots);
+      });
     }
   };
 

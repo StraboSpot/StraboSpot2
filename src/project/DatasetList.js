@@ -57,6 +57,7 @@ const DatasetList = () => {
           promises.push(promise);
         });
       }
+      else console.log('No images to download');
     });
     return Promise.all(promises).then(() => {
       Alert.alert(`Images needed to download: ${neededImagesIds.length}`);
