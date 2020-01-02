@@ -1,10 +1,12 @@
 import React from 'react';
-import {Alert, Platform, Text, View} from 'react-native';
+import {Alert, Platform} from 'react-native';
 import RNFetchBlob from 'rn-fetch-blob';
-import useServerRequests from '../../services/useServerRequests';
 import {useSelector} from 'react-redux';
 
-const useImages = (props) => {
+// Hooks
+import useServerRequests from '../../services/useServerRequests';
+
+const useImages = () => {
 
   let imageCount = 0;
   let dirs = RNFetchBlob.fs.dirs;
@@ -59,6 +61,57 @@ const useImages = (props) => {
           console.log('Error on', imageId, ':', errorMessage, statusCode);  // Android Error: RNFetchBlob request error: url == nullnull
           reject();
         });
+    });
+  };
+
+  const downloadImages = neededImageIds => {
+    let promises = [];
+    let imagesDownloadedCount = 0;
+    let imagesFailedCount = 0;
+    let savedImagesCount = 0;
+
+    neededImageIds.map(imageId => {
+      let promise = downloadImageAndSave(imageId).then(() => {
+        imagesDownloadedCount++;
+        savedImagesCount++;
+        console.log(
+          'NEW/MODIFIED Images Downloaded: ' + imagesDownloadedCount + ' of ' + neededImageIds.length +
+          ' NEW/MODIFIED Images Saved: ' + savedImagesCount + ' of ' + neededImageIds.length);
+      }, err => {
+        imagesFailedCount++;
+        console.warn('Error downloading Image', imageId, 'Error:', err);
+      });
+      promises.push(promise);
+    });
+    return Promise.all(promises).then(() => {
+      if (imagesFailedCount > 0) {
+        //downloadErrors = true;
+        console.warn('Image Downloads Failed: ' + imagesFailedCount);
+      }
+    });
+  };
+
+  const gatherNeededImages = async (spots) => {
+    let neededImagesIds = [];
+    const promises = [];
+    spots.map(spot => {
+      if (spot.properties.images) {
+        spot.properties.images.map((image) => {
+          const promise = doesImageExist(image.id).then((exists) => {
+            if (!exists) {
+              console.log('Need to download image', image.id);
+              neededImagesIds.push(image.id);
+            }
+            else console.log('Image', image.id, 'already exists on device. Not downloading.');
+          });
+          promises.push(promise);
+        });
+      }
+      else console.log('No images to download');
+    });
+    return Promise.all(promises).then(() => {
+      Alert.alert(`Images needed to download: ${neededImagesIds.length}`);
+      return Promise.resolve(neededImagesIds);
     });
   };
 
@@ -163,8 +216,8 @@ const useImages = (props) => {
   };
 
   return [{
-    doesImageExist: doesImageExist,
-    downloadImageAndSave: downloadImageAndSave,
+    downloadImages: downloadImages,
+    gatherNeededImages: gatherNeededImages,
     getLocalImageSrc: getLocalImageSrc,
     uploadImages: uploadImages,
   }];

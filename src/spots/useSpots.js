@@ -1,13 +1,23 @@
 import React from 'react';
-import {useSelector, useDispatch} from 'react-redux';
-import {getNewId} from '../shared/Helpers';
-import {spotReducers} from './Spot.constants';
+import {useDispatch, useSelector} from 'react-redux';
+
+import {getNewId, isEmpty} from '../shared/Helpers';
+
+// Constants
 import {projectReducers} from '../project/Project.constants';
+import {spotReducers} from './Spot.constants';
+
+// Hooks
+import useImagesHook from '../components/images/useImages';
+import useServerRequestsHook from '../services/useServerRequests';
 
 const useSpots = (props) => {
   const dispatch = useDispatch();
   const spots = useSelector(state => state.spot.spots);
   const datasets = useSelector(state => state.project.datasets);
+
+  const [useImages] = useImagesHook();
+  const [useServerRequests] = useServerRequestsHook();
 
   // Create a new Spot
   const createSpot = async (feature) => {
@@ -24,11 +34,32 @@ const useSpots = (props) => {
     await dispatch({type: spotReducers.ADD_SPOT, spot: newSpot});
     const currentDataset = Object.values(datasets).find(dataset => dataset.current);
     console.log('Active Dataset', currentDataset);
-    await dispatch({type: projectReducers.DATASETS.ADD_SPOTS_IDS_TO_DATASET, datasetId: currentDataset.id, spotIds: [newSpot.properties.id]});
+    await dispatch({
+      type: projectReducers.DATASETS.ADD_SPOTS_IDS_TO_DATASET,
+      datasetId: currentDataset.id,
+      spotIds: [newSpot.properties.id],
+    });
 
     console.log('Finished creating new Spot. All Spots: ', spots);
 
     return newSpot;
+  };
+
+  const downloadSpots = async (dataset, encodedLogin) => {
+    const datasetInfoFromServer = await useServerRequests.getDatasetSpots(dataset.id, encodedLogin);
+    if (!isEmpty(datasetInfoFromServer) && datasetInfoFromServer.features) {
+      const spotsOnServer = datasetInfoFromServer.features;
+      // setLoading(false);
+      if (!isEmpty(datasetInfoFromServer) && spotsOnServer) {
+        console.log(spotsOnServer);
+        dispatch({type: spotReducers.ADD_SPOTS, spots: spotsOnServer});
+        const spotIds = Object.values(spotsOnServer).map(spot => spot.properties.id);
+        dispatch({type: projectReducers.DATASETS.ADD_SPOTS_IDS_TO_DATASET, datasetId: dataset.id, spotIds: spotIds});
+        const neededImagesIds = await useImages.gatherNeededImages(spotsOnServer);
+        // console.table(neededImagesIds);
+        await useImages.downloadImages(neededImagesIds);
+      }
+    }
   };
 
   const getMappableSpots = () => {
@@ -49,8 +80,9 @@ const useSpots = (props) => {
   };
 
   return [{
-    getMappableSpots: getMappableSpots,
     createSpot: createSpot,
+    downloadSpots: downloadSpots,
+    getMappableSpots: getMappableSpots,
     getSpotById: getSpotById,
     getSpotsByIds: getSpotsByIds,
   }];
