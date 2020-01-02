@@ -53,16 +53,16 @@ export const pictureSelectDialog = async () => {
 
 export const saveFile = async (imageURI) => {
   let uriParts = imageURI.uri.split('/');
-  let imageName = uriParts[uriParts.length - 1];
+  // let imageName = uriParts[uriParts.length - 1];
+  let imageId = getNewId();
   return new Promise((resolve, reject) => {
     RNFetchBlob
-      .config({path: imagesDirectory + '/' + imageName})
+      .config({path: imagesDirectory + '/' + imageId + '.jpg'})
       .fetch('GET', imageURI.uri, {})
       .then((res) => {
         imageCount++;
         console.log(imageCount, 'File saved to', res.path());
         // let imageId = imageName.split('.')[0];
-        let imageId = getNewId();
         let imageData = {};
         if (Platform.OS === 'ios') {
           imageData = {
@@ -77,7 +77,7 @@ export const saveFile = async (imageURI) => {
       })
       .catch((errorMessage, statusCode) => {
         imageCount++;
-        console.log('Error on', imageName, ':', errorMessage, statusCode);  // Android Error: RNFetchBlob request error: url == nullnull
+        console.log('Error on', imageId, ':', errorMessage, statusCode);  // Android Error: RNFetchBlob request error: url == nullnull
         reject();
       });
   });

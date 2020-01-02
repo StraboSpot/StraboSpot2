@@ -18,7 +18,7 @@ const useImages = (props) => {
 
   // Checks to see if image is already on device
   const doesImageExist = async (imageId) => {
-    const filePath = devicePath + imagesDirectory;
+    const filePath = imagesDirectory;
     const fileName = imageId.toString() + '.jpg';
     const fileURI = filePath + '/' + fileName;
     console.log('Looking on device for file URI: ', fileURI);
@@ -30,6 +30,36 @@ const useImages = (props) => {
       .catch((err) => {
         throw err;
       });
+  };
+
+  const downloadImageAndSave = async (imageId) => {
+    const imageURI = 'https://strabospot.org/pi/' + imageId;
+    return new Promise((resolve, reject) => {
+      RNFetchBlob
+        .config({path: imagesDirectory + '/' + imageId + '.jpg'})
+        .fetch('GET', imageURI, {})
+        .then((res) => {
+          imageCount++;
+          console.log(imageCount, 'File saved to', res.path());
+          // let imageId = imageName.split('.')[0];
+          let imageData = {};
+          if (Platform.OS === 'ios') {
+            imageData = {
+              id: imageId,
+              src: res.path(),
+              height: imageURI.height,
+              width: imageURI.width,
+            };
+          }
+          else imageData = {id: imageId, src: 'file://' + res.path(), height: imageURI.height, width: imageURI.width};
+          resolve(imageData);
+        })
+        .catch((errorMessage, statusCode) => {
+          imageCount++;
+          console.log('Error on', imageId, ':', errorMessage, statusCode);  // Android Error: RNFetchBlob request error: url == nullnull
+          reject();
+        });
+    });
   };
 
   const uploadImages = spots => {
@@ -128,6 +158,7 @@ const useImages = (props) => {
 
   return [{
     doesImageExist: doesImageExist,
+    downloadImageAndSave: downloadImageAndSave,
     uploadImages: uploadImages,
   }];
 };

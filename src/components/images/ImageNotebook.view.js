@@ -1,16 +1,23 @@
 import React from 'react';
-import {ActivityIndicator, Button, FlatList, View} from 'react-native';
+import {ActivityIndicator, Button, FlatList, Platform, View} from 'react-native';
 import {setForm} from '../form/form.container';
 import {connect} from 'react-redux';
 import imageStyles from './images.styles';
 import {Image} from 'react-native-elements';
 import {withNavigation} from 'react-navigation';
 import {spotReducers} from '../../spots/Spot.constants';
+import RNFetchBlob from 'rn-fetch-blob';
 
 const imageNotebook = (props) => {
 
   const getImageSrc = (id) => {
-    return props.imagePaths[id];
+    let dirs = RNFetchBlob.fs.dirs;
+    // const url = 'https://strabospot.org/testimages/images.json';
+    const devicePath = Platform.OS === 'ios' ? dirs.DocumentDir : dirs.SDCardDir; // ios : android
+    const appDirectory = '/StraboSpot';
+    const imagesDirectory = devicePath + appDirectory + '/Images/';
+    return imagesDirectory + id + '.jpg';
+    // return props.imagePaths[id];
   };
 
   const editImage = (image) => {
@@ -41,7 +48,7 @@ const imageNotebook = (props) => {
     <FlatList
       data={props.images}
       renderItem={({item}) => renderImage(item)}
-      keyExtractor={(item) => item.id}
+      keyExtractor={(item) => item.id.toString()}
     />
   );
 };

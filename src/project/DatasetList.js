@@ -32,7 +32,7 @@ const DatasetList = () => {
         const spotIds = Object.values(spots).map(spot => spot.properties.id);
         dispatch({type: projectReducers.DATASETS.ADD_SPOTS_IDS_TO_DATASET, datasetId: dataset.id, spotIds: spotIds});
         const neededImagesIds = await gatherNeededImages(spots);
-        console.table(neededImagesIds);
+        // console.table(neededImagesIds);
         await downloadImages(neededImagesIds);
       }
     }
@@ -72,7 +72,7 @@ const DatasetList = () => {
     let savedImagesCount = 0;
 
     neededImageIds.map(imageId => {
-      let promise = downloadImage(imageId).then(() => {
+      let promise = useImages.downloadImageAndSave(imageId).then(() => {
         imagesDownloadedCount++;
         savedImagesCount++;
         console.log(
@@ -90,14 +90,6 @@ const DatasetList = () => {
         console.warn('Image Downloads Failed: ' + imagesFailedCount);
       }
     });
-  };
-
-  const downloadImage = imageId => {
-    console.log('Download image', imageId);
-    return Promise.resolve();
-    //return serverRequests.downloadImage(imageId, userData.encoded_login).then(() => {
-
-    //});
   };
 
   const isDisabled = (id) => {
