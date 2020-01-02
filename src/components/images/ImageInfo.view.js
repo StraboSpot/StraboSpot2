@@ -1,17 +1,25 @@
 import React, {useState} from 'react';
 import {ActivityIndicator, View} from 'react-native';
-import styles from './images.styles';
 import {connect} from 'react-redux';
 import {Icon, Image} from 'react-native-elements';
+
 import IconButton from '../../shared/ui/IconButton';
-import {imageReducers} from './Image.constants';
 import ImagePropertiesModal from './ImagePropertiesModal';
+
+// Constants
 import {homeReducers} from '../../views/home/Home.constants';
+
+// Hooks
+import useImagesHook from './useImages';
+
+// Styles
+import styles from './images.styles';
 
 const ImageInfoView = (props) => {
   // console.log('Image Info', props);
 
   const [imageNoteModal, setImageNoteModal] = useState(false);
+  const [useImages] = useImagesHook();
 
   // useEffect(() => {
   //   getDims = Dimensions.get('window');
@@ -45,14 +53,10 @@ const ImageInfoView = (props) => {
     setImageNoteModal(false);
   };
 
-  const getImageSrc = (id) => {
-    return props.imagePaths[id];
-  };
-
   return (
     <View>
       <Image
-        source={{uri: getImageSrc(props.navigation.getParam('imageId', 'No-ID'))}}
+        source={{uri: useImages.getLocalImageSrc(props.navigation.getParam('imageId', 'No-ID'))}}
         style={{width: '100%', height: '100%'}}
         PlaceholderContent={<ActivityIndicator/>}
       />
@@ -87,13 +91,11 @@ const ImageInfoView = (props) => {
 const mapStateToProps = (state) => {
   // console.log('MP to P', state);
   return {
-    imagePaths: state.images.imagePaths,
     getDeviceDims: state.home.deviceDimensions,
   };
 };
 
 const mapDispatchToProps = {
-  addPhoto: (image) => ({type: imageReducers.ADD_PHOTOS, images: image}),
   setDeviceDims: (dims) => ({type: homeReducers.DEVICE_DIMENSIONS, dims: dims}),
 };
 export default connect(mapStateToProps, mapDispatchToProps)(ImageInfoView);

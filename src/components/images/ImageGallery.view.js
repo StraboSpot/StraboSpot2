@@ -1,26 +1,30 @@
 import React, {useState, useEffect} from 'react';
 import {ActivityIndicator, Alert, FlatList, ScrollView, Text, View} from 'react-native';
-import {pictureSelectDialog} from './Images.container';
-import {connect} from 'react-redux';
-import imageStyles from './images.styles';
 import {Button} from 'react-native-elements';
-import {imageReducers} from './Image.constants';
-import SortingButtons from '../settings-panel/SortingButtons';
+import {connect} from 'react-redux';
+
 import * as SharedUI from '../../shared/ui/index';
-import {isEmpty} from '../../shared/Helpers';
-import {spotReducers} from '../../spots/Spot.constants';
 import {homeReducers} from '../../views/home/Home.constants';
-import {notebookReducers} from '../notebook-panel/Notebook.constants';
+import {isEmpty} from '../../shared/Helpers';
+import {pictureSelectDialog} from './Images.container';
 import {settingPanelReducers, SortedViews} from '../settings-panel/settingsPanel.constants';
+import SortingButtons from '../settings-panel/SortingButtons';
+
+// Constants
+import {notebookReducers} from '../notebook-panel/Notebook.constants';
+import {spotReducers} from '../../spots/Spot.constants';
+
+// Hooks
+import useImagesHook from './useImages';
 
 // Styles
 import attributesStyles from '../../components/settings-panel/settingsPanelSectionStyles/Attributes.styles';
+import imageStyles from './images.styles';
 
 const imageGallery = (props) => {
+  const [useImages] = useImagesHook();
   const [refresh, setRefresh] = useState(false);
   const [sortedList, setSortedList] = useState(Object.values(props.spots));
-  const {selectedSpot} = props;
-  const {spots, sortedListView} = props;
   let savedArray = [];
 
   useEffect(() => {
@@ -33,10 +37,10 @@ const imageGallery = (props) => {
   }, []);
 
   useEffect(() => {
-    setSortedList(spots);
+    setSortedList(Object.values(props.spots));
     // setRefresh(!refresh);
     console.log('render Recent Views in ImageGallery.js!');
-  }, [selectedSpot, spots, sortedListView, sortedList]);
+  }, [props.selectedSpot, props.spots, props.sortedListView]);
 
   const imageSave = async () => {
     const savedPhoto = await pictureSelectDialog();
@@ -91,7 +95,7 @@ const imageGallery = (props) => {
     return (
       <View style={imageStyles.galleryImageListContainer}>
         <SharedUI.ImageButton
-          source={{uri: getImageSrc(image.id)}}
+          source={{uri: useImages.getLocalImageSrc(image.id)}}
           style={imageStyles.galleryImage}
           PlaceholderContent={<ActivityIndicator/>}
           onPress={() => renderImageModal(image)}
@@ -135,17 +139,11 @@ const imageGallery = (props) => {
     props.setIsImageModalVisible(true);
   };
 
-  const getImageSrc = (id) => {
-    return props.imagePaths[id];
-  };
-
   let sortedView = null;
   const filteredList = sortedList.filter(spot => {
     return !isEmpty(spot.properties.images);
   });
   if (!isEmpty(filteredList)) {
-
-
     if (props.sortedListView === SortedViews.CHRONOLOGICAL) {
       sortedView = <FlatList
         keyExtractor={(item) => item.properties.id.toString()}
@@ -196,7 +194,6 @@ const imageGallery = (props) => {
 
 const mapStateToProps = (state) => {
   return {
-    imagePaths: state.images.imagePaths,
     recentViews: state.spot.recentViews,
     selectedImage: state.spot.selectedAttributes[0],
     selectedSpot: state.spot.selectedSpot,
@@ -206,7 +203,6 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = {
-  addPhoto: (image) => ({type: imageReducers.ADD_PHOTOS, images: image}),
   setSelectedAttributes: (attributes) => ({type: spotReducers.SET_SELECTED_ATTRIBUTES, attributes: attributes}),
   setIsImageModalVisible: (value) => ({type: homeReducers.TOGGLE_IMAGE_MODAL, value: value}),
   setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),

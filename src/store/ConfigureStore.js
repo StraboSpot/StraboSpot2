@@ -2,7 +2,6 @@ import {applyMiddleware, createStore, compose, combineReducers} from 'redux';
 import {notebookReducer} from '../components/notebook-panel/notebook.reducers';
 import {mapReducer} from '../components/maps/maps.reducer';
 import {spotReducer} from '../spots/spot.reducers';
-import {imageReducer} from '../components/images/image.reducers';
 import {homeReducer} from '../views/home/Home.reducer';
 import {userReducer} from '../services/user/UserProfile.reducer';
 import {projectsReducer} from '../project/Projects.reducer';
@@ -27,7 +26,6 @@ const appReducer = combineReducers({
   map: mapReducer,
   notebook: notebookReducer,
   settingsPanel: settingsPanelReducer,
-  images: imageReducer,
   user: userReducer,
   project: projectsReducer,
 });

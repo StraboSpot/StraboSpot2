@@ -62,8 +62,14 @@ const useImages = (props) => {
     });
   };
 
+  const getLocalImageSrc = id => {
+    const imageSrc = imagesDirectory + '/' + id + '.jpg';
+    console.log('Loading image from', Platform.OS === 'ios' ? imageSrc : 'file://' + imageSrc);
+    return Platform.OS === 'ios' ? imageSrc : 'file://' + imageSrc;
+  };
+
   const uploadImages = spots => {
-    return new Promise ((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       spots = Object.values(spots);
       let imagesToUploadCount = 0;
       let imagesUploadedCount = 0;
@@ -110,7 +116,7 @@ const useImages = (props) => {
         }
       };
 
-      const  makeNextImageRequest = (imageProps) => {
+      const makeNextImageRequest = (imageProps) => {
         console.log(imageProps);
         return shouldUploadImage(imageProps)
           // .then(getImageFile)
@@ -132,19 +138,19 @@ const useImages = (props) => {
       const shouldUploadImage = async (imageProps) => {
         return await serverRequests.verifyImageExistence(imageProps.id, user.encoded_login)
           .then(response => {
-              if (response
-                && ((response.modified_timestamp && imageProps.modified_timestamp
-                  && imageProps.modified_timestamp > response.modified_timestamp)
-                  || (!response.modified_timestamp && imageProps.modified_timestamp))) {
-                console.log('Need to upload image:', imageProps.id);
-                imagesToUploadCount++;
-                return Promise.resolve(imageProps);
-              }
-              else {
-                console.log('No need to upload image:', imageProps.id, 'Server response:', response);
-                return Promise.reject('already exists');
-              }
-            }, () => {
+            if (response
+              && ((response.modified_timestamp && imageProps.modified_timestamp
+                && imageProps.modified_timestamp > response.modified_timestamp)
+                || (!response.modified_timestamp && imageProps.modified_timestamp))) {
+              console.log('Need to upload image:', imageProps.id);
+              imagesToUploadCount++;
+              return Promise.resolve(imageProps);
+            }
+            else {
+              console.log('No need to upload image:', imageProps.id, 'Server response:', response);
+              return Promise.reject('already exists');
+            }
+          }, () => {
             console.log('Need to upload image:', imageProps.id);
             imagesToUploadCount++;
             return Promise.resolve(imageProps);
@@ -159,6 +165,7 @@ const useImages = (props) => {
   return [{
     doesImageExist: doesImageExist,
     downloadImageAndSave: downloadImageAndSave,
+    getLocalImageSrc: getLocalImageSrc,
     uploadImages: uploadImages,
   }];
 };

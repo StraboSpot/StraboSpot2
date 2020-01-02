@@ -1,24 +1,22 @@
 import React from 'react';
-import {ActivityIndicator, Button, FlatList, Platform, View} from 'react-native';
-import {setForm} from '../form/form.container';
+import {ActivityIndicator, Button, FlatList, View} from 'react-native';
 import {connect} from 'react-redux';
-import imageStyles from './images.styles';
-import {Image} from 'react-native-elements';
 import {withNavigation} from 'react-navigation';
+
+import {Image} from 'react-native-elements';
+import {setForm} from '../form/form.container';
+
+// Constants
 import {spotReducers} from '../../spots/Spot.constants';
-import RNFetchBlob from 'rn-fetch-blob';
+
+// Hooks
+import useImagesHook from './useImages';
+
+// Styles
+import imageStyles from './images.styles';
 
 const imageNotebook = (props) => {
-
-  const getImageSrc = (id) => {
-    let dirs = RNFetchBlob.fs.dirs;
-    // const url = 'https://strabospot.org/testimages/images.json';
-    const devicePath = Platform.OS === 'ios' ? dirs.DocumentDir : dirs.SDCardDir; // ios : android
-    const appDirectory = '/StraboSpot';
-    const imagesDirectory = devicePath + appDirectory + '/Images/';
-    return imagesDirectory + id + '.jpg';
-    // return props.imagePaths[id];
-  };
+  const [useImages] = useImagesHook();
 
   const editImage = (image) => {
     props.setSelectedAttributes([image]);
@@ -31,7 +29,7 @@ const imageNotebook = (props) => {
     return (
       <View style={imageStyles.imageContainer}>
         <Image
-          source={{uri: getImageSrc(image.id)}}
+          source={{uri: useImages.getLocalImageSrc(image.id)}}
           style={imageStyles.notebookImage}
           PlaceholderContent={<ActivityIndicator/>}
         />
@@ -56,7 +54,6 @@ const imageNotebook = (props) => {
 const mapStateToProps = (state) => {
   return {
     images: state.spot.selectedSpot.properties.images,
-    imagePaths: state.images.imagePaths,
   };
 };
 

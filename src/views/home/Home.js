@@ -19,7 +19,6 @@ import {connect, useDispatch} from 'react-redux';
 import {NotebookPages, notebookReducers} from '../../components/notebook-panel/Notebook.constants';
 import {settingPanelReducers} from '../../components/settings-panel/settingsPanel.constants';
 import {spotReducers} from '../../spots/Spot.constants';
-import {imageReducers} from '../../components/images/Image.constants';
 import * as ImageHelper from '../../components/images/Images.container';
 import NotebookCompassModal from '../../components/measurements/compass/NotebookCompassModal';
 import ShortcutCompassModal from '../../components/measurements/compass/ShortcutCompassModal';
@@ -39,6 +38,9 @@ import vectorIcon from 'react-native-vector-icons/Ionicons';
 import IconButton from '../../shared/ui/IconButton';
 import VertexDrag from '../../components/maps/VertexDrag';
 import {animatePanels, isEmpty} from '../../shared/Helpers';
+
+// Hooks
+import useImagesHook from '../../components/images/useImages';
 
 const homeMenuPanelWidth = 300;
 const notebookPanelWidth = 400;
@@ -80,6 +82,7 @@ const Home = (props) => {
   const [rightsideIconAnimationValue, setRightsideIconAnimationValue] = useState(new Animated.Value(0));
   const [toastVisible, setToastVisible] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [useImages] = useImagesHook();
 
   const mapViewComponent = useRef(null);
 
@@ -312,10 +315,6 @@ const Home = (props) => {
       openNotebookPanel(NotebookPages.OVERVIEW);
       props.setModalVisible(null);
     }
-  };
-
-  const getImageSrc = id => {
-    return props.imagePaths[id];
   };
 
   //function for online/offline state change event handler
@@ -831,7 +830,7 @@ const Home = (props) => {
             title='Hide modal'
             onPress={() => toggleImageModal()}/>
           <Image
-            source={props.selectedImage ? {uri: getImageSrc(props.selectedImage.id)} :
+            source={props.selectedImage ? {uri: useImages.getLocalImageSrc(props.selectedImage.id)} :
               {uri: require('../../assets/images/noimage.jpg')}}
             style={{width: wp('90%'), height: hp('90%')}}
           />
@@ -850,7 +849,6 @@ function mapStateToProps(state) {
     selectedSpot: state.spot.selectedSpot,
     selectedImage: state.spot.selectedAttributes[0],
     isImageModalVisible: state.home.isImageModalVisible,
-    imagePaths: state.images.imagePaths,
     isOnline: state.home.isOnline,
     isNotebookPanelVisible: state.notebook.isNotebookPanelVisible,
     isCompassModalVisible: state.notebook.isCompassModalVisible,
@@ -878,7 +876,6 @@ const mapDispatchToProps = {
   setSettingsPanelPageVisible: (name) => ({type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: name}),
   setIsImageModalVisible: (value) => ({type: homeReducers.TOGGLE_IMAGE_MODAL, value: value}),
   setAllSpotsPanelVisible: (value) => ({type: homeReducers.SET_ALLSPOTS_PANEL_VISIBLE, value: value}),
-  addPhoto: (imageData) => ({type: imageReducers.ADD_PHOTOS, images: imageData}),
   deleteSpot: (id) => ({type: spotReducers.DELETE_SPOT, id: id}),
   onSpotEdit: (field, value) => ({type: spotReducers.EDIT_SPOT_PROPERTIES, field: field, value: value}),
   setModalVisible: (modal) => ({type: homeReducers.SET_MODAL_VISIBLE, modal: modal}),

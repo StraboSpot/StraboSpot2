@@ -18,7 +18,6 @@ import useServerRequests from '../services/useServerRequests';
 // import sharedDialogStyles from '../shared/common.styles';
 // import ProgressCircle from '../shared/ui/ProgressCircle';
 import {homeReducers} from '../views/home/Home.constants';
-import {imageReducers} from '../components/images/Image.constants';
 
 const ProjectList = (props) => {
   const currentProject = useSelector(state => state.project.project);
@@ -113,7 +112,6 @@ const ProjectList = (props) => {
     else if (action === ProjectActions.OVERWRITE) {
       console.log('User wants to:', action, 'and select', selectedProject.name);
       await dispatch({type: spotReducers.CLEAR_SPOTS});
-      await dispatch({type: imageReducers.CLEAR_ALL_IMAGES});
       const projectData = await projectHelpers.loadProjectRemote(selectedProject.id, userData.encoded_login);
       dispatch({type: ProjectActions.projectReducers.PROJECTS, project: projectData});
       await getDatasets(selectedProject);
