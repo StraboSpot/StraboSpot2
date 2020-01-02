@@ -67,6 +67,29 @@ const useServerRequests = () => {
     return request('GET','/datasetSpots/' + datasetId, encodedLogin);
   };
 
+  const getImage = async (imageId, encodedLogin) => {
+    let imageBlob = null;
+    try {
+      let imageResponse = await fetch(baseUrl + '/projectImages/' + imageId, {
+        method: 'GET',
+        responseType: 'blob',
+        headers: {
+          Authorization: 'Basic ' + encodedLogin,
+        },
+      });
+      if (imageResponse.status === 200) {
+        imageBlob = imageResponse.blob();
+        return imageBlob;
+      }
+      else {
+        imageBlob = null;
+      }
+    }
+    catch (error) {
+      console.error(error);
+    }
+  };
+
   const downloadImage = (imageId, encodedLogin) => {
     return request('GET', '/image/' + imageId, encodedLogin, {responseType: 'blob'});
   };
@@ -111,9 +134,7 @@ const useServerRequests = () => {
   };
 
   const handleError = (response) => {
-    if (!response.ok) {
-      return Promise.reject('Error Retrieving Data!');
-    }
+      return Promise.reject(response);
   };
 
   const handleResponse = response => {
@@ -153,6 +174,10 @@ const useServerRequests = () => {
     return post('/project', encodedLogin, project,);
   };
 
+  const verifyImageExistence = (imageId, encodedLogin) => {
+    return request('GET', '/verifyimage/' + imageId, encodedLogin);
+  };
+
   const serverRequests = {
     addDatasetToProject:addDatasetToProject,
     authenticateUser: authenticateUser,
@@ -161,12 +186,14 @@ const useServerRequests = () => {
     getDatasets: getDatasets,
     getDatasetSpots: getDatasetSpots,
     getDataset: getDataset,
+    getImage: getImage,
     getProfile: getProfile,
     getProject: getProject,
     getProfileImage: getProfileImage,
     updateDataset: updateDataset,
     updateDatasetSpots: updateDatasetSpots,
     updateProject: updateProject,
+    verifyImageExistence: verifyImageExistence,
   };
 
   return [serverRequests];
