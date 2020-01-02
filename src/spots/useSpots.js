@@ -49,7 +49,6 @@ const useSpots = (props) => {
     const datasetInfoFromServer = await useServerRequests.getDatasetSpots(dataset.id, encodedLogin);
     if (!isEmpty(datasetInfoFromServer) && datasetInfoFromServer.features) {
       const spotsOnServer = datasetInfoFromServer.features;
-      // setLoading(false);
       if (!isEmpty(datasetInfoFromServer) && spotsOnServer) {
         console.log(spotsOnServer);
         dispatch({type: spotReducers.ADD_SPOTS, spots: spotsOnServer});

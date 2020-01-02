@@ -19,7 +19,6 @@ import {connect, useDispatch} from 'react-redux';
 import {NotebookPages, notebookReducers} from '../../components/notebook-panel/Notebook.constants';
 import {settingPanelReducers} from '../../components/settings-panel/settingsPanel.constants';
 import {spotReducers} from '../../spots/Spot.constants';
-import * as ImageHelper from '../../components/images/Images.container';
 import NotebookCompassModal from '../../components/measurements/compass/NotebookCompassModal';
 import ShortcutCompassModal from '../../components/measurements/compass/ShortcutCompassModal';
 import NotebookSamplesModal from '../../components/samples/NotebookSamplesModal.view';
@@ -155,7 +154,7 @@ const Home = (props) => {
           `The ${name.toUpperCase()} Shortcut button in the  will be functioning soon!`);
         break;
       case 'photo':
-        // takePicture();
+        // useImages.takePicture();
         Alert.alert('Still in the works',
           `The ${name.toUpperCase()} Shortcut button in the  will be functioning soon!`);
         break;
@@ -363,7 +362,7 @@ const Home = (props) => {
 
   const launchCameraFromNotebook = async () => {
     try {
-      const savedPhoto = await ImageHelper.takePicture();
+      const savedPhoto = await useImages.takePicture();
       const photoProperties = {
         id: savedPhoto.id,
         src: savedPhoto.src,

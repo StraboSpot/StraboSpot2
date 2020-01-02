@@ -6,7 +6,6 @@ import {connect} from 'react-redux';
 import * as SharedUI from '../../shared/ui/index';
 import {homeReducers} from '../../views/home/Home.constants';
 import {isEmpty} from '../../shared/Helpers';
-import {pictureSelectDialog} from './Images.container';
 import {settingPanelReducers, SortedViews} from '../settings-panel/settingsPanel.constants';
 import SortingButtons from '../settings-panel/SortingButtons';
 
@@ -43,7 +42,7 @@ const imageGallery = (props) => {
   }, [props.selectedSpot, props.spots, props.sortedListView]);
 
   const imageSave = async () => {
-    const savedPhoto = await pictureSelectDialog();
+    const savedPhoto = await useImages.pictureSelectDialog();
     console.log('imageObj', savedPhoto);
 
     if (savedPhoto === 'cancelled') {

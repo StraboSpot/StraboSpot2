@@ -1,7 +1,10 @@
 import React from 'react';
 import {Alert, Platform} from 'react-native';
+import ImagePicker from 'react-native-image-picker';
 import RNFetchBlob from 'rn-fetch-blob';
 import {useSelector} from 'react-redux';
+
+import {getNewId} from '../../shared/Helpers';
 
 // Hooks
 import useServerRequests from '../../services/useServerRequests';
@@ -18,57 +21,41 @@ const useImages = () => {
 
   const user = useSelector(state => state.user);
 
-  // Checks to see if image is already on device
-  const doesImageExist = async (imageId) => {
-    const filePath = imagesDirectory;
-    const fileName = imageId.toString() + '.jpg';
-    const fileURI = filePath + '/' + fileName;
-    console.log('Looking on device for file URI: ', fileURI);
-    return await RNFetchBlob.fs.exists(fileURI).then(exist => {
-        console.log(`File URI ${fileURI} does ${exist ? '' : 'not'} exist on device`);
-        return exist;
-      },
-    )
-      .catch((err) => {
-        throw err;
-      });
-  };
-
-  const downloadImageAndSave = async (imageId) => {
-    const imageURI = 'https://strabospot.org/pi/' + imageId;
-    return new Promise((resolve, reject) => {
-      RNFetchBlob
-        .config({path: imagesDirectory + '/' + imageId + '.jpg'})
-        .fetch('GET', imageURI, {})
-        .then((res) => {
-          imageCount++;
-          console.log(imageCount, 'File saved to', res.path());
-          // let imageId = imageName.split('.')[0];
-          let imageData = {};
-          if (Platform.OS === 'ios') {
-            imageData = {
-              id: imageId,
-              src: res.path(),
-              height: imageURI.height,
-              width: imageURI.width,
-            };
-          }
-          else imageData = {id: imageId, src: 'file://' + res.path(), height: imageURI.height, width: imageURI.width};
-          resolve(imageData);
-        })
-        .catch((errorMessage, statusCode) => {
-          imageCount++;
-          console.log('Error on', imageId, ':', errorMessage, statusCode);  // Android Error: RNFetchBlob request error: url == nullnull
-          reject();
-        });
-    });
-  };
-
   const downloadImages = neededImageIds => {
     let promises = [];
     let imagesDownloadedCount = 0;
     let imagesFailedCount = 0;
     let savedImagesCount = 0;
+
+    const downloadImageAndSave = async (imageId) => {
+      const imageURI = 'https://strabospot.org/pi/' + imageId;
+      return new Promise((resolve, reject) => {
+        RNFetchBlob
+          .config({path: imagesDirectory + '/' + imageId + '.jpg'})
+          .fetch('GET', imageURI, {})
+          .then((res) => {
+            imageCount++;
+            console.log(imageCount, 'File saved to', res.path());
+            // let imageId = imageName.split('.')[0];
+            let imageData = {};
+            if (Platform.OS === 'ios') {
+              imageData = {
+                id: imageId,
+                src: res.path(),
+                height: imageURI.height,
+                width: imageURI.width,
+              };
+            }
+            else imageData = {id: imageId, src: 'file://' + res.path(), height: imageURI.height, width: imageURI.width};
+            resolve(imageData);
+          })
+          .catch((errorMessage, statusCode) => {
+            imageCount++;
+            console.log('Error on', imageId, ':', errorMessage, statusCode);  // Android Error: RNFetchBlob request error: url == nullnull
+            reject();
+          });
+      });
+    };
 
     neededImageIds.map(imageId => {
       let promise = downloadImageAndSave(imageId).then(() => {
@@ -94,6 +81,23 @@ const useImages = () => {
   const gatherNeededImages = async (spots) => {
     let neededImagesIds = [];
     const promises = [];
+
+    // Checks to see if image is already on device
+    const doesImageExist = async (imageId) => {
+      const filePath = imagesDirectory;
+      const fileName = imageId.toString() + '.jpg';
+      const fileURI = filePath + '/' + fileName;
+      console.log('Looking on device for file URI: ', fileURI);
+      return await RNFetchBlob.fs.exists(fileURI).then(exist => {
+          console.log(`File URI ${fileURI} does ${exist ? '' : 'not'} exist on device`);
+          return exist;
+        },
+      )
+        .catch((err) => {
+          throw err;
+        });
+    };
+
     spots.map(spot => {
       if (spot.properties.images) {
         spot.properties.images.map((image) => {
@@ -119,6 +123,108 @@ const useImages = () => {
     const imageSrc = imagesDirectory + '/' + id + '.jpg';
     console.log('Loading image from', Platform.OS === 'ios' ? imageSrc : 'file://' + imageSrc);
     return Platform.OS === 'ios' ? imageSrc : 'file://' + imageSrc;
+  };
+
+  // Called from Image Gallery and displays image source picker
+  const pictureSelectDialog = async () => {
+    const imageOptionsPicker = {
+      storageOptions: {
+        skipBackup: true,
+      },
+      title: 'Choose Photo Source',
+    };
+    return new Promise((resolve, reject) => {
+      ImagePicker.showImagePicker(imageOptionsPicker, async (response) => {
+        console.log('Response = ', response);
+
+        if (response.didCancel) {
+          console.log('User cancelled image picker');
+          resolve('cancelled');
+        }
+        else if (response.error) {
+          console.log('ImagePicker Error: ', response.error);
+          return reject('Error', response.error);
+        }
+        else {
+          try {
+            const savedPhoto = await saveFile(response);
+            console.log('Saved Photo = ', savedPhoto);
+            resolve(savedPhoto);
+          }
+          catch (e) {
+            reject();
+          }
+        }
+      });
+    });
+  };
+
+  const saveFile = async (imageURI) => {
+    let uriParts = imageURI.uri.split('/');
+    // let imageName = uriParts[uriParts.length - 1];
+    let imageId = getNewId();
+    return new Promise((resolve, reject) => {
+      RNFetchBlob
+        .config({path: imagesDirectory + '/' + imageId + '.jpg'})
+        .fetch('GET', imageURI.uri, {})
+        .then((res) => {
+          imageCount++;
+          console.log(imageCount, 'File saved to', res.path());
+          // let imageId = imageName.split('.')[0];
+          let imageData = {};
+          if (Platform.OS === 'ios') {
+            imageData = {
+              id: imageId,
+              src: res.path(),
+              height: imageURI.height,
+              width: imageURI.width,
+            };
+          }
+          else imageData = {id: imageId, src: 'file://' + res.path(), height: imageURI.height, width: imageURI.width};
+          resolve(imageData);
+        })
+        .catch((errorMessage, statusCode) => {
+          imageCount++;
+          console.log('Error on', imageId, ':', errorMessage, statusCode);  // Android Error: RNFetchBlob request error: url == nullnull
+          reject();
+        });
+    });
+  };
+
+  // Called from Notebook Panel Footer and opens camera only
+  const takePicture = async () => {
+    const imageOptionsCamera = {
+      storageOptions: {
+        skipBackup: true,
+        takePhotoButtonTitle: 'Take Photo Buddy!',
+        chooseFromLibraryButtonTitle: 'choose photo from library',
+        waitUntilSaved: true,
+      },
+      noData: true,
+    };
+    // console.log('aassaasswwww')
+    return new Promise((resolve, reject) => {
+      ImagePicker.launchCamera(imageOptionsCamera, async (response) => {
+        console.log('Response = ', response);
+        if (response.didCancel) {
+          console.log('User cancelled image picker');
+          resolve('cancelled');
+        }
+        else if (response.error) {
+          console.log('ImagePicker Error: ', response.error);
+        }
+        else {
+          try {
+            const savedPhoto = await saveFile(response);
+            console.log('Saved Photo = ', savedPhoto);
+            resolve(savedPhoto);
+          }
+          catch (e) {
+            reject();
+          }
+        }
+      });
+    });
   };
 
   const uploadImages = spots => {
@@ -219,6 +325,8 @@ const useImages = () => {
     downloadImages: downloadImages,
     gatherNeededImages: gatherNeededImages,
     getLocalImageSrc: getLocalImageSrc,
+    pictureSelectDialog: pictureSelectDialog,
+    takePicture: takePicture,
     uploadImages: uploadImages,
   }];
 };
