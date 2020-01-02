@@ -49,7 +49,6 @@ const imageGallery = (props) => {
       console.log('User cancelled image picker', savedArray);
       if (savedArray.length > 0) {
         console.log('ALL PHOTOS SAVED', savedArray);
-        props.addPhoto(savedArray);
       }
       else {
         Alert.alert('No Photos To Save', 'please try again...');

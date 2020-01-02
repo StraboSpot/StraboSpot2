@@ -374,7 +374,6 @@ const Home = (props) => {
       if (savedPhoto === 'cancelled') {
         if (imageArr.length > 0) {
           console.log('ALL PHOTOS SAVED', imageArr);
-          props.addPhoto(imageArr);
           props.onSpotEditImageObj(imageArr);
           toggleLoading(false);
           // toggleToast();
@@ -393,6 +392,7 @@ const Home = (props) => {
     }
     catch (e) {
       Alert.alert('Error Getting Photo!');
+      toggleLoading(false);
     }
   };
 
