@@ -2,8 +2,7 @@ import React from 'react';
 import {Alert, Platform} from 'react-native';
 import ImagePicker from 'react-native-image-picker';
 import RNFetchBlob from 'rn-fetch-blob';
-import {useSelector} from 'react-redux';
-
+import {useSelector, useDispatch} from 'react-redux';
 import {getNewId} from '../../shared/Helpers';
 
 // Hooks
@@ -20,12 +19,14 @@ const useImages = () => {
   const [serverRequests] = useServerRequests();
 
   const user = useSelector(state => state.user);
+  const dispatch = useDispatch();
 
   const downloadImages = neededImageIds => {
     let promises = [];
     let imagesDownloadedCount = 0;
     let imagesFailedCount = 0;
     let savedImagesCount = 0;
+    dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'Downloading Images...'});
 
     const downloadImageAndSave = async (imageId) => {
       const imageURI = 'https://strabospot.org/pi/' + imageId;
@@ -67,6 +68,13 @@ const useImages = () => {
       }, err => {
         imagesFailedCount++;
         console.warn('Error downloading Image', imageId, 'Error:', err);
+      }).finally( () => {
+        dispatch({type: 'REMOVE_LAST_STATUS_MESSAGE'});
+        if (imagesFailedCount > 0) {
+          dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'Downloaded Images ' + imageCount + '/' + neededImageIds.length
+          + 'Failed Images ' + imagesFailedCount + '/' + neededImageIds});
+        }
+        else dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'Downloaded Images: ' + imageCount + '/' + neededImageIds.length});
       });
       promises.push(promise);
     });
@@ -114,7 +122,7 @@ const useImages = () => {
       else console.log('No images to download');
     });
     return Promise.all(promises).then(() => {
-      Alert.alert(`Images needed to download: ${neededImagesIds.length}`);
+      // Alert.alert(`Images needed to download: ${neededImagesIds.length}`);
       return Promise.resolve(neededImagesIds);
     });
   };
@@ -250,8 +258,7 @@ const useImages = () => {
         if (areMoreImages(spot)) {
           console.log('Found image:', spot.properties.images[iImagesLoop].id, spot.properties.images[iImagesLoop],
             'in Spot:', spot.properties.name);
-          makeNextImageRequest(spot.properties.images[iImagesLoop]).then((res) => {
-            console.log('Exists', res);
+          makeNextImageRequest(spot.properties.images[iImagesLoop]).then(() => {
             console.log('Making Next spot request');
             makeNextSpotRequest(spots[iSpotLoop]);
           });
@@ -263,7 +270,8 @@ const useImages = () => {
         }
         else {
           if (imagesToUploadCount === 0) {
-            Alert.alert('No new images to upload');
+            console.log('No new images to upload in spot:', spot.properties.name);
+            resolve();
           }
           else {
             console.log('Finished Uploading Images');
@@ -303,7 +311,7 @@ const useImages = () => {
                 || (!response.modified_timestamp && imageProps.modified_timestamp))) {
               console.log('Need to upload image:', imageProps.id);
               imagesToUploadCount++;
-              return Promise.resolve(imageProps);
+              return resolve(imageProps);
             }
             else {
               console.log('No need to upload image:', imageProps.id, 'Server response:', response);
@@ -312,7 +320,7 @@ const useImages = () => {
           }, () => {
             console.log('Need to upload image:', imageProps.id);
             imagesToUploadCount++;
-            return Promise.resolve(imageProps);
+            return resolve(imageProps);
           });
       };
 
