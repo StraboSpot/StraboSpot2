@@ -11,6 +11,7 @@ import {projectReducers} from './Project.constants';
 
 // Hooks
 import useSpotsHook from '../spots/useSpots';
+import {homeReducers} from '../views/home/Home.constants';
 
 const DatasetList = () => {
   const [useSpots] = useSpotsHook();
@@ -64,8 +65,9 @@ const DatasetList = () => {
       // dispatch({type: homeReducers.SET_LOADING, bool: true});
       setLoading(true);
       dispatch({type: projectReducers.DATASETS.DATASETS_UPDATE, datasets: datasetsCopy});
-      setLoading(true);
+      dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, value: true});
       await useSpots.downloadSpots(datasets[id], userData.encoded_login);
+      dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'Download Complete!'});
       setLoading(false);
     }
     else {
