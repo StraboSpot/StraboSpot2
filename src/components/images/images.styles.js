@@ -10,6 +10,8 @@ const imageStyles = StyleSheet.create({
   },
   closeInfoView: {
     fontWeight: 'bold',
+    borderRadius: 100,
+    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
     position: 'absolute',
     right: 20,
     top: 30,

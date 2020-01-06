@@ -14,26 +14,12 @@ import useImagesHook from './useImages';
 
 // Styles
 import styles from './images.styles';
+import * as themes from '../../shared/styles.constants';
 
 const ImageInfoView = (props) => {
-  // console.log('Image Info', props);
 
   const [imageNoteModal, setImageNoteModal] = useState(false);
   const [useImages] = useImagesHook();
-
-  // useEffect(() => {
-  //   getDims = Dimensions.get('window');
-  //   props.setDeviceDims(getDims);
-  //   function dimsChange() {
-  //     getDims = Dimensions.get('window');
-  //     props.setDeviceDims(getDims);
-  //   }
-  //   Dimensions.addEventListener('change', dimsChange);
-  //   return () => {
-  //     Dimensions.removeEventListener('change', dimsChange);
-  //     console.log('Dims listener removed')
-  //   }
-  // },[props.getDeviceDims]);
 
   let noteModal = (
     <View style={styles.modalPosition}>
@@ -65,8 +51,8 @@ const ImageInfoView = (props) => {
         <Icon
           name={'close'}
           type={'antdesign'}
-          color={'white'}
-          size={42}
+          color={themes.BLUE}
+          size={35}
           onPress={() => {
             props.navigation.goBack();
           }}
