@@ -173,11 +173,9 @@ const imageGallery = (props) => {
     return (
       <React.Fragment>
         <SortingButtons/>
-        <ScrollView>
-          <View style={imageStyles.galleryImageContainer}>
-            {sortedView}
-          </View>
-        </ScrollView>
+        <View style={imageStyles.galleryImageContainer}>
+          {sortedView}
+        </View>
       </React.Fragment>
     );
   }
