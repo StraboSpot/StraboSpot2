@@ -16,6 +16,7 @@ const imageStyles = StyleSheet.create({
   },
   imageContainer: {
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
+    borderBottomWidth: 1,
     padding: 5,
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -30,12 +31,9 @@ const imageStyles = StyleSheet.create({
   },
   galleryImageContainer: {
     flex: 1,
-    flexDirection: 'row',
-    alignContent: 'center',
-    justifyContent: 'space-around',
   },
-  galleryImageListContainer: {
-    paddingLeft: 5,
+  thumbnailContainer: {
+    padding: 5,
   },
   notebookImage: {
     width: 145,
@@ -46,9 +44,9 @@ const imageStyles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  galleryImage: {
-    height: wp('8%'),
-    width: wp('8%'),
+  thumbnail: {
+    height:90,
+    width: 90,
   },
   text: {
     fontSize: themes.PRIMARY_HEADER_TEXT_SIZE + 5,

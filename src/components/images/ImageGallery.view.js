@@ -82,7 +82,6 @@ const imageGallery = (props) => {
           keyExtractor={(image) => image.id}
           data={item.properties.images}
           numColumns={3}
-          columnWrapperStyle={{margin: 10}}
           renderItem={({item}) => renderImage(item)}
         />
       </View>
@@ -91,10 +90,10 @@ const imageGallery = (props) => {
 
   const renderImage = (image) => {
     return (
-      <View style={imageStyles.galleryImageListContainer}>
+      <View style={imageStyles.thumbnailContainer}>
         <SharedUI.ImageButton
           source={{uri: useImages.getLocalImageSrc(image.id)}}
-          style={imageStyles.galleryImage}
+          style={imageStyles.thumbnail}
           PlaceholderContent={<ActivityIndicator/>}
           onPress={() => renderImageModal(image)}
         />
@@ -122,7 +121,6 @@ const imageGallery = (props) => {
             data={spot.properties.images === undefined ? null : spot.properties.images}
             keyExtractor={(image) => image.id}
             numColumns={3}
-            // columnWrapperStyle={{padding: 10}}
             renderItem={({item}) => renderImage(item)}
           />
         </View>
