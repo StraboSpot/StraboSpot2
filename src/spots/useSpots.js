@@ -46,6 +46,8 @@ const useSpots = (props) => {
   };
 
   const downloadSpots = async (dataset, encodedLogin) => {
+    dispatch({type: 'CLEAR_STATUS_MESSAGES'});
+    dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'Downloading Spots...'});
     const datasetInfoFromServer = await useServerRequests.getDatasetSpots(dataset.id, encodedLogin);
     if (!isEmpty(datasetInfoFromServer) && datasetInfoFromServer.features) {
       const spotsOnServer = datasetInfoFromServer.features;
@@ -54,9 +56,14 @@ const useSpots = (props) => {
         dispatch({type: spotReducers.ADD_SPOTS, spots: spotsOnServer});
         const spotIds = Object.values(spotsOnServer).map(spot => spot.properties.id);
         dispatch({type: projectReducers.DATASETS.ADD_SPOTS_IDS_TO_DATASET, datasetId: dataset.id, spotIds: spotIds});
+        dispatch({type: 'REMOVE_LAST_STATUS_MESSAGE'});
+        dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'Downloaded Spots'});
         const neededImagesIds = await useImages.gatherNeededImages(spotsOnServer);
         // console.table(neededImagesIds);
-        await useImages.downloadImages(neededImagesIds);
+        if (neededImagesIds.length === 0) {
+          dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'No New Images to Download'});
+        }
+        else await useImages.downloadImages(neededImagesIds);
       }
     }
   };

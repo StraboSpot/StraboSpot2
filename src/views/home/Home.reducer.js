@@ -2,9 +2,15 @@ import {homeReducers} from './Home.constants';
 import {Dimensions} from 'react-native';
 
 const initialState = {
+  statusMessages: [],
+  imageProgress: {
+    imagesDownloadedCount: 0,
+    neededImageIds: 0,
+  },
   isOnline: null,
   loading: false,
   modalVisible: null,
+  isStatusMessagesModalVisible: false,
   isImageModalVisible: false,
   isAllSpotsPanelVisible: false,
   isSettingsPanelVisible: false,
@@ -25,6 +31,11 @@ export const homeReducer = (state = initialState, action) => {
       return {
         ...state,
         modalVisible: action.modal,
+      };
+    case homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE:
+      return {
+        ...state,
+        isStatusMessagesModalVisible: action.value,
       };
     case homeReducers.DEVICE_DIMENSIONS:
       // console.log('REDUX DEVICE DIMS', state.deviceDimensions);
@@ -65,6 +76,22 @@ export const homeReducer = (state = initialState, action) => {
       return {
         ...state,
         loading: action.bool,
+      };
+    case 'ADD_STATUS_MESSAGE':
+      return {
+        ...state,
+        statusMessages: [...state.statusMessages, action.statusMessage],
+      };
+    case 'REMOVE_LAST_STATUS_MESSAGE':
+      console.log('LASTSTATUSMESSAGE')
+      return {
+        ...state,
+        statusMessages: state.statusMessages.slice(0, -1),
+      };
+    case 'CLEAR_STATUS_MESSAGES':
+      return {
+        ...state,
+        statusMessages: [],
       };
   }
   return state;
