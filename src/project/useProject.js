@@ -1,7 +1,7 @@
 
 import useServerRequests from '../services/useServerRequests';
 
-const useProjectHelpers = () => {
+const useProject = () => {
   const [serverRequests] = useServerRequests();
 
 const defaultTypes = ['geomorphic', 'hydrologic', 'paleontological', 'igneous', 'metamorphic', 'sedimentological',
@@ -24,4 +24,4 @@ const defaultTypes = ['geomorphic', 'hydrologic', 'paleontological', 'igneous', 
   return [projectHelpers];
 };
 
-export default useProjectHelpers;
+export default useProject;
