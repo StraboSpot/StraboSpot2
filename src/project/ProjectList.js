@@ -9,7 +9,7 @@ import * as themes from '../shared/styles.constants';
 import DialogBox from './DialogBox';
 import {withNavigation} from 'react-navigation';
 import * as ProjectActions from './Project.constants';
-import useProjectHelpers from './project';
+import useProjectHook from './useProject';
 import styles from './Project.styles';
 import {SettingsMenuItems} from '../components/settings-panel/SettingsMenu.constants';
 import {spotReducers} from '../spots/Spot.constants';
@@ -32,7 +32,7 @@ const ProjectList = (props) => {
   const [uploadErrors, setUploadErrors] = useState(false);
   // Server calls
   const [serverRequests] = useServerRequests();
-  const [projectHelpers] = useProjectHelpers();
+  const [useProject] = useProjectHook();
 
   useEffect(() => {
     getAllProjects();
@@ -94,9 +94,12 @@ const ProjectList = (props) => {
       try {
         setShowDialog(false);
         const project = await serverRequests.updateProject(currentProject, userData.encoded_login);
-        await dispatch({type: spotReducers.SPOTS_CLEARED, spots: {}});
+        await dispatch({type: spotReducers.CLEAR_SPOTS, spots: {}});
         console.log('Finished uploading project', project);
-        const projectData = await serverRequests.getProject(selectedProject.id, userData.encoded_login);
+        dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, value: true});
+        dispatch({type: 'CLEAR_STATUS_MESSAGES'});
+        await dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'Upload Complete!'});
+        const projectData = await await useProject.loadProjectRemote(selectedProject.id, userData.encoded_login);
         dispatch({type: ProjectActions.projectReducers.PROJECTS, project: projectData});
         await getDatasets(selectedProject);
         dispatch({type: homeReducers.SET_LOADING, bool: false});
@@ -112,7 +115,7 @@ const ProjectList = (props) => {
     else if (action === ProjectActions.OVERWRITE) {
       console.log('User wants to:', action, 'and select', selectedProject.name);
       await dispatch({type: spotReducers.CLEAR_SPOTS});
-      const projectData = await projectHelpers.loadProjectRemote(selectedProject.id, userData.encoded_login);
+      const projectData = await useProject.loadProjectRemote(selectedProject.id, userData.encoded_login);
       dispatch({type: ProjectActions.projectReducers.PROJECTS, project: projectData});
       await getDatasets(selectedProject);
       setShowDialog(false);
