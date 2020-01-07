@@ -7,6 +7,7 @@ import {getNewId} from '../../shared/Helpers';
 
 // Hooks
 import useServerRequests from '../../services/useServerRequests';
+import {homeReducers} from '../../views/home/Home.constants';
 
 const useImages = () => {
 
@@ -69,12 +70,12 @@ const useImages = () => {
         imagesFailedCount++;
         console.warn('Error downloading Image', imageId, 'Error:', err);
       }).finally( () => {
-        dispatch({type: 'REMOVE_LAST_STATUS_MESSAGE'});
+        dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
         if (imagesFailedCount > 0) {
-          dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'Downloaded Images ' + imageCount + '/' + neededImageIds.length
+          dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Downloaded Images ' + imageCount + '/' + neededImageIds.length
           + 'Failed Images ' + imagesFailedCount + '/' + neededImageIds});
         }
-        else dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'Downloaded Images: ' + imageCount + '/' + neededImageIds.length});
+        else dispatch({type:  homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Downloaded Images: ' + imageCount + '/' + neededImageIds.length});
       });
       promises.push(promise);
     });
@@ -303,7 +304,7 @@ const useImages = () => {
       };
 
       const shouldUploadImage = async (imageProps) => {
-        return await serverRequests.verifyImageExistence(imageProps.id, user.encoded_login)
+        return serverRequests.verifyImageExistence(imageProps.id, user.encoded_login)
           .then(response => {
             if (response
               && ((response.modified_timestamp && imageProps.modified_timestamp
@@ -315,9 +316,10 @@ const useImages = () => {
             }
             else {
               console.log('No need to upload image:', imageProps.id, 'Server response:', response);
-              return Promise.reject('already exists');
+              return reject('already exists');
             }
           }, () => {
+            imagesToUploadCount++;
             console.log('Need to upload image:', imageProps.id);
             imagesToUploadCount++;
             return resolve(imageProps);
