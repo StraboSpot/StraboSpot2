@@ -61,7 +61,8 @@ const DatasetList = () => {
       const datasetsActive = Object.values(datasetsCopy).filter(dataset => dataset.active === true);
       datasetsCopy[datasetsActive[0].id].current = true;
     }
-    if (isOnline && !isEmpty(userData) && !isEmpty(datasetsCopy[id]) && datasetsCopy[id].active) {
+    if (isOnline && !isEmpty(userData) && !isEmpty(datasetsCopy[id]) && datasetsCopy[id].active &&
+      isEmpty(datasetsCopy[id].spotIds)) {
       // dispatch({type: homeReducers.SET_LOADING, bool: true});
       setLoading(true);
       dispatch({type: projectReducers.DATASETS.DATASETS_UPDATE, datasets: datasetsCopy});
