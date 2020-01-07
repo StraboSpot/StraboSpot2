@@ -1,16 +1,24 @@
 import React, {useState, useEffect} from 'react';
-import {FlatList, Text, View} from 'react-native';
 import {connect} from 'react-redux';
+import {FlatList, Text, View} from 'react-native';
+import {ListItem} from 'react-native-elements';
 
 import {isEmpty} from '../shared/Helpers';
-import {ListItem} from 'react-native-elements';
-import {settingPanelReducers, SortedViews} from '../components/settings-panel/settingsPanel.constants';
 import SortingButtons from '../components/settings-panel/SortingButtons';
 
+// Constants
+import {settingPanelReducers, SortedViews} from '../components/settings-panel/settingsPanel.constants';
+
+// Hooks
+import useSpotsHook from './useSpots';
+
+// Styles
 import attributesStyles from '../components/settings-panel/settingsPanelSectionStyles/Attributes.styles';
 
 const SpotsList = (props) => {
   const [sortedList, setSortedList] = useState(getSpotsSortedChronologically);
+  const [useSpots] = useSpotsHook();
+  const activeSpotsObj = useSpots.getActiveSpotsObj();
 
   useEffect(() => {
     console.log('In SpotsList useEffect: Updating chronological sorting for Spots');
@@ -19,7 +27,7 @@ const SpotsList = (props) => {
 
   // Reverse chronologically sort Spots
   const getSpotsSortedChronologically = () => {
-    return Object.values(props.spots).sort(((a, b) => {
+    return Object.values(activeSpotsObj).sort(((a, b) => {
       return new Date(b.properties.date) - new Date(a.properties.date);
     }));
   };
@@ -51,7 +59,7 @@ const SpotsList = (props) => {
     );
   };
 
-  if (!isEmpty(props.spots)) {
+  if (!isEmpty(activeSpotsObj)) {
     let sortedView = null;
 
     if (props.sortedListView === SortedViews.CHRONOLOGICAL) {
@@ -75,7 +83,7 @@ const SpotsList = (props) => {
     else {
       sortedView = <FlatList
         keyExtractor={(item) => item.properties.id.toString()}
-        data={Object.values(props.spots)}
+        data={Object.values(activeSpotsObj)}
         renderItem={({item}) => renderName(item)}/>;
     }
     return (
@@ -91,7 +99,7 @@ const SpotsList = (props) => {
   else {
     return (
       <View style={attributesStyles.textContainer}>
-        <Text style={attributesStyles.text}>No Spots Found</Text>
+        <Text style={attributesStyles.text}>No Spots in Active Datasets</Text>
       </View>
     );
   }

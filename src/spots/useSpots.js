@@ -68,8 +68,19 @@ const useSpots = (props) => {
     }
   };
 
+  // Get only the Spots in the active Datasets
+  const getActiveSpotsObj = () => {
+    const activeSpotIds = Object.values(datasets).flatMap(dataset => dataset.active ? dataset.spotIds || [] : []);
+    let activeSpots = {};
+    activeSpotIds.map(spotId => {
+     if (spots[spotId]) activeSpots = {...activeSpots, [spotId]: spots[spotId]};
+     else console.warn('Missing Spot', spotId);
+    });
+    return activeSpots;
+  };
+
   const getMappableSpots = () => {
-    const allSpotsCopy = JSON.parse(JSON.stringify(Object.values(spots)));
+    const allSpotsCopy = JSON.parse(JSON.stringify(Object.values(getActiveSpotsObj())));
     return allSpotsCopy.filter(spot => spot.geometry && !spot.properties.strat_section_id);
   };
 
@@ -88,6 +99,7 @@ const useSpots = (props) => {
   return [{
     createSpot: createSpot,
     downloadSpots: downloadSpots,
+    getActiveSpotsObj: getActiveSpotsObj,
     getMappableSpots: getMappableSpots,
     getSpotById: getSpotById,
     getSpotsByIds: getSpotsByIds,

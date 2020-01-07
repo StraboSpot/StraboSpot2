@@ -66,9 +66,9 @@ const mapView = React.forwardRef((props, ref) => {
   }, []);
 
   useEffect(() => {
-    console.log('Updating DOM on Spots or selected Spots changed');
+    console.log('Updating DOM on Spots, selected Spots or active Datasets changed');
     setDisplayedSpots(isEmpty(props.selectedSpot) ? [] : [{...props.selectedSpot}]);
-  }, [props.spots, props.selectedSpot]);
+  }, [props.spots, props.selectedSpot, props.datasets]);
 
   useEffect(() => {
     console.log('Updating DOM on vertexEndsCoords changed');

@@ -1,16 +1,23 @@
 import React from 'react';
 import {connect} from 'react-redux';
+import {ListItem} from 'react-native-elements';
 import {ScrollView} from 'react-native';
 
-import {ListItem} from 'react-native-elements';
+// Constants
 import {spotReducers} from '../../spots/Spot.constants';
 
+// Hooks
+import useSpotsHook from '../../spots/useSpots';
+
+// Styles
 import * as themes from '../../shared/styles.constants';
 
 const allSpotsView = (props) => {
+  const [useSpots] = useSpotsHook();
+  const activeSpotsObj = useSpots.getActiveSpotsObj();
 
   const pressHandler = (id) => {
-    const spot = Object.values(props.spots).find(selectedSpot => {
+    const spot = Object.values(activeSpotsObj).find(selectedSpot => {
       return selectedSpot.properties.id === id;
     });
     console.log('Switch Selected Spot', spot);
@@ -20,7 +27,7 @@ const allSpotsView = (props) => {
   return (
     <React.Fragment>
       <ScrollView>
-        {Object.values(props.spots).map(spot => {
+        {Object.values(activeSpotsObj).map(spot => {
           return (
             <ListItem
               key={spot.properties.id}
@@ -47,9 +54,7 @@ const allSpotsView = (props) => {
 };
 
 const mapStateToProps = state => {
-  return {
-    spots: state.spot.spots,
-  };
+  return {};
 };
 
 const mapDispatchToProps = {

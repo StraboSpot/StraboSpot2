@@ -15,15 +15,18 @@ import {spotReducers} from '../../spots/Spot.constants';
 
 // Hooks
 import useImagesHook from './useImages';
+import useSpotsHook from '../../spots/useSpots';
 
 // Styles
 import attributesStyles from '../../components/settings-panel/settingsPanelSectionStyles/Attributes.styles';
 import imageStyles from './images.styles';
 
 const imageGallery = (props) => {
+  const [useSpots] = useSpotsHook();
+  const activeSpotsObj = useSpots.getActiveSpotsObj();
   const [useImages] = useImagesHook();
   const [refresh, setRefresh] = useState(false);
-  const [sortedList, setSortedList] = useState(Object.values(props.spots));
+  const [sortedList, setSortedList] = useState(Object.values(activeSpotsObj));
   let savedArray = [];
 
   useEffect(() => {
@@ -36,7 +39,7 @@ const imageGallery = (props) => {
   }, []);
 
   useEffect(() => {
-    setSortedList(Object.values(props.spots));
+    setSortedList(Object.values(activeSpotsObj));
     // setRefresh(!refresh);
     console.log('render Recent Views in ImageGallery.js!');
   }, [props.selectedSpot, props.spots, props.sortedListView]);
@@ -165,7 +168,7 @@ const imageGallery = (props) => {
       sortedView = <FlatList
         keyExtractor={(item) => item.properties.id.toString()}
         extraData={refresh}
-        data={Object.values(props.spots)}
+        data={Object.values(activeSpotsObj)}
         renderItem={({item}) => renderName(item)}/>;
     }
     return (
@@ -180,7 +183,7 @@ const imageGallery = (props) => {
   else {
     return (
       <View style={attributesStyles.textContainer}>
-        <Text style={attributesStyles.text}>No Images Found</Text>
+        <Text style={attributesStyles.text}>No Images in Active Datasets</Text>
       </View>
     );
   }
