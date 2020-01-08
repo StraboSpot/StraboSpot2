@@ -42,6 +42,7 @@ import {animatePanels, isEmpty} from '../../shared/Helpers';
 import useImagesHook from '../../components/images/useImages';
 import StatusDialogBox from '../../shared/ui/StatusDialogBox';
 import sharedDialogStyles from '../../shared/common.styles';
+import useProjectHook from '../../project/useProject';
 
 const homeMenuPanelWidth = 300;
 const notebookPanelWidth = 400;
@@ -56,6 +57,10 @@ const notebookPanelWidth = 400;
 // };
 
 const Home = (props) => {
+  const [useImages] = useImagesHook();
+  const [useProject] = useProjectHook();
+  const currentDataset = useProject.getCurrentDataset();
+
   let imageArr = [];
   const online = require('../../assets/icons/StraboIcons_Oct2019/ConnectionStatusButton_connected.png');
   const offline = require('../../assets/icons/StraboIcons_Oct2019/ConnectionStatusButton_offline.png');
@@ -88,7 +93,6 @@ const Home = (props) => {
   const [rightsideIconAnimationValue, setRightsideIconAnimationValue] = useState(new Animated.Value(0));
   const [toastVisible, setToastVisible] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [useImages] = useImagesHook();
 
   const mapViewComponent = useRef(null);
 
@@ -194,7 +198,8 @@ const Home = (props) => {
       case MapModes.DRAW.POINT:
       case MapModes.DRAW.LINE:
       case MapModes.DRAW.POLYGON:
-        setDraw(name);
+        if (!isEmpty(currentDataset)) setDraw(name);
+        else Alert.alert('No Current Dataset', 'A current dataset needs to be set before drawing Spots.');
         break;
       case 'endDraw':
         endDraw();
