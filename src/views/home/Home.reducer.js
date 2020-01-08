@@ -77,18 +77,17 @@ export const homeReducer = (state = initialState, action) => {
         ...state,
         loading: action.bool,
       };
-    case 'ADD_STATUS_MESSAGE':
+    case homeReducers.ADD_STATUS_MESSAGE:
       return {
         ...state,
         statusMessages: [...state.statusMessages, action.statusMessage],
       };
-    case 'REMOVE_LAST_STATUS_MESSAGE':
-      console.log('LASTSTATUSMESSAGE')
+    case homeReducers.REMOVE_LAST_STATUS_MESSAGE:
       return {
         ...state,
         statusMessages: state.statusMessages.slice(0, -1),
       };
-    case 'CLEAR_STATUS_MESSAGES':
+    case homeReducers.CLEAR_STATUS_MESSAGES:
       return {
         ...state,
         statusMessages: [],

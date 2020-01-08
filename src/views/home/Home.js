@@ -15,7 +15,7 @@ import {SettingsMenuItems} from '../../components/settings-panel/SettingsMenu.co
 import Modal from 'react-native-modal';
 import SaveMapModal from '../../components/dialog-boxes/map-actions/SaveMapsModal';
 import NotebookPanelMenu from '../../components/notebook-panel/NotebookPanelMenu';
-import {connect, useDispatch} from 'react-redux';
+import {connect, useDispatch, useSelector} from 'react-redux';
 import {NotebookPages, notebookReducers} from '../../components/notebook-panel/Notebook.constants';
 import {settingPanelReducers} from '../../components/settings-panel/settingsPanel.constants';
 import {spotReducers} from '../../spots/Spot.constants';
@@ -40,6 +40,8 @@ import {animatePanels, isEmpty} from '../../shared/Helpers';
 
 // Hooks
 import useImagesHook from '../../components/images/useImages';
+import StatusDialogBox from '../../shared/ui/StatusDialogBox';
+import sharedDialogStyles from '../../shared/common.styles';
 
 const homeMenuPanelWidth = 300;
 const notebookPanelWidth = 400;
@@ -59,6 +61,11 @@ const Home = (props) => {
   const offline = require('../../assets/icons/StraboIcons_Oct2019/ConnectionStatusButton_offline.png');
 
   const dispatch = useDispatch();
+  const statusMessages = useSelector(state => state.home.statusMessages);
+  const isStatusMessagesModalVisible = useSelector(state => state.home.isStatusMessagesModalVisible);
+
+  // const imagesCount = useSelector(state => state.home.imageProgress.imagesDownloadedCount);
+  // const imagesNeeded = useSelector(state => state.home.imageProgress.neededImageIds);
   const [dialogs, setDialogs] = useState({
     mapActionsMenuVisible: false,
     mapSymbolsMenuVisible: false,
@@ -406,6 +413,28 @@ const Home = (props) => {
         visible={isProjectLoadSelectionModalVisible}
         closeModal={() => closeInitialProjectLoadModal()}
       />
+    );
+  };
+
+  const renderStatusDialogBox = () => {
+    return (
+      <StatusDialogBox
+        dialogTitle={'Status'}
+        style={sharedDialogStyles.dialogTitleSuccess}
+        visible={isStatusMessagesModalVisible}
+        onTouchOutside={() => dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, value: false})}
+        // disabled={progress !== 1 && !uploadErrors}
+      >
+        <Text>{statusMessages.join('\n')}</Text>
+        {/*<View style={styles.progressCircleContainer}>*/}
+        {/*  <ProgressCircle progress={imagesCount / imagesNeeded} />*/}
+        {/*</View>*/}
+        {statusMessages.includes('Download Complete!') || statusMessages.includes('Upload Complete!') ? <Button
+          title={'OK'}
+          type={'clear'}
+          onPress={() => dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, value: false})}
+        /> : null}
+      </StatusDialogBox>
     );
   };
 
@@ -838,6 +867,11 @@ const Home = (props) => {
       {notebookPanel}
       {homeDrawer}
       {renderLoadProjectFromModal()}
+      {renderStatusDialogBox()}
+      {/*<View style={{position: 'absolute', left: 550, top: 50, backgroundColor: 'white', padding: 20}}>*/}
+      {/*  <Text>{imagesCount} of {imagesNeeded}</Text>*/}
+      {/*  <ProgressCircle progress={imagesCount / imagesNeeded} />*/}
+      {/*</View>*/}
     </View>
   );
 };
