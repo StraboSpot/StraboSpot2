@@ -9,6 +9,7 @@ import {spotReducers} from './Spot.constants';
 
 // Hooks
 import useImagesHook from '../components/images/useImages';
+import useProjectHook from '../project/useProject';
 import useServerRequestsHook from '../services/useServerRequests';
 
 const useSpots = (props) => {
@@ -17,6 +18,7 @@ const useSpots = (props) => {
   const datasets = useSelector(state => state.project.datasets);
 
   const [useImages] = useImagesHook();
+  const [useProject] = useProjectHook();
   const [useServerRequests] = useServerRequestsHook();
 
   // Create a new Spot
@@ -32,7 +34,7 @@ const useSpots = (props) => {
     newSpot.properties.name = 'Spot ' + Object.keys(spots).length;
     console.log('Creating new Spot:', newSpot);
     await dispatch({type: spotReducers.ADD_SPOT, spot: newSpot});
-    const currentDataset = Object.values(datasets).find(dataset => dataset.current);
+    const currentDataset = useProject.getCurrentDataset();
     console.log('Active Dataset', currentDataset);
     await dispatch({
       type: projectReducers.DATASETS.ADD_SPOTS_IDS_TO_DATASET,

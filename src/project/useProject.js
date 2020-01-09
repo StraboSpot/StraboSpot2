@@ -1,11 +1,17 @@
+import {useSelector} from 'react-redux';
 
+// Hooks
 import useServerRequests from '../services/useServerRequests';
 
 const useProject = () => {
+  const datasets = useSelector(state => state.project.datasets);
   const [serverRequests] = useServerRequests();
+  const defaultTypes = ['geomorphic', 'hydrologic', 'paleontological', 'igneous', 'metamorphic', 'sedimentological',
+    'other'];
 
-const defaultTypes = ['geomorphic', 'hydrologic', 'paleontological', 'igneous', 'metamorphic', 'sedimentological',
-  'other'];
+  const getCurrentDataset = () => {
+    return Object.values(datasets).find(dataset => dataset.current);
+  };
 
   const loadProjectRemote = async (projectId, encodedLogin) => {
     console.log(`Getting ${projectId.name} project from server...`);
@@ -18,6 +24,7 @@ const defaultTypes = ['geomorphic', 'hydrologic', 'paleontological', 'igneous', 
   };
 
   const projectHelpers = {
+    getCurrentDataset: getCurrentDataset,
     loadProjectRemote: loadProjectRemote,
   };
 
