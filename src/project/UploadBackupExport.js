@@ -128,79 +128,104 @@ const UploadBackAndExport = (props) => {
     console.log('Finished updating dataset', response);
     const response2 = await serverRequests.addDatasetToProject(project.id, dataset.id, user.encoded_login);
     console.log('Finished updating dataset', response2);
-    await uploadSpots(dataset);
-    console.log('Spots Uploaded');
-    setTimeout(() => {
-      console.log('Finished Uploading Datasets');
-      setIsUploadStatusDialogVisible(false);
-    }, 1000);
+    uploadSpots(dataset).then(() => {
+      console.log('Spots Uploaded');
+      return Promise.resolve();
+    });
+    // setTimeout(() => {
+    //   console.log('Finished Uploading Datasets');
+    //   setIsUploadStatusDialogVisible(false);
+    // }, 1000);
+    return Promise.resolve();
   };
 
   const uploadDatasets = async () => {
-    await setProgress(0.25);
     let currentRequest = 0;
     const activeDatasets = Object.values(datasets).filter(dataset => dataset.active === true);
+    dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Uploading Datasets...'});
+
     // Upload datasets synchronously
-    await makeNextRequest(activeDatasets, currentRequest);
-    currentRequest++;
-    if (currentRequest > 0 && currentRequest < activeDatasets.length) {
-      console.log('A');
-    }
+    const makeNextRequest = async () => {
+      uploadDataset(activeDatasets[currentRequest]).then(() => {
+        currentRequest++;
+        dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
+        // dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
+        if (currentRequest > 0 && currentRequest < activeDatasets.length) {
+          console.log('A');
+          dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Uploading Dataset: ' + currentRequest + '/' + activeDatasets.length});
+        }
+        if (currentRequest < activeDatasets.length) {
+          makeNextRequest();
+        }
+        else {
+          dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Datasets uploaded'});
+          return Promise.resolve();
+        }
+      }, () => {
+        console.error('Error uploading dataset.');
+        return Promise.reject();
+      });
+    };
+
     if (currentRequest < activeDatasets.length) {
       console.log('MakeNextRequest', currentRequest);
-      await makeNextRequest(activeDatasets, currentRequest);
+      makeNextRequest();
     }
     else {
-      dispatch({type: homeReducers.SET_LOADING, bool: false});
+      // dispatch({type: homeReducers.SET_LOADING, bool: false});
+      return Promise.resolve();
     }
   };
 
   const uploadProject = async () => {
-    setProgress(0);
+    dispatch({type: homeReducers.CLEAR_STATUS_MESSAGES});
+    dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, value: true});
     console.log('PROJECT UPLOADING...');
+    dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Uploading Project...'});
     setIsUploadDialogVisible(false);
     setIsUploadStatusDialogVisible(true);
     // await serverRequests.updateProject(project, user.encoded_login).then((response) => {
-        try {
-          const updatedProject = await serverRequests.updateProject(project, user.encoded_login);
-          console.log('Finished uploading project', updatedProject);
-          setUploadErrors(false);
-          // dispatch({type: homeReducers.SET_LOADING, bool: false});
-          setUploadStatusMessage(<Text>Uploaded project the properties for the project:
-            <Text style={[styles.dialogContentText, {color: 'black'}]}> {project.description.project_name}</Text>
-          </Text>);
-          // setIsUploadDialogVisible(false);
-          console.log('Going to uploadDatasets next')
-        }
-        catch (err) {
-          setUploadErrors(true);
-          // setIsUploadDialogVisible(false);
-          setUploadStatusMessage(
-            <Text style={{textAlign: 'center'}}>Error uploading project:
-              <Text style={[styles.dialogContentText, {color: 'black'}]}> {project.description.project_name}</Text>
-            </Text>);
-          setIsUploadStatusDialogVisible(true);
-          console.log('Error uploading project', project);
-        }
-      // }
+    try {
+      const updatedProject = await serverRequests.updateProject(project, user.encoded_login);
+      console.log('Finished uploading project', updatedProject);
+      setUploadErrors(false);
+      console.log('Going to uploadDatasets next')
+    }
+    catch (err) {
+      setUploadErrors(true);
+      // setIsUploadDialogVisible(false);
+      setUploadStatusMessage(
+        <Text style={{textAlign: 'center'}}>Error uploading project:
+          <Text style={[styles.dialogContentText, {color: 'black'}]}> {project.description.project_name}</Text>
+        </Text>);
+      setIsUploadStatusDialogVisible(true);
+      console.log('Error uploading project', project);
+    }
+    // }
     // );
   };
 
   const uploadImages = async spots => {
-    setProgress(0.75);
     const imageRes =  await useImages.uploadImages(spots);
     console.log('ImageRes', imageRes);
-    await setProgress(1);
+    dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Upload Complete!'});
+    // setTimeout(() => {
+    //   setIsUploadStatusDialogVisible(false);
+    //   setProgress(1);
+    // }, 1000);
   };
 
   const uploadSpots = async (dataset) => {
-    let spots = await spotFactory.getSpotsByIds(dataset.spotIds);
-    console.log('Spot', spots);
-    setProgress(0.50);
+    let spots;
+    if (dataset.spotIds){
+      spots = await spotFactory.getSpotsByIds(dataset.spotIds);
+      console.log('Spot', spots);
+    }
+    // setProgress(0.50);
     // spots.forEach(spotValue => checkValidDateTime(spotValue));
     if (isEmpty(spots)) {
-      Alert.alert('No Spots to Upload');
-      setProgress(1);
+      console.warn('No Spots to Upload');
+      return Promise.resolve();
     }
     else {
       const spotCollection = {
