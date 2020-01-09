@@ -4,6 +4,8 @@ import ImagePicker from 'react-native-image-picker';
 import RNFetchBlob from 'rn-fetch-blob';
 import {useSelector, useDispatch} from 'react-redux';
 import {getNewId} from '../../shared/Helpers';
+import {Base64} from 'js-base64';
+import ImageResizer from 'react-native-image-resizer';
 
 // Hooks
 import useServerRequests from '../../services/useServerRequests';
@@ -73,7 +75,7 @@ const useImages = () => {
         dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
         if (imagesFailedCount > 0) {
           dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Downloaded Images ' + imageCount + '/' + neededImageIds.length
-          + 'Failed Images ' + imagesFailedCount + '/' + neededImageIds});
+              + 'Failed Images ' + imagesFailedCount + '/' + neededImageIds});
         }
         else dispatch({type:  homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Downloaded Images: ' + imageCount + '/' + neededImageIds.length});
       });
@@ -87,25 +89,25 @@ const useImages = () => {
     });
   };
 
+  // Checks to see if image is already on device
+  const doesImageExist = async (imageId) => {
+    const filePath = imagesDirectory;
+    const fileName = imageId.toString() + '.jpg';
+    const fileURI = filePath + '/' + fileName;
+    console.log('Looking on device for file URI: ', fileURI);
+    return await RNFetchBlob.fs.exists(fileURI).then(exist => {
+        console.log(`File URI ${fileURI} does ${exist ? '' : 'not'} exist on device`);
+        return exist;
+      },
+    )
+      .catch((err) => {
+        throw err;
+      });
+  };
+
   const gatherNeededImages = async (spots) => {
     let neededImagesIds = [];
     const promises = [];
-
-    // Checks to see if image is already on device
-    const doesImageExist = async (imageId) => {
-      const filePath = imagesDirectory;
-      const fileName = imageId.toString() + '.jpg';
-      const fileURI = filePath + '/' + fileName;
-      console.log('Looking on device for file URI: ', fileURI);
-      return await RNFetchBlob.fs.exists(fileURI).then(exist => {
-          console.log(`File URI ${fileURI} does ${exist ? '' : 'not'} exist on device`);
-          return exist;
-        },
-      )
-        .catch((err) => {
-          throw err;
-        });
-    };
 
     spots.map(spot => {
       if (spot.properties.images) {
@@ -125,6 +127,22 @@ const useImages = () => {
     return Promise.all(promises).then(() => {
       // Alert.alert(`Images needed to download: ${neededImagesIds.length}`);
       return Promise.resolve(neededImagesIds);
+    });
+  };
+
+  const getImageFileURIById = (imageId) => {
+    const filePath = imagesDirectory;
+    const fileName = imageId.toString() + '.jpg';
+    const fileURI = filePath + '/' + fileName;
+    return doesImageExist(imageId).then((exists) => {
+      if (exists) {
+        console.log('Found image file.', fileURI);
+        return Promise.resolve(fileURI);
+      }
+      else {
+        console.log('File not found');
+        return Promise.reject('img/image-not-found.png');
+      }
     });
   };
 
@@ -255,6 +273,29 @@ const useImages = () => {
         return iSpotLoop + 1 < spots.length;
       };
 
+      // const convertImageFile = (data, body) => {
+      //   var imageProps = data[0];
+      //   var src = data[1];
+      //   console.log('Converting file URI to Blob...');
+      //   return fileURItoBlob(src).then(function (blob) {
+      //     console.log('Finished converting file URI to blob for image', imageProps.id);
+      //     return Promise.resolve([imageProps, blob]);
+      //   }, function () {
+      //     return Promise.reject('Error converting file URI to blob for image', imageProps.id);
+      //   });
+      // };
+
+      const getImageFile = async imageProps => {
+        dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
+        dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Processing Image...'});
+        console.log(imageProps);
+        const src = await getImageFileURIById(imageProps.id);
+        if (src !== 'img/image-not-found.png') {
+          return Promise.resolve([imageProps, src]);
+        }
+        else return Promise.reject('Local file not found for image', imageProps.id);
+      };
+
       const makeNextSpotRequest = (spot) => {
         if (areMoreImages(spot)) {
           console.log('Found image:', spot.properties.images[iImagesLoop].id, spot.properties.images[iImagesLoop],
@@ -271,25 +312,24 @@ const useImages = () => {
         }
         else {
           if (imagesToUploadCount === 0) {
-            console.log('No new images to upload in spot:', spot.properties.name);
-            resolve();
+            console.log('No NEW images to upload');
+            dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
+            dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'No NEW images to upload'});
           }
           else {
             console.log('Finished Uploading Images');
-            if (imagesUploadFailedCount > 0) {
-              Alert.alert(`'Images Failed:' ${imagesUploadFailedCount}`);
-            }
-            resolve();
+            if (imagesUploadFailedCount > 0) Alert.alert(`'Images Failed:' ${imagesUploadFailedCount}`);
           }
+          resolve();
         }
       };
 
       const makeNextImageRequest = (imageProps) => {
         console.log(imageProps);
         return shouldUploadImage(imageProps)
-          // .then(getImageFile)
+          .then(getImageFile)
           // .then(convertImageFile)
-          // .then(uploadImage)
+          .then(uploadImage)
           .catch(function (err) {
             if (err !== 'already exists') {
               // uploadErrors = true;
@@ -312,17 +352,97 @@ const useImages = () => {
                 || (!response.modified_timestamp && imageProps.modified_timestamp))) {
               console.log('Need to upload image:', imageProps.id);
               imagesToUploadCount++;
-              return resolve(imageProps);
+              return Promise.resolve(imageProps);
             }
             else {
               console.log('No need to upload image:', imageProps.id, 'Server response:', response);
-              return reject('already exists');
+              return Promise.reject('already exists');
             }
           }, () => {
             imagesToUploadCount++;
             console.log('Need to upload image:', imageProps.id);
-            imagesToUploadCount++;
-            return resolve(imageProps);
+            return Promise.resolve(imageProps);
+          });
+      };
+
+      const getImageSize = image => {
+        return RNFetchBlob.fs.readFile(image, 'base64')
+          .then((data) => {
+            const decodedData = Base64.decode(data);
+            const bytes = decodedData.length;
+            return bytes
+          });
+      };
+
+      const resizeImageForUpload = (imageFile, imageProps) => {
+        const path = '/var/mobile/Containers/Data/Application/8173F960-2CAE-4B66-855E-3FC1D042E025/Documents/StraboSpot/Images/';
+        const max_size = 2000;
+        let height = imageProps.height;
+        let width = imageProps.width;
+
+        if (width > height && width > max_size) {
+          height = max_size * height / width;
+          width = max_size;
+        }
+        else if (height > max_size) {
+          width = max_size * width / height;
+          height = max_size;
+        }
+        return ImageResizer.createResizedImage(
+          imageFile,
+          width,
+          height,
+          'JPEG',
+          100,
+          0,
+          path + '/temp/'
+        )
+          .then(response => {
+            console.log('Response', response)
+            response.name = imageProps.id;
+            if (response.size < 1024) console.log(response.size + ' Bytes');
+            else if (response.size < 1048576) console.log('Resize Image KB:' + (response.size / 1024).toFixed(3) + ' KB');
+            else if (response.size < 1073741824) console.log('Resize Image MB:' + (response.size / 1048576).toFixed(2) + ' MB');
+            else console.log('Resize Image' + (response.size / 1073741824).toFixed(3) + ' GB');
+            return response;
+          });
+      };
+
+      const uploadImage = async (data) => {
+        const imageProps = data[0];
+        const src = data[1];
+        var count = imagesUploadedCount + 1;
+        dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
+        dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Uploading image: ' + count + '...'});
+        console.log('Uploading image', imageProps.id, 'to server...');
+
+        const resizeImage = await resizeImageForUpload(src, imageProps);
+        const uploadURI = Platform.OS === 'ios' ? resizeImage.path.replace('file//', '') : resizeImage.path;
+        console.log('Image re-sized obj', resizeImage);
+
+        let formdata = new FormData();
+        formdata.append('image_file', {uri: uploadURI, name: 'image.jpg', type: 'image/jpeg'});
+        formdata.append('id', imageProps.id);
+        formdata.append('modified_timestamp', Date.now());
+        const bytes = await getImageSize(resizeImage.path);
+        if (bytes < 1024) console.log(bytes + ' Bytes');
+        else if (bytes < 1048576) console.log('KB:' + (bytes / 1024).toFixed(3) + ' KB');
+        else if (bytes < 1073741824) console.log('MB:' + (bytes / 1048576).toFixed(2) + ' MB');
+        else console.log((bytes / 1073741824).toFixed(3) + ' GB');
+        console.time();
+        return serverRequests.uploadImage(formdata, user.encoded_login)
+          .then((res) => {
+              console.timeEnd()
+              imagesUploadedCount++;
+              console.log('Image Uploaded!' + imagesUploadedCount);
+              console.log('Finished uploading image', imageProps.id, 'to the server');
+              dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
+              dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Uploaded Images', imagesUploadedCount});
+              return Promise.resolve();
+            },
+            (err) => Promise.reject('Error uploading image' + imageProps.id) + '\n' + err)
+          .catch((err) => {
+            console.error('LALA', err);
           });
       };
 
