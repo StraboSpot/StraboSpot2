@@ -151,6 +151,18 @@ const useServerRequests = () => {
     return post('/project', encodedLogin, project,);
   };
 
+  const uploadImage = async (formdata, encodedLogin) => {
+    const response = await fetch(baseUrl + '/image', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        'Authorization': 'Basic ' + encodedLogin,
+      },
+      body: formdata,
+    });
+    return handleResponse(response);
+  };
+
   const verifyImageExistence = (imageId, encodedLogin) => {
     return request('GET', '/verifyimage/' + imageId, encodedLogin);
   };
@@ -169,6 +181,7 @@ const useServerRequests = () => {
     updateDataset: updateDataset,
     updateDatasetSpots: updateDatasetSpots,
     updateProject: updateProject,
+    uploadImage: uploadImage,
     verifyImageExistence: verifyImageExistence,
   };
 
