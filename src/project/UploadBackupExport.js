@@ -5,13 +5,10 @@ import {Button, ListItem} from 'react-native-elements';
 import commonStyles from '../shared/common.styles';
 import {homeReducers} from '../views/home/Home.constants';
 import styles from './Project.styles';
-import sharedDialogStyles from '../shared/common.styles';
 import {useDispatch, useSelector} from 'react-redux';
 import {isEmpty, readDataUrl} from '../shared/Helpers';
 import UploadDialogBox from './UploadDialogBox';
-import StatusDialogBox from '../shared/ui/StatusDialogBox';
 import useServerRequests from '../services/useServerRequests';
-import ProgressCircle from '../shared/ui/ProgressCircle';
 import useSpots from '../spots/useSpots';
 import useImagesHook from '../components/images/useImages';
 
@@ -19,7 +16,6 @@ const UploadBackAndExport = (props) => {
   const [serverRequests] = useServerRequests();
   const [spotFactory] = useSpots();
   const [useImages] = useImagesHook();
-  const [progress, setProgress] = useState(null);
   const [uploadErrors, setUploadErrors] = useState(false);
   const [uploadStatusMessage, setUploadStatusMessage] = useState(null);
   const [uploadConfirmText, setUploadConfirmText] = useState(null);
@@ -83,7 +79,7 @@ const UploadBackAndExport = (props) => {
         <View>
           <Text>The following project properties and the active datasets will be uploaded and will
             <Text style={styles.dialogContentText}> OVERWRITE</Text> the project
-          properties and selected datasets on the server. Continue? {'\n'}</Text>
+            properties and selected datasets on the server. Continue? {'\n'}</Text>
           <View style={{alignItems: 'center'}}>
             <FlatList
               data={activeDatasets}
@@ -91,16 +87,27 @@ const UploadBackAndExport = (props) => {
               renderItem={({item}) => renderNames(item)}
             />
           </View>
-          </View>
+        </View>
       );
     }
     setUploadConfirmText(ConfirmText);
     setIsUploadDialogVisible(true);
   };
 
-  const makeNextRequest = (activeDatasets, currentRequest) => {
-    return uploadDataset(activeDatasets[currentRequest]);
-  };
+  // const makeNextRequest = async (activeDatasets, currentRequest) => {
+  //   return await uploadDataset(activeDatasets[currentRequest]).then(() => {
+  //     currentRequest++;
+  //     dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Uploading Dataset: ' + currentRequest + '/' + activeDatasets.length});
+  //     if (currentRequest > 0 && currentRequest < activeDatasets.length) {
+  //       console.log('A');
+  //     }
+  //     if (currentRequest < activeDatasets.length) makeNextRequest();
+  //     else return Promise.resolve();
+  //   }, () => {
+  //     console.error('Error uploading dataset.');
+  //     return Promise.reject();
+  //   })
+  // };
 
   const upload = () => {
     // dispatch({type: homeReducers.SET_LOADING, bool: true});
@@ -226,25 +233,6 @@ const UploadBackAndExport = (props) => {
     );
   };
 
-  const renderStatusDialogBox = () => {
-    return (
-      <StatusDialogBox
-        dialogTitle={uploadErrors ? 'ERROR!' : 'SUCCESS!'}
-        style={uploadErrors ? sharedDialogStyles.dialogTitleError : sharedDialogStyles.dialogTitleSuccess}
-        buttonText={'OK'}
-        visible={isUploadStatusDialogBoxVisible}
-        cancel={() => setIsUploadStatusDialogVisible(false)}
-        onTouchOutside={() => setIsUploadStatusDialogVisible(false)}
-        disabled={progress !== 1 && !uploadErrors}
-      >
-        {uploadStatusMessage}
-        <View style={styles.progressCircleContainer}>
-          <ProgressCircle progress={progress} />
-        </View>
-      </StatusDialogBox>
-    );
-  };
-
   const renderExportButtons = () => {
     return (
       <View>
@@ -255,11 +243,11 @@ const UploadBackAndExport = (props) => {
           onPress={() => onShareNotebookAsPDF()}
         />
         <Button
-        title={'Share Project as CSV'}
-        buttonStyle={commonStyles.standardButton}
-        titleStyle={commonStyles.standardButtonText}
-        onPress={() => onShareProjectAsCSV()}
-      />
+          title={'Share Project as CSV'}
+          buttonStyle={commonStyles.standardButton}
+          titleStyle={commonStyles.standardButtonText}
+          onPress={() => onShareProjectAsCSV()}
+        />
         <Button
           title={'Share Project as Shapefile'}
           buttonStyle={commonStyles.standardButton}
@@ -268,7 +256,7 @@ const UploadBackAndExport = (props) => {
         />
         <View style={{alignItems: 'center', margin: 10, marginTop: 10}}>
           <Text style={commonStyles.standardDescriptionText}>Exports should not be used as the only backup. Since the
-          full database cannot be reconstructed from them.</Text>
+            full database cannot be reconstructed from them.</Text>
         </View>
       </View>
     );
@@ -302,7 +290,6 @@ const UploadBackAndExport = (props) => {
       <View style={styles.listContainer}>
       </View>
       {renderUploadDialogBox()}
-      {renderStatusDialogBox()}
     </React.Fragment>
   );
 };
