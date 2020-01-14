@@ -47,6 +47,24 @@ const useSpots = (props) => {
     return newSpot;
   };
 
+  const deleteSpot = async id => {
+    console.log(id)
+    Object.values(datasets).map(dataset => {
+      if (dataset.spotIds) {
+        console.log(dataset.spotIds);
+        const exists = dataset.spotIds.includes(id);
+        if (exists) {
+          console.log(dataset.id)
+          console.log(dataset.spotIds.filter(spotId => id !== spotId));
+          const filteredLSpotIdList = dataset.spotIds.filter(spotId => id !== spotId);
+          dispatch({type: projectReducers.DATASETS.DELETE_SPOT_ID, filteredList: filteredLSpotIdList, datasetId: dataset.id});
+          dispatch({type: spotReducers.DELETE_SPOT, id: id});
+        }
+      }
+    })
+    return Promise.resolve('spot deleted');
+  };
+
   const downloadSpots = async (dataset, encodedLogin) => {
     dispatch({type: 'CLEAR_STATUS_MESSAGES'});
     dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'Downloading Spots...'});
@@ -100,6 +118,7 @@ const useSpots = (props) => {
 
   return [{
     createSpot: createSpot,
+    deleteSpot: deleteSpot,
     downloadSpots: downloadSpots,
     getActiveSpotsObj: getActiveSpotsObj,
     getMappableSpots: getMappableSpots,

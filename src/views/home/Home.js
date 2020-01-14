@@ -40,6 +40,7 @@ import {animatePanels, isEmpty} from '../../shared/Helpers';
 
 // Hooks
 import useImagesHook from '../../components/images/useImages';
+import useSpotsHook from '../../spots/useSpots';
 import StatusDialogBox from '../../shared/ui/StatusDialogBox';
 import sharedDialogStyles from '../../shared/common.styles';
 import useProjectHook from '../../project/useProject';
@@ -59,6 +60,7 @@ const notebookPanelWidth = 400;
 const Home = (props) => {
   const [useImages] = useImagesHook();
   const [useProject] = useProjectHook();
+  const [useSpots] = useSpotsHook();
   const currentDataset = useProject.getCurrentDataset();
 
   let imageArr = [];
@@ -305,8 +307,11 @@ const Home = (props) => {
         {
           text: 'Delete',
           onPress: () => {
-            props.deleteSpot(id);
-            closeNotebookPanel();
+            useSpots.deleteSpot(id)
+              .then((res) => {
+                console.log(res)
+                closeNotebookPanel();
+              });
           },
         },
       ],
