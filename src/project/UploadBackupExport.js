@@ -1,12 +1,12 @@
-import React, {useState, useEffect} from 'react';
-import {Alert, FlatList, ListView, Text, View} from 'react-native';
+import React, {useState} from 'react';
+import {FlatList, Text, View} from 'react-native';
 import Divider from '../components/settings-panel/HomePanelDivider';
-import {Button, ListItem} from 'react-native-elements';
+import {Button} from 'react-native-elements';
 import commonStyles from '../shared/common.styles';
 import {homeReducers} from '../views/home/Home.constants';
 import styles from './Project.styles';
 import {useDispatch, useSelector} from 'react-redux';
-import {isEmpty, readDataUrl} from '../shared/Helpers';
+import {isEmpty} from '../shared/Helpers';
 import UploadDialogBox from './UploadDialogBox';
 import useServerRequests from '../services/useServerRequests';
 import useSpotsHook from '../spots/useSpots';
@@ -17,7 +17,7 @@ const UploadBackAndExport = (props) => {
   const [useSpots] = useSpotsHook();
   const [useImages] = useImagesHook();
   const [uploadErrors, setUploadErrors] = useState(false);
-  const [uploadStatusMessage, setUploadStatusMessage] = useState(null);
+  // const [uploadStatusMessage, setUploadStatusMessage] = useState(null);
   const [uploadConfirmText, setUploadConfirmText] = useState(null);
   const [isUploadDialogVisible, setIsUploadDialogVisible] = useState(false);
   const [isUploadStatusDialogBoxVisible, setIsUploadStatusDialogVisible] = useState(false);
@@ -116,7 +116,11 @@ const UploadBackAndExport = (props) => {
       .catch(err => {
         console.log('Upload Errors');
         setUploadErrors(true);
-      });
+      })
+      .finally(() => {
+          dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Upload Complete!'});
+        },
+      );
   };
 
   const uploadDataset = async (dataset) => {
@@ -127,7 +131,7 @@ const UploadBackAndExport = (props) => {
     const response = await serverRequests.updateDataset(datasetCopy, user.encoded_login);
     console.log('Finished updating dataset', response);
     const response2 = await serverRequests.addDatasetToProject(project.id, dataset.id, user.encoded_login);
-    console.log('Finished updating dataset', response2);
+    console.log('Finished adding dataset to project', response2);
     uploadSpots(dataset).then(() => {
       console.log('Spots Uploaded');
       return Promise.resolve();
@@ -194,10 +198,6 @@ const UploadBackAndExport = (props) => {
     catch (err) {
       setUploadErrors(true);
       // setIsUploadDialogVisible(false);
-      setUploadStatusMessage(
-        <Text style={{textAlign: 'center'}}>Error uploading project:
-          <Text style={[styles.dialogContentText, {color: 'black'}]}> {project.description.project_name}</Text>
-        </Text>);
       setIsUploadStatusDialogVisible(true);
       console.log('Error uploading project', project);
     }
@@ -208,7 +208,6 @@ const UploadBackAndExport = (props) => {
   const uploadImages = async spots => {
     const imageRes =  await useImages.uploadImages(spots);
     console.log('ImageRes', imageRes);
-    dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Upload Complete!'});
     // setTimeout(() => {
     //   setIsUploadStatusDialogVisible(false);
     //   setProgress(1);
@@ -224,8 +223,9 @@ const UploadBackAndExport = (props) => {
     // setProgress(0.50);
     // spots.forEach(spotValue => checkValidDateTime(spotValue));
     if (isEmpty(spots)) {
-      console.warn('No Spots to Upload');
-      return Promise.resolve();
+      console.log('No Spots to Upload');
+      dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'No Spots to Upload'});
+      // return Promise.resolve();
     }
     else {
       const spotCollection = {
@@ -312,8 +312,6 @@ const UploadBackAndExport = (props) => {
       <Divider sectionText={'export'}/>
       {renderExportButtons()}
       <Divider sectionText={'restore project from backup'}/>
-      <View style={styles.listContainer}>
-      </View>
       {renderUploadDialogBox()}
     </React.Fragment>
   );
