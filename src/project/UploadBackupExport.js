@@ -16,7 +16,7 @@ const UploadBackAndExport = (props) => {
   const [serverRequests] = useServerRequests();
   const [useSpots] = useSpotsHook();
   const [useImages] = useImagesHook();
-  const [uploadErrors, setUploadErrors] = useState(false);
+  // const [uploadErrors, setUploadErrors] = useState(false);
   // const [uploadStatusMessage, setUploadStatusMessage] = useState(null);
   const [uploadConfirmText, setUploadConfirmText] = useState(null);
   const [isUploadDialogVisible, setIsUploadDialogVisible] = useState(false);
@@ -114,11 +114,15 @@ const UploadBackAndExport = (props) => {
     return uploadProject()
       .then(uploadDatasets)
       .catch(err => {
+        dispatch({type: homeReducers.CLEAR_STATUS_MESSAGES});
+        dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Error uploading project'});
         console.log('Upload Errors');
-        setUploadErrors(true);
+        // setUploadErrors(true);
       })
       .finally(() => {
-          dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Upload Complete!'});
+          useImages.deleteTempImagesFolder().then(()=> {
+            dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Upload Complete!'});
+          });
         },
       );
   };
@@ -128,19 +132,20 @@ const UploadBackAndExport = (props) => {
     delete datasetCopy.spotIds;
     delete datasetCopy.current;
     delete datasetCopy.active;
-    const response = await serverRequests.updateDataset(datasetCopy, user.encoded_login);
-    console.log('Finished updating dataset', response);
-    const response2 = await serverRequests.addDatasetToProject(project.id, dataset.id, user.encoded_login);
-    console.log('Finished adding dataset to project', response2);
-    uploadSpots(dataset).then(() => {
-      console.log('Spots Uploaded');
-      return Promise.resolve();
+    return serverRequests.updateDataset(datasetCopy, user.encoded_login).then((response) => {
+      console.log('Finished updating dataset', response);
+      return serverRequests.addDatasetToProject(project.id, dataset.id, user.encoded_login).then((response2) => {
+        console.log('Finished adding dataset to project', response2);
+        return uploadSpots(dataset).then(() => {
+          console.log('Spots Uploaded');
+          return Promise.resolve();
+        });
+      });
     });
     // setTimeout(() => {
     //   console.log('Finished Uploading Datasets');
     //   setIsUploadStatusDialogVisible(false);
     // }, 1000);
-    return Promise.resolve();
   };
 
   const uploadDatasets = async () => {
@@ -150,7 +155,8 @@ const UploadBackAndExport = (props) => {
 
     // Upload datasets synchronously
     const makeNextRequest = async () => {
-      uploadDataset(activeDatasets[currentRequest]).then(() => {
+      console.log('Making request...');
+      return uploadDataset(activeDatasets[currentRequest]).then(() => {
         currentRequest++;
         dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
         // dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
@@ -159,7 +165,7 @@ const UploadBackAndExport = (props) => {
           dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Uploading Dataset: ' + currentRequest + '/' + activeDatasets.length});
         }
         if (currentRequest < activeDatasets.length) {
-          makeNextRequest();
+          return makeNextRequest();
         }
         else {
           dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Datasets uploaded'});
@@ -173,7 +179,7 @@ const UploadBackAndExport = (props) => {
 
     if (currentRequest < activeDatasets.length) {
       console.log('MakeNextRequest', currentRequest);
-      makeNextRequest();
+      return makeNextRequest();
     }
     else {
       // dispatch({type: homeReducers.SET_LOADING, bool: false});
@@ -187,18 +193,21 @@ const UploadBackAndExport = (props) => {
     console.log('PROJECT UPLOADING...');
     dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Uploading Project...'});
     setIsUploadDialogVisible(false);
-    setIsUploadStatusDialogVisible(true);
+    // setIsUploadStatusDialogVisible(true);
     // await serverRequests.updateProject(project, user.encoded_login).then((response) => {
     try {
       const updatedProject = await serverRequests.updateProject(project, user.encoded_login);
       console.log('Finished uploading project', updatedProject);
-      setUploadErrors(false);
-      console.log('Going to uploadDatasets next')
+      dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
+      dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Finished uploading project.'});
+      // setUploadErrors(false);
+      console.log('Going to uploadDatasets next');
+      return Promise.resolve();
     }
     catch (err) {
-      setUploadErrors(true);
-      // setIsUploadDialogVisible(false);
-      setIsUploadStatusDialogVisible(true);
+      // setUploadErrors(true);
+      dispatch({type: homeReducers.CLEAR_STATUS_MESSAGES});
+      dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Error uploading project.'});
       console.log('Error uploading project', project);
     }
     // }
@@ -236,6 +245,7 @@ const UploadBackAndExport = (props) => {
         return uploadImages(spots);
       });
     }
+    return Promise.resolve();
   };
 
   const renderUploadAndBackupButtons = () => {
