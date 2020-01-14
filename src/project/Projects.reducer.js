@@ -39,6 +39,15 @@ export const projectsReducer = (state = initialState, action) => {
         datasets: {...state.datasets, [action.datasetId]: dataset},
       };
     }
+    case projectReducers.DATASETS.DELETE_SPOT_ID: {
+      console.log(action.datasetId, '&', action.filteredList)
+      const dataset = {...state.datasets[action.datasetId], spotIds: action.filteredList};
+      return {
+        ...state,
+        datasets: {...state.datasets, [action.datasetId]: dataset},
+        modified_timestamp: Date.now(),
+      };
+    }
     // case projectReducers.DATASETS.ADD_NEW_SPOT_ID_TO_DATASET:
     //   console.log(action.datasetId);
     //   console.log(state.datasets);
