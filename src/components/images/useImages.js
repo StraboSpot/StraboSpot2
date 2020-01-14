@@ -18,11 +18,16 @@ const useImages = () => {
   // const url = 'https://strabospot.org/testimages/images.json';
   const devicePath = Platform.OS === 'ios' ? dirs.DocumentDir : dirs.SDCardDir; // ios : android
   const appDirectory = '/StraboSpot';
+  const imagesResizeTemp = '/TempImages';
   const imagesDirectory = devicePath + appDirectory + '/Images';
   const [serverRequests] = useServerRequests();
 
   const user = useSelector(state => state.user);
   const dispatch = useDispatch();
+
+  const deleteTempImagesFolder = async () => {
+    return await RNFetchBlob.fs.unlink(devicePath + imagesResizeTemp);
+  };
 
   const downloadImages = neededImageIds => {
     let promises = [];
@@ -395,7 +400,7 @@ const useImages = () => {
           'JPEG',
           100,
           0,
-          path + '/temp/'
+          devicePath + imagesResizeTemp
         )
           .then(response => {
             console.log('Response', response)
@@ -418,7 +423,7 @@ const useImages = () => {
 
         const resizeImage = await resizeImageForUpload(src, imageProps);
         const uploadURI = Platform.OS === 'ios' ? resizeImage.path.replace('file//', '') : resizeImage.path;
-        console.log('Image re-sized obj', resizeImage);
+        // console.log('Image re-sized obj', resizeImage);
 
         let formdata = new FormData();
         formdata.append('image_file', {uri: uploadURI, name: 'image.jpg', type: 'image/jpeg'});
@@ -452,6 +457,7 @@ const useImages = () => {
   };
 
   return [{
+    deleteTempImagesFolder: deleteTempImagesFolder,
     downloadImages: downloadImages,
     gatherNeededImages: gatherNeededImages,
     getLocalImageSrc: getLocalImageSrc,
