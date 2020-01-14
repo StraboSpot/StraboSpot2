@@ -9,12 +9,12 @@ import {useDispatch, useSelector} from 'react-redux';
 import {isEmpty, readDataUrl} from '../shared/Helpers';
 import UploadDialogBox from './UploadDialogBox';
 import useServerRequests from '../services/useServerRequests';
-import useSpots from '../spots/useSpots';
+import useSpotsHook from '../spots/useSpots';
 import useImagesHook from '../components/images/useImages';
 
 const UploadBackAndExport = (props) => {
   const [serverRequests] = useServerRequests();
-  const [spotFactory] = useSpots();
+  const [useSpots] = useSpotsHook();
   const [useImages] = useImagesHook();
   const [uploadErrors, setUploadErrors] = useState(false);
   const [uploadStatusMessage, setUploadStatusMessage] = useState(null);
@@ -218,7 +218,7 @@ const UploadBackAndExport = (props) => {
   const uploadSpots = async (dataset) => {
     let spots;
     if (dataset.spotIds){
-      spots = await spotFactory.getSpotsByIds(dataset.spotIds);
+      spots = await useSpots.getSpotsByIds(dataset.spotIds);
       console.log('Spot', spots);
     }
     // setProgress(0.50);
