@@ -94,21 +94,6 @@ const UploadBackAndExport = (props) => {
     setIsUploadDialogVisible(true);
   };
 
-  // const makeNextRequest = async (activeDatasets, currentRequest) => {
-  //   return await uploadDataset(activeDatasets[currentRequest]).then(() => {
-  //     currentRequest++;
-  //     dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Uploading Dataset: ' + currentRequest + '/' + activeDatasets.length});
-  //     if (currentRequest > 0 && currentRequest < activeDatasets.length) {
-  //       console.log('A');
-  //     }
-  //     if (currentRequest < activeDatasets.length) makeNextRequest();
-  //     else return Promise.resolve();
-  //   }, () => {
-  //     console.error('Error uploading dataset.');
-  //     return Promise.reject();
-  //   })
-  // };
-
   const upload = () => {
     // dispatch({type: homeReducers.SET_LOADING, bool: true});
     return uploadProject()
@@ -142,10 +127,6 @@ const UploadBackAndExport = (props) => {
         });
       });
     });
-    // setTimeout(() => {
-    //   console.log('Finished Uploading Datasets');
-    //   setIsUploadStatusDialogVisible(false);
-    // }, 1000);
   };
 
   const uploadDatasets = async () => {
@@ -159,20 +140,20 @@ const UploadBackAndExport = (props) => {
       return uploadDataset(activeDatasets[currentRequest]).then(() => {
         currentRequest++;
         dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
-        // dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
         if (currentRequest > 0 && currentRequest < activeDatasets.length) {
-          console.log('A');
           dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Uploading Dataset: ' + currentRequest + '/' + activeDatasets.length});
         }
         if (currentRequest < activeDatasets.length) {
           return makeNextRequest();
         }
         else {
-          dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Datasets uploaded'});
+          dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: activeDatasets.length + ' Datasets uploaded'});
           return Promise.resolve();
         }
-      }, () => {
-        console.error('Error uploading dataset.');
+      }, (err) => {
+        console.log('Error uploading dataset.', err);
+        dispatch({type: homeReducers.CLEAR_STATUS_MESSAGES});
+        dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Error uploading dataset.'});
         return Promise.reject();
       });
     };
@@ -182,7 +163,6 @@ const UploadBackAndExport = (props) => {
       return makeNextRequest();
     }
     else {
-      // dispatch({type: homeReducers.SET_LOADING, bool: false});
       return Promise.resolve();
     }
   };

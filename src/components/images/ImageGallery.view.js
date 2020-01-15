@@ -92,12 +92,15 @@ const imageGallery = (props) => {
   };
 
   const renderImage = (image) => {
+
+    // const resizeImage = useImages.resizeImageToThumbnail(image);
+    // console.log('Resized', resizeImage)
     return (
       <View style={imageStyles.thumbnailContainer}>
         <SharedUI.ImageButton
           source={{uri: useImages.getLocalImageSrc(image.id)}}
           style={imageStyles.thumbnail}
-          PlaceholderContent={<ActivityIndicator/>}
+          // PlaceholderContent={<ActivityIndicator/>}
           onPress={() => renderImageModal(image)}
         />
       </View>

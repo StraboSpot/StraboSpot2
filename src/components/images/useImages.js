@@ -92,7 +92,7 @@ const useImages = () => {
         dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
         if (imagesFailedCount > 0) {
           dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Downloaded Images ' + imageCount + '/' + neededImageIds.length
-              + 'Failed Images ' + imagesFailedCount + '/' + neededImageIds});
+              + 'Failed Images ' + imagesFailedCount + '/' + neededImageIds.length});
         }
         else dispatch({type:  homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Downloaded Images: ' + imageCount + '/' + neededImageIds.length});
       });
@@ -101,6 +101,8 @@ const useImages = () => {
     return Promise.all(promises).then(() => {
       if (imagesFailedCount > 0) {
         //downloadErrors = true;
+        dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
+        dispatch({type:  homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Image Downloads Failed: ' + imagesFailedCount});
         console.warn('Image Downloads Failed: ' + imagesFailedCount);
       }
     });
