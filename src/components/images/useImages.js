@@ -43,20 +43,32 @@ const useImages = () => {
           .config({path: imagesDirectory + '/' + imageId + '.jpg'})
           .fetch('GET', imageURI, {})
           .then((res) => {
-            imageCount++;
-            console.log(imageCount, 'File saved to', res.path());
-            // let imageId = imageName.split('.')[0];
-            let imageData = {};
-            if (Platform.OS === 'ios') {
-              imageData = {
-                id: imageId,
-                src: res.path(),
-                height: imageURI.height,
-                width: imageURI.width,
-              };
+            console.log(res)
+            if (res.respInfo.status === 404) {
+              imageCount++;
+              imagesFailedCount++;
+              console.log('Error on', imageId);  // Android Error: RNFetchBlob request error: url == nullnull
+              RNFetchBlob.fs.unlink(res.data).then(() => {
+                console.log('Failed image removed', imageId);
+                reject('404 status');
+              });
             }
-            else imageData = {id: imageId, src: 'file://' + res.path(), height: imageURI.height, width: imageURI.width};
-            resolve(imageData);
+            else {
+              imageCount++;
+              console.log(imageCount, 'File saved to', res.path());
+              // let imageId = imageName.split('.')[0];
+              let imageData = {};
+              if (Platform.OS === 'ios') {
+                imageData = {
+                  id: imageId,
+                  src: res.path(),
+                  height: imageURI.height,
+                  width: imageURI.width,
+                };
+              }
+              else imageData = {id: imageId, src: 'file://' + res.path(), height: imageURI.height, width: imageURI.width};
+              resolve(imageData);
+            }
           })
           .catch((errorMessage, statusCode) => {
             imageCount++;
