@@ -43,21 +43,20 @@ const UploadBackAndExport = (props) => {
     console.log('onShareProjectAsShapefile');
   };
 
-  const checkValidDateTime = (spots) => {
-    const checkedSpot = spots.forEach(spot => {
-      if (!spot.properties.date || !spot.properties.time) {
-        let date = spot.properties.date || spot.properties.time;
-        if (!date) {
-          date = new Date(Date.now());
-          date.setMilliseconds(0);
-        }
-        spot.properties.date = spot.properties.time = date.toISOString();
-        console.log('SPOT', spot);
-        // dispatch({type: spotReducers.EDIT_SPOT_PROPERTIES, field: 'date', value: date});
+  const checkValidDateTime = (spot) => {
+    console.log(spot)
+    // const checkedSpot = spots.forEach(spot => {
+    if (!spot.properties.date || !spot.properties.time) {
+      let date = spot.properties.date || spot.properties.time;
+      if (!date) {
+        date = new Date(Date.now());
+        date.setMilliseconds(0);
       }
-    });
-    console.log('CheckedSpot', checkedSpot);
-    // return checkedSpot;
+      spot.properties.date = spot.properties.time = date.toISOString();
+      console.log('SPOT', spot);
+      // dispatch({type: spotReducers.EDIT_SPOT_PROPERTIES, field: 'date', value: date});
+      return spot;
+    }
   };
 
   const initializeUpload = () => {
@@ -210,7 +209,7 @@ const UploadBackAndExport = (props) => {
       console.log('Spot', spots);
     }
     // setProgress(0.50);
-    // spots.forEach(spotValue => checkValidDateTime(spotValue));
+    spots.forEach(spotValue => checkValidDateTime(spotValue));
     if (isEmpty(spots)) {
       console.log('No Spots to Upload');
       dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'No Spots to Upload'});
