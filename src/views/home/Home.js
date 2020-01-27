@@ -70,6 +70,7 @@ const Home = (props) => {
   const dispatch = useDispatch();
   const statusMessages = useSelector(state => state.home.statusMessages);
   const isStatusMessagesModalVisible = useSelector(state => state.home.isStatusMessagesModalVisible);
+  const isErrorMessagesModalVisible = useSelector(state => state.home.isErrorMessagesModalVisible);
 
   // const imagesCount = useSelector(state => state.home.imageProgress.imagesDownloadedCount);
   // const imagesNeeded = useSelector(state => state.home.imageProgress.neededImageIds);
@@ -428,6 +429,24 @@ const Home = (props) => {
     );
   };
 
+  const renderErrorDialogBox = () => {
+    return (
+      <StatusDialogBox
+        dialogTitle={'ERROR'}
+        style={sharedDialogStyles.dialogTitleError}
+        visible={isErrorMessagesModalVisible}
+        onTouchOutside={() => dispatch({type: homeReducers.SET_ERROR_MESSAGES_MODAL_VISIBLE, value: false})}
+      >
+        <Text style={sharedDialogStyles.dialogStatusMessageText}>{statusMessages.join('\n')}</Text>
+         <Button
+          title={'OK'}
+          type={'clear'}
+          onPress={() => dispatch({type: homeReducers.SET_ERROR_MESSAGES_MODAL_VISIBLE, value: false})}
+        />
+      </StatusDialogBox>
+    );
+  };
+
   const renderStatusDialogBox = () => {
     return (
       <StatusDialogBox
@@ -620,11 +639,18 @@ const Home = (props) => {
       />;
   }
   else if (props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {
-    compassModal =
-      <ShortcutCompassModal
-        close={() => props.setModalVisible(null)}
-        onPress={page => modalHandler(page, Modals.NOTEBOOK_MODALS.COMPASS)}
-      />;
+    if (isEmpty(props.selectedSpot)) {
+      dispatch({type: homeReducers.CLEAR_STATUS_MESSAGES});
+      dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'No Spot Selected!'});
+    dispatch({type: homeReducers.SET_ERROR_MESSAGES_MODAL_VISIBLE, value: true});
+    }
+    else {
+      compassModal =
+        <ShortcutCompassModal
+          close={() => props.setModalVisible(null)}
+          onPress={page => modalHandler(page, Modals.NOTEBOOK_MODALS.COMPASS)}
+        />;
+    }
   }
 
   // Renders samples modals in either shortcut or notebook view
@@ -637,12 +663,19 @@ const Home = (props) => {
       />;
   }
   else if (props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE) {
-    samplesModal =
-      <ShortcutSamplesModal
-        close={() => props.setModalVisible(null)}
-        cancel={() => samplesModalCancel()}
-        onPress={(page) => modalHandler(page, Modals.NOTEBOOK_MODALS.SAMPLE)}
-      />;
+    if (isEmpty(props.selectedSpot)) {
+      dispatch({type: homeReducers.CLEAR_STATUS_MESSAGES});
+      dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'No Spot Selected!'});
+      dispatch({type: homeReducers.SET_ERROR_MESSAGES_MODAL_VISIBLE, value: true});
+    }
+    else{
+      samplesModal =
+        <ShortcutSamplesModal
+          close={() => props.setModalVisible(null)}
+          cancel={() => samplesModalCancel()}
+          onPress={(page) => modalHandler(page, Modals.NOTEBOOK_MODALS.SAMPLE)}
+        />;
+    }
   }
 
   return (
@@ -879,6 +912,7 @@ const Home = (props) => {
       {homeDrawer}
       {renderLoadProjectFromModal()}
       {renderStatusDialogBox()}
+      {renderErrorDialogBox()}
       {/*<View style={{position: 'absolute', left: 550, top: 50, backgroundColor: 'white', padding: 20}}>*/}
       {/*  <Text>{imagesCount} of {imagesNeeded}</Text>*/}
       {/*  <ProgressCircle progress={imagesCount / imagesNeeded} />*/}
