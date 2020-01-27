@@ -16,8 +16,8 @@ const samplesStyle = StyleSheet.create({
   },
   samplesContainer: {
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
-    borderBottomRightRadius: 20,
-    borderBottomLeftRadius: 20,
+    // borderBottomRightRadius: 20,
+    // borderBottomLeftRadius: 20,
   },
   input: {
     flex: 30,

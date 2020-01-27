@@ -78,18 +78,6 @@ const samplesModalView = (props) => {
             <View style={{height: 150}}>
               <Samples/>
             </View>
-            <IconButton
-              source={require('../../assets/icons/StraboIcons_Oct2019/NotebookView_pressed.png')}
-              style={{
-                marginTop: 20,
-                flexDirection: 'row',
-                justifyContent: 'center',
-                height: 25,
-                alignItems: 'flex-end',
-              }}
-              textStyle={{color: themes.BLUE, fontSize: 16, textAlign: 'center'}}
-              onPress={() => props.onPress(NotebookPages.SAMPLE)}
-            > Go to {props.spot.properties.name}</IconButton>
           </View>;
         return modalView;
       }

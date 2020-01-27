@@ -24,7 +24,7 @@ const ShortcutCompassModal = (props) => {
     return (
       <DragAnimation style={styles.modalPositionShortcutView}>
         <Modal
-          component={<RMCompass onPress={props.onPress}/>}
+          component={<RMCompass />}
           style={styles.compassContainer}
           close={props.close}
           onPress={props.onPress}

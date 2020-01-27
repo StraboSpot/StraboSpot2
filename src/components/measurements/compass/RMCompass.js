@@ -52,7 +52,6 @@ const RNCompass = (props) => {
   const degree_update_rate = 1; // Number of degrees changed before the callback is triggered
 
   useEffect(() => {
-    // console.log(`Is device available: ${DeviceMotion.isAvailableAsync()}`);
     displayCompassData();
     return () => {
       NativeModules.Compass.stopObserving();
@@ -66,6 +65,7 @@ const RNCompass = (props) => {
       setHeading(heading);
     });
     return () => {
+      RNSimpleCompass.stop();
       console.log('Heading subscription cancelled');
     };
   }, []);

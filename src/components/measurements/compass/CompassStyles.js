@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
   modalPositionShortcutView: {
     position: 'absolute',
     left: 70,
-    bottom: 70,
+    bottom: 20,
   },
 });
 

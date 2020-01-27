@@ -25,8 +25,9 @@ const shortcutSamplesModalView = (props) => {
         <Modal
           component={<Samples onPress={props.onPress}/>}
           close={props.close}
+          onPress={props.onPress}
           // buttonTitleRight={'Cancel'}
-          onPress={props.cancel}
+          // onPress={props.cancel}
           style={styles.samplesContainer}
         />
       </DragAnimation>

@@ -158,9 +158,11 @@ const Home = (props) => {
         break;
       case 'measurement':
         props.setModalVisible(Modals.SHORTCUT_MODALS.COMPASS);
+        closeNotebookPanel();
         break;
       case 'sample':
         props.setModalVisible(Modals.SHORTCUT_MODALS.SAMPLE);
+        closeNotebookPanel();
         break;
       case 'note':
         Alert.alert('Still in the works',
@@ -556,7 +558,6 @@ const Home = (props) => {
 
   const modalHandler = (page, modalType) => {
     if (props.isNotebookPanelVisible) {
-      console.log('NBS NBModal press in SampleOnPress', page);
       closeNotebookPanel();
       props.setModalVisible(modalType);
     }
@@ -717,37 +718,37 @@ const Home = (props) => {
         {props.shortcutSwitchPosition.Tag ?
           <IconButton
             source={require('../../assets/icons/StraboIcons_Oct2019/TagButton.png')}
-            onPress={clickHandler.bind(this, 'tag')}
+            onPress={() => clickHandler('tag')}
           /> : null}
         {props.shortcutSwitchPosition.Measurement ?
           <IconButton
             source={props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS ? require(
               '../../assets/icons/StraboIcons_Oct2019/MeasurementButton_pressed.png')
               : require('../../assets/icons/StraboIcons_Oct2019/MeasurementButton.png')}
-            onPress={clickHandler.bind(this, 'measurement')}
+            onPress={() => clickHandler('measurement')}
           /> : null}
         {props.shortcutSwitchPosition.Sample ?
           <IconButton
             source={props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE ? require(
               '../../assets/icons/StraboIcons_Oct2019/SampleButton_pressed.png')
               : require('../../assets/icons/StraboIcons_Oct2019/SampleButton.png')}
-            onPress={clickHandler.bind(this, 'sample')}
+            onPress={() => clickHandler('sample')}
           /> : null}
         {props.shortcutSwitchPosition.Note ?
           <IconButton
             name={'Note'}
             source={require('../../assets/icons/StraboIcons_Oct2019/NoteButton.png')}
-            onPress={clickHandler.bind(this, 'note')}
+            onPress={() => clickHandler('note')}
           /> : null}
         {props.shortcutSwitchPosition.Photo ?
           <IconButton
             source={require('../../assets/icons/StraboIcons_Oct2019/PhotoButton.png')}
-            onPress={clickHandler.bind(this, 'photo')}
+            onPress={() => clickHandler('photo')}
           /> : null}
         {props.shortcutSwitchPosition.Sketch ?
           <IconButton
             source={require('../../assets/icons/StraboIcons_Oct2019/SketchButton.png')}
-            onPress={clickHandler.bind(this, 'sketch')}
+            onPress={() => clickHandler('sketch')}
           /> : null}
       </Animated.View>
       <View style={styles.notebookViewIcon}>
