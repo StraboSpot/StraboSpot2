@@ -10,7 +10,36 @@ import IconButton from '../IconButton';
 import {NotebookPages} from '../../../components/notebook-panel/Notebook.constants';
 import {Modals} from '../../../views/home/Home.constants';
 
-const modalView = (props) => {
+const ModalView = (props) => {
+
+  const renderModalBottom = () => {
+    if (props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS ) {
+      return (
+        <IconButton
+          source={require('../../../assets/icons/StraboIcons_Oct2019/NotebookView_pressed.png')}
+          style={{marginTop: 10, flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-end', height: 25}}
+          textStyle={{color: 'blue', fontSize: 16, textAlign: 'center'}}
+          onPress={() => props.onPress(NotebookPages.MEASUREMENT)}
+        >
+          Go to {props.spot.properties.name}
+        </IconButton>
+      );
+    }
+    else if (props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE) {
+      return (
+        <IconButton
+          source={require('../../../assets/icons/StraboIcons_Oct2019/NotebookView_pressed.png')}
+          style={{marginTop: 10, flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-end', height: 25}}
+          textStyle={{color: 'blue', fontSize: 16, textAlign: 'center'}}
+          onPress={() => props.onPress(NotebookPages.SAMPLE)}
+        >
+          Go to {props.spot.properties.name}
+        </IconButton>
+      );
+    }
+    else return null;
+  };
+
   return (
     <View style={modalStyle.modalContainer}>
       <View style={modalStyle.modalTop}>
@@ -32,12 +61,16 @@ const modalView = (props) => {
         {props.component}
       </View>
       <View style={modalStyle.modalBottom}>
-        {props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS ? <IconButton
-          source={require('../../../assets/icons/StraboIcons_Oct2019/NotebookView_pressed.png')}
-          style={{marginTop: 10, flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-end', height: 25}}
-          textStyle={{color: 'blue', fontSize: 16, textAlign: 'center'}}
-          onPress={props.onPress}
-        > Go to {props.spot.properties.name}</IconButton> : null}
+        {renderModalBottom()}
+        {/*{props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS || props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE ?*/}
+        {/*  <IconButton*/}
+        {/*    source={require('../../../assets/icons/StraboIcons_Oct2019/NotebookView_pressed.png')}*/}
+        {/*    style={{marginTop: 10, flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-end', height: 25}}*/}
+        {/*    textStyle={{color: 'blue', fontSize: 16, textAlign: 'center'}}*/}
+        {/*    onPress={() => props.onPress(NotebookPages.MEASUREMENT)}*/}
+        {/*  >*/}
+        {/*    Go to {props.spot.properties.name}*/}
+        {/*  </IconButton> : null}*/}
       </View>
     </View>
   );
@@ -52,4 +85,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps)(modalView);
+export default connect(mapStateToProps)(ModalView);

@@ -23,6 +23,10 @@ const commonStyles = StyleSheet.create({
     fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,
     fontWeight: 'bold',
   },
+  dialogStatusMessageText: {
+    fontWeight: 'bold',
+    fontSize: themes.STATUS_MESSAGE_TEXT_SIZE,
+  },
   dialogButton: {
     borderTopWidth: 1,
     borderColor: themes.LIST_BORDER_COLOR,
