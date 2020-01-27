@@ -172,7 +172,7 @@ const SignIn = (props) => {
             flex: 1,
             justifyContent: 'space-between',
           }}
-          keyboardVerticalOffset={150}
+          keyboardVerticalOffset={0}
         >
           <View style={{alignItems: 'center'}}>
             <View style={styles.signInContainer}>
