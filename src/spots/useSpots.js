@@ -18,7 +18,6 @@ const useSpots = (props) => {
   const datasets = useSelector(state => state.project.datasets);
 
   const [useImages] = useImagesHook();
-  const [useProject] = useProjectHook();
   const [useServerRequests] = useServerRequestsHook();
 
   // Create a new Spot
@@ -34,7 +33,7 @@ const useSpots = (props) => {
     newSpot.properties.name = 'Spot ' + Object.keys(spots).length;
     console.log('Creating new Spot:', newSpot);
     await dispatch({type: spotReducers.ADD_SPOT, spot: newSpot});
-    const currentDataset = useProject.getCurrentDataset();
+    const currentDataset = Object.values(datasets).find(dataset => dataset.current);
     console.log('Active Dataset', currentDataset);
     await dispatch({
       type: projectReducers.DATASETS.ADD_SPOTS_IDS_TO_DATASET,
@@ -79,7 +78,6 @@ const useSpots = (props) => {
         dispatch({type: 'REMOVE_LAST_STATUS_MESSAGE'});
         dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'Downloaded Spots'});
         const neededImagesIds = await useImages.gatherNeededImages(spotsOnServer);
-        // console.table(neededImagesIds);
         if (neededImagesIds.length === 0) {
           dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'No New Images to Download'});
         }
