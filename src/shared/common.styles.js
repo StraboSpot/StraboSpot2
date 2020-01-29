@@ -16,12 +16,16 @@ const commonStyles = StyleSheet.create({
   dialogTitleError: {
     backgroundColor: 'red',
   },
+  dialogWarning: {
+    backgroundColor: themes.MEDIUMGREY,
+  },
   dialogTitleSuccess: {
     backgroundColor: 'green',
   },
   dialogTitleText: {
     fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,
     fontWeight: 'bold',
+    textAlign: 'center',
   },
   dialogStatusMessageText: {
     fontWeight: 'bold',
