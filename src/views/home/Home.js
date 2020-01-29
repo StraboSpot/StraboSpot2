@@ -44,6 +44,7 @@ import useSpotsHook from '../../spots/useSpots';
 import StatusDialogBox from '../../shared/ui/StatusDialogBox';
 import sharedDialogStyles from '../../shared/common.styles';
 import useProjectHook from '../../project/useProject';
+import {BallIndicator} from 'react-native-indicators';
 
 const homeMenuPanelWidth = 300;
 const notebookPanelWidth = 400;
@@ -69,8 +70,10 @@ const Home = (props) => {
 
   const dispatch = useDispatch();
   const statusMessages = useSelector(state => state.home.statusMessages);
+  const isLoading = useSelector(state => state.home.loading);
   const isStatusMessagesModalVisible = useSelector(state => state.home.isStatusMessagesModalVisible);
   const isErrorMessagesModalVisible = useSelector(state => state.home.isErrorMessagesModalVisible);
+  const isInfoMessagesModalVisible = useSelector(state => state.home.isInfoModalVisible);
 
   // const imagesCount = useSelector(state => state.home.imageProgress.imagesDownloadedCount);
   // const imagesNeeded = useSelector(state => state.home.imageProgress.neededImageIds);
@@ -429,22 +432,40 @@ const Home = (props) => {
     );
   };
 
-  const renderErrorDialogBox = () => {
+  const renderInfoDialogBox = () => {
     return (
       <StatusDialogBox
-        dialogTitle={'ERROR'}
-        style={sharedDialogStyles.dialogTitleError}
-        visible={isErrorMessagesModalVisible}
-        onTouchOutside={() => dispatch({type: homeReducers.SET_ERROR_MESSAGES_MODAL_VISIBLE, value: false})}
+        dialogTitle={'Whoops...'}
+        style={sharedDialogStyles.dialogWarning}
+        visible={isInfoMessagesModalVisible}
+        onTouchOutside={() => dispatch({type: homeReducers.SET_INFO_MESSAGES_MODAL_VISIBLE, value: false})}
       >
         <Text style={sharedDialogStyles.dialogStatusMessageText}>{statusMessages.join('\n')}</Text>
-         <Button
+        <Button
           title={'OK'}
           type={'clear'}
-          onPress={() => dispatch({type: homeReducers.SET_ERROR_MESSAGES_MODAL_VISIBLE, value: false})}
+          onPress={() => dispatch({type: homeReducers.SET_INFO_MESSAGES_MODAL_VISIBLE, value: false})}
         />
       </StatusDialogBox>
     );
+  };
+
+  const renderErrorMessageDialogBox = () => {
+      return (
+        <StatusDialogBox
+          dialogTitle={'Error...'}
+          style={sharedDialogStyles.dialogWarning}
+          visible={isErrorMessagesModalVisible}
+          onTouchOutside={() => dispatch({type: homeReducers.SET_ERROR_MESSAGES_MODAL_VISIBLE, value: false})}
+        >
+          <Text style={sharedDialogStyles.dialogStatusMessageText}>{statusMessages.join('\n')}</Text>
+          <Button
+            title={'OK'}
+            type={'clear'}
+            onPress={() => dispatch({type: homeReducers.SET_ERROR_MESSAGES_MODAL_VISIBLE, value: false})}
+          />
+        </StatusDialogBox>
+      )
   };
 
   const renderStatusDialogBox = () => {
@@ -456,15 +477,26 @@ const Home = (props) => {
         onTouchOutside={() => dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, value: false})}
         // disabled={progress !== 1 && !uploadErrors}
       >
-        <Text>{statusMessages.join('\n')}</Text>
-        {/*<View style={styles.progressCircleContainer}>*/}
-        {/*  <ProgressCircle progress={imagesCount / imagesNeeded} />*/}
-        {/*</View>*/}
-        {statusMessages.includes('Download Complete!') || statusMessages.includes('Upload Complete!') ? <Button
-          title={'OK'}
-          type={'clear'}
-          onPress={() => dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, value: false})}
-        /> : null}
+        <View style={{height: 100}}>
+
+            {isLoading ?
+              <View style={{flex: 1}}>
+              <BallIndicator
+                color={'darkgrey'}
+                count={8}
+                size={30}
+              />
+              </View>
+              : null}
+          <View style={{flex: 1, paddingTop: 15}}>
+            <Text>{statusMessages.join('\n')}</Text>
+            {statusMessages.includes('Download Complete!') || statusMessages.includes('Upload Complete!') ? <Button
+              title={'OK'}
+              type={'clear'}
+              onPress={() => dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, value: false})}
+            /> : null}
+          </View>
+        </View>
       </StatusDialogBox>
     );
   };
@@ -642,7 +674,7 @@ const Home = (props) => {
     if (isEmpty(props.selectedSpot)) {
       dispatch({type: homeReducers.CLEAR_STATUS_MESSAGES});
       dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'No Spot Selected!'});
-    dispatch({type: homeReducers.SET_ERROR_MESSAGES_MODAL_VISIBLE, value: true});
+      dispatch({type: homeReducers.SET_INFO_MESSAGES_MODAL_VISIBLE, value: true});
     }
     else {
       compassModal =
@@ -666,9 +698,9 @@ const Home = (props) => {
     if (isEmpty(props.selectedSpot)) {
       dispatch({type: homeReducers.CLEAR_STATUS_MESSAGES});
       dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'No Spot Selected!'});
-      dispatch({type: homeReducers.SET_ERROR_MESSAGES_MODAL_VISIBLE, value: true});
+      dispatch({type: homeReducers.SET_INFO_MESSAGES_MODAL_VISIBLE, value: true});
     }
-    else{
+    else {
       samplesModal =
         <ShortcutSamplesModal
           close={() => props.setModalVisible(null)}
@@ -912,7 +944,8 @@ const Home = (props) => {
       {homeDrawer}
       {renderLoadProjectFromModal()}
       {renderStatusDialogBox()}
-      {renderErrorDialogBox()}
+      {renderInfoDialogBox()}
+      {renderErrorMessageDialogBox()}
       {/*<View style={{position: 'absolute', left: 550, top: 50, backgroundColor: 'white', padding: 20}}>*/}
       {/*  <Text>{imagesCount} of {imagesNeeded}</Text>*/}
       {/*  <ProgressCircle progress={imagesCount / imagesNeeded} />*/}

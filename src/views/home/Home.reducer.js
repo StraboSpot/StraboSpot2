@@ -12,6 +12,7 @@ const initialState = {
   modalVisible: null,
   isStatusMessagesModalVisible: false,
   isErrorMessagesModalVisible: false,
+  isInfoModalVisible: false,
   isImageModalVisible: false,
   isAllSpotsPanelVisible: false,
   isSettingsPanelVisible: false,
@@ -42,6 +43,11 @@ export const homeReducer = (state = initialState, action) => {
       return {
         ...state,
         isErrorMessagesModalVisible: action.value,
+      };
+    case homeReducers.SET_INFO_MESSAGES_MODAL_VISIBLE:
+      return {
+        ...state,
+        isInfoModalVisible: action.value,
       };
     case homeReducers.DEVICE_DIMENSIONS:
       // console.log('REDUX DEVICE DIMS', state.deviceDimensions);
@@ -81,7 +87,7 @@ export const homeReducer = (state = initialState, action) => {
     case homeReducers.SET_LOADING:
       return {
         ...state,
-        loading: action.bool,
+        loading: action.value,
       };
     case homeReducers.ADD_STATUS_MESSAGE:
       return {
