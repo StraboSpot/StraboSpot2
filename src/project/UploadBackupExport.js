@@ -15,7 +15,7 @@ const UploadBackAndExport = (props) => {
   const [useProject] = useProjectHook();
   // const [uploadErrors, setUploadErrors] = useState(false);
   // const [uploadStatusMessage, setUploadStatusMessage] = useState(null);
-  const [uploadConfirmText, setUploadConfirmText] = useState(null);
+  const [activeDatasets, setActiveDatasets] = useState(null);
   const [isUploadDialogVisible, setIsUploadDialogVisible] = useState(false);
   const dispatch = useDispatch();
   const datasets = useSelector(state => state.project.datasets);
@@ -39,35 +39,10 @@ const UploadBackAndExport = (props) => {
 
   const initializeUpload = () => {
     console.log('Initializing Upload');
-    const activeDatasets = Object.values(datasets).filter(dataset => {
+    const filteredDatasets = Object.values(datasets).filter(dataset => {
       return dataset.active === true;
     });
-    let ConfirmText = null;
-    if (isEmpty(activeDatasets)) {
-      ConfirmText = (
-        <Text>No active datasets to upload! Only the project properties will be uploaded and will
-          <Text style={styles.dialogContentText}> OVERWRITE </Text>
-          <Text>the properties for this project on the server. Continue?'</Text>
-        </Text>
-      );
-    }
-    else {
-      ConfirmText = (
-        <View>
-          <Text>The following project properties and the active datasets will be uploaded and will
-            <Text style={styles.dialogContentText}> OVERWRITE</Text> the project
-            properties and selected datasets on the server. Continue? {'\n'}</Text>
-          <View style={{alignItems: 'center'}}>
-            <FlatList
-              data={activeDatasets}
-              keyExtractor={item => item.id.toString()}
-              renderItem={({item}) => renderNames(item)}
-            />
-          </View>
-        </View>
-      );
-    }
-    setUploadConfirmText(ConfirmText);
+    setActiveDatasets(filteredDatasets);
     setIsUploadDialogVisible(true);
   };
 
@@ -161,7 +136,19 @@ const UploadBackAndExport = (props) => {
       cancel={() => setIsUploadDialogVisible(false)}
       onPress={() => upload()}
     >
-      {uploadConfirmText}
+      <View>
+        <Text>The following project properties and the active datasets will be uploaded and will
+          <Text style={styles.dialogContentText}> OVERWRITE</Text> the project
+          properties and selected datasets on the server: </Text>
+        <View style={{alignItems: 'center', paddingTop: 15}}>
+          <FlatList
+            data={activeDatasets}
+            keyExtractor={item => item.id.toString()}
+            renderItem={({item}) => renderNames(item)}
+          />
+        </View>
+        <Text style={{textAlign: 'center', paddingTop: 15}}>Do you want to continue?</Text>
+      </View>
     </UploadDialogBox>
   );
 
