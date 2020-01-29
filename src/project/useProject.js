@@ -65,6 +65,7 @@ const useProject = () => {
   const uploadDatasets = async () => {
     let currentRequest = 0;
     const activeDatasets = Object.values(datasets).filter(dataset => dataset.active === true);
+    dispatch({type: homeReducers.CLEAR_STATUS_MESSAGES});
     dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Uploading Datasets...'});
 
     const makeNextRequest = async () => {
@@ -80,13 +81,15 @@ const useProject = () => {
         }
         else {
           dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
-          dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: activeDatasets.length + ' Datasets uploaded'});
+          dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: activeDatasets.length + ' Datasets uploaded!'});
+          dispatch({type: homeReducers.SET_LOADING, value: false});
           return Promise.resolve();
         }
       }, (err) => {
         console.log('Error uploading dataset.', err);
         dispatch({type: homeReducers.CLEAR_STATUS_MESSAGES});
         dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Error uploading dataset.'});
+        dispatch({type: homeReducers.SET_LOADING, value: false});
         return Promise.reject();
       });
     };
@@ -99,11 +102,11 @@ const useProject = () => {
   };
 
   const uploadImages = async spots => {
-    dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Checking Server for images...'});
     return await useImages.uploadImages(spots);
   };
 
   const uploadProject = async () => {
+    dispatch({type: homeReducers.SET_LOADING, value: true});
     dispatch({type: homeReducers.CLEAR_STATUS_MESSAGES});
     dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, value: true});
     console.log('PROJECT UPLOADING...');
@@ -127,11 +130,14 @@ const useProject = () => {
     let spots;
     if (dataset.spotIds){
       spots = await useSpots.getSpotsByIds(dataset.spotIds);
+      spots.forEach(spotValue => checkValidDateTime(spotValue));
     }
-    spots.forEach(spotValue => checkValidDateTime(spotValue));
     if (isEmpty(spots)) {
       console.log('No Spots to Upload');
-      dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'No Spots to Upload'});
+      dispatch({
+        type: homeReducers.ADD_STATUS_MESSAGE,
+        statusMessage: `${dataset} has 0 spots to Upload `});
+      dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
     }
     else {
       const spotCollection = {
