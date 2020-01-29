@@ -6,24 +6,18 @@ import commonStyles from '../shared/common.styles';
 import {homeReducers} from '../views/home/Home.constants';
 import styles from './Project.styles';
 import {useDispatch, useSelector} from 'react-redux';
-import {isEmpty} from '../shared/Helpers';
 import UploadDialogBox from './UploadDialogBox';
-import useServerRequests from '../services/useServerRequests';
-import useSpotsHook from '../spots/useSpots';
 import useImagesHook from '../components/images/useImages';
+import useProjectHook from './useProject';
 
 const UploadBackAndExport = (props) => {
-  const [serverRequests] = useServerRequests();
-  const [useSpots] = useSpotsHook();
   const [useImages] = useImagesHook();
+  const [useProject] = useProjectHook();
   // const [uploadErrors, setUploadErrors] = useState(false);
   // const [uploadStatusMessage, setUploadStatusMessage] = useState(null);
   const [uploadConfirmText, setUploadConfirmText] = useState(null);
   const [isUploadDialogVisible, setIsUploadDialogVisible] = useState(false);
-  const [isUploadStatusDialogBoxVisible, setIsUploadStatusDialogVisible] = useState(false);
   const dispatch = useDispatch();
-  const user = useSelector(state => state.user);
-  const project = useSelector(state => state.project.project);
   const datasets = useSelector(state => state.project.datasets);
   const isOnline = useSelector(state => state.home.isOnline);
 
@@ -41,22 +35,6 @@ const UploadBackAndExport = (props) => {
 
   const onShareProjectAsShapefile = () => {
     console.log('onShareProjectAsShapefile');
-  };
-
-  const checkValidDateTime = (spot) => {
-    console.log(spot)
-    // const checkedSpot = spots.forEach(spot => {
-    if (!spot.properties.date || !spot.properties.time) {
-      let date = spot.properties.date || spot.properties.time;
-      if (!date) {
-        date = new Date(Date.now());
-        date.setMilliseconds(0);
-      }
-      spot.properties.date = spot.properties.time = date.toISOString();
-      console.log('SPOT', spot);
-      // dispatch({type: spotReducers.EDIT_SPOT_PROPERTIES, field: 'date', value: date});
-      return spot;
-    }
   };
 
   const initializeUpload = () => {
@@ -99,9 +77,7 @@ const UploadBackAndExport = (props) => {
       .then(uploadDatasets)
       .catch(err => {
         dispatch({type: homeReducers.CLEAR_STATUS_MESSAGES});
-        dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Error uploading project'});
-        console.log('Upload Errors');
-        // setUploadErrors(true);
+        dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: `Error uploading project: Status ${err.status}`});
       })
       .finally(() => {
           useImages.deleteTempImagesFolder().then(()=> {
@@ -111,119 +87,14 @@ const UploadBackAndExport = (props) => {
       );
   };
 
-  const uploadDataset = async (dataset) => {
-    let datasetCopy = JSON.parse(JSON.stringify(dataset));
-    delete datasetCopy.spotIds;
-    delete datasetCopy.current;
-    delete datasetCopy.active;
-    return serverRequests.updateDataset(datasetCopy, user.encoded_login).then((response) => {
-      console.log('Finished updating dataset', response);
-      return serverRequests.addDatasetToProject(project.id, dataset.id, user.encoded_login).then((response2) => {
-        console.log('Finished adding dataset to project', response2);
-        return uploadSpots(dataset).then(() => {
-          console.log('Spots Uploaded');
-          return Promise.resolve();
-        });
-      });
-    });
-  };
-
   const uploadDatasets = async () => {
-    let currentRequest = 0;
-    const activeDatasets = Object.values(datasets).filter(dataset => dataset.active === true);
-    dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Uploading Datasets...'});
-
-    // Upload datasets synchronously
-    const makeNextRequest = async () => {
-      console.log('Making request...');
-      return uploadDataset(activeDatasets[currentRequest]).then(() => {
-        currentRequest++;
-        dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
-        if (currentRequest > 0 && currentRequest < activeDatasets.length) {
-          dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Uploading Dataset: ' + currentRequest + '/' + activeDatasets.length});
-        }
-        if (currentRequest < activeDatasets.length) {
-          return makeNextRequest();
-        }
-        else {
-          dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: activeDatasets.length + ' Datasets uploaded'});
-          return Promise.resolve();
-        }
-      }, (err) => {
-        console.log('Error uploading dataset.', err);
-        dispatch({type: homeReducers.CLEAR_STATUS_MESSAGES});
-        dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Error uploading dataset.'});
-        return Promise.reject();
-      });
-    };
-
-    if (currentRequest < activeDatasets.length) {
-      console.log('MakeNextRequest', currentRequest);
-      return makeNextRequest();
-    }
-    else {
+    await useProject.uploadDatasets();
       return Promise.resolve();
-    }
   };
 
   const uploadProject = async () => {
-    dispatch({type: homeReducers.CLEAR_STATUS_MESSAGES});
-    dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, value: true});
-    console.log('PROJECT UPLOADING...');
-    dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Uploading Project...'});
     setIsUploadDialogVisible(false);
-    // setIsUploadStatusDialogVisible(true);
-    // await serverRequests.updateProject(project, user.encoded_login).then((response) => {
-    try {
-      const updatedProject = await serverRequests.updateProject(project, user.encoded_login);
-      console.log('Finished uploading project', updatedProject);
-      dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
-      dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Finished uploading project.'});
-      // setUploadErrors(false);
-      console.log('Going to uploadDatasets next');
-      return Promise.resolve();
-    }
-    catch (err) {
-      // setUploadErrors(true);
-      dispatch({type: homeReducers.CLEAR_STATUS_MESSAGES});
-      dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Error uploading project.'});
-      console.log('Error uploading project', project);
-    }
-    // }
-    // );
-  };
-
-  const uploadImages = async spots => {
-    const imageRes =  await useImages.uploadImages(spots);
-    console.log('ImageRes', imageRes);
-    // setTimeout(() => {
-    //   setIsUploadStatusDialogVisible(false);
-    //   setProgress(1);
-    // }, 1000);
-  };
-
-  const uploadSpots = async (dataset) => {
-    let spots;
-    if (dataset.spotIds){
-      spots = await useSpots.getSpotsByIds(dataset.spotIds);
-      console.log('Spot', spots);
-    }
-    // setProgress(0.50);
-    spots.forEach(spotValue => checkValidDateTime(spotValue));
-    if (isEmpty(spots)) {
-      console.log('No Spots to Upload');
-      dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'No Spots to Upload'});
-      // return Promise.resolve();
-    }
-    else {
-      const spotCollection = {
-        type: 'FeatureCollection',
-        features: Object.values(spots),
-      };
-      return serverRequests.updateDatasetSpots(dataset.id, spotCollection, user.encoded_login).then(() => {
-        return uploadImages(spots);
-      });
-    }
+    await useProject.uploadProject();
     return Promise.resolve();
   };
 
