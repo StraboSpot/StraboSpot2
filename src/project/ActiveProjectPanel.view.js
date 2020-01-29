@@ -43,7 +43,6 @@ const ActiveProjectPanel = (props) => {
     }
   };
 
-
   return (
     <React.Fragment>
       <ActiveProjectList onPress={() => openProjectDescription()}/>

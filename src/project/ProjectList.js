@@ -99,7 +99,7 @@ const ProjectList = (props) => {
         dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, value: true});
         dispatch({type: 'CLEAR_STATUS_MESSAGES'});
         await dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'Upload Complete!'});
-        const projectData = await await useProject.loadProjectRemote(selectedProject.id, userData.encoded_login);
+        const projectData = await useProject.loadProjectRemote(selectedProject.id, userData.encoded_login);
         dispatch({type: ProjectActions.projectReducers.PROJECTS, project: projectData});
         await getDatasets(selectedProject);
         dispatch({type: homeReducers.SET_LOADING, bool: false});
