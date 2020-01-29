@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Alert, Platform} from 'react-native';
 import ImagePicker from 'react-native-image-picker';
 import RNFetchBlob from 'rn-fetch-blob';
@@ -6,7 +6,6 @@ import {useSelector, useDispatch} from 'react-redux';
 import {getNewId} from '../../shared/Helpers';
 import {Base64} from 'js-base64';
 import ImageResizer from 'react-native-image-resizer';
-
 // Hooks
 import useServerRequests from '../../services/useServerRequests';
 import {homeReducers} from '../../views/home/Home.constants';
@@ -55,19 +54,9 @@ const useImages = () => {
             }
             else {
               imageCount++;
+              // imageFiles.push(res.path());
               console.log(imageCount, 'File saved to', res.path());
-              // let imageId = imageName.split('.')[0];
-              let imageData = {};
-              if (Platform.OS === 'ios') {
-                imageData = {
-                  id: imageId,
-                  src: res.path(),
-                  height: imageURI.height,
-                  width: imageURI.width,
-                };
-              }
-              else imageData = {id: imageId, src: 'file://' + res.path(), height: imageURI.height, width: imageURI.width};
-              resolve(imageData);
+              // return convertImageSize(res.path());
             }
           })
           .catch((errorMessage, statusCode) => {
@@ -75,7 +64,7 @@ const useImages = () => {
             console.log('Error on', imageId, ':', errorMessage, statusCode);  // Android Error: RNFetchBlob request error: url == nullnull
             reject();
           });
-      });
+      // });
     };
 
     neededImageIds.map(imageId => {
@@ -107,6 +96,16 @@ const useImages = () => {
       }
     });
   };
+
+  // const formatBytes = (a,b) => {
+  //   if (a === 0) return '0 Bytes';
+  //   const c = 1024;
+  //   const d = b || 2;
+  //   const sizes = ['Bytes','KB','MB','GB','TB','PB','EB','ZB','YB'];
+  //   const i = Math.floor(Math.log(a) / Math.log(c));
+  //
+  //   return parseFloat((a / Math.pow(c,i)).toFixed(d)) + ' ' + sizes[i];
+  // };
 
   // Checks to see if image is already on device
   const doesImageExist = async (imageId) => {
@@ -167,7 +166,8 @@ const useImages = () => {
 
   const getLocalImageSrc = id => {
     const imageSrc = imagesDirectory + '/' + id + '.jpg';
-    console.log('Loading image from', Platform.OS === 'ios' ? imageSrc : 'file://' + imageSrc);
+    // console.count('Image Number');
+    // console.log('Loading image from', Platform.OS === 'ios' ? imageSrc : 'file://' + imageSrc);
     return Platform.OS === 'ios' ? imageSrc : 'file://' + imageSrc;
   };
 
@@ -292,18 +292,6 @@ const useImages = () => {
         return iSpotLoop + 1 < spots.length;
       };
 
-      // const convertImageFile = (data, body) => {
-      //   var imageProps = data[0];
-      //   var src = data[1];
-      //   console.log('Converting file URI to Blob...');
-      //   return fileURItoBlob(src).then(function (blob) {
-      //     console.log('Finished converting file URI to blob for image', imageProps.id);
-      //     return Promise.resolve([imageProps, blob]);
-      //   }, function () {
-      //     return Promise.reject('Error converting file URI to blob for image', imageProps.id);
-      //   });
-      // };
-
       const getImageFile = async imageProps => {
         dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
         dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Processing Image...'});
@@ -344,14 +332,11 @@ const useImages = () => {
       };
 
       const makeNextImageRequest = (imageProps) => {
-        console.log(imageProps);
         return shouldUploadImage(imageProps)
           .then(getImageFile)
-          // .then(convertImageFile)
           .then(uploadImage)
           .catch(function (err) {
             if (err !== 'already exists') {
-              // uploadErrors = true;
               imagesUploadFailedCount++;
               console.error(err);
             }
