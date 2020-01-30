@@ -84,7 +84,7 @@ export const homeReducer = (state = initialState, action) => {
         ...state,
         isOnline: action.online,
       };
-    case homeReducers.SET_LOADING:
+    case homeReducers.SET_STATUS_BOX_LOADING:
       return {
         ...state,
         loading: action.value,
