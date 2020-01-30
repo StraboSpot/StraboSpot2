@@ -13,8 +13,6 @@ import useProjectHook from './useProject';
 const UploadBackAndExport = (props) => {
   const [useImages] = useImagesHook();
   const [useProject] = useProjectHook();
-  // const [uploadErrors, setUploadErrors] = useState(false);
-  // const [uploadStatusMessage, setUploadStatusMessage] = useState(null);
   const [activeDatasets, setActiveDatasets] = useState(null);
   const [isUploadDialogVisible, setIsUploadDialogVisible] = useState(false);
   const dispatch = useDispatch();
@@ -47,15 +45,17 @@ const UploadBackAndExport = (props) => {
   };
 
   const upload = () => {
-    // dispatch({type: homeReducers.SET_LOADING, bool: true});
+    // dispatch({type: homeReducers.SET_STATUS_BOX_LOADING, bool: true});
     return uploadProject()
       .then(uploadDatasets)
       .catch(err => {
         dispatch({type: homeReducers.CLEAR_STATUS_MESSAGES});
-        dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: `Error uploading project: Status ${err.status}`});
+        if (err.status) dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: `Error uploading project: Status \n ${err.status}`});
+        else dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: `Error uploading project: \n ${err}`});
       })
       .finally(() => {
           useImages.deleteTempImagesFolder().then(()=> {
+            dispatch({type: homeReducers.SET_STATUS_BOX_LOADING, value: false});
             dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Upload Complete!'});
           });
         },

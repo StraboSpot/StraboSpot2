@@ -89,7 +89,7 @@ const ProjectList = (props) => {
 
   const switchProject = async (action) => {
     if (action === ProjectActions.BACKUP_TO_SERVER) {
-      dispatch({type: homeReducers.SET_LOADING, bool: true});
+      dispatch({type: homeReducers.SET_STATUS_BOX_LOADING, bool: true});
       console.log('User wants to:', action);
       try {
         setShowDialog(false);
@@ -102,7 +102,7 @@ const ProjectList = (props) => {
         const projectData = await useProject.loadProjectRemote(selectedProject.id, userData.encoded_login);
         dispatch({type: ProjectActions.projectReducers.PROJECTS, project: projectData});
         await getDatasets(selectedProject);
-        dispatch({type: homeReducers.SET_LOADING, bool: false});
+        dispatch({type: homeReducers.SET_STATUS_BOX_LOADING, bool: false});
       }
       catch (err) {
         setUploadErrors(true);
