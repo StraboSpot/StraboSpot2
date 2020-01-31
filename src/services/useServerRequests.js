@@ -87,6 +87,7 @@ const useServerRequests = () => {
       }
       else {
         imageBlob = null;
+        return imageBlob;
       }
     }
     catch (error) {

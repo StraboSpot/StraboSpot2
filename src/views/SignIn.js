@@ -141,11 +141,15 @@ const SignIn = (props) => {
     let userProfile = await serverRequests.getProfile(encodedLogin);
     console.table(userProfile);
     const userProfileImage = await serverRequests.getProfileImage(encodedLogin);
-    if (userProfileImage.data) {
+    if (userProfileImage) {
       readDataUrl(userProfileImage, (base64Image) => {
         dispatch({type: USER_IMAGE, userImage: base64Image});
       });
       dispatch({type: USER_DATA, userData: userProfile});
+    }
+    else {
+      dispatch({type: USER_DATA, userData: userProfile});
+      dispatch({type: USER_IMAGE, userImage: null});
     }
   };
 
