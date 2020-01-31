@@ -119,7 +119,7 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = {
-  clearStorage: () => ({type: 'USER_LOGOUT'}),
+  clearStorage: () => ({type: 'CLEAR_STORE'}),
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withNavigation(UserProfile));

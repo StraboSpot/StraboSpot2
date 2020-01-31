@@ -57,7 +57,7 @@ const SignIn = (props) => {
     // Sentry.configureScope((scope) => {
     //   scope.setUser({'id': 'GUEST'})
     // });
-    if (isEmpty(props.userData)) await dispatch({type: 'USER_LOGOUT'});
+    if (isEmpty(props.userData)) await dispatch({type: 'CLEAR_STORE'});
     console.log('Loading user: GUEST');
     props.navigation.navigate('HomeScreen');
   };
