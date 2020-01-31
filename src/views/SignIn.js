@@ -53,10 +53,11 @@ const SignIn = (props) => {
     dispatch({type: homeReducers.SET_ISONLINE, online: isConnected});
   };
 
-  const guestSignIn = () => {
+  const guestSignIn = async () => {
     // Sentry.configureScope((scope) => {
     //   scope.setUser({'id': 'GUEST'})
     // });
+    if (isEmpty(props.userData)) await dispatch({type: 'USER_LOGOUT'});
     console.log('Loading user: GUEST');
     props.navigation.navigate('HomeScreen');
   };
