@@ -5,12 +5,16 @@ import {ScaleAnimation} from 'react-native-popup-dialog/src';
 
 import * as themes from '../../../shared/styles.constants';
 import styles from '../Dialog.styles';
+import {useSelector} from 'react-redux';
 
 const slideAnimation = new ScaleAnimation({
   useNativeDriver: true,
 });
 
-const MapActionsDialog = props => (
+const MapActionsDialog = props => {
+  const isOnline = useSelector(state => state.home.isOnline);
+
+  return (
   <Dialog
     width={0.3}
     dialogAnimation={slideAnimation}
@@ -37,12 +41,13 @@ const MapActionsDialog = props => (
         textStyle={styles.dialogText}
         onPress={() => props.onPress('zoom')}
       />
-      <DialogButton
+      {isOnline ? <DialogButton
         style={styles.dialogContent}
         text='Save Map for Offline Use'
         textStyle={styles.dialogText}
         onPress={() => props.onPress('saveMap')}
-      />
+        disabled={props.disabled}
+      /> : null}
       <DialogButton
         style={styles.dialogContent}
         text='Add Tag(s) to Spot(s)'
@@ -58,6 +63,6 @@ const MapActionsDialog = props => (
     </DialogContent>
   </Dialog>
 );
-
+};
 
 export default MapActionsDialog;
