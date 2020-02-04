@@ -9,11 +9,12 @@ import * as themes from '../../styles.constants';
 import IconButton from '../IconButton';
 import {NotebookPages} from '../../../components/notebook-panel/Notebook.constants';
 import {Modals} from '../../../views/home/Home.constants';
+import {isEmpty} from '../../Helpers';
 
 const ModalView = (props) => {
 
   const renderModalBottom = () => {
-    if (props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS ) {
+    if (props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS && !isEmpty(props.spot)) {
       return (
         <IconButton
           source={require('../../../assets/icons/StraboIcons_Oct2019/NotebookView_pressed.png')}
@@ -37,7 +38,14 @@ const ModalView = (props) => {
         </IconButton>
       );
     }
-    else return null;
+    else {
+      return (
+        <View style={{alignItems: 'center'}}>
+          {props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS ||  props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE ?
+            <Text style={{fontWeight: '400'}}>Take a measurement first</Text> : null}
+        </View>
+      );
+    }
   };
 
   return (
@@ -62,15 +70,6 @@ const ModalView = (props) => {
       </View>
       <View style={modalStyle.modalBottom}>
         {renderModalBottom()}
-        {/*{props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS || props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE ?*/}
-        {/*  <IconButton*/}
-        {/*    source={require('../../../assets/icons/StraboIcons_Oct2019/NotebookView_pressed.png')}*/}
-        {/*    style={{marginTop: 10, flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-end', height: 25}}*/}
-        {/*    textStyle={{color: 'blue', fontSize: 16, textAlign: 'center'}}*/}
-        {/*    onPress={() => props.onPress(NotebookPages.MEASUREMENT)}*/}
-        {/*  >*/}
-        {/*    Go to {props.spot.properties.name}*/}
-        {/*  </IconButton> : null}*/}
       </View>
     </View>
   );
