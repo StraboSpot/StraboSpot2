@@ -10,6 +10,7 @@ import {CustomBasemap, MacrostratBasemap, MapboxOutdoorsBasemap, MapboxSatellite
 import {getNewId, isEmpty, truncDecimal} from '../../shared/Helpers';
 import {MAPBOX_KEY} from '../../MapboxConfig';
 import useSpotsHook from '../../spots/useSpots';
+import useMapsHook from './useMaps';
 
 // Constants
 import {LATITUDE, LONGITUDE, MapModes} from './Map.constants';
@@ -21,6 +22,7 @@ MapboxGL.setAccessToken(MAPBOX_KEY);
 
 const mapView = React.forwardRef((props, ref) => {
 
+  const [useMaps] = useMapsHook();
   const [useSpots] = useSpotsHook();
   const currentBasemap = useSelector(state => state.map.currentBasemap);
 
@@ -87,22 +89,13 @@ const mapView = React.forwardRef((props, ref) => {
   };
 
   // Set selected and not selected Spots to display when not editing
-  const setDisplayedSpots = (selectedSpots) => {
-    const mappableSpots = useSpots.getMappableSpots();
-    console.log('Selected Spots', selectedSpots, 'All Spots', Object.values(props.spots));
-
-    // Filter selected Spots out of all Spots to get the not selected Spots
-    const selectedIds = selectedSpots.map(sel => sel.properties.id);
-    const selectedMappableSpots = mappableSpots.filter(spot => selectedIds.includes(spot.properties.id));
-    const notSelectedMappableSpots = mappableSpots.filter(spot => !selectedIds.includes(spot.properties.id) ||
-      spot.geometry.type === 'Point');
-    console.log('Selected Mappable Spots', selectedMappableSpots, 'Not Selected Mappable Spots',
-      notSelectedMappableSpots);
-
+  const setDisplayedSpots = async (selectedSpots) => {
+    const mappableSpots = useMaps.setDisplayedSpots(selectedSpots);
+    console.log('Mappable Spots', mappableSpots);
     setMapPropsMutable(m => ({
       ...m,
-      spotsSelected: [...selectedMappableSpots],
-      spotsNotSelected: [...notSelectedMappableSpots],
+      spotsSelected: [...mappableSpots[0]],
+      spotsNotSelected: [...mappableSpots[1]],
     }));
   };
 
@@ -116,12 +109,6 @@ const mapView = React.forwardRef((props, ref) => {
       spotsSelected: isEmpty(spotEditingTmp) ? [] : [{...spotEditingTmp}],
       spotsNotSelected: [...spotsEditedTmp, ...spotsNotEditedTmp],
     }));
-  };
-
-  const setSelectedSpot = spotToSetAsSelected => {
-    console.log('Set selected Spot:', spotToSetAsSelected);
-    setDisplayedSpots(isEmpty(spotToSetAsSelected) ? [] : [{...spotToSetAsSelected}]);
-    props.onSetSelectedSpot(spotToSetAsSelected);
   };
 
   const setDrawFeatures = (features) => {
@@ -172,7 +159,7 @@ const mapView = React.forwardRef((props, ref) => {
       console.log('Selecting or unselect a feature ...');
       const {screenPointX, screenPointY} = e.properties;
       const spotFound = await getSpotAtPress(screenPointX, screenPointY);
-      if (!isEmpty(spotFound)) setSelectedSpot(spotFound);
+      if (!isEmpty(spotFound)) useMaps.setSelectedSpot(spotFound);
       else clearSelectedSpots();
     }
     // Draw a feature
@@ -447,11 +434,7 @@ const mapView = React.forwardRef((props, ref) => {
 
   // Create a point feature at the current location
   const setPointAtCurrentLocation = async () => {
-    await setCurrentLocation();
-    let feature = MapboxGL.geoUtils.makePoint(userLocationCoords);
-    const newSpot = await useSpots.createSpot(feature);
-    setSelectedSpot(newSpot);
-    // throw Error('Geolocation Error');
+    await useMaps.setPointAtCurrentLocation();
   };
 
   // Fly the map to the current location
@@ -469,18 +452,8 @@ const mapView = React.forwardRef((props, ref) => {
 
   // Get the current location from the device and set it in the state
   const setCurrentLocation = async () => {
-    const geolocationOptions = {timeout: 15000, maximumAge: 10000, enableHighAccuracy: true};
-    return new Promise((resolve, reject) => {
-      Geolocation.getCurrentPosition(
-        (position) => {
-          setUserLocationCoords([position.coords.longitude, position.coords.latitude]);
-          console.log('Got Current Location: [', position.coords.longitude, ', ', position.coords.latitude, ']');
-          resolve();
-        },
-        (error) => reject('Error getting current location:', error),
-        geolocationOptions,
-      );
-    });
+    const currentLocation = await useMaps.setCurrentLocation();
+    setUserLocationCoords([currentLocation[0], currentLocation[1]]);
   };
 
   const endDraw = async () => {
@@ -495,7 +468,7 @@ const mapView = React.forwardRef((props, ref) => {
         newFeature = mapPropsMutable.drawFeatures.splice(1, 1)[0];
       }
       newOrEditedSpot = await useSpots.createSpot(newFeature);
-      setSelectedSpot(newOrEditedSpot);
+      useMaps.setSelectedSpot(newOrEditedSpot);
       setDrawFeatures([]);
     }
     console.log('Draw ended.');
