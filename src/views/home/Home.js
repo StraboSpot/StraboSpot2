@@ -161,6 +161,7 @@ const Home = (props) => {
           `The ${name.toUpperCase()} Shortcut button in the  will be functioning soon!`);
         break;
       case 'measurement':
+       dispatch({type: spotReducers.CLEAR_SELECTED_SPOTS});
         props.setModalVisible(Modals.SHORTCUT_MODALS.COMPASS);
         closeNotebookPanel();
         break;
@@ -671,18 +672,11 @@ const Home = (props) => {
       />;
   }
   else if (props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {
-    if (isEmpty(props.selectedSpot)) {
-      dispatch({type: homeReducers.CLEAR_STATUS_MESSAGES});
-      dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'No Spot Selected!'});
-      dispatch({type: homeReducers.SET_INFO_MESSAGES_MODAL_VISIBLE, value: true});
-    }
-    else {
       compassModal =
         <ShortcutCompassModal
           close={() => props.setModalVisible(null)}
           onPress={page => modalHandler(page, Modals.NOTEBOOK_MODALS.COMPASS)}
         />;
-    }
   }
 
   // Renders samples modals in either shortcut or notebook view
