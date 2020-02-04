@@ -21,6 +21,8 @@ import {spotReducers} from '../../../spots/Spot.constants';
 import {homeReducers, Modals} from '../../../views/home/Home.constants';
 import {NotebookPages, notebookReducers} from '../../notebook-panel/Notebook.constants';
 import Slider from '../../../shared/ui/Slider';
+import useMapsHook from '../../maps/useMaps';
+import Geolocation from '@react-native-community/geolocation';
 
 // Styles
 import styles from './CompassStyles';
@@ -33,6 +35,7 @@ const {height, width} = Dimensions.get('window');
 
 const RNCompass = (props) => {
   let modalView = null;
+  const [useMaps] = useMapsHook();
   const [compassData, setCompassData] = useState({
     strike: null,
     dip: null,
@@ -55,7 +58,8 @@ const RNCompass = (props) => {
     displayCompassData();
     return () => {
       NativeModules.Compass.stopObserving();
-      console.log('subscription cancelled');
+      CompassEvents.removeAllListeners('rotationMatrix');
+      console.log('All compass subscription cancelled');
     };
   }, [displayCompassData]);
 
@@ -70,6 +74,10 @@ const RNCompass = (props) => {
     };
   }, []);
 
+  useEffect(() => {
+    console.log('Updating props', props.spot)
+  }, [props.spot]);
+
   const displayCompassData = () => {
     NativeModules.Compass.myDeviceRotation();
     CompassEvents.addListener('rotationMatrix', res => {
@@ -82,7 +90,11 @@ const RNCompass = (props) => {
     });
   };
 
-  const grabMeasurements = () => {
+  const grabMeasurements = async () => {
+    if (props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {
+      const pointSetAtCurrentLocation = await useMaps.setPointAtCurrentLocation();
+      console.log('pointSetAtCurrentLocation', pointSetAtCurrentLocation);
+    }
     let measurements = [];
     if (toggles.includes(CompassToggleButtons.PLANAR)) {
       measurements.push({
@@ -112,8 +124,9 @@ const RNCompass = (props) => {
         newAssociatedOrientation.id = getNewId();
         newOrientation.associated_orientation = [newAssociatedOrientation];
       }
-      const orientations = (typeof props.spot.properties.orientation_data === 'undefined') ? [newOrientation] : [...props.spot.properties.orientation_data, newOrientation];
-      props.onSpotEdit('orientation_data', orientations);
+        const orientations = (isEmpty(props.spot) || typeof props.spot.properties.orientation_data === 'undefined')
+          ? [newOrientation] : [...props.spot.properties.orientation_data, newOrientation];
+        props.onSpotEdit('orientation_data', orientations);
     }
     else Alert.alert('No Measurement Type', 'Please select a measurement type using the toggles.');
   };
@@ -296,22 +309,12 @@ const RNCompass = (props) => {
     }
   }
   else if (props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {
-    if (!isEmpty(props.spot)) {
       modalView =
         <React.Fragment>
           <View style={height <= 1000 ? {height: 300} : {height: 350}}>
-          <Measurements/>
+          {/*<Measurements/>*/}
           </View>
-        {/*<View >*/}
-        {/*<IconButton*/}
-        {/*  source={require('../../../assets/icons/StraboIcons_Oct2019/NotebookView_pressed.png')}*/}
-        {/*  style={{marginTop: 10, flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-end', height: 25}}*/}
-        {/*  textStyle={{color: themes.BLUE, fontSize: 16, textAlign: 'center'}}*/}
-        {/*  onPress={() => props.onPress(NotebookPages.MEASUREMENT)}*/}
-        {/*> Go to {props.spot.properties.name}</IconButton>*/}
-        {/*</View>*/}
       </React.Fragment>;
-    }
   }
 
   return (
