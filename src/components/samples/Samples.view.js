@@ -8,17 +8,17 @@ import {NotebookPages, notebookReducers} from '../notebook-panel/Notebook.consta
 import {getNewId, isEmpty} from '../../shared/Helpers';
 import {homeReducers, Modals} from '../../views/home/Home.constants';
 import Samples from './SamplesNotebook.view';
+import useMapsHook from '../maps/useMaps';
 
 // Styles
 import styles from './samplesStyles/samples.style';
 import * as themes from '../../shared/styles.constants';
-import IconButton from '../../shared/ui/IconButton';
 
-const samplesModalView = (props) => {
+const SamplesModalView = (props) => {
   let modalView = null;
 
+  const [useMaps] = useMapsHook();
   const [selectedButton, setSelectedButton] = useState(null);
-
   const [sampleOrientedValue, setSampleOrientedValue] = useState(null);
   const [inplaceness, setInplaceness] = useState(5);
   const [label, setLabel] = useState(null);
@@ -45,7 +45,11 @@ const samplesModalView = (props) => {
   // };
 
   const saveSample = async () => {
-    sample = [];
+    if (props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE) {
+      const pointSetAtCurrentLocation = await useMaps.setPointAtCurrentLocation();
+      console.log('pointSetAtCurrentLocation', pointSetAtCurrentLocation);
+    }
+    let sample = [];
     // const propertyNameValidation = await checkProperties();
     sample.push({
       sample_id_name: name,
@@ -58,8 +62,13 @@ const samplesModalView = (props) => {
     if (sample.length > 0) {
       let newSample = sample[0];
       newSample.id = getNewId();
-      const samples = (typeof props.spot.properties.samples === 'undefined' ? [newSample] : [...props.spot.properties.samples, newSample]);
-      props.onSpotEdit('samples', samples);
+      if (props.modalVisible === Modals.NOTEBOOK_MODALS.SAMPLE) {
+        const samples = (typeof props.spot.properties.samples === 'undefined' ? [newSample] : [...props.spot.properties.samples, newSample]);
+        props.onSpotEdit('samples', samples);
+      }
+      else if (props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE) {
+        props.onSpotEdit('samples', [newSample]);
+      }
       setName(null);
       setLabel(null);
       setNote('');
@@ -71,35 +80,20 @@ const samplesModalView = (props) => {
   };
 
   const shortcutVisible = () => {
-    if (props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE) {
-      if (!isEmpty(props.spot)) {
+      if (props.modalVisible === Modals.NOTEBOOK_MODALS.SAMPLE
+        && props.deviceDimensions.width > 700) {
         modalView =
-          <View>
-            <View style={{height: 150}}>
-              <Samples/>
-            </View>
-          </View>;
+          <Button
+            title={'View In Shortcut Mode'}
+            type={'clear'}
+            titleStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 16}}
+            onPress={() => props.onPress(NotebookPages.SAMPLE)}
+          />;
         return modalView;
       }
-    }
-    else if (props.modalVisible === Modals.NOTEBOOK_MODALS.SAMPLE
-      && props.deviceDimensions.width > 700) {
-      modalView =
-        <Button
-          title={'View In Shortcut Mode'}
-          type={'clear'}
-          titleStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 16}}
-          onPress={() => props.onPress(NotebookPages.SAMPLE)}
-        />;
-      return modalView;
-    }
-  };
+      else return null;
+    };
 
-  if (isEmpty(props.spot)) {
-    return <View style={[styles.samplesContainer, styles.noSpotContent]}>
-      <Text style={{fontSize: 30}}>No Spot Selected</Text>
-    </View>;
-  }
   return (
     <React.Fragment>
       <View style={styles.input}>
@@ -190,4 +184,4 @@ const mapDispatchToProps = {
   setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(samplesModalView);
+export default connect(mapStateToProps, mapDispatchToProps)(SamplesModalView);
