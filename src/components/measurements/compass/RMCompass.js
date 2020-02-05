@@ -124,9 +124,14 @@ const RNCompass = (props) => {
         newAssociatedOrientation.id = getNewId();
         newOrientation.associated_orientation = [newAssociatedOrientation];
       }
-        const orientations = (isEmpty(props.spot) || typeof props.spot.properties.orientation_data === 'undefined')
+      if (props.modalVisible === Modals.NOTEBOOK_MODALS.COMPASS) {
+        const orientations = (typeof props.spot.properties.orientation_data === 'undefined')
           ? [newOrientation] : [...props.spot.properties.orientation_data, newOrientation];
         props.onSpotEdit('orientation_data', orientations);
+      }
+      else if (props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {
+        props.onSpotEdit('orientation_data', [newOrientation]);
+      }
     }
     else Alert.alert('No Measurement Type', 'Please select a measurement type using the toggles.');
   };
@@ -311,8 +316,10 @@ const RNCompass = (props) => {
   else if (props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {
       modalView =
         <React.Fragment>
-          <View style={height <= 1000 ? {height: 300} : {height: 350}}>
+          <View style={height <= 1000 ? {height: 300, alignItems: 'center', justifyContent: 'center'} :
+            {height: 350, alignContent: 'center', justifyContent: 'center'}}>
           {/*<Measurements/>*/}
+          <Text >Reserved for manual measurement input form fields</Text>
           </View>
       </React.Fragment>;
   }
