@@ -26,7 +26,7 @@ const ModalView = (props) => {
         </IconButton>
       );
     }
-    else if (props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE) {
+    else if (props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE && !isEmpty(props.spot)) {
       return (
         <IconButton
           source={require('../../../assets/icons/StraboIcons_Oct2019/NotebookView_pressed.png')}
@@ -41,7 +41,7 @@ const ModalView = (props) => {
     else {
       return (
         <View style={{alignItems: 'center'}}>
-          {props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS ||  props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE ?
+          {props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS ?
             <Text style={{fontWeight: '400'}}>Take a measurement first</Text> : null}
         </View>
       );
