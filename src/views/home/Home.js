@@ -166,6 +166,7 @@ const Home = (props) => {
         closeNotebookPanel();
         break;
       case 'sample':
+        dispatch({type: spotReducers.CLEAR_SELECTED_SPOTS});
         props.setModalVisible(Modals.SHORTCUT_MODALS.SAMPLE);
         closeNotebookPanel();
         break;
