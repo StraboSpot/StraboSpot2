@@ -59,9 +59,9 @@ const NotebookPanel = props => {
   if (!isEmpty(props.spot)) {
     // console.log('Selected Spot:', props.spot);
 
-    const allSpotsPanel = <View style={notebookStyles.allSpotsPanel}>
-      <AllSpotsView/>
-    </View>;
+    // const allSpotsPanel = <View style={notebookStyles.allSpotsPanel}>
+    //   <AllSpotsView/>
+    // </View>;
 
     return (
 
@@ -72,21 +72,21 @@ const NotebookPanel = props => {
       >
         <FlingGestureHandler
           direction={Directions.LEFT}
-          numberOfPointers={2}
+          numberOfPointers={1}
           onHandlerStateChange={(ev) => _onLeftFlingHandlerStateChange(ev)}
         >
           <Animated.View
             // style={props.isAllSpotsPanelVisible ? [notebookStyles.panel, {marginRight: 125}] : notebookStyles.panel}
-            style={notebookStyles.panel}
+            style={props.isAllSpotsPanelVisible ? [notebookStyles.panel, {right: 125}] : notebookStyles.panel}
           >
             <View
-              style={props.isAllSpotsPanelVisible ? [notebookStyles.headerContainer, {marginRight: 125}] : notebookStyles.headerContainer}>
+              style={notebookStyles.headerContainer}>
               <NotebookHeader
                 onPress={props.onPress}
               />
             </View>
             <View
-              style={props.isAllSpotsPanelVisible ? [notebookStyles.centerContainer, {paddingRight: 125}] : notebookStyles.centerContainer}>
+              style={notebookStyles.centerContainer}>
               {props.notebookPageVisible === NotebookPages.OVERVIEW ||
               props.notebookPageVisible === undefined ? <Overview/> : null}
               {props.notebookPageVisible === NotebookPages.MEASUREMENT ? <MeasurementsPage/> : null}
@@ -94,22 +94,19 @@ const NotebookPanel = props => {
               {props.notebookPageVisible === NotebookPages.NOTE ? <NotesPage/> : null}
               {props.notebookPageVisible === NotebookPages.SAMPLE ? <SamplesPage/> : null}
             </View>
-            <View style={props.isAllSpotsPanelVisible ? [notebookStyles.footerContainer, {marginRight: 125}] :
-              notebookStyles.footerContainer}>
+            <View style={notebookStyles.footerContainer}>
               <NotebookFooter
                 openPage={(page) => setNotebookPageVisible(page)}
                 onPress={(camera) => props.onPress(camera)}
               />
             </View>
             {/*{props.isAllSpotsPanelVisible ? allSpotsPanel : null}*/}
-            {props.isAllSpotsPanelVisible ? allSpotsPanel : null}
           </Animated.View>
         </FlingGestureHandler>
       </FlingGestureHandler>
     );
   }
   else {
-    props.setModalVisible(null);
     return (
       <View style={[notebookStyles.panel, notebookStyles.noSpotContent]}>
         <Text style={[notebookStyles.noSpotContentHeaderText]}>No Spot Selected</Text>

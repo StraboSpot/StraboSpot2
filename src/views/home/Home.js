@@ -8,6 +8,7 @@ import MapSymbolsDialog from '../../components/dialog-boxes/map-symbols/MapSymbo
 import BaseMapDialog from '../../components/dialog-boxes/base-maps/BaseMapDialogBox';
 
 // <----- Home screen Panels ----->
+import AllSpotsPanel from '../../components/notebook-panel/AllSpots.view';
 import NotebookPanel from '../../components/notebook-panel/NotebookPanel';
 import SettingsPanel from '../../components/settings-panel/SettingsPanel';
 import {MapModes} from '../../components/maps/Map.constants';
@@ -46,6 +47,7 @@ import sharedDialogStyles from '../../shared/common.styles';
 import useProjectHook from '../../project/useProject';
 import {BallIndicator} from 'react-native-indicators';
 
+const allSpotsPanelWidth = 125;
 const homeMenuPanelWidth = 300;
 const notebookPanelWidth = 400;
 
@@ -425,6 +427,15 @@ const Home = (props) => {
     console.log('Samples Modal Cancel Selected');
   };
 
+  const renderAllSpotsPanel = () => {
+    return (
+      <View style={[notebookStyles.allSpotsPanel,]}>
+        <AllSpotsPanel/>
+      </View>
+    );
+  };
+
+
   const renderLoadProjectFromModal = () => {
     return (
       <InitialProjectLoadModal
@@ -658,9 +669,7 @@ const Home = (props) => {
           onHandlerStateChange={(ev, name) => flingHandlerNotebook(ev, name)}
           closeNotebook={closeNotebookPanel}
           textStyle={{fontWeight: 'bold', fontSize: 12}}
-          onPress={name => notebookClickHandler(name)}>
-          {/*<AllSpotsView/>*/}
-        </NotebookPanel>
+          onPress={name => notebookClickHandler(name)} />
       </Animated.View>
     </FlingGestureHandler>;
 
@@ -768,13 +777,13 @@ const Home = (props) => {
           </View>
           : null}
       </View>
-      <Animated.View style={[styles.onlineStatus, rightsideIconAnimation]}>
+      <Animated.View style={props.isAllSpotsPanelVisible ? [styles.onlineStatus, rightsideIconAnimation, {right: 125}] : [styles.onlineStatus, rightsideIconAnimation]}>
         <IconButton
           source={props.isOnline ? online : offline}
           // onPress={clickHandler.bind(this, "search")}
         />
       </Animated.View>
-      <Animated.View style={[styles.rightsideIcons, rightsideIconAnimation]}>
+      <Animated.View style={props.isAllSpotsPanelVisible ? [styles.rightsideIcons, rightsideIconAnimation, {right: 125}] : [styles.rightsideIcons, rightsideIconAnimation]}>
         {props.shortcutSwitchPosition.Tag ?
           <IconButton
             source={require('../../assets/icons/StraboIcons_Oct2019/TagButton.png')}
@@ -824,7 +833,7 @@ const Home = (props) => {
       {/*<View><Text>Online: {props.isOnline.toString()}</Text></View> */}
 
       {buttons.drawButtonsVisible ?
-        <Animated.View style={[styles.drawToolsContainer, rightsideIconAnimation]}>
+        <Animated.View style={props.isAllSpotsPanelVisible ? [styles.drawToolsContainer, rightsideIconAnimation, {right: 125}] :  [styles.drawToolsContainer, rightsideIconAnimation]}>
           <IconButton
             style={{top: 5}}
             source={mapMode === MapModes.DRAW.POINT ?
@@ -936,6 +945,7 @@ const Home = (props) => {
         </View>
       </Modal>
       {notebookPanel}
+      {props.isAllSpotsPanelVisible && renderAllSpotsPanel()}
       {homeDrawer}
       {renderLoadProjectFromModal()}
       {renderStatusDialogBox()}

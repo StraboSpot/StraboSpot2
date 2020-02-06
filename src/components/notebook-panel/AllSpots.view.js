@@ -12,7 +12,7 @@ import useSpotsHook from '../../spots/useSpots';
 // Styles
 import * as themes from '../../shared/styles.constants';
 
-const allSpotsView = (props) => {
+const AllSpotsView = (props) => {
   const [useSpots] = useSpotsHook();
   const activeSpotsObj = useSpots.getActiveSpotsObj();
 
@@ -61,4 +61,4 @@ const mapDispatchToProps = {
   onSetSelectedSpot: (spot) => ({type: spotReducers.SET_SELECTED_SPOT, spot: spot}),
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(allSpotsView);
+export default connect(mapStateToProps, mapDispatchToProps)(AllSpotsView);
