@@ -674,7 +674,7 @@ const Home = (props) => {
     </FlingGestureHandler>;
 
   // Renders Compass modals in either shortcut or notebook view
-  if (props.modalVisible === Modals.NOTEBOOK_MODALS.COMPASS && props.isNotebookPanelVisible) {
+  if (props.modalVisible === Modals.NOTEBOOK_MODALS.COMPASS && props.isNotebookPanelVisible && !isEmpty(props.selectedSpot)) {
     compassModal =
       <NotebookCompassModal
         close={() => props.setModalVisible(null)}
@@ -690,7 +690,7 @@ const Home = (props) => {
   }
 
   // Renders samples modals in either shortcut or notebook view
-  if (props.modalVisible === Modals.NOTEBOOK_MODALS.SAMPLE && props.isNotebookPanelVisible) {
+  if (props.modalVisible === Modals.NOTEBOOK_MODALS.SAMPLE && props.isNotebookPanelVisible && !isEmpty(props.selectedSpot)) {
     samplesModal =
       <NotebookSamplesModal
         close={() => props.setModalVisible(null)}
@@ -699,19 +699,12 @@ const Home = (props) => {
       />;
   }
   else if (props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE) {
-    if (isEmpty(props.selectedSpot)) {
-      dispatch({type: homeReducers.CLEAR_STATUS_MESSAGES});
-      dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'No Spot Selected!'});
-      dispatch({type: homeReducers.SET_INFO_MESSAGES_MODAL_VISIBLE, value: true});
-    }
-    else {
       samplesModal =
         <ShortcutSamplesModal
           close={() => props.setModalVisible(null)}
           cancel={() => samplesModalCancel()}
           onPress={(page) => modalHandler(page, Modals.NOTEBOOK_MODALS.SAMPLE)}
         />;
-    }
   }
 
   return (
