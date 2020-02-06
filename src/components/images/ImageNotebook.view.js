@@ -1,5 +1,5 @@
 import React from 'react';
-import {ActivityIndicator, Button, FlatList, View} from 'react-native';
+import {ActivityIndicator, Button, Dimensions, FlatList, ScrollView, View} from 'react-native';
 import {connect} from 'react-redux';
 import {withNavigation} from 'react-navigation';
 
@@ -14,6 +14,8 @@ import useImagesHook from './useImages';
 
 // Styles
 import imageStyles from './images.styles';
+
+const screenHeight = Dimensions.get('window').height;
 
 const imageNotebook = (props) => {
   const [useImages] = useImagesHook();
@@ -43,11 +45,13 @@ const imageNotebook = (props) => {
   };
 
   return (
-    <FlatList
-      data={props.images}
-      renderItem={({item}) => renderImage(item)}
-      keyExtractor={(item) => item.id.toString()}
-    />
+    <ScrollView style={{maxHeight: screenHeight - 300}}>
+      <FlatList
+        data={props.images}
+        renderItem={({item}) => renderImage(item)}
+        keyExtractor={(item) => item.id.toString()}
+      />
+    </ScrollView>
   );
 };
 

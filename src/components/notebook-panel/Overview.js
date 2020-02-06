@@ -48,16 +48,16 @@ const Overview = props => {
     color='#b2b2b7'
     containerStyle={{paddingRight: 10}}/>;
 
-  const [collapsedSections, setCollapsedSections] = useState(['Tags', 'Notes']);
+  const [collapsedSections, setCollapsedSections] = useState(['Tags', 'Notes', 'Photos and Sketches']);
 
   const toggleCollapsed = (name) => {
     if (collapsedSections.includes(name)) setCollapsedSections(collapsedSections.filter((val) => val !== name));
     else setCollapsedSections(collapsedSections.concat(name));
   };
 
-  const renderCollapsableList = () => {
+  const renderCollapsibleList = () => {
 
-    return(
+    return (
       <FlatList
         keyExtractor={(section) => section.id.toString()}
         data={SECTIONS}
@@ -86,7 +86,7 @@ const Overview = props => {
 
   return (
     <View>
-      {renderCollapsableList()}
+      {renderCollapsibleList()}
     </View>
   );
 };
