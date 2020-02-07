@@ -829,7 +829,7 @@ const Home = (props) => {
       </Animated.View>
       <View style={styles.notebookViewIcon}>
         {props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS ||
-        props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE ? null : <IconButton
+        props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE || props.modalVisible === Modals.SHORTCUT_MODALS.NOTES ? null : <IconButton
           source={require('../../assets/icons/StraboIcons_Oct2019/NotebookViewButton.png')}
           onPress={() => openNotebookPanel()}
         />}
