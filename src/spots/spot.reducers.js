@@ -110,6 +110,22 @@ export const spotReducer = (state = initialState, action) => {
         spots: {...state.spots, [selectedSpotId]: updatedSpot},
       };
     }
+    case spotReducers.SET_SELECTED_SPOT_NOTES_TIMESTAMP: {
+
+      const selectedSpotId = state.selectedSpot.properties.id;
+      const notesTimestamp = {
+        ...state.selectedSpot,
+        properties: {
+          ...state.selectedSpot.properties,
+          notesTimestamp: Date(),
+        },
+      };
+      return {
+        ...state,
+        selectedSpot: notesTimestamp,
+        spots: {...state.spots, [selectedSpotId]: notesTimestamp},
+      };
+    }
     case spotReducers.SET_SELECTED_ATTRIBUTES:
       return {
         ...state,

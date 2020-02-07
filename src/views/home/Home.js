@@ -24,6 +24,7 @@ import NotebookCompassModal from '../../components/measurements/compass/Notebook
 import ShortcutCompassModal from '../../components/measurements/compass/ShortcutCompassModal';
 import NotebookSamplesModal from '../../components/samples/NotebookSamplesModal.view';
 import ShortcutSamplesModal from '../../components/samples/ShortcutSamplesModal.view';
+import ShortcutNotesModal from '../../components/notes/ShortcutNotesModal';
 import {homeReducers, Modals} from './Home.constants';
 import notebookStyles from '../../components/notebook-panel/NotebookPanel.styles';
 // import Orientation from "react-native-orientation-locker";
@@ -173,8 +174,11 @@ const Home = (props) => {
         closeNotebookPanel();
         break;
       case 'note':
-        Alert.alert('Still in the works',
-          `The ${name.toUpperCase()} Shortcut button in the  will be functioning soon!`);
+        dispatch({type: spotReducers.CLEAR_SELECTED_SPOTS});
+        dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: Modals.SHORTCUT_MODALS.NOTES});
+        closeNotebookPanel();
+        // Alert.alert('Still in the works',
+        //   `The ${name.toUpperCase()} Shortcut button in the  will be functioning soon!`);
         break;
       case 'photo':
         // useImages.takePicture();
@@ -481,6 +485,15 @@ const Home = (props) => {
       )
   };
 
+  const renderNotesShortcutModal = () => {
+    return (
+      <ShortcutNotesModal
+        close={() => props.setModalVisible(null)}
+        onPress={page => modalHandler(page)}
+      />
+    );
+  };
+
   const renderStatusDialogBox = () => {
     return (
       <StatusDialogBox
@@ -734,6 +747,7 @@ const Home = (props) => {
 
         {(props.modalVisible === Modals.NOTEBOOK_MODALS.SAMPLE ||
           props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE) && samplesModal}
+        {props.modalVisible === Modals.SHORTCUT_MODALS.NOTES && renderNotesShortcutModal()}
       </Animated.View>}
       {Platform.OS === 'android' &&
       <View>
@@ -799,7 +813,7 @@ const Home = (props) => {
         {props.shortcutSwitchPosition.Note ?
           <IconButton
             name={'Note'}
-            source={require('../../assets/icons/StraboIcons_Oct2019/NoteButton.png')}
+            source={props.modalVisible === Modals.SHORTCUT_MODALS.NOTES ? require('../../assets/icons/StraboIcons_Oct2019/NoteButton_pressed.png') : require('../../assets/icons/StraboIcons_Oct2019/NoteButton.png')}
             onPress={() => clickHandler('note')}
           /> : null}
         {props.shortcutSwitchPosition.Photo ?

@@ -6,6 +6,7 @@ export const Modals = {
   SHORTCUT_MODALS: {
     COMPASS: 'Shortcut Compass Modal',
     SAMPLE: 'Shortcut Sample Modal',
+    NOTES:  'Shortcut Notes Modal',
   },
 };
 

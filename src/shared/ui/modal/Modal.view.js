@@ -38,6 +38,18 @@ const ModalView = (props) => {
         </IconButton>
       );
     }
+    else if (props.modalVisible === Modals.SHORTCUT_MODALS.NOTES && !isEmpty(props.spot)) {
+      return (
+        <IconButton
+          source={require('../../../assets/icons/StraboIcons_Oct2019/NotebookView_pressed.png')}
+          style={{marginTop: 10, flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-end', height: 25}}
+          textStyle={{color: 'blue', fontSize: 16, textAlign: 'center'}}
+          onPress={() => props.onPress(NotebookPages.OVERVIEW)}
+        >
+          Go to {props.spot.properties.name}
+        </IconButton>
+      );
+    }
     else {
       return (
         <View style={{alignItems: 'center'}}>
