@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {Alert, Platform} from 'react-native';
 import ImagePicker from 'react-native-image-picker';
 import RNFetchBlob from 'rn-fetch-blob';
-import {useSelector, useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {getNewId} from '../../shared/Helpers';
 import {Base64} from 'js-base64';
 import ImageResizer from 'react-native-image-resizer';
@@ -10,9 +10,11 @@ import ImageResizer from 'react-native-image-resizer';
 import useHomeHook from '../../views/home/useHome';
 import useServerRequests from '../../services/useServerRequests';
 import {homeReducers} from '../../views/home/Home.constants';
+import {spotReducers} from '../../spots/Spot.constants';
 
 const useImages = () => {
-
+  // let imageFiles = [];
+  let imageArr = [];
   let imageCount = 0;
   let dirs = RNFetchBlob.fs.dirs;
   // const url = 'https://strabospot.org/testimages/images.json';
@@ -36,23 +38,23 @@ const useImages = () => {
     let imagesDownloadedCount = 0;
     let imagesFailedCount = 0;
     let savedImagesCount = 0;
+    let imagesFailedArr = [];
     dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'Downloading Images...'});
 
     const downloadImageAndSave = async (imageId) => {
       const imageURI = 'https://strabospot.org/pi/' + imageId;
-      return new Promise((resolve, reject) => {
-        RNFetchBlob
+      // return new Promise((resolve, reject) => {
+        return RNFetchBlob
           .config({path: imagesDirectory + '/' + imageId + '.jpg'})
           .fetch('GET', imageURI, {})
           .then((res) => {
-            console.log(res)
             if (res.respInfo.status === 404) {
               imageCount++;
               imagesFailedCount++;
               console.log('Error on', imageId);  // Android Error: RNFetchBlob request error: url == nullnull
-              RNFetchBlob.fs.unlink(res.data).then(() => {
+              return RNFetchBlob.fs.unlink(res.data).then(() => {
                 console.log('Failed image removed', imageId);
-                reject('404 status');
+                return Promise.reject('404 status');
               });
             }
             else {
@@ -65,7 +67,7 @@ const useImages = () => {
           .catch((errorMessage, statusCode) => {
             imageCount++;
             console.log('Error on', imageId, ':', errorMessage, statusCode);  // Android Error: RNFetchBlob request error: url == nullnull
-            reject();
+            return Promise.reject();
           });
       // });
     };
@@ -80,11 +82,15 @@ const useImages = () => {
       }, err => {
         imagesFailedCount++;
         console.warn('Error downloading Image', imageId, 'Error:', err);
+        RNFetchBlob.fs.unlink(imagesDirectory + '/' + imageId).then(() => {
+          console.log('Image removed', imageId);
+          imagesFailedArr.push(imageId);
+        });
       }).finally( () => {
         dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
         if (imagesFailedCount > 0) {
           dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Downloaded Images ' + imageCount + '/' + neededImageIds.length
-              + 'Failed Images ' + imagesFailedCount + '/' + neededImageIds.length});
+              + '\nFailed Images ' + imagesFailedCount + '/' + neededImageIds.length});
         }
         else dispatch({type:  homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Downloaded Images: ' + imageCount + '/' + neededImageIds.length});
       });
@@ -203,6 +209,14 @@ const useImages = () => {
         return Promise.reject('img/image-not-found.png');
       }
     });
+  };
+
+  const getImageSize = image => {
+    return RNFetchBlob.fs.readFile(image, 'base64')
+      .then((data) => {
+        const decodedData = Base64.decode(data);
+        return decodedData.length;
+      });
   };
 
   const getLocalImageSrc = id => {
@@ -379,7 +393,7 @@ const useImages = () => {
           .catch(function (err) {
             if (err !== 'already exists') {
               imagesUploadFailedCount++;
-              console.error(err);
+              console.warn(err)
             }
           })
           .finally(function () {
@@ -410,17 +424,7 @@ const useImages = () => {
           });
       };
 
-      const getImageSize = image => {
-        return RNFetchBlob.fs.readFile(image, 'base64')
-          .then((data) => {
-            const decodedData = Base64.decode(data);
-            const bytes = decodedData.length;
-            return bytes
-          });
-      };
-
       const resizeImageForUpload = (imageFile, imageProps) => {
-        const path = '/var/mobile/Containers/Data/Application/8173F960-2CAE-4B66-855E-3FC1D042E025/Documents/StraboSpot/Images/';
         const max_size = 2000;
         let height = imageProps.height;
         let width = imageProps.width;
@@ -443,20 +447,22 @@ const useImages = () => {
           devicePath + imagesResizeTemp
         )
           .then(response => {
-            console.log('Response', response)
-            response.name = imageProps.id;
+            response.name = imageProps.id.toString();
             if (response.size < 1024) console.log(response.size + ' Bytes');
             else if (response.size < 1048576) console.log('Resize Image KB:' + (response.size / 1024).toFixed(3) + ' KB');
             else if (response.size < 1073741824) console.log('Resize Image MB:' + (response.size / 1048576).toFixed(2) + ' MB');
             else console.log('Resize Image' + (response.size / 1073741824).toFixed(3) + ' GB');
             return response;
+          })
+          .catch((err) => {
+            Alert.alert('Image Resize Error', err);
           });
       };
 
       const uploadImage = async (data) => {
         const imageProps = data[0];
         const src = data[1];
-        var count = imagesUploadedCount + 1;
+        const count = imagesUploadedCount + 1;
         dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
         dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Uploading image: ' + count + '...'});
         console.log('Uploading image', imageProps.id, 'to server...');
@@ -474,10 +480,10 @@ const useImages = () => {
         else if (bytes < 1048576) console.log('KB:' + (bytes / 1024).toFixed(3) + ' KB');
         else if (bytes < 1073741824) console.log('MB:' + (bytes / 1048576).toFixed(2) + ' MB');
         else console.log((bytes / 1073741824).toFixed(3) + ' GB');
-        console.time();
+        // console.time();
         return serverRequests.uploadImage(formdata, user.encoded_login)
           .then((res) => {
-              console.timeEnd()
+              // console.timeEnd();
               imagesUploadedCount++;
               console.log('Image Uploaded!' + imagesUploadedCount);
               console.log('Finished uploading image', imageProps.id, 'to the server');
@@ -487,7 +493,8 @@ const useImages = () => {
             },
             (err) => Promise.reject('Error uploading image' + imageProps.id) + '\n' + err)
           .catch((err) => {
-            console.error('LALA', err);
+            console.error('Image Upload Error', err);
+            Alert.alert('Image Upload Error', err);
           });
       };
 
@@ -501,6 +508,7 @@ const useImages = () => {
     downloadImages: downloadImages,
     gatherNeededImages: gatherNeededImages,
     getLocalImageSrc: getLocalImageSrc,
+    launchCameraFromNotebook: launchCameraFromNotebook,
     pictureSelectDialog: pictureSelectDialog,
     takePicture: takePicture,
     uploadImages: uploadImages,
