@@ -129,19 +129,6 @@ const Home = (props) => {
     };
   }, []);
 
-  const deviceOrientation = () => {
-    const dimensions = Dimensions.get('window');
-    props.setDeviceDims(dimensions);
-    console.log(props.deviceDimensions);
-  };
-
-  const checkForOpenProject = () => {
-    if (isEmpty(props.getCurrentProject)) {
-      setIsProjectLoadSelectionModalVisible(true);
-      console.log('Project Select Modal is:', isProjectLoadSelectionModalVisible);
-    }
-  };
-
   const cancelEdits = async () => {
     await mapViewComponent.current.cancelEdits();
     setMapMode(MapModes.VIEW);
@@ -151,6 +138,13 @@ const Home = (props) => {
     });
     // toggleButton('editButtonsVisible', false);
     // toggleButton('drawButtonsVisible', true);
+  };
+
+  const checkForOpenProject = () => {
+    if (isEmpty(props.getCurrentProject)) {
+      setIsProjectLoadSelectionModalVisible(true);
+      console.log('Project Select Modal is:', isProjectLoadSelectionModalVisible);
+    }
   };
 
   const clickHandler = (name, position) => {
@@ -263,6 +257,65 @@ const Home = (props) => {
     }
   };
 
+  const closeInitialProjectLoadModal = () => {
+    console.log('Starting Project...');
+    setIsProjectLoadSelectionModalVisible(false);
+  };
+
+  const closeNotebookPanel = () => {
+    console.log('closing notebook');
+    animatePanels(animation, notebookPanelWidth);
+    animatePanels(rightsideIconAnimationValue, 0);
+    props.setNotebookPanelVisible(false);
+    props.setAllSpotsPanelVisible(false);
+  };
+
+  const deleteSpot = id => {
+    const spot = props.spots[id];
+    Alert.alert(
+      'Delete Spot?',
+      'Are you sure you want to delete Spot: ' + spot.properties.name,
+      [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {
+          text: 'Delete',
+          onPress: () => {
+            useSpots.deleteSpot(id)
+              .then((res) => {
+                console.log(res)
+                closeNotebookPanel();
+              });
+          },
+        },
+      ],
+    );
+  };
+
+  const deviceOrientation = () => {
+    const dimensions = Dimensions.get('window');
+    props.setDeviceDims(dimensions);
+    console.log(props.deviceDimensions);
+  };
+
+  const dialogClickHandler = (dialog, name, position) => {
+    clickHandler(name, position);
+    toggleDialog(dialog);
+  };
+
+  const endDraw = async () => {
+    const newOrEditedSpot = await mapViewComponent.current.endDraw();
+    setMapMode(MapModes.VIEW);
+    toggleButton('endDrawButtonVisible', false);
+    if (!isEmpty(newOrEditedSpot)) {
+      openNotebookPanel(NotebookPages.OVERVIEW);
+      props.setModalVisible(null);
+    }
+  };
+
   const goToCurrentLocation = async () => {
     toggleLoading(true);
     try {
@@ -299,96 +352,9 @@ const Home = (props) => {
     }
   };
 
-  const closeNotebookPanel = () => {
-    console.log('closing notebook');
-    animatePanels(animation, notebookPanelWidth);
-    animatePanels(rightsideIconAnimationValue, 0);
-    props.setNotebookPanelVisible(false);
-    props.setAllSpotsPanelVisible(false);
-  };
-
-  const deleteSpot = id => {
-    const spot = props.spots[id];
-    Alert.alert(
-      'Delete Spot?',
-      'Are you sure you want to delete Spot: ' + spot.properties.name,
-      [
-        {
-          text: 'Cancel',
-          onPress: () => console.log('Cancel Pressed'),
-          style: 'cancel',
-        },
-        {
-          text: 'Delete',
-          onPress: () => {
-            useSpots.deleteSpot(id)
-              .then((res) => {
-                console.log(res)
-                closeNotebookPanel();
-              });
-          },
-        },
-      ],
-    );
-  };
-
-  const dialogClickHandler = (dialog, name, position) => {
-    clickHandler(name, position);
-    toggleDialog(dialog);
-  };
-
-  const endDraw = async () => {
-    const newOrEditedSpot = await mapViewComponent.current.endDraw();
-    setMapMode(MapModes.VIEW);
-    toggleButton('endDrawButtonVisible', false);
-    if (!isEmpty(newOrEditedSpot)) {
-      openNotebookPanel(NotebookPages.OVERVIEW);
-      props.setModalVisible(null);
-    }
-  };
-
   //function for online/offline state change event handler
   const handleConnectivityChange = isConnected => {
     props.setIsOnline(isConnected);
-  };
-
-  const newBasemapDisplay = name => {
-    mapViewComponent.current.changeMap(name);
-  };
-
-  const notebookClickHandler = name => {
-    switch (name) {
-      case 'menu':
-        toggleDialog('notebookPanelMenuVisible');
-        break;
-      case 'export':
-        console.log('Export button was pressed');
-        break;
-      case 'camera':
-        launchCameraFromNotebook();
-        break;
-    }
-  };
-
-  const toggleHomeDrawerButton = () => {
-    if (props.homePanelVisible) {
-      props.setHomePanelVisible(false);
-      animatePanels(settingsPanelAnimation, -homeMenuPanelWidth);
-      animatePanels(leftsideIconAnimationValue, 0);
-    }
-    else {
-      props.setHomePanelVisible(true);
-      animatePanels(settingsPanelAnimation, 0);
-      animatePanels(leftsideIconAnimationValue, homeMenuPanelWidth);
-    }
-  };
-
-  const openNotebookPanel = pageView => {
-    console.log('notebook opening', pageView);
-    props.setNotebookPageVisible(pageView);
-    animatePanels(animation, 0);
-    animatePanels(rightsideIconAnimationValue, -notebookPanelWidth);
-    props.setNotebookPanelVisible(true);
   };
 
   const launchCameraFromNotebook = async () => {
@@ -427,8 +393,49 @@ const Home = (props) => {
     }
   };
 
-  const samplesModalCancel = () => {
-    console.log('Samples Modal Cancel Selected');
+  const modalHandler = (page, modalType) => {
+    if (props.isNotebookPanelVisible) {
+      closeNotebookPanel();
+      props.setModalVisible(modalType);
+    }
+    else {
+      openNotebookPanel(page);
+      props.setModalVisible(modalType);
+    }
+  };
+
+  const newBasemapDisplay = name => {
+    mapViewComponent.current.changeMap(name);
+  };
+
+  const notebookClickHandler = name => {
+    switch (name) {
+      case 'menu':
+        toggleDialog('notebookPanelMenuVisible');
+        break;
+      case 'export':
+        console.log('Export button was pressed');
+        break;
+      case 'camera':
+        launchCameraFromNotebook();
+        break;
+    }
+  };
+
+  const onToastShow = () => {
+    toggleLoading(false);
+    setTimeout(() => {
+      toggleToast();
+      setAllPhotosSaved([]);
+    }, 2000);
+  };
+
+  const openNotebookPanel = pageView => {
+    console.log('notebook opening', pageView);
+    props.setNotebookPageVisible(pageView);
+    animatePanels(animation, 0);
+    animatePanels(rightsideIconAnimationValue, -notebookPanelWidth);
+    props.setNotebookPanelVisible(true);
   };
 
   const renderAllSpotsPanel = () => {
@@ -526,6 +533,10 @@ const Home = (props) => {
     );
   };
 
+  const samplesModalCancel = () => {
+    console.log('Samples Modal Cancel Selected');
+  };
+
   const setDraw = async mapModeToSet => {
     mapViewComponent.current.cancelDraw();
     if (mapMode === MapModes.VIEW && mapModeToSet !== MapModes.DRAW.POINT) {
@@ -559,11 +570,6 @@ const Home = (props) => {
     //   toggleButton('drawButtonsVisible', false);
   };
 
-  const closeInitialProjectLoadModal = () => {
-    console.log('Starting Project...');
-    setIsProjectLoadSelectionModalVisible(false);
-  };
-
   // Toggle given button between true (on) and false (off)
   const toggleButton = (button, isVisible) => {
     console.log('Toggle Button', button, isVisible || !buttons[button]);
@@ -581,6 +587,19 @@ const Home = (props) => {
       [dialog]: !dialogs[dialog],
     });
     console.log(dialog, 'is set to', dialogs[dialog]);
+  };
+
+  const toggleHomeDrawerButton = () => {
+    if (props.homePanelVisible) {
+      props.setHomePanelVisible(false);
+      animatePanels(settingsPanelAnimation, -homeMenuPanelWidth);
+      animatePanels(leftsideIconAnimationValue, 0);
+    }
+    else {
+      props.setHomePanelVisible(true);
+      animatePanels(settingsPanelAnimation, 0);
+      animatePanels(leftsideIconAnimationValue, homeMenuPanelWidth);
+    }
   };
 
   const toggleImageModal = () => {
@@ -606,25 +625,6 @@ const Home = (props) => {
   const toggleToast = () => {
     setToastVisible(!toastVisible);
     console.log('Toast state', toastVisible);
-  };
-
-  const modalHandler = (page, modalType) => {
-    if (props.isNotebookPanelVisible) {
-      closeNotebookPanel();
-      props.setModalVisible(modalType);
-    }
-    else {
-      openNotebookPanel(page);
-      props.setModalVisible(modalType);
-    }
-  };
-
-  const onToastShow = () => {
-    toggleLoading(false);
-    setTimeout(() => {
-      toggleToast();
-      setAllPhotosSaved([]);
-    }, 2000);
   };
 
   const animateNotebookMenu = {transform: [{translateX: animation}]};
