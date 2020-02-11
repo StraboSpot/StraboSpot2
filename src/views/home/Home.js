@@ -43,6 +43,7 @@ import {animatePanels, isEmpty} from '../../shared/Helpers';
 // Hooks
 import useImagesHook from '../../components/images/useImages';
 import useSpotsHook from '../../spots/useSpots';
+import useHomeHook from '../home/useHome';
 import StatusDialogBox from '../../shared/ui/StatusDialogBox';
 import sharedDialogStyles from '../../shared/common.styles';
 import useProjectHook from '../../project/useProject';
@@ -62,6 +63,7 @@ const notebookPanelWidth = 400;
 // };
 
 const Home = (props) => {
+  const [useHome] = useHomeHook();
   const [useImages] = useImagesHook();
   const [useProject] = useProjectHook();
   const [useSpots] = useSpotsHook();
@@ -107,10 +109,11 @@ const Home = (props) => {
 
   useEffect(() => {
     vectorIcon.getImageSource('pin', 30);
-    NetInfo.addEventListener(state => {
-      if (state.isConnected) handleConnectivityChange(state.isConnected);
-      // else Alert.alert('Not Online!', 'Please check your internet source.');
-    });
+    useHome.getOnlineStatus();
+    // NetInfo.addEventListener(state => {
+    //   if (state.isConnected) handleConnectivityChange(state.isConnected);
+    //   // else Alert.alert('Not Online!', 'Please check your internet source.');
+    // });
     // props.setDeviceDims(dimensions);
     // if (props.deviceDimensions.width < 500) {
     //   Orientation.unlockAllOrientations();
@@ -317,14 +320,14 @@ const Home = (props) => {
   };
 
   const goToCurrentLocation = async () => {
-    toggleLoading(true);
+    useHome.toggleLoading(true);
     try {
       await mapViewComponent.current.setCurrentLocation();
       toggleLoading(false);
       await mapViewComponent.current.goToCurrentLocation();
     }
     catch {
-      toggleLoading(false);
+      useHome.toggleLoading(false);
       Alert.alert('Geolocation Error', 'Error getting current location.');
     }
   };
@@ -349,47 +352,6 @@ const Home = (props) => {
       animatePanels(rightsideIconAnimationValue, 0);
       props.setNotebookPanelVisible(false);
       props.setAllSpotsPanelVisible(false);
-    }
-  };
-
-  //function for online/offline state change event handler
-  const handleConnectivityChange = isConnected => {
-    props.setIsOnline(isConnected);
-  };
-
-  const launchCameraFromNotebook = async () => {
-    try {
-      const savedPhoto = await useImages.takePicture();
-      const photoProperties = {
-        id: savedPhoto.id,
-        src: savedPhoto.src,
-        image_type: 'photo',
-        height: savedPhoto.height,
-        width: savedPhoto.width,
-      };
-      toggleLoading(true);
-      if (savedPhoto === 'cancelled') {
-        if (imageArr.length > 0) {
-          console.log('ALL PHOTOS SAVED', imageArr);
-          props.onSpotEditImageObj(imageArr);
-          toggleLoading(false);
-          // toggleToast();
-        }
-        else {
-          toggleLoading(false);
-          Alert.alert('No Photos To Save', 'please try again...');
-        }
-      }
-      else {
-        // setAllPhotosSaved(oldArray => ([...oldArray, photoProperties]));
-        imageArr.push(photoProperties);
-        console.log('Photos Saved:', imageArr);
-        await launchCameraFromNotebook();
-      }
-    }
-    catch (e) {
-      Alert.alert('Error Getting Photo!');
-      toggleLoading(false);
     }
   };
 
@@ -423,7 +385,7 @@ const Home = (props) => {
   };
 
   const onToastShow = () => {
-    toggleLoading(false);
+    useHome.toggleLoading(false);
     setTimeout(() => {
       toggleToast();
       setAllPhotosSaved([]);
@@ -606,11 +568,6 @@ const Home = (props) => {
     props.setIsImageModalVisible(!props.isImageModalVisible);
   };
 
-  const toggleLoading = bool => {
-    props.setLoading(bool);
-    console.log('Loading', props.loading);
-  };
-
   const toggleOfflineMapModal = () => {
     setIsOfflineMapModalVisible(!isOfflineMapModalVisible);
     console.log('Modal state', isOfflineMapModalVisible);
@@ -705,7 +662,7 @@ const Home = (props) => {
         endDraw={endDraw}
       />
       {props.vertexStartCoords && <VertexDrag/>}
-      {loading && <LoadingSpinner/>}
+      {isLoading && <LoadingSpinner/>}
 
       {/*{toastVisible &&*/}
       {/*<ToastPopup*/}
