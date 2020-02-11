@@ -27,6 +27,12 @@ const imageGallery = (props) => {
   const [useImages] = useImagesHook();
   const [refresh, setRefresh] = useState(false);
   const [sortedList, setSortedList] = useState(Object.values(activeSpotsObj));
+  const [filteredList] = useState(sortedList.filter(spot => {
+    return !isEmpty(spot.properties.images);
+  }));
+  const [imageURI, setImageURI] = useState([]);
+  const [displayedSpots, setDisplayedSpots] = useState(filteredList.slice(0, 20));
+  const [combinedImageArrays, setCombinedImageArrays] = useState([]);
   let savedArray = [];
 
   useEffect(() => {
@@ -63,7 +69,7 @@ const imageGallery = (props) => {
     else {
       savedArray.push(savedPhoto);
       console.log('AllPhotosSaved', savedArray);
-      imageSave();
+      return imageSave();
     }
   };
 
@@ -210,4 +216,4 @@ const mapDispatchToProps = {
   setSelectedButtonIndex: (index) => ({type: settingPanelReducers.SET_SELECTED_BUTTON_INDEX, index: index}),
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(imageGallery);
+export default connect(mapStateToProps, mapDispatchToProps)(ImageGallery);
