@@ -82,14 +82,13 @@ const useProject = () => {
         else {
           dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
           dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: activeDatasets.length + ' Datasets uploaded!'});
-          // dispatch({type: homeReducers.SET_STATUS_BOX_LOADING, value: false});
           return Promise.resolve();
         }
       }, (err) => {
         console.log('Error uploading dataset.', err);
         dispatch({type: homeReducers.CLEAR_STATUS_MESSAGES});
         dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Error uploading dataset.'});
-        dispatch({type: homeReducers.SET_STATUS_BOX_LOADING, value: false});
+        dispatch({type: homeReducers.SET_LOADING, value: false});
         return Promise.reject();
       });
     };
@@ -111,7 +110,7 @@ const useProject = () => {
   };
 
   const uploadProject = async () => {
-    dispatch({type: homeReducers.SET_STATUS_BOX_LOADING, value: true});
+    dispatch({type: homeReducers.SET_LOADING, value: true});
     dispatch({type: homeReducers.CLEAR_STATUS_MESSAGES});
     dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, value: true});
     console.log('PROJECT UPLOADING...');

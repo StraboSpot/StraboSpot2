@@ -45,7 +45,7 @@ const UploadBackAndExport = (props) => {
   };
 
   const upload = () => {
-    // dispatch({type: homeReducers.SET_STATUS_BOX_LOADING, bool: true});
+    // dispatch({type: homeReducers.SET_LOADING, bool: true});
     return uploadProject()
       .then(uploadDatasets)
       .catch(err => {
@@ -55,7 +55,7 @@ const UploadBackAndExport = (props) => {
       })
       .finally(() => {
           useImages.deleteTempImagesFolder().then(()=> {
-            dispatch({type: homeReducers.SET_STATUS_BOX_LOADING, value: false});
+            dispatch({type: homeReducers.SET_LOADING, value: false});
             dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Upload Complete!'});
           });
         },

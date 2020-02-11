@@ -63,7 +63,7 @@ const DatasetList = () => {
     }
     if (isOnline && !isEmpty(userData) && !isEmpty(datasetsCopy[id]) && datasetsCopy[id].active &&
       isEmpty(datasetsCopy[id].spotIds)) {
-      // dispatch({type: homeReducers.SET_STATUS_BOX_LOADING, bool: true});
+      // dispatch({type: homeReducers.SET_LOADING, bool: true});
       setLoading(true);
       dispatch({type: projectReducers.DATASETS.DATASETS_UPDATE, datasets: datasetsCopy});
       dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, value: true});

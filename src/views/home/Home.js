@@ -117,7 +117,7 @@ const Home = (props) => {
     // }
     // else Orientation.lockToLandscapeLeft();
     Dimensions.addEventListener('change', deviceOrientation);
-    dispatch({type: homeReducers.SET_STATUS_BOX_LOADING, bool: false});
+    dispatch({type: homeReducers.SET_LOADING, bool: false});
     props.setNotebookPanelVisible(false);
     props.setAllSpotsPanelVisible(false);
     props.setModalVisible(null);
@@ -965,7 +965,7 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-  setLoading: (bool) => ({type: homeReducers.SET_STATUS_BOX_LOADING, bool: bool}),
+  setLoading: (bool) => ({type: homeReducers.SET_LOADING, bool: bool}),
   setIsOnline: (online) => ({type: homeReducers.SET_ISONLINE, online: online}),
   setHomePanelVisible: (value) => ({type: homeReducers.SET_SETTINGS_PANEL_VISIBLE, value: value}),
   setHomePanelPageVisible: (name) => ({type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: name}),
