@@ -340,7 +340,7 @@ const Home = (props) => {
   const endDraw = async () => {
     const newOrEditedSpot = await mapViewComponent.current.endDraw();
     setMapMode(MapModes.VIEW);
-    toggleButton('endDrawButtonVisible');
+    toggleButton('endDrawButtonVisible', false);
     if (!isEmpty(newOrEditedSpot)) {
       openNotebookPanel(NotebookPages.OVERVIEW);
       props.setModalVisible(null);
@@ -439,7 +439,6 @@ const Home = (props) => {
     );
   };
 
-
   const renderLoadProjectFromModal = () => {
     return (
       <InitialProjectLoadModal
@@ -534,30 +533,6 @@ const Home = (props) => {
     }
     else if (mapMode === mapModeToSet) mapModeToSet = MapModes.VIEW;
     setMapMode(mapModeToSet);
-    //props.setMapMode(mapModeToSet);
-    if (mapModeToSet === MapModes.DRAW.POINT) {
-      toggleLoading(true);
-      try {
-        await mapViewComponent.current.setPointAtCurrentLocation();
-        toggleLoading(false);
-        setMapMode(MapModes.VIEW);
-        //props.setMapMode(MapModes.VIEW);
-        // openNotebookPanel();
-        props.setNotebookPanelVisible(true);
-        props.setNotebookPageVisible(NotebookPages.OVERVIEW);
-        Animated.timing(animation, {
-          toValue: wp('0%'),
-          duration: 350,
-          easing: Easing.linear,
-          useNativeDriver: true,
-        }).start();
-      }
-      catch (err) {
-        toggleLoading(false);
-        Alert.alert('Geolocation Error', 'Error getting current location. Set a point manually.');
-        toggleButton('endDrawButtonVisible', true);
-      }
-    }
     if (mapModeToSet === MapModes.VIEW) {
       toggleButton('endDrawButtonVisible', false);
     }
@@ -594,7 +569,7 @@ const Home = (props) => {
     console.log('Toggle Button', button, isVisible || !buttons[button]);
     setButtons({
       ...buttons,
-      [button]: isVisible ? isVisible : !buttons[button],
+      [button]: isVisible !== undefined ? isVisible : !buttons[button],
     });
   };
 
@@ -727,6 +702,7 @@ const Home = (props) => {
         mapComponentRef={mapViewComponent}
         mapMode={mapMode}
         startEdit={startEdit}
+        endDraw={endDraw}
       />
       {props.vertexStartCoords && <VertexDrag/>}
       {loading && <LoadingSpinner/>}
