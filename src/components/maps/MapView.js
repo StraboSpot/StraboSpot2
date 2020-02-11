@@ -77,6 +77,11 @@ const mapView = React.forwardRef((props, ref) => {
     if (!isEmpty(props.vertexEndCoords && props.mapMode === MapModes.EDIT)) moveVertex();
   }, [props.vertexEndCoords]);
 
+  useEffect(() => {
+    // console.log('MapPropsMutable in useEffect', mapPropsMutable);
+    if (props.mapMode === MapModes.DRAW.POINT && mapPropsMutable.drawFeatures.length === 1) props.endDraw();
+  }, [mapPropsMutable.drawFeatures]);
+
   const moveVertex = async () => {
     try {
       const newVertexCoords = await map.current.getCoordinateFromView(props.vertexEndCoords);
@@ -464,7 +469,7 @@ const mapView = React.forwardRef((props, ref) => {
       // If there is more than one draw feature (should be no more than three) the first is the first vertex
       // placed, the second is the line or polygon between the vertices, and the third is the last vertex placed
       // Grab the second feature to create the Spot
-      if (mapPropsMutable.drawFeatures.length >= 1) {
+      if (mapPropsMutable.drawFeatures.length > 1) {
         newFeature = mapPropsMutable.drawFeatures.splice(1, 1)[0];
       }
       newOrEditedSpot = await useSpots.createSpot(newFeature);
