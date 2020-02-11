@@ -7,6 +7,7 @@ import {getNewId} from '../../shared/Helpers';
 import {Base64} from 'js-base64';
 import ImageResizer from 'react-native-image-resizer';
 // Hooks
+import useHomeHook from '../../views/home/useHome';
 import useServerRequests from '../../services/useServerRequests';
 import {homeReducers} from '../../views/home/Home.constants';
 
@@ -19,6 +20,8 @@ const useImages = () => {
   const appDirectory = '/StraboSpot';
   const imagesResizeTemp = '/TempImages';
   const imagesDirectory = devicePath + appDirectory + '/Images';
+
+  const [useHome] = useHomeHook();
   const [serverRequests] = useServerRequests();
 
   const user = useSelector(state => state.user);
@@ -121,6 +124,44 @@ const useImages = () => {
       .catch((err) => {
         throw err;
       });
+  };
+
+  const launchCameraFromNotebook = async () => {
+    try {
+      const savedPhoto = await takePicture();
+      const photoProperties = {
+        id: savedPhoto.id,
+        src: savedPhoto.src,
+        image_type: 'photo',
+        height: savedPhoto.height,
+        width: savedPhoto.width,
+      };
+      useHome.toggleLoading(true);
+      if (savedPhoto === 'cancelled') {
+        if (imageArr.length > 0) {
+          console.log('ALL PHOTOS SAVED', imageArr);
+          dispatch({type: spotReducers.EDIT_SPOT_IMAGES, images: imageArr});
+          // props.onSpotEditImageObj(imageArr);
+          useHome.toggleLoading(false);
+          // toggleToast();
+          return Promise.resolve();
+        }
+        else {
+          useHome.toggleLoading(false);
+          Alert.alert('No Photos To Save', 'please try again...');
+        }
+      }
+      else {
+        // setAllPhotosSaved(oldArray => ([...oldArray, photoProperties]));
+        imageArr.push(photoProperties);
+        console.log('Photos Saved:', imageArr);
+        await launchCameraFromNotebook();
+      }
+    }
+    catch (e) {
+      Alert.alert('Error Getting Photo!');
+      useHome.toggleLoading(false);
+    }
   };
 
   const gatherNeededImages = async (spots) => {
