@@ -21,7 +21,16 @@ import useSpotsHook from '../../spots/useSpots';
 import attributesStyles from '../../components/settings-panel/settingsPanelSectionStyles/Attributes.styles';
 import imageStyles from './images.styles';
 
-const imageGallery = (props) => {
+let imageCount = 0;
+// let dirs = RNFetchBlob.fs.dirs;
+// const url = 'https://strabospot.org/testimages/images.json';
+// const devicePath = Platform.OS === 'ios' ? dirs.DocumentDir : dirs.SDCardDir; // ios : android
+// const appDirectory = '/StraboSpot';
+// const imagesResizeTemp = '/TempImages';
+// const imagesDirectory = devicePath + appDirectory + '/Images';
+
+const ImageGallery = (props) => {
+  let imageSrc = require('../../assets/images/noimage.jpg');
   const [useSpots] = useSpotsHook();
   const activeSpotsObj = useSpots.getActiveSpotsObj();
   const [useImages] = useImagesHook();
