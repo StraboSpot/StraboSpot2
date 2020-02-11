@@ -148,9 +148,9 @@ const imageGallery = (props) => {
   };
 
   let sortedView = null;
-  const filteredList = sortedList.filter(spot => {
-    return !isEmpty(spot.properties.images);
-  });
+  // const filteredList = sortedList.filter(spot => {
+  //   return !isEmpty(spot.properties.images);
+  // });
   if (!isEmpty(filteredList)) {
     if (props.sortedListView === SortedViews.CHRONOLOGICAL) {
       sortedView = <FlatList
