@@ -10,7 +10,7 @@ const ToastPopup = (props) => {
       style={styles.photosSavedToastContainer}
       position='top'
       positionValue={300}
-      fadeInDuration={300}
+      fadeInDuration={500}
       fadeOutDuration={1000}
       opacity={0.8}
       textStyle={styles.photoSavedToastText}
