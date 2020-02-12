@@ -102,10 +102,9 @@ const Home = (props) => {
   const [settingsPanelAnimation, setSettingsPanelAnimation] = useState(new Animated.Value(-homeMenuPanelWidth));
   const [leftsideIconAnimationValue, setLeftsideIconAnimationValue] = useState(new Animated.Value(0));
   const [rightsideIconAnimationValue, setRightsideIconAnimationValue] = useState(new Animated.Value(0));
-  const [toastVisible, setToastVisible] = useState(false);
-  const [loading, setLoading] = useState(false);
 
   const mapViewComponent = useRef(null);
+  const toastRef = useRef();
 
   useEffect(() => {
     vectorIcon.getImageSource('pin', 30);
@@ -379,17 +378,13 @@ const Home = (props) => {
         console.log('Export button was pressed');
         break;
       case 'camera':
-        launchCameraFromNotebook();
+        useImages.launchCameraFromNotebook().then((imagesSavedLength) => {
+          {imagesSavedLength === 1 ? toastRef.current.show(`${imagesSavedLength} photo saved!`) :
+            toastRef.current.show(`${imagesSavedLength} photos saved!`);}
+
+        });
         break;
     }
-  };
-
-  const onToastShow = () => {
-    useHome.toggleLoading(false);
-    setTimeout(() => {
-      toggleToast();
-      setAllPhotosSaved([]);
-    }, 2000);
   };
 
   const openNotebookPanel = pageView => {
@@ -579,11 +574,6 @@ const Home = (props) => {
     console.log(props.shortcutSwitchPosition);
   };
 
-  const toggleToast = () => {
-    setToastVisible(!toastVisible);
-    console.log('Toast state', toastVisible);
-  };
-
   const animateNotebookMenu = {transform: [{translateX: animation}]};
   const animateSettingsPanel = {transform: [{translateX: settingsPanelAnimation}]};
   const leftsideIconAnimation = {transform: [{translateX: leftsideIconAnimationValue}]};
@@ -663,16 +653,7 @@ const Home = (props) => {
       />
       {props.vertexStartCoords && <VertexDrag/>}
       {isLoading && <LoadingSpinner/>}
-
-      {/*{toastVisible &&*/}
-      {/*<ToastPopup*/}
-      {/*  visible={toastVisible}*/}
-      {/*  onShow={() => onToastShow()}*/}
-      {/*>*/}
-      {/*  {allPhotosSaved.length === 1 ?*/}
-      {/*    <Text>{allPhotosSaved.length} Picture Saved!</Text> :*/}
-      {/*    <Text>{allPhotosSaved.length} Pictures Saved!</Text>}*/}
-      {/*</ToastPopup>}*/}
+          <ToastPopup toastRef={toastRef} />
       {Platform.OS === 'ios' &&
       <Animated.View style={leftsideIconAnimation}>
         {(props.modalVisible === Modals.NOTEBOOK_MODALS.COMPASS ||

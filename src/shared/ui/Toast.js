@@ -1,21 +1,21 @@
 import React from 'react';
-import ToastPopup from 'react-native-root-toast';
 import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
+import Toast from 'react-native-easy-toast';
+import styles from '../../views/home/Styles';
 
-const Toast = (props) => {
+const ToastPopup = (props) => {
   return (
-    <ToastPopup
-      visible={props.visible}
-      animation={true}
-      hideOnPress={true}
-      backgroundColor={'white'}
-      textColor={'black'}
-      position={hp('40%')}
-      onShow={() => props.onShow()}
-    >
-      {props.children}
-    </ToastPopup>
+    <Toast
+      ref={props.toastRef}
+      style={styles.photosSavedToastContainer}
+      position='top'
+      positionValue={300}
+      fadeInDuration={300}
+      fadeOutDuration={1000}
+      opacity={0.8}
+      textStyle={styles.photoSavedToastText}
+    />
   );
 };
 
-export default Toast;
+export default ToastPopup;

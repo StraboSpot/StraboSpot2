@@ -47,6 +47,14 @@ const styles = StyleSheet.create({
     // margin: 5,
     height: 120,
   },
+  photosSavedToastContainer: {
+    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
+  },
+  photoSavedToastText: {
+    color: themes.DARKGREY,
+    fontSize: themes.PRIMARY_TEXT_SIZE,
+    fontWeight: 'bold',
+  },
 
   // --- Drawer Styles ---
   // --- Bottom icons (line, polygon, and point) ---
