@@ -10,6 +10,9 @@ import attributesStyles from '../../components/settings-panel/settingsPanelSecti
 
 const SamplesList = (props) => {
   const [sortedList, setSortedList] = useState(Object.values(props.spots));
+  const [filteredList] = useState(sortedList.filter(spot => {
+    return !isEmpty(spot.properties.samples);
+  }));
   const [refresh, setRefresh] = useState(false);
   const {spots, sortedListView, selectedSpot} = props;
 
@@ -22,10 +25,9 @@ const SamplesList = (props) => {
   }, []);
 
   useEffect(() => {
-    setSortedList(spots);
-    setRefresh(!refresh);
+    setSortedList(Object.values(spots));
     console.log('Render recent view in SamplesList!');
-  }, [selectedSpot, spots, sortedList, sortedListView]);
+  }, [props.selectedSpot, props.spots, props.sortedListView]);
 
   const renderName = (item) => {
     return (
@@ -68,8 +70,7 @@ const SamplesList = (props) => {
           </View>
           <FlatList
             data={spot.properties.samples === undefined ? null : spot.properties.samples}
-            keyExtractor={(sample) => sample.id}
-            // numColumns={3}
+            keyExtractor={(sample) => sample.id.toString()}
             renderItem={({item}) => renderSample(item)}
           />
         </View>
@@ -91,9 +92,10 @@ const SamplesList = (props) => {
   };
 
   let sortedView = null;
-  const filteredList = sortedList.filter(spot => {
-    return !isEmpty(spot.properties.samples);
-  });
+  // const filteredList = sortedList.filter(spot => {
+  //   console.log(!isEmpty(spot.properties.samples))
+  //   return !isEmpty(spot.properties.samples)
+  // });
   if (!isEmpty(filteredList)) {
     if (props.sortedListView === SortedViews.CHRONOLOGICAL) {
       sortedView = <FlatList
@@ -128,11 +130,11 @@ const SamplesList = (props) => {
     return (
       <React.Fragment>
         <SortingButtons/>
-        <ScrollView>
+        {/*<ScrollView>*/}
           <View>
             {sortedView}
           </View>
-        </ScrollView>
+        {/*</ScrollView>*/}
       </React.Fragment>
     );
   }
