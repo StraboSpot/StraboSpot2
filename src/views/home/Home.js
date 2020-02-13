@@ -71,7 +71,6 @@ const Home = (props) => {
   const [useSpots] = useSpotsHook();
   const currentDataset = useProject.getCurrentDataset();
 
-  let imageArr = [];
   const online = require('../../assets/icons/StraboIcons_Oct2019/ConnectionStatusButton_connected.png');
   const offline = require('../../assets/icons/StraboIcons_Oct2019/ConnectionStatusButton_offline.png');
 
@@ -871,7 +870,7 @@ const Home = (props) => {
             onPress={() => toggleImageModal()}/>
           <Image
             source={props.selectedImage ? {uri: useImages.getLocalImageSrc(props.selectedImage.id)} :
-              {uri: require('../../assets/images/noimage.jpg')}}
+              require('../../assets/images/noimage.jpg')}
             style={{width: wp('90%'), height: hp('90%')}}
           />
         </View>
