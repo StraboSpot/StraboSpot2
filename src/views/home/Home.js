@@ -44,6 +44,7 @@ import {animatePanels, isEmpty} from '../../shared/Helpers';
 import useImagesHook from '../../components/images/useImages';
 import useSpotsHook from '../../spots/useSpots';
 import useHomeHook from '../home/useHome';
+import useMapsHook from '../../components/maps/useMaps';
 import StatusDialogBox from '../../shared/ui/StatusDialogBox';
 import sharedDialogStyles from '../../shared/common.styles';
 import useProjectHook from '../../project/useProject';
@@ -65,6 +66,7 @@ const notebookPanelWidth = 400;
 const Home = (props) => {
   const [useHome] = useHomeHook();
   const [useImages] = useImagesHook();
+  const [useMaps] = useMapsHook();
   const [useProject] = useProjectHook();
   const [useSpots] = useSpotsHook();
   const currentDataset = useProject.getCurrentDataset();
@@ -177,9 +179,19 @@ const Home = (props) => {
         //   `The ${name.toUpperCase()} Shortcut button in the  will be functioning soon!`);
         break;
       case 'photo':
+        dispatch({type: spotReducers.CLEAR_SELECTED_SPOTS});
+        useMaps.setPointAtCurrentLocation().then((point) => {
+          console.log('Point', point);
+          useImages.launchCameraFromNotebook().then((imagesSavedLength) => {
+            imagesSavedLength === 1 ? toastRef.current.show(`${imagesSavedLength} photo saved in spot: ${point.properties.name}`) :
+              toastRef.current.show(`${imagesSavedLength} photos saved in spot: ${props.selectedSpot.properties.name}`);
+            openNotebookPanel();
+          });
+        });
+        // toastRef.current.show('I AM A TOAST!!');
         // useImages.takePicture();
-        Alert.alert('Still in the works',
-          `The ${name.toUpperCase()} Shortcut button in the  will be functioning soon!`);
+        // Alert.alert('Still in the works',
+        //   `The ${name.toUpperCase()} Shortcut button in the  will be functioning soon!`);
         break;
       case 'sketch':
         Alert.alert('Still in the works',
@@ -322,7 +334,7 @@ const Home = (props) => {
     useHome.toggleLoading(true);
     try {
       await mapViewComponent.current.setCurrentLocation();
-      toggleLoading(false);
+      useHome.toggleLoading(false);
       await mapViewComponent.current.goToCurrentLocation();
     }
     catch {
@@ -379,9 +391,8 @@ const Home = (props) => {
         break;
       case 'camera':
         useImages.launchCameraFromNotebook().then((imagesSavedLength) => {
-          {imagesSavedLength === 1 ? toastRef.current.show(`${imagesSavedLength} photo saved!`) :
-            toastRef.current.show(`${imagesSavedLength} photos saved!`);}
-
+          imagesSavedLength === 1 ? toastRef.current.show(`${imagesSavedLength} photo saved!`) :
+            toastRef.current.show(`${imagesSavedLength} photos saved!`);
         });
         break;
     }

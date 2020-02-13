@@ -15,18 +15,9 @@ const useHome = (props) => {
     });
   };
 
-  // //function for online/offline state change event handler
-  // const handleConnectivityChange = isConnected => {
-  //   dispatch({type: homeReducers.SET_ISONLINE, online: isConnected});
-  // };
-
   const toggleLoading = bool => {
     dispatch({type: homeReducers.SET_LOADING, bool: bool})
-    // console.log('Loading', props.loading);
   };
-
-
-
 
   return [{
     getOnlineStatus: getOnlineStatus,

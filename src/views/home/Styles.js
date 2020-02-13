@@ -48,6 +48,8 @@ const styles = StyleSheet.create({
     height: 120,
   },
   photosSavedToastContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
   },
   photoSavedToastText: {
