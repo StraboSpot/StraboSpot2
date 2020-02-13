@@ -1,6 +1,6 @@
 import React from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-
+import {randomNames} from '../assets/test-data/RandomNameGeneratorJSON';
 import {getNewId, isEmpty} from '../shared/Helpers';
 
 // Constants
@@ -22,6 +22,7 @@ const useSpots = (props) => {
 
   // Create a new Spot
   const createSpot = async (feature) => {
+    let randomName = randomNames[Math.floor(Math.random() * randomNames.length)];
     let newSpot = feature;
     newSpot.properties.id = getNewId();
     let d = new Date(Date.now());
@@ -30,7 +31,7 @@ const useSpots = (props) => {
     // Sets modified and viewed timestamps in milliseconds
     newSpot.properties.modified_timestamp = Date.now();
     newSpot.properties.viewed_timestamp = Date.now();
-    newSpot.properties.name = 'Spot ' + Object.keys(spots).length;
+    newSpot.properties.name = randomName;
     console.log('Creating new Spot:', newSpot);
     await dispatch({type: spotReducers.ADD_SPOT, spot: newSpot});
     const currentDataset = Object.values(datasets).find(dataset => dataset.current);
