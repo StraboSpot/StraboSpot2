@@ -150,7 +150,7 @@ const useImages = () => {
           // props.onSpotEditImageObj(imageArr);
           useHome.toggleLoading(false);
           // toggleToast();
-          return Promise.resolve();
+          return Promise.resolve(imageArr.length);
         }
         else {
           useHome.toggleLoading(false);
@@ -161,7 +161,7 @@ const useImages = () => {
         // setAllPhotosSaved(oldArray => ([...oldArray, photoProperties]));
         imageArr.push(photoProperties);
         console.log('Photos Saved:', imageArr);
-        await launchCameraFromNotebook();
+        return launchCameraFromNotebook();
       }
     }
     catch (e) {
@@ -169,6 +169,45 @@ const useImages = () => {
       useHome.toggleLoading(false);
     }
   };
+
+  // const launchCameraFromNotebook = () => {
+  //   // try {
+  //     return takePicture().then((savedPhoto) => {
+  //       const photoProperties = {
+  //         id: savedPhoto.id,
+  //         src: savedPhoto.src,
+  //         image_type: 'photo',
+  //         height: savedPhoto.height,
+  //         width: savedPhoto.width,
+  //       };
+  //       useHome.toggleLoading(true);
+  //       if (savedPhoto === 'cancelled') {
+  //         if (imageArr.length > 0) {
+  //           console.log('ALL PHOTOS SAVED', imageArr);
+  //           dispatch({type: spotReducers.EDIT_SPOT_IMAGES, images: imageArr});
+  //           // props.onSpotEditImageObj(imageArr);
+  //           useHome.toggleLoading(false);
+  //           // toggleToast();
+  //           return Promise.resolve(imageArr.length);
+  //         }
+  //         else {
+  //           useHome.toggleLoading(false);
+  //           Alert.alert('No Photos To Save', 'please try again...');
+  //         }
+  //       }
+  //       else {
+  //         // setAllPhotosSaved(oldArray => ([...oldArray, photoProperties]));
+  //         imageArr.push(photoProperties);
+  //         console.log('Photos Saved:', imageArr);
+  //         return launchCameraFromNotebook();
+  //       }
+  //     })
+  //   // }
+  //   // catch (e) {
+  //   //   Alert.alert('Error Getting Photo!');
+  //   //   useHome.toggleLoading(false);
+  //   // }
+  // };
 
   const gatherNeededImages = async (spots) => {
     let neededImagesIds = [];
