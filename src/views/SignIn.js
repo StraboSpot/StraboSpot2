@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {View, StyleSheet, TextInput, Alert, ImageBackground, KeyboardAvoidingView} from 'react-native';
+import {View, Text, StyleSheet, TextInput, Alert, ImageBackground, KeyboardAvoidingView} from 'react-native';
 import {connect, useSelector, useDispatch} from 'react-redux';
 import useServerRequests from '../services/useServerRequests';
 import * as themes from '../shared/styles.constants';
@@ -179,7 +179,11 @@ const SignIn = (props) => {
           }}
           keyboardVerticalOffset={0}
         >
-          <View style={{alignItems: 'center'}}>
+          <View>
+            <View style={styles.titleContainer}>
+              <Text style={styles.title}>Strabo Spot 2</Text>
+              <Text style={styles.version}>Version 0.1.0</Text>
+            </View>
             <View style={styles.signInContainer}>
               <TextInput
                 style={styles.input}
@@ -237,6 +241,19 @@ const styles = StyleSheet.create({
   },
   signInContainer: {
     alignItems: 'center',
+  },
+  titleContainer: {
+    paddingBottom: 75,
+  },
+  title: {
+    fontSize: 110,
+    fontFamily: 'Arial-BoldMT',
+  },
+  version: {
+    // color: 'black',
+    textAlign: 'center',
+    fontSize: 32,
+    fontFamily: 'ChalkboardSE-Bold',
   },
   buttonStyle: {
     borderRadius: 30,
