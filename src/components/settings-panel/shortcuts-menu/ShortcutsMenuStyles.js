@@ -10,20 +10,16 @@ const styles = StyleSheet.create({
   button: {
     flexDirection: 'row',
     marginRight: 0,
-    // backgroundColor: 'orange'
-    // paddingLeft: 7,
-    // paddingRight: 5
   },
-  // textStyle: {
-  //   fontSize: 22,
-  //   color: '#407ad9',
-  // },
-  // headingText: {
-  //   // alignItems: 'center',
-  //   fontWeight: 'bold',
-  //   fontSize: 25,
-  //   // marginLeft: 20
-  // },
+  textContainer: {
+    alignItems: 'center',
+    padding: 10,
+  },
+  textStyle: {
+    fontSize: themes.PRIMARY_TEXT_SIZE,
+    color: themes.PRIMARY_HEADER_TEXT_COLOR,
+    fontWeight: 'bold',
+  },
   icons: {
     height: 50,
     width: 40,

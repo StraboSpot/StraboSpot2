@@ -8,6 +8,9 @@ import * as themes from '../../../shared/styles.constants';
 
 const ShortcutMenu = props => (
   <React.Fragment>
+    <View style={styles.textContainer}>
+      <Text style={styles.textStyle}>Shortcuts will creat a NEW spot</Text>
+    </View>
     {Object.keys(Buttons).map((key, i) => (
       <ListItem
         containerStyle={{backgroundColor: 'transparent', padding: 0}}
