@@ -164,7 +164,10 @@ const mapView = React.forwardRef((props, ref) => {
       console.log('Selecting or unselect a feature ...');
       const {screenPointX, screenPointY} = e.properties;
       const spotFound = await getSpotAtPress(screenPointX, screenPointY);
-      if (!isEmpty(spotFound)) useMaps.setSelectedSpot(spotFound);
+      if (!isEmpty(spotFound)) {
+        useMaps.setSelectedSpot(spotFound);
+        props.openNotebookOnSelectedSpot();
+      }
       else clearSelectedSpots();
     }
     // Draw a feature

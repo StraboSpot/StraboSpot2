@@ -121,6 +121,7 @@ const Home = (props) => {
     // else Orientation.lockToLandscapeLeft();
     Dimensions.addEventListener('change', deviceOrientation);
     dispatch({type: homeReducers.SET_LOADING, bool: false});
+    dispatch({type: spotReducers.CLEAR_SELECTED_SPOTS});
     props.setNotebookPanelVisible(false);
     props.setAllSpotsPanelVisible(false);
     props.setModalVisible(null);
@@ -660,6 +661,7 @@ const Home = (props) => {
         mapMode={mapMode}
         startEdit={startEdit}
         endDraw={endDraw}
+        openNotebookOnSelectedSpot={() => openNotebookPanel()}
       />
       {props.vertexStartCoords && <VertexDrag/>}
       {isLoading && <LoadingSpinner/>}
