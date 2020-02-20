@@ -140,6 +140,26 @@ const useServerRequests = () => {
     });
   };
 
+  // Register user
+  const registerUser = async (newAccountInfo) => {
+    const newAccount = JSON.stringify({
+      first_name: newAccountInfo.firstName.value,
+      last_name: newAccountInfo.lastName.value,
+      email: newAccountInfo.email.value,
+      password: newAccountInfo.password.value,
+      confirm_password: newAccountInfo.confirmPassword.value,
+    },);
+    const modifiedBaseUrl = baseUrl.slice(0, baseUrl.lastIndexOf('/'));
+    const response = await fetch(modifiedBaseUrl + '/userRegister',{
+      method: 'POST',
+      body: newAccount,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return handleResponse(response);
+  };
+
   const updateDataset = (dataset, encodedLogin) => {
     return post('/dataset', encodedLogin, dataset);
   };
