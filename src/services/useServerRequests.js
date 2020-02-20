@@ -199,6 +199,7 @@ const useServerRequests = () => {
     getProfile: getProfile,
     getProject: getProject,
     getProfileImage: getProfileImage,
+    registerUser: registerUser,
     updateDataset: updateDataset,
     updateDatasetSpots: updateDatasetSpots,
     updateProject: updateProject,
