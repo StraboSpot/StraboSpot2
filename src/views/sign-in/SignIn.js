@@ -1,25 +1,28 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, StyleSheet, TextInput, Alert, ImageBackground, KeyboardAvoidingView} from 'react-native';
+import {View, Text, TextInput, Alert, ImageBackground, KeyboardAvoidingView} from 'react-native';
 import {connect, useSelector, useDispatch} from 'react-redux';
-import useServerRequests from '../services/useServerRequests';
-import * as themes from '../shared/styles.constants';
-import {USER_DATA, USER_IMAGE, ENCODED_LOGIN} from '../services/user/User.constants';
+import useServerRequests from '../../services/useServerRequests';
+import * as themes from '../../shared/styles.constants';
+import {USER_DATA, USER_IMAGE, ENCODED_LOGIN} from '../../services/user/User.constants';
 // import * as Sentry from '@sentry/react-native';
-import {readDataUrl} from '../shared/Helpers';
+import {readDataUrl} from '../../shared/Helpers';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {Button} from 'react-native-elements';
 import NetInfo from '@react-native-community/netinfo';
-import {homeReducers} from './home/Home.constants';
-import IconButton from '../shared/ui/IconButton';
-import {USERNAME_TEST, PASSWORD_TEST} from '../../Config';
+import {homeReducers} from '../home/Home.constants';
+import IconButton from '../../shared/ui/IconButton';
+import {USERNAME_TEST, PASSWORD_TEST} from '../../../Config';
 import {Base64} from 'js-base64';
-import {isEmpty} from '../shared/Helpers';
+import {isEmpty} from '../../shared/Helpers';
+
+// Styles
+import styles from './SignIn.styles';
 
 let user = null;
 
 const SignIn = (props) => {
-  const online = require('../assets/icons/StraboIcons_Oct2019/ConnectionStatusButton_connected.png');
-  const offline = require('../assets/icons/StraboIcons_Oct2019/ConnectionStatusButton_offline.png');
+  const online = require('../../assets/icons/StraboIcons_Oct2019/ConnectionStatusButton_connected.png');
+  const offline = require('../../assets/icons/StraboIcons_Oct2019/ConnectionStatusButton_offline.png');
   const [username, setUsername] = useState(__DEV__ ? USERNAME_TEST : '');
   const [password, setPassword] = useState(__DEV__ ? PASSWORD_TEST : '');
   const isOnline = useSelector(state => state.home.isOnline);
@@ -159,7 +162,7 @@ const SignIn = (props) => {
   };
 
   return (
-    <ImageBackground source={require('../assets/images/background.jpg')} style={styles.backgroundImage}>
+    <ImageBackground source={require('../../assets/images/background.jpg')} style={styles.backgroundImage}>
       <View style={styles.container}>
         <View style={{
           position: 'absolute',
@@ -217,50 +220,3 @@ const SignIn = (props) => {
 };
 
 export default SignIn;
-
-const styles = StyleSheet.create({
-  input: {
-    width: 350,
-    fontSize: themes.PRIMARY_TEXT_SIZE,
-    fontWeight: '500',
-    height: 55,
-    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
-    margin: 10,
-    color: 'black',
-    padding: 8,
-    borderRadius: 14,
-  },
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  backgroundImage: {
-    flex: 1,
-    resizeMode: 'cover',
-  },
-  signInContainer: {
-    alignItems: 'center',
-  },
-  titleContainer: {
-    paddingBottom: 75,
-  },
-  title: {
-    fontSize: 110,
-    fontFamily: 'Arial-BoldMT',
-  },
-  version: {
-    // color: 'black',
-    textAlign: 'center',
-    fontSize: 32,
-    fontFamily: 'ChalkboardSE-Bold',
-  },
-  buttonStyle: {
-    borderRadius: 30,
-    paddingRight: 50,
-    paddingLeft: 50,
-  },
-  icon: {
-    paddingRight: 15,
-  },
-});

@@ -4,7 +4,7 @@ import {PersistGate} from 'redux-persist/integration/react';
 import configureStore from './src/store/ConfigureStore';
 import {createAppContainer} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
-import SignIn from './src/views/SignIn';
+import SignIn from './src/views/sign-in/SignIn';
 import ImageInfo from './src/components/images/ImageInfo.view';
 import SignUp from './src/views/SignUp';
 import Home from './src/views/home/Home';
