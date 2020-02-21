@@ -6,7 +6,7 @@ import {createAppContainer} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
 import SignIn from './src/views/sign-in/SignIn';
 import ImageInfo from './src/components/images/ImageInfo.view';
-import SignUp from './src/views/SignUp';
+import SignUp from './src/views/sign-up/SignUp';
 import Home from './src/views/home/Home';
 import 'react-native-gesture-handler';
 import Loading from './src/shared/ui/Loading';
