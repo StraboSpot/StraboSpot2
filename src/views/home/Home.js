@@ -98,7 +98,7 @@ const Home = (props) => {
   const [mapMode, setMapMode] = useState(MapModes.VIEW);
   const [isOfflineMapModalVisible, setIsOfflineMapModalVisible] = useState(false);
   const [isProjectLoadSelectionModalVisible, setIsProjectLoadSelectionModalVisible] = useState(false);
-  const [allPhotosSaved, setAllPhotosSaved] = useState([]);
+  // const [allPhotosSaved, setAllPhotosSaved] = useState([]);
   const [animation, setAnimation] = useState(new Animated.Value(notebookPanelWidth));
   const [settingsPanelAnimation, setSettingsPanelAnimation] = useState(new Animated.Value(-homeMenuPanelWidth));
   const [leftsideIconAnimationValue, setLeftsideIconAnimationValue] = useState(new Animated.Value(0));
@@ -107,27 +107,16 @@ const Home = (props) => {
   const mapViewComponent = useRef(null);
   const toastRef = useRef();
 
-  useEffect(() => {
-    vectorIcon.getImageSource('pin', 30);
-    useHome.getOnlineStatus();
-    // NetInfo.addEventListener(state => {
-    //   if (state.isConnected) handleConnectivityChange(state.isConnected);
-    //   // else Alert.alert('Not Online!', 'Please check your internet source.');
-    // });
+  useEffect( () => {
     // props.setDeviceDims(dimensions);
     // if (props.deviceDimensions.width < 500) {
     //   Orientation.unlockAllOrientations();
     // }
     // else Orientation.lockToLandscapeLeft();
     Dimensions.addEventListener('change', deviceOrientation);
-    dispatch({type: homeReducers.SET_LOADING, bool: false});
-    dispatch({type: spotReducers.CLEAR_SELECTED_SPOTS});
-    props.setNotebookPanelVisible(false);
-    props.setAllSpotsPanelVisible(false);
-    props.setModalVisible(null);
-    props.setHomePanelVisible(false);
-    props.setHomePanelPageVisible(SettingsMenuItems.SETTINGS_MAIN);
-    checkForOpenProject();
+    console.log('Initializing Home page');
+    initialize().then((res) => setIsProjectLoadSelectionModalVisible(res));
+    console.log('Home page initialized and openProject Modal is', isProjectLoadSelectionModalVisible);
     return function cleanup() {
       Dimensions.removeEventListener('change', deviceOrientation);
     };
@@ -144,11 +133,8 @@ const Home = (props) => {
     // toggleButton('drawButtonsVisible', true);
   };
 
-  const checkForOpenProject = () => {
-    if (isEmpty(props.getCurrentProject)) {
-      setIsProjectLoadSelectionModalVisible(true);
-      console.log('Project Select Modal is:', isProjectLoadSelectionModalVisible);
-    }
+  const initialize = async () => {
+    return await useHome.initializeHomePage();
   };
 
   const clickHandler = (name, position) => {
