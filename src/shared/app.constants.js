@@ -10,3 +10,5 @@ export const menuButtons = {
     CLOSE_NOTEBOOK: 'closeNotebook',
   },
 };
+
+export const VERSION_NUMBER = 'Version 0.2.0';

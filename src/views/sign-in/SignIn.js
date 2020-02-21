@@ -14,6 +14,7 @@ import IconButton from '../../shared/ui/IconButton';
 import {USERNAME_TEST, PASSWORD_TEST} from '../../../Config';
 import {Base64} from 'js-base64';
 import {isEmpty} from '../../shared/Helpers';
+import {VERSION_NUMBER} from '../../shared/app.constants';
 
 // Styles
 import styles from './SignIn.styles';
@@ -185,7 +186,7 @@ const SignIn = (props) => {
           <View>
             <View style={styles.titleContainer}>
               <Text style={styles.title}>Strabo Spot 2</Text>
-              <Text style={styles.version}>Version 0.1.0</Text>
+              <Text style={styles.version}>{VERSION_NUMBER}</Text>
             </View>
             <View style={styles.signInContainer}>
               <TextInput

@@ -8,6 +8,7 @@ import useServerRequests from '../../services/useServerRequests';
 import StatusDialog from '../../shared/ui/StatusDialogBox';
 import DefaultCheckBox from '../../shared/ui/Checkbox';
 import Loading from '../../shared/ui/Loading';
+import {VERSION_NUMBER} from '../../shared/app.constants';
 
 // Styles
 import styles from './SignUp.styles';
@@ -226,7 +227,7 @@ const SignUp = props => {
           <View>
             <View style={styles.titleContainer}>
               <Text style={styles.title}>Strabo Spot 2</Text>
-              <Text style={styles.version}>Version 0.1.0</Text>
+              <Text style={styles.version}>{VERSION_NUMBER}</Text>
             </View>
             <View >
               <View style={styles.inputContainerGroup}>
