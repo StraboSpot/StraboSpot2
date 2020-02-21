@@ -12,6 +12,13 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.75)',
     zIndex: 50,
   },
+  defaultCheckBox: {
+    backgroundColor: 'transparent',
+    borderColor: 'transparent',
+    padding: 0,
+    margin: 0,
+    paddingLeft: 20,
+  },
   loadingContainer: {
     flex: 1,
     position: 'absolute',

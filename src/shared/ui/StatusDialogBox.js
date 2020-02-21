@@ -1,14 +1,11 @@
 import React from 'react';
-import {Text, View} from 'react-native';
 import Dialog, {
   DialogTitle,
   DialogContent,
   SlideAnimation,
-  DialogFooter,
-  DialogButton,
+  FadeAnimation,
 } from 'react-native-popup-dialog';
 import styles from '../../shared/common.styles';
-import * as ProjectActions from '../../project/Project.constants';
 
 const StatusDialogBox = (props) => {
   return (
@@ -17,8 +14,9 @@ const StatusDialogBox = (props) => {
         dialogStyle={styles.dialogBox}
         width={275}
         visible={props.visible}
-        dialogAnimation={new SlideAnimation({
-          slideFrom: 'top',
+        dialogAnimation={new FadeAnimation({
+          animationDuration: 250,
+          useNativeDriver: true,
         })}
         onTouchOutside={props.onTouchOutside}
         useNativeDriver={true}
