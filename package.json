@@ -21,6 +21,7 @@
     "js-base64": "^2.5.1",
     "lodash.isequal": "^4.5.0",
     "moment": "^2.24.0",
+    "password-validator": "^5.0.3",
     "react": "16.9.0",
     "react-moment": "^0.9.7",
     "react-native": "0.61.4",
