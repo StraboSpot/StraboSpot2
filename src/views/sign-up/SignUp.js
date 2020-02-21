@@ -12,10 +12,19 @@ import Loading from '../../shared/ui/Loading';
 // Styles
 import styles from './SignUp.styles';
 import {SlideAnimation} from 'react-native-popup-dialog';
+import {useDispatch, useSelector} from 'react-redux';
+import NetInfo from '@react-native-community/netinfo';
+import {homeReducers} from '../home/Home.constants';
+import IconButton from '../../shared/ui/IconButton';
 
 const checkMark = {type: 'feather', name: 'check', color: 'green'};
 
 const SignUp = props => {
+  const online = require('../../assets/icons/StraboIcons_Oct2019/ConnectionStatusButton_connected.png');
+  const offline = require('../../assets/icons/StraboIcons_Oct2019/ConnectionStatusButton_offline.png');
+
+  const dispatch = useDispatch();
+  const isOnline = useSelector(state => state.home.isOnline);
   const [serverRequests] = useServerRequests();
 
   const [error, setError] = useState(false);
@@ -72,6 +81,17 @@ const SignUp = props => {
       console.log('exited sign-up');
     };
   }, []);
+
+  useEffect(() => {
+    if (isOnline === null) {
+      NetInfo.fetch().then(state => {
+        dispatch({type: homeReducers.SET_ISONLINE, online: state.isConnected});
+      })
+        .catch(err => {
+          throw (err);
+        });
+    }
+  },[isOnline]);
 
   const onChangeText = (key, value) => {
     let connectedValue = {};
@@ -169,6 +189,7 @@ const SignUp = props => {
           title='Sign Up'
           buttonStyle={styles.buttonStyle}
           containerStyle={styles.buttonContainer}
+          disabled={!isOnline}
           raised
           onPress={signUp}
         />
@@ -187,6 +208,16 @@ const SignUp = props => {
   return (
     <ImageBackground source={require('../../assets/images/background.jpg')} style={styles.backgroundImage}>
       <View style={styles.container}>
+          <View style={{
+            position: 'absolute',
+            right: 0,
+            top: 40,
+            zIndex: -1,
+          }}>
+            <IconButton
+              source={isOnline ? online : offline}
+            />
+          </View>
         <KeyboardAvoidingView
           behavior={'position'}
           contentContainerStyle={{alignItems: 'center', marginTop: 100}}
