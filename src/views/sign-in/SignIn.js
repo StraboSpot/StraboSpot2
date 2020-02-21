@@ -175,10 +175,10 @@ const SignIn = (props) => {
           />
         </View>
         <KeyboardAvoidingView
-          behavior={'padding'}
+          behavior={'position'}
           contentContainerStyle={{
-            flex: 1,
-            justifyContent: 'space-between',
+            // flex: 1,
+            // justifyContent: 'space-between',
           }}
           keyboardVerticalOffset={0}
         >
