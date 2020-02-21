@@ -96,9 +96,16 @@ const RNCompass = (props) => {
       console.log('pointSetAtCurrentLocation', pointSetAtCurrentLocation);
     }
     let measurements = [];
+    let strikeWithLeadingzero = compassData.strike;
+    if (compassData.strike >= 1 && compassData.strike <= 9 ) {
+      strikeWithLeadingzero = '00' + compassData.strike;
+    }
+    if (compassData.strike >= 10 && compassData.strike <= 99 ) {
+      strikeWithLeadingzero = '0' + compassData.strike;
+    }
     if (toggles.includes(CompassToggleButtons.PLANAR)) {
       measurements.push({
-        strike: compassData.strike,
+        strike: strikeWithLeadingzero,
         // dip_direction: compassData.dipdir,
         dip: compassData.dip,
         type: 'planar_orientation',
