@@ -73,6 +73,10 @@ const styles = StyleSheet.create({
     paddingRight: 10,
     paddingLeft: 10,
   },
+  sectionTitleContainer: {
+    paddingTop: 0,
+    paddingBottom: 9,
+  },
   buttonText: {
     color: themes.PRIMARY_ACCENT_COLOR,
   },
