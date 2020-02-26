@@ -55,6 +55,7 @@ const dialogStyles = StyleSheet.create({
   },
   dialogContent: {
     marginTop: 15,
+    paddingBottom: 10
   },
   dialogContentText: {
     color: 'red',

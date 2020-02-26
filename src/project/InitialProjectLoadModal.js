@@ -4,6 +4,7 @@ import {useSelector, useDispatch} from 'react-redux';
 import {Button} from 'react-native-elements';
 import {Dialog, DialogTitle, DialogContent, SlideAnimation} from 'react-native-popup-dialog';
 
+import NewProject from './NewProjectForm';
 import ProjectList from './ProjectList';
 import DatasetList from './DatasetList';
 import ActiveDatasetsList from './ActiveDatasetsList';
@@ -149,13 +150,19 @@ const InitialProjectLoadModal = (props) => {
       <React.Fragment>
         {renderProjectTypesButtons()}
         <Spacer/>
-        <Text>Need fields for a new project here.</Text>
-        <Button
-          onPress={() => props.closeModal()}
-          title={'Close Modal (temporary)'}
-          buttonStyle={commonStyles.standardButton}
-          titleStyle={commonStyles.standardButtonText}
-        />
+        {/*<Text>Need fields for a new project here.</Text>*/}
+        <View style={{height: 400}}>
+          <NewProject/>
+        </View>
+        <View>
+          <Button
+            onPress={() => props.closeModal()}
+            title={'Close Modal (temporary)'}
+            buttonStyle={commonStyles.standardButton}
+            containerStyle={{paddingTop: 10}}
+            titleStyle={commonStyles.standardButtonText}
+          />
+        </View>
       </React.Fragment>
     );
   };
