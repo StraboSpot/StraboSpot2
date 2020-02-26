@@ -12,6 +12,18 @@ import styles from './form.styles';
 
 const FormView = ({handleSubmit, isValid, setFieldValue, values}) => {
 
+  const renderDateInput = field => {
+    console.log('In renderDate', field)
+    return (
+      <Field
+        component={NumberInputField}
+        name={field.name}
+        label={field.label}
+        key={field.name}
+      />
+    );
+  };
+
   const renderTextInput = field => {
     return (
       <Field
@@ -59,6 +71,7 @@ const FormView = ({handleSubmit, isValid, setFieldValue, values}) => {
     if (fieldType === 'text') return renderTextInput(field);
     else if (fieldType === 'integer' || fieldType === 'decimal') return renderNumberInput(field);
     else if (fieldType === 'select_one') return renderSelectInput(field, field.type.split(' ')[1]);
+    else if (fieldType === 'date') return renderDateInput(field);
   };
 
   return (

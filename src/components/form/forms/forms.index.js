@@ -7,6 +7,7 @@ import tabularZoneOrientationSurvey from './measurement/tabular-zone-orientation
 import tabularZoneOrientationChoices from './measurement/tabular-zone-orienation-choices';
 import imagePropertiesSurvey from './images/image_properties-survey';
 import imagePropertiesChoices from './images/image_properties-choices';
+import projectDescriptionSurvey from './newProject/project-description-survey';
 
 const getMeasurementSurveyForBulkInput = (form) => {
   const fieldsToExclude = ['label', 'strike', 'dip_direction', 'dip', 'quality', 'trend', 'plunge', 'rake', 'rake_calculated'];
@@ -45,6 +46,9 @@ const forms = {
   'images': {
     'survey': imagePropertiesSurvey,
     'choices': imagePropertiesChoices,
+  },
+  'project_description': {
+    'survey': projectDescriptionSurvey,
   },
 };
 
