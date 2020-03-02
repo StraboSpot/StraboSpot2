@@ -52,7 +52,7 @@ const commonStyles = StyleSheet.create({
     backgroundColor: themes.PRIMARY_ACCENT_COLOR,
   },
   row: {
-    flexDirection: 'row',
+    // flexDirection: 'row',
     height: themes.ROW_HEIGHT,
   },
   fixedWidthSide: {
