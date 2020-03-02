@@ -49,7 +49,7 @@
     "label": "End Date",
     "hint": "",
     "required": false,
-    "constraint_message": "",
+    "constraint_message": "End date cannot be greater then Start Date",
     "constraint": "",
     "appearance": "",
     "calculation": ""

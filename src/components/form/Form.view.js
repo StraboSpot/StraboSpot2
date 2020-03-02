@@ -14,7 +14,6 @@ import styles from './form.styles';
 const FormView = ({handleSubmit, isValid, setFieldValue, values}) => {
 
   const renderDateInput = field => {
-    console.log('In renderDate', field)
     return (
         <Field
           component={DateInputField}

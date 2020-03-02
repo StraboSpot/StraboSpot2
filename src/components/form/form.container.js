@@ -98,10 +98,14 @@ export const setForm = (form, child) => {
 
 export const showErrors = (form) => {
   const errors = form.current.state.errors;
+  const noProjectName = form.current.state.values.project_name;
   let errorMessages = [];
   // eslint-disable-next-line no-unused-vars
   for (const [name, error] of Object.entries(errors)) {
     errorMessages.push(getSurveyFieldLabel(name) + ': ' + error);
+  }
+  if (noProjectName === undefined) {
+    errorMessages.push('Project Name : Undefined');
   }
   Alert.alert('Please Fix the Following Errors', errorMessages.join('\n'));
 };
@@ -121,7 +125,7 @@ export const validateForm = (data) => {
         if (fieldModel.type === 'integer') data[key] = parseInt(value);
         else if (fieldModel.type === 'decimal') data[key] = parseFloat(value);
         else if (fieldModel.type === 'date') data[key] = value;
-        if (key === 'end_date' && Date.parse(data.start_date) > Date.parse(data.end_date)) errors[key] = 'Cannot be before start date';
+        if (key === 'end_date' && Date.parse(data.start_date) > Date.parse(data.end_date)) errors[key] = fieldModel.constraint_message;
         if (fieldModel.constraint) {
           // Max constraint
           // Look for <= in constraint, followed by a space and then any number of digits (- preceding the digits is optional)

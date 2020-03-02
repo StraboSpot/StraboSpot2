@@ -24,7 +24,7 @@ const DateInputField = ({
     // console.log('Description Updated:', date);
     console.log(name, value, touched,'Errors', errors)
     // setFieldValue(name, date, true);
-  }, [date], errors.end_date, errorMessage);
+  }, [errors.end_date, errorMessage]);
 
   const showDatPickerHandler = (type) => {
     setShowDatePickerModal(!showDatePickerModal);
@@ -74,7 +74,7 @@ const DateInputField = ({
         <View style={stylesCommon.fixedWidthSide}>
           <Text style={styles.fieldLabel}>{props.label}</Text>
         </View>
-        <View style={styles.dateValue}>
+        <View>
           <ListItem
             title={moment(value).format('MM/DD/YYYY')}
             containerStyle={{padding: 0, alignContent: 'flex-start'}}
