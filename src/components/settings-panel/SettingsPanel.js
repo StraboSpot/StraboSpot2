@@ -58,7 +58,7 @@ const SettingsPanel = props => {
       page =
         <View style={styles.settingsPanelContainer}>
           {settingsPanelHeader}
-          <MyStraboSpot/>
+          <MyStraboSpot closeHomePanel={props.closeHomePanel}/>
         </View>;
       break;
     case SettingsMenuItems.MANAGE.ACTIVE_PROJECTS:
