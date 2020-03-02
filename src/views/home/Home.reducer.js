@@ -12,6 +12,7 @@ const initialState = {
   modalVisible: null,
   isStatusMessagesModalVisible: false,
   isErrorMessagesModalVisible: false,
+  isProjectLoadSelectionModalVisible: false,
   isInfoModalVisible: false,
   isImageModalVisible: false,
   isAllSpotsPanelVisible: false,
@@ -48,6 +49,11 @@ export const homeReducer = (state = initialState, action) => {
       return {
         ...state,
         isInfoModalVisible: action.value,
+      };
+    case homeReducers.SET_PROJECT_LOAD_SELECTION_MODAL_VISIBLE:
+      return {
+        ...state,
+        isProjectLoadSelectionModalVisible: action.value,
       };
     case homeReducers.DEVICE_DIMENSIONS:
       // console.log('REDUX DEVICE DIMS', state.deviceDimensions);

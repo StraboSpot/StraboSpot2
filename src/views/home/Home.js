@@ -80,6 +80,7 @@ const Home = (props) => {
   const isStatusMessagesModalVisible = useSelector(state => state.home.isStatusMessagesModalVisible);
   const isErrorMessagesModalVisible = useSelector(state => state.home.isErrorMessagesModalVisible);
   const isInfoMessagesModalVisible = useSelector(state => state.home.isInfoModalVisible);
+  const isProjectLoadSelectionModalVisible = useSelector(state => state.home.isProjectLoadSelectionModalVisible);
 
   // const imagesCount = useSelector(state => state.home.imageProgress.imagesDownloadedCount);
   // const imagesNeeded = useSelector(state => state.home.imageProgress.neededImageIds);
@@ -97,7 +98,7 @@ const Home = (props) => {
   });
   const [mapMode, setMapMode] = useState(MapModes.VIEW);
   const [isOfflineMapModalVisible, setIsOfflineMapModalVisible] = useState(false);
-  const [isProjectLoadSelectionModalVisible, setIsProjectLoadSelectionModalVisible] = useState(false);
+  // const [isProjectLoadSelectionModalVisible, setIsProjectLoadSelectionModalVisible] = useState(false);
   // const [allPhotosSaved, setAllPhotosSaved] = useState([]);
   const [animation, setAnimation] = useState(new Animated.Value(notebookPanelWidth));
   const [settingsPanelAnimation, setSettingsPanelAnimation] = useState(new Animated.Value(-homeMenuPanelWidth));
@@ -115,7 +116,7 @@ const Home = (props) => {
     // else Orientation.lockToLandscapeLeft();
     Dimensions.addEventListener('change', deviceOrientation);
     console.log('Initializing Home page');
-    initialize().then((res) => setIsProjectLoadSelectionModalVisible(res));
+    initialize().then((res) => dispatch({type: homeReducers.SET_PROJECT_LOAD_SELECTION_MODAL_VISIBLE, value: res}));
     console.log('Home page initialized and openProject Modal is', isProjectLoadSelectionModalVisible);
     return function cleanup() {
       Dimensions.removeEventListener('change', deviceOrientation);
@@ -259,7 +260,7 @@ const Home = (props) => {
 
   const closeInitialProjectLoadModal = () => {
     console.log('Starting Project...');
-    setIsProjectLoadSelectionModalVisible(false);
+    dispatch({type: homeReducers.SET_PROJECT_LOAD_SELECTION_MODAL_VISIBLE, value: false});
   };
 
   const closeNotebookPanel = () => {
@@ -546,6 +547,7 @@ const Home = (props) => {
   const toggleHomeDrawerButton = () => {
     if (props.homePanelVisible) {
       props.setHomePanelVisible(false);
+      props.setHomePanelPageVisible(SettingsMenuItems.SETTINGS_MAIN);
       animatePanels(settingsPanelAnimation, -homeMenuPanelWidth);
       animatePanels(leftsideIconAnimationValue, 0);
     }
@@ -586,7 +588,9 @@ const Home = (props) => {
       onHandlerStateChange={(ev) => flingHandlerSettingsPanel(ev)}
     >
       <Animated.View style={[settingPanelStyles.settingsDrawer, animateSettingsPanel]}>
-        <SettingsPanel openNotebookPanel={(pageView) => openNotebookPanel(pageView)}/>
+        <SettingsPanel
+          closeHomePanel={() => toggleHomeDrawerButton()}
+          openNotebookPanel={(pageView) => openNotebookPanel(pageView)}/>
       </Animated.View>
     </FlingGestureHandler>;
 
