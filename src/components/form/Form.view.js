@@ -5,6 +5,7 @@ import {Field} from 'formik';
 import TextInputField from './TextInputField';
 import NumberInputField from './NumberInputField';
 import SelectInputField from './SelectInputField';
+import DateInputField from './DateInputField';
 import {getChoices, getSurvey, isRelevant} from './form.container';
 
 // Styles
@@ -15,13 +16,13 @@ const FormView = ({handleSubmit, isValid, setFieldValue, values}) => {
   const renderDateInput = field => {
     console.log('In renderDate', field)
     return (
-      <Field
-        component={NumberInputField}
-        name={field.name}
-        label={field.label}
-        key={field.name}
-      />
-    );
+        <Field
+          component={DateInputField}
+          name={field.name}
+          label={field.label}
+          key={field.name}
+        />
+      );
   };
 
   const renderTextInput = field => {

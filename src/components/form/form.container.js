@@ -120,6 +120,8 @@ export const validateForm = (data) => {
       else if (value) {
         if (fieldModel.type === 'integer') data[key] = parseInt(value);
         else if (fieldModel.type === 'decimal') data[key] = parseFloat(value);
+        else if (fieldModel.type === 'date') data[key] = value;
+        if (key === 'end_date' && Date.parse(data.start_date) > Date.parse(data.end_date)) errors[key] = 'Cannot be before start date';
         if (fieldModel.constraint) {
           // Max constraint
           // Look for <= in constraint, followed by a space and then any number of digits (- preceding the digits is optional)

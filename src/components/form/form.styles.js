@@ -38,6 +38,7 @@ const styles = StyleSheet.create({
   },
   fieldError: {
     color: 'red',
+    textAlign: 'center',
   },
   pickerStyle: {
     fontSize: themes.PRIMARY_TEXT_SIZE,
