@@ -28,9 +28,9 @@ const NotebookFooter = props => {
       case NotebookPages.PHOTO:
         if (props.notebookPageVisible === NotebookPages.PHOTO) return require('../../../assets/icons/StraboIcons_Oct2019/Photo_pressed.png');
         else return require('../../../assets/icons/StraboIcons_Oct2019/Photo.png');
-      case NotebookPages.SKETCH:
-        if (props.notebookPageVisible === NotebookPages.SKETCH) return require('../../../assets/icons/StraboIcons_Oct2019/Sketch_pressed.png');
-        else return require('../../../assets/icons/StraboIcons_Oct2019/Sketch.png');
+      // case NotebookPages.SKETCH:
+      //   if (props.notebookPageVisible === NotebookPages.SKETCH) return require('../../../assets/icons/StraboIcons_Oct2019/Sketch_pressed.png');
+      //   else return require('../../../assets/icons/StraboIcons_Oct2019/Sketch.png');
     }
   };
 
@@ -61,10 +61,11 @@ const NotebookFooter = props => {
         style={footerStyle.footerIcon}
         onPress={() => props.onPress(IconButtons.CAMERA)}
       />
-      <IconButton
-        source={getPageIcon(NotebookPages.SKETCH)}
-        style={footerStyle.footerIcon}
-      />
+      {/*<IconButton*/}
+      {/*  source={getPageIcon(NotebookPages.SKETCH)}*/}
+      {/*  style={footerStyle.footerIcon}*/}
+      {/*  // onPress={() => props.openPage(NotebookPages.SKETCH)}*/}
+      {/*/>*/}
     </View>
   );
 };
