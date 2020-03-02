@@ -60,8 +60,8 @@ export const ShortcutToggleButtons = {
     NAME: 'Photo',
     ICON: require('../../assets/icons/StraboIcons_Oct2019/PhotoButton.png'),
   },
-  SKETCH: {
-    NAME: 'Sketch',
-    ICON: require('../../assets/icons/StraboIcons_Oct2019/SketchButton.png'),
-  },
+  // SKETCH: {
+  //   NAME: 'Sketch',
+  //   ICON: require('../../assets/icons/StraboIcons_Oct2019/SketchButton.png'),
+  // },
 };
