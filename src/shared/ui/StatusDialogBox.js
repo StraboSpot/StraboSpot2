@@ -15,7 +15,7 @@ const StatusDialogBox = (props) => {
         width={275}
         visible={props.visible}
         dialogAnimation={new FadeAnimation({
-          animationDuration: 250,
+          animationDuration: 300,
           useNativeDriver: true,
         })}
         onTouchOutside={props.onTouchOutside}
