@@ -67,7 +67,7 @@ const MeasurementItem = (props) => {
       <TouchableOpacity
         style={props.selectedIds.includes(props.item.item.id) ? stylesCommon.rowContainerInverse : stylesCommon.rowContainer}
         onPress={() => props.onPress()}>
-        <View style={stylesCommon.row}>
+        <View style={[stylesCommon.row, {flexDirection: 'row'}]}>
           <View style={stylesCommon.fillWidthSide}>
             {renderMeasurementText(props.item.item)}
           </View>
