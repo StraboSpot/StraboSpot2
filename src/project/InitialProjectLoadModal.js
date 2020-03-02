@@ -152,7 +152,7 @@ const InitialProjectLoadModal = (props) => {
         <Spacer/>
         {/*<Text>Need fields for a new project here.</Text>*/}
         <View style={{height: 400}}>
-          <NewProject/>
+          <NewProject onPress={() => props.closeModal()}/>
         </View>
         <View>
           <Button
