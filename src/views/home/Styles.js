@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
   dialogBox: {
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
     borderRadius: 10,
-    width: 300,
+    width: 400,
   },
   dialogTitleContainer: {
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,

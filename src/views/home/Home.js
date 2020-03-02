@@ -120,7 +120,7 @@ const Home = (props) => {
     return function cleanup() {
       Dimensions.removeEventListener('change', deviceOrientation);
     };
-  }, []);
+  }, [isProjectLoadSelectionModalVisible]);
 
   const cancelEdits = async () => {
     await mapViewComponent.current.cancelEdits();
