@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Text, View} from 'react-native';
+import {Platform, Text, View} from 'react-native';
 import {Button, ListItem} from 'react-native-elements';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
@@ -9,8 +9,6 @@ import DateDialogBox from '../../shared/ui/StatusDialogBox';
 // Styles
 import styles from './form.styles';
 import stylesCommon from '../../shared/common.styles';
-
-
 
 const DateInputField = ({
                           field: {name, onBlur, onChange, value},
@@ -29,13 +27,30 @@ const DateInputField = ({
     console.log(name, value, touched, 'Errors', errors);
   }, [errors.end_date]);
 
-  const showDatPickerHandler = (type) => {
-    setShowDatePickerModal(!showDatePickerModal);
+  const changeDate = (event, selectedDate) => {
+    console.log('Change Date', name, event, selectedDate);
+    setShowDatePickerModal(false);
+    if (event.type === 'set') {
+      setDate(selectedDate);
+      setFieldValue(name, selectedDate);
+    }
   };
 
-  const changeDate = (event, selectedDate) => {
-    console.log('Change Date', name, event);
-    setDate(selectedDate);
+  const renderDatePicker = () => {
+    if (showDatePickerModal) {
+      return (
+        <View style={{width: '100%'}}>
+          <Text>Date</Text>
+          <DateTimePicker
+            mode={'date'}
+            value={date ? date : new Date()}
+            onChange={(e, selectedDate) => changeDate(e, selectedDate)}
+            display='default'
+          />
+        </View>
+      );
+    }
+    else return null;
   };
 
   const renderDatePickerDialogBox = () => {
@@ -50,18 +65,13 @@ const DateInputField = ({
           <DateTimePicker
             mode={'date'}
             value={date ? date : new Date()}
-            onChange={(e, selectedDate) => {
-              changeDate(e, selectedDate);
-            }}
+            onChange={(e, selectedDate) => changeDate(e, selectedDate)}
             display='default'
           />
           <Button
             title={'Close'}
             type={'clear'}
-            onPress={() => {
-              setFieldValue(name, date);
-              setShowDatePickerModal(false);
-            }}
+            onPress={() => setShowDatePickerModal(false)}
           />
         </View>
       </DateDialogBox>
@@ -79,11 +89,11 @@ const DateInputField = ({
             title={title}
             containerStyle={{padding: 0, alignContent: 'flex-start'}}
             titleStyle={styles.fieldValue}
-            onPress={() => showDatPickerHandler(props.label)}
+            onPress={() => setShowDatePickerModal(true)}
           />
           {name !== 'start_date' ? errors[name] && <Text style={styles.fieldError}>{errors[name]}</Text> : null}
         </View>
-        {renderDatePickerDialogBox()}
+        {Platform.OS === 'ios' ? renderDatePickerDialogBox() : renderDatePicker()}
       </View>
     </View>
   );
