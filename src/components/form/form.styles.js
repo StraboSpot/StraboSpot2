@@ -13,6 +13,8 @@ const styles = StyleSheet.create({
   },
   fieldValue: {
     paddingLeft: 10,
+    paddingTop: 0,
+    paddingBottom: 0,
     fontSize: themes.PRIMARY_TEXT_SIZE,
     color: themes.SECONDARY_ITEM_TEXT_COLOR,
   },
@@ -27,23 +29,31 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   notesFieldValueContainer: {
-    justifyContent: 'center',
     height: 90,
-  },
-  fieldValueNotes: {
-    textAlignVertical: 'top',
     paddingLeft: 10,
+  },
+  notesFieldValue: {
+    textAlignVertical: 'top',
+    paddingLeft: 0,
+    paddingTop: 5,
+    paddingBottom: 5,
     fontSize: themes.PRIMARY_TEXT_SIZE,
+    color: themes.SECONDARY_ITEM_TEXT_COLOR,
+  },
+  dateFieldValueContainer: {
+    padding: 5,
+    alignContent: 'flex-start',
+  },
+  selectFieldValue: {
+    fontSize: themes.PRIMARY_TEXT_SIZE,
+    paddingLeft: 10,
+    paddingTop: 0,
+    paddingBottom: 0,
     color: themes.SECONDARY_ITEM_TEXT_COLOR,
   },
   fieldError: {
     color: 'red',
     textAlign: 'center',
-  },
-  pickerStyle: {
-    fontSize: themes.PRIMARY_TEXT_SIZE,
-    paddingLeft: 10,
-    color: themes.SECONDARY_ITEM_TEXT_COLOR,
   },
 });
 export default styles;

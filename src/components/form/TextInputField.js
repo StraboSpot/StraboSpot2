@@ -22,7 +22,7 @@ const TextInputField = ({
           <TextInput
             onChangeText={onChange(name)}
             onBlur={onBlur(name)}
-            style={styles.fieldValueNotes}
+            style={styles.notesFieldValue}
             value={value}
             multiline={true}
             numberOfLines={3}
@@ -35,19 +35,13 @@ const TextInputField = ({
   else {
     return (
       <View style={stylesCommon.rowContainer}>
-        <View style={stylesCommon.row}>
-          <View style={stylesCommon.fixedWidthSide}>
-            <Text style={styles.fieldLabel}>{props.label}</Text>
-          </View>
-          <View style={stylesCommon.fillWidthSide}>
-            <TextInput
-              onChangeText={onChange(name)}
-              onBlur={onBlur(name)}
-              style={styles.fieldValue}
-              value={value}
-            />
-          </View>
-        </View>
+        <Text style={styles.fieldLabel}>{props.label}</Text>
+        <TextInput
+          onChangeText={onChange(name)}
+          onBlur={onBlur(name)}
+          style={styles.fieldValue}
+          value={value}
+        />
         {errors[name] && <Text style={styles.fieldError}>{errors[name]}</Text>}
       </View>
     );

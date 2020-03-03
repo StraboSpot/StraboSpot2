@@ -20,20 +20,14 @@ const NumberInputField = ({
 
   return (
     <View style={stylesCommon.rowContainer}>
-      <View style={stylesCommon.row}>
-        <View style={stylesCommon.fixedWidthSide}>
-          <Text style={styles.fieldLabel}>{props.label}</Text>
-        </View>
-        <View style={stylesCommon.fillWidthSide}>
-          <TextInput
-            onChangeText={onChange(name)}
-            onBlur={onBlur(name)}
-            style={styles.fieldValue}
-            value={getDisplayValue(value)}
-            keyboardType={'numeric'}
-          />
-        </View>
-      </View>
+      <Text style={styles.fieldLabel}>{props.label}</Text>
+      <TextInput
+        onChangeText={onChange(name)}
+        onBlur={onBlur(name)}
+        style={styles.fieldValue}
+        value={getDisplayValue(value)}
+        keyboardType={'numeric'}
+      />
       {errors[name] && <Text style={styles.fieldError}>{errors[name]}</Text>}
     </View>
   );

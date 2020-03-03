@@ -80,7 +80,7 @@ const commonStyles = StyleSheet.create({
     borderColor: themes.PRIMARY_BACKGROUND_COLOR,
     borderWidth: 1,
     marginLeft: 5,
-    marginRight: 5
+    marginRight: 5,
   },
   standardButtonText: {
     color: themes.PRIMARY_ACCENT_COLOR,

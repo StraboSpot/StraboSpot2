@@ -80,21 +80,15 @@ const DateInputField = ({
 
   return (
     <View style={stylesCommon.rowContainer}>
-      <View style={stylesCommon.row}>
-        <View style={stylesCommon.fixedWidthSide}>
-          <Text style={styles.fieldLabel}>{props.label}</Text>
-        </View>
-        <View>
-          <ListItem
-            title={title}
-            containerStyle={{padding: 0, alignContent: 'flex-start'}}
-            titleStyle={styles.fieldValue}
-            onPress={() => setShowDatePickerModal(true)}
-          />
-          {name !== 'start_date' ? errors[name] && <Text style={styles.fieldError}>{errors[name]}</Text> : null}
-        </View>
-        {Platform.OS === 'ios' ? renderDatePickerDialogBox() : renderDatePicker()}
-      </View>
+      <Text style={styles.fieldLabel}>{props.label}</Text>
+      <ListItem
+        title={title}
+        containerStyle={styles.dateFieldValueContainer}
+        titleStyle={styles.fieldValue}
+        onPress={() => setShowDatePickerModal(true)}
+      />
+      {name !== 'start_date' ? errors[name] && <Text style={styles.fieldError}>{errors[name]}</Text> : null}
+      {Platform.OS === 'ios' ? renderDatePickerDialogBox() : renderDatePicker()}
     </View>
   );
 };

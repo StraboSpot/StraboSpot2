@@ -19,27 +19,21 @@ const SelectInputField = ({
   };
 
   const pickerStyle = {
-    inputIOS: styles.pickerStyle,
-    inputAndroid: styles.pickerStyle,
+    inputIOS: styles.selectFieldValue,
+    inputAndroid: styles.selectFieldValue,
   };
 
   return (
     <View style={stylesCommon.rowContainer}>
-      <View style={stylesCommon.row}>
-        <View style={stylesCommon.fixedWidthSide}>
-          <Text style={styles.fieldLabel}>{props.label}</Text>
-        </View>
-        <View style={stylesCommon.fillWidthSide}>
-          <Picker
-            placeholder={placeholder}
-            onValueChange={onChange(name)}
-            useNativeAndroidPickerStyle={false}
-            items={props.choices}
-            style={pickerStyle}
-            value={value}
-          />
-        </View>
-      </View>
+      <Text style={styles.fieldLabel}>{props.label}</Text>
+      <Picker
+        placeholder={placeholder}
+        onValueChange={onChange(name)}
+        useNativeAndroidPickerStyle={false}
+        items={props.choices}
+        style={pickerStyle}
+        value={value}
+      />
       {errors[name] && <Text style={styles.fieldError}>{errors[name]}</Text>}
     </View>
   );
