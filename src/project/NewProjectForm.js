@@ -1,16 +1,21 @@
 import React, {useRef} from 'react';
-import {ScrollView, Text, TextInput, View} from 'react-native';
-import {Formik} from 'formik';
+import {ScrollView, View} from 'react-native';
 import {Button} from 'react-native-elements';
-import {getForm, hasErrors, setForm, showErrors, validateForm} from '../components/form/form.container';
-import FormView from '../components/form/Form.view';
-import {animatePanels, isEmpty} from '../shared/Helpers';
-import styles from '../shared/ui/ui.styles';
-import Divider from '../components/settings-panel/HomePanelDivider';
 import {useDispatch, useSelector} from 'react-redux';
+import {Formik} from 'formik';
+
+import {getForm, hasErrors, setForm, showErrors, validateForm} from '../components/form/form.container';
+import {isEmpty} from '../shared/Helpers';
+import Divider from '../components/settings-panel/HomePanelDivider';
+import FormView from '../components/form/Form.view';
+
+// Constants
 import {projectReducers} from './Project.constants';
 import {spotReducers} from '../spots/Spot.constants';
 import {homeReducers} from '../views/home/Home.constants';
+
+// Styles
+import styles from '../shared/ui/ui.styles';
 
 const NewProjectForm = (props) => {
   const form = useRef(null);

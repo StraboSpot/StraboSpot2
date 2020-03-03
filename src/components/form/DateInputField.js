@@ -1,12 +1,15 @@
 import React, {useEffect, useState} from 'react';
 import {Text, View} from 'react-native';
+import {Button, ListItem} from 'react-native-elements';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import moment from 'moment';
+
+import DateDialogBox from '../../shared/ui/StatusDialogBox';
+
+// Styles
 import styles from './form.styles';
 import stylesCommon from '../../shared/common.styles';
-import moment from 'moment';
-import {Button, ListItem} from 'react-native-elements';
-import DateDialogBox from '../../shared/ui/StatusDialogBox';
-import {isEmpty} from '../../shared/Helpers';
+
 
 
 const DateInputField = ({
@@ -14,7 +17,6 @@ const DateInputField = ({
                           form: {errors, touched, setFieldValue},
                           ...props
                         }) => {
-  // console.log('ASASASASASD', name, value)
   const [showDatePickerModal, setShowDatePickerModal] = useState(false);
   const [date, setDate] = useState(value);
 
