@@ -19,19 +19,7 @@ const NewProjectForm = (props) => {
   const dispatch = useDispatch();
 
   const initialValues = {
-    project_name: '',
     start_date: new Date(),
-    end_date: new Date(),
-    purpose_of_study: '',
-    other_team_members: '',
-    area_of_interest: '',
-    instruments: '',
-    gps_datum: '',
-    magnetic_declination: null,
-    Grant_ID: '',
-    Funding_Agency: '',
-    ORCID: '',
-    notes: '',
   };
 
   const onSubmitForm = () => {
@@ -57,9 +45,9 @@ const NewProjectForm = (props) => {
 
             dispatch({type: projectReducers.PROJECT_ADD, description: form.current.state.values});
           if (!isEmpty(currentProject)) {
-            console.log('1', form.current.state.values);
+            // console.log('1', form.current.state.values);
             await dispatch({type: spotReducers.CLEAR_SPOTS});
-            console.log('2', form.current.state.values);
+            // console.log('2', form.current.state.values);
             dispatch({type: projectReducers.DATASETS.DATASETS_UPDATE, datasets: {}});
           }
             if (isProjectLoadSelectionModalVisible) {
