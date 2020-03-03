@@ -74,7 +74,7 @@ const DateInputField = ({
         </View>
         <View>
           <ListItem
-            title={moment(value).format('MM/DD/YYYY')}
+            title={title}
             containerStyle={{padding: 0, alignContent: 'flex-start'}}
             titleStyle={styles.fieldValue}
             onPress={() => showDatPickerHandler(props.label)}
