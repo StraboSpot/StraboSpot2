@@ -12,7 +12,7 @@ const StatusDialogBox = (props) => {
     <React.Fragment>
       <Dialog
         dialogStyle={styles.dialogBox}
-        width={275}
+        width={300}
         visible={props.visible}
         dialogAnimation={new FadeAnimation({
           animationDuration: 300,
