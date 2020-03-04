@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
   fieldValue: {
     paddingLeft: 10,
     paddingTop: 0,
-    paddingBottom: 0,
+    // paddingBottom: 5,
     fontSize: themes.PRIMARY_TEXT_SIZE,
     color: themes.SECONDARY_ITEM_TEXT_COLOR,
   },
@@ -41,7 +41,9 @@ const styles = StyleSheet.create({
     color: themes.SECONDARY_ITEM_TEXT_COLOR,
   },
   dateFieldValueContainer: {
-    padding: 5,
+    paddingTop: 0,
+    paddingBottom: 0,
+    paddingLeft: 0,
     alignContent: 'flex-start',
   },
   selectFieldValue: {

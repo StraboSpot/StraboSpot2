@@ -49,7 +49,7 @@
     "label": "End Date",
     "hint": "",
     "required": false,
-    "constraint_message": "End date cannot be greater then Start Date",
+    "constraint_message": "End Date cannot be greater then Start Date",
     "constraint": "",
     "appearance": "",
     "calculation": ""
@@ -58,6 +58,17 @@
     "type": "text",
     "name": "purpose_of_study",
     "label": "Purpose of Study",
+    "hint": "",
+    "required": false,
+    "constraint_message": "",
+    "constraint": "",
+    "appearance": "",
+    "calculation": ""
+  },
+  {
+    "type": "text",
+    "name": "ORCID",
+    "label": "ORCID",
     "hint": "",
     "required": false,
     "constraint_message": "",
@@ -144,17 +155,6 @@
   },
   {
     "type": "text",
-    "name": "ORCID",
-    "label": "ORCID",
-    "hint": "",
-    "required": false,
-    "constraint_message": "",
-    "constraint": "",
-    "appearance": "",
-    "calculation": ""
-  },
-  {
-    "type": "text",
     "name": "notes",
     "label": "Notes",
     "hint": "",
@@ -173,6 +173,6 @@
     "constraint_message": "",
     "constraint": "",
     "appearance": "",
-    "calculation": "'vNcxxcXqz7UBAn2GbQZU99'"
+    "calculation": "'v5yJgMWedwUEJiJCCnQvPk'"
   }
 ]
