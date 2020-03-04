@@ -1,55 +1,56 @@
 import React from 'react';
-import {Provider} from 'react-redux';
-import {PersistGate} from 'redux-persist/integration/react';
-import configureStore from './src/store/ConfigureStore';
 import {createAppContainer} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
-import SignIn from './src/views/sign-in/SignIn';
-import ImageInfo from './src/components/images/ImageInfo.view';
-import SignUp from './src/views/sign-up/SignUp';
-import Home from './src/views/home/Home';
+import {Provider} from 'react-redux';
+import {PersistGate} from 'redux-persist/integration/react';
 import 'react-native-gesture-handler';
+
+import configureStore from './src/store/ConfigureStore';
+import Home from './src/views/home/Home';
+import ImageInfo from './src/components/images/ImageInfo.view';
 import Loading from './src/shared/ui/Loading';
+import SignIn from './src/views/sign-in/SignIn';
+import SignUp from './src/views/sign-up/SignUp';
 
 const App = () => {
-   const {store, persistor} = configureStore();
+  const {store, persistor} = configureStore();
 
-    const RootStack = createStackNavigator(
-      {
-        HomeScreen: {
-          screen: Home,
-          navigationOptions: {
-            gesturesEnabled: false,
-          },
-        },
-        SignIn: {
-          screen: SignIn,
-        },
-        SignUp: {
-          screen: SignUp,
-        },
-        ImageInfo: {
-          screen: ImageInfo,
-          navigationOptions: {
-            gesturesEnabled: false,
-          },
+  const RootStack = createStackNavigator(
+    {
+      HomeScreen: {
+        screen: Home,
+        navigationOptions: {
+          gesturesEnabled: false,
         },
       },
-      {
-        initialRouteName: 'SignIn',
-        headerMode: 'none',
+      SignIn: {
+        screen: SignIn,
       },
-    );
+      SignUp: {
+        screen: SignUp,
+      },
+      ImageInfo: {
+        screen: ImageInfo,
+        navigationOptions: {
+          gesturesEnabled: false,
+        },
+      },
+    },
+    {
+      initialRouteName: 'SignIn',
+      headerMode: 'none',
+    },
+  );
 
-    let Navigation = createAppContainer(RootStack);
+  let Navigation = createAppContainer(RootStack);
 
-    return (
-      <Provider store={store}>
-        <PersistGate loading={<Loading />} persistor={persistor}>
-          <Navigation />
-        </PersistGate>
-      </Provider>
-    );
+  return (
+    <Provider store={store}>
+      <PersistGate loading={<Loading/>} persistor={persistor}>
+        <Navigation/>
+      </PersistGate>
+    </Provider>
+  );
 };
 
- export default App;
+export default App;
