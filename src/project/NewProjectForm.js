@@ -8,18 +8,17 @@ import {getForm, hasErrors, setForm, showErrors, validateForm} from '../componen
 import {isEmpty} from '../shared/Helpers';
 import Divider from '../components/settings-panel/HomePanelDivider';
 import FormView from '../components/form/Form.view';
+import useProjectHook from './useProject';
 
 // Constants
-import {projectReducers} from './Project.constants';
-import {spotReducers} from '../spots/Spot.constants';
 import {homeReducers} from '../views/home/Home.constants';
 
 // Styles
 import styles from '../shared/ui/ui.styles';
 
 const NewProjectForm = (props) => {
+  const [useProject] = useProjectHook();
   const form = useRef(null);
-  const currentProject = useSelector(state => state.project.project);
   const isProjectLoadSelectionModalVisible = useSelector(state => state.home.isProjectLoadSelectionModalVisible);
   const dispatch = useDispatch();
 
@@ -32,9 +31,9 @@ const NewProjectForm = (props) => {
 
   };
 
-  const saveForm = () => {
+  const saveForm = async () => {
+    const formValues = form.current.state.values;
     if (!isEmpty(getForm())) {
-
       return form.current.submitForm().then(async () => {
         console.log('Saved Form')
         if (hasErrors(form)) {
@@ -46,15 +45,8 @@ const NewProjectForm = (props) => {
           return Promise.reject('Project name is undefined');
         }
         else {
-            console.table(form.current.state.values);
-
-            dispatch({type: projectReducers.PROJECT_ADD, description: form.current.state.values});
-          if (!isEmpty(currentProject)) {
-            // console.log('1', form.current.state.values);
-            await dispatch({type: spotReducers.CLEAR_SPOTS});
-            // console.log('2', form.current.state.values);
-            dispatch({type: projectReducers.DATASETS.DATASETS_UPDATE, datasets: {}});
-          }
+         const newProject = await useProject.createProject(formValues);
+         console.log('New Project created', newProject);
             if (isProjectLoadSelectionModalVisible) {
               dispatch({type: homeReducers.SET_PROJECT_LOAD_SELECTION_MODAL_VISIBLE, value: false});
             }

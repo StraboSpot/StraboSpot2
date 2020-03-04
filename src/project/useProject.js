@@ -1,11 +1,13 @@
 import {useDispatch, useSelector} from 'react-redux';
 import {homeReducers} from '../views/home/Home.constants';
-import {isEmpty} from '../shared/Helpers';
+import {getNewId, isEmpty} from '../shared/Helpers';
 
 // Hooks
 import useServerRequests from '../services/useServerRequests';
 import useImagesHook from '../components/images/useImages';
 import useSpotsHook from '../spots/useSpots';
+import {spotReducers} from '../spots/Spot.constants';
+import {projectReducers} from './Project.constants';
 
 const useProject = () => {
   const dispatch = useDispatch();
@@ -18,6 +20,9 @@ const useProject = () => {
 
   const defaultTypes = ['geomorphic', 'hydrologic', 'paleontological', 'igneous', 'metamorphic', 'sedimentological',
     'other'];
+  const defaultRelationshipTypes = ['cross-cuts', 'mutually cross-cuts', 'is cut by', 'is younger than', 'is older than',
+    'is lower metamorphic grade than', 'is higher metamorphic grade than', 'is included within', 'includes',
+    'merges with'];
 
   const checkValidDateTime = (spot) => {
     if (!spot.properties.date || !spot.properties.time) {
@@ -30,6 +35,51 @@ const useProject = () => {
       console.log('SPOT', spot);
       return spot;
     }
+  };
+
+  const createDefaultDataset = () => {
+    const id = getNewId();
+    const defaultDataset = {
+      id: id,
+      name: 'Default',
+      date: new Date(),
+      modified_timestamp: Date.now(),
+    };
+    return defaultDataset;
+  };
+
+  const createProject = async (descriptionData) => {
+    await destroyProject();
+    const id = getNewId();
+    const currentProject = {
+      id: id,
+      description: descriptionData,
+      date: new Date(),
+      modified_timestamp: Date.now(),
+      other_features: defaultTypes,
+      relationship_types: defaultRelationshipTypes,
+    };
+
+    console.log('new project', currentProject);
+    dispatch({type: projectReducers.PROJECT_ADD, description: currentProject});
+    await saveDatasets()
+
+  };
+
+  const saveDatasets = async () => {
+    if (isEmpty(datasets)) {
+     const defaultDataset = await createDefaultDataset();
+     dispatch({type: projectReducers.DATASETS.DATASET_ADD, dataset: defaultDataset});
+    }
+  };
+
+  const destroyProject = async () => {
+    // if (!isEmpty(project)) {
+      await dispatch({type: projectReducers.PROJECT_CLEAR});
+      await dispatch({type: spotReducers.CLEAR_SPOTS});
+      await dispatch({type: projectReducers.DATASETS.DATASETS_UPDATE, datasets: {}});
+    // }
+    return Promise.resolve('Destroyed');
   };
 
   const getCurrentDataset = () => {
@@ -156,6 +206,7 @@ const useProject = () => {
   };
 
   const projectHelpers = {
+    createProject: createProject,
     getCurrentDataset: getCurrentDataset,
     loadProjectRemote: loadProjectRemote,
     uploadDatasets: uploadDatasets,

@@ -15,11 +15,12 @@ export const projectsReducer = (state = initialState, action) => {
     case projectReducers.PROJECT_ADD:
       return {
         ...state,
-        project: {
-          ...state.project,
-          date: new Date(),
-          description: action.description,
-        },
+        project: action.description,
+      };
+    case projectReducers.PROJECT_CLEAR:
+      return {
+        ...state,
+        project: {},
       };
     case projectReducers.UPDATE_PROJECT:
       console.log(action.field, action.value);
@@ -32,6 +33,12 @@ export const projectsReducer = (state = initialState, action) => {
       return {
         ...state,
         project: updatedProject,
+      };
+    case projectReducers.DATASETS.DATASET_ADD:
+
+      return {
+        ...state,
+        datasets: {...state.datasets, [action.dataset.id]: action.dataset},
       };
     case projectReducers.DATASETS.DATASETS_UPDATE: {
       return {
