@@ -1,11 +1,11 @@
 import {applyMiddleware, createStore, compose, combineReducers} from 'redux';
-import {notebookReducer} from '../components/notebook-panel/notebook.reducers';
-import {mapReducer} from '../components/maps/maps.reducer';
-import {spotReducer} from '../spots/spot.reducers';
-import {homeReducer} from '../views/home/Home.reducer';
-import {userReducer} from '../services/user/UserProfile.reducer';
-import {projectsReducer} from '../project/Projects.reducer';
-import {settingsPanelReducer} from '../components/settings-panel/settingsPanel.reducer';
+import {notebookReducer} from '../modules/notebook-panel/notebook.reducers';
+import {mapReducer} from '../modules/maps/maps.reducer';
+import {spotReducer} from '../modules/spots/spot.reducers';
+import {homeReducer} from '../modules/home/home.reducer';
+import {userReducer} from '../modules/user/userProfile.reducer';
+import {projectsReducer} from '../modules/project/projects.reducer';
+import {mainMenuPanelReducer} from '../modules/main-menu-panel/mainMenuPanel.reducer';
 import {createLogger} from 'redux-logger';
 import {persistStore, persistReducer} from 'redux-persist';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -25,7 +25,7 @@ const appReducer = combineReducers({
   spot: spotReducer,
   map: mapReducer,
   notebook: notebookReducer,
-  settingsPanel: settingsPanelReducer,
+  settingsPanel: mainMenuPanelReducer,
   user: userReducer,
   project: projectsReducer,
 });

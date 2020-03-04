@@ -8,7 +8,7 @@ const Loading = props => {
   return (
     <React.Fragment>
       <View style={[styles.backdrop, props.style]}>
-        {/*<View style={styles.loadingContainer}>*/}
+        {/*<View style={home.loadingContainer}>*/}
         <BallIndicator
           color={'darkgrey'}
           count={8}

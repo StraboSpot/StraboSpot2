@@ -27,10 +27,10 @@ const slider = (props) => {
       </View>
 
       <View style={styles.sliderTextContainer}>
-        {/*<View style={styles.sliderTextContainer}>*/}
+        {/*<View style={home.sliderTextContainer}>*/}
         <Text style={styles.sliderText}>{props.leftText}</Text>
         {/*</View>*/}
-        {/*<View style={styles.sliderTextContainer} >*/}
+        {/*<View style={home.sliderTextContainer} >*/}
         <Text style={styles.sliderText}>{props.rightText}</Text>
         {/*</View>*/}
       </View>

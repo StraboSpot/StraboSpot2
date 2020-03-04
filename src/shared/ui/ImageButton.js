@@ -26,7 +26,7 @@ const imageButton = props => {
 
 };
 
-// const styles = StyleSheet.create({
+// const home = StyleSheet.create({
 //   button: {
 //     paddingLeft: 15,
 //     paddingRight: 15,
