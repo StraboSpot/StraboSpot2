@@ -18,6 +18,7 @@ import useServerRequests from '../../services/useServerRequests';
 // import sharedDialogStyles from '../shared/common.home';
 // import ProgressCircle from '../shared/ui/ProgressCircle';
 import {homeReducers} from '../home/home.constants';
+import useSpotsHook from '../spots/useSpots';
 
 const ProjectList = (props) => {
   const currentProject = useSelector(state => state.project.project);
@@ -33,6 +34,7 @@ const ProjectList = (props) => {
   // Server calls
   const [serverRequests] = useServerRequests();
   const [useProject] = useProjectHook();
+  const [useSpots] = useSpotsHook();
 
   useEffect(() => {
     getAllProjects();
@@ -60,11 +62,20 @@ const ProjectList = (props) => {
     }
     else {
       console.log('Saved datasets:', projectDatasetsFromServer);
-      projectDatasetsFromServer.datasets.map(dataset => {
-        dataset.active = false;
-      });
+      if (projectDatasetsFromServer.datasets.length === 1) {
+        projectDatasetsFromServer.datasets[0].active = true;
+        projectDatasetsFromServer.datasets[0].current = true;
+        console.log('Downloaded Spots');
+      }
+      else {
+        projectDatasetsFromServer.datasets.map(dataset => {
+          dataset.active = false;
+        });
+      }
+
       const datasets = Object.assign({}, ...projectDatasetsFromServer.datasets.map(item => ({[item.id]: item})));
       dispatch({type: ProjectActions.projectReducers.DATASETS.DATASETS_UPDATE, datasets: datasets});
+      await useSpots.downloadSpots(projectDatasetsFromServer.datasets[0], userData.encoded_login);
     }
   };
 
@@ -121,7 +132,7 @@ const ProjectList = (props) => {
     else {
       setShowDialog(false);
     }
-    dispatch({type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: SettingsMenuItems.SETTINGS_MAIN});
+    dispatch({type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: SettingsMenuItems.MANAGE.ACTIVE_PROJECTS});
   };
 
   const renderDialog = () => {

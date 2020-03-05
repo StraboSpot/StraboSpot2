@@ -47,7 +47,8 @@ export const projectsReducer = (state = initialState, action) => {
       };
     }
     case projectReducers.DATASETS.ADD_SPOTS_IDS_TO_DATASET: {
-      const spotIds = state.datasets[action.datasetId].spotIds ? [...state.datasets[action.datasetId].spotIds, ...action.spotIds] : action.spotIds;
+      const spotIds = state.datasets[action.datasetId].spotIds ?
+        [...state.datasets[action.datasetId].spotIds, ...action.spotIds] : action.spotIds;
       const spotIdsUnique = [...new Set(spotIds)];
       const dataset = {...state.datasets[action.datasetId], spotIds: spotIdsUnique};
       return {
@@ -56,7 +57,7 @@ export const projectsReducer = (state = initialState, action) => {
       };
     }
     case projectReducers.DATASETS.DELETE_SPOT_ID: {
-      console.log(action.datasetId, '&', action.filteredList)
+      console.log(action.datasetId, '&', action.filteredList);
       const dataset = {...state.datasets[action.datasetId], spotIds: action.filteredList};
       return {
         ...state,
