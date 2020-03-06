@@ -117,11 +117,14 @@ const Home = (props) => {
     Dimensions.addEventListener('change', deviceOrientation);
     console.log('Initializing Home page');
     initialize().then((res) => dispatch({type: homeReducers.SET_PROJECT_LOAD_SELECTION_MODAL_VISIBLE, value: res}));
-    console.log('Home page initialized and openProject Modal is', isProjectLoadSelectionModalVisible);
     return function cleanup() {
       Dimensions.removeEventListener('change', deviceOrientation);
     };
-  }, [isProjectLoadSelectionModalVisible]);
+  }, []);
+
+  useEffect(() => {
+    console.log('Render 2 in Home', props.homePageVisible);
+  }, [props.homePageVisible]);
 
   const cancelEdits = async () => {
     await mapViewComponent.current.cancelEdits();
@@ -404,6 +407,7 @@ const Home = (props) => {
   const renderLoadProjectFromModal = () => {
     return (
       <InitialProjectLoadModal
+        openMainMenu={() => toggleHomeDrawerButton()}
         visible={isProjectLoadSelectionModalVisible}
         closeModal={() => closeInitialProjectLoadModal()}
       />
