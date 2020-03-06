@@ -46,6 +46,11 @@ export const projectsReducer = (state = initialState, action) => {
         datasets: action.datasets,
       };
     }
+    case projectReducers.DATASETS.DATASETS_CLEAR:
+      return {
+        ...state,
+        datasets: {},
+      };
     case projectReducers.DATASETS.ADD_SPOTS_IDS_TO_DATASET: {
       const spotIds = state.datasets[action.datasetId].spotIds ?
         [...state.datasets[action.datasetId].spotIds, ...action.spotIds] : action.spotIds;
@@ -65,19 +70,6 @@ export const projectsReducer = (state = initialState, action) => {
         modified_timestamp: Date.now(),
       };
     }
-    // case projectReducers.DATASETS.ADD_NEW_SPOT_ID_TO_DATASET:
-    //   console.log(action.datasetId);
-    //   console.log(state.datasets);
-    //   return {
-    //     ...state,
-    //     datasets: {
-    //       ...state.datasets,
-    //       [action.datasetId]: {
-    //         ...state.datasets[action.datasetId],
-    //         spotIds: [...state.datasets[action.datasetId].spotIds, action.spotId],
-    //       },
-    //     },
-    //   };
   }
   return state;
 };

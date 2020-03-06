@@ -49,7 +49,6 @@ const useProject = () => {
   };
 
   const createProject = async (descriptionData) => {
-    await destroyProject();
     const id = getNewId();
     const currentProject = {
       id: id,
@@ -59,11 +58,15 @@ const useProject = () => {
       other_features: defaultTypes,
       relationship_types: defaultRelationshipTypes,
     };
-
-    console.log('new project', currentProject);
     dispatch({type: projectReducers.PROJECT_ADD, description: currentProject});
-    await saveDatasets()
+    const defaultDataset = await createDefaultDataset();
+    dispatch({type: projectReducers.DATASETS.DATASET_ADD, dataset: defaultDataset});
+  };
 
+  const initializeNewProject = async (descriptionData) => {
+    await destroyOldProject();
+    await createProject(descriptionData);
+    return Promise.resolve();
   };
 
   const saveDatasets = async () => {
@@ -71,15 +74,16 @@ const useProject = () => {
      const defaultDataset = await createDefaultDataset();
      dispatch({type: projectReducers.DATASETS.DATASET_ADD, dataset: defaultDataset});
     }
+    else console.log('Need to save dataset');
   };
 
-  const destroyProject = async () => {
+  const destroyOldProject = async () => {
     // if (!isEmpty(project)) {
       await dispatch({type: projectReducers.PROJECT_CLEAR});
       await dispatch({type: spotReducers.CLEAR_SPOTS});
-      await dispatch({type: projectReducers.DATASETS.DATASETS_UPDATE, datasets: {}});
+      await dispatch({type: projectReducers.DATASETS.DATASETS_CLEAR});
     // }
-    return Promise.resolve('Destroyed');
+    return Promise.resolve();
   };
 
   const getCurrentDataset = () => {
@@ -208,6 +212,7 @@ const useProject = () => {
   const projectHelpers = {
     createProject: createProject,
     getCurrentDataset: getCurrentDataset,
+    initializeNewProject: initializeNewProject,
     loadProjectRemote: loadProjectRemote,
     uploadDatasets: uploadDatasets,
     uploadProject: uploadProject,
