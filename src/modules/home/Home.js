@@ -124,6 +124,9 @@ const Home = (props) => {
 
   useEffect(() => {
     console.log('Render 2 in Home', props.homePageVisible);
+    return function homeCleanUp () {
+      console.log('Cleaned up in Home');
+    }
   }, [props.homePageVisible]);
 
   const cancelEdits = async () => {
