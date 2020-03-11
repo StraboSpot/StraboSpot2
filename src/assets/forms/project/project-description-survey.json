@@ -6,8 +6,8 @@
     "hint": "",
     "required": null,
     "constraint_message": "",
-    "constraint": "",
     "appearance": "",
+    "constraint": "",
     "calculation": ""
   },
   {
@@ -17,8 +17,19 @@
     "hint": "",
     "required": null,
     "constraint_message": "",
-    "constraint": "",
     "appearance": "",
+    "constraint": "",
+    "calculation": ""
+  },
+  {
+    "type": "begin_group",
+    "name": "group_bv69u01",
+    "label": "Basic Info",
+    "hint": "",
+    "required": null,
+    "constraint_message": "",
+    "appearance": "",
+    "constraint": "",
     "calculation": ""
   },
   {
@@ -28,8 +39,8 @@
     "hint": "",
     "required": true,
     "constraint_message": "",
-    "constraint": "",
     "appearance": "",
+    "constraint": "",
     "calculation": ""
   },
   {
@@ -39,8 +50,8 @@
     "hint": "",
     "required": false,
     "constraint_message": "",
-    "constraint": "",
     "appearance": "",
+    "constraint": "",
     "calculation": ""
   },
   {
@@ -50,107 +61,30 @@
     "hint": "",
     "required": false,
     "constraint_message": "End Date cannot be greater then Start Date",
-    "constraint": "",
     "appearance": "",
+    "constraint": "",
     "calculation": ""
   },
   {
-    "type": "text",
-    "name": "purpose_of_study",
-    "label": "Purpose of Study",
+    "type": "end_group",
+    "name": "",
+    "label": "",
     "hint": "",
-    "required": false,
+    "required": null,
     "constraint_message": "",
-    "constraint": "",
     "appearance": "",
+    "constraint": "",
     "calculation": ""
   },
   {
-    "type": "text",
-    "name": "ORCID",
-    "label": "ORCID",
+    "type": "begin_group",
+    "name": "group_cq6ux93",
+    "label": "Notes",
     "hint": "",
-    "required": false,
+    "required": null,
     "constraint_message": "",
+    "appearance": "",
     "constraint": "",
-    "appearance": "",
-    "calculation": ""
-  },
-  {
-    "type": "text",
-    "name": "other_team_members",
-    "label": "Other Team Members",
-    "hint": "",
-    "required": false,
-    "constraint_message": "",
-    "constraint": "",
-    "appearance": "",
-    "calculation": ""
-  },
-  {
-    "type": "text",
-    "name": "area_of_interest",
-    "label": "Area of Interest",
-    "hint": "",
-    "required": false,
-    "constraint_message": "",
-    "constraint": "",
-    "appearance": "",
-    "calculation": ""
-  },
-  {
-    "type": "text",
-    "name": "instruments",
-    "label": "Instruments Used",
-    "hint": "",
-    "required": false,
-    "constraint_message": "",
-    "constraint": "",
-    "appearance": "",
-    "calculation": ""
-  },
-  {
-    "type": "text",
-    "name": "gps_datum",
-    "label": "GPS Datum",
-    "hint": "default value is WGS84, enter to change",
-    "required": false,
-    "constraint_message": "",
-    "constraint": "",
-    "appearance": "",
-    "calculation": ""
-  },
-  {
-    "type": "decimal",
-    "name": "magnetic_declination",
-    "label": "Magnetic Declination",
-    "hint": "Enter declination based on whether magnetic north is east or west of geographic north. If magnetic north is west of geographic north, enter declination as a negative number; if it is east enter declination as a positive number.",
-    "required": false,
-    "constraint_message": "Declination must be between -180 to 180.",
-    "constraint": ". >= -180 and . <= 180",
-    "appearance": "",
-    "calculation": ""
-  },
-  {
-    "type": "text",
-    "name": "Grant_ID",
-    "label": "Grant ID",
-    "hint": "",
-    "required": false,
-    "constraint_message": "",
-    "constraint": "",
-    "appearance": "",
-    "calculation": ""
-  },
-  {
-    "type": "text",
-    "name": "Funding_Agency",
-    "label": "Funding Agency",
-    "hint": "",
-    "required": false,
-    "constraint_message": "",
-    "constraint": "",
-    "appearance": "",
     "calculation": ""
   },
   {
@@ -160,8 +94,162 @@
     "hint": "",
     "required": false,
     "constraint_message": "",
-    "constraint": "",
     "appearance": "multiline",
+    "constraint": "",
+    "calculation": ""
+  },
+  {
+    "type": "end_group",
+    "name": "",
+    "label": "",
+    "hint": "",
+    "required": null,
+    "constraint_message": "",
+    "appearance": "",
+    "constraint": "",
+    "calculation": ""
+  },
+  {
+    "type": "begin_group",
+    "name": "group_qf5ar76",
+    "label": "Technical Details",
+    "hint": "",
+    "required": null,
+    "constraint_message": "",
+    "appearance": "",
+    "constraint": "",
+    "calculation": ""
+  },
+  {
+    "type": "text",
+    "name": "instruments",
+    "label": "Instruments Used",
+    "hint": "",
+    "required": false,
+    "constraint_message": "",
+    "appearance": "",
+    "constraint": "",
+    "calculation": ""
+  },
+  {
+    "type": "text",
+    "name": "gps_datum",
+    "label": "GPS Datum",
+    "hint": "default value is WGS84, enter to change",
+    "required": false,
+    "constraint_message": "",
+    "appearance": "",
+    "constraint": "",
+    "calculation": ""
+  },
+  {
+    "type": "decimal",
+    "name": "magnetic_declination",
+    "label": "Magnetic Declination",
+    "hint": "Enter declination based on whether magnetic north is east or west of geographic north. If magnetic north is west of geographic north, enter declination as a negative number; if it is east enter declination as a positive number.",
+    "required": false,
+    "constraint_message": "Declination must be between -180 to 180.",
+    "appearance": "",
+    "constraint": ". >= -180 and . <= 180",
+    "calculation": ""
+  },
+  {
+    "type": "end_group",
+    "name": "",
+    "label": "",
+    "hint": "",
+    "required": null,
+    "constraint_message": "",
+    "appearance": "",
+    "constraint": "",
+    "calculation": ""
+  },
+  {
+    "type": "begin_group",
+    "name": "group_tm6hw79",
+    "label": "General Details",
+    "hint": "",
+    "required": null,
+    "constraint_message": "",
+    "appearance": "",
+    "constraint": "",
+    "calculation": ""
+  },
+  {
+    "type": "text",
+    "name": "ORCID",
+    "label": "ORCID",
+    "hint": "",
+    "required": false,
+    "constraint_message": "",
+    "appearance": "",
+    "constraint": "",
+    "calculation": ""
+  },
+  {
+    "type": "text",
+    "name": "other_team_members",
+    "label": "Other Team Members",
+    "hint": "",
+    "required": false,
+    "constraint_message": "",
+    "appearance": "",
+    "constraint": "",
+    "calculation": ""
+  },
+  {
+    "type": "text",
+    "name": "area_of_interest",
+    "label": "Area of Interest",
+    "hint": "",
+    "required": false,
+    "constraint_message": "",
+    "appearance": "",
+    "constraint": "",
+    "calculation": ""
+  },
+  {
+    "type": "text",
+    "name": "purpose_of_study",
+    "label": "Purpose of Study",
+    "hint": "",
+    "required": false,
+    "constraint_message": "",
+    "appearance": "",
+    "constraint": "",
+    "calculation": ""
+  },
+  {
+    "type": "text",
+    "name": "Grant_ID",
+    "label": "Grant ID",
+    "hint": "",
+    "required": false,
+    "constraint_message": "",
+    "appearance": "",
+    "constraint": "",
+    "calculation": ""
+  },
+  {
+    "type": "text",
+    "name": "Funding_Agency",
+    "label": "Funding Agency",
+    "hint": "",
+    "required": false,
+    "constraint_message": "",
+    "appearance": "",
+    "constraint": "",
+    "calculation": ""
+  },
+  {
+    "type": "end_group",
+    "name": "",
+    "label": "",
+    "hint": "",
+    "required": null,
+    "constraint_message": "",
+    "appearance": "",
+    "constraint": "",
     "calculation": ""
   },
   {
@@ -171,8 +259,8 @@
     "hint": "",
     "required": null,
     "constraint_message": "",
-    "constraint": "",
     "appearance": "",
-    "calculation": "'v5yJgMWedwUEJiJCCnQvPk'"
+    "constraint": "",
+    "calculation": "'vNx43iqG47ykQEdTjRncGg'"
   }
 ]
