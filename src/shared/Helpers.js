@@ -36,6 +36,13 @@ export const toRadians = (deg) => {
   return deg * (Math.PI / 180);
 };
 
+export const truncateText = (str, maxLength) => {
+  if (str.length >= maxLength){
+    return str.substr(0, maxLength) + '...';
+  }
+  else return  str;
+};
+
 // Check if array, object, string, number is empty and if so return true
 export const isEmpty = (value) => {
   if (value === null || value === undefined) return true;
