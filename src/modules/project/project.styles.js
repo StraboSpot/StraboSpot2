@@ -3,20 +3,18 @@ import * as themes from '../../shared/styles.constants';
 
 const dialogStyles = StyleSheet.create({
   basicInfoContainer: {
-    marginTop: 10,
-    marginBottom: 10,
-    marginLeft: 20,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    borderRadius: 10,
+    marginTop: 5,
+    marginBottom: 5,
   },
   basicInfoListItemContent: {
-    alignItems: 'flex-end',
+    // alignItems: 'flex-start',
   },
   basicInfoInputText: {
     paddingRight: 10,
-    fontSize: 18,
+    fontSize: 16,
   },
-  notesContainer: {
+  sectionContainer: {
     margin: 10,
     backgroundColor: 'white',
     borderRadius: 10,
@@ -35,7 +33,14 @@ const dialogStyles = StyleSheet.create({
     height: 200,
     backgroundColor: 'white',
     margin: 10,
-    // borderRadius: 30,
+    borderRadius: 10,
+  },
+  listItemTitleAndValue: {
+    flex: 0,
+  },
+  listItems: {
+    borderRadius: 10,
+    padding: 7,
   },
   activeProjectButton: {
     margin: 10,
@@ -88,8 +93,22 @@ const dialogStyles = StyleSheet.create({
     alignItems: 'center',
     paddingTop: 15,
   },
+  projectName: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    borderBottomWidth: 1,
+    borderColor: themes.PRIMARY_BACKGROUND_COLOR,
+    paddingTop: 10,
+    paddingBottom: 10,
+    marginLeft: 10,
+    marginRight: 10
+  },
+  projectDescriptionListContainer: {
+    // borderRadius: 10,
+    paddingBottom: 5,
+    paddingTop: 5,
+  },
   sidePanelHeaderContainer: {
-    // backgroundColor: 'red',
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
     height: 70,
     paddingTop: 20,

@@ -44,11 +44,13 @@ const styles = StyleSheet.create({
   },
   sectionDivider: {
     paddingLeft: 10,
-    justifyContent: 'center',
+    paddingTop: 10,
+    paddingBottom: 10,
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
   },
   sectionDividerText: {
-    fontSize: Platform.OS === 'ios' ? 13 : 16,
+    fontSize: Platform.OS === 'ios' ? 18 : 20,
+    fontWeight: 'bold',
     textTransform: 'uppercase',
     color: themes.SECONDARY_HEADER_TEXT_COLOR,
   },

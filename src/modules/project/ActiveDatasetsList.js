@@ -4,6 +4,9 @@ import {ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 import {projectReducers} from './project.constants';
 
+// Styles
+import styles from './project.styles';
+
 const ActiveDatasetsList = () => {
   const [refresh] = useState();
   const datasets = useSelector(state => state.project.datasets);
@@ -22,7 +25,7 @@ const ActiveDatasetsList = () => {
         <ListItem
           key={item.id}
           title={item.name}
-          containerStyle={{padding: 10}}
+          containerStyle={styles.listItems}
           bottomDivider
           checkmark={item.current}
           onPress={() => makeDatasetCurrent(item.id)}

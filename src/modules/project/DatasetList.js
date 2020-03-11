@@ -13,6 +13,9 @@ import {projectReducers} from './project.constants';
 import useSpotsHook from '../spots/useSpots';
 import {homeReducers} from '../home/home.constants';
 
+// Styles
+import styles from './project.styles';
+
 const DatasetList = () => {
   const [useSpots] = useSpotsHook();
   const [loading, setLoading] = useState(false);
@@ -34,7 +37,7 @@ const DatasetList = () => {
             return <ListItem
               key={item.id}
               title={item.name}
-              containerStyle={{padding: 5}}
+              containerStyle={styles.listItems}
               bottomDivider
               rightElement={
                 <Switch

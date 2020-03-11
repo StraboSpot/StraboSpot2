@@ -27,7 +27,6 @@ const ActiveProjectPanel = (props) => {
 
   const openProjectDescription = () => {
     setShowPanel(SettingsMenuItems.MANAGE.PROJECT_DESCRIPTION);
-
     renderPanel();
   };
 
