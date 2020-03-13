@@ -279,23 +279,6 @@ const ProjectDescription = (props) => {
             <Divider sectionText={'general details'}/>
             {renderGeneralDetails()}
           </ScrollView>
-        {renderSaveDialog()}
-        {/*<Button*/}
-        {/*  title={'Save Changes'}*/}
-        {/*  type={'clear'}*/}
-        {/*  onPress={() => saveChanges()}*/}
-        {/*/>*/}
-      {/*<View style={styles.sidePanelHeaderContainer}>*/}
-      {/*  <View style={styles.sidePanelHeaderTextContainer}>*/}
-      {/*    {renderBackButton()}*/}
-      {/*  </View>*/}
-      {/*  <View style={{flex: 2}}>*/}
-      {/*    {renderBackButton()}*/}
-      {/*    </View>*/}
-      {/*/!*</View>*!/*/}
-      {/*/!*{renderSaveAndCloseButtons()}*!/*/}
-      {/*/!*<Divider sectionText={'basic info'}/>*!/*/}
-
       </View>
     </React.Fragment>
   );
