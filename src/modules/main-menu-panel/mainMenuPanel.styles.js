@@ -8,14 +8,14 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     right: 0,
-    zIndex: -1,
+    zIndex: 0,
   },
   settingsPanelContainer: {
     flex: 1,
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
   },
   container: {
-    flex: 1,
+    flex: 3,
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
   },
   navItemStyle: {
@@ -32,18 +32,17 @@ const styles = StyleSheet.create({
   listContainer: {
     flex: 6,
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
-
   },
   sectionHeading: {
     alignItems: 'flex-start',
     paddingLeft: 10,
-    paddingTop: 10,
+    paddingTop: 5,
     backgroundColor: themes.LIST_HEADER_COLOR,
   },
   sectionHeadingTextStyle: {
     textTransform: 'uppercase',
     paddingTop: 5,
-    paddingBottom: 5,
+    // paddingBottom: 5,
     fontWeight: 'bold',
     fontSize: themes.PRIMARY_TEXT_SIZE,
     color: themes.SECONDARY_ITEM_TEXT_COLOR,
@@ -64,7 +63,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   settingsPanelHeaderTextContainer: {
-    flex: 3,
+    flex: 4,
+    flexDirection: 'row',
     alignItems: 'center',
   },
   settingsPanelIconContainer: {
@@ -75,7 +75,6 @@ const styles = StyleSheet.create({
   settingsPanelHeaderContainer: {
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
     height: 70,
-    paddingTop: 20,
     flexDirection: 'row',
     justifyContent: 'center',
   },

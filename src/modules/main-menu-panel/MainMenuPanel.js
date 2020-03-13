@@ -66,14 +66,14 @@ const MainMenuPanel = props => {
         <View style={styles.settingsPanelContainer}>
           {settingsPanelHeader}
           <ActiveProject
-          title={!isEmpty(project) ? project.description.project_name : null}
+            openSidePanel={props.openSidePanel}
+            title={!isEmpty(project) ? project.description.project_name : null}
           />
         </View>;
       break;
     case SettingsMenuItems.MANAGE.UPLOAD_BACKUP_EXPORT:
       page =
         <View style={styles.settingsPanelContainer}>
-          {settingsPanelHeader}
           <UploadBackupAndExport/>
       </View>
         break;

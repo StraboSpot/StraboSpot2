@@ -4,6 +4,7 @@ const initialState = {
   sortedView: SortedViews.CHRONOLOGICAL,
   selectedButtonIndex: 0,
   settingsPageVisible: null,
+  isSidePanelVisible: true,
 };
 
 export const mainMenuPanelReducer = (state = initialState, action) => {
@@ -22,6 +23,12 @@ export const mainMenuPanelReducer = (state = initialState, action) => {
       return {
         ...state,
         settingsPageVisible: action.name,
+      };
+    case settingPanelReducers.SET_SIDE_PANEL_VISIBLE:
+      console.log('Side Panel Bool', action.bool)
+      return {
+        ...state,
+        isSidePanelVisible: action.bool,
       };
   }
   return state;
