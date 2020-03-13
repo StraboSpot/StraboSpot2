@@ -86,18 +86,83 @@ const useProject = () => {
     return Promise.resolve();
   };
 
+  const getAllProjects = async () => {
+    try {
+      const response = await serverRequests.getMyProjects(user.encoded_login);
+      return response;
+    }
+    catch (err) {
+     return err.ok;
+    }
+  };
+
   const getCurrentDataset = () => {
     return Object.values(datasets).find(dataset => dataset.current);
   };
 
-  const loadProjectRemote = async (projectId, encodedLogin) => {
-    console.log(`Getting ${projectId.name} project from server...`);
-    const project = await serverRequests.getProject(projectId, encodedLogin);
-    console.log('Loaded Project:', project);
-    if (!project.description) project.description = {};
-    if (!project.description.project_name) project.description.project_name = 'Unnamed';
-    if (!project.other_features) project.other_features = defaultTypes;
-    return project;
+  const loadProjectRemote = async (selectedProject) => {
+    console.log(`Getting ${selectedProject.name} project from server...`);
+    if (!isEmpty(project)) {
+      await destroyOldProject();
+    }
+    try {
+      const projectResponse = await serverRequests.getProject(selectedProject.id, user.encoded_login);
+      console.log('Loaded Project:', projectResponse);
+      if (!projectResponse.description) projectResponse.description = {};
+      if (!projectResponse.description.project_name) projectResponse.description.project_name = 'Unnamed';
+      if (!projectResponse.other_features) projectResponse.other_features = defaultTypes;
+      await dispatch({type: projectReducers.PROJECTS, project: projectResponse});
+      await getDatasets(selectedProject);
+      return Promise.resolve(projectResponse);
+    }
+    catch (err) {
+      return err.ok;
+    }
+  };
+
+  const getDatasets = async (project) => {
+    const projectDatasetsFromServer = await serverRequests.getDatasets(project.id, user.encoded_login);
+    if (projectDatasetsFromServer === 401) {
+      console.log('Uh Oh...');
+      return Promise.reject()
+    }
+    else {
+      console.log('Saved datasets:', projectDatasetsFromServer);
+      if (projectDatasetsFromServer.datasets.length === 1) {
+        projectDatasetsFromServer.datasets[0].active = true;
+        projectDatasetsFromServer.datasets[0].current = true;
+      }
+      else {
+        projectDatasetsFromServer.datasets.map(dataset => {
+          dataset.active = false;
+        });
+      }
+      const datasets = Object.assign({}, ...projectDatasetsFromServer.datasets.map(item => ({[item.id]: item})));
+      dispatch({type: projectReducers.DATASETS.DATASETS_UPDATE, datasets: datasets});
+      if (projectDatasetsFromServer.datasets.length === 1){
+        await useSpots.downloadSpots(projectDatasetsFromServer.datasets[0], user.encoded_login);
+      }
+      // await useSpots.downloadSpots(projectDatasetsFromServer.datasets[0], user.encoded_login);
+      return Promise.resolve(datasets);
+    }
+  };
+
+
+  const selectProject = async (selectedProject) => {
+    console.log('Getting project...');
+    if (!isEmpty(project)) {
+      await destroyOldProject();
+    }
+    try {
+      const projectResponse = await serverRequests.getProject(selectedProject.id, user.encoded_login);
+      console.log('Loaded project \n', projectResponse);
+      dispatch({type: projectReducers.PROJECTS, project: projectResponse});
+      await getDatasets(selectedProject);
+      return projectResponse;
+    }
+    catch (err) {
+      return err.ok;
+    }
   };
 
   const uploadDataset = async (dataset) => {
@@ -211,9 +276,12 @@ const useProject = () => {
 
   const projectHelpers = {
     createProject: createProject,
+    getAllProjects: getAllProjects,
     getCurrentDataset: getCurrentDataset,
+    getDatasets: getDatasets,
     initializeNewProject: initializeNewProject,
     loadProjectRemote: loadProjectRemote,
+    selectProject: selectProject,
     uploadDatasets: uploadDatasets,
     uploadProject: uploadProject,
   };
