@@ -27,7 +27,7 @@ const StatusDialogBox = (props) => {
             title={props.dialogTitle}/>
         }
       >
-        <DialogContent style={styles.dialogContent}>
+        <DialogContent style={[styles.dialogContent, props.dialogContent]}>
           {props.children}
         </DialogContent>
       </Dialog>

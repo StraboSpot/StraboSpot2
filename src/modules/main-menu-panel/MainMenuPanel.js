@@ -57,14 +57,12 @@ const MainMenuPanel = props => {
     case SettingsMenuItems.MANAGE.MY_STRABOSPOT:
       page =
         <View style={styles.settingsPanelContainer}>
-          {settingsPanelHeader}
           <MyStraboSpot closeHomePanel={props.closeHomePanel}/>
         </View>;
       break;
     case SettingsMenuItems.MANAGE.ACTIVE_PROJECTS:
       page =
         <View style={styles.settingsPanelContainer}>
-          {settingsPanelHeader}
           <ActiveProject
             openSidePanel={props.openSidePanel}
             title={!isEmpty(project) ? project.description.project_name : null}
@@ -80,7 +78,6 @@ const MainMenuPanel = props => {
     case SettingsMenuItems.APP_PREFERENCES.SHORTCUTS:
       page =
         <View style={styles.settingsPanelContainer}>
-          {settingsPanelHeader}
           <ShortcutMenu
             toggleSwitch={(switchName) => toggleSwitch(switchName)}
             shortcutSwitchPosition={props.shortcutSwitchPosition}
@@ -90,21 +87,18 @@ const MainMenuPanel = props => {
     case SettingsMenuItems.MAPS.MANAGE_OFFLINE_MAPS:
       page =
         <View style={styles.settingsPanelContainer}>
-          {settingsPanelHeader}
           <ManageOfflineMapsMenu/>
         </View>;
       break;
     case SettingsMenuItems.MAPS.CUSTOM:
       page =
         <View style={styles.settingsPanelContainer}>
-          {settingsPanelHeader}
           <CustomMapsMenu/>
         </View>;
       break;
     case SettingsMenuItems.ATTRIBUTES.SPOTS_LIST:
       page =
         <View style={styles.listContainer}>
-          {settingsPanelHeader}
           <SpotsList
             getSpotData={(spotId) => getSpotFromId(spotId)}
           />
@@ -113,7 +107,6 @@ const MainMenuPanel = props => {
     case SettingsMenuItems.ATTRIBUTES.IMAGE_GALLERY:
       page =
         <View style={styles.listContainer}>
-          {settingsPanelHeader}
           <ImageGallery
             getSpotData={(spotId) => getSpotFromId(spotId)}
           />
@@ -122,7 +115,6 @@ const MainMenuPanel = props => {
     case SettingsMenuItems.ATTRIBUTES.SAMPLES:
       page =
         <View style={styles.listContainer}>
-          {settingsPanelHeader}
           <SamplesList
             getSpotData={(spotId, page) => getSpotFromId(spotId, page)}
           />
@@ -130,7 +122,6 @@ const MainMenuPanel = props => {
       break;
     case SettingsMenuItems.PROJECT.SWITCH_PROJECT:
       page = <View style={styles.listContainer}>
-        {settingsPanelHeader}
         <ProjectList/>
       </View>;
       break;
@@ -138,7 +129,6 @@ const MainMenuPanel = props => {
      page =
         <React.Fragment>
           <View style={styles.listContainer}>
-            {settingsPanelHeader}
             <MainMenuPanelList
               onPress={(name) => setVisibleMenu(name)}
               title={buttonTitle}
@@ -150,7 +140,12 @@ const MainMenuPanel = props => {
 
   return (
     <View style={styles.container}>
-      {page}
+      <View style={{ flex: 1}} >
+        {settingsPanelHeader}
+      </View>
+      <View style={{flex: 10}} >
+        {page}
+      </View>
     </View>
   );
 };
