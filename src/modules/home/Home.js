@@ -49,10 +49,15 @@ import StatusDialogBox from '../../shared/ui/StatusDialogBox';
 import sharedDialogStyles from '../../shared/common.styles';
 import useProjectHook from '../project/useProject';
 import {BallIndicator} from 'react-native-indicators';
+import ProjectDescription from '../project/ProjectDescription';
+
+// Styles
+import projectStyles from '../project/project.styles';
 
 const allSpotsPanelWidth = 125;
 const homeMenuPanelWidth = 300;
 const notebookPanelWidth = 400;
+const mainMenuSidePanelWidth = 350;
 
 // const imageOptions = {
 //   storageOptions: {
@@ -102,6 +107,7 @@ const Home = (props) => {
   // const [allPhotosSaved, setAllPhotosSaved] = useState([]);
   const [animation, setAnimation] = useState(new Animated.Value(notebookPanelWidth));
   const [settingsPanelAnimation, setSettingsPanelAnimation] = useState(new Animated.Value(-homeMenuPanelWidth));
+  const [mainMenuSidePanelAnimation] = useState(new Animated.Value(-mainMenuSidePanelWidth));
   const [leftsideIconAnimationValue, setLeftsideIconAnimationValue] = useState(new Animated.Value(0));
   const [rightsideIconAnimationValue, setRightsideIconAnimationValue] = useState(new Animated.Value(0));
 
@@ -582,6 +588,7 @@ const Home = (props) => {
 
   const animateNotebookMenu = {transform: [{translateX: animation}]};
   const animateSettingsPanel = {transform: [{translateX: settingsPanelAnimation}]};
+  const animateMainMenuSidePanel = {transform: [{translateX: mainMenuSidePanelAnimation}]};
   const leftsideIconAnimation = {transform: [{translateX: leftsideIconAnimationValue}]};
   const rightsideIconAnimation = {transform: [{translateX: rightsideIconAnimationValue}]};
   let compassModal = null;
@@ -596,10 +603,19 @@ const Home = (props) => {
     >
       <Animated.View style={[settingPanelStyles.settingsDrawer, animateSettingsPanel]}>
         <SettingsPanel
+          openPanel={() => animatePanels(mainMenuSidePanelAnimation, 300)}
           closeHomePanel={() => toggleHomeDrawerButton()}
           openNotebookPanel={(pageView) => openNotebookPanel(pageView)}/>
       </Animated.View>
     </FlingGestureHandler>;
+
+  const projectDescriptionSidePanel =
+    <Animated.View style={[projectStyles.projectDescriptionPanel, animateMainMenuSidePanel]}>
+      <ProjectDescription  closeSidePanel={() => {
+        console.log('Closing Side Panel')
+        animatePanels(mainMenuSidePanelAnimation, -mainMenuSidePanelWidth)
+      }}/>
+    </Animated.View>;
 
   const notebookPanel =
     <FlingGestureHandler
@@ -877,6 +893,7 @@ const Home = (props) => {
       {notebookPanel}
       {props.isAllSpotsPanelVisible && renderAllSpotsPanel()}
       {homeDrawer}
+      {projectDescriptionSidePanel}
       {renderLoadProjectFromModal()}
       {renderStatusDialogBox()}
       {renderInfoDialogBox()}
