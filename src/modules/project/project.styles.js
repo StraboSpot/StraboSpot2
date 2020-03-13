@@ -11,29 +11,14 @@ const dialogStyles = StyleSheet.create({
     // alignItems: 'flex-start',
   },
   basicInfoInputText: {
-    paddingRight: 10,
     fontSize: 16,
   },
   sectionContainer: {
     margin: 10,
     backgroundColor: 'white',
     borderRadius: 10,
+    padding: 5
     // height: 200
-  },
-  projectDescriptionPanel: {
-    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
-    borderLeftWidth: 1,
-    width: 300,
-    height: '100%',
-    position: 'absolute',
-    left: 0,
-    right: 0,
-  },
-  listContainer: {
-    height: 200,
-    backgroundColor: 'white',
-    margin: 10,
-    borderRadius: 10,
   },
   listItemTitleAndValue: {
     flex: 0,
@@ -50,9 +35,12 @@ const dialogStyles = StyleSheet.create({
     padding: 10,
   },
   buttons: {
-    // paddingLeft: 10,
-    // paddingRight: 10,
     color: themes.BLUE,
+  },
+  buttonText: {
+    fontSize: 14,
+    paddingLeft: 10,
+    paddingBottom: 5,
   },
   dialogBox: {
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
@@ -82,49 +70,62 @@ const dialogStyles = StyleSheet.create({
   dialogButtonText: {
     color: 'black',
   },
+  headerTextContainer: {
+    flex: 0,
+    paddingBottom: 10,
+    width:  '100%',
+  },
   headerText: {
-    flex: 3,
+    textAlign: 'center',
     fontWeight: 'bold',
-    fontSize: 14,
+    fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,
     paddingLeft: 10,
-    paddingBottom: 5,
   },
   progressCircleContainer: {
     alignItems: 'center',
     paddingTop: 15,
   },
-  projectName: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    borderBottomWidth: 1,
-    borderColor: themes.PRIMARY_BACKGROUND_COLOR,
-    paddingTop: 10,
+  projectNameContainer: {
+    flexDirection:  'row',
+    alignItems: 'center',
+    borderBottomWidth: .5,
+    borderColor: themes.PRIMARY_ITEM_TEXT_COLOR,
     paddingBottom: 10,
-    marginLeft: 10,
-    marginRight: 10
+    paddingTop: 10,
+  },
+  projectNameLabel: {
+    flex: 1,
+    paddingLeft: 5,
+  },
+  projectNameValue: {
+    flex: 1.5,
+    alignItems: 'flex-end',
+    paddingRight: 10
   },
   projectDescriptionListContainer: {
-    // borderRadius: 10,
-    paddingBottom: 5,
-    paddingTop: 5,
+    borderColor: themes.PRIMARY_ITEM_TEXT_COLOR,
+    backgroundColor: 'white',
+    paddingLeft: 5,
+    paddingBottom: 10,
+    paddingTop: 10,
+  },
+  projectDescriptionPanel: {
+    // flex: 3,
+    height: '100%',
+    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
+    borderLeftWidth: 1,
+    width: 350,
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    zIndex: -1,
   },
   sidePanelHeaderContainer: {
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
-    height: 70,
-    paddingTop: 20,
-    flexDirection: 'row',
-    justifyContent: 'center',
+    alignItems: 'flex-start',
   },
   sidePanelHeaderTextContainer: {
-    // flex: 1,
-    // backgroundColor: 'green',
-    flexDirection: 'row',
-    position: 'absolute',
-    left: 0,
-    top: 10,
-    // justifyContent: 'center',
-    // paddingLeft: 10,
-    // paddingTop: 10,
+    flex: 3,
   },
   signInText: {
     paddingBottom: 20,
