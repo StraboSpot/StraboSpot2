@@ -12,9 +12,33 @@ import SaveAndCloseButtons from '../../shared/ui/SaveAndCloseButtons';
 import {projectReducers} from './project.constants';
 import {truncateText} from '../../shared/Helpers';
 import EditingModal from './ProjectDescriptionEditModal';
-import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
+import {setForm, getForm} from '../form/form.container';
 
 const ProjectDescription = (props) => {
+  const getInitialFields = () => {
+    const projectDescriptionFieldsGrouped = {
+      basic: ['project_name', 'start_date', 'end_date'],
+      notes: ['notes'],
+      technical: ['gps_datum', 'magnetic_declination'],
+      // general: ['purpose_of_study', 'other_team_members', 'areas_of_interest', 'instruments'],
+    };
+    setForm('project_description');
+    const form = getForm();
+    const basicFields = form.filter((field) => projectDescriptionFieldsGrouped.basic.includes(field.name));
+    const notesFields = form.filter((field) => projectDescriptionFieldsGrouped.notes.includes(field.name));
+    const technicalFields = form.filter((field) => projectDescriptionFieldsGrouped.technical.includes(field.name));
+    const excludedFieldTypes = ['start', 'end', 'begin_group', 'end_group', 'calculate'];
+    const generalFields = form.filter((field) =>
+      ![...projectDescriptionFieldsGrouped.basic, ...projectDescriptionFieldsGrouped.notes, ...projectDescriptionFieldsGrouped.technical].includes(
+        field.name) && !excludedFieldTypes.includes(field.type));
+    return {
+      basic: basicFields,
+      technical: technicalFields,
+      notes: notesFields,
+      general: generalFields,
+    };
+  };
+
   const dispatch = useDispatch();
   const project = useSelector(state => state.project.project);
   const [projectDescription, setProjectDescription] = useState({
@@ -31,15 +55,17 @@ const ProjectDescription = (props) => {
   });
   // const [startDate, setStartDate] = useState(new Date());
   // const [endDate, setEndDate] = useState(new Date());
-  const [category, setCategory] = useState();
-  const [text, setText] = useState(projectDescription[category]);
+  const [label, setLabel] = useState();
+  const [text, setText] = useState(projectDescription[label]);
   const [showEditingModal, setShowEditingModal] = useState(false);
   const [showStartPicker, setShowStartPicker] = useState(false);
   const [showEndPicker, setShowEndPicker] = useState(false);
+  const fields = getInitialFields();
 
   useEffect(() => {
+    console.log('Fields in UE', fields);
     console.log('Description Updated', projectDescription);
-  }, [projectDescription]);
+  }, [fields]);
 
   const changeStartDate = (event, date) => {
     // date = date || projectDescription.start_date;
@@ -173,7 +199,7 @@ const ProjectDescription = (props) => {
     return (
       <EditingModal
         visible={showEditingModal}
-        dialogTitle={category}
+        dialogTitle={label}
         cancel={() => setShowEditingModal(false)}
         confirm={() => setShowEditingModal(false)}
       >
@@ -182,7 +208,7 @@ const ProjectDescription = (props) => {
             numberOfLines={4}
             multiline={true}
             onChangeText={(val) => setText({val})}
-            value={text}
+            value={projectDescription.purpose_of_study}
             style={{backgroundColor: 'white', height: 250, width: 250}}
           />
         </View>
@@ -190,62 +216,32 @@ const ProjectDescription = (props) => {
     );
   };
 
+  const renderListItemFields = (field, i, obj) => (
+    <ListItem
+      key={field.name}
+      title={field.label}
+      titleStyle={styles.listItemTitleAndValue}
+      rightTitle={projectDescription[field.name] ? truncateText(projectDescription[field.name], 10) : 'None'}
+      containerStyle={styles.projectDescriptionListContainer}
+      rightContentContainerStyle={styles.listItemTitleAndValue}
+      bottomDivider={i < obj.length - 1}
+      onPress={() => toggleEditingModal(field.label, projectDescription[field.name])}
+      chevron
+    />
+  );
+
   const toggleEditingModal = (name, value) => {
     console.log(value)
     console.log(name)
     setShowEditingModal(true);
-    setCategory(name);
+    setLabel(name);
   };
 
-  const renderGeneralDetails = () => {
-    return (
-      <View style={styles.sectionContainer}>
-        <ListItem
-              title={'Purpose of Study'}
-              titleStyle={styles.listItemTitleAndValue}
-              rightTitle={project.description.purpose_of_study ? truncateText(project.description.purpose_of_study, 10) : 'None'}
-              rightTitleStyle={styles.listItemTitleAndValue}
-              containerStyle={styles.projectDescriptionListContainer}
-              // rightContentContainerStyle={styles.listItemTitleAndValue}
-              bottomDivider
-              onPress={() => toggleEditingModal('Purpose of Study', projectDescription.purpose_of_study)}
-              chevron
-            />
-            <ListItem
-              title={'Other Team Members'}
-              titleStyle={styles.listItemTitleAndValue}
-              rightTitle={project.description.other_team_members ? truncateText(project.description.other_team_members, 10) : 'None'}
-              rightTitleStyle={styles.listItemTitleAndValue}
-              containerStyle={styles.projectDescriptionListContainer}
-              // rightContentContainerStyle={styles.listItemTitleAndValue}
-              onPress={() => toggleEditingModal('Other Team Members', projectDescription.other_team_members)}
-              bottomDivider
-              chevron
-            />
-            <ListItem
-              title={'Areas of Interest'}
-              titleStyle={styles.listItemTitleAndValue}
-              rightTitle={project.description.areas_of_interest ? truncateText(project.description.areas_of_interest, 10) : 'None'}
-              rightTitleStyle={styles.listItemTitleAndValue}
-              containerStyle={styles.projectDescriptionListContainer}
-              // rightContentContainerStyle={styles.listItemTitleAndValue}
-              bottomDivider
-              onPress={() => toggleEditingModal('Areas of Interest', projectDescription.areas_of_interest)}
-              chevron
-            />
-            <ListItem
-              title={'Instruments Used'}
-              titleStyle={styles.listItemTitleAndValue}
-              rightTitle={projectDescription.instruments ? truncateText(project.description.instruments, 10) : 'None'}
-              rightTitleStyle={styles.listItemTitleAndValue}
-              containerStyle={styles.projectDescriptionListContainer}
-              rightContentContainerStyle={styles.listItemTitleAndValue}
-              onPress={() => toggleEditingModal('Instruments Used', projectDescription.instruments)}
-              chevron
-            />
-        </View>
-    );
-  };
+  const renderGeneralDetails = () => (
+    <View style={styles.sectionContainer}>
+      {fields.general.map((field, i, obj) => renderListItemFields(field, i, obj))}
+    </View>
+  );
 
   const renderSaveAndCloseButtons = () => {
     return (
@@ -255,31 +251,11 @@ const ProjectDescription = (props) => {
     );
   };
 
-  const renderTechnicalDetails = () => {
-    return (
-        <View style={styles.sectionContainer}>
-        <ListItem
-              title={'GPS Datum'}
-              titleStyle={styles.listItemTitleAndValue}
-              rightTitle={projectDescription.gps_datum ? truncateText(projectDescription.gps_datum, 10) : 'None'}
-              containerStyle={styles.projectDescriptionListContainer}
-              rightContentContainerStyle={styles.listItemTitleAndValue}
-              bottomDivider
-              onPress={() => toggleEditingModal('GPS Datum', projectDescription.gps_datum)}
-              chevron
-            />
-            <ListItem
-              title={'Magnetic Declination'}
-              titleStyle={styles.listItemTitleAndValue}
-              rightTitle={project.description.magnetic_declination ? project.description.magnetic_declination.toString() : 'AUTO'}
-              containerStyle={styles.projectDescriptionListContainer}
-              rightContentContainerStyle={styles.listItemTitleAndValue}
-              onPress={() => toggleEditingModal('Magnetic Declination', projectDescription.magnetic_declination)}
-              chevron
-            />
-        </View>
-    );
-  };
+  const renderTechnicalDetails = () => (
+    <View style={styles.sectionContainer}>
+      {fields.technical.map((field, i, obj) => renderListItemFields(field, i, obj))}
+    </View>
+  );
 
   const saveAndGo = async () => {
     await dispatch({type: projectReducers.UPDATE_PROJECT, field: 'description', value: projectDescription});
@@ -290,25 +266,25 @@ const ProjectDescription = (props) => {
     <React.Fragment>
       <View style={styles.settingsPanelContainer}>
         <View style={styles.sidePanelHeaderContainer}>
-          <View style={{flex: 0}} >
+          <View style={{flex: 0}}>
             {renderBackButton()}
           </View>
-          <View style={styles.headerTextContainer} >
+          <View style={styles.headerTextContainer}>
             <Text style={styles.headerText}>Project Description</Text>
           </View>
         </View>
         {renderSaveAndCloseButtons()}
-          <ScrollView>
-            <Divider sectionText={'Basic Info'}/>
-            {renderBasicInfo()}
-            <Divider sectionText={'notes'}/>
-            {renderNotes()}
-            <Divider sectionText={'technical details'}/>
-            {renderTechnicalDetails()}
-            <Divider sectionText={'general details'}/>
-            {renderGeneralDetails()}
-          </ScrollView>
-        {renderEditingModal()}
+        <ScrollView contentInset={{bottom: 125}}>
+          <Divider sectionText={'Basic Info'}/>
+          {renderBasicInfo()}
+          <Divider sectionText={'notes'}/>
+          {renderNotes()}
+          <Divider sectionText={'technical details'}/>
+          {renderTechnicalDetails()}
+          <Divider sectionText={'general details'}/>
+          {renderGeneralDetails()}
+        </ScrollView>
+          {renderEditingModal()}
       </View>
     </React.Fragment>
   );
