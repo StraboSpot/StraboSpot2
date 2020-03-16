@@ -15,7 +15,7 @@
     "@react-native-community/datetimepicker": "^2.1.0",
     "@react-native-community/geolocation": "^2.0.2",
     "@react-native-community/netinfo": "^4.6.0",
-    "@react-native-mapbox-gl/maps": "^7.0.8",
+    "@react-native-mapbox-gl/maps": "^8.0.0-beta1",
     "@turf/turf": "^5.1.6",
     "formik": "^1.5.8",
     "js-base64": "^2.5.1",
