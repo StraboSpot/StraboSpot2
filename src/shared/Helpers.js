@@ -69,7 +69,7 @@ export function toTitleCase(str) {
 export const animatePanels = (animatedState, toValue) => {
   Animated.timing(animatedState, {
     toValue: toValue,
-    duration: 200,
+    duration: 300,
     easing: Easing.linear,
     useNativeDriver: true,
   }).start();

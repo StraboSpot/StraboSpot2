@@ -604,7 +604,7 @@ const Home = (props) => {
     >
       <Animated.View style={[settingPanelStyles.settingsDrawer, animateSettingsPanel]}>
         <SettingsPanel
-          openPanel={() => animatePanels(mainMenuSidePanelAnimation, 300)}
+          openSidePanel={() => animatePanels(mainMenuSidePanelAnimation, 300)}
           closeHomePanel={() => toggleHomeDrawerButton()}
           openNotebookPanel={(pageView) => openNotebookPanel(pageView)}/>
       </Animated.View>
@@ -612,7 +612,8 @@ const Home = (props) => {
 
   const projectDescriptionSidePanel =
     <Animated.View style={[projectStyles.projectDescriptionPanel, animateMainMenuSidePanel]}>
-      <ProjectDescription  closeSidePanel={() => {
+      <ProjectDescription
+        closeSidePanel={() => {
         console.log('Closing Side Panel')
         animatePanels(mainMenuSidePanelAnimation, -mainMenuSidePanelWidth)
       }}/>
