@@ -80,6 +80,7 @@ const Home = (props) => {
   const offline = require('../../assets/icons/ConnectionStatusButton_offline.png');
 
   const dispatch = useDispatch();
+  const project = useSelector(state => state.project.project);
   const statusMessages = useSelector(state => state.home.statusMessages);
   const isLoading = useSelector(state => state.home.loading);
   const isStatusMessagesModalVisible = useSelector(state => state.home.isStatusMessagesModalVisible);
@@ -893,7 +894,7 @@ const Home = (props) => {
       {notebookPanel}
       {props.isAllSpotsPanelVisible && renderAllSpotsPanel()}
       {homeDrawer}
-      {projectDescriptionSidePanel}
+      {!isEmpty(project) && projectDescriptionSidePanel}
       {renderLoadProjectFromModal()}
       {renderStatusDialogBox()}
       {renderInfoDialogBox()}
