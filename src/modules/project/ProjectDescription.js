@@ -11,7 +11,7 @@ import moment from 'moment';
 import SaveAndCloseButtons from '../../shared/ui/SaveAndCloseButtons';
 import {projectReducers} from './project.constants';
 import {truncateText} from '../../shared/Helpers';
-import StatusDialogBox from '../../shared/ui/StatusDialogBox';
+import EditingModal from './ProjectDescriptionEditModal';
 import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 
 const ProjectDescription = (props) => {
@@ -31,6 +31,9 @@ const ProjectDescription = (props) => {
   });
   // const [startDate, setStartDate] = useState(new Date());
   // const [endDate, setEndDate] = useState(new Date());
+  const [category, setCategory] = useState();
+  const [text, setText] = useState(projectDescription[category]);
+  const [showEditingModal, setShowEditingModal] = useState(false);
   const [showStartPicker, setShowStartPicker] = useState(false);
   const [showEndPicker, setShowEndPicker] = useState(false);
 
@@ -49,8 +52,7 @@ const ProjectDescription = (props) => {
   };
 
   const goBack = () => {
-    props.closeSidePanel()
-    dispatch({type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE, bool: false})
+    props.closeSidePanel();
   };
 
   const showDatPickerHandler = (type) => {
@@ -95,7 +97,6 @@ const ProjectDescription = (props) => {
             </View>
             <View style={styles.projectNameValue}>
               <TextInput
-                placeholder={project.description.project_name}
                 placeholderTextColor={'dimgrey'}
                 style={styles.basicInfoInputText}
                 onChangeText={(text) => setProjectDescription({...projectDescription, project_name: text})}
@@ -168,6 +169,34 @@ const ProjectDescription = (props) => {
     );
   };
 
+  const renderEditingModal = () => {
+    return (
+      <EditingModal
+        visible={showEditingModal}
+        dialogTitle={category}
+        cancel={() => setShowEditingModal(false)}
+        confirm={() => setShowEditingModal(false)}
+      >
+        <View style={{}}>
+          <TextInput
+            numberOfLines={4}
+            multiline={true}
+            onChangeText={(val) => setText({val})}
+            value={text}
+            style={{backgroundColor: 'white', height: 250, width: 250}}
+          />
+        </View>
+      </EditingModal>
+    );
+  };
+
+  const toggleEditingModal = (name, value) => {
+    console.log(value)
+    console.log(name)
+    setShowEditingModal(true);
+    setCategory(name);
+  };
+
   const renderGeneralDetails = () => {
     return (
       <View style={styles.sectionContainer}>
@@ -179,7 +208,7 @@ const ProjectDescription = (props) => {
               containerStyle={styles.projectDescriptionListContainer}
               // rightContentContainerStyle={styles.listItemTitleAndValue}
               bottomDivider
-              onPress={() => console.log(project.description.purpose_of_study)}
+              onPress={() => toggleEditingModal('Purpose of Study', projectDescription.purpose_of_study)}
               chevron
             />
             <ListItem
@@ -189,7 +218,7 @@ const ProjectDescription = (props) => {
               rightTitleStyle={styles.listItemTitleAndValue}
               containerStyle={styles.projectDescriptionListContainer}
               // rightContentContainerStyle={styles.listItemTitleAndValue}
-              onPress={() => console.log(project.description.other_team_members)}
+              onPress={() => toggleEditingModal('Other Team Members', projectDescription.other_team_members)}
               bottomDivider
               chevron
             />
@@ -201,17 +230,17 @@ const ProjectDescription = (props) => {
               containerStyle={styles.projectDescriptionListContainer}
               // rightContentContainerStyle={styles.listItemTitleAndValue}
               bottomDivider
-              onPress={() => console.log('GPS Datum')}
+              onPress={() => toggleEditingModal('Areas of Interest', projectDescription.areas_of_interest)}
               chevron
             />
             <ListItem
               title={'Instruments Used'}
               titleStyle={styles.listItemTitleAndValue}
-              rightTitle={projectDescription.instruments ? truncateText(projectDescription.instruments, 10) : 'None'}
+              rightTitle={projectDescription.instruments ? truncateText(project.description.instruments, 10) : 'None'}
               rightTitleStyle={styles.listItemTitleAndValue}
               containerStyle={styles.projectDescriptionListContainer}
               rightContentContainerStyle={styles.listItemTitleAndValue}
-              onPress={() => setProjectDescription({...projectDescription, instruments: 'Hello There Govna'})}
+              onPress={() => toggleEditingModal('Instruments Used', projectDescription.instruments)}
               chevron
             />
         </View>
@@ -228,7 +257,7 @@ const ProjectDescription = (props) => {
 
   const renderTechnicalDetails = () => {
     return (
-        <View style={{}}>
+        <View style={styles.sectionContainer}>
         <ListItem
               title={'GPS Datum'}
               titleStyle={styles.listItemTitleAndValue}
@@ -236,16 +265,16 @@ const ProjectDescription = (props) => {
               containerStyle={styles.projectDescriptionListContainer}
               rightContentContainerStyle={styles.listItemTitleAndValue}
               bottomDivider
-              onPress={() => setProjectDescription({...projectDescription, gps_datum: 'Hello There Govna'})}
+              onPress={() => toggleEditingModal('GPS Datum', projectDescription.gps_datum)}
               chevron
             />
             <ListItem
               title={'Magnetic Declination'}
               titleStyle={styles.listItemTitleAndValue}
-              rightTitle={project.description.magnetic_declination ? project.description.magnetic_declination : 'AUTO'}
+              rightTitle={project.description.magnetic_declination ? project.description.magnetic_declination.toString() : 'AUTO'}
               containerStyle={styles.projectDescriptionListContainer}
               rightContentContainerStyle={styles.listItemTitleAndValue}
-              onPress={() => console.log('Mag Dec')}
+              onPress={() => toggleEditingModal('Magnetic Declination', projectDescription.magnetic_declination)}
               chevron
             />
         </View>
@@ -279,6 +308,7 @@ const ProjectDescription = (props) => {
             <Divider sectionText={'general details'}/>
             {renderGeneralDetails()}
           </ScrollView>
+        {renderEditingModal()}
       </View>
     </React.Fragment>
   );

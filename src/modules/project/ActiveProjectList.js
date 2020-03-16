@@ -14,7 +14,7 @@ const ActiveProjectList = (props) => {
 
   const openSidePanel = () => {
     props.openSidePanel();
-    dispatch({type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE, bool: true});
+    // dispatch({type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE, bool: true});
   };
 
   return (
