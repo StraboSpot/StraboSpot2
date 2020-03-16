@@ -27,9 +27,9 @@ function Basemap(props) {
     <MapboxGL.UserLocation/>
     <MapboxGL.Camera
       ref={cameraRef}
-      zoomLevel={16}
+      // zoomLevel={16}
       centerCoordinate={props.centerCoordinate}
-      followUserLocation={true}
+      // followUserLocation={true}
       followUserMode='normal'
     />
     <MapboxGL.RasterSource
@@ -44,6 +44,14 @@ function Basemap(props) {
         style={{rasterOpacity: 1}}
       />
     </MapboxGL.RasterSource>
+    {/* Image Basemap Layer */}
+    <MapboxGL.Animated.ImageSource
+      id='imageBasemap'
+      coordinates={props.coordQuad}
+      url={props.imageBaseMapSrc}>
+      <MapboxGL.RasterLayer id='imageBasemapLayer'
+                            style={{rasterOpacity: 0.5}}/>
+    </MapboxGL.Animated.ImageSource>
     {/* Feature Layer */}
     <MapboxGL.ShapeSource
       id='shapeSource'

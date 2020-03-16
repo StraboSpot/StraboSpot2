@@ -11,6 +11,7 @@ import {getNewId, isEmpty, truncDecimal} from '../../shared/Helpers';
 import {MAPBOX_KEY} from '../../MapboxConfig';
 import useSpotsHook from '../spots/useSpots';
 import useMapsHook from './useMaps';
+import useImagesHook from '../images/useImages';
 
 // Constants
 import {LATITUDE, LONGITUDE, MapModes} from './maps.constants';
@@ -24,6 +25,7 @@ const map = React.forwardRef((props, ref) => {
 
   const [useMaps] = useMapsHook();
   const [useSpots] = useSpotsHook();
+  const [useImages] = useImagesHook();
   const currentBasemap = useSelector(state => state.map.currentBasemap);
 
   // Data needing to be tracked when in editing mode
@@ -37,16 +39,21 @@ const map = React.forwardRef((props, ref) => {
   // Props that change that needed to pass to the map component
   const initialMapPropsMutable = {
     allowMapViewMove: true,
-    centerCoordinate: [LONGITUDE, LATITUDE],
+    //centerCoordinate: [LONGITUDE, LATITUDE],
     drawFeatures: [],
     editFeatureVertex: [],
     spotsNotSelected: [],
     spotsSelected: [],
+    coordQuad: [],
+    imageBaseMapSrc: null,
   };
 
   const [userLocationCoords, setUserLocationCoords] = useState([LONGITUDE, LATITUDE]);
   const [editingModeData, setEditingModeData] = useState(initialEditingModeData);
   const [mapPropsMutable, setMapPropsMutable] = useState(initialMapPropsMutable);
+
+  //const [imageBasemapData, setImageBasemapData] = useState({});
+  const [imageBasemapId, setImageBasemapId] = useState(15838707752688);
 
   const map = useRef(null);
   const camera = useRef(null);
@@ -61,15 +68,82 @@ const map = React.forwardRef((props, ref) => {
 
   useEffect(() => {
     console.log('Updating DOM on first render');
-    setCurrentLocation()
-      .catch(err => console.log('Error setting current location:', err));
+    // setCurrentLocation()
+    //   .catch(err => console.log('Error setting current location:', err));
     props.clearVertexes();
-    setDisplayedSpots(isEmpty(props.selectedSpot) ? [] : [{...props.selectedSpot}]);
+
+    if (imageBasemapId) showImageBasemap();
+    else setDisplayedSpots(isEmpty(props.selectedSpot) ? [] : [{...props.selectedSpot}]);
   }, []);
+
+  const showImageBasemap = async () => {
+    const imageSrc = useImages.getLocalImageSrc(imageBasemapId);
+    console.log('image basemap source', imageSrc);
+
+    console.log('props.spots', Object.values(props.spots));
+    let imageProps = {};
+    Object.values(props.spots).find(spot => {
+      if (spot.properties.images) {
+        imageProps = spot.properties.images.find(image => image.id === imageBasemapId);
+      }
+    });
+    console.log('Image Basemap Props', imageProps);
+
+    const [x, y] = await map.current.getPointInView([0, 0]);
+    console.log('center', x, y);
+
+    const h = imageProps.height;
+    const w = imageProps.width;
+
+    const z = 0;  // zoom
+
+    const r = x - (w / (2 * Math.pow(2, z)));
+    const l = x + (w / (2 * Math.pow(2, z)));
+    const t = y - (h / (2 * Math.pow(2, z))); //(since zero is at the top for Web Mercator pixels)
+    const b = y + (h / (2 * Math.pow(2, z)));
+
+    //[y,x] from top left of screen
+    const topLeft = await map.current.getCoordinateFromView([l, t]);
+    const topRight = await map.current.getCoordinateFromView([r, t]);
+    const bottomRight = await map.current.getCoordinateFromView([r, b]);
+    const bottomLeft = await map.current.getCoordinateFromView([l, b]);
+
+    console.log('coordQuad', topLeft, topRight, bottomRight, bottomLeft);
+
+    const iData = {
+      imageProps: imageProps,
+      xCenter: x,
+      yCenter: y,
+      h: h,
+      w: w,
+      z: z,
+      l: l,
+      r: r,
+      t: t,
+      b: b,
+      topLeft: topLeft,
+      topRight: topRight,
+      bottomRight: bottomRight,
+      bottomLeft: bottomLeft,
+    };
+
+    /*    setImageBasemapData(d => ({
+     ...d,
+     ...iData,
+     }));*/
+
+    setMapPropsMutable(m => ({
+      ...m,
+      imageBaseMapSrc: imageSrc,
+      coordQuad: [topLeft, topRight, bottomRight, bottomLeft],
+    }));
+
+    setDisplayedSpots(isEmpty(props.selectedSpot) ? [] : [{...props.selectedSpot}], iData);
+  };
 
   useEffect(() => {
     console.log('Updating DOM on Spots, selected Spots or active Datasets changed');
-    setDisplayedSpots(isEmpty(props.selectedSpot) ? [] : [{...props.selectedSpot}]);
+    //setDisplayedSpots(isEmpty(props.selectedSpot) ? [] : [{...props.selectedSpot}]);
   }, [props.spots, props.selectedSpot, props.datasets]);
 
   useEffect(() => {
@@ -93,14 +167,53 @@ const map = React.forwardRef((props, ref) => {
     }
   };
 
+  // Convert xy coords to web mercator coords
+  const convertSpotsGeomXYPixelsToLatLng = async (spots, iData) => {
+    const xRatio = (iData.w / 2) / iData.xCenter;
+    const yRatio = (iData.h / 2) / iData.yCenter;
+
+    return Promise.all(spots.map(async spot => {
+      // Only handling Points for now
+      if (spot.geometry.type === 'Point') {
+        const [x, y] = spot.geometry.coordinates;
+        const xNew = x / xRatio;
+        const yNew = y / yRatio;
+        let [lngConverted, latConverted] = await map.current.getCoordinateFromView([xNew, (iData.yCenter * 2) - yNew]);
+        console.log('Spot:', spot);
+        console.log('x:', x, 'xNew:', xNew, 'lngConverted:', lngConverted);
+        console.log('y:', y, 'yNew:', yNew, 'latConverted:', latConverted);
+        spot.geometry.coordinates = [lngConverted, latConverted];
+        return spot;
+      }
+      else return spot;
+    }));
+  };
+
   // Set selected and not selected Spots to display when not editing
-  const setDisplayedSpots = async (selectedSpots) => {
-    const mappableSpots = useMaps.setDisplayedSpots(selectedSpots);
-    console.log('Mappable Spots', mappableSpots);
+  const setDisplayedSpots = async (selectedSpots, iData) => {
+    let [selectedMappableSpots, notSelectedMappableSpots] = useMaps.setDisplayedSpots(selectedSpots, imageBasemapId);
+
+    console.log('imageBasemapData', iData);
+    let selectedMappableSpotsCopy = JSON.parse(JSON.stringify(selectedMappableSpots));
+    let notSelectedMappableSpotsCopy = JSON.parse(JSON.stringify(notSelectedMappableSpots));
+
+    if (imageBasemapId) {
+      // Get only not selected mappable Spots mapped on this image basemap
+      notSelectedMappableSpotsCopy = notSelectedMappableSpotsCopy.filter(
+        spot => spot.properties.image_basemap === imageBasemapId);
+
+      // Convert coords
+      notSelectedMappableSpotsCopy = await convertSpotsGeomXYPixelsToLatLng(notSelectedMappableSpotsCopy, iData);
+
+      // Need to handle selected Spots too
+    }
+
+
+    console.log('Selected & Not Selected Mappable Spots', selectedMappableSpotsCopy, notSelectedMappableSpotsCopy);
     setMapPropsMutable(m => ({
       ...m,
-      spotsSelected: [...mappableSpots[0]],
-      spotsNotSelected: [...mappableSpots[1]],
+      spotsSelected: [...selectedMappableSpotsCopy],
+      spotsNotSelected: [...notSelectedMappableSpotsCopy],
     }));
   };
 
