@@ -2,6 +2,7 @@ import React, {useRef, useState} from 'react';
 import {Text, View} from 'react-native';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import Geolocation from '@react-native-community/geolocation';
+import * as turf from '@turf/turf/index';
 import {LATITUDE, LONGITUDE} from './maps.constants';
 import {isEmpty} from '../../shared/Helpers';
 import useSpotsHook from '../spots/useSpots';
@@ -20,7 +21,7 @@ const useMaps = (props) => {
   // Create a point feature at the current location
   const setPointAtCurrentLocation = async () => {
     const userLocationCoords = await setCurrentLocation();
-    let feature = MapboxGL.geoUtils.makePoint(userLocationCoords);
+    let feature = turf.point(userLocationCoords);
     const newSpot = await useSpots.createSpot(feature);
     setSelectedSpot(newSpot);
     return Promise.resolve(newSpot);
