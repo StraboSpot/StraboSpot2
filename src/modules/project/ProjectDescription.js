@@ -12,7 +12,7 @@ import SaveAndCloseButtons from '../../shared/ui/SaveAndCloseButtons';
 import {projectReducers} from './project.constants';
 import {truncateText} from '../../shared/Helpers';
 import EditingModal from './ProjectDescriptionEditModal';
-import {setForm, getForm} from '../form/form.container';
+import * as forms from '../../assets/forms/forms.index';
 
 const ProjectDescription = (props) => {
   const getInitialFields = () => {
@@ -22,8 +22,7 @@ const ProjectDescription = (props) => {
       technical: ['gps_datum', 'magnetic_declination'],
       // general: ['purpose_of_study', 'other_team_members', 'areas_of_interest', 'instruments'],
     };
-    setForm('project_description');
-    const form = getForm();
+    const form = forms.default['project_description'].survey;
     const basicFields = form.filter((field) => projectDescriptionFieldsGrouped.basic.includes(field.name));
     const notesFields = form.filter((field) => projectDescriptionFieldsGrouped.notes.includes(field.name));
     const technicalFields = form.filter((field) => projectDescriptionFieldsGrouped.technical.includes(field.name));
