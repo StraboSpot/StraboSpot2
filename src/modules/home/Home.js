@@ -400,7 +400,7 @@ const Home = (props) => {
 
   const openNotebookPanel = pageView => {
     console.log('notebook opening', pageView);
-    props.setNotebookPageVisible(pageView);
+    props.setNotebookPageVisible(pageView || NotebookPages.OVERVIEW);
     animatePanels(animation, 0);
     animatePanels(rightsideIconAnimationValue, -notebookPanelWidth);
     props.setNotebookPanelVisible(true);
