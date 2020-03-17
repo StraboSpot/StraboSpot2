@@ -95,7 +95,7 @@ const MeasurementsPage = (props) => {
     const data = getSectionData(type);
     const selectedIds = getIdsOfSelected();
     return (
-      <View style={{height:'25%'}}>
+      <View style={{height: '25%'}}>
         <FlatList
           data={data}
           renderItem={item =>
@@ -103,7 +103,7 @@ const MeasurementsPage = (props) => {
               item={item}
               selectedIds={selectedIds}
               onPress={() => onMeasurementPressed(item.item, type)}/>}
-              keyExtractor={(item, index) => index.toString()}
+          keyExtractor={(item, index) => index.toString()}
         />
       </View>
     );
@@ -139,18 +139,22 @@ const MeasurementsPage = (props) => {
               type={'clear'}
               onPress={() => props.setModalVisible(Modals.NOTEBOOK_MODALS.COMPASS)}
             />
-            <Button
-              titleStyle={styles.measurementsSectionDividerButtonText}
-              title={'Identify All'}
-              type={'clear'}
-              onPress={() => identifyAll(dividerText)}
-            />
-            <Button
-              titleStyle={styles.measurementsSectionDividerButtonText}
-              title={'Select'}
-              type={'clear'}
-              onPress={() => startSelecting(dividerText)}
-            />
+            {props.spot.properties.orientation_data && props.spot.properties.orientation_data.length > 0 &&
+            <React.Fragment>
+              <Button
+                titleStyle={styles.measurementsSectionDividerButtonText}
+                title={'Identify All'}
+                type={'clear'}
+                onPress={() => identifyAll(dividerText)}
+              />
+              <Button
+                titleStyle={styles.measurementsSectionDividerButtonText}
+                title={'Select'}
+                type={'clear'}
+                onPress={() => startSelecting(dividerText)}
+              />
+            </React.Fragment>
+            }
           </View>}
         </View>
       </View>
@@ -189,12 +193,12 @@ const MeasurementsPage = (props) => {
   const renderMeasurementsShortcutView = () => {
     return (
       <View style={{backgroundColor: themes.PRIMARY_BACKGROUND_COLOR}}>
-          {renderSectionDividerShortcutView(sectionTypes.PLANAR)}
-          {props.spot.properties.orientation_data && renderMeasurements(sectionTypes.PLANAR)}
-          {renderSectionDividerShortcutView(sectionTypes.LINEAR)}
-          {props.spot.properties.orientation_data && renderMeasurements(sectionTypes.LINEAR)}
-          {renderSectionDividerShortcutView(sectionTypes.PLANARLINEAR)}
-          {props.spot.properties.orientation_data && renderMeasurements(sectionTypes.PLANARLINEAR)}
+        {renderSectionDividerShortcutView(sectionTypes.PLANAR)}
+        {props.spot.properties.orientation_data && renderMeasurements(sectionTypes.PLANAR)}
+        {renderSectionDividerShortcutView(sectionTypes.LINEAR)}
+        {props.spot.properties.orientation_data && renderMeasurements(sectionTypes.LINEAR)}
+        {renderSectionDividerShortcutView(sectionTypes.PLANARLINEAR)}
+        {props.spot.properties.orientation_data && renderMeasurements(sectionTypes.PLANARLINEAR)}
       </View>
     );
   };
