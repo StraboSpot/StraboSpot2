@@ -19,6 +19,10 @@ PODS:
     - DoubleConversion
     - glog
   - glog (0.3.5)
+  - Mapbox-iOS-SDK (5.7.0):
+    - MapboxMobileEvents (= 0.10.2)
+  - MapboxMobileEvents (0.10.2)
+  - NoUseFrameworks-MapboxMobileEvents (0.10.2)
   - RCTRequired (0.61.4)
   - RCTTypeSafety (0.61.4):
     - FBLazyVector (= 0.61.4)
@@ -186,9 +190,10 @@ PODS:
     - React
   - react-native-image-picker (1.1.0):
     - React
-  - react-native-image-resizer (1.1.0):
+  - react-native-image-resizer (1.2.0):
     - React
-  - react-native-mapbox-gl (7.0.8):
+  - react-native-mapbox-gl (8.0.0-rc1):
+    - Mapbox-iOS-SDK (~> 5.7)
     - React
   - react-native-netinfo (4.6.0):
     - React
@@ -265,6 +270,7 @@ DEPENDENCIES:
   - FBReactNativeSpec (from `../node_modules/react-native/Libraries/FBReactNativeSpec`)
   - Folly (from `../node_modules/react-native/third-party-podspecs/Folly.podspec`)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
+  - "NoUseFrameworks-MapboxMobileEvents (from `../node_modules/@react-native-mapbox-gl/maps/ios/NoUseFrameworks-MapboxMobileEvents/NoUseFrameworks-MapboxMobileEvents.podspec.json`)"
   - RCTRequired (from `../node_modules/react-native/Libraries/RCTRequired`)
   - RCTTypeSafety (from `../node_modules/react-native/Libraries/TypeSafety`)
   - React (from `../node_modules/react-native/`)
@@ -307,9 +313,12 @@ DEPENDENCIES:
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
+  https://github.com/CocoaPods/Specs.git:
     - boost-for-react-native
     - SSZipArchive
+  trunk:
+    - Mapbox-iOS-SDK
+    - MapboxMobileEvents
 
 EXTERNAL SOURCES:
   DoubleConversion:
@@ -322,6 +331,8 @@ EXTERNAL SOURCES:
     :podspec: "../node_modules/react-native/third-party-podspecs/Folly.podspec"
   glog:
     :podspec: "../node_modules/react-native/third-party-podspecs/glog.podspec"
+  NoUseFrameworks-MapboxMobileEvents:
+    :podspec: "../node_modules/@react-native-mapbox-gl/maps/ios/NoUseFrameworks-MapboxMobileEvents/NoUseFrameworks-MapboxMobileEvents.podspec.json"
   RCTRequired:
     :path: "../node_modules/react-native/Libraries/RCTRequired"
   RCTTypeSafety:
@@ -404,6 +415,9 @@ SPEC CHECKSUMS:
   FBReactNativeSpec: 51477b84b1bf7ab6f9ef307c24e3dd675391be44
   Folly: 30e7936e1c45c08d884aa59369ed951a8e68cf51
   glog: 1f3da668190260b06b429bb211bfbee5cd790c28
+  Mapbox-iOS-SDK: 1b7cb0e739247d20ef75f5f14aa6ce34e1f0660f
+  MapboxMobileEvents: 2bc0ca2eedb627b73cf403258dce2b2fa98074a6
+  NoUseFrameworks-MapboxMobileEvents: 9f38e28109d86a738b88f8f946ebc1441a3a78ac
   RCTRequired: f3b3fb6f4723e8e52facb229d0c75fdc76773849
   RCTTypeSafety: 2ec60de6abb1db050b56ecc4b60188026078fd10
   React: 10e0130b57e55a7cd8c3dee37c1261102ce295f4
@@ -415,8 +429,8 @@ SPEC CHECKSUMS:
   React-jsinspector: d15478d0a8ada19864aa4d1cc1c697b41b3fa92f
   react-native-geolocation: cbd9d6bd06bac411eed2671810f454d4908484a8
   react-native-image-picker: 3637d63fef7e32a230141ab4660d3ceb773c824f
-  react-native-image-resizer: 9dfb844937574db849fd18a56d8e6c607b0a31d8
-  react-native-mapbox-gl: fcd88e2bf0ddea552b0209cc2770a5ac2b9c9910
+  react-native-image-resizer: b718335229b7be37c809bf9ed81d7a066fbfd2dd
+  react-native-mapbox-gl: 88e6bb18990c209c161b23debf3d76b214ca6319
   react-native-netinfo: bd4c115afdf0821b8ddb6c59ef3ddc5f0a7e8ad0
   react-native-simple-compass: 2cd09f4e5dbb7a594c2f0d9f85d035e93c9fccca
   React-RCTActionSheet: 7369b7c85f99b6299491333affd9f01f5a130c22
@@ -443,6 +457,6 @@ SPEC CHECKSUMS:
   SSZipArchive: fa16b8cc4cdeceb698e5e5d9f67e9558532fbf23
   Yoga: ba3d99dbee6c15ea6bbe3783d1f0cb1ffb79af0f
 
-PODFILE CHECKSUM: 464b2992513a30e5cc00fdd3e9f64c696b97a3dc
+PODFILE CHECKSUM: e6990046979d3537826dd45f9a32c854eac64566
 
-COCOAPODS: 1.6.0
+COCOAPODS: 1.9.1

@@ -26,7 +26,7 @@
     "name": "group_bv69u01",
     "label": "Basic Info",
     "hint": "",
-    "required": null,
+    "required": false,
     "constraint_message": "",
     "appearance": "",
     "constraint": "",
@@ -81,7 +81,7 @@
     "name": "group_cq6ux93",
     "label": "Notes",
     "hint": "",
-    "required": null,
+    "required": false,
     "constraint_message": "",
     "appearance": "",
     "constraint": "",
@@ -114,7 +114,7 @@
     "name": "group_qf5ar76",
     "label": "Technical Details",
     "hint": "",
-    "required": null,
+    "required": false,
     "constraint_message": "",
     "appearance": "",
     "constraint": "",
@@ -169,7 +169,7 @@
     "name": "group_tm6hw79",
     "label": "General Details",
     "hint": "",
-    "required": null,
+    "required": false,
     "constraint_message": "",
     "appearance": "",
     "constraint": "",
@@ -177,7 +177,7 @@
   },
   {
     "type": "text",
-    "name": "ORCID",
+    "name": "orcid",
     "label": "ORCID",
     "hint": "",
     "required": false,
@@ -221,7 +221,7 @@
   },
   {
     "type": "text",
-    "name": "Grant_ID",
+    "name": "grant_id",
     "label": "Grant ID",
     "hint": "",
     "required": false,
@@ -232,7 +232,7 @@
   },
   {
     "type": "text",
-    "name": "Funding_Agency",
+    "name": "funding_agency",
     "label": "Funding Agency",
     "hint": "",
     "required": false,
@@ -261,6 +261,6 @@
     "constraint_message": "",
     "appearance": "",
     "constraint": "",
-    "calculation": "'vNx43iqG47ykQEdTjRncGg'"
+    "calculation": "'vPxpkAe2qUw2PyyYa5nJBi'"
   }
 ]

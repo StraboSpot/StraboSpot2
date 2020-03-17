@@ -290,7 +290,8 @@ const map = React.forwardRef((props, ref) => {
       let feature = {};
       const newCoord = turf.getCoord(e);
       // Draw a point for the last coordinate touched
-      const lastVertexPlaced = MapboxGL.geoUtils.makeFeature(e.geometry);
+      // const lastVertexPlaced = MapboxGL.geoUtils.makeFeature(e.geometry);
+      const lastVertexPlaced = turf.point(e.geometry.coordinates);
       // Draw a point (if set point to current location not working)
       if (props.mapMode === MapModes.DRAW.POINT) setDrawFeatures([lastVertexPlaced]);
       else if (isEmpty(mapPropsMutable.drawFeatures)) setDrawFeatures([lastVertexPlaced]);
