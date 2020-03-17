@@ -14,6 +14,13 @@ import AsyncStorage from '@react-native-community/async-storage';
 export const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
+    blacklist: ['notebook'],
+};
+
+const notebookConfig = {
+  key: 'notebook',
+  storage: AsyncStorage,
+  blacklist: ['visibleNotebookPagesStack'],
 };
 
 const loggerMiddleware = createLogger({
@@ -24,7 +31,7 @@ const appReducer = combineReducers({
   home: homeReducer,
   spot: spotReducer,
   map: mapReducer,
-  notebook: notebookReducer,
+  notebook: persistReducer(notebookConfig, notebookReducer),
   settingsPanel: mainMenuPanelReducer,
   user: userReducer,
   project: projectsReducer,
