@@ -44,6 +44,8 @@ const useProject = () => {
       name: 'Default',
       date: new Date(),
       modified_timestamp: Date.now(),
+      current: true,
+      active: true,
     };
     return defaultDataset;
   };
