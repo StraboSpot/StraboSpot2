@@ -5,6 +5,7 @@ import {ListItem} from 'react-native-elements';
 
 import {isEmpty} from '../../shared/Helpers';
 import Loading from '../../shared/ui/Loading';
+import TexInputModal from '../../shared/ui/GeneralTextInputModal';
 
 // Constants
 import {projectReducers} from './project.constants';
@@ -19,6 +20,8 @@ import styles from './project.styles';
 const DatasetList = () => {
   const [useSpots] = useSpotsHook();
   const [loading, setLoading] = useState(false);
+  const [selectedDataset, setSelectedDataset] = useState({});
+  const [isDatasetNameModalVisible, setIsDatasetNameModalVisible] = useState(false);
   const datasets = useSelector(state => state.project.datasets);
   const isOnline = useSelector(state => state.home.isOnline);
   const userData = useSelector(state => state.user);
@@ -37,7 +40,8 @@ const DatasetList = () => {
             return <ListItem
               key={item.id}
               title={item.name}
-              containerStyle={styles.listItems}
+              containerStyle={styles.projectDescriptionListContainer}
+              onPress={() => _selectedDataset(item.id, item.name)}
               bottomDivider
               rightElement={
                 <Switch
@@ -49,6 +53,29 @@ const DatasetList = () => {
           })}
         </ScrollView>);
     }
+  };
+
+  const renderDatasetNameChangeModal = () => {
+    return (
+      <TexInputModal
+        dialogTitle={'Dataset Name Change'}
+        visible={isDatasetNameModalVisible}
+        onPress={() => saveDataset()}
+        close={() => setIsDatasetNameModalVisible(false)}
+        value={selectedDataset.name}
+        onChangeText={(text) => setSelectedDataset({...selectedDataset, name: text})}
+      />
+    );
+  };
+
+  const saveDataset = () => {
+    dispatch({type: 'UPDATE_DATASET_PROPERTIES', dataset: selectedDataset});
+    setIsDatasetNameModalVisible(false);
+  };
+
+  const _selectedDataset = (id, name) => {
+    setSelectedDataset({name: name, id: id});
+    setIsDatasetNameModalVisible(true);
   };
 
   const setSwitchValue = async (val, id) => {
@@ -82,6 +109,7 @@ const DatasetList = () => {
   return (
     <View style={{flex: 1}}>
       {renderDatasets()}
+      {renderDatasetNameChangeModal()}
       {loading && <Loading style={{backgroundColor: 'transparent'}}/>}
     </View>
   );

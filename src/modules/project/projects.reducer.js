@@ -46,6 +46,18 @@ export const projectsReducer = (state = initialState, action) => {
         datasets: action.datasets,
       };
     }
+    case 'UPDATE_DATASET_PROPERTIES':
+      console.log('UpdatedDataset', action.dataset)
+      return {
+        ...state,
+        datasets: {
+          ...state.datasets,
+          [action.dataset.id]: {
+            ...state.datasets[action.dataset.id],
+            name: action.dataset.name,
+          },
+        },
+      };
     case projectReducers.DATASETS.DATASETS_CLEAR:
       return {
         ...state,
