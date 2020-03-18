@@ -313,12 +313,11 @@ DEPENDENCIES:
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
-  https://github.com/CocoaPods/Specs.git:
-    - boost-for-react-native
-    - SSZipArchive
   trunk:
+    - boost-for-react-native
     - Mapbox-iOS-SDK
     - MapboxMobileEvents
+    - SSZipArchive
 
 EXTERNAL SOURCES:
   DoubleConversion:
