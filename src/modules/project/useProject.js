@@ -149,6 +149,12 @@ const useProject = () => {
     }
   };
 
+  const makeDatasetCurrent = (id) => {
+    Object.values(datasets).map(data => data.current = false);
+    const datasetsCopy = JSON.parse(JSON.stringify(datasets));
+    datasetsCopy[id].current = !datasetsCopy[id].current;
+    dispatch({type: projectReducers.DATASETS.DATASETS_UPDATE, datasets: datasetsCopy});
+  };
 
   const selectProject = async (selectedProject) => {
     console.log('Getting project...');
@@ -281,6 +287,7 @@ const useProject = () => {
     getAllProjects: getAllProjects,
     getCurrentDataset: getCurrentDataset,
     getDatasets: getDatasets,
+    makeDatasetCurrent: makeDatasetCurrent,
     initializeNewProject: initializeNewProject,
     loadProjectRemote: loadProjectRemote,
     selectProject: selectProject,

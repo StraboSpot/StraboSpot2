@@ -1,23 +1,16 @@
 import React, {useState} from 'react';
 import {FlatList} from 'react-native';
 import {ListItem} from 'react-native-elements';
-import {useDispatch, useSelector} from 'react-redux';
-import {projectReducers} from './project.constants';
+import {useSelector} from 'react-redux';
+import useProjectHook from './useProject';
 
 // Styles
 import styles from './project.styles';
 
 const ActiveDatasetsList = () => {
+  const [useProject] = useProjectHook();
   const [refresh] = useState();
   const datasets = useSelector(state => state.project.datasets);
-  const dispatch = useDispatch();
-
-  const makeDatasetCurrent = (id) => {
-    Object.values(datasets).map(data => data.current = false);
-    const datasetsCopy = JSON.parse(JSON.stringify(datasets));
-    datasetsCopy[id].current = !datasetsCopy[id].current;
-    dispatch({type: projectReducers.DATASETS.DATASETS_UPDATE, datasets: datasetsCopy});
-  };
 
   const renderActiveDatasets = ({item}) => {
     if (item.active) {
@@ -28,7 +21,7 @@ const ActiveDatasetsList = () => {
           containerStyle={styles.listItems}
           bottomDivider
           checkmark={item.current}
-          onPress={() => makeDatasetCurrent(item.id)}
+          onPress={() => useProject.makeDatasetCurrent(item.id)}
         />
       );
     }
