@@ -34,7 +34,7 @@ const useHome = (props) => {
     dispatch({type: spotReducers.CLEAR_SELECTED_SPOTS});
     dispatch({type: notebookReducers.SET_NOTEBOOK_PANEL_VISIBLE, value: false});
     dispatch({type: homeReducers.SET_ALLSPOTS_PANEL_VISIBLE, value: false});
-    dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: false});
+    dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: null});
     dispatch({type: homeReducers.SET_SETTINGS_PANEL_VISIBLE, value: false});
     dispatch({type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: SettingsMenuItems.SETTINGS_MAIN});
     getOnlineStatus();

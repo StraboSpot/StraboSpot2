@@ -20,7 +20,6 @@ const Notes = (props) => {
   const [note, setNote] = useState('');
 
   useEffect(() => {
-    console.log('LASLKALKSLKSADKLSDLAKSDFLK')
     if (modalVisible === Modals.SHORTCUT_MODALS.NOTES) {
       console.log('In Notes Modal view')
     }

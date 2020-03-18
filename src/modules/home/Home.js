@@ -1,6 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {Alert, Animated, Dimensions, Easing, Platform, Text, View} from 'react-native';
-import NetInfo from '@react-native-community/netinfo';
 import MapView from '../maps/Map';
 import InitialProjectLoadModal from '../project/InitialProjectLoadModal';
 import MapActionsDialog from './MapActionsDialogBox';
@@ -35,7 +34,6 @@ import {Button, Image} from 'react-native-elements';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import homeStyles from './home.style';
 import settingPanelStyles from '../main-menu-panel/mainMenuPanel.styles';
-import vectorIcon from 'react-native-vector-icons/Ionicons';
 import IconButton from '../../shared/ui/IconButton';
 import VertexDrag from '../maps/VertexDrag';
 import {animatePanels, isEmpty} from '../../shared/Helpers';
