@@ -13,6 +13,7 @@ import {projectReducers} from './project.constants';
 import {truncateText} from '../../shared/Helpers';
 import EditingModal from './ProjectDescriptionEditModal';
 import * as forms from '../../assets/forms/forms.index';
+import {SettingsMenuItems} from '../main-menu-panel/mainMenu.constants';
 
 const ProjectDescription = (props) => {
   const getInitialFields = () => {
@@ -40,6 +41,7 @@ const ProjectDescription = (props) => {
 
   const dispatch = useDispatch();
   const project = useSelector(state => state.project.project);
+  const mainMenuPage = useSelector(state => state.settingsPanel.settingsPageVisible);
   const [projectDescription, setProjectDescription] = useState({
     project_name: project.description.project_name,
     start_date: project.description.start_date || new Date(),
@@ -103,7 +105,7 @@ const ProjectDescription = (props) => {
             size={20}
           />
         }
-        title={'Active Project'}
+        title={mainMenuPage === SettingsMenuItems.MANAGE.MY_STRABOSPOT ? 'My StraboSpot' : 'Active Project'}
         type={'clear'}
         containerStyle={{flex: 0, padding: 4}}
         titleStyle={styles.buttonText}

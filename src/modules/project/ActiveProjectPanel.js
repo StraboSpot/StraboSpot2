@@ -54,18 +54,12 @@ const ActiveProjectPanel = (props) => {
       <View style={styles.dividerWithButtonContainer}>
         <Divider sectionText={'PROJECT DATASETS'}/>
         <Button
+          title={'Add'}
+          titleStyle={{fontSize: 14}}
           containerStyle={{paddingRight: 20}}
-          buttonStyle={{padding: 0,}}
+          buttonStyle={{padding: 0}}
           type={'clear'}
           onPress={() => setIsAddDatasetModalVisible(true)}
-          icon={
-            <Icon
-              name='ios-add'
-              type={'ionicon'}
-              size={30}
-              color='darkgrey'
-            />
-          }
         />
       </View>
       <Text style={[commonStyles.standardDescriptionText, styles.subHeaderText]} >Select pencil to edit name</Text>

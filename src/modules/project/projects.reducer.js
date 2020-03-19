@@ -35,6 +35,7 @@ export const projectsReducer = (state = initialState, action) => {
         project: updatedProject,
       };
     case projectReducers.DATASETS.DATASET_ADD:
+      // Needed to create a new instance so React can sense the redux change and useSelector() will update
       const datasets = Object.assign(state.datasets,{...state.datasets, [action.dataset.id]: action.dataset});
       return {
         ...state,

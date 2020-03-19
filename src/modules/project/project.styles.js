@@ -16,6 +16,8 @@ const dialogStyles = StyleSheet.create({
   dividerWithButtonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingBottom: 5
   },
   sectionContainer: {
     margin: 10,
