@@ -85,6 +85,7 @@ const Home = (props) => {
   const isErrorMessagesModalVisible = useSelector(state => state.home.isErrorMessagesModalVisible);
   const isInfoMessagesModalVisible = useSelector(state => state.home.isInfoModalVisible);
   const isProjectLoadSelectionModalVisible = useSelector(state => state.home.isProjectLoadSelectionModalVisible);
+  const isMainMenuPanelVisible = useSelector( state => state.home.isSettingsPanelVisible);
 
   // const imagesCount = useSelector(state => state.home.imageProgress.imagesDownloadedCount);
   // const imagesNeeded = useSelector(state => state.home.imageProgress.neededImageIds);
@@ -282,6 +283,12 @@ const Home = (props) => {
     props.setAllSpotsPanelVisible(false);
   };
 
+  const closeSidePanel = () => {
+    console.log('Closing Side Panel')
+    dispatch({type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE, bool: false});
+    animatePanels(mainMenuSidePanelAnimation, -mainMenuSidePanelWidth);
+  };
+
   const deleteSpot = id => {
     const spot = props.spots[id];
     Alert.alert(
@@ -342,12 +349,13 @@ const Home = (props) => {
   };
 
   const flingHandlerSettingsPanel = ({nativeEvent}) => {
-    if (props.homePanelVisible) {
+    if (isMainMenuPanelVisible) {
       if (nativeEvent.oldState === State.ACTIVE) {
-        console.log('FLING TO CLOSE Settings Panel!', nativeEvent);
+        console.log('FLING TO CLOSE Main Menu Panel!', nativeEvent);
         animatePanels(settingsPanelAnimation, -homeMenuPanelWidth);
         props.setHomePanelPageVisible(SettingsMenuItems.SETTINGS_MAIN);
         props.setHomePanelVisible(false);
+        dispatch({type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE, bool: false});
         animatePanels(leftsideIconAnimationValue, 0);
       }
     }
@@ -402,6 +410,11 @@ const Home = (props) => {
     animatePanels(animation, 0);
     animatePanels(rightsideIconAnimationValue, -notebookPanelWidth);
     props.setNotebookPanelVisible(true);
+  };
+
+  const openSidePanel = () => {
+    animatePanels(mainMenuSidePanelAnimation, 300);
+    dispatch({type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE, bool: true});
   };
 
   const renderAllSpotsPanel = () => {
@@ -557,7 +570,7 @@ const Home = (props) => {
   };
 
   const toggleHomeDrawerButton = () => {
-    if (props.homePanelVisible) {
+    if (isMainMenuPanelVisible) {
       props.setHomePanelVisible(false);
       props.setHomePanelPageVisible(SettingsMenuItems.SETTINGS_MAIN);
       animatePanels(settingsPanelAnimation, -homeMenuPanelWidth);
@@ -602,7 +615,7 @@ const Home = (props) => {
     >
       <Animated.View style={[settingPanelStyles.settingsDrawer, animateSettingsPanel]}>
         <SettingsPanel
-          openSidePanel={() => animatePanels(mainMenuSidePanelAnimation, 300)}
+          openSidePanel={() => openSidePanel()}
           closeHomePanel={() => toggleHomeDrawerButton()}
           openNotebookPanel={(pageView) => openNotebookPanel(pageView)}/>
       </Animated.View>
@@ -611,10 +624,7 @@ const Home = (props) => {
   const projectDescriptionSidePanel =
     <Animated.View style={[projectStyles.projectDescriptionPanel, animateMainMenuSidePanel]}>
       <ProjectDescription
-        closeSidePanel={() => {
-        console.log('Closing Side Panel')
-        animatePanels(mainMenuSidePanelAnimation, -mainMenuSidePanelWidth)
-      }}/>
+        closeSidePanel={() => closeSidePanel()}/>
     </Animated.View>;
 
   const notebookPanel =
@@ -893,7 +903,7 @@ const Home = (props) => {
       {notebookPanel}
       {props.isAllSpotsPanelVisible && renderAllSpotsPanel()}
       {homeDrawer}
-      {!isEmpty(project) && projectDescriptionSidePanel}
+      {!isEmpty(project) && isMainMenuPanelVisible && projectDescriptionSidePanel}
       {renderLoadProjectFromModal()}
       {renderStatusDialogBox()}
       {renderInfoDialogBox()}
@@ -924,7 +934,7 @@ function mapStateToProps(state) {
     vertexStartCoords: state.map.vertexStartCoords,
     userData: state.user.userData,
     homePageVisible: state.settingsPanel.settingsPageVisible,
-    homePanelVisible: state.home.isSettingsPanelVisible,
+    // homePanelVisible: state.home.isSettingsPanelVisible,
   };
 }
 
