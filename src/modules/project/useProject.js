@@ -24,6 +24,13 @@ const useProject = () => {
     'is lower metamorphic grade than', 'is higher metamorphic grade than', 'is included within', 'includes',
     'merges with'];
 
+  const addDataset = async name => {
+    const addedDataset = createDataset(name);
+    await dispatch({type: projectReducers.DATASETS.DATASET_ADD, dataset: addedDataset});
+    await makeDatasetCurrent(addedDataset.id);
+    return Promise.resolve();
+  };
+
   const checkValidDateTime = (spot) => {
     if (!spot.properties.date || !spot.properties.time) {
       let date = spot.properties.date || spot.properties.time;
@@ -37,17 +44,16 @@ const useProject = () => {
     }
   };
 
-  const createDefaultDataset = () => {
+  const createDataset = (name) => {
     const id = getNewId();
-    const defaultDataset = {
+    return {
       id: id,
-      name: 'Default',
+      name: name ? name : 'Default',
       date: new Date(),
       modified_timestamp: Date.now(),
       current: true,
       active: true,
     };
-    return defaultDataset;
   };
 
   const createProject = async (descriptionData) => {
@@ -61,7 +67,7 @@ const useProject = () => {
       relationship_types: defaultRelationshipTypes,
     };
     dispatch({type: projectReducers.PROJECT_ADD, description: currentProject});
-    const defaultDataset = await createDefaultDataset();
+    const defaultDataset = await createDataset();
     dispatch({type: projectReducers.DATASETS.DATASET_ADD, dataset: defaultDataset});
   };
 
@@ -69,14 +75,6 @@ const useProject = () => {
     await destroyOldProject();
     await createProject(descriptionData);
     return Promise.resolve();
-  };
-
-  const saveDatasets = async () => {
-    if (isEmpty(datasets)) {
-     const defaultDataset = await createDefaultDataset();
-     dispatch({type: projectReducers.DATASETS.DATASET_ADD, dataset: defaultDataset});
-    }
-    else console.log('Need to save dataset');
   };
 
   const destroyOldProject = async () => {
@@ -154,6 +152,7 @@ const useProject = () => {
     const datasetsCopy = JSON.parse(JSON.stringify(datasets));
     datasetsCopy[id].current = !datasetsCopy[id].current;
     dispatch({type: projectReducers.DATASETS.DATASETS_UPDATE, datasets: datasetsCopy});
+    return Promise.resolve();
   };
 
   const selectProject = async (selectedProject) => {
@@ -283,6 +282,7 @@ const useProject = () => {
   };
 
   const projectHelpers = {
+    addDataset: addDataset,
     createProject: createProject,
     getAllProjects: getAllProjects,
     getCurrentDataset: getCurrentDataset,

@@ -13,6 +13,10 @@ const dialogStyles = StyleSheet.create({
   basicInfoInputText: {
     fontSize: 16,
   },
+  dividerWithButtonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
   sectionContainer: {
     margin: 10,
     backgroundColor: 'white',
@@ -34,6 +38,7 @@ const dialogStyles = StyleSheet.create({
   activeDataSets: {
     padding: 10,
   },
+
   buttons: {
     color: themes.BLUE,
   },

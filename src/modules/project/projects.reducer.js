@@ -35,10 +35,10 @@ export const projectsReducer = (state = initialState, action) => {
         project: updatedProject,
       };
     case projectReducers.DATASETS.DATASET_ADD:
-
+      const datasets = Object.assign(state.datasets,{...state.datasets, [action.dataset.id]: action.dataset});
       return {
         ...state,
-        datasets: {...state.datasets, [action.dataset.id]: action.dataset},
+        datasets: datasets,
       };
     case projectReducers.DATASETS.DATASETS_UPDATE: {
       return {
