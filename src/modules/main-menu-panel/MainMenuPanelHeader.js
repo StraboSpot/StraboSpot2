@@ -7,16 +7,16 @@ import {SettingsMenuItems} from './mainMenu.constants';
 
 const MainMenuPanelHeader = (props) => {
   const pageVisible = useSelector(state => state.settingsPanel.settingsPageVisible);
+  const isSideMenuVisible = useSelector(state => state.settingsPanel.isSidePanelVisible);
 
   return (
     <View style={styles.settingsPanelHeaderContainer}>
       <View style={styles.settingsPanelIconContainer}>
-        {pageVisible !== SettingsMenuItems.SETTINGS_MAIN ? <Icon
+        {pageVisible !== SettingsMenuItems.SETTINGS_MAIN && !isSideMenuVisible ? <Icon
           name={'ios-arrow-back'}
           type={'ionicon'}
           color={'black'}
           iconStyle={styles.buttons}
-          // containerStyle={{backgroundColor: 'red', paddingRight: 20, paddingLeft: 20}}
           onPress={() => props.onPress()}
           size={30}
         /> : null}

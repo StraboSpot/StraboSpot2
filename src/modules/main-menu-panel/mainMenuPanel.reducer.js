@@ -4,7 +4,7 @@ const initialState = {
   sortedView: SortedViews.CHRONOLOGICAL,
   selectedButtonIndex: 0,
   settingsPageVisible: null,
-  isSidePanelVisible: true,
+  isSidePanelVisible: false,
 };
 
 export const mainMenuPanelReducer = (state = initialState, action) => {
