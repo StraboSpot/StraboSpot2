@@ -34,14 +34,13 @@ const styles = StyleSheet.create({
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
   },
   sectionHeading: {
-    alignItems: 'flex-start',
     paddingLeft: 10,
-    paddingTop: 5,
     backgroundColor: themes.LIST_HEADER_COLOR,
   },
   sectionHeadingTextStyle: {
     textTransform: 'uppercase',
     paddingTop: 5,
+    textAlignVertical: 'center',
     // paddingBottom: 5,
     fontWeight: 'bold',
     fontSize: themes.PRIMARY_TEXT_SIZE,
