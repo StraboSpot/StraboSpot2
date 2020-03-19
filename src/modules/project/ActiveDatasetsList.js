@@ -18,7 +18,7 @@ const ActiveDatasetsList = () => {
         <ListItem
           key={item.id}
           title={item.name}
-          containerStyle={styles.listItems}
+          containerStyle={styles.projectDescriptionListContainer}
           bottomDivider
           checkmark={item.current}
           onPress={() => useProject.makeDatasetCurrent(item.id)}

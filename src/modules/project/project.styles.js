@@ -144,6 +144,9 @@ const dialogStyles = StyleSheet.create({
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
     borderTopWidth: 1,
   },
+  subHeaderText: {
+    textAlign: 'center',
+  },
 });
 
 export default dialogStyles;

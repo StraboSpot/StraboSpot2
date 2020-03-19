@@ -1,9 +1,9 @@
 import React, {useState} from 'react';
 import {ScrollView, Switch, View} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
-import {ListItem} from 'react-native-elements';
+import {Icon, ListItem} from 'react-native-elements';
 
-import {isEmpty} from '../../shared/Helpers';
+import {isEmpty, truncateText} from '../../shared/Helpers';
 import Loading from '../../shared/ui/Loading';
 import TexInputModal from '../../shared/ui/GeneralTextInputModal';
 
@@ -39,9 +39,8 @@ const DatasetList = () => {
           {Object.values(datasets).map((item) => {
             return <ListItem
               key={item.id}
-              title={item.name}
+              title={truncateText(item.name, 15)}
               containerStyle={styles.projectDescriptionListContainer}
-              onPress={() => _selectedDataset(item.id, item.name)}
               bottomDivider
               rightElement={
                 <Switch
@@ -49,6 +48,13 @@ const DatasetList = () => {
                   value={item.active}
                   disabled={isDisabled(item.id)}
                 />}
+              leftIcon={   <Icon
+                name='edit'
+                type={'material'}
+                size={20}
+                color='darkgrey'
+                onPress={() => _selectedDataset(item.id, item.name)}
+              />}
             />;
           })}
         </ScrollView>);

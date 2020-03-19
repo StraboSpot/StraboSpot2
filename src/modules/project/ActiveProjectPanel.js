@@ -68,6 +68,7 @@ const ActiveProjectPanel = (props) => {
           }
         />
       </View>
+      <Text style={[commonStyles.standardDescriptionText, styles.subHeaderText]} >Select pencil to edit name</Text>
       <View style={[styles.sectionContainer, {height: 200}]}>
       <DatasetList/>
       </View>
