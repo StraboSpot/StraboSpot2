@@ -30,7 +30,7 @@ const MyStraboSpot = props => {
           </View>
            : <NewProjectForm closeHomePanel={props.closeHomePanel}/>}
         <Divider sectionText={'Active project'}/>
-        <ActiveProjectList/>
+        <ActiveProjectList openSidePanel={props.openSidePanel}/>
     </React.Fragment>
   );
 };
