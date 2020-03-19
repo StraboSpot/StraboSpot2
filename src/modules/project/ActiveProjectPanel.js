@@ -6,7 +6,6 @@ import Divider from '../main-menu-panel/MainMenuPanelDivider';
 import DatasetList from './DatasetList';
 import ActiveDatasetsList from './ActiveDatasetsList';
 import ActiveProjectList from './ActiveProjectList';
-import ProjectDescriptionPanel from './ProjectDescription';
 import {isEmpty} from '../../shared/Helpers';
 import GeneralTextInputModal from '../../shared/ui/GeneralTextInputModal';
 
