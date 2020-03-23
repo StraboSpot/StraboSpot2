@@ -3,6 +3,7 @@ import Dialog, {
   DialogTitle,
   DialogContent,
   SlideAnimation,
+  FadeAnimation,
   DialogFooter,
   DialogButton,
 } from 'react-native-popup-dialog';
@@ -16,10 +17,11 @@ const UploadDialogBox = (props) => {
         dialogStyle={styles.dialogBox}
         width={275}
         visible={props.visible}
-        dialogAnimation={new SlideAnimation({
-          slideFrom: 'top',
+        dialogAnimation={new FadeAnimation({
+          animationDuration: 200,
+          useNativeDriver: true,
         })}
-        useNativeDriver={true}
+        // useNativeDriver={true}
         footer={
           <DialogFooter>
             <DialogButton

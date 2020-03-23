@@ -57,7 +57,11 @@ const dialogStyles = StyleSheet.create({
     marginTop: 15,
     paddingBottom: 10
   },
-  dialogContentText: {
+  dialogConfirmText: {
+    textAlign: 'center',
+    paddingTop: 15
+  },
+  dialogContentImportantText: {
     color: 'red',
     fontWeight: 'bold',
     textAlign: 'center',
