@@ -45,6 +45,7 @@ const TexInputModal = (props) => {
             onChangeText={props.onChangeText}
             placeholder={'Enter text here...'}
           />
+          {props.children}
         </DialogContent>
       </Dialog>
     </View>
