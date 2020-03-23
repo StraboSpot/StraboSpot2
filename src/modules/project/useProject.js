@@ -77,6 +77,27 @@ const useProject = () => {
     return Promise.resolve();
   };
 
+  const destroyDataset =  (id) => {
+    console.log(datasets[id]);
+    let promise = [];
+    // dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, value: true});
+    if (datasets[id].spotIds) {
+      datasets[id].spotIds.map(async spotId => {
+        console.log('SpotIds', spotId)
+        const spotIdsArr = await useSpots.deleteSpotsFromDataset(datasets[id], spotId);
+        console.log('DeleteSpot()', spotIdsArr)
+        if (isEmpty(spotIdsArr)) {
+           // console.table(updatedDatasets)
+          await dispatch({type: projectReducers.DATASETS.DATASET_DELETE, id: id});
+          return datasets;
+        }
+        else console.log('SPOT IDS ARR:', spotIdsArr)
+      });
+    }
+    else dispatch({type: projectReducers.DATASETS.DATASET_DELETE, id: id});
+    return Promise.resolve(datasets);
+  };
+
   const destroyOldProject = async () => {
     // if (!isEmpty(project)) {
       await dispatch({type: projectReducers.PROJECT_CLEAR});
@@ -284,6 +305,7 @@ const useProject = () => {
   const projectHelpers = {
     addDataset: addDataset,
     createProject: createProject,
+    destroyDataset: destroyDataset,
     getAllProjects: getAllProjects,
     getCurrentDataset: getCurrentDataset,
     getDatasets: getDatasets,

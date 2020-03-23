@@ -47,8 +47,14 @@ export const projectsReducer = (state = initialState, action) => {
         datasets: action.datasets,
       };
     }
-    case 'UPDATE_DATASET_PROPERTIES':
-      console.log('UpdatedDataset', action.dataset)
+    case projectReducers.DATASETS.DATASET_DELETE:
+      const {[action.id]: deletedDataset, ...datasetsList} = state.datasets;  // Delete key with action.id from object
+      return  {
+        ...state,
+        datasets: datasetsList,
+      };
+    case projectReducers.DATASETS.UPDATE_DATASET_PROPERTIES:
+      console.log('UpdatedDataset', action.dataset);
       return {
         ...state,
         datasets: {
@@ -76,7 +82,7 @@ export const projectsReducer = (state = initialState, action) => {
     }
     case projectReducers.DATASETS.DELETE_SPOT_ID: {
       console.log(action.datasetId, '&', action.filteredList);
-      const dataset = {...state.datasets[action.datasetId], spotIds: action.filteredList};
+      const dataset = Object.assign(state.datasets[action.datasetId], {...state.datasets[action.datasetId], spotIds: action.filteredList});
       return {
         ...state,
         datasets: {...state.datasets, [action.datasetId]: dataset},
