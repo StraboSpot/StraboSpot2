@@ -65,6 +65,14 @@ const useSpots = (props) => {
     return Promise.resolve('spot deleted');
   };
 
+  const deleteSpotsFromDataset = (dataset, spotId) => {
+    const updatedSpotIds = dataset.spotIds.filter(id => id !== spotId)
+    dispatch({type: projectReducers.DATASETS.DELETE_SPOT_ID, filteredList: updatedSpotIds, datasetId: dataset.id});
+    dispatch({type: spotReducers.DELETE_SPOT, id: spotId});
+    console.log(dataset, 'Spots', spots)
+    return Promise.resolve(dataset.spotIds);
+  };
+
   const downloadSpots = async (dataset, encodedLogin) => {
     dispatch({type: 'CLEAR_STATUS_MESSAGES'});
     dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'Downloading Spots...'});
@@ -118,6 +126,7 @@ const useSpots = (props) => {
   return [{
     createSpot: createSpot,
     deleteSpot: deleteSpot,
+    deleteSpotsFromDataset: deleteSpotsFromDataset,
     downloadSpots: downloadSpots,
     getActiveSpotsObj: getActiveSpotsObj,
     getMappableSpots: getMappableSpots,
