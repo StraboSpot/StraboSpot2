@@ -63,7 +63,7 @@ const dialogStyles = StyleSheet.create({
   },
   dialogContentImportantText: {
     color: 'red',
-    fontWeight: 'bold',
+    fontWeight: '500',
     textAlign: 'center',
   },
   dialogTitle: {

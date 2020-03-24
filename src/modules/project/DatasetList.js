@@ -23,6 +23,9 @@ import {homeReducers} from '../home/home.constants';
 
 // Styles
 import styles from './project.styles';
+import StatusDialogBox from '../../shared/ui/StatusDialogBox';
+import sharedDialogStyles from '../../shared/common.styles';
+import {BallIndicator} from 'react-native-indicators';
 
 const DatasetList = () => {
 
@@ -32,20 +35,42 @@ const DatasetList = () => {
   const [selectedDataset, setSelectedDataset] = useState({});
   const [isDeleteConfirmModalVisible, setIsDeleteConfirmModalVisible] = useState(false);
   const [isDatasetNameModalVisible, setIsDatasetNameModalVisible] = useState(false);
+  const [isStatusMessagesModalVisible, setIsStatusMessagesModalVisible] = useState(false);
+  const [isDeleting , setIsDeleting] = useState(false);
+
   const datasets = useSelector(state => state.project.datasets);
+  const statusMessages = useSelector(state => state.home.statusMessages);
   const isOnline = useSelector(state => state.home.isOnline);
   const userData = useSelector(state => state.user);
   const dispatch = useDispatch();
 
-  useEffect (() => {
+  useEffect(() => {
     console.log('Datasets in useEffect', datasets)
-  }, [datasets])
+    console.log('States in useEffect', isDeleteConfirmModalVisible, isDatasetNameModalVisible)
+    deleteDataset();
+  }, [datasets, isDeleting, selectedDataset, isStatusMessagesModalVisible])
 
   const deleteDataset = async () => {
+    if (!isDeleteConfirmModalVisible && !isDatasetNameModalVisible && isDeleting && selectedDataset && selectedDataset.id) {
+      setIsDeleting(false);
+      setLoading(true);
+      setIsStatusMessagesModalVisible(true);
+      dispatch({type: homeReducers.CLEAR_STATUS_MESSAGES});
+      dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Deleting Dataset...'});
+      setTimeout(() => {
+        useProject.destroyDataset(selectedDataset.id).then(() => {
+          console.log('Dataset has been deleted!');
+          setLoading(false);
+        });
+      }, 500);
+    }
+  };
+
+  const initializeDelete = () => {
     setIsDatasetNameModalVisible(false);
     setIsDeleteConfirmModalVisible(false);
-    await useProject.destroyDataset(selectedDataset.id);
-  };
+    setIsDeleting(true)
+  }
 
   const isDisabled = (id) => {
     const activeDatasets = Object.values(datasets).filter(dataset => dataset.active === true);
@@ -86,6 +111,7 @@ const DatasetList = () => {
       <View style={{backgroundColor: 'red', alignContent: 'flex-start'}}>
       <TexInputModal
         dialogTitle={'Edit or Delete Dataset'}
+        style={styles.dialogTitle}
         visible={isDatasetNameModalVisible}
         onPress={() => saveDataset()}
         close={() => setIsDatasetNameModalVisible(false)}
@@ -96,6 +122,8 @@ const DatasetList = () => {
             title={'Delete Dataset'}
             titleStyle={{color: 'red'}}
             type={'clear'}
+            disabled={isDisabled(selectedDataset.id)}
+            // disabledTitleStyle={{color: 'yellow'}}
             buttonStyle={{paddingTop: 20, padding: 0}}
             onPress={() => setIsDeleteConfirmModalVisible(true)}
             icon={
@@ -108,6 +136,9 @@ const DatasetList = () => {
               />
             }
           />
+        {isDisabled(selectedDataset.id) && <View >
+            <Text style={[styles.dialogContentImportantText, {paddingTop: 10}]}>You must set another active dataset before you delete this dataset</Text>
+          </View>}
       </TexInputModal>
       </View>
     );
@@ -132,7 +163,7 @@ const DatasetList = () => {
         }
         footer={
           <DialogFooter>
-            <DialogButton text={'Delete'} onPress={() => deleteDataset()}/>
+            <DialogButton text={'Delete'} onPress={() => initializeDelete()}/>
             <DialogButton text={'Cancel'} onPress={() => setIsDeleteConfirmModalVisible(false)}/>
           </DialogFooter>
         }
@@ -145,6 +176,40 @@ const DatasetList = () => {
           <Text style={styles.dialogConfirmText}>Do you want to delete?</Text>
         </View>
       </Dialog>
+    );
+  };
+
+  const renderStatusDialogBox = () => {
+    return (
+      <StatusDialogBox
+        dialogTitle={'Delete Status'}
+        style={sharedDialogStyles.dialogTitleSuccess}
+        visible={isStatusMessagesModalVisible}
+        onTouchOutside={() => dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, value: false})}
+        // disabled={progress !== 1 && !uploadErrors}
+      >
+        <View style={{height: 100}}>
+
+          {loading ?
+            <View style={{flex: 1}}>
+              <BallIndicator
+                color={'darkgrey'}
+                count={8}
+                size={30}
+              />
+            </View>
+            : null}
+          <View style={{flex: 1, paddingTop: 10}}>
+            <Text style={{textAlign: 'center'}}>{statusMessages.join('\n')}</Text>
+            {!loading && <Button
+              title={'OK'}
+              containerStyle={{paddingTop: 15}}
+              type={'clear'}
+              onPress={() => setIsStatusMessagesModalVisible(false)}
+            />}
+          </View>
+        </View>
+      </StatusDialogBox>
     );
   };
 
@@ -188,6 +253,7 @@ const DatasetList = () => {
 
   return (
     <View style={{flex: 1}}>
+      {renderStatusDialogBox()}
       {renderDatasets()}
       {renderDatasetNameChangeModal()}
       {renderDeleteConformationModal()}

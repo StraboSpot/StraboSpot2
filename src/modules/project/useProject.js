@@ -77,25 +77,31 @@ const useProject = () => {
     return Promise.resolve();
   };
 
-  const destroyDataset =  (id) => {
-    console.log(datasets[id]);
-    let promise = [];
-    // dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, value: true});
-    if (datasets[id].spotIds) {
-      datasets[id].spotIds.map(async spotId => {
-        console.log('SpotIds', spotId)
-        const spotIdsArr = await useSpots.deleteSpotsFromDataset(datasets[id], spotId);
-        console.log('DeleteSpot()', spotIdsArr)
-        if (isEmpty(spotIdsArr)) {
-           // console.table(updatedDatasets)
-          await dispatch({type: projectReducers.DATASETS.DATASET_DELETE, id: id});
-          return datasets;
-        }
-        else console.log('SPOT IDS ARR:', spotIdsArr)
-      });
+  const destroyDataset = (id) => {
+    let spotsDeletedCount = 0;
+    if (datasets && datasets[id] && datasets[id].spotIds) {
+      return Promise.all(datasets[id].spotIds.map(spotId => {
+          console.log('SpotIds', spotId);
+          useSpots.deleteSpotsFromDataset(datasets[id], spotId).then((spotIdsArr) => {
+            spotsDeletedCount++;
+            console.log(spotId, 'Current Spot Deleted Count:', spotsDeletedCount);
+            console.log('DeleteSpot()', spotIdsArr);
+            if (isEmpty(spotIdsArr)) {
+              dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
+              dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: `Deleted ${spotsDeletedCount} spots.`});
+              dispatch({type: projectReducers.DATASETS.DATASET_DELETE, id: id});
+              dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: `Dataset Deleted!`});
+            }
+          });
+        }),
+      );
     }
-    else dispatch({type: projectReducers.DATASETS.DATASET_DELETE, id: id});
-    return Promise.resolve(datasets);
+    else {
+      dispatch({type: projectReducers.DATASETS.DATASET_DELETE, id: id});
+      dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
+      dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Dataset Deleted!'});
+      return Promise.resolve();
+    }
   };
 
   const destroyOldProject = async () => {
