@@ -40,6 +40,7 @@ const TexInputModal = (props) => {
         <DialogContent style={[styles.dialogContent, props.dialogContent]}>
           <Input
             value={props.value}
+            maxLength={25}
             inputContainerStyle={{ borderColor: 'transparent'}}
             inputStyle={{backgroundColor: 'white', height: 50, width: 200, paddingLeft: 20}}
             onChangeText={props.onChangeText}
