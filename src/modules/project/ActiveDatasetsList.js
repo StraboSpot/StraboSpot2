@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {FlatList} from 'react-native';
+import {FlatList, View, Text} from 'react-native';
 import {ListItem} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 import useProjectHook from './useProject';
@@ -12,14 +12,24 @@ const ActiveDatasetsList = () => {
   const [refresh] = useState();
   const datasets = useSelector(state => state.project.datasets);
 
-  const renderActiveDatasets = ({item}) => {
+  const spotLengthText = (item) => {
+      return (
+        <View style={{flexWrap: 'wrap', flexDirection: 'row'}}>
+          <Text style={styles.basicInfoInputText}>{item.name} </Text>
+         {item.spotIds ? <Text style={{color: 'grey'}}>({item.spotIds.length} spot{item.spotIds.length !== 1 ? 's' : '' })</Text>
+           : <Text style={{color: 'grey'}}>(0 spots)</Text>}
+        </View>
+      );
+  }
+
+  const renderActiveDatasets = ({item, index}) => {
     if (item.active) {
       return (
         <ListItem
           key={item.id}
-          title={item.name}
+          title={spotLengthText(item)}
           containerStyle={styles.projectDescriptionListContainer}
-          bottomDivider
+          bottomDivider={index < Object.values(datasets).length - 1}
           checkmark={item.current}
           onPress={() => useProject.makeDatasetCurrent(item.id)}
         />

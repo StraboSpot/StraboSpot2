@@ -81,12 +81,15 @@ const DatasetList = () => {
     if (!isEmpty(datasets)) {
       return (
         <ScrollView>
-          {Object.values(datasets).map((item) => {
+          {Object.values(datasets).map((item, i, obj) => {
             return <ListItem
               key={item.id}
-              title={truncateText(item.name, 15)}
+              title={truncateText(item.name, 20)}
+              titleStyle={styles.basicInfoInputText}
+              subtitle={item.spotIds ? `(${item.spotIds.length} spot${item.spotIds.length !== 1 ? 's' : '' })` : '(0 spots)'}
+              subtitleStyle={{color: 'grey'}}
               containerStyle={styles.projectDescriptionListContainer}
-              bottomDivider
+              bottomDivider={i < obj.length - 1}
               rightElement={
                 <Switch
                   onValueChange={(value) => setSwitchValue(value, item.id)}
