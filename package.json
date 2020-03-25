@@ -14,7 +14,7 @@
     "@react-native-community/async-storage": "^1.8.1",
     "@react-native-community/datetimepicker": "^2.3.0",
     "@react-native-community/geolocation": "^2.0.2",
-    "@react-native-community/netinfo": "^4.7.0",
+    "@react-native-community/netinfo": "^5.6.2",
     "@react-native-mapbox-gl/maps": "^8.0.0-rc1",
     "@turf/turf": "^5.1.6",
     "formik": "^1.5.8",
