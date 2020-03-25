@@ -33,6 +33,14 @@ const dialogStyles = StyleSheet.create({
     borderRadius: 10,
     padding: 7,
   },
+  datasetListItemText: {
+    color: themes.PRIMARY_ITEM_TEXT_COLOR,
+    fontSize: themes.MEDIUM_TEXT_SIZE
+  },
+  datasetListItemSpotCount: {
+    color: themes.MEDIUMGREY,
+    fontSize: themes.MEDIUM_TEXT_SIZE
+  },
   activeProjectButton: {
     margin: 10,
     borderRadius: 10,

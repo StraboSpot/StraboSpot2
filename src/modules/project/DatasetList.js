@@ -85,9 +85,9 @@ const DatasetList = () => {
             return <ListItem
               key={item.id}
               title={truncateText(item.name, 20)}
-              titleStyle={styles.basicInfoInputText}
+              titleStyle={styles.datasetListItemText}
               subtitle={item.spotIds ? `(${item.spotIds.length} spot${item.spotIds.length !== 1 ? 's' : '' })` : '(0 spots)'}
-              subtitleStyle={{color: 'grey'}}
+              subtitleStyle={styles.datasetListItemSpotCount}
               containerStyle={styles.projectDescriptionListContainer}
               bottomDivider={i < obj.length - 1}
               rightElement={

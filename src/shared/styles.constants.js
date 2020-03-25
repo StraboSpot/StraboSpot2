@@ -24,5 +24,6 @@ export const PRIMARY_TEXT_SIZE = 18;
 export const STATUS_MESSAGE_TEXT_SIZE = 18;
 export const PRIMARY_HEADER_TEXT_SIZE = 20;
 export const SMALL_TEXT_SIZE = 14;
+export const MEDIUM_TEXT_SIZE = 16;
 
 export const ROW_HEIGHT = 50;

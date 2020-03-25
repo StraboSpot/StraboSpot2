@@ -15,9 +15,9 @@ const ActiveDatasetsList = () => {
   const spotLengthText = (item) => {
       return (
         <View style={{flexWrap: 'wrap', flexDirection: 'row'}}>
-          <Text style={styles.basicInfoInputText}>{item.name} </Text>
-         {item.spotIds ? <Text style={{color: 'grey'}}>({item.spotIds.length} spot{item.spotIds.length !== 1 ? 's' : '' })</Text>
-           : <Text style={{color: 'grey'}}>(0 spots)</Text>}
+          <Text style={styles.datasetListItemText}>{item.name} </Text>
+         {item.spotIds ? <Text style={styles.datasetListItemSpotCount}>({item.spotIds.length} spot{item.spotIds.length !== 1 ? 's' : '' })</Text>
+           : <Text style={styles.datasetListItemSpotCount}>(0 spots)</Text>}
         </View>
       );
   }
