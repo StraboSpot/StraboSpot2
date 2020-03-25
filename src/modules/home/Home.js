@@ -341,7 +341,6 @@ const Home = (props) => {
     try {
       await mapViewComponent.current.goToCurrentLocation();
       useHome.toggleLoading(false);
-      await mapViewComponent.current.goToCurrentLocation();
     }
     catch {
       useHome.toggleLoading(false);
