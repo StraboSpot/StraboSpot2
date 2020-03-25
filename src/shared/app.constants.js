@@ -11,4 +11,4 @@ export const menuButtons = {
   },
 };
 
-export const VERSION_NUMBER = 'Version 0.3.0';
+export const VERSION_NUMBER = 'Version 0.3.1';
