@@ -240,6 +240,7 @@ const Home = (props) => {
       // Map Actions
       case 'zoom':
         console.log(`${name}`, ' was clicked');
+        mapViewComponent.current.zoomToSpotsExtent();
         break;
       case 'saveMap':
         toggleOfflineMapModal();
@@ -338,7 +339,7 @@ const Home = (props) => {
   const goToCurrentLocation = async () => {
     useHome.toggleLoading(true);
     try {
-      await mapViewComponent.current.setCurrentLocation();
+      await mapViewComponent.current.goToCurrentLocation();
       useHome.toggleLoading(false);
       await mapViewComponent.current.goToCurrentLocation();
     }

@@ -29,8 +29,8 @@ function Basemap(props) {
       ref={cameraRef}
       zoomLevel={16}
       centerCoordinate={props.centerCoordinate}
-      followUserLocation={true}
-      followUserMode='normal'
+      // followUserLocation={true}   // Can't follow user location if want to zoom to extent of Spots
+      // followUserMode='normal'
     />
     <MapboxGL.RasterSource
       id={basemap.id}
