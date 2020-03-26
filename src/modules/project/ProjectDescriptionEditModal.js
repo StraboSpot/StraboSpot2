@@ -32,8 +32,8 @@ const DescriptionEditingModal = (props) => {
         }
         footer = {
           <DialogFooter>
-            <DialogButton onPress={props.confirm} text={'Ok'}/>
-            <DialogButton onPress={props.cancel} text={'Cancel'}/>
+            <DialogButton onPress={props.confirm} text={'Close'}/>
+            {/*<DialogButton onPress={props.cancel} text={'Cancel'}/>*/}
           </DialogFooter>
         }
       >

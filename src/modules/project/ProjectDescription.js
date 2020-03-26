@@ -56,8 +56,8 @@ const ProjectDescription = (props) => {
   });
   // const [startDate, setStartDate] = useState(new Date());
   // const [endDate, setEndDate] = useState(new Date());
-  const [label, setLabel] = useState();
-  const [text, setText] = useState(projectDescription[label]);
+  const [selectedField, setSelectedField] = useState();
+  const [textVal, setTextVal] = useState('');
   const [showEditingModal, setShowEditingModal] = useState(false);
   const [showStartPicker, setShowStartPicker] = useState(false);
   const [showEndPicker, setShowEndPicker] = useState(false);
@@ -197,24 +197,30 @@ const ProjectDescription = (props) => {
   };
 
   const renderEditingModal = () => {
-    return (
-      <EditingModal
-        visible={showEditingModal}
-        dialogTitle={label}
-        cancel={() => setShowEditingModal(false)}
-        confirm={() => setShowEditingModal(false)}
-      >
-        <View style={{}}>
-          <TextInput
-            numberOfLines={4}
-            multiline={true}
-            onChangeText={(val) => setText({val})}
-            value={projectDescription.purpose_of_study}
-            style={{backgroundColor: 'white', height: 250, width: 250}}
-          />
-        </View>
-      </EditingModal>
-    );
+    if (selectedField) {
+
+      return (
+        <EditingModal
+          visible={showEditingModal}
+          dialogTitle={selectedField && selectedField.label}
+          // cancel={() => {
+          //   setProjectDescription(project.description)
+          //   setShowEditingModal(false)
+          // }}
+          confirm={() => saveProjectField()}
+        >
+          <View style={{}}>
+            <TextInput
+              numberOfLines={4}
+              multiline={true}
+              onChangeText={(val) => setProjectDescription({...projectDescription, [selectedField.name]: val})}
+              value={projectDescription[selectedField.name]}
+              style={{backgroundColor: 'white', height: 250, width: 250}}
+            />
+          </View>
+        </EditingModal>
+      );
+    }
   };
 
   const renderListItemFields = (field, i, obj) => (
@@ -226,16 +232,21 @@ const ProjectDescription = (props) => {
       containerStyle={styles.projectDescriptionListContainer}
       rightContentContainerStyle={styles.listItemTitleAndValue}
       bottomDivider={i < obj.length - 1}
-      onPress={() => toggleEditingModal(field.label, projectDescription[field.name])}
+      onPress={() => toggleEditingModal(field)}
       chevron
     />
   );
 
-  const toggleEditingModal = (name, value) => {
-    console.log(value)
-    console.log(name)
-    setShowEditingModal(true);
-    setLabel(name);
+  const toggleEditingModal = (field) => {
+    // console.log(value)
+    console.log(field)
+    if (field.name === 'gps_datum') {
+      console.log('popopopo')
+    }
+    else {
+      setShowEditingModal(true);
+    }
+    setSelectedField(field);
   };
 
   const renderGeneralDetails = () => (
@@ -247,8 +258,11 @@ const ProjectDescription = (props) => {
   const renderSaveAndCloseButtons = () => {
     return (
       <SaveAndCloseButtons
-        cancel={() => goBack()}
-        save={() => saveAndGo()}/>
+        cancel={() => {
+          setProjectDescription(project.description)
+          goBack()
+        }}
+        save={() => saveProjectDescriptionAndGo()}/>
     );
   };
 
@@ -258,9 +272,14 @@ const ProjectDescription = (props) => {
     </View>
   );
 
-  const saveAndGo = async () => {
+  const saveProjectDescriptionAndGo = async () => {
     await dispatch({type: projectReducers.UPDATE_PROJECT, field: 'description', value: projectDescription});
     goBack();
+  };
+
+  const saveProjectField = () => {
+    console.log('Selectedfield', selectedField)
+    setShowEditingModal(false)
   };
 
   return (
