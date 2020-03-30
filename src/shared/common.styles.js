@@ -2,17 +2,20 @@ import {StyleSheet} from 'react-native';
 import * as themes from './styles.constants';
 
 const commonStyles = StyleSheet.create({
+  buttonContainer: {
+    paddingTop: 10
+  },
   dialogContent: {
+    flex: 1,
     marginTop: 15,
     alignItems: 'center',
   },
   dialogBox: {
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
     borderRadius: 30,
+    position: 'absolute',
+    top: '15%'
   },
-  // dialogTitle: {
-  //   backgroundColor: 'red',
-  // },
   dialogTitleError: {
     backgroundColor: 'red',
   },
