@@ -13,6 +13,9 @@ const dialogStyles = StyleSheet.create({
   basicInfoInputText: {
     fontSize: 16,
   },
+  buttonContainer: {
+    paddingTop: 10,
+  },
   dividerWithButtonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',

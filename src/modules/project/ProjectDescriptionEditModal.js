@@ -1,21 +1,21 @@
 import React from 'react';
-import {Text, View} from 'react-native';
+import {Button} from 'react-native-elements';
 import Dialog, {
   DialogTitle,
-  DialogButton,
   DialogContent,
-  DialogFooter,
-  SlideAnimation,
   FadeAnimation,
 } from 'react-native-popup-dialog';
-import styles from '../../shared/common.styles';
+
+// Styles
+import commonStyles from '../../shared/common.styles';
+import projectStyles from './project.styles';
 
 const DescriptionEditingModal = (props) => {
 
   return (
     <React.Fragment>
       <Dialog
-        dialogStyle={styles.dialogBox}
+        dialogStyle={commonStyles.dialogBox}
         width={300}
         visible={props.visible}
         dialogAnimation={new FadeAnimation({
@@ -27,18 +27,17 @@ const DescriptionEditingModal = (props) => {
         dialogTitle={
           <DialogTitle
             style={props.style}
-            textStyle={styles.dialogTitleText}
+            textStyle={commonStyles.dialogTitleText}
             title={props.dialogTitle}/>
         }
-        footer = {
-          <DialogFooter>
-            <DialogButton onPress={props.confirm} text={'Close'}/>
-            {/*<DialogButton onPress={props.cancel} text={'Cancel'}/>*/}
-          </DialogFooter>
-        }
       >
-        <DialogContent style={[styles.dialogContent, props.dialogContent]}>
-          {props.children}
+        <DialogContent style={[commonStyles.dialogContent, props.dialogContent]}>
+            {props.children}
+            <Button
+              disabled={props.disabled}
+              onPress={props.confirm}
+              containerStyle={projectStyles.buttonContainer}
+              type={'clear'} title={'Close'}/>
         </DialogContent>
       </Dialog>
     </React.Fragment>

@@ -47,17 +47,16 @@ const ProjectDescription = (props) => {
     start_date: project.description.start_date || new Date(),
     end_date: project.description.end_date || new Date(),
     notes: project.description.notes,
-    gps_datum: project.description.gps_datum,
+    gps_datum: project.description.gps_datum || 'WGS84 (Default)',
     magnetic_declination: project.description.magnetic_declination,
     purpose_of_study: project.description.purpose_of_study,
     other_team_members: project.description.other_team_members,
     areas_of_interest: project.description.areas_of_interest,
     instruments: project.description.instruments,
   });
-  // const [startDate, setStartDate] = useState(new Date());
-  // const [endDate, setEndDate] = useState(new Date());
+  const [magDecValidation, setMagDecValidation] = useState(false);
+  const [validationErrorMessage, setValidationErrorMessage] = useState('');
   const [selectedField, setSelectedField] = useState();
-  const [textVal, setTextVal] = useState('');
   const [showEditingModal, setShowEditingModal] = useState(false);
   const [showStartPicker, setShowStartPicker] = useState(false);
   const [showEndPicker, setShowEndPicker] = useState(false);
@@ -67,6 +66,11 @@ const ProjectDescription = (props) => {
     console.log('Fields in UE', fields);
     console.log('Description Updated', projectDescription);
   }, [fields]);
+
+  useEffect(() => {
+    console.log('UE MagDec', magDecValidation);
+    validateMagField()
+  }, [magDecValidation, projectDescription.magnetic_declination]);
 
   const changeStartDate = (event, date) => {
     // date = date || projectDescription.start_date;
@@ -198,28 +202,47 @@ const ProjectDescription = (props) => {
 
   const renderEditingModal = () => {
     if (selectedField) {
-
-      return (
-        <EditingModal
-          visible={showEditingModal}
-          dialogTitle={selectedField && selectedField.label}
-          // cancel={() => {
-          //   setProjectDescription(project.description)
-          //   setShowEditingModal(false)
-          // }}
-          confirm={() => saveProjectField()}
-        >
-          <View style={{}}>
-            <TextInput
-              numberOfLines={4}
-              multiline={true}
-              onChangeText={(val) => setProjectDescription({...projectDescription, [selectedField.name]: val})}
-              value={projectDescription[selectedField.name]}
-              style={{backgroundColor: 'white', height: 250, width: 250}}
-            />
-          </View>
-        </EditingModal>
-      );
+      if (selectedField.name === 'gps_datum' || selectedField.name === 'magnetic_declination') {
+        return (
+          <EditingModal
+            visible={showEditingModal}
+            dialogTitle={selectedField && selectedField.label}
+            disabled={selectedField.name === 'magnetic_declination' && !magDecValidation}
+            confirm={() => setShowEditingModal(false)}
+          >
+            <View style={{flex: 1, alignItems: 'center'}}>
+              <TextInput
+                keyboardType={selectedField.name === 'magnetic_declination' ? 'number-pad' : 'default'}
+                onChangeText={(val) => setProjectDescription({...projectDescription, [selectedField.name]: val})}
+                value={projectDescription[selectedField.name]}
+                style={{backgroundColor: 'white',padding: 15, width: 250, alignItems: 'center'}}
+              />
+            </View>
+            <View style={styles.dialogConfirmText}>
+              <Text style={styles.dialogContentImportantText}>{validationErrorMessage}</Text>
+            </View>
+          </EditingModal>
+        )
+      }
+      else {
+        return (
+          <EditingModal
+            visible={showEditingModal}
+            dialogTitle={selectedField && selectedField.label}
+            confirm={() => setShowEditingModal(false)}
+          >
+            <View style={{}}>
+              <TextInput
+                numberOfLines={4}
+                multiline={true}
+                onChangeText={(val) => setProjectDescription({...projectDescription, [selectedField.name]: val})}
+                value={projectDescription[selectedField.name]}
+                style={{backgroundColor: 'white', maxHeight: 200, padding: 15, width: 250}}
+              />
+            </View>
+          </EditingModal>
+        );
+      }
     }
   };
 
@@ -228,7 +251,7 @@ const ProjectDescription = (props) => {
       key={field.name}
       title={field.label}
       titleStyle={styles.listItemTitleAndValue}
-      rightTitle={projectDescription[field.name] ? truncateText(projectDescription[field.name], 10) : 'None'}
+      rightTitle={projectDescription[field.name] ? truncateText(projectDescription[field.name], 15) : 'None'}
       containerStyle={styles.projectDescriptionListContainer}
       rightContentContainerStyle={styles.listItemTitleAndValue}
       bottomDivider={i < obj.length - 1}
@@ -239,13 +262,8 @@ const ProjectDescription = (props) => {
 
   const toggleEditingModal = (field) => {
     // console.log(value)
-    console.log(field)
-    if (field.name === 'gps_datum') {
-      console.log('popopopo')
-    }
-    else {
-      setShowEditingModal(true);
-    }
+    console.log(field);
+    setShowEditingModal(true);
     setSelectedField(field);
   };
 
@@ -273,13 +291,22 @@ const ProjectDescription = (props) => {
   );
 
   const saveProjectDescriptionAndGo = async () => {
-    await dispatch({type: projectReducers.UPDATE_PROJECT, field: 'description', value: projectDescription});
-    goBack();
+      await dispatch({type: projectReducers.UPDATE_PROJECT, field: 'description', value: projectDescription});
+      goBack();
   };
 
-  const saveProjectField = () => {
-    console.log('Selectedfield', selectedField)
-    setShowEditingModal(false)
+  const validateMagField = () => {
+    if (selectedField && selectedField.name === 'magnetic_declination') {
+      const magDec = parseInt(projectDescription.magnetic_declination);
+      if (magDec >= 0 && magDec <= 180) {
+        setMagDecValidation(true);
+        setValidationErrorMessage('');
+      }
+      else {
+        setMagDecValidation(false);
+        setValidationErrorMessage('Must be between 0 and 180');
+      }
+    }
   };
 
   return (
