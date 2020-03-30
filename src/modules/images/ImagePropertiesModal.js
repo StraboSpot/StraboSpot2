@@ -71,10 +71,10 @@ const imagePropertiesModal = (props) => {
   const onSubmitForm = () => {
     // if (hasErrors(form)) showErrors(form);
     // else {
-    //   console.log('Saving form data to Spot ...', form.current.state.values);
+    //   console.log('Saving form data to Spot ...', form.current.values);
     //   let images = props.spot.properties.images;
-    //   const i = images.findIndex(imageId => imageId.id === form.current.state.values.id);
-    //   images[i] = form.current.state.values;
+    //   const i = images.findIndex(imageId => imageId.id === form.current.values.id);
+    //   images[i] = form.current.values;
     //   props.onSpotEdit('images', images);
     //   props.close();
     // }
@@ -92,7 +92,7 @@ const imagePropertiesModal = (props) => {
           <SectionDivider dividerText='Feature Type'/>
           <View>
             <Formik
-              ref={form}
+              innerRef={form}
               onSubmit={onSubmitForm}
               validate={validateForm}
               component={Form}
@@ -122,10 +122,10 @@ const imagePropertiesModal = (props) => {
         form.current.submitForm().then(() => {
             if (hasErrors(form)) showErrors(form);
             else {
-              console.log('Saving form data to Spot ...', form.current.state.values);
+              console.log('Saving form data to Spot ...', form.current.values);
               let images = props.spot.properties.images;
-              const i = images.findIndex(img => img.id === form.current.state.values.id);
-              images[i] = form.current.state.values;
+              const i = images.findIndex(img => img.id === form.current.values.id);
+              images[i] = form.current.values;
               props.onSpotEdit('images', images);
               props.setSelectedAttributes([images[i]]);
               props.close();

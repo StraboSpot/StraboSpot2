@@ -1,21 +1,25 @@
-import React, {useState, useRef} from 'react';
+import React, {useRef, useState} from 'react';
 import {Alert, FlatList, ScrollView, Text, View} from 'react-native';
-import {connect} from 'react-redux';
+
 import {Button, ButtonGroup} from 'react-native-elements';
-import {spotReducers} from '../spots/spot.constants';
-import {notebookReducers} from '../notebook-panel/notebook.constants';
+import {connect} from 'react-redux';
 import {Formik} from 'formik';
-import Form from '../form/Form';
-import {getNewId, isEmpty} from '../../shared/Helpers';
-import SectionDivider from '../../shared/ui/SectionDivider';
-import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
+
 import {getForm, hasErrors, setForm, showErrors, validateForm} from '../form/form.container';
-import {homeReducers, Modals} from '../home/home.constants';
+import {getNewId, isEmpty} from '../../shared/Helpers';
+import Form from '../form/Form';
 import MeasurementItem from './MeasurementItem';
+import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
+import SectionDivider from '../../shared/ui/SectionDivider';
+
+// Constants
+import {homeReducers, Modals} from '../home/home.constants';
+import {notebookReducers} from '../notebook-panel/notebook.constants';
+import {spotReducers} from '../spots/spot.constants';
 
 // Styles
-import styles from './measurements.styles';
 import * as themes from '../../shared/styles.constants';
+import styles from './measurements.styles';
 import stylesCommon from '../../shared/common.styles';
 
 const MeasurementDetailPage = (props) => {
@@ -78,7 +82,7 @@ const MeasurementDetailPage = (props) => {
   // Confirm switch between Planar and Tabular Zone
   const onSwitchFeatureType = (i) => {
     console.log(i);
-    const type = form.current.state.values.type;
+    const type = form.current.values.type;
     const switchedType = type === 'tabular_orientation' ? 'planar_orientation' : 'tabular_orientation';
     const typeText = type === 'tabular_orientation' ? 'Planar Orientation' : 'Tabular Zone';
     if ((i === 0 && type === 'tabular_orientation') || (i === 1 && type === 'planar_orientation')) {
@@ -102,7 +106,7 @@ const MeasurementDetailPage = (props) => {
 
   // Switch between Planar and Tabular Zone
   const switchFeatureType = (type) => {
-    const modifiedMeasurement = {...form.current.state.values, type: type};
+    const modifiedMeasurement = {...form.current.values, type: type};
     if (props.selectedMeasurements.length === 1) props.setSelectedAttributes([modifiedMeasurement]);
     else props.setSelectedAttributes([modifiedMeasurement, ...props.selectedMeasurements.slice(1)]);
     type === 'planar_orientation' ? setFeatureTypeIndex(0) : setFeatureTypeIndex(1);
@@ -134,7 +138,7 @@ const MeasurementDetailPage = (props) => {
           </View>
           <View>
             <Formik
-              ref={form}
+              innerRef={form}
               onSubmit={onSubmitForm}
               validate={validateForm}
               component={Form}
@@ -292,13 +296,13 @@ const MeasurementDetailPage = (props) => {
           if (props.selectedMeasurements.length === 1) {
             const selectedOrientation = getSelectedOrientationInfo(props.selectedMeasurements[0]);
             if (!isEmpty(selectedOrientation.i) && !isEmpty(selectedOrientation.iAssociated)) {
-              allMeasurements[selectedOrientation.i].associated_orientation[selectedOrientation.iAssociated] = form.current.state.values;
+              allMeasurements[selectedOrientation.i].associated_orientation[selectedOrientation.iAssociated] = form.current.values;
             }
-            else allMeasurements[selectedOrientation.i] = form.current.state.values;
+            else allMeasurements[selectedOrientation.i] = form.current.values;
           }
           // Bulk feature editing
           else {
-            let formValues = {...form.current.state.values};
+            let formValues = {...form.current.values};
             const fieldsToExclude = ['id', 'associated_orientation', 'label', 'strike', 'dip_direction', 'dip', 'quality', 'trend', 'plunge', 'rake', 'rake_calculated'];
             fieldsToExclude.forEach(key => delete formValues[key]);
             props.selectedMeasurements.map(spotFeature => {

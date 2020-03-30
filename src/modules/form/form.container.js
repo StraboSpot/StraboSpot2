@@ -57,7 +57,7 @@ export const getSurveyFieldLabel = name => {
 };
 
 export const hasErrors = (form) => {
-  return !isEmpty(form.current.state.errors);
+  return !isEmpty(form.current.errors);
 };
 
 // Determine if the field should be shown or not by looking at the relevant key-value pair
@@ -97,8 +97,8 @@ export const setForm = (form, child) => {
 };
 
 export const showErrors = (form) => {
-  const errors = form.current.state.errors;
-  const noProjectName = form.current.state.values.project_name;
+  const errors = form.current.errors;
+  const noProjectName = form.current.values.project_name;
   let errorMessages = [];
   // eslint-disable-next-line no-unused-vars
   for (const [name, error] of Object.entries(errors)) {

@@ -2,26 +2,26 @@ import React from 'react';
 import {View} from 'react-native';
 import {Field} from 'formik';
 
-import TextInputField from './TextInputField';
+import {getChoices, getSurvey, isRelevant} from './form.container';
+import DateInputField from './DateInputField';
 import NumberInputField from './NumberInputField';
 import SelectInputField from './SelectInputField';
-import DateInputField from './DateInputField';
-import {getChoices, getSurvey, isRelevant} from './form.container';
+import TextInputField from './TextInputField';
 
 // Styles
 import styles from './form.styles';
 
-const Form = ({handleSubmit, isValid, setFieldValue, values}) => {
+const Form = (props) => {
 
   const renderDateInput = field => {
     return (
-        <Field
-          component={DateInputField}
-          name={field.name}
-          label={field.label}
-          key={field.name}
-        />
-      );
+      <Field
+        component={DateInputField}
+        name={field.name}
+        label={field.label}
+        key={field.name}
+      />
+    );
   };
 
   const renderTextInput = field => {
@@ -57,11 +57,12 @@ const Form = ({handleSubmit, isValid, setFieldValue, values}) => {
     });
     return (
       <Field
-        component={SelectInputField}
+        as={SelectInputField}
         name={field.name}
         label={field.label}
         key={field.name}
         choices={fieldChoicesCopy}
+        setFieldValue={props.setFieldValue}
       />
     );
   };
@@ -77,7 +78,7 @@ const Form = ({handleSubmit, isValid, setFieldValue, values}) => {
   return (
     <View style={styles.formContainer}>
       {getSurvey().map((field, i) => {
-        if (isRelevant(field, values)) return renderField(field);
+        if (isRelevant(field, props.values)) return renderField(field);
       })}
     </View>
   );
