@@ -45,10 +45,10 @@ const DatasetList = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log('Datasets in useEffect', datasets)
-    console.log('States in useEffect', isDeleteConfirmModalVisible, isDatasetNameModalVisible)
+    console.log('Datasets in useEffect', datasets);
+    console.log('States in useEffect', isDeleteConfirmModalVisible, isDatasetNameModalVisible);
     deleteDataset();
-  }, [datasets, isDeleting, selectedDataset, isStatusMessagesModalVisible])
+  }, [datasets, isDeleting, selectedDataset, isStatusMessagesModalVisible]);
 
   const deleteDataset = async () => {
     if (!isDeleteConfirmModalVisible && !isDatasetNameModalVisible && isDeleting && selectedDataset && selectedDataset.id) {
@@ -69,8 +69,8 @@ const DatasetList = () => {
   const initializeDelete = () => {
     setIsDatasetNameModalVisible(false);
     setIsDeleteConfirmModalVisible(false);
-    setIsDeleting(true)
-  }
+    setIsDeleting(true);
+  };
 
   const isDisabled = (id) => {
     const activeDatasets = Object.values(datasets).filter(dataset => dataset.active === true);

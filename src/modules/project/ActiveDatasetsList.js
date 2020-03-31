@@ -20,7 +20,7 @@ const ActiveDatasetsList = () => {
            : <Text style={styles.datasetListItemSpotCount}>(0 spots)</Text>}
         </View>
       );
-  }
+  };
 
   const renderActiveDatasets = ({item, index}) => {
     if (item.active) {

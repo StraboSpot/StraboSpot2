@@ -73,7 +73,7 @@ const MainMenuPanel = props => {
       page =
         <View style={styles.settingsPanelContainer}>
           <UploadBackupAndExport/>
-      </View>
+      </View>;
         break;
     case SettingsMenuItems.APP_PREFERENCES.SHORTCUTS:
       page =

@@ -48,28 +48,28 @@ const useSpots = (props) => {
   };
 
   const deleteSpot = async id => {
-    console.log(id)
+    console.log(id);
     Object.values(datasets).map(dataset => {
       if (dataset.spotIds) {
         console.log(dataset.spotIds);
         const exists = dataset.spotIds.includes(id);
         if (exists) {
-          console.log(dataset.id)
+          console.log(dataset.id);
           console.log(dataset.spotIds.filter(spotId => id !== spotId));
           const filteredLSpotIdList = dataset.spotIds.filter(spotId => id !== spotId);
           dispatch({type: projectReducers.DATASETS.DELETE_SPOT_ID, filteredList: filteredLSpotIdList, datasetId: dataset.id});
           dispatch({type: spotReducers.DELETE_SPOT, id: id});
         }
       }
-    })
+    });
     return Promise.resolve('spot deleted');
   };
 
   const deleteSpotsFromDataset = (dataset, spotId) => {
-    const updatedSpotIds = dataset.spotIds.filter(id => id !== spotId)
+    const updatedSpotIds = dataset.spotIds.filter(id => id !== spotId);
     dispatch({type: projectReducers.DATASETS.DELETE_SPOT_ID, filteredList: updatedSpotIds, datasetId: dataset.id});
     dispatch({type: spotReducers.DELETE_SPOT, id: spotId});
-    console.log(dataset, 'Spots', spots)
+    console.log(dataset, 'Spots', spots);
     return Promise.resolve(dataset.spotIds);
   };
 

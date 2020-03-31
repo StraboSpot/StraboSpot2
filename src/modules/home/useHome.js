@@ -15,7 +15,7 @@ const useHome = (props) => {
   const getCurrentProject = useSelector(state => state.project.project);
 
   const checkForOpenProject = () => {
-    console.log('Check for open project')
+    console.log('Check for open project');
     return isEmpty(getCurrentProject);
   };
 

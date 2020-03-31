@@ -69,7 +69,7 @@ const ProjectDescription = (props) => {
 
   useEffect(() => {
     console.log('UE MagDec', magDecValidation);
-    validateMagField()
+    validateMagField();
   }, [magDecValidation, projectDescription.magnetic_declination]);
 
   const changeStartDate = (event, date) => {
@@ -277,8 +277,8 @@ const ProjectDescription = (props) => {
     return (
       <SaveAndCloseButtons
         cancel={() => {
-          setProjectDescription(project.description)
-          goBack()
+          setProjectDescription(project.description);
+          goBack();
         }}
         save={() => saveProjectDescriptionAndGo()}/>
     );

@@ -285,7 +285,7 @@ const Home = (props) => {
   };
 
   const closeSidePanel = () => {
-    console.log('Closing Side Panel')
+    console.log('Closing Side Panel');
     dispatch({type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE, bool: false});
     animatePanels(mainMenuSidePanelAnimation, -mainMenuSidePanelWidth);
   };
@@ -306,7 +306,7 @@ const Home = (props) => {
           onPress: () => {
             useSpots.deleteSpot(id)
               .then((res) => {
-                console.log(res)
+                console.log(res);
                 closeNotebookPanel();
               });
           },
