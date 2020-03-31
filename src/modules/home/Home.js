@@ -7,7 +7,7 @@ import MapActionsDialog from './MapActionsDialogBox';
 import MapSymbolsDialog from './MapSymbolsDialogBox';
 import BaseMapDialog from './BaseMapDialogBox';
 
-// <----- Home screen Panels ----->
+// <-----Home screen Panels----->
 import AllSpotsPanel from '../notebook-panel/AllSpots';
 import NotebookPanel from '../notebook-panel/NotebookPanel';
 import SettingsPanel from '../main-menu-panel/MainMenuPanel';
