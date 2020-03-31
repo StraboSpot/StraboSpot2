@@ -24,7 +24,8 @@ function Basemap(props) {
     scrollEnabled={props.allowMapViewMove}
     zoomEnabled={props.allowMapViewMove}
   >
-    <MapboxGL.UserLocation/>
+    <MapboxGL.UserLocation
+      animated={false}/>
     <MapboxGL.Camera
       ref={cameraRef}
       zoomLevel={15}
