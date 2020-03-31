@@ -184,17 +184,22 @@ const useProject = () => {
 
   const selectProject = async (selectedProject) => {
     console.log('Getting project...');
-    if (!isEmpty(project)) {
-      await destroyOldProject();
-    }
     try {
       const projectResponse = await serverRequests.getProject(selectedProject.id, user.encoded_login);
       console.log('Loaded project \n', projectResponse);
+      if (!isEmpty(project)) {
+        await destroyOldProject();
+      }
       dispatch({type: projectReducers.PROJECTS, project: projectResponse});
       await getDatasets(selectedProject);
       return projectResponse;
     }
     catch (err) {
+      console.log(err)
+      dispatch({type: homeReducers.CLEAR_STATUS_MESSAGES});
+      dispatch({type: homeReducers.ADD_STATUS_MESSAGE,
+        statusMessage: `${selectedProject.description.project_name} is not on the server...`});
+      dispatch({type: homeReducers.SET_INFO_MESSAGES_MODAL_VISIBLE, bool: true});
       return err.ok;
     }
   };

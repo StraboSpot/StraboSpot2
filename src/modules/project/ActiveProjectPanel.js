@@ -20,10 +20,8 @@ const ActiveProjectPanel = (props) => {
   const [activeDatasets, setActiveDatasets] = useState(null);
   const [datasetName, setDatasetName] = useState(null);
   const [isAddDatasetModalVisible, setIsAddDatasetModalVisible] = useState(false);
+  const project = useSelector(state => state.project.project);
   const datasets = useSelector(state => state.project.datasets);
-  const settingsPageVisible = useSelector(state => state.settingsPanel.settingsPageVisible);
-  const [showPanel, setShowPanel] = useState(null);
-
 
   useEffect(() => {
     const filteredDatasets = Object.values(datasets).filter(dataset => dataset.active === true);
@@ -74,6 +72,19 @@ const ActiveProjectPanel = (props) => {
       </View>
       <View style={{alignItems: 'center', margin: 10, marginTop: 0}}>
         <Text style={commonStyles.standardDescriptionText}>New Spots will be added to the check marked data set</Text>
+      </View>
+      <View style={styles.buttonContainer}>
+        <Button
+          title={'Download server version of project'}
+          titleStyle={[styles.dialogContentImportantText, {fontSize: 15}]}
+          type={'outline'}
+          containerStyle={{padding: 10}}
+          buttonStyle={{borderRadius: 10, padding: 15}}
+          onPress={() => useProject.selectProject(project)}
+        />
+        <View style={{alignItems: 'center', margin: 10, marginTop: 0}}>
+          <Text style={commonStyles.standardDescriptionText}>This will overwrite anything that has not been uploaded to the server</Text>
+        </View>
       </View>
       {renderAddDatasetModal()}
     </React.Fragment>
