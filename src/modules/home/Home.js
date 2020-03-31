@@ -273,7 +273,7 @@ const Home = (props) => {
 
   const closeInitialProjectLoadModal = () => {
     console.log('Starting Project...');
-    dispatch({type: homeReducers.SET_PROJECT_LOAD_SELECTION_MODAL_VISIBLE, value: false});
+    dispatch({type: homeReducers.SET_PROJECT_LOAD_SELECTION_MODAL_VISIBLE, bool: false});
   };
 
   const closeNotebookPanel = () => {
@@ -438,16 +438,18 @@ const Home = (props) => {
   const renderInfoDialogBox = () => {
     return (
       <StatusDialogBox
-        dialogTitle={'Whoops...'}
+        dialogTitle={'Something Went Wrong'}
         style={sharedDialogStyles.dialogWarning}
         visible={isInfoMessagesModalVisible}
-        onTouchOutside={() => dispatch({type: homeReducers.SET_INFO_MESSAGES_MODAL_VISIBLE, value: false})}
+        onTouchOutside={() => dispatch({type: homeReducers.SET_INFO_MESSAGES_MODAL_VISIBLE, bool: false})}
       >
-        <Text style={sharedDialogStyles.dialogStatusMessageText}>{statusMessages.join('\n')}</Text>
+        <View style={{margin: 15}}>
+          <Text style={sharedDialogStyles.dialogStatusMessageText}>{statusMessages.join('\n')}</Text>
+        </View>
         <Button
           title={'OK'}
           type={'clear'}
-          onPress={() => dispatch({type: homeReducers.SET_INFO_MESSAGES_MODAL_VISIBLE, value: false})}
+          onPress={() => dispatch({type: homeReducers.SET_INFO_MESSAGES_MODAL_VISIBLE, bool: false})}
         />
       </StatusDialogBox>
     );
@@ -459,13 +461,12 @@ const Home = (props) => {
           dialogTitle={'Error...'}
           style={sharedDialogStyles.dialogWarning}
           visible={isErrorMessagesModalVisible}
-          onTouchOutside={() => dispatch({type: homeReducers.SET_ERROR_MESSAGES_MODAL_VISIBLE, value: false})}
         >
           <Text style={sharedDialogStyles.dialogStatusMessageText}>{statusMessages.join('\n')}</Text>
           <Button
             title={'OK'}
             type={'clear'}
-            onPress={() => dispatch({type: homeReducers.SET_ERROR_MESSAGES_MODAL_VISIBLE, value: false})}
+            onPress={() => dispatch({type: homeReducers.SET_ERROR_MESSAGES_MODAL_VISIBLE, bool: false})}
           />
         </StatusDialogBox>
       )
@@ -486,7 +487,7 @@ const Home = (props) => {
         dialogTitle={'Status'}
         style={sharedDialogStyles.dialogTitleSuccess}
         visible={isStatusMessagesModalVisible}
-        onTouchOutside={() => dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, value: false})}
+        onTouchOutside={() => dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, bool: false})}
         // disabled={progress !== 1 && !uploadErrors}
       >
         <View style={{height: 100}}>
@@ -505,7 +506,7 @@ const Home = (props) => {
             {statusMessages.includes('Download Complete!') || statusMessages.includes('Upload Complete!') ? <Button
               title={'OK'}
               type={'clear'}
-              onPress={() => dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, value: false})}
+              onPress={() => dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, bool: false})}
             /> : null}
           </View>
         </View>

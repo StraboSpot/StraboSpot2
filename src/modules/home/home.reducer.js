@@ -38,22 +38,22 @@ export const homeReducer = (state = initialState, action) => {
     case homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE:
       return {
         ...state,
-        isStatusMessagesModalVisible: action.value,
+        isStatusMessagesModalVisible: action.bool,
       };
     case homeReducers.SET_ERROR_MESSAGES_MODAL_VISIBLE:
       return {
         ...state,
-        isErrorMessagesModalVisible: action.value,
+        isErrorMessagesModalVisible: action.bool,
       };
     case homeReducers.SET_INFO_MESSAGES_MODAL_VISIBLE:
       return {
         ...state,
-        isInfoModalVisible: action.value,
+        isInfoModalVisible: action.bool,
       };
     case homeReducers.SET_PROJECT_LOAD_SELECTION_MODAL_VISIBLE:
       return {
         ...state,
-        isProjectLoadSelectionModalVisible: action.value,
+        isProjectLoadSelectionModalVisible: action.bool,
       };
     case homeReducers.DEVICE_DIMENSIONS:
       // console.log('REDUX DEVICE DIMS', state.deviceDimensions);
