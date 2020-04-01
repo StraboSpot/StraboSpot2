@@ -93,6 +93,7 @@ const commonStyles = StyleSheet.create({
   standardDescriptionText: {
     color: themes.SECONDARY_ITEM_TEXT_COLOR,
     fontSize: themes.SMALL_TEXT_SIZE,
+    textAlign: 'right',
   },
 });
 
