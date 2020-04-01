@@ -31,8 +31,9 @@ const commonStyles = StyleSheet.create({
     textAlign: 'center',
   },
   dialogStatusMessageText: {
-    fontWeight: 'bold',
+    fontWeight: '400',
     fontSize: themes.STATUS_MESSAGE_TEXT_SIZE,
+    textAlign: 'center'
   },
   dialogButton: {
     borderTopWidth: 1,

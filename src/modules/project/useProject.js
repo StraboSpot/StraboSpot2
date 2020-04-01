@@ -198,7 +198,7 @@ const useProject = () => {
       console.log(err)
       dispatch({type: homeReducers.CLEAR_STATUS_MESSAGES});
       dispatch({type: homeReducers.ADD_STATUS_MESSAGE,
-        statusMessage: `${selectedProject.description.project_name} is not on the server...`});
+        statusMessage: `There is not a project named: \n\n${selectedProject.description.project_name}\n\n on the server...`});
       dispatch({type: homeReducers.SET_INFO_MESSAGES_MODAL_VISIBLE, bool: true});
       return err.ok;
     }
