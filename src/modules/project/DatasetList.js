@@ -188,7 +188,7 @@ const DatasetList = () => {
         dialogTitle={'Delete Status'}
         style={sharedDialogStyles.dialogTitleSuccess}
         visible={isStatusMessagesModalVisible}
-        onTouchOutside={() => dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, value: false})}
+        onTouchOutside={() => dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, bool: false})}
         // disabled={progress !== 1 && !uploadErrors}
       >
         <View style={{height: 100}}>
@@ -244,7 +244,7 @@ const DatasetList = () => {
       // dispatch({type: homeReducers.SET_LOADING, bool: true});
       setLoading(true);
       dispatch({type: projectReducers.DATASETS.DATASETS_UPDATE, datasets: datasetsCopy});
-      dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, value: true});
+      dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, bool: true});
       await useSpots.downloadSpots(datasets[id], userData.encoded_login);
       dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'Download Complete!'});
       setLoading(false);

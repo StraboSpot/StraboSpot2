@@ -107,7 +107,7 @@ const ProjectList = (props) => {
         const project = await serverRequests.updateProject(currentProject, userData.encoded_login);
         await dispatch({type: spotReducers.CLEAR_SPOTS, spots: {}});
         console.log('Finished uploading project', project);
-        dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, value: true});
+        dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, bool: true});
         dispatch({type: 'CLEAR_STATUS_MESSAGES'});
         await dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'Upload Complete!'});
         const projectData = await useProject.loadProjectRemote(selectedProject.id);
