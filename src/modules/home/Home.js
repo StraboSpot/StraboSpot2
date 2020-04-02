@@ -122,7 +122,7 @@ const Home = (props) => {
     // else Orientation.lockToLandscapeLeft();
     Dimensions.addEventListener('change', deviceOrientation);
     console.log('Initializing Home page');
-    initialize().then((res) => dispatch({type: homeReducers.SET_PROJECT_LOAD_SELECTION_MODAL_VISIBLE, value: res}));
+    initialize().then((res) => dispatch({type: homeReducers.SET_PROJECT_LOAD_SELECTION_MODAL_VISIBLE, bool: res}));
     return function cleanup() {
       Dimensions.removeEventListener('change', deviceOrientation);
     };
