@@ -9,42 +9,54 @@ const useExport = () => {
   const appDirectory = '/StraboSpot';
   const dataBackupsDirectory = devicePath + appDirectory + '/DataBackups';
 
-  const backupProjectToDevice = async () => {
+  const dbs = useSelector(state => state);
+  // dbs.project = {}
+
+  const backupProjectToDevice = async (exportedFileName) => {
     await doesDeviceDirectoryExist(devicePath + appDirectoryForDistributedBackups);
-    console.log('Next')
-    const res = await checkDistributionDataDir();
-    console.log('Next', res)
+    // console.log('Next')
+    // const dataDir = await checkDistributionDataDir();
+    // console.log('Next', dataDir);
+    const dataJson = await gatherDataForDistribution();
+    // console.log('DataJson', dataJson);
+    const exportToDevice = await exportData(devicePath + appDirectoryForDistributedBackups + '/' + exportedFileName, dataJson, 'data.json');
+    console.log('exportData', exportToDevice);
+
   };
 
   const checkDistributionDataDir = async () => {
-   return await RNFetchBlob.fs.isDir(devicePath + appDirectoryForDistributedBackups + '/data').then( checkDirSuccess => {
-      if (checkDirSuccess) {
-        console.log('data folder exists', checkDirSuccess);
-         return RNFetchBlob.fs.unlink(devicePath + appDirectoryForDistributedBackups + '/data').then(() => {
-          console.log('Success removing', appDirectoryForDistributedBackups + '/data');
+    if (devicePath){
+      return await RNFetchBlob.fs.isDir(devicePath + appDirectoryForDistributedBackups + '/data').then( checkDirSuccess => {
+        //exists. delete then add
+        if (checkDirSuccess) {
+          console.log('data folder exists', checkDirSuccess);
+          return RNFetchBlob.fs.unlink(devicePath + appDirectoryForDistributedBackups + '/data').then(() => {
+            console.log('Success removing', appDirectoryForDistributedBackups + '/data');
+            return RNFetchBlob.fs.mkdir(devicePath + appDirectoryForDistributedBackups + '/data').then(createDirSuccess => {
+              console.log('Success creating', appDirectoryForDistributedBackups + '/data');
+              return Promise.resolve(devicePath + appDirectoryForDistributedBackups + '/data')
+            })
+              .catch(err => {
+                console.log('Error making directory', err);
+                return Promise.reject(err.message);
+              });
+          });
+        }
+        //doesn't exist, just create
+        else {
+          console.log('Data folder does not exist');
           return RNFetchBlob.fs.mkdir(devicePath + appDirectoryForDistributedBackups + '/data').then(createDirSuccess => {
-            console.log('Success creating', appDirectoryForDistributedBackups + '/data');
-            return Promise.resolve(devicePath + appDirectoryForDistributedBackups + '/data')
+            console.log('Directory', appDirectoryForDistributedBackups + '/data', 'created.', createDirSuccess);
+            return Promise.resolve(devicePath + appDirectoryForDistributedBackups + '/data');
           })
             .catch(err => {
               console.log('Error making directory', err);
               return Promise.reject(err.message);
             });
-        });
-      }
-      else {
-        console.log('Data folder does not exist');
-         return RNFetchBlob.fs.mkdir(devicePath + appDirectoryForDistributedBackups + '/data').then(createDirSuccess => {
-          console.log('Directory', appDirectoryForDistributedBackups + '/data', 'created.', createDirSuccess);
-          return Promise.resolve(devicePath + appDirectoryForDistributedBackups + '/data');
-        })
-          .catch(err => {
-            console.log('Error making directory', err);
-            return Promise.reject(err.message);
-          });
-      }
-    });
-    // return Promise.resolve();
+        }
+      });
+    }
+    else return Promise.reject('Device Not Found!');
   };
 
   const doesDeviceDirectoryExist = async (directory) => {
@@ -67,12 +79,62 @@ const useExport = () => {
     });
   };
 
+  const exportData = (directory, data, filename) => {
+    // let dir = directory.split('/');
+    // dir.pop();
+    // const rootDir = dir.join('/');
+    return doesDeviceDirectoryExist(directory).then((fullPath) => {
+      console.log('ROOT', fullPath)
+      return RNFetchBlob.fs.writeFile(directory + '/data.json', JSON.stringify(data), 'utf8')
+        .then(() => Promise.resolve('File written to device'));
+    });
+  };
+
+  const gatherDataForDistribution = () => {
+    const dbsStateCopy = JSON.parse(JSON.stringify(dbs));
+    let activeDatasets = [];
+    let currentDataset = {};
+    let spots = dbsStateCopy.spot.spots;
+    let configDb = {};
+    let mapNamesDb = {};
+    let mapTilesDb = {};
+    let json = {
+      mapNamesDb: mapNamesDb,
+      mapTilesDb: mapTilesDb,
+      projectDb: dbsStateCopy.project.project,
+      spotsDb: spots,
+    };
+    Object.values(dbsStateCopy.project.datasets).map(dataset => {
+      const datasetKey = 'dataset_' + dataset.id;
+      const spotsInDatasetKey = 'spots_' + dataset.id;
+      if (dataset.current && dataset.current === true) currentDataset = dataset;
+      if (dataset.active && dataset.active === true) activeDatasets.push(dataset);
+      json.projectDb = {
+        ...json.projectDb,
+        activeDatasets: activeDatasets,
+        [datasetKey]: dataset,
+        [spotsInDatasetKey]: dataset.spotIds,
+        'spots_dataset': currentDataset,
+      };
+      delete dataset.active;
+      delete dataset.current;
+    });
+    json.projectDb.activeDatasets.map(dataset => {
+      delete dataset.active;
+      delete dataset.current;
+    });
+    delete json.projectDb.self;
+    delete json.projectDb.projecttype;
+    console.log('JsonCopy', json)
+    return Promise.resolve(json);
+  };
+
   const exportHelpers = {
     backupProjectToDevice: backupProjectToDevice,
     doesDeviceDirectoryExist: doesDeviceDirectoryExist,
   };
 
   return [exportHelpers];
-}
+};
 
 export default useExport;

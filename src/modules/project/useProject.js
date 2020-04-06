@@ -90,7 +90,7 @@ const useProject = () => {
               dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
               dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: `Deleted ${spotsDeletedCount} spots.`});
               dispatch({type: projectReducers.DATASETS.DATASET_DELETE, id: id});
-              dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: `Dataset Deleted!`});
+              dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Dataset Deleted!'});
             }
           });
         }),
@@ -150,8 +150,7 @@ const useProject = () => {
   const getDatasets = async (project) => {
     const projectDatasetsFromServer = await serverRequests.getDatasets(project.id, user.encoded_login);
     if (projectDatasetsFromServer === 401) {
-      console.log('Uh Oh...');
-      return Promise.reject()
+      return Promise.reject();
     }
     else {
       console.log('Saved datasets:', projectDatasetsFromServer);
@@ -195,7 +194,6 @@ const useProject = () => {
       return projectResponse;
     }
     catch (err) {
-      console.log(err)
       dispatch({type: homeReducers.CLEAR_STATUS_MESSAGES});
       dispatch({type: homeReducers.ADD_STATUS_MESSAGE,
         statusMessage: `There is not a project named: \n\n${selectedProject.description.project_name}\n\n on the server...`});
@@ -270,7 +268,7 @@ const useProject = () => {
   const uploadProject = async () => {
     dispatch({type: homeReducers.SET_LOADING, value: true});
     dispatch({type: homeReducers.CLEAR_STATUS_MESSAGES});
-    dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, value: true});
+    dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, bool: true});
     console.log('PROJECT UPLOADING...');
     dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Uploading Project...'});
     try {
