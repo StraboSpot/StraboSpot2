@@ -78,6 +78,7 @@ const dialogStyles = StyleSheet.create({
     textAlign: 'center',
   },
   dialogTitle: {
+    alignContent: 'center',
     backgroundColor: 'red',
   },
   dialogTitleText: {
@@ -91,6 +92,9 @@ const dialogStyles = StyleSheet.create({
   },
   dialogButtonText: {
     color: 'black',
+  },
+  dialogDisabledButtonText: {
+    color: themes.SECONDARY_ITEM_TEXT_COLOR,
   },
   headerTextContainer: {
     flex: 0,

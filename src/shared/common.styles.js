@@ -14,7 +14,12 @@ const commonStyles = StyleSheet.create({
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
     borderRadius: 30,
     position: 'absolute',
-    top: '15%'
+    top: '15%',
+  },
+  dialogInputContainer: {
+    width: 250,
+    height: 40,
+    backgroundColor: 'white',
   },
   dialogTitleError: {
     backgroundColor: 'red',
