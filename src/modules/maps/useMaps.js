@@ -47,10 +47,31 @@ const useMaps = (props) => {
     const displayedSpots = mappableSpots.filter(
       spot => !spot.properties.image_basemap && !spot.properties.strat_section);
 
-    // Separate selected Spots and not selected Spots
+    let mappedFeatures = [];
+    displayedSpots.map(spot => {
+      if ((spot.geometry.type === 'Point' || spot.geometry.type === 'MultiPoint') && spot.properties.orientation_data) {
+        spot.properties.orientation_data.map((orientation, i) => {
+          const feature = JSON.parse(JSON.stringify(spot));
+          delete feature.properties.orientation_data;
+          orientation.associated_orientation && orientation.associated_orientation.map(associatedOrientation => {
+            feature.properties.orientation = associatedOrientation;
+            mappedFeatures.push(JSON.parse(JSON.stringify(feature)));
+          });
+          feature.properties.orientation = orientation;
+          //feature.properties.orientation_num = i.toString();
+          mappedFeatures.push(JSON.parse(JSON.stringify(feature)));
+        });
+      }
+      else mappedFeatures.push(JSON.parse(JSON.stringify(spot)));
+    });
+
+    console.log('mp', mappedFeatures);
+
+    // Separate selected Spots and not selected Spots (Point Spots need to in both
+    // selected and not selected since the selected symbology is a halo around the point)
     const selectedIds = selectedSpots.map(sel => sel.properties.id);
-    const selectedDisplayedSpots = displayedSpots.filter(spot => selectedIds.includes(spot.properties.id));
-    const notSelectedDisplayedSpots = displayedSpots.filter(spot => !selectedIds.includes(spot.properties.id) ||
+    const selectedDisplayedSpots = mappedFeatures.filter(spot => selectedIds.includes(spot.properties.id));
+    const notSelectedDisplayedSpots = mappedFeatures.filter(spot => !selectedIds.includes(spot.properties.id) ||
       spot.geometry.type === 'Point');
 
     console.log('Selected Spots to Display on this Map:', selectedDisplayedSpots);
