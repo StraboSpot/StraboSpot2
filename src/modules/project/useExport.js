@@ -1,12 +1,13 @@
 import {useDispatch, useSelector} from 'react-redux';
 import RNFetchBlob from 'rn-fetch-blob';
-import {Platform} from 'react-native';
+import {Alert, Platform} from 'react-native';
 
 const useExport = () => {
   let dirs = RNFetchBlob.fs.dirs;
   const devicePath = Platform.OS === 'ios' ? dirs.DocumentDir : dirs.SDCardDir; // ios : android
   const appDirectoryForDistributedBackups = '/StraboSpotProjects';
   const appDirectory = '/StraboSpot';
+  const imagesDirectory = appDirectory + '/Images';
   const dataBackupsDirectory = devicePath + appDirectory + '/DataBackups';
 
   const dbs = useSelector(state => state);
@@ -17,11 +18,12 @@ const useExport = () => {
     // console.log('Next')
     // const dataDir = await checkDistributionDataDir();
     // console.log('Next', dataDir);
-    const dataJson = await gatherDataForDistribution();
+    const dataForExport = await gatherDataForDistribution();
     // console.log('DataJson', dataJson);
-    const exportToDevice = await exportData(devicePath + appDirectoryForDistributedBackups + '/' + exportedFileName, dataJson, 'data.json');
-    console.log('exportData', exportToDevice);
-
+    await exportData(devicePath + appDirectoryForDistributedBackups + '/' + exportedFileName, dataForExport, '/data.json');
+    await doesDeviceDirectoryExist(devicePath + appDirectoryForDistributedBackups + '/' + exportedFileName + '/Images');
+    const imageSuccess = await gatherImagesForDistribution(dataForExport, exportedFileName)
+    console.log('Resolve Message:',imageSuccess.message);
   };
 
   const checkDistributionDataDir = async () => {
@@ -85,8 +87,7 @@ const useExport = () => {
     // const rootDir = dir.join('/');
     return doesDeviceDirectoryExist(directory).then((fullPath) => {
       console.log('ROOT', fullPath)
-      return RNFetchBlob.fs.writeFile(directory + '/data.json', JSON.stringify(data), 'utf8')
-        .then(() => Promise.resolve('File written to device'));
+      return RNFetchBlob.fs.writeFile(directory + filename, JSON.stringify(data), 'utf8');
     });
   };
 
@@ -127,6 +128,49 @@ const useExport = () => {
     delete json.projectDb.projecttype;
     console.log('JsonCopy', json)
     return Promise.resolve(json);
+  };
+
+  const gatherImagesForDistribution = async (data, fileName) => {
+    console.log('data:', data);
+    let promises = [];
+    if (data.spotsDb) {
+      console.log('Spots Exist!');
+      Object.values(data.spotsDb).map(spot => {
+        if (spot.properties.images) {
+          console.log('Spot with images', spot.properties.name, 'Images:' , spot.properties.images);
+          spot.properties.images.map(image => {
+            const promise = moveDistributedImage(image.id, fileName).then(moveFileSuccess => {
+              console.log('Moved file:', moveFileSuccess);
+            });
+            promises.push(promise);
+          });
+          console.log('Image Promises', promises)
+        }
+      });
+      return Promise.all(promises).then(() => {
+        // console.log('Finished moving all images to distribution folder.');
+        return Promise.resolve({message: 'Finished moving all images to distribution folder.'});
+      });
+    }
+  };
+
+  const moveDistributedImage = async (image_id, fileName) => {
+    return RNFetchBlob.fs.exists(devicePath + imagesDirectory + '/' + image_id + '.jpg')
+      .then(exists => {
+      console.log(`file exists: ${devicePath + imagesDirectory + '/' + image_id + '.jpg'} : ${exists}`);
+      return RNFetchBlob.fs.cp(devicePath + imagesDirectory + '/' + image_id + '.jpg',
+        devicePath + appDirectoryForDistributedBackups + '/' + fileName + '/Images/' + image_id + '.jpg')
+        .then(res => {
+          console.log('Image Copy res', res);
+          return Promise.resolve(res);
+        })
+        .catch(err => {
+          console.log('Image copy ERROR', err);
+          return Promise.reject(err);
+        });
+    })
+      .catch(err => Alert.alert('ERROR', err.toString()));
+    // return Promise.resolve();
   };
 
   const exportHelpers = {
