@@ -1,13 +1,18 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {useSelector} from 'react-redux';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import * as turf from '@turf/turf/index';
 
-// import pointSymbol from '../../assets/symbols/point-resizeimage.png';
+import useMapSymbologyHook from './useMapSymbology';
+
+// Constants
+import {symbols as symbolsConstant} from './maps.constants';
 
 function Basemap(props) {
   const basemap = useSelector(state => state.map.currentBasemap);
   const {mapRef, cameraRef} = props.forwardedRef;
+  const [useMapSymbology] = useMapSymbologyHook();
+  const [symbols, setSymbol] = useState(symbolsConstant);
   return <MapboxGL.MapView
     id={basemap.id}
     ref={mapRef}
@@ -46,33 +51,33 @@ function Basemap(props) {
       />
     </MapboxGL.RasterSource>
     {/* Feature Layer */}
+    <MapboxGL.Images
+      images={symbols}
+      onImageMissing={imageKey => {
+        setSymbol({...symbols, [imageKey]: symbols.default_point});
+      }}
+    />
     <MapboxGL.ShapeSource
       id='shapeSource'
       shape={turf.featureCollection(props.spotsNotSelected)}
     >
-      {/*      <MapboxGL.SymbolLayer
-       id='pointLayerNotSelected'
-       minZoomLevel={1}
-       filter={['==', '$type', 'Point']}
-       style={mapStyles.point}
-       />*/}
-      <MapboxGL.CircleLayer
+      <MapboxGL.SymbolLayer
         id='pointLayerNotSelected'
         minZoomLevel={1}
         filter={['==', '$type', 'Point']}
-        style={mapStyles.point}
+        style={useMapSymbology.getMapSymbology().point}
       />
       <MapboxGL.LineLayer
         id='lineLayerNotSelected'
         minZoomLevel={1}
         filter={['==', '$type', 'LineString']}
-        style={mapStyles.line}
+        style={useMapSymbology.getMapSymbology().line}
       />
       <MapboxGL.FillLayer
         id='polygonLayerNotSelected'
         minZoomLevel={1}
         filter={['==', '$type', 'Polygon']}
-        style={mapStyles.polygon}
+        style={useMapSymbology.getMapSymbology().polygon}
       />
     </MapboxGL.ShapeSource>
     {/* Selected Features Layer */}
@@ -84,19 +89,19 @@ function Basemap(props) {
         id='pointLayerSelected'
         minZoomLevel={1}
         filter={['==', '$type', 'Point']}
-        style={mapStyles.pointSelected}
+        style={useMapSymbology.getMapSymbology().pointSelected}
       />
       <MapboxGL.LineLayer
         id='lineLayerSelected'
         minZoomLevel={1}
         filter={['==', '$type', 'LineString']}
-        style={mapStyles.lineSelected}
+        style={useMapSymbology.getMapSymbology().lineSelected}
       />
       <MapboxGL.FillLayer
         id='polygonLayerSelected'
         minZoomLevel={1}
         filter={['==', '$type', 'Polygon']}
-        style={mapStyles.polygonSelected}
+        style={useMapSymbology.getMapSymbology().polygonSelected}
       />
     </MapboxGL.ShapeSource>
     {/* Draw Layer */}
@@ -108,19 +113,19 @@ function Basemap(props) {
         id='pointLayerDraw'
         minZoomLevel={1}
         filter={['==', '$type', 'Point']}
-        style={mapStyles.pointDraw}
+        style={useMapSymbology.getMapSymbology().pointDraw}
       />
       <MapboxGL.LineLayer
         id='lineLayerDraw'
         minZoomLevel={1}
         filter={['==', '$type', 'LineString']}
-        style={mapStyles.lineDraw}
+        style={useMapSymbology.getMapSymbology().lineDraw}
       />
       <MapboxGL.FillLayer
         id='polygonLayerDraw'
         minZoomLevel={1}
         filter={['==', '$type', 'Polygon']}
-        style={mapStyles.polygonDraw}
+        style={useMapSymbology.getMapSymbology().polygonDraw}
       />
     </MapboxGL.ShapeSource>
     {/* Edit Layer */}
@@ -132,7 +137,7 @@ function Basemap(props) {
         id='pointLayerEdit'
         minZoomLevel={1}
         filter={['==', '$type', 'Point']}
-        style={mapStyles.pointEdit}
+        style={useMapSymbology.getMapSymbology().pointEdit}
       />
     </MapboxGL.ShapeSource>
   </MapboxGL.MapView>;
@@ -157,56 +162,3 @@ export const OSMBasemap = React.forwardRef((props, ref) => (
 export const CustomBasemap = React.forwardRef((props, ref) => (
   <Basemap {...props} forwardedRef={ref}/>
 ));
-
-const mapStyles = {
-  point: {
-    circleRadius: 7,
-    circleColor: 'black',
-    circleOpacity: 1,
-    // iconImage: pointSymbol,
-    // iconAllowOverlap: true,
-    // iconSize: 0.5,
-  },
-  line: {
-    lineColor: 'black',
-    lineWidth: 3,
-  },
-  polygon: {
-    fillColor: 'blue',
-    fillOpacity: 0.4,
-  },
-  pointSelected: {
-    circleRadius: 20,
-    circleColor: 'orange',
-    circleOpacity: 0.4,
-  },
-  lineSelected: {
-    lineColor: 'orange',
-    lineWidth: 3,
-  },
-  polygonSelected: {
-    fillColor: 'orange',
-    fillOpacity: 0.7,
-  },
-  pointDraw: {
-    circleRadius: 5,
-    circleColor: 'orange',
-    circleStrokeColor: 'white',
-    circleStrokeWidth: 2,
-  },
-  lineDraw: {
-    lineColor: 'orange',
-    lineWidth: 3,
-    lineDasharray: [2, 2],
-  },
-  polygonDraw: {
-    fillColor: 'orange',
-    fillOpacity: 0.4,
-  },
-  pointEdit: {
-    circleRadius: 10,
-    circleColor: 'orange',
-    circleStrokeColor: 'white',
-    circleStrokeWidth: 2,
-  },
-};

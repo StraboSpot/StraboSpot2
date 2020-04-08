@@ -642,8 +642,9 @@ const map = React.forwardRef((props, ref) => {
       // In getFeatureInRect the function queryRenderedFeaturesInRect returns a feature with coordinates
       // truncated to 5 decimal places so get the matching feature with full coordinates using a temp Id
       // spotFound = props.spots[spotFound.properties.id];
-      spotFound = [...mapProps.spotsNotSelected, ...mapProps.spotsSelected].find(
-        spot => spot.properties.id === spotFound.properties.id);
+      // spotFound = [...mapProps.spotsNotSelected, ...mapProps.spotsSelected].find(
+      //   spot => spot.properties.id === spotFound.properties.id);
+      spotFound = useSpots.getSpotById(spotFound.properties.id);
       console.log('Got Spot at press: ', spotFound);
     }
     return Promise.resolve(...[spotFound]);
