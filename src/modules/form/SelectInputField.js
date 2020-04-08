@@ -1,7 +1,7 @@
 import React from 'react';
 import {Text, View} from 'react-native';
 
-import Picker from 'react-native-picker-select';
+import RNPickerSelect from 'react-native-picker-select';
 import PropTypes from 'prop-types';
 
 // Styles
@@ -23,7 +23,7 @@ const SelectInputField = (props) => {
   return (
     <View style={stylesCommon.rowContainer}>
       <Text style={styles.fieldLabel}>{props.label}</Text>
-      <Picker
+      <RNPickerSelect
         placeholder={placeholder}
         onValueChange={(value, i) => props.setFieldValue(props.name, value)}
         useNativeAndroidPickerStyle={false}
