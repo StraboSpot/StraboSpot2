@@ -34,8 +34,10 @@ const MeasurementDetailPage = (props) => {
     return type === 'planar_orientation' ? 0 : 1;
   };
 
-  const [selectedFeatureTypeIndex, setFeatureTypeIndex] = useState(getTypeSwitchIndex(props.selectedMeasurements[0].type));
-  const [selectedAssociatedMeasurementId, setSelectedAssociatedMeasurementId] = useState(props.selectedMeasurements[0].id);
+  const [selectedFeatureTypeIndex, setFeatureTypeIndex] = useState(getTypeSwitchIndex(props.selectedMeasurements &&
+    props.selectedMeasurements[0] && props.selectedMeasurements[0].type));
+  const [selectedAssociatedMeasurementId, setSelectedAssociatedMeasurementId] = useState(props.selectedMeasurements &&
+    props.selectedMeasurements[0] && props.selectedMeasurements[0].id);
   const form = useRef(null);
 
   // What happens after submitting the form is handled in saveFormAndGo since we want to show
@@ -341,6 +343,7 @@ const MeasurementDetailPage = (props) => {
 
   return (
     <React.Fragment>
+      {props.selectedMeasurements && props.selectedMeasurements[0] &&
       <View style={styles.measurementsContentContainer}>
         {renderCancelSaveButtons()}
         <ScrollView>
@@ -352,7 +355,7 @@ const MeasurementDetailPage = (props) => {
             {renderFormFields()}
           </View>
         </ScrollView>
-      </View>
+      </View>}
     </React.Fragment>
   );
 };

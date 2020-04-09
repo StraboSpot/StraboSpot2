@@ -142,6 +142,7 @@ export const spotReducer = (state = initialState, action) => {
         selectedSpots: [action.spot],
         selectedSpot: action.spot,
         recentViews: recentViewsArr,
+        selectedAttributes: [],
       };
   }
   return state;
