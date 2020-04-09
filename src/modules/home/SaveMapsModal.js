@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-import {Picker, Text, StyleSheet, View} from 'react-native';
+import {Text, StyleSheet, View} from 'react-native';
+import {Picker} from '@react-native-community/picker';
 import {Button, Header, Icon} from 'react-native-elements';
 import {Platform} from 'react-native';
 import RNFetchBlob from 'rn-fetch-blob';

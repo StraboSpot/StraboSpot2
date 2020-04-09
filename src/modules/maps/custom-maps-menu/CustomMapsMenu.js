@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-import {Alert, Picker, Text, View} from 'react-native';
+import {Alert, Text, View} from 'react-native';
+import {Picker} from '@react-native-community/picker';
 import styles from './customMaps.styles';
 import {ListItem} from 'react-native-elements';
 import * as SharedUI from '../../../shared/ui/index';
