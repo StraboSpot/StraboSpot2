@@ -36,11 +36,9 @@ target 'StraboSpot2' do
 
   # Pods Added
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
-
   pod 'ReactNativeART', :path => '../node_modules/@react-native-community/art'
  # Mapbox
-   pod 'NoUseFrameworks-MapboxMobileEvents',  :podspec => '../node_modules/@react-native-mapbox-gl/maps/ios/NoUseFrameworks-MapboxMobileEvents/NoUseFrameworks-MapboxMobileEvents.podspec.json'
-    # use_frameworks!'
+  pod 'react-native-mapbox-gl', :path => '../node_modules/@react-native-mapbox-gl/maps'
 
   target 'StraboSpot2Tests' do
     inherit! :search_paths
