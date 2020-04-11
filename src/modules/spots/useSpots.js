@@ -11,6 +11,7 @@ import {spotReducers} from './spot.constants';
 import useImagesHook from '../images/useImages';
 import useProjectHook from '../project/useProject';
 import useServerRequestsHook from '../../services/useServerRequests';
+import {homeReducers} from '../home/home.constants';
 
 const useSpots = (props) => {
   const dispatch = useDispatch();
@@ -89,6 +90,7 @@ const useSpots = (props) => {
         const neededImagesIds = await useImages.gatherNeededImages(spotsOnServer);
         if (neededImagesIds.length === 0) {
           dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'No New Images to Download'});
+          dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Download Complete!'});
         }
         else await useImages.downloadImages(neededImagesIds);
       }
