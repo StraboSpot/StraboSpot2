@@ -104,19 +104,24 @@ const ProjectList = (props) => {
       console.log('User wants to:', action);
       try {
         setShowDialog(false);
-        const project = await serverRequests.updateProject(currentProject, userData.encoded_login);
-        await dispatch({type: spotReducers.CLEAR_SPOTS, spots: {}});
+        const project = await useProject.uploadProject(currentProject, userData.encoded_login);
         console.log('Finished uploading project', project);
+        const datasets = await useProject.uploadDatasets();
+        console.log('Finished uploading datasets', datasets);
+        await dispatch({type: spotReducers.CLEAR_SPOTS, spots: {}});
+        dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Upload Complete!'});
+
         dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, bool: true});
         dispatch({type: 'CLEAR_STATUS_MESSAGES'});
         await dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'Upload Complete!'});
-        const projectData = await useProject.loadProjectRemote(selectedProject.id);
+        const projectData = await useProject.loadProjectRemote(selectedProject);
         dispatch({type: ProjectActions.projectReducers.PROJECTS, project: projectData});
         await useProject.getDatasets(selectedProject);
+        dispatch({type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: SettingsMenuItems.MANAGE.ACTIVE_PROJECTS});
       }
       catch (err) {
         setUploadErrors(true);
-        console.error('Error', err);
+        console.log('Error', err);
       }
     }
     else if (action === ProjectActions.BACKUP_TO_DEVICE) {
@@ -151,7 +156,7 @@ const ProjectList = (props) => {
         <Text>Switching projects will <Text style={{color: 'red'}}>DELETE </Text>
           the local copy of the current project: </Text>
         <Text style={{color: 'red', textTransform: 'uppercase', marginTop: 5, marginBottom: 10, textAlign: 'center'}}>
-          {!isEmpty(currentProject.description) ? currentProject.description.project_name : 'UN-NAMED'}
+          {currentProject.description && !isEmpty(currentProject.description) ? currentProject.description.project_name : 'UN-NAMED'}
         </Text>
         <Text>Including all datasets and Spots contained within this project. Make sure you have already
           uploaded the project to the server if you wish to preserve the data. Continue?</Text>
