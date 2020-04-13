@@ -1,5 +1,15 @@
-import React from 'react';
-import {View} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {
+  Animated,
+  Button,
+  Dimensions,
+  Keyboard,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  UIManager,
+  View,
+} from 'react-native';
 import {Field} from 'formik';
 
 import {getChoices, getSurvey, isRelevant} from './form.container';
@@ -11,7 +21,60 @@ import TextInputField from './TextInputField';
 // Styles
 import styles from './form.styles';
 
+const {State: TextInputState} = TextInput;
+
 const Form = (props) => {
+  const [textInputAnimate] = useState(new Animated.Value(0));
+  const [selectOnePage, setSelectOnePage] = useState(false);
+  // const [fieldValue, setFieldValue] = useState(null);
+
+  useEffect(() => {
+    Keyboard.addListener('keyboardDidShow', handleKeyboardDidShow);
+    Keyboard.addListener('keyboardDidHide', handleKeyboardDidHide);
+    return function cleanup() {
+      Keyboard.removeListener('keyboardDidShow', handleKeyboardDidShow);
+      Keyboard.removeListener('keyboardDidHide', handleKeyboardDidHide);
+      console.log('Listners Removed');
+    };
+  }, []);
+
+  const handleKeyboardDidShow = (event) => {
+    const {height: windowHeight} = Dimensions.get('window');
+    const keyboardHeight = event.endCoordinates.height;
+    const currentlyFocusedField = TextInputState.currentlyFocusedField();
+    if (currentlyFocusedField === null) {
+      return;
+    }
+    else {
+      UIManager.measure(currentlyFocusedField, (originX, originY, width, height, pageX, pageY) => {
+        const fieldHeight = height;
+        const fieldTop = pageY;
+        const gap = (windowHeight - keyboardHeight) - (fieldTop + fieldHeight);
+        if (gap >= 0) {
+          return;
+        }
+        Animated.timing(
+          textInputAnimate,
+          {
+            toValue: gap,
+            duration: 200,
+            useNativeDriver: true,
+          },
+        ).start();
+      });
+    }
+  };
+
+  const handleKeyboardDidHide = () => {
+    Animated.timing(
+      textInputAnimate,
+      {
+        toValue: 0,
+        duration: 200,
+        useNativeDriver: true,
+      },
+    ).start();
+  };
 
   const renderDateInput = field => {
     return (
@@ -75,12 +138,28 @@ const Form = (props) => {
     else if (fieldType === 'date') return renderDateInput(field);
   };
 
+  // const toggleSelectOne = (field) => {
+  //   setSelectOnePage(!selectOnePage);
+  //   console.log(field);
+  // };
+
+  // const renderSelectOneInput = () => {
+  //   return (
+  //     <View>
+  //       <Text>{fieldValue.label}</Text>
+  //     </View>
+  //   );
+  // };
+
   return (
-    <View style={styles.formContainer}>
+    <Animated.View style={[styles.formContainer, {transform: [{translateY: textInputAnimate}]}]}>
+      {/*{selectOnePage ?*/}
+      {/*  <View>{renderSelectOneInput()}<Button title={'Back'} onPress={() => setSelectOnePage(null)}/></View> :*/}
       {getSurvey().map((field, i) => {
         if (isRelevant(field, props.values)) return renderField(field);
       })}
-    </View>
+      {/*}*/}
+    </Animated.View>
   );
 };
 
