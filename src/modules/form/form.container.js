@@ -10,22 +10,23 @@ export const getForm = () => {
 };
 
 // Get all the choices over all the forms
-const getAllChoices = (object, allChoices) => {
-  Object.keys(object).forEach(formType => {
-    if (object[formType].hasOwnProperty('choices')) {
-      allChoices = [...allChoices, ...object[formType].choices];
-    }
+const getAllChoices = (object) => {
+  return Object.keys(object).reduce((acc, key) => {
+    if (object[key].survey && object[key].choices) return [...acc, ...object[key].choices];
+    else if (object[key].survey) return acc;
     else {
-      allChoices = getAllChoices(object[formType], allChoices);
+      const res = Object.keys(object[key]).reduce((acc1, key1) => {
+        if (object[key][key1].survey && object[key][key1].choices) return [...acc1, ...object[key][key1].choices];
+        else return acc1;
+      }, []);
+      return [...acc, ...res];
     }
-  });
-  return allChoices;
+  }, []);
 };
 
 // Given a name, get the label for it
 export const getLabel = (name) => {
-  let allChoices = [];
-  allChoices = getAllChoices(forms.default, allChoices);
+  const allChoices = getAllChoices(forms.default);
   return allChoices.find(choice => choice.name === name).label || name.replace(/_/g, ' ');
 };
 
