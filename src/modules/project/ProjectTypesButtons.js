@@ -25,6 +25,12 @@ const ProjectTypesButtons = (props) => {
         titleStyle={commonStyles.standardButtonText}
         onPress={() => props.onLoadProjectsFromServer()}
       />}
+      <Button
+        title={'Load a Project from Device'}
+        buttonStyle={commonStyles.standardButton}
+        titleStyle={commonStyles.standardButtonText}
+        onPress={() => props.onLoadProjectsFromDevice()}
+      />
     </View>
   );
 };
