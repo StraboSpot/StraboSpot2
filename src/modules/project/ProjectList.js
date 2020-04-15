@@ -28,7 +28,7 @@ const ProjectList = (props) => {
   const [selectedProject, setSelectedProject] = useState({});
   const [loading, setLoading] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  // const [errorMessage, setErrorMessage] = useState(null);
   const [uploadErrors, setUploadErrors] = useState(false);
   // Server calls
   const [serverRequests] = useServerRequests();
@@ -36,20 +36,37 @@ const ProjectList = (props) => {
   const [useSpots] = useSpotsHook();
 
   useEffect(() => {
-    getAllProjects().then(() => console.log('OK'));
     return function cleanUp () {
-      console.log('Cleaned Up');
+      console.log('Cleaned Up 1');
     };
   }, []);
 
+  useEffect(() => {
+    getAllProjects().then(() => console.log('OK'));
+    return function cleanUp () {
+      console.log('Cleaned Up 2');
+    };
+  }, [props.source]);
+
+  useEffect(() => {
+    console.log('WOOHOO', projectsArr)
+    return function cleanUp () {
+      console.log('Cleaned Up 3');
+    };
+  }, [projectsArr]);
+
   const getAllProjects = async () => {
+    let projectsResponse;
     setLoading(true);
-    const projectsResponse = await useProject.getAllProjects();
+    if (props.source === 'server') projectsResponse = await useProject.getAllServerProjects();
+    else if (props.source === 'device') projectsResponse = await useProject.getAllDeviceProjects();
     if (!projectsResponse) {
-      setErrorMessage('Error getting project');
+      Alert.alert('Error getting projects');
+      // setErrorMessage('Error getting project');
       setLoading(false);
     }
     else {
+      console.log(projectsResponse);
       setProjectsArr(projectsResponse);
       setLoading(false);
     }
@@ -86,16 +103,24 @@ const ProjectList = (props) => {
     console.log('Selected Project:', project);
     setLoading(true);
     if (!isEmpty(currentProject)) {
-      setSelectedProject(project);
+      if (props.source === 'device') {
+        project = await useProject.selectProject(project, props.source);
+        console.log('DeviceFile', project);
+        setSelectedProject(project);
+      }
+      else setSelectedProject(project);
       setLoading(false);
       setShowDialog(true);
     }
     else {
-      const projectData = await useProject.selectProject(project);
-      if (!projectData) {
-        setErrorMessage('Error getting selected project');
-      }
-      setLoading(false);
+      useProject.selectProject(project, props.source).then(currentProject => {
+        if (!currentProject) {
+          Alert.alert('Error getting selected project');
+        }
+        else setSelectedProject(currentProject);
+        // setLoading(false);
+        // setShowDialog(true);
+      });
     }
   };
 
@@ -107,14 +132,14 @@ const ProjectList = (props) => {
         const project = await useProject.uploadProject(currentProject, userData.encoded_login);
         console.log('Finished uploading project', project);
         const datasets = await useProject.uploadDatasets();
-        console.log('Finished uploading datasets', datasets);
+        console.log(datasets);
         await dispatch({type: spotReducers.CLEAR_SPOTS, spots: {}});
-        dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Upload Complete!'});
+        // dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Upload Complete!'});
 
         dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, bool: true});
         dispatch({type: 'CLEAR_STATUS_MESSAGES'});
         await dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'Upload Complete!'});
-        const projectData = await useProject.loadProjectRemote(selectedProject);
+        const projectData = await useProject.selectProject(selectedProject, props.source);
         dispatch({type: ProjectActions.projectReducers.PROJECTS, project: projectData});
         await useProject.getDatasets(selectedProject);
         dispatch({type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: SettingsMenuItems.MANAGE.ACTIVE_PROJECTS});
@@ -128,16 +153,28 @@ const ProjectList = (props) => {
       console.log('User wants to:', action);
     }
     else if (action === ProjectActions.OVERWRITE) {
-      console.log('User wants to:', action, 'and select', selectedProject.name);
-      return useProject.loadProjectRemote(selectedProject).then(projectData => {
-        console.log('ProjectData', projectData);
-        if (!projectData) {
-          setShowDialog(false);
-          Alert.alert('Error');
-        }
+      if (props.source === 'device') {
+        const project = selectedProject.projectDb;
+        console.log('User wants to:', action, 'and select', project.project.description.project_name);
+        await useProject.loadProjectFromDevice(selectedProject);
+        console.log('Loaded From Device');
         setShowDialog(false);
         dispatch({type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: SettingsMenuItems.MANAGE.ACTIVE_PROJECTS});
-      });
+      }
+      else {
+        console.log('User wants to:', action, 'and select', selectedProject.name);
+        return useProject.loadProjectRemote(selectedProject).then(projectData => {
+          console.log('ProjectData', projectData);
+          if (!projectData) {
+            setShowDialog(false);
+            Alert.alert('Error');
+          }
+          else {
+            setShowDialog(false);
+            dispatch({type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: SettingsMenuItems.MANAGE.ACTIVE_PROJECTS});
+          }
+        });
+      }
     }
     else {
       setShowDialog(false);
@@ -170,15 +207,15 @@ const ProjectList = (props) => {
     </View>);
   };
 
-  const renderProjectsList = () => {
+  const renderServerProjectsList = () => {
     if (!isEmpty(projectsArr) && !isEmpty(userData)) {
       // console.log(projectsArr.projects);
       return (
         <ScrollView>
           {projectsArr.projects.map(item => {
             return <ListItem
-              key={item.id}
-              title={item.name}
+              key={props.source === 'device' ? item.id : item.id}
+              title={props.source === 'device' ? item.fileName : item.name}
               containerStyle={{width: '100%'}}
               titleStyle={!isOnline && {color: themes.PRIMARY_ITEM_TEXT_COLOR}}
               onPress={() => selectProject(item)}
@@ -209,7 +246,7 @@ const ProjectList = (props) => {
   return (
     <View style={{flex: 1}}>
       <View style={{flex: 1}}>
-        {loading ? <Loading style={{backgroundColor: themes.PRIMARY_BACKGROUND_COLOR}}/> : renderProjectsList()}
+        {loading ? <Loading style={{backgroundColor: themes.PRIMARY_BACKGROUND_COLOR}}/> : renderServerProjectsList()}
       </View>
       {renderDialog()}
     </View>

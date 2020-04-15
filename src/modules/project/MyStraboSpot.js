@@ -24,32 +24,41 @@ const MyStraboSpot = props => {
               onLoadProjectsFromServer={() => setShowSection('serverProjects')}
               onLoadProjectsFromDevice={() => setShowSection('deviceProjects')}
               onStartNewProject={() => setShowSection('project')}/>
-            <Spacer/>
-            <Divider sectionText={'Active project'}/>
-            <ActiveProjectList openSidePanel={props.openSidePanel}/>
           </View>
         );
       case 'serverProjects':
         return (
-          <View style={{paddingTop: 20, height: 600}}>
-            <UserProfile/>
-            <Divider sectionText={'Project List'}/>
-            <Button title={'Back'} type={'clear'} onPress={() => setShowSection('none')}/>
-            <ProjectList/>
+          <View>
+            <View style={{height: 600}}>
+              <UserProfile/>
+              <Divider sectionText={'Server Project List'}/>
+              <Button title={'Back'} type={'clear'} onPress={() => setShowSection('none')}/>
+              <ProjectList source={'server'}/>
+            </View>
+            <View style={{paddingTop: 40}}>
+              <Divider sectionText={'Active project'}/>
+              <ActiveProjectList openSidePanel={props.openSidePanel}/>
+            </View>
           </View>
         );
       case 'deviceProjects':
         return (
-          <View style={{paddingTop: 20, height: 600}}>
-            <UserProfile/>
-            <Divider sectionText={'Project List'}/>
-            <Button title={'Back'} type={'clear'} onPress={() => setShowSection('none')}/>
-            <Text>DEVICE PROJECTS LIST</Text>
+          <View>
+            <View style={{height: 600}}>
+              <UserProfile/>
+              <Divider sectionText={'Device Project List'}/>
+              <Button title={'Back'} type={'clear'} onPress={() => setShowSection('none')}/>
+              <ProjectList source={'device'}/>
+            </View>
+            <View style={{paddingTop: 40}}>
+              <Divider sectionText={'Active project'}/>
+              <ActiveProjectList openSidePanel={props.openSidePanel}/>
+            </View>
           </View>
         );
       default:
         return (
-          <View style={{paddingTop: 20, height: 600}}>
+          <View style={{height: 600}}>
             <Button title={'Back'} type={'clear'} onPress={() => setShowSection('none')}/>
             <NewProjectForm closeHomePanel={props.closeHomePanel}/>
           </View>
@@ -59,25 +68,7 @@ const MyStraboSpot = props => {
 
   return (
     <React.Fragment>
-      {/*{showSection === 'none' ?*/}
-      {/*  <View style={{padding: 10}}>*/}
-      {/*    <UserProfile/>*/}
-      {/*    <Spacer/>*/}
-      {/*    <ProjectTypesButtons*/}
-      {/*      onLoadProjectsFromServer={() => setShowSection('serverProjects')}*/}
-      {/*      onLoadProjectsFromDevice={() => setShowSection('deviceProjects')}*/}
-      {/*      onStartNewProject={() => setShowSection('project')}/>*/}
-      {/*  </View> :*/}
-      {/*  showSection === 'serverProjects' ?*/}
-      {/*    <View style={{paddingTop: 20, height: 600}}>*/}
-      {/*      <UserProfile/>*/}
-      {/*      <Divider sectionText={'Project List'}/>*/}
-      {/*      <ProjectList/>*/}
-      {/*    </View>*/}
-
-      {/*    : <NewProjectForm closeHomePanel={props.closeHomePanel}/>}*/}
       {renderSectionView()}
-
     </React.Fragment>
   );
 };

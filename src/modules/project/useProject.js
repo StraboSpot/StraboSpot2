@@ -1,15 +1,23 @@
+import {Alert, Platform} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
+import RNFetchBlob from 'rn-fetch-blob';
+
 import {homeReducers} from '../home/home.constants';
 import {getNewId, isEmpty} from '../../shared/Helpers';
+import {spotReducers} from '../spots/spot.constants';
+import {projectReducers} from './project.constants';
 
 // Hooks
 import useServerRequests from '../../services/useServerRequests';
 import useImagesHook from '../images/useImages';
 import useSpotsHook from '../spots/useSpots';
-import {spotReducers} from '../spots/spot.constants';
-import {projectReducers} from './project.constants';
 
 const useProject = () => {
+  let dirs = RNFetchBlob.fs.dirs;
+  const devicePath = Platform.OS === 'ios' ? dirs.DocumentDir : dirs.SDCardDir; // ios : android
+  const appDirectory = '/StraboSpot';
+  const appDirectoryForDistributedBackups = '/StraboSpotProjects';
+
   const dispatch = useDispatch();
   const datasets = useSelector(state => state.project.datasets);
   const project = useSelector(state => state.project.project);
@@ -113,10 +121,29 @@ const useProject = () => {
     return Promise.resolve();
   };
 
-  const getAllProjects = async () => {
+  const getAllDeviceProjects = async () => {
+    return await RNFetchBlob.fs.isDir(devicePath + appDirectoryForDistributedBackups).then(success => {
+      console.log('/StraboProjects exists:', success)
+      if (success) {
+        return RNFetchBlob.fs.ls(devicePath + appDirectoryForDistributedBackups).then(files => {
+          let id = 0;
+          if (!isEmpty(files)) {
+            const deviceFiles = files.map(file => {
+              return {id: id++, fileName: file};
+            });
+            return Promise.resolve({projects: deviceFiles});
+          }
+          else return Promise.resolve([]);
+        });
+      }
+      else return Promise.reject('Directory does not exist');
+    });
+    // return Promise.resolve({projects: res});
+  };
+
+  const getAllServerProjects = async () => {
     try {
-      const response = await serverRequests.getMyProjects(user.encoded_login);
-      return response;
+      return await serverRequests.getMyProjects(user.encoded_login);
     }
     catch (err) {
      return err.ok;
@@ -127,11 +154,30 @@ const useProject = () => {
     return Object.values(datasets).find(dataset => dataset.current);
   };
 
+  const loadProjectFromDevice = async (selectedProject) => {
+    console.log('SELECTED PROJECT', selectedProject);
+    if (!isEmpty(project)) await destroyOldProject();
+    const projectData = selectedProject.projectDb.project;
+    const projectDatasets = selectedProject.projectDb.datasets;
+    const projectSpots = selectedProject.spotsDb;
+    // const projectData = {
+    //   date: selectedProject.projectDb.date,
+    //   modified_timestamp: selectedProject.projectDb.modified_timestamp,
+    //   description: selectedProject.projectDb.description,
+    //   other_features: selectedProject.projectDb.other_features,
+    //   preferences: selectedProject.projectDb.preferences,
+    //   id: selectedProject.projectDb.id,
+    // };
+    console.log('sssssss', projectData);
+     dispatch({type: spotReducers.ADD_SPOTS_FROM_DEVICE , spots: projectSpots});
+     dispatch({type: projectReducers.PROJECTS, project: projectData});
+     dispatch({type: projectReducers.DATASETS.DATASETS_UPDATE, datasets: projectDatasets})
+     return Promise.resolve();
+  };
+
   const loadProjectRemote = async (selectedProject) => {
     console.log(`Getting ${selectedProject.name} project from server...`);
-    if (!isEmpty(project)) {
-      await destroyOldProject();
-    }
+    if (!isEmpty(project)) await destroyOldProject();
     try {
       const projectResponse = await serverRequests.getProject(selectedProject.id, user.encoded_login);
       console.log('Loaded Project:', projectResponse);
@@ -181,25 +227,45 @@ const useProject = () => {
     return Promise.resolve();
   };
 
-  const selectProject = async (selectedProject) => {
+  const readDeviceFile = async (selectedProject) => {
+    let data = selectedProject.fileName;
+    const dataFile = '/data.json';
+    return await RNFetchBlob.fs.readFile(devicePath + appDirectoryForDistributedBackups + '/' + data + dataFile).then(response => {
+        // console.log('DataFile', JSON.parse(response));
+        return Promise.resolve(JSON.parse(response));
+      }, () => Alert.alert('Project Not Found'));
+  };
+
+  const selectProject = async (selectedProject, source) => {
     console.log('Getting project...');
-    try {
-      const projectResponse = await serverRequests.getProject(selectedProject.id, user.encoded_login);
-      console.log('Loaded project \n', projectResponse);
-      if (!isEmpty(project)) {
-        await destroyOldProject();
+    let projectResponse = null;
+    if (source === 'device') {
+        projectResponse = await readDeviceFile(selectedProject).then(dataFile => {
+          return loadProjectFromDevice(dataFile).then(() => {
+            return dataFile;
+          });
+        });
+    }
+    else {
+      try {
+        projectResponse = await serverRequests.getProject(selectedProject.id, user.encoded_login);
+        console.log('Loaded project \n', projectResponse);
+        if (!isEmpty(project)) {
+          await destroyOldProject();
+        }
+        dispatch({type: projectReducers.PROJECTS, project: projectResponse});
+        await getDatasets(selectedProject);
+        return projectResponse;
       }
-      dispatch({type: projectReducers.PROJECTS, project: projectResponse});
-      await getDatasets(selectedProject);
-      return projectResponse;
+      catch (err) {
+        dispatch({type: homeReducers.CLEAR_STATUS_MESSAGES});
+        dispatch({type: homeReducers.ADD_STATUS_MESSAGE,
+          statusMessage: `There is not a project named: \n\n${selectedProject.description.project_name}\n\n on the server...`});
+        dispatch({type: homeReducers.SET_INFO_MESSAGES_MODAL_VISIBLE, bool: true});
+        return err.ok;
+      }
     }
-    catch (err) {
-      dispatch({type: homeReducers.CLEAR_STATUS_MESSAGES});
-      dispatch({type: homeReducers.ADD_STATUS_MESSAGE,
-        statusMessage: `There is not a project named: \n\n${selectedProject.description.project_name}\n\n on the server...`});
-      dispatch({type: homeReducers.SET_INFO_MESSAGES_MODAL_VISIBLE, bool: true});
-      return err.ok;
-    }
+    return Promise.resolve(projectResponse);
   };
 
   const uploadDataset = async (dataset) => {
@@ -238,7 +304,7 @@ const useProject = () => {
         else {
           dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
           dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: activeDatasets.length + ' Datasets uploaded!'});
-          return Promise.resolve();
+          return Promise.resolve({message: 'Datasets Uploaded'});
         }
       }, (err) => {
         console.log('Error uploading dataset.', err);
@@ -258,7 +324,7 @@ const useProject = () => {
       dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'There are no active datasets.'});
       return Promise.reject('No Active Datasets');
     }
-    else return Promise.resolve();
+    else return Promise.resolve('Datasets Uploaded');
   };
 
   const uploadImages = async spots => {
@@ -315,12 +381,15 @@ const useProject = () => {
     addDataset: addDataset,
     createProject: createProject,
     destroyDataset: destroyDataset,
-    getAllProjects: getAllProjects,
+    getAllDeviceProjects: getAllDeviceProjects,
+    getAllServerProjects: getAllServerProjects,
     getCurrentDataset: getCurrentDataset,
     getDatasets: getDatasets,
     makeDatasetCurrent: makeDatasetCurrent,
     initializeNewProject: initializeNewProject,
+    loadProjectFromDevice: loadProjectFromDevice,
     loadProjectRemote: loadProjectRemote,
+    readDeviceFile: readDeviceFile,
     selectProject: selectProject,
     uploadDatasets: uploadDatasets,
     uploadProject: uploadProject,
