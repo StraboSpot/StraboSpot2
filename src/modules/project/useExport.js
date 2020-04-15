@@ -1,4 +1,4 @@
-import {useDispatch, useSelector} from 'react-redux';
+import {useSelector} from 'react-redux';
 import RNFetchBlob from 'rn-fetch-blob';
 import {Alert, Platform} from 'react-native';
 
@@ -18,7 +18,8 @@ const useExport = () => {
     // console.log('Next')
     // const dataDir = await checkDistributionDataDir();
     // console.log('Next', dataDir);
-    const dataForExport = await gatherDataForDistribution();
+    // const dataForExport = await gatherDataForDistribution();  // Data can be backwards compatible with Strabo 1 (unfinished)
+    const dataForExport = await gatherDataForBackup();
     // console.log('DataJson', dataJson);
     await exportData(devicePath + appDirectoryForDistributedBackups + '/' + exportedFileName, dataForExport, '/data.json');
     await doesDeviceDirectoryExist(devicePath + appDirectoryForDistributedBackups + '/' + exportedFileName + '/Images');
@@ -91,42 +92,58 @@ const useExport = () => {
     });
   };
 
-  const gatherDataForDistribution = () => {
+  // const gatherDataForDistribution = () => {
+  //   const dbsStateCopy = JSON.parse(JSON.stringify(dbs));
+  //   let activeDatasets = [];
+  //   let currentDataset = {};
+  //   let spots = dbsStateCopy.spot.spots;
+  //   let configDb = {};
+  //   let mapNamesDb = {};
+  //   let mapTilesDb = {};
+  //   let json = {
+  //     mapNamesDb: mapNamesDb,
+  //     mapTilesDb: mapTilesDb,
+  //     projectDb: dbsStateCopy.project.project,
+  //     spotsDb: spots,
+  //   };
+  //   Object.values(dbsStateCopy.project.datasets).map(dataset => {
+  //     const datasetKey = 'dataset_' + dataset.id;
+  //     const spotsInDatasetKey = 'spots_' + dataset.id;
+  //     if (dataset.current && dataset.current === true) currentDataset = dataset;
+  //     if (dataset.active && dataset.active === true) activeDatasets.push(dataset);
+  //     json.projectDb = {
+  //       ...json.projectDb,
+  //       activeDatasets: activeDatasets,
+  //       [datasetKey]: dataset,
+  //       [spotsInDatasetKey]: dataset.spotIds,
+  //       'spots_dataset': currentDataset,
+  //     };
+  //     delete dataset.active;
+  //     delete dataset.current;
+  //   });
+  //   json.projectDb.activeDatasets.map(dataset => {
+  //     delete dataset.active;
+  //     delete dataset.current;
+  //   });
+  //   delete json.projectDb.self;
+  //   delete json.projectDb.projecttype;
+  //   console.log('JsonCopy', json)
+  //   return Promise.resolve(json);
+  // };
+
+  const gatherDataForBackup = () => {
     const dbsStateCopy = JSON.parse(JSON.stringify(dbs));
-    let activeDatasets = [];
-    let currentDataset = {};
     let spots = dbsStateCopy.spot.spots;
-    let configDb = {};
+    // let configDb = {};
     let mapNamesDb = {};
     let mapTilesDb = {};
     let json = {
       mapNamesDb: mapNamesDb,
       mapTilesDb: mapTilesDb,
-      projectDb: dbsStateCopy.project.project,
+      projectDb: dbsStateCopy.project,
       spotsDb: spots,
     };
-    Object.values(dbsStateCopy.project.datasets).map(dataset => {
-      const datasetKey = 'dataset_' + dataset.id;
-      const spotsInDatasetKey = 'spots_' + dataset.id;
-      if (dataset.current && dataset.current === true) currentDataset = dataset;
-      if (dataset.active && dataset.active === true) activeDatasets.push(dataset);
-      json.projectDb = {
-        ...json.projectDb,
-        activeDatasets: activeDatasets,
-        [datasetKey]: dataset,
-        [spotsInDatasetKey]: dataset.spotIds,
-        'spots_dataset': currentDataset,
-      };
-      delete dataset.active;
-      delete dataset.current;
-    });
-    json.projectDb.activeDatasets.map(dataset => {
-      delete dataset.active;
-      delete dataset.current;
-    });
-    delete json.projectDb.self;
-    delete json.projectDb.projecttype;
-    console.log('JsonCopy', json)
+    console.log('JsonCopy', json);
     return Promise.resolve(json);
   };
 
