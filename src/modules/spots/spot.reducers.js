@@ -26,6 +26,11 @@ export const spotReducer = (state = initialState, action) => {
         ...state,
         spots: {...state.spots, ...spots},
       };
+    case spotReducers.ADD_SPOTS_FROM_DEVICE:
+      return {
+        ...state,
+        spots: action.spots,
+      };
     case spotReducers.CLEAR_SELECTED_SPOTS:
       console.log('CLEAR_SELECTED_SPOTS');
       return {

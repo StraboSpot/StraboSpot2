@@ -103,7 +103,7 @@ const useSpots = (props) => {
     let activeSpots = {};
     activeSpotIds.map(spotId => {
      if (spots[spotId]) activeSpots = {...activeSpots, [spotId]: spots[spotId]};
-     else console.warn('Missing Spot', spotId);
+     else console.log('Missing Spot', spotId);
     });
     return activeSpots;
   };
