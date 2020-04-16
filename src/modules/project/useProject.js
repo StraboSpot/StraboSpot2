@@ -121,10 +121,14 @@ const useProject = () => {
     return Promise.resolve();
   };
 
+  const doesDeviceDirExist = async () => {
+    return await RNFetchBlob.fs.isDir(devicePath + appDirectoryForDistributedBackups);
+  };
+
   const getAllDeviceProjects = async () => {
-    return await RNFetchBlob.fs.isDir(devicePath + appDirectoryForDistributedBackups).then(success => {
-      console.log('/StraboProjects exists:', success)
-      if (success) {
+    const deviceProject = await RNFetchBlob.fs.isDir(devicePath + appDirectoryForDistributedBackups).then(res => {
+      console.log('/StraboProjects exists:', res)
+      if (res) {
         return RNFetchBlob.fs.ls(devicePath + appDirectoryForDistributedBackups).then(files => {
           let id = 0;
           if (!isEmpty(files)) {
@@ -136,9 +140,9 @@ const useProject = () => {
           else return Promise.resolve([]);
         });
       }
-      else return Promise.reject('Directory does not exist');
+      else return res;
     });
-    // return Promise.resolve({projects: res});
+    return Promise.resolve(deviceProject);
   };
 
   const getAllServerProjects = async () => {
@@ -156,23 +160,17 @@ const useProject = () => {
 
   const loadProjectFromDevice = async (selectedProject) => {
     console.log('SELECTED PROJECT', selectedProject);
-    if (!isEmpty(project)) await destroyOldProject();
-    const projectData = selectedProject.projectDb.project;
-    const projectDatasets = selectedProject.projectDb.datasets;
-    const projectSpots = selectedProject.spotsDb;
-    // const projectData = {
-    //   date: selectedProject.projectDb.date,
-    //   modified_timestamp: selectedProject.projectDb.modified_timestamp,
-    //   description: selectedProject.projectDb.description,
-    //   other_features: selectedProject.projectDb.other_features,
-    //   preferences: selectedProject.projectDb.preferences,
-    //   id: selectedProject.projectDb.id,
-    // };
-    console.log('sssssss', projectData);
-     dispatch({type: spotReducers.ADD_SPOTS_FROM_DEVICE , spots: projectSpots});
-     dispatch({type: projectReducers.PROJECTS, project: projectData});
-     dispatch({type: projectReducers.DATASETS.DATASETS_UPDATE, datasets: projectDatasets})
-     return Promise.resolve();
+    const dirExists = await doesDeviceDirExist();
+    if (dirExists) {
+      if (!isEmpty(project)) await destroyOldProject();
+      const projectData = selectedProject.projectDb.project;
+      const projectDatasets = selectedProject.projectDb.datasets;
+      const projectSpots = selectedProject.spotsDb;
+      dispatch({type: spotReducers.ADD_SPOTS_FROM_DEVICE , spots: projectSpots});
+      dispatch({type: projectReducers.PROJECTS, project: projectData});
+      dispatch({type: projectReducers.DATASETS.DATASETS_UPDATE, datasets: projectDatasets})
+      return Promise.resolve();
+    }
   };
 
   const loadProjectRemote = async (selectedProject) => {
@@ -381,6 +379,7 @@ const useProject = () => {
     addDataset: addDataset,
     createProject: createProject,
     destroyDataset: destroyDataset,
+    doesDeviceDirExist: doesDeviceDirExist,
     getAllDeviceProjects: getAllDeviceProjects,
     getAllServerProjects: getAllServerProjects,
     getCurrentDataset: getCurrentDataset,

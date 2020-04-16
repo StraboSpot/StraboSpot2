@@ -10,7 +10,7 @@ import * as ProjectActions from './project.constants';
 import useProjectHook from './useProject';
 import styles from './project.styles';
 import {spotReducers} from '../spots/spot.constants';
-import useServerRequests from '../../services/useServerRequests';
+// import useServerRequests from '../../services/useServerRequests';
 // import DatasetList from './DatasetList';
 // import sharedDialogStyles from '../shared/common.home';
 // import ProgressCircle from '../shared/ui/ProgressCircle';
@@ -18,6 +18,7 @@ import {homeReducers} from '../home/home.constants';
 import useSpotsHook from '../spots/useSpots';
 import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 import {SettingsMenuItems} from '../main-menu-panel/mainMenu.constants';
+import {projectReducers} from './project.constants';
 
 const ProjectList = (props) => {
   const currentProject = useSelector(state => state.project.project);
@@ -28,12 +29,12 @@ const ProjectList = (props) => {
   const [selectedProject, setSelectedProject] = useState({});
   const [loading, setLoading] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
-  // const [errorMessage, setErrorMessage] = useState(null);
-  const [uploadErrors, setUploadErrors] = useState(false);
-  // Server calls
-  const [serverRequests] = useServerRequests();
+  const [isError, setIsError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
+
+  // const [serverRequests] = useServerRequests();
   const [useProject] = useProjectHook();
-  const [useSpots] = useSpotsHook();
+  // const [useSpots] = useSpotsHook();
 
   useEffect(() => {
     return function cleanUp () {
@@ -42,14 +43,14 @@ const ProjectList = (props) => {
   }, []);
 
   useEffect(() => {
-    getAllProjects().then(() => console.log('OK'));
+    getAllProjects().then(() => console.log('OK got projects'));
     return function cleanUp () {
       console.log('Cleaned Up 2');
     };
   }, [props.source]);
 
   useEffect(() => {
-    console.log('WOOHOO', projectsArr)
+    console.log('projectsArr', projectsArr)
     return function cleanUp () {
       console.log('Cleaned Up 3');
     };
@@ -61,11 +62,16 @@ const ProjectList = (props) => {
     if (props.source === 'server') projectsResponse = await useProject.getAllServerProjects();
     else if (props.source === 'device') projectsResponse = await useProject.getAllDeviceProjects();
     if (!projectsResponse) {
-      Alert.alert('Error getting projects');
-      // setErrorMessage('Error getting project');
+      if (props.source === 'device') {
+        dispatch({type: projectReducers.BACKUP_DIRECTORY_EXISTS, bool: false});
+        setIsError(true);
+        setErrorMessage('Cannot find a backup directory on this device...');
+      }
+      else setErrorMessage('Error getting project');
       setLoading(false);
     }
     else {
+      setIsError(false);
       console.log(projectsResponse);
       setProjectsArr(projectsResponse);
       setLoading(false);
@@ -130,6 +136,7 @@ const ProjectList = (props) => {
       try {
         setShowDialog(false);
         const project = await useProject.uploadProject(currentProject, userData.encoded_login);
+        setIsError(false);
         console.log('Finished uploading project', project);
         const datasets = await useProject.uploadDatasets();
         console.log(datasets);
@@ -145,7 +152,7 @@ const ProjectList = (props) => {
         dispatch({type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: SettingsMenuItems.MANAGE.ACTIVE_PROJECTS});
       }
       catch (err) {
-        setUploadErrors(true);
+        setIsError(true);
         console.log('Error', err);
       }
     }
@@ -202,9 +209,11 @@ const ProjectList = (props) => {
   };
 
   const renderErrorMessage = () => {
-    return (<View>
-      <Text style={{color: 'red'}}>Error Getting Data</Text>
-    </View>);
+    return (
+      <View>
+        <Text style={{color: 'red', textAlign: 'center'}}>{errorMessage}</Text>
+      </View>
+    );
   };
 
   const renderServerProjectsList = () => {
@@ -231,11 +240,11 @@ const ProjectList = (props) => {
       return (
         <View style={styles.signInContainer}>
           <View>
-            <Button
+            {props.source === 'server' && <Button
               title={'Retry'}
               onPress={() => getAllProjects()}
-            />
-              {renderErrorMessage()}
+            />}
+              {isError && renderErrorMessage()}
             </View>
         </View>
       );

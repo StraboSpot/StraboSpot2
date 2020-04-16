@@ -10,6 +10,7 @@ import {isEmpty} from '../../shared/Helpers';
 const ProjectTypesButtons = (props) => {
   const isOnline = useSelector(state => state.home.isOnline);
   const user = useSelector(state => state.user);
+  const deviceBackUpDirectoryExists = useSelector(state => state.project.deviceBackUpDirectoryExists);
 
   return (
     <View>
@@ -25,12 +26,12 @@ const ProjectTypesButtons = (props) => {
         titleStyle={commonStyles.standardButtonText}
         onPress={() => props.onLoadProjectsFromServer()}
       />}
-      <Button
+      {deviceBackUpDirectoryExists && <Button
         title={'Load a Project from Device'}
         buttonStyle={commonStyles.standardButton}
         titleStyle={commonStyles.standardButtonText}
         onPress={() => props.onLoadProjectsFromDevice()}
-      />
+      />}
     </View>
   );
 };

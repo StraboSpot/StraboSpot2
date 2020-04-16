@@ -246,7 +246,7 @@ const DatasetList = () => {
       dispatch({type: projectReducers.DATASETS.DATASETS_UPDATE, datasets: datasetsCopy});
       dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, bool: true});
       await useSpots.downloadSpots(datasets[id], userData.encoded_login);
-      dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'Download Complete!'});
+      // dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'Download Complete!'});
       setLoading(false);
     }
     else {
