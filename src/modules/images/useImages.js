@@ -12,6 +12,8 @@ import useServerRequests from '../../services/useServerRequests';
 import {homeReducers} from '../home/home.constants';
 import {spotReducers} from '../spots/spot.constants';
 
+const RNFS = require('react-native-fs');
+
 const useImages = () => {
   // let imageFiles = [];
   let imageArr = [];
@@ -358,7 +360,12 @@ const useImages = () => {
           try {
             const savedPhoto = await saveFile(response);
             console.log('Saved Photo = ', savedPhoto);
-            resolve(savedPhoto);
+            // Deletes default path after every photo saved to /StraboSpot/Images.
+            RNFS.unlink(response.uri).then(() => {
+              console.log('Image default path is unlinked:');
+              resolve(savedPhoto);
+            })
+              .catch(err => console.log('Image unlink error', err.message));
           }
           catch (e) {
             reject();
