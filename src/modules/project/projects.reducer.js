@@ -3,6 +3,7 @@ import {projectReducers} from './project.constants';
 const initialState = {
   project: {},
   datasets: {},
+  deviceBackUpDirectoryExists: false,
 };
 
 export const projectsReducer = (state = initialState, action) => {
@@ -89,6 +90,12 @@ export const projectsReducer = (state = initialState, action) => {
         modified_timestamp: Date.now(),
       };
     }
+    case projectReducers.BACKUP_DIRECTORY_EXISTS:
+      console.log(action.bool);
+      return {
+        ...state,
+        deviceBackUpDirectoryExists: action.bool,
+      };
   }
   return state;
 };

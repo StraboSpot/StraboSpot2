@@ -1,6 +1,7 @@
 import {useSelector} from 'react-redux';
 import RNFetchBlob from 'rn-fetch-blob';
 import {Alert, Platform} from 'react-native';
+import {projectReducers} from './project.constants';
 
 const useExport = () => {
   let dirs = RNFetchBlob.fs.dirs;
@@ -10,6 +11,7 @@ const useExport = () => {
   const imagesDirectory = appDirectory + '/Images';
   const dataBackupsDirectory = devicePath + appDirectory + '/DataBackups';
 
+  const dispatch = useDispatch();
   const dbs = useSelector(state => state);
   // dbs.project = {}
 
@@ -69,9 +71,11 @@ const useExport = () => {
         return Promise.resolve(directory);
       }
       else {
+        // If directory does not exist then one is created
         return RNFetchBlob.fs.mkdir(directory)
           .then(checkDirectorySuccess => {
             console.log('Directory', directory, 'created', checkDirectorySuccess);
+            dispatch({type: projectReducers.BACKUP_DIRECTORY_EXISTS, bool: checkDirectorySuccess});
             return Promise.resolve(directory);
           })
           .catch(createDirError => {
