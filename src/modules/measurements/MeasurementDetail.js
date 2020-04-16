@@ -138,7 +138,7 @@ const MeasurementDetailPage = (props) => {
           <View style={styles.measurementsSectionDividerContainer}>
             <SectionDivider dividerText='Feature Type'/>
           </View>
-          <View>
+          <View style={{flex: 1}}>
             <Formik
               innerRef={form}
               onSubmit={onSubmitForm}
@@ -346,14 +346,12 @@ const MeasurementDetailPage = (props) => {
       {props.selectedMeasurements && props.selectedMeasurements[0] &&
       <View style={styles.measurementsContentContainer}>
         {renderCancelSaveButtons()}
-        <ScrollView>
           {props.selectedMeasurements.length === 1 ?
             renderAssociatedMeasurements() :
             renderMultiMeasurementsBar()}
           {(props.selectedMeasurements[0].type === 'planar_orientation' || props.selectedMeasurements[0].type === 'tabular_orientation') && renderSwitches()}
-          <View>
-            {renderFormFields()}
-          </View>
+        <ScrollView>
+          {renderFormFields()}
         </ScrollView>
       </View>}
     </React.Fragment>
