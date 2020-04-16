@@ -1,5 +1,5 @@
 import React from 'react';
-import {Alert, Text, View} from 'react-native';
+import {Alert, Platform} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {homeReducers} from './home.constants';
 import NetInfo from '@react-native-community/netinfo';
@@ -9,14 +9,31 @@ import {notebookReducers} from '../notebook-panel/notebook.constants';
 import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 import {isEmpty} from '../../shared/Helpers';
 
+// import useProjectHook from '../project/useProject';
+import RNFetchBlob from 'rn-fetch-blob';
+import {projectReducers} from '../project/project.constants';
+
 
 const useHome = (props) => {
+  let dirs = RNFetchBlob.fs.dirs;
+  const devicePath = Platform.OS === 'ios' ? dirs.DocumentDir : dirs.SDCardDir; // ios : android
+  const appDirectory = '/StraboSpot';
+  const appDirectoryForDistributedBackups = '/StraboSpotProjects';
+
   const dispatch = useDispatch();
   const getCurrentProject = useSelector(state => state.project.project);
 
   const checkForOpenProject = () => {
     console.log('Check for open project');
     return isEmpty(getCurrentProject);
+  };
+
+  const checkForDeviceBackupDir = () => {
+    return RNFetchBlob.fs.isDir(devicePath + appDirectoryForDistributedBackups).then(res => {
+      console.log('Backup Directory Exists:', res);
+      dispatch({type: projectReducers.BACKUP_DIRECTORY_EXISTS, bool: res});
+      return Promise.resolve();
+    });
   };
 
   const getOnlineStatus = () => {
@@ -38,7 +55,8 @@ const useHome = (props) => {
     dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: null});
     dispatch({type: homeReducers.SET_SETTINGS_PANEL_VISIBLE, value: false});
     dispatch({type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: SettingsMenuItems.SETTINGS_MAIN});
-    getOnlineStatus();
+    await getOnlineStatus();
+    await checkForDeviceBackupDir();
     return checkForOpenProject();
   };
 
