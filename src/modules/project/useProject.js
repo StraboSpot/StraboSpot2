@@ -174,6 +174,7 @@ const useProject = () => {
   };
 
   const loadProjectRemote = async (selectedProject) => {
+    dispatch({type: homeReducers.SET_LOADING, view: 'modal', bool: true});
     console.log(`Getting ${selectedProject.name} project from server...`);
     if (!isEmpty(project)) await destroyOldProject();
     try {
@@ -308,7 +309,7 @@ const useProject = () => {
         console.log('Error uploading dataset.', err);
         dispatch({type: homeReducers.CLEAR_STATUS_MESSAGES});
         dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Error uploading dataset.'});
-        dispatch({type: homeReducers.SET_LOADING, value: false});
+        dispatch({type: homeReducers.SET_LOADING, view: 'modal', bool: false});
         return Promise.reject();
       });
     };
@@ -318,6 +319,7 @@ const useProject = () => {
       return makeNextRequest();
     }
     if (activeDatasets.length === 0) {
+      dispatch({type: homeReducers.SET_LOADING, view: 'modal', bool: false});
       dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
       dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'There are no active datasets.'});
       return Promise.reject('No Active Datasets');
@@ -330,7 +332,7 @@ const useProject = () => {
   };
 
   const uploadProject = async () => {
-    dispatch({type: homeReducers.SET_LOADING, value: true});
+    dispatch({type: homeReducers.SET_LOADING, view: 'modal', bool: true});
     dispatch({type: homeReducers.CLEAR_STATUS_MESSAGES});
     dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, bool: true});
     console.log('PROJECT UPLOADING...');

@@ -29,8 +29,18 @@ const UploadBackAndExport = (props) => {
   const [exportFileName, setExportFileName] = useState(moment(new Date()).format('YYYY-MM-DD_hmma') + '_' + project.description.project_name);
 
   const backupToDevice = async () => {
+    setIsUploadDialogVisible(false);
+    dispatch({type: 'CLEAR_STATUS_MESSAGES'});
+    dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'Backing up Project to Device...'});
+    dispatch({type: homeReducers.SET_LOADING, view: 'modal', bool: true});
+    dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, bool: true});
     await useExport.backupProjectToDevice(exportFileName);
     console.log(`File ${exportFileName} has been backed up`);
+    // dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
+    dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: '---------------'});
+    dispatch({type: homeReducers.SET_LOADING, view: 'modal', bool: false});
+    await dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'Project Backup Complete!'});
+
   };
 
   const onShareProjectAsCSV = () => {
@@ -61,7 +71,6 @@ const UploadBackAndExport = (props) => {
   };
 
   const upload = () => {
-    // dispatch({type: homeReducers.SET_LOADING, bool: true});
     return uploadProject()
       .then(uploadDatasets)
       .catch(err => {
@@ -71,7 +80,7 @@ const UploadBackAndExport = (props) => {
       })
       .finally(() => {
           useImages.deleteTempImagesFolder().then(()=> {
-            dispatch({type: homeReducers.SET_LOADING, value: false});
+            dispatch({type: homeReducers.SET_LOADING, view: 'modal', bool: false});
             dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Upload Complete!'});
           });
         },

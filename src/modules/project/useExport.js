@@ -91,7 +91,7 @@ const useExport = () => {
     // dir.pop();
     // const rootDir = dir.join('/');
     return doesDeviceDirectoryExist(directory).then((fullPath) => {
-      console.log('ROOT', fullPath)
+      console.log('ROOT', fullPath);
       return RNFetchBlob.fs.writeFile(directory + filename, JSON.stringify(data), 'utf8');
     });
   };
@@ -158,14 +158,14 @@ const useExport = () => {
       console.log('Spots Exist!');
       Object.values(data.spotsDb).map(spot => {
         if (spot.properties.images) {
-          console.log('Spot with images', spot.properties.name, 'Images:' , spot.properties.images);
+          console.log('Spot with images', spot.properties.name, 'Images:', spot.properties.images);
           spot.properties.images.map(image => {
             const promise = moveDistributedImage(image.id, fileName).then(moveFileSuccess => {
               console.log('Moved file:', moveFileSuccess);
             });
             promises.push(promise);
           });
-          console.log('Image Promises', promises)
+          console.log('Image Promises', promises);
         }
       });
       return Promise.all(promises).then(() => {

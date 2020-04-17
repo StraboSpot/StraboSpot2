@@ -143,7 +143,6 @@ const ProjectList = (props) => {
         await dispatch({type: spotReducers.CLEAR_SPOTS, spots: {}});
         // dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Upload Complete!'});
 
-        dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, bool: true});
         dispatch({type: 'CLEAR_STATUS_MESSAGES'});
         await dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'Upload Complete!'});
         const projectData = await useProject.selectProject(selectedProject, props.source);
@@ -160,12 +159,15 @@ const ProjectList = (props) => {
       console.log('User wants to:', action);
     }
     else if (action === ProjectActions.OVERWRITE) {
+      setShowDialog(false);
+      dispatch({type: 'CLEAR_STATUS_MESSAGES'});
+      dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, bool: true});
       if (props.source === 'device') {
         const project = selectedProject.projectDb;
         console.log('User wants to:', action, 'and select', project.project.description.project_name);
         await useProject.loadProjectFromDevice(selectedProject);
         console.log('Loaded From Device');
-        setShowDialog(false);
+        dispatch({type: homeReducers.SET_LOADING, view: 'modal', bool: false});
         dispatch({type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: SettingsMenuItems.MANAGE.ACTIVE_PROJECTS});
       }
       else {
