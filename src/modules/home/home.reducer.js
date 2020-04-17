@@ -8,7 +8,10 @@ const initialState = {
     neededImageIds: 0,
   },
   isOnline: null,
-  loading: false,
+  loading: {
+    modal: false,
+    home: false,
+  },
   modalVisible: null,
   isStatusMessagesModalVisible: false,
   isErrorMessagesModalVisible: false,
@@ -93,7 +96,10 @@ export const homeReducer = (state = initialState, action) => {
     case homeReducers.SET_LOADING:
       return {
         ...state,
-        loading: action.bool,
+        loading: {
+          ...state.loading,
+          [action.view]: action.bool,
+        },
       };
     case homeReducers.ADD_STATUS_MESSAGE:
       return {

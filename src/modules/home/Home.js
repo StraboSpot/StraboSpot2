@@ -490,21 +490,19 @@ const Home = (props) => {
         onTouchOutside={() => dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, bool: false})}
         // disabled={progress !== 1 && !uploadErrors}
       >
-        <View style={{height: 100}}>
-
-            {isLoading ?
+        <View style={{minHeight: 100}} >
+            {isLoading.modal &&
               <View style={{flex: 1}}>
               <BallIndicator
                 color={'darkgrey'}
                 count={8}
                 size={30}
               />
-              </View>
-              : null}
+              </View>}
           <View style={{flex: 1, paddingTop: 15}}>
             <Text style={{textAlign: 'center'}}>{statusMessages.join('\n')}</Text>
             {statusMessages.includes('Download Complete!') || statusMessages.includes('Upload Complete!')
-            || statusMessages.includes('There are no active datasets.') ? <Button
+            || statusMessages.includes('There are no active datasets.') || statusMessages.includes('Project Backup Complete!') ? <Button
               title={'OK'}
               type={'clear'}
               onPress={() => dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, bool: false})}
@@ -689,7 +687,7 @@ const Home = (props) => {
         openNotebookOnSelectedSpot={() => openNotebookPanel()}
       />
       {props.vertexStartCoords && <VertexDrag/>}
-      {isLoading && <LoadingSpinner/>}
+      {/*{isLoading && <LoadingSpinner/>}*/}
           <ToastPopup toastRef={toastRef} />
       {Platform.OS === 'ios' &&
       <Animated.View style={leftsideIconAnimation}>
@@ -941,8 +939,6 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-  setLoading: (bool) => ({type: homeReducers.SET_LOADING, bool: bool}),
-  setIsOnline: (online) => ({type: homeReducers.SET_ISONLINE, online: online}),
   setHomePanelVisible: (value) => ({type: homeReducers.SET_SETTINGS_PANEL_VISIBLE, value: value}),
   setHomePanelPageVisible: (name) => ({type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: name}),
   setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),
