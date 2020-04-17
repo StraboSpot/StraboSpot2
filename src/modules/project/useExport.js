@@ -27,46 +27,53 @@ const useExport = () => {
     // const dataForExport = await gatherDataForDistribution();  // Data can be backwards compatible with Strabo 1 (unfinished)
     const dataForExport = await gatherDataForBackup();
     // console.log('DataJson', dataJson);
-    await exportData(devicePath + appDirectoryForDistributedBackups + '/' + exportedFileName, dataForExport, '/data.json');
+    await exportData(devicePath + appDirectoryForDistributedBackups + '/' + exportedFileName, dataForExport,
+      '/data.json');
+    dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'Data exported.'});
+    const otherMaps = await gatherOtherMapsForDistribution();
+    dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'Maps exported.'});
+    console.log('Other Maps Resolve Message:', otherMaps);
+    // dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
+    dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: `Finished moving all images to distribution folder.`});
     await doesDeviceDirectoryExist(devicePath + appDirectoryForDistributedBackups + '/' + exportedFileName + '/Images');
-    const imageSuccess = await gatherImagesForDistribution(dataForExport, exportedFileName)
-    console.log('Resolve Message:',imageSuccess.message);
+    const imageSuccess = await gatherImagesForDistribution(dataForExport, exportedFileName);
+    console.log('Images Resolve Message:', imageSuccess.message);
   };
 
-  const checkDistributionDataDir = async () => {
-    if (devicePath){
-      return await RNFetchBlob.fs.isDir(devicePath + appDirectoryForDistributedBackups + '/data').then( checkDirSuccess => {
-        //exists. delete then add
-        if (checkDirSuccess) {
-          console.log('data folder exists', checkDirSuccess);
-          return RNFetchBlob.fs.unlink(devicePath + appDirectoryForDistributedBackups + '/data').then(() => {
-            console.log('Success removing', appDirectoryForDistributedBackups + '/data');
-            return RNFetchBlob.fs.mkdir(devicePath + appDirectoryForDistributedBackups + '/data').then(createDirSuccess => {
-              console.log('Success creating', appDirectoryForDistributedBackups + '/data');
-              return Promise.resolve(devicePath + appDirectoryForDistributedBackups + '/data')
-            })
-              .catch(err => {
-                console.log('Error making directory', err);
-                return Promise.reject(err.message);
-              });
-          });
-        }
-        //doesn't exist, just create
-        else {
-          console.log('Data folder does not exist');
-          return RNFetchBlob.fs.mkdir(devicePath + appDirectoryForDistributedBackups + '/data').then(createDirSuccess => {
-            console.log('Directory', appDirectoryForDistributedBackups + '/data', 'created.', createDirSuccess);
-            return Promise.resolve(devicePath + appDirectoryForDistributedBackups + '/data');
-          })
-            .catch(err => {
-              console.log('Error making directory', err);
-              return Promise.reject(err.message);
-            });
-        }
-      });
-    }
-    else return Promise.reject('Device Not Found!');
-  };
+  // const checkDistributionDataDir = async () => {
+  //   if (devicePath){
+  //     return await RNFetchBlob.fs.isDir(devicePath + appDirectoryForDistributedBackups + '/data').then( checkDirSuccess => {
+  //       //exists. delete then add
+  //       if (checkDirSuccess) {
+  //         console.log('data folder exists', checkDirSuccess);
+  //         return RNFetchBlob.fs.unlink(devicePath + appDirectoryForDistributedBackups + '/data').then(() => {
+  //           console.log('Success removing', appDirectoryForDistributedBackups + '/data');
+  //           return RNFetchBlob.fs.mkdir(devicePath + appDirectoryForDistributedBackups + '/data').then(createDirSuccess => {
+  //             console.log('Success creating', appDirectoryForDistributedBackups + '/data');
+  //             return Promise.resolve(devicePath + appDirectoryForDistributedBackups + '/data')
+  //           })
+  //             .catch(err => {
+  //               console.log('Error making directory', err);
+  //               return Promise.reject(err.message);
+  //             });
+  //         });
+  //       }
+  //       //doesn't exist, just create
+  //       else {
+  //         console.log('Data folder does not exist');
+  //         return RNFetchBlob.fs.mkdir(devicePath + appDirectoryForDistributedBackups + '/data').then(createDirSuccess => {
+  //           console.log('Directory', appDirectoryForDistributedBackups + '/data', 'created.', createDirSuccess);
+  //           return Promise.resolve(devicePath + appDirectoryForDistributedBackups + '/data');
+  //         })
+  //           .catch(err => {
+  //             console.log('Error making directory', err);
+  //             return Promise.reject(err.message);
+  //           });
+  //       }
+  //     });
+  //   }
+  //   else return Promise.reject('Device Not Found!');
+  // };
 
   const doesDeviceDirectoryExist = async (directory) => {
     return await RNFetchBlob.fs.isDir(directory).then(checkDirSuccess => {
@@ -177,6 +184,12 @@ const useExport = () => {
         return Promise.resolve({message: 'Finished moving all images to distribution folder.'});
       });
     }
+  };
+
+  const gatherOtherMapsForDistribution = (data) => {
+    console.log(data);
+    dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'Exporting Maps...'});
+    return Promise.resolve('(OTHER MAPS NOT WORKING YET) Other Maps exported to device');
   };
 
   const moveDistributedImage = async (image_id, fileName) => {
