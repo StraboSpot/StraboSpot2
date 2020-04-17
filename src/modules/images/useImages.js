@@ -105,7 +105,10 @@ const useImages = () => {
         dispatch({type:  homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Image Downloads Failed: ' + imagesFailedCount});
         console.warn('Image Downloads Failed: ' + imagesFailedCount);
       }
-      else  dispatch({type:  homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Download Complete!'});
+      else  {
+        dispatch({type: homeReducers.SET_LOADING, view: 'modal', bool: false});
+        dispatch({type:  homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Download Complete!'});
+      }
     });
   };
 

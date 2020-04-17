@@ -89,6 +89,7 @@ const useSpots = (props) => {
         dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'Downloaded Spots'});
         const neededImagesIds = await useImages.gatherNeededImages(spotsOnServer);
         if (neededImagesIds.length === 0) {
+          dispatch({type: homeReducers.SET_LOADING, view: 'modal', bool: false});
           dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'No New Images to Download'});
           dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Download Complete!'});
         }
