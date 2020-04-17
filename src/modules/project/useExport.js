@@ -2,6 +2,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import RNFetchBlob from 'rn-fetch-blob';
 import {Alert, Platform} from 'react-native';
 import {projectReducers} from './project.constants';
+import {homeReducers} from '../home/home.constants';
 
 const useExport = () => {
   let dirs = RNFetchBlob.fs.dirs;
@@ -14,6 +15,9 @@ const useExport = () => {
   const dispatch = useDispatch();
   const dbs = useSelector(state => state);
   // dbs.project = {}
+  let imageCount = 0;
+  let imageBackupFailures = 0;
+  let imageSuccess = 0;
 
   const backupProjectToDevice = async (exportedFileName) => {
     await doesDeviceDirectoryExist(devicePath + appDirectoryForDistributedBackups);
@@ -178,20 +182,34 @@ const useExport = () => {
   const moveDistributedImage = async (image_id, fileName) => {
     return RNFetchBlob.fs.exists(devicePath + imagesDirectory + '/' + image_id + '.jpg')
       .then(exists => {
-      console.log(`file exists: ${devicePath + imagesDirectory + '/' + image_id + '.jpg'} : ${exists}`);
-      return RNFetchBlob.fs.cp(devicePath + imagesDirectory + '/' + image_id + '.jpg',
-        devicePath + appDirectoryForDistributedBackups + '/' + fileName + '/Images/' + image_id + '.jpg')
-        .then(res => {
-          console.log('Image Copy res', res);
-          return Promise.resolve(res);
-        })
-        .catch(err => {
-          console.log('Image copy ERROR', err);
-          return Promise.reject(err);
-        });
-    })
-      .catch(err => Alert.alert('ERROR', err.toString()));
-    // return Promise.resolve();
+        imageCount++;
+        return RNFetchBlob.fs.cp(devicePath + imagesDirectory + '/' + image_id + '.jpg',
+          devicePath + appDirectoryForDistributedBackups + '/' + fileName + '/Images/' + image_id + '.jpg')
+          .then(res => {
+            console.log('Image copy SUCCESS', res);
+            imageSuccess++;
+          }, err => {
+            imageBackupFailures++;
+            console.log('Image copy ERROR', err);
+          })
+          .finally(() => {
+            dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
+            if (imageBackupFailures > 0) {
+              dispatch({
+                type: 'ADD_STATUS_MESSAGE',
+                statusMessage: `Images backed up: ${imageSuccess}\n Already exists images: ${imageBackupFailures}`,
+              });
+            }
+            else {
+              dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: `${imageSuccess} Images backed up.`});
+            }
+            return Promise.resolve();
+          });
+      })
+      .catch(err => {
+        console.log('ERROR', err.toString());
+        dispatch({type: homeReducers.SET_ERROR_MESSAGES_MODAL_VISIBLE, bool: true})
+      });
   };
 
   const exportHelpers = {
