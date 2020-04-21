@@ -75,7 +75,7 @@ const useSpots = (props) => {
   };
 
   const downloadSpots = async (dataset, encodedLogin) => {
-    dispatch({type: 'CLEAR_STATUS_MESSAGES'});
+    // dispatch({type: 'CLEAR_STATUS_MESSAGES'});
     dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'Downloading Spots...'});
     const datasetInfoFromServer = await useServerRequests.getDatasetSpots(dataset.id, encodedLogin);
     if (!isEmpty(datasetInfoFromServer) && datasetInfoFromServer.features) {
@@ -91,7 +91,7 @@ const useSpots = (props) => {
         if (neededImagesIds.length === 0) {
           dispatch({type: homeReducers.SET_LOADING, view: 'modal', bool: false});
           dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'No New Images to Download'});
-          dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Download Complete!'});
+          // dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Download Complete!'});
         }
         else await useImages.downloadImages(neededImagesIds);
       }

@@ -96,7 +96,7 @@ const DatasetList = () => {
                   value={item.active}
                   disabled={isDisabled(item.id)}
                 />}
-              leftIcon={   <Icon
+              leftIcon={<Icon
                 name='edit'
                 type={'material'}
                 size={20}
@@ -173,9 +173,11 @@ const DatasetList = () => {
       >
         <View style={styles.dialogContent}>
           <Text style={{textAlign: 'center'}}>Are you sure you want to delete
-            {selectedDataset && selectedDataset.name ? <Text style={styles.dialogContentImportantText}>{'\n' + selectedDataset.name}</Text> : null}
-            ?</Text>
-          <Text style={styles.dialogConfirmText}>This will <Text style={styles.dialogContentImportantText}>ERASE</Text> everything in this dataset including features, images, and all other data!</Text>
+            {selectedDataset && selectedDataset.name ?
+              <Text style={styles.dialogContentImportantText}>{'\n' + selectedDataset.name}</Text> : null}
+            ? </Text>
+          <Text style={styles.dialogConfirmText}>This will<Text style={styles.dialogContentImportantText}>ERASE</Text>
+            everything in this dataset including features, images, and all other data!</Text>
           <Text style={styles.dialogConfirmText}>Do you want to delete?</Text>
         </View>
       </Dialog>
@@ -245,8 +247,9 @@ const DatasetList = () => {
       setLoading(true);
       dispatch({type: projectReducers.DATASETS.DATASETS_UPDATE, datasets: datasetsCopy});
       dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, bool: true});
+      dispatch({type: homeReducers.CLEAR_STATUS_MESSAGES});
       await useSpots.downloadSpots(datasets[id], userData.encoded_login);
-      // dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'Download Complete!'});
+      dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'Download Complete!'});
       setLoading(false);
     }
     else {

@@ -107,7 +107,6 @@ const ProjectList = (props) => {
 
   const selectProject = async (project) => {
     console.log('Selected Project:', project);
-    setLoading(true);
     if (!isEmpty(currentProject)) {
       if (props.source === 'device') {
         project = await useProject.selectProject(project, props.source);
@@ -115,7 +114,6 @@ const ProjectList = (props) => {
         setSelectedProject(project);
       }
       else setSelectedProject(project);
-      setLoading(false);
       setShowDialog(true);
     }
     else {
@@ -162,16 +160,17 @@ const ProjectList = (props) => {
       setShowDialog(false);
       dispatch({type: 'CLEAR_STATUS_MESSAGES'});
       dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, bool: true});
+      dispatch({type: homeReducers.SET_LOADING, view: 'modal', bool: true});
       if (props.source === 'device') {
         const project = selectedProject.projectDb;
         console.log('User wants to:', action, 'and select', project.project.description.project_name);
         await useProject.loadProjectFromDevice(selectedProject);
         console.log('Loaded From Device');
         dispatch({type: homeReducers.SET_LOADING, view: 'modal', bool: false});
+        dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Download Complete!'});
         dispatch({type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: SettingsMenuItems.MANAGE.ACTIVE_PROJECTS});
       }
       else {
-        console.log('User wants to:', action, 'and select', selectedProject.name);
         return useProject.loadProjectRemote(selectedProject).then(projectData => {
           console.log('ProjectData', projectData);
           if (!projectData) {
@@ -179,7 +178,9 @@ const ProjectList = (props) => {
             Alert.alert('Error');
           }
           else {
-            setShowDialog(false);
+            // setShowDialog(false);
+            dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Download Complete!'});
+            dispatch({type: homeReducers.SET_LOADING, view: 'modal', bool: false});
             dispatch({type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: SettingsMenuItems.MANAGE.ACTIVE_PROJECTS});
           }
         });

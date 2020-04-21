@@ -174,7 +174,7 @@ const useProject = () => {
   };
 
   const loadProjectRemote = async (selectedProject) => {
-    dispatch({type: homeReducers.SET_LOADING, view: 'modal', bool: true});
+    dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: `Getting project: ${selectedProject.name}\n from server...\n ---------------`});
     console.log(`Getting ${selectedProject.name} project from server...`);
     if (!isEmpty(project)) await destroyOldProject();
     try {
@@ -193,12 +193,12 @@ const useProject = () => {
   };
 
   const getDatasets = async (project) => {
+    dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Getting datasets from server...'});
     const projectDatasetsFromServer = await serverRequests.getDatasets(project.id, user.encoded_login);
     if (projectDatasetsFromServer === 401) {
       return Promise.reject();
     }
     else {
-      console.log('Saved datasets:', projectDatasetsFromServer);
       if (projectDatasetsFromServer.datasets.length === 1) {
         projectDatasetsFromServer.datasets[0].active = true;
         projectDatasetsFromServer.datasets[0].current = true;
@@ -210,11 +210,14 @@ const useProject = () => {
       }
       const datasets = Object.assign({}, ...projectDatasetsFromServer.datasets.map(item => ({[item.id]: item})));
       dispatch({type: projectReducers.DATASETS.DATASETS_UPDATE, datasets: datasets});
-      if (projectDatasetsFromServer.datasets.length === 1){
-        await useSpots.downloadSpots(projectDatasetsFromServer.datasets[0], user.encoded_login);
-      }
-      // await useSpots.downloadSpots(projectDatasetsFromServer.datasets[0], user.encoded_login);
-      return Promise.resolve(datasets);
+      dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
+      dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Datasets Saved.'});
+      console.log('Saved datasets:', projectDatasetsFromServer);
+      // if (projectDatasetsFromServer.datasets.length === 1){
+      //   await useSpots.downloadSpots(projectDatasetsFromServer.datasets[0], user.encoded_login);
+      // }
+      // dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Download Complete!'});
+      return Promise.resolve(projectDatasetsFromServer);
     }
   };
 
