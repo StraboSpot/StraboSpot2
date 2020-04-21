@@ -9,7 +9,6 @@ import {spotReducers} from './spot.constants';
 
 // Hooks
 import useImagesHook from '../images/useImages';
-import useProjectHook from '../project/useProject';
 import useServerRequestsHook from '../../services/useServerRequests';
 
 const useSpots = (props) => {
@@ -21,7 +20,7 @@ const useSpots = (props) => {
   const [useServerRequests] = useServerRequestsHook();
 
   // Create a new Spot
-  const createSpot = async (feature) => {
+  const createSpot = async (feature, imageBasemap, mapProps, imageProps) => {
     let randomName = randomNames[Math.floor(Math.random() * randomNames.length)];
     let newSpot = feature;
     newSpot.properties.id = getNewId();
@@ -32,6 +31,16 @@ const useSpots = (props) => {
     newSpot.properties.modified_timestamp = Date.now();
     newSpot.properties.viewed_timestamp = Date.now();
     newSpot.properties.name = randomName;
+    // new spot on imagebasemap, sets image_basemap property for the spot
+    // with imagebasemapId, and the new spot geometry should have 
+    //image pixels, instead of traditional, lat lng, 
+    //so we convert them and save image pixels to spot geometry. 
+    if(imageBasemap){
+       //newSpot.properties.lat = newSpot.geometry.coordinates[0];
+       //newSpot.properties.lng = newSpot.geometry.coordinates[1];
+       newSpot.properties.image_basemap = imageBasemap;
+       newSpot = convertScreenPointsToImagePixels(newSpot,mapProps,imageProps);
+    }
     console.log('Creating new Spot:', newSpot);
     await dispatch({type: spotReducers.ADD_SPOT, spot: newSpot});
     const currentDataset = Object.values(datasets).find(dataset => dataset.current);
@@ -41,14 +50,12 @@ const useSpots = (props) => {
       datasetId: currentDataset.id,
       spotIds: [newSpot.properties.id],
     });
-
     console.log('Finished creating new Spot. All Spots: ', spots);
-
     return newSpot;
   };
 
   const deleteSpot = async id => {
-    console.log(id)
+    console.log("deleting spot",id);
     Object.values(datasets).map(dataset => {
       if (dataset.spotIds) {
         console.log(dataset.spotIds);
@@ -87,6 +94,24 @@ const useSpots = (props) => {
     }
   };
 
+  const getAllImageBaseMaps = () => {
+    const activeSpotObjs = getActiveSpotsObj();
+      const allImageBaseMaps = new Set();
+      const allImagesSet = new Set();
+      var currentSpot, currentImage;
+      for (var key in activeSpotObjs){
+        currentSpot = activeSpotObjs[key];
+        if(!isEmpty(currentSpot.properties.images)){
+          for (var imageKey in Object.keys(currentSpot.properties.images)){
+            currentImage = currentSpot.properties.images[imageKey];
+            allImagesSet.add(currentImage);
+            if(currentImage!=null && currentImage.annotated && currentImage.annotated != undefined){
+              allImageBaseMaps.add(currentImage);
+            }
+          }
+        }
+      }return allImageBaseMaps;
+  };
   // Get only the Spots in the active Datasets
   const getActiveSpotsObj = () => {
     const activeSpotIds = Object.values(datasets).flatMap(dataset => dataset.active ? dataset.spotIds || [] : []);
@@ -98,9 +123,12 @@ const useSpots = (props) => {
     return activeSpots;
   };
 
-  const getMappableSpots = () => {
+  const getMappableSpots = (imageBasemap) => {
     const allSpotsCopy = JSON.parse(JSON.stringify(Object.values(getActiveSpotsObj())));
-    return allSpotsCopy.filter(spot => spot.geometry && !spot.properties.strat_section_id);
+    if(imageBasemap){
+      return allSpotsCopy.filter(spot => spot.geometry && !spot.properties.strat_section_id && spot.properties.image_basemap == imageBasemap);
+    }
+    return allSpotsCopy.filter(spot => spot.geometry && !spot.properties.strat_section_id && !spot.properties.image_basemap);
   };
 
   const getSpotById = (spotId) => {
@@ -114,6 +142,38 @@ const useSpots = (props) => {
     });
     return foundSpots;
   };
+   
+  /*
+    convertScreenPointsToImagePixels, this method is a simple
+    reverse engineering for converting imagePixels to screen coords in 
+    imagebasemaps.
+    We maintain the screen pixels in mapProps from whenpress is done
+    to create the new spot.
+  */
+  const convertScreenPointsToImagePixels = (spot,mapProps,imageProps) => {
+    const xRatio = imageProps.xRatio;
+    const yRatio = imageProps.yRatio;
+    const xTranslation = imageProps.xTranslation;
+    const yTranslation = imageProps.yTranslation;
+    var finalImageCoordinates = [];
+    var imageX, imageY;
+    if(mapProps.screenCords.length > 2){
+      for(var i=0;i<mapProps.screenCords.length;i++){
+        if(i%2==0){
+          imageX = (mapProps.screenCords[i] - xTranslation)*xRatio;
+        }else{
+          imageY = yTranslation - (mapProps.screenCords[i]*yRatio);
+          finalImageCoordinates.push([imageX,imageY]);
+        }
+      }
+      spot.geometry.coordinates= finalImageCoordinates;
+     }else{
+      imageX = (mapProps.screenCords[0] - xTranslation)*xRatio;
+      imageY = yTranslation - (mapProps.screenCords[1]*yRatio);
+      spot.geometry.coordinates= [imageX,imageY];
+     }
+    return spot;
+  }
 
   return [{
     createSpot: createSpot,
@@ -123,6 +183,7 @@ const useSpots = (props) => {
     getMappableSpots: getMappableSpots,
     getSpotById: getSpotById,
     getSpotsByIds: getSpotsByIds,
+    getAllImageBaseMaps: getAllImageBaseMaps,
   }];
 };
 

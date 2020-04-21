@@ -17,8 +17,8 @@ import {homeReducers} from '../home/home.constants';
 const imagePropertiesModal = (props) => {
 
   const [name, setName] = useState(props.selectedImage.title);
-  const [description, setDescription] = useState(props.selectedImage.title);
-  const [switchPosition, setSwitchPosition] = useState(false);
+  const [description, setDescription] = useState(props.selectedImage.caption);
+  const [annotated, setAnnotated] = useState(props.selectedImage.annotated);
   const [showMoreFields, setShowMoreFields] = useState(false);
   const form = useRef(null);
 
@@ -110,6 +110,8 @@ const imagePropertiesModal = (props) => {
     else if (!isEmpty(name)) props.selectedImage.title = name;
     if (isEmpty(description) && props.selectedImage.hasOwnProperty('caption')) delete props.selectedImage.caption;
     else if (!isEmpty(description)) props.selectedImage.caption = description;
+    if (isEmpty(annotated) && props.selectedImage.hasOwnProperty('annotated')) delete props.selectedImage.annotated;
+    else if (!isEmpty(annotated)) props.selectedImage.annotated = annotated;
     console.log('Saving form data to Spot ...', props.selectedImage);
     let images = props.spot.properties.images;
     const i = images.findIndex(img => img.id === props.selectedImage.id);
@@ -162,10 +164,10 @@ const imagePropertiesModal = (props) => {
           {showMoreFields ? renderMoreFields() : renderLessFields()}
         </View>
         <View style={styles.switch}>
-          <Text style={{marginLeft: 25, fontSize: 16}}>Use as basemap</Text>
+          <Text style={{marginLeft: 10, fontSize: 16}}>Use as Image-basemap</Text>
           <Switch
-            onValueChange={() => setSwitchPosition(!switchPosition)}
-            value={switchPosition}
+            onValueChange={(annotated) => setAnnotated(annotated)}
+           value={annotated}
           />
         </View>
       </View>}

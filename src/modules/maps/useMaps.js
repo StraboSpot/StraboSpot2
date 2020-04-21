@@ -45,30 +45,28 @@ const useMaps = (props) => {
   };
 
   // Set selected and not selected Spots to display when not editing
-  const setDisplayedSpots = (selectedSpots) => {
-    const mappableSpots = useSpots.getMappableSpots();
-    console.log('Selected Spots', selectedSpots, 'All Spots', Object.values(spots));
-
+  const setDisplayedSpots = (selectedSpots,imageBasemap) => {
+    var mappableSpots = useSpots.getMappableSpots();
+    if(imageBasemap != undefined){ // if image_basemap, then filter spots by imageBasemap id
+      mappableSpots = useSpots.getMappableSpots(imageBasemap);
+    }
     // Filter selected Spots out of all Spots to get the not selected Spots
     const selectedIds = selectedSpots.map(sel => sel.properties.id);
     const selectedMappableSpots = mappableSpots.filter(spot => selectedIds.includes(spot.properties.id));
-    const notSelectedMappableSpots = mappableSpots.filter(spot => !selectedIds.includes(spot.properties.id) ||
+    const notSelectedMappableSpots = 
+    mappableSpots.filter(spot => 
+      !selectedIds.includes(spot.properties.id) ||
       spot.geometry.type === 'Point');
     console.log('Selected Mappable Spots', selectedMappableSpots, 'Not Selected Mappable Spots',
       notSelectedMappableSpots);
-
     return [selectedMappableSpots, notSelectedMappableSpots];
-    // setMapPropsMutable(m => ({
-    //   ...m,
-    //   spotsSelected: [...selectedMappableSpots],
-    //   spotsNotSelected: [...notSelectedMappableSpots],
-    // }));
   };
 
-  const setSelectedSpot = spotToSetAsSelected => {
-    console.log('Set selected Spot:', spotToSetAsSelected);
-    setDisplayedSpots(isEmpty(spotToSetAsSelected) ? [] : [{...spotToSetAsSelected}]);
+  const setSelectedSpot = (spotToSetAsSelected , imageBasemap) => {
+    console.log('Set selected Spot:', spotToSetAsSelected,imageBasemap);
+    let [selectedSpots,notSelectedSpots] = setDisplayedSpots(isEmpty(spotToSetAsSelected) ? [] : [{...spotToSetAsSelected}],imageBasemap);
     dispatch({type: spotReducers.SET_SELECTED_SPOT, spot: spotToSetAsSelected});
+    return [selectedSpots,notSelectedSpots]
   };
 
   return [{
@@ -76,7 +74,6 @@ const useMaps = (props) => {
     setDisplayedSpots:setDisplayedSpots,
     setPointAtCurrentLocation: setPointAtCurrentLocation,
     setSelectedSpot: setSelectedSpot,
-    // mapProps: mapProps,
   }];
 };
 

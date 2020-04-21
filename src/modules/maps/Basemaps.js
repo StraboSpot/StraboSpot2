@@ -44,14 +44,6 @@ function Basemap(props) {
         style={{rasterOpacity: 1}}
       />
     </MapboxGL.RasterSource>
-    {/* Image Basemap Layer */}
-    <MapboxGL.Animated.ImageSource
-      id='imageBasemap'
-      coordinates={props.coordQuad}
-      url={props.imageBaseMapSrc}>
-      <MapboxGL.RasterLayer id='imageBasemapLayer'
-                            style={{rasterOpacity: 0.5}}/>
-    </MapboxGL.Animated.ImageSource>
     {/* Feature Layer */}
     <MapboxGL.ShapeSource
       id='shapeSource'
@@ -165,7 +157,7 @@ export const CustomBasemap = React.forwardRef((props, ref) => (
   <Basemap {...props} forwardedRef={ref}/>
 ));
 
-const mapStyles = {
+export const mapStyles = {
   point: {
     circleRadius: 7,
     circleColor: 'black',
