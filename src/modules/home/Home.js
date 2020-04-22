@@ -438,7 +438,7 @@ const Home = (props) => {
   const renderInfoDialogBox = () => {
     return (
       <StatusDialogBox
-        dialogTitle={'Something Went Wrong'}
+        dialogTitle={'Status Info'}
         style={sharedDialogStyles.dialogWarning}
         visible={isInfoMessagesModalVisible}
         onTouchOutside={() => dispatch({type: homeReducers.SET_INFO_MESSAGES_MODAL_VISIBLE, bool: false})}
@@ -502,7 +502,10 @@ const Home = (props) => {
           <View style={{flex: 1, paddingTop: 15}}>
             <Text style={{textAlign: 'center'}}>{statusMessages.join('\n')}</Text>
             {statusMessages.includes('Download Complete!') || statusMessages.includes('Upload Complete!')
-            || statusMessages.includes('There are no active datasets.') || statusMessages.includes('Project Backup Complete!') ? <Button
+            || statusMessages.includes('There are no active datasets.')
+            || statusMessages.includes('Project Backup Complete!')
+            || statusMessages.includes('Project loaded.')
+              ? <Button
               title={'OK'}
               type={'clear'}
               onPress={() => dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, bool: false})}
