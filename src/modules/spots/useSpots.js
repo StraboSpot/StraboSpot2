@@ -93,9 +93,11 @@ const useSpots = (props) => {
           dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'No New Images to Download'});
           // dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Download Complete!'});
         }
-        else await useImages.downloadImages(neededImagesIds);
+        else return await useImages.downloadImages(neededImagesIds);
       }
+      return Promise.resolve({message: 'done - Spots'});
     }
+    else return Promise.reject('No Spots!');
   };
 
   // Get only the Spots in the active Datasets
