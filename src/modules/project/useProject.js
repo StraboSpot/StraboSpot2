@@ -169,7 +169,7 @@ const useProject = () => {
       dispatch({type: spotReducers.ADD_SPOTS_FROM_DEVICE , spots: projectSpots});
       dispatch({type: projectReducers.PROJECTS, project: projectData});
       dispatch({type: projectReducers.DATASETS.DATASETS_UPDATE, datasets: projectDatasets})
-      return Promise.resolve();
+      return Promise.resolve(selectedProject.projectDb.project);
     }
   };
 
@@ -184,11 +184,15 @@ const useProject = () => {
       if (!projectResponse.description.project_name) projectResponse.description.project_name = 'Unnamed';
       if (!projectResponse.other_features) projectResponse.other_features = defaultTypes;
       await dispatch({type: projectReducers.PROJECTS, project: projectResponse});
-      await getDatasets(selectedProject);
+      const datasetsResponse = await getDatasets(selectedProject);
+      if (datasetsResponse.datasets.length === 1){
+        await useSpots.downloadSpots(datasetsResponse.datasets[0], user.encoded_login);
+      }
       return Promise.resolve(projectResponse);
     }
     catch (err) {
-      return err.ok;
+      console.log(err);
+      return err;
     }
   };
 
@@ -242,21 +246,24 @@ const useProject = () => {
     console.log('Getting project...');
     let projectResponse = null;
     if (source === 'device') {
-        projectResponse = await readDeviceFile(selectedProject).then(dataFile => {
-          return loadProjectFromDevice(dataFile).then(() => {
-            return dataFile;
+      projectResponse = await readDeviceFile(selectedProject)
+        .then(dataFile => {
+          return loadProjectFromDevice(dataFile).then((data) => {
+            return data;
           });
         });
     }
     else {
       try {
-        projectResponse = await serverRequests.getProject(selectedProject.id, user.encoded_login);
-        console.log('Loaded project \n', projectResponse);
-        if (!isEmpty(project)) {
-          await destroyOldProject();
-        }
-        dispatch({type: projectReducers.PROJECTS, project: projectResponse});
-        await getDatasets(selectedProject);
+        dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, bool: true});
+        projectResponse = await loadProjectRemote(selectedProject);
+        // projectResponse = await serverRequests.getProject(selectedProject.id, user.encoded_login);
+        // console.log('Loaded project \n', projectResponse);
+        // if (!isEmpty(project)) {
+        //   await destroyOldProject();
+        // }
+        // dispatch({type: projectReducers.PROJECTS, project: projectResponse});
+        // await getDatasets(selectedProject);
         return projectResponse;
       }
       catch (err) {
