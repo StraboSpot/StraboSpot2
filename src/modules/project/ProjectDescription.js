@@ -48,7 +48,7 @@ const ProjectDescription = (props) => {
     end_date: project.description.end_date || new Date(),
     notes: project.description.notes,
     gps_datum: project.description.gps_datum || 'WGS84 (Default)',
-    magnetic_declination: project.description.magnetic_declination,
+    magnetic_declination: project.description.magnetic_declination || 0,
     purpose_of_study: project.description.purpose_of_study,
     other_team_members: project.description.other_team_members,
     areas_of_interest: project.description.areas_of_interest,
@@ -63,13 +63,7 @@ const ProjectDescription = (props) => {
   const fields = getInitialFields();
 
   useEffect(() => {
-    console.log('Fields in UE', fields);
-    console.log('Description Updated', projectDescription);
-  }, [fields]);
-
-  useEffect(() => {
-    console.log('UE MagDec', magDecValidation);
-    validateMagField();
+    // console.log('UE MagDec', magDecValidation, 'MagDec value', projectDescription.magnetic_declination);
   }, [magDecValidation, projectDescription.magnetic_declination]);
 
   const changeStartDate = (event, date) => {
@@ -213,16 +207,17 @@ const ProjectDescription = (props) => {
             <View style={{flex: 1, alignItems: 'center'}}>
               <TextInput
                 keyboardType={selectedField.name === 'magnetic_declination' ? 'number-pad' : 'default'}
-                onChangeText={(val) => setProjectDescription({...projectDescription, [selectedField.name]: val})}
-                value={projectDescription[selectedField.name]}
-                style={{backgroundColor: 'white',padding: 15, width: 250, alignItems: 'center'}}
+                onChangeText={(val) => selectedField.name === 'magnetic_declination' ? validateMagField(val) :
+                  setProjectDescription({...projectDescription, [selectedField.name]: val})}
+                defaultValue={projectDescription[selectedField.name].toString()}
+                style={{backgroundColor: 'white', padding: 15, width: 250}}
               />
             </View>
             <View style={styles.dialogConfirmText}>
               <Text style={styles.dialogContentImportantText}>{validationErrorMessage}</Text>
             </View>
           </EditingModal>
-        )
+        );
       }
       else {
         return (
@@ -246,20 +241,23 @@ const ProjectDescription = (props) => {
     }
   };
 
-  const renderListItemFields = (field, i, obj) => (
-    <ListItem
-      key={field.name}
-      title={field.label}
-      titleStyle={styles.listItemTitleAndValue}
-      rightTitle={projectDescription[field.name] ? truncateText(projectDescription[field.name], 15) : 'None'}
-      containerStyle={styles.projectDescriptionListContainer}
-      rightContentContainerStyle={styles.listItemTitleAndValue}
-      bottomDivider={i < obj.length - 1}
-      onPress={() => toggleEditingModal(field)}
-      chevron
-    />
-  );
-
+  const renderListItemFields = (field, i, obj) => {
+    const fieldName = projectDescription && projectDescription[field.name] ?
+      truncateText(projectDescription[field.name], 15).toString() : 'None';
+    return (
+      <ListItem
+        key={field.name}
+        title={field.label}
+        titleStyle={styles.listItemTitleAndValue}
+        rightTitle={fieldName}
+        containerStyle={styles.projectDescriptionListContainer}
+        rightContentContainerStyle={styles.listItemTitleAndValue}
+        bottomDivider={i < obj.length - 1}
+        onPress={() => toggleEditingModal(field)}
+        chevron
+      />
+    );
+  };
   const toggleEditingModal = (field) => {
     // console.log(value)
     console.log(field);
@@ -291,16 +289,23 @@ const ProjectDescription = (props) => {
   );
 
   const saveProjectDescriptionAndGo = async () => {
-      await dispatch({type: projectReducers.UPDATE_PROJECT, field: 'description', value: projectDescription});
-      goBack();
+    await dispatch({type: projectReducers.UPDATE_PROJECT, field: 'description', value: projectDescription});
+    goBack();
   };
 
-  const validateMagField = () => {
+  const regexTest = (value) => {
+    const regex = /^([0-9]{1,2}|1[0-7][0-9]|180)$/g;
+    return regex.test(value);
+  };
+
+  const validateMagField = (val) => {
     if (selectedField && selectedField.name === 'magnetic_declination') {
-      const magDec = parseInt(projectDescription.magnetic_declination);
-      if (magDec >= 0 && magDec <= 180) {
+      const test = regexTest(val);
+      // const regex = /^([0-9]{1,2}|1[0-7][0-9]|180)$/g;
+      if (test) {
         setMagDecValidation(true);
         setValidationErrorMessage('');
+        setProjectDescription({...projectDescription, [selectedField.name]: val.trim()});
       }
       else {
         setMagDecValidation(false);
@@ -331,7 +336,7 @@ const ProjectDescription = (props) => {
           <Divider sectionText={'general details'}/>
           {renderGeneralDetails()}
         </ScrollView>
-          {renderEditingModal()}
+        {renderEditingModal()}
       </View>
     </React.Fragment>
   );

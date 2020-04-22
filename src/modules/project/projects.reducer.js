@@ -25,19 +25,33 @@ export const projectsReducer = (state = initialState, action) => {
       };
     case projectReducers.UPDATE_PROJECT:
       console.log(action.field, action.value);
-      const updatedProject = {
-        ...state.project,
-        [action.field]: action.value,
-        modified_timestamp: Date.now(),
-        date: new Date(),
-      };
+      let updatedProject;
+      if (action.field === 'description') {
+        updatedProject = {
+          ...state.project,
+          description: {
+            ...action.value,
+            magnetic_declination: parseInt(action.value.magnetic_declination),
+          },
+          modified_timestamp: Date.now(),
+          date: new Date(),
+        };
+      }
+      else {
+        updatedProject = {
+          ...state.project,
+          [action.field]: action.value,
+          modified_timestamp: Date.now(),
+          date: new Date(),
+        };
+      }
       return {
         ...state,
         project: updatedProject,
       };
     case projectReducers.DATASETS.DATASET_ADD:
       // Needed to create a new instance so React can sense the redux change and useSelector() will update
-      const datasets = Object.assign(state.datasets,{...state.datasets, [action.dataset.id]: action.dataset});
+      const datasets = Object.assign(state.datasets, {...state.datasets, [action.dataset.id]: action.dataset});
       return {
         ...state,
         datasets: datasets,
@@ -50,7 +64,7 @@ export const projectsReducer = (state = initialState, action) => {
     }
     case projectReducers.DATASETS.DATASET_DELETE:
       const {[action.id]: deletedDataset, ...datasetsList} = state.datasets;  // Delete key with action.id from object
-      return  {
+      return {
         ...state,
         datasets: datasetsList,
       };
@@ -83,7 +97,8 @@ export const projectsReducer = (state = initialState, action) => {
     }
     case projectReducers.DATASETS.DELETE_SPOT_ID: {
       console.log(action.datasetId, '&', action.filteredList);
-      const dataset = Object.assign(state.datasets[action.datasetId], {...state.datasets[action.datasetId], spotIds: action.filteredList});
+      const dataset = Object.assign(state.datasets[action.datasetId],
+        {...state.datasets[action.datasetId], spotIds: action.filteredList});
       return {
         ...state,
         datasets: {...state.datasets, [action.datasetId]: dataset},
