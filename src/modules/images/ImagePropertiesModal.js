@@ -14,8 +14,6 @@ import {isEmpty} from '../../shared/Helpers';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {homeReducers} from '../home/home.constants';
 
-const imagePropertiesModal = (props) => {
-
 const ImagePropertiesModal = (props) => {
   const [name, setName] = useState(props.selectedImage.title);
   const [description, setDescription] = useState(props.selectedImage.title);
