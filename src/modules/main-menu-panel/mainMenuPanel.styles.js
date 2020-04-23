@@ -73,6 +73,7 @@ const styles = StyleSheet.create({
   },
   settingsPanelHeaderContainer: {
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
+    paddingTop: 15,
     height: 70,
     flexDirection: 'row',
     justifyContent: 'center',

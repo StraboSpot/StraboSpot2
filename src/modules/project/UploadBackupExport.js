@@ -14,6 +14,7 @@ import useProjectHook from './useProject';
 // Styles
 import projectStyles from './project.styles';
 import commonStyles from '../../shared/common.styles';
+import Spacer from '../../shared/ui/Spacer';
 
 const UploadBackAndExport = (props) => {
   const [useExport] = useExportHook();
@@ -209,10 +210,11 @@ const UploadBackAndExport = (props) => {
   return (
     <React.Fragment>
       <Divider sectionText={'upload and backup'}/>
+      <Spacer/>
       {renderUploadAndBackupButtons()}
-      <Divider sectionText={'export'}/>
-      {renderExportButtons()}
-      <Divider sectionText={'restore project from backup'}/>
+      {/*<Divider sectionText={'export'}/>*/}
+      {/*{renderExportButtons()}*/}
+      {/*<Divider sectionText={'restore project from backup'}/>*/}
       {renderDialogBox()}
     </React.Fragment>
   );
