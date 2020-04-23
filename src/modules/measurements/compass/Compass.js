@@ -109,16 +109,9 @@ class Compass extends Component {
 
   grabMeasurements = () => {
     let measurements = [];
-    let strikeWithLeadingzero = this.state.compassData.strike;
-    if (this.state.compassData.strike >= 1 && this.state.compassData.strike <= 9 ) {
-      strikeWithLeadingzero = '00' + this.state.compassData.strike;
-    }
-    if (this.state.compassData.strike >= 10 && this.state.compassData.strike <= 99 ) {
-      strikeWithLeadingzero = '0' + this.state.compassData.strike;
-    }
     if (this.state.toggles.includes(CompassToggleButtons.PLANAR)) {
       measurements.push({
-        strike: strikeWithLeadingzero,
+        strike: this.state.compassData.strike,
         dip_direction: this.state.compassData.dipdir,
         dip: this.state.compassData.dip,
         type: 'planar_orientation',
