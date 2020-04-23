@@ -17,7 +17,7 @@ import imageStyles from './images.styles';
 
 const screenHeight = Dimensions.get('window').height;
 
-const imageNotebook = (props) => {
+const ImageNotebook = (props) => {
   const [useImages] = useImagesHook();
 
   const editImage = (image) => {
@@ -65,4 +65,4 @@ const mapDispatchToProps = {
   setSelectedAttributes: (attributes) => ({type: spotReducers.SET_SELECTED_ATTRIBUTES, attributes: attributes}),
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withNavigation(imageNotebook));
+export default connect(mapStateToProps, mapDispatchToProps)(withNavigation(ImageNotebook));

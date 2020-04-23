@@ -16,6 +16,7 @@ import {homeReducers} from '../home/home.constants';
 
 const imagePropertiesModal = (props) => {
 
+const ImagePropertiesModal = (props) => {
   const [name, setName] = useState(props.selectedImage.title);
   const [description, setDescription] = useState(props.selectedImage.title);
   const [switchPosition, setSwitchPosition] = useState(false);
@@ -191,4 +192,4 @@ const mapDispatchToProps = {
   setDeviceDims: (height, width) => ({type: homeReducers.DEVICE_DIMENSIONS, height: height, width: width}),
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(imagePropertiesModal);
+export default connect(mapStateToProps, mapDispatchToProps)(ImagePropertiesModal);

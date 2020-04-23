@@ -14,7 +14,7 @@ const {height, width} = Dimensions.get('window');
 
 const r = 0.4;
 
-const vertexDrag = (props) => {
+const VertexDrag = (props) => {
 
   const [dragX, setDragX] = useState(new Value(0));
   const [dragY, setDragY] = useState(new Value(0));
@@ -100,4 +100,4 @@ const mapDispatchToProps = {
   setVertexEndCoords: (coords) => ({type: mapReducers.VERTEX_END_COORDS, vertexEndCoords: coords}),
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(vertexDrag);
+export default connect(mapStateToProps, mapDispatchToProps)(VertexDrag);
