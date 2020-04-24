@@ -278,6 +278,8 @@ class SaveMapModal extends Component {
     thisMap.appId = this.appId;
     thisMap.name = this.currentMapName;
     thisMap.count = tileCount;
+    thisMap.mapId = new Date().valueOf();
+    thisMap.date = new Date().toLocaleString();
     newOfflineMapsData.push(thisMap);
 
     //loop over offlineMapsData and add any other maps (not current)
@@ -290,7 +292,10 @@ class SaveMapModal extends Component {
       }
     }
 
-    await this.props.onOfflineMaps(newOfflineMapsData);
+   const mapSavedObject = Object.assign({}, ...newOfflineMapsData.map(map => ({ [map.name]: map })));
+    console.log('Map to save to Redux', mapSavedObject);
+
+    await this.props.onOfflineMaps(mapSavedObject);
     console.log('Saved offlineMaps to Redux.');
   };
 
