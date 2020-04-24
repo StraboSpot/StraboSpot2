@@ -1,20 +1,30 @@
 import React, {useState, useRef} from 'react';
 import {Text, TextInput, Switch, ScrollView, View} from 'react-native';
+import {Button, Input} from 'react-native-elements';
 import {connect} from 'react-redux';
 import {Formik} from 'formik';
-import Form from '../form/Form';
-import {getForm, hasErrors, showErrors, validateForm} from '../form/form.container';
 
-import {Button, Input} from 'react-native-elements';
-import styles from './images.styles';
+// Components
+import Form from '../form/Form';
 import Modal from '../../shared/ui/modal/Modal';
-import {spotReducers} from '../spots/spot.constants';
-import {notebookReducers} from '../notebook-panel/notebook.constants';
-import {isEmpty} from '../../shared/Helpers';
 import SectionDivider from '../../shared/ui/SectionDivider';
+
+// Hooks
+import useFormHook from '../form/useForm';
+
+// Utility
+import {isEmpty} from '../../shared/Helpers';
+
+// Constants
 import {homeReducers} from '../home/home.constants';
+import {notebookReducers} from '../notebook-panel/notebook.constants';
+import {spotReducers} from '../spots/spot.constants';
+
+// Styles
+import styles from './images.styles';
 
 const ImagePropertiesModal = (props) => {
+  const [useForm] = useFormHook();
   const [name, setName] = useState(props.selectedImage.title);
   const [description, setDescription] = useState(props.selectedImage.title);
   const [switchPosition, setSwitchPosition] = useState(false);
@@ -68,7 +78,7 @@ const ImagePropertiesModal = (props) => {
   );
 
   const onSubmitForm = () => {
-    // if (hasErrors(form)) showErrors(form);
+    // if (useForm.hasErrors(form)) useForm.showErrors(form);
     // else {
     //   console.log('Saving form data to Spot ...', form.current.values);
     //   let images = props.spot.properties.images;
@@ -84,24 +94,23 @@ const ImagePropertiesModal = (props) => {
   };
 
   const renderFormFields = () => {
-    console.log('Selected Image:', props.selectedImage);
-    if (!isEmpty(getForm())) {
-      return (
+    const formName = ['general', 'images'];
+    console.log('Rendering form:', formName.join('.'), 'with selected image:', props.selectedImage);
+    return (
+      <View>
+        <SectionDivider dividerText='Feature Type'/>
         <View>
-          <SectionDivider dividerText='Feature Type'/>
-          <View>
-            <Formik
-              innerRef={form}
-              onSubmit={onSubmitForm}
-              validate={validateForm}
-              component={Form}
-              initialValues={props.selectedImage}
-              validateOnChange={false}
-            />
-          </View>
+          <Formik
+            innerRef={form}
+            onSubmit={onSubmitForm}
+            validate={(values) => useForm.validateForm({formName: formName, values: values})}
+            component={(formProps) => Form({formName: formName, ...formProps})}
+            initialValues={props.selectedImage}
+            validateOnChange={false}
+          />
         </View>
-      );
-    }
+      </View>
+    );
   };
 
   const saveFormAndGo = () => {
@@ -111,29 +120,26 @@ const ImagePropertiesModal = (props) => {
     else if (!isEmpty(description)) props.selectedImage.caption = description;
     console.log('Saving form data to Spot ...', props.selectedImage);
     let images = props.spot.properties.images;
-    const i = images.findIndex(img => img.id === props.selectedImage.id);
+    let i = images.findIndex(img => img.id === props.selectedImage.id);
     images[i] = props.selectedImage;
     props.onSpotEdit('images', images);
     props.setSelectedAttributes([images[i]]);
 
     if (form.current !== null) {
-      if (!isEmpty(getForm())) {
-        form.current.submitForm().then(() => {
-            if (hasErrors(form)) showErrors(form);
-            else {
-              console.log('Saving form data to Spot ...', form.current.values);
-              let images = props.spot.properties.images;
-              const i = images.findIndex(img => img.id === form.current.values.id);
-              images[i] = form.current.values;
-              props.onSpotEdit('images', images);
-              props.setSelectedAttributes([images[i]]);
-              props.close();
-            }
-          },
-        );
-      }
+      form.current.submitForm().then(() => {
+          if (useForm.hasErrors(form)) useForm.showErrors(form);
+          else {
+            console.log('Saving form data to Spot ...', form.current.values);
+            images = props.spot.properties.images;
+            i = images.findIndex(img => img.id === form.current.values.id);
+            images[i] = form.current.values;
+            props.onSpotEdit('images', images);
+            props.setSelectedAttributes([images[i]]);
+            props.close();
+          }
+        },
+      );
     }
-    else props.close();
   };
 
   return (

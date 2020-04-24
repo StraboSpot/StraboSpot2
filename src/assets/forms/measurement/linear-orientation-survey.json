@@ -4,11 +4,10 @@
     "name": "start",
     "label": "",
     "hint": "",
-    "required": "",
+    "required": null,
     "constraint_message": "",
     "constraint": "",
     "relevant": "",
-    "default": "",
     "appearance": "",
     "calculation": ""
   },
@@ -17,11 +16,10 @@
     "name": "end",
     "label": "",
     "hint": "",
-    "required": "",
+    "required": null,
     "constraint_message": "",
     "constraint": "",
     "relevant": "",
-    "default": "",
     "appearance": "",
     "calculation": ""
   },
@@ -34,7 +32,6 @@
     "constraint_message": "",
     "constraint": "",
     "relevant": "",
-    "default": "",
     "appearance": "",
     "calculation": ""
   },
@@ -47,7 +44,6 @@
     "constraint_message": "Value must be a whole number between 0-360.",
     "constraint": ". >= 0 and . <= 360",
     "relevant": "",
-    "default": "",
     "appearance": "",
     "calculation": ""
   },
@@ -60,7 +56,6 @@
     "constraint_message": "Value must be a whole number between 0-90.",
     "constraint": ". >= 0 and . <= 90",
     "relevant": "",
-    "default": "",
     "appearance": "",
     "calculation": ""
   },
@@ -73,7 +68,6 @@
     "constraint_message": "Value must be a whole number between 0-180.",
     "constraint": ". >= 0 and . <= 180",
     "relevant": "",
-    "default": "",
     "appearance": "",
     "calculation": ""
   },
@@ -86,7 +80,6 @@
     "constraint_message": "",
     "constraint": "",
     "relevant": "${rake} != ''",
-    "default": "no",
     "appearance": "",
     "calculation": ""
   },
@@ -99,7 +92,6 @@
     "constraint_message": "",
     "constraint": "",
     "relevant": "",
-    "default": "",
     "appearance": "likert",
     "calculation": ""
   },
@@ -112,7 +104,6 @@
     "constraint_message": "",
     "constraint": "",
     "relevant": "",
-    "default": "",
     "appearance": "horizontal",
     "calculation": ""
   },
@@ -125,7 +116,6 @@
     "constraint_message": "",
     "constraint": "",
     "relevant": "${feature_type} = 'other'",
-    "default": "",
     "appearance": "",
     "calculation": ""
   },
@@ -138,7 +128,6 @@
     "constraint_message": "",
     "constraint": "",
     "relevant": "",
-    "default": "",
     "appearance": "",
     "calculation": ""
   },
@@ -151,7 +140,6 @@
     "constraint_message": "",
     "constraint": "",
     "relevant": "${feature_type} = 'vorticity_axis'",
-    "default": "",
     "appearance": "",
     "calculation": ""
   },
@@ -164,7 +152,6 @@
     "constraint_message": "",
     "constraint": "",
     "relevant": "",
-    "default": "",
     "appearance": "multiline",
     "calculation": ""
   },
@@ -173,12 +160,11 @@
     "name": "__version__",
     "label": "",
     "hint": "",
-    "required": "",
+    "required": null,
     "constraint_message": "",
     "constraint": "",
     "relevant": "",
-    "default": "",
     "appearance": "",
-    "calculation": "'vmKCTo8owwfCY9nKw4j89Y'"
+    "calculation": "'vrQUzgYiwdX8ST38et8seL'"
   }
 ]

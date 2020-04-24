@@ -1,19 +1,28 @@
 import React, {useEffect, useState} from 'react';
 import {ScrollView, Text, TextInput, View} from 'react-native';
-import Divider from '../main-menu-panel/MainMenuPanelDivider';
-// import SectionDivider from '../../shared/ui/SectionDivider';
-import styles from './project.styles';
-// import mainMenuStyles from '../main-menu-panel/mainMenuPanel.styles'
+
 import {Button, Icon, ListItem} from 'react-native-elements';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import {useDispatch, useSelector} from 'react-redux';
 import moment from 'moment';
-import SaveAndCloseButtons from '../../shared/ui/SaveAndCloseButtons';
-import {projectReducers} from './project.constants';
-import {truncateText} from '../../shared/Helpers';
-import EditingModal from './ProjectDescriptionEditModal';
+import {useDispatch, useSelector} from 'react-redux';
+
+// Assests
 import * as forms from '../../assets/forms/forms.index';
+
+// Components
+import Divider from '../main-menu-panel/MainMenuPanelDivider';
+import EditingModal from './ProjectDescriptionEditModal';
+import SaveAndCloseButtons from '../../shared/ui/SaveAndCloseButtons';
+
+// Constants
+import {projectReducers} from './project.constants';
 import {SettingsMenuItems} from '../main-menu-panel/mainMenu.constants';
+
+// Utilities
+import {truncateText} from '../../shared/Helpers';
+
+// Styles
+import styles from './project.styles';
 
 const ProjectDescription = (props) => {
   const getInitialFields = () => {
@@ -23,7 +32,7 @@ const ProjectDescription = (props) => {
       technical: ['gps_datum', 'magnetic_declination'],
       // general: ['purpose_of_study', 'other_team_members', 'areas_of_interest', 'instruments'],
     };
-    const form = forms.default['project_description'].survey;
+    const form = forms.default.general.project_description.survey;
     const basicFields = form.filter((field) => projectDescriptionFieldsGrouped.basic.includes(field.name));
     const notesFields = form.filter((field) => projectDescriptionFieldsGrouped.notes.includes(field.name));
     const technicalFields = form.filter((field) => projectDescriptionFieldsGrouped.technical.includes(field.name));

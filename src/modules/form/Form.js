@@ -1,22 +1,15 @@
 import React, {useEffect, useState} from 'react';
-import {
-  Animated,
-  Button,
-  Dimensions,
-  Keyboard,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  UIManager,
-  View,
-} from 'react-native';
+import {Animated, Dimensions, Keyboard, TextInput, UIManager} from 'react-native';
 import {Field} from 'formik';
 
-import {getChoices, getSurvey, isRelevant} from './form.container';
+// Components
 import DateInputField from './DateInputField';
 import NumberInputField from './NumberInputField';
 import SelectInputField from './SelectInputField';
 import TextInputField from './TextInputField';
+
+// Hooks
+import useFormHook from './useForm';
 
 // Styles
 import styles from './form.styles';
@@ -24,9 +17,9 @@ import styles from './form.styles';
 const {State: TextInputState} = TextInput;
 
 const Form = (props) => {
+  console.log('form props', props);
+  const [useForm] = useFormHook();
   const [textInputAnimate] = useState(new Animated.Value(0));
-  const [selectOnePage, setSelectOnePage] = useState(false);
-  // const [fieldValue, setFieldValue] = useState(null);
 
   useEffect(() => {
     Keyboard.addListener('keyboardDidShow', handleKeyboardDidShow);
@@ -42,9 +35,7 @@ const Form = (props) => {
     const {height: windowHeight} = Dimensions.get('window');
     const keyboardHeight = event.endCoordinates.height;
     const currentlyFocusedField = TextInputState.currentlyFocusedField();
-    if (currentlyFocusedField === null) {
-      return;
-    }
+    if (currentlyFocusedField === null) return;
     else {
       UIManager.measure(currentlyFocusedField, (originX, originY, width, height, pageX, pageY) => {
         const fieldHeight = height;
@@ -111,7 +102,7 @@ const Form = (props) => {
   };
 
   const renderSelectInput = (field, choicesList) => {
-    const fieldChoices = getChoices().filter(choice => choice.list_name === choicesList);
+    const fieldChoices = useForm.getChoices(props.formName).filter(choice => choice.list_name === choicesList);
     const fieldChoicesCopy = JSON.parse(JSON.stringify(fieldChoices));
     fieldChoicesCopy.map((choice) => {
       choice.value = choice.name;
@@ -138,27 +129,11 @@ const Form = (props) => {
     else if (fieldType === 'date') return renderDateInput(field);
   };
 
-  // const toggleSelectOne = (field) => {
-  //   setSelectOnePage(!selectOnePage);
-  //   console.log(field);
-  // };
-
-  // const renderSelectOneInput = () => {
-  //   return (
-  //     <View>
-  //       <Text>{fieldValue.label}</Text>
-  //     </View>
-  //   );
-  // };
-
   return (
     <Animated.View style={[styles.formContainer, {transform: [{translateY: textInputAnimate}]}]}>
-      {/*{selectOnePage ?*/}
-      {/*  <View>{renderSelectOneInput()}<Button title={'Back'} onPress={() => setSelectOnePage(null)}/></View> :*/}
-      {getSurvey().map((field, i) => {
-        if (isRelevant(field, props.values)) return renderField(field);
+      {useForm.getSurvey(props.formName).map((field, i) => {
+        if (useForm.isRelevant(field, props.values)) return renderField(field);
       })}
-      {/*}*/}
     </Animated.View>
   );
 };

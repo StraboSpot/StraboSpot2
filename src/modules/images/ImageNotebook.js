@@ -1,16 +1,15 @@
 import React from 'react';
 import {ActivityIndicator, Button, Dimensions, FlatList, ScrollView, View} from 'react-native';
+
 import {connect} from 'react-redux';
 import {withNavigation} from 'react-navigation';
-
 import {Image} from 'react-native-elements';
-import {setForm} from '../form/form.container';
-
-// Constants
-import {spotReducers} from '../spots/spot.constants';
 
 // Hooks
 import useImagesHook from './useImages';
+
+// Constants
+import {spotReducers} from '../spots/spot.constants';
 
 // Styles
 import imageStyles from './images.styles';
@@ -22,7 +21,6 @@ const ImageNotebook = (props) => {
 
   const editImage = (image) => {
     props.setSelectedAttributes([image]);
-    setForm('images');
     props.navigation.navigate('ImageInfo', {imageId: image.id});
   };
 

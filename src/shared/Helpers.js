@@ -1,9 +1,8 @@
 import {Animated, Easing} from 'react-native';
+
 const lodashIsEqual = require('lodash.isequal');
 const passwordValidator = require('password-validator');
-
 const schema = new passwordValidator();
-
 
 export const getNewId = () => {
   return Math.floor((new Date().getTime() + Math.random()) * 10);
@@ -37,10 +36,8 @@ export const toRadians = (deg) => {
 };
 
 export const truncateText = (str, maxLength) => {
-  if (str.length >= maxLength){
-    return str.substr(0, maxLength) + '...';
-  }
-  else return  str;
+  if (str.length >= maxLength) return str.substr(0, maxLength) + '...';
+  else return str;
 };
 
 // Check if array, object, string, number is empty and if so return true

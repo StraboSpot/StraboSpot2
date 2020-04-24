@@ -1,8 +1,12 @@
 import React from 'react';
 import {Text, TouchableOpacity, View} from 'react-native';
 import {Icon} from 'react-native-elements';
-import {getLabel} from '../form/form.container';
+
+// Utilities
 import {toTitleCase} from '../../shared/Helpers';
+
+// Constants
+import {labelDictionary} from '../form/form.constants';
 
 // Styles
 import styles from './measurements.styles';
@@ -11,6 +15,10 @@ import * as themes from '../../shared/styles.constants';
 
 // Render a measurement item in a list
 const MeasurementItem = (props) => {
+
+  const getLabel = (key) => {
+    return labelDictionary[key] || key.replace(/_/g, ' ');
+  };
 
   const getTypeText = (item) => {
     if (props.isAssociatedList && props.isAssociatedItem) {
@@ -53,7 +61,8 @@ const MeasurementItem = (props) => {
           </Text>
         </View>
         <View>
-          <Text style={props.selectedIds.includes(props.item.item.id) ? styles.propertyTextInverse : styles.propertyText}>
+          <Text
+            style={props.selectedIds.includes(props.item.item.id) ? styles.propertyTextInverse : styles.propertyText}>
             {getTypeText(item)}
           </Text>
         </View>
@@ -65,7 +74,8 @@ const MeasurementItem = (props) => {
     <View style={styles.measurementsRenderListContainer}>
       {typeof (props.item.item) !== 'undefined' &&
       <TouchableOpacity
-        style={props.selectedIds.includes(props.item.item.id) ? stylesCommon.rowContainerInverse : stylesCommon.rowContainer}
+        style={props.selectedIds.includes(
+          props.item.item.id) ? stylesCommon.rowContainerInverse : stylesCommon.rowContainer}
         onPress={() => props.onPress()}>
         <View style={[stylesCommon.row, {flexDirection: 'row'}]}>
           <View style={stylesCommon.fillWidthSide}>
@@ -76,7 +86,8 @@ const MeasurementItem = (props) => {
               name='ios-information-circle-outline'
               containerStyle={{justifyContent: 'center', paddingRight: 10}}
               type='ionicon'
-              color={props.selectedIds.includes(props.item.item.id) ? themes.SECONDARY_BACKGROUND_COLOR : themes.PRIMARY_ACCENT_COLOR}
+              color={props.selectedIds.includes(
+                props.item.item.id) ? themes.SECONDARY_BACKGROUND_COLOR : themes.PRIMARY_ACCENT_COLOR}
             />
             <Icon
               name='right'

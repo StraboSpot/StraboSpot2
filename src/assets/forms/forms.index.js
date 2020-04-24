@@ -1,3 +1,8 @@
+// General Forms
+import imagePropertiesSurvey from './images/image-properties-survey';
+import imagePropertiesChoices from './images/image-properties-choices';
+import projectDescriptionSurvey from './project/project-description-survey';
+
 // Measurement forms
 import linearOrientationSurvey from './measurement/linear-orientation-survey';
 import linearOrientationChoices from './measurement/linear-orientation-choices';
@@ -5,9 +10,6 @@ import planarOrientationSurvey from './measurement/planar-orientation-survey';
 import planarOrientationChoices from './measurement/planar-orientation-choices';
 import tabularZoneOrientationSurvey from './measurement/tabular-zone-orientation-survey';
 import tabularZoneOrientationChoices from './measurement/tabular-zone-orienation-choices';
-import imagePropertiesSurvey from './images/image-properties-survey';
-import imagePropertiesChoices from './images/image-properties-choices';
-import projectDescriptionSurvey from './project/project-description-survey';
 
 const getMeasurementSurveyForBulkInput = (form) => {
   const fieldsToExclude = ['label', 'strike', 'dip_direction', 'dip', 'quality', 'trend', 'plunge', 'rake', 'rake_calculated'];
@@ -15,6 +17,15 @@ const getMeasurementSurveyForBulkInput = (form) => {
 };
 
 const forms = {
+  'general': {
+    'images': {
+      'survey': imagePropertiesSurvey,
+      'choices': imagePropertiesChoices,
+    },
+    'project_description': {
+      'survey': projectDescriptionSurvey,
+    },
+  },
   'measurement': {
     'linear_orientation': {
       'survey': linearOrientationSurvey,
@@ -42,13 +53,6 @@ const forms = {
       'survey': getMeasurementSurveyForBulkInput(tabularZoneOrientationSurvey),
       'choices': tabularZoneOrientationChoices,
     },
-  },
-  'images': {
-    'survey': imagePropertiesSurvey,
-    'choices': imagePropertiesChoices,
-  },
-  'project_description': {
-    'survey': projectDescriptionSurvey,
   },
 };
 

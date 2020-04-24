@@ -5,10 +5,12 @@ import {Button} from 'react-native-elements';
 import {Formik} from 'formik';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {getForm, hasErrors, setForm, showErrors, validateForm} from '../form/form.container';
-import {isEmpty} from '../../shared/Helpers';
+// Components
 import Divider from '../main-menu-panel/MainMenuPanelDivider';
 import Form from '../form/Form';
+
+// Hooks
+import useFormHook from '../form/useForm';
 import useProjectHook from './useProject';
 
 // Constants
@@ -20,6 +22,7 @@ import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 import {SettingsMenuItems} from '../main-menu-panel/mainMenu.constants';
 
 const NewProjectForm = (props) => {
+  const [useForm] = useFormHook();
   const [useProject] = useProjectHook();
   const form = useRef(null);
   const isProjectLoadSelectionModalVisible = useSelector(state => state.home.isProjectLoadSelectionModalVisible);
@@ -36,66 +39,61 @@ const NewProjectForm = (props) => {
 
   const saveForm = async () => {
     const formValues = form.current.values;
-    if (!isEmpty(getForm())) {
-      return form.current.submitForm().then(async () => {
-        console.log('Saved Form');
-        if (hasErrors(form)) {
-          showErrors(form);
-          return Promise.reject('There was an error in the form');
-        }
-        else if (form.current.values.project_name === undefined) {
-          showErrors(form);
-          return Promise.reject('Project name is undefined');
+    return form.current.submitForm().then(async () => {
+      console.log('Saved Form');
+      if (useForm.hasErrors(form)) {
+        useForm.showErrors(form);
+        return Promise.reject('There was an error in the form');
+      }
+      else if (form.current.values.project_name === undefined) {
+        useForm.showErrors(form);
+        return Promise.reject('Project name is undefined');
+      }
+      else {
+        const newProject = await useProject.initializeNewProject(formValues);
+        console.log('New Project created', newProject);
+        if (isProjectLoadSelectionModalVisible) {
+          dispatch(
+            {type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: SettingsMenuItems.MANAGE.ACTIVE_PROJECTS});
+          props.openMainMenu();
+          dispatch({type: homeReducers.SET_PROJECT_LOAD_SELECTION_MODAL_VISIBLE, value: false});
         }
         else {
-          const newProject = await useProject.initializeNewProject(formValues);
-          console.log('New Project created', newProject);
-          if (isProjectLoadSelectionModalVisible) {
-            dispatch({type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: SettingsMenuItems.MANAGE.ACTIVE_PROJECTS});
-            props.openMainMenu();
-            dispatch({type: homeReducers.SET_PROJECT_LOAD_SELECTION_MODAL_VISIBLE, value: false});
-          }
-          else {
-            dispatch({type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: SettingsMenuItems.MANAGE.ACTIVE_PROJECTS});
-          }
-          return Promise.resolve();
+          dispatch(
+            {type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: SettingsMenuItems.MANAGE.ACTIVE_PROJECTS});
         }
-      });
-    }
-    else {
-      console.log('No form to save');
-      return Promise.reject();
-    }
+        return Promise.resolve();
+      }
+    });
   };
 
   const renderFormFields = () => {
-    setForm('project_description');
-    if (!isEmpty(getForm())) {
-      return (
-        <View style={{flex: 1}}>
-          <View style={styles.sectionTitleContainer}>
-            <Divider sectionText='Create a New Project'/>
-          </View>
-          <ScrollView>
-            <Formik
-              innerRef={form}
-              onSubmit={onSubmitForm}
-              validate={validateForm}
-              component={Form}
-              initialValues={initialValues}
-              validateOnChange={true}
-              enableReinitialize={false}
-            />
-          </ScrollView>
-          <View style={{paddingTop: 10}}>
-            <Button
-              title={'Save'}
-              onPress={() => saveForm()}
-            />
-          </View>
+    const formName = ['general', 'project_description'];
+    console.log('Rendering form:', formName.join('.'), 'with values:', initialValues);
+    return (
+      <View style={{flex: 1}}>
+        <View style={styles.sectionTitleContainer}>
+          <Divider sectionText='Create a New Project'/>
         </View>
-      );
-    }
+        <ScrollView>
+          <Formik
+            innerRef={form}
+            onSubmit={onSubmitForm}
+            validate={(values) => useForm.validateForm({formName: formName, values: values})}
+            component={(formProps) => Form({formName: formName, ...formProps})}
+            initialValues={initialValues}
+            validateOnChange={true}
+            enableReinitialize={false}
+          />
+        </ScrollView>
+        <View style={{paddingTop: 10}}>
+          <Button
+            title={'Save'}
+            onPress={() => saveForm()}
+          />
+        </View>
+      </View>
+    );
   };
 
   return (

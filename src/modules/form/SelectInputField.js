@@ -29,7 +29,7 @@ const SelectInputField = (props) => {
         useNativeAndroidPickerStyle={false}
         items={props.choices}
         style={pickerStyle}
-        value={props.value}
+        value={props.value ? props.value : undefined}
       />
       {props.errors && props.errors[props.name] && <Text style={styles.fieldError}>{props.errors[props.name]}</Text>}
     </View>
