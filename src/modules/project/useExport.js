@@ -3,13 +3,17 @@ import RNFetchBlob from 'rn-fetch-blob';
 import {Alert, Platform} from 'react-native';
 import {projectReducers} from './project.constants';
 import {homeReducers} from '../home/home.constants';
+import {isEmpty} from '../../shared/Helpers';
 
 const useExport = () => {
   let dirs = RNFetchBlob.fs.dirs;
   const devicePath = Platform.OS === 'ios' ? dirs.DocumentDir : dirs.SDCardDir; // ios : android
+  const appDirectoryTiles = '/StraboSpotTiles';
   const appDirectoryForDistributedBackups = '/StraboSpotProjects';
   const appDirectory = '/StraboSpot';
   const imagesDirectory = appDirectory + '/Images';
+  const zipsDirectory = appDirectoryTiles + '/TileZips';
+  const tileCacheDirectory = appDirectoryTiles + '/TileCache';
   const dataBackupsDirectory = devicePath + appDirectory + '/DataBackups';
 
   const dispatch = useDispatch();
@@ -29,15 +33,22 @@ const useExport = () => {
     // console.log('DataJson', dataJson);
     await exportData(devicePath + appDirectoryForDistributedBackups + '/' + exportedFileName, dataForExport,
       '/data.json');
-    dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'Data exported.'});
+    // dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'Data exported.'});
     const otherMaps = await gatherOtherMapsForDistribution();
-    dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'Maps exported.'});
+    dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
+    // dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'Other Maps exported.'});
     console.log('Other Maps Resolve Message:', otherMaps);
+    const maps = await gatherMapsForDistribution(dataForExport, exportedFileName);
+    console.log('Maps resolve message', maps.message);
+    dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: maps.message});
     // dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
-    dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: `Finished moving all images to distribution folder.`});
     await doesDeviceDirectoryExist(devicePath + appDirectoryForDistributedBackups + '/' + exportedFileName + '/Images');
-    const imageSuccess = await gatherImagesForDistribution(dataForExport, exportedFileName);
-    console.log('Images Resolve Message:', imageSuccess.message);
+    dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'Exporting Images...'});
+    const imageResolve = await gatherImagesForDistribution(dataForExport, exportedFileName);
+    console.log('Images Resolve Message:', imageResolve.message);
+    dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: imageResolve.message});
+    // const successResponse = await doesDeviceDirectoryExist(devicePath + appDirectoryForDistributedBackups + '/' + exportedFileName + '/maps');
+    // console.log('Maps directory created:', successResponse);
   };
 
   // const checkDistributionDataDir = async () => {
@@ -149,8 +160,8 @@ const useExport = () => {
   const gatherDataForBackup = () => {
     const dbsStateCopy = JSON.parse(JSON.stringify(dbs));
     let spots = dbsStateCopy.spot.spots;
-    // let configDb = {};
-    let mapNamesDb = {};
+    let configDb = {};
+    let mapNamesDb = dbsStateCopy.map.offlineMaps;
     let mapTilesDb = {};
     let json = {
       mapNamesDb: mapNamesDb,
@@ -162,7 +173,7 @@ const useExport = () => {
     return Promise.resolve(json);
   };
 
-  const gatherImagesForDistribution = async (data, fileName) => {
+  const gatherImagesForDistribution = (data, fileName) => {
     console.log('data:', data);
     let promises = [];
     if (data.spotsDb) {
@@ -181,9 +192,38 @@ const useExport = () => {
       });
       return Promise.all(promises).then(() => {
         // console.log('Finished moving all images to distribution folder.');
-        return Promise.resolve({message: 'Finished moving all images to distribution folder.'});
+        return Promise.resolve({message: 'Finished moving all images.'});
       });
     }
+  };
+
+
+  const gatherMapsForDistribution = (data, fileName) => {
+    const maps = data.mapNamesDb;
+    return new Promise((resolve, reject) => {
+        let promises = [];
+        if (!isEmpty(maps)) {
+          console.log('Maps exist.', maps);
+          doesDeviceDirectoryExist(devicePath + appDirectoryForDistributedBackups + '/' + fileName + '/maps')
+            .then(() => {
+              Object.values(maps).map(map => {
+                const promise = moveDistributedMap(map.mapId, fileName).then(moveFileSuccess => {
+                  console.log('Moved map:', moveFileSuccess);
+                }, moveFileError => console.log('Error moving map:', moveFileError));
+                promises.push(promise);
+                console.log(promises);
+              });
+              Promise.all(promises).then(() => {
+                console.log('Finished moving all maps.');
+                resolve({message: 'Finished moving all maps.'});
+              });
+            });
+        }
+        else {
+          return resolve({message: 'There are no maps to save.'});
+        }
+      },
+    );
   };
 
   const gatherOtherMapsForDistribution = (data) => {
@@ -221,8 +261,33 @@ const useExport = () => {
       })
       .catch(err => {
         console.log('ERROR', err.toString());
-        dispatch({type: homeReducers.SET_ERROR_MESSAGES_MODAL_VISIBLE, bool: true})
+        dispatch({type: homeReducers.SET_ERROR_MESSAGES_MODAL_VISIBLE, bool: true});
       });
+  };
+
+  const moveDistributedMap = async (mapId, fileName) => {
+  console.log('Moving Map:', mapId)
+   return RNFetchBlob.fs.exists(devicePath + zipsDirectory + '/' + mapId + '.zip')
+      .then(exists => {
+      if (exists) {
+        console.log(mapId + '.zip exists?', exists);
+        return RNFetchBlob.fs.cp(devicePath + zipsDirectory + '/' + mapId + '.zip',
+          devicePath + appDirectoryForDistributedBackups + '/' + fileName + '/maps/' + mapId.toString() + '.zip').then(res => {
+            console.log('Map Copied.');
+          return Promise.resolve(mapId);
+        })
+          // .catch(copyError => Alert.alert('error copying map file: ', copyError));
+      }
+      else {
+        console.log('couldn\'t find map ' +  mapId + '.zip');
+        return Promise.resolve()
+      }
+      // return Promise.resolve(mapId);
+    })
+      .catch(err => {
+        console.warn(err);
+      });
+    // return Promise.resolve('OK')
   };
 
   const exportHelpers = {
