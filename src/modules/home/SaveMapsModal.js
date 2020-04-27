@@ -278,7 +278,7 @@ class SaveMapModal extends Component {
     thisMap.appId = this.appId;
     thisMap.name = this.currentMapName;
     thisMap.count = tileCount;
-    thisMap.mapId = new Date().valueOf();
+    thisMap.mapId = zipUID;
     thisMap.date = new Date().toLocaleString();
     newOfflineMapsData.push(thisMap);
 
