@@ -309,9 +309,7 @@ const ProjectDescription = (props) => {
 
   const validateMagField = (val) => {
     if (selectedField && selectedField.name === 'magnetic_declination') {
-      const test = regexTest(val);
-      // const regex = /^([0-9]{1,2}|1[0-7][0-9]|180)$/g;
-      if (test) {
+      if (regexTest(val)) {
         setMagDecValidation(true);
         setValidationErrorMessage('');
         setProjectDescription({...projectDescription, [selectedField.name]: val.trim()});
