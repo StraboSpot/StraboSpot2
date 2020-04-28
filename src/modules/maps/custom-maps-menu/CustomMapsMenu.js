@@ -397,7 +397,7 @@ class CustomMapsMenu extends Component {
           <Input
             placeholder={'enter ' + this.state.mapIdLabel + '...'}
             onChangeText={(text) => this.mapIdEdit(text)}
-            value={this.state.mapId}
+            value={this.state.id}
           />
         </View>
         }
