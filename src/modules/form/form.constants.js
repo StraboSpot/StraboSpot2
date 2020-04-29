@@ -8,8 +8,8 @@ export const labelDictionary = Object.keys(forms.default).reduce((acc, key) => {
   const duplicateKeyCheck = (obj) => {
     Object.entries(obj).forEach(([key1, value]) => {
       if (Object.keys(acc).includes(key1) && acc[key1] !== value) {
-        console.warn('Fix duplicate field name or choice value but mismatched label:',
-          '{' + key1 + ': ' + acc[key1] + '}', 'vs', '{' + key1 + ': ' + value + '}');
+        console.log('*********Fix duplicate field name or choice value but mismatched label:',
+          '{' + key1 + ': ' + acc[key1] + '}', 'vs', '{' + key1 + ': ' + value + '}*********');
       }
     });
   };
