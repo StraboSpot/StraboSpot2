@@ -3,13 +3,19 @@ import * as themes from '../../shared/styles.constants';
 
 const styles = StyleSheet.create({
   formContainer: {
-    paddingLeft: 10,
-    paddingRight: 10,
+    // paddingLeft: 10,
+    // paddingRight: 10,
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
   },
   fieldLabel: {
+    paddingLeft: 10,
+    paddingRight: 10,
     color: themes.PRIMARY_ITEM_TEXT_COLOR,
     fontSize: themes.PRIMARY_TEXT_SIZE,
+  },
+  fieldHeaderLabel: {
+    fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,
+    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
   },
   fieldValue: {
     paddingLeft: 10,

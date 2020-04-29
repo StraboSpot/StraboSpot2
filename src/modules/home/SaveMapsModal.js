@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-import {Picker, Text, StyleSheet, View} from 'react-native';
+import {Text, StyleSheet, View} from 'react-native';
+import {Picker} from '@react-native-community/picker';
 import {Button, Header, Icon} from 'react-native-elements';
 import {Platform} from 'react-native';
 import RNFetchBlob from 'rn-fetch-blob';
@@ -277,6 +278,8 @@ class SaveMapModal extends Component {
     thisMap.appId = this.appId;
     thisMap.name = this.currentMapName;
     thisMap.count = tileCount;
+    thisMap.mapId = zipUID;
+    thisMap.date = new Date().toLocaleString();
     newOfflineMapsData.push(thisMap);
 
     //loop over offlineMapsData and add any other maps (not current)
@@ -289,7 +292,10 @@ class SaveMapModal extends Component {
       }
     }
 
-    await this.props.onOfflineMaps(newOfflineMapsData);
+   const mapSavedObject = Object.assign({}, ...newOfflineMapsData.map(map => ({ [map.name]: map })));
+    console.log('Map to save to Redux', mapSavedObject);
+
+    await this.props.onOfflineMaps(mapSavedObject);
     console.log('Saved offlineMaps to Redux.');
   };
 

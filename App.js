@@ -21,7 +21,7 @@ const App = () => {
       HomeScreen: {
         screen: Home,
         navigationOptions: {
-          gesturesEnabled: false,
+          gestureEnabled: false,
         },
         
       },
@@ -40,7 +40,7 @@ const App = () => {
       ImageInfo: {
         screen: ImageInfo,
         navigationOptions: {
-          gesturesEnabled: false,
+          gestureEnabled: false,
         },
       },
     },

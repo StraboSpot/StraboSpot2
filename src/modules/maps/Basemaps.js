@@ -1,13 +1,18 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {useSelector} from 'react-redux';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import * as turf from '@turf/turf/index';
 
-// import pointSymbol from '../../assets/symbols/point-resizeimage.png';
+import useMapSymbologyHook from './useMapSymbology';
+
+// Constants
+import {symbols as symbolsConstant} from './maps.constants';
 
 function Basemap(props) {
   const basemap = useSelector(state => state.map.currentBasemap);
   const {mapRef, cameraRef} = props.forwardedRef;
+  const [useMapSymbology] = useMapSymbologyHook();
+  const [symbols, setSymbol] = useState(symbolsConstant);
   return <MapboxGL.MapView
     id={basemap.id}
     ref={mapRef}
@@ -24,13 +29,14 @@ function Basemap(props) {
     scrollEnabled={props.allowMapViewMove}
     zoomEnabled={props.allowMapViewMove}
   >
-    <MapboxGL.UserLocation/>
+    <MapboxGL.UserLocation
+      animated={false}/>
     <MapboxGL.Camera
       ref={cameraRef}
-      // zoomLevel={16}
+      zoomLevel={15}
       centerCoordinate={props.centerCoordinate}
-      // followUserLocation={true}
-      followUserMode='normal'
+      // followUserLocation={true}   // Can't follow user location if want to zoom to extent of Spots
+      // followUserMode='normal'
     />
     <MapboxGL.RasterSource
       id={basemap.id}
@@ -45,33 +51,33 @@ function Basemap(props) {
       />
     </MapboxGL.RasterSource>
     {/* Feature Layer */}
+    <MapboxGL.Images
+      images={symbols}
+      onImageMissing={imageKey => {
+        setSymbol({...symbols, [imageKey]: symbols.default_point});
+      }}
+    />
     <MapboxGL.ShapeSource
       id='shapeSource'
       shape={turf.featureCollection(props.spotsNotSelected)}
     >
-      {/*      <MapboxGL.SymbolLayer
-       id='pointLayerNotSelected'
-       minZoomLevel={1}
-       filter={['==', '$type', 'Point']}
-       style={mapStyles.point}
-       />*/}
-      <MapboxGL.CircleLayer
+      <MapboxGL.SymbolLayer
         id='pointLayerNotSelected'
         minZoomLevel={1}
         filter={['==', '$type', 'Point']}
-        style={mapStyles.point}
+        style={useMapSymbology.getMapSymbology().point}
       />
       <MapboxGL.LineLayer
         id='lineLayerNotSelected'
         minZoomLevel={1}
         filter={['==', '$type', 'LineString']}
-        style={mapStyles.line}
+        style={useMapSymbology.getMapSymbology().line}
       />
       <MapboxGL.FillLayer
         id='polygonLayerNotSelected'
         minZoomLevel={1}
         filter={['==', '$type', 'Polygon']}
-        style={mapStyles.polygon}
+        style={useMapSymbology.getMapSymbology().polygon}
       />
     </MapboxGL.ShapeSource>
     {/* Selected Features Layer */}
@@ -83,19 +89,19 @@ function Basemap(props) {
         id='pointLayerSelected'
         minZoomLevel={1}
         filter={['==', '$type', 'Point']}
-        style={mapStyles.pointSelected}
+        style={useMapSymbology.getMapSymbology().pointSelected}
       />
       <MapboxGL.LineLayer
         id='lineLayerSelected'
         minZoomLevel={1}
         filter={['==', '$type', 'LineString']}
-        style={mapStyles.lineSelected}
+        style={useMapSymbology.getMapSymbology().lineSelected}
       />
       <MapboxGL.FillLayer
         id='polygonLayerSelected'
         minZoomLevel={1}
         filter={['==', '$type', 'Polygon']}
-        style={mapStyles.polygonSelected}
+        style={useMapSymbology.getMapSymbology().polygonSelected}
       />
     </MapboxGL.ShapeSource>
     {/* Draw Layer */}
@@ -107,19 +113,19 @@ function Basemap(props) {
         id='pointLayerDraw'
         minZoomLevel={1}
         filter={['==', '$type', 'Point']}
-        style={mapStyles.pointDraw}
+        style={useMapSymbology.getMapSymbology().pointDraw}
       />
       <MapboxGL.LineLayer
         id='lineLayerDraw'
         minZoomLevel={1}
         filter={['==', '$type', 'LineString']}
-        style={mapStyles.lineDraw}
+        style={useMapSymbology.getMapSymbology().lineDraw}
       />
       <MapboxGL.FillLayer
         id='polygonLayerDraw'
         minZoomLevel={1}
         filter={['==', '$type', 'Polygon']}
-        style={mapStyles.polygonDraw}
+        style={useMapSymbology.getMapSymbology().polygonDraw}
       />
     </MapboxGL.ShapeSource>
     {/* Edit Layer */}
@@ -131,7 +137,7 @@ function Basemap(props) {
         id='pointLayerEdit'
         minZoomLevel={1}
         filter={['==', '$type', 'Point']}
-        style={mapStyles.pointEdit}
+        style={useMapSymbology.getMapSymbology().pointEdit}
       />
     </MapboxGL.ShapeSource>
   </MapboxGL.MapView>;

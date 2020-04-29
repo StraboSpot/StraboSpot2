@@ -26,8 +26,11 @@ const InitialProjectLoadModal = (props) => {
   const [visibleProjectSection, setVisibleProjectSection] = useState('activeDatasetsList');
   const [visibleInitialSection, setVisibleInitialSection] = useState('none');
 
-  useEffect(() => {
-    // console.log('Rendered');
+ useEffect(() => {
+    console.log('Rendered 2');
+    return function cleanUp () {
+      console.log('Initial Project Modal CleanUp')
+    };
   }, [selectedProject, isOnline, datasets]);
 
   const goBack = () => {
@@ -35,7 +38,7 @@ const InitialProjectLoadModal = (props) => {
       dispatch({type: projectReducers.PROJECTS, project: {}});
       dispatch({type: projectReducers.DATASETS.DATASETS_UPDATE, datasets: {}});
       dispatch({type: spotReducers.CLEAR_SPOTS});
-      setVisibleInitialSection('serverProjects');
+      setVisibleInitialSection('none');
     }
     else if (visibleProjectSection === 'currentDatasetSelection') {
       setVisibleProjectSection('activeDatasetsList');
@@ -46,6 +49,7 @@ const InitialProjectLoadModal = (props) => {
     return (
       <ProjectTypesButtons
         onLoadProjectsFromServer={() => setVisibleInitialSection('serverProjects')}
+        onLoadProjectsFromDevice={() => setVisibleInitialSection('deviceProjects')}
         onStartNewProject={() => setVisibleInitialSection('project')}/>
     );
   };
@@ -128,6 +132,23 @@ const InitialProjectLoadModal = (props) => {
     );
   };
 
+  const renderListOfProjectsOnDevice = () => {
+    if (!isEmpty(selectedProject)) {
+      return visibleProjectSection === 'activeDatasetsList' ? renderDatasetList() : renderCurrentDatasetSelection();
+    }
+    else {
+      return (
+        <React.Fragment>
+          {renderProjectTypesButtons()}
+          <Spacer/>
+          <View style={{height: 400}}>
+            <ProjectList source={'device'}/>
+          </View>
+        </React.Fragment>
+      );
+    }
+  };
+
   const renderListOfProjectsOnServer = () => {
     if (!isEmpty(selectedProject)) {
       return visibleProjectSection === 'activeDatasetsList' ? renderDatasetList() : renderCurrentDatasetSelection();
@@ -138,10 +159,31 @@ const InitialProjectLoadModal = (props) => {
           {renderProjectTypesButtons()}
           <Spacer/>
           <View style={{height: 400}}>
-            <ProjectList/>
+            <ProjectList source={'server'}/>
           </View>
         </React.Fragment>
       );
+    }
+  };
+
+  const renderSectionView = () => {
+    switch (visibleInitialSection){
+      case 'serverProjects':
+        return (
+          renderListOfProjectsOnServer()
+      );
+      case 'deviceProjects':
+        return (
+          renderListOfProjectsOnDevice()
+      );
+      case 'project':
+        return (
+          renderStartNewProject()
+        );
+      default:
+        return (
+          renderProjectTypesButtons()
+        );
     }
   };
 
@@ -185,9 +227,10 @@ const InitialProjectLoadModal = (props) => {
       >
         <DialogContent>
           <Spacer/>
-          {visibleInitialSection === 'none' ? renderProjectTypesButtons() :
-            visibleInitialSection === 'serverProjects' ? renderListOfProjectsOnServer() : renderStartNewProject()
-          }
+          {/*{visibleInitialSection === 'none' ? renderProjectTypesButtons() :*/}
+          {/*  visibleInitialSection === 'serverProjects' ? renderListOfProjectsOnServer() : renderStartNewProject()*/}
+          {/*}*/}
+          {renderSectionView()}
         </DialogContent>
       </Dialog>
     </React.Fragment>

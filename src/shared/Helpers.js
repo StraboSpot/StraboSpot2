@@ -1,9 +1,8 @@
 import {Animated, Easing} from 'react-native';
+
 const lodashIsEqual = require('lodash.isequal');
 const passwordValidator = require('password-validator');
-
 const schema = new passwordValidator();
-
 
 export const getNewId = () => {
   return Math.floor((new Date().getTime() + Math.random()) * 10);
@@ -37,10 +36,8 @@ export const toRadians = (deg) => {
 };
 
 export const truncateText = (str, maxLength) => {
-  if (str.length >= maxLength){
-    return str.substr(0, maxLength) + '...';
-  }
-  else return  str;
+  if (str.length >= maxLength) return str.substr(0, maxLength) + '...';
+  else return str;
 };
 
 // Check if array, object, string, number is empty and if so return true
@@ -90,15 +87,15 @@ export const validate = (val, rules, connectedValue) => {
     switch (rule) {
       case 'isEmail':
         isValid = isValid && emailValidator(val);
-        console.log('isValid:', isValid)
+        console.log('isValid:', isValid);
         break;
       case 'minLength':
         isValid = isValid && minLengthValidator(val, rules[rule]);
-        console.log('minLength isValid:', isValid)
+        console.log('minLength isValid:', isValid);
         break;
       case 'characterValidator':
         isValid = isValid && passwordValidation(val);
-        console.log('Password Valid', isValid)
+        console.log('Password Valid', isValid);
         break;
       case 'equalTo':
         isValid = isValid && equalToValidator(val, connectedValue[rule]);
@@ -106,7 +103,7 @@ export const validate = (val, rules, connectedValue) => {
         break;
       case 'notEmpty':
         isValid = isValid && notEmptyValidator(val);
-        console.log('notEmpty isValid:', isValid)
+        console.log('notEmpty isValid:', isValid);
         break;
       default:
         isValid = true;
@@ -137,7 +134,7 @@ const equalToValidator = (val, checkValue) => {
 };
 
 const notEmptyValidator = val => {
-  console.log(val)
+  console.log(val);
   return val.trim() !== '';
 };
 

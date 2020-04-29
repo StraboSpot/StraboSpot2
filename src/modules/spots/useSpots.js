@@ -10,6 +10,7 @@ import {spotReducers} from './spot.constants';
 // Hooks
 import useImagesHook from '../images/useImages';
 import useServerRequestsHook from '../../services/useServerRequests';
+import {homeReducers} from '../home/home.constants';
 
 const useSpots = (props) => {
   const dispatch = useDispatch();
@@ -55,25 +56,33 @@ const useSpots = (props) => {
   };
 
   const deleteSpot = async id => {
-    console.log("deleting spot",id);
+    console.log(id);
     Object.values(datasets).map(dataset => {
       if (dataset.spotIds) {
         console.log(dataset.spotIds);
         const exists = dataset.spotIds.includes(id);
         if (exists) {
-          console.log(dataset.id)
+          console.log(dataset.id);
           console.log(dataset.spotIds.filter(spotId => id !== spotId));
           const filteredLSpotIdList = dataset.spotIds.filter(spotId => id !== spotId);
           dispatch({type: projectReducers.DATASETS.DELETE_SPOT_ID, filteredList: filteredLSpotIdList, datasetId: dataset.id});
           dispatch({type: spotReducers.DELETE_SPOT, id: id});
         }
       }
-    })
+    });
     return Promise.resolve('spot deleted');
   };
 
+  const deleteSpotsFromDataset = (dataset, spotId) => {
+    const updatedSpotIds = dataset.spotIds.filter(id => id !== spotId);
+    dispatch({type: projectReducers.DATASETS.DELETE_SPOT_ID, filteredList: updatedSpotIds, datasetId: dataset.id});
+    dispatch({type: spotReducers.DELETE_SPOT, id: spotId});
+    console.log(dataset, 'Spots', spots);
+    return Promise.resolve(dataset.spotIds);
+  };
+
   const downloadSpots = async (dataset, encodedLogin) => {
-    dispatch({type: 'CLEAR_STATUS_MESSAGES'});
+    // dispatch({type: 'CLEAR_STATUS_MESSAGES'});
     dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'Downloading Spots...'});
     const datasetInfoFromServer = await useServerRequests.getDatasetSpots(dataset.id, encodedLogin);
     if (!isEmpty(datasetInfoFromServer) && datasetInfoFromServer.features) {
@@ -87,11 +96,15 @@ const useSpots = (props) => {
         dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'Downloaded Spots'});
         const neededImagesIds = await useImages.gatherNeededImages(spotsOnServer);
         if (neededImagesIds.length === 0) {
+          dispatch({type: homeReducers.SET_LOADING, view: 'modal', bool: false});
           dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'No New Images to Download'});
+          // dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Download Complete!'});
         }
-        else await useImages.downloadImages(neededImagesIds);
+        else return await useImages.downloadImages(neededImagesIds);
       }
+      return Promise.resolve({message: 'done - Spots'});
     }
+    else return Promise.reject('No Spots!');
   };
 
   const getAllImageBaseMaps = () => {
@@ -118,7 +131,7 @@ const useSpots = (props) => {
     let activeSpots = {};
     activeSpotIds.map(spotId => {
      if (spots[spotId]) activeSpots = {...activeSpots, [spotId]: spots[spotId]};
-     else console.warn('Missing Spot', spotId);
+     else console.log('Missing Spot', spotId);
     });
     return activeSpots;
   };
@@ -178,6 +191,7 @@ const useSpots = (props) => {
   return [{
     createSpot: createSpot,
     deleteSpot: deleteSpot,
+    deleteSpotsFromDataset: deleteSpotsFromDataset,
     downloadSpots: downloadSpots,
     getActiveSpotsObj: getActiveSpotsObj,
     getMappableSpots: getMappableSpots,

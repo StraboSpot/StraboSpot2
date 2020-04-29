@@ -1,28 +1,26 @@
 import React from 'react';
 import {ActivityIndicator, Button, Dimensions, FlatList, ScrollView, View} from 'react-native';
+
 import {connect} from 'react-redux';
 import {withNavigation} from 'react-navigation';
-
 import {Image} from 'react-native-elements';
-import {setForm} from '../form/form.container';
-
-// Constants
-import {spotReducers} from '../spots/spot.constants';
 
 // Hooks
 import useImagesHook from './useImages';
+
+// Constants
+import {spotReducers} from '../spots/spot.constants';
 
 // Styles
 import imageStyles from './images.styles';
 
 const screenHeight = Dimensions.get('window').height;
 
-const imageNotebook = (props) => {
+const ImageNotebook = (props) => {
   const [useImages] = useImagesHook();
 
   const editImage = (image) => {
     props.setSelectedAttributes([image]);
-    setForm('images');
     props.navigation.navigate('ImageInfo', {imageId: image.id});
   };
 
@@ -65,4 +63,4 @@ const mapDispatchToProps = {
   setSelectedAttributes: (attributes) => ({type: spotReducers.SET_SELECTED_ATTRIBUTES, attributes: attributes}),
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withNavigation(imageNotebook));
+export default connect(mapStateToProps, mapDispatchToProps)(withNavigation(ImageNotebook));

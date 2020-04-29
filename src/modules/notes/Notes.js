@@ -20,13 +20,12 @@ const Notes = (props) => {
   const [note, setNote] = useState('');
 
   useEffect(() => {
-    console.log('LASLKALKSLKSADKLSDLAKSDFLK')
     if (modalVisible === Modals.SHORTCUT_MODALS.NOTES) {
-      console.log('In Notes Modal view')
+      console.log('In Notes Modal view');
     }
     else if (props.selectedSpot.properties.notes) {
-      console.log('selectedSpot.properties', props.selectedSpot.properties)
-      setNote(props.selectedSpot.properties.notes)
+      console.log('selectedSpot.properties', props.selectedSpot.properties);
+      setNote(props.selectedSpot.properties.notes);
     }
   }, []);
 
@@ -43,7 +42,7 @@ const Notes = (props) => {
       const pointSetAtCurrentLocation = await useMaps.setPointAtCurrentLocation();
       console.log('pointSetAtCurrentLocation', pointSetAtCurrentLocation);
     }
-    console.log(note)
+    console.log(note);
     dispatch({type: spotReducers.EDIT_SPOT_PROPERTIES, field: 'notes', value: note});
     dispatch({type: spotReducers.SET_SELECTED_SPOT_NOTES_TIMESTAMP});
     setNote('');

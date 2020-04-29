@@ -1,18 +1,15 @@
-import {PropTypes} from 'prop-types';
 import React from 'react';
 import {Text, View} from 'react-native';
-import Picker from 'react-native-picker-select';
+
+import RNPickerSelect from 'react-native-picker-select';
+import PropTypes from 'prop-types';
 
 // Styles
 import styles from './form.styles';
 import stylesCommon from '../../shared/common.styles';
 import * as themes from '../../shared/styles.constants';
 
-const SelectInputField = ({
-                            field: {name, onBlur, onChange, value},
-                            form: {errors, touched},
-                            ...props
-                          }) => {
+const SelectInputField = (props) => {
   const placeholder = {
     label: `-- Select ${props.label} --`,
     color: themes.PRIMARY_ITEM_TEXT_COLOR,
@@ -26,30 +23,24 @@ const SelectInputField = ({
   return (
     <View style={stylesCommon.rowContainer}>
       <Text style={styles.fieldLabel}>{props.label}</Text>
-      <Picker
+      <RNPickerSelect
         placeholder={placeholder}
-        onValueChange={onChange(name)}
+        onValueChange={(value, i) => props.setFieldValue(props.name, value)}
         useNativeAndroidPickerStyle={false}
         items={props.choices}
         style={pickerStyle}
-        value={value}
+        value={props.value ? props.value : undefined}
       />
-      {errors[name] && <Text style={styles.fieldError}>{errors[name]}</Text>}
+      {props.errors && props.errors[props.name] && <Text style={styles.fieldError}>{props.errors[props.name]}</Text>}
     </View>
   );
 };
 
 SelectInputField.propTypes = {
-  field: PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    onBlur: PropTypes.func.isRequired,
-    onChange: PropTypes.func.isRequired,
-    value: PropTypes.string,
-  }).isRequired,
-  form: PropTypes.shape({
-    errors: PropTypes.object.isRequired,
-    touched: PropTypes.object.isRequired,
-  }).isRequired,
+  name: PropTypes.string.isRequired,
+  setFieldValue: PropTypes.func.isRequired,
+  value: PropTypes.string,
+  errors: PropTypes.object,
 };
 
 export default SelectInputField;

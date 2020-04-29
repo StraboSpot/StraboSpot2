@@ -3,23 +3,26 @@ import Dialog, {
   DialogTitle,
   DialogContent,
   SlideAnimation,
+  FadeAnimation,
   DialogFooter,
   DialogButton,
 } from 'react-native-popup-dialog';
 import * as ProjectActions from './project.constants';
 import styles from './project.styles';
+import commonStyles from '../../shared/common.styles';
 
 const UploadDialogBox = (props) => {
   return (
     <React.Fragment>
       <Dialog
-        dialogStyle={styles.dialogBox}
+        dialogStyle={commonStyles.dialogBox}
         width={275}
         visible={props.visible}
-        dialogAnimation={new SlideAnimation({
-          slideFrom: 'top',
+        dialogAnimation={new FadeAnimation({
+          animationDuration: 200,
+          useNativeDriver: true,
         })}
-        useNativeDriver={true}
+        // useNativeDriver={true}
         footer={
           <DialogFooter>
             <DialogButton
@@ -29,10 +32,11 @@ const UploadDialogBox = (props) => {
               textStyle={[styles.dialogButtonText, {color: 'red'}]}
             />
             <DialogButton
-              text={'OK'}
+              text={props.buttonText || 'OK'}
               onPress={() => props.onPress(ProjectActions.BACKUP_TO_SERVER)}
               style={[styles.dialogButton]}
-              textStyle={styles.dialogButtonText}
+              textStyle={props.disabled ? styles.dialogDisabledButtonText : styles.dialogButtonText}
+              disabled={props.disabled}
             />
           </DialogFooter>
         }

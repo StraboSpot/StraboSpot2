@@ -12,7 +12,9 @@ const {cond, eq, add, call, set, Value, event} = AnimatedPoint;
 // eslint-disable-next-line no-unused-vars
 const {height, width} = Dimensions.get('window');
 
-const vertexDrag = (props) => {
+const r = 0.4;
+
+const VertexDrag = (props) => {
 
   const [dragX, setDragX] = useState(new Value(0));
   const [dragY, setDragY] = useState(new Value(0));
@@ -71,8 +73,8 @@ const vertexDrag = (props) => {
           style={[
             mapStyles.vertexEditPoint,
             {
-              bottom: props.vertexStartCoords ? height - props.vertexStartCoords[1] - 10 : 0,
-              left: props.vertexStartCoords ? props.vertexStartCoords[0] - 10 : 0
+              bottom: props.vertexStartCoords ? height - (props.vertexStartCoords[1] * r) - 10 : 0,
+              left: props.vertexStartCoords ? (props.vertexStartCoords[0] * r) - 10 : 0,
             },
             {
               transform: [
@@ -98,4 +100,4 @@ const mapDispatchToProps = {
   setVertexEndCoords: (coords) => ({type: mapReducers.VERTEX_END_COORDS, vertexEndCoords: coords}),
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(vertexDrag);
+export default connect(mapStateToProps, mapDispatchToProps)(VertexDrag);

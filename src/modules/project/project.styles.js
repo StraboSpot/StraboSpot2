@@ -13,6 +13,15 @@ const dialogStyles = StyleSheet.create({
   basicInfoInputText: {
     fontSize: 16,
   },
+  buttonContainer: {
+    paddingTop: 10,
+  },
+  dividerWithButtonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingBottom: 5
+  },
   sectionContainer: {
     margin: 10,
     backgroundColor: 'white',
@@ -27,6 +36,14 @@ const dialogStyles = StyleSheet.create({
     borderRadius: 10,
     padding: 7,
   },
+  datasetListItemText: {
+    color: themes.PRIMARY_ITEM_TEXT_COLOR,
+    fontSize: themes.MEDIUM_TEXT_SIZE
+  },
+  datasetListItemSpotCount: {
+    color: themes.MEDIUMGREY,
+    fontSize: themes.MEDIUM_TEXT_SIZE
+  },
   activeProjectButton: {
     margin: 10,
     borderRadius: 10,
@@ -34,6 +51,7 @@ const dialogStyles = StyleSheet.create({
   activeDataSets: {
     padding: 10,
   },
+
   buttons: {
     color: themes.BLUE,
   },
@@ -50,12 +68,17 @@ const dialogStyles = StyleSheet.create({
     marginTop: 15,
     paddingBottom: 10
   },
-  dialogContentText: {
+  dialogConfirmText: {
+    textAlign: 'center',
+    paddingTop: 15
+  },
+  dialogContentImportantText: {
     color: 'red',
-    fontWeight: 'bold',
+    fontWeight: '500',
     textAlign: 'center',
   },
   dialogTitle: {
+    alignContent: 'center',
     backgroundColor: 'red',
   },
   dialogTitleText: {
@@ -69,6 +92,9 @@ const dialogStyles = StyleSheet.create({
   },
   dialogButtonText: {
     color: 'black',
+  },
+  dialogDisabledButtonText: {
+    color: themes.SECONDARY_ITEM_TEXT_COLOR,
   },
   headerTextContainer: {
     flex: 0,
@@ -138,6 +164,9 @@ const dialogStyles = StyleSheet.create({
     flex: 1,
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
     borderTopWidth: 1,
+  },
+  subHeaderText: {
+    textAlign: 'center',
   },
 });
 

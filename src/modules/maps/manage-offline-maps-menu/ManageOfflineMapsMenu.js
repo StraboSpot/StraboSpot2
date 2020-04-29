@@ -39,7 +39,7 @@ class ManageOfflineMapsMenu extends Component {
   render() { //return whole modal here
     return (
       <React.Fragment>
-        {!isEmpty(this.props.offlineMaps) ? (this.props.offlineMaps.map((item, i) =>
+        {!isEmpty(this.props.offlineMaps) ? (Object.values(this.props.offlineMaps).map((item, i) =>
             <ListItem
               containerStyle={{backgroundColor: 'transparent', padding: 0, borderBottomWidth: 1}}
               key={item.saveId}
@@ -115,7 +115,7 @@ class ManageOfflineMapsMenu extends Component {
         },
         {
           text: 'OK',
-          onPress: () => this.deleteMap(map.saveId),
+          onPress: () => this.deleteMap(map),
         },
       ],
       {cancelable: false},
@@ -124,36 +124,27 @@ class ManageOfflineMapsMenu extends Component {
 
   deleteMap = async (map) => {
     console.log('Deleting Map Here');
-    console.log('map: ', map);
-    console.log('directory: ', this.tileCacheDirectory + '/' + map);
-    let folderExists = await RNFS.exists(this.tileCacheDirectory + '/' + map);
+    console.log('map: ', map.saveId);
+    console.log('directory: ', this.tileCacheDirectory + '/' + map.saveId);
+    let folderExists = await RNFS.exists(this.tileCacheDirectory + '/' + map.saveId);
 
     //first, delete folder with tiles
     if (folderExists) {
-      await RNFS.unlink(this.tileCacheDirectory + '/' + map);
+      await RNFS.unlink(this.tileCacheDirectory + '/' + map.saveId);
     }
 
     //now, delete map from Redux
+    let keyToDelete;
     let currentOfflineMaps = this.props.offlineMaps;
+    Object.entries(currentOfflineMaps).forEach(([key, value]) => {
+      if (value.mapId === map.mapId) keyToDelete = key;
+    });
 
-    //now check for existence of AsyncStorage offlineMapsData and store new count
-    if (!currentOfflineMaps) {
-      currentOfflineMaps = [];
-    }
+    console.log(keyToDelete);
+    delete currentOfflineMaps[keyToDelete];
+    console.log(currentOfflineMaps);
 
-    let newOfflineMapsData = [];
-
-    //loop over offlineMapsData and add any other maps (not current)
-    for (let i = 0; i < currentOfflineMaps.length; i++) {
-      if (currentOfflineMaps[i].saveId) {
-        if (currentOfflineMaps[i].saveId != map) {
-          //Add it to new array for Redux Storage
-          newOfflineMapsData.push(currentOfflineMaps[i]);
-        }
-      }
-    }
-
-    await this.props.onOfflineMaps(newOfflineMapsData);
+    await this.props.onOfflineMaps(currentOfflineMaps);
     console.log('Saved offlineMaps to Redux.');
   };
 }

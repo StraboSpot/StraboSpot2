@@ -1,18 +1,28 @@
 import React, {useEffect, useState} from 'react';
 import {ScrollView, Text, TextInput, View} from 'react-native';
-import Divider from '../main-menu-panel/MainMenuPanelDivider';
-// import SectionDivider from '../../shared/ui/SectionDivider';
-import styles from './project.styles';
-// import mainMenuStyles from '../main-menu-panel/mainMenuPanel.styles'
+
 import {Button, Icon, ListItem} from 'react-native-elements';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import {useDispatch, useSelector} from 'react-redux';
 import moment from 'moment';
-import SaveAndCloseButtons from '../../shared/ui/SaveAndCloseButtons';
-import {projectReducers} from './project.constants';
-import {truncateText} from '../../shared/Helpers';
-import EditingModal from './ProjectDescriptionEditModal';
+import {useDispatch, useSelector} from 'react-redux';
+
+// Assests
 import * as forms from '../../assets/forms/forms.index';
+
+// Components
+import Divider from '../main-menu-panel/MainMenuPanelDivider';
+import EditingModal from './ProjectDescriptionEditModal';
+import SaveAndCloseButtons from '../../shared/ui/SaveAndCloseButtons';
+
+// Constants
+import {projectReducers} from './project.constants';
+import {SettingsMenuItems} from '../main-menu-panel/mainMenu.constants';
+
+// Utilities
+import {truncateText} from '../../shared/Helpers';
+
+// Styles
+import styles from './project.styles';
 
 const ProjectDescription = (props) => {
   const getInitialFields = () => {
@@ -22,7 +32,7 @@ const ProjectDescription = (props) => {
       technical: ['gps_datum', 'magnetic_declination'],
       // general: ['purpose_of_study', 'other_team_members', 'areas_of_interest', 'instruments'],
     };
-    const form = forms.default['project_description'].survey;
+    const form = forms.default.general.project_description.survey;
     const basicFields = form.filter((field) => projectDescriptionFieldsGrouped.basic.includes(field.name));
     const notesFields = form.filter((field) => projectDescriptionFieldsGrouped.notes.includes(field.name));
     const technicalFields = form.filter((field) => projectDescriptionFieldsGrouped.technical.includes(field.name));
@@ -40,31 +50,30 @@ const ProjectDescription = (props) => {
 
   const dispatch = useDispatch();
   const project = useSelector(state => state.project.project);
+  const mainMenuPage = useSelector(state => state.settingsPanel.settingsPageVisible);
   const [projectDescription, setProjectDescription] = useState({
     project_name: project.description.project_name,
     start_date: project.description.start_date || new Date(),
     end_date: project.description.end_date || new Date(),
     notes: project.description.notes,
-    gps_datum: project.description.gps_datum,
-    magnetic_declination: project.description.magnetic_declination,
+    gps_datum: project.description.gps_datum || 'WGS84 (Default)',
+    magnetic_declination: project.description.magnetic_declination || 0,
     purpose_of_study: project.description.purpose_of_study,
     other_team_members: project.description.other_team_members,
     areas_of_interest: project.description.areas_of_interest,
     instruments: project.description.instruments,
   });
-  // const [startDate, setStartDate] = useState(new Date());
-  // const [endDate, setEndDate] = useState(new Date());
-  const [label, setLabel] = useState();
-  const [text, setText] = useState(projectDescription[label]);
+  const [magDecValidation, setMagDecValidation] = useState(false);
+  const [validationErrorMessage, setValidationErrorMessage] = useState('');
+  const [selectedField, setSelectedField] = useState();
   const [showEditingModal, setShowEditingModal] = useState(false);
   const [showStartPicker, setShowStartPicker] = useState(false);
   const [showEndPicker, setShowEndPicker] = useState(false);
   const fields = getInitialFields();
 
   useEffect(() => {
-    console.log('Fields in UE', fields);
-    console.log('Description Updated', projectDescription);
-  }, [fields]);
+    // console.log('UE MagDec', magDecValidation, 'MagDec value', projectDescription.magnetic_declination);
+  }, [magDecValidation, projectDescription.magnetic_declination]);
 
   const changeStartDate = (event, date) => {
     // date = date || projectDescription.start_date;
@@ -103,7 +112,7 @@ const ProjectDescription = (props) => {
             size={20}
           />
         }
-        title={'Active Project'}
+        title={mainMenuPage === SettingsMenuItems.MANAGE.MY_STRABOSPOT ? 'My StraboSpot' : 'Active Project'}
         type={'clear'}
         containerStyle={{flex: 0, padding: 4}}
         titleStyle={styles.buttonText}
@@ -195,45 +204,74 @@ const ProjectDescription = (props) => {
   };
 
   const renderEditingModal = () => {
-    return (
-      <EditingModal
-        visible={showEditingModal}
-        dialogTitle={label}
-        cancel={() => setShowEditingModal(false)}
-        confirm={() => setShowEditingModal(false)}
-      >
-        <View style={{}}>
-          <TextInput
-            numberOfLines={4}
-            multiline={true}
-            onChangeText={(val) => setText({val})}
-            value={projectDescription.purpose_of_study}
-            style={{backgroundColor: 'white', height: 250, width: 250}}
-          />
-        </View>
-      </EditingModal>
-    );
+    if (selectedField) {
+      if (selectedField.name === 'gps_datum' || selectedField.name === 'magnetic_declination') {
+        return (
+          <EditingModal
+            visible={showEditingModal}
+            dialogTitle={selectedField && selectedField.label}
+            disabled={selectedField.name === 'magnetic_declination' && !magDecValidation}
+            confirm={() => setShowEditingModal(false)}
+          >
+            <View style={{flex: 1, alignItems: 'center'}}>
+              <TextInput
+                keyboardType={selectedField.name === 'magnetic_declination' ? 'number-pad' : 'default'}
+                onChangeText={(val) => selectedField.name === 'magnetic_declination' ? validateMagField(val) :
+                  setProjectDescription({...projectDescription, [selectedField.name]: val})}
+                defaultValue={projectDescription[selectedField.name].toString()}
+                style={{backgroundColor: 'white', padding: 15, width: 250}}
+              />
+            </View>
+            <View style={styles.dialogConfirmText}>
+              <Text style={styles.dialogContentImportantText}>{validationErrorMessage}</Text>
+            </View>
+          </EditingModal>
+        );
+      }
+      else {
+        return (
+          <EditingModal
+            visible={showEditingModal}
+            dialogTitle={selectedField && selectedField.label}
+            confirm={() => setShowEditingModal(false)}
+          >
+            <View style={{}}>
+              <TextInput
+                numberOfLines={4}
+                multiline={true}
+                onChangeText={(val) => setProjectDescription({...projectDescription, [selectedField.name]: val})}
+                value={projectDescription[selectedField.name]}
+                style={{backgroundColor: 'white', maxHeight: 200, padding: 15, width: 250}}
+              />
+            </View>
+          </EditingModal>
+        );
+      }
+    }
   };
 
-  const renderListItemFields = (field, i, obj) => (
-    <ListItem
-      key={field.name}
-      title={field.label}
-      titleStyle={styles.listItemTitleAndValue}
-      rightTitle={projectDescription[field.name] ? truncateText(projectDescription[field.name], 10) : 'None'}
-      containerStyle={styles.projectDescriptionListContainer}
-      rightContentContainerStyle={styles.listItemTitleAndValue}
-      bottomDivider={i < obj.length - 1}
-      onPress={() => toggleEditingModal(field.label, projectDescription[field.name])}
-      chevron
-    />
-  );
-
-  const toggleEditingModal = (name, value) => {
-    console.log(value)
-    console.log(name)
+  const renderListItemFields = (field, i, obj) => {
+    const fieldName = projectDescription && projectDescription[field.name] ?
+      truncateText(projectDescription[field.name], 15).toString() : 'None';
+    return (
+      <ListItem
+        key={field.name}
+        title={field.label}
+        titleStyle={styles.listItemTitleAndValue}
+        rightTitle={fieldName}
+        containerStyle={styles.projectDescriptionListContainer}
+        rightContentContainerStyle={styles.listItemTitleAndValue}
+        bottomDivider={i < obj.length - 1}
+        onPress={() => toggleEditingModal(field)}
+        chevron
+      />
+    );
+  };
+  const toggleEditingModal = (field) => {
+    // console.log(value)
+    console.log(field);
     setShowEditingModal(true);
-    setLabel(name);
+    setSelectedField(field);
   };
 
   const renderGeneralDetails = () => (
@@ -245,8 +283,11 @@ const ProjectDescription = (props) => {
   const renderSaveAndCloseButtons = () => {
     return (
       <SaveAndCloseButtons
-        cancel={() => goBack()}
-        save={() => saveAndGo()}/>
+        cancel={() => {
+          setProjectDescription(project.description);
+          goBack();
+        }}
+        save={() => saveProjectDescriptionAndGo()}/>
     );
   };
 
@@ -256,9 +297,28 @@ const ProjectDescription = (props) => {
     </View>
   );
 
-  const saveAndGo = async () => {
+  const saveProjectDescriptionAndGo = async () => {
     await dispatch({type: projectReducers.UPDATE_PROJECT, field: 'description', value: projectDescription});
     goBack();
+  };
+
+  const regexTest = (value) => {
+    const regex = /^([0-9]{1,2}|1[0-7][0-9]|180)$/g;
+    return regex.test(value);
+  };
+
+  const validateMagField = (val) => {
+    if (selectedField && selectedField.name === 'magnetic_declination') {
+      if (regexTest(val)) {
+        setMagDecValidation(true);
+        setValidationErrorMessage('');
+        setProjectDescription({...projectDescription, [selectedField.name]: val.trim()});
+      }
+      else {
+        setMagDecValidation(false);
+        setValidationErrorMessage('Must be between 0 and 180');
+      }
+    }
   };
 
   return (
@@ -283,7 +343,7 @@ const ProjectDescription = (props) => {
           <Divider sectionText={'general details'}/>
           {renderGeneralDetails()}
         </ScrollView>
-          {renderEditingModal()}
+        {renderEditingModal()}
       </View>
     </React.Fragment>
   );

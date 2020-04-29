@@ -1,6 +1,8 @@
-import {PropTypes} from 'prop-types';
 import React from 'react';
 import {Text, TextInput, View} from 'react-native';
+
+import PropTypes from 'prop-types';
+
 import {isEmpty} from '../../shared/Helpers';
 
 // Styles
@@ -38,7 +40,7 @@ NumberInputField.propTypes = {
     name: PropTypes.string.isRequired,
     onBlur: PropTypes.func.isRequired,
     onChange: PropTypes.func.isRequired,
-    // value: PropTypes.number,
+    //value: PropTypes.number,
   }).isRequired,
   form: PropTypes.shape({
     errors: PropTypes.object.isRequired,

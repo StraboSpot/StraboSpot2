@@ -1,6 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {Alert, Animated, Dimensions, Easing, Platform, Text, View} from 'react-native';
-import NetInfo from '@react-native-community/netinfo';
 import MapView from '../maps/Map';
 import InitialProjectLoadModal from '../project/InitialProjectLoadModal';
 import MapActionsDialog from './MapActionsDialogBox';
@@ -35,7 +34,6 @@ import {Button, Image} from 'react-native-elements';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import homeStyles from './home.style';
 import settingPanelStyles from '../main-menu-panel/mainMenuPanel.styles';
-import vectorIcon from 'react-native-vector-icons/Ionicons';
 import IconButton from '../../shared/ui/IconButton';
 import VertexDrag from '../maps/VertexDrag';
 import {animatePanels, isEmpty} from '../../shared/Helpers';
@@ -87,6 +85,7 @@ const Home = (props) => {
   const isErrorMessagesModalVisible = useSelector(state => state.home.isErrorMessagesModalVisible);
   const isInfoMessagesModalVisible = useSelector(state => state.home.isInfoModalVisible);
   const isProjectLoadSelectionModalVisible = useSelector(state => state.home.isProjectLoadSelectionModalVisible);
+  const isMainMenuPanelVisible = useSelector( state => state.home.isSettingsPanelVisible);
 
   // const imagesCount = useSelector(state => state.home.imageProgress.imagesDownloadedCount);
   // const imagesNeeded = useSelector(state => state.home.imageProgress.neededImageIds);
@@ -123,7 +122,7 @@ const Home = (props) => {
     // else Orientation.lockToLandscapeLeft();
     Dimensions.addEventListener('change', deviceOrientation);
     console.log('Initializing Home page');
-    initialize().then((res) => dispatch({type: homeReducers.SET_PROJECT_LOAD_SELECTION_MODAL_VISIBLE, value: res}));
+    initialize().then((res) => dispatch({type: homeReducers.SET_PROJECT_LOAD_SELECTION_MODAL_VISIBLE, bool: res}));
     return function cleanup() {
       Dimensions.removeEventListener('change', deviceOrientation);
     };
@@ -241,6 +240,7 @@ const Home = (props) => {
       // Map Actions
       case 'zoom':
         console.log(`${name}`, ' was clicked');
+        mapViewComponent.current.zoomToSpotsExtent();
         break;
       case 'saveMap':
         toggleOfflineMapModal();
@@ -273,7 +273,7 @@ const Home = (props) => {
 
   const closeInitialProjectLoadModal = () => {
     console.log('Starting Project...');
-    dispatch({type: homeReducers.SET_PROJECT_LOAD_SELECTION_MODAL_VISIBLE, value: false});
+    dispatch({type: homeReducers.SET_PROJECT_LOAD_SELECTION_MODAL_VISIBLE, bool: false});
   };
 
   const closeNotebookPanel = () => {
@@ -282,6 +282,12 @@ const Home = (props) => {
     animatePanels(rightsideIconAnimationValue, 0);
     props.setNotebookPanelVisible(false);
     props.setAllSpotsPanelVisible(false);
+  };
+
+  const closeSidePanel = () => {
+    console.log('Closing Side Panel');
+    dispatch({type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE, bool: false});
+    animatePanels(mainMenuSidePanelAnimation, -mainMenuSidePanelWidth);
   };
 
   const deleteSpot = id => {
@@ -300,7 +306,7 @@ const Home = (props) => {
           onPress: () => {
             useSpots.deleteSpot(id)
               .then((res) => {
-                console.log(res)
+                console.log(res);
                 closeNotebookPanel();
               });
           },
@@ -333,9 +339,8 @@ const Home = (props) => {
   const goToCurrentLocation = async () => {
     useHome.toggleLoading(true);
     try {
-      await mapViewComponent.current.setCurrentLocation();
-      useHome.toggleLoading(false);
       await mapViewComponent.current.goToCurrentLocation();
+      useHome.toggleLoading(false);
     }
     catch {
       useHome.toggleLoading(false);
@@ -344,12 +349,13 @@ const Home = (props) => {
   };
 
   const flingHandlerSettingsPanel = ({nativeEvent}) => {
-    if (props.homePanelVisible) {
+    if (isMainMenuPanelVisible) {
       if (nativeEvent.oldState === State.ACTIVE) {
-        console.log('FLING TO CLOSE Settings Panel!', nativeEvent);
+        console.log('FLING TO CLOSE Main Menu Panel!', nativeEvent);
         animatePanels(settingsPanelAnimation, -homeMenuPanelWidth);
         props.setHomePanelPageVisible(SettingsMenuItems.SETTINGS_MAIN);
         props.setHomePanelVisible(false);
+        dispatch({type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE, bool: false});
         animatePanels(leftsideIconAnimationValue, 0);
       }
     }
@@ -400,10 +406,15 @@ const Home = (props) => {
 
   const openNotebookPanel = pageView => {
     console.log('notebook opening', pageView);
-    props.setNotebookPageVisible(pageView);
+    props.setNotebookPageVisible(pageView || NotebookPages.OVERVIEW);
     animatePanels(animation, 0);
     animatePanels(rightsideIconAnimationValue, -notebookPanelWidth);
     props.setNotebookPanelVisible(true);
+  };
+
+  const openSidePanel = () => {
+    animatePanels(mainMenuSidePanelAnimation, 300);
+    dispatch({type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE, bool: true});
   };
 
   const renderAllSpotsPanel = () => {
@@ -427,16 +438,18 @@ const Home = (props) => {
   const renderInfoDialogBox = () => {
     return (
       <StatusDialogBox
-        dialogTitle={'Whoops...'}
+        dialogTitle={'Status Info'}
         style={sharedDialogStyles.dialogWarning}
         visible={isInfoMessagesModalVisible}
-        onTouchOutside={() => dispatch({type: homeReducers.SET_INFO_MESSAGES_MODAL_VISIBLE, value: false})}
+        onTouchOutside={() => dispatch({type: homeReducers.SET_INFO_MESSAGES_MODAL_VISIBLE, bool: false})}
       >
-        <Text style={sharedDialogStyles.dialogStatusMessageText}>{statusMessages.join('\n')}</Text>
+        <View style={{margin: 15}}>
+          <Text style={sharedDialogStyles.dialogStatusMessageText}>{statusMessages.join('\n')}</Text>
+        </View>
         <Button
           title={'OK'}
           type={'clear'}
-          onPress={() => dispatch({type: homeReducers.SET_INFO_MESSAGES_MODAL_VISIBLE, value: false})}
+          onPress={() => dispatch({type: homeReducers.SET_INFO_MESSAGES_MODAL_VISIBLE, bool: false})}
         />
       </StatusDialogBox>
     );
@@ -448,13 +461,12 @@ const Home = (props) => {
           dialogTitle={'Error...'}
           style={sharedDialogStyles.dialogWarning}
           visible={isErrorMessagesModalVisible}
-          onTouchOutside={() => dispatch({type: homeReducers.SET_ERROR_MESSAGES_MODAL_VISIBLE, value: false})}
         >
           <Text style={sharedDialogStyles.dialogStatusMessageText}>{statusMessages.join('\n')}</Text>
           <Button
             title={'OK'}
             type={'clear'}
-            onPress={() => dispatch({type: homeReducers.SET_ERROR_MESSAGES_MODAL_VISIBLE, value: false})}
+            onPress={() => dispatch({type: homeReducers.SET_ERROR_MESSAGES_MODAL_VISIBLE, bool: false})}
           />
         </StatusDialogBox>
       )
@@ -475,26 +487,28 @@ const Home = (props) => {
         dialogTitle={'Status'}
         style={sharedDialogStyles.dialogTitleSuccess}
         visible={isStatusMessagesModalVisible}
-        onTouchOutside={() => dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, value: false})}
+        onTouchOutside={() => dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, bool: false})}
         // disabled={progress !== 1 && !uploadErrors}
       >
-        <View style={{height: 100}}>
-
-            {isLoading ?
+        <View style={{minHeight: 100}} >
+            {isLoading.modal &&
               <View style={{flex: 1}}>
               <BallIndicator
                 color={'darkgrey'}
                 count={8}
                 size={30}
               />
-              </View>
-              : null}
+              </View>}
           <View style={{flex: 1, paddingTop: 15}}>
             <Text style={{textAlign: 'center'}}>{statusMessages.join('\n')}</Text>
-            {statusMessages.includes('Download Complete!') || statusMessages.includes('Upload Complete!') ? <Button
+            {statusMessages.includes('Download Complete!') || statusMessages.includes('Upload Complete!')
+            || statusMessages.includes('There are no active datasets.')
+            || statusMessages.includes('Project Backup Complete!')
+            || statusMessages.includes('Project loaded.')
+              ? <Button
               title={'OK'}
               type={'clear'}
-              onPress={() => dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, value: false})}
+              onPress={() => dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, bool: false})}
             /> : null}
           </View>
         </View>
@@ -559,7 +573,7 @@ const Home = (props) => {
   };
 
   const toggleHomeDrawerButton = () => {
-    if (props.homePanelVisible) {
+    if (isMainMenuPanelVisible) {
       props.setHomePanelVisible(false);
       props.setHomePanelPageVisible(SettingsMenuItems.SETTINGS_MAIN);
       animatePanels(settingsPanelAnimation, -homeMenuPanelWidth);
@@ -604,7 +618,7 @@ const Home = (props) => {
     >
       <Animated.View style={[settingPanelStyles.settingsDrawer, animateSettingsPanel]}>
         <SettingsPanel
-          openSidePanel={() => animatePanels(mainMenuSidePanelAnimation, 300)}
+          openSidePanel={() => openSidePanel()}
           closeHomePanel={() => toggleHomeDrawerButton()}
           openNotebookPanel={(pageView) => openNotebookPanel(pageView)}/>
       </Animated.View>
@@ -613,10 +627,7 @@ const Home = (props) => {
   const projectDescriptionSidePanel =
     <Animated.View style={[projectStyles.projectDescriptionPanel, animateMainMenuSidePanel]}>
       <ProjectDescription
-        closeSidePanel={() => {
-        console.log('Closing Side Panel')
-        animatePanels(mainMenuSidePanelAnimation, -mainMenuSidePanelWidth)
-      }}/>
+        closeSidePanel={() => closeSidePanel()}/>
     </Animated.View>;
 
   const notebookPanel =
@@ -679,7 +690,7 @@ const Home = (props) => {
         openNotebookOnSelectedSpot={() => openNotebookPanel()}
       />
       {props.vertexStartCoords && <VertexDrag/>}
-      {isLoading && <LoadingSpinner/>}
+      {/*{isLoading && <LoadingSpinner/>}*/}
           <ToastPopup toastRef={toastRef} />
       {Platform.OS === 'ios' &&
       <Animated.View style={leftsideIconAnimation}>
@@ -895,7 +906,7 @@ const Home = (props) => {
       {notebookPanel}
       {props.isAllSpotsPanelVisible && renderAllSpotsPanel()}
       {homeDrawer}
-      {!isEmpty(project) && projectDescriptionSidePanel}
+      {!isEmpty(project) && isMainMenuPanelVisible && projectDescriptionSidePanel}
       {renderLoadProjectFromModal()}
       {renderStatusDialogBox()}
       {renderInfoDialogBox()}
@@ -926,13 +937,11 @@ function mapStateToProps(state) {
     vertexStartCoords: state.map.vertexStartCoords,
     userData: state.user.userData,
     homePageVisible: state.settingsPanel.settingsPageVisible,
-    homePanelVisible: state.home.isSettingsPanelVisible,
+    // homePanelVisible: state.home.isSettingsPanelVisible,
   };
 }
 
 const mapDispatchToProps = {
-  setLoading: (bool) => ({type: homeReducers.SET_LOADING, bool: bool}),
-  setIsOnline: (online) => ({type: homeReducers.SET_ISONLINE, online: online}),
   setHomePanelVisible: (value) => ({type: homeReducers.SET_SETTINGS_PANEL_VISIBLE, value: value}),
   setHomePanelPageVisible: (name) => ({type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: name}),
   setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),

@@ -1,17 +1,22 @@
 import React, {useState} from 'react';
-import {FlatList, ScrollView, View} from 'react-native';
+import {FlatList, View} from 'react-native';
+
 import {connect} from 'react-redux';
 import {Button} from 'react-native-elements';
-import {notebookReducers, NotebookPages} from '../notebook-panel/notebook.constants';
+
+// Components
+import MeasurementItem from './MeasurementItem';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import SectionDivider from '../../shared/ui/SectionDivider';
-import MeasurementItem from './MeasurementItem';
+
+// Constants
 import {homeReducers, Modals} from '../home/home.constants';
+import {notebookReducers, NotebookPages} from '../notebook-panel/notebook.constants';
 import {spotReducers} from '../spots/spot.constants';
 
 // Styles
-import styles from './measurements.styles';
 import * as themes from '../../shared/styles.constants';
+import styles from './measurements.styles';
 
 const MeasurementsPage = (props) => {
   const [multiSelectMode, setMultiSelectMode] = useState();
@@ -95,7 +100,7 @@ const MeasurementsPage = (props) => {
     const data = getSectionData(type);
     const selectedIds = getIdsOfSelected();
     return (
-      <View style={{height: '25%'}}>
+      <View style={{maxHeight: '25%'}}>
         <FlatList
           data={data}
           renderItem={item =>
@@ -178,14 +183,12 @@ const MeasurementsPage = (props) => {
             props.setModalVisible(null);
           }}
         />
-        {/*<View>*/}
-          {renderSectionDivider(sectionTypes.PLANAR)}
-          {props.spot.properties.orientation_data && renderMeasurements(sectionTypes.PLANAR)}
-          {renderSectionDivider(sectionTypes.LINEAR)}
-          {props.spot.properties.orientation_data && renderMeasurements(sectionTypes.LINEAR)}
-          {renderSectionDivider(sectionTypes.PLANARLINEAR)}
-          {props.spot.properties.orientation_data && renderMeasurements(sectionTypes.PLANARLINEAR)}
-        {/*</View>*/}
+        {renderSectionDivider(sectionTypes.PLANAR)}
+        {props.spot.properties.orientation_data && renderMeasurements(sectionTypes.PLANAR)}
+        {renderSectionDivider(sectionTypes.LINEAR)}
+        {props.spot.properties.orientation_data && renderMeasurements(sectionTypes.LINEAR)}
+        {renderSectionDivider(sectionTypes.PLANARLINEAR)}
+        {props.spot.properties.orientation_data && renderMeasurements(sectionTypes.PLANARLINEAR)}
       </View>
     );
   };

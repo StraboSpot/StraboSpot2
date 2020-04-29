@@ -3,7 +3,6 @@ import {View} from 'react-native';
 
 import * as turf from '@turf/turf/index';
 import {connect, useSelector} from 'react-redux';
-import Geolocation from '@react-native-community/geolocation';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 
 import {CustomBasemap, MacrostratBasemap, MapboxOutdoorsBasemap, MapboxSatelliteBasemap, OSMBasemap} from './Basemaps';
@@ -44,7 +43,6 @@ const map = React.forwardRef((props, ref) => {
     spotsSelected: [],
   };
 
-  const [userLocationCoords, setUserLocationCoords] = useState([LONGITUDE, LATITUDE]);
   const [editingModeData, setEditingModeData] = useState(initialEditingModeData);
   const [mapPropsMutable, setMapPropsMutable] = useState(initialMapPropsMutable);
 
@@ -61,8 +59,7 @@ const map = React.forwardRef((props, ref) => {
 
   useEffect(() => {
     console.log('Updating DOM on first render');
-    setCurrentLocation()
-      .catch(err => console.log('Error setting current location:', err));
+    setCurrentLocationAsCenter();
     props.clearVertexes();
     setDisplayedSpots(isEmpty(props.selectedSpot) ? [] : [{...props.selectedSpot}]);
   }, []);
@@ -95,12 +92,11 @@ const map = React.forwardRef((props, ref) => {
 
   // Set selected and not selected Spots to display when not editing
   const setDisplayedSpots = async (selectedSpots) => {
-    const mappableSpots = useMaps.setDisplayedSpots(selectedSpots);
-    console.log('Mappable Spots', mappableSpots);
+    let [selectedDisplayedSpots, notSelectedDisplayedSpots] = useMaps.getDisplayedSpots(selectedSpots);
     setMapPropsMutable(m => ({
       ...m,
-      spotsSelected: [...mappableSpots[0]],
-      spotsNotSelected: [...mappableSpots[1]],
+      spotsSelected: [...selectedDisplayedSpots],
+      spotsNotSelected: [...notSelectedDisplayedSpots],
     }));
   };
 
@@ -450,19 +446,23 @@ const map = React.forwardRef((props, ref) => {
   const goToCurrentLocation = async () => {
     if (camera.current) {
       try {
-        await camera.current.flyTo(userLocationCoords, 12000);
+        const currentLocation = await useMaps.getCurrentLocation();
+        await camera.current.flyTo(currentLocation, 2500);
       }
       catch (err) {
         throw Error('Error Flying to Current Location', err);
       }
     }
-    else throw Error('Error Flying to Current Location');
+    else throw Error('Error Getting Map Camera');
   };
 
-  // Get the current location from the device and set it in the state
-  const setCurrentLocation = async () => {
-    const currentLocation = await useMaps.setCurrentLocation();
-    setUserLocationCoords([currentLocation[0], currentLocation[1]]);
+  // Get the current location from the device and set it in the state as the map center
+  const setCurrentLocationAsCenter = async () => {
+    const currentLocation = await useMaps.getCurrentLocation();
+    setMapPropsMutable(m => ({
+      ...m,
+      centerCoordinate: currentLocation,
+    }));
   };
 
   const endDraw = async () => {
@@ -642,8 +642,9 @@ const map = React.forwardRef((props, ref) => {
       // In getFeatureInRect the function queryRenderedFeaturesInRect returns a feature with coordinates
       // truncated to 5 decimal places so get the matching feature with full coordinates using a temp Id
       // spotFound = props.spots[spotFound.properties.id];
-      spotFound = [...mapProps.spotsNotSelected, ...mapProps.spotsSelected].find(
-        spot => spot.properties.id === spotFound.properties.id);
+      // spotFound = [...mapProps.spotsNotSelected, ...mapProps.spotsSelected].find(
+      //   spot => spot.properties.id === spotFound.properties.id);
+      spotFound = useSpots.getSpotById(spotFound.properties.id);
       console.log('Got Spot at press: ', spotFound);
     }
     return Promise.resolve(...[spotFound]);
@@ -705,6 +706,24 @@ const map = React.forwardRef((props, ref) => {
     return [line, newPointOnLine];
   };
 
+  // Zoom map to the extent of the mapped Spots
+  const zoomToSpotsExtent = () => {
+    if (camera.current) {
+      try {
+        const mappedSpots = [...mapProps.spotsSelected, ...mapProps.spotsNotSelected];
+        if (mappedSpots.length > 0) {
+          const features = turf.featureCollection(mappedSpots);
+          const [minX, minY, maxX, maxY] = turf.bbox(features);  //bbox extent in minX, minY, maxX, maxY order
+          camera.current.fitBounds([maxX, minY], [minX, maxY], 40, 2500);
+        }
+      }
+      catch (err) {
+        throw Error('Error Zooming To Extent of Spots', err);
+      }
+    }
+    else throw Error('Error Getting Map Camera');
+  };
+
   useImperativeHandle(props.mapComponentRef, () => {
     return {
       cancelDraw: cancelDraw,
@@ -718,8 +737,8 @@ const map = React.forwardRef((props, ref) => {
       goToCurrentLocation: goToCurrentLocation,
       moveVertex: moveVertex,
       saveEdits: saveEdits,
-      setCurrentLocation: setCurrentLocation,
       setPointAtCurrentLocation: setPointAtCurrentLocation,
+      zoomToSpotsExtent: zoomToSpotsExtent,
     };
   });
 

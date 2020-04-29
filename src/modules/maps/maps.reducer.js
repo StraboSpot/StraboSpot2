@@ -2,13 +2,19 @@ import {mapReducers, basemaps} from './maps.constants';
 
 const initialState = {
   currentBasemap: basemaps.mapboxOutdoors,
-  offlineMaps: [],
+  offlineMaps: {},
+  customMaps: [],
   vertexStartCoords: undefined,
   vertexEndCoords: undefined,
 };
 
 export const mapReducer = (state = initialState, action) => {
   switch (action.type) {
+    case mapReducers.ADD_CUSTOM_MAPS_FROM_DEVICE:
+      return {
+        ...state,
+        customMaps: action.customMaps,
+      };
     case mapReducers.CURRENT_BASEMAP:
       // console.log('Current Basemap in Reducer', action.basemap);
       return {
@@ -25,7 +31,7 @@ export const mapReducer = (state = initialState, action) => {
       console.log('Setting offline maps: ', action.offlineMaps);
       return {
         ...state,
-        offlineMaps: action.offlineMaps,
+        offlineMaps: {...state.offlineMaps, ...action.offlineMaps},
       };
     case mapReducers.DELETE_OFFLINE_MAP:
       console.log('Deleting Offline Map: ', action.offlineMap);

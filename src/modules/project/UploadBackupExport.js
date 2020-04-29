@@ -1,26 +1,47 @@
 import React, {useState} from 'react';
-import {FlatList, Text, View} from 'react-native';
+import {FlatList, Text, TextInput, View} from 'react-native';
 import Divider from '../main-menu-panel/MainMenuPanelDivider';
 import {Button} from 'react-native-elements';
-import commonStyles from '../../shared/common.styles';
+import moment from 'moment';
+
 import {homeReducers} from '../home/home.constants';
-import styles from './project.styles';
 import {useDispatch, useSelector} from 'react-redux';
 import UploadDialogBox from './UploadDialogBox';
+import useExportHook from './useExport';
 import useImagesHook from '../images/useImages';
 import useProjectHook from './useProject';
 
+// Styles
+import projectStyles from './project.styles';
+import commonStyles from '../../shared/common.styles';
+import Spacer from '../../shared/ui/Spacer';
+
 const UploadBackAndExport = (props) => {
+  const [useExport] = useExportHook();
   const [useImages] = useImagesHook();
   const [useProject] = useProjectHook();
-  const [activeDatasets, setActiveDatasets] = useState(null);
-  const [isUploadDialogVisible, setIsUploadDialogVisible] = useState(false);
   const dispatch = useDispatch();
   const datasets = useSelector(state => state.project.datasets);
   const isOnline = useSelector(state => state.home.isOnline);
+  const project = useSelector(state => state.project.project);
+  const [activeDatasets, setActiveDatasets] = useState(null);
+  const [dialogBoxType, setDialogBoxType] = useState(null);
+  const [isUploadDialogVisible, setIsUploadDialogVisible] = useState(false);
+  const [exportFileName, setExportFileName] = useState(moment(new Date()).format('YYYY-MM-DD_hmma') + '_' + project.description.project_name);
 
-  const onBackupProject = () => {
-    console.log('onBackupProject');
+  const backupToDevice = async () => {
+    setIsUploadDialogVisible(false);
+    dispatch({type: 'CLEAR_STATUS_MESSAGES'});
+    dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'Backing up Project to Device...'});
+    dispatch({type: homeReducers.SET_LOADING, view: 'modal', bool: true});
+    dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, bool: true});
+    await useExport.backupProjectToDevice(exportFileName);
+    console.log(`File ${exportFileName} has been backed up`);
+    // dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
+    dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: '---------------'});
+    dispatch({type: homeReducers.SET_LOADING, view: 'modal', bool: false});
+    await dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'Project Backup Complete!'});
+
   };
 
   const onShareProjectAsCSV = () => {
@@ -35,7 +56,13 @@ const UploadBackAndExport = (props) => {
     console.log('onShareProjectAsShapefile');
   };
 
+  const initializeBackup = () => {
+    setDialogBoxType('backup');
+    setIsUploadDialogVisible(true);
+  };
+
   const initializeUpload = () => {
+    setDialogBoxType('upload');
     console.log('Initializing Upload');
     const filteredDatasets = Object.values(datasets).filter(dataset => {
       return dataset.active === true;
@@ -45,7 +72,6 @@ const UploadBackAndExport = (props) => {
   };
 
   const upload = () => {
-    // dispatch({type: homeReducers.SET_LOADING, bool: true});
     return uploadProject()
       .then(uploadDatasets)
       .catch(err => {
@@ -55,7 +81,7 @@ const UploadBackAndExport = (props) => {
       })
       .finally(() => {
           useImages.deleteTempImagesFolder().then(()=> {
-            dispatch({type: homeReducers.SET_LOADING, value: false});
+            dispatch({type: homeReducers.SET_LOADING, view: 'modal', bool: false});
             dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Upload Complete!'});
           });
         },
@@ -87,7 +113,7 @@ const UploadBackAndExport = (props) => {
           title={'Backup project to device'}
           buttonStyle={commonStyles.standardButton}
           titleStyle={commonStyles.standardButtonText}
-          onPress={() => onBackupProject()}
+          onPress={() => initializeBackup()}
         />
       </View>
     );
@@ -129,37 +155,67 @@ const UploadBackAndExport = (props) => {
     return <Text>{name.length > maxLength ? '- ' + truncated : '- ' + name}</Text>;
   };
 
-  const renderUploadDialogBox = () => (
-    <UploadDialogBox
-      dialogTitle={'UPLOAD WARNING!'}
-      visible={isUploadDialogVisible}
-      cancel={() => setIsUploadDialogVisible(false)}
-      onPress={() => upload()}
-    >
-      <View>
-        <Text>The following project properties and the active datasets will be uploaded and will
-          <Text style={styles.dialogContentText}> OVERWRITE</Text> the project
-          properties and selected datasets on the server: </Text>
-        <View style={{alignItems: 'center', paddingTop: 15}}>
-          <FlatList
-            data={activeDatasets}
-            keyExtractor={item => item.id.toString()}
-            renderItem={({item}) => renderNames(item)}
-          />
-        </View>
-        <Text style={{textAlign: 'center', paddingTop: 15}}>Do you want to continue?</Text>
-      </View>
-    </UploadDialogBox>
-  );
+  const renderDialogBox = () => {
+    if (dialogBoxType === 'upload') {
+      return (
+        <UploadDialogBox
+          dialogTitle={'UPLOAD WARNING!'}
+          visible={isUploadDialogVisible}
+          cancel={() => setIsUploadDialogVisible(false)}
+          buttonText={'Upload'}
+          onPress={() => upload()}
+        >
+          <View>
+            <Text>The following project properties and the active datasets will be uploaded and will
+              <Text style={projectStyles.dialogContentImportantText}> OVERWRITE</Text> the project
+              properties and selected datasets on the server: </Text>
+            <View style={{alignItems: 'center', paddingTop: 15}}>
+              <FlatList
+                data={activeDatasets}
+                keyExtractor={item => item.id.toString()}
+                renderItem={({item}) => renderNames(item)}
+              />
+            </View>
+            <Text style={projectStyles.dialogConfirmText}>Do you want to continue?</Text>
+          </View>
+        </UploadDialogBox>
+      );
+    }
+    else if (dialogBoxType === 'backup') {
+      const fileName = exportFileName.replace(/\s/g, '');
+      return (
+        <UploadDialogBox
+          dialogTitle={'Confirm or Change Folder Name'}
+          visible={isUploadDialogVisible}
+          cancel={() => setIsUploadDialogVisible(false)}
+          onPress={() => backupToDevice()}
+          buttonText={'Backup'}
+          disabled={exportFileName === ''}
+        >
+          <View >
+            <Text>If you change the folder name please do not use spaces, special characters (except a dash or underscore) or add a file extension.</Text>
+            <View style={projectStyles.dialogContent}>
+              <TextInput
+                value={fileName}
+                onChangeText={text => setExportFileName(text)}
+                style={commonStyles.dialogInputContainer}
+              />
+            </View>
+          </View>
+        </UploadDialogBox>
+      );
+    }
+  };
 
   return (
     <React.Fragment>
       <Divider sectionText={'upload and backup'}/>
+      <Spacer/>
       {renderUploadAndBackupButtons()}
-      <Divider sectionText={'export'}/>
-      {renderExportButtons()}
-      <Divider sectionText={'restore project from backup'}/>
-      {renderUploadDialogBox()}
+      {/*<Divider sectionText={'export'}/>*/}
+      {/*{renderExportButtons()}*/}
+      {/*<Divider sectionText={'restore project from backup'}/>*/}
+      {renderDialogBox()}
     </React.Fragment>
   );
 };

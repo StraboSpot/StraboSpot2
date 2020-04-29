@@ -2,17 +2,25 @@ import {StyleSheet} from 'react-native';
 import * as themes from './styles.constants';
 
 const commonStyles = StyleSheet.create({
+  buttonContainer: {
+    paddingTop: 10
+  },
   dialogContent: {
+    flex: 1,
     marginTop: 15,
     alignItems: 'center',
   },
   dialogBox: {
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
     borderRadius: 30,
+    position: 'absolute',
+    top: '15%',
   },
-  // dialogTitle: {
-  //   backgroundColor: 'red',
-  // },
+  dialogInputContainer: {
+    width: 250,
+    height: 40,
+    backgroundColor: 'white',
+  },
   dialogTitleError: {
     backgroundColor: 'red',
   },
@@ -28,8 +36,9 @@ const commonStyles = StyleSheet.create({
     textAlign: 'center',
   },
   dialogStatusMessageText: {
-    fontWeight: 'bold',
+    fontWeight: '400',
     fontSize: themes.STATUS_MESSAGE_TEXT_SIZE,
+    textAlign: 'center'
   },
   dialogButton: {
     borderTopWidth: 1,
@@ -89,6 +98,7 @@ const commonStyles = StyleSheet.create({
   standardDescriptionText: {
     color: themes.SECONDARY_ITEM_TEXT_COLOR,
     fontSize: themes.SMALL_TEXT_SIZE,
+    textAlign: 'right',
   },
 });
 

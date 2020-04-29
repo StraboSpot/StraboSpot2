@@ -58,7 +58,7 @@ const MainMenuPanel = props => {
     case SettingsMenuItems.MANAGE.MY_STRABOSPOT:
       page =
         <View style={styles.settingsPanelContainer}>
-          <MyStraboSpot closeHomePanel={props.closeHomePanel}/>
+          <MyStraboSpot openSidePanel={props.openSidePanel} closeHomePanel={props.closeHomePanel}/>
         </View>;
       break;
     case SettingsMenuItems.MANAGE.ACTIVE_PROJECTS:
@@ -74,7 +74,7 @@ const MainMenuPanel = props => {
       page =
         <View style={styles.settingsPanelContainer}>
           <UploadBackupAndExport/>
-      </View>
+      </View>;
         break;
     case SettingsMenuItems.APP_PREFERENCES.SHORTCUTS:
       page =
