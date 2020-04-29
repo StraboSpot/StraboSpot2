@@ -1,7 +1,7 @@
 
 import React, {useState, useRef ,useEffect} from 'react';
 import {ActivityIndicator, Alert, FlatList, ScrollView, Text, View} from 'react-native';
-import {setForm} from '../form/form.container';
+//import {setForm} from '../form/form.container';
 import {connect} from 'react-redux';
 import * as SharedUI from '../../shared/ui/index';
 import {homeReducers} from '../home/home.constants';
@@ -97,7 +97,7 @@ const ImageBaseMaps = (props) => {
 
   const openImageBaseMap = (image) => {
     props.setSelectedAttributes([image]);
-    setForm('images');
+   // setForm('images');
     props.navigation.navigate('ImageBasemapInfo', {imageId: image.id});
   };
 

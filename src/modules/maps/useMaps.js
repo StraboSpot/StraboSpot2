@@ -109,6 +109,7 @@ const useMaps = (props) => {
     getDisplayedSpots: getDisplayedSpots,
     setPointAtCurrentLocation: setPointAtCurrentLocation,
     setSelectedSpot: setSelectedSpot,
+    setDisplayedSpots: setDisplayedSpots,
   }];
 };
 
