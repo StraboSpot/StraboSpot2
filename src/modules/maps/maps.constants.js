@@ -64,6 +64,12 @@ export const basemaps = {
     url: 'http://tiles.strabospot.org/v5/mapbox.satellite/{z}/{x}/{y}.png?access_token=' + MAPBOX_KEY,
     maxZoom: 19,
   },
+  mapboxStyles : {
+    id: 'mapboxStyles',
+    layerId: 'mapboxStyles',
+    layerLabel: 'Mapbox Styles',
+    url: 'https://api.mapbox.com/styles/v1/tiles/256/{z}/{x}/{y}?access_token=' + MAPBOX_KEY,
+  },
 };
 
 export const symbols = {
