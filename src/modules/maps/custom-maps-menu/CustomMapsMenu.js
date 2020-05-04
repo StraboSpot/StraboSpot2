@@ -9,6 +9,7 @@ import {Divider, Input} from 'react-native-elements';
 import {mapReducers} from '../maps.constants';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {isEmpty} from '../../../shared/Helpers';
+import {MAPBOX_KEY} from '../../../MapboxConfig';
 
 class CustomMapsMenu extends Component {
   _isMounted = false;
@@ -96,7 +97,9 @@ class CustomMapsMenu extends Component {
 
   mapIdEdit = (text) => {
     this.setState({showSubmitButton: true});
-    let editedMapUrl = text.split('/').slice(3).join('/'); // Needs to be modified for url and saveUrl
+    let editedMapUrl;
+    if (this.state.chosenForm === 'Mapbox Styles') editedMapUrl = text.split('/').slice(3).join('/'); // Needs to be modified for url and saveUrl
+    else if (this.state.chosenForm === 'Map Warper') editedMapUrl = text;
     this.setState(prevState => {
       return {
         ...prevState,
@@ -286,7 +289,7 @@ class CustomMapsMenu extends Component {
   };
 
   viewCustomMap = async (map) => {
-    let tempCurrentBasemap;
+    let tempCurrentBasemap, mapUrl;
     console.log('viewCustomMap: ', map);
 
     tempCurrentBasemap =
@@ -301,13 +304,21 @@ class CustomMapsMenu extends Component {
 
     await this.props.onCurrentBasemap(tempCurrentBasemap);
 
+    if (map.url === undefined) {
+      if (map.source === 'Mapbox Styles' || map.source === 'mapbox_styles') {
+        mapUrl = 'https://api.mapbox.com/styles/v1/' + map.id + '/tiles/256/{z}/{x}/{y}?access_token=' + MAPBOX_KEY;
+      }
+      else if (map.source === 'Map Warper' || map.source === 'map_warper') mapUrl = 'https://www.strabospot.org/mwproxy/' + map.id + '/{z}/{x}/{y}.png';
+    }
+    else mapUrl = map.url;
+
     tempCurrentBasemap =
       {
         id: 'custom',
         layerId: map.id,
         layerLabel: map.mapTitle,
         layerSaveId: map.id,
-        url: map.url,
+        url: mapUrl,
         maxZoom: 19,
       };
 
