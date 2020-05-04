@@ -70,7 +70,7 @@ const useMaps = (props) => {
     // Separate selected Spots and not selected Spots (Point Spots need to in both
     // selected and not selected since the selected symbology is a halo around the point)
     const selectedIds = selectedSpots.map(sel => sel.properties.id);
-    const selectedDisplayedSpots = mappedFeatures.filter(spot => selectedIds.includes(spot.properties.id));
+    const selectedDisplayedSpots = displayedSpots.filter(spot => selectedIds.includes(spot.properties.id));
     const notSelectedDisplayedSpots = mappedFeatures.filter(spot => !selectedIds.includes(spot.properties.id) ||
       spot.geometry.type === 'Point');
 
