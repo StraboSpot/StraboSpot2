@@ -228,6 +228,9 @@ const useProject = () => {
       if (!projectResponse.description.project_name) projectResponse.description.project_name = 'Unnamed';
       if (!projectResponse.other_features) projectResponse.other_features = defaultTypes;
       await dispatch({type: projectReducers.PROJECTS, project: projectResponse});
+      if (projectResponse.other_maps) {
+        dispatch({type: mapReducers.CUSTOM_MAPS, customMaps: projectResponse.other_maps});
+      }
       const datasetsResponse = await getDatasets(selectedProject);
       if (datasetsResponse.datasets.length === 1){
         await useSpots.downloadSpots(datasetsResponse.datasets[0], user.encoded_login);
