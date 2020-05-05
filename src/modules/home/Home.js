@@ -10,7 +10,7 @@ import BaseMapDialog from './BaseMapDialogBox';
 import AllSpotsPanel from '../notebook-panel/AllSpots';
 import NotebookPanel from '../notebook-panel/NotebookPanel';
 import SettingsPanel from '../main-menu-panel/MainMenuPanel';
-import {MapModes} from '../maps/maps.constants';
+import {MapModes, mapReducers} from '../maps/maps.constants';
 import {SettingsMenuItems} from '../main-menu-panel/mainMenu.constants';
 import Modal from 'react-native-modal';
 import SaveMapModal from './SaveMapsModal';
@@ -129,6 +129,15 @@ const Home = (props) => {
   }, []);
 
   useEffect(() => {
+    /*if(props.currentImageBasemap != undefined){
+      setDialogs(prev => ({
+        ...prev,
+        baseMapMenuVisible : false
+      }));
+    }*/
+  }, [props.currentImageBasemap]);
+
+  useEffect(() => {
     console.log('Render 2 in Home', props.homePageVisible);
     return function homeCleanUp () {
       console.log('Cleaned up in Home');
@@ -236,7 +245,9 @@ const Home = (props) => {
       case 'currentLocation':
         goToCurrentLocation();
         break;
-
+      case 'closeImageBasemap':
+          dispatch(({type: mapReducers.CURRENT_IMAGE_BASEMAP, currentImageBasemap: undefined}));
+        break; 
       // Map Actions
       case 'zoom':
         console.log(`${name}`, ' was clicked');
@@ -742,7 +753,7 @@ const Home = (props) => {
           // onPress={clickHandler.bind(this, "search")}
         />
       </Animated.View>
-      <Animated.View style={props.isAllSpotsPanelVisible ? [homeStyles.rightsideIcons, rightsideIconAnimation, {right: 125}] : [homeStyles.rightsideIcons, rightsideIconAnimation]}>
+        {props.currentImageBasemap == undefined && <Animated.View style={props.isAllSpotsPanelVisible ? [homeStyles.rightsideIcons, rightsideIconAnimation, {right: 125}] : [homeStyles.rightsideIcons, rightsideIconAnimation]}>
         {props.shortcutSwitchPosition.Tag ?
           <IconButton
             source={require('../../assets/icons/TagButton.png')}
@@ -778,7 +789,7 @@ const Home = (props) => {
             source={require('../../assets/icons/SketchButton.png')}
             onPress={() => clickHandler('sketch')}
           /> : null}
-      </Animated.View>
+      </Animated.View>}
       <View style={homeStyles.notebookViewIcon}>
         {props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS ||
         props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE || props.modalVisible === Modals.SHORTCUT_MODALS.NOTES ? null : <IconButton
@@ -832,18 +843,27 @@ const Home = (props) => {
           source={require('../../assets/icons/SymbolsButton.png')}
           onPress={() => toggleDialog('mapSymbolsMenuVisible')}
         />
-        <IconButton
+        {props.currentImageBasemap == undefined && <IconButton
           source={require('../../assets/icons/layersButton.png')}
           onPress={() => toggleDialog('baseMapMenuVisible')}
-        />
+        />}
       </Animated.View>
+      {props.currentImageBasemap == undefined && 
       <Animated.View style={[homeStyles.bottomLeftIcons, leftsideIconAnimation]}>
         <IconButton
           style={{top: 5}}
           source={require('../../assets/icons/MyLocationButton.png')}
           onPress={clickHandler.bind(this, 'currentLocation')}
         />
-      </Animated.View>
+      </Animated.View>}
+      {props.currentImageBasemap != undefined && 
+      <Animated.View style={[homeStyles.bottomLeftIcons, leftsideIconAnimation]}>
+        <IconButton
+          style={{top: 5}}
+          source={require('../../assets/icons/Close_button.png')}
+          onPress={clickHandler.bind(this, 'closeImageBasemap')}
+        />
+        </Animated.View>}
       <MapActionsDialog
         visible={dialogs.mapActionsMenuVisible}
         onPress={(name) => dialogClickHandler('mapActionsMenuVisible', name)}
@@ -921,6 +941,7 @@ const Home = (props) => {
 
 function mapStateToProps(state) {
   return {
+    currentImageBasemap: state.map.currentImageBasemap,
     currentBasemap: state.map.currentBasemap,
     selectedSpot: state.spot.selectedSpot,
     selectedImage: state.spot.selectedAttributes[0],

@@ -10,6 +10,7 @@ import {settingPanelReducers, SortedViews} from '../main-menu-panel/mainMenuPane
 // Constants
 import {notebookReducers} from '../notebook-panel/notebook.constants';
 import {spotReducers} from '../spots/spot.constants';
+import {mapReducers} from '../maps/maps.constants';
 
 // Hooks
 import useImagesHook from '../images/useImages';
@@ -40,29 +41,6 @@ const ImageBaseMaps = (props) => {
    // setSortedList(Object.values(activeSpotsObj));
     setImageBaseMapsSet(useSpots.getAllImageBaseMaps());
   }, [props.selectedSpot, props.spots, props.sortedListView]);
-
-  const imageSave = async () => {
-    const savedPhoto = await useImages.pictureSelectDialog();
-    console.log('imageObj', savedPhoto);
-
-    if (savedPhoto === 'cancelled') {
-      console.log('User cancelled image picker', savedArray);
-      if (savedArray.length > 0) {
-        console.log('ALL PHOTOS SAVED', savedArray);
-      }
-      else {
-        Alert.alert('No Photos To Save', 'please try again...');
-      }
-    }
-    else if (savedPhoto.error) {
-      console.log('ImagePicker Error: ', savedPhoto.error);
-    }
-    else {
-      savedArray.push(savedPhoto);
-      console.log('AllPhotosSaved', savedArray);
-      return imageSave();
-    }
-  };
 
   const renderName = (item) => {
     return (
@@ -95,10 +73,10 @@ const ImageBaseMaps = (props) => {
     );
   };
 
-  const openImageBaseMap = (image) => {
-    props.setSelectedAttributes([image]);
-   // setForm('images');
-    props.navigation.navigate('ImageBasemapInfo', {imageId: image.id});
+  const openImageBaseMap = (imageBasemap) => {
+    // Calling map reducer to update the state
+    console.log("trying to update imagebasemap",imageBasemap);
+    props.updateImageBasemap(imageBasemap);
   };
 
   let sortedView = null;
@@ -144,6 +122,7 @@ const mapDispatchToProps = {
   setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),
   setSortedListView: (view) => ({type: settingPanelReducers.SET_SORTED_VIEW, view: view}),
   setSelectedButtonIndex: (index) => ({type: settingPanelReducers.SET_SELECTED_BUTTON_INDEX, index: index}),
+  updateImageBasemap: (currentImageBasemap) => ({type: mapReducers.CURRENT_IMAGE_BASEMAP, currentImageBasemap: currentImageBasemap}),
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withNavigation(ImageBaseMaps));

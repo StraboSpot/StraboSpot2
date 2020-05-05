@@ -11,7 +11,7 @@ import {spotReducers} from '../spots/spot.constants';
 const useMaps = (props) => {
   const dispatch = useDispatch();
   const [useSpots] = useSpotsHook();
-
+  var mapToUse = undefined;
   // Create a point feature at the current location
   const setPointAtCurrentLocation = async () => {
     const userLocationCoords = await getCurrentLocation();
@@ -103,13 +103,161 @@ const useMaps = (props) => {
     dispatch({type: spotReducers.SET_SELECTED_SPOT, spot: spotToSetAsSelected});
     return [selectedSpots,notSelectedSpots]
   };
+/* getBasemapImageProps, identifies the image being used as the imageBasemap and retrieves its properties*/
+const getBasemapImageProps = (spots,currentImageBasemap) => {
+  let basemapImageProps = {};
+  if(spots == undefined || spots == null) return [];
+  Object.values(spots).find(spot => {
+    if (spot.properties.images) {
+      for(var i=0; i<spot.properties.images.length;i++){
+        if(spot.properties.images[i].id == currentImageBasemap.id){
+          basemapImageProps = spot.properties.images[i];
+          break;
+        }
+      }
+    }
+  });
+  console.log('Current Basemap Image Properties', basemapImageProps);
+  return basemapImageProps;
+}  
 
+/* getCoordQuad method identifies the coordinate span for the 
+   for the image basemap. 
+*/
+ const getCoordQuad = async (map, basemapImageProps, deviceDimensions) => {
+  mapToUse = map;
+  
+  var [x, y] =await mapToUse.getPointInView([0, 0]); // this doesn't work every time, so using device dimensions for now.
+  x=deviceDimensions.width/2;
+  y=deviceDimensions.height/2;
+  const h = basemapImageProps.height;
+  const w = basemapImageProps.width;
+  const imageScreenLengthRatio = deviceDimensions.height/h;
+  const imageScreenWidthRatio = deviceDimensions.width/w;
+  // We identify the left and right spans for the image using the 
+  // center of the screen (device dimensions/2) and then subtracting
+  // width of the image in terms of screen size.
+  // (imageScreenWidthRatio and imageScreenLengthratio)
+  const z = 0;  // zoom just have to play with this..
+  var l = x + (w * imageScreenWidthRatio/ 2);
+  var r = x - (w * imageScreenWidthRatio / 2);
+  const b = y + (h * imageScreenLengthRatio / 2); //(since zero is at the top for Web Mercator pixels)
+  const t = y - (h * imageScreenLengthRatio / 2);
+  
+  // identify the [lat,lng] corners of the image basemap using the map api
+  var bottomLeft = await mapToUse.getCoordinateFromView([l, b]);
+  var bottomRight = await mapToUse.getCoordinateFromView([r, b]);
+  var topRight = await mapToUse.getCoordinateFromView([r, t]);
+  var topLeft = await mapToUse.getCoordinateFromView([l, t]);
+  var coordQuad = [topLeft, topRight, bottomRight,bottomLeft];
+return coordQuad;
+}
+/* calculateImageBasemapProps, calculates the actual translation components for this imagebasemap */
+const calculateImageBasemapProps = async (map,topRight,bottomLeft,basemapImageProps,deviceDimensions) => {
+    mapToUse = map;
+    var [x, y] =await mapToUse.getPointInView([0, 0]); // this doesn't work every time, so using device dimensions for now.
+    x=deviceDimensions.width/2;
+    y=deviceDimensions.height/2;
+    const h = basemapImageProps.height;
+    const w = basemapImageProps.width;
+    // identify screen coordinates for that denote start and end for x and y axes.
+    var imageStartScreenCords = await mapToUse.getPointInView(bottomLeft);
+    var imageEndScreenCords = await mapToUse.getPointInView(topRight);
+    // identify start and end coordinates for the image.
+    const imageXStart = imageStartScreenCords[0];
+    const imageYStart = imageStartScreenCords[1]; 
+    const imageXEnd = imageEndScreenCords[0];
+    const imageYEnd = imageEndScreenCords[1];
+    //xRatio is the ratio between width of the image and screen length of the image
+    //xRatio is useful for converting an image pixel to screen coordinate.
+    var xRatio = (w/(imageXEnd-imageXStart));
+    // xTranslation is the difference between the start points of the image.
+    //screen x coordinate is 0 at start of the screen, but image starts at imageXStart
+    // therefore we need to use xTranslation for conversions.
+    var xTranslation = imageXStart;
+    // similar xRatio, y Ratio is ratio between h of the image and screen height.
+    // "-" because, screen coordinates start from top of screen, image pixels start from bottom.
+    var yRatio = -(h/(imageYEnd-imageYStart)); 
+    // screen coordinates start from top of screen, image pixels start from bottom.
+    var yTranslation = h;
+    var z = 0; // place holder for zoom
+    var imageBasemapProps = {
+     xRatio : xRatio,
+     xTranslation:xTranslation,
+     yRatio:yRatio,
+     yTranslation:yTranslation,
+     basemapImageProps: basemapImageProps,
+     xCenter: x,
+     yCenter: y,
+     h: h,
+     w: w,
+     z: z
+   };
+   return imageBasemapProps;
+}
+
+// convertImagePixelsToLatLng 
+  const convertImagePixelsToLatLong = async(map,selectedMappableSpots,notSelectedMappableSpots,imageBasemapProps) => {
+    notSelectedMappableSpots = await convertSpotsImageXYPixelsToLatLng(map, notSelectedMappableSpots, imageBasemapProps);
+    selectedMappableSpots = await convertSpotsImageXYPixelsToLatLng(map, selectedMappableSpots, imageBasemapProps);
+    return [selectedMappableSpots,notSelectedMappableSpots];
+  }
+  /*
+  convertSpotsImageXYPixelsToLatLng, converts imagePixels to lat lng, such 
+  that the map in the background can understand the spot geometry,
+  inorder to display the properties.
+  Conversion Logic, 
+  imagePixel is divided by corresponding ratios and 
+  then corresponding translations are applied to calculate the screen points.
+  We then pass those screen points to map API to identify the lat lng.
+  Similar logic is applied to different data structures, 
+  according to their geometry type.
+  */
+  const convertSpotsImageXYPixelsToLatLng = async (map, spots, iData) => {
+    mapToUse = map;
+    var xRatio = iData.xRatio;
+    var yRatio = iData.yRatio;
+    const xTranslation = iData.xTranslation;
+    const yTranslation = iData.yTranslation;
+    var screenX,screenY;
+    var convertedSpots =[];
+    for(const spot of spots){
+     if(Array.isArray(spot.geometry.coordinates[0])){
+      var isLineStringCounter=0;
+      var finalLatLngCoordinates = [];
+      for(const subArray of spot.geometry.coordinates){
+        isLineStringCounter++;
+        screenX = (subArray[0] / xRatio) + xTranslation;
+        screenY = (yTranslation - subArray[1]) / yRatio;
+        let [lat,lng] =[];
+        [lat,lng] = await mapToUse.getCoordinateFromView([screenX, screenY]);
+        finalLatLngCoordinates.push([lat,lng]);
+      }
+      if(isLineStringCounter > 2){// polygon
+        spot.geometry.coordinates = [finalLatLngCoordinates];
+      }else{ // LineString
+      spot.geometry.coordinates = finalLatLngCoordinates;
+      }
+    }else { //point
+      screenX = (spot.geometry.coordinates[0] / xRatio) + xTranslation;
+      screenY = (yTranslation - spot.geometry.coordinates[1]) / yRatio;
+      let [lat,lng] = await mapToUse.getCoordinateFromView([screenX, screenY]);
+      spot.geometry.coordinates = [lat,lng];
+     }  
+    convertedSpots.push(spot);
+    };
+    return convertedSpots;
+};
   return [{
     getCurrentLocation: getCurrentLocation,
     getDisplayedSpots: getDisplayedSpots,
     setPointAtCurrentLocation: setPointAtCurrentLocation,
     setSelectedSpot: setSelectedSpot,
     setDisplayedSpots: setDisplayedSpots,
+    getBasemapImageProps : getBasemapImageProps,
+    getCoordQuad : getCoordQuad,
+    convertImagePixelsToLatLong, convertImagePixelsToLatLong,
+    calculateImageBasemapProps : calculateImageBasemapProps
   }];
 };
 

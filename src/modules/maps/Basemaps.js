@@ -1,8 +1,8 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {useSelector} from 'react-redux';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import * as turf from '@turf/turf/index';
-
+import useImagesHook from '../images/useImages';
 import useMapSymbologyHook from './useMapSymbology';
 
 // Constants
@@ -13,6 +13,13 @@ function Basemap(props) {
   const {mapRef, cameraRef} = props.forwardedRef;
   const [useMapSymbology] = useMapSymbologyHook();
   const [symbols, setSymbol] = useState(symbolsConstant);
+  const [currentImageBasemap, setCurrentImageBasemap] = useState(null); // using this just as a state for refresh.
+  const [useImages] = useImagesHook();
+  
+  useEffect(() => {
+    setCurrentImageBasemap(props.currentImageBasemap);
+  }, [props.currentImageBasemap]);
+
   return <MapboxGL.MapView
     id={basemap.id}
     ref={mapRef}
@@ -31,13 +38,14 @@ function Basemap(props) {
   >
     <MapboxGL.UserLocation
       animated={false}/>
+    {props.currentImageBasemap == undefined && 
     <MapboxGL.Camera
       ref={cameraRef}
-      zoomLevel={15}
+      zoomLevel={1}
       centerCoordinate={props.centerCoordinate}
       // followUserLocation={true}   // Can't follow user location if want to zoom to extent of Spots
       // followUserMode='normal'
-    />
+    />}
     <MapboxGL.RasterSource
       id={basemap.id}
       tileUrlTemplates={[basemap.url]}
@@ -50,6 +58,16 @@ function Basemap(props) {
         style={{rasterOpacity: 1}}
       />
     </MapboxGL.RasterSource>
+    {/* Image Basemap Layer */}
+    {props.currentImageBasemap != undefined && 
+    <MapboxGL.Animated.ImageSource
+      id='imageBasemap'
+      coordinates={props.coordQuad}
+      url={useImages.getLocalImageSrc(props.currentImageBasemap.id)}>
+      <MapboxGL.RasterLayer id='imageBasemapLayer'
+                            style={{rasterOpacity: 0.5}}/>
+    </MapboxGL.Animated.ImageSource>}
+    
     {/* Feature Layer */}
     <MapboxGL.Images
       images={symbols}
@@ -160,6 +178,10 @@ export const OSMBasemap = React.forwardRef((props, ref) => (
 ));
 
 export const CustomBasemap = React.forwardRef((props, ref) => (
+  <Basemap {...props} forwardedRef={ref}/>
+));
+
+export const ImageBasemap = React.forwardRef((props, ref) => (
   <Basemap {...props} forwardedRef={ref}/>
 ));
 

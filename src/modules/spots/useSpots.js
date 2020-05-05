@@ -21,7 +21,7 @@ const useSpots = (props) => {
   const [useServerRequests] = useServerRequestsHook();
 
   // Create a new Spot
-  const createSpot = async (feature, imageBasemap, mapProps, imageProps) => {
+  const createSpot = async (feature, imageBasemap, mapProps) => {
     let randomName = randomNames[Math.floor(Math.random() * randomNames.length)];
     let newSpot = feature;
     newSpot.properties.id = getNewId();
@@ -40,7 +40,7 @@ const useSpots = (props) => {
        //newSpot.properties.lat = newSpot.geometry.coordinates[0];
        //newSpot.properties.lng = newSpot.geometry.coordinates[1];
        newSpot.properties.image_basemap = imageBasemap;
-       newSpot = convertScreenPointsToImagePixels(newSpot,mapProps,imageProps);
+       newSpot = convertScreenPointsToImagePixels(newSpot,mapProps);
     }
     console.log('Creating new Spot:', newSpot);
     await dispatch({type: spotReducers.ADD_SPOT, spot: newSpot});
@@ -163,11 +163,12 @@ const useSpots = (props) => {
     We maintain the screen pixels in mapProps from whenpress is done
     to create the new spot.
   */
-  const convertScreenPointsToImagePixels = (spot,mapProps,imageProps) => {
-    const xRatio = imageProps.xRatio;
-    const yRatio = imageProps.yRatio;
-    const xTranslation = imageProps.xTranslation;
-    const yTranslation = imageProps.yTranslation;
+  const convertScreenPointsToImagePixels = (spot,mapProps) => {
+    var imageBasemapProps = mapProps.imageBasemapProps;
+    const xRatio = imageBasemapProps.xRatio;
+    const yRatio = imageBasemapProps.yRatio;
+    const xTranslation = imageBasemapProps.xTranslation;
+    const yTranslation = imageBasemapProps.yTranslation;
     var finalImageCoordinates = [];
     var imageX, imageY;
     if(mapProps.screenCords.length > 2){
