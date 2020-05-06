@@ -407,9 +407,9 @@ const map = React.forwardRef((props, ref) => {
   };
 
   const getCurrentZoom = async () => {
-    //const currentZoom = await map.current.getZoom();
-    //return currentZoom;
-    return 16;
+    console.log('Map.current', map)
+    return await map.current.getZoom();
+    // return 16;
   };
 
   const getTileCount = async (zoomLevel) => {

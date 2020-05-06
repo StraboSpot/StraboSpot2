@@ -37,6 +37,7 @@ import settingPanelStyles from '../main-menu-panel/mainMenuPanel.styles';
 import IconButton from '../../shared/ui/IconButton';
 import VertexDrag from '../maps/VertexDrag';
 import {animatePanels, isEmpty} from '../../shared/Helpers';
+import SaveMaps from '../maps/SaveMaps';
 
 // Hooks
 import useImagesHook from '../images/useImages';
@@ -879,7 +880,7 @@ const Home = (props) => {
         useNativeDriver={true}
       >
         <View style={homeStyles.modal}>
-          <SaveMapModal
+          <SaveMaps
             close={toggleOfflineMapModal}
             map={mapViewComponent.current}
           />
