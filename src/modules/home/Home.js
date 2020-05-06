@@ -13,7 +13,6 @@ import SettingsPanel from '../main-menu-panel/MainMenuPanel';
 import {MapModes} from '../maps/maps.constants';
 import {SettingsMenuItems} from '../main-menu-panel/mainMenu.constants';
 import Modal from 'react-native-modal';
-import SaveMapModal from './SaveMapsModal';
 import NotebookPanelMenu from '../notebook-panel/NotebookPanelMenu';
 import {connect, useDispatch, useSelector} from 'react-redux';
 import {NotebookPages, notebookReducers} from '../notebook-panel/notebook.constants';
