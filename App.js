@@ -3,7 +3,6 @@ import {createAppContainer} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
 import {Provider} from 'react-redux';
 import {PersistGate} from 'redux-persist/integration/react';
-import ImageBasemapInfo from './src/modules/maps/ImageBasemapInfo.view';
 import 'react-native-gesture-handler';
 
 import configureStore from './src/store/ConfigureStore';
@@ -24,12 +23,6 @@ const App = () => {
           gestureEnabled: false,
         },
         
-      },
-      ImageBasemapInfo: {
-        screen: ImageBasemapInfo,
-       navigationOptions: {
-          gesturesEnabled: false,
-        },
       },
       SignIn: {
         screen: SignIn,

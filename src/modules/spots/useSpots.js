@@ -180,8 +180,12 @@ const useSpots = (props) => {
           finalImageCoordinates.push([imageX,imageY]);
         }
       }
-      spot.geometry.coordinates= finalImageCoordinates;
-     }else{
+      if(spot.geometry.type == "Polygon"){
+        spot.geometry.coordinates= [finalImageCoordinates];
+      }else{
+        spot.geometry.coordinates= finalImageCoordinates;
+      }
+     }else{ //point
       imageX = (mapProps.screenCords[0] - xTranslation)*xRatio;
       imageY = yTranslation - (mapProps.screenCords[1]*yRatio);
       spot.geometry.coordinates= [imageX,imageY];

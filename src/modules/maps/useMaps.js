@@ -1,6 +1,6 @@
 import * as turf from '@turf/turf/index';
 import Geolocation from '@react-native-community/geolocation';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 import {isEmpty} from '../../shared/Helpers';
 import useSpotsHook from '../spots/useSpots';
@@ -10,8 +10,10 @@ import {spotReducers} from '../spots/spot.constants';
 
 const useMaps = (props) => {
   const dispatch = useDispatch();
+  const deviceDimensions = useSelector(state => state.home.deviceDimensions);
+  const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
+  const spots = useSelector(state => state.spot.spots);
   const [useSpots] = useSpotsHook();
-  var mapToUse = undefined;
   // Create a point feature at the current location
   const setPointAtCurrentLocation = async () => {
     const userLocationCoords = await getCurrentLocation();
@@ -38,32 +40,19 @@ const useMaps = (props) => {
     });
   };
 
-  // Set selected and not selected Spots to display when not editing
-  const setDisplayedSpots = (selectedSpots,imageBasemap) => {
-    var mappableSpots = useSpots.getMappableSpots();
-    if(imageBasemap != undefined){ // if image_basemap, then filter spots by imageBasemap id
-      mappableSpots = useSpots.getMappableSpots(imageBasemap);
-    }
-    // Filter selected Spots out of all Spots to get the not selected Spots
-    const selectedIds = selectedSpots.map(sel => sel.properties.id);
-    const selectedMappableSpots = mappableSpots.filter(spot => selectedIds.includes(spot.properties.id));
-    const notSelectedMappableSpots = 
-    mappableSpots.filter(spot => 
-      !selectedIds.includes(spot.properties.id) ||
-      spot.geometry.type === 'Point');
-    console.log('Selected Mappable Spots', selectedMappableSpots, 'Not Selected Mappable Spots',
-      notSelectedMappableSpots);
-    return [selectedMappableSpots, notSelectedMappableSpots];
-  };
-
   // Get selected and not selected Spots to display when not editing
   const getDisplayedSpots = (selectedSpots) => {
-    const mappableSpots = useSpots.getMappableSpots();      // Spots with geometry
+    var mappableSpots = useSpots.getMappableSpots();      // Spots with geometry
+    if(currentImageBasemap != undefined){ // if image_basemap, then filter spots by imageBasemap id
+      mappableSpots = useSpots.getMappableSpots(currentImageBasemap.id);
+    }
+    // Filter out Spots on an strat section
+    var displayedSpots = mappableSpots.filter(spot => !spot.properties.strat_section);
+    if(currentImageBasemap == undefined){
+      // Filter out Spots on an image_basemap
+      displayedSpots = displayedSpots.filter(spot => !spot.properties.image_basemap);
+    }
     console.log('Mappable Spots', selectedSpots);
-
-    // Filter out Spots on an image basemap
-    const displayedSpots = mappableSpots.filter(
-      spot => !spot.properties.image_basemap && !spot.properties.strat_section);
 
     let mappedFeatures = [];
     displayedSpots.map(spot => {
@@ -97,16 +86,16 @@ const useMaps = (props) => {
     return [selectedDisplayedSpots, notSelectedDisplayedSpots];
   };
 
-  const setSelectedSpot = (spotToSetAsSelected , imageBasemap) => {
-    console.log('Set selected Spot:', spotToSetAsSelected,imageBasemap);
-    let [selectedSpots,notSelectedSpots] = setDisplayedSpots(isEmpty(spotToSetAsSelected) ? [] : [{...spotToSetAsSelected}],imageBasemap);
+  const setSelectedSpot = (spotToSetAsSelected) => {
+    console.log('Set selected Spot:', spotToSetAsSelected);
+    let [selectedSpots,notSelectedSpots] = getDisplayedSpots(isEmpty(spotToSetAsSelected) ? [] : [{...spotToSetAsSelected}]);
     dispatch({type: spotReducers.SET_SELECTED_SPOT, spot: spotToSetAsSelected});
     return [selectedSpots,notSelectedSpots]
   };
 /* getBasemapImageProps, identifies the image being used as the imageBasemap and retrieves its properties*/
-const getBasemapImageProps = (spots,currentImageBasemap) => {
+const getBasemapImageProps = () => {
   let basemapImageProps = {};
-  if(spots == undefined || spots == null) return [];
+  if(spots == undefined || spots == null || currentImageBasemap == undefined) return [];
   Object.values(spots).find(spot => {
     if (spot.properties.images) {
       for(var i=0; i<spot.properties.images.length;i++){
@@ -124,10 +113,8 @@ const getBasemapImageProps = (spots,currentImageBasemap) => {
 /* getCoordQuad method identifies the coordinate span for the 
    for the image basemap. 
 */
- const getCoordQuad = async (map, basemapImageProps, deviceDimensions) => {
-  mapToUse = map;
-  
-  var [x, y] =await mapToUse.getPointInView([0, 0]); // this doesn't work every time, so using device dimensions for now.
+ const getCoordQuad = async (map, basemapImageProps) => {
+  var [x, y] =await map.getPointInView([0, 0]); // this doesn't work every time, so using device dimensions for now.
   x=deviceDimensions.width/2;
   y=deviceDimensions.height/2;
   const h = basemapImageProps.height;
@@ -145,24 +132,23 @@ const getBasemapImageProps = (spots,currentImageBasemap) => {
   const t = y - (h * imageScreenLengthRatio / 2);
   
   // identify the [lat,lng] corners of the image basemap using the map api
-  var bottomLeft = await mapToUse.getCoordinateFromView([l, b]);
-  var bottomRight = await mapToUse.getCoordinateFromView([r, b]);
-  var topRight = await mapToUse.getCoordinateFromView([r, t]);
-  var topLeft = await mapToUse.getCoordinateFromView([l, t]);
+  var bottomLeft = await map.getCoordinateFromView([l, b]);
+  var bottomRight = await map.getCoordinateFromView([r, b]);
+  var topRight = await map.getCoordinateFromView([r, t]);
+  var topLeft = await map.getCoordinateFromView([l, t]);
   var coordQuad = [topLeft, topRight, bottomRight,bottomLeft];
 return coordQuad;
 }
 /* calculateImageBasemapProps, calculates the actual translation components for this imagebasemap */
-const calculateImageBasemapProps = async (map,topRight,bottomLeft,basemapImageProps,deviceDimensions) => {
-    mapToUse = map;
-    var [x, y] =await mapToUse.getPointInView([0, 0]); // this doesn't work every time, so using device dimensions for now.
+const calculateImageBasemapProps = async (map,calculatedCoordQuad,basemapImageProps) => {
+    var [x, y] =await map.getPointInView([0, 0]); // this doesn't work every time, so using device dimensions for now.
     x=deviceDimensions.width/2;
     y=deviceDimensions.height/2;
     const h = basemapImageProps.height;
     const w = basemapImageProps.width;
     // identify screen coordinates for that denote start and end for x and y axes.
-    var imageStartScreenCords = await mapToUse.getPointInView(bottomLeft);
-    var imageEndScreenCords = await mapToUse.getPointInView(topRight);
+    var imageStartScreenCords = await map.getPointInView(calculatedCoordQuad[3]);//bottomLeft
+    var imageEndScreenCords = await map.getPointInView(calculatedCoordQuad[1]);//topRight
     // identify start and end coordinates for the image.
     const imageXStart = imageStartScreenCords[0];
     const imageYStart = imageStartScreenCords[1]; 
@@ -214,7 +200,6 @@ const calculateImageBasemapProps = async (map,topRight,bottomLeft,basemapImagePr
   according to their geometry type.
   */
   const convertSpotsImageXYPixelsToLatLng = async (map, spots, iData) => {
-    mapToUse = map;
     var xRatio = iData.xRatio;
     var yRatio = iData.yRatio;
     const xTranslation = iData.xTranslation;
@@ -222,26 +207,33 @@ const calculateImageBasemapProps = async (map,topRight,bottomLeft,basemapImagePr
     var screenX,screenY;
     var convertedSpots =[];
     for(const spot of spots){
-     if(Array.isArray(spot.geometry.coordinates[0])){
-      var isLineStringCounter=0;
-      var finalLatLngCoordinates = [];
-      for(const subArray of spot.geometry.coordinates){
-        isLineStringCounter++;
-        screenX = (subArray[0] / xRatio) + xTranslation;
-        screenY = (yTranslation - subArray[1]) / yRatio;
-        let [lat,lng] =[];
-        [lat,lng] = await mapToUse.getCoordinateFromView([screenX, screenY]);
-        finalLatLngCoordinates.push([lat,lng]);
-      }
-      if(isLineStringCounter > 2){// polygon
-        spot.geometry.coordinates = [finalLatLngCoordinates];
-      }else{ // LineString
-      spot.geometry.coordinates = finalLatLngCoordinates;
-      }
+      if(spot.geometry.type != ("Point")){
+        var finalLatLngCoordinates = [];
+        if(spot.geometry.type == ("Polygon")){
+          for(const subArray of spot.geometry.coordinates){
+            for(const innerSubArray of subArray){
+              screenX = (innerSubArray[0] / xRatio) + xTranslation;
+              screenY = (yTranslation - innerSubArray[1]) / yRatio;
+              let [lat,lng] =[];
+              [lat,lng] = await map.getCoordinateFromView([screenX, screenY]);
+              finalLatLngCoordinates.push([lat,lng]);
+            }
+          }
+          spot.geometry.coordinates = [finalLatLngCoordinates]; 
+       }else{
+          for(const subArray of spot.geometry.coordinates){
+            screenX = (subArray[0] / xRatio) + xTranslation;
+            screenY = (yTranslation - subArray[1]) / yRatio;
+            let [lat,lng] =[];
+            [lat,lng] = await map.getCoordinateFromView([screenX, screenY]);
+            finalLatLngCoordinates.push([lat,lng]);
+          }
+          spot.geometry.coordinates = finalLatLngCoordinates;
+        }
     }else { //point
       screenX = (spot.geometry.coordinates[0] / xRatio) + xTranslation;
       screenY = (yTranslation - spot.geometry.coordinates[1]) / yRatio;
-      let [lat,lng] = await mapToUse.getCoordinateFromView([screenX, screenY]);
+      let [lat,lng] = await map.getCoordinateFromView([screenX, screenY]);
       spot.geometry.coordinates = [lat,lng];
      }  
     convertedSpots.push(spot);
@@ -253,7 +245,6 @@ const calculateImageBasemapProps = async (map,topRight,bottomLeft,basemapImagePr
     getDisplayedSpots: getDisplayedSpots,
     setPointAtCurrentLocation: setPointAtCurrentLocation,
     setSelectedSpot: setSelectedSpot,
-    setDisplayedSpots: setDisplayedSpots,
     getBasemapImageProps : getBasemapImageProps,
     getCoordQuad : getCoordQuad,
     convertImagePixelsToLatLong, convertImagePixelsToLatLong,

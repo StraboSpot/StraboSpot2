@@ -10,7 +10,7 @@ import {settingPanelReducers, SortedViews} from '../main-menu-panel/mainMenuPane
 // Constants
 import {notebookReducers} from '../notebook-panel/notebook.constants';
 import {spotReducers} from '../spots/spot.constants';
-import {mapReducers} from '../maps/maps.constants';
+import {mapReducers} from './maps.constants';
 
 // Hooks
 import useImagesHook from '../images/useImages';
@@ -27,8 +27,7 @@ const ImageBaseMaps = (props) => {
   const [imageBaseMapSet,setImageBaseMapsSet] = useState(useSpots.getAllImageBaseMaps());
   const [useImages] = useImagesHook();
   const [refresh, setRefresh] = useState(false);
-  let savedArray = [];
-
+  
   useEffect(() => {
     return function cleanUp() {
       props.setSortedListView(SortedViews.CHRONOLOGICAL);
@@ -68,8 +67,7 @@ const ImageBaseMaps = (props) => {
           style={imageStyles.thumbnail}
           onPress={() => openImageBaseMap(image)}
         />
-        
-      </View>   
+       </View>   
     );
   };
 
@@ -108,8 +106,6 @@ const ImageBaseMaps = (props) => {
 const mapStateToProps = (state) => {
   if(!isEmpty(state.spot.spots))
   return {
-    recentViews: state.spot.recentViews,
-    selectedImage: state.spot.selectedAttributes[0],
     selectedSpot: state.spot.selectedSpot,
     sortedListView: state.settingsPanel.sortedView,
     spots: state.spot.spots,
@@ -117,9 +113,6 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = {
-  setSelectedAttributes: (attributes) => ({type: spotReducers.SET_SELECTED_ATTRIBUTES, attributes: attributes}),
-  setIsImageModalVisible: (value) => ({type: homeReducers.TOGGLE_IMAGE_MODAL, value: value}),
-  setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),
   setSortedListView: (view) => ({type: settingPanelReducers.SET_SORTED_VIEW, view: view}),
   setSelectedButtonIndex: (index) => ({type: settingPanelReducers.SET_SELECTED_BUTTON_INDEX, index: index}),
   updateImageBasemap: (currentImageBasemap) => ({type: mapReducers.CURRENT_IMAGE_BASEMAP, currentImageBasemap: currentImageBasemap}),

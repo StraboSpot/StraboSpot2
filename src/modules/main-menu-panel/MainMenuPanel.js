@@ -10,7 +10,7 @@ import {SettingsMenuItems} from './mainMenu.constants';
 import {spotReducers} from '../spots/spot.constants';
 import ActiveProject from '../project/ActiveProjectPanel';
 import CustomMapsMenu from '../maps/custom-maps-menu/CustomMapsMenu';
-import ImageBaseMaps from '../maps/Image-Basemaps.view';
+import ImageBaseMaps from '../maps/ImageBasemaps';
 import ImageGallery from '../images/ImageGallery';
 import ManageOfflineMapsMenu from '../maps/manage-offline-maps-menu/ManageOfflineMapsMenu';
 import MyStraboSpot from '../project/MyStraboSpot';

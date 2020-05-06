@@ -64,13 +64,13 @@ const map = React.forwardRef((props, ref) => {
   useEffect(() => {
     if(props.currentImageBasemap != undefined){
       async function calculateCoordQuad(basemapImageProps) {
-        var calculatedCoordQuad = await useMaps.getCoordQuad(map.current,basemapImageProps,props.deviceDimensions);
+        var calculatedCoordQuad = await useMaps.getCoordQuad(map.current,basemapImageProps);
         return calculatedCoordQuad;
       }
-      const basemapImageProps = useMaps.getBasemapImageProps(props.spots,props.currentImageBasemap)
+      const basemapImageProps = useMaps.getBasemapImageProps();
       calculateCoordQuad(basemapImageProps)
         .then(calculatedCoordQuad => {
-      useMaps.calculateImageBasemapProps(map.current,calculatedCoordQuad[1],calculatedCoordQuad[3],basemapImageProps,props.deviceDimensions)
+      useMaps.calculateImageBasemapProps(map.current,calculatedCoordQuad,basemapImageProps)
       .then(imageBasemapProps => {
         setDisplayedSpots(isEmpty(props.selectedSpot) ? [] : [{...props.selectedSpot}],imageBasemapProps);
         setMapPropsMutable(m => ({
@@ -143,7 +143,7 @@ const map = React.forwardRef((props, ref) => {
     to lat,lng before we display them.
     */
       if(imageBasemapProps == undefined) return;
-        const mappableSpots = useMaps.setDisplayedSpots(selectedSpots, props.currentImageBasemap.id);
+        const mappableSpots = useMaps.getDisplayedSpots(selectedSpots, props.currentImageBasemap.id);
         let selectedMappableSpotsCopy = JSON.parse(JSON.stringify(mappableSpots[0]));
         let notSelectedMappableSpotsCopy = JSON.parse(JSON.stringify(mappableSpots[1]));
         useMaps.convertImagePixelsToLatLong(map.current,selectedMappableSpotsCopy,

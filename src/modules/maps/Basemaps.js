@@ -4,6 +4,7 @@ import MapboxGL from '@react-native-mapbox-gl/maps';
 import * as turf from '@turf/turf/index';
 import useImagesHook from '../images/useImages';
 import useMapSymbologyHook from './useMapSymbology';
+import {isEmpty} from '../../shared/Helpers';
 
 // Constants
 import {symbols as symbolsConstant} from './maps.constants';
@@ -36,8 +37,9 @@ function Basemap(props) {
     scrollEnabled={props.allowMapViewMove}
     zoomEnabled={props.allowMapViewMove}
   >
+    {props.currentImageBasemap == undefined && 
     <MapboxGL.UserLocation
-      animated={false}/>
+      animated={false}/>}
     {props.currentImageBasemap == undefined && 
     <MapboxGL.Camera
       ref={cameraRef}
@@ -58,14 +60,24 @@ function Basemap(props) {
         style={{rasterOpacity: 1}}
       />
     </MapboxGL.RasterSource>
+    {/* Image Basemap background Layer */}
+    {props.currentImageBasemap != undefined && 
+    <MapboxGL.Animated.ImageSource
+      id='imageBasemap1'
+      coordinates={[[-250, 85], [250, 85], [250, -85], [-250, -85]]}
+      url={require('../../assets/images/imageBasemapBackground.jpg')}> 
+      <MapboxGL.RasterLayer id='imageBasemapLayer1'
+                            style={{rasterOpacity: 1}}/>
+    </MapboxGL.Animated.ImageSource>}
     {/* Image Basemap Layer */}
     {props.currentImageBasemap != undefined && 
     <MapboxGL.Animated.ImageSource
-      id='imageBasemap'
-      coordinates={props.coordQuad}
+      id='imageBasemap2'
+      coordinates={isEmpty(props.coordQuad) == true ? props.coordQuad : 
+        [props.coordQuad[0], props.coordQuad[1], props.coordQuad[2], props.coordQuad[3]]}
       url={useImages.getLocalImageSrc(props.currentImageBasemap.id)}>
-      <MapboxGL.RasterLayer id='imageBasemapLayer'
-                            style={{rasterOpacity: 0.5}}/>
+      <MapboxGL.RasterLayer id='imageBasemapLayer2'
+                            style={{rasterOpacity: .75}}/>
     </MapboxGL.Animated.ImageSource>}
     
     {/* Feature Layer */}
@@ -184,56 +196,3 @@ export const CustomBasemap = React.forwardRef((props, ref) => (
 export const ImageBasemap = React.forwardRef((props, ref) => (
   <Basemap {...props} forwardedRef={ref}/>
 ));
-
-export const mapStyles = {
-  point: {
-    circleRadius: 7,
-    circleColor: 'black',
-    circleOpacity: 1,
-    // iconImage: pointSymbol,
-    // iconAllowOverlap: true,
-    // iconSize: 0.5,
-  },
-  line: {
-    lineColor: 'black',
-    lineWidth: 3,
-  },
-  polygon: {
-    fillColor: 'blue',
-    fillOpacity: 0.4,
-  },
-  pointSelected: {
-    circleRadius: 20,
-    circleColor: 'orange',
-    circleOpacity: 0.4,
-  },
-  lineSelected: {
-    lineColor: 'orange',
-    lineWidth: 3,
-  },
-  polygonSelected: {
-    fillColor: 'orange',
-    fillOpacity: 0.7,
-  },
-  pointDraw: {
-    circleRadius: 5,
-    circleColor: 'orange',
-    circleStrokeColor: 'white',
-    circleStrokeWidth: 2,
-  },
-  lineDraw: {
-    lineColor: 'orange',
-    lineWidth: 3,
-    lineDasharray: [2, 2],
-  },
-  polygonDraw: {
-    fillColor: 'orange',
-    fillOpacity: 0.4,
-  },
-  pointEdit: {
-    circleRadius: 10,
-    circleColor: 'orange',
-    circleStrokeColor: 'white',
-    circleStrokeWidth: 2,
-  },
-};
