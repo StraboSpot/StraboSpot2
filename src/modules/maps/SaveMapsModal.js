@@ -2,21 +2,23 @@ import React, {useEffect, useState} from 'react';
 import {Picker} from '@react-native-community/picker';
 import {Button, Header, Icon} from 'react-native-elements';
 import {Platform, StyleSheet, Text, View} from 'react-native';
+import {Dialog, DialogTitle, DialogContent, SlideAnimation} from 'react-native-popup-dialog';
 import RNFetchBlob from 'rn-fetch-blob';
 // import RNPickerSelect from 'react-native-picker-select';
 
 import {unzip} from 'react-native-zip-archive'; /*TODO  react-native-zip-archive@3.0.1 requires a peer of react@^15.4.2 || <= 16.3.1 but none is installed */
 import ProgressBar from 'react-native-progress/Bar';
-import {connect, useDispatch, useSelector} from 'react-redux';
-import {mapReducers} from '../maps/maps.constants';
-import useMapsHook from './useMaps';
+import {useDispatch, useSelector} from 'react-redux';
+import {mapReducers} from './maps.constants';
+// import useMapsHook from './useMaps';
 
 // Styles
 import * as themes from '../../shared/styles.constants';
+import homeStyles from '../home/home.style';
 
 var RNFS = require('react-native-fs');
 
-const SaveMaps = (props) => {
+const SaveMapsModal = (props) => {
   // console.log(props);
   // const [useMaps] = useMapsHook();
 
@@ -30,10 +32,11 @@ const SaveMaps = (props) => {
   let zipError = '';
   let tryCount = 0;
 
-  const dispatch = useDispatch(state => state.map.offlineMaps);
   const currentBasemap = useSelector(state => state.map.currentBasemap);
   const customMaps = useSelector(state => state.map.customMaps);
   const offlineMaps = useSelector(state => state.map.offlineMaps);
+  const dispatch = useDispatch();
+
   const appId = currentBasemap.id;
   const saveId = currentBasemap.layerSaveId;
   const currentMapName = currentBasemap.layerLabel;
@@ -50,7 +53,7 @@ const SaveMaps = (props) => {
   // const [progressMessage, setProgressMessage] = useState('');
   const [percentDone, setPercentDone] = useState(0);
   const [downloadZoom, setDownloadZoom] = useState(0);
-  const [zoomLevels, setZoomLevels] = useState([])
+  const [zoomLevels, setZoomLevels] = useState([]);
   const [extentString, setExtentString] = useState('');
 
   useEffect(() => {
@@ -85,8 +88,8 @@ const SaveMaps = (props) => {
   },[downloadZoom]);
 
   useEffect(() => {
-    console.log('ProgressMessage', progressMessage)
-  }, [progressMessage])
+    console.log('ProgressMessage', progressMessage);
+  }, [progressMessage]);
 
   const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -344,90 +347,108 @@ const SaveMaps = (props) => {
   };
 
   return (
-      <View style={styles.modalContainer}>
-        <Header
-          backgroundColor={themes.PRIMARY_BACKGROUND_COLOR}
-          // containerStyle={{height: 50}}
-          leftComponent={
-            <Button
-              icon={
-                <Icon
-                  name='ios-close'
-                  type='ionicon'
-                  size={40}
-                />
-              }
-              type= {'clear'}
-              onPress={props.close}
-            />
-          }/>
-        <View style={{height: 40, justifyContent: 'center'}}>
-          <Text style={{fontSize: 20}}>{currentMapName}</Text>
-        </View>
-
-        {showMainMenu &&
-        <View style={{height: 20, width: '100%', paddingLeft: 5}}>
-          <Text>
-            Select max zoom level to download:
-          </Text>
-        </View>
-        }
-        {showMainMenu && <Picker
-          onValueChange={(value) => updatePicker(value)}
-          selectedValue={downloadZoom}
-          style={styles.picker}
-        >
-          {zoomLevels.map(i => {
-            return <Picker.Item
-              key={i}
-              value={i}
-              label={i.toString()}
-            />;
-          })}
-        </Picker>
-        }
-        {showMainMenu &&
-        <Button
-          onPress={() => saveMap()}
-          type={'clear'}
-          buttonStyle={{borderRadius: 30, paddingRight: 50, paddingLeft: 50}}
-          title={`Download ${tileCount} Tiles`}
+    <Dialog
+      dialogStyle={homeStyles.dialogBox}
+      visible={props.visible}
+      dialogAnimation={new SlideAnimation({
+        slideFrom: 'top',
+      })}
+      dialogTitle={
+        <DialogTitle
+          title={'Offline Maps!'}
+          style={homeStyles.dialogTitleContainer}
+          textStyle={homeStyles.dialogTitleText}
         />
-        }
+      }
+    >
+      <DialogContent>
+        <View >
+          <Header
+            backgroundColor={themes.PRIMARY_BACKGROUND_COLOR}
+            // containerStyle={{height: 50}}
+            leftComponent={
+              <Button
+                icon={
+                  <Icon
+                    name='ios-close'
+                    type='ionicon'
+                    size={40}
+                  />
+                }
+                type= {'clear'}
+                onPress={props.close}
+              />
+            }/>
+          <View style={{height: 40, justifyContent: 'center'}}>
+            <Text style={{fontSize: 20}}>{currentMapName}</Text>
+          </View>
 
-        {showLoadingMenu &&
-        <View style={{height: 40, justifyContent: 'center'}}>
-          <Text style={{fontSize: 20}}>{progressMessage}</Text>
+          {showMainMenu &&
+          <View style={{height: 20, width: '100%', paddingLeft: 5}}>
+            <Text>
+              Select max zoom level to download:
+            </Text>
+          </View>
+          }
+          {showMainMenu && <Picker
+            onValueChange={(value) => updatePicker(value)}
+            selectedValue={downloadZoom}
+            style={styles.picker}
+          >
+            {zoomLevels.map(i => {
+              return <Picker.Item
+                key={i}
+                value={i}
+                label={i.toString()}
+              />;
+            })}
+          </Picker>
+          }
+          {showMainMenu &&
+          <Button
+            onPress={() => saveMap()}
+            type={'clear'}
+            buttonStyle={{borderRadius: 30, paddingRight: 50, paddingLeft: 50}}
+            title={`Download ${tileCount} Tiles`}
+          />
+          }
+
+          {showLoadingMenu &&
+          <View style={{height: 40, justifyContent: 'center'}}>
+            <Text style={{fontSize: 20}}>{progressMessage}</Text>
+          </View>
+          }
+
+          {showLoadingBar &&
+          <View style={{height: 40, justifyContent: 'center'}}>
+            <ProgressBar progress={percentDone} width={200}/>
+          </View>
+          }
+
+          {showComplete &&
+          <View style={{height: 40, justifyContent: 'center'}}>
+            <Text style={{fontSize: 20}}>Success!</Text>
+          </View>
+          }
+
+          {showComplete &&
+          <View style={{height: 40, justifyContent: 'center'}}>
+            <Text>Your map has been successfully downloaded to this device.</Text>
+          </View>
+          }
+
+          {showComplete &&
+          <Button
+            onPress={props.close}
+            type={'clear'}
+            buttonStyle={{borderRadius: 30, paddingRight: 50, paddingLeft: 50}}
+            title={'Continue'}
+          />
+          }
         </View>
-        }
+      </DialogContent>
+    </Dialog>
 
-        {showLoadingBar &&
-        <View style={{height: 40, justifyContent: 'center'}}>
-          <ProgressBar progress={percentDone} width={200}/>
-        </View>
-        }
-
-        {showComplete &&
-        <View style={{height: 40, justifyContent: 'center'}}>
-          <Text style={{fontSize: 20}}>Success!</Text>
-        </View>
-        }
-
-        {showComplete &&
-        <View style={{height: 40, justifyContent: 'center'}}>
-          <Text>Your map has been successfully downloaded to this device.</Text>
-        </View>
-        }
-
-        {showComplete &&
-        <Button
-          onPress={props.close}
-          type={'clear'}
-          buttonStyle={{borderRadius: 30, paddingRight: 50, paddingLeft: 50}}
-          title={'Continue'}
-        />
-        }
-      </View>
   );
 };
 
@@ -451,4 +472,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SaveMaps;
+export default SaveMapsModal;
