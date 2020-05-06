@@ -241,6 +241,7 @@ const SaveMaps = (props) => {
   };
 
   const moveFiles = async (zipUID) => {
+    let result;
     let folderExists = await RNFS.exists(tileCacheDirectory + '/' + saveId);
     if (!folderExists) {
       console.log('FOLDER DOESN\'T EXIST! ' + saveId);
@@ -249,7 +250,11 @@ const SaveMaps = (props) => {
     }
 
     //now move files to correct location
-    let result = await RNFS.readDir(tileTempDirectory + '/' + zipUID + '/tiles'); //MainBundlePath // On Android, use "RNFS.DocumentDirectoryPath" (MainBundlePath is not defined)
+    //MainBundlePath // On Android, use "RNFS.DocumentDirectoryPath" (MainBundlePath is not defined)
+    if (Platform.OS === 'ios') result = await RNFS.readDir(tileTempDirectory + '/' + zipUID + '/tiles');
+    else result = await RNFS.DocumentDirectoryPath(tileTempDirectory + '/' + zipUID + '/tiles');
+
+    console.log(result)
 
     await tileMove(result, zipUID);
 
