@@ -10,11 +10,17 @@ const initialState = {
 
 export const mapReducer = (state = initialState, action) => {
   switch (action.type) {
-    case mapReducers.ADD_CUSTOM_MAPS_FROM_DEVICE:
+    case mapReducers.ADD_MAPS_FROM_DEVICE:
       return {
         ...state,
-        customMaps: action.customMaps,
+        [action.field]: action.maps,
       };
+    case mapReducers.CLEAR_MAPS:
+    return {
+      ...state,
+      offlineMaps: {},
+      customMaps: [],
+    };
     case mapReducers.CURRENT_BASEMAP:
       // console.log('Current Basemap in Reducer', action.basemap);
       return {

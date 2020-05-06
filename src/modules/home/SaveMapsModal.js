@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Text, StyleSheet, View} from 'react-native';
+import {Alert, Text, StyleSheet, View} from 'react-native';
 import {Picker} from '@react-native-community/picker';
 import {Button, Header, Icon} from 'react-native-elements';
 import {Platform} from 'react-native';
@@ -106,44 +106,67 @@ class SaveMapModal extends Component {
     this._isMounted = false;
   }
 
+  checkValidMapName = async (map) => {
+    const foundOfflineMaps = Object.values(this.props.offlineMaps).find(offlineMap => {
+      return offlineMap.name === map.layerLabel;
+    });
+    if (foundOfflineMaps && map.layerSaveId === foundOfflineMaps.saveId) {
+      // loading spinner shows here
+      return Promise.resolve();
+    }
+    else if (foundOfflineMaps && map.layerSaveId !== foundOfflineMaps.saveId) {
+      Alert.alert('Append Error!', 'Cannot append the selected new tiles to the saved map' + map.name + 'since the map' +
+        ' tile provider is not the same. A new map name must be given if you wish to use a different tile provider.')
+      return Promise.reject();
+    }
+    else {
+      // loading spinner shows here
+      map.mapid = new Date().valueOf();
+      map.existCount = 0;
+    }
+  };
+
   // Start getting the tiles to download by creating a zip url
   getMapTiles = async (extentString, zoomLevel) => {
+    let layer, id, username;
+    let startZipURL = 'unset';
+
     this.setState({progressMessage: 'Starting Download...'});
 
-    layerID = this.currentBasemap.id;
+    const layerID = this.currentBasemap.id;
+
+    // await this.checkValidMapName(this.currentBasemap);
 
     //let startZipURL = this.tilehost + '/asynczip?mapid=' + this.mapID + '&layer=' + layerID + '&extent=' + extentString + '&zoom=' + zoomLevel;
 
-    startZipURL = 'unset';
-
-    if (layerID == 'custom') {
+    if (layerID === 'custom') {
       //configure advanced URL for custom map types here.
       //first, figure out what kind of map we are downloading...
 
-      downloadMap = '{}';
+      let downloadMap = '{}';
 
       for (let i = 0; i < this.props.customMaps.length; i++) {
-        if (this.props.customMaps[i].id == this.props.currentBasemap.layerId) {
+        if (this.props.customMaps[i].id === this.props.currentBasemap.layerId) {
           downloadMap = this.props.customMaps[i];
         }
       }
 
       console.log('DownloadMap: ', downloadMap);
 
-      if (downloadMap.mapType == 'Mapbox Style') {
+      if (downloadMap.source === 'Mapbox Style') {
         layer = 'mapboxstyles';
-        parts = downloadMap.mapId.split('/');
+        const parts = downloadMap.id.split('/');
         username = parts[0];
         id = parts[1];
-        accessToken = downloadMap.accessToken;
+        const accessToken = downloadMap.key;
         startZipURL = this.tilehost + '/asynczip?layer=' + layer + '&extent=' + extentString + '&zoom=' + zoomLevel + '&username=' + username + '&id=' + id + '&access_token=' + accessToken;
       }
-      else if (downloadMap.mapType == 'Map Warper') {
+      else if (downloadMap.source === 'Map Warper') {
         layer = 'mapwarper';
         id = downloadMap.mapId;
         startZipURL = this.tilehost + '/asynczip?layer=' + layer + '&extent=' + extentString + '&zoom=' + zoomLevel + '&id=' + id;
       }
-      else if (downloadMap.mapType == 'StraboSpot MyMaps') {
+      else if (downloadMap.source === 'StraboSpot MyMaps') {
         layer = 'strabomymaps';
         id = downloadMap.mapId;
         startZipURL = this.tilehost + '/asynczip?layer=' + layer + '&extent=' + extentString + '&zoom=' + zoomLevel + '&id=' + id;
@@ -207,15 +230,17 @@ class SaveMapModal extends Component {
   downloadZip = async (zipUID) => {
     try {
       const downloadZipURL = this.tilehost + '/ziptemp/' + zipUID + '/' + zipUID + '.zip';
-
+      const layerSaveId = this.props.currentBasemap.layerSaveId;
       //first try to delete from temp directories
-      let fileExists = await RNFS.exists(this.tileZipsDirectory + '/' + zipUID + '.zip');
+      let fileExists = await RNFS.exists(this.tileZipsDirectory + '/' + layerSaveId + '.zip');
+      console.log('file Exists:', fileExists ? 'YES' : 'NO');
       if (fileExists) {
         //delete
         await RNFS.unlink(this.tileZipsDirectory + '/' + zipUID + '.zip');
       }
 
       let folderExists = await RNFS.exists(this.tileTempDirectory + '/' + zipUID);
+      console.log('Folder Exists:', folderExists ? 'YES' : 'NO');
       if (folderExists) {
         //delete
         await RNFS.unlink(this.tileTempDirectory + '/' + zipUID);
@@ -237,7 +262,6 @@ class SaveMapModal extends Component {
   };
 
   tileMove = async (tilearray, zipUID) => {
-    // eslint-disable-next-line no-unused-vars
     for (const tile of tilearray) {
       let fileExists = await RNFS.exists(this.tileCacheDirectory + '/' + this.saveId + '/tiles/' + tile.name);
       console.log('foo exists: ', tile.name + ' ' + fileExists);
@@ -265,27 +289,29 @@ class SaveMapModal extends Component {
     let tileCount = await RNFS.readDir(this.tileCacheDirectory + '/' + this.saveId + '/tiles');
     tileCount = tileCount.length;
 
-    currentOfflineMaps = this.props.offlineMaps;
+    let currentOfflineMaps = Object.values(this.props.offlineMaps);
 
     //now check for existence of AsyncStorage offlineMapsData and store new count
     if (!currentOfflineMaps) {
       currentOfflineMaps = [];
     }
 
+    const mapName = this.currentMapName ? this.currentMapName : 'Custom Map';
+
     let newOfflineMapsData = [];
     let thisMap = {};
     thisMap.saveId = this.saveId;
     thisMap.appId = this.appId;
-    thisMap.name = this.currentMapName;
+    thisMap.name = mapName;
     thisMap.count = tileCount;
-    thisMap.mapId = zipUID;
+    thisMap.mapId = new Date().valueOf();
     thisMap.date = new Date().toLocaleString();
     newOfflineMapsData.push(thisMap);
 
     //loop over offlineMapsData and add any other maps (not current)
     for (let i = 0; i < currentOfflineMaps.length; i++) {
       if (currentOfflineMaps[i].saveId) {
-        if (currentOfflineMaps[i].saveId != this.saveId) {
+        if (currentOfflineMaps[i].saveId !== this.saveId) {
           //Add it to new array for Redux Storage
           newOfflineMapsData.push(currentOfflineMaps[i]);
         }
@@ -304,6 +330,7 @@ class SaveMapModal extends Component {
     this.setState({showLoadingBar: false});
     this.setState({percentDone: 0});
     this.setState({progressMessage: 'Installing Tiles in StraboSpot...'});
+    const layerSaveId = this.props.currentBasemap.layerSaveId;
 
     const sourcePath = this.tileZipsDirectory + '/' + zipUID + '.zip';
     const targetPath = this.tileTempDirectory;

@@ -22,6 +22,8 @@ class ManageOfflineMapsMenu extends Component {
     this.devicePath = Platform.OS === 'ios' ? dirs.DocumentDir : dirs.SDCardDir; // ios : android
     this.tilesDirectory = '/StraboSpotTiles';
     this.tileCacheDirectory = this.devicePath + this.tilesDirectory + '/TileCache';
+    this.zipsDirectory = this.devicePath + this.tilesDirectory + '/TileZips';
+    this.tileTempDirectory = this.devicePath + this.tilesDirectory + '/TileTemp';
 
     console.log('tileCacheDirectory: ', this.tileCacheDirectory);
 
@@ -127,10 +129,14 @@ class ManageOfflineMapsMenu extends Component {
     console.log('map: ', map.saveId);
     console.log('directory: ', this.tileCacheDirectory + '/' + map.saveId);
     let folderExists = await RNFS.exists(this.tileCacheDirectory + '/' + map.saveId);
-
+    const zipFileExists = await RNFS.exists(this.zipsDirectory + '/' + map.mapId + '.zip');
+    const tileTempFileExists = await RNFS.exists(this.tileTempDirectory + '/' + map.mapId);
+    console.log(folderExists, zipFileExists, tileTempFileExists);
     //first, delete folder with tiles
-    if (folderExists) {
+    if (folderExists || zipFileExists || tileTempFileExists) {
       await RNFS.unlink(this.tileCacheDirectory + '/' + map.saveId);
+      if (zipFileExists) await RNFS.unlink(this.zipsDirectory + '/' + map.mapId + '.zip');
+      if (tileTempFileExists) await RNFS.unlink(this.tileTempDirectory + '/' + map.mapId);
     }
 
     //now, delete map from Redux
