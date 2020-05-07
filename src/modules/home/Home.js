@@ -36,7 +36,7 @@ import settingPanelStyles from '../main-menu-panel/mainMenuPanel.styles';
 import IconButton from '../../shared/ui/IconButton';
 import VertexDrag from '../maps/VertexDrag';
 import {animatePanels, isEmpty} from '../../shared/Helpers';
-import SaveMapsModal from '../maps/SaveMapsModal';
+import SaveMapsModal from '../maps/offline-maps/SaveMapsModal';
 
 // Hooks
 import useImagesHook from '../images/useImages';

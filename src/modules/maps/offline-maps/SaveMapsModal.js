@@ -8,11 +8,11 @@ import RNFetchBlob from 'rn-fetch-blob';
 import {unzip} from 'react-native-zip-archive'; /*TODO  react-native-zip-archive@3.0.1 requires a peer of react@^15.4.2 || <= 16.3.1 but none is installed */
 import ProgressBar from 'react-native-progress/Bar';
 import {useDispatch, useSelector} from 'react-redux';
-import {mapReducers} from './maps.constants';
+import {mapReducers} from '../maps.constants';
 // import useMapsHook from './useMaps';
 
 // Styles
-import * as themes from '../../shared/styles.constants';
+import * as themes from '../../../shared/styles.constants';
 
 var RNFS = require('react-native-fs');
 

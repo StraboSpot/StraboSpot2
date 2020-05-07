@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Alert, Text, View} from 'react-native';
-import styles from './manageOfflineMaps.styles';
+import styles from './offlineMaps.styles';
 import {ListItem} from 'react-native-elements';
 import {connect} from 'react-redux';
 import RNFetchBlob from 'rn-fetch-blob';
@@ -10,7 +10,7 @@ import {isEmpty} from '../../../shared/Helpers';
 
 var RNFS = require('react-native-fs');
 
-class ManageOfflineMapsMenu extends Component {
+class ManageOfflineMaps extends Component {
   _isMounted = false;
 
   constructor(props, context) {
@@ -167,4 +167,4 @@ const mapDispatchToProps = {
   onCurrentBasemap: (basemap) => ({type: mapReducers.CURRENT_BASEMAP, basemap: basemap}),
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ManageOfflineMapsMenu);
+export default connect(mapStateToProps, mapDispatchToProps)(ManageOfflineMaps);

@@ -11,7 +11,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {isEmpty} from '../../../shared/Helpers';
 import {MAPBOX_KEY} from '../../../MapboxConfig';
 
-class CustomMapsMenu extends Component {
+class ManageCustomMaps extends Component {
   _isMounted = false;
 
   constructor(props, context) {
@@ -471,4 +471,4 @@ const mapDispatchToProps = {
   onCurrentBasemap: (basemap) => ({type: mapReducers.CURRENT_BASEMAP, basemap: basemap}),
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(CustomMapsMenu);
+export default connect(mapStateToProps, mapDispatchToProps)(ManageCustomMaps);
