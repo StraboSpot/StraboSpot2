@@ -5,7 +5,14 @@ import * as turf from '@turf/turf/index';
 import {connect, useSelector} from 'react-redux';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 
-import {CustomBasemap, MacrostratBasemap, MapboxOutdoorsBasemap, MapboxSatelliteBasemap, OSMBasemap, ImageBasemap} from './Basemaps';
+import {
+  CustomBasemap,
+  MacrostratBasemap,
+  MapboxOutdoorsBasemap,
+  MapboxSatelliteBasemap,
+  OSMBasemap,
+  ImageBasemap,
+} from './Basemaps';
 import {getNewId, isEmpty, truncDecimal} from '../../shared/Helpers';
 import {MAPBOX_KEY} from '../../MapboxConfig';
 import useSpotsHook from '../spots/useSpots';
@@ -24,6 +31,7 @@ const map = React.forwardRef((props, ref) => {
   const [useMaps] = useMapsHook();
   const [useSpots] = useSpotsHook();
   const currentBasemap = useSelector(state => state.map.currentBasemap);
+  const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
 
   // Data needing to be tracked when in editing mode
   const initialEditingModeData = {
@@ -41,10 +49,9 @@ const map = React.forwardRef((props, ref) => {
     editFeatureVertex: [],
     spotsNotSelected: [],
     spotsSelected: [],
-    currentImageBasemap: props.currentImageBasemap != undefined ? props.currentImageBasemap : undefined,
-    coordQuad:  [],
-    screenCords: [],
-    imageBasemapProps:[]
+    coordQuad: [],
+    screenCords: [],          // No longer need
+    imageBasemapProps: [],
   };
 
   const [editingModeData, setEditingModeData] = useState(initialEditingModeData);
@@ -59,51 +66,26 @@ const map = React.forwardRef((props, ref) => {
     ref: {mapRef: map, cameraRef: camera},
     onMapPress: (e) => onMapPress(e),
     onMapLongPress: (e) => onMapLongPress(e),
-    currentImageBasemap: props.currentImageBasemap != undefined ? props.currentImageBasemap : undefined,
   };
+
   useEffect(() => {
-    if(props.currentImageBasemap != undefined){
-      async function calculateCoordQuad(basemapImageProps) {
-        var calculatedCoordQuad = await useMaps.getCoordQuad(map.current,basemapImageProps);
-        return calculatedCoordQuad;
-      }
-      const basemapImageProps = useMaps.getBasemapImageProps();
-      calculateCoordQuad(basemapImageProps)
-        .then(calculatedCoordQuad => {
-      useMaps.calculateImageBasemapProps(map.current,calculatedCoordQuad,basemapImageProps)
-      .then(imageBasemapProps => {
-        setDisplayedSpots(isEmpty(props.selectedSpot) ? [] : [{...props.selectedSpot}],imageBasemapProps);
-        setMapPropsMutable(m => ({
-          ...m,
-          coordQuad : calculatedCoordQuad,
-          imageBasemapProps : imageBasemapProps,
-        }));
-      })
-      })
-    }else{
-      setDisplayedSpots((isEmpty(props.selectedSpot) ? [] : [{...props.selectedSpot}]));
-    }
-  }, [props.currentImageBasemap]);
+    const calculatedCoordQuad = currentImageBasemap ? useMaps.getCoordQuad(currentImageBasemap) : undefined;
+    setDisplayedSpots(isEmpty(props.selectedSpot) ? [] : [{...props.selectedSpot}]);
+    setMapPropsMutable(m => ({
+      ...m,
+      coordQuad: calculatedCoordQuad,
+    }));
+  }, [currentImageBasemap]);
 
   useEffect(() => {
     console.log('Updating DOM on first render');
-    setCurrentLocationAsCenter();
+    if (!currentImageBasemap) setCurrentLocationAsCenter();
     props.clearVertexes();
-    setDisplayedSpots(isEmpty(props.selectedSpot) ? [] : [{...props.selectedSpot}]);
   }, []);
 
   useEffect(() => {
     console.log('Updating DOM on Spots, selected Spots or active Datasets changed');
-    if(props.currentImageBasemap != undefined){
-      if(!isEmpty(mapProps.imageBasemapProps)){
-        setDisplayedSpots((isEmpty(props.selectedSpot) ? [] : [{...props.selectedSpot}]),mapProps.imageBasemapProps);
-      }else{
-        // calculate the imageBasemapprops again., but this case generally never happens..
-      }
-    }else{
-        setDisplayedSpots((isEmpty(props.selectedSpot) ? [] : [{...props.selectedSpot}]));
-    }
-    //map.current.getZoom().then(res => {console.log("very important check zoom level",res )});
+    setDisplayedSpots((isEmpty(props.selectedSpot) ? [] : [{...props.selectedSpot}]));
   }, [props.spots, props.selectedSpot, props.datasets]);
 
   useEffect(() => {
@@ -128,32 +110,32 @@ const map = React.forwardRef((props, ref) => {
   };
 
   // Set selected and not selected Spots to display when not editing
-  const setDisplayedSpots = async (selectedSpots,imageBasemapProps) => {
-    if(props.currentImageBasemap == undefined){
+  const setDisplayedSpots = (selectedSpots) => {
+    if (!currentImageBasemap) {
       let [selectedDisplayedSpots, notSelectedDisplayedSpots] = useMaps.getDisplayedSpots(selectedSpots);
       setMapPropsMutable(m => ({
         ...m,
         spotsSelected: [...selectedDisplayedSpots],
         spotsNotSelected: [...notSelectedDisplayedSpots],
       }));
-    }else{
-    /* setDisplayedSpots, for an image basemap, we always show spots that
-    have image_basemap as the the currentImageBasemapid and all the spots 
-    will have coordinates in image pixels. So, we need to convert the image pixels
-    to lat,lng before we display them.
-    */
-      if(imageBasemapProps == undefined) return;
-        const mappableSpots = useMaps.getDisplayedSpots(selectedSpots, props.currentImageBasemap.id);
-        let selectedMappableSpotsCopy = JSON.parse(JSON.stringify(mappableSpots[0]));
-        let notSelectedMappableSpotsCopy = JSON.parse(JSON.stringify(mappableSpots[1]));
-        useMaps.convertImagePixelsToLatLong(map.current,selectedMappableSpotsCopy,
-          notSelectedMappableSpotsCopy,imageBasemapProps).then(result => {
-        setMapPropsMutable(m => ({
-          ...m,
-          spotsSelected: [...result[0]],
-          spotsNotSelected: [...result[1]],
-        }));
-      })
+    }
+    else {
+      /* setDisplayedSpots, for an image basemap, we always show spots that
+       have image_basemap as the the currentImageBasemapid and all the spots
+       will have coordinates in image pixels. So, we need to convert the image pixels
+       to lat,lng before we display them.
+       */
+      if (!currentImageBasemap) return;
+      const mappableSpots = useMaps.getDisplayedSpots(selectedSpots);
+      let selectedMappableSpotsCopy = JSON.parse(JSON.stringify(mappableSpots[0]));
+      let notSelectedMappableSpotsCopy = JSON.parse(JSON.stringify(mappableSpots[1]));
+      selectedMappableSpotsCopy = useMaps.convertImagePixelsToLatLong(selectedMappableSpotsCopy);
+      notSelectedMappableSpotsCopy = useMaps.convertImagePixelsToLatLong(notSelectedMappableSpotsCopy);
+      setMapPropsMutable(m => ({
+        ...m,
+        spotsSelected: [...selectedMappableSpotsCopy],
+        spotsNotSelected: [...notSelectedMappableSpotsCopy],
+      }));
     }
   };
 
@@ -229,20 +211,21 @@ const map = React.forwardRef((props, ref) => {
       console.log('Drawing', props.mapMode, '...');
       let feature = {};
       const newCoord = turf.getCoord(e);
-      if(props.currentImageBasemap != undefined){
-        if(mapPropsMutable.screenCords.length == 0){
+      if (currentImageBasemap) {
+        if (mapPropsMutable.screenCords.length === 0) {
           setMapPropsMutable(m => ({
             ...m,
-            screenCords: [ e.properties.screenPointX, e.properties.screenPointY ],
+            screenCords: [e.properties.screenPointX, e.properties.screenPointY],
           }));
-        }else{
+        }
+        else {
           var nextPointCoords = mapProps.screenCords;
-          nextPointCoords.push(e.properties.screenPointX, e.properties.screenPointY );
+          nextPointCoords.push(e.properties.screenPointX, e.properties.screenPointY);
           setMapPropsMutable(m => ({
             ...m,
-            screenCords: nextPointCoords
+            screenCords: nextPointCoords,
           }));
-        } 
+        }
       }
       // Draw a point for the last coordinate touched
       // const lastVertexPlaced = MapboxGL.geoUtils.makeFeature(e.geometry);
@@ -548,18 +531,16 @@ const map = React.forwardRef((props, ref) => {
       if (mapPropsMutable.drawFeatures.length > 1) {
         newFeature = mapPropsMutable.drawFeatures.splice(1, 1)[0];
       }
-      if(props.currentImageBasemap != undefined){
-        newOrEditedSpot = await useSpots.createSpot(newFeature, props.currentImageBasemap.id, mapProps);
-      }else{
-        newOrEditedSpot = await useSpots.createSpot(newFeature);
+      if (currentImageBasemap) {
+        newOrEditedSpot = await useSpots.createSpot(newFeature, currentImageBasemap.id, mapProps);
       }
+      else newOrEditedSpot = await useSpots.createSpot(newFeature);
       useMaps.setSelectedSpot(newOrEditedSpot);
       setDrawFeatures([]);
       setMapPropsMutable(m => ({
         ...m,
-        screenCords: []
+        screenCords: [],
       }));
-      
     }
     console.log('Draw ended.');
     return Promise.resolve(newOrEditedSpot);
@@ -825,19 +806,18 @@ const map = React.forwardRef((props, ref) => {
 
   return (
     <View style={{flex: 1, zIndex: -1}}>
-      {props.currentImageBasemap != undefined ? <ImageBasemap {...mapProps}/> : null}
-      {props.currentImageBasemap == undefined && currentBasemap.id === 'mapboxSatellite' ? <MapboxSatelliteBasemap {...mapProps}/> : null}
-      {props.currentImageBasemap == undefined && currentBasemap.id === 'mapboxOutdoors' ? <MapboxOutdoorsBasemap {...mapProps}/> : null}
-      {props.currentImageBasemap == undefined && currentBasemap.id === 'osm' ? <OSMBasemap {...mapProps}/> : null}
-      {props.currentImageBasemap == undefined && currentBasemap.id === 'macrostrat' ? <MacrostratBasemap {...mapProps}/> : null}
-      {props.currentImageBasemap == undefined && currentBasemap.id === 'custom' ? <CustomBasemap {...mapProps}/> : null}
+      {currentImageBasemap && <ImageBasemap {...mapProps}/>}
+      {!currentImageBasemap && currentBasemap.id === 'mapboxSatellite' && <MapboxSatelliteBasemap {...mapProps}/>}
+      {!currentImageBasemap && currentBasemap.id === 'mapboxOutdoors' && <MapboxOutdoorsBasemap {...mapProps}/>}
+      {!currentImageBasemap && currentBasemap.id === 'osm' && <OSMBasemap {...mapProps}/>}
+      {!currentImageBasemap && currentBasemap.id === 'macrostrat' && <MacrostratBasemap {...mapProps}/>}
+      {!currentImageBasemap && currentBasemap.id === 'custom' && <CustomBasemap {...mapProps}/>}
     </View>
   );
 });
 
 const mapStateToProps = (state) => {
   return {
-    currentImageBasemap: state.map.currentImageBasemap,
     selectedSpot: state.spot.selectedSpot,
     spots: state.spot.spots,
     vertexEndCoords: state.map.vertexEndCoords,
@@ -849,7 +829,11 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = {
   clearVertexes: () => ({type: mapReducers.CLEAR_VERTEXES}),
   onAddSpot: (spot) => ({type: spotReducers.ADD_SPOT, spot: spot}),
-  addDatasetId: (datasetId, spotId) => ({type: projectReducers.DATASETS.ADD_NEW_SPOT_ID_TO_DATASET, datasetId: datasetId, spotId: spotId}),
+  addDatasetId: (datasetId, spotId) => ({
+    type: projectReducers.DATASETS.ADD_NEW_SPOT_ID_TO_DATASET,
+    datasetId: datasetId,
+    spotId: spotId,
+  }),
   onAddSpots: (spots) => ({type: spotReducers.ADD_SPOTS, spots: spots}),
   onClearSelectedSpots: () => ({type: spotReducers.CLEAR_SELECTED_SPOTS}),
   onCurrentBasemap: (basemap) => ({type: mapReducers.CURRENT_BASEMAP, basemap: basemap}),

@@ -2,6 +2,7 @@ import {mapReducers, basemaps} from './maps.constants';
 
 const initialState = {
   currentBasemap: basemaps.mapboxOutdoors,
+  currentImageBasemap: undefined,
   offlineMaps: {},
   customMaps: [],
   vertexStartCoords: undefined,

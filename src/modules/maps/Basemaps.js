@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {useSelector} from 'react-redux';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import * as turf from '@turf/turf/index';
@@ -11,15 +11,11 @@ import {symbols as symbolsConstant} from './maps.constants';
 
 function Basemap(props) {
   const basemap = useSelector(state => state.map.currentBasemap);
+  const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const {mapRef, cameraRef} = props.forwardedRef;
   const [useMapSymbology] = useMapSymbologyHook();
   const [symbols, setSymbol] = useState(symbolsConstant);
-  const [currentImageBasemap, setCurrentImageBasemap] = useState(null); // using this just as a state for refresh.
   const [useImages] = useImagesHook();
-  
-  useEffect(() => {
-    setCurrentImageBasemap(props.currentImageBasemap);
-  }, [props.currentImageBasemap]);
 
   return <MapboxGL.MapView
     id={basemap.id}
@@ -37,17 +33,19 @@ function Basemap(props) {
     scrollEnabled={props.allowMapViewMove}
     zoomEnabled={props.allowMapViewMove}
   >
-    {props.currentImageBasemap == undefined && 
+
+    {!currentImageBasemap &&
     <MapboxGL.UserLocation
       animated={false}/>}
-    {props.currentImageBasemap == undefined && 
+    {!currentImageBasemap &&
     <MapboxGL.Camera
       ref={cameraRef}
       zoomLevel={1}
-      centerCoordinate={props.centerCoordinate}
+      centerCoordinate={currentImageBasemap ? [0, 0] : props.centerCoordinate}
       // followUserLocation={true}   // Can't follow user location if want to zoom to extent of Spots
       // followUserMode='normal'
     />}
+
     <MapboxGL.RasterSource
       id={basemap.id}
       tileUrlTemplates={[basemap.url]}
@@ -60,26 +58,24 @@ function Basemap(props) {
         style={{rasterOpacity: 1}}
       />
     </MapboxGL.RasterSource>
+
     {/* Image Basemap background Layer */}
-    {props.currentImageBasemap != undefined && 
+    {currentImageBasemap &&
+    <MapboxGL.BackgroundLayer
+      id='background'
+      style={{backgroundColor: '#ffffff'}}/>
+    }
+
+    {/* Image Basemap Layer */}
+    {currentImageBasemap && !isEmpty(props.coordQuad) &&
     <MapboxGL.Animated.ImageSource
-      id='imageBasemap1'
-      coordinates={[[-250, 85], [250, 85], [250, -85], [-250, -85]]}
-      url={require('../../assets/images/imageBasemapBackground.jpg')}> 
-      <MapboxGL.RasterLayer id='imageBasemapLayer1'
+      id='imageBasemap'
+      coordinates={props.coordQuad}
+      url={useImages.getLocalImageSrc(currentImageBasemap.id)}>
+      <MapboxGL.RasterLayer id='imageBasemapLayer'
                             style={{rasterOpacity: 1}}/>
     </MapboxGL.Animated.ImageSource>}
-    {/* Image Basemap Layer */}
-    {props.currentImageBasemap != undefined && 
-    <MapboxGL.Animated.ImageSource
-      id='imageBasemap2'
-      coordinates={isEmpty(props.coordQuad) == true ? props.coordQuad : 
-        [props.coordQuad[0], props.coordQuad[1], props.coordQuad[2], props.coordQuad[3]]}
-      url={useImages.getLocalImageSrc(props.currentImageBasemap.id)}>
-      <MapboxGL.RasterLayer id='imageBasemapLayer2'
-                            style={{rasterOpacity: .75}}/>
-    </MapboxGL.Animated.ImageSource>}
-    
+
     {/* Feature Layer */}
     <MapboxGL.Images
       images={symbols}
@@ -110,6 +106,7 @@ function Basemap(props) {
         style={useMapSymbology.getMapSymbology().polygon}
       />
     </MapboxGL.ShapeSource>
+
     {/* Selected Features Layer */}
     <MapboxGL.ShapeSource
       id='spotsNotSelectedSource'
@@ -134,6 +131,7 @@ function Basemap(props) {
         style={useMapSymbology.getMapSymbology().polygonSelected}
       />
     </MapboxGL.ShapeSource>
+
     {/* Draw Layer */}
     <MapboxGL.ShapeSource
       id='drawFeatures'
@@ -158,6 +156,7 @@ function Basemap(props) {
         style={useMapSymbology.getMapSymbology().polygonDraw}
       />
     </MapboxGL.ShapeSource>
+
     {/* Edit Layer */}
     <MapboxGL.ShapeSource
       id='editFeatureVertex'
@@ -170,6 +169,7 @@ function Basemap(props) {
         style={useMapSymbology.getMapSymbology().pointEdit}
       />
     </MapboxGL.ShapeSource>
+
   </MapboxGL.MapView>;
 }
 
