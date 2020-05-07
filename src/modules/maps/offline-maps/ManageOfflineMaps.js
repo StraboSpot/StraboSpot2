@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {Alert, Text, View} from 'react-native';
 import styles from './offlineMaps.styles';
 import {ListItem} from 'react-native-elements';
-import {connect} from 'react-redux';
+import {connect, useDispatch, useSelector} from 'react-redux';
 import RNFetchBlob from 'rn-fetch-blob';
 import {Platform} from 'react-native';
 import {mapReducers} from '../maps.constants';
@@ -10,73 +10,27 @@ import {isEmpty} from '../../../shared/Helpers';
 
 var RNFS = require('react-native-fs');
 
-class ManageOfflineMaps extends Component {
-  _isMounted = false;
+const ManageOfflineMaps = (props) => {
+  console.log('Props: ', props);
 
-  constructor(props, context) {
-    super(props, context);
+  let dirs = RNFetchBlob.fs.dirs;
+  const devicePath = Platform.OS === 'ios' ? dirs.DocumentDir : dirs.SDCardDir; // ios : android
+  const tilesDirectory = '/StraboSpotTiles';
+  const tileCacheDirectory = devicePath + tilesDirectory + '/TileCache';
+  const zipsDirectory = devicePath + tilesDirectory + '/TileZips';
+  const tileTempDirectory = devicePath + tilesDirectory + '/TileTemp';
 
-    console.log('Props: ', props);
+  console.log('tileCacheDirectory: ', tileCacheDirectory);
 
-    let dirs = RNFetchBlob.fs.dirs;
-    this.devicePath = Platform.OS === 'ios' ? dirs.DocumentDir : dirs.SDCardDir; // ios : android
-    this.tilesDirectory = '/StraboSpotTiles';
-    this.tileCacheDirectory = this.devicePath + this.tilesDirectory + '/TileCache';
-    this.zipsDirectory = this.devicePath + this.tilesDirectory + '/TileZips';
-    this.tileTempDirectory = this.devicePath + this.tilesDirectory + '/TileTemp';
 
-    console.log('tileCacheDirectory: ', this.tileCacheDirectory);
+  const offlineMaps = useSelector(state => state.map.offlineMaps);
+  const currentBasemap = useSelector(state => state.map.currentBasemap);
+  const dispatch = useDispatch
 
-  }
-
-  async componentDidMount() {
-    this._isMounted = true;
-
-  }
-
-  componentWillUnmount() {
-    this._isMounted = false;
-  }
-
-  render() { //return whole modal here
-    return (
-      <React.Fragment>
-        {!isEmpty(this.props.offlineMaps) ? (Object.values(this.props.offlineMaps).map((item, i) =>
-            <ListItem
-              containerStyle={{backgroundColor: 'transparent', padding: 0, borderBottomWidth: 1}}
-              key={item.saveId}
-              title={
-                <View style={styles.itemContainer}>
-                  <Text style={styles.itemTextStyle}>{item.name}</Text>
-                </View>
-              }
-              subtitle={
-                <View style={styles.itemSubContainer}>
-                  <Text style={styles.itemSubTextStyle}>
-                    <Text>
-                      ({item.count} tiles)
-                    </Text>
-                    <Text onPress={() => this.viewOfflineMap(item)} style={styles.buttonPadding}>
-                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;View
-                    </Text>
-                    <Text onPress={() => this.confirmDeleteMap(item)} style={styles.buttonPadding}>
-                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Delete
-                    </Text>
-                  </Text>
-                </View>
-              }
-            />)) :
-          <View style={{alignItems: 'center', paddingTop: 20}}>
-            <Text>No Offline Maps</Text>
-          </View>}
-      </React.Fragment>
-    );
-  }
-
-  viewOfflineMap = async (map) => {
+  const viewOfflineMap = async (map) => {
     let tempCurrentBasemap;
     console.log('viewOfflineMap: ', map);
-    let tileJSON = 'file://' + this.tileCacheDirectory + '/' + map.saveId + '/tiles/{z}_{x}_{y}.png';
+    let tileJSON = 'file://' + tileCacheDirectory + '/' + map.saveId + '/tiles/{z}_{x}_{y}.png';
     console.log('tileJSON: ', tileJSON);
     //change id to force layer reload
     tempCurrentBasemap =
@@ -88,7 +42,7 @@ class ManageOfflineMaps extends Component {
         url: tileJSON,
         maxZoom: 19,
       };
-    await this.props.onCurrentBasemap(tempCurrentBasemap);
+    await props.onCurrentBasemap(tempCurrentBasemap);
     tempCurrentBasemap =
       {
         id: map.appId,
@@ -100,11 +54,11 @@ class ManageOfflineMaps extends Component {
       };
 
     console.log('tempCurrentBasemap: ', tempCurrentBasemap);
-    await this.props.onCurrentBasemap(tempCurrentBasemap);
-    // this.props.closeSettingsDrawer();
+    await props.onCurrentBasemap(tempCurrentBasemap);
+    // props.closeSettingsDrawer();
   };
 
-  confirmDeleteMap = async (map) => {
+  const confirmDeleteMap = async (map) => {
     console.log(map);
     Alert.alert(
       'Delete Offline Map',
@@ -117,31 +71,31 @@ class ManageOfflineMaps extends Component {
         },
         {
           text: 'OK',
-          onPress: () => this.deleteMap(map),
+          onPress: () => deleteMap(map),
         },
       ],
       {cancelable: false},
     );
   };
 
-  deleteMap = async (map) => {
+  const deleteMap = async (map) => {
     console.log('Deleting Map Here');
     console.log('map: ', map.saveId);
-    console.log('directory: ', this.tileCacheDirectory + '/' + map.saveId);
-    let folderExists = await RNFS.exists(this.tileCacheDirectory + '/' + map.saveId);
-    const zipFileExists = await RNFS.exists(this.zipsDirectory + '/' + map.mapId + '.zip');
-    const tileTempFileExists = await RNFS.exists(this.tileTempDirectory + '/' + map.mapId);
+    console.log('directory: ', tileCacheDirectory + '/' + map.saveId);
+    let folderExists = await RNFS.exists(tileCacheDirectory + '/' + map.saveId);
+    const zipFileExists = await RNFS.exists(zipsDirectory + '/' + map.mapId + '.zip');
+    const tileTempFileExists = await RNFS.exists(tileTempDirectory + '/' + map.mapId);
     console.log(folderExists, zipFileExists, tileTempFileExists);
     //first, delete folder with tiles
     if (folderExists || zipFileExists || tileTempFileExists) {
-      await RNFS.unlink(this.tileCacheDirectory + '/' + map.saveId);
-      if (zipFileExists) await RNFS.unlink(this.zipsDirectory + '/' + map.mapId + '.zip');
-      if (tileTempFileExists) await RNFS.unlink(this.tileTempDirectory + '/' + map.mapId);
+      await RNFS.unlink(tileCacheDirectory + '/' + map.saveId);
+      if (zipFileExists) await RNFS.unlink(zipsDirectory + '/' + map.mapId + '.zip');
+      if (tileTempFileExists) await RNFS.unlink(tileTempDirectory + '/' + map.mapId);
     }
 
     //now, delete map from Redux
     let keyToDelete;
-    let currentOfflineMaps = this.props.offlineMaps;
+    let currentOfflineMaps = props.offlineMaps;
     Object.entries(currentOfflineMaps).forEach(([key, value]) => {
       if (value.mapId === map.mapId) keyToDelete = key;
     });
@@ -150,10 +104,44 @@ class ManageOfflineMaps extends Component {
     delete currentOfflineMaps[keyToDelete];
     console.log(currentOfflineMaps);
 
-    await this.props.onOfflineMaps(currentOfflineMaps);
+    await props.onOfflineMaps(currentOfflineMaps);
     console.log('Saved offlineMaps to Redux.');
   };
-}
+
+
+  return (
+    <React.Fragment>
+      {!isEmpty(props.offlineMaps) ? (Object.values(props.offlineMaps).map((item, i) =>
+          <ListItem
+            containerStyle={{backgroundColor: 'transparent', padding: 0, borderBottomWidth: 1}}
+            key={item.saveId}
+            title={
+              <View style={styles.itemContainer}>
+                <Text style={styles.itemTextStyle}>{item.name}</Text>
+              </View>
+            }
+            subtitle={
+              <View style={styles.itemSubContainer}>
+                <Text style={styles.itemSubTextStyle}>
+                  <Text>
+                    ({item.count} tiles)
+                  </Text>
+                  <Text onPress={() => viewOfflineMap(item)} style={styles.buttonPadding}>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;View
+                  </Text>
+                  <Text onPress={() => confirmDeleteMap(item)} style={styles.buttonPadding}>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Delete
+                  </Text>
+                </Text>
+              </View>
+            }
+          />)) :
+        <View style={{alignItems: 'center', paddingTop: 20}}>
+          <Text>No Offline Maps</Text>
+        </View>}
+    </React.Fragment>
+  );
+};
 
 const mapStateToProps = (state) => {
   return {
