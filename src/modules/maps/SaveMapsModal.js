@@ -4,7 +4,6 @@ import {Button, Header, Icon} from 'react-native-elements';
 import {Platform, StyleSheet, Text, View} from 'react-native';
 import {Dialog, DialogTitle, DialogContent, SlideAnimation} from 'react-native-popup-dialog';
 import RNFetchBlob from 'rn-fetch-blob';
-// import RNPickerSelect from 'react-native-picker-select';
 
 import {unzip} from 'react-native-zip-archive'; /*TODO  react-native-zip-archive@3.0.1 requires a peer of react@^15.4.2 || <= 16.3.1 but none is installed */
 import ProgressBar from 'react-native-progress/Bar';
@@ -14,7 +13,6 @@ import {mapReducers} from './maps.constants';
 
 // Styles
 import * as themes from '../../shared/styles.constants';
-import homeStyles from '../home/home.style';
 
 var RNFS = require('react-native-fs');
 
@@ -42,39 +40,45 @@ const SaveMapsModal = (props) => {
   const currentMapName = currentBasemap.layerLabel;
   const maxZoom = currentBasemap.maxZoom;
   // let zoomLevels = [];
-  let offLineMapsData = [];
-  let progressMessage = '';
+  let progressStatus = '';
 
   const [tileCount, setTileCount] = useState(0);
   const [showComplete, setShowComplete] = useState(false);
   const [showMainMenu, setShowMainMenu] = useState(true);
   const [showLoadingMenu, setShowLoadingMenu] = useState(false);
   const [showLoadingBar, setShowLoadingBar] = useState(false);
-  // const [progressMessage, setProgressMessage] = useState('');
+  const [statusMessage, setStatusMessage] = useState('');
   const [percentDone, setPercentDone] = useState(0);
   const [downloadZoom, setDownloadZoom] = useState(0);
   const [zoomLevels, setZoomLevels] = useState([]);
   const [extentString, setExtentString] = useState('');
 
   useEffect(() => {
-    props.map.getCurrentZoom().then((zoom) => {
-      // console.log(zoom);
-      let initialZoom = []
-      let currentZoom = Math.round(zoom);
-      setDownloadZoom(Math.round(zoom));
+    if (props.map) {
+      props.map.getCurrentZoom().then((zoom) => {
+        // console.log(zoom);
+        let initialZoom = []
+        let currentZoom = Math.round(zoom);
+        setDownloadZoom(Math.round(zoom));
 
-      const numZoomLevels = maxZoom ? Math.min(maxZoom - currentZoom + 1, 5) : 5;
+        const numZoomLevels = maxZoom ? Math.min(maxZoom - currentZoom + 1, 5) : 5;
 
-      for (let i = 0; i < numZoomLevels; i++) {
-        initialZoom.push(currentZoom + i)
-      }
-      setZoomLevels(initialZoom);
-    });
+        for (let i = 0; i < numZoomLevels; i++) {
+          initialZoom.push(currentZoom + i)
+        }
+        setZoomLevels(initialZoom);
+      });
 
-    props.map.getExtentString().then(ex => {
-      setExtentString(ex);
-    });
-  }, []);
+      props.map.getExtentString().then(ex => {
+        setExtentString(ex);
+      });
+    }
+    return function unMount() {
+      console.log('SaveMapsModal unMounted');
+      setShowMainMenu(true);
+      setShowComplete(false);
+    }
+  }, [props.map]);
 
   useEffect(() => {
     console.log('downloadZoom in UE', downloadZoom);
@@ -88,8 +92,8 @@ const SaveMapsModal = (props) => {
   },[downloadZoom]);
 
   useEffect(() => {
-    console.log('ProgressMessage', progressMessage);
-  }, [progressMessage]);
+    console.log('progressStatus', progressStatus);
+  }, [progressStatus]);
 
   const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -101,11 +105,11 @@ const SaveMapsModal = (props) => {
       if (responseJson.error) {
         zipError = responseJson.error;
         // setProgressMessage(responseJson.error);
-        progressMessage = responseJson.error;
+        progressStatus = responseJson.error;
         setPercentDone(1);
       }
       else {
-        progressMessage = responseJson.status;
+        progressStatus = responseJson.status;
         setPercentDone(responseJson.percent / 100);
       }
     }
@@ -114,12 +118,13 @@ const SaveMapsModal = (props) => {
     }
     tryCount++;
     console.log(tryCount)
-    if (tryCount <= 200 && progressMessage !== 'Zip File Ready.' && zipError === '') {
+    if (tryCount <= 200 && progressStatus !== 'Zip File Ready.' && zipError === '') {
       await delay(1000);
       await checkStatus(zipUID);
     }
     else {
-      progressMessage = 'Downloading Tiles...';
+      progressStatus = 'Downloading Tiles...';
+      setStatusMessage('Downloading Tiles...');
       await downloadZip(zipUID);
       await delay(3000);
       await doUnzip(zipUID);
@@ -128,9 +133,9 @@ const SaveMapsModal = (props) => {
 
   const doUnzip = async (zipUID) => {
     // hide progress bar
-    setShowLoadingBar(false);
-    setPercentDone(0);
-    progressMessage =  'Installing Tiles in StraboSpot...';
+    // setShowLoadingBar(false);
+    progressStatus =  'Installing Tiles in StraboSpot...';
+    setStatusMessage('Installing tiles...');
     const layerSaveId = currentBasemap.layerSaveId;
 
     const sourcePath = tileZipsDirectory + '/' + zipUID + '.zip';
@@ -191,7 +196,8 @@ const SaveMapsModal = (props) => {
     let startZipURL = 'unset';
 
     // setProgressMessage('Starting Download...');
-    progressMessage =  'Starting Download...';
+    progressStatus =  'Starting Download...';
+    setStatusMessage('Starting Download...');
 
     const layerID = currentBasemap.id;
 
@@ -348,103 +354,109 @@ const SaveMapsModal = (props) => {
 
   return (
     <Dialog
-      dialogStyle={homeStyles.dialogBox}
+      dialogStyle={{borderRadius: 30}}
       visible={props.visible}
       dialogAnimation={new SlideAnimation({
         slideFrom: 'top',
       })}
-      dialogTitle={
-        <DialogTitle
-          title={'Offline Maps!'}
-          style={homeStyles.dialogTitleContainer}
-          textStyle={homeStyles.dialogTitleText}
-        />
-      }
     >
-      <DialogContent>
-        <View >
+      <DialogContent style={{height: 425}}>
+        <View style={styles.modalContainer}>
           <Header
             backgroundColor={themes.PRIMARY_BACKGROUND_COLOR}
-            // containerStyle={{height: 50}}
-            leftComponent={
+            containerStyle={{width: 400}}
+            centerComponent={
+              <View>
+              <View style={{ justifyContent: 'center'}}>
+                <Text style={{fontSize: 30}}>{currentMapName}</Text>
+              </View>
+              </View>
+            }
+          />
+          <View style={{flex: 1}}>
+            <View style={{flex: 1}}>
+                  {showMainMenu &&
+                  <View style={{paddingTop: 20, paddingBottom: 20}}>
+                    <Text style={{textAlign: 'center'}}>
+                      Select max zoom level to download:
+                    </Text>
+                  </View>
+                  }
+
+
+            </View>
+            <View style={{flex: 3}}>
+              {showMainMenu && <Picker
+                onValueChange={(value) => updatePicker(value)}
+                selectedValue={downloadZoom}
+                style={styles.picker}
+              >
+                {zoomLevels.map(i => {
+                  return <Picker.Item
+                    key={i}
+                    value={i}
+                    label={i.toString()}
+                  />;
+                })}
+              </Picker>
+              }
+              {showLoadingBar &&
+              <View style={{height: 40, justifyContent: 'center'}}>
+                <ProgressBar progress={percentDone} width={200}/>
+              </View>
+              }
+              {showLoadingMenu &&
+              <View style={{height: 40, justifyContent: 'center'}}>
+                <Text style={{fontSize: 15}}>{statusMessage}</Text>
+              </View>
+              }
+              {showComplete &&
+              <View style={{height: 40, justifyContent: 'center'}}>
+                <Text style={{fontSize: 20}}>Success!</Text>
+              </View>
+              }
+
+              {showComplete &&
+              <View style={{height: 40, justifyContent: 'center'}}>
+                <Text>Your map has been successfully downloaded to this device.</Text>
+              </View>
+              }
+            </View>
+            <View style={{flex: 2}}>
+              {showMainMenu &&
+              <View>
+                <Button
+                  onPress={() => saveMap()}
+                  type={'clear'}
+                  containerStyle={{marginTop: 15}}
+                  // buttonStyle={{borderRadius: 30, paddingRight: 50, paddingLeft: 50}}
+                  title={`Download ${tileCount} Tiles`}
+                />
+                <Button
+                  title={'Close'}
+                  type={'clear'}
+                  containerStyle={{marginTop: 15}}
+                  onPress={props.close}
+                />
+              </View>
+              }
+              {showComplete &&
               <Button
-                icon={
-                  <Icon
-                    name='ios-close'
-                    type='ionicon'
-                    size={40}
-                  />
-                }
-                type= {'clear'}
                 onPress={props.close}
+                type={'clear'}
+                buttonStyle={{borderRadius: 30, paddingRight: 50, paddingLeft: 50}}
+                title={'Continue'}
               />
-            }/>
-          <View style={{height: 40, justifyContent: 'center'}}>
-            <Text style={{fontSize: 20}}>{currentMapName}</Text>
-          </View>
+              }
+            </View>
+            {/*<LinearGradient colors={['#4c669f', '#3b5998', '#192f6a']} style={styles.linearGradient}>*/}
 
-          {showMainMenu &&
-          <View style={{height: 20, width: '100%', paddingLeft: 5}}>
-            <Text>
-              Select max zoom level to download:
-            </Text>
-          </View>
-          }
-          {showMainMenu && <Picker
-            onValueChange={(value) => updatePicker(value)}
-            selectedValue={downloadZoom}
-            style={styles.picker}
-          >
-            {zoomLevels.map(i => {
-              return <Picker.Item
-                key={i}
-                value={i}
-                label={i.toString()}
-              />;
-            })}
-          </Picker>
-          }
-          {showMainMenu &&
-          <Button
-            onPress={() => saveMap()}
-            type={'clear'}
-            buttonStyle={{borderRadius: 30, paddingRight: 50, paddingLeft: 50}}
-            title={`Download ${tileCount} Tiles`}
-          />
-          }
+          {/*  /!*</LinearGradient>*!/*/}
 
-          {showLoadingMenu &&
-          <View style={{height: 40, justifyContent: 'center'}}>
-            <Text style={{fontSize: 20}}>{progressMessage}</Text>
-          </View>
-          }
 
-          {showLoadingBar &&
-          <View style={{height: 40, justifyContent: 'center'}}>
-            <ProgressBar progress={percentDone} width={200}/>
-          </View>
-          }
 
-          {showComplete &&
-          <View style={{height: 40, justifyContent: 'center'}}>
-            <Text style={{fontSize: 20}}>Success!</Text>
-          </View>
-          }
 
-          {showComplete &&
-          <View style={{height: 40, justifyContent: 'center'}}>
-            <Text>Your map has been successfully downloaded to this device.</Text>
-          </View>
-          }
-
-          {showComplete &&
-          <Button
-            onPress={props.close}
-            type={'clear'}
-            buttonStyle={{borderRadius: 30, paddingRight: 50, paddingLeft: 50}}
-            title={'Continue'}
-          />
-          }
+        </View>
         </View>
       </DialogContent>
     </Dialog>
@@ -455,7 +467,7 @@ const SaveMapsModal = (props) => {
 const styles = StyleSheet.create({
   modalContainer: {
     flex: 1,
-    width: 400,
+    width: 300,
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
     borderRadius: 20,
     alignItems: 'center',
@@ -465,10 +477,11 @@ const styles = StyleSheet.create({
     paddingRight: 15,
   },
   picker: {
-    // left: 0,
-    // right: 0,
-    // height: 250,
-    width: '100%',
+    flex: 1,
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
   },
 });
 
