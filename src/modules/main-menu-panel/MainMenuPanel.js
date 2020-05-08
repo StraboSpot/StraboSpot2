@@ -9,7 +9,7 @@ import {settingPanelReducers} from './mainMenuPanel.constants';
 import {SettingsMenuItems} from './mainMenu.constants';
 import {spotReducers} from '../spots/spot.constants';
 import ActiveProject from '../project/ActiveProjectPanel';
-import CustomMapsMenu from '../maps/custom-maps-menu/CustomMapsMenu';
+import CustomMapsMenu from '../maps/custom-maps/ManageCustomMaps';
 import ImageBaseMaps from '../maps/ImageBasemaps';
 import ImageGallery from '../images/ImageGallery';
 import ManageOfflineMapsMenu from '../maps/offline-maps/ManageOfflineMaps';
