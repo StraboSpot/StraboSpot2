@@ -277,11 +277,10 @@ const SaveMapsModal = (props) => {
       currentOfflineMaps = [];
     }
 
-    if (appId === 'custom') {
       const customMap = customMaps.filter(map => saveId === map.id)
       console.log(customMap)
-      mapName = currentMapName !== 'Custom Map' ? currentMapName : customMap[0].title + ' (Custom Map)';
-    }
+    if (appId !== 'custom') mapName = currentMapName;
+    else mapName = customMap[0].title + ' (Custom Map)';
 
 
     let newOfflineMapsData = [];
