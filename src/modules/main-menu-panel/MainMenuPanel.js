@@ -12,7 +12,7 @@ import ActiveProject from '../project/ActiveProjectPanel';
 import CustomMapsMenu from '../maps/custom-maps-menu/CustomMapsMenu';
 import ImageBaseMaps from '../maps/ImageBasemaps';
 import ImageGallery from '../images/ImageGallery';
-import ManageOfflineMapsMenu from '../maps/manage-offline-maps-menu/ManageOfflineMapsMenu';
+import ManageOfflineMapsMenu from '../maps/offline-maps/ManageOfflineMaps';
 import MyStraboSpot from '../project/MyStraboSpot';
 import ProjectList from '../project/ProjectList';
 import SamplesList from '../samples/SamplesList';

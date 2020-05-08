@@ -13,7 +13,6 @@ import SettingsPanel from '../main-menu-panel/MainMenuPanel';
 import {MapModes, mapReducers} from '../maps/maps.constants';
 import {SettingsMenuItems} from '../main-menu-panel/mainMenu.constants';
 import Modal from 'react-native-modal';
-import SaveMapModal from './SaveMapsModal';
 import NotebookPanelMenu from '../notebook-panel/NotebookPanelMenu';
 import {connect, useDispatch, useSelector} from 'react-redux';
 import {NotebookPages, notebookReducers} from '../notebook-panel/notebook.constants';
@@ -37,6 +36,7 @@ import settingPanelStyles from '../main-menu-panel/mainMenuPanel.styles';
 import IconButton from '../../shared/ui/IconButton';
 import VertexDrag from '../maps/VertexDrag';
 import {animatePanels, isEmpty} from '../../shared/Helpers';
+import SaveMapsModal from '../maps/offline-maps/SaveMapsModal';
 
 // Hooks
 import useImagesHook from '../images/useImages';
@@ -493,6 +493,16 @@ const Home = (props) => {
     );
   };
 
+  const renderSaveMapsModal = () => {
+    return (
+        <SaveMapsModal
+          close={() => setIsOfflineMapModalVisible(false)}
+          map={mapViewComponent.current}
+          visible={isOfflineMapModalVisible}
+        />
+    );
+  };
+
   const renderStatusDialogBox = () => {
     return (
       <StatusDialogBox
@@ -694,7 +704,6 @@ const Home = (props) => {
 
   return (
     <View style={homeStyles.container}>
-      {/*{props.isNotebookPanelVisible && notebookPanel}*/}
       <MapView
         mapComponentRef={mapViewComponent}
         mapMode={mapMode}
@@ -702,9 +711,8 @@ const Home = (props) => {
         endDraw={endDraw}
         openNotebookOnSelectedSpot={() => openNotebookPanel()}
       />
-      {props.vertexStartCoords && <VertexDrag/>}
-      {/*{isLoading && <LoadingSpinner/>}*/}
-      <ToastPopup toastRef={toastRef}/>
+      {props.vertexStartCoords && <VertexDrag/>}     
+          <ToastPopup toastRef={toastRef} />
       {Platform.OS === 'ios' &&
       <Animated.View style={leftsideIconAnimation}>
         {(props.modalVisible === Modals.NOTEBOOK_MODALS.COMPASS ||
@@ -753,7 +761,6 @@ const Home = (props) => {
         style={props.isAllSpotsPanelVisible ? [homeStyles.onlineStatus, rightsideIconAnimation, {right: 125}] : [homeStyles.onlineStatus, rightsideIconAnimation]}>
         <IconButton
           source={props.isOnline ? online : offline}
-          // onPress={clickHandler.bind(this, "search")}
         />
       </Animated.View>
       {!props.currentImageBasemap && <Animated.View
@@ -803,11 +810,6 @@ const Home = (props) => {
             onPress={() => openNotebookPanel()}
           />}
       </View>
-      {/*<View style={props.isNotebookPanelVisible ? home.bottomRightIconsShortcutModal*/}
-      {/*: home.bottomRightIcons}>*/}
-      {/* displays the Online boolean in text*/}
-      {/*<View><Text>Online: {props.isOnline.toString()}</Text></View> */}
-
       {buttons.drawButtonsVisible ?
         <Animated.View
           style={props.isAllSpotsPanelVisible ? [homeStyles.drawToolsContainer, rightsideIconAnimation, {right: 125}] : [homeStyles.drawToolsContainer, rightsideIconAnimation]}>
@@ -834,7 +836,6 @@ const Home = (props) => {
           />
         </Animated.View>
         : null}
-      {/*</View>*/}
       <Animated.View style={[homeStyles.homeIconContainer, leftsideIconAnimation]}>
         <IconButton
           source={require('../../assets/icons/HomeButton.png')}
@@ -891,27 +892,6 @@ const Home = (props) => {
         onPress={(name, position) => dialogClickHandler('notebookPanelMenuVisible', name, position)}
         onTouchOutside={() => toggleDialog('notebookPanelMenuVisible')}
       />
-      {/*{props.isAllSpotsPanelVisible ? <Animated.View style={[notebookStyles.allSpotsPanel, animateAllSpotsMenu]}>*/}
-      {/*  <AllSpotsView*/}
-      {/*    close={() => closeAllSpotsPanel()}*/}
-      {/*  />*/}
-      {/*</Animated.View> : null}*/}
-      {/*<Animated.View style={[notebookStyles.allSpotsPanel, animateAllSpotsMenu]}>*/}
-      {/*  <AllSpotsView*/}
-      {/*    close={() => closeAllSpotsPanel()}*/}
-      {/*  />*/}
-      {/*</Animated.View>*/}
-      <Modal
-        isVisible={isOfflineMapModalVisible}
-        useNativeDriver={true}
-      >
-        <View style={homeStyles.modal}>
-          <SaveMapModal
-            close={toggleOfflineMapModal}
-            map={mapViewComponent.current}
-          />
-        </View>
-      </Modal>
       <Modal
         isVisible={props.isImageModalVisible}
         useNativeDriver={true}
@@ -938,10 +918,7 @@ const Home = (props) => {
       {renderStatusDialogBox()}
       {renderInfoDialogBox()}
       {renderErrorMessageDialogBox()}
-      {/*<View style={{position: 'absolute', left: 550, top: 50, backgroundColor: 'white', padding: 20}}>*/}
-      {/*  <Text>{imagesCount} of {imagesNeeded}</Text>*/}
-      {/*  <ProgressCircle progress={imagesCount / imagesNeeded} />*/}
-      {/*</View>*/}
+      {renderSaveMapsModal()}
     </View>
   );
 };
