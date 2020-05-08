@@ -12,7 +12,6 @@ import {spotReducers} from '../spots/spot.constants';
 const useMaps = (props) => {
   const dispatch = useDispatch();
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
-  const spots = useSelector(state => state.spot.spots);
   const [useSpots] = useSpotsHook();
 
   // Create a point feature at the current location
@@ -105,7 +104,6 @@ const useMaps = (props) => {
   };
 
   // Convert image x,y pixels to WGS84, assuming x,y are web mercator
-  // Only handled points for now
   const convertImagePixelsToLatLong = (features) => {
     let convertedFeatures = [];
     features.forEach(feature => {
@@ -114,6 +112,26 @@ const useMaps = (props) => {
         feature.geometry.coordinates = proj4('EPSG:3857', 'EPSG:4326', [coords[0] * 100, coords[1] * 100]);
         convertedFeatures.push(feature);
       }
+      else if (feature.geometry.type === 'Polygon') {
+          let calculatedCoordinates = [];
+          for (const subArray of feature.geometry.coordinates){
+            for (const innerSubArray of subArray){
+              let [x,y] = proj4('EPSG:3857', 'EPSG:4326', [innerSubArray[0] * 100, innerSubArray[1] * 100]);
+              calculatedCoordinates.push([x,y]);
+            }
+          }
+          feature.geometry.coordinates = [calculatedCoordinates];
+          convertedFeatures.push(feature);
+       }
+       else {
+          let calculatedCoordinates = [];
+          for (const subArray of feature.geometry.coordinates){
+            let [x,y] = proj4('EPSG:3857', 'EPSG:4326', [subArray[0] * 100, subArray[1] * 100]);
+            calculatedCoordinates.push([x,y]);
+          }
+          feature.geometry.coordinates = calculatedCoordinates;
+          convertedFeatures.push(feature);
+        }
     });
     console.log('converted features', convertedFeatures);
     return convertedFeatures;

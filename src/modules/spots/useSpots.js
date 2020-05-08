@@ -1,6 +1,7 @@
 import {useDispatch, useSelector} from 'react-redux';
 import {randomNames} from '../../assets/test-data/default-names';
 import {getNewId, isEmpty} from '../../shared/Helpers';
+import proj4 from 'proj4';
 
 // Constants
 import {projectReducers} from '../project/project.constants';
@@ -14,13 +15,14 @@ import {homeReducers} from '../home/home.constants';
 const useSpots = (props) => {
   const dispatch = useDispatch();
   const spots = useSelector(state => state.spot.spots);
+  const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const datasets = useSelector(state => state.project.datasets);
 
   const [useImages] = useImagesHook();
   const [useServerRequests] = useServerRequestsHook();
 
   // Create a new Spot
-  const createSpot = async (feature, imageBasemap, mapProps) => {
+  const createSpot = async (feature) => {
     let randomName = randomNames[Math.floor(Math.random() * randomNames.length)];
     let newSpot = feature;
     newSpot.properties.id = getNewId();
@@ -31,15 +33,11 @@ const useSpots = (props) => {
     newSpot.properties.modified_timestamp = Date.now();
     newSpot.properties.viewed_timestamp = Date.now();
     newSpot.properties.name = randomName;
-    // new spot on imagebasemap, sets image_basemap property for the spot
-    // with imagebasemapId, and the new spot geometry should have
-    //image pixels, instead of traditional, lat lng,
-    //so we convert them and save image pixels to spot geometry.
-    if (imageBasemap) {
+    if (currentImageBasemap) {
       //newSpot.properties.lat = newSpot.geometry.coordinates[0];
       //newSpot.properties.lng = newSpot.geometry.coordinates[1];
-      newSpot.properties.image_basemap = imageBasemap;
-      newSpot = convertScreenPointsToImagePixels(newSpot, mapProps);
+      newSpot.properties.image_basemap = currentImageBasemap.id;
+      newSpot = convertFeatureGeometryToImagePixels(newSpot);
     }
     console.log('Creating new Spot:', newSpot);
     await dispatch({type: spotReducers.ADD_SPOT, spot: newSpot});
@@ -141,7 +139,7 @@ const useSpots = (props) => {
     const allSpotsCopy = JSON.parse(JSON.stringify(Object.values(getActiveSpotsObj())));
     if (imageBasemap) {
       return allSpotsCopy.filter(
-        spot => spot.geometry && !spot.properties.strat_section_id && spot.properties.image_basemap == imageBasemap);
+        spot => spot.geometry && !spot.properties.strat_section_id && spot.properties.image_basemap === imageBasemap);
     }
     return allSpotsCopy.filter(
       spot => spot.geometry && !spot.properties.strat_section_id && !spot.properties.image_basemap);
@@ -159,40 +157,31 @@ const useSpots = (props) => {
     return foundSpots;
   };
 
-  /*
-   convertScreenPointsToImagePixels, this method is a simple
-   reverse engineering for converting imagePixels to screen coords in
-   imagebasemaps.
-   We maintain the screen pixels in mapProps from whenpress is done
-   to create the new spot.
-   */
-  const convertScreenPointsToImagePixels = (spot, mapProps) => {
-    var imageBasemapProps = mapProps.imageBasemapProps;
-    const xRatio = imageBasemapProps.xRatio;
-    const yRatio = imageBasemapProps.yRatio;
-    const xTranslation = imageBasemapProps.xTranslation;
-    const yTranslation = imageBasemapProps.yTranslation;
-    var finalImageCoordinates = [];
-    var imageX, imageY;
-    if (mapProps.screenCords.length > 2) {
-      for (var i = 0; i < mapProps.screenCords.length; i++) {
-        if (i % 2 == 0) {
-          imageX = (mapProps.screenCords[i] - xTranslation) * xRatio;
+  // Convert WGS84 to image x,y pixels, assuming x,y are web mercator
+  const convertFeatureGeometryToImagePixels = (feature) => {
+    var imageX,imageY;
+    let calculatedCoordinates = [];
+    if (feature.geometry.type === 'Point') {
+      [imageX,imageY] = proj4('EPSG:4326', 'EPSG:3857', feature.geometry.coordinates);
+      feature.geometry.coordinates = [imageX / 100,imageY / 100];
+    }
+    else if (feature.geometry.type === 'Polygon') {
+        for (const subArray of feature.geometry.coordinates){
+          for (const innerSubArray of subArray){
+            [imageX,imageY] = proj4('EPSG:4326', 'EPSG:3857', innerSubArray);
+            calculatedCoordinates.push([imageX / 100,imageY / 100]);
+          }
         }
-        else {
-          imageY = yTranslation - (mapProps.screenCords[i] * yRatio);
-          finalImageCoordinates.push([imageX, imageY]);
+        feature.geometry.coordinates = [calculatedCoordinates];
+     }
+     else { // LineString
+        for (const subArray of feature.geometry.coordinates){
+          [imageX,imageY] = proj4('EPSG:4326', 'EPSG:3857', subArray);
+          calculatedCoordinates.push([imageX / 100,imageY / 100]);
         }
+        feature.geometry.coordinates = calculatedCoordinates;
       }
-      if (spot.geometry.type == 'Polygon') spot.geometry.coordinates = [finalImageCoordinates];
-      else spot.geometry.coordinates = finalImageCoordinates;
-    }
-    else { //point
-      imageX = (mapProps.screenCords[0] - xTranslation) * xRatio;
-      imageY = yTranslation - (mapProps.screenCords[1] * yRatio);
-      spot.geometry.coordinates = [imageX, imageY];
-    }
-    return spot;
+    return feature;
   };
 
   return [{

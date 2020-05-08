@@ -5,6 +5,8 @@ import * as turf from '@turf/turf/index';
 import useImagesHook from '../images/useImages';
 import useMapSymbologyHook from './useMapSymbology';
 import {isEmpty} from '../../shared/Helpers';
+import proj4 from 'proj4';
+import {Platform} from 'react-native';
 
 // Constants
 import {symbols as symbolsConstant} from './maps.constants';
@@ -37,14 +39,14 @@ function Basemap(props) {
     {!currentImageBasemap &&
     <MapboxGL.UserLocation
       animated={false}/>}
-    {!currentImageBasemap &&
+
     <MapboxGL.Camera
       ref={cameraRef}
-      zoomLevel={1}
-      centerCoordinate={currentImageBasemap ? [0, 0] : props.centerCoordinate}
+      zoomLevel={currentImageBasemap ? 7 : 15}
+      centerCoordinate={currentImageBasemap ? proj4('EPSG:3857', 'EPSG:4326', [(currentImageBasemap.width * 100) / 2, (currentImageBasemap.height * 100) / 2]) : props.centerCoordinate}
       // followUserLocation={true}   // Can't follow user location if want to zoom to extent of Spots
       // followUserMode='normal'
-    />}
+    />
 
     <MapboxGL.RasterSource
       id={basemap.id}
@@ -60,12 +62,20 @@ function Basemap(props) {
     </MapboxGL.RasterSource>
 
     {/* Image Basemap background Layer */}
-    {currentImageBasemap &&
+    {Platform.OS === 'android' && currentImageBasemap &&
     <MapboxGL.BackgroundLayer
       id='background'
       style={{backgroundColor: '#ffffff'}}/>
     }
 
+    {Platform.OS === 'ios' && currentImageBasemap &&
+    <MapboxGL.Animated.ImageSource
+      id='imageBasemapBackground'
+      coordinates={[[-250, 85], [250, 85], [250, -85], [-250, -85]]}
+      url={require('../../assets/images/imageBasemapBackground.jpg')}>
+      <MapboxGL.RasterLayer id='imageBasemapBackgroundLayer'
+                            style={{rasterOpacity: 1}}/>
+    </MapboxGL.Animated.ImageSource>}
     {/* Image Basemap Layer */}
     {currentImageBasemap && !isEmpty(props.coordQuad) &&
     <MapboxGL.Animated.ImageSource

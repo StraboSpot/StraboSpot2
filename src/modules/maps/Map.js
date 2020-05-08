@@ -211,22 +211,6 @@ const map = React.forwardRef((props, ref) => {
       console.log('Drawing', props.mapMode, '...');
       let feature = {};
       const newCoord = turf.getCoord(e);
-      if (currentImageBasemap) {
-        if (mapPropsMutable.screenCords.length === 0) {
-          setMapPropsMutable(m => ({
-            ...m,
-            screenCords: [e.properties.screenPointX, e.properties.screenPointY],
-          }));
-        }
-        else {
-          var nextPointCoords = mapProps.screenCords;
-          nextPointCoords.push(e.properties.screenPointX, e.properties.screenPointY);
-          setMapPropsMutable(m => ({
-            ...m,
-            screenCords: nextPointCoords,
-          }));
-        }
-      }
       // Draw a point for the last coordinate touched
       // const lastVertexPlaced = MapboxGL.geoUtils.makeFeature(e.geometry);
       const lastVertexPlaced = turf.point(e.geometry.coordinates);
@@ -531,10 +515,7 @@ const map = React.forwardRef((props, ref) => {
       if (mapPropsMutable.drawFeatures.length > 1) {
         newFeature = mapPropsMutable.drawFeatures.splice(1, 1)[0];
       }
-      if (currentImageBasemap) {
-        newOrEditedSpot = await useSpots.createSpot(newFeature, currentImageBasemap.id, mapProps);
-      }
-      else newOrEditedSpot = await useSpots.createSpot(newFeature);
+      newOrEditedSpot = await useSpots.createSpot(newFeature);
       useMaps.setSelectedSpot(newOrEditedSpot);
       setDrawFeatures([]);
       setMapPropsMutable(m => ({
