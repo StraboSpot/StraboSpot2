@@ -1,15 +1,19 @@
 import React, {useState} from 'react';
 import {Alert, Text, View} from 'react-native';
 import {Picker} from '@react-native-community/picker';
-import styles from './customMaps.styles';
 import {Button, ListItem} from 'react-native-elements';
-import * as SharedUI from '../../../shared/ui/index';
 import {connect} from 'react-redux';
-import {Divider, Input} from 'react-native-elements';
+import {Input} from 'react-native-elements';
 import {mapReducers} from '../maps.constants';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {isEmpty} from '../../../shared/Helpers';
 import {MAPBOX_KEY} from '../../../MapboxConfig';
+import Divider from '../../main-menu-panel/MainMenuPanelDivider';
+
+// Styles
+import styles from './customMaps.styles';
+import commonStyles from '../../../shared/common.styles';
+
 
 const ManageCustomMaps = (props) => {
   console.log('Props: ', props);
@@ -307,11 +311,31 @@ const ManageCustomMaps = (props) => {
   return (
 
     <React.Fragment>
+      {showFrontPage &&
+      <View style={{}}>
+        <Button
+          onPress={showMapPicker}
+          containerStyle={styles.buttonContainer}
+          buttonStyle={commonStyles.standardButton}
+          titleStyle={commonStyles.standardButtonText}
+          icon={
+            <Icon
+              style={styles.icon}
+              name={'ios-add'}
+              size={30}
+              color={'white'}/>
+          }
+          title={'Add new Custom Map'}
+        />
+      </View>
+      }
+      <Divider sectionText={'current custom maps'} style={styles.header}/>
       {showFrontPage && props.customMaps &&
-      <View>
-        {
-          props.customMaps.map((item, i) => <ListItem
-            containerStyle={{backgroundColor: 'transparent', padding: 0}}
+      <View style={styles.sectionsContainer}>
+        {props.customMaps.map((item, i) => (
+            <ListItem
+            containerStyle={styles.list}
+            bottomDivider={i < Object.values(props.customMaps).length - 1}
             key={item.id}
             title={
               <View style={styles.itemContainer}>
@@ -333,7 +357,7 @@ const ManageCustomMaps = (props) => {
                 </Text>
               </View>
             }
-          />)
+          />))
         }
       </View>
       }
@@ -406,27 +430,6 @@ const ManageCustomMaps = (props) => {
         <Text style={styles.submitButton} onPress={checkMap}>
           Submit
         </Text>
-      </View>
-      }
-      {showFrontPage &&
-      <View style={{flex: 1}}>
-        <Button
-          onPress={showMapPicker}
-          icon={
-            <Icon
-              style={styles.icon}
-              name={'ios-add'}
-              size={30}
-              color={'white'}/>
-          }
-          // name={'ios-arrow-back'}
-          size={20}
-          color={'#407ad9'}
-          title={'Add New Map'}
-        />
-        {/*<Text style={styles.rightlink}>*/}
-        {/*  Add New Map*/}
-        {/*</Text>*/}
       </View>
       }
     </React.Fragment>
