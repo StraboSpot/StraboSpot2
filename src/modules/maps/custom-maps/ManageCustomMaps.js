@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {useState} from 'react';
 import {Alert, Text, View} from 'react-native';
 import {Picker} from '@react-native-community/picker';
 import styles from './customMaps.styles';
@@ -11,134 +11,109 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {isEmpty} from '../../../shared/Helpers';
 import {MAPBOX_KEY} from '../../../MapboxConfig';
 
-class ManageCustomMaps extends Component {
-  _isMounted = false;
+const ManageCustomMaps = (props) => {
+  console.log('Props: ', props);
 
-  constructor(props, context) {
-    super(props, context);
-    console.log('Props: ', props);
+  const [showFrontPage, setShowFrontPage] = useState(true);
+  const [showNewMapSelect, setShowNewMapSelect] = useState(false);
+  const [showForm, setShowForm] = useState(false);
+  const [showLoadingMenu, setShowLoadingMenu] = useState(false);
+  const [showSubmitButton, setShowSubmitButton] = useState(true);
+  const [chosenForm, setChosenForm] = useState('false');
+  const [map, setMap] = useState({
+    mapTitle: '',
+    mapIdLabel: '',
+    mapId: '',
+    accessToken: props.user.mapboxToken,
+  });
 
-    this.state = {
-      showFrontPage: true,
-      showNewMapSelect: false,
-      showForm: false,
-      showLoadingMenu: false,
-      chosenForm: '',
-      maptitle: '',
+  const mapTypes = [
+    'Select...',
+    'Mapbox Style',
+    'Map Warper',
+    'StraboSpot MyMaps',
+  ];
+
+  const showMapPicker = () => {
+    setShowFrontPage(false);
+    setShowNewMapSelect(true);
+  };
+
+  const showHome = () => {
+    setShowFrontPage(true);
+    setShowForm(false);
+    setMap({
       mapIdLabel: '',
       mapId: '',
-      accessToken: this.props.user.mapboxToken,
-      showSubmitButton: true,
-    };
-
-    this.mapTypes = [
-      'Select...',
-      'Mapbox Style',
-      'Map Warper',
-      'StraboSpot MyMaps',
-    ];
-  }
-
-  async componentDidMount() {
-    this._isMounted = true;
-
-  }
-
-  componentWillUnmount() {
-    this._isMounted = false;
-  }
-
-  showMapPicker = () => {
-    this.setState({showFrontPage: false});
-    this.setState({showNewMapSelect: true});
+      mapTitle: '',
+      accessToken: '',
+    });
+    setChosenForm('');
   };
 
-  showHome = () => {
-    this.setState({showFrontPage: true});
-    this.setState({showForm: false});
-    this.setState({mapIdLabel: ''});
-    this.setState({mapId: ''});
-    this.setState({mapTitle: ''});
-    this.setState({accessToken: ''});
-    this.setState({chosenForm: ''});
-  };
-
-  updateForm = (chosenForm) => {
+  const updateForm = (chosenForm) => {
     console.log('chosen form: ', chosenForm);
-    this.setState({showNewMapSelect: false});
-    this.setState({chosenForm: chosenForm});
+    setShowNewMapSelect(false);
+    setChosenForm(chosenForm);
 
     switch (chosenForm) {
       case 'Mapbox Style':
-        this.setState({mapIdLabel: 'Style URL'});
+        setMap({...map, mapIdLabel: 'Style URL'});
         break;
       case 'Map Warper':
-        this.setState({mapIdLabel: '5 Digit Map ID'});
+        setMap({...map, mapIdLabel: '5 Digit Map ID'});
         break;
       case 'StraboSpot MyMaps':
-        this.setState({mapIdLabel: 'Strabo Map ID'});
+        setMap({...map, mapIdLabel: 'Strabo Map ID'});
         break;
       default:
-        this.setState({mapIdLabel: 'Error!'});
+        setMap({...map, mapIdLabel: 'Error!'});
     }
 
-    this.setState({showForm: true});
+    setShowForm(true);
   };
 
-  mapTitleEdit = (text) => {
-    this.setState({showSubmitButton: true});
-    this.setState(prevState => {
-      return {
-        ...prevState,
-        mapTitle: text,
-      };
-    }, () => console.log('mapTitle state:', this.state.mapTitle));
+  const mapTitleEdit = (text) => {
+    setShowSubmitButton(true);
+    setMap({...map, mapTitle: text});
   };
 
-  mapIdEdit = (text) => {
-    this.setState({showSubmitButton: true});
+  const mapIdEdit = (text) => {
+    setShowSubmitButton(true);
     let editedMapUrl;
-    if (this.state.chosenForm === 'Mapbox Styles') editedMapUrl = text.split('/').slice(3).join('/'); // Needs to be modified for url and saveUrl
-    else if (this.state.chosenForm === 'Map Warper') editedMapUrl = text;
-    this.setState(prevState => {
-      return {
-        ...prevState,
-        mapId: editedMapUrl,
-      };
-    }, () => console.log('mapId state:', this.state.mapId));
+    if (chosenForm === 'Mapbox Style') {
+      editedMapUrl = text.split('/').slice(3).join('/');
+    }// Needs to be modified for url and saveUrl
+    else if (chosenForm === 'Map Warper') editedMapUrl = text;
+    setMap({...map, mapId: editedMapUrl});
   };
 
-  accessTokenEdit = (text) => {
-    this.setState(prevState => {
-      return {
-        ...prevState,
-        accessToken: text,
-      };
-    }, () => console.log('accessToken state:', this.state.accessToken));
+  const accessTokenEdit = (text) => {
+    setMap( {...map, accessToken: text});
   };
 
-  checkMap = async () => {
+  const checkMap = async () => {
     let url, saveUrl;
-    const {mapId} = this.state;
+    // const {mapId} = state;
     // let mapIdEdit = mapId.split('/').slice(3).join('/'); // Needs to be modified for url and saveUrl
     // console.log(mapIdEdit)
-    this.setState({showSubmitButton: false});
-    switch (this.state.chosenForm) {
+   setShowSubmitButton(true);
+    switch (chosenForm) {
       case 'Mapbox Style':
         //jasonash/cjl3xdv9h22j12tqfmyce22zq
         //pk.eyJ1IjoiamFzb25hc2giLCJhIjoiY2l2dTUycmNyMDBrZjJ5bzBhaHgxaGQ1diJ9.O2UUsedIcg1U7w473A5UHA
-        url = 'https://api.mapbox.com/styles/v1/' + mapId + '/tiles/256/0/0/0?access_token=' + this.state.accessToken;
-         saveUrl = 'https://api.mapbox.com/styles/v1/' + mapId + '/tiles/256/{z}/{x}/{y}?access_token=' + this.state.accessToken;
+        url = 'https://api.mapbox.com/styles/v1/' + map.mapId + '/tiles/256/0/0/0?access_token=' + map.accessToken;
+        saveUrl = 'https://api.mapbox.com/styles/v1/' + map.mapId + '/tiles/256/{z}/{x}/{y}?access_token=' + map.accessToken;
         break;
       case 'Map Warper':
-        url = 'https://www.strabospot.org/mwproxy/' + this.state.mapId + '/0/0/0.png';
-        saveUrl = 'https://www.strabospot.org/mwproxy/' + this.state.mapId + '/{z}/{x}/{y}.png';
+        url = 'https://www.strabospot.org/mwproxy/' + map.mapId + '/0/0/0.png';
+        saveUrl = 'https://www.strabospot.org/mwproxy/' + map.mapId + '/{z}/{x}/{y}.png';
         break;
       case 'StraboSpot MyMaps':
         //5b7597c754016
         //https://strabospot.org/geotiff/tiles/5b7597c754016/0/0/0.png
-        url = 'https://strabospot.org/geotiff/tiles/' + this.state.mapId + '/0/0/0.png';
-        saveUrl = 'https://strabospot.org/geotiff/tiles/' + this.state.mapId + '/{z}/{x}/{y}.png';
+        url = 'https://strabospot.org/geotiff/tiles/' + map.mapId + '/0/0/0.png';
+        saveUrl = 'https://strabospot.org/geotiff/tiles/' + map.mapId + '/{z}/{x}/{y}.png';
         break;
       default:
         url = 'na';
@@ -148,41 +123,41 @@ class ManageCustomMaps extends Component {
     fetch(url).then(response => {
       const statusCode = response.status;
       console.log('statusCode', statusCode);
-      console.log('customMaps: ', this.props.customMaps);
-      if (statusCode == '200') {
+      console.log('customMaps: ', props.customMaps);
+      if (statusCode === 200) {
         //check to see if it already exists in Redux
         let mapExists = false;
-        for (let i = 0; i < this.props.customMaps.length; i++) {
-          if (this.props.customMaps[i].mapId == this.state.mapId) {
+        for (let i = 0; i < props.customMaps.length; i++) {
+          if (props.customMaps[i].mapId === map.mapId) {
             mapExists = true;
           }
         }
         if (!mapExists) {
           //add map to Redux here...
           let newReduxMaps = [];
-          for (let i = 0; i < this.props.customMaps.length; i++) {
-            newReduxMaps.push(this.props.customMaps[i]);
+          for (let i = 0; i < props.customMaps.length; i++) {
+            newReduxMaps.push(props.customMaps[i]);
           }
           let newMap = {};
           newMap.opacity = 1; // TODO add opacity to custom map
           newMap.overlay = true; // TODO add overlay to custom map
-          newMap.mapId = this.makeMapId();
-          newMap.source = this.state.chosenForm;
-          newMap.id = this.state.mapId;
-          newMap.title = this.state.mapTitle;
-          if (this.state.accessToken) {
-            newMap.key = this.state.accessToken;
+          newMap.mapId = makeMapId();
+          newMap.source = chosenForm;
+          newMap.id = map.mapId;
+          newMap.title = map.mapTitle;
+          if (map.accessToken) {
+            newMap.key = map.accessToken;
           }
           newMap.url = saveUrl;
           newReduxMaps.push(newMap);
-          this.props.onCustomMaps(newReduxMaps);
+          props.onCustomMaps(newReduxMaps);
           Alert.alert(
             'Success!',
             'Map has been added successfully.',
             [
               {
                 text: 'OK',
-                onPress: () => this.showHome(),
+                onPress: () => showHome(),
               },
             ],
             {cancelable: false},
@@ -195,7 +170,7 @@ class ManageCustomMaps extends Component {
             [
               {
                 text: 'OK',
-                onPress: () => this.showHome(),
+                onPress: () => showHome(),
               },
             ],
             {cancelable: false},
@@ -230,7 +205,7 @@ class ManageCustomMaps extends Component {
       });
   };
 
-  makeMapId = () => {
+  const makeMapId = () => {
     var result = '';
     var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     var charactersLength = characters.length;
@@ -240,7 +215,7 @@ class ManageCustomMaps extends Component {
     return result;
   };
 
-  confirmDeleteMap = async (map) => {
+  const confirmDeleteMap = async (map) => {
     console.log(map);
     Alert.alert(
       'Delete Custom Map',
@@ -253,19 +228,19 @@ class ManageCustomMaps extends Component {
         },
         {
           text: 'OK',
-          onPress: () => this.deleteMap(map.id),
+          onPress: () => deleteMap(map.id),
         },
       ],
       {cancelable: false},
     );
   };
 
-  deleteMap = async (mapid) => {
+  const deleteMap = async (mapid) => {
     console.log('Deleting Map Here');
     console.log('map: ', mapid);
 
     //now, delete map from Redux
-    currentCustomMaps = this.props.customMaps;
+    let currentCustomMaps = props.customMaps;
 
     if (!currentCustomMaps) {
       currentCustomMaps = [];
@@ -276,19 +251,19 @@ class ManageCustomMaps extends Component {
     //loop over offlineMapsData and add any other maps (not current)
     for (let i = 0; i < currentCustomMaps.length; i++) {
       if (currentCustomMaps[i].id) {
-        if (currentCustomMaps[i].id != mapid) {
+        if (currentCustomMaps[i].id !== mapid) {
           //Add it to new array for Redux Storage
           newCustomMapsData.push(currentCustomMaps[i]);
         }
       }
     }
 
-    await this.props.onCustomMaps(newCustomMapsData);
+    await props.onCustomMaps(newCustomMapsData);
     console.log('Saved customMaps to Redux.');
 
   };
 
-  viewCustomMap = async (map) => {
+  const viewCustomMap = async (map) => {
     let tempCurrentBasemap, mapUrl;
     console.log('viewCustomMap: ', map);
 
@@ -302,7 +277,7 @@ class ManageCustomMaps extends Component {
         maxZoom: 19,
       };
 
-    await this.props.onCurrentBasemap(tempCurrentBasemap);
+    await props.onCurrentBasemap(tempCurrentBasemap);
 
     if (map.url === undefined) {
       if (map.source === 'Mapbox Styles' || map.source === 'mapbox_styles') {
@@ -310,7 +285,9 @@ class ManageCustomMaps extends Component {
       }
       else if (map.source === 'Map Warper' || map.source === 'map_warper') mapUrl = 'https://www.strabospot.org/mwproxy/' + map.id + '/{z}/{x}/{y}.png';
     }
-    else mapUrl = map.url;
+    else {
+      mapUrl = map.url;
+    }
 
     tempCurrentBasemap =
       {
@@ -323,140 +300,138 @@ class ManageCustomMaps extends Component {
       };
 
     console.log('tempCurrentBasemap: ', tempCurrentBasemap);
-    await this.props.onCurrentBasemap(tempCurrentBasemap);
-    // this.props.closeSettingsDrawer();
+    await props.onCurrentBasemap(tempCurrentBasemap);
+    // props.closeSettingsDrawer();
   };
 
-  render() { //return whole modal here
-    return (
+  return (
 
-      <React.Fragment>
-        {this.state.showFrontPage && this.props.customMaps &&
-        <View>
-          {
-            this.props.customMaps.map((item, i) => <ListItem
-              containerStyle={{backgroundColor: 'transparent', padding: 0}}
-              key={item.id}
-              title={
-                <View style={styles.itemContainer}>
-                  <Text style={styles.itemTextStyle}>{item.title}</Text>
-                </View>
-              }
-              subtitle={
-                <View style={styles.itemSubContainer}>
-                  <Text style={styles.itemSubTextStyle}>
-                    <Text>
-                      ({item.source})
-                    </Text>
-                    <Text onPress={() => this.viewCustomMap(item)} style={styles.buttonPadding}>
-                      &nbsp;&nbsp;&nbsp;View
-                    </Text>
-                    <Text onPress={() => this.confirmDeleteMap(item)} style={styles.buttonPadding}>
-                      &nbsp;&nbsp;&nbsp;Delete
-                    </Text>
-                  </Text>
-                </View>
-              }
-            />)
-          }
-        </View>
-        }
-        {this.state.showFrontPage && isEmpty(this.props.customMaps) &&
-        <View style={styles.centertext}>
-          <Text>
-            No custom maps yet.
-          </Text>
-        </View>
-        }
-        {this.state.showNewMapSelect &&
-        <View>
-          <View style={{alignItems: 'center'}}>
-            <Text style={styles.headerText}>Select Map Type:</Text>
-          </View>
-          <Picker
-            selectedValue=''
-            onValueChange={(mapSelectorType) => this.updateForm(mapSelectorType)}
-            style={styles.picker}>
-            {
-              this.mapTypes.map(function (i) {
-                return <Picker.Item
-                  label={i}
-                  value={i}
-                  key={i}
-                />;
-              })
+    <React.Fragment>
+      {showFrontPage && props.customMaps &&
+      <View>
+        {
+          props.customMaps.map((item, i) => <ListItem
+            containerStyle={{backgroundColor: 'transparent', padding: 0}}
+            key={item.id}
+            title={
+              <View style={styles.itemContainer}>
+                <Text style={styles.itemTextStyle}>{item.title}</Text>
+              </View>
             }
-          </Picker>
-        </View>
+            subtitle={
+              <View style={styles.itemSubContainer}>
+                <Text style={styles.itemSubTextStyle}>
+                  <Text>
+                    ({item.source})
+                  </Text>
+                  <Text onPress={() => viewCustomMap(item)} style={styles.buttonPadding}>
+                    &nbsp;&nbsp;&nbsp;View
+                  </Text>
+                  <Text onPress={() => confirmDeleteMap(item)} style={styles.buttonPadding}>
+                    &nbsp;&nbsp;&nbsp;Delete
+                  </Text>
+                </Text>
+              </View>
+            }
+          />)
         }
-        {this.state.showForm &&
-        <View>
-          <View style={{alignItems: 'center', paddingBottom: 10}}>
-            <Text style={styles.headerText}>New {this.state.chosenForm}:</Text>
-          </View>
-          <Divider style={styles.divider}>
-            <Text style={styles.dividerText}>My Map Title</Text>
-          </Divider>
-          <Input
-            placeholder='enter map title...'
-            onChangeText={(text) => this.mapTitleEdit(text)}
-            value={this.state.mapTitle}
-          />
-          <Divider style={styles.divider}>
-            <Text style={styles.dividerText}>{this.state.mapIdLabel}</Text>
-          </Divider>
-          <Input
-            placeholder={'enter ' + this.state.mapIdLabel + '...'}
-            onChangeText={(text) => this.mapIdEdit(text)}
-            value={this.state.id}
-          />
+      </View>
+      }
+      {showFrontPage && isEmpty(props.customMaps) &&
+      <View style={styles.centertext}>
+        <Text>
+          No custom maps yet.
+        </Text>
+      </View>
+      }
+      {showNewMapSelect &&
+      <View>
+        <View style={{alignItems: 'center'}}>
+          <Text style={styles.headerText}>Select Map Type:</Text>
         </View>
-        }
-        {this.state.chosenForm === 'Mapbox Style' &&
-        <View>
-          <Divider style={styles.divider}>
-            <Text style={styles.dividerText}>Access Token</Text>
-          </Divider>
-          <Input
-            placeholder={'enter Access Token...'}
-            onChangeText={(text) => this.accessTokenEdit(text)}
-            value={this.state.accessToken}
-          />
+        <Picker
+          selectedValue=''
+          onValueChange={(mapSelectorType) => updateForm(mapSelectorType)}
+          style={styles.picker}>
+          {
+            mapTypes.map(function (i) {
+              return <Picker.Item
+                label={i}
+                value={i}
+                key={i}
+              />;
+            })
+          }
+        </Picker>
+      </View>
+      }
+      {showForm &&
+      <View>
+        <View style={{alignItems: 'center', paddingBottom: 10}}>
+          <Text style={styles.headerText}>New {chosenForm}:</Text>
         </View>
-        }
-        {this.state.showSubmitButton && this.state.mapTitle !== '' && this.state.mapId !== ''
-        && (this.state.chosenForm != 'Mapbox Style' || this.state.accessToken != '') &&
-        <View>
-          <Text style={styles.submitButton} onPress={this.checkMap}>
-            Submit
-          </Text>
-        </View>
-        }
-        {this.state.showFrontPage &&
-        <View style={{flex: 1}}>
-          <Button
-            onPress={this.showMapPicker}
-              icon={
-                <Icon
-                  style={styles.icon}
-                  name={'ios-add'}
-                  size={30}
-                  color={'white'}/>
-              }
-            // name={'ios-arrow-back'}
-            size={20}
-            color={'#407ad9'}
-            title={'Add New Map'}
-          />
-            {/*<Text style={styles.rightlink}>*/}
-            {/*  Add New Map*/}
-            {/*</Text>*/}
-        </View>
-        }
-      </React.Fragment>
-    );
-  }
-}
+        <Divider style={styles.divider}>
+          <Text style={styles.dividerText}>My Map Title</Text>
+        </Divider>
+        <Input
+          placeholder='enter map title...'
+          onChangeText={(text) => mapTitleEdit(text)}
+          value={map.mapTitle}
+        />
+        <Divider style={styles.divider}>
+          <Text style={styles.dividerText}>{map.mapIdLabel}</Text>
+        </Divider>
+        <Input
+          placeholder={'enter ' + map.mapIdLabel + '...'}
+          onChangeText={(text) => mapIdEdit(text)}
+          value={map.mapId}
+        />
+      </View>
+      }
+      {chosenForm === 'Mapbox Style' &&
+      <View>
+        <Divider style={styles.divider}>
+          <Text style={styles.dividerText}>Access Token</Text>
+        </Divider>
+        <Input
+          placeholder={'enter Access Token...'}
+          onChangeText={(text) => accessTokenEdit(text)}
+          value={map.accessToken}
+        />
+      </View>
+      }
+      {showSubmitButton && map.mapTitle !== '' && map.mapId !== ''
+      && (chosenForm !== 'Mapbox Style' || map.accessToken !== '') &&
+      <View>
+        <Text style={styles.submitButton} onPress={checkMap}>
+          Submit
+        </Text>
+      </View>
+      }
+      {showFrontPage &&
+      <View style={{flex: 1}}>
+        <Button
+          onPress={showMapPicker}
+          icon={
+            <Icon
+              style={styles.icon}
+              name={'ios-add'}
+              size={30}
+              color={'white'}/>
+          }
+          // name={'ios-arrow-back'}
+          size={20}
+          color={'#407ad9'}
+          title={'Add New Map'}
+        />
+        {/*<Text style={styles.rightlink}>*/}
+        {/*  Add New Map*/}
+        {/*</Text>*/}
+      </View>
+      }
+    </React.Fragment>
+  );
+};
 
 const mapStateToProps = (state) => {
   return {
