@@ -39,23 +39,15 @@ const styles = StyleSheet.create({
     width: 40,
   },
   itemContainer: {
-    // flex: 1,
     width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
-    // paddingTop: 7,
     paddingBottom: 10,
-
-    // paddingLeft: 10,
   },
   itemSubContainer: {
-    // width: '90%',
-    // flex: 2,
     justifyContent: 'space-between',
     flexDirection: 'row',
-    // alignContent: 'flex-start',
     paddingTop: 10,
-    // paddingBottom: 7,
     paddingLeft: 10,
   },
   itemTextStyle: {
