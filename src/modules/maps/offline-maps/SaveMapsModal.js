@@ -250,7 +250,7 @@ const SaveMapsModal = (props) => {
   };
 
   const moveFiles = async (zipUID) => {
-    let result;
+    let result, mapName;
     let folderExists = await RNFS.exists(tileCacheDirectory + '/' + saveId);
     if (!folderExists) {
       console.log('FOLDER DOESN\'T EXIST! ' + saveId);
@@ -277,7 +277,12 @@ const SaveMapsModal = (props) => {
       currentOfflineMaps = [];
     }
 
-    const mapName = currentMapName ? currentMapName : 'Custom Map';
+    if (appId === 'custom') {
+      const customMap = customMaps.filter(map => saveId === map.id)
+      console.log(customMap)
+      mapName = currentMapName !== 'Custom Map' ? currentMapName : customMap[0].title + ' (Custom Map)';
+    }
+
 
     let newOfflineMapsData = [];
     let thisMap = {};
