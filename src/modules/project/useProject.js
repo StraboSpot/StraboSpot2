@@ -3,7 +3,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import RNFetchBlob from 'rn-fetch-blob';
 
 import {homeReducers} from '../home/home.constants';
-import {getNewId, isEmpty} from '../../shared/Helpers';
+import {getNewId, isEmpty, makeMapId} from '../../shared/Helpers';
 import {spotReducers} from '../spots/spot.constants';
 import {projectReducers} from './project.constants';
 
@@ -229,7 +229,11 @@ const useProject = () => {
       if (!projectResponse.other_features) projectResponse.other_features = defaultTypes;
       await dispatch({type: projectReducers.PROJECTS, project: projectResponse});
       if (projectResponse.other_maps) {
-        dispatch({type: mapReducers.CUSTOM_MAPS, customMaps: projectResponse.other_maps});
+        projectResponse.other_maps.map(map => {
+          if (!map.mapId) map.mapId = makeMapId();
+        });
+        const mapIdsAsKeys = Object.assign({}, ...projectResponse.other_maps.map(map => ({[map.mapId]: map})));
+        dispatch({type: mapReducers.CUSTOM_MAPS, customMaps: mapIdsAsKeys});
       }
       const datasetsResponse = await getDatasets(selectedProject);
       if (datasetsResponse.datasets.length === 1){
