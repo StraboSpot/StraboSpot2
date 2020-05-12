@@ -76,7 +76,7 @@ const BaseMapDialog = props => {
         />
         <View>
           <Text style={[commonStyles.dialogTitleText, {paddingTop: 10}]}>Custom Maps</Text>
-          {customMaps.map((item, i) => {
+          {Object.values(customMaps).map((item, i) => {
             return (
               <ListItem
                 containerStyle={styles.customBaseMapListContainer}

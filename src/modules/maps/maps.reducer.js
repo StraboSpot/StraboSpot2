@@ -4,7 +4,8 @@ const initialState = {
   currentBasemap: basemaps.mapboxOutdoors,
   currentImageBasemap: undefined,
   offlineMaps: {},
-  customMaps: [],
+  customMaps: {},
+  selectedCustomMapToEdit: {},
   vertexStartCoords: undefined,
   vertexEndCoords: undefined,
 };
@@ -37,12 +38,12 @@ export const mapReducer = (state = initialState, action) => {
       console.log('Setting custom maps: ', action.customMaps);
       return {
         ...state,
-        customMaps: action.customMaps,
+        customMaps: {...state.customMaps, ...action.customMaps},
       };
     case mapReducers.EDIT_CUSTOM_MAP:
       return {
         ...state,
-        mapToEdit: action.customMap,
+        selectedCustomMapToEdit: action.customMap,
       };
     case mapReducers.OFFLINE_MAPS:
       console.log('Setting offline maps: ', action.offlineMaps);

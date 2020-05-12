@@ -6,7 +6,7 @@ import {connect} from 'react-redux';
 import {Input} from 'react-native-elements';
 import {mapReducers} from '../maps.constants';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {isEmpty} from '../../../shared/Helpers';
+import {isEmpty, makeMapId} from '../../../shared/Helpers';
 import Divider from '../../main-menu-panel/MainMenuPanelDivider';
 import useMapHook from '../useMaps';
 
@@ -160,7 +160,8 @@ const ManageCustomMaps = (props) => {
           }
           newMap.url = saveUrl;
           newReduxMaps.push(newMap);
-          props.onCustomMaps(newReduxMaps);
+
+          props.onCustomMaps(Object.assign({}, ...newReduxMaps.map(map => ({ [map.mapId]: map}))));
           Alert.alert(
             'Success!',
             'Map has been added successfully.',
@@ -215,15 +216,15 @@ const ManageCustomMaps = (props) => {
       });
   };
 
-  const makeMapId = () => {
-    var result = '';
-    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    var charactersLength = characters.length;
-    for (var i = 0; i < 10; i++) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
-    }
-    return result;
-  };
+  // const makeMapId = () => {
+  //   var result = '';
+  //   var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  //   var charactersLength = characters.length;
+  //   for (var i = 0; i < 10; i++) {
+  //     result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  //   }
+  //   return result;
+  // };
 
   const confirmDeleteMap = async (map) => {
     console.log(map);
@@ -238,7 +239,7 @@ const ManageCustomMaps = (props) => {
         },
         {
           text: 'OK',
-          onPress: () => deleteMap(map.id),
+          onPress: () => deleteMap(map.mapId),
         },
       ],
       {cancelable: false},
@@ -339,7 +340,7 @@ const ManageCustomMaps = (props) => {
       <Divider sectionText={'current custom maps'} style={styles.header}/>
       {showFrontPage && props.customMaps &&
       <View style={styles.sectionsContainer}>
-        {props.customMaps.map((item, i) => (
+        {Object.values(props.customMaps).map((item, i) => (
             <ListItem
             containerStyle={styles.list}
             bottomDivider={i < Object.values(props.customMaps).length - 1}

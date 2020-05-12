@@ -20,7 +20,7 @@ const useMaps = (props) => {
   const [useSpots] = useSpotsHook();
 
   const editCustomMap = (map) => {
-    dispatch({type: mapReducers.EDIT_CUSTOM_MAP, customMap: map});
+    dispatch({type: mapReducers.SELECTED_CUSTOM_MAP_TO_EDIT, customMap: map});
     dispatch({type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE, bool: true});
   };
 
