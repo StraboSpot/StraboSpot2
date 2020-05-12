@@ -8,11 +8,21 @@ import useSpotsHook from '../spots/useSpots';
 
 // Constants
 import {spotReducers} from '../spots/spot.constants';
+import {MAPBOX_KEY} from '../../MapboxConfig';
+import {mapReducers} from './maps.constants';
+import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 
 const useMaps = (props) => {
   const dispatch = useDispatch();
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
+  const customMaps = useSelector(state => state.map.customMaps);
+
   const [useSpots] = useSpotsHook();
+
+  const editCustomMap = (map) => {
+    dispatch({type: mapReducers.EDIT_CUSTOM_MAP, customMap: map});
+    dispatch({type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE, bool: true});
+  };
 
   // Create a point feature at the current location
   const setPointAtCurrentLocation = async () => {
@@ -137,13 +147,67 @@ const useMaps = (props) => {
     return convertedFeatures;
   };
 
+  const setCustomMapSwitchValue = (value, ind) => {
+    console.log('value', value, 'id', ind);
+    const customMapsCopy = [...customMaps];
+    // if (customMapsCopy.length > 1) customMapsCopy.map(map => map.isMapViewable = false);
+    customMapsCopy[ind].isMapViewable = value;
+    console.log(customMapsCopy);
+    dispatch({type: mapReducers.CUSTOM_MAPS, customMaps: customMapsCopy});
+    viewCustomMap(customMapsCopy[ind]).then(map => console.log('aaaaaaaaaaaa', map))
+  };
+
+  const viewCustomMap = async (map) => {
+    let tempCurrentBasemap, mapUrl;
+    console.log('viewCustomMap: ', map);
+
+    tempCurrentBasemap =
+      {
+        id: 'osm',
+        layerId: map.id,
+        layerLabel: map.mapTitle,
+        layerSaveId: map.id,
+        url: map.url,
+        maxZoom: 19,
+      };
+
+    await dispatch({type: mapReducers.CURRENT_BASEMAP, basemap: tempCurrentBasemap});
+
+    if (map.url === undefined) {
+      if (map.source === 'Mapbox Styles' || map.source === 'mapbox_styles') {
+        mapUrl = 'https://api.mapbox.com/styles/v1/' + map.id + '/tiles/256/{z}/{x}/{y}?access_token=' + MAPBOX_KEY;
+      }
+      else if (map.source === 'Map Warper' || map.source === 'map_warper') mapUrl = 'https://www.strabospot.org/mwproxy/' + map.id + '/{z}/{x}/{y}.png';
+    }
+    else {
+      mapUrl = map.url;
+    }
+
+    tempCurrentBasemap =
+      {
+        id: 'custom',
+        layerId: map.id,
+        layerLabel: map.mapTitle,
+        layerSaveId: map.id,
+        url: mapUrl,
+        maxZoom: 19,
+      };
+
+    console.log('tempCurrentBasemap: ', tempCurrentBasemap);
+    await dispatch({type: mapReducers.CURRENT_BASEMAP, basemap: tempCurrentBasemap});
+    // props.closeSettingsDrawer();
+  };
+
   return [{
+    editCustomMap: editCustomMap,
     getCurrentLocation: getCurrentLocation,
     getDisplayedSpots: getDisplayedSpots,
     setPointAtCurrentLocation: setPointAtCurrentLocation,
     setSelectedSpot: setSelectedSpot,
     getCoordQuad: getCoordQuad,
     convertImagePixelsToLatLong: convertImagePixelsToLatLong,
+    setCustomMapSwitchValue: setCustomMapSwitchValue,
+    viewCustomMap: viewCustomMap,
   }];
 };
 

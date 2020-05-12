@@ -7,8 +7,8 @@ import {Input} from 'react-native-elements';
 import {mapReducers} from '../maps.constants';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {isEmpty} from '../../../shared/Helpers';
-import {MAPBOX_KEY} from '../../../MapboxConfig';
 import Divider from '../../main-menu-panel/MainMenuPanelDivider';
+import useMapHook from '../useMaps';
 
 // Styles
 import styles from './customMaps.styles';
@@ -17,6 +17,8 @@ import commonStyles from '../../../shared/common.styles';
 
 const ManageCustomMaps = (props) => {
   console.log('Props: ', props);
+
+  const [useMaps] = useMapHook();
 
   const [showFrontPage, setShowFrontPage] = useState(true);
   const [showNewMapSelect, setShowNewMapSelect] = useState(false);
@@ -84,12 +86,11 @@ const ManageCustomMaps = (props) => {
 
   const mapIdEdit = (text) => {
     setShowSubmitButton(true);
-    let editedMapUrl;
-    if (chosenForm === 'Mapbox Style') {
-      editedMapUrl = text.split('/').slice(3).join('/');
-    }// Needs to be modified for url and saveUrl
-    else if (chosenForm === 'Map Warper') editedMapUrl = text;
-    setMap({...map, mapId: editedMapUrl});
+    // if (chosenForm === 'Mapbox Style') {
+    //   editedMapUrl = text.split('/').slice(3).join('/');
+    // }// Needs to be modified for url and saveUrl
+    // else if (chosenForm === 'Map Warper') editedMapUrl = text;
+    setMap({...map, mapId: text});
   };
 
   const accessTokenEdit = (text) => {
@@ -98,6 +99,11 @@ const ManageCustomMaps = (props) => {
 
   const checkMap = async () => {
     let url, saveUrl;
+    let editedMapUrl;
+    if (chosenForm === 'Mapbox Style') {
+      editedMapUrl = map.mapId.split('/').slice(3).join('/');
+    }// Needs to be modified for url and saveUrl
+    else if (chosenForm === 'Map Warper') editedMapUrl = map.mapId;
     // const {mapId} = state;
     // let mapIdEdit = mapId.split('/').slice(3).join('/'); // Needs to be modified for url and saveUrl
     // console.log(mapIdEdit)
@@ -106,12 +112,12 @@ const ManageCustomMaps = (props) => {
       case 'Mapbox Style':
         //jasonash/cjl3xdv9h22j12tqfmyce22zq
         //pk.eyJ1IjoiamFzb25hc2giLCJhIjoiY2l2dTUycmNyMDBrZjJ5bzBhaHgxaGQ1diJ9.O2UUsedIcg1U7w473A5UHA
-        url = 'https://api.mapbox.com/styles/v1/' + map.mapId + '/tiles/256/0/0/0?access_token=' + map.accessToken;
-        saveUrl = 'https://api.mapbox.com/styles/v1/' + map.mapId + '/tiles/256/{z}/{x}/{y}?access_token=' + map.accessToken;
+        url = 'https://api.mapbox.com/styles/v1/' + editedMapUrl + '/tiles/256/0/0/0?access_token=' + map.accessToken;
+        saveUrl = 'https://api.mapbox.com/styles/v1/' + editedMapUrl + '/tiles/256/{z}/{x}/{y}?access_token=' + map.accessToken;
         break;
       case 'Map Warper':
-        url = 'https://www.strabospot.org/mwproxy/' + map.mapId + '/0/0/0.png';
-        saveUrl = 'https://www.strabospot.org/mwproxy/' + map.mapId + '/{z}/{x}/{y}.png';
+        url = 'https://www.strabospot.org/mwproxy/' + editedMapUrl + '/0/0/0.png';
+        saveUrl = 'https://www.strabospot.org/mwproxy/' + editedMapUrl + '/{z}/{x}/{y}.png';
         break;
       case 'StraboSpot MyMaps':
         //5b7597c754016
@@ -267,46 +273,47 @@ const ManageCustomMaps = (props) => {
 
   };
 
-  const viewCustomMap = async (map) => {
-    let tempCurrentBasemap, mapUrl;
-    console.log('viewCustomMap: ', map);
 
-    tempCurrentBasemap =
-      {
-        id: 'osm',
-        layerId: map.id,
-        layerLabel: map.mapTitle,
-        layerSaveId: map.id,
-        url: map.url,
-        maxZoom: 19,
-      };
-
-    await props.onCurrentBasemap(tempCurrentBasemap);
-
-    if (map.url === undefined) {
-      if (map.source === 'Mapbox Styles' || map.source === 'mapbox_styles') {
-        mapUrl = 'https://api.mapbox.com/styles/v1/' + map.id + '/tiles/256/{z}/{x}/{y}?access_token=' + MAPBOX_KEY;
-      }
-      else if (map.source === 'Map Warper' || map.source === 'map_warper') mapUrl = 'https://www.strabospot.org/mwproxy/' + map.id + '/{z}/{x}/{y}.png';
-    }
-    else {
-      mapUrl = map.url;
-    }
-
-    tempCurrentBasemap =
-      {
-        id: 'custom',
-        layerId: map.id,
-        layerLabel: map.mapTitle,
-        layerSaveId: map.id,
-        url: mapUrl,
-        maxZoom: 19,
-      };
-
-    console.log('tempCurrentBasemap: ', tempCurrentBasemap);
-    await props.onCurrentBasemap(tempCurrentBasemap);
-    // props.closeSettingsDrawer();
-  };
+  // const viewCustomMap = async (map) => {
+  //   let tempCurrentBasemap, mapUrl;
+  //   console.log('viewCustomMap: ', map);
+  //
+  //   tempCurrentBasemap =
+  //     {
+  //       id: 'osm',
+  //       layerId: map.id,
+  //       layerLabel: map.mapTitle,
+  //       layerSaveId: map.id,
+  //       url: map.url,
+  //       maxZoom: 19,
+  //     };
+  //
+  //   await props.onCurrentBasemap(tempCurrentBasemap);
+  //
+  //   if (map.url === undefined) {
+  //     if (map.source === 'Mapbox Styles' || map.source === 'mapbox_styles') {
+  //       mapUrl = 'https://api.mapbox.com/styles/v1/' + map.id + '/tiles/256/{z}/{x}/{y}?access_token=' + MAPBOX_KEY;
+  //     }
+  //     else if (map.source === 'Map Warper' || map.source === 'map_warper') mapUrl = 'https://www.strabospot.org/mwproxy/' + map.id + '/{z}/{x}/{y}.png';
+  //   }
+  //   else {
+  //     mapUrl = map.url;
+  //   }
+  //
+  //   tempCurrentBasemap =
+  //     {
+  //       id: 'custom',
+  //       layerId: map.id,
+  //       layerLabel: map.mapTitle,
+  //       layerSaveId: map.id,
+  //       url: mapUrl,
+  //       maxZoom: 19,
+  //     };
+  //
+  //   console.log('tempCurrentBasemap: ', tempCurrentBasemap);
+  //   await props.onCurrentBasemap(tempCurrentBasemap);
+  //   // props.closeSettingsDrawer();
+  // };
 
   return (
 
@@ -348,8 +355,8 @@ const ManageCustomMaps = (props) => {
                   <Text>
                     ({item.source})
                   </Text>
-                  <Text onPress={() => viewCustomMap(item)} style={styles.buttonPadding}>
-                    &nbsp;&nbsp;&nbsp;View
+                  <Text onPress={() => useMaps.editCustomMap(item)} style={styles.buttonPadding}>
+                    &nbsp;&nbsp;&nbsp;Edit
                   </Text>
                   <Text onPress={() => confirmDeleteMap(item)} style={styles.buttonPadding}>
                     &nbsp;&nbsp;&nbsp;Delete

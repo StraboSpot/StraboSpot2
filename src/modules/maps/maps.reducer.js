@@ -39,6 +39,11 @@ export const mapReducer = (state = initialState, action) => {
         ...state,
         customMaps: action.customMaps,
       };
+    case mapReducers.EDIT_CUSTOM_MAP:
+      return {
+        ...state,
+        mapToEdit: action.customMap,
+      };
     case mapReducers.OFFLINE_MAPS:
       console.log('Setting offline maps: ', action.offlineMaps);
       return {

@@ -11,13 +11,22 @@ const styles = StyleSheet.create({
     padding: 10,
     marginTop: 10,
   },
-
+  editCustomMapsContainer: {
+    height: '100%',
+    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
+    borderLeftWidth: 1,
+    width: 300,
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    zIndex: -1,
+  },
   textStyle: {
     fontSize: 14,
     color: '#407ad9',
   },
   header: {
-    paddingTop: 20
+    paddingTop: 20,
   },
   headingText: {
     alignItems: 'center',
@@ -94,7 +103,7 @@ const styles = StyleSheet.create({
     margin: 10,
     backgroundColor: 'white',
     borderRadius: 10,
-    padding: 5
+    padding: 5,
     // height: 200
   },
   submitButton: {
