@@ -65,7 +65,7 @@ const MainMenuPanel = props => {
       page =
         <View style={styles.settingsPanelContainer}>
           <ActiveProject
-            openSidePanel={props.openSidePanel}
+            // openSidePanel={(view) => props.openSidePanel(view)}
             title={!isEmpty(project) ? project.description.project_name : null}
           />
         </View>;
@@ -102,7 +102,9 @@ const MainMenuPanel = props => {
     case SettingsMenuItems.MAPS.CUSTOM:
       page =
         <View style={styles.settingsPanelContainer}>
-          <CustomMapsMenu/>
+          <CustomMapsMenu
+            // openSidePanel={(view, map) => props.openSidePanel(view, map)}
+          />
         </View>;
       break;
     case SettingsMenuItems.ATTRIBUTES.SPOTS_LIST:

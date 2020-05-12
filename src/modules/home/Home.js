@@ -141,9 +141,9 @@ const Home = (props) => {
      baseMapMenuVisible : false
      }));
      }*/
-    return function cleanUp(){
+    return function cleanUp() {
       console.log('currentImageBasemap cleanup UE');
-    }
+    };
   }, [props.currentImageBasemap]);
 
   useEffect(() => {
@@ -307,7 +307,7 @@ const Home = (props) => {
 
   const closeSidePanel = () => {
     console.log('Closing Side Panel');
-    dispatch({type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE, bool: false});
+    // dispatch({type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE, bool: false});
     animatePanels(mainMenuSidePanelAnimation, -mainMenuSidePanelWidth);
     animatePanels(customMapsSidePanelAnimation, -customMapsSidePanelWidth);
   };
@@ -435,7 +435,7 @@ const Home = (props) => {
   };
 
   const openSidePanel = (panelView, data) => {
-    console.log(panelView)
+    console.log(panelView);
     if (isSidePanelVisible) {
       if (settingsPageVisible === 'Active Project') animatePanels(mainMenuSidePanelAnimation, 300);
       else if (settingsPageVisible === 'Custom Maps') animatePanels(customMapsSidePanelAnimation, 300);
@@ -509,11 +509,11 @@ const Home = (props) => {
 
   const renderSaveMapsModal = () => {
     return (
-        <SaveMapsModal
-          close={() => setIsOfflineMapModalVisible(false)}
-          map={mapViewComponent.current}
-          visible={isOfflineMapModalVisible}
-        />
+      <SaveMapsModal
+        close={() => setIsOfflineMapModalVisible(false)}
+        map={mapViewComponent.current}
+        visible={isOfflineMapModalVisible}
+      />
     );
   };
 
@@ -655,7 +655,7 @@ const Home = (props) => {
     >
       <Animated.View style={[settingPanelStyles.settingsDrawer, animateSettingsPanel]}>
         <SettingsPanel
-          openSidePanel={() => openSidePanel()}
+          // openSidePanel={(view, data) => openSidePanel(view, data)}
           closeHomePanel={() => toggleHomeDrawerButton()}
           openNotebookPanel={(pageView) => openNotebookPanel(pageView)}/>
       </Animated.View>
@@ -671,7 +671,7 @@ const Home = (props) => {
     <Animated.View style={[customMapStyles.editCustomMapsContainer, animateCustomMapsSidePanel]}>
       <EditCustomMaps
         closeSidePanel={() => closeSidePanel()}/>
-    </Animated.View>
+    </Animated.View>;
 
   const notebookPanel =
     <FlingGestureHandler
@@ -706,7 +706,8 @@ const Home = (props) => {
   }
 
   // Renders samples modals in either shortcut or notebook view
-  if (props.modalVisible === Modals.NOTEBOOK_MODALS.SAMPLE && props.isNotebookPanelVisible && !isEmpty(props.selectedSpot)) {
+  if (props.modalVisible === Modals.NOTEBOOK_MODALS.SAMPLE && props.isNotebookPanelVisible && !isEmpty(
+    props.selectedSpot)) {
     samplesModal =
       <NotebookSamplesModal
         close={() => props.setModalVisible(null)}
@@ -732,8 +733,8 @@ const Home = (props) => {
         endDraw={endDraw}
         openNotebookOnSelectedSpot={() => openNotebookPanel()}
       />
-      {props.vertexStartCoords && <VertexDrag/>}     
-          <ToastPopup toastRef={toastRef} />
+      {props.vertexStartCoords && <VertexDrag/>}
+      <ToastPopup toastRef={toastRef}/>
       {Platform.OS === 'ios' &&
       <Animated.View style={leftsideIconAnimation}>
         {(props.modalVisible === Modals.NOTEBOOK_MODALS.COMPASS ||
@@ -877,7 +878,7 @@ const Home = (props) => {
           onPress={() => toggleDialog('baseMapMenuVisible')}
         />}
       </Animated.View>
-      {!props.currentImageBasemap  &&
+      {!props.currentImageBasemap &&
       <Animated.View style={[homeStyles.bottomLeftIcons, leftsideIconAnimation]}>
         <IconButton
           style={{top: 5}}
@@ -941,7 +942,7 @@ const Home = (props) => {
       {renderInfoDialogBox()}
       {renderErrorMessageDialogBox()}
       {renderSaveMapsModal()}
-      {isSidePanelVisible && openSidePanel()}
+      {isSidePanelVisible ? openSidePanel() : closeSidePanel()}
     </View>
   );
 };

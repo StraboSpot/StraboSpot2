@@ -40,7 +40,7 @@ export const mapReducer = (state = initialState, action) => {
         ...state,
         customMaps: {...state.customMaps, ...action.customMaps},
       };
-    case mapReducers.EDIT_CUSTOM_MAP:
+    case mapReducers.SELECTED_CUSTOM_MAP_TO_EDIT:
       return {
         ...state,
         selectedCustomMapToEdit: action.customMap,
