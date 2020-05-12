@@ -51,11 +51,14 @@ import ProjectDescription from '../project/ProjectDescription';
 
 // Styles
 import projectStyles from '../project/project.styles';
+import customMapStyles from '../maps/custom-maps/customMaps.styles';
+import EditCustomMaps from '../maps/custom-maps/EditCustomMaps';
 
 const allSpotsPanelWidth = 125;
 const homeMenuPanelWidth = 300;
 const notebookPanelWidth = 400;
 const mainMenuSidePanelWidth = 350;
+const customMapsSidePanelWidth = 350;
 
 // const imageOptions = {
 //   storageOptions: {
@@ -79,6 +82,7 @@ const Home = (props) => {
 
   const dispatch = useDispatch();
   const project = useSelector(state => state.project.project);
+  const settingsPageVisible = useSelector(state => state.settingsPanel.settingsPageVisible);
   const statusMessages = useSelector(state => state.home.statusMessages);
   const isLoading = useSelector(state => state.home.loading);
   const isStatusMessagesModalVisible = useSelector(state => state.home.isStatusMessagesModalVisible);
@@ -86,6 +90,7 @@ const Home = (props) => {
   const isInfoMessagesModalVisible = useSelector(state => state.home.isInfoModalVisible);
   const isProjectLoadSelectionModalVisible = useSelector(state => state.home.isProjectLoadSelectionModalVisible);
   const isMainMenuPanelVisible = useSelector(state => state.home.isSettingsPanelVisible);
+  const isSidePanelVisible = useSelector(state => state.settingsPanel.isSidePanelVisible);
 
   // const imagesCount = useSelector(state => state.home.imageProgress.imagesDownloadedCount);
   // const imagesNeeded = useSelector(state => state.home.imageProgress.neededImageIds);
@@ -108,6 +113,7 @@ const Home = (props) => {
   const [animation, setAnimation] = useState(new Animated.Value(notebookPanelWidth));
   const [settingsPanelAnimation, setSettingsPanelAnimation] = useState(new Animated.Value(-homeMenuPanelWidth));
   const [mainMenuSidePanelAnimation] = useState(new Animated.Value(-mainMenuSidePanelWidth));
+  const [customMapsSidePanelAnimation] = useState(new Animated.Value(-customMapsSidePanelWidth));
   const [leftsideIconAnimationValue, setLeftsideIconAnimationValue] = useState(new Animated.Value(0));
   const [rightsideIconAnimationValue, setRightsideIconAnimationValue] = useState(new Animated.Value(0));
 
@@ -135,6 +141,9 @@ const Home = (props) => {
      baseMapMenuVisible : false
      }));
      }*/
+    return function cleanUp(){
+      console.log('currentImageBasemap cleanup UE');
+    }
   }, [props.currentImageBasemap]);
 
   useEffect(() => {
@@ -300,6 +309,7 @@ const Home = (props) => {
     console.log('Closing Side Panel');
     dispatch({type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE, bool: false});
     animatePanels(mainMenuSidePanelAnimation, -mainMenuSidePanelWidth);
+    animatePanels(customMapsSidePanelAnimation, -customMapsSidePanelWidth);
   };
 
   const deleteSpot = id => {
@@ -424,9 +434,13 @@ const Home = (props) => {
     props.setNotebookPanelVisible(true);
   };
 
-  const openSidePanel = () => {
-    animatePanels(mainMenuSidePanelAnimation, 300);
-    dispatch({type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE, bool: true});
+  const openSidePanel = (panelView, data) => {
+    console.log(panelView)
+    if (isSidePanelVisible) {
+      if (settingsPageVisible === 'Active Project') animatePanels(mainMenuSidePanelAnimation, 300);
+      else if (settingsPageVisible === 'Custom Maps') animatePanels(customMapsSidePanelAnimation, 300);
+      // dispatch({type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE, bool: true});
+    }
   };
 
   const renderAllSpotsPanel = () => {
@@ -626,6 +640,7 @@ const Home = (props) => {
   const animateNotebookMenu = {transform: [{translateX: animation}]};
   const animateSettingsPanel = {transform: [{translateX: settingsPanelAnimation}]};
   const animateMainMenuSidePanel = {transform: [{translateX: mainMenuSidePanelAnimation}]};
+  const animateCustomMapsSidePanel = {transform: [{translateX: customMapsSidePanelAnimation}]};
   const leftsideIconAnimation = {transform: [{translateX: leftsideIconAnimationValue}]};
   const rightsideIconAnimation = {transform: [{translateX: rightsideIconAnimationValue}]};
   let compassModal = null;
@@ -651,6 +666,12 @@ const Home = (props) => {
       <ProjectDescription
         closeSidePanel={() => closeSidePanel()}/>
     </Animated.View>;
+
+  const editCustomMaps =
+    <Animated.View style={[customMapStyles.editCustomMapsContainer, animateCustomMapsSidePanel]}>
+      <EditCustomMaps
+        closeSidePanel={() => closeSidePanel()}/>
+    </Animated.View>
 
   const notebookPanel =
     <FlingGestureHandler
@@ -914,11 +935,13 @@ const Home = (props) => {
       {props.isAllSpotsPanelVisible && renderAllSpotsPanel()}
       {homeDrawer}
       {!isEmpty(project) && isMainMenuPanelVisible && projectDescriptionSidePanel}
+      {isMainMenuPanelVisible && editCustomMaps}
       {renderLoadProjectFromModal()}
       {renderStatusDialogBox()}
       {renderInfoDialogBox()}
       {renderErrorMessageDialogBox()}
       {renderSaveMapsModal()}
+      {isSidePanelVisible && openSidePanel()}
     </View>
   );
 };

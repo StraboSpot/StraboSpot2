@@ -8,6 +8,7 @@ import styles from './dialog.styles';
 import commonStyles from '../../shared/common.styles';
 import {useDispatch, useSelector} from 'react-redux';
 import {ListItem} from 'react-native-elements';
+import useMapsHook from '../maps/useMaps';
 import {mapReducers} from '../maps/maps.constants';
 
 const slideAnimation = new ScaleAnimation({
@@ -16,16 +17,17 @@ const slideAnimation = new ScaleAnimation({
 
 const BaseMapDialog = props => {
 
+  const [useMaps] = useMapsHook();
   const dispatch = useDispatch();
   const customMaps = useSelector(state => state.map.customMaps);
 
-  const setSwitchValue = (value, ind) => {
-    console.log('value', value, 'id', ind)
-    const customMapsCopy = [...customMaps];
-    customMapsCopy[ind].switch = value
-    console.log(customMapsCopy)
-    dispatch({type: mapReducers.CUSTOM_MAPS, customMaps: customMapsCopy});
-  };
+  // const setCustomMapSwitchValue = (value, ind) => {
+  //   console.log('value', value, 'id', ind);
+  //   const customMapsCopy = [...customMaps];
+  //   customMapsCopy[ind].isMapViewable = value;
+  //   console.log(customMapsCopy);
+  //   dispatch({type: mapReducers.CUSTOM_MAPS, customMaps: customMapsCopy});
+  // };
 
   return (
     <Dialog
@@ -87,8 +89,8 @@ const BaseMapDialog = props => {
                 }
                 rightElement={
                   <Switch
-                    value={item.switch}
-                    onValueChange={(val) => setSwitchValue(val, i)}
+                    value={item.isMapViewable}
+                    onValueChange={(val) => useMaps.setCustomMapSwitchValue(val, i)}
                   />
                 }
               />
