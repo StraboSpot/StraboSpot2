@@ -23,6 +23,7 @@ import {truncateText} from '../../shared/Helpers';
 
 // Styles
 import styles from './project.styles';
+import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 
 const ProjectDescription = (props) => {
   const getInitialFields = () => {
@@ -116,7 +117,8 @@ const ProjectDescription = (props) => {
         type={'clear'}
         containerStyle={{flex: 0, padding: 4}}
         titleStyle={styles.buttonText}
-        onPress={() => goBack()}
+        // onPress={() => goBack()}
+        onPress={() => dispatch({type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE, bool: false})}
       />
     );
   };
@@ -285,7 +287,8 @@ const ProjectDescription = (props) => {
       <SaveAndCloseButtons
         cancel={() => {
           setProjectDescription(project.description);
-          goBack();
+          // goBack();
+          dispatch({type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE, bool: false});
         }}
         save={() => saveProjectDescriptionAndGo()}/>
     );
@@ -299,7 +302,8 @@ const ProjectDescription = (props) => {
 
   const saveProjectDescriptionAndGo = async () => {
     await dispatch({type: projectReducers.UPDATE_PROJECT, field: 'description', value: projectDescription});
-    goBack();
+    // goBack();
+    dispatch({type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE, bool: false});
   };
 
   const regexTest = (value) => {

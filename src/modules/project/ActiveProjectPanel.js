@@ -48,7 +48,7 @@ const ActiveProjectPanel = (props) => {
 
   return (
     <React.Fragment>
-      <ActiveProjectList openSidePanel={props.openSidePanel}/>
+      <ActiveProjectList />
       <View style={styles.dividerWithButtonContainer}>
         <Divider sectionText={'PROJECT DATASETS'}/>
         <Button
