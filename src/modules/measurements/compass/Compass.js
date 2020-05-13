@@ -50,7 +50,7 @@ class Compass extends Component {
         rake: null,
         rake_calculated: 'no',
       },
-      toggles: [CompassToggleButtons.PLANAR],
+      toggles: props.compassMeasurementTypes,
       spinValue: new Animated.Value(0),
       sliderValue: 5,
       showDataModal: false,
@@ -564,6 +564,7 @@ function mapStateToProps(state) {
     isNotebookPanelVisible: state.notebook.isNotebookPanelVisible,
     modalVisible: state.home.modalVisible,
     deviceDimensions: state.home.deviceDimensions,
+    compassMeasurementTypes: state.notebook.compassMeasurementTypes,
   };
 }
 

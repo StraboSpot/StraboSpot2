@@ -1,3 +1,4 @@
+import {CompassToggleButtons} from '../measurements/compass/compass.constants';
 import {notebookReducers} from './notebook.constants';
 import {isEmpty} from '../../shared/Helpers';
 
@@ -5,10 +6,17 @@ const initialState = {
   visibleNotebookPagesStack: [],
   isNotebookPanelVisible: false,
   isSamplesModalVisible: false,
+  compassMeasurementTypes: [CompassToggleButtons.PLANAR],
 };
 
 export const notebookReducer = (state = initialState, action) => {
   switch (action.type) {
+    case notebookReducers.SET_COMPASS_MEASUREMENT_TYPES: {
+      return {
+        ...state,
+        compassMeasurementTypes: action.value,
+      };
+    }
     case notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE: {
       let visibleNotebookPagesStack = state.visibleNotebookPagesStack;
       if (isEmpty(visibleNotebookPagesStack)) visibleNotebookPagesStack = [action.page];

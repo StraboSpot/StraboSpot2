@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {connect} from 'react-redux';
+import {connect, useSelector} from 'react-redux';
 import {
   Animated,
   Switch,
@@ -46,7 +46,8 @@ const RNCompass = (props) => {
     //   // rake_calculated: 'no'
   });
   const [heading, setHeading] = useState(null);
-  const [toggles, setToggles] = useState([CompassToggleButtons.PLANAR]);
+  const compassMeasurementTypes = useSelector(state => state.notebook.compassMeasurementTypes);
+  const [toggles, setToggles] = useState(compassMeasurementTypes);
   const [sliderValue, setSliderValue] = useState(5);
   const [strikeSpinValue] = useState(new Animated.Value(0));
   const [trendSpinValue] = useState(new Animated.Value(0));

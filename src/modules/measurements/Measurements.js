@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
-import {FlatList, View} from 'react-native';
+import {Alert, FlatList, View} from 'react-native';
 
-import {connect} from 'react-redux';
+import {connect, useDispatch} from 'react-redux';
 import {Button} from 'react-native-elements';
 
 // Components
@@ -10,6 +10,7 @@ import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton'
 import SectionDivider from '../../shared/ui/SectionDivider';
 
 // Constants
+import {CompassToggleButtons} from './compass/compass.constants';
 import {homeReducers, Modals} from '../home/home.constants';
 import {notebookReducers, NotebookPages} from '../notebook-panel/notebook.constants';
 import {spotReducers} from '../spots/spot.constants';
@@ -19,13 +20,24 @@ import * as themes from '../../shared/styles.constants';
 import styles from './measurements.styles';
 
 const MeasurementsPage = (props) => {
+  const dispatch = useDispatch();
   const [multiSelectMode, setMultiSelectMode] = useState();
   const [selectedFeaturesTemp, setSelectedFeaturesTemp] = useState([]);
 
   const sectionTypes = {
     PLANAR: 'Planar Measurements',
     LINEAR: 'Linear Measurements',
-    PLANARLINEAR: 'Planar + Linear Measurements',
+    PLANARLINEAR: 'P + L Measurements',
+  };
+
+  const addMeasurement = (sectionType) => {
+    props.setModalVisible(Modals.NOTEBOOK_MODALS.COMPASS);
+
+    let types = [];
+    if (sectionType === sectionTypes.PLANAR) types = [CompassToggleButtons.PLANAR];
+    else if (sectionType === sectionTypes.LINEAR) types = [CompassToggleButtons.LINEAR];
+    else types = [CompassToggleButtons.PLANAR, CompassToggleButtons.LINEAR];
+    dispatch({type: notebookReducers.SET_COMPASS_MEASUREMENT_TYPES, value: types});
   };
 
   const getSectionData = (sectionType) => {
@@ -53,15 +65,14 @@ const MeasurementsPage = (props) => {
   const onMeasurementPressed = (item, type) => {
     if (!multiSelectMode) viewMeasurementDetail(item);
     else {
-      if (type === multiSelectMode) {
+      if (type === multiSelectMode && (selectedFeaturesTemp.length === 0 ||
+        (selectedFeaturesTemp.length > 0 && selectedFeaturesTemp[0].type === item.type))) {
         const i = selectedFeaturesTemp.find(selectedFeature => selectedFeature.id === item.id);
         if (i) setSelectedFeaturesTemp(selectedFeaturesTemp.filter(selectedFeature => selectedFeature.id !== item.id));
         else setSelectedFeaturesTemp([...selectedFeaturesTemp, item]);
         console.log('Adding selected feature to identify group ...');
       }
-      else {
-        console.log('Mismatched type');
-      }
+      else Alert.alert('Feature type mismatch!');
     }
   };
 
@@ -142,7 +153,7 @@ const MeasurementsPage = (props) => {
               titleStyle={styles.measurementsSectionDividerButtonText}
               title={'Add'}
               type={'clear'}
-              onPress={() => props.setModalVisible(Modals.NOTEBOOK_MODALS.COMPASS)}
+              onPress={() => addMeasurement(dividerText)}
             />
             {props.spot.properties.orientation_data && props.spot.properties.orientation_data.length > 0 &&
             <React.Fragment>
