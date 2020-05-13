@@ -84,7 +84,7 @@ const MeasurementsPage = (props) => {
 
   const identifyAll = (type) => {
     const data = getSectionData(type);
-    console.log(data);
+    console.log('Identify All:', data);
     setMultiSelectMode();
     props.setSelectedAttributes(data);
     props.setNotebookPageVisible(NotebookPages.MEASUREMENTDETAIL);

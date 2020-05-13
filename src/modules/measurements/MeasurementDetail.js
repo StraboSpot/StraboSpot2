@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Alert, ScrollView, Text, View} from 'react-native';
+import {Alert, ScrollView, Text, TouchableOpacity, View} from 'react-native';
 
 import {Button, ButtonGroup} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
@@ -39,11 +39,7 @@ const MeasurementDetailPage = (props) => {
 
   useEffect(() => {
     console.log('In MeasurementDetailPage useEffect', selectedMeasurements);
-    if (selectedMeasurements && selectedMeasurements[0]) {
-      setActiveMeasurement(selectedMeasurements[0]);
-      const formCategory = selectedMeasurements.length === 1 ? 'measurement' : 'measurement_bulk';
-      setFormName([formCategory, selectedMeasurements[0].type]);
-    }
+    if (selectedMeasurements && selectedMeasurements[0]) switchActiveMeasurement(selectedMeasurements[0]);
   }, []);
 
   // What happens after submitting the form is handled in saveFormAndGo since we want to show
@@ -83,7 +79,8 @@ const MeasurementDetailPage = (props) => {
   // Switch the active measurement
   const switchActiveMeasurement = (measurement) => {
     setActiveMeasurement(measurement);
-    setFormName(['measurement', measurement.type]);
+    const formCategory = selectedMeasurements.length === 1 ? 'measurement' : 'measurement_bulk';
+    setFormName([formCategory, measurement.type]);
   };
 
   // Confirm switch between Planar and Tabular Zone
@@ -217,32 +214,41 @@ const MeasurementDetailPage = (props) => {
 
     return (
       <View>
-        <View style={styles.measurementsRenderListContainer}>
-          <View style={stylesCommon.rowContainerInverse}>
+        <TouchableOpacity style={styles.measurementsRenderListContainer}
+                          onPress={() => onSwitchActiveMeasurement(selectedMeasurements[0])}>
+          <View
+            style={activeMeasurement.id === selectedMeasurements[0].id ? stylesCommon.rowContainerInverse : stylesCommon.rowContainer}>
             <View style={stylesCommon.row}>
               <View style={stylesCommon.fillWidthSide}>
                 <View style={styles.measurementsListItem}>
-                  <Text style={styles.mainTextInverse}>{mainText}</Text>
-                  <Text style={styles.propertyTextInverse}>{propertyText}</Text>
+                  <Text
+                    style={activeMeasurement.id === selectedMeasurements[0].id ? styles.mainTextInverse : styles.mainText}>{mainText}</Text>
+                  <Text
+                    style={activeMeasurement.id === selectedMeasurements[0].id ? styles.propertyTextInverse : styles.propertyText}>{propertyText}</Text>
                 </View>
               </View>
             </View>
           </View>
-        </View>
+        </TouchableOpacity>
         {hasAssociated &&
         <View>
-          <View style={styles.measurementsRenderListContainer}>
-            <View style={stylesCommon.rowContainer}>
+          <TouchableOpacity style={styles.measurementsRenderListContainer}
+                            onPress={() => onSwitchActiveMeasurement(
+                              selectedMeasurements[0].associated_orientation[0])}>
+            <View
+              style={activeMeasurement.id === selectedMeasurements[0].associated_orientation[0].id ? stylesCommon.rowContainerInverse : stylesCommon.rowContainer}>
               <View style={stylesCommon.row}>
                 <View style={stylesCommon.fillWidthSide}>
                   <View style={styles.measurementsListItem}>
-                    <Text style={styles.mainText}>{mainText2}</Text>
-                    <Text style={styles.propertyText}>{propertyText2}</Text>
+                    <Text
+                      style={activeMeasurement.id === selectedMeasurements[0].associated_orientation[0].id ? styles.mainTextInverse : styles.mainText}>{mainText2}</Text>
+                    <Text
+                      style={activeMeasurement.id === selectedMeasurements[0].associated_orientation[0].id ? styles.propertyTextInverse : styles.propertyText}>{propertyText2}</Text>
                   </View>
                 </View>
               </View>
             </View>
-          </View>
+          </TouchableOpacity>
           <Text style={styles.basicText}>Only one associated line or plane can be classified in bulk</Text>
         </View>}
         <View style={{paddingBottom: 15}}/>
@@ -289,8 +295,16 @@ const MeasurementDetailPage = (props) => {
         const fieldsToExclude = ['id', 'associated_orientation', 'label', 'strike', 'dip_direction', 'dip', 'quality',
           'trend', 'plunge', 'rake', 'rake_calculated'];
         fieldsToExclude.forEach(key => delete formValues[key]);
-        idsOfMeasurementsToEdit = selectedMeasurements.map(measurement => measurement.id);
+        if (activeMeasurement.id === selectedMeasurements[0].id) {
+          idsOfMeasurementsToEdit = selectedMeasurements.map(measurement => measurement.id);
+        }
+        else {
+          idsOfMeasurementsToEdit = selectedMeasurements.reduce(
+            (acc, measurement) => [...acc, ...measurement.associated_orientation.map(
+              associatedOrientation => associatedOrientation.id)], []);
+        }
       }
+
       orientationDataCopy.forEach((measurement, i) => {
         if (idsOfMeasurementsToEdit.includes(measurement.id)) {
           orientationDataCopy[i] = selectedMeasurements.length === 1 ? formValues : {...measurement, ...formValues};
@@ -329,10 +343,10 @@ const MeasurementDetailPage = (props) => {
 
   return (
     <React.Fragment>
-      {selectedMeasurements && selectedMeasurements[0] && <View style={styles.measurementsContentContainer}>
+      {activeMeasurement && <View style={styles.measurementsContentContainer}>
         {renderCancelSaveButtons()}
         <ScrollView>
-          {selectedMeasurements.length === 1 ? renderAssociatedMeasurements() : renderMultiMeasurementsBar()}
+          {activeMeasurement && selectedMeasurements.length === 1 ? renderAssociatedMeasurements() : renderMultiMeasurementsBar()}
           {activeMeasurement && (activeMeasurement.type === 'planar_orientation' ||
             activeMeasurement.type === 'tabular_orientation') && renderPlanarTabularSwitches()}
           <View>
