@@ -239,40 +239,40 @@ const ManageCustomMaps = (props) => {
         },
         {
           text: 'OK',
-          onPress: () => deleteMap(map.mapId),
+          onPress: () => useMaps.deleteMap(map.mapId),
         },
       ],
       {cancelable: false},
     );
   };
 
-  const deleteMap = async (mapid) => {
-    console.log('Deleting Map Here');
-    console.log('map: ', mapid);
-
-    //now, delete map from Redux
-    let currentCustomMaps = props.customMaps;
-
-    if (!currentCustomMaps) {
-      currentCustomMaps = [];
-    }
-
-    let newCustomMapsData = [];
-
-    //loop over offlineMapsData and add any other maps (not current)
-    for (let i = 0; i < currentCustomMaps.length; i++) {
-      if (currentCustomMaps[i].id) {
-        if (currentCustomMaps[i].id !== mapid) {
-          //Add it to new array for Redux Storage
-          newCustomMapsData.push(currentCustomMaps[i]);
-        }
-      }
-    }
-
-    await props.onCustomMaps(newCustomMapsData);
-    console.log('Saved customMaps to Redux.');
-
-  };
+  // const deleteMap = async (mapid) => {
+  //   console.log('Deleting Map Here');
+  //   console.log('map: ', mapid);
+  //
+  //   //now, delete map from Redux
+  //   let currentCustomMaps = props.customMaps;
+  //   console.log(Object.keys(props.customMaps))
+  //   if (!currentCustomMaps) {
+  //     currentCustomMaps = [];
+  //   }
+  //
+  //   // let newCustomMapsData = [];
+  //   //
+  //   // //loop over offlineMapsData and add any other maps (not current)
+  //   // for (let i = 0; i < Object.values(currentCustomMaps).length; i++) {
+  //   //   if (currentCustomMaps[i].id) {
+  //   //     if (currentCustomMaps[i].id !== mapid) {
+  //   //       //Add it to new array for Redux Storage
+  //   //       newCustomMapsData.push(currentCustomMaps[i]);
+  //   //     }
+  //   //   }
+  //   // }
+  //
+  //   // await props.onCustomMaps(newCustomMapsData);
+  //   console.log('Saved customMaps to Redux.');
+  //
+  // };
 
 
   // const viewCustomMap = async (map) => {

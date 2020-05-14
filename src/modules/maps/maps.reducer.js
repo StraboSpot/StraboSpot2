@@ -51,6 +51,12 @@ export const mapReducer = (state = initialState, action) => {
         ...state,
         offlineMaps: {...state.offlineMaps, ...action.offlineMaps},
       };
+    case mapReducers.DELETE_CUSTOM_MAP:
+      // Replaces customMaps object with updated object with deleted map
+      return {
+        ...state,
+        customMaps: action.customMaps,
+      };
     case mapReducers.DELETE_OFFLINE_MAP:
       console.log('Deleting Offline Map: ', action.offlineMap);
       return {

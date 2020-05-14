@@ -11,13 +11,27 @@ import {spotReducers} from '../spots/spot.constants';
 import {MAPBOX_KEY} from '../../MapboxConfig';
 import {mapReducers} from './maps.constants';
 import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
+import {projectReducers} from '../project/project.constants';
 
 const useMaps = (props) => {
   const dispatch = useDispatch();
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const customMaps = useSelector(state => state.map.customMaps);
+  const project = useSelector(state => state.project.project);
 
   const [useSpots] = useSpotsHook();
+
+  const deleteMap = async (mapId) => {
+    console.log('Deleting Map Here');
+    console.log('map: ', mapId);
+    const projectCopy = {...project};
+    const customMapsCopy = {...customMaps};
+    delete customMapsCopy[mapId];
+    delete projectCopy.other_maps[mapId];
+    dispatch({type: mapReducers.DELETE_CUSTOM_MAP, customMaps: customMapsCopy}); // replaces customMaps with updated object
+    dispatch({type: projectReducers.PROJECTS, project: projectCopy}); // Deletes map from project
+    console.log('Saved customMaps to Redux.');
+  };
 
   const editCustomMap = (map) => {
     dispatch({type: mapReducers.SELECTED_CUSTOM_MAP_TO_EDIT, customMap: map});
@@ -199,6 +213,7 @@ const useMaps = (props) => {
   };
 
   return [{
+    deleteMap: deleteMap,
     editCustomMap: editCustomMap,
     getCurrentLocation: getCurrentLocation,
     getDisplayedSpots: getDisplayedSpots,
