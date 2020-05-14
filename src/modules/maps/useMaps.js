@@ -35,7 +35,7 @@ const useMaps = (props) => {
 
   const editCustomMap = (map) => {
     dispatch({type: mapReducers.SELECTED_CUSTOM_MAP_TO_EDIT, customMap: map});
-    dispatch({type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE, bool: true});
+    dispatch({type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE, view: 'editCustomMap', bool: true});
   };
 
   // Create a point feature at the current location
