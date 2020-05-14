@@ -3,18 +3,15 @@ import {Alert, FlatList, View} from 'react-native';
 
 import {connect, useDispatch} from 'react-redux';
 import {Button} from 'react-native-elements';
-
 // Components
 import MeasurementItem from './MeasurementItem';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import SectionDivider from '../../shared/ui/SectionDivider';
-
 // Constants
 import {CompassToggleButtons} from './compass/compass.constants';
 import {homeReducers, Modals} from '../home/home.constants';
-import {notebookReducers, NotebookPages} from '../notebook-panel/notebook.constants';
+import {NotebookPages, notebookReducers} from '../notebook-panel/notebook.constants';
 import {spotReducers} from '../spots/spot.constants';
-
 // Styles
 import * as themes from '../../shared/styles.constants';
 import styles from './measurements.styles';
@@ -126,6 +123,7 @@ const MeasurementsPage = (props) => {
   };
 
   const renderSectionDivider = (dividerText) => {
+    const dataThisSection = props.spot.properties.orientation_data ? getSectionData(dividerText) : [];
     return (
       <View style={((multiSelectMode && dividerText === multiSelectMode) || !multiSelectMode) ?
         styles.measurementsSectionDividerWithButtonsContainer : styles.measurementsSectionDividerContainer}>
@@ -155,22 +153,22 @@ const MeasurementsPage = (props) => {
               type={'clear'}
               onPress={() => addMeasurement(dividerText)}
             />
-            {props.spot.properties.orientation_data && props.spot.properties.orientation_data.length > 0 &&
             <React.Fragment>
               <Button
+                disabled={dataThisSection.length < 1}
                 titleStyle={styles.measurementsSectionDividerButtonText}
                 title={'Identify All'}
                 type={'clear'}
                 onPress={() => identifyAll(dividerText)}
               />
               <Button
+                disabled={dataThisSection.length < 1}
                 titleStyle={styles.measurementsSectionDividerButtonText}
                 title={'Select'}
                 type={'clear'}
                 onPress={() => startSelecting(dividerText)}
               />
             </React.Fragment>
-            }
           </View>}
         </View>
       </View>
