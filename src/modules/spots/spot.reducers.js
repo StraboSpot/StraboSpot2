@@ -1,4 +1,4 @@
-import {isEqual} from '../../shared/Helpers';
+import {isEmpty, isEqual} from '../../shared/Helpers';
 import {spotReducers} from './spot.constants';
 
 const initialState = {
@@ -93,13 +93,10 @@ export const spotReducer = (state = initialState, action) => {
     }
     case spotReducers.EDIT_SPOT_PROPERTIES: {
       console.log('EDITSPOT', action);
-      let updatedSpot = state.selectedSpot;
+      let selectedSpotCopy = JSON.parse(JSON.stringify(state.selectedSpot));
       const selectedSpotId = state.selectedSpot.properties.id;
-      if (((action.value !== typeof ({}) || !Array.isArray(action.value)) && !isEqual(action.value,
-        state.selectedSpot.properties[action.field]))
-        || ((action.value === typeof ({}) || Array.isArray(action.value)) && !isEqual(action.value,
-          state.selectedSpot.properties[action.field]))) {
-        updatedSpot = {
+      if (!isEmpty(action.value) && !isEqual(action.value, state.selectedSpot.properties[action.field])) {
+        selectedSpotCopy = {
           ...state.selectedSpot,
           properties: {
             ...state.selectedSpot.properties,
@@ -108,10 +105,14 @@ export const spotReducer = (state = initialState, action) => {
           },
         };
       }
+      else if (isEmpty(action.value)) {
+        delete selectedSpotCopy.properties[action.field];
+        selectedSpotCopy.properties.modified_timestamp = Date.now();
+      }
       return {
         ...state,
-        selectedSpot: updatedSpot,
-        spots: {...state.spots, [selectedSpotId]: updatedSpot},
+        selectedSpot: selectedSpotCopy,
+        spots: {...state.spots, [selectedSpotId]: selectedSpotCopy},
       };
     }
     case spotReducers.SET_SELECTED_SPOT_NOTES_TIMESTAMP: {

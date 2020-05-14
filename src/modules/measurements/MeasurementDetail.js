@@ -341,6 +341,38 @@ const MeasurementDetailPage = (props) => {
     });
   };
 
+  // Delete a single measurement
+  const deleteMeasurement = () => {
+    let aborted = false;
+    let orientationDataCopy = JSON.parse(JSON.stringify(spot.properties.orientation_data));
+    orientationDataCopy.forEach((measurement, i) => {
+      if (activeMeasurement.id === measurement.id && !measurement.associated_orientation) orientationDataCopy[i] = {};
+      else if (activeMeasurement.id === measurement.id && measurement.associated_orientation) {
+        Alert.alert('Please delete the associated features before deleting the primary feature.');
+        aborted = true;
+      }
+      else if (measurement.associated_orientation) {
+        measurement.associated_orientation.forEach((associatedMeasurement, j) => {
+          if (activeMeasurement.id === associatedMeasurement.id) orientationDataCopy[i].associated_orientation[j] = {};
+        });
+        orientationDataCopy[i].associated_orientation = orientationDataCopy[i].associated_orientation.filter(
+          associatedMeasurement => !isEmpty(associatedMeasurement));
+      }
+      if (measurement.associated_orientation && isEmpty(measurement.associated_orientation)) {
+        delete orientationDataCopy[i].associated_orientation;
+      }
+    });
+    if (!aborted) {
+      orientationDataCopy = orientationDataCopy.filter(measurement => !isEmpty(measurement));
+      dispatch({type: spotReducers.EDIT_SPOT_PROPERTIES, field: 'orientation_data', value: orientationDataCopy});
+
+      if (modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {
+        dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: Modals.NOTEBOOK_MODALS.COMPASS});
+      }
+      dispatch({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE_TO_PREV});
+    }
+  };
+
   return (
     <React.Fragment>
       {activeMeasurement && <View style={styles.measurementsContentContainer}>
@@ -352,6 +384,13 @@ const MeasurementDetailPage = (props) => {
           <View>
             {!isEmpty(formName) && renderFormFields()}
           </View>
+          {selectedMeasurements.length === 1 &&
+          <Button
+            titleStyle={{color: themes.RED}}
+            title={'Delete Measurement'}
+            type={'clear'}
+            onPress={() => deleteMeasurement()}
+          />}
         </ScrollView>
       </View>}
     </React.Fragment>
