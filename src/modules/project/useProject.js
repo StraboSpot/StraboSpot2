@@ -234,6 +234,7 @@ const useProject = () => {
         });
         const mapIdsAsKeys = Object.assign({}, ...projectResponse.other_maps.map(map => ({[map.mapId]: map})));
         dispatch({type: mapReducers.CUSTOM_MAPS, customMaps: mapIdsAsKeys});
+        dispatch({type: projectReducers.PROJECTS, project: {...projectResponse, other_maps: mapIdsAsKeys}});
       }
       const datasetsResponse = await getDatasets(selectedProject);
       if (datasetsResponse.datasets.length === 1){

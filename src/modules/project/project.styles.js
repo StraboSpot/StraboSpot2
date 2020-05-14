@@ -140,7 +140,7 @@ const dialogStyles = StyleSheet.create({
     height: '100%',
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
     borderLeftWidth: 1,
-    width: 350,
+    width: 300,
     position: 'absolute',
     left: 0,
     right: 0,

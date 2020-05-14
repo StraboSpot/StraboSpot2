@@ -5,6 +5,7 @@ const initialState = {
   selectedButtonIndex: 0,
   settingsPageVisible: null,
   isSidePanelVisible: false,
+  sidePanelView: null,
 };
 
 export const mainMenuPanelReducer = (state = initialState, action) => {
@@ -28,6 +29,7 @@ export const mainMenuPanelReducer = (state = initialState, action) => {
       return {
         ...state,
         isSidePanelVisible: action.bool,
+        sidePanelView: action.view,
       };
   }
   return state;

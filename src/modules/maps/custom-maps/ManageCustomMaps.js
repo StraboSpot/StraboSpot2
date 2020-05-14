@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {Alert, Text, View} from 'react-native';
 import {Picker} from '@react-native-community/picker';
 import {Button, ListItem} from 'react-native-elements';
-import {connect} from 'react-redux';
+import {connect, useDispatch} from 'react-redux';
 import {Input} from 'react-native-elements';
 import {mapReducers} from '../maps.constants';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -13,6 +13,7 @@ import useMapHook from '../useMaps';
 // Styles
 import styles from './customMaps.styles';
 import commonStyles from '../../../shared/common.styles';
+import {settingPanelReducers} from '../../main-menu-panel/mainMenuPanel.constants';
 
 
 const ManageCustomMaps = (props) => {
@@ -20,6 +21,7 @@ const ManageCustomMaps = (props) => {
 
   const [useMaps] = useMapHook();
 
+  const dispatch = useDispatch();
   const [showFrontPage, setShowFrontPage] = useState(true);
   const [showNewMapSelect, setShowNewMapSelect] = useState(false);
   const [showForm, setShowForm] = useState(false);
@@ -322,7 +324,7 @@ const ManageCustomMaps = (props) => {
       {showFrontPage &&
       <View style={{}}>
         <Button
-          onPress={showMapPicker}
+          onPress={() => dispatch({type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE, view: 'addCustomMap', bool: true})}
           containerStyle={styles.buttonContainer}
           buttonStyle={commonStyles.standardButton}
           titleStyle={commonStyles.standardButtonText}

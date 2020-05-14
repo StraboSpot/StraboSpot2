@@ -23,7 +23,7 @@ const ActiveProjectList = (props) => {
         title={isEmpty(project) ? 'No Project' : project.description.project_name}
         containerStyle={styles.projectDescriptionListContainer}
         chevron
-        onPress={() => dispatch({type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE, bool: true})}
+        onPress={() => dispatch({type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE, view: 'activeProject', bool: true})}
       />
       </View>
     </React.Fragment>
