@@ -57,8 +57,7 @@ import sidePanelStyles from '../main-menu-panel/sidePanel.styles';
 const allSpotsPanelWidth = 125;
 const homeMenuPanelWidth = 300;
 const notebookPanelWidth = 400;
-const mainMenuSidePanelWidth = 350;
-const customMapsSidePanelWidth = 350;
+const mainMenuSidePanelWidth = 300;
 
 // const imageOptions = {
 //   storageOptions: {
@@ -659,10 +658,10 @@ const Home = (props) => {
   const toggleSidePanel = () => {
     if (isSidePanelVisible) {
       if (settingsPageVisible === 'Custom Maps') {
-        animatePanels(mainMenuSidePanelAnimation, 300);
+        animatePanels(mainMenuSidePanelAnimation, mainMenuSidePanelWidth);
       }
       else if (settingsPageVisible === 'Active Project') {
-        animatePanels(mainMenuSidePanelAnimation, 300);
+        animatePanels(mainMenuSidePanelAnimation, mainMenuSidePanelWidth);
       }
       return renderSidePanelView();
     }
@@ -966,7 +965,7 @@ const Home = (props) => {
       {notebookPanel}
       {props.isAllSpotsPanelVisible && renderAllSpotsPanel()}
       {homeDrawer}
-      {toggleSidePanel()}
+      {isMainMenuPanelVisible && toggleSidePanel()}
       {renderLoadProjectFromModal()}
       {renderStatusDialogBox()}
       {renderInfoDialogBox()}
