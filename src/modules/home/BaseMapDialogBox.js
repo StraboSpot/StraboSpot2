@@ -90,7 +90,7 @@ const BaseMapDialog = props => {
                 rightElement={
                   <Switch
                     value={item.isMapViewable}
-                    onValueChange={(val) => useMaps.setCustomMapSwitchValue(val, i)}
+                    onValueChange={(val) => useMaps.setCustomMapSwitchValue(val, item.mapId)}
                   />
                 }
               />
