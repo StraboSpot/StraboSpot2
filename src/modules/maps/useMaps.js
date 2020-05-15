@@ -3,7 +3,7 @@ import Geolocation from '@react-native-community/geolocation';
 import {useDispatch, useSelector} from 'react-redux';
 import proj4 from 'proj4';
 
-import {isEmpty} from '../../shared/Helpers';
+import {isEmpty, makeMapId} from '../../shared/Helpers';
 import useSpotsHook from '../spots/useSpots';
 
 // Constants
@@ -12,6 +12,7 @@ import {MAPBOX_KEY} from '../../MapboxConfig';
 import {mapReducers} from './maps.constants';
 import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 import {projectReducers} from '../project/project.constants';
+import {Alert} from 'react-native';
 
 const useMaps = (props) => {
   const dispatch = useDispatch();
@@ -20,6 +21,130 @@ const useMaps = (props) => {
   const project = useSelector(state => state.project.project);
 
   const [useSpots] = useSpotsHook();
+
+  const checkMap = async (chosenForm, map) => {
+    let url, saveUrl;
+    let editedMapUrl;
+    if (chosenForm === 'Mapbox Styles') {
+      editedMapUrl = map.id.split('/').slice(3).join('/');
+    }// Needs to be modified for url and saveUrl
+    else if (chosenForm === 'Map Warper') editedMapUrl = map.id;
+    // const {id} = state;
+    // let mapIdEdit = id.split('/').slice(3).join('/'); // Needs to be modified for url and saveUrl
+    // console.log(mapIdEdit)
+    // setShowSubmitButton(true);
+    console.log('Chosen Form', chosenForm, 'EditedURL', editedMapUrl)
+    switch (chosenForm) {
+      case 'Mapbox Styles':
+        //jasonash/cjl3xdv9h22j12tqfmyce22zq
+        //pk.eyJ1IjoiamFzb25hc2giLCJhIjoiY2l2dTUycmNyMDBrZjJ5bzBhaHgxaGQ1diJ9.O2UUsedIcg1U7w473A5UHA
+        url = 'https://api.mapbox.com/styles/v1/' + editedMapUrl + '/tiles/256/0/0/0?access_token=' + map.accessToken;
+        saveUrl = 'https://api.mapbox.com/styles/v1/' + editedMapUrl + '/tiles/256/{z}/{x}/{y}?access_token=' + map.accessToken;
+        break;
+      case 'Map Warper':
+        url = 'https://www.strabospot.org/mwproxy/' + editedMapUrl + '/0/0/0.png';
+        saveUrl = 'https://www.strabospot.org/mwproxy/' + editedMapUrl + '/{z}/{x}/{y}.png';
+        break;
+      case 'StraboSpot MyMaps':
+        //5b7597c754016
+        //https://strabospot.org/geotiff/tiles/5b7597c754016/0/0/0.png
+        url = 'https://strabospot.org/geotiff/tiles/' + map.id + '/0/0/0.png';
+        saveUrl = 'https://strabospot.org/geotiff/tiles/' + map.id + '/{z}/{x}/{y}.png';
+        break;
+      default:
+        url = 'na';
+        saveUrl = 'na';
+    }
+
+    fetch(url).then(response => {
+      const statusCode = response.status;
+      console.log('statusCode', statusCode);
+      console.log('customMaps: ', customMaps);
+      if (statusCode === 200) {
+        let customMapsArr = Object.values(customMaps);
+        //check to see if it already exists in Redux
+        let mapExists = false;
+        for (let i = 0; i < customMapsArr.length; i++) {
+          console.log(Object.values(customMaps))
+          if (customMapsArr[i].id === map.id) {
+            mapExists = true;
+          }
+        }
+        if (!mapExists) {
+          //add map to Redux here...
+          let newReduxMaps = [];
+          // for (let i = 0; i < customMapsArr.length; i++) {
+          //   newReduxMaps.push(customMapsArr[i]);
+          // }
+          let newMap = {};
+          newMap.title = map.title;
+          newMap.source = chosenForm;
+          newMap.id = map.id;
+          newMap.opacity = map.opacity;
+          newMap.overlay = map.isOverlay;
+          newMap.mapId = makeMapId();
+          if (map.accessToken) {
+            newMap.key = map.accessToken;
+          }
+          newMap.url = saveUrl;
+          newReduxMaps.push(newMap);
+
+          console.log(Object.assign({}, ...newReduxMaps.map(map => ({ [map.mapId]: map}))))
+          const newMapObject = Object.assign({}, ...newReduxMaps.map(map => ({ [map.mapId]: map})))
+          dispatch({type: mapReducers.CUSTOM_MAPS, customMaps: newMapObject});
+          Alert.alert(
+            'Success!',
+            'Map has been added successfully.',
+            [
+              {
+                text: 'OK',
+                // onPress: () => showHome(),
+              },
+            ],
+            {cancelable: false},
+          );
+        }
+        else {
+          Alert.alert(
+            'Failure!',
+            'You have already added this map.',
+            [
+              {
+                text: 'OK',
+                // onPress: () => showHome(),
+              },
+            ],
+            {cancelable: false},
+          );
+        }
+      }
+      else {
+        Alert.alert(
+          'Failure!',
+          'Provided map is not valid.',
+          [
+            {
+              text: 'OK',
+            },
+          ],
+          {cancelable: false},
+        );
+      }
+    })
+      .catch(error => {
+        console.log('Error!: ', error);
+        Alert.alert(
+          'Failure!',
+          'Provided map is not valid...',
+          [
+            {
+              text: 'OK',
+            },
+          ],
+          {cancelable: false},
+        );
+      });
+  };
 
   const deleteMap = async (mapId) => {
     console.log('Deleting Map Here');
@@ -163,7 +288,7 @@ const useMaps = (props) => {
 
   const setCustomMapSwitchValue = (value, ind) => {
     console.log('value', value, 'id', ind);
-    const customMapsCopy = [...customMaps];
+    const customMapsCopy = {...customMaps};
     // if (customMapsCopy.length > 1) customMapsCopy.map(map => map.isMapViewable = false);
     customMapsCopy[ind].isMapViewable = value;
     console.log(customMapsCopy);
@@ -209,10 +334,11 @@ const useMaps = (props) => {
 
     console.log('tempCurrentBasemap: ', tempCurrentBasemap);
     await dispatch({type: mapReducers.CURRENT_BASEMAP, basemap: tempCurrentBasemap});
-    // props.closeSettingsDrawer();
+    // closeSettingsDrawer();
   };
 
   return [{
+    checkMap: checkMap,
     deleteMap: deleteMap,
     editCustomMap: editCustomMap,
     getCurrentLocation: getCurrentLocation,

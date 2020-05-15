@@ -34,6 +34,12 @@ export const mapReducers = {
   CLEAR_VERTEXES: 'CLEAR_VERTEXES',
 };
 
+export const customMapTypes = {
+  MAPBOX_STYLES: 'Mapbox Styles',
+  MAP_WARPER: 'Map Warper',
+  STRABOSPOT_MY_MAPS:'Strabospot MyMaps',
+};
+
 export const basemaps = {
   osm: {
     id: 'osm',
