@@ -54,24 +54,12 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     color: themes.SECONDARY_HEADER_TEXT_COLOR,
   },
-  sliderTextContainer: {
-    width: '100%',
-    justifyContent: 'space-between',
-    // paddingBottom: 5,
-    paddingRight: 10,
-    paddingLeft: 10,
-    flexDirection: 'row',
-  },
-  sliderText: {
-    color: themes.SECONDARY_ITEM_TEXT_COLOR,
-    fontSize: 16,
-  },
   sliderContainer: {
     width: 150,
     alignItems: 'center',
   },
   slider: {
-    width: 200,
+    // width: 200,
     paddingRight: 10,
     paddingLeft: 10,
   },

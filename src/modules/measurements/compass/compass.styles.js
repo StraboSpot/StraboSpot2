@@ -1,30 +1,12 @@
 import {StyleSheet} from 'react-native';
 import * as themes from '../../../shared/styles.constants';
-// import {widthPercentageToDP as wp} from "react-native-responsive-screen";
-
-// const {width, height} = Dimensions.get('window');
-//    let strikeLineFromTop = null;
-//    let trendLineFromTop = null;
-
-
-// const strikeLinePosition = () => {
-//     if (width < 500) return wp('75%');
-//     // if (width >= 1000 && width < 1099) return strikeLineFromTop= 62;
-//   if (width >= 1100 && width < 1199) return strikeLineFromTop= 79;
-//   if (width >= 1200 || (width >= 1000 && width < 1099)) return strikeLineFromTop= 62;
-// };
-// const trendLinePosition = () => {
-//   if (width < 500) return wp('55%');
-//   // if (width >= 1000 && width < 1099) return strikeLineFromTop= 67;
-//   if (width >= 1100 && width < 1199) return trendLineFromTop= 84;
-//   if (width >= 1200 || (width >= 1000 && width < 1099)) return trendLineFromTop= 67;
-// };
 
 const styles = StyleSheet.create({
   buttonContainer: {
     paddingBottom: 10,
   },
   compassContainer: {
+    zIndex: 1,
     flex: 15,
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
     // backgroundColor: 'red',
@@ -61,10 +43,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingTop: 10,
   },
+  sliderTextContainer: {
+    width: '100%',
+    justifyContent: 'space-between',
+    // paddingBottom: 5,
+    paddingRight: 10,
+    paddingLeft: 10,
+    flexDirection: 'row',
+  },
   sliderHeading: {
     fontWeight: 'bold',
     fontSize: themes.PRIMARY_TEXT_SIZE - 3,
     color: themes.SECONDARY_ITEM_TEXT_COLOR,
+  },
+  sliderText: {
+    color: themes.SECONDARY_ITEM_TEXT_COLOR,
+    fontSize: 16,
   },
   switchContainer: {
     flex: 1,

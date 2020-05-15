@@ -3,8 +3,8 @@ import * as themes from '../../shared/styles.constants';
 
 const sidePanelStyles = StyleSheet.create({
   infoInputText: {
-    fontSize: 16,
-    padding: 15,
+    // fontSize: 16,
+    padding: 10,
   },
   textInputNameContainer: {
     flexDirection: 'row',
@@ -31,6 +31,7 @@ const sidePanelStyles = StyleSheet.create({
   sectionContainer: {
     flex: 1,
     paddingTop: 20,
+    justifyContent: 'center'
   },
   sidePanelContainer: {
     height: '100%',

@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
     padding: 10,
     marginTop: 10,
   },
-  editCustomMapsContainer: {
+  customMapsSideContainer: {
     height: '100%',
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
     borderLeftWidth: 1,
@@ -98,8 +98,12 @@ const styles = StyleSheet.create({
     height: 30,
     justifyContent: 'center',
   },
+  saveButtonContainer: {
+    alignItems: 'center',
+  },
   sectionsContainer: {
-    // flex: 1,
+    borderColor: themes.MEDIUMGREY,
+    borderWidth: 1,
     margin: 10,
     backgroundColor: 'white',
     borderRadius: 10,
