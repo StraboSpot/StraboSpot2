@@ -13,7 +13,7 @@ import {
   OSMBasemap,
   ImageBasemap,
 } from './Basemaps';
-import {getNewId, isEmpty, truncDecimal} from '../../shared/Helpers';
+import {getNewId, getNewUUID, isEmpty, truncDecimal} from '../../shared/Helpers';
 import {MAPBOX_KEY} from '../../MapboxConfig';
 import useSpotsHook from '../spots/useSpots';
 import useMapsHook from './useMaps';
@@ -191,7 +191,7 @@ const map = React.forwardRef((props, ref) => {
         ...feature,
         properties: {
           ...feature.properties,
-          tempEditId: getNewId(),
+          tempEditId: getNewUUID(),
         },
       };
     });
@@ -461,7 +461,7 @@ const map = React.forwardRef((props, ref) => {
             ...feature,
             properties: {
               ...feature.properties,
-              tempEditId: getNewId(),
+              tempEditId: getNewUUID(),
             },
           };
         });
@@ -714,7 +714,7 @@ const map = React.forwardRef((props, ref) => {
               ...feature,
               properties: {
                 ...feature.properties,
-                tempEditId: getNewId(),
+                tempEditId: getNewUUID(),
               },
             };
           });

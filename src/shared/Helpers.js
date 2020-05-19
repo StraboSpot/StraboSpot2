@@ -17,9 +17,14 @@ export const makeMapId = () => {
 };
 
 export const getNewId = () => {
-  return uuidv4();
+  return Math.floor((new Date().getTime() + Math.random()) * 10);
+  // return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+  //   c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
 };
 
+export const getNewUUID = () => {
+  return uuidv4();
+};
 // Truncate the decimal part of a number to 5 digits and return as a string
 export const truncDecimal = (num) => {
   const numParts = num.toString().split('.');
