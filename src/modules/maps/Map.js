@@ -103,6 +103,7 @@ const map = React.forwardRef((props, ref) => {
       const newVertexCoords = await map.current.getCoordinateFromView(props.vertexEndCoords);
       if (currentImageBasemap && editingModeData.spotEditing && turf.getType(editingModeData.spotEditing) == 'Point') {
         const vertexCoordinates = useMaps.convertCoordinateProjections(geoLatLngProjection, pixelProjection, [newVertexCoords[0], newVertexCoords[1]]);
+        console.log('Move vertex to:', vertexCoordinates);
         editSpotCoordinates([vertexCoordinates[0], vertexCoordinates[1]]);
       }
       else {
@@ -469,7 +470,6 @@ const map = React.forwardRef((props, ref) => {
             explodedFeatures = explodedFeatures.map( spot => useMaps.convertImagePixelsToLatLong(spot));
           }
         }
-        console.log('explodedFeatures', explodedFeatures);
         setDrawFeatures(explodedFeatures);
         const spotsEditedTmp = editingModeData.spotsEdited.filter(
           spotEdited => spotEdited.properties.id !== spotEditingCopy.properties.id);
@@ -718,7 +718,6 @@ const map = React.forwardRef((props, ref) => {
               },
             };
           });
-          console.log('explodedFeatures', explodedFeatures);
           setDrawFeatures(explodedFeatures);
           const spotsEditedTmp = editingModeData.spotsEdited.filter(
             spotEdited => spotEdited.properties.id !== spotEditingCopy.properties.id);
@@ -786,7 +785,6 @@ const map = React.forwardRef((props, ref) => {
     let featureFound = {};
     if (featuresInRect.length > 1) {
       const distances = await getDistancesFromSpot(screenPointX,screenPointY,featuresInRect);
-      console.log('final distances',distances);
       const [distance,indexWithMinimumIndex] = getClosestSpotDistanceAndIndex(distances);
       featureFound = featuresInRect[indexWithMinimumIndex];
     }

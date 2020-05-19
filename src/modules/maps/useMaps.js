@@ -248,7 +248,7 @@ const useMaps = (props) => {
     var topRight = convertCoordinateProjections(pixelProjection,geoLatLngProjection, [imageBasemapProps.width, imageBasemapProps.height]);
     var topLeft = convertCoordinateProjections(pixelProjection,geoLatLngProjection, [0, imageBasemapProps.height]);
     var coordQuad = [topLeft, topRight, bottomRight, bottomLeft];
-    console.log('coordQuad', coordQuad);
+    console.log('The coordinates identified for image-basemap :', coordQuad);
     return coordQuad;
   };
 
@@ -316,9 +316,8 @@ const useMaps = (props) => {
     const customMapsCopy = {...customMaps};
     // if (customMapsCopy.length > 1) customMapsCopy.map(map => map.isMapViewable = false);
     customMapsCopy[ind].isMapViewable = value;
-    console.log(customMapsCopy);
     dispatch({type: mapReducers.CUSTOM_MAPS, customMaps: customMapsCopy});
-    viewCustomMap(customMapsCopy[ind]).then(map => console.log('aaaaaaaaaaaa', map));
+    viewCustomMap(customMapsCopy[ind]).then(map => console.log(map));
   };
 
   const viewCustomMap = async (map) => {

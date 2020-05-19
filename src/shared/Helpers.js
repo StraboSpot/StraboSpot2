@@ -1,4 +1,6 @@
 import {Animated, Easing} from 'react-native';
+import 'react-native-get-random-values';
+import { v4 as uuidv4 } from 'uuid';
 
 const lodashIsEqual = require('lodash.isequal');
 const passwordValidator = require('password-validator');
@@ -15,9 +17,7 @@ export const makeMapId = () => {
 };
 
 export const getNewId = () => {
-  return Math.floor((new Date().getTime() + Math.random()) * 1000); // random * 1000 makes difference to the newId
-  // return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
-  //   c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+  return uuidv4();
 };
 
 // Truncate the decimal part of a number to 5 digits and return as a string
