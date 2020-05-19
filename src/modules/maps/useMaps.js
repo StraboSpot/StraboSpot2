@@ -9,7 +9,7 @@ import useSpotsHook from '../spots/useSpots';
 // Constants
 import {spotReducers} from '../spots/spot.constants';
 import {MAPBOX_KEY} from '../../MapboxConfig';
-import {mapReducers} from './maps.constants';
+import {mapReducers,geoLatLngProjection,pixelProjection} from './maps.constants';
 import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 import {projectReducers} from '../project/project.constants';
 import {Alert} from 'react-native';
@@ -33,7 +33,7 @@ const useMaps = (props) => {
     // let mapIdEdit = id.split('/').slice(3).join('/'); // Needs to be modified for url and saveUrl
     // console.log(mapIdEdit)
     // setShowSubmitButton(true);
-    console.log('Chosen Form', chosenForm, 'EditedURL', editedMapUrl)
+    console.log('Chosen Form', chosenForm, 'EditedURL', editedMapUrl);
     switch (chosenForm) {
       case 'Mapbox Styles':
         //jasonash/cjl3xdv9h22j12tqfmyce22zq
@@ -65,7 +65,7 @@ const useMaps = (props) => {
         //check to see if it already exists in Redux
         let mapExists = false;
         for (let i = 0; i < customMapsArr.length; i++) {
-          console.log(Object.values(customMaps))
+          console.log(Object.values(customMaps));
           if (customMapsArr[i].id === map.id) {
             mapExists = true;
           }
@@ -89,8 +89,8 @@ const useMaps = (props) => {
           newMap.url = saveUrl;
           newReduxMaps.push(newMap);
 
-          console.log(Object.assign({}, ...newReduxMaps.map(map => ({ [map.mapId]: map}))))
-          const newMapObject = Object.assign({}, ...newReduxMaps.map(map => ({ [map.mapId]: map})))
+          console.log(Object.assign({}, ...newReduxMaps.map(map => ({ [map.mapId]: map}))));
+          const newMapObject = Object.assign({}, ...newReduxMaps.map(map => ({ [map.mapId]: map})));
           dispatch({type: mapReducers.CUSTOM_MAPS, customMaps: newMapObject});
           Alert.alert(
             'Success!',
@@ -193,7 +193,7 @@ const useMaps = (props) => {
   const getDisplayedSpots = (selectedSpots) => {
     var mappableSpots = useSpots.getMappableSpots();      // Spots with geometry
     // if image_basemap, then filter spots by imageBasemap id
-    if (currentImageBasemap) mappableSpots = useSpots.getMappableSpots(currentImageBasemap.id);
+    if (currentImageBasemap) mappableSpots = useSpots.getMappableSpots();
     // Filter out Spots on an strat section
     var displayedSpots = mappableSpots.filter(spot => !spot.properties.strat_section);
     // Filter out Spots on an image_basemap
@@ -244,46 +244,71 @@ const useMaps = (props) => {
   const getCoordQuad = (imageBasemapProps) => {
     // identify the [lat,lng] corners of the image basemap
     var bottomLeft = [0, 0];
-    var bottomRight = proj4('EPSG:3857', 'EPSG:4326', [imageBasemapProps.width * 100, 0]);
-    var topRight = proj4('EPSG:3857', 'EPSG:4326', [imageBasemapProps.width * 100, imageBasemapProps.height * 100]);
-    var topLeft = proj4('EPSG:3857', 'EPSG:4326', [0, imageBasemapProps.height * 100]);
+    var bottomRight = convertCoordinateProjections(pixelProjection,geoLatLngProjection, [imageBasemapProps.width, 0]);
+    var topRight = convertCoordinateProjections(pixelProjection,geoLatLngProjection, [imageBasemapProps.width, imageBasemapProps.height]);
+    var topLeft = convertCoordinateProjections(pixelProjection,geoLatLngProjection, [0, imageBasemapProps.height]);
     var coordQuad = [topLeft, topRight, bottomRight, bottomLeft];
     console.log('coordQuad', coordQuad);
     return coordQuad;
   };
 
   // Convert image x,y pixels to WGS84, assuming x,y are web mercator
-  const convertImagePixelsToLatLong = (features) => {
-    let convertedFeatures = [];
-    features.forEach(feature => {
+  const convertImagePixelsToLatLong = (feature) => {
       if (feature.geometry.type === 'Point') {
         const coords = feature.geometry.coordinates;
-        feature.geometry.coordinates = proj4('EPSG:3857', 'EPSG:4326', [coords[0] * 100, coords[1] * 100]);
-        convertedFeatures.push(feature);
+        feature.geometry.coordinates = convertCoordinateProjections(pixelProjection,geoLatLngProjection, [coords[0], coords[1]]);
       }
       else if (feature.geometry.type === 'Polygon') {
           let calculatedCoordinates = [];
           for (const subArray of feature.geometry.coordinates){
             for (const innerSubArray of subArray){
-              let [x,y] = proj4('EPSG:3857', 'EPSG:4326', [innerSubArray[0] * 100, innerSubArray[1] * 100]);
+              let [x,y] = convertCoordinateProjections(pixelProjection,geoLatLngProjection, [innerSubArray[0], innerSubArray[1]]);
               calculatedCoordinates.push([x,y]);
             }
           }
           feature.geometry.coordinates = [calculatedCoordinates];
-          convertedFeatures.push(feature);
        }
        else {
           let calculatedCoordinates = [];
           for (const subArray of feature.geometry.coordinates){
-            let [x,y] = proj4('EPSG:3857', 'EPSG:4326', [subArray[0] * 100, subArray[1] * 100]);
+            let [x,y] = convertCoordinateProjections(pixelProjection,geoLatLngProjection, [subArray[0], subArray[1]]);
             calculatedCoordinates.push([x,y]);
           }
           feature.geometry.coordinates = calculatedCoordinates;
-          convertedFeatures.push(feature);
         }
-    });
-    console.log('converted features', convertedFeatures);
-    return convertedFeatures;
+        return feature;
+  };
+
+  // Convert WGS84 to image x,y pixels, assuming x,y are web mercator
+  const convertFeatureGeometryToImagePixels = (feature) => {
+    var imageX,imageY;
+    let calculatedCoordinates = [];
+    if (feature.geometry.type === 'Point') {
+      [imageX,imageY] = convertCoordinateProjections(geoLatLngProjection, pixelProjection, feature.geometry.coordinates);
+      feature.geometry.coordinates = [imageX,imageY];
+    }
+    else if (feature.geometry.type === 'Polygon') {
+      for (const subArray of feature.geometry.coordinates){
+        for (const innerSubArray of subArray){
+          [imageX,imageY] = convertCoordinateProjections(geoLatLngProjection, pixelProjection, innerSubArray);
+          calculatedCoordinates.push([imageX,imageY]);
+        }
+      }
+      feature.geometry.coordinates = [calculatedCoordinates];
+    }
+    else { // LineString
+      for (const subArray of feature.geometry.coordinates){
+        [imageX,imageY] = convertCoordinateProjections(geoLatLngProjection, pixelProjection,  subArray);
+        calculatedCoordinates.push([imageX,imageY]);
+      }
+      feature.geometry.coordinates = calculatedCoordinates;
+    }
+    return feature;
+  };
+
+  const convertCoordinateProjections = (sourceProjection, targetProjection, coords) => {
+    const [targetX,targetY] = proj4(sourceProjection, targetProjection, coords);
+    return [targetX,targetY];
   };
 
   const setCustomMapSwitchValue = (value, ind) => {
@@ -293,7 +318,7 @@ const useMaps = (props) => {
     customMapsCopy[ind].isMapViewable = value;
     console.log(customMapsCopy);
     dispatch({type: mapReducers.CUSTOM_MAPS, customMaps: customMapsCopy});
-    viewCustomMap(customMapsCopy[ind]).then(map => console.log('aaaaaaaaaaaa', map))
+    viewCustomMap(customMapsCopy[ind]).then(map => console.log('aaaaaaaaaaaa', map));
   };
 
   const viewCustomMap = async (map) => {
@@ -340,6 +365,7 @@ const useMaps = (props) => {
   return [{
     checkMap: checkMap,
     deleteMap: deleteMap,
+    convertCoordinateProjections : convertCoordinateProjections,
     editCustomMap: editCustomMap,
     getCurrentLocation: getCurrentLocation,
     getDisplayedSpots: getDisplayedSpots,
@@ -349,6 +375,7 @@ const useMaps = (props) => {
     convertImagePixelsToLatLong: convertImagePixelsToLatLong,
     setCustomMapSwitchValue: setCustomMapSwitchValue,
     viewCustomMap: viewCustomMap,
+    convertFeatureGeometryToImagePixels: convertFeatureGeometryToImagePixels,
   }];
 };
 

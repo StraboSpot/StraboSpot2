@@ -1,15 +1,15 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useSelector} from 'react-redux';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import * as turf from '@turf/turf/index';
 import useImagesHook from '../images/useImages';
 import useMapSymbologyHook from './useMapSymbology';
 import {isEmpty} from '../../shared/Helpers';
-import proj4 from 'proj4';
 import {Platform} from 'react-native';
 
 // Constants
-import {symbols as symbolsConstant} from './maps.constants';
+import {symbols as symbolsConstant,geoLatLngProjection,pixelProjection} from './maps.constants';
+import useMapsHook from './useMaps';
 
 function Basemap(props) {
   const basemap = useSelector(state => state.map.currentBasemap);
@@ -18,6 +18,7 @@ function Basemap(props) {
   const [useMapSymbology] = useMapSymbologyHook();
   const [symbols, setSymbol] = useState(symbolsConstant);
   const [useImages] = useImagesHook();
+  const [useMaps] = useMapsHook();
 
   return <MapboxGL.MapView
     id={basemap.id}
@@ -42,8 +43,8 @@ function Basemap(props) {
 
     <MapboxGL.Camera
       ref={cameraRef}
-      zoomLevel={currentImageBasemap ? 7 : 15}
-      centerCoordinate={currentImageBasemap ? proj4('EPSG:3857', 'EPSG:4326', [(currentImageBasemap.width * 100) / 2, (currentImageBasemap.height * 100) / 2]) : props.centerCoordinate}
+      zoomLevel={currentImageBasemap ? 14 : 15}
+      centerCoordinate={currentImageBasemap ? useMaps.convertCoordinateProjections(pixelProjection, geoLatLngProjection, [(currentImageBasemap.width) / 2, (currentImageBasemap.height) / 2]) : props.centerCoordinate}
       // followUserLocation={true}   // Can't follow user location if want to zoom to extent of Spots
       // followUserMode='normal'
     />

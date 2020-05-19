@@ -1,7 +1,6 @@
 import {useDispatch, useSelector} from 'react-redux';
 import {randomNames} from '../../assets/test-data/default-names';
 import {getNewId, isEmpty} from '../../shared/Helpers';
-import proj4 from 'proj4';
 
 // Constants
 import {projectReducers} from '../project/project.constants';
@@ -33,12 +32,6 @@ const useSpots = (props) => {
     newSpot.properties.modified_timestamp = Date.now();
     newSpot.properties.viewed_timestamp = Date.now();
     newSpot.properties.name = randomName;
-    if (currentImageBasemap) {
-      //newSpot.properties.lat = newSpot.geometry.coordinates[0];
-      //newSpot.properties.lng = newSpot.geometry.coordinates[1];
-      newSpot.properties.image_basemap = currentImageBasemap.id;
-      newSpot = convertFeatureGeometryToImagePixels(newSpot);
-    }
     console.log('Creating new Spot:', newSpot);
     await dispatch({type: spotReducers.ADD_SPOT, spot: newSpot});
     const currentDataset = Object.values(datasets).find(dataset => dataset.current);
@@ -135,11 +128,11 @@ const useSpots = (props) => {
     return activeSpots;
   };
 
-  const getMappableSpots = (imageBasemap) => {
+  const getMappableSpots = () => {
     const allSpotsCopy = JSON.parse(JSON.stringify(Object.values(getActiveSpotsObj())));
-    if (imageBasemap) {
+    if (currentImageBasemap) {
       return allSpotsCopy.filter(
-        spot => spot.geometry && !spot.properties.strat_section_id && spot.properties.image_basemap === imageBasemap);
+        spot => spot.geometry && !spot.properties.strat_section_id && spot.properties.image_basemap === currentImageBasemap.id);
     }
     return allSpotsCopy.filter(
       spot => spot.geometry && !spot.properties.strat_section_id && !spot.properties.image_basemap);
@@ -155,33 +148,6 @@ const useSpots = (props) => {
       if (spotIds.includes(obj[1].properties.id)) foundSpots.push(obj[1]);
     });
     return foundSpots;
-  };
-
-  // Convert WGS84 to image x,y pixels, assuming x,y are web mercator
-  const convertFeatureGeometryToImagePixels = (feature) => {
-    var imageX,imageY;
-    let calculatedCoordinates = [];
-    if (feature.geometry.type === 'Point') {
-      [imageX,imageY] = proj4('EPSG:4326', 'EPSG:3857', feature.geometry.coordinates);
-      feature.geometry.coordinates = [imageX / 100,imageY / 100];
-    }
-    else if (feature.geometry.type === 'Polygon') {
-        for (const subArray of feature.geometry.coordinates){
-          for (const innerSubArray of subArray){
-            [imageX,imageY] = proj4('EPSG:4326', 'EPSG:3857', innerSubArray);
-            calculatedCoordinates.push([imageX / 100,imageY / 100]);
-          }
-        }
-        feature.geometry.coordinates = [calculatedCoordinates];
-     }
-     else { // LineString
-        for (const subArray of feature.geometry.coordinates){
-          [imageX,imageY] = proj4('EPSG:4326', 'EPSG:3857', subArray);
-          calculatedCoordinates.push([imageX / 100,imageY / 100]);
-        }
-        feature.geometry.coordinates = calculatedCoordinates;
-      }
-    return feature;
   };
 
   return [{
