@@ -3,6 +3,7 @@ import {useSelector} from 'react-redux';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import * as turf from '@turf/turf/index';
 import useImagesHook from '../images/useImages';
+import useMapsHook from './useMaps';
 import useMapSymbologyHook from './useMapSymbology';
 import {isEmpty} from '../../shared/Helpers';
 import {Platform} from 'react-native';
@@ -14,6 +15,7 @@ import useMapsHook from './useMaps';
 function Basemap(props) {
   const basemap = useSelector(state => state.map.currentBasemap);
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
+  const customMaps = useSelector(state => state.map.customMaps);
   const {mapRef, cameraRef} = props.forwardedRef;
   const [useMapSymbology] = useMapSymbologyHook();
   const [symbols, setSymbol] = useState(symbolsConstant);
@@ -61,6 +63,19 @@ function Basemap(props) {
         style={{rasterOpacity: 1}}
       />
     </MapboxGL.RasterSource>
+
+    {/* Custom Overlay Layer */}
+    {Object.values(customMaps).map(customMap => {
+      return customMap.overlay && customMap.isViewable &&
+        <MapboxGL.RasterSource
+          key={customMap.id}
+          id={customMap.id}
+          tileUrlTemplates={useMaps.getCustomMapSrc(customMap)}>
+          <MapboxGL.RasterLayer id={customMap.id + 'Layer'}
+                                sourceID={customMap.id}
+                                style={{rasterOpacity: customMap.opacity}}/>
+        </MapboxGL.RasterSource>;
+    })}
 
     {/* Image Basemap background Layer */}
     {Platform.OS === 'android' && currentImageBasemap &&

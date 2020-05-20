@@ -79,7 +79,7 @@ const ManageCustomMaps = (props) => {
                     ({item.source})
                   </Text>
                   <Text onPress={() => useMaps.editCustomMap(item)} style={styles.buttonPadding}>
-                    {/*&nbsp;&nbsp;&nbsp;Edit*/}
+                    &nbsp;&nbsp;&nbsp;Edit
                   </Text>
                   <Text onPress={() => confirmDeleteMap(item)} style={styles.buttonPadding}>
                     &nbsp;&nbsp;&nbsp;Delete

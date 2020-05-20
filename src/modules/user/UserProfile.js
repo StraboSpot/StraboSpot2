@@ -96,6 +96,7 @@ const UserProfile = (props) => {
       <Button
         onPress={() => doLogOut()}
         title={'Log out'}
+        containerStyle={commonStyles.standardButtonContainer}
         buttonStyle={commonStyles.standardButton}
         titleStyle={commonStyles.standardButtonText}
       />

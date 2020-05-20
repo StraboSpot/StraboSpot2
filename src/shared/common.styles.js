@@ -83,10 +83,13 @@ const commonStyles = StyleSheet.create({
     color: themes.PRIMARY_ITEM_TEXT_COLOR,
     fontSize: themes.PRIMARY_TEXT_SIZE,
   },
+  standardButtonContainer: {
+    paddingTop: 5,
+  },
   standardButton: {
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
     height: 50,
-    borderColor: themes.PRIMARY_BACKGROUND_COLOR,
+    borderColor: themes.MEDIUMGREY,
     borderWidth: 1,
     marginLeft: 5,
     marginRight: 5,

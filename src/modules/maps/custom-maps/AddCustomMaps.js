@@ -10,19 +10,20 @@ import {
   Animated,
   Platform,
 } from 'react-native';
-import {Button, Input, ListItem} from 'react-native-elements';
+import {Button, Input, ListItem, Slider} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import Divider from '../../main-menu-panel/MainMenuPanelDivider';
 import {customMapTypes} from '../maps.constants';
 import {settingPanelReducers} from '../../main-menu-panel/mainMenuPanel.constants';
 import SidePanelHeader from '../../main-menu-panel/SidePanelHeader';
-import Slider from '../../../shared/ui/Slider';
+// import Slider from '../../../shared/ui/Slider';
 import useMapHook from '../useMaps';
 
 // Styles
 import sidePanelStyles from '../../main-menu-panel/sidePanel.styles';
 import styles from './customMaps.styles';
+import * as themes from '../../../shared/styles.constants';
 
 const {State: TextInputState} = TextInput;
 
@@ -35,7 +36,7 @@ const AddCustomMaps = (props) => {
 
   const [editableCustomMapData, setEditableCustomMapData] = useState({
     title: '',
-    opacity: 0.5,
+    opacity: 0,
     isOverlay: false,
     id: '',
     accessToken: MBAccessToken,
@@ -54,6 +55,10 @@ const AddCustomMaps = (props) => {
       console.log('Listners Removed');
     };
   }, []);
+
+  useEffect(() => {
+    console.log((editableCustomMapData.opacity/1).toFixed(1) *100)
+  },[editableCustomMapData.opacity])
 
   const handleKeyboardDidShow = (event) => {
     const {height: windowHeight} = Dimensions.get('window');
@@ -183,39 +188,48 @@ const AddCustomMaps = (props) => {
     );
   };
 
-  const renderOverlay = () => (
-    <React.Fragment>
-      <ListItem
-        containerStyle={sidePanelStyles.infoInputText}
-        title={'Display as overlay'}
-        rightElement={
-          <Switch
-            value={editableCustomMapData.isOverlay}
-            onValueChange={val => setEditableCustomMapData(e => ({...e, isOverlay: val}))}
-          />
-        }
-      />
-      {editableCustomMapData.isOverlay &&
-      <View style={{}}>
+  const renderOverlay = () => {
+    let sliderValuePercent = (editableCustomMapData.opacity / 1).toFixed(1) * 100;
+    return (
+      <React.Fragment>
         <ListItem
-          containerStyle={{borderTopWidth: 0.5, padding: 0, paddingLeft: 10}}
-          title={'Opacity'}
+          containerStyle={sidePanelStyles.infoInputText}
+          title={'Display as overlay'}
           rightElement={
-            <View style={{flex: 2}}>
-              <Slider
-                sliderValue={editableCustomMapData.opacity}
-                onValueChange={(val) => setEditableCustomMapData(e => ({...e, opacity: val}))}
-                maximumValue={1}
-                minimumValue={0}
-                step={0.1}
-              />
-            </View>
+            <Switch
+              value={editableCustomMapData.isOverlay}
+              onValueChange={val => setEditableCustomMapData(e => ({...e, isOverlay: val}))}
+            />
           }
         />
-      </View>
-      }
-    </React.Fragment>
-  );
+        {editableCustomMapData.isOverlay &&
+        <View style={{}}>
+          <ListItem
+            containerStyle={{borderTopWidth: 0.5, padding: 0, paddingLeft: 10}}
+            title={'Opacity'}
+            subtitle={`(${sliderValuePercent}%)`}
+            subtitleStyle={{fontSize: 12, paddingLeft: 15}}
+            rightElement={
+              <View style={{flex: 2}}>
+                <Slider
+                  sliderValue={editableCustomMapData.opacity}
+                  onValueChange={(val) => setEditableCustomMapData(e => ({...e, opacity: val}))}
+                  maximumValue={1}
+                  minimumValue={0}
+                  step={0.1}
+                  thumbStyle={{borderWidth: 1, borderColor: 'grey'}}
+                  minimumTrackTintColor={themes.PRIMARY_ACCENT_COLOR}
+                  maximumTrackTintColor={themes.PRIMARY_BACKGROUND_COLOR}
+                  thumbTintColor={themes.PRIMARY_BACKGROUND_COLOR}
+                />
+              </View>
+            }
+          />
+        </View>
+        }
+      </React.Fragment>
+    );
+  };
 
   const renderBackButton = () => {
     return (

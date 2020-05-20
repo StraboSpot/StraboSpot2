@@ -39,7 +39,7 @@ export const mapReducers = {
 export const customMapTypes = {
   MAPBOX_STYLES: 'Mapbox Styles',
   MAP_WARPER: 'Map Warper',
-  STRABOSPOT_MY_MAPS:'Strabospot MyMaps',
+  STRABOSPOT_MY_MAPS: 'Strabospot MyMaps',
 };
 
 export const basemaps = {
@@ -50,14 +50,7 @@ export const basemaps = {
     layerSaveId: 'osm',
     url: 'https://a.tile.openstreetmap.org/{z}/{x}/{y}.png',
     maxZoom: 16,
-  },
-  macrostrat: {
-    id: 'macrostrat',
-    layerId: 'macrostratLayer',
-    layerLabel: 'Geology from Macrostrat',
-    layerSaveId: 'macrostrat',
-    url: 'http://tiles.strabospot.org/v5/macrostrat/{z}/{x}/{y}.png',
-    maxZoom: 19,
+    isDefault: true,
   },
   mapboxOutdoors: {
     id: 'mapboxOutdoors',
@@ -66,6 +59,7 @@ export const basemaps = {
     layerSaveId: 'mapbox.outdoors',
     url: 'http://tiles.strabospot.org/v5/mapbox.outdoors/{z}/{x}/{y}.png?access_token=' + MAPBOX_KEY,
     maxZoom: 19,
+    isDefault: true,
   },
   mapboxSatellite: {
     id: 'mapboxSatellite',
@@ -74,12 +68,23 @@ export const basemaps = {
     layerSaveId: 'mapbox.satellite',
     url: 'http://tiles.strabospot.org/v5/mapbox.satellite/{z}/{x}/{y}.png?access_token=' + MAPBOX_KEY,
     maxZoom: 19,
+    isDefault: true,
   },
-  mapboxStyles : {
+  macrostrat: {
+    id: 'macrostrat',
+    layerId: 'macrostratLayer',
+    layerLabel: 'Geology from Macrostrat',
+    layerSaveId: 'macrostrat',
+    url: 'http://tiles.strabospot.org/v5/macrostrat/{z}/{x}/{y}.png',
+    maxZoom: 19,
+    isDefault: true,
+  },
+  mapboxStyles: {
     id: 'mapboxStyles',
     layerId: 'mapboxStyles',
     layerLabel: 'Mapbox Styles',
     url: 'https://api.mapbox.com/styles/v1/tiles/256/{z}/{x}/{y}?access_token=' + MAPBOX_KEY,
+    isDefault: false,
   },
 };
 
