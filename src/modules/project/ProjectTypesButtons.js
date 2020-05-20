@@ -16,18 +16,21 @@ const ProjectTypesButtons = (props) => {
     <View>
       <Button
         title={'Start a New Project'}
+        containerStyle={commonStyles.standardButtonContainer}
         buttonStyle={commonStyles.standardButton}
         titleStyle={commonStyles.standardButtonText}
         onPress={() => props.onStartNewProject()}
       />
       {isOnline && !isEmpty(user) && <Button
         title={'Load a Project from Server'}
+        containerStyle={commonStyles.standardButtonContainer}
         buttonStyle={commonStyles.standardButton}
         titleStyle={commonStyles.standardButtonText}
         onPress={() => props.onLoadProjectsFromServer()}
       />}
       {deviceBackUpDirectoryExists && <Button
         title={'Load a Project from Device'}
+        containerStyle={commonStyles.standardButtonContainer}
         buttonStyle={commonStyles.standardButton}
         titleStyle={commonStyles.standardButtonText}
         onPress={() => props.onLoadProjectsFromDevice()}
