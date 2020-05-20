@@ -3,6 +3,7 @@ import {useSelector} from 'react-redux';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import * as turf from '@turf/turf/index';
 import useImagesHook from '../images/useImages';
+import useMapsHook from './useMaps';
 import useMapSymbologyHook from './useMapSymbology';
 import {isEmpty} from '../../shared/Helpers';
 import proj4 from 'proj4';
@@ -14,10 +15,12 @@ import {symbols as symbolsConstant} from './maps.constants';
 function Basemap(props) {
   const basemap = useSelector(state => state.map.currentBasemap);
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
+  const customMaps = useSelector(state => state.map.customMaps);
   const {mapRef, cameraRef} = props.forwardedRef;
   const [useMapSymbology] = useMapSymbologyHook();
   const [symbols, setSymbol] = useState(symbolsConstant);
   const [useImages] = useImagesHook();
+  const [useMaps] = useMapsHook();
 
   return <MapboxGL.MapView
     id={basemap.id}
@@ -43,7 +46,8 @@ function Basemap(props) {
     <MapboxGL.Camera
       ref={cameraRef}
       zoomLevel={currentImageBasemap ? 7 : 15}
-      centerCoordinate={currentImageBasemap ? proj4('EPSG:3857', 'EPSG:4326', [(currentImageBasemap.width * 100) / 2, (currentImageBasemap.height * 100) / 2]) : props.centerCoordinate}
+      centerCoordinate={currentImageBasemap ? proj4('EPSG:3857', 'EPSG:4326',
+        [(currentImageBasemap.width * 100) / 2, (currentImageBasemap.height * 100) / 2]) : props.centerCoordinate}
       // followUserLocation={true}   // Can't follow user location if want to zoom to extent of Spots
       // followUserMode='normal'
     />
@@ -60,6 +64,19 @@ function Basemap(props) {
         style={{rasterOpacity: 1}}
       />
     </MapboxGL.RasterSource>
+
+    {/* Custom Overlay Layer */}
+    {Object.values(customMaps).map(customMap => {
+      return customMap.overlay && customMap.isViewable &&
+        <MapboxGL.RasterSource
+          key={customMap.id}
+          id={customMap.id}
+          tileUrlTemplates={useMaps.getCustomMapSrc(customMap)}>
+          <MapboxGL.RasterLayer id={customMap.id + 'Layer'}
+                                sourceID={customMap.id}
+                                style={{rasterOpacity: customMap.opacity}}/>
+        </MapboxGL.RasterSource>;
+    })}
 
     {/* Image Basemap background Layer */}
     {Platform.OS === 'android' && currentImageBasemap &&
