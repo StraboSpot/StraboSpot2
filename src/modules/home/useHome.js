@@ -54,6 +54,7 @@ const useHome = (props) => {
     dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: null});
     dispatch({type: homeReducers.SET_SETTINGS_PANEL_VISIBLE, value: false});
     dispatch({type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: SettingsMenuItems.SETTINGS_MAIN});
+    dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, bool: false});
     await getOnlineStatus();
     await checkForDeviceBackupDir();
     return checkForOpenProject();
