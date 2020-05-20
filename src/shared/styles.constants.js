@@ -5,6 +5,7 @@ export const MEDIUMGREY = 'darkgray';  //(#d3d3d3)
 export const DARKGREY = 'dimgray';
 //export const BLUE = 'blue';  // (#0000ff)
 export const BLUE = 'dodgerblue'; // (#1e90ff)
+export const RED = 'red';
 
 export const PRIMARY_BACKGROUND_COLOR = LIGHTGREY;
 export const SECONDARY_BACKGROUND_COLOR = 'white';
