@@ -1,14 +1,19 @@
-import React from 'react';
 import {Alert, Platform} from 'react-native';
-import ImagePicker from 'react-native-image-picker';
-import RNFetchBlob from 'rn-fetch-blob';
-import {useDispatch, useSelector} from 'react-redux';
-import {getNewId} from '../../shared/Helpers';
 import {Base64} from 'js-base64';
+import {useDispatch, useSelector} from 'react-redux';
+import ImagePicker from 'react-native-image-picker';
 import ImageResizer from 'react-native-image-resizer';
+import RNFetchBlob from 'rn-fetch-blob';
+
 // Hooks
+import useExportHook from '../project/useExport';
 import useHomeHook from '../home/useHome';
 import useServerRequests from '../../services/useServerRequests';
+
+// Utility
+import {getNewId, isEmpty} from '../../shared/Helpers';
+
+// Constants
 import {homeReducers} from '../home/home.constants';
 import {spotReducers} from '../spots/spot.constants';
 
@@ -27,6 +32,7 @@ const useImages = () => {
 
   const [useHome] = useHomeHook();
   const [serverRequests] = useServerRequests();
+  const [useExport] = useExportHook();
 
   const user = useSelector(state => state.user);
   const dispatch = useDispatch();
@@ -35,7 +41,7 @@ const useImages = () => {
     return await RNFetchBlob.fs.unlink(devicePath + imagesResizeTemp);
   };
 
-  const downloadImages = neededImageIds => {
+  const downloadImages = async (neededImageIds) => {
     let promises = [];
     let imagesDownloadedCount = 0;
     let imagesFailedCount = 0;
@@ -74,38 +80,52 @@ const useImages = () => {
       // });
     };
 
-    neededImageIds.map(imageId => {
-      let promise = downloadImageAndSave(imageId).then(() => {
-        imagesDownloadedCount++;
-        savedImagesCount++;
-        console.log(
-          'NEW/MODIFIED Images Downloaded: ' + imagesDownloadedCount + ' of ' + neededImageIds.length +
-          ' NEW/MODIFIED Images Saved: ' + savedImagesCount + ' of ' + neededImageIds.length);
-      }, err => {
-        imagesFailedCount++;
-        console.warn('Error downloading Image', imageId, 'Error:', err);
-        RNFetchBlob.fs.unlink(imagesDirectory + '/' + imageId).then(() => {
-          console.log('Image removed', imageId);
-          imagesFailedArr.push(imageId);
+    try {
+      if (!isEmpty(neededImageIds)) {
+        // Check path first, if doesn't exist, then create
+        await useExport.doesDeviceDirectoryExist(devicePath + appDirectory);
+        await useExport.doesDeviceDirectoryExist(imagesDirectory);
+
+        neededImageIds.map(imageId => {
+          let promise = downloadImageAndSave(imageId).then(() => {
+            imagesDownloadedCount++;
+            savedImagesCount++;
+            console.log(
+              'NEW/MODIFIED Images Downloaded: ' + imagesDownloadedCount + ' of ' + neededImageIds.length +
+              ' NEW/MODIFIED Images Saved: ' + savedImagesCount + ' of ' + neededImageIds.length);
+          }, err => {
+            imagesFailedCount++;
+            console.warn('Error downloading Image', imageId, 'Error:', err);
+            RNFetchBlob.fs.unlink(imagesDirectory + '/' + imageId).then(() => {
+              console.log('Image removed', imageId);
+              imagesFailedArr.push(imageId);
+            });
+          }).finally(() => {
+            dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
+            if (imagesFailedCount > 0) {
+              dispatch({
+                type: homeReducers.ADD_STATUS_MESSAGE,
+                statusMessage: 'Downloaded Images ' + imageCount + '/' + neededImageIds.length
+                  + '\nFailed Images ' + imagesFailedCount + '/' + neededImageIds.length,
+              });
+            }
+            else {
+              dispatch({
+                type: homeReducers.ADD_STATUS_MESSAGE,
+                statusMessage: 'Downloaded Images: ' + imageCount + '/' + neededImageIds.length,
+              });
+            }
+          });
+          promises.push(promise);
         });
-      }).finally(() => {
-        dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
-        if (imagesFailedCount > 0) {
-          dispatch({
-            type: homeReducers.ADD_STATUS_MESSAGE,
-            statusMessage: 'Downloaded Images ' + imageCount + '/' + neededImageIds.length
-              + '\nFailed Images ' + imagesFailedCount + '/' + neededImageIds.length,
-          });
-        }
-        else {
-          dispatch({
-            type: homeReducers.ADD_STATUS_MESSAGE,
-            statusMessage: 'Downloaded Images: ' + imageCount + '/' + neededImageIds.length,
-          });
-        }
-      });
-      promises.push(promise);
-    });
+      }
+    }
+    catch (e) {
+      dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
+      dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Error Downloading Images!'});
+      console.warn('Error Downloading Images: ' + e);
+    }
+
     return Promise.all(promises).then(() => {
       if (imagesFailedCount > 0) {
         //downloadErrors = true;
@@ -114,7 +134,7 @@ const useImages = () => {
           {type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Image Downloads Failed: ' + imagesFailedCount});
         console.warn('Image Downloads Failed: ' + imagesFailedCount);
       }
-      else  {
+      else {
         dispatch({type: homeReducers.SET_LOADING, view: 'modal', bool: false});
         // dispatch({type:  homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Download Complete!'});
       }
@@ -241,7 +261,6 @@ const useImages = () => {
           promises.push(promise);
         });
       }
-      else console.log('No images to download');
     });
     return Promise.all(promises).then(() => {
       // Alert.alert(`Images needed to download: ${neededImagesIds.length}`);
