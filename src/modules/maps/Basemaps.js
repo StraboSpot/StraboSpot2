@@ -10,7 +10,6 @@ import {Platform} from 'react-native';
 
 // Constants
 import {symbols as symbolsConstant, geoLatLngProjection, pixelProjection} from './maps.constants';
-import useMapsHook from './useMaps';
 
 function Basemap(props) {
   const basemap = useSelector(state => state.map.currentBasemap);
@@ -92,6 +91,7 @@ function Basemap(props) {
       <MapboxGL.RasterLayer id='imageBasemapBackgroundLayer'
                             style={{rasterOpacity: 1}}/>
     </MapboxGL.Animated.ImageSource>}
+
     {/* Image Basemap Layer */}
     {currentImageBasemap && !isEmpty(props.coordQuad) &&
     <MapboxGL.Animated.ImageSource
