@@ -1,4 +1,6 @@
 import {Animated, Easing} from 'react-native';
+import 'react-native-get-random-values';
+import { v4 as uuidv4 } from 'uuid';
 
 const lodashIsEqual = require('lodash.isequal');
 const passwordValidator = require('password-validator');
@@ -20,6 +22,9 @@ export const getNewId = () => {
   //   c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
 };
 
+export const getNewUUID = () => {
+  return uuidv4();
+};
 // Truncate the decimal part of a number to 5 digits and return as a string
 export const truncDecimal = (num) => {
   const numParts = num.toString().split('.');

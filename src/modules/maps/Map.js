@@ -13,13 +13,13 @@ import {
   OSMBasemap,
   ImageBasemap,
 } from './Basemaps';
-import {getNewId, isEmpty, truncDecimal} from '../../shared/Helpers';
+import {getNewId, getNewUUID, isEmpty, truncDecimal} from '../../shared/Helpers';
 import {MAPBOX_KEY} from '../../MapboxConfig';
 import useSpotsHook from '../spots/useSpots';
 import useMapsHook from './useMaps';
 
 // Constants
-import {LATITUDE, LONGITUDE, MapModes} from './maps.constants';
+import {LATITUDE, LONGITUDE, MapModes,geoLatLngProjection,pixelProjection} from './maps.constants';
 import {mapReducers, basemaps} from './maps.constants';
 import {spotReducers} from '../spots/spot.constants';
 import {projectReducers} from '../project/project.constants';
@@ -99,10 +99,17 @@ const map = React.forwardRef((props, ref) => {
   }, [mapPropsMutable.drawFeatures]);
 
   const moveVertex = async () => {
-    try {
+    try { // on imagebasemap, if spot is not point, conversion happens in editSpotCoordinates.
       const newVertexCoords = await map.current.getCoordinateFromView(props.vertexEndCoords);
-      console.log('Move vertex to:', newVertexCoords);
-      editSpotCoordinates(newVertexCoords);
+      if (currentImageBasemap && editingModeData.spotEditing && turf.getType(editingModeData.spotEditing) == 'Point') {
+        const vertexCoordinates = useMaps.convertCoordinateProjections(geoLatLngProjection, pixelProjection, [newVertexCoords[0], newVertexCoords[1]]);
+        console.log('Move vertex to:', vertexCoordinates);
+        editSpotCoordinates([vertexCoordinates[0], vertexCoordinates[1]]);
+      }
+      else {
+        console.log('Move vertex to:', newVertexCoords);
+        editSpotCoordinates(newVertexCoords);
+      }
     }
     catch {
       console.log('Problem moving the vertex');
@@ -129,8 +136,8 @@ const map = React.forwardRef((props, ref) => {
       const mappableSpots = useMaps.getDisplayedSpots(selectedSpots);
       let selectedMappableSpotsCopy = JSON.parse(JSON.stringify(mappableSpots[0]));
       let notSelectedMappableSpotsCopy = JSON.parse(JSON.stringify(mappableSpots[1]));
-      selectedMappableSpotsCopy = useMaps.convertImagePixelsToLatLong(selectedMappableSpotsCopy);
-      notSelectedMappableSpotsCopy = useMaps.convertImagePixelsToLatLong(notSelectedMappableSpotsCopy);
+      selectedMappableSpotsCopy = selectedMappableSpotsCopy.map( spot => useMaps.convertImagePixelsToLatLong(spot));
+      notSelectedMappableSpotsCopy = notSelectedMappableSpotsCopy.map( spot => useMaps.convertImagePixelsToLatLong(spot));
       setMapPropsMutable(m => ({
         ...m,
         spotsSelected: [...selectedMappableSpotsCopy],
@@ -144,11 +151,26 @@ const map = React.forwardRef((props, ref) => {
     spotsNotEditedTmp = spotsNotEditedTmp.filter(spot => spot.properties.id !== spotEditingTmp.properties.id);
     console.log('Set displayed Spots while editing. Editing:', spotEditingTmp, 'Edited:', spotsEditedTmp, 'Not edited:',
       spotsNotEditedTmp);
-    setMapPropsMutable(m => ({
-      ...m,
-      spotsSelected: isEmpty(spotEditingTmp) ? [] : [{...spotEditingTmp}],
-      spotsNotSelected: [...spotsEditedTmp, ...spotsNotEditedTmp],
-    }));
+    if (!currentImageBasemap) {
+      setMapPropsMutable(m => ({
+        ...m,
+        spotsSelected: isEmpty(spotEditingTmp) ? [] : [{...spotEditingTmp}],
+        spotsNotSelected: [...spotsEditedTmp, ...spotsNotEditedTmp],
+      }));
+    }
+    else { // if imagebasemap, then all the coordinates have to be converted.
+      let spotsEditedCopy = JSON.parse(JSON.stringify(isEmpty(spotsEditedTmp) ? [] : spotsEditedTmp));
+      let spotsNotEditedCopy = JSON.parse(JSON.stringify(isEmpty(spotsNotEditedTmp) ? [] : spotsNotEditedTmp));
+      let spotEditingCopy = JSON.parse(JSON.stringify(isEmpty(spotEditingTmp) ? [] : [{...spotEditingTmp}]));
+      spotsEditedCopy = spotsEditedCopy.map( spot => useMaps.convertImagePixelsToLatLong(spot));
+      spotsNotEditedCopy = spotsNotEditedCopy.map( spot => useMaps.convertImagePixelsToLatLong(spot));
+      spotEditingCopy = spotEditingCopy.map( spot => useMaps.convertImagePixelsToLatLong(spot));
+      setMapPropsMutable(m => ({
+        ...m,
+        spotsSelected: isEmpty(spotEditingCopy) ? [] : spotEditingCopy,
+        spotsNotSelected: [...spotsEditedCopy, ...spotsNotEditedCopy],
+      }));
+    }
   };
 
   const setDrawFeatures = (features) => {
@@ -169,10 +191,15 @@ const map = React.forwardRef((props, ref) => {
         ...feature,
         properties: {
           ...feature.properties,
-          tempEditId: getNewId(),
+          tempEditId: getNewUUID(),
         },
       };
     });
+    if (currentImageBasemap) { // if imagebasemap, features, need to be converted to getLatLng inOrder to project them.
+      if (turf.getType(spotToEdit) === 'Polygon' || turf.getType(spotToEdit) === 'LineString') {
+        explodedFeatures = explodedFeatures.map( spot => useMaps.convertImagePixelsToLatLong(spot));
+      }
+    }
     setDrawFeatures(explodedFeatures);
   };
 
@@ -323,8 +350,22 @@ const map = React.forwardRef((props, ref) => {
       editFeatureVertex: [vertex],
       allowMapViewMove: false,
     }));
-    const vertexCoordinates = await map.current.getPointInView(vertex.geometry.coordinates);
-    props.setVertexStartCoords(vertexCoordinates);
+    if (currentImageBasemap && ((isEmpty(editingModeData.spotEditing) || (!isEmpty(editingModeData.spotEditing) && editingModeData.spotEditing.properties.name !== vertex.properties.name)))){
+      // spotEditing will be empty for Point and not empty for polygon or linestring, because, only Point can select the vertex on first long press.
+      // For polygon or line, long press would identify the spot.
+      // For polygon or LineString, the vertex comes from the draw feature, so, the coordinates are already in lat lng projection, so no more conversion necessary.
+
+      // !isEmpty(editingModeData.spotEditing) && editingModeData.spotEditing.properties.name != vertex.properties.name)), this check is required
+      // when a polygon/linestring is selected by a long press first then a different point than the points on polygon/line is selected to edit.
+      const coords = vertex.geometry.coordinates;
+      const [lat,lng] = useMaps.convertCoordinateProjections(pixelProjection, geoLatLngProjection, [coords[0], coords[1]]);
+      const vertexCoordinates = await map.current.getPointInView([lat,lng]);
+      props.setVertexStartCoords(vertexCoordinates);
+    }
+    else {
+      const vertexCoordinates = await map.current.getPointInView(vertex.geometry.coordinates);
+      props.setVertexStartCoords(vertexCoordinates);
+    }
   };
 
   const clearSelectedVertexToEdit = () => {
@@ -368,25 +409,43 @@ const map = React.forwardRef((props, ref) => {
           spotEditingCopy.geometry.coordinates = newCoord;
           isModified = true;
         }
-        else if (turf.getType(spotEditingCopy) === 'LineString') {
-          for (let i = 0; i < coords.length; i++) {
-            if (coords[i][0] === coordToEdit[0] && coords[i][1] === coordToEdit[1]) {
-              spotEditingCopy.geometry.coordinates[i] = newCoord;
-              isModified = true;
+        // identify the coordinates to edit, uses the tempEditId on drawFeatures and vertex to edit.
+        // the index on drawFeatures array that matches with vertex to edit is the index of the coordinates to be edited
+        // on the actual polygon or linestring.
+        else {
+          var indexOfCoordinatesToUpdate = [];
+          for (let index = 0; index < mapPropsMutable.drawFeatures.length; index++){
+            if (mapPropsMutable.drawFeatures[index].properties.tempEditId === editingModeData.vertexToEdit.properties.tempEditId){
+              indexOfCoordinatesToUpdate.push(index);
             }
           }
-        }
-        else if (turf.getType(spotEditingCopy) === 'Polygon') {
-          for (let i = 0; i < coords.length; i++) {
-            for (let j = 0; j < coords[i].length; j++) {
-              if (coords[i][j][0] === coordToEdit[0] && coords[i][j][1] === coordToEdit[1]) {
-                spotEditingCopy.geometry.coordinates[i][j] = newCoord;
-                isModified = true;
+          if (currentImageBasemap){
+            newCoord = useMaps.convertCoordinateProjections(geoLatLngProjection, pixelProjection, newCoord);
+          }
+          if (turf.getType(spotEditingCopy) === 'LineString') {
+            for (let j = 0; j < coords.length; j++) {
+              if (indexOfCoordinatesToUpdate.includes(j)) {
+                spotEditingCopy.geometry.coordinates[j] = newCoord;
+              }
+            }
+            isModified = true;
+          }
+          else if (turf.getType(spotEditingCopy) === 'Polygon') {
+            if (indexOfCoordinatesToUpdate.includes(0)) {
+              indexOfCoordinatesToUpdate.push(mapPropsMutable.drawFeatures.length);
+              // if its first index, that needs to be edited, for a polygon, the last and first coordinates
+              //point to the same one, so both should be updated.
+            }
+            for (let i = 0; i < coords.length; i++) {
+              for (let j = 0; j < coords[i].length; j++) {
+                if (indexOfCoordinatesToUpdate.includes(j)) {
+                  spotEditingCopy.geometry.coordinates[i][j] = newCoord;
+                  isModified = true;
+                }
               }
             }
           }
         }
-
         if (isModified) {
           spotEditingCopy.properties.modified_timestamp = Date.now();
           console.log('Finished editing Spot. Edited Spot:', spotEditingCopy, 'mapProps.spotsSelected',
@@ -402,11 +461,15 @@ const map = React.forwardRef((props, ref) => {
             ...feature,
             properties: {
               ...feature.properties,
-              tempEditId: getNewId(),
+              tempEditId: getNewUUID(),
             },
           };
         });
-        console.log('explodedFeatures', explodedFeatures);
+        if (currentImageBasemap) { // if imagebasemap, features, need to be converted to getLatLng inOrder to project them.
+          if (turf.getType(spotEditingCopy) === 'Polygon' || turf.getType(spotEditingCopy) === 'LineString') {
+            explodedFeatures = explodedFeatures.map( spot => useMaps.convertImagePixelsToLatLong(spot));
+          }
+        }
         setDrawFeatures(explodedFeatures);
         const spotsEditedTmp = editingModeData.spotsEdited.filter(
           spotEdited => spotEdited.properties.id !== spotEditingCopy.properties.id);
@@ -446,7 +509,7 @@ const map = React.forwardRef((props, ref) => {
   };
 
   const getCurrentZoom = async () => {
-    console.log('Map.current', map)
+    console.log('Map.current', map);
     return await map.current.getZoom();
     // return 16;
   };
@@ -514,6 +577,10 @@ const map = React.forwardRef((props, ref) => {
       // Grab the second feature to create the Spot
       if (mapPropsMutable.drawFeatures.length > 1) {
         newFeature = mapPropsMutable.drawFeatures.splice(1, 1)[0];
+      }
+      if (currentImageBasemap){ //create new spot for imagebasemap - needs lat long to pixel conversion.
+        newFeature = useMaps.convertFeatureGeometryToImagePixels(newFeature);
+        newFeature.properties.image_basemap = currentImageBasemap.id;
       }
       newOrEditedSpot = await useSpots.createSpot(newFeature);
       useMaps.setSelectedSpot(newOrEditedSpot);
@@ -647,11 +714,10 @@ const map = React.forwardRef((props, ref) => {
               ...feature,
               properties: {
                 ...feature.properties,
-                tempEditId: getNewId(),
+                tempEditId: getNewUUID(),
               },
             };
           });
-          console.log('explodedFeatures', explodedFeatures);
           setDrawFeatures(explodedFeatures);
           const spotsEditedTmp = editingModeData.spotsEdited.filter(
             spotEdited => spotEdited.properties.id !== spotEditingCopy.properties.id);
@@ -717,14 +783,59 @@ const map = React.forwardRef((props, ref) => {
     const featureCollectionInRect = await map.current.queryRenderedFeaturesInRect(bbox, null, layers);
     const featuresInRect = featureCollectionInRect.features;
     let featureFound = {};
-    if (featuresInRect.length > 0) {
-      if (featuresInRect.length > 1) console.log('Multiple features where pressed:', featuresInRect);
-      featureFound = featuresInRect[0]; // Just use first feature, if more than one
+    if (featuresInRect.length > 1) {
+      const distances = await getDistancesFromSpot(screenPointX,screenPointY,featuresInRect);
+      const [distance,indexWithMinimumIndex] = getClosestSpotDistanceAndIndex(distances);
+      featureFound = featuresInRect[indexWithMinimumIndex];
+    }
+    else if (featuresInRect.length == 1) {
+      featureFound = featuresInRect[0];
     }
     else console.log('No feature found where pressed.');
     return Promise.resolve(featureFound);
   };
 
+  const getDistancesFromSpot = async (screenPointX, screenPointY, featuresInRect) => {
+    const dummyFeature = {
+      'type': 'Feature',
+      'properties': {},
+      'geometry': {
+        'type': 'Point',
+        'coordinates': [screenPointX, screenPointY],
+      },
+    };
+    var distances = [];
+    var screenCoords = [];
+    for (var i = 0; i < featuresInRect.length; i++){
+      if (featuresInRect[i].geometry.type === 'Polygon' || featuresInRect[i].geometry.type === 'LineString'){
+        // trying to get a distance that is closest from the vertices of a polygon or line
+        // to the dummy feature with screenX and screenY
+        var explodedFeatures = turf.explode(featuresInRect[i]);
+        var explodedFeaturesDistancesFromSpot = await getDistancesFromSpot(screenPointX,screenPointY,explodedFeatures.features);
+        const [distance,indexWithMinimumIndex] = getClosestSpotDistanceAndIndex(explodedFeaturesDistancesFromSpot);
+        distances[i] = distance;
+      }
+      else {
+        var eachFeature = JSON.parse(JSON.stringify(featuresInRect[i]));
+        screenCoords = await map.current.getPointInView(eachFeature.geometry.coordinates);
+        eachFeature.geometry.coordinates = screenCoords;
+        distances[i] = turf.distance(dummyFeature,eachFeature);
+      }
+    }
+    return distances;
+  };
+
+  const getClosestSpotDistanceAndIndex = (distancesFromSpot) => {
+    var minDistance = Number.MAX_VALUE;
+    var minIndex = -1;
+    for (var j = 0; j < distancesFromSpot.length; j++) {
+      if (minDistance > distancesFromSpot[j]) { // trying to get the minimum distance
+        minDistance = distancesFromSpot[j];
+        minIndex = j;
+      } // else we can ignore that feature.
+    }
+    return [minDistance,minIndex];
+  };
   // Add a new vertex to a polygon by creating a new feature for each possible place to insert the
   // new vertex into the feature polygon coordiantes then taking the union of those features
   const addVertexToPolygon = (polygon, newVertexGeom) => {

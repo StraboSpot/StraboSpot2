@@ -23,11 +23,11 @@ import { withNavigation } from 'react-navigation';
 
 const ImageBaseMaps = (props) => {
   const [useSpots] = useSpotsHook();
-  const activeSpotsObj = useSpots.getActiveSpotsObj(); 
+  const activeSpotsObj = useSpots.getActiveSpotsObj();
   const [imageBaseMapSet,setImageBaseMapsSet] = useState(useSpots.getAllImageBaseMaps());
   const [useImages] = useImagesHook();
   const [refresh, setRefresh] = useState(false);
-  
+
   useEffect(() => {
     return function cleanUp() {
       props.setSortedListView(SortedViews.CHRONOLOGICAL);
@@ -50,8 +50,8 @@ const ImageBaseMaps = (props) => {
           </Text>
         </View>
         <FlatList
-          
-          data={imageBaseMapList.filter(obj => { return obj.id == item.id})}
+
+          data={imageBaseMapList.filter(obj => { return obj.id === item.id;})}
           numColumns={3}
           renderItem={({item}) => renderImageBaseMap(item)}
         />
@@ -67,13 +67,13 @@ const ImageBaseMaps = (props) => {
           style={imageStyles.thumbnail}
           onPress={() => openImageBaseMap(image)}
         />
-       </View>   
+       </View>
     );
   };
 
   const openImageBaseMap = (imageBasemap) => {
     // Calling map reducer to update the state
-    console.log("trying to update imagebasemap",imageBasemap);
+    console.log('trying to update imagebasemap',imageBasemap);
     props.updateImageBasemap(imageBasemap);
   };
 
@@ -104,13 +104,14 @@ const ImageBaseMaps = (props) => {
 };
 
 const mapStateToProps = (state) => {
-  if(!isEmpty(state.spot.spots))
-  return {
-    selectedSpot: state.spot.selectedSpot,
-    sortedListView: state.settingsPanel.sortedView,
-    spots: state.spot.spots,
+  if (!isEmpty(state.spot.spots)) {
+    return {
+        selectedSpot: state.spot.selectedSpot,
+        sortedListView: state.settingsPanel.sortedView,
+        spots: state.spot.spots,
+      };
+    }
   };
-};
 
 const mapDispatchToProps = {
   setSortedListView: (view) => ({type: settingPanelReducers.SET_SORTED_VIEW, view: view}),
