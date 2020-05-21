@@ -29,6 +29,7 @@ const notebookHeaderStyles = StyleSheet.create({
   threeDotMenu: {
     width: 25,
     height: 25,
+    color: themes.PRIMARY_ACCENT_COLOR,
   },
 });
 

@@ -3,16 +3,14 @@ import Dialog, {DialogButton, DialogContent, DialogTitle} from 'react-native-pop
 import {ScaleAnimation} from 'react-native-popup-dialog/src';
 
 // Styles
-import * as themes from '../../shared/styles.constants';
 import styles from './dialog.styles';
 
 const scaleAnimation = new ScaleAnimation({
   useNativeDriver: true,
 });
 
-const MapSymbolsDialog = props => (
+const MapSymbolsDialog = (props) => (
   <Dialog
-    width={0.3}
     dialogAnimation={scaleAnimation}
     dialogStyle={styles.dialogBox}
     visible={props.visible}
@@ -20,19 +18,12 @@ const MapSymbolsDialog = props => (
       <DialogTitle
         title='Map Symbols'
         style={styles.dialogTitle}
-        textStyle={
-          {
-            color: 'white',
-            fontSize: themes.PRIMARY_TEXT_SIZE,
-            fontWeight: 'bold',
-          }
-        }
+        textStyle={styles.dialogTitleText}
       />}
     onTouchOutside={props.onTouchOutside}
   >
     <DialogContent>
       <DialogButton
-        style={styles.dialogContent}
         text='Foliations'
         textStyle={styles.dialogText}
         onPress={() => props.onPress('foliations')}

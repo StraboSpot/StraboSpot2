@@ -86,14 +86,27 @@ const notebookStyles = StyleSheet.create({
   },
   dialogBox: {
     position: 'absolute',
-    top: 25,
-    right: 25,
+    width: 200,
+    top: 10,
+    right: 10,
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
     borderRadius: 20,
     zIndex: 10,
   },
+  dialogTitle: {
+    backgroundColor: themes.PRIMARY_ACCENT_COLOR,
+  },
+  dialogTitleText: {
+    color: themes.SECONDARY_BACKGROUND_COLOR,
+    fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,
+    fontWeight: 'bold',
+  },
   dialogContent: {
-    borderBottomWidth: 1,
+    borderTopWidth: 1,
+    borderColor: 'lightgrey',
+  },
+  dialogText: {
+    color: themes.PRIMARY_ACCENT_COLOR,
   },
 });
 

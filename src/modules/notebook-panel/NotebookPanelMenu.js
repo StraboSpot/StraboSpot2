@@ -1,56 +1,61 @@
 import React from 'react';
-import Dialog, {DialogButton, DialogContent} from 'react-native-popup-dialog';
-import {connect} from 'react-redux';
-import {menuButtons} from '../../shared/app.constants';
+import Dialog, {DialogButton, DialogContent, DialogTitle} from 'react-native-popup-dialog';
+import {useSelector} from 'react-redux';
 
 // Styles
 import styles from './notebookPanel.styles';
 
-const NotebookPanelMenu = props => (
-  <Dialog
-    width={0.15}
-    dialogStyle={styles.dialogBox}
-    visible={props.visible}
-    onTouchOutside={props.onTouchOutside}
-  >
-    <DialogContent>
-      <DialogButton
-        style={styles.dialogContent}
-        text='Copy this Spot'
-        textStyle={{fontSize: 12}}
-        onPress={() => props.onPress(menuButtons.notebookMenu.COPY_FEATURE)}
-      />
-      <DialogButton
-        style={styles.dialogContent}
-        text='Delete this Spot'
-        textStyle={{fontSize: 12}}
-        onPress={() => props.onPress(menuButtons.notebookMenu.DELETE_SPOT)}
-      />
-      {props.isAllSpotsPanelVisible ? <DialogButton
-        style={styles.dialogContent}
-        text='Close All Spots Panel'
-        textStyle={{fontSize: 12}}
-        onPress={() => props.onPress(menuButtons.notebookMenu.TOGGLE_ALL_SPOTS_PANEL, 'close')}
-      /> : <DialogButton
-        style={styles.dialogContent}
-        text='Open All Spots Panel'
-        textStyle={{fontSize: 12}}
-        onPress={() => props.onPress(menuButtons.notebookMenu.TOGGLE_ALL_SPOTS_PANEL, 'open')}
-      />}
-      <DialogButton
-        style={styles.dialogContent}
-        text='Close Notebook'
-        textStyle={{fontSize: 12}}
-        onPress={() => props.onPress(menuButtons.notebookMenu.CLOSE_NOTEBOOK)}
-      />
-    </DialogContent>
-  </Dialog>
-);
+// Constants
+import {menuButtons} from '../../shared/app.constants';
 
-const mapStateToProps = (state) => {
-  return {
-    isAllSpotsPanelVisible: state.home.isAllSpotsPanelVisible,
-  };
+const NotebookPanelMenu = (props) => {
+  const isAllSpotsPanelVisible = useSelector(state => state.home.isAllSpotsPanelVisible);
+
+  return (
+    <Dialog
+      dialogStyle={styles.dialogBox}
+      visible={props.visible}
+      onTouchOutside={props.onTouchOutside}
+      dialogTitle={
+        <DialogTitle
+          title='Spot Actions'
+          style={styles.dialogTitle}
+          textStyle={styles.dialogTitleText}
+        />}
+    >
+      <DialogContent>
+        <DialogButton
+          text='Copy this Spot'
+          textStyle={styles.dialogText}
+          onPress={() => props.onPress(menuButtons.notebookMenu.COPY_FEATURE)}
+        />
+        <DialogButton
+          style={styles.dialogContent}
+          text='Delete this Spot'
+          textStyle={styles.dialogText}
+          onPress={() => props.onPress(menuButtons.notebookMenu.DELETE_SPOT)}
+        />
+        {isAllSpotsPanelVisible ?
+          <DialogButton
+            style={styles.dialogContent}
+            text='Close All Spots Panel'
+            textStyle={styles.dialogText}
+            onPress={() => props.onPress(menuButtons.notebookMenu.TOGGLE_ALL_SPOTS_PANEL, 'close')}/> :
+          <DialogButton
+            style={styles.dialogContent}
+            text='Open All Spots Panel'
+            textStyle={styles.dialogText}
+            onPress={() => props.onPress(menuButtons.notebookMenu.TOGGLE_ALL_SPOTS_PANEL, 'open')}
+          />}
+        <DialogButton
+          style={styles.dialogContent}
+          text='Close Notebook'
+          textStyle={styles.dialogText}
+          onPress={() => props.onPress(menuButtons.notebookMenu.CLOSE_NOTEBOOK)}
+        />
+      </DialogContent>
+    </Dialog>
+  );
 };
 
-export default connect(mapStateToProps)(NotebookPanelMenu);
+export default NotebookPanelMenu;

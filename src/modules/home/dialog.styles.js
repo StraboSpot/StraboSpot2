@@ -20,14 +20,19 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   dialogTitle: {
-    backgroundColor: themes.BLUE,
+    backgroundColor: themes.PRIMARY_ACCENT_COLOR,
+  },
+  dialogTitleText: {
+    color: themes.SECONDARY_BACKGROUND_COLOR,
+    fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,
+    fontWeight: 'bold',
   },
   dialogContent: {
-    borderBottomWidth: 1,
-    borderColor: 'lightgrey'
+    borderTopWidth: 1,
+    borderColor: 'lightgrey',
   },
   dialogText: {
-    color: themes.BLUE,
+    color: themes.PRIMARY_ACCENT_COLOR,
   },
 });
 
