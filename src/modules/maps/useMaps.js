@@ -9,7 +9,7 @@ import useSpotsHook from '../spots/useSpots';
 // Constants
 import {spotReducers} from '../spots/spot.constants';
 import {MAPBOX_KEY} from '../../MapboxConfig';
-import {basemaps1, mapReducers,geoLatLngProjection,pixelProjection} from './maps.constants';
+import {basemaps1, mapReducers, geoLatLngProjection, pixelProjection} from './maps.constants';
 import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 import {projectReducers} from '../project/project.constants';
 import {Alert} from 'react-native';
@@ -19,6 +19,7 @@ const useMaps = (props) => {
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const customMaps = useSelector(state => state.map.customMaps);
   const project = useSelector(state => state.project.project);
+  const selectedSpot = useSelector(state => state.spot.selectedSpot);
 
   const [useSpots] = useSpotsHook();
 
@@ -28,7 +29,7 @@ const useMaps = (props) => {
     else url = url + basemap.id + basemap.tilePath + (basemap.key ? '?access_token=' + basemap.key : '');
     console.log('URL', url);
     return [url];
-  }
+  };
 
   const checkMap = async (chosenForm, map) => {
     let url, saveUrl;
@@ -97,8 +98,8 @@ const useMaps = (props) => {
           newMap.url = saveUrl;
           newReduxMaps.push(newMap);
 
-          console.log(Object.assign({}, ...newReduxMaps.map(map => ({ [map.mapId]: map}))));
-          const newMapObject = Object.assign({}, ...newReduxMaps.map(map => ({ [map.mapId]: map})));
+          console.log(Object.assign({}, ...newReduxMaps.map(map => ({[map.mapId]: map}))));
+          const newMapObject = Object.assign({}, ...newReduxMaps.map(map => ({[map.mapId]: map})));
           dispatch({type: mapReducers.CUSTOM_MAPS, customMaps: newMapObject});
           Alert.alert(
             'Success!',
@@ -238,6 +239,15 @@ const useMaps = (props) => {
     return [selectedDisplayedSpots, notSelectedDisplayedSpots];
   };
 
+  const isGeoMap = (map) => {
+    return !map.props.id === 'image_basemap';
+  };
+
+  // If feature is mapped on geographical map, not an image basemap or strat section
+  const isOnGeoMap = (feature) => {
+    return !feature.properties.image_basemap && !feature.properties.strat_section;
+  };
+
   const setSelectedSpot = (spotToSetAsSelected) => {
     console.log('Set selected Spot:', spotToSetAsSelected);
     let [selectedSpots, notSelectedSpots] = getDisplayedSpots(
@@ -252,9 +262,10 @@ const useMaps = (props) => {
   const getCoordQuad = (imageBasemapProps) => {
     // identify the [lat,lng] corners of the image basemap
     var bottomLeft = [0, 0];
-    var bottomRight = convertCoordinateProjections(pixelProjection,geoLatLngProjection, [imageBasemapProps.width, 0]);
-    var topRight = convertCoordinateProjections(pixelProjection,geoLatLngProjection, [imageBasemapProps.width, imageBasemapProps.height]);
-    var topLeft = convertCoordinateProjections(pixelProjection,geoLatLngProjection, [0, imageBasemapProps.height]);
+    var bottomRight = convertCoordinateProjections(pixelProjection, geoLatLngProjection, [imageBasemapProps.width, 0]);
+    var topRight = convertCoordinateProjections(pixelProjection, geoLatLngProjection,
+      [imageBasemapProps.width, imageBasemapProps.height]);
+    var topLeft = convertCoordinateProjections(pixelProjection, geoLatLngProjection, [0, imageBasemapProps.height]);
     var coordQuad = [topLeft, topRight, bottomRight, bottomLeft];
     console.log('The coordinates identified for image-basemap :', coordQuad);
     return coordQuad;
@@ -262,52 +273,55 @@ const useMaps = (props) => {
 
   // Convert image x,y pixels to WGS84, assuming x,y are web mercator
   const convertImagePixelsToLatLong = (feature) => {
-      if (feature.geometry.type === 'Point') {
-        const coords = feature.geometry.coordinates;
-        feature.geometry.coordinates = convertCoordinateProjections(pixelProjection,geoLatLngProjection, [coords[0], coords[1]]);
-      }
-      else if (feature.geometry.type === 'Polygon') {
-          let calculatedCoordinates = [];
-          for (const subArray of feature.geometry.coordinates){
-            for (const innerSubArray of subArray){
-              let [x,y] = convertCoordinateProjections(pixelProjection,geoLatLngProjection, [innerSubArray[0], innerSubArray[1]]);
-              calculatedCoordinates.push([x,y]);
-            }
-          }
-          feature.geometry.coordinates = [calculatedCoordinates];
-       }
-       else {
-          let calculatedCoordinates = [];
-          for (const subArray of feature.geometry.coordinates){
-            let [x,y] = convertCoordinateProjections(pixelProjection,geoLatLngProjection, [subArray[0], subArray[1]]);
-            calculatedCoordinates.push([x,y]);
-          }
-          feature.geometry.coordinates = calculatedCoordinates;
+    if (feature.geometry.type === 'Point') {
+      const coords = feature.geometry.coordinates;
+      feature.geometry.coordinates = convertCoordinateProjections(pixelProjection, geoLatLngProjection,
+        [coords[0], coords[1]]);
+    }
+    else if (feature.geometry.type === 'Polygon') {
+      let calculatedCoordinates = [];
+      for (const subArray of feature.geometry.coordinates) {
+        for (const innerSubArray of subArray) {
+          let [x, y] = convertCoordinateProjections(pixelProjection, geoLatLngProjection,
+            [innerSubArray[0], innerSubArray[1]]);
+          calculatedCoordinates.push([x, y]);
         }
-        return feature;
+      }
+      feature.geometry.coordinates = [calculatedCoordinates];
+    }
+    else {
+      let calculatedCoordinates = [];
+      for (const subArray of feature.geometry.coordinates) {
+        let [x, y] = convertCoordinateProjections(pixelProjection, geoLatLngProjection, [subArray[0], subArray[1]]);
+        calculatedCoordinates.push([x, y]);
+      }
+      feature.geometry.coordinates = calculatedCoordinates;
+    }
+    return feature;
   };
 
   // Convert WGS84 to image x,y pixels, assuming x,y are web mercator
   const convertFeatureGeometryToImagePixels = (feature) => {
-    var imageX,imageY;
+    var imageX, imageY;
     let calculatedCoordinates = [];
     if (feature.geometry.type === 'Point') {
-      [imageX,imageY] = convertCoordinateProjections(geoLatLngProjection, pixelProjection, feature.geometry.coordinates);
-      feature.geometry.coordinates = [imageX,imageY];
+      [imageX, imageY] = convertCoordinateProjections(geoLatLngProjection, pixelProjection,
+        feature.geometry.coordinates);
+      feature.geometry.coordinates = [imageX, imageY];
     }
     else if (feature.geometry.type === 'Polygon') {
-      for (const subArray of feature.geometry.coordinates){
-        for (const innerSubArray of subArray){
-          [imageX,imageY] = convertCoordinateProjections(geoLatLngProjection, pixelProjection, innerSubArray);
-          calculatedCoordinates.push([imageX,imageY]);
+      for (const subArray of feature.geometry.coordinates) {
+        for (const innerSubArray of subArray) {
+          [imageX, imageY] = convertCoordinateProjections(geoLatLngProjection, pixelProjection, innerSubArray);
+          calculatedCoordinates.push([imageX, imageY]);
         }
       }
       feature.geometry.coordinates = [calculatedCoordinates];
     }
     else { // LineString
-      for (const subArray of feature.geometry.coordinates){
-        [imageX,imageY] = convertCoordinateProjections(geoLatLngProjection, pixelProjection,  subArray);
-        calculatedCoordinates.push([imageX,imageY]);
+      for (const subArray of feature.geometry.coordinates) {
+        [imageX, imageY] = convertCoordinateProjections(geoLatLngProjection, pixelProjection, subArray);
+        calculatedCoordinates.push([imageX, imageY]);
       }
       feature.geometry.coordinates = calculatedCoordinates;
     }
@@ -315,13 +329,13 @@ const useMaps = (props) => {
   };
 
   const convertCoordinateProjections = (sourceProjection, targetProjection, coords) => {
-    const [targetX,targetY] = proj4(sourceProjection, targetProjection, coords);
-    return [targetX,targetY];
+    const [targetX, targetY] = proj4(sourceProjection, targetProjection, coords);
+    return [targetX, targetY];
   };
 
   const setCurrentBasemap = (mapId) => {
     if (!mapId) mapId = 'mapbox.outdoors';
-    const currentBasemap =  basemaps1.find(basemap => basemap.id === mapId);
+    const currentBasemap = basemaps1.find(basemap => basemap.id === mapId);
     dispatch({type: mapReducers.CURRENT_BASEMAP, basemap: currentBasemap});
   };
 
@@ -375,14 +389,38 @@ const useMaps = (props) => {
     // closeSettingsDrawer();
   };
 
+  const zoomToSpots = async (spots, map, camera) => {
+    if (camera) {
+      try {
+        if (spots.length === 1) {
+          const centroid = turf.centroid(spots[0]);
+          const zoom = await map.getZoom();
+          camera.flyTo(turf.getCoord(centroid));
+          camera.zoomTo(zoom);
+        }
+        else if (spots.length > 1) {
+          const features = turf.featureCollection(spots);
+          const [minX, minY, maxX, maxY] = turf.bbox(features);  //bbox extent in minX, minY, maxX, maxY order
+          camera.fitBounds([maxX, minY], [minX, maxY], 100, 2500);
+        }
+      }
+      catch (err) {
+        throw Error('Error Zooming To Extent of Spots', err);
+      }
+    }
+    else throw Error('Error Getting Map Camera');
+  };
+
   return [{
     buildUrl: buildUrl,
     checkMap: checkMap,
     deleteMap: deleteMap,
-    convertCoordinateProjections : convertCoordinateProjections,
+    convertCoordinateProjections: convertCoordinateProjections,
     editCustomMap: editCustomMap,
     getCurrentLocation: getCurrentLocation,
     getDisplayedSpots: getDisplayedSpots,
+    isGeoMap: isGeoMap,
+    isOnGeoMap: isOnGeoMap,
     setPointAtCurrentLocation: setPointAtCurrentLocation,
     setSelectedSpot: setSelectedSpot,
     getCoordQuad: getCoordQuad,
@@ -391,6 +429,7 @@ const useMaps = (props) => {
     setCustomMapSwitchValue: setCustomMapSwitchValue,
     viewCustomMap: viewCustomMap,
     convertFeatureGeometryToImagePixels: convertFeatureGeometryToImagePixels,
+    zoomToSpots: zoomToSpots,
   }];
 };
 

@@ -31,6 +31,12 @@ const NotebookPanelMenu = (props) => {
         />
         <DialogButton
           style={styles.dialogContent}
+          text='Zoom to this Spot'
+          textStyle={styles.dialogText}
+          onPress={() => props.onPress(menuButtons.notebookMenu.ZOOM_TO_SPOT)}
+        />
+        <DialogButton
+          style={styles.dialogContent}
           text='Delete this Spot'
           textStyle={styles.dialogText}
           onPress={() => props.onPress(menuButtons.notebookMenu.DELETE_SPOT)}
