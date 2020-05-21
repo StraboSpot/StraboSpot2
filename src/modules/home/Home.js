@@ -143,6 +143,7 @@ const Home = (props) => {
      baseMapMenuVisible : false
      }));
      }*/
+    if (props.currentImageBasemap) toggleHomeDrawerButton();
     return function cleanUp() {
       console.log('currentImageBasemap cleanup UE');
     };

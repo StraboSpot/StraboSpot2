@@ -50,7 +50,7 @@ function Basemap(props) {
       // followUserMode='normal'
     />
 
-    <MapboxGL.RasterSource
+    {!currentImageBasemap && <MapboxGL.RasterSource
       id={basemap.id}
       tileUrlTemplates={useMaps.buildUrl(basemap)}
       maxZoomLevel={basemap.maxZoom}
@@ -61,7 +61,7 @@ function Basemap(props) {
         sourceID={basemap.id}
         style={{rasterOpacity: 1}}
       />
-    </MapboxGL.RasterSource>
+    </MapboxGL.RasterSource>}
 
     {/* Custom Overlay Layer */}
     {Object.values(customMaps).map(customMap => {
