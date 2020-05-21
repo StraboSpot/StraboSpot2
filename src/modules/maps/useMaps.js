@@ -328,10 +328,10 @@ const useMaps = (props) => {
   const setCustomMapSwitchValue = (value, map) => {
     console.log('value', value, 'id', map.mapId);
     const customMapsCopy = {...customMaps};
-    // if (customMapsCopy.length > 1) customMapsCopy.map(map => map.isMapViewable = false);
-    customMapsCopy[ind].isMapViewable = value;
+    // if (customMapsCopy.length > 1) customMapsCopy.map(map => map.isViewable = false);
+    customMapsCopy[map.mapId].isViewable = value;
     dispatch({type: mapReducers.CUSTOM_MAPS, customMaps: customMapsCopy});
-    viewCustomMap(customMapsCopy[ind]).then(map => console.log(map));
+    if (!customMapsCopy[map.mapId].overlay) viewCustomMap(map);
   };
 
   const viewCustomMap = async (map) => {
@@ -387,6 +387,7 @@ const useMaps = (props) => {
     setSelectedSpot: setSelectedSpot,
     getCoordQuad: getCoordQuad,
     convertImagePixelsToLatLong: convertImagePixelsToLatLong,
+    setCurrentBasemap: setCurrentBasemap,
     setCustomMapSwitchValue: setCustomMapSwitchValue,
     viewCustomMap: viewCustomMap,
     convertFeatureGeometryToImagePixels: convertFeatureGeometryToImagePixels,
