@@ -383,6 +383,17 @@ const map = React.forwardRef((props, ref) => {
     props.clearVertexes();
   };
 
+  // Identify the vertex which has to be updated
+  const getVertexIndexInSpotToEdit = (vertex) =>{
+    var indexOfCoordinatesToUpdate = [];
+    for (let index = 0; index < mapPropsMutable.drawFeatures.length; index++){
+      if (mapPropsMutable.drawFeatures[index].properties.tempEditId === vertex.properties.tempEditId){
+        indexOfCoordinatesToUpdate.push(index);
+      }
+    }
+    return indexOfCoordinatesToUpdate;
+  };
+
   // Edit the coordinates of a selected feature
   const editSpotCoordinates = (newCoord) => {
     console.log('In editSpotCoordinates', newCoord);
@@ -401,9 +412,6 @@ const map = React.forwardRef((props, ref) => {
           console.warn('error use getCoords on spotEditingCopy', spotEditingCopy);
           coords = spotEditingCopy.geometry.coordinates;
         }
-
-        const coordToEdit = turf.getCoords(editingModeData.vertexToEdit);
-        console.log('Original coords:', coords, 'Coord to edit:', coordToEdit, 'New coord:', newCoord);
         let isModified = false;
         if (turf.getType(spotEditingCopy) === 'Point') {
           spotEditingCopy.geometry.coordinates = newCoord;
@@ -413,12 +421,7 @@ const map = React.forwardRef((props, ref) => {
         // the index on drawFeatures array that matches with vertex to edit is the index of the coordinates to be edited
         // on the actual polygon or linestring.
         else {
-          var indexOfCoordinatesToUpdate = [];
-          for (let index = 0; index < mapPropsMutable.drawFeatures.length; index++){
-            if (mapPropsMutable.drawFeatures[index].properties.tempEditId === editingModeData.vertexToEdit.properties.tempEditId){
-              indexOfCoordinatesToUpdate.push(index);
-            }
-          }
+          var indexOfCoordinatesToUpdate = getVertexIndexInSpotToEdit(editingModeData.vertexToEdit);
           if (currentImageBasemap){
             newCoord = useMaps.convertCoordinateProjections(geoLatLngProjection, pixelProjection, newCoord);
           }
@@ -661,80 +664,99 @@ const map = React.forwardRef((props, ref) => {
         let spotEditingCopy = JSON.parse(JSON.stringify(editingModeData.spotEditing));
         if (turf.getType(spotEditingCopy) === 'LineString' || turf.getType(spotEditingCopy) === 'Polygon') {
           const vertexSelected = await getDrawFeatureAtPress(screenPointX, screenPointY);
-          let vertexToEditThisScope = {};
-          if (isEmpty(vertexSelected)) {
-            console.log('Adding new vertex...');
-            // To add a vertex to a line the new point selected must be on the line
-            if (turf.getType(spotEditingCopy) === 'LineString' && !isEmpty(spotToEdit) &&
-              spotEditingCopy.properties.id === spotToEdit.properties.id) {
-              [spotEditingCopy, vertexToEditThisScope] = addVertexToLine(spotEditingCopy, e.geometry);
-            }
-            else if (turf.getType(spotEditingCopy) === 'Polygon') {
-              spotEditingCopy = addVertexToPolygon(spotEditingCopy, e.geometry);
-            }
-          }
-          else {
-            console.log('Deleting selected vertex...');
-            const coords = turf.getCoords(spotEditingCopy);
-            const coordToEdit = turf.getCoord(vertexSelected);
-            let isModified = false;
-            if (turf.getType(spotEditingCopy) === 'LineString' && coords.length > 3) {
-              for (let i = 0; i < coords.length; i++) {
-                if (truncDecimal(coords[i][0]) === truncDecimal(coordToEdit[0])
-                  && truncDecimal(coords[i][1]) === truncDecimal(coordToEdit[1])) {
-                  spotEditingCopy.geometry.coordinates.splice(i, 1);
-                  isModified = true;
+          if (spotEditingCopy.properties.id === spotToEdit.properties.id) {
+            let vertexToEditThisScope = {};
+            if (isEmpty(vertexSelected)) {
+              console.log('Adding new vertex...');
+              // To add a vertex to a line the new point selected must be on the line
+              if (turf.getType(spotEditingCopy) === 'LineString' && !isEmpty(spotToEdit)) {
+                if (currentImageBasemap) {
+                  spotEditingCopy = useMaps.convertImagePixelsToLatLong(spotEditingCopy);
+                  [spotEditingCopy, vertexToEditThisScope] = addVertexToLine(spotEditingCopy, e.geometry);
+                  spotEditingCopy = useMaps.convertFeatureGeometryToImagePixels(spotEditingCopy);
                 }
+                else [spotEditingCopy, vertexToEditThisScope] = addVertexToLine(spotEditingCopy, e.geometry);
+              }
+              else if (turf.getType(spotEditingCopy) === 'Polygon') {
+                if (currentImageBasemap) {
+                  spotEditingCopy = useMaps.convertImagePixelsToLatLong(spotEditingCopy);
+                  spotEditingCopy = addVertexToPolygon(spotEditingCopy, e.geometry);
+                  spotEditingCopy = useMaps.convertFeatureGeometryToImagePixels(spotEditingCopy);
+                }
+                else spotEditingCopy = addVertexToPolygon(spotEditingCopy, e.geometry);
               }
             }
-            else if (turf.getType(spotEditingCopy) === 'Polygon' && coords[0].length > 4) {
-              for (let i = 0; i < coords.length; i++) {
-                for (let j = 0; j < coords[i].length; j++) {
-                  if (truncDecimal(coords[i][j][0]) === truncDecimal(coordToEdit[0])
-                    && truncDecimal(coords[i][j][1]) === truncDecimal(coordToEdit[1])) {
-                    spotEditingCopy.geometry.coordinates[i].splice(j, 1);
+            else {
+              console.log('Deleting selected vertex...');
+              const coords = turf.getCoords(spotEditingCopy);
+              var indexOfCoordinatesToUpdate = getVertexIndexInSpotToEdit(vertexSelected);
+              let isModified = false;
+              if (turf.getType(spotEditingCopy) === 'LineString' && coords.length > 2) {
+                for (let i = 0; i < coords.length; i++) {
+                  if (indexOfCoordinatesToUpdate.includes(i)) {
+                    spotEditingCopy.geometry.coordinates.splice(i, 1);
                     isModified = true;
                   }
                 }
               }
+              else if (turf.getType(spotEditingCopy) === 'Polygon' && coords[0].length > 4) {
+                for (let i = 0; i < coords.length; i++) {
+                  for (let j = 0; j < coords[i].length; j++) {
+                    if (indexOfCoordinatesToUpdate.includes(j)) {
+                      spotEditingCopy.geometry.coordinates[i].splice(j, 1);
+                      isModified = true;
+                    }
+                  }
+                }
+                if (indexOfCoordinatesToUpdate.includes(0)) {
+                  // when the first spot is deleted, update the last spot to the current first spot.
+                  spotEditingCopy.geometry.coordinates[0][spotEditingCopy.geometry.coordinates[0].length - 1] = spotEditingCopy.geometry.coordinates[0][0];
+                }
+              }
+              else console.log('Not enough vertices in selected feature to delete one.');
+              if (isModified) {
+                spotEditingCopy.properties.modified_timestamp = Date.now();
+                console.log('Finished deleting vetex. Edited Spot:', spotEditingCopy);
+              }
+              else console.warn('Problem editing Spot');
             }
-            else console.log('Not enough vertices in selected feature to delete one.');
-            if (isModified) {
-              spotEditingCopy.properties.modified_timestamp = Date.now();
-              console.log('Finished deleting vetex. Edited Spot:', spotEditingCopy);
+            console.log('Edited coords:', turf.getCoords(spotEditingCopy));
+            let explodedFeatures = turf.explode(spotEditingCopy).features;
+            // If polygon remove last exploded point because it is the same as the first
+            if (turf.getType(spotEditingCopy) === 'Polygon') explodedFeatures.pop();
+            explodedFeatures = explodedFeatures.map(feature => {
+              return {
+                ...feature,
+                properties: {
+                  ...feature.properties,
+                  tempEditId: getNewUUID(),
+                },
+              };
+            });
+            if (currentImageBasemap) { // if imagebasemap, features, need to be converted to getLatLng inOrder to project them.
+              if (turf.getType(spotEditingCopy) === 'Polygon' || turf.getType(spotEditingCopy) === 'LineString') {
+                explodedFeatures = explodedFeatures.map( spot => useMaps.convertImagePixelsToLatLong(spot));
+              }
             }
-            else console.warn('Problem editing Spot');
+            setDrawFeatures(explodedFeatures);
+            const spotsEditedTmp = editingModeData.spotsEdited.filter(
+              spotEdited => spotEdited.properties.id !== spotEditingCopy.properties.id);
+            spotsEditedTmp.push(spotEditingCopy);
+            const spotsNotEditedTmp = editingModeData.spotsNotEdited.filter(
+              spotNotEdited => spotNotEdited.properties.id !== spotEditingCopy.properties.id);
+            setEditingModeData(d => ({
+              ...d,
+              spotEditing: spotEditingCopy,
+              spotsEdited: spotsEditedTmp,
+              spotsNotEdited: spotsNotEditedTmp,
+            }));
+            setDisplayedSpotsWhileEditing(spotEditingCopy, spotsEditedTmp, spotsNotEditedTmp);
+            clearSelectedVertexToEdit();
+            //setSelectedVertexToEdit(vertexToEditThisScope);
+            console.log('Finished editing Spot. Spot Editing: ', spotEditingCopy);
           }
-          console.log('Edited coords:', turf.getCoords(spotEditingCopy));
-          let explodedFeatures = turf.explode(spotEditingCopy).features;
-          // If polygon remove last exploded point because it is the same as the first
-          if (turf.getType(spotEditingCopy) === 'Polygon') explodedFeatures.pop();
-          explodedFeatures = explodedFeatures.map(feature => {
-            return {
-              ...feature,
-              properties: {
-                ...feature.properties,
-                tempEditId: getNewUUID(),
-              },
-            };
-          });
-          setDrawFeatures(explodedFeatures);
-          const spotsEditedTmp = editingModeData.spotsEdited.filter(
-            spotEdited => spotEdited.properties.id !== spotEditingCopy.properties.id);
-          spotsEditedTmp.push(spotEditingCopy);
-          const spotsNotEditedTmp = editingModeData.spotsNotEdited.filter(
-            spotNotEdited => spotNotEdited.properties.id !== spotEditingCopy.properties.id);
-          setEditingModeData(d => ({
-            ...d,
-            spotEditing: spotEditingCopy,
-            spotsEdited: spotsEditedTmp,
-            spotsNotEdited: spotsNotEditedTmp,
-          }));
-          setDisplayedSpotsWhileEditing(spotEditingCopy, spotsEditedTmp, spotsNotEditedTmp);
-          clearSelectedVertexToEdit();
-          //setSelectedVertexToEdit(vertexToEditThisScope);
-          console.log('Finished editing Spot. Spot Editing: ', spotEditingCopy);
-        }
+          else console.log('Invalid vertex selected. No action');
+          }
         else console.log('Selected Spot is not a line or polygon. No action taken.');
       }
       else console.log('No feature selected. No action taken.');
