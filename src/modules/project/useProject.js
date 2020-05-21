@@ -1,17 +1,20 @@
 import {Alert, Platform} from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
 import RNFetchBlob from 'rn-fetch-blob';
-
-import {homeReducers} from '../home/home.constants';
-import {getNewId, isEmpty, makeMapId} from '../../shared/Helpers';
-import {spotReducers} from '../spots/spot.constants';
-import {projectReducers} from './project.constants';
+import {useDispatch, useSelector} from 'react-redux';
 
 // Hooks
 import useServerRequests from '../../services/useServerRequests';
 import useImagesHook from '../images/useImages';
 import useSpotsHook from '../spots/useSpots';
+
+// Utilities
+import {getNewId, isEmpty, makeMapId} from '../../shared/Helpers';
+
+// Constants
+import {homeReducers} from '../home/home.constants';
 import {mapReducers} from '../maps/maps.constants';
+import {projectReducers} from './project.constants';
+import {spotReducers} from '../spots/spot.constants';
 
 const useProject = () => {
   let dirs = RNFetchBlob.fs.dirs;
@@ -68,7 +71,7 @@ const useProject = () => {
                   RNFetchBlob.fs.ls(devicePath + zipsDirectory).then(files => {
                     console.log('files', files);
                     resolve();
-                  })
+                  });
                   // resolve();
                 }
                 else resolve(zipsDirectory, 'does NOT exist.');
@@ -79,9 +82,9 @@ const useProject = () => {
         }
         else resolve('Maps directory not found.');
       })
-        .catch(err=> {
-        console.log('ERROR checking directory', err);
-      });
+        .catch(err => {
+          console.log('ERROR checking directory', err);
+        });
     });
   };
 
@@ -147,28 +150,28 @@ const useProject = () => {
 
   const destroyOldProject = async () => {
     // if (!isEmpty(project)) {
-      await dispatch({type: projectReducers.PROJECT_CLEAR});
-      await dispatch({type: spotReducers.CLEAR_SPOTS});
-      await dispatch({type: projectReducers.DATASETS.DATASETS_CLEAR});
-      await dispatch({type: mapReducers.CLEAR_MAPS});
+    await dispatch({type: projectReducers.PROJECT_CLEAR});
+    await dispatch({type: spotReducers.CLEAR_SPOTS});
+    await dispatch({type: projectReducers.DATASETS.DATASETS_CLEAR});
+    await dispatch({type: mapReducers.CLEAR_MAPS});
     // }
     return Promise.resolve();
   };
 
   const doesAppDirExist = async (subDirectory) => {
-      return  await RNFetchBlob.fs.isDir(devicePath + subDirectory);
+    return await RNFetchBlob.fs.isDir(devicePath + subDirectory);
   };
 
   const doesDeviceDirExist = async (subDirectory) => {
     if (subDirectory !== undefined) {
-      return  await RNFetchBlob.fs.isDir(devicePath + appDirectoryForDistributedBackups + '/' + subDirectory);
+      return await RNFetchBlob.fs.isDir(devicePath + appDirectoryForDistributedBackups + '/' + subDirectory);
     }
     else return await RNFetchBlob.fs.isDir(devicePath + appDirectoryForDistributedBackups);
   };
 
   const getAllDeviceProjects = async () => {
     const deviceProject = await RNFetchBlob.fs.isDir(devicePath + appDirectoryForDistributedBackups).then(res => {
-      console.log('/StraboProjects exists:', res)
+      console.log('/StraboProjects exists:', res);
       if (res) {
         return RNFetchBlob.fs.ls(devicePath + appDirectoryForDistributedBackups).then(files => {
           let id = 0;
@@ -191,7 +194,7 @@ const useProject = () => {
       return await serverRequests.getMyProjects(user.encoded_login);
     }
     catch (err) {
-     return err.ok;
+      return err.ok;
     }
   };
 
@@ -203,10 +206,10 @@ const useProject = () => {
     console.log('SELECTED PROJECT', selectedProject);
     const {projectDb, spotsDb, otherMapsDb, mapNamesDb, mapTilesDb} = selectedProject;
     const dirExists = await doesDeviceDirExist();
-    console.log(dirExists)
+    console.log(dirExists);
     if (dirExists) {
       if (!isEmpty(project)) await destroyOldProject();
-      dispatch({type: spotReducers.ADD_SPOTS_FROM_DEVICE , spots: spotsDb});
+      dispatch({type: spotReducers.ADD_SPOTS_FROM_DEVICE, spots: spotsDb});
       dispatch({type: projectReducers.PROJECTS, project: projectDb.project});
       dispatch({type: projectReducers.DATASETS.DATASETS_UPDATE, datasets: projectDb.datasets});
       if (!isEmpty(otherMapsDb) || !isEmpty(mapNamesDb)) {
@@ -218,7 +221,10 @@ const useProject = () => {
   };
 
   const loadProjectRemote = async (selectedProject) => {
-    dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: `Getting project: ${selectedProject.name}\n from server...\n ---------------`});
+    dispatch({
+      type: homeReducers.ADD_STATUS_MESSAGE,
+      statusMessage: `Getting project: ${selectedProject.name}\n from server...\n ---------------`,
+    });
     console.log(`Getting ${selectedProject.name} project from server...`);
     if (!isEmpty(project)) await destroyOldProject();
     try {
@@ -237,7 +243,7 @@ const useProject = () => {
         dispatch({type: projectReducers.PROJECTS, project: {...projectResponse, other_maps: mapIdsAsKeys}});
       }
       const datasetsResponse = await getDatasets(selectedProject);
-      if (datasetsResponse.datasets.length === 1){
+      if (datasetsResponse.datasets.length === 1) {
         await useSpots.downloadSpots(datasetsResponse.datasets[0], user.encoded_login);
       }
       return Promise.resolve(projectResponse);
@@ -288,7 +294,8 @@ const useProject = () => {
   const readDeviceFile = async (selectedProject) => {
     let data = selectedProject.fileName;
     const dataFile = '/data.json';
-    return await RNFetchBlob.fs.readFile(devicePath + appDirectoryForDistributedBackups + '/' + data + dataFile).then(response => {
+    return await RNFetchBlob.fs.readFile(devicePath + appDirectoryForDistributedBackups + '/' + data + dataFile).then(
+      response => {
         // console.log('DataFile', JSON.parse(response));
         return Promise.resolve(JSON.parse(response));
       }, () => Alert.alert('Project Not Found'));
@@ -324,8 +331,10 @@ const useProject = () => {
       }
       catch (err) {
         dispatch({type: homeReducers.CLEAR_STATUS_MESSAGES});
-        dispatch({type: homeReducers.ADD_STATUS_MESSAGE,
-          statusMessage: `There is not a project named: \n\n${selectedProject.description.project_name}\n\n on the server...`});
+        dispatch({
+          type: homeReducers.ADD_STATUS_MESSAGE,
+          statusMessage: `There is not a project named: \n\n${selectedProject.description.project_name}\n\n on the server...`,
+        });
         dispatch({type: homeReducers.SET_INFO_MESSAGES_MODAL_VISIBLE, bool: true});
         return err.ok;
       }
@@ -361,14 +370,18 @@ const useProject = () => {
         currentRequest++;
         dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
         if (currentRequest > 0 && currentRequest < activeDatasets.length) {
-          dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Uploading Dataset: ' + currentRequest + '/' + activeDatasets.length});
+          dispatch({
+            type: homeReducers.ADD_STATUS_MESSAGE,
+            statusMessage: 'Uploading Dataset: ' + currentRequest + '/' + activeDatasets.length,
+          });
         }
         if (currentRequest < activeDatasets.length) {
           return makeNextRequest();
         }
         else {
           dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
-          dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: activeDatasets.length + ' Datasets uploaded!'});
+          dispatch(
+            {type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: activeDatasets.length + ' Datasets uploaded!'});
           return Promise.resolve({message: 'Datasets Uploaded'});
         }
       }, (err) => {
@@ -420,7 +433,7 @@ const useProject = () => {
 
   const uploadSpots = async (dataset) => {
     let spots;
-    if (dataset.spotIds){
+    if (dataset.spotIds) {
       spots = await useSpots.getSpotsByIds(dataset.spotIds);
       spots.forEach(spotValue => checkValidDateTime(spotValue));
     }
@@ -428,7 +441,8 @@ const useProject = () => {
       console.log('No Spots to Upload');
       dispatch({
         type: homeReducers.ADD_STATUS_MESSAGE,
-        statusMessage: `${dataset} has 0 spots to Upload `});
+        statusMessage: `${dataset} has 0 spots to Upload `,
+      });
       dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
     }
     else {
