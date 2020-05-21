@@ -80,6 +80,7 @@ const Home = (props) => {
   const offline = require('../../assets/icons/ConnectionStatusButton_offline.png');
 
   const dispatch = useDispatch();
+  const customMaps = useSelector(state => state.map.customMaps);
   const project = useSelector(state => state.project.project);
   const settingsPageVisible = useSelector(state => state.settingsPanel.settingsPageVisible);
   const statusMessages = useSelector(state => state.home.statusMessages);
@@ -135,6 +136,7 @@ const Home = (props) => {
   }, []);
 
   useEffect(() => {
+    console.log('Custom Maps Changed');
     /*if(props.currentImageBasemap != undefined){
      setDialogs(prev => ({
      ...prev,
@@ -144,7 +146,7 @@ const Home = (props) => {
     return function cleanUp() {
       console.log('currentImageBasemap cleanup UE');
     };
-  }, [props.currentImageBasemap]);
+  }, [props.currentImageBasemap, customMaps]);
 
   useEffect(() => {
     console.log('Render 2 in Home', props.homePageVisible);
@@ -272,23 +274,6 @@ const Home = (props) => {
       case 'stereonet':
         console.log(`${name}`, ' was clicked');
         break;
-
-      // Map Basemap Layers
-      case 'mapboxSatellite':
-        newBasemapDisplay(name);
-        break;
-      case 'mapboxOutdoors':
-        newBasemapDisplay(name);
-        break;
-      case 'osm':
-        newBasemapDisplay(name);
-        break;
-      case 'macrostrat':
-        newBasemapDisplay(name);
-        break;
-      case 'custom':
-        newBasemapDisplay(name);
-        break;
     }
   };
 
@@ -403,10 +388,6 @@ const Home = (props) => {
       openNotebookPanel(page);
       props.setModalVisible(modalType);
     }
-  };
-
-  const newBasemapDisplay = name => {
-    mapViewComponent.current.changeMap(name);
   };
 
   const notebookClickHandler = name => {
@@ -936,7 +917,7 @@ const Home = (props) => {
       />
       <BaseMapDialog
         visible={dialogs.baseMapMenuVisible}
-        onPress={(name) => dialogClickHandler('baseMapMenuVisible', name)}
+        onPress={(name) => useMaps.setCurrentBasemap(name)}
         onTouchOutside={() => toggleDialog('baseMapMenuVisible')}
       />
       <NotebookPanelMenu

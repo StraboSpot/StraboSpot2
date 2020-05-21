@@ -35,10 +35,10 @@ const SaveMapsModal = (props) => {
   const offlineMaps = useSelector(state => state.map.offlineMaps);
   const dispatch = useDispatch();
 
-  const appId = currentBasemap.id;
-  const saveId = currentBasemap.layerSaveId;
-  const currentMapName = currentBasemap.layerLabel;
-  const maxZoom = currentBasemap.maxZoom;
+  const appId = currentBasemap && currentBasemap.id;
+  const saveId = currentBasemap && currentBasemap.layerSaveId;
+  const currentMapName = currentBasemap && currentBasemap.layerLabel;
+  const maxZoom = currentBasemap && currentBasemap.maxZoom;
   // let zoomLevels = [];
   let progressStatus = '';
 

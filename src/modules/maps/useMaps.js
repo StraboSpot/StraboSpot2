@@ -9,7 +9,7 @@ import useSpotsHook from '../spots/useSpots';
 // Constants
 import {spotReducers} from '../spots/spot.constants';
 import {MAPBOX_KEY} from '../../MapboxConfig';
-import {mapReducers,geoLatLngProjection,pixelProjection} from './maps.constants';
+import {basemaps1, mapReducers,geoLatLngProjection,pixelProjection} from './maps.constants';
 import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 import {projectReducers} from '../project/project.constants';
 import {Alert} from 'react-native';
@@ -21,6 +21,14 @@ const useMaps = (props) => {
   const project = useSelector(state => state.project.project);
 
   const [useSpots] = useSpotsHook();
+
+  const buildUrl = (basemap) => {
+    let url = basemap.url[0];
+    if (basemap.source === 'osm') url = url + basemap.tilePath;
+    else url = url + basemap.id + basemap.tilePath + (basemap.key ? '?access_token=' + basemap.key : '');
+    console.log('URL', url);
+    return [url];
+  }
 
   const checkMap = async (chosenForm, map) => {
     let url, saveUrl;
@@ -311,8 +319,14 @@ const useMaps = (props) => {
     return [targetX,targetY];
   };
 
-  const setCustomMapSwitchValue = (value, ind) => {
-    console.log('value', value, 'id', ind);
+  const setCurrentBasemap = (mapId) => {
+    if (!mapId) mapId = 'mapbox.outdoors';
+    const currentBasemap =  basemaps1.find(basemap => basemap.id === mapId);
+    dispatch({type: mapReducers.CURRENT_BASEMAP, basemap: currentBasemap});
+  };
+
+  const setCustomMapSwitchValue = (value, map) => {
+    console.log('value', value, 'id', map.mapId);
     const customMapsCopy = {...customMaps};
     // if (customMapsCopy.length > 1) customMapsCopy.map(map => map.isMapViewable = false);
     customMapsCopy[ind].isMapViewable = value;
@@ -362,6 +376,7 @@ const useMaps = (props) => {
   };
 
   return [{
+    buildUrl: buildUrl,
     checkMap: checkMap,
     deleteMap: deleteMap,
     convertCoordinateProjections : convertCoordinateProjections,

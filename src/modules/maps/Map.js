@@ -79,6 +79,7 @@ const map = React.forwardRef((props, ref) => {
 
   useEffect(() => {
     console.log('Updating DOM on first render');
+    if (!currentBasemap) useMaps.setCurrentBasemap();
     if (!currentImageBasemap) setCurrentLocationAsCenter();
     props.clearVertexes();
   }, []);
@@ -531,14 +532,6 @@ const map = React.forwardRef((props, ref) => {
     }
   };
 
-  const changeMap = (mapName) => {
-    if (mapName === 'mapboxSatellite' || mapName === 'mapboxOutdoors' || mapName === 'osm' || mapName === 'macrostrat') {
-      console.log('Switching basemap to:', mapName);
-      props.onCurrentBasemap(basemaps[mapName]);
-    }
-    else console.log('Cancel switching basemaps. Basemap', mapName, 'still needs to be setup.');
-  };
-
   // Create a point feature at the current location
   const setPointAtCurrentLocation = async () => {
     await useMaps.setPointAtCurrentLocation();
@@ -882,7 +875,6 @@ const map = React.forwardRef((props, ref) => {
     return {
       cancelDraw: cancelDraw,
       cancelEdits: cancelEdits,
-      changeMap: changeMap,
       endDraw: endDraw,
       getCurrentBasemap: getCurrentBasemap,
       getCurrentZoom: getCurrentZoom,
@@ -899,11 +891,11 @@ const map = React.forwardRef((props, ref) => {
   return (
     <View style={{flex: 1, zIndex: -1}}>
       {currentImageBasemap && <ImageBasemap {...mapProps}/>}
-      {!currentImageBasemap && currentBasemap.id === 'mapboxSatellite' && <MapboxSatelliteBasemap {...mapProps}/>}
-      {!currentImageBasemap && currentBasemap.id === 'mapboxOutdoors' && <MapboxOutdoorsBasemap {...mapProps}/>}
-      {!currentImageBasemap && currentBasemap.id === 'osm' && <OSMBasemap {...mapProps}/>}
-      {!currentImageBasemap && currentBasemap.id === 'macrostrat' && <MacrostratBasemap {...mapProps}/>}
-      {!currentImageBasemap && currentBasemap.id === 'custom' && <CustomBasemap {...mapProps}/>}
+      {!currentImageBasemap && currentBasemap && currentBasemap.id === 'mapbox.satellite' && <MapboxSatelliteBasemap {...mapProps}/>}
+      {!currentImageBasemap && currentBasemap && currentBasemap.id === 'mapbox.outdoors' && <MapboxOutdoorsBasemap {...mapProps}/>}
+      {!currentImageBasemap && currentBasemap && currentBasemap.id === 'osm' && <OSMBasemap {...mapProps}/>}
+      {!currentImageBasemap && currentBasemap && currentBasemap.id === 'macrostrat' && <MacrostratBasemap {...mapProps}/>}
+      {!currentImageBasemap && currentBasemap && currentBasemap.id === 'custom' && <CustomBasemap {...mapProps}/>}
     </View>
   );
 });

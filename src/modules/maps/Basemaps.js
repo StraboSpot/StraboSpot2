@@ -52,12 +52,12 @@ function Basemap(props) {
 
     <MapboxGL.RasterSource
       id={basemap.id}
-      tileUrlTemplates={[basemap.url]}
+      tileUrlTemplates={useMaps.buildUrl(basemap)}
       maxZoomLevel={basemap.maxZoom}
       tileSize={256}
     >
       <MapboxGL.RasterLayer
-        id={basemap.layerId}
+        id={basemap.id}
         sourceID={basemap.id}
         style={{rasterOpacity: 1}}
       />
