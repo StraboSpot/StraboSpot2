@@ -22,8 +22,9 @@ const styles = StyleSheet.create({
     backgroundColor: themes.BLUE,
   },
   dialogContent: {
-    borderBottomWidth: 1,
-    borderColor: 'lightgrey'
+    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
+    borderColor: 'lightgrey',
+    alignItems: 'flex-start',
   },
   dialogText: {
     color: themes.BLUE,

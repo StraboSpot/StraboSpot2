@@ -55,7 +55,8 @@ const styles = StyleSheet.create({
     color: themes.SECONDARY_HEADER_TEXT_COLOR,
   },
   sliderContainer: {
-    width: 150,
+    flex:1,
+    // width: 150,
     alignItems: 'center',
   },
   slider: {
