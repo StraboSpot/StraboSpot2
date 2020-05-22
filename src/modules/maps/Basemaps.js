@@ -52,7 +52,7 @@ function Basemap(props) {
 
     {!currentImageBasemap && <MapboxGL.RasterSource
       id={basemap.id}
-      tileUrlTemplates={useMaps.buildUrl(basemap)}
+      tileUrlTemplates={[useMaps.buildUrl(basemap)]}
       maxZoomLevel={basemap.maxZoom}
       tileSize={256}
     >
