@@ -13,8 +13,8 @@ const styles = StyleSheet.create({
   },
   dialogBox: {
     position: 'absolute',
-    bottom: 70,
-    left: 100,
+    bottom: 10,
+    left: 10,
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
     borderRadius: 20,
   },

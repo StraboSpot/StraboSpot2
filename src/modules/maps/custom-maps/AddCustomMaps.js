@@ -41,7 +41,7 @@ const AddCustomMaps = (props) => {
     id: '',
     accessToken: MBAccessToken,
   });
-  const [mapType, setMapType] = useState(customMapTypes.MAPBOX_STYLES);
+  const [mapType, setMapType] = useState('map_warper');
   const [textInputAnimate] = useState(new Animated.Value(0));
 
   const dispatch = useDispatch();
@@ -57,8 +57,8 @@ const AddCustomMaps = (props) => {
   }, []);
 
   useEffect(() => {
-    console.log((editableCustomMapData.opacity/1).toFixed(1) *100)
-  },[editableCustomMapData.opacity])
+    console.log((editableCustomMapData.opacity / 1).toFixed(1) * 100);
+  }, [editableCustomMapData.opacity]);
 
   const handleKeyboardDidShow = (event) => {
     const {height: windowHeight} = Dimensions.get('window');
@@ -98,26 +98,26 @@ const AddCustomMaps = (props) => {
     ).start();
   };
 
-  const selectMap = (item) => {
-    console.log(item);
-    setMapType(item);
+  const selectMap = (source) => {
+    console.log(source);
+    setMapType(source);
   };
 
   const renderCustomMapName = (item, i) => {
     return (
       <ListItem
         containerStyle={styles.list}
-        title={item}
+        title={item.title}
         bottomDivider={i < Object.values(customMapTypes).length - 1}
-        checkmark={item === mapType}
-        onPress={() => selectMap(item)}
+        checkmark={item.source === mapType}
+        onPress={() => selectMap(item.source)}
       />
     );
   };
 
   const renderMapDetails = () => {
     switch (mapType) {
-      case customMapTypes.MAPBOX_STYLES:
+      case 'mapbox_styles':
         return (
           <View>
             <Input
@@ -136,7 +136,7 @@ const AddCustomMaps = (props) => {
               placeholder={'Access token'}/>
           </View>
         );
-      case customMapTypes.MAP_WARPER:
+      case 'map_warper':
         return (
           <View>
             <Input
@@ -148,7 +148,7 @@ const AddCustomMaps = (props) => {
             />
           </View>
         );
-      case customMapTypes.STRABOSPOT_MY_MAPS:
+      case 'strabospot_mymaps':
         return (
           <View>
             <Input
@@ -167,8 +167,9 @@ const AddCustomMaps = (props) => {
     <React.Fragment>
       <View>
         <FlatList
-          keyExtractor={item => item}
-          data={Object.values(customMapTypes)}
+          keyExtractor={item => item.source}
+          // data={Object.values(customMapTypes)}
+          data={customMapTypes}
           renderItem={({item, index}) => renderCustomMapName(item, index)}
         />
       </View>

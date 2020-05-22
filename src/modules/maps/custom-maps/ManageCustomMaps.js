@@ -34,7 +34,7 @@ const ManageCustomMaps = (props) => {
         },
         {
           text: 'OK',
-          onPress: () => useMaps.deleteMap(map.mapId),
+          onPress: () => useMaps.deleteMap(map.id),
         },
       ],
       {cancelable: false},
