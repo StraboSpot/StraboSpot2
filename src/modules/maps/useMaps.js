@@ -36,9 +36,19 @@ const useMaps = (props) => {
     if (basemap.source === 'osm') {
       url = url + basemap.tilePath;
     }
-    if (basemap.source === 'mapbox_styles') {
-      url = url + basemap.id + basemap.urlTilePath + '?access_token=' + basemap.key;
+    else if (basemap.source === 'mapbox_styles') {
+      url = url + basemap.id + basemap.tilePath + '?access_token=' + basemap.key;
     }
+    // else if (basemap.id === 'custom') {
+    //   let mapIdEdit = basemap.layerId.split('/').slice(3).join('/'); // Needs to be modified for url and saveUrl
+    //   console.log(mapIdEdit)
+    //   if (basemap.source === 'Mapbox Styles' || basemap.source === 'mapbox_styles') {
+    //     url = 'https://api.mapbox.com/styles/v1/' + basemap.id + '/tiles/256/{z}/{x}/{y}?access_token=' + MAPBOX_KEY;
+    //   }
+    //   else if (basemap.source === 'Map Warper' || basemap.source === 'map_warper') url = 'https://www.strabospot.org/mwproxy/' + basemap.id + '/{z}/{x}/{y}.png';
+    //   // }
+    //   url = basemap.url;
+    // }
     else {
       url = url + basemap.id + basemap.tilePath + (basemap.key ? '?access_token=' + basemap.key : '');
     }
@@ -224,16 +234,16 @@ const useMaps = (props) => {
 
   const getCustomMapSrc = (map) => {
     let mapUrl;
-    if (map.url) {
-      mapUrl = map.url;
-    }
-    else {
+    // if (map.url) {
+    //   mapUrl = map.url;
+    // }
+    // else {
       if (map.source === 'Mapbox Styles' || map.source === 'mapbox_styles') {
         mapUrl = 'https://api.mapbox.com/styles/v1/' + map.id + '/tiles/256/{z}/{x}/{y}?access_token=' + MAPBOX_KEY;
       }
       else if (map.source === 'Map Warper' || map.source === 'map_warper') mapUrl = 'https://www.strabospot.org/mwproxy/' + map.id + '/{z}/{x}/{y}.png';
-    }
-    return [mapUrl];
+    // }
+    return mapUrl;
   };
 
   // Get selected and not selected Spots to display when not editing
@@ -393,21 +403,26 @@ const useMaps = (props) => {
     //     };
     //
     //   dispatch({type: mapReducers.CURRENT_BASEMAP, basemap: tempCurrentBasemap});
-
-    const mapUrl = await getCustomMapSrc(map);
+    const editedMapUrl = map.id.split('/').slice(3).join('/');
+    const providerInfo = await getProviderInfo(map.source);
+    const mapType = customMapTypes.find(customMap => {
+      return customMap.source === map.source;
+    });
+    const url = buildUrl({...mapType, ...providerInfo, id: editedMapUrl, key: map.key});
 
     tempCurrentBasemap =
       {
         id: 'custom',
-        layerId: map.id,
+        source: map.source,
+        layerId: editedMapUrl,
         layerLabel: map.title,
         layerSaveId: map.id,
-        url: mapUrl[0],
+        url: [url],
         maxZoom: 19,
       };
 
     console.log('tempCurrentBasemap: ', tempCurrentBasemap);
-    dispatch({type: mapReducers.CURRENT_BASEMAP, basemap: tempCurrentBasemap});
+    dispatch({type: mapReducers.CURRENT_BASEMAP, basemap: {...mapType, ...providerInfo, id: editedMapUrl, key: map.key}});
     // closeSettingsDrawer();
   };
 
