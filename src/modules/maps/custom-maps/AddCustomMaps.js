@@ -277,7 +277,7 @@ const AddCustomMaps = (props) => {
       </View>
       <View style={[sidePanelStyles.sectionContainer, {flex: 3}]}>
         <Button
-          containerStyle={styles.saveButtonContainer}
+          containerStyle={styles.saveAndDeleteButtonContainer}
           buttonStyle={{borderRadius: 20, width: 100}}
           title={'Save'}
           onPress={() => useMaps.checkMap(mapType, editableCustomMapData)}

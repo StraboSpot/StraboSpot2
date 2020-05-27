@@ -12,6 +12,7 @@ import {Platform} from 'react-native';
 import {symbols as symbolsConstant, geoLatLngProjection, pixelProjection} from './maps.constants';
 
 function Basemap(props) {
+  console.log('BM PROPS', props)
   const basemap = useSelector(state => state.map.currentBasemap);
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const customMaps = useSelector(state => state.map.customMaps);

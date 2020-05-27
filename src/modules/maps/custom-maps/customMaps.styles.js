@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
     height: 30,
     justifyContent: 'center',
   },
-  saveButtonContainer: {
+  saveAndDeleteButtonContainer: {
     alignItems: 'center',
   },
   sectionsContainer: {

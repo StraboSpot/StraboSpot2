@@ -34,11 +34,12 @@ export const mapReducer = (state = initialState, action) => {
         ...state,
         currentImageBasemap: action.currentImageBasemap,
       };
-    case mapReducers.CUSTOM_MAPS:
-      console.log('Setting custom maps: ', action.customMaps);
+    case mapReducers.ADD_CUSTOM_MAP:
+      const newMapObject = Object.assign({}, {[action.customMap.id]: action.customMap})
+      console.log('Setting custom maps: ', newMapObject);
       return {
         ...state,
-        customMaps: {...state.customMaps, ...action.customMaps},
+        customMaps: {...state.customMaps, ...newMapObject},
       };
     case mapReducers.SELECTED_CUSTOM_MAP_TO_EDIT:
       return {

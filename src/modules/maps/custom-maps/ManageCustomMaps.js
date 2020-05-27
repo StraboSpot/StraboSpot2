@@ -21,26 +21,6 @@ const ManageCustomMaps = (props) => {
 
   const dispatch = useDispatch();
 
-  const confirmDeleteMap = async (map) => {
-    console.log(map);
-    Alert.alert(
-      'Delete Custom Map',
-      'Are your sure you want to delete ' + map.mapTitle + '?',
-      [
-        {
-          text: 'Cancel',
-          onPress: () => console.log('Cancel Pressed'),
-          style: 'cancel',
-        },
-        {
-          text: 'OK',
-          onPress: () => useMaps.deleteMap(map.id),
-        },
-      ],
-      {cancelable: false},
-    );
-  };
-
   return (
     <React.Fragment>
       <View style={{}}>
@@ -81,9 +61,9 @@ const ManageCustomMaps = (props) => {
                   <Text onPress={() => useMaps.editCustomMap(item)} style={styles.buttonPadding}>
                     &nbsp;&nbsp;&nbsp;Edit
                   </Text>
-                  <Text onPress={() => confirmDeleteMap(item)} style={styles.buttonPadding}>
-                    &nbsp;&nbsp;&nbsp;Delete
-                  </Text>
+                  {/*<Text onPress={() => confirmDeleteMap(item)} style={styles.buttonPadding}>*/}
+                  {/*  &nbsp;&nbsp;&nbsp;Delete*/}
+                  {/*</Text>*/}
                 </Text>
               </View>
             }

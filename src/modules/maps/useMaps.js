@@ -57,22 +57,20 @@ const useMaps = (props) => {
 
   const checkMap = async (source, map) => {
     let saveUrl;
-    let editedMapUrl;
-    if (source === 'mapbox_styles') {
-      editedMapUrl = map.id.split('/').slice(3).join('/');
-    }// Needs to be modified for url and saveUrl
-    else if (source === 'map_warper') editedMapUrl = map.id;
-    const providerInfo = await getProviderInfo(source);
-    const mapType = customMapTypes.find(map => {
-      return map.source === source;
-    });
-    const url = buildUrl({...mapType, ...providerInfo, id: editedMapUrl, key: map.accessToken});
-    console.log('URL', url);
+    let mapId = map.id;
+    if (source === 'mapbox_styles') mapId = map.id.split('/').slice(3).join('/'); // Needs to be modified for url and saveUrl
+    // else if (source === 'map_warper') mapId = map.id;
+    const providerInfo = getProviderInfo(source);
+    // const mapType = customMapTypes.find(mapType => mapType.source === source);
+    const customMap = {...map, ...providerInfo, id: mapId, key: map.accessToken, source: source};
+    const url = buildUrl(customMap);
+    const testUrl = url.replace(/({z}\/{x}\/{y})/, '0/0/0')
+    console.log('URL', testUrl);
     // const {id} = state;
     // let mapIdEdit = id.split('/').slice(3).join('/'); // Needs to be modified for url and saveUrl
     // console.log(mapIdEdit)
     // setShowSubmitButton(true);
-    console.log('Chosen Form', source, 'EditedURL', editedMapUrl);
+    console.log('Chosen Form', source, 'EditedURL', mapId);
     // switch (chosenForm) {
     //   case 'Mapbox Styles':
     //     //jasonash/cjl3xdv9h22j12tqfmyce22zq
@@ -95,70 +93,70 @@ const useMaps = (props) => {
     //     saveUrl = 'na';
     // }
 
-    fetch(url).then(response => {
+    fetch(testUrl).then(response => {
       const statusCode = response.status;
       console.log('statusCode', statusCode);
       console.log('customMaps: ', customMaps);
       if (statusCode === 200) {
-        let customMapsArr = Object.values(customMaps);
-        //check to see if it already exists in Redux
-        let mapExists = false;
-        for (let i = 0; i < customMapsArr.length; i++) {
-          console.log(Object.values(customMaps));
-          if (customMapsArr[i].id === map.id) {
-            mapExists = true;
-          }
-        }
-        if (!mapExists) {
-          //add map to Redux here...
-          let newReduxMaps = [];
-          // for (let i = 0; i < customMapsArr.length; i++) {
-          //   newReduxMaps.push(customMapsArr[i]);
-          // }
-          let newMap = {};
-          newMap.title = map.title;
-          newMap.source = source;
-          newMap.id = map.id;
-          newMap.opacity = map.opacity;
-          newMap.overlay = map.isOverlay;
-          newMap.mapId = makeMapId();
-          if (map.accessToken) {
-            newMap.key = map.accessToken;
-          }
-          newMap.url = url;
-          newReduxMaps.push(newMap);
+        // let customMapsArr = Object.values(customMaps);
+        //    //check to see if it already exists in Redux
+        //    let mapExists = false;
+        //    for (let i = 0; i < customMapsArr.length; i++) {
+        //      console.log(Object.values(customMaps));
+        //      if (customMapsArr[i].id === map.id) {
+        //        mapExists = true;
+        //      }
+        //    }
+        //    if (!mapExists) {
+        //      //add map to Redux here...
+        //      let newReduxMaps = [];
+        //      // for (let i = 0; i < customMapsArr.length; i++) {
+        //      //   newReduxMaps.push(customMapsArr[i]);
+        //      // }
+        //      let newMap = {};
+        //      newMap.title = map.title;
+        //      newMap.source = source;
+        //      newMap.id = map.id;
+        //      newMap.opacity = map.opacity;
+        //      newMap.overlay = map.isOverlay;
+        //      newMap.mapId = makeMapId();
+        //      if (map.accessToken) {
+        //        newMap.key = map.accessToken;
+        //      }
+        //      newMap.url = url;
+        //      newReduxMaps.push(newMap);
 
-          console.log(Object.assign({}, ...newReduxMaps.map(map => ({[map.id]: map}))));
-          const newMapObject = Object.assign({}, ...newReduxMaps.map(map => ({[map.id]: map})));
-          dispatch({type: mapReducers.CUSTOM_MAPS, customMaps: newMapObject});
-          dispatch({type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE, bool: false});
-          dispatch({type: homeReducers.SET_SETTINGS_PANEL_VISIBLE, bool: false});
-          Alert.alert(
-            'Success!',
-            'Map has been added successfully.',
-            [
-              {
-                text: 'OK',
-                // onPress: () => showHome(),
-              },
-            ],
-            {cancelable: false},
-          );
-        }
-        else {
-          Alert.alert(
-            'Failure!',
-            'You have already added this map.',
-            [
-              {
-                text: 'OK',
-                // onPress: () => showHome(),
-              },
-            ],
-            {cancelable: false},
-          );
-        }
+        // console.log(Object.assign({}, ...newReduxMaps.map(map => ({[map.id]: map}))));
+        // const newMapObject = Object.assign({}, ...newReduxMaps.map(map => ({[map.id]: map})));
+        dispatch({type: mapReducers.ADD_CUSTOM_MAP, customMap: customMap});
+        dispatch({type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE, bool: false});
+        dispatch({type: homeReducers.SET_SETTINGS_PANEL_VISIBLE, bool: false});
+        Alert.alert(
+          'Success!',
+          'Map has been added successfully.',
+          [
+            {
+              text: 'OK',
+              // onPress: () => showHome(),
+            },
+          ],
+          {cancelable: false},
+        );
       }
+      //   else {
+      //     Alert.alert(
+      //       'Failure!',
+      //       'You have already added this map.',
+      //       [
+      //         {
+      //           text: 'OK',
+      //           // onPress: () => showHome(),
+      //         },
+      //       ],
+      //       {cancelable: false},
+      //     );
+      //   }
+      // }
       else {
         Alert.alert(
           'Failure!',
@@ -376,6 +374,7 @@ const useMaps = (props) => {
   const setCurrentBasemap = (mapId) => {
     if (!mapId) mapId = 'mapbox.outdoors';
     const currentBasemap =  basemaps1.find(basemap => basemap.id === mapId);
+    console.log('Current Base Map', currentBasemap)
     dispatch({type: mapReducers.CURRENT_BASEMAP, basemap: currentBasemap});
   };
 
@@ -388,7 +387,7 @@ const useMaps = (props) => {
     if (!customMapsCopy[map.mapId].overlay) viewCustomMap(map);
   };
 
-  const viewCustomMap = async (map) => {
+  const viewCustomMap = (map) => {
     let tempCurrentBasemap;
     console.log('viewCustomMap: ', map);
     // if (customMaps[map.mapId].isViewable) {
@@ -403,26 +402,26 @@ const useMaps = (props) => {
     //     };
     //
     //   dispatch({type: mapReducers.CURRENT_BASEMAP, basemap: tempCurrentBasemap});
-    const editedMapUrl = map.id.split('/').slice(3).join('/');
-    const providerInfo = await getProviderInfo(map.source);
-    const mapType = customMapTypes.find(customMap => {
-      return customMap.source === map.source;
-    });
-    const url = buildUrl({...mapType, ...providerInfo, id: editedMapUrl, key: map.key});
-
-    tempCurrentBasemap =
-      {
-        id: 'custom',
-        source: map.source,
-        layerId: editedMapUrl,
-        layerLabel: map.title,
-        layerSaveId: map.id,
-        url: [url],
-        maxZoom: 19,
-      };
-
-    console.log('tempCurrentBasemap: ', tempCurrentBasemap);
-    dispatch({type: mapReducers.CURRENT_BASEMAP, basemap: {...mapType, ...providerInfo, id: editedMapUrl, key: map.key}});
+   // const editedMapUrl = map.id.split('/').slice(3).join('/');
+   //  const providerInfo = await getProviderInfo(map.source);
+   //  const mapType = customMapTypes.find(customMap => {
+   //    return customMap.source === map.source;
+   //  });
+   //  const url = buildUrl({...mapType, ...providerInfo, id: editedMapUrl, key: map.key});
+   //
+   //  tempCurrentBasemap =
+   //    {
+   //      id: 'custom',
+   //      source: map.source,
+   //      layerId: editedMapUrl,
+   //      layerLabel: map.title,
+   //      layerSaveId: map.id,
+   //      url: [url],
+   //      maxZoom: 19,
+   //    };
+   //
+     console.log('tempCurrentBasemap: ', map);
+    dispatch({type: mapReducers.CURRENT_BASEMAP, basemap: map});
     // closeSettingsDrawer();
   };
 
