@@ -885,7 +885,7 @@ const Home = (props) => {
       <Animated.View style={[homeStyles.homeIconContainer, leftsideIconAnimation]}>
         <IconButton
           //style={{top: 5}}
-          source={require('../../assets/icons/Close_button.png')}
+          source={require('../../assets/icons/CloseButton.png')}
           onPress={clickHandler.bind(this, 'closeImageBasemap')}
         />
       </Animated.View>}
