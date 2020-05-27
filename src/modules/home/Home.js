@@ -875,12 +875,20 @@ const Home = (props) => {
           />
         </Animated.View>
         : null}
-      <Animated.View style={[homeStyles.homeIconContainer, leftsideIconAnimation]}>
+      {!props.currentImageBasemap && <Animated.View style={[homeStyles.homeIconContainer, leftsideIconAnimation]}>
         <IconButton
           source={require('../../assets/icons/HomeButton.png')}
           onPress={clickHandler.bind(this, 'home')}
         />
-      </Animated.View>
+      </Animated.View>}
+      {props.currentImageBasemap &&
+      <Animated.View style={[homeStyles.homeIconContainer, leftsideIconAnimation]}>
+        <IconButton
+          //style={{top: 5}}
+          source={require('../../assets/icons/Close_button.png')}
+          onPress={clickHandler.bind(this, 'closeImageBasemap')}
+        />
+      </Animated.View>}
       <Animated.View style={[homeStyles.leftsideIcons, leftsideIconAnimation]}>
         <IconButton
           source={require('../../assets/icons/MapActionsButton.png')}
@@ -901,14 +909,6 @@ const Home = (props) => {
           style={{top: 5}}
           source={require('../../assets/icons/MyLocationButton.png')}
           onPress={clickHandler.bind(this, 'currentLocation')}
-        />
-      </Animated.View>}
-      {props.currentImageBasemap &&
-      <Animated.View style={[homeStyles.bottomLeftIcons, leftsideIconAnimation]}>
-        <IconButton
-          style={{top: 5}}
-          source={require('../../assets/icons/Close_button.png')}
-          onPress={clickHandler.bind(this, 'closeImageBasemap')}
         />
       </Animated.View>}
       <MapActionsDialog
