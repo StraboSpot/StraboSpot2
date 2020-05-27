@@ -239,6 +239,9 @@ const Home = (props) => {
         if (position === 'open') props.setAllSpotsPanelVisible(true);
         else if (position === 'close') props.setAllSpotsPanelVisible(false);
         break;
+      case 'zoomToSpot':
+        mapViewComponent.current.zoomToSpot();
+        break;
       // Map Actions
       case MapModes.DRAW.POINT:
       case MapModes.DRAW.LINE:
@@ -504,15 +507,15 @@ const Home = (props) => {
     switch (sidePanelView) {
       case 'addCustomMap':
         panelView =
-        <Animated.View style={[sidePanelStyles.sidePanelContainer, animateMainMenuSidePanel]}>
-          <AddCustomMaps/>
-        </Animated.View>;
+          <Animated.View style={[sidePanelStyles.sidePanelContainer, animateMainMenuSidePanel]}>
+            <AddCustomMaps/>
+          </Animated.View>;
         break;
       case 'editCustomMap':
         panelView =
-        <Animated.View style={[sidePanelStyles.sidePanelContainer, animateMainMenuSidePanel]}>
-          <EditCustomMaps/>
-        </Animated.View>;
+          <Animated.View style={[sidePanelStyles.sidePanelContainer, animateMainMenuSidePanel]}>
+            <EditCustomMaps/>
+          </Animated.View>;
         break;
       case 'activeProject':
         panelView =
@@ -651,7 +654,9 @@ const Home = (props) => {
       if (settingsPageVisible === 'Custom Maps') {
         animatePanels(mainMenuSidePanelAnimation, -mainMenuSidePanelWidth);
       }
-      else if (settingsPageVisible === 'Active Project') animatePanels(mainMenuSidePanelAnimation, -mainMenuSidePanelWidth);
+      else if (settingsPageVisible === 'Active Project') {
+        animatePanels(mainMenuSidePanelAnimation, -mainMenuSidePanelWidth);
+      }
     }
     return renderSidePanelView();
   };
@@ -870,12 +875,20 @@ const Home = (props) => {
           />
         </Animated.View>
         : null}
-      <Animated.View style={[homeStyles.homeIconContainer, leftsideIconAnimation]}>
+      {!props.currentImageBasemap && <Animated.View style={[homeStyles.homeIconContainer, leftsideIconAnimation]}>
         <IconButton
           source={require('../../assets/icons/HomeButton.png')}
           onPress={clickHandler.bind(this, 'home')}
         />
-      </Animated.View>
+      </Animated.View>}
+      {props.currentImageBasemap &&
+      <Animated.View style={[homeStyles.homeIconContainer, leftsideIconAnimation]}>
+        <IconButton
+          //style={{top: 5}}
+          source={require('../../assets/icons/CloseButton.png')}
+          onPress={clickHandler.bind(this, 'closeImageBasemap')}
+        />
+      </Animated.View>}
       <Animated.View style={[homeStyles.leftsideIcons, leftsideIconAnimation]}>
         <IconButton
           source={require('../../assets/icons/MapActionsButton.png')}
@@ -896,14 +909,6 @@ const Home = (props) => {
           style={{top: 5}}
           source={require('../../assets/icons/MyLocationButton.png')}
           onPress={clickHandler.bind(this, 'currentLocation')}
-        />
-      </Animated.View>}
-      {props.currentImageBasemap &&
-      <Animated.View style={[homeStyles.bottomLeftIcons, leftsideIconAnimation]}>
-        <IconButton
-          style={{top: 5}}
-          source={require('../../assets/icons/Close_button.png')}
-          onPress={clickHandler.bind(this, 'closeImageBasemap')}
         />
       </Animated.View>}
       <MapActionsDialog

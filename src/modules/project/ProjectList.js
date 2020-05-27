@@ -1,24 +1,29 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Alert, ScrollView, Text, View} from 'react-native';
-import {useSelector, useDispatch} from 'react-redux';
-import Loading from '../../shared/ui/Loading';
 import {ListItem, Button} from 'react-native-elements';
-import {isEmpty} from '../../shared/Helpers';
-import * as themes from '../../shared/styles.constants';
+import {useDispatch, useSelector} from 'react-redux';
+
+// Components
 import DialogBox from './DialogBox';
-import * as ProjectActions from './project.constants';
+import Loading from '../../shared/ui/Loading';
+
+// Hooks
 import useProjectHook from './useProject';
-import styles from './project.styles';
-import {spotReducers} from '../spots/spot.constants';
-// import useServerRequests from '../../services/useServerRequests';
-// import DatasetList from './DatasetList';
-// import sharedDialogStyles from '../shared/common.home';
-// import ProgressCircle from '../shared/ui/ProgressCircle';
+
+// Utilities
+import {isEmpty} from '../../shared/Helpers';
+
+// Constants
+import * as ProjectActions from './project.constants';
 import {homeReducers} from '../home/home.constants';
-import useSpotsHook from '../spots/useSpots';
+import {projectReducers} from './project.constants';
 import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 import {SettingsMenuItems} from '../main-menu-panel/mainMenu.constants';
-import {projectReducers} from './project.constants';
+import {spotReducers} from '../spots/spot.constants';
+
+// Styles
+import * as themes from '../../shared/styles.constants';
+import styles from './project.styles';
 
 const ProjectList = (props) => {
   const currentProject = useSelector(state => state.project.project);
@@ -37,21 +42,21 @@ const ProjectList = (props) => {
   // const [useSpots] = useSpotsHook();
 
   useEffect(() => {
-    return function cleanUp () {
+    return function cleanUp() {
       console.log('Cleaned Up 1');
     };
   }, []);
 
   useEffect(() => {
     getAllProjects().then(() => console.log('OK got projects'));
-    return function cleanUp () {
+    return function cleanUp() {
       console.log('Cleaned Up 2');
     };
   }, [props.source]);
 
   useEffect(() => {
-    console.log('projectsArr', projectsArr)
-    return function cleanUp () {
+    console.log('projectsArr', projectsArr);
+    return function cleanUp() {
       console.log('Cleaned Up 3');
     };
   }, [projectsArr]);
@@ -72,7 +77,7 @@ const ProjectList = (props) => {
     }
     else {
       setIsError(false);
-      console.log(projectsResponse);
+      console.log('List of Projects on Server:', projectsResponse);
       setProjectsArr(projectsResponse);
       setLoading(false);
     }
@@ -111,7 +116,7 @@ const ProjectList = (props) => {
       // if (props.source === 'device') {
       //   project = await useProject.readDeviceFile(project, props.source);
       //   console.log('DeviceFile', project);
-        setSelectedProject(project);
+      setSelectedProject(project);
       // }
       // else setSelectedProject(project);
       setShowDialog(true);
@@ -190,7 +195,8 @@ const ProjectList = (props) => {
               dispatch({type: homeReducers.CLEAR_STATUS_MESSAGES});
               dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Project does not have any spots'});
               dispatch({type: homeReducers.SET_INFO_MESSAGES_MODAL_VISIBLE, bool: true});
-              dispatch({type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: SettingsMenuItems.MANAGE.ACTIVE_PROJECTS});
+              dispatch(
+                {type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: SettingsMenuItems.MANAGE.ACTIVE_PROJECTS});
             }
             else Alert.alert('Error', 'No Project Data!');
           }
@@ -198,7 +204,8 @@ const ProjectList = (props) => {
             // setShowDialog(false);
             dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Download Complete!'});
             dispatch({type: homeReducers.SET_LOADING, view: 'modal', bool: false});
-            dispatch({type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: SettingsMenuItems.MANAGE.ACTIVE_PROJECTS});
+            dispatch(
+              {type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: SettingsMenuItems.MANAGE.ACTIVE_PROJECTS});
           }
         });
       }
@@ -220,7 +227,8 @@ const ProjectList = (props) => {
         <Text>Switching projects will <Text style={{color: 'red'}}>DELETE </Text>
           the local copy of the current project: </Text>
         <Text style={{color: 'red', textTransform: 'uppercase', marginTop: 5, marginBottom: 10, textAlign: 'center'}}>
-          {currentProject.description && !isEmpty(currentProject.description) ? currentProject.description.project_name : 'UN-NAMED'}
+          {currentProject.description && !isEmpty(
+            currentProject.description) ? currentProject.description.project_name : 'UN-NAMED'}
         </Text>
         <Text>Including all datasets and Spots contained within this project. Make sure you have already
           uploaded the project to the server if you wish to preserve the data. Continue?</Text>
@@ -264,8 +272,8 @@ const ProjectList = (props) => {
               title={'Retry'}
               onPress={() => getAllProjects()}
             />}
-              {isError && renderErrorMessage()}
-            </View>
+            {isError && renderErrorMessage()}
+          </View>
         </View>
       );
     }

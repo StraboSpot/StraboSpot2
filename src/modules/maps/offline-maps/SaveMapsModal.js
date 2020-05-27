@@ -1,15 +1,15 @@
 import React, {useEffect, useState} from 'react';
-import {Picker} from '@react-native-community/picker';
-import {Button, Header, Icon} from 'react-native-elements';
+import {Button, Header} from 'react-native-elements';
+import {Dialog, DialogContent, SlideAnimation} from 'react-native-popup-dialog';
 import {Platform, StyleSheet, Text, View} from 'react-native';
-import {Dialog, DialogTitle, DialogContent, SlideAnimation} from 'react-native-popup-dialog';
+import {unzip} from 'react-native-zip-archive'; /*TODO  react-native-zip-archive@3.0.1 requires a peer of react@^15.4.2 || <= 16.3.1 but none is installed */
+import {useDispatch, useSelector} from 'react-redux';
+import {Picker} from '@react-native-community/picker';
+import ProgressBar from 'react-native-progress/Bar';
 import RNFetchBlob from 'rn-fetch-blob';
 
-import {unzip} from 'react-native-zip-archive'; /*TODO  react-native-zip-archive@3.0.1 requires a peer of react@^15.4.2 || <= 16.3.1 but none is installed */
-import ProgressBar from 'react-native-progress/Bar';
-import {useDispatch, useSelector} from 'react-redux';
+// Constants
 import {mapReducers} from '../maps.constants';
-// import useMapsHook from './useMaps';
 
 // Styles
 import * as themes from '../../../shared/styles.constants';
@@ -57,14 +57,14 @@ const SaveMapsModal = (props) => {
     if (props.map) {
       props.map.getCurrentZoom().then((zoom) => {
         // console.log(zoom);
-        let initialZoom = []
+        let initialZoom = [];
         let currentZoom = Math.round(zoom);
         setDownloadZoom(Math.round(zoom));
 
         const numZoomLevels = maxZoom ? Math.min(maxZoom - currentZoom + 1, 5) : 5;
 
         for (let i = 0; i < numZoomLevels; i++) {
-          initialZoom.push(currentZoom + i)
+          initialZoom.push(currentZoom + i);
         }
         setZoomLevels(initialZoom);
       });
@@ -77,7 +77,7 @@ const SaveMapsModal = (props) => {
       console.log('SaveMapsModal unMounted');
       setShowMainMenu(true);
       setShowComplete(false);
-    }
+    };
   }, [props.map]);
 
   useEffect(() => {
@@ -89,7 +89,7 @@ const SaveMapsModal = (props) => {
 
       });
     }
-  },[downloadZoom]);
+  }, [downloadZoom]);
 
   useEffect(() => {
     console.log('progressStatus', progressStatus);
@@ -117,7 +117,7 @@ const SaveMapsModal = (props) => {
       console.log('Network Error');
     }
     tryCount++;
-    console.log(tryCount)
+    console.log(tryCount);
     if (tryCount <= 200 && progressStatus !== 'Zip File Ready.' && zipError === '') {
       await delay(1000);
       await checkStatus(zipUID);
@@ -134,7 +134,7 @@ const SaveMapsModal = (props) => {
   const doUnzip = async (zipUID) => {
     // hide progress bar
     // setShowLoadingBar(false);
-    progressStatus =  'Installing Tiles in StraboSpot...';
+    progressStatus = 'Installing Tiles in StraboSpot...';
     setStatusMessage('Installing tiles...');
     const layerSaveId = currentBasemap.layerSaveId;
 
@@ -196,7 +196,7 @@ const SaveMapsModal = (props) => {
     let startZipURL = 'unset';
 
     // setProgressMessage('Starting Download...');
-    progressStatus =  'Starting Download...';
+    progressStatus = 'Starting Download...';
     setStatusMessage('Starting Download...');
 
     const layerID = currentBasemap.id;
@@ -263,7 +263,7 @@ const SaveMapsModal = (props) => {
     if (Platform.OS === 'ios') result = await RNFS.readDir(tileTempDirectory + '/' + zipUID + '/tiles');
     else result = await RNFS.DocumentDirectoryPath(tileTempDirectory + '/' + zipUID + '/tiles');
 
-    console.log(result)
+    console.log(result);
 
     await tileMove(result, zipUID);
 
@@ -277,8 +277,8 @@ const SaveMapsModal = (props) => {
       currentOfflineMaps = [];
     }
 
-      const customMap = customMaps.filter(map => saveId === map.id)
-      console.log(customMap)
+    const customMap = customMaps.filter(map => saveId === map.id);
+    console.log(customMap);
     if (appId !== 'custom') mapName = currentMapName;
     else mapName = customMap[0].title + ' (Custom Map)';
 
@@ -303,7 +303,7 @@ const SaveMapsModal = (props) => {
       }
     }
 
-    const mapSavedObject = Object.assign({}, ...newOfflineMapsData.map(map => ({ [map.name]: map })));
+    const mapSavedObject = Object.assign({}, ...newOfflineMapsData.map(map => ({[map.name]: map})));
     console.log('Map to save to Redux', mapSavedObject);
 
     await dispatch({type: mapReducers.OFFLINE_MAPS, offlineMaps: mapSavedObject});
@@ -371,21 +371,21 @@ const SaveMapsModal = (props) => {
             containerStyle={{width: 400}}
             centerComponent={
               <View>
-              <View style={{ justifyContent: 'center'}}>
-                <Text style={{fontSize: 30}}>{currentMapName}</Text>
-              </View>
+                <View style={{justifyContent: 'center'}}>
+                  <Text style={{fontSize: 30}}>{currentMapName}</Text>
+                </View>
               </View>
             }
           />
           <View style={{flex: 1}}>
             <View style={{flex: 1}}>
-                  {showMainMenu &&
-                  <View style={{paddingTop: 20, paddingBottom: 20}}>
-                    <Text style={{textAlign: 'center'}}>
-                      Select max zoom level to download:
-                    </Text>
-                  </View>
-                  }
+              {showMainMenu &&
+              <View style={{paddingTop: 20, paddingBottom: 20}}>
+                <Text style={{textAlign: 'center'}}>
+                  Select max zoom level to download:
+                </Text>
+              </View>
+              }
 
 
             </View>
@@ -453,14 +453,7 @@ const SaveMapsModal = (props) => {
               />
               }
             </View>
-            {/*<LinearGradient colors={['#4c669f', '#3b5998', '#192f6a']} style={styles.linearGradient}>*/}
-
-          {/*  /!*</LinearGradient>*!/*/}
-
-
-
-
-        </View>
+          </View>
         </View>
       </DialogContent>
     </Dialog>

@@ -1,20 +1,24 @@
 import React, {useEffect, useState} from 'react';
-import {Text, View, Switch, ScrollView} from 'react-native';
-import Dialog, {DialogContent, DialogTitle} from 'react-native-popup-dialog';
-import {ScaleAnimation} from 'react-native-popup-dialog/src';
 import {ListItem} from 'react-native-elements';
+import {ScaleAnimation} from 'react-native-popup-dialog/src';
+import {ScrollView, Switch, Text, View} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
+import Dialog, {DialogContent, DialogTitle} from 'react-native-popup-dialog';
 
-import {basemaps, basemaps1} from '../maps/maps.constants';
-import {isEmpty} from '../../shared/Helpers';
+// Components
 import SectionDivider from '../../shared/ui/SectionDivider';
+
+// Utilites
+import {isEmpty} from '../../shared/Helpers';
 
 // Hooks
 import useMapsHook from '../maps/useMaps';
 
 // Styles
 import styles from './dialog.styles';
-import * as themes from '../../shared/styles.constants';
+
+// Constants
+import {basemaps, basemaps1} from '../maps/maps.constants';
 
 const slideAnimation = new ScaleAnimation({
   useNativeDriver: true,
@@ -46,7 +50,6 @@ const BaseMapDialog = props => {
 
   return (
     <Dialog
-      width={0.3}
       dialogAnimation={slideAnimation}
       dialogStyle={styles.dialogBox}
       visible={props.visible}
@@ -54,13 +57,7 @@ const BaseMapDialog = props => {
         <DialogTitle
           title='Map Layers'
           style={styles.dialogTitle}
-          textStyle={
-            {
-              color: 'white',
-              fontSize: themes.PRIMARY_TEXT_SIZE,
-              fontWeight: 'bold',
-            }
-          }
+          textStyle={styles.dialogTitleText}
         />}
       onTouchOutside={props.onTouchOutside}
     >
@@ -102,7 +99,7 @@ const BaseMapDialog = props => {
                   //     onValueChange={(val) => useMaps.setCustomMapSwitchValue(val, customMap)}
                   //   />
                   // }
-                />
+                />;
             })}
           </ScrollView>}
         </View>

@@ -15,19 +15,24 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 10,
     left: 10,
+    width: 300,
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
     borderRadius: 20,
   },
   dialogTitle: {
-    backgroundColor: themes.BLUE,
+    backgroundColor: themes.PRIMARY_ACCENT_COLOR,
+  },
+  dialogTitleText: {
+    color: themes.SECONDARY_BACKGROUND_COLOR,
+    fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,
+    fontWeight: 'bold',
   },
   dialogContent: {
-    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
+    borderTopWidth: 1,
     borderColor: 'lightgrey',
-    alignItems: 'flex-start',
   },
   dialogText: {
-    color: themes.BLUE,
+    color: themes.PRIMARY_ACCENT_COLOR,
   },
 });
 
