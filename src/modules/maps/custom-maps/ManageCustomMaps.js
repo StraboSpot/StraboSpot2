@@ -25,7 +25,7 @@ const ManageCustomMaps = (props) => {
     <React.Fragment>
       <View style={{}}>
         <Button
-          onPress={() => dispatch({type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE, view: 'addCustomMap', bool: true})}
+          onPress={() => dispatch({type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE, view: settingPanelReducers.SET_SIDE_PANEL_VIEW.ADD_CUSTOM_MAP, bool: true})}
           containerStyle={styles.buttonContainer}
           buttonStyle={commonStyles.standardButton}
           titleStyle={commonStyles.standardButtonText}
