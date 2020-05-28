@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {
+  Alert,
   FlatList,
   TextInput,
   View,
@@ -17,6 +18,7 @@ import Divider from '../../main-menu-panel/MainMenuPanelDivider';
 import {customMapTypes} from '../maps.constants';
 import {settingPanelReducers} from '../../main-menu-panel/mainMenuPanel.constants';
 import SidePanelHeader from '../../main-menu-panel/SidePanelHeader';
+import {mapReducers} from '../maps.constants';
 // import Slider from '../../../shared/ui/Slider';
 import useMapHook from '../useMaps';
 
@@ -24,6 +26,7 @@ import useMapHook from '../useMaps';
 import sidePanelStyles from '../../main-menu-panel/sidePanel.styles';
 import styles from './customMaps.styles';
 import * as themes from '../../../shared/styles.constants';
+import {SettingsMenuItems} from '../../main-menu-panel/mainMenu.constants';
 
 const {State: TextInputState} = TextInput;
 
@@ -59,6 +62,25 @@ const AddCustomMaps = (props) => {
   useEffect(() => {
     console.log((editableCustomMapData.opacity / 1).toFixed(1) * 100);
   }, [editableCustomMapData.opacity]);
+
+  const addMap = async () => {
+    const customMap = await useMaps.checkMap(mapType, editableCustomMapData)
+    console.log(customMap)
+        dispatch({type: mapReducers.ADD_CUSTOM_MAP, customMap: customMap});
+        dispatch({type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE, view: null, bool: false});
+        dispatch({type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: SettingsMenuItems.SETTINGS_MAIN});
+        Alert.alert(
+          'Success!',
+          'Map has been added successfully.',
+          [
+            {
+              text: 'OK',
+              // onPress: () => showHome(),
+            },
+          ],
+          {cancelable: false},
+        );
+  };
 
   const handleKeyboardDidShow = (event) => {
     const {height: windowHeight} = Dimensions.get('window');
@@ -280,7 +302,7 @@ const AddCustomMaps = (props) => {
           containerStyle={styles.saveAndDeleteButtonContainer}
           buttonStyle={{borderRadius: 20, width: 100}}
           title={'Save'}
-          onPress={() => useMaps.checkMap(mapType, editableCustomMapData)}
+          onPress={() => addMap()}
         />
       </View>
     </Animated.View>
