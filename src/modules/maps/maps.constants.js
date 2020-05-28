@@ -129,7 +129,7 @@ export const mapProviders = {
     imageType: 'png',
     mime: 'image/png',
     tilePath: '/{z}/{x}/{y}.png',
-    url: ['https://api.mapbox.com/v4/']
+    url: ['https://api.mapbox.com/v4/'],
   },
   mapbox_styles: {
     attributions: '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors.',

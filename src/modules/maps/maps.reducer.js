@@ -1,4 +1,4 @@
-import {mapReducers } from './maps.constants';
+import {mapReducers} from './maps.constants';
 
 const initialState = {
   currentBasemap: undefined,
@@ -18,11 +18,11 @@ export const mapReducer = (state = initialState, action) => {
         [action.field]: action.maps,
       };
     case mapReducers.CLEAR_MAPS:
-    return {
-      ...state,
-      offlineMaps: {},
-      customMaps: [],
-    };
+      return {
+        ...state,
+        offlineMaps: {},
+        customMaps: [],
+      };
     case mapReducers.CURRENT_BASEMAP:
       // console.log('Current Basemap in Reducer', action.basemap);
       return {
@@ -30,12 +30,12 @@ export const mapReducer = (state = initialState, action) => {
         currentBasemap: action.basemap,
       };
     case mapReducers.CURRENT_IMAGE_BASEMAP:
-    return {
+      return {
         ...state,
         currentImageBasemap: action.currentImageBasemap,
       };
     case mapReducers.ADD_CUSTOM_MAP:
-      const newMapObject = Object.assign({}, {[action.customMap.id]: action.customMap})
+      const newMapObject = Object.assign({}, {[action.customMap.id]: action.customMap});
       console.log('Setting custom maps: ', newMapObject);
       return {
         ...state,

@@ -8,7 +8,7 @@ import useImagesHook from '../images/useImages';
 import useSpotsHook from '../spots/useSpots';
 
 // Utilities
-import {getNewId, isEmpty, makeMapId} from '../../shared/Helpers';
+import {getNewId, isEmpty} from '../../shared/Helpers';
 
 // Constants
 import {homeReducers} from '../home/home.constants';

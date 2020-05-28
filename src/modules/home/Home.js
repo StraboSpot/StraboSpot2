@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {Alert, Animated, Dimensions, Easing, Platform, Text, View} from 'react-native';
-import MapView from '../maps/Map';
+import Map from '../maps/Map';
 import InitialProjectLoadModal from '../project/InitialProjectLoadModal';
 import MapActionsDialog from './MapActionsDialogBox';
 import MapSymbolsDialog from './MapSymbolsDialogBox';
@@ -497,7 +497,6 @@ const Home = (props) => {
       <SaveMapsModal
         close={() => setIsOfflineMapModalVisible(false)}
         map={mapViewComponent.current}
-        visible={isOfflineMapModalVisible}
       />
     );
   };
@@ -743,7 +742,7 @@ const Home = (props) => {
 
   return (
     <View style={homeStyles.container}>
-      <MapView
+      <Map
         mapComponentRef={mapViewComponent}
         mapMode={mapMode}
         startEdit={startEdit}
@@ -957,7 +956,7 @@ const Home = (props) => {
       {renderStatusDialogBox()}
       {renderInfoDialogBox()}
       {renderErrorMessageDialogBox()}
-      {renderSaveMapsModal()}
+      {isOfflineMapModalVisible && renderSaveMapsModal()}
     </View>
   );
 };

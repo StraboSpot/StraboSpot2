@@ -359,7 +359,6 @@ const SaveMapsModal = (props) => {
   return (
     <Dialog
       dialogStyle={{borderRadius: 30}}
-      visible={props.visible}
       dialogAnimation={new SlideAnimation({
         slideFrom: 'top',
       })}

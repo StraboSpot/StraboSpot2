@@ -12,9 +12,6 @@ import {Platform} from 'react-native';
 import {symbols as symbolsConstant, geoLatLngProjection, pixelProjection} from './maps.constants';
 
 function Basemap(props) {
-  console.log('BM PROPS', props)
-  const basemap = useSelector(state => state.map.currentBasemap);
-  const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const customMaps = useSelector(state => state.map.customMaps);
   const {mapRef, cameraRef} = props.forwardedRef;
   const [useMapSymbology] = useMapSymbologyHook();
@@ -23,7 +20,7 @@ function Basemap(props) {
   const [useMaps] = useMapsHook();
 
   return <MapboxGL.MapView
-    id={basemap.id}
+    id={props.imageBasemap ? props.imageBasemap.id : props.basemap.id}
     ref={mapRef}
     style={{flex: 1}}
     animated={true}
@@ -39,27 +36,29 @@ function Basemap(props) {
     zoomEnabled={props.allowMapViewMove}
   >
 
-    {!currentImageBasemap &&
+    {!props.imageBasemap &&
     <MapboxGL.UserLocation
       animated={false}/>}
 
     <MapboxGL.Camera
       ref={cameraRef}
-      zoomLevel={currentImageBasemap ? 14 : 15}
-      centerCoordinate={currentImageBasemap ? useMaps.convertCoordinateProjections(pixelProjection, geoLatLngProjection, [(currentImageBasemap.width) / 2, (currentImageBasemap.height) / 2]) : props.centerCoordinate}
+      zoomLevel={props.imageBasemap ? 14 : 15}
+      centerCoordinate={props.imageBasemap ? useMaps.convertCoordinateProjections(pixelProjection, geoLatLngProjection,
+        [(props.imageBasemap.width) / 2, (props.imageBasemap.height) / 2]) : props.centerCoordinate}
       // followUserLocation={true}   // Can't follow user location if want to zoom to extent of Spots
       // followUserMode='normal'
     />
 
-    {!currentImageBasemap && <MapboxGL.RasterSource
-      id={basemap.id}
-      tileUrlTemplates={[useMaps.buildUrl(basemap)]}
-      maxZoomLevel={basemap.maxZoom}
+    {/* Basemap Raster */}
+    {!props.imageBasemap && <MapboxGL.RasterSource
+      id={props.basemap.id}
+      tileUrlTemplates={useMaps.buildTileUrl(props.basemap)}
+      maxZoomLevel={props.basemap.maxZoom}
       tileSize={256}
     >
       <MapboxGL.RasterLayer
-        id={basemap.id}
-        sourceID={basemap.id}
+        id={props.basemap.id + 'Layer'}
+        sourceID={props.basemap.id}
         style={{rasterOpacity: 1}}
       />
     </MapboxGL.RasterSource>}
@@ -70,7 +69,7 @@ function Basemap(props) {
         <MapboxGL.RasterSource
           key={customMap.id}
           id={customMap.id}
-          tileUrlTemplates={useMaps.getCustomMapSrc(customMap)}>
+          tileUrlTemplates={useMaps.buildTileUrl(customMap)}>
           <MapboxGL.RasterLayer id={customMap.id + 'Layer'}
                                 sourceID={customMap.id}
                                 style={{rasterOpacity: customMap.opacity}}/>
@@ -78,13 +77,13 @@ function Basemap(props) {
     })}
 
     {/* Image Basemap background Layer */}
-    {Platform.OS === 'android' && currentImageBasemap &&
+    {Platform.OS === 'android' && props.imageBasemap &&
     <MapboxGL.BackgroundLayer
       id='background'
       style={{backgroundColor: '#ffffff'}}/>
     }
 
-    {Platform.OS === 'ios' && currentImageBasemap &&
+    {Platform.OS === 'ios' && props.imageBasemap &&
     <MapboxGL.Animated.ImageSource
       id='imageBasemapBackground'
       coordinates={[[-250, 85], [250, 85], [250, -85], [-250, -85]]}
@@ -94,11 +93,11 @@ function Basemap(props) {
     </MapboxGL.Animated.ImageSource>}
 
     {/* Image Basemap Layer */}
-    {currentImageBasemap && !isEmpty(props.coordQuad) &&
+    {props.imageBasemap && !isEmpty(props.coordQuad) &&
     <MapboxGL.Animated.ImageSource
       id='imageBasemap'
       coordinates={props.coordQuad}
-      url={useImages.getLocalImageSrc(currentImageBasemap.id)}>
+      url={useImages.getLocalImageSrc(props.imageBasemap.id)}>
       <MapboxGL.RasterLayer id='imageBasemapLayer'
                             style={{rasterOpacity: 1}}/>
     </MapboxGL.Animated.ImageSource>}
@@ -200,26 +199,10 @@ function Basemap(props) {
   </MapboxGL.MapView>;
 }
 
-export const MapboxOutdoorsBasemap = React.forwardRef((props, ref) => (
+export const MapLayer1 = React.forwardRef((props, ref) => (
   <Basemap {...props} forwardedRef={ref}/>
 ));
 
-export const MapboxSatelliteBasemap = React.forwardRef((props, ref) => (
-  <Basemap {...props} forwardedRef={ref}/>
-));
-
-export const MacrostratBasemap = React.forwardRef((props, ref) => (
-  <Basemap {...props} forwardedRef={ref}/>
-));
-
-export const OSMBasemap = React.forwardRef((props, ref) => (
-  <Basemap {...props} forwardedRef={ref}/>
-));
-
-export const CustomBasemap = React.forwardRef((props, ref) => (
-  <Basemap {...props} forwardedRef={ref}/>
-));
-
-export const ImageBasemap = React.forwardRef((props, ref) => (
+export const MapLayer2 = React.forwardRef((props, ref) => (
   <Basemap {...props} forwardedRef={ref}/>
 ));
