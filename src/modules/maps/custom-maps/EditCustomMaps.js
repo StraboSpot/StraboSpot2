@@ -25,7 +25,7 @@ const EditCustomMaps = (props) => {
   const initialEditableState = {
     title: customMapToEdit.title || null,
     opacity: customMapToEdit.opacity === 0 ? 1 : customMapToEdit.opacity,
-    isOverlay: customMapToEdit.isOverlay || false,
+    overlay: customMapToEdit.overlay || false,
     styleUrl: customMapToEdit.url,
   };
 
@@ -69,7 +69,7 @@ const EditCustomMaps = (props) => {
   const saveAndClose = (i) => {
     const customMapCopy = {...customMapToEdit};
     customMapCopy.opacity = editableCustomMapData.opacity;
-    customMapCopy.isOverlay =  editableCustomMapData.isOverlay;
+    customMapCopy.overlay =  editableCustomMapData.overlay;
     customMapCopy.title = editableCustomMapData.title;
     console.log(customMapCopy)
     dispatch({type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE, bool: false});
@@ -96,13 +96,13 @@ const EditCustomMaps = (props) => {
           title={'Display as overlay'}
           rightElement={
             <Switch
-              value={editableCustomMapData.isOverlay}
-              onValueChange={val => setEditableCustomMapData(e => ({...e, isOverlay: val}))}
+              value={editableCustomMapData.overlay}
+              onValueChange={val => setEditableCustomMapData(e => ({...e, overlay: val}))}
             />
           }
         />
         </View>
-        {editableCustomMapData.isOverlay &&
+        {editableCustomMapData.overlay &&
         <View style={{}}>
           <ListItem
             containerStyle={{borderTopWidth: 0.5, padding: 0, paddingLeft: 10}}

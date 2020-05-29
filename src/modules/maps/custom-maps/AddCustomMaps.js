@@ -40,7 +40,7 @@ const AddCustomMaps = (props) => {
   const [editableCustomMapData, setEditableCustomMapData] = useState({
     title: '',
     opacity: 0,
-    isOverlay: false,
+    overlay: false,
     id: '',
     accessToken: MBAccessToken,
   });
@@ -220,12 +220,12 @@ const AddCustomMaps = (props) => {
           title={'Display as overlay'}
           rightElement={
             <Switch
-              value={editableCustomMapData.isOverlay}
-              onValueChange={val => setEditableCustomMapData(e => ({...e, isOverlay: val}))}
+              value={editableCustomMapData.overlay}
+              onValueChange={val => setEditableCustomMapData(e => ({...e, overlay: val}))}
             />
           }
         />
-        {editableCustomMapData.isOverlay &&
+        {editableCustomMapData.overlay &&
         <View style={{}}>
           <ListItem
             containerStyle={{borderTopWidth: 0.5, padding: 0, paddingLeft: 10}}

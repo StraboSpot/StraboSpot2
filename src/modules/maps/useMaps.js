@@ -254,9 +254,9 @@ const useMaps = () => {
     console.log('value', value, 'id', map.mapId);
     const customMapsCopy = {...customMaps};
     // if (customMapsCopy.length > 1) customMapsCopy.map(map => map.isViewable = false);
-    customMapsCopy[map.mapId].isViewable = value;
-    dispatch({type: mapReducers.CUSTOM_MAPS, customMaps: customMapsCopy});
-    if (!customMapsCopy[map.mapId].overlay) viewCustomMap(map);
+    customMapsCopy[map.id].isViewable = value;
+    dispatch({type: mapReducers.ADD_CUSTOM_MAP, customMap: customMapsCopy[map.id]});
+    if (!customMapsCopy[map.id].overlay) viewCustomMap(map);
   };
 
   const viewCustomMap = (map) => {
