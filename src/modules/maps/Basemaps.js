@@ -52,7 +52,7 @@ function Basemap(props) {
     {/* Basemap Raster */}
     {!props.imageBasemap && <MapboxGL.RasterSource
       id={props.basemap.id}
-      tileUrlTemplates={useMaps.buildTileUrl(props.basemap)}
+      tileUrlTemplates={[useMaps.buildTileUrl(props.basemap)]}
       maxZoomLevel={props.basemap.maxZoom}
       tileSize={256}
     >
@@ -69,7 +69,7 @@ function Basemap(props) {
         <MapboxGL.RasterSource
           key={customMap.id}
           id={customMap.id}
-          tileUrlTemplates={useMaps.buildTileUrl(customMap)}>
+          tileUrlTemplates={[useMaps.buildTileUrl(customMap)]}>
           <MapboxGL.RasterLayer id={customMap.id + 'Layer'}
                                 sourceID={customMap.id}
                                 style={{rasterOpacity: customMap.opacity}}/>

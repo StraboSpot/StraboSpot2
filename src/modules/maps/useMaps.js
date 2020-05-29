@@ -32,7 +32,7 @@ const useMaps = () => {
     if (basemap.source === 'osm') tileUrl = tileUrl + basemap.tilePath;
     else tileUrl = tileUrl + basemap.id + basemap.tilePath + (basemap.key ? '?access_token=' + basemap.key : '');
     console.log('Map Tile URL:', tileUrl);
-    return [tileUrl];
+    return tileUrl;
   };
 
   const saveCustomMap = async (source, map) => {

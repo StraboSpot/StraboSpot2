@@ -64,7 +64,7 @@ const AddCustomMaps = (props) => {
   }, [editableCustomMapData.opacity]);
 
   const addMap = async () => {
-    const customMap = await useMaps.checkMap(mapType, editableCustomMapData)
+    const customMap = await useMaps.saveCustomMap(mapType, editableCustomMapData)
     console.log(customMap)
         dispatch({type: mapReducers.ADD_CUSTOM_MAP, customMap: customMap});
         dispatch({type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE, view: null, bool: false});
