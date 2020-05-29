@@ -35,9 +35,8 @@ const SaveMapsModal = (props) => {
   const offlineMaps = useSelector(state => state.map.offlineMaps);
   const dispatch = useDispatch();
 
-  const appId = currentBasemap && currentBasemap.id;
-  const saveId = currentBasemap && currentBasemap.layerSaveId;
-  const currentMapName = currentBasemap && currentBasemap.layerLabel;
+  const id = currentBasemap && currentBasemap.id;
+  const currentMapName = currentBasemap && currentBasemap.title;
   const maxZoom = currentBasemap && currentBasemap.maxZoom;
   // let zoomLevels = [];
   let progressStatus = '';
@@ -56,7 +55,6 @@ const SaveMapsModal = (props) => {
   useEffect(() => {
     if (props.map) {
       props.map.getCurrentZoom().then((zoom) => {
-        // console.log(zoom);
         let initialZoom = [];
         let currentZoom = Math.round(zoom);
         setDownloadZoom(Math.round(zoom));
@@ -73,11 +71,6 @@ const SaveMapsModal = (props) => {
         setExtentString(ex);
       });
     }
-    return function unMount() {
-      console.log('SaveMapsModal unMounted');
-      setShowMainMenu(true);
-      setShowComplete(false);
-    };
   }, [props.map]);
 
   useEffect(() => {
@@ -158,7 +151,7 @@ const SaveMapsModal = (props) => {
   const downloadZip = async (zipUID) => {
     try {
       const downloadZipURL = tilehost + '/ziptemp/' + zipUID + '/' + zipUID + '.zip';
-      const layerSaveId = currentBasemap.layerSaveId;
+      const layerSaveId = currentBasemap.id;
       //first try to delete from temp directories
       let fileExists = await RNFS.exists(tileZipsDirectory + '/' + layerSaveId + '.zip');
       console.log('file Exists:', fileExists ? 'YES' : 'NO');
@@ -239,8 +232,8 @@ const SaveMapsModal = (props) => {
       }
     }
     else {
-      layer = currentBasemap.layerSaveId;
-      startZipURL = tilehost + '/asynczip?layer=' + layer + '&extent=' + extentString + '&zoom=' + downloadZoom;
+      layer = currentBasemap.id;
+      startZipURL = tilehost + '/asynczip?layer=' + layerID + '&extent=' + extentString + '&zoom=' + downloadZoom;
     }
 
     console.log('startZipURL: ', startZipURL);
@@ -251,11 +244,11 @@ const SaveMapsModal = (props) => {
 
   const moveFiles = async (zipUID) => {
     let result, mapName;
-    let folderExists = await RNFS.exists(tileCacheDirectory + '/' + saveId);
+    let folderExists = await RNFS.exists(tileCacheDirectory + '/' + id);
     if (!folderExists) {
-      console.log('FOLDER DOESN\'T EXIST! ' + saveId);
-      await RNFS.mkdir(tileCacheDirectory + '/' + saveId);
-      await RNFS.mkdir(tileCacheDirectory + '/' + saveId + '/tiles');
+      console.log('FOLDER DOESN\'T EXIST! ' + id);
+      await RNFS.mkdir(tileCacheDirectory + '/' + id);
+      await RNFS.mkdir(tileCacheDirectory + '/' + id + '/tiles');
     }
 
     //now move files to correct location
@@ -267,7 +260,7 @@ const SaveMapsModal = (props) => {
 
     await tileMove(result, zipUID);
 
-    let tileCount = await RNFS.readDir(tileCacheDirectory + '/' + saveId + '/tiles');
+    let tileCount = await RNFS.readDir(tileCacheDirectory + '/' + id + '/tiles');
     tileCount = tileCount.length;
 
     let currentOfflineMaps = Object.values(offlineMaps);
@@ -277,26 +270,26 @@ const SaveMapsModal = (props) => {
       currentOfflineMaps = [];
     }
 
-    const customMap = customMaps.filter(map => saveId === map.id);
+    const customMap = Object.values(customMaps).filter(map => id === map.id);
     console.log(customMap);
-    if (appId !== 'custom') mapName = currentMapName;
+    if (id !== 'custom') mapName = currentMapName;
     else mapName = customMap[0].title + ' (Custom Map)';
 
 
     let newOfflineMapsData = [];
     let thisMap = {};
-    thisMap.saveId = saveId;
-    thisMap.appId = appId;
+    thisMap.id = id;
     thisMap.name = mapName;
     thisMap.count = tileCount;
-    thisMap.mapId = new Date().valueOf();
+    // thisMap.mapId = new Date().valueOf();
+    thisMap.mapId = zipUID;
     thisMap.date = new Date().toLocaleString();
     newOfflineMapsData.push(thisMap);
 
     //loop over offlineMapsData and add any other maps (not current)
     for (let i = 0; i < currentOfflineMaps.length; i++) {
-      if (currentOfflineMaps[i].saveId) {
-        if (currentOfflineMaps[i].saveId !== saveId) {
+      if (currentOfflineMaps[i].id) {
+        if (currentOfflineMaps[i].id !== id) {
           //Add it to new array for Redux Storage
           newOfflineMapsData.push(currentOfflineMaps[i]);
         }
@@ -334,11 +327,11 @@ const SaveMapsModal = (props) => {
 
   const tileMove = async (tilearray, zipUID) => {
     for (const tile of tilearray) {
-      let fileExists = await RNFS.exists(tileCacheDirectory + '/' + saveId + '/tiles/' + tile.name);
+      let fileExists = await RNFS.exists(tileCacheDirectory + '/' + id + '/tiles/' + tile.name);
       console.log('foo exists: ', tile.name + ' ' + fileExists);
       if (!fileExists) {
         await RNFS.moveFile(tileTempDirectory + '/' + zipUID + '/tiles/' + tile.name,
-          tileCacheDirectory + '/' + saveId + '/tiles/' + tile.name);
+          tileCacheDirectory + '/' + id + '/tiles/' + tile.name);
         console.log(tile);
       }
     }
@@ -358,6 +351,11 @@ const SaveMapsModal = (props) => {
 
   return (
     <Dialog
+      onDismiss={() => {
+        setShowMainMenu(true);
+        setShowComplete(false);
+      }}
+      visible={props.visible}
       dialogStyle={{borderRadius: 30}}
       dialogAnimation={new SlideAnimation({
         slideFrom: 'top',

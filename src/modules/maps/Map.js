@@ -923,8 +923,8 @@ const Map = React.forwardRef((props, ref) => {
   return (
     <View style={{flex: 1, zIndex: -1}}>
       {/* Switch identical layers to force basemap raster re-render based on mapToggle value*/}
-      {mapToggle && <MapLayer1  {...mapProps}/>}
-      {!mapToggle && <MapLayer2 {...mapProps}/>}
+      {mapProps.basemap && mapToggle && <MapLayer1  {...mapProps}/>}
+      {mapProps.basemap && !mapToggle && <MapLayer2 {...mapProps}/>}
     </View>
   );
 });

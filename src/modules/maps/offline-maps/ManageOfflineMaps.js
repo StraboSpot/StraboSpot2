@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, useEffect} from 'react';
 import {Alert, Text, View} from 'react-native';
 import {Button, ListItem} from 'react-native-elements';
 import {connect, useDispatch, useSelector} from 'react-redux';
@@ -8,7 +8,7 @@ import {mapReducers} from '../maps.constants';
 import {isEmpty} from '../../../shared/Helpers';
 // import SectionDivider from '../../../shared/ui/SectionDivider';
 import Divider from '../../main-menu-panel/MainMenuPanelDivider';
-
+import useExportHook from '../../project/useExport';
 // Styles
 import commonStyles from '../../../shared/common.styles';
 import styles from './offlineMaps.styles';
@@ -18,6 +18,7 @@ var RNFS = require('react-native-fs');
 const ManageOfflineMaps = (props) => {
   console.log('Props: ', props);
 
+  const [useExport] = useExportHook();
   let dirs = RNFetchBlob.fs.dirs;
   const devicePath = Platform.OS === 'ios' ? dirs.DocumentDir : dirs.SDCardDir; // ios : android
   const tilesDirectory = '/StraboSpotTiles';
@@ -35,27 +36,11 @@ const ManageOfflineMaps = (props) => {
     let tempCurrentBasemap;
     console.log('viewOfflineMap: ', map);
 
-    let tileJSON = 'file://' + tileCacheDirectory + '/' + map.saveId + '/tiles/{z}_{x}_{y}.png';
-    console.log('tileJSON: ', tileJSON);
-    //change id to force layer reload
-    tempCurrentBasemap = {
-      id: 'null',
-      layerId: map.saveId,
-      layerLabel: map.name,
-      layerSaveId: map.saveId,
-      url: tileJSON,
-      maxZoom: 19,
-    };
-    await props.onCurrentBasemap(tempCurrentBasemap);
-    tempCurrentBasemap = {
-      id: map.appId,
-      layerId: map.saveId,
-      layerLabel: map.name,
-      layerSaveId: map.saveId,
-      url: tileJSON,
-      maxZoom: 19,
-    };
+    // let tileJSON = 'file://' + tileCacheDirectory + '/' + map.id + '/tiles/{z}_{x}_{y}.png';
+    const url = 'file://' + tileCacheDirectory + '/'
+    const tilePath = '/tiles/{z}_{x}_{y}.png'
 
+    tempCurrentBasemap = {...map, url: [url], tilePath: tilePath};
     console.log('tempCurrentBasemap: ', tempCurrentBasemap);
     await props.onCurrentBasemap(tempCurrentBasemap);
     // props.closeSettingsDrawer();
@@ -83,9 +68,9 @@ const ManageOfflineMaps = (props) => {
 
   const deleteMap = async (map) => {
     console.log('Deleting Map Here');
-    console.log('map: ', map.saveId);
-    console.log('directory: ', tileCacheDirectory + '/' + map.saveId);
-    let folderExists = await RNFS.exists(tileCacheDirectory + '/' + map.saveId);
+    console.log('map: ', map.id);
+    console.log('directory: ', tileCacheDirectory + '/' + map.id);
+    let folderExists = await RNFS.exists(tileCacheDirectory + '/' + map.id);
     const zipFileExists = await RNFS.exists(
       zipsDirectory + '/' + map.mapId + '.zip',
     );
@@ -135,7 +120,7 @@ const ManageOfflineMaps = (props) => {
             <ListItem
               containerStyle={styles.list}
               bottomDivider={i < Object.values(props.offlineMaps).length - 1}
-              key={item.saveId}
+              key={item.id}
               title={
                 <View style={styles.itemContainer}>
                   <Text style={styles.itemTextStyle}>{item.name}</Text>
