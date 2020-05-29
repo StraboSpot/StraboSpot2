@@ -419,15 +419,6 @@ const Home = (props) => {
     props.setNotebookPanelVisible(true);
   };
 
-  const openSidePanel = (panelView, data) => {
-    console.log(panelView);
-    if (isSidePanelVisible) {
-      if (settingsPageVisible === 'Active Project') animatePanels(mainMenuSidePanelAnimation, 300);
-      else if (settingsPageVisible === 'Custom Maps') animatePanels(customMapsSidePanelAnimation, 300);
-      // dispatch({type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE, bool: true});
-    }
-  };
-
   const renderAllSpotsPanel = () => {
     return (
       <View style={[notebookStyles.allSpotsPanel]}>
@@ -495,6 +486,7 @@ const Home = (props) => {
   const renderSaveMapsModal = () => {
     return (
       <SaveMapsModal
+        visible={isOfflineMapModalVisible}
         close={() => setIsOfflineMapModalVisible(false)}
         map={mapViewComponent.current}
       />
@@ -956,7 +948,7 @@ const Home = (props) => {
       {renderStatusDialogBox()}
       {renderInfoDialogBox()}
       {renderErrorMessageDialogBox()}
-      {isOfflineMapModalVisible && renderSaveMapsModal()}
+      {renderSaveMapsModal()}
     </View>
   );
 };
