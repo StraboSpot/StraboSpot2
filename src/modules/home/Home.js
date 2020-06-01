@@ -914,7 +914,11 @@ const Home = (props) => {
       />
       <BaseMapDialog
         visible={dialogs.baseMapMenuVisible}
-        onPress={(name) => useMaps.setCurrentBasemap(name)}
+        close={() => toggleDialog('baseMapMenuVisible')}
+        onPress={(name) => {
+          useMaps.setCurrentBasemap(name);
+          toggleDialog('baseMapMenuVisible');
+        }}
         onTouchOutside={() => toggleDialog('baseMapMenuVisible')}
       />
       <NotebookPanelMenu

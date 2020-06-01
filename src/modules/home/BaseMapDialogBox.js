@@ -80,7 +80,10 @@ const BaseMapDialog = props => {
                   bottomDivider={i < customMapsArr.length - 1}
                   key={customMap.id}
                   checkmark={customMap.id === currentBasemap.id}
-                  onPress={() => useMaps.viewCustomMap(customMap)}
+                  onPress={() => {
+                    useMaps.viewCustomMap(customMap);
+                    props.close();
+                  }}
                   title={
                     <View style={styles.itemContainer}>
                       <Text style={styles.customBaseMapListText}>{customMap.title}</Text>
