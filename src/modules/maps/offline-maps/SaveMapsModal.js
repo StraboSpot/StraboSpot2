@@ -296,7 +296,7 @@ const SaveMapsModal = (props) => {
       }
     }
 
-    const mapSavedObject = Object.assign({}, ...newOfflineMapsData.map(map => ({[map.name]: map})));
+    const mapSavedObject = Object.assign({}, ...newOfflineMapsData.map(map => ({[map.id]: map})));
     console.log('Map to save to Redux', mapSavedObject);
 
     await dispatch({type: mapReducers.OFFLINE_MAPS, offlineMaps: mapSavedObject});

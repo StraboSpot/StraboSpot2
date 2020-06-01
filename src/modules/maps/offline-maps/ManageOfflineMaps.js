@@ -32,13 +32,17 @@ const ManageOfflineMaps = (props) => {
   const currentBasemap = useSelector((state) => state.map.currentBasemap);
   const dispatch = useDispatch;
 
+  useEffect(() => {
+    useExport.getMapsFromDevice();
+  },[]);
+
   const viewOfflineMap = async (map) => {
     let tempCurrentBasemap;
     console.log('viewOfflineMap: ', map);
 
     // let tileJSON = 'file://' + tileCacheDirectory + '/' + map.id + '/tiles/{z}_{x}_{y}.png';
-    const url = 'file://' + tileCacheDirectory + '/'
-    const tilePath = '/tiles/{z}_{x}_{y}.png'
+    const url = 'file://' + tileCacheDirectory + '/';
+    const tilePath = '/tiles/{z}_{x}_{y}.png';
 
     tempCurrentBasemap = {...map, url: [url], tilePath: tilePath};
     console.log('tempCurrentBasemap: ', tempCurrentBasemap);
@@ -80,7 +84,7 @@ const ManageOfflineMaps = (props) => {
     console.log(folderExists, zipFileExists, tileTempFileExists);
     //first, delete folder with tiles
     if (folderExists || zipFileExists || tileTempFileExists) {
-      await RNFS.unlink(tileCacheDirectory + '/' + map.saveId);
+      await RNFS.unlink(tileCacheDirectory + '/' + map.id);
       if (zipFileExists) {
         await RNFS.unlink(zipsDirectory + '/' + map.mapId + '.zip');
       }
@@ -96,12 +100,12 @@ const ManageOfflineMaps = (props) => {
       if (value.mapId === map.mapId) keyToDelete = key;
     });
 
-    console.log(keyToDelete);
+    // console.log(keyToDelete);
     delete currentOfflineMaps[keyToDelete];
-    console.log(currentOfflineMaps);
+    // console.log(currentOfflineMaps);
 
     await props.onOfflineMaps(currentOfflineMaps);
-    console.log('Saved offlineMaps to Redux.');
+    // console.log('Saved offlineMaps to Redux.');
   };
 
   return (

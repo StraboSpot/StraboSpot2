@@ -161,7 +161,7 @@ export const mapProviders = {
     attributions: '© <a href="http://mapwarper.net/home/about">Map Warper</a>',
     imageType: 'png',
     mime: 'image/png',
-    tilePath: '/{z}/{x}/{y}.png',
+    tilePath: '{z}/{x}/{y}.png',
     url: ['https://www.strabospot.org/mwproxy/'],
   },
   strabo_spot_mapbox: {

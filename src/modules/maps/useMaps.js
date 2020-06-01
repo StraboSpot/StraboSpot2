@@ -16,8 +16,10 @@ import {projectReducers} from '../project/project.constants';
 
 const useMaps = () => {
   const dispatch = useDispatch();
+  const currentBasemap = useSelector(state => state.map.currentBasemap);
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const customMaps = useSelector(state => state.map.customMaps);
+  const customMapToEdit = useSelector(state => state.map.selectedCustomMapToEdit);
   const project = useSelector(state => state.project.project);
   const settingsPanel = useSelector(state => state.home.isSettingsPanelVisible);
 
@@ -30,18 +32,20 @@ const useMaps = () => {
   const buildTileUrl = (basemap) => {
     let tileUrl = basemap.url[0];
     if (basemap.source === 'osm') tileUrl = tileUrl + basemap.tilePath;
+    if (basemap.source === 'map_warper') tileUrl = tileUrl + '/' + basemap.id + '/' + basemap.tilePath;
     else tileUrl = tileUrl + basemap.id + basemap.tilePath + (basemap.key ? '?access_token=' + basemap.key : '');
-    console.log('Map Tile URL:', tileUrl);
     return tileUrl;
   };
 
   const saveCustomMap = async (source, map) => {
     let mapId = map.id;
+    let testTileUrl;
     if (source === 'mapbox_styles') mapId = map.id.split('/').slice(3).join('/'); // Pull out mapbox styles map id
     const providerInfo = getProviderInfo(source);
     const customMap = {...map, ...providerInfo, id: mapId, key: map.accessToken, source: source};
     const tileUrl = buildTileUrl(customMap);
-    const testTileUrl = tileUrl.replace(/({z}\/{x}\/{y})/, '0/0/0');
+    if (map.source === 'map_warper') testTileUrl = 'https://strabospot.org/map_warper_check/' + map.id;
+    else testTileUrl = tileUrl.replace(/({z}\/{x}\/{y})/, '0/0/0');
     console.log('Custom Map:', customMap, 'Test Tile URL:', testTileUrl);
 
     return fetch(testTileUrl).then(response => {
@@ -243,6 +247,18 @@ const useMaps = () => {
     return [targetX, targetY];
   };
 
+  const saveEditsAndClose = (map) => {
+    const customMapCopy = {...customMapToEdit};
+    customMapCopy.opacity = map.opacity;
+    customMapCopy.overlay =  map.overlay;
+    customMapCopy.title = map.title;
+    console.log(customMapCopy);
+    if (customMapCopy.overlay && customMapCopy.id === currentBasemap.id) setCurrentBasemap(null);
+
+    dispatch({type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE, bool: false});
+    dispatch({type: mapReducers.ADD_CUSTOM_MAP, customMap: customMapCopy});
+  };
+
   const setCurrentBasemap = (mapId) => {
     if (!mapId) mapId = 'mapbox.outdoors';
     const currentBasemap = basemaps1.find(basemap => basemap.id === mapId);
@@ -300,6 +316,7 @@ const useMaps = () => {
     setSelectedSpot: setSelectedSpot,
     getCoordQuad: getCoordQuad,
     convertImagePixelsToLatLong: convertImagePixelsToLatLong,
+    saveEditsAndClose: saveEditsAndClose,
     setCurrentBasemap: setCurrentBasemap,
     setCustomMapSwitchValue: setCustomMapSwitchValue,
     viewCustomMap: viewCustomMap,
