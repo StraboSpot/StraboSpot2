@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useSelector} from 'react-redux';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import * as turf from '@turf/turf/index';
@@ -46,6 +46,7 @@ function Basemap(props) {
       ref={cameraRef}
       zoomLevel={currentImageBasemap ? 14 : 15}
       centerCoordinate={currentImageBasemap ? useMaps.convertCoordinateProjections(pixelProjection, geoLatLngProjection, [(currentImageBasemap.width) / 2, (currentImageBasemap.height) / 2]) : props.centerCoordinate}
+      animationDuration={0}
       // followUserLocation={true}   // Can't follow user location if want to zoom to extent of Spots
       // followUserMode='normal'
     />
