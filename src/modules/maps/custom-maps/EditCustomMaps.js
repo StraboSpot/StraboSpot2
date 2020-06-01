@@ -1,12 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import {Alert, FlatList, Switch, Text, TextInput, View} from 'react-native';
 import Divider from '../../main-menu-panel/MainMenuPanelDivider';
-import {Button, Icon, ListItem, Slider} from 'react-native-elements';
+import {ListItem, Slider} from 'react-native-elements';
 import {settingPanelReducers} from '../../main-menu-panel/mainMenuPanel.constants';
 import {useDispatch, useSelector} from 'react-redux';
 
 import SidePanelHeader from '../../main-menu-panel/SidePanelHeader';
 import SaveAndDeleteButtons from '../../../shared/ui/SaveAndDeleteButtons';
+import {isEqual} from '../../../shared/Helpers';
 
 // Hooks
 import useMapHook from '../useMaps';
@@ -15,12 +16,10 @@ import useMapHook from '../useMaps';
 import sidePanelStyles from '../../main-menu-panel/sidePanel.styles';
 import styles from './customMaps.styles';
 import * as themes from '../../../shared/styles.constants';
-import {mapReducers} from '../maps.constants';
 
 const EditCustomMaps = (props) => {
   const dispatch = useDispatch();
   const customMapToEdit = useSelector(state => state.map.selectedCustomMapToEdit);
-  const customMaps = useSelector(state => state.map.customMaps);
 
   const initialEditableState = {
     title: customMapToEdit.title || null,
@@ -31,19 +30,15 @@ const EditCustomMaps = (props) => {
 
   const [useMaps] = useMapHook();
 
-  const [slider, setSlider] = useState(5)
   const [editableCustomMapData, setEditableCustomMapData] = useState({...customMapToEdit, ...initialEditableState});
-  const [refresh, setRefresh] = useState(false);
+  const [slider, setSlider] = useState(editableCustomMapData.opacity);
+  // const [refresh, setRefresh] = useState(false);
 
   useEffect(() => {
-    // console.log('Selected custom map', editableCustomMapData.title);
-    // return function cleanUp() {
-    //   console.log('BLAH')
-    // }
     if (customMapToEdit.id !== editableCustomMapData.id) {
       setEditableCustomMapData(customMapToEdit);
     }
-    console.log('editableCustomMapData', editableCustomMapData)
+    console.log('editableCustomMapData', editableCustomMapData);
   }, [customMapToEdit, initialEditableState, editableCustomMapData]);
 
   const confirmDeleteMap = async () => {
@@ -66,16 +61,6 @@ const EditCustomMaps = (props) => {
     );
   };
 
-  const saveAndClose = (i) => {
-    const customMapCopy = {...customMapToEdit};
-    customMapCopy.opacity = editableCustomMapData.opacity;
-    customMapCopy.overlay =  editableCustomMapData.overlay;
-    customMapCopy.title = editableCustomMapData.title;
-    console.log(customMapCopy)
-    dispatch({type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE, bool: false});
-    dispatch({type: mapReducers.ADD_CUSTOM_MAP, customMap: customMapCopy});
-  };
-
   const renderBackButton = () => {
     return (
       <SidePanelHeader
@@ -86,7 +71,6 @@ const EditCustomMaps = (props) => {
   };
 
   const renderOverlay = (map, i) => {
-    console.log('AAAAAAAAAAAAAAAA', map)
     let sliderValuePercent = (editableCustomMapData.opacity / 1).toFixed(1) * 100;
     return (
       <React.Fragment>
@@ -113,7 +97,8 @@ const EditCustomMaps = (props) => {
               <View style={{flex: 2, paddingTop: 10, paddingBottom: 10}}>
                 <Slider
                   value={editableCustomMapData.opacity}
-                  onValueChange={(val) => setEditableCustomMapData(e => ({...e, opacity: val}))}
+                  onValueChange={(val) => setSlider(val)}
+                  onSlidingComplete={() => setEditableCustomMapData(e => ({...e, opacity: slider}))}
                   maximumValue={1}
                   minimumValue={0}
                   step={0.1}
@@ -149,11 +134,10 @@ const EditCustomMaps = (props) => {
       <View style={[sidePanelStyles.sectionContainer, {flex: 3}]}>
         <Divider sectionText={'overlay settings'}/>
         <View style={styles.sectionsContainer}>
-          {/*{renderOverlay()}*/}
           <FlatList
             // keyExtractor={item => item.id}
             scrollEnabled={false}
-            extraData={refresh}
+            // extraData={refresh}
             data={[customMapToEdit]}
             renderItem={({item, i}) => renderOverlay(item)}
           />
@@ -169,7 +153,7 @@ const EditCustomMaps = (props) => {
       <View style={[sidePanelStyles.sectionContainer, {flex: 3}]}>
         <SaveAndDeleteButtons
           title={'Save'}
-          onPress={() => saveAndClose()}
+          onPress={() => useMaps.saveEditsAndClose(editableCustomMapData)}
         />
         <SaveAndDeleteButtons
           title={'Delete Map'}
