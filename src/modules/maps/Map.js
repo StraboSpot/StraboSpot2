@@ -313,7 +313,11 @@ const map = React.forwardRef((props, ref) => {
           console.log('vertexSelected', vertexSelected);
           if (isEmpty(vertexSelected)) {
             if (editingModeData.spotEditing.properties.id === spotFound.properties.id) clearSelectedFeatureToEdit();
-            else setSelectedSpotToEdit(spotFound);
+            else {
+              //if the spot is in already edited list, then get the spot from that list.
+              let editedSpot = editingModeData.spotsEdited.find(spot => spot.properties.id === spotFound.properties.id);
+              setSelectedSpotToEdit(isEmpty(editedSpot) ? spotFound : editedSpot);
+            }
           }
           else setSelectedVertexToEdit(vertexSelected);
         }
