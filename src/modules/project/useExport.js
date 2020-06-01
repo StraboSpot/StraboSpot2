@@ -4,6 +4,7 @@ import {Alert, Platform} from 'react-native';
 import {projectReducers} from './project.constants';
 import {homeReducers} from '../home/home.constants';
 import {isEmpty} from '../../shared/Helpers';
+import {mapReducers} from '../maps/maps.constants';
 
 const useExport = () => {
   let dirs = RNFetchBlob.fs.dirs;
@@ -14,6 +15,7 @@ const useExport = () => {
   const imagesDirectory = appDirectory + '/Images';
   const zipsDirectory = appDirectoryTiles + '/TileZips';
   const tileCacheDirectory = appDirectoryTiles + '/TileCache';
+  const tileTempDirectory = appDirectoryTiles + '/TileTemp';
   const dataBackupsDirectory = devicePath + appDirectory + '/DataBackups';
 
   const dispatch = useDispatch();
@@ -240,6 +242,42 @@ const useExport = () => {
     return Promise.resolve('Other Maps exported to device');
   };
 
+  const getMapsFromDevice = async () => {
+      await RNFetchBlob.fs.exists(devicePath + tileTempDirectory).then(res => {
+        console.log('EXISTS', res);
+        RNFetchBlob.fs.ls(devicePath + tileTempDirectory).then(file => {
+          console.log('FILE', file)
+          if (!isEmpty(file)) {
+            file.map(async (map, i) => {
+              const readFile = await RNFetchBlob.fs.readFile(devicePath + tileTempDirectory + '/' + map + '/details.json');
+              console.log('LALALLA', JSON.parse(readFile), file[i])
+              const mapData = JSON.parse(readFile)
+              let mapName;
+              if (mapData.layer === 'mapbox.outdoor') mapName = 'Mapbox Topo';
+              if (mapData.layer === 'mapbox.satellite') mapName = 'Mapbox Satellite';
+              else mapName = 'Custom';
+
+              let newOfflineMapsData = [];
+              let thisMap = {};
+              thisMap.id = mapData.layer;
+              thisMap.name = mapName;
+              thisMap.count = mapData.tile_count;
+              // thisMap.mapId = new Date().valueOf();
+              thisMap.mapId = file[i];
+              thisMap.date = new Date().toLocaleString();
+              newOfflineMapsData.push(thisMap);
+
+              const mapSavedObject = Object.assign({}, ...newOfflineMapsData.map(map => ({[map.id]: map})));
+              console.log('Map to save to Redux', mapSavedObject);
+
+              await dispatch({type: mapReducers.OFFLINE_MAPS, offlineMaps: mapSavedObject});
+              console.log('Saved offlineMaps to Redux.');
+            });
+          }
+        });
+      });
+  };
+
   const moveDistributedImage = async (image_id, fileName) => {
     return RNFetchBlob.fs.exists(devicePath + imagesDirectory + '/' + image_id + '.jpg')
       .then(exists => {
@@ -301,6 +339,7 @@ const useExport = () => {
   const exportHelpers = {
     backupProjectToDevice: backupProjectToDevice,
     doesDeviceDirectoryExist: doesDeviceDirectoryExist,
+    getMapsFromDevice: getMapsFromDevice,
   };
 
   return [exportHelpers];
