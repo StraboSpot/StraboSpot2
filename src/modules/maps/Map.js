@@ -301,7 +301,7 @@ const map = React.forwardRef((props, ref) => {
       // If so, check to see if point pressed was at another vertex of the selected feature
       //     If not edit vertex coords to those of pressed point
       //     If so switch selected vertex to vertex at pressed point
-      const spotFound = await getSpotAtPress(screenPointX, screenPointY);
+      let spotFound = await getSpotAtPress(screenPointX, screenPointY);
       if (isEmpty(editingModeData.spotEditing)) {
         if (isEmpty(spotFound)) console.log('No feature selected.');
         else setSelectedSpotToEdit(spotFound);
@@ -313,7 +313,11 @@ const map = React.forwardRef((props, ref) => {
           console.log('vertexSelected', vertexSelected);
           if (isEmpty(vertexSelected)) {
             if (editingModeData.spotEditing.properties.id === spotFound.properties.id) clearSelectedFeatureToEdit();
-            else setSelectedSpotToEdit(spotFound);
+            else {
+              //if the spot is in already edited list, then get the spot from that list.
+              spotFound = editingModeData.spotsEdited.find(spot => spot.properties.id === spotFound.properties.id);
+              setSelectedSpotToEdit(spotFound);
+            }
           }
           else setSelectedVertexToEdit(vertexSelected);
         }
