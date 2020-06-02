@@ -1,18 +1,8 @@
-import {Dimensions, StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 import * as themes from '../../shared/styles.constants';
-import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
-
-// eslint-disable-next-line no-unused-vars
-const {height, width} = Dimensions.get('window');
-const getWidthPercent = () => {
-  if (width < 500) return wp('95%');
-  if (width >= 500 && width <= 1000) return wp('50%');
-  if (width > 1000) return wp('35%');
-};
 
 const notebookStyles = StyleSheet.create({
   panel: {
-    // flex: 1,
     width: 400,
     height: '100%',
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
@@ -20,16 +10,6 @@ const notebookStyles = StyleSheet.create({
     right: 0,
     zIndex: -1,
   },
-  // panelWithAllSpotsPanel: {
-  //   width: getWidthPercent() + 125,
-  //   height: '100%',
-  //   borderBottomLeftRadius: 30,
-  //   borderTopLeftRadius: 30,
-  //   backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
-  //   position: 'absolute',
-  //   right: 125,
-  //   zIndex: 1,
-  // },
   allSpotsPanel: {
     flex: 1,
     zIndex: 1000,
@@ -37,24 +17,25 @@ const notebookStyles = StyleSheet.create({
     width: 125,
     height: '100%',
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
-    borderWidth: 1,
+    borderWidth: 2,
+    borderBottomColor: themes.DARKGREY,
     position: 'absolute',
     right: 0,
   },
   headerContainer: {
-    borderBottomWidth: 1,
-    height: 70,
-    padding: 10,
-    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
+    borderBottomWidth: 2,
+    borderBottomColor: themes.DARKGREY,
+    paddingBottom: 5,
+    paddingTop: 5,
   },
   centerContainer: {
     flex: 1,
   },
   footerContainer: {
     height: 60,
-    borderTopWidth: 1,
+    borderTopWidth: 2,
+    borderTopColor: themes.DARKGREY,
     padding: 10,
-    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
   },
   noSpotContent: {
     flex: 1,
@@ -107,6 +88,24 @@ const notebookStyles = StyleSheet.create({
   },
   dialogText: {
     color: themes.PRIMARY_ACCENT_COLOR,
+  },
+  traceContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    borderBottomWidth: 2,
+    borderBottomColor: themes.DARKGREY,
+  },
+  traceToggleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingLeft: 10,
+  },
+  traceToggleText: {
+    paddingRight: 10,
+    fontSize: themes.MEDIUM_TEXT_SIZE,
+  },
+  traceDisabledText: {
+    color: themes.PRIMARY_BACKGROUND_COLOR,
   },
 });
 

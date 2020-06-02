@@ -2,6 +2,8 @@
 import imagePropertiesSurvey from './images/image-properties-survey';
 import imagePropertiesChoices from './images/image-properties-choices';
 import projectDescriptionSurvey from './project/project-description-survey';
+import traceSurvey from './trace/trace-survey';
+import traceChoices from './trace/trace-choices';
 
 // Measurement forms
 import linearOrientationSurvey from './measurement/linear-orientation-survey';
@@ -17,41 +19,45 @@ const getMeasurementSurveyForBulkInput = (form) => {
 };
 
 const forms = {
-  'general': {
-    'images': {
-      'survey': imagePropertiesSurvey,
-      'choices': imagePropertiesChoices,
+  general: {
+    images: {
+      survey: imagePropertiesSurvey,
+      choices: imagePropertiesChoices,
     },
-    'project_description': {
-      'survey': projectDescriptionSurvey,
+    project_description: {
+      survey: projectDescriptionSurvey,
     },
-  },
-  'measurement': {
-    'linear_orientation': {
-      'survey': linearOrientationSurvey,
-      'choices': linearOrientationChoices,
-    },
-    'planar_orientation': {
-      'survey': planarOrientationSurvey,
-      'choices': planarOrientationChoices,
-    },
-    'tabular_orientation': {
-      'survey': tabularZoneOrientationSurvey,
-      'choices': tabularZoneOrientationChoices,
+    trace: {
+      survey: traceSurvey,
+      choices: traceChoices,
     },
   },
-  'measurement_bulk': {
-    'linear_orientation': {
-      'survey': getMeasurementSurveyForBulkInput(linearOrientationSurvey),
-      'choices': linearOrientationChoices,
+  measurement: {
+    linear_orientation: {
+      survey: linearOrientationSurvey,
+      choices: linearOrientationChoices,
     },
-    'planar_orientation': {
-      'survey': getMeasurementSurveyForBulkInput(planarOrientationSurvey),
-      'choices': planarOrientationChoices,
+    planar_orientation: {
+      survey: planarOrientationSurvey,
+      choices: planarOrientationChoices,
     },
-    'tabular_orientation': {
-      'survey': getMeasurementSurveyForBulkInput(tabularZoneOrientationSurvey),
-      'choices': tabularZoneOrientationChoices,
+    tabular_orientation: {
+      survey: tabularZoneOrientationSurvey,
+      choices: tabularZoneOrientationChoices,
+    },
+  },
+  measurement_bulk: {
+    linear_orientation: {
+      survey: getMeasurementSurveyForBulkInput(linearOrientationSurvey),
+      choices: linearOrientationChoices,
+    },
+    planar_orientation: {
+      survey: getMeasurementSurveyForBulkInput(planarOrientationSurvey),
+      choices: planarOrientationChoices,
+    },
+    tabular_orientation: {
+      survey: getMeasurementSurveyForBulkInput(tabularZoneOrientationSurvey),
+      choices: tabularZoneOrientationChoices,
     },
   },
 };

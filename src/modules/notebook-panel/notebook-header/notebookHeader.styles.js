@@ -3,26 +3,27 @@ import * as themes from '../../../shared/styles.constants';
 
 const notebookHeaderStyles = StyleSheet.create({
   headerContentContainer: {
-    flex: 15,
     flexDirection: 'row',
-  },
-  headerButtons: {
-    paddingTop: 20,
+    alignItems: 'center',
   },
   headerCoords: {
     color: themes.PRIMARY_ACCENT_COLOR,
-    fontSize: 16,
+    fontSize: themes.MEDIUM_TEXT_SIZE,
   },
   headerImage: {
     resizeMode: 'contain',
+    width: 50,
+    height: 50,
   },
   headerSpotName: {
-    fontSize: 30,
+    fontSize: themes.SPOT_NAME_SIZE,
     fontWeight: 'bold',
+    paddingTop: 0,
+    paddingBottom: 0,
+    paddingLeft: 0,
   },
   headerSpotNameAndCoordsContainer: {
-    paddingLeft: 10,
-    justifyContent: 'center',
+    paddingLeft: 5,
     flex: 1,
     flexDirection: 'column',
   },

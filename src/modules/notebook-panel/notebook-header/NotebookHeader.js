@@ -1,30 +1,35 @@
 import React, {useState} from 'react';
-import {Text, View} from 'react-native';
-import {Image} from 'react-native-elements';
-import {connect} from 'react-redux';
-import {TextInput} from 'react-native';
+import {Image, TextInput, Text, View} from 'react-native';
+import {useDispatch, useSelector} from 'react-redux';
 
+// Components
 import IconButton from '../../../shared/ui/IconButton';
 
 // Styles
 import headerStyles from './notebookHeader.styles';
 
+// Utilities
+import {toTitleCase} from '../../../shared/Helpers';
+
 // Constants
+import {labelDictionary} from '../../form/form.constants';
 import {spotReducers} from '../../spots/spot.constants';
 
 const NotebookHeader = props => {
+  const dispatch = useDispatch();
+  const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
+  const spot = useSelector(state => state.spot.selectedSpot);
+  const [spotName, setSpotName] = useState(spot.properties.name);
 
-  const [spotName, setSpotName] = useState(props.spot.properties.name);
-
-  // Creates DMS string for coordinates
   const getSpotCoordText = () => {
-    if (props.spot.geometry) {
-      if (props.spot.geometry.type === 'Point') {
-        const lng = props.spot.geometry.coordinates[0];
-        const lat = props.spot.geometry.coordinates[1];
+    if (spot.geometry && spot.geometry.type) {
+      // Creates DMS string for Point coordinates
+      if (spot.geometry.type === 'Point') {
+        const lng = spot.geometry.coordinates[0];
+        const lat = spot.geometry.coordinates[1];
         const latitude = lat.toFixed(6);
         const longitude = lng.toFixed(6);
-        if (props.currentImageBasemap && props.spot.properties.image_basemap){
+        if (currentImageBasemap && spot.properties.image_basemap) {
           return longitude + ' Xpx, ' + latitude + ' Ypx';
         }
         else {
@@ -34,26 +39,58 @@ const NotebookHeader = props => {
           return longitude + degreeSymbol + ' ' + longitudeCardinal + ', ' + latitude + degreeSymbol + ' ' + latitudeCardinal;
         }
       }
-      return props.spot.geometry.type;
+      else if (spot.geometry.type === 'LineString' && spot.properties.trace &&
+        spot.properties.trace.trace_feature && spot.properties.trace.trace_type) {
+        return getTraceText();
+      }
+      return spot.geometry.type;
     }
     else return 'No Geometry';
+  };
+
+  const getSpotGemometryIcon = () => {
+    if (spot.geometry && spot.geometry.type) {
+      if (spot.geometry.type === 'Point') return require('../../../assets/icons/NotebookHeaderPoint.png');
+      else if (spot.geometry.type === 'LineString') return require('../../../assets/icons/NotebookHeaderLine.png');
+      else if (spot.geometry.type === 'Polygon') return require('../../../assets/icons/NotebookHeaderPolygon.png');
+    }
+    else return require('../../../assets/icons/NotebookHeaderUnknown.png');
+  };
+
+  const getTraceText = () => {
+    const traceDictionary = labelDictionary.general.trace;
+    const key = spot.properties.trace.trace_type;
+    let traceText = traceDictionary[key] || key.replace(/_/g, ' ');
+    traceText = toTitleCase(traceText) + ' Trace';
+    const traceSubTypeFields = ['contact_type', 'geologic_structure_type', 'geomorphic_feature', 'antropogenic_feature', 'other_feature'];
+    const subType = traceSubTypeFields.find(subTypeField => spot.properties.trace[subTypeField]);
+    if (subType) {
+      const subTypeValue = spot.properties.trace[subType];
+      const subTypeLabel = traceDictionary[subTypeValue];
+      if (subTypeLabel) traceText = traceText + ' - ' + subTypeLabel.toUpperCase();
+    }
+    return traceText;
+  };
+
+  const onSpotEdit = (field, value) => {
+    dispatch({type: spotReducers.EDIT_SPOT_PROPERTIES, field: field, value: value});
   };
 
   return (
     <View style={headerStyles.headerContentContainer}>
       <Image
-        source={require('../../../assets/icons/NotebookHeaderPoint.png')}
+        source={getSpotGemometryIcon()}
         style={headerStyles.headerImage}
       />
       <View style={headerStyles.headerSpotNameAndCoordsContainer}>
         <TextInput
-          defaultValue={props.spot.properties.name}
+          defaultValue={spot.properties.name}
           onChangeText={(text) => setSpotName(text)}
-          onBlur={() => props.onSpotEdit('name', spotName)}
+          onBlur={() => onSpotEdit('name', spotName)}
           style={headerStyles.headerSpotName}/>
         <Text style={headerStyles.headerCoords}>{getSpotCoordText()}</Text>
       </View>
-      <View style={headerStyles.headerButtons}>
+      <View>
         <IconButton
           onPress={() => props.onPress('menu')}
           source={require('../../../assets/icons/three-dot-menu.png')}
@@ -64,16 +101,5 @@ const NotebookHeader = props => {
   );
 };
 
-function mapStateToProps(state) {
-  return {
-    spot: state.spot.selectedSpot,
-    currentImageBasemap: state.map.currentImageBasemap,
-  };
-}
-
-const mapDispatchToProps = {
-  onSpotEdit: (field, value) => ({type: spotReducers.EDIT_SPOT_PROPERTIES, field: field, value: value}),
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(NotebookHeader);
+export default NotebookHeader;
 

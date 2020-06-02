@@ -27,7 +27,7 @@ const useMaps = (props) => {
     let url = basemap.url[0];
     if (basemap.source === 'osm') url = url + basemap.tilePath;
     else url = url + basemap.id + basemap.tilePath + (basemap.key ? '?access_token=' + basemap.key : '');
-    console.log('URL', url);
+    //console.log('URL', url);
     return [url];
   };
 
