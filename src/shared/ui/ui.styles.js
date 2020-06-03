@@ -42,6 +42,14 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'flex-start',
   },
+  saveAndDeleteButtonStyles: {
+    borderRadius: 20,
+    width: 150,
+  },
+  saveAndDeleteButtonContainer: {
+    alignItems: 'center',
+    paddingTop: 10,
+  },
   sectionDivider: {
     paddingLeft: 10,
     paddingTop: 10,
@@ -55,7 +63,8 @@ const styles = StyleSheet.create({
     color: themes.SECONDARY_HEADER_TEXT_COLOR,
   },
   sliderContainer: {
-    width: 150,
+    flex:1,
+    // width: 150,
     alignItems: 'center',
   },
   slider: {

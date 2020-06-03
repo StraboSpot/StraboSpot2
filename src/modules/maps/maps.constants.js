@@ -26,7 +26,7 @@ export const mapReducers = {
   CLEAR_MAPS: 'CLEAR_MAPS',
   CURRENT_BASEMAP: 'CURRENT_BASEMAP',
   CURRENT_IMAGE_BASEMAP: 'CURRENT_IMAGE_BASEMAP',
-  CUSTOM_MAPS: 'CUSTOM_MAPS',
+  ADD_CUSTOM_MAP: 'ADD_CUSTOM_MAP',
   DELETE_CUSTOM_MAP: 'DELETE_CUSTOM_MAP',
   DELETE_OFFLINE_MAP: 'DELETE_OFFLINE_MAP',
   SELECTED_CUSTOM_MAP_TO_EDIT: 'SELECTED_CUSTOM_MAP_TO_EDIT',
@@ -36,148 +36,104 @@ export const mapReducers = {
   CLEAR_VERTEXES: 'CLEAR_VERTEXES',
 };
 
-export const customMapTypes = {
-  MAPBOX_STYLES: 'Mapbox Styles',
-  MAP_WARPER: 'Map Warper',
-  STRABOSPOT_MY_MAPS: 'Strabospot MyMaps',
-};
-
-export const basemaps = {
-  osm: {
+const defaultMaps = [
+  {
+    title: 'Mapbox Topo',
+    id: 'mapbox.outdoors',
+    source: 'strabo_spot_mapbox',
+  }, {
+    title: 'Mapbox Satellite',
+    id: 'mapbox.satellite',
+    source: 'strabo_spot_mapbox',
+  }, {
+    title: 'OSM Streets',
     id: 'osm',
-    layerId: 'osmLayer',
-    layerLabel: 'OSM Streets',
-    layerSaveId: 'osm',
-    url: 'https://a.tile.openstreetmap.org/{z}/{x}/{y}.png',
-    urls: ['https://a.tile.openstreetmap.org/', 'https://b.tile.openstreetmap.org/', 'https://c.tile.openstreetmap.org/'],
-    maxZoom: 16,
-    isDefault: true,
-  },
-  mapboxOutdoors: {
-    id: 'mapboxOutdoors',
-    layerId: 'mapboxOutdoorsLayer',
-    layerLabel: 'Mapbox Topo',
-    layerSaveId: 'mapbox.outdoors',
-    tilePath: '/{z}/{x}/{y}.png?access_token=' + MAPBOX_KEY,
-    url: 'http://tiles.strabospot.org/v5/mapbox.outdoors/{z}/{x}/{y}.png?access_token=' + MAPBOX_KEY,
-    urls: ['http://tiles.strabospot.org/v5/mapbox.outdoors/'],
-    maxZoom: 19,
-    isDefault: true,
-  },
-  mapboxSatellite: {
-    id: 'mapboxSatellite',
-    layerId: 'mapboxSatelliteLayer',
-    layerLabel: 'Mapbox Satellite',
-    layerSaveId: 'mapbox.satellite',
-    tilePath: '/{z}/{x}/{y}.png?access_token=' + MAPBOX_KEY,
-    url: 'http://tiles.strabospot.org/v5/mapbox.satellite/{z}/{x}/{y}.png?access_token=' + MAPBOX_KEY,
-    urls: ['http://tiles.strabospot.org/v5/mapbox.satellite/'],
-    maxZoom: 19,
-    isDefault: true,
-  },
-  macrostrat: {
+    source: 'osm',
+  }, {
+    title: 'Geology from Macrostrat',
     id: 'macrostrat',
-    layerId: 'macrostratLayer',
-    layerLabel: 'Geology from Macrostrat',
-    layerSaveId: 'macrostrat',
-    tilePath: '/{z}/{x}/{y}.png',
-    url: 'http://tiles.strabospot.org/v5/macrostrat/{z}/{x}/{y}.png',
-    urls: ['http://tiles.strabospot.org/v5/macrostrat/'],
-    maxZoom: 19,
-    isDefault: true,
-  },
-  mapboxStyles: {
-    id: 'mapboxStyles',
-    layerId: 'mapboxStyles',
-    layerLabel: 'Mapbox Styles',
-    url: 'https://api.mapbox.com/styles/v1/tiles/256/{z}/{x}/{y}?access_token=' + MAPBOX_KEY,
-    isDefault: false,
-  },
-};
-
-const defaultMaps = [{
-    'title': 'Mapbox Topo',
-    'id': 'mapbox.outdoors',
-    'source': 'strabo_spot_mapbox',
-  }, {
-    'title': 'Mapbox Satellite',
-    'id': 'mapbox.satellite',
-    'source': 'strabo_spot_mapbox',
-  }, {
-    'title': 'OSM Streets',
-    'id': 'osm',
-    'source': 'osm',
-  }, {
-    'title': 'Geology from Macrostrat',
-    'id': 'macrostrat',
-    'source': 'macrostrat',
+    source: 'macrostrat',
   }];
 
+export const customMapTypes = [
+  {
+    title: 'Mapbox Styles',
+    source: 'mapbox_styles',
+  },
+  {
+    title: 'Map Warper',
+    source: 'map_warper',
+  },
+  {
+    title: 'Strabospot My Maps',
+    source: 'strabospot_mymaps',
+  },
+];
+
 export const mapProviders = {
-  'mapbox_classic': {
-    'attributions': '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors.',
-    'imageType': 'png',
-    'mime': 'image/png',
-    'tilePath': '/{z}/{x}/{y}.png',
-    'url': ['https://api.mapbox.com/v4/']
+  mapbox_classic: {
+    attributions: '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors.',
+    imageType: 'png',
+    mime: 'image/png',
+    tilePath: '/{z}/{x}/{y}.png',
+    url: ['https://api.mapbox.com/v4/'],
   },
-  'mapbox_styles': {
-    'attributions': '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors.',
-    'mime': 'image/png',
-    'tilePath': '/tiles/256/{z}/{x}/{y}',
-    'url': ['https://api.mapbox.com/styles/v1/'],
-    'maxZoom': 20,
+  mapbox_styles: {
+    attributions: '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors.',
+    mime: 'image/png',
+    tilePath: '/tiles/256/{z}/{x}/{y}',
+    url: ['https://api.mapbox.com/styles/v1/'],
+    maxZoom: 20,
   },
-  'osm': {
-    'attributions': '© <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors.',
-    'imageType': 'png',
-    'mime': 'image/png',
+  osm: {
+    attributions: '© <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors.',
+    imageType: 'png',
+    mime: 'image/png',
     tilePath: '{z}/{x}/{y}.png',
-    'url': [
+    url: [
       'https://a.tile.openstreetmap.org/',
       'https://b.tile.openstreetmap.org/',
       'https://c.tile.openstreetmap.org/',
     ],
-    'maxZoom': 16,                  // http://wiki.openstreetmap.org/wiki/Zoom_levels
+    maxZoom: 16,                  // http://wiki.openstreetmap.org/wiki/Zoom_levels
   },
-  'macrostrat': {
-    'attributions': '© <a href="https://macrostrat.org/#about">Macrostrat</a>',
-    'imageType': 'png',
-    'mime': 'image/png',
-    'tilePath': '/{z}/{x}/{y}.png',
-    'url': ['http://tiles.strabospot.org/v5/'],
+  macrostrat: {
+    attributions: '© <a href="https://macrostrat.org/#about">Macrostrat</a>',
+    imageType: 'png',
+    mime: 'image/png',
+    tilePath: '/{z}/{x}/{y}.png',
+    url: ['http://tiles.strabospot.org/v5/'],
   },
-  'map_warper': {
-    'attributions': '© <a href="http://mapwarper.net/home/about">Map Warper</a>',
-    'imageType': 'png',
-    'mime': 'image/png',
-    'tilePath': '/{z}/{x}/{y}.png',
-    'url': ['https://www.strabospot.org/mwproxy/'],
+  map_warper: {
+    attributions: '© <a href="http://mapwarper.net/home/about">Map Warper</a>',
+    imageType: 'png',
+    mime: 'image/png',
+    tilePath: '{z}/{x}/{y}.png',
+    url: ['https://www.strabospot.org/mwproxy/'],
   },
-  'strabo_spot_mapbox': {
-    'attributions': '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors.',
-    'imageType': 'png',
-    'mime': 'image/png',
-    'tilePath': '/{z}/{x}/{y}.png',
-    'url': ['http://tiles.strabospot.org/v5/'],
-    'maxZoom': 19,                   // https://www.mapbox.com/help/define-mapbox-satellite/
+  strabo_spot_mapbox: {
+    attributions: '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors.',
+    imageType: 'png',
+    mime: 'image/png',
+    tilePath: '/{z}/{x}/{y}.png',
+    url: ['http://tiles.strabospot.org/v5/'],
+    maxZoom: 19,                   // https://www.mapbox.com/help/define-mapbox-satellite/
   },
-  'strabospot_mymaps': {
-    'attributions': '<a href="https://www.strabospot.org">StraboSpot Contributed</a>',
-    'imageType': 'png',
-    'mime': 'image/png',
-    'tilePath': '/{z}/{x}/{y}.png',
-    // 'url': [straboMyMapsUrl],
-    'maxZoom': 25,
+  strabospot_mymaps: {
+    attributions: '<a href="https://www.strabospot.org">StraboSpot Contributed</a>',
+    imageType: 'png',
+    mime: 'image/png',
+    tilePath: '/{z}/{x}/{y}.png',
+    // url: [straboMyMapsUrl],
+    maxZoom: 25,
   },
 };
 
-export const basemaps1 = defaultMaps.map(map => {
-
+export const basemaps = defaultMaps.map(map => {
   if (map.source === 'strabo_spot_mapbox') map.key = MAPBOX_KEY;
   return {...map, ...mapProviders[map.source]};
 });
-console.log(basemaps1);
+console.log(basemaps);
 
 export const symbols = {
   'default_point': require('../../assets/symbols/point.png'),

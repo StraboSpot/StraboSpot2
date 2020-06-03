@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {Alert, Animated, Dimensions, Easing, Platform, Text, View} from 'react-native';
-import MapView from '../maps/Map';
+import Map from '../maps/Map';
 import InitialProjectLoadModal from '../project/InitialProjectLoadModal';
 import MapActionsDialog from './MapActionsDialogBox';
 import MapSymbolsDialog from './MapSymbolsDialogBox';
@@ -37,8 +37,7 @@ import IconButton from '../../shared/ui/IconButton';
 import VertexDrag from '../maps/VertexDrag';
 import {animatePanels, isEmpty} from '../../shared/Helpers';
 import SaveMapsModal from '../maps/offline-maps/SaveMapsModal';
-import EditCustomMaps from '../maps/custom-maps/EditCustomMaps';
-import AddCustomMaps from '../maps/custom-maps/AddCustomMaps';
+import CustomMapDetails from '../maps/custom-maps/CustomMapDetails';
 
 // Hooks
 import useImagesHook from '../images/useImages';
@@ -419,15 +418,6 @@ const Home = (props) => {
     props.setNotebookPanelVisible(true);
   };
 
-  const openSidePanel = (panelView, data) => {
-    console.log(panelView);
-    if (isSidePanelVisible) {
-      if (settingsPageVisible === 'Active Project') animatePanels(mainMenuSidePanelAnimation, 300);
-      else if (settingsPageVisible === 'Custom Maps') animatePanels(customMapsSidePanelAnimation, 300);
-      // dispatch({type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE, bool: true});
-    }
-  };
-
   const renderAllSpotsPanel = () => {
     return (
       <View style={[notebookStyles.allSpotsPanel]}>
@@ -495,9 +485,9 @@ const Home = (props) => {
   const renderSaveMapsModal = () => {
     return (
       <SaveMapsModal
+        visible={isOfflineMapModalVisible}
         close={() => setIsOfflineMapModalVisible(false)}
         map={mapViewComponent.current}
-        visible={isOfflineMapModalVisible}
       />
     );
   };
@@ -505,16 +495,10 @@ const Home = (props) => {
   const renderSidePanelView = () => {
     let panelView = <Animated.View style={[sidePanelStyles.sidePanelContainer, animateMainMenuSidePanel]}/>;
     switch (sidePanelView) {
-      case 'addCustomMap':
+      case 'manageCustomMap':
         panelView =
           <Animated.View style={[sidePanelStyles.sidePanelContainer, animateMainMenuSidePanel]}>
-            <AddCustomMaps/>
-          </Animated.View>;
-        break;
-      case 'editCustomMap':
-        panelView =
-          <Animated.View style={[sidePanelStyles.sidePanelContainer, animateMainMenuSidePanel]}>
-            <EditCustomMaps/>
+            <CustomMapDetails/>
           </Animated.View>;
         break;
       case 'activeProject':
@@ -745,7 +729,7 @@ const Home = (props) => {
 
   return (
     <View style={homeStyles.container}>
-      <MapView
+      <Map
         mapComponentRef={mapViewComponent}
         mapMode={mapMode}
         startEdit={startEdit}
@@ -925,7 +909,11 @@ const Home = (props) => {
       />
       <BaseMapDialog
         visible={dialogs.baseMapMenuVisible}
-        onPress={(name) => useMaps.setCurrentBasemap(name)}
+        close={() => toggleDialog('baseMapMenuVisible')}
+        onPress={(name) => {
+          useMaps.setCurrentBasemap(name);
+          toggleDialog('baseMapMenuVisible');
+        }}
         onTouchOutside={() => toggleDialog('baseMapMenuVisible')}
       />
       <NotebookPanelMenu

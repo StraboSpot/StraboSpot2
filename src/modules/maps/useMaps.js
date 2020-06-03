@@ -1,158 +1,42 @@
 import * as turf from '@turf/turf/index';
 import Geolocation from '@react-native-community/geolocation';
 import {useDispatch, useSelector} from 'react-redux';
+import {useEffect} from 'react';
 import proj4 from 'proj4';
 
-import {isEmpty, makeMapId} from '../../shared/Helpers';
+import {isEmpty} from '../../shared/Helpers';
 import useSpotsHook from '../spots/useSpots';
 
 // Constants
 import {spotReducers} from '../spots/spot.constants';
-import {MAPBOX_KEY} from '../../MapboxConfig';
-import {basemaps1, mapReducers, geoLatLngProjection, pixelProjection} from './maps.constants';
+import {basemaps, mapProviders, mapReducers, geoLatLngProjection, pixelProjection} from './maps.constants';
+import {SettingsMenuItems} from '../main-menu-panel/mainMenu.constants';
 import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 import {projectReducers} from '../project/project.constants';
-import {Alert} from 'react-native';
+import useServerRequestsHook from '../../services/useServerRequests';
 
-const useMaps = (props) => {
+const useMaps = () => {
   const dispatch = useDispatch();
+  const currentBasemap = useSelector(state => state.map.currentBasemap);
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const customMaps = useSelector(state => state.map.customMaps);
+  const customMapToEdit = useSelector(state => state.map.selectedCustomMapToEdit);
   const project = useSelector(state => state.project.project);
-  const selectedSpot = useSelector(state => state.spot.selectedSpot);
+  const settingsPanel = useSelector(state => state.home.isSettingsPanelVisible);
 
   const [useSpots] = useSpotsHook();
+  const [useServerRequests] = useServerRequestsHook();
 
-  const buildUrl = (basemap) => {
-    let url = basemap.url[0];
-    if (basemap.source === 'osm') url = url + basemap.tilePath;
-    else url = url + basemap.id + basemap.tilePath + (basemap.key ? '?access_token=' + basemap.key : '');
-    //console.log('URL', url);
-    return [url];
-  };
+  useEffect(() => {
+    console.log('Settings Panel', settingsPanel);
+  }, [settingsPanel]);
 
-  const checkMap = async (chosenForm, map) => {
-    let url, saveUrl;
-    let editedMapUrl;
-    if (chosenForm === 'Mapbox Styles') {
-      editedMapUrl = map.id.split('/').slice(3).join('/');
-    }// Needs to be modified for url and saveUrl
-    else if (chosenForm === 'Map Warper') editedMapUrl = map.id;
-    // const {id} = state;
-    // let mapIdEdit = id.split('/').slice(3).join('/'); // Needs to be modified for url and saveUrl
-    // console.log(mapIdEdit)
-    // setShowSubmitButton(true);
-    console.log('Chosen Form', chosenForm, 'EditedURL', editedMapUrl);
-    switch (chosenForm) {
-      case 'Mapbox Styles':
-        //jasonash/cjl3xdv9h22j12tqfmyce22zq
-        //pk.eyJ1IjoiamFzb25hc2giLCJhIjoiY2l2dTUycmNyMDBrZjJ5bzBhaHgxaGQ1diJ9.O2UUsedIcg1U7w473A5UHA
-        url = 'https://api.mapbox.com/styles/v1/' + editedMapUrl + '/tiles/256/0/0/0?access_token=' + map.accessToken;
-        saveUrl = 'https://api.mapbox.com/styles/v1/' + editedMapUrl + '/tiles/256/{z}/{x}/{y}?access_token=' + map.accessToken;
-        break;
-      case 'Map Warper':
-        url = 'https://www.strabospot.org/mwproxy/' + editedMapUrl + '/0/0/0.png';
-        saveUrl = 'https://www.strabospot.org/mwproxy/' + editedMapUrl + '/{z}/{x}/{y}.png';
-        break;
-      case 'StraboSpot MyMaps':
-        //5b7597c754016
-        //https://strabospot.org/geotiff/tiles/5b7597c754016/0/0/0.png
-        url = 'https://strabospot.org/geotiff/tiles/' + map.id + '/0/0/0.png';
-        saveUrl = 'https://strabospot.org/geotiff/tiles/' + map.id + '/{z}/{x}/{y}.png';
-        break;
-      default:
-        url = 'na';
-        saveUrl = 'na';
-    }
-
-    fetch(url).then(response => {
-      const statusCode = response.status;
-      console.log('statusCode', statusCode);
-      console.log('customMaps: ', customMaps);
-      if (statusCode === 200) {
-        let customMapsArr = Object.values(customMaps);
-        //check to see if it already exists in Redux
-        let mapExists = false;
-        for (let i = 0; i < customMapsArr.length; i++) {
-          console.log(Object.values(customMaps));
-          if (customMapsArr[i].id === map.id) {
-            mapExists = true;
-          }
-        }
-        if (!mapExists) {
-          //add map to Redux here...
-          let newReduxMaps = [];
-          // for (let i = 0; i < customMapsArr.length; i++) {
-          //   newReduxMaps.push(customMapsArr[i]);
-          // }
-          let newMap = {};
-          newMap.title = map.title;
-          newMap.source = chosenForm;
-          newMap.id = map.id;
-          newMap.opacity = map.opacity;
-          newMap.overlay = map.isOverlay;
-          newMap.mapId = makeMapId();
-          if (map.accessToken) {
-            newMap.key = map.accessToken;
-          }
-          newMap.url = saveUrl;
-          newReduxMaps.push(newMap);
-
-          console.log(Object.assign({}, ...newReduxMaps.map(map => ({[map.mapId]: map}))));
-          const newMapObject = Object.assign({}, ...newReduxMaps.map(map => ({[map.mapId]: map})));
-          dispatch({type: mapReducers.CUSTOM_MAPS, customMaps: newMapObject});
-          Alert.alert(
-            'Success!',
-            'Map has been added successfully.',
-            [
-              {
-                text: 'OK',
-                // onPress: () => showHome(),
-              },
-            ],
-            {cancelable: false},
-          );
-        }
-        else {
-          Alert.alert(
-            'Failure!',
-            'You have already added this map.',
-            [
-              {
-                text: 'OK',
-                // onPress: () => showHome(),
-              },
-            ],
-            {cancelable: false},
-          );
-        }
-      }
-      else {
-        Alert.alert(
-          'Failure!',
-          'Provided map is not valid.',
-          [
-            {
-              text: 'OK',
-            },
-          ],
-          {cancelable: false},
-        );
-      }
-    })
-      .catch(error => {
-        console.log('Error!: ', error);
-        Alert.alert(
-          'Failure!',
-          'Provided map is not valid...',
-          [
-            {
-              text: 'OK',
-            },
-          ],
-          {cancelable: false},
-        );
-      });
+  const buildTileUrl = (basemap) => {
+    let tileUrl = basemap.url[0];
+    if (basemap.source === 'osm') tileUrl = tileUrl + basemap.tilePath;
+    if (basemap.source === 'map_warper') tileUrl = tileUrl + '/' + basemap.id + '/' + basemap.tilePath;
+    else tileUrl = tileUrl + basemap.id + basemap.tilePath + (basemap.key ? '?access_token=' + basemap.key : '');
+    return tileUrl;
   };
 
   const deleteMap = async (mapId) => {
@@ -161,15 +45,23 @@ const useMaps = (props) => {
     const projectCopy = {...project};
     const customMapsCopy = {...customMaps};
     delete customMapsCopy[mapId];
-    delete projectCopy.other_maps[mapId];
+    if (projectCopy.other_maps && projectCopy.other_maps[mapId]) {
+      delete projectCopy.other_maps[mapId];
+      dispatch({type: projectReducers.PROJECTS, project: projectCopy}); // Deletes map from project
+    }
     dispatch({type: mapReducers.DELETE_CUSTOM_MAP, customMaps: customMapsCopy}); // replaces customMaps with updated object
-    dispatch({type: projectReducers.PROJECTS, project: projectCopy}); // Deletes map from project
+    dispatch({type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE, view: null, bool: false});
+    dispatch({type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: SettingsMenuItems.SETTINGS_MAIN});
     console.log('Saved customMaps to Redux.');
   };
 
-  const editCustomMap = (map) => {
+  const customMapDetails = (map) => {
     dispatch({type: mapReducers.SELECTED_CUSTOM_MAP_TO_EDIT, customMap: map});
-    dispatch({type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE, view: 'editCustomMap', bool: true});
+    dispatch({
+      type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE,
+      view: settingPanelReducers.SET_SIDE_PANEL_VIEW.MANAGE_CUSTOM_MAP,
+      bool: true,
+    });
   };
 
   // Create a point feature at the current location
@@ -237,6 +129,11 @@ const useMaps = (props) => {
     console.log('Selected Spots to Display on this Map:', selectedDisplayedSpots);
     console.log('Not Selected Spots to Display on this Map:', notSelectedDisplayedSpots);
     return [selectedDisplayedSpots, notSelectedDisplayedSpots];
+  };
+
+  const getProviderInfo = (source) => {
+    console.log(mapProviders[source]);
+    return mapProviders[source];
   };
 
   const isGeoMap = (map) => {
@@ -333,9 +230,31 @@ const useMaps = (props) => {
     return [targetX, targetY];
   };
 
+  const saveCustomMap = async (map) => {
+    let mapId = map.id;
+    let testTileUrl;
+    if (map.source === 'mapbox_styles' && map.id.includes('mapbox://styles/')) mapId = map.id.split('/').slice(3).join('/'); // Pull out mapbox styles map id
+    const providerInfo = getProviderInfo(map.source);
+    const customMap = {...map, ...providerInfo, id: mapId, key: map.accessToken, source: map.source};
+    const tileUrl = buildTileUrl(customMap);
+    if (map.source === 'map_warper') testTileUrl = 'https://strabospot.org/map_warper_check/' + map.id;
+    else testTileUrl = tileUrl.replace(/({z}\/{x}\/{y})/, '0/0/0');
+    console.log('Custom Map:', customMap, 'Test Tile URL:', testTileUrl);
+
+    const testUrlResponse = await useServerRequests.testCustomMapUrl(testTileUrl);
+    if (testUrlResponse) {
+      if (map.overlay && map.id === currentBasemap.id) {
+        console.log(('Setting Basemap to Maobox Topo...'));
+        setCurrentBasemap(null);
+      }
+      return customMap;
+    }
+  };
+
   const setCurrentBasemap = (mapId) => {
     if (!mapId) mapId = 'mapbox.outdoors';
-    const currentBasemap = basemaps1.find(basemap => basemap.id === mapId);
+    const currentBasemap = basemaps.find(basemap => basemap.id === mapId);
+    console.log('Setting current basemap to a default basemap...');
     dispatch({type: mapReducers.CURRENT_BASEMAP, basemap: currentBasemap});
   };
 
@@ -343,50 +262,14 @@ const useMaps = (props) => {
     console.log('value', value, 'id', map.mapId);
     const customMapsCopy = {...customMaps};
     // if (customMapsCopy.length > 1) customMapsCopy.map(map => map.isViewable = false);
-    customMapsCopy[map.mapId].isViewable = value;
-    dispatch({type: mapReducers.CUSTOM_MAPS, customMaps: customMapsCopy});
-    if (!customMapsCopy[map.mapId].overlay) viewCustomMap(map);
+    customMapsCopy[map.id].isViewable = value;
+    dispatch({type: mapReducers.ADD_CUSTOM_MAP, customMap: customMapsCopy[map.id]});
+    if (!customMapsCopy[map.id].overlay) viewCustomMap(map);
   };
 
-  const viewCustomMap = async (map) => {
-    let tempCurrentBasemap, mapUrl;
-    console.log('viewCustomMap: ', map);
-
-    tempCurrentBasemap =
-      {
-        id: 'osm',
-        layerId: map.id,
-        layerLabel: map.mapTitle,
-        layerSaveId: map.id,
-        url: map.url,
-        maxZoom: 19,
-      };
-
-    await dispatch({type: mapReducers.CURRENT_BASEMAP, basemap: tempCurrentBasemap});
-
-    if (map.url === undefined) {
-      if (map.source === 'Mapbox Styles' || map.source === 'mapbox_styles') {
-        mapUrl = 'https://api.mapbox.com/styles/v1/' + map.id + '/tiles/256/{z}/{x}/{y}?access_token=' + MAPBOX_KEY;
-      }
-      else if (map.source === 'Map Warper' || map.source === 'map_warper') mapUrl = 'https://www.strabospot.org/mwproxy/' + map.id + '/{z}/{x}/{y}.png';
-    }
-    else {
-      mapUrl = map.url;
-    }
-
-    tempCurrentBasemap =
-      {
-        id: 'custom',
-        layerId: map.id,
-        layerLabel: map.mapTitle,
-        layerSaveId: map.id,
-        url: mapUrl,
-        maxZoom: 19,
-      };
-
-    console.log('tempCurrentBasemap: ', tempCurrentBasemap);
-    await dispatch({type: mapReducers.CURRENT_BASEMAP, basemap: tempCurrentBasemap});
-    // closeSettingsDrawer();
+  const viewCustomMap = (map) => {
+    console.log('Setting current basemap to a custom basemap...');
+    dispatch({type: mapReducers.CURRENT_BASEMAP, basemap: map});
   };
 
   const zoomToSpots = async (spots, map, camera) => {
@@ -412,11 +295,10 @@ const useMaps = (props) => {
   };
 
   return [{
-    buildUrl: buildUrl,
-    checkMap: checkMap,
+    buildTileUrl: buildTileUrl,
     deleteMap: deleteMap,
     convertCoordinateProjections: convertCoordinateProjections,
-    editCustomMap: editCustomMap,
+    customMapDetails: customMapDetails,
     getCurrentLocation: getCurrentLocation,
     getDisplayedSpots: getDisplayedSpots,
     isGeoMap: isGeoMap,
@@ -425,6 +307,7 @@ const useMaps = (props) => {
     setSelectedSpot: setSelectedSpot,
     getCoordQuad: getCoordQuad,
     convertImagePixelsToLatLong: convertImagePixelsToLatLong,
+    saveCustomMap: saveCustomMap,
     setCurrentBasemap: setCurrentBasemap,
     setCustomMapSwitchValue: setCustomMapSwitchValue,
     viewCustomMap: viewCustomMap,

@@ -21,76 +21,61 @@ const ManageCustomMaps = (props) => {
 
   const dispatch = useDispatch();
 
-  const confirmDeleteMap = async (map) => {
-    console.log(map);
-    Alert.alert(
-      'Delete Custom Map',
-      'Are your sure you want to delete ' + map.mapTitle + '?',
-      [
-        {
-          text: 'Cancel',
-          onPress: () => console.log('Cancel Pressed'),
-          style: 'cancel',
-        },
-        {
-          text: 'OK',
-          onPress: () => useMaps.deleteMap(map.mapId),
-        },
-      ],
-      {cancelable: false},
-    );
+  const mapTypeName = (source) => {
+    let name;
+    if (source === 'mapbox_styles') name = 'Mapbox Styles';
+    if (source === 'map_warper') name = 'Map Warper';
+    if (source === ' strabospot_mymaps') name = 'Strabospot My Maps';
+    return name;
   };
 
   return (
     <React.Fragment>
       <View style={{}}>
         <Button
-          onPress={() => dispatch({type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE, view: 'addCustomMap', bool: true})}
+          onPress={() => useMaps.customMapDetails({})}
           containerStyle={styles.buttonContainer}
           buttonStyle={commonStyles.standardButton}
           titleStyle={commonStyles.standardButtonText}
           icon={
             <Icon
-              style={styles.icon}
+              style={styles.icons}
               name={'ios-add'}
-              size={30}
-              color={'white'}/>
+              size={35}
+              color={styles.iconColor.color}/>
           }
           title={'Add new Custom Map'}
         />
       </View>
       <Divider sectionText={'current custom maps'} style={styles.header}/>
       {!isEmpty(props.customMaps) ?
-      <View style={styles.sectionsContainer}>
-        {Object.values(props.customMaps).map((item, i) => (
+        <View style={styles.sectionsContainer}>
+          {Object.values(props.customMaps).map((item, i) => (
             <ListItem
-            containerStyle={styles.list}
-            bottomDivider={i < Object.values(props.customMaps).length - 1}
-            key={item.id}
-            title={
-              <View style={styles.itemContainer}>
-                <Text style={styles.itemTextStyle}>{item.title}</Text>
-              </View>
-            }
-            subtitle={
-              <View style={styles.itemSubContainer}>
-                <Text style={styles.itemSubTextStyle}>
-                  <Text>
-                    ({item.source})
+              containerStyle={styles.list}
+              bottomDivider={i < Object.values(props.customMaps).length - 1}
+              key={item.id}
+              onPress={() => useMaps.customMapDetails(item)}
+              chevron
+              title={
+                <View style={styles.itemContainer}>
+                  <Text style={styles.itemTextStyle}>{item.title}</Text>
+                </View>
+              }
+              subtitle={
+                <View style={styles.itemSubContainer}>
+                  <Text style={styles.itemSubTextStyle}>
+                    <Text>
+                      ({mapTypeName(item.source)})
+                    </Text>
                   </Text>
-                  <Text onPress={() => useMaps.editCustomMap(item)} style={styles.buttonPadding}>
-                    &nbsp;&nbsp;&nbsp;Edit
-                  </Text>
-                  <Text onPress={() => confirmDeleteMap(item)} style={styles.buttonPadding}>
-                    &nbsp;&nbsp;&nbsp;Delete
-                  </Text>
-                </Text>
-              </View>
-            }
-          />))
-        }
-      </View>
-        : <View style={[styles.sectionsContainer, {justifyContent: 'center', alignItems: 'center'}]}><Text >No custom maps</Text></View>}
+                </View>
+              }
+            />))
+          }
+        </View>
+        : <View style={[styles.sectionsContainer, {justifyContent: 'center', alignItems: 'center'}]}><Text>No custom
+          maps</Text></View>}
     </React.Fragment>
   );
 };

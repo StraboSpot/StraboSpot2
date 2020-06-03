@@ -5,14 +5,7 @@ import {View} from 'react-native';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 
 // Components
-import {
-  CustomBasemap,
-  MacrostratBasemap,
-  MapboxOutdoorsBasemap,
-  MapboxSatelliteBasemap,
-  OSMBasemap,
-  ImageBasemap,
-} from './Basemaps';
+import {MapLayer1, MapLayer2} from './Basemaps';
 
 // Hooks
 import useSpotsHook from '../spots/useSpots';
@@ -30,7 +23,7 @@ import {projectReducers} from '../project/project.constants';
 
 MapboxGL.setAccessToken(MAPBOX_KEY);
 
-const map = React.forwardRef((props, ref) => {
+const Map = React.forwardRef((props, ref) => {
 
   const [useMaps] = useMapsHook();
   const [useSpots] = useSpotsHook();
@@ -48,9 +41,11 @@ const map = React.forwardRef((props, ref) => {
   // Props that change that needed to pass to the map component
   const initialMapPropsMutable = {
     allowMapViewMove: true,
+    basemap: currentBasemap,
     centerCoordinate: [LONGITUDE, LATITUDE],
     drawFeatures: [],
     editFeatureVertex: [],
+    imageBasemap: currentImageBasemap,
     spotsNotSelected: [],
     spotsSelected: [],
     coordQuad: [],
@@ -60,6 +55,7 @@ const map = React.forwardRef((props, ref) => {
 
   const [editingModeData, setEditingModeData] = useState(initialEditingModeData);
   const [mapPropsMutable, setMapPropsMutable] = useState(initialMapPropsMutable);
+  const [mapToggle, setMapToggle] = useState(true);
 
   const map = useRef(null);
   const camera = useRef(null);
@@ -73,13 +69,24 @@ const map = React.forwardRef((props, ref) => {
   };
 
   useEffect(() => {
+    console.log('Changed image basemap to:', currentImageBasemap);
     const calculatedCoordQuad = currentImageBasemap ? useMaps.getCoordQuad(currentImageBasemap) : undefined;
-    setDisplayedSpots(isEmpty(props.selectedSpot) ? [] : [{...props.selectedSpot}]);
     setMapPropsMutable(m => ({
       ...m,
       coordQuad: calculatedCoordQuad,
+      imageBasemap: currentImageBasemap,
     }));
+    setMapToggle(!mapToggle);
   }, [currentImageBasemap]);
+
+  useEffect(() => {
+    console.log('Changed current basemap to:', currentBasemap);
+    setMapPropsMutable(m => ({
+      ...m,
+      basemap: currentBasemap,
+    }));
+    setMapToggle(!mapToggle);
+  }, [currentBasemap]);
 
   useEffect(() => {
     console.log('Updating DOM on first render');
@@ -89,9 +96,9 @@ const map = React.forwardRef((props, ref) => {
   }, []);
 
   useEffect(() => {
-    console.log('Updating DOM on Spots, selected Spots or active Datasets changed');
+    console.log('Updating Spots, selected Spots, active datasets or basemap changed');
     setDisplayedSpots((isEmpty(props.selectedSpot) ? [] : [{...props.selectedSpot}]));
-  }, [props.spots, props.selectedSpot, props.datasets]);
+  }, [props.spots, props.selectedSpot, props.datasets, currentBasemap, currentImageBasemap]);
 
   useEffect(() => {
     console.log('Updating DOM on vertexEndsCoords changed');
@@ -106,7 +113,7 @@ const map = React.forwardRef((props, ref) => {
   const moveVertex = async () => {
     try { // on imagebasemap, if spot is not point, conversion happens in editSpotCoordinates.
       const newVertexCoords = await map.current.getCoordinateFromView(props.vertexEndCoords);
-      if (currentImageBasemap && editingModeData.spotEditing && turf.getType(editingModeData.spotEditing) == 'Point') {
+      if (currentImageBasemap && editingModeData.spotEditing && turf.getType(editingModeData.spotEditing) === 'Point') {
         const vertexCoordinates = useMaps.convertCoordinateProjections(geoLatLngProjection, pixelProjection,
           [newVertexCoords[0], newVertexCoords[1]]);
         console.log('Move vertex to:', vertexCoordinates);
@@ -919,15 +926,9 @@ const map = React.forwardRef((props, ref) => {
 
   return (
     <View style={{flex: 1, zIndex: -1}}>
-      {currentImageBasemap && <ImageBasemap {...mapProps}/>}
-      {!currentImageBasemap && currentBasemap && currentBasemap.id === 'mapbox.satellite' &&
-      <MapboxSatelliteBasemap {...mapProps}/>}
-      {!currentImageBasemap && currentBasemap && currentBasemap.id === 'mapbox.outdoors' &&
-      <MapboxOutdoorsBasemap {...mapProps}/>}
-      {!currentImageBasemap && currentBasemap && currentBasemap.id === 'osm' && <OSMBasemap {...mapProps}/>}
-      {!currentImageBasemap && currentBasemap && currentBasemap.id === 'macrostrat' &&
-      <MacrostratBasemap {...mapProps}/>}
-      {!currentImageBasemap && currentBasemap && currentBasemap.id === 'custom' && <CustomBasemap {...mapProps}/>}
+      {/* Switch identical layers to force basemap raster re-render based on mapToggle value*/}
+      {mapProps.basemap && mapToggle && <MapLayer1  {...mapProps}/>}
+      {mapProps.basemap && !mapToggle && <MapLayer2 {...mapProps}/>}
     </View>
   );
 });
@@ -957,4 +958,4 @@ const mapDispatchToProps = {
   setVertexStartCoords: (coords) => ({type: mapReducers.VERTEX_START_COORDS, vertexStartCoords: coords}),
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(map);
+export default connect(mapStateToProps, mapDispatchToProps)(Map);

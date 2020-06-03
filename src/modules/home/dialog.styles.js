@@ -4,7 +4,7 @@ import * as themes from '../../shared/styles.constants';
 const styles = StyleSheet.create({
   customBaseMapListContainer: {
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
-    paddingLeft: 15,
+    // paddingLeft: 15,
     paddingBottom: 10,
     paddingTop: 10,
   },
@@ -30,6 +30,8 @@ const styles = StyleSheet.create({
   dialogContent: {
     borderTopWidth: 1,
     borderColor: 'lightgrey',
+    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
+
   },
   dialogText: {
     color: themes.PRIMARY_ACCENT_COLOR,

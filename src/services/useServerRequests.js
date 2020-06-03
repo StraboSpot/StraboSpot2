@@ -160,6 +160,21 @@ const useServerRequests = () => {
     return handleResponse(response);
   };
 
+
+  const testCustomMapUrl = async (url) => {
+    try {
+      const response = await fetch(url);
+      console.log(response);
+      if (response.ok) {
+        return response.ok;
+      }
+    }
+    catch (e) {
+      console.log('ERROR', e);
+      return e;
+    }
+  };
+
   const updateDataset = (dataset, encodedLogin) => {
     return post('/dataset', encodedLogin, dataset);
   };
@@ -200,6 +215,7 @@ const useServerRequests = () => {
     getProject: getProject,
     getProfileImage: getProfileImage,
     registerUser: registerUser,
+    testCustomMapUrl: testCustomMapUrl,
     updateDataset: updateDataset,
     updateDatasetSpots: updateDatasetSpots,
     updateProject: updateProject,

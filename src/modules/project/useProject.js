@@ -8,7 +8,7 @@ import useImagesHook from '../images/useImages';
 import useSpotsHook from '../spots/useSpots';
 
 // Utilities
-import {getNewId, isEmpty, makeMapId} from '../../shared/Helpers';
+import {getNewId, isEmpty} from '../../shared/Helpers';
 
 // Constants
 import {homeReducers} from '../home/home.constants';
@@ -235,12 +235,12 @@ const useProject = () => {
       if (!projectResponse.other_features) projectResponse.other_features = defaultTypes;
       await dispatch({type: projectReducers.PROJECTS, project: projectResponse});
       if (projectResponse.other_maps) {
-        projectResponse.other_maps.map(map => {
-          if (!map.mapId) map.mapId = makeMapId();
-        });
-        const mapIdsAsKeys = Object.assign({}, ...projectResponse.other_maps.map(map => ({[map.mapId]: map})));
-        dispatch({type: mapReducers.CUSTOM_MAPS, customMaps: mapIdsAsKeys});
-        dispatch({type: projectReducers.PROJECTS, project: {...projectResponse, other_maps: mapIdsAsKeys}});
+        // projectResponse.other_maps.map(map => {
+        //   if (!map.mapId) map.mapId = makeMapId();
+        // });
+        // const mapIdsAsKeys = Object.assign({}, ...projectResponse.other_maps.map(map => ({[map.mapId]: map})));
+        // dispatch({type: mapReducers.CUSTOM_MAPS, customMaps: mapIdsAsKeys});
+        // dispatch({type: projectReducers.PROJECTS, project: {...projectResponse, other_maps: mapIdsAsKeys}});
       }
       const datasetsResponse = await getDatasets(selectedProject);
       if (datasetsResponse.datasets.length === 1) {

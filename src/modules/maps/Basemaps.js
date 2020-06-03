@@ -22,7 +22,7 @@ function Basemap(props) {
   const [useMaps] = useMapsHook();
 
   return <MapboxGL.MapView
-    id={basemap.id}
+    id={currentImageBasemap ? currentImageBasemap.id : basemap.id}
     ref={mapRef}
     style={{flex: 1}}
     animated={true}
@@ -70,7 +70,7 @@ function Basemap(props) {
         <MapboxGL.RasterSource
           key={customMap.id}
           id={customMap.id}
-          tileUrlTemplates={useMaps.getCustomMapSrc(customMap)}>
+          tileUrlTemplates={[useMaps.buildTileUrl(customMap)]}>
           <MapboxGL.RasterLayer id={customMap.id + 'Layer'}
                                 sourceID={customMap.id}
                                 style={{rasterOpacity: customMap.opacity}}/>
@@ -200,26 +200,10 @@ function Basemap(props) {
   </MapboxGL.MapView>;
 }
 
-export const MapboxOutdoorsBasemap = React.forwardRef((props, ref) => (
+export const MapLayer1 = React.forwardRef((props, ref) => (
   <Basemap {...props} forwardedRef={ref}/>
 ));
 
-export const MapboxSatelliteBasemap = React.forwardRef((props, ref) => (
-  <Basemap {...props} forwardedRef={ref}/>
-));
-
-export const MacrostratBasemap = React.forwardRef((props, ref) => (
-  <Basemap {...props} forwardedRef={ref}/>
-));
-
-export const OSMBasemap = React.forwardRef((props, ref) => (
-  <Basemap {...props} forwardedRef={ref}/>
-));
-
-export const CustomBasemap = React.forwardRef((props, ref) => (
-  <Basemap {...props} forwardedRef={ref}/>
-));
-
-export const ImageBasemap = React.forwardRef((props, ref) => (
+export const MapLayer2 = React.forwardRef((props, ref) => (
   <Basemap {...props} forwardedRef={ref}/>
 ));
