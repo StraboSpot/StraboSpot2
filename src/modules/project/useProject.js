@@ -19,7 +19,6 @@ import {spotReducers} from '../spots/spot.constants';
 const useProject = () => {
   let dirs = RNFetchBlob.fs.dirs;
   const devicePath = Platform.OS === 'ios' ? dirs.DocumentDir : dirs.SDCardDir; // ios : android
-  const appDirectory = '/StraboSpot';
   const appDirectoryForDistributedBackups = '/StraboSpotProjects';
   const appDirectoryTiles = '/StraboSpotTiles';
   const zipsDirectory = appDirectoryTiles + '/TileZips';
@@ -204,7 +203,7 @@ const useProject = () => {
 
   const loadProjectFromDevice = async (selectedProject) => {
     console.log('SELECTED PROJECT', selectedProject);
-    const {projectDb, spotsDb, otherMapsDb, mapNamesDb, mapTilesDb} = selectedProject;
+    const {projectDb, spotsDb, otherMapsDb, mapNamesDb} = selectedProject;
     const dirExists = await doesDeviceDirExist();
     console.log(dirExists);
     if (dirExists) {
@@ -235,12 +234,6 @@ const useProject = () => {
       if (!projectResponse.other_features) projectResponse.other_features = defaultTypes;
       await dispatch({type: projectReducers.PROJECTS, project: projectResponse});
       if (projectResponse.other_maps) {
-        // projectResponse.other_maps.map(map => {
-        //   if (!map.mapId) map.mapId = makeMapId();
-        // });
-        // const mapIdsAsKeys = Object.assign({}, ...projectResponse.other_maps.map(map => ({[map.mapId]: map})));
-        // dispatch({type: mapReducers.CUSTOM_MAPS, customMaps: mapIdsAsKeys});
-        // dispatch({type: projectReducers.PROJECTS, project: {...projectResponse, other_maps: mapIdsAsKeys}});
       }
       const datasetsResponse = await getDatasets(selectedProject);
       if (datasetsResponse.datasets.length === 1) {
@@ -275,10 +268,6 @@ const useProject = () => {
       dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
       dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Datasets Saved.'});
       console.log('Saved datasets:', projectDatasetsFromServer);
-      // if (projectDatasetsFromServer.datasets.length === 1){
-      //   await useSpots.downloadSpots(projectDatasetsFromServer.datasets[0], user.encoded_login);
-      // }
-      // dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Download Complete!'});
       return Promise.resolve(projectDatasetsFromServer);
     }
   };
@@ -296,7 +285,6 @@ const useProject = () => {
     const dataFile = '/data.json';
     return await RNFetchBlob.fs.readFile(devicePath + appDirectoryForDistributedBackups + '/' + data + dataFile).then(
       response => {
-        // console.log('DataFile', JSON.parse(response));
         return Promise.resolve(JSON.parse(response));
       }, () => Alert.alert('Project Not Found'));
   };
@@ -318,15 +306,9 @@ const useProject = () => {
     }
     else {
       try {
+        dispatch({type: homeReducers.CLEAR_STATUS_MESSAGES});
         dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, bool: true});
         projectResponse = await loadProjectRemote(selectedProject);
-        // projectResponse = await serverRequests.getProject(selectedProject.id, user.encoded_login);
-        // console.log('Loaded project \n', projectResponse);
-        // if (!isEmpty(project)) {
-        //   await destroyOldProject();
-        // }
-        // dispatch({type: projectReducers.PROJECTS, project: projectResponse});
-        // await getDatasets(selectedProject);
         return projectResponse;
       }
       catch (err) {

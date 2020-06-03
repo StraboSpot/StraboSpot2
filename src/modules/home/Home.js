@@ -533,9 +533,7 @@ const Home = (props) => {
             {statusMessages.includes('Download Complete!') || statusMessages.includes('Upload Complete!')
             || statusMessages.includes('There are no active datasets.')
             || statusMessages.includes('Project Backup Complete!')
-            || statusMessages.includes('Project loaded.')
-            || statusMessages.includes('Datasets Saved.')
-            || statusMessages.includes('Downloaded Spots')
+            || statusMessages.includes('Project loaded!')
               ? <Button
                 title={'OK'}
                 type={'clear'}

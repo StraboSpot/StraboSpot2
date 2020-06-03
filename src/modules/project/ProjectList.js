@@ -83,42 +83,10 @@ const ProjectList = (props) => {
     }
   };
 
-  // const getDatasets = async (project) => {
-  //   return await useProject.getDatasets((project));
-  // };
-  // const getDatasets = async (project) => {
-  //   const projectDatasetsFromServer = await serverRequests.getDatasets(project.id, userData.encoded_login);
-  //   if (projectDatasetsFromServer === 401) {
-  //     console.log('Uh Oh...');
-  //   }
-  //   else {
-  //     console.log('Saved datasets:', projectDatasetsFromServer);
-  //     if (projectDatasetsFromServer.datasets.length === 1) {
-  //       projectDatasetsFromServer.datasets[0].active = true;
-  //       projectDatasetsFromServer.datasets[0].current = true;
-  //       console.log('Downloaded Spots');
-  //     }
-  //     else {
-  //       projectDatasetsFromServer.datasets.map(dataset => {
-  //         dataset.active = false;
-  //       });
-  //     }
-  //
-  //     const datasets = Object.assign({}, ...projectDatasetsFromServer.datasets.map(item => ({[item.id]: item})));
-  //     dispatch({type: ProjectActions.projectReducers.DATASETS.DATASETS_UPDATE, datasets: datasets});
-  //     await useSpots.downloadSpots(projectDatasetsFromServer.datasets[0], userData.encoded_login);
-  //   }
-  // };
-
   const selectProject = async (project) => {
     console.log('Selected Project:', project);
     if (!isEmpty(currentProject)) {
-      // if (props.source === 'device') {
-      //   project = await useProject.readDeviceFile(project, props.source);
-      //   console.log('DeviceFile', project);
       setSelectedProject(project);
-      // }
-      // else setSelectedProject(project);
       setShowDialog(true);
     }
     else {
@@ -128,7 +96,7 @@ const ProjectList = (props) => {
         }
         else setSelectedProject(currentProject);
         setLoading(false);
-        // setShowDialog(true);
+        dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Project loaded!'});
       });
     }
   };
@@ -146,17 +114,9 @@ const ProjectList = (props) => {
         await dispatch({type: spotReducers.CLEAR_SPOTS, spots: {}});
         dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Project uploaded to server.'});
 
-        // dispatch({type: 'CLEAR_STATUS_MESSAGES'});
-        // if (props.source === 'device') {
-        //   const deviceData = await useProject.loadProjectFromDevice(selectedProject);
-        //   console.log(deviceData)
-        // }
         const projectData = await useProject.selectProject(selectedProject, props.source);
         console.log('PROJECT DATA', projectData);
-        // if (props.source === 'device') projectData = projectData.projectDb;
-        // dispatch({type: ProjectActions.projectReducers.PROJECTS, project: projectData});
-        // await useProject.getDatasets(selectedProject);
-        await dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'Project loaded.'});
+        await dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'Project loaded!'});
         dispatch({type: homeReducers.SET_LOADING, view: 'modal', bool: false});
         dispatch({type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: SettingsMenuItems.MANAGE.ACTIVE_PROJECTS});
       }
@@ -174,11 +134,7 @@ const ProjectList = (props) => {
       dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, bool: true});
       dispatch({type: homeReducers.SET_LOADING, view: 'modal', bool: true});
       if (props.source === 'device') {
-        // const project = selectedProject.projectDb;
-        // console.log('User wants to:', action, 'and select', project.project.description.project_name);
         await useProject.selectProject(selectedProject, props.source);
-        // const readDevice = await useProject.readDeviceFile(selectedProject);
-        // await useProject.loadProjectFromDevice(readDevice);
         console.log('Loaded From Device');
         dispatch({type: homeReducers.SET_LOADING, view: 'modal', bool: false});
         dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Download Complete!'});
@@ -201,7 +157,6 @@ const ProjectList = (props) => {
             else Alert.alert('Error', 'No Project Data!');
           }
           else {
-            // setShowDialog(false);
             dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Download Complete!'});
             dispatch({type: homeReducers.SET_LOADING, view: 'modal', bool: false});
             dispatch(
@@ -246,7 +201,6 @@ const ProjectList = (props) => {
 
   const renderServerProjectsList = () => {
     if (!isEmpty(projectsArr) && !isEmpty(userData)) {
-      // console.log(projectsArr.projects);
       return (
         <ScrollView>
           {projectsArr.projects.map(item => {

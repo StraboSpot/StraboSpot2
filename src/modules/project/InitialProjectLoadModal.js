@@ -26,10 +26,10 @@ const InitialProjectLoadModal = (props) => {
   const [visibleProjectSection, setVisibleProjectSection] = useState('activeDatasetsList');
   const [visibleInitialSection, setVisibleInitialSection] = useState('none');
 
- useEffect(() => {
+  useEffect(() => {
     console.log('Rendered 2');
-    return function cleanUp () {
-      console.log('Initial Project Modal CleanUp')
+    return function cleanUp() {
+      console.log('Initial Project Modal CleanUp');
     };
   }, [selectedProject, isOnline, datasets]);
 
@@ -66,7 +66,7 @@ const InitialProjectLoadModal = (props) => {
         <Button
           onPress={() => props.closeModal()}
           title={'Close'}
-          disabled={isEmpty(Object.keys(datasets).find(key =>  datasets[key].current === true))}
+          disabled={isEmpty(Object.keys(datasets).find(key => datasets[key].current === true))}
           buttonStyle={commonStyles.standardButton}
           titleStyle={commonStyles.standardButtonText}
         />
@@ -101,7 +101,7 @@ const InitialProjectLoadModal = (props) => {
           onPress={() => props.closeModal()}
           title={'Close'}
           disabled={isEmpty(datasets) ||
-          isEmpty(Object.keys(datasets).find(key =>  datasets[key].active === true))}
+          isEmpty(Object.keys(datasets).find(key => datasets[key].active === true))}
           buttonStyle={[commonStyles.standardButton]}
           titleStyle={commonStyles.standardButtonText}
         />
@@ -121,7 +121,7 @@ const InitialProjectLoadModal = (props) => {
         {renderContinueOrCloseButton()}
         <Spacer/>
         <View style={commonStyles.standardButtonText}>
-          <Text>  By default the first dataset selected will be made the current dataset. You can change this on the next
+          <Text> By default the first dataset selected will be made the current dataset. You can change this on the next
             page and in the Active Project section of the Home Menu.</Text>
         </View>
         <Spacer/>
@@ -167,15 +167,15 @@ const InitialProjectLoadModal = (props) => {
   };
 
   const renderSectionView = () => {
-    switch (visibleInitialSection){
+    switch (visibleInitialSection) {
       case 'serverProjects':
         return (
           renderListOfProjectsOnServer()
-      );
+        );
       case 'deviceProjects':
         return (
           renderListOfProjectsOnDevice()
-      );
+        );
       case 'project':
         return (
           renderStartNewProject()
@@ -192,7 +192,6 @@ const InitialProjectLoadModal = (props) => {
       <React.Fragment>
         {renderProjectTypesButtons()}
         <Spacer/>
-        {/*<Text>Need fields for a new project here.</Text>*/}
         <View style={{height: 400}}>
           <NewProject openMainMenu={props.openMainMenu} onPress={() => props.closeModal()}/>
         </View>
@@ -227,9 +226,6 @@ const InitialProjectLoadModal = (props) => {
       >
         <DialogContent>
           <Spacer/>
-          {/*{visibleInitialSection === 'none' ? renderProjectTypesButtons() :*/}
-          {/*  visibleInitialSection === 'serverProjects' ? renderListOfProjectsOnServer() : renderStartNewProject()*/}
-          {/*}*/}
           {renderSectionView()}
         </DialogContent>
       </Dialog>
