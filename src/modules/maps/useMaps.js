@@ -9,7 +9,7 @@ import useSpotsHook from '../spots/useSpots';
 
 // Constants
 import {spotReducers} from '../spots/spot.constants';
-import {basemaps1, mapProviders, mapReducers, geoLatLngProjection, pixelProjection} from './maps.constants';
+import {basemaps, mapProviders, mapReducers, geoLatLngProjection, pixelProjection} from './maps.constants';
 import {SettingsMenuItems} from '../main-menu-panel/mainMenu.constants';
 import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 import {projectReducers} from '../project/project.constants';
@@ -253,7 +253,7 @@ const useMaps = () => {
 
   const setCurrentBasemap = (mapId) => {
     if (!mapId) mapId = 'mapbox.outdoors';
-    const currentBasemap = basemaps1.find(basemap => basemap.id === mapId);
+    const currentBasemap = basemaps.find(basemap => basemap.id === mapId);
     console.log('Setting current basemap to a default basemap...');
     dispatch({type: mapReducers.CURRENT_BASEMAP, basemap: currentBasemap});
   };

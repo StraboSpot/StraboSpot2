@@ -36,59 +36,6 @@ export const mapReducers = {
   CLEAR_VERTEXES: 'CLEAR_VERTEXES',
 };
 
-export const basemaps = {
-  osm: {
-    id: 'osm',
-    layerId: 'osmLayer',
-    layerLabel: 'OSM Streets',
-    layerSaveId: 'osm',
-    url: 'https://a.tile.openstreetmap.org/{z}/{x}/{y}.png',
-    urls: ['https://a.tile.openstreetmap.org/', 'https://b.tile.openstreetmap.org/', 'https://c.tile.openstreetmap.org/'],
-    maxZoom: 16,
-    isDefault: true,
-  },
-  mapboxOutdoors: {
-    id: 'mapboxOutdoors',
-    layerId: 'mapboxOutdoorsLayer',
-    layerLabel: 'Mapbox Topo',
-    layerSaveId: 'mapbox.outdoors',
-    tilePath: '/{z}/{x}/{y}.png?access_token=' + MAPBOX_KEY,
-    url: 'http://tiles.strabospot.org/v5/mapbox.outdoors/{z}/{x}/{y}.png?access_token=' + MAPBOX_KEY,
-    urls: ['http://tiles.strabospot.org/v5/mapbox.outdoors/'],
-    maxZoom: 19,
-    isDefault: true,
-  },
-  mapboxSatellite: {
-    id: 'mapboxSatellite',
-    layerId: 'mapboxSatelliteLayer',
-    layerLabel: 'Mapbox Satellite',
-    layerSaveId: 'mapbox.satellite',
-    tilePath: '/{z}/{x}/{y}.png?access_token=' + MAPBOX_KEY,
-    url: 'http://tiles.strabospot.org/v5/mapbox.satellite/{z}/{x}/{y}.png?access_token=' + MAPBOX_KEY,
-    urls: ['http://tiles.strabospot.org/v5/mapbox.satellite/'],
-    maxZoom: 19,
-    isDefault: true,
-  },
-  macrostrat: {
-    id: 'macrostrat',
-    layerId: 'macrostratLayer',
-    layerLabel: 'Geology from Macrostrat',
-    layerSaveId: 'macrostrat',
-    tilePath: '/{z}/{x}/{y}.png',
-    url: 'http://tiles.strabospot.org/v5/macrostrat/{z}/{x}/{y}.png',
-    urls: ['http://tiles.strabospot.org/v5/macrostrat/'],
-    maxZoom: 19,
-    isDefault: true,
-  },
-  mapboxStyles: {
-    id: 'mapboxStyles',
-    layerId: 'mapboxStyles',
-    layerLabel: 'Mapbox Styles',
-    url: 'https://api.mapbox.com/styles/v1/tiles/256/{z}/{x}/{y}?access_token=' + MAPBOX_KEY,
-    isDefault: false,
-  },
-};
-
 const defaultMaps = [
   {
     title: 'Mapbox Topo',
@@ -182,11 +129,11 @@ export const mapProviders = {
   },
 };
 
-export const basemaps1 = defaultMaps.map(map => {
+export const basemaps = defaultMaps.map(map => {
   if (map.source === 'strabo_spot_mapbox') map.key = MAPBOX_KEY;
   return {...map, ...mapProviders[map.source]};
 });
-console.log(basemaps1);
+console.log(basemaps);
 
 export const symbols = {
   'default_point': require('../../assets/symbols/point.png'),
