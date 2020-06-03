@@ -242,28 +242,13 @@ const useMaps = () => {
     console.log('Custom Map:', customMap, 'Test Tile URL:', testTileUrl);
 
     const testUrlResponse = await useServerRequests.testCustomMapUrl(testTileUrl);
-   console.log(testUrlResponse)
     if (testUrlResponse) {
+      if (map.overlay && map.id === currentBasemap.id) {
+        console.log(('Setting Basemap to Maobox Topo...'));
+        setCurrentBasemap(null);
+      }
       return customMap;
     }
-    // return fetch(testTileUrl).then(response => {
-    //   const statusCode = response.status;
-    //   console.log('statusCode', statusCode);
-    //   console.log('customMaps: ', customMaps);
-    //   if (statusCode === 200) return customMap;
-    // });
-  };
-
-  const saveEditsAndClose = (map) => {
-    const customMapCopy = {...customMapToEdit};
-    customMapCopy.opacity = map.opacity;
-    customMapCopy.overlay =  map.overlay;
-    customMapCopy.title = map.title;
-    console.log(customMapCopy);
-    if (customMapCopy.overlay && customMapCopy.id === currentBasemap.id) setCurrentBasemap(null);
-
-    dispatch({type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE, bool: false});
-    dispatch({type: mapReducers.ADD_CUSTOM_MAP, customMap: customMapCopy});
   };
 
   const setCurrentBasemap = (mapId) => {
@@ -311,7 +296,6 @@ const useMaps = () => {
 
   return [{
     buildTileUrl: buildTileUrl,
-    saveCustomMap: saveCustomMap,
     deleteMap: deleteMap,
     convertCoordinateProjections: convertCoordinateProjections,
     customMapDetails: customMapDetails,
@@ -323,7 +307,7 @@ const useMaps = () => {
     setSelectedSpot: setSelectedSpot,
     getCoordQuad: getCoordQuad,
     convertImagePixelsToLatLong: convertImagePixelsToLatLong,
-    saveEditsAndClose: saveEditsAndClose,
+    saveCustomMap: saveCustomMap,
     setCurrentBasemap: setCurrentBasemap,
     setCustomMapSwitchValue: setCustomMapSwitchValue,
     viewCustomMap: viewCustomMap,
