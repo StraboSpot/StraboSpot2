@@ -37,8 +37,7 @@ import IconButton from '../../shared/ui/IconButton';
 import VertexDrag from '../maps/VertexDrag';
 import {animatePanels, isEmpty} from '../../shared/Helpers';
 import SaveMapsModal from '../maps/offline-maps/SaveMapsModal';
-import EditCustomMaps from '../maps/custom-maps/EditCustomMaps';
-import AddCustomMaps from '../maps/custom-maps/AddCustomMaps';
+import CustomMapDetails from '../maps/custom-maps/CustomMapDetails';
 
 // Hooks
 import useImagesHook from '../images/useImages';
@@ -499,7 +498,7 @@ const Home = (props) => {
       case 'manageCustomMap':
         panelView =
           <Animated.View style={[sidePanelStyles.sidePanelContainer, animateMainMenuSidePanel]}>
-            <AddCustomMaps/>
+            <CustomMapDetails/>
           </Animated.View>;
         break;
       case 'activeProject':
