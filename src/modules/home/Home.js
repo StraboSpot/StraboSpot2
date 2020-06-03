@@ -496,16 +496,10 @@ const Home = (props) => {
   const renderSidePanelView = () => {
     let panelView = <Animated.View style={[sidePanelStyles.sidePanelContainer, animateMainMenuSidePanel]}/>;
     switch (sidePanelView) {
-      case 'addCustomMap':
+      case 'manageCustomMap':
         panelView =
           <Animated.View style={[sidePanelStyles.sidePanelContainer, animateMainMenuSidePanel]}>
             <AddCustomMaps/>
-          </Animated.View>;
-        break;
-      case 'editCustomMap':
-        panelView =
-          <Animated.View style={[sidePanelStyles.sidePanelContainer, animateMainMenuSidePanel]}>
-            <EditCustomMaps/>
           </Animated.View>;
         break;
       case 'activeProject':
