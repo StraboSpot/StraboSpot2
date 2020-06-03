@@ -9,7 +9,6 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     padding: 10,
-    marginTop: 10,
   },
   customMapsSideContainer: {
     height: '100%',
@@ -35,8 +34,12 @@ const styles = StyleSheet.create({
     marginLeft: 0,
   },
   icons: {
-    height: 50,
-    width: 40,
+    position: 'absolute',
+    left: 35,
+    top: 5,
+  },
+  iconColor: {
+    color: themes.BLUE,
   },
   itemContainer: {
     width: '90%',

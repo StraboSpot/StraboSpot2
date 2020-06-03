@@ -13,6 +13,7 @@ import {basemaps1, mapProviders, mapReducers, geoLatLngProjection, pixelProjecti
 import {SettingsMenuItems} from '../main-menu-panel/mainMenu.constants';
 import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 import {projectReducers} from '../project/project.constants';
+import useServerRequestsHook from '../../services/useServerRequests';
 
 const useMaps = () => {
   const dispatch = useDispatch();
@@ -24,6 +25,7 @@ const useMaps = () => {
   const settingsPanel = useSelector(state => state.home.isSettingsPanelVisible);
 
   const [useSpots] = useSpotsHook();
+  const [useServerRequests] = useServerRequestsHook();
 
   useEffect(() => {
     console.log('Settings Panel', settingsPanel);
@@ -35,25 +37,6 @@ const useMaps = () => {
     if (basemap.source === 'map_warper') tileUrl = tileUrl + '/' + basemap.id + '/' + basemap.tilePath;
     else tileUrl = tileUrl + basemap.id + basemap.tilePath + (basemap.key ? '?access_token=' + basemap.key : '');
     return tileUrl;
-  };
-
-  const saveCustomMap = async (source, map) => {
-    let mapId = map.id;
-    let testTileUrl;
-    if (source === 'mapbox_styles') mapId = map.id.split('/').slice(3).join('/'); // Pull out mapbox styles map id
-    const providerInfo = getProviderInfo(source);
-    const customMap = {...map, ...providerInfo, id: mapId, key: map.accessToken, source: source};
-    const tileUrl = buildTileUrl(customMap);
-    if (map.source === 'map_warper') testTileUrl = 'https://strabospot.org/map_warper_check/' + map.id;
-    else testTileUrl = tileUrl.replace(/({z}\/{x}\/{y})/, '0/0/0');
-    console.log('Custom Map:', customMap, 'Test Tile URL:', testTileUrl);
-
-    return fetch(testTileUrl).then(response => {
-      const statusCode = response.status;
-      console.log('statusCode', statusCode);
-      console.log('customMaps: ', customMaps);
-      if (statusCode === 200) return customMap;
-    });
   };
 
   const deleteMap = async (mapId) => {
@@ -72,11 +55,11 @@ const useMaps = () => {
     console.log('Saved customMaps to Redux.');
   };
 
-  const editCustomMap = (map) => {
+  const customMapDetails = (map) => {
     dispatch({type: mapReducers.SELECTED_CUSTOM_MAP_TO_EDIT, customMap: map});
     dispatch({
       type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE,
-      view: settingPanelReducers.SET_SIDE_PANEL_VIEW.EDIT_CUSTOM_MAP,
+      view: settingPanelReducers.SET_SIDE_PANEL_VIEW.MANAGE_CUSTOM_MAP,
       bool: true,
     });
   };
@@ -247,6 +230,30 @@ const useMaps = () => {
     return [targetX, targetY];
   };
 
+  const saveCustomMap = async (map) => {
+    let mapId = map.id;
+    let testTileUrl;
+    if (map.source === 'mapbox_styles' && map.id.includes('mapbox://styles/')) mapId = map.id.split('/').slice(3).join('/'); // Pull out mapbox styles map id
+    const providerInfo = getProviderInfo(map.source);
+    const customMap = {...map, ...providerInfo, id: mapId, key: map.accessToken, source: map.source};
+    const tileUrl = buildTileUrl(customMap);
+    if (map.source === 'map_warper') testTileUrl = 'https://strabospot.org/map_warper_check/' + map.id;
+    else testTileUrl = tileUrl.replace(/({z}\/{x}\/{y})/, '0/0/0');
+    console.log('Custom Map:', customMap, 'Test Tile URL:', testTileUrl);
+
+    const testUrlResponse = await useServerRequests.testCustomMapUrl(testTileUrl);
+   console.log(testUrlResponse)
+    if (testUrlResponse) {
+      return customMap;
+    }
+    // return fetch(testTileUrl).then(response => {
+    //   const statusCode = response.status;
+    //   console.log('statusCode', statusCode);
+    //   console.log('customMaps: ', customMaps);
+    //   if (statusCode === 200) return customMap;
+    // });
+  };
+
   const saveEditsAndClose = (map) => {
     const customMapCopy = {...customMapToEdit};
     customMapCopy.opacity = map.opacity;
@@ -307,7 +314,7 @@ const useMaps = () => {
     saveCustomMap: saveCustomMap,
     deleteMap: deleteMap,
     convertCoordinateProjections: convertCoordinateProjections,
-    editCustomMap: editCustomMap,
+    customMapDetails: customMapDetails,
     getCurrentLocation: getCurrentLocation,
     getDisplayedSpots: getDisplayedSpots,
     isGeoMap: isGeoMap,
