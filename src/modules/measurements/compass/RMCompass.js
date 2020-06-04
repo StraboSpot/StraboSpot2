@@ -227,8 +227,11 @@ const RNCompass = (props) => {
     return (
       <Slider
         onSlidingComplete={(value) => setSliderValue(value)}
-        sliderValue={sliderValue}
-        thumbTouchSize={{width: 80, height: 80}}
+        value={sliderValue}
+        step={1}
+        maximumValue={5}
+        minimumValue={1}
+        thumbTouchSize={{width: 40, height: 40}}
         leftText={'Low'}
         rightText={'High'}
       />

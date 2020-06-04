@@ -68,9 +68,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   slider: {
-    // width: 200,
+    width: '90%',
     paddingRight: 10,
     paddingLeft: 10,
+  },
+  sliderTextContainer: {
+    width: '100%',
+    justifyContent: 'space-between',
+    // paddingBottom: 5,
+    paddingRight: 10,
+    paddingLeft: 10,
+    flexDirection: 'row',
   },
   sectionTitleContainer: {
     paddingTop: 0,
