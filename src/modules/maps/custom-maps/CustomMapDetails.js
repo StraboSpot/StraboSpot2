@@ -11,7 +11,7 @@ import {
   Animated,
   Platform,
 } from 'react-native';
-import {Button, Input, ListItem, Slider} from 'react-native-elements';
+import {Button, Input, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import Divider from '../../main-menu-panel/MainMenuPanelDivider';
@@ -19,7 +19,7 @@ import {customMapTypes} from '../maps.constants';
 import {settingPanelReducers} from '../../main-menu-panel/mainMenuPanel.constants';
 import SidePanelHeader from '../../main-menu-panel/SidePanelHeader';
 import {mapReducers} from '../maps.constants';
-// import Slider from '../../../shared/ui/Slider';
+import Slider from '../../../shared/ui/Slider';
 import useMapHook from '../useMaps';
 
 // Styles
@@ -43,7 +43,6 @@ const AddCustomMaps = (props) => {
 
   const [editableCustomMapData, setEditableCustomMapData] = useState(null);
   const [textInputAnimate] = useState(new Animated.Value(0));
-  const [slider, setSlider] = useState(editableCustomMapData ? editableCustomMapData.opacity : 1);
 
   const dispatch = useDispatch();
 
@@ -268,16 +267,10 @@ const AddCustomMaps = (props) => {
               <View style={{flex: 2}}>
                 <Slider
                   value={editableCustomMapData && editableCustomMapData.opacity}
-                  // onValueChange={(val) => setEditableCustomMapData(e => ({...e, opacity: val}))}
-                  onValueChange={(val) => setSlider(val)}
-                  onSlidingComplete={() => setEditableCustomMapData(e => ({...e, opacity: slider}))}
+                  onValueChange={(val) => setEditableCustomMapData(e => ({...e, opacity: val}))}
                   maximumValue={1}
                   minimumValue={0}
                   step={0.1}
-                  thumbStyle={{borderWidth: 1, borderColor: 'grey'}}
-                  minimumTrackTintColor={themes.PRIMARY_ACCENT_COLOR}
-                  maximumTrackTintColor={themes.PRIMARY_BACKGROUND_COLOR}
-                  thumbTintColor={themes.PRIMARY_BACKGROUND_COLOR}
                 />
               </View>
             }
