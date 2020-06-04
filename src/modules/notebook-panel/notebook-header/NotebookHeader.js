@@ -39,9 +39,14 @@ const NotebookHeader = props => {
           return longitude + degreeSymbol + ' ' + longitudeCardinal + ', ' + latitude + degreeSymbol + ' ' + latitudeCardinal;
         }
       }
-      else if (spot.geometry.type === 'LineString' && spot.properties.trace &&
-        spot.properties.trace.trace_feature && spot.properties.trace.trace_type) {
+      else if ((spot.geometry.type === 'LineString' || spot.geometry.type === 'MultiLineString') &&
+        spot.properties.trace && spot.properties.trace.trace_feature && spot.properties.trace.trace_type) {
         return getTraceText();
+      }
+      else if ((spot.geometry.type === 'Polygon' || spot.geometry.type === 'MultiPolygon' ||
+        spot.geometry.type === 'GeometryCollection') &&
+        spot.properties.surface_feature && spot.properties.surface_feature.surface_feature_type) {
+        return getSurfaceFeatureText();
       }
       return spot.geometry.type;
     }
@@ -70,6 +75,17 @@ const NotebookHeader = props => {
       if (subTypeLabel) traceText = traceText + ' - ' + subTypeLabel.toUpperCase();
     }
     return traceText;
+  };
+
+  const getSurfaceFeatureText = () => {
+    const surfaceFeatureDictionary = labelDictionary.general.surface_feature;
+    const key = spot.properties.surface_feature.surface_feature_type;
+    let surfaceFeatureText = surfaceFeatureDictionary[key] || key.replace(/_/g, ' ');
+    if (spot.properties.surface_feature.surface_feature_type === 'other' &&
+      spot.properties.surface_feature.other_surface_feature_type) {
+      surfaceFeatureText = spot.properties.surface_feature.other_surface_feature_type;
+    }
+    return toTitleCase(surfaceFeatureText);
   };
 
   const onSpotEdit = (field, value) => {

@@ -17,7 +17,7 @@ import styles from './form.styles';
 const {State: TextInputState} = TextInput;
 
 const Form = (props) => {
-  console.log('form props', props);
+  //console.log('form props', props);
   const [useForm] = useFormHook();
   const [textInputAnimate] = useState(new Animated.Value(0));
 
@@ -27,7 +27,7 @@ const Form = (props) => {
     return function cleanup() {
       Keyboard.removeListener('keyboardDidShow', handleKeyboardDidShow);
       Keyboard.removeListener('keyboardDidHide', handleKeyboardDidHide);
-      console.log('Listners Removed');
+      //console.log('Listners Removed');
     };
   }, []);
 

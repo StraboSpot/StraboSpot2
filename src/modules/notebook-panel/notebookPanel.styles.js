@@ -89,22 +89,22 @@ const notebookStyles = StyleSheet.create({
   dialogText: {
     color: themes.PRIMARY_ACCENT_COLOR,
   },
-  traceContainer: {
+  traceSurfaceFeatureContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     borderBottomWidth: 2,
     borderBottomColor: themes.DARKGREY,
   },
-  traceToggleContainer: {
+  traceSurfaceFeatureToggleContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingLeft: 10,
   },
-  traceToggleText: {
+  traceSurfaceFeatureToggleText: {
     paddingRight: 10,
     fontSize: themes.MEDIUM_TEXT_SIZE,
   },
-  traceDisabledText: {
+  traceSurfaceFeatureDisabledText: {
     color: themes.PRIMARY_BACKGROUND_COLOR,
   },
 });

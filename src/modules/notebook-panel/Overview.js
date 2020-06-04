@@ -30,8 +30,8 @@ const Overview = props => {
   const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
   const [collapsedSections, setCollapsedSections] = useState(['Tags', 'Notes', 'Photos and Sketches']);
-  const [isTraceEnabled, setIsTraceEnabled] = useState(false);
-  const [isTraceEdit, setIsTraceEdit] = useState(false);
+  const [isTraceSurfaceFeatureEnabled, setIsTraceSurfaceFeatureEnabled] = useState(false);
+  const [isTraceSurfaceFeatureEdit, setIsTraceSurfaceFeatureEdit] = useState(false);
   const form = useRef(null);
   const [useForm] = useFormHook();
 
@@ -55,12 +55,18 @@ const Overview = props => {
     containerStyle={{paddingRight: 10}}/>;
 
   useEffect(() => {
-    setIsTraceEnabled(spot.properties.hasOwnProperty('trace') && spot.properties.trace.trace_feature);
-    setIsTraceEdit(false);
+    setIsTraceSurfaceFeatureEnabled((spot.properties.hasOwnProperty('trace') &&
+      spot.properties.trace.trace_feature) || spot.properties.hasOwnProperty('surface_feature'));
+    setIsTraceSurfaceFeatureEdit(false);
   }, [spot]);
 
   const cancelFormAndGo = () => {
-    setIsTraceEdit(false);
+    setIsTraceSurfaceFeatureEdit(false);
+    if (isTraceSurfaceFeatureEnabled && !spot.properties.hasOwnProperty('surface_feature') &&
+      (spot.geometry.type === 'Polygon' || spot.geometry.type === 'MultiPolygon' ||
+        spot.geometry.type === 'GeometryCollection')) {
+      setIsTraceSurfaceFeatureEnabled(false);
+    }
   };
 
   // What happens after submitting the form is handled in saveFormAndGo since we want to show
@@ -108,8 +114,11 @@ const Overview = props => {
     );
   };
 
-  const renderTraceFeatureForm = () => {
-    const formName = ['general', 'trace'];
+  const renderTraceSurfaceFeatureForm = () => {
+    let formName = ['general', 'trace'];
+    if (spot.geometry.type === 'Polygon' || spot.geometry.type === 'MultiPolygon' ||
+      spot.geometry.type === 'GeometryCollection') formName = ['general', 'surface_feature'];
+    let initialValues = spot.properties.trace || spot.properties.surface_feature || {};
     return (
       <View>
         {renderCancelSaveButtons()}
@@ -119,7 +128,7 @@ const Overview = props => {
             onSubmit={onSubmitForm}
             validate={(values) => useForm.validateForm({formName: formName, values: values})}
             component={(formProps) => Form({formName: formName, ...formProps})}
-            initialValues={spot.properties.trace}
+            initialValues={initialValues}
             validateOnChange={false}
             enableReinitialize={true}
           />
@@ -135,7 +144,13 @@ const Overview = props => {
         return Promise.reject();
       }
       console.log('Saving form data to Spot ...');
-      dispatch({type: spotReducers.EDIT_SPOT_PROPERTIES, field: 'trace', value: form.current.values});
+      if (spot.geometry.type === 'LineString' || spot.geometry.type === 'MultiLineString') {
+        dispatch({type: spotReducers.EDIT_SPOT_PROPERTIES, field: 'trace', value: form.current.values});
+      }
+      else if (spot.geometry.type === 'Polygon' || spot.geometry.type === 'MultiPolygon' ||
+        spot.geometry.type === 'GeometryCollection') {
+        dispatch({type: spotReducers.EDIT_SPOT_PROPERTIES, field: 'surface_feature', value: form.current.values});
+      }
       return Promise.resolve();
     }, (e) => {
       console.log('Error submitting form', e);
@@ -145,7 +160,7 @@ const Overview = props => {
 
   const saveFormAndGo = () => {
     saveForm().then(() => {
-      setIsTraceEdit(false);
+      setIsTraceSurfaceFeatureEdit(false);
     }, () => {
       console.log('Error saving form data to Spot');
     });
@@ -156,46 +171,66 @@ const Overview = props => {
     else setCollapsedSections(collapsedSections.concat(name));
   };
 
-  const toggleTrace = () => {
-    const continueToggleTrace = () => {
-      const trace = isTraceEnabled ? {} : {trace_feature: true};
-      dispatch({type: spotReducers.EDIT_SPOT_PROPERTIES, field: 'trace', value: trace});
+  const toggleTraceSurfaceFeature = () => {
+    const continueToggleTraceSurfaceFeature = () => {
+      if (spot.geometry.type === 'LineString' || spot.geometry.type === 'MultiLineString') {
+        const trace = isTraceSurfaceFeatureEnabled ? {} : {trace_feature: true};
+        dispatch({type: spotReducers.EDIT_SPOT_PROPERTIES, field: 'trace', value: trace});
+      }
+      else if (spot.geometry.type === 'Polygon' || spot.geometry.type === 'MultiPolygon' ||
+        spot.geometry.type === 'GeometryCollection') {
+        setIsTraceSurfaceFeatureEnabled(!isTraceSurfaceFeatureEnabled);
+        setIsTraceSurfaceFeatureEdit(!isTraceSurfaceFeatureEnabled);
+        if (isTraceSurfaceFeatureEnabled) {
+          dispatch({type: spotReducers.EDIT_SPOT_PROPERTIES, field: 'surface_feature', value: {}});
+        }
+      }
     };
 
-    if (isTraceEnabled && !isEmpty(Object.keys(spot.properties.trace).filter(t => t !== 'trace_feature'))) {
-      Alert.alert('Turn Off Trace Feature Warning',
-        'Turning off trace feature will delete all trace data. Are you sure you want to continue?',
+    if (isTraceSurfaceFeatureEnabled && ((spot.properties.hasOwnProperty('trace') &&
+      !isEmpty(Object.keys(spot.properties.trace).filter(t => t !== 'trace_feature'))) ||
+      spot.properties.hasOwnProperty('surface_feature'))) {
+      let featureTypeText = spot.geometry.type === 'LineString' || spot.geometry.type === 'MultiLineString' ? 'Trace' : 'Surface';
+      Alert.alert('Turn Off ' + featureTypeText + ' Feature Warning',
+        'Turning off ' + featureTypeText.toLowerCase() + ' feature will delete all ' +
+        featureTypeText.toLowerCase() + ' feature data. Are you sure you want to continue?',
         [
           {text: 'No', style: 'cancel'},
-          {text: 'Yes', onPress: continueToggleTrace},
+          {text: 'Yes', onPress: continueToggleTraceSurfaceFeature},
         ],
         {cancelable: false},
       );
     }
-    else continueToggleTrace();
+    else continueToggleTraceSurfaceFeature();
   };
 
   return (
     <View>
-      {spot.geometry && spot.geometry.type && spot.geometry.type === 'LineString' &&
-      <View style={notebookStyles.traceContainer}>
-        <View style={notebookStyles.traceToggleContainer}>
-          <Text style={notebookStyles.traceToggleText}>This is a trace feature</Text>
+      {spot.geometry && spot.geometry.type && (spot.geometry.type === 'LineString' ||
+        spot.geometry.type === 'MultiLineString' || spot.geometry.type === 'Polygon' ||
+        spot.geometry.type === 'MultiPolygon' || spot.geometry.type === 'GeometryCollection') &&
+      <View style={notebookStyles.traceSurfaceFeatureContainer}>
+        <View style={notebookStyles.traceSurfaceFeatureToggleContainer}>
+          {(spot.geometry.type === 'LineString' || spot.geometry.type === 'MultiLineString') &&
+          <Text style={notebookStyles.traceSurfaceFeatureToggleText}>This is a trace feature</Text>}
+          {(spot.geometry.type === 'Polygon' || spot.geometry.type === 'MultiPolygon' ||
+            spot.geometry.type === 'GeometryCollection') &&
+          <Text style={notebookStyles.traceSurfaceFeatureToggleText}>This is a surface feature</Text>}
           <Switch
-            onValueChange={toggleTrace}
-            value={isTraceEnabled}
+            onValueChange={toggleTraceSurfaceFeature}
+            value={isTraceSurfaceFeatureEnabled}
           />
         </View>
         <View>
           <Button
             title='Edit'
             type='clear'
-            disabled={!isTraceEnabled}
-            disabledTitleStyle={notebookStyles.traceDisabledText}
-            onPress={() => setIsTraceEdit(true)}/>
+            disabled={!isTraceSurfaceFeatureEnabled}
+            disabledTitleStyle={notebookStyles.traceSurfaceFeatureDisabledText}
+            onPress={() => setIsTraceSurfaceFeatureEdit(true)}/>
         </View>
       </View>}
-      {isTraceEdit ? renderTraceFeatureForm() : renderCollapsibleList()}
+      {isTraceSurfaceFeatureEdit ? renderTraceSurfaceFeatureForm() : renderCollapsibleList()}
     </View>
   );
 };

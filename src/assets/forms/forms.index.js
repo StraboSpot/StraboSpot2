@@ -4,6 +4,8 @@ import imagePropertiesChoices from './images/image-properties-choices';
 import projectDescriptionSurvey from './project/project-description-survey';
 import traceSurvey from './trace/trace-survey';
 import traceChoices from './trace/trace-choices';
+import surfaceFeatureSurvey from './surface-feature/surface-feature-survey.json';
+import surfaceFeatureChoices from './surface-feature/surface-feature-choices.json';
 
 // Measurement forms
 import linearOrientationSurvey from './measurement/linear-orientation-survey';
@@ -30,6 +32,10 @@ const forms = {
     trace: {
       survey: traceSurvey,
       choices: traceChoices,
+    },
+    surface_feature: {
+      survey: surfaceFeatureSurvey,
+      choices: surfaceFeatureChoices,
     },
   },
   measurement: {
