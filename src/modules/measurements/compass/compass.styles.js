@@ -5,14 +5,20 @@ const styles = StyleSheet.create({
   buttonContainer: {
     paddingBottom: 10,
   },
+  buttonTitleStyle: {
+    color: themes.PRIMARY_ACCENT_COLOR,
+    fontSize: 16,
+  },
   compassContainer: {
-    zIndex: 1,
-    flex: 15,
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
-    // backgroundColor: 'red',
-    // borderBottomRightRadius: 20,
-    // borderBottomLeftRadius: 20,
     width: '100%',
+  },
+  compassImage: {
+    marginTop: 15,
+    height: 175,
+    width: 175,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   compassImageContainer: {
     alignItems: 'center',
@@ -40,16 +46,9 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   sliderContainer: {
-    alignItems: 'center',
-    paddingTop: 10,
-  },
-  sliderTextContainer: {
-    width: '100%',
-    justifyContent: 'space-between',
-    // paddingBottom: 5,
-    paddingRight: 10,
-    paddingLeft: 10,
-    flexDirection: 'row',
+    flex: 1,
+    padding: 10,
+    justifyContent: 'center',
   },
   sliderHeading: {
     fontWeight: 'bold',

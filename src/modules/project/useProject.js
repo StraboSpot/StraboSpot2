@@ -263,8 +263,8 @@ const useProject = () => {
           dataset.active = false;
         });
       }
-      const datasets = Object.assign({}, ...projectDatasetsFromServer.datasets.map(item => ({[item.id]: item})));
-      dispatch({type: projectReducers.DATASETS.DATASETS_UPDATE, datasets: datasets});
+      const datasetsReassigned = Object.assign({}, ...projectDatasetsFromServer.datasets.map(item => ({[item.id]: item})));
+      dispatch({type: projectReducers.DATASETS.DATASETS_UPDATE, datasets: datasetsReassigned});
       dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
       dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Datasets Saved.'});
       console.log('Saved datasets:', projectDatasetsFromServer);
@@ -273,6 +273,7 @@ const useProject = () => {
   };
 
   const makeDatasetCurrent = (id) => {
+    // eslint-disable-next-line no-return-assign
     Object.values(datasets).map(data => data.current = false);
     const datasetsCopy = JSON.parse(JSON.stringify(datasets));
     datasetsCopy[id].current = !datasetsCopy[id].current;

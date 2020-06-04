@@ -22,13 +22,11 @@ import {homeReducers, Modals} from '../../home/home.constants';
 import {NotebookPages, notebookReducers} from '../../notebook-panel/notebook.constants';
 import Slider from '../../../shared/ui/Slider';
 import useMapsHook from '../../maps/useMaps';
-import Geolocation from '@react-native-community/geolocation';
 
 // Styles
-import styles from './compass.styles';
+import compassStyles from './compass.styles';
+import uiStyles from '../../../shared/ui/ui.styles';
 import * as themes from '../../../shared/styles.constants';
-import Measurements from '../Measurements';
-import IconButton from '../../../shared/ui/IconButton';
 
 // eslint-disable-next-line no-unused-vars
 const {height, width} = Dimensions.get('window');
@@ -65,9 +63,9 @@ const RNCompass = (props) => {
   }, [displayCompassData]);
 
   useEffect(() => {
-    RNSimpleCompass.start(degree_update_rate, ({degree, accuracy}) => {
-      const heading = roundToDecimalPlaces(mod(degree - 270, 360), 0);
-      setHeading(heading);
+    RNSimpleCompass.start(degree_update_rate, ({degree}) => {
+      const compassHeading = roundToDecimalPlaces(mod(degree - 270, 360), 0);
+      setHeading(compassHeading);
     });
     return () => {
       RNSimpleCompass.stop();
@@ -144,18 +142,8 @@ const RNCompass = (props) => {
 
   const renderCompass = () => {
     return (
-      <TouchableOpacity style={styles.compassImageContainer} onPress={() => grabMeasurements()}>
-        <Image source={require('../../../assets/images/compass/compass.png')}
-               style={{
-                 marginTop: 15,
-                 height: 175,
-                 width: 175,
-                 justifyContent: 'center',
-                 alignItems: 'center',
-                 // resizeMode: 'contain',
-                 // transform: [{rotate: 360 - magnetometer + 'deg'}]
-               }}
-        />
+      <TouchableOpacity style={compassStyles.compassImageContainer} onPress={() => grabMeasurements()}>
+        <Image source={require('../../../assets/images/compass/compass.png')} style={compassStyles.compassImage}/>
         {renderCompassSymbols()}
       </TouchableOpacity>
     );
@@ -183,9 +171,8 @@ const RNCompass = (props) => {
 
   const renderDataView = () => {
     return (
-      <View style={{alignItems: 'flex-start'}}>
+      <View style={uiStyles.alignItemsToCenter}>
         <Text>Heading: {heading}</Text>
-        {/*<Text>{text}</Text>*/}
         <Text>Strike: {compassData.strike}</Text>
         <Text>Dip: {compassData.dip}</Text>
         <Text>Trend: {compassData.trend}</Text>
@@ -217,7 +204,7 @@ const RNCompass = (props) => {
         key={image}
         source={image}
         style={
-          [styles.strikeAndDipLine,
+          [compassStyles.strikeAndDipLine,
             {transform: [{rotate: spin}]},
           ]}/>
     );
@@ -240,14 +227,14 @@ const RNCompass = (props) => {
 
   const renderToggles = () => {
     return (
-      Object.keys(CompassToggleButtons).map((key, i) => (
+      Object.keys(CompassToggleButtons).map((key) => (
         <ListItem
-          containerStyle={styles.toggleButtonsContainer}
+          containerStyle={compassStyles.toggleButtonsContainer}
           key={key}
           title={
-            <View style={styles.itemContainer}>
-              <Text style={styles.itemTextStyle}>{CompassToggleButtons[key]}</Text>
-              <View style={styles.switchContainer}>
+            <View style={compassStyles.itemContainer}>
+              <Text style={compassStyles.itemTextStyle}>{CompassToggleButtons[key]}</Text>
+              <View style={compassStyles.switchContainer}>
                 <Switch
                   // style={home.switch}
                   trackColor={{false: themes.SECONDARY_BACKGROUND_COLOR, true: 'green'}}
@@ -291,7 +278,7 @@ const RNCompass = (props) => {
         key={image}
         source={image}
         style={
-          [styles.trendLine,
+          [compassStyles.trendLine,
             // {transform: [{rotate: compassData.trend + 'deg'}]}
             {transform: [{rotate: spin}]},
           ]}/>
@@ -304,13 +291,13 @@ const RNCompass = (props) => {
         <Button
           title={'View In Shortcut Mode'}
           type={'clear'}
-          titleStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 16}}
+          titleStyle={compassStyles.buttonTitleStyle}
           onPress={() => props.onPress(NotebookPages.MEASUREMENT)}
         />
         <Button
           title={'Toggle data view'}
           type={'clear'}
-          titleStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 16}}
+          titleStyle={compassStyles.buttonTitleStyle}
           onPress={() => {
             viewData();
           }}
@@ -319,13 +306,13 @@ const RNCompass = (props) => {
     }
   }
   else if (props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {
-      modalView =
-        <React.Fragment>
-          <View style={height <= 1000 ? {height: 300, alignItems: 'center', justifyContent: 'center'} :
-            {height: 350, alignContent: 'center', justifyContent: 'center'}}>
+    modalView =
+      <React.Fragment>
+        <View style={height <= 1000 ? {height: 300, alignItems: 'center', justifyContent: 'center'} :
+          {height: 350, alignContent: 'center', justifyContent: 'center'}}>
           {/*<Measurements/>*/}
-          <Text >Reserved for manual measurement input form fields</Text>
-          </View>
+          <Text>Reserved for manual measurement input form fields</Text>
+        </View>
       </React.Fragment>;
   }
 
@@ -334,20 +321,18 @@ const RNCompass = (props) => {
       <View style={{}}>
         <View>
           <Text style={{textAlign: 'center', fontSize: 12}}>Tap compass to record</Text>
-          {/*<View style={{ height: 50, backgroundColor: 'powderblue'}} />*/}
           {renderCompass()}
         </View>
-        <View style={styles.toggleButtonsRowContainer}>
+        <View style={compassStyles.toggleButtonsRowContainer}>
           {renderToggles()}
         </View>
-        <View style={styles.sliderContainer}>
-          <Text style={styles.sliderHeading}>Quality of Measurement</Text>
+        <View style={compassStyles.sliderContainer}>
+          <Text style={compassStyles.sliderHeading}>Quality of Measurement</Text>
           {renderSlider()}
         </View>
       </View>
-      <View style={styles.buttonContainer}>
+      <View style={compassStyles.buttonContainer}>
         {modalView}
-        {/*{showDeviceMotionModal && deviceMotionModal}*/}
         {showData ? renderDataView() : null}
       </View>
     </View>

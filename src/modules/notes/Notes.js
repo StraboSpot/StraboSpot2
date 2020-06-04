@@ -8,7 +8,9 @@ import {spotReducers} from '../spots/spot.constants';
 import {Modals} from '../home/home.constants';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import useMapsHook from '../maps/useMaps';
-import {isEmpty} from '../../shared/Helpers';
+
+// Styles
+import uiStyles from '../../shared/ui/ui.styles';
 
 const Notes = (props) => {
   const [useMaps] = useMapsHook();
@@ -59,7 +61,7 @@ const Notes = (props) => {
     return (
       <View>
         {modalVisible === Modals.SHORTCUT_MODALS.NOTES ?
-          <View style={{alignItems: 'center'}}>
+          <View style={uiStyles.alignItemsToCenter}>
             <Text>Saving a note will create</Text>
             <Text>a new spot.</Text>
           </View>

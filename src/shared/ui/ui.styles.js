@@ -3,6 +3,9 @@ import * as themes from '../styles.constants';
 import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
 
 const styles = StyleSheet.create({
+  alignItemsToCenter: {
+    alignItems: 'center',
+  },
   backdrop: {
     position: 'absolute',
     top: 0,
