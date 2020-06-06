@@ -30,7 +30,7 @@ function Basemap(props) {
   const evaluateCenterCoordinates = () => {
     if (props.zoomToSpot) {
       return props.imageBasemap ?
-        ((isEmpty(selectedSpot) || !isEmpty(selectedSpot) && selectedSpot.properties.image_basemap != props.imageBasemap.id) ? defaultCenterCoordinates() :
+        ((isEmpty(selectedSpot) || !isEmpty(selectedSpot) && selectedSpot.properties.image_basemap !== props.imageBasemap.id) ? defaultCenterCoordinates() :
           useMaps.convertCoordinateProjections(pixelProjection, geoLatLngProjection, turf.centroid(selectedSpot).geometry.coordinates))
         : ((isEmpty(selectedSpot)) || !isEmpty(selectedSpot) && selectedSpot.properties.image_basemap) ? defaultCenterCoordinates() : turf.centroid(selectedSpot).geometry.coordinates;
     }

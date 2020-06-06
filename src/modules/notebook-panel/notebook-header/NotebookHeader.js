@@ -29,7 +29,7 @@ const NotebookHeader = props => {
         const lat = spot.geometry.coordinates[1];
         const latitude = lat.toFixed(6);
         const longitude = lng.toFixed(6);
-        if (currentImageBasemap && spot.properties.image_basemap) {
+        if (spot.properties.image_basemap) {
           return longitude + ' Xpx, ' + latitude + ' Ypx';
         }
         else {
