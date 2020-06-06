@@ -1,6 +1,6 @@
 import React, {useEffect, useImperativeHandle, useRef, useState} from 'react';
 import * as turf from '@turf/turf/index';
-import {connect, useSelector} from 'react-redux';
+import {connect, useSelector, useDispatch} from 'react-redux';
 import {View} from 'react-native';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 
@@ -24,7 +24,7 @@ import {projectReducers} from '../project/project.constants';
 MapboxGL.setAccessToken(MAPBOX_KEY);
 
 const Map = React.forwardRef((props, ref) => {
-
+  const dispatch = useDispatch();
   const [useMaps] = useMapsHook();
   const [useSpots] = useSpotsHook();
   const currentBasemap = useSelector(state => state.map.currentBasemap);
@@ -49,8 +49,7 @@ const Map = React.forwardRef((props, ref) => {
     spotsNotSelected: [],
     spotsSelected: [],
     coordQuad: [],
-    screenCords: [],          // No longer need
-    imageBasemapProps: [],
+    zoomToSpot : false,
   };
 
   const [editingModeData, setEditingModeData] = useState(initialEditingModeData);
@@ -99,6 +98,20 @@ const Map = React.forwardRef((props, ref) => {
     console.log('Updating Spots, selected Spots, active datasets or basemap changed');
     setDisplayedSpots((isEmpty(props.selectedSpot) ? [] : [{...props.selectedSpot}]));
   }, [props.spots, props.selectedSpot, props.datasets, currentBasemap, currentImageBasemap]);
+
+  useEffect(() => {
+    // On change of selected spot, reset the zoomToSpot
+    if (mapProps.zoomToSpot) {
+      setMapPropsMutable(m => ({
+        ...m,
+        zoomToSpot: false,
+      }));
+      // On turning off the zoomToSpot, if not on imagebasemap,
+      // zoomToSpot synchronously to current selected spot.
+      // (turning off zoomToSpot, will move the camera to center coordinates, so reset the camera zoom to new selected spot's position.)
+      if (!currentImageBasemap) zoomToSpot();
+    }
+  }, [props.selectedSpot]);
 
   useEffect(() => {
     console.log('Updating DOM on vertexEndsCoords changed');
@@ -600,10 +613,6 @@ const Map = React.forwardRef((props, ref) => {
       newOrEditedSpot = await useSpots.createSpot(newFeature);
       useMaps.setSelectedSpot(newOrEditedSpot);
       setDrawFeatures([]);
-      setMapPropsMutable(m => ({
-        ...m,
-        screenCords: [],
-      }));
     }
     console.log('Draw ended.');
     return Promise.resolve(newOrEditedSpot);
@@ -895,9 +904,39 @@ const Map = React.forwardRef((props, ref) => {
 
   const zoomToSpot = () => {
     if (props.selectedSpot && useMaps.isOnGeoMap(props.selectedSpot)) {
-      useMaps.zoomToSpots([props.selectedSpot], map.current, camera.current);
+       // spot selected is on geomap, but currently on imagebasemap mode, turn off imagebasemap mode and zoomToSpot in async mode.
+       if (currentImageBasemap){
+         dispatch(({type: mapReducers.CURRENT_IMAGE_BASEMAP, currentImageBasemap: undefined}));
+         setMapPropsMutable(m => ({
+           ...m,
+           zoomToSpot: true,
+         }));
+       }
+       // spot selected is on geomap and mapMode is main-map, zoomToSpot in sync mode.
+       else useMaps.zoomToSpots([props.selectedSpot], map.current, camera.current);
     }
-    // To Do: Handle case if spot is not on geo map
+    else if (props.selectedSpot && props.selectedSpot.properties.image_basemap) {
+       //spot selected is on imagebasemap, either if not on imagebasemap
+       // or not on same imagebasemap as the selectedspot's imagebasemap,
+       // then switch to corresponding imagebasemap and zoomToSpot in asyncMode
+       if (!currentImageBasemap || currentImageBasemap.id !== props.selectedSpot.properties.image_basemap) {
+         var imageBasemapData = Array.from(useSpots.getAllImageBaseMaps()).find(
+          imgBasemap => imgBasemap.id === props.selectedSpot.properties.image_basemap);
+         dispatch(({
+           type: mapReducers.CURRENT_IMAGE_BASEMAP,
+           currentImageBasemap: imageBasemapData,
+         }));
+         setMapPropsMutable(m => ({
+           ...m,
+           zoomToSpot: true,
+         }));
+       }
+       //spot selected is already on the same imagebasemap, zoomToSpot in sync mode.
+       else useMaps.zoomToSpots([props.selectedSpot], map.current, camera.current);
+    }
+    else {
+          // handle other maps
+    }
   };
 
   // Zoom map to the extent of the mapped Spots
