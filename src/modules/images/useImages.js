@@ -334,35 +334,31 @@ const useImages = () => {
   };
 
   const saveFile = async (imageURI) => {
-    let uriParts = imageURI.uri.split('/');
-    // let imageName = uriParts[uriParts.length - 1];
     let imageId = getNewId();
-    return new Promise((resolve, reject) => {
-      RNFetchBlob
-        .config({path: imagesDirectory + '/' + imageId + '.jpg'})
-        .fetch('GET', imageURI.uri, {})
-        .then((res) => {
-          imageCount++;
-          console.log(imageCount, 'File saved to', res.path());
-          // let imageId = imageName.split('.')[0];
-          let imageData = {};
-          if (Platform.OS === 'ios') {
-            imageData = {
-              id: imageId,
-              src: res.path(),
-              height: imageURI.height,
-              width: imageURI.width,
-            };
-          }
-          else imageData = {id: imageId, src: 'file://' + res.path(), height: imageURI.height, width: imageURI.width};
-          resolve(imageData);
-        })
-        .catch((errorMessage, statusCode) => {
-          imageCount++;
-          console.log('Error on', imageId, ':', errorMessage, statusCode);  // Android Error: RNFetchBlob request error: url == nullnull
-          reject();
-        });
-    });
+    const imagePath = imagesDirectory + '/' + imageId + '.jpg';
+    console.log(imageURI);
+    try {
+      await RNFS.mkdir(imagesDirectory);
+      await RNFS.copyFile(imageURI.uri, imagePath);
+      console.log(imageCount, 'File saved to:', imagePath);
+      imageCount++;
+      let imageData = {};
+      if (Platform.OS === 'ios') {
+        imageData = {
+          id: imageId,
+          src: imagePath,
+          height: imageURI.height,
+          width: imageURI.width,
+        };
+      }
+      else imageData = {id: imageId, src: imageURI.uri, height: imageURI.height, width: imageURI.width};
+      return Promise.resolve(imageData);
+    }
+    catch (e) {
+      imageCount++;
+      console.log('Error on', imageId, ':', e);
+      return Promise.reject();
+    }
   };
 
   // Called from Notebook Panel Footer and opens camera only
