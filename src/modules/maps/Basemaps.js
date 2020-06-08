@@ -13,11 +13,31 @@ import {symbols as symbolsConstant, geoLatLngProjection, pixelProjection} from '
 
 function Basemap(props) {
   const customMaps = useSelector(state => state.map.customMaps);
+  const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const {mapRef, cameraRef} = props.forwardedRef;
   const [useMapSymbology] = useMapSymbologyHook();
   const [symbols, setSymbol] = useState(symbolsConstant);
   const [useImages] = useImagesHook();
   const [useMaps] = useMapsHook();
+
+  const defaultCenterCoordinates = () => {
+    return props.imageBasemap ? useMaps.convertCoordinateProjections(pixelProjection, geoLatLngProjection, [(props.imageBasemap.width) / 2, (props.imageBasemap.height) / 2])
+           : props.centerCoordinate;
+  };
+  // Evaluate and return appropriate center coordinates
+  // if ZoomToSpot is set, then asyncMode zoomToSpot is triggered, load the map with center coordinates as the coordinates of the centroid of the selectedSpot
+  // else return default center coordinates.
+  const evaluateCenterCoordinates = () => {
+    if (props.zoomToSpot) {
+      return props.imageBasemap ?
+        ((isEmpty(selectedSpot) || !isEmpty(selectedSpot) && selectedSpot.properties.image_basemap !== props.imageBasemap.id) ? defaultCenterCoordinates() :
+          useMaps.convertCoordinateProjections(pixelProjection, geoLatLngProjection, turf.centroid(selectedSpot).geometry.coordinates))
+        : ((isEmpty(selectedSpot)) || !isEmpty(selectedSpot) && selectedSpot.properties.image_basemap) ? defaultCenterCoordinates() : turf.centroid(selectedSpot).geometry.coordinates;
+    }
+    else {
+      return defaultCenterCoordinates();
+    }
+  };
 
   return <MapboxGL.MapView
     id={props.imageBasemap ? props.imageBasemap.id : props.basemap.id}
@@ -43,7 +63,7 @@ function Basemap(props) {
     <MapboxGL.Camera
       ref={cameraRef}
       zoomLevel={props.imageBasemap ? 14 : 15}
-      centerCoordinate={props.imageBasemap ? useMaps.convertCoordinateProjections(pixelProjection, geoLatLngProjection, [(props.imageBasemap.width) / 2, (props.imageBasemap.height) / 2]) : props.centerCoordinate}
+      centerCoordinate={evaluateCenterCoordinates()}
       animationDuration={0}
       // followUserLocation={true}   // Can't follow user location if want to zoom to extent of Spots
       // followUserMode='normal'

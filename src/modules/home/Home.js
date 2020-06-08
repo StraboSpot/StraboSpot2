@@ -135,14 +135,7 @@ const Home = (props) => {
   }, []);
 
   useEffect(() => {
-    console.log('Custom Maps Changed');
-    /*if(props.currentImageBasemap != undefined){
-     setDialogs(prev => ({
-     ...prev,
-     baseMapMenuVisible : false
-     }));
-     }*/
-    if (props.currentImageBasemap) toggleHomeDrawerButton();
+    if (props.currentImageBasemap && isMainMenuPanelVisible) toggleHomeDrawerButton();
     return function cleanUp() {
       console.log('currentImageBasemap cleanup UE');
     };
@@ -859,14 +852,14 @@ const Home = (props) => {
           />
         </Animated.View>
         : null}
-      {!props.currentImageBasemap && <Animated.View style={[homeStyles.homeIconContainer, leftsideIconAnimation]}>
+      <Animated.View style={[homeStyles.homeIconContainer, leftsideIconAnimation]}>
         <IconButton
           source={require('../../assets/icons/HomeButton.png')}
           onPress={clickHandler.bind(this, 'home')}
         />
-      </Animated.View>}
+      </Animated.View>
       {props.currentImageBasemap &&
-      <Animated.View style={[homeStyles.homeIconContainer, leftsideIconAnimation]}>
+      <Animated.View style={[homeStyles.bottomLeftIcons, leftsideIconAnimation]}>
         <IconButton
           //style={{top: 5}}
           source={require('../../assets/icons/CloseButton.png')}

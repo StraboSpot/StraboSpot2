@@ -32,6 +32,13 @@ const useSpots = (props) => {
     newSpot.properties.modified_timestamp = Date.now();
     newSpot.properties.viewed_timestamp = Date.now();
     newSpot.properties.name = randomName;
+    if (currentImageBasemap && newSpot.geometry.type == 'Point') {
+      const rootSpot = findRootSpot(currentImageBasemap.id);
+      if (rootSpot) {
+        newSpot.properties.lng = rootSpot.geometry.coordinates[0];
+        newSpot.properties.lat = rootSpot.geometry.coordinates[1];
+      }
+    }
     console.log('Creating new Spot:', newSpot);
     await dispatch({type: spotReducers.ADD_SPOT, spot: newSpot});
     const currentDataset = Object.values(datasets).find(dataset => dataset.current);
@@ -43,6 +50,30 @@ const useSpots = (props) => {
     });
     console.log('Finished creating new Spot. All Spots: ', spots);
     return newSpot;
+  };
+
+  // find the rootSpot for a given image id.
+  const findRootSpot = (imageId) => {
+    let rootSpot, imageFound = false;
+    const allSpots = getActiveSpotsObj();
+    for (let index in allSpots) {
+      let currentSpot = allSpots[index];
+      let spotImages = currentSpot.properties.images;
+      for (let imageIndex in spotImages) {
+        let currentImage = spotImages[imageIndex];
+        if (currentImage.id === imageId){
+          imageFound = true;
+        }
+      }
+      if (imageFound) {
+        rootSpot = currentSpot;
+        break;
+      }
+    }
+    if (rootSpot && rootSpot.properties.image_basemap){
+      return findRootSpot(rootSpot.properties.image_basemap);
+    }
+    return rootSpot;
   };
 
   const deleteSpot = async id => {
@@ -160,6 +191,7 @@ const useSpots = (props) => {
     getSpotById: getSpotById,
     getSpotsByIds: getSpotsByIds,
     getAllImageBaseMaps: getAllImageBaseMaps,
+    findRootSpot : findRootSpot,
   }];
 };
 

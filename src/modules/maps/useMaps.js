@@ -273,16 +273,20 @@ const useMaps = () => {
   };
 
   const zoomToSpots = async (spots, map, camera) => {
+    var spotsCopy = spots.map(spot => JSON.parse(JSON.stringify(spot)));
+    if (currentImageBasemap) {
+      spotsCopy.map(spot => {convertImagePixelsToLatLong(spot);});
+    }
     if (camera) {
       try {
         if (spots.length === 1) {
-          const centroid = turf.centroid(spots[0]);
+          const centroid = turf.centroid(spotsCopy[0]);
           const zoom = await map.getZoom();
           camera.flyTo(turf.getCoord(centroid));
           camera.zoomTo(zoom);
         }
         else if (spots.length > 1) {
-          const features = turf.featureCollection(spots);
+          const features = turf.featureCollection(spotsCopy);
           const [minX, minY, maxX, maxY] = turf.bbox(features);  //bbox extent in minX, minY, maxX, maxY order
           camera.fitBounds([maxX, minY], [minX, maxY], 100, 2500);
         }

@@ -15,9 +15,12 @@ import {toTitleCase} from '../../../shared/Helpers';
 import {labelDictionary} from '../../form/form.constants';
 import {spotReducers} from '../../spots/spot.constants';
 
+//hooks
+import useSpotsHook from '../../spots/useSpots';
+
 const NotebookHeader = props => {
   const dispatch = useDispatch();
-  const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
+  const [useSpots] = useSpotsHook();
   const spot = useSelector(state => state.spot.selectedSpot);
   const [spotName, setSpotName] = useState(spot.properties.name);
 
@@ -25,19 +28,31 @@ const NotebookHeader = props => {
     if (spot.geometry && spot.geometry.type) {
       // Creates DMS string for Point coordinates
       if (spot.geometry.type === 'Point') {
-        const lng = spot.geometry.coordinates[0];
-        const lat = spot.geometry.coordinates[1];
-        const latitude = lat.toFixed(6);
-        const longitude = lng.toFixed(6);
-        if (currentImageBasemap && spot.properties.image_basemap) {
-          return longitude + ' Xpx, ' + latitude + ' Ypx';
+        let lng = spot.geometry.coordinates[0];
+        let lat = spot.geometry.coordinates[1];
+        let latitude = lat.toFixed(6);
+        let longitude = lng.toFixed(6);
+        if (spot.properties.image_basemap) {
+          let pixelDetails = longitude + ' Xpx, ' + latitude + ' Ypx';
+          let rootSpotDetails;
+          if (!spot.properties.lat) {
+            const rootSpot = useSpots.findRootSpot(spot.properties.image_basemap);
+            if (rootSpot && rootSpot.geometry) {
+              lng = rootSpot.geometry.coordinates[0];
+              lat = rootSpot.geometry.coordinates[1];
+            }
+            else rootSpotDetails = 'unavailable';
+          }
+          else {
+            lng = spot.properties.lng;
+            lat = spot.properties.lat;
+          }
+          latitude = lat.toFixed(6);
+          longitude = lng.toFixed(6);
+          if (!rootSpotDetails) rootSpotDetails = getLatLngText(latitude,longitude,lat,lng);
+          if (!rootSpotDetails || rootSpotDetails === 'unavailable') return pixelDetails; else return rootSpotDetails + '\n' + pixelDetails;
         }
-        else {
-          const degreeSymbol = '\u00B0';
-          let latitudeCardinal = Math.sign(lat) >= 0 ? 'North' : 'South';
-          let longitudeCardinal = Math.sign(lng) >= 0 ? 'East' : 'West';
-          return longitude + degreeSymbol + ' ' + longitudeCardinal + ', ' + latitude + degreeSymbol + ' ' + latitudeCardinal;
-        }
+        else return getLatLngText(latitude,longitude,lat,lng);
       }
       else if ((spot.geometry.type === 'LineString' || spot.geometry.type === 'MultiLineString') &&
         spot.properties.trace && spot.properties.trace.trace_feature && spot.properties.trace.trace_type) {
@@ -51,6 +66,13 @@ const NotebookHeader = props => {
       return spot.geometry.type;
     }
     else return 'No Geometry';
+  };
+
+  const getLatLngText = (latitude,longitude,lat,lng) => {
+    const degreeSymbol = '\u00B0';
+    let latitudeCardinal = Math.sign(lat) >= 0 ? 'North' : 'South';
+    let longitudeCardinal = Math.sign(lng) >= 0 ? 'East' : 'West';
+    return longitude + degreeSymbol + ' ' + longitudeCardinal + ', ' + latitude + degreeSymbol + ' ' + latitudeCardinal;
   };
 
   const getSpotGemometryIcon = () => {
