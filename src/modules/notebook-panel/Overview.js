@@ -62,11 +62,8 @@ const Overview = props => {
 
   const cancelFormAndGo = () => {
     setIsTraceSurfaceFeatureEdit(false);
-    if (isTraceSurfaceFeatureEnabled && !spot.properties.hasOwnProperty('surface_feature') &&
-      (spot.geometry.type === 'Polygon' || spot.geometry.type === 'MultiPolygon' ||
-        spot.geometry.type === 'GeometryCollection')) {
-      setIsTraceSurfaceFeatureEnabled(false);
-    }
+    if (isTraceSurfaceFeatureEnabled && !spot.properties.hasOwnProperty('trace') &&
+      !spot.properties.hasOwnProperty('surface_feature')) setIsTraceSurfaceFeatureEnabled(false);
   };
 
   // What happens after submitting the form is handled in saveFormAndGo since we want to show
@@ -115,10 +112,12 @@ const Overview = props => {
   };
 
   const renderTraceSurfaceFeatureForm = () => {
-    let formName = ['general', 'trace'];
-    if (spot.geometry.type === 'Polygon' || spot.geometry.type === 'MultiPolygon' ||
-      spot.geometry.type === 'GeometryCollection') formName = ['general', 'surface_feature'];
+    let formName = ['general', 'surface_feature'];
     let initialValues = spot.properties.trace || spot.properties.surface_feature || {};
+    if (spot.geometry.type === 'LineString' || spot.geometry.type === 'MultiLineString') {
+      formName = ['general', 'trace'];
+      initialValues = {...initialValues, 'trace_feature': true};
+    }
     return (
       <View>
         {renderCancelSaveButtons()}
@@ -145,7 +144,8 @@ const Overview = props => {
       }
       console.log('Saving form data to Spot ...');
       if (spot.geometry.type === 'LineString' || spot.geometry.type === 'MultiLineString') {
-        dispatch({type: spotReducers.EDIT_SPOT_PROPERTIES, field: 'trace', value: form.current.values});
+        const traceValues = {...form.current.values, 'trace_feature': true};
+        dispatch({type: spotReducers.EDIT_SPOT_PROPERTIES, field: 'trace', value: traceValues});
       }
       else if (spot.geometry.type === 'Polygon' || spot.geometry.type === 'MultiPolygon' ||
         spot.geometry.type === 'GeometryCollection') {
@@ -173,17 +173,14 @@ const Overview = props => {
 
   const toggleTraceSurfaceFeature = () => {
     const continueToggleTraceSurfaceFeature = () => {
-      if (spot.geometry.type === 'LineString' || spot.geometry.type === 'MultiLineString') {
-        const trace = isTraceSurfaceFeatureEnabled ? {} : {trace_feature: true};
-        dispatch({type: spotReducers.EDIT_SPOT_PROPERTIES, field: 'trace', value: trace});
-      }
-      else if (spot.geometry.type === 'Polygon' || spot.geometry.type === 'MultiPolygon' ||
-        spot.geometry.type === 'GeometryCollection') {
-        setIsTraceSurfaceFeatureEnabled(!isTraceSurfaceFeatureEnabled);
-        setIsTraceSurfaceFeatureEdit(!isTraceSurfaceFeatureEnabled);
-        if (isTraceSurfaceFeatureEnabled) {
-          dispatch({type: spotReducers.EDIT_SPOT_PROPERTIES, field: 'surface_feature', value: {}});
-        }
+      setIsTraceSurfaceFeatureEnabled(!isTraceSurfaceFeatureEnabled);
+      setIsTraceSurfaceFeatureEdit(!isTraceSurfaceFeatureEnabled);
+
+      // If toggled off remove trace or surface feature
+      if (isTraceSurfaceFeatureEnabled) {
+        let field = 'surface_feature';
+        if (spot.geometry.type === 'LineString' || spot.geometry.type === 'MultiLineString') field = 'trace';
+        dispatch({type: spotReducers.EDIT_SPOT_PROPERTIES, field: field, value: {}});
       }
     };
 
