@@ -14,13 +14,13 @@ import AsyncStorage from '@react-native-community/async-storage';
 export const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
-    blacklist: ['notebook'],
+  blacklist: ['notebook'],
 };
 
 const notebookConfig = {
   key: 'notebook',
   storage: AsyncStorage,
-  // blacklist: ['visibleNotebookPagesStack'],
+  blacklist: ['visibleNotebookPagesStack', 'isNotebookPanelVisible'],
 };
 
 const loggerMiddleware = createLogger({
@@ -28,7 +28,7 @@ const loggerMiddleware = createLogger({
   collapsed: (getState, action, logEntry) => !logEntry.error,
 });
 
-const appReducer = combineReducers({
+const rootReducer = combineReducers({
   home: homeReducer,
   spot: spotReducer,
   map: mapReducer,
@@ -37,14 +37,6 @@ const appReducer = combineReducers({
   user: userReducer,
   project: projectsReducer,
 });
-
-const rootReducer = (state, action) => {
-  if (action.type === 'CLEAR_STORE') {
-    AsyncStorage.removeItem('root');
-    state = undefined;
-  }
-  return appReducer(state, action);
-};
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
