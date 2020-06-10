@@ -1,5 +1,6 @@
 import {CompassToggleButtons} from '../measurements/compass/compass.constants';
 import {notebookReducers} from './notebook.constants';
+import {redux} from '../../shared/app.constants';
 import {isEmpty} from '../../shared/Helpers';
 
 const initialState = {
@@ -42,6 +43,9 @@ export const notebookReducer = (state = initialState, action) => {
         ...state,
         isNotebookPanelVisible: action.value,
       };
+    case redux.CLEAR_STORE:
+      console.log('Clearing Notebook...');
+      return initialState;
   }
   return state;
 };
