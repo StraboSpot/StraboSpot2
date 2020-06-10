@@ -13,12 +13,43 @@ import {homeReducers} from '../home/home.constants';
 
 const useSpots = (props) => {
   const dispatch = useDispatch();
+  const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const spots = useSelector(state => state.spot.spots);
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const datasets = useSelector(state => state.project.datasets);
 
   const [useImages] = useImagesHook();
   const [useServerRequests] = useServerRequestsHook();
+
+  // Copy Spot to a new Spot omiting specific properties
+  const copySpot = async () => {
+    // Ids are generated in such quick succession here that using the getNewId function from Helpers.js doesn't
+    // work since that is based on a timestamp
+    const getNewCopyId = () => Math.floor(10000000000000 + Math.random() * 90000000000000);
+
+    let copiedSpot = {'type': 'Feature'};
+    let {name, id, date, time, modified_timestamp, images, samples, viewed_timestamp, ...properties} = selectedSpot.properties;
+    copiedSpot.properties = properties;
+    if (properties.orientation_data) {
+      const orientation_data = properties.orientation_data.map(measurement => {
+        let {id: measurementId, strike, dip_direction, dip, trend, plunge, rake, rake_calculated, ...measurementRest} = measurement;
+        if (measurementRest.associated_orientation) {
+          const associated_orientation = measurementRest.associated_orientation.map(assocMeasurement => {
+            let {id: measurementIdA, strike: strikeA, dip_direction: dipDirectionA, dip: dipA, trend: trendA, plunge: plungeA, rake: rakeA, rake_calculated: rakeCalculatedA, ...assocMeasurementRest} = assocMeasurement;
+            return {...assocMeasurementRest, id: getNewCopyId()};
+          });
+          if (associated_orientation) {
+            return {...measurementRest, id: getNewCopyId(), associated_orientation: associated_orientation};
+          }
+        }
+        else return {...measurementRest, id: getNewCopyId()};
+      });
+      if (orientation_data) copiedSpot.properties.orientation_data = orientation_data;
+    }
+    const newSpot = await createSpot(copiedSpot);
+    dispatch({type: spotReducers.SET_SELECTED_SPOT, spot: newSpot});
+    console.log('Spot Copied. New Spot', newSpot);
+  };
 
   // Create a new Spot
   const createSpot = async (feature) => {
@@ -32,7 +63,7 @@ const useSpots = (props) => {
     newSpot.properties.modified_timestamp = Date.now();
     newSpot.properties.viewed_timestamp = Date.now();
     newSpot.properties.name = randomName;
-    if (currentImageBasemap && newSpot.geometry.type == 'Point') {
+    if (currentImageBasemap && newSpot.geometry.type === 'Point') {
       const rootSpot = findRootSpot(currentImageBasemap.id);
       if (rootSpot) {
         newSpot.properties.lng = rootSpot.geometry.coordinates[0];
@@ -61,7 +92,7 @@ const useSpots = (props) => {
       let spotImages = currentSpot.properties.images;
       for (let imageIndex in spotImages) {
         let currentImage = spotImages[imageIndex];
-        if (currentImage.id === imageId){
+        if (currentImage.id === imageId) {
           imageFound = true;
         }
       }
@@ -70,7 +101,7 @@ const useSpots = (props) => {
         break;
       }
     }
-    if (rootSpot && rootSpot.properties.image_basemap){
+    if (rootSpot && rootSpot.properties.image_basemap) {
       return findRootSpot(rootSpot.properties.image_basemap);
     }
     return rootSpot;
@@ -182,6 +213,7 @@ const useSpots = (props) => {
   };
 
   return [{
+    copySpot: copySpot,
     createSpot: createSpot,
     deleteSpot: deleteSpot,
     deleteSpotsFromDataset: deleteSpotsFromDataset,
@@ -191,7 +223,7 @@ const useSpots = (props) => {
     getSpotById: getSpotById,
     getSpotsByIds: getSpotsByIds,
     getAllImageBaseMaps: getAllImageBaseMaps,
-    findRootSpot : findRootSpot,
+    findRootSpot: findRootSpot,
   }];
 };
 
