@@ -221,8 +221,9 @@ const Home = (props) => {
       case 'closeNotebook':
         closeNotebookPanel();
         break;
-      case 'copyFeature':
-        console.log('Spot Copied!');
+      case 'copySpot':
+        useSpots.copySpot();
+        dispatch({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: NotebookPages.OVERVIEW});
         break;
       case 'deleteSpot':
         deleteSpot(props.selectedSpot.properties.id);
@@ -404,7 +405,7 @@ const Home = (props) => {
   };
 
   const openNotebookPanel = pageView => {
-    console.log('notebook opening', pageView);
+    console.log('Opening Notebook', pageView, '...');
     props.setNotebookPageVisible(pageView || NotebookPages.OVERVIEW);
     animatePanels(animation, 0);
     animatePanels(rightsideIconAnimationValue, -notebookPanelWidth);

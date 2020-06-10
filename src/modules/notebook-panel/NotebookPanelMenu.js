@@ -27,7 +27,7 @@ const NotebookPanelMenu = (props) => {
         <DialogButton
           text='Copy this Spot'
           textStyle={styles.dialogText}
-          onPress={() => props.onPress(menuButtons.notebookMenu.COPY_FEATURE)}
+          onPress={() => props.onPress(menuButtons.notebookMenu.COPY_SPOT)}
         />
         <DialogButton
           style={styles.dialogContent}
