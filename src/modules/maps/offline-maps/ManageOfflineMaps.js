@@ -28,14 +28,6 @@ const ManageOfflineMaps = (props) => {
 
   console.log('tileCacheDirectory: ', tileCacheDirectory);
 
-  const offlineMaps = useSelector((state) => state.map.offlineMaps);
-  const currentBasemap = useSelector((state) => state.map.currentBasemap);
-  const dispatch = useDispatch;
-
-  useEffect(() => {
-    useExport.getMapsFromDevice();
-  },[]);
-
   const viewOfflineMap = async (map) => {
     let tempCurrentBasemap;
     console.log('viewOfflineMap: ', map);

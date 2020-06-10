@@ -1,4 +1,5 @@
 import {mapReducers} from './maps.constants';
+import {redux} from '../../shared/app.constants';
 
 const initialState = {
   currentBasemap: undefined,
@@ -81,6 +82,13 @@ export const mapReducer = (state = initialState, action) => {
         ...state,
         vertexStartCoords: undefined,
         vertexEndCoords: undefined,
+      };
+    case redux.CLEAR_STORE:
+      return {
+        ...state,
+        customMaps: {},
+        selectedCustomMapToEdit: {},
+        currentBasemap: undefined
       };
   }
   return state;

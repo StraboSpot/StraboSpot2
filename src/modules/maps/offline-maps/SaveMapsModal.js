@@ -14,7 +14,7 @@ import {mapReducers} from '../maps.constants';
 // Styles
 import * as themes from '../../../shared/styles.constants';
 
-var RNFS = require('react-native-fs');
+const RNFS = require('react-native-fs');
 
 const SaveMapsModal = (props) => {
   // console.log(props);
@@ -36,6 +36,7 @@ const SaveMapsModal = (props) => {
   const dispatch = useDispatch();
 
   const id = currentBasemap && currentBasemap.id;
+  const source = currentBasemap && currentBasemap.source;
   const currentMapName = currentBasemap && currentBasemap.title;
   const maxZoom = currentBasemap && currentBasemap.maxZoom;
   // let zoomLevels = [];
@@ -193,21 +194,20 @@ const SaveMapsModal = (props) => {
     setStatusMessage('Starting Download...');
 
     const layerID = currentBasemap.id;
+    const layerSource = currentBasemap.source;
 
     // await checkValidMapName(currentBasemap);
 
     //let startZipURL = tilehost + '/asynczip?mapid=' + mapID + '&layer=' + layerID + '&extent=' + extentString + '&zoom=' + downloadZoom;
 
-    if (layerID === 'custom') {
+    if (layerSource === 'map_warper' || layerSource === 'mapbox_styles' || layerSource === 'strabospot_mymaps') {
       //configure advanced URL for custom map types here.
       //first, figure out what kind of map we are downloading...
 
-      let downloadMap = '{}';
+      let downloadMap = {};
 
-      for (let i = 0; i < customMaps.length; i++) {
-        if (customMaps[i].id === currentBasemap.layerId) {
-          downloadMap = customMaps[i];
-        }
+      if (customMaps[layerID].id === currentBasemap.id) {
+        downloadMap = customMaps[layerID];
       }
 
       console.log('DownloadMap: ', downloadMap);
@@ -272,7 +272,7 @@ const SaveMapsModal = (props) => {
 
     const customMap = Object.values(customMaps).filter(map => id === map.id);
     console.log(customMap);
-    if (id !== 'custom') mapName = currentMapName;
+    if (source === 'strabo_spot_mapbox' || source === 'osm' || source === 'macrostrat') mapName = currentMapName;
     else mapName = customMap[0].title + ' (Custom Map)';
 
 
