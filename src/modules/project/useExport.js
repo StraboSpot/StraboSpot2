@@ -299,7 +299,6 @@ const useExport = () => {
   const exportHelpers = {
     backupProjectToDevice: backupProjectToDevice,
     doesDeviceDirectoryExist: doesDeviceDirectoryExist,
-    getMapsFromDevice: getMapsFromDevice,
   };
 
   return [exportHelpers];
