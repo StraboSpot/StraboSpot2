@@ -55,6 +55,7 @@ import {homeReducers, Modals} from './home.constants';
 import {MapModes, mapReducers} from '../maps/maps.constants';
 import {NotebookPages, notebookReducers} from '../notebook-panel/notebook.constants';
 import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
+import {SettingsMenuItems} from '../main-menu-panel/mainMenu.constants';
 import {spotReducers} from '../spots/spot.constants';
 
 const allSpotsPanelWidth = 125;
