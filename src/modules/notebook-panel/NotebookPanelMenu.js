@@ -10,6 +10,7 @@ import {menuButtons} from '../../shared/app.constants';
 
 const NotebookPanelMenu = (props) => {
   const isAllSpotsPanelVisible = useSelector(state => state.home.isAllSpotsPanelVisible);
+  const selectedSpot = useSelector(state => state.spot.selectedSpot);
 
   return (
     <Dialog
@@ -41,6 +42,13 @@ const NotebookPanelMenu = (props) => {
           textStyle={styles.dialogText}
           onPress={() => props.onPress(menuButtons.notebookMenu.DELETE_SPOT)}
         />
+        {(!selectedSpot.geometry || (selectedSpot.geometry && selectedSpot.geometry.type === 'Point')) &&
+        <DialogButton
+          style={styles.dialogContent}
+          text='Set to Current Location'
+          textStyle={styles.dialogText}
+          onPress={() => props.onPress(menuButtons.notebookMenu.SET_SPOT_TO_CURRENT_LOCATION)}
+        />}
         {isAllSpotsPanelVisible ?
           <DialogButton
             style={styles.dialogContent}

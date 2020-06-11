@@ -1,5 +1,8 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {Alert, Animated, Dimensions, Easing, Platform, Text, View} from 'react-native';
+import * as turf from '@turf/turf';
+
+// Components
 import Map from '../maps/Map';
 import InitialProjectLoadModal from '../project/InitialProjectLoadModal';
 import MapActionsDialog from './MapActionsDialogBox';
@@ -90,6 +93,7 @@ const Home = (props) => {
   const isProjectLoadSelectionModalVisible = useSelector(state => state.home.isProjectLoadSelectionModalVisible);
   const isMainMenuPanelVisible = useSelector(state => state.home.isSettingsPanelVisible);
   const isSidePanelVisible = useSelector(state => state.settingsPanel.isSidePanelVisible);
+  const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const sidePanelView = useSelector(state => state.settingsPanel.sidePanelView);
 
   // const imagesCount = useSelector(state => state.home.imageProgress.imagesDownloadedCount);
@@ -163,7 +167,7 @@ const Home = (props) => {
     return await useHome.initializeHomePage();
   };
 
-  const clickHandler = (name, position) => {
+  const clickHandler = async (name, position) => {
     switch (name) {
       case 'search':
         Alert.alert('Still in the works',
@@ -227,6 +231,13 @@ const Home = (props) => {
         break;
       case 'deleteSpot':
         deleteSpot(props.selectedSpot.properties.id);
+        break;
+      case 'setSpotToCurrentLocation':
+        const currentLocation = await useMaps.getCurrentLocation();
+        let editedSpot = JSON.parse(JSON.stringify(selectedSpot));
+        editedSpot.geometry = turf.point(currentLocation).geometry;
+        dispatch({type: spotReducers.ADD_SPOT, spot: editedSpot});
+        dispatch({type: spotReducers.SET_SELECTED_SPOT, spot: editedSpot});
         break;
       case 'toggleAllSpotsPanel':
         if (position === 'open') props.setAllSpotsPanelVisible(true);
