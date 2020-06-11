@@ -62,7 +62,7 @@ function Basemap(props) {
 
     <MapboxGL.Camera
       ref={cameraRef}
-      zoomLevel={props.imageBasemap ? 14 : 15}
+      zoomLevel={props.imageBasemap ? 14 : props.zoom}
       centerCoordinate={evaluateCenterCoordinates()}
       animationDuration={0}
       // followUserLocation={true}   // Can't follow user location if want to zoom to extent of Spots

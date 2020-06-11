@@ -50,6 +50,7 @@ const Map = React.forwardRef((props, ref) => {
     spotsSelected: [],
     coordQuad: [],
     zoomToSpot : false,
+    zoom: 14,
   };
 
   const [editingModeData, setEditingModeData] = useState(initialEditingModeData);
@@ -82,10 +83,12 @@ const Map = React.forwardRef((props, ref) => {
     console.log('Changed current basemap to:', currentBasemap);
     const getCenter = async () => {
       const center = await map.current.getCenter();
+      const zoom = await map.current.getZoom();
       setMapPropsMutable(m => ({
         ...m,
         basemap: currentBasemap,
         centerCoordinate: center,
+        zoom: zoom,
       }));
       setMapToggle(!mapToggle);
     };
