@@ -26,6 +26,10 @@ export const mod = (a, n) => {
   return ((a % n) + n) % n;
 };
 
+export const padWithLeadingZeros = (number, length) => {
+  return number.toString().padStart(length, '0');
+};
+
 // Round value to the number of decimal places in the variable places
 export const roundToDecimalPlaces = (value, places) => {
   var multiplier = Math.pow(10, places);
