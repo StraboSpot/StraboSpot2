@@ -80,11 +80,16 @@ const Map = React.forwardRef((props, ref) => {
 
   useEffect(() => {
     console.log('Changed current basemap to:', currentBasemap);
-    setMapPropsMutable(m => ({
-      ...m,
-      basemap: currentBasemap,
-    }));
-    setMapToggle(!mapToggle);
+    const getCenter = async () => {
+      const center = await map.current.getCenter();
+      setMapPropsMutable(m => ({
+        ...m,
+        basemap: currentBasemap,
+        centerCoordinate: center,
+      }));
+      setMapToggle(!mapToggle);
+    };
+    getCenter();
   }, [currentBasemap]);
 
   useEffect(() => {
