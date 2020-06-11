@@ -1,60 +1,61 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Alert, Animated, Dimensions, Easing, Platform, Text, View} from 'react-native';
 import * as turf from '@turf/turf';
+import {Alert, Animated, Dimensions, Platform, Text, View} from 'react-native';
+import {BallIndicator} from 'react-native-indicators';
+import {Button, Image} from 'react-native-elements';
+import {connect, useDispatch, useSelector} from 'react-redux';
+import {Directions, FlingGestureHandler, State} from 'react-native-gesture-handler';
+import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
+import Modal from 'react-native-modal';
+// import Orientation from "react-native-orientation-locker";
 
 // Components
-import Map from '../maps/Map';
+import AllSpotsPanel from '../notebook-panel/AllSpots';
+import BaseMapDialog from './BaseMapDialogBox';
+import CustomMapDetails from '../maps/custom-maps/CustomMapDetails';
+import IconButton from '../../shared/ui/IconButton';
 import InitialProjectLoadModal from '../project/InitialProjectLoadModal';
+// import LoadingSpinner from '../../shared/ui/Loading';
+import Map from '../maps/Map';
 import MapActionsDialog from './MapActionsDialogBox';
 import MapSymbolsDialog from './MapSymbolsDialogBox';
-import BaseMapDialog from './BaseMapDialogBox';
-
-// <-----Home screen Panels----->
-import AllSpotsPanel from '../notebook-panel/AllSpots';
+import NotebookCompassModal from '../measurements/compass/NotebookCompassModal';
 import NotebookPanel from '../notebook-panel/NotebookPanel';
-import SettingsPanel from '../main-menu-panel/MainMenuPanel';
-import {MapModes, mapReducers} from '../maps/maps.constants';
-import {SettingsMenuItems} from '../main-menu-panel/mainMenu.constants';
-import Modal from 'react-native-modal';
 import NotebookPanelMenu from '../notebook-panel/NotebookPanelMenu';
-import {connect, useDispatch, useSelector} from 'react-redux';
+import NotebookSamplesModal from '../samples/NotebookSamplesModal';
+import ProjectDescription from '../project/ProjectDescription';
+import SaveMapsModal from '../maps/offline-maps/SaveMapsModal';
+import SettingsPanel from '../main-menu-panel/MainMenuPanel';
+import ShortcutCompassModal from '../measurements/compass/ShortcutCompassModal';
+import ShortcutNotesModal from '../notes/ShortcutNotesModal';
+import ShortcutSamplesModal from '../samples/ShortcutSamplesModal';
+import StatusDialogBox from '../../shared/ui/StatusDialogBox';
+import ToastPopup from '../../shared/ui/Toast';
+import VertexDrag from '../maps/VertexDrag';
+
+// Hooks
+import useHomeHook from './useHome';
+import useImagesHook from '../images/useImages';
+import useMapsHook from '../maps/useMaps';
+import useProjectHook from '../project/useProject';
+import useSpotsHook from '../spots/useSpots';
+
+// Utilities
+import {animatePanels, isEmpty} from '../../shared/Helpers';
+
+// Styles
+import homeStyles from './home.style';
+import notebookStyles from '../notebook-panel/notebookPanel.styles';
+import settingPanelStyles from '../main-menu-panel/mainMenuPanel.styles';
+import sharedDialogStyles from '../../shared/common.styles';
+import sidePanelStyles from '../main-menu-panel/sidePanel.styles';
+
+// Constants
+import {homeReducers, Modals} from './home.constants';
+import {MapModes, mapReducers} from '../maps/maps.constants';
 import {NotebookPages, notebookReducers} from '../notebook-panel/notebook.constants';
 import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 import {spotReducers} from '../spots/spot.constants';
-import NotebookCompassModal from '../measurements/compass/NotebookCompassModal';
-import ShortcutCompassModal from '../measurements/compass/ShortcutCompassModal';
-import NotebookSamplesModal from '../samples/NotebookSamplesModal';
-import ShortcutSamplesModal from '../samples/ShortcutSamplesModal';
-import ShortcutNotesModal from '../notes/ShortcutNotesModal';
-import {homeReducers, Modals} from './home.constants';
-import notebookStyles from '../notebook-panel/notebookPanel.styles';
-// import Orientation from "react-native-orientation-locker";
-import {Directions, FlingGestureHandler, State} from 'react-native-gesture-handler';
-// import LoadingSpinner from '../../shared/ui/Loading';
-import ToastPopup from '../../shared/ui/Toast';
-import {Button, Image} from 'react-native-elements';
-import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
-import homeStyles from './home.style';
-import settingPanelStyles from '../main-menu-panel/mainMenuPanel.styles';
-import IconButton from '../../shared/ui/IconButton';
-import VertexDrag from '../maps/VertexDrag';
-import {animatePanels, isEmpty} from '../../shared/Helpers';
-import SaveMapsModal from '../maps/offline-maps/SaveMapsModal';
-import CustomMapDetails from '../maps/custom-maps/CustomMapDetails';
-
-// Hooks
-import useImagesHook from '../images/useImages';
-import useSpotsHook from '../spots/useSpots';
-import useHomeHook from './useHome';
-import useMapsHook from '../maps/useMaps';
-import StatusDialogBox from '../../shared/ui/StatusDialogBox';
-import sharedDialogStyles from '../../shared/common.styles';
-import useProjectHook from '../project/useProject';
-import {BallIndicator} from 'react-native-indicators';
-import ProjectDescription from '../project/ProjectDescription';
-
-// Styles
-import sidePanelStyles from '../main-menu-panel/sidePanel.styles';
 
 const allSpotsPanelWidth = 125;
 const homeMenuPanelWidth = 300;

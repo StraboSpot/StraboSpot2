@@ -1,6 +1,4 @@
 import {useDispatch, useSelector} from 'react-redux';
-import {randomNames} from '../../assets/test-data/default-names';
-import {getNewId, isEmpty} from '../../shared/Helpers';
 
 // Constants
 import {projectReducers} from '../project/project.constants';
@@ -10,6 +8,10 @@ import {spotReducers} from './spot.constants';
 import useImagesHook from '../images/useImages';
 import useServerRequestsHook from '../../services/useServerRequests';
 import {homeReducers} from '../home/home.constants';
+
+// Utilities
+import {getNewId, isEmpty} from '../../shared/Helpers';
+import {randomNames} from '../../assets/test-data/default-names';
 
 const useSpots = (props) => {
   const dispatch = useDispatch();
