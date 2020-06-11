@@ -25,6 +25,7 @@ const ManageOfflineMaps = (props) => {
   const tileCacheDirectory = devicePath + tilesDirectory + '/TileCache';
   const zipsDirectory = devicePath + tilesDirectory + '/TileZips';
   const tileTempDirectory = devicePath + tilesDirectory + '/TileTemp';
+  const isOnline = useSelector(state => state.home.isOnline);
 
   console.log('tileCacheDirectory: ', tileCacheDirectory);
 
@@ -126,11 +127,11 @@ const ManageOfflineMaps = (props) => {
                 <View style={styles.itemSubContainer}>
                   {/*<View style={styles.itemSubTextStyle}>*/}
                     {/*<Text>({item.count} tiles)</Text>*/}
-                    <Text
+                  {!isOnline && <Text
                       onPress={() => viewOfflineMap(item)}
                       style={styles.buttonText}>
                       View in map ({item.count} tiles)
-                    </Text>
+                    </Text>}
                     <Text
                       onPress={() => confirmDeleteMap(item)}
                       style={styles.buttonText}>
