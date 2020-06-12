@@ -1,5 +1,6 @@
 import {homeReducers} from './home.constants';
 import {Dimensions} from 'react-native';
+import {redux} from '../../shared/app.constants';
 
 const initialState = {
   statusMessages: [],
@@ -16,6 +17,7 @@ const initialState = {
   isStatusMessagesModalVisible: false,
   isErrorMessagesModalVisible: false,
   isProjectLoadSelectionModalVisible: false,
+  isOfflineMapModalVisible: false,
   isInfoModalVisible: false,
   isImageModalVisible: false,
   isAllSpotsPanelVisible: false,
@@ -58,6 +60,12 @@ export const homeReducer = (state = initialState, action) => {
         ...state,
         isProjectLoadSelectionModalVisible: action.bool,
       };
+    case homeReducers.SET_OFFLINE_MAPS_MODAL_VISIBLE: {
+      return {
+        ...state,
+        isOfflineMapModalVisible: action.bool,
+      };
+    }
     case homeReducers.DEVICE_DIMENSIONS:
       // console.log('REDUX DEVICE DIMS', state.deviceDimensions);
       // console.log('REDUX DIMS ACTION', action)

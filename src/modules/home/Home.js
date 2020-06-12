@@ -15,7 +15,7 @@ import BaseMapDialog from './BaseMapDialogBox';
 import CustomMapDetails from '../maps/custom-maps/CustomMapDetails';
 import IconButton from '../../shared/ui/IconButton';
 import InitialProjectLoadModal from '../project/InitialProjectLoadModal';
-// import LoadingSpinner from '../../shared/ui/Loading';
+import LoadingSpinner from '../../shared/ui/Loading';
 import Map from '../maps/Map';
 import MapActionsDialog from './MapActionsDialogBox';
 import MapSymbolsDialog from './MapSymbolsDialogBox';
@@ -88,7 +88,9 @@ const Home = (props) => {
   const project = useSelector(state => state.project.project);
   const settingsPageVisible = useSelector(state => state.settingsPanel.settingsPageVisible);
   const statusMessages = useSelector(state => state.home.statusMessages);
-  const isLoading = useSelector(state => state.home.loading);
+  const isHomeLoading = useSelector(state => state.home.loading.home);
+  const isModalLoading = useSelector(state => state.home.loading.modal);
+  const isOfflineMapModalVisible = useSelector(state => state.home.isOfflineMapModalVisible);
   const isStatusMessagesModalVisible = useSelector(state => state.home.isStatusMessagesModalVisible);
   const isErrorMessagesModalVisible = useSelector(state => state.home.isErrorMessagesModalVisible);
   const isInfoMessagesModalVisible = useSelector(state => state.home.isInfoModalVisible);
@@ -113,7 +115,6 @@ const Home = (props) => {
     editButtonsVisible: false,
   });
   const [mapMode, setMapMode] = useState(MapModes.VIEW);
-  const [isOfflineMapModalVisible, setIsOfflineMapModalVisible] = useState(false);
   // const [isProjectLoadSelectionModalVisible, setIsProjectLoadSelectionModalVisible] = useState(false);
   // const [allPhotosSaved, setAllPhotosSaved] = useState([]);
   const [animation, setAnimation] = useState(new Animated.Value(notebookPanelWidth));
@@ -276,7 +277,7 @@ const Home = (props) => {
         mapViewComponent.current.zoomToSpotsExtent();
         break;
       case 'saveMap':
-        toggleOfflineMapModal();
+        dispatch({type: homeReducers.SET_OFFLINE_MAPS_MODAL_VISIBLE, bool: !isOfflineMapModalVisible});
         break;
       case 'addTag':
         Alert.alert('Still in the works', `The ${name.toUpperCase()} button in the  will be functioning soon!`);
@@ -493,7 +494,7 @@ const Home = (props) => {
     return (
       <SaveMapsModal
         visible={isOfflineMapModalVisible}
-        close={() => setIsOfflineMapModalVisible(false)}
+        close={() => dispatch({type: homeReducers.SET_OFFLINE_MAPS_MODAL_VISIBLE, bool: false})}
         map={mapViewComponent.current}
       />
     );
@@ -527,7 +528,7 @@ const Home = (props) => {
         // disabled={progress !== 1 && !uploadErrors}
       >
         <View style={{minHeight: 100}}>
-          {isLoading.modal &&
+          {isModalLoading &&
           <View style={{flex: 1}}>
             <BallIndicator
               color={'darkgrey'}
@@ -541,6 +542,7 @@ const Home = (props) => {
             || statusMessages.includes('There are no active datasets.')
             || statusMessages.includes('Project Backup Complete!')
             || statusMessages.includes('Project loaded!')
+            || statusMessages.includes('Success!')
               ? <Button
                 title={'OK'}
                 type={'clear'}
@@ -624,11 +626,6 @@ const Home = (props) => {
 
   const toggleImageModal = () => {
     props.setIsImageModalVisible(!props.isImageModalVisible);
-  };
-
-  const toggleOfflineMapModal = () => {
-    setIsOfflineMapModalVisible(!isOfflineMapModalVisible);
-    console.log('Modal state', isOfflineMapModalVisible);
   };
 
   const toggleSidePanel = () => {
@@ -944,6 +941,7 @@ const Home = (props) => {
           />
         </View>
       </Modal>
+      {isHomeLoading && <LoadingSpinner/>}
       {notebookPanel}
       {props.isAllSpotsPanelVisible && renderAllSpotsPanel()}
       {homeDrawer}
@@ -952,7 +950,7 @@ const Home = (props) => {
       {renderStatusDialogBox()}
       {renderInfoDialogBox()}
       {renderErrorMessageDialogBox()}
-      {renderSaveMapsModal()}
+      {isOfflineMapModalVisible && renderSaveMapsModal()}
     </View>
   );
 };

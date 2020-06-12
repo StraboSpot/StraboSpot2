@@ -82,8 +82,8 @@ const Map = React.forwardRef((props, ref) => {
   useEffect(() => {
     console.log('Changed current basemap to:', currentBasemap);
     const getCenter = async () => {
-      const center = await map.current.getCenter();
-      const zoom = await map.current.getZoom();
+      const center = map && map.current ? await map.current.getCenter() : initialMapPropsMutable.centerCoordinate;
+      const zoom = map && map.current ? await map.current.getZoom() : initialMapPropsMutable.zoom;
       setMapPropsMutable(m => ({
         ...m,
         basemap: currentBasemap,
