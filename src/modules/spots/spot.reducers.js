@@ -1,5 +1,6 @@
 import {isEmpty, isEqual} from '../../shared/Helpers';
 import {spotReducers} from './spot.constants';
+import {redux} from '../../shared/app.constants';
 
 const initialState = {
   selectedSpots: [],
@@ -149,6 +150,8 @@ export const spotReducer = (state = initialState, action) => {
         recentViews: recentViewsArr,
         selectedAttributes: [],
       };
+    case redux.CLEAR_STORE:
+      return initialState;
   }
   return state;
 };

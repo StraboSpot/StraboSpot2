@@ -1,4 +1,5 @@
 import {projectReducers} from './project.constants';
+import {redux} from '../../shared/app.constants';
 
 const initialState = {
   project: {},
@@ -110,6 +111,8 @@ export const projectsReducer = (state = initialState, action) => {
         ...state,
         deviceBackUpDirectoryExists: action.bool,
       };
+    case redux.CLEAR_STORE:
+      return initialState;
   }
   return state;
 };

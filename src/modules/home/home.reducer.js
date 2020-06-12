@@ -116,6 +116,8 @@ export const homeReducer = (state = initialState, action) => {
         ...state,
         statusMessages: [],
       };
+    case redux.CLEAR_STORE:
+      return initialState;
   }
   return state;
 };

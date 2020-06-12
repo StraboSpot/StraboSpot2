@@ -1,4 +1,6 @@
 import * as UserInfo from './user.constants';
+import {redux} from '../../shared/app.constants';
+
 
 const initialState = {};
 
@@ -24,6 +26,9 @@ export const userReducer = (state = initialState, action) => {
         ...state,
         image: action.userImage,
       };
+    case redux.CLEAR_STORE:
+      console.log('Clearing User Profile...');
+      return initialState;
   }
   return state;
 };
