@@ -7,6 +7,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {Picker} from '@react-native-community/picker';
 import ProgressBar from 'react-native-progress/Bar';
 import RNFetchBlob from 'rn-fetch-blob';
+import * as loading from 'react-native-indicators';
 
 // Constants
 import {mapReducers} from '../maps.constants';
@@ -43,15 +44,26 @@ const SaveMapsModal = (props) => {
   let progressStatus = '';
 
   const [tileCount, setTileCount] = useState(0);
+  const [installedTiles, setInstalledTiles] = useState(0);
+  const [tilesToInstall, setTilesToInstall] = useState(0);
   const [showComplete, setShowComplete] = useState(false);
   const [showMainMenu, setShowMainMenu] = useState(true);
   const [showLoadingMenu, setShowLoadingMenu] = useState(false);
   const [showLoadingBar, setShowLoadingBar] = useState(false);
+  const [isLoadingWave, setIsLoadingWave] = useState(false);
   const [statusMessage, setStatusMessage] = useState('');
   const [percentDone, setPercentDone] = useState(0);
   const [downloadZoom, setDownloadZoom] = useState(0);
   const [zoomLevels, setZoomLevels] = useState([]);
   const [extentString, setExtentString] = useState('');
+
+  useEffect(() => {
+    return function cleanUp() {
+      setInstalledTiles(0);
+      setTilesToInstall(0);
+      setPercentDone(0);
+    };
+  }, []);
 
   useEffect(() => {
     if (props.map) {
@@ -104,7 +116,6 @@ const SaveMapsModal = (props) => {
       }
       else {
         progressStatus = responseJson.status;
-        setPercentDone(responseJson.percent / 100);
       }
     }
     catch {
@@ -112,15 +123,17 @@ const SaveMapsModal = (props) => {
     }
     tryCount++;
     console.log(tryCount);
-    if (tryCount <= 200 && progressStatus !== 'Zip File Ready.' && zipError === '') {
-      await delay(1000);
+    if (progressStatus !== 'Zip File Ready.' && zipError === '') {
+      // await delay(300);
       await checkStatus(zipUID);
     }
     else {
+      setIsLoadingWave(false);
       progressStatus = 'Downloading Tiles...';
       setStatusMessage('Downloading Tiles...');
       await downloadZip(zipUID);
-      await delay(3000);
+      setStatusMessage('Gathering Tiles...');
+      await delay(1000);
       await doUnzip(zipUID);
     }
   };
@@ -128,6 +141,7 @@ const SaveMapsModal = (props) => {
   const doUnzip = async (zipUID) => {
     // hide progress bar
     // setShowLoadingBar(false);
+    setPercentDone(0);
     progressStatus = 'Installing Tiles in StraboSpot...';
     setStatusMessage('Installing tiles...');
     const layerSaveId = currentBasemap.layerSaveId;
@@ -188,7 +202,7 @@ const SaveMapsModal = (props) => {
   const getMapTiles = async () => {
     let layer, id, username;
     let startZipURL = 'unset';
-
+    setIsLoadingWave(true);
     // setProgressMessage('Starting Download...');
     progressStatus = 'Starting Download...';
     setStatusMessage('Starting Download...');
@@ -273,7 +287,7 @@ const SaveMapsModal = (props) => {
     const customMap = Object.values(customMaps).filter(map => id === map.id);
     console.log(customMap);
     if (source === 'strabo_spot_mapbox' || source === 'osm' || source === 'macrostrat') mapName = currentMapName;
-    else mapName = customMap[0].title + ' (Custom Map)';
+    else mapName = customMap[0].title;
 
 
     let newOfflineMapsData = [];
@@ -326,14 +340,26 @@ const SaveMapsModal = (props) => {
   };
 
   const tileMove = async (tilearray, zipUID) => {
+    console.log(tilearray.length);
+    let fileCount = 0;
+    let neededTiles = 0;
+    let notNeededTiles = 0;
     for (const tile of tilearray) {
+      fileCount++;
       let fileExists = await RNFS.exists(tileCacheDirectory + '/' + id + '/tiles/' + tile.name);
       console.log('foo exists: ', tile.name + ' ' + fileExists);
       if (!fileExists) {
+        neededTiles++;
+        setTilesToInstall(neededTiles);
         await RNFS.moveFile(tileTempDirectory + '/' + zipUID + '/tiles/' + tile.name,
           tileCacheDirectory + '/' + id + '/tiles/' + tile.name);
         console.log(tile);
       }
+      else {
+        notNeededTiles++;
+        setInstalledTiles(notNeededTiles);
+      }
+      setPercentDone(fileCount / tilearray.length);
     }
   };
 
@@ -361,7 +387,7 @@ const SaveMapsModal = (props) => {
         slideFrom: 'top',
       })}
     >
-      <DialogContent style={{height: 425}}>
+      <DialogContent style={{height: 410}}>
         <View style={styles.modalContainer}>
           <Header
             backgroundColor={themes.PRIMARY_BACKGROUND_COLOR}
@@ -403,12 +429,21 @@ const SaveMapsModal = (props) => {
               }
               {showLoadingBar &&
               <View style={{height: 40, justifyContent: 'center'}}>
-                <ProgressBar progress={percentDone} width={200}/>
+                {isLoadingWave ?
+                  <View style={{paddingBottom: 35}}>
+                    <loading.DotIndicator animating={isLoadingWave} count={6} size={10}/>
+                  </View> :
+                  <ProgressBar progress={percentDone} width={200}/>}
               </View>
               }
               {showLoadingMenu &&
               <View style={{height: 40, justifyContent: 'center'}}>
                 <Text style={{fontSize: 15}}>{statusMessage}</Text>
+                {!statusMessage.includes('Starting Download...') &&
+                <View>
+                  <Text style={{fontSize: 15}}>Installing: {tilesToInstall}</Text>
+                  <Text style={{fontSize: 15}}>Already Installed: {installedTiles}</Text>
+                </View>}
               </View>
               }
               {showComplete &&

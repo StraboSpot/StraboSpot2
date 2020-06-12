@@ -79,7 +79,8 @@ const AddCustomMaps = (props) => {
       dispatch({type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE, view: null, bool: false});
       dispatch({type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: SettingsMenuItems.SETTINGS_MAIN});
       dispatch({type: homeReducers.CLEAR_STATUS_MESSAGES});
-      dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: `Success! \n\nMap ${customMap.title} has been added or updated!`});
+      dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Success!'});
+      dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: `\nMap ${customMap.title} has been added or updated!`});
       dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, bool: true});
     }
     else {

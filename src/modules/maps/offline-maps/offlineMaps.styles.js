@@ -42,12 +42,12 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
-    paddingBottom: 10,
+    // paddingBottom: 10,
   },
   itemSubContainer: {
     justifyContent: 'space-between',
     flexDirection: 'row',
-    paddingTop: 10,
+    // paddingTop: 10,
     paddingLeft: 10,
   },
   itemTextStyle: {
