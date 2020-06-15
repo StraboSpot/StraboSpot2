@@ -131,6 +131,27 @@ const useMaps = () => {
     return [selectedDisplayedSpots, notSelectedDisplayedSpots];
   };
 
+  // Find Spots within (points) or intersecting (line or polygon) the drawn polygon
+  const getLassoedSpots = (mappedSpots, drawnPolygon) => {
+    const selectedSpots = [];
+    try {
+      mappedSpots.forEach(spot => {
+        const spotType = spot.geometry.type;
+        if ((spotType === 'Point' && turf.booleanWithin(spot, drawnPolygon))
+          || (spotType === 'LineString'
+            && (turf.lineIntersect(spot, drawnPolygon).features.length > 0 || turf.booleanContains(drawnPolygon, spot)))
+          || (spotType === 'Polygon' && turf.booleanOverlap(spot, drawnPolygon))) {
+          selectedSpots.push(spot);
+        }
+      });
+    }
+    catch (e) {
+      console.log('Error getting Spots within or intersecting the drawn polygon', e);
+    }
+    console.log('Selected Spots', selectedSpots);
+    return selectedSpots;
+  };
+
   const getProviderInfo = (source) => {
     console.log(mapProviders[source]);
     return mapProviders[source];
@@ -305,6 +326,7 @@ const useMaps = () => {
     customMapDetails: customMapDetails,
     getCurrentLocation: getCurrentLocation,
     getDisplayedSpots: getDisplayedSpots,
+    getLassoedSpots: getLassoedSpots,
     isGeoMap: isGeoMap,
     isOnGeoMap: isOnGeoMap,
     setPointAtCurrentLocation: setPointAtCurrentLocation,

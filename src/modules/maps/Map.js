@@ -618,8 +618,14 @@ const Map = React.forwardRef((props, ref) => {
         newFeature = useMaps.convertFeatureGeometryToImagePixels(newFeature);
         newFeature.properties.image_basemap = currentImageBasemap.id;
       }
-      newOrEditedSpot = await useSpots.createSpot(newFeature);
-      useMaps.setSelectedSpot(newOrEditedSpot);
+      if (props.isSelectingForStereonet) {
+        const mappedSpots = JSON.parse(JSON.stringify(mapPropsMutable.spotsNotSelected));
+        const selectedSpots = useMaps.getLassoedSpots(mappedSpots, newFeature);
+      }
+      else {
+        newOrEditedSpot = await useSpots.createSpot(newFeature);
+        useMaps.setSelectedSpot(newOrEditedSpot);
+      }
       setDrawFeatures([]);
     }
     console.log('Draw ended.');
@@ -957,6 +963,7 @@ const Map = React.forwardRef((props, ref) => {
     return {
       cancelDraw: cancelDraw,
       cancelEdits: cancelEdits,
+      clearSelectedSpots: clearSelectedSpots,
       endDraw: endDraw,
       getCurrentBasemap: getCurrentBasemap,
       getCurrentZoom: getCurrentZoom,

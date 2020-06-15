@@ -123,6 +123,7 @@ const Home = (props) => {
   // const [customMapsSidePanelAnimation] = useState(new Animated.Value(-customMapsSidePanelWidth));
   const [leftsideIconAnimationValue, setLeftsideIconAnimationValue] = useState(new Animated.Value(0));
   const [rightsideIconAnimationValue, setRightsideIconAnimationValue] = useState(new Animated.Value(0));
+  const [isSelectingForStereonet, setIsSelectingForStereonet] = useState(false);
 
   const mapViewComponent = useRef(null);
   const toastRef = useRef();
@@ -284,6 +285,9 @@ const Home = (props) => {
         break;
       case 'stereonet':
         console.log(`${name}`, ' was clicked');
+        mapViewComponent.current.clearSelectedSpots();
+        setIsSelectingForStereonet(true);
+        setDraw(MapModes.DRAW.POLYGON);
         break;
     }
   };
@@ -348,10 +352,11 @@ const Home = (props) => {
     const newOrEditedSpot = await mapViewComponent.current.endDraw();
     setMapMode(MapModes.VIEW);
     toggleButton('endDrawButtonVisible', false);
-    if (!isEmpty(newOrEditedSpot)) {
+    if (!isEmpty(newOrEditedSpot) && !isSelectingForStereonet) {
       openNotebookPanel(NotebookPages.OVERVIEW);
       props.setModalVisible(null);
     }
+    setIsSelectingForStereonet(false);
   };
 
   const goToCurrentLocation = async () => {
@@ -737,6 +742,7 @@ const Home = (props) => {
         startEdit={startEdit}
         endDraw={endDraw}
         openNotebookOnSelectedSpot={() => openNotebookPanel()}
+        isSelectingForStereonet={isSelectingForStereonet}
       />
       {props.vertexStartCoords && <VertexDrag/>}
       <ToastPopup toastRef={toastRef}/>
