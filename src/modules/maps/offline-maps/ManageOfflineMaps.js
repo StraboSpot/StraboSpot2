@@ -8,17 +8,16 @@ import {mapReducers} from '../maps.constants';
 import {isEmpty} from '../../../shared/Helpers';
 // import SectionDivider from '../../../shared/ui/SectionDivider';
 import Divider from '../../main-menu-panel/MainMenuPanelDivider';
-import useExportHook from '../../project/useExport';
 // Styles
 import commonStyles from '../../../shared/common.styles';
 import styles from './offlineMaps.styles';
+import {homeReducers} from '../../home/home.constants';
 
 var RNFS = require('react-native-fs');
 
 const ManageOfflineMaps = (props) => {
   console.log('Props: ', props);
 
-  const [useExport] = useExportHook();
   let dirs = RNFetchBlob.fs.dirs;
   const devicePath = Platform.OS === 'ios' ? dirs.DocumentDir : dirs.SDCardDir; // ios : android
   const tilesDirectory = '/StraboSpotTiles';
@@ -26,6 +25,7 @@ const ManageOfflineMaps = (props) => {
   const zipsDirectory = devicePath + tilesDirectory + '/TileZips';
   const tileTempDirectory = devicePath + tilesDirectory + '/TileTemp';
   const isOnline = useSelector(state => state.home.isOnline);
+  const dispatch = useDispatch();
 
   console.log('tileCacheDirectory: ', tileCacheDirectory);
 
@@ -56,18 +56,19 @@ const ManageOfflineMaps = (props) => {
         },
         {
           text: 'OK',
-          onPress: () => deleteMap(map),
+          onPress: () => deleteOfflineMap(map),
         },
       ],
       {cancelable: false},
     );
   };
 
-  const deleteMap = async (map) => {
+  const deleteOfflineMap = async (map) => {
     console.log('Deleting Map Here');
     console.log('map: ', map.id);
-    console.log('directory: ', tileCacheDirectory + '/' + map.id);
-    let folderExists = await RNFS.exists(tileCacheDirectory + '/' + map.id);
+    // console.log('directory: ', tileCacheDirectory + '/' + map.id);
+    const mapId = map.id === 'mapwarper' ? map.name  : map.id;
+    let folderExists = await RNFS.exists(tileCacheDirectory + '/' + mapId);
     const zipFileExists = await RNFS.exists(
       zipsDirectory + '/' + map.mapId + '.zip',
     );
@@ -77,7 +78,7 @@ const ManageOfflineMaps = (props) => {
     console.log(folderExists, zipFileExists, tileTempFileExists);
     //first, delete folder with tiles
     if (folderExists || zipFileExists || tileTempFileExists) {
-      await RNFS.unlink(tileCacheDirectory + '/' + map.id);
+      await RNFS.unlink(tileCacheDirectory + '/' + mapId);
       if (zipFileExists) {
         await RNFS.unlink(zipsDirectory + '/' + map.mapId + '.zip');
       }
@@ -105,7 +106,7 @@ const ManageOfflineMaps = (props) => {
     <React.Fragment>
       <Button
         title={'Download tiles of current map'}
-        onPress={() => console.log('Pressed')}
+        onPress={() => dispatch({type: homeReducers.SET_OFFLINE_MAPS_MODAL_VISIBLE, bool: true})}
         containerStyle={styles.buttonContainer}
         buttonStyle={commonStyles.standardButton}
         titleStyle={commonStyles.standardButtonText}
@@ -120,23 +121,27 @@ const ManageOfflineMaps = (props) => {
               key={item.id}
               title={
                 <View style={styles.itemContainer}>
-                  <Text style={styles.itemTextStyle}>{item.name}</Text>
+                  <Text style={styles.itemTextStyle}>{`${item.name} (${item.count} tiles)`}</Text>
                 </View>
               }
               subtitle={
                 <View style={styles.itemSubContainer}>
                   {/*<View style={styles.itemSubTextStyle}>*/}
                     {/*<Text>({item.count} tiles)</Text>*/}
-                  {!isOnline && <Text
+                  {!isOnline && <Button
                       onPress={() => viewOfflineMap(item)}
-                      style={styles.buttonText}>
-                      View in map ({item.count} tiles)
-                    </Text>}
-                    <Text
+                      titleStyle={styles.buttonText}
+                      type={'clear'}
+                      title={'View in map'}
+                    />}
+                    <Button
                       onPress={() => confirmDeleteMap(item)}
-                      style={styles.buttonText}>
+                      titleStyle={styles.buttonText}
+                      type={'clear'}
+                      title={'Delete'}
+                    >
                       Delete
-                    </Text>
+                    </Button>
                   {/*</View>*/}
                 </View>
               }
