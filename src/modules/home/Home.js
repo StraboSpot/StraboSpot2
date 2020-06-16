@@ -171,7 +171,7 @@ const Home = (props) => {
     return await useHome.initializeHomePage();
   };
 
-  const clickHandler = async (name, position) => {
+  const clickHandler = (name, position) => {
     switch (name) {
       case 'search':
         Alert.alert('Still in the works',
@@ -235,13 +235,6 @@ const Home = (props) => {
         break;
       case 'deleteSpot':
         deleteSpot(props.selectedSpot.properties.id);
-        break;
-      case 'setSpotToCurrentLocation':
-        const currentLocation = await useMaps.getCurrentLocation();
-        let editedSpot = JSON.parse(JSON.stringify(selectedSpot));
-        editedSpot.geometry = turf.point(currentLocation).geometry;
-        dispatch({type: spotReducers.ADD_SPOT, spot: editedSpot});
-        dispatch({type: spotReducers.SET_SELECTED_SPOT, spot: editedSpot});
         break;
       case 'toggleAllSpotsPanel':
         if (position === 'open') props.setAllSpotsPanelVisible(true);
@@ -406,7 +399,7 @@ const Home = (props) => {
     }
   };
 
-  const notebookClickHandler = name => {
+  const notebookClickHandler = async name => {
     switch (name) {
       case 'menu':
         toggleDialog('notebookPanelMenuVisible');
@@ -419,6 +412,16 @@ const Home = (props) => {
           imagesSavedLength === 1 ? toastRef.current.show(`${imagesSavedLength} photo saved!`) :
             toastRef.current.show(`${imagesSavedLength} photos saved!`);
         });
+        break;
+      case 'setToCurrentLocation':
+        const currentLocation = await useMaps.getCurrentLocation();
+        let editedSpot = JSON.parse(JSON.stringify(selectedSpot));
+        editedSpot.geometry = turf.point(currentLocation).geometry;
+        dispatch({type: spotReducers.ADD_SPOT, spot: editedSpot});
+        dispatch({type: spotReducers.SET_SELECTED_SPOT, spot: editedSpot});
+        break;
+      case 'setFromMap':
+        Alert.alert('Not implemented yet');
         break;
     }
   };

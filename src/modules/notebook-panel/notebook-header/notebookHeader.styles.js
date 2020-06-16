@@ -6,10 +6,6 @@ const notebookHeaderStyles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  headerCoords: {
-    color: themes.PRIMARY_ACCENT_COLOR,
-    fontSize: themes.MEDIUM_TEXT_SIZE,
-  },
   headerImage: {
     resizeMode: 'contain',
     width: 50,

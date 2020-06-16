@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
-import {Image, TextInput, Text, View} from 'react-native';
+import {Button} from 'react-native-elements';
+import {Image, TextInput, View} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 
 // Components
@@ -49,10 +50,10 @@ const NotebookHeader = props => {
           }
           latitude = lat.toFixed(6);
           longitude = lng.toFixed(6);
-          if (!rootSpotDetails) rootSpotDetails = getLatLngText(latitude,longitude,lat,lng);
+          if (!rootSpotDetails) rootSpotDetails = getLatLngText(latitude, longitude, lat, lng);
           if (!rootSpotDetails || rootSpotDetails === 'unavailable') return pixelDetails; else return rootSpotDetails + '\n' + pixelDetails;
         }
-        else return getLatLngText(latitude,longitude,lat,lng);
+        else return getLatLngText(latitude, longitude, lat, lng);
       }
       else if ((spot.geometry.type === 'LineString' || spot.geometry.type === 'MultiLineString') &&
         spot.properties.trace && spot.properties.trace.trace_feature && spot.properties.trace.trace_type) {
@@ -65,10 +66,10 @@ const NotebookHeader = props => {
       }
       return spot.geometry.type;
     }
-    else return 'No Geometry';
+    else return undefined;
   };
 
-  const getLatLngText = (latitude,longitude,lat,lng) => {
+  const getLatLngText = (latitude, longitude, lat, lng) => {
     const degreeSymbol = '\u00B0';
     let latitudeCardinal = Math.sign(lat) >= 0 ? 'North' : 'South';
     let longitudeCardinal = Math.sign(lng) >= 0 ? 'East' : 'West';
@@ -126,7 +127,24 @@ const NotebookHeader = props => {
           onChangeText={(text) => setSpotName(text)}
           onBlur={() => onSpotEdit('name', spotName)}
           style={headerStyles.headerSpotName}/>
-        <Text style={headerStyles.headerCoords}>{getSpotCoordText()}</Text>
+        {getSpotCoordText() ?
+          <Button
+            type='clear'
+            title={getSpotCoordText()}
+            buttonStyle={{padding: 0, justifyContent: 'flex-start'}}/> :
+          <View style={{flexDirection: 'row'}}>
+            <Button
+              type='clear'
+              title={'Set To Current Location'}
+              buttonStyle={{padding: 0}}
+              onPress={() => props.onPress('setToCurrentLocation')}/>
+            <Button
+              type='clear'
+              title={'Set From Map'}
+              buttonStyle={{padding: 0, paddingLeft: 40}}
+              onPress={() => props.onPress('setFromMap')}/>
+          </View>
+        }
       </View>
       <View>
         <IconButton
