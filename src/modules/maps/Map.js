@@ -38,6 +38,7 @@ const Map = React.forwardRef((props, ref) => {
     spotsEdited: [],
     spotsNotEdited: [],
     vertexToEdit: [],
+    newVertexIndex: [],
   };
 
   // Props that change that needed to pass to the map component
@@ -384,6 +385,7 @@ const Map = React.forwardRef((props, ref) => {
     setEditingModeData(d => ({
       ...d,
       vertexToEdit: vertex,
+      newVertexIndex: undefined,
     }));
     console.log('Set vertex to edit:', vertex);
     setMapPropsMutable(m => ({
@@ -428,6 +430,9 @@ const Map = React.forwardRef((props, ref) => {
 
   // Identify the vertex which has to be updated
   const getVertexIndexInSpotToEdit = (vertex) => {
+    if (isEmpty(vertex)){
+      return {};
+    }
     var indexOfCoordinatesToUpdate = [];
     for (let index = 0; index < mapPropsMutable.drawFeatures.length; index++) {
       if (mapPropsMutable.drawFeatures[index].properties.tempEditId === vertex.properties.tempEditId) {
@@ -469,9 +474,18 @@ const Map = React.forwardRef((props, ref) => {
             newCoord = useMaps.convertCoordinateProjections(geoLatLngProjection, pixelProjection, newCoord);
           }
           if (turf.getType(spotEditingCopy) === 'LineString') {
-            for (let j = 0; j < coords.length; j++) {
-              if (indexOfCoordinatesToUpdate.includes(j)) {
-                spotEditingCopy.geometry.coordinates[j] = newCoord;
+           if (!isEmpty(editingModeData.newVertexIndex)){
+             spotEditingCopy.geometry.coordinates[editingModeData.newVertexIndex + 1] = newCoord;
+             setEditingModeData(d => ({
+               ...d,
+               newVertexIndex: undefined,
+             }));
+            }
+            else {
+              for (let j = 0; j < coords.length; j++) {
+                if (indexOfCoordinatesToUpdate.includes(j)) {
+                  spotEditingCopy.geometry.coordinates[j] = newCoord;
+                }
               }
             }
             isModified = true;
@@ -702,17 +716,25 @@ const Map = React.forwardRef((props, ref) => {
         if (turf.getType(spotEditingCopy) === 'LineString' || turf.getType(spotEditingCopy) === 'Polygon') {
           const vertexSelected = await getDrawFeatureAtPress(screenPointX, screenPointY);
           if (spotEditingCopy.properties.id === spotToEdit.properties.id) {
-            let vertexToEditThisScope = {};
+            let vertexAdded = {};
             if (isEmpty(vertexSelected)) {
               console.log('Adding new vertex...');
               // To add a vertex to a line the new point selected must be on the line
               if (turf.getType(spotEditingCopy) === 'LineString' && !isEmpty(spotToEdit)) {
                 if (currentImageBasemap) {
                   spotEditingCopy = useMaps.convertImagePixelsToLatLong(spotEditingCopy);
-                  [spotEditingCopy, vertexToEditThisScope] = addVertexToLine(spotEditingCopy, e.geometry);
+                  [spotEditingCopy, vertexAdded] = addVertexToLine(spotEditingCopy, e.geometry);
                   spotEditingCopy = useMaps.convertFeatureGeometryToImagePixels(spotEditingCopy);
+                  setSelectedSpotToEdit(useMaps.convertFeatureGeometryToImagePixels(vertexAdded));
                 }
-                else [spotEditingCopy, vertexToEditThisScope] = addVertexToLine(spotEditingCopy, e.geometry);
+                else {
+                  [spotEditingCopy, vertexAdded] = addVertexToLine(spotEditingCopy, e.geometry);
+                  setSelectedSpotToEdit(vertexAdded);
+                }
+                setEditingModeData(d => ({
+                  ...d,
+                  newVertexIndex: vertexAdded.properties.index,
+                }));
               }
               else if (turf.getType(spotEditingCopy) === 'Polygon') {
                 if (currentImageBasemap) {
