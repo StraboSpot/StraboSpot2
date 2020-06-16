@@ -281,6 +281,8 @@ PODS:
     - React-Core
   - RNCAsyncStorage (1.9.0):
     - React
+  - RNCClipboard (1.2.2):
+    - React
   - RNCMaskedView (0.1.7):
     - React
   - RNCPicker (1.3.0):
@@ -349,6 +351,7 @@ DEPENDENCIES:
   - "ReactNativeART (from `../node_modules/@react-native-community/art`)"
   - rn-fetch-blob (from `../node_modules/rn-fetch-blob`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-community/async-storage`)"
+  - "RNCClipboard (from `../node_modules/@react-native-community/clipboard`)"
   - "RNCMaskedView (from `../node_modules/@react-native-community/masked-view`)"
   - "RNCPicker (from `../node_modules/@react-native-community/picker`)"
   - "RNDateTimePicker (from `../node_modules/@react-native-community/datetimepicker`)"
@@ -442,6 +445,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/rn-fetch-blob"
   RNCAsyncStorage:
     :path: "../node_modules/@react-native-community/async-storage"
+  RNCClipboard:
+    :path: "../node_modules/@react-native-community/clipboard"
   RNCMaskedView:
     :path: "../node_modules/@react-native-community/masked-view"
   RNCPicker:
@@ -506,6 +511,7 @@ SPEC CHECKSUMS:
   ReactNativeART: f003b07dfa7098aa419ed95b69560923440b1eee
   rn-fetch-blob: f065bb7ab7fb48dd002629f8bdcb0336602d3cba
   RNCAsyncStorage: b16697280b08bab4b5f2f67f752d93d13a52e9ed
+  RNCClipboard: a254f6e568bc713b7ef49646e216661369882030
   RNCMaskedView: 90dd32f5b786bd562e876e1421ea77c700cbf71e
   RNCPicker: 7d06ee91dff65b0bcd400ca00039051d5ddcb938
   RNDateTimePicker: f654c60568209005a3d9a5a6c4bff0c7094ec527
