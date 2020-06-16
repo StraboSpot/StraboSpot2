@@ -1,31 +1,32 @@
 import * as turf from '@turf/turf/index';
-import Geolocation from '@react-native-community/geolocation';
 import {useDispatch, useSelector} from 'react-redux';
 import {useEffect} from 'react';
+import Geolocation from '@react-native-community/geolocation';
 import proj4 from 'proj4';
 
-import {isEmpty} from '../../shared/Helpers';
+// Hooks
+import useServerRequestsHook from '../../services/useServerRequests';
 import useSpotsHook from '../spots/useSpots';
 
+// Utilities
+import {isEmpty} from '../../shared/Helpers';
+
 // Constants
-import {spotReducers} from '../spots/spot.constants';
 import {basemaps, mapProviders, mapReducers, geoLatLngProjection, pixelProjection} from './maps.constants';
-import {SettingsMenuItems} from '../main-menu-panel/mainMenu.constants';
-import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 import {projectReducers} from '../project/project.constants';
-import useServerRequestsHook from '../../services/useServerRequests';
+import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
+import {SettingsMenuItems} from '../main-menu-panel/mainMenu.constants';
+import {spotReducers} from '../spots/spot.constants';
 
 const useMaps = () => {
-  const dispatch = useDispatch();
+  const [useServerRequests] = useServerRequestsHook();
+  const [useSpots] = useSpotsHook();
   const currentBasemap = useSelector(state => state.map.currentBasemap);
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const customMaps = useSelector(state => state.map.customMaps);
-  const customMapToEdit = useSelector(state => state.map.selectedCustomMapToEdit);
+  const dispatch = useDispatch();
   const project = useSelector(state => state.project.project);
   const settingsPanel = useSelector(state => state.home.isSettingsPanelVisible);
-
-  const [useSpots] = useSpotsHook();
-  const [useServerRequests] = useServerRequestsHook();
 
   useEffect(() => {
     console.log('Settings Panel', settingsPanel);
@@ -55,6 +56,68 @@ const useMaps = () => {
     console.log('Saved customMaps to Redux.');
   };
 
+  const convertCoordinateProjections = (sourceProjection, targetProjection, coords) => {
+    const [targetX, targetY] = proj4(sourceProjection, targetProjection, coords);
+    return [targetX, targetY];
+  };
+
+  // Convert WGS84 to image x,y pixels, assuming x,y are web mercator
+  const convertFeatureGeometryToImagePixels = (feature) => {
+    var imageX, imageY;
+    let calculatedCoordinates = [];
+    if (feature.geometry.type === 'Point') {
+      [imageX, imageY] = convertCoordinateProjections(geoLatLngProjection, pixelProjection,
+        feature.geometry.coordinates);
+      feature.geometry.coordinates = [imageX, imageY];
+    }
+    else if (feature.geometry.type === 'Polygon') {
+      for (const subArray of feature.geometry.coordinates) {
+        for (const innerSubArray of subArray) {
+          [imageX, imageY] = convertCoordinateProjections(geoLatLngProjection, pixelProjection, innerSubArray);
+          calculatedCoordinates.push([imageX, imageY]);
+        }
+      }
+      feature.geometry.coordinates = [calculatedCoordinates];
+    }
+    else { // LineString
+      for (const subArray of feature.geometry.coordinates) {
+        [imageX, imageY] = convertCoordinateProjections(geoLatLngProjection, pixelProjection, subArray);
+        calculatedCoordinates.push([imageX, imageY]);
+      }
+      feature.geometry.coordinates = calculatedCoordinates;
+    }
+    return feature;
+  };
+
+  // Convert image x,y pixels to WGS84, assuming x,y are web mercator
+  const convertImagePixelsToLatLong = (feature) => {
+    if (feature.geometry.type === 'Point') {
+      const coords = feature.geometry.coordinates;
+      feature.geometry.coordinates = convertCoordinateProjections(pixelProjection, geoLatLngProjection,
+        [coords[0], coords[1]]);
+    }
+    else if (feature.geometry.type === 'Polygon') {
+      let calculatedCoordinates = [];
+      for (const subArray of feature.geometry.coordinates) {
+        for (const innerSubArray of subArray) {
+          let [x, y] = convertCoordinateProjections(pixelProjection, geoLatLngProjection,
+            [innerSubArray[0], innerSubArray[1]]);
+          calculatedCoordinates.push([x, y]);
+        }
+      }
+      feature.geometry.coordinates = [calculatedCoordinates];
+    }
+    else {
+      let calculatedCoordinates = [];
+      for (const subArray of feature.geometry.coordinates) {
+        let [x, y] = convertCoordinateProjections(pixelProjection, geoLatLngProjection, [subArray[0], subArray[1]]);
+        calculatedCoordinates.push([x, y]);
+      }
+      feature.geometry.coordinates = calculatedCoordinates;
+    }
+    return feature;
+  };
+
   const customMapDetails = (map) => {
     dispatch({type: mapReducers.SELECTED_CUSTOM_MAP_TO_EDIT, customMap: map});
     dispatch({
@@ -64,14 +127,17 @@ const useMaps = () => {
     });
   };
 
-  // Create a point feature at the current location
-  const setPointAtCurrentLocation = async () => {
-    const userLocationCoords = await getCurrentLocation();
-    let feature = turf.point(userLocationCoords);
-    const newSpot = await useSpots.createSpot(feature);
-    setSelectedSpot(newSpot);
-    return Promise.resolve(newSpot);
-    // throw Error('Geolocation Error');
+  // Identify the coordinate span for the for the image basemap.
+  const getCoordQuad = (imageBasemapProps) => {
+    // identify the [lat,lng] corners of the image basemap
+    var bottomLeft = [0, 0];
+    var bottomRight = convertCoordinateProjections(pixelProjection, geoLatLngProjection, [imageBasemapProps.width, 0]);
+    var topRight = convertCoordinateProjections(pixelProjection, geoLatLngProjection,
+      [imageBasemapProps.width, imageBasemapProps.height]);
+    var topLeft = convertCoordinateProjections(pixelProjection, geoLatLngProjection, [0, imageBasemapProps.height]);
+    var coordQuad = [topLeft, topRight, bottomRight, bottomLeft];
+    console.log('The coordinates identified for image-basemap :', coordQuad);
+    return coordQuad;
   };
 
   // Get the current location from the device and set it in the state
@@ -92,11 +158,9 @@ const useMaps = () => {
 
   // Get selected and not selected Spots to display when not editing
   const getDisplayedSpots = (selectedSpots) => {
-    var mappableSpots = useSpots.getMappableSpots();      // Spots with geometry
-    // if image_basemap, then filter spots by imageBasemap id
-    if (currentImageBasemap) mappableSpots = useSpots.getMappableSpots();
+    const mappableSpots = useSpots.getMappableSpots();      // Spots with geometry
     // Filter out Spots on an strat section
-    var displayedSpots = mappableSpots.filter(spot => !spot.properties.strat_section);
+    let displayedSpots = mappableSpots.filter(spot => !spot.properties.strat_section);
     // Filter out Spots on an image_basemap
     if (!currentImageBasemap) displayedSpots = displayedSpots.filter(spot => !spot.properties.image_basemap);
     console.log('Mappable Spots', selectedSpots);
@@ -131,27 +195,6 @@ const useMaps = () => {
     return [selectedDisplayedSpots, notSelectedDisplayedSpots];
   };
 
-  // Find Spots within (points) or intersecting (line or polygon) the drawn polygon
-  const getLassoedSpots = (mappedSpots, drawnPolygon) => {
-    const selectedSpots = [];
-    try {
-      mappedSpots.forEach(spot => {
-        const spotType = spot.geometry.type;
-        if ((spotType === 'Point' && turf.booleanWithin(spot, drawnPolygon))
-          || (spotType === 'LineString'
-            && (turf.lineIntersect(spot, drawnPolygon).features.length > 0 || turf.booleanContains(drawnPolygon, spot)))
-          || (spotType === 'Polygon' && turf.booleanOverlap(spot, drawnPolygon))) {
-          selectedSpots.push(spot);
-        }
-      });
-    }
-    catch (e) {
-      console.log('Error getting Spots within or intersecting the drawn polygon', e);
-    }
-    console.log('Selected Spots', selectedSpots);
-    return selectedSpots;
-  };
-
   const getProviderInfo = (source) => {
     console.log(mapProviders[source]);
     return mapProviders[source];
@@ -166,100 +209,17 @@ const useMaps = () => {
     return !feature.properties.image_basemap && !feature.properties.strat_section;
   };
 
-  const setSelectedSpot = (spotToSetAsSelected) => {
-    console.log('Set selected Spot:', spotToSetAsSelected);
-    let [selectedSpots, notSelectedSpots] = getDisplayedSpots(
-      isEmpty(spotToSetAsSelected) ? [] : [{...spotToSetAsSelected}]);
-    dispatch({type: spotReducers.SET_SELECTED_SPOT, spot: spotToSetAsSelected});
-    return [selectedSpots, notSelectedSpots];
-  };
-
-  /* getCoordQuad method identifies the coordinate span for the
-   for the image basemap.
-   */
-  const getCoordQuad = (imageBasemapProps) => {
-    // identify the [lat,lng] corners of the image basemap
-    var bottomLeft = [0, 0];
-    var bottomRight = convertCoordinateProjections(pixelProjection, geoLatLngProjection, [imageBasemapProps.width, 0]);
-    var topRight = convertCoordinateProjections(pixelProjection, geoLatLngProjection,
-      [imageBasemapProps.width, imageBasemapProps.height]);
-    var topLeft = convertCoordinateProjections(pixelProjection, geoLatLngProjection, [0, imageBasemapProps.height]);
-    var coordQuad = [topLeft, topRight, bottomRight, bottomLeft];
-    console.log('The coordinates identified for image-basemap :', coordQuad);
-    return coordQuad;
-  };
-
-  // Convert image x,y pixels to WGS84, assuming x,y are web mercator
-  const convertImagePixelsToLatLong = (feature) => {
-    if (feature.geometry.type === 'Point') {
-      const coords = feature.geometry.coordinates;
-      feature.geometry.coordinates = convertCoordinateProjections(pixelProjection, geoLatLngProjection,
-        [coords[0], coords[1]]);
-    }
-    else if (feature.geometry.type === 'Polygon') {
-      let calculatedCoordinates = [];
-      for (const subArray of feature.geometry.coordinates) {
-        for (const innerSubArray of subArray) {
-          let [x, y] = convertCoordinateProjections(pixelProjection, geoLatLngProjection,
-            [innerSubArray[0], innerSubArray[1]]);
-          calculatedCoordinates.push([x, y]);
-        }
-      }
-      feature.geometry.coordinates = [calculatedCoordinates];
-    }
-    else {
-      let calculatedCoordinates = [];
-      for (const subArray of feature.geometry.coordinates) {
-        let [x, y] = convertCoordinateProjections(pixelProjection, geoLatLngProjection, [subArray[0], subArray[1]]);
-        calculatedCoordinates.push([x, y]);
-      }
-      feature.geometry.coordinates = calculatedCoordinates;
-    }
-    return feature;
-  };
-
-  // Convert WGS84 to image x,y pixels, assuming x,y are web mercator
-  const convertFeatureGeometryToImagePixels = (feature) => {
-    var imageX, imageY;
-    let calculatedCoordinates = [];
-    if (feature.geometry.type === 'Point') {
-      [imageX, imageY] = convertCoordinateProjections(geoLatLngProjection, pixelProjection,
-        feature.geometry.coordinates);
-      feature.geometry.coordinates = [imageX, imageY];
-    }
-    else if (feature.geometry.type === 'Polygon') {
-      for (const subArray of feature.geometry.coordinates) {
-        for (const innerSubArray of subArray) {
-          [imageX, imageY] = convertCoordinateProjections(geoLatLngProjection, pixelProjection, innerSubArray);
-          calculatedCoordinates.push([imageX, imageY]);
-        }
-      }
-      feature.geometry.coordinates = [calculatedCoordinates];
-    }
-    else { // LineString
-      for (const subArray of feature.geometry.coordinates) {
-        [imageX, imageY] = convertCoordinateProjections(geoLatLngProjection, pixelProjection, subArray);
-        calculatedCoordinates.push([imageX, imageY]);
-      }
-      feature.geometry.coordinates = calculatedCoordinates;
-    }
-    return feature;
-  };
-
-  const convertCoordinateProjections = (sourceProjection, targetProjection, coords) => {
-    const [targetX, targetY] = proj4(sourceProjection, targetProjection, coords);
-    return [targetX, targetY];
-  };
-
   const saveCustomMap = async (map) => {
     let mapId = map.id;
-    let testTileUrl;
-    if (map.source === 'mapbox_styles' && map.id.includes('mapbox://styles/')) mapId = map.id.split('/').slice(3).join('/'); // Pull out mapbox styles map id
+    // Pull out mapbox styles map id
+    if (map.source === 'mapbox_styles' && map.id.includes('mapbox://styles/')) {
+      mapId = map.id.split('/').slice(3).join('/');
+    }
     const providerInfo = getProviderInfo(map.source);
     const customMap = {...map, ...providerInfo, id: mapId, key: map.accessToken, source: map.source};
     const tileUrl = buildTileUrl(customMap);
+    let testTileUrl = tileUrl.replace(/({z}\/{x}\/{y})/, '0/0/0');
     if (map.source === 'map_warper') testTileUrl = 'https://strabospot.org/map_warper_check/' + map.id;
-    else testTileUrl = tileUrl.replace(/({z}\/{x}\/{y})/, '0/0/0');
     console.log('Custom Map:', customMap, 'Test Tile URL:', testTileUrl);
 
     const testUrlResponse = await useServerRequests.testCustomMapUrl(testTileUrl);
@@ -272,20 +232,36 @@ const useMaps = () => {
     }
   };
 
+  // Create a point feature at the current location
+  const setPointAtCurrentLocation = async () => {
+    const userLocationCoords = await getCurrentLocation();
+    let feature = turf.point(userLocationCoords);
+    const newSpot = await useSpots.createSpot(feature);
+    setSelectedSpot(newSpot);
+    return Promise.resolve(newSpot);
+  };
+
   const setCurrentBasemap = (mapId) => {
     if (!mapId) mapId = 'mapbox.outdoors';
-    const currentBasemap = basemaps.find(basemap => basemap.id === mapId);
+    const newBasemap = basemaps.find(basemap => basemap.id === mapId);
     console.log('Setting current basemap to a default basemap...');
-    dispatch({type: mapReducers.CURRENT_BASEMAP, basemap: currentBasemap});
+    dispatch({type: mapReducers.CURRENT_BASEMAP, basemap: newBasemap});
   };
 
   const setCustomMapSwitchValue = (value, map) => {
     console.log('value', value, 'id', map.mapId);
     const customMapsCopy = {...customMaps};
-    // if (customMapsCopy.length > 1) customMapsCopy.map(map => map.isViewable = false);
     customMapsCopy[map.id].isViewable = value;
     dispatch({type: mapReducers.ADD_CUSTOM_MAP, customMap: customMapsCopy[map.id]});
     if (!customMapsCopy[map.id].overlay) viewCustomMap(map);
+  };
+
+  const setSelectedSpot = (spotToSetAsSelected) => {
+    console.log('Set selected Spot:', spotToSetAsSelected);
+    let [selectedSpots, notSelectedSpots] = getDisplayedSpots(
+      isEmpty(spotToSetAsSelected) ? [] : [{...spotToSetAsSelected}]);
+    dispatch({type: spotReducers.SET_SELECTED_SPOT, spot: spotToSetAsSelected});
+    return [selectedSpots, notSelectedSpots];
   };
 
   const viewCustomMap = (map) => {
@@ -295,9 +271,7 @@ const useMaps = () => {
 
   const zoomToSpots = async (spots, map, camera) => {
     var spotsCopy = spots.map(spot => JSON.parse(JSON.stringify(spot)));
-    if (currentImageBasemap) {
-      spotsCopy.map(spot => {convertImagePixelsToLatLong(spot);});
-    }
+    if (currentImageBasemap) spotsCopy.map(spot => convertImagePixelsToLatLong(spot));
     if (camera) {
       try {
         if (spots.length === 1) {
@@ -321,23 +295,22 @@ const useMaps = () => {
 
   return [{
     buildTileUrl: buildTileUrl,
-    deleteMap: deleteMap,
     convertCoordinateProjections: convertCoordinateProjections,
+    convertFeatureGeometryToImagePixels: convertFeatureGeometryToImagePixels,
+    convertImagePixelsToLatLong: convertImagePixelsToLatLong,
     customMapDetails: customMapDetails,
+    deleteMap: deleteMap,
+    getCoordQuad: getCoordQuad,
     getCurrentLocation: getCurrentLocation,
     getDisplayedSpots: getDisplayedSpots,
-    getLassoedSpots: getLassoedSpots,
     isGeoMap: isGeoMap,
     isOnGeoMap: isOnGeoMap,
-    setPointAtCurrentLocation: setPointAtCurrentLocation,
-    setSelectedSpot: setSelectedSpot,
-    getCoordQuad: getCoordQuad,
-    convertImagePixelsToLatLong: convertImagePixelsToLatLong,
     saveCustomMap: saveCustomMap,
     setCurrentBasemap: setCurrentBasemap,
     setCustomMapSwitchValue: setCustomMapSwitchValue,
+    setPointAtCurrentLocation: setPointAtCurrentLocation,
+    setSelectedSpot: setSelectedSpot,
     viewCustomMap: viewCustomMap,
-    convertFeatureGeometryToImagePixels: convertFeatureGeometryToImagePixels,
     zoomToSpots: zoomToSpots,
   }];
 };

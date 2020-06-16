@@ -10,23 +10,24 @@ import {MapLayer1, MapLayer2} from './Basemaps';
 // Hooks
 import useSpotsHook from '../spots/useSpots';
 import useMapsHook from './useMaps';
+import useMapFeaturesHook from './useMapFeatures';
 
 // Utilities
 import {getNewUUID, isEmpty} from '../../shared/Helpers';
 
 // Constants
-import {LATITUDE, LONGITUDE, MapModes, geoLatLngProjection, pixelProjection} from './maps.constants';
+import {geoLatLngProjection, LATITUDE, LONGITUDE, MapModes, pixelProjection} from './maps.constants';
 import {MAPBOX_KEY} from '../../MapboxConfig';
 import {mapReducers} from './maps.constants';
-import {spotReducers} from '../spots/spot.constants';
 import {projectReducers} from '../project/project.constants';
-import {union} from '@turf/turf/index';
+import {spotReducers} from '../spots/spot.constants';
 
 MapboxGL.setAccessToken(MAPBOX_KEY);
 
 const Map = React.forwardRef((props, ref) => {
   const dispatch = useDispatch();
   const [useMaps] = useMapsHook();
+  const [useMapFeatures] = useMapFeaturesHook();
   const [useSpots] = useSpotsHook();
   const currentBasemap = useSelector(state => state.map.currentBasemap);
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
@@ -51,7 +52,7 @@ const Map = React.forwardRef((props, ref) => {
     spotsNotSelected: [],
     spotsSelected: [],
     coordQuad: [],
-    zoomToSpot : false,
+    zoomToSpot: false,
     zoom: 14,
   };
 
@@ -568,7 +569,7 @@ const Map = React.forwardRef((props, ref) => {
   };
 
   const getCurrentZoom = async () => {
-    console.log('Map.current', map);
+    //console.log('Map.current', map);
     return await map.current.getZoom();
     // return 16;
   };
@@ -634,8 +635,8 @@ const Map = React.forwardRef((props, ref) => {
         newFeature.properties.image_basemap = currentImageBasemap.id;
       }
       if (props.isSelectingForStereonet) {
-        const mappedSpots = JSON.parse(JSON.stringify(mapPropsMutable.spotsNotSelected));
-        const selectedSpots = useMaps.getLassoedSpots(mappedSpots, newFeature);
+        const selectedSpots = await useMapFeatures.getLassoedSpots(mapPropsMutable.spotsNotSelected, newFeature);
+        await useMapFeatures.getStereonet(selectedSpots);
       }
       else {
         newOrEditedSpot = await useSpots.createSpot(newFeature);
@@ -941,38 +942,38 @@ const Map = React.forwardRef((props, ref) => {
 
   const zoomToSpot = () => {
     if (props.selectedSpot && useMaps.isOnGeoMap(props.selectedSpot)) {
-       // spot selected is on geomap, but currently on imagebasemap mode, turn off imagebasemap mode and zoomToSpot in async mode.
-       if (currentImageBasemap){
-         dispatch(({type: mapReducers.CURRENT_IMAGE_BASEMAP, currentImageBasemap: undefined}));
-         setMapPropsMutable(m => ({
-           ...m,
-           zoomToSpot: true,
-         }));
-       }
-       // spot selected is on geomap and mapMode is main-map, zoomToSpot in sync mode.
-       else useMaps.zoomToSpots([props.selectedSpot], map.current, camera.current);
+      // spot selected is on geomap, but currently on imagebasemap mode, turn off imagebasemap mode and zoomToSpot in async mode.
+      if (currentImageBasemap) {
+        dispatch(({type: mapReducers.CURRENT_IMAGE_BASEMAP, currentImageBasemap: undefined}));
+        setMapPropsMutable(m => ({
+          ...m,
+          zoomToSpot: true,
+        }));
+      }
+      // spot selected is on geomap and mapMode is main-map, zoomToSpot in sync mode.
+      else useMaps.zoomToSpots([props.selectedSpot], map.current, camera.current);
     }
     else if (props.selectedSpot && props.selectedSpot.properties.image_basemap) {
-       //spot selected is on imagebasemap, either if not on imagebasemap
-       // or not on same imagebasemap as the selectedspot's imagebasemap,
-       // then switch to corresponding imagebasemap and zoomToSpot in asyncMode
-       if (!currentImageBasemap || currentImageBasemap.id !== props.selectedSpot.properties.image_basemap) {
-         var imageBasemapData = Array.from(useSpots.getAllImageBaseMaps()).find(
+      //spot selected is on imagebasemap, either if not on imagebasemap
+      // or not on same imagebasemap as the selectedspot's imagebasemap,
+      // then switch to corresponding imagebasemap and zoomToSpot in asyncMode
+      if (!currentImageBasemap || currentImageBasemap.id !== props.selectedSpot.properties.image_basemap) {
+        var imageBasemapData = Array.from(useSpots.getAllImageBaseMaps()).find(
           imgBasemap => imgBasemap.id === props.selectedSpot.properties.image_basemap);
-         dispatch(({
-           type: mapReducers.CURRENT_IMAGE_BASEMAP,
-           currentImageBasemap: imageBasemapData,
-         }));
-         setMapPropsMutable(m => ({
-           ...m,
-           zoomToSpot: true,
-         }));
-       }
-       //spot selected is already on the same imagebasemap, zoomToSpot in sync mode.
-       else useMaps.zoomToSpots([props.selectedSpot], map.current, camera.current);
+        dispatch(({
+          type: mapReducers.CURRENT_IMAGE_BASEMAP,
+          currentImageBasemap: imageBasemapData,
+        }));
+        setMapPropsMutable(m => ({
+          ...m,
+          zoomToSpot: true,
+        }));
+      }
+      //spot selected is already on the same imagebasemap, zoomToSpot in sync mode.
+      else useMaps.zoomToSpots([props.selectedSpot], map.current, camera.current);
     }
     else {
-          // handle other maps
+      // handle other maps
     }
   };
 
