@@ -132,15 +132,16 @@ const useMaps = () => {
   };
 
   // Find Spots within (points) or intersecting (line or polygon) the drawn polygon
-  const getLassoedSpots = (mappedSpots, drawnPolygon) => {
+  const getLassoedSpots = (features, drawnPolygon) => {
+    const featuresIds = features.map(feature => feature.properties.id);
+    const spotsIds = [...new Set(featuresIds)]; // Remove duplicate ids
+    const spots = useSpots.getSpotsByIds(spotsIds);
     const selectedSpots = [];
     try {
-      mappedSpots.forEach(spot => {
-        const spotType = spot.geometry.type;
-        if ((spotType === 'Point' && turf.booleanWithin(spot, drawnPolygon))
-          || (spotType === 'LineString'
-            && (turf.lineIntersect(spot, drawnPolygon).features.length > 0 || turf.booleanContains(drawnPolygon, spot)))
-          || (spotType === 'Polygon' && turf.booleanOverlap(spot, drawnPolygon))) {
+      spots.forEach(spot => {
+        if (turf.booleanWithin(spot, drawnPolygon) ||
+          (spot.geometry.type === 'LineString' && turf.lineIntersect(spot, drawnPolygon).features.length > 0) ||
+          (spot.geometry.type === 'Polygon' && turf.booleanOverlap(spot, drawnPolygon))) {
           selectedSpots.push(spot);
         }
       });
@@ -254,7 +255,8 @@ const useMaps = () => {
   const saveCustomMap = async (map) => {
     let mapId = map.id;
     let testTileUrl;
-    if (map.source === 'mapbox_styles' && map.id.includes('mapbox://styles/')) mapId = map.id.split('/').slice(3).join('/'); // Pull out mapbox styles map id
+    if (map.source === 'mapbox_styles' && map.id.includes('mapbox://styles/')) mapId = map.id.split('/').slice(3).join(
+      '/'); // Pull out mapbox styles map id
     const providerInfo = getProviderInfo(map.source);
     const customMap = {...map, ...providerInfo, id: mapId, key: map.accessToken, source: map.source};
     const tileUrl = buildTileUrl(customMap);
@@ -296,7 +298,9 @@ const useMaps = () => {
   const zoomToSpots = async (spots, map, camera) => {
     var spotsCopy = spots.map(spot => JSON.parse(JSON.stringify(spot)));
     if (currentImageBasemap) {
-      spotsCopy.map(spot => {convertImagePixelsToLatLong(spot);});
+      spotsCopy.map(spot => {
+        convertImagePixelsToLatLong(spot);
+      });
     }
     if (camera) {
       try {
