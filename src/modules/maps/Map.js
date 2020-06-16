@@ -10,6 +10,7 @@ import {MapLayer1, MapLayer2} from './Basemaps';
 // Hooks
 import useSpotsHook from '../spots/useSpots';
 import useMapsHook from './useMaps';
+import useMapFeaturesHook from './useMapFeatures';
 
 // Utilities
 import {getNewUUID, isEmpty} from '../../shared/Helpers';
@@ -26,6 +27,7 @@ MapboxGL.setAccessToken(MAPBOX_KEY);
 const Map = React.forwardRef((props, ref) => {
   const dispatch = useDispatch();
   const [useMaps] = useMapsHook();
+  const [useMapFeatures] = useMapFeaturesHook();
   const [useSpots] = useSpotsHook();
   const currentBasemap = useSelector(state => state.map.currentBasemap);
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
@@ -620,7 +622,8 @@ const Map = React.forwardRef((props, ref) => {
       }
       if (props.isSelectingForStereonet) {
         const mappedSpots = JSON.parse(JSON.stringify(mapPropsMutable.spotsNotSelected));
-        const selectedSpots = useMaps.getLassoedSpots(mappedSpots, newFeature);
+        const selectedSpots = await useMapFeatures.getLassoedSpots(mappedSpots, newFeature);
+        await useMapFeatures.getStereonet(selectedSpots);
       }
       else {
         newOrEditedSpot = await useSpots.createSpot(newFeature);
