@@ -75,7 +75,6 @@ const RNCompass = (props) => {
 
   useEffect(() => {
     console.log('Updating props', props.spot);
-    setToggles(compassMeasurementTypes);
   }, [props.spot, compassMeasurementTypes]);
 
   const displayCompassData = () => {
