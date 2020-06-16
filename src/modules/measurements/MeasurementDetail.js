@@ -132,7 +132,8 @@ const MeasurementDetailPage = (props) => {
 
   const renderFormFields = () => {
     console.log('Rendering form:', formName[0] + '.' + formName[1],
-      'with selected measurement' + (selectedMeasurements.length > 1 ? 's:' : ':'), selectedMeasurements);
+      'with selected measurement' + (selectedMeasurements.length > 1 ? 's:' : ':'), selectedMeasurements,
+      'and active measurement:', activeMeasurement);
     return (
       <View>
         <View style={styles.measurementsSectionDividerContainer}>

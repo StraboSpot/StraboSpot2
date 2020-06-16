@@ -9,8 +9,7 @@ const useMapFeatures = (props) => {
 
   const [useSpots] = useSpotsHook();
 
-  // Find Spots within (points) or intersecting (line or polygon) the drawn polygon
-  // Find Spots within (points) or intersecting (line or polygon) the drawn polygon
+  // Get Spots within (points) or intersecting (line or polygon) the drawn polygon
   const getLassoedSpots = (features, drawnPolygon) => {
     const featuresIds = features.map(feature => feature.properties.id);
     const spotsIds = [...new Set(featuresIds)]; // Remove duplicate ids
