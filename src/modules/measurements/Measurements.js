@@ -110,7 +110,7 @@ const MeasurementsPage = (props) => {
     return (
       <View style={{maxHeight: '25%'}}>
         <FlatList
-          data={data}
+          data={data.reverse()}
           renderItem={item =>
             <MeasurementItem
               item={item}
