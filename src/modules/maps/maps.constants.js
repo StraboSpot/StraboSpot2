@@ -123,8 +123,8 @@ export const mapProviders = {
     attributions: '<a href="https://www.strabospot.org">StraboSpot Contributed</a>',
     imageType: 'png',
     mime: 'image/png',
-    tilePath: '/{z}/{x}/{y}.png',
-    // url: [straboMyMapsUrl],
+    tilePath: '{z}/{x}/{y}.png',
+    url: ['https://strabospot.org/geotiff/tiles/'],
     maxZoom: 25,
   },
 };

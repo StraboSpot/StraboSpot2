@@ -35,7 +35,7 @@ const useMaps = () => {
   const buildTileUrl = (basemap) => {
     let tileUrl = basemap.url[0];
     if (basemap.source === 'osm') tileUrl = tileUrl + basemap.tilePath;
-    if (basemap.source === 'map_warper') tileUrl = tileUrl + '/' + basemap.id + '/' + basemap.tilePath;
+    if (basemap.source === 'map_warper' || basemap.source === 'strabospot_mymaps') tileUrl = tileUrl + '/' + basemap.id + '/' + basemap.tilePath;
     else tileUrl = tileUrl + basemap.id + basemap.tilePath + (basemap.key ? '?access_token=' + basemap.key : '');
     return tileUrl;
   };
@@ -220,6 +220,7 @@ const useMaps = () => {
     const tileUrl = buildTileUrl(customMap);
     let testTileUrl = tileUrl.replace(/({z}\/{x}\/{y})/, '0/0/0');
     if (map.source === 'map_warper') testTileUrl = 'https://strabospot.org/map_warper_check/' + map.id;
+    if (map.source === 'strabospot_mymaps') testTileUrl =  'https://strabospot.org/strabo_mymaps_check/' + map.id;
     console.log('Custom Map:', customMap, 'Test Tile URL:', testTileUrl);
 
     const testUrlResponse = await useServerRequests.testCustomMapUrl(testTileUrl);

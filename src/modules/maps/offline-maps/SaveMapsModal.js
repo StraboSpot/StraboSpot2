@@ -239,7 +239,7 @@ const SaveMapsModal = (props) => {
         id = downloadMap.id;
         startZipURL = tilehost + '/asynczip?layer=' + layer + '&extent=' + extentString + '&zoom=' + downloadZoom + '&id=' + id;
       }
-      else if (downloadMap.source === 'StraboSpot MyMaps') {
+      else if (downloadMap.source === 'strabospot_mymaps') {
         layer = 'strabomymaps';
         id = downloadMap.id;
         startZipURL = tilehost + '/asynczip?layer=' + layer + '&extent=' + extentString + '&zoom=' + downloadZoom + '&id=' + id;
@@ -347,13 +347,13 @@ const SaveMapsModal = (props) => {
     for (const tile of tilearray) {
       fileCount++;
       let fileExists = await RNFS.exists(tileCacheDirectory + '/' + id + '/tiles/' + tile.name);
-      console.log('foo exists: ', tile.name + ' ' + fileExists);
+      // console.log('foo exists: ', tile.name + ' ' + fileExists);
       if (!fileExists) {
         neededTiles++;
         setTilesToInstall(neededTiles);
         await RNFS.moveFile(tileTempDirectory + '/' + zipUID + '/tiles/' + tile.name,
           tileCacheDirectory + '/' + id + '/tiles/' + tile.name);
-        console.log(tile);
+        // console.log(tile);
       }
       else {
         notNeededTiles++;
