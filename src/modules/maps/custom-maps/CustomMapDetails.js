@@ -210,6 +210,8 @@ const AddCustomMaps = (props) => {
               inputContainerStyle={{borderBottomWidth: 0}}
               placeholder={'Strabo Map ID'}
               placeholderTextColor={'black'}
+              defaultValue={editableCustomMapData.id}
+              onChangeText={text => setEditableCustomMapData(e => ({...e, id: text}))}
             />
             {/*<Input inputContainerStyle={{borderBottomWidth: 0}}*/}
             {/*       placeholder={'Access token'}/>*/}

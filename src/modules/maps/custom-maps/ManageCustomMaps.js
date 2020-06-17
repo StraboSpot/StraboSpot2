@@ -25,7 +25,7 @@ const ManageCustomMaps = (props) => {
     let name;
     if (source === 'mapbox_styles') name = 'Mapbox Styles';
     if (source === 'map_warper') name = 'Map Warper';
-    if (source === ' strabospot_mymaps') name = 'Strabospot My Maps';
+    if (source === 'strabospot_mymaps') name = 'Strabospot My Maps';
     return name;
   };
 
