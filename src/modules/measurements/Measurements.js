@@ -110,7 +110,7 @@ const MeasurementsPage = (props) => {
     return (
       <View style={{maxHeight: '25%'}}>
         <FlatList
-          data={data}
+          data={data.reverse()}
           renderItem={item =>
             <MeasurementItem
               item={item}
@@ -147,12 +147,12 @@ const MeasurementsPage = (props) => {
           />}
           {!multiSelectMode &&
           <View style={{flexDirection: 'row'}}>
-            <Button
+            {props.modalVisible !== 'Notebook Compass Modal' && <Button
               titleStyle={styles.measurementsSectionDividerButtonText}
               title={'Add'}
               type={'clear'}
               onPress={() => addMeasurement(dividerText)}
-            />
+            />}
             <React.Fragment>
               <Button
                 disabled={dataThisSection.length < 1}
