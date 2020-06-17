@@ -491,16 +491,32 @@ const Map = React.forwardRef((props, ref) => {
             isModified = true;
           }
           else if (turf.getType(spotEditingCopy) === 'Polygon') {
-            if (indexOfCoordinatesToUpdate.includes(0)) {
-              indexOfCoordinatesToUpdate.push(mapPropsMutable.drawFeatures.length);
-              // if its first index, that needs to be edited, for a polygon, the last and first coordinates
-              //point to the same one, so both should be updated.
+            if (!isEmpty(editingModeData.newVertexIndex)){
+              spotEditingCopy.geometry.coordinates[0][editingModeData.newVertexIndex] = newCoord;
+              if (editingModeData.newVertexIndex === 0){
+                spotEditingCopy.geometry.coordinates[0][mapPropsMutable.drawFeatures.length] = newCoord;
+              }
+              else if (editingModeData.newVertexIndex === mapPropsMutable.drawFeatures.length){
+                spotEditingCopy.geometry.coordinates[0][0] = newCoord;
+              }
+              setEditingModeData(d => ({
+                ...d,
+                newVertexIndex: undefined,
+              }));
+              isModified = true;
             }
-            for (let i = 0; i < coords.length; i++) {
-              for (let j = 0; j < coords[i].length; j++) {
-                if (indexOfCoordinatesToUpdate.includes(j)) {
-                  spotEditingCopy.geometry.coordinates[i][j] = newCoord;
-                  isModified = true;
+            else {
+              if (indexOfCoordinatesToUpdate.includes(0)) {
+                indexOfCoordinatesToUpdate.push(mapPropsMutable.drawFeatures.length);
+                // if its first index, that needs to be edited, for a polygon, the last and first coordinates
+                //point to the same one, so both should be updated.
+              }
+              for (let i = 0; i < coords.length; i++) {
+                for (let j = 0; j < coords[i].length; j++) {
+                  if (indexOfCoordinatesToUpdate.includes(j)) {
+                    spotEditingCopy.geometry.coordinates[i][j] = newCoord;
+                    isModified = true;
+                  }
                 }
               }
             }
@@ -928,7 +944,19 @@ const Map = React.forwardRef((props, ref) => {
     }
     const possiblePolysFC = turf.featureCollection(possiblePolys);
     const unkinkedPolys = turf.unkinkPolygon(possiblePolysFC).features;
-    return turf.union(...unkinkedPolys);
+    let unionedPoly = turf.union(...unkinkedPolys);
+    let features = turf.explode(unionedPoly).features;
+    for (let i = 0; i < features.length; i++) {
+      let eachFeatureGeom = features[i];
+      if (eachFeatureGeom.geometry.coordinates[0] === newVertexGeom.coordinates[0] && eachFeatureGeom.geometry.coordinates[1] === newVertexGeom.coordinates[1]) {
+        setSelectedSpotToEdit(eachFeatureGeom);
+        setEditingModeData(d => ({
+          ...d,
+          newVertexIndex: i,
+        }));
+      }
+    }
+  return unionedPoly;
   };
 
   // Add a new vertex to a line
