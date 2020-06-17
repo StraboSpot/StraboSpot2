@@ -133,15 +133,17 @@ const NotebookHeader = props => {
             title={getSpotCoordText()}
             buttonStyle={{padding: 0, justifyContent: 'flex-start'}}/> :
           <View style={{flexDirection: 'row'}}>
+            {!spot.properties.trace && !spot.properties.surface_feature &&
             <Button
               type='clear'
               title={'Set To Current Location'}
               buttonStyle={{padding: 0}}
               onPress={() => props.onPress('setToCurrentLocation')}/>
+            }
             <Button
               type='clear'
-              title={'Set From Map'}
-              buttonStyle={{padding: 0, paddingLeft: 40}}
+              title={'Set in Current View'}
+              buttonStyle={{padding: 0, paddingLeft: spot.properties.trace || spot.properties.surface_feature ? 0 : 40}}
               onPress={() => props.onPress('setFromMap')}/>
           </View>
         }

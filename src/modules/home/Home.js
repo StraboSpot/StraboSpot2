@@ -421,7 +421,9 @@ const Home = (props) => {
         dispatch({type: spotReducers.SET_SELECTED_SPOT, spot: editedSpot});
         break;
       case 'setFromMap':
-        Alert.alert('Not implemented yet');
+        mapViewComponent.current.createDefaultGeom();
+        closeNotebookPanel();
+        startEdit();
         break;
     }
   };

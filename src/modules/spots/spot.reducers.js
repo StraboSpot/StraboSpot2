@@ -13,12 +13,25 @@ const initialState = {
 export const spotReducer = (state = initialState, action) => {
   switch (action.type) {
     // Takes a single Spot object and adds it to the Spots objects with a key that is the Spot Id
-    case spotReducers.ADD_SPOT:
+    case spotReducers.ADD_SPOT: {
       console.log('ADDED Spot:', action.spot, 'to Existing Spots:', state.spots);
+      let selectedSpotCopy = JSON.parse(JSON.stringify(state.selectedSpot));
+      if (!isEmpty(state.selectedSpot) && state.selectedSpot.properties &&
+        state.selectedSpot.properties.id === action.spot.properties.id) selectedSpotCopy = action.spot;
+      const updatedSpot = {
+        ...action.spot,
+        properties: {
+          ...action.spot.properties,
+          modified_timestamp: Date.now(),
+        },
+      };
       return {
         ...state,
-        spots: {...state.spots, [action.spot.properties.id]: action.spot},
+        selectedSpot: selectedSpotCopy,
+        selectedSpots: !isEmpty(selectedSpotCopy) ? [selectedSpotCopy] : [],
+        spots: {...state.spots, [action.spot.properties.id]: updatedSpot},
       };
+    }
     // Takes an array of Spot objects and merges them with the Spots object with a key that is the Spot Id
     case spotReducers.ADD_SPOTS:
       const spots = Object.assign({}, ...action.spots.map(spot => ({[spot.properties.id]: spot})));
@@ -55,18 +68,6 @@ export const spotReducer = (state = initialState, action) => {
         selectedSpots: [],
         spots: newSpots,
         recentViews: state.recentViews.filter(id => id !== action.id),
-      };
-    case spotReducers.EDIT_SPOT_GEOMETRY:
-      console.log('EDITSPOT Geometry', action);
-      return {
-        ...state,
-        selectedSpot: {
-          ...state.selectedSpot,
-          geometry: {
-            ...state.selected.geometry,
-            [action.field]: action.value,
-          },
-        },
       };
     case spotReducers.EDIT_SPOT_IMAGES: {
       let updatedSpotImages = null;

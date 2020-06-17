@@ -31,6 +31,7 @@ const Map = React.forwardRef((props, ref) => {
   const [useSpots] = useSpotsHook();
   const currentBasemap = useSelector(state => state.map.currentBasemap);
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
+  const selectedSpot = useSelector(state => state.spot.selectedSpot);
 
   // Data needing to be tracked when in editing mode
   const initialEditingModeData = {
@@ -133,6 +134,50 @@ const Map = React.forwardRef((props, ref) => {
     // console.log('MapPropsMutable in useEffect', mapPropsMutable);
     if (props.mapMode === MapModes.DRAW.POINT && mapPropsMutable.drawFeatures.length === 1) props.endDraw();
   }, [mapPropsMutable.drawFeatures]);
+
+  // Create a default geometry for a Spot that doesn't have geometry when 'Set in Current View' is clicked
+  // then make it selected for immediate editing
+  const createDefaultGeom = async () => {
+    if (selectedSpot && selectedSpot.properties && map && map.current) {
+      const centerCoords = await map.current.getCenter();
+      if (centerCoords) {
+        let defaultFeature = turf.point(centerCoords);
+        if (selectedSpot.properties.trace || selectedSpot.properties.surface_feature) {
+          const centerArea = turf.buffer(defaultFeature, 0.25, {units: 'miles'});
+          defaultFeature = turf.bboxPolygon(turf.bbox(centerArea));
+          if (selectedSpot.properties.trace) {
+            const defaultFeatureCoords = turf.getCoords(defaultFeature);
+            defaultFeature = turf.lineString([defaultFeatureCoords[0][0], defaultFeatureCoords[0][2]]);
+          }
+        }
+        const selectedSpotCopy = {
+          ...selectedSpot,
+          geometry: defaultFeature.geometry,
+        };
+        dispatch(({type: spotReducers.ADD_SPOT, spot: selectedSpotCopy}));
+
+        // Set new geomtry ready for editing
+        setSelectedSpotToEdit(selectedSpotCopy);
+        if (turf.getType(selectedSpotCopy) === 'Point') setSelectedVertexToEdit(selectedSpotCopy);
+        else if (turf.getType(selectedSpotCopy) === 'LineString') {
+          const vertexToEdit = {
+            ...selectedSpotCopy,
+            geometry: turf.getGeom(turf.point(turf.getCoords(selectedSpotCopy)[0])),
+          };
+          setSelectedVertexToEdit(vertexToEdit);
+        }
+        else if (turf.getType(selectedSpotCopy) === 'Polygon') {
+          const vertexToEdit = {
+            ...selectedSpotCopy,
+            geometry: turf.getGeom(turf.point(turf.getCoords(selectedSpotCopy)[0][0])),
+          };
+          setSelectedVertexToEdit(vertexToEdit);
+        }
+      }
+      else console.warn('Error getting the center of the map');
+    }
+    else console.warn('Error creating a default geometry as there is no map or Selected Spot');
+  };
 
   const moveVertex = async () => {
     try { // on imagebasemap, if spot is not point, conversion happens in editSpotCoordinates.
@@ -430,7 +475,7 @@ const Map = React.forwardRef((props, ref) => {
 
   // Identify the vertex which has to be updated
   const getVertexIndexInSpotToEdit = (vertex) => {
-    if (isEmpty(vertex)){
+    if (isEmpty(vertex)) {
       return {};
     }
     var indexOfCoordinatesToUpdate = [];
@@ -474,12 +519,12 @@ const Map = React.forwardRef((props, ref) => {
             newCoord = useMaps.convertCoordinateProjections(geoLatLngProjection, pixelProjection, newCoord);
           }
           if (turf.getType(spotEditingCopy) === 'LineString') {
-           if (!isEmpty(editingModeData.newVertexIndex)){
-             spotEditingCopy.geometry.coordinates[editingModeData.newVertexIndex + 1] = newCoord;
-             setEditingModeData(d => ({
-               ...d,
-               newVertexIndex: undefined,
-             }));
+            if (!isEmpty(editingModeData.newVertexIndex)) {
+              spotEditingCopy.geometry.coordinates[editingModeData.newVertexIndex + 1] = newCoord;
+              setEditingModeData(d => ({
+                ...d,
+                newVertexIndex: undefined,
+              }));
             }
             else {
               for (let j = 0; j < coords.length; j++) {
@@ -491,12 +536,12 @@ const Map = React.forwardRef((props, ref) => {
             isModified = true;
           }
           else if (turf.getType(spotEditingCopy) === 'Polygon') {
-            if (!isEmpty(editingModeData.newVertexIndex)){
+            if (!isEmpty(editingModeData.newVertexIndex)) {
               spotEditingCopy.geometry.coordinates[0][editingModeData.newVertexIndex] = newCoord;
-              if (editingModeData.newVertexIndex === 0){
+              if (editingModeData.newVertexIndex === 0) {
                 spotEditingCopy.geometry.coordinates[0][mapPropsMutable.drawFeatures.length] = newCoord;
               }
-              else if (editingModeData.newVertexIndex === mapPropsMutable.drawFeatures.length){
+              else if (editingModeData.newVertexIndex === mapPropsMutable.drawFeatures.length) {
                 spotEditingCopy.geometry.coordinates[0][0] = newCoord;
               }
               setEditingModeData(d => ({
@@ -956,7 +1001,7 @@ const Map = React.forwardRef((props, ref) => {
         }));
       }
     }
-  return unionedPoly;
+    return unionedPoly;
   };
 
   // Add a new vertex to a line
@@ -1016,6 +1061,7 @@ const Map = React.forwardRef((props, ref) => {
       cancelDraw: cancelDraw,
       cancelEdits: cancelEdits,
       clearSelectedSpots: clearSelectedSpots,
+      createDefaultGeom: createDefaultGeom,
       endDraw: endDraw,
       getCurrentBasemap: getCurrentBasemap,
       getCurrentZoom: getCurrentZoom,
