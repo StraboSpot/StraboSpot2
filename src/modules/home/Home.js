@@ -183,20 +183,21 @@ const Home = (props) => {
         break;
       case 'measurement':
         dispatch({type: spotReducers.CLEAR_SELECTED_SPOTS});
-        props.setModalVisible(Modals.SHORTCUT_MODALS.COMPASS);
+        if (modalVisible === Modals.SHORTCUT_MODALS.COMPASS) dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: null});
+        else dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: Modals.SHORTCUT_MODALS.COMPASS});
         closeNotebookPanel();
         break;
       case 'sample':
         dispatch({type: spotReducers.CLEAR_SELECTED_SPOTS});
-        props.setModalVisible(Modals.SHORTCUT_MODALS.SAMPLE);
+        if (modalVisible === Modals.SHORTCUT_MODALS.SAMPLE) dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: null});
+        else dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: Modals.SHORTCUT_MODALS.SAMPLE});
         closeNotebookPanel();
         break;
       case 'note':
         dispatch({type: spotReducers.CLEAR_SELECTED_SPOTS});
-        dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: Modals.SHORTCUT_MODALS.NOTES});
+        if (modalVisible === Modals.SHORTCUT_MODALS.NOTES) dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: null});
+        else dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: Modals.SHORTCUT_MODALS.NOTES});
         closeNotebookPanel();
-        // Alert.alert('Still in the works',
-        //   `The ${name.toUpperCase()} Shortcut button in the  will be functioning soon!`);
         break;
       case 'photo':
         dispatch({type: spotReducers.CLEAR_SELECTED_SPOTS});
