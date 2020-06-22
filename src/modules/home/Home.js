@@ -424,7 +424,6 @@ const Home = (props) => {
       case 'setFromMap':
         mapViewComponent.current.createDefaultGeom();
         closeNotebookPanel();
-        startEdit();
         break;
     }
   };

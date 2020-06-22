@@ -156,23 +156,8 @@ const Map = React.forwardRef((props, ref) => {
         };
         dispatch(({type: spotReducers.ADD_SPOT, spot: selectedSpotCopy}));
 
-        // Set new geomtry ready for editing
-        setSelectedSpotToEdit(selectedSpotCopy);
-        if (turf.getType(selectedSpotCopy) === 'Point') setSelectedVertexToEdit(selectedSpotCopy);
-        else if (turf.getType(selectedSpotCopy) === 'LineString') {
-          const vertexToEdit = {
-            ...selectedSpotCopy,
-            geometry: turf.getGeom(turf.point(turf.getCoords(selectedSpotCopy)[0])),
-          };
-          setSelectedVertexToEdit(vertexToEdit);
-        }
-        else if (turf.getType(selectedSpotCopy) === 'Polygon') {
-          const vertexToEdit = {
-            ...selectedSpotCopy,
-            geometry: turf.getGeom(turf.point(turf.getCoords(selectedSpotCopy)[0][0])),
-          };
-          setSelectedVertexToEdit(vertexToEdit);
-        }
+        // Set new geometry ready for editing
+        startEditing(selectedSpotCopy);
       }
       else console.warn('Error getting the center of the map');
     }
