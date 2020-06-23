@@ -14,6 +14,7 @@ YellowBox.ignoreWarnings([
   'Remote debugger',
   'Warning:',
   'Module RNSimpleCompass requires main queue setup since it overrides `init` but doesn\'t implement `requiresMainQueueSetup`.',
+  'Sending `zipArchiveProgressEvent` with no listeners registered.',
 ]);
 
 AppRegistry.registerComponent(appName, () => App);

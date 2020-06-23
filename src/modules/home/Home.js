@@ -85,6 +85,7 @@ const Home = (props) => {
 
   const dispatch = useDispatch();
   const customMaps = useSelector(state => state.map.customMaps);
+  const modalVisible = useSelector(state => state.home.modalVisible);
   const project = useSelector(state => state.project.project);
   const settingsPageVisible = useSelector(state => state.settingsPanel.settingsPageVisible);
   const statusMessages = useSelector(state => state.home.statusMessages);
