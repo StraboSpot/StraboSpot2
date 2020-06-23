@@ -104,14 +104,14 @@ const homeStyles = StyleSheet.create({
   onlineStatus: {
     position: 'absolute',
     right: 0,
-    top: 40,
+    top: 15,
     zIndex: -1,
   },
 
   // --- Bottom Left Icon (current location) ---
   bottomLeftIcons: {
     position: 'absolute',
-    bottom: 20,
+    bottom: 10,
     zIndex: -1,
   },
   layersIcon: {
@@ -126,7 +126,7 @@ const homeStyles = StyleSheet.create({
   homeIconContainer: {
     position: 'absolute',
     left: 0,
-    top: 20,
+    top: 15,
     zIndex: -1,
   },
   tagIcon: {
@@ -144,7 +144,7 @@ const homeStyles = StyleSheet.create({
     zIndex: 1,
     color: themes.PRIMARY_ITEM_TEXT_COLOR,
     position: 'absolute',
-    bottom: '15%',
+    top: 15,
     right: '45%',
   },
 
