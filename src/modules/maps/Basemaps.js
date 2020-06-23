@@ -6,10 +6,12 @@ import useImagesHook from '../images/useImages';
 import useMapsHook from './useMaps';
 import useMapSymbologyHook from './useMapSymbology';
 import {isEmpty} from '../../shared/Helpers';
-import {Platform} from 'react-native';
+import {Platform, Text, View} from 'react-native';
 
 // Constants
 import {symbols as symbolsConstant, geoLatLngProjection, pixelProjection} from './maps.constants';
+// Styles
+import homeStyles from '../home/home.style';
 
 function Basemap(props) {
   const customMaps = useSelector(state => state.map.customMaps);
@@ -19,10 +21,13 @@ function Basemap(props) {
   const [symbols, setSymbol] = useState(symbolsConstant);
   const [useImages] = useImagesHook();
   const [useMaps] = useMapsHook();
+  const [showZoom, setShowZoom] = useState(false);
+  const [currentZoom, setCurrentZoom] = useState(undefined);
 
   const defaultCenterCoordinates = () => {
-    return props.imageBasemap ? useMaps.convertCoordinateProjections(pixelProjection, geoLatLngProjection, [(props.imageBasemap.width) / 2, (props.imageBasemap.height) / 2])
-           : props.centerCoordinate;
+    return props.imageBasemap ? useMaps.convertCoordinateProjections(pixelProjection, geoLatLngProjection,
+      [(props.imageBasemap.width) / 2, (props.imageBasemap.height) / 2])
+      : props.centerCoordinate;
   };
   // Evaluate and return appropriate center coordinates
   // if ZoomToSpot is set, then asyncMode zoomToSpot is triggered, load the map with center coordinates as the coordinates of the centroid of the selectedSpot
@@ -39,183 +44,197 @@ function Basemap(props) {
     }
   };
 
-  return <MapboxGL.MapView
-    id={props.imageBasemap ? props.imageBasemap.id : props.basemap.id}
-    ref={mapRef}
-    style={{flex: 1}}
-    animated={true}
-    localizeLabels={true}
-    logoEnabled={false}
-    rotateEnabled={false}
-    pitchEnable={false}
-    attributionEnabled={false}
-    compassEnabled={true}
-    onPress={props.onMapPress}
-    onLongPress={props.onMapLongPress}
-    scrollEnabled={props.allowMapViewMove}
-    zoomEnabled={props.allowMapViewMove}
-  >
+  const onZoomChange = (zoomLevel) => {
+    setShowZoom(true);
+    setCurrentZoom(zoomLevel);
+  };
 
-    {!props.imageBasemap &&
-    <MapboxGL.UserLocation
-      animated={false}/>}
+  return (
+    <View style={{flex:1}}>
+      {showZoom && <View style={homeStyles.currentZoom}>
+        <Text >Zoom Level: {currentZoom && currentZoom.toFixed(1) }</Text>
+      </View>}
+      <MapboxGL.MapView
+        id={props.imageBasemap ? props.imageBasemap.id : props.basemap.id}
+        ref={mapRef}
+        style={{flex: 1}}
+        animated={true}
+        localizeLabels={true}
+        logoEnabled={false}
+        rotateEnabled={false}
+        pitchEnable={false}
+        attributionEnabled={false}
+        compassEnabled={true}
+        onPress={props.onMapPress}
+        onLongPress={props.onMapLongPress}
+        scrollEnabled={props.allowMapViewMove}
+        zoomEnabled={props.allowMapViewMove}
+        onRegionIsChanging={(args) => onZoomChange(args.properties.zoomLevel)}
+        onRegionDidChange={() => setShowZoom(false)}
+      >
 
-    <MapboxGL.Camera
-      ref={cameraRef}
-      zoomLevel={props.imageBasemap ? 14 : props.zoom}
-      centerCoordinate={evaluateCenterCoordinates()}
-      animationDuration={0}
-      // followUserLocation={true}   // Can't follow user location if want to zoom to extent of Spots
-      // followUserMode='normal'
-    />
+        {!props.imageBasemap &&
+        <MapboxGL.UserLocation
+          animated={false}/>}
 
-    {!props.imageBasemap && <MapboxGL.RasterSource
-      id={props.basemap.id}
-      tileUrlTemplates={[useMaps.buildTileUrl(props.basemap)]}
-      maxZoomLevel={props.basemap.maxZoom}
-      tileSize={256}
-    >
-      <MapboxGL.RasterLayer
-        id={props.basemap.id}
-        sourceID={props.basemap.id}
-        style={{rasterOpacity: 1}}
-      />
-    </MapboxGL.RasterSource>}
+        <MapboxGL.Camera
+          ref={cameraRef}
+          zoomLevel={props.imageBasemap ? 14 : props.zoom}
+          centerCoordinate={evaluateCenterCoordinates()}
+          animationDuration={0}
+          // followUserLocation={true}   // Can't follow user location if want to zoom to extent of Spots
+          // followUserMode='normal'
+        />
 
-    {/* Custom Overlay Layer */}
-    {Object.values(customMaps).map(customMap => {
-      return customMap.overlay && customMap.isViewable &&
-        <MapboxGL.RasterSource
-          key={customMap.id}
-          id={customMap.id}
-          tileUrlTemplates={[useMaps.buildTileUrl(customMap)]}>
-          <MapboxGL.RasterLayer id={customMap.id + 'Layer'}
-                                sourceID={customMap.id}
-                                style={{rasterOpacity: customMap.opacity}}/>
-        </MapboxGL.RasterSource>;
-    })}
+        {!props.imageBasemap && <MapboxGL.RasterSource
+          id={props.basemap.id}
+          tileUrlTemplates={[useMaps.buildTileUrl(props.basemap)]}
+          maxZoomLevel={props.basemap.maxZoom}
+          tileSize={256}
+        >
+          <MapboxGL.RasterLayer
+            id={props.basemap.id}
+            sourceID={props.basemap.id}
+            style={{rasterOpacity: 1}}
+          />
+        </MapboxGL.RasterSource>}
 
-    {/* Image Basemap background Layer */}
-    {Platform.OS === 'android' && props.imageBasemap &&
-    <MapboxGL.BackgroundLayer
-      id='background'
-      style={{backgroundColor: '#ffffff'}}/>
-    }
+        {/* Custom Overlay Layer */}
+        {Object.values(customMaps).map(customMap => {
+          return customMap.overlay && customMap.isViewable &&
+            <MapboxGL.RasterSource
+              key={customMap.id}
+              id={customMap.id}
+              tileUrlTemplates={[useMaps.buildTileUrl(customMap)]}>
+              <MapboxGL.RasterLayer id={customMap.id + 'Layer'}
+                                    sourceID={customMap.id}
+                                    style={{rasterOpacity: customMap.opacity}}/>
+            </MapboxGL.RasterSource>;
+        })}
 
-    {Platform.OS === 'ios' && props.imageBasemap &&
-    <MapboxGL.Animated.ImageSource
-      id='imageBasemapBackground'
-      coordinates={[[-250, 85], [250, 85], [250, -85], [-250, -85]]}
-      url={require('../../assets/images/imageBasemapBackground.jpg')}>
-      <MapboxGL.RasterLayer id='imageBasemapBackgroundLayer'
-                            style={{rasterOpacity: 1}}/>
-    </MapboxGL.Animated.ImageSource>}
+        {/* Image Basemap background Layer */}
+        {Platform.OS === 'android' && props.imageBasemap &&
+        <MapboxGL.BackgroundLayer
+          id='background'
+          style={{backgroundColor: '#ffffff'}}/>
+        }
 
-    {/* Image Basemap Layer */}
-    {props.imageBasemap && !isEmpty(props.coordQuad) &&
-    <MapboxGL.Animated.ImageSource
-      id='imageBasemap'
-      coordinates={props.coordQuad}
-      url={useImages.getLocalImageSrc(props.imageBasemap.id)}>
-      <MapboxGL.RasterLayer id='imageBasemapLayer'
-                            style={{rasterOpacity: 1}}/>
-    </MapboxGL.Animated.ImageSource>}
+        {Platform.OS === 'ios' && props.imageBasemap &&
+        <MapboxGL.Animated.ImageSource
+          id='imageBasemapBackground'
+          coordinates={[[-250, 85], [250, 85], [250, -85], [-250, -85]]}
+          url={require('../../assets/images/imageBasemapBackground.jpg')}>
+          <MapboxGL.RasterLayer id='imageBasemapBackgroundLayer'
+                                style={{rasterOpacity: 1}}/>
+        </MapboxGL.Animated.ImageSource>}
 
-    {/* Feature Layer */}
-    <MapboxGL.Images
-      images={symbols}
-      onImageMissing={imageKey => {
-        setSymbol({...symbols, [imageKey]: symbols.default_point});
-      }}
-    />
-    <MapboxGL.ShapeSource
-      id='shapeSource'
-      shape={turf.featureCollection(props.spotsNotSelected)}
-    >
-      <MapboxGL.SymbolLayer
-        id='pointLayerNotSelected'
-        minZoomLevel={1}
-        filter={['==', '$type', 'Point']}
-        style={useMapSymbology.getMapSymbology().point}
-      />
-      <MapboxGL.LineLayer
-        id='lineLayerNotSelected'
-        minZoomLevel={1}
-        filter={['==', '$type', 'LineString']}
-        style={useMapSymbology.getMapSymbology().line}
-      />
-      <MapboxGL.FillLayer
-        id='polygonLayerNotSelected'
-        minZoomLevel={1}
-        filter={['==', '$type', 'Polygon']}
-        style={useMapSymbology.getMapSymbology().polygon}
-      />
-    </MapboxGL.ShapeSource>
+        {/* Image Basemap Layer */}
+        {props.imageBasemap && !isEmpty(props.coordQuad) &&
+        <MapboxGL.Animated.ImageSource
+          id='imageBasemap'
+          coordinates={props.coordQuad}
+          url={useImages.getLocalImageSrc(props.imageBasemap.id)}>
+          <MapboxGL.RasterLayer id='imageBasemapLayer'
+                                style={{rasterOpacity: 1}}/>
+        </MapboxGL.Animated.ImageSource>}
 
-    {/* Selected Features Layer */}
-    <MapboxGL.ShapeSource
-      id='spotsNotSelectedSource'
-      shape={turf.featureCollection(props.spotsSelected)}
-    >
-      <MapboxGL.CircleLayer
-        id='pointLayerSelected'
-        minZoomLevel={1}
-        filter={['==', '$type', 'Point']}
-        style={useMapSymbology.getMapSymbology().pointSelected}
-      />
-      <MapboxGL.LineLayer
-        id='lineLayerSelected'
-        minZoomLevel={1}
-        filter={['==', '$type', 'LineString']}
-        style={useMapSymbology.getMapSymbology().lineSelected}
-      />
-      <MapboxGL.FillLayer
-        id='polygonLayerSelected'
-        minZoomLevel={1}
-        filter={['==', '$type', 'Polygon']}
-        style={useMapSymbology.getMapSymbology().polygonSelected}
-      />
-    </MapboxGL.ShapeSource>
+        {/* Feature Layer */}
+        <MapboxGL.Images
+          images={symbols}
+          onImageMissing={imageKey => {
+            setSymbol({...symbols, [imageKey]: symbols.default_point});
+          }}
+        />
+        <MapboxGL.ShapeSource
+          id='shapeSource'
+          shape={turf.featureCollection(props.spotsNotSelected)}
+        >
+          <MapboxGL.SymbolLayer
+            id='pointLayerNotSelected'
+            minZoomLevel={1}
+            filter={['==', '$type', 'Point']}
+            style={useMapSymbology.getMapSymbology().point}
+          />
+          <MapboxGL.LineLayer
+            id='lineLayerNotSelected'
+            minZoomLevel={1}
+            filter={['==', '$type', 'LineString']}
+            style={useMapSymbology.getMapSymbology().line}
+          />
+          <MapboxGL.FillLayer
+            id='polygonLayerNotSelected'
+            minZoomLevel={1}
+            filter={['==', '$type', 'Polygon']}
+            style={useMapSymbology.getMapSymbology().polygon}
+          />
+        </MapboxGL.ShapeSource>
 
-    {/* Draw Layer */}
-    <MapboxGL.ShapeSource
-      id='drawFeatures'
-      shape={turf.featureCollection(props.drawFeatures)}
-    >
-      <MapboxGL.CircleLayer
-        id='pointLayerDraw'
-        minZoomLevel={1}
-        filter={['==', '$type', 'Point']}
-        style={useMapSymbology.getMapSymbology().pointDraw}
-      />
-      <MapboxGL.LineLayer
-        id='lineLayerDraw'
-        minZoomLevel={1}
-        filter={['==', '$type', 'LineString']}
-        style={useMapSymbology.getMapSymbology().lineDraw}
-      />
-      <MapboxGL.FillLayer
-        id='polygonLayerDraw'
-        minZoomLevel={1}
-        filter={['==', '$type', 'Polygon']}
-        style={useMapSymbology.getMapSymbology().polygonDraw}
-      />
-    </MapboxGL.ShapeSource>
+        {/* Selected Features Layer */}
+        <MapboxGL.ShapeSource
+          id='spotsNotSelectedSource'
+          shape={turf.featureCollection(props.spotsSelected)}
+        >
+          <MapboxGL.CircleLayer
+            id='pointLayerSelected'
+            minZoomLevel={1}
+            filter={['==', '$type', 'Point']}
+            style={useMapSymbology.getMapSymbology().pointSelected}
+          />
+          <MapboxGL.LineLayer
+            id='lineLayerSelected'
+            minZoomLevel={1}
+            filter={['==', '$type', 'LineString']}
+            style={useMapSymbology.getMapSymbology().lineSelected}
+          />
+          <MapboxGL.FillLayer
+            id='polygonLayerSelected'
+            minZoomLevel={1}
+            filter={['==', '$type', 'Polygon']}
+            style={useMapSymbology.getMapSymbology().polygonSelected}
+          />
+        </MapboxGL.ShapeSource>
 
-    {/* Edit Layer */}
-    <MapboxGL.ShapeSource
-      id='editFeatureVertex'
-      shape={turf.featureCollection(props.editFeatureVertex)}
-    >
-      <MapboxGL.CircleLayer
-        id='pointLayerEdit'
-        minZoomLevel={1}
-        filter={['==', '$type', 'Point']}
-        style={useMapSymbology.getMapSymbology().pointEdit}
-      />
-    </MapboxGL.ShapeSource>
+        {/* Draw Layer */}
+        <MapboxGL.ShapeSource
+          id='drawFeatures'
+          shape={turf.featureCollection(props.drawFeatures)}
+        >
+          <MapboxGL.CircleLayer
+            id='pointLayerDraw'
+            minZoomLevel={1}
+            filter={['==', '$type', 'Point']}
+            style={useMapSymbology.getMapSymbology().pointDraw}
+          />
+          <MapboxGL.LineLayer
+            id='lineLayerDraw'
+            minZoomLevel={1}
+            filter={['==', '$type', 'LineString']}
+            style={useMapSymbology.getMapSymbology().lineDraw}
+          />
+          <MapboxGL.FillLayer
+            id='polygonLayerDraw'
+            minZoomLevel={1}
+            filter={['==', '$type', 'Polygon']}
+            style={useMapSymbology.getMapSymbology().polygonDraw}
+          />
+        </MapboxGL.ShapeSource>
 
-  </MapboxGL.MapView>;
+        {/* Edit Layer */}
+        <MapboxGL.ShapeSource
+          id='editFeatureVertex'
+          shape={turf.featureCollection(props.editFeatureVertex)}
+        >
+          <MapboxGL.CircleLayer
+            id='pointLayerEdit'
+            minZoomLevel={1}
+            filter={['==', '$type', 'Point']}
+            style={useMapSymbology.getMapSymbology().pointEdit}
+          />
+        </MapboxGL.ShapeSource>
+
+      </MapboxGL.MapView>
+    </View>
+  );
 }
 
 export const MapLayer1 = React.forwardRef((props, ref) => (

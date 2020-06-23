@@ -8,6 +8,7 @@ import {Picker} from '@react-native-community/picker';
 import ProgressBar from 'react-native-progress/Bar';
 import RNFetchBlob from 'rn-fetch-blob';
 import * as loading from 'react-native-indicators';
+import useMapsHook from '../useMaps';
 
 // Constants
 import {mapReducers} from '../maps.constants';
@@ -19,7 +20,7 @@ const RNFS = require('react-native-fs');
 
 const SaveMapsModal = (props) => {
   // console.log(props);
-  // const [useMaps] = useMapsHook();
+  const [useMaps] = useMapsHook();
 
   const tilehost = 'http://tiles.strabospot.org';
   let dirs = RNFetchBlob.fs.dirs;
@@ -157,6 +158,8 @@ const SaveMapsModal = (props) => {
     }
     catch (err) {
       console.log('Unzip Error:', err);
+      useMaps.handleError('Something went wrong...', err);
+      return Promise.reject();
     }
 
     return Promise.resolve();
@@ -192,7 +195,9 @@ const SaveMapsModal = (props) => {
       setPercentDone(1);
     }
     catch (err) {
+      useMaps.handleError('Something went wrong...', err);
       console.log('Download Tile Zip Error :', err);
+      return Promise.reject();
     }
   };
 

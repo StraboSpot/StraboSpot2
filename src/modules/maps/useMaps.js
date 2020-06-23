@@ -17,6 +17,7 @@ import {projectReducers} from '../project/project.constants';
 import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 import {SettingsMenuItems} from '../main-menu-panel/mainMenu.constants';
 import {spotReducers} from '../spots/spot.constants';
+import {homeReducers} from '../home/home.constants';
 
 const useMaps = () => {
   const [useServerRequests] = useServerRequestsHook();
@@ -200,6 +201,13 @@ const useMaps = () => {
     return mapProviders[source];
   };
 
+  const handleError = (message, err) => {
+    dispatch({type: homeReducers.CLEAR_STATUS_MESSAGES});
+    dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: `${message} \n\n${err}`});
+    dispatch({type: homeReducers.SET_OFFLINE_MAPS_MODAL_VISIBLE, bool: false});
+    dispatch({type: homeReducers.SET_ERROR_MESSAGES_MODAL_VISIBLE, bool: true});
+  };
+
   const isGeoMap = (map) => {
     return !map.props.id === 'image_basemap';
   };
@@ -304,6 +312,7 @@ const useMaps = () => {
     getCoordQuad: getCoordQuad,
     getCurrentLocation: getCurrentLocation,
     getDisplayedSpots: getDisplayedSpots,
+    handleError: handleError,
     isGeoMap: isGeoMap,
     isOnGeoMap: isOnGeoMap,
     saveCustomMap: saveCustomMap,

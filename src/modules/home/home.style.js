@@ -136,6 +136,17 @@ const homeStyles = StyleSheet.create({
     position: 'absolute',
     bottom: 10,
   },
+  currentZoom: {
+    fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    padding: 10,
+    zIndex: 1,
+    color: themes.PRIMARY_ITEM_TEXT_COLOR,
+    position: 'absolute',
+    bottom: '15%',
+    right: '45%',
+  },
 
   // --- Modal Style ---
   modal: {
