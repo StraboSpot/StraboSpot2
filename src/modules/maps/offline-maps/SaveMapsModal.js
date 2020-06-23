@@ -123,7 +123,7 @@ const SaveMapsModal = (props) => {
     }
     tryCount++;
     console.log(tryCount);
-    if (progressStatus !== 'Zip File Ready.' && zipError === '') {
+    if (tryCount <= 200 && progressStatus !== 'Zip File Ready.' && zipError === '') {
       // await delay(300);
       await checkStatus(zipUID);
     }
@@ -132,7 +132,6 @@ const SaveMapsModal = (props) => {
       progressStatus = 'Downloading Tiles...';
       setStatusMessage('Downloading Tiles...');
       await downloadZip(zipUID);
-      setStatusMessage('Gathering Tiles...');
       await delay(1000);
       await doUnzip(zipUID);
     }
@@ -205,7 +204,8 @@ const SaveMapsModal = (props) => {
     setIsLoadingWave(true);
     // setProgressMessage('Starting Download...');
     progressStatus = 'Starting Download...';
-    setStatusMessage('Starting Download...');
+    // setStatusMessage('Starting Download...');
+    setStatusMessage('Gathering Tiles...');
 
     const layerID = currentBasemap.id;
     const layerSource = currentBasemap.source;
@@ -340,7 +340,6 @@ const SaveMapsModal = (props) => {
   };
 
   const tileMove = async (tilearray, zipUID) => {
-    console.log(tilearray.length);
     let fileCount = 0;
     let neededTiles = 0;
     let notNeededTiles = 0;

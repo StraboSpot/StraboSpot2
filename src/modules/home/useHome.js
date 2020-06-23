@@ -48,7 +48,6 @@ const useHome = (props) => {
     dispatch({type: homeReducers.SET_LOADING, view: 'home', bool: false});
     dispatch({type: homeReducers.SET_LOADING, view: 'modal', bool: false});
     dispatch({type: spotReducers.CLEAR_SELECTED_SPOTS});
-    dispatch({type: notebookReducers.SET_NOTEBOOK_PANEL_VISIBLE, value: false});
     dispatch({type: homeReducers.SET_ALLSPOTS_PANEL_VISIBLE, value: false});
     dispatch({type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE, value: false});
     dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: null});

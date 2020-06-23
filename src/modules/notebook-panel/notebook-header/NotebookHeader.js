@@ -137,12 +137,14 @@ const NotebookHeader = props => {
             <Button
               type='clear'
               title={'Set To Current Location'}
+              titleStyle={{fontSize: 14}}
               buttonStyle={{padding: 0}}
               onPress={() => props.onPress('setToCurrentLocation')}/>
             }
             <Button
               type='clear'
               title={'Set in Current View'}
+              titleStyle={{fontSize: 14}}
               buttonStyle={{padding: 0, paddingLeft: spot.properties.trace || spot.properties.surface_feature ? 0 : 40}}
               onPress={() => props.onPress('setFromMap')}/>
           </View>
