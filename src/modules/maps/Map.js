@@ -1,7 +1,9 @@
 import React, {useEffect, useImperativeHandle, useRef, useState} from 'react';
 import * as turf from '@turf/turf/index';
+import {Button} from 'react-native-elements';
 import {connect, useSelector, useDispatch} from 'react-redux';
 import {View} from 'react-native';
+import Dialog, {DialogContent, DialogTitle, SlideAnimation} from 'react-native-popup-dialog';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 
 // Components
@@ -60,6 +62,8 @@ const Map = React.forwardRef((props, ref) => {
   const [editingModeData, setEditingModeData] = useState(initialEditingModeData);
   const [mapPropsMutable, setMapPropsMutable] = useState(initialMapPropsMutable);
   const [mapToggle, setMapToggle] = useState(true);
+  const [showSetInCurrentViewModal, setShowSetInCurrentViewModal] = useState(false);
+  const [defaultGeomType, setDefaultGeomType] = useState();
 
   const map = useRef(null);
   const camera = useRef(null);
@@ -135,33 +139,45 @@ const Map = React.forwardRef((props, ref) => {
     if (props.mapMode === MapModes.DRAW.POINT && mapPropsMutable.drawFeatures.length === 1) props.endDraw();
   }, [mapPropsMutable.drawFeatures]);
 
+  useEffect(() => {
+    if (defaultGeomType) createDefaultGeomContinued();
+  }, [defaultGeomType]);
+
   // Create a default geometry for a Spot that doesn't have geometry when 'Set in Current View' is clicked
   // then make it selected for immediate editing
   const createDefaultGeom = async () => {
     if (selectedSpot && selectedSpot.properties && map && map.current) {
-      const centerCoords = await map.current.getCenter();
-      if (centerCoords) {
-        let defaultFeature = turf.point(centerCoords);
-        if (selectedSpot.properties.trace || selectedSpot.properties.surface_feature) {
-          const centerArea = turf.buffer(defaultFeature, 0.25, {units: 'miles'});
-          defaultFeature = turf.bboxPolygon(turf.bbox(centerArea));
-          if (selectedSpot.properties.trace) {
-            const defaultFeatureCoords = turf.getCoords(defaultFeature);
-            defaultFeature = turf.lineString([defaultFeatureCoords[0][0], defaultFeatureCoords[0][2]]);
-          }
-        }
-        const selectedSpotCopy = {
-          ...selectedSpot,
-          geometry: defaultFeature.geometry,
-        };
-        dispatch(({type: spotReducers.ADD_SPOT, spot: selectedSpotCopy}));
+      if (selectedSpot.properties.trace) setDefaultGeomType('LineString');
+      else if (selectedSpot.properties.surface_feature) setDefaultGeomType('Polygon');
+      else setShowSetInCurrentViewModal(true);
 
-        // Set new geometry ready for editing
-        startEditing(selectedSpotCopy);
-      }
-      else console.warn('Error getting the center of the map');
     }
     else console.warn('Error creating a default geometry as there is no map or Selected Spot');
+  };
+
+  const createDefaultGeomContinued = async () => {
+    const centerCoords = await map.current.getCenter();
+    if (centerCoords) {
+      let defaultFeature = turf.point(centerCoords);
+      if (defaultGeomType === 'LineString' || defaultGeomType === 'Polygon') {
+        const centerArea = turf.buffer(defaultFeature, 0.25, {units: 'miles'});
+        defaultFeature = turf.bboxPolygon(turf.bbox(centerArea));
+        if (defaultGeomType === 'LineString') {
+          const defaultFeatureCoords = turf.getCoords(defaultFeature);
+          defaultFeature = turf.lineString([defaultFeatureCoords[0][0], defaultFeatureCoords[0][2]]);
+        }
+      }
+      const selectedSpotCopy = {
+        ...selectedSpot,
+        geometry: defaultFeature.geometry,
+      };
+      dispatch(({type: spotReducers.ADD_SPOT, spot: selectedSpotCopy}));
+
+      // Set new geometry ready for editing
+      startEditing(selectedSpotCopy);
+    }
+    else console.warn('Error getting the center of the map');
+    setDefaultGeomType();
   };
 
   const moveVertex = async () => {
@@ -1035,6 +1051,41 @@ const Map = React.forwardRef((props, ref) => {
     }
   };
 
+  // Modal to prompt the user to select a geometry if no geometry has been set
+  const renderSetInCurrentViewModal = () => {
+    const buttons = ['Point', 'LineString', 'Polygon'];
+
+    const updateDefaultGeomType = (geomType) => {
+      setShowSetInCurrentViewModal(false);
+      setDefaultGeomType(geomType);
+    };
+
+    return (
+      <Dialog
+        dialogTitle={<DialogTitle title='Select a Geometry Type'/>}
+        onDismiss={() => {
+
+        }}
+        visible={showSetInCurrentViewModal}
+        dialogStyle={{borderRadius: 30}}
+        dialogAnimation={new SlideAnimation({
+          slideFrom: 'top',
+        })}
+      >
+        <DialogContent>
+          {buttons.map(button =>
+            <Button
+              title={button}
+              type='outline'
+              onPress={() => updateDefaultGeomType(button)}
+              key={button}
+            />,
+          )}
+        </DialogContent>
+      </Dialog>
+    );
+  };
+
   // Zoom map to the extent of the mapped Spots
   const zoomToSpotsExtent = () => {
     const spots = [...mapProps.spotsSelected, ...mapProps.spotsNotSelected];
@@ -1066,6 +1117,7 @@ const Map = React.forwardRef((props, ref) => {
       {/* Switch identical layers to force basemap raster re-render based on mapToggle value*/}
       {mapProps.basemap && mapToggle && <MapLayer1  {...mapProps}/>}
       {mapProps.basemap && !mapToggle && <MapLayer2 {...mapProps}/>}
+      {renderSetInCurrentViewModal()}
     </View>
   );
 });
