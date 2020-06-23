@@ -183,19 +183,19 @@ const Home = (props) => {
         break;
       case 'measurement':
         dispatch({type: spotReducers.CLEAR_SELECTED_SPOTS});
-        if (modalVisible === Modals.SHORTCUT_MODALS.COMPASS) dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: null});
+        if (props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS) dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: null});
         else dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: Modals.SHORTCUT_MODALS.COMPASS});
         closeNotebookPanel();
         break;
       case 'sample':
         dispatch({type: spotReducers.CLEAR_SELECTED_SPOTS});
-        if (modalVisible === Modals.SHORTCUT_MODALS.SAMPLE) dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: null});
+        if (props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE) dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: null});
         else dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: Modals.SHORTCUT_MODALS.SAMPLE});
         closeNotebookPanel();
         break;
       case 'note':
         dispatch({type: spotReducers.CLEAR_SELECTED_SPOTS});
-        if (modalVisible === Modals.SHORTCUT_MODALS.NOTES) dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: null});
+        if (props.modalVisible === Modals.SHORTCUT_MODALS.NOTES) dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: null});
         else dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: Modals.SHORTCUT_MODALS.NOTES});
         closeNotebookPanel();
         break;
