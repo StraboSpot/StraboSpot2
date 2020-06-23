@@ -277,9 +277,9 @@ const useMaps = () => {
       try {
         if (spots.length === 1) {
           const centroid = turf.centroid(spotsCopy[0]);
-          const zoom = await map.getZoom();
+          //const zoom = await map.getZoom();
           camera.flyTo(turf.getCoord(centroid));
-          camera.zoomTo(zoom);
+          //camera.zoomTo(zoom);
         }
         else if (spots.length > 1) {
           const features = turf.featureCollection(spotsCopy);

@@ -39,7 +39,7 @@ const Map = React.forwardRef((props, ref) => {
     spotsEdited: [],
     spotsNotEdited: [],
     vertexToEdit: [],
-    newVertexIndex: [],
+    vertexIndex: [],
   };
 
   // Props that change that needed to pass to the map component
@@ -285,6 +285,11 @@ const Map = React.forwardRef((props, ref) => {
 
   // Mapbox: Handle map press
   const onMapPress = async (e) => {
+    props.clearVertexes();
+    setMapPropsMutable(m => ({
+      ...m,
+      editFeatureVertex: [],
+    }));
     console.log('props', props);
     console.log('mapProps', mapProps);
     console.log('Map press detected:', e);
@@ -415,7 +420,7 @@ const Map = React.forwardRef((props, ref) => {
     setEditingModeData(d => ({
       ...d,
       vertexToEdit: vertex,
-      newVertexIndex: undefined,
+      vertexIndex: undefined,
     }));
     console.log('Set vertex to edit:', vertex);
     setMapPropsMutable(m => ({
@@ -504,11 +509,11 @@ const Map = React.forwardRef((props, ref) => {
             newCoord = useMaps.convertCoordinateProjections(geoLatLngProjection, pixelProjection, newCoord);
           }
           if (turf.getType(spotEditingCopy) === 'LineString') {
-            if (!isEmpty(editingModeData.newVertexIndex)) {
-              spotEditingCopy.geometry.coordinates[editingModeData.newVertexIndex + 1] = newCoord;
+            if (!isEmpty(editingModeData.vertexIndex)) {
+              spotEditingCopy.geometry.coordinates[editingModeData.vertexIndex] = newCoord;
               setEditingModeData(d => ({
                 ...d,
-                newVertexIndex: undefined,
+                vertexIndex: undefined,
               }));
             }
             else {
@@ -521,17 +526,17 @@ const Map = React.forwardRef((props, ref) => {
             isModified = true;
           }
           else if (turf.getType(spotEditingCopy) === 'Polygon') {
-            if (!isEmpty(editingModeData.newVertexIndex)) {
-              spotEditingCopy.geometry.coordinates[0][editingModeData.newVertexIndex] = newCoord;
-              if (editingModeData.newVertexIndex === 0) {
+            if (!isEmpty(editingModeData.vertexIndex)) {
+              spotEditingCopy.geometry.coordinates[0][editingModeData.vertexIndex] = newCoord;
+              if (editingModeData.vertexIndex === 0) {
                 spotEditingCopy.geometry.coordinates[0][mapPropsMutable.drawFeatures.length] = newCoord;
               }
-              else if (editingModeData.newVertexIndex === mapPropsMutable.drawFeatures.length) {
+              else if (editingModeData.vertexIndex === mapPropsMutable.drawFeatures.length) {
                 spotEditingCopy.geometry.coordinates[0][0] = newCoord;
               }
               setEditingModeData(d => ({
                 ...d,
-                newVertexIndex: undefined,
+                vertexIndex: undefined,
               }));
               isModified = true;
             }
@@ -732,7 +737,7 @@ const Map = React.forwardRef((props, ref) => {
     clearSelectedVertexToEdit();
   };
 
-  const startEditing = (spotToEdit) => {
+  const startEditing = (spotToEdit, vertexToEdit) => {
     props.startEdit();
     clearEditing();
     const mappableSpots = useSpots.getMappableSpots();
@@ -745,6 +750,14 @@ const Map = React.forwardRef((props, ref) => {
     spotToEdit ? console.log('Set Spot to edit:', spotToEdit) : console.log('No Spot selected to edit.');
     setDisplayedSpotsWhileEditing(spotToEdit, [], mappableSpots);
     setEditFeatures(spotToEdit);
+    if (spotToEdit.geometry.type !== 'Point'){
+      // use VertexToEdit here, but DrawFeatures is not returning the appropriate one.
+      setSelectedVertexToEdit(turf.explode(spotToEdit).features[0]);
+      setEditingModeData(d => ({
+        ...d,
+        vertexIndex : 0,
+      }));
+    }
     if (turf.getType(spotToEdit) === 'Point') setSelectedVertexToEdit(spotToEdit);
   };
 
@@ -754,7 +767,10 @@ const Map = React.forwardRef((props, ref) => {
     const {screenPointX, screenPointY} = e.properties;
     const spotToEdit = await getSpotAtPress(screenPointX, screenPointY);
     const mappableSpots = useSpots.getMappableSpots();
-    if (props.mapMode === MapModes.VIEW && !isEmpty(mappableSpots)) startEditing(spotToEdit);
+    if (props.mapMode === MapModes.VIEW && !isEmpty(mappableSpots)) {
+      const closestVertexToSelect = await getDrawFeatureAtPress(screenPointX, screenPointY);
+      startEditing(spotToEdit,closestVertexToSelect);
+    }
     else if (props.mapMode === MapModes.EDIT) {
       if (isEmpty(spotToEdit)) console.log('Already in editing mode and no Spot found where pressed. No action taken.');
       else if (!isEmpty(editingModeData.spotEditing)) {
@@ -779,7 +795,7 @@ const Map = React.forwardRef((props, ref) => {
                 }
                 setEditingModeData(d => ({
                   ...d,
-                  newVertexIndex: vertexAdded.properties.index,
+                  vertexIndex: vertexAdded.properties.index + 1,
                 }));
               }
               else if (turf.getType(spotEditingCopy) === 'Polygon') {
@@ -982,7 +998,7 @@ const Map = React.forwardRef((props, ref) => {
         setSelectedSpotToEdit(eachFeatureGeom);
         setEditingModeData(d => ({
           ...d,
-          newVertexIndex: i,
+          vertexIndex: i,
         }));
       }
     }
