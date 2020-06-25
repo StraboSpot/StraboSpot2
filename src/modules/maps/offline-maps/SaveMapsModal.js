@@ -167,9 +167,27 @@ const SaveMapsModal = (props) => {
   };
 
   const downloadZip = async (zipUID) => {
+    const downloadProgress = (res) => {
+      const percentage = Math.floor((res.totalBytesSent/res.totalBytesExpectedToSend) * 100);
+      console.log('UPLOAD IS ' + percentage + '% DONE!');
+    };
+
     try {
       const downloadZipURL = tilehost + '/ziptemp/' + zipUID + '/' + zipUID + '.zip';
       const layerSaveId = currentBasemap.id;
+      const downloadOptions = {
+        fromUrl: downloadZipURL,
+        toFile: tileZipsDirectory + '/' + zipUID + '.zip',
+        begin: (response) => {
+          const jobId = response.jobId;
+          console.log('UPLOAD HAS BEGUN! JobId: ' + jobId);
+        },
+        progress: (res) => {
+          console.log(((res.bytesWritten/res.contentLength) * 100).toFixed(2));
+          setPercentDone(res.bytesWritten/res.contentLength);
+        },
+      };
+
       //first try to delete from temp directories
       let fileExists = await RNFS.exists(tileZipsDirectory + '/' + layerSaveId + '.zip');
       console.log('file Exists:', fileExists ? 'YES' : 'NO');
@@ -177,23 +195,21 @@ const SaveMapsModal = (props) => {
         //delete
         await RNFS.unlink(tileZipsDirectory + '/' + zipUID + '.zip');
       }
-
+      else await RNFS.mkdir(tileZipsDirectory);
       let folderExists = await RNFS.exists(tileTempDirectory + '/' + zipUID);
       console.log('Folder Exists:', folderExists ? 'YES' : 'NO');
       if (folderExists) {
         //delete
         await RNFS.unlink(tileTempDirectory + '/' + zipUID);
       }
+      else await RNFS.mkdir(tileTempDirectory)
 
-      let res = await RNFetchBlob
-        .config({path: tileZipsDirectory + '/' + zipUID + '.zip'})
-        .fetch('GET', downloadZipURL, {})
-        .progress((received, total) => {
-          console.log('progress', received / total);
-          setPercentDone(received / total);
+      await RNFS.downloadFile(downloadOptions).promise.then(res => {
+        console.log(res);
+      })
+        .catch(e => {
+          console.log('SERVER ERROR', e);
         });
-      console.log('Zip file saved to', res.path());
-      setPercentDone(1);
     }
     catch (err) {
       useMaps.handleError('Something went wrong in Download Zip...', err);
