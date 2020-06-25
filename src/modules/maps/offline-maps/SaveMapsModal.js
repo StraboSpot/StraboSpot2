@@ -467,7 +467,7 @@ const SaveMapsModal = (props) => {
               {showLoadingMenu &&
               <View style={{height: 40, justifyContent: 'center'}}>
                 <Text style={{fontSize: 15}}>{statusMessage}</Text>
-                {!statusMessage.includes('Installing tiles...') &&
+                {statusMessage.includes('Installing tiles...') && !statusMessage.includes('Downloading Tiles...') &&
                 <View>
                   <Text style={{fontSize: 15}}>Installing: {tilesToInstall}</Text>
                   <Text style={{fontSize: 15}}>Already Installed: {installedTiles}</Text>
