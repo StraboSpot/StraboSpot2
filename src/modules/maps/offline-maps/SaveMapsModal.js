@@ -9,14 +9,15 @@ import ProgressBar from 'react-native-progress/Bar';
 import RNFetchBlob from 'rn-fetch-blob';
 import * as loading from 'react-native-indicators';
 import useMapsHook from '../useMaps';
+import {toNumberFixedValue} from '../../../shared/Helpers';
+
+const RNFS = require('react-native-fs');
 
 // Constants
 import {mapReducers} from '../maps.constants';
 
 // Styles
 import * as themes from '../../../shared/styles.constants';
-
-const RNFS = require('react-native-fs');
 
 const SaveMapsModal = (props) => {
   // console.log(props);
@@ -73,7 +74,7 @@ const SaveMapsModal = (props) => {
         let currentZoom = Math.round(zoom);
         setDownloadZoom(Math.round(zoom));
 
-        const numZoomLevels = maxZoom ? Math.min(maxZoom - currentZoom + 1, 5) : 5;
+        const numZoomLevels = maxZoom ? Math.min(maxZoom - currentZoom + 1, 6) : 5;
 
         for (let i = 0; i < numZoomLevels; i++) {
           initialZoom.push(currentZoom + i);
@@ -124,8 +125,8 @@ const SaveMapsModal = (props) => {
     }
     tryCount++;
     console.log(tryCount);
-    if (tryCount <= 200 && progressStatus !== 'Zip File Ready.' && zipError === '') {
-      // await delay(300);
+    if (progressStatus !== 'Zip File Ready.' && zipError === '') {
+      // await delay(500);
       await checkStatus(zipUID);
     }
     else {
@@ -143,7 +144,7 @@ const SaveMapsModal = (props) => {
     // setShowLoadingBar(false);
     setPercentDone(0);
     progressStatus = 'Installing Tiles in StraboSpot...';
-    setStatusMessage('Installing tiles...');
+    setStatusMessage('Preparing to install tiles...');
     const layerSaveId = currentBasemap.layerSaveId;
 
     const sourcePath = tileZipsDirectory + '/' + zipUID + '.zip';
@@ -158,7 +159,7 @@ const SaveMapsModal = (props) => {
     }
     catch (err) {
       console.log('Unzip Error:', err);
-      useMaps.handleError('Something went wrong...', err);
+      useMaps.handleError('Something went wrong in UnZip...', err);
       return Promise.reject();
     }
 
@@ -195,7 +196,7 @@ const SaveMapsModal = (props) => {
       setPercentDone(1);
     }
     catch (err) {
-      useMaps.handleError('Something went wrong...', err);
+      useMaps.handleError('Something went wrong in Download Zip...', err);
       console.log('Download Tile Zip Error :', err);
       return Promise.reject();
     }
@@ -262,6 +263,7 @@ const SaveMapsModal = (props) => {
   };
 
   const moveFiles = async (zipUID) => {
+    setStatusMessage('Installing tiles...');
     let result, mapName;
     let folderExists = await RNFS.exists(tileCacheDirectory + '/' + id);
     if (!folderExists) {
@@ -432,18 +434,24 @@ const SaveMapsModal = (props) => {
               </Picker>
               }
               {showLoadingBar &&
-              <View style={{height: 40, justifyContent: 'center'}}>
+              <View style={{height: 40, justifyContent: 'center', flexDirection: 'row'}}>
                 {isLoadingWave ?
                   <View style={{paddingBottom: 35}}>
                     <loading.DotIndicator animating={isLoadingWave} count={6} size={10}/>
                   </View> :
-                  <ProgressBar progress={percentDone} width={200}/>}
+                  <View>
+                    <ProgressBar progress={percentDone} width={200}/>
+                    <Text style={{textAlign: 'right', paddingTop: 5}}>
+                      {toNumberFixedValue(percentDone, 1)}
+                    </Text>
+                  </View>
+                  }
               </View>
               }
               {showLoadingMenu &&
               <View style={{height: 40, justifyContent: 'center'}}>
                 <Text style={{fontSize: 15}}>{statusMessage}</Text>
-                {!statusMessage.includes('Starting Download...') &&
+                {!statusMessage.includes('Installing tiles...') &&
                 <View>
                   <Text style={{fontSize: 15}}>Installing: {tilesToInstall}</Text>
                   <Text style={{fontSize: 15}}>Already Installed: {installedTiles}</Text>
