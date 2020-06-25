@@ -25,7 +25,7 @@ const commonStyles = StyleSheet.create({
     backgroundColor: 'red',
   },
   dialogWarning: {
-    backgroundColor: themes.MEDIUMGREY,
+    backgroundColor: 'red',
   },
   dialogTitleSuccess: {
     backgroundColor: 'green',
