@@ -27,7 +27,7 @@ const SortingButtons = (props) => {
     <React.Fragment>
       <SharedUI.ButtonGroup
         selectedIndex={props.selectedButtonIndex}
-        buttons={['     Reverse\nChronological', 'Map Extent', 'Recent\n Views']}
+        buttons={['Reverse\nChronological', 'Map Extent', 'Recent\n Views']}
         containerStyle={{height: 50}}
         buttonStyle={{padding: 5}}
         textStyle={{fontSize: 12}}

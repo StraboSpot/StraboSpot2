@@ -109,7 +109,7 @@ const MainMenuPanel = props => {
       break;
     case SettingsMenuItems.ATTRIBUTES.SPOTS_LIST:
       page =
-        <View style={styles.listContainer}>
+        <View style={styles.settingsPanelContainer}>
           <SpotsList
             getSpotData={(spotId) => getSpotFromId(spotId)}
           />
@@ -117,7 +117,7 @@ const MainMenuPanel = props => {
       break;
     case SettingsMenuItems.ATTRIBUTES.IMAGE_GALLERY:
       page =
-        <View style={styles.listContainer}>
+        <View style={styles.settingsPanelContainer}>
           <ImageGallery
             getSpotData={(spotId) => getSpotFromId(spotId)}
           />
@@ -125,14 +125,14 @@ const MainMenuPanel = props => {
       break;
     case SettingsMenuItems.ATTRIBUTES.SAMPLES:
       page =
-        <View style={styles.listContainer}>
+        <View style={styles.settingsPanelContainer}>
           <SamplesList
             getSpotData={(spotId, page) => getSpotFromId(spotId, page)}
           />
         </View>;
       break;
     case SettingsMenuItems.PROJECT.SWITCH_PROJECT:
-      page = <View style={styles.listContainer}>
+      page = <View style={styles.settingsPanelContainer}>
         <ProjectList/>
       </View>;
       break;

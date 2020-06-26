@@ -327,7 +327,7 @@ const ProjectDescription = (props) => {
 
   return (
     <React.Fragment>
-      <View style={styles.settingsPanelContainer}>
+      <View >
         <View style={styles.sidePanelHeaderContainer}>
           <View style={{flex: 0}}>
             {renderBackButton()}
