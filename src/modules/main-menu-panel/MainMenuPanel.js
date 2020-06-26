@@ -16,6 +16,7 @@ import ManageOfflineMapsMenu from '../maps/offline-maps/ManageOfflineMaps';
 import MyStraboSpot from '../project/MyStraboSpot';
 import ProjectList from '../project/ProjectList';
 import SamplesList from '../samples/SamplesList';
+import Tags from '../tags/Tags';
 import MainMenuPanelHeader from './MainMenuPanelHeader';
 import MainMenuPanelList from './MainMenuPanelList';
 import ShortcutMenu from './shortcuts-menu/ShortcutsMenu';
@@ -130,6 +131,12 @@ const MainMenuPanel = props => {
             getSpotData={(spotId, page) => getSpotFromId(spotId, page)}
           />
         </View>;
+      break;
+    case SettingsMenuItems.ATTRIBUTES.TAGS:
+      page =
+        <View style={styles.settingsPanelContainer}>
+          <Tags/>
+        </View>
       break;
     case SettingsMenuItems.PROJECT.SWITCH_PROJECT:
       page = <View style={styles.settingsPanelContainer}>
