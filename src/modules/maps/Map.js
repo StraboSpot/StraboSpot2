@@ -34,6 +34,7 @@ const Map = React.forwardRef((props, ref) => {
   const currentBasemap = useSelector(state => state.map.currentBasemap);
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
+  const recentSpots = useSelector(state => state.spot.recentViews);
 
   // Data needing to be tracked when in editing mode
   const initialEditingModeData = {
@@ -307,6 +308,8 @@ const Map = React.forwardRef((props, ref) => {
   // We explode the features and identify the closest vertex from the screen point (x,y) on the spot
   // returns an array of vertex and its index.
   const identifyClosestVertexOnSpotPress = async (spotFound, screenPointX, screenPointY) => {
+    let editedSpot = editingModeData.spotsEdited.find(spot => spot.properties.id === spotFound.properties.id);
+    spotFound = editedSpot ? editedSpot : spotFound;
     let spotFoundCopy = JSON.parse(JSON.stringify(spotFound));
     if (currentImageBasemap){
       spotFoundCopy = useMaps.convertImagePixelsToLatLong(spotFoundCopy);
@@ -334,7 +337,10 @@ const Map = React.forwardRef((props, ref) => {
         useMaps.setSelectedSpot(spotFound);
         props.openNotebookOnSelectedSpot();
       }
-      else clearSelectedSpots();
+      else {
+        clearSelectedSpots();
+        if (recentSpots[0]) useMaps.setSelectedSpot(useSpots.getSpotById(recentSpots[0]));
+      }
     }
     // Draw a feature
     else if (props.mapMode === MapModes.DRAW.POINT || props.mapMode === MapModes.DRAW.LINE
