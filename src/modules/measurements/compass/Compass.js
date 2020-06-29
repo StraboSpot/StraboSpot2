@@ -18,6 +18,7 @@ import IconButton from '../../../shared/ui/IconButton';
 import styles from './compass.styles';
 import uiStyles from '../../../shared/ui/ui.styles';
 import * as themes from '../../../shared/styles.constants';
+import commonStyles from '../../../shared/common.styles';
 
 const degree_update_rate = 2; // Number of degrees changed before the callback is triggered
 
@@ -476,8 +477,8 @@ class Compass extends Component {
     }
 
     if (isEmpty(this.props.spot)) {
-      return <View style={[styles.samplesContainer, styles.noSpotContent]}>
-        <Text style={{fontSize: 30}}>No Spot Selected</Text>
+      return <View style={[styles.samplesContainer, commonStyles.noContentContainer]}>
+        <Text style={commonStyles.noContentText}>No Spot Selected</Text>
       </View>;
     }
     return (
