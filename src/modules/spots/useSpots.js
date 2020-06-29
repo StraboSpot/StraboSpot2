@@ -65,7 +65,7 @@ const useSpots = (props) => {
     newSpot.properties.modified_timestamp = Date.now();
     newSpot.properties.viewed_timestamp = Date.now();
     newSpot.properties.name = randomName;
-    if (currentImageBasemap && newSpot.geometry.type === 'Point') {
+    if (currentImageBasemap && newSpot.geometry && newSpot.geometry.type === 'Point') { //newSpot geometry is unavailable when spot is copied.
       const rootSpot = findRootSpot(currentImageBasemap.id);
       if (rootSpot) {
         newSpot.properties.lng = rootSpot.geometry.coordinates[0];
