@@ -16,8 +16,6 @@ const samplesStyle = StyleSheet.create({
   },
   samplesContainer: {
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
-    // borderBottomRightRadius: 20,
-    // borderBottomLeftRadius: 20,
   },
   input: {
     flex: 30,
@@ -34,7 +32,6 @@ const samplesStyle = StyleSheet.create({
   },
   listLabel: {
     marginLeft: 10,
-    // paddingBottom: 10,
   },
   listText: {
     marginLeft: 5,
@@ -42,17 +39,10 @@ const samplesStyle = StyleSheet.create({
   },
   notebookListContainer: {
     flex: 1,
-    // backgroundColor: 'white',
     borderBottomWidth: 0.5,
     borderColor: themes.LIST_BORDER_COLOR,
     marginBottom: 3,
     padding: 5,
-  },
-  noSpotContent: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: 700,
   },
   headingText: {
     fontSize: themes.PRIMARY_TEXT_SIZE - 3,
@@ -89,7 +79,6 @@ const samplesStyle = StyleSheet.create({
     position: 'absolute',
     left: 70,
     bottom: 70,
-    // zIndex: 1
   },
   sampleContentContainer: {
     flex: 1,

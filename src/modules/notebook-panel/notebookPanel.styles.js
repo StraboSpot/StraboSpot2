@@ -37,12 +37,6 @@ const notebookStyles = StyleSheet.create({
     borderTopColor: themes.DARKGREY,
     padding: 10,
   },
-  noSpotContent: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,
-  },
   noSpotContentHeaderText: {
     fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,
     paddingBottom: 10,

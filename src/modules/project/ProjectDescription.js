@@ -24,6 +24,7 @@ import {truncateText} from '../../shared/Helpers';
 // Styles
 import styles from './project.styles';
 import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
+import SidePanelHeader from '../main-menu-panel/sidePanel/SidePanelHeader';
 
 const ProjectDescription = (props) => {
   const getInitialFields = () => {
@@ -115,9 +116,8 @@ const ProjectDescription = (props) => {
         }
         title={mainMenuPage === SettingsMenuItems.MANAGE.MY_STRABOSPOT ? 'My StraboSpot' : 'Active Project'}
         type={'clear'}
-        containerStyle={{flex: 0, padding: 4}}
+        // containerStyle={{flex: 0, padding: 4}}
         titleStyle={styles.buttonText}
-        // onPress={() => goBack()}
         onPress={() => dispatch({type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE, bool: false})}
       />
     );
@@ -327,28 +327,23 @@ const ProjectDescription = (props) => {
 
   return (
     <React.Fragment>
-      <View >
-        <View style={styles.sidePanelHeaderContainer}>
-          <View style={{flex: 0}}>
-            {renderBackButton()}
-          </View>
-          <View style={styles.headerTextContainer}>
-            <Text style={styles.headerText}>Project Description</Text>
-          </View>
-        </View>
-        {renderSaveAndCloseButtons()}
-        <ScrollView contentInset={{bottom: 125}}>
-          <Divider sectionText={'Basic Info'}/>
-          {renderBasicInfo()}
-          <Divider sectionText={'notes'}/>
-          {renderNotes()}
-          <Divider sectionText={'technical details'}/>
-          {renderTechnicalDetails()}
-          <Divider sectionText={'general details'}/>
-          {renderGeneralDetails()}
-        </ScrollView>
-        {renderEditingModal()}
-      </View>
+      <SidePanelHeader
+        title={'Active Project'}
+        headerTitle={'Project Description'}
+        backButton={() => dispatch({type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE, bool: false})}
+      />
+      {renderSaveAndCloseButtons()}
+      <ScrollView contentInset={{bottom: 125}}>
+        <Divider sectionText={'Basic Info'}/>
+        {renderBasicInfo()}
+        <Divider sectionText={'notes'}/>
+        {renderNotes()}
+        <Divider sectionText={'technical details'}/>
+        {renderTechnicalDetails()}
+        <Divider sectionText={'general details'}/>
+        {renderGeneralDetails()}
+      </ScrollView>
+      {renderEditingModal()}
     </React.Fragment>
   );
 };

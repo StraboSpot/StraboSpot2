@@ -17,7 +17,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import Divider from '../../main-menu-panel/MainMenuPanelDivider';
 import {customMapTypes} from '../maps.constants';
 import {settingPanelReducers} from '../../main-menu-panel/mainMenuPanel.constants';
-import SidePanelHeader from '../../main-menu-panel/SidePanelHeader';
+import SidePanelHeader from '../../main-menu-panel/sidePanel/SidePanelHeader';
 import {mapReducers} from '../maps.constants';
 import Slider from '../../../shared/ui/Slider';
 import useMapHook from '../useMaps';
@@ -284,22 +284,21 @@ const AddCustomMaps = (props) => {
     );
   };
 
-  const renderBackButton = () => {
+  const renderSidePanelHeader = () => {
     return (
       <SidePanelHeader
-        title={'Custom Maps'}
-        onPress={() => {
+        backButton={() => {
           dispatch({type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE, bool: false});
           dispatch({type: mapReducers.SELECTED_CUSTOM_MAP_TO_EDIT, customMap: {}});
         }}
+        title={'Custom Maps'}
+        headerTitle={'Add Map'}
       />
     );
   };
   return (
     <Animated.View style={[{flex: 1}, {transform: [{translateY: textInputAnimate}]}]}>
-      <View style={sidePanelStyles.sidePanelHeaderContainer}>
-        {renderBackButton()}
-      </View>
+      {renderSidePanelHeader()}
       <View style={[sidePanelStyles.sectionContainer, {flex: 2}]}>
         <Divider sectionText={'Custom Map Title'}/>
         <View style={sidePanelStyles.textInputNameContainer}>

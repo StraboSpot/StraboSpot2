@@ -19,6 +19,8 @@ import {FlingGestureHandler, Directions, State} from 'react-native-gesture-handl
 import notebookStyles from './notebookPanel.styles';
 import * as themes from '../../shared/styles.constants';
 import AllSpotsView from './AllSpots';
+import commonStyles from '../../shared/common.styles';
+import Spacer from '../../shared/ui/Spacer';
 
 const NotebookPanel = props => {
 
@@ -108,10 +110,11 @@ const NotebookPanel = props => {
   }
   else {
     return (
-      <View style={[notebookStyles.panel, notebookStyles.noSpotContent]}>
-        <Text style={[notebookStyles.noSpotContentHeaderText]}>No Spot Selected</Text>
-        <Text style={notebookStyles.noSpotContentText}>Please select a spot.</Text>
-        <Text style={notebookStyles.noSpotContentText}>To close swipe RIGHT</Text>
+      <View style={[notebookStyles.panel, commonStyles.noContentContainer]}>
+        <Text style={commonStyles.noContentText}>No Spot Selected!</Text>
+        <Spacer/>
+        <Text style={commonStyles.noContentText}>Please select a spot.</Text>
+        <Text style={commonStyles.noContentText}>To close swipe RIGHT</Text>
       </View>
     );
   }

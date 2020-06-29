@@ -48,6 +48,24 @@ const commonStyles = StyleSheet.create({
   dialogButtonText: {
     color: 'black',
   },
+  dialogConfirmText: {
+    textAlign: 'center',
+    paddingTop: 15,
+  },
+  noContentContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    // fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,
+  },
+  noContentText: {
+    fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,
+    fontWeight: 'bold',
+  },
+  panelContainerStyles: {
+    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
+    flex: 1,
+  },
   // List Styles
   rowContainer: {
     flex: 1,
@@ -76,7 +94,7 @@ const commonStyles = StyleSheet.create({
   },
   listItem: {
     padding: 10,
-    borderBottomWidth: 0.5,
+    borderBottomWidth: 1,
     borderColor: themes.LIST_BORDER_COLOR,
   },
   listItemTitle: {
@@ -91,8 +109,9 @@ const commonStyles = StyleSheet.create({
     height: 50,
     borderColor: themes.MEDIUMGREY,
     borderWidth: 1,
-    marginLeft: 5,
-    marginRight: 5,
+    borderRadius: 10,
+    // marginLeft: 5,
+    // marginRight: 5,
   },
   standardButtonText: {
     color: themes.PRIMARY_ACCENT_COLOR,
