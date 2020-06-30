@@ -2,9 +2,9 @@ import React from 'react';
 import {Text, View} from 'react-native';
 
 // Styles
-import sidePanelStyles from './sidePanel.styles';
+import sidePanelStyles from '../sidePanel.styles';
 import {Button, Icon} from 'react-native-elements';
-import styles from '../project/project.styles';
+import styles from '../../project/project.styles';
 
 const SidePanelHeader = (props) => {
   return (

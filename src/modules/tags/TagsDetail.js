@@ -5,7 +5,7 @@ import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 import {useDispatch, useSelector} from 'react-redux';
 import Divider from '../main-menu-panel/MainMenuPanelDivider';
 import {toTitleCase} from '../../shared/Helpers';
-import SidePanelHeader from '../main-menu-panel/SidePanelHeader';
+import SidePanelHeader from '../main-menu-panel/sidePanel/SidePanelHeader';
 import {getDimensions, isEmpty} from '../../shared/Helpers';
 
 // Styles
