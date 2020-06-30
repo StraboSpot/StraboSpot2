@@ -4,7 +4,7 @@ import {Alert} from 'react-native';
 import * as forms from '../../assets/forms/forms.index';
 
 // Utility
-import {isEmpty} from '../../shared/Helpers';
+import {isEmpty, toTitleCase} from '../../shared/Helpers';
 
 // Constants
 import {labelDictionary} from './form.constants';
@@ -27,7 +27,7 @@ const useForm = () => {
 
   // Given a name, get the label for it
   const getLabel = (key) => {
-    return labelDictionary[key] || key.replace(/_/g, ' ');
+    return labelDictionary[key] || toTitleCase(key.replace(/_/g, ' '));
   };
 
   // Return the survey object given the form category and name
@@ -67,6 +67,15 @@ const useForm = () => {
 
   const showErrors = (form) => {
     const errors = form.current.errors;
+    let errorMessages = [];
+    for (const [name, error] of Object.entries(errors)) {
+      errorMessages.push(getLabel(name) + ': ' + error);
+    }
+    Alert.alert('Please Fix the Following Errors', errorMessages.join('\n'));
+  };
+
+  const showErrorsTwoForms = (form1, form2) => {
+    let errors = {...form1.current.errors, ...form2.current.errors};
     let errorMessages = [];
     for (const [name, error] of Object.entries(errors)) {
       errorMessages.push(getLabel(name) + ': ' + error);
@@ -138,6 +147,7 @@ const useForm = () => {
     hasErrors: hasErrors,
     isRelevant: isRelevant,
     showErrors: showErrors,
+    showErrorsTwoForms: showErrorsTwoForms,
     validateForm: validateForm,
   }];
 };

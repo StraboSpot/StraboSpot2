@@ -1,0 +1,35 @@
+[
+  {
+    "type": "start",
+    "name": "start"
+  },
+  {
+    "type": "end",
+    "name": "end"
+  },
+  {
+    "type": "decimal",
+    "name": "gps_accuracy",
+    "label": "GPS Accuracy (m)",
+    "hint": "Accuracy level of the latitude and longitude coordinates in meters.",
+    "required": false
+  },
+  {
+    "type": "decimal",
+    "name": "altitude",
+    "label": "Altitude (m)",
+    "hint": "Height of the position in meters above the ellipsoid of the earth.",
+    "required": false
+  },
+  {
+    "type": "decimal",
+    "name": "spot_radius",
+    "label": "Radius of Spot (m)",
+    "required": false
+  },
+  {
+    "type": "calculate",
+    "name": "__version__",
+    "calculation": "'vnfNAusCEB9vQp6jiQ33wL'"
+  }
+]

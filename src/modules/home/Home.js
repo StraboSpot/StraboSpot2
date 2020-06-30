@@ -416,6 +416,9 @@ const Home = (props) => {
             toastRef.current.show(`${imagesSavedLength} photos saved!`);
         });
         break;
+      case 'showGeographyInfo':
+        props.setNotebookPageVisible(NotebookPages.GEOGRAPHY);
+        break;
       case 'setToCurrentLocation':
         const currentLocation = await useMaps.getCurrentLocation();
         let editedSpot = JSON.parse(JSON.stringify(selectedSpot));

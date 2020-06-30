@@ -1,40 +1,37 @@
 import React from 'react';
 import {Animated, Text, View} from 'react-native';
 import {connect} from 'react-redux';
-import NotebookHeader from './notebook-header/NotebookHeader';
-import NotebookFooter from './notebook-footer/NotebookFooter';
-import Overview from './Overview';
-import * as SharedUI from '../../shared/ui/index';
-import MeasurementsPage from '../measurements/Measurements';
-import MeasurementDetailPage from '../measurements/MeasurementDetail';
-import NotesPage from '../notes/Notes';
-import SamplesPage from '../samples/SamplesNotebook';
-import {notebookReducers, NotebookPages} from './notebook.constants';
-import {homeReducers, Modals} from '../home/home.constants';
-import {isEmpty} from '../../shared/Helpers';
 import {FlingGestureHandler, Directions, State} from 'react-native-gesture-handler';
-// import {openAllSpotsPanelFromMenu, closeAllSpotsPanelFromMenu, animatePanels} from '../../shared/Helpers';
 
-// Styles
-import notebookStyles from './notebookPanel.styles';
-import * as themes from '../../shared/styles.constants';
-import AllSpotsView from './AllSpots';
-import commonStyles from '../../shared/common.styles';
+// Components
+import Geography from '../geography/Geography';
+import MeasurementDetailPage from '../measurements/MeasurementDetail';
+import MeasurementsPage from '../measurements/Measurements';
+import NotebookFooter from './notebook-footer/NotebookFooter';
+import NotebookHeader from './notebook-header/NotebookHeader';
+import NotesPage from '../notes/Notes';
+import Overview from './Overview';
+import SamplesPage from '../samples/SamplesNotebook';
 import Spacer from '../../shared/ui/Spacer';
 
+// Constants
+import {homeReducers, Modals} from '../home/home.constants';
+import {notebookReducers, NotebookPages} from './notebook.constants';
+
+// Utilities
+import {isEmpty} from '../../shared/Helpers';
+
+// Styles
+import commonStyles from '../../shared/common.styles';
+import notebookStyles from './notebookPanel.styles';
+
 const NotebookPanel = props => {
-
-  // const [animation, setAnimation] = useState(new Animated.Value(250));
-
-
   const setNotebookPageVisible = page => {
     const pageVisible = props.setNotebookPageVisible(page);
     if (pageVisible.page === NotebookPages.MEASUREMENT || pageVisible === NotebookPages.MEASUREMENTDETAIL) {
       props.setModalVisible(Modals.NOTEBOOK_MODALS.COMPASS);
     }
-    else if (pageVisible.page === NotebookPages.SAMPLE) {
-      props.setModalVisible(Modals.NOTEBOOK_MODALS.SAMPLE);
-    }
+    else if (pageVisible.page === NotebookPages.SAMPLE) props.setModalVisible(Modals.NOTEBOOK_MODALS.SAMPLE);
     else props.setModalVisible(null);
   };
 
@@ -52,21 +49,10 @@ const NotebookPanel = props => {
     }
   };
 
-  // const animateAllSpotsMenu = {
-  //   transform: [
-  //     {translateX: animation}
-  //   ],
-  // };
-
   if (!isEmpty(props.spot)) {
     console.log('Selected Spot:', props.spot);
 
-    // const allSpotsPanel = <View style={notebookStyles.allSpotsPanel}>
-    //   <AllSpotsView/>
-    // </View>;
-
     return (
-
       <FlingGestureHandler
         direction={Directions.RIGHT}
         numberOfPointers={2}
@@ -91,6 +77,7 @@ const NotebookPanel = props => {
               style={notebookStyles.centerContainer}>
               {props.notebookPageVisible === NotebookPages.OVERVIEW ||
               props.notebookPageVisible === undefined ? <Overview/> : null}
+              {props.notebookPageVisible === NotebookPages.GEOGRAPHY ? <Geography/> : null}
               {props.notebookPageVisible === NotebookPages.MEASUREMENT ? <MeasurementsPage/> : null}
               {props.notebookPageVisible === NotebookPages.MEASUREMENTDETAIL ? <MeasurementDetailPage/> : null}
               {props.notebookPageVisible === NotebookPages.NOTE ? <NotesPage/> : null}
@@ -102,7 +89,6 @@ const NotebookPanel = props => {
                 onPress={(camera) => props.onPress(camera)}
               />
             </View>
-            {/*{props.isAllSpotsPanelVisible ? allSpotsPanel : null}*/}
           </Animated.View>
         </FlingGestureHandler>
       </FlingGestureHandler>

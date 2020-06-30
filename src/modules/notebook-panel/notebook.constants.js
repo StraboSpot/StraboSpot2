@@ -1,6 +1,7 @@
 export const NotebookPages = {
   OVERVIEW: 'Overview',
   BASIC: 'Basic',
+  GEOGRAPHY: 'Geography',
   TAG: 'Tag',
   MEASUREMENT: 'Measurements',
   MEASUREMENTDETAIL: 'Measurement Detail',

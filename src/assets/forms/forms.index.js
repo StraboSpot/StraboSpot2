@@ -1,9 +1,10 @@
 // General Forms
-import imagePropertiesSurvey from './images/image-properties-survey';
-import imagePropertiesChoices from './images/image-properties-choices';
-import projectDescriptionSurvey from './project/project-description-survey';
-import traceSurvey from './trace/trace-survey';
-import traceChoices from './trace/trace-choices';
+import geographySurvey from './geography/geography-survey.json';
+import imagePropertiesSurvey from './images/image-properties-survey.json';
+import imagePropertiesChoices from './images/image-properties-choices.json';
+import projectDescriptionSurvey from './project/project-description-survey.json';
+import traceSurvey from './trace/trace-survey.json';
+import traceChoices from './trace/trace-choices.json';
 import surfaceFeatureSurvey from './surface-feature/surface-feature-survey.json';
 import surfaceFeatureChoices from './surface-feature/surface-feature-choices.json';
 
@@ -22,6 +23,9 @@ const getMeasurementSurveyForBulkInput = (form) => {
 
 const forms = {
   general: {
+    geography: {
+      survey: geographySurvey,
+    },
     images: {
       survey: imagePropertiesSurvey,
       choices: imagePropertiesChoices,

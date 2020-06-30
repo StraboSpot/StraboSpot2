@@ -58,7 +58,7 @@ TextInputField.propTypes = {
   }).isRequired,
   form: PropTypes.shape({
     errors: PropTypes.object.isRequired,
-    touched: PropTypes.object.isRequired,
+    //touched: PropTypes.object.isRequired,
   }).isRequired,
 };
 

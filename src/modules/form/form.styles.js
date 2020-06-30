@@ -13,10 +13,6 @@ const styles = StyleSheet.create({
     color: themes.PRIMARY_ITEM_TEXT_COLOR,
     fontSize: themes.PRIMARY_TEXT_SIZE,
   },
-  fieldHeaderLabel: {
-    fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,
-    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
-  },
   fieldValue: {
     paddingLeft: 10,
     paddingTop: 0,

@@ -10,13 +10,13 @@ import IconButton from '../../../shared/ui/IconButton';
 import headerStyles from './notebookHeader.styles';
 
 // Utilities
-import {toTitleCase} from '../../../shared/Helpers';
+import {isEmpty, toTitleCase} from '../../../shared/Helpers';
 
 // Constants
 import {labelDictionary} from '../../form/form.constants';
 import {spotReducers} from '../../spots/spot.constants';
 
-//hooks
+// Hooks
 import useSpotsHook from '../../spots/useSpots';
 
 const NotebookHeader = props => {
@@ -31,29 +31,24 @@ const NotebookHeader = props => {
       if (spot.geometry.type === 'Point') {
         let lng = spot.geometry.coordinates[0];
         let lat = spot.geometry.coordinates[1];
-        let latitude = lat.toFixed(6);
-        let longitude = lng.toFixed(6);
         if (spot.properties.image_basemap) {
-          let pixelDetails = longitude + ' Xpx, ' + latitude + ' Ypx';
-          let rootSpotDetails;
-          if (!spot.properties.lat) {
+          let pixelDetails = lng.toFixed(6) + ' Xpx, ' + lat.toFixed(6) + ' Ypx';
+          if (isEmpty(spot.properties.lat) || isEmpty(spot.properties.lng)) {
             const rootSpot = useSpots.findRootSpot(spot.properties.image_basemap);
             if (rootSpot && rootSpot.geometry) {
               lng = rootSpot.geometry.coordinates[0];
               lat = rootSpot.geometry.coordinates[1];
+              return getLatLngText(lat, lng) + '\n' + pixelDetails;
             }
-            else rootSpotDetails = 'unavailable';
           }
           else {
             lng = spot.properties.lng;
             lat = spot.properties.lat;
+            return getLatLngText(lat, lng) + '\n' + pixelDetails;
           }
-          latitude = lat.toFixed(6);
-          longitude = lng.toFixed(6);
-          if (!rootSpotDetails) rootSpotDetails = getLatLngText(latitude, longitude, lat, lng);
-          if (!rootSpotDetails || rootSpotDetails === 'unavailable') return pixelDetails; else return rootSpotDetails + '\n' + pixelDetails;
+          return pixelDetails;
         }
-        else return getLatLngText(latitude, longitude, lat, lng);
+        else return getLatLngText(lat, lng);
       }
       else if ((spot.geometry.type === 'LineString' || spot.geometry.type === 'MultiLineString') &&
         spot.properties.trace && spot.properties.trace.trace_feature && spot.properties.trace.trace_type) {
@@ -69,11 +64,12 @@ const NotebookHeader = props => {
     else return undefined;
   };
 
-  const getLatLngText = (latitude, longitude, lat, lng) => {
+  const getLatLngText = (lat, lng) => {
     const degreeSymbol = '\u00B0';
     let latitudeCardinal = Math.sign(lat) >= 0 ? 'North' : 'South';
     let longitudeCardinal = Math.sign(lng) >= 0 ? 'East' : 'West';
-    return longitude + degreeSymbol + ' ' + longitudeCardinal + ', ' + latitude + degreeSymbol + ' ' + latitudeCardinal;
+    return lng.toFixed(6) + degreeSymbol + ' ' + longitudeCardinal + ', ' +
+      lat.toFixed(6) + degreeSymbol + ' ' + latitudeCardinal;
   };
 
   const getSpotGemometryIcon = () => {
@@ -131,7 +127,9 @@ const NotebookHeader = props => {
           <Button
             type='clear'
             title={getSpotCoordText()}
-            buttonStyle={{padding: 0, justifyContent: 'flex-start'}}/> :
+            titleStyle={{textAlign: 'left'}}
+            buttonStyle={{padding: 0, justifyContent: 'flex-start'}}
+            onPress={() => props.onPress('showGeographyInfo')}/> :
           <View style={{flexDirection: 'row'}}>
             {!spot.properties.trace && !spot.properties.surface_feature &&
             <Button
