@@ -26,8 +26,7 @@ const ActiveProjectList = (props) => {
         onPress={() => dispatch({
           type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE,
           view: settingPanelReducers.SET_SIDE_PANEL_VIEW.PROJECT_DESCRIPTION,
-          bool: true}
-          )}
+          bool: true})}
       />
       </View>
     </React.Fragment>

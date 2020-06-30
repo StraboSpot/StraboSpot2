@@ -9,7 +9,7 @@ export const settingPanelReducers = {
   SET_SIDE_PANEL_VIEW: {
     MANAGE_CUSTOM_MAP: 'manageCustomMap',
     PROJECT_DESCRIPTION: 'project description',
-    TAGS_DETAIL: 'tags detail',
+    TAG_DETAIL: 'tag detail',
   },
   SET_SORTED_VIEW: ' SET_SORTED_VIEW',
   SET_SORTED_LIST: 'SET_SORTED_LIST',

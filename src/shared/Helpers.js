@@ -1,4 +1,4 @@
-import {Animated, Easing, Text} from 'react-native';
+import {Animated, Dimensions, Easing, Platform, Text} from 'react-native';
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
 import React from 'react';
@@ -6,6 +6,11 @@ import React from 'react';
 const lodashIsEqual = require('lodash.isequal');
 const passwordValidator = require('password-validator');
 const schema = new passwordValidator();
+
+export const getDimensions = () => {
+  const platform = Platform.OS === 'ios' ? 'window' : 'screen';
+  return Dimensions.get(platform);
+};
 
 export const getNewId = () => {
   return Math.floor((new Date().getTime() + Math.random()) * 10);

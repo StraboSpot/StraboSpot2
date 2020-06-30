@@ -30,6 +30,7 @@ export const mainMenuPanelReducer = (state = initialState, action) => {
         ...state,
         isSidePanelVisible: action.bool,
         sidePanelView: action.view,
+        tag: action.tag,
       };
   }
   return state;

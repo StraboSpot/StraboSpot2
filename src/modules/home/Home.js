@@ -30,6 +30,7 @@ import ShortcutCompassModal from '../measurements/compass/ShortcutCompassModal';
 import ShortcutNotesModal from '../notes/ShortcutNotesModal';
 import ShortcutSamplesModal from '../samples/ShortcutSamplesModal';
 import StatusDialogBox from '../../shared/ui/StatusDialogBox';
+import TagDetail from '../tags/TagsDetail';
 import ToastPopup from '../../shared/ui/Toast';
 import VertexDrag from '../maps/VertexDrag';
 
@@ -512,21 +513,27 @@ const Home = (props) => {
   };
 
   const renderSidePanelView = () => {
-    let panelView = <Animated.View style={[sidePanelStyles.sidePanelContainer, animateMainMenuSidePanel]}/>;
-    switch (sidePanelView) {
-      case 'manageCustomMap':
-        panelView =
-          <Animated.View style={[sidePanelStyles.sidePanelContainer, animateMainMenuSidePanel]}>
-            <CustomMapDetails/>
-          </Animated.View>;
-        break;
-      case 'activeProject':
-        panelView =
-          <Animated.View style={[sidePanelStyles.sidePanelContainer, animateMainMenuSidePanel]}>
-            <ProjectDescription/>
-          </Animated.View>;
-    }
+    let panelView = <Animated.View style={[sidePanelStyles.sidePanelContainer, animateMainMenuSidePanel]}>
+      {renderSidePanelContent()}
+    </Animated.View>;
     return panelView;
+  };
+
+  const renderSidePanelContent = () => {
+    switch (sidePanelView) {
+      case settingPanelReducers.SET_SIDE_PANEL_VIEW.MANAGE_CUSTOM_MAP:
+        return (
+          <CustomMapDetails/>
+        );
+      case settingPanelReducers.SET_SIDE_PANEL_VIEW.PROJECT_DESCRIPTION:
+          return (
+            <ProjectDescription/>
+          );
+      case settingPanelReducers.SET_SIDE_PANEL_VIEW.TAG_DETAIL:
+        return (
+          <TagDetail/>
+        );
+    }
   };
 
   const renderStatusDialogBox = () => {
@@ -641,21 +648,11 @@ const Home = (props) => {
 
   const toggleSidePanel = () => {
     if (isSidePanelVisible) {
-      if (settingsPageVisible === 'Custom Maps') {
         animatePanels(mainMenuSidePanelAnimation, mainMenuSidePanelWidth);
-      }
-      else if (settingsPageVisible === 'Active Project') {
-        animatePanels(mainMenuSidePanelAnimation, mainMenuSidePanelWidth);
-      }
       return renderSidePanelView();
     }
     else {
-      if (settingsPageVisible === 'Custom Maps') {
         animatePanels(mainMenuSidePanelAnimation, -mainMenuSidePanelWidth);
-      }
-      else if (settingsPageVisible === 'Active Project') {
-        animatePanels(mainMenuSidePanelAnimation, -mainMenuSidePanelWidth);
-      }
     }
     return renderSidePanelView();
   };

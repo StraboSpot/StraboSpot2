@@ -98,6 +98,7 @@ const commonStyles = StyleSheet.create({
     borderColor: themes.LIST_BORDER_COLOR,
   },
   listItemTitle: {
+    fontWeight: themes.PRIMARY_LISTITEM_FONTWEIGHT,
     color: themes.PRIMARY_ITEM_TEXT_COLOR,
     fontSize: themes.PRIMARY_TEXT_SIZE,
   },

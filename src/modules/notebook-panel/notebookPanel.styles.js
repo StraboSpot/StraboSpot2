@@ -48,7 +48,7 @@ const notebookStyles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignItems: 'flex-end',
-    paddingTop: 15,
+    paddingTop: 5,
     paddingLeft: 10,
     paddingRight: 10,
     lineHeight: 30,
