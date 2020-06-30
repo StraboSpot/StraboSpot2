@@ -24,10 +24,12 @@ const SidePanelHeader = (props) => {
           type={'clear'}
           containerStyle={{flex: 0, padding: 4}}
           titleStyle={styles.buttonText}
-          onPress={props.onPress}
+          onPress={props.backButton}
         />
+        <View style={styles.headerTextContainer}>
+          <Text style={styles.headerText}>{props.headerTitle}</Text>
+        </View>
       </View>
-
     </React.Fragment>
   );
 };
