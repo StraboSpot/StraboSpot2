@@ -31,6 +31,7 @@
     "react-moment": "^0.9.7",
     "react-native": "^0.62.2",
     "react-native-collapsible": "^1.5.2",
+    "react-native-dropdown-picker": "^3.0.5",
     "react-native-easy-toast": "^1.2.0",
     "react-native-elements": "^2.0.2",
     "react-native-fs": "^2.16.6",
