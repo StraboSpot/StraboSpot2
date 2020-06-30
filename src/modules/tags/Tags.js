@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {Text, View, FlatList, TouchableOpacity} from 'react-native';
 import {ButtonGroup, Icon, ListItem} from 'react-native-elements';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import Collapsible from 'react-native-collapsible';
 import {isEmpty} from '../../shared/Helpers';
 
@@ -9,9 +9,11 @@ import {isEmpty} from '../../shared/Helpers';
 import notebookStyles from '../notebook-panel/notebookPanel.styles';
 import tagStyles from './Tags.styles';
 import commonStyles from '../../shared/common.styles';
+import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 
 const Tags = (props) => {
 
+  const dispatch = useDispatch();
   const tags = useSelector(state => state.project.project.tags);
 
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -31,25 +33,32 @@ const Tags = (props) => {
 
   const sectionContents = (name) => {
     let content;
-    switch (name) {
-      case 'Geologic Units':
-        const geo = tags.filter(tag => tag.type === 'geologic_unit');
+    if (tags) {
+      switch (name) {
+        case 'Geologic Units':
+          const geo = tags.filter(tag => tag.type === 'geologic_unit');
           content =
             <FlatList data={geo} renderItem={({item}) => renderTag(item)}/>;
           break;
-      case 'Concepts':
-        const concept = tags.filter(tag => tag.type === 'concept');
-        content =
-          <FlatList data={concept} renderItem={({item}) => renderTag(item)}/>;
+        case 'Concepts':
+          const concept = tags.filter(tag => tag.type === 'concept');
+          content =
+            <FlatList data={concept} renderItem={({item}) => renderTag(item)}/>;
           break;
-      case 'Documentation' :
-        const documentation = tags.filter(tag => tag.type === 'documentation');
-        content =
-          <FlatList data={documentation} renderItem={({item}) => renderTag(item)}/>;
-      case 'Rosetta' :
-        const rosetta = tags.filter(tag => tag.type === 'rosetta');
-        content =
-          <FlatList data={rosetta} renderItem={({item}) => renderTag(item)}/>;
+        case 'Documentation' :
+          const documentation = tags.filter(tag => tag.type === 'documentation');
+          content =
+            <FlatList data={documentation} renderItem={({item}) => renderTag(item)}/>;
+        case 'Rosetta' :
+          const rosetta = tags.filter(tag => tag.type === 'rosetta');
+          content =
+            <FlatList data={rosetta} renderItem={({item}) => renderTag(item)}/>;
+        default:
+          content =
+            <View style={{alignContent: 'center', justifyContent: 'center'}}>
+              <Text style={tagStyles.noTagsText}>No Tags</Text>
+            </View>;
+      }
     }
     return content;
   };
@@ -62,11 +71,16 @@ const Tags = (props) => {
           containerStyle={[commonStyles.listItem, {marginTop: 1}]}
           rightTitle={item.spots ? `${item.spots.length} spots` : '0 spots'}
           rightTitleStyle={tagStyles.rightTitleListStyle}
+          onPress={() => dispatch({
+            type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE,
+            view: settingPanelReducers.SET_SIDE_PANEL_VIEW.TAG_DETAIL,
+            tag: item,
+            bool: true }) }
           chevron
         />
       );
     }
-    else return <Text>No Data</Text>
+    else return <Text>No Data</Text>;
   };
 
   const renderCollapsibleList = (sections) => {
@@ -112,8 +126,8 @@ const Tags = (props) => {
   ];
 
   return (
-    <View >
-      <View>
+    <View style={{flex: 1}}>
+      <View style={{flex: 1, justifyContent: 'center'}}>
         <ButtonGroup
           selectedIndex={selectedIndex}
           onPress={(index) => {
@@ -126,8 +140,11 @@ const Tags = (props) => {
           textStyle={{fontSize: 12}}
         />
       </View>
-      <View>
-        {renderCollapsibleList(sections)}
+      <View style={{flex: 9}}>
+        {tags ? renderCollapsibleList(sections) :
+          <View style={commonStyles.noContentContainer}>
+            <Text style={commonStyles.noContentText}>No Tags!</Text>
+          </View>}
       </View>
     </View>
   );
