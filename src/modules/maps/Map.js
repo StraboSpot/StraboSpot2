@@ -435,11 +435,13 @@ const Map = React.forwardRef((props, ref) => {
               //  this is the case when the spot and vertex are chosen to be edited at once.
               let editedSpot = editingModeData.spotsEdited.find(spot => spot.properties.id === spotFound.properties.id);
               setSelectedSpotToEdit(isEmpty(editedSpot) ? spotFound : editedSpot);
-              setSelectedVertexToEdit(vertexSelected);
-              setEditingModeData(d => ({
-                ...d,
-                vertexIndex: closestVertexDetails[1],
-              }));
+              if (spotFound.geometry.type != 'Point') { // if Point, vertex gets set by setSelectedSpotToEdit already.
+                setSelectedVertexToEdit(vertexSelected);
+                setEditingModeData(d => ({
+                  ...d,
+                  vertexIndex: closestVertexDetails[1],
+                }));
+              }
             }
             else setSelectedVertexToEdit(vertexSelected);
             // this is the case when the spot is already highlighted for edit and a vertex is chosen to edit.
@@ -486,9 +488,11 @@ const Map = React.forwardRef((props, ref) => {
       editFeatureVertex: [vertex],
       allowMapViewMove: false,
     }));
-    if (currentImageBasemap && ((isEmpty(editingModeData.spotEditing) || (!isEmpty(
+    if (currentImageBasemap && ((isEmpty(editingModeData.spotEditing) || ((!isEmpty(
+      editingModeData.spotEditing) && editingModeData.spotEditing.geometry.type === 'Point')) || (!isEmpty(
       editingModeData.spotEditing) && editingModeData.spotEditing.properties.name !== vertex.properties.name)))) {
-      // spotEditing will be empty for Point and not empty for polygon or linestring, because, only Point can select the vertex on first long press.
+      // spotEditing will be empty for Point (may not be empty if the same spot is selected again for edit) and
+      // not empty for polygon or linestring, because, only Point can select the vertex on first long press.
       // For polygon or line, long press would identify the spot.
       // For polygon or LineString, the vertex comes from the draw feature, so, the coordinates are already in lat lng projection, so no more conversion necessary.
 
