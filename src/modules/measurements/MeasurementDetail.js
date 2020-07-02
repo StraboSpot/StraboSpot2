@@ -381,7 +381,8 @@ const MeasurementDetailPage = (props) => {
         <FlatList
           ListHeaderComponent={
             <View>
-              {activeMeasurement && selectedMeasurements.length === 1 ? renderAssociatedMeasurements() : renderMultiMeasurementsBar()}
+              {activeMeasurement && selectedMeasurements.length === 1 && renderAssociatedMeasurements()}
+              {activeMeasurement && selectedMeasurements.length > 1 && renderMultiMeasurementsBar()}
               {activeMeasurement && (activeMeasurement.type === 'planar_orientation' ||
                 activeMeasurement.type === 'tabular_orientation') && renderPlanarTabularSwitches()}
               <View>
