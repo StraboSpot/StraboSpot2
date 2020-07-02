@@ -8,11 +8,26 @@ import PropTypes from 'prop-types';
 import styles from './form.styles';
 import * as themes from '../../shared/styles.constants';
 
+// Utilities
+import {isEmpty} from '../../shared/Helpers';
+
 const SelectInputField = (props) => {
-  const getChoiceLabel = (value) => {
-    const choiceFound = props.choices.find(choice => choice.value === value);
-    return choiceFound ? choiceFound.label : 'Unknown';
+  const fieldValueChanged = (value) => {
+    if (props.single) {
+      if (value[0] === props.value) props.setFieldValue(props.name, undefined);
+      else props.setFieldValue(props.name, value[0]);
+    }
+    else props.setFieldValue(props.name, value);
   };
+
+  const getChoiceLabel = (value) => {
+    if (typeof value === 'object' && Array.isArray(value) && value.length > 1) return 'Multiple Selected';
+    else if (typeof value === 'object' && Array.isArray(value) && value.length === 1) value = value[0];
+    const choiceFound = props.choices.find(choice => choice.value === value);
+    return choiceFound ? choiceFound.label : '';
+  };
+
+  const placeholderText = `-- Select ${props.label} --`;
 
   return (
     <View>
@@ -24,18 +39,18 @@ const SelectInputField = (props) => {
           <MultiSelect
             hideSubmitButton={true}
             hideTags={false}
-            single={true}
+            single={props.single}
             hideDropdown={true}
             searchIcon={false}
             items={props.choices}
             uniqueKey='value'
             displayKey='label'
-            onSelectedItemsChange={(value, i) => props.setFieldValue(props.name, value[0])}
-            selectedItems={props.value ? [props.value] : undefined}
+            onSelectedItemsChange={fieldValueChanged}
+            selectedItems={isEmpty(props.value) || typeof props.value === 'object' ? props.value : [props.value]}
             textInputProps={{editable: false}}
             styleMainWrapper={styles.dropdownMainWrapper}
-            selectText={props.value ? getChoiceLabel(props.value) : `-- Select ${props.label} --`}
-            searchInputPlaceholderText={props.value ? getChoiceLabel(props.value) : `-- Select ${props.label} --`}
+            selectText={isEmpty(props.value) ? placeholderText : getChoiceLabel(props.value)}
+            searchInputPlaceholderText={isEmpty(props.value) ? placeholderText : getChoiceLabel(props.value)}
             searchInputStyle={styles.dropdownSelectionListHeader}
             fontSize={themes.PRIMARY_TEXT_SIZE}
             selectedItemTextColor={themes.SECONDARY_ITEM_TEXT_COLOR}
@@ -55,7 +70,7 @@ const SelectInputField = (props) => {
 SelectInputField.propTypes = {
   name: PropTypes.string.isRequired,
   setFieldValue: PropTypes.func.isRequired,
-  value: PropTypes.string,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.array]),
   errors: PropTypes.object,
 };
 

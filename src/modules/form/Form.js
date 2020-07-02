@@ -101,8 +101,9 @@ const Form = (props) => {
     );
   };
 
-  const renderSelectInput = (field, choicesList) => {
-    const fieldChoices = useForm.getChoices(props.formName).filter(choice => choice.list_name === choicesList);
+  const renderSelectInput = (field) => {
+    const [fieldType, choicesListName] = field.type.split(' ');
+    const fieldChoices = useForm.getChoices(props.formName).filter(choice => choice.list_name === choicesListName);
     const fieldChoicesCopy = JSON.parse(JSON.stringify(fieldChoices));
     fieldChoicesCopy.map((choice) => {
       choice.value = choice.name;
@@ -117,6 +118,7 @@ const Form = (props) => {
         key={field.name}
         choices={fieldChoicesCopy}
         setFieldValue={props.setFieldValue}
+        single={fieldType === 'select_one'}
       />
     );
   };
@@ -125,7 +127,7 @@ const Form = (props) => {
     const fieldType = field.type.split(' ')[0];
     if (fieldType === 'text') return renderTextInput(field);
     else if (fieldType === 'integer' || fieldType === 'decimal') return renderNumberInput(field);
-    else if (fieldType === 'select_one') return renderSelectInput(field, field.type.split(' ')[1]);
+    else if (fieldType === 'select_one' || fieldType === 'select_multiple') return renderSelectInput(field);
     else if (fieldType === 'date') return renderDateInput(field);
   };
 
