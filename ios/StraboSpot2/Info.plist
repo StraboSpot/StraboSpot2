@@ -22,10 +22,10 @@
 	<string>$(PRODUCT_NAME) to access device&apos;s accelerometer</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
-	<key>CFBundleShortVersionString</key>
-	<string>1.0</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Launch Screen</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
@@ -54,6 +54,7 @@
 	<key>UIAppFonts</key>
 	<array>
 		<string>Feather.ttf</string>
+		<string>MaterialCommunityIcons.ttf</string>
 		<string>AntDesign.ttf</string>
 		<string>FontAwesome.ttf</string>
 		<string>Fontisto.ttf</string>

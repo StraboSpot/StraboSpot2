@@ -2,9 +2,24 @@ import {StyleSheet} from 'react-native';
 import * as themes from '../../shared/styles.constants';
 
 const styles = StyleSheet.create({
+  dropdownMainWrapper: {
+    paddingLeft: 10,
+  },
+  dropdownSelectedContainer: {
+    paddingTop: 0,
+    paddingBottom: 0,
+    borderColor: 'white',
+    marginRight: -15,
+  },
+  dropdownSelectionListHeader: {
+    fontSize: themes.PRIMARY_TEXT_SIZE,
+    marginLeft: -15,
+    alignItems: 'flex-start',
+  },
+  dropdownRowList: {
+    marginRight: -10,
+  },
   formContainer: {
-    // paddingLeft: 10,
-    // paddingRight: 10,
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
   },
   fieldLabel: {
@@ -16,7 +31,6 @@ const styles = StyleSheet.create({
   fieldValue: {
     paddingLeft: 10,
     paddingTop: 0,
-    // paddingBottom: 5,
     fontSize: themes.PRIMARY_TEXT_SIZE,
     color: themes.SECONDARY_ITEM_TEXT_COLOR,
   },
