@@ -1,5 +1,5 @@
 import React, {useState, useRef} from 'react';
-import {Text, TextInput, Switch, ScrollView, View} from 'react-native';
+import {Text, TextInput, Switch, ScrollView, View, FlatList} from 'react-native';
 import {Button, Input} from 'react-native-elements';
 import {connect} from 'react-redux';
 import {Formik} from 'formik';
@@ -36,9 +36,13 @@ const ImagePropertiesModal = (props) => {
     if (width > height) {
       return (
         <View>
-          <ScrollView style={{height: 425}}>
-            {renderFormFields()}
-          </ScrollView>
+          <FlatList
+            ListHeaderComponent={
+              <View style={{height: 425}}>
+                {renderFormFields()}
+              </View>
+            }
+            />
           <Button
             title={'Show fewer fields'}
             type={'clear'}

@@ -121,17 +121,21 @@ const Overview = props => {
     return (
       <View>
         {renderCancelSaveButtons()}
-        <ScrollView>
-          <Formik
-            innerRef={form}
-            onSubmit={onSubmitForm}
-            validate={(values) => useForm.validateForm({formName: formName, values: values})}
-            component={(formProps) => Form({formName: formName, ...formProps})}
-            initialValues={initialValues}
-            validateOnChange={false}
-            enableReinitialize={true}
-          />
-        </ScrollView>
+        <FlatList
+          ListHeaderComponent={
+            <View>
+              <Formik
+                innerRef={form}
+                onSubmit={onSubmitForm}
+                validate={(values) => useForm.validateForm({formName: formName, values: values})}
+                component={(formProps) => Form({formName: formName, ...formProps})}
+                initialValues={initialValues}
+                validateOnChange={false}
+                enableReinitialize={true}
+              />
+            </View>
+          }
+        />
       </View>
     );
   };
