@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Alert, ScrollView, Text, TouchableOpacity, View} from 'react-native';
+import {Alert, FlatList, Text, TouchableOpacity, View} from 'react-native';
 
 import {Button, ButtonGroup} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
@@ -378,21 +378,25 @@ const MeasurementDetailPage = (props) => {
     <React.Fragment>
       {activeMeasurement && <View style={styles.measurementsContentContainer}>
         {renderCancelSaveButtons()}
-        <ScrollView>
-          {activeMeasurement && selectedMeasurements.length === 1 ? renderAssociatedMeasurements() : renderMultiMeasurementsBar()}
-          {activeMeasurement && (activeMeasurement.type === 'planar_orientation' ||
-            activeMeasurement.type === 'tabular_orientation') && renderPlanarTabularSwitches()}
-          <View>
-            {!isEmpty(formName) && renderFormFields()}
-          </View>
-          {selectedMeasurements.length === 1 &&
-          <Button
-            titleStyle={{color: themes.RED}}
-            title={'Delete Measurement'}
-            type={'clear'}
-            onPress={() => deleteMeasurement()}
-          />}
-        </ScrollView>
+        <FlatList
+          ListHeaderComponent={
+            <View>
+              {activeMeasurement && selectedMeasurements.length === 1 ? renderAssociatedMeasurements() : renderMultiMeasurementsBar()}
+              {activeMeasurement && (activeMeasurement.type === 'planar_orientation' ||
+                activeMeasurement.type === 'tabular_orientation') && renderPlanarTabularSwitches()}
+              <View>
+                {!isEmpty(formName) && renderFormFields()}
+              </View>
+              {selectedMeasurements.length === 1 &&
+              <Button
+                titleStyle={{color: themes.RED}}
+                title={'Delete Measurement'}
+                type={'clear'}
+                onPress={() => deleteMeasurement()}
+              />}
+            </View>
+          }
+        />
       </View>}
     </React.Fragment>
   );
