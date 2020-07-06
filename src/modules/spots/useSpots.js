@@ -30,7 +30,7 @@ const useSpots = (props) => {
     const getNewCopyId = () => Math.floor(10000000000000 + Math.random() * 90000000000000);
 
     let copiedSpot = {'type': 'Feature'};
-    let {name, id, date, time, modified_timestamp, images, samples, viewed_timestamp, ...properties} = selectedSpot.properties;
+    let {name, id, date, time, modified_timestamp, images, samples, viewed_timestamp, lat, lng, altitude, gps_accuracy, spot_radius, ...properties} = selectedSpot.properties;
     copiedSpot.properties = properties;
     if (properties.orientation_data) {
       const orientation_data = properties.orientation_data.map(measurement => {
