@@ -29,6 +29,7 @@ const NumberInputField = ({
         style={styles.fieldValue}
         value={getDisplayValue(value)}
         keyboardType={'numeric'}
+        placeholder={props.placeholder}
       />
       {errors[name] && <Text style={styles.fieldError}>{errors[name]}</Text>}
     </View>

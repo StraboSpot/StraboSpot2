@@ -86,6 +86,7 @@ const Form = (props) => {
         label={field.label}
         key={field.name}
         appearance={field.appearance}
+        placeholder={field.hint}
       />
     );
   };
@@ -97,6 +98,7 @@ const Form = (props) => {
         name={field.name}
         label={field.label}
         key={field.name}
+        placeholder={field.hint}
       />
     );
   };

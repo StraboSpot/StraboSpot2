@@ -27,6 +27,7 @@ const TextInputField = ({
             value={value}
             multiline={true}
             numberOfLines={3}
+            placeholder={props.placeholder}
           />
         </View>
         {errors[name] && <Text style={styles.fieldError}>{errors[name]}</Text>}
@@ -42,6 +43,7 @@ const TextInputField = ({
           onBlur={onBlur(name)}
           style={styles.fieldValue}
           value={value}
+          placeholder={props.placeholder}
         />
         {errors[name] && <Text style={styles.fieldError}>{errors[name]}</Text>}
       </View>
