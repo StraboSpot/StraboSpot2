@@ -43,6 +43,16 @@ const sidePanelStyles = StyleSheet.create({
     right: 0,
     zIndex: -1,
   },
+  sidePanelContainerPhones: {
+    height: '100%',
+    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
+    borderLeftWidth: 1,
+    width: 300,
+    position: 'absolute',
+    left: -300,
+    right: 0,
+    zIndex: 0,
+  },
   sidePanelHeaderContainer: {
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
     alignItems: 'flex-start',
