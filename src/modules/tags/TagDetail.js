@@ -6,7 +6,7 @@ import {ListItem} from 'react-native-elements';
 import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 import {tagTypes} from './tags.constants';
 import {useDispatch, useSelector} from 'react-redux';
-import Concepts from './tag/Concepts';
+import Concept from './tag/Concept';
 import Divider from '../main-menu-panel/MainMenuPanelDivider';
 import {toTitleCase} from '../../shared/Helpers';
 import SidePanelHeader from '../main-menu-panel/sidePanel/SidePanelHeader';
@@ -104,7 +104,7 @@ const TagDetail = () => {
   const renderTypeFields = () => {
     switch (selectedTag.type) {
       case tagTypes.CONCEPT:
-        return <Concepts/>;
+        return <Concept/>;
       default:
         return null;
     }
@@ -117,8 +117,7 @@ const TagDetail = () => {
         title={'Tags'}
         headerTitle={!isEmpty(selectedTag) && selectedTag.name}
       />
-      {/*<View style={{flex: 1}}>*/}
-      <View style={{flex: 5}}>
+      <View style={{flex: 5, paddingTop: 10}}>
         <FlatList
           ListHeaderComponent={
             <View>

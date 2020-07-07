@@ -16,7 +16,7 @@ import {toTitleCase} from '../../../shared/Helpers';
 import tagStyles from '../tags.styles';
 import styles from '../../form/form.styles';
 
-const Concepts = () => {
+const Concept = () => {
 
   const dispatch = useDispatch();
   const selectedTag = useSelector(state => state.tags.selectedTag);
@@ -62,4 +62,4 @@ const Concepts = () => {
   );
 };
 
-export default Concepts;
+export default Concept;
