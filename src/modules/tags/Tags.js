@@ -1,18 +1,24 @@
 import React, {useState} from 'react';
-import {Text, View, FlatList, TouchableOpacity} from 'react-native';
+import {FlatList, Text, TouchableOpacity, View} from 'react-native';
+
+// Packages
 import {ButtonGroup, Icon, ListItem} from 'react-native-elements';
-import {useDispatch, useSelector} from 'react-redux';
 import Collapsible from 'react-native-collapsible';
+import {useDispatch, useSelector} from 'react-redux';
+
+// Utilities
 import {isEmpty} from '../../shared/Helpers';
 
-//Styles
-import notebookStyles from '../notebook-panel/notebookPanel.styles';
-import tagStyles from './tags.styles';
-import commonStyles from '../../shared/common.styles';
+// Constants
+import {tagsReducers} from './tags.constants';
 import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 
-const Tags = (props) => {
+// Styles
+import commonStyles from '../../shared/common.styles';
+import notebookStyles from '../notebook-panel/notebookPanel.styles';
+import tagStyles from './tags.styles';
 
+const Tags = () => {
   const dispatch = useDispatch();
   const tags = useSelector(state => state.project.project.tags);
 
@@ -70,12 +76,17 @@ const Tags = (props) => {
           title={item.name}
           containerStyle={[commonStyles.listItem, {marginTop: 1}]}
           rightTitle={item.spots ? `${item.spots.length} spots` : '0 spots'}
-          rightTitleStyle={tagStyles.rightTitleListStyle}
-          onPress={() => dispatch({
-            type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE,
-            view: settingPanelReducers.SET_SIDE_PANEL_VIEW.TAG_DETAIL,
-            tag: item,
-            bool: true }) }
+          rightTitleStyle={tagStyles.valueInList}
+          onPress={() => {
+            dispatch({
+              type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE,
+              view: settingPanelReducers.SET_SIDE_PANEL_VIEW.TAG_DETAIL,
+              // tag: item,
+              bool: true,
+            });
+            dispatch({type: tagsReducers.SELECTED_TAG, tag: item});
+          }
+          }
           chevron
         />
       );
