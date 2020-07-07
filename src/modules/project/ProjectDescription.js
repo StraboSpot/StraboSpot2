@@ -1,30 +1,21 @@
 import React, {useEffect, useState} from 'react';
 import {ScrollView, Text, TextInput, View} from 'react-native';
 
-import {Button, Icon, ListItem} from 'react-native-elements';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
+import {Button, Icon, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
-// Assests
 import * as forms from '../../assets/forms/forms.index';
-
-// Components
-import Divider from '../main-menu-panel/MainMenuPanelDivider';
-import EditingModal from './ProjectDescriptionEditModal';
-import SaveAndCloseButtons from '../../shared/ui/SaveAndCloseButtons';
-
-// Constants
-import {projectReducers} from './project.constants';
-import {SettingsMenuItems} from '../main-menu-panel/mainMenu.constants';
-
-// Utilities
 import {truncateText} from '../../shared/Helpers';
-
-// Styles
-import styles from './project.styles';
+import SaveAndCloseButtons from '../../shared/ui/SaveAndCloseButtons';
+import {SettingsMenuItems} from '../main-menu-panel/mainMenu.constants';
 import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
+import Divider from '../main-menu-panel/MainMenuPanelDivider';
 import SidePanelHeader from '../main-menu-panel/sidePanel/SidePanelHeader';
+import {projectReducers} from './project.constants';
+import styles from './project.styles';
+import EditingModal from './ProjectDescriptionEditModal';
 
 const ProjectDescription = (props) => {
   const getInitialFields = () => {

@@ -1,13 +1,13 @@
 import React, {useState} from 'react';
 import {Platform, Text, View} from 'react-native';
 
-import {Button, ListItem} from 'react-native-elements';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
+import {Button, ListItem} from 'react-native-elements';
 
-import {formStyles} from '../form';
-import DateDialogBox from '../../shared/ui/StatusDialogBox';
 import stylesCommon from '../../shared/common.styles';
+import DateDialogBox from '../../shared/ui/StatusDialogBox';
+import {formStyles} from '../form';
 
 const DateInputField = ({
                           field: {name, onBlur, onChange, value},

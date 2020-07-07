@@ -1,7 +1,9 @@
 import React from 'react';
 import {View} from 'react-native';
-import styles from './ui.styles';
+
 import {BallIndicator} from 'react-native-indicators';
+
+import styles from './ui.styles';
 
 const Loading = props => {
 

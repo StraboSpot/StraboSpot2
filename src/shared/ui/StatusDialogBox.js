@@ -1,10 +1,11 @@
 import React from 'react';
+
 import Dialog, {
   DialogTitle,
   DialogContent,
-  SlideAnimation,
   FadeAnimation,
 } from 'react-native-popup-dialog';
+
 import styles from '../../shared/common.styles';
 
 const StatusDialogBox = (props) => {

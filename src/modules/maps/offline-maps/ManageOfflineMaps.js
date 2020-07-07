@@ -1,17 +1,16 @@
-import React, {Component, useEffect} from 'react';
-import {Alert, Text, View} from 'react-native';
+import React from 'react';
+import {Alert, Text, View, Platform} from 'react-native';
+
 import {Button, ListItem} from 'react-native-elements';
 import {connect, useDispatch, useSelector} from 'react-redux';
 import RNFetchBlob from 'rn-fetch-blob';
-import {Platform} from 'react-native';
-import {mapReducers} from '../maps.constants';
-import {isEmpty} from '../../../shared/Helpers';
-// import SectionDivider from '../../../shared/ui/SectionDivider';
-import Divider from '../../main-menu-panel/MainMenuPanelDivider';
-// Styles
+
 import commonStyles from '../../../shared/common.styles';
-import styles from './offlineMaps.styles';
+import {isEmpty} from '../../../shared/Helpers';
 import {homeReducers} from '../../home/home.constants';
+import Divider from '../../main-menu-panel/MainMenuPanelDivider';
+import {mapReducers} from '../maps.constants';
+import styles from './offlineMaps.styles';
 
 var RNFS = require('react-native-fs');
 
@@ -67,7 +66,7 @@ const ManageOfflineMaps = (props) => {
     console.log('Deleting Map Here');
     console.log('map: ', map.id);
     // console.log('directory: ', tileCacheDirectory + '/' + map.id);
-    const mapId = map.id === 'mapwarper' ? map.name  : map.id;
+    const mapId = map.id === 'mapwarper' ? map.name : map.id;
     let folderExists = await RNFS.exists(tileCacheDirectory + '/' + mapId);
     const zipFileExists = await RNFS.exists(
       zipsDirectory + '/' + map.mapId + '.zip',
@@ -127,21 +126,21 @@ const ManageOfflineMaps = (props) => {
               subtitle={
                 <View style={styles.itemSubContainer}>
                   {/*<View style={styles.itemSubTextStyle}>*/}
-                    {/*<Text>({item.count} tiles)</Text>*/}
+                  {/*<Text>({item.count} tiles)</Text>*/}
                   {!isOnline && <Button
-                      onPress={() => viewOfflineMap(item)}
-                      titleStyle={styles.buttonText}
-                      type={'clear'}
-                      title={'View in map'}
-                    />}
-                    <Button
-                      onPress={() => confirmDeleteMap(item)}
-                      titleStyle={styles.buttonText}
-                      type={'clear'}
-                      title={'Delete'}
-                    >
-                      Delete
-                    </Button>
+                    onPress={() => viewOfflineMap(item)}
+                    titleStyle={styles.buttonText}
+                    type={'clear'}
+                    title={'View in map'}
+                  />}
+                  <Button
+                    onPress={() => confirmDeleteMap(item)}
+                    titleStyle={styles.buttonText}
+                    type={'clear'}
+                    title={'Delete'}
+                  >
+                    Delete
+                  </Button>
                   {/*</View>*/}
                 </View>
               }

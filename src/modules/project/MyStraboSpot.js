@@ -1,14 +1,15 @@
 import React, {useState} from 'react';
-import {Text, View} from 'react-native';
+import {View} from 'react-native';
+
 import {Button} from 'react-native-elements';
 
-import ProjectList from './ProjectList';
-import ProjectTypesButtons from './ProjectTypesButtons';
 import Spacer from '../../shared/ui/Spacer';
+import Divider from '../main-menu-panel/MainMenuPanelDivider';
 import UserProfile from '../user/UserProfile';
 import ActiveProjectList from './ActiveProjectList';
-import Divider from '../main-menu-panel/MainMenuPanelDivider';
 import NewProjectForm from './NewProjectForm';
+import ProjectList from './ProjectList';
+import ProjectTypesButtons from './ProjectTypesButtons';
 
 const MyStraboSpot = props => {
   const [showSection, setShowSection] = useState('none');

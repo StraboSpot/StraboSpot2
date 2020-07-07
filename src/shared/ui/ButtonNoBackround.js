@@ -1,9 +1,9 @@
 import React from 'react';
-import {TouchableOpacity, TouchableNativeFeedback, Text, View, StyleSheet, Platform} from 'react-native';
-import {Button, Icon} from 'react-native-elements';
-import * as themes from '../styles.constants';
+import {TouchableOpacity, TouchableNativeFeedback, StyleSheet, Platform} from 'react-native';
 
-// import Icon from "react-native-vector-icons/Ionicons";
+import {Button} from 'react-native-elements';
+
+import * as themes from '../styles.constants';
 
 const buttonNoBackground = props => {
   const content = (
@@ -13,12 +13,12 @@ const buttonNoBackground = props => {
       containerStyle={[styles.button, props.style]}
       titleStyle={[styles.buttonText, props.textStyle]}
       onPress={props.onPress}
-  />
+    />
   );
 
   if (Platform.OS === 'ios') {
     return (
-      <TouchableOpacity >
+      <TouchableOpacity>
         {content}
       </TouchableOpacity>
     );

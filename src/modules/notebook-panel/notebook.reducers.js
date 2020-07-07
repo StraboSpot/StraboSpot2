@@ -1,7 +1,7 @@
-import {CompassToggleButtons} from '../measurements/compass/compass.constants';
-import {notebookReducers} from './notebook.constants';
 import {redux} from '../../shared/app.constants';
 import {isEmpty} from '../../shared/Helpers';
+import {CompassToggleButtons} from '../measurements/compass/compass.constants';
+import {notebookReducers} from './notebook.constants';
 
 const initialState = {
   visibleNotebookPagesStack: [],

@@ -1,7 +1,8 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
-import Animated from 'react-native-reanimated';
+
 import {PanGestureHandler, State} from 'react-native-gesture-handler';
+import Animated from 'react-native-reanimated';
 
 const {cond, eq, add, call, set, Value, event} = Animated;
 

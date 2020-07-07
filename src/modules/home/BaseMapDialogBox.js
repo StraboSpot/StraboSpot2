@@ -1,24 +1,16 @@
 import React from 'react';
-import {ListItem} from 'react-native-elements';
-import {ScaleAnimation} from 'react-native-popup-dialog/src';
 import {ScrollView, Switch, Text, View} from 'react-native';
-import {useSelector} from 'react-redux';
+
+import {ListItem} from 'react-native-elements';
 import Dialog, {DialogContent, DialogTitle} from 'react-native-popup-dialog';
+import {ScaleAnimation} from 'react-native-popup-dialog/src';
+import {useSelector} from 'react-redux';
 
-// Components
-import SectionDivider from '../../shared/ui/SectionDivider';
-
-// Utilites
 import {isEmpty} from '../../shared/Helpers';
-
-// Hooks
-import useMapsHook from '../maps/useMaps';
-
-// Styles
-import styles from './dialog.styles';
-
-// Constants
+import SectionDivider from '../../shared/ui/SectionDivider';
 import {basemaps} from '../maps/maps.constants';
+import useMapsHook from '../maps/useMaps';
+import styles from './dialog.styles';
 
 const slideAnimation = new ScaleAnimation({
   useNativeDriver: true,

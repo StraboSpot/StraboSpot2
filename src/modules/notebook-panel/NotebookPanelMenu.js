@@ -1,12 +1,10 @@
 import React from 'react';
+
 import Dialog, {DialogButton, DialogContent, DialogTitle} from 'react-native-popup-dialog';
 import {useSelector} from 'react-redux';
 
-// Styles
-import styles from './notebookPanel.styles';
-
-// Constants
 import {menuButtons} from '../../shared/app.constants';
+import styles from './notebookPanel.styles';
 
 const NotebookPanelMenu = (props) => {
   const isAllSpotsPanelVisible = useSelector(state => state.home.isAllSpotsPanelVisible);

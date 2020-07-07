@@ -1,4 +1,5 @@
 import {StyleSheet} from 'react-native';
+
 import * as themes from '../../shared/styles.constants';
 
 const styles = StyleSheet.create({
@@ -13,7 +14,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     marginTop: 10,
-    width: 300
+    width: 300,
   },
   checkBoxText: {
     color: 'white',
@@ -28,7 +29,7 @@ const styles = StyleSheet.create({
     // color: 'black',
     padding: 8,
     borderRadius: 14,
-    borderColor: 'red'
+    borderColor: 'red',
   },
   inputContainerGroup: {
     alignItems: 'center',

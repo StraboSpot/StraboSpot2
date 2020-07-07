@@ -1,29 +1,21 @@
 import React, {useEffect, useState} from 'react';
 import {Alert, ScrollView, Text, View} from 'react-native';
+
 import {ListItem, Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
-// Components
-import DialogBox from './DialogBox';
-import Loading from '../../shared/ui/Loading';
-
-// Hooks
-import useProjectHook from './useProject';
-
-// Utilities
 import {isEmpty} from '../../shared/Helpers';
-
-// Constants
-import * as ProjectActions from './project.constants';
-import {homeReducers} from '../home/home.constants';
-import {projectReducers} from './project.constants';
-import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
-import {SettingsMenuItems} from '../main-menu-panel/mainMenu.constants';
-import {spotReducers} from '../spots/spot.constants';
-
-// Styles
 import * as themes from '../../shared/styles.constants';
+import Loading from '../../shared/ui/Loading';
+import {homeReducers} from '../home/home.constants';
+import {SettingsMenuItems} from '../main-menu-panel/mainMenu.constants';
+import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
+import {spotReducers} from '../spots/spot.constants';
+import DialogBox from './DialogBox';
+import {projectReducers} from './project.constants';
+import * as ProjectActions from './project.constants';
 import styles from './project.styles';
+import useProjectHook from './useProject';
 
 const ProjectList = (props) => {
   const currentProject = useSelector(state => state.project.project);

@@ -1,9 +1,10 @@
 import React from 'react';
 import {View, Platform} from 'react-native';
-import Modal from '../../shared/ui/modal/Modal';
-import Notes from './Notes';
-import styles from '../measurements/compass/compass.styles';
+
 import DragAnimation from '../../shared/ui/DragAmination';
+import Modal from '../../shared/ui/modal/Modal';
+import styles from '../measurements/compass/compass.styles';
+import Notes from './Notes';
 
 const ShortcutNotesModal = (props) => {
   if (Platform.OS === 'android') {

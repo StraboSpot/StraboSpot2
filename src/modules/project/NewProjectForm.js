@@ -1,16 +1,16 @@
 import React, {useRef} from 'react';
 import {ScrollView, View} from 'react-native';
 
-import {Button} from 'react-native-elements';
 import {Formik} from 'formik';
+import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import styles from '../../shared/ui/ui.styles';
 import {Form, useFormHook} from '../form';
 import {homeReducers} from '../home/home.constants';
-import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 import {SettingsMenuItems} from '../main-menu-panel/mainMenu.constants';
+import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 import Divider from '../main-menu-panel/MainMenuPanelDivider';
-import styles from '../../shared/ui/ui.styles';
 import useProjectHook from './useProject';
 
 const NewProjectForm = (props) => {

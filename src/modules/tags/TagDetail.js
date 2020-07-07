@@ -1,27 +1,16 @@
 import React, {useState} from 'react';
 import {FlatList, ScrollView, Text, TextInput, View} from 'react-native';
 
-// Third Party Packages
 import {ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
-// Local Files
-import {Concept, tagsStyles, tagTypes, useTagsHook} from '../tags';
-
-// Components
-import Divider from '../main-menu-panel/MainMenuPanelDivider';
-import {toTitleCase} from '../../shared/Helpers';
-import SidePanelHeader from '../main-menu-panel/sidePanel/SidePanelHeader';
-import {getDimensions, isEmpty} from '../../shared/Helpers';
-
-// Styles
 import commonStyles from '../../shared/common.styles';
-
-// Constants
+import {toTitleCase,getDimensions, isEmpty} from '../../shared/Helpers';
 import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
-
-// Hooks
+import Divider from '../main-menu-panel/MainMenuPanelDivider';
+import SidePanelHeader from '../main-menu-panel/sidePanel/SidePanelHeader';
 import useSpotsHook from '../spots/useSpots';
+import {Concept, tagsStyles, tagTypes, useTagsHook} from '../tags';
 
 const TagDetail = () => {
   const [useTags] = useTagsHook();
@@ -93,7 +82,7 @@ const TagDetail = () => {
   const renderTaggedSpots = () => {
     const height = getDimensions().height;
     return (
-      <View style={[tagsStyles.sectionContainer, {maxHeight: height * .40}]}>
+      <View style={[tagsStyles.sectionContainer, {maxHeight: height * 0.40}]}>
         <ScrollView>
           {selectedTag && selectedTag.spots ?
             selectedTag.spots.map((spotId, index) => {

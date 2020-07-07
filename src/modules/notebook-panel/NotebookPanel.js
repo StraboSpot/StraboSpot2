@@ -1,29 +1,23 @@
 import React from 'react';
 import {Animated, Text, View} from 'react-native';
-import {connect} from 'react-redux';
-import {FlingGestureHandler, Directions, State} from 'react-native-gesture-handler';
 
-// Components
+import {FlingGestureHandler, Directions, State} from 'react-native-gesture-handler';
+import {connect} from 'react-redux';
+
+import commonStyles from '../../shared/common.styles';
+import {isEmpty} from '../../shared/Helpers';
+import Spacer from '../../shared/ui/Spacer';
 import Geography from '../geography/Geography';
+import {homeReducers, Modals} from '../home/home.constants';
 import MeasurementDetailPage from '../measurements/MeasurementDetail';
 import MeasurementsPage from '../measurements/Measurements';
+import NotesPage from '../notes/Notes';
+import SamplesPage from '../samples/SamplesNotebook';
 import NotebookFooter from './notebook-footer/NotebookFooter';
 import NotebookHeader from './notebook-header/NotebookHeader';
-import NotesPage from '../notes/Notes';
-import Overview from './Overview';
-import SamplesPage from '../samples/SamplesNotebook';
-import Spacer from '../../shared/ui/Spacer';
-
-// Constants
-import {homeReducers, Modals} from '../home/home.constants';
 import {notebookReducers, NotebookPages} from './notebook.constants';
-
-// Utilities
-import {isEmpty} from '../../shared/Helpers';
-
-// Styles
-import commonStyles from '../../shared/common.styles';
 import notebookStyles from './notebookPanel.styles';
+import Overview from './Overview';
 
 const NotebookPanel = props => {
   const setNotebookPageVisible = page => {

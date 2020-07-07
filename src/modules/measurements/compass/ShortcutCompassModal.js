@@ -1,10 +1,11 @@
 import React from 'react';
 import {View, Platform} from 'react-native';
-import Modal from '../../../shared/ui/modal/Modal';
-import styles from './compass.styles';
-import Compass from './Compass';
-import RMCompass from './RMCompass';
+
 import DragAnimation from '../../../shared/ui/DragAmination';
+import Modal from '../../../shared/ui/modal/Modal';
+import Compass from './Compass';
+import styles from './compass.styles';
+import RMCompass from './RMCompass';
 
 const ShortcutCompassModal = (props) => {
   if (Platform.OS === 'android') {

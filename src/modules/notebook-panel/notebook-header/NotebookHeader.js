@@ -1,23 +1,15 @@
 import React, {useState} from 'react';
-import {Button} from 'react-native-elements';
 import {Image, TextInput, View} from 'react-native';
+
+import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
-// Components
-import IconButton from '../../../shared/ui/IconButton';
-
-// Styles
-import headerStyles from './notebookHeader.styles';
-
-// Utilities
 import {isEmpty, toTitleCase} from '../../../shared/Helpers';
-
-// Constants
-import {labelDictionary} from '../../form/form.constants';
+import IconButton from '../../../shared/ui/IconButton';
+import {labelDictionary} from '../../form';
 import {spotReducers} from '../../spots/spot.constants';
-
-// Hooks
 import useSpotsHook from '../../spots/useSpots';
+import headerStyles from './notebookHeader.styles';
 
 const NotebookHeader = props => {
   const dispatch = useDispatch();

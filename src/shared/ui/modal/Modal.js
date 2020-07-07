@@ -1,15 +1,15 @@
 import React from 'react';
 import {Text, View} from 'react-native';
-import {connect} from 'react-redux';
-import {Button} from 'react-native-elements/src/index';
 
-// Styles
-import modalStyle from './modal.style';
+import {Button} from 'react-native-elements';
+import {connect} from 'react-redux';
+
+import {Modals} from '../../../modules/home/home.constants';
+import {NotebookPages} from '../../../modules/notebook-panel/notebook.constants';
+import {isEmpty} from '../../Helpers';
 import * as themes from '../../styles.constants';
 import IconButton from '../IconButton';
-import {NotebookPages} from '../../../modules/notebook-panel/notebook.constants';
-import {Modals} from '../../../modules/home/home.constants';
-import {isEmpty} from '../../Helpers';
+import modalStyle from './modal.style';
 
 const Modal = (props) => {
 

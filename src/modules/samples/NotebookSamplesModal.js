@@ -1,9 +1,10 @@
 import React from 'react';
 import {Platform, View} from 'react-native';
-import Modal from '../../shared/ui/modal/Modal';
-import styles from './samples.style';
-import Samples from './Samples';
+
 import DragAnimation from '../../shared/ui/DragAmination';
+import Modal from '../../shared/ui/modal/Modal';
+import Samples from './Samples';
+import styles from './samples.style';
 // import Orientation from "react-native-orientation-locker";
 
 const notebookSamplesModal = (props) => {

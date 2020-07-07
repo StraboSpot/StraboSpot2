@@ -1,8 +1,9 @@
-import React from 'react';
 import {Alert} from 'react-native';
+
 import Clipboard from '@react-native-community/clipboard';
 import * as turf from '@turf/turf';
 import moment from 'moment';
+
 import useSpotsHook from '../spots/useSpots';
 
 const useMapFeatures = (props) => {

@@ -1,18 +1,17 @@
 import React, {useState} from 'react';
 import {Alert, Text, TextInput, View} from 'react-native';
-import {connect} from 'react-redux';
-import {Button, ButtonGroup, Input} from 'react-native-elements';
-import Slider from '../../shared/ui/Slider';
-import {spotReducers} from '../spots/spot.constants';
-import {NotebookPages, notebookReducers} from '../notebook-panel/notebook.constants';
-import {getNewId, isEmpty} from '../../shared/Helpers';
-import {homeReducers, Modals} from '../home/home.constants';
-import Samples from './SamplesNotebook';
-import useMapsHook from '../maps/useMaps';
 
-// Styles
-import styles from './samples.style';
+import {Button, ButtonGroup, Input} from 'react-native-elements';
+import {connect} from 'react-redux';
+
+import {getNewId} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
+import Slider from '../../shared/ui/Slider';
+import {homeReducers, Modals} from '../home/home.constants';
+import useMapsHook from '../maps/useMaps';
+import {NotebookPages, notebookReducers} from '../notebook-panel/notebook.constants';
+import {spotReducers} from '../spots/spot.constants';
+import styles from './samples.style';
 
 const SamplesModalView = (props) => {
   let modalView = null;

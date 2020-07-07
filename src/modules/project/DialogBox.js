@@ -1,4 +1,5 @@
 import React from 'react';
+
 import Dialog, {
   DialogTitle,
   DialogContent,
@@ -6,6 +7,7 @@ import Dialog, {
   DialogFooter,
   DialogButton,
 } from 'react-native-popup-dialog';
+
 import * as ProjectActions from './project.constants';
 import styles from './project.styles';
 

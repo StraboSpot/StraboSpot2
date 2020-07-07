@@ -1,25 +1,20 @@
 import React, {useState, useEffect} from 'react';
-import {ActivityIndicator, Alert, FlatList, ScrollView, Text, View} from 'react-native';
+import {Alert, FlatList, Text, View} from 'react-native';
+
 import {Button} from 'react-native-elements';
 import {connect} from 'react-redux';
 
+import {isEmpty} from '../../shared/Helpers';
 import * as SharedUI from '../../shared/ui/index';
 import {homeReducers} from '../home/home.constants';
-import {isEmpty} from '../../shared/Helpers';
+import attributesStyles from '../main-menu-panel/attributes.styles';
 import {settingPanelReducers, SortedViews} from '../main-menu-panel/mainMenuPanel.constants';
 import SortingButtons from '../main-menu-panel/SortingButtons';
-
-// Constants
 import {notebookReducers} from '../notebook-panel/notebook.constants';
 import {spotReducers} from '../spots/spot.constants';
-
-// Hooks
-import useImagesHook from './useImages';
 import useSpotsHook from '../spots/useSpots';
-
-// Styles
-import attributesStyles from '../main-menu-panel/attributes.styles';
 import imageStyles from './images.styles';
+import useImagesHook from './useImages';
 
 let imageCount = 0;
 // let dirs = RNFetchBlob.fs.dirs;

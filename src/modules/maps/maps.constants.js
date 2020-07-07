@@ -1,4 +1,5 @@
 import {Dimensions} from 'react-native';
+
 import {MAPBOX_KEY} from '../../MapboxConfig';
 
 const {width, height} = Dimensions.get('window');

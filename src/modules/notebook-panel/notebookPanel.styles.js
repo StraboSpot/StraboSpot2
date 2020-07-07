@@ -1,4 +1,5 @@
 import {StyleSheet} from 'react-native';
+
 import * as themes from '../../shared/styles.constants';
 
 const notebookStyles = StyleSheet.create({

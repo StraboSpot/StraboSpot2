@@ -1,8 +1,10 @@
 import React from 'react';
 import {Button, Text, View} from 'react-native';
-import noteStyles from './notes.styles';
+
 import {connect} from 'react-redux';
+
 import {notebookReducers, NotebookPages} from '../notebook-panel/notebook.constants';
+import noteStyles from './notes.styles';
 
 const SpotNotesOverview = props => {
 

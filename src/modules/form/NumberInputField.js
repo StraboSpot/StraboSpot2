@@ -3,9 +3,9 @@ import {Text, TextInput, View} from 'react-native';
 
 import PropTypes from 'prop-types';
 
-import {formStyles} from '../form';
-import {isEmpty} from '../../shared/Helpers';
 import stylesCommon from '../../shared/common.styles';
+import {isEmpty} from '../../shared/Helpers';
+import {formStyles} from '../form';
 
 const NumberInputField = ({
                             field: {name, onBlur, onChange, value},
@@ -13,7 +13,7 @@ const NumberInputField = ({
                             ...props
                           }) => {
 
-  const getDisplayValue = value => {
+  const getDisplayValue = () => {
     if (!isEmpty(value)) return value.toString();
     return value;
   };
@@ -25,7 +25,7 @@ const NumberInputField = ({
         onChangeText={onChange(name)}
         onBlur={onBlur(name)}
         style={formStyles.fieldValue}
-        value={getDisplayValue(value)}
+        value={getDisplayValue()}
         keyboardType={'numeric'}
         placeholder={props.placeholder}
       />

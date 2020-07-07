@@ -1,63 +1,54 @@
 import React, {useEffect, useRef, useState} from 'react';
-import * as turf from '@turf/turf';
 import {Alert, Animated, Dimensions, Platform, Text, View} from 'react-native';
-import {BallIndicator} from 'react-native-indicators';
-import {Button, Image} from 'react-native-elements';
-import {connect, useDispatch, useSelector} from 'react-redux';
-import {Directions, FlingGestureHandler, State} from 'react-native-gesture-handler';
-import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
-import Modal from 'react-native-modal';
-// import Orientation from "react-native-orientation-locker";
 
-// Components
-import AllSpotsPanel from '../notebook-panel/AllSpots';
-import BaseMapDialog from './BaseMapDialogBox';
-import CustomMapDetails from '../maps/custom-maps/CustomMapDetails';
+import * as turf from '@turf/turf';
+import {Button, Image} from 'react-native-elements';
+import {Directions, FlingGestureHandler, State} from 'react-native-gesture-handler';
+import {BallIndicator} from 'react-native-indicators';
+import Modal from 'react-native-modal';
+import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
+import {connect, useDispatch, useSelector} from 'react-redux';
+
+import sharedDialogStyles from '../../shared/common.styles';
+import {animatePanels, isEmpty} from '../../shared/Helpers';
 import IconButton from '../../shared/ui/IconButton';
-import InitialProjectLoadModal from '../project/InitialProjectLoadModal';
 import LoadingSpinner from '../../shared/ui/Loading';
+import StatusDialogBox from '../../shared/ui/StatusDialogBox';
+import ToastPopup from '../../shared/ui/Toast';
+import useImagesHook from '../images/useImages';
+import {SettingsMenuItems} from '../main-menu-panel/mainMenu.constants';
+import SettingsPanel from '../main-menu-panel/MainMenuPanel';
+import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
+import settingPanelStyles from '../main-menu-panel/mainMenuPanel.styles';
+import sidePanelStyles from '../main-menu-panel/sidePanel.styles';
+import CustomMapDetails from '../maps/custom-maps/CustomMapDetails';
 import Map from '../maps/Map';
+import {MapModes, mapReducers} from '../maps/maps.constants';
+import SaveMapsModal from '../maps/offline-maps/SaveMapsModal';
+import useMapsHook from '../maps/useMaps';
+import VertexDrag from '../maps/VertexDrag';
+import NotebookCompassModal from '../measurements/compass/NotebookCompassModal';
+import ShortcutCompassModal from '../measurements/compass/ShortcutCompassModal';
+import AllSpotsPanel from '../notebook-panel/AllSpots';
+import {NotebookPages, notebookReducers} from '../notebook-panel/notebook.constants';
+import NotebookPanel from '../notebook-panel/NotebookPanel';
+import notebookStyles from '../notebook-panel/notebookPanel.styles';
+import NotebookPanelMenu from '../notebook-panel/NotebookPanelMenu';
+import ShortcutNotesModal from '../notes/ShortcutNotesModal';
+import InitialProjectLoadModal from '../project/InitialProjectLoadModal';
+import ProjectDescription from '../project/ProjectDescription';
+import useProjectHook from '../project/useProject';
+import NotebookSamplesModal from '../samples/NotebookSamplesModal';
+import ShortcutSamplesModal from '../samples/ShortcutSamplesModal';
+import {spotReducers} from '../spots/spot.constants';
+import useSpotsHook from '../spots/useSpots';
+import {TagDetail} from '../tags';
+import BaseMapDialog from './BaseMapDialogBox';
+import {homeReducers, Modals} from './home.constants';
+import homeStyles from './home.style';
 import MapActionsDialog from './MapActionsDialogBox';
 import MapSymbolsDialog from './MapSymbolsDialogBox';
-import NotebookCompassModal from '../measurements/compass/NotebookCompassModal';
-import NotebookPanel from '../notebook-panel/NotebookPanel';
-import NotebookPanelMenu from '../notebook-panel/NotebookPanelMenu';
-import NotebookSamplesModal from '../samples/NotebookSamplesModal';
-import ProjectDescription from '../project/ProjectDescription';
-import SaveMapsModal from '../maps/offline-maps/SaveMapsModal';
-import SettingsPanel from '../main-menu-panel/MainMenuPanel';
-import ShortcutCompassModal from '../measurements/compass/ShortcutCompassModal';
-import ShortcutNotesModal from '../notes/ShortcutNotesModal';
-import ShortcutSamplesModal from '../samples/ShortcutSamplesModal';
-import StatusDialogBox from '../../shared/ui/StatusDialogBox';
-import {TagDetail} from '../tags';
-import ToastPopup from '../../shared/ui/Toast';
-import VertexDrag from '../maps/VertexDrag';
-
-// Hooks
 import useHomeHook from './useHome';
-import useImagesHook from '../images/useImages';
-import useMapsHook from '../maps/useMaps';
-import useProjectHook from '../project/useProject';
-import useSpotsHook from '../spots/useSpots';
-
-// Utilities
-import {animatePanels, isEmpty} from '../../shared/Helpers';
-
-// Styles
-import homeStyles from './home.style';
-import notebookStyles from '../notebook-panel/notebookPanel.styles';
-import settingPanelStyles from '../main-menu-panel/mainMenuPanel.styles';
-import sharedDialogStyles from '../../shared/common.styles';
-import sidePanelStyles from '../main-menu-panel/sidePanel.styles';
-
-// Constants
-import {homeReducers, Modals} from './home.constants';
-import {MapModes, mapReducers} from '../maps/maps.constants';
-import {NotebookPages, notebookReducers} from '../notebook-panel/notebook.constants';
-import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
-import {SettingsMenuItems} from '../main-menu-panel/mainMenu.constants';
-import {spotReducers} from '../spots/spot.constants';
 
 const allSpotsPanelWidth = 125;
 const homeMenuPanelWidth = 300;
@@ -521,7 +512,7 @@ const Home = (props) => {
     if (deviceWidth < 600) {
        return <Animated.View style={[sidePanelStyles.sidePanelContainerPhones, animateMainMenuSidePanel]}>
          {renderSidePanelContent()}
-       </Animated.View>
+       </Animated.View>;
     }
     return <Animated.View style={[sidePanelStyles.sidePanelContainer, animateMainMenuSidePanel]}>
       {renderSidePanelContent()}

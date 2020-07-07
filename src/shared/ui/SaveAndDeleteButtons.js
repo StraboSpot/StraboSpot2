@@ -1,7 +1,8 @@
 import React from 'react';
-import {Text, View} from 'react-native';
-import uiStyles from '../ui/ui.styles';
+
 import {Button} from 'react-native-elements';
+
+import uiStyles from '../ui/ui.styles';
 
 const SaveAndDeleteButtons = (props) => {
   return (

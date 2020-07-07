@@ -1,4 +1,5 @@
 import {StyleSheet} from 'react-native';
+
 import * as themes from '../../shared/styles.constants';
 
 const dialogStyles = StyleSheet.create({
@@ -20,13 +21,13 @@ const dialogStyles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingBottom: 5
+    paddingBottom: 5,
   },
   sectionContainer: {
     margin: 10,
     backgroundColor: 'white',
     borderRadius: 10,
-    padding: 5
+    padding: 5,
     // height: 200
   },
   listItemTitleAndValue: {
@@ -38,11 +39,11 @@ const dialogStyles = StyleSheet.create({
   },
   datasetListItemText: {
     color: themes.PRIMARY_ITEM_TEXT_COLOR,
-    fontSize: themes.MEDIUM_TEXT_SIZE
+    fontSize: themes.MEDIUM_TEXT_SIZE,
   },
   datasetListItemSpotCount: {
     color: themes.MEDIUMGREY,
-    fontSize: themes.MEDIUM_TEXT_SIZE
+    fontSize: themes.MEDIUM_TEXT_SIZE,
   },
   activeProjectButton: {
     margin: 10,
@@ -66,11 +67,11 @@ const dialogStyles = StyleSheet.create({
   },
   dialogContent: {
     marginTop: 15,
-    paddingBottom: 10
+    paddingBottom: 10,
   },
   dialogConfirmText: {
     textAlign: 'center',
-    paddingTop: 15
+    paddingTop: 15,
   },
   dialogContentImportantText: {
     color: 'red',
@@ -114,7 +115,7 @@ const dialogStyles = StyleSheet.create({
   projectNameContainer: {
     flexDirection:  'row',
     alignItems: 'center',
-    borderBottomWidth: .5,
+    borderBottomWidth: 0.5,
     borderColor: themes.PRIMARY_ITEM_TEXT_COLOR,
     paddingBottom: 10,
     paddingTop: 10,
@@ -126,7 +127,7 @@ const dialogStyles = StyleSheet.create({
   projectNameValue: {
     flex: 1.5,
     alignItems: 'flex-end',
-    paddingRight: 10
+    paddingRight: 10,
   },
   projectDescriptionListContainer: {
     borderColor: themes.PRIMARY_ITEM_TEXT_COLOR,

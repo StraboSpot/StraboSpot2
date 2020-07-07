@@ -1,11 +1,11 @@
 import React, {useState} from 'react';
 import {FlatList, View, Text} from 'react-native';
+
 import {ListItem} from 'react-native-elements';
 import {useSelector} from 'react-redux';
-import useProjectHook from './useProject';
 
-// Styles
 import styles from './project.styles';
+import useProjectHook from './useProject';
 
 const ActiveDatasetsList = () => {
   const [useProject] = useProjectHook();

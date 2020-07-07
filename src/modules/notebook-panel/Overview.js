@@ -1,21 +1,20 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {Alert, FlatList, Switch, Text, TouchableOpacity, View} from 'react-native';
 
-import {Button} from 'react-native-elements';
 import {Formik} from 'formik';
-import {Icon} from 'react-native-elements';
-import {useDispatch, useSelector} from 'react-redux';
 import Collapsible from 'react-native-collapsible';
+import {Button,Icon} from 'react-native-elements';
+import {useDispatch, useSelector} from 'react-redux';
 
-import {Form, useFormHook} from '../form';
 import {isEmpty} from '../../shared/Helpers';
-import {spotReducers} from '../spots/spot.constants';
-import MeasurementsOverview from '../measurements/MeasurementsOverview';
-import NotebookImages from '../images/ImageNotebook';
-import notebookStyles from './notebookPanel.styles';
-import NotesOverview from '../notes/NotesOverview';
 import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
+import {Form, useFormHook} from '../form';
+import NotebookImages from '../images/ImageNotebook';
+import MeasurementsOverview from '../measurements/MeasurementsOverview';
+import NotesOverview from '../notes/NotesOverview';
+import {spotReducers} from '../spots/spot.constants';
 import TagsOverview from '../tags/TagsOverview';
+import notebookStyles from './notebookPanel.styles';
 
 const Overview = props => {
   const dispatch = useDispatch();

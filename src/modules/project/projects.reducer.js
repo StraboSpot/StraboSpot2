@@ -1,5 +1,5 @@
-import {projectReducers} from './project.constants';
 import {redux} from '../../shared/app.constants';
+import {projectReducers} from './project.constants';
 
 const initialState = {
   project: {},

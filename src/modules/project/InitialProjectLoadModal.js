@@ -1,22 +1,21 @@
 import React, {useState, useEffect} from 'react';
 import {Text, View} from 'react-native';
-import {useSelector, useDispatch} from 'react-redux';
+
 import {Button} from 'react-native-elements';
 import {Dialog, DialogTitle, DialogContent, SlideAnimation} from 'react-native-popup-dialog';
+import {useSelector, useDispatch} from 'react-redux';
 
-import NewProject from './NewProjectForm';
-import ProjectList from './ProjectList';
-import DatasetList from './DatasetList';
-import ActiveDatasetsList from './ActiveDatasetsList';
-import ProjectTypesButtons from './ProjectTypesButtons';
-import Spacer from '../../shared/ui/Spacer';
-
-// Styles
 import commonStyles from '../../shared/common.styles';
-import homeStyles from '../home/home.style';
 import {isEmpty} from '../../shared/Helpers';
-import {projectReducers} from './project.constants';
+import Spacer from '../../shared/ui/Spacer';
+import homeStyles from '../home/home.style';
 import {spotReducers} from '../spots/spot.constants';
+import ActiveDatasetsList from './ActiveDatasetsList';
+import DatasetList from './DatasetList';
+import NewProject from './NewProjectForm';
+import {projectReducers} from './project.constants';
+import ProjectList from './ProjectList';
+import ProjectTypesButtons from './ProjectTypesButtons';
 
 const InitialProjectLoadModal = (props) => {
   const selectedProject = useSelector(state => state.project.project);

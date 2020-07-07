@@ -1,21 +1,21 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {Alert, FlatList, Text, TouchableOpacity, View} from 'react-native';
 
+import {Formik} from 'formik';
 import {Button, ButtonGroup} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
-import {Formik} from 'formik';
 
-import * as themes from '../../shared/styles.constants';
-import {Form, useFormHook} from '../form';
+import stylesCommon from '../../shared/common.styles';
 import {getNewId, isEmpty} from '../../shared/Helpers';
+import * as themes from '../../shared/styles.constants';
+import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
+import SectionDivider from '../../shared/ui/SectionDivider';
+import {Form, useFormHook} from '../form';
 import {homeReducers, Modals} from '../home/home.constants';
 import {notebookReducers} from '../notebook-panel/notebook.constants';
 import {spotReducers} from '../spots/spot.constants';
 import MeasurementItem from './MeasurementItem';
-import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
-import SectionDivider from '../../shared/ui/SectionDivider';
 import styles from './measurements.styles';
-import stylesCommon from '../../shared/common.styles';
 
 const MeasurementDetailPage = (props) => {
   const dispatch = useDispatch();

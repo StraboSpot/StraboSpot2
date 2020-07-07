@@ -1,5 +1,5 @@
-import {mapReducers} from './maps.constants';
 import {redux} from '../../shared/app.constants';
+import {mapReducers} from './maps.constants';
 
 const initialState = {
   currentBasemap: undefined,
@@ -88,7 +88,7 @@ export const mapReducer = (state = initialState, action) => {
         ...state,
         customMaps: {},
         selectedCustomMapToEdit: {},
-        currentBasemap: undefined
+        currentBasemap: undefined,
       };
   }
   return state;

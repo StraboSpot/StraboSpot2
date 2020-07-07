@@ -1,35 +1,32 @@
 import React, {useEffect, useState} from 'react';
 import {
   Alert,
-  FlatList,
-  TextInput,
-  View,
-  Switch,
-  Keyboard,
-  Dimensions,
-  UIManager,
   Animated,
+  Dimensions,
+  Keyboard,
+  FlatList,
   Platform,
+  Switch,
+  TextInput,
+  UIManager,
+  View,
 } from 'react-native';
+
 import {Button, Input, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
-import Divider from '../../main-menu-panel/MainMenuPanelDivider';
-import {customMapTypes} from '../maps.constants';
-import {settingPanelReducers} from '../../main-menu-panel/mainMenuPanel.constants';
-import SidePanelHeader from '../../main-menu-panel/sidePanel/SidePanelHeader';
-import {mapReducers} from '../maps.constants';
-import Slider from '../../../shared/ui/Slider';
-import useMapHook from '../useMaps';
-
-// Styles
-import sidePanelStyles from '../../main-menu-panel/sidePanel.styles';
-import styles from './customMaps.styles';
-import * as themes from '../../../shared/styles.constants';
-import {SettingsMenuItems} from '../../main-menu-panel/mainMenu.constants';
 import {isEmpty} from '../../../shared/Helpers';
 import SaveAndDeleteButtons from '../../../shared/ui/SaveAndDeleteButtons';
+import Slider from '../../../shared/ui/Slider';
 import {homeReducers} from '../../home/home.constants';
+import {SettingsMenuItems} from '../../main-menu-panel/mainMenu.constants';
+import {settingPanelReducers} from '../../main-menu-panel/mainMenuPanel.constants';
+import Divider from '../../main-menu-panel/MainMenuPanelDivider';
+import sidePanelStyles from '../../main-menu-panel/sidePanel.styles';
+import SidePanelHeader from '../../main-menu-panel/sidePanel/SidePanelHeader';
+import {customMapTypes, mapReducers} from '../maps.constants';
+import useMapHook from '../useMaps';
+import styles from './customMaps.styles';
 
 const {State: TextInputState} = TextInput;
 
@@ -280,7 +277,7 @@ const AddCustomMaps = (props) => {
       {renderSidePanelHeader()}
       <View style={[sidePanelStyles.sectionContainer, {flex: 2, paddingTop: 10}]}>
         <Divider sectionText={'Custom Map Title'}/>
-          {renderTitle()}
+        {renderTitle()}
       </View>
       <View style={[sidePanelStyles.sectionContainer, {flex: 3}]}>
         <Divider sectionText={'Overlay Settings'}/>
@@ -323,7 +320,7 @@ const AddCustomMaps = (props) => {
       </View>
       <View style={[sidePanelStyles.sectionContainer, {flex: 3}]}>
         <Divider sectionText={'Map Details'}/>
-          {renderMapDetails()}
+        {renderMapDetails()}
       </View>
       <View style={[sidePanelStyles.sectionContainer, {flex: 3}]}>
         <SaveAndDeleteButtons

@@ -1,17 +1,17 @@
 import React, {useState, useEffect} from 'react';
 import {FlatList, Text, View} from 'react-native';
 
-import {connect} from 'react-redux';
 import {withNavigation} from 'react-navigation';
+import {connect} from 'react-redux';
 
-import * as SharedUI from '../../shared/ui/index';
 import {isEmpty} from '../../shared/Helpers';
-import {mapReducers} from './maps.constants';
-import {settingPanelReducers, SortedViews} from '../main-menu-panel/mainMenuPanel.constants';
-import attributesStyles from '../main-menu-panel/attributes.styles';
+import * as SharedUI from '../../shared/ui/index';
 import imageStyles from '../images/images.styles';
 import useImagesHook from '../images/useImages';
+import attributesStyles from '../main-menu-panel/attributes.styles';
+import {settingPanelReducers, SortedViews} from '../main-menu-panel/mainMenuPanel.constants';
 import useSpotsHook from '../spots/useSpots';
+import {mapReducers} from './maps.constants';
 
 const ImageBaseMaps = (props) => {
   const [useSpots] = useSpotsHook();

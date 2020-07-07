@@ -1,4 +1,5 @@
 import {StyleSheet} from 'react-native';
+
 import * as themes from '../../../shared/styles.constants';
 
 const styles = StyleSheet.create({
@@ -18,7 +19,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: themes.SMALL_TEXT_SIZE,
-    color: themes.PRIMARY_ACCENT_COLOR
+    color: themes.PRIMARY_ACCENT_COLOR,
     // paddingLeft: 20,
   },
   divider: {
@@ -67,7 +68,7 @@ const styles = StyleSheet.create({
     margin: 10,
     backgroundColor: 'white',
     borderRadius: 10,
-    padding: 5
+    padding: 5,
     // height: 200
   },
   list: {

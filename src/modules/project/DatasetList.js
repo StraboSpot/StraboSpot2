@@ -1,31 +1,26 @@
 import React, {useState, useEffect} from 'react';
 import {ScrollView, Switch, Text, View} from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
+
 import {Button, Icon, ListItem} from 'react-native-elements';
+import {BallIndicator} from 'react-native-indicators';
 import Dialog, {
   DialogTitle,
   DialogButton,
   DialogFooter,
   FadeAnimation,
 } from 'react-native-popup-dialog';
+import {useDispatch, useSelector} from 'react-redux';
 
-import {isEmpty, truncateText} from '../../shared/Helpers';
-import Loading from '../../shared/ui/Loading';
-import TexInputModal from '../../shared/ui/GeneralTextInputModal';
-
-// Constants
-import {projectReducers} from './project.constants';
-
-// Hooks
-import useSpotsHook from '../spots/useSpots';
-import useProjectHook from '../project/useProject';
-import {homeReducers} from '../home/home.constants';
-
-// Styles
-import styles from './project.styles';
-import StatusDialogBox from '../../shared/ui/StatusDialogBox';
 import sharedDialogStyles from '../../shared/common.styles';
-import {BallIndicator} from 'react-native-indicators';
+import {isEmpty, truncateText} from '../../shared/Helpers';
+import TexInputModal from '../../shared/ui/GeneralTextInputModal';
+import Loading from '../../shared/ui/Loading';
+import StatusDialogBox from '../../shared/ui/StatusDialogBox';
+import {homeReducers} from '../home/home.constants';
+import useProjectHook from '../project/useProject';
+import useSpotsHook from '../spots/useSpots';
+import {projectReducers} from './project.constants';
+import styles from './project.styles';
 
 const DatasetList = () => {
 

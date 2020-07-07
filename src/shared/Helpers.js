@@ -1,7 +1,7 @@
-import {Animated, Dimensions, Easing, Platform, Text} from 'react-native';
+import {Animated, Dimensions, Easing, Platform} from 'react-native';
+
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
-import React from 'react';
 
 const lodashIsEqual = require('lodash.isequal');
 const passwordValidator = require('password-validator');
@@ -48,7 +48,7 @@ export const toDegrees = (radians) => {
 
 export const toNumberFixedValue = (number, decPlaces) => {
   return Number(number).toLocaleString(undefined,{style: 'percent', minimumFractionDigits: decPlaces});
-}
+};
 
 export const toRadians = (deg) => {
   return deg * (Math.PI / 180);

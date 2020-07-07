@@ -1,13 +1,13 @@
 import React from 'react';
 import {Text, View} from 'react-native';
 
+import PropTypes from 'prop-types';
 import {ListItem} from 'react-native-elements';
 import MultiSelect from 'react-native-multiple-select';
-import PropTypes from 'prop-types';
 
+import {isEmpty} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
 import {formStyles} from '../form';
-import {isEmpty} from '../../shared/Helpers';
 
 const SelectInputField = (props) => {
   const fieldValueChanged = (value) => {

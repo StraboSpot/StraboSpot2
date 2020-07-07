@@ -1,21 +1,15 @@
 import React, {useState} from 'react';
 import {FlatList, Text, TouchableOpacity, View} from 'react-native';
 
-// Packages
-import {ButtonGroup, Icon, ListItem} from 'react-native-elements';
 import Collapsible from 'react-native-collapsible';
+import {ButtonGroup, Icon, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
-// Utilities
-import {isEmpty} from '../../shared/Helpers';
-
-// Constants
-import {tagsReducers} from './tags.constants';
-import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
-
-// Styles
 import commonStyles from '../../shared/common.styles';
+import {isEmpty} from '../../shared/Helpers';
+import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 import notebookStyles from '../notebook-panel/notebookPanel.styles';
+import {tagsReducers} from './tags.constants';
 import tagStyles from './tags.styles';
 
 const Tags = () => {

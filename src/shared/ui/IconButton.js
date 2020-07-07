@@ -1,5 +1,5 @@
-import {TouchableOpacity, TouchableNativeFeedback, Text, View, StyleSheet, Platform, Image} from 'react-native';
 import React from 'react';
+import {TouchableOpacity, TouchableNativeFeedback, Text, View, StyleSheet, Platform, Image} from 'react-native';
 
 const iconButton = props => {
   const content = (

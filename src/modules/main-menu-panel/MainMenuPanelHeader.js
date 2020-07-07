@@ -1,9 +1,11 @@
 import React from 'react';
 import {View, Text} from 'react-native';
-import styles from './mainMenuPanel.styles';
+
+import {Icon} from 'react-native-elements';
 import {useSelector} from 'react-redux';
-import {Icon, Header} from 'react-native-elements';
+
 import {SettingsMenuItems} from './mainMenu.constants';
+import styles from './mainMenuPanel.styles';
 
 const MainMenuPanelHeader = (props) => {
   const pageVisible = useSelector(state => state.settingsPanel.settingsPageVisible);
@@ -24,7 +26,7 @@ const MainMenuPanelHeader = (props) => {
       <View style={styles.settingsPanelHeaderTextContainer}>
         <Text style={styles.headerText}>{pageVisible}</Text>
       </View>
-      <View style={{flex: 1, paddingBottom: 10}}></View>
+      <View style={{flex: 1, paddingBottom: 10}} />
     </View>
   );
   // return (

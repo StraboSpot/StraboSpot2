@@ -1,20 +1,17 @@
 import {Alert, Platform} from 'react-native';
-import RNFetchBlob from 'rn-fetch-blob';
+
 import {useDispatch, useSelector} from 'react-redux';
+import RNFetchBlob from 'rn-fetch-blob';
 
 // Hooks
 import useServerRequests from '../../services/useServerRequests';
-import useImagesHook from '../images/useImages';
-import useSpotsHook from '../spots/useSpots';
-
-// Utilities
 import {getNewId, isEmpty} from '../../shared/Helpers';
-
-// Constants
 import {homeReducers} from '../home/home.constants';
+import useImagesHook from '../images/useImages';
 import {mapReducers} from '../maps/maps.constants';
-import {projectReducers} from './project.constants';
 import {spotReducers} from '../spots/spot.constants';
+import useSpotsHook from '../spots/useSpots';
+import {projectReducers} from './project.constants';
 
 const useProject = () => {
   let dirs = RNFetchBlob.fs.dirs;

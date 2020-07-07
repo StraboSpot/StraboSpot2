@@ -1,28 +1,21 @@
 import React, {useEffect, useImperativeHandle, useRef, useState} from 'react';
+import {View} from 'react-native';
+
+import MapboxGL from '@react-native-mapbox-gl/maps';
 import * as turf from '@turf/turf/index';
 import {Button} from 'react-native-elements';
-import {connect, useSelector, useDispatch} from 'react-redux';
-import {View} from 'react-native';
 import Dialog, {DialogContent, DialogTitle, SlideAnimation} from 'react-native-popup-dialog';
-import MapboxGL from '@react-native-mapbox-gl/maps';
+import {connect, useSelector, useDispatch} from 'react-redux';
 
-// Components
-import {MapLayer1, MapLayer2} from './Basemaps';
-
-// Hooks
-import useSpotsHook from '../spots/useSpots';
-import useMapsHook from './useMaps';
-import useMapFeaturesHook from './useMapFeatures';
-
-// Utilities
-import {getNewUUID, isEmpty} from '../../shared/Helpers';
-
-// Constants
-import {geoLatLngProjection, LATITUDE, LONGITUDE, MapModes, pixelProjection} from './maps.constants';
 import {MAPBOX_KEY} from '../../MapboxConfig';
-import {mapReducers} from './maps.constants';
+import {getNewUUID, isEmpty} from '../../shared/Helpers';
 import {projectReducers} from '../project/project.constants';
 import {spotReducers} from '../spots/spot.constants';
+import useSpotsHook from '../spots/useSpots';
+import {MapLayer1, MapLayer2} from './Basemaps';
+import {geoLatLngProjection, LATITUDE, LONGITUDE, MapModes, pixelProjection,mapReducers} from './maps.constants';
+import useMapFeaturesHook from './useMapFeatures';
+import useMapsHook from './useMaps';
 
 MapboxGL.setAccessToken(MAPBOX_KEY);
 

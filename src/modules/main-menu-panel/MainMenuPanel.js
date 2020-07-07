@@ -1,29 +1,29 @@
 import React from 'react';
-import {connect, useSelector} from 'react-redux';
 import {View} from 'react-native';
 
-import {homeReducers} from '../home/home.constants';
+import {connect, useSelector} from 'react-redux';
+
 import {isEmpty} from '../../shared/Helpers';
-import {NotebookPages} from '../notebook-panel/notebook.constants';
-import {settingPanelReducers} from './mainMenuPanel.constants';
-import {SettingsMenuItems} from './mainMenu.constants';
-import {spotReducers} from '../spots/spot.constants';
-import ActiveProject from '../project/ActiveProjectPanel';
+import {homeReducers} from '../home/home.constants';
+import ImageGallery from '../images/ImageGallery';
 import CustomMapsMenu from '../maps/custom-maps/ManageCustomMaps';
 import ImageBaseMaps from '../maps/ImageBasemaps';
-import ImageGallery from '../images/ImageGallery';
 import ManageOfflineMapsMenu from '../maps/offline-maps/ManageOfflineMaps';
+import {NotebookPages} from '../notebook-panel/notebook.constants';
+import ActiveProject from '../project/ActiveProjectPanel';
 import MyStraboSpot from '../project/MyStraboSpot';
 import ProjectList from '../project/ProjectList';
+import UploadBackupAndExport from '../project/UploadBackupExport';
 import SamplesList from '../samples/SamplesList';
+import {spotReducers} from '../spots/spot.constants';
+import SpotsList from '../spots/SpotsList';
 import Tags from '../tags/Tags';
+import {SettingsMenuItems} from './mainMenu.constants';
+import {settingPanelReducers} from './mainMenuPanel.constants';
+import styles from './mainMenuPanel.styles';
 import MainMenuPanelHeader from './MainMenuPanelHeader';
 import MainMenuPanelList from './MainMenuPanelList';
 import ShortcutMenu from './shortcuts-menu/ShortcutsMenu';
-import SpotsList from '../spots/SpotsList';
-import UploadBackupAndExport from '../project/UploadBackupExport';
-
-import styles from './mainMenuPanel.styles';
 
 const MainMenuPanel = props => {
   let buttonTitle = null;
@@ -75,8 +75,8 @@ const MainMenuPanel = props => {
       page =
         <View style={styles.settingsPanelContainer}>
           <UploadBackupAndExport/>
-      </View>;
-        break;
+        </View>;
+      break;
     case SettingsMenuItems.APP_PREFERENCES.SHORTCUTS:
       page =
         <View style={styles.settingsPanelContainer}>
@@ -92,12 +92,12 @@ const MainMenuPanel = props => {
           <ManageOfflineMapsMenu/>
         </View>;
       break;
-      case SettingsMenuItems.MAPS.IMAGE_BASEMAPS :
+    case SettingsMenuItems.MAPS.IMAGE_BASEMAPS :
       page =
         <View style={styles.settingsPanelContainer}>
           <ImageBaseMaps
             getSpotData={(spotId) => getSpotFromId(spotId)}
-         />
+          />
         </View>;
       break;
     case SettingsMenuItems.MAPS.CUSTOM:
@@ -136,7 +136,7 @@ const MainMenuPanel = props => {
       page =
         <View style={styles.settingsPanelContainer}>
           <Tags/>
-        </View>
+        </View>;
       break;
     case SettingsMenuItems.PROJECT.SWITCH_PROJECT:
       page = <View style={styles.settingsPanelContainer}>
@@ -144,13 +144,13 @@ const MainMenuPanel = props => {
       </View>;
       break;
     default:
-     page =
+      page =
         <React.Fragment>
           <View style={styles.listContainer}>
             <MainMenuPanelList
               onPress={(name) => setVisibleMenu(name)}
               title={buttonTitle}
-              activeProject={!isEmpty(project)  ? project.description.project_name : 'No Active Project'}
+              activeProject={!isEmpty(project) ? project.description.project_name : 'No Active Project'}
             />
           </View>
         </React.Fragment>;
@@ -158,10 +158,10 @@ const MainMenuPanel = props => {
 
   return (
     <View style={styles.container}>
-      <View style={{ flex: 1}} >
+      <View style={{flex: 1}}>
         {settingsPanelHeader}
       </View>
-      <View style={{flex: 10}} >
+      <View style={{flex: 10}}>
         {page}
       </View>
     </View>

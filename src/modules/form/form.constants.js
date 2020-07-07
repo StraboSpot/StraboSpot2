@@ -1,5 +1,4 @@
 import * as forms from '../../assets/forms/forms.index';
-import {isEmpty} from '../../shared/Helpers';
 
 // Create a dictionary with the labels for each field name and each choice value across all forms
 // export const labelDictionary = Object.keys(forms.default).reduce((acc, key) => {

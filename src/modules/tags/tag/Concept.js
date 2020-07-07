@@ -1,20 +1,14 @@
-import React, {useState, useRef} from 'react';
+import React, {useState} from 'react';
 import {View} from 'react-native';
 
-// Packages
 import {ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
-// Components
-import NonAutoFormDropdown from '../../../shared/NonAutoFormDropdown';
-
-// Utilities
-import {tagsReducers} from '../../tags';
 import {toTitleCase} from '../../../shared/Helpers';
-
-// Styles
-import tagStyles from '../tags.styles';
+import NonAutoFormDropdown from '../../../shared/NonAutoFormDropdown';
 import styles from '../../form/form.styles';
+import {tagsReducers} from '../../tags';
+import tagStyles from '../tags.styles';
 
 const Concept = () => {
 

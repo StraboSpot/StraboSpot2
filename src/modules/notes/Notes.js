@@ -1,16 +1,16 @@
 import React, {useState, useEffect} from 'react';
 import {Text, TextInput, View} from 'react-native';
-import noteStyles from './notes.styles';
-import {connect, useDispatch, useSelector} from 'react-redux';
-import {Button, Input} from 'react-native-elements';
-import {notebookReducers, NotebookPages} from '../notebook-panel/notebook.constants';
-import {spotReducers} from '../spots/spot.constants';
-import {Modals} from '../home/home.constants';
-import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
-import useMapsHook from '../maps/useMaps';
 
-// Styles
+import {Button} from 'react-native-elements';
+import {connect, useDispatch, useSelector} from 'react-redux';
+
 import uiStyles from '../../shared/ui/ui.styles';
+import {Modals} from '../home/home.constants';
+import useMapsHook from '../maps/useMaps';
+import {notebookReducers, NotebookPages} from '../notebook-panel/notebook.constants';
+import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
+import {spotReducers} from '../spots/spot.constants';
+import noteStyles from './notes.styles';
 
 const Notes = (props) => {
   const [useMaps] = useMapsHook();
@@ -48,7 +48,7 @@ const Notes = (props) => {
     dispatch({type: spotReducers.EDIT_SPOT_PROPERTIES, field: 'notes', value: note});
     dispatch({type: spotReducers.SET_SELECTED_SPOT_NOTES_TIMESTAMP});
     setNote('');
-    dispatch({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: NotebookPages.OVERVIEW})
+    dispatch({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: NotebookPages.OVERVIEW});
   };
 
   // const setPointToCurrentLocation = async () => {

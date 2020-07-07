@@ -1,12 +1,11 @@
 import React from 'react';
 import {ScrollView, View} from 'react-native';
+
 import {Button} from 'react-native-elements';
 
-import HomePanelDivider from './MainMenuPanelDivider';
 import {SettingsMenuItems} from './mainMenu.constants';
-
-// Styles
 import styles from './mainMenuPanel.styles';
+import HomePanelDivider from './MainMenuPanelDivider';
 
 const MainMenuPanelList = props => {
 

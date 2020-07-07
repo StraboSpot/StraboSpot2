@@ -1,8 +1,10 @@
 import React from 'react';
 import {Text, View} from 'react-native';
+
 import Slider from '@react-native-community/slider';
-import styles from './ui.styles';
+
 import * as themes from '../styles.constants';
+import styles from './ui.styles';
 
 const slider = (props) => {
   return (

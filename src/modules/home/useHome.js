@@ -1,23 +1,19 @@
-import React from 'react';
 import {Alert, Platform} from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
-import {homeReducers} from './home.constants';
+
 import NetInfo from '@react-native-community/netinfo';
-import {spotReducers} from '../spots/spot.constants';
-import {SettingsMenuItems} from '../main-menu-panel/mainMenu.constants';
-import {notebookReducers} from '../notebook-panel/notebook.constants';
-import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
-import {isEmpty} from '../../shared/Helpers';
-
-// import useProjectHook from '../project/useProject';
+import {useDispatch, useSelector} from 'react-redux';
 import RNFetchBlob from 'rn-fetch-blob';
-import {projectReducers} from '../project/project.constants';
 
+import {isEmpty} from '../../shared/Helpers';
+import {SettingsMenuItems} from '../main-menu-panel/mainMenu.constants';
+import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
+import {projectReducers} from '../project/project.constants';
+import {spotReducers} from '../spots/spot.constants';
+import {homeReducers} from './home.constants';
 
 const useHome = (props) => {
   let dirs = RNFetchBlob.fs.dirs;
   const devicePath = Platform.OS === 'ios' ? dirs.DocumentDir : dirs.SDCardDir; // ios : android
-  const appDirectory = '/StraboSpot';
   const appDirectoryForDistributedBackups = '/StraboSpotProjects';
 
   const dispatch = useDispatch();

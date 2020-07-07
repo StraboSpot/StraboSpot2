@@ -1,6 +1,7 @@
 import React from 'react';
-import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
+
 import Toast from 'react-native-easy-toast';
+
 import homeStyles from '../../modules/home/home.style';
 
 const ToastPopup = (props) => {

@@ -1,10 +1,11 @@
 import React from 'react';
 import {FlatList, View} from 'react-native';
+
 import {connect} from 'react-redux';
 
-import MeasurementItem from './MeasurementItem';
 import {NotebookPages, notebookReducers} from '../notebook-panel/notebook.constants';
 import {spotReducers} from '../spots/spot.constants';
+import MeasurementItem from './MeasurementItem';
 
 const MeasurementsOverview = (props) => {
   const onMeasurementPressed = (item) => {

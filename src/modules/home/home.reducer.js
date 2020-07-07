@@ -1,6 +1,7 @@
-import {homeReducers} from './home.constants';
 import {Dimensions} from 'react-native';
+
 import {redux} from '../../shared/app.constants';
+import {homeReducers} from './home.constants';
 
 const initialState = {
   statusMessages: [],

@@ -1,19 +1,14 @@
 import React, {useState, useEffect} from 'react';
-import {connect} from 'react-redux';
 import {FlatList, Text, View} from 'react-native';
+
 import {ListItem} from 'react-native-elements';
+import {connect} from 'react-redux';
 
 import {isEmpty} from '../../shared/Helpers';
-import SortingButtons from '../main-menu-panel/SortingButtons';
-
-// Constants
-import {settingPanelReducers, SortedViews} from '../main-menu-panel/mainMenuPanel.constants';
-
-// Hooks
-import useSpotsHook from './useSpots';
-
-// Styles
 import attributesStyles from '../main-menu-panel/attributes.styles';
+import {settingPanelReducers, SortedViews} from '../main-menu-panel/mainMenuPanel.constants';
+import SortingButtons from '../main-menu-panel/SortingButtons';
+import useSpotsHook from './useSpots';
 
 const SpotsList = (props) => {
   const [sortedList, setSortedList] = useState(getSpotsSortedChronologically);

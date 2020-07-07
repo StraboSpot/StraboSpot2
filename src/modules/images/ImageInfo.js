@@ -1,20 +1,15 @@
 import React, {useState} from 'react';
 import {ActivityIndicator, View} from 'react-native';
-import {connect} from 'react-redux';
+
 import {Icon, Image} from 'react-native-elements';
+import {connect} from 'react-redux';
 
-import IconButton from '../../shared/ui/IconButton';
-import ImagePropertiesModal from './ImagePropertiesModal';
-
-// Constants
-import {homeReducers} from '../home/home.constants';
-
-// Hooks
-import useImagesHook from './useImages';
-
-// Styles
-import styles from './images.styles';
 import * as themes from '../../shared/styles.constants';
+import IconButton from '../../shared/ui/IconButton';
+import {homeReducers} from '../home/home.constants';
+import ImagePropertiesModal from './ImagePropertiesModal';
+import styles from './images.styles';
+import useImagesHook from './useImages';
 
 const ImageInfo = (props) => {
 

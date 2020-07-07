@@ -3,8 +3,8 @@ import {Text, TextInput, View} from 'react-native';
 
 import PropTypes from 'prop-types';
 
-import {formStyles} from '../form';
 import stylesCommon from '../../shared/common.styles';
+import {formStyles} from '../form';
 
 const TextInputField = ({
                           field: {name, onBlur, onChange, value},

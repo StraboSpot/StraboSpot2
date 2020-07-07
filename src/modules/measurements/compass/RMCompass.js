@@ -1,5 +1,4 @@
 import React, {useState, useEffect} from 'react';
-import {connect, useSelector} from 'react-redux';
 import {
   Animated,
   Switch,
@@ -13,20 +12,21 @@ import {
   NativeModules,
   NativeEventEmitter,
 } from 'react-native';
-import {getNewId, mod, roundToDecimalPlaces, isEmpty} from '../../../shared/Helpers';
-import {CompassToggleButtons} from './compass.constants';
+
 import {Button, ListItem} from 'react-native-elements';
 import RNSimpleCompass from 'react-native-simple-compass';
-import {spotReducers} from '../../spots/spot.constants';
-import {homeReducers, Modals} from '../../home/home.constants';
-import {NotebookPages, notebookReducers} from '../../notebook-panel/notebook.constants';
-import Slider from '../../../shared/ui/Slider';
-import useMapsHook from '../../maps/useMaps';
+import {connect, useSelector} from 'react-redux';
 
-// Styles
-import compassStyles from './compass.styles';
-import uiStyles from '../../../shared/ui/ui.styles';
+import {getNewId, mod, roundToDecimalPlaces, isEmpty} from '../../../shared/Helpers';
 import * as themes from '../../../shared/styles.constants';
+import Slider from '../../../shared/ui/Slider';
+import uiStyles from '../../../shared/ui/ui.styles';
+import {homeReducers, Modals} from '../../home/home.constants';
+import useMapsHook from '../../maps/useMaps';
+import {NotebookPages, notebookReducers} from '../../notebook-panel/notebook.constants';
+import {spotReducers} from '../../spots/spot.constants';
+import {CompassToggleButtons} from './compass.constants';
+import compassStyles from './compass.styles';
 
 // eslint-disable-next-line no-unused-vars
 const {height, width} = Dimensions.get('window');

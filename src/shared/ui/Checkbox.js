@@ -1,5 +1,7 @@
 import React from 'react';
+
 import {CheckBox} from 'react-native-elements';
+
 import styles from './ui.styles';
 
 const DefaultCheckBox = (props) => {

@@ -1,15 +1,15 @@
 import React from 'react';
 import {ScrollView, Text, View} from 'react-native';
-import {Icon, ListItem} from 'react-native-elements';
-import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
-import {notebookReducers, NotebookPages} from '../notebook-panel/notebook.constants';
-import {connect} from 'react-redux';
-import SectionDivider from '../../shared/ui/SectionDivider';
 
-// Styles
-import styles from './samples.style';
+import {Icon, ListItem} from 'react-native-elements';
+import {connect} from 'react-redux';
+
 import * as themes from '../../shared/styles.constants';
+import SectionDivider from '../../shared/ui/SectionDivider';
 import {homeReducers, Modals} from '../home/home.constants';
+import {notebookReducers, NotebookPages} from '../notebook-panel/notebook.constants';
+import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
+import styles from './samples.style';
 
 const samplesNotebook = (props) => {
 

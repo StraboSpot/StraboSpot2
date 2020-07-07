@@ -1,11 +1,11 @@
 import React, {useState} from 'react';
 import {Dimensions} from 'react-native';
-import {connect} from 'react-redux';
-import AnimatedPoint from 'react-native-reanimated';
-import {State, PanGestureHandler} from 'react-native-gesture-handler';
-import {mapReducers} from './maps.constants';
 
-//Styles
+import {State, PanGestureHandler} from 'react-native-gesture-handler';
+import AnimatedPoint from 'react-native-reanimated';
+import {connect} from 'react-redux';
+
+import {mapReducers} from './maps.constants';
 import mapStyles from './maps.styles';
 
 const {cond, eq, add, call, set, Value, event} = AnimatedPoint;
@@ -81,8 +81,7 @@ const VertexDrag = (props) => {
               ],
             },
           ]}
-        >
-        </AnimatedPoint.View>
+         />
       </PanGestureHandler>
     </React.Fragment>
   );

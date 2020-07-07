@@ -1,9 +1,11 @@
+import {Alert, Platform} from 'react-native';
+
 import {useDispatch, useSelector} from 'react-redux';
 import RNFetchBlob from 'rn-fetch-blob';
-import {Alert, Platform} from 'react-native';
-import {projectReducers} from './project.constants';
-import {homeReducers} from '../home/home.constants';
+
 import {isEmpty} from '../../shared/Helpers';
+import {homeReducers} from '../home/home.constants';
+import {projectReducers} from './project.constants';
 
 const useExport = () => {
   let dirs = RNFetchBlob.fs.dirs;
@@ -233,7 +235,7 @@ const useExport = () => {
     if (!isEmpty(configDb.other_maps)) {
       exportData(devicePath + appDirectoryForDistributedBackups + '/' + exportedFileName, configDb.other_maps, '/other_maps.json').then(() => {
         console.log('Other Maps Exported');
-      })
+      });
     }
     return Promise.resolve('Other Maps exported to device');
   };
@@ -272,7 +274,7 @@ const useExport = () => {
   };
 
   const moveDistributedMap = async (mapId, fileName) => {
-  console.log('Moving Map:', mapId)
+  console.log('Moving Map:', mapId);
    return RNFetchBlob.fs.exists(devicePath + zipsDirectory + '/' + mapId + '.zip')
       .then(exists => {
       if (exists) {
@@ -281,12 +283,12 @@ const useExport = () => {
           devicePath + appDirectoryForDistributedBackups + '/' + fileName + '/maps/' + mapId.toString() + '.zip').then(res => {
             console.log('Map Copied.');
           return Promise.resolve(mapId);
-        })
+        });
           // .catch(copyError => Alert.alert('error copying map file: ', copyError));
       }
       else {
         console.log('couldn\'t find map ' +  mapId + '.zip');
-        return Promise.resolve()
+        return Promise.resolve();
       }
       // return Promise.resolve(mapId);
     })

@@ -1,5 +1,6 @@
-import {useSelector} from 'react-redux';
 import {Alert} from 'react-native';
+
+import {useSelector} from 'react-redux';
 
 const useServerRequests = () => {
   const user = useSelector(state => state.user);

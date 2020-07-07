@@ -1,24 +1,24 @@
-import RNSimpleCompass from 'react-native-simple-compass';
 import React, {Component} from 'react';
-import {connect} from 'react-redux';
 import {Animated, Easing, Alert, Image, View, Text, TouchableOpacity} from 'react-native';
-import {setUpdateIntervalForType, SensorTypes, accelerometer} from 'react-native-sensors';
-import {getNewId, mod, toRadians, toDegrees, roundToDecimalPlaces, isEmpty} from '../../../shared/Helpers';
-import {CompassToggleButtons} from './compass.constants';
+
 import {Button, ListItem} from 'react-native-elements';
+import {setUpdateIntervalForType, SensorTypes, accelerometer} from 'react-native-sensors';
+import RNSimpleCompass from 'react-native-simple-compass';
 import {Switch} from 'react-native-switch';
-import {spotReducers} from '../../spots/spot.constants';
+import {connect} from 'react-redux';
+
+import commonStyles from '../../../shared/common.styles';
+import {getNewId, mod, toRadians, toDegrees, roundToDecimalPlaces, isEmpty} from '../../../shared/Helpers';
+import * as themes from '../../../shared/styles.constants';
+import IconButton from '../../../shared/ui/IconButton';
+import Slider from '../../../shared/ui/Slider';
+import uiStyles from '../../../shared/ui/ui.styles';
 import {homeReducers, Modals} from '../../home/home.constants';
 import {NotebookPages, notebookReducers} from '../../notebook-panel/notebook.constants';
-import Slider from '../../../shared/ui/Slider';
+import {spotReducers} from '../../spots/spot.constants';
 import Measurements from '../Measurements';
-import IconButton from '../../../shared/ui/IconButton';
-
-// Styles
+import {CompassToggleButtons} from './compass.constants';
 import styles from './compass.styles';
-import uiStyles from '../../../shared/ui/ui.styles';
-import * as themes from '../../../shared/styles.constants';
-import commonStyles from '../../../shared/common.styles';
 
 const degree_update_rate = 2; // Number of degrees changed before the callback is triggered
 

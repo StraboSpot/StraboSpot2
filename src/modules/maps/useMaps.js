@@ -1,23 +1,19 @@
-import * as turf from '@turf/turf/index';
-import {useDispatch, useSelector} from 'react-redux';
 import {useEffect} from 'react';
+
 import Geolocation from '@react-native-community/geolocation';
+import * as turf from '@turf/turf/index';
 import proj4 from 'proj4';
+import {useDispatch, useSelector} from 'react-redux';
 
-// Hooks
 import useServerRequestsHook from '../../services/useServerRequests';
-import useSpotsHook from '../spots/useSpots';
-
-// Utilities
 import {isEmpty} from '../../shared/Helpers';
-
-// Constants
-import {basemaps, mapProviders, mapReducers, geoLatLngProjection, pixelProjection} from './maps.constants';
-import {projectReducers} from '../project/project.constants';
-import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
-import {SettingsMenuItems} from '../main-menu-panel/mainMenu.constants';
-import {spotReducers} from '../spots/spot.constants';
 import {homeReducers} from '../home/home.constants';
+import {SettingsMenuItems} from '../main-menu-panel/mainMenu.constants';
+import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
+import {projectReducers} from '../project/project.constants';
+import {spotReducers} from '../spots/spot.constants';
+import useSpotsHook from '../spots/useSpots';
+import {basemaps, mapProviders, mapReducers, geoLatLngProjection, pixelProjection} from './maps.constants';
 
 const useMaps = () => {
   const [useServerRequests] = useServerRequestsHook();

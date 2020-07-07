@@ -1,7 +1,8 @@
 import React from 'react';
 import {View} from 'react-native';
-import {useSelector} from 'react-redux';
+
 import {Button} from 'react-native-elements';
+import {useSelector} from 'react-redux';
 
 // Styles
 import commonStyles from '../../shared/common.styles';

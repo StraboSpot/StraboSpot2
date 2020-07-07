@@ -1,9 +1,10 @@
 import React from 'react';
-import Modal from '../../shared/ui/modal/Modal';
-import styles from './samples.style';
-import Samples from './Samples';
-import DragAnimation from '../../shared/ui/DragAmination';
 import {Platform, View} from 'react-native';
+
+import DragAnimation from '../../shared/ui/DragAmination';
+import Modal from '../../shared/ui/modal/Modal';
+import Samples from './Samples';
+import styles from './samples.style';
 
 const shortcutSamplesModal = (props) => {
   if (Platform.OS === 'android') {

@@ -3,11 +3,11 @@ import {Text, TouchableOpacity, View} from 'react-native';
 
 import {Icon} from 'react-native-elements';
 
-import * as themes from '../../shared/styles.constants';
+import stylesCommon from '../../shared/common.styles';
 import {isEmpty, padWithLeadingZeros, toTitleCase} from '../../shared/Helpers';
+import * as themes from '../../shared/styles.constants';
 import {labelDictionary} from '../form';
 import styles from './measurements.styles';
-import stylesCommon from '../../shared/common.styles';
 
 // Render a measurement item in a list
 const MeasurementItem = (props) => {

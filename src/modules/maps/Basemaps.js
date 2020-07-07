@@ -1,17 +1,16 @@
 import React, {useState} from 'react';
-import {useSelector} from 'react-redux';
-import MapboxGL from '@react-native-mapbox-gl/maps';
-import * as turf from '@turf/turf/index';
-import useImagesHook from '../images/useImages';
-import useMapsHook from './useMaps';
-import useMapSymbologyHook from './useMapSymbology';
-import {isEmpty} from '../../shared/Helpers';
 import {Platform, Text, View} from 'react-native';
 
-// Constants
-import {symbols as symbolsConstant, geoLatLngProjection, pixelProjection} from './maps.constants';
-// Styles
+import MapboxGL from '@react-native-mapbox-gl/maps';
+import * as turf from '@turf/turf/index';
+import {useSelector} from 'react-redux';
+
+import {isEmpty} from '../../shared/Helpers';
 import homeStyles from '../home/home.style';
+import useImagesHook from '../images/useImages';
+import {symbols as symbolsConstant, geoLatLngProjection, pixelProjection} from './maps.constants';
+import useMapsHook from './useMaps';
+import useMapSymbologyHook from './useMapSymbology';
 
 function Basemap(props) {
   const customMaps = useSelector(state => state.map.customMaps);

@@ -5,13 +5,13 @@ import * as turf from '@turf/turf/index';
 import {Field, Formik} from 'formik';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {Form, formStyles, NumberInputField, TextInputField, useFormHook} from '../form';
 import {isEmpty} from '../../shared/Helpers';
-import {notebookReducers} from '../notebook-panel/notebook.constants';
-import {spotReducers} from '../spots/spot.constants';
 import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import SectionDivider from '../../shared/ui/SectionDivider';
+import {Form, formStyles, NumberInputField, TextInputField, useFormHook} from '../form';
 import useMapsHooks from '../maps/useMaps';
+import {notebookReducers} from '../notebook-panel/notebook.constants';
+import {spotReducers} from '../spots/spot.constants';
 
 const Geography = (props) => {
   const [useForm] = useFormHook();

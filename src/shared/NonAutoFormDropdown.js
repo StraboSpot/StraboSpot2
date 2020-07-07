@@ -1,15 +1,15 @@
 import React from 'react';
 
 // Packages
-import MultiSelect from 'react-native-multiple-select';
 import PropTypes from 'prop-types';
+import MultiSelect from 'react-native-multiple-select';
 
 // Constants
-import * as themes from './styles.constants';
+import styles from '../modules/form/form.styles';
 import {conceptType} from '../modules/tags/tags.constants';
+import * as themes from './styles.constants';
 
 // Styles
-import styles from '../modules/form/form.styles';
 
 const NonAutoFormDropdown = (props) => {
   return (

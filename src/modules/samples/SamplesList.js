@@ -1,12 +1,14 @@
 import React, {useState, useEffect} from 'react';
-import {Alert, FlatList, ScrollView, Text, View} from 'react-native';
-import {connect} from 'react-redux';
-import SortingButtons from '../main-menu-panel/SortingButtons';
-import {NotebookPages, notebookReducers} from '../notebook-panel/notebook.constants';
-import {settingPanelReducers, SortedViews} from '../main-menu-panel/mainMenuPanel.constants';
+import {Alert, FlatList, Text, View} from 'react-native';
+
 import {Button, ListItem} from 'react-native-elements';
+import {connect} from 'react-redux';
+
 import {isEmpty} from '../../shared/Helpers';
 import attributesStyles from '../main-menu-panel/attributes.styles';
+import {settingPanelReducers, SortedViews} from '../main-menu-panel/mainMenuPanel.constants';
+import SortingButtons from '../main-menu-panel/SortingButtons';
+import {NotebookPages, notebookReducers} from '../notebook-panel/notebook.constants';
 
 const SamplesList = (props) => {
   const [sortedList, setSortedList] = useState(Object.values(props.spots));

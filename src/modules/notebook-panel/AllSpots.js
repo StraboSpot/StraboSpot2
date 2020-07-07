@@ -1,16 +1,12 @@
 import React from 'react';
-import {connect} from 'react-redux';
-import {ListItem} from 'react-native-elements';
 import {ScrollView} from 'react-native';
 
-// Constants
-import {spotReducers} from '../spots/spot.constants';
+import {ListItem} from 'react-native-elements';
+import {connect} from 'react-redux';
 
-// Hooks
-import useSpotsHook from '../spots/useSpots';
-
-// Styles
 import * as themes from '../../shared/styles.constants';
+import {spotReducers} from '../spots/spot.constants';
+import useSpotsHook from '../spots/useSpots';
 
 const AllSpots = (props) => {
   const [useSpots] = useSpotsHook();

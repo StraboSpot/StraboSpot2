@@ -1,14 +1,6 @@
-import {Dimensions, StyleSheet} from 'react-native';
-import * as themes from '../../shared/styles.constants';
-import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
+import {StyleSheet} from 'react-native';
 
-// eslint-disable-next-line no-unused-vars
-const {height, width} = Dimensions.get('window');
-const getWidthPercent = () => {
-  if (width < 500) return wp('95%');
-  if (width >= 500 && width <= 1000) return wp('40%');
-  if (width > 1000) return wp('30%');
-};
+import * as themes from '../../shared/styles.constants';
 
 const homeStyles = StyleSheet.create({
   container: {

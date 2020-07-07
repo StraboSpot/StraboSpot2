@@ -1,18 +1,16 @@
-import React, {useState} from 'react';
-import {Alert, Text, View} from 'react-native';
+import React from 'react';
+import {Text, View} from 'react-native';
+
 import {Button, ListItem} from 'react-native-elements';
-import {connect, useDispatch} from 'react-redux';
-import {mapReducers} from '../maps.constants';
 import Icon from 'react-native-vector-icons/Ionicons';
-import Divider from '../../main-menu-panel/MainMenuPanelDivider';
-import useMapHook from '../useMaps';
+import {connect, useDispatch} from 'react-redux';
 
-// Styles
-import styles from './customMaps.styles';
 import commonStyles from '../../../shared/common.styles';
-import {settingPanelReducers} from '../../main-menu-panel/mainMenuPanel.constants';
 import {isEmpty} from '../../../shared/Helpers';
-
+import Divider from '../../main-menu-panel/MainMenuPanelDivider';
+import {mapReducers} from '../maps.constants';
+import useMapHook from '../useMaps';
+import styles from './customMaps.styles';
 
 const ManageCustomMaps = (props) => {
   console.log('Props: ', props);

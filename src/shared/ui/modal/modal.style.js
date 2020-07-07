@@ -1,4 +1,5 @@
 import {Dimensions, StyleSheet} from 'react-native';
+
 import * as themes from '../../styles.constants';
 
 // eslint-disable-next-line no-unused-vars

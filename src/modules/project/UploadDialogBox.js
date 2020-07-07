@@ -1,15 +1,16 @@
 import React from 'react';
+
 import Dialog, {
   DialogTitle,
   DialogContent,
-  SlideAnimation,
   FadeAnimation,
   DialogFooter,
   DialogButton,
 } from 'react-native-popup-dialog';
+
+import commonStyles from '../../shared/common.styles';
 import * as ProjectActions from './project.constants';
 import styles from './project.styles';
-import commonStyles from '../../shared/common.styles';
 
 const UploadDialogBox = (props) => {
   return (

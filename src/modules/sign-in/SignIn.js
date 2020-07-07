@@ -1,22 +1,19 @@
 import React, {useState, useEffect} from 'react';
 import {View, Text, TextInput, Alert, ImageBackground, KeyboardAvoidingView} from 'react-native';
-import {connect, useSelector, useDispatch} from 'react-redux';
-import useServerRequests from '../../services/useServerRequests';
-import * as themes from '../../shared/styles.constants';
-import {USER_DATA, USER_IMAGE, ENCODED_LOGIN} from '../user/user.constants';
-// import * as Sentry from '@sentry/react-native';
-import {readDataUrl} from '../../shared/Helpers';
-import Icon from 'react-native-vector-icons/Ionicons';
-import {Button} from 'react-native-elements';
-import NetInfo from '@react-native-community/netinfo';
-import {homeReducers} from '../home/home.constants';
-import IconButton from '../../shared/ui/IconButton';
-import {USERNAME_TEST, PASSWORD_TEST} from '../../../Config';
-import {Base64} from 'js-base64';
-import {isEmpty} from '../../shared/Helpers';
-import {VERSION_NUMBER} from '../../shared/app.constants';
 
-// Styles
+import NetInfo from '@react-native-community/netinfo';
+import {Base64} from 'js-base64';
+import {Button} from 'react-native-elements';
+import Icon from 'react-native-vector-icons/Ionicons';
+import {useSelector, useDispatch} from 'react-redux';
+
+import {USERNAME_TEST, PASSWORD_TEST} from '../../../Config';
+import useServerRequests from '../../services/useServerRequests';
+import {VERSION_NUMBER} from '../../shared/app.constants';
+import {readDataUrl,isEmpty} from '../../shared/Helpers';
+import IconButton from '../../shared/ui/IconButton';
+import {homeReducers} from '../home/home.constants';
+import {USER_DATA, USER_IMAGE, ENCODED_LOGIN} from '../user/user.constants';
 import styles from './signIn.styles';
 
 let user = null;

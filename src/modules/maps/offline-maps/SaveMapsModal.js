@@ -1,23 +1,21 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Header} from 'react-native-elements';
-import {Dialog, DialogContent, SlideAnimation} from 'react-native-popup-dialog';
 import {Platform, StyleSheet, Text, View} from 'react-native';
+
+import {Picker} from '@react-native-community/picker';
+import {Button, Header} from 'react-native-elements';
+import * as loading from 'react-native-indicators';
+import {Dialog, DialogContent, SlideAnimation} from 'react-native-popup-dialog';
+import ProgressBar from 'react-native-progress/Bar';
 import {unzip} from 'react-native-zip-archive'; /*TODO  react-native-zip-archive@3.0.1 requires a peer of react@^15.4.2 || <= 16.3.1 but none is installed */
 import {useDispatch, useSelector} from 'react-redux';
-import {Picker} from '@react-native-community/picker';
-import ProgressBar from 'react-native-progress/Bar';
 import RNFetchBlob from 'rn-fetch-blob';
-import * as loading from 'react-native-indicators';
-import useMapsHook from '../useMaps';
+
 import {toNumberFixedValue} from '../../../shared/Helpers';
+import * as themes from '../../../shared/styles.constants';
+import {mapReducers} from '../maps.constants';
+import useMapsHook from '../useMaps';
 
 const RNFS = require('react-native-fs');
-
-// Constants
-import {mapReducers} from '../maps.constants';
-
-// Styles
-import * as themes from '../../../shared/styles.constants';
 
 const SaveMapsModal = (props) => {
   // console.log(props);
@@ -168,7 +166,7 @@ const SaveMapsModal = (props) => {
 
   const downloadZip = async (zipUID) => {
     const downloadProgress = (res) => {
-      const percentage = Math.floor((res.totalBytesSent/res.totalBytesExpectedToSend) * 100);
+      const percentage = Math.floor((res.totalBytesSent / res.totalBytesExpectedToSend) * 100);
       console.log('UPLOAD IS ' + percentage + '% DONE!');
     };
 
@@ -183,8 +181,8 @@ const SaveMapsModal = (props) => {
           console.log('UPLOAD HAS BEGUN! JobId: ' + jobId);
         },
         progress: (res) => {
-          console.log(((res.bytesWritten/res.contentLength) * 100).toFixed(2));
-          setPercentDone(res.bytesWritten/res.contentLength);
+          console.log(((res.bytesWritten / res.contentLength) * 100).toFixed(2));
+          setPercentDone(res.bytesWritten / res.contentLength);
         },
       };
 
@@ -202,7 +200,7 @@ const SaveMapsModal = (props) => {
         //delete
         await RNFS.unlink(tileTempDirectory + '/' + zipUID);
       }
-      else await RNFS.mkdir(tileTempDirectory)
+      else await RNFS.mkdir(tileTempDirectory);
 
       await RNFS.downloadFile(downloadOptions).promise.then(res => {
         console.log(res);

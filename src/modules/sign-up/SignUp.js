@@ -1,22 +1,20 @@
 import React, {useEffect, useState} from 'react';
 import {Alert, Text, View, TextInput, StyleSheet, KeyboardAvoidingView, ImageBackground} from 'react-native';
-import {Button, Input} from 'react-native-elements';
-import {isEmpty, validate} from '../../shared/Helpers';
-import * as themes from '../../shared/styles.constants';
-import {userReducer} from '../user/userProfile.reducer';
-import useServerRequests from '../../services/useServerRequests';
-import StatusDialog from '../../shared/ui/StatusDialogBox';
-import DefaultCheckBox from '../../shared/ui/Checkbox';
-import Loading from '../../shared/ui/Loading';
-import {VERSION_NUMBER} from '../../shared/app.constants';
 
-// Styles
-import styles from './signUp.styles';
+import NetInfo from '@react-native-community/netinfo';
+import {Button, Input} from 'react-native-elements';
 import {SlideAnimation} from 'react-native-popup-dialog';
 import {useDispatch, useSelector} from 'react-redux';
-import NetInfo from '@react-native-community/netinfo';
-import {homeReducers} from '../home/home.constants';
+
+import useServerRequests from '../../services/useServerRequests';
+import {VERSION_NUMBER} from '../../shared/app.constants';
+import {isEmpty, validate} from '../../shared/Helpers';
+import DefaultCheckBox from '../../shared/ui/Checkbox';
 import IconButton from '../../shared/ui/IconButton';
+import Loading from '../../shared/ui/Loading';
+import StatusDialog from '../../shared/ui/StatusDialogBox';
+import {homeReducers} from '../home/home.constants';
+import styles from './signUp.styles';
 
 const checkMark = {type: 'feather', name: 'check', color: 'green'};
 

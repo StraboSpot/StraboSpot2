@@ -1,19 +1,20 @@
 import React, {useState} from 'react';
 import {Alert, FlatList, View} from 'react-native';
 
-import {connect, useDispatch} from 'react-redux';
 import {Button} from 'react-native-elements';
+import {connect, useDispatch} from 'react-redux';
+
 // Components
-import MeasurementItem from './MeasurementItem';
-import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
+import * as themes from '../../shared/styles.constants';
 import SectionDivider from '../../shared/ui/SectionDivider';
 // Constants
-import {CompassToggleButtons} from './compass/compass.constants';
 import {homeReducers, Modals} from '../home/home.constants';
 import {NotebookPages, notebookReducers} from '../notebook-panel/notebook.constants';
+import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import {spotReducers} from '../spots/spot.constants';
+import {CompassToggleButtons} from './compass/compass.constants';
+import MeasurementItem from './MeasurementItem';
 // Styles
-import * as themes from '../../shared/styles.constants';
 import styles from './measurements.styles';
 
 const MeasurementsPage = (props) => {

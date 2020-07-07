@@ -1,14 +1,12 @@
 import React from 'react';
 import {View, Text} from 'react-native';
-import {Button} from 'react-native-elements';
-import {connect} from 'react-redux';
-import {Avatar} from 'react-native-elements';
+
+import {Button,Avatar} from 'react-native-elements';
 import {withNavigation} from 'react-navigation';
+import {connect} from 'react-redux';
 
-import {isEmpty} from '../../shared/Helpers';
-
-// Styles
 import commonStyles from '../../shared/common.styles';
+import {isEmpty} from '../../shared/Helpers';
 import userStyles from './user.styles';
 
 const UserProfile = (props) => {

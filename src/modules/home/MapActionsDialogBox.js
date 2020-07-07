@@ -1,4 +1,5 @@
 import React from 'react';
+
 import Dialog, {DialogButton, DialogContent, DialogTitle} from 'react-native-popup-dialog';
 import {ScaleAnimation} from 'react-native-popup-dialog/src';
 import {useSelector} from 'react-redux';

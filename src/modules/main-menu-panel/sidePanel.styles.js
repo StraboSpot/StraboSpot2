@@ -12,7 +12,7 @@ const sidePanelStyles = StyleSheet.create({
     // flexDirection: 'row',
     // alignItems: 'center',
     // borderColor: themes.MEDIUMGREY,
-    borderWidth: .5,
+    borderWidth: 0.5,
     borderRadius: 10,
     backgroundColor: 'white',
     // marginBottom: 10,
@@ -34,7 +34,7 @@ const sidePanelStyles = StyleSheet.create({
     // flex: 1,
     // paddingTop: 10,
     // backgroundColor: 'red',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   sidePanelContainer: {
     height: '100%',

@@ -1,9 +1,10 @@
 import {StyleSheet} from 'react-native';
+
 import * as themes from './styles.constants';
 
 const commonStyles = StyleSheet.create({
   buttonContainer: {
-    paddingTop: 10
+    paddingTop: 10,
   },
   dialogContent: {
     flex: 1,
@@ -38,7 +39,7 @@ const commonStyles = StyleSheet.create({
   dialogStatusMessageText: {
     fontWeight: '400',
     fontSize: themes.STATUS_MESSAGE_TEXT_SIZE,
-    textAlign: 'center'
+    textAlign: 'center',
   },
   dialogButton: {
     borderTopWidth: 1,

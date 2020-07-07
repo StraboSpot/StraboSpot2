@@ -1,20 +1,19 @@
 import React, {useState} from 'react';
 import {FlatList, Text, TextInput, View} from 'react-native';
-import Divider from '../main-menu-panel/MainMenuPanelDivider';
-import {Button} from 'react-native-elements';
+
 import moment from 'moment';
-
-import {homeReducers} from '../home/home.constants';
+import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
-import UploadDialogBox from './UploadDialogBox';
-import useExportHook from './useExport';
-import useImagesHook from '../images/useImages';
-import useProjectHook from './useProject';
 
-// Styles
-import projectStyles from './project.styles';
 import commonStyles from '../../shared/common.styles';
 import Spacer from '../../shared/ui/Spacer';
+import {homeReducers} from '../home/home.constants';
+import useImagesHook from '../images/useImages';
+import Divider from '../main-menu-panel/MainMenuPanelDivider';
+import projectStyles from './project.styles';
+import UploadDialogBox from './UploadDialogBox';
+import useExportHook from './useExport';
+import useProjectHook from './useProject';
 
 const UploadBackAndExport = (props) => {
   const [useExport] = useExportHook();

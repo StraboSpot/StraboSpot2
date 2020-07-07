@@ -1,6 +1,6 @@
+import {redux} from '../../shared/app.constants';
 import {isEmpty, isEqual} from '../../shared/Helpers';
 import {spotReducers} from './spot.constants';
-import {redux} from '../../shared/app.constants';
 
 const initialState = {
   selectedSpots: [],

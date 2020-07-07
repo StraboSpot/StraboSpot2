@@ -1,11 +1,11 @@
 import React from 'react';
 import {ScrollView, Text, View} from 'react-native';
-import {connect} from 'react-redux';
-import {ListItem, Icon} from 'react-native-elements';
-import {isEmpty} from '../../shared/Helpers';
 
-// Styles
+import {ListItem, Icon} from 'react-native-elements';
+import {connect} from 'react-redux';
+
 import commonStyles from '../../shared/common.styles';
+import {isEmpty} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
 
 const SpotTag = () => {

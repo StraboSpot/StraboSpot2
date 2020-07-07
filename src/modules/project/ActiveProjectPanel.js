@@ -1,20 +1,20 @@
 import React, {useState, useEffect} from 'react';
 import {Text, View} from 'react-native';
-import {useSelector, useDispatch} from 'react-redux';
-import { Button, Icon} from 'react-native-elements';
-import Divider from '../main-menu-panel/MainMenuPanelDivider';
-import DatasetList from './DatasetList';
-import ActiveDatasetsList from './ActiveDatasetsList';
-import ActiveProjectList from './ActiveProjectList';
+
+import {Button} from 'react-native-elements';
+import {useSelector} from 'react-redux';
+
+import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import GeneralTextInputModal from '../../shared/ui/GeneralTextInputModal';
-
-// Styles
+import Divider from '../main-menu-panel/MainMenuPanelDivider';
+import ActiveDatasetsList from './ActiveDatasetsList';
+import ActiveProjectList from './ActiveProjectList';
+import DatasetList from './DatasetList';
 import styles from './project.styles';
-import commonStyles from '../../shared/common.styles';
 import useProjectHook from './useProject';
 
-const ActiveProjectPanel = (props) => {
+const ActiveProjectPanel = () => {
 
   const [useProject] = useProjectHook();
   const [activeDatasets, setActiveDatasets] = useState(null);
@@ -48,7 +48,7 @@ const ActiveProjectPanel = (props) => {
 
   return (
     <React.Fragment>
-      <ActiveProjectList />
+      <ActiveProjectList/>
       <View style={styles.dividerWithButtonContainer}>
         <Divider sectionText={'PROJECT DATASETS'}/>
         <Button
@@ -60,9 +60,9 @@ const ActiveProjectPanel = (props) => {
           onPress={() => setIsAddDatasetModalVisible(true)}
         />
       </View>
-      <Text style={[commonStyles.standardDescriptionText, styles.subHeaderText]} >Select pencil to edit name</Text>
+      <Text style={[commonStyles.standardDescriptionText, styles.subHeaderText]}>Select pencil to edit name</Text>
       <View style={[styles.sectionContainer, {height: 200}]}>
-      <DatasetList/>
+        <DatasetList/>
       </View>
       <View style={{paddingBottom: 10}}>
         <Divider sectionText={'ACTIVE DATASETS'}/>
@@ -83,7 +83,8 @@ const ActiveProjectPanel = (props) => {
           onPress={() => useProject.selectProject(project)}
         />
         <View style={{alignItems: 'center', margin: 10, marginTop: 0}}>
-          <Text style={commonStyles.standardDescriptionText}>This will overwrite anything that has not been uploaded to the server</Text>
+          <Text style={commonStyles.standardDescriptionText}>This will overwrite anything that has not been uploaded to
+            the server</Text>
         </View>
       </View>
       {renderAddDatasetModal()}

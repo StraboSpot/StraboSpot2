@@ -1,20 +1,16 @@
 import {Alert, Platform} from 'react-native';
+
 import {Base64} from 'js-base64';
-import {useDispatch, useSelector} from 'react-redux';
 import ImagePicker from 'react-native-image-picker';
 import ImageResizer from 'react-native-image-resizer';
+import {useDispatch, useSelector} from 'react-redux';
 import RNFetchBlob from 'rn-fetch-blob';
 
-// Hooks
-import useExportHook from '../project/useExport';
-import useHomeHook from '../home/useHome';
 import useServerRequests from '../../services/useServerRequests';
-
-// Utility
 import {getNewId, isEmpty} from '../../shared/Helpers';
-
-// Constants
 import {homeReducers} from '../home/home.constants';
+import useHomeHook from '../home/useHome';
+import useExportHook from '../project/useExport';
 import {spotReducers} from '../spots/spot.constants';
 
 const RNFS = require('react-native-fs');

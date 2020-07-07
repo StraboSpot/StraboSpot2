@@ -1,10 +1,12 @@
 import React from 'react';
 import {Image, Text, View} from 'react-native';
-import styles from './shortcutsMenu.styles';
+
 import {ListItem} from 'react-native-elements';
-import {ShortcutToggleButtons as Buttons} from '../mainMenu.constants';
 import {Switch} from 'react-native-switch';
+
 import * as themes from '../../../shared/styles.constants';
+import {ShortcutToggleButtons as Buttons} from '../mainMenu.constants';
+import styles from './shortcutsMenu.styles';
 
 const ShortcutMenu = props => (
   <React.Fragment>

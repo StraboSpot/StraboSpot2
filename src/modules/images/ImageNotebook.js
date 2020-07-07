@@ -1,18 +1,13 @@
 import React from 'react';
 import {ActivityIndicator, Button, Dimensions, FlatList, ScrollView, View} from 'react-native';
 
-import {connect} from 'react-redux';
-import {withNavigation} from 'react-navigation';
 import {Image} from 'react-native-elements';
+import {withNavigation} from 'react-navigation';
+import {connect} from 'react-redux';
 
-// Hooks
-import useImagesHook from './useImages';
-
-// Constants
 import {spotReducers} from '../spots/spot.constants';
-
-// Styles
 import imageStyles from './images.styles';
+import useImagesHook from './useImages';
 
 const screenHeight = Dimensions.get('window').height;
 

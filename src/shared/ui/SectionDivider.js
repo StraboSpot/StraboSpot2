@@ -1,5 +1,6 @@
 import React from 'react';
 import {Text, View} from 'react-native';
+
 import styles from '../../shared/ui/ui.styles';
 
 const SectionDivider = (props) => {

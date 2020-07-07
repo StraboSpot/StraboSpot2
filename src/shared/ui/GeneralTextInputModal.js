@@ -1,14 +1,15 @@
 import React from 'react';
-import {TextInput,KeyboardAvoidingView, View} from 'react-native';
+import {View} from 'react-native';
+
 import {Input} from 'react-native-elements';
 import Dialog, {
   DialogTitle,
   DialogContent,
   DialogButton,
   DialogFooter,
-  SlideAnimation,
   FadeAnimation,
 } from 'react-native-popup-dialog';
+
 import styles from '../../shared/common.styles';
 
 const TexInputModal = (props) => {
@@ -41,7 +42,7 @@ const TexInputModal = (props) => {
           <Input
             value={props.value}
             maxLength={25}
-            inputContainerStyle={{ borderColor: 'transparent'}}
+            inputContainerStyle={{borderColor: 'transparent'}}
             inputStyle={{backgroundColor: 'white', height: 50, width: 200, paddingLeft: 20}}
             onChangeText={props.onChangeText}
             placeholder={'Enter text here...'}

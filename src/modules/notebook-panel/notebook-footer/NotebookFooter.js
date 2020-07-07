@@ -1,11 +1,13 @@
 import React from 'react';
 import {View} from 'react-native';
-import IconButton from '../../../shared/ui/IconButton';
-import footerStyle from './notebookFooter.styles';
-import {NotebookPages} from '../notebook.constants';
-import {IconButtons} from '../../../shared/app.constants';
+
 import {connect} from 'react-redux';
+
+import {IconButtons} from '../../../shared/app.constants';
 import {isEmpty} from '../../../shared/Helpers';
+import IconButton from '../../../shared/ui/IconButton';
+import {NotebookPages} from '../notebook.constants';
+import footerStyle from './notebookFooter.styles';
 
 const NotebookFooter = props => {
 

@@ -1,6 +1,5 @@
-import * as UserInfo from './user.constants';
 import {redux} from '../../shared/app.constants';
-
+import * as UserInfo from './user.constants';
 
 const initialState = {};
 
