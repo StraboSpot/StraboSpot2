@@ -6,7 +6,7 @@ import {homeReducer} from '../modules/home/home.reducer';
 import {userReducer} from '../modules/user/userProfile.reducer';
 import {projectsReducer} from '../modules/project/projects.reducer';
 import {mainMenuPanelReducer} from '../modules/main-menu-panel/mainMenuPanel.reducer';
-import {tagsReducer} from '../modules/tags/tags.reducer';
+import {tagsReducer} from '../modules/tags';
 import {createLogger} from 'redux-logger';
 import {persistStore, persistReducer} from 'redux-persist';
 import AsyncStorage from '@react-native-community/async-storage';

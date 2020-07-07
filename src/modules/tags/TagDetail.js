@@ -1,27 +1,30 @@
 import React, {useState} from 'react';
 import {FlatList, ScrollView, Text, TextInput, View} from 'react-native';
 
-// Packages
+// Third Party Packages
 import {ListItem} from 'react-native-elements';
-import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
-import {tagTypes} from './tags.constants';
 import {useDispatch, useSelector} from 'react-redux';
-import Concept from './tag/Concept';
+
+// Local Files
+import {Concept, tagsStyles, tagTypes, useTagsHook} from '../tags';
+
+// Components
 import Divider from '../main-menu-panel/MainMenuPanelDivider';
 import {toTitleCase} from '../../shared/Helpers';
 import SidePanelHeader from '../main-menu-panel/sidePanel/SidePanelHeader';
 import {getDimensions, isEmpty} from '../../shared/Helpers';
 
 // Styles
-import tagStyles from './tags.styles';
 import commonStyles from '../../shared/common.styles';
 
+// Constants
+import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
+
 // Hooks
-import useTagHooks from '../tags/useTags';
 import useSpotsHook from '../spots/useSpots';
 
 const TagDetail = () => {
-  const [useTags] = useTagHooks();
+  const [useTags] = useTagsHook();
   const [useSpots] = useSpotsHook();
 
   const dispatch = useDispatch();
@@ -47,7 +50,7 @@ const TagDetail = () => {
     const titleCase = toTitleCase(str);
     return (
       <View>
-        <View style={tagStyles.sectionContainer}>
+        <View style={tagsStyles.sectionContainer}>
           <View>
             <ListItem
               title={'Name'}
@@ -57,7 +60,7 @@ const TagDetail = () => {
                   defaultValue={!isEmpty(selectedTag) && selectedTag.name}
                   onChangeText={(text) => setTagName(text)}
                   onBlur={() => useTags.save(selectedTag.id, tagName)}
-                  style={tagStyles.listText}
+                  style={tagsStyles.listText}
                 />
               }
               bottomDivider={true}
@@ -66,7 +69,7 @@ const TagDetail = () => {
               title={'Type'}
               titleStyle={commonStyles.listItemTitle}
               rightElement={
-                <Text style={tagStyles.listText}>{titleCase}</Text>
+                <Text style={tagsStyles.listText}>{titleCase}</Text>
               }
             />
           </View>
@@ -74,7 +77,7 @@ const TagDetail = () => {
         <View>
           {renderTypeFields(selectedTag.type)}
         </View>
-        <View style={tagStyles.sectionContainer}>
+        <View style={tagsStyles.sectionContainer}>
           <TextInput
             multiline={true}
             placeholder={'No Notes'}
@@ -90,7 +93,7 @@ const TagDetail = () => {
   const renderTaggedSpots = () => {
     const height = getDimensions().height;
     return (
-      <View style={[tagStyles.sectionContainer, {maxHeight: height * .40}]}>
+      <View style={[tagsStyles.sectionContainer, {maxHeight: height * .40}]}>
         <ScrollView>
           {selectedTag && selectedTag.spots ?
             selectedTag.spots.map((spotId, index) => {

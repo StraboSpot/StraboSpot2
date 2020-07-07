@@ -9,7 +9,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import NonAutoFormDropdown from '../../../shared/NonAutoFormDropdown';
 
 // Utilities
-import {tagsReducers} from '../tags.constants';
+import {tagsReducers} from '../../tags';
 import {toTitleCase} from '../../../shared/Helpers';
 
 // Styles

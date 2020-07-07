@@ -4,7 +4,7 @@ import React from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 
 // Utilities
-import {tagTypes} from './tags.constants';
+import {tagsReducers, tagTypes} from './tags.constants';
 
 const useTags = () => {
   const dispatch = useDispatch();

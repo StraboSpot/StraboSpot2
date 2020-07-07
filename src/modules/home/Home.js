@@ -30,7 +30,7 @@ import ShortcutCompassModal from '../measurements/compass/ShortcutCompassModal';
 import ShortcutNotesModal from '../notes/ShortcutNotesModal';
 import ShortcutSamplesModal from '../samples/ShortcutSamplesModal';
 import StatusDialogBox from '../../shared/ui/StatusDialogBox';
-import TagDetail from '../tags/TagDetail';
+import {TagDetail} from '../tags';
 import ToastPopup from '../../shared/ui/Toast';
 import VertexDrag from '../maps/VertexDrag';
 
