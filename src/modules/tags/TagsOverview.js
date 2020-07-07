@@ -8,7 +8,7 @@ import {isEmpty} from '../../shared/Helpers';
 import commonStyles from '../../shared/common.styles';
 import * as themes from '../../shared/styles.constants';
 
-const SpotTag = props => {
+const SpotTag = () => {
   if (!isEmpty(data)) {
     return (
       <ScrollView style={{height: 250}}>
