@@ -1,4 +1,6 @@
 import {StyleSheet} from 'react-native';
+
+// Constants
 import * as themes from '../../shared/styles.constants';
 
 const sidePanelStyles = StyleSheet.create({
@@ -7,14 +9,14 @@ const sidePanelStyles = StyleSheet.create({
     padding: 10,
   },
   textInputNameContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderColor: themes.MEDIUMGREY,
+    // flexDirection: 'row',
+    // alignItems: 'center',
+    // borderColor: themes.MEDIUMGREY,
     borderWidth: .5,
     borderRadius: 10,
     backgroundColor: 'white',
-    // paddingBottom: 10,
-    margin: 10,
+    // marginBottom: 10,
+    paddingLeft: 10,
     // paddingTop: 10,
   },
   textInputNameLabel: {
@@ -29,8 +31,9 @@ const sidePanelStyles = StyleSheet.create({
     paddingTop: 10,
   },
   sectionContainer: {
-    flex: 1,
-    paddingTop: 20,
+    // flex: 1,
+    // paddingTop: 10,
+    // backgroundColor: 'red',
     justifyContent: 'center'
   },
   sidePanelContainer: {
