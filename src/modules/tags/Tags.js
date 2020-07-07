@@ -7,7 +7,7 @@ import {isEmpty} from '../../shared/Helpers';
 
 //Styles
 import notebookStyles from '../notebook-panel/notebookPanel.styles';
-import tagStyles from './Tags.styles';
+import tagStyles from './tags.styles';
 import commonStyles from '../../shared/common.styles';
 import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 

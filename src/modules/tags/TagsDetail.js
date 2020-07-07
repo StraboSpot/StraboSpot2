@@ -9,7 +9,7 @@ import SidePanelHeader from '../main-menu-panel/sidePanel/SidePanelHeader';
 import {getDimensions, isEmpty} from '../../shared/Helpers';
 
 // Styles
-import tagStyles from './Tags.styles';
+import tagStyles from './tags.styles';
 import commonStyles from '../../shared/common.styles';
 
 // Hooks
