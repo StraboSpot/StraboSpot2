@@ -34,6 +34,7 @@ import {homeReducers} from '../../home/home.constants';
 const {State: TextInputState} = TextInput;
 
 const AddCustomMaps = (props) => {
+  let sliderValuePercent = editableCustomMapData && (editableCustomMapData.opacity / 1).toFixed(1) * 100;
   const MBKeyboardType = Platform.OS === 'ios' ? 'url' : 'default';
   const MWKeyboardType = Platform.OS === 'ios' ? 'numeric' : 'phone-pad';
   const [useMaps] = useMapHook();
@@ -173,17 +174,16 @@ const AddCustomMaps = (props) => {
     switch (editableCustomMapData && editableCustomMapData.source) {
       case 'mapbox_styles':
         return (
-          <View>
+          <View style={{padding: 0}}>
             <Input
               value={editableCustomMapData.id}
-              containerStyle={{borderBottomWidth: 0.5}}
-              inputContainerStyle={{borderBottomWidth: 0}}
+              inputContainerStyle={sidePanelStyles.textInputNameContainer}
               onChangeText={text => setEditableCustomMapData(e => ({...e, id: text}))}
               keyboardType={MBKeyboardType}
               placeholderTextColor={'black'}
               placeholder={'Styles URL'}/>
             <Input
-              inputContainerStyle={{borderBottomWidth: 0}}
+              inputContainerStyle={sidePanelStyles.textInputNameContainer}
               placeholderTextColor={'black'}
               onChangeText={text => setEditableCustomMapData(e => ({...e, accessToken: text}))}
               defaultValue={editableCustomMapData.accessToken}
@@ -197,7 +197,7 @@ const AddCustomMaps = (props) => {
               keyboardType={MWKeyboardType}
               defaultValue={editableCustomMapData.id}
               onChangeText={text => setEditableCustomMapData(e => ({...e, id: text}))}
-              inputContainerStyle={{borderBottomWidth: 0}}
+              inputContainerStyle={sidePanelStyles.textInputNameContainer}
               placeholder={'Map ID'}
               placeholderTextColor={'black'}
             />
@@ -207,7 +207,7 @@ const AddCustomMaps = (props) => {
         return (
           <View>
             <Input
-              inputContainerStyle={{borderBottomWidth: 0}}
+              inputContainerStyle={sidePanelStyles.textInputNameContainer}
               placeholder={'Strabo Map ID'}
               placeholderTextColor={'black'}
               defaultValue={editableCustomMapData.id}
@@ -236,7 +236,8 @@ const AddCustomMaps = (props) => {
     return (
       <React.Fragment>
         <Input
-          inputContainerStyle={{borderBottomWidth: 0}}
+          containerStyle={sidePanelStyles.infoInputText}
+          inputContainerStyle={sidePanelStyles.textInputNameContainer}
           style={sidePanelStyles.infoInputText}
           defaultValue={editableCustomMapData && editableCustomMapData.title}
           onChangeText={text => setEditableCustomMapData({...editableCustomMapData, title: text})}
@@ -246,7 +247,6 @@ const AddCustomMaps = (props) => {
   };
 
   const renderOverlay = () => {
-    let sliderValuePercent = editableCustomMapData && (editableCustomMapData.opacity / 1).toFixed(1) * 100;
     return (
       <React.Fragment>
         <ListItem
@@ -259,27 +259,6 @@ const AddCustomMaps = (props) => {
             />
           }
         />
-        {editableCustomMapData && editableCustomMapData.overlay &&
-        <View style={{}}>
-          <ListItem
-            containerStyle={{borderTopWidth: 0.5, padding: 0, paddingLeft: 10}}
-            title={'Opacity'}
-            subtitle={`(${sliderValuePercent}%)`}
-            subtitleStyle={{fontSize: 12, paddingLeft: 15}}
-            rightElement={
-              <View style={{flex: 2}}>
-                <Slider
-                  value={editableCustomMapData && editableCustomMapData.opacity}
-                  onValueChange={(val) => setEditableCustomMapData(e => ({...e, opacity: val}))}
-                  maximumValue={1}
-                  minimumValue={0}
-                  step={0.1}
-                />
-              </View>
-            }
-          />
-        </View>
-        }
       </React.Fragment>
     );
   };
@@ -299,16 +278,35 @@ const AddCustomMaps = (props) => {
   return (
     <Animated.View style={[{flex: 1}, {transform: [{translateY: textInputAnimate}]}]}>
       {renderSidePanelHeader()}
-      <View style={[sidePanelStyles.sectionContainer, {flex: 2}]}>
+      <View style={[sidePanelStyles.sectionContainer, {flex: 2, paddingTop: 10}]}>
         <Divider sectionText={'Custom Map Title'}/>
-        <View style={sidePanelStyles.textInputNameContainer}>
           {renderTitle()}
-        </View>
       </View>
       <View style={[sidePanelStyles.sectionContainer, {flex: 3}]}>
         <Divider sectionText={'Overlay Settings'}/>
         <View style={styles.sectionsContainer}>
           {renderOverlay()}
+          {editableCustomMapData && editableCustomMapData.overlay &&
+          <View style={{}}>
+            <ListItem
+              containerStyle={{borderTopWidth: 0.5, padding: 0, paddingLeft: 10}}
+              title={'Opacity'}
+              subtitle={`(${sliderValuePercent}%)`}
+              subtitleStyle={{fontSize: 12, paddingLeft: 15}}
+              rightElement={
+                <View style={{flex: 2}}>
+                  <Slider
+                    value={editableCustomMapData && editableCustomMapData.opacity}
+                    onValueChange={(val) => setEditableCustomMapData(e => ({...e, opacity: val}))}
+                    maximumValue={1}
+                    minimumValue={0}
+                    step={0.1}
+                  />
+                </View>
+              }
+            />
+          </View>
+          }
         </View>
       </View>
       <View style={[sidePanelStyles.sectionContainer, {flex: 5}]}>
@@ -325,9 +323,7 @@ const AddCustomMaps = (props) => {
       </View>
       <View style={[sidePanelStyles.sectionContainer, {flex: 3}]}>
         <Divider sectionText={'Map Details'}/>
-        <View style={styles.sectionsContainer}>
           {renderMapDetails()}
-        </View>
       </View>
       <View style={[sidePanelStyles.sectionContainer, {flex: 3}]}>
         <SaveAndDeleteButtons
