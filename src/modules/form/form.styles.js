@@ -1,4 +1,6 @@
 import {StyleSheet} from 'react-native';
+
+// Constants
 import * as themes from '../../shared/styles.constants';
 
 const styles = StyleSheet.create({
@@ -6,10 +8,9 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
   },
   dropdownSelectedContainer: {
-    paddingTop: 0,
-    paddingBottom: 0,
+    paddingTop: 0, //Overrides default
+    paddingBottom: 0, //Overrides default
     borderColor: 'white',
-    marginRight: -15,
   },
   dropdownSelectionListHeader: {
     fontSize: themes.PRIMARY_TEXT_SIZE,

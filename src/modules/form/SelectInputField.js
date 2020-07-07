@@ -1,11 +1,15 @@
 import React from 'react';
-import {ListItem} from 'react-native-elements';
 import {Text, View} from 'react-native';
+
+// Packages
+import {ListItem} from 'react-native-elements';
 import MultiSelect from 'react-native-multiple-select';
 import PropTypes from 'prop-types';
 
 // Styles
 import styles from './form.styles';
+
+// Constants
 import * as themes from '../../shared/styles.constants';
 
 // Utilities
@@ -72,6 +76,7 @@ SelectInputField.propTypes = {
   setFieldValue: PropTypes.func.isRequired,
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.array]),
   errors: PropTypes.object,
+  choices: PropTypes.string.isRequired,
 };
 
 export default SelectInputField;
