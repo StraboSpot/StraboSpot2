@@ -76,7 +76,7 @@ SelectInputField.propTypes = {
   setFieldValue: PropTypes.func.isRequired,
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.array]),
   errors: PropTypes.object,
-  choices: PropTypes.string.isRequired,
+  choices: PropTypes.array.isRequired,
 };
 
 export default SelectInputField;
