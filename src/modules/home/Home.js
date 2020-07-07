@@ -74,6 +74,8 @@ const mainMenuSidePanelWidth = 300;
 // };
 
 const Home = (props) => {
+  const platform = Platform.OS === 'ios' ? 'window' : 'screen';
+  const deviceWidth = Dimensions.get(platform).width;
   const [useHome] = useHomeHook();
   const [useImages] = useImagesHook();
   const [useMaps] = useMapsHook();
@@ -516,10 +518,14 @@ const Home = (props) => {
   };
 
   const renderSidePanelView = () => {
-    let panelView = <Animated.View style={[sidePanelStyles.sidePanelContainer, animateMainMenuSidePanel]}>
+    if (deviceWidth < 600) {
+       return <Animated.View style={[sidePanelStyles.sidePanelContainerPhones, animateMainMenuSidePanel]}>
+         {renderSidePanelContent()}
+       </Animated.View>
+    }
+    return <Animated.View style={[sidePanelStyles.sidePanelContainer, animateMainMenuSidePanel]}>
       {renderSidePanelContent()}
     </Animated.View>;
-    return panelView;
   };
 
   const renderSidePanelContent = () => {
