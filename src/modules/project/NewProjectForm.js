@@ -5,21 +5,13 @@ import {Button} from 'react-native-elements';
 import {Formik} from 'formik';
 import {useDispatch, useSelector} from 'react-redux';
 
-// Components
-import Divider from '../main-menu-panel/MainMenuPanelDivider';
-import Form from '../form/Form';
-
-// Hooks
-import useFormHook from '../form/useForm';
-import useProjectHook from './useProject';
-
-// Constants
+import {Form, useFormHook} from '../form';
 import {homeReducers} from '../home/home.constants';
-
-// Styles
-import styles from '../../shared/ui/ui.styles';
 import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 import {SettingsMenuItems} from '../main-menu-panel/mainMenu.constants';
+import Divider from '../main-menu-panel/MainMenuPanelDivider';
+import styles from '../../shared/ui/ui.styles';
+import useProjectHook from './useProject';
 
 const NewProjectForm = (props) => {
   const [useForm] = useFormHook();

@@ -1,29 +1,17 @@
 import React, {useRef} from 'react';
-import * as turf from '@turf/turf/index';
-import {Formik, Field} from 'formik';
 import {ScrollView, Text, View} from 'react-native';
+
+import * as turf from '@turf/turf/index';
+import {Field, Formik} from 'formik';
 import {useDispatch, useSelector} from 'react-redux';
 
-// Components
-import Form from '../form/Form';
-import NumberInputField from '../form/NumberInputField';
-import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
-import SectionDivider from '../../shared/ui/SectionDivider';
-import TextInputField from '../form/TextInputField';
-
-// Styles
-import formStyles from '../form/form.styles';
-
-// Constants
+import {Form, formStyles, NumberInputField, TextInputField, useFormHook} from '../form';
+import {isEmpty} from '../../shared/Helpers';
 import {notebookReducers} from '../notebook-panel/notebook.constants';
 import {spotReducers} from '../spots/spot.constants';
-
-// Hooks
-import useFormHook from '../form/useForm';
+import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
+import SectionDivider from '../../shared/ui/SectionDivider';
 import useMapsHooks from '../maps/useMaps';
-
-// Utilities
-import {isEmpty} from '../../shared/Helpers';
 
 const Geography = (props) => {
   const [useForm] = useFormHook();

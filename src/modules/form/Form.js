@@ -1,18 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import {Animated, Dimensions, Keyboard, TextInput, UIManager} from 'react-native';
+
 import {Field} from 'formik';
 
-// Components
-import DateInputField from './DateInputField';
-import NumberInputField from './NumberInputField';
-import SelectInputField from './SelectInputField';
-import TextInputField from './TextInputField';
-
-// Hooks
-import useFormHook from './useForm';
-
-// Styles
-import styles from './form.styles';
+import {DateInputField, formStyles, NumberInputField, SelectInputField, TextInputField, useFormHook} from '../form';
 
 const {State: TextInputState} = TextInput;
 
@@ -134,7 +125,7 @@ const Form = (props) => {
   };
 
   return (
-    <Animated.View style={[styles.formContainer, {transform: [{translateY: textInputAnimate}]}]}>
+    <Animated.View style={[formStyles.formContainer, {transform: [{translateY: textInputAnimate}]}]}>
       {useForm.getSurvey(props.formName).map((field, i) => {
         if (useForm.isRelevant(field, props.values)) return renderField(field);
       })}

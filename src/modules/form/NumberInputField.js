@@ -3,10 +3,8 @@ import {Text, TextInput, View} from 'react-native';
 
 import PropTypes from 'prop-types';
 
+import {formStyles} from '../form';
 import {isEmpty} from '../../shared/Helpers';
-
-// Styles
-import styles from './form.styles';
 import stylesCommon from '../../shared/common.styles';
 
 const NumberInputField = ({
@@ -22,16 +20,16 @@ const NumberInputField = ({
 
   return (
     <View style={stylesCommon.rowContainer}>
-      <Text style={styles.fieldLabel}>{props.label}</Text>
+      <Text style={formStyles.fieldLabel}>{props.label}</Text>
       <TextInput
         onChangeText={onChange(name)}
         onBlur={onBlur(name)}
-        style={styles.fieldValue}
+        style={formStyles.fieldValue}
         value={getDisplayValue(value)}
         keyboardType={'numeric'}
         placeholder={props.placeholder}
       />
-      {errors[name] && <Text style={styles.fieldError}>{errors[name]}</Text>}
+      {errors[name] && <Text style={formStyles.fieldError}>{errors[name]}</Text>}
     </View>
   );
 };

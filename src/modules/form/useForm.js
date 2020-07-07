@@ -1,13 +1,8 @@
 import {Alert} from 'react-native';
 
-// Assests
+import {labelDictionary} from '../form';
 import * as forms from '../../assets/forms/forms.index';
-
-// Utility
 import {isEmpty, toTitleCase} from '../../shared/Helpers';
-
-// Constants
-import {labelDictionary} from './form.constants';
 
 const useForm = () => {
   /*const createDefaultLabel = (data) => {

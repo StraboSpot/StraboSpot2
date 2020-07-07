@@ -5,25 +5,15 @@ import {Button, ButtonGroup} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 import {Formik} from 'formik';
 
-// Components
-import Form from '../form/Form';
-import MeasurementItem from './MeasurementItem';
-import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
-import SectionDivider from '../../shared/ui/SectionDivider';
-
-// Hooks
-import useFormHook from '../form/useForm';
-
-// Utility
+import * as themes from '../../shared/styles.constants';
+import {Form, useFormHook} from '../form';
 import {getNewId, isEmpty} from '../../shared/Helpers';
-
-// Constants
 import {homeReducers, Modals} from '../home/home.constants';
 import {notebookReducers} from '../notebook-panel/notebook.constants';
 import {spotReducers} from '../spots/spot.constants';
-
-// Styles
-import * as themes from '../../shared/styles.constants';
+import MeasurementItem from './MeasurementItem';
+import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
+import SectionDivider from '../../shared/ui/SectionDivider';
 import styles from './measurements.styles';
 import stylesCommon from '../../shared/common.styles';
 

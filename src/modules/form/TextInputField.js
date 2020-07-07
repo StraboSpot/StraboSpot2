@@ -3,8 +3,7 @@ import {Text, TextInput, View} from 'react-native';
 
 import PropTypes from 'prop-types';
 
-// Styles
-import styles from './form.styles';
+import {formStyles} from '../form';
 import stylesCommon from '../../shared/common.styles';
 
 const TextInputField = ({
@@ -15,37 +14,37 @@ const TextInputField = ({
 
   if (props.appearance === 'multiline') {
     return (
-      <View style={styles.notesFieldContainer}>
-        <View style={styles.notesFieldLabelContainer}>
-          <Text style={styles.fieldLabel}>{props.label}</Text>
+      <View style={formStyles.notesFieldContainer}>
+        <View style={formStyles.notesFieldLabelContainer}>
+          <Text style={formStyles.fieldLabel}>{props.label}</Text>
         </View>
-        <View style={styles.notesFieldValueContainer}>
+        <View style={formStyles.notesFieldValueContainer}>
           <TextInput
             onChangeText={onChange(name)}
             onBlur={onBlur(name)}
-            style={styles.notesFieldValue}
+            style={formStyles.notesFieldValue}
             value={value}
             multiline={true}
             numberOfLines={3}
             placeholder={props.placeholder}
           />
         </View>
-        {errors[name] && <Text style={styles.fieldError}>{errors[name]}</Text>}
+        {errors[name] && <Text style={formStyles.fieldError}>{errors[name]}</Text>}
       </View>
     );
   }
   else {
     return (
       <View style={stylesCommon.rowContainer}>
-        <Text style={styles.fieldLabel}>{props.label}</Text>
+        <Text style={formStyles.fieldLabel}>{props.label}</Text>
         <TextInput
           onChangeText={onChange(name)}
           onBlur={onBlur(name)}
-          style={styles.fieldValue}
+          style={formStyles.fieldValue}
           value={value}
           placeholder={props.placeholder}
         />
-        {errors[name] && <Text style={styles.fieldError}>{errors[name]}</Text>}
+        {errors[name] && <Text style={formStyles.fieldError}>{errors[name]}</Text>}
       </View>
     );
   }

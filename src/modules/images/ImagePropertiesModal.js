@@ -1,26 +1,17 @@
 import React, {useState, useRef} from 'react';
 import {Text, TextInput, Switch, ScrollView, View, FlatList} from 'react-native';
+
 import {Button, Input} from 'react-native-elements';
 import {connect} from 'react-redux';
 import {Formik} from 'formik';
 
-// Components
-import Form from '../form/Form';
-import Modal from '../../shared/ui/modal/Modal';
-import SectionDivider from '../../shared/ui/SectionDivider';
-
-// Hooks
-import useFormHook from '../form/useForm';
-
-// Utility
-import {isEmpty} from '../../shared/Helpers';
-
-// Constants
+import {Form, useFormHook} from '../form';
 import {homeReducers} from '../home/home.constants';
+import {isEmpty} from '../../shared/Helpers';
 import {notebookReducers} from '../notebook-panel/notebook.constants';
 import {spotReducers} from '../spots/spot.constants';
-
-// Styles
+import Modal from '../../shared/ui/modal/Modal';
+import SectionDivider from '../../shared/ui/SectionDivider';
 import styles from './images.styles';
 
 const ImagePropertiesModal = (props) => {

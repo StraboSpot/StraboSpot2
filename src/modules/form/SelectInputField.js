@@ -1,18 +1,12 @@
 import React from 'react';
 import {Text, View} from 'react-native';
 
-// Packages
 import {ListItem} from 'react-native-elements';
 import MultiSelect from 'react-native-multiple-select';
 import PropTypes from 'prop-types';
 
-// Styles
-import styles from './form.styles';
-
-// Constants
 import * as themes from '../../shared/styles.constants';
-
-// Utilities
+import {formStyles} from '../form';
 import {isEmpty} from '../../shared/Helpers';
 
 const SelectInputField = (props) => {
@@ -38,7 +32,7 @@ const SelectInputField = (props) => {
       <ListItem
         title={props.label}
         containerStyle={{padding: 0}}
-        titleStyle={styles.fieldLabel}
+        titleStyle={formStyles.fieldLabel}
         subtitle={
           <MultiSelect
             hideSubmitButton={true}
@@ -52,21 +46,21 @@ const SelectInputField = (props) => {
             onSelectedItemsChange={fieldValueChanged}
             selectedItems={isEmpty(props.value) || typeof props.value === 'object' ? props.value : [props.value]}
             textInputProps={{editable: false}}
-            styleMainWrapper={styles.dropdownMainWrapper}
+            styleMainWrapper={formStyles.dropdownMainWrapper}
             selectText={isEmpty(props.value) ? placeholderText : getChoiceLabel(props.value)}
             searchInputPlaceholderText={isEmpty(props.value) ? placeholderText : getChoiceLabel(props.value)}
-            searchInputStyle={styles.dropdownSelectionListHeader}
+            searchInputStyle={formStyles.dropdownSelectionListHeader}
             fontSize={themes.PRIMARY_TEXT_SIZE}
             selectedItemTextColor={themes.SECONDARY_ITEM_TEXT_COLOR}
             selectedItemIconColor={themes.SECONDARY_ITEM_TEXT_COLOR}
             textColor={themes.SECONDARY_ITEM_TEXT_COLOR}
             itemTextColor={themes.PRIMARY_ITEM_TEXT_COLOR}
-            styleRowList={styles.dropdownRowList}
-            styleDropdownMenuSubsection={styles.dropdownSelectedContainer}
+            styleRowList={formStyles.dropdownRowList}
+            styleDropdownMenuSubsection={formStyles.dropdownSelectedContainer}
           />
         }
       />
-      {props.errors && props.errors[props.name] && <Text style={styles.fieldError}>{props.errors[props.name]}</Text>}
+      {props.errors && props.errors[props.name] && <Text style={formStyles.fieldError}>{props.errors[props.name]}</Text>}
     </View>
   );
 };

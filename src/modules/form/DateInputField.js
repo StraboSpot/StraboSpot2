@@ -1,13 +1,12 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {Platform, Text, View} from 'react-native';
+
 import {Button, ListItem} from 'react-native-elements';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
 
+import {formStyles} from '../form';
 import DateDialogBox from '../../shared/ui/StatusDialogBox';
-
-// Styles
-import styles from './form.styles';
 import stylesCommon from '../../shared/common.styles';
 
 const DateInputField = ({
@@ -71,14 +70,14 @@ const DateInputField = ({
 
   return (
     <View style={stylesCommon.rowContainer}>
-      <Text style={styles.fieldLabel}>{props.label}</Text>
+      <Text style={formStyles.fieldLabel}>{props.label}</Text>
       <ListItem
         title={title}
-        containerStyle={styles.dateFieldValueContainer}
-        titleStyle={styles.fieldValue}
+        containerStyle={formStyles.dateFieldValueContainer}
+        titleStyle={formStyles.fieldValue}
         onPress={() => setIsDatePickerModalVisible(true)}
       />
-      {errors[name] && <Text style={styles.fieldError}>{errors[name]}</Text>}
+      {errors[name] && <Text style={formStyles.fieldError}>{errors[name]}</Text>}
       {Platform.OS === 'ios' ? renderDatePickerDialogBox() : isDatePickerModalVisible && renderDatePicker()}
     </View>
   );
