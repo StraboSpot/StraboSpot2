@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {FlatList, ScrollView, Text, TextInput, View} from 'react-native';
 
-import {ListItem} from 'react-native-elements';
+import {Button, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
@@ -52,28 +52,32 @@ const TagDetail = () => {
                   style={tagsStyles.listText}
                 />
               }
-              bottomDivider={true}
+              bottomDivider
             />
             <ListItem
               title={'Type'}
               titleStyle={commonStyles.listItemTitle}
+              bottomDivider
               rightElement={
                 <Text style={tagsStyles.listText}>{titleCase}</Text>
               }
             />
+            {renderTypeFields(selectedTag.concept_type)}
+            <ListItem
+              title={'Notes'}
+              titleStyle={commonStyles.listItemTitle}
+              rightElement={
+                <TextInput
+                  multiline={true}
+                  placeholder={'No Notes'}
+                  editable={false}
+                  numberOfLines={5}
+                  style={{flex: 2, minHeight: 50, maxHeight: 100}}
+                  defaultValue={selectedTag && selectedTag.notes}
+                />
+              }
+            />
           </View>
-        </View>
-        <View>
-          {renderTypeFields(selectedTag.type)}
-        </View>
-        <View style={tagsStyles.sectionContainer}>
-          <TextInput
-            multiline={true}
-            placeholder={'No Notes'}
-            numberOfLines={5}
-            style={{minHeight: 50, maxHeight: 100}}
-            defaultValue={selectedTag && selectedTag.notes}
-          />
         </View>
       </View>
     );
@@ -93,12 +97,22 @@ const TagDetail = () => {
     );
   };
 
-  const renderTypeFields = () => {
-    switch (selectedTag.type) {
-      case tagTypes.CONCEPT:
-        return <Concept/>;
-      default:
-        return null;
+  const renderTypeFields = (type) => {
+    if (type) {
+      const titleCaseName = type.split('_').join(' ');
+      switch (selectedTag.type) {
+        case tagTypes.CONCEPT || tagTypes.DOCUMENTATION:
+          return <ListItem
+            titleStyle={{...commonStyles.listItemTitle, fontSize: 15}}
+            title={'Concept Type'}
+            bottomDivider
+            rightElement={
+              <Text style={tagsStyles.listText}>{toTitleCase(titleCaseName)}</Text>
+            }
+          />;
+        default:
+          return null;
+      }
     }
   };
 
@@ -114,11 +128,28 @@ const TagDetail = () => {
           ListHeaderComponent={
             <View>
               <View>
-                <Divider sectionText={'Tag Info'}/>
+                <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+                  <Divider sectionText={'Tag Info'}/>
+                  <Button
+                    title={'view/edit'}
+                    type={'clear'}
+                    titleStyle={commonStyles.standardButtonText}
+                    onPress={() => console.log('pressed')}/>
+                </View>
                 {selectedTag && renderTagInfo()}
               </View>
               <View>
-                <Divider sectionText={'Tagged Spots'}/>
+                <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+                  <Divider sectionText={'Tagged Spots'}/>
+                  <Button
+                    title={'add/remove'}
+                    type={'clear'}
+                    titleStyle={commonStyles.standardButtonText}
+                    onPress={() => dispatch({
+                      type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE,
+                      bool: true,
+                      view: settingPanelReducers.SET_SIDE_PANEL_VIEW.TAG_ADD_REMOVE_SPOTS })}/>
+                </View>
                 {selectedTag && renderTaggedSpots()}
               </View>
             </View>}

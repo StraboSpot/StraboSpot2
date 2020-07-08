@@ -14,10 +14,7 @@ export const tagsReducer = (state = initialState, action) => {
     case tagsReducers.UPDATE_TAG:
       return {
         ...state,
-        selectedTag: {
-          ...state.selectedTag,
-          [action.field]: action.value,
-        },
+        selectedTag: action.value
       };
   }
   return state;
