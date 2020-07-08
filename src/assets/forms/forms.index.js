@@ -10,6 +10,8 @@ import tabularZoneOrientationSurvey from './measurement/tabular-zone-orientation
 import projectDescriptionSurvey from './project/project-description-survey.json';
 import surfaceFeatureChoices from './surface-feature/surface-feature-choices.json';
 import surfaceFeatureSurvey from './surface-feature/surface-feature-survey.json';
+import tagsChoices from './tags/tags-choices.json';
+import tagsSurvey from './tags/tags-survey.json';
 import traceChoices from './trace/trace-choices.json';
 import traceSurvey from './trace/trace-survey.json';
 
@@ -65,6 +67,12 @@ const forms = {
     tabular_orientation: {
       survey: getMeasurementSurveyForBulkInput(tabularZoneOrientationSurvey),
       choices: tabularZoneOrientationChoices,
+    },
+  },
+  project: {
+    tags: {
+      survey: tagsSurvey,
+      choices: tagsChoices,
     },
   },
 };
