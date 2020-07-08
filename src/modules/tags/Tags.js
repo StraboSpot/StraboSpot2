@@ -7,10 +7,11 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
+import AddButton from '../../shared/ui/AddButton';
 import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 import notebookStyles from '../notebook-panel/notebookPanel.styles';
 import {projectReducers} from '../project/project.constants';
-import {tagsStyles} from '../tags';
+import {TagDetailModal, tagsStyles} from '../tags';
 
 const Tags = () => {
   const dispatch = useDispatch();
@@ -18,6 +19,7 @@ const Tags = () => {
 
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [collapsedSections, setCollapsedSections] = useState([]);
+  const [isDetailModalVisibile, setIsDetailModalVisible] = useState(false);
 
   const expandedIcon = <Icon
     name='ios-add'
@@ -30,6 +32,11 @@ const Tags = () => {
     type='ionicon'
     color='#b2b2b7'
     containerStyle={{paddingRight: 10}}/>;
+
+  const addTag = () => {
+    dispatch({type: projectReducers.SET_SELECTED_TAG, tag: {}});
+    setIsDetailModalVisible(true);
+  };
 
   const sectionContents = (type) => {
     let filteredTags = {};
@@ -126,12 +133,20 @@ const Tags = () => {
           textStyle={{fontSize: 12}}
         />
       </View>
+      <AddButton
+        onPress={addTag}
+        title={'Add New Tag'}
+      />
       <View style={{flex: 9}}>
         {tags ? renderCollapsibleList(sections) :
           <View style={commonStyles.noContentContainer}>
             <Text style={commonStyles.noContentText}>No Tags!</Text>
           </View>}
       </View>
+      <TagDetailModal
+        isVisible={isDetailModalVisibile}
+        closeModal={() => setIsDetailModalVisible(false)}
+      />
     </View>
   );
 };

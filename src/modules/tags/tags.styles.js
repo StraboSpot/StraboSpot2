@@ -33,6 +33,7 @@ const tagStyles = StyleSheet.create({
   // --- Modal Style ---
   modalView: {
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
+    maxHeight: '90%',
   },
 });
 
