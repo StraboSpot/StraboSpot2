@@ -87,6 +87,7 @@ const TagDetail = () => {
           <View>
             <ListItem
               title={'Name:'}
+              containerStyle={tagsStyles.listContainer}
               titleStyle={commonStyles.listItemTitle}
               subtitle={selectedTag.name}
               subtitleStyle={tagsStyles.listText}
@@ -94,14 +95,16 @@ const TagDetail = () => {
             />
             <ListItem
               title={'Type:'}
+              containerStyle={tagsStyles.listContainer}
               titleStyle={commonStyles.listItemTitle}
               bottomDivider
-              subtitle={selectedTag.type}
+              subtitle={useTags.getLabel(selectedTag.type)}
               subtitleStyle={tagsStyles.listText}
             />
             {renderTypeFields()}
             <ListItem
               title={'Notes:'}
+              containerStyle={tagsStyles.listContainer}
               titleStyle={commonStyles.listItemTitle}
               subtitle={
                 <TextInput
@@ -136,26 +139,17 @@ const TagDetail = () => {
 
   const renderTypeFields = () => {
     if (selectedTag.type) {
-      // const titleCaseName = type.split('_').join(' ');
-      let fieldLabel, valueLabel, fieldName, fieldValue;
-      if (selectedTag.type === 'concept' && !isEmpty(selectedTag.concept_type)) {
-        fieldLabel = 'Concept Type:';
-        fieldValue = selectedTag.concept_type;
-      }
-      else if (selectedTag.type === 'documentation' && !isEmpty(selectedTag.documentation_type)) {
-        fieldLabel = 'Documentation Type:';
-        fieldValue = selectedTag.documentation_type;
-      }
-      else if (selectedTag.type === 'other' && !isEmpty(selectedTag.other)) {
-        fieldLabel = 'Documentation Type:';
-        fieldValue = selectedTag.other;
-      }
-      if (fieldValue && fieldLabel) {
+      let field;
+      if (selectedTag.type === 'concept') field = 'concept_type';
+      else if (selectedTag.type === 'documentation') field = 'documentation_type';
+      else if (selectedTag.type === 'other') field = 'other';
+      if (field && !isEmpty(selectedTag[field])) {
         return <ListItem
           titleStyle={{...commonStyles.listItemTitle}}
-          title={fieldLabel}
+          title={useTags.getLabel(field) + ':'}
+          containerStyle={tagsStyles.listContainer}
           bottomDivider
-          subtitle={fieldValue}
+          subtitle={useTags.getLabel(selectedTag[field])}
           subtitleStyle={tagsStyles.listText}
         />;
       }
