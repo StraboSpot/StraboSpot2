@@ -9,8 +9,8 @@ import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 import notebookStyles from '../notebook-panel/notebookPanel.styles';
-import {tagsReducers} from './tags.constants';
-import tagStyles from './tags.styles';
+import {projectReducers} from '../project/project.constants';
+import {tagsStyles} from '../tags';
 
 const Tags = () => {
   const dispatch = useDispatch();
@@ -56,7 +56,7 @@ const Tags = () => {
         default:
           content =
             <View style={{alignContent: 'center', justifyContent: 'center'}}>
-              <Text style={tagStyles.noTagsText}>No Tags</Text>
+              <Text style={tagsStyles.noTagsText}>No Tags</Text>
             </View>;
       }
     }
@@ -70,7 +70,7 @@ const Tags = () => {
           title={item.name}
           containerStyle={[commonStyles.listItem, {marginTop: 1}]}
           rightTitle={item.spots ? `${item.spots.length} spots` : '0 spots'}
-          rightTitleStyle={tagStyles.valueInList}
+          rightTitleStyle={tagsStyles.valueInList}
           onPress={() => {
             dispatch({
               type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE,
@@ -78,7 +78,7 @@ const Tags = () => {
               // tag: item,
               bool: true,
             });
-            dispatch({type: tagsReducers.SELECTED_TAG, tag: item});
+            dispatch({type: projectReducers.SET_SELECTED_TAG, tag: item});
           }
           }
           chevron

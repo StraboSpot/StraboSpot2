@@ -1,10 +1,12 @@
 import {redux} from '../../shared/app.constants';
+import {isEmpty} from '../../shared/Helpers';
 import {projectReducers} from './project.constants';
 
 const initialState = {
   project: {},
   datasets: {},
   deviceBackUpDirectoryExists: false,
+  selectedTag: {},
 };
 
 export const projectsReducer = (state = initialState, action) => {
@@ -27,6 +29,7 @@ export const projectsReducer = (state = initialState, action) => {
     case projectReducers.UPDATE_PROJECT:
       console.log(action.field, action.value);
       let updatedProject;
+      let updatedSelectedTag = state.selectedTag;
       if (action.field === 'description') {
         updatedProject = {
           ...state.project,
@@ -39,6 +42,9 @@ export const projectsReducer = (state = initialState, action) => {
         };
       }
       else {
+        if (action.field === 'tags' && !isEmpty(state.selectedTag)) {
+          updatedSelectedTag = action.value.find(tag => tag.id === state.selectedTag.id);
+        }
         updatedProject = {
           ...state.project,
           [action.field]: action.value,
@@ -49,6 +55,7 @@ export const projectsReducer = (state = initialState, action) => {
       return {
         ...state,
         project: updatedProject,
+        selectedTag: updatedSelectedTag,
       };
     case projectReducers.DATASETS.DATASET_ADD:
       // Needed to create a new instance so React can sense the redux change and useSelector() will update
@@ -110,6 +117,11 @@ export const projectsReducer = (state = initialState, action) => {
       return {
         ...state,
         deviceBackUpDirectoryExists: action.bool,
+      };
+    case projectReducers.SET_SELECTED_TAG:
+      return {
+        ...state,
+        selectedTag: action.tag,
       };
     case redux.CLEAR_STORE:
       return initialState;

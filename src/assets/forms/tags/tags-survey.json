@@ -1,0 +1,128 @@
+[
+  {
+    "type": "start",
+    "name": "start",
+    "label": "",
+    "required": null,
+    "relevant": "",
+    "appearance": "",
+    "calculation": ""
+  },
+  {
+    "type": "end",
+    "name": "end",
+    "label": "",
+    "required": null,
+    "relevant": "",
+    "appearance": "",
+    "calculation": ""
+  },
+  {
+    "type": "text",
+    "name": "name",
+    "label": "Name",
+    "required": true,
+    "relevant": "",
+    "appearance": "",
+    "calculation": ""
+  },
+  {
+    "type": "select_one nc1iz96",
+    "name": "type",
+    "label": "Type",
+    "required": false,
+    "relevant": "",
+    "appearance": "",
+    "calculation": ""
+  },
+  {
+    "type": "select_one ku2ea50",
+    "name": "concept_type",
+    "label": "Concept Type",
+    "required": false,
+    "relevant": "${type} = 'concept'",
+    "appearance": "",
+    "calculation": ""
+  },
+  {
+    "type": "text",
+    "name": "other_concept_type",
+    "label": "Other Concept Type",
+    "required": true,
+    "relevant": "${concept_type} = 'other_concept'",
+    "appearance": "",
+    "calculation": ""
+  },
+  {
+    "type": "select_one dv8xm46",
+    "name": "documentation_type",
+    "label": "Documentation Type",
+    "required": false,
+    "relevant": "${type} = 'documentation'",
+    "appearance": "",
+    "calculation": ""
+  },
+  {
+    "type": "text",
+    "name": "other_documentation_type",
+    "label": "Other Documentation Type",
+    "required": true,
+    "relevant": "${documentation_type} = 'other_documentation'",
+    "appearance": "",
+    "calculation": ""
+  },
+  {
+    "type": "text",
+    "name": "other_type",
+    "label": "Other Type",
+    "required": true,
+    "relevant": "${type} = 'other'",
+    "appearance": "",
+    "calculation": ""
+  },
+  {
+    "type": "begin_group",
+    "name": "group_is3mo21",
+    "label": "Geologic Unit",
+    "required": false,
+    "relevant": "${type} = 'geologic_unit'",
+    "appearance": "",
+    "calculation": ""
+  },
+  {
+    "type": "note",
+    "name": "See_Rock_Unit_KoBo_Form",
+    "label": "See Rock Unit KoBo Form",
+    "required": false,
+    "relevant": "",
+    "appearance": "",
+    "calculation": ""
+  },
+  {
+    "type": "end_group",
+    "name": "",
+    "label": "",
+    "required": null,
+    "relevant": "",
+    "appearance": "",
+    "calculation": ""
+  },
+  {
+    "type": "text",
+    "name": "notes",
+    "label": "Notes",
+    "required": false,
+    "relevant": "",
+    "appearance": "multiline",
+    "calculation": ""
+  },
+  {
+    "type": "calculate",
+    "name": "__version__",
+    "label": "",
+    "required": null,
+    "relevant": "",
+    "appearance": "",
+    "calculation": "'v6zxQZPk6fje3gaHDHWEtF'"
+  }
+]

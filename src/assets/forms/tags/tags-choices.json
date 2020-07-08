@@ -1,0 +1,92 @@
+[
+  {
+    "list_name": "nc1iz96",
+    "name": "geologic_unit",
+    "label": "Geologic Unit",
+    "order": null
+  },
+  {
+    "list_name": "nc1iz96",
+    "name": "concept",
+    "label": "Concept",
+    "order": 1
+  },
+  {
+    "list_name": "nc1iz96",
+    "name": "documentation",
+    "label": "Documentation",
+    "order": 2
+  },
+  {
+    "list_name": "nc1iz96",
+    "name": "rosetta",
+    "label": "Rosetta",
+    "order": 3
+  },
+  {
+    "list_name": "nc1iz96",
+    "name": "experimental_apparatus",
+    "label": "Experimental Apparatus",
+    "order": 4
+  },
+  {
+    "list_name": "nc1iz96",
+    "name": "other",
+    "label": "Other",
+    "order": 5
+  },
+  {
+    "list_name": "ku2ea50",
+    "name": "geological_structure",
+    "label": "Geological Structure",
+    "order": null
+  },
+  {
+    "list_name": "ku2ea50",
+    "name": "marker_layer",
+    "label": "Marker Layer",
+    "order": null
+  },
+  {
+    "list_name": "ku2ea50",
+    "name": "deformation_event",
+    "label": "Deformation Event",
+    "order": null
+  },
+  {
+    "list_name": "ku2ea50",
+    "name": "degree_of_deformation",
+    "label": "Degree of Deformation",
+    "order": null
+  },
+  {
+    "list_name": "ku2ea50",
+    "name": "metamorphic_facies",
+    "label": "Metamorphic Facies",
+    "order": null
+  },
+  {
+    "list_name": "ku2ea50",
+    "name": "other_concept",
+    "label": "Other Concept",
+    "order": null
+  },
+  {
+    "list_name": "dv8xm46",
+    "name": "observation_timing",
+    "label": "Observation Timing",
+    "order": null
+  },
+  {
+    "list_name": "dv8xm46",
+    "name": "type_of_data",
+    "label": "Type of Data",
+    "order": null
+  },
+  {
+    "list_name": "dv8xm46",
+    "name": "other_documentation",
+    "label": "Other Documentation",
+    "order": null
+  }
+]

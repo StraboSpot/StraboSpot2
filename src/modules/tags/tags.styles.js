@@ -18,10 +18,15 @@ const tagStyles = StyleSheet.create({
   },
   sectionContainer: {
     margin: 10,
-    backgroundColor: 'white',
+    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
     borderRadius: 10,
     padding: 5,
     // height: 200
+  },
+
+  // --- Modal Style ---
+  modalView: {
+    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
   },
 });
 
