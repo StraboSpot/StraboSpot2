@@ -238,9 +238,9 @@ const TagDetail = () => {
         dialogStyle={tagsStyles.modalView}>
         <DialogContent>
           {renderCancelSaveButtons()}
-          <ScrollView style={formStyles.formContainer}>
-            {renderTagForm()}
-          </ScrollView>
+          <FlatList style={formStyles.formContainer}
+                    ListHeaderComponent={renderTagForm()}>
+          </FlatList>
         </DialogContent>
       </Dialog>
     </React.Fragment>

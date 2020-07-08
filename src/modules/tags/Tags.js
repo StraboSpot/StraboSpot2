@@ -31,36 +31,17 @@ const Tags = () => {
     color='#b2b2b7'
     containerStyle={{paddingRight: 10}}/>;
 
-  const sectionContents = (name) => {
-    let content;
-    if (tags) {
-      switch (name) {
-        case 'Geologic Units':
-          const geo = tags.filter(tag => tag.type === 'geologic_unit');
-          content =
-            <FlatList data={geo} renderItem={({item}) => renderTag(item)}/>;
-          break;
-        case 'Concepts':
-          const concept = tags.filter(tag => tag.type === 'concept');
-          content =
-            <FlatList data={concept} renderItem={({item}) => renderTag(item)}/>;
-          break;
-        case 'Documentation' :
-          const documentation = tags.filter(tag => tag.type === 'documentation');
-          content =
-            <FlatList data={documentation} renderItem={({item}) => renderTag(item)}/>;
-        case 'Rosetta' :
-          const rosetta = tags.filter(tag => tag.type === 'rosetta');
-          content =
-            <FlatList data={rosetta} renderItem={({item}) => renderTag(item)}/>;
-        default:
-          content =
-            <View style={{alignContent: 'center', justifyContent: 'center'}}>
-              <Text style={tagsStyles.noTagsText}>No Tags</Text>
-            </View>;
-      }
+  const sectionContents = (type) => {
+    let filteredTags = {};
+    if (!isEmpty(tags)) filteredTags = tags.filter(tag => tag.type === type);
+    if (isEmpty(filteredTags)) {
+      return (
+        <View style={{alignContent: 'center', justifyContent: 'center'}}>
+          <Text style={tagsStyles.noTagsText}>No Tags</Text>
+        </View>
+      );
     }
-    return content;
+    return <FlatList data={filteredTags} renderItem={({item}) => renderTag(item)}/>;
   };
 
   const renderTag = (item) => {
@@ -122,12 +103,12 @@ const Tags = () => {
   };
 
   const sections = [
-    {id: 1, title: 'Geologic Units', content: sectionContents('Geologic Units')},
-    {id: 2, title: 'Concepts', content: sectionContents('Concepts')},
-    {id: 3, title: 'Documentation', content: sectionContents('Documentation')},
-    {id: 4, title: 'Rosetta', content: sectionContents('Rosetta')},
-    {id: 5, title: 'Experimental Apparatus', content: sectionContents('Experimental Apparatus')},
-    {id: 6, title: 'Other', content: sectionContents('Other')},
+    {id: 1, title: 'Geologic Units', content: sectionContents('geologic_unit')},
+    {id: 2, title: 'Concepts', content: sectionContents('concept')},
+    {id: 3, title: 'Documentation', content: sectionContents('documentation')},
+    {id: 4, title: 'Rosetta', content: sectionContents('rosetta')},
+    {id: 5, title: 'Experimental Apparatus', content: sectionContents('experimental_apparatus')},
+    {id: 6, title: 'Other', content: sectionContents('other')},
   ];
 
   return (
