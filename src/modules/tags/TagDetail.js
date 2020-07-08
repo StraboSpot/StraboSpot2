@@ -10,13 +10,14 @@ import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 import Divider from '../main-menu-panel/MainMenuPanelDivider';
 import SidePanelHeader from '../main-menu-panel/sidePanel/SidePanelHeader';
 import useSpotsHook from '../spots/useSpots';
-import {TagDetailModal, tagsStyles} from '../tags';
+import {TagDetailModal, tagsStyles, useTagsHook} from '../tags';
 
 const TagDetail = () => {
   const dispatch = useDispatch();
   const selectedTag = useSelector(state => state.project.selectedTag);
   const [isDetailModalVisibile, setIsDetailModalVisible] = useState(false);
   const [useSpots] = useSpotsHook();
+  const [useTags] = useTagsHook();
 
   const renderSpots = (spot, i) => {
     const spotData = useSpots.getSpotById(spot);
