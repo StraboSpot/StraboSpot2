@@ -15,7 +15,7 @@ import Divider from '../main-menu-panel/MainMenuPanelDivider';
 import SidePanelHeader from '../main-menu-panel/sidePanel/SidePanelHeader';
 import {projectReducers} from '../project/project.constants';
 import useSpotsHook from '../spots/useSpots';
-import {tagsStyles, tagTypes, useTagsHook} from '../tags';
+import {tagsStyles, useTagsHook} from '../tags';
 
 const TagDetail = () => {
   const [useForm] = useFormHook();
@@ -86,31 +86,24 @@ const TagDetail = () => {
         <View style={tagsStyles.sectionContainer}>
           <View>
             <ListItem
-              title={'Name'}
+              title={'Name:'}
               titleStyle={commonStyles.listItemTitle}
-              rightElement={
-                <TextInput
-                  defaultValue={!isEmpty(selectedTag) && selectedTag.name}
-                  onChangeText={(text) => setTagName(text)}
-                  onBlur={() => useTags.save(selectedTag.id, tagName)}
-                  style={tagsStyles.listText}
-                />
-              }
+              subtitle={selectedTag.name}
+              subtitleStyle={tagsStyles.listText}
               bottomDivider
             />
             <ListItem
-              title={'Type'}
+              title={'Type:'}
               titleStyle={commonStyles.listItemTitle}
               bottomDivider
-              rightElement={
-                <Text style={tagsStyles.listText}>{titleCase}</Text>
-              }
+              subtitle={selectedTag.type}
+              subtitleStyle={tagsStyles.listText}
             />
-            {renderTypeFields(selectedTag.concept_type)}
+            {renderTypeFields()}
             <ListItem
-              title={'Notes'}
+              title={'Notes:'}
               titleStyle={commonStyles.listItemTitle}
-              rightElement={
+              subtitle={
                 <TextInput
                   multiline={true}
                   placeholder={'No Notes'}
@@ -141,21 +134,30 @@ const TagDetail = () => {
     );
   };
 
-  const renderTypeFields = (type) => {
-    if (type) {
-      const titleCaseName = type.split('_').join(' ');
-      switch (selectedTag.type) {
-        case tagTypes.CONCEPT || tagTypes.DOCUMENTATION:
-          return <ListItem
-            titleStyle={{...commonStyles.listItemTitle, fontSize: 15}}
-            title={'Concept Type'}
-            bottomDivider
-            rightElement={
-              <Text style={tagsStyles.listText}>{toTitleCase(titleCaseName)}</Text>
-            }
-          />;
-        default:
-          return null;
+  const renderTypeFields = () => {
+    if (selectedTag.type) {
+      // const titleCaseName = type.split('_').join(' ');
+      let fieldLabel, valueLabel, fieldName, fieldValue;
+      if (selectedTag.type === 'concept' && !isEmpty(selectedTag.concept_type)) {
+        fieldLabel = 'Concept Type:';
+        fieldValue = selectedTag.concept_type;
+      }
+      else if (selectedTag.type === 'documentation' && !isEmpty(selectedTag.documentation_type)) {
+        fieldLabel = 'Documentation Type:';
+        fieldValue = selectedTag.documentation_type;
+      }
+      else if (selectedTag.type === 'other' && !isEmpty(selectedTag.other)) {
+        fieldLabel = 'Documentation Type:';
+        fieldValue = selectedTag.other;
+      }
+      if (fieldValue && fieldLabel) {
+        return <ListItem
+          titleStyle={{...commonStyles.listItemTitle}}
+          title={fieldLabel}
+          bottomDivider
+          subtitle={fieldValue}
+          subtitleStyle={tagsStyles.listText}
+        />;
       }
     }
   };

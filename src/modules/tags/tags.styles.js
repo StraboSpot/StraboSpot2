@@ -6,7 +6,9 @@ const tagStyles = StyleSheet.create({
   listText: {
     flex: 2,
     marginRight: 10,
-    fontSize: 16,
+    fontSize: themes.PRIMARY_TEXT_SIZE,
+    color: themes.SECONDARY_ITEM_TEXT_COLOR,
+    // paddingTop: 5
   },
   noTagsText: {
     textAlign: 'center',
@@ -20,7 +22,9 @@ const tagStyles = StyleSheet.create({
     margin: 10,
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
     borderRadius: 10,
-    padding: 5,
+    padding: 10,
+    paddingLeft: 5,
+
     // height: 200
   },
 

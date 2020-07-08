@@ -9,9 +9,7 @@ import {mapReducer} from '../modules/maps/maps.reducer';
 import {notebookReducer} from '../modules/notebook-panel/notebook.reducers';
 import {projectsReducer} from '../modules/project/projects.reducer';
 import {spotReducer} from '../modules/spots/spot.reducers';
-import {tagsReducer} from '../modules/tags';
 import {userReducer} from '../modules/user/userProfile.reducer';
-
 
 // Redux Persist
 export const persistConfig = {
@@ -38,7 +36,6 @@ const rootReducer = combineReducers({
   project: projectsReducer,
   settingsPanel: mainMenuPanelReducer,
   spot: spotReducer,
-  tags: tagsReducer,
   user: userReducer,
 });
 
