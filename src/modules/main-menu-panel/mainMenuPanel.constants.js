@@ -10,6 +10,7 @@ export const settingPanelReducers = {
     MANAGE_CUSTOM_MAP: 'manageCustomMap',
     PROJECT_DESCRIPTION: 'project description',
     TAG_DETAIL: 'tag detail',
+    TAG_ADD_REMOVE_SPOTS: 'add remove tag spots',
   },
   SET_SORTED_VIEW: ' SET_SORTED_VIEW',
   SET_SORTED_LIST: 'SET_SORTED_LIST',

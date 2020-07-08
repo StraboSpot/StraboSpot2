@@ -42,7 +42,7 @@ import NotebookSamplesModal from '../samples/NotebookSamplesModal';
 import ShortcutSamplesModal from '../samples/ShortcutSamplesModal';
 import {spotReducers} from '../spots/spot.constants';
 import useSpotsHook from '../spots/useSpots';
-import {TagDetail} from '../tags';
+import {TagAddRemoveSpots, TagDetail} from '../tags';
 import BaseMapDialog from './BaseMapDialogBox';
 import {homeReducers, Modals} from './home.constants';
 import homeStyles from './home.style';
@@ -533,6 +533,10 @@ const Home = (props) => {
         return (
           <TagDetail/>
         );
+      case settingPanelReducers.SET_SIDE_PANEL_VIEW.TAG_ADD_REMOVE_SPOTS:
+        return (
+          <TagAddRemoveSpots/>
+        )
     }
   };
 
