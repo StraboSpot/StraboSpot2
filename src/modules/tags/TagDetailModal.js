@@ -5,7 +5,7 @@ import {Formik} from 'formik';
 import Dialog, {DialogContent, DialogTitle} from 'react-native-popup-dialog';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {isEmpty} from '../../shared/Helpers';
+import {getNewId, isEmpty} from '../../shared/Helpers';
 import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import {Form, formStyles, useFormHook} from '../form';
 import {projectReducers} from '../project/project.constants';
@@ -65,7 +65,9 @@ const TagDetailModal = (props) => {
         console.log('Saving tag data to Project ...');
         console.log('Form values', form.current.values);
         let updatedTags = tags.filter(tag => tag.id !== selectedTag.id);
-        updatedTags.push(form.current.values);
+        let updatedTag = form.current.values;
+        if (!updatedTag.id) updatedTag.id = getNewId();
+        updatedTags.push(updatedTag);
         dispatch({type: projectReducers.UPDATE_PROJECT, field: 'tags', value: updatedTags});
         return Promise.resolve();
       }
