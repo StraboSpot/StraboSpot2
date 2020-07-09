@@ -63,6 +63,11 @@ const commonStyles = StyleSheet.create({
     fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,
     fontWeight: 'bold',
   },
+  noValueText: {
+    textAlign: 'center',
+    fontWeight: '200',
+    fontSize: themes.MEDIUM_TEXT_SIZE,
+  },
   panelContainerStyles: {
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
     flex: 1,

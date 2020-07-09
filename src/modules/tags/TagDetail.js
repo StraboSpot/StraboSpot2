@@ -145,7 +145,10 @@ const TagDetail = () => {
                       view: settingPanelReducers.SET_SIDE_PANEL_VIEW.TAG_ADD_REMOVE_SPOTS,
                     })}/>
                 </View>
-                {selectedTag && renderTaggedSpots()}
+                {selectedTag.spots && !isEmpty(selectedTag.spots) ? renderTaggedSpots() :
+                  <View style={commonStyles.noContentContainer}>
+                    <Text style={commonStyles.noValueText}>Contains no spots</Text>
+                  </View>}
               </View>
             </View>}
         />

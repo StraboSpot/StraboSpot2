@@ -8,6 +8,7 @@ import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 import SidePanelHeader from '../main-menu-panel/sidePanel/SidePanelHeader';
+import {projectReducers} from '../project/project.constants';
 
 const AddRemoveTagSpots = (props) => {
   const dispatch = useDispatch();
@@ -16,38 +17,37 @@ const AddRemoveTagSpots = (props) => {
   const tags = useSelector(state => state.project.project.tags);
 
   const addRemoveSpotFromTag = (spotId) => {
-    // console.log(spotId)
-    const selectedTagCopy = [...selectedTag.spots];
-    if (selectedTagCopy.includes(spotId)) {
-      const newspotTagArr = selectedTagCopy.filter(id => {
-        return spotId !== id;
-      });
-      console.table(newspotTagArr);
+    let selectedTagCopy = JSON.parse(JSON.stringify(selectedTag));
+    if (selectedTagCopy.spots) {
+      if (selectedTagCopy.spots.includes(spotId)) {
+        selectedTagCopy.spots = selectedTagCopy.spots.filter(id => spotId !== id);
+      }
+      else selectedTagCopy.spots.push(spotId);
     }
     else {
-      selectedTagCopy.push(spotId);
-      console.table(selectedTagCopy);
+      selectedTagCopy.spots = [];
+      selectedTagCopy.spots.push(spotId);
     }
-    const tag = tags.map(tag => tag === selectedTag.id)
-    console.log('TAG', tag)
-    if (tag) {
-
-    }
+    const updatedTags = tags.filter(tag => tag.id !== selectedTagCopy.id);
+    updatedTags.push(selectedTagCopy);
+    dispatch({type: projectReducers.UPDATE_PROJECT, field: 'tags', value: updatedTags});
   };
 
   const showSpotTags = (spot) => {
-    const spotsWithTags = selectedTag.spots.find(tag => {
-      return spot.properties.id === tag;
-    });
-    console.table(spotsWithTags);
-    return spotsWithTags;
+    if (selectedTag.spots || isEmpty(selectedTag.spots)) {
+      const spotsWithTags = selectedTag.spots.find(tag => spot.properties.id === tag);
+      console.table(spotsWithTags);
+      return spotsWithTags;
+    }
   };
 
-  const renderSpotsList = (spot) => {
+  const renderSpotListItem = (spot) => {
+    const spotsWithTag = showSpotTags(spot);
+    console.log(spotsWithTag);
     return <ListItem
       title={spot.properties.name}
       onPress={() => addRemoveSpotFromTag(spot.properties.id)}
-      checkmark={spot.properties.id === showSpotTags(spot)}
+      checkmark={spot.properties.id === spotsWithTag}
       bottomDivider
     />;
   };
@@ -69,7 +69,7 @@ const AddRemoveTagSpots = (props) => {
         <FlatList
           keyExtractor={(spot) => spot.properties.id.toString()}
           data={Object.values(spots)}
-          renderItem={({item}) => renderSpotsList(item)}
+          renderItem={({item}) => renderSpotListItem(item)}
         />
       </View>
     </React.Fragment>

@@ -44,7 +44,7 @@ const Tags = () => {
     if (isEmpty(filteredTags)) {
       return (
         <View style={{alignContent: 'center', justifyContent: 'center'}}>
-          <Text style={tagsStyles.noTagsText}>No Tags</Text>
+          <Text style={commonStyles.noValueText}>No Tags</Text>
         </View>
       );
     }
