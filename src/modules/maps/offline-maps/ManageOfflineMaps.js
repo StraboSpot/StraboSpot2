@@ -46,7 +46,7 @@ const ManageOfflineMaps = (props) => {
     console.log(map);
     Alert.alert(
       'Delete Offline Map',
-      'Are your sure you want to delete ' + map.name + '?',
+      'Are you sure you want to delete ' + map.name + '?',
       [
         {
           text: 'Cancel',

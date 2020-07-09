@@ -178,19 +178,25 @@ const Home = (props) => {
         break;
       case 'measurement':
         dispatch({type: spotReducers.CLEAR_SELECTED_SPOTS});
-        if (modalVisible === Modals.SHORTCUT_MODALS.COMPASS) dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: null});
+        if (modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {
+          dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: null});
+        }
         else dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: Modals.SHORTCUT_MODALS.COMPASS});
         closeNotebookPanel();
         break;
       case 'sample':
         dispatch({type: spotReducers.CLEAR_SELECTED_SPOTS});
-        if (modalVisible === Modals.SHORTCUT_MODALS.SAMPLE) dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: null});
+        if (modalVisible === Modals.SHORTCUT_MODALS.SAMPLE) {
+          dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: null});
+        }
         else dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: Modals.SHORTCUT_MODALS.SAMPLE});
         closeNotebookPanel();
         break;
       case 'note':
         dispatch({type: spotReducers.CLEAR_SELECTED_SPOTS});
-        if (modalVisible === Modals.SHORTCUT_MODALS.NOTES) dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: null});
+        if (modalVisible === Modals.SHORTCUT_MODALS.NOTES) {
+          dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: null});
+        }
         else dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: Modals.SHORTCUT_MODALS.NOTES});
         closeNotebookPanel();
         break;
@@ -510,9 +516,9 @@ const Home = (props) => {
 
   const renderSidePanelView = () => {
     if (deviceWidth < 600) {
-       return <Animated.View style={[sidePanelStyles.sidePanelContainerPhones, animateMainMenuSidePanel]}>
-         {renderSidePanelContent()}
-       </Animated.View>;
+      return <Animated.View style={[sidePanelStyles.sidePanelContainerPhones, animateMainMenuSidePanel]}>
+        {renderSidePanelContent()}
+      </Animated.View>;
     }
     return <Animated.View style={[sidePanelStyles.sidePanelContainer, animateMainMenuSidePanel]}>
       {renderSidePanelContent()}
@@ -526,9 +532,9 @@ const Home = (props) => {
           <CustomMapDetails/>
         );
       case settingPanelReducers.SET_SIDE_PANEL_VIEW.PROJECT_DESCRIPTION:
-          return (
-            <ProjectDescription/>
-          );
+        return (
+          <ProjectDescription/>
+        );
       case settingPanelReducers.SET_SIDE_PANEL_VIEW.TAG_DETAIL:
         return (
           <TagDetail/>
@@ -536,7 +542,7 @@ const Home = (props) => {
       case settingPanelReducers.SET_SIDE_PANEL_VIEW.TAG_ADD_REMOVE_SPOTS:
         return (
           <TagAddRemoveSpots/>
-        )
+        );
     }
   };
 
@@ -652,11 +658,11 @@ const Home = (props) => {
 
   const toggleSidePanel = () => {
     if (isSidePanelVisible) {
-        animatePanels(mainMenuSidePanelAnimation, mainMenuSidePanelWidth);
+      animatePanels(mainMenuSidePanelAnimation, mainMenuSidePanelWidth);
       return renderSidePanelView();
     }
     else {
-        animatePanels(mainMenuSidePanelAnimation, -mainMenuSidePanelWidth);
+      animatePanels(mainMenuSidePanelAnimation, -mainMenuSidePanelWidth);
     }
     return renderSidePanelView();
   };
