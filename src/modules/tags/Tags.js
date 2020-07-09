@@ -48,7 +48,11 @@ const Tags = () => {
         </View>
       );
     }
-    return <FlatList data={filteredTags} renderItem={({item}) => renderTag(item)}/>;
+    return (
+      <FlatList keyExtractor={(item) => item.id.toString()}
+                data={filteredTags}
+                renderItem={({item}) => renderTag(item)}/>
+    );
   };
 
   const renderTag = (item) => {
