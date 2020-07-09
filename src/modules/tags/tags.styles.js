@@ -11,7 +11,7 @@ const tagStyles = StyleSheet.create({
     marginRight: 10,
     fontSize: themes.PRIMARY_TEXT_SIZE,
     color: themes.SECONDARY_ITEM_TEXT_COLOR,
-    paddingTop: 5
+    paddingTop: 5,
   },
   noTagsText: {
     textAlign: 'center',
