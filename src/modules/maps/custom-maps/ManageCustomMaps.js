@@ -1,24 +1,18 @@
 import React from 'react';
 import {Text, View} from 'react-native';
 
-import {Button, ListItem} from 'react-native-elements';
-import Icon from 'react-native-vector-icons/Ionicons';
-import {connect, useDispatch} from 'react-redux';
+import {ListItem} from 'react-native-elements';
+import {connect} from 'react-redux';
 
-import commonStyles from '../../../shared/common.styles';
 import {isEmpty} from '../../../shared/Helpers';
+import AddButton from '../../../shared/ui/AddButton';
 import Divider from '../../main-menu-panel/MainMenuPanelDivider';
 import {mapReducers} from '../maps.constants';
 import useMapHook from '../useMaps';
 import styles from './customMaps.styles';
 
 const ManageCustomMaps = (props) => {
-  console.log('Props: ', props);
-
   const [useMaps] = useMapHook();
-
-  const dispatch = useDispatch();
-
   const mapTypeName = (source) => {
     let name;
     if (source === 'mapbox_styles') name = 'Mapbox Styles';
@@ -29,22 +23,10 @@ const ManageCustomMaps = (props) => {
 
   return (
     <React.Fragment>
-      <View style={{}}>
-        <Button
-          onPress={() => useMaps.customMapDetails({})}
-          containerStyle={styles.buttonContainer}
-          buttonStyle={commonStyles.standardButton}
-          titleStyle={commonStyles.standardButtonText}
-          icon={
-            <Icon
-              style={styles.icons}
-              name={'ios-add'}
-              size={35}
-              color={styles.iconColor.color}/>
-          }
-          title={'Add new Custom Map'}
-        />
-      </View>
+      <AddButton
+        onPress={() => useMaps.customMapDetails({})}
+        title={'Add new Custom Map'}
+      />
       <Divider sectionText={'current custom maps'} style={styles.header}/>
       {!isEmpty(props.customMaps) ?
         <View style={styles.sectionsContainer}>

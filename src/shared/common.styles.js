@@ -6,6 +6,9 @@ const commonStyles = StyleSheet.create({
   buttonContainer: {
     paddingTop: 10,
   },
+  buttonPadding: {
+    padding: 10,
+  },
   dialogContent: {
     flex: 1,
     marginTop: 15,
@@ -52,6 +55,14 @@ const commonStyles = StyleSheet.create({
   dialogConfirmText: {
     textAlign: 'center',
     paddingTop: 15,
+  },
+  iconColor: {
+    color: themes.BLUE,
+  },
+  icons: {
+    position: 'absolute',
+    left: 35,
+    top: 5,
   },
   noContentContainer: {
     flex: 1,

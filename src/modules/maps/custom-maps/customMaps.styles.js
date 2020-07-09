@@ -8,9 +8,6 @@ const styles = StyleSheet.create({
     paddingLeft: 7,
     paddingRight: 5,
   },
-  buttonContainer: {
-    padding: 10,
-  },
   customMapsSideContainer: {
     height: '100%',
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
@@ -33,14 +30,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 20,
     marginLeft: 0,
-  },
-  icons: {
-    position: 'absolute',
-    left: 35,
-    top: 5,
-  },
-  iconColor: {
-    color: themes.BLUE,
   },
   itemContainer: {
     width: '90%',
