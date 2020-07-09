@@ -192,6 +192,7 @@ const ProjectList = (props) => {
   };
 
   const renderServerProjectsList = () => {
+    const titleStyle = !isOnline ? {color: themes.PRIMARY_ITEM_TEXT_COLOR} : {color: themes.SECONDARY_ITEM_TEXT_COLOR};
     if (!isEmpty(projectsArr) && !isEmpty(userData)) {
       return (
         <ScrollView>
@@ -200,7 +201,7 @@ const ProjectList = (props) => {
               key={props.source === 'device' ? item.id : item.id}
               title={props.source === 'device' ? item.fileName : item.name}
               containerStyle={{width: '100%'}}
-              titleStyle={!isOnline && {color: themes.PRIMARY_ITEM_TEXT_COLOR}}
+              titleStyle={titleStyle}
               onPress={() => selectProject(item)}
               disabled={!isOnline}
               disabledStyle={{backgroundColor: 'lightgrey'}}
