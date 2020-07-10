@@ -1,13 +1,13 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Alert, FlatList, Switch, Text, TouchableOpacity, View} from 'react-native';
+import {Alert, FlatList, Switch, Text, View} from 'react-native';
 
 import {Formik} from 'formik';
-import Collapsible from 'react-native-collapsible';
-import {Button,Icon} from 'react-native-elements';
+import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {isEmpty} from '../../shared/Helpers';
 import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
+import SectionDivider from '../../shared/ui/SectionDivider';
 import {Form, useFormHook} from '../form';
 import NotebookImages from '../images/ImageNotebook';
 import MeasurementsOverview from '../measurements/MeasurementsOverview';
@@ -19,7 +19,6 @@ import notebookStyles from './notebookPanel.styles';
 const Overview = props => {
   const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
-  const [collapsedSections, setCollapsedSections] = useState(['Tags', 'Notes', 'Photos and Sketches']);
   const [isTraceSurfaceFeatureEnabled, setIsTraceSurfaceFeatureEnabled] = useState(false);
   const [isTraceSurfaceFeatureEdit, setIsTraceSurfaceFeatureEdit] = useState(false);
   const form = useRef(null);
@@ -31,18 +30,6 @@ const Overview = props => {
     {id: 3, title: 'Tags', content: <TagsOverview/>},
     {id: 4, title: 'Notes', content: <NotesOverview/>},
   ];
-
-  const expandedIcon = <Icon
-    name='ios-add'
-    type='ionicon'
-    color='#b2b2b7'
-    containerStyle={{paddingRight: 10}}/>;
-
-  const collapseIcon = <Icon
-    name='ios-remove'
-    type='ionicon'
-    color='#b2b2b7'
-    containerStyle={{paddingRight: 10}}/>;
 
   useEffect(() => {
     setIsTraceSurfaceFeatureEnabled((spot.properties.hasOwnProperty('trace') &&
@@ -73,7 +60,7 @@ const Overview = props => {
     );
   };
 
-  const renderCollapsibleList = () => {
+  const renderSectionsList = () => {
     return (
       <FlatList
         keyExtractor={(section) => section.id.toString()}
@@ -84,19 +71,9 @@ const Overview = props => {
 
   const renderSections = (section) => {
     return (
-      <View key={section.title}>
-        <TouchableOpacity onPress={() => toggleCollapsed(section.title)}>
-          <View style={notebookStyles.collapsibleSectionHeaderContainer}>
-            {collapsedSections.includes(section.title) ? expandedIcon : collapseIcon}
-            <Text style={notebookStyles.collapsibleSectionHeaderText}>{section.title}</Text>
-          </View>
-        </TouchableOpacity>
-        {/*<Collapsible collapsed={false} align="center">*/}
-        <Collapsible collapsed={collapsedSections.includes(section.title)} align='center'>
-          <View>
-            {section.content}
-          </View>
-        </Collapsible>
+      <View>
+        <SectionDivider dividerText={section.title}/>
+        {section.content}
       </View>
     );
   };
@@ -160,11 +137,6 @@ const Overview = props => {
     });
   };
 
-  const toggleCollapsed = (name) => {
-    if (collapsedSections.includes(name)) setCollapsedSections(collapsedSections.filter((val) => val !== name));
-    else setCollapsedSections(collapsedSections.concat(name));
-  };
-
   const toggleTraceSurfaceFeature = () => {
     const continueToggleTraceSurfaceFeature = () => {
       setIsTraceSurfaceFeatureEnabled(!isTraceSurfaceFeatureEnabled);
@@ -221,7 +193,7 @@ const Overview = props => {
             onPress={() => setIsTraceSurfaceFeatureEdit(true)}/>
         </View>
       </View>}
-      {isTraceSurfaceFeatureEdit ? renderTraceSurfaceFeatureForm() : renderCollapsibleList()}
+      {isTraceSurfaceFeatureEdit ? renderTraceSurfaceFeatureForm() : renderSectionsList()}
     </View>
   );
 };
