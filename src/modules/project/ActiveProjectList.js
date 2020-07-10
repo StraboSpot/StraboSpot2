@@ -4,6 +4,7 @@ import {View} from 'react-native';
 import {ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 import styles from './project.styles';
@@ -13,14 +14,9 @@ const ActiveProjectList = (props) => {
 
   const project = useSelector(state => state.project.project);
 
-  // const openSidePanel = (view) => {
-  //   props.openSidePanel(view);
-  //   // dispatch({type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE, bool: true});
-  // };
-
   return (
     <React.Fragment>
-      <View style={styles.sectionContainer}>
+      <View style={commonStyles.sectionContainer}>
         <ListItem
         title={isEmpty(project) ? 'No Project' : project.description.project_name}
         containerStyle={styles.projectDescriptionListContainer}

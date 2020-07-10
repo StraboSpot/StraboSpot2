@@ -61,13 +61,13 @@ const ActiveProjectPanel = () => {
         />
       </View>
       <Text style={[commonStyles.standardDescriptionText, styles.subHeaderText]}>Select pencil to edit name</Text>
-      <View style={[styles.sectionContainer, {height: 200}]}>
+      <View style={[commonStyles.sectionContainer, {height: 200}]}>
         <DatasetList/>
       </View>
       <View style={{paddingBottom: 10}}>
         <Divider sectionText={'ACTIVE DATASETS'}/>
       </View>
-      <View style={[styles.sectionContainer, {height: 200}]}>
+      <View style={[commonStyles.sectionContainer, {height: 200}]}>
         {!isEmpty(activeDatasets) ? <ActiveDatasetsList/> : null}
       </View>
       <View style={{alignItems: 'center', margin: 10, marginTop: 0}}>

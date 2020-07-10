@@ -23,13 +23,6 @@ const dialogStyles = StyleSheet.create({
     alignItems: 'center',
     paddingBottom: 5,
   },
-  sectionContainer: {
-    margin: 10,
-    backgroundColor: 'white',
-    borderRadius: 10,
-    padding: 5,
-    // height: 200
-  },
   listItemTitleAndValue: {
     flex: 0,
   },

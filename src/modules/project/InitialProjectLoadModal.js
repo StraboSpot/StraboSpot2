@@ -26,7 +26,6 @@ const InitialProjectLoadModal = (props) => {
   const [visibleInitialSection, setVisibleInitialSection] = useState('none');
 
   useEffect(() => {
-    console.log('Rendered 2');
     return function cleanUp() {
       console.log('Initial Project Modal CleanUp');
     };

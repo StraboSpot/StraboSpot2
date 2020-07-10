@@ -7,6 +7,7 @@ import {Button, Icon, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import * as forms from '../../assets/forms/forms.index';
+import commonStyles from '../../shared/common.styles';
 import {truncateText} from '../../shared/Helpers';
 import SaveAndCloseButtons from '../../shared/ui/SaveAndCloseButtons';
 import {SettingsMenuItems} from '../main-menu-panel/mainMenu.constants';
@@ -117,7 +118,7 @@ const ProjectDescription = (props) => {
   const renderBasicInfo = () => {
     return (
       <React.Fragment>
-        <View style={styles.sectionContainer}>
+        <View style={commonStyles.sectionContainer}>
           <View style={styles.projectNameContainer}>
             <View style={styles.projectNameLabel}>
               <Text style={{fontSize: 16}}>Project Name:</Text>
@@ -181,7 +182,7 @@ const ProjectDescription = (props) => {
   const renderNotes = () => {
     return (
       <React.Fragment>
-        <View style={styles.sectionContainer}>
+        <View style={commonStyles.sectionContainer}>
           <TextInput
             placeholder={'Notes'}
             onChangeText={noteText => setProjectDescription({...projectDescription, notes: noteText})}
@@ -268,7 +269,7 @@ const ProjectDescription = (props) => {
   };
 
   const renderGeneralDetails = () => (
-    <View style={styles.sectionContainer}>
+    <View style={commonStyles.sectionContainer}>
       {fields.general.map((field, i, obj) => renderListItemFields(field, i, obj))}
     </View>
   );
@@ -286,7 +287,7 @@ const ProjectDescription = (props) => {
   };
 
   const renderTechnicalDetails = () => (
-    <View style={styles.sectionContainer}>
+    <View style={commonStyles.sectionContainer}>
       {fields.technical.map((field, i, obj) => renderListItemFields(field, i, obj))}
     </View>
   );
