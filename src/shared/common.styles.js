@@ -119,6 +119,14 @@ const commonStyles = StyleSheet.create({
     color: themes.PRIMARY_ITEM_TEXT_COLOR,
     fontSize: themes.PRIMARY_TEXT_SIZE,
   },
+  sectionContainer: {
+    marginTop: 10,
+    marginBottom: 10,
+    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
+    // borderRadius: 10,
+    padding: 5,
+    // height: 200
+  },
   standardButtonContainer: {
     paddingTop: 5,
   },
