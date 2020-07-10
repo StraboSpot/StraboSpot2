@@ -1,10 +1,11 @@
 import React from 'react';
-import {ActivityIndicator, Button, Dimensions, FlatList, ScrollView, View} from 'react-native';
+import {ActivityIndicator, Button, Dimensions, FlatList, ScrollView, Text, View} from 'react-native';
 
 import {Image} from 'react-native-elements';
 import {withNavigation} from 'react-navigation';
-import {connect} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
+import commonStyles from '../../shared/common.styles';
 import {spotReducers} from '../spots/spot.constants';
 import imageStyles from './images.styles';
 import useImagesHook from './useImages';
@@ -13,9 +14,11 @@ const screenHeight = Dimensions.get('window').height;
 
 const ImageNotebook = (props) => {
   const [useImages] = useImagesHook();
+  const dispatch = useDispatch();
+  const images = useSelector(state => state.spot.selectedSpot.properties.images);
 
   const editImage = (image) => {
-    props.setSelectedAttributes([image]);
+    dispatch({type: spotReducers.SET_SELECTED_ATTRIBUTES, attributes: [image]});
     props.navigation.navigate('ImageInfo', {imageId: image.id});
   };
 
@@ -39,23 +42,13 @@ const ImageNotebook = (props) => {
 
   return (
     <ScrollView style={{maxHeight: screenHeight - 300}}>
-      <FlatList
-        data={props.images}
+      {images ? <FlatList
+        data={images}
         renderItem={({item}) => renderImage(item)}
         keyExtractor={(item) => item.id.toString()}
-      />
+      /> : <Text style={commonStyles.noValueText}>No Images</Text>}
     </ScrollView>
   );
 };
 
-const mapStateToProps = (state) => {
-  return {
-    images: state.spot.selectedSpot.properties.images,
-  };
-};
-
-const mapDispatchToProps = {
-  setSelectedAttributes: (attributes) => ({type: spotReducers.SET_SELECTED_ATTRIBUTES, attributes: attributes}),
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(withNavigation(ImageNotebook));
+export default withNavigation(ImageNotebook);

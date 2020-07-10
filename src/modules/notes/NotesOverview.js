@@ -1,42 +1,36 @@
 import React from 'react';
 import {Button, Text, View} from 'react-native';
 
-import {connect} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
+import commonStyles from '../../shared/common.styles';
+import {truncateText} from '../../shared/Helpers';
 import {notebookReducers, NotebookPages} from '../notebook-panel/notebook.constants';
 import noteStyles from './notes.styles';
 
 const SpotNotesOverview = props => {
 
-  const savedNote = props.selectedSpot.properties.notes;
+  const dispatch = useDispatch();
+  const savedNote = useSelector(state => state.spot.selectedSpot.properties.notes);
 
   return (
-    <View style={noteStyles.notesOverviewContainer}>
+    <View>
+      {savedNote ? <View style={noteStyles.notesOverviewContainer}>
       <View style={{flex: 4}}>
-        {savedNote !== '' ? <Text style={props.style}>{savedNote}</Text> :
-          <Text style={props.style}>There are no notes for this spot</Text>}
+        <Text style={props.style}>{truncateText(savedNote, 50)}</Text>
       </View>
       <View style={{flex: 1, justifyContent: 'flex-start'}}>
         <View style={noteStyles.editButton}>
           <Button
             title={'Edit'}
-            onPress={() => props.setNotebookPageVisible(NotebookPages.NOTE)}
+            onPress={() => dispatch({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: NotebookPages.NOTE})}
             style={noteStyles.editButton}
           />
         </View>
       </View>
+    </View> : <Text style={commonStyles.noValueText}>No Notes</Text>}
     </View>
   );
 };
 
-const mapStateToProps = (state) => {
-  return {
-    selectedSpot: state.spot.selectedSpot,
-  };
-};
-
-const mapDispatchToProps = {
-  setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(SpotNotesOverview);
+export default SpotNotesOverview;

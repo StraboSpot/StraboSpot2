@@ -1,41 +1,34 @@
 import React from 'react';
-import {FlatList, View} from 'react-native';
+import {FlatList, Text, View} from 'react-native';
 
-import {connect} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
+import commonStyles from '../../shared/common.styles';
 import {NotebookPages, notebookReducers} from '../notebook-panel/notebook.constants';
 import {spotReducers} from '../spots/spot.constants';
 import MeasurementItem from './MeasurementItem';
 
-const MeasurementsOverview = (props) => {
+const MeasurementsOverview = () => {
+  const dispatch = useDispatch();
+  const orientationsData = useSelector(state => state.spot.selectedSpot.properties.orientation_data);
+
   const onMeasurementPressed = (item) => {
-    props.setSelectedAttributes([item]);
-    props.setNotebookPageVisible(NotebookPages.MEASUREMENTDETAIL);
+    dispatch({type: spotReducers.SET_SELECTED_ATTRIBUTES, attributes: [item]});
+    dispatch({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: NotebookPages.MEASUREMENTDETAIL});
   };
 
   return (
     <View>
-      <FlatList
-        data={props.spot.properties.orientation_data}
+      {orientationsData ? <FlatList
+        data={orientationsData}
         renderItem={item => <MeasurementItem item={item}
                                              selectedIds={[]}
                                              onPress={() => onMeasurementPressed(item.item)}/>}
         keyExtractor={(item, index) => index.toString()}
-      />
+      /> : <Text style={commonStyles.noValueText}>No Measurements</Text>}
     </View>
   );
 };
 
-function mapStateToProps(state) {
-  return {
-    spot: state.spot.selectedSpot,
-  };
-}
-
-const mapDispatchToProps = {
-  setSelectedAttributes: (attributes) => ({type: spotReducers.SET_SELECTED_ATTRIBUTES, attributes: attributes}),
-  setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(MeasurementsOverview);
+export default MeasurementsOverview;
 
