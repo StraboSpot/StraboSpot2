@@ -14,7 +14,7 @@ import {NotebookPages, notebookReducers} from '../notebook-panel/notebook.consta
 import useSpotsHook from '../spots/useSpots';
 import {TagDetailModal, tagsStyles, useTagsHook} from '../tags';
 
-const TagDetail = () => {
+const TagDetail = (props) => {
   const dispatch = useDispatch();
   const selectedTag = useSelector(state => state.project.selectedTag);
   const [isDetailModalVisibile, setIsDetailModalVisible] = useState(false);
@@ -24,6 +24,7 @@ const TagDetail = () => {
 
   const openSpotInNotebook = (spot) => {
     useMaps.setSelectedSpot(spot);
+    props.openNotebookPanel(NotebookPages.OVERVIEW);
     dispatch({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: NotebookPages.OVERVIEW});
     dispatch({type: notebookReducers.SET_NOTEBOOK_PANEL_VISIBLE, value: true});
   };

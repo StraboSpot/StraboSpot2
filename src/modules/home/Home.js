@@ -537,7 +537,7 @@ const Home = (props) => {
         );
       case settingPanelReducers.SET_SIDE_PANEL_VIEW.TAG_DETAIL:
         return (
-          <TagDetail/>
+          <TagDetail openNotebookPanel={(pageView) => openNotebookPanel(pageView)}/>
         );
       case settingPanelReducers.SET_SIDE_PANEL_VIEW.TAG_ADD_REMOVE_SPOTS:
         return (
