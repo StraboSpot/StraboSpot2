@@ -10,9 +10,10 @@ import AddButton from '../../shared/ui/AddButton';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 import {projectReducers} from '../project/project.constants';
-import {TagDetailModal, tagsStyles} from '../tags';
+import {TagDetailModal, tagsStyles, useTagsHook} from '../tags';
 
 const Tags = () => {
+  const [useTags] = useTagsHook();
   const dispatch = useDispatch();
   const tags = useSelector(state => state.project.project.tags || []);
 
@@ -56,7 +57,7 @@ const Tags = () => {
         <ListItem
           title={item.name}
           containerStyle={[commonStyles.listItem, {marginTop: 1}]}
-          rightTitle={item.spots ? `${item.spots.length} spots` : '0 spots'}
+          rightTitle={useTags.renderSpotCount(item)}
           rightTitleStyle={tagsStyles.valueInList}
           onPress={() => {
             dispatch({

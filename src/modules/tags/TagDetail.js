@@ -64,7 +64,7 @@ const TagDetail = (props) => {
 
   const renderTaggedSpots = () => {
     return (
-      <View style={commonStyles.buttonContainer}>
+      <View >
         {selectedTag && selectedTag.spots ?
           <FlatList
             keyExtractor={(item) => item.toString()}
