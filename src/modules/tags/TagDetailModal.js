@@ -2,22 +2,20 @@ import React, {useRef} from 'react';
 import {Alert, FlatList, View} from 'react-native';
 
 import {Formik} from 'formik';
-import {Button} from 'react-native-elements';
-import Dialog, {DialogContent, DialogTitle} from 'react-native-popup-dialog';
+import {Button, Overlay} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {getNewId, isEmpty} from '../../shared/Helpers';
+import {getNewId} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
 import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import {Form, formStyles, useFormHook} from '../form';
 import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 import {projectReducers} from '../project/project.constants';
-import {tagsStyles} from './index';
 
 const TagDetailModal = (props) => {
   const dispatch = useDispatch();
   const selectedTag = useSelector(state => state.project.selectedTag);
-  const tags = useSelector(state => state.project.project.tags);
+  const tags = useSelector(state => state.project.project.tags || []);
 
   const [useForm] = useFormHook();
   const form = useRef(null);
@@ -118,12 +116,13 @@ const TagDetailModal = (props) => {
   };
 
   return (
-    <Dialog
-      dialogTitle={<DialogTitle title={isEmpty(selectedTag) ? 'Add a New Tag' : selectedTag.name}/>}
-      visible={props.isVisible}
-      width={350}
-      dialogStyle={tagsStyles.modalView}>
-      <DialogContent>
+    <Overlay
+      isVisible={props.isVisible}
+      windowBackgroundColor='rgba(0, 0, 0, .5)'
+      overlayBackgroundColor='blue'
+      overlayStyle={{maxHeight: '90%', width: 350, borderRadius: 20}}
+    >
+      <View style={{maxHeight: '100%'}}>
         {renderCancelSaveButtons()}
         <FlatList style={formStyles.formContainer}
                   ListHeaderComponent={
@@ -138,8 +137,8 @@ const TagDetailModal = (props) => {
                     </View>
                   }
         />
-      </DialogContent>
-    </Dialog>
+      </View>
+    </Overlay>
   );
 };
 

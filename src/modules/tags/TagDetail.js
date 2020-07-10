@@ -1,11 +1,11 @@
 import React, {useState} from 'react';
-import {FlatList, ScrollView, Text, TextInput, View} from 'react-native';
+import {FlatList, Text, View} from 'react-native';
 
 import {Button, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
-import {toTitleCase, getDimensions, isEmpty} from '../../shared/Helpers';
+import {isEmpty, truncateText} from '../../shared/Helpers';
 import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 import Divider from '../main-menu-panel/MainMenuPanelDivider';
 import SidePanelHeader from '../main-menu-panel/sidePanel/SidePanelHeader';
@@ -29,24 +29,13 @@ const TagDetail = (props) => {
     dispatch({type: notebookReducers.SET_NOTEBOOK_PANEL_VISIBLE, value: true});
   };
 
-  /*const renderSpotListItem1 = (spot, i) => {
-    const spotData = useSpots.getSpotById(spot);
-    if (!isEmpty(spotData)) {
-      return (
-        <ListItem
-          title={spotData.properties.name}
-          bottomDivider={i < selectedTag.spots.length - 1}
-        />
-      );
-    }
-  };*/
-
   const renderSpotListItem = (spotId) => {
     const spot = useSpots.getSpotById(spotId);
     if (!isEmpty(spot)) {
       return <ListItem
         title={spot.properties.name}
         onPress={() => openSpotInNotebook(spot)}
+        chevron
         bottomDivider
       />;
     }
@@ -60,64 +49,18 @@ const TagDetail = (props) => {
     const subType = subTypeField ? useTags.getLabel(selectedTag[subTypeField]) : undefined;
     const rockUnitFields = ['unit_label_abbreviation', 'map_unit_name', 'member_name', 'rock_type'];
     let rockUnitString = rockUnitFields.reduce((acc, field) => {
-      if (selectedTag[field]) return acc + (!isEmpty(acc) ? ' - ' : '') + selectedTag[field];
+      if (selectedTag[field]) return acc + (!isEmpty(acc) ? ' / ' : '') + selectedTag[field];
       else return acc;
     }, []);
-    const notes = selectedTag.notes ? selectedTag.notes : undefined;
+    const notes = selectedTag.notes ? truncateText(selectedTag.notes, 100) : undefined;
     return (
       <View style={tagsStyles.sectionContainer}>
-        {type && <Text>Type: {type}{subType && ' - ' + subType.toUpperCase()}</Text>}
-        {rockUnitString && <Text>{rockUnitString}</Text>}
-        {notes && <Text>Notes: {notes}</Text>}
+        {type && <Text style={tagsStyles.listText}>{type}{subType && ' - ' + subType.toUpperCase()}</Text>}
+        {!isEmpty(rockUnitString) && <Text style={tagsStyles.listText}>{rockUnitString}</Text>}
+        {notes && <Text style={tagsStyles.listText}>Notes: {notes}</Text>}
       </View>
     );
   };
-
-  /* const renderTagInfo1 = () => {
-   let str = selectedTag.type;
-   str = str.split('_').join(' ');
-   const titleCase = toTitleCase(str);
-   return (
-   <View>
-   <View style={tagsStyles.sectionContainer}>
-   <View>
-   <ListItem
-   title={'Name:'}
-   containerStyle={tagsStyles.listContainer}
-   titleStyle={commonStyles.listItemTitle}
-   subtitle={selectedTag.name}
-   subtitleStyle={tagsStyles.listText}
-   bottomDivider
-   />
-   <ListItem
-   title={'Type:'}
-   containerStyle={tagsStyles.listContainer}
-   titleStyle={commonStyles.listItemTitle}
-   bottomDivider
-   subtitle={useTags.getLabel(selectedTag.type)}
-   subtitleStyle={tagsStyles.listText}
-   />
-   {renderTypeFields()}
-   <ListItem
-   title={'Notes:'}
-   containerStyle={tagsStyles.listContainer}
-   titleStyle={commonStyles.listItemTitle}
-   subtitle={
-   <TextInput
-   multiline={true}
-   placeholder={'No Notes'}
-   editable={false}
-   numberOfLines={5}
-   style={{flex: 2, minHeight: 50, maxHeight: 100}}
-   defaultValue={selectedTag && selectedTag.notes}
-   />
-   }
-   />
-   </View>
-   </View>
-   </View>
-   );
-   };*/
 
   const renderTaggedSpots = () => {
     return (
@@ -132,39 +75,6 @@ const TagDetail = (props) => {
       </View>
     );
   };
-
-  /*  const renderTaggedSpots1 = () => {
-   const height = getDimensions().height;
-   return (
-   <View style={[tagsStyles.sectionContainer, {maxHeight: height * 0.40}]}>
-   <ScrollView>
-   {selectedTag && selectedTag.spots ?
-   selectedTag.spots.map((spotId, index) => {
-   return <View key={spotId}>{renderSpotListItem(spotId, index)}</View>;
-   }) : <Text>No Spots</Text>}
-   </ScrollView>
-   </View>
-   );
-   };*/
-
- /* const renderTypeFields = () => {
-    if (selectedTag.type) {
-      let field;
-      if (selectedTag.type === 'concept') field = 'concept_type';
-      else if (selectedTag.type === 'documentation') field = 'documentation_type';
-      else if (selectedTag.type === 'other') field = 'other';
-      if (field && !isEmpty(selectedTag[field])) {
-        return <ListItem
-          titleStyle={{...commonStyles.listItemTitle}}
-          title={useTags.getLabel(field) + ':'}
-          containerStyle={tagsStyles.listContainer}
-          bottomDivider
-          subtitle={useTags.getLabel(selectedTag[field])}
-          subtitleStyle={tagsStyles.listText}
-        />;
-      }
-    }
-  };*/
 
   return (
     <React.Fragment>

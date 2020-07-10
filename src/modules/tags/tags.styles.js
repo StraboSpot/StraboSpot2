@@ -7,11 +7,8 @@ const tagStyles = StyleSheet.create({
     padding: 5,
   },
   listText: {
-    flex: 2,
-    marginRight: 10,
-    fontSize: themes.PRIMARY_TEXT_SIZE,
+    fontSize: 14,
     color: themes.SECONDARY_ITEM_TEXT_COLOR,
-    paddingTop: 5,
   },
   noTagsText: {
     textAlign: 'center',
@@ -22,12 +19,8 @@ const tagStyles = StyleSheet.create({
     color: themes.SECONDARY_ITEM_TEXT_COLOR,
   },
   sectionContainer: {
-    margin: 10,
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
-    borderRadius: 10,
     padding: 10,
-    paddingLeft: 5,
-    // height: 200
   },
 
   // --- Modal Style ---

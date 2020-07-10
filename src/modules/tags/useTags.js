@@ -5,7 +5,7 @@ import {labelDictionary} from '../form';
 
 const useTags = () => {
   const dispatch = useDispatch();
-  const projectTags = useSelector(state => state.project.project.tags);
+  const projectTags = useSelector(state => state.project.project.tags || []);
   const tagsDictionary = labelDictionary.project.tags;
 
   const getLabel = (key) => {

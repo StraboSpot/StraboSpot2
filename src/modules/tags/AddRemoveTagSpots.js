@@ -10,11 +10,11 @@ import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 import SidePanelHeader from '../main-menu-panel/sidePanel/SidePanelHeader';
 import {projectReducers} from '../project/project.constants';
 
-const AddRemoveTagSpots = (props) => {
+const AddRemoveTagSpots = () => {
   const dispatch = useDispatch();
   const selectedTag = useSelector((state) => state.project.selectedTag);
   const spots = useSelector((state) => state.spot.spots);
-  const tags = useSelector(state => state.project.project.tags);
+  const tags = useSelector(state => state.project.project.tags || []);
 
   const addRemoveSpotFromTag = (spotId) => {
     let selectedTagCopy = JSON.parse(JSON.stringify(selectedTag));
@@ -34,16 +34,14 @@ const AddRemoveTagSpots = (props) => {
   };
 
   const showSpotTags = (spot) => {
-    if (selectedTag.spots || isEmpty(selectedTag.spots)) {
+    if (selectedTag.spots) {
       const spotsWithTags = selectedTag.spots.find(tag => spot.properties.id === tag);
-      console.table(spotsWithTags);
       return spotsWithTags;
     }
   };
 
   const renderSpotListItem = (spot) => {
     const spotsWithTag = showSpotTags(spot);
-    console.log(spotsWithTag);
     return <ListItem
       title={spot.properties.name}
       onPress={() => addRemoveSpotFromTag(spot.properties.id)}
