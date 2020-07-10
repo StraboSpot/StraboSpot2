@@ -168,7 +168,7 @@ const Overview = props => {
   };
 
   return (
-    <View>
+    <View style={{flex: 1}}>
       {spot.geometry && spot.geometry.type && (spot.geometry.type === 'LineString' ||
         spot.geometry.type === 'MultiLineString' || spot.geometry.type === 'Polygon' ||
         spot.geometry.type === 'MultiPolygon' || spot.geometry.type === 'GeometryCollection') &&
