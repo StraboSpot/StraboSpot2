@@ -56,6 +56,12 @@ const commonStyles = StyleSheet.create({
     textAlign: 'center',
     paddingTop: 15,
   },
+  dividerWithButton: {
+    paddingTop: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
   iconColor: {
     color: themes.BLUE,
   },

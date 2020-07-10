@@ -64,7 +64,7 @@ const TagDetail = (props) => {
 
   const renderTaggedSpots = () => {
     return (
-      <View style={{...commonStyles.buttonContainer, flex: 1}}>
+      <View style={commonStyles.buttonContainer}>
         {selectedTag && selectedTag.spots ?
           <FlatList
             keyExtractor={(item) => item.toString()}
@@ -99,7 +99,7 @@ const TagDetail = (props) => {
                 {selectedTag && renderTagInfo()}
               </View>
               <View>
-                <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+                <View style={commonStyles.dividerWithButton}>
                   <Divider sectionText={'Tagged Spots'}/>
                   <Button
                     title={'add/remove'}
