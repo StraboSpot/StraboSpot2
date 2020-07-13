@@ -2,11 +2,10 @@ import React from 'react';
 import {FlatList, Text, View} from 'react-native';
 
 import {Button, ListItem} from 'react-native-elements';
-import {useDispatch, useSelector} from 'react-redux';
+import {useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
-import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 import Divider from '../main-menu-panel/MainMenuPanelDivider';
 import {useSpotsHook} from '../spots';
 import {useTagsHook} from '../tags';
@@ -14,7 +13,6 @@ import {useTagsHook} from '../tags';
 const TagDetail = (props) => {
   const [useSpots] = useSpotsHook();
   const [useTags] = useTagsHook();
-  const dispatch = useDispatch();
   const selectedTag = useSelector(state => state.project.selectedTag);
 
   const renderSpotListItem = (spotId) => {
@@ -22,10 +20,7 @@ const TagDetail = (props) => {
     if (!isEmpty(spot)) {
       return <ListItem
         title={spot.properties.name}
-        onPress={() => {
-          props.openNotebookPanel();
-          useTags.openSpotInNotebook(spot);
-        }}
+        onPress={() => props.openSpot(spot)}
         chevron
         bottomDivider
       />;
@@ -69,11 +64,8 @@ const TagDetail = (props) => {
                   title={'add/remove'}
                   type={'clear'}
                   titleStyle={commonStyles.standardButtonText}
-                  onPress={() => dispatch({
-                    type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE,
-                    bool: true,
-                    view: settingPanelReducers.SET_SIDE_PANEL_VIEW.TAG_ADD_REMOVE_SPOTS,
-                  })}/>
+                  onPress={props.addRemoveSpots}
+                />
               </View>
               {selectedTag.spots && !isEmpty(selectedTag.spots) ? renderTaggedSpots() :
                 <View style={commonStyles.noContentContainer}>

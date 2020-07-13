@@ -7,9 +7,7 @@ import {useDispatch} from 'react-redux';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
-import {homeReducers} from '../home/home.constants';
-import {SettingsMenuItems} from '../main-menu-panel/mainMenu.constants';
-import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
+import {NotebookPages, notebookReducers} from '../notebook-panel/notebook.constants';
 import {projectReducers} from '../project/project.constants';
 import {useTagsHook} from '../tags';
 
@@ -18,14 +16,8 @@ const SpotTag = () => {
   const dispatch = useDispatch();
 
   const openTag = (tag) => {
-    dispatch({
-      type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE,
-      bool: true,
-      view: settingPanelReducers.SET_SIDE_PANEL_VIEW.TAG_DETAIL,
-    });
     dispatch({type: projectReducers.SET_SELECTED_TAG, tag: tag});
-    dispatch({type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: SettingsMenuItems.ATTRIBUTES.TAGS});
-    dispatch({type: homeReducers.SET_SETTINGS_PANEL_VISIBLE, value: true});
+    dispatch({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: NotebookPages.TAG_DETAIL});
   };
 
   const renderTag = (tag) => {
