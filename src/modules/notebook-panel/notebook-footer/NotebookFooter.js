@@ -41,6 +41,8 @@ const NotebookFooter = props => {
       <IconButton
         source={getPageIcon(NotebookPages.TAG)}
         style={footerStyle.footerIcon}
+        onPress={() => props.openPage(NotebookPages.TAG)}
+
       />
       <IconButton
         source={getPageIcon(NotebookPages.MEASUREMENT)}
