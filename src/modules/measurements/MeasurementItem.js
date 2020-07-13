@@ -1,13 +1,11 @@
 import React from 'react';
-import {Text, TouchableOpacity, View} from 'react-native';
 
-import {Icon} from 'react-native-elements';
+import {ListItem} from 'react-native-elements';
 
-import stylesCommon from '../../shared/common.styles';
+import commonStyles from '../../shared/common.styles';
 import {isEmpty, padWithLeadingZeros, toTitleCase} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
 import {labelDictionary} from '../form';
-import styles from './measurements.styles';
 
 // Render a measurement item in a list
 const MeasurementItem = (props) => {
@@ -59,56 +57,38 @@ const MeasurementItem = (props) => {
     return '?';
   };
 
-  // Render an individual measurement
-  const renderMeasurementText = (item) => {
-    return (
-      <View style={styles.measurementsListItem}>
-        <View>
-          <Text style={props.selectedIds.includes(props.item.item.id) ? styles.mainTextInverse : styles.mainText}>
-            {getMeasurementText(item)}
-          </Text>
-        </View>
-        <View>
-          <Text
-            style={props.selectedIds.includes(props.item.item.id) ? styles.propertyTextInverse : styles.propertyText}>
-            {getTypeText(item)}
-          </Text>
-        </View>
-      </View>
-    );
-  };
-
   return (
-    <View style={styles.measurementsRenderListContainer}>
+    <React.Fragment>
       {typeof (props.item.item) !== 'undefined' &&
-      <TouchableOpacity
-        style={props.selectedIds.includes(
-          props.item.item.id) ? stylesCommon.rowContainerInverse : stylesCommon.rowContainer}
-        onPress={() => props.onPress()}>
-        <View style={[stylesCommon.row, {flexDirection: 'row'}]}>
-          <View style={stylesCommon.fillWidthSide}>
-            {renderMeasurementText(props.item.item)}
-          </View>
-          <View style={stylesCommon.itemRightIconsContainer}>
-            <Icon
-              name='ios-information-circle-outline'
-              containerStyle={{justifyContent: 'center', paddingRight: 10}}
-              type='ionicon'
-              color={props.selectedIds.includes(
-                props.item.item.id) ? themes.SECONDARY_BACKGROUND_COLOR : themes.PRIMARY_ACCENT_COLOR}
-            />
-            <Icon
-              name='right'
-              containerStyle={{justifyContent: 'center', paddingRight: 10}}
-              type='antdesign'
-              color={themes.PRIMARY_BACKGROUND_COLOR}
-              size={13}
-            />
-          </View>
-        </View>
-      </TouchableOpacity>
+      <ListItem
+        containerStyle={props.selectedIds.includes(
+          props.item.item.id) ? commonStyles.listItemInverse : commonStyles.listItem}
+        contentContainerStyle={{maxWidth: 75}}
+        key={props.item.item.id}
+        onPress={() => props.onPress()}
+        pad={5}
+        title={getMeasurementText(props.item.item)}
+        titleStyle={props.selectedIds.includes(
+          props.item.item.id) ? commonStyles.listItemTitleInverse : commonStyles.listItemTitle}
+        rightContentContainerStyle={{alignItems: 'flex-start'}}
+        rightTitle={getTypeText(props.item.item)}
+        rightTitleStyle={props.selectedIds.includes(
+          props.item.item.id) ? commonStyles.listItemRightTitleInverse : commonStyles.listItemRightTitle}
+        rightIcon={{
+          name: 'ios-information-circle-outline',
+          type: 'ionicon',
+          color: props.selectedIds.includes(
+            props.item.item.id) ? themes.SECONDARY_BACKGROUND_COLOR : themes.PRIMARY_ACCENT_COLOR,
+        }}
+        chevron={{
+          name: 'right',
+          type: 'antdesign',
+          color: themes.PRIMARY_BACKGROUND_COLOR,
+          size: 16,
+        }}
+      />
       }
-    </View>
+    </React.Fragment>
   );
 };
 

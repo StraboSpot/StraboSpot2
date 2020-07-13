@@ -140,10 +140,6 @@ const dialogStyles = StyleSheet.create({
     right: 0,
     zIndex: -1,
   },
-  sidePanelHeaderContainer: {
-    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
-    alignItems: 'flex-start',
-  },
   sidePanelHeaderTextContainer: {
     flex: 3,
   },

@@ -95,35 +95,28 @@ const commonStyles = StyleSheet.create({
     borderBottomWidth: 0.5,
     borderColor: themes.LIST_BORDER_COLOR,
   },
-  rowContainerInverse: {
-    flex: 1,
-    borderBottomWidth: 0.5,
-    borderColor: themes.LIST_BORDER_COLOR,
-    backgroundColor: themes.PRIMARY_ACCENT_COLOR,
-  },
-  row: {
-    // flexDirection: 'row',
-    height: themes.ROW_HEIGHT,
-  },
-  fixedWidthSide: {
-    justifyContent: 'center',
-  },
-  fillWidthSide: {
-    flex: 1,
-    justifyContent: 'center',
-  },
-  itemRightIconsContainer: {
-    flexDirection: 'row',
-  },
   listItem: {
     padding: 10,
     borderBottomWidth: 1,
     borderColor: themes.LIST_BORDER_COLOR,
   },
+  listItemInverse: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderColor: themes.LIST_BORDER_COLOR,
+    backgroundColor: themes.PRIMARY_ACCENT_COLOR,
+  },
   listItemTitle: {
-    fontWeight: themes.PRIMARY_LISTITEM_FONTWEIGHT,
     color: themes.PRIMARY_ITEM_TEXT_COLOR,
-    fontSize: themes.PRIMARY_TEXT_SIZE,
+  },
+  listItemTitleInverse: {
+    color: themes.SECONDARY_BACKGROUND_COLOR,
+  },
+  listItemRightTitle: {
+    color: themes.SECONDARY_ITEM_TEXT_COLOR,
+  },
+  listItemRightTitleInverse: {
+    color: themes.PRIMARY_BACKGROUND_COLOR,
   },
   sectionContainer: {
     marginTop: 10,

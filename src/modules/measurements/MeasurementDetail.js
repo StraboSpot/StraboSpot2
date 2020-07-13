@@ -1,11 +1,11 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Alert, FlatList, Text, TouchableOpacity, View} from 'react-native';
+import {Alert, FlatList, Text, View} from 'react-native';
 
 import {Formik} from 'formik';
-import {Button, ButtonGroup} from 'react-native-elements';
+import {Button, ButtonGroup, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
-import stylesCommon from '../../shared/common.styles';
+import commonStyles from '../../shared/common.styles';
 import {getNewId, isEmpty} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
 import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
@@ -205,43 +205,33 @@ const MeasurementDetailPage = (props) => {
 
     return (
       <View>
-        <TouchableOpacity style={styles.measurementsRenderListContainer}
-                          onPress={() => onSwitchActiveMeasurement(selectedMeasurements[0])}>
-          <View
-            style={activeMeasurement.id === selectedMeasurements[0].id ? stylesCommon.rowContainerInverse : stylesCommon.rowContainer}>
-            <View style={stylesCommon.row}>
-              <View style={stylesCommon.fillWidthSide}>
-                <View style={styles.measurementsListItem}>
-                  <Text
-                    style={activeMeasurement.id === selectedMeasurements[0].id ? styles.mainTextInverse : styles.mainText}>{mainText}</Text>
-                  <Text
-                    style={activeMeasurement.id === selectedMeasurements[0].id ? styles.propertyTextInverse : styles.propertyText}>{propertyText}</Text>
-                </View>
-              </View>
-            </View>
-          </View>
-        </TouchableOpacity>
+        <ListItem
+          containerStyle={activeMeasurement.id === selectedMeasurements[0].id ? commonStyles.listItemInverse : commonStyles.listItem}
+          contentContainerStyle={{maxWidth: 150, padding: 5}}
+          onPress={() => onSwitchActiveMeasurement(selectedMeasurements[0])}
+          pad={5}
+          title={mainText}
+          titleStyle={activeMeasurement.id === selectedMeasurements[0].id ? commonStyles.listItemTitleInverse : commonStyles.listItemTitle}
+          rightContentContainerStyle={{alignItems: 'flex-start'}}
+          rightTitle={propertyText}
+          rightTitleStyle={activeMeasurement.id === selectedMeasurements[0].id ? commonStyles.listItemRightTitleInverse : commonStyles.listItemRightTitle}
+        />
         {hasAssociated &&
-        <View>
-          <TouchableOpacity style={styles.measurementsRenderListContainer}
-                            onPress={() => onSwitchActiveMeasurement(
-                              selectedMeasurements[0].associated_orientation[0])}>
-            <View
-              style={activeMeasurement.id === selectedMeasurements[0].associated_orientation[0].id ? stylesCommon.rowContainerInverse : stylesCommon.rowContainer}>
-              <View style={stylesCommon.row}>
-                <View style={stylesCommon.fillWidthSide}>
-                  <View style={styles.measurementsListItem}>
-                    <Text
-                      style={activeMeasurement.id === selectedMeasurements[0].associated_orientation[0].id ? styles.mainTextInverse : styles.mainText}>{mainText2}</Text>
-                    <Text
-                      style={activeMeasurement.id === selectedMeasurements[0].associated_orientation[0].id ? styles.propertyTextInverse : styles.propertyText}>{propertyText2}</Text>
-                  </View>
-                </View>
-              </View>
-            </View>
-          </TouchableOpacity>
-          <Text style={styles.basicText}>Only one associated line or plane can be classified in bulk</Text>
-        </View>}
+        <ListItem
+          containerStyle={activeMeasurement.id === selectedMeasurements[0].associated_orientation[0].id ? commonStyles.listItemInverse : commonStyles.listItem}
+          contentContainerStyle={{maxWidth: 150, padding: 5}}
+          onPress={() => onSwitchActiveMeasurement(selectedMeasurements[0].associated_orientation[0])}
+          pad={5}
+          title={mainText2}
+          titleStyle={activeMeasurement.id === selectedMeasurements[0].associated_orientation[0].id ? commonStyles.listItemTitleInverse : commonStyles.listItemTitle}
+          rightContentContainerStyle={{alignItems: 'flex-start'}}
+          rightTitle={propertyText2}
+          rightTitleStyle={activeMeasurement.id === selectedMeasurements[0].associated_orientation[0].id ? commonStyles.listItemRightTitleInverse : commonStyles.listItemRightTitle}
+        />
+        }
+        {hasAssociated &&
+        <Text style={styles.basicText}>Only one associated line or plane can be classified in bulk</Text>
+        }
         <View style={{paddingBottom: 15}}/>
       </View>
     );

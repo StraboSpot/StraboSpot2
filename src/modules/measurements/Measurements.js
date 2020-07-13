@@ -4,17 +4,14 @@ import {Alert, FlatList, View} from 'react-native';
 import {Button} from 'react-native-elements';
 import {connect, useDispatch} from 'react-redux';
 
-// Components
 import * as themes from '../../shared/styles.constants';
 import SectionDivider from '../../shared/ui/SectionDivider';
-// Constants
 import {homeReducers, Modals} from '../home/home.constants';
 import {NotebookPages, notebookReducers} from '../notebook-panel/notebook.constants';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import {spotReducers} from '../spots/spot.constants';
 import {CompassToggleButtons} from './compass/compass.constants';
 import MeasurementItem from './MeasurementItem';
-// Styles
 import styles from './measurements.styles';
 
 const MeasurementsPage = (props) => {
@@ -189,8 +186,8 @@ const MeasurementsPage = (props) => {
       <View style={styles.measurementsContentContainer}>
         <ReturnToOverviewButton
           onPress={() => {
-            props.setNotebookPageVisible(NotebookPages.OVERVIEW);
-            props.setModalVisible(null);
+            dispatch({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: NotebookPages.OVERVIEW});
+            dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: null});
           }}
         />
         {renderSectionDivider(sectionTypes.PLANAR)}
