@@ -83,12 +83,12 @@ const TagDetail = (props) => {
         title={'Tags'}
         headerTitle={!isEmpty(selectedTag) && selectedTag.name}
       />
-      <View style={{flex: 5, paddingTop: 10}}>
+      <View>
         <FlatList
           ListHeaderComponent={
             <View>
               <View>
-                <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+                <View style={commonStyles.dividerWithButton}>
                   <Divider sectionText={'Tag Info'}/>
                   <Button
                     title={'view/edit'}

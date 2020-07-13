@@ -1,24 +1,22 @@
-import React, {useRef} from 'react';
+import React from 'react';
 import {Alert, FlatList, View} from 'react-native';
 
-import {Formik} from 'formik';
 import {Button, Overlay} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {getNewId} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
 import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
-import {Form, formStyles, useFormHook} from '../form';
+import {formStyles} from '../form';
 import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 import {projectReducers} from '../project/project.constants';
+import {useTagsHook} from '../tags';
 
 const TagDetailModal = (props) => {
   const dispatch = useDispatch();
   const selectedTag = useSelector(state => state.project.selectedTag);
   const tags = useSelector(state => state.project.project.tags || []);
 
-  const [useForm] = useFormHook();
-  const form = useRef(null);
+  const [useTags] = useTagsHook();
 
   const confirmDeleteTag = () => {
     Alert.alert(
@@ -47,12 +45,6 @@ const TagDetailModal = (props) => {
     dispatch({type: projectReducers.SET_SELECTED_TAG, tag: {}});
   };
 
-  // What happens after submitting the form is handled in saveFormAndClose since we want to show
-  // an alert message if there are errors but this function won't be called if form is invalid
-  const onSubmitForm = () => {
-    console.log('In onSubmitForm');
-  };
-
   const renderCancelSaveButtons = () => {
     return (
       <View>
@@ -64,50 +56,8 @@ const TagDetailModal = (props) => {
     );
   };
 
-  const renderTagForm = () => {
-    const formName = ['project', 'tags'];
-    console.log('Rendering form: tag', selectedTag);
-    return (
-      <View style={{flex: 1}}>
-        <Formik
-          innerRef={form}
-          onSubmit={onSubmitForm}
-          validate={(values) => useForm.validateForm({formName: formName, values: values})}
-          component={(formProps) => Form({formName: formName, ...formProps})}
-          initialValues={selectedTag}
-          validateOnChange={false}
-          enableReinitialize={true}
-        />
-      </View>
-    );
-  };
-
-  const saveForm = async () => {
-    try {
-      await form.current.submitForm();
-      if (useForm.hasErrors(form)) {
-        useForm.showErrors(form);
-        return Promise.reject();
-      }
-      else {
-        console.log('Saving tag data to Project ...');
-        console.log('Form values', form.current.values);
-        let updatedTags = tags.filter(tag => tag.id !== selectedTag.id);
-        let updatedTag = form.current.values;
-        if (!updatedTag.id) updatedTag.id = getNewId();
-        updatedTags.push(updatedTag);
-        dispatch({type: projectReducers.UPDATE_PROJECT, field: 'tags', value: updatedTags});
-        return Promise.resolve();
-      }
-    }
-    catch (e) {
-      console.log('Error submitting form', e);
-      return Promise.reject();
-    }
-  };
-
   const saveFormAndClose = () => {
-    saveForm().then(() => {
+    useTags.saveForm().then(() => {
       console.log('Finished saving tag data');
       props.closeModal();
     }, () => {
@@ -127,7 +77,7 @@ const TagDetailModal = (props) => {
         <FlatList style={formStyles.formContainer}
                   ListHeaderComponent={
                     <View>
-                      {renderTagForm()}
+                      {useTags.renderTagForm()}
                       <Button
                         titleStyle={{color: themes.RED}}
                         title={'Delete Tag'}

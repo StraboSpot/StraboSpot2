@@ -13,8 +13,8 @@ const SpotTag = () => {
   const [useTags] = useTagsHook();
   const tags = useSelector(state => state.project.project.tags || []);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
-  const filteredTags = tags.filter(tag => tag.spots.includes(selectedSpot.properties.id));
-  console.log('FilteredTags', filteredTags);
+  const filteredTags = tags.filter(tag => tag.spots && tag.spots.includes(selectedSpot.properties.id));
+
   const renderTag = (tag) => {
     return (
       <ListItem
