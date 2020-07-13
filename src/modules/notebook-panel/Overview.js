@@ -13,7 +13,7 @@ import NotebookImages from '../images/ImageNotebook';
 import MeasurementsOverview from '../measurements/MeasurementsOverview';
 import NotesOverview from '../notes/NotesOverview';
 import {spotReducers} from '../spots/spot.constants';
-import TagsOverview from '../tags/TagsOverview';
+import {TagsAtSpotList} from '../tags';
 import notebookStyles from './notebookPanel.styles';
 
 const Overview = props => {
@@ -27,7 +27,7 @@ const Overview = props => {
   const SECTIONS = [
     {id: 1, title: 'Measurements', content: <MeasurementsOverview/>},
     {id: 2, title: 'Photos and Sketches', content: <NotebookImages/>},
-    {id: 3, title: 'Tags', content: <TagsOverview/>},
+    {id: 3, title: 'Tags', content: <TagsAtSpotList/>},
     {id: 4, title: 'Notes', content: <NotesOverview/>},
   ];
 

@@ -4,21 +4,27 @@ import {View} from 'react-native';
 import {Formik} from 'formik';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {getNewId} from '../../shared/Helpers';
-import {Form, formStyles, useFormHook, labelDictionary} from '../form';
+import {getNewId, isEmpty} from '../../shared/Helpers';
+import {Form, useFormHook, labelDictionary} from '../form';
 import {projectReducers} from '../project/project.constants';
-
 
 const useTags = () => {
   const [useForm] = useFormHook();
   const dispatch = useDispatch();
-  const selectedTag = useSelector(state => state.project.selectedTag);
-  const projectTags = useSelector(state => state.project.project.tags || []);
-  const tagsDictionary = labelDictionary.project.tags;
   const form = useRef(null);
+  const projectTags = useSelector(state => state.project.project.tags || []);
+  const selectedSpot = useSelector(state => state.spot.selectedSpot);
+  const selectedTag = useSelector(state => state.project.selectedTag);
+  const tagsDictionary = labelDictionary.project.tags;
 
   const getLabel = (key) => {
     return tagsDictionary[key] || key.replace(/_/g, ' ');
+  };
+
+  // Get Tags at a Spot given an Id or if no Id specified get tags at the selected Spot
+  const getTagsAtSpot = (spotId) => {
+    if (!spotId && !isEmpty(selectedSpot)) spotId = selectedSpot.properties.id;
+    return projectTags.filter(tag => tag.spots && tag.spots.includes(spotId));
   };
 
   // What happens after submitting the form is handled in saveFormAndClose since we want to show
@@ -84,6 +90,7 @@ const useTags = () => {
 
   return [{
     getLabel: getLabel,
+    getTagsAtSpot: getTagsAtSpot,
     renderSpotCount: renderSpotCount,
     renderTagForm: renderTagForm,
     save: save,

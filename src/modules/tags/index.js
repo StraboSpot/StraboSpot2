@@ -4,3 +4,4 @@ export {default as TagDetail} from './TagDetail';
 export {default as tagsStyles} from './tags.styles';
 export {default as useTagsHook} from './useTags';
 export {default as TagDetailModal} from './TagDetailModal';
+export {default as TagsAtSpotList} from './TagsAtSpotList';
