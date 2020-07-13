@@ -1,15 +1,19 @@
 import React, {useRef} from 'react';
-import {View} from 'react-native';
+import {Text, View} from 'react-native';
 
 import {Formik} from 'formik';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {getNewId, isEmpty} from '../../shared/Helpers';
+import {getNewId, isEmpty, truncateText} from '../../shared/Helpers';
 import {Form, useFormHook, labelDictionary} from '../form';
+import useMapsHook from '../maps/useMaps';
+import {NotebookPages, notebookReducers} from '../notebook-panel/notebook.constants';
 import {projectReducers} from '../project/project.constants';
+import {tagsStyles} from './index';
 
 const useTags = () => {
   const [useForm] = useFormHook();
+  const [useMaps] = useMapsHook();
   const dispatch = useDispatch();
   const form = useRef(null);
   const projectTags = useSelector(state => state.project.project.tags || []);
@@ -27,6 +31,12 @@ const useTags = () => {
     return projectTags.filter(tag => tag.spots && tag.spots.includes(spotId));
   };
 
+  const openSpotInNotebook = (spot) => {
+    useMaps.setSelectedSpot(spot);
+    dispatch({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: NotebookPages.OVERVIEW});
+    dispatch({type: notebookReducers.SET_NOTEBOOK_PANEL_VISIBLE, value: true});
+  };
+
   // What happens after submitting the form is handled in saveFormAndClose since we want to show
   // an alert message if there are errors but this function won't be called if form is invalid
   const onSubmitForm = () => {
@@ -39,6 +49,27 @@ const useTags = () => {
       return `${tag.spots.length} spots`;
     }
     else return '0 spots';
+  };
+
+  const renderTagInfo = () => {
+    let type = selectedTag.type ? getLabel(selectedTag.type) : undefined;
+    if (selectedTag.type === 'other' && selectedTag.other_type) type = selectedTag.other_type;
+    const subtypeFields = ['other_concept_type', 'other_documentation_type', 'concept_type', 'documentation_type'];
+    const subTypeField = subtypeFields.find(subtype => selectedTag[subtype]);
+    const subType = subTypeField ? getLabel(selectedTag[subTypeField]) : undefined;
+    const rockUnitFields = ['unit_label_abbreviation', 'map_unit_name', 'member_name', 'rock_type'];
+    let rockUnitString = rockUnitFields.reduce((acc, field) => {
+      if (selectedTag[field]) return acc + (!isEmpty(acc) ? ' / ' : '') + selectedTag[field];
+      else return acc;
+    }, []);
+    const notes = selectedTag.notes ? truncateText(selectedTag.notes, 100) : undefined;
+    return (
+      <View style={tagsStyles.sectionContainer}>
+        {type && <Text style={tagsStyles.listText}>{type}{subType && ' - ' + subType.toUpperCase()}</Text>}
+        {!isEmpty(rockUnitString) && <Text style={tagsStyles.listText}>{rockUnitString}</Text>}
+        {notes && <Text style={tagsStyles.listText}>Notes: {notes}</Text>}
+      </View>
+    );
   };
 
   const renderTagForm = () => {
@@ -91,7 +122,9 @@ const useTags = () => {
   return [{
     getLabel: getLabel,
     getTagsAtSpot: getTagsAtSpot,
+    openSpotInNotebook: openSpotInNotebook,
     renderSpotCount: renderSpotCount,
+    renderTagInfo: renderTagInfo,
     renderTagForm: renderTagForm,
     save: save,
     saveForm: saveForm,
