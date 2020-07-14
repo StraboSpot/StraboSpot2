@@ -193,15 +193,6 @@ const InitialProjectLoadModal = (props) => {
         <View style={{height: 400}}>
           <NewProject openMainMenu={props.openMainMenu} onPress={() => props.closeModal()}/>
         </View>
-        <View>
-          <Button
-            onPress={() => props.closeModal()}
-            title={'Close Modal (temporary)'}
-            buttonStyle={commonStyles.standardButton}
-            containerStyle={{paddingTop: 10}}
-            titleStyle={commonStyles.standardButtonText}
-          />
-        </View>
       </React.Fragment>
     );
   };
