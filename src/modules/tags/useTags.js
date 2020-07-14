@@ -16,6 +16,7 @@ const useTags = () => {
   const [useMaps] = useMapsHook();
   const dispatch = useDispatch();
   const form = useRef(null);
+  const addTagToSelectedSpot = useSelector(state => state.project.addTagToSelectedSpot);
   const projectTags = useSelector(state => state.project.project.tags || []);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const selectedTag = useSelector(state => state.project.selectedTag);
@@ -29,6 +30,13 @@ const useTags = () => {
   const getTagsAtSpot = (spotId) => {
     if (!spotId && !isEmpty(selectedSpot)) spotId = selectedSpot.properties.id;
     return projectTags.filter(tag => tag.spots && tag.spots.includes(spotId));
+  };
+
+  const getTagsAtSpotGeologicUnitFirst = (spotId) => {
+    const tagsAtSpot = getTagsAtSpot(spotId);
+    const tagsGeologicUnit = tagsAtSpot.filter(tag => tag.type === 'geologic_unit');
+    const tagsOther = tagsAtSpot.filter(tag => tag.type !== 'geologic_unit');
+    return [...tagsGeologicUnit, ...tagsOther];
   };
 
   const openSpotInNotebook = (spot) => {
@@ -90,11 +98,6 @@ const useTags = () => {
     );
   };
 
-  const save = (id, value) => {
-    const tag = projectTags.find(tag => tag.id === id);
-    tag.name = value;
-  };
-
   const saveForm = async () => {
     try {
       await form.current.submitForm();
@@ -109,6 +112,10 @@ const useTags = () => {
         let updatedTag = form.current.values;
         if (!updatedTag.id) updatedTag.id = getNewId();
         updatedTags.push(updatedTag);
+        if (addTagToSelectedSpot) {
+          if (!updatedTag.spots) updatedTag.spots = [];
+          updatedTag.spots.push(selectedSpot.properties.id);
+        }
         dispatch({type: projectReducers.UPDATE_PROJECT, field: 'tags', value: updatedTags});
         return Promise.resolve();
       }
@@ -122,11 +129,11 @@ const useTags = () => {
   return [{
     getLabel: getLabel,
     getTagsAtSpot: getTagsAtSpot,
+    getTagsAtSpotGeologicUnitFirst: getTagsAtSpotGeologicUnitFirst,
     openSpotInNotebook: openSpotInNotebook,
     renderSpotCount: renderSpotCount,
     renderTagInfo: renderTagInfo,
     renderTagForm: renderTagForm,
-    save: save,
     saveForm: saveForm,
   }];
 };
