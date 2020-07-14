@@ -52,7 +52,7 @@ const SpotTag = () => {
       {!isEmpty(useTags.getTagsAtSpot()) ?
         <FlatList
           keyExtractor={item => item.id.toString()}
-          data={useTags.getTagsAtSpot()}
+          data={useTags.getTagsAtSpotGeologicUnitFirst()}
           renderItem={({item}) => renderTag(item)}/>
         : <Text style={commonStyles.noValueText}>No Tags</Text>
       }

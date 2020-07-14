@@ -32,6 +32,13 @@ const useTags = () => {
     return projectTags.filter(tag => tag.spots && tag.spots.includes(spotId));
   };
 
+  const getTagsAtSpotGeologicUnitFirst = (spotId) => {
+    const tagsAtSpot = getTagsAtSpot(spotId);
+    const tagsGeologicUnit = tagsAtSpot.filter(tag => tag.type === 'geologic_unit');
+    const tagsOther = tagsAtSpot.filter(tag => tag.type !== 'geologic_unit');
+    return [...tagsGeologicUnit, ...tagsOther];
+  };
+
   const openSpotInNotebook = (spot) => {
     useMaps.setSelectedSpot(spot);
     dispatch({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: NotebookPages.OVERVIEW});
@@ -122,6 +129,7 @@ const useTags = () => {
   return [{
     getLabel: getLabel,
     getTagsAtSpot: getTagsAtSpot,
+    getTagsAtSpotGeologicUnitFirst: getTagsAtSpotGeologicUnitFirst,
     openSpotInNotebook: openSpotInNotebook,
     renderSpotCount: renderSpotCount,
     renderTagInfo: renderTagInfo,
