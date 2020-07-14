@@ -20,7 +20,13 @@ const TagsNotebook = () => {
 
   const addTag = () => {
     dispatch({type: projectReducers.SET_SELECTED_TAG, tag: {}});
+    dispatch({type: projectReducers.ADD_TAG_TO_SELECTED_SPOT, addTagToSelectedSpot: true});
     setIsDetailModalVisible(true);
+  };
+
+  const closeTagDetailModal = () => {
+    setIsDetailModalVisible(false);
+    dispatch({type: projectReducers.ADD_TAG_TO_SELECTED_SPOT, addTagToSelectedSpot: false});
   };
 
   return (
@@ -48,7 +54,7 @@ const TagsNotebook = () => {
       </View>
       <TagDetailModal
         isVisible={isDetailModalVisibile}
-        closeModal={() => setIsDetailModalVisible(false)}
+        closeModal={closeTagDetailModal}
       />
     </React.Fragment>
   );

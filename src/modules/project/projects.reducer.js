@@ -7,10 +7,16 @@ const initialState = {
   datasets: {},
   deviceBackUpDirectoryExists: false,
   selectedTag: {},
+  addTagToSelectedSpot: false,
 };
 
 export const projectsReducer = (state = initialState, action) => {
   switch (action.type) {
+    case projectReducers.ADD_TAG_TO_SELECTED_SPOT:
+      return {
+        ...state,
+        addTagToSelectedSpot: action.addTagToSelectedSpot,
+      };
     case projectReducers.PROJECTS:
       return {
         ...state,
