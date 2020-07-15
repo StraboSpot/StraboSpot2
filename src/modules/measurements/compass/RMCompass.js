@@ -307,11 +307,11 @@ const RNCompass = (props) => {
   else if (props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {
     modalView =
       <React.Fragment>
-        <View style={height <= 1000 ? {height: 300, alignItems: 'center', justifyContent: 'center'} :
-          {height: 350, alignContent: 'center', justifyContent: 'center'}}>
-          {/*<Measurements/>*/}
-          <Text>Reserved for manual measurement input form fields</Text>
-        </View>
+        {/*<View style={height <= 1000 ? {height: 300, alignItems: 'center', justifyContent: 'center'} :*/}
+        {/*  {alignContent: 'center', justifyContent: 'center'}}>*/}
+        {/*  <Measurements/>*/}
+          {/*<Text>Reserved for manual measurement input form fields</Text>*/}
+        {/*</View>*/}
       </React.Fragment>;
   }
 
@@ -319,7 +319,9 @@ const RNCompass = (props) => {
     <View style={{}}>
       <View style={{}}>
         <View>
+          <Text style={{textAlign: 'center', fontSize: 12, fontWeight: 'bold'}}>x Spots Created </Text>
           <Text style={{textAlign: 'center', fontSize: 12}}>Tap compass to record</Text>
+          <Text style={{textAlign: 'center', fontSize: 12}}> a measurement in a NEW SPOT</Text>
           {renderCompass()}
         </View>
         <View style={compassStyles.toggleButtonsRowContainer}>
