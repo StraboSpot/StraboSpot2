@@ -15,7 +15,7 @@ const notebookSamplesModal = (props) => {
         <Modal
           component={<Samples onPress={props.onPress}/>}
           close={props.close}
-          buttonTitleRight={'Cancel'}
+          buttonTitleLeft={'Cancel'}
           onPress={props.cancel}
           style={styles.samplesContainer}
         />
@@ -28,7 +28,6 @@ const notebookSamplesModal = (props) => {
         <Modal
           component={<Samples onPress={props.onPress}/>}
           close={props.close}
-          // buttonTitleRight={'Go Back'}
           onPress={props.cancel}
           style={styles.samplesContainer}
         />

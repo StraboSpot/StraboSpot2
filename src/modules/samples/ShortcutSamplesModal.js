@@ -14,7 +14,7 @@ const shortcutSamplesModal = (props) => {
           component={<Samples onPress={props.onPress}/>}
           style={styles.samplesContainer}
           close={props.close}
-          buttonTitleRight={'Undo last'}
+          buttonTitleLeft={'Undo last'}
           textStyle={{fontWeight: 'bold'}}
         />
       </View>
@@ -27,8 +27,6 @@ const shortcutSamplesModal = (props) => {
           component={<Samples onPress={props.onPress}/>}
           close={props.close}
           onPress={props.onPress}
-          // buttonTitleRight={'Cancel'}
-          // onPress={props.cancel}
           style={styles.samplesContainer}
         />
       </DragAnimation>
