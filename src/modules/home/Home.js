@@ -42,7 +42,7 @@ import NotebookSamplesModal from '../samples/NotebookSamplesModal';
 import ShortcutSamplesModal from '../samples/ShortcutSamplesModal';
 import {spotReducers} from '../spots/spot.constants';
 import useSpotsHook from '../spots/useSpots';
-import {TagAddRemoveSpots, TagDetailSidePanel} from '../tags';
+import {NotebookTagsModal, TagAddRemoveSpots, TagDetailSidePanel} from '../tags';
 import BaseMapDialog from './BaseMapDialogBox';
 import {homeReducers, Modals} from './home.constants';
 import homeStyles from './home.style';
@@ -446,6 +446,14 @@ const Home = (props) => {
         <AllSpotsPanel/>
       </View>
     );
+  };
+
+  const renderFloatingViews = () => {
+    if (props.modalVisible === Modals.NOTEBOOK_MODALS.TAGS) {
+      return (
+        <NotebookTagsModal close={() => props.setModalVisible(null)}/>
+      );
+    }
   };
 
   const renderLoadProjectFromModal = () => {
@@ -965,6 +973,7 @@ const Home = (props) => {
       {props.isAllSpotsPanelVisible && renderAllSpotsPanel()}
       {homeDrawer}
       {isMainMenuPanelVisible && toggleSidePanel()}
+      {renderFloatingViews()}
       {renderLoadProjectFromModal()}
       {renderStatusDialogBox()}
       {renderInfoDialogBox()}
