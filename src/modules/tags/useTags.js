@@ -18,12 +18,39 @@ const useTags = () => {
   const form = useRef(null);
   const addTagToSelectedSpot = useSelector(state => state.project.addTagToSelectedSpot);
   const projectTags = useSelector(state => state.project.project.tags || []);
+  const project = useSelector(state => state.project.project);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const selectedTag = useSelector(state => state.project.selectedTag);
   const tagsDictionary = labelDictionary.project.tags;
 
+  const addRemoveSpotFromTag = (spotId) => {
+    let selectedTagCopy = JSON.parse(JSON.stringify(selectedTag));
+    if (selectedTagCopy.spots) {
+      if (selectedTagCopy.spots.includes(spotId)) {
+        selectedTagCopy.spots = selectedTagCopy.spots.filter(id => spotId !== id);
+      }
+      else selectedTagCopy.spots.push(spotId);
+    }
+    else {
+      selectedTagCopy.spots = [];
+      selectedTagCopy.spots.push(spotId);
+    }
+    const updatedTags = projectTags.filter(tag => tag.id !== selectedTagCopy.id);
+    updatedTags.push(selectedTagCopy);
+    dispatch({type: projectReducers.UPDATE_PROJECT, field: 'tags', value: updatedTags});
+  };
+
   const getLabel = (key) => {
     return tagsDictionary[key] || key.replace(/_/g, ' ');
+  };
+
+  const addRemoveTagFromSpot = (tag, spotId) => {
+    if (!tag.spots) tag.spots = [];
+    const i = tag.spots.indexOf(selectedSpot.properties.id);
+    console.log('index of tag', i);
+    if (i === -1) tag.spots.push(selectedSpot.properties.id);
+    else tag.spots.splice(i, 1);
+    saveTag(tag);
   };
 
   // Get Tags at a Spot given an Id or if no Id specified get tags at the selected Spot
@@ -126,7 +153,23 @@ const useTags = () => {
     }
   };
 
+  const saveTag = (tagToSave) => {
+    let projectCopy = JSON.parse(JSON.stringify(project));
+    projectCopy.tags.filter(tag => tag.id === tagToSave.id);
+    projectCopy.tags.push(tagToSave.id);
+    dispatch({type: projectReducers.UPDATE_PROJECT, value: projectCopy});
+  };
+
+  const showSpotTags = (spot) => {
+    if (selectedTag.spots) {
+      const spotsWithTags = selectedTag.spots.find(tag => spot.properties.id === tag);
+      return spotsWithTags;
+    }
+  };
+
   return [{
+    addRemoveSpotFromTag: addRemoveSpotFromTag,
+    addRemoveTagFromSpot: addRemoveTagFromSpot,
     getLabel: getLabel,
     getTagsAtSpot: getTagsAtSpot,
     getTagsAtSpotGeologicUnitFirst: getTagsAtSpotGeologicUnitFirst,
@@ -135,6 +178,7 @@ const useTags = () => {
     renderTagInfo: renderTagInfo,
     renderTagForm: renderTagForm,
     saveForm: saveForm,
+    showSpotTags: showSpotTags,
   }];
 };
 
