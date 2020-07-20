@@ -192,7 +192,7 @@ PODS:
     - React
   - react-native-image-picker (2.3.1):
     - React
-  - react-native-image-resizer (1.2.1):
+  - react-native-image-resizer (1.2.3):
     - React
   - react-native-mapbox-gl (8.0.0):
     - "@react-native-mapbox-gl-mapbox-static (~> 5.7)"
@@ -299,6 +299,14 @@ PODS:
     - React
   - RNSensors (5.4.1):
     - React
+  - RNSentry (1.6.2):
+    - React
+    - Sentry (~> 5.1.8)
+  - RNSound (0.11.0):
+    - React
+    - RNSound/Core (= 0.11.0)
+  - RNSound/Core (0.11.0):
+    - React
   - RNVectorIcons (6.6.0):
     - React
   - RNZipArchive (5.0.2):
@@ -308,6 +316,9 @@ PODS:
   - RNZipArchive/Core (5.0.2):
     - React
     - SSZipArchive (= 2.2.2)
+  - Sentry (5.1.9):
+    - Sentry/Core (= 5.1.9)
+  - Sentry/Core (5.1.9)
   - SSZipArchive (2.2.2)
   - Yoga (1.14.0)
 
@@ -360,6 +371,8 @@ DEPENDENCIES:
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNSensors (from `../node_modules/react-native-sensors`)
+  - "RNSentry (from `../node_modules/@sentry/react-native`)"
+  - RNSound (from `../node_modules/react-native-sound`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
   - RNZipArchive (from `../node_modules/react-native-zip-archive`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
@@ -370,6 +383,7 @@ SPEC REPOS:
     - boost-for-react-native
     - Mapbox-iOS-SDK
     - MapboxMobileEvents
+    - Sentry
     - SSZipArchive
 
 EXTERNAL SOURCES:
@@ -463,6 +477,10 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-screens"
   RNSensors:
     :path: "../node_modules/react-native-sensors"
+  RNSentry:
+    :path: "../node_modules/@sentry/react-native"
+  RNSound:
+    :path: "../node_modules/react-native-sound"
   RNVectorIcons:
     :path: "../node_modules/react-native-vector-icons"
   RNZipArchive:
@@ -492,7 +510,7 @@ SPEC CHECKSUMS:
   react-native-geolocation: cbd9d6bd06bac411eed2671810f454d4908484a8
   react-native-get-random-values: 2b7500cdb68066aba87cdccd97067c29e16ffe95
   react-native-image-picker: 668e72d0277dc8c12ae90e835507c1eddd2e4f85
-  react-native-image-resizer: 487329f0748d62a075f9d1ba1676c3ab394d169f
+  react-native-image-resizer: 3a0a2ab15953b2aec5dda20338e3c6bd6c26e528
   react-native-mapbox-gl: 77b87a1dd2d7b41b6b77018c0f3bed5f8ee55c81
   react-native-netinfo: 61a837131d5f0194d22f8048a456d8f31a074baa
   react-native-safe-area-context: 8260e5157617df4b72865f44006797f895b2ada7
@@ -520,8 +538,11 @@ SPEC CHECKSUMS:
   RNReanimated: 955cf4068714003d2f1a6e2bae3fb1118f359aff
   RNScreens: b5c0e1b2b04512919e78bd3898e144a157ce2363
   RNSensors: 0c25e336a6302bc70870b15f190c6fdb014bf24c
+  RNSentry: 9d68f0ce79608e90e10ac320c409321efc114b8f
+  RNSound: c980916b596cc15c8dcd2f6ecd3b13c4881dbe20
   RNVectorIcons: 0bb4def82230be1333ddaeee9fcba45f0b288ed4
   RNZipArchive: f06fe0dcfb9e2fa7437fc7f6c03d5400952f2d57
+  Sentry: 81f7f2bd3cb041137ea7efcde3aa5ad0d5a67632
   SSZipArchive: fa16b8cc4cdeceb698e5e5d9f67e9558532fbf23
   Yoga: 3ebccbdd559724312790e7742142d062476b698e
 
