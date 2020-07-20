@@ -11,6 +11,19 @@ const initialState = {
 };
 
 export const projectsReducer = (state = initialState, action) => {
+  // Temporary fix to the project data structure for a bug that has since been corrected
+  // Take this out after Doug gets his project working again - hopefully this fixes it
+  if (state.project && state.project && state.project.undefined) {
+    const projectCopy = JSON.parse(JSON.stringify(state.project));
+    delete projectCopy.undefined;
+    return {
+      ...state,
+      project: {
+        ...projectCopy,
+      },
+    };
+  }
+
   switch (action.type) {
     case projectReducers.ADD_TAG_TO_SELECTED_SPOT:
       return {
