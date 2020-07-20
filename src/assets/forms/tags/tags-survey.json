@@ -43,7 +43,7 @@
     "name": "type",
     "label": "Type",
     "hint": "",
-    "required": false,
+    "required": true,
     "relevant": "",
     "appearance": "",
     "constraint": "",
@@ -932,7 +932,7 @@
     "appearance": "",
     "constraint": "",
     "constraint_message": "",
-    "calculation": "'vjAJZCmKSJMcKdVgYPhzED'",
+    "calculation": "'vpTmckk24xy7PMJXheYdjg'",
     "$given_name": "__version__"
   }
 ]
