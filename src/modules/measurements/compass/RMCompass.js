@@ -28,8 +28,18 @@ import {spotReducers} from '../../spots/spot.constants';
 import {CompassToggleButtons} from './compass.constants';
 import compassStyles from './compass.styles';
 
+const Sound = require('react-native-sound');
+
 // eslint-disable-next-line no-unused-vars
 const {height, width} = Dimensions.get('window');
+const ButtonClick = new Sound('ButtonClick.mp3', Sound.MAIN_BUNDLE, (error) => {
+  if (error) {
+    console.log('failed to load the sound', error);
+    return;
+  }
+  console.log(
+    'duration in seconds: ' + ButtonClick.getDuration() + ' number of channels: ' + ButtonClick.getNumberOfChannels());
+});
 
 const RNCompass = (props) => {
   let modalView = null;
@@ -89,6 +99,13 @@ const RNCompass = (props) => {
     });
   };
 
+  const playSound = () => {
+    ButtonClick.play(success => {
+      if (success) console.log('successfully finished playing');
+      else console.log('playback failed due to audio decoding errors');
+    });
+  };
+
   const grabMeasurements = async () => {
     if (props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {
       const pointSetAtCurrentLocation = await useMaps.setPointAtCurrentLocation();
@@ -131,6 +148,7 @@ const RNCompass = (props) => {
       else if (props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {
         props.onSpotEdit('orientation_data', [newOrientation]);
       }
+    playSound();
     }
     else Alert.alert('No Measurement Type', 'Please select a measurement type using the toggles.');
   };
