@@ -8,14 +8,11 @@ import * as themes from '../../shared/styles.constants';
 import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import {formStyles} from '../form';
 import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
-import {projectReducers} from '../project/project.constants';
 import {useTagsHook} from '../tags';
 
 const TagDetailModal = (props) => {
   const dispatch = useDispatch();
   const selectedTag = useSelector(state => state.project.selectedTag);
-  const tags = useSelector(state => state.project.project.tags || []);
-
   const [useTags] = useTagsHook();
 
   const confirmDeleteTag = () => {
@@ -40,9 +37,7 @@ const TagDetailModal = (props) => {
   const deleteTag = () => {
     props.closeModal();
     dispatch({type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE, bool: false});
-    let updatedTags = tags.filter(tag => tag.id !== selectedTag.id);
-    dispatch({type: projectReducers.UPDATE_PROJECT, field: 'tags', value: updatedTags});
-    dispatch({type: projectReducers.SET_SELECTED_TAG, tag: {}});
+    useTags.deleteTag(selectedTag);
   };
 
   const renderCancelSaveButtons = () => {

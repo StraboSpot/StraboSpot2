@@ -18,7 +18,6 @@ const useTags = () => {
   const form = useRef(null);
   const addTagToSelectedSpot = useSelector(state => state.project.addTagToSelectedSpot);
   const projectTags = useSelector(state => state.project.project.tags || []);
-  const project = useSelector(state => state.project.project);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const selectedTag = useSelector(state => state.project.selectedTag);
   const tagsDictionary = labelDictionary.project.tags;
@@ -35,21 +34,25 @@ const useTags = () => {
       selectedTagCopy.spots = [];
       selectedTagCopy.spots.push(spotId);
     }
-    const updatedTags = projectTags.filter(tag => tag.id !== selectedTagCopy.id);
-    updatedTags.push(selectedTagCopy);
+    saveTag(selectedTagCopy);
+  };
+
+  const deleteTag = (tagToDelete) => {
+    let updatedTags = projectTags.filter(tag => tag.id !== tagToDelete.id);
     dispatch({type: projectReducers.UPDATE_PROJECT, field: 'tags', value: updatedTags});
+    dispatch({type: projectReducers.SET_SELECTED_TAG, tag: {}});
   };
 
   const getLabel = (key) => {
     return tagsDictionary[key] || key.replace(/_/g, ' ');
   };
 
-  const addRemoveTagFromSpot = (tag, spotId) => {
+  const addRemoveTagFromSpot = (tag) => {
     if (!tag.spots) tag.spots = [];
     const i = tag.spots.indexOf(selectedSpot.properties.id);
-    console.log('index of tag', i);
     if (i === -1) tag.spots.push(selectedSpot.properties.id);
     else tag.spots.splice(i, 1);
+    if (isEmpty(tag.spots)) delete tag.spots;
     saveTag(tag);
   };
 
@@ -134,15 +137,13 @@ const useTags = () => {
       else {
         console.log('Saving tag data to Project ...');
         console.log('Form values', form.current.values);
-        let updatedTags = projectTags.filter(tag => tag.id !== selectedTag.id);
         let updatedTag = form.current.values;
         if (!updatedTag.id) updatedTag.id = getNewId();
-        updatedTags.push(updatedTag);
         if (addTagToSelectedSpot) {
           if (!updatedTag.spots) updatedTag.spots = [];
           updatedTag.spots.push(selectedSpot.properties.id);
         }
-        dispatch({type: projectReducers.UPDATE_PROJECT, field: 'tags', value: updatedTags});
+        saveTag(updatedTag);
         return Promise.resolve();
       }
     }
@@ -153,22 +154,15 @@ const useTags = () => {
   };
 
   const saveTag = (tagToSave) => {
-    let projectCopy = JSON.parse(JSON.stringify(project));
-    projectCopy.tags.filter(tag => tag.id === tagToSave.id);
-    projectCopy.tags.push(tagToSave.id);
-    dispatch({type: projectReducers.UPDATE_PROJECT, value: projectCopy});
-  };
-
-  const showSpotTags = (spot) => {
-    if (selectedTag.spots) {
-      const spotsWithTags = selectedTag.spots.find(tag => spot.properties.id === tag);
-      return spotsWithTags;
-    }
+    const updatedTags = projectTags.filter(tag => tag.id !== tagToSave.id);
+    updatedTags.push(tagToSave);
+    dispatch({type: projectReducers.UPDATE_PROJECT, field: 'tags', value: updatedTags});
   };
 
   return [{
     addRemoveSpotFromTag: addRemoveSpotFromTag,
     addRemoveTagFromSpot: addRemoveTagFromSpot,
+    deleteTag: deleteTag,
     getLabel: getLabel,
     getTagsAtSpot: getTagsAtSpot,
     getTagsAtSpotGeologicUnitFirst: getTagsAtSpotGeologicUnitFirst,
@@ -177,7 +171,6 @@ const useTags = () => {
     renderTagInfo: renderTagInfo,
     renderTagForm: renderTagForm,
     saveForm: saveForm,
-    showSpotTags: showSpotTags,
   }];
 };
 

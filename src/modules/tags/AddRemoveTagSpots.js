@@ -15,21 +15,12 @@ const AddRemoveTagSpots = () => {
   const dispatch = useDispatch();
   const selectedTag = useSelector((state) => state.project.selectedTag);
   const spots = useSelector((state) => state.spot.spots);
-  const tags = useSelector(state => state.project.project.tags || []);
-
-  const showSpotTags = (spot) => {
-    if (selectedTag.spots) {
-      const spotsWithTags = selectedTag.spots.find(tag => spot.properties.id === tag);
-      return spotsWithTags;
-    }
-  };
 
   const renderSpotListItem = (spot) => {
-    const spotsWithTag = showSpotTags(spot);
     return <ListItem
       title={spot.properties.name}
       onPress={() => useTags.addRemoveSpotFromTag(spot.properties.id)}
-      checkmark={spot.properties.id === spotsWithTag}
+      checkmark={selectedTag.spots && selectedTag.spots.includes(spot.properties.id)}
       bottomDivider
     />;
   };
