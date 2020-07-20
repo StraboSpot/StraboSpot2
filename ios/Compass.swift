@@ -41,7 +41,7 @@ class Compass: RCTEventEmitter {
   func myAccelermoter() {
     if motion.isAccelerometerAvailable {
       print("available")
-      motion.accelerometerUpdateInterval = 0.1
+      motion.accelerometerUpdateInterval = 0.5
       motion.startAccelerometerUpdates(to: OperationQueue.main) { (data, error) in
 //                    print(data as Any, "Error", error as Any)
             if let trueData = data {
@@ -74,7 +74,7 @@ class Compass: RCTEventEmitter {
           }
               let queue = OperationQueue.main
       
-              motion.deviceMotionUpdateInterval = 0.1
+    motion.deviceMotionUpdateInterval = 0.5
           motion.startDeviceMotionUpdates(using: .xTrueNorthZVertical, to: queue, withHandler: { (data: CMDeviceMotion?, error: Error?) in
                   guard let data = data, error == nil else {
                       return

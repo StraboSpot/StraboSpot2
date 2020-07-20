@@ -4,28 +4,30 @@
 <dict>
 	<key></key>
 	<string></string>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>en</string>
+	<key>CFBundleDisplayName</key>
+	<string>StraboSpot2</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
 	<key>CFBundleName</key>
 	<string>$(PRODUCT_NAME)</string>
-	<key>UILaunchStoryboardName</key>
-	<string>Launch Screen</string>
-	<key>UIFileSharingEnabled</key>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleVersion</key>
+	<string>1</string>
+	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>MGLMapboxMetricsEnabledSettingShownInApp</key>
 	<string>YES</string>
-	<key>CFBundleDevelopmentRegion</key>
-	<string>en</string>
-	<key>CFBundleVersion</key>
-	<string>1</string>
-	<key>NSCameraUsageDescription</key>
-	<string>$(PRODUCT_NAME) needs permission to access camera</string>
-	<key>NSFileProviderDomainUsageDescription</key>
-	<string>$(PRODUCT_NAME) to access device&apos;s accelerometer</string>
-	<key>CFBundlePackageType</key>
-	<string>APPL</string>
-	<key>UIMainStoryboardFile</key>
-	<string>Launch Screen</string>
-	<key>CFBundleShortVersionString</key>
-	<string>1.0</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
@@ -39,18 +41,16 @@
 			</dict>
 		</dict>
 	</dict>
-	<key>CFBundleInfoDictionaryVersion</key>
-	<string>6.0</string>
-	<key>CFBundleExecutable</key>
-	<string>$(EXECUTABLE_NAME)</string>
-	<key>UIRequiredDeviceCapabilities</key>
-	<array>
-		<string>armv7</string>
-	</array>
+	<key>NSCameraUsageDescription</key>
+	<string>$(PRODUCT_NAME) needs permission to access camera</string>
+	<key>NSFileProviderDomainUsageDescription</key>
+	<string>$(PRODUCT_NAME) to access device's accelerometer</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string></string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>$(PRODUCT_NAME) would like to save photos to your photo gallery</string>
-	<key>CFBundleIdentifier</key>
-	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>$(PRODUCT_NAME) would like access to your photo gallery</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Feather.ttf</string>
@@ -61,23 +61,25 @@
 		<string>Ionicons.ttf</string>
 		<string>MaterialIcons.ttf</string>
 	</array>
-	<key>CFBundleSignature</key>
-	<string>????</string>
+	<key>UIFileSharingEnabled</key>
+	<true/>
+	<key>UILaunchStoryboardName</key>
+	<string>Launch Screen</string>
+	<key>UIMainStoryboardFile</key>
+	<string>Launch Screen</string>
+	<key>UIRequiredDeviceCapabilities</key>
+	<array>
+		<string>armv7</string>
+	</array>
 	<key>UIRequiresFullScreen</key>
 	<true/>
-	<key>LSRequiresIPhoneOS</key>
+	<key>UIStatusBarHidden</key>
 	<true/>
-	<key>CFBundleDisplayName</key>
-	<string>StraboSpot2</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>$(PRODUCT_NAME) would like access to your photo gallery</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
 </dict>
 </plist>
