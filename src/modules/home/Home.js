@@ -762,7 +762,6 @@ const Home = (props) => {
         mapMode={mapMode}
         startEdit={startEdit}
         endDraw={endDraw}
-        openNotebookOnSelectedSpot={() => openNotebookPanel()}
         isSelectingForStereonet={isSelectingForStereonet}
       />
       {props.vertexStartCoords && <VertexDrag/>}
