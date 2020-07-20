@@ -13,7 +13,7 @@ import {projectReducers} from '../project/project.constants';
 import {spotReducers} from '../spots/spot.constants';
 import useSpotsHook from '../spots/useSpots';
 import {MapLayer1, MapLayer2} from './Basemaps';
-import {geoLatLngProjection, LATITUDE, LONGITUDE, MapModes, pixelProjection,mapReducers} from './maps.constants';
+import {geoLatLngProjection, LATITUDE, LONGITUDE, MapModes, pixelProjection, mapReducers} from './maps.constants';
 import useMapFeaturesHook from './useMapFeatures';
 import useMapsHook from './useMaps';
 
@@ -68,6 +68,7 @@ const Map = React.forwardRef((props, ref) => {
     ref: {mapRef: map, cameraRef: camera},
     onMapPress: (e) => onMapPress(e),
     onMapLongPress: (e) => onMapLongPress(e),
+    setSpotsInMapExtent: () => setSpotsInMapExtent(),
   };
 
   useEffect(() => {
@@ -162,7 +163,7 @@ const Map = React.forwardRef((props, ref) => {
         }
       }
       // copy spot for imagebasemaps needs conversion of coordinates.
-      if (currentImageBasemap){
+      if (currentImageBasemap) {
         defaultFeature = useMaps.convertFeatureGeometryToImagePixels(defaultFeature);
       }
       const selectedSpotCopy = {
@@ -172,7 +173,7 @@ const Map = React.forwardRef((props, ref) => {
       dispatch(({type: spotReducers.ADD_SPOT, spot: selectedSpotCopy}));
 
       // Set new geometry ready for editing, set the active vertex to first index of the geometry.
-      startEditing(selectedSpotCopy,turf.explode(selectedSpotCopy).features[0],0);
+      startEditing(selectedSpotCopy, turf.explode(selectedSpotCopy).features[0], 0);
     }
     else console.warn('Error getting the center of the map');
     setDefaultGeomType();
@@ -304,15 +305,13 @@ const Map = React.forwardRef((props, ref) => {
     let editedSpot = editingModeData.spotsEdited.find(spot => spot.properties.id === spotFound.properties.id);
     spotFound = editedSpot ? editedSpot : spotFound;
     let spotFoundCopy = JSON.parse(JSON.stringify(spotFound));
-    if (currentImageBasemap){
-      spotFoundCopy = useMaps.convertImagePixelsToLatLong(spotFoundCopy);
-    }
-    const explodedFeatures =  turf.explode(spotFoundCopy).features;
+    if (currentImageBasemap) spotFoundCopy = useMaps.convertImagePixelsToLatLong(spotFoundCopy);
+    const explodedFeatures = turf.explode(spotFoundCopy).features;
     const distances = await getDistancesFromSpot(screenPointX, screenPointY, explodedFeatures);
     const [distance, closestVertexIndex] = getClosestSpotDistanceAndIndex(distances);
     // in case of imagebasemap, return the original non converted vertex.
-    if (currentImageBasemap) return [turf.explode(spotFound).features[closestVertexIndex],closestVertexIndex];
-    else return [explodedFeatures[closestVertexIndex],closestVertexIndex];
+    if (currentImageBasemap) return [turf.explode(spotFound).features[closestVertexIndex], closestVertexIndex];
+    else return [explodedFeatures[closestVertexIndex], closestVertexIndex];
   };
 
   // Mapbox: Handle map press
@@ -408,9 +407,9 @@ const Map = React.forwardRef((props, ref) => {
         if (isEmpty(spotFound)) clearSelectedFeatureToEdit();
         else {
           let vertexSelected = await getDrawFeatureAtPress(screenPointX, screenPointY);
-          if (isEmpty(vertexSelected)){
+          if (isEmpty(vertexSelected)) {
             // draw features did not return anything.. generally a scenario of selecting a vertex on a spot press.
-            closestVertexDetails = await identifyClosestVertexOnSpotPress(spotFound,screenPointX,screenPointY);
+            closestVertexDetails = await identifyClosestVertexOnSpotPress(spotFound, screenPointX, screenPointY);
             vertexSelected = closestVertexDetails[0];
             isVertexIdentifiedAtSpotPress = true;
           }
@@ -428,7 +427,7 @@ const Map = React.forwardRef((props, ref) => {
               //  this is the case when the spot and vertex are chosen to be edited at once.
               let editedSpot = editingModeData.spotsEdited.find(spot => spot.properties.id === spotFound.properties.id);
               setSelectedSpotToEdit(isEmpty(editedSpot) ? spotFound : editedSpot);
-              if (spotFound.geometry.type != 'Point') { // if Point, vertex gets set by setSelectedSpotToEdit already.
+              if (spotFound.geometry.type !== 'Point') { // if Point, vertex gets set by setSelectedSpotToEdit already.
                 setSelectedVertexToEdit(vertexSelected);
                 setEditingModeData(d => ({
                   ...d,
@@ -831,7 +830,7 @@ const Map = React.forwardRef((props, ref) => {
         // draw features did not return anything.. generally a scenario of selecting a vertex on a spot long press.
         closestVertexDetails = await identifyClosestVertexOnSpotPress(spotToEdit, screenPointX, screenPointY);
         closestVertexToSelect = closestVertexDetails[0];
-        startEditing(spotToEdit, closestVertexToSelect,closestVertexDetails[1]);
+        startEditing(spotToEdit, closestVertexToSelect, closestVertexDetails[1]);
       }
     }
     else if (props.mapMode === MapModes.EDIT) {
@@ -1149,6 +1148,25 @@ const Map = React.forwardRef((props, ref) => {
     );
   };
 
+  // Calculate the Spots in the current map extent and send to redux
+  const setSpotsInMapExtent = async () => {
+    if (map && map.current) {
+      const mapBounds = await map.current.getVisibleBounds();
+      let right = mapBounds[0][0];
+      let top = mapBounds[0][1];
+      let left = mapBounds[1][0];
+      let bottom = mapBounds[1][1];
+      let bbox = [left, bottom, right, top];
+      const bboxPoly = turf.bboxPolygon(bbox);
+      const spotsInMapExtent = useMapFeatures.getLassoedSpots([...mapProps.spotsSelected, ...mapProps.spotsNotSelected],
+        bboxPoly);
+      dispatch(({
+        type: mapReducers.SET_SPOTS_IN_MAP_EXTENT,
+        spots: spotsInMapExtent,
+      }));
+    }
+  };
+
   // Zoom map to the extent of the mapped Spots
   const zoomToSpotsExtent = () => {
     const spots = [...mapProps.spotsSelected, ...mapProps.spotsNotSelected];
@@ -1165,6 +1183,7 @@ const Map = React.forwardRef((props, ref) => {
       getCurrentBasemap: getCurrentBasemap,
       getCurrentZoom: getCurrentZoom,
       getExtentString: getExtentString,
+      // setSpotsInMapExtent: setSpotsInMapExtent,
       getTileCount: getTileCount,
       goToCurrentLocation: goToCurrentLocation,
       moveVertex: moveVertex,

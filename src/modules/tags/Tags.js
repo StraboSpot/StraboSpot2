@@ -16,6 +16,7 @@ const Tags = () => {
   const [useTags] = useTagsHook();
   const dispatch = useDispatch();
   const tags = useSelector(state => state.project.project.tags || []);
+  const spotsInMapExtent = useSelector(state => state.map.spotsInMapExtent);
 
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isDetailModalVisibile, setIsDetailModalVisible] = useState(false);
@@ -32,11 +33,12 @@ const Tags = () => {
     {id: 4, title: 'Rosetta', content: 'rosetta'},
     {id: 5, title: 'Experimental Apparatus', content: 'experimental_apparatus'},
     {id: 6, title: 'Other', content: 'other'},
+    {id: 7, title: 'No Type Specified', content: undefined},
   ];
 
   const sectionContents = (type) => {
     let filteredTags = {};
-    if (!isEmpty(tags)) filteredTags = tags.filter(tag => tag.type === type);
+    filteredTags = tags.filter(tag => tag.type === type);
     if (isEmpty(filteredTags)) {
       return (
         <View style={{alignContent: 'center', justifyContent: 'center'}}>
@@ -75,7 +77,28 @@ const Tags = () => {
     else return <Text>No Data</Text>;
   };
 
-  const renderTagsList = (sections) => {
+  const renderTagsListByMapExtent = () => {
+    const spotIds = spotsInMapExtent.map(spot => spot.properties.id);
+    const tagsInMapExtent = tags.filter(tag => {
+      return tag.spots && !isEmpty(tag.spots.find(spotId => spotIds.includes(spotId)));
+    });
+    console.log('tagsInMapExtent', tagsInMapExtent);
+
+    if (!isEmpty(tagsInMapExtent)) {
+      return (
+        <FlatList keyExtractor={(item) => item.id.toString()}
+                  data={tagsInMapExtent}
+                  renderItem={({item}) => renderTag(item)}/>
+      );
+    }
+    else return <Text style={{padding: 10}}>No Spots with tags in current map extent</Text>;
+  };
+
+  const renderTagsListByRecentlyUsed = () => {
+    return <Text style={{padding: 10}}>This has not been implemented yet</Text>;
+  };
+
+  const renderTagsListByType = () => {
     return (
       <FlatList
         keyExtractor={(section) => section.id.toString()}
@@ -85,36 +108,42 @@ const Tags = () => {
   };
 
   const renderSections = (section) => {
-    return (
-      <View>
-        <SectionDivider dividerText={section.title}/>
-        {sectionContents(section.content)}
-      </View>
-    );
+    if (section.id !== 7 || (section.id === 7 && !isEmpty(tags.filter(tag => tag.type === section.content)))) {
+      return (
+        <View>
+          <SectionDivider dividerText={section.title}/>
+          {sectionContents(section.content)}
+        </View>
+      );
+    }
   };
 
   return (
     <View style={{flex: 1}}>
-      <View style={{flex: 1, justifyContent: 'center'}}>
-        <ButtonGroup
-          selectedIndex={selectedIndex}
-          onPress={(index) => {
-            console.log(index);
-            setSelectedIndex(index);
-          }}
-          buttons={['Categorized', 'Map Extent', 'Recently Used']}
-          containerStyle={{height: 50}}
-          buttonStyle={{padding: 5}}
-          textStyle={{fontSize: 12}}
-        />
-      </View>
+      {!isEmpty(tags) &&
+      <ButtonGroup
+        selectedIndex={selectedIndex}
+        onPress={(index) => setSelectedIndex(index)}
+        buttons={['Categorized', 'Map Extent', 'Recently Used']}
+        containerStyle={{height: 50}}
+        buttonStyle={{padding: 5}}
+        textStyle={{fontSize: 12}}
+      />
+      }
       <AddButton
         onPress={addTag}
         title={'Add New Tag'}
       />
-      <View style={{flex: 9}}>
-        {tags && renderTagsList(sections)}
+      {!isEmpty(tags) &&
+      <View style={{flex: 1}}>
+        {selectedIndex === 0 && renderTagsListByType()}
+        {selectedIndex === 1 && renderTagsListByMapExtent()}
+        {selectedIndex === 2 && renderTagsListByRecentlyUsed()}
       </View>
+      }
+      {isEmpty(tags) &&
+      <Text style={{padding: 10}}>No tags have been added to this project yet</Text>
+      }
       <TagDetailModal
         isVisible={isDetailModalVisibile}
         closeModal={() => setIsDetailModalVisible(false)}

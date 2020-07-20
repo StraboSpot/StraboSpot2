@@ -9,6 +9,7 @@ const initialState = {
   selectedCustomMapToEdit: {},
   vertexStartCoords: undefined,
   vertexEndCoords: undefined,
+  spotsInMapExtent: [],
 };
 
 export const mapReducer = (state = initialState, action) => {
@@ -82,6 +83,12 @@ export const mapReducer = (state = initialState, action) => {
         ...state,
         vertexStartCoords: undefined,
         vertexEndCoords: undefined,
+      };
+    case mapReducers.SET_SPOTS_IN_MAP_EXTENT:
+      console.log('Spots in Map Extent', action.spots);
+      return {
+        ...state,
+        spotsInMapExtent: action.spots,
       };
     case redux.CLEAR_STORE:
       return {

@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {FlatList, Text, View} from 'react-native';
 
 import {ListItem} from 'react-native-elements';
-import {connect} from 'react-redux';
+import {connect, useSelector} from 'react-redux';
 
 import {isEmpty} from '../../shared/Helpers';
 import attributesStyles from '../main-menu-panel/attributes.styles';
@@ -14,6 +14,7 @@ const SpotsList = (props) => {
   const [sortedList, setSortedList] = useState(getSpotsSortedChronologically);
   const [useSpots] = useSpotsHook();
   const activeSpotsObj = useSpots.getActiveSpotsObj();
+  const spotsInMapExtent = useSelector(state => state.map.spotsInMapExtent);
 
   useEffect(() => {
     console.log('In SpotsList useEffect: Updating chronological sorting for Spots');
@@ -64,16 +65,23 @@ const SpotsList = (props) => {
         renderItem={({item}) => renderName(item)}/>;
     }
     else if (props.sortedListView === SortedViews.MAP_EXTENT) {
-      sortedView = <View style={attributesStyles.textContainer}>
-        <Text>Not Implemented Yet</Text>
-      </View>;
+      if (!isEmpty(spotsInMapExtent)) {
+        sortedView = <FlatList
+          keyExtractor={(item) => item.properties.id.toString()}
+          data={spotsInMapExtent}
+          renderItem={({item}) => renderName(item)}/>;
+      }
+      else sortedView = <Text style={{padding: 10}}>No Spots in current map extent</Text>;
     }
     else if (props.sortedListView === SortedViews.RECENT_VIEWS) {
-      sortedView =
-        <FlatList
-          keyExtractor={(item) => item.toString()}
-          data={props.recentViews}
-          renderItem={({item}) => renderRecentView(item)}/>;
+      if (!isEmpty(props.recentViews)) {
+        sortedView =
+          <FlatList
+            keyExtractor={(item) => item.toString()}
+            data={props.recentViews}
+            renderItem={({item}) => renderRecentView(item)}/>;
+      }
+      else sortedView = <Text style={{padding: 10}}>No recently views Spots</Text>;
     }
     else {
       sortedView = <FlatList

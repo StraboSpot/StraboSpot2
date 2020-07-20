@@ -87,7 +87,7 @@ const useTags = () => {
   };
 
   const renderTagInfo = () => {
-    let type = selectedTag.type ? getLabel(selectedTag.type) : undefined;
+    let type = selectedTag.type ? getLabel(selectedTag.type) : 'No type specified';
     if (selectedTag.type === 'other' && selectedTag.other_type) type = selectedTag.other_type;
     const subtypeFields = ['other_concept_type', 'other_documentation_type', 'concept_type', 'documentation_type'];
     const subTypeField = subtypeFields.find(subtype => selectedTag[subtype]);
@@ -100,7 +100,7 @@ const useTags = () => {
     const notes = selectedTag.notes ? truncateText(selectedTag.notes, 100) : undefined;
     return (
       <View style={tagsStyles.sectionContainer}>
-        {type && <Text style={tagsStyles.listText}>{type}{subType && ' - ' + subType.toUpperCase()}</Text>}
+        {<Text style={tagsStyles.listText}>{type}{subType && ' - ' + subType.toUpperCase()}</Text>}
         {!isEmpty(rockUnitString) && <Text style={tagsStyles.listText}>{rockUnitString}</Text>}
         {notes && <Text style={tagsStyles.listText}>Notes: {notes}</Text>}
       </View>
@@ -109,7 +109,6 @@ const useTags = () => {
 
   const renderTagForm = () => {
     const formName = ['project', 'tags'];
-    console.log('Rendering form: tag', selectedTag);
     return (
       <View style={{flex: 1}}>
         <Formik

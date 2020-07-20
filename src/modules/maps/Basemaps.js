@@ -48,10 +48,15 @@ function Basemap(props) {
     setCurrentZoom(zoomLevel);
   };
 
+  const onRegionDidChange = () => {
+    setShowZoom(false);
+    props.setSpotsInMapExtent();
+  };
+
   return (
-    <View style={{flex:1}}>
+    <View style={{flex: 1}}>
       {showZoom && <View style={homeStyles.currentZoom}>
-        <Text >Zoom: {currentZoom && currentZoom.toFixed(1) }</Text>
+        <Text>Zoom: {currentZoom && currentZoom.toFixed(1)}</Text>
       </View>}
       <MapboxGL.MapView
         id={props.imageBasemap ? props.imageBasemap.id : props.basemap.id}
@@ -69,7 +74,7 @@ function Basemap(props) {
         scrollEnabled={props.allowMapViewMove}
         zoomEnabled={props.allowMapViewMove}
         onRegionIsChanging={(args) => onZoomChange(args.properties.zoomLevel)}
-        onRegionDidChange={() => setShowZoom(false)}
+        onRegionDidChange={() => onRegionDidChange()}
       >
 
         {!props.imageBasemap &&
