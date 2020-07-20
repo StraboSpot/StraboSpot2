@@ -3,7 +3,6 @@ export const NotebookPages = {
   BASIC: 'Basic',
   GEOGRAPHY: 'Geography',
   TAG: 'Tag',
-  TAG_DETAIL: 'Tag Detail',
   MEASUREMENT: 'Measurements',
   MEASUREMENTDETAIL: 'Measurement Detail',
   SAMPLE: 'Sample',

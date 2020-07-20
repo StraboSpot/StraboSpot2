@@ -13,7 +13,6 @@ import MeasurementDetailPage from '../measurements/MeasurementDetail';
 import MeasurementsPage from '../measurements/Measurements';
 import NotesPage from '../notes/Notes';
 import SamplesPage from '../samples/SamplesNotebook';
-import TagDetailNotebook from '../tags/TagDetailNotebook';
 import TagsPage from '../tags/TagsNotebook';
 import NotebookFooter from './notebook-footer/NotebookFooter';
 import NotebookHeader from './notebook-header/NotebookHeader';
@@ -79,8 +78,6 @@ const NotebookPanel = props => {
               {props.notebookPageVisible === NotebookPages.NOTE ? <NotesPage/> : null}
               {props.notebookPageVisible === NotebookPages.SAMPLE ? <SamplesPage/> : null}
               {props.notebookPageVisible === NotebookPages.TAG ? <TagsPage/> : null}
-              {props.notebookPageVisible === NotebookPages.TAG_DETAIL ?
-                <TagDetailNotebook openNotebook={props.openNotebook}/> : null}
             </View>
             <View style={notebookStyles.footerContainer}>
               <NotebookFooter

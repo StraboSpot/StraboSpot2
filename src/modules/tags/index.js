@@ -2,7 +2,6 @@ export {default as NotebookTagsModal} from './TagsFloatingView';
 export {default as Tags} from './Tags';
 export {default as TagAddRemoveSpots} from './AddRemoveTagSpots';
 export {default as TagDetailSidePanel} from './TagDetailSidePanel';
-export {default as TagDetailNotebook} from './TagDetailNotebook';
 export {default as TagDetail} from './TagDetail';
 export {default as TagsModal} from './TagsModal';
 export {default as tagsStyles} from './tags.styles';
