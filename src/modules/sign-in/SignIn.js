@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {View, Text, TextInput, Alert, ImageBackground, KeyboardAvoidingView} from 'react-native';
 
 import NetInfo from '@react-native-community/netinfo';
+import * as Sentry from '@sentry/react-native';
 import {Base64} from 'js-base64';
 import {Button} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -49,15 +50,22 @@ const SignIn = (props) => {
     }
   },[isOnline]);
 
+  useEffect(() => {
+    Sentry.configureScope((scope) => {
+      scope.setUser({'email': userData.email});
+      console.log('SCOPE', scope);
+    });
+  }, [userData])
+
   //function for online/offline state change event handler
   const handleConnectivityChange = (isConnected) => {
     dispatch({type: homeReducers.SET_ISONLINE, online: isConnected});
   };
 
   const guestSignIn = async () => {
-    // Sentry.configureScope((scope) => {
-    //   scope.setUser({'id': 'GUEST'})
-    // });
+    Sentry.configureScope((scope) => {
+      scope.setUser({'id': 'GUEST'})
+    });
     if (isEmpty(props.userData)) await dispatch({type: 'CLEAR_STORE'});
     console.log('Loading user: GUEST');
     props.navigation.navigate('HomeScreen');
