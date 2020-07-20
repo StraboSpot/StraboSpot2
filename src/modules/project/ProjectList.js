@@ -86,9 +86,10 @@ const ProjectList = (props) => {
         if (!currentProject) {
           Alert.alert('Error getting selected project');
         }
-        else setSelectedProject(currentProject);
-        setLoading(false);
-        dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Project loaded!'});
+        else {
+          setLoading(false);
+          dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Project loaded!'});
+        }
       });
     }
   };
