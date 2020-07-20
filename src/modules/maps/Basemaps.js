@@ -77,9 +77,9 @@ function Basemap(props) {
         onRegionDidChange={() => onRegionDidChange()}
       >
 
-        {!props.imageBasemap &&
-        <MapboxGL.UserLocation
-          animated={false}/>}
+        {/*{!props.imageBasemap &&*/}
+        {/*<MapboxGL.UserLocation*/}
+        {/*  animated={false}/>}*/}
 
         <MapboxGL.Camera
           ref={cameraRef}
