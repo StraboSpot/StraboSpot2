@@ -91,7 +91,6 @@ const commonStyles = StyleSheet.create({
   },
   // List Styles
   rowContainer: {
-    flex: 1,
     borderBottomWidth: 0.5,
     borderColor: themes.LIST_BORDER_COLOR,
   },

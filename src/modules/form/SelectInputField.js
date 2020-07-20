@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import {ListItem} from 'react-native-elements';
 import MultiSelect from 'react-native-multiple-select';
 
+import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
 import {formStyles} from '../form';
@@ -31,7 +32,7 @@ const SelectInputField = (props) => {
     <View>
       <ListItem
         title={props.label}
-        containerStyle={{padding: 0}}
+        containerStyle={{...commonStyles.rowContainer, padding: 0}}
         titleStyle={formStyles.fieldLabel}
         subtitle={
           <MultiSelect
