@@ -20,6 +20,17 @@ import Measurements from '../Measurements';
 import {CompassToggleButtons} from './compass.constants';
 import styles from './compass.styles';
 
+const Sound = require('react-native-sound');
+
+const ButtonClick = new Sound('ButtonClick.mp3', Sound.MAIN_BUNDLE, (error) => {
+  if (error) {
+    console.log('failed to load the sound', error);
+    return;
+  }
+  console.log(
+    'duration in seconds: ' + ButtonClick.getDuration() + ' number of channels: ' + ButtonClick.getNumberOfChannels());
+});
+
 const degree_update_rate = 2; // Number of degrees changed before the callback is triggered
 
 class Compass extends Component {
@@ -114,8 +125,16 @@ class Compass extends Component {
       }
       const orientations = (typeof this.props.spot.properties.orientation_data === 'undefined') ? [newOrientation] : [...this.props.spot.properties.orientation_data, newOrientation];
       this.props.onSpotEdit('orientation_data', orientations);
+      this.playSound();
     }
     else Alert.alert('No Measurement Type', 'Please select a measurement type using the toggles.');
+  };
+
+  playSound = () => {
+    ButtonClick.play(success => {
+      if (success) console.log('successfully finished playing');
+      else console.log('playback failed due to audio decoding errors');
+    });
   };
 
   subscribe = async () => {
