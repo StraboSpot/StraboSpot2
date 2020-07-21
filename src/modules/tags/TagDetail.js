@@ -18,12 +18,15 @@ const TagDetail = (props) => {
   const renderSpotListItem = (spotId) => {
     const spot = useSpots.getSpotById(spotId);
     if (!isEmpty(spot)) {
-      return <ListItem
-        title={spot.properties.name}
-        onPress={() => props.openSpot(spot)}
-        chevron
-        bottomDivider
-      />;
+      return (
+        <ListItem
+          title={spot.properties.name}
+          onPress={() => props.openSpot(spot)}
+          chevron
+          bottomDivider
+          leftAvatar={{source: useSpots.getSpotGemometryIconSource(spot), size: 20}}
+        />
+      );
     }
   };
 

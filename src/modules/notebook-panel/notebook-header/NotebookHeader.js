@@ -64,15 +64,6 @@ const NotebookHeader = props => {
       lat.toFixed(6) + degreeSymbol + ' ' + latitudeCardinal;
   };
 
-  const getSpotGemometryIcon = () => {
-    if (spot.geometry && spot.geometry.type) {
-      if (spot.geometry.type === 'Point') return require('../../../assets/icons/Point_pressed.png');
-      else if (spot.geometry.type === 'LineString') return require('../../../assets/icons/Line_pressed.png');
-      else if (spot.geometry.type === 'Polygon') return require('../../../assets/icons/Polygon_pressed.png');
-    }
-    else return require('../../../assets/icons/QuestionMark_pressed.png');
-  };
-
   const getTraceText = () => {
     const traceDictionary = labelDictionary.general.trace;
     const key = spot.properties.trace.trace_type;
@@ -106,7 +97,7 @@ const NotebookHeader = props => {
   return (
     <View style={headerStyles.headerContentContainer}>
       <Image
-        source={getSpotGemometryIcon()}
+        source={useSpots.getSpotGemometryIconSource(spot)}
         style={headerStyles.headerImage}
       />
       <View style={headerStyles.headerSpotNameAndCoordsContainer}>

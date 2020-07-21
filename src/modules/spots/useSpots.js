@@ -201,6 +201,16 @@ const useSpots = (props) => {
     return spots[spotId];
   };
 
+  const getSpotGemometryIconSource = (spot) => {
+    if (spot.geometry && spot.geometry.type) {
+      if (spot.geometry.type === 'Point') return require('../../assets/icons/Point_pressed.png');
+      else if (spot.geometry.type === 'LineString') return require('../../assets/icons/Line_pressed.png');
+      else if (spot.geometry.type === 'Polygon') return require('../../assets/icons/Polygon_pressed.png');
+    }
+    else return require('../../assets/icons/QuestionMark_pressed.png');
+  };
+
+
   const getSpotsByIds = (spotIds) => {
     const foundSpots = [];
     Object.entries(spots).forEach(obj => {
@@ -218,6 +228,7 @@ const useSpots = (props) => {
     getActiveSpotsObj: getActiveSpotsObj,
     getMappableSpots: getMappableSpots,
     getSpotById: getSpotById,
+    getSpotGemometryIconSource: getSpotGemometryIconSource,
     getSpotsByIds: getSpotsByIds,
     getAllImageBaseMaps: getAllImageBaseMaps,
     findRootSpot: findRootSpot,

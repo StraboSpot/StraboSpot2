@@ -8,9 +8,11 @@ import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 import SidePanelHeader from '../main-menu-panel/sidePanel/SidePanelHeader';
+import {useSpotsHook} from '../spots';
 import {useTagsHook} from '../tags';
 
 const AddRemoveTagSpots = () => {
+  const [useSpots] = useSpotsHook();
   const [useTags] = useTagsHook();
   const dispatch = useDispatch();
   const selectedTag = useSelector((state) => state.project.selectedTag);
@@ -22,6 +24,7 @@ const AddRemoveTagSpots = () => {
       onPress={() => useTags.addRemoveSpotFromTag(spot.properties.id)}
       checkmark={selectedTag.spots && selectedTag.spots.includes(spot.properties.id)}
       bottomDivider
+      leftAvatar={{source: useSpots.getSpotGemometryIconSource(spot), size: 20}}
     />;
   };
 

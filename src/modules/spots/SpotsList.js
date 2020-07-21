@@ -30,28 +30,13 @@ const SpotsList = (props) => {
 
   const renderName = (item) => {
     return (
-      <View>
-        <ListItem
-          key={item.properties.id}
-          title={item.properties.name}
-          chevron={true}
-          onPress={() => props.getSpotData(item.properties.id)}
-        />
-      </View>
-    );
-  };
-
-  const renderRecentView = (spotId) => {
-    const spot = props.spots[spotId];
-    return (
-      <View>
-        <ListItem
-          key={spot.properties.id}
-          title={spot.properties.name}
-          chevron={true}
-          onPress={() => props.getSpotData(spot.properties.id)}
-        />
-      </View>
+      <ListItem
+        key={item.properties.id}
+        title={item.properties.name}
+        chevron={true}
+        onPress={() => props.getSpotData(item.properties.id)}
+        leftAvatar={{source: useSpots.getSpotGemometryIconSource(item), size: 20}}
+      />
     );
   };
 
@@ -74,12 +59,13 @@ const SpotsList = (props) => {
       else sortedView = <Text style={{padding: 10}}>No Spots in current map extent</Text>;
     }
     else if (props.sortedListView === SortedViews.RECENT_VIEWS) {
-      if (!isEmpty(props.recentViews)) {
-        sortedView =
-          <FlatList
-            keyExtractor={(item) => item.toString()}
-            data={props.recentViews}
-            renderItem={({item}) => renderRecentView(item)}/>;
+      const recentlyViewedSpotIds = props.recentViews;
+      const recentlyViewedSpots = recentlyViewedSpotIds.map(spotId => props.spots[spotId]);
+      if (!isEmpty(recentlyViewedSpots)) {
+        sortedView = <FlatList
+          keyExtractor={(item) => item.properties.id.toString()}
+          data={recentlyViewedSpots}
+          renderItem={({item}) => renderName(item)}/>;
       }
       else sortedView = <Text style={{padding: 10}}>No recently views Spots</Text>;
     }
