@@ -1,11 +1,13 @@
 import React from 'react';
-import {Animated, Text, View} from 'react-native';
+import {Animated, FlatList, Text, View} from 'react-native';
 
 // import {FlingGestureHandler, Directions, State} from 'react-native-gesture-handler';
-import {connect} from 'react-redux';
+import {ListItem} from 'react-native-elements';
+import {connect, useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
+import SectionDivider from '../../shared/ui/SectionDivider';
 import Spacer from '../../shared/ui/Spacer';
 import Geography from '../geography/Geography';
 import {homeReducers, Modals} from '../home/home.constants';
@@ -13,6 +15,8 @@ import MeasurementDetailPage from '../measurements/MeasurementDetail';
 import MeasurementsPage from '../measurements/Measurements';
 import NotesPage from '../notes/Notes';
 import SamplesPage from '../samples/SamplesNotebook';
+import {useSpotsHook} from '../spots';
+import {spotReducers} from '../spots/spot.constants';
 import TagsPage from '../tags/TagsNotebook';
 import NotebookFooter from './notebook-footer/NotebookFooter';
 import NotebookHeader from './notebook-header/NotebookHeader';
@@ -21,6 +25,11 @@ import notebookStyles from './notebookPanel.styles';
 import Overview from './Overview';
 
 const NotebookPanel = props => {
+  const [useSpots] = useSpotsHook();
+  const dispatch = useDispatch();
+  const recentlyViewedSpotIds = useSelector(state => state.spot.recentViews);
+  const spots = useSelector(state => state.spot.spots);
+
   const setNotebookPageVisible = page => {
     const pageVisible = props.setNotebookPageVisible(page);
     if (pageVisible.page === NotebookPages.MEASUREMENT || pageVisible === NotebookPages.MEASUREMENTDETAIL) {
@@ -58,45 +67,67 @@ const NotebookPanel = props => {
       //     numberOfPointers={1}
       //     onHandlerStateChange={(ev) => _onLeftFlingHandlerStateChange(ev)}
       //   >
-          <Animated.View
-            // style={props.isAllSpotsPanelVisible ? [notebookStyles.panel, {marginRight: 125}] : notebookStyles.panel}
-            style={props.isAllSpotsPanelVisible ? [notebookStyles.panel, {right: 125}] : notebookStyles.panel}
-          >
-            <View
-              style={notebookStyles.headerContainer}>
-              <NotebookHeader
-                onPress={props.onPress}
-              />
-            </View>
-            <View
-              style={notebookStyles.centerContainer}>
-              {props.notebookPageVisible === NotebookPages.OVERVIEW ||
-              props.notebookPageVisible === undefined ? <Overview/> : null}
-              {props.notebookPageVisible === NotebookPages.GEOGRAPHY ? <Geography/> : null}
-              {props.notebookPageVisible === NotebookPages.MEASUREMENT ? <MeasurementsPage/> : null}
-              {props.notebookPageVisible === NotebookPages.MEASUREMENTDETAIL ? <MeasurementDetailPage/> : null}
-              {props.notebookPageVisible === NotebookPages.NOTE ? <NotesPage/> : null}
-              {props.notebookPageVisible === NotebookPages.SAMPLE ? <SamplesPage/> : null}
-              {props.notebookPageVisible === NotebookPages.TAG ? <TagsPage/> : null}
-            </View>
-            <View style={notebookStyles.footerContainer}>
-              <NotebookFooter
-                openPage={(page) => setNotebookPageVisible(page)}
-                onPress={(camera) => props.onPress(camera)}
-              />
-            </View>
-          </Animated.View>
-        // </FlingGestureHandler>
+      <Animated.View
+        // style={props.isAllSpotsPanelVisible ? [notebookStyles.panel, {marginRight: 125}] : notebookStyles.panel}
+        style={props.isAllSpotsPanelVisible ? [notebookStyles.panel, {right: 125}] : notebookStyles.panel}
+      >
+        <View
+          style={notebookStyles.headerContainer}>
+          <NotebookHeader
+            onPress={props.onPress}
+          />
+        </View>
+        <View
+          style={notebookStyles.centerContainer}>
+          {props.notebookPageVisible === NotebookPages.OVERVIEW ||
+          props.notebookPageVisible === undefined ? <Overview/> : null}
+          {props.notebookPageVisible === NotebookPages.GEOGRAPHY ? <Geography/> : null}
+          {props.notebookPageVisible === NotebookPages.MEASUREMENT ? <MeasurementsPage/> : null}
+          {props.notebookPageVisible === NotebookPages.MEASUREMENTDETAIL ? <MeasurementDetailPage/> : null}
+          {props.notebookPageVisible === NotebookPages.NOTE ? <NotesPage/> : null}
+          {props.notebookPageVisible === NotebookPages.SAMPLE ? <SamplesPage/> : null}
+          {props.notebookPageVisible === NotebookPages.TAG ? <TagsPage/> : null}
+        </View>
+        <View style={notebookStyles.footerContainer}>
+          <NotebookFooter
+            openPage={(page) => setNotebookPageVisible(page)}
+            onPress={(camera) => props.onPress(camera)}
+          />
+        </View>
+      </Animated.View>
+      // </FlingGestureHandler>
       // </FlingGestureHandler>
     );
   }
   else {
+    const renderSpotName = (item) => {
+      return (
+        <ListItem
+          key={item.properties.id}
+          title={item.properties.name}
+          chevron={true}
+          onPress={() => dispatch({type: spotReducers.SET_SELECTED_SPOT, spot: item})}
+          leftAvatar={{source: useSpots.getSpotGemometryIconSource(item), size: 20}}
+        />
+      );
+    };
+
+    const recentlyViewedSpots = recentlyViewedSpotIds.map(spotId => spots[spotId]);
     return (
-      <View style={[notebookStyles.panel, commonStyles.noContentContainer]}>
-        <Text style={commonStyles.noContentText}>No Spot Selected!</Text>
-        <Spacer/>
-        <Text style={commonStyles.noContentText}>Please select a spot.</Text>
-        <Text style={commonStyles.noContentText}>To close swipe RIGHT</Text>
+      <View style={notebookStyles.panel}>
+        <Text style={{...commonStyles.noContentText, textAlign: 'center', paddingTop: 40}}>No Spot Currently
+          Selected!</Text>
+        {!isEmpty(recentlyViewedSpots) &&
+        <View>
+          <Spacer/>
+          <Spacer/>
+          <SectionDivider dividerText='Recent Spots'/>
+          <FlatList
+            keyExtractor={(item) => item.properties.id.toString()}
+            data={recentlyViewedSpots}
+            renderItem={({item}) => renderSpotName(item)}/>
+        </View>
+        }
       </View>
     );
   }

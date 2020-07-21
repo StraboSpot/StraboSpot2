@@ -27,7 +27,6 @@ const Map = React.forwardRef((props, ref) => {
   const currentBasemap = useSelector(state => state.map.currentBasemap);
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
-  const recentSpots = useSelector(state => state.spot.recentViews);
 
   // Data needing to be tracked when in editing mode
   const initialEditingModeData = {
@@ -326,10 +325,7 @@ const Map = React.forwardRef((props, ref) => {
       const {screenPointX, screenPointY} = e.properties;
       const spotFound = await getSpotAtPress(screenPointX, screenPointY);
       if (!isEmpty(spotFound)) useMaps.setSelectedSpot(spotFound);
-      else {
-        clearSelectedSpots();
-        if (recentSpots[0]) useMaps.setSelectedSpot(useSpots.getSpotById(recentSpots[0]));
-      }
+      else clearSelectedSpots();
     }
     // Draw a feature
     else if (props.mapMode === MapModes.DRAW.POINT || props.mapMode === MapModes.DRAW.LINE
