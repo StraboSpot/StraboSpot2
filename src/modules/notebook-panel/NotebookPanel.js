@@ -1,7 +1,7 @@
 import React from 'react';
 import {Animated, Text, View} from 'react-native';
 
-import {FlingGestureHandler, Directions, State} from 'react-native-gesture-handler';
+// import {FlingGestureHandler, Directions, State} from 'react-native-gesture-handler';
 import {connect} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
@@ -30,34 +30,34 @@ const NotebookPanel = props => {
     else props.setModalVisible(null);
   };
 
-  const _onRightFlingHandlerStateChange = ({nativeEvent}) => {
-    if (nativeEvent.oldState === State.ACTIVE) {
-      props.setAllSpotsPanelVisible(false);
-      // animatePanels(animation, 250)
-    }
-  };
+  // const _onRightFlingHandlerStateChange = ({nativeEvent}) => {
+  //   if (nativeEvent.oldState === State.ACTIVE) {
+  //     props.setAllSpotsPanelVisible(false);
+  //     // animatePanels(animation, 250)
+  //   }
+  // };
 
-  const _onLeftFlingHandlerStateChange = ({nativeEvent}) => {
-    if (nativeEvent.oldState === State.ACTIVE) {
-      props.setAllSpotsPanelVisible(true);
-      // animatePanels(animation, 125)
-    }
-  };
+  // const _onLeftFlingHandlerStateChange = ({nativeEvent}) => {
+  //   if (nativeEvent.oldState === State.ACTIVE) {
+  //     props.setAllSpotsPanelVisible(true);
+  //     // animatePanels(animation, 125)
+  //   }
+  // };
 
   if (!isEmpty(props.spot)) {
     console.log('Selected Spot:', props.spot);
 
     return (
-      <FlingGestureHandler
-        direction={Directions.RIGHT}
-        numberOfPointers={2}
-        onHandlerStateChange={(ev) => _onRightFlingHandlerStateChange(ev)}
-      >
-        <FlingGestureHandler
-          direction={Directions.LEFT}
-          numberOfPointers={1}
-          onHandlerStateChange={(ev) => _onLeftFlingHandlerStateChange(ev)}
-        >
+      // <FlingGestureHandler
+      //   direction={Directions.RIGHT}
+      //   numberOfPointers={2}
+      //   onHandlerStateChange={(ev) => _onRightFlingHandlerStateChange(ev)}
+      // >
+      //   <FlingGestureHandler
+      //     direction={Directions.LEFT}
+      //     numberOfPointers={1}
+      //     onHandlerStateChange={(ev) => _onLeftFlingHandlerStateChange(ev)}
+      //   >
           <Animated.View
             // style={props.isAllSpotsPanelVisible ? [notebookStyles.panel, {marginRight: 125}] : notebookStyles.panel}
             style={props.isAllSpotsPanelVisible ? [notebookStyles.panel, {right: 125}] : notebookStyles.panel}
@@ -86,8 +86,8 @@ const NotebookPanel = props => {
               />
             </View>
           </Animated.View>
-        </FlingGestureHandler>
-      </FlingGestureHandler>
+        // </FlingGestureHandler>
+      // </FlingGestureHandler>
     );
   }
   else {
