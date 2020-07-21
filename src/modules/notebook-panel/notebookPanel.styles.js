@@ -24,19 +24,19 @@ const notebookStyles = StyleSheet.create({
     right: 0,
   },
   headerContainer: {
+    flex: 1,
     borderBottomWidth: 2,
     borderBottomColor: themes.DARKGREY,
     paddingBottom: 5,
     paddingTop: 5,
   },
   centerContainer: {
-    flex: 1,
+    flex: 10,
   },
   footerContainer: {
-    height: 60,
+    flex: 1,
     borderTopWidth: 2,
     borderTopColor: themes.DARKGREY,
-    padding: 10,
   },
   noSpotContentHeaderText: {
     fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,

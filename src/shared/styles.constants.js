@@ -1,6 +1,6 @@
 //See https://facebook.github.io/react-native/docs/colors
 
-export const LIGHTGREY = '#efeff4';  //(lightgrey)
+export const LIGHTGREY = '#f7f7f7';  //(lightgrey)
 export const MEDIUMGREY = 'darkgray';  //(#d3d3d3)
 export const DARKGREY = 'dimgray';
 //export const BLUE = 'blue';  // (#0000ff)
@@ -8,7 +8,7 @@ export const BLUE = 'dodgerblue'; // (#1e90ff)
 export const RED = 'red';
 
 export const PRIMARY_BACKGROUND_COLOR = LIGHTGREY;
-export const SECONDARY_BACKGROUND_COLOR = 'white';
+export const SECONDARY_BACKGROUND_COLOR = '#ffffff';
 
 export const PRIMARY_HEADER_TEXT_COLOR = 'black';
 export const SECONDARY_HEADER_TEXT_COLOR = DARKGREY;
@@ -19,7 +19,7 @@ export const PRIMARY_LISTITEM_FONTWEIGHT = '500';
 
 export const PRIMARY_ACCENT_COLOR = BLUE;
 
-export const LIST_BORDER_COLOR = LIGHTGREY;
+export const LIST_BORDER_COLOR = '#808080';
 export const LIST_HEADER_COLOR = 'rgb(239, 239, 244)';
 
 export const PRIMARY_TEXT_SIZE = 18;

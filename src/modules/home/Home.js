@@ -777,9 +777,15 @@ const Home = (props) => {
       </View>
       <Animated.View
         style={props.isAllSpotsPanelVisible ? [homeStyles.onlineStatus, rightsideIconAnimation, {right: 125}] : [homeStyles.onlineStatus, rightsideIconAnimation]}>
-        <IconButton
-          source={props.isOnline ? online : offline}
-        />
+        {/*<IconButton*/}
+        {/*  source={props.isOnline ? online : offline}*/}
+        {/*/>*/}
+        {props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS ||
+        props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE || props.modalVisible === Modals.SHORTCUT_MODALS.NOTES ? null :
+          <IconButton
+            source={isNotebookPanelVisible ? require('../../assets/icons/NotebookViewButton_pressed.png') : require('../../assets/icons/NotebookViewButton.png')}
+            onPress={() => toggleNotebookPanel()}
+          />}
       </Animated.View>
       {!props.currentImageBasemap && <Animated.View
         style={props.isAllSpotsPanelVisible ? [homeStyles.rightsideIcons, rightsideIconAnimation, {right: 125}] : [homeStyles.rightsideIcons, rightsideIconAnimation]}>
@@ -822,12 +828,12 @@ const Home = (props) => {
           /> : null}
       </Animated.View>}
       <View style={homeStyles.notebookViewIcon}>
-        {props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS ||
-        props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE || props.modalVisible === Modals.SHORTCUT_MODALS.NOTES ? null :
-          <IconButton
-            source={require('../../assets/icons/NotebookViewButton.png')}
-            onPress={() => openNotebookPanel()}
-          />}
+        {/*{props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS ||*/}
+        {/*props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE || props.modalVisible === Modals.SHORTCUT_MODALS.NOTES ? null :*/}
+        {/*  <IconButton*/}
+        {/*    source={require('../../assets/icons/NotebookViewButton.png')}*/}
+        {/*    onPress={() => openNotebookPanel()}*/}
+        {/*  />}*/}
       </View>
       {buttons.drawButtonsVisible ?
         <Animated.View
@@ -857,7 +863,7 @@ const Home = (props) => {
         : null}
       <Animated.View style={[homeStyles.homeIconContainer, leftsideIconAnimation]}>
         <IconButton
-          source={require('../../assets/icons/HomeButton.png')}
+          source={isMainMenuPanelVisible? require('../../assets/icons/HomeButton_pressed.png') : require('../../assets/icons/HomeButton.png')}
           onPress={clickHandler.bind(this, 'home')}
         />
       </Animated.View>
@@ -865,7 +871,7 @@ const Home = (props) => {
       <Animated.View style={[homeStyles.bottomLeftIcons, leftsideIconAnimation]}>
         <IconButton
           //style={{top: 5}}
-          source={require('../../assets/icons/CloseButton.png')}
+          source={require('../../assets/icons/Close.png')}
           onPress={clickHandler.bind(this, 'closeImageBasemap')}
         />
       </Animated.View>}

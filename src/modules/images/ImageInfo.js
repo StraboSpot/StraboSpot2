@@ -42,15 +42,11 @@ const ImageInfo = (props) => {
         PlaceholderContent={<ActivityIndicator/>}
       />
       {imageNoteModal ? noteModal : null}
-      <View style={styles.closeInfoView}>
-        <Icon
-          name={'close'}
-          type={'antdesign'}
-          color={themes.BLUE}
-          size={35}
-          onPress={() => {
-            props.navigation.goBack();
-          }}
+      <View style={styles.closeButtonContainer}>
+        <IconButton
+          source={require('../../assets/icons/Close.png')}
+          onPress={() => props.navigation.goBack()}
+          style={styles.closeButtonStyle}
         />
       </View>
       <View style={styles.rightsideIcons}>

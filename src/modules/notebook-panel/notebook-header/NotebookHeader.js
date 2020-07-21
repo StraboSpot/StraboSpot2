@@ -66,11 +66,11 @@ const NotebookHeader = props => {
 
   const getSpotGemometryIcon = () => {
     if (spot.geometry && spot.geometry.type) {
-      if (spot.geometry.type === 'Point') return require('../../../assets/icons/NotebookHeaderPoint.png');
-      else if (spot.geometry.type === 'LineString') return require('../../../assets/icons/NotebookHeaderLine.png');
-      else if (spot.geometry.type === 'Polygon') return require('../../../assets/icons/NotebookHeaderPolygon.png');
+      if (spot.geometry.type === 'Point') return require('../../../assets/icons/Point_pressed.png');
+      else if (spot.geometry.type === 'LineString') return require('../../../assets/icons/Line_pressed.png');
+      else if (spot.geometry.type === 'Polygon') return require('../../../assets/icons/Polygon_pressed.png');
     }
-    else return require('../../../assets/icons/NotebookHeaderUnknown.png');
+    else return require('../../../assets/icons/QuestionMark_pressed.png');
   };
 
   const getTraceText = () => {
@@ -143,7 +143,7 @@ const NotebookHeader = props => {
       <View>
         <IconButton
           onPress={() => props.onPress('menu')}
-          source={require('../../../assets/icons/three-dot-menu.png')}
+          source={require('../../../assets/icons/MapActions.png')}
           style={headerStyles.threeDotMenu}
         />
       </View>

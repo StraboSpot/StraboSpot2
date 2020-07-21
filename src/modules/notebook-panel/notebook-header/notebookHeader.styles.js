@@ -6,6 +6,8 @@ const notebookHeaderStyles = StyleSheet.create({
   headerContentContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
+    paddingLeft: 10,
   },
   headerImage: {
     resizeMode: 'contain',
@@ -25,8 +27,8 @@ const notebookHeaderStyles = StyleSheet.create({
     flexDirection: 'column',
   },
   threeDotMenu: {
-    width: 25,
-    height: 25,
+    width: 50,
+    // height: 40,
   },
 });
 

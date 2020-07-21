@@ -8,13 +8,17 @@ const imageStyles = StyleSheet.create({
     alignItems: 'center',
     paddingBottom: 10,
   },
-  closeInfoView: {
-    fontWeight: 'bold',
-    borderRadius: 100,
-    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
+  closeButtonContainer: {
     position: 'absolute',
     right: 20,
-    top: 30,
+    top: 40,
+  },
+  closeButton: {
+    width: 40,
+  },
+  closeButtonStyle: {
+    width: 40,
+    height: 40,
   },
   imageContainer: {
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
@@ -67,13 +71,6 @@ const imageStyles = StyleSheet.create({
     height: '50%',
     width: '98%',
     resizeMode: 'contain',
-  },
-  closeButtonStyle: {
-    width: 25,
-    height: 25,
-    top: 9,
-    right: 9,
-    position: 'absolute',
   },
   modalPosition: {
     position: 'absolute',
