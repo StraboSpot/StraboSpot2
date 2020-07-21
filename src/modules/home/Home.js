@@ -89,6 +89,7 @@ const Home = (props) => {
   const isErrorMessagesModalVisible = useSelector(state => state.home.isErrorMessagesModalVisible);
   const isInfoMessagesModalVisible = useSelector(state => state.home.isInfoModalVisible);
   const isProjectLoadSelectionModalVisible = useSelector(state => state.home.isProjectLoadSelectionModalVisible);
+  const isNotebookPanelVisible = useSelector(state => state.notebook.isNotebookPanelVisible);
   const isMainMenuPanelVisible = useSelector(state => state.home.isSettingsPanelVisible);
   const isSidePanelVisible = useSelector(state => state.settingsPanel.isSidePanelVisible);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
@@ -685,6 +686,13 @@ const Home = (props) => {
 
   const toggleImageModal = () => {
     props.setIsImageModalVisible(!props.isImageModalVisible);
+  };
+
+  const toggleNotebookPanel = () => {
+    if(isNotebookPanelVisible) {
+      closeNotebookPanel()
+    }
+    else openNotebookPanel();
   };
 
   const toggleSidePanel = () => {
