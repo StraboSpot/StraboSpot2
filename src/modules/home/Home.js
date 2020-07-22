@@ -108,6 +108,7 @@ const Home = (props) => {
     drawButtonOn: undefined,
     drawButtonsVisible: true,
     editButtonsVisible: false,
+    userLocationButtonOn: false,
   });
   const [mapMode, setMapMode] = useState(MapModes.VIEW);
   // const [isProjectLoadSelectionModalVisible, setIsProjectLoadSelectionModalVisible] = useState(false);
@@ -261,8 +262,10 @@ const Home = (props) => {
       case 'saveEdits':
         saveEdits();
         break;
-      case 'currentLocation':
-        goToCurrentLocation();
+      case 'toggleUserLocation':
+        if (!buttons.userLocationButtonOn) goToCurrentLocation();
+        mapViewComponent.current.toggleUserLocation(!buttons.userLocationButtonOn);
+        toggleButton('userLocationButtonOn');
         break;
       case 'closeImageBasemap':
         dispatch(({type: mapReducers.CURRENT_IMAGE_BASEMAP, currentImageBasemap: undefined}));
@@ -361,9 +364,9 @@ const Home = (props) => {
       await mapViewComponent.current.goToCurrentLocation();
       useHome.toggleLoading(false);
     }
-    catch {
+    catch (err) {
       useHome.toggleLoading(false);
-      Alert.alert('Geolocation Error', 'Error getting current location.');
+      Alert.alert('Geolocation Error', err);
     }
   };
 
@@ -901,8 +904,8 @@ const Home = (props) => {
       <Animated.View style={[homeStyles.bottomLeftIcons, leftsideIconAnimation]}>
         <IconButton
           style={{top: 5}}
-          source={require('../../assets/icons/MyLocationButton.png')}
-          onPress={clickHandler.bind(this, 'currentLocation')}
+          source={buttons.userLocationButtonOn ? require('../../assets/icons/MyLocationButton_pressed.png') : require('../../assets/icons/MyLocationButton.png')}
+          onPress={clickHandler.bind(this, 'toggleUserLocation')}
         />
       </Animated.View>}
       <MapActionsDialog

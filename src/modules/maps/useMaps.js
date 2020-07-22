@@ -139,7 +139,7 @@ const useMaps = () => {
 
   // Get the current location from the device and set it in the state
   const getCurrentLocation = async () => {
-    const geolocationOptions = {timeout: 15000, maximumAge: 10000, enableHighAccuracy: true};
+    const geolocationOptions = {timeout: 2500, maximumAge: 10000, enableHighAccuracy: true};
     return new Promise((resolve, reject) => {
       Geolocation.getCurrentPosition(
         (position) => {
@@ -147,7 +147,7 @@ const useMaps = () => {
           console.log('Got Current Location: [', position.coords.longitude, ', ', position.coords.latitude, ']');
           resolve([position.coords.longitude, position.coords.latitude]);
         },
-        (error) => reject('Error getting current location:', error),
+        (error) => reject('Error getting current location: ' + (error.message ? error.message : 'Unknown Error')),
         geolocationOptions,
       );
     });

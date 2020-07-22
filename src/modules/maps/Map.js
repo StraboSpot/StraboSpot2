@@ -48,6 +48,7 @@ const Map = React.forwardRef((props, ref) => {
     spotsNotSelected: [],
     spotsSelected: [],
     coordQuad: [],
+    showUserLocation: false,
     zoomToSpot: false,
     zoom: 14,
   };
@@ -702,10 +703,10 @@ const Map = React.forwardRef((props, ref) => {
         await camera.current.flyTo(currentLocation, 2500);
       }
       catch (err) {
-        throw Error('Error Flying to Current Location', err);
+        throw err;
       }
     }
-    else throw Error('Error Getting Map Camera');
+    else throw 'Error Getting Map Camera';
   };
 
   // Get the current location from the device and set it in the state as the map center
@@ -1166,6 +1167,13 @@ const Map = React.forwardRef((props, ref) => {
     useMaps.zoomToSpots(spots, map.current, camera.current);
   };
 
+  const toggleUserLocation = (value) => {
+    setMapPropsMutable(m => ({
+      ...m,
+      showUserLocation: value ? value : !mapProps.showUserLocation,
+    }));
+  };
+
   useImperativeHandle(props.mapComponentRef, () => {
     return {
       cancelDraw: cancelDraw,
@@ -1182,6 +1190,7 @@ const Map = React.forwardRef((props, ref) => {
       moveVertex: moveVertex,
       saveEdits: saveEdits,
       setPointAtCurrentLocation: setPointAtCurrentLocation,
+      toggleUserLocation: toggleUserLocation,
       zoomToSpot: zoomToSpot,
       zoomToSpotsExtent: zoomToSpotsExtent,
     };
