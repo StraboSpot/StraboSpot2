@@ -20,7 +20,7 @@ const attributesStyles = StyleSheet.create({
     fontWeight: '600',
     fontSize: themes.PRIMARY_HEADER_TEXT_SIZE - 2,
   },
-  spotListListContainer: {
+  spotListContainer: {
     flex: 1,
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
   },
