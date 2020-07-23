@@ -44,7 +44,8 @@ const useTags = () => {
   };
 
   const getLabel = (key) => {
-    return tagsDictionary[key] || key.replace(/_/g, ' ');
+    if (key) return tagsDictionary[key] || key.replace(/_/g, ' ');
+    return 'No Type Specified';
   };
 
   const addRemoveTagFromSpot = (tag) => {
