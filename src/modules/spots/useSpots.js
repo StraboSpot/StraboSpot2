@@ -6,7 +6,7 @@ import {getNewId, isEmpty} from '../../shared/Helpers';
 import {homeReducers} from '../home/home.constants';
 import useImagesHook from '../images/useImages';
 import {projectReducers} from '../project/project.constants';
-import {spotReducers} from './spot.constants';
+import {generalKeysIcons, sedKeysIcons, spotReducers} from './spot.constants';
 
 const useSpots = (props) => {
   const dispatch = useDispatch();
@@ -201,6 +201,25 @@ const useSpots = (props) => {
     return spots[spotId];
   };
 
+  const getSpotDataIconSource = (iconKey) => {
+    const iconSources = {...generalKeysIcons, ...sedKeysIcons};
+    if (iconSources[iconKey]) return iconSources[iconKey];
+  };
+
+  const getSpotDataKeys = (spot) => {
+    let keysFound = Object.keys(spot.properties).filter(key => {
+      return Object.keys(generalKeysIcons).includes(key) && !isEmpty(spot.properties[key]);
+    });
+    if (spot.properties.sed) {
+      const sedKeysFound = Object.keys(spot.properties.sed).filter(key => {
+        return Object.keys(sedKeysIcons).includes(key) && !isEmpty(spot.properties.sed[key]);
+      });
+      keysFound = [...keysFound, sedKeysFound];
+    }
+    // console.log('Keys Found', keysFound);
+    return keysFound;
+  };
+
   const getSpotGemometryIconSource = (spot) => {
     if (spot.geometry && spot.geometry.type) {
       if (spot.geometry.type === 'Point') return require('../../assets/icons/Point_pressed.png');
@@ -228,6 +247,8 @@ const useSpots = (props) => {
     getActiveSpotsObj: getActiveSpotsObj,
     getMappableSpots: getMappableSpots,
     getSpotById: getSpotById,
+    getSpotDataIconSource: getSpotDataIconSource,
+    getSpotDataKeys: getSpotDataKeys,
     getSpotGemometryIconSource: getSpotGemometryIconSource,
     getSpotsByIds: getSpotsByIds,
     getAllImageBaseMaps: getAllImageBaseMaps,

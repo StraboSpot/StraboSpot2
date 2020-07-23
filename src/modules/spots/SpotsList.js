@@ -1,18 +1,20 @@
 import React, {useState, useEffect} from 'react';
 import {FlatList, Text, View} from 'react-native';
 
-import {ListItem} from 'react-native-elements';
+import {Avatar, ListItem} from 'react-native-elements';
 import {connect, useSelector} from 'react-redux';
 
 import {isEmpty} from '../../shared/Helpers';
 import attributesStyles from '../main-menu-panel/attributes.styles';
 import {settingPanelReducers, SortedViews} from '../main-menu-panel/mainMenuPanel.constants';
 import SortingButtons from '../main-menu-panel/SortingButtons';
+import {useTagsHook} from '../tags';
 import useSpotsHook from './useSpots';
 
 const SpotsList = (props) => {
   const [sortedList, setSortedList] = useState(getSpotsSortedChronologically);
   const [useSpots] = useSpotsHook();
+  const [useTags] = useTagsHook();
   const activeSpotsObj = useSpots.getActiveSpotsObj();
   const spotsInMapExtent = useSelector(state => state.map.spotsInMapExtent);
 
@@ -28,6 +30,23 @@ const SpotsList = (props) => {
     }));
   };
 
+  const renderDataIcons = (item) => {
+    const keysFound = useSpots.getSpotDataKeys(item);
+    if (!isEmpty(useTags.getTagsAtSpot(item.properties.id))) keysFound.push('tags');
+
+    return (
+      <React.Fragment>
+        {keysFound.map(key => {
+          return <Avatar
+            source={useSpots.getSpotDataIconSource(key)}
+            size={20}
+            key={key}
+          />;
+        })}
+      </React.Fragment>
+    );
+  };
+
   const renderName = (item) => {
     return (
       <ListItem
@@ -36,6 +55,7 @@ const SpotsList = (props) => {
         chevron={true}
         onPress={() => props.getSpotData(item.properties.id)}
         leftAvatar={{source: useSpots.getSpotGemometryIconSource(item), size: 20}}
+        rightAvatar={renderDataIcons(item)}
       />
     );
   };

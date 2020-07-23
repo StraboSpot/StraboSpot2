@@ -81,7 +81,7 @@ const Overview = props => {
   const renderTraceSurfaceFeatureForm = () => {
     let formName = ['general', 'surface_feature'];
     let initialValues = spot.properties.trace || spot.properties.surface_feature || {};
-    if (spot.geometry.type === 'LineString' || spot.geometry.type === 'MultiLineString') {
+    if (spot.geometry && (spot.geometry.type === 'LineString' || spot.geometry.type === 'MultiLineString')) {
       formName = ['general', 'trace'];
       initialValues = {...initialValues, 'trace_feature': true};
     }
