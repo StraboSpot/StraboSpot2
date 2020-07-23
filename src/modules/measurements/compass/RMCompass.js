@@ -148,7 +148,7 @@ const RNCompass = (props) => {
       else if (props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {
         props.onSpotEdit('orientation_data', [newOrientation]);
       }
-    playSound();
+      playSound();
     }
     else Alert.alert('No Measurement Type', 'Please select a measurement type using the toggles.');
   };
@@ -328,7 +328,7 @@ const RNCompass = (props) => {
         {/*<View style={height <= 1000 ? {height: 300, alignItems: 'center', justifyContent: 'center'} :*/}
         {/*  {alignContent: 'center', justifyContent: 'center'}}>*/}
         {/*  <Measurements/>*/}
-          {/*<Text>Reserved for manual measurement input form fields</Text>*/}
+        {/*<Text>Reserved for manual measurement input form fields</Text>*/}
         {/*</View>*/}
       </React.Fragment>;
   }

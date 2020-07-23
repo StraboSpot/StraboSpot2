@@ -103,7 +103,7 @@ const SpotsList = (props) => {
     return (
       <View style={{flex: 1}}>
         <SortingButtons/>
-        <View style={attributesStyles.spotsListContainer}>
+        <View style={attributesStyles.spotListContainer}>
           {sortedView}
         </View>
       </View>

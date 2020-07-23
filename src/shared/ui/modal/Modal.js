@@ -22,7 +22,7 @@ const Modal = (props) => {
           textStyle={{color: 'blue', fontSize: 16, textAlign: 'center'}}
           onPress={() => props.onPress(NotebookPages.MEASUREMENT)}
         >
-          Go to {props.spot.properties.name}
+          Go to Last Spot Created
         </IconButton>
       );
     }
@@ -65,7 +65,7 @@ const Modal = (props) => {
       <View style={modalStyle.modalTop}>
         <Button
           titleStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 16}}
-          title={props.buttonTitleRight}
+          title={props.buttonTitleLeft}
           type={'clear'}
           onPress={props.onPress}
         />
