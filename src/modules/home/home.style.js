@@ -5,7 +5,7 @@ import * as themes from '../../shared/styles.constants';
 const homeStyles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: themes.LIGHTGREY,
+    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
   },
   buttonWithBackground: {
     color: 'black',
@@ -45,7 +45,7 @@ const homeStyles = StyleSheet.create({
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
   },
   photoSavedToastText: {
-    color: themes.DARKGREY,
+    color: themes.SECONDARY_HEADER_TEXT_COLOR,
     fontSize: themes.PRIMARY_TEXT_SIZE,
     fontWeight: 'bold',
   },

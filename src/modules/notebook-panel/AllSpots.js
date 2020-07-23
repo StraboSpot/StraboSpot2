@@ -35,7 +35,7 @@ const AllSpots = (props) => {
               contentContainerStyle={{
                 justifyContent: 'center',
                 alignItems: 'center',
-                backgroundColor: themes.LIGHTGREY,
+                backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
                 padding: 10,
                 paddingTop: 20,
                 paddingBottom: 20,
