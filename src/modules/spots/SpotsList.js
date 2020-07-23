@@ -41,6 +41,7 @@ const SpotsList = (props) => {
             source={useSpots.getSpotDataIconSource(key)}
             size={20}
             key={key}
+            title={key}  // used as placeholder while loading image
           />;
         })}
       </React.Fragment>
@@ -48,6 +49,9 @@ const SpotsList = (props) => {
   };
 
   const renderName = (item) => {
+    const tags = useTags.getTagsAtSpot(item.properties.id);
+    const tagsString = tags.map(tag => tag.name).sort().join(', ');
+
     return (
       <ListItem
         key={item.properties.id}
@@ -56,6 +60,7 @@ const SpotsList = (props) => {
         onPress={() => props.getSpotData(item.properties.id)}
         leftAvatar={{source: useSpots.getSpotGemometryIconSource(item), size: 20}}
         rightAvatar={renderDataIcons(item)}
+        {...!isEmpty(tagsString) && {subtitle: tagsString}}
       />
     );
   };

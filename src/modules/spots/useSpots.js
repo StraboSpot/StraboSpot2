@@ -214,7 +214,7 @@ const useSpots = (props) => {
       const sedKeysFound = Object.keys(spot.properties.sed).filter(key => {
         return Object.keys(sedKeysIcons).includes(key) && !isEmpty(spot.properties.sed[key]);
       });
-      keysFound = [...keysFound, sedKeysFound];
+      keysFound = [...keysFound, ...sedKeysFound];
     }
     // console.log('Keys Found', keysFound);
     return keysFound;
