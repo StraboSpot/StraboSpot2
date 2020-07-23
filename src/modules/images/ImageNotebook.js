@@ -25,17 +25,25 @@ const ImageNotebook = (props) => {
   const renderImage = (image) => {
     // console.log('IMAGE', image);
     return (
-      <View style={imageStyles.imageContainer}>
-        <Image
-          source={{uri: useImages.getLocalImageSrc(image.id)}}
-          style={imageStyles.notebookImage}
-          PlaceholderContent={<ActivityIndicator/>}
-        />
-        <Button
-          title={'Edit'}
-          onPress={() => editImage(image)}
-          style={imageStyles.editButton}
-        />
+      <View>
+        <View style={imageStyles.imageContainer}>
+          <Image
+            source={{uri: useImages.getLocalImageSrc(image.id)}}
+            style={imageStyles.notebookImage}
+            PlaceholderContent={<ActivityIndicator/>}
+          />
+          <View style={{
+            flexDirection: 'column',
+          }}>
+            <Text style={[commonStyles.dialogContent,{textAlign:'left'}]}>Image title : {image.title}</Text>
+            <Text style={[commonStyles.dialogContent,{textAlign:'left'}]}>{(image.annotated) ? 'Image Basemap' : ''}</Text>
+          </View>
+          <Button
+            title={'Edit'}
+            onPress={() => editImage(image)}
+            style={imageStyles.editButton}
+          />
+        </View>
       </View>
     );
   };

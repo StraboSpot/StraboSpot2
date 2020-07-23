@@ -108,7 +108,7 @@ const Map = React.forwardRef((props, ref) => {
   useEffect(() => {
     console.log('Updating Spots, selected Spots, active datasets or basemap changed');
     setDisplayedSpots((isEmpty(props.selectedSpot) ? [] : [{...props.selectedSpot}]));
-  }, [props.spots, props.selectedSpot, props.datasets, currentBasemap, currentImageBasemap]);
+  }, [props.spots, props.datasets, currentBasemap, currentImageBasemap]);
 
   useEffect(() => {
     // On change of selected spot, reset the zoomToSpot
@@ -122,6 +122,8 @@ const Map = React.forwardRef((props, ref) => {
       // (turning off zoomToSpot, will move the camera to center coordinates, so reset the camera zoom to new selected spot's position.)
       if (!currentImageBasemap) zoomToSpot();
     }
+    //conditional call to avoid multiple renders during edit mode.
+    if (props.mapMode !== MapModes.EDIT) setDisplayedSpots((isEmpty(props.selectedSpot) ? [] : [{...props.selectedSpot}]));
   }, [props.selectedSpot]);
 
   useEffect(() => {
@@ -391,6 +393,8 @@ const Map = React.forwardRef((props, ref) => {
       //     If not edit vertex coords to those of pressed point
       //     If so switch selected vertex to vertex at pressed point
       const spotFound = await getSpotAtPress(screenPointX, screenPointY);
+      // #114, while editing, click on a different spot to edit, should immediately identify it as the selected spot and hence update the notebook panel.
+      if (!isEmpty(spotFound)) useMaps.setSelectedSpot(spotFound);
       if (isEmpty(editingModeData.spotEditing)) {
         if (isEmpty(spotFound)) console.log('No feature selected.');
         else setSelectedSpotToEdit(spotFound);
@@ -553,16 +557,26 @@ const Map = React.forwardRef((props, ref) => {
         // on the actual polygon or linestring.
         else {
           var indexOfCoordinatesToUpdate = getVertexIndexInSpotToEdit(editingModeData.vertexToEdit);
+          if (!isEmpty(indexOfCoordinatesToUpdate)){
+            if (indexOfCoordinatesToUpdate.includes(0)) {
+              setEditingModeData(d => ({
+                ...d,
+                vertexIndex: 0,
+              }));
+            }
+            else {
+              setEditingModeData(d => ({
+                ...d,
+                vertexIndex: indexOfCoordinatesToUpdate,
+              }));
+            }
+          }
           if (currentImageBasemap) {
             newCoord = useMaps.convertCoordinateProjections(geoLatLngProjection, pixelProjection, newCoord);
           }
           if (turf.getType(spotEditingCopy) === 'LineString') {
             if (!isEmpty(editingModeData.vertexIndex)) {
               spotEditingCopy.geometry.coordinates[editingModeData.vertexIndex] = newCoord;
-              setEditingModeData(d => ({
-                ...d,
-                vertexIndex: undefined,
-              }));
             }
             else {
               for (let j = 0; j < coords.length; j++) {
@@ -582,10 +596,6 @@ const Map = React.forwardRef((props, ref) => {
               else if (editingModeData.vertexIndex === mapPropsMutable.drawFeatures.length) {
                 spotEditingCopy.geometry.coordinates[0][0] = newCoord;
               }
-              setEditingModeData(d => ({
-                ...d,
-                vertexIndex: undefined,
-              }));
               isModified = true;
             }
             else {
@@ -642,7 +652,11 @@ const Map = React.forwardRef((props, ref) => {
           spotsNotEdited: spotsNotEditedTmp,
         }));
         setDisplayedSpotsWhileEditing(spotEditingCopy, spotsEditedTmp, spotsNotEditedTmp);
-        clearSelectedVertexToEdit();
+        setMapPropsMutable(m => ({
+          // this clears the initial feature vertex that is selected.
+          ...m,
+          editFeatureVertex: [],
+        }));
         console.log('Finished editing Spot. Spot Editing: ', spotEditingCopy);
         if (turf.getType(spotEditingCopy) === 'Point') clearSelectedFeatureToEdit();
       }
@@ -796,6 +810,8 @@ const Map = React.forwardRef((props, ref) => {
       spotsNotEdited: mappableSpots,
     }));
     spotToEdit ? console.log('Set Spot to edit:', spotToEdit) : console.log('No Spot selected to edit.');
+    // #114, editing a spot should immediately identify it as the selected spot and hence update the notebook panel.
+    if (!isEmpty(spotToEdit)) useMaps.setSelectedSpot(spotToEdit);
     setDisplayedSpotsWhileEditing(spotToEdit, [], mappableSpots);
     setEditFeatures(spotToEdit);
     // while starting to edit the spot, set the vertex active to move immediately, if available
