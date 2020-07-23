@@ -47,7 +47,6 @@ const useImages = () => {
 
     const downloadImageAndSave = async (imageId) => {
       const imageURI = 'https://strabospot.org/pi/' + imageId;
-      // return new Promise((resolve, reject) => {
       return RNFetchBlob
         .config({path: imagesDirectory + '/' + imageId + '.jpg'})
         .fetch('GET', imageURI, {})
@@ -63,9 +62,7 @@ const useImages = () => {
           }
           else {
             imageCount++;
-            // imageFiles.push(res.path());
             console.log(imageCount, 'File saved to', res.path());
-            // return convertImageSize(res.path());
           }
         })
         .catch((errorMessage, statusCode) => {
@@ -73,7 +70,6 @@ const useImages = () => {
           console.log('Error on', imageId, ':', errorMessage, statusCode);  // Android Error: RNFetchBlob request error: url == nullnull
           return Promise.reject();
         });
-      // });
     };
 
     try {
@@ -82,8 +78,8 @@ const useImages = () => {
         await useExport.doesDeviceDirectoryExist(devicePath + appDirectory);
         await useExport.doesDeviceDirectoryExist(imagesDirectory);
 
-        neededImageIds.map(imageId => {
-          let promise = downloadImageAndSave(imageId).then(() => {
+        for (const imageId of neededImageIds) {
+          let promise = await downloadImageAndSave(imageId).then(() => {
             imagesDownloadedCount++;
             savedImagesCount++;
             console.log(
@@ -113,7 +109,7 @@ const useImages = () => {
             }
           });
           promises.push(promise);
-        });
+        }
       }
     }
     catch (e) {
