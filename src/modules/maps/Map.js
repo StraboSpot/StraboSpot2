@@ -405,6 +405,13 @@ const Map = React.forwardRef((props, ref) => {
         if (isEmpty(spotFound)) clearSelectedFeatureToEdit();
         else {
           let vertexSelected = await getDrawFeatureAtPress(screenPointX, screenPointY);
+          if (!isEmpty(vertexSelected)){
+            // When draw features identifies a vertex that is not on the spot found, mark it undefined so that,
+            // we can calculate a vertex on the spot found that is closest to the press.
+            if (spotFound.properties.id !== vertexSelected.properties.id){
+             vertexSelected = undefined;
+            }
+          }
           if (isEmpty(vertexSelected)) {
             // draw features did not return anything.. generally a scenario of selecting a vertex on a spot press.
             closestVertexDetails = await identifyClosestVertexOnSpotPress(spotFound, screenPointX, screenPointY);
