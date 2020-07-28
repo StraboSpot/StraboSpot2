@@ -3,8 +3,10 @@ import {ScrollView, Text, View} from 'react-native';
 
 import * as turf from '@turf/turf/index';
 import {Field, Formik} from 'formik';
+import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import SectionDivider from '../../shared/ui/SectionDivider';
@@ -23,6 +25,13 @@ const Geography = (props) => {
 
   const cancelFormAndGo = () => {
     dispatch({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE_TO_PREV});
+  };
+
+  // Fill in current location
+  const fillWithCurrentLocation = async () => {
+    const [lng, lat] = await useMaps.getCurrentLocation();
+    if (lat) geomForm.current.setFieldValue('latitude', lat);
+    if (lng) geomForm.current.setFieldValue('longitude', lng);
   };
 
   // What happens after submitting the form is handled in saveFormAndGo since we want to show
@@ -135,19 +144,33 @@ const Geography = (props) => {
     return (
       <View>
         {!isEmpty(initialGeomValues.latitude) && !isEmpty(initialGeomValues.longitude) ?
-          <View>
-            <Field
-              component={NumberInputField}
-              name={'longitude'}
-              key={'longitude'}
-              label={'Longitude'}
-            />
-            <Field
-              component={NumberInputField}
-              name={'latitude'}
-              key={'latitude'}
-              label={'Latitude'}
-            />
+          <View style={{flex: 1, flexDirection: 'row', ...commonStyles.rowContainer}}>
+            <View style={{flex: 1, flexDirection: 'row', ...commonStyles.rowContainer}}>
+              <Field
+                component={NumberInputField}
+                name={'longitude'}
+                key={'longitude'}
+                label={'Longitude'}
+              />
+              <Field
+                component={NumberInputField}
+                name={'latitude'}
+                key={'latitude'}
+                label={'Latitude'}
+              />
+            </View>
+            <View style={commonStyles.rowContainer}>
+              <Button
+                onPress={fillWithCurrentLocation}
+                type='clear'
+                icon={{
+                  name: 'locate',
+                  type: 'ionicon',
+                  size: 30,
+                  color: commonStyles.iconColor.color,
+                }}
+              />
+            </View>
           </View> :
           <View>
             <Text style={formStyles.fieldLabel}>Coordinates as [Longitude, Latitude]</Text>
