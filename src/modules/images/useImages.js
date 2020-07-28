@@ -530,7 +530,7 @@ const useImages = () => {
         const src = data[1];
         const count = imagesUploadedCount + 1;
         dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
-        dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Uploading image: ' + count + '...'});
+        dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Uploading image: ' + count});
         console.log('Uploading image', imageProps.id, 'to server...');
 
         const resizeImage = await resizeImageForUpload(src, imageProps);

@@ -7,7 +7,7 @@ const useServerRequests = () => {
   const baseUrl = 'https://strabospot.org/db';
 
   const addDatasetToProject = (projectId, datasetId, encodedLogin) => {
-  return post('/projectDatasets/' + projectId, encodedLogin, {id: datasetId});
+    return post('/projectDatasets/' + projectId, encodedLogin, {id: datasetId});
   };
 
   const authenticateUser = async (username, password) => {
@@ -65,7 +65,7 @@ const useServerRequests = () => {
   };
 
   const getDatasetSpots = (datasetId, encodedLogin) => {
-    return request('GET','/datasetSpots/' + datasetId, encodedLogin);
+    return request('GET', '/datasetSpots/' + datasetId, encodedLogin);
   };
 
   const downloadImage = (imageId, encodedLogin) => {
@@ -109,11 +109,11 @@ const useServerRequests = () => {
   };
 
   const getMyProjects = (encodedLogin) => {
-    return request('GET','/myProjects', encodedLogin);
+    return request('GET', '/myProjects', encodedLogin);
   };
 
   const handleError = (response) => {
-      return Promise.reject(response);
+    return Promise.reject(response);
   };
 
   const handleResponse = response => {
@@ -149,9 +149,9 @@ const useServerRequests = () => {
       email: newAccountInfo.email.value,
       password: newAccountInfo.password.value,
       confirm_password: newAccountInfo.confirmPassword.value,
-    },);
+    });
     const modifiedBaseUrl = baseUrl.slice(0, baseUrl.lastIndexOf('/'));
-    const response = await fetch(modifiedBaseUrl + '/userRegister',{
+    const response = await fetch(modifiedBaseUrl + '/userRegister', {
       method: 'POST',
       body: newAccount,
       headers: {
@@ -185,7 +185,7 @@ const useServerRequests = () => {
   };
 
   const updateProject = (project, encodedLogin) => {
-    return post('/project', encodedLogin, project,);
+    return post('/project', encodedLogin, project);
   };
 
   const uploadImage = async (formdata, encodedLogin) => {
@@ -205,7 +205,7 @@ const useServerRequests = () => {
   };
 
   const serverRequests = {
-    addDatasetToProject:addDatasetToProject,
+    addDatasetToProject: addDatasetToProject,
     authenticateUser: authenticateUser,
     downloadImage: downloadImage,
     getMyProjects: getMyProjects,
