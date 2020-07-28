@@ -5,13 +5,12 @@ import NetInfo from '@react-native-community/netinfo';
 import * as Sentry from '@sentry/react-native';
 import {Base64} from 'js-base64';
 import {Button} from 'react-native-elements';
-import Icon from 'react-native-vector-icons/Ionicons';
 import {useSelector, useDispatch} from 'react-redux';
 
 import {USERNAME_TEST, PASSWORD_TEST} from '../../../Config';
 import useServerRequests from '../../services/useServerRequests';
 import {VERSION_NUMBER} from '../../shared/app.constants';
-import {readDataUrl,isEmpty} from '../../shared/Helpers';
+import {readDataUrl, isEmpty} from '../../shared/Helpers';
 import IconButton from '../../shared/ui/IconButton';
 import {homeReducers} from '../home/home.constants';
 import {USER_DATA, USER_IMAGE, ENCODED_LOGIN} from '../user/user.constants';
@@ -48,14 +47,14 @@ const SignIn = (props) => {
           throw (err);
         });
     }
-  },[isOnline]);
+  }, [isOnline]);
 
   useEffect(() => {
     Sentry.configureScope((scope) => {
       scope.setUser({'email': userData.email});
       console.log('SCOPE', scope);
     });
-  }, [userData])
+  }, [userData]);
 
   //function for online/offline state change event handler
   const handleConnectivityChange = (isConnected) => {
@@ -64,7 +63,7 @@ const SignIn = (props) => {
 
   const guestSignIn = async () => {
     Sentry.configureScope((scope) => {
-      scope.setUser({'id': 'GUEST'})
+      scope.setUser({'id': 'GUEST'});
     });
     if (isEmpty(props.userData)) await dispatch({type: 'CLEAR_STORE'});
     console.log('Loading user: GUEST');
@@ -101,13 +100,12 @@ const SignIn = (props) => {
     return (
       <View>
         <Button
-          icon={
-            <Icon
-              style={styles.icon}
-              name={'ios-log-in'}
-              size={30}
-              color={'white'}/>
-          }
+          icon={{
+            name: 'log-in',
+            type: 'ionicon',
+            size: 30,
+            color: 'white',
+          }}
           type={'solid'}
           containerStyle={{marginTop: 30}}
           onPress={() => signIn()}
@@ -116,13 +114,13 @@ const SignIn = (props) => {
           title={'Sign In'}
         />
         <Button
-          icon={
-            <Icon
-              style={styles.icon}
-              name={'ios-add'}
-              size={30}
-              color={'white'}/>
-          }
+          icon={{
+            style: styles.icon,
+            name: 'add',
+            type: 'ionicon',
+            size: 30,
+            color: 'white',
+          }}
           type={'solid'}
           containerStyle={{marginTop: 10}}
           onPress={() => createAccount()}
@@ -131,13 +129,12 @@ const SignIn = (props) => {
           title={'Create an Account'}
         />
         <Button
-          icon={
-            <Icon
-              style={styles.icon}
-              name={'ios-people'}
-              size={30}
-              color={'white'}/>
-          }
+          icon={{
+            name: 'people',
+            type: 'ionicon',
+            size: 30,
+            color: 'white',
+          }}
           type={'solid'}
           onPress={() => guestSignIn()}
           containerStyle={{marginTop: 10}}
