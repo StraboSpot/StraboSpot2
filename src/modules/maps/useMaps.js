@@ -1,4 +1,5 @@
 import {useEffect} from 'react';
+import {Platform} from 'react-native';
 
 import Geolocation from '@react-native-community/geolocation';
 import * as turf from '@turf/turf/index';
@@ -139,7 +140,9 @@ const useMaps = () => {
 
   // Get the current location from the device and set it in the state
   const getCurrentLocation = async () => {
-    const geolocationOptions = {timeout: 2500, maximumAge: 10000, enableHighAccuracy: true};
+    let geolocationOptions = {timeout: 2500, maximumAge: 10000};
+    // Fixes issue with Android not getting current location if enableHighAccuracy is true
+    geolocationOptions = Platform.OS === 'ios' ? {enableHighAccuracy: true, ...geolocationOptions} : geolocationOptions;
     return new Promise((resolve, reject) => {
       Geolocation.getCurrentPosition(
         (position) => {
