@@ -37,6 +37,8 @@ target 'StraboSpot2' do
   # Pods Added
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
   pod 'ReactNativeART', :path => '../node_modules/@react-native-community/art'
+  pod 'RNSentry', :podspec => '../node_modules/@sentry/react-native/RNSentry.podspec' # or your path to node_modules
+
  # Mapbox
   pod 'react-native-mapbox-gl', :path => '../node_modules/@react-native-mapbox-gl/maps'
 

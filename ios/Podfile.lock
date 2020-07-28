@@ -299,7 +299,7 @@ PODS:
     - React
   - RNSensors (5.4.1):
     - React
-  - RNSentry (1.6.2):
+  - RNSentry (1.6.3):
     - React
     - Sentry (~> 5.1.8)
   - RNSound (0.11.0):
@@ -371,7 +371,7 @@ DEPENDENCIES:
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNSensors (from `../node_modules/react-native-sensors`)
-  - "RNSentry (from `../node_modules/@sentry/react-native`)"
+  - "RNSentry (from `../node_modules/@sentry/react-native/RNSentry.podspec`)"
   - RNSound (from `../node_modules/react-native-sound`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
   - RNZipArchive (from `../node_modules/react-native-zip-archive`)
@@ -478,7 +478,7 @@ EXTERNAL SOURCES:
   RNSensors:
     :path: "../node_modules/react-native-sensors"
   RNSentry:
-    :path: "../node_modules/@sentry/react-native"
+    :podspec: "../node_modules/@sentry/react-native/RNSentry.podspec"
   RNSound:
     :path: "../node_modules/react-native-sound"
   RNVectorIcons:
@@ -538,7 +538,7 @@ SPEC CHECKSUMS:
   RNReanimated: 955cf4068714003d2f1a6e2bae3fb1118f359aff
   RNScreens: b5c0e1b2b04512919e78bd3898e144a157ce2363
   RNSensors: 0c25e336a6302bc70870b15f190c6fdb014bf24c
-  RNSentry: 9d68f0ce79608e90e10ac320c409321efc114b8f
+  RNSentry: ae1e005e4f2655775475445a9c49c1d343e8e3a7
   RNSound: c980916b596cc15c8dcd2f6ecd3b13c4881dbe20
   RNVectorIcons: 0bb4def82230be1333ddaeee9fcba45f0b288ed4
   RNZipArchive: f06fe0dcfb9e2fa7437fc7f6c03d5400952f2d57
@@ -546,6 +546,6 @@ SPEC CHECKSUMS:
   SSZipArchive: fa16b8cc4cdeceb698e5e5d9f67e9558532fbf23
   Yoga: 3ebccbdd559724312790e7742142d062476b698e
 
-PODFILE CHECKSUM: 3c4acf691861233ff27a13e55050d597223c3f64
+PODFILE CHECKSUM: 21352b9adbaf3da807aaaf43e6585e3bd73ccfad
 
 COCOAPODS: 1.9.1
