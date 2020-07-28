@@ -36,6 +36,7 @@ const NotebookPanel = props => {
       props.setModalVisible(Modals.NOTEBOOK_MODALS.COMPASS);
     }
     else if (pageVisible.page === NotebookPages.SAMPLE) props.setModalVisible(Modals.NOTEBOOK_MODALS.SAMPLE);
+    else if (pageVisible.page === NotebookPages.TAG) props.setModalVisible(Modals.NOTEBOOK_MODALS.TAGS);
     else props.setModalVisible(null);
   };
 
