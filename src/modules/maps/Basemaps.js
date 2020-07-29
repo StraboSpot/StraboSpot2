@@ -119,20 +119,14 @@ function Basemap(props) {
         })}
 
         {/* Image Basemap background Layer */}
-        {Platform.OS === 'android' && props.imageBasemap &&
-        <MapboxGL.BackgroundLayer
-          id='background'
-          style={{backgroundColor: '#ffffff'}}/>
-        }
-
-        {Platform.OS === 'ios' && props.imageBasemap &&
-        <MapboxGL.Animated.ImageSource
-          id='imageBasemapBackground'
-          coordinates={[[-250, 85], [250, 85], [250, -85], [-250, -85]]}
-          url={require('../../assets/images/imageBasemapBackground.jpg')}>
-          <MapboxGL.RasterLayer id='imageBasemapBackgroundLayer'
-                                style={{rasterOpacity: 1}}/>
-        </MapboxGL.Animated.ImageSource>}
+        {props.imageBasemap &&
+        <MapboxGL.VectorSource>
+          <MapboxGL.BackgroundLayer
+            id='background'
+            style={{backgroundColor: '#ffffff'}}
+            sourceID={'imageBasemap'}
+          />
+        </MapboxGL.VectorSource>}
 
         {/* Image Basemap Layer */}
         {props.imageBasemap && !isEmpty(props.coordQuad) &&
