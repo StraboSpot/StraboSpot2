@@ -233,7 +233,7 @@ const useMaps = () => {
     const testUrlResponse = await useServerRequests.testCustomMapUrl(testTileUrl);
     if (testUrlResponse) {
       if (map.overlay && map.id === currentBasemap.id) {
-        console.log(('Setting Basemap to Maobox Topo...'));
+        console.log(('Setting Basemap to Mapbox Topo...'));
         setCurrentBasemap(null);
       }
       return customMap;

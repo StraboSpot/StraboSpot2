@@ -692,8 +692,8 @@ const Home = (props) => {
   };
 
   const toggleNotebookPanel = () => {
-    if(isNotebookPanelVisible) {
-      closeNotebookPanel()
+    if (isNotebookPanelVisible) {
+      closeNotebookPanel();
     }
     else openNotebookPanel();
   };
@@ -874,7 +874,7 @@ const Home = (props) => {
         : null}
       <Animated.View style={[homeStyles.homeIconContainer, leftsideIconAnimation]}>
         <IconButton
-          source={isMainMenuPanelVisible? require('../../assets/icons/HomeButton_pressed.png') : require('../../assets/icons/HomeButton.png')}
+          source={isMainMenuPanelVisible ? require('../../assets/icons/HomeButton_pressed.png') : require('../../assets/icons/HomeButton.png')}
           onPress={clickHandler.bind(this, 'home')}
         />
       </Animated.View>
