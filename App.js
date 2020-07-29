@@ -13,6 +13,13 @@ import SignUp from './src/modules/sign-up/SignUp';
 import Loading from './src/shared/ui/Loading';
 import configureStore from './src/store/ConfigureStore';
 
+import * as Sentry from '@sentry/react-native';
+
+Sentry.init({ 
+  dsn: 'https://4a3776035f3d425c997d45dc6d05e659@o201723.ingest.sentry.io/1783328', 
+});
+
+
 const App = () => {
   const {store, persistor} = configureStore();
 
