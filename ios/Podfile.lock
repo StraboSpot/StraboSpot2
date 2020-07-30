@@ -352,7 +352,7 @@ PODS:
     - React
   - RNScreens (2.9.0):
     - React
-  - RNSensors (5.4.1):
+  - RNSensors (6.1.0):
     - React
   - RNSentry (1.7.0):
     - React
@@ -637,7 +637,7 @@ SPEC CHECKSUMS:
   RNGestureHandler: b6b359bb800ae399a9c8b27032bdbf7c18f08a08
   RNReanimated: c2bb7438b57a3d987bb2e4e6e4bca94787e30b02
   RNScreens: c526239bbe0e957b988dacc8d75ac94ec9cb19da
-  RNSensors: 0c25e336a6302bc70870b15f190c6fdb014bf24c
+  RNSensors: 4ae6660861b426fd16f61ce2df0b750bda6ac32d
   RNSentry: 05192c14c02562eb7810d6ac3c227b68e76cfb9c
   RNSound: da030221e6ac7e8290c6b43f2b5f2133a8e225b0
   RNVectorIcons: da6fe858f5a65d7bbc3379540a889b0b12aa5976
