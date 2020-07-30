@@ -7,17 +7,6 @@ target 'StraboSpot2' do
   config = use_native_modules!
   use_react_native!(:path => config["reactNativePath"])
 
-    # Pods Added
-    pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
-    pod 'ReactNativeART', :path => '../node_modules/@react-native-community/art'
-
-   # Mapbox
-    pod 'react-native-mapbox-gl', :path => '../node_modules/@react-native-mapbox-gl/maps'
-
-  target 'StraboSpot2Tests' do
-    inherit! :complete
-    # Pods for testing
-  end
 
   # Enables Flipper.
   #
@@ -37,3 +26,5 @@ target 'StraboSpot2-tvOS' do
     # Pods for testing
   end
 end
+
+

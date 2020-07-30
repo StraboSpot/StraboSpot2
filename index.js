@@ -1,4 +1,4 @@
-import {AppRegistry, YellowBox} from 'react-native';
+import {AppRegistry, LogBox, YellowBox} from 'react-native';
 
 import * as Sentry from '@sentry/react-native';
 
@@ -11,7 +11,7 @@ Sentry.init({
   enableNative: true,
 });
 
-YellowBox.ignoreWarnings([
+LogBox.ignoreLogs([
   'Require cycle:',
   'Remote debugger',
   'Warning:',
