@@ -264,7 +264,7 @@ PODS:
     - React
   - react-native-netinfo (5.9.5):
     - React
-  - react-native-safe-area-context (0.7.3):
+  - react-native-safe-area-context (3.1.1):
     - React
   - react-native-simple-compass (1.0.0):
     - React
@@ -613,7 +613,7 @@ SPEC CHECKSUMS:
   react-native-image-resizer: 2f1577efa3bc762597681f530c8e8d05ce0ceeb3
   react-native-mapbox-gl: 77b87a1dd2d7b41b6b77018c0f3bed5f8ee55c81
   react-native-netinfo: 7f3f3ed9e8f0e7ab3e7cac00cbfdc6997e25ecaf
-  react-native-safe-area-context: e200d4433aba6b7e60b52da5f37af11f7a0b0392
+  react-native-safe-area-context: 4c3249e4840225c61fcd215b136af0a737bccb79
   react-native-simple-compass: 2cd09f4e5dbb7a594c2f0d9f85d035e93c9fccca
   react-native-slider: e99fc201cefe81270fc9d81714a7a0f5e566b168
   React-RCTActionSheet: 910163b6b09685a35c4ebbc52b66d1bfbbe39fc5

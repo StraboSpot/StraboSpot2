@@ -48,7 +48,7 @@
     "react-native-progress": "^4.1.2",
     "react-native-reanimated": "^1.10.1",
     "react-native-responsive-screen": "^1.4.1",
-    "react-native-safe-area-context": "^0.7.3",
+    "react-native-safe-area-context": "^3.1.1",
     "react-native-screens": "^2.9.0",
     "react-native-sensors": "^6.1.0",
     "react-native-simple-compass": "git+https://github.com/cjrorvik/react-native-simple-compass.git",
