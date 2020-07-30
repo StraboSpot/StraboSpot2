@@ -142,7 +142,7 @@ const Tags = () => {
       </View>
       }
       {isEmpty(tags) &&
-      <Text style={{padding: 10}}>No tags have been added to this project yet</Text>
+      <Text style={{padding: 10, textAlign: 'center'}}>No tags have been added to this project yet</Text>
       }
       <TagDetailModal
         isVisible={isDetailModalVisibile}
