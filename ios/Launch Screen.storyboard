@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097.2" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
     <device id="ipad11_0rounded" orientation="landscape" layout="fullscreen" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
@@ -19,12 +19,6 @@
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Background" translatesAutoresizingMaskIntoConstraints="NO" id="3GT-br-UIA">
                                 <rect key="frame" x="0.0" y="0.0" width="712" height="794"/>
                             </imageView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="bottomLeft" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="StraboSpot 2" textAlignment="natural" lineBreakMode="tailTruncation" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ldy-MJ-N9z">
-                                <rect key="frame" x="162.5" y="80" width="387" height="69"/>
-                                <fontDescription key="fontDescription" type="boldSystem" pointSize="64"/>
-                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Image" translatesAutoresizingMaskIntoConstraints="NO" id="2IO-VN-aVc" userLabel="Logo">
                                 <rect key="frame" x="156" y="197" width="400" height="400"/>
                                 <constraints>
@@ -32,25 +26,15 @@
                                     <constraint firstAttribute="height" constant="400" id="a5Q-E6-RIv"/>
                                 </constraints>
                             </imageView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Testing Version" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gdv-fx-Exr">
-                                <rect key="frame" x="228" y="20" width="256.5" height="43"/>
-                                <fontDescription key="fontDescription" type="boldSystem" pointSize="36"/>
-                                <color key="textColor" red="0.99999600649999998" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="ldy-MJ-N9z" firstAttribute="top" secondItem="gdv-fx-Exr" secondAttribute="bottom" constant="48" id="9Gu-ID-ZbH"/>
                             <constraint firstItem="3GT-br-UIA" firstAttribute="bottom" secondItem="Bcu-3y-fUS" secondAttribute="bottom" id="L39-pL-kKM"/>
                             <constraint firstItem="2IO-VN-aVc" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="Vrl-j8-bKN"/>
                             <constraint firstItem="3GT-br-UIA" firstAttribute="leading" secondItem="Bcu-3y-fUS" secondAttribute="leading" id="bZE-Sq-JD6"/>
                             <constraint firstItem="3GT-br-UIA" firstAttribute="trailing" secondItem="Bcu-3y-fUS" secondAttribute="trailing" id="cYw-HX-5lc"/>
                             <constraint firstItem="3GT-br-UIA" firstAttribute="top" secondItem="Bcu-3y-fUS" secondAttribute="top" id="gnu-KE-ja6"/>
-                            <constraint firstItem="ldy-MJ-N9z" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="pun-aV-j8E"/>
-                            <constraint firstItem="ldy-MJ-N9z" firstAttribute="top" secondItem="gdv-fx-Exr" secondAttribute="bottom" constant="17" id="spd-2J-5jw"/>
                             <constraint firstItem="2IO-VN-aVc" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="syh-4n-WTn"/>
-                            <constraint firstItem="gdv-fx-Exr" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="zBZ-Pl-3hy"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="Bcu-3y-fUS"/>
                     </view>
