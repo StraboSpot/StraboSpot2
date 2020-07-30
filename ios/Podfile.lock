@@ -262,7 +262,7 @@ PODS:
     - "@react-native-mapbox-gl-mapbox-static (~> 5.7)"
     - Mapbox-iOS-SDK (~> 5.7)
     - React
-  - react-native-netinfo (5.7.0):
+  - react-native-netinfo (5.9.5):
     - React
   - react-native-safe-area-context (0.7.3):
     - React
@@ -334,27 +334,27 @@ PODS:
     - React
   - rn-fetch-blob (0.12.0):
     - React-Core
-  - RNCAsyncStorage (1.9.0):
+  - RNCAsyncStorage (1.11.0):
     - React
   - RNCClipboard (1.2.3):
     - React
   - RNCMaskedView (0.1.10):
     - React
-  - RNCPicker (1.3.0):
+  - RNCPicker (1.6.5):
     - React
-  - RNDateTimePicker (2.3.1):
+  - RNDateTimePicker (2.6.1):
     - React
   - RNFS (2.16.6):
     - React
-  - RNGestureHandler (1.6.1):
+  - RNGestureHandler (1.7.0):
     - React
-  - RNReanimated (1.8.0):
+  - RNReanimated (1.10.1):
     - React
-  - RNScreens (2.4.0):
+  - RNScreens (2.9.0):
     - React
   - RNSensors (5.4.1):
     - React
-  - RNSentry (1.6.3):
+  - RNSentry (1.7.0):
     - React
     - Sentry (~> 5.1.8)
   - RNSound (0.11.0):
@@ -612,7 +612,7 @@ SPEC CHECKSUMS:
   react-native-image-picker: 3d3f85baabca60a00b75fb8facc1376db7bbdafa
   react-native-image-resizer: 2f1577efa3bc762597681f530c8e8d05ce0ceeb3
   react-native-mapbox-gl: 77b87a1dd2d7b41b6b77018c0f3bed5f8ee55c81
-  react-native-netinfo: becc6dd2bb2335aa85a8adbaefc8e206125e6177
+  react-native-netinfo: 7f3f3ed9e8f0e7ab3e7cac00cbfdc6997e25ecaf
   react-native-safe-area-context: e200d4433aba6b7e60b52da5f37af11f7a0b0392
   react-native-simple-compass: 2cd09f4e5dbb7a594c2f0d9f85d035e93c9fccca
   react-native-slider: e99fc201cefe81270fc9d81714a7a0f5e566b168
@@ -628,17 +628,17 @@ SPEC CHECKSUMS:
   ReactCommon: a0a1edbebcac5e91338371b72ffc66aa822792ce
   ReactNativeART: 78edc68dd4a1e675338cd0cd113319cf3a65f2ab
   rn-fetch-blob: f065bb7ab7fb48dd002629f8bdcb0336602d3cba
-  RNCAsyncStorage: 453cd7c335ec9ba3b877e27d02238956b76f3268
+  RNCAsyncStorage: db711e29e5e0500d9bd21aa0c2e397efa45302b1
   RNCClipboard: 48eaf27bea3de7c9a265529725434268d47a2ee9
   RNCMaskedView: 5a8ec07677aa885546a0d98da336457e2bea557f
-  RNCPicker: 7d06ee91dff65b0bcd400ca00039051d5ddcb938
-  RNDateTimePicker: 5b151d197435a4e929bfb6f285ed2372561e3578
+  RNCPicker: 55b9b4240d0a9eba8733d02616775d4040de2e7d
+  RNDateTimePicker: f13c2d8c4cd1ea6d1a1f9ea7ddcdd24e82060770
   RNFS: 2bd9eb49dc82fa9676382f0585b992c424cd59df
-  RNGestureHandler: 8f09cd560f8d533eb36da5a6c5a843af9f056b38
-  RNReanimated: 955cf4068714003d2f1a6e2bae3fb1118f359aff
-  RNScreens: b5c0e1b2b04512919e78bd3898e144a157ce2363
+  RNGestureHandler: b6b359bb800ae399a9c8b27032bdbf7c18f08a08
+  RNReanimated: c2bb7438b57a3d987bb2e4e6e4bca94787e30b02
+  RNScreens: c526239bbe0e957b988dacc8d75ac94ec9cb19da
   RNSensors: 0c25e336a6302bc70870b15f190c6fdb014bf24c
-  RNSentry: ae1e005e4f2655775475445a9c49c1d343e8e3a7
+  RNSentry: 05192c14c02562eb7810d6ac3c227b68e76cfb9c
   RNSound: da030221e6ac7e8290c6b43f2b5f2133a8e225b0
   RNVectorIcons: da6fe858f5a65d7bbc3379540a889b0b12aa5976
   RNZipArchive: 94ade6cf137af264a1b50525b90a8b7d45266c87
