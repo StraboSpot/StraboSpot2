@@ -15,7 +15,7 @@ const ShortcutCompassModal = (props) => {
           component={<Compass onPress={props.onPress}/>}
           style={styles.compassContainer}
           close={props.close}
-          buttonTitleLeft={'Undo last'}
+          buttonTitleLeft={'Undo'}
           textStyle={{fontWeight: 'bold'}}
         />
       </View>
@@ -30,7 +30,7 @@ const ShortcutCompassModal = (props) => {
           close={props.close}
           onPress={props.onPress}
           // spotName={props.spotName}
-          buttonTitleLeft={'Undo last'}
+          buttonTitleLeft={'Undo'}
           textStyle={{fontWeight: 'bold'}}
           // bottom={props.bottom}
         >{props.children}</Modal>

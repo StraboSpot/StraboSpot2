@@ -15,7 +15,7 @@ const NotebookCompassModal = (props) => {
           component={<Compass onPress={props.onPress}/>}
           style={styles.compassContainer}
           close={props.close}
-          buttonTitleLeft={'Undo last'}
+          buttonTitleLeft={'Undo'}
           textStyle={{fontWeight: 'bold'}}
         />
       </View>
@@ -28,7 +28,7 @@ const NotebookCompassModal = (props) => {
           component={<RMCompass onPress={props.onPress}/>}
           style={styles.compassContainer}
           close={props.close}
-          buttonTitleLeft={'Undo last'}
+          buttonTitleLeft={'Undo'}
           textStyle={{fontWeight: 'bold'}}
         />
       </DragAnimation>

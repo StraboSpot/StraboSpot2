@@ -1,8 +1,8 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {Text, View} from 'react-native';
 
 import {Button} from 'react-native-elements';
-import {connect} from 'react-redux';
+import {connect, useSelector} from 'react-redux';
 
 import {Modals} from '../../../modules/home/home.constants';
 import {NotebookPages} from '../../../modules/notebook-panel/notebook.constants';
@@ -12,6 +12,44 @@ import IconButton from '../IconButton';
 import modalStyle from './modal.style';
 
 const Modal = (props) => {
+  const [modalTitle, setModalTitle] = useState('');
+  const modalVivible = useSelector(state => state.home.modalVisible);
+
+  useEffect(() => {
+    if (modalVivible === Modals.NOTEBOOK_MODALS.TAGS ||
+      modalVivible === Modals.SHORTCUT_MODALS.TAGS) setModalTitle('Tags');
+    if (modalVivible === Modals.NOTEBOOK_MODALS.COMPASS ||
+      modalVivible === Modals.SHORTCUT_MODALS.COMPASS) setModalTitle('Compass');
+    if (modalVivible === Modals.NOTEBOOK_MODALS.SAMPLE ||
+      modalVivible === Modals.SHORTCUT_MODALS.SAMPLE) setModalTitle('Sample');
+    if (modalVivible === Modals.SHORTCUT_MODALS.NOTES) setModalTitle('Notes');
+  }, []);
+
+  const renderModalHeader = () => {
+    return (
+      <View style={modalStyle.modalTop}>
+        <View style={{flex: 1, alignItems: 'flex-start'}}>
+          <Button
+            titleStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 16}}
+            title={props.buttonTitleLeft}
+            type={'clear'}
+            onPress={props.onPress}
+          />
+        </View>
+        <View>
+          <Text style={modalStyle.modalTitle}>{modalTitle}</Text>
+        </View>
+        <View style={{flex: 1, alignItems: 'flex-end'}}>
+          <Button
+            titleStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 16}}
+            title={'Close'}
+            type={'clear'}
+            onPress={() => props.close()}
+          />
+        </View>
+      </View>
+    );
+  };
 
   const renderModalBottom = () => {
     if (props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS && !isEmpty(props.spot)) {
@@ -62,21 +100,7 @@ const Modal = (props) => {
 
   return (
     <View style={modalStyle.modalContainer}>
-      <View style={modalStyle.modalTop}>
-        <Button
-          titleStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 16}}
-          title={props.buttonTitleLeft}
-          type={'clear'}
-          onPress={props.onPress}
-        />
-        <Text style={[modalStyle.textStyle, props.textStyle]}>{props.children}</Text>
-        <Button
-          titleStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 16}}
-          title={'Close'}
-          type={'clear'}
-          onPress={() => props.close()}
-        />
-      </View>
+      {renderModalHeader()}
       <View style={props.style}>
         {props.component}
       </View>
