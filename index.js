@@ -1,4 +1,4 @@
-import {AppRegistry, LogBox, YellowBox} from 'react-native';
+import {AppRegistry, LogBox} from 'react-native';
 
 import * as Sentry from '@sentry/react-native';
 
