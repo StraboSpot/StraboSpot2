@@ -80,9 +80,6 @@ const SignIn = (props) => {
         dispatch({type: ENCODED_LOGIN, value: encodedLogin});
         updateUserResponse(encodedLogin).then(() => {
           console.log(`${username} is successfully logged in!`);
-          // Sentry.configureScope((scope) => {
-          //   scope.setUser({'email': user.email})
-          // });
           props.navigation.navigate('HomeScreen');
         });
       }
