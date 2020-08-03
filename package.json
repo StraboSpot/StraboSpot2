@@ -23,7 +23,7 @@
     "@sentry/react-native": "^1.7.0",
     "@turf/turf": "^5.1.6",
     "formik": "^2.1.5",
-    "js-base64": "^3.4.1",
+    "js-base64": "^3.4.3",
     "lodash.isequal": "^4.5.0",
     "moment": "^2.27.0",
     "password-validator": "^5.0.3",
