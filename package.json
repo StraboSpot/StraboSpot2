@@ -20,7 +20,7 @@
     "@react-native-community/slider": "^3.0.3",
     "@react-native-mapbox-gl/maps": "^8.0.0",
     "@sentry/cli": "^1.55.1",
-    "@sentry/react-native": "^1.7.0",
+    "@sentry/react-native": "^1.7.1",
     "@turf/turf": "^5.1.6",
     "formik": "^2.1.5",
     "js-base64": "^3.4.3",
