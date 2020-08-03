@@ -70,7 +70,7 @@
     "@babel/runtime": "^7.11.0",
     "@react-native-community/eslint-config": "^2.0.0",
     "babel-jest": "^26.2.1",
-    "eslint": "^7.5.0",
+    "eslint": "^7.6.0",
     "eslint-plugin-import": "^2.22.0",
     "jest": "^26.2.1",
     "metro-react-native-babel-preset": "^0.61.0",
