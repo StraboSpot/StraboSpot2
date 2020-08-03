@@ -114,6 +114,7 @@ function Basemap(props) {
               tileUrlTemplates={[useMaps.buildTileUrl(customMap)]}>
               <MapboxGL.RasterLayer id={customMap.id + 'Layer'}
                                     sourceID={customMap.id}
+                                    belowLayerID={'pointLayerNotSelected' || 'pointLayerSelected'}
                                     style={{rasterOpacity: customMap.opacity}}/>
             </MapboxGL.RasterSource>;
         })}
