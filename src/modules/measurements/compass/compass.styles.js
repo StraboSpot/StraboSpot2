@@ -75,6 +75,7 @@ const styles = StyleSheet.create({
   },
   toggleButtonsRowContainer: {
     borderBottomWidth: 1,
+    paddingTop: 15,
   },
   trendLine: {
     height: 105,

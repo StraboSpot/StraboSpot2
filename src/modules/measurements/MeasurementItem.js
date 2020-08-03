@@ -83,7 +83,7 @@ const MeasurementItem = (props) => {
         chevron={{
           name: 'right',
           type: 'antdesign',
-          color: themes.PRIMARY_BACKGROUND_COLOR,
+          color: themes.SECONDARY_BACKGROUND_COLOR,
           size: 16,
         }}
       />

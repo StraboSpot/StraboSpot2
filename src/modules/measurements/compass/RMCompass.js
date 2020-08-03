@@ -19,6 +19,7 @@ import {connect, useSelector} from 'react-redux';
 
 import {getNewId, mod, roundToDecimalPlaces, isEmpty} from '../../../shared/Helpers';
 import * as themes from '../../../shared/styles.constants';
+import modalStyle from '../../../shared/ui/modal/modal.style';
 import Slider from '../../../shared/ui/Slider';
 import uiStyles from '../../../shared/ui/ui.styles';
 import {homeReducers, Modals} from '../../home/home.constants';
@@ -44,6 +45,7 @@ const ButtonClick = new Sound('ButtonClick.mp3', Sound.MAIN_BUNDLE, (error) => {
 const RNCompass = (props) => {
   let modalView = null;
   const [useMaps] = useMapsHook();
+  const modalVisible = useSelector(state => state.home.modalVisible);
   const [compassData, setCompassData] = useState({
     strike: null,
     dip: null,
@@ -107,7 +109,7 @@ const RNCompass = (props) => {
   };
 
   const grabMeasurements = async () => {
-    if (props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {
+    if (modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {
       const pointSetAtCurrentLocation = await useMaps.setPointAtCurrentLocation();
       console.log('pointSetAtCurrentLocation', pointSetAtCurrentLocation);
     }
@@ -140,12 +142,12 @@ const RNCompass = (props) => {
         newAssociatedOrientation.id = getNewId();
         newOrientation.associated_orientation = [newAssociatedOrientation];
       }
-      if (props.modalVisible === Modals.NOTEBOOK_MODALS.COMPASS) {
+      if (modalVisible === Modals.NOTEBOOK_MODALS.COMPASS) {
         const orientations = (typeof props.spot.properties.orientation_data === 'undefined')
           ? [newOrientation] : [...props.spot.properties.orientation_data, newOrientation];
         props.onSpotEdit('orientation_data', orientations);
       }
-      else if (props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {
+      else if (modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {
         props.onSpotEdit('orientation_data', [newOrientation]);
       }
       playSound();
@@ -302,7 +304,7 @@ const RNCompass = (props) => {
     );
   };
 
-  if (props.modalVisible === Modals.NOTEBOOK_MODALS.COMPASS) {
+  if (modalVisible === Modals.NOTEBOOK_MODALS.COMPASS) {
     if (!isEmpty(props.spot)) {
       modalView = <View>
         <Button
@@ -322,7 +324,7 @@ const RNCompass = (props) => {
       </View>;
     }
   }
-  else if (props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {
+  else if (modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {
     modalView =
       <React.Fragment>
         {/*<View style={height <= 1000 ? {height: 300, alignItems: 'center', justifyContent: 'center'} :*/}
@@ -334,12 +336,15 @@ const RNCompass = (props) => {
   }
 
   return (
-    <View style={{}}>
+    <View>
       <View style={{}}>
-        <View>
-          <Text style={{textAlign: 'center', fontSize: 12, fontWeight: 'bold'}}>x Spots Created </Text>
-          <Text style={{textAlign: 'center', fontSize: 12}}>Tap compass to record</Text>
-          <Text style={{textAlign: 'center', fontSize: 12}}> a measurement in a NEW SPOT</Text>
+        <View >
+          <View style={modalStyle.textContainer}>
+            {/*<Text style={{...modalStyle.textStyle, fontWeight: 'bold'}}>x Spots Created </Text>*/}
+            <Text style={modalStyle.textStyle}>Tap compass to record</Text>
+            {modalVisible === Modals.NOTEBOOK_MODALS.COMPASS ? <Text style={modalStyle.textStyle}> a measurement</Text> :
+              <Text style={modalStyle.textStyle}> a measurement in a NEW spot</Text>}
+          </View>
           {renderCompass()}
         </View>
         <View style={compassStyles.toggleButtonsRowContainer}>
@@ -362,7 +367,6 @@ const mapStateToProps = (state) => {
   return {
     spot: state.spot.selectedSpot,
     isNotebookPanelVisible: state.notebook.isNotebookPanelVisible,
-    modalVisible: state.home.modalVisible,
     deviceDimensions: state.home.deviceDimensions,
   };
 };
