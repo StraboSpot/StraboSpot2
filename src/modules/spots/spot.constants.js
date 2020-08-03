@@ -1,13 +1,13 @@
 export const generalKeysIcons = {
-  orientation_data: require('../../assets/icons/MeasurementButton.png'),
-  _3d_structures: require('../../assets/icons/3DstructureButton.png'),
-  notes: require('../../assets/icons/NoteButton.png'),
-  images: require('../../assets/icons/PhotoButton.png'),
-  samples: require('../../assets/icons/SampleButton.png'),
+  orientation_data: require('../../assets/icons/Measurement_transparent.png'),
+  _3d_structures: require('../../assets/icons/3DStructure_transparent.png'),
+  notes: require('../../assets/icons/Note_transparent.png'),
+  images: require('../../assets/icons/Photo_transparent.png'),
+  samples: require('../../assets/icons/Sample_transparent.png'),
   other_features: require('../../assets/icons/QuestionMark_pressed.png'),
   pet: require('../../assets/icons/QuestionMark_pressed.png'),
   fabrics: require('../../assets/icons/QuestionMark_pressed.png'),
-  tags: require('../../assets/icons/TagButton.png'),
+  tags: require('../../assets/icons/Tag_transparent.png'),
 };
 
 export const sedKeysIcons = {
