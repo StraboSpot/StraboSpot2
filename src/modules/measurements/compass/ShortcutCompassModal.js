@@ -12,12 +12,11 @@ const ShortcutCompassModal = (props) => {
     return (
       <View style={styles.modalPositionShortcutView}>
         <Modal
-          style={styles.compassContainer}
           close={props.close}
           buttonTitleLeft={'Undo'}
           textStyle={{fontWeight: 'bold'}}
         >
-          <Compass onPress={props.onPress}/>
+          <Compass/>
         </Modal>
       </View>
     );

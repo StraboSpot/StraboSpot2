@@ -12,7 +12,6 @@ const notebookSamplesModal = (props) => {
     return (
       <View style={styles.modalPosition}>
         <Modal
-          style={modalStyle.modalContainer}
           close={props.close}
           buttonTitleLeft={'Undo'}
           textStyle={{fontWeight: 'bold'}}
@@ -26,11 +25,9 @@ const notebookSamplesModal = (props) => {
     return (
       <DragAnimation style={styles.modalPosition}>
         <Modal
-          style={modalStyle.modalContainer}
           close={props.close}
           buttonTitleLeft={'Undo'}
           textStyle={{fontWeight: 'bold'}}
-          onPress={props.onPress}
         >
           <Samples onPress={props.onPress}/>
         </Modal>

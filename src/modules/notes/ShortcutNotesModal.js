@@ -11,12 +11,12 @@ const ShortcutNotesModal = (props) => {
     return (
       <View style={styles.modalPositionShortcutView}>
         <Modal
-          component={<Notes onPress={props.onPress}/>}
-          // style={home.compassContainer}
           close={props.close}
-          buttonTitleLeft={'Undo'}
+          onPress={props.onPress}
           textStyle={{fontWeight: 'bold'}}
-        />
+        >
+          <Notes/>
+        </Modal>
       </View>
     );
   }
@@ -24,15 +24,12 @@ const ShortcutNotesModal = (props) => {
     return (
       <DragAnimation style={styles.modalPositionShortcutView}>
         <Modal
-          component={<Notes />}
-          style={styles.compassContainer}
           close={props.close}
           onPress={props.onPress}
-          // spotName={props.spotName}
-          // buttonTitleLeft={'Undo'}
           textStyle={{fontWeight: 'bold'}}
-          // bottom={props.bottom}
-        >{props.children}</Modal>
+        >
+          <Notes />
+        </Modal>
       </DragAnimation>
     );
   }

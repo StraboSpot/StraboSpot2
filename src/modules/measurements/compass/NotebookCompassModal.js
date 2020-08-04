@@ -12,12 +12,12 @@ const NotebookCompassModal = (props) => {
     return (
       <View style={styles.modalPosition}>
         <Modal
-          style={styles.compassContainer}
           close={props.close}
           buttonTitleLeft={'Undo'}
           textStyle={{fontWeight: 'bold'}}
+          onPress={props.onPress}
         >
-          <Compass onPress={props.onPress}/>
+          <Compass/>
         </Modal>
       </View>
     );
@@ -26,12 +26,12 @@ const NotebookCompassModal = (props) => {
     return (
       <DragAnimation style={styles.modalPosition}>
         <Modal
-          style={styles.compassContainer}
           close={props.close}
           buttonTitleLeft={'Undo'}
           textStyle={{fontWeight: 'bold'}}
+          onPress={props.onPress}
         >
-          <RMCompass onPress={props.onPress}/>
+          <RMCompass/>
         </Modal>
       </DragAnimation>
     );

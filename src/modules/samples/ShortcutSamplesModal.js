@@ -13,9 +13,8 @@ const shortcutSamplesModal = (props) => {
         <Modal
           close={props.close}
           onPress={props.onPress}
-          style={styles.samplesContainer}
         >
-          <Samples onPress={props.onPress}/>
+          <Samples/>
         </Modal>
       </View>
     );
@@ -26,9 +25,8 @@ const shortcutSamplesModal = (props) => {
         <Modal
           close={props.close}
           onPress={props.onPress}
-          style={styles.samplesContainer}
         >
-          <Samples onPress={props.onPress}/>
+          <Samples/>
         </Modal>
       </DragAnimation>
     );
