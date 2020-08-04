@@ -122,14 +122,17 @@ const SamplesModalView = (props) => {
           />
         </View>
       </View>
-      <View style={{flex: 15, paddingBottom: 20, alignItems: 'center'}}>
-        <View style={{paddingTop: 20}}>
+      <View style={styles.sliderContainer}>
+        <View style={{paddingTop: 20, paddingBottom: 10}}>
           <Text style={styles.headingText}>Inplaceness of Sample: {inplaceness}</Text>
         </View>
         <Slider
-          sliderValue={inplaceness}
-          // setSliderValue={value => setInplaceness(value)}
           onSlidingComplete={value => setInplaceness(value)}
+          value={inplaceness}
+          step={1}
+          maximumValue={5}
+          minimumValue={1}
+          thumbTouchSize={{width: 50, height: 50}}
           leftText={'Float'}
           rightText={'In Place'}
         />

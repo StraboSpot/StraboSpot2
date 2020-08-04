@@ -56,6 +56,12 @@ const samplesStyle = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
+  sliderContainer: {
+    flex: 1,
+    padding: 10,
+    justifyContent: 'center',
+    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
+  },
   text: {
     fontSize: themes.PRIMARY_HEADER_TEXT_SIZE + 5,
   },
