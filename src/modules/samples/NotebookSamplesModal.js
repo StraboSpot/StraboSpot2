@@ -3,22 +3,22 @@ import {Platform, View} from 'react-native';
 
 import DragAnimation from '../../shared/ui/DragAmination';
 import Modal from '../../shared/ui/modal/Modal';
+import modalStyle from '../../shared/ui/modal/modal.style';
 import Samples from './Samples';
 import styles from './samples.style';
-// import Orientation from "react-native-orientation-locker";
 
 const notebookSamplesModal = (props) => {
   if (Platform.OS === 'android') {
-    // Orientation.lockToPortrait();
     return (
       <View style={styles.modalPosition}>
         <Modal
-          component={<Samples onPress={props.onPress}/>}
+          style={modalStyle.modalContainer}
           close={props.close}
-          buttonTitleLeft={'Cancel'}
-          onPress={props.cancel}
-          style={styles.samplesContainer}
-        />
+          buttonTitleLeft={'Undo'}
+          textStyle={{fontWeight: 'bold'}}
+        >
+          <Samples onPress={props.onPress}/>
+        </Modal>
       </View>
     );
   }
@@ -26,11 +26,14 @@ const notebookSamplesModal = (props) => {
     return (
       <DragAnimation style={styles.modalPosition}>
         <Modal
-          component={<Samples onPress={props.onPress}/>}
+          style={modalStyle.modalContainer}
           close={props.close}
-          onPress={props.cancel}
-          style={styles.samplesContainer}
-        />
+          buttonTitleLeft={'Undo'}
+          textStyle={{fontWeight: 'bold'}}
+          onPress={props.onPress}
+        >
+          <Samples onPress={props.onPress}/>
+        </Modal>
       </DragAnimation>
     );
   }

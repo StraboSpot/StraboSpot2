@@ -11,12 +11,12 @@ const shortcutSamplesModal = (props) => {
     return (
       <View style={styles.modalPositionShortcutView}>
         <Modal
-          component={<Samples onPress={props.onPress}/>}
-          style={styles.samplesContainer}
           close={props.close}
-          buttonTitleLeft={'Undo last'}
-          textStyle={{fontWeight: 'bold'}}
-        />
+          onPress={props.onPress}
+          style={styles.samplesContainer}
+        >
+          <Samples onPress={props.onPress}/>
+        </Modal>
       </View>
     );
   }
@@ -24,11 +24,12 @@ const shortcutSamplesModal = (props) => {
     return (
       <DragAnimation style={styles.modalPositionShortcutView}>
         <Modal
-          component={<Samples onPress={props.onPress}/>}
           close={props.close}
           onPress={props.onPress}
           style={styles.samplesContainer}
-        />
+        >
+          <Samples onPress={props.onPress}/>
+        </Modal>
       </DragAnimation>
     );
   }
