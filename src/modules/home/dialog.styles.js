@@ -28,6 +28,11 @@ const styles = StyleSheet.create({
     fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,
     fontWeight: 'bold',
   },
+  dialogLargerText: {
+    color: themes.PRIMARY_HEADER_TEXT_COLOR,
+    fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,
+    fontWeight: 'bold',
+  },
   dialogContent: {
     borderTopWidth: 1,
     borderColor: 'lightgrey',
@@ -35,7 +40,7 @@ const styles = StyleSheet.create({
 
   },
   dialogText: {
-    color: themes.PRIMARY_ACCENT_COLOR,
+    color: themes.PRIMARY_HEADER_TEXT_COLOR,
   },
 });
 

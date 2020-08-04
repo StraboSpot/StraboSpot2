@@ -27,6 +27,8 @@ const Map = React.forwardRef((props, ref) => {
   const currentBasemap = useSelector(state => state.map.currentBasemap);
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
+  const selectedSymbols = useSelector(state => state.map.symbolsDisplayed) || [];
+  const allSymbolsToggled = useSelector(state => state.map.allSymbolsToggled);
 
   // Data needing to be tracked when in editing mode
   const initialEditingModeData = {
@@ -106,9 +108,9 @@ const Map = React.forwardRef((props, ref) => {
   }, []);
 
   useEffect(() => {
-    console.log('Updating Spots, selected Spots, active datasets or basemap changed');
+    console.log('Updating Spots, selected Spots, active datasets, basemap or map symbols to display changed');
     setDisplayedSpots((isEmpty(props.selectedSpot) ? [] : [{...props.selectedSpot}]));
-  }, [props.spots, props.datasets, currentBasemap, currentImageBasemap]);
+  }, [props.spots, props.datasets, currentBasemap, currentImageBasemap, selectedSymbols, allSymbolsToggled]);
 
   useEffect(() => {
     // On change of selected spot, reset the zoomToSpot
@@ -123,7 +125,9 @@ const Map = React.forwardRef((props, ref) => {
       if (!currentImageBasemap) zoomToSpot();
     }
     //conditional call to avoid multiple renders during edit mode.
-    if (props.mapMode !== MapModes.EDIT) setDisplayedSpots((isEmpty(props.selectedSpot) ? [] : [{...props.selectedSpot}]));
+    if (props.mapMode !== MapModes.EDIT) {
+      setDisplayedSpots((isEmpty(props.selectedSpot) ? [] : [{...props.selectedSpot}]));
+    }
   }, [props.selectedSpot]);
 
   useEffect(() => {
@@ -405,12 +409,10 @@ const Map = React.forwardRef((props, ref) => {
         if (isEmpty(spotFound)) clearSelectedFeatureToEdit();
         else {
           let vertexSelected = await getDrawFeatureAtPress(screenPointX, screenPointY);
-          if (!isEmpty(vertexSelected)){
+          if (!isEmpty(vertexSelected)) {
             // When draw features identifies a vertex that is not on the spot found, mark it undefined so that,
             // we can calculate a vertex on the spot found that is closest to the press.
-            if (spotFound.properties.id !== vertexSelected.properties.id){
-             vertexSelected = undefined;
-            }
+            if (spotFound.properties.id !== vertexSelected.properties.id) vertexSelected = undefined;
           }
           if (isEmpty(vertexSelected)) {
             // draw features did not return anything.. generally a scenario of selecting a vertex on a spot press.
@@ -564,7 +566,7 @@ const Map = React.forwardRef((props, ref) => {
         // on the actual polygon or linestring.
         else {
           var indexOfCoordinatesToUpdate = getVertexIndexInSpotToEdit(editingModeData.vertexToEdit);
-          if (!isEmpty(indexOfCoordinatesToUpdate)){
+          if (!isEmpty(indexOfCoordinatesToUpdate)) {
             if (indexOfCoordinatesToUpdate.includes(0)) {
               setEditingModeData(d => ({
                 ...d,

@@ -25,6 +25,8 @@ const useMaps = () => {
   const dispatch = useDispatch();
   const project = useSelector(state => state.project.project);
   const settingsPanel = useSelector(state => state.home.isSettingsPanelVisible);
+  const selectedSymbols = useSelector(state => state.map.symbolsDisplayed) || [];
+  const allSymbolsToggled = useSelector(state => state.map.allSymbolsToggled);
 
   useEffect(() => {
     console.log('Settings Panel', settingsPanel);
@@ -183,7 +185,16 @@ const useMaps = () => {
       else mappedFeatures.push(JSON.parse(JSON.stringify(spot)));
     });
 
-    // Separate selected Spots and not selected Spots (Point Spots need to in both
+    // Filter out symbols not being displayed as set in the Map Symbols Switcher
+    if (!allSymbolsToggled) {
+      displayedSpots = displayedSpots.filter(spot => spot.properties.orientation_data &&
+        !isEmpty(spot.properties.orientation_data.filter(
+          orientation => orientation.feature_type && selectedSymbols.includes(orientation.feature_type))));
+      mappedFeatures = mappedFeatures.filter(spot => spot.properties.orientation &&
+        spot.properties.orientation.feature_type && selectedSymbols.includes(spot.properties.orientation.feature_type));
+    }
+
+    // Separate selected Spots and not selected Spots (Point Spots need to be in both
     // selected and not selected since the selected symbology is a halo around the point)
     const selectedIds = selectedSpots.map(sel => sel.properties.id);
     const selectedDisplayedSpots = displayedSpots.filter(spot => selectedIds.includes(spot.properties.id));

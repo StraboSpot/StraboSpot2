@@ -1,5 +1,5 @@
 import {redux} from '../../shared/app.constants';
-import {mapReducers} from './maps.constants';
+import {mapReducers, mapSymbolsSwitcher} from './maps.constants';
 
 const initialState = {
   currentBasemap: undefined,
@@ -10,6 +10,8 @@ const initialState = {
   vertexStartCoords: undefined,
   vertexEndCoords: undefined,
   spotsInMapExtent: [],
+  symbolsDisplayed: mapSymbolsSwitcher.map(symbolEntry => symbolEntry.key),
+  allSymbolsToggled: true,
 };
 
 export const mapReducer = (state = initialState, action) => {
@@ -89,6 +91,18 @@ export const mapReducer = (state = initialState, action) => {
       return {
         ...state,
         spotsInMapExtent: action.spots,
+      };
+    case mapReducers.SET_SYMBOLS_DISPLAYED:
+      console.log('Map Symbols Displayed', action.symbols);
+      return {
+        ...state,
+        symbolsDisplayed: action.symbols,
+      };
+    case mapReducers.SET_ALL_SYMBOLS_TOGGLED:
+      console.log('Map All Symbols Toggled', action.toggled);
+      return {
+        ...state,
+        allSymbolsToggled: action.toggled,
       };
     case redux.CLEAR_STORE:
       return {

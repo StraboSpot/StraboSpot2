@@ -35,7 +35,9 @@ export const mapReducers = {
   VERTEX_START_COORDS: 'VERTEX_START_COORDS',
   VERTEX_END_COORDS: 'VERTEX_END_COORDS',
   CLEAR_VERTEXES: 'CLEAR_VERTEXES',
-  SET_SPOTS_IN_MAP_EXTENT:'SET_SPOTS_IN_MAP_EXTENT',
+  SET_SPOTS_IN_MAP_EXTENT: 'SET_SPOTS_IN_MAP_EXTENT',
+  SET_SYMBOLS_DISPLAYED: 'SET_SYMBOLS_DISPLAYED',
+  SET_ALL_SYMBOLS_TOGGLED: 'SET_ALL_SYMBOLS_TOGGLED',
 };
 
 const defaultMaps = [
@@ -170,3 +172,11 @@ export const symbols = {
   // 'intersection': require('../../assets/symbols/intersection.png'),
   'lineation_general': require('../../assets/symbols/lineation_general.png'),
 };
+
+export const mapSymbolsSwitcher = [
+  {title: 'Foliations', key: 'foliation'},
+  {title: 'Beddings', key: 'bedding'},
+  {title: 'Faults', key: 'fault'},
+  {title: 'Fold Hinges', key: 'fold_hinge'},
+  {title: 'Fractures', key: 'fracture'},
+];
