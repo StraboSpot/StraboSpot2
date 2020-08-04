@@ -94,6 +94,7 @@ const Home = (props) => {
   const isSidePanelVisible = useSelector(state => state.settingsPanel.isSidePanelVisible);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const sidePanelView = useSelector(state => state.settingsPanel.sidePanelView);
+  const isAllSymbolsOn = useSelector(state => state.map.isAllSymbolsOn);
 
   // const imagesCount = useSelector(state => state.home.imageProgress.imagesDownloadedCount);
   // const imagesNeeded = useSelector(state => state.home.imageProgress.neededImageIds);
@@ -891,10 +892,15 @@ const Home = (props) => {
           source={require('../../assets/icons/MapActionsButton.png')}
           onPress={() => toggleDialog('mapActionsMenuVisible')}
         />
-        <IconButton
-          source={require('../../assets/icons/SymbolsButton.png')}
-          onPress={() => toggleDialog('mapSymbolsMenuVisible')}
-        />
+        {isAllSymbolsOn ?
+          <IconButton
+            source={require('../../assets/icons/SymbolsButton.png')}
+            onPress={() => toggleDialog('mapSymbolsMenuVisible')}
+          /> :
+          <IconButton
+            source={require('../../assets/icons/SymbolsButton_pressed.png')}
+            onPress={() => toggleDialog('mapSymbolsMenuVisible')}
+          />}
         {!props.currentImageBasemap && <IconButton
           source={require('../../assets/icons/layersButton.png')}
           onPress={() => toggleDialog('baseMapMenuVisible')}

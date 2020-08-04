@@ -86,7 +86,10 @@ const NotebookPanel = props => {
       );
     };
 
-    const recentlyViewedSpots = recentlyViewedSpotIds.map(spotId => spots[spotId]);
+    const recentlyViewedSpots = recentlyViewedSpotIds.reduce((obj, key) => {
+      if (spots && spots.hasOwnProperty(key)) obj.push(spots[key]);
+      return obj;
+    }, []);
     return (
       <View style={notebookStyles.panel}>
         <Text style={{...commonStyles.noContentText, textAlign: 'center', paddingTop: 40}}>No Spot Currently
