@@ -25,8 +25,8 @@ const useMaps = () => {
   const dispatch = useDispatch();
   const project = useSelector(state => state.project.project);
   const settingsPanel = useSelector(state => state.home.isSettingsPanelVisible);
-  const selectedSymbols = useSelector(state => state.map.symbolsDisplayed) || [];
-  const allSymbolsToggled = useSelector(state => state.map.allSymbolsToggled);
+  const selectedSymbols = useSelector(state => state.map.symbolsOn) || [];
+  const isAllSymbolsOn = useSelector(state => state.map.isAllSymbolsOn);
 
   useEffect(() => {
     console.log('Settings Panel', settingsPanel);
@@ -186,7 +186,7 @@ const useMaps = () => {
     });
 
     // Filter out symbols not being displayed as set in the Map Symbols Switcher
-    if (!allSymbolsToggled) {
+    if (!isAllSymbolsOn) {
       displayedSpots = displayedSpots.filter(spot => spot.properties.orientation_data &&
         !isEmpty(spot.properties.orientation_data.filter(
           orientation => orientation.feature_type && selectedSymbols.includes(orientation.feature_type))));

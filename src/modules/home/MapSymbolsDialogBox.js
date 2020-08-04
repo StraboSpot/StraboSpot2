@@ -14,26 +14,20 @@ const scaleAnimation = new ScaleAnimation({
 
 const MapSymbolsDialog = (props) => {
   const dispatch = useDispatch();
-  const selectedSymbols = useSelector(state => state.map.symbolsDisplayed) || [];
-  const allSymbolsToggled = useSelector(state => state.map.allSymbolsToggled);
+  const symbolsOn = useSelector(state => state.map.symbolsOn) || [];
+  const isAllSymbolsOn = useSelector(state => state.map.isAllSymbolsOn);
   const symbolKeys = mapSymbolsSwitcher.map(symbolEntry => symbolEntry.key);
 
-  const toggleAllSymbols = () => {
-    console.log('All Symbols Toggled');
-    dispatch({type: mapReducers.SET_ALL_SYMBOLS_TOGGLED, toggled: !allSymbolsToggled});
-    dispatch({type: mapReducers.SET_SYMBOLS_DISPLAYED, symbols: symbolKeys});
+  const toggleAllSymbolsOn = () => {
+    dispatch({type: mapReducers.SET_ALL_SYMBOLS_TOGGLED, toggled: !isAllSymbolsOn});
   };
 
   const toggleSymbolSelected = (symbol) => {
-    let selectedSymbolsCopy = [...selectedSymbols];
-    const i = selectedSymbolsCopy.indexOf(symbol);
-    if (i === -1) selectedSymbolsCopy.push(symbol);
-    else selectedSymbolsCopy.splice(i, 1);
-    dispatch({type: mapReducers.SET_SYMBOLS_DISPLAYED, symbols: selectedSymbolsCopy});
-    if (selectedSymbolsCopy.length === symbolKeys.length) {
-      dispatch({type: mapReducers.SET_ALL_SYMBOLS_TOGGLED, toggled: true});
-    }
-    else dispatch({type: mapReducers.SET_ALL_SYMBOLS_TOGGLED, toggled: false});
+    let symbolsOnCopy = [...symbolsOn];
+    const i = symbolsOnCopy.indexOf(symbol);
+    if (i === -1) symbolsOnCopy.push(symbol);
+    else symbolsOnCopy.splice(i, 1);
+    dispatch({type: mapReducers.SET_SYMBOLS_DISPLAYED, symbols: symbolsOnCopy});
   };
 
   return (
@@ -59,7 +53,7 @@ const MapSymbolsDialog = (props) => {
             titleStyle={dialogStyles.dialogText}
             switch={{
               onChange: () => toggleSymbolSelected(switcherEntry.key),
-              value: selectedSymbols.includes(switcherEntry.key),
+              value: symbolsOn.includes(switcherEntry.key),
             }}
           />;
         })}
@@ -68,7 +62,7 @@ const MapSymbolsDialog = (props) => {
           title='All Symbols'
           containerStyle={{...dialogStyles.dialogContent, paddingTop: 40}}
           titleStyle={dialogStyles.dialogLargerText}
-          switch={{onChange: () => toggleAllSymbols(), value: allSymbolsToggled}}
+          switch={{onChange: () => toggleAllSymbolsOn(), value: isAllSymbolsOn}}
         />
       </DialogContent>
     </Dialog>

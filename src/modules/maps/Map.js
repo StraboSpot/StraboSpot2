@@ -27,8 +27,8 @@ const Map = React.forwardRef((props, ref) => {
   const currentBasemap = useSelector(state => state.map.currentBasemap);
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
-  const selectedSymbols = useSelector(state => state.map.symbolsDisplayed) || [];
-  const allSymbolsToggled = useSelector(state => state.map.allSymbolsToggled);
+  const selectedSymbols = useSelector(state => state.map.symbolsOn) || [];
+  const isAllSymbolsOn = useSelector(state => state.map.isAllSymbolsOn);
 
   // Data needing to be tracked when in editing mode
   const initialEditingModeData = {
@@ -110,7 +110,7 @@ const Map = React.forwardRef((props, ref) => {
   useEffect(() => {
     console.log('Updating Spots, selected Spots, active datasets, basemap or map symbols to display changed');
     setDisplayedSpots((isEmpty(props.selectedSpot) ? [] : [{...props.selectedSpot}]));
-  }, [props.spots, props.datasets, currentBasemap, currentImageBasemap, selectedSymbols, allSymbolsToggled]);
+  }, [props.spots, props.datasets, currentBasemap, currentImageBasemap, selectedSymbols, isAllSymbolsOn]);
 
   useEffect(() => {
     // On change of selected spot, reset the zoomToSpot

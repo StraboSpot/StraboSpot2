@@ -1,6 +1,7 @@
 import {redux} from '../../shared/app.constants';
 import {mapReducers, mapSymbolsSwitcher} from './maps.constants';
 
+const symbolKeys = mapSymbolsSwitcher.map(symbolEntry => symbolEntry.key);
 const initialState = {
   currentBasemap: undefined,
   currentImageBasemap: undefined,
@@ -10,8 +11,8 @@ const initialState = {
   vertexStartCoords: undefined,
   vertexEndCoords: undefined,
   spotsInMapExtent: [],
-  symbolsDisplayed: mapSymbolsSwitcher.map(symbolEntry => symbolEntry.key),
-  allSymbolsToggled: true,
+  symbolsOn: symbolKeys,
+  isAllSymbolsOn: true,
 };
 
 export const mapReducer = (state = initialState, action) => {
@@ -96,13 +97,15 @@ export const mapReducer = (state = initialState, action) => {
       console.log('Map Symbols Displayed', action.symbols);
       return {
         ...state,
-        symbolsDisplayed: action.symbols,
+        symbolsOn: action.symbols,
+        isAllSymbolsOn: action.symbols.length < symbolKeys.length ? false : state.isAllSymbolsOn,
       };
     case mapReducers.SET_ALL_SYMBOLS_TOGGLED:
       console.log('Map All Symbols Toggled', action.toggled);
       return {
         ...state,
-        allSymbolsToggled: action.toggled,
+        isAllSymbolsOn: action.toggled,
+        symbolsOn: action.toggled ? symbolKeys : state.symbolsOn,
       };
     case redux.CLEAR_STORE:
       return {
