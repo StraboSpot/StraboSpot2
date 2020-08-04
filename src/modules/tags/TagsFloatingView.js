@@ -3,12 +3,12 @@ import {Platform, View} from 'react-native';
 
 import {useSelector} from 'react-redux';
 
+import {isEmpty} from '../../shared/Helpers';
 import DragAnimation from '../../shared/ui/DragAmination';
 import Modal from '../../shared/ui/modal/Modal';
 import {Modals} from '../home/home.constants';
-import styles from '../measurements/compass/compass.styles';
+import compassStyles from '../measurements/compass/compass.styles';
 import {Tags, TagsModal} from '../tags';
-import {isEmpty} from '../../shared/Helpers';
 
 const TagsFloatingView = (props) => {
 
@@ -18,10 +18,10 @@ const TagsFloatingView = (props) => {
   if (modalVisible === Modals.NOTEBOOK_MODALS.TAGS && !isEmpty(tags)) {
     if (Platform.OS === 'android') {
       return (
-        <View style={styles.modalPosition}>
+        <View style={compassStyles.modalPosition}>
           <Modal
             component={<TagsModal onPress={props.onPress}/>}
-            style={styles.compassContainer}
+            style={compassStyles.compassContainer}
             close={props.close}
             buttonTitleLeft={'Undo last'}
             textStyle={{fontWeight: 'bold'}}
@@ -31,10 +31,10 @@ const TagsFloatingView = (props) => {
     }
     else {
       return (
-        <DragAnimation style={styles.modalPosition}>
+        <DragAnimation style={compassStyles.modalPosition}>
           <Modal
             component={<TagsModal onPress={props.onPress}/>}
-            style={styles.compassContainer}
+            style={compassStyles.compassContainer}
             close={props.close}
             buttonTitleLeft={'Cancel'}
             textStyle={{fontWeight: 'bold'}}
@@ -46,10 +46,10 @@ const TagsFloatingView = (props) => {
   else {
     if (Platform.OS === 'android') {
       return (
-        <View style={styles.modalPositionShortcutView}>
+        <View style={compassStyles.modalPositionShortcutView}>
           <Modal
             component={<Tags onPress={props.onPress}/>}
-            style={styles.compassContainer}
+            style={compassStyles.compassContainer}
             close={props.close}
             buttonTitleLeft={'Undo last'}
             textStyle={{fontWeight: 'bold'}}
@@ -59,10 +59,10 @@ const TagsFloatingView = (props) => {
     }
     else {
       return (
-        <DragAnimation style={styles.modalPositionShortcutView}>
+        <DragAnimation style={compassStyles.modalPositionShortcutView}>
           <Modal
             component={<Tags onPress={props.onPress}/>}
-            style={styles.compassContainer}
+            style={compassStyles.compassContainer}
             close={props.close}
             buttonTitleLeft={'Cancel'}
             textStyle={{fontWeight: 'bold'}}

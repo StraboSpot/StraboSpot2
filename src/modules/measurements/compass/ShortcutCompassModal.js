@@ -4,13 +4,13 @@ import {View, Platform} from 'react-native';
 import DragAnimation from '../../../shared/ui/DragAmination';
 import Modal from '../../../shared/ui/modal/Modal';
 import Compass from './Compass';
-import styles from './compass.styles';
+import compassStyles from './compass.styles';
 import RMCompass from './RMCompass';
 
 const ShortcutCompassModal = (props) => {
   if (Platform.OS === 'android') {
     return (
-      <View style={styles.modalPositionShortcutView}>
+      <View style={compassStyles.modalPositionShortcutView}>
         <Modal
           close={props.close}
           buttonTitleLeft={'Undo'}
@@ -23,7 +23,7 @@ const ShortcutCompassModal = (props) => {
   }
   else {
     return (
-      <DragAnimation style={styles.modalPositionShortcutView}>
+      <DragAnimation style={compassStyles.modalPositionShortcutView}>
         <Modal
           close={props.close}
           onPress={props.onPress}

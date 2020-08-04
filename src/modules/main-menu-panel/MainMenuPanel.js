@@ -10,6 +10,7 @@ import CustomMapsMenu from '../maps/custom-maps/ManageCustomMaps';
 import ImageBaseMaps from '../maps/ImageBasemaps';
 import ManageOfflineMapsMenu from '../maps/offline-maps/ManageOfflineMaps';
 import {NotebookPages} from '../notebook-panel/notebook.constants';
+import ShortcutMenu from '../preferences/shortcuts-menu/ShortcutsMenu';
 import ActiveProject from '../project/ActiveProjectPanel';
 import MyStraboSpot from '../project/MyStraboSpot';
 import ProjectList from '../project/ProjectList';
@@ -23,7 +24,6 @@ import {settingPanelReducers} from './mainMenuPanel.constants';
 import styles from './mainMenuPanel.styles';
 import MainMenuPanelHeader from './MainMenuPanelHeader';
 import MainMenuPanelList from './MainMenuPanelList';
-import ShortcutMenu from './shortcuts-menu/ShortcutsMenu';
 
 const MainMenuPanel = props => {
   let buttonTitle = null;

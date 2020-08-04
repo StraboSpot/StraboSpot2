@@ -4,7 +4,6 @@ import {Animated, Easing, Alert, Image, View, Text, TouchableOpacity} from 'reac
 import {Button, ListItem} from 'react-native-elements';
 import {setUpdateIntervalForType, SensorTypes, accelerometer} from 'react-native-sensors';
 import RNSimpleCompass from 'react-native-simple-compass';
-import {Switch} from 'react-native-switch';
 import {connect} from 'react-redux';
 
 import commonStyles from '../../../shared/common.styles';
@@ -17,8 +16,8 @@ import {homeReducers, Modals} from '../../home/home.constants';
 import {NotebookPages, notebookReducers} from '../../notebook-panel/notebook.constants';
 import {spotReducers} from '../../spots/spot.constants';
 import Measurements from '../Measurements';
-import {CompassToggleButtons} from './compass.constants';
-import styles from './compass.styles';
+import {COMPASS_TOGGLE_BUTTONS} from './compass.constants';
+import compassStyles from './compass.styles';
 
 const Sound = require('react-native-sound');
 
@@ -95,7 +94,7 @@ class Compass extends Component {
 
   grabMeasurements = () => {
     let measurements = [];
-    if (this.state.toggles.includes(CompassToggleButtons.PLANAR)) {
+    if (this.state.toggles.includes(COMPASS_TOGGLE_BUTTONS.PLANAR)) {
       measurements.push({
         strike: this.state.compassData.strike,
         dip_direction: this.state.compassData.dipdir,
@@ -104,7 +103,7 @@ class Compass extends Component {
         quality: this.state.sliderValue.toString(),
       });
     }
-    if (this.state.toggles.includes(CompassToggleButtons.LINEAR)) {
+    if (this.state.toggles.includes(COMPASS_TOGGLE_BUTTONS.LINEAR)) {
       measurements.push({
         trend: this.state.compassData.trend,
         plunge: this.state.compassData.plunge,
@@ -295,7 +294,7 @@ class Compass extends Component {
   // Render the compass
   renderCompass = () => {
     return (
-      <TouchableOpacity style={styles.compassImageContainer} onPress={() => this.grabMeasurements()}>
+      <TouchableOpacity style={compassStyles.compassImageContainer} onPress={() => this.grabMeasurements()}>
         <Image source={require('../../../assets/images/compass/compass.png')}
                style={{
                  marginTop: 25,
@@ -311,8 +310,8 @@ class Compass extends Component {
   };
 
   renderCompassSymbols = () => {
-    const linearInToggleOn = this.state.toggles.includes(CompassToggleButtons.LINEAR);
-    const plannerInToggleOn = this.state.toggles.includes(CompassToggleButtons.PLANAR);
+    const linearInToggleOn = this.state.toggles.includes(COMPASS_TOGGLE_BUTTONS.LINEAR);
+    const plannerInToggleOn = this.state.toggles.includes(COMPASS_TOGGLE_BUTTONS.PLANAR);
 
     if (linearInToggleOn && plannerInToggleOn && this.state.compassData.trend !== null && this.state.compassData.strike !== null) {
       return (
@@ -332,7 +331,7 @@ class Compass extends Component {
   // Render magnetometer heading, x, y, z from accelerometer and calculated measurements
   renderMeasurements = () => {
     return (
-      <View style={styles.measurementsContainer}>
+      <View style={compassStyles.measurementsContainer}>
         <Text>x: {this.state.accelerometer.x}</Text>
         <Text>y: {this.state.accelerometer.y}</Text>
         <Text>z: {this.state.accelerometer.z}</Text>
@@ -366,7 +365,7 @@ class Compass extends Component {
         key={image}
         source={image}
         style={
-          [styles.strikeAndDipLine,
+          [compassStyles.strikeAndDipLine,
             {transform: [{rotate: spin}]},
           ]}/>
     );
@@ -394,7 +393,7 @@ class Compass extends Component {
         key={image}
         source={image}
         style={
-          [styles.trendLine,
+          [compassStyles.trendLine,
             {transform: [{rotate: spin}]},
           ]}/>
     );
@@ -402,33 +401,15 @@ class Compass extends Component {
 
   renderToggles = () => {
     return (
-      Object.keys(CompassToggleButtons).map((key, i) => (
+      Object.entries(COMPASS_TOGGLE_BUTTONS).map(([key, value], i) => (
         <ListItem
-          containerStyle={styles.toggleButtonsContainer}
+          containerStyle={compassStyles.toggleButtonsContainer}
           key={key}
-          title={
-            <View style={styles.itemContainer}>
-              <Text style={styles.itemTextStyle}>{CompassToggleButtons[key]}</Text>
-              <View style={styles.switchContainer}>
-                <Switch
-                  style={styles.switch}
-                  value={this.state.toggles.includes(CompassToggleButtons[key])}
-                  onValueChange={(val) => this.toggleSwitch(CompassToggleButtons[key])}
-                  circleSize={25}
-                  barHeight={20}
-                  circleBorderWidth={3}
-                  backgroundActive={'#407ad9'}
-                  backgroundInactive={'gray'}
-                  circleActiveColor={'#000000'}
-                  circleInActiveColor={'#000000'}
-                  changeValueImmediately={true} // if rendering inside circle, change state immediately or wait for animation to complete
-                  innerCircleStyle={{
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }} // style for inner animated circle for what you (may) be rendering inside the circle
-                />
-              </View>
-            </View>}
+          title={value}
+          switch={{
+            onChange: () => this.toggleSwitch(value),
+            value: this.state.toggles.includes(value),
+          }}
         />
       ))
     );
@@ -496,20 +477,20 @@ class Compass extends Component {
     }
 
     if (isEmpty(this.props.spot)) {
-      return <View style={[styles.samplesContainer, commonStyles.noContentContainer]}>
+      return <View style={[compassStyles.samplesContainer, commonStyles.noContentContainer]}>
         <Text style={commonStyles.noContentText}>No Spot Selected</Text>
       </View>;
     }
     return (
       <View style={{flex: 1}}>
         <Text style={{textAlign: 'center'}}>Tap compass to take a measurement</Text>
-        <View style={styles.renderCompassContainer}>
+        <View style={compassStyles.renderCompassContainer}>
           {this.renderCompass()}
         </View>
-        <View style={styles.toggleButtonsRowContainer}>
+        <View style={compassStyles.toggleButtonsRowContainer}>
           {this.renderToggles()}
         </View>
-        <View style={styles.sliderContainer}>
+        <View style={compassStyles.sliderContainer}>
           <Slider
             setSliderValue={(value) => this.setState({sliderValue: value})}
             sliderValue={this.state.sliderValue}
@@ -517,7 +498,7 @@ class Compass extends Component {
             rightText={'High Quality'}
           />
         </View>
-        <View style={styles.buttonContainer}>
+        <View style={compassStyles.buttonContainer}>
           {modalView}
           {this.state.showDataModal ? dataModal : null}
         </View>

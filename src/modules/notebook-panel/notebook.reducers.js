@@ -1,13 +1,13 @@
 import {redux} from '../../shared/app.constants';
 import {isEmpty} from '../../shared/Helpers';
-import {CompassToggleButtons} from '../measurements/compass/compass.constants';
+import {COMPASS_TOGGLE_BUTTONS} from '../measurements/compass/compass.constants';
 import {notebookReducers} from './notebook.constants';
 
 const initialState = {
   visibleNotebookPagesStack: [],
   isNotebookPanelVisible: false,
   isSamplesModalVisible: false,
-  compassMeasurementTypes: [CompassToggleButtons.PLANAR],
+  compassMeasurementTypes: [COMPASS_TOGGLE_BUTTONS.PLANAR],
 };
 
 export const notebookReducer = (state = initialState, action) => {

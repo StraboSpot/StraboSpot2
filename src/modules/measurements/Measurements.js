@@ -10,7 +10,7 @@ import {homeReducers, Modals} from '../home/home.constants';
 import {NotebookPages, notebookReducers} from '../notebook-panel/notebook.constants';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import {spotReducers} from '../spots/spot.constants';
-import {CompassToggleButtons} from './compass/compass.constants';
+import {COMPASS_TOGGLE_BUTTONS} from './compass/compass.constants';
 import MeasurementItem from './MeasurementItem';
 import styles from './measurements.styles';
 
@@ -29,9 +29,9 @@ const MeasurementsPage = (props) => {
     props.setModalVisible(Modals.NOTEBOOK_MODALS.COMPASS);
 
     let types = [];
-    if (sectionType === sectionTypes.PLANAR) types = [CompassToggleButtons.PLANAR];
-    else if (sectionType === sectionTypes.LINEAR) types = [CompassToggleButtons.LINEAR];
-    else types = [CompassToggleButtons.PLANAR, CompassToggleButtons.LINEAR];
+    if (sectionType === sectionTypes.PLANAR) types = [COMPASS_TOGGLE_BUTTONS.PLANAR];
+    else if (sectionType === sectionTypes.LINEAR) types = [COMPASS_TOGGLE_BUTTONS.LINEAR];
+    else types = [COMPASS_TOGGLE_BUTTONS.PLANAR, COMPASS_TOGGLE_BUTTONS.LINEAR];
     dispatch({type: notebookReducers.SET_COMPASS_MEASUREMENT_TYPES, value: types});
   };
 

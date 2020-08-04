@@ -1,7 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {
   Animated,
-  Switch,
   Easing,
   Alert,
   Image,
@@ -26,7 +25,7 @@ import {homeReducers, Modals} from '../../home/home.constants';
 import useMapsHook from '../../maps/useMaps';
 import {NotebookPages, notebookReducers} from '../../notebook-panel/notebook.constants';
 import {spotReducers} from '../../spots/spot.constants';
-import {CompassToggleButtons} from './compass.constants';
+import {COMPASS_TOGGLE_BUTTONS} from './compass.constants';
 import compassStyles from './compass.styles';
 
 const Sound = require('react-native-sound');
@@ -114,7 +113,7 @@ const RNCompass = (props) => {
       console.log('pointSetAtCurrentLocation', pointSetAtCurrentLocation);
     }
     let measurements = [];
-    if (toggles.includes(CompassToggleButtons.PLANAR)) {
+    if (toggles.includes(COMPASS_TOGGLE_BUTTONS.PLANAR)) {
       measurements.push({
         strike: compassData.strike,
         // dip_direction: compassData.dipdir,
@@ -123,7 +122,7 @@ const RNCompass = (props) => {
         quality: sliderValue.toString(),
       });
     }
-    if (toggles.includes(CompassToggleButtons.LINEAR)) {
+    if (toggles.includes(COMPASS_TOGGLE_BUTTONS.LINEAR)) {
       measurements.push({
         trend: compassData.trend,
         plunge: compassData.plunge,
@@ -170,8 +169,8 @@ const RNCompass = (props) => {
 
   const renderCompassSymbols = () => {
     // console.log('Strike', compassData.strike + '\n' + 'Trend', compassData.trend);
-    const linearInToggleOn = toggles.includes(CompassToggleButtons.LINEAR);
-    const plannerInToggleOn = toggles.includes(CompassToggleButtons.PLANAR);
+    const linearInToggleOn = toggles.includes(COMPASS_TOGGLE_BUTTONS.LINEAR);
+    const plannerInToggleOn = toggles.includes(COMPASS_TOGGLE_BUTTONS.PLANAR);
 
     if (linearInToggleOn && plannerInToggleOn && compassData.trend !== null && compassData.strike !== null) {
       return (
@@ -246,23 +245,14 @@ const RNCompass = (props) => {
 
   const renderToggles = () => {
     return (
-      Object.keys(CompassToggleButtons).map((key) => (
+      Object.entries(COMPASS_TOGGLE_BUTTONS).map(([key, value], i) => (
         <ListItem
-          containerStyle={compassStyles.toggleButtonsContainer}
           key={key}
-          title={
-            <View style={compassStyles.itemContainer}>
-              <Text style={compassStyles.itemTextStyle}>{CompassToggleButtons[key]}</Text>
-              <View style={compassStyles.switchContainer}>
-                <Switch
-                  // style={home.switch}
-                  trackColor={{false: themes.SECONDARY_BACKGROUND_COLOR, true: 'green'}}
-                  // ios_backgroundColor={'lightgrey'}
-                  onValueChange={() => toggleSwitch(CompassToggleButtons[key])}
-                  value={toggles.includes(CompassToggleButtons[key])}
-                />
-              </View>
-            </View>}
+          title={value}
+          switch={{
+            onChange: () => toggleSwitch(value),
+            value: toggles.includes(value),
+          }}
         />
       ))
     );
@@ -342,7 +332,8 @@ const RNCompass = (props) => {
           <View style={modalStyle.textContainer}>
             {/*<Text style={{...modalStyle.textStyle, fontWeight: 'bold'}}>x Spots Created </Text>*/}
             <Text style={modalStyle.textStyle}>Tap compass to record</Text>
-            {modalVisible === Modals.NOTEBOOK_MODALS.COMPASS ? <Text style={modalStyle.textStyle}> a measurement</Text> :
+            {modalVisible === Modals.NOTEBOOK_MODALS.COMPASS ?
+              <Text style={modalStyle.textStyle}> a measurement</Text> :
               <Text style={modalStyle.textStyle}> a measurement in a NEW spot</Text>}
           </View>
           {renderCompass()}

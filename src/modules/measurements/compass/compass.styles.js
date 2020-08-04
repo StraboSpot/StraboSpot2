@@ -24,21 +24,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  itemContainer: {
-    width: '90%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingLeft: 15,
-  },
-  itemTextStyle: {
-    fontSize: 14,
-    marginLeft: 10,
-  },
-  compassContentContainer: {
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-  },
   sliderContainer: {
     flex: 1,
     padding: 10,
@@ -54,13 +39,6 @@ const styles = StyleSheet.create({
     color: themes.SECONDARY_ITEM_TEXT_COLOR,
     fontSize: 16,
   },
-  switchContainer: {
-    flex: 1,
-    alignItems: 'flex-end',
-  },
-  switch: {
-    justifyContent: 'flex-end',
-  },
   strikeAndDipLine: {
     zIndex: 10,
     height: 125,
@@ -68,9 +46,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 40,
     resizeMode: 'contain',
-  },
-  toggleButtonsContainer: {
-    padding: 10,
   },
   trendLine: {
     height: 105,
