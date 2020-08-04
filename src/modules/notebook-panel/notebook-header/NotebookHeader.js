@@ -24,7 +24,7 @@ const NotebookHeader = props => {
         let lng = spot.geometry.coordinates[0];
         let lat = spot.geometry.coordinates[1];
         if (spot.properties.image_basemap) {
-          let pixelDetails = lng.toFixed(6) + ' Xpx, ' + lat.toFixed(6) + ' Ypx';
+          let pixelDetails = lng.toFixed(6) + ' X, ' + lat.toFixed(6) + ' Y';
           if (isEmpty(spot.properties.lat) || isEmpty(spot.properties.lng)) {
             const rootSpot = useSpots.findRootSpot(spot.properties.image_basemap);
             if (rootSpot && rootSpot.geometry) {
@@ -58,8 +58,8 @@ const NotebookHeader = props => {
 
   const getLatLngText = (lat, lng) => {
     const degreeSymbol = '\u00B0';
-    let latitudeCardinal = Math.sign(lat) >= 0 ? 'North' : 'South';
-    let longitudeCardinal = Math.sign(lng) >= 0 ? 'East' : 'West';
+    let latitudeCardinal = Math.sign(lat) >= 0 ? 'N' : 'S';
+    let longitudeCardinal = Math.sign(lng) >= 0 ? 'E' : 'W';
     return lng.toFixed(6) + degreeSymbol + ' ' + longitudeCardinal + ', ' +
       lat.toFixed(6) + degreeSymbol + ' ' + latitudeCardinal;
   };
