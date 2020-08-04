@@ -97,7 +97,6 @@ const commonStyles = StyleSheet.create({
   listItem: {
     padding: 10,
     borderBottomWidth: 1,
-    borderColor: themes.LIST_BORDER_COLOR,
   },
   listItemInverse: {
     padding: 10,
