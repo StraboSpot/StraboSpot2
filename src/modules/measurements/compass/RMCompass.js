@@ -338,7 +338,7 @@ const RNCompass = (props) => {
   return (
     <View>
       <View style={{}}>
-        <View >
+        <View style={compassStyles.compassContainer}>
           <View style={modalStyle.textContainer}>
             {/*<Text style={{...modalStyle.textStyle, fontWeight: 'bold'}}>x Spots Created </Text>*/}
             <Text style={modalStyle.textStyle}>Tap compass to record</Text>

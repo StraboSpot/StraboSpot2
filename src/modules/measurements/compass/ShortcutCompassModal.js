@@ -12,12 +12,13 @@ const ShortcutCompassModal = (props) => {
     return (
       <View style={styles.modalPositionShortcutView}>
         <Modal
-          component={<Compass onPress={props.onPress}/>}
           style={styles.compassContainer}
           close={props.close}
           buttonTitleLeft={'Undo'}
           textStyle={{fontWeight: 'bold'}}
-        />
+        >
+          <Compass onPress={props.onPress}/>
+        </Modal>
       </View>
     );
   }
@@ -25,15 +26,13 @@ const ShortcutCompassModal = (props) => {
     return (
       <DragAnimation style={styles.modalPositionShortcutView}>
         <Modal
-          component={<RMCompass />}
-          style={styles.compassContainer}
           close={props.close}
           onPress={props.onPress}
-          // spotName={props.spotName}
           buttonTitleLeft={'Undo'}
           textStyle={{fontWeight: 'bold'}}
-          // bottom={props.bottom}
-        >{props.children}</Modal>
+        >
+          <RMCompass/>
+        </Modal>
       </DragAnimation>
     );
   }

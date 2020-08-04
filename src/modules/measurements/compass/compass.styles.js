@@ -12,7 +12,6 @@ const styles = StyleSheet.create({
   },
   compassContainer: {
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
-    width: '100%',
   },
   compassImage: {
     marginTop: 15,
@@ -44,6 +43,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 10,
     justifyContent: 'center',
+    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
   },
   sliderHeading: {
     fontWeight: 'bold',
@@ -70,12 +70,7 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   toggleButtonsContainer: {
-    backgroundColor: 'transparent',
     padding: 10,
-  },
-  toggleButtonsRowContainer: {
-    borderBottomWidth: 1,
-    paddingTop: 15,
   },
   trendLine: {
     height: 105,
