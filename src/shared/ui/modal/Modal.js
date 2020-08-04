@@ -1,14 +1,13 @@
 import React, {useEffect, useState} from 'react';
-import {Text, View} from 'react-native';
+import {Image, Text, View} from 'react-native';
 
-import {Button} from 'react-native-elements';
+import {Button, ListItem} from 'react-native-elements';
 import {connect, useSelector} from 'react-redux';
 
 import {Modals} from '../../../modules/home/home.constants';
 import {NotebookPages} from '../../../modules/notebook-panel/notebook.constants';
 import {isEmpty} from '../../Helpers';
 import * as themes from '../../styles.constants';
-import IconButton from '../IconButton';
 import modalStyle from './modal.style';
 
 const Modal = (props) => {
@@ -54,43 +53,63 @@ const Modal = (props) => {
   const renderModalBottom = () => {
     if (props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS && !isEmpty(props.spot)) {
       return (
-        <IconButton
-          source={require('../../../assets/icons/NotebookView_pressed.png')}
-          style={{marginTop: 10, flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-end', height: 25}}
-          textStyle={{color: 'blue', fontSize: 16, textAlign: 'center'}}
-          onPress={() => props.onPress(NotebookPages.MEASUREMENT)}
-        >
-          Go to Last Spot Created
-        </IconButton>
+        <View style={modalStyle.modalBottom}>
+          <ListItem
+            containerStyle={modalStyle.modalBottom}
+            title={'Go to last spot created'}
+            titleStyle={modalStyle.textStyle}
+            onPress={() => props.onPress(NotebookPages.MEASUREMENT)}
+            chevron={{name: 'right', type: 'antdesign', color: themes.LIST_CHEVRON_COLOR, size: 16}}
+            leftIcon={
+              <Image
+                target={props.name}
+                source={require('../../../assets/icons/NotebookView_pressed.png')}
+                style={modalStyle.icon}
+              />
+            }
+          />
+        </View>
       );
     }
     else if (props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE && !isEmpty(props.spot)) {
       return (
-        <IconButton
-          source={require('../../../assets/icons/NotebookView_pressed.png')}
-          style={{marginTop: 10, flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-end', height: 25}}
-          textStyle={{color: 'blue', fontSize: 16, textAlign: 'center'}}
+        <ListItem
+          containerStyle={modalStyle.modalBottom}
+          title={'Go to last spot created'}
+          titleStyle={modalStyle.textStyle}
           onPress={() => props.onPress(NotebookPages.SAMPLE)}
-        >
-          Go to {props.spot.properties.name}
-        </IconButton>
+          chevron={{name: 'right', type: 'antdesign', color: themes.LIST_CHEVRON_COLOR, size: 16}}
+          leftIcon={
+            <Image
+              target={props.name}
+              source={require('../../../assets/icons/NotebookView_pressed.png')}
+              style={modalStyle.icon}
+            />
+          }
+        />
       );
     }
     else if (props.modalVisible === Modals.SHORTCUT_MODALS.NOTES && !isEmpty(props.spot)) {
       return (
-        <IconButton
-          source={require('../../../assets/icons/NotebookView_pressed.png')}
-          style={{marginTop: 10, flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-end', height: 25}}
-          textStyle={{color: 'blue', fontSize: 16, textAlign: 'center'}}
-          onPress={() => props.onPress(NotebookPages.OVERVIEW)}
-        >
-          Go to {props.spot.properties.name}
-        </IconButton>
+        <ListItem
+          containerStyle={modalStyle.modalBottom}
+          title={'Go to last spot created'}
+          titleStyle={modalStyle.textStyle}
+          onPress={() => props.onPress(NotebookPages.NOTE)}
+          chevron={{name: 'right', type: 'antdesign', color: themes.LIST_CHEVRON_COLOR, size: 16}}
+          leftIcon={
+            <Image
+              target={props.name}
+              source={require('../../../assets/icons/NotebookView_pressed.png')}
+              style={modalStyle.icon}
+            />
+          }
+        />
       );
     }
     else {
       return (
-        <View style={{alignItems: 'center'}}>
+        <View style={{alignItems: 'center', paddingBottom: 20}}>
           {props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS ?
             <Text style={{fontWeight: '400'}}>Take a measurement first</Text> : null}
         </View>
@@ -101,8 +120,8 @@ const Modal = (props) => {
   return (
     <View style={modalStyle.modalContainer}>
       {renderModalHeader()}
-      <View style={props.style}>
-        {props.component}
+      <View>
+        {props.children}
       </View>
       <View style={modalStyle.modalBottom}>
         {renderModalBottom()}

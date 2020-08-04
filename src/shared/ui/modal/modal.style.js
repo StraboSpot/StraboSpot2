@@ -6,11 +6,13 @@ import * as themes from '../../styles.constants';
 const {width, height} = Dimensions.get('window');
 
 const modalStyle = StyleSheet.create({
+  icon: {
+    width: 25,
+    height: 25,
+  },
   modalContainer: {
     width: 250,
-    // height: 500,
-    // opacity: 0.90,
-    backgroundColor: '#f7f7f7',
+    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
     borderBottomRightRadius: 20,
     borderBottomLeftRadius: 20,
     borderTopRightRadius: 20,
@@ -18,8 +20,6 @@ const modalStyle = StyleSheet.create({
     zIndex: 1,
   },
   modalBottom: {
-    paddingBottom: 20,
-    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
     borderBottomRightRadius: 20,
     borderBottomLeftRadius: 20,
   },
@@ -27,15 +27,11 @@ const modalStyle = StyleSheet.create({
     fontWeight: 'bold',
   },
   modalTop: {
-    // flex: 1,
     alignItems: 'center',
     flexDirection: 'row',
-    // justifyContent: 'space-between',
-    // paddingLeft: 10,
-    // paddingRight: 10,
-    // backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
-    // borderTopRightRadius: 20,
-    // borderTopLeftRadius: 20,
+    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
+    borderTopRightRadius: 20,
+    borderTopLeftRadius: 20,
   },
   textStyle: {
     fontSize: themes.MODAL_TEXT_SIZE,
@@ -45,7 +41,6 @@ const modalStyle = StyleSheet.create({
     alignItems: 'center',
     paddingBottom: 10,
     paddingTop: 10,
-    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
   },
 });
 

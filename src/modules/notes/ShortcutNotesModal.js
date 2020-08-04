@@ -28,7 +28,7 @@ const ShortcutNotesModal = (props) => {
           onPress={props.onPress}
           textStyle={{fontWeight: 'bold'}}
         >
-          <Notes />
+          <Notes/>
         </Modal>
       </DragAnimation>
     );
