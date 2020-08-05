@@ -1,7 +1,9 @@
-import {Animated, Dimensions, Easing, Platform} from 'react-native';
+import {Animated, Dimensions, Easing, Platform, UIManager} from 'react-native';
 
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
+
+const {height: windowHeight} = Dimensions.get('window');
 
 const lodashIsEqual = require('lodash.isequal');
 const passwordValidator = require('password-validator');
@@ -25,6 +27,41 @@ export const getNewUUID = () => {
 export const truncDecimal = (num) => {
   const numParts = num.toString().split('.');
   return numParts[0].concat('.').concat(numParts[1].slice(0, 5));
+};
+
+export const handleKeyboardDidHide = (textInputAnimate) => {
+  Animated.timing(
+    textInputAnimate,
+    {
+      toValue: 0,
+      duration: 200,
+      useNativeDriver: true,
+    },
+  ).start();
+};
+
+export const handleKeyboardDidShow = (event, TextInputState, textInputAnimate) => {
+  const keyboardHeight = event.endCoordinates.height;
+  const currentlyFocusedField = TextInputState.currentlyFocusedField();
+  if (currentlyFocusedField === null) return;
+  else {
+    UIManager.measure(currentlyFocusedField, (originX, originY, width, height, pageX, pageY) => {
+      const fieldHeight = height;
+      const fieldTop = pageY;
+      const gap = (windowHeight - keyboardHeight) - (fieldTop + fieldHeight);
+      if (gap >= 0) {
+        return;
+      }
+      Animated.timing(
+        textInputAnimate,
+        {
+          toValue: gap,
+          duration: 200,
+          useNativeDriver: true,
+        },
+      ).start();
+    });
+  }
 };
 
 // Correct a quirk in JS that doesn't mod negative number correctly

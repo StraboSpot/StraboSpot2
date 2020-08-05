@@ -3,6 +3,7 @@ import {Animated, Dimensions, Keyboard, TextInput, UIManager} from 'react-native
 
 import {Field} from 'formik';
 
+import * as Helpers from '../../shared/Helpers';
 import {DateInputField, formStyles, NumberInputField, SelectInputField, TextInputField, useFormHook} from '../form';
 
 const {State: TextInputState} = TextInput;
@@ -22,41 +23,10 @@ const Form = (props) => {
     };
   }, []);
 
-  const handleKeyboardDidShow = (event) => {
-    const {height: windowHeight} = Dimensions.get('window');
-    const keyboardHeight = event.endCoordinates.height;
-    const currentlyFocusedField = TextInputState.currentlyFocusedField();
-    if (currentlyFocusedField === null) return;
-    else {
-      UIManager.measure(currentlyFocusedField, (originX, originY, width, height, pageX, pageY) => {
-        const fieldHeight = height;
-        const fieldTop = pageY;
-        const gap = (windowHeight - keyboardHeight) - (fieldTop + fieldHeight);
-        if (gap >= 0) {
-          return;
-        }
-        Animated.timing(
-          textInputAnimate,
-          {
-            toValue: gap,
-            duration: 200,
-            useNativeDriver: true,
-          },
-        ).start();
-      });
-    }
-  };
+  const handleKeyboardDidShow = (event) => Helpers.handleKeyboardDidShow(event, TextInputState, textInputAnimate)
 
-  const handleKeyboardDidHide = () => {
-    Animated.timing(
-      textInputAnimate,
-      {
-        toValue: 0,
-        duration: 200,
-        useNativeDriver: true,
-      },
-    ).start();
-  };
+
+  const handleKeyboardDidHide = () => Helpers.handleKeyboardDidHide(textInputAnimate);
 
   const renderDateInput = field => {
     return (

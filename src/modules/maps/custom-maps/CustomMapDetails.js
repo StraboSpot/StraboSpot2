@@ -2,13 +2,11 @@ import React, {useEffect, useState} from 'react';
 import {
   Alert,
   Animated,
-  Dimensions,
   Keyboard,
   FlatList,
   Platform,
   Switch,
   TextInput,
-  UIManager,
   View,
 } from 'react-native';
 
@@ -16,6 +14,7 @@ import {Button, Input, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {isEmpty} from '../../../shared/Helpers';
+import * as Helpers from '../../../shared/Helpers';
 import SaveAndDeleteButtons from '../../../shared/ui/SaveAndDeleteButtons';
 import Slider from '../../../shared/ui/Slider';
 import {homeReducers} from '../../home/home.constants';
@@ -30,7 +29,7 @@ import styles from './customMaps.styles';
 
 const {State: TextInputState} = TextInput;
 
-const AddCustomMaps = (props) => {
+const AddCustomMaps = () => {
   let sliderValuePercent = editableCustomMapData && (editableCustomMapData.opacity / 1).toFixed(1) * 100;
   const MBKeyboardType = Platform.OS === 'ios' ? 'url' : 'default';
   const MWKeyboardType = Platform.OS === 'ios' ? 'numeric' : 'phone-pad';
@@ -111,44 +110,9 @@ const AddCustomMaps = (props) => {
     );
   };
 
+  const handleKeyboardDidShow = (event) => Helpers.handleKeyboardDidShow(event, TextInputState, textInputAnimate);
 
-  const handleKeyboardDidShow = (event) => {
-    const {height: windowHeight} = Dimensions.get('window');
-    const keyboardHeight = event.endCoordinates.height;
-    const currentlyFocusedField = TextInputState.currentlyFocusedField();
-    if (currentlyFocusedField === null) {
-      return;
-    }
-    else {
-      UIManager.measure(currentlyFocusedField, (originX, originY, width, height, pageX, pageY) => {
-        const fieldHeight = height;
-        const fieldTop = pageY;
-        const gap = (windowHeight - keyboardHeight) - (fieldTop + fieldHeight);
-        if (gap >= 0) {
-          return;
-        }
-        Animated.timing(
-          textInputAnimate,
-          {
-            toValue: gap,
-            duration: 200,
-            useNativeDriver: true,
-          },
-        ).start();
-      });
-    }
-  };
-
-  const handleKeyboardDidHide = () => {
-    Animated.timing(
-      textInputAnimate,
-      {
-        toValue: 0,
-        duration: 200,
-        useNativeDriver: true,
-      },
-    ).start();
-  };
+  const handleKeyboardDidHide = () => Helpers.handleKeyboardDidHide(textInputAnimate);
 
   const selectMap = (source) => {
     console.log(source);
