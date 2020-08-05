@@ -32,7 +32,7 @@ const samplesNotebook = (props) => {
                 numberOfLines={1}
                 style={styles.listText}>{oriented} - {item.sample_description ? item.sample_description
                 : 'No Description'}</Text>}
-            chevron={true}
+            chevron
             rightIcon={
               <Icon
                 name='ios-information-circle-outline'

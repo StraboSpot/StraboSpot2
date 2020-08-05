@@ -87,7 +87,7 @@ const SamplesList = (props) => {
         key={item.id}
         title={item.sample_id_name ? item.sample_id_name :
           <Text style={{color: 'grey'}}>Sample id: {item.id}</Text>}
-        chevron={true}
+        chevron
         onPress={() => Alert.alert('Will go to Sample Detail', `${item.id}`)}
       />
     );

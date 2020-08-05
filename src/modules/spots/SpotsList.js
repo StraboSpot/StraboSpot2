@@ -56,7 +56,7 @@ const SpotsList = (props) => {
       <ListItem
         key={item.properties.id}
         title={item.properties.name}
-        chevron={true}
+        chevron
         onPress={() => props.getSpotData(item.properties.id)}
         leftAvatar={{source: useSpots.getSpotGemometryIconSource(item), size: 20}}
         rightAvatar={renderDataIcons(item)}

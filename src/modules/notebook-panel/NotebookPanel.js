@@ -79,7 +79,7 @@ const NotebookPanel = props => {
         <ListItem
           key={item.properties.id}
           title={item.properties.name}
-          chevron={true}
+          chevron
           onPress={() => dispatch({type: spotReducers.SET_SELECTED_SPOT, spot: item})}
           leftAvatar={{source: useSpots.getSpotGemometryIconSource(item), size: 20}}
         />

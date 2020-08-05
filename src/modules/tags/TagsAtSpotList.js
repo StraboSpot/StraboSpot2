@@ -31,12 +31,7 @@ const SpotTag = () => {
   const renderTag = (tag) => {
     return (
       <ListItem
-        chevron={{
-          name: 'right',
-          type: 'antdesign',
-          color: themes.PRIMARY_BACKGROUND_COLOR,
-          size: 16,
-        }}
+        chevron
         containerStyle={commonStyles.listItem}
         contentContainerStyle={{maxWidth: 150}}
         key={tag.id}

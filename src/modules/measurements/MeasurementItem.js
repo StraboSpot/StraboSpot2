@@ -80,12 +80,7 @@ const MeasurementItem = (props) => {
           color: props.selectedIds.includes(
             props.item.item.id) ? themes.SECONDARY_BACKGROUND_COLOR : themes.PRIMARY_ACCENT_COLOR,
         }}
-        chevron={{
-          name: 'right',
-          type: 'antdesign',
-          color: themes.SECONDARY_BACKGROUND_COLOR,
-          size: 16,
-        }}
+        chevron
       />
       }
     </React.Fragment>
