@@ -7,6 +7,7 @@ module.exports = {
     'brace-style': ['error', 'stroustrup', {allowSingleLine: true}],
     curly: ['error', 'multi-line'],
     'jsx-quotes': ['error', 'prefer-single'],
+    'operator-linebreak': ['error', 'before'],
     'import/order': [
       'error',
       {
