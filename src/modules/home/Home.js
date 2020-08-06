@@ -235,7 +235,7 @@ const Home = (props) => {
         dispatch({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: NotebookPages.OVERVIEW});
         break;
       case 'deleteSpot':
-        deleteSpot(props.selectedSpot.properties.id);
+        deleteSpot(selectedSpot.properties.id);
         break;
       case 'toggleAllSpotsPanel':
         if (position === 'open') props.setAllSpotsPanelVisible(true);
@@ -296,7 +296,6 @@ const Home = (props) => {
 
   const closeNotebookPanel = () => {
     console.log('closing notebook');
-    props.setModalVisible(null);
     animatePanels(animation, notebookPanelWidth);
     animatePanels(rightsideIconAnimationValue, 0);
     props.setNotebookPanelVisible(false);
@@ -427,7 +426,8 @@ const Home = (props) => {
   };
 
   const renderFloatingViews = () => {
-    if (props.modalVisible === Modals.NOTEBOOK_MODALS.TAGS) {
+    if (modalVisible === Modals.NOTEBOOK_MODALS.TAGS && props.isNotebookPanelVisible
+      && !isEmpty(selectedSpot)) {
       return (
         <NotebookTagsModal
           close={() => props.setModalVisible(null)}
@@ -435,7 +435,7 @@ const Home = (props) => {
         />
       );
     }
-    if (props.modalVisible === Modals.SHORTCUT_MODALS.TAGS) {
+    if (modalVisible === Modals.SHORTCUT_MODALS.TAGS) {
       return (
         <NotebookCompassModal
           close={() => props.setModalVisible(null)}
@@ -443,7 +443,8 @@ const Home = (props) => {
         />
       );
     }
-    if (props.modalVisible === Modals.NOTEBOOK_MODALS.COMPASS && props.isNotebookPanelVisible) {
+    if (modalVisible === Modals.NOTEBOOK_MODALS.COMPASS && props.isNotebookPanelVisible
+      && !isEmpty(selectedSpot)) {
       return (
         <NotebookCompassModal
           close={() => props.setModalVisible(null)}
@@ -451,7 +452,7 @@ const Home = (props) => {
         />
       );
     }
-    if (props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {
+    if (modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {
       return (
         <ShortcutCompassModal
           close={() => props.setModalVisible(null)}
@@ -459,7 +460,8 @@ const Home = (props) => {
         />
       );
     }
-    if (props.modalVisible === Modals.NOTEBOOK_MODALS.SAMPLE && props.isNotebookPanelVisible) {
+    if (modalVisible === Modals.NOTEBOOK_MODALS.SAMPLE && props.isNotebookPanelVisible
+      && !isEmpty(selectedSpot)) {
       return (
         <NotebookSamplesModal
           close={() => props.setModalVisible(null)}
@@ -468,7 +470,7 @@ const Home = (props) => {
         />
       );
     }
-    else if (props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE) {
+    else if (modalVisible === Modals.SHORTCUT_MODALS.SAMPLE) {
       return (
         <ShortcutSamplesModal
           close={() => props.setModalVisible(null)}
@@ -477,7 +479,7 @@ const Home = (props) => {
         />
       );
     }
-    if (props.modalVisible === Modals.SHORTCUT_MODALS.NOTES) {
+    if (modalVisible === Modals.SHORTCUT_MODALS.NOTES) {
       return (
         <ShortcutNotesModal
           close={() => props.setModalVisible(null)}
@@ -759,10 +761,10 @@ const Home = (props) => {
       <ToastPopup toastRef={toastRef}/>
       {Platform.OS === 'android' && (
         <View>
-          {(props.modalVisible === Modals.NOTEBOOK_MODALS.COMPASS
-            || props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS) && compassModal}
-          {(props.modalVisible === Modals.NOTEBOOK_MODALS.SAMPLE
-            || props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE) && samplesModal}
+          {(modalVisible === Modals.NOTEBOOK_MODALS.COMPASS
+            || modalVisible === Modals.SHORTCUT_MODALS.COMPASS) && compassModal}
+          {(modalVisible === Modals.NOTEBOOK_MODALS.SAMPLE
+            || modalVisible === Modals.SHORTCUT_MODALS.SAMPLE) && samplesModal}
         </View>
       )}
       <View style={homeStyles.topCenter}>
@@ -817,7 +819,7 @@ const Home = (props) => {
         {props.shortcutSwitchPosition.Tag
           ? (
             <IconButton
-              source={props.modalVisible === Modals.SHORTCUT_MODALS.TAGS
+              source={modalVisible === Modals.SHORTCUT_MODALS.TAGS
                 ? require('../../assets/icons/TagButton_pressed.png')
                 : require('../../assets/icons/TagButton.png')}
               onPress={() => clickHandler('tag')}
@@ -828,7 +830,7 @@ const Home = (props) => {
         {props.shortcutSwitchPosition.Measurement
           ? (
             <IconButton
-              source={props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS
+              source={modalVisible === Modals.SHORTCUT_MODALS.COMPASS
                 ? require('../../assets/icons/MeasurementButton_pressed.png')
                 : require('../../assets/icons/MeasurementButton.png')}
               onPress={() => clickHandler('measurement')}
@@ -839,7 +841,7 @@ const Home = (props) => {
         {props.shortcutSwitchPosition.Sample
           ? (
             <IconButton
-              source={props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE
+              source={modalVisible === Modals.SHORTCUT_MODALS.SAMPLE
                 ? require('../../assets/icons/SampleButton_pressed.png')
                 : require('../../assets/icons/SampleButton.png')}
               onPress={() => clickHandler('sample')}
@@ -851,68 +853,7 @@ const Home = (props) => {
           ? (
             <IconButton
               name={'Note'}
-              source={props.modalVisible === Modals.SHORTCUT_MODALS.NOTES
-                ? require('../../assets/icons/NoteButton_pressed.png')
-                : require('../../assets/icons/NoteButton.png')}
-              onPress={() => clickHandler('note')}
-            />
-          )
-          : null
-        }
-        {props.shortcutSwitchPosition.Photo
-          ? (
-            <IconButton
-              source={require('../../assets/icons/PhotoButton.png')}
-              onPress={() => clickHandler('photo')}
-            />
-          )
-          : null
-        }
-        {props.shortcutSwitchPosition.Sketch
-          ? (
-            <IconButton
-              source={require('../../assets/icons/SketchButton.png')}
-              onPress={() => clickHandler('sketch')}
-            />
-          )
-          : null
-        }
-        {props.shortcutSwitchPosition.Tag
-          ? (
-            <IconButton
-              source={require('../../assets/icons/TagButton.png')}
-              onPress={() => clickHandler('tag')}
-            />
-          )
-          : null
-        }
-        {props.shortcutSwitchPosition.Measurement
-          ? (
-            <IconButton
-              source={props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS
-                ? require('../../assets/icons/MeasurementButton_pressed.png')
-                : require('../../assets/icons/MeasurementButton.png')}
-              onPress={() => clickHandler('measurement')}
-            />
-          )
-          : null
-        }
-        {props.shortcutSwitchPosition.Sample
-          ? (
-            <IconButton
-              source={props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE
-                ? require('../../assets/icons/SampleButton_pressed.png')
-                : require('../../assets/icons/SampleButton.png')}
-              onPress={() => clickHandler('sample')}
-            />
-          )
-          : null
-        }
-        {props.shortcutSwitchPosition.Note
-          ? (
-            <IconButton
-              name={'Note'}
-              source={props.modalVisible === Modals.SHORTCUT_MODALS.NOTES
+              source={modalVisible === Modals.SHORTCUT_MODALS.NOTES
                 ? require('../../assets/icons/NoteButton_pressed.png')
                 : require('../../assets/icons/NoteButton.png')}
               onPress={() => clickHandler('note')}
@@ -1083,7 +1024,6 @@ function mapStateToProps(state) {
   return {
     currentImageBasemap: state.map.currentImageBasemap,
     currentBasemap: state.map.currentBasemap,
-    selectedSpot: state.spot.selectedSpot,
     selectedImage: state.spot.selectedAttributes[0],
     isImageModalVisible: state.home.isImageModalVisible,
     isOnline: state.home.isOnline,
@@ -1098,7 +1038,6 @@ function mapStateToProps(state) {
     vertexStartCoords: state.map.vertexStartCoords,
     userData: state.user.userData,
     homePageVisible: state.settingsPanel.settingsPageVisible,
-    // homePanelVisible: state.home.isSettingsPanelVisible,
   };
 }
 
