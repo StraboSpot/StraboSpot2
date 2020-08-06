@@ -294,6 +294,7 @@ const Home = (props) => {
 
   const closeNotebookPanel = () => {
     console.log('closing notebook');
+    props.setModalVisible(null);
     animatePanels(animation, notebookPanelWidth);
     animatePanels(rightsideIconAnimationValue, 0);
     props.setNotebookPanelVisible(false);
@@ -347,10 +348,7 @@ const Home = (props) => {
     const newOrEditedSpot = await mapViewComponent.current.endDraw();
     setMapMode(MapModes.VIEW);
     toggleButton('endDrawButtonVisible', false);
-    if (!isEmpty(newOrEditedSpot) && !isSelectingForStereonet) {
-      openNotebookPanel(NotebookPages.OVERVIEW);
-      props.setModalVisible(null);
-    }
+    if (!isEmpty(newOrEditedSpot) && !isSelectingForStereonet) openNotebookPanel(NotebookPages.OVERVIEW);
     setIsSelectingForStereonet(false);
   };
 
@@ -411,6 +409,7 @@ const Home = (props) => {
 
   const openNotebookPanel = pageView => {
     console.log('Opening Notebook', pageView, '...');
+    props.setModalVisible(null);
     props.setNotebookPageVisible(pageView || NotebookPages.OVERVIEW);
     animatePanels(animation, 0);
     animatePanels(rightsideIconAnimationValue, -notebookPanelWidth);
@@ -697,9 +696,7 @@ const Home = (props) => {
   };
 
   const toggleNotebookPanel = () => {
-    if (isNotebookPanelVisible) {
-      closeNotebookPanel();
-    }
+    if (isNotebookPanelVisible) closeNotebookPanel();
     else openNotebookPanel();
   };
 
