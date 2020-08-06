@@ -63,13 +63,13 @@ const InitialProjectLoadModal = (props) => {
         />
         <Button
           onPress={() => props.closeModal()}
-          title={'Close'}
+          title={'Done'}
           disabled={isEmpty(Object.keys(datasets).find(key => datasets[key].current === true))}
           buttonStyle={commonStyles.standardButton}
           titleStyle={commonStyles.standardButtonText}
         />
         <View style={{alignItems: 'center', paddingTop: 10}}>
-          <Text>Please verify of change the dataset to make active</Text>
+          <Text>Set an active dataset</Text>
         </View>
         <Spacer/>
         <View style={{height: 400}}>
@@ -85,7 +85,7 @@ const InitialProjectLoadModal = (props) => {
       return (
         <Button
           onPress={() => setVisibleProjectSection('currentDatasetSelection')}
-          title={'Continue'}
+          title={'Next'}
           // disabled={isEmpty(datasets) ||
           // isEmpty(Object.keys(datasets).find(key =>  datasets[key].active === true))}
           buttonStyle={[commonStyles.standardButton]}
@@ -97,7 +97,7 @@ const InitialProjectLoadModal = (props) => {
       return (
         <Button
           onPress={() => props.closeModal()}
-          title={'Close'}
+          title={'Done'}
           disabled={isEmpty(datasets)
           || isEmpty(Object.keys(datasets).find(key => datasets[key].active === true))}
           buttonStyle={[commonStyles.standardButton]}
