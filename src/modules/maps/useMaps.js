@@ -185,13 +185,16 @@ const useMaps = () => {
       else mappedFeatures.push(JSON.parse(JSON.stringify(spot)));
     });
 
-    // Filter out symbols not being displayed as set in the Map Symbols Switcher
+    // For point Spots filter out symbols not being displayed as set in the Map Symbols Switcher
     if (!isAllSymbolsOn) {
-      displayedSpots = displayedSpots.filter(spot => spot.properties.orientation_data &&
-        !isEmpty(spot.properties.orientation_data.filter(
-          orientation => orientation.feature_type && selectedSymbols.includes(orientation.feature_type))));
-      mappedFeatures = mappedFeatures.filter(spot => spot.properties.orientation &&
-        spot.properties.orientation.feature_type && selectedSymbols.includes(spot.properties.orientation.feature_type));
+      displayedSpots = displayedSpots.filter(
+        spot => turf.getType(spot) !== 'Point'
+          || (spot.properties.orientation_data
+            && !isEmpty(spot.properties.orientation_data.filter(orientation => orientation.feature_type
+              && selectedSymbols.includes(orientation.feature_type)))));
+      mappedFeatures = mappedFeatures.filter(spot => turf.getType(spot) !== 'Point'
+        || (spot.properties.orientation && spot.properties.orientation.feature_type
+          && selectedSymbols.includes(spot.properties.orientation.feature_type)));
     }
 
     // Separate selected Spots and not selected Spots (Point Spots need to be in both
