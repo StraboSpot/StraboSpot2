@@ -22,7 +22,6 @@ const styles = StyleSheet.create({
     borderColor: 'transparent',
     padding: 0,
     margin: 0,
-    paddingLeft: 20,
   },
   loadingContainer: {
     flex: 1,

@@ -13,10 +13,11 @@ const DefaultCheckBox = (props) => {
         textStyle={props.textStyle}
         checked={props.checked}
         checkedColor={props.checkedColor}
-        iconType={'feather'}
-        checkedIcon='check-square'
-        uncheckedIcon='square'
-        containerStyle={styles.defaultCheckBox}
+        iconType={'ionicon'}
+        iconRight={props.iconRight}
+        checkedIcon='checkbox-outline'
+        uncheckedIcon='square-outline'
+        containerStyle={[styles.defaultCheckBox, props.containerStyle]}
         onPress={props.onPress}
       />
     </React.Fragment>
