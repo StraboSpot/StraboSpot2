@@ -78,21 +78,6 @@ const SamplesModalView = (props) => {
     else Alert.alert('No Sample Type', 'Please select a samples.');
   };
 
-  const shortcutVisible = () => {
-      if (props.modalVisible === Modals.NOTEBOOK_MODALS.SAMPLE
-        && props.deviceDimensions.width > 700) {
-        modalView =
-          <Button
-            title={'View In Shortcut Mode'}
-            type={'clear'}
-            titleStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 16}}
-            onPress={() => props.onPress(NotebookPages.SAMPLE)}
-          />;
-        return modalView;
-      }
-      else return null;
-    };
-
   return (
     <React.Fragment>
       <View style={styles.input}>
@@ -164,9 +149,6 @@ const SamplesModalView = (props) => {
           buttonStyle={{borderRadius: 10, backgroundColor: 'red'}}
           onPress={() => saveSample()}
         />
-        <View style={{width: '100%'}}>
-          {shortcutVisible()}
-        </View>
       </View>
     </React.Fragment>
   );

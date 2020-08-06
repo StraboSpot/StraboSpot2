@@ -54,15 +54,6 @@ const homeMenuPanelWidth = 300;
 const notebookPanelWidth = 400;
 const mainMenuSidePanelWidth = 300;
 
-// const imageOptions = {
-//   storageOptions: {
-//     skipBackup: true,
-//     // path: 'StraboSpot/Images',
-//     takePhotoButtonTitle: 'Take Photo Buddy!',
-//     chooseFromLibraryButtonTitle: 'choose photo from library'
-//   }
-// };
-
 const Home = (props) => {
   const platform = Platform.OS === 'ios' ? 'window' : 'screen';
   const deviceWidth = Dimensions.get(platform).width;
@@ -175,8 +166,12 @@ const Home = (props) => {
           `The ${name.toUpperCase()} Shortcut button in the  will be functioning soon!`);
         break;
       case 'tag':
-        Alert.alert('Still in the works',
-          `The ${name.toUpperCase()} Shortcut button in the  will be functioning soon!`);
+        dispatch({type: spotReducers.CLEAR_SELECTED_SPOTS});
+        if (modalVisible === Modals.SHORTCUT_MODALS.TAGS) {
+          dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: null});
+        }
+        else dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: Modals.SHORTCUT_MODALS.TAGS});
+        closeNotebookPanel();
         break;
       case 'measurement':
         dispatch({type: spotReducers.CLEAR_SELECTED_SPOTS});
@@ -433,15 +428,25 @@ const Home = (props) => {
   const renderFloatingViews = () => {
     if (props.modalVisible === Modals.NOTEBOOK_MODALS.TAGS) {
       return (
-        <NotebookTagsModal close={() => props.setModalVisible(null)}/>
+        <NotebookTagsModal
+          close={() => props.setModalVisible(null)}
+          onPress={() => modalHandler(null, Modals.SHORTCUT_MODALS.TAGS)}
+        />
       );
     }
-    if (props.modalVisible === Modals.NOTEBOOK_MODALS.COMPASS && props.isNotebookPanelVisible && !isEmpty(
-      props.selectedSpot)) {
+    if (props.modalVisible === Modals.SHORTCUT_MODALS.TAGS) {
       return (
         <NotebookCompassModal
           close={() => props.setModalVisible(null)}
-          onPress={page => modalHandler(page, Modals.SHORTCUT_MODALS.COMPASS)}
+          onPress={() => modalHandler(null, Modals.SHORTCUT_MODALS.COMPASS)}
+        />
+      );
+    }
+    if (props.modalVisible === Modals.NOTEBOOK_MODALS.COMPASS && props.isNotebookPanelVisible) {
+      return (
+        <NotebookCompassModal
+          close={() => props.setModalVisible(null)}
+          onPress={() => modalHandler(null, Modals.SHORTCUT_MODALS.COMPASS)}
         />
       );
     }
@@ -449,17 +454,16 @@ const Home = (props) => {
       return (
         <ShortcutCompassModal
           close={() => props.setModalVisible(null)}
-          onPress={page => modalHandler(page, Modals.NOTEBOOK_MODALS.COMPASS)}
+          onPress={() => modalHandler(NotebookPages.MEASUREMENT, Modals.NOTEBOOK_MODALS.COMPASS)}
         />
       );
     }
-    if (props.modalVisible === Modals.NOTEBOOK_MODALS.SAMPLE && props.isNotebookPanelVisible && !isEmpty(
-      props.selectedSpot)) {
+    if (props.modalVisible === Modals.NOTEBOOK_MODALS.SAMPLE && props.isNotebookPanelVisible) {
       return (
         <NotebookSamplesModal
           close={() => props.setModalVisible(null)}
           cancel={() => samplesModalCancel()}
-          onPress={(page) => modalHandler(page, Modals.SHORTCUT_MODALS.SAMPLE)}
+          onPress={() => modalHandler(null, Modals.SHORTCUT_MODALS.SAMPLE)}
         />
       );
     }
@@ -468,7 +472,7 @@ const Home = (props) => {
         <ShortcutSamplesModal
           close={() => props.setModalVisible(null)}
           cancel={() => samplesModalCancel()}
-          onPress={(page) => modalHandler(page, Modals.NOTEBOOK_MODALS.SAMPLE)}
+          onPress={() => modalHandler(NotebookPages.SAMPLE, Modals.NOTEBOOK_MODALS.SAMPLE)}
         />
       );
     }
@@ -476,7 +480,7 @@ const Home = (props) => {
       return (
         <ShortcutNotesModal
           close={() => props.setModalVisible(null)}
-          onPress={page => modalHandler(page)}
+          onPress={() => modalHandler(NotebookPages.NOTE)}
         />
       );
     }
@@ -792,18 +796,17 @@ const Home = (props) => {
         {/*<IconButton*/}
         {/*  source={props.isOnline ? online : offline}*/}
         {/*/>*/}
-        {props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS ||
-        props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE || props.modalVisible === Modals.SHORTCUT_MODALS.NOTES ? null :
           <IconButton
             source={isNotebookPanelVisible ? require('../../assets/icons/NotebookViewButton_pressed.png') : require('../../assets/icons/NotebookViewButton.png')}
             onPress={() => toggleNotebookPanel()}
-          />}
+          />
       </Animated.View>
       {!props.currentImageBasemap && <Animated.View
         style={props.isAllSpotsPanelVisible ? [homeStyles.rightsideIcons, rightsideIconAnimation, {right: 125}] : [homeStyles.rightsideIcons, rightsideIconAnimation]}>
         {props.shortcutSwitchPosition.Tag ?
           <IconButton
-            source={require('../../assets/icons/TagButton.png')}
+            source={props.modalVisible === Modals.SHORTCUT_MODALS.TAGS ? require('../../assets/icons/TagButton_pressed.png') :
+            require('../../assets/icons/TagButton.png')}
             onPress={() => clickHandler('tag')}
           /> : null}
         {props.shortcutSwitchPosition.Measurement ?
@@ -839,14 +842,6 @@ const Home = (props) => {
             onPress={() => clickHandler('sketch')}
           /> : null}
       </Animated.View>}
-      <View style={homeStyles.notebookViewIcon}>
-        {/*{props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS ||*/}
-        {/*props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE || props.modalVisible === Modals.SHORTCUT_MODALS.NOTES ? null :*/}
-        {/*  <IconButton*/}
-        {/*    source={require('../../assets/icons/NotebookViewButton.png')}*/}
-        {/*    onPress={() => openNotebookPanel()}*/}
-        {/*  />}*/}
-      </View>
       {buttons.drawButtonsVisible ?
         <Animated.View
           style={props.isAllSpotsPanelVisible ? [homeStyles.drawToolsContainer, rightsideIconAnimation, {right: 125}] : [homeStyles.drawToolsContainer, rightsideIconAnimation]}>

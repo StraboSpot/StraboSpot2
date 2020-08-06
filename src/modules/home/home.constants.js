@@ -1,14 +1,14 @@
 export const Modals = {
   NOTEBOOK_MODALS: {
-    COMPASS: 'Notebook Compass Modal',
-    SAMPLE: 'Notebook Sample Modal',
-    TAGS: 'Notebook Tags Modal',
+    COMPASS: 'Compass',
+    SAMPLE: 'Sample',
+    TAGS: 'Tags',
   },
   SHORTCUT_MODALS: {
-    COMPASS: 'Shortcut Compass Modal',
-    SAMPLE: 'Shortcut Sample Modal',
-    NOTES:  'Shortcut Notes Modal',
-    TAGS: 'Shortcut Tags Modal',
+    COMPASS: 'Compass Shortcut',
+    SAMPLE: 'Sample Shortcut',
+    NOTES:  'Notes Shortcut',
+    TAGS: 'Tags Shortcut',
   },
 };
 

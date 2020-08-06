@@ -15,8 +15,9 @@ const notebookSamplesModal = (props) => {
           close={props.close}
           buttonTitleLeft={'Undo'}
           textStyle={{fontWeight: 'bold'}}
+          onPress={props.onPress}
         >
-          <Samples onPress={props.onPress}/>
+          <Samples/>
         </Modal>
       </View>
     );
@@ -28,8 +29,9 @@ const notebookSamplesModal = (props) => {
           close={props.close}
           buttonTitleLeft={'Undo'}
           textStyle={{fontWeight: 'bold'}}
+          onPress={props.onPress}
         >
-          <Samples onPress={props.onPress}/>
+          <Samples/>
         </Modal>
       </DragAnimation>
     );

@@ -20,12 +20,13 @@ const TagsFloatingView = (props) => {
       return (
         <View style={compassStyles.modalPosition}>
           <Modal
-            component={<TagsModal onPress={props.onPress}/>}
-            style={compassStyles.compassContainer}
             close={props.close}
-            buttonTitleLeft={'Undo last'}
+            buttonTitleLeft={'Cancel'}
             textStyle={{fontWeight: 'bold'}}
-          />
+            onPress={props.onPress}
+          >
+            <TagsModal/>
+          </Modal>
         </View>
       );
     }
@@ -33,12 +34,13 @@ const TagsFloatingView = (props) => {
       return (
         <DragAnimation style={compassStyles.modalPosition}>
           <Modal
-            component={<TagsModal onPress={props.onPress}/>}
-            style={compassStyles.compassContainer}
             close={props.close}
             buttonTitleLeft={'Cancel'}
             textStyle={{fontWeight: 'bold'}}
-          />
+            onPress={props.onPress}
+          >
+            <TagsModal/>
+          </Modal>
         </DragAnimation>
       );
     }
@@ -48,12 +50,13 @@ const TagsFloatingView = (props) => {
       return (
         <View style={compassStyles.modalPositionShortcutView}>
           <Modal
-            component={<Tags onPress={props.onPress}/>}
-            style={compassStyles.compassContainer}
             close={props.close}
-            buttonTitleLeft={'Undo last'}
+            buttonTitleLeft={'Cancel'}
             textStyle={{fontWeight: 'bold'}}
-          />
+            onPress={props.onPress}
+          >
+            <TagsModal/>
+          </Modal>
         </View>
       );
     }
@@ -61,12 +64,13 @@ const TagsFloatingView = (props) => {
       return (
         <DragAnimation style={compassStyles.modalPositionShortcutView}>
           <Modal
-            component={<Tags onPress={props.onPress}/>}
-            style={compassStyles.compassContainer}
             close={props.close}
             buttonTitleLeft={'Cancel'}
             textStyle={{fontWeight: 'bold'}}
-          />
+            onPress={props.onPress}
+          >
+            <TagsModal/>
+          </Modal>
         </DragAnimation>
       );
     }

@@ -154,10 +154,6 @@ const RNCompass = (props) => {
     else Alert.alert('No Measurement Type', 'Please select a measurement type using the toggles.');
   };
 
-  const viewData = () => {
-    setShowData(!showData);
-  };
-
   const renderCompass = () => {
     return (
       <TouchableOpacity style={compassStyles.compassImageContainer} onPress={() => grabMeasurements()}>
@@ -293,37 +289,6 @@ const RNCompass = (props) => {
           ]}/>
     );
   };
-
-  if (modalVisible === Modals.NOTEBOOK_MODALS.COMPASS) {
-    if (!isEmpty(props.spot)) {
-      modalView = <View>
-        <Button
-          title={'View In Shortcut Mode'}
-          type={'clear'}
-          titleStyle={compassStyles.buttonTitleStyle}
-          onPress={() => props.onPress(NotebookPages.MEASUREMENT)}
-        />
-        <Button
-          title={'Toggle data view'}
-          type={'clear'}
-          titleStyle={compassStyles.buttonTitleStyle}
-          onPress={() => {
-            viewData();
-          }}
-        />
-      </View>;
-    }
-  }
-  else if (modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {
-    modalView =
-      <React.Fragment>
-        {/*<View style={height <= 1000 ? {height: 300, alignItems: 'center', justifyContent: 'center'} :*/}
-        {/*  {alignContent: 'center', justifyContent: 'center'}}>*/}
-        {/*  <Measurements/>*/}
-        {/*<Text>Reserved for manual measurement input form fields</Text>*/}
-        {/*</View>*/}
-      </React.Fragment>;
-  }
 
   return (
     <View>

@@ -2,27 +2,20 @@ import React, {useEffect, useState} from 'react';
 import {Image, Text, View} from 'react-native';
 
 import {Button, ListItem} from 'react-native-elements';
-import {connect, useSelector} from 'react-redux';
+import {useSelector} from 'react-redux';
 
 import {Modals} from '../../../modules/home/home.constants';
-import {NotebookPages} from '../../../modules/notebook-panel/notebook.constants';
+import compassStyles from '../../../modules/measurements/compass/compass.styles';
 import {isEmpty} from '../../Helpers';
 import * as themes from '../../styles.constants';
 import modalStyle from './modal.style';
 
 const Modal = (props) => {
   const [modalTitle, setModalTitle] = useState('');
-  const modalVivible = useSelector(state => state.home.modalVisible);
+  const modalVisible = useSelector(state => state.home.modalVisible);
+  const selectedSpot = useSelector(state => state.spot.selectedSpot);
 
-  useEffect(() => {
-    if (modalVivible === Modals.NOTEBOOK_MODALS.TAGS ||
-      modalVivible === Modals.SHORTCUT_MODALS.TAGS) setModalTitle('Tags');
-    if (modalVivible === Modals.NOTEBOOK_MODALS.COMPASS ||
-      modalVivible === Modals.SHORTCUT_MODALS.COMPASS) setModalTitle('Compass');
-    if (modalVivible === Modals.NOTEBOOK_MODALS.SAMPLE ||
-      modalVivible === Modals.SHORTCUT_MODALS.SAMPLE) setModalTitle('Sample');
-    if (modalVivible === Modals.SHORTCUT_MODALS.NOTES) setModalTitle('Notes');
-  }, []);
+  useEffect(() => setModalTitle(modalVisible), []);
 
   const renderModalHeader = () => {
     return (
@@ -51,14 +44,16 @@ const Modal = (props) => {
   };
 
   const renderModalBottom = () => {
-    if (props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS && !isEmpty(props.spot)) {
+    if (modalVisible === Modals.SHORTCUT_MODALS.COMPASS || modalVisible === Modals.SHORTCUT_MODALS.TAGS
+      || modalVisible === Modals.SHORTCUT_MODALS.TAGS || modalVisible === Modals.SHORTCUT_MODALS.SAMPLE
+      || modalVisible === Modals.SHORTCUT_MODALS.NOTES) {
       return (
         <View style={modalStyle.modalBottom}>
-          <ListItem
+          {!isEmpty(selectedSpot) && <ListItem
             containerStyle={modalStyle.modalBottom}
             title={'Go to last spot created'}
             titleStyle={modalStyle.textStyle}
-            onPress={() => props.onPress(NotebookPages.MEASUREMENT)}
+            onPress={props.onPress}
             chevron={{name: 'right', type: 'antdesign', color: themes.LIST_CHEVRON_COLOR, size: 16}}
             leftIcon={
               <Image
@@ -67,51 +62,24 @@ const Modal = (props) => {
                 style={modalStyle.icon}
               />
             }
-          />
+          />}
+          {isEmpty(selectedSpot) && modalVisible === Modals.SHORTCUT_MODALS.COMPASS
+          && <View style={{alignItems: 'center', paddingBottom: 20}}>
+            <Text style={{fontWeight: '400'}}>Take a measurement first</Text>
+          </View>}
         </View>
       );
     }
-    else if (props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE && !isEmpty(props.spot)) {
+    else if (modalVisible === Modals.NOTEBOOK_MODALS.COMPASS || modalVisible === Modals.NOTEBOOK_MODALS.TAGS
+      || modalVisible === Modals.NOTEBOOK_MODALS.SAMPLE) {
       return (
-        <ListItem
-          containerStyle={modalStyle.modalBottom}
-          title={'Go to last spot created'}
-          titleStyle={modalStyle.textStyle}
-          onPress={() => props.onPress(NotebookPages.SAMPLE)}
-          chevron={{name: 'right', type: 'antdesign', color: themes.LIST_CHEVRON_COLOR, size: 16}}
-          leftIcon={
-            <Image
-              target={props.name}
-              source={require('../../../assets/icons/NotebookView_pressed.png')}
-              style={modalStyle.icon}
-            />
-          }
-        />
-      );
-    }
-    else if (props.modalVisible === Modals.SHORTCUT_MODALS.NOTES && !isEmpty(props.spot)) {
-      return (
-        <ListItem
-          containerStyle={modalStyle.modalBottom}
-          title={'Go to last spot created'}
-          titleStyle={modalStyle.textStyle}
-          onPress={() => props.onPress(NotebookPages.NOTE)}
-          chevron={{name: 'right', type: 'antdesign', color: themes.LIST_CHEVRON_COLOR, size: 16}}
-          leftIcon={
-            <Image
-              target={props.name}
-              source={require('../../../assets/icons/NotebookView_pressed.png')}
-              style={modalStyle.icon}
-            />
-          }
-        />
-      );
-    }
-    else {
-      return (
-        <View style={{alignItems: 'center', paddingBottom: 20}}>
-          {props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS ?
-            <Text style={{fontWeight: '400'}}>Take a measurement first</Text> : null}
+        <View>
+          {!isEmpty(selectedSpot) && <Button
+            title={'View In Shortcut Mode'}
+            type={'clear'}
+            titleStyle={compassStyles.buttonTitleStyle}
+            onPress={props.onPress}
+          />}
         </View>
       );
     }
@@ -130,13 +98,4 @@ const Modal = (props) => {
   );
 };
 
-const mapStateToProps = (state) => {
-  return {
-    spot: state.spot.selectedSpot,
-    isNotebookPanelVisible: state.notebook.isNotebookPanelVisible,
-    modalVisible: state.home.modalVisible,
-    deviceDimensions: state.home.deviceDimensions,
-  };
-};
-
-export default connect(mapStateToProps)(Modal);
+export default Modal;
