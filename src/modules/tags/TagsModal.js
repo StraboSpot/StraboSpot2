@@ -1,10 +1,11 @@
 import React from 'react';
-import {FlatList} from 'react-native';
+import {FlatList, Text, View} from 'react-native';
 
-import {ListItem} from 'react-native-elements';
+import {Button, ListItem} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
-import commonStyles from '../../shared/common.styles';
+import DefaultCheckBox from '../../shared/ui/Checkbox';
+import modalStyle from '../../shared/ui/modal/modal.style';
 import {useTagsHook} from '../tags';
 
 const TagsModal = () => {
@@ -16,25 +17,35 @@ const TagsModal = () => {
     return (
       <ListItem
         title={tag.name}
-        rightTitle={useTags.getLabel(tag.type)}
-        rightTitleStyle={{}}
-        rightContentContainerStyle={{alignItems: 'flex-start'}}
-        containerStyle={commonStyles.listItem}
-        contentContainerStyle={{maxWidth: 100}}
+        titleStyle={{fontWeight: 'bold'}}
+        rightElement={
+            <DefaultCheckBox
+              iconRight
+              checkedColor={'grey'}
+              checked={tag && tag.spots && tag.spots.includes(selectedSpot.properties.id)}/>
+          }
+        subtitle={'- ' + useTags.getLabel(tag.type)}
         bottomDivider={i < tags.length - 1}
         onPress={() => useTags.addRemoveTagFromSpot(tag)}
-        checkmark={tag && tag.spots && tag.spots.includes(selectedSpot.properties.id)}
+        // checkmark={!isEmpty(selectedSpot) && tag && tag.spots && tag.spots.includes(selectedSpot.properties.id)}
       />
     );
   };
 
   return (
     <React.Fragment>
-      <FlatList
-        keyExtractor={item => item.id.toString()}
-        data={tags.sort((a, b) => a.name.localeCompare(b.name))}  // alphabetize by name
-        renderItem={({item, index}) => renderTagItem(item, index)}
+      <ListItem
+        title={'Filter Tags by Type'}
+        chevron
       />
+      <View style={modalStyle.textContainer}>
+        <Text style={modalStyle.textStyle}>Check all tags that apply</Text>
+      </View>
+        <FlatList
+          keyExtractor={item => item.id.toString()}
+          data={tags.sort((a, b) => a.name.localeCompare(b.name))}  // alphabetize by name
+          renderItem={({item, index}) => renderTagItem(item, index)}
+        />
     </React.Fragment>
   );
 };
