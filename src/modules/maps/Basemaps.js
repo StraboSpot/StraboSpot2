@@ -33,10 +33,19 @@ function Basemap(props) {
   // else return default center coordinates.
   const evaluateCenterCoordinates = () => {
     if (props.zoomToSpot) {
-      return props.imageBasemap ?
-        ((isEmpty(selectedSpot) || !isEmpty(selectedSpot) && selectedSpot.properties.image_basemap !== props.imageBasemap.id) ? defaultCenterCoordinates() :
-          useMaps.convertCoordinateProjections(pixelProjection, geoLatLngProjection, turf.centroid(selectedSpot).geometry.coordinates))
-        : ((isEmpty(selectedSpot)) || !isEmpty(selectedSpot) && selectedSpot.properties.image_basemap) ? defaultCenterCoordinates() : turf.centroid(selectedSpot).geometry.coordinates;
+      return props.imageBasemap
+        ? (
+          (isEmpty(selectedSpot)
+            || !isEmpty(selectedSpot) && selectedSpot.properties.image_basemap !== props.imageBasemap.id)
+            ? defaultCenterCoordinates()
+            : useMaps.convertCoordinateProjections(pixelProjection, geoLatLngProjection,
+            turf.centroid(selectedSpot).geometry.coordinates)
+        )
+        : (
+          ((isEmpty(selectedSpot)) || !isEmpty(selectedSpot) && selectedSpot.properties.image_basemap)
+            ? defaultCenterCoordinates()
+            : turf.centroid(selectedSpot).geometry.coordinates
+        );
     }
     else {
       return defaultCenterCoordinates();
@@ -107,7 +116,7 @@ function Basemap(props) {
 
         {/* Custom Overlay Layer */}
         {Object.values(customMaps).map(customMap => {
-          return customMap.overlay && customMap.isViewable &&
+          return customMap.overlay && customMap.isViewable && (
             <MapboxGL.RasterSource
               key={customMap.id}
               id={customMap.id}
@@ -116,28 +125,31 @@ function Basemap(props) {
                                     sourceID={customMap.id}
                                     belowLayerID={'pointLayerNotSelected' || 'pointLayerSelected'}
                                     style={{rasterOpacity: customMap.opacity}}/>
-            </MapboxGL.RasterSource>;
+            </MapboxGL.RasterSource>
+          );
         })}
 
         {/* Image Basemap background Layer */}
-        {props.imageBasemap &&
-        <MapboxGL.VectorSource>
-          <MapboxGL.BackgroundLayer
-            id='background'
-            style={{backgroundColor: '#ffffff'}}
-            sourceID={'imageBasemap'}
-          />
-        </MapboxGL.VectorSource>}
+        {props.imageBasemap && (
+          <MapboxGL.VectorSource>
+            <MapboxGL.BackgroundLayer
+              id='background'
+              style={{backgroundColor: '#ffffff'}}
+              sourceID={'imageBasemap'}
+            />
+          </MapboxGL.VectorSource>
+        )}
 
         {/* Image Basemap Layer */}
-        {props.imageBasemap && !isEmpty(props.coordQuad) &&
-        <MapboxGL.Animated.ImageSource
-          id='imageBasemap'
-          coordinates={props.coordQuad}
-          url={useImages.getLocalImageSrc(props.imageBasemap.id)}>
-          <MapboxGL.RasterLayer id='imageBasemapLayer'
-                                style={{rasterOpacity: 1}}/>
-        </MapboxGL.Animated.ImageSource>}
+        {props.imageBasemap && !isEmpty(props.coordQuad) && (
+          <MapboxGL.Animated.ImageSource
+            id='imageBasemap'
+            coordinates={props.coordQuad}
+            url={useImages.getLocalImageSrc(props.imageBasemap.id)}>
+            <MapboxGL.RasterLayer id='imageBasemapLayer'
+                                  style={{rasterOpacity: 1}}/>
+          </MapboxGL.Animated.ImageSource>
+        )}
 
         {/* Feature Layer */}
         <MapboxGL.Images

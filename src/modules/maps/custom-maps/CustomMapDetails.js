@@ -77,7 +77,8 @@ const AddCustomMaps = () => {
       dispatch({type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: SettingsMenuItems.SETTINGS_MAIN});
       dispatch({type: homeReducers.CLEAR_STATUS_MESSAGES});
       dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Success!'});
-      dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: `\nMap ${customMap.title} has been added or updated!`});
+      dispatch(
+        {type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: `\nMap ${customMap.title} has been added or updated!`});
       dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, bool: true});
     }
     else {
@@ -247,27 +248,27 @@ const AddCustomMaps = () => {
         <Divider sectionText={'Overlay Settings'}/>
         <View style={styles.sectionsContainer}>
           {renderOverlay()}
-          {editableCustomMapData && editableCustomMapData.overlay &&
-          <View style={{}}>
-            <ListItem
-              containerStyle={{borderTopWidth: 0.5, padding: 0, paddingLeft: 10}}
-              title={'Opacity'}
-              subtitle={`(${sliderValuePercent}%)`}
-              subtitleStyle={{fontSize: 12, paddingLeft: 15}}
-              rightElement={
-                <View style={{flex: 2}}>
-                  <Slider
-                    value={editableCustomMapData && editableCustomMapData.opacity}
-                    onValueChange={(val) => setEditableCustomMapData(e => ({...e, opacity: val}))}
-                    maximumValue={1}
-                    minimumValue={0}
-                    step={0.1}
-                  />
-                </View>
-              }
-            />
-          </View>
-          }
+          {editableCustomMapData && editableCustomMapData.overlay && (
+            <View style={{}}>
+              <ListItem
+                containerStyle={{borderTopWidth: 0.5, padding: 0, paddingLeft: 10}}
+                title={'Opacity'}
+                subtitle={`(${sliderValuePercent}%)`}
+                subtitleStyle={{fontSize: 12, paddingLeft: 15}}
+                rightElement={
+                  <View style={{flex: 2}}>
+                    <Slider
+                      value={editableCustomMapData && editableCustomMapData.opacity}
+                      onValueChange={(val) => setEditableCustomMapData(e => ({...e, opacity: val}))}
+                      maximumValue={1}
+                      minimumValue={0}
+                      step={0.1}
+                    />
+                  </View>
+                }
+              />
+            </View>
+          )}
         </View>
       </View>
       <View style={[sidePanelStyles.sectionContainer, {flex: 5}]}>

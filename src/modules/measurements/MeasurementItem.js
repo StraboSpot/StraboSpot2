@@ -47,42 +47,42 @@ const MeasurementItem = (props) => {
 
   const getMeasurementText = (item) => {
     if (item.type === 'planar_orientation' || item.type === 'tabular_orientation') {
-      return (isEmpty(item.strike) ? '?' : padWithLeadingZeros(item.strike, 3)) + '/' +
-        (isEmpty(item.dip) ? '?' : padWithLeadingZeros(item.dip, 2));
+      return (isEmpty(item.strike) ? '?' : padWithLeadingZeros(item.strike, 3)) + '/'
+        + (isEmpty(item.dip) ? '?' : padWithLeadingZeros(item.dip, 2));
     }
     if (item.type === 'linear_orientation') {
-      return (isEmpty(item.plunge) ? '?' : padWithLeadingZeros(item.plunge, 2)) + '\u2192' +
-        (isEmpty(item.trend) ? '?' : padWithLeadingZeros(item.trend, 3));
+      return (isEmpty(item.plunge) ? '?' : padWithLeadingZeros(item.plunge, 2)) + '\u2192'
+        + (isEmpty(item.trend) ? '?' : padWithLeadingZeros(item.trend, 3));
     }
     return '?';
   };
 
   return (
     <React.Fragment>
-      {typeof (props.item.item) !== 'undefined' &&
-      <ListItem
-        containerStyle={props.selectedIds.includes(
-          props.item.item.id) ? commonStyles.listItemInverse : commonStyles.listItem}
-        contentContainerStyle={{maxWidth: 75}}
-        key={props.item.item.id}
-        onPress={() => props.onPress()}
-        pad={5}
-        title={getMeasurementText(props.item.item)}
-        titleStyle={props.selectedIds.includes(
-          props.item.item.id) ? commonStyles.listItemTitleInverse : commonStyles.listItemTitle}
-        rightContentContainerStyle={{alignItems: 'flex-start'}}
-        rightTitle={getTypeText(props.item.item)}
-        rightTitleStyle={props.selectedIds.includes(
-          props.item.item.id) ? commonStyles.listItemRightTitleInverse : commonStyles.listItemRightTitle}
-        rightIcon={{
-          name: 'ios-information-circle-outline',
-          type: 'ionicon',
-          color: props.selectedIds.includes(
-            props.item.item.id) ? themes.SECONDARY_BACKGROUND_COLOR : themes.PRIMARY_ACCENT_COLOR,
-        }}
-        chevron
-      />
-      }
+      {typeof (props.item.item) !== 'undefined' && (
+        <ListItem
+          containerStyle={props.selectedIds.includes(
+            props.item.item.id) ? commonStyles.listItemInverse : commonStyles.listItem}
+          contentContainerStyle={{maxWidth: 75}}
+          key={props.item.item.id}
+          onPress={() => props.onPress()}
+          pad={5}
+          title={getMeasurementText(props.item.item)}
+          titleStyle={props.selectedIds.includes(
+            props.item.item.id) ? commonStyles.listItemTitleInverse : commonStyles.listItemTitle}
+          rightContentContainerStyle={{alignItems: 'flex-start'}}
+          rightTitle={getTypeText(props.item.item)}
+          rightTitleStyle={props.selectedIds.includes(
+            props.item.item.id) ? commonStyles.listItemRightTitleInverse : commonStyles.listItemRightTitle}
+          rightIcon={{
+            name: 'ios-information-circle-outline',
+            type: 'ionicon',
+            color: props.selectedIds.includes(
+              props.item.item.id) ? themes.SECONDARY_BACKGROUND_COLOR : themes.PRIMARY_ACCENT_COLOR,
+          }}
+          chevron
+        />
+      )}
     </React.Fragment>
   );
 };

@@ -17,18 +17,23 @@ const NotebookFooter = props => {
         if (props.notebookPageVisible === NotebookPages.TAG) return require('../../../assets/icons/Tag_pressed.png');
         else return require('../../../assets/icons/Tag.png');
       case NotebookPages.MEASUREMENT:
-        if (props.notebookPageVisible === NotebookPages.MEASUREMENT || props.notebookPageVisible === NotebookPages.MEASUREMENTDETAIL) {
+        if (props.notebookPageVisible === NotebookPages.MEASUREMENT
+          || props.notebookPageVisible === NotebookPages.MEASUREMENTDETAIL) {
           return require('../../../assets/icons/Measurement_pressed.png');
         }
         else return require('../../../assets/icons/Measurement.png');
       case NotebookPages.SAMPLE:
-        if (props.notebookPageVisible === NotebookPages.SAMPLE) return require('../../../assets/icons/Sample_pressed.png');
+        if (props.notebookPageVisible === NotebookPages.SAMPLE) {
+          return require('../../../assets/icons/Sample_pressed.png');
+        }
         else return require('../../../assets/icons/Sample.png');
       case NotebookPages.NOTE:
         if (props.notebookPageVisible === NotebookPages.NOTE) return require('../../../assets/icons/Note_pressed.png');
         else return require('../../../assets/icons/Note.png');
       case NotebookPages.PHOTO:
-        if (props.notebookPageVisible === NotebookPages.PHOTO) return require('../../../assets/icons/Photo_pressed.png');
+        if (props.notebookPageVisible === NotebookPages.PHOTO) {
+          return require('../../../assets/icons/Photo_pressed.png');
+        }
         else return require('../../../assets/icons/Photo.png');
       // case NotebookPages.SKETCH:
       //   if (props.notebookPageVisible === NotebookPages.SKETCH) return require('../../../assets/icons/StraboIcons_Oct2019/Sketch_pressed.png');
@@ -76,8 +81,9 @@ const NotebookFooter = props => {
 
 function mapStateToProps(state) {
   return {
-    notebookPageVisible: isEmpty(state.notebook.visibleNotebookPagesStack) ? null :
-      state.notebook.visibleNotebookPagesStack.slice(-1)[0],
+    notebookPageVisible: isEmpty(state.notebook.visibleNotebookPagesStack)
+      ? null
+      : state.notebook.visibleNotebookPagesStack.slice(-1)[0],
   };
 }
 

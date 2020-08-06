@@ -18,9 +18,9 @@ const useMapFeatures = (props) => {
     const selectedSpots = [];
     try {
       spots.forEach(spot => {
-        if (turf.booleanWithin(spot, drawnPolygon) ||
-          (spot.geometry.type === 'LineString' && turf.lineIntersect(spot, drawnPolygon).features.length > 0) ||
-          (spot.geometry.type === 'Polygon' && turf.booleanOverlap(spot, drawnPolygon))) {
+        if (turf.booleanWithin(spot, drawnPolygon)
+          || (spot.geometry.type === 'LineString' && turf.lineIntersect(spot, drawnPolygon).features.length > 0)
+          || (spot.geometry.type === 'Polygon' && turf.booleanOverlap(spot, drawnPolygon))) {
           selectedSpots.push(spot);
         }
       });

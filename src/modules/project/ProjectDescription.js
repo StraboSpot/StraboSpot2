@@ -151,28 +151,36 @@ const ProjectDescription = (props) => {
             onPress={() => showDatPickerHandler('endDate')}
             chevron
           />
-          {showStartPicker ?
-            <View>
-              <Button type={'clear'} title={'Start Date Done'} onPress={() => setShowStartPicker(false)}/>
-              <DateTimePicker
-                mode={'date'}
-                value={projectDescription.start_date || new Date()}
-                onChange={changeStartDate}
-                display='default'
-              />
-            </View> : null}
-          {showEndPicker ?
-            <View>
-              <Button type={'clear'} title={'End Date Done'} onPress={() => setShowEndPicker(false)}/>
-              <Text style={{textAlign: 'center', fontSize: 12}}>End Date cannot be before Start Date</Text>
-              <DateTimePicker
-                mode={'date'}
-                value={projectDescription.end_date || new Date()}
-                minimumDate={projectDescription.start_date}
-                onChange={changeEndDate}
-                display='default'
-              />
-            </View> : null}
+          {showStartPicker
+            ? (
+              <View>
+                <Button type={'clear'} title={'Start Date Done'} onPress={() => setShowStartPicker(false)}/>
+                <DateTimePicker
+                  mode={'date'}
+                  value={projectDescription.start_date || new Date()}
+                  onChange={changeStartDate}
+                  display='default'
+                />
+              </View>
+            )
+            : null
+          }
+          {showEndPicker
+            ? (
+              <View>
+                <Button type={'clear'} title={'End Date Done'} onPress={() => setShowEndPicker(false)}/>
+                <Text style={{textAlign: 'center', fontSize: 12}}>End Date cannot be before Start Date</Text>
+                <DateTimePicker
+                  mode={'date'}
+                  value={projectDescription.end_date || new Date()}
+                  minimumDate={projectDescription.start_date}
+                  onChange={changeEndDate}
+                  display='default'
+                />
+              </View>
+            )
+            : null
+          }
         </View>
 
       </React.Fragment>
@@ -210,8 +218,10 @@ const ProjectDescription = (props) => {
             <View style={{flex: 1, alignItems: 'center'}}>
               <TextInput
                 keyboardType={selectedField.name === 'magnetic_declination' ? 'number-pad' : 'default'}
-                onChangeText={(val) => selectedField.name === 'magnetic_declination' ? validateMagField(val) :
-                  setProjectDescription({...projectDescription, [selectedField.name]: val})}
+                onChangeText={(val) => selectedField.name === 'magnetic_declination'
+                  ? validateMagField(val)
+                  : setProjectDescription({...projectDescription, [selectedField.name]: val})
+                }
                 defaultValue={projectDescription[selectedField.name].toString()}
                 style={{backgroundColor: 'white', padding: 15, width: 250}}
               />
@@ -245,8 +255,9 @@ const ProjectDescription = (props) => {
   };
 
   const renderListItemFields = (field, i, obj) => {
-    const fieldName = projectDescription && projectDescription[field.name] ?
-      truncateText(projectDescription[field.name], 15).toString() : 'None';
+    const fieldName = projectDescription && projectDescription[field.name]
+      ? truncateText(projectDescription[field.name], 15).toString()
+      : 'None';
     return (
       <ListItem
         key={field.name}

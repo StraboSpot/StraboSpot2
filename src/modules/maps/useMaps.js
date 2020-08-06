@@ -201,8 +201,8 @@ const useMaps = () => {
     // selected and not selected since the selected symbology is a halo around the point)
     const selectedIds = selectedSpots.map(sel => sel.properties.id);
     const selectedDisplayedSpots = displayedSpots.filter(spot => selectedIds.includes(spot.properties.id));
-    const notSelectedDisplayedSpots = mappedFeatures.filter(spot => !selectedIds.includes(spot.properties.id) ||
-      spot.geometry.type === 'Point');
+    const notSelectedDisplayedSpots = mappedFeatures.filter(spot => !selectedIds.includes(spot.properties.id)
+      || spot.geometry.type === 'Point');
 
     console.log('Selected Spots to Display on this Map:', selectedDisplayedSpots);
     console.log('Not Selected Spots to Display on this Map:', notSelectedDisplayedSpots);

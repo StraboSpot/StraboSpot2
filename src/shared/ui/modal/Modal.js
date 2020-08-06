@@ -49,20 +49,22 @@ const Modal = (props) => {
       || modalVisible === Modals.SHORTCUT_MODALS.NOTES) {
       return (
         <View style={modalStyle.modalBottom}>
-          {!isEmpty(selectedSpot) && <ListItem
-            containerStyle={modalStyle.modalBottom}
-            title={'Go to last spot created'}
-            titleStyle={modalStyle.textStyle}
-            onPress={props.onPress}
-            chevron={{name: 'right', type: 'antdesign', color: themes.LIST_CHEVRON_COLOR, size: 16}}
-            leftIcon={
-              <Image
-                target={props.name}
-                source={require('../../../assets/icons/NotebookView_pressed.png')}
-                style={modalStyle.icon}
-              />
-            }
-          />}
+          {!isEmpty(selectedSpot) && (
+            <ListItem
+              containerStyle={modalStyle.modalBottom}
+              title={'Go to last spot created'}
+              titleStyle={modalStyle.textStyle}
+              onPress={props.onPress}
+              chevron={{name: 'right', type: 'antdesign', color: themes.LIST_CHEVRON_COLOR, size: 16}}
+              leftIcon={
+                <Image
+                  target={props.name}
+                  source={require('../../../assets/icons/NotebookView_pressed.png')}
+                  style={modalStyle.icon}
+                />
+              }
+            />
+          )}
           {isEmpty(selectedSpot) && modalVisible === Modals.SHORTCUT_MODALS.COMPASS
           && <View style={{alignItems: 'center', paddingBottom: 20}}>
             <Text style={{fontWeight: '400'}}>Take a measurement first</Text>
@@ -74,12 +76,14 @@ const Modal = (props) => {
       || modalVisible === Modals.NOTEBOOK_MODALS.SAMPLE) {
       return (
         <View>
-          {!isEmpty(selectedSpot) && <Button
-            title={'View In Shortcut Mode'}
-            type={'clear'}
-            titleStyle={compassStyles.buttonTitleStyle}
-            onPress={props.onPress}
-          />}
+          {!isEmpty(selectedSpot) && (
+            <Button
+              title={'View In Shortcut Mode'}
+              type={'clear'}
+              titleStyle={compassStyles.buttonTitleStyle}
+              onPress={props.onPress}
+            />
+          )}
         </View>
       );
     }

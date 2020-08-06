@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
   },
   navItemStyle: {
-    borderTopWidth: .5,
+    borderTopWidth: 0.5,
     borderColor: themes.LIST_BORDER_COLOR,
   },
   navButtonText: {

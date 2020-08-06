@@ -28,34 +28,37 @@ const ManageCustomMaps = (props) => {
         title={'Add new Custom Map'}
       />
       <Divider sectionText={'current custom maps'} style={styles.header}/>
-      {!isEmpty(props.customMaps) ?
-        <View style={styles.sectionsContainer}>
-          {Object.values(props.customMaps).map((item, i) => (
-            <ListItem
-              containerStyle={styles.list}
-              bottomDivider={i < Object.values(props.customMaps).length - 1}
-              key={item.id}
-              onPress={() => useMaps.customMapDetails(item)}
-              chevron
-              title={
-                <View style={styles.itemContainer}>
-                  <Text style={styles.itemTextStyle}>{item.title}</Text>
-                </View>
-              }
-              subtitle={
-                <View style={styles.itemSubContainer}>
-                  <Text style={styles.itemSubTextStyle}>
-                    <Text>
-                      ({mapTypeName(item.source)})
+      {!isEmpty(props.customMaps)
+        ? (
+          <View style={styles.sectionsContainer}>
+            {Object.values(props.customMaps).map((item, i) => (
+              <ListItem
+                containerStyle={styles.list}
+                bottomDivider={i < Object.values(props.customMaps).length - 1}
+                key={item.id}
+                onPress={() => useMaps.customMapDetails(item)}
+                chevron
+                title={
+                  <View style={styles.itemContainer}>
+                    <Text style={styles.itemTextStyle}>{item.title}</Text>
+                  </View>
+                }
+                subtitle={
+                  <View style={styles.itemSubContainer}>
+                    <Text style={styles.itemSubTextStyle}>
+                      <Text>({mapTypeName(item.source)})</Text>
                     </Text>
-                  </Text>
-                </View>
-              }
-            />))
-          }
-        </View>
-        : <View style={[styles.sectionsContainer, {justifyContent: 'center', alignItems: 'center'}]}><Text>No custom
-          maps</Text></View>}
+                  </View>
+                }
+              />))
+            }
+          </View>
+        ) : (
+          <View style={[styles.sectionsContainer, {justifyContent: 'center', alignItems: 'center'}]}>
+            <Text>No custom maps</Text>
+          </View>
+        )
+      }
     </React.Fragment>
   );
 };

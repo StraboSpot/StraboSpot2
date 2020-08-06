@@ -85,8 +85,9 @@ const SamplesList = (props) => {
     return (
       <ListItem
         key={item.id}
-        title={item.sample_id_name ? item.sample_id_name :
-          <Text style={{color: 'grey'}}>Sample id: {item.id}</Text>}
+        title={item.sample_id_name
+          ? item.sample_id_name
+          : <Text style={{color: 'grey'}}>Sample id: {item.id}</Text>}
         chevron
         onPress={() => Alert.alert('Will go to Sample Detail', `${item.id}`)}
       />
@@ -133,9 +134,9 @@ const SamplesList = (props) => {
       <React.Fragment>
         <SortingButtons/>
         {/*<ScrollView>*/}
-          <View>
-            {sortedView}
-          </View>
+        <View>
+          {sortedView}
+        </View>
         {/*</ScrollView>*/}
       </React.Fragment>
     );

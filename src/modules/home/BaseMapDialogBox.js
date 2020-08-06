@@ -53,51 +53,61 @@ const BaseMapDialog = props => {
             />;
           })}
         </View>}
-        {!isOnline && <View style={!isEmpty(customMaps) && {borderBottomWidth: 1}}>
+        {!isOnline && (
+          <View style={!isEmpty(customMaps) && {borderBottomWidth: 1}}>
             <SectionDivider dividerText={'Offline Default Basemaps'}/>
             {Object.values(offlineMap).map((map, i) => {
-              if (map.id ===  'mapbox.outdoors' || map.id === 'mapbox.satellite' || map.id === 'osm'
+              if (map.id === 'mapbox.outdoors' || map.id === 'mapbox.satellite' || map.id === 'osm'
                 || map.id === 'macrostrat') {
-                return <ListItem
-                  key={map.id}
-                  title={map.name}
-                  containerStyle={styles.dialogContent}
-                  bottomDivider={i < basemaps.length - 2}
-                  titleStyle={styles.dialogText}
-                  onPress={() => props.onPress(map.id)}
-                  checkmark={currentBasemap && map.id === currentBasemap.id}
-                />;
+                return (
+                  <ListItem
+                    key={map.id}
+                    title={map.name}
+                    containerStyle={styles.dialogContent}
+                    bottomDivider={i < basemaps.length - 2}
+                    titleStyle={styles.dialogText}
+                    onPress={() => props.onPress(map.id)}
+                    checkmark={currentBasemap && map.id === currentBasemap.id}
+                  />
+                );
               }
               else return null;
             })}
-          </View>}
+          </View>
+        )}
         <View>
-          {!isEmpty(customMaps) && customMapsArr.some(map => !map.overlay) && isOnline && <ScrollView style={{maxHeight: 400}}>
-            <SectionDivider dividerText={'Custom Basemaps'} />
-            {customMapsArr.map((customMap, i) => {
-              return !customMap.overlay &&
-                <ListItem
-                  containerStyle={styles.customBaseMapListContainer}
-                  bottomDivider={i < customMapsArr.length - 1}
-                  key={customMap.id}
-                  checkmark={isOnline && customMap.id === currentBasemap.id}
-                  onPress={() => {
-                    useMaps.viewCustomMap(customMap);
-                    props.close();
-                  }}
-                  title={
-                    <View style={styles.itemContainer}>
-                      <Text style={styles.customBaseMapListText}>{customMap.title}</Text>
-                    </View>
-                  }
-                />;
-            })}
-          </ScrollView>}
+          {!isEmpty(customMaps) && customMapsArr.some(map => !map.overlay) && isOnline && (
+            <ScrollView style={{maxHeight: 400}}>
+              <SectionDivider dividerText={'Custom Basemaps'}/>
+              {customMapsArr.map((customMap, i) => {
+                return (
+                  !customMap.overlay
+                  && (
+                    <ListItem
+                      containerStyle={styles.customBaseMapListContainer}
+                      bottomDivider={i < customMapsArr.length - 1}
+                      key={customMap.id}
+                      checkmark={isOnline && customMap.id === currentBasemap.id}
+                      onPress={() => {
+                        useMaps.viewCustomMap(customMap);
+                        props.close();
+                      }}
+                      title={
+                        <View style={styles.itemContainer}>
+                          <Text style={styles.customBaseMapListText}>{customMap.title}</Text>
+                        </View>
+                      }
+                    />
+                  )
+                );
+              })}
+            </ScrollView>
+          )}
         </View>
         {!isEmpty(customMaps) && customMapsArr.some(map => map.overlay) && <ScrollView style={{maxHeight: 400}}>
           <SectionDivider dividerText={'Custom Map Overlays'} style={{}}/>
           {customMapsArr.map((customMap, i) => {
-            return customMap.overlay &&
+            return customMap.overlay && (
               <ListItem
                 containerStyle={styles.customBaseMapListContainer}
                 bottomDivider={i < customMapsArr.length - 1}
@@ -114,7 +124,8 @@ const BaseMapDialog = props => {
                     onValueChange={(val) => useMaps.setCustomMapSwitchValue(val, customMap)}
                   />
                 }
-              />;
+              />
+            );
           })}
         </ScrollView>}
       </DialogContent>

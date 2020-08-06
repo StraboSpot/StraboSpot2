@@ -422,15 +422,13 @@ const SaveMapsModal = (props) => {
           />
           <View style={{flex: 1}}>
             <View style={{flex: 1}}>
-              {showMainMenu &&
-              <View style={{paddingTop: 20, paddingBottom: 20}}>
-                <Text style={{textAlign: 'center'}}>
-                  Select max zoom level to download:
-                </Text>
-              </View>
-              }
-
-
+              {showMainMenu && (
+                <View style={{paddingTop: 20, paddingBottom: 20}}>
+                  <Text style={{textAlign: 'center'}}>
+                    Select max zoom level to download:
+                  </Text>
+                </View>
+              )}
             </View>
             <View style={{flex: 3}}>
               {showMainMenu && <Picker
@@ -447,75 +445,77 @@ const SaveMapsModal = (props) => {
                 })}
               </Picker>
               }
-              {showLoadingBar &&
-              <View style={{height: 40, justifyContent: 'center', flexDirection: 'row'}}>
-                {isLoadingWave ?
-                  <View style={{paddingBottom: 35}}>
-                    <loading.DotIndicator animating={isLoadingWave} count={6} size={10}/>
-                  </View> :
-                  <View>
-                    <ProgressBar progress={percentDone} width={200}/>
-                    <Text style={{textAlign: 'right', paddingTop: 5}}>
-                      {toNumberFixedValue(percentDone, 1)}
-                    </Text>
-                  </View>
+              {showLoadingBar && (
+                <View style={{height: 40, justifyContent: 'center', flexDirection: 'row'}}>
+                  {isLoadingWave
+                    ? (
+                      <View style={{paddingBottom: 35}}>
+                        <loading.DotIndicator animating={isLoadingWave} count={6} size={10}/>
+                      </View>
+                    ) : (
+                      <View>
+                        <ProgressBar progress={percentDone} width={200}/>
+                        <Text style={{textAlign: 'right', paddingTop: 5}}>
+                          {toNumberFixedValue(percentDone, 1)}
+                        </Text>
+                      </View>
+                    )
                   }
-              </View>
-              }
-              {showLoadingMenu &&
-              <View style={{height: 40, justifyContent: 'center'}}>
-                <Text style={{fontSize: 15}}>{statusMessage}</Text>
-                {statusMessage.includes('Installing tiles...') && !statusMessage.includes('Downloading Tiles...') &&
-                <View>
-                  <Text style={{fontSize: 15}}>Installing: {tilesToInstall}</Text>
-                  <Text style={{fontSize: 15}}>Already Installed: {installedTiles}</Text>
-                </View>}
-              </View>
-              }
-              {showComplete &&
-              <View style={{height: 40, justifyContent: 'center'}}>
-                <Text style={{fontSize: 20}}>Success!</Text>
-              </View>
-              }
-
-              {showComplete &&
-              <View style={{height: 40, justifyContent: 'center'}}>
-                <Text>Your map has been successfully downloaded to this device.</Text>
-              </View>
-              }
+                </View>
+              )}
+              {showLoadingMenu && (
+                <View style={{height: 40, justifyContent: 'center'}}>
+                  <Text style={{fontSize: 15}}>{statusMessage}</Text>
+                  {statusMessage.includes('Installing tiles...') && !statusMessage.includes('Downloading Tiles...') && (
+                    <View>
+                      <Text style={{fontSize: 15}}>Installing: {tilesToInstall}</Text>
+                      <Text style={{fontSize: 15}}>Already Installed: {installedTiles}</Text>
+                    </View>
+                  )}
+                </View>
+              )}
+              {showComplete && (
+                <View style={{height: 40, justifyContent: 'center'}}>
+                  <Text style={{fontSize: 20}}>Success!</Text>
+                </View>
+              )}
+              {showComplete && (
+                <View style={{height: 40, justifyContent: 'center'}}>
+                  <Text>Your map has been successfully downloaded to this device.</Text>
+                </View>
+              )}
             </View>
             <View style={{flex: 2}}>
-              {showMainMenu &&
-              <View>
+              {showMainMenu && (
+                <View>
+                  <Button
+                    onPress={() => saveMap()}
+                    type={'clear'}
+                    containerStyle={{marginTop: 15}}
+                    // buttonStyle={{borderRadius: 30, paddingRight: 50, paddingLeft: 50}}
+                    title={`Download ${tileCount} Tiles`}
+                  />
+                  <Button
+                    title={'Close'}
+                    type={'clear'}
+                    containerStyle={{marginTop: 15}}
+                    onPress={props.close}
+                  />
+                </View>
+              )}
+              {showComplete && (
                 <Button
-                  onPress={() => saveMap()}
-                  type={'clear'}
-                  containerStyle={{marginTop: 15}}
-                  // buttonStyle={{borderRadius: 30, paddingRight: 50, paddingLeft: 50}}
-                  title={`Download ${tileCount} Tiles`}
-                />
-                <Button
-                  title={'Close'}
-                  type={'clear'}
-                  containerStyle={{marginTop: 15}}
                   onPress={props.close}
+                  type={'clear'}
+                  buttonStyle={{borderRadius: 30, paddingRight: 50, paddingLeft: 50}}
+                  title={'Continue'}
                 />
-              </View>
-              }
-              {showComplete &&
-              <Button
-                onPress={props.close}
-                type={'clear'}
-                buttonStyle={{borderRadius: 30, paddingRight: 50, paddingLeft: 50}}
-                title={'Continue'}
-              />
-              }
+              )}
             </View>
           </View>
         </View>
       </DialogContent>
     </Dialog>
-
   );
 };
 

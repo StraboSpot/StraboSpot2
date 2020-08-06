@@ -42,13 +42,13 @@ const NotebookHeader = props => {
         }
         else return getLatLngText(lat, lng);
       }
-      else if ((spot.geometry.type === 'LineString' || spot.geometry.type === 'MultiLineString') &&
-        spot.properties.trace && spot.properties.trace.trace_feature && spot.properties.trace.trace_type) {
+      else if ((spot.geometry.type === 'LineString' || spot.geometry.type === 'MultiLineString')
+        && spot.properties.trace && spot.properties.trace.trace_feature && spot.properties.trace.trace_type) {
         return getTraceText();
       }
-      else if ((spot.geometry.type === 'Polygon' || spot.geometry.type === 'MultiPolygon' ||
-        spot.geometry.type === 'GeometryCollection') &&
-        spot.properties.surface_feature && spot.properties.surface_feature.surface_feature_type) {
+      else if ((spot.geometry.type === 'Polygon' || spot.geometry.type === 'MultiPolygon'
+        || spot.geometry.type === 'GeometryCollection') && spot.properties.surface_feature
+        && spot.properties.surface_feature.surface_feature_type) {
         return getSurfaceFeatureText();
       }
       return spot.geometry.type;
@@ -60,8 +60,8 @@ const NotebookHeader = props => {
     const degreeSymbol = '\u00B0';
     let latitudeCardinal = Math.sign(lat) >= 0 ? 'N' : 'S';
     let longitudeCardinal = Math.sign(lng) >= 0 ? 'E' : 'W';
-    return lng.toFixed(6) + degreeSymbol + ' ' + longitudeCardinal + ', ' +
-      lat.toFixed(6) + degreeSymbol + ' ' + latitudeCardinal;
+    return lng.toFixed(6) + degreeSymbol + ' ' + longitudeCardinal + ', '
+      + lat.toFixed(6) + degreeSymbol + ' ' + latitudeCardinal;
   };
 
   const getTraceText = () => {
@@ -83,8 +83,8 @@ const NotebookHeader = props => {
     const surfaceFeatureDictionary = labelDictionary.general.surface_feature;
     const key = spot.properties.surface_feature.surface_feature_type;
     let surfaceFeatureText = surfaceFeatureDictionary[key] || key.replace(/_/g, ' ');
-    if (spot.properties.surface_feature.surface_feature_type === 'other' &&
-      spot.properties.surface_feature.other_surface_feature_type) {
+    if (spot.properties.surface_feature.surface_feature_type === 'other'
+      && spot.properties.surface_feature.other_surface_feature_type) {
       surfaceFeatureText = spot.properties.surface_feature.other_surface_feature_type;
     }
     return toTitleCase(surfaceFeatureText);
@@ -106,29 +106,38 @@ const NotebookHeader = props => {
           onChangeText={(text) => setSpotName(text)}
           onBlur={() => onSpotEdit('name', spotName)}
           style={headerStyles.headerSpotName}/>
-        {getSpotCoordText() ?
-          <Button
-            type='clear'
-            title={getSpotCoordText()}
-            titleStyle={{textAlign: 'left'}}
-            buttonStyle={{padding: 0, justifyContent: 'flex-start'}}
-            onPress={() => props.onPress('showGeographyInfo')}/> :
-          <View style={{flexDirection: 'row'}}>
-            {!spot.properties.trace && !spot.properties.surface_feature &&
+        {getSpotCoordText()
+          ? (
             <Button
               type='clear'
-              title={'Set To Current Location'}
-              titleStyle={{fontSize: 14}}
-              buttonStyle={{padding: 0}}
-              onPress={() => props.onPress('setToCurrentLocation')}/>
-            }
-            <Button
-              type='clear'
-              title={'Set in Current View'}
-              titleStyle={{fontSize: 14}}
-              buttonStyle={{padding: 0, paddingLeft: spot.properties.trace || spot.properties.surface_feature ? 0 : 40}}
-              onPress={() => props.onPress('setFromMap')}/>
-          </View>
+              title={getSpotCoordText()}
+              titleStyle={{textAlign: 'left'}}
+              buttonStyle={{padding: 0, justifyContent: 'flex-start'}}
+              onPress={() => props.onPress('showGeographyInfo')}
+            />
+          )
+          : (
+            <View style={{flexDirection: 'row'}}>
+              {!spot.properties.trace && !spot.properties.surface_feature && (
+                <Button
+                  type='clear'
+                  title={'Set To Current Location'}
+                  titleStyle={{fontSize: 14}}
+                  buttonStyle={{padding: 0}}
+                  onPress={() => props.onPress('setToCurrentLocation')}
+                />
+              )}
+              <Button
+                type='clear'
+                title={'Set in Current View'}
+                titleStyle={{fontSize: 14}}
+                buttonStyle={{
+                  padding: 0,
+                  paddingLeft: spot.properties.trace || spot.properties.surface_feature ? 0 : 40,
+                }}
+                onPress={() => props.onPress('setFromMap')}/>
+            </View>
+          )
         }
       </View>
       <View>

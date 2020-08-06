@@ -52,11 +52,13 @@ const SpotTag = () => {
 
   return (
     <React.Fragment>
-      {!isEmpty(useTags.getTagsAtSpot()) ?
-        <FlatList
-          keyExtractor={item => item.id.toString()}
-          data={useTags.getTagsAtSpotGeologicUnitFirst()}
-          renderItem={({item}) => renderTag(item)}/>
+      {!isEmpty(useTags.getTagsAtSpot())
+        ? (
+          <FlatList
+            keyExtractor={item => item.id.toString()}
+            data={useTags.getTagsAtSpotGeologicUnitFirst()}
+            renderItem={({item}) => renderTag(item)}/>
+        )
         : <Text style={commonStyles.noValueText}>No Tags</Text>
       }
     </React.Fragment>

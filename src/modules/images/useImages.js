@@ -83,8 +83,8 @@ const useImages = () => {
             imagesDownloadedCount++;
             savedImagesCount++;
             console.log(
-              'NEW/MODIFIED Images Downloaded: ' + imagesDownloadedCount + ' of ' + neededImageIds.length +
-              ' NEW/MODIFIED Images Saved: ' + savedImagesCount + ' of ' + neededImageIds.length);
+              'NEW/MODIFIED Images Downloaded: ' + imagesDownloadedCount + ' of ' + neededImageIds.length
+              + ' NEW/MODIFIED Images Saved: ' + savedImagesCount + ' of ' + neededImageIds.length);
           }, err => {
             imagesFailedCount++;
             console.warn('Error downloading Image', imageId, 'Error:', err);

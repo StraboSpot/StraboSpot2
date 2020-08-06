@@ -90,7 +90,7 @@ const SignUp = props => {
           throw (err);
         });
     }
-  },[isOnline]);
+  }, [isOnline]);
 
   const onChangeText = (key, value) => {
     let connectedValue = {};
@@ -118,9 +118,9 @@ const SignUp = props => {
       ...userData,
       confirmPassword: {
         ...userData.confirmPassword,
-        valid: key === 'password' ? validate(userData.confirmPassword.value, userData.confirmPassword.validationRules,
-          connectedValue) :
-          userData.confirmPassword.valid,
+        valid: key === 'password'
+          ? validate(userData.confirmPassword.value, userData.confirmPassword.validationRules, connectedValue)
+          : userData.confirmPassword.valid,
       },
       [key]: {
         ...userData[key],
@@ -207,16 +207,16 @@ const SignUp = props => {
   return (
     <ImageBackground source={require('../../assets/images/background.jpg')} style={styles.backgroundImage}>
       <View style={styles.container}>
-          <View style={{
-            position: 'absolute',
-            right: 0,
-            top: 40,
-            zIndex: -1,
-          }}>
-            <IconButton
-              source={isOnline ? online : offline}
-            />
-          </View>
+        <View style={{
+          position: 'absolute',
+          right: 0,
+          top: 40,
+          zIndex: -1,
+        }}>
+          <IconButton
+            source={isOnline ? online : offline}
+          />
+        </View>
         <KeyboardAvoidingView
           behavior={'position'}
           contentContainerStyle={{alignItems: 'center', marginTop: 100}}
@@ -227,62 +227,62 @@ const SignUp = props => {
               <Text style={styles.title}>Strabo Spot 2</Text>
               <Text style={styles.version}>{VERSION_NUMBER}</Text>
             </View>
-            <View >
+            <View>
               <View style={styles.inputContainerGroup}>
-              <View style={{flexDirection: 'row'}}>
-                <Input
-                  containerStyle={styles.input}
-                  inputContainerStyle={styles.inputContainer}
-                  // label={'First Name'}
-                  placeholder={'First Name'}
-                  onChangeText={val => onChangeText('firstName', val)}
+                <View style={{flexDirection: 'row'}}>
+                  <Input
+                    containerStyle={styles.input}
+                    inputContainerStyle={styles.inputContainer}
+                    // label={'First Name'}
+                    placeholder={'First Name'}
+                    onChangeText={val => onChangeText('firstName', val)}
+                  />
+                  <Input
+                    containerStyle={styles.input}
+                    inputContainerStyle={styles.inputContainer}
+                    placeholder={'Last Name'}
+                    onChangeText={val => onChangeText('lastName', val)}
+                  />
+                </View>
+                <View style={{width: 700, alignItems: 'center'}}>
+                  <Text style={styles.text}>Must contain at least one uppercase, one digit, and no spaces</Text>
+                </View>
+                <View style={{flexDirection: 'row'}}>
+                  <Input
+                    containerStyle={styles.input}
+                    inputContainerStyle={styles.inputContainer}
+                    secureTextEntry={!userData.password.showPassword}
+                    placeholder={'Create Password'}
+                    rightIcon={!isEmpty(userData.password.value) && userData.password.valid ? checkMark : null}
+                    autoCapitalize='none'
+                    onChangeText={val => onChangeText('password', val)}
+                  />
+                  <Input
+                    containerStyle={styles.input}
+                    inputContainerStyle={styles.inputContainer}
+                    placeholder={'Confirm Password'}
+                    rightIcon={!isEmpty(userData.password.value) && userData.confirmPassword.valid ? checkMark : null}
+                    secureTextEntry={!userData.password.showPassword}
+                    autoCapitalize='none'
+                    onChangeText={val => onChangeText('confirmPassword', val)}
+                  />
+                </View>
+                <DefaultCheckBox
+                  title='Show Password'
+                  textStyle={styles.checkBoxText}
+                  checkedColor={'white'}
+                  checked={userData.password.showPassword}
+                  onPress={() => toggleCheck()}
                 />
                 <Input
+                  keyboardType={'email-address'}
                   containerStyle={styles.input}
                   inputContainerStyle={styles.inputContainer}
-                  placeholder={'Last Name'}
-                  onChangeText={val => onChangeText('lastName', val)}
+                  placeholder={'E-Mail'}
+                  rightIcon={!isEmpty(userData.email.value) && userData.email.valid ? checkMark : null}
+                  onChangeText={val => onChangeText('email', val)}
                 />
-              </View>
-              <View style={{width: 700, alignItems: 'center'}}>
-                <Text style={styles.text}>Must contain at least one uppercase, one digit, and no spaces</Text>
-              </View>
-              <View style={{flexDirection: 'row'}}>
-              <Input
-                containerStyle={styles.input}
-                inputContainerStyle={styles.inputContainer}
-                secureTextEntry={!userData.password.showPassword}
-                placeholder={'Create Password'}
-                rightIcon={!isEmpty(userData.password.value) && userData.password.valid ? checkMark : null}
-                autoCapitalize='none'
-                onChangeText={val => onChangeText('password', val)}
-              />
-              <Input
-                containerStyle={styles.input}
-                inputContainerStyle={styles.inputContainer}
-                placeholder={'Confirm Password'}
-                rightIcon={!isEmpty(userData.password.value) && userData.confirmPassword.valid ? checkMark : null}
-                secureTextEntry={!userData.password.showPassword}
-                autoCapitalize='none'
-                onChangeText={val => onChangeText('confirmPassword', val)}
-              />
-              </View>
-              <DefaultCheckBox
-                title='Show Password'
-                textStyle={styles.checkBoxText}
-                checkedColor={'white'}
-                checked={userData.password.showPassword}
-                onPress={() => toggleCheck()}
-              />
-              <Input
-                keyboardType={'email-address'}
-                containerStyle={styles.input}
-                inputContainerStyle={styles.inputContainer}
-                placeholder={'E-Mail'}
-                rightIcon={!isEmpty(userData.email.value) && userData.email.valid ? checkMark : null}
-                onChangeText={val => onChangeText('email', val)}
-              />
-              {renderButtons()}
+                {renderButtons()}
               </View>
               <StatusDialog
                 visible={statusDialog}

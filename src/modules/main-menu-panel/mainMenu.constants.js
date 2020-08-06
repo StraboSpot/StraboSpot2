@@ -18,7 +18,7 @@ export const SettingsMenuItems = {
     // MANAGE_DATASETS: 'Manage Datasets',
     SHORTCUTS: 'Shortcuts',
     NOTEBOOK_BAR: 'Notebook Bar',
-    NAMING_CONVENTIONS: 'NamingConventions',
+    NAMING_CONVENTIONS: 'Naming Conventions',
     UNITS: 'Units',
     // BACKUP_EXPORT: 'Backup & Export',
   },

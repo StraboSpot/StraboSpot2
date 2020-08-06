@@ -40,18 +40,24 @@ const NotebookPanelMenu = (props) => {
           textStyle={styles.dialogText}
           onPress={() => props.onPress(menuButtons.notebookMenu.DELETE_SPOT)}
         />
-        {isAllSpotsPanelVisible ?
-          <DialogButton
-            style={styles.dialogContent}
-            text='Close All Spots Panel'
-            textStyle={styles.dialogText}
-            onPress={() => props.onPress(menuButtons.notebookMenu.TOGGLE_ALL_SPOTS_PANEL, 'close')}/> :
-          <DialogButton
-            style={styles.dialogContent}
-            text='Open All Spots Panel'
-            textStyle={styles.dialogText}
-            onPress={() => props.onPress(menuButtons.notebookMenu.TOGGLE_ALL_SPOTS_PANEL, 'open')}
-          />}
+        {isAllSpotsPanelVisible
+          ? (
+            <DialogButton
+              style={styles.dialogContent}
+              text='Close All Spots Panel'
+              textStyle={styles.dialogText}
+              onPress={() => props.onPress(menuButtons.notebookMenu.TOGGLE_ALL_SPOTS_PANEL, 'close')}
+            />
+          )
+          : (
+            <DialogButton
+              style={styles.dialogContent}
+              text='Open All Spots Panel'
+              textStyle={styles.dialogText}
+              onPress={() => props.onPress(menuButtons.notebookMenu.TOGGLE_ALL_SPOTS_PANEL, 'open')}
+            />
+          )
+        }
         <DialogButton
           style={styles.dialogContent}
           text='Close Notebook'

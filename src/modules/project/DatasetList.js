@@ -31,7 +31,7 @@ const DatasetList = () => {
   const [isDeleteConfirmModalVisible, setIsDeleteConfirmModalVisible] = useState(false);
   const [isDatasetNameModalVisible, setIsDatasetNameModalVisible] = useState(false);
   const [isStatusMessagesModalVisible, setIsStatusMessagesModalVisible] = useState(false);
-  const [isDeleting , setIsDeleting] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const datasets = useSelector(state => state.project.datasets);
   const statusMessages = useSelector(state => state.home.statusMessages);
@@ -81,7 +81,7 @@ const DatasetList = () => {
               key={item.id}
               title={truncateText(item.name, 20)}
               titleStyle={styles.datasetListItemText}
-              subtitle={item.spotIds ? `(${item.spotIds.length} spot${item.spotIds.length !== 1 ? 's' : '' })` : '(0 spots)'}
+              subtitle={item.spotIds ? `(${item.spotIds.length} spot${item.spotIds.length !== 1 ? 's' : ''})` : '(0 spots)'}
               subtitleStyle={styles.datasetListItemSpotCount}
               containerStyle={styles.projectDescriptionListContainer}
               bottomDivider={i < obj.length - 1}
@@ -107,15 +107,15 @@ const DatasetList = () => {
   const renderDatasetNameChangeModal = () => {
     return (
       <View style={{backgroundColor: 'red', alignContent: 'flex-start'}}>
-      <TexInputModal
-        dialogTitle={'Edit or Delete Dataset'}
-        style={styles.dialogTitle}
-        visible={isDatasetNameModalVisible}
-        onPress={() => saveDataset()}
-        close={() => setIsDatasetNameModalVisible(false)}
-        value={selectedDataset.name}
-        onChangeText={(text) => setSelectedDataset({...selectedDataset, name: text})}
-      >
+        <TexInputModal
+          dialogTitle={'Edit or Delete Dataset'}
+          style={styles.dialogTitle}
+          visible={isDatasetNameModalVisible}
+          onPress={() => saveDataset()}
+          close={() => setIsDatasetNameModalVisible(false)}
+          value={selectedDataset.name}
+          onChangeText={(text) => setSelectedDataset({...selectedDataset, name: text})}
+        >
           <Button
             title={'Delete Dataset'}
             titleStyle={{color: 'red'}}
@@ -134,10 +134,13 @@ const DatasetList = () => {
               />
             }
           />
-        {isDisabled(selectedDataset.id) && <View >
-            <Text style={[styles.dialogContentImportantText, {paddingTop: 10}]}>You must set another active dataset before you delete this dataset</Text>
-          </View>}
-      </TexInputModal>
+          {isDisabled(selectedDataset.id) && (
+            <View>
+              <Text style={[styles.dialogContentImportantText, {paddingTop: 10}]}>You must set another active dataset
+                before you delete this dataset</Text>
+            </View>
+          )}
+        </TexInputModal>
       </View>
     );
   };
@@ -168,9 +171,12 @@ const DatasetList = () => {
       >
         <View style={styles.dialogContent}>
           <Text style={{textAlign: 'center'}}>Are you sure you want to delete
-            {selectedDataset && selectedDataset.name ?
-              <Text style={styles.dialogContentImportantText}>{'\n' + selectedDataset.name}</Text> : null}
-            ? </Text>
+            {selectedDataset && selectedDataset.name
+              ? <Text style={styles.dialogContentImportantText}>{'\n' + selectedDataset.name}</Text>
+              : null
+            }
+            ?
+          </Text>
           <Text style={styles.dialogConfirmText}>This will<Text style={styles.dialogContentImportantText}>ERASE</Text>
             everything in this dataset including features, images, and all other data!</Text>
           <Text style={styles.dialogConfirmText}>Do you want to delete?</Text>
@@ -190,15 +196,18 @@ const DatasetList = () => {
       >
         <View style={{height: 100}}>
 
-          {loading ?
-            <View style={{flex: 1}}>
-              <BallIndicator
-                color={'darkgrey'}
-                count={8}
-                size={30}
-              />
-            </View>
-            : null}
+          {loading
+            ? (
+              <View style={{flex: 1}}>
+                <BallIndicator
+                  color={'darkgrey'}
+                  count={8}
+                  size={30}
+                />
+              </View>
+            )
+            : null
+          }
           <View style={{flex: 1, paddingTop: 10}}>
             <Text style={{textAlign: 'center'}}>{statusMessages.join('\n')}</Text>
             {!loading && <Button
@@ -219,8 +228,8 @@ const DatasetList = () => {
   };
 
   const _selectedDataset = (id, name) => {
-      setSelectedDataset({name: name, id: id});
-      setIsDatasetNameModalVisible(true);
+    setSelectedDataset({name: name, id: id});
+    setIsDatasetNameModalVisible(true);
   };
 
   const setSwitchValue = async (val, id) => {
@@ -236,8 +245,8 @@ const DatasetList = () => {
       const datasetsActive = Object.values(datasetsCopy).filter(dataset => dataset.active === true);
       datasetsCopy[datasetsActive[0].id].current = true;
     }
-    if (isOnline && !isEmpty(userData) && !isEmpty(datasetsCopy[id]) && datasetsCopy[id].active &&
-      isEmpty(datasetsCopy[id].spotIds)) {
+    if (isOnline && !isEmpty(userData) && !isEmpty(datasetsCopy[id]) && datasetsCopy[id].active
+      && isEmpty(datasetsCopy[id].spotIds)) {
       // dispatch({type: homeReducers.SET_LOADING, bool: true});
       setLoading(true);
       dispatch({type: projectReducers.DATASETS.DATASETS_UPDATE, datasets: datasetsCopy});

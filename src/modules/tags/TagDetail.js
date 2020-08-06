@@ -33,14 +33,17 @@ const TagDetail = (props) => {
   const renderTaggedSpots = () => {
     return (
       <View>
-        {selectedTag && selectedTag.spots ?
-          <FlatList
-            keyExtractor={(item) => item.toString()}
-            data={selectedTag.spots}
-            inverted
-            renderItem={({item}) => renderSpotListItem(item)}
-          />
-          : <Text>No Spots</Text>}
+        {selectedTag && selectedTag.spots
+          ? (
+            <FlatList
+              keyExtractor={(item) => item.toString()}
+              data={selectedTag.spots}
+              inverted
+              renderItem={({item}) => renderSpotListItem(item)}
+            />
+          )
+          : <Text>No Spots</Text>
+        }
       </View>
     );
   };
@@ -71,10 +74,14 @@ const TagDetail = (props) => {
                   onPress={props.addRemoveSpots}
                 />
               </View>
-              {selectedTag.spots && !isEmpty(selectedTag.spots) ? renderTaggedSpots() :
-                <View style={commonStyles.noContentContainer}>
-                  <Text style={commonStyles.noValueText}>Contains no spots</Text>
-                </View>}
+              {selectedTag.spots && !isEmpty(selectedTag.spots)
+                ? renderTaggedSpots()
+                : (
+                  <View style={commonStyles.noContentContainer}>
+                    <Text style={commonStyles.noValueText}>Contains no spots</Text>
+                  </View>
+                )
+              }
             </View>
           </View>}
       />

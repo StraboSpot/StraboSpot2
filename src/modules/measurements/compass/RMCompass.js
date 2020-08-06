@@ -297,9 +297,9 @@ const RNCompass = (props) => {
           <View style={modalStyle.textContainer}>
             {/*<Text style={{...modalStyle.textStyle, fontWeight: 'bold'}}>x Spots Created </Text>*/}
             <Text style={modalStyle.textStyle}>Tap compass to record</Text>
-            {modalVisible === Modals.NOTEBOOK_MODALS.COMPASS ?
-              <Text style={modalStyle.textStyle}> a measurement</Text> :
-              <Text style={modalStyle.textStyle}> a measurement in a NEW spot</Text>}
+            {modalVisible === Modals.NOTEBOOK_MODALS.COMPASS
+              ? <Text style={modalStyle.textStyle}> a measurement</Text>
+              : <Text style={modalStyle.textStyle}> a measurement in a NEW spot</Text>}
           </View>
           {renderCompass()}
         </View>

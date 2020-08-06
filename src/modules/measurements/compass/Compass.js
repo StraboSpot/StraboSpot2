@@ -436,10 +436,11 @@ class Compass extends Component {
 
   render() {
     let modalView = null;
-    let dataModal =
+    let dataModal = (
       <View style={uiStyles.alignItemsToCenter}>
         {this.renderMeasurements()}
-      </View>;
+      </View>
+    );
 
 
     if (this.props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {

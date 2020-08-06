@@ -60,8 +60,8 @@ const MeasurementsPage = (props) => {
   const onMeasurementPressed = (item, type) => {
     if (!multiSelectMode) viewMeasurementDetail(item);
     else {
-      if (type === multiSelectMode && (selectedFeaturesTemp.length === 0 ||
-        (selectedFeaturesTemp.length > 0 && selectedFeaturesTemp[0].type === item.type))) {
+      if (type === multiSelectMode && (selectedFeaturesTemp.length === 0
+        || (selectedFeaturesTemp.length > 0 && selectedFeaturesTemp[0].type === item.type))) {
         const i = selectedFeaturesTemp.find(selectedFeature => selectedFeature.id === item.id);
         if (i) setSelectedFeaturesTemp(selectedFeaturesTemp.filter(selectedFeature => selectedFeature.id !== item.id));
         else setSelectedFeaturesTemp([...selectedFeaturesTemp, item]);
@@ -123,51 +123,55 @@ const MeasurementsPage = (props) => {
   const renderSectionDivider = (dividerText) => {
     const dataThisSection = props.spot.properties.orientation_data ? getSectionData(dividerText) : [];
     return (
-      <View style={((multiSelectMode && dividerText === multiSelectMode) || !multiSelectMode) ?
-        styles.measurementsSectionDividerWithButtonsContainer : styles.measurementsSectionDividerContainer}>
+      <View style={((multiSelectMode && dividerText === multiSelectMode) || !multiSelectMode)
+        ? styles.measurementsSectionDividerWithButtonsContainer
+        : styles.measurementsSectionDividerContainer}>
         <View style={styles.measurementsSectionDividerTextContainer}>
           <SectionDivider dividerText={dividerText}/>
         </View>
         <View style={styles.measurementsSectionDividerButtonContainer}>
-          {multiSelectMode && dividerText === multiSelectMode &&
-          <Button
-            titleStyle={styles.measurementsSectionDividerButtonText}
-            title={'Cancel'}
-            type={'clear'}
-            onPress={() => cancelSelecting()}
-          />}
-          {multiSelectMode && selectedFeaturesTemp.length >= 1 && dividerText === multiSelectMode &&
-          <Button
-            titleStyle={styles.measurementsSectionDividerButtonText}
-            title={'Identify Selected'}
-            type={'clear'}
-            onPress={() => endSelecting()}
-          />}
-          {!multiSelectMode &&
-          <View style={{flexDirection: 'row'}}>
-            {props.modalVisible !== 'Notebook Compass Modal' && <Button
+          {multiSelectMode && dividerText === multiSelectMode && (
+            <Button
               titleStyle={styles.measurementsSectionDividerButtonText}
-              title={'Add'}
+              title={'Cancel'}
               type={'clear'}
-              onPress={() => addMeasurement(dividerText)}
-            />}
-            <React.Fragment>
-              <Button
-                disabled={dataThisSection.length < 1}
+              onPress={() => cancelSelecting()}
+            />
+          )}
+          {multiSelectMode && selectedFeaturesTemp.length >= 1 && dividerText === multiSelectMode && (
+            <Button
+              titleStyle={styles.measurementsSectionDividerButtonText}
+              title={'Identify Selected'}
+              type={'clear'}
+              onPress={() => endSelecting()}
+            />
+          )}
+          {!multiSelectMode && (
+            <View style={{flexDirection: 'row'}}>
+              {props.modalVisible !== 'Notebook Compass Modal' && <Button
                 titleStyle={styles.measurementsSectionDividerButtonText}
-                title={'Identify All'}
+                title={'Add'}
                 type={'clear'}
-                onPress={() => identifyAll(dividerText)}
-              />
-              <Button
-                disabled={dataThisSection.length < 1}
-                titleStyle={styles.measurementsSectionDividerButtonText}
-                title={'Select'}
-                type={'clear'}
-                onPress={() => startSelecting(dividerText)}
-              />
-            </React.Fragment>
-          </View>}
+                onPress={() => addMeasurement(dividerText)}
+              />}
+              <React.Fragment>
+                <Button
+                  disabled={dataThisSection.length < 1}
+                  titleStyle={styles.measurementsSectionDividerButtonText}
+                  title={'Identify All'}
+                  type={'clear'}
+                  onPress={() => identifyAll(dividerText)}
+                />
+                <Button
+                  disabled={dataThisSection.length < 1}
+                  titleStyle={styles.measurementsSectionDividerButtonText}
+                  title={'Select'}
+                  type={'clear'}
+                  onPress={() => startSelecting(dividerText)}
+                />
+              </React.Fragment>
+            </View>
+          )}
         </View>
       </View>
     );

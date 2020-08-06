@@ -55,8 +55,9 @@ const NotebookPanel = props => {
         </View>
         <View
           style={notebookStyles.centerContainer}>
-          {props.notebookPageVisible === NotebookPages.OVERVIEW ||
-          props.notebookPageVisible === undefined ? <Overview/> : null}
+          {props.notebookPageVisible === NotebookPages.OVERVIEW || props.notebookPageVisible === undefined
+            ? <Overview/> : null
+          }
           {props.notebookPageVisible === NotebookPages.GEOGRAPHY ? <Geography/> : null}
           {props.notebookPageVisible === NotebookPages.MEASUREMENT ? <MeasurementsPage/> : null}
           {props.notebookPageVisible === NotebookPages.MEASUREMENTDETAIL ? <MeasurementDetailPage/> : null}
@@ -94,17 +95,17 @@ const NotebookPanel = props => {
       <View style={notebookStyles.panel}>
         <Text style={{...commonStyles.noContentText, textAlign: 'center', paddingTop: 40}}>No Spot Currently
           Selected!</Text>
-        {!isEmpty(recentlyViewedSpots) &&
-        <View>
-          <Spacer/>
-          <Spacer/>
-          <SectionDivider dividerText='Recent Spots'/>
-          <FlatList
-            keyExtractor={(item) => item.properties.id.toString()}
-            data={recentlyViewedSpots}
-            renderItem={({item}) => renderSpotName(item)}/>
-        </View>
-        }
+        {!isEmpty(recentlyViewedSpots) && (
+          <View>
+            <Spacer/>
+            <Spacer/>
+            <SectionDivider dividerText='Recent Spots'/>
+            <FlatList
+              keyExtractor={(item) => item.properties.id.toString()}
+              data={recentlyViewedSpots}
+              renderItem={({item}) => renderSpotName(item)}/>
+          </View>
+        )}
       </View>
     );
   }
@@ -115,8 +116,9 @@ function mapStateToProps(state) {
     spot: state.spot.selectedSpot,
     selectedSpots: state.spot.selectedSpots,
     isAllSpotsPanelVisible: state.home.isAllSpotsPanelVisible,
-    notebookPageVisible: isEmpty(state.notebook.visibleNotebookPagesStack) ?
-      null : state.notebook.visibleNotebookPagesStack.slice(-1)[0],
+    notebookPageVisible: isEmpty(state.notebook.visibleNotebookPagesStack)
+      ? null
+      : state.notebook.visibleNotebookPagesStack.slice(-1)[0],
   };
 }
 

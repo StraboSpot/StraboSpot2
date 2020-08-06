@@ -60,14 +60,19 @@ const Notes = (props) => {
   const renderNotebookView = () => {
     return (
       <View>
-        {modalVisible === Modals.SHORTCUT_MODALS.NOTES ?
-          <View style={uiStyles.alignItemsToCenter}>
-            <Text>Saving a note will create</Text>
-            <Text>a new spot.</Text>
-          </View>
-          : <ReturnToOverviewButton
-          onPress={() => props.setNotebookPageVisible(NotebookPages.OVERVIEW)}
-        />}
+        {modalVisible === Modals.SHORTCUT_MODALS.NOTES
+          ? (
+            <View style={uiStyles.alignItemsToCenter}>
+              <Text>Saving a note will create</Text>
+              <Text>a new spot.</Text>
+            </View>
+          )
+          : (
+            <ReturnToOverviewButton
+              onPress={() => props.setNotebookPageVisible(NotebookPages.OVERVIEW)}
+            />
+          )
+        }
         <View style={noteStyles.container}>
           {/*{!isEmpty(props.selectedSpot) ? <Text>{props.selectedSpot.properties.notes}</Text> : <Text>'No Note'</Text>}*/}
           <View style={[noteStyles.inputContainer]}>
@@ -104,7 +109,7 @@ const Notes = (props) => {
 
   return (
     <View>
-     {renderNotebookView()}
+      {renderNotebookView()}
     </View>
 
   );

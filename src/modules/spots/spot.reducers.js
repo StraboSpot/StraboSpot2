@@ -16,8 +16,8 @@ export const spotReducer = (state = initialState, action) => {
     case spotReducers.ADD_SPOT: {
       console.log('ADDED Spot:', action.spot, 'to Existing Spots:', state.spots);
       let selectedSpotCopy = JSON.parse(JSON.stringify(state.selectedSpot));
-      if (!isEmpty(state.selectedSpot) && state.selectedSpot.properties &&
-        state.selectedSpot.properties.id === action.spot.properties.id) selectedSpotCopy = action.spot;
+      if (!isEmpty(state.selectedSpot) && state.selectedSpot.properties
+        && state.selectedSpot.properties.id === action.spot.properties.id) selectedSpotCopy = action.spot;
       const updatedSpot = {
         ...action.spot,
         properties: {

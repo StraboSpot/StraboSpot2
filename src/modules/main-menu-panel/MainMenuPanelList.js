@@ -13,8 +13,10 @@ const MainMenuPanelList = props => {
     return (
       <Button
         key={key}
-        title={name === SettingsMenuItems.MANAGE.ACTIVE_PROJECTS ?
-          SettingsMenuItems.MANAGE.ACTIVE_PROJECTS + ` (${props.activeProject})` : name}
+        title={name === SettingsMenuItems.MANAGE.ACTIVE_PROJECTS
+          ? SettingsMenuItems.MANAGE.ACTIVE_PROJECTS + ` (${props.activeProject})`
+          : name
+        }
         type={'clear'}
         containerStyle={styles.navItemStyle}
         titleStyle={styles.navButtonText}
@@ -33,7 +35,8 @@ const MainMenuPanelList = props => {
         <HomePanelDivider sectionText={'Maps'}/>
         {Object.keys(SettingsMenuItems.MAPS).map(key => renderButtons(SettingsMenuItems.MAPS[key], key))}
         <HomePanelDivider sectionText={'Preferences'}/>
-        {Object.keys(SettingsMenuItems.APP_PREFERENCES).map(key => renderButtons(SettingsMenuItems.APP_PREFERENCES[key], key))}
+        {Object.keys(SettingsMenuItems.APP_PREFERENCES).map(
+          key => renderButtons(SettingsMenuItems.APP_PREFERENCES[key], key))}
         <HomePanelDivider sectionText={'Help'}/>
         {Object.keys(SettingsMenuItems.HELP).map(key => renderButtons(SettingsMenuItems.HELP[key], key))}
       </View>

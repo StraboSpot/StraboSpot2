@@ -23,8 +23,9 @@ const samplesNotebook = (props) => {
           <ListItem
             key={item.id}
             containerStyle={styles.notebookListContainer}
-            title={item.sample_id_name ? item.sample_id_name :
-              <Text style={{color: 'grey'}}>Sample id: {item.id}</Text>}
+            title={item.sample_id_name
+              ? item.sample_id_name
+              : <Text style={{color: 'grey'}}>Sample id: {item.id}</Text>}
             // contentContainerStyle={{ paddingBottom: 10}}
             subtitleStyle={styles.listText}
             subtitle={

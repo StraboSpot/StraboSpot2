@@ -57,94 +57,107 @@ const MainMenuPanel = props => {
 
   switch (props.settingsPageVisible) {
     case SettingsMenuItems.MANAGE.MY_STRABOSPOT:
-      page =
+      page = (
         <View style={styles.settingsPanelContainer}>
           <MyStraboSpot openSidePanel={props.openSidePanel} closeHomePanel={props.closeHomePanel}/>
-        </View>;
+        </View>
+      );
       break;
     case SettingsMenuItems.MANAGE.ACTIVE_PROJECTS:
-      page =
+      page = (
         <View style={styles.settingsPanelContainer}>
           <ActiveProject
             // openSidePanel={(view) => props.openSidePanel(view)}
             title={!isEmpty(project) ? project.description.project_name : null}
           />
-        </View>;
+        </View>
+      );
       break;
     case SettingsMenuItems.MANAGE.UPLOAD_BACKUP_EXPORT:
-      page =
+      page = (
         <View style={styles.settingsPanelContainer}>
           <UploadBackupAndExport/>
-        </View>;
+        </View>
+      );
       break;
     case SettingsMenuItems.APP_PREFERENCES.SHORTCUTS:
-      page =
+      page = (
         <View style={styles.settingsPanelContainer}>
           <ShortcutMenu
             toggleSwitch={(switchName) => toggleSwitch(switchName)}
             shortcutSwitchPosition={props.shortcutSwitchPosition}
           />
-        </View>;
+        </View>
+      );
       break;
     case SettingsMenuItems.MAPS.MANAGE_OFFLINE_MAPS:
-      page =
+      page = (
         <View style={styles.settingsPanelContainer}>
           <ManageOfflineMapsMenu/>
-        </View>;
+        </View>
+      );
       break;
     case SettingsMenuItems.MAPS.IMAGE_BASEMAPS :
-      page =
+      page = (
         <View style={styles.settingsPanelContainer}>
           <ImageBaseMaps
             getSpotData={(spotId) => getSpotFromId(spotId)}
           />
-        </View>;
+        </View>
+      );
       break;
     case SettingsMenuItems.MAPS.CUSTOM:
-      page =
+      page = (
         <View style={styles.settingsPanelContainer}>
           <CustomMapsMenu
             // openSidePanel={(view, map) => props.openSidePanel(view, map)}
           />
-        </View>;
+        </View>
+      );
       break;
     case SettingsMenuItems.ATTRIBUTES.SPOTS_LIST:
-      page =
+      page = (
         <View style={styles.settingsPanelContainer}>
           <SpotsList
             getSpotData={(spotId) => getSpotFromId(spotId)}
           />
-        </View>;
+        </View>
+      );
       break;
     case SettingsMenuItems.ATTRIBUTES.IMAGE_GALLERY:
-      page =
+      page = (
         <View style={styles.settingsPanelContainer}>
           <ImageGallery
             getSpotData={(spotId) => getSpotFromId(spotId)}
           />
-        </View>;
+        </View>
+      );
       break;
     case SettingsMenuItems.ATTRIBUTES.SAMPLES:
-      page =
+      page = (
         <View style={styles.settingsPanelContainer}>
           <SamplesList
             getSpotData={(spotId, page) => getSpotFromId(spotId, page)}
           />
-        </View>;
+        </View>
+      );
       break;
     case SettingsMenuItems.ATTRIBUTES.TAGS:
-      page =
+      page = (
         <View style={styles.settingsPanelContainer}>
           <Tags/>
-        </View>;
+        </View>
+      );
       break;
     case SettingsMenuItems.PROJECT.SWITCH_PROJECT:
-      page = <View style={styles.settingsPanelContainer}>
-        <ProjectList/>
-      </View>;
+      page = (
+        <View style={styles.settingsPanelContainer}>
+          <ProjectList/>
+        </View>
+      );
       break;
     default:
-      page =
+      page = (
         <React.Fragment>
           <View style={styles.listContainer}>
             <MainMenuPanelList
@@ -153,7 +166,8 @@ const MainMenuPanel = props => {
               activeProject={!isEmpty(project) ? project.description.project_name : 'No Active Project'}
             />
           </View>
-        </React.Fragment>;
+        </React.Fragment>
+      );
   }
 
   return (

@@ -98,8 +98,8 @@ const InitialProjectLoadModal = (props) => {
         <Button
           onPress={() => props.closeModal()}
           title={'Close'}
-          disabled={isEmpty(datasets) ||
-          isEmpty(Object.keys(datasets).find(key => datasets[key].active === true))}
+          disabled={isEmpty(datasets)
+          || isEmpty(Object.keys(datasets).find(key => datasets[key].active === true))}
           buttonStyle={[commonStyles.standardButton]}
           titleStyle={commonStyles.standardButtonText}
         />

@@ -120,30 +120,30 @@ const Tags = () => {
 
   return (
     <View style={{flex: 1}}>
-      {!isEmpty(tags) &&
-      <ButtonGroup
-        selectedIndex={selectedIndex}
-        onPress={(index) => setSelectedIndex(index)}
-        buttons={['Categorized', 'Map Extent', 'Recently Used']}
-        containerStyle={{height: 50}}
-        buttonStyle={{padding: 5}}
-        textStyle={{fontSize: 12}}
-      />
-      }
+      {!isEmpty(tags) && (
+        <ButtonGroup
+          selectedIndex={selectedIndex}
+          onPress={(index) => setSelectedIndex(index)}
+          buttons={['Categorized', 'Map Extent', 'Recently Used']}
+          containerStyle={{height: 50}}
+          buttonStyle={{padding: 5}}
+          textStyle={{fontSize: 12}}
+        />
+      )}
       <AddButton
         onPress={addTag}
         title={'Add New Tag'}
       />
-      {!isEmpty(tags) &&
-      <View style={{flex: 1}}>
-        {selectedIndex === 0 && renderTagsListByType()}
-        {selectedIndex === 1 && renderTagsListByMapExtent()}
-        {selectedIndex === 2 && renderTagsListByRecentlyUsed()}
-      </View>
-      }
-      {isEmpty(tags) &&
-      <Text style={{padding: 10, textAlign: 'center'}}>No tags have been added to this project yet</Text>
-      }
+      {!isEmpty(tags) && (
+        <View style={{flex: 1}}>
+          {selectedIndex === 0 && renderTagsListByType()}
+          {selectedIndex === 1 && renderTagsListByMapExtent()}
+          {selectedIndex === 2 && renderTagsListByRecentlyUsed()}
+        </View>
+      )}
+      {isEmpty(tags) && (
+        <Text style={{padding: 10, textAlign: 'center'}}>No tags have been added to this project yet</Text>
+      )}
       <TagDetailModal
         isVisible={isDetailModalVisibile}
         closeModal={() => setIsDetailModalVisible(false)}

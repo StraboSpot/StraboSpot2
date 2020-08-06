@@ -32,15 +32,15 @@ const Overview = props => {
   ];
 
   useEffect(() => {
-    setIsTraceSurfaceFeatureEnabled((spot.properties.hasOwnProperty('trace') &&
-      spot.properties.trace.trace_feature) || spot.properties.hasOwnProperty('surface_feature'));
+    setIsTraceSurfaceFeatureEnabled((spot.properties.hasOwnProperty('trace') && spot.properties.trace.trace_feature)
+      || spot.properties.hasOwnProperty('surface_feature'));
     setIsTraceSurfaceFeatureEdit(false);
   }, [spot]);
 
   const cancelFormAndGo = () => {
     setIsTraceSurfaceFeatureEdit(false);
-    if (isTraceSurfaceFeatureEnabled && !spot.properties.hasOwnProperty('trace') &&
-      !spot.properties.hasOwnProperty('surface_feature')) setIsTraceSurfaceFeatureEnabled(false);
+    if (isTraceSurfaceFeatureEnabled && !spot.properties.hasOwnProperty('trace')
+      && !spot.properties.hasOwnProperty('surface_feature')) setIsTraceSurfaceFeatureEnabled(false);
   };
 
   // What happens after submitting the form is handled in saveFormAndGo since we want to show
@@ -118,8 +118,8 @@ const Overview = props => {
         const traceValues = {...form.current.values, 'trace_feature': true};
         dispatch({type: spotReducers.EDIT_SPOT_PROPERTIES, field: 'trace', value: traceValues});
       }
-      else if (spot.geometry.type === 'Polygon' || spot.geometry.type === 'MultiPolygon' ||
-        spot.geometry.type === 'GeometryCollection') {
+      else if (spot.geometry.type === 'Polygon' || spot.geometry.type === 'MultiPolygon'
+        || spot.geometry.type === 'GeometryCollection') {
         dispatch({type: spotReducers.EDIT_SPOT_PROPERTIES, field: 'surface_feature', value: form.current.values});
       }
       return Promise.resolve();
@@ -150,13 +150,14 @@ const Overview = props => {
       }
     };
 
-    if (isTraceSurfaceFeatureEnabled && ((spot.properties.hasOwnProperty('trace') &&
-      !isEmpty(Object.keys(spot.properties.trace).filter(t => t !== 'trace_feature'))) ||
-      spot.properties.hasOwnProperty('surface_feature'))) {
-      let featureTypeText = spot.geometry.type === 'LineString' || spot.geometry.type === 'MultiLineString' ? 'Trace' : 'Surface';
+    if (isTraceSurfaceFeatureEnabled && ((spot.properties.hasOwnProperty('trace')
+      && !isEmpty(Object.keys(spot.properties.trace).filter(t => t !== 'trace_feature')))
+      || spot.properties.hasOwnProperty('surface_feature'))) {
+      let featureTypeText = spot.geometry.type === 'LineString' || spot.geometry.type === 'MultiLineString'
+        ? 'Trace' : 'Surface';
       Alert.alert('Turn Off ' + featureTypeText + ' Feature Warning',
-        'Turning off ' + featureTypeText.toLowerCase() + ' feature will delete all ' +
-        featureTypeText.toLowerCase() + ' feature data. Are you sure you want to continue?',
+        'Turning off ' + featureTypeText.toLowerCase() + ' feature will delete all '
+        + featureTypeText.toLowerCase() + ' feature data. Are you sure you want to continue?',
         [
           {text: 'No', style: 'cancel'},
           {text: 'Yes', onPress: continueToggleTraceSurfaceFeature},
@@ -169,30 +170,31 @@ const Overview = props => {
 
   return (
     <View style={{flex: 1}}>
-      {spot.geometry && spot.geometry.type && (spot.geometry.type === 'LineString' ||
-        spot.geometry.type === 'MultiLineString' || spot.geometry.type === 'Polygon' ||
-        spot.geometry.type === 'MultiPolygon' || spot.geometry.type === 'GeometryCollection') &&
-      <View style={notebookStyles.traceSurfaceFeatureContainer}>
-        <View style={notebookStyles.traceSurfaceFeatureToggleContainer}>
-          {(spot.geometry.type === 'LineString' || spot.geometry.type === 'MultiLineString') &&
-          <Text style={notebookStyles.traceSurfaceFeatureToggleText}>This is a trace feature</Text>}
-          {(spot.geometry.type === 'Polygon' || spot.geometry.type === 'MultiPolygon' ||
-            spot.geometry.type === 'GeometryCollection') &&
-          <Text style={notebookStyles.traceSurfaceFeatureToggleText}>This is a surface feature</Text>}
-          <Switch
-            onValueChange={toggleTraceSurfaceFeature}
-            value={isTraceSurfaceFeatureEnabled}
-          />
+      {spot.geometry && spot.geometry.type && (spot.geometry.type === 'LineString'
+        || spot.geometry.type === 'MultiLineString' || spot.geometry.type === 'Polygon'
+        || spot.geometry.type === 'MultiPolygon' || spot.geometry.type === 'GeometryCollection') && (
+        <View style={notebookStyles.traceSurfaceFeatureContainer}>
+          <View style={notebookStyles.traceSurfaceFeatureToggleContainer}>
+            {(spot.geometry.type === 'LineString' || spot.geometry.type === 'MultiLineString')
+            && <Text style={notebookStyles.traceSurfaceFeatureToggleText}>This is a trace feature</Text>}
+            {(spot.geometry.type === 'Polygon' || spot.geometry.type === 'MultiPolygon'
+              || spot.geometry.type === 'GeometryCollection')
+            && <Text style={notebookStyles.traceSurfaceFeatureToggleText}>This is a surface feature</Text>}
+            <Switch
+              onValueChange={toggleTraceSurfaceFeature}
+              value={isTraceSurfaceFeatureEnabled}
+            />
+          </View>
+          <View>
+            <Button
+              title='Edit'
+              type='clear'
+              disabled={!isTraceSurfaceFeatureEnabled}
+              disabledTitleStyle={notebookStyles.traceSurfaceFeatureDisabledText}
+              onPress={() => setIsTraceSurfaceFeatureEdit(true)}/>
+          </View>
         </View>
-        <View>
-          <Button
-            title='Edit'
-            type='clear'
-            disabled={!isTraceSurfaceFeatureEnabled}
-            disabledTitleStyle={notebookStyles.traceSurfaceFeatureDisabledText}
-            onPress={() => setIsTraceSurfaceFeatureEdit(true)}/>
-        </View>
-      </View>}
+      )}
       {isTraceSurfaceFeatureEdit ? renderTraceSurfaceFeatureForm() : renderSectionsList()}
     </View>
   );

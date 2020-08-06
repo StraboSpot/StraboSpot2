@@ -143,43 +143,48 @@ const Geography = (props) => {
   const renderGeoCoords = (initialGeomValues) => {
     return (
       <View>
-        {!isEmpty(initialGeomValues.latitude) && !isEmpty(initialGeomValues.longitude) ?
-          <View style={{flex: 1, flexDirection: 'row', ...commonStyles.rowContainer}}>
+        {!isEmpty(initialGeomValues.latitude) && !isEmpty(initialGeomValues.longitude)
+          ? (
             <View style={{flex: 1, flexDirection: 'row', ...commonStyles.rowContainer}}>
-              <Field
-                component={NumberInputField}
-                name={'longitude'}
-                key={'longitude'}
-                label={'Longitude'}
-              />
-              <Field
-                component={NumberInputField}
-                name={'latitude'}
-                key={'latitude'}
-                label={'Latitude'}
-              />
+              <View style={{flex: 1, flexDirection: 'row', ...commonStyles.rowContainer}}>
+                <Field
+                  component={NumberInputField}
+                  name={'longitude'}
+                  key={'longitude'}
+                  label={'Longitude'}
+                />
+                <Field
+                  component={NumberInputField}
+                  name={'latitude'}
+                  key={'latitude'}
+                  label={'Latitude'}
+                />
+              </View>
+              <View style={commonStyles.rowContainer}>
+                <Button
+                  onPress={fillWithCurrentLocation}
+                  type='clear'
+                  icon={{
+                    name: 'locate',
+                    type: 'ionicon',
+                    size: 30,
+                    color: commonStyles.iconColor.color,
+                  }}
+                />
+              </View>
             </View>
-            <View style={commonStyles.rowContainer}>
-              <Button
-                onPress={fillWithCurrentLocation}
-                type='clear'
-                icon={{
-                  name: 'locate',
-                  type: 'ionicon',
-                  size: 30,
-                  color: commonStyles.iconColor.color,
-                }}
-              />
+          )
+          : (
+            <View>
+              <Text style={formStyles.fieldLabel}>Coordinates as [Longitude, Latitude]</Text>
+              <View style={formStyles.notesFieldContainer}>
+                <Text style={{...formStyles.fieldValue, paddingBottom: 5}} numberOfLines={3}>
+                  {initialGeomValues.coordsString}
+                </Text>
+              </View>
             </View>
-          </View> :
-          <View>
-            <Text style={formStyles.fieldLabel}>Coordinates as [Longitude, Latitude]</Text>
-            <View style={formStyles.notesFieldContainer}>
-              <Text style={{...formStyles.fieldValue, paddingBottom: 5}} numberOfLines={3}>
-                {initialGeomValues.coordsString}
-              </Text>
-            </View>
-          </View>}
+          )
+        }
       </View>
     );
   };
@@ -188,29 +193,33 @@ const Geography = (props) => {
     return (
       <View>
         <Text style={formStyles.fieldLabel}>IMAGE BASEMAP COORDINATES</Text>
-        {!isEmpty(initialGeomValues.x_pixels) && !isEmpty(initialGeomValues.y_pixels) ?
-          <View>
-            <Field
-              component={NumberInputField}
-              name={'x_pixels'}
-              key={'x_pixels'}
-              label={'X Pixels'}
-            />
-            <Field
-              component={NumberInputField}
-              name={'y_pixels'}
-              key={'y_pixels'}
-              label={'Y Pixels'}
-            />
-          </View> :
-          <View>
-            <Text style={formStyles.fieldLabel}>Coordinates as [X Pixels, Y Pixels]</Text>
-            <View style={formStyles.notesFieldContainer}>
-              <Text style={{...formStyles.fieldValue, paddingBottom: 5}} numberOfLines={3}>
-                {initialGeomValues.coordsString}
-              </Text>
+        {!isEmpty(initialGeomValues.x_pixels) && !isEmpty(initialGeomValues.y_pixels)
+          ? (
+            <View>
+              <Field
+                component={NumberInputField}
+                name={'x_pixels'}
+                key={'x_pixels'}
+                label={'X Pixels'}
+              />
+              <Field
+                component={NumberInputField}
+                name={'y_pixels'}
+                key={'y_pixels'}
+                label={'Y Pixels'}
+              />
             </View>
-          </View>
+          )
+          : (
+            <View>
+              <Text style={formStyles.fieldLabel}>Coordinates as [X Pixels, Y Pixels]</Text>
+              <View style={formStyles.notesFieldContainer}>
+                <Text style={{...formStyles.fieldValue, paddingBottom: 5}} numberOfLines={3}>
+                  {initialGeomValues.coordsString}
+                </Text>
+              </View>
+            </View>
+          )
         }
         <Text style={formStyles.fieldLabel}>REAL-WORLD COORDINATES</Text>
         <Field

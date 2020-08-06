@@ -79,9 +79,9 @@ const MeasurementDetailPage = (props) => {
     if ((i === 0 && currentType === 'tabular_orientation') || (i === 1 && currentType === 'planar_orientation')) {
       const newType = currentType === 'tabular_orientation' ? 'planar_orientation' : 'tabular_orientation';
       const typeText = newType === 'tabular_orientation' ? 'Tabular Zone' : 'Planar Orientation';
-      const alertTextEnd = selectedMeasurements.length === 1 ? 'this measurement to a ' + typeText + '? You will ' +
-        'lose all non-relevant data for this measurement.' : 'these measurements to ' + typeText + '? You will lose' +
-        ' all non-relevant data for these measurements.';
+      const alertTextEnd = selectedMeasurements.length === 1 ? 'this measurement to a ' + typeText + '? You will '
+        + 'lose all non-relevant data for this measurement.' : 'these measurements to ' + typeText + '? You will lose'
+        + ' all non-relevant data for these measurements.';
       Alert.alert('Switch to ' + typeText, 'Are you sure you want to switch ' + alertTextEnd,
         [
           {
@@ -159,39 +159,48 @@ const MeasurementDetailPage = (props) => {
     return (
       <View>
         {/* Primary measurement */}
-        {activeMeasurement && selectedMeasurements && selectedMeasurements[0] && selectedMeasurements[0].associated_orientation &&
-        <MeasurementItem item={{item: selectedMeasurements[0]}}
-                         selectedIds={[activeMeasurement.id]}
-                         isAssociatedItem={false}
-                         isAssociatedList={true}
-                         onPress={() => onSwitchActiveMeasurement(selectedMeasurements[0])}/>}
+        {activeMeasurement && selectedMeasurements && selectedMeasurements[0]
+        && selectedMeasurements[0].associated_orientation && (
+          <MeasurementItem item={{item: selectedMeasurements[0]}}
+                           selectedIds={[activeMeasurement.id]}
+                           isAssociatedItem={false}
+                           isAssociatedList={true}
+                           onPress={() => onSwitchActiveMeasurement(selectedMeasurements[0])}
+          />
+        )}
 
         {/* Associated measurements */}
-        {activeMeasurement && selectedMeasurements && selectedMeasurements[0] && selectedMeasurements[0].associated_orientation &&
-        selectedMeasurements[0].associated_orientation.map((item, i) =>
-          <MeasurementItem item={{item: item}}
-                           selectedIds={[activeMeasurement.id]}
-                           isAssociatedItem={true}
-                           isAssociatedList={true}
-                           onPress={() => onSwitchActiveMeasurement(item)}
-                           key={item.id}/>)}
+        {activeMeasurement && selectedMeasurements && selectedMeasurements[0]
+        && selectedMeasurements[0].associated_orientation && (
+          selectedMeasurements[0].associated_orientation.map((item, i) =>
+            <MeasurementItem item={{item: item}}
+                             selectedIds={[activeMeasurement.id]}
+                             isAssociatedItem={true}
+                             isAssociatedList={true}
+                             onPress={() => onSwitchActiveMeasurement(item)}
+                             key={item.id}
+            />,
+          )
+        )}
 
         {/* Buttons to add an associated measurement */}
-        {selectedMeasurements && selectedMeasurements[0] && selectedMeasurements[0].type === 'linear_orientation' &&
-        <Button
-          titleStyle={styles.buttonText}
-          title={'+ Add Associated Plane'}
-          type={'clear'}
-          onPress={() => addAssociatedMeasurement('planar_orientation')}
-        />}
-        {selectedMeasurements && selectedMeasurements[0] && (selectedMeasurements[0].type === 'planar_orientation' ||
-          selectedMeasurements[0].type === 'tabular_orientation') &&
-        <Button
-          titleStyle={styles.buttonText}
-          title={'+ Add Associated Line'}
-          type={'clear'}
-          onPress={() => addAssociatedMeasurement('linear_orientation')}
-        />}
+        {selectedMeasurements && selectedMeasurements[0] && selectedMeasurements[0].type === 'linear_orientation' && (
+          <Button
+            titleStyle={styles.buttonText}
+            title={'+ Add Associated Plane'}
+            type={'clear'}
+            onPress={() => addAssociatedMeasurement('planar_orientation')}
+          />
+        )}
+        {selectedMeasurements && selectedMeasurements[0] && (selectedMeasurements[0].type === 'planar_orientation'
+          || selectedMeasurements[0].type === 'tabular_orientation') && (
+          <Button
+            titleStyle={styles.buttonText}
+            title={'+ Add Associated Line'}
+            type={'clear'}
+            onPress={() => addAssociatedMeasurement('linear_orientation')}
+          />
+        )}
       </View>
     );
   };
@@ -216,22 +225,22 @@ const MeasurementDetailPage = (props) => {
           rightTitle={propertyText}
           rightTitleStyle={activeMeasurement.id === selectedMeasurements[0].id ? commonStyles.listItemRightTitleInverse : commonStyles.listItemRightTitle}
         />
-        {hasAssociated &&
-        <ListItem
-          containerStyle={activeMeasurement.id === selectedMeasurements[0].associated_orientation[0].id ? commonStyles.listItemInverse : commonStyles.listItem}
-          contentContainerStyle={{maxWidth: 150, padding: 5}}
-          onPress={() => onSwitchActiveMeasurement(selectedMeasurements[0].associated_orientation[0])}
-          pad={5}
-          title={mainText2}
-          titleStyle={activeMeasurement.id === selectedMeasurements[0].associated_orientation[0].id ? commonStyles.listItemTitleInverse : commonStyles.listItemTitle}
-          rightContentContainerStyle={{alignItems: 'flex-start'}}
-          rightTitle={propertyText2}
-          rightTitleStyle={activeMeasurement.id === selectedMeasurements[0].associated_orientation[0].id ? commonStyles.listItemRightTitleInverse : commonStyles.listItemRightTitle}
-        />
-        }
-        {hasAssociated &&
-        <Text style={styles.basicText}>Only one associated line or plane can be classified in bulk</Text>
-        }
+        {hasAssociated && (
+          <ListItem
+            containerStyle={activeMeasurement.id === selectedMeasurements[0].associated_orientation[0].id ? commonStyles.listItemInverse : commonStyles.listItem}
+            contentContainerStyle={{maxWidth: 150, padding: 5}}
+            onPress={() => onSwitchActiveMeasurement(selectedMeasurements[0].associated_orientation[0])}
+            pad={5}
+            title={mainText2}
+            titleStyle={activeMeasurement.id === selectedMeasurements[0].associated_orientation[0].id ? commonStyles.listItemTitleInverse : commonStyles.listItemTitle}
+            rightContentContainerStyle={{alignItems: 'flex-start'}}
+            rightTitle={propertyText2}
+            rightTitleStyle={activeMeasurement.id === selectedMeasurements[0].associated_orientation[0].id ? commonStyles.listItemRightTitleInverse : commonStyles.listItemRightTitle}
+          />
+        )}
+        {hasAssociated && (
+          <Text style={styles.basicText}>Only one associated line or plane can be classified in bulk</Text>
+        )}
         <View style={{paddingBottom: 15}}/>
       </View>
     );
@@ -294,8 +303,9 @@ const MeasurementDetailPage = (props) => {
         else if (measurement.associated_orientation) {
           measurement.associated_orientation.forEach((associatedMeasurement, j) => {
             if (idsOfMeasurementsToEdit.includes(associatedMeasurement.id)) {
-              orientationDataCopy[i].associated_orientation[j] = selectedMeasurements.length === 1 ?
-                formValues : {...associatedMeasurement, ...formValues};
+              orientationDataCopy[i].associated_orientation[j] = selectedMeasurements.length === 1
+                ? formValues
+                : {...associatedMeasurement, ...formValues};
               editedSelectedMeasurements.push(orientationDataCopy[i]);
             }
           });
@@ -363,18 +373,19 @@ const MeasurementDetailPage = (props) => {
             <View>
               {activeMeasurement && selectedMeasurements.length === 1 && renderAssociatedMeasurements()}
               {activeMeasurement && selectedMeasurements.length > 1 && renderMultiMeasurementsBar()}
-              {activeMeasurement && (activeMeasurement.type === 'planar_orientation' ||
-                activeMeasurement.type === 'tabular_orientation') && renderPlanarTabularSwitches()}
+              {activeMeasurement && (activeMeasurement.type === 'planar_orientation'
+                || activeMeasurement.type === 'tabular_orientation') && renderPlanarTabularSwitches()}
               <View>
                 {!isEmpty(formName) && renderFormFields()}
               </View>
-              {selectedMeasurements.length === 1 &&
-              <Button
-                titleStyle={{color: themes.RED}}
-                title={'Delete Measurement'}
-                type={'clear'}
-                onPress={() => deleteMeasurement()}
-              />}
+              {selectedMeasurements.length === 1 && (
+                <Button
+                  titleStyle={{color: themes.RED}}
+                  title={'Delete Measurement'}
+                  type={'clear'}
+                  onPress={() => deleteMeasurement()}
+                />
+              )}
             </View>
           }
         />
