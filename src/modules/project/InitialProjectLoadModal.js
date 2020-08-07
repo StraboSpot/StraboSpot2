@@ -3,6 +3,7 @@ import {Text, View} from 'react-native';
 
 import {Button} from 'react-native-elements';
 import {Dialog, DialogTitle, DialogContent, SlideAnimation} from 'react-native-popup-dialog';
+import {withNavigation} from 'react-navigation';
 import {useSelector, useDispatch} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
@@ -45,10 +46,22 @@ const InitialProjectLoadModal = (props) => {
 
   const renderProjectTypesButtons = () => {
     return (
+      <View>
       <ProjectTypesButtons
         onLoadProjectsFromServer={() => setVisibleInitialSection('serverProjects')}
         onLoadProjectsFromDevice={() => setVisibleInitialSection('deviceProjects')}
         onStartNewProject={() => setVisibleInitialSection('project')}/>
+        <Button
+          title={'Back to Sign In'}
+          type={'clear'}
+          containerStyle={commonStyles.buttonContainer}
+          titleStyle={commonStyles.standardButtonText}
+          onPress={() => {
+            dispatch({type: 'CLEAR_STORE'});
+            props.navigation.goBack();
+          }}
+        />
+      </View>
     );
   };
 
@@ -222,4 +235,4 @@ const InitialProjectLoadModal = (props) => {
   );
 };
 
-export default InitialProjectLoadModal;
+export default withNavigation(InitialProjectLoadModal);
