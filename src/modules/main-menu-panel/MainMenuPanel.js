@@ -10,6 +10,7 @@ import CustomMapsMenu from '../maps/custom-maps/ManageCustomMaps';
 import ImageBaseMaps from '../maps/ImageBasemaps';
 import ManageOfflineMapsMenu from '../maps/offline-maps/ManageOfflineMaps';
 import {NotebookPages} from '../notebook-panel/notebook.constants';
+import NamingConventions from '../preferences/naming-conventions/NamingConventions';
 import ShortcutMenu from '../preferences/shortcuts-menu/ShortcutsMenu';
 import ActiveProject from '../project/ActiveProjectPanel';
 import MyStraboSpot from '../project/MyStraboSpot';
@@ -87,6 +88,13 @@ const MainMenuPanel = props => {
             toggleSwitch={(switchName) => toggleSwitch(switchName)}
             shortcutSwitchPosition={props.shortcutSwitchPosition}
           />
+        </View>
+      );
+      break;
+    case SettingsMenuItems.APP_PREFERENCES.NAMING_CONVENTIONS:
+      page = (
+        <View style={styles.settingsPanelContainer}>
+          <NamingConventions/>
         </View>
       );
       break;

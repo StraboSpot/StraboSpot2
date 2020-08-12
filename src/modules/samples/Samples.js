@@ -1,8 +1,8 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Alert, Text, TextInput, View} from 'react-native';
 
 import {Button, ButtonGroup, Input} from 'react-native-elements';
-import {connect} from 'react-redux';
+import {connect, useDispatch, useSelector} from 'react-redux';
 
 import {getNewId} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
@@ -10,12 +10,14 @@ import Slider from '../../shared/ui/Slider';
 import {homeReducers, Modals} from '../home/home.constants';
 import useMapsHook from '../maps/useMaps';
 import {NotebookPages, notebookReducers} from '../notebook-panel/notebook.constants';
+import {projectReducers} from '../project/project.constants';
 import {spotReducers} from '../spots/spot.constants';
 import styles from './samples.style';
 
 const SamplesModalView = (props) => {
   let modalView = null;
-
+  const dispatch = useDispatch();
+  const preferences = useSelector(state => state.project.project.preferences);
   const [useMaps] = useMapsHook();
   const [selectedButton, setSelectedButton] = useState(null);
   const [sampleOrientedValue, setSampleOrientedValue] = useState(null);
@@ -24,6 +26,18 @@ const SamplesModalView = (props) => {
   const [name, setName] = useState(null);
   const [note, setNote] = useState(null);
   const [description, setDescription] = useState(null);
+  const [samplePrefix, setSamplePrefix] = useState(null);
+  const [startingSampleNumber, setStartingSampleNumber] = useState(null);
+
+  useEffect(() => {
+    console.log('useEffect SamplesModalView [props.spot]');
+    const defaultName = preferences.sample_prefix || 'Unnamed';
+    const defaultNumber = preferences.starting_sample_number
+      || (props.spot.properties.samples && props.spot.properties.samples.length + 1) || 1;
+    setSamplePrefix(defaultName);
+    setStartingSampleNumber(defaultNumber);
+    setName(defaultName + defaultNumber);
+  }, [props.spot]);
 
   const buttonNames = ['Oriented', 'Unoriented'];
 
@@ -68,6 +82,12 @@ const SamplesModalView = (props) => {
       else if (props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE) {
         props.onSpotEdit('samples', [newSample]);
       }
+      const updatedPreferences = {
+        ...preferences,
+        sample_prefix: samplePrefix,
+        starting_sample_number: startingSampleNumber + 1,
+      };
+      dispatch({type: projectReducers.UPDATE_PROJECT, field: 'preferences', value: updatedPreferences});
       setName(null);
       setLabel(null);
       setNote('');

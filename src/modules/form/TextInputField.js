@@ -9,7 +9,7 @@ import {formStyles} from '../form';
 const TextInputField = ({
                           field: {name, onBlur, onChange, value},
                           form: {errors, touched},
-                          ...props
+                          onMyChange, ...props
                         }) => {
 
   if (props.appearance === 'multiline') {
@@ -20,7 +20,7 @@ const TextInputField = ({
         </View>
         <View style={formStyles.notesFieldValueContainer}>
           <TextInput
-            onChangeText={onChange(name)}
+            onChangeText={onMyChange && typeof onMyChange === 'function' ? val => onMyChange(name, val) : onChange(name)}
             onBlur={onBlur(name)}
             style={formStyles.notesFieldValue}
             value={value}
@@ -38,7 +38,7 @@ const TextInputField = ({
       <View style={stylesCommon.rowContainer}>
         <Text style={formStyles.fieldLabel}>{props.label}</Text>
         <TextInput
-          onChangeText={onChange(name)}
+          onChangeText={onMyChange && typeof onMyChange === 'function' ? val => onMyChange(name, val) : onChange(name)}
           onBlur={onBlur(name)}
           style={formStyles.fieldValue}
           value={value}
