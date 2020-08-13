@@ -11,6 +11,7 @@ import Home from './src/modules/home/Home';
 import ImageInfo from './src/modules/images/ImageInfo';
 import SignIn from './src/modules/sign-in/SignIn';
 import SignUp from './src/modules/sign-up/SignUp';
+import Sketch from './src/modules/sketch/Sketch';
 import Loading from './src/shared/ui/Loading';
 import configureStore from './src/store/ConfigureStore';
 
@@ -44,6 +45,12 @@ const App = () => {
           gestureEnabled: false,
         },
       },
+      Sketch: {
+        screen: Sketch,
+        navigationOptions: {
+          gestureEnabled: false,
+        }
+      }
     },
     {
       initialRouteName: 'SignIn',
