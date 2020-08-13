@@ -5,7 +5,7 @@ import Dialog, {DialogContent, DialogTitle} from 'react-native-popup-dialog';
 import {ScaleAnimation} from 'react-native-popup-dialog/src';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {toTitleCase} from '../../shared/Helpers';
+import {isEmpty, toTitleCase} from '../../shared/Helpers';
 import {mapReducers} from '../maps/maps.constants';
 import useMeasurementsHook from '../measurements/useMeasurements';
 import dialogStyles from './dialog.styles';
@@ -52,7 +52,7 @@ const MapSymbolsDialog = (props) => {
       onTouchOutside={props.onTouchOutside}
     >
       <DialogContent>
-        {mapSymbols.map((symbol, i) => {
+        {!isEmpty(mapSymbols) && mapSymbols.map((symbol, i) => {
           return <ListItem
             key={symbol}
             title={getSymbolTitle(symbol)}
