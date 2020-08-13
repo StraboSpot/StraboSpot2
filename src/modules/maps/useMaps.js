@@ -211,7 +211,7 @@ const useMaps = () => {
   const setMapSymbols = (mappedFeatures) => {
     const featureTypes = mappedFeatures.reduce((acc, feature) => {
       return feature.properties.orientation && feature.properties.orientation.feature_type
-        ? [...acc, feature.properties.orientation.feature_type]
+        ? [...new Set([...acc, feature.properties.orientation.feature_type])]
         : acc;
     }, []);
     dispatch({type: mapReducers.SET_MAP_SYMBOLS, mapSymbols: featureTypes});
