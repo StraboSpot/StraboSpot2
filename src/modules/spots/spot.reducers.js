@@ -72,7 +72,7 @@ export const spotReducer = (state = initialState, action) => {
     case spotReducers.EDIT_SPOT_IMAGES: {
       let updatedSpotImages = null;
       const selectedSpotId = state.selectedSpot.properties.id;
-      console.log('EDITSPOT Image', action.image, 'ID', selectedSpotId);
+      console.log('EDITSPOT Image', action.images, 'ID', selectedSpotId);
       let tempImages = [];
       if (state.selectedSpot.properties.images) tempImages = state.selectedSpot.properties.images;
 

@@ -13,7 +13,8 @@ const useSpots = (props) => {
   const spots = useSelector(state => state.spot.spots);
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const datasets = useSelector(state => state.project.datasets);
-  const preferences = useSelector(state => state.project.project.preferences);
+  const preferences = useSelector(state => state.project.project.preferences) || {};
+
 
   const [useImages] = useImagesHook();
   const [useServerRequests] = useServerRequestsHook();

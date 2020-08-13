@@ -12,7 +12,7 @@ const NamingConventions = () => {
   const formName = ['preferences', 'naming_conventions'];
   const [useForm] = useFormHook();
   const form = useRef(null);
-  const preferences = useSelector(state => state.project.project.preferences);
+  const preferences = useSelector(state => state.project.project.preferences) || {};
 
   const onMyChange = async (name, value) => {
     await form.current.setFieldValue(name, value);

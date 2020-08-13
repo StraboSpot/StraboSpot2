@@ -17,7 +17,7 @@ import styles from './samples.style';
 const SamplesModalView = (props) => {
   let modalView = null;
   const dispatch = useDispatch();
-  const preferences = useSelector(state => state.project.project.preferences);
+  const preferences = useSelector(state => state.project.project.preferences) || {};
   const [useMaps] = useMapsHook();
   const [selectedButton, setSelectedButton] = useState(null);
   const [sampleOrientedValue, setSampleOrientedValue] = useState(null);
