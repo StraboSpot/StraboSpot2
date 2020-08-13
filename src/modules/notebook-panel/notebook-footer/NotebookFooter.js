@@ -1,7 +1,8 @@
 import React from 'react';
 import {View} from 'react-native';
 
-import {connect} from 'react-redux';
+import {withNavigation} from 'react-navigation';
+import {connect, useSelector} from 'react-redux';
 
 import {IconButtons} from '../../../shared/app.constants';
 import {isEmpty} from '../../../shared/Helpers';
@@ -10,6 +11,8 @@ import {NotebookPages} from '../notebook.constants';
 import footerStyle from './notebookFooter.styles';
 
 const NotebookFooter = props => {
+
+  const selectedSpot = useSelector(state => state.spot.selectedSpot);
 
   const getPageIcon = (page) => {
     switch (page) {
@@ -35,9 +38,11 @@ const NotebookFooter = props => {
           return require('../../../assets/icons/Photo_pressed.png');
         }
         else return require('../../../assets/icons/Photo.png');
-      // case NotebookPages.SKETCH:
-      //   if (props.notebookPageVisible === NotebookPages.SKETCH) return require('../../../assets/icons/StraboIcons_Oct2019/Sketch_pressed.png');
-      //   else return require('../../../assets/icons/StraboIcons_Oct2019/Sketch.png');
+      case NotebookPages.SKETCH:
+        if (props.notebookPageVisible === NotebookPages.SKETCH) {
+          return require('../../../assets/icons/Sketch_pressed.png');
+        }
+        else return require('../../../assets/icons/Sketch.png');
     }
   };
 
@@ -70,11 +75,11 @@ const NotebookFooter = props => {
         style={footerStyle.footerIcon}
         onPress={() => props.onPress(IconButtons.CAMERA)}
       />
-      {/*<IconButton*/}
-      {/*  source={getPageIcon(NotebookPages.SKETCH)}*/}
-      {/*  style={footerStyle.footerIcon}*/}
-      {/*  // onPress={() => props.openPage(NotebookPages.SKETCH)}*/}
-      {/*/>*/}
+      <IconButton
+        source={getPageIcon(NotebookPages.SKETCH)}
+        style={footerStyle.footerIcon}
+        onPress={() => props.navigation.navigate('Sketch', {selectedSpot: selectedSpot})}
+      />
     </View>
   );
 };
@@ -89,4 +94,4 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {};
 
-export default connect(mapStateToProps, mapDispatchToProps)(NotebookFooter);
+export default connect(mapStateToProps, mapDispatchToProps)(withNavigation(NotebookFooter));
