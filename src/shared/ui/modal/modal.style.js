@@ -22,6 +22,7 @@ const modalStyle = StyleSheet.create({
   modalBottom: {
     borderBottomRightRadius: 20,
     borderBottomLeftRadius: 20,
+    paddingBottom: 10,
   },
   modalTitle: {
     fontWeight: 'bold',

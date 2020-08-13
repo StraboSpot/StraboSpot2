@@ -15,7 +15,7 @@ const Modal = (props) => {
   const modalVisible = useSelector(state => state.home.modalVisible);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
 
-  useEffect(() => setModalTitle(modalVisible), []);
+  useEffect(() => setModalTitle(modalVisible), [modalVisible]);
 
   const renderModalHeader = () => {
     return (
@@ -25,7 +25,7 @@ const Modal = (props) => {
             titleStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 16}}
             title={props.buttonTitleLeft}
             type={'clear'}
-            onPress={props.onPress}
+            onPress={props.cancel}
           />
         </View>
         <View>
@@ -36,7 +36,7 @@ const Modal = (props) => {
             titleStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 16}}
             title={'Close'}
             type={'clear'}
-            onPress={() => props.close()}
+            onPress={props.close}
           />
         </View>
       </View>

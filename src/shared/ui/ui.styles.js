@@ -41,6 +41,16 @@ const styles = StyleSheet.create({
     marginTop: 10,
     alignItems: 'flex-start',
   },
+  modalPosition: {
+    position: 'absolute',
+    left: 70,
+    bottom: 10,
+  },
+  modalPositionShortcutView: {
+    position: 'absolute',
+    left: 70,
+    bottom: 20,
+  },
   navButtonsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
