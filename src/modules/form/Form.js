@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Animated, Dimensions, Keyboard, TextInput, UIManager} from 'react-native';
+import {Animated, Keyboard, TextInput} from 'react-native';
 
 import {Field} from 'formik';
 
@@ -14,6 +14,7 @@ const Form = (props) => {
   const [textInputAnimate] = useState(new Animated.Value(0));
 
   useEffect(() => {
+    console.log('useEffect Form []');
     Keyboard.addListener('keyboardDidShow', handleKeyboardDidShow);
     Keyboard.addListener('keyboardDidHide', handleKeyboardDidHide);
     return function cleanup() {
@@ -48,6 +49,7 @@ const Form = (props) => {
         key={field.name}
         appearance={field.appearance}
         placeholder={field.hint}
+        onMyChange={props.onMyChange}
       />
     );
   };
@@ -60,6 +62,7 @@ const Form = (props) => {
         label={field.label}
         key={field.name}
         placeholder={field.hint}
+        onMyChange={props.onMyChange}
       />
     );
   };

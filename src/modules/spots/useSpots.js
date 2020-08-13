@@ -1,6 +1,5 @@
 import {useDispatch, useSelector} from 'react-redux';
 
-import {randomNames} from '../../assets/test-data/default-names';
 import useServerRequestsHook from '../../services/useServerRequests';
 import {getNewId, isEmpty} from '../../shared/Helpers';
 import {homeReducers} from '../home/home.constants';
@@ -14,6 +13,7 @@ const useSpots = (props) => {
   const spots = useSelector(state => state.spot.spots);
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const datasets = useSelector(state => state.project.datasets);
+  const preferences = useSelector(state => state.project.project.preferences);
 
   const [useImages] = useImagesHook();
   const [useServerRequests] = useServerRequestsHook();
@@ -50,7 +50,6 @@ const useSpots = (props) => {
 
   // Create a new Spot
   const createSpot = async (feature) => {
-    let randomName = randomNames[Math.floor(Math.random() * randomNames.length)];
     let newSpot = feature;
     newSpot.properties.id = getNewId();
     let d = new Date(Date.now());
@@ -59,7 +58,14 @@ const useSpots = (props) => {
     // Sets modified and viewed timestamps in milliseconds
     newSpot.properties.modified_timestamp = Date.now();
     newSpot.properties.viewed_timestamp = Date.now();
-    newSpot.properties.name = randomName;
+
+    // Set spot name
+    const defaultName = preferences.spot_prefix || 'Unnamed';
+    const defaultNumber = preferences.starting_number_for_spot || Object.keys(spots).length + 1;
+    newSpot.properties.name = defaultName + defaultNumber;
+    const updatedPreferences = {...preferences, spot_prefix: defaultName, starting_number_for_spot: defaultNumber + 1};
+    dispatch({type: projectReducers.UPDATE_PROJECT, field: 'preferences', value: updatedPreferences});
+
     if (currentImageBasemap && newSpot.geometry && newSpot.geometry.type === 'Point') { //newSpot geometry is unavailable when spot is copied.
       const rootSpot = findRootSpot(currentImageBasemap.id);
       if (rootSpot) {

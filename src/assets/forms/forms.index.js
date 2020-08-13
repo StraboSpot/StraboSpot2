@@ -7,6 +7,7 @@ import planarOrientationChoices from './measurement/planar-orientation-choices';
 import planarOrientationSurvey from './measurement/planar-orientation-survey';
 import tabularZoneOrientationChoices from './measurement/tabular-zone-orienation-choices';
 import tabularZoneOrientationSurvey from './measurement/tabular-zone-orientation-survey';
+import namingConventionsSurvey from './preferences/naming-conventions-survey.json';
 import projectDescriptionSurvey from './project/project-description-survey.json';
 import surfaceFeatureChoices from './surface-feature/surface-feature-choices.json';
 import surfaceFeatureSurvey from './surface-feature/surface-feature-survey.json';
@@ -67,6 +68,11 @@ const forms = {
     tabular_orientation: {
       survey: getMeasurementSurveyForBulkInput(tabularZoneOrientationSurvey),
       choices: tabularZoneOrientationChoices,
+    },
+  },
+  preferences: {
+    naming_conventions: {
+      survey: namingConventionsSurvey,
     },
   },
   project: {
