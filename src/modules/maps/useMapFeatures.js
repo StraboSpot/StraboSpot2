@@ -28,7 +28,7 @@ const useMapFeatures = (props) => {
     catch (e) {
       console.log('Error getting Spots within or intersecting the drawn polygon', e);
     }
-    console.log('Selected Spots', selectedSpots);
+    //console.log('Spots in given polygon:', selectedSpots);
     return selectedSpots;
   };
 

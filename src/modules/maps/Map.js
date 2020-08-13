@@ -758,6 +758,7 @@ const Map = React.forwardRef((props, ref) => {
       }
       if (props.isSelectingForStereonet) {
         const selectedSpots = await useMapFeatures.getLassoedSpots(mapPropsMutable.spotsNotSelected, newFeature);
+        console.log('Selected Spots', selectedSpots);
         await useMapFeatures.getStereonet(selectedSpots);
       }
       else {

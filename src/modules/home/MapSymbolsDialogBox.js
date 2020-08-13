@@ -5,7 +5,9 @@ import Dialog, {DialogContent, DialogTitle} from 'react-native-popup-dialog';
 import {ScaleAnimation} from 'react-native-popup-dialog/src';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {mapReducers, mapSymbolsSwitcher} from '../maps/maps.constants';
+import {toTitleCase} from '../../shared/Helpers';
+import {mapReducers} from '../maps/maps.constants';
+import useMeasurementsHook from '../measurements/useMeasurements';
 import dialogStyles from './dialog.styles';
 
 const scaleAnimation = new ScaleAnimation({
@@ -16,7 +18,13 @@ const MapSymbolsDialog = (props) => {
   const dispatch = useDispatch();
   const symbolsOn = useSelector(state => state.map.symbolsOn) || [];
   const isAllSymbolsOn = useSelector(state => state.map.isAllSymbolsOn);
-  const symbolKeys = mapSymbolsSwitcher.map(symbolEntry => symbolEntry.key);
+  const mapSymbols = useSelector(state => state.map.mapSymbols);
+  const [useMeasurements] = useMeasurementsHook();
+
+  const getSymbolTitle = (symbol) => {
+    const label = toTitleCase(useMeasurements.getLabel(symbol));
+    return label.endsWith('y') ? label.slice(0, -1) + 'ies' : label + 's';
+  };
 
   const toggleAllSymbolsOn = () => {
     dispatch({type: mapReducers.SET_ALL_SYMBOLS_TOGGLED, toggled: !isAllSymbolsOn});
@@ -44,16 +52,16 @@ const MapSymbolsDialog = (props) => {
       onTouchOutside={props.onTouchOutside}
     >
       <DialogContent>
-        {mapSymbolsSwitcher.map((switcherEntry, i) => {
+        {mapSymbols.map((symbol, i) => {
           return <ListItem
-            key={switcherEntry.key}
-            title={switcherEntry.title}
+            key={symbol}
+            title={getSymbolTitle(symbol)}
             containerStyle={dialogStyles.dialogContent}
-            bottomDivider={i < symbolKeys.length - 2}
+            bottomDivider={i < mapSymbols.length - 2}
             titleStyle={dialogStyles.dialogText}
             switch={{
-              onChange: () => toggleSymbolSelected(switcherEntry.key),
-              value: symbolsOn.includes(switcherEntry.key),
+              onChange: () => toggleSymbolSelected(symbol),
+              value: symbolsOn.includes(symbol),
             }}
           />;
         })}

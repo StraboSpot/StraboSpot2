@@ -5,16 +5,12 @@ import {ListItem} from 'react-native-elements';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty, padWithLeadingZeros, toTitleCase} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
-import {labelDictionary} from '../form';
+import useMeasurementsHook from './useMeasurements';
 
 // Render a measurement item in a list
 const MeasurementItem = (props) => {
 
-  const getLabel = (key) => {
-    const measurementsDictionary = Object.values(labelDictionary.measurement).reduce((acc, form) => ({...acc, ...form}),
-      {});
-    return measurementsDictionary[key] || key.replace(/_/g, ' ');
-  };
+  const [useMeasurements] = useMeasurementsHook();
 
   const getTypeText = (item) => {
     const firstOrderClassFields = ['feature_type', 'type'];
@@ -23,10 +19,12 @@ const MeasurementItem = (props) => {
       'injection_type', 'fracture_zone', 'fault_or_sz', 'damage_zone', 'alteration_zone', 'enveloping_surface'];
     let firstOrderClass = firstOrderClassFields.find(firstOrderClassField => item[firstOrderClassField]);
     let secondOrderClass = secondOrderClassFields.find(secondOrderClassField => item[secondOrderClassField]);
-    let firstOrderClassLabel = firstOrderClass ? toTitleCase(getLabel(item[firstOrderClass])) : 'Unknown';
+    let firstOrderClassLabel = firstOrderClass
+      ? toTitleCase(useMeasurements.getLabel(item[firstOrderClass]))
+      : 'Unknown';
     firstOrderClassLabel = firstOrderClassLabel.replace('Orientation', 'Feature');
     if (firstOrderClassLabel === 'Tabular Feature') firstOrderClassLabel = 'Planar Feature (TZ)';
-    const secondOrderClassLabel = secondOrderClass && getLabel(item[secondOrderClass]).toUpperCase();
+    const secondOrderClassLabel = secondOrderClass && useMeasurements.getLabel(item[secondOrderClass]).toUpperCase();
 
     // Is an associated orientation on an associated list
     if (props.isAssociatedList && props.isAssociatedItem) {
