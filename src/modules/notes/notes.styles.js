@@ -8,8 +8,8 @@ const noteStyle = StyleSheet.create({
   },
   inputContainer: {
     height: 300,
-    borderWidth: 1,
-    // paddingTop: 25
+    paddingTop: 10,
+    paddingLeft: 10,
   },
   notesOverviewContainer: {
     padding: 10,
