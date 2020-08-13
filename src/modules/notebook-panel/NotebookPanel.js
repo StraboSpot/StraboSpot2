@@ -56,7 +56,7 @@ const NotebookPanel = props => {
         <View
           style={notebookStyles.centerContainer}>
           {props.notebookPageVisible === NotebookPages.OVERVIEW || props.notebookPageVisible === undefined
-            ? <Overview/> : null
+            ? <Overview openMainMenu={props.openMainMenu}/> : null
           }
           {props.notebookPageVisible === NotebookPages.GEOGRAPHY ? <Geography/> : null}
           {props.notebookPageVisible === NotebookPages.MEASUREMENT ? <MeasurementsPage/> : null}

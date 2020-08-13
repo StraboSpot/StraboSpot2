@@ -744,6 +744,7 @@ const Home = (props) => {
         // onHandlerStateChange={(ev, name) => flingHandlerNotebook(ev, name)}
         closeNotebook={closeNotebookPanel}
         textStyle={{fontWeight: 'bold', fontSize: 12}}
+        openMainMenu={() => toggleHomeDrawerButton()}
         onPress={name => notebookClickHandler(name)}/>
     </Animated.View>
   );

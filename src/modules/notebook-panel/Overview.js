@@ -27,7 +27,7 @@ const Overview = props => {
   const SECTIONS = [
     {id: 1, title: 'Measurements', content: <MeasurementsOverview/>},
     {id: 2, title: 'Photos and Sketches', content: <NotebookImages/>},
-    {id: 3, title: 'Tags', content: <TagsAtSpotList/>},
+    {id: 3, title: 'Tags', content: <TagsAtSpotList openMainMenu={props.openMainMenu}/>},
     {id: 4, title: 'Notes', content: <NotesOverview/>},
   ];
 

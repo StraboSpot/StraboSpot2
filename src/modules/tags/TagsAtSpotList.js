@@ -13,7 +13,7 @@ import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 import {projectReducers} from '../project/project.constants';
 import {useTagsHook} from '../tags';
 
-const SpotTag = () => {
+const SpotTag = (props) => {
   const [useTags] = useTagsHook();
   const dispatch = useDispatch();
 
@@ -25,7 +25,8 @@ const SpotTag = () => {
     });
     dispatch({type: projectReducers.SET_SELECTED_TAG, tag: tag});
     dispatch({type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: SettingsMenuItems.ATTRIBUTES.TAGS});
-    dispatch({type: homeReducers.SET_SETTINGS_PANEL_VISIBLE, value: true});
+    // dispatch({type: homeReducers.SET_SETTINGS_PANEL_VISIBLE, value: true});
+    props.openMainMenu();
   };
 
   const renderTag = (tag) => {
