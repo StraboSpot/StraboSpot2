@@ -7,7 +7,7 @@ import modalStyle from '../../shared/ui/modal/modal.style';
 import Samples from './Samples';
 import styles from './samples.style';
 
-const notebookSamplesModal = (props) => {
+const NotebookSamplesModal = (props) => {
   if (Platform.OS === 'android') {
     return (
       <View style={styles.modalPosition}>
@@ -38,4 +38,4 @@ const notebookSamplesModal = (props) => {
   }
 };
 
-export default notebookSamplesModal;
+export default NotebookSamplesModal;
