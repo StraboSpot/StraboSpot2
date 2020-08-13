@@ -41,7 +41,7 @@ import NotebookSamplesModal from '../samples/NotebookSamplesModal';
 import ShortcutSamplesModal from '../samples/ShortcutSamplesModal';
 import {spotReducers} from '../spots/spot.constants';
 import useSpotsHook from '../spots/useSpots';
-import {NotebookTagsModal, TagAddRemoveSpots, TagDetailSidePanel} from '../tags';
+import {TagsNotebookModal, TagAddRemoveSpots, TagDetailSidePanel, TagsShortcutModal} from '../tags';
 import BaseMapDialog from './BaseMapDialogBox';
 import {homeReducers, Modals} from './home.constants';
 import homeStyles from './home.style';
@@ -70,8 +70,8 @@ const Home = (props) => {
   const dispatch = useDispatch();
   const customMaps = useSelector(state => state.map.customMaps);
   const modalVisible = useSelector(state => state.home.modalVisible);
-  const project = useSelector(state => state.project.project);
-  const settingsPageVisible = useSelector(state => state.settingsPanel.settingsPageVisible);
+  // const project = useSelector(state => state.project.project);
+  // const settingsPageVisible = useSelector(state => state.settingsPanel.settingsPageVisible);
   const statusMessages = useSelector(state => state.home.statusMessages);
   const isHomeLoading = useSelector(state => state.home.loading.home);
   const isModalLoading = useSelector(state => state.home.loading.modal);
@@ -429,7 +429,7 @@ const Home = (props) => {
     if (modalVisible === Modals.NOTEBOOK_MODALS.TAGS && props.isNotebookPanelVisible
       && !isEmpty(selectedSpot)) {
       return (
-        <NotebookTagsModal
+        <TagsNotebookModal
           close={() => props.setModalVisible(null)}
           onPress={() => modalHandler(null, Modals.SHORTCUT_MODALS.TAGS)}
         />
@@ -437,9 +437,9 @@ const Home = (props) => {
     }
     if (modalVisible === Modals.SHORTCUT_MODALS.TAGS) {
       return (
-        <NotebookCompassModal
+        <TagsShortcutModal
           close={() => props.setModalVisible(null)}
-          onPress={() => modalHandler(null, Modals.SHORTCUT_MODALS.COMPASS)}
+          onPress={() => modalHandler(NotebookPages.TAG, Modals.NOTEBOOK_MODALS.TAGS)}
         />
       );
     }
