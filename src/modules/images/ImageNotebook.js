@@ -24,11 +24,11 @@ const ImageNotebook = (props) => {
     props.navigation.navigate('ImageInfo', {imageId: image.id});
   };
 
-  const setAnnotated = (image,annotation) => {
+  const setAnnotated = (image, annotation) => {
     image.annotated = annotation;
     if (annotation && !image.title) image.title = image.id;
     dispatch({type: spotReducers.SET_SELECTED_ATTRIBUTES, attributes: [image]});
-    if (!image.annotated){
+    if (!image.annotated) {
       props.updateImageBasemap(undefined);
     }
   };
@@ -44,25 +44,29 @@ const ImageNotebook = (props) => {
             PlaceholderContent={<ActivityIndicator/>}
             onPress={() => editImage(image)}
           />
-          <View style={{alignSelf:'flex-start',
-            flexDirection: 'column',flex: 1, paddingLeft:10,
-          }}>
-            {image.title && <Text style={[commonStyles.dialogContent,{textAlign:'left',textDecorationLine : 'underline'}]}>{truncateText(image.title,20)}</Text>}
-            <View style={[{alignSelf:'flex-start'}]}>
-            {image.annotated && <Button
-              title={'View as Image Basemap'}
-              onPress={() => props.updateImageBasemap(image)}
-            />}
+          <View style={{alignSelf: 'flex-start', flexDirection: 'column', flex: 1, paddingLeft: 10}}>
+            {image.title &&
+            <Text
+              style={[commonStyles.dialogContent, {textAlign: 'left', textDecorationLine: 'underline'}]}>
+              {truncateText(image.title, 20)}
+            </Text>}
+            <View style={[{alignSelf: 'flex-start'}]}>
+              {image.annotated && <Button
+                title={'View as Image Basemap'}
+                onPress={() => props.updateImageBasemap(image)}
+              />}
             </View>
-            <View style={{alignSelf:'flex-start',
-              flexDirection: 'row',flex: 1, paddingLeft:10,alignItems:'center',
-            }}>
-            <Switch
-              onValueChange={(annotated) => setAnnotated(image,annotated)}
-              value={image.annotated}
-            />
-            <Text style={{textAlign:'left',paddingLeft:5}}>Image as Image Basemap?</Text>
-            </View>
+            {image.image_type !== 'sketch' ? <View
+              style={{alignSelf: 'flex-start', flexDirection: 'row', flex: 1, paddingLeft: 10, alignItems: 'center'}}>
+              <Switch
+                onValueChange={(annotated) => setAnnotated(image, annotated)}
+                value={image.annotated}
+              />
+              <Text style={{textAlign: 'left', paddingLeft: 5}}>Image as Image Basemap?</Text>
+            </View> : <View
+              style={{alignSelf: 'flex-start', flexDirection: 'row', flex: 1, paddingLeft: 10, alignItems: 'center'}}>
+              <Text>Id: {image.id}</Text>
+            </View>}
           </View>
         </View>
       </View>
@@ -81,8 +85,7 @@ const ImageNotebook = (props) => {
 };
 
 function mapStateToProps(state) {
-  return {
-     };
+  return {};
 }
 
 const mapDispatchToProps = {

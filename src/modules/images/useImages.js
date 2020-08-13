@@ -331,7 +331,8 @@ const useImages = () => {
     console.log(imageURI);
     try {
       await RNFS.mkdir(imagesDirectory);
-      await RNFS.copyFile(imageURI.uri, imagePath);
+      if (imageURI.uri) await RNFS.copyFile(imageURI.uri, imagePath);
+      else await RNFS.copyFile(imageURI, imagePath);
       console.log(imageCount, 'File saved to:', imagePath);
       imageCount++;
       let imageData = {};
@@ -515,8 +516,10 @@ const useImages = () => {
           .then(response => {
             response.name = imageProps.id.toString();
             if (response.size < 1024) console.log(response.size + ' Bytes');
-            else if (response.size < 1048576) console.log('Resize Image KB:' + (response.size / 1024).toFixed(3) + ' KB');
-            else if (response.size < 1073741824) console.log('Resize Image MB:' + (response.size / 1048576).toFixed(2) + ' MB');
+            else if (response.size < 1048576) console.log(
+              'Resize Image KB:' + (response.size / 1024).toFixed(3) + ' KB');
+            else if (response.size < 1073741824) console.log(
+              'Resize Image MB:' + (response.size / 1048576).toFixed(2) + ' MB');
             else console.log('Resize Image' + (response.size / 1073741824).toFixed(3) + ' GB');
             return response;
           })
@@ -576,6 +579,7 @@ const useImages = () => {
     getLocalImageSrc: getLocalImageSrc,
     launchCameraFromNotebook: launchCameraFromNotebook,
     pictureSelectDialog: pictureSelectDialog,
+    saveFile: saveFile,
     takePicture: takePicture,
     uploadImages: uploadImages,
   }];

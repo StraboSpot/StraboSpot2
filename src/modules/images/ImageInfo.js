@@ -1,10 +1,9 @@
 import React, {useState} from 'react';
 import {ActivityIndicator, View} from 'react-native';
 
-import {Icon, Image} from 'react-native-elements';
+import {Image} from 'react-native-elements';
 import {connect} from 'react-redux';
 
-import * as themes from '../../shared/styles.constants';
 import IconButton from '../../shared/ui/IconButton';
 import {homeReducers} from '../home/home.constants';
 import ImagePropertiesModal from './ImagePropertiesModal';
@@ -12,9 +11,14 @@ import styles from './images.styles';
 import useImagesHook from './useImages';
 
 const ImageInfo = (props) => {
-
   const [imageNoteModal, setImageNoteModal] = useState(false);
+  const [imageProps] = useState(props.navigation.getParam('imageId', 'No-ID'));
   const [useImages] = useImagesHook();
+
+  // useEffect(() => {
+  //   console.log('Nav Props', props.navigation.getParam('imageId', 'No-ID'))
+  //   setImageProps(props.navigation.getParam('imageId', 'No-ID'));
+  // }, [imageProps]);
 
   let noteModal = (
     <View style={styles.modalPosition}>
@@ -28,6 +32,11 @@ const ImageInfo = (props) => {
 
   const clickHandler = (name) => {
     console.log(name);
+    switch (name) {
+      case 'sketch':
+        props.navigation.navigate('Sketch', {imageId: imageProps});
+        break;
+    }
   };
 
   const closeModal = () => {
@@ -37,7 +46,7 @@ const ImageInfo = (props) => {
   return (
     <View>
       <Image
-        source={{uri: useImages.getLocalImageSrc(props.navigation.getParam('imageId', 'No-ID'))}}
+        source={{uri: useImages.getLocalImageSrc(imageProps)}}
         style={{width: '100%', height: '100%'}}
         PlaceholderContent={<ActivityIndicator/>}
       />
