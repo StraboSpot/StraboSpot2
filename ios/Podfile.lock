@@ -354,9 +354,11 @@ PODS:
     - React
   - RNSensors (6.1.0):
     - React
-  - RNSentry (1.7.0):
+  - RNSentry (1.7.1):
     - React
-    - Sentry (~> 5.1.8)
+    - Sentry (~> 5.2.0)
+  - RNSketchCanvas (0.8.0):
+    - React
   - RNSound (0.11.0):
     - React
     - RNSound/Core (= 0.11.0)
@@ -371,9 +373,9 @@ PODS:
   - RNZipArchive/Core (5.0.4):
     - React
     - SSZipArchive (= 2.2.2)
-  - Sentry (5.1.10):
-    - Sentry/Core (= 5.1.10)
-  - Sentry/Core (5.1.10)
+  - Sentry (5.2.0):
+    - Sentry/Core (= 5.2.0)
+  - Sentry/Core (5.2.0)
   - SSZipArchive (2.2.2)
   - Yoga (1.14.0)
   - YogaKit (1.18.1):
@@ -448,6 +450,7 @@ DEPENDENCIES:
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNSensors (from `../node_modules/react-native-sensors`)
   - "RNSentry (from `../node_modules/@sentry/react-native`)"
+  - "RNSketchCanvas (from `../node_modules/@terrylinla/react-native-sketch-canvas`)"
   - RNSound (from `../node_modules/react-native-sound`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
   - RNZipArchive (from `../node_modules/react-native-zip-archive`)
@@ -568,6 +571,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-sensors"
   RNSentry:
     :path: "../node_modules/@sentry/react-native"
+  RNSketchCanvas:
+    :path: "../node_modules/@terrylinla/react-native-sketch-canvas"
   RNSound:
     :path: "../node_modules/react-native-sound"
   RNVectorIcons:
@@ -638,11 +643,12 @@ SPEC CHECKSUMS:
   RNReanimated: c2bb7438b57a3d987bb2e4e6e4bca94787e30b02
   RNScreens: c526239bbe0e957b988dacc8d75ac94ec9cb19da
   RNSensors: 4ae6660861b426fd16f61ce2df0b750bda6ac32d
-  RNSentry: 05192c14c02562eb7810d6ac3c227b68e76cfb9c
+  RNSentry: 2bae4ffee2e66376ef42cb845a494c3bde17bc56
+  RNSketchCanvas: 6939b18677cd1794151cc3d8eb5a0a2158a4a05b
   RNSound: da030221e6ac7e8290c6b43f2b5f2133a8e225b0
   RNVectorIcons: da6fe858f5a65d7bbc3379540a889b0b12aa5976
   RNZipArchive: 94ade6cf137af264a1b50525b90a8b7d45266c87
-  Sentry: 8715e88b813bde9ad37aead365d5b04ac7302153
+  Sentry: 6e04bc3e11bf771ca79140a112de64dcfbc7d8cb
   SSZipArchive: fa16b8cc4cdeceb698e5e5d9f67e9558532fbf23
   Yoga: 7740b94929bbacbddda59bf115b5317e9a161598
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
