@@ -29,7 +29,10 @@ const Map = React.forwardRef((props, ref) => {
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const selectedSymbols = useSelector(state => state.map.symbolsOn) || [];
   const isAllSymbolsOn = useSelector(state => state.map.isAllSymbolsOn);
-
+  const isDrawFeatureModeOn = () => {
+    return (props.mapMode === MapModes.DRAW.POINT || props.mapMode === MapModes.DRAW.LINE
+      || props.mapMode === MapModes.DRAW.POLYGON);
+  };
   // Data needing to be tracked when in editing mode
   const initialEditingModeData = {
     spotEditing: {},
@@ -67,6 +70,7 @@ const Map = React.forwardRef((props, ref) => {
   // Props that needed to pass to the map component
   const mapProps = {
     ...mapPropsMutable,
+    allowMapViewMove: isDrawFeatureModeOn() ? false : true,
     ref: {mapRef: map, cameraRef: camera},
     onMapPress: (e) => onMapPress(e),
     onMapLongPress: (e) => onMapLongPress(e),
@@ -335,8 +339,7 @@ const Map = React.forwardRef((props, ref) => {
       else clearSelectedSpots();
     }
     // Draw a feature
-    else if (props.mapMode === MapModes.DRAW.POINT || props.mapMode === MapModes.DRAW.LINE
-      || props.mapMode === MapModes.DRAW.POLYGON) {
+    else if (isDrawFeatureModeOn()) {
       console.log('Drawing', props.mapMode, '...');
       let feature = {};
       const newCoord = turf.getCoord(e);
