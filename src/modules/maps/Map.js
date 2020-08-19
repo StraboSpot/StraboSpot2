@@ -1033,7 +1033,8 @@ const Map = React.forwardRef((props, ref) => {
     var distances = [];
     var screenCoords = [];
     for (var i = 0; i < featuresInRect.length; i++) {
-      if (featuresInRect[i].geometry.type === 'Polygon' || featuresInRect[i].geometry.type === 'LineString') {
+      if (featuresInRect[i].geometry.type === 'Polygon' || featuresInRect[i].geometry.type === 'LineString'
+        || featuresInRect[i].geometry.type === 'MultiLineString' || featuresInRect[i].geometry.type === 'MultiPolygon') {
         // trying to get a distance that is closest from the vertices of a polygon or line
         // to the dummy feature with screenX and screenY
         var explodedFeatures = turf.explode(featuresInRect[i]);
