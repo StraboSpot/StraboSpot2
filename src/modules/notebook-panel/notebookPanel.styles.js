@@ -6,7 +6,7 @@ const notebookStyles = StyleSheet.create({
   panel: {
     width: 400,
     height: '100%',
-    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
+    backgroundColor: '#ffffff',
     position: 'absolute',
     right: 0,
     zIndex: -1,
@@ -88,12 +88,12 @@ const notebookStyles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     borderBottomWidth: 2,
-    borderBottomColor: themes.DARKGREY,
   },
   traceSurfaceFeatureToggleContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingLeft: 10,
+    paddingTop:5,
   },
   traceSurfaceFeatureToggleText: {
     paddingRight: 10,
@@ -101,6 +101,11 @@ const notebookStyles = StyleSheet.create({
   },
   traceSurfaceFeatureDisabledText: {
     color: themes.PRIMARY_BACKGROUND_COLOR,
+  },
+  sectionContainer: {
+    paddingTop:7,
+    //paddingBottom:5,
+    borderBottomWidth: 2,
   },
 });
 

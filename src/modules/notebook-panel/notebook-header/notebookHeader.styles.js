@@ -8,6 +8,7 @@ const notebookHeaderStyles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
     paddingLeft: 10,
+    borderBottomWidth:2,
   },
   headerImage: {
     resizeMode: 'contain',

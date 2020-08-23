@@ -3,17 +3,22 @@ import {Alert, FlatList, Switch, Text, View} from 'react-native';
 
 import {Formik} from 'formik';
 import {Button} from 'react-native-elements';
-import {useDispatch, useSelector} from 'react-redux';
+import {connect, useDispatch, useSelector} from 'react-redux';
 
 import {isEmpty} from '../../shared/Helpers';
 import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {Form, useFormHook} from '../form';
+import {homeReducers, Modals} from '../home/home.constants';
 import NotebookImages from '../images/ImageNotebook';
+import useImagesHook from '../images/useImages';
 import MeasurementsOverview from '../measurements/MeasurementsOverview';
 import NotesOverview from '../notes/NotesOverview';
+import SamplesNotebook from '../samples/SamplesNotebook';
 import {spotReducers} from '../spots/spot.constants';
 import {TagsAtSpotList} from '../tags';
+import NotebookFooter from './notebook-footer/NotebookFooter';
+import {NotebookPages, notebookReducers} from './notebook.constants';
 import notebookStyles from './notebookPanel.styles';
 
 const Overview = props => {
@@ -23,13 +28,37 @@ const Overview = props => {
   const [isTraceSurfaceFeatureEdit, setIsTraceSurfaceFeatureEdit] = useState(false);
   const form = useRef(null);
   const [useForm] = useFormHook();
+  const [useImages] = useImagesHook();
 
   const SECTIONS = [
-    {id: 1, title: 'Measurements', content: <MeasurementsOverview/>},
-    {id: 2, title: 'Photos and Sketches', content: <NotebookImages/>},
-    {id: 3, title: 'Tags', content: <TagsAtSpotList openMainMenu={props.openMainMenu}/>},
-    {id: 4, title: 'Notes', content: <NotesOverview/>},
+    {id: 1, title: 'Measurements', content: <MeasurementsOverview/>, icon:<NotebookFooter openPage={(page) => setNotebookPageVisible(page)}
+                                                                                              onPress={(camera) => props.onPress(camera)} buttonName='measurements'/>},
+    {id: 2, title: 'Photos and Sketches', content: <NotebookImages/>, icon:<NotebookFooter openPage={(page) => setNotebookPageVisible(page)}
+                                                                                           onPress={() => launchCamera()} buttonName='photosandsketches'/>},
+    {id: 3, title: 'Tags', content: <TagsAtSpotList openMainMenu={props.openMainMenu}/>, icon:<NotebookFooter openPage={(page) => setNotebookPageVisible(page)}
+                                                                                                               onPress={(camera) => props.onPress(camera)} buttonName='tags'/>},
+    {id: 4, title: 'Samples', content: <SamplesNotebook/>,icon:<NotebookFooter openPage={(page) => setNotebookPageVisible(page)}
+                                                                               onPress={(camera) => props.onPress(camera)} buttonName='samples'/>},
+    {id: 5, title: 'Notes', content: <NotesOverview/>,icon:<NotebookFooter openPage={(page) => setNotebookPageVisible(page)}
+                                                                           onPress={(camera) => props.onPress(camera)} buttonName='notes'/>},
   ];
+  const toastRef = useRef();
+  const launchCamera = () =>{
+    useImages.launchCameraFromNotebook().then((imagesSavedLength) => {
+      imagesSavedLength === 1
+        ? toastRef.current.show(`${imagesSavedLength} photo saved!`)
+        : toastRef.current.show(`${imagesSavedLength} photos saved!`);
+    });
+  };
+  const setNotebookPageVisible = page => {
+    const pageVisible = props.setNotebookPageVisible(page);
+    if (pageVisible.page === NotebookPages.MEASUREMENT || pageVisible === NotebookPages.MEASUREMENTDETAIL) {
+      props.setModalVisible(Modals.NOTEBOOK_MODALS.COMPASS);
+    }
+    else if (pageVisible.page === NotebookPages.SAMPLE) props.setModalVisible(Modals.NOTEBOOK_MODALS.SAMPLE);
+    else if (pageVisible.page === NotebookPages.TAG) props.setModalVisible(Modals.NOTEBOOK_MODALS.TAGS);
+    else props.setModalVisible(null);
+  };
 
   useEffect(() => {
     setIsTraceSurfaceFeatureEnabled((spot.properties.hasOwnProperty('trace') && spot.properties.trace.trace_feature)
@@ -71,8 +100,11 @@ const Overview = props => {
 
   const renderSections = (section) => {
     return (
-      <View>
-        <SectionDivider dividerText={section.title}/>
+      <View style={notebookStyles.sectionContainer}>
+        <View style={{flexDirection: 'row',alignItems: 'center'}}>
+          <SectionDivider dividerText={section.title}/>
+          <View style={{}}>{section.icon}</View>
+        </View>
         {section.content}
       </View>
     );
@@ -199,5 +231,13 @@ const Overview = props => {
     </View>
   );
 };
+function mapStateToProps() {
+  return {};
+}
+const mapDispatchToProps = {
+  setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),
+  setModalVisible: (modal) => ({type: homeReducers.SET_MODAL_VISIBLE, modal: modal}),
+  setAllSpotsPanelVisible: (value) => ({type: homeReducers.SET_ALLSPOTS_PANEL_VISIBLE, value: value}),
+};
 
-export default Overview;
+export default connect(mapStateToProps, mapDispatchToProps)(Overview);

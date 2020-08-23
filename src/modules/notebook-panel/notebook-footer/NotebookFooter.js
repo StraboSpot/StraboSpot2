@@ -48,38 +48,38 @@ const NotebookFooter = props => {
 
   return (
     <View style={footerStyle.footerIconContainer}>
-      <IconButton
+      {((props.buttonName && props.buttonName === 'tags') || (!props.buttonName)) && <IconButton
         source={getPageIcon(NotebookPages.TAG)}
         style={footerStyle.footerIcon}
         onPress={() => props.openPage(NotebookPages.TAG)}
 
-      />
-      <IconButton
+      />}
+      {((props.buttonName && props.buttonName === 'measurements') || (!props.buttonName)) && <IconButton
         source={getPageIcon(NotebookPages.MEASUREMENT)}
         style={footerStyle.footerIcon}
         onPress={() => props.openPage(NotebookPages.MEASUREMENT)}
-      />
-      <IconButton
+      />}
+      {((props.buttonName && props.buttonName === 'samples') || (!props.buttonName)) && <IconButton
         source={getPageIcon(NotebookPages.SAMPLE)}
         style={footerStyle.footerIcon}
         onPress={() => props.openPage(NotebookPages.SAMPLE)}
-      />
-      <IconButton
+      />}
+      {((props.buttonName && props.buttonName === 'notes') || (!props.buttonName)) && <IconButton
         source={getPageIcon(NotebookPages.NOTE)}
         style={footerStyle.footerIcon}
         onPress={() => props.openPage(NotebookPages.NOTE)}
 
-      />
-      <IconButton
+      />}
+      {((props.buttonName && props.buttonName === 'photosandsketches') || (!props.buttonName)) && <IconButton
         source={getPageIcon(NotebookPages.PHOTO)}
         style={footerStyle.footerIcon}
         onPress={() => props.onPress(IconButtons.CAMERA)}
-      />
-      <IconButton
+      />}
+      {((props.buttonName && props.buttonName === 'photosandsketches') || (!props.buttonName)) && <IconButton
         source={getPageIcon(NotebookPages.SKETCH)}
         style={footerStyle.footerIcon}
         onPress={() => props.navigation.navigate('Sketch', {selectedSpot: selectedSpot})}
-      />
+      />}
     </View>
   );
 };
