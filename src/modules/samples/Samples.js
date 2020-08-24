@@ -33,7 +33,7 @@ const SamplesModalView = (props) => {
     console.log('useEffect SamplesModalView [props.spot]');
     const defaultName = preferences.sample_prefix || 'Unnamed';
     const defaultNumber = preferences.starting_sample_number
-      || (props.spot.properties.samples && props.spot.properties.samples.length + 1) || 1;
+      || (props.spot.properties && props.spot.properties.samples && props.spot.properties.samples.length + 1) || 1;
     setSamplePrefix(defaultName);
     setStartingSampleNumber(defaultNumber);
     setName(defaultName + defaultNumber);
