@@ -3,7 +3,7 @@ import {Alert, FlatList, Switch, Text, View} from 'react-native';
 
 import {Formik} from 'formik';
 import {Button} from 'react-native-elements';
-import {connect, useDispatch, useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 import {isEmpty} from '../../shared/Helpers';
 import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
@@ -51,13 +51,13 @@ const Overview = props => {
     });
   };
   const setNotebookPageVisible = page => {
-    const pageVisible = props.setNotebookPageVisible(page);
+    const pageVisible = dispatch({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page});
     if (pageVisible.page === NotebookPages.MEASUREMENT || pageVisible === NotebookPages.MEASUREMENTDETAIL) {
-      props.setModalVisible(Modals.NOTEBOOK_MODALS.COMPASS);
+      dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: Modals.NOTEBOOK_MODALS.COMPASS});
     }
-    else if (pageVisible.page === NotebookPages.SAMPLE) props.setModalVisible(Modals.NOTEBOOK_MODALS.SAMPLE);
-    else if (pageVisible.page === NotebookPages.TAG) props.setModalVisible(Modals.NOTEBOOK_MODALS.TAGS);
-    else props.setModalVisible(null);
+    else if (pageVisible.page === NotebookPages.SAMPLE) dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: Modals.NOTEBOOK_MODALS.SAMPLE});
+    else if (pageVisible.page === NotebookPages.TAG) dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: Modals.NOTEBOOK_MODALS.TAGS});
+    else dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: null});
   };
 
   useEffect(() => {
@@ -103,7 +103,7 @@ const Overview = props => {
       <View style={notebookStyles.sectionContainer}>
         <View style={{flexDirection: 'row',alignItems: 'center'}}>
           <SectionDivider dividerText={section.title}/>
-          <View style={{}}>{section.icon}</View>
+          <View style={{paddingTop: 15}}>{section.icon}</View>
         </View>
         {section.content}
       </View>
@@ -231,13 +231,4 @@ const Overview = props => {
     </View>
   );
 };
-function mapStateToProps() {
-  return {};
-}
-const mapDispatchToProps = {
-  setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),
-  setModalVisible: (modal) => ({type: homeReducers.SET_MODAL_VISIBLE, modal: modal}),
-  setAllSpotsPanelVisible: (value) => ({type: homeReducers.SET_ALLSPOTS_PANEL_VISIBLE, value: value}),
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Overview);
+export default Overview;
