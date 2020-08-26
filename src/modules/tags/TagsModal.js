@@ -12,6 +12,7 @@ import {Modals} from '../home/home.constants';
 import useMapsHook from '../maps/useMaps';
 import {projectReducers} from '../project/project.constants';
 import {useTagsHook, TagDetailModal} from '../tags';
+import {isEmpty} from '../../shared/Helpers';
 
 const TagsModal = (props) => {
   const dispatch = useDispatch();
@@ -67,8 +68,7 @@ const TagsModal = (props) => {
         <View style={{maxHeight: 300}}>
           {renderSpotTagsList()}
           {modalVisible === Modals.SHORTCUT_MODALS.TAGS
-          && <SaveButton title={'Save'} onPress={() => save()}
-          />}
+          && <SaveButton title={'Save'} onPress={() => save()} disabled={isEmpty(checkedTagsTemp)}/>}
         </View>
       </React.Fragment>
     );
