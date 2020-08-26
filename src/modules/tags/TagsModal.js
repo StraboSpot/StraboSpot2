@@ -109,10 +109,10 @@ const TagsModal = (props) => {
 
   return (
     <View>
-      <AddButton
+      {modalVisible === Modals.SHORTCUT_MODALS.TAGS && <AddButton
         title={'Create New Tag'}
         onPress={() => addTag()}
-      />
+      />}
       {renderTagContent()}
       <TagDetailModal
         isVisible={isDetailModalVisible}
