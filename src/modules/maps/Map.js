@@ -70,7 +70,7 @@ const Map = React.forwardRef((props, ref) => {
   // Props that needed to pass to the map component
   const mapProps = {
     ...mapPropsMutable,
-    allowMapViewMove: isDrawFeatureModeOn() ? false : true,
+    allowMapViewMove: !isDrawFeatureModeOn(),
     ref: {mapRef: map, cameraRef: camera},
     onMapPress: (e) => onMapPress(e),
     onMapLongPress: (e) => onMapLongPress(e),
