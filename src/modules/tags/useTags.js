@@ -1,4 +1,4 @@
-import React, {useRef} from 'react';
+import React, {useEffect, useRef} from 'react';
 import {Text, View} from 'react-native';
 
 import {Formik} from 'formik';
@@ -6,6 +6,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import {getNewId, isEmpty, truncateText} from '../../shared/Helpers';
 import {Form, useFormHook, labelDictionary} from '../form';
+import {Modals} from '../home/home.constants';
 import useMapsHook from '../maps/useMaps';
 import {NotebookPages, notebookReducers} from '../notebook-panel/notebook.constants';
 import {projectReducers} from '../project/project.constants';
@@ -17,10 +18,24 @@ const useTags = () => {
   const dispatch = useDispatch();
   const form = useRef(null);
   const addTagToSelectedSpot = useSelector(state => state.project.addTagToSelectedSpot);
+  const modalVisible = useSelector(state => state.home.modalVisible);
   const projectTags = useSelector(state => state.project.project.tags || []);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const selectedTag = useSelector(state => state.project.selectedTag);
   const tagsDictionary = labelDictionary.project.tags;
+
+  useEffect(() => {
+    console.log('useEffect useTags [addTagToSelectedSpot]');
+  }, [addTagToSelectedSpot]);
+
+  const addTag = () => {
+    dispatch({type: projectReducers.SET_SELECTED_TAG, tag: {}});
+    if (modalVisible === Modals.NOTEBOOK_MODALS.TAGS) {
+      dispatch({type: projectReducers.ADD_TAG_TO_SELECTED_SPOT, addTagToSelectedSpot: true});
+    }
+    else dispatch({type: projectReducers.ADD_TAG_TO_SELECTED_SPOT, addTagToSelectedSpot: false});
+    return;
+  };
 
   const addRemoveSpotFromTag = (spotId) => {
     let selectedTagCopy = JSON.parse(JSON.stringify(selectedTag));
@@ -48,10 +63,11 @@ const useTags = () => {
     return 'No Type Specified';
   };
 
-  const addRemoveTagFromSpot = (tag) => {
+  const addRemoveTagFromSpot = (tag, spot) => {
     if (!tag.spots) tag.spots = [];
-    const i = tag.spots.indexOf(selectedSpot.properties.id);
-    if (i === -1) tag.spots.push(selectedSpot.properties.id);
+    const spotId = spot ? spot.properties.id : selectedSpot.properties.id;
+    const i = tag.spots.indexOf(spotId);
+    if (i === -1) tag.spots.push(spotId);
     else tag.spots.splice(i, 1);
     if (isEmpty(tag.spots)) delete tag.spots;
     saveTag(tag);
@@ -161,6 +177,7 @@ const useTags = () => {
   };
 
   return [{
+    addTag: addTag,
     addRemoveSpotFromTag: addRemoveSpotFromTag,
     addRemoveTagFromSpot: addRemoveTagFromSpot,
     deleteTag: deleteTag,

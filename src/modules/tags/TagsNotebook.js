@@ -11,16 +11,15 @@ import {homeReducers, Modals} from '../home/home.constants';
 import {NotebookPages, notebookReducers} from '../notebook-panel/notebook.constants';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import {projectReducers} from '../project/project.constants';
-import {TagDetailModal, TagsAtSpotList} from '../tags';
+import {TagDetailModal, TagsAtSpotList, useTagsHook} from '../tags';
 
 const TagsNotebook = () => {
-
+  const [useTags] = useTagsHook();
   const dispatch = useDispatch();
   const [isDetailModalVisibile, setIsDetailModalVisible] = useState(false);
 
-  const addTag = () => {
-    dispatch({type: projectReducers.SET_SELECTED_TAG, tag: {}});
-    dispatch({type: projectReducers.ADD_TAG_TO_SELECTED_SPOT, addTagToSelectedSpot: true});
+  const addTag = async() => {
+    await useTags.addTag();
     setIsDetailModalVisible(true);
   };
 
