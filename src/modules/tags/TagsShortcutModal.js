@@ -37,8 +37,8 @@ const TagsShortcutModal = (props) => {
         <DragAnimation style={uiStyles.modalPositionShortcutView}>
           <Modal
             close={props.close}
-            cancel={props.cancel}
-            buttonTitleLeft={'Cancel'}
+            // cancel={props.cancel}
+            // buttonTitleLeft={'Cancel'}
             textStyle={{fontWeight: 'bold'}}
             onPress={(view) => props.onPress(view, NotebookPages.TAG, Modals.NOTEBOOK_MODALS.TAGS)}
           >

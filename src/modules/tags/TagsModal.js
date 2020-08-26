@@ -68,7 +68,11 @@ const TagsModal = (props) => {
         <View style={{maxHeight: 300}}>
           {renderSpotTagsList()}
           {modalVisible === Modals.SHORTCUT_MODALS.TAGS
-          && <SaveButton title={'Save'} onPress={() => save()} disabled={isEmpty(checkedTagsTemp)}/>}
+          && <SaveButton
+            buttonStyle={{backgroundColor: 'red'}}
+            title={'Save tag(s)'}
+            onPress={() => save()} disabled={isEmpty(checkedTagsTemp)}
+          />}
         </View>
       </React.Fragment>
     );
