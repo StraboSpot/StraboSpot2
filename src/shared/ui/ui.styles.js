@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
   },
   saveAndDeleteButtonStyles: {
-    borderRadius: 20,
+    borderRadius: 15,
     width: 150,
   },
   saveAndDeleteButtonContainer: {
@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
   },
   sectionDividerText: {
-    fontSize: Platform.OS === 'ios' ? 18 : 20,
+    fontSize: Platform.OS === 'ios' ? 16 : 20,
     fontWeight: 'bold',
     textTransform: 'uppercase',
     color: themes.SECONDARY_HEADER_TEXT_COLOR,

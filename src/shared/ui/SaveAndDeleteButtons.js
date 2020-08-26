@@ -9,9 +9,11 @@ const SaveAndDeleteButtons = (props) => {
     <React.Fragment>
       <Button
         title={props.title}
-        containerStyle={uiStyles.saveAndDeleteButtonContainer}
+        containerStyle={[uiStyles.saveAndDeleteButtonContainer, props.containerStyle]}
         buttonStyle={[uiStyles.saveAndDeleteButtonStyles, props.buttonStyle]}
+        titleStyle={props.titleStyle}
         onPress={props.onPress}
+        disabled={props.disabled}
       />
     </React.Fragment>
   );
