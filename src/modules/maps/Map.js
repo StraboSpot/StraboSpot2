@@ -29,7 +29,10 @@ const Map = React.forwardRef((props, ref) => {
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const selectedSymbols = useSelector(state => state.map.symbolsOn) || [];
   const isAllSymbolsOn = useSelector(state => state.map.isAllSymbolsOn);
-
+  const isDrawFeatureModeOn = () => {
+    return (props.mapMode === MapModes.DRAW.POINT || props.mapMode === MapModes.DRAW.LINE
+      || props.mapMode === MapModes.DRAW.POLYGON);
+  };
   // Data needing to be tracked when in editing mode
   const initialEditingModeData = {
     spotEditing: {},
@@ -67,6 +70,7 @@ const Map = React.forwardRef((props, ref) => {
   // Props that needed to pass to the map component
   const mapProps = {
     ...mapPropsMutable,
+    allowMapViewMove: !isDrawFeatureModeOn(),
     ref: {mapRef: map, cameraRef: camera},
     onMapPress: (e) => onMapPress(e),
     onMapLongPress: (e) => onMapLongPress(e),
@@ -335,8 +339,7 @@ const Map = React.forwardRef((props, ref) => {
       else clearSelectedSpots();
     }
     // Draw a feature
-    else if (props.mapMode === MapModes.DRAW.POINT || props.mapMode === MapModes.DRAW.LINE
-      || props.mapMode === MapModes.DRAW.POLYGON) {
+    else if (isDrawFeatureModeOn()) {
       console.log('Drawing', props.mapMode, '...');
       let feature = {};
       const newCoord = turf.getCoord(e);
@@ -1030,7 +1033,8 @@ const Map = React.forwardRef((props, ref) => {
     var distances = [];
     var screenCoords = [];
     for (var i = 0; i < featuresInRect.length; i++) {
-      if (featuresInRect[i].geometry.type === 'Polygon' || featuresInRect[i].geometry.type === 'LineString') {
+      if (featuresInRect[i].geometry.type === 'Polygon' || featuresInRect[i].geometry.type === 'LineString'
+        || featuresInRect[i].geometry.type === 'MultiLineString' || featuresInRect[i].geometry.type === 'MultiPolygon') {
         // trying to get a distance that is closest from the vertices of a polygon or line
         // to the dummy feature with screenX and screenY
         var explodedFeatures = turf.explode(featuresInRect[i]);
