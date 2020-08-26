@@ -70,8 +70,6 @@ const Home = (props) => {
   const dispatch = useDispatch();
   const customMaps = useSelector(state => state.map.customMaps);
   const modalVisible = useSelector(state => state.home.modalVisible);
-  // const project = useSelector(state => state.project.project);
-  // const settingsPageVisible = useSelector(state => state.settingsPanel.settingsPageVisible);
   const statusMessages = useSelector(state => state.home.statusMessages);
   const isHomeLoading = useSelector(state => state.home.loading.home);
   const isModalLoading = useSelector(state => state.home.loading.modal);
@@ -170,7 +168,7 @@ const Home = (props) => {
         if (modalVisible === Modals.SHORTCUT_MODALS.TAGS) {
           dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: null});
         }
-        else dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: Modals.SHORTCUT_MODALS.TAGS});
+        else modalHandler(null, Modals.SHORTCUT_MODALS.TAGS);
         closeNotebookPanel();
         break;
       case 'measurement':
