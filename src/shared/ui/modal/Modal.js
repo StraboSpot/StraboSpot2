@@ -34,7 +34,7 @@ const Modal = (props) => {
         <View style={{flex: 1, alignItems: 'flex-end'}}>
           <Button
             titleStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 16}}
-            title={'Close'}
+            title={props.title || 'Close'}
             type={'clear'}
             onPress={props.close}
           />

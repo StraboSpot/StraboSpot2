@@ -33,6 +33,7 @@ const ImagePropertiesModal = (props) => {
                 {renderFormFields()}
               </View>
             }
+            scrollEnabled={false}
             />
           <Button
             title={'Show fewer fields'}
@@ -46,9 +47,9 @@ const ImagePropertiesModal = (props) => {
     else {
       return (
         <View>
-          <ScrollView>
+          <View>
             {renderFormFields()}
-          </ScrollView>
+          </View>
           <Button
             title={'Show fewer fields'}
             type={'clear'}
@@ -92,9 +93,9 @@ const ImagePropertiesModal = (props) => {
     const formName = ['general', 'images'];
     console.log('Rendering form:', formName.join('.'), 'with selected image:', props.selectedImage);
     return (
-      <View>
+      <View style={{flex: 1}}>
         <SectionDivider dividerText='Feature Type'/>
-        <View>
+        <ScrollView>
           <Formik
             innerRef={form}
             onSubmit={onSubmitForm}
@@ -142,7 +143,14 @@ const ImagePropertiesModal = (props) => {
 
   return (
     <Modal
-      component={<View style={{flex: 1}}>
+      title={'Save'}
+      buttonTitleLeft={'Cancel'}
+      cancel={props.cancel}
+      close={() => saveFormAndGo()}
+      style={styles.modalContainer}
+      modalStyle={{opacity: 1, width: 350}}
+    >
+      <View>
         <Input
           placeholder={'Image Name'}
           inputContainerStyle={styles.inputContainer}
@@ -168,14 +176,11 @@ const ImagePropertiesModal = (props) => {
           <Text style={{marginLeft: 10, fontSize: 16}}>Use as Image-basemap</Text>
           <Switch
             onValueChange={(annotated) => setAnnotated(annotated)}
-           value={annotated}
+            value={annotated}
           />
         </View>
-      </View>}
-      close={() => saveFormAndGo()}
-      style={styles.modalContainer}
-      modalStyle={{opacity: 1, width: 350}}
-    />
+      </View>
+    </Modal>
   );
 };
 

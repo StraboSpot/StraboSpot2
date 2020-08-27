@@ -23,7 +23,8 @@ const ImageInfo = (props) => {
   let noteModal = (
     <View style={styles.modalPosition}>
       <ImagePropertiesModal
-        close={() => closeModal()}
+        close={() => closeModal()} // Saves and closes modal
+        cancel={() => closeModal()} // Closes without saving
       >
         Image Info
       </ImagePropertiesModal>
