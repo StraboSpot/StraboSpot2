@@ -156,6 +156,111 @@ const useMapSymbology = (props) => {
     ];
   };
 
+  const getLineColor = () => {
+    return (
+      ['case',
+        ['all',
+          ['has', 'trace'],
+          ['has', 'trace_type', ['get', 'trace']],
+        ],
+        ['case',
+          // Case 1: Geologic Structure
+          ['==', ['get', 'trace_type', ['get', 'trace']], 'geologic_struc'],
+          '#FF0000',
+          ['case',
+            // Case 2: Contact
+            ['==', ['get', 'trace_type', ['get', 'trace']], 'contact'],
+            '#000000',
+            ['case',
+              // Case 3: Geomorphic Feature
+              ['==', ['get', 'trace_type', ['get', 'trace']], 'geomorphic_fea'],
+              '#0000FF',
+              ['case',
+                // Case 4: Anthropoenic Feature
+                ['==', ['get', 'trace_type', ['get', 'trace']], 'anthropenic_fe'],
+                '#800080',
+                'black',
+              ],
+            ],
+          ],
+        ],
+        // Default
+        'red',
+      ]
+    );
+  };
+
+  // This doesn't work as line-dasharray is not supported wtih data-driven styling
+  // https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/#paint-line-line-dasharray
+  const getLineDashArray = () => {
+    return (
+      ['case',
+        ['all',
+          ['has', 'trace'],
+          ['has', 'trace_quality', ['get', 'trace']],
+        ],
+        [1, 0],
+        ['case',
+          // Case 1: Known
+          ['==', ['get', 'trace_quality', ['get', 'trace']], 'known'],
+          ['literal', [1, 0]],
+          ['case',
+            // Case 2: Approximate & Questionable
+            ['any',
+              ['==', ['get', 'trace_quality', ['get', 'trace']], 'approximate'],
+              ['==', ['get', 'trace_quality', ['get', 'trace']], 'questionable'],
+            ],
+            ['literal', [20, 15]],
+            ['case',
+              // Case 3: Other
+              ['==', ['get', 'trace_quality', ['get', 'trace']], 'other'],
+              ['literal', [20, 15, 0, 15]],
+              ['literal', [1, 0]],
+            ],
+          ],
+        ],
+        // Default
+        [1, 0],
+      ]
+    );
+  };
+
+  const getLineWidth = () => {
+    return (
+      ['case',
+        ['all',
+          ['has', 'trace'],
+          ['has', 'trace_type', ['get', 'trace']],
+        ],
+        ['case',
+          ['any',
+            ['all',
+              ['==', ['get', 'trace_type', ['get', 'trace']], 'geologic_struc'],
+              ['has', 'geologic_structure_type', ['get', 'trace']],
+              ['any',
+                ['==', ['get', 'geologic_structure_type', ['get', 'trace']], 'fault'],
+                ['==', ['get', 'geologic_structure_type', ['get', 'trace']], 'shear_zone'],
+              ],
+            ],
+            ['all',
+              ['==', ['get', 'trace_type', ['get', 'trace']], 'contact'],
+              ['has', 'contact_type', ['get', 'trace']],
+              ['==', ['get', 'contact_type', ['get', 'trace']], 'intrusive'],
+              ['has', 'intrusive_contact_type', ['get', 'trace']],
+              ['==', ['get', 'intrusive_contact_type', ['get', 'trace']], 'dike'],
+            ],
+            ['==', ['get', 'trace_type', ['get', 'trace']], 'geomorphic_fea'],
+            ['==', ['get', 'trace_type', ['get', 'trace']], 'anthropenic_fe'],
+          ],
+          4,
+          2,
+        ],
+        // Default
+        2,
+      ]
+    );
+  };
+
   const mapStyles = {
     point: {
       textIgnorePlacement: true,  // Need to be able to stack symbols at same location
@@ -170,8 +275,9 @@ const useMapSymbology = (props) => {
       symbolSpacing: 0,
     },
     line: {
-      lineColor: 'black',
-      lineWidth: 3,
+      lineColor: getLineColor(),
+      lineWidth: getLineWidth(),
+      lineDasharray: getLineDashArray(),
     },
     polygon: {
       fillColor: 'blue',
