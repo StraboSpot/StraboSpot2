@@ -104,7 +104,7 @@ const ImagePropertiesModal = (props) => {
             initialValues={props.selectedImage}
             validateOnChange={false}
           />
-        </View>
+        </ScrollView>
       </View>
     );
   };
