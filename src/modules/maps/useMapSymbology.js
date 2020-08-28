@@ -270,6 +270,57 @@ const useMapSymbology = (props) => {
     );
   };
 
+  const getPolyFill = () => {
+    return (
+      // Variable bindings
+      ['let', 'default', 'rgba(0, 0, 255, 0.4)',
+
+        // Output
+        ['case',
+          ['has', 'surface_feature'],
+          ['case',
+            ['==', ['get', 'surface_feature_type', ['get', 'surface_feature']], 'rock_unit'],
+            'rgba(0, 255, 255, 0.4)',
+            ['case',
+              ['==', ['get', 'surface_feature_type', ['get', 'surface_feature']], 'contiguous_outcrop'],
+              'rgba(240, 128, 128, 0.4)',
+              ['case',
+                ['==', ['get', 'surface_feature_type', ['get', 'surface_feature']], 'geologic_structure'],
+                'rgba(0, 255, 255, 0.4)',
+                ['case',
+                  ['==', ['get', 'surface_feature_type', ['get', 'surface_feature']], 'geomorphic_feature'],
+                  'rgba(0, 128, 0, 0.4)',
+                  ['case',
+                    ['==', ['get', 'surface_feature_type', ['get', 'surface_feature']], 'anthropogenic_feature'],
+                    'rgba(128, 0, 128, 0.4)',
+                    ['case',
+                      ['==', ['get', 'surface_feature_type', ['get', 'surface_feature']], 'extent_of_mapping'],
+                      'rgba(128, 0, 128, 0)',
+                      ['case',
+                        ['==', ['get', 'surface_feature_type', ['get', 'surface_feature']], 'extent_of_biological_marker'],
+                        'rgba(0, 128, 0, 0.4)',
+                        ['case',
+                          ['any',
+                            ['==', ['get', 'surface_feature_type', ['get', 'surface_feature']], 'subjected_to_similar_process'],
+                            ['==', ['get', 'surface_feature_type', ['get', 'surface_feature']], 'gradients'],
+                          ],
+                          'rgba(255, 165, 0,0.4)',
+                          ['var', 'default'],
+                        ],
+                      ],
+                    ],
+                  ],
+                ],
+              ],
+            ],
+          ],
+          // Default
+          ['var', 'default'],
+        ],
+      ]
+    );
+  };
+
   const mapStyles = {
     point: {
       textIgnorePlacement: true,  // Need to be able to stack symbols at same location
@@ -300,8 +351,8 @@ const useMapSymbology = (props) => {
       lineDasharray: [5, 2, 1, 2],
     },
     polygon: {
-      fillColor: 'blue',
-      fillOpacity: 0.4,
+      fillColor: getPolyFill(),
+      fillOutlineColor: 'black',
     },
     pointSelected: {
       circleRadius: 35,
