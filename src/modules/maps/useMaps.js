@@ -286,6 +286,7 @@ const useMaps = () => {
     }
   };
 
+  // HELLO
   // Create a point feature at the current location
   const setPointAtCurrentLocation = async () => {
     const userLocationCoords = await getCurrentLocation();
