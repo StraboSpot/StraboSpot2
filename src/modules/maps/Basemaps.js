@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Platform, Text, View} from 'react-native';
+import {Text, View} from 'react-native';
 
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import * as turf from '@turf/turf/index';
@@ -58,6 +58,7 @@ function Basemap(props) {
   };
 
   const onRegionDidChange = () => {
+    console.log('Event onRegionDidChange');
     setShowZoom(false);
     props.setSpotsInMapExtent();
   };
@@ -165,19 +166,35 @@ function Basemap(props) {
           <MapboxGL.SymbolLayer
             id='pointLayerNotSelected'
             minZoomLevel={1}
-            filter={['==', '$type', 'Point']}
+            filter={['==', ['geometry-type'], 'Point']}
             style={useMapSymbology.getMapSymbology().point}
           />
+
+          {/* Need 3 different lines for the different types of line dashes since
+           lineDasharray is not suppported with data-driven styling*/}
           <MapboxGL.LineLayer
             id='lineLayerNotSelected'
             minZoomLevel={1}
-            filter={['==', '$type', 'LineString']}
+            filter={useMapSymbology.getSolidLines()}
             style={useMapSymbology.getMapSymbology().line}
           />
+          <MapboxGL.LineLayer
+            id='lineLayerNotSelectedDashed'
+            minZoomLevel={1}
+            filter={useMapSymbology.getDashedLines()}
+            style={useMapSymbology.getMapSymbology().lineDashed}
+          />
+          <MapboxGL.LineLayer
+            id='lineLayerNotSelectedDotDashed'
+            minZoomLevel={1}
+            filter={useMapSymbology.getDotDashedLines()}
+            style={useMapSymbology.getMapSymbology().lineDotDashed}
+          />
+
           <MapboxGL.FillLayer
             id='polygonLayerNotSelected'
             minZoomLevel={1}
-            filter={['==', '$type', 'Polygon']}
+            filter={['==', ['geometry-type'], 'Polygon']}
             style={useMapSymbology.getMapSymbology().polygon}
           />
         </MapboxGL.ShapeSource>
@@ -190,19 +207,35 @@ function Basemap(props) {
           <MapboxGL.CircleLayer
             id='pointLayerSelected'
             minZoomLevel={1}
-            filter={['==', '$type', 'Point']}
+            filter={['==', ['geometry-type'], 'Point']}
             style={useMapSymbology.getMapSymbology().pointSelected}
           />
+
+          {/* Need 3 different lines for the different types of line dashes since
+           lineDasharray is not suppported with data-driven styling*/}
           <MapboxGL.LineLayer
             id='lineLayerSelected'
             minZoomLevel={1}
-            filter={['==', '$type', 'LineString']}
+            filter={useMapSymbology.getSolidLines()}
             style={useMapSymbology.getMapSymbology().lineSelected}
           />
+          <MapboxGL.LineLayer
+            id='lineLayerSelectedDashed'
+            minZoomLevel={1}
+            filter={useMapSymbology.getDashedLines()}
+            style={useMapSymbology.getMapSymbology().lineSelectedDashed}
+          />
+          <MapboxGL.LineLayer
+            id='lineLayerSelectedDotDashed'
+            minZoomLevel={1}
+            filter={useMapSymbology.getDotDashedLines()}
+            style={useMapSymbology.getMapSymbology().lineSelectedDotDashed}
+          />
+
           <MapboxGL.FillLayer
             id='polygonLayerSelected'
             minZoomLevel={1}
-            filter={['==', '$type', 'Polygon']}
+            filter={['==', ['geometry-type'], 'Polygon']}
             style={useMapSymbology.getMapSymbology().polygonSelected}
           />
         </MapboxGL.ShapeSource>
@@ -215,19 +248,19 @@ function Basemap(props) {
           <MapboxGL.CircleLayer
             id='pointLayerDraw'
             minZoomLevel={1}
-            filter={['==', '$type', 'Point']}
+            filter={['==', ['geometry-type'], 'Point']}
             style={useMapSymbology.getMapSymbology().pointDraw}
           />
           <MapboxGL.LineLayer
             id='lineLayerDraw'
             minZoomLevel={1}
-            filter={['==', '$type', 'LineString']}
+            filter={['==', ['geometry-type'], 'LineString']}
             style={useMapSymbology.getMapSymbology().lineDraw}
           />
           <MapboxGL.FillLayer
             id='polygonLayerDraw'
             minZoomLevel={1}
-            filter={['==', '$type', 'Polygon']}
+            filter={['==', ['geometry-type'], 'Polygon']}
             style={useMapSymbology.getMapSymbology().polygonDraw}
           />
         </MapboxGL.ShapeSource>
@@ -240,7 +273,7 @@ function Basemap(props) {
           <MapboxGL.CircleLayer
             id='pointLayerEdit'
             minZoomLevel={1}
-            filter={['==', '$type', 'Point']}
+            filter={['==', ['geometry-type'], 'Point']}
             style={useMapSymbology.getMapSymbology().pointEdit}
           />
         </MapboxGL.ShapeSource>

@@ -176,7 +176,7 @@ const useMapSymbology = (props) => {
               ['==', ['get', 'trace_type', ['get', 'trace']], 'geomorphic_fea'],
               '#0000FF',
               ['case',
-                // Case 4: Anthropoenic Feature
+                // Case 4: Anthropogenic Feature
                 ['==', ['get', 'trace_type', ['get', 'trace']], 'anthropenic_fe'],
                 '#800080',
                 'black',
@@ -185,42 +185,7 @@ const useMapSymbology = (props) => {
           ],
         ],
         // Default
-        'red',
-      ]
-    );
-  };
-
-  // This doesn't work as line-dasharray is not supported wtih data-driven styling
-  // https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/#paint-line-line-dasharray
-  const getLineDashArray = () => {
-    return (
-      ['case',
-        ['all',
-          ['has', 'trace'],
-          ['has', 'trace_quality', ['get', 'trace']],
-        ],
-        [1, 0],
-        ['case',
-          // Case 1: Known
-          ['==', ['get', 'trace_quality', ['get', 'trace']], 'known'],
-          ['literal', [1, 0]],
-          ['case',
-            // Case 2: Approximate & Questionable
-            ['any',
-              ['==', ['get', 'trace_quality', ['get', 'trace']], 'approximate'],
-              ['==', ['get', 'trace_quality', ['get', 'trace']], 'questionable'],
-            ],
-            ['literal', [20, 15]],
-            ['case',
-              // Case 3: Other
-              ['==', ['get', 'trace_quality', ['get', 'trace']], 'other'],
-              ['literal', [20, 15, 0, 15]],
-              ['literal', [1, 0]],
-            ],
-          ],
-        ],
-        // Default
-        [1, 0],
+        'black',
       ]
     );
   };
@@ -261,6 +226,50 @@ const useMapSymbology = (props) => {
     );
   };
 
+  const getSolidLines = () => {
+    return (
+      ['all',
+        ['==', ['geometry-type'], 'LineString'],
+        ['!',
+          ['all',
+            ['has', 'trace'],
+            ['has', 'trace_quality', ['get', 'trace']],
+            ['any',
+              ['==', ['get', 'trace_quality', ['get', 'trace']], 'approximate'],
+              ['==', ['get', 'trace_quality', ['get', 'trace']], 'approximate(?)'],
+              ['==', ['get', 'trace_quality', ['get', 'trace']], 'other'],
+            ],
+          ],
+        ],
+      ]
+    );
+  };
+
+  const getDashedLines = () => {
+    return (
+      ['all',
+        ['==', ['geometry-type'], 'LineString'],
+        ['has', 'trace'],
+        ['has', 'trace_quality', ['get', 'trace']],
+        ['any',
+          ['==', ['get', 'trace_quality', ['get', 'trace']], 'approximate'],
+          ['==', ['get', 'trace_quality', ['get', 'trace']], 'approximate(?)'],
+        ],
+      ]
+    );
+  };
+
+  const getDotDashedLines = () => {
+    return (
+      ['all',
+        ['==', ['geometry-type'], 'LineString'],
+        ['has', 'trace'],
+        ['has', 'trace_quality', ['get', 'trace']],
+        ['==', ['get', 'trace_quality', ['get', 'trace']], 'other'],
+      ]
+    );
+  };
+
   const mapStyles = {
     point: {
       textIgnorePlacement: true,  // Need to be able to stack symbols at same location
@@ -277,7 +286,18 @@ const useMapSymbology = (props) => {
     line: {
       lineColor: getLineColor(),
       lineWidth: getLineWidth(),
-      lineDasharray: getLineDashArray(),
+    },
+    lineDashed: {
+      lineColor: getLineColor(),
+      lineWidth: getLineWidth(),
+      lineDasharray: [5, 2],  // Can't use data-driven styling with line-dasharray - it is not supported
+                              // Used filters on the line layers instead
+                              // https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/#paint-line-line-dasharray
+    },
+    lineDotDashed: {
+      lineColor: getLineColor(),
+      lineWidth: getLineWidth(),
+      lineDasharray: [5, 2, 1, 2],
     },
     polygon: {
       fillColor: 'blue',
@@ -291,6 +311,16 @@ const useMapSymbology = (props) => {
     lineSelected: {
       lineColor: 'orange',
       lineWidth: 3,
+    },
+    lineSelectedDashed: {
+      lineColor: 'orange',
+      lineWidth: getLineWidth(),
+      lineDasharray: [5, 2],
+    },
+    lineSelectedDotDashed: {
+      lineColor: 'orange',
+      lineWidth: getLineWidth(),
+      lineDasharray: [5, 2, 1, 2],
     },
     polygonSelected: {
       fillColor: 'orange',
@@ -325,6 +355,9 @@ const useMapSymbology = (props) => {
 
   return [{
     getMapSymbology: getMapSymbology,
+    getDashedLines: getDashedLines,
+    getDotDashedLines: getDotDashedLines,
+    getSolidLines: getSolidLines,
   }];
 };
 
