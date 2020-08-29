@@ -56,7 +56,7 @@ const samplesNotebook = (props) => {
             props.setModalVisible(null);
           }}
         />
-        <SectionDivider dividerText='Samples'/>
+        <SectionDivider dividerText='samples'/>
         {/*<FlatList*/}
         {/*  keyExtractor={(item, index) => index.toString()}*/}
         {/*  data={props.spot}*/}
