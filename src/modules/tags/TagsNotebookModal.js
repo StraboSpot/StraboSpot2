@@ -37,6 +37,7 @@ const TagsNotebookModal = (props) => {
       return (
         <View style={uiStyles.modalPosition}>
           <Modal
+            style={{width: 285}}
             close={props.close}
             cancel={props.cancel}
             buttonTitleLeft={'Cancel'}
@@ -65,6 +66,7 @@ const TagsNotebookModal = (props) => {
       return (
         <DragAnimation style={uiStyles.modalPosition}>
           <Modal
+            style={{width: 285}}
             close={props.close}
             cancel={props.cancel}
             buttonTitleLeft={'Cancel'}

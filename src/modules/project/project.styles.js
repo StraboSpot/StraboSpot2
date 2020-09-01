@@ -125,7 +125,6 @@ const dialogStyles = StyleSheet.create({
   projectDescriptionListContainer: {
     borderColor: themes.PRIMARY_ITEM_TEXT_COLOR,
     backgroundColor: 'white',
-    paddingLeft: 5,
     paddingBottom: 10,
     paddingTop: 10,
   },

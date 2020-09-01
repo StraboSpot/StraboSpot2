@@ -13,7 +13,7 @@ const AllSpots = (props) => {
   const [useSpots] = useSpotsHook();
   const activeSpotsObj = useSpots.getActiveSpotsObj();
 
-  const pressHandler = (id) => {
+  const selectSpot = (id) => {
     const spot = Object.values(activeSpotsObj).find(selectedSpot => {
       return selectedSpot.properties.id === id;
     });

@@ -21,6 +21,7 @@ const TagsShortcutModal = (props) => {
       return (
         <View style={uiStyles.modalPositionShortcutView}>
           <Modal
+            style={{width: 285}}
             close={props.close}
             cancel={props.cancel}
             buttonTitleLeft={'Cancel'}
@@ -36,6 +37,7 @@ const TagsShortcutModal = (props) => {
       return (
         <DragAnimation style={uiStyles.modalPositionShortcutView}>
           <Modal
+            style={{width: 285}}
             close={props.close}
             // cancel={props.cancel}
             // buttonTitleLeft={'Cancel'}

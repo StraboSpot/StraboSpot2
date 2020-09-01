@@ -1,7 +1,7 @@
 import React from 'react';
-import {Text, View} from 'react-native';
+import {Switch, Text, View} from 'react-native';
 
-import {ListItem} from 'react-native-elements';
+import {Avatar, ListItem} from 'react-native-elements';
 
 import {SHORTCUT_TOGGLE_BUTTONS} from './shortcuts.constants';
 import shortcutMenuStyles from './shortcutsMenu.styles';

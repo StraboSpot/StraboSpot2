@@ -90,7 +90,7 @@ const Modal = (props) => {
   };
 
   return (
-    <View style={modalStyle.modalContainer}>
+    <View style={[modalStyle.modalContainer, props.style]}>
       {renderModalHeader()}
       <View>
         {props.children}

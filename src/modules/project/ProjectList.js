@@ -204,7 +204,6 @@ const ProjectList = (props) => {
               onPress={() => selectProject(item)}
               disabled={!isOnline}
               disabledStyle={{backgroundColor: 'lightgrey'}}
-              chevron
               bottomDivider
             >
               <ListItem.Content>

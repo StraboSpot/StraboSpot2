@@ -7,7 +7,7 @@ const tagStyles = StyleSheet.create({
     padding: 5,
   },
   listText: {
-    fontSize: 14,
+    fontSize: 12,
     color: themes.SECONDARY_ITEM_TEXT_COLOR,
   },
   noTagsText: {

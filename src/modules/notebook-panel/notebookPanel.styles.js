@@ -23,6 +23,13 @@ const notebookStyles = StyleSheet.create({
     position: 'absolute',
     right: 0,
   },
+  allSpotsPanelContents: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
+    paddingTop: 20,
+    paddingBottom: 20,
+  },
   headerContainer: {
     flex: 1,
     borderBottomWidth: 2,

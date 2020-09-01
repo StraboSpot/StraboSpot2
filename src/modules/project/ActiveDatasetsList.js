@@ -13,16 +13,6 @@ const ActiveDatasetsList = () => {
   const [refresh] = useState();
   const datasets = useSelector(state => state.project.datasets);
 
-  const spotLengthText = (item) => {
-      return (
-        <View style={{flexWrap: 'wrap', flexDirection: 'row'}}>
-          <Text style={styles.datasetListItemText}>{item.name} </Text>
-         {item.spotIds ? <Text style={styles.datasetListItemSpotCount}>({item.spotIds.length} spot{item.spotIds.length !== 1 ? 's' : '' })</Text>
-           : <Text style={styles.datasetListItemSpotCount}>(0 spots)</Text>}
-        </View>
-      );
-  };
-
   const renderActiveDatasets = ({item, index}) => {
     if (item.active) {
       return (
