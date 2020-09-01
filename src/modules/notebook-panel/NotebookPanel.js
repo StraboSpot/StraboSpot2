@@ -63,7 +63,7 @@ const NotebookPanel = props => {
           {props.notebookPageVisible === NotebookPages.MEASUREMENTDETAIL ? <MeasurementDetailPage/> : null}
           {props.notebookPageVisible === NotebookPages.NOTE ? <NotesPage/> : null}
           {props.notebookPageVisible === NotebookPages.SAMPLE ? <SamplesPage/> : null}
-          {props.notebookPageVisible === NotebookPages.TAG ? <TagsPage/> : null}
+          {props.notebookPageVisible === NotebookPages.TAG ? <TagsPage openMainMenu={props.openMainMenu}/> : null}
         </View>
         <View style={notebookStyles.footerContainer}>
           <NotebookFooter

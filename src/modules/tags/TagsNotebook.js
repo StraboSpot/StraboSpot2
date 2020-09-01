@@ -13,7 +13,8 @@ import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton'
 import {projectReducers} from '../project/project.constants';
 import {TagDetailModal, TagsAtSpotList, useTagsHook} from '../tags';
 
-const TagsNotebook = () => {
+const TagsNotebook = (props) => {
+  console.log('PROPS in TAGS NOTEBOOK', props)
   const [useTags] = useTagsHook();
   const dispatch = useDispatch();
   const [isDetailModalVisibile, setIsDetailModalVisible] = useState(false);
@@ -50,7 +51,7 @@ const TagsNotebook = () => {
             onPress={() => dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: Modals.NOTEBOOK_MODALS.TAGS})}
           />
         </View>
-        <TagsAtSpotList/>
+        <TagsAtSpotList openMainMenu={props.openMainMenu}/>
       </View>
       <TagDetailModal
         isVisible={isDetailModalVisibile}

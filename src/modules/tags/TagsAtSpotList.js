@@ -2,7 +2,7 @@ import React from 'react';
 import {FlatList, Text} from 'react-native';
 
 import {Icon, ListItem} from 'react-native-elements';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
@@ -14,9 +14,10 @@ import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 import {projectReducers} from '../project/project.constants';
 import {useTagsHook} from '../tags';
 
-const SpotTag = (props) => {
+const TagsAtSpotList = (props) => {
   const [useTags] = useTagsHook();
   const dispatch = useDispatch();
+  const isMainMenuPanelVisible = useSelector(state => state.home.isSettingsPanelVisible);
 
   const openTag = (tag) => {
     dispatch({
@@ -27,7 +28,7 @@ const SpotTag = (props) => {
     dispatch({type: projectReducers.SET_SELECTED_TAG, tag: tag});
     dispatch({type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: SettingsMenuItems.ATTRIBUTES.TAGS});
     // dispatch({type: homeReducers.SET_SETTINGS_PANEL_VISIBLE, value: true});
-    props.openMainMenu();
+    if (!isMainMenuPanelVisible) props.openMainMenu();
   };
 
   const renderTag = (tag) => {
@@ -59,4 +60,4 @@ const SpotTag = (props) => {
   );
 };
 
-export default SpotTag;
+export default TagsAtSpotList;
