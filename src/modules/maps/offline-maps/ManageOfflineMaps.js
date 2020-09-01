@@ -118,15 +118,12 @@ const ManageOfflineMaps = (props) => {
               containerStyle={styles.list}
               bottomDivider={i < Object.values(props.offlineMaps).length - 1}
               key={item.id}
-              title={
+            >
+              <ListItem.Content>
                 <View style={styles.itemContainer}>
-                  <Text style={styles.itemTextStyle}>{`${item.name} (${item.count} tiles)`}</Text>
+                  <ListItem.Title style={styles.itemTextStyle}>{`${item.name} (${item.count} tiles)`}</ListItem.Title>
                 </View>
-              }
-              subtitle={
                 <View style={styles.itemSubContainer}>
-                  {/*<View style={styles.itemSubTextStyle}>*/}
-                  {/*<Text>({item.count} tiles)</Text>*/}
                   {!isOnline && <Button
                     onPress={() => viewOfflineMap(item)}
                     titleStyle={styles.buttonText}
@@ -138,13 +135,10 @@ const ManageOfflineMaps = (props) => {
                     titleStyle={styles.buttonText}
                     type={'clear'}
                     title={'Delete'}
-                  >
-                    Delete
-                  </Button>
-                  {/*</View>*/}
+                  />
                 </View>
-              }
-            />
+              </ListItem.Content>
+            </ListItem>
           ))
         ) : (
           <View style={{alignItems: 'center', paddingTop: 20}}>

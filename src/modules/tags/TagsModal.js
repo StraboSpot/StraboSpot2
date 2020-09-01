@@ -4,6 +4,7 @@ import {FlatList, Text, View} from 'react-native';
 import {ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import {isEmpty} from '../../shared/Helpers';
 import AddButton from '../../shared/ui/AddButton';
 import DefaultCheckBox from '../../shared/ui/Checkbox';
 import modalStyle from '../../shared/ui/modal/modal.style';
@@ -12,7 +13,7 @@ import {Modals} from '../home/home.constants';
 import useMapsHook from '../maps/useMaps';
 import {projectReducers} from '../project/project.constants';
 import {useTagsHook, TagDetailModal} from '../tags';
-import {isEmpty} from '../../shared/Helpers';
+import tagStyles from './tags.styles';
 
 const TagsModal = (props) => {
   const dispatch = useDispatch();
@@ -90,24 +91,23 @@ const TagsModal = (props) => {
 
   const renderTagItem = (tag, i) => {
     return (
-      <ListItem
-        title={tag.name}
-        titleStyle={{fontWeight: 'bold'}}
-        rightElement={
-          <DefaultCheckBox
-            iconRight
-            onPress={() => modalVisible !== Modals.SHORTCUT_MODALS.TAGS
-              ? useTags.addRemoveTagFromSpot(tag)
-              : checkTags(tag)}
-            checkedColor={'grey'}
-            checked={modalVisible !== Modals.SHORTCUT_MODALS.TAGS
-              ? tag && tag.spots && tag.spots.includes(selectedSpot.properties.id)
-              : checkedTagsTemp.map(checkedTag => checkedTag.id).includes(tag.id)}
-          />
-        }
-        subtitle={'- ' + useTags.getLabel(tag.type)}
-        bottomDivider={i < tags.length - 1}
-      />
+      <ListItem key={tag.id} bottomDivider={i < tags.length - 1}>
+        <ListItem.Content>
+          <ListItem.Title style={{fontWeight: 'bold'}}>{tag.name}</ListItem.Title>
+        </ListItem.Content>
+        <ListItem.Content>
+          <ListItem.Title style={tagStyles.listText}>{useTags.getLabel(tag.type)}</ListItem.Title>
+        </ListItem.Content>
+        <DefaultCheckBox
+          onPress={() => modalVisible !== Modals.SHORTCUT_MODALS.TAGS
+            ? useTags.addRemoveTagFromSpot(tag)
+            : checkTags(tag)}
+          checkedColor={'grey'}
+          checked={modalVisible !== Modals.SHORTCUT_MODALS.TAGS
+            ? tag && tag.spots && tag.spots.includes(selectedSpot.properties.id)
+            : checkedTagsTemp.map(checkedTag => checkedTag.id).includes(tag.id)}
+        />
+      </ListItem>
     );
   };
 

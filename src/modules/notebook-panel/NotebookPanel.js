@@ -2,7 +2,7 @@ import React from 'react';
 import {Animated, FlatList, Text, View} from 'react-native';
 
 // import {FlingGestureHandler, Directions, State} from 'react-native-gesture-handler';
-import {ListItem} from 'react-native-elements';
+import {Avatar, ListItem} from 'react-native-elements';
 import {connect, useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
@@ -77,13 +77,12 @@ const NotebookPanel = props => {
   else {
     const renderSpotName = (item) => {
       return (
-        <ListItem
-          key={item.properties.id}
-          title={item.properties.name}
-          chevron
-          onPress={() => dispatch({type: spotReducers.SET_SELECTED_SPOT, spot: item})}
-          leftAvatar={{source: useSpots.getSpotGemometryIconSource(item), size: 20}}
-        />
+        <ListItem key={item.properties.id} onPress={() => dispatch({type: spotReducers.SET_SELECTED_SPOT, spot: item})}>
+          <Avatar source={useSpots.getSpotGemometryIconSource(item)} size={20}/>
+          <ListItem.Content>
+            <ListItem.Title>{item.properties.name}</ListItem.Title>
+          </ListItem.Content>
+        </ListItem>
       );
     };
 

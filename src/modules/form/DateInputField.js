@@ -72,11 +72,13 @@ const DateInputField = ({
     <View style={stylesCommon.rowContainer}>
       <Text style={formStyles.fieldLabel}>{props.label}</Text>
       <ListItem
-        title={title}
         containerStyle={formStyles.dateFieldValueContainer}
-        titleStyle={formStyles.fieldValue}
         onPress={() => setIsDatePickerModalVisible(true)}
-      />
+      >
+        <ListItem.Content>
+          <ListItem.Title style={formStyles.fieldValue}>{title}</ListItem.Title>
+        </ListItem.Content>
+      </ListItem>
       {errors[name] && <Text style={formStyles.fieldError}>{errors[name]}</Text>}
       {Platform.OS === 'ios' ? renderDatePickerDialogBox() : isDatePickerModalVisible && renderDatePicker()}
     </View>

@@ -14,14 +14,16 @@ const ShortcutMenu = props => (
     {Object.values(SHORTCUT_TOGGLE_BUTTONS).map((toggleButton, i) => (
       <ListItem
         key={i}
-        title={toggleButton.NAME}
-        leftAvatar={{source: toggleButton.ICON}}
-        switch={{
-          onChange: () => props.toggleSwitch(toggleButton.NAME),
-          value: props.shortcutSwitchPosition[toggleButton.NAME],
-        }}
         bottomDivider={i < Object.values(SHORTCUT_TOGGLE_BUTTONS).length - 1}
-      />
+      >
+        <Avatar source={toggleButton.ICON}/>
+        <ListItem.Content>
+          <ListItem.Title>{toggleButton.NAME}</ListItem.Title>
+        </ListItem.Content>
+        <Switch
+          onChange={() => props.toggleSwitch(toggleButton.NAME)}
+          value={props.shortcutSwitchPosition[toggleButton.NAME]}/>
+      </ListItem>
     ))}
   </React.Fragment>
 );

@@ -1,12 +1,13 @@
 import React from 'react';
 import {ScrollView, Switch, Text, View} from 'react-native';
 
-import {ListItem} from 'react-native-elements';
+import {Icon, ListItem} from 'react-native-elements';
 import Dialog, {DialogContent, DialogTitle} from 'react-native-popup-dialog';
 import {ScaleAnimation} from 'react-native-popup-dialog/src';
 import {useSelector} from 'react-redux';
 
 import {isEmpty} from '../../shared/Helpers';
+import * as themes from '../../shared/styles.constants';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {basemaps} from '../maps/maps.constants';
 import useMapsHook from '../maps/useMaps';
@@ -44,13 +45,15 @@ const BaseMapDialog = props => {
           {basemaps.map((map, i) => {
             return <ListItem
               key={map.id}
-              title={map.title}
               containerStyle={styles.dialogContent}
               bottomDivider={i < basemaps.length - 2}
-              titleStyle={styles.dialogText}
-              onPress={() => props.onPress(map.id)}
-              checkmark={currentBasemap && currentBasemap.id && map.id === currentBasemap.id}
-            />;
+              onPress={() => props.onPress(map.id)}>
+              <ListItem.Content>
+                <ListItem.Title style={styles.dialogText}>{map.title}</ListItem.Title>
+              </ListItem.Content>
+              {currentBasemap && currentBasemap.id && map.id === currentBasemap.id
+              && <Icon type={'ionicon'} color={themes.BLUE} name={'checkmark-outline'}/>}
+            </ListItem>;
           })}
         </View>}
         {!isOnline && (
@@ -62,13 +65,15 @@ const BaseMapDialog = props => {
                 return (
                   <ListItem
                     key={map.id}
-                    title={map.name}
                     containerStyle={styles.dialogContent}
                     bottomDivider={i < basemaps.length - 2}
-                    titleStyle={styles.dialogText}
-                    onPress={() => props.onPress(map.id)}
-                    checkmark={currentBasemap && map.id === currentBasemap.id}
-                  />
+                    onPress={() => props.onPress(map.id)}>
+                    <ListItem.Content>
+                      <ListItem.Title style={styles.dialogText}>{map.title}</ListItem.Title>
+                    </ListItem.Content>
+                    {currentBasemap && map.id === currentBasemap.id
+                    && <Icon type={'ionicon'} color={themes.BLUE} name={'checkmark-outline'}/>}
+                  </ListItem>
                 );
               }
               else return null;
@@ -87,17 +92,18 @@ const BaseMapDialog = props => {
                       containerStyle={styles.customBaseMapListContainer}
                       bottomDivider={i < customMapsArr.length - 1}
                       key={customMap.id}
-                      checkmark={isOnline && customMap.id === currentBasemap.id}
                       onPress={() => {
                         useMaps.viewCustomMap(customMap);
                         props.close();
-                      }}
-                      title={
+                      }}>
+                      <ListItem.Content>
                         <View style={styles.itemContainer}>
-                          <Text style={styles.customBaseMapListText}>{customMap.title}</Text>
+                          <ListItem.Title style={styles.customBaseMapListText}>{customMap.title}</ListItem.Title>
                         </View>
-                      }
-                    />
+                      </ListItem.Content>
+                      {isOnline && customMap.id === currentBasemap.id &&
+                      <Icon type={'ionicon'} color={themes.BLUE} name={'checkmark-outline'}/>}
+                    </ListItem>
                   )
                 );
               })}
@@ -111,20 +117,18 @@ const BaseMapDialog = props => {
               <ListItem
                 containerStyle={styles.customBaseMapListContainer}
                 bottomDivider={i < customMapsArr.length - 1}
-                key={customMap.id}
-                title={
+                key={customMap.id}>
+                <ListItem.Content>
                   <View style={styles.itemContainer}>
-                    <Text style={styles.customBaseMapListText}>{customMap.title}</Text>
+                    <ListItem.Title style={styles.customBaseMapListText}>{customMap.title}</ListItem.Title>
                   </View>
-                }
-                rightElement={
-                  <Switch
-                    style={{marginRight: 10}}
-                    value={customMap.isViewable}
-                    onValueChange={(val) => useMaps.setCustomMapSwitchValue(val, customMap)}
-                  />
-                }
-              />
+                </ListItem.Content>
+                <Switch
+                  style={{marginRight: 10}}
+                  value={customMap.isViewable}
+                  onValueChange={(val) => useMaps.setCustomMapSwitchValue(val, customMap)}
+                />
+              </ListItem>
             );
           })}
         </ScrollView>}

@@ -83,14 +83,12 @@ const SamplesList = (props) => {
   const renderSample = (item) => {
     // console.log('ITEM', item)
     return (
-      <ListItem
-        key={item.id}
-        title={item.sample_id_name
-          ? item.sample_id_name
-          : <Text style={{color: 'grey'}}>Sample id: {item.id}</Text>}
-        chevron
-        onPress={() => Alert.alert('Will go to Sample Detail', `${item.id}`)}
-      />
+      <ListItem key={item.id} onPress={() => Alert.alert('Will go to Sample Detail', `${item.id}`)}>
+        <ListItem.Content>
+          <ListItem.Title>{item.sample_id_name}</ListItem.Title>
+        </ListItem.Content>
+        <ListItem.Chevron/>
+      </ListItem>
     );
   };
 

@@ -30,39 +30,37 @@ const SelectInputField = (props) => {
 
   return (
     <View>
-      <ListItem
-        title={props.label}
-        containerStyle={{...commonStyles.rowContainer, padding: 0}}
-        titleStyle={formStyles.fieldLabel}
-        subtitle={
-          <View style={{width: '100%'}}>
-            <MultiSelect
-              hideSubmitButton={true}
-              hideTags={false}
-              single={props.single}
-              hideDropdown={true}
-              searchIcon={false}
-              items={props.choices}
-              uniqueKey='value'
-              displayKey='label'
-              onSelectedItemsChange={fieldValueChanged}
-              selectedItems={isEmpty(props.value) || typeof props.value === 'object' ? props.value : [props.value]}
-              textInputProps={{editable: false}}
-              styleMainWrapper={formStyles.dropdownMainWrapper}
-              selectText={isEmpty(props.value) ? placeholderText : getChoiceLabel(props.value)}
-              searchInputPlaceholderText={isEmpty(props.value) ? placeholderText : getChoiceLabel(props.value)}
-              searchInputStyle={formStyles.dropdownSelectionListHeader}
-              fontSize={themes.PRIMARY_TEXT_SIZE}
-              selectedItemTextColor={themes.SECONDARY_ITEM_TEXT_COLOR}
-              selectedItemIconColor={themes.SECONDARY_ITEM_TEXT_COLOR}
-              textColor={themes.SECONDARY_ITEM_TEXT_COLOR}
-              itemTextColor={themes.PRIMARY_ITEM_TEXT_COLOR}
-              styleRowList={formStyles.dropdownRowList}
-              styleDropdownMenuSubsection={formStyles.dropdownSelectedContainer}
-            />
-          </View>
-        }
-      />
+      <ListItem containerStyle={{...commonStyles.rowContainer, padding: 0}}>
+        <ListItem.Content>
+          <ListItem.Title style={formStyles.fieldLabel}>{props.label}</ListItem.Title>
+            <View style={{width: '100%'}}>
+              <MultiSelect
+                hideSubmitButton={true}
+                hideTags={false}
+                single={props.single}
+                hideDropdown={true}
+                searchIcon={false}
+                items={props.choices}
+                uniqueKey='value'
+                displayKey='label'
+                onSelectedItemsChange={fieldValueChanged}
+                selectedItems={isEmpty(props.value) || typeof props.value === 'object' ? props.value : [props.value]}
+                textInputProps={{editable: false}}
+                styleMainWrapper={formStyles.dropdownMainWrapper}
+                selectText={isEmpty(props.value) ? placeholderText : getChoiceLabel(props.value)}
+                searchInputPlaceholderText={isEmpty(props.value) ? placeholderText : getChoiceLabel(props.value)}
+                searchInputStyle={formStyles.dropdownSelectionListHeader}
+                fontSize={themes.PRIMARY_TEXT_SIZE}
+                selectedItemTextColor={themes.SECONDARY_ITEM_TEXT_COLOR}
+                selectedItemIconColor={themes.SECONDARY_ITEM_TEXT_COLOR}
+                textColor={themes.SECONDARY_ITEM_TEXT_COLOR}
+                itemTextColor={themes.PRIMARY_ITEM_TEXT_COLOR}
+                styleRowList={formStyles.dropdownRowList}
+                styleDropdownMenuSubsection={formStyles.dropdownSelectedContainer}
+              />
+            </View>
+        </ListItem.Content>
+      </ListItem>
       {props.errors && props.errors[props.name] && <Text style={formStyles.fieldError}>{props.errors[props.name]}</Text>}
     </View>
   );

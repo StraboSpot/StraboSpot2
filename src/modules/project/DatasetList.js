@@ -79,26 +79,32 @@ const DatasetList = () => {
           {Object.values(datasets).map((item, i, obj) => {
             return <ListItem
               key={item.id}
-              title={truncateText(item.name, 20)}
-              titleStyle={styles.datasetListItemText}
-              subtitle={item.spotIds ? `(${item.spotIds.length} spot${item.spotIds.length !== 1 ? 's' : ''})` : '(0 spots)'}
-              subtitleStyle={styles.datasetListItemSpotCount}
               containerStyle={styles.projectDescriptionListContainer}
               bottomDivider={i < obj.length - 1}
-              rightElement={
-                <Switch
-                  onValueChange={(value) => setSwitchValue(value, item.id)}
-                  value={item.active}
-                  disabled={isDisabled(item.id)}
-                />}
-              leftIcon={<Icon
+            >
+              <Icon
                 name='edit'
                 type={'material'}
                 size={20}
                 color='darkgrey'
                 onPress={() => _selectedDataset(item.id, item.name)}
-              />}
-            />;
+              />
+              <ListItem.Content>
+                <ListItem.Title
+                  style={styles.datasetListItemText}>{truncateText(item.name, 20)}
+                </ListItem.Title>
+                <ListItem.Subtitle style={styles.datasetListItemSpotCount}>
+                  {item.spotIds
+                    ? `(${item.spotIds.length} spot${item.spotIds.length !== 1 ? 's' : ''})`
+                    : '(0 spots)'}
+                </ListItem.Subtitle>
+              </ListItem.Content>
+              <Switch
+                onValueChange={(value) => setSwitchValue(value, item.id)}
+                value={item.active}
+                disabled={isDisabled(item.id)}
+              />
+            </ListItem>;
           })}
         </ScrollView>);
     }

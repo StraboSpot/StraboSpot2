@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {ListItem} from 'react-native-elements';
+import {Icon, ListItem} from 'react-native-elements';
 
 import commonStyles from '../../shared/common.styles';
 import {isEmpty, padWithLeadingZeros, toTitleCase} from '../../shared/Helpers';
@@ -61,25 +61,31 @@ const MeasurementItem = (props) => {
         <ListItem
           containerStyle={props.selectedIds.includes(
             props.item.item.id) ? commonStyles.listItemInverse : commonStyles.listItem}
-          contentContainerStyle={{maxWidth: 75}}
           key={props.item.item.id}
           onPress={() => props.onPress()}
           pad={5}
-          title={getMeasurementText(props.item.item)}
-          titleStyle={props.selectedIds.includes(
-            props.item.item.id) ? commonStyles.listItemTitleInverse : commonStyles.listItemTitle}
-          rightContentContainerStyle={{alignItems: 'flex-start'}}
-          rightTitle={getTypeText(props.item.item)}
-          rightTitleStyle={props.selectedIds.includes(
-            props.item.item.id) ? commonStyles.listItemRightTitleInverse : commonStyles.listItemRightTitle}
-          rightIcon={{
-            name: 'ios-information-circle-outline',
-            type: 'ionicon',
-            color: props.selectedIds.includes(
-              props.item.item.id) ? themes.SECONDARY_BACKGROUND_COLOR : themes.PRIMARY_ACCENT_COLOR,
-          }}
-          chevron
-        />
+        >
+          <ListItem.Content>
+            <ListItem.Title
+              style={props.selectedIds.includes(
+                props.item.item.id) ? commonStyles.listItemTitleInverse : commonStyles.listItemTitle}
+            >{getMeasurementText(props.item.item)}</ListItem.Title>
+          </ListItem.Content>
+          <ListItem.Content>
+            <ListItem.Title
+              style={props.selectedIds.includes(
+                props.item.item.id) ? commonStyles.listItemRightTitleInverse : commonStyles.listItemRightTitle}
+            >{getTypeText(props.item.item)}</ListItem.Title>
+          </ListItem.Content>
+          <Icon
+            name={'ios-information-circle-outline'}
+            type={'ionicon'}
+            color={props.selectedIds.includes(props.item.item.id)
+              ? themes.SECONDARY_BACKGROUND_COLOR
+              : themes.PRIMARY_ACCENT_COLOR}
+          />
+          <ListItem.Chevron/>
+        </ListItem>
       )}
     </React.Fragment>
   );

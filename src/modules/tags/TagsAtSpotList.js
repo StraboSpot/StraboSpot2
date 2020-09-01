@@ -1,12 +1,13 @@
 import React from 'react';
 import {FlatList, Text} from 'react-native';
 
-import {ListItem} from 'react-native-elements';
+import {Icon, ListItem} from 'react-native-elements';
 import {useDispatch} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
+import {PRIMARY_ACCENT_COLOR, SECONDARY_ITEM_TEXT_COLOR} from '../../shared/styles.constants';
 import {homeReducers} from '../home/home.constants';
 import {SettingsMenuItems} from '../main-menu-panel/mainMenu.constants';
 import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
@@ -31,23 +32,15 @@ const SpotTag = (props) => {
 
   const renderTag = (tag) => {
     return (
-      <ListItem
-        chevron
-        containerStyle={commonStyles.listItem}
-        contentContainerStyle={{maxWidth: 150}}
-        key={tag.id}
-        onPress={() => openTag(tag)}
-        pad={5}
-        rightContentContainerStyle={{alignItems: 'flex-start'}}
-        rightTitle={useTags.getLabel(tag.type)}
-        rightTitleStyle={{color: themes.SECONDARY_ITEM_TEXT_COLOR}}
-        rightIcon={{
-          name: 'ios-information-circle-outline',
-          type: 'ionicon',
-          color: themes.PRIMARY_ACCENT_COLOR,
-        }}
-        title={tag.name}
-      />
+      <ListItem containerStyle={commonStyles.listItem} key={tag.id} onPress={() => openTag(tag)}>
+        <ListItem.Content>
+          <ListItem.Title>{tag.name}</ListItem.Title>
+        </ListItem.Content>
+        <ListItem.Content>
+          <ListItem.Title style={SECONDARY_ITEM_TEXT_COLOR}>{useTags.getLabel(tag.type)}</ListItem.Title>
+        </ListItem.Content>
+        <Icon name={'information-circle-outline'} type={'ionicon'} color={PRIMARY_ACCENT_COLOR}/>
+      </ListItem>
     );
   };
 

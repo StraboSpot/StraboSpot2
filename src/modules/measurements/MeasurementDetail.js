@@ -216,27 +216,46 @@ const MeasurementDetailPage = (props) => {
       <View>
         <ListItem
           containerStyle={activeMeasurement.id === selectedMeasurements[0].id ? commonStyles.listItemInverse : commonStyles.listItem}
-          contentContainerStyle={{maxWidth: 150, padding: 5}}
           onPress={() => onSwitchActiveMeasurement(selectedMeasurements[0])}
-          pad={5}
-          title={mainText}
-          titleStyle={activeMeasurement.id === selectedMeasurements[0].id ? commonStyles.listItemTitleInverse : commonStyles.listItemTitle}
-          rightContentContainerStyle={{alignItems: 'flex-start'}}
-          rightTitle={propertyText}
-          rightTitleStyle={activeMeasurement.id === selectedMeasurements[0].id ? commonStyles.listItemRightTitleInverse : commonStyles.listItemRightTitle}
-        />
+          pad={5}>
+          <ListItem.Content>
+            <ListItem.Title
+              style={activeMeasurement.id === selectedMeasurements[0].id
+                ? commonStyles.listItemTitleInverse
+                : commonStyles.listItemTitle}>{mainText}</ListItem.Title>
+          </ListItem.Content>
+          <ListItem.Content>
+            <ListItem.Title
+              style={activeMeasurement.id === selectedMeasurements[0].id
+                ? commonStyles.listItemRightTitleInverse
+                : commonStyles.listItemRightTitle}
+            >{propertyText}</ListItem.Title>
+          </ListItem.Content>
+        </ListItem>
         {hasAssociated && (
           <ListItem
             containerStyle={activeMeasurement.id === selectedMeasurements[0].associated_orientation[0].id ? commonStyles.listItemInverse : commonStyles.listItem}
-            contentContainerStyle={{maxWidth: 150, padding: 5}}
             onPress={() => onSwitchActiveMeasurement(selectedMeasurements[0].associated_orientation[0])}
             pad={5}
-            title={mainText2}
-            titleStyle={activeMeasurement.id === selectedMeasurements[0].associated_orientation[0].id ? commonStyles.listItemTitleInverse : commonStyles.listItemTitle}
-            rightContentContainerStyle={{alignItems: 'flex-start'}}
-            rightTitle={propertyText2}
             rightTitleStyle={activeMeasurement.id === selectedMeasurements[0].associated_orientation[0].id ? commonStyles.listItemRightTitleInverse : commonStyles.listItemRightTitle}
-          />
+          >
+            <ListItem.Content>
+              <ListItem.Title
+                style={activeMeasurement.id === selectedMeasurements[0].associated_orientation[0].id
+                  ? commonStyles.listItemTitleInverse
+                  : commonStyles.listItemTitle}
+              >{mainText2}</ListItem.Title>
+            </ListItem.Content>
+            <ListItem.Content>
+              <View>
+                <ListItem.Title
+                  style={activeMeasurement.id === selectedMeasurements[0].associated_orientation[0].id
+                    ? commonStyles.listItemRightTitleInverse
+                    : commonStyles.listItemRightTitle}
+                >{propertyText2}</ListItem.Title>
+              </View>
+            </ListItem.Content>
+          </ListItem>
         )}
         {hasAssociated && (
           <Text style={styles.basicText}>Only one associated line or plane can be classified in bulk</Text>

@@ -1,7 +1,7 @@
 import React from 'react';
 import {FlatList, Text, View} from 'react-native';
 
-import {Button, ListItem} from 'react-native-elements';
+import {Avatar, Button, ListItem} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
@@ -19,13 +19,13 @@ const TagDetail = (props) => {
     const spot = useSpots.getSpotById(spotId);
     if (!isEmpty(spot)) {
       return (
-        <ListItem
-          title={spot.properties.name}
-          onPress={() => props.openSpot(spot)}
-          chevron
-          bottomDivider
-          leftAvatar={{source: useSpots.getSpotGemometryIconSource(spot), size: 20}}
-        />
+        <ListItem onPress={() => props.openSpot(spot)} bottomDivider>
+          <Avatar source={useSpots.getSpotGemometryIconSource(spot)} size={20}/>
+          <ListItem.Content>
+            <ListItem.Title>{spot.properties.name}</ListItem.Title>
+          </ListItem.Content>
+          <ListItem.Chevron/>
+        </ListItem>
       );
     }
   };

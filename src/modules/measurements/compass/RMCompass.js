@@ -5,6 +5,7 @@ import {
   Alert,
   Image,
   View,
+  Switch,
   Text,
   Dimensions,
   TouchableOpacity,
@@ -242,14 +243,12 @@ const RNCompass = (props) => {
   const renderToggles = () => {
     return (
       Object.entries(COMPASS_TOGGLE_BUTTONS).map(([key, value], i) => (
-        <ListItem
-          key={key}
-          title={value}
-          switch={{
-            onChange: () => toggleSwitch(value),
-            value: toggles.includes(value),
-          }}
-        />
+        <ListItem key={key}>
+          <ListItem.Content>
+            <ListItem.Title>{value}</ListItem.Title>
+          </ListItem.Content>
+          <Switch onValueChange={() => toggleSwitch(value)} value={toggles.includes(value)}/>
+        </ListItem>
       ))
     );
   };

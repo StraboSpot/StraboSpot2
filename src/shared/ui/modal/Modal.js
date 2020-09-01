@@ -50,20 +50,20 @@ const Modal = (props) => {
       return (
         <View style={modalStyle.modalBottom}>
           {!isEmpty(selectedSpot) && (
-            <ListItem
-              containerStyle={modalStyle.modalBottom}
-              title={'Go to last spot created'}
-              titleStyle={modalStyle.textStyle}
-              onPress={props.onPress}
-              chevron={{name: 'right', type: 'antdesign', color: themes.LIST_CHEVRON_COLOR, size: 16}}
-              leftIcon={
-                <Image
-                  target={props.name}
-                  source={require('../../../assets/icons/NotebookView_pressed.png')}
-                  style={modalStyle.icon}
-                />
-              }
-            />
+            <ListItem containerStyle={modalStyle.modalBottom} onPress={props.onPress}>
+
+              <ListItem.Content style={{alignItems: 'center', flexDirection: 'row'}}>
+                <View style={{paddingRight: 10}}>
+                  <Image
+                    target={props.name}
+                    source={require('../../../assets/icons/NotebookView_pressed.png')}
+                    style={modalStyle.icon}
+                  />
+                </View>
+                <ListItem.Title style={modalStyle.textStyle}>'Go to last spot created'</ListItem.Title>
+              </ListItem.Content>
+              <ListItem.Chevron/>
+            </ListItem>
           )}
           {isEmpty(selectedSpot) && modalVisible === Modals.SHORTCUT_MODALS.COMPASS
           && <View style={{alignItems: 'center', paddingBottom: 20}}>

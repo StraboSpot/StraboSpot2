@@ -12,7 +12,6 @@ import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton'
 import styles from './samples.style';
 
 const samplesNotebook = (props) => {
-
   const renderSampleList = () => {
     return props.spot.properties.samples.map(item => {
       // console.log('LIST', item);
@@ -23,25 +22,24 @@ const samplesNotebook = (props) => {
           <ListItem
             key={item.id}
             containerStyle={styles.notebookListContainer}
-            title={item.sample_id_name
-              ? item.sample_id_name
-              : <Text style={{color: 'grey'}}>Sample id: {item.id}</Text>}
-            // contentContainerStyle={{ paddingBottom: 10}}
-            subtitleStyle={styles.listText}
-            subtitle={
-              <Text
+          >
+            <ListItem.Content>
+              <ListItem.Title>{item.sample_id_name
+                ? item.sample_id_name
+                : <Text style={{color: 'grey'}}>Sample id: {item.id}</Text>}</ListItem.Title>
+              <ListItem.Subtitle style={styles.listText}>{<Text
                 numberOfLines={1}
                 style={styles.listText}>{oriented} - {item.sample_description ? item.sample_description
-                : 'No Description'}</Text>}
-            chevron
-            rightIcon={
-              <Icon
-                name='ios-information-circle-outline'
-                type='ionicon'
-                color={themes.PRIMARY_ACCENT_COLOR}
-                onPress={() => console.log('Samples item pressed', item.id, item.label)}
-              />}
-          />
+                : 'No Description'}</Text>}</ListItem.Subtitle>
+            </ListItem.Content>
+            <Icon
+              name='ios-information-circle-outline'
+              type='ionicon'
+              color={themes.PRIMARY_ACCENT_COLOR}
+              onPress={() => console.log('Samples item pressed', item.id)}
+            />
+            <ListItem.Chevron/>
+          </ListItem>
         </View>
       );
     });

@@ -1,4 +1,5 @@
 import React from 'react';
+import {Switch} from 'react-native';
 
 import {ListItem} from 'react-native-elements';
 import Dialog, {DialogContent, DialogTitle} from 'react-native-popup-dialog';
@@ -53,25 +54,24 @@ const MapSymbolsDialog = (props) => {
     >
       <DialogContent>
         {!isEmpty(mapSymbols) && mapSymbols.map((symbol, i) => {
-          return <ListItem
-            key={symbol}
-            title={getSymbolTitle(symbol)}
-            containerStyle={dialogStyles.dialogContent}
-            bottomDivider={i < mapSymbols.length - 2}
-            titleStyle={dialogStyles.dialogText}
-            switch={{
-              onChange: () => toggleSymbolSelected(symbol),
-              value: symbolsOn.includes(symbol),
-            }}
-          />;
+          return (
+            <ListItem
+              key={symbol}
+              containerStyle={dialogStyles.dialogContent}
+              bottomDivider={i < mapSymbols.length - 2}>
+              <ListItem.Content>
+                <ListItem.Title style={dialogStyles.dialogText}>{getSymbolTitle(symbol)}</ListItem.Title>
+              </ListItem.Content>
+              <Switch onChange={() => toggleSymbolSelected(symbol)} value={symbolsOn.includes(symbol)}/>
+            </ListItem>
+          );
         })}
-        <ListItem
-          key={'all'}
-          title='All Symbols'
-          containerStyle={{...dialogStyles.dialogContent, paddingTop: 40}}
-          titleStyle={dialogStyles.dialogLargerText}
-          switch={{onChange: () => toggleAllSymbolsOn(), value: isAllSymbolsOn}}
-        />
+        <ListItem key={'all'} containerStyle={{...dialogStyles.dialogContent, paddingTop: 40}}>
+          <ListItem.Content>
+            <ListItem.Title style={dialogStyles.dialogLargerText}>{'All Symbols'}</ListItem.Title>
+          </ListItem.Content>
+          <Switch onChange={() => toggleAllSymbolsOn()} value={isAllSymbolsOn}/>
+        </ListItem>
       </DialogContent>
     </Dialog>
   );

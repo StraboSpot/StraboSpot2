@@ -1,9 +1,10 @@
 import React, {useState} from 'react';
 import {FlatList, View, Text} from 'react-native';
 
-import {ListItem} from 'react-native-elements';
+import {Icon, ListItem} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
+import {BLUE} from '../../shared/styles.constants';
 import styles from './project.styles';
 import useProjectHook from './useProject';
 
@@ -27,12 +28,18 @@ const ActiveDatasetsList = () => {
       return (
         <ListItem
           key={item.id}
-          title={spotLengthText(item)}
           containerStyle={styles.projectDescriptionListContainer}
           bottomDivider={index < Object.values(datasets).length - 1}
-          checkmark={item.current}
           onPress={() => useProject.makeDatasetCurrent(item.id)}
-        />
+        >
+          <ListItem.Content>
+            <ListItem.Title>{item.name}</ListItem.Title>
+            <ListItem.Subtitle>{item.spotIds ? <Text
+                style={styles.datasetListItemSpotCount}>({item.spotIds.length} spot{item.spotIds.length !== 1 ? 's' : ''})</Text>
+              : <Text style={styles.datasetListItemSpotCount}>(0 spots)</Text>}</ListItem.Subtitle>
+          </ListItem.Content>
+          {item.current && <Icon name={'checkmark-outline'} type={'ionicon'} color={BLUE}/>}
+        </ListItem>
       );
     }
   };

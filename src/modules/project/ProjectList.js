@@ -200,15 +200,20 @@ const ProjectList = (props) => {
           {projectsArr.projects.map(item => {
             return <ListItem
               key={props.source === 'device' ? item.id : item.id}
-              title={props.source === 'device' ? item.fileName : item.name}
               containerStyle={{width: '100%'}}
-              titleStyle={titleStyle}
               onPress={() => selectProject(item)}
               disabled={!isOnline}
               disabledStyle={{backgroundColor: 'lightgrey'}}
               chevron
               bottomDivider
-            />;
+            >
+              <ListItem.Content>
+                <ListItem.Title
+                  style={titleStyle}>{props.source === 'device' ? item.fileName : item.name}
+                </ListItem.Title>
+              </ListItem.Content>
+              <ListItem.Chevron/>
+            </ListItem>;
           })}
         </ScrollView>);
     }

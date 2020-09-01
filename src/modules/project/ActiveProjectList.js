@@ -18,14 +18,18 @@ const ActiveProjectList = (props) => {
     <React.Fragment>
       <View style={commonStyles.sectionContainer}>
         <ListItem
-        title={isEmpty(project) ? 'No Project' : project.description.project_name}
-        containerStyle={styles.projectDescriptionListContainer}
-        chevron
-        onPress={() => dispatch({
-          type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE,
-          view: settingPanelReducers.SET_SIDE_PANEL_VIEW.PROJECT_DESCRIPTION,
-          bool: true})}
-      />
+          containerStyle={styles.projectDescriptionListContainer}
+          onPress={() => dispatch({
+            type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE,
+            view: settingPanelReducers.SET_SIDE_PANEL_VIEW.PROJECT_DESCRIPTION,
+            bool: true,
+          })}
+        >
+          <ListItem.Content>
+            <ListItem.Title>{isEmpty(project) ? 'No Project' : project.description.project_name}</ListItem.Title>
+          </ListItem.Content>
+          <ListItem.Chevron/>
+        </ListItem>
       </View>
     </React.Fragment>
   );

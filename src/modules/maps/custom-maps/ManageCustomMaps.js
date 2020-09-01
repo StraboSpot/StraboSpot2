@@ -36,21 +36,18 @@ const ManageCustomMaps = (props) => {
                 containerStyle={styles.list}
                 bottomDivider={i < Object.values(props.customMaps).length - 1}
                 key={item.id}
-                onPress={() => useMaps.customMapDetails(item)}
-                chevron
-                title={
+                onPress={() => useMaps.customMapDetails(item)}>
+                <ListItem.Content>
                   <View style={styles.itemContainer}>
-                    <Text style={styles.itemTextStyle}>{item.title}</Text>
+                    <ListItem.Title style={styles.itemTextStyle}>{item.title}</ListItem.Title>
                   </View>
-                }
-                subtitle={
                   <View style={styles.itemSubContainer}>
-                    <Text style={styles.itemSubTextStyle}>
-                      <Text>({mapTypeName(item.source)})</Text>
-                    </Text>
+                    <ListItem.Subtitle style={styles.itemSubTextStyle}>({mapTypeName(item.source)})</ListItem.Subtitle>
                   </View>
-                }
-              />))
+                </ListItem.Content>
+                <ListItem.Chevron/>
+              </ListItem>
+            ))
             }
           </View>
         ) : (

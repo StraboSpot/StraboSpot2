@@ -57,10 +57,7 @@ const Tags = () => {
     if (!isEmpty(item)) {
       return (
         <ListItem
-          title={item.name}
-          containerStyle={[commonStyles.listItem, {marginTop: 1}]}
-          rightTitle={useTags.renderSpotCount(item)}
-          rightTitleStyle={tagsStyles.valueInList}
+          containerStyle={commonStyles.listItem}
           onPress={() => {
             dispatch({
               type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE,
@@ -70,8 +67,15 @@ const Tags = () => {
             dispatch({type: projectReducers.SET_SELECTED_TAG, tag: item});
           }
           }
-          chevron
-        />
+        >
+          <ListItem.Content>
+            <ListItem.Title>{item.name}</ListItem.Title>
+          </ListItem.Content>
+          <ListItem.Content right>
+            <ListItem.Title>{useTags.renderSpotCount(item)}</ListItem.Title>
+          </ListItem.Content>
+          <ListItem.Chevron/>
+        </ListItem>
       );
     }
     else return <Text>No Data</Text>;

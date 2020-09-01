@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Animated, Easing, Alert, Image, View, Text, TouchableOpacity} from 'react-native';
+import {Animated, Easing, Alert, Image, View, Switch, Text, TouchableOpacity} from 'react-native';
 
 import {Button, ListItem} from 'react-native-elements';
 import {setUpdateIntervalForType, SensorTypes, accelerometer} from 'react-native-sensors';
@@ -402,15 +402,12 @@ class Compass extends Component {
   renderToggles = () => {
     return (
       Object.entries(COMPASS_TOGGLE_BUTTONS).map(([key, value], i) => (
-        <ListItem
-          containerStyle={compassStyles.toggleButtonsContainer}
-          key={key}
-          title={value}
-          switch={{
-            onChange: () => this.toggleSwitch(value),
-            value: this.state.toggles.includes(value),
-          }}
-        />
+        <ListItem containerStyle={compassStyles.toggleButtonsContainer} key={key}>
+          <ListItem.Content>
+            <ListItem.Title>{value}</ListItem.Title>
+          </ListItem.Content>
+          <Switch onValueChange={() => this.toggleSwitch(value)} value={this.state.toggles.includes(value)}/>
+        </ListItem>
       ))
     );
   };

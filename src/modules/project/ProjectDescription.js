@@ -133,24 +133,30 @@ const ProjectDescription = (props) => {
             </View>
           </View>
           <ListItem
-            title={'Start Date'}
-            titleStyle={styles.listItemTitleAndValue}
-            rightTitle={moment(projectDescription.start_date).format('MM/DD/YYYY')}
-            rightContentContainerStyle={styles.listItemTitleAndValue}
             containerStyle={styles.projectDescriptionListContainer}
             onPress={() => showDatPickerHandler('startDate')}
             bottomDivider
-            chevron
-          />
+          >
+            <ListItem.Content>
+              <ListItem.Title style={styles.listItemTitleAndValue}>{'Start Date'}</ListItem.Title>
+            </ListItem.Content>
+            <ListItem.Content style={styles.listItemTitleAndValue}>
+              <ListItem.Title>{moment(projectDescription.start_date).format('MM/DD/YYYY')}</ListItem.Title>
+            </ListItem.Content>
+            <ListItem.Chevron/>
+          </ListItem>
           <ListItem
-            title={'End Date'}
-            titleStyle={styles.listItemTitleAndValue}
-            rightTitle={moment(projectDescription.end_date).format('MM/DD/YYYY')}
-            rightContentContainerStyle={styles.listItemTitleAndValue}
             containerStyle={styles.projectDescriptionListContainer}
             onPress={() => showDatPickerHandler('endDate')}
-            chevron
-          />
+          >
+            <ListItem.Content>
+              <ListItem.Title style={styles.listItemTitleAndValue}>{'End Date'}</ListItem.Title>
+            </ListItem.Content>
+            <ListItem.Content style={styles.listItemTitleAndValue}>
+              <ListItem.Title>{moment(projectDescription.end_date).format('MM/DD/YYYY')}</ListItem.Title>
+            </ListItem.Content>
+            <ListItem.Chevron/>
+          </ListItem>
           {showStartPicker
             ? (
               <View>
@@ -261,15 +267,18 @@ const ProjectDescription = (props) => {
     return (
       <ListItem
         key={field.name}
-        title={field.label}
-        titleStyle={styles.listItemTitleAndValue}
-        rightTitle={fieldName}
         containerStyle={styles.projectDescriptionListContainer}
-        rightContentContainerStyle={styles.listItemTitleAndValue}
         bottomDivider={i < obj.length - 1}
         onPress={() => toggleEditingModal(field)}
-        chevron
-      />
+      >
+        <ListItem.Content>
+          <ListItem.Title style={styles.listItemTitleAndValue}>{field.label}</ListItem.Title>
+        </ListItem.Content>
+        <ListItem.Content style={styles.listItemTitleAndValue}>
+          <ListItem.Title>{fieldName}</ListItem.Title>
+        </ListItem.Content>
+        <ListItem.Chevron/>
+      </ListItem>
     );
   };
   const toggleEditingModal = (field) => {

@@ -7,6 +7,7 @@ import {connect} from 'react-redux';
 import * as themes from '../../shared/styles.constants';
 import {spotReducers} from '../spots/spot.constants';
 import useSpotsHook from '../spots/useSpots';
+import notebookStyles from './notebookPanel.styles';
 
 const AllSpots = (props) => {
   const [useSpots] = useSpotsHook();
@@ -27,21 +28,16 @@ const AllSpots = (props) => {
           return (
             <ListItem
               key={spot.properties.id}
-              title={spot.properties.name}
-              titleStyle={{fontSize: 14}}
-              subtitle={spot.geometry && spot.geometry.type || 'No Geometry'}
-              subtitleStyle={{fontSize: 12}}
               containerStyle={{paddingTop: 5}}
-              contentContainerStyle={{
-                justifyContent: 'center',
-                alignItems: 'center',
-                backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
-                padding: 10,
-                paddingTop: 20,
-                paddingBottom: 20,
-              }}
-              onPress={() => pressHandler(spot.properties.id)}
-            />
+              onPress={() => selectSpot(spot.properties.id)}
+            >
+              <ListItem.Content style={notebookStyles.allSpotsPanelContents}>
+                <ListItem.Title style={{fontSize: 14}}>{spot.properties.name}</ListItem.Title>
+                <ListItem.Subtitle
+                  style={{fontSize: 12}}>{spot.geometry && spot.geometry.type || 'No Geometry'}
+                </ListItem.Subtitle>
+              </ListItem.Content>
+            </ListItem>
           );
         })}
       </ScrollView>

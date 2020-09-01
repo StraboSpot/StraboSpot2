@@ -55,13 +55,16 @@ const SpotsList = (props) => {
     return (
       <ListItem
         key={item.properties.id}
-        title={item.properties.name}
-        chevron
         onPress={() => props.getSpotData(item.properties.id)}
-        leftAvatar={{source: useSpots.getSpotGemometryIconSource(item), size: 20}}
-        rightAvatar={renderDataIcons(item)}
-        {...!isEmpty(tagsString) && {subtitle: tagsString}}
-      />
+      >
+        <Avatar source={useSpots.getSpotGemometryIconSource(item)} size={20}/>
+        <ListItem.Content>
+          <ListItem.Title>{item.properties.name}</ListItem.Title>
+          {!isEmpty(tagsString) && <ListItem.Subtitle>{tagsString}</ListItem.Subtitle>}
+        </ListItem.Content>
+        {renderDataIcons(item)}
+        <ListItem.Chevron/>
+      </ListItem>
     );
   };
 
