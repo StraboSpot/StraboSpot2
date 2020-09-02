@@ -743,6 +743,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 5E9ABD89187CEAC66366071B /* Pods-StraboSpot2.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -800,12 +801,12 @@
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/React-jsiexecutor\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/React-jsinspector\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/ReactNativeART\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/SSZipArchive\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/Sentry\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/Yoga\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/YogaKit\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/glog\"",
+					"“${PODS_CONFIGURATION_BUILD_DIR}/ReactNativeART”",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/react-native-geolocation\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/react-native-get-random-values\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/react-native-image-picker\"",
@@ -838,6 +839,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = FB073937A1E2312717C23039 /* Pods-StraboSpot2.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
