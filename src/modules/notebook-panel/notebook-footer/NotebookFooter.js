@@ -72,7 +72,7 @@ const NotebookFooter = props => {
       <IconButton
         source={getPageIcon(NotebookPages.PHOTO)}
         style={footerStyle.footerIcon}
-        onPress={() => props.onPress(IconButtons.CAMERA)}
+        onPress={() => props.openPage(NotebookPages.PHOTO)}
       />
       <IconButton
         source={getPageIcon(NotebookPages.SKETCH)}

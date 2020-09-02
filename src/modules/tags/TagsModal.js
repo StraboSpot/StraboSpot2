@@ -6,9 +6,9 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import {isEmpty} from '../../shared/Helpers';
 import AddButton from '../../shared/ui/AddButton';
+import SaveButton from '../../shared/ui/ButtonRounded';
 import DefaultCheckBox from '../../shared/ui/Checkbox';
 import modalStyle from '../../shared/ui/modal/modal.style';
-import SaveButton from '../../shared/ui/SaveAndDeleteButtons';
 import {Modals} from '../home/home.constants';
 import useMapsHook from '../maps/useMaps';
 import {projectReducers} from '../project/project.constants';

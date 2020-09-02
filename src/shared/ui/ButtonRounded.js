@@ -4,7 +4,7 @@ import {Button} from 'react-native-elements';
 
 import uiStyles from '../ui/ui.styles';
 
-const SaveAndDeleteButtons = (props) => {
+const ButtonRounded = (props) => {
   return (
     <React.Fragment>
       <Button
@@ -19,4 +19,4 @@ const SaveAndDeleteButtons = (props) => {
   );
 };
 
-export default SaveAndDeleteButtons;
+export default ButtonRounded;

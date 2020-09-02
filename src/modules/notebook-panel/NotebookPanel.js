@@ -11,6 +11,7 @@ import SectionDivider from '../../shared/ui/SectionDivider';
 import Spacer from '../../shared/ui/Spacer';
 import Geography from '../geography/Geography';
 import {homeReducers, Modals} from '../home/home.constants';
+import {ImagesPage} from '../images';
 import MeasurementDetailPage from '../measurements/MeasurementDetail';
 import MeasurementsPage from '../measurements/Measurements';
 import NotesPage from '../notes/Notes';
@@ -64,6 +65,7 @@ const NotebookPanel = props => {
           {props.notebookPageVisible === NotebookPages.NOTE ? <NotesPage/> : null}
           {props.notebookPageVisible === NotebookPages.SAMPLE ? <SamplesPage/> : null}
           {props.notebookPageVisible === NotebookPages.TAG ? <TagsPage openMainMenu={props.openMainMenu}/> : null}
+          {props.notebookPageVisible === NotebookPages.PHOTO ? <ImagesPage onPress={props.onPress}/> : null}
         </View>
         <View style={notebookStyles.footerContainer}>
           <NotebookFooter
