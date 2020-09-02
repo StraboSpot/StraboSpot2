@@ -1,7 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {FlatList, Text, View} from 'react-native';
 
-import {withNavigation} from 'react-navigation';
 import {connect} from 'react-redux';
 
 import {isEmpty} from '../../shared/Helpers';
@@ -116,4 +115,4 @@ const mapDispatchToProps = {
   }),
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withNavigation(ImageBaseMaps));
+export default connect(mapStateToProps, mapDispatchToProps)(ImageBaseMaps);

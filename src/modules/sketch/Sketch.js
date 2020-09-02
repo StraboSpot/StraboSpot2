@@ -10,14 +10,13 @@ import styles from './sketch.styles';
 
 
 const Sketch = (props) => {
-  console.log('IP in Sketch', props.navigation.getParam('imageId', 'No-ID'))
 
   const [imageId, setImageId] = useState(null);
   const dispatch = useDispatch();
   const [useImages] = useImagesHook();
 
   useEffect(() => {
-    setImageId(props.navigation.getParam('imageId', 'No-ID'))
+    if (props.route.params?.imageId) setImageId(props.route.params.imageId)
   }, [imageId]);
 
   const saveSketch = async (success, path) => {
@@ -103,14 +102,12 @@ const Sketch = (props) => {
           }
           savePreference={() => {
             // const sketchId = getNewId();
-
             return {
               folder: 'RNSketchCanvas',
               filename: String(Math.ceil(Math.random() * 100000000)),
               transparent: false,
               imageType: 'jpg',
             };
-
           }}
         />
       </View>

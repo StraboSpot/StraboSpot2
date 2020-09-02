@@ -12,7 +12,7 @@ import useImagesHook from './useImages';
 
 const ImageInfo = (props) => {
   const [imageNoteModal, setImageNoteModal] = useState(false);
-  const [imageProps] = useState(props.navigation.getParam('imageId', 'No-ID'));
+  const [imageProps] = useState(props.route.params.imageId);
   const [useImages] = useImagesHook();
 
   // useEffect(() => {

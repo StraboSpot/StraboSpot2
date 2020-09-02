@@ -490,6 +490,7 @@ const Home = (props) => {
   const renderLoadProjectFromModal = () => {
     return (
       <InitialProjectLoadModal
+        navigation={props.navigation}
         openMainMenu={() => toggleHomeDrawerButton()}
         visible={isProjectLoadSelectionModalVisible}
         closeModal={() => closeInitialProjectLoadModal()}
@@ -730,6 +731,7 @@ const Home = (props) => {
   const homeDrawer = (
     <Animated.View style={[settingPanelStyles.settingsDrawer, animateSettingsPanel]}>
       <SettingsPanel
+        navigation={props.navigation}
         // openSidePanel={(view, data) => openSidePanel(view, data)}
         closeHomePanel={() => toggleHomeDrawerButton()}
         openNotebookPanel={(pageView) => openNotebookPanel(pageView)}/>
@@ -740,6 +742,7 @@ const Home = (props) => {
     <Animated.View style={[notebookStyles.panel, animateNotebookMenu]}>
       <NotebookPanel
         // onHandlerStateChange={(ev, name) => flingHandlerNotebook(ev, name)}
+        navigation={props.navigation}
         closeNotebook={closeNotebookPanel}
         textStyle={{fontWeight: 'bold', fontSize: 12}}
         openMainMenu={() => toggleHomeDrawerButton()}

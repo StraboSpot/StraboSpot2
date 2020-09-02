@@ -19,7 +19,7 @@ const MyStraboSpot = props => {
       case 'none':
         return (
           <View style={{padding: 10}}>
-            <UserProfile/>
+            <UserProfile navigation={props.navigation}/>
             <Spacer/>
             <ProjectTypesButtons
               onLoadProjectsFromServer={() => setShowSection('serverProjects')}

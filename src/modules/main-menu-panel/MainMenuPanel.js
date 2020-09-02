@@ -60,7 +60,7 @@ const MainMenuPanel = props => {
     case SettingsMenuItems.MANAGE.MY_STRABOSPOT:
       page = (
         <View style={styles.settingsPanelContainer}>
-          <MyStraboSpot openSidePanel={props.openSidePanel} closeHomePanel={props.closeHomePanel}/>
+          <MyStraboSpot navigation={props.navigation} openSidePanel={props.openSidePanel} closeHomePanel={props.closeHomePanel}/>
         </View>
       );
       break;
