@@ -2,7 +2,6 @@ import React from 'react';
 import {View, Text} from 'react-native';
 
 import {Button,Avatar} from 'react-native-elements';
-import {withNavigation} from 'react-navigation';
 import {connect} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
@@ -13,7 +12,7 @@ const UserProfile = (props) => {
 
   const doLogOut = async () => {
     if (!isEmpty(props.userData)) await props.clearStorage();
-    props.navigation.navigate('SignIn');
+    props.navigation.popToTop();
   };
 
   const getUserInitials = () => {
@@ -121,4 +120,4 @@ const mapDispatchToProps = {
   clearStorage: () => ({type: 'CLEAR_STORE'}),
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withNavigation(UserProfile));
+export default connect(mapStateToProps, mapDispatchToProps)(UserProfile);

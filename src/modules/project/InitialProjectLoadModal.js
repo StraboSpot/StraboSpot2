@@ -3,7 +3,6 @@ import {Text, View} from 'react-native';
 
 import {Button} from 'react-native-elements';
 import {Dialog, DialogTitle, DialogContent, SlideAnimation} from 'react-native-popup-dialog';
-import {withNavigation} from 'react-navigation';
 import {useSelector, useDispatch} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
@@ -235,4 +234,4 @@ const InitialProjectLoadModal = (props) => {
   );
 };
 
-export default withNavigation(InitialProjectLoadModal);
+export default InitialProjectLoadModal;

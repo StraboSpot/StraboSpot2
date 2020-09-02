@@ -1,7 +1,6 @@
 import React from 'react';
 import {View} from 'react-native';
 
-import {withNavigation} from 'react-navigation';
 import {connect, useSelector} from 'react-redux';
 
 import {IconButtons} from '../../../shared/app.constants';
@@ -78,7 +77,7 @@ const NotebookFooter = props => {
       <IconButton
         source={getPageIcon(NotebookPages.SKETCH)}
         style={footerStyle.footerIcon}
-        onPress={() => props.navigation.navigate('Sketch', {selectedSpot: selectedSpot})}
+        onPress={() => props.navigation.navigate('Sketch')}
       />
     </View>
   );
@@ -94,4 +93,4 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {};
 
-export default connect(mapStateToProps, mapDispatchToProps)(withNavigation(NotebookFooter));
+export default connect(mapStateToProps, mapDispatchToProps)(NotebookFooter);

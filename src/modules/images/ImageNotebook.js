@@ -1,7 +1,6 @@
 import React from 'react';
 import {ActivityIndicator, Button, Dimensions, FlatList, ScrollView, Switch, Text, View} from 'react-native';
 
-import {withNavigation} from 'react-navigation';
 import {connect, useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
@@ -95,4 +94,4 @@ const mapDispatchToProps = {
   }),
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withNavigation(ImageNotebook));
+export default connect(mapStateToProps, mapDispatchToProps)(ImageNotebook);
