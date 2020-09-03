@@ -21,7 +21,6 @@ const ImagesViewPage = (props) => {
   const renderImages = (image) => {
     const imageSrc = useImages.getLocalImageSrc(image.id);
     return (
-      <View>
         <Card containerStyle={imageStyles.cardContainer}>
           <Card.Title style={{fontSize: 12}}>{image.title ?? image.id}</Card.Title>
           <Card.Image
@@ -46,7 +45,6 @@ const ImagesViewPage = (props) => {
               disabledTitleStyle={{color: 'white'}}
               titleStyle={commonStyles.standardButtonText}/>
         </Card>
-      </View>
     );
   };
 
@@ -59,11 +57,11 @@ const ImagesViewPage = (props) => {
   }
 
   return (
-    <React.Fragment>
+    <View style={{flex: 1}}>
       <ReturnToOverviewButton
         onPress={() => dispatch({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: NotebookPages.OVERVIEW})}
       />
-      <View style={{alignItems: 'center'}}>
+      <View style={{alignItems: 'center', flex: 1}}>
         <View style={imageStyles.buttonsContainer}>
           <ButtonRounded
             icon={
@@ -94,7 +92,7 @@ const ImagesViewPage = (props) => {
             onPress={() => props.onPress('importPhoto')}
           />
         </View>
-        <View style={{padding: 5}}>
+        <View style={{padding: 5, flex: 1}}>
           {images
           && <FlatList
             data={images}
@@ -103,7 +101,7 @@ const ImagesViewPage = (props) => {
           />}
         </View>
       </View>
-    </React.Fragment>
+    </View>
   );
 };
 
