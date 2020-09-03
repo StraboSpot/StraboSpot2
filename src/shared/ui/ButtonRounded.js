@@ -8,6 +8,7 @@ const ButtonRounded = (props) => {
   return (
     <React.Fragment>
       <Button
+        icon={props.icon}
         title={props.title}
         containerStyle={[uiStyles.saveAndDeleteButtonContainer, props.containerStyle]}
         buttonStyle={[uiStyles.saveAndDeleteButtonStyles, props.buttonStyle]}
