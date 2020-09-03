@@ -389,6 +389,9 @@ const Home = (props) => {
             : toastRef.current.show(`${imagesSavedLength} photos saved!`);
         });
         break;
+      case 'importPhoto':
+          useImages.getImagesFromCameraRoll();
+        break;
       case 'showGeographyInfo':
         props.setNotebookPageVisible(NotebookPages.GEOGRAPHY);
         break;

@@ -2,6 +2,7 @@ import {Alert, Platform} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
 import {Base64} from 'js-base64';
+// import ImagePicker from 'react-native-image-crop-picker';
 import ImagePicker from 'react-native-image-picker';
 import ImageResizer from 'react-native-image-resizer';
 import {useDispatch, useSelector} from 'react-redux';
@@ -11,6 +12,7 @@ import useServerRequests from '../../services/useServerRequests';
 import {getNewId, isEmpty} from '../../shared/Helpers';
 import {homeReducers} from '../home/home.constants';
 import useHomeHook from '../home/useHome';
+import {mapReducers} from '../maps/maps.constants';
 import useExportHook from '../project/useExport';
 import {spotReducers} from '../spots/spot.constants';
 
@@ -299,6 +301,11 @@ const useImages = () => {
     return Platform.OS === 'ios' ? imageSrc : 'file://' + imageSrc;
   };
 
+  const getImagesFromCameraRoll = () => {
+    console.log('Images from CameraRoll');
+    ImagePicker.launchImageLibrary({}, response => console.log('!!!', response))
+  };
+
   // Called from Image Gallery and displays image source picker
   const pictureSelectDialog = async () => {
     const imageOptionsPicker = {
@@ -359,6 +366,15 @@ const useImages = () => {
       imageCount++;
       console.log('Error on', imageId, ':', e);
       return Promise.reject();
+    }
+  };
+
+  const setAnnotation = (image, annotation) => {
+    image.annotated = annotation;
+    if (annotation && !image.title) image.title = image.id;
+    dispatch({type: spotReducers.SET_SELECTED_ATTRIBUTES, attributes: [image]});
+    if (!image.annotated) {
+      dispatch({type: mapReducers.CURRENT_IMAGE_BASEMAP, currentImageBasemap: undefined});
     }
   };
 
@@ -588,9 +604,11 @@ const useImages = () => {
     editImage: editImage,
     gatherNeededImages: gatherNeededImages,
     getLocalImageSrc: getLocalImageSrc,
+    getImagesFromCameraRoll: getImagesFromCameraRoll,
     launchCameraFromNotebook: launchCameraFromNotebook,
     pictureSelectDialog: pictureSelectDialog,
     saveFile: saveFile,
+    setAnnotation: setAnnotation,
     takePicture: takePicture,
     uploadImages: uploadImages,
   }];

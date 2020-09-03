@@ -8,6 +8,25 @@ const imageStyles = StyleSheet.create({
     alignItems: 'center',
     paddingBottom: 10,
   },
+  buttonsContainer: {
+    flexDirection: 'row',
+    // padding: 10
+    // justifyContent: 'space-evenly',
+  },
+  buttonContainer: {
+    backgroundColor: 'white',
+    borderColor: 'grey',
+    borderWidth: 1,
+    margin: 10,
+  },
+  cardContainer: {
+    margin: 0,
+    justifyContent: 'center',
+    padding: 0,
+    paddingHorizontal: 10,
+    paddingTop: 10,
+    backgroundColor: 'white',
+  },
   closeButtonContainer: {
     position: 'absolute',
     right: 20,
@@ -19,6 +38,9 @@ const imageStyles = StyleSheet.create({
   closeButtonStyle: {
     width: 40,
     height: 40,
+  },
+  icon: {
+    paddingRight: 10,
   },
   imageContainer: {
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
@@ -51,7 +73,7 @@ const imageStyles = StyleSheet.create({
     justifyContent: 'center',
   },
   thumbnail: {
-    height:90,
+    height: 90,
     width: 90,
   },
   text: {

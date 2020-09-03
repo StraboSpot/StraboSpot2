@@ -1,13 +1,16 @@
-import React from 'react';
-import {FlatList, Image, Text, View} from 'react-native';
+import React, {useState} from 'react';
+import {Alert, FlatList, Switch, Text, View} from 'react-native';
 
-import {Button, Card, ListItem} from 'react-native-elements';
+import {Card, Button, Icon} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
-import StandardButton from '../../shared/ui/ButtonRounded';
+import commonStyles from '../../shared/common.styles';
+import ButtonRounded from '../../shared/ui/ButtonRounded';
 import {imageStyles, useImagesHook} from '../images';
+import {mapReducers} from '../maps/maps.constants';
 import {NotebookPages, notebookReducers} from '../notebook-panel/notebook.constants';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
+import {spotReducers} from '../spots/spot.constants';
 
 const ImagesViewPage = (props) => {
 
@@ -15,44 +18,90 @@ const ImagesViewPage = (props) => {
   const dispatch = useDispatch();
   const images = useSelector(state => state.spot.selectedSpot.properties.images);
 
-  const renderImages = (item) => {
-    console.log('Image Item', item);
-    const imageSrc = useImages.getLocalImageSrc(item.id);
-    console.log('Image Src', imageSrc);
+  const renderImages = (image) => {
+    const imageSrc = useImages.getLocalImageSrc(image.id);
     return (
-      <View style={{flexDirection: 'column', flex: 1}}>
-        <Card containerStyle={{}}>
-          <Card.Title style={{fontSize: 12}}>{item.title ?? item.id}</Card.Title>
+      <View>
+        <Card containerStyle={imageStyles.cardContainer}>
+          <Card.Title style={{fontSize: 12}}>{image.title ?? image.id}</Card.Title>
           <Card.Image
             source={{uri: imageSrc}}
-            style={{justifyContent: 'center', alignItems: 'center', height: 100}}
-            onPress={() => useImages.editImage(item)}
+            style={{width: 150, height: 130}}
+            onPress={() => useImages.editImage(image)}
           />
+
+          <View style={{flexDirection: 'row', justifyContent: 'space-between', paddingTop: 10}}>
+            <Text style={{fontSize: 14, textAlign: 'left', paddingLeft: 0}}>Image as {'\n'}Basemap?</Text>
+            <Switch
+              style={{height: 20}}
+              onValueChange={(annotated) => useImages.setAnnotation(image, annotated)}
+              value={image.annotated}
+            />
+          </View>
+            <Button
+              type={'clear'}
+              onPress={() => updateImageBasemap(image)}
+              title={'View as basemap'}
+              disabled={!image.annotated}
+              disabledTitleStyle={{color: 'white'}}
+              titleStyle={commonStyles.standardButtonText}/>
         </Card>
       </View>
     );
   };
+
+  const updateImageBasemap = (image) => {
+    console.log('!!!!!!!!!!!!', image)
+    if (image.image_type === 'sketch') {
+      Alert.alert('Function not available yet', 'Viewing a sketch as an image basemap will be done soon.');
+    }
+    else dispatch({type: mapReducers.CURRENT_IMAGE_BASEMAP, currentImageBasemap: image})
+  }
 
   return (
     <React.Fragment>
       <ReturnToOverviewButton
         onPress={() => dispatch({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: NotebookPages.OVERVIEW})}
       />
-      <View style={imageStyles.buttonContainer}>
-        <StandardButton
-          title={'Take'}
-          type={'outline'}
-          onPress={() => props.onPress('takePhoto')}
-        />
-        <StandardButton
-          title={'Import'}
-          type={'outline'}
-          onPress={() => props.onPress('importPhoto')}
-
-        />
-      </View>
-      <View style={{flex: 1}}>
-        {images && <FlatList data={images} renderItem={({item}) => renderImages(item)} numColumns={2}/>}
+      <View style={{alignItems: 'center'}}>
+        <View style={imageStyles.buttonsContainer}>
+          <ButtonRounded
+            icon={
+              <Icon
+                name={'camera-outline'}
+                type={'ionicon'}
+                iconStyle={imageStyles.icon}
+                color={commonStyles.iconColor.color}/>
+            }
+            title={'Take'}
+            titleStyle={commonStyles.standardButtonText}
+            buttonStyle={imageStyles.buttonContainer}
+            type={'outline'}
+            onPress={() => props.onPress('takePhoto')}
+          />
+          <ButtonRounded
+            icon={
+              <Icon
+                name={'images-outline'}
+                type={'ionicon'}
+                iconStyle={imageStyles.icon}
+                color={commonStyles.iconColor.color}/>
+            }
+            title={'Import'}
+            titleStyle={commonStyles.standardButtonText}
+            buttonStyle={imageStyles.buttonContainer}
+            type={'outline'}
+            onPress={() => props.onPress('importPhoto')}
+          />
+        </View>
+        <View style={{padding: 5}}>
+          {images
+          && <FlatList
+            data={images}
+            renderItem={({item}) => renderImages(item)}
+            numColumns={2}
+          />}
+        </View>
       </View>
     </React.Fragment>
   );
