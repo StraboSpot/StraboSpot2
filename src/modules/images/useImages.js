@@ -1,5 +1,6 @@
 import {Alert, Platform} from 'react-native';
 
+import {useNavigation} from '@react-navigation/native';
 import {Base64} from 'js-base64';
 import ImagePicker from 'react-native-image-picker';
 import ImageResizer from 'react-native-image-resizer';
@@ -16,6 +17,8 @@ import {spotReducers} from '../spots/spot.constants';
 const RNFS = require('react-native-fs');
 
 const useImages = () => {
+  const navigation = useNavigation();
+
   // let imageFiles = [];
   let imageArr = [];
   let imageCount = 0;
