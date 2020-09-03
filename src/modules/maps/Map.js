@@ -973,9 +973,10 @@ const Map = React.forwardRef((props, ref) => {
   // Get the Spot where screen was pressed
   const getSpotAtPress = async (screenPointX, screenPoint) => {
     console.log('mapMode in getSpotAtPress', props.mapMode);
-    const spotLayers = ['pointLayerNotSelected', 'lineLayerNotSelected', 'lineLayerNotSelectedDashed',
-      'lineLayerNotSelectedDotDashed', 'polygonLayerNotSelected', 'pointLayerSelected', 'lineLayerSelected',
-      'lineLayerSelectedDashed', 'lineLayerSelectedDotDashed', 'polygonLayerSelected'];
+    const spotLayers = ['pointLayerNotSelected', 'lineLayerNotSelected', 'lineLayerNotSelectedDotted',
+      'lineLayerNotSelectedDashed', 'lineLayerNotSelectedDotDashed', 'polygonLayerNotSelected', 'pointLayerSelected',
+      'lineLayerSelected', 'lineLayerSelectedDotted', 'lineLayerSelectedDashed', 'lineLayerSelectedDotDashed',
+      'polygonLayerSelected'];
     let spotFound = await getFeatureInRect(screenPointX, screenPoint, spotLayers);
     if (!isEmpty(spotFound)) {
       // In getFeatureInRect the function queryRenderedFeaturesInRect returns a feature with coordinates

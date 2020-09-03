@@ -23,11 +23,22 @@ function Basemap(props) {
   const [showZoom, setShowZoom] = useState(false);
   const [currentZoom, setCurrentZoom] = useState(undefined);
 
+  // Add symbology to properties of map features (not to Spots themselves) since data-driven styling
+  // doesn't work for colors by tags and more complex styling
+  const addSymbology = (features) => {
+    return features.map(feature => {
+      const symbology = useMapSymbology.getSymbology(feature);
+      if (!isEmpty(symbology)) feature.properties.symbology = symbology;
+      return feature;
+    });
+  };
+
   const defaultCenterCoordinates = () => {
     return props.imageBasemap ? useMaps.convertCoordinateProjections(pixelProjection, geoLatLngProjection,
       [(props.imageBasemap.width) / 2, (props.imageBasemap.height) / 2])
       : props.centerCoordinate;
   };
+
   // Evaluate and return appropriate center coordinates
   // if ZoomToSpot is set, then asyncMode zoomToSpot is triggered, load the map with center coordinates as the coordinates of the centroid of the selectedSpot
   // else return default center coordinates.
@@ -161,7 +172,7 @@ function Basemap(props) {
         />
         <MapboxGL.ShapeSource
           id='shapeSource'
-          shape={turf.featureCollection(props.spotsNotSelected)}
+          shape={turf.featureCollection(addSymbology(props.spotsNotSelected))}
         >
           <MapboxGL.SymbolLayer
             id='pointLayerNotSelected'
@@ -170,24 +181,30 @@ function Basemap(props) {
             style={useMapSymbology.getMapSymbology().point}
           />
 
-          {/* Need 3 different lines for the different types of line dashes since
+          {/* Need 4 different lines for the different types of line dashes since
            lineDasharray is not suppported with data-driven styling*/}
           <MapboxGL.LineLayer
             id='lineLayerNotSelected'
             minZoomLevel={1}
-            filter={useMapSymbology.getSolidLines()}
+            filter={useMapSymbology.getLinesFilteredByPattern('solid')}
             style={useMapSymbology.getMapSymbology().line}
+          />
+          <MapboxGL.LineLayer
+            id='lineLayerNotSelectedDotted'
+            minZoomLevel={1}
+            filter={useMapSymbology.getLinesFilteredByPattern('dotted')}
+            style={useMapSymbology.getMapSymbology().lineDotted}
           />
           <MapboxGL.LineLayer
             id='lineLayerNotSelectedDashed'
             minZoomLevel={1}
-            filter={useMapSymbology.getDashedLines()}
+            filter={useMapSymbology.getLinesFilteredByPattern('dashed')}
             style={useMapSymbology.getMapSymbology().lineDashed}
           />
           <MapboxGL.LineLayer
             id='lineLayerNotSelectedDotDashed'
             minZoomLevel={1}
-            filter={useMapSymbology.getDotDashedLines()}
+            filter={useMapSymbology.getLinesFilteredByPattern('dotDashed')}
             style={useMapSymbology.getMapSymbology().lineDotDashed}
           />
 
@@ -202,7 +219,7 @@ function Basemap(props) {
         {/* Selected Features Layer */}
         <MapboxGL.ShapeSource
           id='spotsNotSelectedSource'
-          shape={turf.featureCollection(props.spotsSelected)}
+          shape={turf.featureCollection(addSymbology(props.spotsSelected))}
         >
           <MapboxGL.CircleLayer
             id='pointLayerSelected'
@@ -211,24 +228,30 @@ function Basemap(props) {
             style={useMapSymbology.getMapSymbology().pointSelected}
           />
 
-          {/* Need 3 different lines for the different types of line dashes since
+          {/* Need 4 different lines for the different types of line dashes since
            lineDasharray is not suppported with data-driven styling*/}
           <MapboxGL.LineLayer
             id='lineLayerSelected'
             minZoomLevel={1}
-            filter={useMapSymbology.getSolidLines()}
+            filter={useMapSymbology.getLinesFilteredByPattern('solid')}
             style={useMapSymbology.getMapSymbology().lineSelected}
+          />
+          <MapboxGL.LineLayer
+            id='lineLayerSelectedDotted'
+            minZoomLevel={1}
+            filter={useMapSymbology.getLinesFilteredByPattern('dotted')}
+            style={useMapSymbology.getMapSymbology().lineSelectedDotted}
           />
           <MapboxGL.LineLayer
             id='lineLayerSelectedDashed'
             minZoomLevel={1}
-            filter={useMapSymbology.getDashedLines()}
+            filter={useMapSymbology.getLinesFilteredByPattern('dashed')}
             style={useMapSymbology.getMapSymbology().lineSelectedDashed}
           />
           <MapboxGL.LineLayer
             id='lineLayerSelectedDotDashed'
             minZoomLevel={1}
-            filter={useMapSymbology.getDotDashedLines()}
+            filter={useMapSymbology.getLinesFilteredByPattern('dotDashed')}
             style={useMapSymbology.getMapSymbology().lineSelectedDotDashed}
           />
 

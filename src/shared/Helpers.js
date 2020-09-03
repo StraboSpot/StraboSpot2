@@ -1,7 +1,7 @@
 import {Animated, Dimensions, Easing, Platform, UIManager} from 'react-native';
 
 import 'react-native-get-random-values';
-import { v4 as uuidv4 } from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 
 const {height: windowHeight} = Dimensions.get('window');
 
@@ -64,6 +64,21 @@ export const handleKeyboardDidShow = (event, TextInputState, textInputAnimate) =
   }
 };
 
+export const hexToRgb = (hex) => {
+  // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
+  const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+  hex = hex.replace(shorthandRegex, function (m, r, g, b) {
+    return r + r + g + g + b + b;
+  });
+
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result ? {
+    r: parseInt(result[1], 16),
+    g: parseInt(result[2], 16),
+    b: parseInt(result[3], 16),
+  } : null;
+};
+
 // Correct a quirk in JS that doesn't mod negative number correctly
 export const mod = (a, n) => {
   return ((a % n) + n) % n;
@@ -84,7 +99,7 @@ export const toDegrees = (radians) => {
 };
 
 export const toNumberFixedValue = (number, decPlaces) => {
-  return Number(number).toLocaleString(undefined,{style: 'percent', minimumFractionDigits: decPlaces});
+  return Number(number).toLocaleString(undefined, {style: 'percent', minimumFractionDigits: decPlaces});
 };
 
 export const toRadians = (deg) => {

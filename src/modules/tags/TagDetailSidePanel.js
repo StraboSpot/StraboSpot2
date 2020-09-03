@@ -1,33 +1,54 @@
 import React, {useState} from 'react';
-import {View} from 'react-native';
+import {Text, View, TouchableOpacity} from 'react-native';
 
 import {useDispatch, useSelector} from 'react-redux';
 
+import ColorPickerModal from '../../shared/ColorPickerModal';
 import {isEmpty} from '../../shared/Helpers';
+import * as themes from '../../shared/styles.constants';
 import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 import SidePanelHeader from '../main-menu-panel/sidePanel/SidePanelHeader';
-import {TagDetail, TagDetailModal, useTagsHook} from '../tags';
+import {spotReducers} from '../spots/spot.constants';
+import {TagDetail, TagDetailModal} from '../tags';
 
 const TagDetailSidePanel = (props) => {
-  const [useTags] = useTagsHook();
 
   const dispatch = useDispatch();
   const selectedTag = useSelector(state => state.project.selectedTag);
   const [isDetailModalVisibile, setIsDetailModalVisible] = useState(false);
+  const [isColorPickerModalVisibile, setIsColorPickerModalVisible] = useState(false);
 
   return (
     <React.Fragment>
-      <SidePanelHeader
-        backButton={() => dispatch({type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE, bool: false})}
-        title={'Tags'}
-        headerTitle={!isEmpty(selectedTag) && selectedTag.name}
-      />
+      <View style={{flexDirection: 'row'}}>
+        <View style={{flex: 1}}>
+          <SidePanelHeader
+            backButton={() => dispatch({type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE, bool: false})}
+            title={'Tags'}
+            headerTitle={!isEmpty(selectedTag) && selectedTag.name}
+          />
+        </View>
+        <View style={{
+          width: 50,
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
+        }}>
+          <TouchableOpacity style={{
+            width: 30, height: 30, borderWidth: 1, borderColor: themes.PRIMARY_BACKGROUND_COLOR,
+            backgroundColor: selectedTag.color,
+          }}
+                            onPress={() => setIsColorPickerModalVisible(true)}>
+            {!selectedTag.color && <Text>No Color</Text>}
+          </TouchableOpacity>
+        </View>
+      </View>
+
       <View style={{flex: 1}}>
         <TagDetail
-          openNotebookPanel={props.openNotebookPanel}
           openSpot={(spot) => {
+            dispatch({type: spotReducers.SET_SELECTED_SPOT, spot: spot});
             props.openNotebookPanel();
-            useTags.openSpotInNotebook(spot);
           }}
           addRemoveSpots={() => dispatch({
             type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE,
@@ -40,6 +61,10 @@ const TagDetailSidePanel = (props) => {
       <TagDetailModal
         isVisible={isDetailModalVisibile}
         closeModal={() => setIsDetailModalVisible(false)}
+      />
+      <ColorPickerModal
+        isVisible={isColorPickerModalVisibile}
+        closeModal={() => setIsColorPickerModalVisible(false)}
       />
     </React.Fragment>
   );
