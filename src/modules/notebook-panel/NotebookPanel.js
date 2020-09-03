@@ -56,7 +56,7 @@ const NotebookPanel = props => {
         <View
           style={notebookStyles.centerContainer}>
           {props.notebookPageVisible === NotebookPages.OVERVIEW || props.notebookPageVisible === undefined
-            ? <Overview navigation={props.navigation} openMainMenu={props.openMainMenu}/> : null
+            ? <Overview openMainMenu={props.openMainMenu}/> : null
           }
           {props.notebookPageVisible === NotebookPages.GEOGRAPHY ? <Geography/> : null}
           {props.notebookPageVisible === NotebookPages.MEASUREMENT ? <MeasurementsPage/> : null}
@@ -67,7 +67,6 @@ const NotebookPanel = props => {
         </View>
         <View style={notebookStyles.footerContainer}>
           <NotebookFooter
-            navigation={props.navigation}
             openPage={(page) => setNotebookPageVisible(page)}
             onPress={(camera) => props.onPress(camera)}
           />

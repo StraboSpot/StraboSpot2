@@ -10,7 +10,7 @@ import {NotebookPages} from '../notebook.constants';
 import footerStyle from './notebookFooter.styles';
 
 const NotebookFooter = props => {
-
+  const navigation = useNavigation();
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
 
   const getPageIcon = (page) => {
@@ -77,7 +77,7 @@ const NotebookFooter = props => {
       <IconButton
         source={getPageIcon(NotebookPages.SKETCH)}
         style={footerStyle.footerIcon}
-        onPress={() => props.navigation.navigate('Sketch')}
+        onPress={() => navigation.navigate('Sketch')}
       />
     </View>
   );

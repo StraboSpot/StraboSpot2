@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import {ActivityIndicator, View} from 'react-native';
 
+import {useNavigation} from '@react-navigation/native';
 import {Image} from 'react-native-elements';
 import {connect} from 'react-redux';
 
@@ -14,11 +15,7 @@ const ImageInfo = (props) => {
   const [imageNoteModal, setImageNoteModal] = useState(false);
   const [imageProps] = useState(props.route.params.imageId);
   const [useImages] = useImagesHook();
-
-  // useEffect(() => {
-  //   console.log('Nav Props', props.navigation.getParam('imageId', 'No-ID'))
-  //   setImageProps(props.navigation.getParam('imageId', 'No-ID'));
-  // }, [imageProps]);
+  const navigation = useNavigation();
 
   let noteModal = (
     <View style={styles.modalPosition}>
@@ -35,7 +32,7 @@ const ImageInfo = (props) => {
     console.log(name);
     switch (name) {
       case 'sketch':
-        props.navigation.navigate('Sketch', {imageId: imageProps});
+        navigation.navigate('Sketch', {imageId: imageProps});
         break;
     }
   };
@@ -55,7 +52,7 @@ const ImageInfo = (props) => {
       <View style={styles.closeButtonContainer}>
         <IconButton
           source={require('../../assets/icons/Close.png')}
-          onPress={() => props.navigation.goBack()}
+          onPress={() => navigation.goBack()}
           style={styles.closeButtonStyle}
         />
       </View>

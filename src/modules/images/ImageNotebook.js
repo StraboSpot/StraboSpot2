@@ -1,6 +1,7 @@
 import React from 'react';
 import {ActivityIndicator, Button, Dimensions, FlatList, ScrollView, Switch, Text, View} from 'react-native';
 
+import {useNavigation} from '@react-navigation/native';
 import {connect, useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
@@ -14,13 +15,14 @@ import useImagesHook from './useImages';
 const screenHeight = Dimensions.get('window').height;
 
 const ImageNotebook = (props) => {
+  const navigation = useNavigation();
   const [useImages] = useImagesHook();
   const dispatch = useDispatch();
   const images = useSelector(state => state.spot.selectedSpot.properties.images);
 
   const editImage = (image) => {
     dispatch({type: spotReducers.SET_SELECTED_ATTRIBUTES, attributes: [image]});
-    props.navigation.navigate('ImageInfo', {imageId: image.id});
+    navigation.navigate('ImageInfo', {imageId: image.id});
   };
 
   const setAnnotated = (image, annotation) => {
