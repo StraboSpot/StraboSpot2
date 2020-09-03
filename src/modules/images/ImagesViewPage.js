@@ -4,10 +4,10 @@ import {FlatList, Image, Text, View} from 'react-native';
 import {Button, Card, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import StandardButton from '../../shared/ui/ButtonRounded';
 import {imageStyles, useImagesHook} from '../images';
 import {NotebookPages, notebookReducers} from '../notebook-panel/notebook.constants';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
-import StandardButton from '../../shared/ui/ButtonRounded';
 
 const ImagesViewPage = (props) => {
 

@@ -159,6 +159,11 @@ const useImages = () => {
       });
   };
 
+  const editImage = (image) => {
+    dispatch({type: spotReducers.SET_SELECTED_ATTRIBUTES, attributes: [image]});
+    navigation.navigate('ImageInfo', {imageId: image.id});
+  };
+
   const launchCameraFromNotebook = async () => {
     try {
       const savedPhoto = await takePicture();
@@ -516,10 +521,12 @@ const useImages = () => {
           .then(response => {
             response.name = imageProps.id.toString();
             if (response.size < 1024) console.log(response.size + ' Bytes');
-            else if (response.size < 1048576) console.log(
-              'Resize Image KB:' + (response.size / 1024).toFixed(3) + ' KB');
-            else if (response.size < 1073741824) console.log(
-              'Resize Image MB:' + (response.size / 1048576).toFixed(2) + ' MB');
+            else if (response.size < 1048576) {
+              console.log('Resize Image KB:' + (response.size / 1024).toFixed(3) + ' KB');
+            }
+            else if (response.size < 1073741824) {
+              console.log('Resize Image MB:' + (response.size / 1048576).toFixed(2) + ' MB');
+            }
             else console.log('Resize Image' + (response.size / 1073741824).toFixed(3) + ' GB');
             return response;
           })
@@ -575,6 +582,7 @@ const useImages = () => {
   return [{
     deleteTempImagesFolder: deleteTempImagesFolder,
     downloadImages: downloadImages,
+    editImage: editImage,
     gatherNeededImages: gatherNeededImages,
     getLocalImageSrc: getLocalImageSrc,
     launchCameraFromNotebook: launchCameraFromNotebook,

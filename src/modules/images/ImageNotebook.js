@@ -44,8 +44,8 @@ const ImageNotebook = (props) => {
             onPress={() => editImage(image)}
           />
           <View style={{alignSelf: 'flex-start', flexDirection: 'column', flex: 1, paddingLeft: 10}}>
-            {image.title &&
-            <Text
+            {image.title
+            && <Text
               style={[commonStyles.dialogContent, {textAlign: 'left', textDecorationLine: 'underline'}]}>
               {truncateText(image.title, 20)}
             </Text>}
