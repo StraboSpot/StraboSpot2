@@ -1,6 +1,7 @@
 import React from 'react';
 import {View} from 'react-native';
 
+import {useNavigation} from '@react-navigation/native';
 import {connect, useSelector} from 'react-redux';
 
 import {IconButtons} from '../../../shared/app.constants';
