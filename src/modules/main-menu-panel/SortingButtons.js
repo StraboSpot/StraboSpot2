@@ -1,8 +1,8 @@
 import React from 'react';
 
+import {ButtonGroup} from 'react-native-elements';
 import {connect} from 'react-redux';
 
-import * as SharedUI from '../../shared/ui';
 import {settingPanelReducers, SortedViews} from './mainMenuPanel.constants';
 
 const SortingButtons = (props) => {
@@ -26,7 +26,7 @@ const SortingButtons = (props) => {
 
   return (
     <React.Fragment>
-      <SharedUI.ButtonGroup
+      <ButtonGroup
         selectedIndex={props.selectedButtonIndex}
         buttons={['Reverse\nChronological', 'Map Extent', 'Recent\n Views']}
         containerStyle={{height: 50}}

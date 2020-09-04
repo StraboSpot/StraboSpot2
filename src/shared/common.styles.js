@@ -138,7 +138,7 @@ const commonStyles = StyleSheet.create({
   },
   standardButtonText: {
     color: themes.PRIMARY_ACCENT_COLOR,
-    fontSize: themes.SMALL_TEXT_SIZE,
+    fontSize: themes.MEDIUM_TEXT_SIZE,
   },
   standardDescriptionText: {
     color: themes.SECONDARY_ITEM_TEXT_COLOR,

@@ -157,8 +157,6 @@ const SignUp = props => {
         setStatusDialogTitle('Uh Oh!');
         setStatusMessage(newUser.message);
       }
-
-      // props.navigation.navigate('HomeScreen');
     }
     catch (err) {
       console.log('error signing up: ', err);

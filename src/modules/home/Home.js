@@ -382,12 +382,15 @@ const Home = (props) => {
       case 'export':
         console.log('Export button was pressed');
         break;
-      case 'camera':
+      case 'takePhoto':
         useImages.launchCameraFromNotebook().then((imagesSavedLength) => {
           imagesSavedLength === 1
             ? toastRef.current.show(`${imagesSavedLength} photo saved!`)
             : toastRef.current.show(`${imagesSavedLength} photos saved!`);
         });
+        break;
+      case 'importPhoto':
+        useImages.getImagesFromCameraRoll();
         break;
       case 'showGeographyInfo':
         props.setNotebookPageVisible(NotebookPages.GEOGRAPHY);

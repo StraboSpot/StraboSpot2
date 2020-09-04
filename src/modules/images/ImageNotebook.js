@@ -20,20 +20,6 @@ const ImageNotebook = (props) => {
   const dispatch = useDispatch();
   const images = useSelector(state => state.spot.selectedSpot.properties.images);
 
-  const editImage = (image) => {
-    dispatch({type: spotReducers.SET_SELECTED_ATTRIBUTES, attributes: [image]});
-    navigation.navigate('ImageInfo', {imageId: image.id});
-  };
-
-  const setAnnotated = (image, annotation) => {
-    image.annotated = annotation;
-    if (annotation && !image.title) image.title = image.id;
-    dispatch({type: spotReducers.SET_SELECTED_ATTRIBUTES, attributes: [image]});
-    if (!image.annotated) {
-      props.updateImageBasemap(undefined);
-    }
-  };
-
   const renderImage = (image) => {
     // console.log('IMAGE', image);
     return (
@@ -43,11 +29,11 @@ const ImageNotebook = (props) => {
             source={{uri: useImages.getLocalImageSrc(image.id)}}
             style={imageStyles.notebookImage}
             PlaceholderContent={<ActivityIndicator/>}
-            onPress={() => editImage(image)}
+            onPress={() => useImages.editImage(image)}
           />
           <View style={{alignSelf: 'flex-start', flexDirection: 'column', flex: 1, paddingLeft: 10}}>
-            {image.title &&
-            <Text
+            {image.title
+            && <Text
               style={[commonStyles.dialogContent, {textAlign: 'left', textDecorationLine: 'underline'}]}>
               {truncateText(image.title, 20)}
             </Text>}
@@ -60,7 +46,7 @@ const ImageNotebook = (props) => {
             {image.image_type !== 'sketch' ? <View
               style={{alignSelf: 'flex-start', flexDirection: 'row', flex: 1, paddingLeft: 10, alignItems: 'center'}}>
               <Switch
-                onValueChange={(annotated) => setAnnotated(image, annotated)}
+                onValueChange={(annotated) => useImages.setAnnotation(image, annotated)}
                 value={image.annotated}
               />
               <Text style={{textAlign: 'left', paddingLeft: 5}}>Image as Image Basemap?</Text>

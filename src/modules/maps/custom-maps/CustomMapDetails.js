@@ -15,7 +15,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import {isEmpty} from '../../../shared/Helpers';
 import * as Helpers from '../../../shared/Helpers';
-import SaveAndDeleteButtons from '../../../shared/ui/SaveAndDeleteButtons';
+import ButtonRounded from '../../../shared/ui/ButtonRounded';
 import Slider from '../../../shared/ui/Slider';
 import {homeReducers} from '../../home/home.constants';
 import {SettingsMenuItems} from '../../main-menu-panel/mainMenu.constants';
@@ -288,11 +288,11 @@ const AddCustomMaps = () => {
         {renderMapDetails()}
       </View>
       <View style={[sidePanelStyles.sectionContainer, {flex: 3}]}>
-        <SaveAndDeleteButtons
+        <ButtonRounded
           title={'Save'}
           onPress={() => addMap()}
         />
-        <SaveAndDeleteButtons
+        <ButtonRounded
           title={'Delete Map'}
           buttonStyle={{backgroundColor: 'red'}}
           onPress={() => confirmDeleteMap()}
