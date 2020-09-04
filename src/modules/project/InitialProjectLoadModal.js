@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {Text, View} from 'react-native';
 
+import {useNavigation} from '@react-navigation/native';
 import {Button} from 'react-native-elements';
 import {Dialog, DialogTitle, DialogContent, SlideAnimation} from 'react-native-popup-dialog';
 import {useSelector, useDispatch} from 'react-redux';
@@ -18,6 +19,7 @@ import ProjectList from './ProjectList';
 import ProjectTypesButtons from './ProjectTypesButtons';
 
 const InitialProjectLoadModal = (props) => {
+  const navigation = useNavigation();
   const selectedProject = useSelector(state => state.project.project);
   const datasets = useSelector(state => state.project.datasets);
   const isOnline = useSelector(state => state.home.isOnline);
@@ -57,7 +59,7 @@ const InitialProjectLoadModal = (props) => {
           titleStyle={commonStyles.standardButtonText}
           onPress={() => {
             dispatch({type: 'CLEAR_STORE'});
-            props.navigation.goBack();
+            navigation.goBack();
           }}
         />
       </View>

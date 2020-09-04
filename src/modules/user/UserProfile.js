@@ -1,6 +1,7 @@
 import React from 'react';
 import {View, Text} from 'react-native';
 
+import {useNavigation} from '@react-navigation/native';
 import {Button,Avatar} from 'react-native-elements';
 import {connect} from 'react-redux';
 
@@ -9,10 +10,11 @@ import {isEmpty} from '../../shared/Helpers';
 import userStyles from './user.styles';
 
 const UserProfile = (props) => {
+  const navigation = useNavigation();
 
   const doLogOut = async () => {
     if (!isEmpty(props.userData)) await props.clearStorage();
-    props.navigation.popToTop();
+    navigation.popToTop();
   };
 
   const getUserInitials = () => {

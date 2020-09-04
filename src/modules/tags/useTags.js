@@ -7,14 +7,11 @@ import {useDispatch, useSelector} from 'react-redux';
 import {getNewId, isEmpty, truncateText} from '../../shared/Helpers';
 import {Form, useFormHook, labelDictionary} from '../form';
 import {Modals} from '../home/home.constants';
-import useMapsHook from '../maps/useMaps';
-import {NotebookPages, notebookReducers} from '../notebook-panel/notebook.constants';
 import {projectReducers} from '../project/project.constants';
 import {tagsStyles} from './index';
 
 const useTags = () => {
   const [useForm] = useFormHook();
-  const [useMaps] = useMapsHook();
   const dispatch = useDispatch();
   const form = useRef(null);
   const addTagToSelectedSpot = useSelector(state => state.project.addTagToSelectedSpot);
@@ -84,12 +81,6 @@ const useTags = () => {
     const tagsGeologicUnit = tagsAtSpot.filter(tag => tag.type === 'geologic_unit');
     const tagsOther = tagsAtSpot.filter(tag => tag.type !== 'geologic_unit');
     return [...tagsGeologicUnit, ...tagsOther];
-  };
-
-  const openSpotInNotebook = (spot) => {
-    useMaps.setSelectedSpot(spot);
-    dispatch({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: NotebookPages.OVERVIEW});
-    dispatch({type: notebookReducers.SET_NOTEBOOK_PANEL_VISIBLE, value: true});
   };
 
   // What happens after submitting the form is handled in saveFormAndClose since we want to show
@@ -184,11 +175,11 @@ const useTags = () => {
     getLabel: getLabel,
     getTagsAtSpot: getTagsAtSpot,
     getTagsAtSpotGeologicUnitFirst: getTagsAtSpotGeologicUnitFirst,
-    openSpotInNotebook: openSpotInNotebook,
     renderSpotCount: renderSpotCount,
     renderTagInfo: renderTagInfo,
     renderTagForm: renderTagForm,
     saveForm: saveForm,
+    saveTag: saveTag,
   }];
 };
 

@@ -1,4 +1,15 @@
+import {hexToRgb, isEmpty} from '../../shared/Helpers';
+import useTagsHook from '../tags/useTags';
+
 const useMapSymbology = (props) => {
+  const [useTags] = useTagsHook();
+
+  const linePatterns = {
+    solid: [1, 0],
+    dotted: [0.5, 2],
+    dashed: [5, 2],
+    dotDashed: [5, 2, 0.5, 2],
+  };
 
   // Get the rotation of the symbol, either strike, trend or failing both, 0
   const getIconRotation = () => {
@@ -156,169 +167,129 @@ const useMapSymbology = (props) => {
     ];
   };
 
-  const getLineColor = () => {
-    return (
-      ['case',
-        ['all',
-          ['has', 'trace'],
-          ['has', 'trace_type', ['get', 'trace']],
-        ],
-        ['case',
-          // Case 1: Geologic Structure
-          ['==', ['get', 'trace_type', ['get', 'trace']], 'geologic_struc'],
-          '#FF0000',
-          ['case',
-            // Case 2: Contact
-            ['==', ['get', 'trace_type', ['get', 'trace']], 'contact'],
-            '#000000',
-            ['case',
-              // Case 3: Geomorphic Feature
-              ['==', ['get', 'trace_type', ['get', 'trace']], 'geomorphic_fea'],
-              '#0000FF',
-              ['case',
-                // Case 4: Anthropogenic Feature
-                ['==', ['get', 'trace_type', ['get', 'trace']], 'anthropenic_fe'],
-                '#800080',
-                'black',
-              ],
-            ],
-          ],
-        ],
-        // Default
-        'black',
-      ]
-    );
-  };
-
-  const getLineWidth = () => {
-    return (
-      ['case',
-        ['all',
-          ['has', 'trace'],
-          ['has', 'trace_type', ['get', 'trace']],
-        ],
-        ['case',
-          ['any',
-            ['all',
-              ['==', ['get', 'trace_type', ['get', 'trace']], 'geologic_struc'],
-              ['has', 'geologic_structure_type', ['get', 'trace']],
-              ['any',
-                ['==', ['get', 'geologic_structure_type', ['get', 'trace']], 'fault'],
-                ['==', ['get', 'geologic_structure_type', ['get', 'trace']], 'shear_zone'],
-              ],
-            ],
-            ['all',
-              ['==', ['get', 'trace_type', ['get', 'trace']], 'contact'],
-              ['has', 'contact_type', ['get', 'trace']],
-              ['==', ['get', 'contact_type', ['get', 'trace']], 'intrusive'],
-              ['has', 'intrusive_contact_type', ['get', 'trace']],
-              ['==', ['get', 'intrusive_contact_type', ['get', 'trace']], 'dike'],
-            ],
-            ['==', ['get', 'trace_type', ['get', 'trace']], 'geomorphic_fea'],
-            ['==', ['get', 'trace_type', ['get', 'trace']], 'anthropenic_fe'],
-          ],
-          4,
-          2,
-        ],
-        // Default
-        2,
-      ]
-    );
-  };
-
-  const getSolidLines = () => {
+  const getLinesFilteredByPattern = (pattern) => {
     return (
       ['all',
         ['==', ['geometry-type'], 'LineString'],
-        ['!',
-          ['all',
-            ['has', 'trace'],
-            ['has', 'trace_quality', ['get', 'trace']],
-            ['any',
-              ['==', ['get', 'trace_quality', ['get', 'trace']], 'approximate'],
-              ['==', ['get', 'trace_quality', ['get', 'trace']], 'approximate(?)'],
-              ['==', ['get', 'trace_quality', ['get', 'trace']], 'other'],
-            ],
-          ],
-        ],
+        ['==', ['to-string', ['get', 'lineDasharray', ['get', 'symbology']]], ['to-string', ['literal', linePatterns[pattern]]]],
       ]
     );
   };
 
-  const getDashedLines = () => {
-    return (
-      ['all',
-        ['==', ['geometry-type'], 'LineString'],
-        ['has', 'trace'],
-        ['has', 'trace_quality', ['get', 'trace']],
-        ['any',
-          ['==', ['get', 'trace_quality', ['get', 'trace']], 'approximate'],
-          ['==', ['get', 'trace_quality', ['get', 'trace']], 'approximate(?)'],
-        ],
-      ]
-    );
+  const getLineSymbology = (feature) => {
+    let color = '#663300';
+    let width = 2;
+    let lineDash = linePatterns.solid;
+    if (feature.properties.trace) {
+      const trace = feature.properties.trace;
+
+      // Set line color and weight
+      switch (trace.trace_type) {
+        case 'geologic_struc':
+          color = '#FF0000';
+          if (trace.geologic_structure_type
+            && (trace.geologic_structure_type === 'fault' || trace.geologic_structure_type === 'shear_zone')) {
+            width = 4;
+          }
+          break;
+        case 'contact':
+          color = '#000000';
+          if (trace.contact_type && trace.contact_type === 'intrusive'
+            && trace.intrusive_contact_type && trace.intrusive_contact_type === 'dike') {
+            width = 4;
+          }
+          break;
+        case 'geomorphic_fea':
+          color = '#0000FF';
+          width = 4;
+          break;
+        case 'anthropenic_fe':
+          color = '#800080';
+          width = 4;
+          break;
+      }
+
+      // Set line pattern
+      lineDash = linePatterns.dotted;
+      switch (trace.trace_quality) {
+        case 'known':
+          lineDash = linePatterns.solid;
+          break;
+        case 'approximate':
+        case 'approximate(?)':
+          lineDash = linePatterns.dashed;
+          break;
+        case 'other':
+          lineDash = linePatterns.dotDashed;
+          break;
+      }
+    }
+
+    return {
+      'lineColor': color,
+      'lineWidth': width,
+      'lineDasharray': lineDash,
+    };
   };
 
-  const getDotDashedLines = () => {
-    return (
-      ['all',
-        ['==', ['geometry-type'], 'LineString'],
-        ['has', 'trace'],
-        ['has', 'trace_quality', ['get', 'trace']],
-        ['==', ['get', 'trace_quality', ['get', 'trace']], 'other'],
-      ]
-    );
+  const getPolygonSymbology = (feature) => {
+    let color = 'rgba(0, 0, 255, 0.4)';     // default fill color
+    let tagsAtSpot = useTags.getTagsAtSpot(feature.properties.id);
+    const tagsGeologicUnit = tagsAtSpot.filter(tag => tag.type === 'geologic_unit');
+
+    // If feature has a geologic unit tag and that tag has a color assigned use that color
+    if (!isEmpty(tagsGeologicUnit) && tagsGeologicUnit[0].color) {
+      const rgbColor = hexToRgb(tagsGeologicUnit[0].color);
+      color = 'rgba(' + rgbColor.r + ', ' + rgbColor.g + ', ' + rgbColor.b + ', 0.4)';
+    }
+    // If feature has a surface feature type apply the specified color
+    else if (feature.properties.surface_feature && feature.properties.surface_feature.surface_feature_type) {
+      switch (feature.properties.surface_feature.surface_feature_type) {
+        case 'rock_unit':
+          color = 'rgba(0, 255, 255, 0.4)';   // light blue
+          break;
+        case 'contiguous_outcrop':
+          color = 'rgba(240, 128, 128, 0.4)'; // pink
+          break;
+        case 'geologic_structure':
+          color = 'rgba(0, 255, 255, 0.4)';   // light blue
+          break;
+        case 'geomorphic_feature':
+          color = 'rgba(0, 128, 0, 0.4)';     // green
+          break;
+        case 'anthropogenic_feature':
+          color = 'rgba(128, 0, 128, 0.4)';   // purple
+          break;
+        case 'extent_of_mapping':
+          color = 'rgba(128, 0, 128, 0)';     // no fill
+          break;
+        case 'extent_of_biological_marker':   // green
+          color = 'rgba(0, 128, 0, 0.4)';
+          break;
+        case 'subjected_to_similar_process':
+          color = 'rgba(255, 165, 0,0.4)';    // orange
+          break;
+        case 'gradients':
+          color = 'rgba(255, 165, 0,0.4)';    // orange
+          break;
+      }
+    }
+    return {
+      'fillColor': color,
+    };
   };
 
-  const getPolyFill = () => {
-    return (
-      // Variable bindings
-      ['let', 'default', 'rgba(0, 0, 255, 0.4)',
-
-        // Output
-        ['case',
-          ['has', 'surface_feature'],
-          ['case',
-            ['==', ['get', 'surface_feature_type', ['get', 'surface_feature']], 'rock_unit'],
-            'rgba(0, 255, 255, 0.4)',
-            ['case',
-              ['==', ['get', 'surface_feature_type', ['get', 'surface_feature']], 'contiguous_outcrop'],
-              'rgba(240, 128, 128, 0.4)',
-              ['case',
-                ['==', ['get', 'surface_feature_type', ['get', 'surface_feature']], 'geologic_structure'],
-                'rgba(0, 255, 255, 0.4)',
-                ['case',
-                  ['==', ['get', 'surface_feature_type', ['get', 'surface_feature']], 'geomorphic_feature'],
-                  'rgba(0, 128, 0, 0.4)',
-                  ['case',
-                    ['==', ['get', 'surface_feature_type', ['get', 'surface_feature']], 'anthropogenic_feature'],
-                    'rgba(128, 0, 128, 0.4)',
-                    ['case',
-                      ['==', ['get', 'surface_feature_type', ['get', 'surface_feature']], 'extent_of_mapping'],
-                      'rgba(128, 0, 128, 0)',
-                      ['case',
-                        ['==', ['get', 'surface_feature_type', ['get', 'surface_feature']], 'extent_of_biological_marker'],
-                        'rgba(0, 128, 0, 0.4)',
-                        ['case',
-                          ['any',
-                            ['==', ['get', 'surface_feature_type', ['get', 'surface_feature']], 'subjected_to_similar_process'],
-                            ['==', ['get', 'surface_feature_type', ['get', 'surface_feature']], 'gradients'],
-                          ],
-                          'rgba(255, 165, 0,0.4)',
-                          ['var', 'default'],
-                        ],
-                      ],
-                    ],
-                  ],
-                ],
-              ],
-            ],
-          ],
-          // Default
-          ['var', 'default'],
-        ],
-      ]
-    );
+  const getSymbology = (feature) => {
+    switch (feature.geometry.type) {
+      case 'LineString':
+      case 'MultiLineString':
+        return getLineSymbology(feature);
+      case 'Polygon':
+      case 'MultiPolygon':
+        return getPolygonSymbology(feature);
+      default:
+        return {};
+    }
   };
 
   const mapStyles = {
@@ -335,23 +306,28 @@ const useMapSymbology = (props) => {
       symbolSpacing: 0,
     },
     line: {
-      lineColor: getLineColor(),
-      lineWidth: getLineWidth(),
+      lineColor: ['get', 'lineColor', ['get', 'symbology']],
+      lineWidth: ['get', 'lineWidth', ['get', 'symbology']],
+    },
+    lineDotted: {
+      lineColor: ['get', 'lineColor', ['get', 'symbology']],
+      lineWidth: ['get', 'lineWidth', ['get', 'symbology']],
+      lineDasharray: linePatterns.dotted,   // Can't use data-driven styling with line-dasharray - it is not supported
+                                            // Used filters on the line layers instead
+                                            // https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/#paint-line-line-dasharray
     },
     lineDashed: {
-      lineColor: getLineColor(),
-      lineWidth: getLineWidth(),
-      lineDasharray: [5, 2],  // Can't use data-driven styling with line-dasharray - it is not supported
-                              // Used filters on the line layers instead
-                              // https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/#paint-line-line-dasharray
+      lineColor: ['get', 'lineColor', ['get', 'symbology']],
+      lineWidth: ['get', 'lineWidth', ['get', 'symbology']],
+      lineDasharray: linePatterns.dashed,
     },
     lineDotDashed: {
-      lineColor: getLineColor(),
-      lineWidth: getLineWidth(),
-      lineDasharray: [5, 2, 1, 2],
+      lineColor: ['get', 'lineColor', ['get', 'symbology']],
+      lineWidth: ['get', 'lineWidth', ['get', 'symbology']],
+      lineDasharray: linePatterns.dotDashed,
     },
     polygon: {
-      fillColor: getPolyFill(),
+      fillColor: ['get', 'fillColor', ['get', 'symbology']],
       fillOutlineColor: 'black',
     },
     pointSelected: {
@@ -361,17 +337,22 @@ const useMapSymbology = (props) => {
     },
     lineSelected: {
       lineColor: 'orange',
-      lineWidth: 3,
+      lineWidth: ['get', 'lineWidth', ['get', 'symbology']],
+    },
+    lineSelectedDotted: {
+      lineColor: 'orange',
+      lineWidth: ['get', 'lineWidth', ['get', 'symbology']],
+      lineDasharray: linePatterns.dotted,
     },
     lineSelectedDashed: {
       lineColor: 'orange',
-      lineWidth: getLineWidth(),
-      lineDasharray: [5, 2],
+      lineWidth: ['get', 'lineWidth', ['get', 'symbology']],
+      lineDasharray: linePatterns.dashed,
     },
     lineSelectedDotDashed: {
       lineColor: 'orange',
-      lineWidth: getLineWidth(),
-      lineDasharray: [5, 2, 1, 2],
+      lineWidth: ['get', 'lineWidth', ['get', 'symbology']],
+      lineDasharray: linePatterns.dotDashed,
     },
     polygonSelected: {
       fillColor: 'orange',
@@ -406,9 +387,8 @@ const useMapSymbology = (props) => {
 
   return [{
     getMapSymbology: getMapSymbology,
-    getDashedLines: getDashedLines,
-    getDotDashedLines: getDotDashedLines,
-    getSolidLines: getSolidLines,
+    getLinesFilteredByPattern: getLinesFilteredByPattern,
+    getSymbology: getSymbology,
   }];
 };
 
