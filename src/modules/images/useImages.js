@@ -302,12 +302,16 @@ const useImages = () => {
   };
 
   const getImagesFromCameraRoll = async () => {
-    useHome.toggleLoading(true);
     ImagePicker.launchImageLibrary({}, async response => {
-      const savedPhoto = await saveFile(response);
-      console.log('Saved Photo in getImagesFromCameraRoll', savedPhoto);
-      dispatch({type: spotReducers.EDIT_SPOT_IMAGES, images: [savedPhoto]});
-      useHome.toggleLoading(false);
+      console.log('RES', response)
+      if (response.didCancel) useHome.toggleLoading(false);
+      else{
+        useHome.toggleLoading(true);
+        const savedPhoto = await saveFile(response);
+        console.log('Saved Photo in getImagesFromCameraRoll', savedPhoto);
+        dispatch({type: spotReducers.EDIT_SPOT_IMAGES, images: [savedPhoto]});
+        useHome.toggleLoading(false);
+      }
     });
   };
 
