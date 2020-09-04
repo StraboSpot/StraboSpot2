@@ -390,7 +390,7 @@ const Home = (props) => {
         });
         break;
       case 'importPhoto':
-          useImages.getImagesFromCameraRoll();
+        useImages.getImagesFromCameraRoll();
         break;
       case 'showGeographyInfo':
         props.setNotebookPageVisible(NotebookPages.GEOGRAPHY);

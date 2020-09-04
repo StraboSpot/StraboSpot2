@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {Alert, FlatList, Switch, Text, View} from 'react-native';
 
 import {Card, Button, Icon} from 'react-native-elements';
@@ -10,7 +10,6 @@ import {imageStyles, useImagesHook} from '../images';
 import {mapReducers} from '../maps/maps.constants';
 import {NotebookPages, notebookReducers} from '../notebook-panel/notebook.constants';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
-import {spotReducers} from '../spots/spot.constants';
 
 const ImagesViewPage = (props) => {
 
@@ -21,40 +20,39 @@ const ImagesViewPage = (props) => {
   const renderImages = (image) => {
     const imageSrc = useImages.getLocalImageSrc(image.id);
     return (
-        <Card containerStyle={imageStyles.cardContainer}>
-          <Card.Title style={{fontSize: 12}}>{image.title ?? image.id}</Card.Title>
-          <Card.Image
-            source={{uri: imageSrc}}
-            style={{width: 150, height: 130}}
-            onPress={() => useImages.editImage(image)}
-          />
+      <Card containerStyle={imageStyles.cardContainer}>
+        <Card.Title style={{fontSize: 12}}>{image.title ?? image.id}</Card.Title>
+        <Card.Image
+          source={{uri: imageSrc}}
+          style={{width: 150, height: 130}}
+          onPress={() => useImages.editImage(image)}
+        />
 
-          <View style={{flexDirection: 'row', justifyContent: 'space-between', paddingTop: 10}}>
-            <Text style={{fontSize: 14, textAlign: 'left', paddingLeft: 0}}>Image as {'\n'}Basemap?</Text>
-            <Switch
-              style={{height: 20}}
-              onValueChange={(annotated) => useImages.setAnnotation(image, annotated)}
-              value={image.annotated}
-            />
-          </View>
-            <Button
-              type={'clear'}
-              onPress={() => updateImageBasemap(image)}
-              title={'View as basemap'}
-              disabled={!image.annotated}
-              disabledTitleStyle={{color: 'white'}}
-              titleStyle={commonStyles.standardButtonText}/>
-        </Card>
+        <View style={{flexDirection: 'row', justifyContent: 'space-between', paddingTop: 10}}>
+          <Text style={{fontSize: 14, textAlign: 'left', paddingLeft: 0}}>Image as {'\n'}Basemap?</Text>
+          <Switch
+            style={{height: 20}}
+            onValueChange={(annotated) => useImages.setAnnotation(image, annotated)}
+            value={image.annotated}
+          />
+        </View>
+        <Button
+          type={'clear'}
+          onPress={() => updateImageBasemap(image)}
+          title={'View as basemap'}
+          disabled={!image.annotated}
+          disabledTitleStyle={{color: 'white'}}
+          titleStyle={commonStyles.standardButtonText}/>
+      </Card>
     );
   };
 
   const updateImageBasemap = (image) => {
-    console.log('!!!!!!!!!!!!', image)
     if (image.image_type === 'sketch') {
       Alert.alert('Function not available yet', 'Viewing a sketch as an image basemap will be done soon.');
     }
-    else dispatch({type: mapReducers.CURRENT_IMAGE_BASEMAP, currentImageBasemap: image})
-  }
+    else dispatch({type: mapReducers.CURRENT_IMAGE_BASEMAP, currentImageBasemap: image});
+  };
 
   return (
     <View style={{flex: 1}}>

@@ -302,15 +302,13 @@ const useImages = () => {
   };
 
   const getImagesFromCameraRoll = async () => {
-    console.log('Images from CameraRoll');
     useHome.toggleLoading(true);
     ImagePicker.launchImageLibrary({}, async response => {
-      console.log('!!!', response)
       const savedPhoto = await saveFile(response);
-      console.log('Saved Photo in getImagesFromCameraRoll', savedPhoto)
+      console.log('Saved Photo in getImagesFromCameraRoll', savedPhoto);
       dispatch({type: spotReducers.EDIT_SPOT_IMAGES, images: [savedPhoto]});
       useHome.toggleLoading(false);
-    })
+    });
   };
 
   // Called from Image Gallery and displays image source picker

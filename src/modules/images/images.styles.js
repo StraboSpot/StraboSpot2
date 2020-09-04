@@ -10,8 +10,6 @@ const imageStyles = StyleSheet.create({
   },
   buttonsContainer: {
     flexDirection: 'row',
-    // padding: 10
-    // justifyContent: 'space-evenly',
   },
   buttonContainer: {
     backgroundColor: 'white',
