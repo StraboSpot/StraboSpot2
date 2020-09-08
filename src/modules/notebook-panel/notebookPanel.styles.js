@@ -1,10 +1,10 @@
-import {StyleSheet} from 'react-native';
+import {Dimensions, StyleSheet} from 'react-native';
 
 import * as themes from '../../shared/styles.constants';
 
 const notebookStyles = StyleSheet.create({
   panel: {
-    width: 400,
+    width: Math.min(400, Dimensions.get('window').width),
     height: '100%',
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
     position: 'absolute',
