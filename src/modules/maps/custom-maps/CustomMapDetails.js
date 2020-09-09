@@ -18,7 +18,6 @@ import * as Helpers from '../../../shared/Helpers';
 import ButtonRounded from '../../../shared/ui/ButtonRounded';
 import Slider from '../../../shared/ui/Slider';
 import {homeReducers} from '../../home/home.constants';
-import {SettingsMenuItems} from '../../main-menu-panel/mainMenu.constants';
 import {settingPanelReducers} from '../../main-menu-panel/mainMenuPanel.constants';
 import Divider from '../../main-menu-panel/MainMenuPanelDivider';
 import sidePanelStyles from '../../main-menu-panel/sidePanel.styles';
@@ -74,7 +73,7 @@ const AddCustomMaps = () => {
     if (customMap !== undefined) {
       dispatch({type: mapReducers.ADD_CUSTOM_MAP, customMap: customMap});
       dispatch({type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE, view: null, bool: false});
-      dispatch({type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: SettingsMenuItems.SETTINGS_MAIN});
+      dispatch({type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: undefined});
       dispatch({type: homeReducers.CLEAR_STATUS_MESSAGES});
       dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Success!'});
       dispatch(
