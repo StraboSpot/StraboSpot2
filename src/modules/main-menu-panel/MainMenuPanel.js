@@ -20,7 +20,7 @@ import SamplesList from '../samples/SamplesList';
 import {spotReducers} from '../spots/spot.constants';
 import SpotsList from '../spots/SpotsList';
 import Tags from '../tags/Tags';
-import {SettingsMenuItems} from './mainMenu.constants';
+import {MAIN_MENU_ITEMS} from './mainMenu.constants';
 import {settingPanelReducers} from './mainMenuPanel.constants';
 import styles from './mainMenuPanel.styles';
 import MainMenuPanelHeader from './MainMenuPanelHeader';
@@ -30,7 +30,7 @@ const MainMenuPanel = props => {
   let buttonTitle = null;
   const project = useSelector(state => state.project.project);
   let settingsPanelHeader = <MainMenuPanelHeader
-    onPress={() => props.setSettingsPanelPageVisible(SettingsMenuItems.SETTINGS_MAIN)}>
+    onPress={() => props.setSettingsPanelPageVisible(undefined)}>
     {props.settingsPageVisible}
   </MainMenuPanelHeader>;
 
@@ -57,14 +57,14 @@ const MainMenuPanel = props => {
   else buttonTitle = 'Sign Out';
 
   switch (props.settingsPageVisible) {
-    case SettingsMenuItems.MANAGE.MY_STRABOSPOT:
+    case MAIN_MENU_ITEMS.MANAGE.MY_STRABOSPOT:
       page = (
         <View style={styles.settingsPanelContainer}>
           <MyStraboSpot openSidePanel={props.openSidePanel} closeHomePanel={props.closeHomePanel}/>
         </View>
       );
       break;
-    case SettingsMenuItems.MANAGE.ACTIVE_PROJECTS:
+    case MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS:
       page = (
         <View style={styles.settingsPanelContainer}>
           <ActiveProject
@@ -74,14 +74,14 @@ const MainMenuPanel = props => {
         </View>
       );
       break;
-    case SettingsMenuItems.MANAGE.UPLOAD_BACKUP_EXPORT:
+    case MAIN_MENU_ITEMS.MANAGE.UPLOAD_BACKUP_EXPORT:
       page = (
         <View style={styles.settingsPanelContainer}>
           <UploadBackupAndExport/>
         </View>
       );
       break;
-    case SettingsMenuItems.APP_PREFERENCES.SHORTCUTS:
+    case MAIN_MENU_ITEMS.PREFERENCES.SHORTCUTS:
       page = (
         <View style={styles.settingsPanelContainer}>
           <ShortcutMenu
@@ -91,21 +91,21 @@ const MainMenuPanel = props => {
         </View>
       );
       break;
-    case SettingsMenuItems.APP_PREFERENCES.NAMING_CONVENTIONS:
+    case MAIN_MENU_ITEMS.PREFERENCES.NAMING_CONVENTIONS:
       page = (
         <View style={styles.settingsPanelContainer}>
           <NamingConventions/>
         </View>
       );
       break;
-    case SettingsMenuItems.MAPS.MANAGE_OFFLINE_MAPS:
+    case MAIN_MENU_ITEMS.MAPS.MANAGE_OFFLINE_MAPS:
       page = (
         <View style={styles.settingsPanelContainer}>
           <ManageOfflineMapsMenu/>
         </View>
       );
       break;
-    case SettingsMenuItems.MAPS.IMAGE_BASEMAPS :
+    case MAIN_MENU_ITEMS.MAPS.IMAGE_BASEMAPS :
       page = (
         <View style={styles.settingsPanelContainer}>
           <ImageBaseMaps
@@ -114,7 +114,7 @@ const MainMenuPanel = props => {
         </View>
       );
       break;
-    case SettingsMenuItems.MAPS.CUSTOM:
+    case MAIN_MENU_ITEMS.MAPS.CUSTOM:
       page = (
         <View style={styles.settingsPanelContainer}>
           <CustomMapsMenu
@@ -123,7 +123,7 @@ const MainMenuPanel = props => {
         </View>
       );
       break;
-    case SettingsMenuItems.ATTRIBUTES.SPOTS_LIST:
+    case MAIN_MENU_ITEMS.ATTRIBUTES.SPOTS_LIST:
       page = (
         <View style={styles.settingsPanelContainer}>
           <SpotsList
@@ -132,7 +132,7 @@ const MainMenuPanel = props => {
         </View>
       );
       break;
-    case SettingsMenuItems.ATTRIBUTES.IMAGE_GALLERY:
+    case MAIN_MENU_ITEMS.ATTRIBUTES.IMAGE_GALLERY:
       page = (
         <View style={styles.settingsPanelContainer}>
           <ImageGallery
@@ -141,7 +141,7 @@ const MainMenuPanel = props => {
         </View>
       );
       break;
-    case SettingsMenuItems.ATTRIBUTES.SAMPLES:
+    case MAIN_MENU_ITEMS.ATTRIBUTES.SAMPLES:
       page = (
         <View style={styles.settingsPanelContainer}>
           <SamplesList
@@ -150,17 +150,10 @@ const MainMenuPanel = props => {
         </View>
       );
       break;
-    case SettingsMenuItems.ATTRIBUTES.TAGS:
+    case MAIN_MENU_ITEMS.ATTRIBUTES.TAGS:
       page = (
         <View style={styles.settingsPanelContainer}>
           <Tags/>
-        </View>
-      );
-      break;
-    case SettingsMenuItems.PROJECT.SWITCH_PROJECT:
-      page = (
-        <View style={styles.settingsPanelContainer}>
-          <ProjectList/>
         </View>
       );
       break;

@@ -3,7 +3,7 @@ import {Text, View} from 'react-native';
 
 import styles from './mainMenuPanel.styles';
 
-const SettingPanelDivider = (props) => {
+const MainMenuPanelDivider = (props) => {
   return (
     <View style={[styles.sectionHeading, props.style]}>
       <Text style={styles.sectionHeadingTextStyle}>{props.sectionText}</Text>
@@ -11,4 +11,4 @@ const SettingPanelDivider = (props) => {
   );
 };
 
-export default SettingPanelDivider;
+export default MainMenuPanelDivider;

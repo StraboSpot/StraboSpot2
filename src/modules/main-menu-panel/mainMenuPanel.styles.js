@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
   },
   sectionHeading: {
     paddingLeft: 10,
-    backgroundColor: themes.LIST_HEADER_COLOR,
+    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
   },
   sectionHeadingTextStyle: {
     textTransform: 'uppercase',

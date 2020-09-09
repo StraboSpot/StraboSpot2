@@ -6,7 +6,7 @@ import {useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
-import Divider from '../main-menu-panel/MainMenuPanelDivider';
+import SectionDivider from '../../shared/ui/SectionDivider';
 import {useSpotsHook} from '../spots';
 import {useTagsHook} from '../tags';
 
@@ -55,7 +55,7 @@ const TagDetail = (props) => {
           <View>
             <View>
               <View style={commonStyles.dividerWithButton}>
-                <Divider sectionText={'Tag Info'}/>
+                <SectionDivider dividerText={'Tag Info'}/>
                 <Button
                   title={'view/edit'}
                   type={'clear'}
@@ -66,7 +66,7 @@ const TagDetail = (props) => {
             </View>
             <View>
               <View style={commonStyles.dividerWithButton}>
-                <Divider sectionText={'Tagged Spots'}/>
+                <SectionDivider dividerText={'Tagged Spots'}/>
                 <Button
                   title={'add/remove'}
                   type={'clear'}

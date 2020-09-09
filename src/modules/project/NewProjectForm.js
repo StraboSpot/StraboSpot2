@@ -8,7 +8,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import styles from '../../shared/ui/ui.styles';
 import {Form, useFormHook} from '../form';
 import {homeReducers} from '../home/home.constants';
-import {SettingsMenuItems} from '../main-menu-panel/mainMenu.constants';
+import {MAIN_MENU_ITEMS} from '../main-menu-panel/mainMenu.constants';
 import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 import Divider from '../main-menu-panel/MainMenuPanelDivider';
 import useProjectHook from './useProject';
@@ -46,13 +46,13 @@ const NewProjectForm = (props) => {
         console.log('New Project created', newProject);
         if (isProjectLoadSelectionModalVisible) {
           dispatch(
-            {type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: SettingsMenuItems.MANAGE.ACTIVE_PROJECTS});
+            {type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS});
           props.openMainMenu();
           dispatch({type: homeReducers.SET_PROJECT_LOAD_SELECTION_MODAL_VISIBLE, value: false});
         }
         else {
           dispatch(
-            {type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: SettingsMenuItems.MANAGE.ACTIVE_PROJECTS});
+            {type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS});
         }
         return Promise.resolve();
       }

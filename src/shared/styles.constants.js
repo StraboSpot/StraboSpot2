@@ -23,7 +23,6 @@ export const PRIMARY_LISTITEM_FONTWEIGHT = '500';
 export const PRIMARY_ACCENT_COLOR = BLUE;
 
 export const LIST_BORDER_COLOR = '#808080';
-export const LIST_HEADER_COLOR = 'rgb(239, 239, 244)';
 export const LIST_CHEVRON_COLOR = MEDIUMGREY;
 
 export const PRIMARY_TEXT_SIZE = 18;

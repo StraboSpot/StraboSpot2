@@ -5,7 +5,6 @@ import {useDispatch, useSelector} from 'react-redux';
 import RNFetchBlob from 'rn-fetch-blob';
 
 import {isEmpty} from '../../shared/Helpers';
-import {SettingsMenuItems} from '../main-menu-panel/mainMenu.constants';
 import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 import {projectReducers} from '../project/project.constants';
 import {spotReducers} from '../spots/spot.constants';
@@ -48,7 +47,7 @@ const useHome = (props) => {
     dispatch({type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE, value: false});
     dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: null});
     dispatch({type: homeReducers.SET_SETTINGS_PANEL_VISIBLE, value: false});
-    dispatch({type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: SettingsMenuItems.SETTINGS_MAIN});
+    dispatch({type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: undefined});
     dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, bool: false});
     await getOnlineStatus();
     await checkForDeviceBackupDir();

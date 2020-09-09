@@ -15,7 +15,6 @@ import LoadingSpinner from '../../shared/ui/Loading';
 import StatusDialogBox from '../../shared/ui/StatusDialogBox';
 import ToastPopup from '../../shared/ui/Toast';
 import useImagesHook from '../images/useImages';
-import {SettingsMenuItems} from '../main-menu-panel/mainMenu.constants';
 import SettingsPanel from '../main-menu-panel/MainMenuPanel';
 import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 import settingPanelStyles from '../main-menu-panel/mainMenuPanel.styles';
@@ -685,7 +684,7 @@ const Home = (props) => {
   const toggleHomeDrawerButton = () => {
     if (isMainMenuPanelVisible) {
       props.setHomePanelVisible(false);
-      props.setHomePanelPageVisible(SettingsMenuItems.SETTINGS_MAIN);
+      props.setHomePanelPageVisible(undefined);
       animatePanels(settingsPanelAnimation, -homeMenuPanelWidth);
       animatePanels(leftsideIconAnimationValue, 0);
     }

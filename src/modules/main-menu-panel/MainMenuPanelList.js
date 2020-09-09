@@ -3,9 +3,9 @@ import {ScrollView, View} from 'react-native';
 
 import {Button} from 'react-native-elements';
 
-import {SettingsMenuItems} from './mainMenu.constants';
+import SectionDivider from '../../shared/ui/SectionDivider';
+import {MAIN_MENU_ITEMS} from './mainMenu.constants';
 import styles from './mainMenuPanel.styles';
-import HomePanelDivider from './MainMenuPanelDivider';
 
 const MainMenuPanelList = props => {
 
@@ -13,8 +13,8 @@ const MainMenuPanelList = props => {
     return (
       <Button
         key={key}
-        title={name === SettingsMenuItems.MANAGE.ACTIVE_PROJECTS
-          ? SettingsMenuItems.MANAGE.ACTIVE_PROJECTS + ` (${props.activeProject})`
+        title={name === MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS
+          ? MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS + ` (${props.activeProject})`
           : name
         }
         type={'clear'}
@@ -27,18 +27,13 @@ const MainMenuPanelList = props => {
 
   return (
     <ScrollView>
-      <HomePanelDivider sectionText={'Manage'}/>
       <View style={styles.navSectionStyle}>
-        {Object.keys(SettingsMenuItems.MANAGE).map(key => renderButtons(SettingsMenuItems.MANAGE[key], key))}
-        <HomePanelDivider sectionText={'Attributes'}/>
-        {Object.keys(SettingsMenuItems.ATTRIBUTES).map(key => renderButtons(SettingsMenuItems.ATTRIBUTES[key], key))}
-        <HomePanelDivider sectionText={'Maps'}/>
-        {Object.keys(SettingsMenuItems.MAPS).map(key => renderButtons(SettingsMenuItems.MAPS[key], key))}
-        <HomePanelDivider sectionText={'Preferences'}/>
-        {Object.keys(SettingsMenuItems.APP_PREFERENCES).map(
-          key => renderButtons(SettingsMenuItems.APP_PREFERENCES[key], key))}
-        <HomePanelDivider sectionText={'Help'}/>
-        {Object.keys(SettingsMenuItems.HELP).map(key => renderButtons(SettingsMenuItems.HELP[key], key))}
+        {Object.entries(MAIN_MENU_ITEMS).map(([item, submenuItems]) => (
+          <View>
+            <SectionDivider dividerText={item}/>
+            {Object.values(submenuItems).map(submenuItem => renderButtons(submenuItem))}
+          </View>
+        ))}
       </View>
     </ScrollView>
   );

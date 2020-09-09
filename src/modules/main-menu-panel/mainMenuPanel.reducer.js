@@ -3,7 +3,7 @@ import {settingPanelReducers, SortedViews} from './mainMenuPanel.constants';
 const initialState = {
   sortedView: SortedViews.CHRONOLOGICAL,
   selectedButtonIndex: 0,
-  settingsPageVisible: null,
+  settingsPageVisible: undefined,
   isSidePanelVisible: false,
   sidePanelView: null,
 };

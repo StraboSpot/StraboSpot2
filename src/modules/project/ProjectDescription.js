@@ -10,7 +10,7 @@ import * as forms from '../../assets/forms/forms.index';
 import commonStyles from '../../shared/common.styles';
 import {truncateText} from '../../shared/Helpers';
 import SaveAndCloseButtons from '../../shared/ui/SaveAndCloseButtons';
-import {SettingsMenuItems} from '../main-menu-panel/mainMenu.constants';
+import {MAIN_MENU_ITEMS} from '../main-menu-panel/mainMenu.constants';
 import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 import Divider from '../main-menu-panel/MainMenuPanelDivider';
 import SidePanelHeader from '../main-menu-panel/sidePanel/SidePanelHeader';
@@ -106,7 +106,7 @@ const ProjectDescription = (props) => {
             size={20}
           />
         }
-        title={mainMenuPage === SettingsMenuItems.MANAGE.MY_STRABOSPOT ? 'My StraboSpot' : 'Active Project'}
+        title={mainMenuPage === MAIN_MENU_ITEMS.MANAGE.MY_STRABOSPOT ? 'My StraboSpot' : 'Active Project'}
         type={'clear'}
         // containerStyle={{flex: 0, padding: 4}}
         titleStyle={styles.buttonText}

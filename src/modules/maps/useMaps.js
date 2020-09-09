@@ -9,7 +9,6 @@ import {useDispatch, useSelector} from 'react-redux';
 import useServerRequestsHook from '../../services/useServerRequests';
 import {isEmpty} from '../../shared/Helpers';
 import {homeReducers} from '../home/home.constants';
-import {SettingsMenuItems} from '../main-menu-panel/mainMenu.constants';
 import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 import {projectReducers} from '../project/project.constants';
 import {spotReducers} from '../spots/spot.constants';
@@ -52,7 +51,7 @@ const useMaps = () => {
     }
     dispatch({type: mapReducers.DELETE_CUSTOM_MAP, customMaps: customMapsCopy}); // replaces customMaps with updated object
     dispatch({type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE, view: null, bool: false});
-    dispatch({type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: SettingsMenuItems.SETTINGS_MAIN});
+    dispatch({type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: undefined});
     console.log('Saved customMaps to Redux.');
   };
 
