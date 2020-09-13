@@ -31,7 +31,8 @@ const Map = React.forwardRef((props, ref) => {
   const isAllSymbolsOn = useSelector(state => state.map.isAllSymbolsOn);
   const isDrawFeatureModeOn = () => {
     return (props.mapMode === MapModes.DRAW.POINT || props.mapMode === MapModes.DRAW.LINE
-      || props.mapMode === MapModes.DRAW.POLYGON);
+      || props.mapMode === MapModes.DRAW.POLYGON || props.mapMode === MapModes.DRAW.FREEHANDPOLYGON
+      || props.mapMode == MapModes.DRAW.FREEHANDLINE);
   };
   // Data needing to be tracked when in editing mode
   const initialEditingModeData = {
@@ -70,6 +71,7 @@ const Map = React.forwardRef((props, ref) => {
   // Props that needed to pass to the map component
   const mapProps = {
     ...mapPropsMutable,
+    mapMode: props.mapMode,
     allowMapViewMove: !isDrawFeatureModeOn(),
     ref: {mapRef: map, cameraRef: camera},
     onMapPress: (e) => onMapPress(e),
@@ -326,133 +328,137 @@ const Map = React.forwardRef((props, ref) => {
 
   // Mapbox: Handle map press
   const onMapPress = async (e) => {
-    console.log('props', props);
-    console.log('mapProps', mapProps);
-    console.log('Map press detected:', e);
-    console.log('Map mode:', props.mapMode);
-    // Select/Unselect a feature
-    if (props.mapMode === MapModes.VIEW) {
-      console.log('Selecting or unselect a feature ...');
-      const {screenPointX, screenPointY} = e.properties;
-      const spotFound = await getSpotAtPress(screenPointX, screenPointY);
-      if (!isEmpty(spotFound)) useMaps.setSelectedSpot(spotFound);
-      else clearSelectedSpots();
-    }
-    // Draw a feature
-    else if (isDrawFeatureModeOn()) {
-      console.log('Drawing', props.mapMode, '...');
-      let feature = {};
-      const newCoord = turf.getCoord(e);
-      // Draw a point for the last coordinate touched
-      // const lastVertexPlaced = MapboxGL.geoUtils.makeFeature(e.geometry);
-      const lastVertexPlaced = turf.point(e.geometry.coordinates);
-      // Draw a point (if set point to current location not working)
-      if (props.mapMode === MapModes.DRAW.POINT) setDrawFeatures([lastVertexPlaced]);
-      else if (isEmpty(mapPropsMutable.drawFeatures)) setDrawFeatures([lastVertexPlaced]);
-      // Draw a line given a point and a new point
-      else if (mapPropsMutable.drawFeatures.length === 1) {
-        const firstVertexPlaced = mapPropsMutable.drawFeatures[0];
-        const firstVertexPlacedCoords = turf.getCoords(firstVertexPlaced);
-        feature = turf.lineString([firstVertexPlacedCoords, newCoord]);
-        setDrawFeatures([firstVertexPlaced, feature, lastVertexPlaced]);
+    if (props.mapMode !== MapModes.DRAW.FREEHANDPOLYGON && props.mapMode !== MapModes.DRAW.FREEHANDLINE) {
+      console.log('props', props);
+      console.log('mapProps', mapProps);
+      console.log('Map press detected:', e);
+      console.log('Map mode:', props.mapMode);
+      // Select/Unselect a feature
+      if (props.mapMode === MapModes.VIEW) {
+        console.log('Selecting or unselect a feature ...');
+        const {screenPointX, screenPointY} = e.properties;
+        const spotFound = await getSpotAtPress(screenPointX, screenPointY);
+        if (!isEmpty(spotFound)) useMaps.setSelectedSpot(spotFound);
+        else clearSelectedSpots();
       }
-      // Draw a line given a line and a new point
-      else if (mapPropsMutable.drawFeatures.length > 1 && props.mapMode === MapModes.DRAW.LINE) {
-        const firstVertexPlaced = mapPropsMutable.drawFeatures[0];
-        const lineCoords = turf.getCoords(mapPropsMutable.drawFeatures[1]);
-        feature = turf.lineString([...lineCoords, newCoord]);
-        setDrawFeatures([firstVertexPlaced, feature, lastVertexPlaced]);
-      }
-      else if (mapPropsMutable.drawFeatures.length > 1 && props.mapMode === MapModes.DRAW.POLYGON) {
-        const firstVertexPlaced = mapPropsMutable.drawFeatures[0];
-        const firstVertexPlacedCoords = turf.getCoords(firstVertexPlaced);
-
-        // Draw a polygon given a line and a new point
-        if (turf.getType(mapPropsMutable.drawFeatures[1]) === 'LineString') {
+      // Draw a feature
+      else if (isDrawFeatureModeOn()) {
+        console.log('Drawing', props.mapMode, '...');
+        let feature = {};
+        const newCoord = turf.getCoord(e);
+        // Draw a point for the last coordinate touched
+        // const lastVertexPlaced = MapboxGL.geoUtils.makeFeature(e.geometry);
+        const lastVertexPlaced = turf.point(e.geometry.coordinates);
+        // Draw a point (if set point to current location not working)
+        if (props.mapMode === MapModes.DRAW.POINT) setDrawFeatures([lastVertexPlaced]);
+        else if (isEmpty(mapPropsMutable.drawFeatures)) setDrawFeatures([lastVertexPlaced]);
+        // Draw a line given a point and a new point
+        else if (mapPropsMutable.drawFeatures.length === 1) {
+          const firstVertexPlaced = mapPropsMutable.drawFeatures[0];
+          const firstVertexPlacedCoords = turf.getCoords(firstVertexPlaced);
+          feature = turf.lineString([firstVertexPlacedCoords, newCoord]);
+          setDrawFeatures([firstVertexPlaced, feature, lastVertexPlaced]);
+        }
+        // Draw a line given a line and a new point
+        else if (mapPropsMutable.drawFeatures.length > 1 && props.mapMode === MapModes.DRAW.LINE) {
+          const firstVertexPlaced = mapPropsMutable.drawFeatures[0];
           const lineCoords = turf.getCoords(mapPropsMutable.drawFeatures[1]);
-          feature = turf.polygon([[...lineCoords, newCoord, firstVertexPlacedCoords]]);
+          feature = turf.lineString([...lineCoords, newCoord]);
+          setDrawFeatures([firstVertexPlaced, feature, lastVertexPlaced]);
         }
-        // Draw a polygon given a polygon and a new point
-        else {
-          let polyCoords = turf.getCoords(mapPropsMutable.drawFeatures[1])[0];
-          polyCoords.pop();
-          feature = turf.polygon([[...polyCoords, newCoord, firstVertexPlacedCoords]]);
-        }
-        setDrawFeatures([firstVertexPlaced, feature, lastVertexPlaced]);
-      }
-    }
-    // Edit a Spot
-    else if (props.mapMode === MapModes.EDIT) {
-      // Select/Unselect new vertex to edit
-      const {screenPointX, screenPointY} = e.properties;
-      console.log('Select/Unselect vertex (and thus feature with the vertex) to edit');
-      console.log('Selecting feature to edit...');
+        else if (mapPropsMutable.drawFeatures.length > 1 && props.mapMode === MapModes.DRAW.POLYGON) {
+          const firstVertexPlaced = mapPropsMutable.drawFeatures[0];
+          const firstVertexPlacedCoords = turf.getCoords(firstVertexPlaced);
 
-      // If we don't have a selected feature, check to see if point pressed was at a feature
-      //   If not, do nothing
-      //   If so, set that feature to the selected feature and set all other features as features-not-selected and
-      //   explode the vertices of the selected feature if the feature is a line or polygon and add to draw layer
-      // If we already have a selected feature check to see if we also already have a selected vertex
-      // If not, and there is a different feature at the point pressed, set that feature as the selected feature
-      // If not, and there is a vertex of the selected feature at the point pressed, set that as the selected vertex
-      // If not, and there is no feature at the point pressed, unselect the selected feature
-      // If so, check to see if point pressed was at another vertex of the selected feature
-      //     If not edit vertex coords to those of pressed point
-      //     If so switch selected vertex to vertex at pressed point
-      const spotFound = await getSpotAtPress(screenPointX, screenPointY);
-      // #114, while editing, click on a different spot to edit, should immediately identify it as the selected spot and hence update the notebook panel.
-      if (!isEmpty(spotFound)) useMaps.setSelectedSpot(spotFound);
-      if (isEmpty(editingModeData.spotEditing)) {
-        if (isEmpty(spotFound)) console.log('No feature selected.');
-        else setSelectedSpotToEdit(spotFound);
-      }
-      else {
-        let closestVertexDetails = {};
-        let isVertexIdentifiedAtSpotPress = false;
-        if (isEmpty(spotFound)) clearSelectedFeatureToEdit();
-        else {
-          let vertexSelected = await getDrawFeatureAtPress(screenPointX, screenPointY);
-          if (!isEmpty(vertexSelected)) {
-            // When draw features identifies a vertex that is not on the spot found, mark it undefined so that,
-            // we can calculate a vertex on the spot found that is closest to the press.
-            if (spotFound.properties.id !== vertexSelected.properties.id) vertexSelected = undefined;
+          // Draw a polygon given a line and a new point
+          if (turf.getType(mapPropsMutable.drawFeatures[1]) === 'LineString') {
+            const lineCoords = turf.getCoords(mapPropsMutable.drawFeatures[1]);
+            feature = turf.polygon([[...lineCoords, newCoord, firstVertexPlacedCoords]]);
           }
-          if (isEmpty(vertexSelected)) {
-            // draw features did not return anything.. generally a scenario of selecting a vertex on a spot press.
-            closestVertexDetails = await identifyClosestVertexOnSpotPress(spotFound, screenPointX, screenPointY);
-            vertexSelected = closestVertexDetails[0];
-            isVertexIdentifiedAtSpotPress = true;
-          }
-          if (isEmpty(vertexSelected)) {
-            if (editingModeData.spotEditing.properties.id === spotFound.properties.id) clearSelectedFeatureToEdit();
-            else {
-              //if the spot is in already edited list, then get the spot from that list.
-              let editedSpot = editingModeData.spotsEdited.find(spot => spot.properties.id === spotFound.properties.id);
-              setSelectedSpotToEdit(isEmpty(editedSpot) ? spotFound : editedSpot);
-            }
-          }
+          // Draw a polygon given a polygon and a new point
           else {
-            //if the vertex is not empty, check if its identified at spot press or vertex press
-            if (isVertexIdentifiedAtSpotPress) {
-              //  this is the case when the spot and vertex are chosen to be edited at once.
-              let editedSpot = editingModeData.spotsEdited.find(spot => spot.properties.id === spotFound.properties.id);
-              setSelectedSpotToEdit(isEmpty(editedSpot) ? spotFound : editedSpot);
-              if (spotFound.geometry.type !== 'Point') { // if Point, vertex gets set by setSelectedSpotToEdit already.
-                setSelectedVertexToEdit(vertexSelected);
-                setEditingModeData(d => ({
-                  ...d,
-                  vertexIndex: closestVertexDetails[1],
-                }));
+            let polyCoords = turf.getCoords(mapPropsMutable.drawFeatures[1])[0];
+            polyCoords.pop();
+            feature = turf.polygon([[...polyCoords, newCoord, firstVertexPlacedCoords]]);
+          }
+          setDrawFeatures([firstVertexPlaced, feature, lastVertexPlaced]);
+        }
+      }
+      // Edit a Spot
+      else if (props.mapMode === MapModes.EDIT) {
+        // Select/Unselect new vertex to edit
+        const {screenPointX, screenPointY} = e.properties;
+        console.log('Select/Unselect vertex (and thus feature with the vertex) to edit');
+        console.log('Selecting feature to edit...');
+
+        // If we don't have a selected feature, check to see if point pressed was at a feature
+        //   If not, do nothing
+        //   If so, set that feature to the selected feature and set all other features as features-not-selected and
+        //   explode the vertices of the selected feature if the feature is a line or polygon and add to draw layer
+        // If we already have a selected feature check to see if we also already have a selected vertex
+        // If not, and there is a different feature at the point pressed, set that feature as the selected feature
+        // If not, and there is a vertex of the selected feature at the point pressed, set that as the selected vertex
+        // If not, and there is no feature at the point pressed, unselect the selected feature
+        // If so, check to see if point pressed was at another vertex of the selected feature
+        //     If not edit vertex coords to those of pressed point
+        //     If so switch selected vertex to vertex at pressed point
+        const spotFound = await getSpotAtPress(screenPointX, screenPointY);
+        // #114, while editing, click on a different spot to edit, should immediately identify it as the selected spot and hence update the notebook panel.
+        if (!isEmpty(spotFound)) useMaps.setSelectedSpot(spotFound);
+        if (isEmpty(editingModeData.spotEditing)) {
+          if (isEmpty(spotFound)) console.log('No feature selected.');
+          else setSelectedSpotToEdit(spotFound);
+        }
+        else {
+          let closestVertexDetails = {};
+          let isVertexIdentifiedAtSpotPress = false;
+          if (isEmpty(spotFound)) clearSelectedFeatureToEdit();
+          else {
+            let vertexSelected = await getDrawFeatureAtPress(screenPointX, screenPointY);
+            if (!isEmpty(vertexSelected)) {
+              // When draw features identifies a vertex that is not on the spot found, mark it undefined so that,
+              // we can calculate a vertex on the spot found that is closest to the press.
+              if (spotFound.properties.id !== vertexSelected.properties.id) vertexSelected = undefined;
+            }
+            if (isEmpty(vertexSelected)) {
+              // draw features did not return anything.. generally a scenario of selecting a vertex on a spot press.
+              closestVertexDetails = await identifyClosestVertexOnSpotPress(spotFound, screenPointX, screenPointY);
+              vertexSelected = closestVertexDetails[0];
+              isVertexIdentifiedAtSpotPress = true;
+            }
+            if (isEmpty(vertexSelected)) {
+              if (editingModeData.spotEditing.properties.id === spotFound.properties.id) clearSelectedFeatureToEdit();
+              else {
+                //if the spot is in already edited list, then get the spot from that list.
+                let editedSpot = editingModeData.spotsEdited.find(
+                  spot => spot.properties.id === spotFound.properties.id);
+                setSelectedSpotToEdit(isEmpty(editedSpot) ? spotFound : editedSpot);
               }
             }
-            else setSelectedVertexToEdit(vertexSelected);
-            // this is the case when the spot is already highlighted for edit and a vertex is chosen to edit.
+            else {
+              //if the vertex is not empty, check if its identified at spot press or vertex press
+              if (isVertexIdentifiedAtSpotPress) {
+                //  this is the case when the spot and vertex are chosen to be edited at once.
+                let editedSpot = editingModeData.spotsEdited.find(
+                  spot => spot.properties.id === spotFound.properties.id);
+                setSelectedSpotToEdit(isEmpty(editedSpot) ? spotFound : editedSpot);
+                if (spotFound.geometry.type !== 'Point') { // if Point, vertex gets set by setSelectedSpotToEdit already.
+                  setSelectedVertexToEdit(vertexSelected);
+                  setEditingModeData(d => ({
+                    ...d,
+                    vertexIndex: closestVertexDetails[1],
+                  }));
+                }
+              }
+              else setSelectedVertexToEdit(vertexSelected);
+              // this is the case when the spot is already highlighted for edit and a vertex is chosen to edit.
+            }
           }
         }
       }
-    }
-    else {
-      console.log('Error. Unknown map mode:', props.mapMode);
+      else {
+        console.log('Error. Unknown map mode:', props.mapMode);
+      }
     }
   };
 
@@ -747,7 +753,33 @@ const Map = React.forwardRef((props, ref) => {
   const endDraw = async () => {
     console.log('endDraw mapProps', mapProps);
     let newOrEditedSpot = {};
-    if (!isEmpty(mapPropsMutable.drawFeatures)) {
+    if (props.mapMode == MapModes.DRAW.FREEHANDPOLYGON || props.mapMode == MapModes.DRAW.FREEHANDLINE) {
+      if (props.freehandFeatureCoords && props.freehandFeatureCoords.length > 2) {
+        let screenCoordinates = props.freehandFeatureCoords;
+        let featureCoordinates = new Array();
+        let screenX, screenY = 0;
+        for (let i = 0; i < screenCoordinates.length; i++) {
+          screenX = screenCoordinates[i][0] + 30; // difference between the Sketch Canvas and Map Screen coordinates.
+          screenY = screenCoordinates[i][1] + 30;
+          let geoCoordinates = await map.current.getCoordinateFromView([screenX, screenY]);
+          featureCoordinates.push(geoCoordinates);
+        }
+        let feature;
+        if (props.mapMode == MapModes.DRAW.FREEHANDPOLYGON) {
+          featureCoordinates.push(featureCoordinates[0]); // First and Last coordinates of polygon should match
+          feature = turf.polygon([featureCoordinates]);
+        }
+        else feature = turf.lineString(featureCoordinates);
+        if (currentImageBasemap) { //create new spot for imagebasemap - needs lat long to pixel conversion.
+          feature = useMaps.convertFeatureGeometryToImagePixels(feature);
+          feature.properties.image_basemap = currentImageBasemap.id;
+        }
+        newOrEditedSpot = await useSpots.createSpot(feature);
+        useMaps.setSelectedSpot(newOrEditedSpot);
+        dispatch(({type: mapReducers.FREEHAND_FEATURE_COORDS, freehandFeatureCoords: undefined}));// reset the freeHandCoordinates
+      }
+    }
+    else if (!isEmpty(mapPropsMutable.drawFeatures)) {
       let newFeature = mapPropsMutable.drawFeatures[0];  // If one, draw feature the Spot is just a point
       // If there is more than one draw feature (should be no more than three) the first is the first vertex
       // placed, the second is the line or polygon between the vertices, and the third is the last vertex placed
@@ -1244,6 +1276,7 @@ const mapStateToProps = (state) => {
     selectedSpot: state.spot.selectedSpot,
     spots: state.spot.spots,
     vertexEndCoords: state.map.vertexEndCoords,
+    freehandFeatureCoords: state.map.freehandFeatureCoords,
     datasets: state.project.datasets,
     deviceDimensions: state.home.deviceDimensions,
   };

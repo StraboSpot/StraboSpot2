@@ -9,6 +9,7 @@ const initialState = {
   selectedCustomMapToEdit: {},
   vertexStartCoords: undefined,
   vertexEndCoords: undefined,
+  freehandFeatureCoords: undefined,
   spotsInMapExtent: [],
   symbolsOn: [],
   isAllSymbolsOn: true,
@@ -79,6 +80,11 @@ export const mapReducer = (state = initialState, action) => {
       return {
         ...state,
         vertexEndCoords: action.vertexEndCoords,
+      };
+    case mapReducers.FREEHAND_FEATURE_COORDS:
+      return {
+        ...state,
+        freehandFeatureCoords: action.freehandFeatureCoords,
       };
     case mapReducers.CLEAR_VERTEXES:
       console.log('Clearing Start and End Vertexes...');

@@ -245,6 +245,8 @@ const Home = (props) => {
       case MapModes.DRAW.POINT:
       case MapModes.DRAW.LINE:
       case MapModes.DRAW.POLYGON:
+      case MapModes.DRAW.FREEHANDPOLYGON:
+      case MapModes.DRAW.FREEHANDLINE:
         if (!isEmpty(currentDataset)) setDraw(name);
         else Alert.alert('No Current Dataset', 'A current dataset needs to be set before drawing Spots.');
         break;
@@ -634,7 +636,10 @@ const Home = (props) => {
     if (mapMode === MapModes.VIEW && mapModeToSet !== MapModes.DRAW.POINT) {
       toggleButton('endDrawButtonVisible', true);
     }
-    else if (mapMode === mapModeToSet) mapModeToSet = MapModes.VIEW;
+    else if (mapMode === mapModeToSet
+      || (mapMode === MapModes.DRAW.FREEHANDPOLYGON && mapModeToSet === MapModes.DRAW.POLYGON)
+      || (mapMode === MapModes.DRAW.FREEHANDLINE && mapModeToSet === MapModes.DRAW.LINE)
+    ) mapModeToSet = MapModes.VIEW;
     setMapMode(mapModeToSet);
     if (mapModeToSet === MapModes.VIEW) {
       toggleButton('endDrawButtonVisible', false);
@@ -894,17 +899,21 @@ const Home = (props) => {
             />
             <IconButton
               style={{top: 5}}
-              source={mapMode === MapModes.DRAW.LINE
+              source={ mapMode === MapModes.DRAW.FREEHANDLINE ? require('../../assets/icons/LineButton_pressed_copy.png')
+                : (mapMode === MapModes.DRAW.LINE
                 ? require('../../assets/icons/LineButton_pressed.png')
-                : require('../../assets/icons/LineButton.png')}
+                : require('../../assets/icons/LineButton.png'))}
               onPress={clickHandler.bind(this, MapModes.DRAW.LINE)}
+              onLongPress={clickHandler.bind(this, MapModes.DRAW.FREEHANDLINE)}
             />
             <IconButton
               style={{top: 5}}
-              source={mapMode === MapModes.DRAW.POLYGON
+              source={mapMode === MapModes.DRAW.FREEHANDPOLYGON ? require('../../assets/icons/PolygonFreehandButton_pressed.png')
+                : (mapMode === MapModes.DRAW.POLYGON
                 ? require('../../assets/icons/PolygonButton_pressed.png')
-                : require('../../assets/icons/PolygonButton.png')}
+                : require('../../assets/icons/PolygonButton.png'))}
               onPress={clickHandler.bind(this, MapModes.DRAW.POLYGON)}
+              onLongPress={clickHandler.bind(this, MapModes.DRAW.FREEHANDPOLYGON)}
             />
           </Animated.View>
         )
