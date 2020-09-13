@@ -315,7 +315,6 @@ const useMaps = () => {
     let [selectedSpots, notSelectedSpots] = getDisplayedSpots(
       isEmpty(spotToSetAsSelected) ? [] : [{...spotToSetAsSelected}]);
     dispatch({type: spotReducers.SET_SELECTED_SPOT, spot: spotToSetAsSelected});
-    return [selectedSpots, notSelectedSpots];
   };
 
   const viewCustomMap = (map) => {
