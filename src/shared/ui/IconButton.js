@@ -17,7 +17,7 @@ const iconButton = props => {
 
   if (Platform.OS === 'ios') {
     return (
-      <TouchableOpacity style={props.style} onPress={props.onPress}>
+      <TouchableOpacity style={props.style} onPress={props.onPress} onLongPress={props.onLongPress}>
         {content}
       </TouchableOpacity>
     );

@@ -18,6 +18,8 @@ export const MapModes = {
     POINT: 'point',
     LINE: 'line',
     POLYGON: 'polygon',
+    FREEHANDPOLYGON: 'freehandpolygon',
+    FREEHANDLINE: 'freehandline',
   },
   EDIT: 'edit',
 };
@@ -39,6 +41,7 @@ export const mapReducers = {
   SET_SYMBOLS_DISPLAYED: 'SET_SYMBOLS_DISPLAYED',
   SET_ALL_SYMBOLS_TOGGLED: 'SET_ALL_SYMBOLS_TOGGLED',
   SET_MAP_SYMBOLS: 'SET_MAP_SYMBOLS',
+  FREEHAND_FEATURE_COORDS: 'FREEHAND_FEATURE_COORDS',
 };
 
 const defaultMaps = [

@@ -8,7 +8,8 @@ import {useSelector} from 'react-redux';
 import {isEmpty} from '../../shared/Helpers';
 import homeStyles from '../home/home.style';
 import useImagesHook from '../images/useImages';
-import {symbols as symbolsConstant, geoLatLngProjection, pixelProjection} from './maps.constants';
+import FreehandSketch from '../sketch/FreehandSketch';
+import {symbols as symbolsConstant, geoLatLngProjection, pixelProjection, MapModes} from './maps.constants';
 import useMapsHook from './useMaps';
 import useMapSymbologyHook from './useMapSymbology';
 
@@ -162,7 +163,9 @@ function Basemap(props) {
                                   style={{rasterOpacity: 1}}/>
           </MapboxGL.Animated.ImageSource>
         )}
-
+        {(props.mapMode == MapModes.DRAW.FREEHANDPOLYGON || props.mapMode == MapModes.DRAW.FREEHANDLINE) && <FreehandSketch>
+        <MapboxGL.RasterLayer id='sketchLayer'/>
+        </FreehandSketch>}
         {/* Feature Layer */}
         <MapboxGL.Images
           images={symbols}
