@@ -6,7 +6,7 @@ const notebookStyles = StyleSheet.create({
   panel: {
     width: Math.min(400, Dimensions.get('window').width),
     height: '100%',
-    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
+    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
     position: 'absolute',
     right: 0,
     zIndex: -1,
@@ -108,6 +108,10 @@ const notebookStyles = StyleSheet.create({
   },
   traceSurfaceFeatureDisabledText: {
     color: themes.PRIMARY_BACKGROUND_COLOR,
+  },
+  sectionContainer: {
+    borderBottomWidth: 2,
+    borderBottomColor: themes.DARKGREY,
   },
 });
 

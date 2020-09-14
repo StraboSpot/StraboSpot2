@@ -40,10 +40,9 @@ const samplesStyle = StyleSheet.create({
   },
   notebookListContainer: {
     flex: 1,
-    borderBottomWidth: 0.5,
-    borderColor: themes.LIST_BORDER_COLOR,
-    marginBottom: 3,
+    borderBottomWidth: 1,
     padding: 5,
+    borderBottomColor: themes.LIST_CHEVRON_COLOR,
   },
   headingText: {
     fontSize: themes.PRIMARY_TEXT_SIZE - 3,

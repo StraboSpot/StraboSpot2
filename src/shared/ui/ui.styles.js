@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     paddingTop: 10,
     paddingBottom: 10,
-    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
+    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
   },
   sectionDividerText: {
     fontSize: Platform.OS === 'ios' ? 16 : 20,
