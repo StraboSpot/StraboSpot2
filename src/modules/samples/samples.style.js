@@ -42,7 +42,7 @@ const samplesStyle = StyleSheet.create({
     flex: 1,
     borderBottomWidth: 1,
     padding: 5,
-    borderBottomColor: themes.LIST_CHEVRON_COLOR,
+    borderBottomColor: themes.LIST_BORDER_COLOR,
   },
   headingText: {
     fontSize: themes.PRIMARY_TEXT_SIZE - 3,
