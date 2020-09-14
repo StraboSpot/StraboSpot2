@@ -80,20 +80,6 @@ const Overview = props => {
     );
   };
 
-  {/*
-  const renderSections = (section) => {
-    return (
-      <View style={notebookStyles.sectionContainer}>
-        <View style={{flexDirection: 'row',alignItems: 'center'}}>
-          <SectionDivider dividerText={section.title}/>
-          <View style={{paddingTop: 15}}>{section.icon}</View>
-        </View>
-        {section.content}
-      </View>
-    );
-  };
-  */}
-
   const renderTraceSurfaceFeatureForm = () => {
     let formName = ['general', 'surface_feature'];
     let initialValues = spot.properties.trace || spot.properties.surface_feature || {};
