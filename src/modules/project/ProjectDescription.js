@@ -1,16 +1,15 @@
 import React, {useEffect, useState} from 'react';
-import {ScrollView, Text, TextInput, View} from 'react-native';
+import {Platform, ScrollView, Text, TextInput, View} from 'react-native';
 
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
-import {Button, Icon, ListItem} from 'react-native-elements';
+import {Button, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import * as forms from '../../assets/forms/forms.index';
 import commonStyles from '../../shared/common.styles';
-import {truncateText} from '../../shared/Helpers';
+import {truncateText, isEmpty} from '../../shared/Helpers';
 import SaveAndCloseButtons from '../../shared/ui/SaveAndCloseButtons';
-import {MAIN_MENU_ITEMS} from '../main-menu-panel/mainMenu.constants';
 import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 import Divider from '../main-menu-panel/MainMenuPanelDivider';
 import SidePanelHeader from '../main-menu-panel/sidePanel/SidePanelHeader';
@@ -31,9 +30,10 @@ const ProjectDescription = (props) => {
     const notesFields = form.filter((field) => projectDescriptionFieldsGrouped.notes.includes(field.name));
     const technicalFields = form.filter((field) => projectDescriptionFieldsGrouped.technical.includes(field.name));
     const excludedFieldTypes = ['start', 'end', 'begin_group', 'end_group', 'calculate'];
-    const generalFields = form.filter((field) =>
-      ![...projectDescriptionFieldsGrouped.basic, ...projectDescriptionFieldsGrouped.notes, ...projectDescriptionFieldsGrouped.technical].includes(
-        field.name) && !excludedFieldTypes.includes(field.type));
+    const generalFields = form.filter((field) => (
+      ![...projectDescriptionFieldsGrouped.basic, ...projectDescriptionFieldsGrouped.notes,
+        ...projectDescriptionFieldsGrouped.technical].includes(field.name) && !excludedFieldTypes.includes(field.type)
+    ));
     return {
       basic: basicFields,
       technical: technicalFields,
@@ -44,75 +44,38 @@ const ProjectDescription = (props) => {
 
   const dispatch = useDispatch();
   const project = useSelector(state => state.project.project);
-  const mainMenuPage = useSelector(state => state.settingsPanel.settingsPageVisible);
   const [projectDescription, setProjectDescription] = useState({
-    project_name: project.description.project_name,
-    start_date: project.description.start_date || new Date(),
-    end_date: project.description.end_date || new Date(),
-    notes: project.description.notes,
+    ...project.description,
+    start_date: Date.parse(project.description.start_date) ? new Date(project.description.start_date) : new Date(),
+    end_date: Date.parse(project.description.end_date) ? new Date(project.description.end_date) : new Date(),
     gps_datum: project.description.gps_datum || 'WGS84 (Default)',
     magnetic_declination: project.description.magnetic_declination || 0,
-    purpose_of_study: project.description.purpose_of_study,
-    other_team_members: project.description.other_team_members,
-    areas_of_interest: project.description.areas_of_interest,
-    instruments: project.description.instruments,
   });
-  const [magDecValidation, setMagDecValidation] = useState(false);
-  const [validationErrorMessage, setValidationErrorMessage] = useState('');
+  const [isValidMagneticDeclination, setIsValidMagneticDeclination] = useState(false);
+  const [magneticDeclinationValidationMessage, setMagneticDeclinationValidationMessage] = useState('');
   const [selectedField, setSelectedField] = useState();
   const [showEditingModal, setShowEditingModal] = useState(false);
-  const [showStartPicker, setShowStartPicker] = useState(false);
-  const [showEndPicker, setShowEndPicker] = useState(false);
+  const [pickerVisible, setPickerVisible] = useState();
   const fields = getInitialFields();
 
   useEffect(() => {
-    // console.log('UE MagDec', magDecValidation, 'MagDec value', projectDescription.magnetic_declination);
-  }, [magDecValidation, projectDescription.magnetic_declination]);
+    console.log('UE, []');
+    validateMagneticDeclination(projectDescription.magnetic_declination);
+  }, []);
+
+  // useEffect(() => {
+  //   console.log('UE MagDec', isValidMagneticDeclination, 'MagDec value', projectDescription.magnetic_declination);
+  //   validateMagneticDeclination(projectDescription.magnetic_declination);
+  // }, [isValidMagneticDeclination, projectDescription.magnetic_declination]);
 
   const changeStartDate = (event, date) => {
-    // date = date || projectDescription.start_date;
-    setProjectDescription({...projectDescription, start_date: date});
+    if (Platform.OS === 'android') setPickerVisible();
+    setProjectDescription({...projectDescription, start_date: date || projectDescription.start_date});
   };
 
   const changeEndDate = (event, date) => {
-    // date = date || projectDescription.end_date;
-    setProjectDescription({...projectDescription, end_date: date});
-  };
-
-  const goBack = () => {
-    props.closeSidePanel();
-  };
-
-  const showDatPickerHandler = (type) => {
-    if (type === 'startDate') {
-      setShowStartPicker(!showStartPicker);
-      setShowEndPicker(false);
-    }
-    else if (type === 'endDate') {
-      setShowEndPicker(!showEndPicker);
-      setShowStartPicker(false);
-    }
-  };
-
-  const renderBackButton = () => {
-    return (
-      <Button
-        icon={
-          <Icon
-            name={'ios-arrow-back'}
-            type={'ionicon'}
-            color={'black'}
-            iconStyle={styles.buttons}
-            size={20}
-          />
-        }
-        title={mainMenuPage === MAIN_MENU_ITEMS.MANAGE.MY_STRABOSPOT ? 'My StraboSpot' : 'Active Project'}
-        type={'clear'}
-        // containerStyle={{flex: 0, padding: 4}}
-        titleStyle={styles.buttonText}
-        onPress={() => dispatch({type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE, bool: false})}
-      />
-    );
+    if (Platform.OS === 'android') setPickerVisible();
+    setProjectDescription({...projectDescription, end_date: date || projectDescription.end_date});
   };
 
   const renderBasicInfo = () => {
@@ -134,7 +97,7 @@ const ProjectDescription = (props) => {
           </View>
           <ListItem
             containerStyle={styles.projectDescriptionListContainer}
-            onPress={() => showDatPickerHandler('startDate')}
+            onPress={() => setPickerVisible('startDate')}
             bottomDivider
           >
             <ListItem.Content>
@@ -147,7 +110,7 @@ const ProjectDescription = (props) => {
           </ListItem>
           <ListItem
             containerStyle={styles.projectDescriptionListContainer}
-            onPress={() => showDatPickerHandler('endDate')}
+            onPress={() => setPickerVisible('endDate')}
           >
             <ListItem.Content>
               <ListItem.Title style={styles.listItemTitleAndValue}>{'End Date'}</ListItem.Title>
@@ -157,38 +120,32 @@ const ProjectDescription = (props) => {
             </ListItem.Content>
             <ListItem.Chevron/>
           </ListItem>
-          {showStartPicker
-            ? (
-              <View>
-                <Button type={'clear'} title={'Start Date Done'} onPress={() => setShowStartPicker(false)}/>
-                <DateTimePicker
-                  mode={'date'}
-                  value={projectDescription.start_date || new Date()}
-                  onChange={changeStartDate}
-                  display='default'
-                />
-              </View>
-            )
-            : null
-          }
-          {showEndPicker
-            ? (
-              <View>
-                <Button type={'clear'} title={'End Date Done'} onPress={() => setShowEndPicker(false)}/>
-                <Text style={{textAlign: 'center', fontSize: 12}}>End Date cannot be before Start Date</Text>
-                <DateTimePicker
-                  mode={'date'}
-                  value={projectDescription.end_date || new Date()}
-                  minimumDate={projectDescription.start_date}
-                  onChange={changeEndDate}
-                  display='default'
-                />
-              </View>
-            )
-            : null
-          }
+          {pickerVisible === 'startDate' && (
+            <View>
+              {Platform.OS === 'ios'
+              && <Button type={'clear'} title={'Start Date Done'} onPress={() => setPickerVisible()}/>}
+              <DateTimePicker
+                mode={'date'}
+                value={projectDescription.start_date || new Date()}
+                onChange={changeStartDate}
+                display='default'
+              />
+            </View>
+          )}
+          {pickerVisible === 'endDate' && (
+            <View>
+              {Platform.OS === 'ios'
+              && <Button type={'clear'} title={'End Date Done'} onPress={() => setPickerVisible()}/>}
+              <DateTimePicker
+                mode={'date'}
+                value={projectDescription.end_date || new Date()}
+                minimumDate={projectDescription.start_date}
+                onChange={changeEndDate}
+                display='default'
+              />
+            </View>
+          )}
         </View>
-
       </React.Fragment>
     );
   };
@@ -213,55 +170,39 @@ const ProjectDescription = (props) => {
 
   const renderEditingModal = () => {
     if (selectedField) {
-      if (selectedField.name === 'gps_datum' || selectedField.name === 'magnetic_declination') {
-        return (
-          <EditingModal
-            visible={showEditingModal}
-            dialogTitle={selectedField && selectedField.label}
-            disabled={selectedField.name === 'magnetic_declination' && !magDecValidation}
-            confirm={() => setShowEditingModal(false)}
-          >
-            <View style={{flex: 1, alignItems: 'center'}}>
-              <TextInput
-                keyboardType={selectedField.name === 'magnetic_declination' ? 'number-pad' : 'default'}
-                onChangeText={(val) => selectedField.name === 'magnetic_declination'
-                  ? validateMagField(val)
-                  : setProjectDescription({...projectDescription, [selectedField.name]: val})
-                }
-                defaultValue={projectDescription[selectedField.name].toString()}
-                style={{backgroundColor: 'white', padding: 15, width: 250}}
-              />
-            </View>
+      return (
+        <EditingModal
+          visible={showEditingModal}
+          dialogTitle={selectedField && selectedField.label}
+          disabled={selectedField.name === 'magnetic_declination' && !isValidMagneticDeclination}
+          confirm={() => setShowEditingModal(false)}
+        >
+          <View style={{flex: 1, alignItems: 'center'}}>
+            <TextInput
+              keyboardType={selectedField.name === 'magnetic_declination' ? 'number-pad' : 'default'}
+              onChangeText={(val) => selectedField.name === 'magnetic_declination'
+                ? validateMagneticDeclination(val)
+                : setProjectDescription({...projectDescription, [selectedField.name]: val})
+              }
+              numberOfLines={selectedField.name === 'magnetic_declination' ? 1 : 4}
+              multiline={selectedField.name !== 'magnetic_declination'}
+              defaultValue={!isEmpty(projectDescription[selectedField.name])
+              && projectDescription[selectedField.name].toString()}
+              style={{backgroundColor: 'white', padding: 15, width: 250, maxHeight: 200}}
+            />
+          </View>
+          {selectedField.name === 'magnetic_declination' && (
             <View style={styles.dialogConfirmText}>
-              <Text style={styles.dialogContentImportantText}>{validationErrorMessage}</Text>
+              <Text style={styles.dialogContentImportantText}>{magneticDeclinationValidationMessage}</Text>
             </View>
-          </EditingModal>
-        );
-      }
-      else {
-        return (
-          <EditingModal
-            visible={showEditingModal}
-            dialogTitle={selectedField && selectedField.label}
-            confirm={() => setShowEditingModal(false)}
-          >
-            <View style={{}}>
-              <TextInput
-                numberOfLines={4}
-                multiline={true}
-                onChangeText={(val) => setProjectDescription({...projectDescription, [selectedField.name]: val})}
-                value={projectDescription[selectedField.name]}
-                style={{backgroundColor: 'white', maxHeight: 200, padding: 15, width: 250}}
-              />
-            </View>
-          </EditingModal>
-        );
-      }
+          )}
+        </EditingModal>
+      );
     }
   };
 
   const renderListItemFields = (field, i, obj) => {
-    const fieldName = projectDescription && projectDescription[field.name]
+    const fieldName = projectDescription && !isEmpty(projectDescription[field.name])
       ? truncateText(projectDescription[field.name], 15).toString()
       : 'None';
     return (
@@ -282,8 +223,6 @@ const ProjectDescription = (props) => {
     );
   };
   const toggleEditingModal = (field) => {
-    // console.log(value)
-    console.log(field);
     setShowEditingModal(true);
     setSelectedField(field);
   };
@@ -299,7 +238,6 @@ const ProjectDescription = (props) => {
       <SaveAndCloseButtons
         cancel={() => {
           setProjectDescription(project.description);
-          // goBack();
           dispatch({type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE, bool: false});
         }}
         save={() => saveProjectDescriptionAndGo()}/>
@@ -314,26 +252,19 @@ const ProjectDescription = (props) => {
 
   const saveProjectDescriptionAndGo = async () => {
     await dispatch({type: projectReducers.UPDATE_PROJECT, field: 'description', value: projectDescription});
-    // goBack();
     dispatch({type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE, bool: false});
   };
 
-  const regexTest = (value) => {
-    const regex = /^([0-9]{1,2}|1[0-7][0-9]|180)$/g;
-    return regex.test(value);
-  };
-
-  const validateMagField = (val) => {
-    if (selectedField && selectedField.name === 'magnetic_declination') {
-      if (regexTest(val)) {
-        setMagDecValidation(true);
-        setValidationErrorMessage('');
-        setProjectDescription({...projectDescription, [selectedField.name]: val.trim()});
-      }
-      else {
-        setMagDecValidation(false);
-        setValidationErrorMessage('Must be between 0 and 180');
-      }
+  const validateMagneticDeclination = (val) => {
+    const magneticDeclination = parseFloat(val, 10);
+    if (magneticDeclination >= -180 && magneticDeclination <= 180) {
+      setIsValidMagneticDeclination(true);
+      setMagneticDeclinationValidationMessage('');
+      setProjectDescription({...projectDescription, magnetic_declination: magneticDeclination});
+    }
+    else {
+      setIsValidMagneticDeclination(false);
+      setMagneticDeclinationValidationMessage('Must be between 0 and 180');
     }
   };
 

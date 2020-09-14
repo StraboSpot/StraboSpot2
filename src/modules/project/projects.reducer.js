@@ -54,7 +54,6 @@ export const projectsReducer = (state = initialState, action) => {
           ...state.project,
           description: {
             ...action.value,
-            magnetic_declination: parseInt(action.value.magnetic_declination),
           },
           modified_timestamp: Date.now(),
           date: new Date(),
