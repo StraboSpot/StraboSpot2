@@ -12,6 +12,7 @@ import {Form, useFormHook} from '../form';
 import NotebookImages from '../images/ImageNotebook';
 import MeasurementsOverview from '../measurements/MeasurementsOverview';
 import NotesOverview from '../notes/NotesOverview';
+import SamplesNotebook from '../samples/SamplesNotebook';
 import {spotReducers} from '../spots/spot.constants';
 import {TagsAtSpotList} from '../tags';
 import notebookStyles from './notebookPanel.styles';
@@ -28,7 +29,8 @@ const Overview = props => {
     {id: 1, title: 'Measurements', content: <MeasurementsOverview/>},
     {id: 2, title: 'Photos and Sketches', content: <NotebookImages/>},
     {id: 3, title: 'Tags', content: <TagsAtSpotList openMainMenu={props.openMainMenu}/>},
-    {id: 4, title: 'Notes', content: <NotesOverview/>},
+    {id: 4, title: 'Samples', content: <SamplesNotebook/>},
+    {id: 5, title: 'Notes', content: <NotesOverview/>},
   ];
 
   useEffect(() => {
@@ -71,7 +73,7 @@ const Overview = props => {
 
   const renderSections = (section) => {
     return (
-      <View>
+      <View style={notebookStyles.sectionContainer}>
         <SectionDivider dividerText={section.title}/>
         {section.content}
       </View>
@@ -199,5 +201,4 @@ const Overview = props => {
     </View>
   );
 };
-
 export default Overview;

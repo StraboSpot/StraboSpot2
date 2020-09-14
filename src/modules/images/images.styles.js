@@ -43,6 +43,7 @@ const imageStyles = StyleSheet.create({
   imageContainer: {
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
     borderBottomWidth: 1,
+    borderBottomColor: themes.LIST_CHEVRON_COLOR,
     padding: 5,
     flexDirection: 'row',
     justifyContent: 'space-between',

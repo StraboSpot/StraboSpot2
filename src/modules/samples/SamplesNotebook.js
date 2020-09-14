@@ -4,6 +4,8 @@ import {ScrollView, Text, View} from 'react-native';
 import {Icon, ListItem} from 'react-native-elements';
 import {connect} from 'react-redux';
 
+import commonStyles from '../../shared/common.styles';
+import {isEmpty} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {homeReducers, Modals} from '../home/home.constants';
@@ -48,20 +50,20 @@ const samplesNotebook = (props) => {
   const renderNotebookView = () => {
     return (
       <View>
-        <ReturnToOverviewButton
+        {props.notebookPageVisible === NotebookPages.SAMPLE && <ReturnToOverviewButton
           onPress={() => {
             props.setNotebookPageVisible(NotebookPages.OVERVIEW);
             props.setModalVisible(null);
           }}
-        />
-        <SectionDivider dividerText='samples'/>
+        />}
+        {props.notebookPageVisible === NotebookPages.SAMPLE && <SectionDivider dividerText='Samples'/>}
         {/*<FlatList*/}
         {/*  keyExtractor={(item, index) => index.toString()}*/}
         {/*  data={props.spot}*/}
         {/*  renderItem={renderItem}*/}
         {/*/>*/}
         <ScrollView>
-          {props.spot.properties.samples ? renderSampleList() : null}
+          {props.spot.properties.samples ? renderSampleList() : <Text style={commonStyles.noValueText}>No Samples</Text>}
         </ScrollView>
       </View>
     );
@@ -89,7 +91,10 @@ const mapStateToProps = (state) => {
   return {
     spot: state.spot.selectedSpot,
     modalVisible: state.home.modalVisible,
-  };
+    notebookPageVisible: isEmpty(state.notebook.visibleNotebookPagesStack)
+       ? null
+       : state.notebook.visibleNotebookPagesStack.slice(-1)[0],
+    };
 };
 
 const mapDispatchToProps = {
