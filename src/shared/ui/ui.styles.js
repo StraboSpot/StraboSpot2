@@ -23,6 +23,10 @@ const styles = StyleSheet.create({
     padding: 0,
     margin: 0,
   },
+  imageIcon: {
+    width: 65,
+    height: 65,
+  },
   loadingContainer: {
     flex: 1,
     position: 'absolute',
