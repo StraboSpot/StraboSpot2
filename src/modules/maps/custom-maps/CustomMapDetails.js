@@ -10,11 +10,12 @@ import {
   View,
 } from 'react-native';
 
-import {Button, Input, ListItem} from 'react-native-elements';
+import {Button, Icon, Input, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {isEmpty} from '../../../shared/Helpers';
 import * as Helpers from '../../../shared/Helpers';
+import {BLUE, DARKGREY} from '../../../shared/styles.constants';
 import ButtonRounded from '../../../shared/ui/ButtonRounded';
 import Slider from '../../../shared/ui/Slider';
 import {homeReducers} from '../../home/home.constants';
@@ -29,7 +30,6 @@ import styles from './customMaps.styles';
 const {State: TextInputState} = TextInput;
 
 const AddCustomMaps = () => {
-  let sliderValuePercent = editableCustomMapData && (editableCustomMapData.opacity / 1).toFixed(1) * 100;
   const MBKeyboardType = Platform.OS === 'ios' ? 'url' : 'default';
   const MWKeyboardType = Platform.OS === 'ios' ? 'numeric' : 'phone-pad';
   const [useMaps] = useMapHook();
@@ -42,6 +42,8 @@ const AddCustomMaps = () => {
 
   const dispatch = useDispatch();
 
+  let sliderValuePercent = editableCustomMapData && Math.round(editableCustomMapData.opacity * 100).toFixed(0);
+  console.log(sliderValuePercent);
   useEffect(() => {
     Keyboard.addListener('keyboardDidShow', handleKeyboardDidShow);
     Keyboard.addListener('keyboardDidHide', handleKeyboardDidHide);
@@ -120,14 +122,23 @@ const AddCustomMaps = () => {
   };
 
   const renderCustomMapName = (item, i) => {
+    const radioSelected = <Icon name={'radiobox-marked'} type={'material-community'} color={BLUE}/>;
+    const radioUnslected = <Icon name={'radiobox-blank'} type={'material-community'} color={DARKGREY}/>;
     return (
       <ListItem
-        containerStyle={styles.list}
-        title={item.title}
+        // containerStyle={styles.list}
         bottomDivider={i < Object.values(customMapTypes).length - 1}
-        checkmark={editableCustomMapData && item.source === editableCustomMapData.source}
-        onPress={() => selectMap(item.source)}
-      />
+      >
+        <ListItem.Content style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <ListItem.Title>{item.title}</ListItem.Title>
+          <ListItem.CheckBox
+            checked={editableCustomMapData && item.source === editableCustomMapData.source}
+            checkedIcon={radioSelected}
+            uncheckedIcon={radioUnslected}
+            onPress={() => selectMap(item.source)}
+          />
+        </ListItem.Content>
+      </ListItem>
     );
   };
 
@@ -186,6 +197,7 @@ const AddCustomMaps = () => {
       <View>
         <FlatList
           keyExtractor={item => item.source}
+          scrollEnabled={false}
           data={customMapTypes}
           renderItem={({item, index}) => renderCustomMapName(item, index)}
         />
@@ -210,16 +222,16 @@ const AddCustomMaps = () => {
   const renderOverlay = () => {
     return (
       <React.Fragment>
-        <ListItem
-          containerStyle={sidePanelStyles.infoInputText}
-          title={'Display as overlay'}
-          rightElement={
+        <ListItem containerStyle={styles.list}>
+          <ListItem.Content style={styles.listItemContentContainer}>
+            <ListItem.Title style={{textAlign: 'justify', margin: 0, paddingRight: 30}}>Display as
+              overlay</ListItem.Title>
             <Switch
               value={editableCustomMapData && editableCustomMapData.overlay}
               onValueChange={val => setEditableCustomMapData(e => ({...e, overlay: val}))}
             />
-          }
-        />
+          </ListItem.Content>
+        </ListItem>
       </React.Fragment>
     );
   };
@@ -243,30 +255,26 @@ const AddCustomMaps = () => {
         <Divider sectionText={'Custom Map Title'}/>
         {renderTitle()}
       </View>
-      <View style={[sidePanelStyles.sectionContainer, {flex: 3}]}>
+      <View style={[sidePanelStyles.sectionContainer, {flex: 4}]}>
         <Divider sectionText={'Overlay Settings'}/>
         <View style={styles.sectionsContainer}>
           {renderOverlay()}
           {editableCustomMapData && editableCustomMapData.overlay && (
-            <View style={{}}>
-              <ListItem
-                containerStyle={{borderTopWidth: 0.5, padding: 0, paddingLeft: 10}}
-                title={'Opacity'}
-                subtitle={`(${sliderValuePercent}%)`}
-                subtitleStyle={{fontSize: 12, paddingLeft: 15}}
-                rightElement={
-                  <View style={{flex: 2}}>
-                    <Slider
-                      value={editableCustomMapData && editableCustomMapData.opacity}
-                      onValueChange={(val) => setEditableCustomMapData(e => ({...e, opacity: val}))}
-                      maximumValue={1}
-                      minimumValue={0}
-                      step={0.1}
-                    />
-                  </View>
-                }
-              />
-            </View>
+            <ListItem containerStyle={styles.list}>
+              <ListItem.Content style={{}}>
+                <ListItem.Title>Opacity</ListItem.Title>
+                <ListItem.Subtitle style={{paddingLeft: 10}}>{sliderValuePercent}%</ListItem.Subtitle>
+              </ListItem.Content>
+              <View style={{flex: 2}}>
+                <Slider
+                  value={editableCustomMapData && editableCustomMapData.opacity}
+                  onValueChange={(val) => setEditableCustomMapData(e => ({...e, opacity: val}))}
+                  maximumValue={1}
+                  minimumValue={0.05}
+                  step={0.05}
+                />
+              </View>
+            </ListItem>
           )}
         </View>
       </View>

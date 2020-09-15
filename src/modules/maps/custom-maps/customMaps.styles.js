@@ -64,7 +64,12 @@ const styles = StyleSheet.create({
     borderColor: themes.PRIMARY_ITEM_TEXT_COLOR,
     paddingLeft: 5,
     paddingBottom: 10,
-    paddingTop: 10,
+    // paddingTop: 10,
+  },
+  listItemContentContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   switch: {
     flex: 1,
