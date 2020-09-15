@@ -41,14 +41,12 @@ import ShortcutSamplesModal from '../samples/ShortcutSamplesModal';
 import {spotReducers} from '../spots/spot.constants';
 import useSpotsHook from '../spots/useSpots';
 import {TagsNotebookModal, TagAddRemoveSpots, TagDetailSidePanel, TagsShortcutModal} from '../tags';
-import BaseMapDialog from './BaseMapDialogBox';
 import {homeReducers, Modals} from './home.constants';
 import homeStyles from './home.style';
-import MapActionsDialog from './MapActionsDialogBox';
-import MapSymbolsDialog from './MapSymbolsDialogBox';
+import LeftSideButtons from './LeftSideButtons';
+import RightSideButtons from './RightSideButtons';
 import useHomeHook from './useHome';
 
-const allSpotsPanelWidth = 125;
 const homeMenuPanelWidth = 300;
 const notebookPanelWidth = 400;
 const mainMenuSidePanelWidth = 300;
@@ -82,7 +80,6 @@ const Home = (props) => {
   const isSidePanelVisible = useSelector(state => state.settingsPanel.isSidePanelVisible);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const sidePanelView = useSelector(state => state.settingsPanel.sidePanelView);
-  const isAllSymbolsOn = useSelector(state => state.map.isAllSymbolsOn);
 
   // const imagesCount = useSelector(state => state.home.imageProgress.imagesDownloadedCount);
   // const imagesNeeded = useSelector(state => state.home.imageProgress.neededImageIds);
@@ -156,7 +153,7 @@ const Home = (props) => {
     return await useHome.initializeHomePage();
   };
 
-  const clickHandler = (name, position) => {
+  const clickHandler = (name, value) => {
     switch (name) {
       case 'search':
         Alert.alert('Still in the works',
@@ -235,8 +232,8 @@ const Home = (props) => {
         deleteSpot(selectedSpot.properties.id);
         break;
       case 'toggleAllSpotsPanel':
-        if (position === 'open') props.setAllSpotsPanelVisible(true);
-        else if (position === 'close') props.setAllSpotsPanelVisible(false);
+        if (value === 'open') props.setAllSpotsPanelVisible(true);
+        else if (value === 'close') props.setAllSpotsPanelVisible(false);
         break;
       case 'zoomToSpot':
         mapViewComponent.current.zoomToSpot();
@@ -260,9 +257,9 @@ const Home = (props) => {
         saveEdits();
         break;
       case 'toggleUserLocation':
-        if (!buttons.userLocationButtonOn) goToCurrentLocation();
-        mapViewComponent.current.toggleUserLocation(!buttons.userLocationButtonOn);
-        toggleButton('userLocationButtonOn');
+        if (!value) goToCurrentLocation();
+        mapViewComponent.current.toggleUserLocation(!value);
+        // toggleButton('userLocationButtonOn');
         break;
       case 'closeImageBasemap':
         dispatch(({type: mapReducers.CURRENT_IMAGE_BASEMAP, currentImageBasemap: undefined}));
@@ -341,7 +338,6 @@ const Home = (props) => {
 
   const dialogClickHandler = (dialog, name, position) => {
     clickHandler(name, position);
-    toggleDialog(dialog);
   };
 
   const endDraw = async () => {
@@ -543,6 +539,34 @@ const Home = (props) => {
     );
   };
 
+  const renderSaveAndCancelDrawButtons = () => {
+    return (
+      <View style={homeStyles.drawSaveAndCancelButtons}>
+        {buttons.endDrawButtonVisible && <Button
+          containerStyle={{alignContent: 'center'}}
+          buttonStyle={homeStyles.drawToolsButtons}
+          titleStyle={{color: 'black'}}
+          title={'End Draw'}
+          onPress={clickHandler.bind(this, 'endDraw')}
+        />}
+        {buttons.editButtonsVisible && <View>
+          <Button
+            buttonStyle={homeStyles.drawToolsButtons}
+            titleStyle={{color: 'black'}}
+            title={'Save Edits'}
+            onPress={() => clickHandler('saveEdits')}
+          />
+          <Button
+            buttonStyle={[homeStyles.drawToolsButtons, {marginTop: 5}]}
+            titleStyle={{color: 'black'}}
+            title={'Cancel Edits'}
+            onPress={() => clickHandler('cancelEdits')}
+          />
+        </View>}
+      </View>
+    );
+  };
+
   const renderSaveMapsModal = () => {
     return (
       <SaveMapsModal
@@ -676,7 +700,7 @@ const Home = (props) => {
     });
   };
 
-  // Toggle given dialog between true (visible) and false (hidden)
+  // // Toggle given dialog between true (visible) and false (hidden)
   const toggleDialog = dialog => {
     console.log('Toggle', dialog);
     setDialogs({
@@ -773,227 +797,28 @@ const Home = (props) => {
             || modalVisible === Modals.SHORTCUT_MODALS.SAMPLE) && samplesModal}
         </View>
       )}
-      <View style={homeStyles.topCenter}>
-        {buttons.endDrawButtonVisible
-          ? (
-            <Button
-              containerStyle={{alignContent: 'center'}}
-              buttonStyle={homeStyles.drawToolsButtons}
-              titleStyle={{color: 'black'}}
-              title={'End Draw'}
-              onPress={clickHandler.bind(this, 'endDraw')}
-            />
-          )
-          : null
-        }
-        {buttons.editButtonsVisible
-          ? (
-            <View>
-              <Button
-                buttonStyle={homeStyles.drawToolsButtons}
-                titleStyle={{color: 'black'}}
-                title={'Save Edits'}
-                onPress={clickHandler.bind(this, 'saveEdits')}
-              />
-              <Button
-                buttonStyle={[homeStyles.drawToolsButtons, {marginTop: 5}]}
-                titleStyle={{color: 'black'}}
-                title={'Cancel Edits'}
-                onPress={clickHandler.bind(this, 'cancelEdits')}
-              />
-            </View>
-          )
-          : null
-        }
-      </View>
-      <Animated.View
-        style={props.isAllSpotsPanelVisible
-          ? [homeStyles.onlineStatus, rightsideIconAnimation, {right: 125}]
-          : [homeStyles.onlineStatus, rightsideIconAnimation]}>
-        {/*<IconButton*/}
-        {/*  source={props.isOnline ? online : offline}*/}
-        {/*/>*/}
-        <IconButton
-          source={isNotebookPanelVisible
-            ? require('../../assets/icons/NotebookViewButton_pressed.png')
-            : require('../../assets/icons/NotebookViewButton.png')}
-          onPress={() => toggleNotebookPanel()}
+      <Animated.View style={props.isAllSpotsPanelVisible
+        ? [homeStyles.homeRightsideIconsContainer, rightsideIconAnimation, {right: 125}]
+        : [homeStyles.homeRightsideIconsContainer, rightsideIconAnimation]}>
+        <RightSideButtons
+          toggleNotebookPanel={() => toggleNotebookPanel()}
+          clickHandler={name => clickHandler(name)}
+          drawButtonsVisible={buttons.drawButtonsVisible}
+          mapMode={mapMode}/>
+      </Animated.View>
+      <Animated.View style={[homeStyles.homeLeftsideIconsContainer, leftsideIconAnimation]}>
+        <LeftSideButtons
+          toggleHomeDrawer={() => toggleHomeDrawerButton()}
+          dialogClickHandler={(dialog, name) => dialogClickHandler(dialog, name)}
+          clickHandler={(name, value) => clickHandler(name, value)}
         />
       </Animated.View>
-      {!props.currentImageBasemap && <Animated.View
-        style={props.isAllSpotsPanelVisible ? [homeStyles.rightsideIcons, rightsideIconAnimation, {right: 125}] : [homeStyles.rightsideIcons, rightsideIconAnimation]}>
-        {props.shortcutSwitchPosition.Tag
-          ? (
-            <IconButton
-              source={modalVisible === Modals.SHORTCUT_MODALS.TAGS
-                ? require('../../assets/icons/TagButton_pressed.png')
-                : require('../../assets/icons/TagButton.png')}
-              onPress={() => clickHandler('tag')}
-            />
-          )
-          : null
-        }
-        {props.shortcutSwitchPosition.Measurement
-          ? (
-            <IconButton
-              source={modalVisible === Modals.SHORTCUT_MODALS.COMPASS
-                ? require('../../assets/icons/MeasurementButton_pressed.png')
-                : require('../../assets/icons/MeasurementButton.png')}
-              onPress={() => clickHandler('measurement')}
-            />
-          )
-          : null
-        }
-        {props.shortcutSwitchPosition.Sample
-          ? (
-            <IconButton
-              source={modalVisible === Modals.SHORTCUT_MODALS.SAMPLE
-                ? require('../../assets/icons/SampleButton_pressed.png')
-                : require('../../assets/icons/SampleButton.png')}
-              onPress={() => clickHandler('sample')}
-            />
-          )
-          : null
-        }
-        {props.shortcutSwitchPosition.Note
-          ? (
-            <IconButton
-              name={'Note'}
-              source={modalVisible === Modals.SHORTCUT_MODALS.NOTES
-                ? require('../../assets/icons/NoteButton_pressed.png')
-                : require('../../assets/icons/NoteButton.png')}
-              onPress={() => clickHandler('note')}
-            />
-          )
-          : null
-        }
-        {props.shortcutSwitchPosition.Photo
-          ? (
-            <IconButton
-              source={require('../../assets/icons/PhotoButton.png')}
-              onPress={() => clickHandler('photo')}
-            />
-          )
-          : null
-        }
-        {props.shortcutSwitchPosition.Sketch
-          ? (
-            <IconButton
-              source={require('../../assets/icons/SketchButton.png')}
-              onPress={() => clickHandler('sketch')}
-            />
-          )
-          : null
-        }
-      </Animated.View>}
-      {buttons.drawButtonsVisible
-        ? (
-          <Animated.View
-            style={props.isAllSpotsPanelVisible ? [homeStyles.drawToolsContainer, rightsideIconAnimation, {right: 125}] : [homeStyles.drawToolsContainer, rightsideIconAnimation]}>
-            <IconButton
-              style={{top: 5}}
-              source={mapMode === MapModes.DRAW.POINT
-                ? require('../../assets/icons/PointButton_pressed.png')
-                : require('../../assets/icons/PointButton.png')}
-              onPress={clickHandler.bind(this, MapModes.DRAW.POINT)}
-            />
-            <IconButton
-              style={{top: 5}}
-              source={ mapMode === MapModes.DRAW.FREEHANDLINE ? require('../../assets/icons/LineButton_pressed_copy.png')
-                : (mapMode === MapModes.DRAW.LINE
-                ? require('../../assets/icons/LineButton_pressed.png')
-                : require('../../assets/icons/LineButton.png'))}
-              onPress={clickHandler.bind(this, MapModes.DRAW.LINE)}
-              onLongPress={clickHandler.bind(this, MapModes.DRAW.FREEHANDLINE)}
-            />
-            <IconButton
-              style={{top: 5}}
-              source={mapMode === MapModes.DRAW.FREEHANDPOLYGON ? require('../../assets/icons/PolygonFreehandButton_pressed.png')
-                : (mapMode === MapModes.DRAW.POLYGON
-                ? require('../../assets/icons/PolygonButton_pressed.png')
-                : require('../../assets/icons/PolygonButton.png'))}
-              onPress={clickHandler.bind(this, MapModes.DRAW.POLYGON)}
-              onLongPress={clickHandler.bind(this, MapModes.DRAW.FREEHANDPOLYGON)}
-            />
-          </Animated.View>
-        )
-        : null
-      }
-      <Animated.View style={[homeStyles.homeIconContainer, leftsideIconAnimation]}>
-        <IconButton
-          source={isMainMenuPanelVisible
-            ? require('../../assets/icons/HomeButton_pressed.png')
-            : require('../../assets/icons/HomeButton.png')}
-          onPress={clickHandler.bind(this, 'home')}
-        />
-      </Animated.View>
-      {props.currentImageBasemap && (
-        <Animated.View style={[homeStyles.bottomLeftIcons, leftsideIconAnimation]}>
-          <IconButton
-            //style={{top: 5}}
-            source={require('../../assets/icons/Close.png')}
-            onPress={clickHandler.bind(this, 'closeImageBasemap')}
-          />
-        </Animated.View>
-      )}
-      <Animated.View style={[homeStyles.leftsideIcons, leftsideIconAnimation]}>
-        <IconButton
-          source={require('../../assets/icons/MapActionsButton.png')}
-          onPress={() => toggleDialog('mapActionsMenuVisible')}
-        />
-        {isAllSymbolsOn
-          ? (
-            <IconButton
-              source={require('../../assets/icons/SymbolsButton.png')}
-              onPress={() => toggleDialog('mapSymbolsMenuVisible')}
-            />
-          ) : (
-            <IconButton
-              source={require('../../assets/icons/SymbolsButton_pressed.png')}
-              onPress={() => toggleDialog('mapSymbolsMenuVisible')}
-            />
-          )
-        }
-        {!props.currentImageBasemap && (
-          <IconButton
-            source={require('../../assets/icons/layersButton.png')}
-            onPress={() => toggleDialog('baseMapMenuVisible')}
-          />
-        )}
-      </Animated.View>
-      {!props.currentImageBasemap && (
-        <Animated.View style={[homeStyles.bottomLeftIcons, leftsideIconAnimation]}>
-          <IconButton
-            style={{top: 5}}
-            source={buttons.userLocationButtonOn
-              ? require('../../assets/icons/MyLocationButton_pressed.png')
-              : require('../../assets/icons/MyLocationButton.png')}
-            onPress={clickHandler.bind(this, 'toggleUserLocation')}
-          />
-        </Animated.View>
-      )}
-      <MapActionsDialog
-        visible={dialogs.mapActionsMenuVisible}
-        onPress={(name) => dialogClickHandler('mapActionsMenuVisible', name)}
-        onTouchOutside={() => toggleDialog('mapActionsMenuVisible')}
-      />
-      <MapSymbolsDialog
-        visible={dialogs.mapSymbolsMenuVisible}
-        onPress={(name) => dialogClickHandler('mapSymbolsMenuVisible', name)}
-        onTouchOutside={() => toggleDialog('mapSymbolsMenuVisible')}
-      />
-      <BaseMapDialog
-        visible={dialogs.baseMapMenuVisible}
-        close={() => toggleDialog('baseMapMenuVisible')}
-        onPress={(name) => {
-          useMaps.setCurrentBasemap(name);
-          toggleDialog('baseMapMenuVisible');
-        }}
-        onTouchOutside={() => toggleDialog('baseMapMenuVisible')}
-      />
       <NotebookPanelMenu
         visible={dialogs.notebookPanelMenuVisible}
-        onPress={(name, position) => dialogClickHandler('notebookPanelMenuVisible', name, position)}
+        onPress={(name, position) => {
+          clickHandler(name, position);
+          toggleDialog('notebookPanelMenuVisible');
+        }}
         onTouchOutside={() => toggleDialog('notebookPanelMenuVisible')}
       />
       <Modal
@@ -1019,6 +844,7 @@ const Home = (props) => {
       {notebookPanel}
       {props.isAllSpotsPanelVisible && renderAllSpotsPanel()}
       {homeDrawer}
+      {renderSaveAndCancelDrawButtons()}
       {isMainMenuPanelVisible && toggleSidePanel()}
       {renderFloatingViews()}
       {renderLoadProjectFromModal()}
