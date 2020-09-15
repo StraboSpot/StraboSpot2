@@ -26,11 +26,10 @@ const Overview = props => {
   const [useForm] = useFormHook();
 
   const SECTIONS = [
+    {id: 4, title: 'Notes', content: <NotesOverview/>},
     {id: 1, title: 'Measurements', content: <MeasurementsOverview/>},
     {id: 2, title: 'Photos and Sketches', content: <NotebookImages/>},
     {id: 3, title: 'Tags', content: <TagsAtSpotList openMainMenu={props.openMainMenu}/>},
-    {id: 4, title: 'Samples', content: <SamplesNotebook/>},
-    {id: 5, title: 'Notes', content: <NotesOverview/>},
   ];
 
   useEffect(() => {
@@ -201,4 +200,5 @@ const Overview = props => {
     </View>
   );
 };
+
 export default Overview;
