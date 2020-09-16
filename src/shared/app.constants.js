@@ -16,4 +16,4 @@ export const redux = {
   CLEAR_STORE: 'CLEAR_STORE',
 };
 
-export const VERSION_NUMBER = 'Version 0.9.0';
+export const VERSION_NUMBER = 'Version 0.10.0';
