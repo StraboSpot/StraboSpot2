@@ -1,8 +1,11 @@
+import {useSelector} from 'react-redux';
+
 import {hexToRgb, isEmpty} from '../../shared/Helpers';
 import useTagsHook from '../tags/useTags';
 
 const useMapSymbology = (props) => {
   const [useTags] = useTagsHook();
+  const tagTypeForColor = useSelector(state => state.map.tagTypeForColor);
 
   const linePatterns = {
     solid: [1, 0],
@@ -232,16 +235,29 @@ const useMapSymbology = (props) => {
     };
   };
 
-  const getPolygonSymbology = (feature) => {
-    let color = 'rgba(0, 0, 255, 0.4)';     // default fill color
+  // If feature has a tag of the type specified in the Map Symbols dialog (geologic unit or concept)
+  // and that tag has a color assigned to then apply that color first
+  const getTagColor = (feature) => {
+    let color;
     let tagsAtSpot = useTags.getTagsAtSpot(feature.properties.id);
-    const tagsGeologicUnit = tagsAtSpot.filter(tag => tag.type === 'geologic_unit');
-
-    // If feature has a geologic unit tag and that tag has a color assigned use that color
-    if (!isEmpty(tagsGeologicUnit) && tagsGeologicUnit[0].color) {
-      const rgbColor = hexToRgb(tagsGeologicUnit[0].color);
+    const tagsForColor = tagsAtSpot.filter(tag => tag.type === tagTypeForColor);
+    if (!isEmpty(tagsForColor) && tagsForColor[0].color) {
+      const rgbColor = hexToRgb(tagsForColor[0].color);
       color = 'rgba(' + rgbColor.r + ', ' + rgbColor.g + ', ' + rgbColor.b + ', 0.4)';
     }
+    return color;
+  };
+
+  const getPointSymbology = (feature) => {
+    return {
+      'circleColor': getTagColor(feature) || 'transparent',
+    };
+  };
+
+  const getPolygonSymbology = (feature) => {
+    let color = 'rgba(0, 0, 255, 0.4)';     // default fill color
+    const tagColor = getTagColor(feature);
+    if (tagColor) color = tagColor;
     // If feature has a surface feature type apply the specified color
     else if (feature.properties.surface_feature && feature.properties.surface_feature.surface_feature_type) {
       switch (feature.properties.surface_feature.surface_feature_type) {
@@ -281,6 +297,9 @@ const useMapSymbology = (props) => {
 
   const getSymbology = (feature) => {
     switch (feature.geometry.type) {
+      case 'Point':
+      case 'MultiPoint':
+        return getPointSymbology(feature);
       case 'LineString':
       case 'MultiLineString':
         return getLineSymbology(feature);
@@ -304,6 +323,10 @@ const useMapSymbology = (props) => {
       iconIgnorePlacement: true,  // Need to be able to stack symbols at same location
       iconSize: 0.08,
       symbolSpacing: 0,
+    },
+    pointColorHalo: {
+      circleRadius: 10,
+      circleColor: ['get', 'circleColor', ['get', 'symbology']],
     },
     line: {
       lineColor: ['get', 'lineColor', ['get', 'symbology']],

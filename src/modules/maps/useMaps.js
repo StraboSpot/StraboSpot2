@@ -168,11 +168,10 @@ const useMaps = () => {
     return mappedSpots;
   };
 
-  // All features mapped on current map (Spots with mulitple measurements
-  // become mulitple features, one feature for each measurement)
-  const getAllMappedFeatures = (mappedSpots) => {
+  // Spots with mulitple measurements become mulitple features, one feature for each measurement
+  const getSpotsAsFeatures = (spots) => {
     let mappedFeatures = [];
-    mappedSpots.map(spot => {
+    spots.map(spot => {
       if ((spot.geometry.type === 'Point' || spot.geometry.type === 'MultiPoint') && spot.properties.orientation_data) {
         spot.properties.orientation_data.map((orientation, i) => {
           const feature = JSON.parse(JSON.stringify(spot));
@@ -191,13 +190,6 @@ const useMaps = () => {
     return mappedFeatures;
   };
 
-  // Point features the are currently visible on the map (i.e. not toggled off in the Map Symbol Switcher)
-  const getVisibleMappedFeatures = (mappedFeatures) => {
-    return mappedFeatures.filter(spot => turf.getType(spot) !== 'Point'
-      || (spot.properties.orientation && spot.properties.orientation.feature_type
-        && selectedSymbols.includes(spot.properties.orientation.feature_type)));
-  };
-
   // Point Spots the are currently visible on the map (i.e. not toggled off in the Map Symbol Switcher)
   const getVisibleMappedSpots = (mappedSpots) => {
     return mappedSpots.filter(spot => turf.getType(spot) !== 'Point'
@@ -206,12 +198,14 @@ const useMaps = () => {
           && selectedSymbols.includes(orientation.feature_type)))));
   };
 
-  // Set map symbols as list of feature types in mapped features
-  const setMapSymbols = (mappedFeatures) => {
-    const featureTypes = mappedFeatures.reduce((acc, feature) => {
-      return feature.properties.orientation && feature.properties.orientation.feature_type
-        ? [...new Set([...acc, feature.properties.orientation.feature_type])]
-        : acc;
+  // Gather and set the feature types that are present in the mapped Spots
+  const setMapSymbols = (mappedSpots) => {
+    const featureTypes = mappedSpots.reduce((acc, spot) => {
+      const spotFeatureTypes = spot.properties.orientation_data
+        && spot.properties.orientation_data.reduce((acc1, orientation) => {
+          return orientation.feature_type ? [...new Set([...acc1, orientation.feature_type])] : acc1;
+        }, []);
+      return spotFeatureTypes ? [...new Set([...acc, ...spotFeatureTypes])] : acc;
     }, []);
     dispatch({type: mapReducers.SET_MAP_SYMBOLS, mapSymbols: featureTypes});
   };
@@ -219,25 +213,21 @@ const useMaps = () => {
   // Get selected and not selected Spots to display when not editing
   const getDisplayedSpots = (selectedSpots) => {
     let mappedSpots = getAllMappedSpots();
-    let mappedFeatures = getAllMappedFeatures(mappedSpots);
-    setMapSymbols(mappedFeatures);
+    setMapSymbols(mappedSpots);
 
     // If any map symbol toggle is ON filter out the Point features & Spots that are not visible
-    if (!isAllSymbolsOn) {
-      mappedSpots = getVisibleMappedSpots(mappedSpots);
-      mappedFeatures = getVisibleMappedFeatures(mappedFeatures);
-    }
+    if (!isAllSymbolsOn) mappedSpots = getVisibleMappedSpots(mappedSpots);
 
     // Separate selected Spots and not selected Spots (Point Spots need to be in both
     // selected and not selected since the selected symbology is a halo around the point)
     const selectedIds = selectedSpots.map(sel => sel.properties.id);
     const selectedMappedSpots = mappedSpots.filter(spot => selectedIds.includes(spot.properties.id));
-    const notSelectedMappedFeatures = mappedFeatures.filter(spot => !selectedIds.includes(spot.properties.id)
+    const notSelectedMappedSpots = mappedSpots.filter(spot => !selectedIds.includes(spot.properties.id)
       || spot.geometry.type === 'Point');
 
     console.log('Selected Spots to Display on this Map:', selectedMappedSpots);
-    console.log('Not Selected Features to Display on this Map:', notSelectedMappedFeatures);
-    return [selectedMappedSpots, notSelectedMappedFeatures];
+    console.log('Not Selected Spots to Display on this Map:', notSelectedMappedSpots);
+    return [selectedMappedSpots, notSelectedMappedSpots];
   };
 
   const getProviderInfo = (source) => {
@@ -285,7 +275,6 @@ const useMaps = () => {
     }
   };
 
-  // HELLO
   // Create a point feature at the current location
   const setPointAtCurrentLocation = async () => {
     const userLocationCoords = await getCurrentLocation();
@@ -312,8 +301,6 @@ const useMaps = () => {
 
   const setSelectedSpot = (spotToSetAsSelected) => {
     console.log('Set selected Spot:', spotToSetAsSelected);
-    let [selectedSpots, notSelectedSpots] = getDisplayedSpots(
-      isEmpty(spotToSetAsSelected) ? [] : [{...spotToSetAsSelected}]);
     dispatch({type: spotReducers.SET_SELECTED_SPOT, spot: spotToSetAsSelected});
   };
 
@@ -354,6 +341,7 @@ const useMaps = () => {
     getCoordQuad: getCoordQuad,
     getCurrentLocation: getCurrentLocation,
     getDisplayedSpots: getDisplayedSpots,
+    getSpotsAsFeatures: getSpotsAsFeatures,
     handleError: handleError,
     isGeoMap: isGeoMap,
     isOnGeoMap: isOnGeoMap,

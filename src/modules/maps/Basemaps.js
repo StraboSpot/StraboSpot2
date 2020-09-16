@@ -163,9 +163,15 @@ function Basemap(props) {
                                   style={{rasterOpacity: 1}}/>
           </MapboxGL.Animated.ImageSource>
         )}
-        {(props.mapMode == MapModes.DRAW.FREEHANDPOLYGON || props.mapMode == MapModes.DRAW.FREEHANDLINE) && <FreehandSketch>
-        <MapboxGL.RasterLayer id='sketchLayer'/>
-        </FreehandSketch>}
+
+        {/* Sketch Layer */}
+        {(props.mapMode === MapModes.DRAW.FREEHANDPOLYGON || props.mapMode === MapModes.DRAW.FREEHANDLINE)
+        && (
+          <FreehandSketch>
+            <MapboxGL.RasterLayer id='sketchLayer'/>
+          </FreehandSketch>
+        )}
+
         {/* Feature Layer */}
         <MapboxGL.Images
           images={symbols}
@@ -174,8 +180,8 @@ function Basemap(props) {
           }}
         />
         <MapboxGL.ShapeSource
-          id='shapeSource'
-          shape={turf.featureCollection(addSymbology(props.spotsNotSelected))}
+          id='spotsNotSelectedSource'
+          shape={turf.featureCollection(addSymbology(useMaps.getSpotsAsFeatures(props.spotsNotSelected)))}
         >
           <MapboxGL.SymbolLayer
             id='pointLayerNotSelected'
@@ -221,7 +227,7 @@ function Basemap(props) {
 
         {/* Selected Features Layer */}
         <MapboxGL.ShapeSource
-          id='spotsNotSelectedSource'
+          id='spotsSelectedSource'
           shape={turf.featureCollection(addSymbology(props.spotsSelected))}
         >
           <MapboxGL.CircleLayer
@@ -263,6 +269,19 @@ function Basemap(props) {
             minZoomLevel={1}
             filter={['==', ['geometry-type'], 'Polygon']}
             style={useMapSymbology.getMapSymbology().polygonSelected}
+          />
+        </MapboxGL.ShapeSource>
+
+        {/* Colored Halo Around Points Layer */}
+        <MapboxGL.ShapeSource
+          id='shapeSource'
+          shape={turf.featureCollection(addSymbology(props.spotsNotSelected))}
+        >
+          <MapboxGL.CircleLayer
+            id='pointLayerColorHalo'
+            minZoomLevel={1}
+            filter={['==', ['geometry-type'], 'Point']}
+            style={useMapSymbology.getMapSymbology().pointColorHalo}
           />
         </MapboxGL.ShapeSource>
 

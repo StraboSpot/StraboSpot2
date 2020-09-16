@@ -14,6 +14,7 @@ const initialState = {
   symbolsOn: [],
   isAllSymbolsOn: true,
   mapSymbols: [],
+  tagTypeForColor: 'geologic_unit',
 };
 
 export const mapReducer = (state = initialState, action) => {
@@ -118,6 +119,12 @@ export const mapReducer = (state = initialState, action) => {
       return {
         ...state,
         mapSymbols: action.mapSymbols,
+      };
+    case mapReducers.SET_TAG_TYPE_FOR_COLOR:
+      console.log('Set Tag Type for Color', action.tagTypeForColor);
+      return {
+        ...state,
+        tagTypeForColor: action.tagTypeForColor,
       };
     case redux.CLEAR_STORE:
       return {
