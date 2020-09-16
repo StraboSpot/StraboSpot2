@@ -1,10 +1,10 @@
 import {StyleSheet} from 'react-native';
+
 import * as themes from '../../shared/styles.constants';
 
 const sketchStyles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 30,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
@@ -19,12 +19,11 @@ const sketchStyles = StyleSheet.create({
   strokeWidthButton: {
     marginHorizontal: 50,
     marginVertical: 20,
-    width: 30,
-    height: 30,
+    padding: 10,
     borderRadius: 15,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#39579A',
+    borderWidth: 1,
   },
   functionButton: {
     marginHorizontal: 2.5,

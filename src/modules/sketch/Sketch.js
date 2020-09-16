@@ -16,7 +16,7 @@ const Sketch = (props) => {
   const [useImages] = useImagesHook();
 
   useEffect(() => {
-    if (props.route.params?.imageId) setImageId(props.route.params.imageId)
+    if (props.route.params?.imageId) setImageId(props.route.params.imageId);
   }, [imageId]);
 
   const saveSketch = async (success, path) => {
@@ -24,7 +24,7 @@ const Sketch = (props) => {
     if (success) {
         const savedSketch = await useImages.saveFile(path);
         dispatch({type: spotReducers.EDIT_SPOT_IMAGES, images: [{...savedSketch, image_type: 'sketch'}]});
-        Alert.alert(`Sketch ${savedSketch.id} Saved!`)
+        Alert.alert(`Sketch ${savedSketch.id} Saved!`);
       }
       else console.log('Didn\'t move sketch');
   };
@@ -33,16 +33,20 @@ const Sketch = (props) => {
     <View style={styles.container}>
       <View style={{flex: 1, flexDirection: 'row'}}>
         <RNSketchCanvas
-          // onStrokeStart={(x, y) => console.log('X:', x, 'Y:', y)}
-          containerStyle={{backgroundColor: 'transparent', flex: 1}}
-          canvasStyle={{backgroundColor: 'transparent', flex: 1}}
+          containerStyle={{backgroundColor: 'transparent', flex: 0}}
+          canvasStyle={{
+            backgroundColor: 'transparent',
+            flex: 1,
+            borderWidth: 2,
+            borderColor: 'grey',
+          }}
           localSourceImage={{
             filename: imageId + '.jpg', // e.g. 'image.png' or '/storage/sdcard0/Pictures/image.png'
             directory: SketchCanvas.DOCUMENT + '/StraboSpot/Images', // e.g. SketchCanvas.MAIN_BUNDLE or '/storage/sdcard0/Pictures/'
             mode: 'AspectFit',
           }}
           defaultStrokeIndex={0}
-          defaultStrokeWidth={5}
+          defaultStrokeWidth={1}
           onClosePressed={() => props.navigation.goBack()}
           onSketchSaved={(success, path) => saveSketch(success, path)}
           closeComponent={
@@ -80,18 +84,23 @@ const Sketch = (props) => {
               />
             );
           }}
+          strokeWidthStep={1}
+          minStrokeWidth={1}
+          maxStrokeWidth={10}
           strokeWidthComponent= {(w) => {
             return (
               <View style={styles.strokeWidthButton}>
                 <View
-                  style={{
-                    backgroundColor: 'white',
-                    marginHorizontal: 2.5,
-                    width: Math.sqrt(w / 3) * 10,
-                    height: Math.sqrt(w / 3) * 10,
-                    borderRadius: (Math.sqrt(w / 3) * 10) / 2,
-                  }}
-                />
+                  // style={{
+                  //   backgroundColor: 'white',
+                  //   marginHorizontal: 2.5,
+                  //   width: Math.sqrt(w / 3) * 10,
+                  //   height: Math.sqrt(w / 3) * 10,
+                  //   borderRadius: (Math.sqrt(w / 3) * 10) / 2,
+                  // }}
+                >
+                  <Text>Line Weight: {w}</Text>
+                </View>
               </View>
             );
           }}
