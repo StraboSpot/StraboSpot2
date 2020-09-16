@@ -63,11 +63,6 @@ const ProjectDescription = (props) => {
     validateMagneticDeclination(projectDescription.magnetic_declination);
   }, []);
 
-  // useEffect(() => {
-  //   console.log('UE MagDec', isValidMagneticDeclination, 'MagDec value', projectDescription.magnetic_declination);
-  //   validateMagneticDeclination(projectDescription.magnetic_declination);
-  // }, [isValidMagneticDeclination, projectDescription.magnetic_declination]);
-
   const changeStartDate = (event, date) => {
     if (Platform.OS === 'android') setPickerVisible();
     setProjectDescription({...projectDescription, start_date: date || projectDescription.start_date});
@@ -264,7 +259,7 @@ const ProjectDescription = (props) => {
     }
     else {
       setIsValidMagneticDeclination(false);
-      setMagneticDeclinationValidationMessage('Must be between 0 and 180');
+      setMagneticDeclinationValidationMessage('Must be between -180 and 180');
     }
   };
 

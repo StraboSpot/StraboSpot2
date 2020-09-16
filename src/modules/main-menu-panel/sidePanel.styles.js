@@ -4,20 +4,11 @@ import {StyleSheet} from 'react-native';
 import * as themes from '../../shared/styles.constants';
 
 const sidePanelStyles = StyleSheet.create({
-  infoInputText: {
-    // fontSize: 16,
-    padding: 10,
-  },
   textInputNameContainer: {
-    // flexDirection: 'row',
-    // alignItems: 'center',
-    // borderColor: themes.MEDIUMGREY,
     borderWidth: 0.5,
     borderRadius: 10,
     backgroundColor: 'white',
-    // marginBottom: 10,
     paddingLeft: 10,
-    // paddingTop: 10,
   },
   textInputNameLabel: {
     flex: 1,
@@ -31,9 +22,6 @@ const sidePanelStyles = StyleSheet.create({
     paddingTop: 10,
   },
   sectionContainer: {
-    // flex: 1,
-    // paddingTop: 10,
-    // backgroundColor: 'red',
     justifyContent: 'center',
   },
   sidePanelContainer: {

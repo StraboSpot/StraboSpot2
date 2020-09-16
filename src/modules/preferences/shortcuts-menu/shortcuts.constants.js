@@ -19,8 +19,8 @@ export const SHORTCUT_TOGGLE_BUTTONS = {
     NAME: 'Photo',
     ICON: require('../../../assets/icons/PhotoButton.png'),
   },
-  // SKETCH: {
-  //   NAME: 'Sketch',
-  //   ICON: require('../../../assets/icons/StraboIcons_Oct2019/SketchButton.png'),
-  // },
+  SKETCH: {
+    NAME: 'Sketch',
+    ICON: require('../../../assets/icons/SketchButton.png'),
+  },
 };
