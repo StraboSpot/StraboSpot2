@@ -325,7 +325,7 @@ const useMapSymbology = (props) => {
       symbolSpacing: 0,
     },
     pointColorHalo: {
-      circleRadius: 10,
+      circleRadius: 20,
       circleColor: ['get', 'circleColor', ['get', 'symbology']],
     },
     line: {
