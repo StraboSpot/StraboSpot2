@@ -77,10 +77,9 @@ const homeStyles = StyleSheet.create({
   },
 
   // --- Left and right icon absolute positions from top ---
-  homeLeftsideIconsContainer: {
+  leftsideIcons: {
     position: 'absolute',
-    bottom: 0,
-    top: 0,
+    bottom: 150,
     zIndex: -1,
   },
   shortcutButtons: {
@@ -89,22 +88,28 @@ const homeStyles = StyleSheet.create({
     top: 150,
     zIndex: -1,
   },
-  homeRightsideIconsContainer: {
-    position: 'absolute',
-    right: 0,
-    top: 0,
-    bottom: 0,
-    zIndex: -1,
-  },
   drawSaveAndCancelButtons: {
     position: 'absolute',
     bottom: 90,
     right: '45%',
   },
-  noteBookButton: {
+  notebookButton: {
     position: 'absolute',
     top: 10,
     right: 0,
+  },
+
+  // --- Bottom Left Icon (current location) ---
+  bottomLeftIcons: {
+    position: 'absolute',
+    bottom: 10,
+    zIndex: -1,
+  },
+  homeIconContainer: {
+    position: 'absolute',
+    left: 0,
+    top: 15,
+    zIndex: -1,
   },
   currentZoom: {
     fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,

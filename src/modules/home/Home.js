@@ -10,7 +10,6 @@ import {connect, useDispatch, useSelector} from 'react-redux';
 
 import sharedDialogStyles from '../../shared/common.styles';
 import {animatePanels, isEmpty} from '../../shared/Helpers';
-import IconButton from '../../shared/ui/IconButton';
 import LoadingSpinner from '../../shared/ui/Loading';
 import StatusDialogBox from '../../shared/ui/StatusDialogBox';
 import ToastPopup from '../../shared/ui/Toast';
@@ -60,9 +59,6 @@ const Home = (props) => {
   const [useProject] = useProjectHook();
   const [useSpots] = useSpotsHook();
   const currentDataset = useProject.getCurrentDataset();
-
-  const online = require('../../assets/icons/ConnectionStatusButton_connected.png');
-  const offline = require('../../assets/icons/ConnectionStatusButton_offline.png');
 
   const dispatch = useDispatch();
   const customMaps = useSelector(state => state.map.customMaps);
@@ -259,7 +255,7 @@ const Home = (props) => {
       case 'toggleUserLocation':
         if (!value) goToCurrentLocation();
         mapViewComponent.current.toggleUserLocation(!value);
-        // toggleButton('userLocationButtonOn');
+        toggleButton('userLocationButtonOn');
         break;
       case 'closeImageBasemap':
         dispatch(({type: mapReducers.CURRENT_IMAGE_BASEMAP, currentImageBasemap: undefined}));
@@ -338,6 +334,7 @@ const Home = (props) => {
 
   const dialogClickHandler = (dialog, name, position) => {
     clickHandler(name, position);
+    toggleDialog(dialog);
   };
 
   const endDraw = async () => {
@@ -700,7 +697,7 @@ const Home = (props) => {
     });
   };
 
-  // // Toggle given dialog between true (visible) and false (hidden)
+  // Toggle given dialog between true (visible) and false (hidden)
   const toggleDialog = dialog => {
     console.log('Toggle', dialog);
     setDialogs({
@@ -742,12 +739,6 @@ const Home = (props) => {
       animatePanels(mainMenuSidePanelAnimation, -mainMenuSidePanelWidth);
     }
     return renderSidePanelView();
-  };
-
-  const toggleSwitch = switchName => {
-    console.log('Switch', switchName);
-    props.onShortcutSwitchChange(switchName);
-    console.log(props.shortcutSwitchPosition);
   };
 
   const animateNotebookMenu = {transform: [{translateX: animation}]};
@@ -797,28 +788,23 @@ const Home = (props) => {
             || modalVisible === Modals.SHORTCUT_MODALS.SAMPLE) && samplesModal}
         </View>
       )}
-      <Animated.View style={props.isAllSpotsPanelVisible
-        ? [homeStyles.homeRightsideIconsContainer, rightsideIconAnimation, {right: 125}]
-        : [homeStyles.homeRightsideIconsContainer, rightsideIconAnimation]}>
-        <RightSideButtons
-          toggleNotebookPanel={() => toggleNotebookPanel()}
-          clickHandler={name => clickHandler(name)}
-          drawButtonsVisible={buttons.drawButtonsVisible}
-          mapMode={mapMode}/>
-      </Animated.View>
-      <Animated.View style={[homeStyles.homeLeftsideIconsContainer, leftsideIconAnimation]}>
-        <LeftSideButtons
-          toggleHomeDrawer={() => toggleHomeDrawerButton()}
-          dialogClickHandler={(dialog, name) => dialogClickHandler(dialog, name)}
-          clickHandler={(name, value) => clickHandler(name, value)}
-        />
-      </Animated.View>
+      <RightSideButtons
+        toggleNotebookPanel={() => toggleNotebookPanel()}
+        clickHandler={name => clickHandler(name)}
+        drawButtonsVisible={buttons.drawButtonsVisible}
+        mapMode={mapMode}
+        rightsideIconAnimation={rightsideIconAnimation}
+      />
+      <LeftSideButtons
+        toggleHomeDrawer={() => toggleHomeDrawerButton()}
+        dialogClickHandler={(dialog, name) => dialogClickHandler(dialog, name)}
+        clickHandler={(name, value) => clickHandler(name, value)}
+        rightsideIconAnimation={rightsideIconAnimation}
+        leftsideIconAnimation={leftsideIconAnimation}
+      />
       <NotebookPanelMenu
         visible={dialogs.notebookPanelMenuVisible}
-        onPress={(name, position) => {
-          clickHandler(name, position);
-          toggleDialog('notebookPanelMenuVisible');
-        }}
+        onPress={(name, position) => dialogClickHandler('notebookPanelMenuVisible', name, position)}
         onTouchOutside={() => toggleDialog('notebookPanelMenuVisible')}
       />
       <Modal

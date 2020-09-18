@@ -1,6 +1,6 @@
 import React from 'react';
-import {Alert, View, Text, TouchableNativeFeedback, TouchableOpacity, Platform, StyleSheet} from 'react-native';
-import {Image} from 'react-native-elements'
+
+import {Image} from 'react-native-elements';
 
 import uiStyles from '../ui/ui.styles';
 
