@@ -30,36 +30,19 @@ const SignIn = (props) => {
   const [serverRequests] = useServerRequests();
 
   useEffect(() => {
+      NetInfo.addEventListener(state => {
+        dispatch({type: homeReducers.SET_ISONLINE, online: state.isConnected});
+      });
     if (!isEmpty(userData) && !isEmpty(project)) {
       props.navigation.navigate('HomeScreen');
-    }
-    NetInfo.addEventListener(state => {
-      handleConnectivityChange(state.isConnected);
-    });
-  }, []);
-
-  useEffect(() => {
-    if (isOnline === null) {
-      NetInfo.fetch().then(state => {
-        dispatch({type: homeReducers.SET_ISONLINE, online: state.isConnected});
-      })
-        .catch(err => {
-          throw (err);
-        });
     }
   }, [isOnline]);
 
   useEffect(() => {
     Sentry.configureScope((scope) => {
       scope.setUser({'email': userData.email});
-      console.log('SCOPE', scope);
     });
   }, [userData]);
-
-  //function for online/offline state change event handler
-  const handleConnectivityChange = (isConnected) => {
-    dispatch({type: homeReducers.SET_ISONLINE, online: isConnected});
-  };
 
   const guestSignIn = async () => {
     Sentry.configureScope((scope) => {
