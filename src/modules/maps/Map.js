@@ -72,7 +72,7 @@ const Map = React.forwardRef((props, ref) => {
   const mapProps = {
     ...mapPropsMutable,
     mapMode: props.mapMode,
-    allowMapViewMove: !isDrawFeatureModeOn(),
+    allowMapViewMove: !isDrawFeatureModeOn() && props.mapMode != MapModes.EDIT,
     ref: {mapRef: map, cameraRef: camera},
     onMapPress: (e) => onMapPress(e),
     onMapLongPress: (e) => onMapLongPress(e),
@@ -759,8 +759,8 @@ const Map = React.forwardRef((props, ref) => {
         let featureCoordinates = new Array();
         let screenX, screenY = 0;
         for (let i = 0; i < screenCoordinates.length; i++) {
-          screenX = screenCoordinates[i][0] + 30; // difference between the Sketch Canvas and Map Screen coordinates.
-          screenY = screenCoordinates[i][1] + 30;
+          screenX = screenCoordinates[i][0];
+          screenY = screenCoordinates[i][1];
           let geoCoordinates = await map.current.getCoordinateFromView([screenX, screenY]);
           featureCoordinates.push(geoCoordinates);
         }
