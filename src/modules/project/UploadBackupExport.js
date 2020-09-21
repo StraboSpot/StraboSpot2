@@ -79,17 +79,19 @@ const UploadBackAndExport = (props) => {
         else dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: `Error uploading project: \n ${err}`});
       })
       .finally(() => {
-          useImages.deleteTempImagesFolder().then(()=> {
-            dispatch({type: homeReducers.SET_LOADING, view: 'modal', bool: false});
-            dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Upload Complete!'});
-          });
+          useImages.deleteTempImagesFolder()
+            .catch(err2 => console.error('Error deleting temp images folder', err2))
+            .finally(() => {
+              dispatch({type: homeReducers.SET_LOADING, view: 'modal', bool: false});
+              dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Upload Complete!'});
+            });
         },
       );
   };
 
   const uploadDatasets = async () => {
     await useProject.uploadDatasets();
-      return Promise.resolve();
+    return Promise.resolve();
   };
 
   const uploadProject = async () => {
