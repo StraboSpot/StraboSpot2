@@ -1,5 +1,6 @@
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 require_relative '../node_modules/react-native/scripts/react_native_pods'
+  install! 'cocoapods', :deterministic_uuids => false
 
 platform :ios, '10.0'
 
