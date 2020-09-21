@@ -9,14 +9,15 @@ import {Modals} from './home.constants';
 import homeStyles from './home.style';
 
 const RightSideButtons = (props) => {
-  // const online = require('../../assets/icons/ConnectionStatusButton_connected.png');
-  // const offline = require('../../assets/icons/ConnectionStatusButton_offline.png');
+  const online = require('../../assets/icons/ConnectionStatusButton_connected.png');
+  const offline = require('../../assets/icons/ConnectionStatusButton_offline.png');
 
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const isAllSpotsPanelVisible = useSelector(state => state.home.isAllSpotsPanelVisible);
   const isNotebookPanelVisible = useSelector(state => state.notebook.isNotebookPanelVisible);
   const modalVisible = useSelector(state => state.home.modalVisible);
   const shortcutSwitchPosition = useSelector(state => state.home.shortcutSwitchPosition);
+  const isOnline = useSelector(state => state.home.isOnline);
 
   return (
     <React.Fragment>
@@ -24,14 +25,14 @@ const RightSideButtons = (props) => {
         style={isAllSpotsPanelVisible
           ? [homeStyles.notebookButton, props.rightsideIconAnimation, {right: 125}]
           : [homeStyles.notebookButton, props.rightsideIconAnimation]}>
-        {/*<IconButton*/}
-        {/*  source={props.isOnline ? online : offline}*/}
-        {/*/>*/}
         <IconButton
           source={isNotebookPanelVisible
             ? require('../../assets/icons/NotebookViewButton_pressed.png')
             : require('../../assets/icons/NotebookViewButton.png')}
           onPress={() => props.toggleNotebookPanel()}
+        />
+        <IconButton
+          source={isOnline ? online : offline}
         />
       </Animated.View>
       {!currentImageBasemap && (

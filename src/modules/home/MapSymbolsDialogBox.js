@@ -86,7 +86,7 @@ const MapSymbolsDialog = (props) => {
             tagTypeForColor: i === 0 ? 'geologic_unit' : 'concept',
           })}
           selectedIndex={tagTypeForColor === 'geologic_unit' ? 0 : 1}
-          buttons={['Geologic Unit Tags', 'Conceptual Tags']}
+          buttons={['Geologic Unit', 'Conceptual']}
           containerStyle={styles.measurementDetailSwitches}
           selectedButtonStyle={{backgroundColor: themes.PRIMARY_ACCENT_COLOR}}
           textStyle={{color: themes.PRIMARY_ACCENT_COLOR}}
