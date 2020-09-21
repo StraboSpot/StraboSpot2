@@ -26,8 +26,6 @@ const ButtonClick = new Sound('ButtonClick.mp3', Sound.MAIN_BUNDLE, (error) => {
     console.log('failed to load the sound', error);
     return;
   }
-  console.log(
-    'duration in seconds: ' + ButtonClick.getDuration() + ' number of channels: ' + ButtonClick.getNumberOfChannels());
 });
 
 const degree_update_rate = 2; // Number of degrees changed before the callback is triggered
