@@ -19,9 +19,9 @@ const scaleAnimation = new ScaleAnimation({
 
 const MapSymbolsDialog = (props) => {
   const dispatch = useDispatch();
-  const symbolsOn = useSelector(state => state.map.symbolsOn) || [];
   const isAllSymbolsOn = useSelector(state => state.map.isAllSymbolsOn);
   const mapSymbols = useSelector(state => state.map.mapSymbols);
+  const symbolsOn = useSelector(state => state.map.symbolsOn) || [];
   const tagTypeForColor = useSelector(state => state.map.tagTypeForColor);
   const [useMeasurements] = useMeasurementsHook();
 
@@ -32,6 +32,11 @@ const MapSymbolsDialog = (props) => {
 
   const toggleAllSymbolsOn = () => {
     dispatch({type: mapReducers.SET_ALL_SYMBOLS_TOGGLED, toggled: !isAllSymbolsOn});
+  };
+
+  const toggleShowTagColor = () => {
+    if (tagTypeForColor) dispatch({type: mapReducers.SET_TAG_TYPE_FOR_COLOR, tagTypeForColor: undefined});
+    else dispatch({type: mapReducers.SET_TAG_TYPE_FOR_COLOR, tagTypeForColor: 'geologic_unit'});
   };
 
   const toggleSymbolSelected = (symbol) => {
@@ -77,20 +82,23 @@ const MapSymbolsDialog = (props) => {
         </ListItem>
         <ListItem key={'tag_color'} containerStyle={{...dialogStyles.dialogContent}}>
           <ListItem.Content>
-            <ListItem.Title style={dialogStyles.dialogLargerText}>{'Tag Color Prioritization'}</ListItem.Title>
+            <ListItem.Title style={dialogStyles.dialogLargerText}>{'Show Tag Color'}</ListItem.Title>
           </ListItem.Content>
+          <Switch onChange={() => toggleShowTagColor()} value={tagTypeForColor !== undefined}/>
         </ListItem>
-        <ButtonGroup
-          onPress={i => dispatch({
-            type: mapReducers.SET_TAG_TYPE_FOR_COLOR,
-            tagTypeForColor: i === 0 ? 'geologic_unit' : 'concept',
-          })}
-          selectedIndex={tagTypeForColor === 'geologic_unit' ? 0 : 1}
-          buttons={['Geologic Unit', 'Conceptual']}
-          containerStyle={styles.measurementDetailSwitches}
-          selectedButtonStyle={{backgroundColor: themes.PRIMARY_ACCENT_COLOR}}
-          textStyle={{color: themes.PRIMARY_ACCENT_COLOR}}
-        />
+        {tagTypeForColor && (
+          <ButtonGroup
+            onPress={i => dispatch({
+              type: mapReducers.SET_TAG_TYPE_FOR_COLOR,
+              tagTypeForColor: i === 0 ? 'geologic_unit' : 'concept',
+            })}
+            selectedIndex={tagTypeForColor === 'geologic_unit' ? 0 : 1}
+            buttons={['Geologic Unit', 'Conceptual']}
+            containerStyle={styles.measurementDetailSwitches}
+            selectedButtonStyle={{backgroundColor: themes.PRIMARY_ACCENT_COLOR}}
+            textStyle={{color: themes.PRIMARY_ACCENT_COLOR}}
+          />
+        )}
       </DialogContent>
     </Dialog>
   );

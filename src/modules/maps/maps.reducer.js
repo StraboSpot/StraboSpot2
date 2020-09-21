@@ -14,7 +14,7 @@ const initialState = {
   symbolsOn: [],
   isAllSymbolsOn: true,
   mapSymbols: [],
-  tagTypeForColor: 'geologic_unit',
+  tagTypeForColor: undefined,
 };
 
 export const mapReducer = (state = initialState, action) => {
