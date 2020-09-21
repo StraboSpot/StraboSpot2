@@ -164,7 +164,7 @@ const useMaps = () => {
     let mappedSpots = spotsWithGeometry.filter(spot => !spot.properties.strat_section);
     // Filter out Spots on an image_basemap
     if (!currentImageBasemap) mappedSpots = mappedSpots.filter(spot => !spot.properties.image_basemap);
-    console.log('All Mapped Spots on this map', mappedSpots);
+    // console.log('All Mapped Spots on this map', mappedSpots);
     return mappedSpots;
   };
 
@@ -225,8 +225,8 @@ const useMaps = () => {
     const notSelectedMappedSpots = mappedSpots.filter(spot => !selectedIds.includes(spot.properties.id)
       || spot.geometry.type === 'Point');
 
-    console.log('Selected Spots to Display on this Map:', selectedMappedSpots);
-    console.log('Not Selected Spots to Display on this Map:', notSelectedMappedSpots);
+    // console.log('Selected Spots to Display on this Map:', selectedMappedSpots);
+    // console.log('Not Selected Spots to Display on this Map:', notSelectedMappedSpots);
     return [selectedMappedSpots, notSelectedMappedSpots];
   };
 

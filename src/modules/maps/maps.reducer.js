@@ -95,7 +95,7 @@ export const mapReducer = (state = initialState, action) => {
         vertexEndCoords: undefined,
       };
     case mapReducers.SET_SPOTS_IN_MAP_EXTENT:
-      console.log('Spots in Map Extent', action.spots);
+      // console.log('Spots in Map Extent', action.spots);
       return {
         ...state,
         spotsInMapExtent: action.spots,
