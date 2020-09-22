@@ -165,7 +165,7 @@ function Basemap(props) {
         )}
 
         {/* Sketch Layer */}
-        {(props.mapMode === MapModes.DRAW.FREEHANDPOLYGON || props.mapMode === MapModes.DRAW.FREEHANDLINE)
+        {(props.freehandSketchMode)
         && (
           <FreehandSketch>
             <MapboxGL.RasterLayer id='sketchLayer'/>
