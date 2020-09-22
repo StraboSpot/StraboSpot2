@@ -57,6 +57,7 @@ const Map = React.forwardRef((props, ref) => {
     showUserLocation: false,
     zoomToSpot: false,
     zoom: 14,
+    freehandSketchMode:false,
   };
 
   const [editingModeData, setEditingModeData] = useState(initialEditingModeData);
@@ -71,7 +72,8 @@ const Map = React.forwardRef((props, ref) => {
   // Props that needed to pass to the map component
   const mapProps = {
     ...mapPropsMutable,
-    mapMode: props.mapMode,
+    freehandSketchMode: (props.mapMode === MapModes.DRAW.FREEHANDPOLYGON
+      || props.mapMode == MapModes.DRAW.FREEHANDLINE),
     allowMapViewMove: !isDrawFeatureModeOn() && props.mapMode != MapModes.EDIT,
     ref: {mapRef: map, cameraRef: camera},
     onMapPress: (e) => onMapPress(e),
@@ -774,9 +776,14 @@ const Map = React.forwardRef((props, ref) => {
           feature = useMaps.convertFeatureGeometryToImagePixels(feature);
           feature.properties.image_basemap = currentImageBasemap.id;
         }
-        newOrEditedSpot = await useSpots.createSpot(feature);
-        useMaps.setSelectedSpot(newOrEditedSpot);
-        dispatch(({type: mapReducers.FREEHAND_FEATURE_COORDS, freehandFeatureCoords: undefined}));// reset the freeHandCoordinates
+        if (props.isSelectingForStereonet) {
+          await getStereonetForFeature(feature);
+        }
+        else {
+          newOrEditedSpot = await useSpots.createSpot(feature);
+          useMaps.setSelectedSpot(newOrEditedSpot);
+          dispatch(({type: mapReducers.FREEHAND_FEATURE_COORDS, freehandFeatureCoords: undefined}));// reset the freeHandCoordinates
+        }
       }
     }
     else if (!isEmpty(mapPropsMutable.drawFeatures)) {
@@ -792,9 +799,7 @@ const Map = React.forwardRef((props, ref) => {
         newFeature.properties.image_basemap = currentImageBasemap.id;
       }
       if (props.isSelectingForStereonet) {
-        const selectedSpots = await useMapFeatures.getLassoedSpots(mapPropsMutable.spotsNotSelected, newFeature);
-        console.log('Selected Spots', selectedSpots);
-        await useMapFeatures.getStereonet(selectedSpots);
+        await getStereonetForFeature(newFeature);
       }
       else {
         newOrEditedSpot = await useSpots.createSpot(newFeature);
@@ -804,6 +809,12 @@ const Map = React.forwardRef((props, ref) => {
     }
     console.log('Draw ended.');
     return Promise.resolve(newOrEditedSpot);
+  };
+
+  const getStereonetForFeature = async (feature) => {
+    const selectedSpots = await useMapFeatures.getLassoedSpots(mapPropsMutable.spotsNotSelected, feature);
+    console.log('Selected Spots', selectedSpots);
+    await useMapFeatures.getStereonet(selectedSpots);
   };
 
   const cancelDraw = () => {
