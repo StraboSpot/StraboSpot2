@@ -8,6 +8,7 @@ export const menuButtons = {
     DELETE_SPOT: 'deleteSpot',
     TOGGLE_ALL_SPOTS_PANEL: 'toggleAllSpotsPanel',
     CLOSE_NOTEBOOK: 'closeNotebook',
+    SHOW_NESTING: 'showNesting',
     ZOOM_TO_SPOT: 'zoomToSpot',
   },
 };

@@ -6,6 +6,7 @@ export const NotebookPages = {
   MEASUREMENT: 'Measurements',
   MEASUREMENTDETAIL: 'Measurement Detail',
   SAMPLE: 'Sample',
+  NESTING: 'Nesting',
   NOTE: 'Note',
   PHOTO: 'Photo',
   SKETCH: 'Sketch',

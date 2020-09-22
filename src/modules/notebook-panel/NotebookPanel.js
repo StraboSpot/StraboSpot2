@@ -14,6 +14,7 @@ import {homeReducers, Modals} from '../home/home.constants';
 import {ImagesPage} from '../images';
 import MeasurementDetailPage from '../measurements/MeasurementDetail';
 import MeasurementsPage from '../measurements/Measurements';
+import Nesting from '../nesting/Nesting';
 import NotesPage from '../notes/Notes';
 import SamplesPage from '../samples/SamplesNotebook';
 import {useSpotsHook} from '../spots';
@@ -43,7 +44,6 @@ const NotebookPanel = props => {
 
   if (!isEmpty(props.spot)) {
     console.log('Selected Spot:', props.spot);
-
     return (
       <Animated.View
         style={props.isAllSpotsPanelVisible ? [notebookStyles.panel, {right: 125}] : notebookStyles.panel}
@@ -56,16 +56,16 @@ const NotebookPanel = props => {
         </View>
         <View
           style={notebookStyles.centerContainer}>
-          {props.notebookPageVisible === NotebookPages.OVERVIEW || props.notebookPageVisible === undefined
-            ? <Overview openMainMenu={props.openMainMenu}/> : null
-          }
-          {props.notebookPageVisible === NotebookPages.GEOGRAPHY ? <Geography/> : null}
-          {props.notebookPageVisible === NotebookPages.MEASUREMENT ? <MeasurementsPage/> : null}
-          {props.notebookPageVisible === NotebookPages.MEASUREMENTDETAIL ? <MeasurementDetailPage/> : null}
-          {props.notebookPageVisible === NotebookPages.NOTE ? <NotesPage/> : null}
-          {props.notebookPageVisible === NotebookPages.SAMPLE ? <SamplesPage/> : null}
-          {props.notebookPageVisible === NotebookPages.TAG ? <TagsPage openMainMenu={props.openMainMenu}/> : null}
-          {props.notebookPageVisible === NotebookPages.PHOTO ? <ImagesPage onPress={props.onPress}/> : null}
+          {(props.notebookPageVisible === NotebookPages.OVERVIEW || props.notebookPageVisible === undefined)
+          && <Overview openMainMenu={props.openMainMenu}/>}
+          {props.notebookPageVisible === NotebookPages.GEOGRAPHY && <Geography/>}
+          {props.notebookPageVisible === NotebookPages.MEASUREMENT && <MeasurementsPage/>}
+          {props.notebookPageVisible === NotebookPages.MEASUREMENTDETAIL && <MeasurementDetailPage/>}
+          {props.notebookPageVisible === NotebookPages.NOTE && <NotesPage/>}
+          {props.notebookPageVisible === NotebookPages.SAMPLE && <SamplesPage/>}
+          {props.notebookPageVisible === NotebookPages.TAG && <TagsPage openMainMenu={props.openMainMenu}/>}
+          {props.notebookPageVisible === NotebookPages.PHOTO && <ImagesPage onPress={props.onPress}/>}
+          {props.notebookPageVisible === NotebookPages.NESTING && <Nesting/>}
         </View>
         <View style={notebookStyles.footerContainer}>
           <NotebookFooter

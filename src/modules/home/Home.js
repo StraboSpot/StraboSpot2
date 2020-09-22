@@ -234,6 +234,9 @@ const Home = (props) => {
       case 'zoomToSpot':
         mapViewComponent.current.zoomToSpot();
         break;
+      case 'showNesting':
+        dispatch({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: NotebookPages.NESTING});
+        break;
       // Map Actions
       case MapModes.DRAW.POINT:
       case MapModes.DRAW.LINE:

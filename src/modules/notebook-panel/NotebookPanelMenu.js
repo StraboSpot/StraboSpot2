@@ -60,6 +60,12 @@ const NotebookPanelMenu = (props) => {
         }
         <DialogButton
           style={styles.dialogContent}
+          text='Show Nesting'
+          textStyle={styles.dialogText}
+          onPress={() => props.onPress(menuButtons.notebookMenu.SHOW_NESTING)}
+        />
+        <DialogButton
+          style={styles.dialogContent}
           text='Close Notebook'
           textStyle={styles.dialogText}
           onPress={() => props.onPress(menuButtons.notebookMenu.CLOSE_NOTEBOOK)}
