@@ -194,6 +194,13 @@ const useSpots = (props) => {
     return activeSpots;
   };
 
+  // Reverse chronologically sort active Spots
+  const getSpotsSortedReverseChronologically = () => {
+    return Object.values(getActiveSpotsObj()).sort(((a, b) => {
+      return new Date(b.properties.date) - new Date(a.properties.date);
+    }));
+  };
+
   const getMappableSpots = () => {
     const allSpotsCopy = JSON.parse(JSON.stringify(Object.values(getActiveSpotsObj())));
     if (currentImageBasemap) {
@@ -252,6 +259,7 @@ const useSpots = (props) => {
     deleteSpotsFromDataset: deleteSpotsFromDataset,
     downloadSpots: downloadSpots,
     getActiveSpotsObj: getActiveSpotsObj,
+    getSpotsSortedReverseChronologically: getSpotsSortedReverseChronologically,
     getMappableSpots: getMappableSpots,
     getSpotById: getSpotById,
     getSpotDataIconSource: getSpotDataIconSource,

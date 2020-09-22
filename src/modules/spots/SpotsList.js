@@ -12,7 +12,7 @@ import {useTagsHook} from '../tags';
 import useSpotsHook from './useSpots';
 
 const SpotsList = (props) => {
-  const [sortedList, setSortedList] = useState(getSpotsSortedChronologically);
+  const [sortedList, setSortedList] = useState({});
   const [useSpots] = useSpotsHook();
   const [useTags] = useTagsHook();
   const activeSpotsObj = useSpots.getActiveSpotsObj();
@@ -20,15 +20,8 @@ const SpotsList = (props) => {
 
   useEffect(() => {
     console.log('In SpotsList useEffect: Updating chronological sorting for Spots');
-    setSortedList(getSpotsSortedChronologically);
+    setSortedList(useSpots.getSpotsSortedReverseChronologically());
   }, [props.spots]);
-
-  // Reverse chronologically sort Spots
-  const getSpotsSortedChronologically = () => {
-    return Object.values(activeSpotsObj).sort(((a, b) => {
-      return new Date(b.properties.date) - new Date(a.properties.date);
-    }));
-  };
 
   const renderDataIcons = (item) => {
     const keysFound = useSpots.getSpotDataKeys(item);

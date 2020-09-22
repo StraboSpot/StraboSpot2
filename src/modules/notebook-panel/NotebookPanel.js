@@ -2,7 +2,7 @@ import React from 'react';
 import {Animated, FlatList, Text, View} from 'react-native';
 
 // import {FlingGestureHandler, Directions, State} from 'react-native-gesture-handler';
-import {Avatar, ListItem} from 'react-native-elements';
+import {Avatar, Button, ListItem} from 'react-native-elements';
 import {connect, useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
@@ -77,6 +77,36 @@ const NotebookPanel = props => {
     );
   }
   else {
+    const renderSpotsList = () => {
+      let spotsList = recentlyViewedSpotIds.reduce((obj, key) => {
+        if (spots && spots.hasOwnProperty(key)) obj.push(spots[key]);
+        return obj;
+      }, []);
+      if (isEmpty(spotsList)) spotsList = useSpots.getSpotsSortedReverseChronologically();
+      return (
+        <View>
+          <Spacer/>
+          <Spacer/>
+          <SectionDivider dividerText='Recent Spots'/>
+          {isEmpty(spotsList) ? (
+            <Text style={{paddingLeft: 10}}>No Spots in Active Datasets</Text>
+          ) : (
+            <FlatList
+              keyExtractor={(item) => item.properties.id.toString()}
+              data={spotsList}
+              renderItem={({item}) => renderSpotName(item)}/>
+          )}
+          <Spacer/>
+          <Spacer/>
+          <Button
+            title={'Close Notebook'}
+            type={'clear'}
+            titleStyle={commonStyles.standardButtonText}
+            onPress={() => props.closeNotebook()}/>
+        </View>
+      );
+    };
+
     const renderSpotName = (item) => {
       return (
         <ListItem key={item.properties.id} onPress={() => dispatch({type: spotReducers.SET_SELECTED_SPOT, spot: item})}>
@@ -88,25 +118,11 @@ const NotebookPanel = props => {
       );
     };
 
-    const recentlyViewedSpots = recentlyViewedSpotIds.reduce((obj, key) => {
-      if (spots && spots.hasOwnProperty(key)) obj.push(spots[key]);
-      return obj;
-    }, []);
     return (
       <View style={notebookStyles.panel}>
         <Text style={{...commonStyles.noContentText, textAlign: 'center', paddingTop: 40}}>No Spot Currently
           Selected!</Text>
-        {!isEmpty(recentlyViewedSpots) && (
-          <View>
-            <Spacer/>
-            <Spacer/>
-            <SectionDivider dividerText='Recent Spots'/>
-            <FlatList
-              keyExtractor={(item) => item.properties.id.toString()}
-              data={recentlyViewedSpots}
-              renderItem={({item}) => renderSpotName(item)}/>
-          </View>
-        )}
+        {renderSpotsList()}
       </View>
     );
   }
