@@ -9,6 +9,7 @@ import {useSelector, useDispatch} from 'react-redux';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import Spacer from '../../shared/ui/Spacer';
+import {homeReducers} from '../home/home.constants';
 import homeStyles from '../home/home.style';
 import {spotReducers} from '../spots/spot.constants';
 import ActiveDatasetsList from './ActiveDatasetsList';
@@ -23,6 +24,7 @@ const InitialProjectLoadModal = (props) => {
   const selectedProject = useSelector(state => state.project.project);
   const datasets = useSelector(state => state.project.datasets);
   const isOnline = useSelector(state => state.home.isOnline);
+  const userName = useSelector(state => state.user.name);
   const dispatch = useDispatch();
   const [visibleProjectSection, setVisibleProjectSection] = useState('activeDatasetsList');
   const [visibleInitialSection, setVisibleInitialSection] = useState('none');
@@ -48,18 +50,19 @@ const InitialProjectLoadModal = (props) => {
   const renderProjectTypesButtons = () => {
     return (
       <View>
-      <ProjectTypesButtons
-        onLoadProjectsFromServer={() => setVisibleInitialSection('serverProjects')}
-        onLoadProjectsFromDevice={() => setVisibleInitialSection('deviceProjects')}
-        onStartNewProject={() => setVisibleInitialSection('project')}/>
+        <ProjectTypesButtons
+          onLoadProjectsFromServer={() => setVisibleInitialSection('serverProjects')}
+          onLoadProjectsFromDevice={() => setVisibleInitialSection('deviceProjects')}
+          onStartNewProject={() => setVisibleInitialSection('project')}/>
         <Button
-          title={'Back to Sign In'}
+          title={userName ? `Not ${userName}?` : 'Sign in?'}
           type={'clear'}
           containerStyle={commonStyles.buttonContainer}
           titleStyle={commonStyles.standardButtonText}
           onPress={() => {
-            dispatch({type: 'CLEAR_STORE'});
-            navigation.goBack();
+            if (userName) dispatch({type: 'CLEAR_STORE'});
+            dispatch({type: homeReducers.SET_IS_SIGNED_IN, bool: false});
+            navigation.navigate('SignIn');
           }}
         />
       </View>
@@ -211,6 +214,13 @@ const InitialProjectLoadModal = (props) => {
     );
   };
 
+  const displayFirstName = () => {
+    if (userName && !isEmpty(userName)) return userName.split(' ')[0];
+    else return 'Guest';
+  };
+
+  const firstName = displayFirstName();
+
   return (
     <React.Fragment>
       <Dialog
@@ -221,7 +231,7 @@ const InitialProjectLoadModal = (props) => {
         })}
         dialogTitle={
           <DialogTitle
-            title={'Welcome to StraboSpot!'}
+            title={`Welcome to StraboSpot, \n ${firstName}!`}
             style={homeStyles.dialogTitleContainer}
             textStyle={homeStyles.dialogTitleText}
           />

@@ -2,9 +2,10 @@ import React, {useState, useEffect} from 'react';
 import {View, Text, TextInput, Alert, ImageBackground, KeyboardAvoidingView} from 'react-native';
 
 import NetInfo from '@react-native-community/netinfo';
+import {useNavigation} from '@react-navigation/native';
 import * as Sentry from '@sentry/react-native';
 import {Base64} from 'js-base64';
-import {Button} from 'react-native-elements';
+import {Button, CheckBox} from 'react-native-elements';
 import {useSelector, useDispatch} from 'react-redux';
 
 import {USERNAME_TEST, PASSWORD_TEST} from '../../../Config';
@@ -12,6 +13,7 @@ import useServerRequests from '../../services/useServerRequests';
 import {VERSION_NUMBER} from '../../shared/app.constants';
 import {readDataUrl, isEmpty} from '../../shared/Helpers';
 import IconButton from '../../shared/ui/IconButton';
+import uiStyles from '../../shared/ui/ui.styles';
 import {homeReducers} from '../home/home.constants';
 import {USER_DATA, USER_IMAGE, ENCODED_LOGIN} from '../user/user.constants';
 import styles from './signIn.styles';
@@ -19,23 +21,22 @@ import styles from './signIn.styles';
 let user = null;
 
 const SignIn = (props) => {
+  const navigation = useNavigation();
+
   const online = require('../../assets/icons/ConnectionStatusButton_connected.png');
   const offline = require('../../assets/icons/ConnectionStatusButton_offline.png');
   const [username, setUsername] = useState(__DEV__ ? USERNAME_TEST : '');
   const [password, setPassword] = useState(__DEV__ ? PASSWORD_TEST : '');
+  const isSignedIn = useSelector(state => state.home.isSignedIn);
   const isOnline = useSelector(state => state.home.isOnline);
   const userData = useSelector(state => state.user);
-  const project = useSelector(state => state.project.project);
   const dispatch = useDispatch();
   const [serverRequests] = useServerRequests();
 
   useEffect(() => {
-      NetInfo.addEventListener(state => {
-        dispatch({type: homeReducers.SET_ISONLINE, online: state.isConnected});
-      });
-    if (!isEmpty(userData) && !isEmpty(project)) {
-      props.navigation.navigate('HomeScreen');
-    }
+    NetInfo.addEventListener(state => {
+      dispatch({type: homeReducers.SET_ISONLINE, online: state.isConnected});
+    });
   }, [isOnline]);
 
   useEffect(() => {
@@ -44,13 +45,15 @@ const SignIn = (props) => {
     });
   }, [userData]);
 
+  useEffect(() => [isSignedIn]);
+
   const guestSignIn = async () => {
     Sentry.configureScope((scope) => {
       scope.setUser({'id': 'GUEST'});
     });
-    if (isEmpty(props.userData)) await dispatch({type: 'CLEAR_STORE'});
+    if (!isEmpty(props.userData)) await dispatch({type: 'CLEAR_STORE'});
     console.log('Loading user: GUEST');
-    props.navigation.navigate('HomeScreen');
+    await navigation.navigate('HomeScreen');
   };
 
   const signIn = async () => {
@@ -60,10 +63,9 @@ const SignIn = (props) => {
       // login with provider
       if (user === 'true') {
         const encodedLogin = Base64.encode(username + ':' + password);
-        dispatch({type: ENCODED_LOGIN, value: encodedLogin});
         updateUserResponse(encodedLogin).then(() => {
+          navigation.navigate('HomeScreen');
           console.log(`${username} is successfully logged in!`);
-          props.navigation.navigate('HomeScreen');
         });
       }
       else {
@@ -108,7 +110,7 @@ const SignIn = (props) => {
           disabled={!isOnline}
           title={'Create an Account'}
         />
-        <Button
+        {!isSignedIn && <Button
           icon={{
             name: 'people',
             type: 'ionicon',
@@ -120,23 +122,23 @@ const SignIn = (props) => {
           containerStyle={{marginTop: 10}}
           buttonStyle={styles.buttonStyle}
           title={'Continue as Guest'}
-        />
+        />}
       </View>
     );
   };
 
   const updateUserResponse = async (encodedLogin) => {
     let userProfile = await serverRequests.getProfile(encodedLogin);
+    dispatch({type: ENCODED_LOGIN, value: encodedLogin});
+    dispatch({type: USER_DATA, userData: userProfile});
     const userProfileImage = await serverRequests.getProfileImage(encodedLogin);
     if (userProfileImage) {
       readDataUrl(userProfileImage, (base64Image) => {
         dispatch({type: USER_IMAGE, userImage: base64Image});
       });
-      dispatch({type: USER_DATA, userData: userProfile});
     }
     else {
-      dispatch({type: USER_DATA, userData: userProfile});
-      dispatch({type: USER_IMAGE, userImage: null});
+      dispatch({type: USER_IMAGE, userImage: require('../../assets/images/noimage.jpg')});
     }
   };
 
@@ -193,6 +195,14 @@ const SignIn = (props) => {
                 returnKeyType='go'
                 onSubmitEditing={signIn}
               />
+              <CheckBox
+                checked={isSignedIn}
+                title={'Keep me signed in'}
+                textStyle={{color: 'white'}}
+                uncheckedColor={'white'}
+                checkedColor={'white'}
+                containerStyle={uiStyles.defaultCheckBox}
+                onIconPress={() => dispatch({type: homeReducers.SET_IS_SIGNED_IN, bool: !isSignedIn})}/>
               {renderButtons()}
             </View>
           </View>
