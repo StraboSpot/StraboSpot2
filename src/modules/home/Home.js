@@ -64,6 +64,7 @@ const Home = (props) => {
   const customMaps = useSelector(state => state.map.customMaps);
   const modalVisible = useSelector(state => state.home.modalVisible);
   const statusMessages = useSelector(state => state.home.statusMessages);
+  const projectLoadComplete = useSelector(state => state.home.projectLoadComplete);
   const isHomeLoading = useSelector(state => state.home.loading.home);
   const isModalLoading = useSelector(state => state.home.loading.modal);
   const isOfflineMapModalVisible = useSelector(state => state.home.isOfflineMapModalVisible);
@@ -126,6 +127,14 @@ const Home = (props) => {
       console.log('currentImageBasemap cleanup UE');
     };
   }, [props.currentImageBasemap, customMaps]);
+
+  useEffect(() => {
+    if (projectLoadComplete) {
+      mapViewComponent.current.zoomToSpotsExtent();
+      dispatch({type: homeReducers.PROJECT_LOAD_COMPLETE, projectLoadComplete: false});
+      // toggles off whenever new project is loaded successfully to trigger the same for next project load.
+    }
+  }, [projectLoadComplete]);
 
   useEffect(() => {
     console.log('Render 2 in Home', props.homePageVisible);
