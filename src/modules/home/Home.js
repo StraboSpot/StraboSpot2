@@ -3,7 +3,6 @@ import {Alert, Animated, Dimensions, Platform, Text, View} from 'react-native';
 
 import * as turf from '@turf/turf';
 import {Button, Image} from 'react-native-elements';
-import {stat} from 'react-native-fs';
 import {BallIndicator} from 'react-native-indicators';
 import Modal from 'react-native-modal';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
