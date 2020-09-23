@@ -32,6 +32,7 @@ const initialState = {
     Photo: false,
     Sketch: false,
   },
+  projectLoadComplete: false,
 };
 
 export const homeReducer = (state = initialState, action) => {
@@ -61,6 +62,12 @@ export const homeReducer = (state = initialState, action) => {
         ...state,
         isProjectLoadSelectionModalVisible: action.bool,
       };
+    case homeReducers.PROJECT_LOAD_COMPLETE: {
+      return {
+        ...state,
+        projectLoadComplete: action.projectLoadComplete,
+      };
+    }
     case homeReducers.SET_OFFLINE_MAPS_MODAL_VISIBLE: {
       return {
         ...state,

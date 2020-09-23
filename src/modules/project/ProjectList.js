@@ -89,6 +89,7 @@ const ProjectList = (props) => {
         else {
           setLoading(false);
           dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Project loaded!'});
+          dispatch({type: homeReducers.PROJECT_LOAD_COMPLETE, projectLoadComplete: true});
         }
       });
     }
@@ -151,6 +152,7 @@ const ProjectList = (props) => {
           }
           else {
             dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Download Complete!'});
+            dispatch({type: homeReducers.PROJECT_LOAD_COMPLETE, projectLoadComplete: true});
             dispatch({type: homeReducers.SET_LOADING, view: 'modal', bool: false});
             dispatch(
               {type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS});
