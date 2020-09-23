@@ -1,12 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import {FlatList, Text, View} from 'react-native';
 
-import {Avatar, ListItem} from 'react-native-elements';
+import {Avatar, Icon, ListItem} from 'react-native-elements';
 import {useSelector, useDispatch} from 'react-redux';
 
 import {isEmpty} from '../../shared/Helpers';
 import SectionDivider from '../../shared/ui/SectionDivider';
-import Spacer from '../../shared/ui/Spacer';
 import {NotebookPages, notebookReducers} from '../notebook-panel/notebook.constants';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import {useSpotsHook} from '../spots';
@@ -62,6 +61,7 @@ const Nesting = (props) => {
         <ListItem
           key={item.properties.id}
           onPress={() => goToSpotNesting(item)}
+          containerStyle={{padding: 5, paddingLeft: 10}}
         >
           <Avatar source={useSpots.getSpotGemometryIconSource(item)} size={20}/>
           <ListItem.Content>
@@ -76,14 +76,9 @@ const Nesting = (props) => {
 
   const renderGeneration = (type, generation, i) => {
     i++;
-    let ordinalAbbrev = 'th';
-    if (i === 1) ordinalAbbrev = 'st';
-    else if (i === 2) ordinalAbbrev = 'nd';
-    else if (i === 3) ordinalAbbrev = 'rd';
-
     return (
       <View>
-        <SectionDivider dividerText={i + ordinalAbbrev + ' Generation ' + type}/>
+        <Text style={{paddingLeft: 10}}>{i} {i === 1 ? 'Level' : 'Levels'} {type === 'Parents' ? 'Up' : 'Down'}</Text>
         <FlatList
           keyExtractor={(item) => item.toString()}
           data={generation}
@@ -95,31 +90,29 @@ const Nesting = (props) => {
 
   const renderGenerations = (type) => {
     const generationData = type === 'Parents' ? parentGenerations : childrenGenerations;
-    return (
-      <View>
-        <SectionDivider dividerText={type + ' Generations'}/>
-        {isEmpty(generationData)
-          ? <Text style={{padding: 10}}>No {type}</Text>
-          : (
-            <FlatList
-              keyExtractor={(item) => item.toString()}
-              data={type === 'Parents' ? generationData.reverse() : generationData}
-              renderItem={({item, index}) => renderGeneration(type, item, index)}
-              reverse
-            />
-          )
-        }
-      </View>
-    );
+    if (!isEmpty(generationData)) {
+      return (
+        <View>
+          {type === 'Children' && (
+            <Icon type={'material-icons'} name={'south'} containerStyle={{paddingLeft: 8, alignItems: 'flex-start'}}/>
+          )}
+          <FlatList
+            keyExtractor={(item) => item.toString()}
+            data={type === 'Parents' ? generationData.reverse() : generationData}
+            renderItem={({item, index}) => renderGeneration(type, item, index)}
+          />
+          {type === 'Parents' && (
+            <Icon type={'material-icons'} name={'north'} containerStyle={{paddingLeft: 8, alignItems: 'flex-start'}}/>
+          )}
+        </View>
+      );
+    }
   };
 
   const renderSelf = self => {
     return (
       <View>
-        <Spacer/>
-        <SectionDivider dividerText={'Self'}/>
         {renderName(self)}
-        <Spacer/>
       </View>
     );
   };
