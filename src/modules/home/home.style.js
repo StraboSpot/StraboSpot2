@@ -25,6 +25,7 @@ const homeStyles = StyleSheet.create({
   dialogTitleText: {
     fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,
     fontWeight: 'bold',
+    textAlign: 'center',
   },
   dialogButton: {
     borderTopWidth: 1,
