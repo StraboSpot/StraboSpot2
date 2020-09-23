@@ -45,7 +45,7 @@ const SignIn = (props) => {
     });
   }, [userData]);
 
-  useEffect(() => [isSignedIn]);
+  useEffect(() => {} ,[isSignedIn]);
 
   const guestSignIn = async () => {
     Sentry.configureScope((scope) => {
@@ -65,6 +65,7 @@ const SignIn = (props) => {
         const encodedLogin = Base64.encode(username + ':' + password);
         updateUserResponse(encodedLogin).then(() => {
           navigation.navigate('HomeScreen');
+          dispatch({type: homeReducers.SET_IS_SIGNED_IN, bool: true});
           console.log(`${username} is successfully logged in!`);
         });
       }
@@ -110,7 +111,7 @@ const SignIn = (props) => {
           disabled={!isOnline}
           title={'Create an Account'}
         />
-        {!isSignedIn && <Button
+        <Button
           icon={{
             name: 'people',
             type: 'ionicon',
@@ -122,7 +123,7 @@ const SignIn = (props) => {
           containerStyle={{marginTop: 10}}
           buttonStyle={styles.buttonStyle}
           title={'Continue as Guest'}
-        />}
+        />
       </View>
     );
   };
@@ -195,14 +196,6 @@ const SignIn = (props) => {
                 returnKeyType='go'
                 onSubmitEditing={signIn}
               />
-              <CheckBox
-                checked={isSignedIn}
-                title={'Keep me signed in'}
-                textStyle={{color: 'white'}}
-                uncheckedColor={'white'}
-                checkedColor={'white'}
-                containerStyle={uiStyles.defaultCheckBox}
-                onIconPress={() => dispatch({type: homeReducers.SET_IS_SIGNED_IN, bool: !isSignedIn})}/>
               {renderButtons()}
             </View>
           </View>
