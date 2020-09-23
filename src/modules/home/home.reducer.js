@@ -14,6 +14,7 @@ const initialState = {
     modal: false,
     home: false,
   },
+  isSignedIn: false,
   modalVisible: null,
   isStatusMessagesModalVisible: false,
   isErrorMessagesModalVisible: false,
@@ -37,6 +38,11 @@ const initialState = {
 
 export const homeReducer = (state = initialState, action) => {
   switch (action.type) {
+    case homeReducers.SET_IS_SIGNED_IN:
+      return {
+        ...state,
+        isSignedIn: action.bool,
+      };
     case homeReducers.SET_MODAL_VISIBLE:
       return {
         ...state,
