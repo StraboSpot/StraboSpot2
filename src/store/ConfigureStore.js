@@ -47,9 +47,12 @@ if (__DEV__) {
   composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 }
 
-export default () => {
+const store = () => {
   const store = createStore(persistedReducer, composeEnhancers(applyMiddleware(loggerMiddleware)));
+  console.log('The State of the Store', store.getState());
   const persistor = persistStore(store);
   // const persistorPurge = persistStore(store).purge(); // Use this to clear persistStore completely
   return {store, persistor};
 };
+
+export default store;
