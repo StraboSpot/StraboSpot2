@@ -64,9 +64,10 @@ function Basemap(props) {
     }
   };
 
-  const onZoomChange = (zoomLevel) => {
+  const onZoomChange = async () => {
+    const zoom = await mapRef.current.getZoom()
     setShowZoom(true);
-    setCurrentZoom(zoomLevel);
+    setCurrentZoom(zoom);
   };
 
   const onRegionDidChange = () => {
@@ -95,7 +96,7 @@ function Basemap(props) {
         onLongPress={props.onMapLongPress}
         scrollEnabled={props.allowMapViewMove}
         zoomEnabled={props.allowMapViewMove}
-        onRegionIsChanging={(args) => onZoomChange(args.properties.zoomLevel)}
+        onRegionIsChanging={(args) => onZoomChange()}
         onRegionDidChange={() => onRegionDidChange()}
       >
 
