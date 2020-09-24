@@ -158,6 +158,7 @@ const useSpots = (props) => {
           dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Download Complete!'});
         }
         else return await useImages.downloadImages(neededImagesIds);
+        dispatch({type: homeReducers.PROJECT_LOAD_COMPLETE, projectLoadComplete: true});
       }
       return Promise.resolve({message: 'done - Spots'});
     }
