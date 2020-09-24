@@ -9,7 +9,7 @@ import {isEmpty} from '../../shared/Helpers';
 import homeStyles from '../home/home.style';
 import useImagesHook from '../images/useImages';
 import FreehandSketch from '../sketch/FreehandSketch';
-import {symbols as symbolsConstant, geoLatLngProjection, pixelProjection, MapModes} from './maps.constants';
+import {symbols as symbolsConstant, geoLatLngProjection, pixelProjection} from './maps.constants';
 import useMapsHook from './useMaps';
 import useMapSymbologyHook from './useMapSymbology';
 
@@ -173,6 +173,19 @@ function Basemap(props) {
           </FreehandSketch>
         )}
 
+        {/* Colored Halo Around Points Layer */}
+        <MapboxGL.ShapeSource
+          id='shapeSource'
+          shape={turf.featureCollection(addSymbology(props.spotsNotSelected))}
+        >
+          <MapboxGL.CircleLayer
+            id='pointLayerColorHalo'
+            minZoomLevel={1}
+            filter={['==', ['geometry-type'], 'Point']}
+            style={useMapSymbology.getMapSymbology().pointColorHalo}
+          />
+        </MapboxGL.ShapeSource>
+
         {/* Feature Layer */}
         <MapboxGL.Images
           images={symbols}
@@ -184,11 +197,11 @@ function Basemap(props) {
           id='spotsNotSelectedSource'
           shape={turf.featureCollection(addSymbology(useMaps.getSpotsAsFeatures(props.spotsNotSelected)))}
         >
-          <MapboxGL.SymbolLayer
-            id='pointLayerNotSelected'
+          <MapboxGL.FillLayer
+            id='polygonLayerNotSelected'
             minZoomLevel={1}
-            filter={['==', ['geometry-type'], 'Point']}
-            style={useMapSymbology.getMapSymbology().point}
+            filter={['==', ['geometry-type'], 'Polygon']}
+            style={useMapSymbology.getMapSymbology().polygon}
           />
 
           {/* Need 4 different lines for the different types of line dashes since
@@ -218,11 +231,11 @@ function Basemap(props) {
             style={useMapSymbology.getMapSymbology().lineDotDashed}
           />
 
-          <MapboxGL.FillLayer
-            id='polygonLayerNotSelected'
+          <MapboxGL.SymbolLayer
+            id='pointLayerNotSelected'
             minZoomLevel={1}
-            filter={['==', ['geometry-type'], 'Polygon']}
-            style={useMapSymbology.getMapSymbology().polygon}
+            filter={['==', ['geometry-type'], 'Point']}
+            style={useMapSymbology.getMapSymbology().point}
           />
         </MapboxGL.ShapeSource>
 
@@ -231,11 +244,11 @@ function Basemap(props) {
           id='spotsSelectedSource'
           shape={turf.featureCollection(addSymbology(props.spotsSelected))}
         >
-          <MapboxGL.CircleLayer
-            id='pointLayerSelected'
+          <MapboxGL.FillLayer
+            id='polygonLayerSelected'
             minZoomLevel={1}
-            filter={['==', ['geometry-type'], 'Point']}
-            style={useMapSymbology.getMapSymbology().pointSelected}
+            filter={['==', ['geometry-type'], 'Polygon']}
+            style={useMapSymbology.getMapSymbology().polygonSelected}
           />
 
           {/* Need 4 different lines for the different types of line dashes since
@@ -265,24 +278,11 @@ function Basemap(props) {
             style={useMapSymbology.getMapSymbology().lineSelectedDotDashed}
           />
 
-          <MapboxGL.FillLayer
-            id='polygonLayerSelected'
-            minZoomLevel={1}
-            filter={['==', ['geometry-type'], 'Polygon']}
-            style={useMapSymbology.getMapSymbology().polygonSelected}
-          />
-        </MapboxGL.ShapeSource>
-
-        {/* Colored Halo Around Points Layer */}
-        <MapboxGL.ShapeSource
-          id='shapeSource'
-          shape={turf.featureCollection(addSymbology(props.spotsNotSelected))}
-        >
           <MapboxGL.CircleLayer
-            id='pointLayerColorHalo'
+            id='pointLayerSelected'
             minZoomLevel={1}
             filter={['==', ['geometry-type'], 'Point']}
-            style={useMapSymbology.getMapSymbology().pointColorHalo}
+            style={useMapSymbology.getMapSymbology().pointSelected}
           />
         </MapboxGL.ShapeSource>
 
