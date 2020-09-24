@@ -63,12 +63,13 @@ const useNesting = (props) => {
     // Find children spots based on image basemap
     if (thisSpot.properties.images) {
       const imageBasemaps = thisSpot.properties.images.map(image => image.id);
-      const imageBasemapChildrenSpots = spots.filter(spot => imageBasemaps.includes(spot.properties.image_basemap));
+      const imageBasemapChildrenSpots = Object.values(spots).filter(
+        spot => imageBasemaps.includes(spot.properties.image_basemap));
       childrenSpots.push(imageBasemapChildrenSpots);
     }
     // Find children spots based on strat section
     if (thisSpot.properties.sed && thisSpot.properties.sed.strat_section) {
-      const stratSectionChildrenSpots = spots.filter(spot => {
+      const stratSectionChildrenSpots = Object.values(spots).filter(spot => {
         return thisSpot.properties.sed.strat_section.strat_section_id === spot.properties.strat_section_id;
       });
       childrenSpots.push(stratSectionChildrenSpots);
@@ -88,7 +89,7 @@ const useNesting = (props) => {
     childrenSpots = childrenSpots.flat();
     // Find children spots based on geometry
     // Only non-point features can have children
-    if (thisSpot.geometry.type) {
+    if (thisSpot.geometry && thisSpot.geometry.type) {
       if (thisSpot.geometry.type !== 'Point') {
         const otherSpots = Object.values(spots).filter(spot => {
           return spot.geometry && spot.properties.id !== thisSpot.properties.id;
@@ -144,14 +145,16 @@ const useNesting = (props) => {
     // Find parent spots based on image basemap
     if (thisSpot.properties.image_basemap) {
       const parentImageBasemapSpot = Object.values(spots).find(spot => {
-        return spot.properties.images.find(image => image.id === thisSpot.properties.image_basemap);
+        return spot.properties.images
+          && spot.properties.images.find(image => image.id === thisSpot.properties.image_basemap);
       });
       parentSpots.push(parentImageBasemapSpot);
     }
     // Find parent spots based on strat section
     if (thisSpot.properties.strat_section_id) {
       const parentStratSectionSpot = Object.values(spots).find(spot => {
-        return spot.properties.sed.find(sed => sed.strat_section_id === thisSpot.properties.strat_section_id);
+        return spot.properties.sed
+          && spot.properties.sed.find(sed => sed.strat_section_id === thisSpot.properties.strat_section_id);
       });
       parentSpots.push(parentStratSectionSpot);
     }
@@ -170,8 +173,8 @@ const useNesting = (props) => {
         if ((!thisSpot.properties.image_basemap && !spot.properties.image_basemap)
           || (thisSpot.properties.image_basemap && spot.properties.image_basemap
             && thisSpot.properties.image_basemap === spot.properties.image_basemap)) {
-          if (spot.geometry.type && (spot.geometry.type === 'Polygon' || spot.geometry.type === 'MutiPolygon'
-            || spot.geometry.type === 'GeometryCollection')) {
+          if (spot.geometry.type && (spot.geometry.type === 'Polygon'
+            || spot.geometry.type === 'MutiPolygon' || spot.geometry.type === 'GeometryCollection')) {
             if (isWithin(thisSpot, spot)) parentSpots.push(spot);
           }
         }

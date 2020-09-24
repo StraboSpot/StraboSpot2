@@ -74,16 +74,24 @@ const Nesting = (props) => {
     }
   };
 
-  const renderGeneration = (type, generation, i) => {
-    i++;
+  const renderGeneration = (type, generation, i, length) => {
+    const levelNum = type == 'Parents' ? length - i : i + 1;
+    const generationText = levelNum + (levelNum === 1 ? ' Level' : ' Levels') + (type === 'Parents' ? ' Up' : ' Down');
     return (
       <View>
-        <Text style={{paddingLeft: 10}}>{i} {i === 1 ? 'Level' : 'Levels'} {type === 'Parents' ? 'Up' : 'Down'}</Text>
+        {type === 'Children' && (
+          <Icon type={'material-icons'} name={'south'} containerStyle={{paddingLeft: 8, alignItems: 'flex-start'}}/>
+        )}
+        <Text style={{paddingLeft: 10}}>{generationText}</Text>
         <FlatList
+          listKey={type + i}
           keyExtractor={(item) => item.toString()}
           data={generation}
           renderItem={({item}) => renderName(item)}
         />
+        {type === 'Parents' && (
+          <Icon type={'material-icons'} name={'north'} containerStyle={{paddingLeft: 8, alignItems: 'flex-start'}}/>
+        )}
       </View>
     );
   };
@@ -93,17 +101,12 @@ const Nesting = (props) => {
     if (!isEmpty(generationData)) {
       return (
         <View>
-          {type === 'Children' && (
-            <Icon type={'material-icons'} name={'south'} containerStyle={{paddingLeft: 8, alignItems: 'flex-start'}}/>
-          )}
           <FlatList
+            listKey={type}
             keyExtractor={(item) => item.toString()}
             data={type === 'Parents' ? generationData.reverse() : generationData}
-            renderItem={({item, index}) => renderGeneration(type, item, index)}
+            renderItem={({item, index}) => renderGeneration(type, item, index, generationData.length)}
           />
-          {type === 'Parents' && (
-            <Icon type={'material-icons'} name={'north'} containerStyle={{paddingLeft: 8, alignItems: 'flex-start'}}/>
-          )}
         </View>
       );
     }
