@@ -1,4 +1,4 @@
-import {Alert, Platform} from 'react-native';
+import {Alert, Image, Platform} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
 import {Base64} from 'js-base64';
@@ -68,6 +68,7 @@ const useImages = () => {
           else {
             imageCount++;
             console.log(imageCount, 'File saved to', res.path());
+            return Promise.resolve({imageIdMessage: 'Success with' + imageId})
           }
         })
         .catch((errorMessage, statusCode) => {
@@ -349,33 +350,47 @@ const useImages = () => {
     });
   };
 
+  const getImageHeightAndWidth = async (imageURI) => {
+   return new Promise((resolve, reject) => {
+     Image.getSize(imageURI.uri || imageURI, (width, height) => {
+       resolve({width: width, height: height});
+     }, (error) => {
+       Alert.alert('THERE IS AN ERROR', error.message)
+       reject('THERE IS AN ERROR' + error)});
+   });
+  };
+
   const saveFile = async (imageURI) => {
-    let imageId = getNewId();
-    const imagePath = imagesDirectory + '/' + imageId + '.jpg';
-    console.log(imageURI);
-    try {
-      await RNFS.mkdir(imagesDirectory);
-      if (imageURI.uri) await RNFS.copyFile(imageURI.uri, imagePath);
-      else await RNFS.copyFile(imageURI, imagePath);
-      console.log(imageCount, 'File saved to:', imagePath);
-      imageCount++;
-      let imageData = {};
-      if (Platform.OS === 'ios') {
-        imageData = {
-          id: imageId,
-          src: imagePath,
-          height: imageURI.height,
-          width: imageURI.width,
-        };
+    let imageSize;
+    if (imageURI.height === undefined && imageURI.width === undefined) {
+      imageSize = await getImageHeightAndWidth(imageURI)
+    }
+      let imageId = getNewId();
+      const imagePath = imagesDirectory + '/' + imageId + '.jpg';
+      console.log(imageURI);
+      try {
+        await RNFS.mkdir(imagesDirectory);
+        if (imageURI.uri) await RNFS.copyFile(imageURI.uri, imagePath);
+        else await RNFS.copyFile(imageURI, imagePath);
+        console.log(imageCount, 'File saved to:', imagePath);
+        imageCount++;
+        let imageData = {};
+        if (Platform.OS === 'ios') {
+          imageData = {
+            id: imageId,
+            src: imagePath,
+            height: imageURI.height || imageSize.height,
+            width: imageURI.width || imageSize.width,
+          };
+        }
+        else imageData = {id: imageId, src: imageURI.uri, height: imageURI.height, width: imageURI.width};
+        return Promise.resolve(imageData);
       }
-      else imageData = {id: imageId, src: imageURI.uri, height: imageURI.height, width: imageURI.width};
-      return Promise.resolve(imageData);
-    }
-    catch (e) {
-      imageCount++;
-      console.log('Error on', imageId, ':', e);
-      return Promise.reject();
-    }
+      catch (e) {
+        imageCount++;
+        console.log('Error on', imageId, ':', e);
+        return Promise.reject();
+      }
   };
 
   const setAnnotation = (image, annotation) => {
