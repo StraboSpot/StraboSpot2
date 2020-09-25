@@ -2,22 +2,19 @@ import React from 'react';
 import {View, Text} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
-import {Button,Avatar} from 'react-native-elements';
-import {connect, useDispatch} from 'react-redux';
+import {Button, Avatar} from 'react-native-elements';
+import {connect} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
-import {homeReducers} from '../home/home.constants';
 import userStyles from './user.styles';
 
 const UserProfile = (props) => {
   const navigation = useNavigation();
-  const dispatch = useDispatch();
 
   const doLogOut = async () => {
     if (!isEmpty(props.userData)) await props.clearStorage();
     navigation.navigate('SignIn');
-    dispatch({type: homeReducers.SET_IS_SIGNED_IN, bool: false});
   };
 
   const getUserInitials = () => {
@@ -88,7 +85,7 @@ const UserProfile = (props) => {
             <Text style={userStyles.avatarLabelName}>Guest</Text>
           </View>
         </View>
-        );
+      );
     }
 
   };
@@ -96,21 +93,21 @@ const UserProfile = (props) => {
   const renderLogOutButton = () => {
     return (
       <View>
-      <Button
-        onPress={() => doLogOut()}
-        title={'Log out'}
-        containerStyle={commonStyles.standardButtonContainer}
-        buttonStyle={commonStyles.standardButton}
-        titleStyle={commonStyles.standardButtonText}
-      />
-    {isEmpty(props.userData)
-    && <Button
-      onPress={() => navigation.navigate('SignIn')}
-      title={'Go To Sign In'}
-      containerStyle={commonStyles.standardButtonContainer}
-      buttonStyle={commonStyles.standardButton}
-      titleStyle={commonStyles.standardButtonText}
-    />}
+        <Button
+          onPress={() => doLogOut()}
+          title={'Log out'}
+          containerStyle={commonStyles.standardButtonContainer}
+          buttonStyle={commonStyles.standardButton}
+          titleStyle={commonStyles.standardButtonText}
+        />
+        {isEmpty(props.userData)
+        && <Button
+          onPress={() => navigation.navigate('SignIn')}
+          title={'Go To Sign In'}
+          containerStyle={commonStyles.standardButtonContainer}
+          buttonStyle={commonStyles.standardButton}
+          titleStyle={commonStyles.standardButtonText}
+        />}
       </View>
     );
   };

@@ -274,7 +274,6 @@ const Home = (props) => {
         break;
       // Map Actions
       case 'zoom':
-        console.log(`${name}`, ' was clicked');
         mapViewComponent.current.zoomToSpotsExtent();
         break;
       case 'saveMap':

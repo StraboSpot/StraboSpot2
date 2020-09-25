@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
-import {Alert, StyleSheet, Text, View} from 'react-native';
+import {Alert, Text, View} from 'react-native';
 
+import {useNavigation} from '@react-navigation/native';
 import RNSketchCanvas, {SketchCanvas} from '@terrylinla/react-native-sketch-canvas';
 import {useDispatch} from 'react-redux';
 
@@ -10,7 +11,7 @@ import styles from './sketch.styles';
 
 
 const Sketch = (props) => {
-
+  const navigation = useNavigation();
   const [imageId, setImageId] = useState(null);
   const dispatch = useDispatch();
   const [useImages] = useImagesHook();
@@ -20,13 +21,33 @@ const Sketch = (props) => {
   }, [imageId]);
 
   const saveSketch = async (success, path) => {
-      console.log(success, 'Path:', path);
+    console.log(success, 'Path:', path);
     if (success) {
-        const savedSketch = await useImages.saveFile(path);
-        dispatch({type: spotReducers.EDIT_SPOT_IMAGES, images: [{...savedSketch, image_type: 'sketch'}]});
-        Alert.alert(`Sketch ${savedSketch.id} Saved!`);
-      }
-      else console.log('Didn\'t move sketch');
+      const savedSketch = await useImages.saveFile(path);
+      dispatch({type: spotReducers.EDIT_SPOT_IMAGES, images: [{...savedSketch, image_type: 'sketch'}]});
+      Alert.alert(`Sketch ${savedSketch.id} Saved!`,
+        null,
+        [
+          {
+            text: 'Cancel',
+            onPress: () => console.log('Cancel Pressed'),
+            style: 'cancel',
+          },
+          {text: 'OK', onPress: () => navigation.pop()},
+        ]);
+    }
+    else  {
+      Alert.alert(`Sketch Saved!`,
+        null,
+        [
+          {
+            text: 'Cancel',
+            onPress: () => console.log('Cancel Pressed'),
+            style: 'cancel',
+          },
+          {text: 'OK', onPress: () => navigation.pop()},
+        ]);
+    }
   };
 
   return (
@@ -50,7 +71,7 @@ const Sketch = (props) => {
           onClosePressed={() => props.navigation.goBack()}
           onSketchSaved={(success, path) => saveSketch(success, path)}
           closeComponent={
-            <View style={styles.functionButton} >
+            <View style={styles.functionButton}>
               <Text style={{color: 'white'}}>Close</Text>
             </View>
           }
@@ -87,18 +108,10 @@ const Sketch = (props) => {
           strokeWidthStep={1}
           minStrokeWidth={1}
           maxStrokeWidth={10}
-          strokeWidthComponent= {(w) => {
+          strokeWidthComponent={(w) => {
             return (
               <View style={styles.strokeWidthButton}>
-                <View
-                  // style={{
-                  //   backgroundColor: 'white',
-                  //   marginHorizontal: 2.5,
-                  //   width: Math.sqrt(w / 3) * 10,
-                  //   height: Math.sqrt(w / 3) * 10,
-                  //   borderRadius: (Math.sqrt(w / 3) * 10) / 2,
-                  // }}
-                >
+                <View>
                   <Text>Line Weight: {w}</Text>
                 </View>
               </View>

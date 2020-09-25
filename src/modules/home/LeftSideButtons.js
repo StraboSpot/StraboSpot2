@@ -73,12 +73,18 @@ const LeftSideButtons = (props) => {
       </Animated.View>
       <MapActionsDialog
         visible={dialogs.mapActionsMenuVisible}
-        onPress={(name) => props.dialogClickHandler('mapActionsMenuVisible', name)}
+        onPress={(name) => {
+          props.dialogClickHandler('mapActionsMenuVisible', name);
+          toggleDialog('mapActionsMenuVisible')
+        }}
         onTouchOutside={() => toggleDialog('mapActionsMenuVisible')}
       />
       <MapSymbolsDialog
         visible={dialogs.mapSymbolsMenuVisible}
-        onPress={(name) => props.dialogClickHandler('mapSymbolsMenuVisible', name)}
+        onPress={(name) => {
+          props.dialogClickHandler('mapSymbolsMenuVisible', name);
+          toggleDialog('mapSymbolsMenuVisible')
+        }}
         onTouchOutside={() => toggleDialog('mapSymbolsMenuVisible')}
       />
       <BaseMapDialog

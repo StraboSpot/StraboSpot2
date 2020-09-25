@@ -64,9 +64,9 @@ const SignIn = (props) => {
       if (user === 'true') {
         const encodedLogin = Base64.encode(username + ':' + password);
         updateUserResponse(encodedLogin).then(() => {
-          navigation.navigate('HomeScreen');
-          dispatch({type: homeReducers.SET_IS_SIGNED_IN, bool: true});
           console.log(`${username} is successfully logged in!`);
+          dispatch({type: homeReducers.SET_IS_SIGNED_IN, bool: true});
+          navigation.navigate('HomeScreen');
         });
       }
       else {

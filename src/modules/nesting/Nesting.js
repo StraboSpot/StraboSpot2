@@ -114,7 +114,7 @@ const Nesting = (props) => {
 
   const renderSelf = self => {
     return (
-      <View>
+      <View style={{borderWidth: 1, borderColor: 'green'}}>
         {renderName(self)}
       </View>
     );
