@@ -22,9 +22,10 @@ import {spotReducers} from '../spots/spot.constants';
 import TagsPage from '../tags/TagsNotebook';
 import NotebookFooter from './notebook-footer/NotebookFooter';
 import NotebookHeader from './notebook-header/NotebookHeader';
-import {notebookReducers, NotebookPages} from './notebook.constants';
+import {notebookReducers, NotebookPages, SECONDARY_NOTEBOOK_PAGES, SED_NOTEBOOK_PAGES} from './notebook.constants';
 import notebookStyles from './notebookPanel.styles';
 import Overview from './Overview';
+import PlaceholderPage from './PlaceholderPage';
 
 const NotebookPanel = props => {
   const [useSpots] = useSpotsHook();
@@ -56,16 +57,39 @@ const NotebookPanel = props => {
         </View>
         <View
           style={notebookStyles.centerContainer}>
+
+          {/*Main Overview Page*/}
           {(props.notebookPageVisible === NotebookPages.OVERVIEW || props.notebookPageVisible === undefined)
           && <Overview openMainMenu={props.openMainMenu}/>}
-          {props.notebookPageVisible === NotebookPages.GEOGRAPHY && <Geography/>}
+
+          {/*Primary Pages*/}
           {props.notebookPageVisible === NotebookPages.MEASUREMENT && <MeasurementsPage/>}
-          {props.notebookPageVisible === NotebookPages.MEASUREMENTDETAIL && <MeasurementDetailPage/>}
           {props.notebookPageVisible === NotebookPages.NOTE && <NotesPage/>}
           {props.notebookPageVisible === NotebookPages.SAMPLE && <SamplesPage/>}
           {props.notebookPageVisible === NotebookPages.TAG && <TagsPage openMainMenu={props.openMainMenu}/>}
           {props.notebookPageVisible === NotebookPages.PHOTO && <ImagesPage onPress={props.onPress}/>}
+
+          {/*Additional Notebook Pages*/}
+          {props.notebookPageVisible === NotebookPages.GEOGRAPHY && <Geography/>}
+          {props.notebookPageVisible === NotebookPages.MEASUREMENTDETAIL && <MeasurementDetailPage/>}
           {props.notebookPageVisible === NotebookPages.NESTING && <Nesting/>}
+
+          {/*Secondary Notebook Pages*/}
+          {props.notebookPageVisible === SECONDARY_NOTEBOOK_PAGES.THREE_D_STRUCTURES && <PlaceholderPage/>}
+          {props.notebookPageVisible === SECONDARY_NOTEBOOK_PAGES.IG_MET && <PlaceholderPage/>}
+          {props.notebookPageVisible === SECONDARY_NOTEBOOK_PAGES.FABRICS && <PlaceholderPage/>}
+          {props.notebookPageVisible === SECONDARY_NOTEBOOK_PAGES.OTHER_FEATURES && <PlaceholderPage/>}
+          {props.notebookPageVisible === SECONDARY_NOTEBOOK_PAGES.RELATIONSHIPS && <PlaceholderPage/>}
+          {props.notebookPageVisible === SECONDARY_NOTEBOOK_PAGES.DATA && <PlaceholderPage/>}
+
+          {/*Sed Notebook Pages*/}
+          {props.notebookPageVisible === SED_NOTEBOOK_PAGES.LITHOLOGIES && <PlaceholderPage/>}
+          {props.notebookPageVisible === SED_NOTEBOOK_PAGES.BEDDING && <PlaceholderPage/>}
+          {props.notebookPageVisible === SED_NOTEBOOK_PAGES.STRUCTURES && <PlaceholderPage/>}
+          {props.notebookPageVisible === SED_NOTEBOOK_PAGES.DIAGENESIS && <PlaceholderPage/>}
+          {props.notebookPageVisible === SED_NOTEBOOK_PAGES.FOSSILS && <PlaceholderPage/>}
+          {props.notebookPageVisible === SED_NOTEBOOK_PAGES.INTERPRETATIONS && <PlaceholderPage/>}
+
         </View>
         <View style={notebookStyles.footerContainer}>
           <NotebookFooter

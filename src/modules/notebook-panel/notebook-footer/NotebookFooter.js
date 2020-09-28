@@ -1,18 +1,19 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {View} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
-import {connect, useSelector} from 'react-redux';
+import {Button} from 'react-native-elements';
+import {connect} from 'react-redux';
 
-import {IconButtons} from '../../../shared/app.constants';
 import {isEmpty} from '../../../shared/Helpers';
 import IconButton from '../../../shared/ui/IconButton';
 import {NotebookPages} from '../notebook.constants';
+import MorePagesMenu from './MorePagesMenu';
 import footerStyle from './notebookFooter.styles';
 
 const NotebookFooter = props => {
   const navigation = useNavigation();
-  const selectedSpot = useSelector(state => state.spot.selectedSpot);
+  const [isMorePagesMenuVisible, setIsMorePagesMenuVisible] = useState(false);
 
   const getPageIcon = (page) => {
     switch (page) {
@@ -47,40 +48,47 @@ const NotebookFooter = props => {
   };
 
   return (
-    <View style={footerStyle.footerIconContainer}>
-      <IconButton
-        source={getPageIcon(NotebookPages.TAG)}
-        style={footerStyle.footerIcon}
-        onPress={() => props.openPage(NotebookPages.TAG)}
+    <React.Fragment>
+      <View style={footerStyle.footerIconContainer}>
+        <IconButton
+          source={getPageIcon(NotebookPages.TAG)}
+          onPress={() => props.openPage(NotebookPages.TAG)}
 
-      />
-      <IconButton
-        source={getPageIcon(NotebookPages.MEASUREMENT)}
-        style={footerStyle.footerIcon}
-        onPress={() => props.openPage(NotebookPages.MEASUREMENT)}
-      />
-      <IconButton
-        source={getPageIcon(NotebookPages.SAMPLE)}
-        style={footerStyle.footerIcon}
-        onPress={() => props.openPage(NotebookPages.SAMPLE)}
-      />
-      <IconButton
-        source={getPageIcon(NotebookPages.NOTE)}
-        style={footerStyle.footerIcon}
-        onPress={() => props.openPage(NotebookPages.NOTE)}
+        />
+        <IconButton
+          source={getPageIcon(NotebookPages.MEASUREMENT)}
+          onPress={() => props.openPage(NotebookPages.MEASUREMENT)}
+        />
+        <IconButton
+          source={getPageIcon(NotebookPages.SAMPLE)}
+          onPress={() => props.openPage(NotebookPages.SAMPLE)}
+        />
+        <IconButton
+          source={getPageIcon(NotebookPages.NOTE)}
+          onPress={() => props.openPage(NotebookPages.NOTE)}
 
+        />
+        <IconButton
+          source={getPageIcon(NotebookPages.PHOTO)}
+          onPress={() => props.openPage(NotebookPages.PHOTO)}
+        />
+        <IconButton
+          source={getPageIcon(NotebookPages.SKETCH)}
+          onPress={() => navigation.navigate('Sketch')}
+        />
+        <Button
+          containerStyle={{alignSelf: 'center'}}
+          title={'MORE'}
+          type='clear'
+          titleStyle={footerStyle.morePagesButton}
+          onPress={() => setIsMorePagesMenuVisible(true)}
+        />
+      </View>
+      <MorePagesMenu
+        visible={isMorePagesMenuVisible}
+        closeMorePagesMenu={() => setIsMorePagesMenuVisible(false)}
       />
-      <IconButton
-        source={getPageIcon(NotebookPages.PHOTO)}
-        style={footerStyle.footerIcon}
-        onPress={() => props.openPage(NotebookPages.PHOTO)}
-      />
-      <IconButton
-        source={getPageIcon(NotebookPages.SKETCH)}
-        style={footerStyle.footerIcon}
-        onPress={() => navigation.navigate('Sketch')}
-      />
-    </View>
+    </React.Fragment>
   );
 };
 
