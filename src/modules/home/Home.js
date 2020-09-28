@@ -15,7 +15,7 @@ import StatusDialogBox from '../../shared/ui/StatusDialogBox';
 import ToastPopup from '../../shared/ui/Toast';
 import useImagesHook from '../images/useImages';
 import SettingsPanel from '../main-menu-panel/MainMenuPanel';
-import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
+import {mainMenuPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 import settingPanelStyles from '../main-menu-panel/mainMenuPanel.styles';
 import sidePanelStyles from '../main-menu-panel/sidePanel.styles';
 import CustomMapDetails from '../maps/custom-maps/CustomMapDetails';
@@ -74,9 +74,9 @@ const Home = (props) => {
   const isProjectLoadSelectionModalVisible = useSelector(state => state.home.isProjectLoadSelectionModalVisible);
   const isNotebookPanelVisible = useSelector(state => state.notebook.isNotebookPanelVisible);
   const isMainMenuPanelVisible = useSelector(state => state.home.isMainMenuPanelVisible);
-  const isSidePanelVisible = useSelector(state => state.settingsPanel.isSidePanelVisible);
+  const isSidePanelVisible = useSelector(state => state.mainMenu.isSidePanelVisible);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
-  const sidePanelView = useSelector(state => state.settingsPanel.sidePanelView);
+  const sidePanelView = useSelector(state => state.mainMenu.sidePanelView);
   const user = useSelector(state => state.user);
 
   // const imagesCount = useSelector(state => state.home.imageProgress.imagesDownloadedCount);
@@ -305,7 +305,7 @@ const Home = (props) => {
 
   // const closeSidePanel = () => {
   //   console.log('Closing Side Panel');
-  //   // dispatch({type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE, bool: false});
+  //   // dispatch({type: mainMenuPanelReducers.SET_SIDE_PANEL_VISIBLE, bool: false});
   //   animatePanels(mainMenuSidePanelAnimation, -mainMenuSidePanelWidth);
   //   animatePanels(customMapsSidePanelAnimation, -customMapsSidePanelWidth);
   // };
@@ -597,20 +597,20 @@ const Home = (props) => {
 
   const renderSidePanelContent = () => {
     switch (sidePanelView) {
-      case settingPanelReducers.SET_SIDE_PANEL_VIEW.MANAGE_CUSTOM_MAP:
+      case mainMenuPanelReducers.SET_SIDE_PANEL_VIEW.MANAGE_CUSTOM_MAP:
         return (
           <CustomMapDetails/>
         );
-      case settingPanelReducers.SET_SIDE_PANEL_VIEW.PROJECT_DESCRIPTION:
+      case mainMenuPanelReducers.SET_SIDE_PANEL_VIEW.PROJECT_DESCRIPTION:
         return (
           <ProjectDescription/>
         );
-      case settingPanelReducers.SET_SIDE_PANEL_VIEW.TAG_DETAIL:
+      case mainMenuPanelReducers.SET_SIDE_PANEL_VIEW.TAG_DETAIL:
         return (
           <TagDetailSidePanel
             openNotebookPanel={(pageView) => openNotebookPanel(pageView)}/>
         );
-      case settingPanelReducers.SET_SIDE_PANEL_VIEW.TAG_ADD_REMOVE_SPOTS:
+      case mainMenuPanelReducers.SET_SIDE_PANEL_VIEW.TAG_ADD_REMOVE_SPOTS:
         return (
           <TagAddRemoveSpots/>
         );
@@ -762,6 +762,7 @@ const Home = (props) => {
     <Animated.View style={[settingPanelStyles.settingsDrawer, animateSettingsPanel]}>
       <SettingsPanel
         // openSidePanel={(view, data) => openSidePanel(view, data)}
+        // openHomePanel={() => dispatch({type: })}
         closeHomePanel={() => toggleHomeDrawerButton()}
         openNotebookPanel={(pageView) => openNotebookPanel(pageView)}/>
     </Animated.View>
@@ -868,17 +869,17 @@ function mapStateToProps(state) {
     isAllSpotsPanelVisible: state.home.isAllSpotsPanelVisible,
     vertexStartCoords: state.map.vertexStartCoords,
     userData: state.user.userData,
-    homePageVisible: state.settingsPanel.settingsPageVisible,
+    homePageVisible: state.mainMenu.mainMenuPageVisible,
   };
 }
 
 const mapDispatchToProps = {
   setHomePanelVisible: (value) => ({type: homeReducers.SET_SETTINGS_PANEL_VISIBLE, value: value}),
-  setHomePanelPageVisible: (name) => ({type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: name}),
+  setHomePanelPageVisible: (name) => ({type: mainMenuPanelReducers.SET_MENU_SELECTION_PAGE, name: name}),
   setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),
   setNotebookPanelVisible: (value) => ({type: notebookReducers.SET_NOTEBOOK_PANEL_VISIBLE, value: value}),
   setSettingsPanelVisible: (value) => ({type: homeReducers.SET_SETTINGS_PANEL_VISIBLE, value: value}),
-  setSettingsPanelPageVisible: (name) => ({type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: name}),
+  setSettingsPanelPageVisible: (name) => ({type: mainMenuPanelReducers.SET_MENU_SELECTION_PAGE, name: name}),
   setIsImageModalVisible: (value) => ({type: homeReducers.TOGGLE_IMAGE_MODAL, value: value}),
   setAllSpotsPanelVisible: (value) => ({type: homeReducers.SET_ALLSPOTS_PANEL_VISIBLE, value: value}),
   deleteSpot: (id) => ({type: spotReducers.DELETE_SPOT, id: id}),

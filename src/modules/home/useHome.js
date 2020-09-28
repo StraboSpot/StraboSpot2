@@ -5,7 +5,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import RNFetchBlob from 'rn-fetch-blob';
 
 import {isEmpty} from '../../shared/Helpers';
-import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
+import {mainMenuPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 import {projectReducers} from '../project/project.constants';
 import {spotReducers} from '../spots/spot.constants';
 import {homeReducers} from './home.constants';
@@ -35,10 +35,10 @@ const useHome = (props) => {
     dispatch({type: homeReducers.SET_LOADING, view: 'modal', bool: false});
     dispatch({type: spotReducers.CLEAR_SELECTED_SPOTS});
     dispatch({type: homeReducers.SET_ALLSPOTS_PANEL_VISIBLE, value: false});
-    dispatch({type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE, value: false});
+    dispatch({type: mainMenuPanelReducers.SET_SIDE_PANEL_VISIBLE, value: false});
     dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: null});
     dispatch({type: homeReducers.SET_SETTINGS_PANEL_VISIBLE, value: false});
-    dispatch({type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: undefined});
+    dispatch({type: mainMenuPanelReducers.SET_MENU_SELECTION_PAGE, name: undefined});
     dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, bool: false});
     // dispatch({type: redux.CLEAR_STORE});
     await checkForDeviceBackupDir();

@@ -10,7 +10,7 @@ import * as forms from '../../assets/forms/forms.index';
 import commonStyles from '../../shared/common.styles';
 import {truncateText, isEmpty} from '../../shared/Helpers';
 import SaveAndCloseButtons from '../../shared/ui/SaveAndCloseButtons';
-import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
+import {mainMenuPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 import Divider from '../main-menu-panel/MainMenuPanelDivider';
 import SidePanelHeader from '../main-menu-panel/sidePanel/SidePanelHeader';
 import {projectReducers} from './project.constants';
@@ -233,7 +233,7 @@ const ProjectDescription = (props) => {
       <SaveAndCloseButtons
         cancel={() => {
           setProjectDescription(project.description);
-          dispatch({type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE, bool: false});
+          dispatch({type: mainMenuPanelReducers.SET_SIDE_PANEL_VISIBLE, bool: false});
         }}
         save={() => saveProjectDescriptionAndGo()}/>
     );
@@ -247,7 +247,7 @@ const ProjectDescription = (props) => {
 
   const saveProjectDescriptionAndGo = async () => {
     await dispatch({type: projectReducers.UPDATE_PROJECT, field: 'description', value: projectDescription});
-    dispatch({type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE, bool: false});
+    dispatch({type: mainMenuPanelReducers.SET_SIDE_PANEL_VISIBLE, bool: false});
   };
 
   const validateMagneticDeclination = (val) => {
@@ -268,7 +268,7 @@ const ProjectDescription = (props) => {
       <SidePanelHeader
         title={'Active Project'}
         headerTitle={'Project Description'}
-        backButton={() => dispatch({type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE, bool: false})}
+        backButton={() => dispatch({type: mainMenuPanelReducers.SET_SIDE_PANEL_VISIBLE, bool: false})}
       />
       {renderSaveAndCloseButtons()}
       <ScrollView contentInset={{bottom: 125}}>

@@ -8,12 +8,12 @@ import {MAIN_MENU_TITLE} from './mainMenu.constants';
 import styles from './mainMenuPanel.styles';
 
 const MainMenuPanelHeader = (props) => {
-  const pageVisible = useSelector(state => state.settingsPanel.settingsPageVisible);
-  const isSideMenuVisible = useSelector(state => state.settingsPanel.isSidePanelVisible);
+  const pageVisible = useSelector(state => state.mainMenu.mainMenuPageVisible);
+  const isSideMenuVisible = useSelector(state => state.mainMenu.isSidePanelVisible);
 
   return (
-    <View style={styles.settingsPanelHeaderContainer}>
-      <View style={styles.settingsPanelIconContainer}>
+    <View style={styles.mainMenuHeaderContainer}>
+      <View style={styles.mainMenuIconContainer}>
         {pageVisible && !isSideMenuVisible && <Icon
           name={'ios-arrow-back'}
           type={'ionicon'}
@@ -23,7 +23,7 @@ const MainMenuPanelHeader = (props) => {
           size={30}
         />}
       </View>
-      <View style={styles.settingsPanelHeaderTextContainer}>
+      <View style={styles.mainMenuHeaderTextContainer}>
         <Text style={styles.headerText}>{pageVisible || MAIN_MENU_TITLE}</Text>
       </View>
       <View style={{flex: 1, paddingBottom: 10}}/>

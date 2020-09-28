@@ -7,7 +7,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import * as themes from '../../shared/styles.constants';
 import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import {formStyles} from '../form';
-import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
+import {mainMenuPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 import {useTagsHook} from '../tags';
 
 const TagDetailModal = (props) => {
@@ -36,7 +36,7 @@ const TagDetailModal = (props) => {
 
   const deleteTag = () => {
     props.closeModal();
-    dispatch({type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE, bool: false});
+    dispatch({type: mainMenuPanelReducers.SET_SIDE_PANEL_VISIBLE, bool: false});
     useTags.deleteTag(selectedTag);
   };
 

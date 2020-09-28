@@ -3,7 +3,7 @@ import React from 'react';
 import {ButtonGroup} from 'react-native-elements';
 import {connect} from 'react-redux';
 
-import {settingPanelReducers, SortedViews} from './mainMenuPanel.constants';
+import {mainMenuPanelReducers, SortedViews} from './mainMenuPanel.constants';
 
 const SortingButtons = (props) => {
   const updateIndex = (selectedButtonIndex) => {
@@ -41,14 +41,14 @@ const SortingButtons = (props) => {
 const mapStateToProps = (state) => {
   return {
     spots: state.spot.spots,
-    selectedButtonIndex: state.settingsPanel.selectedButtonIndex,
+    selectedButtonIndex: state.mainMenu.selectedButtonIndex,
     selectedSpot: state.spot.selectedSpot,
   };
 };
 
 const mapDispatchToProps = {
-  setSortedListView: (view) => ({type: settingPanelReducers.SET_SORTED_VIEW, view: view}),
-  setSelectedButtonIndex: (index) => ({type: settingPanelReducers.SET_SELECTED_BUTTON_INDEX, index: index}),
+  setSortedListView: (view) => ({type: mainMenuPanelReducers.SET_SORTED_VIEW, view: view}),
+  setSelectedButtonIndex: (index) => ({type: mainMenuPanelReducers.SET_SELECTED_BUTTON_INDEX, index: index}),
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(SortingButtons);

@@ -6,7 +6,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import ColorPickerModal from '../../shared/ColorPickerModal';
 import {isEmpty} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
-import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
+import {mainMenuPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 import SidePanelHeader from '../main-menu-panel/sidePanel/SidePanelHeader';
 import {spotReducers} from '../spots/spot.constants';
 import {TagDetail, TagDetailModal} from '../tags';
@@ -23,7 +23,7 @@ const TagDetailSidePanel = (props) => {
       <View style={{flexDirection: 'row'}}>
         <View style={{flex: 1}}>
           <SidePanelHeader
-            backButton={() => dispatch({type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE, bool: false})}
+            backButton={() => dispatch({type: mainMenuPanelReducers.SET_SIDE_PANEL_VISIBLE, bool: false})}
             title={'Tags'}
             headerTitle={!isEmpty(selectedTag) && selectedTag.name}
           />
@@ -51,9 +51,9 @@ const TagDetailSidePanel = (props) => {
             props.openNotebookPanel();
           }}
           addRemoveSpots={() => dispatch({
-            type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE,
+            type: mainMenuPanelReducers.SET_SIDE_PANEL_VISIBLE,
             bool: true,
-            view: settingPanelReducers.SET_SIDE_PANEL_VIEW.TAG_ADD_REMOVE_SPOTS,
+            view: mainMenuPanelReducers.SET_SIDE_PANEL_VIEW.TAG_ADD_REMOVE_SPOTS,
           })}
           setIsDetailModalVisible={() => setIsDetailModalVisible(true)}
         />

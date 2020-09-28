@@ -7,7 +7,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import {BLUE} from '../../shared/styles.constants';
-import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
+import {mainMenuPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 import SidePanelHeader from '../main-menu-panel/sidePanel/SidePanelHeader';
 import {useSpotsHook} from '../spots';
 import {useTagsHook} from '../tags';
@@ -35,9 +35,9 @@ const AddRemoveTagSpots = () => {
       <SidePanelHeader
         backButton={() =>
           dispatch({
-            type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE,
+            type: mainMenuPanelReducers.SET_SIDE_PANEL_VISIBLE,
             bool: true,
-            view: settingPanelReducers.SET_SIDE_PANEL_VIEW.TAG_DETAIL,
+            view: mainMenuPanelReducers.SET_SIDE_PANEL_VIEW.TAG_DETAIL,
           })
         }
         title={`${selectedTag.name}`}

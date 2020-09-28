@@ -6,7 +6,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
-import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
+import {mainMenuPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 import styles from './project.styles';
 
 const ActiveProjectList = (props) => {
@@ -20,8 +20,8 @@ const ActiveProjectList = (props) => {
         <ListItem
           containerStyle={styles.projectDescriptionListContainer}
           onPress={() => dispatch({
-            type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE,
-            view: settingPanelReducers.SET_SIDE_PANEL_VIEW.PROJECT_DESCRIPTION,
+            type: mainMenuPanelReducers.SET_SIDE_PANEL_VISIBLE,
+            view: mainMenuPanelReducers.SET_SIDE_PANEL_VIEW.PROJECT_DESCRIPTION,
             bool: true,
           })}
         >

@@ -9,7 +9,7 @@ import * as themes from '../../shared/styles.constants';
 import Loading from '../../shared/ui/Loading';
 import {homeReducers} from '../home/home.constants';
 import {MAIN_MENU_ITEMS} from '../main-menu-panel/mainMenu.constants';
-import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
+import {mainMenuPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 import {spotReducers} from '../spots/spot.constants';
 import DialogBox from './DialogBox';
 import {projectReducers} from './project.constants';
@@ -111,7 +111,7 @@ const ProjectList = (props) => {
         console.log('PROJECT DATA', projectData);
         await dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'Project loaded!'});
         dispatch({type: homeReducers.SET_LOADING, view: 'modal', bool: false});
-        dispatch({type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS});
+        dispatch({type: mainMenuPanelReducers.SET_MENU_SELECTION_PAGE, name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS});
       }
       catch (err) {
         setIsError(true);
@@ -131,7 +131,7 @@ const ProjectList = (props) => {
         console.log('Loaded From Device');
         dispatch({type: homeReducers.SET_LOADING, view: 'modal', bool: false});
         dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Download Complete!'});
-        dispatch({type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS});
+        dispatch({type: mainMenuPanelReducers.SET_MENU_SELECTION_PAGE, name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS});
       }
       else {
         return useProject.loadProjectRemote(selectedProject).then(projectData => {
@@ -145,7 +145,7 @@ const ProjectList = (props) => {
               dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Project does not have any spots'});
               dispatch({type: homeReducers.SET_INFO_MESSAGES_MODAL_VISIBLE, bool: true});
               dispatch(
-                {type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS});
+                {type: mainMenuPanelReducers.SET_MENU_SELECTION_PAGE, name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS});
             }
             else Alert.alert('Error', 'No Project Data!');
           }
@@ -153,7 +153,7 @@ const ProjectList = (props) => {
             dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Download Complete!'});
             dispatch({type: homeReducers.SET_LOADING, view: 'modal', bool: false});
             dispatch(
-              {type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS});
+              {type: mainMenuPanelReducers.SET_MENU_SELECTION_PAGE, name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS});
           }
         });
       }

@@ -6,7 +6,7 @@ import {connect, useSelector} from 'react-redux';
 
 import {isEmpty} from '../../shared/Helpers';
 import attributesStyles from '../main-menu-panel/attributes.styles';
-import {settingPanelReducers, SortedViews} from '../main-menu-panel/mainMenuPanel.constants';
+import {mainMenuPanelReducers, SortedViews} from '../main-menu-panel/mainMenuPanel.constants';
 import SortingButtons from '../main-menu-panel/SortingButtons';
 import {useTagsHook} from '../tags';
 import useSpotsHook from './useSpots';
@@ -120,12 +120,12 @@ const mapStateToProps = (state) => {
     recentViews: state.spot.recentViews,
     selectedSpot: state.spot.selectedSpot,
     spots: state.spot.spots,
-    sortedListView: state.settingsPanel.sortedView,
+    sortedListView: state.mainMenu.sortedView,
   };
 };
 
 const mapDispatchToProps = {
-  setSelectedButtonIndex: (index) => ({type: settingPanelReducers.SET_SELECTED_BUTTON_INDEX, index: index}),
+  setSelectedButtonIndex: (index) => ({type: mainMenuPanelReducers.SET_SELECTED_BUTTON_INDEX, index: index}),
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(SpotsList);

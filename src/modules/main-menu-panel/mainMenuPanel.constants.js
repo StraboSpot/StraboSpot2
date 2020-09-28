@@ -4,7 +4,7 @@ export const SortedViews = {
   RECENT_VIEWS: 'RECENT_VIEWS',
 };
 
-export const settingPanelReducers = {
+export const mainMenuPanelReducers = {
   SET_SIDE_PANEL_VISIBLE: 'SET_SIDE_PANEL_VISIBLE',
   SET_SIDE_PANEL_VIEW: {
     MANAGE_CUSTOM_MAP: 'manageCustomMap',

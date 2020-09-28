@@ -34,7 +34,7 @@ const rootReducer = combineReducers({
   notebook: persistReducer(notebookConfig, notebookReducer),
   map: mapReducer,
   project: projectsReducer,
-  settingsPanel: mainMenuPanelReducer,
+  mainMenu: mainMenuPanelReducer,
   spot: spotReducer,
   user: userReducer,
 });

@@ -8,7 +8,7 @@ import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import AddButton from '../../shared/ui/AddButton';
 import SectionDivider from '../../shared/ui/SectionDivider';
-import {settingPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
+import {mainMenuPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 import {projectReducers} from '../project/project.constants';
 import {TagDetailModal, tagsStyles, useTagsHook} from '../tags';
 
@@ -60,8 +60,8 @@ const Tags = () => {
           containerStyle={commonStyles.listItem}
           onPress={() => {
             dispatch({
-              type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE,
-              view: settingPanelReducers.SET_SIDE_PANEL_VIEW.TAG_DETAIL,
+              type: mainMenuPanelReducers.SET_SIDE_PANEL_VISIBLE,
+              view: mainMenuPanelReducers.SET_SIDE_PANEL_VIEW.TAG_DETAIL,
               bool: true,
             });
             dispatch({type: projectReducers.SET_SELECTED_TAG, tag: item});

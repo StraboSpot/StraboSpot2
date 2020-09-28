@@ -6,7 +6,7 @@ import {connect} from 'react-redux';
 
 import {isEmpty} from '../../shared/Helpers';
 import attributesStyles from '../main-menu-panel/attributes.styles';
-import {settingPanelReducers, SortedViews} from '../main-menu-panel/mainMenuPanel.constants';
+import {mainMenuPanelReducers, SortedViews} from '../main-menu-panel/mainMenuPanel.constants';
 import SortingButtons from '../main-menu-panel/SortingButtons';
 import {NotebookPages, notebookReducers} from '../notebook-panel/notebook.constants';
 
@@ -151,18 +151,18 @@ const SamplesList = (props) => {
 const mapStateToProps = (state) => {
   return {
     recentViews: state.spot.recentViews,
-    selectedButtonIndex: state.settingsPanel.selectedButtonIndex,
+    selectedButtonIndex: state.mainMenu.selectedButtonIndex,
     selectedImage: state.spot.selectedAttributes[0],
     selectedSpot: state.spot.selectedSpot,
-    sortedListView: state.settingsPanel.sortedView,
+    sortedListView: state.mainMenu.sortedView,
     spots: state.spot.spots,
   };
 };
 
 const mapDispatchToProps = {
   setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),
-  setSortedListView: (view) => ({type: settingPanelReducers.SET_SORTED_VIEW, view: view}),
-  setSelectedButtonIndex: (index) => ({type: settingPanelReducers.SET_SELECTED_BUTTON_INDEX, index: index}),
+  setSortedListView: (view) => ({type: mainMenuPanelReducers.SET_SORTED_VIEW, view: view}),
+  setSelectedButtonIndex: (index) => ({type: mainMenuPanelReducers.SET_SELECTED_BUTTON_INDEX, index: index}),
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(SamplesList);

@@ -8,7 +8,7 @@ import * as SharedUI from '../../shared/ui/index';
 import imageStyles from '../images/images.styles';
 import useImagesHook from '../images/useImages';
 import attributesStyles from '../main-menu-panel/attributes.styles';
-import {settingPanelReducers, SortedViews} from '../main-menu-panel/mainMenuPanel.constants';
+import {mainMenuPanelReducers, SortedViews} from '../main-menu-panel/mainMenuPanel.constants';
 import useSpotsHook from '../spots/useSpots';
 import {mapReducers} from './maps.constants';
 
@@ -100,15 +100,15 @@ const mapStateToProps = (state) => {
   if (!isEmpty(state.spot.spots)) {
     return {
       selectedSpot: state.spot.selectedSpot,
-      sortedListView: state.settingsPanel.sortedView,
+      sortedListView: state.mainMenu.sortedView,
       spots: state.spot.spots,
     };
   }
 };
 
 const mapDispatchToProps = {
-  setSortedListView: (view) => ({type: settingPanelReducers.SET_SORTED_VIEW, view: view}),
-  setSelectedButtonIndex: (index) => ({type: settingPanelReducers.SET_SELECTED_BUTTON_INDEX, index: index}),
+  setSortedListView: (view) => ({type: mainMenuPanelReducers.SET_SORTED_VIEW, view: view}),
+  setSelectedButtonIndex: (index) => ({type: mainMenuPanelReducers.SET_SELECTED_BUTTON_INDEX, index: index}),
   updateImageBasemap: (currentImageBasemap) => ({
     type: mapReducers.CURRENT_IMAGE_BASEMAP,
     currentImageBasemap: currentImageBasemap,

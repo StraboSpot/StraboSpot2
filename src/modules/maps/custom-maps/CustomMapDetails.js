@@ -19,7 +19,7 @@ import {BLUE, DARKGREY} from '../../../shared/styles.constants';
 import ButtonRounded from '../../../shared/ui/ButtonRounded';
 import Slider from '../../../shared/ui/Slider';
 import {homeReducers} from '../../home/home.constants';
-import {settingPanelReducers} from '../../main-menu-panel/mainMenuPanel.constants';
+import {mainMenuPanelReducers} from '../../main-menu-panel/mainMenuPanel.constants';
 import Divider from '../../main-menu-panel/MainMenuPanelDivider';
 import sidePanelStyles from '../../main-menu-panel/sidePanel.styles';
 import SidePanelHeader from '../../main-menu-panel/sidePanel/SidePanelHeader';
@@ -74,8 +74,8 @@ const AddCustomMaps = () => {
     console.log(customMap);
     if (customMap !== undefined) {
       dispatch({type: mapReducers.ADD_CUSTOM_MAP, customMap: customMap});
-      dispatch({type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE, view: null, bool: false});
-      dispatch({type: settingPanelReducers.SET_MENU_SELECTION_PAGE, name: undefined});
+      dispatch({type: mainMenuPanelReducers.SET_SIDE_PANEL_VISIBLE, view: null, bool: false});
+      dispatch({type: mainMenuPanelReducers.SET_MENU_SELECTION_PAGE, name: undefined});
       dispatch({type: homeReducers.CLEAR_STATUS_MESSAGES});
       dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Success!'});
       dispatch(
@@ -240,7 +240,7 @@ const AddCustomMaps = () => {
     return (
       <SidePanelHeader
         backButton={() => {
-          dispatch({type: settingPanelReducers.SET_SIDE_PANEL_VISIBLE, bool: false});
+          dispatch({type: mainMenuPanelReducers.SET_SIDE_PANEL_VISIBLE, bool: false});
           dispatch({type: mapReducers.SELECTED_CUSTOM_MAP_TO_EDIT, customMap: {}});
         }}
         title={'Custom Maps'}

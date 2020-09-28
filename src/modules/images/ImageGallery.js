@@ -8,7 +8,7 @@ import {isEmpty} from '../../shared/Helpers';
 import * as SharedUI from '../../shared/ui/index';
 import {homeReducers} from '../home/home.constants';
 import attributesStyles from '../main-menu-panel/attributes.styles';
-import {settingPanelReducers, SortedViews} from '../main-menu-panel/mainMenuPanel.constants';
+import {mainMenuPanelReducers, SortedViews} from '../main-menu-panel/mainMenuPanel.constants';
 import SortingButtons from '../main-menu-panel/SortingButtons';
 import {notebookReducers} from '../notebook-panel/notebook.constants';
 import {spotReducers} from '../spots/spot.constants';
@@ -207,7 +207,7 @@ const mapStateToProps = (state) => {
     recentViews: state.spot.recentViews,
     selectedImage: state.spot.selectedAttributes[0],
     selectedSpot: state.spot.selectedSpot,
-    sortedListView: state.settingsPanel.sortedView,
+    sortedListView: state.mainMenu.sortedView,
     spots: state.spot.spots,
   };
 };
@@ -216,8 +216,8 @@ const mapDispatchToProps = {
   setSelectedAttributes: (attributes) => ({type: spotReducers.SET_SELECTED_ATTRIBUTES, attributes: attributes}),
   setIsImageModalVisible: (value) => ({type: homeReducers.TOGGLE_IMAGE_MODAL, value: value}),
   setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),
-  setSortedListView: (view) => ({type: settingPanelReducers.SET_SORTED_VIEW, view: view}),
-  setSelectedButtonIndex: (index) => ({type: settingPanelReducers.SET_SELECTED_BUTTON_INDEX, index: index}),
+  setSortedListView: (view) => ({type: mainMenuPanelReducers.SET_SORTED_VIEW, view: view}),
+  setSelectedButtonIndex: (index) => ({type: mainMenuPanelReducers.SET_SELECTED_BUTTON_INDEX, index: index}),
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ImageGallery);

@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
     right: 0,
     zIndex: 0,
   },
-  settingsPanelContainer: {
+  mainMenuContainer: {
     flex: 1,
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
   },
@@ -63,24 +63,24 @@ const styles = StyleSheet.create({
     fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,
     textAlign: 'center',
   },
-  settingsPanelHeaderTextContainer: {
+  mainMenuHeaderTextContainer: {
     flex: 4,
     flexDirection: 'row',
     alignItems: 'center',
   },
-  settingsPanelIconContainer: {
+  mainMenuIconContainer: {
     flex: 1,
     alignItems: 'flex-start',
     justifyContent: 'center',
   },
-  settingsPanelHeaderContainer: {
+  mainMenuHeaderContainer: {
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
     paddingTop: 15,
     height: 70,
     flexDirection: 'row',
     justifyContent: 'center',
   },
-  settingsPanelHeaderText: {
+  mainMenuHeaderText: {
     fontWeight: 'bold',
     fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,
   },
