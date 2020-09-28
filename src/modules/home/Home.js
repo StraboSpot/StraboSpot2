@@ -77,6 +77,7 @@ const Home = (props) => {
   const isSidePanelVisible = useSelector(state => state.settingsPanel.isSidePanelVisible);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const sidePanelView = useSelector(state => state.settingsPanel.sidePanelView);
+  const user = useSelector(state => state.user);
 
   // const imagesCount = useSelector(state => state.home.imageProgress.imagesDownloadedCount);
   // const imagesNeeded = useSelector(state => state.home.imageProgress.neededImageIds);

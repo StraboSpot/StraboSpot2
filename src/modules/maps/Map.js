@@ -32,6 +32,7 @@ const Map = React.forwardRef((props, ref) => {
   const datasets = useSelector(state =>state.project.datasets);
   const selectedSymbols = useSelector(state => state.map.symbolsOn) || [];
   const isAllSymbolsOn = useSelector(state => state.map.isAllSymbolsOn);
+  const user = useSelector(state => state.user);
   const isDrawFeatureModeOn = () => {
     return (props.mapMode === MapModes.DRAW.POINT || props.mapMode === MapModes.DRAW.LINE
       || props.mapMode === MapModes.DRAW.POLYGON || props.mapMode === MapModes.DRAW.FREEHANDPOLYGON
@@ -116,7 +117,7 @@ const Map = React.forwardRef((props, ref) => {
     if (!currentBasemap) useMaps.setCurrentBasemap();
     if (!currentImageBasemap) setCurrentLocationAsCenter();
     clearVertexes();
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     console.log('Updating Spots, selected Spots, active datasets, basemap or map symbols to display changed');
