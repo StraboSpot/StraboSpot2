@@ -115,11 +115,15 @@ const Home = (props) => {
     // else Orientation.lockToLandscapeLeft();
     Dimensions.addEventListener('change', deviceOrientation);
     console.log('Initializing Home page');
-    initialize().then((res) => dispatch({type: homeReducers.SET_PROJECT_LOAD_SELECTION_MODAL_VISIBLE, bool: res}));
+    initialize().then((res) => {
+      dispatch({type: homeReducers.SET_PROJECT_LOAD_SELECTION_MODAL_VISIBLE, bool: res});
+      animatePanels(MainMenuPanelAnimation, -homeMenuPanelWidth);
+      animatePanels(leftsideIconAnimationValue, 0);
+    });
     return function cleanup() {
       Dimensions.removeEventListener('change', deviceOrientation);
     };
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     if (props.currentImageBasemap && isMainMenuPanelVisible) toggleHomeDrawerButton();
@@ -135,13 +139,6 @@ const Home = (props) => {
       // toggles off whenever new project is loaded successfully to trigger the same for next project load.
     }
   }, [projectLoadComplete]);
-
-  useEffect(() => {
-    console.log('Render 2 in Home', props.homePageVisible);
-    return function homeCleanUp() {
-      console.log('Cleaned up in Home');
-    };
-  }, [props.homePageVisible]);
 
   const cancelEdits = async () => {
     await mapViewComponent.current.cancelEdits();

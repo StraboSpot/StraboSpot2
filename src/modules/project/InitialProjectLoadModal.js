@@ -33,7 +33,7 @@ const InitialProjectLoadModal = (props) => {
     return function cleanUp() {
       console.log('Initial Project Modal CleanUp');
     };
-  }, [selectedProject, isOnline, datasets]);
+  }, [isOnline]);
 
   const goBack = () => {
     if (visibleProjectSection === 'activeDatasetsList') {
