@@ -23,7 +23,7 @@ const initialState = {
   isInfoModalVisible: false,
   isImageModalVisible: false,
   isAllSpotsPanelVisible: false,
-  isSettingsPanelVisible: false,
+  isMainMenuPanelVisible: false,
   deviceDimensions: Dimensions.get('window'),
   shortcutSwitchPosition: {
     Tag: false,
@@ -103,7 +103,7 @@ export const homeReducer = (state = initialState, action) => {
     case homeReducers.SET_SETTINGS_PANEL_VISIBLE:
       return {
         ...state,
-        isSettingsPanelVisible: action.value,
+        isMainMenuPanelVisible: action.value,
       };
     case homeReducers.TOGGLE_IMAGE_MODAL:
       return {

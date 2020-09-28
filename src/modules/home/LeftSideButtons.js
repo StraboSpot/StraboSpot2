@@ -14,7 +14,7 @@ const LeftSideButtons = (props) => {
 
   const [useMaps] = UseMapsHook();
   const isAllSymbolsOn = useSelector(state => state.map.isAllSymbolsOn);
-  const isMainMenuPanelVisible = useSelector(state => state.home.isSettingsPanelVisible);
+  const isMainMenuPanelVisible = useSelector(state => state.home.isMainMenuPanelVisible);
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const [dialogs, setDialogs] = useState({
     mapActionsMenuVisible: false,

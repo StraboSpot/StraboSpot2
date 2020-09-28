@@ -73,7 +73,7 @@ const Home = (props) => {
   const isInfoMessagesModalVisible = useSelector(state => state.home.isInfoModalVisible);
   const isProjectLoadSelectionModalVisible = useSelector(state => state.home.isProjectLoadSelectionModalVisible);
   const isNotebookPanelVisible = useSelector(state => state.notebook.isNotebookPanelVisible);
-  const isMainMenuPanelVisible = useSelector(state => state.home.isSettingsPanelVisible);
+  const isMainMenuPanelVisible = useSelector(state => state.home.isMainMenuPanelVisible);
   const isSidePanelVisible = useSelector(state => state.settingsPanel.isSidePanelVisible);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const sidePanelView = useSelector(state => state.settingsPanel.sidePanelView);
@@ -97,7 +97,7 @@ const Home = (props) => {
   // const [isProjectLoadSelectionModalVisible, setIsProjectLoadSelectionModalVisible] = useState(false);
   // const [allPhotosSaved, setAllPhotosSaved] = useState([]);
   const [animation, setAnimation] = useState(new Animated.Value(notebookPanelWidth));
-  const [settingsPanelAnimation, setSettingsPanelAnimation] = useState(new Animated.Value(-homeMenuPanelWidth));
+  const [MainMenuPanelAnimation] = useState(new Animated.Value(-homeMenuPanelWidth));
   const [mainMenuSidePanelAnimation] = useState(new Animated.Value(-mainMenuSidePanelWidth));
   // const [customMapsSidePanelAnimation] = useState(new Animated.Value(-customMapsSidePanelWidth));
   const [leftsideIconAnimationValue, setLeftsideIconAnimationValue] = useState(new Animated.Value(0));
@@ -722,12 +722,12 @@ const Home = (props) => {
     if (isMainMenuPanelVisible) {
       props.setHomePanelVisible(false);
       props.setHomePanelPageVisible(undefined);
-      animatePanels(settingsPanelAnimation, -homeMenuPanelWidth);
+      animatePanels(MainMenuPanelAnimation, -homeMenuPanelWidth);
       animatePanels(leftsideIconAnimationValue, 0);
     }
     else {
       props.setHomePanelVisible(true);
-      animatePanels(settingsPanelAnimation, 0);
+      animatePanels(MainMenuPanelAnimation, 0);
       animatePanels(leftsideIconAnimationValue, homeMenuPanelWidth);
     }
   };
@@ -753,7 +753,7 @@ const Home = (props) => {
   };
 
   const animateNotebookMenu = {transform: [{translateX: animation}]};
-  const animateSettingsPanel = {transform: [{translateX: settingsPanelAnimation}]};
+  const animateSettingsPanel = {transform: [{translateX: MainMenuPanelAnimation}]};
   const animateMainMenuSidePanel = {transform: [{translateX: mainMenuSidePanelAnimation}]};
   const leftsideIconAnimation = {transform: [{translateX: leftsideIconAnimationValue}]};
   const rightsideIconAnimation = {transform: [{translateX: rightsideIconAnimationValue}]};

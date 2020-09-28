@@ -15,7 +15,7 @@ import {useTagsHook} from '../tags';
 const TagsAtSpotList = (props) => {
   const [useTags] = useTagsHook();
   const dispatch = useDispatch();
-  const isMainMenuPanelVisible = useSelector(state => state.home.isSettingsPanelVisible);
+  const isMainMenuPanelVisible = useSelector(state => state.home.isMainMenuPanelVisible);
 
   const openTag = (tag) => {
     dispatch({

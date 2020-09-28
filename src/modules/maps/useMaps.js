@@ -23,13 +23,13 @@ const useMaps = () => {
   const customMaps = useSelector(state => state.map.customMaps);
   const dispatch = useDispatch();
   const project = useSelector(state => state.project.project);
-  const settingsPanel = useSelector(state => state.home.isSettingsPanelVisible);
+  const isMainMenuPanelVisible = useSelector(state => state.home.isMainMenuPanelVisible);
   const selectedSymbols = useSelector(state => state.map.symbolsOn) || [];
   const isAllSymbolsOn = useSelector(state => state.map.isAllSymbolsOn);
 
   useEffect(() => {
-    console.log('Settings Panel', settingsPanel);
-  }, [settingsPanel]);
+    console.log('isMainMenuPanelVisible:', isMainMenuPanelVisible);
+  }, [isMainMenuPanelVisible]);
 
   const buildTileUrl = (basemap) => {
     let tileUrl = basemap.url[0];
