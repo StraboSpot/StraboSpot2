@@ -44,12 +44,14 @@ const Nesting = (props) => {
     return (
       <React.Fragment>
         {keysFound.map(key => {
-          return <Avatar
-            source={useSpots.getSpotDataIconSource(key)}
-            size={20}
-            key={key}
-            title={key}  // used as placeholder while loading image
-          />;
+          return (
+            <Avatar
+              source={useSpots.getSpotDataIconSource(key)}
+              size={20}
+              key={key}
+              title={key}  // used as placeholder while loading image
+            />
+          );
         })}
       </React.Fragment>
     );
@@ -75,7 +77,7 @@ const Nesting = (props) => {
   };
 
   const renderGeneration = (type, generation, i, length) => {
-    const levelNum = type == 'Parents' ? length - i : i + 1;
+    const levelNum = type === 'Parents' ? length - i : i + 1;
     const generationText = levelNum + (levelNum === 1 ? ' Level' : ' Levels') + (type === 'Parents' ? ' Up' : ' Down');
     return (
       <View>
@@ -131,12 +133,10 @@ const Nesting = (props) => {
 
   return (
     <View>
-      {notebookPageVisible === NotebookPages.NESTING && (
-        <ReturnToOverviewButton
-          onPress={() => dispatch({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: NotebookPages.OVERVIEW})}
-        />
-      )}
-      {notebookPageVisible === NotebookPages.NESTING && <SectionDivider dividerText='Nesting'/>}
+      <ReturnToOverviewButton
+        onPress={() => dispatch({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: NotebookPages.OVERVIEW})}
+      />
+      <SectionDivider dividerText='Nesting'/>
       <FlatList
         ListHeaderComponent={renderGenerations('Parents')}
         ListFooterComponent={renderGenerations('Children')}

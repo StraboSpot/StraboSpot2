@@ -176,7 +176,7 @@ const useSpots = (props) => {
         for (var imageKey in Object.keys(currentSpot.properties.images)) {
           currentImage = currentSpot.properties.images[imageKey];
           allImagesSet.add(currentImage);
-          if (currentImage != null && currentImage.annotated && currentImage.annotated != undefined) {
+          if (currentImage !== null && currentImage.annotated) {
             allImageBaseMaps.add(currentImage);
           }
         }
@@ -260,13 +260,13 @@ const useSpots = (props) => {
     deleteSpotsFromDataset: deleteSpotsFromDataset,
     downloadSpots: downloadSpots,
     getActiveSpotsObj: getActiveSpotsObj,
-    getSpotsSortedReverseChronologically: getSpotsSortedReverseChronologically,
     getMappableSpots: getMappableSpots,
     getSpotById: getSpotById,
     getSpotDataIconSource: getSpotDataIconSource,
     getSpotDataKeys: getSpotDataKeys,
     getSpotGemometryIconSource: getSpotGemometryIconSource,
     getSpotsByIds: getSpotsByIds,
+    getSpotsSortedReverseChronologically: getSpotsSortedReverseChronologically,
     getAllImageBaseMaps: getAllImageBaseMaps,
     findRootSpot: findRootSpot,
   }];

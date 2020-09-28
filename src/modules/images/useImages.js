@@ -73,7 +73,7 @@ const useImages = () => {
         })
         .catch((errorMessage, statusCode) => {
           imageCount++;
-          console.log('Error on', imageId, ':', errorMessage, statusCode);  // Android Error: RNFetchBlob request error: url == nullnull
+          console.error('Error on', imageId, ':', errorMessage, statusCode);  // Android Error: RNFetchBlob request error: url == nullnull
           return Promise.reject();
         });
     };
