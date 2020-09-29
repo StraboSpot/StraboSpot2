@@ -167,6 +167,15 @@ const useTags = () => {
     dispatch({type: projectReducers.UPDATE_PROJECT, field: 'tags', value: updatedTags});
   };
 
+  const addTagToSpot = (tag, spot) => {
+    if (!tag.spots) tag.spots = [];
+    const spotId = spot ? spot.properties.id : selectedSpot.properties.id;
+    const i = tag.spots.indexOf(spotId);
+    if (i === -1) tag.spots.push(spotId);
+    if (isEmpty(tag.spots)) delete tag.spots;
+    saveTag(tag);
+  };
+
   return [{
     addTag: addTag,
     addRemoveSpotFromTag: addRemoveSpotFromTag,
@@ -180,6 +189,7 @@ const useTags = () => {
     renderTagForm: renderTagForm,
     saveForm: saveForm,
     saveTag: saveTag,
+    addTagToSpot: addTagToSpot,
   }];
 };
 

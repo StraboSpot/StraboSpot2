@@ -1,5 +1,5 @@
 import React, {useEffect, useImperativeHandle, useRef, useState} from 'react';
-import {View} from 'react-native';
+import {Alert, View} from 'react-native';
 
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import * as turf from '@turf/turf/index';
@@ -9,6 +9,7 @@ import {useSelector, useDispatch} from 'react-redux';
 
 import {MAPBOX_KEY} from '../../MapboxConfig';
 import {getNewUUID, isEmpty} from '../../shared/Helpers';
+import {homeReducers, Modals} from '../home/home.constants';
 import {spotReducers} from '../spots/spot.constants';
 import useSpotsHook from '../spots/useSpots';
 import {MapLayer1, MapLayer2} from './Basemaps';
@@ -782,6 +783,19 @@ const Map = React.forwardRef((props, ref) => {
         }
         if (props.isSelectingForStereonet) {
           await getStereonetForFeature(feature);
+        }
+        else if (props.isSelectingForTagging){
+          const selectedSpots = await useMapFeatures.getLassoedSpots(mapPropsMutable.spotsNotSelected, feature);
+          if (selectedSpots.length > 0) {
+            dispatch({type: spotReducers.SET_INTERSECTED_SPOTS_FOR_TAGGING, spots: selectedSpots});
+            dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: Modals.SHORTCUT_MODALS.ADD_TAGS_TO_SPOTS});
+          }
+          else {
+            Alert.alert(
+              'Error!',
+              'No spots selected.',
+            );
+          }
         }
         else {
           newOrEditedSpot = await useSpots.createSpot(feature);

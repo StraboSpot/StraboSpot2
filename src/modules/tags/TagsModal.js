@@ -20,6 +20,7 @@ const TagsModal = (props) => {
   const [useMaps] = useMapsHook();
   const [useTags] = useTagsHook();
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
+  const selectedSpotsForTagging = useSelector(state => state.spot.intersectedSpotsForTagging);
   const modalVisible = useSelector(state => state.home.modalVisible);
   const tags = useSelector(state => state.project.project.tags) || [];
   const [checkedTagsTemp, setCheckedTagsTemp] = useState([]);
@@ -46,11 +47,20 @@ const TagsModal = (props) => {
   };
 
   const save = async () => {
-    useMaps.setPointAtCurrentLocation().then(spot => {
-      checkedTagsTemp.map(tag => {
-        useTags.addRemoveTagFromSpot(tag, spot);
+    if (modalVisible !== (Modals.SHORTCUT_MODALS.ADD_TAGS_TO_SPOTS)) {
+      useMaps.setPointAtCurrentLocation().then(spot => {
+        checkedTagsTemp.map(tag => {
+          useTags.addRemoveTagFromSpot(tag, spot);
+        });
       });
-    });
+    }
+    else {
+      checkedTagsTemp.map(tag => {
+        selectedSpotsForTagging.map(spot => {
+          useTags.addTagToSpot(tag,spot);
+        });
+      });
+    }
   };
 
   const renderTagContent = () => {
@@ -68,7 +78,7 @@ const TagsModal = (props) => {
         </View>
         <View style={{maxHeight: 300}}>
           {renderSpotTagsList()}
-          {modalVisible === Modals.SHORTCUT_MODALS.TAGS
+          {(modalVisible === Modals.SHORTCUT_MODALS.TAGS ||  modalVisible === Modals.SHORTCUT_MODALS.ADD_TAGS_TO_SPOTS)
           && <SaveButton
             buttonStyle={{backgroundColor: 'red'}}
             title={'Save tag(s)'}
@@ -99,11 +109,11 @@ const TagsModal = (props) => {
           <ListItem.Title style={tagStyles.listText}>{useTags.getLabel(tag.type)}</ListItem.Title>
         </ListItem.Content>
         <DefaultCheckBox
-          onPress={() => modalVisible !== Modals.SHORTCUT_MODALS.TAGS
+          onPress={() => (modalVisible !== Modals.SHORTCUT_MODALS.TAGS) && (modalVisible !== Modals.SHORTCUT_MODALS.ADD_TAGS_TO_SPOTS)
             ? useTags.addRemoveTagFromSpot(tag)
             : checkTags(tag)}
           checkedColor={'grey'}
-          checked={modalVisible !== Modals.SHORTCUT_MODALS.TAGS
+          checked={(modalVisible && modalVisible !== Modals.SHORTCUT_MODALS.TAGS) && (modalVisible !== Modals.SHORTCUT_MODALS.ADD_TAGS_TO_SPOTS)
             ? tag && tag.spots && tag.spots.includes(selectedSpot.properties.id)
             : checkedTagsTemp.map(checkedTag => checkedTag.id).includes(tag.id)}
         />
@@ -113,7 +123,7 @@ const TagsModal = (props) => {
 
   return (
     <View>
-      {modalVisible === Modals.SHORTCUT_MODALS.TAGS && <AddButton
+      {(modalVisible === Modals.SHORTCUT_MODALS.TAGS || modalVisible === Modals.SHORTCUT_MODALS.ADD_TAGS_TO_SPOTS) && <AddButton
         title={'Create New Tag'}
         onPress={() => addTag()}
       />}
