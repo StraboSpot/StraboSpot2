@@ -19,7 +19,7 @@ const MyStraboSpot = props => {
       case 'none':
         return (
           <View style={{padding: 10}}>
-            <UserProfile/>
+            <UserProfile openMainMenu={props.openHomePanel}/>
             <Spacer/>
             <ProjectTypesButtons
               onLoadProjectsFromServer={() => setShowSection('serverProjects')}
@@ -31,7 +31,7 @@ const MyStraboSpot = props => {
         return (
           <View>
             <View style={{height: 600}}>
-              <UserProfile/>
+              <UserProfile openMainMenu={props.openHomePanel}/>
               <Divider sectionText={'Server Project List'}/>
               <Button title={'Back'} type={'clear'} onPress={() => setShowSection('none')}/>
               <ProjectList source={'server'}/>
@@ -46,7 +46,7 @@ const MyStraboSpot = props => {
         return (
           <View>
             <View style={{height: 600}}>
-              <UserProfile/>
+              <UserProfile openMainMenu={props.openHomePanel}/>
               <Divider sectionText={'Device Project List'}/>
               <Button title={'Back'} type={'clear'} onPress={() => setShowSection('none')}/>
               <ProjectList source={'device'}/>

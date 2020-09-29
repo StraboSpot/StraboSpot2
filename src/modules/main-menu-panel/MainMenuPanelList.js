@@ -13,7 +13,6 @@ const MainMenuPanelList = props => {
     return (
       <View key={i}>
         <Button
-
           title={name === MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS
             ? MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS + ` (${props.activeProject})`
             : name

@@ -14,6 +14,7 @@ import LoadingSpinner from '../../shared/ui/Loading';
 import StatusDialogBox from '../../shared/ui/StatusDialogBox';
 import ToastPopup from '../../shared/ui/Toast';
 import useImagesHook from '../images/useImages';
+import {MAIN_MENU_ITEMS} from '../main-menu-panel/mainMenu.constants';
 import SettingsPanel from '../main-menu-panel/MainMenuPanel';
 import {mainMenuPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 import settingPanelStyles from '../main-menu-panel/mainMenuPanel.styles';
@@ -762,7 +763,8 @@ const Home = (props) => {
     <Animated.View style={[settingPanelStyles.settingsDrawer, animateSettingsPanel]}>
       <SettingsPanel
         // openSidePanel={(view, data) => openSidePanel(view, data)}
-        // openHomePanel={() => dispatch({type: })}
+        openHomePanel={() => dispatch(
+          {type: mainMenuPanelReducers.SET_MENU_SELECTION_PAGE, name: MAIN_MENU_ITEMS.MANAGE.UPLOAD_BACKUP_EXPORT})}
         closeHomePanel={() => toggleHomeDrawerButton()}
         openNotebookPanel={(pageView) => openNotebookPanel(pageView)}/>
     </Animated.View>

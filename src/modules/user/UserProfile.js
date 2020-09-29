@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text} from 'react-native';
+import {Alert, View, Text} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
 import {Button, Avatar} from 'react-native-elements';
@@ -12,9 +12,36 @@ import userStyles from './user.styles';
 const UserProfile = (props) => {
   const navigation = useNavigation();
 
-  const doLogOut = async () => {
-    if (!isEmpty(props.userData)) await props.clearStorage();
-    navigation.navigate('SignIn');
+  const doLogOut = () => {
+    Alert.alert(
+      'Log out?',
+      'Logging out will ERASE all local data. Please make sure you saved changes to the server or device?',
+      [
+        {
+          text: 'Backup to Server',
+          style: 'default',
+          onPress: props.openMainMenu,
+        },
+        {
+          text: 'Backup to Device',
+          style: 'default',
+          onPress: props.openMainMenu,
+        },
+        {
+          text: 'Go back', style: 'default', onPress: () => {
+          },
+        },
+        {
+          text: 'Log Out',
+          style: 'destructive',
+          onPress: async () => {
+            await props.clearStorage();
+            const route = await navigation.navigate('SignIn');
+            console.log(route);
+          },
+        },
+      ],
+    );
   };
 
   const getUserInitials = () => {
