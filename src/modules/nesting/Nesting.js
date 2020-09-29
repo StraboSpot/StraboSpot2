@@ -59,6 +59,8 @@ const Nesting = (props) => {
 
   const renderName = (item) => {
     if (item && item.properties) {
+      const children = useNesting.getChildrenGenerationsSpots(item, 10);
+      const numSubspots = children.flat().length;
       return (
         <ListItem
           key={item.properties.id}
@@ -68,6 +70,7 @@ const Nesting = (props) => {
           <Avatar source={useSpots.getSpotGemometryIconSource(item)} size={20}/>
           <ListItem.Content>
             <ListItem.Title>{item.properties.name}</ListItem.Title>
+            <ListItem.Subtitle>[{numSubspots } subspot{numSubspots !== 1 && 's'}]</ListItem.Subtitle>
           </ListItem.Content>
           {renderDataIcons(item)}
           <ListItem.Chevron/>
@@ -116,7 +119,7 @@ const Nesting = (props) => {
 
   const renderSelf = self => {
     return (
-      <View style={{borderWidth: 1, borderColor: 'green'}}>
+      <View style={{borderWidth: 1, borderColor: 'black'}}>
         {renderName(self)}
       </View>
     );
@@ -132,7 +135,7 @@ const Nesting = (props) => {
   };
 
   return (
-    <View>
+    <View style={{flex: 1}}>
       <ReturnToOverviewButton
         onPress={() => dispatch({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: NotebookPages.OVERVIEW})}
       />
