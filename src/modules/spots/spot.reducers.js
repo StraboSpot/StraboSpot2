@@ -8,6 +8,7 @@ const initialState = {
   selectedAttributes: [],
   recentViews: [],
   spots: {},
+  intersectedSpotsForTagging: [],
 };
 
 export const spotReducer = (state = initialState, action) => {
@@ -50,6 +51,11 @@ export const spotReducer = (state = initialState, action) => {
         ...state,
         selectedSpots: [],
         selectedSpot: {},
+      };
+    case spotReducers.SET_INTERSECTED_SPOTS_FOR_TAGGING:
+      return {
+        ...state,
+        intersectedSpotsForTagging: action.spots,
       };
     case spotReducers.CLEAR_SPOTS:
       return {

@@ -40,7 +40,7 @@ import NotebookSamplesModal from '../samples/NotebookSamplesModal';
 import ShortcutSamplesModal from '../samples/ShortcutSamplesModal';
 import {spotReducers} from '../spots/spot.constants';
 import useSpotsHook from '../spots/useSpots';
-import {TagsNotebookModal, TagAddRemoveSpots, TagDetailSidePanel, TagsShortcutModal} from '../tags';
+import {TagsNotebookModal, TagAddRemoveSpots, TagDetailSidePanel, TagsShortcutModal, AddTagsToSpotsShortcutModal} from '../tags';
 import {homeReducers, Modals} from './home.constants';
 import homeStyles from './home.style';
 import LeftSideButtons from './LeftSideButtons';
@@ -105,6 +105,7 @@ const Home = (props) => {
   const [leftsideIconAnimationValue, setLeftsideIconAnimationValue] = useState(new Animated.Value(0));
   const [rightsideIconAnimationValue, setRightsideIconAnimationValue] = useState(new Animated.Value(0));
   const [isSelectingForStereonet, setIsSelectingForStereonet] = useState(false);
+  const [isSelectingForTagging, setIsSelectingForTagging] = useState(false);
 
   const mapViewComponent = useRef(null);
   const toastRef = useRef();
@@ -279,8 +280,10 @@ const Home = (props) => {
         dispatch({type: homeReducers.SET_OFFLINE_MAPS_MODAL_VISIBLE, bool: !isOfflineMapModalVisible});
         break;
       case 'addTag':
-        Alert.alert('Still in the works',
-          `The ${name.toUpperCase()} button in the  will be functioning soon!`);
+        console.log(`${name}`, ' was clicked');
+        mapViewComponent.current.clearSelectedSpots();
+        setIsSelectingForTagging(true);
+        setDraw(MapModes.DRAW.FREEHANDPOLYGON);
         break;
       case 'stereonet':
         console.log(`${name}`, ' was clicked');
@@ -415,7 +418,7 @@ const Home = (props) => {
 
   const openNotebookPanel = pageView => {
     console.log('Opening Notebook', pageView, '...');
-    props.setModalVisible(null);
+    if (modalVisible != Modals.SHORTCUT_MODALS.ADD_TAGS_TO_SPOTS ) props.setModalVisible(null);
     props.setNotebookPageVisible(pageView || NotebookPages.OVERVIEW);
     animatePanels(animation, 0);
     animatePanels(rightsideIconAnimationValue, -notebookPanelWidth);
@@ -443,6 +446,14 @@ const Home = (props) => {
     if (modalVisible === Modals.SHORTCUT_MODALS.TAGS) {
       return (
         <TagsShortcutModal
+          close={() => props.setModalVisible(null)}
+          onPress={() => modalHandler(NotebookPages.TAG, Modals.NOTEBOOK_MODALS.TAGS)}
+        />
+      );
+    }
+    if (modalVisible === Modals.SHORTCUT_MODALS.ADD_TAGS_TO_SPOTS) {
+      return (
+        <AddTagsToSpotsShortcutModal
           close={() => props.setModalVisible(null)}
           onPress={() => modalHandler(NotebookPages.TAG, Modals.NOTEBOOK_MODALS.TAGS)}
         />
@@ -789,6 +800,7 @@ const Home = (props) => {
         startEdit={startEdit}
         endDraw={endDraw}
         isSelectingForStereonet={isSelectingForStereonet}
+        isSelectingForTagging={isSelectingForTagging}
       />
       {props.vertexStartCoords && <VertexDrag/>}
       <ToastPopup toastRef={toastRef}/>
