@@ -135,7 +135,7 @@ const Nesting = (props) => {
   };
 
   return (
-    <View>
+    <View style={{flex: 1, backgroundColor: 'red'}}>
       <ReturnToOverviewButton
         onPress={() => dispatch({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: NotebookPages.OVERVIEW})}
       />
