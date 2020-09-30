@@ -1,47 +1,36 @@
-import React from 'react';
-import {Alert, View, Text} from 'react-native';
+import React, {useState} from 'react';
+import {View, Text} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
 import {Button, Avatar} from 'react-native-elements';
-import {connect} from 'react-redux';
+import {connect, useDispatch} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
+import StandardModal from '../../shared/ui/StandardModal';
+import {MAIN_MENU_ITEMS} from '../main-menu-panel/mainMenu.constants';
+import {mainMenuPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 import userStyles from './user.styles';
 
 const UserProfile = (props) => {
+  const dispatch = useDispatch();
   const navigation = useNavigation();
+  const [isLogoutModalVisible, setIsLogoutModalVisible] = useState(false);
+
+  const openUploadAndBackupPage = () => {
+    setIsLogoutModalVisible(false);
+    setTimeout(() => {          // Added timeOut cause state of modal wasn't changing fast enough
+      dispatch(
+        {type: mainMenuPanelReducers.SET_MENU_SELECTION_PAGE, name: MAIN_MENU_ITEMS.MANAGE.UPLOAD_BACKUP_EXPORT});
+    }, 200);
+  };
 
   const doLogOut = () => {
-    Alert.alert(
-      'Log out?',
-      'Logging out will ERASE all local data. Please make sure you saved changes to the server or device?',
-      [
-        {
-          text: 'Backup to Server',
-          style: 'default',
-          onPress: props.openMainMenu,
-        },
-        {
-          text: 'Backup to Device',
-          style: 'default',
-          onPress: props.openMainMenu,
-        },
-        {
-          text: 'Go back', style: 'default', onPress: () => {
-          },
-        },
-        {
-          text: 'Log Out',
-          style: 'destructive',
-          onPress: async () => {
-            await props.clearStorage();
-            const route = await navigation.navigate('SignIn');
-            console.log(route);
-          },
-        },
-      ],
-    );
+    setIsLogoutModalVisible(false);
+    setTimeout(() => {          // Added timeOut cause state of modal wasn't changing fast enough
+      props.clearStorage();
+      navigation.navigate('SignIn');
+    }, 200);
   };
 
   const getUserInitials = () => {
@@ -121,7 +110,7 @@ const UserProfile = (props) => {
     return (
       <View>
         <Button
-          onPress={() => doLogOut()}
+          onPress={() => setIsLogoutModalVisible(true)}
           title={'Log out'}
           containerStyle={commonStyles.standardButtonContainer}
           buttonStyle={commonStyles.standardButton}
@@ -139,11 +128,42 @@ const UserProfile = (props) => {
     );
   };
 
+  const renderLogoutModal = () => {
+    return (
+      <StandardModal
+        visible={isLogoutModalVisible}
+        dialogTitle={'Log Out?'}
+        dialogTitleStyle={commonStyles.dialogWarning}>
+        <Text style={commonStyles.dialogConfirmText}>Logging out will
+          <Text
+            style={commonStyles.dialogContentImportantText}>ERASE</Text> local data. Please make sure you saved changes
+          to the server or device?
+        </Text>
+        <Button
+          title={'Backup'}
+          type={'clear'}
+          containerStyle={commonStyles.buttonContainer}
+          onPress={() => openUploadAndBackupPage()}/>
+        <Button title={'Logout'}
+                titleStyle={commonStyles.dialogContentImportantText}
+
+                onPress={() => doLogOut()}
+                type={'clear'}
+                containerStyle={commonStyles.buttonContainer}/>
+        <Button
+          title={'Cancel'}
+          onPress={() => setIsLogoutModalVisible(false)} type={'clear'}
+          containerStyle={commonStyles.buttonContainer}/>
+      </StandardModal>
+    );
+  };
+
   return (
     <React.Fragment>
       <View style={userStyles.profileContainer}>
         {renderAvatarImageBlock()}
         {renderLogOutButton()}
+        {renderLogoutModal()}
       </View>
     </React.Fragment>
   );
