@@ -239,7 +239,7 @@ const DatasetList = () => {
   };
 
   const setSwitchValue = async (val, id) => {
-    const datasetsCopy = {...datasets};
+    const datasetsCopy = JSON.parse(JSON.stringify(datasets));
     datasetsCopy[id].active = val;
 
     // Check for a current dataset
@@ -258,7 +258,7 @@ const DatasetList = () => {
       dispatch({type: projectReducers.DATASETS.DATASETS_UPDATE, datasets: datasetsCopy});
       dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, bool: true});
       dispatch({type: homeReducers.CLEAR_STATUS_MESSAGES});
-      await useSpots.downloadSpots(datasets[id], userData.encoded_login);
+      await useSpots.downloadSpots(datasetsCopy[id], userData.encoded_login);
       dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'Download Complete!'});
       setLoading(false);
     }
