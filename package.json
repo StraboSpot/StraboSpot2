@@ -76,7 +76,8 @@
     "eslint": "^7.9.0",
     "eslint-plugin-import": "^2.22.0",
     "jest": "^26.4.2",
-    "react-test-renderer": "^16.13.1"
+    "react-test-renderer": "^16.13.1",
+    "redux-immutable-state-invariant": "^2.1.0"
   },
   "jest": {
     "preset": "react-native"

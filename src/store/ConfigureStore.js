@@ -29,6 +29,10 @@ const loggerMiddleware = createLogger({
   collapsed: (getState, action, logEntry) => !logEntry.error,
 });
 
+const middleware = process.env.NODE_ENV !== 'production'
+  ? [require('redux-immutable-state-invariant').default(), loggerMiddleware]
+  : [];
+
 const rootReducer = combineReducers({
   home: homeReducer,
   notebook: persistReducer(notebookConfig, notebookReducer),
@@ -48,7 +52,7 @@ if (__DEV__) {
 }
 
 const store = () => {
-  const store = createStore(persistedReducer, composeEnhancers(applyMiddleware(loggerMiddleware)));
+  const store = createStore(persistedReducer, composeEnhancers(applyMiddleware(...middleware)));
   console.log('The State of the Store', store.getState());
   const persistor = persistStore(store);
   // const persistorPurge = persistStore(store).purge(); // Use this to clear persistStore completely
