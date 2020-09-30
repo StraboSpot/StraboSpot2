@@ -66,11 +66,11 @@ const dialogStyles = StyleSheet.create({
     textAlign: 'center',
     paddingTop: 15,
   },
-  dialogContentImportantText: {
-    color: 'red',
-    fontWeight: '500',
-    textAlign: 'center',
-  },
+  // dialogContentImportantText: {
+  //   color: 'red',
+  //   fontWeight: '500',
+  //   textAlign: 'center',
+  // },
   dialogTitleContainer: {
     alignContent: 'center',
     backgroundColor: 'red',

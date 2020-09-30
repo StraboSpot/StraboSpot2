@@ -7,6 +7,7 @@ import {useSelector} from 'react-redux';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import GeneralTextInputModal from '../../shared/ui/GeneralTextInputModal';
+import StandardModal from '../../shared/ui/StandardModal';
 import Divider from '../main-menu-panel/MainMenuPanelDivider';
 import ActiveDatasetsList from './ActiveDatasetsList';
 import ActiveProjectList from './ActiveProjectList';
@@ -17,6 +18,7 @@ import useProjectHook from './useProject';
 const ActiveProjectPanel = () => {
 
   const [useProject] = useProjectHook();
+  const [isWarningModalVisible, setIsWarningModalVisible] = useState(false);
   const [activeDatasets, setActiveDatasets] = useState(null);
   const [datasetName, setDatasetName] = useState(null);
   const [isAddDatasetModalVisible, setIsAddDatasetModalVisible] = useState(false);
@@ -28,6 +30,11 @@ const ActiveProjectPanel = () => {
     setActiveDatasets(filteredDatasets);
   }, [datasets]);
 
+  const confirm = () => {
+    useProject.selectProject(project);
+    setIsWarningModalVisible(false);
+  };
+
   const renderAddDatasetModal = () => {
     return (
       <GeneralTextInputModal
@@ -38,6 +45,34 @@ const ActiveProjectPanel = () => {
         value={datasetName}
         onChangeText={(text) => setDatasetName(text)}
       />
+    );
+  };
+
+  const renderWarningModal = () => {
+    return (
+      <StandardModal
+        visible={isWarningModalVisible}
+        dialogTitleStyle={commonStyles.dialogWarning}
+        dialogTitle={'Warning!'}
+      >
+        <View style={[commonStyles.dialogContent]}>
+          <Text style={[commonStyles.standardDescriptionText, {textAlign: 'center'}]}>This will overwrite anything that has not been uploaded to
+            the server</Text>
+        </View>
+        <View style={{flexDirection: 'row', justifyContent: 'space-evenly', paddingTop: 10}}>
+          <Button
+            title={'OK'}
+            onPress={() => confirm()}
+            buttonStyle={{paddingLeft: 20, paddingRight: 20}}
+            containerStyle={commonStyles.buttonContainer}/>
+          <Button
+            title={'Cancel'}
+            onPress={() => setIsWarningModalVisible(false)}
+            // buttonStyle={commonStyles.dialogButton}
+            containerStyle={commonStyles.buttonContainer}
+          />
+        </View>
+      </StandardModal>
     );
   };
 
@@ -80,7 +115,7 @@ const ActiveProjectPanel = () => {
           type={'outline'}
           containerStyle={{padding: 10}}
           buttonStyle={{borderRadius: 10, padding: 15}}
-          onPress={() => useProject.selectProject(project)}
+          onPress={() => setIsWarningModalVisible(true)}
         />
         <View style={{alignItems: 'center', margin: 10, marginTop: 0}}>
           <Text style={commonStyles.standardDescriptionText}>This will overwrite anything that has not been uploaded to
@@ -88,6 +123,7 @@ const ActiveProjectPanel = () => {
         </View>
       </View>
       {renderAddDatasetModal()}
+      {renderWarningModal()}
     </React.Fragment>
   );
 };

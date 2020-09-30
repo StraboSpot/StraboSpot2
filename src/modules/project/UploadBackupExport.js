@@ -168,7 +168,7 @@ const UploadBackAndExport = (props) => {
         >
           <View>
             <Text>The following project properties and the active datasets will be uploaded and will
-              <Text style={projectStyles.dialogContentImportantText}> OVERWRITE</Text> the project
+              <Text style={commonStyles.dialogContentImportantText}> OVERWRITE</Text> the project
               properties and selected datasets on the server: </Text>
             <View style={{alignItems: 'center', paddingTop: 15}}>
               <FlatList
