@@ -20,6 +20,11 @@ const commonStyles = StyleSheet.create({
     position: 'absolute',
     top: '15%',
   },
+  dialogContentImportantText: {
+    color: 'red',
+    fontWeight: '500',
+    textAlign: 'center',
+  },
   dialogInputContainer: {
     width: 250,
     height: 40,
