@@ -57,7 +57,7 @@ const TagsModal = (props) => {
     else {
       checkedTagsTemp.map(tag => {
         selectedSpotsForTagging.map(spot => {
-          useTags.addTagToSpot(tag,spot);
+          useTags.addTagToSpot(tag, spot);
         });
       });
     }
@@ -74,11 +74,13 @@ const TagsModal = (props) => {
         {/*  chevron*/}
         {/*/>*/}
         <View style={modalStyle.textContainer}>
-          <Text style={modalStyle.textStyle}>Check all tags that apply</Text>
+          {tags && !isEmpty(tags)
+            ? <Text style={modalStyle.textStyle}>Check all tags that apply</Text>
+            : <Text style={modalStyle.textStyle}>No Tags</Text>}
         </View>
         <View style={{maxHeight: 300}}>
           {renderSpotTagsList()}
-          {(modalVisible === Modals.SHORTCUT_MODALS.TAGS ||  modalVisible === Modals.SHORTCUT_MODALS.ADD_TAGS_TO_SPOTS)
+          {(modalVisible === Modals.SHORTCUT_MODALS.TAGS || modalVisible === Modals.SHORTCUT_MODALS.ADD_TAGS_TO_SPOTS)
           && <SaveButton
             buttonStyle={{backgroundColor: 'red'}}
             title={'Save tag(s)'}
