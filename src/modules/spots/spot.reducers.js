@@ -157,6 +157,20 @@ export const spotReducer = (state = initialState, action) => {
         recentViews: recentViewsArr,
         selectedAttributes: [],
       };
+    case spotReducers.UPDATE_IMAGE_SIZE:
+      const foundSpot = Object.values(state.spots).find(spot => {
+        return spot.properties.images && spot.properties.images.find(image => image.id === action.image.id);
+      });
+      if (foundSpot) {
+        const imagesFiltered = foundSpot.properties.images.filter(image => image.id !== action.image.id);
+        imagesFiltered.push(action.image);
+        foundSpot.properties.images = imagesFiltered;
+        return {
+          ...state,
+          spots: {...state.spots, [foundSpot.properties.id]: foundSpot},
+        };
+      }
+      else return state;
     case redux.CLEAR_STORE:
       return initialState;
   }

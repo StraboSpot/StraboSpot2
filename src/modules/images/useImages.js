@@ -35,6 +35,7 @@ const useImages = () => {
   const [serverRequests] = useServerRequests();
   const [useExport] = useExportHook();
 
+  const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const user = useSelector(state => state.user);
   const dispatch = useDispatch();
 
@@ -68,7 +69,7 @@ const useImages = () => {
           else {
             imageCount++;
             console.log(imageCount, 'File saved to', res.path());
-            return Promise.resolve({imageIdMessage: 'Success with' + imageId})
+            return Promise.resolve({imageIdMessage: 'Success with' + imageId});
           }
         })
         .catch((errorMessage, statusCode) => {
@@ -304,9 +305,9 @@ const useImages = () => {
 
   const getImagesFromCameraRoll = async () => {
     ImagePicker.launchImageLibrary({}, async response => {
-      console.log('RES', response)
+      console.log('RES', response);
       if (response.didCancel) useHome.toggleLoading(false);
-      else{
+      else {
         useHome.toggleLoading(true);
         const savedPhoto = await saveFile(response);
         console.log('Saved Photo in getImagesFromCameraRoll', savedPhoto);
@@ -351,46 +352,45 @@ const useImages = () => {
   };
 
   const getImageHeightAndWidth = async (imageURI) => {
-   return new Promise((resolve, reject) => {
-     Image.getSize(imageURI.uri || imageURI, (width, height) => {
-       resolve({width: width, height: height});
-     }, (error) => {
-       Alert.alert('THERE IS AN ERROR', error.message)
-       reject('THERE IS AN ERROR' + error)});
-   });
+    return new Promise((resolve, reject) => {
+      Image.getSize(imageURI.uri || imageURI, (width, height) => {
+        resolve({width: width, height: height});
+      }, (error) => {
+        Alert.alert('Error getting size of image:', error.message);
+        reject('Error getting size of image:' + error);
+      });
+    });
   };
 
   const saveFile = async (imageURI) => {
     let imageSize;
-    if (imageURI.height === undefined && imageURI.width === undefined) {
-      imageSize = await getImageHeightAndWidth(imageURI)
+    if (!imageURI.height || !imageURI.width) imageSize = await getImageHeightAndWidth(imageURI);
+    let imageId = getNewId();
+    const imagePath = imagesDirectory + '/' + imageId + '.jpg';
+    console.log(imageURI);
+    try {
+      await RNFS.mkdir(imagesDirectory);
+      if (imageURI.uri) await RNFS.copyFile(imageURI.uri, imagePath);
+      else await RNFS.copyFile(imageURI, imagePath);
+      console.log(imageCount, 'File saved to:', imagePath);
+      imageCount++;
+      let imageData = {};
+      if (Platform.OS === 'ios') {
+        imageData = {
+          id: imageId,
+          src: imagePath,
+          height: imageURI.height || imageSize.height,
+          width: imageURI.width || imageSize.width,
+        };
+      }
+      else imageData = {id: imageId, src: imageURI.uri, height: imageURI.height, width: imageURI.width};
+      return Promise.resolve(imageData);
     }
-      let imageId = getNewId();
-      const imagePath = imagesDirectory + '/' + imageId + '.jpg';
-      console.log(imageURI);
-      try {
-        await RNFS.mkdir(imagesDirectory);
-        if (imageURI.uri) await RNFS.copyFile(imageURI.uri, imagePath);
-        else await RNFS.copyFile(imageURI, imagePath);
-        console.log(imageCount, 'File saved to:', imagePath);
-        imageCount++;
-        let imageData = {};
-        if (Platform.OS === 'ios') {
-          imageData = {
-            id: imageId,
-            src: imagePath,
-            height: imageURI.height || imageSize.height,
-            width: imageURI.width || imageSize.width,
-          };
-        }
-        else imageData = {id: imageId, src: imageURI.uri, height: imageURI.height, width: imageURI.width};
-        return Promise.resolve(imageData);
-      }
-      catch (e) {
-        imageCount++;
-        console.log('Error on', imageId, ':', e);
-        return Promise.reject();
-      }
+    catch (e) {
+      imageCount++;
+      console.log('Error on', imageId, ':', e);
+      return Promise.reject();
+    }
   };
 
   const setAnnotation = (image, annotation) => {
@@ -399,6 +399,16 @@ const useImages = () => {
     dispatch({type: spotReducers.SET_SELECTED_ATTRIBUTES, attributes: [image]});
     if (!image.annotated) {
       dispatch({type: mapReducers.CURRENT_IMAGE_BASEMAP, currentImageBasemap: undefined});
+    }
+  };
+
+  const setImageBasemapSize = async (imageBasemap) => {
+    const uri = getLocalImageSrc(imageBasemap.id);
+    const imageSize = await getImageHeightAndWidth(uri);
+    const updatedImage = {...imageBasemap, ...imageSize};
+    dispatch({type: spotReducers.UPDATE_IMAGE_SIZE, image: updatedImage});
+    if (currentImageBasemap.id === updatedImage.id) {
+      dispatch({type: mapReducers.CURRENT_IMAGE_BASEMAP, currentImageBasemap: updatedImage});
     }
   };
 
@@ -628,11 +638,13 @@ const useImages = () => {
     editImage: editImage,
     gatherNeededImages: gatherNeededImages,
     getLocalImageSrc: getLocalImageSrc,
+    getImageHeightAndWidth: getImageHeightAndWidth,
     getImagesFromCameraRoll: getImagesFromCameraRoll,
     launchCameraFromNotebook: launchCameraFromNotebook,
     pictureSelectDialog: pictureSelectDialog,
     saveFile: saveFile,
     setAnnotation: setAnnotation,
+    setImageBasemapSize: setImageBasemapSize,
     takePicture: takePicture,
     uploadImages: uploadImages,
   }];

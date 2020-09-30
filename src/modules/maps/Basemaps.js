@@ -65,7 +65,7 @@ function Basemap(props) {
   };
 
   const onZoomChange = async () => {
-    const zoom = await mapRef.current.getZoom()
+    const zoom = await mapRef.current.getZoom();
     setShowZoom(true);
     setCurrentZoom(zoom);
   };

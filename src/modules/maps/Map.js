@@ -10,6 +10,7 @@ import {useSelector, useDispatch} from 'react-redux';
 import {MAPBOX_KEY} from '../../MapboxConfig';
 import {getNewUUID, isEmpty} from '../../shared/Helpers';
 import {homeReducers, Modals} from '../home/home.constants';
+import useImagesHook from '../images/useImages';
 import {spotReducers} from '../spots/spot.constants';
 import useSpotsHook from '../spots/useSpots';
 import {MapLayer1, MapLayer2} from './Basemaps';
@@ -21,23 +22,26 @@ MapboxGL.setAccessToken(MAPBOX_KEY);
 
 const Map = React.forwardRef((props, ref) => {
   const dispatch = useDispatch();
+
+  const [useImages] = useImagesHook();
   const [useMaps] = useMapsHook();
   const [useMapFeatures] = useMapFeaturesHook();
   const [useSpots] = useSpotsHook();
+
   const currentBasemap = useSelector(state => state.map.currentBasemap);
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const vertexEndCoords = useSelector(state => state.map.vertexEndCoords);
   const spots = useSelector(state => state.spot.spots);
-  const freehandFeatureCoords = useSelector(state =>state.map.freehandFeatureCoords);
-  const datasets = useSelector(state =>state.project.datasets);
+  const freehandFeatureCoords = useSelector(state => state.map.freehandFeatureCoords);
+  const datasets = useSelector(state => state.project.datasets);
   const selectedSymbols = useSelector(state => state.map.symbolsOn) || [];
   const isAllSymbolsOn = useSelector(state => state.map.isAllSymbolsOn);
   const user = useSelector(state => state.user);
   const isDrawFeatureModeOn = () => {
     return (props.mapMode === MapModes.DRAW.POINT || props.mapMode === MapModes.DRAW.LINE
       || props.mapMode === MapModes.DRAW.POLYGON || props.mapMode === MapModes.DRAW.FREEHANDPOLYGON
-      || props.mapMode == MapModes.DRAW.FREEHANDLINE);
+      || props.mapMode === MapModes.DRAW.FREEHANDLINE);
   };
   // Data needing to be tracked when in editing mode
   const initialEditingModeData = {
@@ -62,7 +66,7 @@ const Map = React.forwardRef((props, ref) => {
     showUserLocation: false,
     zoomToSpot: false,
     zoom: 14,
-    freehandSketchMode:false,
+    freehandSketchMode: false,
   };
 
   const [editingModeData, setEditingModeData] = useState(initialEditingModeData);
@@ -78,8 +82,8 @@ const Map = React.forwardRef((props, ref) => {
   const mapProps = {
     ...mapPropsMutable,
     freehandSketchMode: (props.mapMode === MapModes.DRAW.FREEHANDPOLYGON
-      || props.mapMode == MapModes.DRAW.FREEHANDLINE),
-    allowMapViewMove: !isDrawFeatureModeOn() && props.mapMode != MapModes.EDIT,
+      || props.mapMode === MapModes.DRAW.FREEHANDLINE),
+    allowMapViewMove: !isDrawFeatureModeOn() && props.mapMode !== MapModes.EDIT,
     ref: {mapRef: map, cameraRef: camera},
     onMapPress: (e) => onMapPress(e),
     onMapLongPress: (e) => onMapLongPress(e),
@@ -87,17 +91,24 @@ const Map = React.forwardRef((props, ref) => {
   };
 
   useEffect(() => {
+    console.log('UE1 Map [currentImageBasemap]');
     console.log('Changed image basemap to:', currentImageBasemap);
-    const calculatedCoordQuad = currentImageBasemap ? useMaps.getCoordQuad(currentImageBasemap) : undefined;
-    setMapPropsMutable(m => ({
-      ...m,
-      coordQuad: calculatedCoordQuad,
-      imageBasemap: currentImageBasemap,
-    }));
-    setMapToggle(!mapToggle);
+    if (currentImageBasemap && (!currentImageBasemap.height || !currentImageBasemap.width)) {
+      useImages.setImageBasemapSize(currentImageBasemap);
+    }
+    else {
+      const calculatedCoordQuad = currentImageBasemap ? useMaps.getCoordQuad(currentImageBasemap) : undefined;
+      setMapPropsMutable(m => ({
+        ...m,
+        coordQuad: calculatedCoordQuad,
+        imageBasemap: currentImageBasemap,
+      }));
+      setMapToggle(!mapToggle);
+    }
   }, [currentImageBasemap]);
 
   useEffect(() => {
+    console.log('UE2 Map [currentBasemap]');
     console.log('Changed current basemap to:', currentBasemap);
     const getCenter = async () => {
       const center = map && map.current ? await map.current.getCenter() : initialMapPropsMutable.centerCoordinate;
@@ -114,6 +125,7 @@ const Map = React.forwardRef((props, ref) => {
   }, [currentBasemap]);
 
   useEffect(() => {
+    console.log('UE3 Map [user]');
     console.log('Updating DOM on first render');
     if (!currentBasemap) useMaps.setCurrentBasemap();
     if (!currentImageBasemap) setCurrentLocationAsCenter();
@@ -121,11 +133,14 @@ const Map = React.forwardRef((props, ref) => {
   }, [user]);
 
   useEffect(() => {
+    console.log(
+      'UE4 Map [props.spots, props.datasets, currentBasemap, currentImageBasemap, selectedSymbols, isAllSymbolsOn]');
     console.log('Updating Spots, selected Spots, active datasets, basemap or map symbols to display changed');
     setDisplayedSpots((isEmpty(selectedSpot) ? [] : [{...selectedSpot}]));
   }, [spots, datasets, currentBasemap, currentImageBasemap, selectedSymbols, isAllSymbolsOn]);
 
   useEffect(() => {
+    console.log('UE5 Map [selectedSpot]');
     // On change of selected spot, reset the zoomToSpot
     if (mapProps.zoomToSpot) {
       setMapPropsMutable(m => ({
@@ -144,16 +159,19 @@ const Map = React.forwardRef((props, ref) => {
   }, [selectedSpot]);
 
   useEffect(() => {
+    console.log('UE6 Map [vertexEndCoords]');
     console.log('Updating DOM on vertexEndsCoords changed');
     if (!isEmpty(vertexEndCoords && props.mapMode === MapModes.EDIT)) moveVertex();
   }, [vertexEndCoords]);
 
   useEffect(() => {
+    console.log('UE7 Map [mapPropsMutable.drawFeature]');
     // console.log('MapPropsMutable in useEffect', mapPropsMutable);
     if (props.mapMode === MapModes.DRAW.POINT && mapPropsMutable.drawFeatures.length === 1) props.endDraw();
   }, [mapPropsMutable.drawFeatures]);
 
   useEffect(() => {
+    console.log('UE9 Map [defaultGeomType]');
     if (defaultGeomType) createDefaultGeomContinued();
   }, [defaultGeomType]);
 
@@ -699,11 +717,7 @@ const Map = React.forwardRef((props, ref) => {
     let top = mapBounds[0][1];
     let left = mapBounds[1][0];
     let bottom = mapBounds[1][1];
-    let extentString = left + ',' + bottom + ',' + right + ',' + top;
-
-    //extentString = "-110.86973277578818,32.296336913128584,-110.86531862627777,32.30231710144568";
-
-    return extentString;
+    return left + ',' + bottom + ',' + right + ',' + top;
   };
 
   const getCurrentZoom = async () => {
@@ -760,10 +774,10 @@ const Map = React.forwardRef((props, ref) => {
   const endDraw = async () => {
     console.log('endDraw mapProps', mapProps);
     let newOrEditedSpot = {};
-    if (props.mapMode == MapModes.DRAW.FREEHANDPOLYGON || props.mapMode == MapModes.DRAW.FREEHANDLINE) {
+    if (props.mapMode === MapModes.DRAW.FREEHANDPOLYGON || props.mapMode === MapModes.DRAW.FREEHANDLINE) {
       if (freehandFeatureCoords && freehandFeatureCoords.length > 2) {
         let screenCoordinates = freehandFeatureCoords;
-        let featureCoordinates = new Array();
+        let featureCoordinates = [];
         let screenX, screenY = 0;
         for (let i = 0; i < screenCoordinates.length; i++) {
           screenX = screenCoordinates[i][0];
@@ -772,7 +786,7 @@ const Map = React.forwardRef((props, ref) => {
           featureCoordinates.push(geoCoordinates);
         }
         let feature;
-        if (props.mapMode == MapModes.DRAW.FREEHANDPOLYGON) {
+        if (props.mapMode === MapModes.DRAW.FREEHANDPOLYGON) {
           featureCoordinates.push(featureCoordinates[0]); // First and Last coordinates of polygon should match
           feature = turf.polygon([featureCoordinates]);
         }
@@ -784,7 +798,7 @@ const Map = React.forwardRef((props, ref) => {
         if (props.isSelectingForStereonet) {
           await getStereonetForFeature(feature);
         }
-        else if (props.isSelectingForTagging){
+        else if (props.isSelectingForTagging) {
           const selectedSpots = await useMapFeatures.getLassoedSpots(mapPropsMutable.spotsNotSelected, feature);
           if (selectedSpots.length > 0) {
             dispatch({type: spotReducers.SET_INTERSECTED_SPOTS_FOR_TAGGING, spots: selectedSpots});
@@ -860,7 +874,8 @@ const Map = React.forwardRef((props, ref) => {
       await dispatch({type: spotReducers.SET_SELECTED_SPOT, spot: editingModeData.spotEditing});
     }
     if (!isEmpty(editingModeData.spotsEdited)) {
-      await dispatch({type: spotReducers.ADD_SPOTS, spots: [...editingModeData.spotsNotEdited, ...editingModeData.spotsEdited]});
+      await dispatch(
+        {type: spotReducers.ADD_SPOTS, spots: [...editingModeData.spotsNotEdited, ...editingModeData.spotsEdited]});
     }
     clearEditing();
   };
@@ -1257,8 +1272,8 @@ const Map = React.forwardRef((props, ref) => {
 
   // Zoom map to the extent of the mapped Spots
   const zoomToSpotsExtent = () => {
-    const spots = [...mapProps.spotsSelected, ...mapProps.spotsNotSelected];
-    useMaps.zoomToSpots(spots, map.current, camera.current);
+    const spotsToZoomTo = [...mapProps.spotsSelected, ...mapProps.spotsNotSelected];
+    useMaps.zoomToSpots(spotsToZoomTo, map.current, camera.current);
   };
 
   const toggleUserLocation = (value) => {

@@ -30,6 +30,7 @@ const InitialProjectLoadModal = (props) => {
   const [visibleInitialSection, setVisibleInitialSection] = useState('none');
 
   useEffect(() => {
+    console.log('UE InitialProjectLoadModal [isOnline]');
     return function cleanUp() {
       console.log('Initial Project Modal CleanUp');
     };

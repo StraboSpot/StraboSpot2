@@ -37,7 +37,7 @@ const Sketch = (props) => {
         ]);
     }
     else  {
-      Alert.alert(`Sketch Saved!`,
+      Alert.alert('Error Saving Sketch!',
         null,
         [
           {
