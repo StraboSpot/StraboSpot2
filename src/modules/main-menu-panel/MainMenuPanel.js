@@ -1,5 +1,5 @@
 import React from 'react';
-import {View} from 'react-native';
+import {View, Text} from 'react-native';
 
 import {connect, useSelector} from 'react-redux';
 
@@ -20,6 +20,7 @@ import SamplesList from '../samples/SamplesList';
 import {spotReducers} from '../spots/spot.constants';
 import SpotsList from '../spots/SpotsList';
 import Tags from '../tags/Tags';
+import About from './About';
 import {MAIN_MENU_ITEMS} from './mainMenu.constants';
 import {mainMenuPanelReducers} from './mainMenuPanel.constants';
 import styles from './mainMenuPanel.styles';
@@ -157,6 +158,13 @@ const MainMenuPanel = props => {
       page = (
         <View style={styles.mainMenuContainer}>
           <Tags/>
+        </View>
+      );
+      break;
+    case MAIN_MENU_ITEMS.HELP.ABOUT:
+      page = (
+        <View style={[styles.mainMenuContainer, {alignItems: 'center', justifyContent: 'center'}]}>
+          <About/>
         </View>
       );
       break;
