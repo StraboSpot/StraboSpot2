@@ -15,7 +15,7 @@ import StatusDialogBox from '../../shared/ui/StatusDialogBox';
 import ToastPopup from '../../shared/ui/Toast';
 import useImagesHook from '../images/useImages';
 import {MAIN_MENU_ITEMS} from '../main-menu-panel/mainMenu.constants';
-import SettingsPanel from '../main-menu-panel/MainMenuPanel';
+import MainMenuPanel from '../main-menu-panel/MainMenuPanel';
 import {mainMenuPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 import settingPanelStyles from '../main-menu-panel/mainMenuPanel.styles';
 import sidePanelStyles from '../main-menu-panel/sidePanel.styles';
@@ -770,9 +770,9 @@ const Home = (props) => {
   let compassModal = null;
   let samplesModal = null;
 
-  const homeDrawer = (
+  const MainMenu = (
     <Animated.View style={[settingPanelStyles.settingsDrawer, animateSettingsPanel]}>
-      <SettingsPanel
+      <MainMenuPanel
         // openSidePanel={(view, data) => openSidePanel(view, data)}
         openHomePanel={() => dispatch(
           {type: mainMenuPanelReducers.SET_MENU_SELECTION_PAGE, name: MAIN_MENU_ITEMS.MANAGE.UPLOAD_BACKUP_EXPORT})}
@@ -853,7 +853,7 @@ const Home = (props) => {
       {isHomeLoading && <LoadingSpinner/>}
       {notebookPanel}
       {props.isAllSpotsPanelVisible && renderAllSpotsPanel()}
-      {homeDrawer}
+      {MainMenu}
       {renderSaveAndCancelDrawButtons()}
       {isMainMenuPanelVisible && toggleSidePanel()}
       {renderFloatingViews()}
