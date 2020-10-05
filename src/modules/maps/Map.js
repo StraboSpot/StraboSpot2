@@ -1279,7 +1279,7 @@ const Map = React.forwardRef((props, ref) => {
   const toggleUserLocation = (value) => {
     setMapPropsMutable(m => ({
       ...m,
-      showUserLocation: value ? value : !mapProps.showUserLocation,
+      showUserLocation: value ,
     }));
   };
 

@@ -75,7 +75,7 @@ const LeftSideButtons = (props) => {
         visible={dialogs.mapActionsMenuVisible}
         onPress={(name) => {
           props.dialogClickHandler('mapActionsMenuVisible', name);
-          toggleDialog('mapActionsMenuVisible')
+          toggleDialog('mapActionsMenuVisible');
         }}
         onTouchOutside={() => toggleDialog('mapActionsMenuVisible')}
       />
@@ -83,7 +83,7 @@ const LeftSideButtons = (props) => {
         visible={dialogs.mapSymbolsMenuVisible}
         onPress={(name) => {
           props.dialogClickHandler('mapSymbolsMenuVisible', name);
-          toggleDialog('mapSymbolsMenuVisible')
+          toggleDialog('mapSymbolsMenuVisible');
         }}
         onTouchOutside={() => toggleDialog('mapSymbolsMenuVisible')}
       />
@@ -103,7 +103,10 @@ const LeftSideButtons = (props) => {
             source={buttons.userLocationButtonOn
               ? require('../../assets/icons/MyLocationButton_pressed.png')
               : require('../../assets/icons/MyLocationButton.png')}
-            onPress={() => props.clickHandler('toggleUserLocation')}
+            onPress={() => {
+              setButtons({...buttons, userLocationButtonOn: !buttons.userLocationButtonOn});
+              props.clickHandler('toggleUserLocation', !buttons.userLocationButtonOn);
+            }}
           />
         </Animated.View>
       )}

@@ -266,8 +266,7 @@ const Home = (props) => {
         break;
       case 'toggleUserLocation':
         if (!value) goToCurrentLocation();
-        mapViewComponent.current.toggleUserLocation(!value);
-        toggleButton('userLocationButtonOn');
+        mapViewComponent.current.toggleUserLocation(value);
         break;
       case 'closeImageBasemap':
         dispatch(({type: mapReducers.CURRENT_IMAGE_BASEMAP, currentImageBasemap: undefined}));
