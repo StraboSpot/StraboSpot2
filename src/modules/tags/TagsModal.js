@@ -92,10 +92,11 @@ const TagsModal = (props) => {
   };
 
   const renderSpotTagsList = () => {
+    const tagsCopy = JSON.parse(JSON.stringify(tags))
     return (
       <FlatList
         keyExtractor={item => item.id.toString()}
-        data={tags.sort((a, b) => a.name.localeCompare(b.name))}  // alphabetize by name
+        data={tagsCopy}  // alphabetize by name
         renderItem={({item, index}) => renderTagItem(item, index)}
       />
     );
