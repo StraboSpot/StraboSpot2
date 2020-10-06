@@ -30,6 +30,7 @@ import MainMenuPanelList from './MainMenuPanelList';
 const MainMenuPanel = props => {
   let buttonTitle = null;
   const project = useSelector(state => state.project.project);
+  const spotsInMapExtent = useSelector(state => state.map.spotsInMapExtent);
   let mainMenuHeader = <MainMenuPanelHeader
     onPress={() => props.setSettingsPanelPageVisible(undefined)}>
     {props.settingsPageVisible}
@@ -132,6 +133,7 @@ const MainMenuPanel = props => {
         <View style={styles.mainMenuContainer}>
           <SpotsList
             getSpotData={(spotId) => getSpotFromId(spotId)}
+            spotsInMapExtent={spotsInMapExtent}
           />
         </View>
       );

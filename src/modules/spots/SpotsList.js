@@ -16,7 +16,7 @@ const SpotsList = (props) => {
   const [useSpots] = useSpotsHook();
   const [useTags] = useTagsHook();
   const activeSpotsObj = useSpots.getActiveSpotsObj();
-  const spotsInMapExtent = useSelector(state => state.map.spotsInMapExtent);
+  // const spotsInMapExtent = useSelector(state => state.map.spotsInMapExtent);
 
   useEffect(() => {
     console.log('In SpotsList useEffect: Updating chronological sorting for Spots');
@@ -71,10 +71,10 @@ const SpotsList = (props) => {
         renderItem={({item}) => renderName(item)}/>;
     }
     else if (props.sortedListView === SortedViews.MAP_EXTENT) {
-      if (!isEmpty(spotsInMapExtent)) {
+      if (!isEmpty(props.spotsInMapExtent)) {
         sortedView = <FlatList
           keyExtractor={(item) => item.properties.id.toString()}
-          data={spotsInMapExtent}
+          data={props.spotsInMapExtent}
           renderItem={({item}) => renderName(item)}/>;
       }
       else sortedView = <Text style={{padding: 10}}>No Spots in current map extent</Text>;
