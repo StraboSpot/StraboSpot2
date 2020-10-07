@@ -145,7 +145,7 @@ export const spotReducer = (state = initialState, action) => {
         selectedAttributes: action.attributes,
       };
     case spotReducers.SET_SELECTED_SPOT:
-      let recentViewsArr = state.recentViews;
+      let recentViewsArr = Object.assign([], state.recentViews);
       const index = recentViewsArr.indexOf(action.spot.properties.id);
       if (index !== -1) recentViewsArr.splice(index, 1);
       recentViewsArr.unshift(action.spot.properties.id);
