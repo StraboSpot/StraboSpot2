@@ -73,16 +73,15 @@ const TagsNotebookModal = (props) => {
             textStyle={{fontWeight: 'bold'}}
             onPress={props.onPress}
           >
-            {project.tags && !isEmpty(project.tags) ? <TagsModal/>
-              : <View style={{paddingTop: 10, paddingBottom: 10}}>
-                <Text style={commonStyles.noValueText}>No tags in project.</Text>
-                <Text style={commonStyles.noValueText}>To add a tag press 'Add Tag.'</Text>
-                <AddButton
-                  title={'Create New Tag'}
-                  onPress={() => addTag()}
-                />
-              </View>
-            }
+            <View style={{paddingTop: 10, paddingBottom: 10}}>
+              {project.tags && isEmpty(project.tags)
+              && <Text style={commonStyles.noValueText}>No tags in project.</Text>}
+              <AddButton
+                title={'Create New Tag'}
+                onPress={() => addTag()}
+              />
+            </View>
+            <TagsModal/>
           </Modal>
           <TagDetailModal
             isVisible={isDetailModalVisible}
