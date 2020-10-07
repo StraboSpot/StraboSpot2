@@ -1,6 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {Alert, Animated, Dimensions, Platform, Text, View} from 'react-native';
 
+import * as Sentry from '@sentry/react-native';
 import * as turf from '@turf/turf';
 import {Button, Image} from 'react-native-elements';
 import {BallIndicator} from 'react-native-indicators';
@@ -116,6 +117,11 @@ const Home = (props) => {
     //   Orientation.unlockAllOrientations();
     // }
     // else Orientation.lockToLandscapeLeft();
+    if (user.email && user.email) {
+      Sentry.configureScope((scope) => {
+        scope.setUser({'email': user.email, username: user.name});
+      });
+    }
     Dimensions.addEventListener('change', deviceOrientation);
     console.log('Initializing Home page');
     initialize().then((res) => {

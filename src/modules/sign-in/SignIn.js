@@ -5,7 +5,7 @@ import NetInfo from '@react-native-community/netinfo';
 import {useNavigation} from '@react-navigation/native';
 import * as Sentry from '@sentry/react-native';
 import {Base64} from 'js-base64';
-import {Button, CheckBox} from 'react-native-elements';
+import {Button} from 'react-native-elements';
 import {useSelector, useDispatch} from 'react-redux';
 
 import {USERNAME_TEST, PASSWORD_TEST} from '../../../Config';
@@ -13,7 +13,6 @@ import useServerRequests from '../../services/useServerRequests';
 import {VERSION_NUMBER} from '../../shared/app.constants';
 import {readDataUrl, isEmpty} from '../../shared/Helpers';
 import IconButton from '../../shared/ui/IconButton';
-import uiStyles from '../../shared/ui/ui.styles';
 import {homeReducers} from '../home/home.constants';
 import {USER_DATA, USER_IMAGE, ENCODED_LOGIN} from '../user/user.constants';
 import styles from './signIn.styles';
@@ -27,9 +26,7 @@ const SignIn = (props) => {
   const offline = require('../../assets/icons/ConnectionStatusButton_offline.png');
   const [username, setUsername] = useState(__DEV__ ? USERNAME_TEST : '');
   const [password, setPassword] = useState(__DEV__ ? PASSWORD_TEST : '');
-  const isSignedIn = useSelector(state => state.home.isSignedIn);
   const isOnline = useSelector(state => state.home.isOnline);
-  const userData = useSelector(state => state.user);
   const dispatch = useDispatch();
   const [serverRequests] = useServerRequests();
 
@@ -38,14 +35,6 @@ const SignIn = (props) => {
       dispatch({type: homeReducers.SET_ISONLINE, online: state.isConnected});
     });
   }, [isOnline]);
-
-  useEffect(() => {
-    Sentry.configureScope((scope) => {
-      scope.setUser({'email': userData.email});
-    });
-  }, [userData]);
-
-  useEffect(() => {} ,[isSignedIn]);
 
   const guestSignIn = async () => {
     Sentry.configureScope((scope) => {
@@ -58,8 +47,8 @@ const SignIn = (props) => {
 
   const signIn = async () => {
     console.log('Authenticating and signing in...');
-    user = await serverRequests.authenticateUser(username, password);
     try {
+      user = await serverRequests.authenticateUser(username, password);
       // login with provider
       if (user === 'true') {
         const encodedLogin = Base64.encode(username + ':' + password);
@@ -76,6 +65,7 @@ const SignIn = (props) => {
     }
     catch (err) {
       console.log('error:', err);
+      Sentry.captureException(err);
     }
   };
 
