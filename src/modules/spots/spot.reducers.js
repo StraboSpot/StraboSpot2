@@ -157,7 +157,7 @@ export const spotReducer = (state = initialState, action) => {
         recentViews: recentViewsArr,
         selectedAttributes: [],
       };
-    case spotReducers.UPDATE_IMAGE_SIZE:
+    case spotReducers.EDIT_SPOT_IMAGE:
       const foundSpot = Object.values(state.spots).find(spot => {
         return spot.properties.images && spot.properties.images.find(image => image.id === action.image.id);
       });
@@ -165,8 +165,11 @@ export const spotReducer = (state = initialState, action) => {
         const imagesFiltered = foundSpot.properties.images.filter(image => image.id !== action.image.id);
         imagesFiltered.push(action.image);
         foundSpot.properties.images = imagesFiltered;
+        const selectedSpotCopy = state.selectedSpot && state.selectedSpot.properties.id === foundSpot.properties.id
+        ? foundSpot : state.selectedSpot;
         return {
           ...state,
+          selectedSpot: selectedSpotCopy,
           spots: {...state.spots, [foundSpot.properties.id]: foundSpot},
         };
       }
