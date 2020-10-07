@@ -21,10 +21,6 @@ const useTags = () => {
   const selectedTag = useSelector(state => state.project.selectedTag);
   const tagsDictionary = labelDictionary.project.tags;
 
-  useEffect(() => {
-    console.log('useEffect useTags [addTagToSelectedSpot]');
-  }, [addTagToSelectedSpot]);
-
   const addTag = () => {
     dispatch({type: projectReducers.SET_SELECTED_TAG, tag: {}});
     if (modalVisible === Modals.NOTEBOOK_MODALS.TAGS) {

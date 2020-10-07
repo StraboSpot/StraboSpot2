@@ -1,6 +1,5 @@
-import {Alert, Platform} from 'react-native';
+import {Platform} from 'react-native';
 
-import NetInfo from '@react-native-community/netinfo';
 import {useDispatch, useSelector} from 'react-redux';
 import RNFetchBlob from 'rn-fetch-blob';
 

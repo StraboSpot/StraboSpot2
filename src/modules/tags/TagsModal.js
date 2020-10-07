@@ -126,15 +126,7 @@ const TagsModal = (props) => {
 
   return (
     <View>
-      {(modalVisible === Modals.SHORTCUT_MODALS.TAGS || modalVisible === Modals.SHORTCUT_MODALS.ADD_TAGS_TO_SPOTS) && <AddButton
-        title={'Create New Tag'}
-        onPress={() => addTag()}
-      />}
       {renderTagContent()}
-      <TagDetailModal
-        isVisible={isDetailModalVisible}
-        closeModal={closeTagDetailModal}
-      />
     </View>
   );
 };

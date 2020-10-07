@@ -41,7 +41,13 @@ import NotebookSamplesModal from '../samples/NotebookSamplesModal';
 import ShortcutSamplesModal from '../samples/ShortcutSamplesModal';
 import {spotReducers} from '../spots/spot.constants';
 import useSpotsHook from '../spots/useSpots';
-import {TagsNotebookModal, TagAddRemoveSpots, TagDetailSidePanel, TagsShortcutModal, AddTagsToSpotsShortcutModal} from '../tags';
+import {
+  TagsNotebookModal,
+  TagAddRemoveSpots,
+  TagDetailSidePanel,
+  TagsShortcutModal,
+  AddTagsToSpotsShortcutModal,
+} from '../tags';
 import {homeReducers, Modals} from './home.constants';
 import homeStyles from './home.style';
 import LeftSideButtons from './LeftSideButtons';
@@ -423,7 +429,7 @@ const Home = (props) => {
 
   const openNotebookPanel = pageView => {
     console.log('Opening Notebook', pageView, '...');
-    if (modalVisible != Modals.SHORTCUT_MODALS.ADD_TAGS_TO_SPOTS ) props.setModalVisible(null);
+    if (modalVisible !== Modals.SHORTCUT_MODALS.ADD_TAGS_TO_SPOTS) props.setModalVisible(null);
     props.setNotebookPageVisible(pageView || NotebookPages.OVERVIEW);
     animatePanels(animation, 0);
     animatePanels(rightsideIconAnimationValue, -notebookPanelWidth);
@@ -874,7 +880,6 @@ const Home = (props) => {
 function mapStateToProps(state) {
   return {
     currentImageBasemap: state.map.currentImageBasemap,
-    currentBasemap: state.map.currentBasemap,
     selectedImage: state.spot.selectedAttributes[0],
     isImageModalVisible: state.home.isImageModalVisible,
     isOnline: state.home.isOnline,
@@ -906,7 +911,6 @@ const mapDispatchToProps = {
   setModalVisible: (modal) => ({type: homeReducers.SET_MODAL_VISIBLE, modal: modal}),
   setDeviceDims: (dims) => ({type: homeReducers.DEVICE_DIMENSIONS, dims: dims}),
   onSpotEditImageObj: (images) => ({type: spotReducers.EDIT_SPOT_IMAGES, images: images}),
-  onSetSelectedSpot: (spot) => ({type: spotReducers.SET_SELECTED_SPOT, spot: spot}),
   onShortcutSwitchChange: (switchName) => ({type: homeReducers.SHORTCUT_SWITCH_POSITION, switchName: switchName}),
 };
 

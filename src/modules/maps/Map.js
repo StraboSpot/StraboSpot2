@@ -1293,7 +1293,6 @@ const Map = React.forwardRef((props, ref) => {
       getCurrentBasemap: getCurrentBasemap,
       getCurrentZoom: getCurrentZoom,
       getExtentString: getExtentString,
-      // setSpotsInMapExtent: setSpotsInMapExtent,
       getTileCount: getTileCount,
       goToCurrentLocation: goToCurrentLocation,
       moveVertex: moveVertex,

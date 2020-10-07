@@ -17,7 +17,7 @@ const ImagesViewPage = (props) => {
   const dispatch = useDispatch();
   const images = useSelector(state => state.spot.selectedSpot.properties.images);
 
-  const renderImages = (image) => {
+  const renderImage = (image) => {
     const imageSrc = useImages.getLocalImageSrc(image.id);
     return (
       <Card containerStyle={imageStyles.cardContainer}>
@@ -94,7 +94,7 @@ const ImagesViewPage = (props) => {
           {images
           && <FlatList
             data={images}
-            renderItem={({item}) => renderImages(item)}
+            renderItem={({item}) => renderImage(item)}
             numColumns={2}
           />}
         </View>
