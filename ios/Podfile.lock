@@ -242,11 +242,11 @@ PODS:
   - React-jsinspector (0.63.2)
   - react-native-geolocation (2.0.2):
     - React
-  - react-native-get-random-values (1.4.0):
+  - react-native-get-random-values (1.5.0):
     - React
   - react-native-image-picker (2.3.3):
     - React
-  - react-native-image-resizer (1.2.3):
+  - react-native-image-resizer (1.2.6):
     - React
   - react-native-mapbox-gl (8.0.0):
     - "@react-native-mapbox-gl-mapbox-static (~> 5.7)"
@@ -262,9 +262,9 @@ PODS:
     - "@react-native-mapbox-gl-mapbox-static (~> 5.7)"
     - Mapbox-iOS-SDK (~> 5.7)
     - React
-  - react-native-netinfo (5.9.5):
+  - react-native-netinfo (5.9.6):
     - React
-  - react-native-safe-area-context (3.1.1):
+  - react-native-safe-area-context (3.1.7):
     - React
   - react-native-simple-compass (1.0.0):
     - React
@@ -332,27 +332,27 @@ PODS:
     - React-jsi (= 0.63.2)
   - rn-fetch-blob (0.12.0):
     - React-Core
-  - RNCAsyncStorage (1.11.0):
+  - RNCAsyncStorage (1.12.0):
     - React
   - RNCClipboard (1.2.3):
     - React
   - RNCMaskedView (0.1.10):
     - React
-  - RNCPicker (1.6.5):
+  - RNCPicker (1.7.1):
     - React
-  - RNDateTimePicker (2.6.1):
+  - RNDateTimePicker (3.0.2):
     - React
   - RNFS (2.16.6):
     - React
-  - RNGestureHandler (1.7.0):
+  - RNGestureHandler (1.8.0):
     - React
-  - RNReanimated (1.10.1):
+  - RNReanimated (1.13.0):
     - React
-  - RNScreens (2.9.0):
+  - RNScreens (2.10.1):
     - React
-  - RNSensors (6.1.0):
+  - RNSensors (7.0.1):
     - React
-  - RNSentry (1.7.1):
+  - RNSentry (1.8.2):
     - React
     - Sentry (~> 5.2.0)
   - RNSketchCanvas (0.8.0):
@@ -362,13 +362,13 @@ PODS:
     - RNSound/Core (= 0.11.0)
   - RNSound/Core (0.11.0):
     - React
-  - RNVectorIcons (7.0.0):
+  - RNVectorIcons (7.1.0):
     - React
-  - RNZipArchive (5.0.4):
+  - RNZipArchive (5.0.6):
     - React
-    - RNZipArchive/Core (= 5.0.4)
+    - RNZipArchive/Core (= 5.0.6)
     - SSZipArchive (= 2.2.2)
-  - RNZipArchive/Core (5.0.4):
+  - RNZipArchive/Core (5.0.6):
     - React
     - SSZipArchive (= 2.2.2)
   - Sentry (5.2.2):
@@ -608,12 +608,12 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 8ca588cc921e70590820ce72b8789b02c67cce38
   React-jsinspector: b14e62ebe7a66e9231e9581279909f2fc3db6606
   react-native-geolocation: cbd9d6bd06bac411eed2671810f454d4908484a8
-  react-native-get-random-values: 2b7500cdb68066aba87cdccd97067c29e16ffe95
+  react-native-get-random-values: 1404bd5cc0ab0e287f75ee1c489555688fc65f89
   react-native-image-picker: a6c3d644751a388b0fc8b56822ff7cbd398a3008
-  react-native-image-resizer: 3a0a2ab15953b2aec5dda20338e3c6bd6c26e528
+  react-native-image-resizer: f9fd7a61ffb3683987a6528e15e32bc32eb9dee3
   react-native-mapbox-gl: 77b87a1dd2d7b41b6b77018c0f3bed5f8ee55c81
-  react-native-netinfo: 7f3f3ed9e8f0e7ab3e7cac00cbfdc6997e25ecaf
-  react-native-safe-area-context: 4c3249e4840225c61fcd215b136af0a737bccb79
+  react-native-netinfo: d2c312fa4b151214e1d5c8456ddb5f28ff24a576
+  react-native-safe-area-context: fcece23844742b6f7f0627c3715b806a7deff946
   react-native-simple-compass: 2cd09f4e5dbb7a594c2f0d9f85d035e93c9fccca
   react-native-slider: b733e17fdd31186707146debf1f04b5d94aa1a93
   React-RCTActionSheet: 910163b6b09685a35c4ebbc52b66d1bfbbe39fc5
@@ -627,21 +627,21 @@ SPEC CHECKSUMS:
   React-RCTVibration: 4d2e726957f4087449739b595f107c0d4b6c2d2d
   ReactCommon: a0a1edbebcac5e91338371b72ffc66aa822792ce
   rn-fetch-blob: f065bb7ab7fb48dd002629f8bdcb0336602d3cba
-  RNCAsyncStorage: db711e29e5e0500d9bd21aa0c2e397efa45302b1
+  RNCAsyncStorage: 3eea36d9460c5159b592f9ecbe5a77f8aca98006
   RNCClipboard: 5f3218dcdc28405aa2ae72b78e388f150b826dd3
   RNCMaskedView: f5c7d14d6847b7b44853f7acb6284c1da30a3459
-  RNCPicker: 55b9b4240d0a9eba8733d02616775d4040de2e7d
-  RNDateTimePicker: f13c2d8c4cd1ea6d1a1f9ea7ddcdd24e82060770
+  RNCPicker: a2bf7bad059f23de52add203c3c5a3bc5b5239d8
+  RNDateTimePicker: 3a1783e63fcb6e2b162b08a4321db030d23accff
   RNFS: 2bd9eb49dc82fa9676382f0585b992c424cd59df
-  RNGestureHandler: b6b359bb800ae399a9c8b27032bdbf7c18f08a08
-  RNReanimated: c2bb7438b57a3d987bb2e4e6e4bca94787e30b02
-  RNScreens: c526239bbe0e957b988dacc8d75ac94ec9cb19da
-  RNSensors: 4ae6660861b426fd16f61ce2df0b750bda6ac32d
-  RNSentry: 2bae4ffee2e66376ef42cb845a494c3bde17bc56
+  RNGestureHandler: 7a5833d0f788dbd107fbb913e09aa0c1ff333c39
+  RNReanimated: 89f5e0a04d1dd52fbf27e7e7030d8f80a646a3fc
+  RNScreens: b748efec66e095134c7166ca333b628cd7e6f3e2
+  RNSensors: 07c37847fc643356e7f9829800932f7d7c33455a
+  RNSentry: cff88174a0b2e0289b2efe5be1abba1f6c54269d
   RNSketchCanvas: 6939b18677cd1794151cc3d8eb5a0a2158a4a05b
   RNSound: c980916b596cc15c8dcd2f6ecd3b13c4881dbe20
-  RNVectorIcons: da6fe858f5a65d7bbc3379540a889b0b12aa5976
-  RNZipArchive: be3009f34009076062b34f1d0f000391ad3ea86a
+  RNVectorIcons: bc69e6a278b14842063605de32bec61f0b251a59
+  RNZipArchive: 0c9463e46a56d93b29cd8a306e051f24397f5dfa
   Sentry: 8fa58a051237554f22507fb483b9a1de0171a2dc
   SSZipArchive: fa16b8cc4cdeceb698e5e5d9f67e9558532fbf23
   Yoga: 7740b94929bbacbddda59bf115b5317e9a161598
