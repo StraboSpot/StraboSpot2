@@ -25,18 +25,14 @@ let imageCount = 0;
 // const imagesDirectory = devicePath + appDirectory + '/Images';
 
 const ImageGallery = (props) => {
-  let imageSrc = require('../../assets/images/noimage.jpg');
   const [useSpots] = useSpotsHook();
   const activeSpotsObj = useSpots.getActiveSpotsObj();
   const [useImages] = useImagesHook();
-  const [refresh, setRefresh] = useState(false);
+  const [refresh] = useState(false);
   const [sortedList, setSortedList] = useState(Object.values(activeSpotsObj));
   const [filteredList] = useState(sortedList.filter(spot => {
     return !isEmpty(spot.properties.images);
   }));
-  const [imageURI, setImageURI] = useState([]);
-  const [displayedSpots, setDisplayedSpots] = useState(filteredList.slice(0, 20));
-  const [combinedImageArrays, setCombinedImageArrays] = useState([]);
   let savedArray = [];
 
   useEffect(() => {
