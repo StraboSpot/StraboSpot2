@@ -36,6 +36,7 @@ const useImages = () => {
   const [useExport] = useExportHook();
 
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
+  const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const user = useSelector(state => state.user);
   const dispatch = useDispatch();
 
@@ -394,10 +395,16 @@ const useImages = () => {
   };
 
   const setAnnotation = (image, annotation) => {
-    image.annotated = annotation;
-    if (annotation && !image.title) image.title = image.id;
-    dispatch({type: spotReducers.SET_SELECTED_ATTRIBUTES, attributes: [image]});
-    if (!image.annotated) {
+    const imageCopy = JSON.parse(JSON.stringify(image));
+    imageCopy.annotated = annotation;
+    if (annotation && !imageCopy.title) imageCopy.title = imageCopy.id;
+    if (selectedSpot && selectedSpot.properties && selectedSpot.properties.images) {
+      const updatedImages = selectedSpot.properties.images.filter(image => imageCopy.id !== image.id);
+      console.log(updatedImages);
+      updatedImages.push(imageCopy);
+      dispatch({type: spotReducers.EDIT_SPOT_PROPERTIES, field: 'images', value: updatedImages});
+    }
+    if (!imageCopy.annotated) {
       dispatch({type: mapReducers.CURRENT_IMAGE_BASEMAP, currentImageBasemap: undefined});
     }
   };
@@ -406,7 +413,7 @@ const useImages = () => {
     const uri = getLocalImageSrc(imageBasemap.id);
     const imageSize = await getImageHeightAndWidth(uri);
     const updatedImage = {...imageBasemap, ...imageSize};
-    dispatch({type: spotReducers.UPDATE_IMAGE_SIZE, image: updatedImage});
+    dispatch({type: spotReducers.EDIT_SPOT_IMAGE, image: updatedImage});
     if (currentImageBasemap.id === updatedImage.id) {
       dispatch({type: mapReducers.CURRENT_IMAGE_BASEMAP, currentImageBasemap: updatedImage});
     }
