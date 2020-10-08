@@ -9,6 +9,8 @@ import tabularZoneOrientationChoices from './measurement/tabular-zone-orienation
 import tabularZoneOrientationSurvey from './measurement/tabular-zone-orientation-survey';
 import namingConventionsSurvey from './preferences/naming-conventions-survey.json';
 import projectDescriptionSurvey from './project/project-description-survey.json';
+import sampleChoices from './sample/sample-choices.json';
+import sampleSurvey from './sample/sample-survey.json';
 import surfaceFeatureChoices from './surface-feature/surface-feature-choices.json';
 import surfaceFeatureSurvey from './surface-feature/surface-feature-survey.json';
 import tagsChoices from './tags/tags-choices.json';
@@ -36,6 +38,10 @@ const forms = {
     trace: {
       survey: traceSurvey,
       choices: traceChoices,
+    },
+    sample: {
+      survey: sampleSurvey,
+      choices: sampleChoices,
     },
     surface_feature: {
       survey: surfaceFeatureSurvey,
