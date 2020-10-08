@@ -1,7 +1,17 @@
 import AsyncStorage from '@react-native-community/async-storage';
 import {applyMiddleware, createStore, compose, combineReducers} from 'redux';
+import {configureStore, getDefaultMiddleware} from '@reduxjs/toolkit';
 import {createLogger} from 'redux-logger';
-import {persistStore, persistReducer} from 'redux-persist';
+import {
+  persistStore,
+  persistReducer,
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+} from 'redux-persist';
 
 import {homeReducer} from '../modules/home/home.reducer';
 import {mainMenuPanelReducer} from '../modules/main-menu-panel/mainMenuPanel.reducer';
@@ -45,18 +55,15 @@ const rootReducer = combineReducers({
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
-let composeEnhancers = compose;
-
-if (__DEV__) {
-  composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-}
-
-const store = () => {
-  const store = createStore(persistedReducer, composeEnhancers(applyMiddleware(...middleware)));
-  console.log('The State of the Store', store.getState());
-  const persistor = persistStore(store);
-  // const persistorPurge = persistStore(store).purge(); // Use this to clear persistStore completely
-  return {store, persistor};
+const defalutMiddlewareOptions = {
+  serializableCheck: {
+    ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+  },
 };
+
+const store = configureStore({
+  reducer: persistedReducer,
+  middleware: [...getDefaultMiddleware(defalutMiddlewareOptions), ...middleware],
+});
 
 export default store;
