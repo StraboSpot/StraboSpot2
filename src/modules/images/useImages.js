@@ -10,7 +10,11 @@ import RNFetchBlob from 'rn-fetch-blob';
 
 import useServerRequests from '../../services/useServerRequests';
 import {getNewId, isEmpty} from '../../shared/Helpers';
-import {homeReducers} from '../home/home.constants';
+import {
+  addedStatusMessage,
+  removedLastStatusMessage,
+  setLoadingStatus,
+} from '../home/home.slice';
 import useHomeHook from '../home/useHome';
 import {mapReducers} from '../maps/maps.constants';
 import useExportHook from '../project/useExport';
@@ -50,7 +54,7 @@ const useImages = () => {
     let imagesFailedCount = 0;
     let savedImagesCount = 0;
     let imagesFailedArr = [];
-    dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'Downloading Images...'});
+    dispatch(addedStatusMessage({statusMessage: 'Downloading Images...'}));
 
     const downloadImageAndSave = async (imageId) => {
       const imageURI = 'https://strabospot.org/pi/' + imageId;
@@ -101,19 +105,18 @@ const useImages = () => {
               imagesFailedArr.push(imageId);
             });
           }).finally(() => {
-            dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
+            dispatch(removedLastStatusMessage());
             if (imagesFailedCount > 0) {
-              dispatch({
-                type: homeReducers.ADD_STATUS_MESSAGE,
-                statusMessage: 'Downloaded Images ' + imageCount + '/' + neededImageIds.length
-                  + '\nFailed Images ' + imagesFailedCount + '/' + neededImageIds.length,
-              });
+              dispatch(addedStatusMessage(
+                {
+                  statusMessage: 'Downloaded Images ' + imageCount + '/' + neededImageIds.length
+                    + '\nFailed Images ' + imagesFailedCount + '/' + neededImageIds.length,
+                }));
             }
             else {
-              dispatch({
-                type: homeReducers.ADD_STATUS_MESSAGE,
-                statusMessage: 'Downloaded Images: ' + imageCount + '/' + neededImageIds.length,
-              });
+              dispatch(addedStatusMessage(
+                {statusMessage: 'Downloaded Images: ' + imageCount + '/' + neededImageIds.length},
+              ));
             }
           });
           promises.push(promise);
@@ -121,22 +124,20 @@ const useImages = () => {
       }
     }
     catch (e) {
-      dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
-      dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Error Downloading Images!'});
+      dispatch(removedLastStatusMessage());
+      dispatch(addedStatusMessage({statusMessage: 'Error Downloading Images!'}));
       console.warn('Error Downloading Images: ' + e);
     }
 
     return Promise.all(promises).then(() => {
       if (imagesFailedCount > 0) {
         //downloadErrors = true;
-        dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
-        dispatch(
-          {type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Image Downloads Failed: ' + imagesFailedCount});
+        dispatch(removedLastStatusMessage());
+        dispatch(addedStatusMessage({statusMessage: 'Image Downloads Failed: \' + imagesFailedCount'}));
         console.warn('Image Downloads Failed: ' + imagesFailedCount);
       }
       else {
-        dispatch({type: homeReducers.SET_LOADING, view: 'modal', bool: false});
-        // dispatch({type:  homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Download Complete!'});
+        dispatch(setLoadingStatus({bool: false}));
       }
     });
   };
@@ -480,8 +481,8 @@ const useImages = () => {
       };
 
       const getImageFile = async imageProps => {
-        dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
-        dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Processing Image...'});
+        dispatch(removedLastStatusMessage());
+        dispatch(addedStatusMessage({statusMessage: 'Processing Image...'}));
         console.log(imageProps);
         const src = await getImageFileURIById(imageProps.id);
         if (src !== 'img/image-not-found.png') {
@@ -507,8 +508,8 @@ const useImages = () => {
         else {
           if (imagesToUploadCount === 0) {
             console.log('No NEW images to upload');
-            dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
-            dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'No NEW images to upload'});
+            dispatch(removedLastStatusMessage());
+            dispatch(addedStatusMessage({statusMessage: 'No NEW images to upload'}));
           }
           else {
             console.log('Finished Uploading Images');
@@ -599,8 +600,8 @@ const useImages = () => {
         const imageProps = data[0];
         const src = data[1];
         const count = imagesUploadedCount + 1;
-        dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
-        dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Uploading image: ' + count});
+        dispatch(removedLastStatusMessage());
+        dispatch(addedStatusMessage({statusMessage: 'Uploading image: ' + count}));
         console.log('Uploading image', imageProps.id, 'to server...');
 
         const resizeImage = await resizeImageForUpload(src, imageProps);
@@ -623,8 +624,8 @@ const useImages = () => {
               imagesUploadedCount++;
               console.log('Image Uploaded!' + imagesUploadedCount);
               console.log('Finished uploading image', imageProps.id, 'to the server');
-              dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
-              dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Uploaded Images', imagesUploadedCount});
+              dispatch(removedLastStatusMessage());
+              dispatch(addedStatusMessage({statusMessage: 'Uploaded Images', imagesUploadedCount}));
               return Promise.resolve();
             },
             (err) => Promise.reject('Error uploading image' + imageProps.id) + '\n' + err)

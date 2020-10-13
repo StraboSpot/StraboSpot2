@@ -6,7 +6,14 @@ import RNFetchBlob from 'rn-fetch-blob';
 // Hooks
 import useServerRequests from '../../services/useServerRequests';
 import {getNewId, isEmpty} from '../../shared/Helpers';
-import {homeReducers} from '../home/home.constants';
+import {
+  addedStatusMessage,
+  clearedStatusMessages,
+  removedLastStatusMessage,
+  setLoadingStatus,
+  setInfoMessagesModalVisible,
+  setStatusMessagesModalVisible,
+} from '../home/home.slice';
 import useImagesHook from '../images/useImages';
 import {mapReducers} from '../maps/maps.constants';
 import {spotReducers} from '../spots/spot.constants';
@@ -127,10 +134,10 @@ const useProject = () => {
             console.log(spotId, 'Current Spot Deleted Count:', spotsDeletedCount);
             console.log('DeleteSpot()', spotIdsArr);
             if (isEmpty(spotIdsArr)) {
-              dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
-              dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: `Deleted ${spotsDeletedCount} spots.`});
+              dispatch(removedLastStatusMessage());
+              dispatch(addedStatusMessage({statusMessage: `Deleted ${spotsDeletedCount} spots.`}));
               dispatch({type: projectReducers.DATASETS.DATASET_DELETE, id: id});
-              dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Dataset Deleted!'});
+              dispatch(addedStatusMessage({statusMessage: 'Dataset Deleted!'}));
             }
           });
         }),
@@ -138,8 +145,8 @@ const useProject = () => {
     }
     else {
       dispatch({type: projectReducers.DATASETS.DATASET_DELETE, id: id});
-      dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
-      dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Dataset Deleted!'});
+      dispatch(removedLastStatusMessage());
+      dispatch(addedStatusMessage({statusMessage: 'Dataset Deleted!'}));
       return Promise.resolve();
     }
   };
@@ -217,10 +224,9 @@ const useProject = () => {
   };
 
   const loadProjectRemote = async (selectedProject) => {
-    dispatch({
-      type: homeReducers.ADD_STATUS_MESSAGE,
-      statusMessage: `Getting project: ${selectedProject.name}\n from server...\n ---------------`,
-    });
+    dispatch(addedStatusMessage(
+      {statusMessage: `Getting project: ${selectedProject.name}\n from server...\n ---------------`},
+    ));
     console.log(`Getting ${selectedProject.name} project from server...`);
     if (!isEmpty(project)) await destroyOldProject();
     try {
@@ -245,7 +251,7 @@ const useProject = () => {
   };
 
   const getDatasets = async (project) => {
-    dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Getting datasets from server...'});
+    dispatch(addedStatusMessage({statusMessage: 'Getting datasets from server...'}));
     const projectDatasetsFromServer = await serverRequests.getDatasets(project.id, user.encoded_login);
     if (projectDatasetsFromServer === 401) {
       return Promise.reject();
@@ -262,8 +268,8 @@ const useProject = () => {
       }
       const datasetsReassigned = Object.assign({}, ...projectDatasetsFromServer.datasets.map(item => ({[item.id]: item})));
       dispatch({type: projectReducers.DATASETS.DATASETS_UPDATE, datasets: datasetsReassigned});
-      dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
-      dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Datasets Saved.'});
+      dispatch(removedLastStatusMessage());
+      dispatch(addedStatusMessage({statusMessage: 'Datasets Saved.'}));
       console.log('Saved datasets:', projectDatasetsFromServer);
       return Promise.resolve(projectDatasetsFromServer);
     }
@@ -304,18 +310,18 @@ const useProject = () => {
     }
     else {
       try {
-        dispatch({type: homeReducers.CLEAR_STATUS_MESSAGES});
-        dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, bool: true});
+        dispatch(clearedStatusMessages());
+        dispatch(setStatusMessagesModalVisible({bool: true}));
         projectResponse = await loadProjectRemote(selectedProject);
         return projectResponse;
       }
       catch (err) {
-        dispatch({type: homeReducers.CLEAR_STATUS_MESSAGES});
-        dispatch({
-          type: homeReducers.ADD_STATUS_MESSAGE,
-          statusMessage: `There is not a project named: \n\n${selectedProject.description.project_name}\n\n on the server...`,
-        });
-        dispatch({type: homeReducers.SET_INFO_MESSAGES_MODAL_VISIBLE, bool: true});
+        dispatch(clearedStatusMessages());
+        dispatch(addedStatusMessage({
+          statusMessage: `There is not a project named: 
+          \n\n${selectedProject.description.project_name}\n\n on the server...`,
+        }));
+        dispatch(setInfoMessagesModalVisible({bool: true}));
         return err.ok;
       }
     }
@@ -341,34 +347,31 @@ const useProject = () => {
   const uploadDatasets = async () => {
     let currentRequest = 0;
     const activeDatasets = Object.values(datasets).filter(dataset => dataset.active === true);
-    dispatch({type: homeReducers.CLEAR_STATUS_MESSAGES});
-    dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Uploading Datasets...'});
+    dispatch(clearedStatusMessages());
+    dispatch(addedStatusMessage({statusMessage: 'Uploading Datasets...'}));
 
     const makeNextRequest = async () => {
       console.log('Making request...');
       return uploadDataset(activeDatasets[currentRequest]).then(() => {
         currentRequest++;
-        dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
+        dispatch(removedLastStatusMessage());
         if (currentRequest > 0 && currentRequest < activeDatasets.length) {
-          dispatch({
-            type: homeReducers.ADD_STATUS_MESSAGE,
-            statusMessage: 'Uploading Dataset: ' + currentRequest + '/' + activeDatasets.length,
-          });
+          dispatch(
+            addedStatusMessage({statusMessage: 'Uploading Dataset: ' + currentRequest + '/' + activeDatasets.length}));
         }
         if (currentRequest < activeDatasets.length) {
           return makeNextRequest();
         }
         else {
-          dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
-          dispatch(
-            {type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: activeDatasets.length + ' Datasets uploaded!'});
+          dispatch(removedLastStatusMessage());
+          dispatch(addedStatusMessage({statusMessage: activeDatasets.length + ' Datasets uploaded!'}));
           return Promise.resolve({message: 'Datasets Uploaded'});
         }
       }, (err) => {
         console.log('Error uploading dataset.', err);
-        dispatch({type: homeReducers.CLEAR_STATUS_MESSAGES});
-        dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Error uploading dataset.'});
-        dispatch({type: homeReducers.SET_LOADING, view: 'modal', bool: false});
+        dispatch(clearedStatusMessages());
+        dispatch(addedStatusMessage({statusMessage: 'Error uploading dataset.'}));
+        dispatch(setLoadingStatus({view: 'modal', bool: false}));
         return Promise.reject();
       });
     };
@@ -378,9 +381,9 @@ const useProject = () => {
       return makeNextRequest();
     }
     if (activeDatasets.length === 0) {
-      dispatch({type: homeReducers.SET_LOADING, view: 'modal', bool: false});
-      dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
-      dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'There are no active datasets.'});
+      dispatch(setLoadingStatus({view: 'modal', bool: false}));
+      dispatch(removedLastStatusMessage());
+      dispatch(addedStatusMessage({statusMessage: 'There are no active datasets.'}));
       return Promise.reject('No Active Datasets');
     }
     else return Promise.resolve('Datasets Uploaded');
@@ -391,21 +394,21 @@ const useProject = () => {
   };
 
   const uploadProject = async () => {
-    dispatch({type: homeReducers.SET_LOADING, view: 'modal', bool: true});
-    dispatch({type: homeReducers.CLEAR_STATUS_MESSAGES});
-    dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, bool: true});
+    dispatch(setLoadingStatus({view: 'modal', bool: true}));
+    dispatch(clearedStatusMessages());
+    dispatch(setStatusMessagesModalVisible({bool: true}));
     console.log('PROJECT UPLOADING...');
-    dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Uploading Project...'});
+    dispatch(addedStatusMessage({statusMessage: 'Uploading Project...'}));
     try {
       const updatedProject = await serverRequests.updateProject(project, user.encoded_login);
-      dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
-      dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Finished uploading project.'});
+      dispatch(removedLastStatusMessage());
+      dispatch(addedStatusMessage({statusMessage: 'Finished uploading project.'}));
       console.log('Going to uploadDatasets next');
       return Promise.resolve(updatedProject);
     }
     catch (err) {
-      dispatch({type: homeReducers.CLEAR_STATUS_MESSAGES});
-      dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Error uploading project.'});
+      dispatch(clearedStatusMessages());
+      dispatch(addedStatusMessage({statusMessage: 'Error uploading project.'}));
       console.log('Error uploading project', err);
       return Promise.reject(err);
     }
@@ -419,11 +422,8 @@ const useProject = () => {
     }
     if (isEmpty(spots)) {
       console.log('No Spots to Upload');
-      dispatch({
-        type: homeReducers.ADD_STATUS_MESSAGE,
-        statusMessage: `${dataset} has 0 spots to Upload `,
-      });
-      dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
+      dispatch(addedStatusMessage({statusMessage: `${dataset} has 0 spots to Upload `}));
+      dispatch(removedLastStatusMessage());
     }
     else {
       const spotCollection = {

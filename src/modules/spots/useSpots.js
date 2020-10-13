@@ -2,10 +2,11 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import useServerRequestsHook from '../../services/useServerRequests';
 import {getNewId, isEmpty} from '../../shared/Helpers';
-import {homeReducers} from '../home/home.constants';
+import {addedStatusMessage} from '../home/home.slice';
 import useImagesHook from '../images/useImages';
 import {projectReducers} from '../project/project.constants';
 import {generalKeysIcons, sedKeysIcons, spotReducers} from './spot.constants';
+import {removedLastStatusMessage, setLoadingStatus, setProjectLoadComplete} from '../home/home.slice';
 
 const useSpots = (props) => {
   const dispatch = useDispatch();
@@ -139,8 +140,7 @@ const useSpots = (props) => {
   };
 
   const downloadSpots = async (dataset, encodedLogin) => {
-    // dispatch({type: 'CLEAR_STATUS_MESSAGES'});
-    dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'Downloading Spots...'});
+    dispatch(addedStatusMessage({statusMessage: 'Downloading Spots...'}));
     const datasetInfoFromServer = await useServerRequests.getDatasetSpots(dataset.id, encodedLogin);
     if (!isEmpty(datasetInfoFromServer) && datasetInfoFromServer.features) {
       const spotsOnServer = datasetInfoFromServer.features;
@@ -149,16 +149,16 @@ const useSpots = (props) => {
         dispatch({type: spotReducers.ADD_SPOTS, spots: spotsOnServer});
         const spotIds = Object.values(spotsOnServer).map(spot => spot.properties.id);
         dispatch({type: projectReducers.DATASETS.ADD_SPOTS_IDS_TO_DATASET, datasetId: dataset.id, spotIds: spotIds});
-        dispatch({type: 'REMOVE_LAST_STATUS_MESSAGE'});
-        dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'Downloaded Spots'});
+        dispatch(removedLastStatusMessage());
+        dispatch(addedStatusMessage({statusMessage: 'Downloaded Spots'}));
         const neededImagesIds = await useImages.gatherNeededImages(spotsOnServer);
         if (neededImagesIds.length === 0) {
-          dispatch({type: homeReducers.SET_LOADING, view: 'modal', bool: false});
-          dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'No New Images to Download'});
-          dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Download Complete!'});
+          dispatch(setLoadingStatus({view: 'modal', bool: false}));
+          dispatch(addedStatusMessage({statusMessage: 'No New Images to Download'}));
+          dispatch(addedStatusMessage({statusMessage: 'Download Complete!'}));
         }
         else return await useImages.downloadImages(neededImagesIds);
-        dispatch({type: homeReducers.PROJECT_LOAD_COMPLETE, projectLoadComplete: true});
+        dispatch(setProjectLoadComplete({bool: true}));
       }
       return Promise.resolve({message: 'done - Spots'});
     }

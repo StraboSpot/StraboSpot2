@@ -7,13 +7,18 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
 import Spacer from '../../shared/ui/Spacer';
-import {homeReducers} from '../home/home.constants';
 import useImagesHook from '../images/useImages';
 import Divider from '../main-menu-panel/MainMenuPanelDivider';
 import projectStyles from './project.styles';
 import UploadDialogBox from './UploadDialogBox';
 import useExportHook from './useExport';
 import useProjectHook from './useProject';
+import {
+  addedStatusMessage,
+  clearedStatusMessages,
+  setLoadingStatus,
+  setStatusMessagesModalVisible,
+} from '../home/home.slice';
 
 const UploadBackAndExport = (props) => {
   const [useExport] = useExportHook();
@@ -30,16 +35,15 @@ const UploadBackAndExport = (props) => {
 
   const backupToDevice = async () => {
     setIsUploadDialogVisible(false);
-    dispatch({type: 'CLEAR_STATUS_MESSAGES'});
-    dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'Backing up Project to Device...'});
-    dispatch({type: homeReducers.SET_LOADING, view: 'modal', bool: true});
-    dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, bool: true});
+    dispatch(clearedStatusMessages());
+    dispatch(addedStatusMessage({statusMessage: 'Backing up Project to Device...'}));
+    dispatch(setLoadingStatus({view: 'modal', bool: true}));
+    dispatch(setStatusMessagesModalVisible({bool: true}));
     await useExport.backupProjectToDevice(exportFileName);
     console.log(`File ${exportFileName} has been backed up`);
-    // dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
-    dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: '---------------'});
-    dispatch({type: homeReducers.SET_LOADING, view: 'modal', bool: false});
-    await dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'Project Backup Complete!'});
+    dispatch(addedStatusMessage({statusMessage: '---------------'}));
+    dispatch(setLoadingStatus({view: 'modal', bool: false}));
+    await dispatch(addedStatusMessage({statusMessage: 'Project Backup Complete!'}));
 
   };
 
@@ -74,16 +78,18 @@ const UploadBackAndExport = (props) => {
     return uploadProject()
       .then(uploadDatasets)
       .catch(err => {
-        dispatch({type: homeReducers.CLEAR_STATUS_MESSAGES});
-        if (err.status) dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: `Error uploading project: Status \n ${err.status}`});
-        else dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: `Error uploading project: \n ${err}`});
+        dispatch(clearedStatusMessages());
+        if (err.status) {
+          dispatch(addedStatusMessage({statusMessage: `Error uploading project: Status \n ${err.status}`}));
+        }
+        else dispatch(addedStatusMessage({statusMessage: `Error uploading project: \n ${err}`}));
       })
       .finally(() => {
           useImages.deleteTempImagesFolder()
             .catch(err2 => console.error('Error deleting temp images folder', err2))
             .finally(() => {
-              dispatch({type: homeReducers.SET_LOADING, view: 'modal', bool: false});
-              dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Upload Complete!'});
+              dispatch(setLoadingStatus({view: 'modal', bool: false}));
+              dispatch(addedStatusMessage({statusMessage: 'Upload Complete!'}));
             });
         },
       );

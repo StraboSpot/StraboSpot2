@@ -7,7 +7,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import styles from '../../shared/ui/ui.styles';
 import {Form, useFormHook} from '../form';
-import {homeReducers} from '../home/home.constants';
+import {setProjectLoadSelectionModalVisible} from '../home/home.slice';
 import {MAIN_MENU_ITEMS} from '../main-menu-panel/mainMenu.constants';
 import {mainMenuPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 import Divider from '../main-menu-panel/MainMenuPanelDivider';
@@ -48,7 +48,7 @@ const NewProjectForm = (props) => {
           dispatch(
             {type: mainMenuPanelReducers.SET_MENU_SELECTION_PAGE, name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS});
           props.openMainMenu();
-          dispatch({type: homeReducers.SET_PROJECT_LOAD_SELECTION_MODAL_VISIBLE, value: false});
+          dispatch(setProjectLoadSelectionModalVisible({bool: false}));
         }
         else {
           dispatch(

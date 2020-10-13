@@ -11,7 +11,8 @@ import * as themes from '../../shared/styles.constants';
 import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {Form, useFormHook} from '../form';
-import {homeReducers, Modals} from '../home/home.constants';
+import {Modals} from '../home/home.constants';
+import {setModalVisible} from '../home/home.slice';
 import {notebookReducers} from '../notebook-panel/notebook.constants';
 import {spotReducers} from '../spots/spot.constants';
 import MeasurementItem from './MeasurementItem';
@@ -284,7 +285,7 @@ const MeasurementDetailPage = (props) => {
 
   const cancelFormAndGo = () => {
     if (modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {
-      dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: Modals.NOTEBOOK_MODALS.COMPASS});
+      dispatch(setModalVisible({modal: Modals.NOTEBOOK_MODALS.COMPASS}));
     }
     dispatch({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE_TO_PREV});
   };
@@ -343,7 +344,7 @@ const MeasurementDetailPage = (props) => {
     saveForm().then(() => {
       console.log('Finished saving form data to Spot');
       if (modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {
-        dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: Modals.NOTEBOOK_MODALS.COMPASS});
+        dispatch(setModalVisible({modal: Modals.NOTEBOOK_MODALS.COMPASS}));
       }
       dispatch({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE_TO_PREV});
     }, () => {
@@ -377,7 +378,7 @@ const MeasurementDetailPage = (props) => {
       dispatch({type: spotReducers.EDIT_SPOT_PROPERTIES, field: 'orientation_data', value: orientationDataCopy});
 
       if (modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {
-        dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: Modals.NOTEBOOK_MODALS.COMPASS});
+        dispatch(setModalVisible({modal: Modals.NOTEBOOK_MODALS.COMPASS}));
       }
       dispatch({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE_TO_PREV});
     }

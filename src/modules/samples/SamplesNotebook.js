@@ -8,10 +8,11 @@ import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
 import SectionDivider from '../../shared/ui/SectionDivider';
-import {homeReducers, Modals} from '../home/home.constants';
+import {Modals} from '../home/home.constants';
 import {notebookReducers, NotebookPages} from '../notebook-panel/notebook.constants';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import styles from './samples.style';
+import {setModalVisible} from '../home/home.slice';
 
 const samplesNotebook = (props) => {
   const renderSampleList = () => {
@@ -53,7 +54,7 @@ const samplesNotebook = (props) => {
         {props.notebookPageVisible === NotebookPages.SAMPLE && <ReturnToOverviewButton
           onPress={() => {
             props.setNotebookPageVisible(NotebookPages.OVERVIEW);
-            props.setModalVisible(null);
+            dispatch(setModalVisible({modal: null}));
           }}
         />}
         {props.notebookPageVisible === NotebookPages.SAMPLE && <SectionDivider dividerText='Samples'/>}
@@ -63,7 +64,8 @@ const samplesNotebook = (props) => {
         {/*  renderItem={renderItem}*/}
         {/*/>*/}
         <ScrollView>
-          {props.spot.properties.samples ? renderSampleList() : <Text style={commonStyles.noValueText}>No Samples</Text>}
+          {props.spot.properties.samples ? renderSampleList() :
+            <Text style={commonStyles.noValueText}>No Samples</Text>}
         </ScrollView>
       </View>
     );
@@ -99,7 +101,6 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = {
   setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),
-  setModalVisible: (modal) => ({type: homeReducers.SET_MODAL_VISIBLE, modal: modal}),
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(samplesNotebook);

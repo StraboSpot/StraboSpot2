@@ -7,7 +7,7 @@ import RNFetchBlob from 'rn-fetch-blob';
 
 import commonStyles from '../../../shared/common.styles';
 import {isEmpty} from '../../../shared/Helpers';
-import {homeReducers} from '../../home/home.constants';
+import {setOfflineMapsModalVisible} from '../../home/home.slice';
 import Divider from '../../main-menu-panel/MainMenuPanelDivider';
 import {mapReducers} from '../maps.constants';
 import styles from './offlineMaps.styles';
@@ -105,7 +105,7 @@ const ManageOfflineMaps = (props) => {
     <React.Fragment>
       <Button
         title={'Download tiles of current map'}
-        onPress={() => dispatch({type: homeReducers.SET_OFFLINE_MAPS_MODAL_VISIBLE, bool: true})}
+        onPress={() => dispatch(setOfflineMapsModalVisible({bool: true}))}
         containerStyle={styles.buttonContainer}
         buttonStyle={commonStyles.standardButton}
         titleStyle={commonStyles.standardButtonText}

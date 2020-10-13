@@ -4,7 +4,7 @@ import {View, Text} from 'react-native';
 import {connect, useSelector} from 'react-redux';
 
 import {isEmpty} from '../../shared/Helpers';
-import {homeReducers} from '../home/home.constants';
+import {shortcutSwitchPosition} from '../home/home.slice';
 import ImageGallery from '../images/ImageGallery';
 import CustomMapsMenu from '../maps/custom-maps/ManageCustomMaps';
 import ImageBaseMaps from '../maps/ImageBasemaps';
@@ -51,8 +51,8 @@ const MainMenuPanel = props => {
 
   const toggleSwitch = (switchName) => {
     console.log('Switch', switchName);
-    props.onShortcutSwitchChange(switchName);
-    console.log(props.shortcutSwitchPosition);
+    dispatch(shortcutSwitchPosition({switchName: switchName}));
+    console.log(shortcutSwitchPosition);
   };
 
   if (isEmpty(props.userProfile)) buttonTitle = 'Sign In';
@@ -199,7 +199,6 @@ const MainMenuPanel = props => {
 const mapStateToProps = (state) => {
   return {
     settingsPageVisible: state.mainMenu.mainMenuPageVisible,
-    shortcutSwitchPosition: state.home.shortcutSwitchPosition,
     spots: state.spot.spots,
     userProfile: state.user.userData,
   };
@@ -207,7 +206,6 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = {
   setSettingsPanelPageVisible: (name) => ({type: mainMenuPanelReducers.SET_MENU_SELECTION_PAGE, name: name}),
-  onShortcutSwitchChange: (switchName) => ({type: homeReducers.SHORTCUT_SWITCH_POSITION, switchName: switchName}),
   onSetSelectedSpot: (spot) => ({type: spotReducers.SET_SELECTED_SPOT, spot: spot}),
 };
 

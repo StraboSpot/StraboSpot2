@@ -6,7 +6,8 @@ import {connect, useDispatch} from 'react-redux';
 
 import * as themes from '../../shared/styles.constants';
 import SectionDivider from '../../shared/ui/SectionDivider';
-import {homeReducers, Modals} from '../home/home.constants';
+import {Modals} from '../home/home.constants';
+import {setModalVisible} from '../home/home.slice';
 import {NotebookPages, notebookReducers} from '../notebook-panel/notebook.constants';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import {spotReducers} from '../spots/spot.constants';
@@ -26,7 +27,7 @@ const MeasurementsPage = (props) => {
   };
 
   const addMeasurement = (sectionType) => {
-    props.setModalVisible(Modals.NOTEBOOK_MODALS.COMPASS);
+    dispatch(setModalVisible({modal: Modals.NOTEBOOK_MODALS.COMPASS}));
 
     let types = [];
     if (sectionType === sectionTypes.PLANAR) types = [COMPASS_TOGGLE_BUTTONS.PLANAR];
@@ -191,7 +192,7 @@ const MeasurementsPage = (props) => {
         <ReturnToOverviewButton
           onPress={() => {
             dispatch({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: NotebookPages.OVERVIEW});
-            dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: null});
+            dispatch(setModalVisible({modal: null}));
           }}
         />
         {renderSectionDivider(sectionTypes.PLANAR)}
@@ -227,13 +228,11 @@ const MeasurementsPage = (props) => {
 function mapStateToProps(state) {
   return {
     spot: state.spot.selectedSpot,
-    modalVisible: state.home.modalVisible,
   };
 }
 
 const mapDispatchToProps = {
   setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),
-  setModalVisible: (modal) => ({type: homeReducers.SET_MODAL_VISIBLE, modal: modal}),
   setSelectedAttributes: (attributes) => ({type: spotReducers.SET_SELECTED_ATTRIBUTES, attributes: attributes}),
 };
 

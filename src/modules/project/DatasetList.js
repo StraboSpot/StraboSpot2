@@ -16,7 +16,7 @@ import {isEmpty, truncateText} from '../../shared/Helpers';
 import TexInputModal from '../../shared/ui/GeneralTextInputModal';
 import Loading from '../../shared/ui/Loading';
 import StatusDialogBox from '../../shared/ui/StatusDialogBox';
-import {homeReducers} from '../home/home.constants';
+import {addedStatusMessage, clearedStatusMessages, setStatusMessagesModalVisible} from '../home/home.slice';
 import useProjectHook from '../project/useProject';
 import useSpotsHook from '../spots/useSpots';
 import {projectReducers} from './project.constants';
@@ -50,8 +50,8 @@ const DatasetList = () => {
       setIsDeleting(false);
       setLoading(true);
       setIsStatusMessagesModalVisible(true);
-      dispatch({type: homeReducers.CLEAR_STATUS_MESSAGES});
-      dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Deleting Dataset...'});
+      dispatch(clearedStatusMessages());
+      dispatch(addedStatusMessage({statusMessage: 'Deleting Dataset...'}));
       setTimeout(() => {
         useProject.destroyDataset(selectedDataset.id).then(() => {
           console.log('Dataset has been deleted!');
@@ -197,7 +197,7 @@ const DatasetList = () => {
         dialogTitle={'Delete Status'}
         style={sharedDialogStyles.dialogTitleSuccess}
         visible={isStatusMessagesModalVisible}
-        onTouchOutside={() => dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, bool: false})}
+        onTouchOutside={() => dispatch(setStatusMessagesModalVisible({bool: false}))}
         // disabled={progress !== 1 && !uploadErrors}
       >
         <View style={{height: 100}}>
@@ -256,10 +256,10 @@ const DatasetList = () => {
       // dispatch({type: homeReducers.SET_LOADING, bool: true});
       setLoading(true);
       dispatch({type: projectReducers.DATASETS.DATASETS_UPDATE, datasets: datasetsCopy});
-      dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, bool: true});
-      dispatch({type: homeReducers.CLEAR_STATUS_MESSAGES});
+      dispatch(setStatusMessagesModalVisible({bool: true}));
+      dispatch(clearedStatusMessages());
       await useSpots.downloadSpots(datasetsCopy[id], userData.encoded_login);
-      dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'Download Complete!'});
+      dispatch(addedStatusMessage({statusMessage: 'Download Complete!'}));
       setLoading(false);
     }
     else {

@@ -9,7 +9,8 @@ import {useSelector, useDispatch} from 'react-redux';
 
 import {MAPBOX_KEY} from '../../MapboxConfig';
 import {getNewUUID, isEmpty} from '../../shared/Helpers';
-import {homeReducers, Modals} from '../home/home.constants';
+import {Modals} from '../home/home.constants';
+import {setModalVisible} from '../home/home.slice';
 import useImagesHook from '../images/useImages';
 import {spotReducers} from '../spots/spot.constants';
 import useSpotsHook from '../spots/useSpots';
@@ -802,7 +803,7 @@ const Map = React.forwardRef((props, ref) => {
           const selectedSpots = await useMapFeatures.getLassoedSpots(mapPropsMutable.spotsNotSelected, feature);
           if (selectedSpots.length > 0) {
             dispatch({type: spotReducers.SET_INTERSECTED_SPOTS_FOR_TAGGING, spots: selectedSpots});
-            dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: Modals.SHORTCUT_MODALS.ADD_TAGS_TO_SPOTS});
+            dispatch(setModalVisible({modal: Modals.SHORTCUT_MODALS.ADD_TAGS_TO_SPOTS}));
           }
           else {
             Alert.alert(

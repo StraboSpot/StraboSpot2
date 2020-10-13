@@ -13,8 +13,8 @@ import useServerRequests from '../../services/useServerRequests';
 import {VERSION_NUMBER} from '../../shared/app.constants';
 import {readDataUrl, isEmpty} from '../../shared/Helpers';
 import IconButton from '../../shared/ui/IconButton';
-import {homeReducers} from '../home/home.constants';
-import {USER_DATA, USER_IMAGE, ENCODED_LOGIN} from '../user/user.constants';
+import {setUserData} from '../user/userProfile.slice';
+import {setOnlineStatus, setSignedInStatus} from '../home/home.slice';
 import styles from './signIn.styles';
 
 let user = null;
@@ -32,7 +32,7 @@ const SignIn = (props) => {
 
   useEffect(() => {
     NetInfo.addEventListener(state => {
-      dispatch({type: homeReducers.SET_ISONLINE, online: state.isConnected});
+      dispatch(setOnlineStatus({bool: state.isConnected}));
     });
   }, [isOnline]);
 
@@ -54,7 +54,8 @@ const SignIn = (props) => {
         const encodedLogin = Base64.encode(username + ':' + password);
         updateUserResponse(encodedLogin).then(() => {
           console.log(`${username} is successfully logged in!`);
-          dispatch({type: homeReducers.SET_IS_SIGNED_IN, bool: true});
+          dispatch(setUserData(userState));
+          dispatch(setSignedInStatus({bool: true}));
           navigation.navigate('HomeScreen');
         });
       }

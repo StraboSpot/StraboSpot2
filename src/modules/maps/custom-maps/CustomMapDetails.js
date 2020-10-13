@@ -18,7 +18,11 @@ import * as Helpers from '../../../shared/Helpers';
 import {BLUE, DARKGREY} from '../../../shared/styles.constants';
 import ButtonRounded from '../../../shared/ui/ButtonRounded';
 import Slider from '../../../shared/ui/Slider';
-import {homeReducers} from '../../home/home.constants';
+import {addedStatusMessage,
+  clearedStatusMessages,
+  setErrorMessagesModalVisible,
+  setStatusMessagesModalVisible
+} from '../../home/home.slice';
 import {mainMenuPanelReducers} from '../../main-menu-panel/mainMenuPanel.constants';
 import Divider from '../../main-menu-panel/MainMenuPanelDivider';
 import sidePanelStyles from '../../main-menu-panel/sidePanel.styles';
@@ -76,19 +80,16 @@ const AddCustomMaps = () => {
       dispatch({type: mapReducers.ADD_CUSTOM_MAP, customMap: customMap});
       dispatch({type: mainMenuPanelReducers.SET_SIDE_PANEL_VISIBLE, view: null, bool: false});
       dispatch({type: mainMenuPanelReducers.SET_MENU_SELECTION_PAGE, name: undefined});
-      dispatch({type: homeReducers.CLEAR_STATUS_MESSAGES});
-      dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Success!'});
-      dispatch(
-        {type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: `\nMap ${customMap.title} has been added or updated!`});
-      dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, bool: true});
+      dispatch(clearedStatusMessages());
+      dispatch(addedStatusMessage({statusMessage: 'Success!'}));
+      dispatch(addedStatusMessage({statusMessage: `\nMap ${customMap.title} has been added or updated!`}));
+      dispatch(setStatusMessagesModalVisible({bool: true}));
     }
     else {
-      dispatch({type: homeReducers.CLEAR_STATUS_MESSAGES});
-      dispatch({
-        type: homeReducers.ADD_STATUS_MESSAGE,
-        statusMessage: 'Something Went Wrong \n\nCheck the id and map type of the map you are trying to save.',
-      });
-      dispatch({type: homeReducers.SET_ERROR_MESSAGES_MODAL_VISIBLE, bool: true});
+      dispatch(clearedStatusMessages());
+      dispatch(addedStatusMessage(
+        {statusMessage: 'Something Went Wrong \n\nCheck the id and map type of the map you are trying to save.'}));
+      dispatch(setErrorMessagesModalVisible({bool: true}));
     }
   };
 

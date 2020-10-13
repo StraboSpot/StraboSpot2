@@ -4,7 +4,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import RNFetchBlob from 'rn-fetch-blob';
 
 import {isEmpty} from '../../shared/Helpers';
-import {homeReducers} from '../home/home.constants';
+import {addedStatusMessage, removedLastStatusMessage, setErrorMessagesModalVisible} from '../home/home.slice';
 import {projectReducers} from './project.constants';
 
 const useExport = () => {
@@ -40,20 +40,17 @@ const useExport = () => {
     // console.log('DataJson', dataJson);
     await exportData(devicePath + appDirectoryForDistributedBackups + '/' + exportedFileName, dataForExport,
       '/data.json');
-    // dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'Data exported.'});
     // const otherMaps = await gatherOtherMapsForDistribution(exportedFileName);
-    dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
-    // dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: otherMaps});
+    dispatch(removedLastStatusMessage());
     // console.log('Other Maps Resolve Message:', otherMaps);
     const maps = await gatherMapsForDistribution(dataForExport, exportedFileName);
     console.log('Maps resolve message', maps.message);
-    dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: maps.message});
-    // dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
+    dispatch(addedStatusMessage({statusMessage: maps.message}));
     await doesDeviceDirectoryExist(devicePath + appDirectoryForDistributedBackups + '/' + exportedFileName + '/Images');
-    dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'Exporting Images...'});
+    dispatch(addedStatusMessage({statusMessage: 'Exporting Images...'}));
     const imageResolve = await gatherImagesForDistribution(dataForExport, exportedFileName);
     console.log('Images Resolve Message:', imageResolve.message);
-    dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: imageResolve.message});
+    dispatch(addedStatusMessage({statusMessage: imageResolve.message}));
     // const successResponse = await doesDeviceDirectoryExist(devicePath + appDirectoryForDistributedBackups + '/' + exportedFileName + '/maps');
     // console.log('Maps directory created:', successResponse);
   };
@@ -231,7 +228,7 @@ const useExport = () => {
 
   const gatherOtherMapsForDistribution = (exportedFileName) => {
     console.log(configDb);
-    dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'Exporting Maps...'});
+    dispatch(addedStatusMessage({statusMessage: 'Exporting Maps...'}));
     if (!isEmpty(configDb.other_maps)) {
       exportData(devicePath + appDirectoryForDistributedBackups + '/' + exportedFileName, configDb.other_maps, '/other_maps.json').then(() => {
         console.log('Other Maps Exported');
@@ -254,22 +251,22 @@ const useExport = () => {
             console.log('Image copy ERROR', err);
           })
           .finally(() => {
-            dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
+            dispatch(removedLastStatusMessage());
             if (imageBackupFailures > 0) {
-              dispatch({
-                type: 'ADD_STATUS_MESSAGE',
-                statusMessage: `Images backed up: ${imageSuccess}\n Already exists images: ${imageBackupFailures}`,
-              });
+              dispatch(addedStatusMessage({
+                statusMessage: `Images backed up: ${imageSuccess}
+                \n Already exists images: ${imageBackupFailures}`,
+              }));
             }
             else {
-              dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: `${imageSuccess} Images backed up.`});
+              dispatch(addedStatusMessage({statusMessage: `${imageSuccess} Images backed up.`}));
             }
             return Promise.resolve();
           });
       })
       .catch(err => {
         console.log('ERROR', err.toString());
-        dispatch({type: homeReducers.SET_ERROR_MESSAGES_MODAL_VISIBLE, bool: true});
+        dispatch(setErrorMessagesModalVisible({bool: true}));
       });
   };
 

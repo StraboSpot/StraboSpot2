@@ -9,7 +9,6 @@ import {isEmpty} from '../../shared/Helpers';
 import Modal from '../../shared/ui/modal/Modal';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {Form, useFormHook} from '../form';
-import {homeReducers} from '../home/home.constants';
 import {notebookReducers} from '../notebook-panel/notebook.constants';
 import {spotReducers} from '../spots/spot.constants';
 import styles from './images.styles';

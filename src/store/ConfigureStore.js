@@ -13,13 +13,14 @@ import {
   REGISTER,
 } from 'redux-persist';
 
-import {homeReducer} from '../modules/home/home.reducer';
+import homeSlice from '../modules/home/home.slice';
 import {mainMenuPanelReducer} from '../modules/main-menu-panel/mainMenuPanel.reducer';
 import {mapReducer} from '../modules/maps/maps.reducer';
 import {notebookReducer} from '../modules/notebook-panel/notebook.reducers';
 import {projectsReducer} from '../modules/project/projects.reducer';
 import {spotReducer} from '../modules/spots/spot.reducers';
-import {userReducer} from '../modules/user/userProfile.reducer';
+import userSlice from '../modules/user/userProfile.slice';
+import {redux} from '../shared/app.constants';
 
 // Redux Persist
 export const persistConfig = {
@@ -43,15 +44,22 @@ const middleware = process.env.NODE_ENV !== 'production'
   ? [require('redux-immutable-state-invariant').default(), loggerMiddleware]
   : [];
 
-const rootReducer = combineReducers({
-  home: homeReducer,
+const combinedReducers = combineReducers({
+  home: homeSlice,
   notebook: persistReducer(notebookConfig, notebookReducer),
   map: mapReducer,
   project: projectsReducer,
   mainMenu: mainMenuPanelReducer,
   spot: spotReducer,
-  user: userReducer,
+  user: userSlice,
 });
+
+const rootReducer = (state, action) => {
+  if (action.type === redux.CLEAR_STORE) {
+    state = undefined;
+  }
+  return combinedReducers(state, action);
+};
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 

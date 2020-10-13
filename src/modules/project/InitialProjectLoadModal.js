@@ -9,8 +9,8 @@ import {useSelector, useDispatch} from 'react-redux';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import Spacer from '../../shared/ui/Spacer';
-import {homeReducers} from '../home/home.constants';
 import homeStyles from '../home/home.style';
+import {setOnlineStatus} from '../home/home.slice';
 import {spotReducers} from '../spots/spot.constants';
 import ActiveDatasetsList from './ActiveDatasetsList';
 import DatasetList from './DatasetList';
@@ -61,8 +61,8 @@ const InitialProjectLoadModal = (props) => {
           containerStyle={commonStyles.buttonContainer}
           titleStyle={commonStyles.standardButtonText}
           onPress={() => {
-            if (userName) dispatch({type: 'CLEAR_STORE'});
-            dispatch({type: homeReducers.SET_IS_SIGNED_IN, bool: false});
+            if (userName) dispatch({type: redux.CLEAR_STORE});
+            dispatch(setOnlineStatus({bool: false}));
             navigation.navigate('SignIn');
           }}
         />

@@ -5,6 +5,7 @@ import {useNavigation} from '@react-navigation/native';
 import {Button, Avatar} from 'react-native-elements';
 import {connect, useDispatch} from 'react-redux';
 
+import {redux} from '../../shared/app.constants';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import StandardModal from '../../shared/ui/StandardModal';
@@ -28,7 +29,7 @@ const UserProfile = (props) => {
   const doLogOut = () => {
     setIsLogoutModalVisible(false);
     setTimeout(() => {          // Added timeOut cause state of modal wasn't changing fast enough
-      props.clearStorage();
+      dispatch({type: redux.CLEAR_STORE});
       navigation.navigate('SignIn');
     }, 200);
   };

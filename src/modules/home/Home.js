@@ -48,7 +48,20 @@ import {
   TagsShortcutModal,
   AddTagsToSpotsShortcutModal,
 } from '../tags';
-import {homeReducers, Modals} from './home.constants';
+import {Modals} from './home.constants';
+import {
+  gotDeviceDimensions,
+  setAllSpotsPanelVisible,
+  setErrorMessagesModalVisible,
+  setImageModalVisible,
+  setInfoMessagesModalVisible,
+  setModalVisible,
+  setProjectLoadComplete,
+  setProjectLoadSelectionModalVisible,
+  setOfflineMapsModalVisible,
+  setMainMenuPanelVisible,
+  setStatusMessagesModalVisible,
+} from './home.slice';
 import homeStyles from './home.style';
 import LeftSideButtons from './LeftSideButtons';
 import RightSideButtons from './RightSideButtons';
@@ -131,7 +144,7 @@ const Home = (props) => {
     Dimensions.addEventListener('change', deviceOrientation);
     console.log('Initializing Home page');
     initialize().then((res) => {
-      dispatch({type: homeReducers.SET_PROJECT_LOAD_SELECTION_MODAL_VISIBLE, bool: res});
+      dispatch(setProjectLoadSelectionModalVisible({bool: res}));
       animatePanels(MainMenuPanelAnimation, -homeMenuPanelWidth);
       animatePanels(leftsideIconAnimationValue, 0);
     });
@@ -150,7 +163,7 @@ const Home = (props) => {
   useEffect(() => {
     if (projectLoadComplete) {
       mapViewComponent.current.zoomToSpotsExtent();
-      dispatch({type: homeReducers.PROJECT_LOAD_COMPLETE, projectLoadComplete: false});
+      dispatch(setProjectLoadComplete({bool: false}));
       // toggles off whenever new project is loaded successfully to trigger the same for next project load.
     }
   }, [projectLoadComplete]);
@@ -179,7 +192,7 @@ const Home = (props) => {
       case 'tag':
         dispatch({type: spotReducers.CLEAR_SELECTED_SPOTS});
         if (modalVisible === Modals.SHORTCUT_MODALS.TAGS) {
-          dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: null});
+          dispatch(setModalVisible({modal: null}));
         }
         else modalHandler(null, Modals.SHORTCUT_MODALS.TAGS);
         closeNotebookPanel();
@@ -187,25 +200,25 @@ const Home = (props) => {
       case 'measurement':
         dispatch({type: spotReducers.CLEAR_SELECTED_SPOTS});
         if (modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {
-          dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: null});
+          dispatch(setModalVisible({modal: null}));
         }
-        else dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: Modals.SHORTCUT_MODALS.COMPASS});
+        else dispatch(setModalVisible({modal: Modals.SHORTCUT_MODALS.COMPASS}));
         closeNotebookPanel();
         break;
       case 'sample':
         dispatch({type: spotReducers.CLEAR_SELECTED_SPOTS});
         if (modalVisible === Modals.SHORTCUT_MODALS.SAMPLE) {
-          dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: null});
+          dispatch(setModalVisible({modal: null}));
         }
-        else dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: Modals.SHORTCUT_MODALS.SAMPLE});
+        else dispatch(setModalVisible({modal: Modals.SHORTCUT_MODALS.SAMPLE}));
         closeNotebookPanel();
         break;
       case 'note':
         dispatch({type: spotReducers.CLEAR_SELECTED_SPOTS});
         if (modalVisible === Modals.SHORTCUT_MODALS.NOTES) {
-          dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: null});
+          dispatch(setModalVisible({modal: null}));
         }
-        else dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: Modals.SHORTCUT_MODALS.NOTES});
+        else dispatch(setModalVisible({modal: Modals.SHORTCUT_MODALS.NOTES}));
         closeNotebookPanel();
         break;
       case 'photo':
@@ -249,8 +262,8 @@ const Home = (props) => {
         deleteSpot(selectedSpot.properties.id);
         break;
       case 'toggleAllSpotsPanel':
-        if (value === 'open') props.setAllSpotsPanelVisible(true);
-        else if (value === 'close') props.setAllSpotsPanelVisible(false);
+        if (value === 'open') dispatch(setAllSpotsPanelVisible({bool: true}));
+        else if (value === 'close') dispatch(setAllSpotsPanelVisible({bool: false}));
         break;
       case 'zoomToSpot':
         mapViewComponent.current.zoomToSpot();
@@ -288,7 +301,7 @@ const Home = (props) => {
         mapViewComponent.current.zoomToSpotsExtent();
         break;
       case 'saveMap':
-        dispatch({type: homeReducers.SET_OFFLINE_MAPS_MODAL_VISIBLE, bool: !isOfflineMapModalVisible});
+        dispatch(setOfflineMapsModalVisible({bool: !isOfflineMapModalVisible}));
         break;
       case 'addTag':
         console.log(`${name}`, ' was clicked');
@@ -307,7 +320,7 @@ const Home = (props) => {
 
   const closeInitialProjectLoadModal = () => {
     console.log('Starting Project...');
-    dispatch({type: homeReducers.SET_PROJECT_LOAD_SELECTION_MODAL_VISIBLE, bool: false});
+    dispatch(setProjectLoadSelectionModalVisible({bool: false}));
   };
 
   const closeNotebookPanel = () => {
@@ -315,7 +328,7 @@ const Home = (props) => {
     animatePanels(animation, notebookPanelWidth);
     animatePanels(rightsideIconAnimationValue, 0);
     props.setNotebookPanelVisible(false);
-    props.setAllSpotsPanelVisible(false);
+    dispatch(setAllSpotsPanelVisible({bool: false}));
   };
 
   // const closeSidePanel = () => {
@@ -352,8 +365,8 @@ const Home = (props) => {
 
   const deviceOrientation = () => {
     const dimensions = Dimensions.get('window');
-    props.setDeviceDims(dimensions);
-    console.log(props.deviceDimensions);
+    dispatch(gotDeviceDimensions({dims: dimensions}));
+    console.log(deviceDimensions);
   };
 
   const dialogClickHandler = (dialog, name, position) => {
@@ -384,11 +397,11 @@ const Home = (props) => {
   const modalHandler = (page, modalType) => {
     if (props.isNotebookPanelVisible) {
       closeNotebookPanel();
-      props.setModalVisible(modalType);
+      dispatch(setModalVisible({modal: modalType}));
     }
     else {
       openNotebookPanel(page);
-      props.setModalVisible(modalType);
+      dispatch(setModalVisible({modal: modalType}));
     }
   };
 
@@ -429,7 +442,7 @@ const Home = (props) => {
 
   const openNotebookPanel = pageView => {
     console.log('Opening Notebook', pageView, '...');
-    if (modalVisible !== Modals.SHORTCUT_MODALS.ADD_TAGS_TO_SPOTS) props.setModalVisible(null);
+    if (modalVisible !== Modals.SHORTCUT_MODALS.ADD_TAGS_TO_SPOTS) dispatch(setModalVisible({modal: null}));
     props.setNotebookPageVisible(pageView || NotebookPages.OVERVIEW);
     animatePanels(animation, 0);
     animatePanels(rightsideIconAnimationValue, -notebookPanelWidth);
@@ -449,7 +462,7 @@ const Home = (props) => {
       && !isEmpty(selectedSpot)) {
       return (
         <TagsNotebookModal
-          close={() => props.setModalVisible(null)}
+          close={() => dispatch(setModalVisible({modal: null}))}
           onPress={() => modalHandler(null, Modals.SHORTCUT_MODALS.TAGS)}
         />
       );
@@ -457,7 +470,7 @@ const Home = (props) => {
     if (modalVisible === Modals.SHORTCUT_MODALS.TAGS) {
       return (
         <TagsShortcutModal
-          close={() => props.setModalVisible(null)}
+          close={() => dispatch(setModalVisible({modal: null}))}
           onPress={() => modalHandler(NotebookPages.TAG, Modals.NOTEBOOK_MODALS.TAGS)}
         />
       );
@@ -465,7 +478,7 @@ const Home = (props) => {
     if (modalVisible === Modals.SHORTCUT_MODALS.ADD_TAGS_TO_SPOTS) {
       return (
         <AddTagsToSpotsShortcutModal
-          close={() => props.setModalVisible(null)}
+          close={() => dispatch(setModalVisible({modal: null}))}
           onPress={() => modalHandler(NotebookPages.TAG, Modals.NOTEBOOK_MODALS.TAGS)}
         />
       );
@@ -474,7 +487,7 @@ const Home = (props) => {
       && !isEmpty(selectedSpot)) {
       return (
         <NotebookCompassModal
-          close={() => props.setModalVisible(null)}
+          close={() => dispatch(setModalVisible({modal: null}))}
           onPress={() => modalHandler(null, Modals.SHORTCUT_MODALS.COMPASS)}
         />
       );
@@ -482,7 +495,7 @@ const Home = (props) => {
     if (modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {
       return (
         <ShortcutCompassModal
-          close={() => props.setModalVisible(null)}
+          close={() => dispatch(setModalVisible({modal: null}))}
           onPress={() => modalHandler(NotebookPages.MEASUREMENT, Modals.NOTEBOOK_MODALS.COMPASS)}
         />
       );
@@ -491,7 +504,7 @@ const Home = (props) => {
       && !isEmpty(selectedSpot)) {
       return (
         <NotebookSamplesModal
-          close={() => props.setModalVisible(null)}
+          close={() => dispatch(setModalVisible({modal: null}))}
           cancel={() => samplesModalCancel()}
           onPress={() => modalHandler(null, Modals.SHORTCUT_MODALS.SAMPLE)}
         />
@@ -500,7 +513,7 @@ const Home = (props) => {
     else if (modalVisible === Modals.SHORTCUT_MODALS.SAMPLE) {
       return (
         <ShortcutSamplesModal
-          close={() => props.setModalVisible(null)}
+          close={() => dispatch(setModalVisible({modal: null}))}
           cancel={() => samplesModalCancel()}
           onPress={() => modalHandler(NotebookPages.SAMPLE, Modals.NOTEBOOK_MODALS.SAMPLE)}
         />
@@ -509,7 +522,7 @@ const Home = (props) => {
     if (modalVisible === Modals.SHORTCUT_MODALS.NOTES) {
       return (
         <ShortcutNotesModal
-          close={() => props.setModalVisible(null)}
+          close={() => dispatch(setModalVisible({modal: null}))}
           onPress={() => modalHandler(NotebookPages.NOTE)}
         />
       );
@@ -532,8 +545,7 @@ const Home = (props) => {
         dialogTitle={'Status Info'}
         style={sharedDialogStyles.dialogWarning}
         visible={isInfoMessagesModalVisible}
-        onTouchOutside={() => dispatch(
-          {type: homeReducers.SET_INFO_MESSAGES_MODAL_VISIBLE, bool: false})}
+        onTouchOutside={() => dispatch(setInfoMessagesModalVisible({bool: false}))}
       >
         <View style={{margin: 15}}>
           <Text style={sharedDialogStyles.dialogStatusMessageText}>{statusMessages.join(
@@ -542,8 +554,7 @@ const Home = (props) => {
         <Button
           title={'OK'}
           type={'clear'}
-          onPress={() => dispatch(
-            {type: homeReducers.SET_INFO_MESSAGES_MODAL_VISIBLE, bool: false})}
+          onPress={() => dispatch(setInfoMessagesModalVisible({bool: false}))}
         />
       </StatusDialogBox>
     );
@@ -561,8 +572,7 @@ const Home = (props) => {
         <Button
           title={'OK'}
           type={'clear'}
-          onPress={() => dispatch(
-            {type: homeReducers.SET_ERROR_MESSAGES_MODAL_VISIBLE, bool: false})}
+          onPress={() => dispatch(setErrorMessagesModalVisible({bool: false}))}
         />
       </StatusDialogBox>
     );
@@ -600,7 +610,7 @@ const Home = (props) => {
     return (
       <SaveMapsModal
         visible={isOfflineMapModalVisible}
-        close={() => dispatch({type: homeReducers.SET_OFFLINE_MAPS_MODAL_VISIBLE, bool: false})}
+        close={() => dispatch(setOfflineMapsModalVisible({bool: false}))}
         map={mapViewComponent.current}
       />
     );
@@ -646,8 +656,7 @@ const Home = (props) => {
         dialogTitle={'Status'}
         style={sharedDialogStyles.dialogTitleSuccess}
         visible={isStatusMessagesModalVisible}
-        onTouchOutside={() => dispatch(
-          {type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, bool: false})}
+        onTouchOutside={() => dispatch(setStatusMessagesModalVisible({bool: false}))}
         // disabled={progress !== 1 && !uploadErrors}
       >
         <View style={{minHeight: 100}}>
@@ -669,7 +678,7 @@ const Home = (props) => {
                 <Button
                   title={'OK'}
                   type={'clear'}
-                  onPress={() => dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, bool: false})}
+                  onPress={() => dispatch(setStatusMessagesModalVisible({bool: false}))}
                 />
               )
               : null
@@ -741,20 +750,20 @@ const Home = (props) => {
 
   const toggleHomeDrawerButton = () => {
     if (isMainMenuPanelVisible) {
-      props.setHomePanelVisible(false);
+      dispatch(setMainMenuPanelVisible({bool: false}));
       props.setHomePanelPageVisible(undefined);
       animatePanels(MainMenuPanelAnimation, -homeMenuPanelWidth);
       animatePanels(leftsideIconAnimationValue, 0);
     }
     else {
-      props.setHomePanelVisible(true);
+      dispatch(setMainMenuPanelVisible({bool: true}));
       animatePanels(MainMenuPanelAnimation, 0);
       animatePanels(leftsideIconAnimationValue, homeMenuPanelWidth);
     }
   };
 
   const toggleImageModal = () => {
-    props.setIsImageModalVisible(!props.isImageModalVisible);
+    dispatch(setImageModalVisible({bool: !props.isImageModalVisible}));
   };
 
   const toggleNotebookPanel = () => {
@@ -898,20 +907,14 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-  setHomePanelVisible: (value) => ({type: homeReducers.SET_SETTINGS_PANEL_VISIBLE, value: value}),
   setHomePanelPageVisible: (name) => ({type: mainMenuPanelReducers.SET_MENU_SELECTION_PAGE, name: name}),
   setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),
   setNotebookPanelVisible: (value) => ({type: notebookReducers.SET_NOTEBOOK_PANEL_VISIBLE, value: value}),
-  setSettingsPanelVisible: (value) => ({type: homeReducers.SET_SETTINGS_PANEL_VISIBLE, value: value}),
   setSettingsPanelPageVisible: (name) => ({type: mainMenuPanelReducers.SET_MENU_SELECTION_PAGE, name: name}),
-  setIsImageModalVisible: (value) => ({type: homeReducers.TOGGLE_IMAGE_MODAL, value: value}),
-  setAllSpotsPanelVisible: (value) => ({type: homeReducers.SET_ALLSPOTS_PANEL_VISIBLE, value: value}),
   deleteSpot: (id) => ({type: spotReducers.DELETE_SPOT, id: id}),
   onSpotEdit: (field, value) => ({type: spotReducers.EDIT_SPOT_PROPERTIES, field: field, value: value}),
-  setModalVisible: (modal) => ({type: homeReducers.SET_MODAL_VISIBLE, modal: modal}),
-  setDeviceDims: (dims) => ({type: homeReducers.DEVICE_DIMENSIONS, dims: dims}),
+  // setDeviceDims: (dims) => ({type: homeReducers.DEVICE_DIMENSIONS, dims: dims}),
   onSpotEditImageObj: (images) => ({type: spotReducers.EDIT_SPOT_IMAGES, images: images}),
-  onShortcutSwitchChange: (switchName) => ({type: homeReducers.SHORTCUT_SWITCH_POSITION, switchName: switchName}),
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

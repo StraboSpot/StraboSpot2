@@ -6,7 +6,7 @@ import {connect} from 'react-redux';
 
 import {isEmpty} from '../../shared/Helpers';
 import * as SharedUI from '../../shared/ui/index';
-import {homeReducers} from '../home/home.constants';
+import {setImageModalVisible} from '../home/home.slice';
 import attributesStyles from '../main-menu-panel/attributes.styles';
 import {mainMenuPanelReducers, SortedViews} from '../main-menu-panel/mainMenuPanel.constants';
 import SortingButtons from '../main-menu-panel/SortingButtons';
@@ -144,7 +144,7 @@ const ImageGallery = (props) => {
   const renderImageModal = (image) => {
     console.log(image.id, '\n was pressed!');
     props.setSelectedAttributes([image]);
-    props.setIsImageModalVisible(true);
+    dispatch(setImageModalVisible({bool: true}));
   };
 
   let sortedView = null;
@@ -210,7 +210,6 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = {
   setSelectedAttributes: (attributes) => ({type: spotReducers.SET_SELECTED_ATTRIBUTES, attributes: attributes}),
-  setIsImageModalVisible: (value) => ({type: homeReducers.TOGGLE_IMAGE_MODAL, value: value}),
   setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),
   setSortedListView: (view) => ({type: mainMenuPanelReducers.SET_SORTED_VIEW, view: view}),
   setSelectedButtonIndex: (index) => ({type: mainMenuPanelReducers.SET_SELECTED_BUTTON_INDEX, index: index}),

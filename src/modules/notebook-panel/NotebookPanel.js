@@ -10,7 +10,8 @@ import {isEmpty} from '../../shared/Helpers';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import Spacer from '../../shared/ui/Spacer';
 import Geography from '../geography/Geography';
-import {homeReducers, Modals} from '../home/home.constants';
+import {Modals} from '../home/home.constants';
+import {setModalVisible} from '../home/home.slice';
 import {ImagesPage} from '../images';
 import MeasurementDetailPage from '../measurements/MeasurementDetail';
 import MeasurementsPage from '../measurements/Measurements';
@@ -36,11 +37,11 @@ const NotebookPanel = props => {
   const setNotebookPageVisible = page => {
     const pageVisible = props.setNotebookPageVisible(page);
     if (pageVisible.page === NotebookPages.MEASUREMENT || pageVisible === NotebookPages.MEASUREMENTDETAIL) {
-      props.setModalVisible(Modals.NOTEBOOK_MODALS.COMPASS);
+      dispatch(setModalVisible({modal: Modals.NOTEBOOK_MODALS.COMPASS}));
     }
-    else if (pageVisible.page === NotebookPages.SAMPLE) props.setModalVisible(Modals.NOTEBOOK_MODALS.SAMPLE);
-    else if (pageVisible.page === NotebookPages.TAG) props.setModalVisible(Modals.NOTEBOOK_MODALS.TAGS);
-    else props.setModalVisible(null);
+    else if (pageVisible.page === NotebookPages.SAMPLE) dispatch(setModalVisible({modal: Modals.NOTEBOOK_MODALS.SAMPLE}));
+    else if (pageVisible.page === NotebookPages.TAG) dispatch(setModalVisible({modal: Modals.NOTEBOOK_MODALS.TAGS}));
+    else dispatch(setModalVisible({modal: null}));
   };
 
   if (!isEmpty(props.spot)) {
@@ -156,7 +157,6 @@ function mapStateToProps(state) {
   return {
     spot: state.spot.selectedSpot,
     selectedSpots: state.spot.selectedSpots,
-    isAllSpotsPanelVisible: state.home.isAllSpotsPanelVisible,
     notebookPageVisible: isEmpty(state.notebook.visibleNotebookPagesStack)
       ? null
       : state.notebook.visibleNotebookPagesStack.slice(-1)[0],
@@ -165,8 +165,6 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
   setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),
-  setModalVisible: (modal) => ({type: homeReducers.SET_MODAL_VISIBLE, modal: modal}),
-  setAllSpotsPanelVisible: (value) => ({type: homeReducers.SET_ALLSPOTS_PANEL_VISIBLE, value: value}),
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(NotebookPanel);
