@@ -12,6 +12,7 @@ import {Form, useFormHook} from '../form';
 import {homeReducers} from '../home/home.constants';
 import {notebookReducers} from '../notebook-panel/notebook.constants';
 import {spotReducers} from '../spots/spot.constants';
+import useSpotsHook from '../spots/useSpots';
 import styles from './images.styles';
 
 const ImagePropertiesModal = (props) => {
@@ -21,6 +22,7 @@ const ImagePropertiesModal = (props) => {
   const [annotated, setAnnotated] = useState(props.selectedImage.annotated);
   const [showMoreFields, setShowMoreFields] = useState(false);
   const form = useRef(null);
+  const [useSpots] = useSpotsHook();
 
   const renderMoreFields = () => {
     const {width, height} = props.getDeviceDims;
@@ -34,7 +36,7 @@ const ImagePropertiesModal = (props) => {
               </View>
             }
             scrollEnabled={false}
-            />
+          />
           <Button
             title={'Show fewer fields'}
             type={'clear'}
@@ -117,9 +119,14 @@ const ImagePropertiesModal = (props) => {
     if (isEmpty(annotated) && props.selectedImage.hasOwnProperty('annotated')) delete props.selectedImage.annotated;
     else if (!isEmpty(annotated)) props.selectedImage.annotated = annotated;
     console.log('Saving form data to Spot ...', props.selectedImage);
-    let images = props.spot.properties.images;
+    let images, spot;
+    spot = useSpots.getSpotByImageId(props.selectedImage.id);
+    images = spot.properties.images;
     let i = images.findIndex(img => img.id === props.selectedImage.id);
     images[i] = props.selectedImage;
+    if (!props.spot || props.spot.id !== spot.properties.id) {
+      props.onSetSelectedSpot(spot);
+    }
     props.onSpotEdit('images', images);
     props.setSelectedAttributes([images[i]]);
 
@@ -197,6 +204,7 @@ const mapDispatchToProps = {
   setNotebookPageVisibleToPrev: () => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE_TO_PREV}),
   setSelectedAttributes: (attributes) => ({type: spotReducers.SET_SELECTED_ATTRIBUTES, attributes: attributes}),
   setDeviceDims: (height, width) => ({type: homeReducers.DEVICE_DIMENSIONS, height: height, width: width}),
+  onSetSelectedSpot: (spot) => ({type: spotReducers.SET_SELECTED_SPOT, spot: spot}),
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ImagePropertiesModal);

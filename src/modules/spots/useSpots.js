@@ -111,6 +111,20 @@ const useSpots = (props) => {
     return rootSpot;
   };
 
+  const getSpotByImageId = (imageId) => {
+    const activeSpotsObj = Object.values(getActiveSpotsObj());
+    let filteredList = activeSpotsObj.filter(spot => {
+      return !isEmpty(spot.properties.images);
+    });
+    for (let index = 0; index < filteredList.length; index++) {
+      let images = filteredList[index].properties.images;
+      for (let imageIndex = 0; imageIndex < images.length; imageIndex++) {
+        if (imageId === images[imageIndex].id) {
+          return filteredList[index];
+        }
+      }
+    }
+  };
   const deleteSpot = async id => {
     console.log(id);
     Object.values(datasets).map(dataset => {
@@ -269,6 +283,7 @@ const useSpots = (props) => {
     getSpotsSortedReverseChronologically: getSpotsSortedReverseChronologically,
     getAllImageBaseMaps: getAllImageBaseMaps,
     findRootSpot: findRootSpot,
+    getSpotByImageId: getSpotByImageId,
   }];
 };
 
