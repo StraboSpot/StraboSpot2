@@ -266,7 +266,8 @@ const useProject = () => {
           dataset.active = false;
         });
       }
-      const datasetsReassigned = Object.assign({}, ...projectDatasetsFromServer.datasets.map(item => ({[item.id]: item})));
+      const datasetsReassigned = Object.assign({},
+        ...projectDatasetsFromServer.datasets.map(item => ({[item.id]: item})));
       dispatch({type: projectReducers.DATASETS.DATASETS_UPDATE, datasets: datasetsReassigned});
       dispatch(removedLastStatusMessage());
       dispatch(addedStatusMessage({statusMessage: 'Datasets Saved.'}));

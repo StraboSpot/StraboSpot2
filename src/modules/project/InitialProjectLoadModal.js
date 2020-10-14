@@ -6,6 +6,7 @@ import {Button} from 'react-native-elements';
 import {Dialog, DialogTitle, DialogContent, SlideAnimation} from 'react-native-popup-dialog';
 import {useSelector, useDispatch} from 'react-redux';
 
+import {redux} from '../../shared/app.constants';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import Spacer from '../../shared/ui/Spacer';

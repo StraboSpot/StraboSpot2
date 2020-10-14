@@ -31,7 +31,8 @@ const UploadBackAndExport = (props) => {
   const [activeDatasets, setActiveDatasets] = useState(null);
   const [dialogBoxType, setDialogBoxType] = useState(null);
   const [isUploadDialogVisible, setIsUploadDialogVisible] = useState(false);
-  const [exportFileName, setExportFileName] = useState(moment(new Date()).format('YYYY-MM-DD_hmma') + '_' + project.description.project_name);
+  const [exportFileName, setExportFileName] = useState(
+    moment(new Date()).format('YYYY-MM-DD_hmma') + '_' + project.description.project_name);
 
   const backupToDevice = async () => {
     setIsUploadDialogVisible(false);
@@ -199,8 +200,9 @@ const UploadBackAndExport = (props) => {
           buttonText={'Backup'}
           disabled={exportFileName === ''}
         >
-          <View >
-            <Text>If you change the folder name please do not use spaces, special characters (except a dash or underscore) or add a file extension.</Text>
+          <View>
+            <Text>If you change the folder name please do not use spaces, special characters (except a dash or
+              underscore) or add a file extension.</Text>
             <View style={projectStyles.dialogContent}>
               <TextInput
                 value={fileName}
