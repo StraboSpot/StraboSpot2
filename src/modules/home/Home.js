@@ -18,6 +18,7 @@ import useImagesHook from '../images/useImages';
 import {MAIN_MENU_ITEMS} from '../main-menu-panel/mainMenu.constants';
 import MainMenuPanel from '../main-menu-panel/MainMenuPanel';
 import {mainMenuPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
+import {setMenuSelectionPage} from '../main-menu-panel/mainMenuPanel.slice';
 import settingPanelStyles from '../main-menu-panel/mainMenuPanel.styles';
 import sidePanelStyles from '../main-menu-panel/sidePanel.styles';
 import CustomMapDetails from '../maps/custom-maps/CustomMapDetails';
@@ -86,12 +87,14 @@ const Home = (props) => {
   const deviceDimensions = useSelector(state => state.home.deviceDimensions);
   const modalVisible = useSelector(state => state.home.modalVisible);
   const statusMessages = useSelector(state => state.home.statusMessages);
-  const projectLoadComplete = useSelector(state => state.home.projectLoadComplete);
+  const projectLoadComplete = useSelector(state => state.home.isProjectLoadComplete);
+  const isAllSpotsPanelVisible = useSelector(state => state.home.isAllSpotsPanelVisible);
   const isHomeLoading = useSelector(state => state.home.loading.home);
   const isModalLoading = useSelector(state => state.home.loading.modal);
   const isOfflineMapModalVisible = useSelector(state => state.home.isOfflineMapModalVisible);
   const isStatusMessagesModalVisible = useSelector(state => state.home.isStatusMessagesModalVisible);
   const isErrorMessagesModalVisible = useSelector(state => state.home.isErrorMessagesModalVisible);
+  const isImageModalVisible = useSelector(state => state.home.isImageModalVisible);
   const isInfoMessagesModalVisible = useSelector(state => state.home.isInfoModalVisible);
   const isProjectLoadSelectionModalVisible = useSelector(state => state.home.isProjectLoadSelectionModalVisible);
   const isNotebookPanelVisible = useSelector(state => state.notebook.isNotebookPanelVisible);
@@ -752,7 +755,7 @@ const Home = (props) => {
   const toggleHomeDrawerButton = () => {
     if (isMainMenuPanelVisible) {
       dispatch(setMainMenuPanelVisible({bool: false}));
-      props.setHomePanelPageVisible(undefined);
+      dispatch(setMenuSelectionPage({name:undefined}));
       animatePanels(MainMenuPanelAnimation, -homeMenuPanelWidth);
       animatePanels(leftsideIconAnimationValue, 0);
     }
@@ -764,7 +767,7 @@ const Home = (props) => {
   };
 
   const toggleImageModal = () => {
-    dispatch(setImageModalVisible({bool: !props.isImageModalVisible}));
+    dispatch(setImageModalVisible({bool: !isImageModalVisible}));
   };
 
   const toggleNotebookPanel = () => {
@@ -795,8 +798,7 @@ const Home = (props) => {
     <Animated.View style={[settingPanelStyles.settingsDrawer, animateSettingsPanel]}>
       <MainMenuPanel
         // openSidePanel={(view, data) => openSidePanel(view, data)}
-        openHomePanel={() => dispatch(
-          {type: mainMenuPanelReducers.SET_MENU_SELECTION_PAGE, name: MAIN_MENU_ITEMS.MANAGE.UPLOAD_BACKUP_EXPORT})}
+        openHomePanel={() => dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.UPLOAD_BACKUP_EXPORT}))}
         closeHomePanel={() => toggleHomeDrawerButton()}
         openNotebookPanel={(pageView) => openNotebookPanel(pageView)}/>
     </Animated.View>
@@ -853,7 +855,7 @@ const Home = (props) => {
         onTouchOutside={() => toggleDialog('notebookPanelMenuVisible')}
       />
       <Modal
-        isVisible={props.isImageModalVisible}
+        isVisible={isImageModalVisible}
         useNativeDriver={true}
         style={{flex: 1}}
       >
@@ -873,7 +875,7 @@ const Home = (props) => {
       </Modal>
       {isHomeLoading && <LoadingSpinner/>}
       {notebookPanel}
-      {props.isAllSpotsPanelVisible && renderAllSpotsPanel()}
+      {isAllSpotsPanelVisible && renderAllSpotsPanel()}
       {MainMenu}
       {renderSaveAndCancelDrawButtons()}
       {isMainMenuPanelVisible && toggleSidePanel()}
@@ -891,26 +893,17 @@ function mapStateToProps(state) {
   return {
     currentImageBasemap: state.map.currentImageBasemap,
     selectedImage: state.spot.selectedAttributes[0],
-    isImageModalVisible: state.home.isImageModalVisible,
-    isOnline: state.home.isOnline,
     isNotebookPanelVisible: state.notebook.isNotebookPanelVisible,
     isCompassModalVisible: state.notebook.isCompassModalVisible,
-    modalVisible: state.home.modalVisible,
     spots: state.spot.spots,
     getCurrentProject: state.project.project,
-    shortcutSwitchPosition: state.home.shortcutSwitchPosition,
-    isAllSpotsPanelVisible: state.home.isAllSpotsPanelVisible,
     vertexStartCoords: state.map.vertexStartCoords,
-    userData: state.user.userData,
-    homePageVisible: state.mainMenu.mainMenuPageVisible,
   };
 }
 
 const mapDispatchToProps = {
-  setHomePanelPageVisible: (name) => ({type: mainMenuPanelReducers.SET_MENU_SELECTION_PAGE, name: name}),
   setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),
   setNotebookPanelVisible: (value) => ({type: notebookReducers.SET_NOTEBOOK_PANEL_VISIBLE, value: value}),
-  setSettingsPanelPageVisible: (name) => ({type: mainMenuPanelReducers.SET_MENU_SELECTION_PAGE, name: name}),
   deleteSpot: (id) => ({type: spotReducers.DELETE_SPOT, id: id}),
   onSpotEdit: (field, value) => ({type: spotReducers.EDIT_SPOT_PROPERTIES, field: field, value: value}),
   onSpotEditImageObj: (images) => ({type: spotReducers.EDIT_SPOT_IMAGES, images: images}),

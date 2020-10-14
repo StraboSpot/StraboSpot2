@@ -12,6 +12,7 @@ import {MAIN_MENU_ITEMS} from '../main-menu-panel/mainMenu.constants';
 import {mainMenuPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 import Divider from '../main-menu-panel/MainMenuPanelDivider';
 import useProjectHook from './useProject';
+import {setMenuSelectionPage} from '../main-menu-panel/mainMenuPanel.slice';
 
 const NewProjectForm = (props) => {
   const [useForm] = useFormHook();
@@ -45,15 +46,11 @@ const NewProjectForm = (props) => {
         const newProject = await useProject.initializeNewProject(formValues);
         console.log('New Project created', newProject);
         if (isProjectLoadSelectionModalVisible) {
-          dispatch(
-            {type: mainMenuPanelReducers.SET_MENU_SELECTION_PAGE, name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS});
+          dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
           props.openMainMenu();
           dispatch(setProjectLoadSelectionModalVisible({bool: false}));
         }
-        else {
-          dispatch(
-            {type: mainMenuPanelReducers.SET_MENU_SELECTION_PAGE, name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS});
-        }
+        else dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
         return Promise.resolve();
       }
     });

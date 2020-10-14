@@ -53,4 +53,4 @@ const mapDispatchToProps = {
   onSetSelectedSpot: (spot) => ({type: spotReducers.SET_SELECTED_SPOT, spot: spot}),
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(AllSpots);
+export default connect(null, mapDispatchToProps)(AllSpots);

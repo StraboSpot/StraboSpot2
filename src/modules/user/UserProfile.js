@@ -3,26 +3,26 @@ import {View, Text} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
 import {Button, Avatar} from 'react-native-elements';
-import {connect, useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 import {redux} from '../../shared/app.constants';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import StandardModal from '../../shared/ui/StandardModal';
 import {MAIN_MENU_ITEMS} from '../main-menu-panel/mainMenu.constants';
-import {mainMenuPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
+import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import userStyles from './user.styles';
 
 const UserProfile = (props) => {
   const dispatch = useDispatch();
+  const userData = useSelector(state => state.user);
   const navigation = useNavigation();
   const [isLogoutModalVisible, setIsLogoutModalVisible] = useState(false);
 
   const openUploadAndBackupPage = () => {
     setIsLogoutModalVisible(false);
     setTimeout(() => {          // Added timeOut cause state of modal wasn't changing fast enough
-      dispatch(
-        {type: mainMenuPanelReducers.SET_MENU_SELECTION_PAGE, name: MAIN_MENU_ITEMS.MANAGE.UPLOAD_BACKUP_EXPORT});
+      dispatch(setSidePanelVisible({name: MAIN_MENU_ITEMS.MANAGE.UPLOAD_BACKUP_EXPORT}));
     }, 200);
   };
 
@@ -35,7 +35,7 @@ const UserProfile = (props) => {
   };
 
   const getUserInitials = () => {
-    const name = props.userData.name;
+    const name = userData.name;
     let initials = name.match(/\b\w/g) || [];
     initials = ((initials.shift() || '') + (initials.pop() || '')).toUpperCase();
     console.log(initials);
@@ -43,35 +43,35 @@ const UserProfile = (props) => {
   };
 
   const renderAvatarImageBlock = () => {
-    if (!isEmpty(props.userData)) {
-      if (!isEmpty(props.userData.image)) {
+    if (!isEmpty(userData)) {
+      if (!isEmpty(userData.image)) {
         return (
           <View style={userStyles.profileNameAndImageContainer}>
             <View style={userStyles.avatarImageContainer}>
               <Avatar
                 // containerStyle={userStyles.avatarImage}
-                source={{uri: props.userData.image}}
+                source={{uri: userData.image}}
                 showEditButton={false}
                 rounded={true}
                 size={70}
-                onPress={() => console.log(props.userData.name)}
+                onPress={() => console.log(userData.name)}
               />
             </View>
             <View style={userStyles.avatarLabelContainer}>
-              <Text style={userStyles.avatarLabelName}>{props.userData.name}</Text>
-              <Text style={userStyles.avatarLabelEmail}>{props.userData.email}</Text>
+              <Text style={userStyles.avatarLabelName}>{userData.name}</Text>
+              <Text style={userStyles.avatarLabelEmail}>{userData.email}</Text>
             </View>
           </View>
         );
       }
-      else if (isEmpty(props.userData.image)) {
+      else if (isEmpty(userData.image)) {
         return (
           <View style={userStyles.profileNameAndImageContainer}>
             <View style={userStyles.avatarImageContainer}>
               <Avatar
                 // source={require('../../assets/images/noimage.jpg')}
-                title={props.userData.name && props.userData.name !== '' && getUserInitials()}
-                source={props.userData.name === '' ? require('../../assets/images/splash.png') : null}
+                title={userData.name && userData.name !== '' && getUserInitials()}
+                source={userData.name === '' ? require('../../assets/images/splash.png') : null}
                 showEditButton={true}
                 rounded={true}
                 size={70}
@@ -79,8 +79,8 @@ const UserProfile = (props) => {
               />
             </View>
             <View style={userStyles.avatarLabelContainer}>
-              <Text style={userStyles.avatarLabelName}>{props.userData.name}</Text>
-              <Text style={userStyles.avatarLabelEmail}>{props.userData.email}</Text>
+              <Text style={userStyles.avatarLabelName}>{userData.name}</Text>
+              <Text style={userStyles.avatarLabelEmail}>{userData.email}</Text>
             </View>
           </View>
         );
@@ -91,7 +91,7 @@ const UserProfile = (props) => {
         <View style={userStyles.profileNameAndImageContainer}>
           <View style={userStyles.avatarImageContainer}>
             <Avatar
-              icon={isEmpty(props.userData) ? {name: 'user', type: 'font-awesome'} : null}
+              icon={isEmpty(userData) ? {name: 'user', type: 'font-awesome'} : null}
               showEditButton={false}
               rounded={true}
               size={70}
@@ -117,7 +117,7 @@ const UserProfile = (props) => {
           buttonStyle={commonStyles.standardButton}
           titleStyle={commonStyles.standardButtonText}
         />
-        {isEmpty(props.userData)
+        {isEmpty(userData)
         && <Button
           onPress={() => navigation.navigate('SignIn')}
           title={'Go To Sign In'}
@@ -170,14 +170,4 @@ const UserProfile = (props) => {
   );
 };
 
-const mapStateToProps = (state) => {
-  return {
-    userData: state.user,
-  };
-};
-
-const mapDispatchToProps = {
-  clearStorage: () => ({type: 'CLEAR_STORE'}),
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(UserProfile);
+export default UserProfile;

@@ -11,6 +11,7 @@ import {MAIN_MENU_ITEMS} from '../main-menu-panel/mainMenu.constants';
 import {mainMenuPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 import {projectReducers} from '../project/project.constants';
 import {useTagsHook} from '../tags';
+import {setMenuSelectionPage, setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 
 const TagsAtSpotList = (props) => {
   const [useTags] = useTagsHook();
@@ -18,13 +19,9 @@ const TagsAtSpotList = (props) => {
   const isMainMenuPanelVisible = useSelector(state => state.home.isMainMenuPanelVisible);
 
   const openTag = (tag) => {
-    dispatch({
-      type: mainMenuPanelReducers.SET_SIDE_PANEL_VISIBLE,
-      bool: true,
-      view: mainMenuPanelReducers.SET_SIDE_PANEL_VIEW.TAG_DETAIL,
-    });
+    dispatch(setSidePanelVisible({bool: true, view: mainMenuPanelReducers.SET_SIDE_PANEL_VIEW.TAG_DETAIL}));
     dispatch({type: projectReducers.SET_SELECTED_TAG, tag: tag});
-    dispatch({type: mainMenuPanelReducers.SET_MENU_SELECTION_PAGE, name: MAIN_MENU_ITEMS.ATTRIBUTES.TAGS});
+    dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.ATTRIBUTES.TAGS}));
     if (!isMainMenuPanelVisible) props.openMainMenu();
   };
 

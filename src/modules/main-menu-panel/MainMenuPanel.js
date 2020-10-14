@@ -22,7 +22,7 @@ import SpotsList from '../spots/SpotsList';
 import Tags from '../tags/Tags';
 import About from './About';
 import {MAIN_MENU_ITEMS} from './mainMenu.constants';
-import {mainMenuPanelReducers} from './mainMenuPanel.constants';
+import {setMenuSelectionPage} from './mainMenuPanel.slice';
 import styles from './mainMenuPanel.styles';
 import MainMenuPanelHeader from './MainMenuPanelHeader';
 import MainMenuPanelList from './MainMenuPanelList';
@@ -31,11 +31,13 @@ const MainMenuPanel = props => {
   let buttonTitle = null;
   const dispatch = useDispatch();
   const project = useSelector(state => state.project.project);
+  const settingsPageVisible = useSelector(state => state.mainMenu.mainMenuPageVisible);
   const switchPosition = useSelector(state => state.home.shortcutSwitchPosition);
   const spotsInMapExtent = useSelector(state => state.map.spotsInMapExtent);
+  const user = useSelector(state => state.user);
   let mainMenuHeader = <MainMenuPanelHeader
-    onPress={() => props.setSettingsPanelPageVisible(undefined)}>
-    {props.settingsPageVisible}
+    onPress={() => dispatch(setMenuSelectionPage({name: undefined}))}>
+    {settingsPageVisible}
   </MainMenuPanelHeader>;
 
   let page = null;
@@ -48,7 +50,7 @@ const MainMenuPanel = props => {
   };
 
   const setVisibleMenu = (name) => {
-    props.setSettingsPanelPageVisible(name);
+    dispatch(setMenuSelectionPage({name: name}));
   };
 
   const toggleSwitch = (switchName) => {
@@ -57,10 +59,10 @@ const MainMenuPanel = props => {
     console.log(shortcutSwitchPosition);
   };
 
-  if (isEmpty(props.userProfile)) buttonTitle = 'Sign In';
+  if (isEmpty(user)) buttonTitle = 'Sign In';
   else buttonTitle = 'Sign Out';
 
-  switch (props.settingsPageVisible) {
+  switch (settingsPageVisible) {
     case MAIN_MENU_ITEMS.MANAGE.MY_STRABOSPOT:
       page = (
         <View style={styles.mainMenuContainer}>
@@ -200,14 +202,11 @@ const MainMenuPanel = props => {
 
 const mapStateToProps = (state) => {
   return {
-    settingsPageVisible: state.mainMenu.mainMenuPageVisible,
     spots: state.spot.spots,
-    userProfile: state.user.userData,
   };
 };
 
 const mapDispatchToProps = {
-  setSettingsPanelPageVisible: (name) => ({type: mainMenuPanelReducers.SET_MENU_SELECTION_PAGE, name: name}),
   onSetSelectedSpot: (spot) => ({type: spotReducers.SET_SELECTED_SPOT, spot: spot}),
 };
 

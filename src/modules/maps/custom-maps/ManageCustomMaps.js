@@ -64,7 +64,6 @@ const mapStateToProps = (state) => {
   return {
     customMaps: state.map.customMaps,
     currentBasemap: state.map.currentBasemap,
-    user: state.user,
   };
 };
 

@@ -1,18 +1,21 @@
 import React, {useState, useEffect} from 'react';
 import {FlatList, Text, View} from 'react-native';
 
-import {connect} from 'react-redux';
+import {connect, useDispatch, useSelector} from 'react-redux';
 
 import {isEmpty} from '../../shared/Helpers';
 import * as SharedUI from '../../shared/ui/index';
 import imageStyles from '../images/images.styles';
 import useImagesHook from '../images/useImages';
 import attributesStyles from '../main-menu-panel/attributes.styles';
-import {mainMenuPanelReducers, SortedViews} from '../main-menu-panel/mainMenuPanel.constants';
+import {SortedViews} from '../main-menu-panel/mainMenuPanel.constants';
 import useSpotsHook from '../spots/useSpots';
 import {mapReducers} from './maps.constants';
+import {setSelectedButtonIndex, setSortedView} from '../main-menu-panel/mainMenuPanel.slice';
 
 const ImageBaseMaps = (props) => {
+  const dispatch = useDispatch();
+  const sortedListView = useSelector(state => state.mainMenu.sortedView)
   const [useSpots] = useSpotsHook();
   const activeSpotsObj = useSpots.getActiveSpotsObj();
   const [imageBaseMapSet, setImageBaseMapsSet] = useState(useSpots.getAllImageBaseMaps());
@@ -21,8 +24,8 @@ const ImageBaseMaps = (props) => {
 
   useEffect(() => {
     return function cleanUp() {
-      props.setSortedListView(SortedViews.CHRONOLOGICAL);
-      props.setSelectedButtonIndex(0);
+      dispatch(setSortedView({view: SortedViews.CHRONOLOGICAL}));
+      dispatch(setSelectedButtonIndex({index: 0}));
       console.log('CLEANUP!');
     };
   }, []);
@@ -30,7 +33,7 @@ const ImageBaseMaps = (props) => {
   useEffect(() => {
     // setSortedList(Object.values(activeSpotsObj));
     setImageBaseMapsSet(useSpots.getAllImageBaseMaps());
-  }, [props.selectedSpot, props.spots, props.sortedListView]);
+  }, [props.selectedSpot, props.spots, sortedListView]);
 
   const renderName = (item) => {
     return (
@@ -100,15 +103,12 @@ const mapStateToProps = (state) => {
   if (!isEmpty(state.spot.spots)) {
     return {
       selectedSpot: state.spot.selectedSpot,
-      sortedListView: state.mainMenu.sortedView,
       spots: state.spot.spots,
     };
   }
 };
 
 const mapDispatchToProps = {
-  setSortedListView: (view) => ({type: mainMenuPanelReducers.SET_SORTED_VIEW, view: view}),
-  setSelectedButtonIndex: (index) => ({type: mainMenuPanelReducers.SET_SELECTED_BUTTON_INDEX, index: index}),
   updateImageBasemap: (currentImageBasemap) => ({
     type: mapReducers.CURRENT_IMAGE_BASEMAP,
     currentImageBasemap: currentImageBasemap,

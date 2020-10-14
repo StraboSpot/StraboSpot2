@@ -4,7 +4,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import RNFetchBlob from 'rn-fetch-blob';
 
 import {isEmpty} from '../../shared/Helpers';
-import {mainMenuPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
+import {setMenuSelectionPage, setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import {projectReducers} from '../project/project.constants';
 import {spotReducers} from '../spots/spot.constants';
 import {
@@ -40,10 +40,10 @@ const useHome = (props) => {
     dispatch(setLoadingStatus({view: 'modal', bool: false}));
     dispatch({type: spotReducers.CLEAR_SELECTED_SPOTS});
     dispatch(setAllSpotsPanelVisible({bool: false}));
-    dispatch({type: mainMenuPanelReducers.SET_SIDE_PANEL_VISIBLE, value: false});
+    dispatch(setSidePanelVisible({value: false}));
     dispatch(setModalVisible({modal: null}));
     dispatch(setMainMenuPanelVisible({bool: false}));
-    dispatch({type: mainMenuPanelReducers.SET_MENU_SELECTION_PAGE, name: undefined});
+    dispatch(setMenuSelectionPage({name: undefined}));
     dispatch(setStatusMessagesModalVisible({bool: false}));
     // dispatch({type: redux.CLEAR_STORE});
     await checkForDeviceBackupDir();

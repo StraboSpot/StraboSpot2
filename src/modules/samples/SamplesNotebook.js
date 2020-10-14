@@ -2,20 +2,21 @@ import React from 'react';
 import {ScrollView, Text, View} from 'react-native';
 
 import {Icon, ListItem} from 'react-native-elements';
-import {connect, useDispatch} from 'react-redux';
+import {connect, useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {Modals} from '../home/home.constants';
+import {setModalVisible} from '../home/home.slice';
 import {notebookReducers, NotebookPages} from '../notebook-panel/notebook.constants';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import styles from './samples.style';
 
 const SamplesNotebook = (props) => {
   const dispatch = useDispatch();
-
+  const modalVisible = useSelector(state => state.home.modalVisible);
   const renderSampleList = () => {
     return props.spot.properties.samples.map(item => {
       // console.log('LIST', item);
@@ -65,8 +66,8 @@ const SamplesNotebook = (props) => {
         {/*  renderItem={renderItem}*/}
         {/*/>*/}
         <ScrollView>
-          {props.spot.properties.samples ? renderSampleList() :
-            <Text style={commonStyles.noValueText}>No Samples</Text>}
+          {props.spot.properties.samples ? renderSampleList()
+            : <Text style={commonStyles.noValueText}>No Samples</Text>}
         </ScrollView>
       </View>
     );
@@ -85,7 +86,7 @@ const SamplesNotebook = (props) => {
 
   return (
     <React.Fragment>
-      {props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE ? renderShortcutView() : renderNotebookView()}
+      {modalVisible === Modals.SHORTCUT_MODALS.SAMPLE ? renderShortcutView() : renderNotebookView()}
     </React.Fragment>
   );
 };
@@ -93,7 +94,6 @@ const SamplesNotebook = (props) => {
 const mapStateToProps = (state) => {
   return {
     spot: state.spot.selectedSpot,
-    modalVisible: state.home.modalVisible,
     notebookPageVisible: isEmpty(state.notebook.visibleNotebookPagesStack)
       ? null
       : state.notebook.visibleNotebookPagesStack.slice(-1)[0],

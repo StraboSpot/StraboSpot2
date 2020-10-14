@@ -17,6 +17,7 @@ import styles from './samples.style';
 const SamplesModalView = (props) => {
   let modalView = null;
   const dispatch = useDispatch();
+  const modalVisible = useSelector(state => state.home.modalVisible);
   const preferences = useSelector(state => state.project.project.preferences) || {};
   const [useMaps] = useMapsHook();
   const [selectedButton, setSelectedButton] = useState(null);
@@ -58,7 +59,7 @@ const SamplesModalView = (props) => {
   // };
 
   const saveSample = async () => {
-    if (props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE) {
+    if (modalVisible === Modals.SHORTCUT_MODALS.SAMPLE) {
       const pointSetAtCurrentLocation = await useMaps.setPointAtCurrentLocation();
       console.log('pointSetAtCurrentLocation', pointSetAtCurrentLocation);
     }
@@ -75,11 +76,11 @@ const SamplesModalView = (props) => {
     if (sample.length > 0) {
       let newSample = sample[0];
       newSample.id = getNewId();
-      if (props.modalVisible === Modals.NOTEBOOK_MODALS.SAMPLE) {
+      if (modalVisible === Modals.NOTEBOOK_MODALS.SAMPLE) {
         const samples = (typeof props.spot.properties.samples === 'undefined' ? [newSample] : [...props.spot.properties.samples, newSample]);
         props.onSpotEdit('samples', samples);
       }
-      else if (props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE) {
+      else if (modalVisible === Modals.SHORTCUT_MODALS.SAMPLE) {
         props.onSpotEdit('samples', [newSample]);
       }
       const updatedPreferences = {
@@ -177,8 +178,6 @@ const SamplesModalView = (props) => {
 const mapStateToProps = (state) => {
   return {
     spot: state.spot.selectedSpot,
-    modalVisible: state.home.modalVisible,
-    deviceDimensions: state.home.deviceDimensions,
   };
 };
 

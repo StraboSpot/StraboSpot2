@@ -71,10 +71,6 @@ const ImageNotebook = (props) => {
   );
 };
 
-function mapStateToProps(state) {
-  return {};
-}
-
 const mapDispatchToProps = {
   updateImageBasemap: (currentImageBasemap) => ({
     type: mapReducers.CURRENT_IMAGE_BASEMAP,
@@ -82,4 +78,4 @@ const mapDispatchToProps = {
   }),
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ImageNotebook);
+export default connect(null, mapDispatchToProps)(ImageNotebook);

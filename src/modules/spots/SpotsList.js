@@ -6,12 +6,13 @@ import {connect, useSelector} from 'react-redux';
 
 import {isEmpty} from '../../shared/Helpers';
 import attributesStyles from '../main-menu-panel/attributes.styles';
-import {mainMenuPanelReducers, SortedViews} from '../main-menu-panel/mainMenuPanel.constants';
+import {SortedViews} from '../main-menu-panel/mainMenuPanel.constants';
 import SortingButtons from '../main-menu-panel/SortingButtons';
 import {useTagsHook} from '../tags';
 import useSpotsHook from './useSpots';
 
 const SpotsList = (props) => {
+  const sortedListView = useSelector(state => state.mainMenu.sortedView);
   const [sortedList, setSortedList] = useState({});
   const [useSpots] = useSpotsHook();
   const [useTags] = useTagsHook();
@@ -64,13 +65,13 @@ const SpotsList = (props) => {
   if (!isEmpty(activeSpotsObj)) {
     let sortedView = null;
 
-    if (props.sortedListView === SortedViews.CHRONOLOGICAL) {
+    if (sortedListView === SortedViews.CHRONOLOGICAL) {
       sortedView = <FlatList
         keyExtractor={(item) => item.properties.id.toString()}
         data={sortedList}
         renderItem={({item}) => renderName(item)}/>;
     }
-    else if (props.sortedListView === SortedViews.MAP_EXTENT) {
+    else if (sortedListView === SortedViews.MAP_EXTENT) {
       if (!isEmpty(props.spotsInMapExtent)) {
         sortedView = <FlatList
           keyExtractor={(item) => item.properties.id.toString()}
@@ -79,7 +80,7 @@ const SpotsList = (props) => {
       }
       else sortedView = <Text style={{padding: 10}}>No Spots in current map extent</Text>;
     }
-    else if (props.sortedListView === SortedViews.RECENT_VIEWS) {
+    else if (sortedListView === SortedViews.RECENT_VIEWS) {
       const recentlyViewedSpotIds = props.recentViews;
       const recentlyViewedSpots = recentlyViewedSpotIds.map(spotId => props.spots[spotId]);
       if (!isEmpty(recentlyViewedSpots)) {
@@ -120,12 +121,7 @@ const mapStateToProps = (state) => {
     recentViews: state.spot.recentViews,
     selectedSpot: state.spot.selectedSpot,
     spots: state.spot.spots,
-    sortedListView: state.mainMenu.sortedView,
   };
 };
 
-const mapDispatchToProps = {
-  setSelectedButtonIndex: (index) => ({type: mainMenuPanelReducers.SET_SELECTED_BUTTON_INDEX, index: index}),
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(SpotsList);
+export default connect(mapStateToProps)(SpotsList);

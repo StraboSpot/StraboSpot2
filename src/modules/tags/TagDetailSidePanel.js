@@ -10,6 +10,7 @@ import {mainMenuPanelReducers} from '../main-menu-panel/mainMenuPanel.constants'
 import SidePanelHeader from '../main-menu-panel/sidePanel/SidePanelHeader';
 import {spotReducers} from '../spots/spot.constants';
 import {TagDetail, TagDetailModal} from '../tags';
+import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 
 const TagDetailSidePanel = (props) => {
 
@@ -23,7 +24,7 @@ const TagDetailSidePanel = (props) => {
       <View style={{flexDirection: 'row'}}>
         <View style={{flex: 1}}>
           <SidePanelHeader
-            backButton={() => dispatch({type: mainMenuPanelReducers.SET_SIDE_PANEL_VISIBLE, bool: false})}
+            backButton={() => dispatch(setSidePanelVisible({bool: false}))}
             title={'Tags'}
             headerTitle={!isEmpty(selectedTag) && selectedTag.name}
           />
@@ -50,11 +51,11 @@ const TagDetailSidePanel = (props) => {
             dispatch({type: spotReducers.SET_SELECTED_SPOT, spot: spot});
             props.openNotebookPanel();
           }}
-          addRemoveSpots={() => dispatch({
-            type: mainMenuPanelReducers.SET_SIDE_PANEL_VISIBLE,
-            bool: true,
-            view: mainMenuPanelReducers.SET_SIDE_PANEL_VIEW.TAG_ADD_REMOVE_SPOTS,
-          })}
+          addRemoveSpots={() => {
+            dispatch(setSidePanelVisible(
+              {bool: true, view: mainMenuPanelReducers.SET_SIDE_PANEL_VIEW.TAG_ADD_REMOVE_SPOTS},
+            ));
+          }}
           setIsDetailModalVisible={() => setIsDetailModalVisible(true)}
         />
       </View>

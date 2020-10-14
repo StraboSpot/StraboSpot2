@@ -15,6 +15,7 @@ import {
   setOnlineStatus,
 } from '../home/home.slice';
 import {mainMenuPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
+import {setMenuSelectionPage, setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import {projectReducers} from '../project/project.constants';
 import {spotReducers} from '../spots/spot.constants';
 import useSpotsHook from '../spots/useSpots';
@@ -55,8 +56,8 @@ const useMaps = () => {
       dispatch({type: projectReducers.PROJECTS, project: projectCopy}); // Deletes map from project
     }
     dispatch({type: mapReducers.DELETE_CUSTOM_MAP, customMaps: customMapsCopy}); // replaces customMaps with updated object
-    dispatch({type: mainMenuPanelReducers.SET_SIDE_PANEL_VISIBLE, view: null, bool: false});
-    dispatch({type: mainMenuPanelReducers.SET_MENU_SELECTION_PAGE, name: undefined});
+    dispatch(setSidePanelVisible({view: null, bool: false}));
+    dispatch(setMenuSelectionPage({name: undefined}));
     console.log('Saved customMaps to Redux.');
   };
 
@@ -124,11 +125,7 @@ const useMaps = () => {
 
   const customMapDetails = (map) => {
     dispatch({type: mapReducers.SELECTED_CUSTOM_MAP_TO_EDIT, customMap: map});
-    dispatch({
-      type: mainMenuPanelReducers.SET_SIDE_PANEL_VISIBLE,
-      view: mainMenuPanelReducers.SET_SIDE_PANEL_VIEW.MANAGE_CUSTOM_MAP,
-      bool: true,
-    });
+    dispatch(setSidePanelVisible({view: mainMenuPanelReducers.SET_SIDE_PANEL_VIEW.MANAGE_CUSTOM_MAP, bool: true}));
   };
 
   // Identify the coordinate span for the for the image basemap.

@@ -3,7 +3,7 @@ import {Text, TextInput, Switch, ScrollView, View, FlatList} from 'react-native'
 
 import {Formik} from 'formik';
 import {Button, Input} from 'react-native-elements';
-import {connect, useDispatch} from 'react-redux';
+import {connect, useDispatch, useSelector} from 'react-redux';
 
 import {isEmpty} from '../../shared/Helpers';
 import Modal from '../../shared/ui/modal/Modal';
@@ -15,6 +15,7 @@ import styles from './images.styles';
 
 const ImagePropertiesModal = (props) => {
   const dispatch = useDispatch();
+  const deviceDims = useSelector(state => state.home.deviceDimensions)
   const [useForm] = useFormHook();
   const [description, setDescription] = useState(props.selectedImage.caption);
   const [annotated, setAnnotated] = useState(props.selectedImage.annotated);
@@ -23,7 +24,7 @@ const ImagePropertiesModal = (props) => {
   const form = useRef(null);
 
   const renderMoreFields = () => {
-    const {width, height} = props.getDeviceDims;
+    const {width, height} = deviceDims;
     if (width > height) {
       return (
         <View>
@@ -110,8 +111,11 @@ const ImagePropertiesModal = (props) => {
   };
 
   const saveFormAndGo = () => {
-    if (isEmpty(name) && props.selectedImage.hasOwnProperty('title')) delete props.selectedImage.title;
-    else if (!isEmpty(name)) props.selectedImage.title = name;
+    const imagePropertiesCopy = JSON.parse(JSON.stringify(imageProperties));
+    dispatch({type: spotReducers.EDIT_SPOT_IMAGE, image: imageProperties});
+    if (isEmpty(imagePropertiesCopy.title) && props.selectedImage.hasOwnProperty(
+      'title')) delete imagePropertiesCopy.title;
+    else if (!isEmpty(imageProperties.title)) props.selectedImage.title = imageProperties.title;
     if (isEmpty(description) && props.selectedImage.hasOwnProperty('caption')) delete props.selectedImage.caption;
     else if (!isEmpty(description)) props.selectedImage.caption = description;
     if (isEmpty(annotated) && props.selectedImage.hasOwnProperty('annotated')) delete props.selectedImage.annotated;
@@ -189,7 +193,6 @@ function mapStateToProps(state) {
   return {
     spot: state.spot.selectedSpot,
     selectedImage: state.spot.selectedAttributes[0],
-    getDeviceDims: state.home.deviceDimensions,
   };
 }
 
@@ -197,7 +200,6 @@ const mapDispatchToProps = {
   onSpotEdit: (field, value) => ({type: spotReducers.EDIT_SPOT_PROPERTIES, field: field, value: value}),
   setNotebookPageVisibleToPrev: () => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE_TO_PREV}),
   setSelectedAttributes: (attributes) => ({type: spotReducers.SET_SELECTED_ATTRIBUTES, attributes: attributes}),
-  // setDeviceDims: (height, width) => ({type: homeReducers.DEVICE_DIMENSIONS, height: height, width: width}),
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ImagePropertiesModal);

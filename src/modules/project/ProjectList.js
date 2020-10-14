@@ -22,6 +22,7 @@ import {projectReducers} from './project.constants';
 import * as ProjectActions from './project.constants';
 import styles from './project.styles';
 import useProjectHook from './useProject';
+import {setMenuSelectionPage} from '../main-menu-panel/mainMenuPanel.slice';
 
 const ProjectList = (props) => {
   const currentProject = useSelector(state => state.project.project);
@@ -117,7 +118,7 @@ const ProjectList = (props) => {
         console.log('PROJECT DATA', projectData);
         await dispatch(addedStatusMessage({statusMessage: 'Project loaded!'}));
         dispatch(setLoadingStatus({view: 'modal', bool: false}));
-        dispatch({type: mainMenuPanelReducers.SET_MENU_SELECTION_PAGE, name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS});
+        dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
       }
       catch (err) {
         setIsError(true);
@@ -137,7 +138,7 @@ const ProjectList = (props) => {
         console.log('Loaded From Device');
         dispatch(setLoadingStatus({view: 'modal', bool: false}));
         dispatch(addedStatusMessage({statusMessage: 'Download Complete!'}));
-        dispatch({type: mainMenuPanelReducers.SET_MENU_SELECTION_PAGE, name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS});
+        dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
       }
       else {
         return useProject.loadProjectRemote(selectedProject).then(projectData => {
@@ -150,16 +151,14 @@ const ProjectList = (props) => {
               dispatch(clearedStatusMessages());
               dispatch(addedStatusMessage({statusMessage: 'Project does not have any spots'}));
               dispatch(setInfoMessagesModalVisible({bool: true}));
-              dispatch(
-                {type: mainMenuPanelReducers.SET_MENU_SELECTION_PAGE, name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS});
+              dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
             }
             else Alert.alert('Error', 'No Project Data!');
           }
           else {
             dispatch(addedStatusMessage({statusMessage: 'Download Complete!'}));
             dispatch(setLoadingStatus({view: 'modal', bool: false}));
-            dispatch(
-              {type: mainMenuPanelReducers.SET_MENU_SELECTION_PAGE, name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS});
+            dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
           }
         });
       }

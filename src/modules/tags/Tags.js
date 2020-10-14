@@ -11,6 +11,7 @@ import SectionDivider from '../../shared/ui/SectionDivider';
 import {mainMenuPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 import {projectReducers} from '../project/project.constants';
 import {TagDetailModal, tagsStyles, useTagsHook} from '../tags';
+import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 
 const Tags = () => {
   const [useTags] = useTagsHook();
@@ -59,11 +60,9 @@ const Tags = () => {
         <ListItem
           containerStyle={commonStyles.listItem}
           onPress={() => {
-            dispatch({
-              type: mainMenuPanelReducers.SET_SIDE_PANEL_VISIBLE,
-              view: mainMenuPanelReducers.SET_SIDE_PANEL_VIEW.TAG_DETAIL,
-              bool: true,
-            });
+            dispatch(setSidePanelVisible(
+              {view: mainMenuPanelReducers.SET_SIDE_PANEL_VIEW.TAG_DETAIL, bool: true},
+            ));
             dispatch({type: projectReducers.SET_SELECTED_TAG, tag: item});
           }
           }

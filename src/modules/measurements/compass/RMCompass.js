@@ -320,7 +320,6 @@ const mapStateToProps = (state) => {
   return {
     spot: state.spot.selectedSpot,
     isNotebookPanelVisible: state.notebook.isNotebookPanelVisible,
-    deviceDimensions: state.home.deviceDimensions,
   };
 };
 

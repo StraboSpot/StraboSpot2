@@ -13,8 +13,8 @@ import useServerRequests from '../../services/useServerRequests';
 import {VERSION_NUMBER} from '../../shared/app.constants';
 import {readDataUrl, isEmpty} from '../../shared/Helpers';
 import IconButton from '../../shared/ui/IconButton';
-import {setUserData} from '../user/userProfile.slice';
 import {setOnlineStatus, setSignedInStatus} from '../home/home.slice';
+import {setUserData} from '../user/userProfile.slice';
 import styles from './signIn.styles';
 
 let user = null;

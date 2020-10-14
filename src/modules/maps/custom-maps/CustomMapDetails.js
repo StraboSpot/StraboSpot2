@@ -21,9 +21,9 @@ import Slider from '../../../shared/ui/Slider';
 import {addedStatusMessage,
   clearedStatusMessages,
   setErrorMessagesModalVisible,
-  setStatusMessagesModalVisible
+  setStatusMessagesModalVisible,
 } from '../../home/home.slice';
-import {mainMenuPanelReducers} from '../../main-menu-panel/mainMenuPanel.constants';
+import {setMenuSelectionPage, setSidePanelVisible} from '../../main-menu-panel/mainMenuPanel.slice';
 import Divider from '../../main-menu-panel/MainMenuPanelDivider';
 import sidePanelStyles from '../../main-menu-panel/sidePanel.styles';
 import SidePanelHeader from '../../main-menu-panel/sidePanel/SidePanelHeader';
@@ -78,8 +78,8 @@ const AddCustomMaps = () => {
     console.log(customMap);
     if (customMap !== undefined) {
       dispatch({type: mapReducers.ADD_CUSTOM_MAP, customMap: customMap});
-      dispatch({type: mainMenuPanelReducers.SET_SIDE_PANEL_VISIBLE, view: null, bool: false});
-      dispatch({type: mainMenuPanelReducers.SET_MENU_SELECTION_PAGE, name: undefined});
+      dispatch(setSidePanelVisible({view: null, bool: false}));
+      dispatch(setMenuSelectionPage({name: undefined}));
       dispatch(clearedStatusMessages());
       dispatch(addedStatusMessage({statusMessage: 'Success!'}));
       dispatch(addedStatusMessage({statusMessage: `\nMap ${customMap.title} has been added or updated!`}));
@@ -241,7 +241,7 @@ const AddCustomMaps = () => {
     return (
       <SidePanelHeader
         backButton={() => {
-          dispatch({type: mainMenuPanelReducers.SET_SIDE_PANEL_VISIBLE, bool: false});
+          dispatch(setSidePanelVisible({bool: false}));
           dispatch({type: mapReducers.SELECTED_CUSTOM_MAP_TO_EDIT, customMap: {}});
         }}
         title={'Custom Maps'}
