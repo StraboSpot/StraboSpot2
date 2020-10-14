@@ -1,7 +1,7 @@
 import React from 'react';
 import {View, Text} from 'react-native';
 
-import {connect, useSelector} from 'react-redux';
+import {connect, useDispatch, useSelector} from 'react-redux';
 
 import {isEmpty} from '../../shared/Helpers';
 import {shortcutSwitchPosition} from '../home/home.slice';
@@ -29,7 +29,9 @@ import MainMenuPanelList from './MainMenuPanelList';
 
 const MainMenuPanel = props => {
   let buttonTitle = null;
+  const dispatch = useDispatch();
   const project = useSelector(state => state.project.project);
+  const switchPosition = useSelector(state => state.home.shortcutSwitchPosition);
   const spotsInMapExtent = useSelector(state => state.map.spotsInMapExtent);
   let mainMenuHeader = <MainMenuPanelHeader
     onPress={() => props.setSettingsPanelPageVisible(undefined)}>
@@ -91,7 +93,7 @@ const MainMenuPanel = props => {
         <View style={styles.mainMenuContainer}>
           <ShortcutMenu
             toggleSwitch={(switchName) => toggleSwitch(switchName)}
-            shortcutSwitchPosition={props.shortcutSwitchPosition}
+            shortcutSwitchPosition={switchPosition}
           />
         </View>
       );

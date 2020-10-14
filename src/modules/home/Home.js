@@ -83,6 +83,7 @@ const Home = (props) => {
 
   const dispatch = useDispatch();
   const customMaps = useSelector(state => state.map.customMaps);
+  const deviceDimensions = useSelector(state => state.home.deviceDimensions);
   const modalVisible = useSelector(state => state.home.modalVisible);
   const statusMessages = useSelector(state => state.home.statusMessages);
   const projectLoadComplete = useSelector(state => state.home.projectLoadComplete);
@@ -132,7 +133,7 @@ const Home = (props) => {
 
   useEffect(() => {
     // props.setDeviceDims(dimensions);
-    // if (props.deviceDimensions.width < 500) {
+    // if (deviceDimensions.width < 500) {
     //   Orientation.unlockAllOrientations();
     // }
     // else Orientation.lockToLandscapeLeft();
@@ -895,7 +896,6 @@ function mapStateToProps(state) {
     isNotebookPanelVisible: state.notebook.isNotebookPanelVisible,
     isCompassModalVisible: state.notebook.isCompassModalVisible,
     modalVisible: state.home.modalVisible,
-    deviceDimensions: state.home.deviceDimensions,
     spots: state.spot.spots,
     getCurrentProject: state.project.project,
     shortcutSwitchPosition: state.home.shortcutSwitchPosition,
@@ -913,7 +913,6 @@ const mapDispatchToProps = {
   setSettingsPanelPageVisible: (name) => ({type: mainMenuPanelReducers.SET_MENU_SELECTION_PAGE, name: name}),
   deleteSpot: (id) => ({type: spotReducers.DELETE_SPOT, id: id}),
   onSpotEdit: (field, value) => ({type: spotReducers.EDIT_SPOT_PROPERTIES, field: field, value: value}),
-  // setDeviceDims: (dims) => ({type: homeReducers.DEVICE_DIMENSIONS, dims: dims}),
   onSpotEditImageObj: (images) => ({type: spotReducers.EDIT_SPOT_IMAGES, images: images}),
 };
 

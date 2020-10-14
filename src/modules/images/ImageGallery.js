@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {Alert, FlatList, Text, View} from 'react-native';
 
 import {Button} from 'react-native-elements';
-import {connect} from 'react-redux';
+import {connect, useDispatch} from 'react-redux';
 
 import {isEmpty} from '../../shared/Helpers';
 import * as SharedUI from '../../shared/ui/index';
@@ -25,6 +25,7 @@ let imageCount = 0;
 // const imagesDirectory = devicePath + appDirectory + '/Images';
 
 const ImageGallery = (props) => {
+  const dispatch = useDispatch();
   const [useSpots] = useSpotsHook();
   const activeSpotsObj = useSpots.getActiveSpotsObj();
   const [useImages] = useImagesHook();

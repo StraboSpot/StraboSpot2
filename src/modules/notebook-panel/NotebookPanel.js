@@ -32,6 +32,7 @@ const NotebookPanel = props => {
   const [useSpots] = useSpotsHook();
   const dispatch = useDispatch();
   const recentlyViewedSpotIds = useSelector(state => state.spot.recentViews);
+  const isAllSpotsPanelVisible = useSelector(state => state.home.isAllSpotsPanelVisible);
   const spots = useSelector(state => state.spot.spots);
 
   const setNotebookPageVisible = page => {
@@ -48,7 +49,7 @@ const NotebookPanel = props => {
     console.log('Selected Spot:', props.spot);
     return (
       <Animated.View
-        style={props.isAllSpotsPanelVisible ? [notebookStyles.panel, {right: 125}] : notebookStyles.panel}
+        style={isAllSpotsPanelVisible ? [notebookStyles.panel, {right: 125}] : notebookStyles.panel}
       >
         <View
           style={notebookStyles.headerContainer}>

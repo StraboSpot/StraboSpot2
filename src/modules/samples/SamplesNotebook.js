@@ -2,7 +2,7 @@ import React from 'react';
 import {ScrollView, Text, View} from 'react-native';
 
 import {Icon, ListItem} from 'react-native-elements';
-import {connect} from 'react-redux';
+import {connect, useDispatch} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
@@ -12,9 +12,10 @@ import {Modals} from '../home/home.constants';
 import {notebookReducers, NotebookPages} from '../notebook-panel/notebook.constants';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import styles from './samples.style';
-import {setModalVisible} from '../home/home.slice';
 
-const samplesNotebook = (props) => {
+const SamplesNotebook = (props) => {
+  const dispatch = useDispatch();
+
   const renderSampleList = () => {
     return props.spot.properties.samples.map(item => {
       // console.log('LIST', item);
@@ -94,14 +95,14 @@ const mapStateToProps = (state) => {
     spot: state.spot.selectedSpot,
     modalVisible: state.home.modalVisible,
     notebookPageVisible: isEmpty(state.notebook.visibleNotebookPagesStack)
-       ? null
-       : state.notebook.visibleNotebookPagesStack.slice(-1)[0],
-    };
+      ? null
+      : state.notebook.visibleNotebookPagesStack.slice(-1)[0],
+  };
 };
 
 const mapDispatchToProps = {
   setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(samplesNotebook);
+export default connect(mapStateToProps, mapDispatchToProps)(SamplesNotebook);
 

@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {Alert, FlatList, View} from 'react-native';
 
 import {Button} from 'react-native-elements';
-import {connect, useDispatch} from 'react-redux';
+import {connect, useDispatch, useSelector} from 'react-redux';
 
 import * as themes from '../../shared/styles.constants';
 import SectionDivider from '../../shared/ui/SectionDivider';
@@ -17,6 +17,7 @@ import styles from './measurements.styles';
 
 const MeasurementsPage = (props) => {
   const dispatch = useDispatch();
+  const modalVisible = useSelector(state => state.home.modalVisible);
   const [multiSelectMode, setMultiSelectMode] = useState();
   const [selectedFeaturesTemp, setSelectedFeaturesTemp] = useState([]);
 
@@ -149,7 +150,7 @@ const MeasurementsPage = (props) => {
           )}
           {!multiSelectMode && (
             <View style={{flexDirection: 'row'}}>
-              {props.modalVisible !== 'Notebook Compass Modal' && <Button
+              {modalVisible !== 'Notebook Compass Modal' && <Button
                 titleStyle={styles.measurementsSectionDividerButtonText}
                 title={'Add'}
                 type={'clear'}
@@ -220,7 +221,7 @@ const MeasurementsPage = (props) => {
 
   return (
     <React.Fragment>
-      {props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS ? renderMeasurementsShortcutView() : renderMeasurementsNotebookView()}
+      {modalVisible === Modals.SHORTCUT_MODALS.COMPASS ? renderMeasurementsShortcutView() : renderMeasurementsNotebookView()}
     </React.Fragment>
   );
 };

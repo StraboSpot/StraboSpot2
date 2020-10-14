@@ -3,7 +3,7 @@ import {Text, TextInput, Switch, ScrollView, View, FlatList} from 'react-native'
 
 import {Formik} from 'formik';
 import {Button, Input} from 'react-native-elements';
-import {connect} from 'react-redux';
+import {connect, useDispatch} from 'react-redux';
 
 import {isEmpty} from '../../shared/Helpers';
 import Modal from '../../shared/ui/modal/Modal';
@@ -14,10 +14,11 @@ import {spotReducers} from '../spots/spot.constants';
 import styles from './images.styles';
 
 const ImagePropertiesModal = (props) => {
+  const dispatch = useDispatch();
   const [useForm] = useFormHook();
-  const [name, setName] = useState(props.selectedImage.title);
   const [description, setDescription] = useState(props.selectedImage.caption);
   const [annotated, setAnnotated] = useState(props.selectedImage.annotated);
+  const [imageProperties, setImageProperties] = useState(props.selectedImage);
   const [showMoreFields, setShowMoreFields] = useState(false);
   const form = useRef(null);
 
@@ -33,7 +34,7 @@ const ImagePropertiesModal = (props) => {
               </View>
             }
             scrollEnabled={false}
-            />
+          />
           <Button
             title={'Show fewer fields'}
             type={'clear'}
@@ -154,8 +155,8 @@ const ImagePropertiesModal = (props) => {
           placeholder={'Image Name'}
           inputContainerStyle={styles.inputContainer}
           inputStyle={styles.inputText}
-          onChangeText={(text) => setName(text)}
-          value={name}
+          onChangeText={(text) => setImageProperties({...imageProperties, title: text})}
+          value={imageProperties.title}
         />
         <View style={styles.textboxContainer}>
           <TextInput
@@ -164,8 +165,9 @@ const ImagePropertiesModal = (props) => {
             multiline={true}
             numberOfLines={4}
             style={styles.textbox}
-            onChangeText={(text) => setDescription(text)}
-            value={description}
+            // onChangeText={(text) => setDescription(text)}
+            onChangeText={(text) => setImageProperties({...imageProperties, caption: text})}
+            value={imageProperties.caption}
           />
         </View>
         <View style={styles.button}>
@@ -174,8 +176,8 @@ const ImagePropertiesModal = (props) => {
         <View style={styles.switch}>
           <Text style={{marginLeft: 10, fontSize: 16}}>Use as Image-basemap</Text>
           <Switch
-            onValueChange={(annotated) => setAnnotated(annotated)}
-            value={annotated}
+            onValueChange={(annotated) => setImageProperties({...imageProperties, annotated: annotated})}
+            value={imageProperties.annotated}
           />
         </View>
       </View>
@@ -195,7 +197,7 @@ const mapDispatchToProps = {
   onSpotEdit: (field, value) => ({type: spotReducers.EDIT_SPOT_PROPERTIES, field: field, value: value}),
   setNotebookPageVisibleToPrev: () => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE_TO_PREV}),
   setSelectedAttributes: (attributes) => ({type: spotReducers.SET_SELECTED_ATTRIBUTES, attributes: attributes}),
-  setDeviceDims: (height, width) => ({type: homeReducers.DEVICE_DIMENSIONS, height: height, width: width}),
+  // setDeviceDims: (height, width) => ({type: homeReducers.DEVICE_DIMENSIONS, height: height, width: width}),
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ImagePropertiesModal);
