@@ -98,13 +98,18 @@ const ImageGallery = (props) => {
   };
 
   const renderImage = (image) => {
+    //const imgPath = await useImages.getImageFileURIById(image.id);
+   // const imgPath = useImages.getImageURI(image.id);
+    const imgPath = useImages.getLocalImageSrc(image.id);
+    console.log('imgPath', imgPath);
 
     // const resizeImage = useImages.resizeImageToThumbnail(image);
     // console.log('Resized', resizeImage)
     return (
       <View style={imageStyles.thumbnailContainer}>
         <SharedUI.ImageButton
-          source={{uri: useImages.getLocalImageSrc(image.id)}}
+         // source={{uri: useImages.getLocalImageSrc(image.id)}}
+          source={{uri: imgPath}}
           style={imageStyles.thumbnail}
           // PlaceholderContent={<ActivityIndicator/>}
           onPress={() => renderImageModal(image)}
@@ -130,7 +135,7 @@ const ImageGallery = (props) => {
             />
           </View>
           <FlatList
-            data={spot.properties.images === undefined ? null : spot.properties.images}
+            data={spot.properties.images}
             keyExtractor={(image) => image.id}
             numColumns={3}
             renderItem={({item}) => renderImage(item)}
@@ -142,7 +147,7 @@ const ImageGallery = (props) => {
   };
 
   const renderImageModal = (image) => {
-    console.log(image.id, '\n was pressed!');
+    console.log('Opening image', image.id, '...');
     props.setSelectedAttributes([image]);
     props.setIsImageModalVisible(true);
   };

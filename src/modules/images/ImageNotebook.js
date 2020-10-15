@@ -27,6 +27,7 @@ const ImageNotebook = (props) => {
         <View style={imageStyles.imageContainer}>
           <SharedUI.ImageButton
             source={{uri: useImages.getLocalImageSrc(image.id)}}
+            //source={useImages.getLocalImageSrc(image.id)}
             style={imageStyles.notebookImage}
             PlaceholderContent={<ActivityIndicator/>}
             onPress={() => useImages.editImage(image)}

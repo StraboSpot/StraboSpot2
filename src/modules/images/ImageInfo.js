@@ -44,7 +44,7 @@ const ImageInfo = (props) => {
   return (
     <View>
       <Image
-        source={{uri: useImages.getLocalImageSrc(imageProps)}}
+        source={useImages.getLocalImageSrc(imageProps)}
         style={{width: '100%', height: '100%'}}
         PlaceholderContent={<ActivityIndicator/>}
       />

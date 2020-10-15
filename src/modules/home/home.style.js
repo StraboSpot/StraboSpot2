@@ -110,7 +110,7 @@ const homeStyles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     top: 15,
-    zIndex: -1,
+    zIndex: 0,
   },
   currentZoom: {
     fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,

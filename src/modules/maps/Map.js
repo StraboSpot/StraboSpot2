@@ -1197,8 +1197,9 @@ const Map = React.forwardRef((props, ref) => {
       // or not on same imagebasemap as the selectedspot's imagebasemap,
       // then switch to corresponding imagebasemap and zoomToSpot in asyncMode
       if (!currentImageBasemap || currentImageBasemap.id !== selectedSpot.properties.image_basemap) {
-        var imageBasemapData = Array.from(useSpots.getAllImageBaseMaps()).find(
-          imgBasemap => imgBasemap.id === selectedSpot.properties.image_basemap);
+        const imageBasemapData = useSpots.getImageBasemaps().find(imgBasemap => {
+          return imgBasemap.id === selectedSpot.properties.image_basemap;
+        });
         dispatch(({
           type: mapReducers.CURRENT_IMAGE_BASEMAP,
           currentImageBasemap: imageBasemapData,

@@ -854,9 +854,7 @@ const Home = (props) => {
             title='Hide modal'
             onPress={() => toggleImageModal()}/>
           <Image
-            source={props.selectedImage
-              ? {uri: useImages.getLocalImageSrc(props.selectedImage.id)}
-              : require('../../assets/images/noimage.jpg')}
+            source={props.selectedImage && useImages.getLocalImageSrc(props.selectedImage.id)}
             style={{width: wp('90%'), height: hp('90%')}}
           />
         </View>
