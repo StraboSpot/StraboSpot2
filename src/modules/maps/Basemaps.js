@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {Text, View} from 'react-native';
 
 import MapboxGL from '@react-native-mapbox-gl/maps';
@@ -23,16 +23,6 @@ function Basemap(props) {
   const [useMaps] = useMapsHook();
   const [showZoom, setShowZoom] = useState(false);
   const [currentZoom, setCurrentZoom] = useState(undefined);
-  const [doesImageExist, setDoesImageExist] = useState(false);
-
-  useEffect(() => {
-    console.log('UE Basemap [props.imageBasemap]');
-    if (props.imageBasemap && props.imageBasemap.id) checkImageExistance().catch(console.error);
-  }, [props.imageBasemap]);
-
-  const checkImageExistance = async () => {
-    return useImages.doesImageExist(props.imageBasemap.id).then((doesExist) => setDoesImageExist(doesExist));
-  };
 
   // Add symbology to properties of map features (not to Spots themselves) since data-driven styling
   // doesn't work for colors by tags and more complex styling
@@ -54,17 +44,27 @@ function Basemap(props) {
   // if ZoomToSpot is set, then asyncMode zoomToSpot is triggered, load the map with center coordinates as the coordinates of the centroid of the selectedSpot
   // else return default center coordinates.
   const evaluateCenterCoordinates = () => {
-    if (props.zoomToSpot && !isEmpty(selectedSpot)) {
-      if (props.imageBasemap && selectedSpot.properties.image_basemap === props.imageBasemap.id) {
-        return useMaps.convertCoordinateProjections(pixelProjection, geoLatLngProjection,
-          turf.centroid(selectedSpot).geometry.coordinates);
-      }
-      else if (!selectedSpot.properties.image_basemap) return turf.centroid(selectedSpot).geometry.coordinates;
+    if (props.zoomToSpot) {
+      return props.imageBasemap
+        ? (
+          (isEmpty(selectedSpot)
+            || !isEmpty(selectedSpot) && selectedSpot.properties.image_basemap !== props.imageBasemap.id)
+            ? defaultCenterCoordinates()
+            : useMaps.convertCoordinateProjections(pixelProjection, geoLatLngProjection,
+            turf.centroid(selectedSpot).geometry.coordinates)
+        )
+        : (
+          ((isEmpty(selectedSpot)) || !isEmpty(selectedSpot) && selectedSpot.properties.image_basemap)
+            ? defaultCenterCoordinates()
+            : turf.centroid(selectedSpot).geometry.coordinates
+        );
     }
-    return defaultCenterCoordinates();
+    else {
+      return defaultCenterCoordinates();
+    }
   };
 
-    const onZoomChange = async () => {
+  const onZoomChange = async () => {
     const zoom = await mapRef.current.getZoom();
     setShowZoom(true);
     setCurrentZoom(zoom);
@@ -155,7 +155,7 @@ function Basemap(props) {
         )}
 
         {/* Image Basemap Layer */}
-        {props.imageBasemap && !isEmpty(props.coordQuad) && doesImageExist && (
+        {props.imageBasemap && !isEmpty(props.coordQuad) && (
           <MapboxGL.Animated.ImageSource
             id='imageBasemap'
             coordinates={props.coordQuad}

@@ -29,13 +29,10 @@ const samplesNotebook = (props) => {
               <ListItem.Title>{item.sample_id_name
                 ? item.sample_id_name
                 : <Text style={{color: 'grey'}}>Sample id: {item.id}</Text>}</ListItem.Title>
-              <ListItem.Subtitle style={styles.listText}>
-                {<Text
-                  numberOfLines={1}
-                  style={styles.listText}>{oriented} -
-                  {item.sample_description ? item.sample_description : 'No Description'}
-                </Text>}
-              </ListItem.Subtitle>
+              <ListItem.Subtitle style={styles.listText}>{<Text
+                numberOfLines={1}
+                style={styles.listText}>{oriented} - {item.sample_description ? item.sample_description
+                : 'No Description'}</Text>}</ListItem.Subtitle>
             </ListItem.Content>
             <Icon
               name='ios-information-circle-outline'
@@ -53,14 +50,12 @@ const samplesNotebook = (props) => {
   const renderNotebookView = () => {
     return (
       <View>
-        {props.notebookPageVisible === NotebookPages.SAMPLE && (
-          <ReturnToOverviewButton
-            onPress={() => {
-              props.setNotebookPageVisible(NotebookPages.OVERVIEW);
-              props.setModalVisible(null);
-            }}
-          />
-        )}
+        {props.notebookPageVisible === NotebookPages.SAMPLE && <ReturnToOverviewButton
+          onPress={() => {
+            props.setNotebookPageVisible(NotebookPages.OVERVIEW);
+            props.setModalVisible(null);
+          }}
+        />}
         {props.notebookPageVisible === NotebookPages.SAMPLE && <SectionDivider dividerText='Samples'/>}
         {/*<FlatList*/}
         {/*  keyExtractor={(item, index) => index.toString()}*/}
@@ -68,9 +63,7 @@ const samplesNotebook = (props) => {
         {/*  renderItem={renderItem}*/}
         {/*/>*/}
         <ScrollView>
-          {props.spot.properties.samples
-            ? renderSampleList()
-            : <Text style={commonStyles.noValueText}>No Samples</Text>}
+          {props.spot.properties.samples ? renderSampleList() : <Text style={commonStyles.noValueText}>No Samples</Text>}
         </ScrollView>
       </View>
     );
@@ -99,9 +92,9 @@ const mapStateToProps = (state) => {
     spot: state.spot.selectedSpot,
     modalVisible: state.home.modalVisible,
     notebookPageVisible: isEmpty(state.notebook.visibleNotebookPagesStack)
-      ? null
-      : state.notebook.visibleNotebookPagesStack.slice(-1)[0],
-  };
+       ? null
+       : state.notebook.visibleNotebookPagesStack.slice(-1)[0],
+    };
 };
 
 const mapDispatchToProps = {

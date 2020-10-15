@@ -30,7 +30,7 @@ const loggerMiddleware = createLogger({
 });
 
 const middleware = process.env.NODE_ENV !== 'production'
-  ? []
+  ? [require('redux-immutable-state-invariant').default(), loggerMiddleware]
   : [];
 
 const rootReducer = combineReducers({

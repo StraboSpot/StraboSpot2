@@ -3,7 +3,7 @@ import {ActivityIndicator, TouchableOpacity, TouchableNativeFeedback, Platform} 
 
 import {Image} from 'react-native-elements';
 
-const ImageButton = props => {
+const imageButton = props => {
   const content = (
     <Image
       source={props.source}
@@ -42,4 +42,4 @@ const ImageButton = props => {
 //   }
 // });
 
-export default ImageButton;
+export default imageButton;
