@@ -1,9 +1,8 @@
 import AsyncStorage from '@react-native-community/async-storage';
-import {applyMiddleware, createStore, compose, combineReducers} from 'redux';
 import {configureStore, getDefaultMiddleware} from '@reduxjs/toolkit';
+import {combineReducers} from 'redux';
 import {createLogger} from 'redux-logger';
 import {
-  persistStore,
   persistReducer,
   FLUSH,
   REHYDRATE,
@@ -14,9 +13,9 @@ import {
 } from 'redux-persist';
 
 import homeSlice from '../modules/home/home.slice';
-import {mainMenuPanelReducer} from '../modules/main-menu-panel/mainMenuPanel.reducer';
+import mainMenuSlice from '../modules/main-menu-panel/mainMenuPanel.slice';
 import {mapReducer} from '../modules/maps/maps.reducer';
-import {notebookReducer} from '../modules/notebook-panel/notebook.reducers';
+import notebookSlice from '../modules/notebook-panel/notebook.slice';
 import {projectsReducer} from '../modules/project/projects.reducer';
 import {spotReducer} from '../modules/spots/spot.reducers';
 import userSlice from '../modules/user/userProfile.slice';
@@ -46,10 +45,10 @@ const middleware = process.env.NODE_ENV !== 'production'
 
 const combinedReducers = combineReducers({
   home: homeSlice,
-  notebook: persistReducer(notebookConfig, notebookReducer),
+  notebook: persistReducer(notebookConfig, notebookSlice),
   map: mapReducer,
   project: projectsReducer,
-  mainMenu: mainMenuPanelReducer,
+  mainMenu: mainMenuSlice,
   spot: spotReducer,
   user: userSlice,
 });
