@@ -26,7 +26,7 @@ const NotebookHeader = props => {
         if (spot.properties.image_basemap) {
           let pixelDetails = lng.toFixed(6) + ' X, ' + lat.toFixed(6) + ' Y';
           if (isEmpty(spot.properties.lat) || isEmpty(spot.properties.lng)) {
-            const rootSpot = useSpots.findRootSpot(spot.properties.image_basemap);
+            const rootSpot = useSpots.getRootSpot(spot.properties.image_basemap);
             if (rootSpot && rootSpot.geometry && rootSpot.geometry.type === 'Point') {
               lng = rootSpot.geometry.coordinates[0];
               lat = rootSpot.geometry.coordinates[1];

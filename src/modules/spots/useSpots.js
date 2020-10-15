@@ -9,12 +9,12 @@ import {generalKeysIcons, sedKeysIcons, spotReducers} from './spot.constants';
 
 const useSpots = (props) => {
   const dispatch = useDispatch();
-  const selectedSpot = useSelector(state => state.spot.selectedSpot);
-  const spots = useSelector(state => state.spot.spots);
+
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const datasets = useSelector(state => state.project.datasets);
   const preferences = useSelector(state => state.project.project.preferences) || {};
-
+  const selectedSpot = useSelector(state => state.spot.selectedSpot);
+  const spots = useSelector(state => state.spot.spots);
 
   const [useImages] = useImagesHook();
   const [useServerRequests] = useServerRequestsHook();
@@ -68,7 +68,7 @@ const useSpots = (props) => {
     dispatch({type: projectReducers.UPDATE_PROJECT, field: 'preferences', value: updatedPreferences});
 
     if (currentImageBasemap && newSpot.geometry && newSpot.geometry.type === 'Point') { //newSpot geometry is unavailable when spot is copied.
-      const rootSpot = findRootSpot(currentImageBasemap.id);
+      const rootSpot = getRootSpot(currentImageBasemap.id);
       if (rootSpot) {
         newSpot.properties.lng = rootSpot.geometry.coordinates[0];
         newSpot.properties.lat = rootSpot.geometry.coordinates[1];
@@ -85,30 +85,6 @@ const useSpots = (props) => {
     });
     console.log('Finished creating new Spot. All Spots: ', spots);
     return newSpot;
-  };
-
-  // find the rootSpot for a given image id.
-  const findRootSpot = (imageId) => {
-    let rootSpot, imageFound = false;
-    const allSpots = getActiveSpotsObj();
-    for (let index in allSpots) {
-      let currentSpot = allSpots[index];
-      let spotImages = currentSpot.properties.images;
-      for (let imageIndex in spotImages) {
-        let currentImage = spotImages[imageIndex];
-        if (currentImage.id === imageId) {
-          imageFound = true;
-        }
-      }
-      if (imageFound) {
-        rootSpot = currentSpot;
-        break;
-      }
-    }
-    if (rootSpot && rootSpot.properties.image_basemap) {
-      return findRootSpot(rootSpot.properties.image_basemap);
-    }
-    return rootSpot;
   };
 
   const deleteSpot = async id => {
@@ -165,25 +141,6 @@ const useSpots = (props) => {
     else return Promise.reject('No Spots!');
   };
 
-  const getAllImageBaseMaps = () => {
-    const activeSpotObjs = getActiveSpotsObj();
-    const allImageBaseMaps = new Set();
-    const allImagesSet = new Set();
-    var currentSpot, currentImage;
-    for (var key in activeSpotObjs) {
-      currentSpot = activeSpotObjs[key];
-      if (!isEmpty(currentSpot.properties.images)) {
-        for (var imageKey in Object.keys(currentSpot.properties.images)) {
-          currentImage = currentSpot.properties.images[imageKey];
-          allImagesSet.add(currentImage);
-          if (currentImage !== null && currentImage.annotated) {
-            allImageBaseMaps.add(currentImage);
-          }
-        }
-      }
-    }
-    return allImageBaseMaps;
-  };
   // Get only the Spots in the active Datasets
   const getActiveSpotsObj = () => {
     const activeSpotIds = Object.values(datasets).flatMap(dataset => dataset.active ? dataset.spotIds || [] : []);
@@ -195,30 +152,51 @@ const useSpots = (props) => {
     return activeSpots;
   };
 
-  // Reverse chronologically sort active Spots
-  const getSpotsSortedReverseChronologically = () => {
-    return Object.values(getActiveSpotsObj()).sort(((a, b) => {
-      return new Date(b.properties.date) - new Date(a.properties.date);
-    }));
+  const getImageBasemaps = () => {
+    return Object.values(getActiveSpotsObj()).reduce((acc, spot) => {
+      const imageBasemaps = spot.properties.images
+        && spot.properties.images.reduce((acc1, image) => {
+          return image.annotated ? acc1.push(image) : acc1;
+        }, []);
+      return [...acc, ...imageBasemaps];
+    }, []);
   };
 
   const getMappableSpots = () => {
     const allSpotsCopy = JSON.parse(JSON.stringify(Object.values(getActiveSpotsObj())));
     if (currentImageBasemap) {
-      return allSpotsCopy.filter(
-        spot => spot.geometry && !spot.properties.strat_section_id && spot.properties.image_basemap === currentImageBasemap.id);
+      return allSpotsCopy.filter(spot => {
+        return spot.geometry
+          && !spot.properties.strat_section_id && spot.properties.image_basemap === currentImageBasemap.id;
+      });
     }
-    return allSpotsCopy.filter(
-      spot => spot.geometry && !spot.properties.strat_section_id && !spot.properties.image_basemap);
+    return allSpotsCopy.filter(spot => {
+      return spot.geometry && !spot.properties.strat_section_id && !spot.properties.image_basemap;
+    });
+  };
+
+  // Find the rootSpot for a given image id.
+  const getRootSpot = (imageId) => {
+    let rootSpot, imageFound = false;
+    const allSpots = getActiveSpotsObj();
+    for (let index in allSpots) {
+      let currentSpot = allSpots[index];
+      let spotImages = currentSpot.properties.images;
+      for (let imageIndex in spotImages) {
+        let currentImage = spotImages[imageIndex];
+        if (currentImage.id === imageId) imageFound = true;
+      }
+      if (imageFound) {
+        rootSpot = currentSpot;
+        break;
+      }
+    }
+    if (rootSpot && rootSpot.properties.image_basemap) return getRootSpot(rootSpot.properties.image_basemap);
+    return rootSpot;
   };
 
   const getSpotById = (spotId) => {
     return spots[spotId];
-  };
-
-  const getSpotDataIconSource = (iconKey) => {
-    const iconSources = {...generalKeysIcons, ...sedKeysIcons};
-    if (iconSources[iconKey]) return iconSources[iconKey];
   };
 
   const getSpotDataKeys = (spot) => {
@@ -235,6 +213,11 @@ const useSpots = (props) => {
     return keysFound;
   };
 
+  const getSpotDataIconSource = (iconKey) => {
+    const iconSources = {...generalKeysIcons, ...sedKeysIcons};
+    if (iconSources[iconKey]) return iconSources[iconKey];
+  };
+
   const getSpotGemometryIconSource = (spot) => {
     if (spot.geometry && spot.geometry.type) {
       if (spot.geometry.type === 'Point') return require('../../assets/icons/Point_pressed.png');
@@ -244,13 +227,19 @@ const useSpots = (props) => {
     else return require('../../assets/icons/QuestionMark_pressed.png');
   };
 
-
   const getSpotsByIds = (spotIds) => {
     const foundSpots = [];
     Object.entries(spots).forEach(obj => {
       if (spotIds.includes(obj[1].properties.id)) foundSpots.push(obj[1]);
     });
     return foundSpots;
+  };
+
+  // Reverse chronologically sort active Spots
+  const getSpotsSortedReverseChronologically = () => {
+    return Object.values(getActiveSpotsObj()).sort(((a, b) => {
+      return new Date(b.properties.date) - new Date(a.properties.date);
+    }));
   };
 
   return [{
@@ -260,15 +249,15 @@ const useSpots = (props) => {
     deleteSpotsFromDataset: deleteSpotsFromDataset,
     downloadSpots: downloadSpots,
     getActiveSpotsObj: getActiveSpotsObj,
+    getImageBasemaps: getImageBasemaps,
     getMappableSpots: getMappableSpots,
+    getRootSpot: getRootSpot,
     getSpotById: getSpotById,
     getSpotDataIconSource: getSpotDataIconSource,
     getSpotDataKeys: getSpotDataKeys,
     getSpotGemometryIconSource: getSpotGemometryIconSource,
     getSpotsByIds: getSpotsByIds,
     getSpotsSortedReverseChronologically: getSpotsSortedReverseChronologically,
-    getAllImageBaseMaps: getAllImageBaseMaps,
-    findRootSpot: findRootSpot,
   }];
 };
 
