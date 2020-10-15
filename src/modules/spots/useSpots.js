@@ -111,20 +111,6 @@ const useSpots = (props) => {
     return rootSpot;
   };
 
-  const getSpotByImageId = (imageId) => {
-    const activeSpotsObj = Object.values(getActiveSpotsObj());
-    let filteredList = activeSpotsObj.filter(spot => {
-      return !isEmpty(spot.properties.images);
-    });
-    for (let index = 0; index < filteredList.length; index++) {
-      let images = filteredList[index].properties.images;
-      for (let imageIndex = 0; imageIndex < images.length; imageIndex++) {
-        if (imageId === images[imageIndex].id) {
-          return filteredList[index];
-        }
-      }
-    }
-  };
   const deleteSpot = async id => {
     console.log(id);
     Object.values(datasets).map(dataset => {
@@ -230,6 +216,12 @@ const useSpots = (props) => {
     return spots[spotId];
   };
 
+  const getSpotByImageId = (imageId) => {
+    return Object.values(getActiveSpotsObj()).find(spot => {
+      return spot.properties.images && spot.properties.images.find(image => image.id === imageId);
+    });
+  };
+
   const getSpotDataIconSource = (iconKey) => {
     const iconSources = {...generalKeysIcons, ...sedKeysIcons};
     if (iconSources[iconKey]) return iconSources[iconKey];
@@ -273,17 +265,17 @@ const useSpots = (props) => {
     deleteSpot: deleteSpot,
     deleteSpotsFromDataset: deleteSpotsFromDataset,
     downloadSpots: downloadSpots,
+    findRootSpot: findRootSpot,
     getActiveSpotsObj: getActiveSpotsObj,
+    getAllImageBaseMaps: getAllImageBaseMaps,
     getMappableSpots: getMappableSpots,
     getSpotById: getSpotById,
+    getSpotByImageId: getSpotByImageId,
     getSpotDataIconSource: getSpotDataIconSource,
     getSpotDataKeys: getSpotDataKeys,
     getSpotGemometryIconSource: getSpotGemometryIconSource,
     getSpotsByIds: getSpotsByIds,
     getSpotsSortedReverseChronologically: getSpotsSortedReverseChronologically,
-    getAllImageBaseMaps: getAllImageBaseMaps,
-    findRootSpot: findRootSpot,
-    getSpotByImageId: getSpotByImageId,
   }];
 };
 

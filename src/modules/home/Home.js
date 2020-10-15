@@ -148,32 +148,27 @@ const Home = (props) => {
   }, [props.currentImageBasemap, customMaps]);
 
   useEffect(() => {
-    if (props.isImageModalVisible) {
-      populateData();
-    }
+    if (props.isImageModalVisible) populateImageSlideShowData();
     else imageSlideShowData = [];
   }, [props.isImageModalVisible]);
 
-  const populateData = () => {
+  const populateImageSlideShowData = () => {
     toggleHomeDrawerButton();
     const activeSpotsObj = Object.values(useSpots.getActiveSpotsObj());
-    let image = props.selectedImage;
+    let image = JSON.parse(JSON.stringify(props.selectedImage));
     let firstImageID = image.id;
     let uri = useImages.getLocalImageSrc(image.id);
     let imageWithURI = {image, uri};
     imageSlideShowData.push(imageWithURI);
-    let spotsWithImagesList = activeSpotsObj.filter(spot => {
-      return !isEmpty(spot.properties.images);
-    });
-    for (let index = 0; index < spotsWithImagesList.length; index++) {
-      let images = spotsWithImagesList[index].properties.images;
-      for (let imageIndex = 0; imageIndex < images.length; imageIndex++) {
-        image = images[imageIndex];
-        uri = useImages.getLocalImageSrc(images[imageIndex].id);
+    let spotsWithImagesList = activeSpotsObj.filter(spot => !isEmpty(spot.properties.images));
+    spotsWithImagesList.map(spot => {
+      Object.values(spot.properties.images).map(image => {
+        image = JSON.parse(JSON.stringify(image));
+        uri = useImages.getLocalImageSrc(image.id);
         imageWithURI = {image, uri};
         if (image.id !== firstImageID) imageSlideShowData.push(imageWithURI); //skip the first image that's already in
-      }
-    }
+      });
+    });
   };
 
   useEffect(() => {
@@ -871,28 +866,30 @@ const Home = (props) => {
         onPress={(name, position) => dialogClickHandler('notebookPanelMenuVisible', name, position)}
         onTouchOutside={() => toggleDialog('notebookPanelMenuVisible')}
       />
-      {props.isImageModalVisible && <SafeAreaView>
-        <ScrollView>
-          <FlatListSlider
-            data={imageSlideShowData}
-            imageKey={'uri'}
-            autoscroll={false}
-            separator={0}
-            loop={true}
-            width={props.deviceDimensions.width}
-            height={props.deviceDimensions.height}
-            onPress={(item) => {
-              console.log(item);
-            }}
-            component={(
-              <Preview
-                toggle={() => toggleImageModal()}
-                openNotebookPanel={(page) => openNotebookPanel(page)}
-              />
-            )}
-          />
-        </ScrollView>
-      </SafeAreaView>}
+      {props.isImageModalVisible && (
+        <SafeAreaView>
+          <ScrollView>
+            <FlatListSlider
+              data={imageSlideShowData}
+              imageKey={'uri'}
+              autoscroll={false}
+              separator={0}
+              loop={true}
+              width={props.deviceDimensions.width}
+              height={props.deviceDimensions.height}
+              onPress={(item) => {
+                console.log(item);
+              }}
+              component={(
+                <Preview
+                  toggle={() => toggleImageModal()}
+                  openNotebookPanel={(page) => openNotebookPanel(page)}
+                />
+              )}
+            />
+          </ScrollView>
+        </SafeAreaView>
+      )}
       {isHomeLoading && <LoadingSpinner/>}
       {notebookPanel}
       {props.isAllSpotsPanelVisible && renderAllSpotsPanel()}

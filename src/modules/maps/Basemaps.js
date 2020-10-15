@@ -42,25 +42,14 @@ function Basemap(props) {
 
   // Evaluate and return appropriate center coordinates
   const evaluateCenterCoordinates = () => {
-    if (props.zoomToSpot) {
-      if (isEmpty(selectedSpot)) return defaultCenterCoordinates();
-      else if (props.imageBasemap) {
-        // if a spot is selected and is not on the image basemap, center coordinates will be that of the image basemap,
-        // else if the spot is on the image basemap, go to the centroid of the spot.
-        return (selectedSpot.properties.image_basemap !== props.imageBasemap.id)
-          ? defaultCenterCoordinates()
-          : useMaps.convertCoordinateProjections(pixelProjection, geoLatLngProjection,
-            turf.centroid(selectedSpot).geometry.coordinates);
+    if (props.zoomToSpot && !isEmpty(selectedSpot)) {
+      if (props.imageBasemap && selectedSpot.properties.image_basemap === props.imageBasemap.id) {
+        return useMaps.convertCoordinateProjections(pixelProjection, geoLatLngProjection,
+          turf.centroid(selectedSpot).geometry.coordinates);
       }
-      else {
-        // if there is no image basemap, but the spot that is selected is on image basemap, center coordinates will be
-        // that of the normal map else if the spot is on the normal map, get the centroid of the same.
-        return selectedSpot.properties.image_basemap
-          ? defaultCenterCoordinates()
-          : turf.centroid(selectedSpot).geometry.coordinates;
-      }
+      else if (!selectedSpot.properties.image_basemap) return turf.centroid(selectedSpot).geometry.coordinates;
     }
-    else return defaultCenterCoordinates();
+    return defaultCenterCoordinates();
   };
 
   const onZoomChange = async () => {

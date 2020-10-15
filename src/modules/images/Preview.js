@@ -12,8 +12,7 @@ import useSpotsHook from '../spots/useSpots';
 import styles from './images.styles';
 
 
-const Preview = (props, item,
-                 imageKey,) => {
+const Preview = (props) => {
   const [useSpots] = useSpotsHook();
   const spots = useSelector(state => state.spot.spots);
   const [imageNoteModal, setImageNoteModal] = useState(false);
@@ -26,7 +25,8 @@ const Preview = (props, item,
       >
         Image Info
       </ImagePropertiesModal>
-    </View>);
+    </View>
+  );
 
   const closeModal = () => {
     setImageNoteModal(false);
@@ -51,12 +51,11 @@ const Preview = (props, item,
       <View>
         <Image
           source={{uri: props.item.uri}}
-
           style={[{width: wp('100%'), height: hp('100%')}]}
           PlaceholderContent={<ActivityIndicator/>}
         />
       </View>
-      {imageNoteModal ? noteModal : null}
+      {imageNoteModal && noteModal}
       <View style={{position: 'absolute', left: 10, bottom: 50}}>
         <IconButton
           style={styles.imageInfoButtons}

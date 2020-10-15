@@ -119,14 +119,11 @@ const ImagePropertiesModal = (props) => {
     if (isEmpty(annotated) && props.selectedImage.hasOwnProperty('annotated')) delete props.selectedImage.annotated;
     else if (!isEmpty(annotated)) props.selectedImage.annotated = annotated;
     console.log('Saving form data to Spot ...', props.selectedImage);
-    let images, spot;
-    spot = useSpots.getSpotByImageId(props.selectedImage.id);
-    images = spot.properties.images;
+    let spot = useSpots.getSpotByImageId(props.selectedImage.id);
+    let images = JSON.parse(JSON.stringify(spot.properties.images));
     let i = images.findIndex(img => img.id === props.selectedImage.id);
     images[i] = props.selectedImage;
-    if (!props.spot || props.spot.id !== spot.properties.id) {
-      props.onSetSelectedSpot(spot);
-    }
+    if (!props.spot || props.spot.id !== spot.properties.id) props.onSetSelectedSpot(spot);
     props.onSpotEdit('images', images);
     props.setSelectedAttributes([images[i]]);
 
