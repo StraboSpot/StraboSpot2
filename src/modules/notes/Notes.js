@@ -7,7 +7,8 @@ import {connect, useDispatch, useSelector} from 'react-redux';
 import uiStyles from '../../shared/ui/ui.styles';
 import {Modals} from '../home/home.constants';
 import useMapsHook from '../maps/useMaps';
-import {notebookReducers, NotebookPages} from '../notebook-panel/notebook.constants';
+import {NotebookPages} from '../notebook-panel/notebook.constants';
+import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import {spotReducers} from '../spots/spot.constants';
 import noteStyles from './notes.styles';
@@ -48,7 +49,7 @@ const Notes = (props) => {
     dispatch({type: spotReducers.EDIT_SPOT_PROPERTIES, field: 'notes', value: note});
     dispatch({type: spotReducers.SET_SELECTED_SPOT_NOTES_TIMESTAMP});
     setNote('');
-    dispatch({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: NotebookPages.OVERVIEW});
+    dispatch(setNotebookPageVisible(NotebookPages.OVERVIEW));
   };
 
   // const setPointToCurrentLocation = async () => {
@@ -69,7 +70,7 @@ const Notes = (props) => {
           )
           : (
             <ReturnToOverviewButton
-              onPress={() => props.setNotebookPageVisible(NotebookPages.OVERVIEW)}
+              onPress={() => dispatch(setNotebookPageVisible(NotebookPages.OVERVIEW))}
             />
           )
         }
@@ -123,7 +124,6 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = {
   onSpotEdit: (field, value) => ({type: spotReducers.EDIT_SPOT_PROPERTIES, field: field, value: value}),
-  setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Notes);

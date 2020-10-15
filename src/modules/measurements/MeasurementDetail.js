@@ -13,7 +13,7 @@ import SectionDivider from '../../shared/ui/SectionDivider';
 import {Form, useFormHook} from '../form';
 import {Modals} from '../home/home.constants';
 import {setModalVisible} from '../home/home.slice';
-import {notebookReducers} from '../notebook-panel/notebook.constants';
+import {setNotebookPageVisibleToPrev} from '../notebook-panel/notebook.slice';
 import {spotReducers} from '../spots/spot.constants';
 import MeasurementItem from './MeasurementItem';
 import styles from './measurements.styles';
@@ -287,7 +287,7 @@ const MeasurementDetailPage = (props) => {
     if (modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {
       dispatch(setModalVisible({modal: Modals.NOTEBOOK_MODALS.COMPASS}));
     }
-    dispatch({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE_TO_PREV});
+    dispatch(setNotebookPageVisibleToPrev());
   };
 
   const saveForm = async () => {
@@ -346,7 +346,7 @@ const MeasurementDetailPage = (props) => {
       if (modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {
         dispatch(setModalVisible({modal: Modals.NOTEBOOK_MODALS.COMPASS}));
       }
-      dispatch({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE_TO_PREV});
+      dispatch(setNotebookPageVisibleToPrev());
     }, () => {
       console.log('Error saving form data to Spot');
     });
@@ -380,7 +380,7 @@ const MeasurementDetailPage = (props) => {
       if (modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {
         dispatch(setModalVisible({modal: Modals.NOTEBOOK_MODALS.COMPASS}));
       }
-      dispatch({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE_TO_PREV});
+      dispatch(setNotebookPageVisibleToPrev());
     }
   };
 

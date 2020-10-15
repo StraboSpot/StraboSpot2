@@ -45,10 +45,6 @@ const AllSpots = (props) => {
   );
 };
 
-const mapStateToProps = state => {
-  return {};
-};
-
 const mapDispatchToProps = {
   onSetSelectedSpot: (spot) => ({type: spotReducers.SET_SELECTED_SPOT, spot: spot}),
 };

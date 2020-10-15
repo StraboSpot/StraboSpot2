@@ -160,8 +160,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = {
-  setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(SamplesList);
+export default connect(mapStateToProps)(SamplesList);

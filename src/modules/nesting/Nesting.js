@@ -6,7 +6,8 @@ import {useSelector, useDispatch} from 'react-redux';
 
 import {isEmpty} from '../../shared/Helpers';
 import SectionDivider from '../../shared/ui/SectionDivider';
-import {NotebookPages, notebookReducers} from '../notebook-panel/notebook.constants';
+import {NotebookPages} from '../notebook-panel/notebook.constants';
+import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import {useSpotsHook} from '../spots';
 import {spotReducers} from '../spots/spot.constants';
@@ -70,7 +71,7 @@ const Nesting = (props) => {
           <Avatar source={useSpots.getSpotGemometryIconSource(item)} size={20}/>
           <ListItem.Content>
             <ListItem.Title>{item.properties.name}</ListItem.Title>
-            <ListItem.Subtitle>[{numSubspots } subspot{numSubspots !== 1 && 's'}]</ListItem.Subtitle>
+            <ListItem.Subtitle>[{numSubspots} subspot{numSubspots !== 1 && 's'}]</ListItem.Subtitle>
           </ListItem.Content>
           {renderDataIcons(item)}
           <ListItem.Chevron/>
@@ -137,7 +138,7 @@ const Nesting = (props) => {
   return (
     <View style={{flex: 1}}>
       <ReturnToOverviewButton
-        onPress={() => dispatch({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: NotebookPages.OVERVIEW})}
+        onPress={() => dispatch(setNotebookPageVisible(NotebookPages.OVERVIEW))}
       />
       <SectionDivider dividerText='Nesting'/>
       <FlatList

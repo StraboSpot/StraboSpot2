@@ -30,7 +30,8 @@ import VertexDrag from '../maps/VertexDrag';
 import NotebookCompassModal from '../measurements/compass/NotebookCompassModal';
 import ShortcutCompassModal from '../measurements/compass/ShortcutCompassModal';
 import AllSpotsPanel from '../notebook-panel/AllSpots';
-import {NotebookPages, notebookReducers} from '../notebook-panel/notebook.constants';
+import {NotebookPages} from '../notebook-panel/notebook.constants';
+import {setNotebookPageVisible, setNotebookPanelVisible} from '../notebook-panel/notebook.slice';
 import NotebookPanel from '../notebook-panel/NotebookPanel';
 import notebookStyles from '../notebook-panel/notebookPanel.styles';
 import NotebookPanelMenu from '../notebook-panel/NotebookPanelMenu';
@@ -260,7 +261,7 @@ const Home = (props) => {
         break;
       case 'copySpot':
         useSpots.copySpot();
-        dispatch({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: NotebookPages.OVERVIEW});
+        dispatch(setNotebookPageVisible(NotebookPages.OVERVIEW));
         break;
       case 'deleteSpot':
         deleteSpot(selectedSpot.properties.id);
@@ -273,7 +274,7 @@ const Home = (props) => {
         mapViewComponent.current.zoomToSpot();
         break;
       case 'showNesting':
-        dispatch({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: NotebookPages.NESTING});
+        dispatch(setNotebookPageVisible(NotebookPages.NESTING));
         break;
       // Map Actions
       case MapModes.DRAW.POINT:
@@ -331,8 +332,8 @@ const Home = (props) => {
     console.log('closing notebook');
     animatePanels(animation, notebookPanelWidth);
     animatePanels(rightsideIconAnimationValue, 0);
-    props.setNotebookPanelVisible(false);
-    dispatch(setAllSpotsPanelVisible({bool: false}));
+    dispatch(setNotebookPanelVisible(false));
+    dispatch(setAllSpotsPanelVisible(false));
   };
 
   // const closeSidePanel = () => {
@@ -399,7 +400,7 @@ const Home = (props) => {
   };
 
   const modalHandler = (page, modalType) => {
-    if (props.isNotebookPanelVisible) {
+    if (isNotebookPanelVisible) {
       closeNotebookPanel();
       dispatch(setModalVisible({modal: modalType}));
     }
@@ -428,7 +429,7 @@ const Home = (props) => {
         useImages.getImagesFromCameraRoll();
         break;
       case 'showGeographyInfo':
-        props.setNotebookPageVisible(NotebookPages.GEOGRAPHY);
+        dispatch(setNotebookPageVisible(NotebookPages.GEOGRAPHY));
         break;
       case 'setToCurrentLocation':
         const currentLocation = await useMaps.getCurrentLocation();
@@ -447,10 +448,10 @@ const Home = (props) => {
   const openNotebookPanel = pageView => {
     console.log('Opening Notebook', pageView, '...');
     if (modalVisible !== Modals.SHORTCUT_MODALS.ADD_TAGS_TO_SPOTS) dispatch(setModalVisible({modal: null}));
-    props.setNotebookPageVisible(pageView || NotebookPages.OVERVIEW);
+    dispatch(setNotebookPageVisible(pageView || NotebookPages.OVERVIEW));
     animatePanels(animation, 0);
     animatePanels(rightsideIconAnimationValue, -notebookPanelWidth);
-    props.setNotebookPanelVisible(true);
+    dispatch(setNotebookPanelVisible(true));
   };
 
   const renderAllSpotsPanel = () => {
@@ -462,7 +463,7 @@ const Home = (props) => {
   };
 
   const renderFloatingViews = () => {
-    if (modalVisible === Modals.NOTEBOOK_MODALS.TAGS && props.isNotebookPanelVisible
+    if (modalVisible === Modals.NOTEBOOK_MODALS.TAGS && isNotebookPanelVisible
       && !isEmpty(selectedSpot)) {
       return (
         <TagsNotebookModal
@@ -487,7 +488,7 @@ const Home = (props) => {
         />
       );
     }
-    if (modalVisible === Modals.NOTEBOOK_MODALS.COMPASS && props.isNotebookPanelVisible
+    if (modalVisible === Modals.NOTEBOOK_MODALS.COMPASS && isNotebookPanelVisible
       && !isEmpty(selectedSpot)) {
       return (
         <NotebookCompassModal
@@ -504,7 +505,7 @@ const Home = (props) => {
         />
       );
     }
-    if (modalVisible === Modals.NOTEBOOK_MODALS.SAMPLE && props.isNotebookPanelVisible
+    if (modalVisible === Modals.NOTEBOOK_MODALS.SAMPLE && isNotebookPanelVisible
       && !isEmpty(selectedSpot)) {
       return (
         <NotebookSamplesModal
@@ -893,8 +894,6 @@ function mapStateToProps(state) {
   return {
     currentImageBasemap: state.map.currentImageBasemap,
     selectedImage: state.spot.selectedAttributes[0],
-    isNotebookPanelVisible: state.notebook.isNotebookPanelVisible,
-    isCompassModalVisible: state.notebook.isCompassModalVisible,
     spots: state.spot.spots,
     getCurrentProject: state.project.project,
     vertexStartCoords: state.map.vertexStartCoords,
@@ -902,8 +901,6 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-  setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),
-  setNotebookPanelVisible: (value) => ({type: notebookReducers.SET_NOTEBOOK_PANEL_VISIBLE, value: value}),
   deleteSpot: (id) => ({type: spotReducers.DELETE_SPOT, id: id}),
   onSpotEdit: (field, value) => ({type: spotReducers.EDIT_SPOT_PROPERTIES, field: field, value: value}),
   onSpotEditImageObj: (images) => ({type: spotReducers.EDIT_SPOT_IMAGES, images: images}),

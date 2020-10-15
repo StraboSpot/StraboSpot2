@@ -8,7 +8,8 @@ import * as themes from '../../shared/styles.constants';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {Modals} from '../home/home.constants';
 import {setModalVisible} from '../home/home.slice';
-import {NotebookPages, notebookReducers} from '../notebook-panel/notebook.constants';
+import {NotebookPages} from '../notebook-panel/notebook.constants';
+import {setCompassMeasurementTypes, setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import {spotReducers} from '../spots/spot.constants';
 import {COMPASS_TOGGLE_BUTTONS} from './compass/compass.constants';
@@ -34,7 +35,7 @@ const MeasurementsPage = (props) => {
     if (sectionType === sectionTypes.PLANAR) types = [COMPASS_TOGGLE_BUTTONS.PLANAR];
     else if (sectionType === sectionTypes.LINEAR) types = [COMPASS_TOGGLE_BUTTONS.LINEAR];
     else types = [COMPASS_TOGGLE_BUTTONS.PLANAR, COMPASS_TOGGLE_BUTTONS.LINEAR];
-    dispatch({type: notebookReducers.SET_COMPASS_MEASUREMENT_TYPES, value: types});
+    dispatch(setCompassMeasurementTypes(types));
   };
 
   const getSectionData = (sectionType) => {
@@ -75,7 +76,7 @@ const MeasurementsPage = (props) => {
 
   const viewMeasurementDetail = (item) => {
     props.setSelectedAttributes([item]);
-    props.setNotebookPageVisible(NotebookPages.MEASUREMENTDETAIL);
+    dispatch(setNotebookPageVisible(NotebookPages.MEASUREMENTDETAIL));
   };
 
 
@@ -84,7 +85,7 @@ const MeasurementsPage = (props) => {
     console.log('Identify All:', data);
     setMultiSelectMode();
     props.setSelectedAttributes(data);
-    props.setNotebookPageVisible(NotebookPages.MEASUREMENTDETAIL);
+    dispatch(setNotebookPageVisible(NotebookPages.MEASUREMENTDETAIL));
   };
 
   const startSelecting = (type) => {
@@ -101,7 +102,7 @@ const MeasurementsPage = (props) => {
   const endSelecting = () => {
     console.log('Identify Selected:', selectedFeaturesTemp);
     props.setSelectedAttributes(selectedFeaturesTemp);
-    props.setNotebookPageVisible(NotebookPages.MEASUREMENTDETAIL);
+    dispatch(setNotebookPageVisible(NotebookPages.MEASUREMENTDETAIL));
   };
 
   const renderMeasurements = (type) => {
@@ -192,7 +193,7 @@ const MeasurementsPage = (props) => {
       <View style={styles.measurementsContentContainer}>
         <ReturnToOverviewButton
           onPress={() => {
-            dispatch({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: NotebookPages.OVERVIEW});
+            dispatch(setNotebookPageVisible(NotebookPages.OVERVIEW));
             dispatch(setModalVisible({modal: null}));
           }}
         />
@@ -233,7 +234,6 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-  setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),
   setSelectedAttributes: (attributes) => ({type: spotReducers.SET_SELECTED_ATTRIBUTES, attributes: attributes}),
 };
 

@@ -5,7 +5,8 @@ import Dialog, {DialogContent, DialogTitle} from 'react-native-popup-dialog';
 import {useDispatch} from 'react-redux';
 
 import SectionDivider from '../../../shared/ui/SectionDivider';
-import {SECONDARY_NOTEBOOK_PAGES, SED_NOTEBOOK_PAGES, notebookReducers} from '../notebook.constants';
+import {SECONDARY_NOTEBOOK_PAGES, SED_NOTEBOOK_PAGES} from '../notebook.constants';
+import {setNotebookPageVisible} from '../notebook.slice';
 import styles from '../notebookPanel.styles';
 import footerStyles from './notebookFooter.styles';
 
@@ -14,7 +15,7 @@ const MorePagesMenu = (props) => {
 
   const switchPage = (page) => {
     const moreNotebookPages = {...SECONDARY_NOTEBOOK_PAGES, ...SED_NOTEBOOK_PAGES};
-    dispatch({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: moreNotebookPages[page]});
+    dispatch(setNotebookPageVisible(moreNotebookPages[page]));
     props.closeMorePagesMenu();
   };
 

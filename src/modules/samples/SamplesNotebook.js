@@ -10,7 +10,8 @@ import * as themes from '../../shared/styles.constants';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {Modals} from '../home/home.constants';
 import {setModalVisible} from '../home/home.slice';
-import {notebookReducers, NotebookPages} from '../notebook-panel/notebook.constants';
+import {NotebookPages} from '../notebook-panel/notebook.constants';
+import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import styles from './samples.style';
 
@@ -55,7 +56,7 @@ const SamplesNotebook = (props) => {
       <View>
         {props.notebookPageVisible === NotebookPages.SAMPLE && <ReturnToOverviewButton
           onPress={() => {
-            props.setNotebookPageVisible(NotebookPages.OVERVIEW);
+            dispatch(setNotebookPageVisible(NotebookPages.OVERVIEW));
             dispatch(setModalVisible({modal: null}));
           }}
         />}
@@ -100,9 +101,5 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = {
-  setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(SamplesNotebook);
+export default connect(mapStateToProps)(SamplesNotebook);
 

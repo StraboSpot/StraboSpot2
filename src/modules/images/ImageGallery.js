@@ -11,7 +11,6 @@ import attributesStyles from '../main-menu-panel/attributes.styles';
 import {SortedViews} from '../main-menu-panel/mainMenuPanel.constants';
 import {setSelectedButtonIndex, setSortedView} from '../main-menu-panel/mainMenuPanel.slice';
 import SortingButtons from '../main-menu-panel/SortingButtons';
-import {notebookReducers} from '../notebook-panel/notebook.constants';
 import {spotReducers} from '../spots/spot.constants';
 import useSpotsHook from '../spots/useSpots';
 import imageStyles from './images.styles';
@@ -212,7 +211,6 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = {
   setSelectedAttributes: (attributes) => ({type: spotReducers.SET_SELECTED_ATTRIBUTES, attributes: attributes}),
-  setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ImageGallery);

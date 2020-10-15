@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text} from 'react-native';
+import {View} from 'react-native';
 
 import {connect, useDispatch, useSelector} from 'react-redux';
 
@@ -14,7 +14,6 @@ import NamingConventions from '../preferences/naming-conventions/NamingConventio
 import ShortcutMenu from '../preferences/shortcuts-menu/ShortcutsMenu';
 import ActiveProject from '../project/ActiveProjectPanel';
 import MyStraboSpot from '../project/MyStraboSpot';
-import ProjectList from '../project/ProjectList';
 import UploadBackupAndExport from '../project/UploadBackupExport';
 import SamplesList from '../samples/SamplesList';
 import {spotReducers} from '../spots/spot.constants';
@@ -40,7 +39,7 @@ const MainMenuPanel = props => {
     {settingsPageVisible}
   </MainMenuPanelHeader>;
 
-  let page = null;
+  let page;
 
   const getSpotFromId = (spotId, page) => {
     const spot = props.spots[spotId];

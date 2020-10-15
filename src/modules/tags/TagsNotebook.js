@@ -8,19 +8,20 @@ import commonStyles from '../../shared/common.styles';
 import AddButton from '../../shared/ui/AddButton';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {Modals} from '../home/home.constants';
-import {NotebookPages, notebookReducers} from '../notebook-panel/notebook.constants';
+import {setModalVisible} from '../home/home.slice';
+import {NotebookPages} from '../notebook-panel/notebook.constants';
+import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import {projectReducers} from '../project/project.constants';
 import {TagDetailModal, TagsAtSpotList, useTagsHook} from '../tags';
-import {setModalVisible} from '../home/home.slice';
 
 const TagsNotebook = (props) => {
-  console.log('PROPS in TAGS NOTEBOOK', props)
+  console.log('PROPS in TAGS NOTEBOOK', props);
   const [useTags] = useTagsHook();
   const dispatch = useDispatch();
   const [isDetailModalVisibile, setIsDetailModalVisible] = useState(false);
 
-  const addTag = async() => {
+  const addTag = async () => {
     await useTags.addTag();
     setIsDetailModalVisible(true);
   };
@@ -34,7 +35,7 @@ const TagsNotebook = (props) => {
     <React.Fragment>
       <ReturnToOverviewButton
         onPress={() => {
-          dispatch({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: NotebookPages.OVERVIEW});
+          dispatch(setNotebookPageVisible(NotebookPages.OVERVIEW));
           dispatch(setModalVisible({modal: null}));
         }}
       />
