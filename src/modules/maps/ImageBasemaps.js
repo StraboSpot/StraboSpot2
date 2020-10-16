@@ -1,118 +1,81 @@
-import React, {useState, useEffect} from 'react';
-import {FlatList, Text, View} from 'react-native';
+import React from 'react';
+import {Alert, FlatList, Text, View} from 'react-native';
 
-import {connect} from 'react-redux';
+import {useDispatch} from 'react-redux';
 
 import {isEmpty} from '../../shared/Helpers';
 import * as SharedUI from '../../shared/ui/index';
 import imageStyles from '../images/images.styles';
 import useImagesHook from '../images/useImages';
 import attributesStyles from '../main-menu-panel/attributes.styles';
-import {mainMenuPanelReducers, SortedViews} from '../main-menu-panel/mainMenuPanel.constants';
 import useSpotsHook from '../spots/useSpots';
 import {mapReducers} from './maps.constants';
 
 const ImageBaseMaps = (props) => {
+  const dispatch = useDispatch();
+
   const [useSpots] = useSpotsHook();
-  const activeSpotsObj = useSpots.getActiveSpotsObj();
-  const [imageBaseMapSet, setImageBaseMapsSet] = useState(useSpots.getAllImageBaseMaps());
   const [useImages] = useImagesHook();
-  const [refresh, setRefresh] = useState(false);
 
-  useEffect(() => {
-    return function cleanUp() {
-      props.setSortedListView(SortedViews.CHRONOLOGICAL);
-      props.setSelectedButtonIndex(0);
-      console.log('CLEANUP!');
-    };
-  }, []);
+  const handleImagePressed = (image) => {
+    console.log('Pressed image basemap:', image);
+    useImages.doesImageExist(image.id)
+      .then((doesExist) => {
+        if (!doesExist) Alert.alert('Missing Image!', 'Unable to find image file on this device.');
+        dispatch({type: mapReducers.CURRENT_IMAGE_BASEMAP, currentImageBasemap: image});
+      })
+      .catch((e) => console.error('Image not found', e));
+  };
 
-  useEffect(() => {
-    // setSortedList(Object.values(activeSpotsObj));
-    setImageBaseMapsSet(useSpots.getAllImageBaseMaps());
-  }, [props.selectedSpot, props.spots, props.sortedListView]);
+  const renderImageBasemaps = () => {
+    const imageBasemaps = useSpots.getImageBasemaps();
+    console.log('Image basemaps:', imageBasemaps);
+    return (
+      <React.Fragment>
+        <View style={imageStyles.galleryImageContainer}>
+          <FlatList
+            keyExtractor={(item) => item.id.toString()}
+            data={imageBasemaps}
+            numColumns={3}
+            renderItem={({item}) => renderImageBasemapThumbnail(item)}
+          />
+        </View>
+      </React.Fragment>
+    );
+  };
 
-  const renderName = (item) => {
+  const renderImageBasemapThumbnail = (image) => {
     return (
       <View style={attributesStyles.listContainer}>
         <View style={attributesStyles.listHeading}>
           <Text style={[attributesStyles.headingText]}>
-            {item.title}
+            {image.title}
           </Text>
         </View>
-        <FlatList
-
-          data={imageBaseMapList.filter(obj => {
-            return obj.id === item.id;
-          })}
-          numColumns={3}
-          renderItem={({item}) => renderImageBaseMap(item)}
-        />
-      </View>
-    );
-  };
-
-  const renderImageBaseMap = (image) => {
-    return (
-      <View style={imageStyles.thumbnailContainer}>
-        <SharedUI.ImageButton
-          source={{uri: useImages.getLocalImageSrc(image.id)}}
-          style={imageStyles.thumbnail}
-          onPress={() => openImageBaseMap(image)}
-        />
-      </View>
-    );
-  };
-
-  const openImageBaseMap = (imageBasemap) => {
-    // Calling map reducer to update the state
-    console.log('trying to update imagebasemap', imageBasemap);
-    props.updateImageBasemap(imageBasemap);
-  };
-
-  let sortedView = null;
-  const imageBaseMapList = Array.from(imageBaseMapSet);
-  if (!isEmpty(imageBaseMapList)) {
-    sortedView = <FlatList
-      keyExtractor={(item) => item.id.toString()}
-      extraData={refresh}
-      data={imageBaseMapList}
-      renderItem={({item}) => renderName(item)}
-    />;
-    return (
-      <React.Fragment>
-        <View style={imageStyles.galleryImageContainer}>
-          {sortedView}
+        <View style={imageStyles.thumbnailContainer}>
+          <SharedUI.ImageButton
+            source={{uri: useImages.getLocalImageURI(image.id)}}
+            style={imageStyles.thumbnail}
+            onPress={() => handleImagePressed(image)}
+          />
         </View>
-      </React.Fragment>
+      </View>
     );
-  }
-  else {
+  };
+
+  const renderNoImageBasemaps = () => {
     return (
       <View style={attributesStyles.textContainer}>
-        <Text style={attributesStyles.text}>No Image-Basemaps found</Text>
+        <Text style={attributesStyles.text}>No Image Basemaps in Active Datasets</Text>
       </View>
     );
-  }
+  };
+
+  return (
+    <React.Fragment>
+      {isEmpty(useSpots.getImageBasemaps()) ? renderNoImageBasemaps() : renderImageBasemaps()}
+    </React.Fragment>
+  );
 };
 
-const mapStateToProps = (state) => {
-  if (!isEmpty(state.spot.spots)) {
-    return {
-      selectedSpot: state.spot.selectedSpot,
-      sortedListView: state.mainMenu.sortedView,
-      spots: state.spot.spots,
-    };
-  }
-};
-
-const mapDispatchToProps = {
-  setSortedListView: (view) => ({type: mainMenuPanelReducers.SET_SORTED_VIEW, view: view}),
-  setSelectedButtonIndex: (index) => ({type: mainMenuPanelReducers.SET_SELECTED_BUTTON_INDEX, index: index}),
-  updateImageBasemap: (currentImageBasemap) => ({
-    type: mapReducers.CURRENT_IMAGE_BASEMAP,
-    currentImageBasemap: currentImageBasemap,
-  }),
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(ImageBaseMaps);
+export default ImageBaseMaps;

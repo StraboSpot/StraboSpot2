@@ -833,7 +833,7 @@ const Home = (props) => {
             onPress={() => toggleImageModal()}/>
           <Image
             source={props.selectedImage
-              ? {uri: useImages.getLocalImageSrc(props.selectedImage.id)}
+              ? {uri: useImages.getLocalImageURI(props.selectedImage.id)}
               : require('../../assets/images/noimage.jpg')}
             style={{width: wp('90%'), height: hp('90%')}}
           />

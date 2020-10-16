@@ -18,12 +18,11 @@ const ImagesViewPage = (props) => {
   const images = useSelector(state => state.spot.selectedSpot.properties.images);
 
   const renderImage = (image) => {
-    const imageSrc = useImages.getLocalImageSrc(image.id);
     return (
       <Card containerStyle={imageStyles.cardContainer}>
         <Card.Title style={{fontSize: 12}}>{image.title ?? image.id}</Card.Title>
         <Card.Image
-          source={{uri: imageSrc}}
+          source={{uri: useImages.getLocalImageURI(image.id)}}
           style={{width: 150, height: 130}}
           onPress={() => useImages.editImage(image)}
         />

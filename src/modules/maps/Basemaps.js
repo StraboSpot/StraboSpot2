@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Text, View} from 'react-native';
 
 import MapboxGL from '@react-native-mapbox-gl/maps';
@@ -23,6 +23,16 @@ function Basemap(props) {
   const [useMaps] = useMapsHook();
   const [showZoom, setShowZoom] = useState(false);
   const [currentZoom, setCurrentZoom] = useState(undefined);
+  const [doesImageExist, setDoesImageExist] = useState(false);
+
+  useEffect(() => {
+    console.log('UE Basemap [props.imageBasemap]');
+    if (props.imageBasemap && props.imageBasemap.id) checkImageExistance().catch(console.error);
+  }, [props.imageBasemap]);
+
+  const checkImageExistance = async () => {
+    return useImages.doesImageExist(props.imageBasemap.id).then((doesExist) => setDoesImageExist(doesExist));
+  };
 
   // Add symbology to properties of map features (not to Spots themselves) since data-driven styling
   // doesn't work for colors by tags and more complex styling
@@ -155,11 +165,11 @@ function Basemap(props) {
         )}
 
         {/* Image Basemap Layer */}
-        {props.imageBasemap && !isEmpty(props.coordQuad) && (
+        {props.imageBasemap && !isEmpty(props.coordQuad) && doesImageExist && (
           <MapboxGL.Animated.ImageSource
             id='imageBasemap'
             coordinates={props.coordQuad}
-            url={useImages.getLocalImageSrc(props.imageBasemap.id)}>
+            url={useImages.getLocalImageURI(props.imageBasemap.id)}>
             <MapboxGL.RasterLayer id='imageBasemapLayer'
                                   style={{rasterOpacity: 1}}/>
           </MapboxGL.Animated.ImageSource>

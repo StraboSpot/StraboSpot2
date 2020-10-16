@@ -26,7 +26,7 @@ const ImageGallery = (props) => {
   const spots = useSelector(state => state.spot.spots);
 
   const handleImagePressed = (image) => {
-    console.log('Pressed image', image);
+    console.log('Pressed image:', image);
     useImages.doesImageExist(image.id)
       .then((doesExist) => {
         if (doesExist) {
@@ -67,7 +67,7 @@ const ImageGallery = (props) => {
     return (
       <View style={imageStyles.thumbnailContainer}>
         <SharedUI.ImageButton
-          source={{uri: useImages.getLocalImageSrc(image.id)}}
+          source={{uri: useImages.getLocalImageURI(image.id)}}
           style={imageStyles.thumbnail}
           //PlaceholderContent={<ActivityIndicator/>}
           onPress={() => handleImagePressed(image)}
