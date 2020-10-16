@@ -1,95 +1,61 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import {Alert, FlatList, Text, View} from 'react-native';
 
 import {Button} from 'react-native-elements';
-import {connect} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 import {isEmpty} from '../../shared/Helpers';
 import * as SharedUI from '../../shared/ui/index';
 import {homeReducers} from '../home/home.constants';
 import attributesStyles from '../main-menu-panel/attributes.styles';
-import {mainMenuPanelReducers, SortedViews} from '../main-menu-panel/mainMenuPanel.constants';
+import {SortedViews} from '../main-menu-panel/mainMenuPanel.constants';
 import SortingButtons from '../main-menu-panel/SortingButtons';
-import {notebookReducers} from '../notebook-panel/notebook.constants';
 import {spotReducers} from '../spots/spot.constants';
 import useSpotsHook from '../spots/useSpots';
 import imageStyles from './images.styles';
 import useImagesHook from './useImages';
 
-let imageCount = 0;
-// let dirs = RNFetchBlob.fs.dirs;
-// const url = 'https://strabospot.org/testimages/images.json';
-// const devicePath = Platform.OS === 'ios' ? dirs.DocumentDir : dirs.SDCardDir; // ios : android
-// const appDirectory = '/StraboSpot';
-// const imagesResizeTemp = '/TempImages';
-// const imagesDirectory = devicePath + appDirectory + '/Images';
-
 const ImageGallery = (props) => {
-  const [useSpots] = useSpotsHook();
-  const activeSpotsObj = useSpots.getActiveSpotsObj();
+  const dispatch = useDispatch();
+
   const [useImages] = useImagesHook();
-  const [refresh] = useState(false);
-  const [sortedList, setSortedList] = useState(Object.values(activeSpotsObj));
-  const [filteredList] = useState(sortedList.filter(spot => {
-    return !isEmpty(spot.properties.images);
-  }));
-  let savedArray = [];
+  const [useSpots] = useSpotsHook();
 
-  useEffect(() => {
-    console.log('ImageView render!');
-    return function cleanUp() {
-      props.setSortedListView(SortedViews.CHRONOLOGICAL);
-      props.setSelectedButtonIndex(0);
-      console.log('CLEANUP!');
-    };
-  }, []);
+  const recentViews = useSelector(state => state.spot.recentViews);
+  const sortedView = useSelector(state => state.mainMenu.sortedView);
+  const spots = useSelector(state => state.spot.spots);
 
-  useEffect(() => {
-    setSortedList(Object.values(activeSpotsObj));
-    // setRefresh(!refresh);
-    console.log('render Recent Views in ImageGallery.js!');
-  }, [props.selectedSpot, props.spots, props.sortedListView]);
-
-  const imageSave = async () => {
-    const savedPhoto = await useImages.pictureSelectDialog();
-    console.log('imageObj', savedPhoto);
-
-    if (savedPhoto === 'cancelled') {
-      console.log('User cancelled image picker', savedArray);
-      if (savedArray.length > 0) {
-        console.log('ALL PHOTOS SAVED', savedArray);
-      }
-      else {
-        Alert.alert('No Photos To Save', 'please try again...');
-      }
-    }
-    else if (savedPhoto.error) {
-      console.log('ImagePicker Error: ', savedPhoto.error);
-    }
-    else {
-      savedArray.push(savedPhoto);
-      console.log('AllPhotosSaved', savedArray);
-      return imageSave();
-    }
+  const handleImagePressed = (image) => {
+    console.log('Pressed image', image);
+    useImages.doesImageExist(image.id)
+      .then((doesExist) => {
+        if (doesExist) {
+          console.log('Opening image', image.id, '...');
+          dispatch({type: spotReducers.SET_SELECTED_ATTRIBUTES, attributes: [image]});
+          dispatch({type: homeReducers.TOGGLE_IMAGE_MODAL, value: true});
+        }
+        else Alert.alert('Missing Image!', 'Unable to find image file on this device.');
+      })
+      .catch((e) => console.error('Image not found', e));
   };
 
-  const renderName = (item) => {
+  const renderImagesInSpot = (spot) => {
     return (
       <View style={attributesStyles.listContainer}>
         <View style={attributesStyles.listHeading}>
           <Text style={[attributesStyles.headingText]}>
-            {item.properties.name}
+            {spot.properties.name}
           </Text>
           <Button
             titleStyle={{fontSize: 16}}
             title={'View In Spot'}
             type={'clear'}
-            onPress={() => props.getSpotData(item.properties.id)}
+            onPress={() => props.getSpotData(spot.properties.id)}
           />
         </View>
         <FlatList
           keyExtractor={(image) => image.id}
-          data={item.properties.images}
+          data={spot.properties.images}
           numColumns={3}
           renderItem={({item}) => renderImage(item)}
         />
@@ -98,122 +64,62 @@ const ImageGallery = (props) => {
   };
 
   const renderImage = (image) => {
-
-    // const resizeImage = useImages.resizeImageToThumbnail(image);
-    // console.log('Resized', resizeImage)
     return (
       <View style={imageStyles.thumbnailContainer}>
         <SharedUI.ImageButton
           source={{uri: useImages.getLocalImageSrc(image.id)}}
           style={imageStyles.thumbnail}
-          // PlaceholderContent={<ActivityIndicator/>}
-          onPress={() => renderImageModal(image)}
+          //PlaceholderContent={<ActivityIndicator/>}
+          onPress={() => handleImagePressed(image)}
         />
       </View>
     );
   };
 
-  const renderRecentView = (spotID) => {
-    const spot = props.spots[spotID];
-    if (spot.properties.images && !isEmpty(spot.properties.images)) {
-      return (
-        <View style={attributesStyles.listContainer}>
-          <View style={attributesStyles.listHeading}>
-            <Text style={attributesStyles.headingText}>
-              {spot.properties.name}
-            </Text>
-            <Button
-              titleStyle={{fontSize: 16}}
-              title={'View In Spot'}
-              type={'clear'}
-              onPress={() => props.getSpotData(spot.properties.id)}
-            />
-          </View>
-          <FlatList
-            data={spot.properties.images === undefined ? null : spot.properties.images}
-            keyExtractor={(image) => image.id}
-            numColumns={3}
-            renderItem={({item}) => renderImage(item)}
-          />
-        </View>
-
-      );
-    }
-  };
-
-  const renderImageModal = (image) => {
-    console.log(image.id, '\n was pressed!');
-    props.setSelectedAttributes([image]);
-    props.setIsImageModalVisible(true);
-  };
-
-  let sortedView = null;
-  // const filteredList = sortedList.filter(spot => {
-  //   return !isEmpty(spot.properties.images);
-  // });
-  if (!isEmpty(filteredList)) {
-    if (props.sortedListView === SortedViews.CHRONOLOGICAL) {
-      sortedView = <FlatList
-        keyExtractor={(item) => item.properties.id.toString()}
-        extraData={refresh}
-        data={filteredList}
-        renderItem={({item}) => renderName(item)}/>;
-    }
-    else if (props.sortedListView === SortedViews.MAP_EXTENT) {
-      sortedView = <FlatList
-        keyExtractor={(item) => item.properties.id.toString()}
-        extraData={refresh}
-        data={filteredList}
-        renderItem={({item}) => renderName(item)}/>;
-    }
-    else if (props.sortedListView === SortedViews.RECENT_VIEWS) {
-      sortedView = <FlatList
-        keyExtractor={(item) => item.toString()}
-        extraData={refresh}
-        data={props.recentViews}
-        renderItem={({item}) => renderRecentView(item)}/>;
-    }
-    else {
-      sortedView = <FlatList
-        keyExtractor={(item) => item.properties.id.toString()}
-        extraData={refresh}
-        data={Object.values(activeSpotsObj)}
-        renderItem={({item}) => renderName(item)}/>;
-    }
-    return (
-      <React.Fragment>
-        <SortingButtons/>
-        <View style={imageStyles.galleryImageContainer}>
-          {sortedView}
-        </View>
-      </React.Fragment>
-    );
-  }
-  else {
+  const renderNoImages = () => {
     return (
       <View style={attributesStyles.textContainer}>
         <Text style={attributesStyles.text}>No Images in Active Datasets</Text>
       </View>
     );
-  }
-};
-
-const mapStateToProps = (state) => {
-  return {
-    recentViews: state.spot.recentViews,
-    selectedImage: state.spot.selectedAttributes[0],
-    selectedSpot: state.spot.selectedSpot,
-    sortedListView: state.mainMenu.sortedView,
-    spots: state.spot.spots,
   };
+
+  const renderSpotsWithImages = () => {
+    let sortedSpotsWithImages = useSpots.getSpotsWithImagesSortedReverseChronologically();
+    let noImagesText = 'No Spots with images';
+    if (sortedView === SortedViews.MAP_EXTENT) {
+      sortedSpotsWithImages = props.spotsInMapExtent.filter(spot => spot.properties.images);
+      if (isEmpty(sortedSpotsWithImages)) noImagesText = 'No Spots with images in current map extent';
+    }
+    else if (sortedView === SortedViews.RECENT_VIEWS) {
+      const recentlyViewedSpots = recentViews.map(spotId => spots[spotId]);
+      sortedSpotsWithImages = recentlyViewedSpots.filter(spot => spot.properties.images);
+      if (!isEmpty(sortedSpotsWithImages)) noImagesText = 'No recently viewed Spots with images';
+    }
+    return (
+      <React.Fragment>
+        <SortingButtons/>
+        <View style={imageStyles.galleryImageContainer}>
+          {isEmpty(sortedSpotsWithImages)
+            ? <Text style={{padding: 10}}>{noImagesText}</Text>
+            : (
+              <FlatList
+                keyExtractor={(item) => item.properties.id.toString()}
+                data={sortedSpotsWithImages}
+                renderItem={({item}) => renderImagesInSpot(item)}
+              />
+            )
+          }
+        </View>
+      </React.Fragment>
+    );
+  };
+
+  return (
+    <React.Fragment>
+      {isEmpty(useSpots.getSpotsWithImages()) ? renderNoImages() : renderSpotsWithImages()}
+    </React.Fragment>
+  );
 };
 
-const mapDispatchToProps = {
-  setSelectedAttributes: (attributes) => ({type: spotReducers.SET_SELECTED_ATTRIBUTES, attributes: attributes}),
-  setIsImageModalVisible: (value) => ({type: homeReducers.TOGGLE_IMAGE_MODAL, value: value}),
-  setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),
-  setSortedListView: (view) => ({type: mainMenuPanelReducers.SET_SORTED_VIEW, view: view}),
-  setSelectedButtonIndex: (index) => ({type: mainMenuPanelReducers.SET_SELECTED_BUTTON_INDEX, index: index}),
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(ImageGallery);
+export default ImageGallery;

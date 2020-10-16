@@ -151,20 +151,14 @@ const useImages = () => {
   //   return parseFloat((a / Math.pow(c,i)).toFixed(d)) + ' ' + sizes[i];
   // };
 
-  // Checks to see if image is already on device
+  // Check to see if image is on the local device
   const doesImageExist = async (imageId) => {
-    const filePath = imagesDirectory;
-    const fileName = imageId.toString() + '.jpg';
-    const fileURI = filePath + '/' + fileName;
-    console.log('Looking on device for file URI: ', fileURI);
-    return await RNFetchBlob.fs.exists(fileURI).then(exist => {
-        console.log(`File URI ${fileURI} does ${exist ? '' : 'not'} exist on device`);
-        return exist;
-      },
-    )
-      .catch((err) => {
-        throw err;
-      });
+    const imageURI = getLocalImageURI(imageId);
+    console.log('Looking on device for image at URI:', imageURI, '...');
+    const isValidURI = await RNFS.exists(imageURI);
+    if (isValidURI) console.log(`Found image at URI: ${imageURI}`);
+    else console.error(`Not Found image at URI: ${imageURI}`);
+    return Promise.resolve(isValidURI);
   };
 
   const editImage = (image) => {
@@ -641,6 +635,7 @@ const useImages = () => {
 
   return [{
     deleteTempImagesFolder: deleteTempImagesFolder,
+    doesImageExist: doesImageExist,
     downloadImages: downloadImages,
     editImage: editImage,
     gatherNeededImages: gatherNeededImages,

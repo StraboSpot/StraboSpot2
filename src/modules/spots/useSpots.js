@@ -156,8 +156,8 @@ const useSpots = (props) => {
     return Object.values(getActiveSpotsObj()).reduce((acc, spot) => {
       const imageBasemaps = spot.properties.images
         && spot.properties.images.reduce((acc1, image) => {
-          return image.annotated ? acc1.push(image) : acc1;
-        }, []);
+          return image.annotated ? [...acc1, image] : acc1;
+        }, []) || [];
       return [...acc, ...imageBasemaps];
     }, []);
   };
@@ -242,6 +242,16 @@ const useSpots = (props) => {
     }));
   };
 
+  const getSpotsWithImages = () => {
+    return Object.values(getActiveSpotsObj()).filter(spot => !isEmpty(spot.properties.images));
+  };
+
+  const getSpotsWithImagesSortedReverseChronologically = () => {
+    return getSpotsWithImages().sort(((a, b) => {
+      return new Date(b.properties.date) - new Date(a.properties.date);
+    }));
+  };
+
   return [{
     copySpot: copySpot,
     createSpot: createSpot,
@@ -258,6 +268,8 @@ const useSpots = (props) => {
     getSpotGemometryIconSource: getSpotGemometryIconSource,
     getSpotsByIds: getSpotsByIds,
     getSpotsSortedReverseChronologically: getSpotsSortedReverseChronologically,
+    getSpotsWithImages: getSpotsWithImages,
+    getSpotsWithImagesSortedReverseChronologically: getSpotsWithImagesSortedReverseChronologically,
   }];
 };
 
