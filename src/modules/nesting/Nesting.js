@@ -6,6 +6,7 @@ import {useSelector, useDispatch} from 'react-redux';
 
 import {isEmpty} from '../../shared/Helpers';
 import SectionDivider from '../../shared/ui/SectionDivider';
+import useImagesHook from '../images/useImages';
 import {NotebookPages, notebookReducers} from '../notebook-panel/notebook.constants';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import {useSpotsHook} from '../spots';
@@ -18,6 +19,7 @@ const Nesting = (props) => {
   const [useNesting] = useNestingHook();
   const [useSpots] = useSpotsHook();
   const [useTags] = useTagsHook();
+  const [useImages] = useImagesHook();
 
   const notebookPageVisible = useSelector(state => (
     !isEmpty(state.notebook.visibleNotebookPagesStack) && state.notebook.visibleNotebookPagesStack.slice(-1)[0]
@@ -28,7 +30,7 @@ const Nesting = (props) => {
   const [childrenGenerations, setChildrenGenerations] = useState();
 
   useEffect(() => {
-    console.log('UE NESTING [spots]');
+    console.log('UE Nesting [spots]');
 
     if (notebookPageVisible === NotebookPages.NESTING) updateNest();
   }, [spots, selectedSpot]);
@@ -61,16 +63,19 @@ const Nesting = (props) => {
     if (item && item.properties) {
       const children = useNesting.getChildrenGenerationsSpots(item, 10);
       const numSubspots = children.flat().length;
+      const imageBasemapId = item.properties.image_basemap;
+      let imageSource = useSpots.getSpotGemometryIconSource(item);
+      if (imageBasemapId) imageSource = useImages.getLocalImageURI(imageBasemapId);
       return (
         <ListItem
           key={item.properties.id}
           onPress={() => goToSpotNesting(item)}
           containerStyle={{padding: 5, paddingLeft: 10}}
         >
-          <Avatar source={useSpots.getSpotGemometryIconSource(item)} size={20}/>
+          <Avatar source={imageSource} size={20}/>
           <ListItem.Content>
             <ListItem.Title>{item.properties.name}</ListItem.Title>
-            <ListItem.Subtitle>[{numSubspots } subspot{numSubspots !== 1 && 's'}]</ListItem.Subtitle>
+            <ListItem.Subtitle>[{numSubspots} subspot{numSubspots !== 1 && 's'}]</ListItem.Subtitle>
           </ListItem.Content>
           {renderDataIcons(item)}
           <ListItem.Chevron/>
@@ -82,6 +87,9 @@ const Nesting = (props) => {
   const renderGeneration = (type, generation, i, length) => {
     const levelNum = type === 'Parents' ? length - i : i + 1;
     const generationText = levelNum + (levelNum === 1 ? ' Level' : ' Levels') + (type === 'Parents' ? ' Up' : ' Down');
+    const groupedGeneration = generation.reduce(
+      (r, v, i, a, k = v.properties.image_basemap) => ((r[k] || (r[k] = [])).push(v), r), {});
+    console.log('groupedGeneration', groupedGeneration);
     return (
       <View>
         {type === 'Children' && (

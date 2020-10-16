@@ -9,6 +9,8 @@ const ImageButton = props => {
       source={props.source}
       style={props.style}
       PlaceholderContent={<ActivityIndicator/>}
+      //defaultSource={require('../../assets/images/noimage.jpg')}
+      // onError={e => console.log(e)}
     />
   );
 

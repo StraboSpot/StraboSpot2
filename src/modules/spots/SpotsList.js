@@ -65,17 +65,21 @@ const SpotsList = (props) => {
     let sortedView = null;
 
     if (props.sortedListView === SortedViews.CHRONOLOGICAL) {
-      sortedView = <FlatList
-        keyExtractor={(item) => item.properties.id.toString()}
-        data={sortedList}
-        renderItem={({item}) => renderName(item)}/>;
+      sortedView = (
+        <FlatList
+          keyExtractor={(item) => item.properties.id.toString()}
+          data={sortedList}
+          renderItem={({item}) => renderName(item)}/>
+      );
     }
     else if (props.sortedListView === SortedViews.MAP_EXTENT) {
       if (!isEmpty(props.spotsInMapExtent)) {
-        sortedView = <FlatList
-          keyExtractor={(item) => item.properties.id.toString()}
-          data={props.spotsInMapExtent}
-          renderItem={({item}) => renderName(item)}/>;
+        sortedView = (
+          <FlatList
+            keyExtractor={(item) => item.properties.id.toString()}
+            data={props.spotsInMapExtent}
+            renderItem={({item}) => renderName(item)}/>
+        );
       }
       else sortedView = <Text style={{padding: 10}}>No Spots in current map extent</Text>;
     }
@@ -83,18 +87,22 @@ const SpotsList = (props) => {
       const recentlyViewedSpotIds = props.recentViews;
       const recentlyViewedSpots = recentlyViewedSpotIds.map(spotId => props.spots[spotId]);
       if (!isEmpty(recentlyViewedSpots)) {
-        sortedView = <FlatList
-          keyExtractor={(item) => item.properties.id.toString()}
-          data={recentlyViewedSpots}
-          renderItem={({item}) => renderName(item)}/>;
+        sortedView = (
+          <FlatList
+            keyExtractor={(item) => item.properties.id.toString()}
+            data={recentlyViewedSpots}
+            renderItem={({item}) => renderName(item)}/>
+        );
       }
-      else sortedView = <Text style={{padding: 10}}>No recently views Spots</Text>;
+      else sortedView = <Text style={{padding: 10}}>No recently viewed Spots</Text>;
     }
     else {
-      sortedView = <FlatList
-        keyExtractor={(item) => item.properties.id.toString()}
-        data={Object.values(activeSpotsObj)}
-        renderItem={({item}) => renderName(item)}/>;
+      sortedView = (
+        <FlatList
+          keyExtractor={(item) => item.properties.id.toString()}
+          data={Object.values(activeSpotsObj)}
+          renderItem={({item}) => renderName(item)}/>
+      );
     }
     return (
       <View style={{flex: 1}}>

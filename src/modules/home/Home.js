@@ -264,7 +264,7 @@ const Home = (props) => {
       case MapModes.DRAW.POLYGON:
       case MapModes.DRAW.FREEHANDPOLYGON:
       case MapModes.DRAW.FREEHANDLINE:
-        if (!isEmpty(currentDataset)) setDraw(name);
+        if (!isEmpty(currentDataset)) setDraw(name).catch(console.error);
         else Alert.alert('No Current Dataset', 'A current dataset needs to be set before drawing Spots.');
         break;
       case 'endDraw':
@@ -277,7 +277,7 @@ const Home = (props) => {
         saveEdits();
         break;
       case 'toggleUserLocation':
-        if (!value) goToCurrentLocation();
+        if (!value) goToCurrentLocation().catch(console.error);
         mapViewComponent.current.toggleUserLocation(value);
         break;
       case 'closeImageBasemap':
@@ -294,13 +294,13 @@ const Home = (props) => {
         console.log(`${name}`, ' was clicked');
         mapViewComponent.current.clearSelectedSpots();
         setIsSelectingForTagging(true);
-        setDraw(MapModes.DRAW.FREEHANDPOLYGON);
+        setDraw(MapModes.DRAW.FREEHANDPOLYGON).catch(console.error);
         break;
       case 'stereonet':
         console.log(`${name}`, ' was clicked');
         mapViewComponent.current.clearSelectedSpots();
         setIsSelectingForStereonet(true);
-        setDraw(MapModes.DRAW.POLYGON);
+        setDraw(MapModes.DRAW.POLYGON).catch(console.error);
         break;
     }
   };
@@ -330,23 +330,20 @@ const Home = (props) => {
     Alert.alert(
       'Delete Spot?',
       'Are you sure you want to delete Spot: ' + spot.properties.name,
-      [
-        {
-          text: 'Cancel',
-          onPress: () => console.log('Cancel Pressed'),
-          style: 'cancel',
+      [{
+        text: 'Cancel',
+        onPress: () => console.log('Cancel Pressed'),
+        style: 'cancel',
+      }, {
+        text: 'Delete',
+        onPress: () => {
+          useSpots.deleteSpot(id)
+            .then((res) => {
+              console.log(res);
+              closeNotebookPanel();
+            });
         },
-        {
-          text: 'Delete',
-          onPress: () => {
-            useSpots.deleteSpot(id)
-              .then((res) => {
-                console.log(res);
-                closeNotebookPanel();
-              });
-          },
-        },
-      ],
+      }],
     );
   };
 
@@ -532,18 +529,15 @@ const Home = (props) => {
         dialogTitle={'Status Info'}
         style={sharedDialogStyles.dialogWarning}
         visible={isInfoMessagesModalVisible}
-        onTouchOutside={() => dispatch(
-          {type: homeReducers.SET_INFO_MESSAGES_MODAL_VISIBLE, bool: false})}
+        onTouchOutside={() => dispatch({type: homeReducers.SET_INFO_MESSAGES_MODAL_VISIBLE, bool: false})}
       >
         <View style={{margin: 15}}>
-          <Text style={sharedDialogStyles.dialogStatusMessageText}>{statusMessages.join(
-            '\n')}</Text>
+          <Text style={sharedDialogStyles.dialogStatusMessageText}>{statusMessages.join('\n')}</Text>
         </View>
         <Button
           title={'OK'}
           type={'clear'}
-          onPress={() => dispatch(
-            {type: homeReducers.SET_INFO_MESSAGES_MODAL_VISIBLE, bool: false})}
+          onPress={() => dispatch({type: homeReducers.SET_INFO_MESSAGES_MODAL_VISIBLE, bool: false})}
         />
       </StatusDialogBox>
     );
@@ -556,13 +550,11 @@ const Home = (props) => {
         style={sharedDialogStyles.dialogWarning}
         visible={isErrorMessagesModalVisible}
       >
-        <Text style={sharedDialogStyles.dialogStatusMessageText}>{statusMessages.join(
-          '\n')}</Text>
+        <Text style={sharedDialogStyles.dialogStatusMessageText}>{statusMessages.join('\n')}</Text>
         <Button
           title={'OK'}
           type={'clear'}
-          onPress={() => dispatch(
-            {type: homeReducers.SET_ERROR_MESSAGES_MODAL_VISIBLE, bool: false})}
+          onPress={() => dispatch({type: homeReducers.SET_ERROR_MESSAGES_MODAL_VISIBLE, bool: false})}
         />
       </StatusDialogBox>
     );
@@ -621,22 +613,13 @@ const Home = (props) => {
   const renderSidePanelContent = () => {
     switch (sidePanelView) {
       case mainMenuPanelReducers.SET_SIDE_PANEL_VIEW.MANAGE_CUSTOM_MAP:
-        return (
-          <CustomMapDetails/>
-        );
+        return <CustomMapDetails/>;
       case mainMenuPanelReducers.SET_SIDE_PANEL_VIEW.PROJECT_DESCRIPTION:
-        return (
-          <ProjectDescription/>
-        );
+        return <ProjectDescription/>;
       case mainMenuPanelReducers.SET_SIDE_PANEL_VIEW.TAG_DETAIL:
-        return (
-          <TagDetailSidePanel
-            openNotebookPanel={(pageView) => openNotebookPanel(pageView)}/>
-        );
+        return <TagDetailSidePanel openNotebookPanel={(pageView) => openNotebookPanel(pageView)}/>;
       case mainMenuPanelReducers.SET_SIDE_PANEL_VIEW.TAG_ADD_REMOVE_SPOTS:
-        return (
-          <TagAddRemoveSpots/>
-        );
+        return <TagAddRemoveSpots/>;
     }
   };
 
@@ -646,8 +629,7 @@ const Home = (props) => {
         dialogTitle={'Status'}
         style={sharedDialogStyles.dialogTitleSuccess}
         visible={isStatusMessagesModalVisible}
-        onTouchOutside={() => dispatch(
-          {type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, bool: false})}
+        onTouchOutside={() => dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, bool: false})}
         // disabled={progress !== 1 && !uploadErrors}
       >
         <View style={{minHeight: 100}}>
@@ -665,15 +647,13 @@ const Home = (props) => {
             {statusMessages.includes('Download Complete!') || statusMessages.includes('Upload Complete!')
             || statusMessages.includes('There are no active datasets.') || statusMessages.includes('Success!')
             || statusMessages.includes('Project Backup Complete!') || statusMessages.includes('Project loaded!')
-              ? (
-                <Button
-                  title={'OK'}
-                  type={'clear'}
-                  onPress={() => dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, bool: false})}
-                />
-              )
-              : null
-            }
+            && (
+              <Button
+                title={'OK'}
+                type={'clear'}
+                onPress={() => dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, bool: false})}
+              />
+            )}
           </View>
         </View>
       </StatusDialogBox>
@@ -767,9 +747,7 @@ const Home = (props) => {
       animatePanels(mainMenuSidePanelAnimation, mainMenuSidePanelWidth);
       return renderSidePanelView();
     }
-    else {
-      animatePanels(mainMenuSidePanelAnimation, -mainMenuSidePanelWidth);
-    }
+    else animatePanels(mainMenuSidePanelAnimation, -mainMenuSidePanelWidth);
     return renderSidePanelView();
   };
 
@@ -817,10 +795,10 @@ const Home = (props) => {
       <ToastPopup toastRef={toastRef}/>
       {Platform.OS === 'android' && (
         <View>
-          {(modalVisible === Modals.NOTEBOOK_MODALS.COMPASS
-            || modalVisible === Modals.SHORTCUT_MODALS.COMPASS) && compassModal}
-          {(modalVisible === Modals.NOTEBOOK_MODALS.SAMPLE
-            || modalVisible === Modals.SHORTCUT_MODALS.SAMPLE) && samplesModal}
+          {(modalVisible === Modals.NOTEBOOK_MODALS.COMPASS || modalVisible === Modals.SHORTCUT_MODALS.COMPASS)
+          && compassModal}
+          {(modalVisible === Modals.NOTEBOOK_MODALS.SAMPLE || modalVisible === Modals.SHORTCUT_MODALS.SAMPLE)
+          && samplesModal}
         </View>
       )}
       <RightSideButtons
@@ -910,7 +888,6 @@ const mapDispatchToProps = {
   onSpotEdit: (field, value) => ({type: spotReducers.EDIT_SPOT_PROPERTIES, field: field, value: value}),
   setModalVisible: (modal) => ({type: homeReducers.SET_MODAL_VISIBLE, modal: modal}),
   setDeviceDims: (dims) => ({type: homeReducers.DEVICE_DIMENSIONS, dims: dims}),
-  onSpotEditImageObj: (images) => ({type: spotReducers.EDIT_SPOT_IMAGES, images: images}),
   onShortcutSwitchChange: (switchName) => ({type: homeReducers.SHORTCUT_SWITCH_POSITION, switchName: switchName}),
 };
 

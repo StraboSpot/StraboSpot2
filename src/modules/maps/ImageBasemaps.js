@@ -14,10 +14,9 @@ import {mapReducers} from './maps.constants';
 
 const ImageBaseMaps = (props) => {
   const [useSpots] = useSpotsHook();
-  const activeSpotsObj = useSpots.getActiveSpotsObj();
-  const [imageBaseMapSet, setImageBaseMapsSet] = useState(useSpots.getAllImageBaseMaps());
+  const [imageBasemaps, setImageBasemaps] = useState();
   const [useImages] = useImagesHook();
-  const [refresh, setRefresh] = useState(false);
+  const missingImage = require('../../assets/images/noimage.jpg');
 
   useEffect(() => {
     return function cleanUp() {
@@ -28,38 +27,31 @@ const ImageBaseMaps = (props) => {
   }, []);
 
   useEffect(() => {
-    // setSortedList(Object.values(activeSpotsObj));
-    setImageBaseMapsSet(useSpots.getAllImageBaseMaps());
+    //setImageBasemaps(useSpots.getAllImageBaseMaps());
+    setImageBasemaps(useSpots.getImageBasemaps());
   }, [props.selectedSpot, props.spots, props.sortedListView]);
 
-  const renderName = (item) => {
+  const renderImageBasemapThumbnail = async (imageData) => {
+    console.log('image basemap item', imageData);
+    let imageURI;
+    let isExist = true;
+    //isExist = await useImages.doesImageExist(imageData.id);
+    if (isExist) imageURI = useImages.getLocalImageURI(imageData.id);
+    console.log('imageData imageURI', imageURI);
     return (
       <View style={attributesStyles.listContainer}>
         <View style={attributesStyles.listHeading}>
           <Text style={[attributesStyles.headingText]}>
-            {item.title}
+            {imageData.title}
           </Text>
         </View>
-        <FlatList
-
-          data={imageBaseMapList.filter(obj => {
-            return obj.id === item.id;
-          })}
-          numColumns={3}
-          renderItem={({item}) => renderImageBaseMap(item)}
-        />
-      </View>
-    );
-  };
-
-  const renderImageBaseMap = (image) => {
-    return (
-      <View style={imageStyles.thumbnailContainer}>
-        <SharedUI.ImageButton
-          source={{uri: useImages.getLocalImageSrc(image.id)}}
-          style={imageStyles.thumbnail}
-          onPress={() => openImageBaseMap(image)}
-        />
+        <View style={imageStyles.thumbnailContainer}>
+          <SharedUI.ImageButton
+            source={imageURI ? {uri: imageURI} : require('../../assets/images/noimage.jpg')}
+            style={imageStyles.thumbnail}
+            onPress={() => openImageBaseMap(imageData)}
+          />
+        </View>
       </View>
     );
   };
@@ -70,19 +62,19 @@ const ImageBaseMaps = (props) => {
     props.updateImageBasemap(imageBasemap);
   };
 
-  let sortedView = null;
-  const imageBaseMapList = Array.from(imageBaseMapSet);
-  if (!isEmpty(imageBaseMapList)) {
-    sortedView = <FlatList
-      keyExtractor={(item) => item.id.toString()}
-      extraData={refresh}
-      data={imageBaseMapList}
-      renderItem={({item}) => renderName(item)}
-    />;
+  //const imageBasemapList = Array.from(imageBasemaps);
+  const imageBasemapList = imageBasemaps;
+  console.log('imageBasemapList', imageBasemapList);
+  if (!isEmpty(imageBasemapList)) {
     return (
       <React.Fragment>
         <View style={imageStyles.galleryImageContainer}>
-          {sortedView}
+          <FlatList
+            keyExtractor={(item) => item.id.toString()}
+            data={imageBasemapList}
+            numColumns={3}
+            renderItem={({item}) => renderImageBasemapThumbnail(item)}
+          />
         </View>
       </React.Fragment>
     );
