@@ -242,10 +242,6 @@ const useSpots = (props) => {
     }));
   };
 
-  const getSpotsWithImages = () => {
-    return Object.values(getActiveSpotsObj()).filter(spot => !isEmpty(spot.properties.images));
-  };
-
   return [{
     copySpot: copySpot,
     createSpot: createSpot,
@@ -262,7 +258,6 @@ const useSpots = (props) => {
     getSpotGemometryIconSource: getSpotGemometryIconSource,
     getSpotsByIds: getSpotsByIds,
     getSpotsSortedReverseChronologically: getSpotsSortedReverseChronologically,
-    getSpotsWithImages: getSpotsWithImages,
   }];
 };
 

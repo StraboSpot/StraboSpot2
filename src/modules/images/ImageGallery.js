@@ -16,48 +16,80 @@ import useSpotsHook from '../spots/useSpots';
 import imageStyles from './images.styles';
 import useImagesHook from './useImages';
 
+let imageCount = 0;
+// let dirs = RNFetchBlob.fs.dirs;
+// const url = 'https://strabospot.org/testimages/images.json';
+// const devicePath = Platform.OS === 'ios' ? dirs.DocumentDir : dirs.SDCardDir; // ios : android
+// const appDirectory = '/StraboSpot';
+// const imagesResizeTemp = '/TempImages';
+// const imagesDirectory = devicePath + appDirectory + '/Images';
+
 const ImageGallery = (props) => {
-  const [useImages] = useImagesHook();
   const [useSpots] = useSpotsHook();
-
   const activeSpotsObj = useSpots.getActiveSpotsObj();
-
-  const [sortedList, setSortedList] = useState(Object.values(activeSpotsObj));
-  const [filteredList] = useState(sortedList.filter(spot => !isEmpty(spot.properties.images)));
-  //const spots = useSpots.getSpotsWithImages()
+  const [useImages] = useImagesHook();
   const [refresh] = useState(false);
+  const [sortedList, setSortedList] = useState(Object.values(activeSpotsObj));
+  const [filteredList] = useState(sortedList.filter(spot => {
+    return !isEmpty(spot.properties.images);
+  }));
+  let savedArray = [];
 
   useEffect(() => {
-    console.log('UE ImageGallery []');
-    return function reset() {
+    console.log('ImageView render!');
+    return function cleanUp() {
       props.setSortedListView(SortedViews.CHRONOLOGICAL);
       props.setSelectedButtonIndex(0);
-      console.log('Reset Image Gallery');
+      console.log('CLEANUP!');
     };
   }, []);
 
   useEffect(() => {
     setSortedList(Object.values(activeSpotsObj));
+    // setRefresh(!refresh);
     console.log('render Recent Views in ImageGallery.js!');
   }, [props.selectedSpot, props.spots, props.sortedListView]);
 
-  const renderImagesInSpot = (spot) => {
+  const imageSave = async () => {
+    const savedPhoto = await useImages.pictureSelectDialog();
+    console.log('imageObj', savedPhoto);
+
+    if (savedPhoto === 'cancelled') {
+      console.log('User cancelled image picker', savedArray);
+      if (savedArray.length > 0) {
+        console.log('ALL PHOTOS SAVED', savedArray);
+      }
+      else {
+        Alert.alert('No Photos To Save', 'please try again...');
+      }
+    }
+    else if (savedPhoto.error) {
+      console.log('ImagePicker Error: ', savedPhoto.error);
+    }
+    else {
+      savedArray.push(savedPhoto);
+      console.log('AllPhotosSaved', savedArray);
+      return imageSave();
+    }
+  };
+
+  const renderName = (item) => {
     return (
       <View style={attributesStyles.listContainer}>
         <View style={attributesStyles.listHeading}>
           <Text style={[attributesStyles.headingText]}>
-            {spot.properties.name}
+            {item.properties.name}
           </Text>
           <Button
             titleStyle={{fontSize: 16}}
             title={'View In Spot'}
             type={'clear'}
-            onPress={() => props.getSpotData(spot.properties.id)}
+            onPress={() => props.getSpotData(item.properties.id)}
           />
         </View>
         <FlatList
           keyExtractor={(image) => image.id}
-          data={spot.properties.images}
+          data={item.properties.images}
           numColumns={3}
           renderItem={({item}) => renderImage(item)}
         />
@@ -66,86 +98,90 @@ const ImageGallery = (props) => {
   };
 
   const renderImage = (image) => {
-    const imgPath = useImages.getLocalImageURI(image.id);
-    console.log('imgPath', imgPath);
+
+    // const resizeImage = useImages.resizeImageToThumbnail(image);
+    // console.log('Resized', resizeImage)
     return (
       <View style={imageStyles.thumbnailContainer}>
         <SharedUI.ImageButton
-          // source={{uri: useImages.getLocalImageURI(image.id)}}
-          source={{uri: imgPath}}
+          source={{uri: useImages.getLocalImageSrc(image.id)}}
           style={imageStyles.thumbnail}
-          //PlaceholderContent={<ActivityIndicator/>}
-          onPress={() => handleImagePressed(image)}
+          // PlaceholderContent={<ActivityIndicator/>}
+          onPress={() => renderImageModal(image)}
         />
       </View>
     );
   };
 
-  const handleImagePressed = (image) => {
-    useImages.doesImageExist(image.id)
-      .then((doesExist) => {
-        if (doesExist) {
-          console.log('Opening image', image.id, '...');
-          props.setSelectedAttributes([image]);
-          props.setIsImageModalVisible(true);
-        }
-        else Alert.alert('Missing Image!', 'Unable to find image file on this device.');
-      })
-      .catch((e) => console.error('Image not found', e));
+  const renderRecentView = (spotID) => {
+    const spot = props.spots[spotID];
+    if (spot.properties.images && !isEmpty(spot.properties.images)) {
+      return (
+        <View style={attributesStyles.listContainer}>
+          <View style={attributesStyles.listHeading}>
+            <Text style={attributesStyles.headingText}>
+              {spot.properties.name}
+            </Text>
+            <Button
+              titleStyle={{fontSize: 16}}
+              title={'View In Spot'}
+              type={'clear'}
+              onPress={() => props.getSpotData(spot.properties.id)}
+            />
+          </View>
+          <FlatList
+            data={spot.properties.images === undefined ? null : spot.properties.images}
+            keyExtractor={(image) => image.id}
+            numColumns={3}
+            renderItem={({item}) => renderImage(item)}
+          />
+        </View>
+
+      );
+    }
+  };
+
+  const renderImageModal = (image) => {
+    console.log(image.id, '\n was pressed!');
+    props.setSelectedAttributes([image]);
+    props.setIsImageModalVisible(true);
   };
 
   let sortedView = null;
+  // const filteredList = sortedList.filter(spot => {
+  //   return !isEmpty(spot.properties.images);
+  // });
   if (!isEmpty(filteredList)) {
     if (props.sortedListView === SortedViews.CHRONOLOGICAL) {
-      sortedView = (
-        <FlatList
+      sortedView = <FlatList
         keyExtractor={(item) => item.properties.id.toString()}
         extraData={refresh}
         data={filteredList}
-        renderItem={({item}) => renderImagesInSpot(item)}/>
-      );
+        renderItem={({item}) => renderName(item)}/>;
     }
     else if (props.sortedListView === SortedViews.MAP_EXTENT) {
-      const spotsInMapExtentWithImages = props.spotsInMapExtent.filter(spot => spot.properties.images);
-      if (!isEmpty(spotsInMapExtentWithImages)) {
-        sortedView = (
-          <FlatList
-            keyExtractor={(item) => item.properties.id.toString()}
-            extraData={refresh}
-            data={spotsInMapExtentWithImages}
-            renderItem={({item}) => renderImagesInSpot(item)}/>
-        );
-      }
-      else sortedView = <Text style={{padding: 10}}>No Spots in current map extent with images</Text>;
+      sortedView = <FlatList
+        keyExtractor={(item) => item.properties.id.toString()}
+        extraData={refresh}
+        data={filteredList}
+        renderItem={({item}) => renderName(item)}/>;
     }
     else if (props.sortedListView === SortedViews.RECENT_VIEWS) {
-      const recentlyViewedSpotIds = props.recentViews;
-      const recentlyViewedSpots = recentlyViewedSpotIds.map(spotId => props.spots[spotId]);
-      const recentlyViewedSpotsWithImages = recentlyViewedSpots.filter(spot => spot.properties.images);
-      if (!isEmpty(recentlyViewedSpotsWithImages)) {
-        sortedView = (
-          <FlatList
-            keyExtractor={(item) => item.properties.id.toString()}
-            extraData={refresh}
-            data={recentlyViewedSpotsWithImages}
-            renderItem={({item}) => renderImagesInSpot(item)}/>
-        );
-      }
-      else sortedView = <Text style={{padding: 10}}>No recently viewed Spots with images</Text>;
+      sortedView = <FlatList
+        keyExtractor={(item) => item.toString()}
+        extraData={refresh}
+        data={props.recentViews}
+        renderItem={({item}) => renderRecentView(item)}/>;
     }
     else {
-      sortedView = (
-        <FlatList
-          keyExtractor={(item) => item.properties.id.toString()}
-          extraData={refresh}
-          data={Object.values(activeSpotsObj)}
-          renderItem={({item}) => renderImagesInSpot(item)}/>
-      );
+      sortedView = <FlatList
+        keyExtractor={(item) => item.properties.id.toString()}
+        extraData={refresh}
+        data={Object.values(activeSpotsObj)}
+        renderItem={({item}) => renderName(item)}/>;
     }
-
     return (
       <React.Fragment>
-        {isEmpty(useSpots.getSpotsWithImages()) ?
         <SortingButtons/>
         <View style={imageStyles.galleryImageContainer}>
           {sortedView}
