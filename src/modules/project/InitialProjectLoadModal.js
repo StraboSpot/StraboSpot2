@@ -10,18 +10,19 @@ import {redux} from '../../shared/app.constants';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import Spacer from '../../shared/ui/Spacer';
-import homeStyles from '../home/home.style';
 import {setOnlineStatus} from '../home/home.slice';
+import homeStyles from '../home/home.style';
 import {spotReducers} from '../spots/spot.constants';
 import ActiveDatasetsList from './ActiveDatasetsList';
 import DatasetList from './DatasetList';
 import NewProject from './NewProjectForm';
-import {projectReducers} from './project.constants';
 import ProjectList from './ProjectList';
+import {clearedProject, clearedDatasets} from './projectSliceTemp';
 import ProjectTypesButtons from './ProjectTypesButtons';
 
 const InitialProjectLoadModal = (props) => {
   const navigation = useNavigation();
+  const selectedDataset = useSelector(state => state.project.selectedDatasetId);
   const selectedProject = useSelector(state => state.project.project);
   const datasets = useSelector(state => state.project.datasets);
   const isOnline = useSelector(state => state.home.isOnline);
@@ -39,8 +40,8 @@ const InitialProjectLoadModal = (props) => {
 
   const goBack = () => {
     if (visibleProjectSection === 'activeDatasetsList') {
-      dispatch({type: projectReducers.PROJECTS, project: {}});
-      dispatch({type: projectReducers.DATASETS.DATASETS_UPDATE, datasets: {}});
+      dispatch(clearedProject());
+      dispatch(clearedDatasets());
       dispatch({type: spotReducers.CLEAR_SPOTS});
       setVisibleInitialSection('none');
     }
@@ -83,7 +84,7 @@ const InitialProjectLoadModal = (props) => {
         <Button
           onPress={() => props.closeModal()}
           title={'Done'}
-          disabled={isEmpty(Object.keys(datasets).find(key => datasets[key].current === true))}
+          disabled={isEmpty(selectedDataset)}
           buttonStyle={commonStyles.standardButton}
           titleStyle={commonStyles.standardButtonText}
         />
@@ -99,14 +100,11 @@ const InitialProjectLoadModal = (props) => {
   };
 
   const renderContinueOrCloseButton = () => {
-    const activeDatasets = Object.values(datasets).filter(dataset => dataset.active === true);
-    if (activeDatasets.length > 1) {
+    if (selectedDataset.length > 1) {
       return (
         <Button
           onPress={() => setVisibleProjectSection('currentDatasetSelection')}
           title={'Next'}
-          // disabled={isEmpty(datasets) ||
-          // isEmpty(Object.keys(datasets).find(key =>  datasets[key].active === true))}
           buttonStyle={[commonStyles.standardButton]}
           titleStyle={commonStyles.standardButtonText}
         />
@@ -117,8 +115,7 @@ const InitialProjectLoadModal = (props) => {
         <Button
           onPress={() => props.closeModal()}
           title={'Done'}
-          disabled={isEmpty(datasets)
-          || isEmpty(Object.keys(datasets).find(key => datasets[key].active === true))}
+          disabled={isEmpty(selectedDataset)}
           buttonStyle={[commonStyles.standardButton]}
           titleStyle={commonStyles.standardButtonText}
         />

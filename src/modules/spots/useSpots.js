@@ -7,9 +7,13 @@ import useImagesHook from '../images/useImages';
 import {projectReducers} from '../project/project.constants';
 import {generalKeysIcons, sedKeysIcons, spotReducers} from './spot.constants';
 import {removedLastStatusMessage, setLoadingStatus, setProjectLoadComplete} from '../home/home.slice';
+import {addedSpotsIdsToDataset} from '../project/projectSliceTemp';
+import {addSpot} from './spotSliceTemp';
 
 const useSpots = (props) => {
   const dispatch = useDispatch();
+  const activeDatasetsIds = useSelector(state => state.project.activeDatasetsIds);
+  const selectedDatasetId = useSelector(state => state.project.selectedDatasetId);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const spots = useSelector(state => state.spot.spots);
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
@@ -79,11 +83,7 @@ const useSpots = (props) => {
     await dispatch({type: spotReducers.ADD_SPOT, spot: newSpot});
     const currentDataset = Object.values(datasets).find(dataset => dataset.current);
     console.log('Active Dataset', currentDataset);
-    await dispatch({
-      type: projectReducers.DATASETS.ADD_SPOTS_IDS_TO_DATASET,
-      datasetId: currentDataset.id,
-      spotIds: [newSpot.properties.id],
-    });
+    await dispatch(addedSpotsIdsToDataset({datasetId: currentDataset.id, spotIds: [newSpot.properties.id]}));
     console.log('Finished creating new Spot. All Spots: ', spots);
     return newSpot;
   };
@@ -148,7 +148,8 @@ const useSpots = (props) => {
         console.log(spotsOnServer);
         dispatch({type: spotReducers.ADD_SPOTS, spots: spotsOnServer});
         const spotIds = Object.values(spotsOnServer).map(spot => spot.properties.id);
-        dispatch({type: projectReducers.DATASETS.ADD_SPOTS_IDS_TO_DATASET, datasetId: dataset.id, spotIds: spotIds});
+        dispatch(addedSpotsIdsToDataset({datasetId: dataset.id, spotIds: spotIds}));
+        // dispatch({type: projectReducers.DATASETS.ADD_SPOTS_IDS_TO_DATASET, datasetId: dataset.id, spotIds: spotIds});
         dispatch(removedLastStatusMessage());
         dispatch(addedStatusMessage({statusMessage: 'Downloaded Spots'}));
         const neededImagesIds = await useImages.gatherNeededImages(spotsOnServer);
@@ -184,9 +185,15 @@ const useSpots = (props) => {
     }
     return allImageBaseMaps;
   };
+
   // Get only the Spots in the active Datasets
   const getActiveSpotsObj = () => {
-    const activeSpotIds = Object.values(datasets).flatMap(dataset => dataset.active ? dataset.spotIds || [] : []);
+    // const activeSpotIds = Object.values(datasets).flatMap(dataset => dataset.active ? dataset.spotIds || [] : []);
+    const getActiveDatasetDataFromId = activeDatasetsIds.map(datasetId => {
+      return datasets[datasetId];
+    })
+    console.log('getActiveDatasetsFromId', getActiveDatasetDataFromId)
+    const activeSpotIds = getActiveDatasetDataFromId.flatMap(dataset => dataset.spotIds);
     let activeSpots = {};
     activeSpotIds.map(spotId => {
       if (spots[spotId]) activeSpots = {...activeSpots, [spotId]: spots[spotId]};

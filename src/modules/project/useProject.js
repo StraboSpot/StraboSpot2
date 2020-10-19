@@ -1,3 +1,4 @@
+import React, {useEffect} from 'react';
 import {Alert, Platform} from 'react-native';
 
 import {useDispatch, useSelector} from 'react-redux';
@@ -18,7 +19,17 @@ import useImagesHook from '../images/useImages';
 import {mapReducers} from '../maps/maps.constants';
 import {spotReducers} from '../spots/spot.constants';
 import useSpotsHook from '../spots/useSpots';
-import {projectReducers} from './project.constants';
+import {
+  addedDataset,
+  addedProject,
+  addedProjectDescription,
+  clearedDatasets,
+  clearedProject,
+  deletedDataset,
+  setActiveDatasets,
+  setSelectedDataset,
+  updatedDatasets,
+} from './projectSliceTemp';
 
 const useProject = () => {
   let dirs = RNFetchBlob.fs.dirs;
@@ -31,6 +42,7 @@ const useProject = () => {
   const dispatch = useDispatch();
   const datasets = useSelector(state => state.project.datasets);
   const project = useSelector(state => state.project.project);
+  const selectedDatasetId = useSelector(state => state.project.selectedDatasetId);
   const user = useSelector(state => state.user);
   const [serverRequests] = useServerRequests();
   const [useImages] = useImagesHook();
@@ -42,10 +54,15 @@ const useProject = () => {
     'is lower metamorphic grade than', 'is higher metamorphic grade than', 'is included within', 'includes',
     'merges with'];
 
+  useEffect(() => {
+    console.log('Updating Use Effect in useProjects', datasets);
+  }, [datasets]);
+
   const addDataset = async name => {
-    const addedDataset = createDataset(name);
-    await dispatch({type: projectReducers.DATASETS.DATASET_ADD, dataset: addedDataset});
-    await makeDatasetCurrent(addedDataset.id);
+    const datasetObj = createDataset(name);
+    await dispatch(addedDataset(datasetObj));
+    console.log('Added datasets', datasets);
+    await makeDatasetCurrent(datasetObj);
     return Promise.resolve();
   };
 
@@ -92,30 +109,34 @@ const useProject = () => {
   };
 
   const createDataset = (name) => {
+    const newDate = new Date().toISOString();
+    const modifiedTimeStamp = Date.now();
     const id = getNewId();
     return {
       id: id,
       name: name ? name : 'Default',
-      date: new Date(),
-      modified_timestamp: Date.now(),
+      date: newDate,
+      modified_timestamp: modifiedTimeStamp,
       current: true,
       active: true,
     };
   };
 
   const createProject = async (descriptionData) => {
+    const newDate = new Date().toISOString();
     const id = getNewId();
     const currentProject = {
       id: id,
       description: descriptionData,
-      date: new Date(),
+      date: newDate,
       modified_timestamp: Date.now(),
       other_features: defaultTypes,
       relationship_types: defaultRelationshipTypes,
     };
-    dispatch({type: projectReducers.PROJECT_ADD, description: currentProject});
+    dispatch(addedProjectDescription(currentProject));
+    // dispatch({type: projectReducers.PROJECT_ADD, description: currentProject});
     const defaultDataset = await createDataset();
-    dispatch({type: projectReducers.DATASETS.DATASET_ADD, dataset: defaultDataset});
+    dispatch(addedDataset(defaultDataset));
   };
 
   const initializeNewProject = async (descriptionData) => {
@@ -136,7 +157,7 @@ const useProject = () => {
             if (isEmpty(spotIdsArr)) {
               dispatch(removedLastStatusMessage());
               dispatch(addedStatusMessage({statusMessage: `Deleted ${spotsDeletedCount} spots.`}));
-              dispatch({type: projectReducers.DATASETS.DATASET_DELETE, id: id});
+              dispatch(deletedDataset(id));
               dispatch(addedStatusMessage({statusMessage: 'Dataset Deleted!'}));
             }
           });
@@ -144,7 +165,7 @@ const useProject = () => {
       );
     }
     else {
-      dispatch({type: projectReducers.DATASETS.DATASET_DELETE, id: id});
+      dispatch(deletedDataset(id));
       dispatch(removedLastStatusMessage());
       dispatch(addedStatusMessage({statusMessage: 'Dataset Deleted!'}));
       return Promise.resolve();
@@ -153,9 +174,9 @@ const useProject = () => {
 
   const destroyOldProject = async () => {
     // if (!isEmpty(project)) {
-    await dispatch({type: projectReducers.PROJECT_CLEAR});
+    await dispatch(clearedProject());
     await dispatch({type: spotReducers.CLEAR_SPOTS});
-    await dispatch({type: projectReducers.DATASETS.DATASETS_CLEAR});
+    await dispatch(clearedDatasets());
     await dispatch({type: mapReducers.CLEAR_MAPS});
     // }
     return Promise.resolve();
@@ -201,8 +222,8 @@ const useProject = () => {
     }
   };
 
-  const getCurrentDataset = () => {
-    return Object.values(datasets).find(dataset => dataset.current);
+  const getSelectedDatasetFromId = () => {
+    return datasets[selectedDatasetId]
   };
 
   const loadProjectFromDevice = async (selectedProject) => {
@@ -213,8 +234,7 @@ const useProject = () => {
     if (dirExists) {
       if (!isEmpty(project)) await destroyOldProject();
       dispatch({type: spotReducers.ADD_SPOTS_FROM_DEVICE, spots: spotsDb});
-      dispatch({type: projectReducers.PROJECTS, project: projectDb.project});
-      dispatch({type: projectReducers.DATASETS.DATASETS_UPDATE, datasets: projectDb.datasets});
+      dispatch(addedProject(projectDb.project));
       if (!isEmpty(otherMapsDb) || !isEmpty(mapNamesDb)) {
         dispatch({type: mapReducers.ADD_MAPS_FROM_DEVICE, field: 'customMaps', maps: otherMapsDb});
         dispatch({type: mapReducers.ADD_MAPS_FROM_DEVICE, field: 'offlineMaps', maps: mapNamesDb});
@@ -235,7 +255,7 @@ const useProject = () => {
       if (!projectResponse.description) projectResponse.description = {};
       if (!projectResponse.description.project_name) projectResponse.description.project_name = 'Unnamed';
       if (!projectResponse.other_features) projectResponse.other_features = defaultTypes;
-      await dispatch({type: projectReducers.PROJECTS, project: projectResponse});
+      await dispatch(addedProject(projectResponse));
       if (projectResponse.other_maps) {
       }
       const datasetsResponse = await getDatasets(selectedProject);
@@ -258,17 +278,12 @@ const useProject = () => {
     }
     else {
       if (projectDatasetsFromServer.datasets.length === 1) {
-        projectDatasetsFromServer.datasets[0].active = true;
-        projectDatasetsFromServer.datasets[0].current = true;
-      }
-      else {
-        projectDatasetsFromServer.datasets.map(dataset => {
-          dataset.active = false;
-        });
+        dispatch(setActiveDatasets({bool: true, dataset: projectDatasetsFromServer.datasets[0].id}));
+        dispatch(setSelectedDataset(projectDatasetsFromServer.datasets[0].id));
       }
       const datasetsReassigned = Object.assign({},
         ...projectDatasetsFromServer.datasets.map(item => ({[item.id]: item})));
-      dispatch({type: projectReducers.DATASETS.DATASETS_UPDATE, datasets: datasetsReassigned});
+      dispatch(updatedDatasets(datasetsReassigned));
       dispatch(removedLastStatusMessage());
       dispatch(addedStatusMessage({statusMessage: 'Datasets Saved.'}));
       console.log('Saved datasets:', projectDatasetsFromServer);
@@ -276,12 +291,8 @@ const useProject = () => {
     }
   };
 
-  const makeDatasetCurrent = (id) => {
-    // eslint-disable-next-line no-return-assign
-    Object.values(datasets).map(data => data.current = false);
-    const datasetsCopy = JSON.parse(JSON.stringify(datasets));
-    datasetsCopy[id].current = !datasetsCopy[id].current;
-    dispatch({type: projectReducers.DATASETS.DATASETS_UPDATE, datasets: datasetsCopy});
+  const makeDatasetCurrent = (dataset) => {
+    dispatch(setSelectedDataset(dataset));
     return Promise.resolve();
   };
 
@@ -445,7 +456,7 @@ const useProject = () => {
     doesDeviceDirExist: doesDeviceDirExist,
     getAllDeviceProjects: getAllDeviceProjects,
     getAllServerProjects: getAllServerProjects,
-    getCurrentDataset: getCurrentDataset,
+    getSelectedDatasetFromId: getSelectedDatasetFromId,
     getDatasets: getDatasets,
     makeDatasetCurrent: makeDatasetCurrent,
     initializeNewProject: initializeNewProject,

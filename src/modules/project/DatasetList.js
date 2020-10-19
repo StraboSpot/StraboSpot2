@@ -21,6 +21,7 @@ import useProjectHook from '../project/useProject';
 import useSpotsHook from '../spots/useSpots';
 import {projectReducers} from './project.constants';
 import styles from './project.styles';
+import {updatedDatasetProperties, updatedDatasets, setActiveDatasets, setSelectedDataset} from './projectSliceTemp';
 
 const DatasetList = () => {
 
@@ -32,7 +33,8 @@ const DatasetList = () => {
   const [isDatasetNameModalVisible, setIsDatasetNameModalVisible] = useState(false);
   const [isStatusMessagesModalVisible, setIsStatusMessagesModalVisible] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-
+  const selectedDatasetId = useSelector(state => state.project.selectedDatasetId);
+  const activeDatasetsIds = useSelector(state => state.project.activeDatasetsIds);
   const datasets = useSelector(state => state.project.datasets);
   const statusMessages = useSelector(state => state.home.statusMessages);
   const isOnline = useSelector(state => state.home.isOnline);
@@ -43,7 +45,7 @@ const DatasetList = () => {
     console.log('Datasets in useEffect', datasets);
     console.log('States in useEffect', isDeleteConfirmModalVisible, isDatasetNameModalVisible);
     deleteDataset();
-  }, [datasets, isDeleting, selectedDataset, isStatusMessagesModalVisible]);
+  }, [datasets, isDeleting, activeDatasetsIds, isStatusMessagesModalVisible, selectedDatasetId]);
 
   const deleteDataset = async () => {
     if (!isDeleteConfirmModalVisible && !isDatasetNameModalVisible && isDeleting && selectedDataset && selectedDataset.id) {
@@ -68,8 +70,7 @@ const DatasetList = () => {
   };
 
   const isDisabled = (id) => {
-    const activeDatasets = Object.values(datasets).filter(dataset => dataset.active === true);
-    return activeDatasets.length === 1 && activeDatasets[0].id === id;
+    return activeDatasetsIds.length === 1 && activeDatasetsIds[0] === id;
   };
 
   const renderDatasets = () => {
@@ -100,8 +101,9 @@ const DatasetList = () => {
                 </ListItem.Subtitle>
               </ListItem.Content>
               <Switch
-                onValueChange={(value) => setSwitchValue(value, item.id)}
-                value={item.active}
+                onValueChange={(value) => setSwitchValue(value, item)}
+                value={activeDatasetsIds.some(dataset => dataset === item.id)}
+                // value={false}
                 disabled={isDisabled(item.id)}
               />
             </ListItem>;
@@ -229,7 +231,7 @@ const DatasetList = () => {
   };
 
   const saveDataset = () => {
-    dispatch({type: 'UPDATE_DATASET_PROPERTIES', dataset: selectedDataset});
+    dispatch(updatedDatasetProperties(selectedDataset));
     setIsDatasetNameModalVisible(false);
   };
 
@@ -238,33 +240,45 @@ const DatasetList = () => {
     setIsDatasetNameModalVisible(true);
   };
 
-  const setSwitchValue = async (val, id) => {
-    const datasetsCopy = JSON.parse(JSON.stringify(datasets));
-    datasetsCopy[id].active = val;
+  const setSwitchValue = async (val, dataset) => {
+    if (isOnline && !isEmpty(userData) && !isEmpty(dataset.spotIds) && selectedDataset.length > 1){
+      setLoading(true);
+        dispatch(setStatusMessagesModalVisible({bool: true}));
+        dispatch(clearedStatusMessages());
+        await useSpots.downloadSpots(dataset, userData.encoded_login);
+      dispatch(addedStatusMessage({statusMessage: 'Download Complete!'}));
+        setLoading(false);
+    }
+    else await dispatch(setActiveDatasets({bool: val, dataset: dataset.id}));
+
+
+    // const datasetsCopy = JSON.parse(JSON.stringify(datasets));
+    // datasetsCopy[id].active = val;
 
     // Check for a current dataset
-    const i = Object.values(datasetsCopy).findIndex(data => data.current === true);
-    if (val && i === -1) datasetsCopy[id].current = true;
+    // const i = Object.values(datasetsCopy).findIndex(data => data.current === true);
+    // if (val && i === -1) datasetsCopy[id].current = true;
 
-    else if (!val && datasetsCopy[id].current) {
-      datasetsCopy[id].current = false;
-      const datasetsActive = Object.values(datasetsCopy).filter(dataset => dataset.active === true);
-      datasetsCopy[datasetsActive[0].id].current = true;
-    }
-    if (isOnline && !isEmpty(userData) && !isEmpty(datasetsCopy[id]) && datasetsCopy[id].active
-      && isEmpty(datasetsCopy[id].spotIds)) {
-      // dispatch({type: homeReducers.SET_LOADING, bool: true});
-      setLoading(true);
-      dispatch({type: projectReducers.DATASETS.DATASETS_UPDATE, datasets: datasetsCopy});
-      dispatch(setStatusMessagesModalVisible({bool: true}));
-      dispatch(clearedStatusMessages());
-      await useSpots.downloadSpots(datasetsCopy[id], userData.encoded_login);
-      dispatch(addedStatusMessage({statusMessage: 'Download Complete!'}));
-      setLoading(false);
-    }
-    else {
-      dispatch({type: projectReducers.DATASETS.DATASETS_UPDATE, datasets: datasetsCopy});
-    }
+    // else if (!val && datasetsCopy[id].current) {
+    //   datasetsCopy[id].current = false;
+    //   const datasetsActive = Object.values(datasetsCopy).filter(dataset => dataset.active === true);
+    //   datasetsCopy[datasetsActive[0].id].current = true;
+    // }
+
+    // if (isOnline && !isEmpty(userData) && !isEmpty(datasetsCopy[id]) && datasetsCopy[id].active
+    //   && isEmpty(datasetsCopy[id].spotIds)) {
+    //   // dispatch({type: homeReducers.SET_LOADING, bool: true});
+    //   setLoading(true);
+    //   // dispatch(updatedDatasets(datasetsCopy));
+    //   dispatch(setStatusMessagesModalVisible({bool: true}));
+    //   dispatch(clearedStatusMessages());
+    //   // await useSpots.downloadSpots(datasetsCopy[id], userData.encoded_login);
+    //   dispatch(addedStatusMessage({statusMessage: 'Download Complete!'}));
+    //   setLoading(false);
+    // }
+    // else {
+    //   dispatch(updatedDatasets(datasetsCopy));
+    // }
   };
 
   return (

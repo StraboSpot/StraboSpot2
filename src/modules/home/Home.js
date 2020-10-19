@@ -81,7 +81,7 @@ const Home = (props) => {
   const [useMaps] = useMapsHook();
   const [useProject] = useProjectHook();
   const [useSpots] = useSpotsHook();
-  const currentDataset = useProject.getCurrentDataset();
+  const selectedDataset = useProject.getSelectedDatasetFromId();
 
   const dispatch = useDispatch();
   const customMaps = useSelector(state => state.map.customMaps);
@@ -282,7 +282,7 @@ const Home = (props) => {
       case MapModes.DRAW.POLYGON:
       case MapModes.DRAW.FREEHANDPOLYGON:
       case MapModes.DRAW.FREEHANDLINE:
-        if (!isEmpty(currentDataset)) setDraw(name);
+        if (!isEmpty(selectedDataset)) setDraw(name);
         else Alert.alert('No Current Dataset', 'A current dataset needs to be set before drawing Spots.');
         break;
       case 'endDraw':

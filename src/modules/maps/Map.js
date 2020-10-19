@@ -31,6 +31,7 @@ const Map = React.forwardRef((props, ref) => {
 
   const currentBasemap = useSelector(state => state.map.currentBasemap);
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
+  const activeDatasetsIds = useSelector(state => state.project.activeDatasetsIds);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const vertexEndCoords = useSelector(state => state.map.vertexEndCoords);
   const spots = useSelector(state => state.spot.spots);
@@ -157,7 +158,7 @@ const Map = React.forwardRef((props, ref) => {
     if (props.mapMode !== MapModes.EDIT) {
       setDisplayedSpots((isEmpty(selectedSpot) ? [] : [{...selectedSpot}]));
     }
-  }, [selectedSpot]);
+  }, [selectedSpot, activeDatasetsIds]);
 
   useEffect(() => {
     console.log('UE6 Map [vertexEndCoords]');
