@@ -12,18 +12,18 @@ const useMapFeatures = (props) => {
 
   // Get Spots within (points) or intersecting (line or polygon) the drawn polygon
   const getLassoedSpots = (features, drawnPolygon) => {
-    const featuresIds = features.map(feature => feature.properties.id);
-    const spotsIds = [...new Set(featuresIds)]; // Remove duplicate ids
-    const spots = useSpots.getSpotsByIds(spotsIds);
-    const selectedSpots = [];
+    let selectedSpots;
     try {
-      spots.forEach(spot => {
-        if (turf.booleanWithin(spot, drawnPolygon)
-          || (spot.geometry.type === 'LineString' && turf.lineIntersect(spot, drawnPolygon).features.length > 0)
-          || (spot.geometry.type === 'Polygon' && turf.booleanOverlap(spot, drawnPolygon))) {
-          selectedSpots.push(spot);
+      const selectedFeaturesIds = [];
+      features.forEach(feature => {
+        if (turf.booleanWithin(feature, drawnPolygon)
+          || (feature.geometry.type === 'LineString' && turf.lineIntersect(feature, drawnPolygon).features.length > 0)
+          || (feature.geometry.type === 'Polygon' && turf.booleanOverlap(feature, drawnPolygon))) {
+          selectedFeaturesIds.push(feature.properties.id);
         }
       });
+      const selectedSpotsIds = [...new Set(selectedFeaturesIds)]; // Remove duplicate ids
+      selectedSpots = useSpots.getSpotsByIds(selectedSpotsIds);
     }
     catch (e) {
       console.log('Error getting Spots within or intersecting the drawn polygon', e);
