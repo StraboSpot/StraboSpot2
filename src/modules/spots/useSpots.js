@@ -5,6 +5,7 @@ import {getNewId, isEmpty} from '../../shared/Helpers';
 import {addedStatusMessage} from '../home/home.slice';
 import useImagesHook from '../images/useImages';
 import {projectReducers} from '../project/project.constants';
+import {addedSpotsIdsToDataset} from '../project/projects.reducer';
 import {generalKeysIcons, sedKeysIcons, spotReducers} from './spot.constants';
 import {removedLastStatusMessage, setLoadingStatus, setProjectLoadComplete} from '../home/home.slice';
 import {addedSpotsIdsToDataset} from '../project/projectSliceTemp';
@@ -81,7 +82,8 @@ const useSpots = (props) => {
     }
     console.log('Creating new Spot:', newSpot);
     await dispatch({type: spotReducers.ADD_SPOT, spot: newSpot});
-    const currentDataset = Object.values(datasets).find(dataset => dataset.current);
+    // const currentDataset = Object.values(datasets).find(dataset => dataset.current);
+    const currentDataset = datasets[selectedDatasetId];
     console.log('Active Dataset', currentDataset);
     await dispatch(addedSpotsIdsToDataset({datasetId: currentDataset.id, spotIds: [newSpot.properties.id]}));
     console.log('Finished creating new Spot. All Spots: ', spots);
@@ -191,8 +193,8 @@ const useSpots = (props) => {
     // const activeSpotIds = Object.values(datasets).flatMap(dataset => dataset.active ? dataset.spotIds || [] : []);
     const getActiveDatasetDataFromId = activeDatasetsIds.map(datasetId => {
       return datasets[datasetId];
-    })
-    console.log('getActiveDatasetsFromId', getActiveDatasetDataFromId)
+    });
+    console.log('getActiveDatasetsFromId', getActiveDatasetDataFromId);
     const activeSpotIds = getActiveDatasetDataFromId.flatMap(dataset => dataset.spotIds);
     let activeSpots = {};
     activeSpotIds.map(spotId => {

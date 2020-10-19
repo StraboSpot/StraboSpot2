@@ -29,7 +29,7 @@ import {
   setActiveDatasets,
   setSelectedDataset,
   updatedDatasets,
-} from './projectSliceTemp';
+} from './projects.reducer';
 
 const useProject = () => {
   let dirs = RNFetchBlob.fs.dirs;
@@ -40,6 +40,7 @@ const useProject = () => {
 
 
   const dispatch = useDispatch();
+  const activeDatasetsIds = useSelector(state => state.project.activeDatasetsIds);
   const datasets = useSelector(state => state.project.datasets);
   const project = useSelector(state => state.project.project);
   const selectedDatasetId = useSelector(state => state.project.selectedDatasetId);
@@ -358,25 +359,25 @@ const useProject = () => {
 
   const uploadDatasets = async () => {
     let currentRequest = 0;
-    const activeDatasets = Object.values(datasets).filter(dataset => dataset.active === true);
+    const selectedDataset = Object.values(datasets).filter(dataset => dataset.active === true);
     dispatch(clearedStatusMessages());
     dispatch(addedStatusMessage({statusMessage: 'Uploading Datasets...'}));
 
     const makeNextRequest = async () => {
       console.log('Making request...');
-      return uploadDataset(activeDatasets[currentRequest]).then(() => {
+      return uploadDataset(selectedDataset[currentRequest]).then(() => {
         currentRequest++;
         dispatch(removedLastStatusMessage());
-        if (currentRequest > 0 && currentRequest < activeDatasets.length) {
+        if (currentRequest > 0 && currentRequest < activeDatasetsIds.length) {
           dispatch(
-            addedStatusMessage({statusMessage: 'Uploading Dataset: ' + currentRequest + '/' + activeDatasets.length}));
+            addedStatusMessage({statusMessage: 'Uploading Dataset: ' + currentRequest + '/' + activeDatasetsIds.length}));
         }
-        if (currentRequest < activeDatasets.length) {
+        if (currentRequest < activeDatasetsIds.length) {
           return makeNextRequest();
         }
         else {
           dispatch(removedLastStatusMessage());
-          dispatch(addedStatusMessage({statusMessage: activeDatasets.length + ' Datasets uploaded!'}));
+          dispatch(addedStatusMessage({statusMessage: activeDatasetsIds.length + ' Datasets uploaded!'}));
           return Promise.resolve({message: 'Datasets Uploaded'});
         }
       }, (err) => {
@@ -388,11 +389,11 @@ const useProject = () => {
       });
     };
 
-    if (currentRequest < activeDatasets.length) {
+    if (currentRequest < activeDatasetsIds.length) {
       console.log('MakeNextRequest', currentRequest);
       return makeNextRequest();
     }
-    if (activeDatasets.length === 0) {
+    if (activeDatasetsIds.length === 0) {
       dispatch(setLoadingStatus({view: 'modal', bool: false}));
       dispatch(removedLastStatusMessage());
       dispatch(addedStatusMessage({statusMessage: 'There are no active datasets.'}));
