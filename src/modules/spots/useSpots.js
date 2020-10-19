@@ -5,7 +5,7 @@ import {getNewId, isEmpty} from '../../shared/Helpers';
 import {addedStatusMessage} from '../home/home.slice';
 import useImagesHook from '../images/useImages';
 import {projectReducers} from '../project/project.constants';
-import {addedSpotsIdsToDataset} from '../project/projects.reducer';
+import {addedSpotsIdsToDataset} from '../project/projects.slice';
 import {generalKeysIcons, sedKeysIcons, spotReducers} from './spot.constants';
 import {removedLastStatusMessage, setLoadingStatus, setProjectLoadComplete} from '../home/home.slice';
 import {addedSpotsIdsToDataset} from '../project/projectSliceTemp';

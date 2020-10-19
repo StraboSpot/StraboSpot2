@@ -17,7 +17,7 @@ import ActiveDatasetsList from './ActiveDatasetsList';
 import DatasetList from './DatasetList';
 import NewProject from './NewProjectForm';
 import ProjectList from './ProjectList';
-import {clearedProject, clearedDatasets} from './projects.reducer';
+import {clearedProject, clearedDatasets} from './projects.slice';
 import ProjectTypesButtons from './ProjectTypesButtons';
 
 const InitialProjectLoadModal = (props) => {

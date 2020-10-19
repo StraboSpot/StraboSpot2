@@ -21,7 +21,7 @@ import useProjectHook from '../project/useProject';
 import useSpotsHook from '../spots/useSpots';
 import {projectReducers} from './project.constants';
 import styles from './project.styles';
-import {updatedDatasetProperties, updatedDatasets, setActiveDatasets, setSelectedDataset} from './projects.reducer';
+import {updatedDatasetProperties, updatedDatasets, setActiveDatasets, setSelectedDataset} from './projects.slice';
 
 const DatasetList = () => {
 

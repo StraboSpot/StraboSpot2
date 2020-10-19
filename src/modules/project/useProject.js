@@ -29,7 +29,7 @@ import {
   setActiveDatasets,
   setSelectedDataset,
   updatedDatasets,
-} from './projects.reducer';
+} from './projects.slice';
 
 const useProject = () => {
   let dirs = RNFetchBlob.fs.dirs;
