@@ -2,13 +2,11 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import useServerRequestsHook from '../../services/useServerRequests';
 import {getNewId, isEmpty} from '../../shared/Helpers';
-import {addedStatusMessage} from '../home/home.slice';
+import {addedStatusMessage,removedLastStatusMessage, setLoadingStatus, setProjectLoadComplete} from '../home/home.slice';
 import useImagesHook from '../images/useImages';
 import {projectReducers} from '../project/project.constants';
 import {addedSpotsIdsToDataset} from '../project/projects.slice';
 import {generalKeysIcons, sedKeysIcons, spotReducers} from './spot.constants';
-import {removedLastStatusMessage, setLoadingStatus, setProjectLoadComplete} from '../home/home.slice';
-import {addedSpotsIdsToDataset} from '../project/projectSliceTemp';
 import {addSpot} from './spotSliceTemp';
 
 const useSpots = (props) => {
@@ -81,6 +79,7 @@ const useSpots = (props) => {
       }
     }
     console.log('Creating new Spot:', newSpot);
+    // await dispatch(addSpot(newSpot));
     await dispatch({type: spotReducers.ADD_SPOT, spot: newSpot});
     // const currentDataset = Object.values(datasets).find(dataset => dataset.current);
     const currentDataset = datasets[selectedDatasetId];

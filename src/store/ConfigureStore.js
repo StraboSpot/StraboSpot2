@@ -16,7 +16,7 @@ import homeSlice from '../modules/home/home.slice';
 import mainMenuSlice from '../modules/main-menu-panel/mainMenuPanel.slice';
 import {mapReducer} from '../modules/maps/maps.reducer';
 import notebookSlice from '../modules/notebook-panel/notebook.slice';
-import projectSlice from '../modules/project/projects.reducer';
+import projectSlice from '../modules/project/projects.slice';
 import {spotReducer} from '../modules/spots/spot.reducers';
 import userSlice from '../modules/user/userProfile.slice';
 import {redux} from '../shared/app.constants';

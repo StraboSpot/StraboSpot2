@@ -32,19 +32,18 @@ import PlaceholderPage from './PlaceholderPage';
 const NotebookPanel = props => {
   const [useSpots] = useSpotsHook();
   const dispatch = useDispatch();
-  const pageVisible = useSelector(state => isEmpty(state.notebook.visibleNotebookPagesStack)
-    ? null : state.notebook.visibleNotebookPagesStack.slice(-1)[0]);
+  const pageVisible = useSelector(state => state.notebook.visibleNotebookPagesStack.slice(-1)[0]);
   const recentlyViewedSpotIds = useSelector(state => state.spot.recentViews);
   const isAllSpotsPanelVisible = useSelector(state => state.home.isAllSpotsPanelVisible);
   const spots = useSelector(state => state.spot.spots);
 
   const notebookPageVisible = page => {
-    const pageVisible = dispatch(setNotebookPageVisible(page));
-    if (pageVisible.page === NotebookPages.MEASUREMENT || pageVisible === NotebookPages.MEASUREMENTDETAIL) {
+    dispatch(setNotebookPageVisible(page));
+    if (page === NotebookPages.MEASUREMENT || page === NotebookPages.MEASUREMENTDETAIL) {
       dispatch(setModalVisible({modal: Modals.NOTEBOOK_MODALS.COMPASS}));
     }
-    else if (pageVisible.page === NotebookPages.SAMPLE) dispatch(setModalVisible({modal: Modals.NOTEBOOK_MODALS.SAMPLE}));
-    else if (pageVisible.page === NotebookPages.TAG) dispatch(setModalVisible({modal: Modals.NOTEBOOK_MODALS.TAGS}));
+    else if (page === NotebookPages.SAMPLE) dispatch(setModalVisible({modal: Modals.NOTEBOOK_MODALS.SAMPLE}));
+    else if (page === NotebookPages.TAG) dispatch(setModalVisible({modal: Modals.NOTEBOOK_MODALS.TAGS}));
     else dispatch(setModalVisible({modal: null}));
   };
 
@@ -161,9 +160,6 @@ function mapStateToProps(state) {
   return {
     spot: state.spot.selectedSpot,
     selectedSpots: state.spot.selectedSpots,
-    notebookPageVisible: isEmpty(state.notebook.visibleNotebookPagesStack)
-      ? null
-      : state.notebook.visibleNotebookPagesStack.slice(-1)[0],
   };
 }
 

@@ -103,7 +103,7 @@ const ActiveProjectPanel = () => {
         <Divider sectionText={'ACTIVE DATASETS'}/>
       </View>
       <View style={[commonStyles.sectionContainer, {height: 200}]}>
-        {!isEmpty(activeDatasets) ? <ActiveDatasetsList/> : null}
+        {<ActiveDatasetsList/>}
       </View>
       <View style={{alignItems: 'center', margin: 10, marginTop: 0}}>
         <Text style={commonStyles.standardDescriptionText}>New Spots will be added to the check marked data set</Text>
