@@ -141,9 +141,9 @@ const useSpots = (props) => {
   };
 
   const downloadSpots = async (dataset, encodedLogin) => {
-    dispatch(addedStatusMessage({statusMessage: 'Downloading Spots...'}));
     const datasetInfoFromServer = await useServerRequests.getDatasetSpots(dataset.id, encodedLogin);
     if (!isEmpty(datasetInfoFromServer) && datasetInfoFromServer.features) {
+      dispatch(addedStatusMessage({statusMessage: 'Downloading Spots...'}));
       const spotsOnServer = datasetInfoFromServer.features;
       if (!isEmpty(datasetInfoFromServer) && spotsOnServer) {
         console.log(spotsOnServer);
@@ -164,7 +164,10 @@ const useSpots = (props) => {
       }
       return Promise.resolve({message: 'done - Spots'});
     }
-    else return Promise.reject('No Spots!');
+    else {
+      dispatch(setLoadingStatus({view: 'modal', bool: false}));
+      return Promise.resolve('No Spots!')
+    };
   };
 
   const getAllImageBaseMaps = () => {
@@ -189,17 +192,17 @@ const useSpots = (props) => {
 
   // Get only the Spots in the active Datasets
   const getActiveSpotsObj = () => {
-    // const activeSpotIds = Object.values(datasets).flatMap(dataset => dataset.active ? dataset.spotIds || [] : []);
-    const getActiveDatasetDataFromId = activeDatasetsIds.map(datasetId => {
-      return datasets[datasetId];
-    });
-    console.log('getActiveDatasetsFromId', getActiveDatasetDataFromId);
-    const activeSpotIds = getActiveDatasetDataFromId.flatMap(dataset => dataset.spotIds);
     let activeSpots = {};
-    activeSpotIds.map(spotId => {
-      if (spots[spotId]) activeSpots = {...activeSpots, [spotId]: spots[spotId]};
-      else console.log('Missing Spot', spotId);
-    });
+    // const activeSpotIds = Object.values(datasets).flatMap(dataset => dataset.active ? dataset.spotIds || [] : []);
+    if (!isEmpty(datasets) && !isEmpty(activeDatasetsIds)) {
+      const activeDatasets = activeDatasetsIds.map(datasetId => datasets[datasetId]);
+      console.log('getActiveDatasetsFromId', activeDatasets);
+      const activeSpotIds = activeDatasets.flatMap(dataset => dataset.spotIds);
+      activeSpotIds.map(spotId => {
+        if (spots[spotId]) activeSpots = {...activeSpots, [spotId]: spots[spotId]};
+        else console.log('Missing Spot', spotId);
+      });
+    }
     return activeSpots;
   };
 

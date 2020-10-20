@@ -54,7 +54,6 @@ const projectSlice = createSlice({
       // console.log('after', current(state))
     },
     setSelectedDataset(state, action) {
-
       state.selectedDatasetId = action.payload;
     },
     setSelectedTag(state, action) {},

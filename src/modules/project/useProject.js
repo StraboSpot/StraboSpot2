@@ -45,6 +45,7 @@ const useProject = () => {
   const project = useSelector(state => state.project.project);
   const selectedDatasetId = useSelector(state => state.project.selectedDatasetId);
   const user = useSelector(state => state.user);
+  const isOnline = useSelector(state => state.home.isOnline);
   const [serverRequests] = useServerRequests();
   const [useImages] = useImagesHook();
   const [useSpots] = useSpotsHook();
@@ -285,8 +286,8 @@ const useProject = () => {
       const datasetsReassigned = Object.assign({},
         ...projectDatasetsFromServer.datasets.map(item => ({[item.id]: item})));
       dispatch(updatedDatasets(datasetsReassigned));
-      dispatch(removedLastStatusMessage());
-      dispatch(addedStatusMessage({statusMessage: 'Datasets Saved.'}));
+      // dispatch(removedLastStatusMessage());
+      // dispatch(addedStatusMessage({statusMessage: 'Datasets Saved.'}));
       console.log('Saved datasets:', projectDatasetsFromServer);
       return Promise.resolve(projectDatasetsFromServer);
     }
@@ -339,6 +340,24 @@ const useProject = () => {
       }
     }
     return Promise.resolve(projectResponse);
+  };
+
+  const setSwitchValue = async (val, dataset) => {
+    const areActiveDatasetsEmpty = isEmpty(activeDatasetsIds);
+
+    if (isOnline && !isEmpty(user) && val && isEmpty(dataset.spotIds)){
+      dispatch(setStatusMessagesModalVisible({bool: true}));
+      dispatch(clearedStatusMessages());
+      const res = await useSpots.downloadSpots(dataset, user.encoded_login);
+      console.log(res)
+      if (res === 'No Spots!') dispatch(addedStatusMessage({statusMessage: 'No Spots!'}));
+      else dispatch(addedStatusMessage({statusMessage: 'Download Complete!'}));
+      if (val && areActiveDatasetsEmpty) dispatch(setSelectedDataset(dataset.id));
+      dispatch(setActiveDatasets({bool: val, dataset: dataset.id}))
+      return Promise.resolve();
+    }
+    else await dispatch(setActiveDatasets({bool: val, dataset: dataset.id}));
+    return Promise.resolve();
   };
 
   const uploadDataset = async (dataset) => {
@@ -465,6 +484,7 @@ const useProject = () => {
     loadProjectRemote: loadProjectRemote,
     readDeviceFile: readDeviceFile,
     selectProject: selectProject,
+    setSwitchValue: setSwitchValue,
     uploadDatasets: uploadDatasets,
     uploadProject: uploadProject,
   };
