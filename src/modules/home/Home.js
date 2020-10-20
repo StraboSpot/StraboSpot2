@@ -167,7 +167,6 @@ const Home = (props) => {
       return [...acc, ...imagesForSlideshow1];
     }, []);
     setImageSlideshowData([firstSlideshowImage, ...imagesForSlideshow]);
-    console.log('data', [firstSlideshowImage, ...imagesForSlideshow]);
   };
 
   useEffect(() => {
