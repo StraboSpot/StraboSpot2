@@ -96,7 +96,7 @@ const Map = React.forwardRef((props, ref) => {
     console.log('UE1 Map [currentImageBasemap]');
     console.log('Changed image basemap to:', currentImageBasemap);
     if (currentImageBasemap && (!currentImageBasemap.height || !currentImageBasemap.width)) {
-      useImages.setImageBasemapSize(currentImageBasemap);
+      useImages.setImageHeightAndWidth(currentImageBasemap).catch(console.error);
     }
     else {
       const calculatedCoordQuad = currentImageBasemap ? useMaps.getCoordQuad(currentImageBasemap) : undefined;
@@ -1199,8 +1199,9 @@ const Map = React.forwardRef((props, ref) => {
       // or not on same imagebasemap as the selectedspot's imagebasemap,
       // then switch to corresponding imagebasemap and zoomToSpot in asyncMode
       if (!currentImageBasemap || currentImageBasemap.id !== selectedSpot.properties.image_basemap) {
-        var imageBasemapData = Array.from(useSpots.getAllImageBaseMaps()).find(
-          imgBasemap => imgBasemap.id === selectedSpot.properties.image_basemap);
+        const imageBasemapData = useSpots.getImageBasemaps().find(imgBasemap => {
+          return imgBasemap.id === selectedSpot.properties.image_basemap;
+        });
         dispatch(({
           type: mapReducers.CURRENT_IMAGE_BASEMAP,
           currentImageBasemap: imageBasemapData,

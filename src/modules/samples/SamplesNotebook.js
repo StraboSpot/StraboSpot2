@@ -32,11 +32,15 @@ const SamplesNotebook = (props) => {
             <ListItem.Content>
               <ListItem.Title>{item.sample_id_name
                 ? item.sample_id_name
-                : <Text style={{color: 'grey'}}>Sample id: {item.id}</Text>}</ListItem.Title>
-              <ListItem.Subtitle style={styles.listText}>{<Text
-                numberOfLines={1}
-                style={styles.listText}>{oriented} - {item.sample_description ? item.sample_description
-                : 'No Description'}</Text>}</ListItem.Subtitle>
+                : <Text style={{color: 'grey'}}>Sample id: {item.id}</Text>}
+              </ListItem.Title>
+              <ListItem.Subtitle style={styles.listText}>
+                {<Text
+                  numberOfLines={1}
+                  style={styles.listText}>{oriented} -
+                  {item.sample_description ? item.sample_description : 'No Description'}
+                </Text>}
+              </ListItem.Subtitle>
             </ListItem.Content>
             <Icon
               name='ios-information-circle-outline'
@@ -54,12 +58,14 @@ const SamplesNotebook = (props) => {
   const renderNotebookView = () => {
     return (
       <View>
-        {props.notebookPageVisible === NotebookPages.SAMPLE && <ReturnToOverviewButton
+        {props.notebookPageVisible === NotebookPages.SAMPLE && (
+          <ReturnToOverviewButton
           onPress={() => {
             dispatch(setNotebookPageVisible(NotebookPages.OVERVIEW));
             dispatch(setModalVisible({modal: null}));
           }}
-        />}
+        />
+        )}
         {props.notebookPageVisible === NotebookPages.SAMPLE && <SectionDivider dividerText='Samples'/>}
         {/*<FlatList*/}
         {/*  keyExtractor={(item, index) => index.toString()}*/}
@@ -67,7 +73,8 @@ const SamplesNotebook = (props) => {
         {/*  renderItem={renderItem}*/}
         {/*/>*/}
         <ScrollView>
-          {props.spot.properties.samples ? renderSampleList()
+          {props.spot.properties.samples
+            ? renderSampleList()
             : <Text style={commonStyles.noValueText}>No Samples</Text>}
         </ScrollView>
       </View>

@@ -146,6 +146,7 @@ const MainMenuPanel = props => {
         <View style={styles.mainMenuContainer}>
           <ImageGallery
             getSpotData={(spotId) => getSpotFromId(spotId)}
+            spotsInMapExtent={spotsInMapExtent}
           />
         </View>
       );

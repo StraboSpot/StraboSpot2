@@ -1,14 +1,13 @@
+import {useState} from 'react';
 import {Alert, Image, Platform} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
-import {Base64} from 'js-base64';
-// import ImagePicker from 'react-native-image-crop-picker';
 import ImagePicker from 'react-native-image-picker';
 import ImageResizer from 'react-native-image-resizer';
 import {useDispatch, useSelector} from 'react-redux';
 import RNFetchBlob from 'rn-fetch-blob';
 
-import useServerRequests from '../../services/useServerRequests';
+import useServerRequestsHook from '../../services/useServerRequests';
 import {getNewId, isEmpty} from '../../shared/Helpers';
 import {
   addedStatusMessage,
@@ -23,26 +22,24 @@ import {spotReducers} from '../spots/spot.constants';
 const RNFS = require('react-native-fs');
 
 const useImages = () => {
+  const dispatch = useDispatch();
   const navigation = useNavigation();
+  const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
+  const selectedSpot = useSelector(state => state.spot.selectedSpot);
+  const user = useSelector(state => state.user);
 
-  // let imageFiles = [];
-  let imageArr = [];
-  let imageCount = 0;
-  let dirs = RNFetchBlob.fs.dirs;
-  // const url = 'https://strabospot.org/testimages/images.json';
+  const [newImages, setNewImages] = useState([]);
+
+  const [useExport] = useExportHook();
+  const [useHome] = useHomeHook();
+  const [useServerRequests] = useServerRequestsHook();
+
+  const dirs = RNFetchBlob.fs.dirs;
   const devicePath = Platform.OS === 'ios' ? dirs.DocumentDir : dirs.SDCardDir; // ios : android
   const appDirectory = '/StraboSpot';
   const imagesResizeTemp = '/TempImages';
   const imagesDirectory = devicePath + appDirectory + '/Images';
-
-  const [useHome] = useHomeHook();
-  const [serverRequests] = useServerRequests();
-  const [useExport] = useExportHook();
-
-  const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
-  const selectedSpot = useSelector(state => state.spot.selectedSpot);
-  const user = useSelector(state => state.user);
-  const dispatch = useDispatch();
+  let imageCount = 0;
 
   const deleteTempImagesFolder = async () => {
     return await RNFetchBlob.fs.unlink(devicePath + imagesResizeTemp);
@@ -152,25 +149,19 @@ const useImages = () => {
   //   return parseFloat((a / Math.pow(c,i)).toFixed(d)) + ' ' + sizes[i];
   // };
 
-  // Checks to see if image is already on device
+  // Check to see if image is on the local device
   const doesImageExist = async (imageId) => {
-    const filePath = imagesDirectory;
-    const fileName = imageId.toString() + '.jpg';
-    const fileURI = filePath + '/' + fileName;
-    console.log('Looking on device for file URI: ', fileURI);
-    return await RNFetchBlob.fs.exists(fileURI).then(exist => {
-        console.log(`File URI ${fileURI} does ${exist ? '' : 'not'} exist on device`);
-        return exist;
-      },
-    )
-      .catch((err) => {
-        throw err;
-      });
+    const imageURI = getLocalImageURI(imageId);
+    console.log('Looking on device for image at URI:', imageURI, '...');
+    const isValidURI = await RNFS.exists(imageURI);
+    if (isValidURI) console.log(`Found image at URI: ${imageURI}`);
+    else console.error(`Not Found image at URI: ${imageURI}`);
+    return Promise.resolve(isValidURI);
   };
 
   const editImage = (image) => {
     dispatch({type: spotReducers.SET_SELECTED_ATTRIBUTES, attributes: [image]});
-    navigation.navigate('ImageInfo', {imageId: image.id});
+    navigation.navigate('ImageInfo', {imageId: image.id}).catch(console.error);
   };
 
   const launchCameraFromNotebook = async () => {
@@ -185,13 +176,11 @@ const useImages = () => {
       };
       useHome.toggleLoading(true);
       if (savedPhoto === 'cancelled') {
-        if (imageArr.length > 0) {
-          console.log('ALL PHOTOS SAVED', imageArr);
-          dispatch({type: spotReducers.EDIT_SPOT_IMAGES, images: imageArr});
-          // props.onSpotEditImageObj(imageArr);
+        if (newImages.length > 0) {
+          console.log('ALL PHOTOS SAVED', newImages);
+          dispatch({type: spotReducers.EDIT_SPOT_IMAGES, images: newImages});
           useHome.toggleLoading(false);
-          // toggleToast();
-          return Promise.resolve(imageArr.length);
+          return Promise.resolve(newImages.length);
         }
         else {
           useHome.toggleLoading(false);
@@ -199,9 +188,8 @@ const useImages = () => {
         }
       }
       else {
-        // setAllPhotosSaved(oldArray => ([...oldArray, photoProperties]));
-        imageArr.push(photoProperties);
-        console.log('Photos Saved:', imageArr);
+        console.log('Photos to Save:', [...newImages, photoProperties]);
+        setNewImages(prevState => [...prevState, photoProperties]);
         return launchCameraFromNotebook();
       }
     }
@@ -210,45 +198,6 @@ const useImages = () => {
       useHome.toggleLoading(false);
     }
   };
-
-  // const launchCameraFromNotebook = () => {
-  //   // try {
-  //     return takePicture().then((savedPhoto) => {
-  //       const photoProperties = {
-  //         id: savedPhoto.id,
-  //         src: savedPhoto.src,
-  //         image_type: 'photo',
-  //         height: savedPhoto.height,
-  //         width: savedPhoto.width,
-  //       };
-  //       useHome.toggleLoading(true);
-  //       if (savedPhoto === 'cancelled') {
-  //         if (imageArr.length > 0) {
-  //           console.log('ALL PHOTOS SAVED', imageArr);
-  //           dispatch({type: spotReducers.EDIT_SPOT_IMAGES, images: imageArr});
-  //           // props.onSpotEditImageObj(imageArr);
-  //           useHome.toggleLoading(false);
-  //           // toggleToast();
-  //           return Promise.resolve(imageArr.length);
-  //         }
-  //         else {
-  //           useHome.toggleLoading(false);
-  //           Alert.alert('No Photos To Save', 'please try again...');
-  //         }
-  //       }
-  //       else {
-  //         // setAllPhotosSaved(oldArray => ([...oldArray, photoProperties]));
-  //         imageArr.push(photoProperties);
-  //         console.log('Photos Saved:', imageArr);
-  //         return launchCameraFromNotebook();
-  //       }
-  //     })
-  //   // }
-  //   // catch (e) {
-  //   //   Alert.alert('Error Getting Photo!');
-  //   //   useHome.toggleLoading(false);
-  //   // }
-  // };
 
   const gatherNeededImages = async (spots) => {
     let neededImagesIds = [];
@@ -259,7 +208,7 @@ const useImages = () => {
         spot.properties.images.map((image) => {
           const promise = doesImageExist(image.id).then((exists) => {
             if (!exists) {
-              console.log('Need to download image', image.id);
+              console.log('Need to download image:', image.id);
               neededImagesIds.push(image.id);
             }
             else console.log('Image', image.id, 'already exists on device. Not downloading.');
@@ -274,28 +223,9 @@ const useImages = () => {
     });
   };
 
-  const getImageFileURIById = (imageId) => {
-    const filePath = imagesDirectory;
-    const fileName = imageId.toString() + '.jpg';
-    const fileURI = filePath + '/' + fileName;
-    return doesImageExist(imageId).then((exists) => {
-      if (exists) {
-        console.log('Found image file.', fileURI);
-        return Promise.resolve(fileURI);
-      }
-      else {
-        console.log('File not found');
-        return Promise.reject('img/image-not-found.png');
-      }
-    });
-  };
-
-  const getImageSize = image => {
-    return RNFetchBlob.fs.readFile(image, 'base64')
-      .then((data) => {
-        const decodedData = Base64.decode(data);
-        return decodedData.length;
-      });
+  const getLocalImageURI = (id) => {
+    const imageURI = imagesDirectory + '/' + id + '.jpg';
+    return Platform.OS === 'ios' ? imageURI : 'file://' + imageURI;
   };
 
   const getLocalImageSrc = id => {
@@ -312,51 +242,17 @@ const useImages = () => {
       else {
         useHome.toggleLoading(true);
         const savedPhoto = await saveFile(response);
-        console.log('Saved Photo in getImagesFromCameraRoll', savedPhoto);
+        console.log('Saved Photo in getImagesFromCameraRoll:', savedPhoto);
         dispatch({type: spotReducers.EDIT_SPOT_IMAGES, images: [savedPhoto]});
         useHome.toggleLoading(false);
       }
     });
   };
 
-  // Called from Image Gallery and displays image source picker
-  const pictureSelectDialog = async () => {
-    const imageOptionsPicker = {
-      storageOptions: {
-        skipBackup: true,
-      },
-      title: 'Choose Photo Source',
-    };
-    return new Promise((resolve, reject) => {
-      ImagePicker.showImagePicker(imageOptionsPicker, async (response) => {
-        console.log('Response = ', response);
-
-        if (response.didCancel) {
-          console.log('User cancelled image picker');
-          resolve('cancelled');
-        }
-        else if (response.error) {
-          console.log('ImagePicker Error: ', response.error);
-          return reject('Error', response.error);
-        }
-        else {
-          try {
-            const savedPhoto = await saveFile(response);
-            console.log('Saved Photo = ', savedPhoto);
-            resolve(savedPhoto);
-          }
-          catch (e) {
-            reject();
-          }
-        }
-      });
-    });
-  };
-
   const getImageHeightAndWidth = async (imageURI) => {
     return new Promise((resolve, reject) => {
       Image.getSize(imageURI.uri || imageURI, (width, height) => {
-        resolve({width: width, height: height});
+        resolve({height: height, width: width});
       }, (error) => {
         Alert.alert('Error getting size of image:', error.message);
         reject('Error getting size of image:' + error);
@@ -400,24 +296,28 @@ const useImages = () => {
     imageCopy.annotated = annotation;
     if (annotation && !imageCopy.title) imageCopy.title = imageCopy.id;
     if (selectedSpot && selectedSpot.properties && selectedSpot.properties.images) {
-      const updatedImages = selectedSpot.properties.images.filter(image => imageCopy.id !== image.id);
+      const updatedImages = selectedSpot.properties.images.filter(image2 => imageCopy.id !== image2.id);
       console.log(updatedImages);
       updatedImages.push(imageCopy);
       dispatch({type: spotReducers.EDIT_SPOT_PROPERTIES, field: 'images', value: updatedImages});
     }
-    if (!imageCopy.annotated) {
-      dispatch({type: mapReducers.CURRENT_IMAGE_BASEMAP, currentImageBasemap: undefined});
-    }
+    if (!imageCopy.annotated) dispatch({type: mapReducers.CURRENT_IMAGE_BASEMAP, currentImageBasemap: undefined});
   };
 
-  const setImageBasemapSize = async (imageBasemap) => {
-    const uri = getLocalImageSrc(imageBasemap.id);
-    const imageSize = await getImageHeightAndWidth(uri);
-    const updatedImage = {...imageBasemap, ...imageSize};
-    dispatch({type: spotReducers.EDIT_SPOT_IMAGE, image: updatedImage});
-    if (currentImageBasemap.id === updatedImage.id) {
-      dispatch({type: mapReducers.CURRENT_IMAGE_BASEMAP, currentImageBasemap: updatedImage});
+  const setImageHeightAndWidth = async (imageBasemap) => {
+    const imageURI = getLocalImageURI(imageBasemap.id);
+    if (imageURI) {
+      const isValidImageURI = await RNFS.exists(imageURI);
+      if (isValidImageURI) {
+        const imageSize = await getImageHeightAndWidth(imageURI);
+        const updatedImage = {...imageBasemap, ...imageSize};
+        dispatch({type: spotReducers.EDIT_SPOT_IMAGE, image: updatedImage});
+        if (currentImageBasemap.id === updatedImage.id) {
+          dispatch({type: mapReducers.CURRENT_IMAGE_BASEMAP, currentImageBasemap: updatedImage});
+        }
+      }
     }
+    else console.error('Error setting image height and width');
   };
 
   // Called from Notebook Panel Footer and opens camera only
@@ -425,13 +325,12 @@ const useImages = () => {
     const imageOptionsCamera = {
       storageOptions: {
         skipBackup: true,
-        takePhotoButtonTitle: 'Take Photo Buddy!',
-        chooseFromLibraryButtonTitle: 'choose photo from library',
+        takePhotoButtonTitle: 'Take Photo',
+        chooseFromLibraryButtonTitle: 'Choose Photo From Library',
         waitUntilSaved: true,
       },
       noData: true,
     };
-    // console.log('aassaasswwww')
     return new Promise((resolve, reject) => {
       ImagePicker.launchCamera(imageOptionsCamera, async (response) => {
         console.log('Response = ', response);
@@ -439,9 +338,7 @@ const useImages = () => {
           console.log('User cancelled image picker');
           resolve('cancelled');
         }
-        else if (response.error) {
-          console.log('ImagePicker Error: ', response.error);
-        }
+        else if (response.error) console.log('ImagePicker Error: ', response.error);
         else {
           try {
             const savedPhoto = await saveFile(response);
@@ -451,7 +348,7 @@ const useImages = () => {
               console.log('Image default path is unlinked:');
               resolve(savedPhoto);
             })
-              .catch(err => console.log('Image unlink error', err.message));
+              .catch(err => console.log('Image unlink error:', err.message));
           }
           catch (e) {
             reject();
@@ -470,7 +367,9 @@ const useImages = () => {
       let iSpotLoop = 0;
       let iImagesLoop = 0;
 
-      console.log('Gathering images to upload', spots);
+      dispatch(removedLastStatusMessage());
+      dispatch(addedStatusMessage({statusMessage: 'Gathering Images to Upload...'}));
+      console.log('Gathering images to upload from Spots:', spots);
 
       const areMoreImages = (spot) => {
         return spot.properties && spot.properties.images && iImagesLoop < spot.properties.images.length;
@@ -483,12 +382,10 @@ const useImages = () => {
       const getImageFile = async imageProps => {
         dispatch(removedLastStatusMessage());
         dispatch(addedStatusMessage({statusMessage: 'Processing Image...'}));
-        console.log(imageProps);
-        const src = await getImageFileURIById(imageProps.id);
-        if (src !== 'img/image-not-found.png') {
-          return Promise.resolve([imageProps, src]);
-        }
-        else return Promise.reject('Local file not found for image', imageProps.id);
+        const imageURI = getLocalImageURI(imageProps.id);
+        const isValidImageURI = await RNFS.exists(imageURI);
+        if (isValidImageURI) return Promise.resolve([imageProps, imageURI]);
+        else return Promise.reject('Local file not found for image:', imageProps.id);
       };
 
       const makeNextSpotRequest = (spot) => {
@@ -536,13 +433,13 @@ const useImages = () => {
       };
 
       const shouldUploadImage = async (imageProps) => {
-        return serverRequests.verifyImageExistence(imageProps.id, user.encoded_login)
+        return useServerRequests.verifyImageExistence(imageProps.id, user.encoded_login)
           .then(response => {
             if (response
               && ((response.modified_timestamp && imageProps.modified_timestamp
                 && imageProps.modified_timestamp > response.modified_timestamp)
                 || (!response.modified_timestamp && imageProps.modified_timestamp))) {
-              console.log('Need to upload image:', imageProps.id);
+              console.log('Need to upload image:', imageProps.id, 'Server response:', response);
               imagesToUploadCount++;
               return Promise.resolve(imageProps);
             }
@@ -618,7 +515,7 @@ const useImages = () => {
         else if (bytes < 1073741824) console.log('MB:' + (bytes / 1048576).toFixed(2) + ' MB');
         else console.log((bytes / 1073741824).toFixed(3) + ' GB');
         // console.time();
-        return serverRequests.uploadImage(formdata, user.encoded_login)
+        return useServerRequests.uploadImage(formdata, user.encoded_login)
           .then((res) => {
               // console.timeEnd();
               imagesUploadedCount++;
@@ -642,17 +539,16 @@ const useImages = () => {
 
   return [{
     deleteTempImagesFolder: deleteTempImagesFolder,
+    doesImageExist: doesImageExist,
     downloadImages: downloadImages,
     editImage: editImage,
     gatherNeededImages: gatherNeededImages,
-    getLocalImageSrc: getLocalImageSrc,
-    getImageHeightAndWidth: getImageHeightAndWidth,
+    getLocalImageURI: getLocalImageURI,
     getImagesFromCameraRoll: getImagesFromCameraRoll,
     launchCameraFromNotebook: launchCameraFromNotebook,
-    pictureSelectDialog: pictureSelectDialog,
     saveFile: saveFile,
     setAnnotation: setAnnotation,
-    setImageBasemapSize: setImageBasemapSize,
+    setImageHeightAndWidth: setImageHeightAndWidth,
     takePicture: takePicture,
     uploadImages: uploadImages,
   }];

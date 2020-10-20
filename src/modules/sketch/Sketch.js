@@ -9,12 +9,13 @@ import useImagesHook from '../images/useImages';
 import {spotReducers} from '../spots/spot.constants';
 import styles from './sketch.styles';
 
-
 const Sketch = (props) => {
-  const navigation = useNavigation();
-  const [imageId, setImageId] = useState(null);
   const dispatch = useDispatch();
+
+  const navigation = useNavigation();
   const [useImages] = useImagesHook();
+
+  const [imageId, setImageId] = useState(null);
 
   useEffect(() => {
     if (props.route.params?.imageId) setImageId(props.route.params.imageId);
@@ -27,26 +28,26 @@ const Sketch = (props) => {
       dispatch({type: spotReducers.EDIT_SPOT_IMAGES, images: [{...savedSketch, image_type: 'sketch'}]});
       Alert.alert(`Sketch ${savedSketch.id} Saved!`,
         null,
-        [
-          {
-            text: 'Cancel',
-            onPress: () => console.log('Cancel Pressed'),
-            style: 'cancel',
-          },
-          {text: 'OK', onPress: () => navigation.pop()},
-        ]);
+        [{
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        }, {
+          text: 'OK', onPress: () => navigation.pop(),
+        }],
+      );
     }
-    else  {
+    else {
       Alert.alert('Error Saving Sketch!',
         null,
-        [
-          {
-            text: 'Cancel',
-            onPress: () => console.log('Cancel Pressed'),
-            style: 'cancel',
-          },
-          {text: 'OK', onPress: () => navigation.pop()},
-        ]);
+        [{
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        }, {
+          text: 'OK', onPress: () => navigation.pop(),
+        }],
+      );
     }
   };
 
@@ -123,7 +124,6 @@ const Sketch = (props) => {
             </View>
           }
           savePreference={() => {
-            // const sketchId = getNewId();
             return {
               folder: 'RNSketchCanvas',
               filename: String(Math.ceil(Math.random() * 100000000)),
