@@ -17,4 +17,5 @@ export const redux = {
   CLEAR_STORE: 'CLEAR_STORE',
 };
 
-export const VERSION_NUMBER = 'Version 0.12.0';
+// Be sure to change the version in X-Code to match TODO: Change X-Code version to match
+export const VERSION_NUMBER = 'Version 0.12.1';
