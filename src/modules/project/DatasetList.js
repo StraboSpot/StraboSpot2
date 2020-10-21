@@ -47,7 +47,7 @@ const DatasetList = () => {
     deleteDataset();
   }, [datasets, isDeleting, activeDatasetsIds, isStatusMessagesModalVisible, selectedDatasetId]);
 
-  const deleteDataset = async () => {
+  const deleteDataset = () => {
     if (!isDeleteConfirmModalVisible && !isDatasetNameModalVisible && isDeleting && selectedDataset && selectedDataset.id) {
       setIsDeleting(false);
       setLoading(true);
@@ -70,7 +70,7 @@ const DatasetList = () => {
   };
 
   const isDisabled = (id) => {
-    return activeDatasetsIds.length === 1 && activeDatasetsIds[0] === id;
+    return (activeDatasetsIds.length === 1 && activeDatasetsIds[0] === id) || selectedDatasetId === id;
   };
 
   const renderDatasets = () => {
@@ -128,7 +128,7 @@ const DatasetList = () => {
             title={'Delete Dataset'}
             titleStyle={{color: 'red'}}
             type={'clear'}
-            disabled={isDisabled(selectedDataset.id)}
+            disabled={activeDatasetsIds.includes(selectedDataset.id)}
             // disabledTitleStyle={{color: 'yellow'}}
             buttonStyle={{paddingTop: 20, padding: 0}}
             onPress={() => setIsDeleteConfirmModalVisible(true)}
@@ -142,10 +142,10 @@ const DatasetList = () => {
               />
             }
           />
-          {isDisabled(selectedDataset.id) && (
+          {activeDatasetsIds.includes(selectedDataset.id) && (
             <View>
               <Text style={[styles.dialogContentImportantText, {paddingTop: 10}]}>You must set another active dataset
-                before you delete this dataset</Text>
+                or switch off "{selectedDataset.name}" before you delete this dataset</Text>
             </View>
           )}
         </TexInputModal>

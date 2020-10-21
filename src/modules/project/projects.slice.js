@@ -46,12 +46,9 @@ const projectSlice = createSlice({
     deletedSpotIdFromDataset(state, action) {},
     doesBackupDirectoryExist(state, action) {},
     setActiveDatasets(state, action) {
-      // console.log(JSON.stringify(state.datasets, undefined, 2))
-      // console.log('before', current(state))
       const {bool, dataset}= action.payload;
       if (bool) state.activeDatasetsIds = [...state.activeDatasetsIds, dataset];
       else state.activeDatasetsIds = state.activeDatasetsIds.filter(data => data !== dataset);
-      // console.log('after', current(state))
     },
     setSelectedDataset(state, action) {
       state.selectedDatasetId = action.payload;
