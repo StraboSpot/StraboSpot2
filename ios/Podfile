@@ -6,13 +6,9 @@ platform :ios, '10.0'
 
 target 'StraboSpot2' do
   config = use_native_modules!
+    inherit! :complete
 
   use_react_native!(:path => config["reactNativePath"])
-
-  target 'StraboSpot2' do
-    inherit! :complete
-    # Pods for testing
-  end
 
   # Enables Flipper.
   #
