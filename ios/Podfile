@@ -1,13 +1,18 @@
-require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 require_relative '../node_modules/react-native/scripts/react_native_pods'
+require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
   install! 'cocoapods', :deterministic_uuids => false
 
 platform :ios, '10.0'
 
 target 'StraboSpot2' do
   config = use_native_modules!
+
   use_react_native!(:path => config["reactNativePath"])
 
+  target 'StraboSpot2' do
+    inherit! :complete
+    # Pods for testing
+  end
 
   # Enables Flipper.
   #
@@ -27,5 +32,3 @@ target 'StraboSpot2-tvOS' do
     # Pods for testing
   end
 end
-
-
