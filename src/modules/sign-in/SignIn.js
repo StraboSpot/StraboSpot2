@@ -17,22 +17,25 @@ import {setOnlineStatus, setSignedInStatus} from '../home/home.slice';
 import {setUserData} from '../user/userProfile.slice';
 import styles from './signIn.styles';
 
-let user = null;
+let isUserAuthenicated = null;
 
 const SignIn = (props) => {
-  const navigation = useNavigation();
 
   const online = require('../../assets/icons/ConnectionStatusButton_connected.png');
   const offline = require('../../assets/icons/ConnectionStatusButton_offline.png');
   const [username, setUsername] = useState(__DEV__ ? USERNAME_TEST : '');
   const [password, setPassword] = useState(__DEV__ ? PASSWORD_TEST : '');
-  const isOnline = useSelector(state => state.home.isOnline);
+
   const dispatch = useDispatch();
+  const isOnline = useSelector(state => state.home.isOnline);
+  const user = useSelector(state => state.user);
+
+  const navigation = useNavigation();
   const [serverRequests] = useServerRequests();
 
   useEffect(() => {
     NetInfo.addEventListener(state => {
-      dispatch(setOnlineStatus({bool: state.isConnected}));
+      dispatch(setOnlineStatus(state.isConnected));
     });
   }, [isOnline]);
 
@@ -40,22 +43,22 @@ const SignIn = (props) => {
     Sentry.configureScope((scope) => {
       scope.setUser({'id': 'GUEST'});
     });
-    if (!isEmpty(props.userData)) await dispatch({type: 'CLEAR_STORE'});
+    if (!isEmpty(user)) await dispatch({type: 'CLEAR_STORE'});
     console.log('Loading user: GUEST');
     await navigation.navigate('HomeScreen');
   };
 
   const signIn = async () => {
-    console.log('Authenticating and signing in...');
+    console.log(`Authenticating ${username} and signing in...`);
     try {
-      user = await serverRequests.authenticateUser(username, password);
+      isUserAuthenicated = await serverRequests.authenticateUser(username, password);
       // login with provider
-      if (user === 'true') {
+      if (isUserAuthenicated === 'true') {
         const encodedLogin = Base64.encode(username + ':' + password);
-        updateUserResponse(encodedLogin).then(() => {
+        updateUserResponse(encodedLogin).then((userState) => {
           console.log(`${username} is successfully logged in!`);
           dispatch(setUserData(userState));
-          dispatch(setSignedInStatus({bool: true}));
+          dispatch(setSignedInStatus(true));
           navigation.navigate('HomeScreen');
         });
       }
@@ -119,19 +122,26 @@ const SignIn = (props) => {
     );
   };
 
-  const updateUserResponse = async (encodedLogin) => {
-    let userProfile = await serverRequests.getProfile(encodedLogin);
-    dispatch({type: ENCODED_LOGIN, value: encodedLogin});
-    dispatch({type: USER_DATA, userData: userProfile});
-    const userProfileImage = await serverRequests.getProfileImage(encodedLogin);
+  const getUserImage = async (userProfileImage) => {
     if (userProfileImage) {
-      readDataUrl(userProfileImage, (base64Image) => {
-        dispatch({type: USER_IMAGE, userImage: base64Image});
+      return new Promise((resolve, reject) => {
+        readDataUrl(userProfileImage, (base64Image) => {
+          if (base64Image) resolve(base64Image);
+          else reject('Could not convert image to base64');
+        });
       });
     }
-    else {
-      dispatch({type: USER_IMAGE, userImage: require('../../assets/images/noimage.jpg')});
-    }
+    else return require('../../assets/images/noimage.jpg');
+  };
+
+  const updateUserResponse = async (encodedLogin) => {
+    let userState = {};
+    let userProfile = await serverRequests.getProfile(encodedLogin);
+    const userProfileImage = await serverRequests.getProfileImage(encodedLogin);
+    console.log('userProfileImage', userProfileImage);
+    const image = await getUserImage(userProfileImage);
+    userState = {...userProfile, image: image, encodedLogin: encodedLogin};
+    return Promise.resolve(userState);
   };
 
   const createAccount = () => {
@@ -197,3 +207,4 @@ const SignIn = (props) => {
 };
 
 export default SignIn;
+
