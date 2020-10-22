@@ -64,7 +64,7 @@ const useProject = () => {
     const datasetObj = createDataset(name);
     await dispatch(addedDataset(datasetObj));
     console.log('Added datasets', datasets);
-    await makeDatasetCurrent(datasetObj);
+    // await makeDatasetCurrent(datasetObj);
     return Promise.resolve();
   };
 
@@ -345,26 +345,29 @@ const useProject = () => {
   const setSwitchValue = async (val, dataset) => {
     const areActiveDatasetsEmpty = isEmpty(activeDatasetsIds);
 
-    if (isOnline && !isEmpty(user) && val && isEmpty(dataset.spotIds)){
-      dispatch(setStatusMessagesModalVisible({bool: true}));
-      dispatch(clearedStatusMessages());
-      const res = await useSpots.downloadSpots(dataset, user.encoded_login);
-      console.log(res)
-      if (res === 'No Spots!') dispatch(addedStatusMessage({statusMessage: 'No Spots!'}));
-      else dispatch(addedStatusMessage({statusMessage: 'Download Complete!'}));
-      if (val && areActiveDatasetsEmpty) dispatch(setSelectedDataset(dataset.id));
-      dispatch(setActiveDatasets({bool: val, dataset: dataset.id}))
+    if (isOnline && !isEmpty(user) && val){
+
+      dispatch(setActiveDatasets({bool: val, dataset: dataset.id}));
+      dispatch(setSelectedDataset(dataset.id));
+      if (isEmpty(dataset.spotIds)){
+        dispatch(setStatusMessagesModalVisible({bool: true}));
+        dispatch(clearedStatusMessages());
+         const res = await useSpots.downloadSpots(dataset, user.encoded_login);
+        if (res === 'No Spots!') dispatch(addedStatusMessage({statusMessage: 'No Spots!'}));
+        else dispatch(addedStatusMessage({statusMessage: 'Download Complete!'}));
+      }
+      // if (val && areActiveDatasetsEmpty) dispatch(setSelectedDataset(dataset.id));
       return Promise.resolve();
     }
-    else await dispatch(setActiveDatasets({bool: val, dataset: dataset.id}));
+    else {
+      dispatch(setActiveDatasets({bool: val, dataset: dataset.id}));
+    }
     return Promise.resolve();
   };
 
   const uploadDataset = async (dataset) => {
     let datasetCopy = JSON.parse(JSON.stringify(dataset));
     delete datasetCopy.spotIds;
-    delete datasetCopy.current;
-    delete datasetCopy.active;
     return serverRequests.updateDataset(datasetCopy, user.encoded_login).then((response) => {
       console.log('Finished updating dataset', response);
       return serverRequests.addDatasetToProject(project.id, dataset.id, user.encoded_login).then((response2) => {
@@ -378,13 +381,14 @@ const useProject = () => {
 
   const uploadDatasets = async () => {
     let currentRequest = 0;
-    const selectedDataset = Object.values(datasets).filter(dataset => dataset.active === true);
+    // const selectedDataset = Object.values(datasets).filter(dataset => dataset.active === true);
+    const activeDatasets = activeDatasetsIds.map(datasetId => datasets[datasetId]);
     dispatch(clearedStatusMessages());
     dispatch(addedStatusMessage({statusMessage: 'Uploading Datasets...'}));
 
     const makeNextRequest = async () => {
       console.log('Making request...');
-      return uploadDataset(selectedDataset[currentRequest]).then(() => {
+      return uploadDataset(activeDatasets[currentRequest]).then(() => {
         currentRequest++;
         dispatch(removedLastStatusMessage());
         if (currentRequest > 0 && currentRequest < activeDatasetsIds.length) {
@@ -404,7 +408,7 @@ const useProject = () => {
         dispatch(clearedStatusMessages());
         dispatch(addedStatusMessage({statusMessage: 'Error uploading dataset.'}));
         dispatch(setLoadingStatus({view: 'modal', bool: false}));
-        return Promise.reject();
+        return Promise.reject(err);
       });
     };
 

@@ -22,7 +22,7 @@ import ProjectTypesButtons from './ProjectTypesButtons';
 
 const InitialProjectLoadModal = (props) => {
   const navigation = useNavigation();
-  const selectedDataset = useSelector(state => state.project.selectedDatasetId);
+  const activeDatasetsId = useSelector(state => state.project.activeDatasetsIds);
   const selectedProject = useSelector(state => state.project.project);
   const datasets = useSelector(state => state.project.datasets);
   const isOnline = useSelector(state => state.home.isOnline);
@@ -84,12 +84,12 @@ const InitialProjectLoadModal = (props) => {
         <Button
           onPress={() => props.closeModal()}
           title={'Done'}
-          disabled={isEmpty(selectedDataset)}
+          disabled={isEmpty(activeDatasetsId)}
           buttonStyle={commonStyles.standardButton}
           titleStyle={commonStyles.standardButtonText}
         />
         <View style={{alignItems: 'center', paddingTop: 10}}>
-          <Text>Set an active dataset</Text>
+          <Text>Select the dataset to add new spots.</Text>
         </View>
         <Spacer/>
         <View style={{height: 400}}>
@@ -100,7 +100,7 @@ const InitialProjectLoadModal = (props) => {
   };
 
   const renderContinueOrCloseButton = () => {
-    if (selectedDataset.length > 1) {
+    if (activeDatasetsId.length > 1) {
       return (
         <Button
           onPress={() => setVisibleProjectSection('currentDatasetSelection')}
@@ -115,7 +115,7 @@ const InitialProjectLoadModal = (props) => {
         <Button
           onPress={() => props.closeModal()}
           title={'Done'}
-          disabled={isEmpty(selectedDataset)}
+          disabled={isEmpty(activeDatasetsId)}
           buttonStyle={[commonStyles.standardButton]}
           titleStyle={commonStyles.standardButtonText}
         />

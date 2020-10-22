@@ -43,8 +43,15 @@ const projectSlice = createSlice({
       const {[action.payload]: deletedDataset, ...datasetsList} = state.datasets;  // Delete key with action.id from object
       state.datasets = datasetsList;
     },
-    deletedSpotIdFromDataset(state, action) {},
-    doesBackupDirectoryExist(state, action) {},
+    deletedSpotIdFromDataset(state, action) {
+      const {dataset, spotId} = action.payload;
+      const updatedSpotIds = dataset.spotIds.filter(id => id !== spotId)
+      state.datasets[dataset.id].spotIds = updatedSpotIds;
+      console.log(current(state))
+    },
+    doesBackupDirectoryExist(state, action) {
+
+    },
     setActiveDatasets(state, action) {
       const {bool, dataset}= action.payload;
       if (bool) state.activeDatasetsIds = [...state.activeDatasetsIds, dataset];

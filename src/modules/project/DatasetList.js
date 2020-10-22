@@ -128,7 +128,7 @@ const DatasetList = () => {
             title={'Delete Dataset'}
             titleStyle={{color: 'red'}}
             type={'clear'}
-            disabled={activeDatasetsIds.includes(selectedDataset.id)}
+            disabled={isDisabled(selectedDataset.id)}
             // disabledTitleStyle={{color: 'yellow'}}
             buttonStyle={{paddingTop: 20, padding: 0}}
             onPress={() => setIsDeleteConfirmModalVisible(true)}
@@ -142,10 +142,10 @@ const DatasetList = () => {
               />
             }
           />
-          {activeDatasetsIds.includes(selectedDataset.id) && (
+          {isDisabled(selectedDataset.id) && (
             <View>
-              <Text style={[styles.dialogContentImportantText, {paddingTop: 10}]}>You must set another active dataset
-                or switch off "{selectedDataset.name}" before you delete this dataset</Text>
+              <Text style={[styles.dialogContentImportantText, {paddingTop: 10, textAlign: 'center'}]}>{selectedDataset.name} can not be
+                deleted while still selected as the current dataset.</Text>
             </View>
           )}
         </TexInputModal>
