@@ -17,7 +17,7 @@ import {homeReducers} from '../home/home.constants';
 import {USER_DATA, USER_IMAGE, ENCODED_LOGIN} from '../user/user.constants';
 import styles from './signIn.styles';
 
-let user = null;
+let isUserAuthenicated = null;
 
 const SignIn = (props) => {
   const navigation = useNavigation();
@@ -46,14 +46,15 @@ const SignIn = (props) => {
   };
 
   const signIn = async () => {
-    console.log('Authenticating and signing in...');
+    console.log(`Authenticating ${username} and signing in...`);
     try {
-      user = await serverRequests.authenticateUser(username, password);
+      isUserAuthenicated = await serverRequests.authenticateUser(username, password);
       // login with provider
-      if (user === 'true') {
+      if (isUserAuthenicated === 'true') {
         const encodedLogin = Base64.encode(username + ':' + password);
-        updateUserResponse(encodedLogin).then(() => {
+        updateUserResponse(encodedLogin).then((userState) => {
           console.log(`${username} is successfully logged in!`);
+          dispatch({type: USER_DATA, userData: userState});
           dispatch({type: homeReducers.SET_IS_SIGNED_IN, bool: true});
           navigation.navigate('HomeScreen');
         });
@@ -118,81 +119,95 @@ const SignIn = (props) => {
     );
   };
 
-  const updateUserResponse = async (encodedLogin) => {
-    let userProfile = await serverRequests.getProfile(encodedLogin);
-    dispatch({type: ENCODED_LOGIN, value: encodedLogin});
-    dispatch({type: USER_DATA, userData: userProfile});
-    const userProfileImage = await serverRequests.getProfileImage(encodedLogin);
+  const getUserImage = async (userProfileImage) => {
     if (userProfileImage) {
-      readDataUrl(userProfileImage, (base64Image) => {
-        dispatch({type: USER_IMAGE, userImage: base64Image});
+      return new Promise((resolve, reject) => {
+        readDataUrl(userProfileImage, (base64Image) => {
+          if (base64Image) resolve(base64Image);
+          else reject('Could not convert image to base64');
+        });
       });
     }
-    else {
-      dispatch({type: USER_IMAGE, userImage: require('../../assets/images/noimage.jpg')});
+    else return require('../../assets/images/noimage.jpg');
+  };
+
+  const updateUserResponse = async (encodedLogin) => {
+    let userState = {};
+    try {
+      let userProfile = await serverRequests.getProfile(encodedLogin);
+      const userProfileImage = await serverRequests.getProfileImage(encodedLogin);
+      console.log('userProfileImage', userProfileImage);
+      const image = await getUserImage(userProfileImage);
+      userState = {...userProfile, image: image, encodedLogin: encodedLogin};
+      return Promise.resolve(userState);
     }
-  };
-
-  const createAccount = () => {
-    props.navigation.navigate('SignUp');
-  };
-
-  return (
-    <ImageBackground source={require('../../assets/images/background.jpg')} style={styles.backgroundImage}>
-      <View style={styles.container}>
-        <View style={{
-          position: 'absolute',
-          right: 0,
-          top: 40,
-          zIndex: -1,
-        }}>
-          <IconButton
-            source={isOnline ? online : offline}
-          />
-        </View>
-        <KeyboardAvoidingView
-          behavior={'position'}
-          contentContainerStyle={{
-            // flex: 1,
-            // justifyContent: 'space-between',
-          }}
-          keyboardVerticalOffset={0}
-        >
-          <View>
-            <View style={styles.titleContainer}>
-              <Text style={styles.title}>Strabo Spot 2</Text>
-              <Text style={styles.version}>{VERSION_NUMBER}</Text>
-            </View>
-            <View style={styles.signInContainer}>
-              <TextInput
-                style={styles.input}
-                placeholder='Username'
-                autoCapitalize='none'
-                autoCorrect={false}
-                placeholderTextColor='#6a777e'
-                onChangeText={val => setUsername(val.toLowerCase())}
-                value={username}
-                keyboardType='email-address'
-                returnKeyType='go'
-              />
-              <TextInput
-                style={styles.input}
-                placeholder='Password'
-                autoCapitalize='none'
-                secureTextEntry={true}
-                placeholderTextColor='#6a777e'
-                onChangeText={val => setPassword(val)}
-                value={password}
-                returnKeyType='go'
-                onSubmitEditing={signIn}
-              />
-              {renderButtons()}
-            </View>
-          </View>
-        </KeyboardAvoidingView>
-      </View>
-    </ImageBackground>
-  );
+    catch (err) {
+      console.log('SIGN IN ERROR', err);
+    }
 };
 
+const createAccount = () => {
+  props.navigation.navigate('SignUp');
+};
+
+return (
+  <ImageBackground source={require('../../assets/images/background.jpg')} style={styles.backgroundImage}>
+    <View style={styles.container}>
+      <View style={{
+        position: 'absolute',
+        right: 0,
+        top: 40,
+        zIndex: -1,
+      }}>
+        <IconButton
+          source={isOnline ? online : offline}
+        />
+      </View>
+      <KeyboardAvoidingView
+        behavior={'position'}
+        contentContainerStyle={{
+          // flex: 1,
+          // justifyContent: 'space-between',
+        }}
+        keyboardVerticalOffset={0}
+      >
+        <View>
+          <View style={styles.titleContainer}>
+            <Text style={styles.title}>Strabo Spot 2</Text>
+            <Text style={styles.version}>{VERSION_NUMBER}</Text>
+          </View>
+          <View style={styles.signInContainer}>
+            <TextInput
+              style={styles.input}
+              placeholder='Username'
+              autoCapitalize='none'
+              autoCorrect={false}
+              placeholderTextColor='#6a777e'
+              onChangeText={val => setUsername(val.toLowerCase())}
+              value={username}
+              keyboardType='email-address'
+              returnKeyType='go'
+            />
+            <TextInput
+              style={styles.input}
+              placeholder='Password'
+              autoCapitalize='none'
+              secureTextEntry={true}
+              placeholderTextColor='#6a777e'
+              onChangeText={val => setPassword(val)}
+              value={password}
+              returnKeyType='go'
+              onSubmitEditing={signIn}
+            />
+            {renderButtons()}
+          </View>
+        </View>
+      </KeyboardAvoidingView>
+    </View>
+  </ImageBackground>
+);
+}
+;
+
 export default SignIn;
+

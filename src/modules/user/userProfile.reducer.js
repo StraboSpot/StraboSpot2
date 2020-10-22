@@ -13,6 +13,8 @@ export const userReducer = (state = initialState, action) => {
         email: action.userData.email,
         mapboxToken: action.userData.mapboxToken,
         password: action.userData.password,
+        encoded_login: action.userData.encodedLogin,
+        image: action.userData.image,
       };
 
     case UserInfo.ENCODED_LOGIN:
