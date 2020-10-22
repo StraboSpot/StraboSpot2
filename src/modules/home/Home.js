@@ -666,9 +666,9 @@ const Home = (props) => {
           )}
           <View style={{flex: 1, paddingTop: 15}}>
             <Text style={{textAlign: 'center'}}>{statusMessages.join('\n')}</Text>
-            {statusMessages.includes('Download Complete!') || statusMessages.includes('Upload Complete!')
+            {(statusMessages.includes('Download Complete!') || statusMessages.includes('Upload Complete!')
             || statusMessages.includes('There are no active datasets.') || statusMessages.includes('Success!')
-            || statusMessages.includes('Project Backup Complete!') || statusMessages.includes('Project loaded!')
+            || statusMessages.includes('Project Backup Complete!') || statusMessages.includes('Project loaded!'))
             && (
               <Button
                 title={'OK'}
