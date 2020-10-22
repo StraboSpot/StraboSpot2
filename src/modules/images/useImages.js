@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {Alert, Image, Platform} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
@@ -18,33 +18,25 @@ import {spotReducers} from '../spots/spot.constants';
 const RNFS = require('react-native-fs');
 
 const useImages = () => {
-  const dispatch = useDispatch();
-  const navigation = useNavigation();
-  const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
-  const selectedSpot = useSelector(state => state.spot.selectedSpot);
-  const user = useSelector(state => state.user);
-
-  const [imageCount, setImageCount] = useState(0);
-  const [newImages, setNewImages] = useState([]);
-
-  const [useExport] = useExportHook();
-  const [useHome] = useHomeHook();
-  const [useServerRequests] = useServerRequestsHook();
-
   const dirs = RNFetchBlob.fs.dirs;
   const devicePath = Platform.OS === 'ios' ? dirs.DocumentDir : dirs.SDCardDir; // ios : android
   const appDirectory = '/StraboSpot';
   const imagesResizeTemp = '/TempImages';
   const imagesDirectory = devicePath + appDirectory + '/Images';
 
-  const [useHome] = useHomeHook();
-  const [serverRequests] = useServerRequests();
-  const [useExport] = useExportHook();
+  const navigation = useNavigation();
 
+  const [useExport] = useExportHook();
+  const [useHome] = useHomeHook();
+  const [useServerRequests] = useServerRequestsHook();
+
+  const dispatch = useDispatch();
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const user = useSelector(state => state.user);
-  const dispatch = useDispatch();
+
+  let imageCount = 0;
+  let newImages = [];
 
   const deleteTempImagesFolder = async () => {
     return await RNFetchBlob.fs.unlink(devicePath + imagesResizeTemp);
@@ -197,7 +189,7 @@ const useImages = () => {
       }
       else {
         console.log('Photos to Save:', [...newImages, photoProperties]);
-        setNewImages(prevState => [...prevState, photoProperties]);
+        newImages.push(photoProperties);
         return launchCameraFromNotebook();
       }
     }
@@ -517,13 +509,13 @@ const useImages = () => {
         formdata.append('image_file', {uri: uploadURI, name: 'image.jpg', type: 'image/jpeg'});
         formdata.append('id', imageProps.id);
         formdata.append('modified_timestamp', Date.now());
-        const bytes = await getImageSize(resizeImage.path);
+        const bytes = await getImageHeightAndWidth(resizeImage.path);
         if (bytes < 1024) console.log(bytes + ' Bytes');
         else if (bytes < 1048576) console.log('KB:' + (bytes / 1024).toFixed(3) + ' KB');
         else if (bytes < 1073741824) console.log('MB:' + (bytes / 1048576).toFixed(2) + ' MB');
         else console.log((bytes / 1073741824).toFixed(3) + ' GB');
         // console.time();
-        return serverRequests.uploadImage(formdata, user.encoded_login)
+        return useServerRequests.uploadImage(formdata, user.encoded_login)
           .then((res) => {
               // console.timeEnd();
               imagesUploadedCount++;
