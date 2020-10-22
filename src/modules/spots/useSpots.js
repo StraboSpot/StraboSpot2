@@ -5,9 +5,10 @@ import {getNewId, isEmpty} from '../../shared/Helpers';
 import {addedStatusMessage,removedLastStatusMessage, setLoadingStatus, setProjectLoadComplete} from '../home/home.slice';
 import useImagesHook from '../images/useImages';
 import {projectReducers} from '../project/project.constants';
-import {addedSpotsIdsToDataset} from '../project/projects.slice';
+import {addedSpotsIdsToDataset, deletedSpotIdFromDataset} from '../project/projects.slice';
 import {generalKeysIcons, sedKeysIcons, spotReducers} from './spot.constants';
 import {addSpot} from './spotSliceTemp';
+import {useEffect} from 'react';
 
 const useSpots = (props) => {
   const dispatch = useDispatch();
@@ -22,6 +23,10 @@ const useSpots = (props) => {
 
   const [useImages] = useImagesHook();
   const [useServerRequests] = useServerRequestsHook();
+
+  useEffect(() => {
+    console.log('datasets in useSpots UE', datasets)
+  }, [datasets])
 
   // Copy Spot to a new Spot omiting specific properties
   const copySpot = async () => {
@@ -89,19 +94,17 @@ const useSpots = (props) => {
     return newSpot;
   };
 
-  const deleteSpot = async id => {
-    console.log(id);
+  const deleteSpot = async spotId => {
+    console.log(spotId);
     Object.values(datasets).map(dataset => {
       if (dataset.spotIds) {
         console.log(dataset.spotIds);
-        const exists = dataset.spotIds.includes(id);
+        const exists = dataset.spotIds.includes(spotId);
         if (exists) {
           console.log(dataset.id);
-          console.log(dataset.spotIds.filter(spotId => id !== spotId));
-          const filteredLSpotIdList = dataset.spotIds.filter(spotId => id !== spotId);
-          dispatch(
-            {type: projectReducers.DATASETS.DELETE_SPOT_ID, filteredList: filteredLSpotIdList, datasetId: dataset.id});
-          dispatch({type: spotReducers.DELETE_SPOT, id: id});
+          console.log(dataset.spotIds.filter(id => spotId !== id));
+          dispatch(deletedSpotIdFromDataset({spotId: spotId, dataset: dataset}));
+          dispatch({type: spotReducers.DELETE_SPOT, id: spotId});
         }
       }
     });
@@ -109,8 +112,8 @@ const useSpots = (props) => {
   };
 
   const deleteSpotsFromDataset = (dataset, spotId) => {
-    const updatedSpotIds = dataset.spotIds.filter(id => id !== spotId);
-    dispatch({type: projectReducers.DATASETS.DELETE_SPOT_ID, filteredList: updatedSpotIds, datasetId: dataset.id});
+    // const updatedSpotIds = dataset.spotIds.filter(id => id !== spotId);
+    dispatch(deletedSpotIdFromDataset({spotId: spotId, dataset: dataset}));
     dispatch({type: spotReducers.DELETE_SPOT, id: spotId});
     console.log(dataset, 'Spots', spots);
     return Promise.resolve(dataset.spotIds);
@@ -153,11 +156,14 @@ const useSpots = (props) => {
     if (!isEmpty(datasets) && !isEmpty(activeDatasetsIds)) {
       const activeDatasets = activeDatasetsIds.map(datasetId => datasets[datasetId]);
       console.log('getActiveDatasetsFromId', activeDatasets);
-      const activeSpotIds = activeDatasets.flatMap(dataset => dataset.spotIds);
-      activeSpotIds.map(spotId => {
-        if (spots[spotId]) activeSpots = {...activeSpots, [spotId]: spots[spotId]};
-        else console.log('Missing Spot', spotId);
-      });
+        const activeSpotIds = activeDatasets.flatMap(dataset => {
+          if (dataset.spotIds && !isEmpty(dataset.spotIds)) return dataset.spotIds;
+          return;
+        });
+        activeSpotIds.map(spotId => {
+          if (spots[spotId]) activeSpots = {...activeSpots, [spotId]: spots[spotId]};
+          else console.log('Missing Spot', spotId);
+        });
     }
     return activeSpots;
   };
