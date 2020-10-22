@@ -139,7 +139,7 @@ const useSpots = (props) => {
           dispatch(addedStatusMessage({statusMessage: 'Download Complete!'}));
         }
         else return await useImages.downloadImages(neededImagesIds);
-        dispatch(setProjectLoadComplete({bool: true}));
+        dispatch(setProjectLoadComplete(true));
       }
       return Promise.resolve({message: 'done - Spots'});
     }

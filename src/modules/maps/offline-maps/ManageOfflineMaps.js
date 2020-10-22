@@ -105,7 +105,7 @@ const ManageOfflineMaps = (props) => {
     <React.Fragment>
       <Button
         title={'Download tiles of current map'}
-        onPress={() => dispatch(setOfflineMapsModalVisible({bool: true}))}
+        onPress={() => dispatch(setOfflineMapsModalVisible(true))}
         containerStyle={styles.buttonContainer}
         buttonStyle={commonStyles.standardButton}
         titleStyle={commonStyles.standardButtonText}

@@ -199,7 +199,7 @@ const DatasetList = () => {
         dialogTitle={'Delete Status'}
         style={sharedDialogStyles.dialogTitleSuccess}
         visible={isStatusMessagesModalVisible}
-        onTouchOutside={() => dispatch(setStatusMessagesModalVisible({bool: false}))}
+        onTouchOutside={() => dispatch(setStatusMessagesModalVisible(false))}
         // disabled={progress !== 1 && !uploadErrors}
       >
         <View style={{height: 100}}>

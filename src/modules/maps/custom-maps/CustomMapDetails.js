@@ -83,13 +83,13 @@ const AddCustomMaps = () => {
       dispatch(clearedStatusMessages());
       dispatch(addedStatusMessage({statusMessage: 'Success!'}));
       dispatch(addedStatusMessage({statusMessage: `\nMap ${customMap.title} has been added or updated!`}));
-      dispatch(setStatusMessagesModalVisible({bool: true}));
+      dispatch(setStatusMessagesModalVisible(true));
     }
     else {
       dispatch(clearedStatusMessages());
       dispatch(addedStatusMessage(
         {statusMessage: 'Something Went Wrong \n\nCheck the id and map type of the map you are trying to save.'}));
-      dispatch(setErrorMessagesModalVisible({bool: true}));
+      dispatch(setErrorMessagesModalVisible(true));
     }
   };
 

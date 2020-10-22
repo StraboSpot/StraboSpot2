@@ -39,12 +39,12 @@ const useHome = (props) => {
     dispatch(setLoadingStatus({view: 'home', bool: false}));
     dispatch(setLoadingStatus({view: 'modal', bool: false}));
     dispatch({type: spotReducers.CLEAR_SELECTED_SPOTS});
-    dispatch(setAllSpotsPanelVisible({bool: false}));
+    dispatch(setAllSpotsPanelVisible(false));
     dispatch(setSidePanelVisible({value: false}));
     dispatch(setModalVisible({modal: null}));
-    dispatch(setMainMenuPanelVisible({bool: false}));
+    dispatch(setMainMenuPanelVisible(false));
     dispatch(setMenuSelectionPage({name: undefined}));
-    dispatch(setStatusMessagesModalVisible({bool: false}));
+    dispatch(setStatusMessagesModalVisible(false));
     // dispatch({type: redux.CLEAR_STORE});
     await checkForDeviceBackupDir();
     return checkForOpenProject();

@@ -51,47 +51,46 @@ const homeSlice = createSlice({
     },
     removedLastStatusMessage(state) {
       state.statusMessages = state.statusMessages.slice(0, -1);
-      console.log('STATE>STATUSMESSAGES', state.statusMessages)
     },
     setAllSpotsPanelVisible(state, action) {
-      state.isAllSpotsPanelVisible = action.payload.bool;
+      state.isAllSpotsPanelVisible = action.payload;
     },
     setErrorMessagesModalVisible(state, action) {
-      state.isErrorMessagesModalVisible = action.payload.bool;
+      state.isErrorMessagesModalVisible = action.payload;
     },
     setImageModalVisible(state, action) {
-      state.isImageModalVisible = action.payload.bool;
+      state.isImageModalVisible = action.payload;
     },
     setInfoMessagesModalVisible(state, action) {
-      state.isInfoModalVisible = action.payload.bool;
+      state.isInfoModalVisible = action.payload;
     },
     setLoadingStatus(state, action) {
       const {bool, view} = action.payload;
       state.loading[view] = bool;
     },
     setMainMenuPanelVisible(state, action) {
-      state.isMainMenuPanelVisible = action.payload.bool;
+      state.isMainMenuPanelVisible = action.payload;
     },
     setModalVisible(state, action) {
       state.modalVisible = action.payload.modal;
     },
     setOfflineMapsModalVisible(state, action) {
-      state.isOfflineMapModalVisible = action.payload.bool;
+      state.isOfflineMapModalVisible = action.payload;
     },
     setOnlineStatus(state, action) {
-      state.isOnline = action.payload.bool;
+      state.isOnline = action.payload;
     },
     setProjectLoadComplete(state, action) {
-      state.isProjectLoadComplete = action.payload.bool;
+      state.isProjectLoadComplete = action.payload;
     },
     setProjectLoadSelectionModalVisible(state, action) {
-      state.isProjectLoadSelectionModalVisible = action.payload.bool;
+      state.isProjectLoadSelectionModalVisible = action.payload;
     },
     setSignedInStatus(state, action) {
-      state.isSignedIn = action.payload.bool;
+      state.isSignedIn = action.payload;
     },
     setStatusMessagesModalVisible(state, action) {
-      state.isStatusMessagesModalVisible = action.payload.bool;
+      state.isStatusMessagesModalVisible = action.payload;
     },
     shortcutSwitchPosition(state, action) {
       state.shortcutSwitchPosition[action.payload.switchName] = !state.shortcutSwitchPosition[action.payload.switchName];

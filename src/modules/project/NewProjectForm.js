@@ -9,7 +9,6 @@ import styles from '../../shared/ui/ui.styles';
 import {Form, useFormHook} from '../form';
 import {setProjectLoadSelectionModalVisible} from '../home/home.slice';
 import {MAIN_MENU_ITEMS} from '../main-menu-panel/mainMenu.constants';
-import {mainMenuPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 import Divider from '../main-menu-panel/MainMenuPanelDivider';
 import useProjectHook from './useProject';
 import {setMenuSelectionPage} from '../main-menu-panel/mainMenuPanel.slice';
@@ -48,7 +47,7 @@ const NewProjectForm = (props) => {
         if (isProjectLoadSelectionModalVisible) {
           dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
           props.openMainMenu();
-          dispatch(setProjectLoadSelectionModalVisible({bool: false}));
+          dispatch(setProjectLoadSelectionModalVisible(false));
         }
         else dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
         return Promise.resolve();

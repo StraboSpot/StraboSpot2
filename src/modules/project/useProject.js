@@ -325,7 +325,7 @@ const useProject = () => {
     else {
       try {
         dispatch(clearedStatusMessages());
-        dispatch(setStatusMessagesModalVisible({bool: true}));
+        dispatch(setStatusMessagesModalVisible(true));
         projectResponse = await loadProjectRemote(selectedProject);
         return projectResponse;
       }
@@ -335,7 +335,7 @@ const useProject = () => {
           statusMessage: `There is not a project named: 
           \n\n${selectedProject.description.project_name}\n\n on the server...`,
         }));
-        dispatch(setInfoMessagesModalVisible({bool: true}));
+        dispatch(setInfoMessagesModalVisible(true));
         return err.ok;
       }
     }
@@ -350,7 +350,7 @@ const useProject = () => {
       dispatch(setActiveDatasets({bool: val, dataset: dataset.id}));
       dispatch(setSelectedDataset(dataset.id));
       if (isEmpty(dataset.spotIds)){
-        dispatch(setStatusMessagesModalVisible({bool: true}));
+        dispatch(setStatusMessagesModalVisible(true));
         dispatch(clearedStatusMessages());
          const res = await useSpots.downloadSpots(dataset, user.encoded_login);
         if (res === 'No Spots!') dispatch(addedStatusMessage({statusMessage: 'No Spots!'}));
@@ -432,7 +432,7 @@ const useProject = () => {
   const uploadProject = async () => {
     dispatch(setLoadingStatus({view: 'modal', bool: true}));
     dispatch(clearedStatusMessages());
-    dispatch(setStatusMessagesModalVisible({bool: true}));
+    dispatch(setStatusMessagesModalVisible(true));
     console.log('PROJECT UPLOADING...');
     dispatch(addedStatusMessage({statusMessage: 'Uploading Project...'}));
     try {

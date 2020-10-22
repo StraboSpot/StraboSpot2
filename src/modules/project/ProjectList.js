@@ -131,7 +131,7 @@ const ProjectList = (props) => {
     else if (action === ProjectActions.OVERWRITE) {
       setShowDialog(false);
       dispatch(clearedStatusMessages());
-      dispatch(setStatusMessagesModalVisible({bool: true}));
+      dispatch(setStatusMessagesModalVisible(true));
       dispatch(setLoadingStatus({view: 'modal', bool: true}));
       if (props.source === 'device') {
         await useProject.selectProject(selectedProject, props.source);
@@ -146,11 +146,11 @@ const ProjectList = (props) => {
           if (!projectData || typeof projectData === 'string') {
             setShowDialog(false);
             dispatch(setLoadingStatus({view: 'modal', bool: false}));
-            dispatch(setStatusMessagesModalVisible({bool: false}));
+            dispatch(setStatusMessagesModalVisible(false));
             if (projectData === 'No Spots!') {
               dispatch(clearedStatusMessages());
               dispatch(addedStatusMessage({statusMessage: 'Project does not have any spots'}));
-              dispatch(setInfoMessagesModalVisible({bool: true}));
+              dispatch(setInfoMessagesModalVisible(true));
               dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
             }
             else Alert.alert('Error', 'No Project Data!');

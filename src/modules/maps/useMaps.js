@@ -241,7 +241,7 @@ const useMaps = () => {
     dispatch(clearedStatusMessages());
     dispatch(addedStatusMessage({statusMessage: `${message} \n\n${err}`}));
     dispatch(setOnlineStatus({bool: false}));
-    dispatch(setErrorMessagesModalVisible({bool: true}));
+    dispatch(setErrorMessagesModalVisible(true));
   };
 
   const isGeoMap = (map) => {

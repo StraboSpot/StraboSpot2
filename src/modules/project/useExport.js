@@ -267,7 +267,7 @@ const useExport = () => {
       })
       .catch(err => {
         console.log('ERROR', err.toString());
-        dispatch(setErrorMessagesModalVisible({bool: true}));
+        dispatch(setErrorMessagesModalVisible(true));
       });
   };
 

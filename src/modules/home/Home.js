@@ -149,7 +149,7 @@ const Home = (props) => {
     Dimensions.addEventListener('change', deviceOrientation);
     console.log('Initializing Home page');
     initialize().then((res) => {
-      dispatch(setProjectLoadSelectionModalVisible({bool: res}));
+      dispatch(setProjectLoadSelectionModalVisible(res));
       animatePanels(MainMenuPanelAnimation, -homeMenuPanelWidth);
       animatePanels(leftsideIconAnimationValue, 0);
     });
@@ -168,7 +168,7 @@ const Home = (props) => {
   useEffect(() => {
     if (projectLoadComplete) {
       mapViewComponent.current.zoomToSpotsExtent();
-      dispatch(setProjectLoadComplete({bool: false}));
+      dispatch(setProjectLoadComplete(false));
       // toggles off whenever new project is loaded successfully to trigger the same for next project load.
     }
   }, [projectLoadComplete]);
@@ -267,8 +267,8 @@ const Home = (props) => {
         deleteSpot(selectedSpot.properties.id);
         break;
       case 'toggleAllSpotsPanel':
-        if (value === 'open') dispatch(setAllSpotsPanelVisible({bool: true}));
-        else if (value === 'close') dispatch(setAllSpotsPanelVisible({bool: false}));
+        if (value === 'open') dispatch(setAllSpotsPanelVisible(true));
+        else if (value === 'close') dispatch(setAllSpotsPanelVisible(false));
         break;
       case 'zoomToSpot':
         mapViewComponent.current.zoomToSpot();
@@ -325,7 +325,7 @@ const Home = (props) => {
 
   const closeInitialProjectLoadModal = () => {
     console.log('Starting Project...');
-    dispatch(setProjectLoadSelectionModalVisible({bool: false}));
+    dispatch(setProjectLoadSelectionModalVisible(false));
   };
 
   const closeNotebookPanel = () => {
@@ -547,7 +547,7 @@ const Home = (props) => {
         dialogTitle={'Status Info'}
         style={sharedDialogStyles.dialogWarning}
         visible={isInfoMessagesModalVisible}
-        onTouchOutside={() => dispatch(setInfoMessagesModalVisible({bool: false}))}
+        onTouchOutside={() => dispatch(setInfoMessagesModalVisible( false))}
       >
         <View style={{margin: 15}}>
           <Text style={sharedDialogStyles.dialogStatusMessageText}>{statusMessages.join('\n')}</Text>
@@ -555,7 +555,7 @@ const Home = (props) => {
         <Button
           title={'OK'}
           type={'clear'}
-          onPress={() => dispatch(setInfoMessagesModalVisible({bool: false}))}
+          onPress={() => dispatch(setInfoMessagesModalVisible(false))}
         />
       </StatusDialogBox>
     );
@@ -572,7 +572,7 @@ const Home = (props) => {
         <Button
           title={'OK'}
           type={'clear'}
-          onPress={() => dispatch(setErrorMessagesModalVisible({bool: false}))}
+          onPress={() => dispatch(setErrorMessagesModalVisible(false))}
         />
       </StatusDialogBox>
     );
@@ -610,7 +610,7 @@ const Home = (props) => {
     return (
       <SaveMapsModal
         visible={isOfflineMapModalVisible}
-        close={() => dispatch(setOfflineMapsModalVisible({bool: false}))}
+        close={() => dispatch(setOfflineMapsModalVisible(false))}
         map={mapViewComponent.current}
       />
     );
@@ -647,7 +647,7 @@ const Home = (props) => {
         dialogTitle={'Status'}
         style={sharedDialogStyles.dialogTitleSuccess}
         visible={isStatusMessagesModalVisible}
-        onTouchOutside={() => dispatch(setStatusMessagesModalVisible({bool: false}))}
+        onTouchOutside={() => dispatch(setStatusMessagesModalVisible(false))}
         // disabled={progress !== 1 && !uploadErrors}
       >
         <View style={{minHeight: 100}}>
@@ -670,7 +670,7 @@ const Home = (props) => {
                 <Button
                   title={'OK'}
                   type={'clear'}
-                  onPress={() => dispatch(setStatusMessagesModalVisible({bool: false}))}
+                  onPress={() => dispatch(setStatusMessagesModalVisible(false))}
                 />
               )}
           </View>
@@ -740,13 +740,13 @@ const Home = (props) => {
 
   const toggleHomeDrawerButton = () => {
     if (isMainMenuPanelVisible) {
-      dispatch(setMainMenuPanelVisible({bool: false}));
+      dispatch(setMainMenuPanelVisible(false));
       dispatch(setMenuSelectionPage({name:undefined}));
       animatePanels(MainMenuPanelAnimation, -homeMenuPanelWidth);
       animatePanels(leftsideIconAnimationValue, 0);
     }
     else {
-      dispatch(setMainMenuPanelVisible({bool: true}));
+      dispatch(setMainMenuPanelVisible(true));
       animatePanels(MainMenuPanelAnimation, 0);
       animatePanels(leftsideIconAnimationValue, homeMenuPanelWidth);
     }
