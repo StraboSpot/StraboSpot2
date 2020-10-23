@@ -35,11 +35,12 @@ const TagDetailSidePanel = (props) => {
           alignItems: 'center',
           backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
         }}>
-          <TouchableOpacity style={{
-            width: 30, height: 30, borderWidth: 1, borderColor: themes.PRIMARY_BACKGROUND_COLOR,
-            backgroundColor: selectedTag.color,
-          }}
-                            onPress={() => setIsColorPickerModalVisible(true)}>
+          <TouchableOpacity
+            style={{
+              width: 30, height: 30, borderWidth: 1, borderColor: themes.PRIMARY_BACKGROUND_COLOR,
+              backgroundColor: selectedTag.color,
+            }}
+            onPress={() => setIsColorPickerModalVisible(true)}>
             {!selectedTag.color && <Text>No Color</Text>}
           </TouchableOpacity>
         </View>

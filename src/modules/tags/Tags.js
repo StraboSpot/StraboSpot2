@@ -71,7 +71,7 @@ const Tags = () => {
             <ListItem.Title>{tag.name}</ListItem.Title>
           </ListItem.Content>
           <ListItem.Content right>
-            <ListItem.Title>{useTags.renderSpotCount(item)}</ListItem.Title>
+            <ListItem.Title>{useTags.renderSpotCount(tag)}</ListItem.Title>
           </ListItem.Content>
           <ListItem.Chevron/>
         </ListItem>

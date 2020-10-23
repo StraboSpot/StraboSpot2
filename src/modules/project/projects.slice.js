@@ -78,18 +78,22 @@ const projectSlice = createSlice({
     },
     updatedProject(state, action) {
       const {field, value} = action.payload;
+      let updatedProject;
       if (field === 'description') {
         state.project.description = value;
-        state.project.modified_timestamp = Date.now();
-        state.project.date = new Date().toISOString();
       }
-      else if (field === 'tags' && !isEmpty(state.selectedTag.id)) {
-        state.selectedTag = value.find(tag => tag.id === state.selectedTag);
+      else {
+        if (field === 'tags' && !isEmpty(state.selectedTag)){
+          state.selectedTag = value.find(tag => tag.id === state.selectedTag.id);
+        }
       }
-    }
-    ,
+      state.project[field] = value;
+      state.project.modified_timestamp = Date.now();
+      state.project.date = new Date().toISOString();
+    },
   },
-});
+})
+;
 
 export const {
   addedDataset,

@@ -8,10 +8,10 @@ import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import {BLUE} from '../../shared/styles.constants';
 import {mainMenuPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
+import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import SidePanelHeader from '../main-menu-panel/sidePanel/SidePanelHeader';
 import {useSpotsHook} from '../spots';
 import {useTagsHook} from '../tags';
-import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 
 const AddRemoveTagSpots = () => {
   const [useSpots] = useSpotsHook();
