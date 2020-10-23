@@ -5,7 +5,7 @@ import RNFetchBlob from 'rn-fetch-blob';
 
 import {isEmpty} from '../../shared/Helpers';
 import {setMenuSelectionPage, setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
-import {projectReducers} from '../project/project.constants';
+import {doesBackupDirectoryExist} from '../project/projects.slice';
 import {spotReducers} from '../spots/spot.constants';
 import {
   setLoadingStatus,
@@ -29,8 +29,8 @@ const useHome = (props) => {
   };
 
   const checkForDeviceBackupDir = () => {
-    return RNFetchBlob.fs.isDir(devicePath + appDirectoryForDistributedBackups).then(res => {
-      dispatch({type: projectReducers.BACKUP_DIRECTORY_EXISTS, bool: res});
+    return RNFetchBlob.fs.isDir(devicePath + appDirectoryForDistributedBackups).then(doesExist => {
+      dispatch(doesBackupDirectoryExist(doesExist));
       return Promise.resolve();
     });
   };

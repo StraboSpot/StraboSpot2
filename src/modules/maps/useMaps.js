@@ -16,7 +16,7 @@ import {
 } from '../home/home.slice';
 import {mainMenuPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 import {setMenuSelectionPage, setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
-import {projectReducers} from '../project/project.constants';
+import {addedProject} from '../project/projects.slice';
 import {spotReducers} from '../spots/spot.constants';
 import useSpotsHook from '../spots/useSpots';
 import {basemaps, mapProviders, mapReducers, geoLatLngProjection, pixelProjection} from './maps.constants';
@@ -53,7 +53,7 @@ const useMaps = () => {
     delete customMapsCopy[mapId];
     if (projectCopy.other_maps && projectCopy.other_maps[mapId]) {
       delete projectCopy.other_maps[mapId];
-      dispatch({type: projectReducers.PROJECTS, project: projectCopy}); // Deletes map from project
+      dispatch(addedProject(projectCopy)); // Deletes map from project
     }
     dispatch({type: mapReducers.DELETE_CUSTOM_MAP, customMaps: customMapsCopy}); // replaces customMaps with updated object
     dispatch(setSidePanelVisible({view: null, bool: false}));

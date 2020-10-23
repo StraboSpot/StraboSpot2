@@ -7,10 +7,9 @@ import {connect, useDispatch, useSelector} from 'react-redux';
 import {getNewId} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
 import Slider from '../../shared/ui/Slider';
-import {homeReducers, Modals} from '../home/home.constants';
+import {Modals} from '../home/home.constants';
 import useMapsHook from '../maps/useMaps';
-import {NotebookPages, notebookReducers} from '../notebook-panel/notebook.constants';
-import {projectReducers} from '../project/project.constants';
+import {updatedProject} from '../project/projects.slice';
 import {spotReducers} from '../spots/spot.constants';
 import styles from './samples.style';
 
@@ -88,7 +87,7 @@ const SamplesModalView = (props) => {
         sample_prefix: samplePrefix,
         starting_sample_number: startingSampleNumber + 1,
       };
-      dispatch({type: projectReducers.UPDATE_PROJECT, field: 'preferences', value: updatedPreferences});
+      dispatch(updatedProject({field: 'preferences', value: updatedPreferences}));
       setName(null);
       setLabel(null);
       setNote('');

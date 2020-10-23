@@ -9,9 +9,9 @@ import {isEmpty} from '../../shared/Helpers';
 import {PRIMARY_ACCENT_COLOR, SECONDARY_ITEM_TEXT_COLOR} from '../../shared/styles.constants';
 import {MAIN_MENU_ITEMS} from '../main-menu-panel/mainMenu.constants';
 import {mainMenuPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
-import {projectReducers} from '../project/project.constants';
-import {useTagsHook} from '../tags';
 import {setMenuSelectionPage, setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
+import {setSelectedTag} from '../project/projects.slice';
+import {useTagsHook} from '../tags';
 
 const TagsAtSpotList = (props) => {
   const [useTags] = useTagsHook();
@@ -20,7 +20,7 @@ const TagsAtSpotList = (props) => {
 
   const openTag = (tag) => {
     dispatch(setSidePanelVisible({bool: true, view: mainMenuPanelReducers.SET_SIDE_PANEL_VIEW.TAG_DETAIL}));
-    dispatch({type: projectReducers.SET_SELECTED_TAG, tag: tag});
+    dispatch(setSelectedTag(tag));
     dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.ATTRIBUTES.TAGS}));
     if (!isMainMenuPanelVisible) props.openMainMenu();
   };

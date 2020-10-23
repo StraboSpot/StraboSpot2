@@ -9,9 +9,9 @@ import {isEmpty} from '../../shared/Helpers';
 import AddButton from '../../shared/ui/AddButton';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {mainMenuPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
-import {projectReducers} from '../project/project.constants';
-import {TagDetailModal, tagsStyles, useTagsHook} from '../tags';
 import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
+import {setSelectedTag} from '../project/projects.slice';
+import {TagDetailModal, useTagsHook} from '../tags';
 
 const Tags = () => {
   const [useTags] = useTagsHook();
@@ -23,7 +23,7 @@ const Tags = () => {
   const [isDetailModalVisibile, setIsDetailModalVisible] = useState(false);
 
   const addTag = () => {
-    dispatch({type: projectReducers.SET_SELECTED_TAG, tag: {}});
+    dispatch(setSelectedTag({}));
     setIsDetailModalVisible(true);
   };
 
@@ -54,8 +54,8 @@ const Tags = () => {
     );
   };
 
-  const renderTag = (item) => {
-    if (!isEmpty(item)) {
+  const renderTag = (tag) => {
+    if (!isEmpty(tag)) {
       return (
         <ListItem
           containerStyle={commonStyles.listItem}
@@ -63,12 +63,12 @@ const Tags = () => {
             dispatch(setSidePanelVisible(
               {view: mainMenuPanelReducers.SET_SIDE_PANEL_VIEW.TAG_DETAIL, bool: true},
             ));
-            dispatch({type: projectReducers.SET_SELECTED_TAG, tag: item});
+            dispatch(setSelectedTag(tag));
           }
           }
         >
           <ListItem.Content>
-            <ListItem.Title>{item.name}</ListItem.Title>
+            <ListItem.Title>{tag.name}</ListItem.Title>
           </ListItem.Content>
           <ListItem.Content right>
             <ListItem.Title>{useTags.renderSpotCount(item)}</ListItem.Title>

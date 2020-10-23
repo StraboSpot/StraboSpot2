@@ -12,7 +12,7 @@ import {setModalVisible} from '../home/home.slice';
 import {NotebookPages} from '../notebook-panel/notebook.constants';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
-import {projectReducers} from '../project/project.constants';
+import {addedTagToSelectedSpot} from '../project/projects.slice';
 import {TagDetailModal, TagsAtSpotList, useTagsHook} from '../tags';
 
 const TagsNotebook = (props) => {
@@ -28,7 +28,7 @@ const TagsNotebook = (props) => {
 
   const closeTagDetailModal = () => {
     setIsDetailModalVisible(false);
-    dispatch({type: projectReducers.ADD_TAG_TO_SELECTED_SPOT, addTagToSelectedSpot: false});
+    dispatch(addedTagToSelectedSpot(false));
   };
 
   return (

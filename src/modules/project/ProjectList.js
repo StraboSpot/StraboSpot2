@@ -15,14 +15,13 @@ import {
   setStatusMessagesModalVisible,
 } from '../home/home.slice';
 import {MAIN_MENU_ITEMS} from '../main-menu-panel/mainMenu.constants';
-import {mainMenuPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
+import {setMenuSelectionPage} from '../main-menu-panel/mainMenuPanel.slice';
 import {spotReducers} from '../spots/spot.constants';
 import DialogBox from './DialogBox';
-import {projectReducers} from './project.constants';
 import * as ProjectActions from './project.constants';
 import styles from './project.styles';
+import {doesBackupDirectoryExist} from './projects.slice';
 import useProjectHook from './useProject';
-import {setMenuSelectionPage} from '../main-menu-panel/mainMenuPanel.slice';
 
 const ProjectList = (props) => {
   const currentProject = useSelector(state => state.project.project);
@@ -67,7 +66,7 @@ const ProjectList = (props) => {
     else if (props.source === 'device') projectsResponse = await useProject.getAllDeviceProjects();
     if (!projectsResponse) {
       if (props.source === 'device') {
-        dispatch({type: projectReducers.BACKUP_DIRECTORY_EXISTS, bool: false});
+        dispatch(doesBackupDirectoryExist(false));
         setIsError(true);
         setErrorMessage('Cannot find a backup directory on this device...');
       }

@@ -5,7 +5,7 @@ import {getNewId, isEmpty} from '../../shared/Helpers';
 import {addedStatusMessage,removedLastStatusMessage, setLoadingStatus, setProjectLoadComplete} from '../home/home.slice';
 import useImagesHook from '../images/useImages';
 import {projectReducers} from '../project/project.constants';
-import {addedSpotsIdsToDataset, deletedSpotIdFromDataset} from '../project/projects.slice';
+import {addedSpotsIdsToDataset, deletedSpotIdFromDataset, updatedProject} from '../project/projects.slice';
 import {generalKeysIcons, sedKeysIcons, spotReducers} from './spot.constants';
 import {addSpot} from './spotSliceTemp';
 import {useEffect} from 'react';
@@ -74,7 +74,7 @@ const useSpots = (props) => {
     const defaultNumber = preferences.starting_number_for_spot || Object.keys(spots).length + 1;
     newSpot.properties.name = defaultName + defaultNumber;
     const updatedPreferences = {...preferences, spot_prefix: defaultName, starting_number_for_spot: defaultNumber + 1};
-    dispatch({type: projectReducers.UPDATE_PROJECT, field: 'preferences', value: updatedPreferences});
+    dispatch(updatedProject({field: 'preferences', value: updatedPreferences}));
 
     if (currentImageBasemap && newSpot.geometry && newSpot.geometry.type === 'Point') { //newSpot geometry is unavailable when spot is copied.
       const rootSpot = getRootSpot(currentImageBasemap.id);

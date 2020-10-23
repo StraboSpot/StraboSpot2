@@ -5,7 +5,7 @@ import RNFetchBlob from 'rn-fetch-blob';
 
 import {isEmpty} from '../../shared/Helpers';
 import {addedStatusMessage, removedLastStatusMessage, setErrorMessagesModalVisible} from '../home/home.slice';
-import {projectReducers} from './project.constants';
+import {doesBackupDirectoryExist} from './projects.slice';
 
 const useExport = () => {
   let dirs = RNFetchBlob.fs.dirs;
@@ -101,7 +101,7 @@ const useExport = () => {
         return RNFetchBlob.fs.mkdir(directory)
           .then(checkDirectorySuccess => {
             console.log('Directory', directory, 'created', checkDirectorySuccess);
-            dispatch({type: projectReducers.BACKUP_DIRECTORY_EXISTS, bool: checkDirectorySuccess});
+            dispatch(doesBackupDirectoryExist(checkDirectorySuccess));
             return Promise.resolve(directory);
           })
           .catch(createDirError => {

@@ -11,9 +11,9 @@ import DefaultCheckBox from '../../shared/ui/Checkbox';
 import modalStyle from '../../shared/ui/modal/modal.style';
 import {Modals} from '../home/home.constants';
 import useMapsHook from '../maps/useMaps';
-import {projectReducers} from '../project/project.constants';
-import {useTagsHook, TagDetailModal} from '../tags';
+import {useTagsHook} from '../tags';
 import tagStyles from './tags.styles';
+import {addedTagToSelectedSpot} from '../project/projects.slice';
 
 const TagsModal = (props) => {
   const dispatch = useDispatch();
@@ -33,7 +33,7 @@ const TagsModal = (props) => {
 
   const closeTagDetailModal = () => {
     setIsDetailModalVisible(false);
-    dispatch({type: projectReducers.ADD_TAG_TO_SELECTED_SPOT, addTagToSelectedSpot: false});
+    dispatch(addedTagToSelectedSpot(false));
   };
 
 

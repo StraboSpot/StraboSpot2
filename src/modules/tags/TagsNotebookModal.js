@@ -10,7 +10,7 @@ import DragAnimation from '../../shared/ui/DragAmination';
 import Modal from '../../shared/ui/modal/Modal';
 import uiStyles from '../../shared/ui/ui.styles';
 import {Modals} from '../home/home.constants';
-import {projectReducers} from '../project/project.constants';
+import {addedTagToSelectedSpot} from '../project/projects.slice';
 import {TagDetailModal, TagsModal, useTagsHook} from '../tags';
 
 const TagsNotebookModal = (props) => {
@@ -29,7 +29,7 @@ const TagsNotebookModal = (props) => {
 
   const closeTagDetailModal = () => {
     setIsDetailModalVisible(false);
-    dispatch({type: projectReducers.ADD_TAG_TO_SELECTED_SPOT, addTagToSelectedSpot: false});
+    dispatch(addedTagToSelectedSpot(false));
   };
 
   if (modalVisible === Modals.NOTEBOOK_MODALS.TAGS && !isEmpty(selectedSpot)) {

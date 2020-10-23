@@ -10,12 +10,12 @@ import * as forms from '../../assets/forms/forms.index';
 import commonStyles from '../../shared/common.styles';
 import {truncateText, isEmpty} from '../../shared/Helpers';
 import SaveAndCloseButtons from '../../shared/ui/SaveAndCloseButtons';
+import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import Divider from '../main-menu-panel/MainMenuPanelDivider';
 import SidePanelHeader from '../main-menu-panel/sidePanel/SidePanelHeader';
-import {projectReducers} from './project.constants';
 import styles from './project.styles';
 import EditingModal from './ProjectDescriptionEditModal';
-import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
+import {updatedProject} from './projects.slice';
 
 const ProjectDescription = (props) => {
   const getInitialFields = () => {
@@ -245,8 +245,14 @@ const ProjectDescription = (props) => {
     </View>
   );
 
-  const saveProjectDescriptionAndGo = async () => {
-    await dispatch({type: projectReducers.UPDATE_PROJECT, field: 'description', value: projectDescription});
+  const saveProjectDescriptionAndGo = () => {
+    dispatch(updatedProject(
+      {field: 'description',
+        value:
+          {...projectDescription,
+            start_date: projectDescription.start_date.toISOString(),
+            end_date: projectDescription.end_date.toISOString(),
+          }}));
     dispatch(setSidePanelVisible({bool: false}));
   };
 
