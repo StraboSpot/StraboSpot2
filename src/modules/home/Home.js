@@ -1,12 +1,11 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Alert, Animated, Dimensions, Platform, Text, View} from 'react-native';
+import {Alert, Animated, Dimensions, Platform, ScrollView, Text, View, SafeAreaView} from 'react-native';
 
 import * as Sentry from '@sentry/react-native';
 import * as turf from '@turf/turf';
-import {Button, Image} from 'react-native-elements';
+import {Button} from 'react-native-elements';
+import {FlatListSlider} from 'react-native-flatlist-slider';
 import {BallIndicator} from 'react-native-indicators';
-import Modal from 'react-native-modal';
-import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import {connect, useDispatch, useSelector} from 'react-redux';
 
 import sharedDialogStyles from '../../shared/common.styles';
@@ -14,6 +13,7 @@ import {animatePanels, isEmpty} from '../../shared/Helpers';
 import LoadingSpinner from '../../shared/ui/Loading';
 import StatusDialogBox from '../../shared/ui/StatusDialogBox';
 import ToastPopup from '../../shared/ui/Toast';
+import Preview from '../images/Preview';
 import useImagesHook from '../images/useImages';
 import {MAIN_MENU_ITEMS} from '../main-menu-panel/mainMenu.constants';
 import MainMenuPanel from '../main-menu-panel/MainMenuPanel';
@@ -136,7 +136,7 @@ const Home = (props) => {
   const [rightsideIconAnimationValue, setRightsideIconAnimationValue] = useState(new Animated.Value(0));
   const [isSelectingForStereonet, setIsSelectingForStereonet] = useState(false);
   const [isSelectingForTagging, setIsSelectingForTagging] = useState(false);
-
+  const [imageSlideshowData, setImageSlideshowData] = useState([]);
   const mapViewComponent = useRef(null);
   const toastRef = useRef();
 
@@ -169,6 +169,28 @@ const Home = (props) => {
       console.log('currentImageBasemap cleanup UE');
     };
   }, [currentImageBasemap, customMaps]);
+
+  useEffect(() => {
+    if (props.isImageModalVisible) populateImageSlideshowData();
+    else setImageSlideshowData([]);
+  }, [props.isImageModalVisible]);
+
+  const populateImageSlideshowData = () => {
+    toggleHomeDrawerButton();
+    let image = props.selectedImage;
+    let firstImageID = props.selectedImage.id;
+    let uri = useImages.getLocalImageURI(firstImageID);
+    let firstSlideshowImage = {image, uri};
+    const imagesForSlideshow = Object.values(useSpots.getActiveSpotsObj()).reduce((acc, spot) => {
+      const imagesForSlideshow1 = spot.properties.images
+        && spot.properties.images.reduce((acc1, image) => {
+          uri = useImages.getLocalImageURI(image.id);
+          return (image.id !== firstImageID) ? [...acc1, {image, uri}] : acc1;
+        }, []) || [];
+      return [...acc, ...imagesForSlideshow1];
+    }, []);
+    setImageSlideshowData([firstSlideshowImage, ...imagesForSlideshow]);
+  };
 
   useEffect(() => {
     if (projectLoadComplete) {
@@ -323,7 +345,7 @@ const Home = (props) => {
         console.log(`${name}`, ' was clicked');
         mapViewComponent.current.clearSelectedSpots();
         setIsSelectingForStereonet(true);
-        setDraw(MapModes.DRAW.POLYGON).catch(console.error);
+        setDraw(MapModes.DRAW.FREEHANDPOLYGON).catch(console.error);
         break;
     }
   };
@@ -395,7 +417,7 @@ const Home = (props) => {
       await mapViewComponent.current.goToCurrentLocation();
       useHome.toggleLoading(false);
     }
-    catch (err) {
+ catch (err) {
       useHome.toggleLoading(false);
       Alert.alert('Geolocation Error', err);
     }
@@ -670,8 +692,8 @@ const Home = (props) => {
           <View style={{flex: 1, paddingTop: 15}}>
             <Text style={{textAlign: 'center'}}>{statusMessages.join('\n')}</Text>
             {(statusMessages.includes('Download Complete!') || statusMessages.includes('Upload Complete!')
-              || statusMessages.includes('There are no active datasets.') || statusMessages.includes('Success!')
-              || statusMessages.includes('Project Backup Complete!') || statusMessages.includes('Project loaded!')
+            || statusMessages.includes('There are no active datasets.') || statusMessages.includes('Success!')
+            || statusMessages.includes('Project Backup Complete!') || statusMessages.includes('Project loaded!')
               || statusMessages.includes('No Spots!') || statusMessages.includes('Datasets Saved.'))
             && (
               <Button
@@ -845,25 +867,30 @@ const Home = (props) => {
         onPress={(name, position) => dialogClickHandler('notebookPanelMenuVisible', name, position)}
         onTouchOutside={() => toggleDialog('notebookPanelMenuVisible')}
       />
-      <Modal
-        isVisible={isImageModalVisible}
-        useNativeDriver={true}
-        style={{flex: 1}}
-      >
-        <View style={homeStyles.modal}>
-          <Button
-            type={'clear'}
-            titleProps={{color: 'white'}}
-            title='Hide modal'
-            onPress={() => toggleImageModal()}/>
-          <Image
-            source={selectedImage
-              ? {uri: useImages.getLocalImageURI(selectedImage.id)}
-              : require('../../assets/images/noimage.jpg')}
-            style={{width: wp('90%'), height: hp('90%')}}
-          />
-        </View>
-      </Modal>
+      {(imageSlideshowData.length) > 0 && (
+        <SafeAreaView>
+          <ScrollView>
+            <FlatListSlider
+              data={imageSlideshowData}
+              imageKey={'uri'}
+              autoscroll={false}
+              separator={0}
+              loop={true}
+              width={props.deviceDimensions.width}
+              height={props.deviceDimensions.height}
+              onPress={(item) => {
+                console.log(item);
+              }}
+              component={(
+                <Preview
+                  toggle={() => toggleImageModal()}
+                  openNotebookPanel={(page) => openNotebookPanel(page)}
+                />
+              )}
+            />
+          </ScrollView>
+        </SafeAreaView>
+      )}
       {isHomeLoading && <LoadingSpinner/>}
       {notebookPanel}
       {isAllSpotsPanelVisible && renderAllSpotsPanel()}

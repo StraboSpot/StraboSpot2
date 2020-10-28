@@ -136,75 +136,80 @@ const SignIn = (props) => {
 
   const updateUserResponse = async (encodedLogin) => {
     let userState = {};
-    let userProfile = await serverRequests.getProfile(encodedLogin);
-    const userProfileImage = await serverRequests.getProfileImage(encodedLogin);
-    console.log('userProfileImage', userProfileImage);
-    const image = await getUserImage(userProfileImage);
-    userState = {...userProfile, image: image, encodedLogin: encodedLogin};
-    return Promise.resolve(userState);
+    try {
+      let userProfile = await serverRequests.getProfile(encodedLogin);
+      const userProfileImage = await serverRequests.getProfileImage(encodedLogin);
+      console.log('userProfileImage', userProfileImage);
+      const image = await getUserImage(userProfileImage);
+      userState = {...userProfile, image: image, encodedLogin: encodedLogin};
+      return Promise.resolve(userState);
+    }
+    catch (err) {
+      console.log('SIGN IN ERROR', err);
+    }
   };
 
-  const createAccount = () => {
-    props.navigation.navigate('SignUp');
-  };
-
-  return (
-    <ImageBackground source={require('../../assets/images/background.jpg')} style={styles.backgroundImage}>
-      <View style={styles.container}>
-        <View style={{
-          position: 'absolute',
-          right: 0,
-          top: 40,
-          zIndex: -1,
-        }}>
-          <IconButton
-            source={isOnline ? online : offline}
-          />
-        </View>
-        <KeyboardAvoidingView
-          behavior={'position'}
-          contentContainerStyle={{
-            // flex: 1,
-            // justifyContent: 'space-between',
-          }}
-          keyboardVerticalOffset={0}
-        >
-          <View>
-            <View style={styles.titleContainer}>
-              <Text style={styles.title}>Strabo Spot 2</Text>
-              <Text style={styles.version}>{VERSION_NUMBER}</Text>
-            </View>
-            <View style={styles.signInContainer}>
-              <TextInput
-                style={styles.input}
-                placeholder='Username'
-                autoCapitalize='none'
-                autoCorrect={false}
-                placeholderTextColor='#6a777e'
-                onChangeText={val => setUsername(val.toLowerCase())}
-                value={username}
-                keyboardType='email-address'
-                returnKeyType='go'
-              />
-              <TextInput
-                style={styles.input}
-                placeholder='Password'
-                autoCapitalize='none'
-                secureTextEntry={true}
-                placeholderTextColor='#6a777e'
-                onChangeText={val => setPassword(val)}
-                value={password}
-                returnKeyType='go'
-                onSubmitEditing={signIn}
-              />
-              {renderButtons()}
-            </View>
-          </View>
-        </KeyboardAvoidingView>
-      </View>
-    </ImageBackground>
-  );
+const createAccount = () => {
+  props.navigation.navigate('SignUp');
 };
 
-export default SignIn;
+return (
+  <ImageBackground source={require('../../assets/images/background.jpg')} style={styles.backgroundImage}>
+    <View style={styles.container}>
+      <View style={{
+        position: 'absolute',
+        right: 0,
+        top: 40,
+        zIndex: -1,
+      }}>
+        <IconButton
+          source={isOnline ? online : offline}
+        />
+      </View>
+      <KeyboardAvoidingView
+        behavior={'position'}
+        contentContainerStyle={{
+          // flex: 1,
+          // justifyContent: 'space-between',
+        }}
+        keyboardVerticalOffset={0}
+      >
+        <View>
+          <View style={styles.titleContainer}>
+            <Text style={styles.title}>Strabo Spot 2</Text>
+            <Text style={styles.version}>{VERSION_NUMBER}</Text>
+          </View>
+          <View style={styles.signInContainer}>
+            <TextInput
+              style={styles.input}
+              placeholder='Username'
+              autoCapitalize='none'
+              autoCorrect={false}
+              placeholderTextColor='#6a777e'
+              onChangeText={val => setUsername(val.toLowerCase())}
+              value={username}
+              keyboardType='email-address'
+              returnKeyType='go'
+            />
+            <TextInput
+              style={styles.input}
+              placeholder='Password'
+              autoCapitalize='none'
+              secureTextEntry={true}
+              placeholderTextColor='#6a777e'
+              onChangeText={val => setPassword(val)}
+              value={password}
+              returnKeyType='go'
+              onSubmitEditing={signIn}
+            />
+            {renderButtons()}
+          </View>
+        </View>
+      </KeyboardAvoidingView>
+    </View>
+  </ImageBackground>
+);
+}
+;
 
+export default SignIn;

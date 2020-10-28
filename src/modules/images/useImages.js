@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {Alert, Image, Platform} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
@@ -40,7 +40,9 @@ const useImages = () => {
   const appDirectory = '/StraboSpot';
   const imagesResizeTemp = '/TempImages';
   const imagesDirectory = devicePath + appDirectory + '/Images';
+
   let imageCount = 0;
+  let newImages = [];
 
   const deleteTempImagesFolder = async () => {
     return await RNFetchBlob.fs.unlink(devicePath + imagesResizeTemp);
@@ -192,7 +194,7 @@ const useImages = () => {
       }
       else {
         console.log('Photos to Save:', [...newImages, photoProperties]);
-        setNewImages(prevState => [...prevState, photoProperties]);
+        newImages.push(photoProperties);
         return launchCameraFromNotebook();
       }
     }

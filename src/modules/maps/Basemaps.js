@@ -51,27 +51,15 @@ function Basemap(props) {
   };
 
   // Evaluate and return appropriate center coordinates
-  // if ZoomToSpot is set, then asyncMode zoomToSpot is triggered, load the map with center coordinates as the coordinates of the centroid of the selectedSpot
-  // else return default center coordinates.
   const evaluateCenterCoordinates = () => {
-    if (props.zoomToSpot) {
-      return props.imageBasemap
-        ? (
-          (isEmpty(selectedSpot)
-            || !isEmpty(selectedSpot) && selectedSpot.properties.image_basemap !== props.imageBasemap.id)
-            ? defaultCenterCoordinates()
-            : useMaps.convertCoordinateProjections(pixelProjection, geoLatLngProjection,
-            turf.centroid(selectedSpot).geometry.coordinates)
-        )
-        : (
-          ((isEmpty(selectedSpot)) || !isEmpty(selectedSpot) && selectedSpot.properties.image_basemap)
-            ? defaultCenterCoordinates()
-            : turf.centroid(selectedSpot).geometry.coordinates
-        );
+    if (props.zoomToSpot && !isEmpty(selectedSpot)) {
+      if (props.imageBasemap && selectedSpot.properties.image_basemap === props.imageBasemap.id) {
+        return useMaps.convertCoordinateProjections(pixelProjection, geoLatLngProjection,
+          turf.centroid(selectedSpot).geometry.coordinates);
+      }
+      else if (!selectedSpot.properties.image_basemap) return turf.centroid(selectedSpot).geometry.coordinates;
     }
-    else {
-      return defaultCenterCoordinates();
-    }
+    return defaultCenterCoordinates();
   };
 
   const onZoomChange = async () => {

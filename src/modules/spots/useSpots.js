@@ -225,6 +225,17 @@ const useSpots = (props) => {
     return spots[spotId];
   };
 
+  const getSpotByImageId = (imageId) => {
+    return Object.values(getActiveSpotsObj()).find(spot => {
+      return spot.properties.images && spot.properties.images.find(image => image.id === imageId);
+    });
+  };
+
+  const getSpotDataIconSource = (iconKey) => {
+    const iconSources = {...generalKeysIcons, ...sedKeysIcons};
+    if (iconSources[iconKey]) return iconSources[iconKey];
+  };
+
   const getSpotDataKeys = (spot) => {
     let keysFound = Object.keys(spot.properties).filter(key => {
       return Object.keys(generalKeysIcons).includes(key) && !isEmpty(spot.properties[key]);
@@ -237,11 +248,6 @@ const useSpots = (props) => {
     }
     // console.log('Keys Found', keysFound);
     return keysFound;
-  };
-
-  const getSpotDataIconSource = (iconKey) => {
-    const iconSources = {...generalKeysIcons, ...sedKeysIcons};
-    if (iconSources[iconKey]) return iconSources[iconKey];
   };
 
   const getSpotGemometryIconSource = (spot) => {
@@ -289,6 +295,7 @@ const useSpots = (props) => {
     getMappableSpots: getMappableSpots,
     getRootSpot: getRootSpot,
     getSpotById: getSpotById,
+    getSpotByImageId: getSpotByImageId,
     getSpotDataIconSource: getSpotDataIconSource,
     getSpotDataKeys: getSpotDataKeys,
     getSpotGemometryIconSource: getSpotGemometryIconSource,

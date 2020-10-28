@@ -8,6 +8,7 @@ import Modal from '../../shared/ui/modal/Modal';
 import {Form, useFormHook} from '../form';
 import {spotReducers} from '../spots/spot.constants';
 import {editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
+import useSpotsHook from '../spots/useSpots';
 import styles from './images.styles';
 
 const ImagePropertiesModal = (props) => {
@@ -17,6 +18,7 @@ const ImagePropertiesModal = (props) => {
   const [useForm] = useFormHook();
   const [annotated, setAnnotated] = useState(selectedImage.annotated);
   const form = useRef(null);
+  const [useSpots] = useSpotsHook();
 
   const onSubmitForm = () => {
     // if (useForm.hasErrors(form)) useForm.showErrors(form);
