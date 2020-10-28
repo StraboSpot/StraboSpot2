@@ -17,6 +17,7 @@ import MyStraboSpot from '../project/MyStraboSpot';
 import UploadBackupAndExport from '../project/UploadBackupExport';
 import SamplesList from '../samples/SamplesList';
 import {spotReducers} from '../spots/spot.constants';
+import {setSelectedSpot} from '../spots/spotSliceTemp';
 import SpotsList from '../spots/SpotsList';
 import Tags from '../tags/Tags';
 import About from './About';
@@ -31,6 +32,7 @@ const MainMenuPanel = props => {
   const dispatch = useDispatch();
   const project = useSelector(state => state.project.project);
   const settingsPageVisible = useSelector(state => state.mainMenu.mainMenuPageVisible);
+  const spots = useSelector(state => state.spot.spots);
   const switchPosition = useSelector(state => state.home.shortcutSwitchPosition);
   const spotsInMapExtent = useSelector(state => state.map.spotsInMapExtent);
   const user = useSelector(state => state.user);
@@ -42,10 +44,11 @@ const MainMenuPanel = props => {
   let page;
 
   const getSpotFromId = (spotId, page) => {
-    const spot = props.spots[spotId];
+    const spot = spots[spotId];
     if (page === NotebookPages.SAMPLE) props.openNotebookPanel(NotebookPages.SAMPLE);
     else props.openNotebookPanel(NotebookPages.OVERVIEW);
-    props.onSetSelectedSpot(spot);
+    // props.onSetSelectedSpot(spot);
+    dispatch(setSelectedSpot(spot));
   };
 
   const setVisibleMenu = (name) => {
@@ -200,14 +203,4 @@ const MainMenuPanel = props => {
   );
 };
 
-const mapStateToProps = (state) => {
-  return {
-    spots: state.spot.spots,
-  };
-};
-
-const mapDispatchToProps = {
-  onSetSelectedSpot: (spot) => ({type: spotReducers.SET_SELECTED_SPOT, spot: spot}),
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(MainMenuPanel);
+export default MainMenuPanel;

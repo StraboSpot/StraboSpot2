@@ -7,6 +7,7 @@ import {isEmpty} from '../../shared/Helpers';
 import {setMenuSelectionPage, setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import {doesBackupDirectoryExist} from '../project/projects.slice';
 import {spotReducers} from '../spots/spot.constants';
+import {clearedSelectedSpots} from '../spots/spotSliceTemp';
 import {
   setLoadingStatus,
   setAllSpotsPanelVisible,
@@ -38,7 +39,7 @@ const useHome = (props) => {
   const initializeHomePage = async () => {
     dispatch(setLoadingStatus({view: 'home', bool: false}));
     dispatch(setLoadingStatus({view: 'modal', bool: false}));
-    dispatch({type: spotReducers.CLEAR_SELECTED_SPOTS});
+    dispatch(clearedSelectedSpots());
     dispatch(setAllSpotsPanelVisible(false));
     dispatch(setSidePanelVisible({value: false}));
     dispatch(setModalVisible({modal: null}));

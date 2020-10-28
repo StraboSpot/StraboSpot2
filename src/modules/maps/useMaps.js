@@ -18,6 +18,7 @@ import {mainMenuPanelReducers} from '../main-menu-panel/mainMenuPanel.constants'
 import {setMenuSelectionPage, setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import {addedProject} from '../project/projects.slice';
 import {spotReducers} from '../spots/spot.constants';
+import {setSelectedSpot} from '../spots/spotSliceTemp';
 import useSpotsHook from '../spots/useSpots';
 import {basemaps, mapProviders, mapReducers, geoLatLngProjection, pixelProjection} from './maps.constants';
 
@@ -282,7 +283,7 @@ const useMaps = () => {
     const userLocationCoords = await getCurrentLocation();
     let feature = turf.point(userLocationCoords);
     const newSpot = await useSpots.createSpot(feature);
-    setSelectedSpot(newSpot);
+    setSelectedSpotOnMap(newSpot);
     return Promise.resolve(newSpot);
   };
 
@@ -301,9 +302,10 @@ const useMaps = () => {
     if (!customMapsCopy[map.id].overlay) viewCustomMap(map);
   };
 
-  const setSelectedSpot = (spotToSetAsSelected) => {
+  const setSelectedSpotOnMap = (spotToSetAsSelected) => {
     console.log('Set selected Spot:', spotToSetAsSelected);
-    dispatch({type: spotReducers.SET_SELECTED_SPOT, spot: spotToSetAsSelected});
+    // dispatch({type: spotReducers.SET_SELECTED_SPOT, spot: spotToSetAsSelected});
+    dispatch(setSelectedSpot(spotToSetAsSelected));
   };
 
   const viewCustomMap = (map) => {
@@ -351,7 +353,7 @@ const useMaps = () => {
     setCurrentBasemap: setCurrentBasemap,
     setCustomMapSwitchValue: setCustomMapSwitchValue,
     setPointAtCurrentLocation: setPointAtCurrentLocation,
-    setSelectedSpot: setSelectedSpot,
+    setSelectedSpotOnMap: setSelectedSpotOnMap,
     viewCustomMap: viewCustomMap,
     zoomToSpots: zoomToSpots,
   }];

@@ -13,6 +13,7 @@ import Spacer from '../../shared/ui/Spacer';
 import {setOnlineStatus} from '../home/home.slice';
 import homeStyles from '../home/home.style';
 import {spotReducers} from '../spots/spot.constants';
+import {clearedSpots} from '../spots/spotSliceTemp';
 import ActiveDatasetsList from './ActiveDatasetsList';
 import DatasetList from './DatasetList';
 import NewProject from './NewProjectForm';
@@ -24,7 +25,6 @@ const InitialProjectLoadModal = (props) => {
   const navigation = useNavigation();
   const activeDatasetsId = useSelector(state => state.project.activeDatasetsIds);
   const selectedProject = useSelector(state => state.project.project);
-  const datasets = useSelector(state => state.project.datasets);
   const isOnline = useSelector(state => state.home.isOnline);
   const userName = useSelector(state => state.user.name);
   const dispatch = useDispatch();
@@ -42,7 +42,7 @@ const InitialProjectLoadModal = (props) => {
     if (visibleProjectSection === 'activeDatasetsList') {
       dispatch(clearedProject());
       dispatch(clearedDatasets());
-      dispatch({type: spotReducers.CLEAR_SPOTS});
+      dispatch(clearedSpots());
       setVisibleInitialSection('none');
     }
     else if (visibleProjectSection === 'currentDatasetSelection') {

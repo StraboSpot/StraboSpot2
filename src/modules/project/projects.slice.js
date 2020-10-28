@@ -78,7 +78,6 @@ const projectSlice = createSlice({
     },
     updatedProject(state, action) {
       const {field, value} = action.payload;
-      let updatedProject;
       if (field === 'description') {
         state.project.description = value;
       }

@@ -42,6 +42,7 @@ import useProjectHook from '../project/useProject';
 import NotebookSamplesModal from '../samples/NotebookSamplesModal';
 import ShortcutSamplesModal from '../samples/ShortcutSamplesModal';
 import {spotReducers} from '../spots/spot.constants';
+import {addedSpot, clearedSelectedSpots, setSelectedSpot} from '../spots/spotSliceTemp';
 import useSpotsHook from '../spots/useSpots';
 import {
   TagsNotebookModal,
@@ -84,6 +85,7 @@ const Home = (props) => {
   const selectedDataset = useProject.getSelectedDatasetFromId();
 
   const dispatch = useDispatch();
+  const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const customMaps = useSelector(state => state.map.customMaps);
   const deviceDimensions = useSelector(state => state.home.deviceDimensions);
   const modalVisible = useSelector(state => state.home.modalVisible);
@@ -101,9 +103,12 @@ const Home = (props) => {
   const isNotebookPanelVisible = useSelector(state => state.notebook.isNotebookPanelVisible);
   const isMainMenuPanelVisible = useSelector(state => state.home.isMainMenuPanelVisible);
   const isSidePanelVisible = useSelector(state => state.mainMenu.isSidePanelVisible);
+  const selectedImage = useSelector(state => state.spot.selectedAttributes[0]);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const sidePanelView = useSelector(state => state.mainMenu.sidePanelView);
+  const spots = useSelector(state => state.spot.spots);
   const user = useSelector(state => state.user);
+  const vertexStartCoords = useSelector(state => state.map.vertexStartCoords);
 
   // const imagesCount = useSelector(state => state.home.imageProgress.imagesDownloadedCount);
   // const imagesNeeded = useSelector(state => state.home.imageProgress.neededImageIds);
@@ -159,11 +164,11 @@ const Home = (props) => {
   }, [user]);
 
   useEffect(() => {
-    if (props.currentImageBasemap && isMainMenuPanelVisible) toggleHomeDrawerButton();
+    if (currentImageBasemap && isMainMenuPanelVisible) toggleHomeDrawerButton();
     return function cleanUp() {
       console.log('currentImageBasemap cleanup UE');
     };
-  }, [props.currentImageBasemap, customMaps]);
+  }, [currentImageBasemap, customMaps]);
 
   useEffect(() => {
     if (projectLoadComplete) {
@@ -195,7 +200,7 @@ const Home = (props) => {
           `The ${name.toUpperCase()} Shortcut button in the  will be functioning soon!`);
         break;
       case 'tag':
-        dispatch({type: spotReducers.CLEAR_SELECTED_SPOTS});
+        dispatch(clearedSelectedSpots());
         if (modalVisible === Modals.SHORTCUT_MODALS.TAGS) {
           dispatch(setModalVisible({modal: null}));
         }
@@ -203,7 +208,7 @@ const Home = (props) => {
         closeNotebookPanel();
         break;
       case 'measurement':
-        dispatch({type: spotReducers.CLEAR_SELECTED_SPOTS});
+        dispatch(clearedSelectedSpots());
         if (modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {
           dispatch(setModalVisible({modal: null}));
         }
@@ -211,7 +216,7 @@ const Home = (props) => {
         closeNotebookPanel();
         break;
       case 'sample':
-        dispatch({type: spotReducers.CLEAR_SELECTED_SPOTS});
+        dispatch(clearedSelectedSpots());
         if (modalVisible === Modals.SHORTCUT_MODALS.SAMPLE) {
           dispatch(setModalVisible({modal: null}));
         }
@@ -219,7 +224,7 @@ const Home = (props) => {
         closeNotebookPanel();
         break;
       case 'note':
-        dispatch({type: spotReducers.CLEAR_SELECTED_SPOTS});
+        dispatch(clearedSelectedSpots());
         if (modalVisible === Modals.SHORTCUT_MODALS.NOTES) {
           dispatch(setModalVisible({modal: null}));
         }
@@ -227,7 +232,7 @@ const Home = (props) => {
         closeNotebookPanel();
         break;
       case 'photo':
-        dispatch({type: spotReducers.CLEAR_SELECTED_SPOTS});
+        dispatch(clearedSelectedSpots());
         useMaps.setPointAtCurrentLocation().then((point) => {
           console.log('Point', point);
           useImages.launchCameraFromNotebook().then((imagesSavedLength) => {
@@ -344,7 +349,7 @@ const Home = (props) => {
   // };
 
   const deleteSpot = id => {
-    const spot = props.spots[id];
+    const spot = spots[id];
     Alert.alert(
       'Delete Spot?',
       'Are you sure you want to delete Spot: ' + spot.properties.name,
@@ -432,8 +437,10 @@ const Home = (props) => {
         const currentLocation = await useMaps.getCurrentLocation();
         let editedSpot = JSON.parse(JSON.stringify(selectedSpot));
         editedSpot.geometry = turf.point(currentLocation).geometry;
-        dispatch({type: spotReducers.ADD_SPOT, spot: editedSpot});
-        dispatch({type: spotReducers.SET_SELECTED_SPOT, spot: editedSpot});
+        // dispatch({type: spotReducers.ADD_SPOT, spot: editedSpot});
+        dispatch(addedSpot(editedSpot));
+        // dispatch({type: spotReducers.SET_SELECTED_SPOT, spot: editedSpot});
+        dispatch(setSelectedSpot(editedSpot));
         break;
       case 'setFromMap':
         mapViewComponent.current.createDefaultGeom();
@@ -547,7 +554,7 @@ const Home = (props) => {
         dialogTitle={'Status Info'}
         style={sharedDialogStyles.dialogWarning}
         visible={isInfoMessagesModalVisible}
-        onTouchOutside={() => dispatch(setInfoMessagesModalVisible( false))}
+        onTouchOutside={() => dispatch(setInfoMessagesModalVisible(false))}
       >
         <View style={{margin: 15}}>
           <Text style={sharedDialogStyles.dialogStatusMessageText}>{statusMessages.join('\n')}</Text>
@@ -663,16 +670,16 @@ const Home = (props) => {
           <View style={{flex: 1, paddingTop: 15}}>
             <Text style={{textAlign: 'center'}}>{statusMessages.join('\n')}</Text>
             {(statusMessages.includes('Download Complete!') || statusMessages.includes('Upload Complete!')
-            || statusMessages.includes('There are no active datasets.') || statusMessages.includes('Success!')
-            || statusMessages.includes('Project Backup Complete!') || statusMessages.includes('Project loaded!')
-            || statusMessages.includes('No Spots!') || statusMessages.includes('Datasets Saved.'))
+              || statusMessages.includes('There are no active datasets.') || statusMessages.includes('Success!')
+              || statusMessages.includes('Project Backup Complete!') || statusMessages.includes('Project loaded!')
+              || statusMessages.includes('No Spots!') || statusMessages.includes('Datasets Saved.'))
             && (
-                <Button
-                  title={'OK'}
-                  type={'clear'}
-                  onPress={() => dispatch(setStatusMessagesModalVisible(false))}
-                />
-              )}
+              <Button
+                title={'OK'}
+                type={'clear'}
+                onPress={() => dispatch(setStatusMessagesModalVisible(false))}
+              />
+            )}
           </View>
         </View>
       </StatusDialogBox>
@@ -741,7 +748,7 @@ const Home = (props) => {
   const toggleHomeDrawerButton = () => {
     if (isMainMenuPanelVisible) {
       dispatch(setMainMenuPanelVisible(false));
-      dispatch(setMenuSelectionPage({name:undefined}));
+      dispatch(setMenuSelectionPage({name: undefined}));
       animatePanels(MainMenuPanelAnimation, -homeMenuPanelWidth);
       animatePanels(leftsideIconAnimationValue, 0);
     }
@@ -809,7 +816,7 @@ const Home = (props) => {
         isSelectingForStereonet={isSelectingForStereonet}
         isSelectingForTagging={isSelectingForTagging}
       />
-      {props.vertexStartCoords && <VertexDrag/>}
+      {vertexStartCoords && <VertexDrag/>}
       <ToastPopup toastRef={toastRef}/>
       {Platform.OS === 'android' && (
         <View>
@@ -850,8 +857,8 @@ const Home = (props) => {
             title='Hide modal'
             onPress={() => toggleImageModal()}/>
           <Image
-            source={props.selectedImage
-              ? {uri: useImages.getLocalImageURI(props.selectedImage.id)}
+            source={selectedImage
+              ? {uri: useImages.getLocalImageURI(selectedImage.id)}
               : require('../../assets/images/noimage.jpg')}
             style={{width: wp('90%'), height: hp('90%')}}
           />
@@ -873,20 +880,4 @@ const Home = (props) => {
   );
 };
 
-function mapStateToProps(state) {
-  return {
-    currentImageBasemap: state.map.currentImageBasemap,
-    selectedImage: state.spot.selectedAttributes[0],
-    spots: state.spot.spots,
-    getCurrentProject: state.project.project,
-    vertexStartCoords: state.map.vertexStartCoords,
-  };
-}
-
-const mapDispatchToProps = {
-  deleteSpot: (id) => ({type: spotReducers.DELETE_SPOT, id: id}),
-  onSpotEdit: (field, value) => ({type: spotReducers.EDIT_SPOT_PROPERTIES, field: field, value: value}),
-  onSpotEditImageObj: (images) => ({type: spotReducers.EDIT_SPOT_IMAGES, images: images}),
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Home);
+export default Home;

@@ -13,6 +13,7 @@ import {Modals} from '../home/home.constants';
 import {setModalVisible} from '../home/home.slice';
 import useImagesHook from '../images/useImages';
 import {spotReducers} from '../spots/spot.constants';
+import {addedSpot, addedSpots, clearedSelectedSpots, setIntersectedSpotsForTagging, setSelectedSpot} from '../spots/spotSliceTemp';
 import useSpotsHook from '../spots/useSpots';
 import {MapLayer1, MapLayer2} from './Basemaps';
 import {geoLatLngProjection, LATITUDE, LONGITUDE, MapModes, pixelProjection, mapReducers} from './maps.constants';
@@ -209,7 +210,8 @@ const Map = React.forwardRef((props, ref) => {
         ...selectedSpot,
         geometry: defaultFeature.geometry,
       };
-      dispatch(({type: spotReducers.ADD_SPOT, spot: selectedSpotCopy}));
+      // dispatch(({type: spotReducers.ADD_SPOT, spot: selectedSpotCopy}));
+      dispatch(addedSpot(selectedSpotCopy));
 
       // Set new geometry ready for editing, set the active vertex to first index of the geometry.
       startEditing(selectedSpotCopy, turf.explode(selectedSpotCopy).features[0], 0);
@@ -328,13 +330,13 @@ const Map = React.forwardRef((props, ref) => {
   const clearSelectedSpots = () => {
     console.log('Clear selected Spots.');
     setDisplayedSpots([]);
-    dispatch({type: spotReducers.CLEAR_SELECTED_SPOTS});
+    dispatch(clearedSelectedSpots());
   };
 
   const clearSelectedSpotsWhileEditing = () => {
     console.log('Clear selected Spots.');
     setDisplayedSpotsWhileEditing([], editingModeData.spotsEdited, editingModeData.spotsNotEdited);
-    dispatch({type: spotReducers.CLEAR_SELECTED_SPOTS});
+    dispatch(clearedSelectedSpots());
   };
 
   // This method is required when the draw features at press returns empty
@@ -365,7 +367,7 @@ const Map = React.forwardRef((props, ref) => {
         console.log('Selecting or unselect a feature ...');
         const {screenPointX, screenPointY} = e.properties;
         const spotFound = await getSpotAtPress(screenPointX, screenPointY);
-        if (!isEmpty(spotFound)) useMaps.setSelectedSpot(spotFound);
+        if (!isEmpty(spotFound)) useMaps.setSelectedSpotOnMap(spotFound);
         else clearSelectedSpots();
       }
       // Draw a feature
@@ -431,7 +433,7 @@ const Map = React.forwardRef((props, ref) => {
         //     If so switch selected vertex to vertex at pressed point
         const spotFound = await getSpotAtPress(screenPointX, screenPointY);
         // #114, while editing, click on a different spot to edit, should immediately identify it as the selected spot and hence update the notebook panel.
-        if (!isEmpty(spotFound)) useMaps.setSelectedSpot(spotFound);
+        if (!isEmpty(spotFound)) useMaps.setSelectedSpotOnMap(spotFound);
         if (isEmpty(editingModeData.spotEditing)) {
           if (isEmpty(spotFound)) console.log('No feature selected.');
           else setSelectedSpotToEdit(spotFound);
@@ -803,7 +805,8 @@ const Map = React.forwardRef((props, ref) => {
         else if (props.isSelectingForTagging) {
           const selectedSpots = await useMapFeatures.getLassoedSpots(mapPropsMutable.spotsNotSelected, feature);
           if (selectedSpots.length > 0) {
-            dispatch({type: spotReducers.SET_INTERSECTED_SPOTS_FOR_TAGGING, spots: selectedSpots});
+            // dispatch({type: spotReducers.SET_INTERSECTED_SPOTS_FOR_TAGGING, spots: selectedSpots});
+            dispatch(setIntersectedSpotsForTagging(selectedSpots));
             dispatch(setModalVisible({modal: Modals.SHORTCUT_MODALS.ADD_TAGS_TO_SPOTS}));
           }
           else {
@@ -815,7 +818,7 @@ const Map = React.forwardRef((props, ref) => {
         }
         else {
           newOrEditedSpot = await useSpots.createSpot(feature);
-          useMaps.setSelectedSpot(newOrEditedSpot);
+          useMaps.setSelectedSpotOnMap(newOrEditedSpot);
           dispatch(({type: mapReducers.FREEHAND_FEATURE_COORDS, freehandFeatureCoords: undefined}));// reset the freeHandCoordinates
         }
       }
@@ -837,7 +840,7 @@ const Map = React.forwardRef((props, ref) => {
       }
       else {
         newOrEditedSpot = await useSpots.createSpot(newFeature);
-        useMaps.setSelectedSpot(newOrEditedSpot);
+        useMaps.setSelectedSpotOnMap(newOrEditedSpot);
       }
       setDrawFeatures([]);
     }
@@ -861,7 +864,8 @@ const Map = React.forwardRef((props, ref) => {
     if (!isEmpty(editingModeData.spotEditing)) {
       const spotOrig = spots[editingModeData.spotEditing.properties.id];
       setDisplayedSpots([spotOrig]);
-      await dispatch({type: spotReducers.SET_SELECTED_SPOT, spot: spotOrig});
+      // await dispatch({type: spotReducers.SET_SELECTED_SPOT, spot: spotOrig});
+      await dispatch(setSelectedSpot(spotOrig));
     }
     else setDisplayedSpots([]);
     clearEditing();
@@ -873,11 +877,13 @@ const Map = React.forwardRef((props, ref) => {
     if (isEmpty(editingModeData.spotEditing)) setDisplayedSpots([]);
     else {
       setDisplayedSpots([editingModeData.spotEditing]);
-      await dispatch({type: spotReducers.SET_SELECTED_SPOT, spot: editingModeData.spotEditing});
+      // await dispatch({type: spotReducers.SET_SELECTED_SPOT, spot: editingModeData.spotEditing});
+      await dispatch(setSelectedSpot(editingModeData.spotEditing));
     }
     if (!isEmpty(editingModeData.spotsEdited)) {
-      await dispatch(
-        {type: spotReducers.ADD_SPOTS, spots: [...editingModeData.spotsNotEdited, ...editingModeData.spotsEdited]});
+      dispatch(addedSpots([...editingModeData.spotsNotEdited, ...editingModeData.spotsEdited]));
+    //   await dispatch(
+    //     {type: spotReducers.ADD_SPOTS, spots: [...editingModeData.spotsNotEdited, ...editingModeData.spotsEdited]});
     }
     clearEditing();
   };
@@ -902,7 +908,7 @@ const Map = React.forwardRef((props, ref) => {
     }));
     spotToEdit ? console.log('Set Spot to edit:', spotToEdit) : console.log('No Spot selected to edit.');
     // #114, editing a spot should immediately identify it as the selected spot and hence update the notebook panel.
-    if (!isEmpty(spotToEdit)) useMaps.setSelectedSpot(spotToEdit);
+    if (!isEmpty(spotToEdit)) useMaps.setSelectedSpotOnMap(spotToEdit);
     setDisplayedSpotsWhileEditing(spotToEdit, [], mappableSpots);
     setEditFeatures(spotToEdit);
     // while starting to edit the spot, set the vertex active to move immediately, if available

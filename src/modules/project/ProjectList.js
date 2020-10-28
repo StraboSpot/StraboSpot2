@@ -17,6 +17,7 @@ import {
 import {MAIN_MENU_ITEMS} from '../main-menu-panel/mainMenu.constants';
 import {setMenuSelectionPage} from '../main-menu-panel/mainMenuPanel.slice';
 import {spotReducers} from '../spots/spot.constants';
+import {clearedSpots} from '../spots/spotSliceTemp';
 import DialogBox from './DialogBox';
 import * as ProjectActions from './project.constants';
 import styles from './project.styles';
@@ -110,7 +111,7 @@ const ProjectList = (props) => {
         console.log('Finished uploading project', project);
         const datasets = await useProject.uploadDatasets();
         console.log(datasets);
-        await dispatch({type: spotReducers.CLEAR_SPOTS, spots: {}});
+        await dispatch(clearedSpots());
         dispatch(addedStatusMessage({statusMessage: 'Project uploaded to server.'}));
 
         const projectData = await useProject.selectProject(selectedProject, props.source);

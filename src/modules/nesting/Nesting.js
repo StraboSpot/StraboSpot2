@@ -11,6 +11,7 @@ import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import {useSpotsHook} from '../spots';
 import {spotReducers} from '../spots/spot.constants';
+import {setSelectedSpot} from '../spots/spotSliceTemp';
 import {useTagsHook} from '../tags';
 import useNestingHook from './useNesting';
 
@@ -35,7 +36,8 @@ const Nesting = (props) => {
   }, [spots, selectedSpot]);
 
   const goToSpotNesting = (spot) => {
-    dispatch({type: spotReducers.SET_SELECTED_SPOT, spot: spot});
+    // dispatch({type: spotReducers.SET_SELECTED_SPOT, spot: spot});
+    dispatch(setSelectedSpot(spot));
   };
 
   const renderDataIcons = (item) => {

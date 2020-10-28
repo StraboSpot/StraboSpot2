@@ -18,6 +18,7 @@ import useHomeHook from '../home/useHome';
 import {mapReducers} from '../maps/maps.constants';
 import useExportHook from '../project/useExport';
 import {spotReducers} from '../spots/spot.constants';
+import {editedSpotImage, editedSpotImages, editedSpotProperties, setSelectedAttributes} from '../spots/spotSliceTemp';
 
 const RNFS = require('react-native-fs');
 
@@ -160,8 +161,9 @@ const useImages = () => {
   };
 
   const editImage = (image) => {
-    dispatch({type: spotReducers.SET_SELECTED_ATTRIBUTES, attributes: [image]});
-    navigation.navigate('ImageInfo', {imageId: image.id}).catch(console.error);
+    // dispatch({type: spotReducers.SET_SELECTED_ATTRIBUTES, attributes: [image]});
+    dispatch(setSelectedAttributes([image]));
+    navigation.navigate('ImageInfo', {imageId: image.id});
   };
 
   const launchCameraFromNotebook = async () => {
@@ -178,7 +180,8 @@ const useImages = () => {
       if (savedPhoto === 'cancelled') {
         if (newImages.length > 0) {
           console.log('ALL PHOTOS SAVED', newImages);
-          dispatch({type: spotReducers.EDIT_SPOT_IMAGES, images: newImages});
+          // dispatch({type: spotReducers.EDIT_SPOT_IMAGES, images: newImages});
+          dispatch(editedSpotImages(newImages));
           useHome.toggleLoading(false);
           return Promise.resolve(newImages.length);
         }
@@ -243,7 +246,8 @@ const useImages = () => {
         useHome.toggleLoading(true);
         const savedPhoto = await saveFile(response);
         console.log('Saved Photo in getImagesFromCameraRoll:', savedPhoto);
-        dispatch({type: spotReducers.EDIT_SPOT_IMAGES, images: [savedPhoto]});
+        // dispatch({type: spotReducers.EDIT_SPOT_IMAGES, images: [savedPhoto]});
+        dispatch(editedSpotImages([savedPhoto]));
         useHome.toggleLoading(false);
       }
     });
@@ -299,7 +303,7 @@ const useImages = () => {
       const updatedImages = selectedSpot.properties.images.filter(image2 => imageCopy.id !== image2.id);
       console.log(updatedImages);
       updatedImages.push(imageCopy);
-      dispatch({type: spotReducers.EDIT_SPOT_PROPERTIES, field: 'images', value: updatedImages});
+      dispatch(editedSpotProperties({field: 'images', value: updatedImages}));
     }
     if (!imageCopy.annotated) dispatch({type: mapReducers.CURRENT_IMAGE_BASEMAP, currentImageBasemap: undefined});
   };
@@ -311,7 +315,8 @@ const useImages = () => {
       if (isValidImageURI) {
         const imageSize = await getImageHeightAndWidth(imageURI);
         const updatedImage = {...imageBasemap, ...imageSize};
-        dispatch({type: spotReducers.EDIT_SPOT_IMAGE, image: updatedImage});
+        dispatch(editedSpotImage(updatedImage));
+        // dispatch({type: spotReducers.EDIT_SPOT_IMAGE, image: updatedImage});
         if (currentImageBasemap.id === updatedImage.id) {
           dispatch({type: mapReducers.CURRENT_IMAGE_BASEMAP, currentImageBasemap: updatedImage});
         }
@@ -509,7 +514,7 @@ const useImages = () => {
         formdata.append('image_file', {uri: uploadURI, name: 'image.jpg', type: 'image/jpeg'});
         formdata.append('id', imageProps.id);
         formdata.append('modified_timestamp', Date.now());
-        const bytes = await getImageSize(resizeImage.path);
+        const bytes = await getImageHeightAndWidth(resizeImage.path);
         if (bytes < 1024) console.log(bytes + ' Bytes');
         else if (bytes < 1048576) console.log('KB:' + (bytes / 1024).toFixed(3) + ' KB');
         else if (bytes < 1073741824) console.log('MB:' + (bytes / 1048576).toFixed(2) + ' MB');

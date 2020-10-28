@@ -7,10 +7,11 @@ import ColorPickerModal from '../../shared/ColorPickerModal';
 import {isEmpty} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
 import {mainMenuPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
+import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import SidePanelHeader from '../main-menu-panel/sidePanel/SidePanelHeader';
 import {spotReducers} from '../spots/spot.constants';
+import {setSelectedSpot} from '../spots/spotSliceTemp';
 import {TagDetail, TagDetailModal} from '../tags';
-import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 
 const TagDetailSidePanel = (props) => {
 
@@ -49,7 +50,8 @@ const TagDetailSidePanel = (props) => {
       <View style={{flex: 1}}>
         <TagDetail
           openSpot={(spot) => {
-            dispatch({type: spotReducers.SET_SELECTED_SPOT, spot: spot});
+            // dispatch({type: spotReducers.SET_SELECTED_SPOT, spot: spot});
+            dispatch(setSelectedSpot(spot));
             props.openNotebookPanel();
           }}
           addRemoveSpots={() => {

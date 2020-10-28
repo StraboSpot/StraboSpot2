@@ -3,7 +3,7 @@ import {Animated, FlatList, Text, View} from 'react-native';
 
 // import {FlingGestureHandler, Directions, State} from 'react-native-gesture-handler';
 import {Avatar, Button, ListItem} from 'react-native-elements';
-import {connect, useDispatch, useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
@@ -20,6 +20,7 @@ import NotesPage from '../notes/Notes';
 import SamplesPage from '../samples/SamplesNotebook';
 import {useSpotsHook} from '../spots';
 import {spotReducers} from '../spots/spot.constants';
+import {setSelectedSpot} from '../spots/spotSliceTemp';
 import TagsPage from '../tags/TagsNotebook';
 import NotebookFooter from './notebook-footer/NotebookFooter';
 import NotebookHeader from './notebook-header/NotebookHeader';
@@ -34,6 +35,7 @@ const NotebookPanel = props => {
   const dispatch = useDispatch();
   const pageVisible = useSelector(state => state.notebook.visibleNotebookPagesStack.slice(-1)[0]);
   const recentlyViewedSpotIds = useSelector(state => state.spot.recentViews);
+  const spot = useSelector(state => state.spot.selectedSpot);
   const isAllSpotsPanelVisible = useSelector(state => state.home.isAllSpotsPanelVisible);
   const spots = useSelector(state => state.spot.spots);
 
@@ -47,8 +49,8 @@ const NotebookPanel = props => {
     else dispatch(setModalVisible({modal: null}));
   };
 
-  if (!isEmpty(props.spot)) {
-    console.log('Selected Spot:', props.spot);
+  if (!isEmpty(spot)) {
+    console.log('Selected Spot:', spot);
     return (
       <Animated.View
         style={isAllSpotsPanelVisible ? [notebookStyles.panel, {right: 125}] : notebookStyles.panel}
@@ -137,7 +139,10 @@ const NotebookPanel = props => {
 
     const renderSpotName = (item) => {
       return (
-        <ListItem key={item.properties.id} onPress={() => dispatch({type: spotReducers.SET_SELECTED_SPOT, spot: item})}>
+        <ListItem key={item.properties.id} onPress={() => {
+          // dispatch({type: spotReducers.SET_SELECTED_SPOT, spot: item})
+          dispatch(setSelectedSpot(item));
+        }}>
           <Avatar source={useSpots.getSpotGemometryIconSource(item)} size={20}/>
           <ListItem.Content>
             <ListItem.Title>{item.properties.name}</ListItem.Title>
@@ -156,11 +161,4 @@ const NotebookPanel = props => {
   }
 };
 
-function mapStateToProps(state) {
-  return {
-    spot: state.spot.selectedSpot,
-    selectedSpots: state.spot.selectedSpots,
-  };
-}
-
-export default connect(mapStateToProps)(NotebookPanel);
+export default NotebookPanel;

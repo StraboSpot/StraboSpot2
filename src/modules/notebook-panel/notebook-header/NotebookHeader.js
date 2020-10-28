@@ -8,6 +8,7 @@ import {isEmpty, toTitleCase} from '../../../shared/Helpers';
 import IconButton from '../../../shared/ui/IconButton';
 import {labelDictionary} from '../../form';
 import {spotReducers} from '../../spots/spot.constants';
+import {editedSpotProperties} from '../../spots/spotSliceTemp';
 import useSpotsHook from '../../spots/useSpots';
 import headerStyles from './notebookHeader.styles';
 
@@ -91,7 +92,8 @@ const NotebookHeader = props => {
   };
 
   const onSpotEdit = (field, value) => {
-    dispatch({type: spotReducers.EDIT_SPOT_PROPERTIES, field: field, value: value});
+    // dispatch({type: spotReducers.EDIT_SPOT_PROPERTIES, field: field, value: value});
+    dispatch(editedSpotProperties({field: field, value: value}));
   };
 
   return (

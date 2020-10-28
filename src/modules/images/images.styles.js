@@ -99,7 +99,9 @@ const imageStyles = StyleSheet.create({
     bottom: 20,
   },
   modalContainer: {
-    flex: 8,
+    flex: 1,
+    opacity: .75,
+    // maxHeight: 700,
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
     borderBottomRightRadius: 20,
     borderBottomLeftRadius: 20,

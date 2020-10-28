@@ -11,6 +11,7 @@ import attributesStyles from '../main-menu-panel/attributes.styles';
 import {SortedViews} from '../main-menu-panel/mainMenuPanel.constants';
 import SortingButtons from '../main-menu-panel/SortingButtons';
 import {spotReducers} from '../spots/spot.constants';
+import {setSelectedAttributes} from '../spots/spotSliceTemp';
 import useSpotsHook from '../spots/useSpots';
 import imageStyles from './images.styles';
 import useImagesHook from './useImages';
@@ -31,7 +32,8 @@ const ImageGallery = (props) => {
       .then((doesExist) => {
         if (doesExist) {
           console.log('Opening image', image.id, '...');
-          dispatch({type: spotReducers.SET_SELECTED_ATTRIBUTES, attributes: [image]});
+          // dispatch({type: spotReducers.SET_SELECTED_ATTRIBUTES, attributes: [image]});
+          dispatch(setSelectedAttributes([image]));
           dispatch(setImageModalVisible({bool: true}));
         }
         else Alert.alert('Missing Image!', 'Unable to find image file on this device.');

@@ -14,13 +14,14 @@ import {Form, formStyles, NumberInputField, TextInputField, useFormHook} from '.
 import useMapsHooks from '../maps/useMaps';
 import {setNotebookPageVisibleToPrev} from '../notebook-panel/notebook.slice';
 import {spotReducers} from '../spots/spot.constants';
+import {addedSpot} from '../spots/spotSliceTemp';
 
 const Geography = (props) => {
   const [useForm] = useFormHook();
   const [useMaps] = useMapsHooks();
   const dispatch = useDispatch();
   const form = useRef(null);
-  const geomForm = useRef(null);
+  const geomForm = useRef(null)
   const spot = useSelector(state => state.spot.selectedSpot);
 
   const cancelFormAndGo = () => {
@@ -267,7 +268,8 @@ const Geography = (props) => {
           }
         }
         const editedSpot = {geometry: geometry, properties: {...geographyProperties}, type: spot.type};
-        dispatch({type: spotReducers.ADD_SPOT, spot: editedSpot});
+        // dispatch({type: spotReducers.ADD_SPOT, spot: editedSpot});
+        dispatch(addedSpot(editedSpot));
         return Promise.resolve();
       }
     }

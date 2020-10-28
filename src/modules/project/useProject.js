@@ -18,6 +18,7 @@ import {
 import useImagesHook from '../images/useImages';
 import {mapReducers} from '../maps/maps.constants';
 import {spotReducers} from '../spots/spot.constants';
+import {addedSpotsFromDevice, clearedSpots} from '../spots/spotSliceTemp';
 import useSpotsHook from '../spots/useSpots';
 import {
   addedDataset,
@@ -177,7 +178,7 @@ const useProject = () => {
   const destroyOldProject = async () => {
     // if (!isEmpty(project)) {
     await dispatch(clearedProject());
-    await dispatch({type: spotReducers.CLEAR_SPOTS});
+    await dispatch(clearedSpots());
     await dispatch(clearedDatasets());
     await dispatch({type: mapReducers.CLEAR_MAPS});
     // }
@@ -225,7 +226,7 @@ const useProject = () => {
   };
 
   const getSelectedDatasetFromId = () => {
-    return datasets[selectedDatasetId]
+    return datasets[selectedDatasetId];
   };
 
   const loadProjectFromDevice = async (selectedProject) => {
@@ -235,7 +236,8 @@ const useProject = () => {
     console.log(dirExists);
     if (dirExists) {
       if (!isEmpty(project)) await destroyOldProject();
-      dispatch({type: spotReducers.ADD_SPOTS_FROM_DEVICE, spots: spotsDb});
+      // dispatch({type: spotReducers.ADD_SPOTS_FROM_DEVICE, spots: spotsDb});
+      dispatch(addedSpotsFromDevice(spotsDb));
       dispatch(addedProject(projectDb.project));
       if (!isEmpty(otherMapsDb) || !isEmpty(mapNamesDb)) {
         dispatch({type: mapReducers.ADD_MAPS_FROM_DEVICE, field: 'customMaps', maps: otherMapsDb});
@@ -345,14 +347,14 @@ const useProject = () => {
   const setSwitchValue = async (val, dataset) => {
     const areActiveDatasetsEmpty = isEmpty(activeDatasetsIds);
 
-    if (isOnline && !isEmpty(user) && val){
+    if (isOnline && !isEmpty(user) && val) {
 
       dispatch(setActiveDatasets({bool: val, dataset: dataset.id}));
       dispatch(setSelectedDataset(dataset.id));
-      if (isEmpty(dataset.spotIds)){
+      if (isEmpty(dataset.spotIds)) {
         dispatch(setStatusMessagesModalVisible(true));
         dispatch(clearedStatusMessages());
-         const res = await useSpots.downloadSpots(dataset, user.encoded_login);
+        const res = await useSpots.downloadSpots(dataset, user.encoded_login);
         if (res === 'No Spots!') dispatch(addedStatusMessage({statusMessage: 'No Spots!'}));
         else dispatch(addedStatusMessage({statusMessage: 'Download Complete!'}));
       }
@@ -393,7 +395,8 @@ const useProject = () => {
         dispatch(removedLastStatusMessage());
         if (currentRequest > 0 && currentRequest < activeDatasetsIds.length) {
           dispatch(
-            addedStatusMessage({statusMessage: 'Uploading Dataset: ' + currentRequest + '/' + activeDatasetsIds.length}));
+            addedStatusMessage(
+              {statusMessage: 'Uploading Dataset: ' + currentRequest + '/' + activeDatasetsIds.length}));
         }
         if (currentRequest < activeDatasetsIds.length) {
           return makeNextRequest();
