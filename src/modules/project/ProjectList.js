@@ -17,7 +17,7 @@ import {
 import {MAIN_MENU_ITEMS} from '../main-menu-panel/mainMenu.constants';
 import {setMenuSelectionPage} from '../main-menu-panel/mainMenuPanel.slice';
 import {spotReducers} from '../spots/spot.constants';
-import {clearedSpots} from '../spots/spotSliceTemp';
+import {clearedSpots} from '../spots/spots.slice';
 import DialogBox from './DialogBox';
 import * as ProjectActions from './project.constants';
 import styles from './project.styles';

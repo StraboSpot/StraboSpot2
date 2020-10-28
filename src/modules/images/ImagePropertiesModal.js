@@ -7,7 +7,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import Modal from '../../shared/ui/modal/Modal';
 import {Form, useFormHook} from '../form';
 import {spotReducers} from '../spots/spot.constants';
-import {editedSpotProperties, setSelectedAttributes} from '../spots/spotSliceTemp';
+import {editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
 import styles from './images.styles';
 
 const ImagePropertiesModal = (props) => {

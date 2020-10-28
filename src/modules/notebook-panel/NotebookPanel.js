@@ -20,7 +20,7 @@ import NotesPage from '../notes/Notes';
 import SamplesPage from '../samples/SamplesNotebook';
 import {useSpotsHook} from '../spots';
 import {spotReducers} from '../spots/spot.constants';
-import {setSelectedSpot} from '../spots/spotSliceTemp';
+import {setSelectedSpot} from '../spots/spots.slice';
 import TagsPage from '../tags/TagsNotebook';
 import NotebookFooter from './notebook-footer/NotebookFooter';
 import NotebookHeader from './notebook-header/NotebookHeader';

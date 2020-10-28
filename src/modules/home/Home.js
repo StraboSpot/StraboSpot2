@@ -42,7 +42,7 @@ import useProjectHook from '../project/useProject';
 import NotebookSamplesModal from '../samples/NotebookSamplesModal';
 import ShortcutSamplesModal from '../samples/ShortcutSamplesModal';
 import {spotReducers} from '../spots/spot.constants';
-import {addedSpot, clearedSelectedSpots, setSelectedSpot} from '../spots/spotSliceTemp';
+import {addedSpot, clearedSelectedSpots, setSelectedSpot} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
 import {
   TagsNotebookModal,

@@ -18,7 +18,7 @@ import {mainMenuPanelReducers} from '../main-menu-panel/mainMenuPanel.constants'
 import {setMenuSelectionPage, setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import {addedProject} from '../project/projects.slice';
 import {spotReducers} from '../spots/spot.constants';
-import {setSelectedSpot} from '../spots/spotSliceTemp';
+import {setSelectedSpot} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
 import {basemaps, mapProviders, mapReducers, geoLatLngProjection, pixelProjection} from './maps.constants';
 

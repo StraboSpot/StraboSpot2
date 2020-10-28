@@ -15,7 +15,7 @@ import uiStyles from '../../../shared/ui/ui.styles';
 import {Modals} from '../../home/home.constants';
 import {NotebookPages} from '../../notebook-panel/notebook.constants';
 import {spotReducers} from '../../spots/spot.constants';
-import {editedSpotProperties} from '../../spots/spotSliceTemp';
+import {editedSpotProperties} from '../../spots/spots.slice';
 import Measurements from '../Measurements';
 import {COMPASS_TOGGLE_BUTTONS} from './compass.constants';
 import compassStyles from './compass.styles';

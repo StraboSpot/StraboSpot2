@@ -7,7 +7,7 @@ import {useDispatch} from 'react-redux';
 
 import useImagesHook from '../images/useImages';
 import {spotReducers} from '../spots/spot.constants';
-import {editedSpotImages} from '../spots/spotSliceTemp';
+import {editedSpotImages} from '../spots/spots.slice';
 import styles from './sketch.styles';
 
 const Sketch = (props) => {

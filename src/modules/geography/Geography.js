@@ -14,7 +14,7 @@ import {Form, formStyles, NumberInputField, TextInputField, useFormHook} from '.
 import useMapsHooks from '../maps/useMaps';
 import {setNotebookPageVisibleToPrev} from '../notebook-panel/notebook.slice';
 import {spotReducers} from '../spots/spot.constants';
-import {addedSpot} from '../spots/spotSliceTemp';
+import {addedSpot} from '../spots/spots.slice';
 
 const Geography = (props) => {
   const [useForm] = useFormHook();

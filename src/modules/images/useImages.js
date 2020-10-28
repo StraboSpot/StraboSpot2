@@ -18,7 +18,7 @@ import useHomeHook from '../home/useHome';
 import {mapReducers} from '../maps/maps.constants';
 import useExportHook from '../project/useExport';
 import {spotReducers} from '../spots/spot.constants';
-import {editedSpotImage, editedSpotImages, editedSpotProperties, setSelectedAttributes} from '../spots/spotSliceTemp';
+import {editedSpotImage, editedSpotImages, editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
 
 const RNFS = require('react-native-fs');
 

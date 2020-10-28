@@ -13,7 +13,7 @@ import {
 import useImagesHook from '../images/useImages';
 import {addedSpotsIdsToDataset, deletedSpotIdFromDataset, updatedProject} from '../project/projects.slice';
 import {generalKeysIcons, sedKeysIcons} from './spot.constants';
-import {addedSpot, addedSpots, deletedSpot, setSelectedSpot} from './spotSliceTemp';
+import {addedSpot, addedSpots, deletedSpot, setSelectedSpot} from './spots.slice';
 
 const useSpots = (props) => {
   const dispatch = useDispatch();

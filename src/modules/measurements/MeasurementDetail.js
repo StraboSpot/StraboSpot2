@@ -15,7 +15,7 @@ import {Modals} from '../home/home.constants';
 import {setModalVisible} from '../home/home.slice';
 import {setNotebookPageVisibleToPrev} from '../notebook-panel/notebook.slice';
 import {spotReducers} from '../spots/spot.constants';
-import {editedSpotProperties, setSelectedAttributes} from '../spots/spotSliceTemp';
+import {editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
 import MeasurementItem from './MeasurementItem';
 import styles from './measurements.styles';
 

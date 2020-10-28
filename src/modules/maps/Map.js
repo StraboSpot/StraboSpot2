@@ -13,7 +13,7 @@ import {Modals} from '../home/home.constants';
 import {setModalVisible} from '../home/home.slice';
 import useImagesHook from '../images/useImages';
 import {spotReducers} from '../spots/spot.constants';
-import {addedSpot, addedSpots, clearedSelectedSpots, setIntersectedSpotsForTagging, setSelectedSpot} from '../spots/spotSliceTemp';
+import {addedSpot, addedSpots, clearedSelectedSpots, setIntersectedSpotsForTagging, setSelectedSpot} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
 import {MapLayer1, MapLayer2} from './Basemaps';
 import {geoLatLngProjection, LATITUDE, LONGITUDE, MapModes, pixelProjection, mapReducers} from './maps.constants';

@@ -10,7 +10,7 @@ import {Modals} from '../home/home.constants';
 import useMapsHook from '../maps/useMaps';
 import {updatedProject} from '../project/projects.slice';
 import {spotReducers} from '../spots/spot.constants';
-import {editedSpotProperties} from '../spots/spotSliceTemp';
+import {editedSpotProperties} from '../spots/spots.slice';
 import styles from './samples.style';
 
 const SamplesModalView = (props) => {

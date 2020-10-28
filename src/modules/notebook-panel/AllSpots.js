@@ -5,7 +5,7 @@ import {ListItem} from 'react-native-elements';
 import {useDispatch} from 'react-redux';
 
 import {spotReducers} from '../spots/spot.constants';
-import {setSelectedSpot} from '../spots/spotSliceTemp';
+import {setSelectedSpot} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
 import notebookStyles from './notebookPanel.styles';
 

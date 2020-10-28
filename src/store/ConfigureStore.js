@@ -17,7 +17,7 @@ import mainMenuSlice from '../modules/main-menu-panel/mainMenuPanel.slice';
 import {mapReducer} from '../modules/maps/maps.reducer';
 import notebookSlice from '../modules/notebook-panel/notebook.slice';
 import projectSlice from '../modules/project/projects.slice';
-import {spotReducer} from '../modules/spots/spot.reducers';
+import spotsSlice from '../modules/spots/spots.slice';
 import userSlice from '../modules/user/userProfile.slice';
 import {redux} from '../shared/app.constants';
 
@@ -49,7 +49,7 @@ const combinedReducers = combineReducers({
   map: mapReducer,
   project: projectSlice,
   mainMenu: mainMenuSlice,
-  spot: spotReducer,
+  spot: spotsSlice,
   user: userSlice,
 });
 

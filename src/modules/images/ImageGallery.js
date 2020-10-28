@@ -11,7 +11,7 @@ import attributesStyles from '../main-menu-panel/attributes.styles';
 import {SortedViews} from '../main-menu-panel/mainMenuPanel.constants';
 import SortingButtons from '../main-menu-panel/SortingButtons';
 import {spotReducers} from '../spots/spot.constants';
-import {setSelectedAttributes} from '../spots/spotSliceTemp';
+import {setSelectedAttributes} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
 import imageStyles from './images.styles';
 import useImagesHook from './useImages';

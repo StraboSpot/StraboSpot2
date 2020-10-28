@@ -11,7 +11,7 @@ import {NotebookPages} from '../notebook-panel/notebook.constants';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import {spotReducers} from '../spots/spot.constants';
-import {editedSpotProperties, setSelectedSpotNotesTimestamp} from '../spots/spotSliceTemp';
+import {editedSpotProperties, setSelectedSpotNotesTimestamp} from '../spots/spots.slice';
 import noteStyles from './notes.styles';
 
 const Notes = (props) => {

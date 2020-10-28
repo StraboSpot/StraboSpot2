@@ -24,7 +24,7 @@ import uiStyles from '../../../shared/ui/ui.styles';
 import {Modals} from '../../home/home.constants';
 import useMapsHook from '../../maps/useMaps';
 import {spotReducers} from '../../spots/spot.constants';
-import {editedSpotProperties} from '../../spots/spotSliceTemp';
+import {editedSpotProperties} from '../../spots/spots.slice';
 import {COMPASS_TOGGLE_BUTTONS} from './compass.constants';
 import compassStyles from './compass.styles';
 

@@ -11,7 +11,7 @@ import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import {useSpotsHook} from '../spots';
 import {spotReducers} from '../spots/spot.constants';
-import {setSelectedSpot} from '../spots/spotSliceTemp';
+import {setSelectedSpot} from '../spots/spots.slice';
 import {useTagsHook} from '../tags';
 import useNestingHook from './useNesting';
 

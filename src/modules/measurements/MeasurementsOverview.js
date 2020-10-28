@@ -7,7 +7,7 @@ import commonStyles from '../../shared/common.styles';
 import {NotebookPages} from '../notebook-panel/notebook.constants';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import {spotReducers} from '../spots/spot.constants';
-import {setSelectedAttributes} from '../spots/spotSliceTemp';
+import {setSelectedAttributes} from '../spots/spots.slice';
 import MeasurementItem from './MeasurementItem';
 
 const MeasurementsOverview = () => {

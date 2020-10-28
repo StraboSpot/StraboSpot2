@@ -14,7 +14,7 @@ import MeasurementsOverview from '../measurements/MeasurementsOverview';
 import NotesOverview from '../notes/NotesOverview';
 import SamplesNotebook from '../samples/SamplesNotebook';
 import {spotReducers} from '../spots/spot.constants';
-import {editedSpotProperties} from '../spots/spotSliceTemp';
+import {editedSpotProperties} from '../spots/spots.slice';
 import {TagsAtSpotList} from '../tags';
 import notebookStyles from './notebookPanel.styles';
 

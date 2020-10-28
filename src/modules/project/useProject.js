@@ -18,7 +18,7 @@ import {
 import useImagesHook from '../images/useImages';
 import {mapReducers} from '../maps/maps.constants';
 import {spotReducers} from '../spots/spot.constants';
-import {addedSpotsFromDevice, clearedSpots} from '../spots/spotSliceTemp';
+import {addedSpotsFromDevice, clearedSpots} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
 import {
   addedDataset,

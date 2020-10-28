@@ -1,8 +1,8 @@
-import {redux} from '../../shared/app.constants';
-import {isEmpty, isEqual} from '../../shared/Helpers';
-import {spotReducers} from './spot.constants';
+import {createSlice, current} from '@reduxjs/toolkit';
 
-const initialState = {
+import {isEmpty, isEqual} from '../../shared/Helpers';
+
+const initialSpotState = {
   selectedSpots: [],
   selectedSpot: {},
   selectedAttributes: [],
@@ -11,171 +11,119 @@ const initialState = {
   intersectedSpotsForTagging: [],
 };
 
-export const spotReducer = (state = initialState, action) => {
-  switch (action.type) {
-    // Takes a single Spot object and adds it to the Spots objects with a key that is the Spot Id
-    case spotReducers.ADD_SPOT: {
-      console.log('ADDED Spot:', action.spot, 'to Existing Spots:', state.spots);
-      let selectedSpotCopy = JSON.parse(JSON.stringify(state.selectedSpot));
+const spotSlice = createSlice({
+  name: 'spot',
+  initialState: initialSpotState,
+  reducers: {
+    addedSpot(state, action) {
+      console.log('ADDED Spot:', action.payload, 'to Existing Spots:', state.spots);
       if (!isEmpty(state.selectedSpot) && state.selectedSpot.properties
-        && state.selectedSpot.properties.id === action.spot.properties.id) selectedSpotCopy = action.spot;
-      const updatedSpot = {
-        ...action.spot,
-        properties: {
-          ...action.spot.properties,
-          modified_timestamp: Date.now(),
-        },
-      };
-      return {
-        ...state,
-        selectedSpot: selectedSpotCopy,
-        selectedSpots: !isEmpty(selectedSpotCopy) ? [selectedSpotCopy] : [],
-        spots: {...state.spots, [action.spot.properties.id]: updatedSpot},
-      };
-    }
-    // Takes an array of Spot objects and merges them with the Spots object with a key that is the Spot Id
-    case spotReducers.ADD_SPOTS:
-      const spots = Object.assign({}, ...action.spots.map(spot => ({[spot.properties.id]: spot})));
-      console.log('ADDED Spots:', action.spots, 'to Existing Spots:', state.spots);
-      return {
-        ...state,
-        spots: {...state.spots, ...spots},
-      };
-    case spotReducers.ADD_SPOTS_FROM_DEVICE:
-      return {
-        ...state,
-        spots: action.spots,
-      };
-    case spotReducers.CLEAR_SELECTED_SPOTS:
-      return {
-        ...state,
-        selectedSpots: [],
-        selectedSpot: {},
-      };
-    case spotReducers.SET_INTERSECTED_SPOTS_FOR_TAGGING:
-      return {
-        ...state,
-        intersectedSpotsForTagging: action.spots,
-      };
-    case spotReducers.CLEAR_SPOTS:
-      return {
-        ...state,
-        selectedSpots: [],
-        selectedSpot: {},
-        spots: {},
-        recentViews: [],
-      };
-    case spotReducers.DELETE_SPOT:
-      const {[action.id]: deletedSpot, ...newSpots} = state.spots;  // Delete key with action.id from object
-      console.log('DELETED Spot: ', action.id, deletedSpot);
-      return {
-        ...state,
-        selectedSpot: {},
-        selectedSpots: [],
-        spots: newSpots,
-        recentViews: state.recentViews.filter(id => id !== action.id),
-      };
-    case spotReducers.EDIT_SPOT_IMAGES: {
-      let updatedSpotImages = null;
-      const selectedSpotId = state.selectedSpot.properties.id;
-      console.log('EDITSPOT Image', action.images, 'ID', selectedSpotId);
+        && state.selectedSpot.properties.id === action.payload.properties.id) state.selectedSpot = action.payload;
+      action.payload.properties.modified_timestamp = Date.now();
+      state.selectedSpot = action.payload;
+      state.selectedSpots = !isEmpty(state.selectedSpot) ? [state.selectedSpot] : [];
+      state.spots = {...state.spots, [action.payload.properties.id]: action.payload};
+    },
+    addedSpots(state, action) {
+      const spots = Object.assign({}, ...action.payload.map(spot => ({[spot.properties.id]: spot})));
+      console.log('ADDED Spots:', action.payload, 'to Existing Spots:', current(state));
+      state.spots = {...state.spots, ...spots};
+    },
+    addedSpotsFromDevice(state, action) {
+      state.spots = action.payload;
+    },
+    clearedSelectedSpots(state) {
+      state.selectedSpots = [];
+      state.selectedSpot = {};
+    },
+    clearedSpots(state) {
+      state.selectedSpot = {};
+      state.selectedSpots = [];
+      state.spots = {};
+      state.recentViews = [];
+    },
+    deletedSpot(state, action) {
+      const {[action.payload]: deletedSpot, ...newSpots} = state.spots;
+      console.log('DELETED Spot: ', action.payload, deletedSpot);
+      state.selectedSpot = {};
+      state.selectedSpots = [];
+      state.spots = newSpots;
+      state.recentViews = state.recentViews.filter(id => id !== action.payload);
+    },
+    editedSpotImage(state, action) {
+      const foundSpot = Object.values(state.spots).find(spot => {
+        return spot.properties.images && spot.properties.images.find(image => image.id === action.payload.id);
+      });
+      if (foundSpot) {
+        const imagesFiltered = foundSpot.properties.images.filter(image => image.id !== action.payload.id);
+        imagesFiltered.push(action.payload);
+        foundSpot.properties.images = imagesFiltered;
+        const selectedSpotCopy = state.selectedSpot && state.selectedSpot.properties.id === foundSpot.properties.id
+          ? foundSpot : state.selectedSpot;
+        console.log('Edit Image for selectedSpot', selectedSpotCopy);
+        state.selectedSpot = selectedSpotCopy;
+        state.spots = {...state.spots, [foundSpot.properties.id]: foundSpot};
+      }
+    },
+    editedSpotImages(state, action) {
       let tempImages = [];
       if (state.selectedSpot.properties.images) tempImages = state.selectedSpot.properties.images;
-
-      const updatedSpotObj = action.images.map(image => {
+      const updatedSpotObj = action.payload.map(image => {
         return {id: image.id, height: image.height, width: image.width, image_type: image.image_type};
       });
       tempImages = [...tempImages, ...updatedSpotObj];
-      updatedSpotImages = {
-        ...state.selectedSpot,
-        properties: {
-          ...state.selectedSpot.properties,
-          images: tempImages,
-        },
-      };
-      return {
-        ...state,
-        selectedSpot: updatedSpotImages,
-        spots: {...state.spots, [selectedSpotId]: updatedSpotImages},
-      };
-    }
-    case spotReducers.EDIT_SPOT_PROPERTIES: {
-      console.log('EDITSPOT', action);
-      let selectedSpotCopy = JSON.parse(JSON.stringify(state.selectedSpot));
-      const selectedSpotId = state.selectedSpot.properties.id;
-      if (!isEmpty(action.value) && !isEqual(action.value, state.selectedSpot.properties[action.field])) {
-        selectedSpotCopy = {
-          ...state.selectedSpot,
-          properties: {
-            ...state.selectedSpot.properties,
-            [action.field]: action.value,
-            modified_timestamp: Date.now(),
-          },
-        };
+      state.selectedSpot.properties.images = tempImages;
+      state.spots = {...state.spots, [state.selectedSpot.properties.id]: state.selectedSpot};
+    },
+    editedSpotProperties(state, action) {
+      const {field, value} = action.payload;
+      if (!isEmpty(value) && !isEqual(value, state.selectedSpot.properties[field])) {
+        state.selectedSpot.properties[field] = value;
+        state.modified_timestamp = Date.now();
       }
-      else if (isEmpty(action.value)) {
-        delete selectedSpotCopy.properties[action.field];
-        selectedSpotCopy.properties.modified_timestamp = Date.now();
+      else if (isEmpty(value)) {
+        delete state.selectedSpot.properties[field];
       }
-      return {
-        ...state,
-        selectedSpot: selectedSpotCopy,
-        spots: {...state.spots, [selectedSpotId]: selectedSpotCopy},
-      };
-    }
-    case spotReducers.SET_SELECTED_SPOT_NOTES_TIMESTAMP: {
-
-      const selectedSpotId = state.selectedSpot.properties.id;
-      const notesTimestamp = {
-        ...state.selectedSpot,
-        properties: {
-          ...state.selectedSpot.properties,
-          notesTimestamp: Date(),
-        },
-      };
-      return {
-        ...state,
-        selectedSpot: notesTimestamp,
-        spots: {...state.spots, [selectedSpotId]: notesTimestamp},
-      };
-    }
-    case spotReducers.SET_SELECTED_ATTRIBUTES:
-      return {
-        ...state,
-        selectedAttributes: action.attributes,
-      };
-    case spotReducers.SET_SELECTED_SPOT:
+      state.spots = {...state.spots, [state.selectedSpot.properties.id]: state.selectedSpot};
+    },
+    setIntersectedSpotsForTagging(state, action) {
+      state.intersectedSpotsForTagging = action.payload;
+    },
+    setSelectedAttributes(state, action) {
+      state.selectedAttributes = action.payload;
+    },
+    setSelectedSpot(state, action) {
       let recentViewsArr = Object.assign([], state.recentViews);
-      const index = recentViewsArr.indexOf(action.spot.properties.id);
+      const index = recentViewsArr.indexOf(action.payload.properties.id);
       if (index !== -1) recentViewsArr.splice(index, 1);
-      recentViewsArr.unshift(action.spot.properties.id);
+      recentViewsArr.unshift(action.payload.properties.id);
       if (state.recentViews.length > 20) recentViewsArr.shift();
-      return {
-        ...state,
-        selectedSpots: [action.spot],
-        selectedSpot: action.spot,
-        recentViews: recentViewsArr,
-        selectedAttributes: [],
-      };
-    case spotReducers.EDIT_SPOT_IMAGE:
-      const foundSpot = Object.values(state.spots).find(spot => {
-        return spot.properties.images && spot.properties.images.find(image => image.id === action.image.id);
-      });
-      if (foundSpot) {
-        const imagesFiltered = foundSpot.properties.images.filter(image => image.id !== action.image.id);
-        imagesFiltered.push(action.image);
-        foundSpot.properties.images = imagesFiltered;
-        const selectedSpotCopy = state.selectedSpot && state.selectedSpot.properties.id === foundSpot.properties.id
-        ? foundSpot : state.selectedSpot;
-        return {
-          ...state,
-          selectedSpot: selectedSpotCopy,
-          spots: {...state.spots, [foundSpot.properties.id]: foundSpot},
-        };
-      }
-      else return state;
-    case redux.CLEAR_STORE:
-      return initialState;
-  }
-  return state;
-};
+      state.selectedSpots = action.payload;
+      state.selectedSpot = action.payload;
+      state.recentViews = recentViewsArr;
+      state.selectedAttributes = [];
+    },
+    setSelectedSpotNotesTimestamp(state) {
+      state.selectedSpot.properties.notesTimestamp = Date();
+      state.spots = {...state.spots, [state.selectedSpot.properties.id]: state.selectedSpot};
+    },
+  },
+});
+
+export const {
+  addedSpot,
+  addedSpots,
+  addedSpotsFromDevice,
+  clearedSelectedSpots,
+  clearedSpots,
+  deletedSpot,
+  editedSpotImage,
+  editedSpotImages,
+  editedSpotProperties,
+  setIntersectedSpotsForTagging,
+  setSelectedAttributes,
+  setSelectedSpot,
+  setSelectedSpotNotesTimestamp,
+} = spotSlice.actions;
+
+export default spotSlice.reducer;
