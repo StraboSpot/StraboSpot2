@@ -29,8 +29,6 @@ const useImages = () => {
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const user = useSelector(state => state.user);
 
-  const [newImages, setNewImages] = useState([]);
-
   const [useExport] = useExportHook();
   const [useHome] = useHomeHook();
   const [useServerRequests] = useServerRequestsHook();
