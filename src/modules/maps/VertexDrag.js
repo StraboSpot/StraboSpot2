@@ -6,8 +6,8 @@ import AnimatedPoint from 'react-native-reanimated';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {mapReducers} from './maps.constants';
-import mapStyles from './maps.slice';
 import {setVertexEndCoords} from './maps.slice';
+import mapStyles from './maps.styles';
 
 const {cond, eq, add, call, set, Value, event} = AnimatedPoint;
 // eslint-disable-next-line no-unused-vars
