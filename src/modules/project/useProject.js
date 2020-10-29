@@ -3,7 +3,6 @@ import {Alert, Platform} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import RNFetchBlob from 'rn-fetch-blob';
 
-// Hooks
 import useServerRequests from '../../services/useServerRequests';
 import {getNewId, isEmpty} from '../../shared/Helpers';
 import {homeReducers} from '../home/home.constants';
@@ -20,11 +19,11 @@ const useProject = () => {
   const appDirectoryTiles = '/StraboSpotTiles';
   const zipsDirectory = appDirectoryTiles + '/TileZips';
 
-
   const dispatch = useDispatch();
   const datasets = useSelector(state => state.project.datasets);
   const project = useSelector(state => state.project.project);
   const user = useSelector(state => state.user);
+
   const [serverRequests] = useServerRequests();
   const [useImages] = useImagesHook();
   const [useSpots] = useSpotsHook();
@@ -260,7 +259,8 @@ const useProject = () => {
           dataset.active = false;
         });
       }
-      const datasetsReassigned = Object.assign({}, ...projectDatasetsFromServer.datasets.map(item => ({[item.id]: item})));
+      const datasetsReassigned = Object.assign({},
+        ...projectDatasetsFromServer.datasets.map(item => ({[item.id]: item})));
       dispatch({type: projectReducers.DATASETS.DATASETS_UPDATE, datasets: datasetsReassigned});
       dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
       dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Datasets Saved.'});
@@ -322,95 +322,89 @@ const useProject = () => {
     return Promise.resolve(projectResponse);
   };
 
+  // Upload Dataset Properties
   const uploadDataset = async (dataset) => {
-    let datasetCopy = JSON.parse(JSON.stringify(dataset));
-    delete datasetCopy.spotIds;
-    delete datasetCopy.current;
-    delete datasetCopy.active;
-    return serverRequests.updateDataset(datasetCopy, user.encoded_login).then((response) => {
-      console.log('Finished updating dataset', response);
-      return serverRequests.addDatasetToProject(project.id, dataset.id, user.encoded_login).then((response2) => {
-        console.log('Finished adding dataset to project', response2);
-        return uploadSpots(dataset).then(() => {
-          return Promise.resolve();
-        });
+    try {
+      console.log(dataset.name + ': Uploading Dataset Properties...');
+      dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: '----------'});
+      dispatch(
+        {type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: dataset.name + ': Uploading Dataset Properties...'});
+
+      let datasetCopy = JSON.parse(JSON.stringify(dataset));
+      delete datasetCopy.spotIds;
+      delete datasetCopy.current;
+      delete datasetCopy.active;
+
+      await serverRequests.updateDataset(datasetCopy, user.encoded_login);
+      await serverRequests.addDatasetToProject(project.id, dataset.id, user.encoded_login);
+      console.log(dataset.name + ': Finished Uploading Dataset Properties...');
+      dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
+      dispatch({
+        type: homeReducers.ADD_STATUS_MESSAGE,
+        statusMessage: dataset.name + ': Finished Uploading Dataset Properties.',
       });
-    });
+    }
+    catch (err) {
+      console.error(dataset.name + ': Error Uploading Dataset Properties...');
+      dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
+      dispatch({
+        type: homeReducers.ADD_STATUS_MESSAGE,
+        statusMessage: dataset.name + ': Error Uploading Dataset Properties.',
+      });
+      throw Error;
+    }
+
+    await uploadSpots(dataset);
   };
 
+  // Synchronously Upload Datasets
   const uploadDatasets = async () => {
     let currentRequest = 0;
     const activeDatasets = Object.values(datasets).filter(dataset => dataset.active === true);
-    dispatch({type: homeReducers.CLEAR_STATUS_MESSAGES});
-    dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Uploading Datasets...'});
 
-    const makeNextRequest = async () => {
-      console.log('Making request...');
-      return uploadDataset(activeDatasets[currentRequest]).then(() => {
-        currentRequest++;
-        dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
-        if (currentRequest > 0 && currentRequest < activeDatasets.length) {
-          dispatch({
-            type: homeReducers.ADD_STATUS_MESSAGE,
-            statusMessage: 'Uploading Dataset: ' + currentRequest + '/' + activeDatasets.length,
-          });
-        }
-        if (currentRequest < activeDatasets.length) {
-          return makeNextRequest();
-        }
-        else {
-          dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
-          dispatch(
-            {type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: activeDatasets.length + ' Datasets uploaded!'});
-          return Promise.resolve({message: 'Datasets Uploaded'});
-        }
-      }, (err) => {
-        console.log('Error uploading dataset.', err);
-        dispatch({type: homeReducers.CLEAR_STATUS_MESSAGES});
-        dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Error uploading dataset.'});
-        dispatch({type: homeReducers.SET_LOADING, view: 'modal', bool: false});
-        return Promise.reject();
-      });
+    const makeNextDatasetRequest = async () => {
+      await uploadDataset(activeDatasets[currentRequest]);
+      currentRequest++;
+      if (currentRequest < activeDatasets.length) await makeNextDatasetRequest();
+      else {
+        const msgText = 'Finished Uploading ' + activeDatasets.length + ' Dataset' + (activeDatasets.length === 1 ? '.' : 's.');
+        console.log(msgText);
+        dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: '----------'});
+        dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: msgText});
+      }
     };
 
-    if (currentRequest < activeDatasets.length) {
-      console.log('MakeNextRequest', currentRequest);
-      return makeNextRequest();
-    }
     if (activeDatasets.length === 0) {
-      dispatch({type: homeReducers.SET_LOADING, view: 'modal', bool: false});
-      dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
-      dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'There are no active datasets.'});
-      return Promise.reject('No Active Datasets');
+      console.log('No Active Datasets Found.');
+      dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'No Active Datasets Found.'});
     }
-    else return Promise.resolve('Datasets Uploaded');
+    else if (currentRequest < activeDatasets.length) {
+      const msgText = 'Found ' + activeDatasets.length + ' Active Dataset' + (activeDatasets.length ? '' : 's') + ' to Upload.';
+      console.log(msgText);
+      dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: msgText});
+      await makeNextDatasetRequest();
+    }
   };
 
-  const uploadImages = async spots => {
-    return await useImages.uploadImages(spots);
-  };
-
+  // Upload Project Properties
   const uploadProject = async () => {
-    dispatch({type: homeReducers.SET_LOADING, view: 'modal', bool: true});
-    dispatch({type: homeReducers.CLEAR_STATUS_MESSAGES});
-    dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, bool: true});
-    console.log('PROJECT UPLOADING...');
-    dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Uploading Project...'});
     try {
-      const updatedProject = await serverRequests.updateProject(project, user.encoded_login);
+      console.log('Uploading Project Properties...');
+      dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Uploading Project Properties...'});
+      await serverRequests.updateProject(project, user.encoded_login);
+      console.log('Finished Uploading Project Properties...');
       dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
-      dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Finished uploading project.'});
-      console.log('Going to uploadDatasets next');
-      return Promise.resolve(updatedProject);
+      dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Finished Uploading Project Properties.'});
     }
     catch (err) {
-      dispatch({type: homeReducers.CLEAR_STATUS_MESSAGES});
-      dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Error uploading project.'});
-      console.log('Error uploading project', err);
-      return Promise.reject(err);
+      console.error('Error Uploading Project Properties.', err);
+      dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
+      dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Error Uploading Project Properties.'});
+      throw Error;
     }
   };
 
+  // Upload Spots
   const uploadSpots = async (dataset) => {
     let spots;
     if (dataset.spotIds) {
@@ -418,23 +412,30 @@ const useProject = () => {
       spots.forEach(spotValue => checkValidDateTime(spotValue));
     }
     if (isEmpty(spots)) {
-      console.log('No Spots to Upload');
-      dispatch({
-        type: homeReducers.ADD_STATUS_MESSAGE,
-        statusMessage: `${dataset} has 0 spots to Upload `,
-      });
-      dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
+      console.log(dataset.name + ': No Spots to Upload.');
+      dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: dataset.name + ': No Spots to Upload.'});
     }
     else {
-      const spotCollection = {
-        type: 'FeatureCollection',
-        features: Object.values(spots),
-      };
-      return serverRequests.updateDatasetSpots(dataset.id, spotCollection, user.encoded_login).then(() => {
-        return uploadImages(spots);
-      });
+      try {
+        const spotCollection = {
+          type: 'FeatureCollection',
+          features: Object.values(spots),
+        };
+        console.log(dataset.name + ': Uploading Spots...');
+        dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: dataset.name + ': Uploading Spots...'});
+        await serverRequests.updateDatasetSpots(dataset.id, spotCollection, user.encoded_login);
+        console.log(dataset.name + ': Finished Uploading Spots.');
+        dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
+        dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: dataset.name + ': Finished Uploading Spots.'});
+        await useImages.uploadImages(Object.values(spots), dataset.name);
+      }
+      catch (err) {
+        console.error(dataset.name + ': Error Uploading Project Spots.', err);
+        dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
+        dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: dataset.name + ': Error Uploading Spots.'});
+        throw Error;
+      }
     }
-    return Promise.resolve();
   };
 
   const projectHelpers = {

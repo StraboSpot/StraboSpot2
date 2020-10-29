@@ -1,4 +1,3 @@
-import {useEffect, useState} from 'react';
 import {Alert, Image, Platform} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
@@ -21,8 +20,10 @@ const useImages = () => {
   const dirs = RNFetchBlob.fs.dirs;
   const devicePath = Platform.OS === 'ios' ? dirs.DocumentDir : dirs.SDCardDir; // ios : android
   const appDirectory = '/StraboSpot';
-  const imagesResizeTemp = '/TempImages';
   const imagesDirectory = devicePath + appDirectory + '/Images';
+  const tempImagesDownsizedDirectory = devicePath + appDirectory + '/TempImages';
+  // const testUrl = 'https://strabospot.org/testimages/images.json';
+  // const missingImage = require('../../assets/images/noimage.jpg');
 
   const navigation = useNavigation();
 
@@ -37,10 +38,6 @@ const useImages = () => {
 
   let imageCount = 0;
   let newImages = [];
-
-  const deleteTempImagesFolder = async () => {
-    return await RNFetchBlob.fs.unlink(devicePath + imagesResizeTemp);
-  };
 
   const downloadImages = async (neededImageIds) => {
     let promises = [];
@@ -139,16 +136,6 @@ const useImages = () => {
     });
   };
 
-  // const formatBytes = (a,b) => {
-  //   if (a === 0) return '0 Bytes';
-  //   const c = 1024;
-  //   const d = b || 2;
-  //   const sizes = ['Bytes','KB','MB','GB','TB','PB','EB','ZB','YB'];
-  //   const i = Math.floor(Math.log(a) / Math.log(c));
-  //
-  //   return parseFloat((a / Math.pow(c,i)).toFixed(d)) + ' ' + sizes[i];
-  // };
-
   // Check to see if image is on the local device
   const doesImageExist = async (imageId) => {
     const imageURI = getLocalImageURI(imageId);
@@ -161,7 +148,7 @@ const useImages = () => {
 
   const editImage = (image) => {
     dispatch({type: spotReducers.SET_SELECTED_ATTRIBUTES, attributes: [image]});
-    navigation.navigate('ImageInfo', {imageId: image.id}).catch(console.error);
+    navigation.navigate('ImageInfo', {imageId: image.id});
   };
 
   const launchCameraFromNotebook = async () => {
@@ -169,7 +156,6 @@ const useImages = () => {
       const savedPhoto = await takePicture();
       const photoProperties = {
         id: savedPhoto.id,
-        src: savedPhoto.src,
         image_type: 'photo',
         height: savedPhoto.height,
         width: savedPhoto.width,
@@ -228,13 +214,6 @@ const useImages = () => {
     return Platform.OS === 'ios' ? imageURI : 'file://' + imageURI;
   };
 
-  const getLocalImageSrc = id => {
-    const imageSrc = imagesDirectory + '/' + id + '.jpg';
-    // console.count('Image Number');
-    // console.log('Loading image from', Platform.OS === 'ios' ? imageSrc : 'file://' + imageSrc);
-    return Platform.OS === 'ios' ? imageSrc : 'file://' + imageSrc;
-  };
-
   const getImagesFromCameraRoll = async () => {
     ImagePicker.launchImageLibrary({}, async response => {
       console.log('RES', response);
@@ -249,45 +228,40 @@ const useImages = () => {
     });
   };
 
-  const getImageHeightAndWidth = async (imageURI) => {
+  const getImageHeightAndWidth = (imageURI) => {
     return new Promise((resolve, reject) => {
-      Image.getSize(imageURI.uri || imageURI, (width, height) => {
+      Image.getSize(imageURI, (width, height) => {
         resolve({height: height, width: width});
-      }, (error) => {
-        Alert.alert('Error getting size of image:', error.message);
-        reject('Error getting size of image:' + error);
+      }, (err) => {
+        console.log('Error getting size of image:', err.message);
+        reject();
       });
     });
   };
 
-  const saveFile = async (imageURI) => {
-    let imageSize;
-    if (!imageURI.height || !imageURI.width) imageSize = await getImageHeightAndWidth(imageURI);
+  const saveFile = async (imageData) => {
+    console.log('New image data:', imageData);
+    let height = imageData.height;
+    let width = imageData.width;
+    const tempImageURI = Platform.OS === 'ios' ? imageData.path : 'file://' + imageData.path;
+    if (!height || !width) ({height, width} = await getImageHeightAndWidth(tempImageURI));
     let imageId = getNewId();
-    const imagePath = imagesDirectory + '/' + imageId + '.jpg';
-    console.log(imageURI);
+    let imageURI = getLocalImageURI(imageId);
     try {
       await RNFS.mkdir(imagesDirectory);
-      if (imageURI.uri) await RNFS.copyFile(imageURI.uri, imagePath);
-      else await RNFS.copyFile(imageURI, imagePath);
-      console.log(imageCount, 'File saved to:', imagePath);
+      await RNFS.copyFile(tempImageURI, imageURI);
+      console.log(imageCount, 'File saved to:', imageURI);
       imageCount++;
-      let imageData = {};
-      if (Platform.OS === 'ios') {
-        imageData = {
-          id: imageId,
-          src: imagePath,
-          height: imageURI.height || imageSize.height,
-          width: imageURI.width || imageSize.width,
-        };
-      }
-      else imageData = {id: imageId, src: imageURI.uri, height: imageURI.height, width: imageURI.width};
-      return Promise.resolve(imageData);
+      return {
+        id: imageId,
+        height: height,
+        width: width,
+      };
     }
-    catch (e) {
+    catch (err) {
       imageCount++;
-      console.log('Error on', imageId, ':', e);
-      return Promise.reject();
+      console.log('Error on', imageId, ':', err);
+      throw Error;
     }
   };
 
@@ -304,13 +278,13 @@ const useImages = () => {
     if (!imageCopy.annotated) dispatch({type: mapReducers.CURRENT_IMAGE_BASEMAP, currentImageBasemap: undefined});
   };
 
-  const setImageHeightAndWidth = async (imageBasemap) => {
-    const imageURI = getLocalImageURI(imageBasemap.id);
+  const setImageHeightAndWidth = async (image) => {
+    const imageURI = getLocalImageURI(image.id);
     if (imageURI) {
       const isValidImageURI = await RNFS.exists(imageURI);
       if (isValidImageURI) {
         const imageSize = await getImageHeightAndWidth(imageURI);
-        const updatedImage = {...imageBasemap, ...imageSize};
+        const updatedImage = {...image, ...imageSize};
         dispatch({type: spotReducers.EDIT_SPOT_IMAGE, image: updatedImage});
         if (currentImageBasemap.id === updatedImage.id) {
           dispatch({type: mapReducers.CURRENT_IMAGE_BASEMAP, currentImageBasemap: updatedImage});
@@ -332,213 +306,202 @@ const useImages = () => {
       noData: true,
     };
     return new Promise((resolve, reject) => {
-      ImagePicker.launchCamera(imageOptionsCamera, async (response) => {
-        console.log('Response = ', response);
-        if (response.didCancel) {
-          console.log('User cancelled image picker');
-          resolve('cancelled');
-        }
-        else if (response.error) console.log('ImagePicker Error: ', response.error);
-        else {
-          try {
-            const savedPhoto = await saveFile(response);
-            console.log('Saved Photo = ', savedPhoto);
-            // Deletes default path after every photo saved to /StraboSpot/Images.
-            RNFS.unlink(response.uri).then(() => {
-              console.log('Image default path is unlinked:');
-              resolve(savedPhoto);
-            })
-              .catch(err => console.log('Image unlink error:', err.message));
-          }
-          catch (e) {
-            reject();
-          }
-        }
-      });
+      try {
+        ImagePicker.launchCamera(imageOptionsCamera, (response) => {
+          console.log('Response = ', response);
+          if (response.didCancel) resolve('cancelled');
+          else if (response.error) reject();
+          else resolve(saveFile(response));
+        });
+      }
+      catch (e) {
+        reject();
+      }
     });
   };
 
-  const uploadImages = spots => {
-    return new Promise((resolve, reject) => {
-      spots = Object.values(spots);
-      let imagesToUploadCount = 0;
-      let imagesUploadedCount = 0;
-      let imagesUploadFailedCount = 0;
-      let iSpotLoop = 0;
-      let iImagesLoop = 0;
+  const uploadImages = async (spots, datasetName) => {
+    let imagesOnServer = [];
+    let imagesToUpload = [];
+    let imagesUploadedCount = 0;
+    let imagesUploadFailedCount = 0;
+    let iSpotLoop = 0;
+    let iImagesLoop = 0;
 
-      dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
-      dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Gathering Images to Upload...'});
-      console.log('Gathering images to upload from Spots:', spots);
+    console.log(datasetName + ': Looking for Images to Upload in Spots...', spots);
+    dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: datasetName + ': Looking for Images to Upload...'});
 
-      const areMoreImages = (spot) => {
-        return spot.properties && spot.properties.images && iImagesLoop < spot.properties.images.length;
-      };
+    const areMoreImages = (spot) => {
+      return spot.properties && spot.properties.images && iImagesLoop < spot.properties.images.length;
+    };
 
-      const areMoreSpots = () => {
-        return iSpotLoop + 1 < spots.length;
-      };
+    const areMoreSpots = () => {
+      return iSpotLoop + 1 < spots.length;
+    };
 
-      const getImageFile = async imageProps => {
-        dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
-        dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Processing Image...'});
-        const imageURI = getLocalImageURI(imageProps.id);
-        const isValidImageURI = await RNFS.exists(imageURI);
-        if (isValidImageURI) return Promise.resolve([imageProps, imageURI]);
-        else return Promise.reject('Local file not found for image:', imageProps.id);
-      };
-
-      const makeNextSpotRequest = (spot) => {
-        if (areMoreImages(spot)) {
-          console.log('Found image:', spot.properties.images[iImagesLoop].id, spot.properties.images[iImagesLoop],
-            'in Spot:', spot.properties.name);
-          makeNextImageRequest(spot.properties.images[iImagesLoop]).then(() => {
-            console.log('Making Next spot request');
-            makeNextSpotRequest(spots[iSpotLoop]);
-          });
-        }
-        else if (areMoreSpots()) {
-          iSpotLoop++;
-          iImagesLoop = 0;
-          makeNextSpotRequest(spots[iSpotLoop]);
+    // Synchronously loop through spots and images finding images to upload
+    const makeNextSpotRequest = async (spot) => {
+      if (areMoreImages(spot)) {
+        await shouldUploadImage(spot.properties.images[iImagesLoop]);
+        await makeNextSpotRequest(spots[iSpotLoop]);
+      }
+      else if (areMoreSpots()) {
+        iSpotLoop++;
+        iImagesLoop = 0;
+        await makeNextSpotRequest(spots[iSpotLoop]);
+      }
+      else {
+        if (imagesToUpload.length === 0) {
+          let msgText = datasetName + ': No NEW Images to Upload.';
+          if (imagesOnServer.length === 0) msgText = datasetName + ': No Images in Spots.';
+          console.log(msgText);
+          dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
+          dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: msgText});
         }
         else {
-          if (imagesToUploadCount === 0) {
-            console.log('No NEW images to upload');
-            dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
-            dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'No NEW images to upload'});
-          }
-          else {
-            console.log('Finished Uploading Images');
-            if (imagesUploadFailedCount > 0) Alert.alert(`'Images Failed:' ${imagesUploadFailedCount}`);
-          }
-          resolve();
+          const msgText = datasetName + ': Found ' + imagesToUpload.length + ' Image'
+            + (imagesToUpload.length === 1 ? '' : 's') + ' to Upload.';
+          console.log(msgText, imagesToUpload);
+          dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
+          dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: msgText});
         }
-      };
+        if (imagesOnServer.length > 0) console.log(datasetName + ': Images Already on Server', imagesOnServer);
+      }
+    };
 
-      const makeNextImageRequest = (imageProps) => {
-        return shouldUploadImage(imageProps)
-          .then(getImageFile)
-          .then(uploadImage)
-          .catch(function (err) {
-            if (err !== 'already exists') {
-              imagesUploadFailedCount++;
-              console.warn(err);
-            }
-          })
-          .finally(function () {
-            iImagesLoop++;
-            return Promise.resolve();
-          });
-      };
+    // Check if image is already on server and push image into either array imagesOnServer or imagesToUpload
+    const shouldUploadImage = async (imageProps) => {
+      try {
+        const response = await useServerRequests.verifyImageExistence(imageProps.id, user.encoded_login);
+        if (response
+          && ((response.modified_timestamp && imageProps.modified_timestamp
+            && imageProps.modified_timestamp > response.modified_timestamp)
+            || (!response.modified_timestamp && imageProps.modified_timestamp))) {
+          imagesToUpload.push(imageProps);
+        }
+        else imagesOnServer.push(imageProps);
+      }
+      catch (err) {
+        imagesToUpload.push(imageProps);
+      }
+      iImagesLoop++;
+    };
 
-      const shouldUploadImage = async (imageProps) => {
-        return useServerRequests.verifyImageExistence(imageProps.id, user.encoded_login)
-          .then(response => {
-            if (response
-              && ((response.modified_timestamp && imageProps.modified_timestamp
-                && imageProps.modified_timestamp > response.modified_timestamp)
-                || (!response.modified_timestamp && imageProps.modified_timestamp))) {
-              console.log('Need to upload image:', imageProps.id, 'Server response:', response);
-              imagesToUploadCount++;
-              return Promise.resolve(imageProps);
-            }
-            else {
-              console.log('No need to upload image:', imageProps.id, 'Server response:', response);
-              return Promise.reject('already exists');
-            }
-          }, () => {
-            imagesToUploadCount++;
-            console.log('Need to upload image:', imageProps.id);
-            return Promise.resolve(imageProps);
-          });
-      };
+    // Start uploading image by getting the image file, downsizing the image and then uploading
+    const startUploadingImage = async (imageProps) => {
+      try {
+        const imageURI = await getImageFile(imageProps);
+        const resizedImage = await resizeImageForUpload(imageProps, imageURI);
+        await uploadImage(imageProps.id, resizedImage);
+        imagesUploadedCount++;
+      }
+      catch {
+        imagesUploadFailedCount++;
+      }
+      let msgText = datasetName + ': Uploading Images...';
+      let countMsgText = datasetName + ': Images Uploaded ' + imagesUploadedCount + '/' + imagesToUpload.length;
+      if (imagesUploadFailedCount > 0) countMsgText += ' (' + imagesUploadFailedCount + ' Failed)';
+      console.log(msgText + '\n' + countMsgText);
+      dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
+      dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: msgText + '\n' + countMsgText});
+      if (imagesUploadedCount + imagesUploadFailedCount < imagesToUpload.length) {
+        await startUploadingImage(imagesToUpload[imagesUploadedCount + imagesUploadFailedCount]);
+      }
+      else {
+        msgText = datasetName + ': Finished Uploading Images' + (imagesUploadFailedCount > 0 ? ' with Errors' : '') + '.';
+        console.log(msgText + '\n' + countMsgText);
+        dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
+        dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: msgText + '\n' + countMsgText});
+      }
+    };
 
-      const resizeImageForUpload = (imageFile, imageProps) => {
-        const max_size = 2000;
+    // Get the URI of the image file if it exists on local device
+    const getImageFile = async (imageProps) => {
+      try {
+        const imageURI = getLocalImageURI(imageProps.id);
+        const isValidImageURI = await RNFS.exists(imageURI);
+        if (isValidImageURI) return imageURI;
+        throw Error;  // Webstorm giving warning here but we want this caught locally so we get the log
+      }
+      catch {
+        console.log('Local file not found for image:' + imageProps.id);
+        throw Error;
+      }
+    };
+
+    // Downsize image for upload
+    const resizeImageForUpload = async (imageProps, imageURI) => {
+      try {
+        console.log(datasetName + ': Resizing Image', imageProps.id, '...');
         let height = imageProps.height;
         let width = imageProps.width;
 
-        if (width > height && width > max_size) {
-          height = max_size * height / width;
-          width = max_size;
-        }
-        else if (height > max_size) {
-          width = max_size * width / height;
-          height = max_size;
-        }
-        return ImageResizer.createResizedImage(
-          imageFile,
-          width,
-          height,
-          'JPEG',
-          100,
-          0,
-          devicePath + imagesResizeTemp,
-        )
-          .then(response => {
-            response.name = imageProps.id.toString();
-            if (response.size < 1024) console.log(response.size + ' Bytes');
-            else if (response.size < 1048576) {
-              console.log('Resize Image KB:' + (response.size / 1024).toFixed(3) + ' KB');
-            }
-            else if (response.size < 1073741824) {
-              console.log('Resize Image MB:' + (response.size / 1048576).toFixed(2) + ' MB');
-            }
-            else console.log('Resize Image' + (response.size / 1073741824).toFixed(3) + ' GB');
-            return response;
-          })
-          .catch((err) => {
-            Alert.alert('Image Resize Error', err);
-          });
-      };
+        if (!width || !height) ({width, height} = await getImageHeightAndWidth(imageURI));
 
-      const uploadImage = async (data) => {
-        const imageProps = data[0];
-        const src = data[1];
-        const count = imagesUploadedCount + 1;
-        dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
-        dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Uploading image: ' + count});
-        console.log('Uploading image', imageProps.id, 'to server...');
+        if (width && height) {
+          const max_size = 2000;
+          if (width > height && width > max_size) {
+            height = max_size * height / width;
+            width = max_size;
+          }
+          else if (height > max_size) {
+            width = max_size * width / height;
+            height = max_size;
+          }
 
-        const resizeImage = await resizeImageForUpload(src, imageProps);
-        const uploadURI = Platform.OS === 'ios' ? resizeImage.path.replace('file//', '') : resizeImage.path;
-        // console.log('Image re-sized obj', resizeImage);
+          await RNFS.mkdir(tempImagesDownsizedDirectory);
+          const createResizedImageProps = [imageURI, width, height, 'JPEG', 100, 0, tempImagesDownsizedDirectory];
+          const resizedImage = await ImageResizer.createResizedImage(...createResizedImageProps);
+          let imageSizeText;
+          if (resizedImage.size < 1024) imageSizeText = resizedImage.size + ' bytes';
+          else if (resizedImage.size < 1048576) imageSizeText = (resizedImage.size / 1024).toFixed(3) + ' kB';
+          else if (resizedImage.size < 1073741824) imageSizeText = (resizedImage.size / 1048576).toFixed(2) + ' MB';
+          else imageSizeText = (resizedImage.size / 1073741824).toFixed(3) + ' GB';
+          console.log(datasetName + ': Finished Resizing Image', imageProps.id, 'New Size', imageSizeText);
+          return resizedImage;
+        }
+      }
+      catch (err) {
+        console.error(datasetName + ': Error Resizing Image.', err);
+        throw Error;
+      }
+    };
+
+    // Upload the image to server
+    const uploadImage = async (imageId, resizedImage) => {
+      try {
+        console.log(datasetName + ': Uploading Image', imageId, '...');
 
         let formdata = new FormData();
-        formdata.append('image_file', {uri: uploadURI, name: 'image.jpg', type: 'image/jpeg'});
-        formdata.append('id', imageProps.id);
+        formdata.append('image_file', {uri: resizedImage.uri, name: 'image.jpg', type: 'image/jpeg'});
+        formdata.append('id', imageId);
         formdata.append('modified_timestamp', Date.now());
-        const bytes = await getImageHeightAndWidth(resizeImage.path);
-        if (bytes < 1024) console.log(bytes + ' Bytes');
-        else if (bytes < 1048576) console.log('KB:' + (bytes / 1024).toFixed(3) + ' KB');
-        else if (bytes < 1073741824) console.log('MB:' + (bytes / 1048576).toFixed(2) + ' MB');
-        else console.log((bytes / 1073741824).toFixed(3) + ' GB');
-        // console.time();
-        return useServerRequests.uploadImage(formdata, user.encoded_login)
-          .then((res) => {
-              // console.timeEnd();
-              imagesUploadedCount++;
-              console.log('Image Uploaded!' + imagesUploadedCount);
-              console.log('Finished uploading image', imageProps.id, 'to the server');
-              dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
-              dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Uploaded Images', imagesUploadedCount});
-              return Promise.resolve();
-            },
-            (err) => Promise.reject('Error uploading image' + imageProps.id) + '\n' + err)
-          .catch((err) => {
-            console.error('Image Upload Error', err);
-            Alert.alert('Image Upload Error', err);
-          });
-      };
+        await useServerRequests.uploadImage(formdata, user.encoded_login);
+        console.log(datasetName + ': Finished Uploading Image', imageId);
+      }
+      catch (err) {
+        console.log(datasetName + ': Error Uploading Image', imageId, err);
+        throw Error;
+      }
+    };
 
-      if (iSpotLoop < spots.length) makeNextSpotRequest(spots[iSpotLoop]);
-      else resolve();
-    });
+    // Delete the folder used for downsized images
+    const deleteTempImagesFolder = async () => {
+      try {
+        let dirExists = await RNFS.exists(tempImagesDownsizedDirectory);
+        if (dirExists) await RNFetchBlob.fs.unlink(tempImagesDownsizedDirectory);
+      }
+      catch {
+        console.error(datasetName + ': Error Deleting Temp Images Folder.');
+      }
+    };
+
+    if (spots.length > 0) await makeNextSpotRequest(spots[0]);
+    if (imagesToUpload.length > 0) await startUploadingImage(imagesToUpload[0]);
+    await deleteTempImagesFolder();
   };
 
   return [{
-    deleteTempImagesFolder: deleteTempImagesFolder,
     doesImageExist: doesImageExist,
     downloadImages: downloadImages,
     editImage: editImage,

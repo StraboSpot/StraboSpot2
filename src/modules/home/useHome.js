@@ -38,6 +38,7 @@ const useHome = (props) => {
     dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: null});
     dispatch({type: homeReducers.SET_SETTINGS_PANEL_VISIBLE, value: false});
     dispatch({type: mainMenuPanelReducers.SET_MENU_SELECTION_PAGE, name: undefined});
+    dispatch({type: homeReducers.CLEAR_STATUS_MESSAGES});
     dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, bool: false});
     // dispatch({type: redux.CLEAR_STORE});
     await checkForDeviceBackupDir();

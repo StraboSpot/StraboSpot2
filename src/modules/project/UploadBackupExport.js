@@ -8,7 +8,6 @@ import {useDispatch, useSelector} from 'react-redux';
 import commonStyles from '../../shared/common.styles';
 import Spacer from '../../shared/ui/Spacer';
 import {homeReducers} from '../home/home.constants';
-import useImagesHook from '../images/useImages';
 import Divider from '../main-menu-panel/MainMenuPanelDivider';
 import projectStyles from './project.styles';
 import UploadDialogBox from './UploadDialogBox';
@@ -17,16 +16,18 @@ import useProjectHook from './useProject';
 
 const UploadBackAndExport = (props) => {
   const [useExport] = useExportHook();
-  const [useImages] = useImagesHook();
   const [useProject] = useProjectHook();
+
   const dispatch = useDispatch();
   const datasets = useSelector(state => state.project.datasets);
   const isOnline = useSelector(state => state.home.isOnline);
   const project = useSelector(state => state.project.project);
+
   const [activeDatasets, setActiveDatasets] = useState(null);
   const [dialogBoxType, setDialogBoxType] = useState(null);
   const [isUploadDialogVisible, setIsUploadDialogVisible] = useState(false);
-  const [exportFileName, setExportFileName] = useState(moment(new Date()).format('YYYY-MM-DD_hmma') + '_' + project.description.project_name);
+  const [exportFileName, setExportFileName] = useState(
+    moment(new Date()).format('YYYY-MM-DD_hmma') + '_' + project.description.project_name);
 
   const backupToDevice = async () => {
     setIsUploadDialogVisible(false);
@@ -62,7 +63,7 @@ const UploadBackAndExport = (props) => {
 
   const initializeUpload = () => {
     setDialogBoxType('upload');
-    console.log('Initializing Upload');
+    console.log('Initializing Upload...');
     const filteredDatasets = Object.values(datasets).filter(dataset => {
       return dataset.active === true;
     });
@@ -70,34 +71,24 @@ const UploadBackAndExport = (props) => {
     setIsUploadDialogVisible(true);
   };
 
-  const upload = () => {
-    return uploadProject()
-      .then(uploadDatasets)
-      .catch(err => {
-        dispatch({type: homeReducers.CLEAR_STATUS_MESSAGES});
-        if (err.status) dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: `Error uploading project: Status \n ${err.status}`});
-        else dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: `Error uploading project: \n ${err}`});
-      })
-      .finally(() => {
-          useImages.deleteTempImagesFolder()
-            .catch(err2 => console.error('Error deleting temp images folder', err2))
-            .finally(() => {
-              dispatch({type: homeReducers.SET_LOADING, view: 'modal', bool: false});
-              dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Upload Complete!'});
-            });
-        },
-      );
-  };
-
-  const uploadDatasets = async () => {
-    await useProject.uploadDatasets();
-    return Promise.resolve();
-  };
-
-  const uploadProject = async () => {
+  const upload = async () => {
     setIsUploadDialogVisible(false);
-    await useProject.uploadProject();
-    return Promise.resolve();
+    dispatch({type: homeReducers.SET_LOADING, view: 'modal', bool: true});
+    dispatch({type: homeReducers.CLEAR_STATUS_MESSAGES});
+    dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, bool: true});
+    try {
+      await useProject.uploadProject();
+      await useProject.uploadDatasets();
+      dispatch({type: homeReducers.SET_LOADING, view: 'modal', bool: false});
+      dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Upload Complete!'});
+      console.log('Upload Complete');
+    }
+    catch (err) {
+      dispatch({type: homeReducers.SET_LOADING, view: 'modal', bool: false});
+      dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: '----------'});
+      dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Upload Failed!'});
+      console.error('Upload Failed!');
+    }
   };
 
   const renderUploadAndBackupButtons = () => {
@@ -160,16 +151,16 @@ const UploadBackAndExport = (props) => {
     if (dialogBoxType === 'upload') {
       return (
         <UploadDialogBox
-          dialogTitle={'UPLOAD WARNING!'}
+          dialogTitle={'OVERWRITE WARNING!'}
           visible={isUploadDialogVisible}
           cancel={() => setIsUploadDialogVisible(false)}
           buttonText={'Upload'}
           onPress={() => upload()}
         >
           <View>
-            <Text>The following project properties and the active datasets will be uploaded and will
-              <Text style={commonStyles.dialogContentImportantText}> OVERWRITE</Text> the project
-              properties and selected datasets on the server: </Text>
+            <Text>Project properties and the following active datasets will be uploaded and will
+              <Text style={commonStyles.dialogContentImportantText}> OVERWRITE</Text> any data already on the server
+              for this project: </Text>
             <View style={{alignItems: 'center', paddingTop: 15}}>
               <FlatList
                 data={activeDatasets}
@@ -177,7 +168,6 @@ const UploadBackAndExport = (props) => {
                 renderItem={({item}) => renderNames(item)}
               />
             </View>
-            <Text style={projectStyles.dialogConfirmText}>Do you want to continue?</Text>
           </View>
         </UploadDialogBox>
       );
@@ -193,8 +183,9 @@ const UploadBackAndExport = (props) => {
           buttonText={'Backup'}
           disabled={exportFileName === ''}
         >
-          <View >
-            <Text>If you change the folder name please do not use spaces, special characters (except a dash or underscore) or add a file extension.</Text>
+          <View>
+            <Text>If you change the folder name please do not use spaces, special characters (except a dash or
+              underscore) or add a file extension.</Text>
             <View style={projectStyles.dialogContent}>
               <TextInput
                 value={fileName}

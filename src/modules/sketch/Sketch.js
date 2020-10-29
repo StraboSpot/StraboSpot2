@@ -22,22 +22,26 @@ const Sketch = (props) => {
   }, [imageId]);
 
   const saveSketch = async (success, path) => {
-    console.log(success, 'Path:', path);
-    if (success) {
-      const savedSketch = await useImages.saveFile(path);
-      dispatch({type: spotReducers.EDIT_SPOT_IMAGES, images: [{...savedSketch, image_type: 'sketch'}]});
-      Alert.alert(`Sketch ${savedSketch.id} Saved!`,
-        null,
-        [{
-          text: 'Cancel',
-          onPress: () => console.log('Cancel Pressed'),
-          style: 'cancel',
-        }, {
-          text: 'OK', onPress: () => navigation.pop(),
-        }],
-      );
+    try {
+      console.log(success, 'Path:', path);
+      if (success) {
+        const savedSketch = await useImages.saveFile({'path': path});
+        dispatch({type: spotReducers.EDIT_SPOT_IMAGES, images: [{...savedSketch, image_type: 'sketch'}]});
+        Alert.alert(`Sketch ${savedSketch.id} Saved!`,
+          null,
+          [{
+            text: 'Cancel',
+            onPress: () => console.log('Cancel Pressed'),
+            style: 'cancel',
+          }, {
+            text: 'OK', onPress: () => navigation.pop(),
+          }],
+        );
+      }
+      else throw Error;
     }
-    else {
+    catch (err) {
+      console.error('Error Saving Sketch', err);
       Alert.alert('Error Saving Sketch!',
         null,
         [{
