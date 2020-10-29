@@ -1,15 +1,25 @@
 import AsyncStorage from '@react-native-community/async-storage';
-import {applyMiddleware, createStore, compose, combineReducers} from 'redux';
+import {configureStore, getDefaultMiddleware} from '@reduxjs/toolkit';
+import {combineReducers} from 'redux';
 import {createLogger} from 'redux-logger';
-import {persistStore, persistReducer} from 'redux-persist';
+import {
+  persistReducer,
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+} from 'redux-persist';
 
-import {homeReducer} from '../modules/home/home.reducer';
-import {mainMenuPanelReducer} from '../modules/main-menu-panel/mainMenuPanel.reducer';
-import {mapReducer} from '../modules/maps/maps.reducer';
-import {notebookReducer} from '../modules/notebook-panel/notebook.reducers';
-import {projectsReducer} from '../modules/project/projects.reducer';
-import {spotReducer} from '../modules/spots/spot.reducers';
-import {userReducer} from '../modules/user/userProfile.reducer';
+import homeSlice from '../modules/home/home.slice';
+import mainMenuSlice from '../modules/main-menu-panel/mainMenuPanel.slice';
+import mapsSlice from '../modules/maps/maps.slice';
+import notebookSlice from '../modules/notebook-panel/notebook.slice';
+import projectSlice from '../modules/project/projects.slice';
+import spotsSlice from '../modules/spots/spots.slice';
+import userSlice from '../modules/user/userProfile.slice';
+import {redux} from '../shared/app.constants';
 
 // Redux Persist
 export const persistConfig = {
@@ -33,30 +43,34 @@ const middleware = process.env.NODE_ENV !== 'production'
   ? [require('redux-immutable-state-invariant').default(), loggerMiddleware]
   : [];
 
-const rootReducer = combineReducers({
-  home: homeReducer,
-  notebook: persistReducer(notebookConfig, notebookReducer),
-  map: mapReducer,
-  project: projectsReducer,
-  mainMenu: mainMenuPanelReducer,
-  spot: spotReducer,
-  user: userReducer,
+const combinedReducers = combineReducers({
+  home: homeSlice,
+  notebook: persistReducer(notebookConfig, notebookSlice),
+  map: mapsSlice,
+  project: projectSlice,
+  mainMenu: mainMenuSlice,
+  spot: spotsSlice,
+  user: userSlice,
 });
+
+const rootReducer = (state, action) => {
+  if (action.type === redux.CLEAR_STORE) {
+    state = undefined;
+  }
+  return combinedReducers(state, action);
+};
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
-let composeEnhancers = compose;
-
-if (__DEV__) {
-  composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-}
-
-const store = () => {
-  const store = createStore(persistedReducer, composeEnhancers(applyMiddleware(...middleware)));
-  console.log('The State of the Store', store.getState());
-  const persistor = persistStore(store);
-  // const persistorPurge = persistStore(store).purge(); // Use this to clear persistStore completely
-  return {store, persistor};
+const defalutMiddlewareOptions = {
+  serializableCheck: {
+    ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+  },
 };
+
+const store = configureStore({
+  reducer: persistedReducer,
+  middleware: [...getDefaultMiddleware(defalutMiddlewareOptions), loggerMiddleware],
+});
 
 export default store;

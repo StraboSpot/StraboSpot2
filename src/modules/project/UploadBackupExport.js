@@ -7,12 +7,18 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
 import Spacer from '../../shared/ui/Spacer';
-import {homeReducers} from '../home/home.constants';
+import useImagesHook from '../images/useImages';
 import Divider from '../main-menu-panel/MainMenuPanelDivider';
 import projectStyles from './project.styles';
 import UploadDialogBox from './UploadDialogBox';
 import useExportHook from './useExport';
 import useProjectHook from './useProject';
+import {
+  addedStatusMessage,
+  clearedStatusMessages,
+  setLoadingStatus,
+  setStatusMessagesModalVisible,
+} from '../home/home.slice';
 
 const UploadBackAndExport = (props) => {
   const [useExport] = useExportHook();
@@ -20,10 +26,10 @@ const UploadBackAndExport = (props) => {
 
   const dispatch = useDispatch();
   const datasets = useSelector(state => state.project.datasets);
+  const activeDatasetsIds = useSelector(state => state.project.activeDatasetsIds)
   const isOnline = useSelector(state => state.home.isOnline);
   const project = useSelector(state => state.project.project);
 
-  const [activeDatasets, setActiveDatasets] = useState(null);
   const [dialogBoxType, setDialogBoxType] = useState(null);
   const [isUploadDialogVisible, setIsUploadDialogVisible] = useState(false);
   const [exportFileName, setExportFileName] = useState(
@@ -31,16 +37,15 @@ const UploadBackAndExport = (props) => {
 
   const backupToDevice = async () => {
     setIsUploadDialogVisible(false);
-    dispatch({type: 'CLEAR_STATUS_MESSAGES'});
-    dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'Backing up Project to Device...'});
-    dispatch({type: homeReducers.SET_LOADING, view: 'modal', bool: true});
-    dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, bool: true});
+    dispatch(clearedStatusMessages());
+    dispatch(addedStatusMessage({statusMessage: 'Backing up Project to Device...'}));
+    dispatch(setLoadingStatus({view: 'modal', bool: true}));
+    dispatch(setStatusMessagesModalVisible(true));
     await useExport.backupProjectToDevice(exportFileName);
     console.log(`File ${exportFileName} has been backed up`);
-    // dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
-    dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: '---------------'});
-    dispatch({type: homeReducers.SET_LOADING, view: 'modal', bool: false});
-    await dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'Project Backup Complete!'});
+    dispatch(addedStatusMessage({statusMessage: '---------------'}));
+    dispatch(setLoadingStatus({view: 'modal', bool: false}));
+    await dispatch(addedStatusMessage({statusMessage: 'Project Backup Complete!'}));
 
   };
 
@@ -64,29 +69,25 @@ const UploadBackAndExport = (props) => {
   const initializeUpload = () => {
     setDialogBoxType('upload');
     console.log('Initializing Upload...');
-    const filteredDatasets = Object.values(datasets).filter(dataset => {
-      return dataset.active === true;
-    });
-    setActiveDatasets(filteredDatasets);
     setIsUploadDialogVisible(true);
   };
 
   const upload = async () => {
     setIsUploadDialogVisible(false);
-    dispatch({type: homeReducers.SET_LOADING, view: 'modal', bool: true});
-    dispatch({type: homeReducers.CLEAR_STATUS_MESSAGES});
-    dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, bool: true});
+    dispatch(setLoadingStatus({view: 'modal', bool: true}));
+    dispatch(clearedStatusMessages());
+    dispatch(setStatusMessagesModalVisible(true));
     try {
       await useProject.uploadProject();
       await useProject.uploadDatasets();
-      dispatch({type: homeReducers.SET_LOADING, view: 'modal', bool: false});
-      dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Upload Complete!'});
+      dispatch(setLoadingStatus({view: 'modal', bool: false}));
+      dispatch(addedStatusMessage({statusMessage: 'Upload Complete!'}));
       console.log('Upload Complete');
     }
     catch (err) {
-      dispatch({type: homeReducers.SET_LOADING, view: 'modal', bool: false});
-      dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: '----------'});
-      dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Upload Failed!'});
+      dispatch(setLoadingStatus({view: 'modal', bool: false}));
+      dispatch(addedStatusMessage({statusMessage: '----------'}));
+      dispatch(addedStatusMessage({statusMessage: 'Upload Failed!'}));
       console.error('Upload Failed!');
     }
   };
@@ -149,6 +150,7 @@ const UploadBackAndExport = (props) => {
 
   const renderDialogBox = () => {
     if (dialogBoxType === 'upload') {
+      const activeDatasets = activeDatasetsIds.map(datasetId => datasets[datasetId]);
       return (
         <UploadDialogBox
           dialogTitle={'OVERWRITE WARNING!'}

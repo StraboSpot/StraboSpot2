@@ -8,7 +8,9 @@ import commonStyles from '../../shared/common.styles';
 import ButtonRounded from '../../shared/ui/ButtonRounded';
 import {imageStyles, useImagesHook} from '../images';
 import {mapReducers} from '../maps/maps.constants';
-import {NotebookPages, notebookReducers} from '../notebook-panel/notebook.constants';
+import {setCurrentImageBasemap} from '../maps/maps.slice';
+import {NotebookPages} from '../notebook-panel/notebook.constants';
+import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 
 const ImagesViewPage = (props) => {
@@ -50,13 +52,13 @@ const ImagesViewPage = (props) => {
     if (image.image_type === 'sketch') {
       Alert.alert('Function not available yet', 'Viewing a sketch as an image basemap will be done soon.');
     }
-    else dispatch({type: mapReducers.CURRENT_IMAGE_BASEMAP, currentImageBasemap: image});
+    else dispatch(setCurrentImageBasemap(image));
   };
 
   return (
     <View style={{flex: 1}}>
       <ReturnToOverviewButton
-        onPress={() => dispatch({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: NotebookPages.OVERVIEW})}
+        onPress={() => dispatch(setNotebookPageVisible(NotebookPages.OVERVIEW))}
       />
       <View style={{alignItems: 'center', flex: 1}}>
         <View style={imageStyles.buttonsContainer}>

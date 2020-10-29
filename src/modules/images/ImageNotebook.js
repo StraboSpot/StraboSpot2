@@ -2,12 +2,13 @@ import React from 'react';
 import {ActivityIndicator, Button, Dimensions, FlatList, ScrollView, Switch, Text, View} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
-import {connect, useDispatch, useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
 import {truncateText} from '../../shared/Helpers';
 import * as SharedUI from '../../shared/ui/index';
 import {mapReducers} from '../maps/maps.constants';
+import {setCurrentImageBasemap} from '../maps/maps.slice';
 import {spotReducers} from '../spots/spot.constants';
 import imageStyles from './images.styles';
 import useImagesHook from './useImages';
@@ -40,7 +41,7 @@ const ImageNotebook = (props) => {
             <View style={[{alignSelf: 'flex-start'}]}>
               {image.annotated && <Button
                 title={'View as Image Basemap'}
-                onPress={() => props.updateImageBasemap(image)}
+                onPress={() => dispatch(setCurrentImageBasemap(image))}
               />}
             </View>
             {image.image_type !== 'sketch' ? <View
@@ -71,15 +72,4 @@ const ImageNotebook = (props) => {
   );
 };
 
-function mapStateToProps(state) {
-  return {};
-}
-
-const mapDispatchToProps = {
-  updateImageBasemap: (currentImageBasemap) => ({
-    type: mapReducers.CURRENT_IMAGE_BASEMAP,
-    currentImageBasemap: currentImageBasemap,
-  }),
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(ImageNotebook);
+export default ImageNotebook;

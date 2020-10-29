@@ -13,19 +13,18 @@ import {
   NativeEventEmitter,
 } from 'react-native';
 
-import {Button, ListItem} from 'react-native-elements';
+import {ListItem} from 'react-native-elements';
 import RNSimpleCompass from 'react-native-simple-compass';
 import {connect, useSelector} from 'react-redux';
 
-import {getNewId, mod, roundToDecimalPlaces, isEmpty} from '../../../shared/Helpers';
-import * as themes from '../../../shared/styles.constants';
+import {getNewId, mod, roundToDecimalPlaces} from '../../../shared/Helpers';
 import modalStyle from '../../../shared/ui/modal/modal.style';
 import Slider from '../../../shared/ui/Slider';
 import uiStyles from '../../../shared/ui/ui.styles';
-import {homeReducers, Modals} from '../../home/home.constants';
+import {Modals} from '../../home/home.constants';
 import useMapsHook from '../../maps/useMaps';
-import {NotebookPages, notebookReducers} from '../../notebook-panel/notebook.constants';
 import {spotReducers} from '../../spots/spot.constants';
+import {editedSpotProperties} from '../../spots/spots.slice';
 import {COMPASS_TOGGLE_BUTTONS} from './compass.constants';
 import compassStyles from './compass.styles';
 
@@ -320,13 +319,11 @@ const mapStateToProps = (state) => {
   return {
     spot: state.spot.selectedSpot,
     isNotebookPanelVisible: state.notebook.isNotebookPanelVisible,
-    deviceDimensions: state.home.deviceDimensions,
   };
 };
 
 const mapDispatchToProps = {
-  onSpotEdit: (field, value) => ({type: spotReducers.EDIT_SPOT_PROPERTIES, field: field, value: value}),
-  setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),
-  setModalVisible: (modal) => ({type: homeReducers.SET_MODAL_VISIBLE, modal: modal}),
+  // onSpotEdit: (field, value) => ({type: spotReducers.EDIT_SPOT_PROPERTIES, field: field, value: value}),
+  onSpotEdit: (field, value) => (editedSpotProperties({field: field, value: value})),
 };
 export default connect(mapStateToProps, mapDispatchToProps)(RNCompass);

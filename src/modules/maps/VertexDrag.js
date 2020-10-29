@@ -3,9 +3,10 @@ import {Dimensions} from 'react-native';
 
 import {State, PanGestureHandler} from 'react-native-gesture-handler';
 import AnimatedPoint from 'react-native-reanimated';
-import {connect} from 'react-redux';
+import {connect, useDispatch, useSelector} from 'react-redux';
 
 import {mapReducers} from './maps.constants';
+import {setVertexEndCoords} from './maps.slice';
 import mapStyles from './maps.styles';
 
 const {cond, eq, add, call, set, Value, event} = AnimatedPoint;
@@ -13,7 +14,8 @@ const {cond, eq, add, call, set, Value, event} = AnimatedPoint;
 const {height, width} = Dimensions.get('window');
 
 const VertexDrag = (props) => {
-
+  const dispatch = useDispatch();
+  // const vertexStartCoords = useSelector(state => state.map.vertexStartCoords); // See note at bottom.
   const [dragX, setDragX] = useState(new Value(0));
   const [dragY, setDragY] = useState(new Value(0));
   const [offsetX, setOffsetX] = useState(new Value(0));
@@ -48,7 +50,7 @@ const VertexDrag = (props) => {
     // console.log(`You are at x: ${coords[0]} and y: ${coords[1]}!`);
     let endCoords = [props.vertexStartCoords[0] + coords[0], props.vertexStartCoords[1] + coords[1]];
     console.log('x from comp', coords[0], 'y from comp', coords[1], 'endCoords:', endCoords);
-    props.setVertexEndCoords(endCoords);
+    dispatch(setVertexEndCoords(endCoords));
   };
 
   return (
@@ -87,14 +89,12 @@ const VertexDrag = (props) => {
   );
 };
 
+// TODO Getting rid of mapStateToProps and using useSelector messes up dragging a point and continues to set a new
+//  endVertexCoord. Leaving mapStateToProps...for now.
 const mapStateToProps = (state) => {
   return {
     vertexStartCoords: state.map.vertexStartCoords,
   };
 };
 
-const mapDispatchToProps = {
-  setVertexEndCoords: (coords) => ({type: mapReducers.VERTEX_END_COORDS, vertexEndCoords: coords}),
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(VertexDrag);
+export default connect(mapStateToProps)(VertexDrag);

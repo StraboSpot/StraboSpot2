@@ -2,34 +2,37 @@ import React, {useState, useEffect} from 'react';
 import {Alert, FlatList, Text, View} from 'react-native';
 
 import {Button, ListItem} from 'react-native-elements';
-import {connect} from 'react-redux';
+import {connect, useDispatch, useSelector} from 'react-redux';
 
 import {isEmpty} from '../../shared/Helpers';
 import attributesStyles from '../main-menu-panel/attributes.styles';
-import {mainMenuPanelReducers, SortedViews} from '../main-menu-panel/mainMenuPanel.constants';
+import {SortedViews} from '../main-menu-panel/mainMenuPanel.constants';
 import SortingButtons from '../main-menu-panel/SortingButtons';
 import {NotebookPages, notebookReducers} from '../notebook-panel/notebook.constants';
+import {setSelectedButtonIndex, setSortedView} from '../main-menu-panel/mainMenuPanel.slice';
 
 const SamplesList = (props) => {
+  const dispatch = useDispatch();
+  const sortedListView = useSelector(state => state.mainMenu.sortedView);
   const [sortedList, setSortedList] = useState(Object.values(props.spots));
   const [filteredList] = useState(sortedList.filter(spot => {
     return !isEmpty(spot.properties.samples);
   }));
   const [refresh, setRefresh] = useState(false);
-  const {spots, sortedListView, selectedSpot} = props;
+  const {spots, selectedSpot} = props;
 
   useEffect(() => {
     console.log('Render in Samples List');
     return function cleanUp() {
-      props.setSortedListView(SortedViews.CHRONOLOGICAL);
-      props.setSelectedButtonIndex(0);
+      dispatch(setSortedView({view: SortedViews.CHRONOLOGICAL}));
+      dispatch(setSelectedButtonIndex({index: 0}));
     };
   }, []);
 
   useEffect(() => {
     setSortedList(Object.values(spots));
     console.log('Render recent view in SamplesList!');
-  }, [props.selectedSpot, props.spots, props.sortedListView]);
+  }, [props.selectedSpot, props.spots, sortedListView]);
 
   const renderName = (item) => {
     return (
@@ -98,21 +101,21 @@ const SamplesList = (props) => {
   //   return !isEmpty(spot.properties.samples)
   // });
   if (!isEmpty(filteredList)) {
-    if (props.sortedListView === SortedViews.CHRONOLOGICAL) {
+    if (sortedListView === SortedViews.CHRONOLOGICAL) {
       sortedView = <FlatList
         keyExtractor={(item) => item.properties.id.toString()}
         extraData={refresh}
         data={filteredList}
         renderItem={({item}) => renderName(item)}/>;
     }
-    else if (props.sortedListView === SortedViews.MAP_EXTENT) {
+    else if (sortedListView === SortedViews.MAP_EXTENT) {
       sortedView = <FlatList
         keyExtractor={(item) => item.properties.id.toString()}
         extraData={refresh}
         data={filteredList}
         renderItem={({item}) => renderName(item)}/>;
     }
-    else if (props.sortedListView === SortedViews.RECENT_VIEWS) {
+    else if (sortedListView === SortedViews.RECENT_VIEWS) {
       sortedView = <FlatList
         keyExtractor={(item) => item.toString()}
         extraData={refresh}
@@ -151,18 +154,10 @@ const SamplesList = (props) => {
 const mapStateToProps = (state) => {
   return {
     recentViews: state.spot.recentViews,
-    selectedButtonIndex: state.mainMenu.selectedButtonIndex,
     selectedImage: state.spot.selectedAttributes[0],
     selectedSpot: state.spot.selectedSpot,
-    sortedListView: state.mainMenu.sortedView,
     spots: state.spot.spots,
   };
 };
 
-const mapDispatchToProps = {
-  setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),
-  setSortedListView: (view) => ({type: mainMenuPanelReducers.SET_SORTED_VIEW, view: view}),
-  setSelectedButtonIndex: (index) => ({type: mainMenuPanelReducers.SET_SELECTED_BUTTON_INDEX, index: index}),
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(SamplesList);
+export default connect(mapStateToProps)(SamplesList);

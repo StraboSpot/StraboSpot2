@@ -2,18 +2,22 @@ import React from 'react';
 import {ScrollView, Text, View} from 'react-native';
 
 import {Icon, ListItem} from 'react-native-elements';
-import {connect} from 'react-redux';
+import {connect, useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
 import SectionDivider from '../../shared/ui/SectionDivider';
-import {homeReducers, Modals} from '../home/home.constants';
-import {notebookReducers, NotebookPages} from '../notebook-panel/notebook.constants';
+import {Modals} from '../home/home.constants';
+import {setModalVisible} from '../home/home.slice';
+import {NotebookPages} from '../notebook-panel/notebook.constants';
+import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import styles from './samples.style';
 
-const samplesNotebook = (props) => {
+const SamplesNotebook = (props) => {
+  const dispatch = useDispatch();
+  const modalVisible = useSelector(state => state.home.modalVisible);
   const renderSampleList = () => {
     return props.spot.properties.samples.map(item => {
       // console.log('LIST', item);
@@ -56,11 +60,11 @@ const samplesNotebook = (props) => {
       <View>
         {props.notebookPageVisible === NotebookPages.SAMPLE && (
           <ReturnToOverviewButton
-            onPress={() => {
-              props.setNotebookPageVisible(NotebookPages.OVERVIEW);
-              props.setModalVisible(null);
-            }}
-          />
+          onPress={() => {
+            dispatch(setNotebookPageVisible(NotebookPages.OVERVIEW));
+            dispatch(setModalVisible({modal: null}));
+          }}
+        />
         )}
         {props.notebookPageVisible === NotebookPages.SAMPLE && <SectionDivider dividerText='Samples'/>}
         {/*<FlatList*/}
@@ -90,7 +94,7 @@ const samplesNotebook = (props) => {
 
   return (
     <React.Fragment>
-      {props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE ? renderShortcutView() : renderNotebookView()}
+      {modalVisible === Modals.SHORTCUT_MODALS.SAMPLE ? renderShortcutView() : renderNotebookView()}
     </React.Fragment>
   );
 };
@@ -98,16 +102,11 @@ const samplesNotebook = (props) => {
 const mapStateToProps = (state) => {
   return {
     spot: state.spot.selectedSpot,
-    modalVisible: state.home.modalVisible,
-    notebookPageVisible: !isEmpty(state.notebook.visibleNotebookPagesStack)
-      && state.notebook.visibleNotebookPagesStack.slice(-1)[0],
+    notebookPageVisible: isEmpty(state.notebook.visibleNotebookPagesStack)
+      ? null
+      : state.notebook.visibleNotebookPagesStack.slice(-1)[0],
   };
 };
 
-const mapDispatchToProps = {
-  setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),
-  setModalVisible: (modal) => ({type: homeReducers.SET_MODAL_VISIBLE, modal: modal}),
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(samplesNotebook);
+export default connect(mapStateToProps)(SamplesNotebook);
 

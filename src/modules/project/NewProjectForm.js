@@ -7,11 +7,11 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import styles from '../../shared/ui/ui.styles';
 import {Form, useFormHook} from '../form';
-import {homeReducers} from '../home/home.constants';
+import {setProjectLoadSelectionModalVisible} from '../home/home.slice';
 import {MAIN_MENU_ITEMS} from '../main-menu-panel/mainMenu.constants';
-import {mainMenuPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 import Divider from '../main-menu-panel/MainMenuPanelDivider';
 import useProjectHook from './useProject';
+import {setMenuSelectionPage} from '../main-menu-panel/mainMenuPanel.slice';
 
 const NewProjectForm = (props) => {
   const [useForm] = useFormHook();
@@ -45,15 +45,11 @@ const NewProjectForm = (props) => {
         const newProject = await useProject.initializeNewProject(formValues);
         console.log('New Project created', newProject);
         if (isProjectLoadSelectionModalVisible) {
-          dispatch(
-            {type: mainMenuPanelReducers.SET_MENU_SELECTION_PAGE, name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS});
+          dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
           props.openMainMenu();
-          dispatch({type: homeReducers.SET_PROJECT_LOAD_SELECTION_MODAL_VISIBLE, value: false});
+          dispatch(setProjectLoadSelectionModalVisible(false));
         }
-        else {
-          dispatch(
-            {type: mainMenuPanelReducers.SET_MENU_SELECTION_PAGE, name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS});
-        }
+        else dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
         return Promise.resolve();
       }
     });

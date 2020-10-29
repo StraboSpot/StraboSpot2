@@ -5,6 +5,7 @@ import RNSketchCanvas from '@terrylinla/react-native-sketch-canvas';
 import {useDispatch} from 'react-redux';
 
 import {mapReducers} from '../maps/maps.constants';
+import {setFreehandFeatureCoords} from '../maps/maps.slice';
 import styles from './sketch.styles';
 
 let freehandFeatureCoords = new Array();
@@ -12,7 +13,7 @@ const Sketch = (props) => {
   const dispatch = useDispatch();
 
   const onDrop = () => {
-    dispatch(({type: mapReducers.FREEHAND_FEATURE_COORDS, freehandFeatureCoords: freehandFeatureCoords}));
+    dispatch(setFreehandFeatureCoords(freehandFeatureCoords));
   };
 
   const freeDraw = (coords) => {

@@ -9,6 +9,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {isEmpty, toTitleCase} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
 import {mapReducers} from '../maps/maps.constants';
+import {setAllSymbolsToggled, setSymbolsDisplayed, setTagTypeForColor} from '../maps/maps.slice';
 import styles from '../measurements/measurements.styles';
 import useMeasurementsHook from '../measurements/useMeasurements';
 import dialogStyles from './dialog.styles';
@@ -31,12 +32,12 @@ const MapSymbolsDialog = (props) => {
   };
 
   const toggleAllSymbolsOn = () => {
-    dispatch({type: mapReducers.SET_ALL_SYMBOLS_TOGGLED, toggled: !isAllSymbolsOn});
+    dispatch(setAllSymbolsToggled(!isAllSymbolsOn));
   };
 
   const toggleShowTagColor = () => {
-    if (tagTypeForColor) dispatch({type: mapReducers.SET_TAG_TYPE_FOR_COLOR, tagTypeForColor: undefined});
-    else dispatch({type: mapReducers.SET_TAG_TYPE_FOR_COLOR, tagTypeForColor: 'geologic_unit'});
+    if (tagTypeForColor) dispatch(setTagTypeForColor(undefined));
+    else dispatch(setTagTypeForColor('geologic_unit'));
   };
 
   const toggleSymbolSelected = (symbol) => {
@@ -44,7 +45,7 @@ const MapSymbolsDialog = (props) => {
     const i = symbolsOnCopy.indexOf(symbol);
     if (i === -1) symbolsOnCopy.push(symbol);
     else symbolsOnCopy.splice(i, 1);
-    dispatch({type: mapReducers.SET_SYMBOLS_DISPLAYED, symbols: symbolsOnCopy});
+    dispatch(setSymbolsDisplayed(symbolsOnCopy));
   };
 
   return (
@@ -88,10 +89,7 @@ const MapSymbolsDialog = (props) => {
         </ListItem>
         {tagTypeForColor && (
           <ButtonGroup
-            onPress={i => dispatch({
-              type: mapReducers.SET_TAG_TYPE_FOR_COLOR,
-              tagTypeForColor: i === 0 ? 'geologic_unit' : 'concept',
-            })}
+            onPress={i => dispatch(setTagTypeForColor(i === 0 ? 'geologic_unit' : 'concept'))}
             selectedIndex={tagTypeForColor === 'geologic_unit' ? 0 : 1}
             buttons={['Geologic Unit', 'Conceptual']}
             containerStyle={styles.measurementDetailSwitches}

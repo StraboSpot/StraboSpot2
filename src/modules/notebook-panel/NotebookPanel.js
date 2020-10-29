@@ -3,14 +3,15 @@ import {Animated, FlatList, Text, View} from 'react-native';
 
 // import {FlingGestureHandler, Directions, State} from 'react-native-gesture-handler';
 import {Avatar, Button, ListItem} from 'react-native-elements';
-import {connect, useDispatch, useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import Spacer from '../../shared/ui/Spacer';
 import Geography from '../geography/Geography';
-import {homeReducers, Modals} from '../home/home.constants';
+import {Modals} from '../home/home.constants';
+import {setModalVisible} from '../home/home.slice';
 import {ImagesPage} from '../images';
 import MeasurementDetailPage from '../measurements/MeasurementDetail';
 import MeasurementsPage from '../measurements/Measurements';
@@ -19,10 +20,12 @@ import NotesPage from '../notes/Notes';
 import SamplesPage from '../samples/SamplesNotebook';
 import {useSpotsHook} from '../spots';
 import {spotReducers} from '../spots/spot.constants';
+import {setSelectedSpot} from '../spots/spots.slice';
 import TagsPage from '../tags/TagsNotebook';
 import NotebookFooter from './notebook-footer/NotebookFooter';
 import NotebookHeader from './notebook-header/NotebookHeader';
-import {notebookReducers, NotebookPages, SECONDARY_NOTEBOOK_PAGES, SED_NOTEBOOK_PAGES} from './notebook.constants';
+import {NotebookPages, SECONDARY_NOTEBOOK_PAGES, SED_NOTEBOOK_PAGES} from './notebook.constants';
+import {setNotebookPageVisible} from './notebook.slice';
 import notebookStyles from './notebookPanel.styles';
 import Overview from './Overview';
 import PlaceholderPage from './PlaceholderPage';
@@ -30,24 +33,27 @@ import PlaceholderPage from './PlaceholderPage';
 const NotebookPanel = props => {
   const [useSpots] = useSpotsHook();
   const dispatch = useDispatch();
+  const pageVisible = useSelector(state => state.notebook.visibleNotebookPagesStack.slice(-1)[0]);
   const recentlyViewedSpotIds = useSelector(state => state.spot.recentViews);
+  const spot = useSelector(state => state.spot.selectedSpot);
+  const isAllSpotsPanelVisible = useSelector(state => state.home.isAllSpotsPanelVisible);
   const spots = useSelector(state => state.spot.spots);
 
-  const setNotebookPageVisible = page => {
-    const pageVisible = props.setNotebookPageVisible(page);
-    if (pageVisible.page === NotebookPages.MEASUREMENT || pageVisible === NotebookPages.MEASUREMENTDETAIL) {
-      props.setModalVisible(Modals.NOTEBOOK_MODALS.COMPASS);
+  const notebookPageVisible = page => {
+    dispatch(setNotebookPageVisible(page));
+    if (page === NotebookPages.MEASUREMENT || page === NotebookPages.MEASUREMENTDETAIL) {
+      dispatch(setModalVisible({modal: Modals.NOTEBOOK_MODALS.COMPASS}));
     }
-    else if (pageVisible.page === NotebookPages.SAMPLE) props.setModalVisible(Modals.NOTEBOOK_MODALS.SAMPLE);
-    else if (pageVisible.page === NotebookPages.TAG) props.setModalVisible(Modals.NOTEBOOK_MODALS.TAGS);
-    else props.setModalVisible(null);
+    else if (page === NotebookPages.SAMPLE) dispatch(setModalVisible({modal: Modals.NOTEBOOK_MODALS.SAMPLE}));
+    else if (page === NotebookPages.TAG) dispatch(setModalVisible({modal: Modals.NOTEBOOK_MODALS.TAGS}));
+    else dispatch(setModalVisible({modal: null}));
   };
 
-  if (!isEmpty(props.spot)) {
-    console.log('Selected Spot:', props.spot);
+  if (!isEmpty(spot)) {
+    console.log('Selected Spot:', spot);
     return (
       <Animated.View
-        style={props.isAllSpotsPanelVisible ? [notebookStyles.panel, {right: 125}] : notebookStyles.panel}
+        style={isAllSpotsPanelVisible ? [notebookStyles.panel, {right: 125}] : notebookStyles.panel}
       >
         <View
           style={notebookStyles.headerContainer}>
@@ -59,41 +65,41 @@ const NotebookPanel = props => {
           style={notebookStyles.centerContainer}>
 
           {/*Main Overview Page*/}
-          {(props.notebookPageVisible === NotebookPages.OVERVIEW || props.notebookPageVisible === undefined)
+          {(pageVisible === NotebookPages.OVERVIEW || pageVisible === undefined)
           && <Overview openMainMenu={props.openMainMenu}/>}
 
           {/*Primary Pages*/}
-          {props.notebookPageVisible === NotebookPages.MEASUREMENT && <MeasurementsPage/>}
-          {props.notebookPageVisible === NotebookPages.NOTE && <NotesPage/>}
-          {props.notebookPageVisible === NotebookPages.SAMPLE && <SamplesPage/>}
-          {props.notebookPageVisible === NotebookPages.TAG && <TagsPage openMainMenu={props.openMainMenu}/>}
-          {props.notebookPageVisible === NotebookPages.PHOTO && <ImagesPage onPress={props.onPress}/>}
+          {pageVisible === NotebookPages.MEASUREMENT && <MeasurementsPage/>}
+          {pageVisible === NotebookPages.NOTE && <NotesPage/>}
+          {pageVisible === NotebookPages.SAMPLE && <SamplesPage/>}
+          {pageVisible === NotebookPages.TAG && <TagsPage openMainMenu={props.openMainMenu}/>}
+          {pageVisible === NotebookPages.PHOTO && <ImagesPage onPress={props.onPress}/>}
 
           {/*Additional Notebook Pages*/}
-          {props.notebookPageVisible === NotebookPages.GEOGRAPHY && <Geography/>}
-          {props.notebookPageVisible === NotebookPages.MEASUREMENTDETAIL && <MeasurementDetailPage/>}
-          {props.notebookPageVisible === NotebookPages.NESTING && <Nesting/>}
+          {pageVisible === NotebookPages.GEOGRAPHY && <Geography/>}
+          {pageVisible === NotebookPages.MEASUREMENTDETAIL && <MeasurementDetailPage/>}
+          {pageVisible === NotebookPages.NESTING && <Nesting/>}
 
           {/*Secondary Notebook Pages*/}
-          {props.notebookPageVisible === SECONDARY_NOTEBOOK_PAGES.THREE_D_STRUCTURES && <PlaceholderPage/>}
-          {props.notebookPageVisible === SECONDARY_NOTEBOOK_PAGES.IG_MET && <PlaceholderPage/>}
-          {props.notebookPageVisible === SECONDARY_NOTEBOOK_PAGES.FABRICS && <PlaceholderPage/>}
-          {props.notebookPageVisible === SECONDARY_NOTEBOOK_PAGES.OTHER_FEATURES && <PlaceholderPage/>}
-          {props.notebookPageVisible === SECONDARY_NOTEBOOK_PAGES.RELATIONSHIPS && <PlaceholderPage/>}
-          {props.notebookPageVisible === SECONDARY_NOTEBOOK_PAGES.DATA && <PlaceholderPage/>}
+          {pageVisible === SECONDARY_NOTEBOOK_PAGES.THREE_D_STRUCTURES && <PlaceholderPage/>}
+          {pageVisible === SECONDARY_NOTEBOOK_PAGES.IG_MET && <PlaceholderPage/>}
+          {pageVisible === SECONDARY_NOTEBOOK_PAGES.FABRICS && <PlaceholderPage/>}
+          {pageVisible === SECONDARY_NOTEBOOK_PAGES.OTHER_FEATURES && <PlaceholderPage/>}
+          {pageVisible === SECONDARY_NOTEBOOK_PAGES.RELATIONSHIPS && <PlaceholderPage/>}
+          {pageVisible === SECONDARY_NOTEBOOK_PAGES.DATA && <PlaceholderPage/>}
 
           {/*Sed Notebook Pages*/}
-          {props.notebookPageVisible === SED_NOTEBOOK_PAGES.LITHOLOGIES && <PlaceholderPage/>}
-          {props.notebookPageVisible === SED_NOTEBOOK_PAGES.BEDDING && <PlaceholderPage/>}
-          {props.notebookPageVisible === SED_NOTEBOOK_PAGES.STRUCTURES && <PlaceholderPage/>}
-          {props.notebookPageVisible === SED_NOTEBOOK_PAGES.DIAGENESIS && <PlaceholderPage/>}
-          {props.notebookPageVisible === SED_NOTEBOOK_PAGES.FOSSILS && <PlaceholderPage/>}
-          {props.notebookPageVisible === SED_NOTEBOOK_PAGES.INTERPRETATIONS && <PlaceholderPage/>}
+          {pageVisible === SED_NOTEBOOK_PAGES.LITHOLOGIES && <PlaceholderPage/>}
+          {pageVisible === SED_NOTEBOOK_PAGES.BEDDING && <PlaceholderPage/>}
+          {pageVisible === SED_NOTEBOOK_PAGES.STRUCTURES && <PlaceholderPage/>}
+          {pageVisible === SED_NOTEBOOK_PAGES.DIAGENESIS && <PlaceholderPage/>}
+          {pageVisible === SED_NOTEBOOK_PAGES.FOSSILS && <PlaceholderPage/>}
+          {pageVisible === SED_NOTEBOOK_PAGES.INTERPRETATIONS && <PlaceholderPage/>}
 
         </View>
         <View style={notebookStyles.footerContainer}>
           <NotebookFooter
-            openPage={(page) => setNotebookPageVisible(page)}
+            openPage={(page) => notebookPageVisible(page)}
             onPress={(camera) => props.onPress(camera)}
           />
         </View>
@@ -133,7 +139,10 @@ const NotebookPanel = props => {
 
     const renderSpotName = (item) => {
       return (
-        <ListItem key={item.properties.id} onPress={() => dispatch({type: spotReducers.SET_SELECTED_SPOT, spot: item})}>
+        <ListItem key={item.properties.id} onPress={() => {
+          // dispatch({type: spotReducers.SET_SELECTED_SPOT, spot: item})
+          dispatch(setSelectedSpot(item));
+        }}>
           <Avatar source={useSpots.getSpotGemometryIconSource(item)} size={20}/>
           <ListItem.Content>
             <ListItem.Title>{item.properties.name}</ListItem.Title>
@@ -152,21 +161,4 @@ const NotebookPanel = props => {
   }
 };
 
-function mapStateToProps(state) {
-  return {
-    spot: state.spot.selectedSpot,
-    selectedSpots: state.spot.selectedSpots,
-    isAllSpotsPanelVisible: state.home.isAllSpotsPanelVisible,
-    notebookPageVisible: isEmpty(state.notebook.visibleNotebookPagesStack)
-      ? null
-      : state.notebook.visibleNotebookPagesStack.slice(-1)[0],
-  };
-}
-
-const mapDispatchToProps = {
-  setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),
-  setModalVisible: (modal) => ({type: homeReducers.SET_MODAL_VISIBLE, modal: modal}),
-  setAllSpotsPanelVisible: (value) => ({type: homeReducers.SET_ALLSPOTS_PANEL_VISIBLE, value: value}),
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(NotebookPanel);
+export default NotebookPanel;

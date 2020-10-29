@@ -1,25 +1,29 @@
 import React from 'react';
 
 import {ButtonGroup} from 'react-native-elements';
-import {connect} from 'react-redux';
+import {connect, useDispatch, useSelector} from 'react-redux';
 
-import {mainMenuPanelReducers, SortedViews} from './mainMenuPanel.constants';
+import {SortedViews} from './mainMenuPanel.constants';
+import {setSelectedButtonIndex, setSortedView} from './mainMenuPanel.slice';
 
 const SortingButtons = (props) => {
-  const updateIndex = (selectedButtonIndex) => {
-    props.setSelectedButtonIndex(selectedButtonIndex);
-    switch (selectedButtonIndex) {
+  const dispatch = useDispatch();
+  const selectedButtonIndex = useSelector(state => state.mainMenu.selectedButtonIndex);
+
+  const updateIndex = (buttonIndex) => {
+    dispatch(setSelectedButtonIndex({index: buttonIndex}));
+    switch (buttonIndex) {
       case 0:
         console.log('Chronological Selected', props.spots);
-        props.setSortedListView(SortedViews.CHRONOLOGICAL);
+        dispatch(setSortedView({view: SortedViews.CHRONOLOGICAL}));
         break;
       case 1:
         console.log('Map Extent Selected');
-        props.setSortedListView(SortedViews.MAP_EXTENT);
+        dispatch(setSortedView({view: SortedViews.MAP_EXTENT}));
         break;
       case 2:
         console.log('Recent Selected');
-        props.setSortedListView(SortedViews.RECENT_VIEWS);
+        dispatch(setSortedView({view: SortedViews.RECENT_VIEWS}));
         break;
     }
   };
@@ -27,7 +31,7 @@ const SortingButtons = (props) => {
   return (
     <React.Fragment>
       <ButtonGroup
-        selectedIndex={props.selectedButtonIndex}
+        selectedIndex={selectedButtonIndex}
         buttons={['Reverse\nChronological', 'Map Extent', 'Recent\n Views']}
         containerStyle={{height: 50}}
         buttonStyle={{padding: 5}}
@@ -41,14 +45,10 @@ const SortingButtons = (props) => {
 const mapStateToProps = (state) => {
   return {
     spots: state.spot.spots,
-    selectedButtonIndex: state.mainMenu.selectedButtonIndex,
     selectedSpot: state.spot.selectedSpot,
   };
 };
 
-const mapDispatchToProps = {
-  setSortedListView: (view) => ({type: mainMenuPanelReducers.SET_SORTED_VIEW, view: view}),
-  setSelectedButtonIndex: (index) => ({type: mainMenuPanelReducers.SET_SELECTED_BUTTON_INDEX, index: index}),
-};
 
-export default connect(mapStateToProps, mapDispatchToProps)(SortingButtons);
+
+export default connect(mapStateToProps)(SortingButtons);

@@ -2,14 +2,15 @@ import React from 'react';
 import {ScrollView} from 'react-native';
 
 import {ListItem} from 'react-native-elements';
-import {connect} from 'react-redux';
+import {useDispatch} from 'react-redux';
 
-import * as themes from '../../shared/styles.constants';
 import {spotReducers} from '../spots/spot.constants';
+import {setSelectedSpot} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
 import notebookStyles from './notebookPanel.styles';
 
 const AllSpots = (props) => {
+  const dispatch = useDispatch();
   const [useSpots] = useSpotsHook();
   const activeSpotsObj = useSpots.getActiveSpotsObj();
 
@@ -18,7 +19,8 @@ const AllSpots = (props) => {
       return selectedSpot.properties.id === id;
     });
     console.log('Switch Selected Spot', spot);
-    props.onSetSelectedSpot(spot);
+    // props.onSetSelectedSpot(spot);
+    dispatch(setSelectedSpot(spot));
   };
 
   return (
@@ -45,12 +47,4 @@ const AllSpots = (props) => {
   );
 };
 
-const mapStateToProps = state => {
-  return {};
-};
-
-const mapDispatchToProps = {
-  onSetSelectedSpot: (spot) => ({type: spotReducers.SET_SELECTED_SPOT, spot: spot}),
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(AllSpots);
+export default AllSpots;

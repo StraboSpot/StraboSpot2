@@ -6,7 +6,7 @@ import RNSketchCanvas, {SketchCanvas} from '@terrylinla/react-native-sketch-canv
 import {useDispatch} from 'react-redux';
 
 import useImagesHook from '../images/useImages';
-import {spotReducers} from '../spots/spot.constants';
+import {editedSpotImages} from '../spots/spots.slice';
 import styles from './sketch.styles';
 
 const Sketch = (props) => {
@@ -26,7 +26,7 @@ const Sketch = (props) => {
       console.log(success, 'Path:', path);
       if (success) {
         const savedSketch = await useImages.saveFile({'path': path});
-        dispatch({type: spotReducers.EDIT_SPOT_IMAGES, images: [{...savedSketch, image_type: 'sketch'}]});
+        dispatch(editedSpotImages([{...savedSketch, image_type: 'sketch'}]));
         Alert.alert(`Sketch ${savedSketch.id} Saved!`,
           null,
           [{

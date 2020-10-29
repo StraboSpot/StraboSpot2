@@ -1,10 +1,10 @@
 import React from 'react';
-import {View, Text} from 'react-native';
+import {View} from 'react-native';
 
-import {connect, useSelector} from 'react-redux';
+import {connect, useDispatch, useSelector} from 'react-redux';
 
 import {isEmpty} from '../../shared/Helpers';
-import {homeReducers} from '../home/home.constants';
+import {shortcutSwitchPosition} from '../home/home.slice';
 import ImageGallery from '../images/ImageGallery';
 import CustomMapsMenu from '../maps/custom-maps/ManageCustomMaps';
 import ImageBaseMaps from '../maps/ImageBasemaps';
@@ -14,51 +14,57 @@ import NamingConventions from '../preferences/naming-conventions/NamingConventio
 import ShortcutMenu from '../preferences/shortcuts-menu/ShortcutsMenu';
 import ActiveProject from '../project/ActiveProjectPanel';
 import MyStraboSpot from '../project/MyStraboSpot';
-import ProjectList from '../project/ProjectList';
 import UploadBackupAndExport from '../project/UploadBackupExport';
 import SamplesList from '../samples/SamplesList';
 import {spotReducers} from '../spots/spot.constants';
+import {setSelectedSpot} from '../spots/spots.slice';
 import SpotsList from '../spots/SpotsList';
 import Tags from '../tags/Tags';
 import About from './About';
 import {MAIN_MENU_ITEMS} from './mainMenu.constants';
-import {mainMenuPanelReducers} from './mainMenuPanel.constants';
+import {setMenuSelectionPage} from './mainMenuPanel.slice';
 import styles from './mainMenuPanel.styles';
 import MainMenuPanelHeader from './MainMenuPanelHeader';
 import MainMenuPanelList from './MainMenuPanelList';
 
 const MainMenuPanel = props => {
   let buttonTitle = null;
+  const dispatch = useDispatch();
   const project = useSelector(state => state.project.project);
+  const settingsPageVisible = useSelector(state => state.mainMenu.mainMenuPageVisible);
+  const spots = useSelector(state => state.spot.spots);
+  const switchPosition = useSelector(state => state.home.shortcutSwitchPosition);
   const spotsInMapExtent = useSelector(state => state.map.spotsInMapExtent);
+  const user = useSelector(state => state.user);
   let mainMenuHeader = <MainMenuPanelHeader
-    onPress={() => props.setSettingsPanelPageVisible(undefined)}>
-    {props.settingsPageVisible}
+    onPress={() => dispatch(setMenuSelectionPage({name: undefined}))}>
+    {settingsPageVisible}
   </MainMenuPanelHeader>;
 
-  let page = null;
+  let page;
 
   const getSpotFromId = (spotId, page) => {
-    const spot = props.spots[spotId];
+    const spot = spots[spotId];
     if (page === NotebookPages.SAMPLE) props.openNotebookPanel(NotebookPages.SAMPLE);
     else props.openNotebookPanel(NotebookPages.OVERVIEW);
-    props.onSetSelectedSpot(spot);
+    // props.onSetSelectedSpot(spot);
+    dispatch(setSelectedSpot(spot));
   };
 
   const setVisibleMenu = (name) => {
-    props.setSettingsPanelPageVisible(name);
+    dispatch(setMenuSelectionPage({name: name}));
   };
 
   const toggleSwitch = (switchName) => {
     console.log('Switch', switchName);
-    props.onShortcutSwitchChange(switchName);
-    console.log(props.shortcutSwitchPosition);
+    dispatch(shortcutSwitchPosition({switchName: switchName}));
+    console.log(shortcutSwitchPosition);
   };
 
-  if (isEmpty(props.userProfile)) buttonTitle = 'Sign In';
+  if (isEmpty(user)) buttonTitle = 'Sign In';
   else buttonTitle = 'Sign Out';
 
-  switch (props.settingsPageVisible) {
+  switch (settingsPageVisible) {
     case MAIN_MENU_ITEMS.MANAGE.MY_STRABOSPOT:
       page = (
         <View style={styles.mainMenuContainer}>
@@ -91,7 +97,7 @@ const MainMenuPanel = props => {
         <View style={styles.mainMenuContainer}>
           <ShortcutMenu
             toggleSwitch={(switchName) => toggleSwitch(switchName)}
-            shortcutSwitchPosition={props.shortcutSwitchPosition}
+            shortcutSwitchPosition={switchPosition}
           />
         </View>
       );
@@ -197,19 +203,4 @@ const MainMenuPanel = props => {
   );
 };
 
-const mapStateToProps = (state) => {
-  return {
-    settingsPageVisible: state.mainMenu.mainMenuPageVisible,
-    shortcutSwitchPosition: state.home.shortcutSwitchPosition,
-    spots: state.spot.spots,
-    userProfile: state.user.userData,
-  };
-};
-
-const mapDispatchToProps = {
-  setSettingsPanelPageVisible: (name) => ({type: mainMenuPanelReducers.SET_MENU_SELECTION_PAGE, name: name}),
-  onShortcutSwitchChange: (switchName) => ({type: homeReducers.SHORTCUT_SWITCH_POSITION, switchName: switchName}),
-  onSetSelectedSpot: (spot) => ({type: spotReducers.SET_SELECTED_SPOT, spot: spot}),
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(MainMenuPanel);
+export default MainMenuPanel;

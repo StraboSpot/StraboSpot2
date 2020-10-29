@@ -16,42 +16,44 @@ import {isEmpty, truncateText} from '../../shared/Helpers';
 import TexInputModal from '../../shared/ui/GeneralTextInputModal';
 import Loading from '../../shared/ui/Loading';
 import StatusDialogBox from '../../shared/ui/StatusDialogBox';
-import {homeReducers} from '../home/home.constants';
+import {addedStatusMessage, clearedStatusMessages, setStatusMessagesModalVisible} from '../home/home.slice';
 import useProjectHook from '../project/useProject';
 import useSpotsHook from '../spots/useSpots';
 import {projectReducers} from './project.constants';
 import styles from './project.styles';
+import {updatedDatasetProperties, updatedDatasets, setActiveDatasets, setSelectedDataset} from './projects.slice';
 
 const DatasetList = () => {
 
   const [useSpots] = useSpotsHook();
   const [useProject] = useProjectHook();
   const [loading, setLoading] = useState(false);
-  const [selectedDataset, setSelectedDataset] = useState({});
+  const [selectedDataset, setSelectedDatasetProperties] = useState({});
   const [isDeleteConfirmModalVisible, setIsDeleteConfirmModalVisible] = useState(false);
   const [isDatasetNameModalVisible, setIsDatasetNameModalVisible] = useState(false);
   const [isStatusMessagesModalVisible, setIsStatusMessagesModalVisible] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-
+  const selectedDatasetId = useSelector(state => state.project.selectedDatasetId);
+  const activeDatasetsIds = useSelector(state => state.project.activeDatasetsIds);
   const datasets = useSelector(state => state.project.datasets);
   const statusMessages = useSelector(state => state.home.statusMessages);
-  const isOnline = useSelector(state => state.home.isOnline);
-  const userData = useSelector(state => state.user);
+  // const isOnline = useSelector(state => state.home.isOnline);
+  // const userData = useSelector(state => state.user);
   const dispatch = useDispatch();
 
   useEffect(() => {
     console.log('Datasets in useEffect', datasets);
     console.log('States in useEffect', isDeleteConfirmModalVisible, isDatasetNameModalVisible);
     deleteDataset();
-  }, [datasets, isDeleting, selectedDataset, isStatusMessagesModalVisible]);
+  }, [datasets, isDeleting, activeDatasetsIds, isStatusMessagesModalVisible, selectedDatasetId]);
 
-  const deleteDataset = async () => {
+  const deleteDataset = () => {
     if (!isDeleteConfirmModalVisible && !isDatasetNameModalVisible && isDeleting && selectedDataset && selectedDataset.id) {
       setIsDeleting(false);
       setLoading(true);
       setIsStatusMessagesModalVisible(true);
-      dispatch({type: homeReducers.CLEAR_STATUS_MESSAGES});
-      dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Deleting Dataset...'});
+      dispatch(clearedStatusMessages());
+      dispatch(addedStatusMessage({statusMessage: 'Deleting Dataset...'}));
       setTimeout(() => {
         useProject.destroyDataset(selectedDataset.id).then(() => {
           console.log('Dataset has been deleted!');
@@ -68,8 +70,7 @@ const DatasetList = () => {
   };
 
   const isDisabled = (id) => {
-    const activeDatasets = Object.values(datasets).filter(dataset => dataset.active === true);
-    return activeDatasets.length === 1 && activeDatasets[0].id === id;
+    return (activeDatasetsIds.length === 1 && activeDatasetsIds[0] === id) || selectedDatasetId === id;
   };
 
   const renderDatasets = () => {
@@ -100,8 +101,9 @@ const DatasetList = () => {
                 </ListItem.Subtitle>
               </ListItem.Content>
               <Switch
-                onValueChange={(value) => setSwitchValue(value, item.id)}
-                value={item.active}
+                onValueChange={(value) => setSwitchValue(value, item)}
+                value={activeDatasetsIds.some(dataset => dataset === item.id)}
+                // value={false}
                 disabled={isDisabled(item.id)}
               />
             </ListItem>;
@@ -120,7 +122,7 @@ const DatasetList = () => {
           onPress={() => saveDataset()}
           close={() => setIsDatasetNameModalVisible(false)}
           value={selectedDataset.name}
-          onChangeText={(text) => setSelectedDataset({...selectedDataset, name: text})}
+          onChangeText={(text) => setSelectedDatasetProperties({...selectedDataset, name: text})}
         >
           <Button
             title={'Delete Dataset'}
@@ -142,8 +144,8 @@ const DatasetList = () => {
           />
           {isDisabled(selectedDataset.id) && (
             <View>
-              <Text style={[styles.dialogContentImportantText, {paddingTop: 10}]}>You must set another active dataset
-                before you delete this dataset</Text>
+              <Text style={[styles.dialogContentImportantText, {paddingTop: 10, textAlign: 'center'}]}>{selectedDataset.name} can not be
+                deleted while still selected as the current dataset.</Text>
             </View>
           )}
         </TexInputModal>
@@ -197,7 +199,7 @@ const DatasetList = () => {
         dialogTitle={'Delete Status'}
         style={sharedDialogStyles.dialogTitleSuccess}
         visible={isStatusMessagesModalVisible}
-        onTouchOutside={() => dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, bool: false})}
+        onTouchOutside={() => dispatch(setStatusMessagesModalVisible(false))}
         // disabled={progress !== 1 && !uploadErrors}
       >
         <View style={{height: 100}}>
@@ -229,42 +231,19 @@ const DatasetList = () => {
   };
 
   const saveDataset = () => {
-    dispatch({type: 'UPDATE_DATASET_PROPERTIES', dataset: selectedDataset});
+    dispatch(updatedDatasetProperties(selectedDataset));
     setIsDatasetNameModalVisible(false);
   };
 
   const _selectedDataset = (id, name) => {
-    setSelectedDataset({name: name, id: id});
+    setSelectedDatasetProperties({name: name, id: id});
     setIsDatasetNameModalVisible(true);
   };
 
-  const setSwitchValue = async (val, id) => {
-    const datasetsCopy = JSON.parse(JSON.stringify(datasets));
-    datasetsCopy[id].active = val;
-
-    // Check for a current dataset
-    const i = Object.values(datasetsCopy).findIndex(data => data.current === true);
-    if (val && i === -1) datasetsCopy[id].current = true;
-
-    else if (!val && datasetsCopy[id].current) {
-      datasetsCopy[id].current = false;
-      const datasetsActive = Object.values(datasetsCopy).filter(dataset => dataset.active === true);
-      datasetsCopy[datasetsActive[0].id].current = true;
-    }
-    if (isOnline && !isEmpty(userData) && !isEmpty(datasetsCopy[id]) && datasetsCopy[id].active
-      && isEmpty(datasetsCopy[id].spotIds)) {
-      // dispatch({type: homeReducers.SET_LOADING, bool: true});
-      setLoading(true);
-      dispatch({type: projectReducers.DATASETS.DATASETS_UPDATE, datasets: datasetsCopy});
-      dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, bool: true});
-      dispatch({type: homeReducers.CLEAR_STATUS_MESSAGES});
-      await useSpots.downloadSpots(datasetsCopy[id], userData.encoded_login);
-      dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'Download Complete!'});
-      setLoading(false);
-    }
-    else {
-      dispatch({type: projectReducers.DATASETS.DATASETS_UPDATE, datasets: datasetsCopy});
-    }
+  const setSwitchValue = async (val, dataset) => {
+    setLoading(true);
+    await useProject.setSwitchValue(val, dataset);
+    setLoading(false);
   };
 
   return (

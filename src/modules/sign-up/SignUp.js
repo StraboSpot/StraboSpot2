@@ -13,8 +13,8 @@ import DefaultCheckBox from '../../shared/ui/Checkbox';
 import IconButton from '../../shared/ui/IconButton';
 import Loading from '../../shared/ui/Loading';
 import StatusDialog from '../../shared/ui/StatusDialogBox';
-import {homeReducers} from '../home/home.constants';
 import styles from './signUp.styles';
+import {setOnlineStatus} from '../home/home.slice';
 
 const checkMark = {type: 'feather', name: 'check', color: 'green'};
 
@@ -84,7 +84,7 @@ const SignUp = props => {
   useEffect(() => {
     if (isOnline === null) {
       NetInfo.fetch().then(state => {
-        dispatch({type: homeReducers.SET_ISONLINE, online: state.isConnected});
+        dispatch(setOnlineStatus({bool: state.isConnected}));
       })
         .catch(err => {
           throw (err);

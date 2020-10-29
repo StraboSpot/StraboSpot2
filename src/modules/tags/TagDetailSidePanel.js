@@ -7,8 +7,10 @@ import ColorPickerModal from '../../shared/ColorPickerModal';
 import {isEmpty} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
 import {mainMenuPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
+import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import SidePanelHeader from '../main-menu-panel/sidePanel/SidePanelHeader';
 import {spotReducers} from '../spots/spot.constants';
+import {setSelectedSpot} from '../spots/spots.slice';
 import {TagDetail, TagDetailModal} from '../tags';
 
 const TagDetailSidePanel = (props) => {
@@ -23,7 +25,7 @@ const TagDetailSidePanel = (props) => {
       <View style={{flexDirection: 'row'}}>
         <View style={{flex: 1}}>
           <SidePanelHeader
-            backButton={() => dispatch({type: mainMenuPanelReducers.SET_SIDE_PANEL_VISIBLE, bool: false})}
+            backButton={() => dispatch(setSidePanelVisible({bool: false}))}
             title={'Tags'}
             headerTitle={!isEmpty(selectedTag) && selectedTag.name}
           />
@@ -34,11 +36,12 @@ const TagDetailSidePanel = (props) => {
           alignItems: 'center',
           backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
         }}>
-          <TouchableOpacity style={{
-            width: 30, height: 30, borderWidth: 1, borderColor: themes.PRIMARY_BACKGROUND_COLOR,
-            backgroundColor: selectedTag.color,
-          }}
-                            onPress={() => setIsColorPickerModalVisible(true)}>
+          <TouchableOpacity
+            style={{
+              width: 30, height: 30, borderWidth: 1, borderColor: themes.PRIMARY_BACKGROUND_COLOR,
+              backgroundColor: selectedTag.color,
+            }}
+            onPress={() => setIsColorPickerModalVisible(true)}>
             {!selectedTag.color && <Text>No Color</Text>}
           </TouchableOpacity>
         </View>
@@ -47,14 +50,15 @@ const TagDetailSidePanel = (props) => {
       <View style={{flex: 1}}>
         <TagDetail
           openSpot={(spot) => {
-            dispatch({type: spotReducers.SET_SELECTED_SPOT, spot: spot});
+            // dispatch({type: spotReducers.SET_SELECTED_SPOT, spot: spot});
+            dispatch(setSelectedSpot(spot));
             props.openNotebookPanel();
           }}
-          addRemoveSpots={() => dispatch({
-            type: mainMenuPanelReducers.SET_SIDE_PANEL_VISIBLE,
-            bool: true,
-            view: mainMenuPanelReducers.SET_SIDE_PANEL_VIEW.TAG_ADD_REMOVE_SPOTS,
-          })}
+          addRemoveSpots={() => {
+            dispatch(setSidePanelVisible(
+              {bool: true, view: mainMenuPanelReducers.SET_SIDE_PANEL_VIEW.TAG_ADD_REMOVE_SPOTS},
+            ));
+          }}
           setIsDetailModalVisible={() => setIsDetailModalVisible(true)}
         />
       </View>

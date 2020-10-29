@@ -18,18 +18,21 @@ import useImagesHook from '../images/useImages';
 import {MAIN_MENU_ITEMS} from '../main-menu-panel/mainMenu.constants';
 import MainMenuPanel from '../main-menu-panel/MainMenuPanel';
 import {mainMenuPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
+import {setMenuSelectionPage} from '../main-menu-panel/mainMenuPanel.slice';
 import settingPanelStyles from '../main-menu-panel/mainMenuPanel.styles';
 import sidePanelStyles from '../main-menu-panel/sidePanel.styles';
 import CustomMapDetails from '../maps/custom-maps/CustomMapDetails';
 import Map from '../maps/Map';
 import {MapModes, mapReducers} from '../maps/maps.constants';
+import {setCurrentImageBasemap} from '../maps/maps.slice';
 import SaveMapsModal from '../maps/offline-maps/SaveMapsModal';
 import useMapsHook from '../maps/useMaps';
 import VertexDrag from '../maps/VertexDrag';
 import NotebookCompassModal from '../measurements/compass/NotebookCompassModal';
 import ShortcutCompassModal from '../measurements/compass/ShortcutCompassModal';
 import AllSpotsPanel from '../notebook-panel/AllSpots';
-import {NotebookPages, notebookReducers} from '../notebook-panel/notebook.constants';
+import {NotebookPages} from '../notebook-panel/notebook.constants';
+import {setNotebookPageVisible, setNotebookPanelVisible} from '../notebook-panel/notebook.slice';
 import NotebookPanel from '../notebook-panel/NotebookPanel';
 import notebookStyles from '../notebook-panel/notebookPanel.styles';
 import NotebookPanelMenu from '../notebook-panel/NotebookPanelMenu';
@@ -39,7 +42,7 @@ import ProjectDescription from '../project/ProjectDescription';
 import useProjectHook from '../project/useProject';
 import NotebookSamplesModal from '../samples/NotebookSamplesModal';
 import ShortcutSamplesModal from '../samples/ShortcutSamplesModal';
-import {spotReducers} from '../spots/spot.constants';
+import {addedSpot, clearedSelectedSpots, setSelectedSpot} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
 import {
   TagsNotebookModal,
@@ -48,7 +51,20 @@ import {
   TagsShortcutModal,
   AddTagsToSpotsShortcutModal,
 } from '../tags';
-import {homeReducers, Modals} from './home.constants';
+import {Modals} from './home.constants';
+import {
+  gotDeviceDimensions,
+  setAllSpotsPanelVisible,
+  setErrorMessagesModalVisible,
+  setImageModalVisible,
+  setInfoMessagesModalVisible,
+  setModalVisible,
+  setProjectLoadComplete,
+  setProjectLoadSelectionModalVisible,
+  setOfflineMapsModalVisible,
+  setMainMenuPanelVisible,
+  setStatusMessagesModalVisible,
+} from './home.slice';
 import homeStyles from './home.style';
 import LeftSideButtons from './LeftSideButtons';
 import RightSideButtons from './RightSideButtons';
@@ -66,26 +82,33 @@ const Home = (props) => {
   const [useMaps] = useMapsHook();
   const [useProject] = useProjectHook();
   const [useSpots] = useSpotsHook();
-  const currentDataset = useProject.getCurrentDataset();
+  const selectedDataset = useProject.getSelectedDatasetFromId();
 
   const dispatch = useDispatch();
+  const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const customMaps = useSelector(state => state.map.customMaps);
+  const deviceDimensions = useSelector(state => state.home.deviceDimensions);
   const modalVisible = useSelector(state => state.home.modalVisible);
   const statusMessages = useSelector(state => state.home.statusMessages);
-  const projectLoadComplete = useSelector(state => state.home.projectLoadComplete);
+  const projectLoadComplete = useSelector(state => state.home.isProjectLoadComplete);
+  const isAllSpotsPanelVisible = useSelector(state => state.home.isAllSpotsPanelVisible);
   const isHomeLoading = useSelector(state => state.home.loading.home);
   const isModalLoading = useSelector(state => state.home.loading.modal);
   const isOfflineMapModalVisible = useSelector(state => state.home.isOfflineMapModalVisible);
   const isStatusMessagesModalVisible = useSelector(state => state.home.isStatusMessagesModalVisible);
   const isErrorMessagesModalVisible = useSelector(state => state.home.isErrorMessagesModalVisible);
+  const isImageModalVisible = useSelector(state => state.home.isImageModalVisible);
   const isInfoMessagesModalVisible = useSelector(state => state.home.isInfoModalVisible);
   const isProjectLoadSelectionModalVisible = useSelector(state => state.home.isProjectLoadSelectionModalVisible);
   const isNotebookPanelVisible = useSelector(state => state.notebook.isNotebookPanelVisible);
   const isMainMenuPanelVisible = useSelector(state => state.home.isMainMenuPanelVisible);
   const isSidePanelVisible = useSelector(state => state.mainMenu.isSidePanelVisible);
+  const selectedImage = useSelector(state => state.spot.selectedAttributes[0]);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const sidePanelView = useSelector(state => state.mainMenu.sidePanelView);
+  const spots = useSelector(state => state.spot.spots);
   const user = useSelector(state => state.user);
+  const vertexStartCoords = useSelector(state => state.map.vertexStartCoords);
 
   // const imagesCount = useSelector(state => state.home.imageProgress.imagesDownloadedCount);
   // const imagesNeeded = useSelector(state => state.home.imageProgress.neededImageIds);
@@ -119,7 +142,7 @@ const Home = (props) => {
 
   useEffect(() => {
     // props.setDeviceDims(dimensions);
-    // if (props.deviceDimensions.width < 500) {
+    // if (deviceDimensions.width < 500) {
     //   Orientation.unlockAllOrientations();
     // }
     // else Orientation.lockToLandscapeLeft();
@@ -131,7 +154,7 @@ const Home = (props) => {
     Dimensions.addEventListener('change', deviceOrientation);
     console.log('Initializing Home page');
     initialize().then((res) => {
-      dispatch({type: homeReducers.SET_PROJECT_LOAD_SELECTION_MODAL_VISIBLE, bool: res});
+      dispatch(setProjectLoadSelectionModalVisible(res));
       animatePanels(MainMenuPanelAnimation, -homeMenuPanelWidth);
       animatePanels(leftsideIconAnimationValue, 0);
     });
@@ -141,11 +164,11 @@ const Home = (props) => {
   }, [user]);
 
   useEffect(() => {
-    if (props.currentImageBasemap && isMainMenuPanelVisible) toggleHomeDrawerButton();
+    if (currentImageBasemap && isMainMenuPanelVisible) toggleHomeDrawerButton();
     return function cleanUp() {
       console.log('currentImageBasemap cleanup UE');
     };
-  }, [props.currentImageBasemap, customMaps]);
+  }, [currentImageBasemap, customMaps]);
 
   useEffect(() => {
     if (props.isImageModalVisible) populateImageSlideshowData();
@@ -172,7 +195,7 @@ const Home = (props) => {
   useEffect(() => {
     if (projectLoadComplete) {
       mapViewComponent.current.zoomToSpotsExtent();
-      dispatch({type: homeReducers.PROJECT_LOAD_COMPLETE, projectLoadComplete: false});
+      dispatch(setProjectLoadComplete(false));
       // toggles off whenever new project is loaded successfully to trigger the same for next project load.
     }
   }, [projectLoadComplete]);
@@ -199,39 +222,39 @@ const Home = (props) => {
           `The ${name.toUpperCase()} Shortcut button in the  will be functioning soon!`);
         break;
       case 'tag':
-        dispatch({type: spotReducers.CLEAR_SELECTED_SPOTS});
+        dispatch(clearedSelectedSpots());
         if (modalVisible === Modals.SHORTCUT_MODALS.TAGS) {
-          dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: null});
+          dispatch(setModalVisible({modal: null}));
         }
         else modalHandler(null, Modals.SHORTCUT_MODALS.TAGS);
         closeNotebookPanel();
         break;
       case 'measurement':
-        dispatch({type: spotReducers.CLEAR_SELECTED_SPOTS});
+        dispatch(clearedSelectedSpots());
         if (modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {
-          dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: null});
+          dispatch(setModalVisible({modal: null}));
         }
-        else dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: Modals.SHORTCUT_MODALS.COMPASS});
+        else dispatch(setModalVisible({modal: Modals.SHORTCUT_MODALS.COMPASS}));
         closeNotebookPanel();
         break;
       case 'sample':
-        dispatch({type: spotReducers.CLEAR_SELECTED_SPOTS});
+        dispatch(clearedSelectedSpots());
         if (modalVisible === Modals.SHORTCUT_MODALS.SAMPLE) {
-          dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: null});
+          dispatch(setModalVisible({modal: null}));
         }
-        else dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: Modals.SHORTCUT_MODALS.SAMPLE});
+        else dispatch(setModalVisible({modal: Modals.SHORTCUT_MODALS.SAMPLE}));
         closeNotebookPanel();
         break;
       case 'note':
-        dispatch({type: spotReducers.CLEAR_SELECTED_SPOTS});
+        dispatch(clearedSelectedSpots());
         if (modalVisible === Modals.SHORTCUT_MODALS.NOTES) {
-          dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: null});
+          dispatch(setModalVisible({modal: null}));
         }
-        else dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: Modals.SHORTCUT_MODALS.NOTES});
+        else dispatch(setModalVisible({modal: Modals.SHORTCUT_MODALS.NOTES}));
         closeNotebookPanel();
         break;
       case 'photo':
-        dispatch({type: spotReducers.CLEAR_SELECTED_SPOTS});
+        dispatch(clearedSelectedSpots());
         useMaps.setPointAtCurrentLocation().then((point) => {
           console.log('Point', point);
           useImages.launchCameraFromNotebook().then((imagesSavedLength) => {
@@ -262,20 +285,20 @@ const Home = (props) => {
         break;
       case 'copySpot':
         useSpots.copySpot();
-        dispatch({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: NotebookPages.OVERVIEW});
+        dispatch(setNotebookPageVisible(NotebookPages.OVERVIEW));
         break;
       case 'deleteSpot':
         deleteSpot(selectedSpot.properties.id);
         break;
       case 'toggleAllSpotsPanel':
-        if (value === 'open') props.setAllSpotsPanelVisible(true);
-        else if (value === 'close') props.setAllSpotsPanelVisible(false);
+        if (value === 'open') dispatch(setAllSpotsPanelVisible(true));
+        else if (value === 'close') dispatch(setAllSpotsPanelVisible(false));
         break;
       case 'zoomToSpot':
         mapViewComponent.current.zoomToSpot();
         break;
       case 'showNesting':
-        dispatch({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: NotebookPages.NESTING});
+        dispatch(setNotebookPageVisible(NotebookPages.NESTING));
         break;
       // Map Actions
       case MapModes.DRAW.POINT:
@@ -283,7 +306,7 @@ const Home = (props) => {
       case MapModes.DRAW.POLYGON:
       case MapModes.DRAW.FREEHANDPOLYGON:
       case MapModes.DRAW.FREEHANDLINE:
-        if (!isEmpty(currentDataset)) setDraw(name).catch(console.error);
+        if (!isEmpty(selectedDataset)) setDraw(name).catch(console.error);
         else Alert.alert('No Current Dataset', 'A current dataset needs to be set before drawing Spots.');
         break;
       case 'endDraw':
@@ -300,14 +323,14 @@ const Home = (props) => {
         mapViewComponent.current.toggleUserLocation(value);
         break;
       case 'closeImageBasemap':
-        dispatch(({type: mapReducers.CURRENT_IMAGE_BASEMAP, currentImageBasemap: undefined}));
+        dispatch(setCurrentImageBasemap(undefined));
         break;
       // Map Actions
       case 'zoom':
         mapViewComponent.current.zoomToSpotsExtent();
         break;
       case 'saveMap':
-        dispatch({type: homeReducers.SET_OFFLINE_MAPS_MODAL_VISIBLE, bool: !isOfflineMapModalVisible});
+        dispatch(setOfflineMapsModalVisible({bool: !isOfflineMapModalVisible}));
         break;
       case 'addTag':
         console.log(`${name}`, ' was clicked');
@@ -326,15 +349,15 @@ const Home = (props) => {
 
   const closeInitialProjectLoadModal = () => {
     console.log('Starting Project...');
-    dispatch({type: homeReducers.SET_PROJECT_LOAD_SELECTION_MODAL_VISIBLE, bool: false});
+    dispatch(setProjectLoadSelectionModalVisible(false));
   };
 
   const closeNotebookPanel = () => {
     console.log('closing notebook');
     animatePanels(animation, notebookPanelWidth);
     animatePanels(rightsideIconAnimationValue, 0);
-    props.setNotebookPanelVisible(false);
-    props.setAllSpotsPanelVisible(false);
+    dispatch(setNotebookPanelVisible(false));
+    dispatch(setAllSpotsPanelVisible(false));
   };
 
   // const closeSidePanel = () => {
@@ -345,7 +368,7 @@ const Home = (props) => {
   // };
 
   const deleteSpot = id => {
-    const spot = props.spots[id];
+    const spot = spots[id];
     Alert.alert(
       'Delete Spot?',
       'Are you sure you want to delete Spot: ' + spot.properties.name,
@@ -368,8 +391,8 @@ const Home = (props) => {
 
   const deviceOrientation = () => {
     const dimensions = Dimensions.get('window');
-    props.setDeviceDims(dimensions);
-    console.log(props.deviceDimensions);
+    dispatch(gotDeviceDimensions({dims: dimensions}));
+    console.log(deviceDimensions);
   };
 
   const dialogClickHandler = (dialog, name, position) => {
@@ -398,13 +421,13 @@ const Home = (props) => {
   };
 
   const modalHandler = (page, modalType) => {
-    if (props.isNotebookPanelVisible) {
+    if (isNotebookPanelVisible) {
       closeNotebookPanel();
-      props.setModalVisible(modalType);
+      dispatch(setModalVisible({modal: modalType}));
     }
     else {
       openNotebookPanel(page);
-      props.setModalVisible(modalType);
+      dispatch(setModalVisible({modal: modalType}));
     }
   };
 
@@ -425,14 +448,16 @@ const Home = (props) => {
         useImages.getImagesFromCameraRoll();
         break;
       case 'showGeographyInfo':
-        props.setNotebookPageVisible(NotebookPages.GEOGRAPHY);
+        dispatch(setNotebookPageVisible(NotebookPages.GEOGRAPHY));
         break;
       case 'setToCurrentLocation':
         const currentLocation = await useMaps.getCurrentLocation();
         let editedSpot = JSON.parse(JSON.stringify(selectedSpot));
         editedSpot.geometry = turf.point(currentLocation).geometry;
-        dispatch({type: spotReducers.ADD_SPOT, spot: editedSpot});
-        dispatch({type: spotReducers.SET_SELECTED_SPOT, spot: editedSpot});
+        // dispatch({type: spotReducers.ADD_SPOT, spot: editedSpot});
+        dispatch(addedSpot(editedSpot));
+        // dispatch({type: spotReducers.SET_SELECTED_SPOT, spot: editedSpot});
+        dispatch(setSelectedSpot(editedSpot));
         break;
       case 'setFromMap':
         mapViewComponent.current.createDefaultGeom();
@@ -443,11 +468,11 @@ const Home = (props) => {
 
   const openNotebookPanel = pageView => {
     console.log('Opening Notebook', pageView, '...');
-    if (modalVisible !== Modals.SHORTCUT_MODALS.ADD_TAGS_TO_SPOTS) props.setModalVisible(null);
-    props.setNotebookPageVisible(pageView || NotebookPages.OVERVIEW);
+    if (modalVisible !== Modals.SHORTCUT_MODALS.ADD_TAGS_TO_SPOTS) dispatch(setModalVisible({modal: null}));
+    dispatch(setNotebookPageVisible(pageView || NotebookPages.OVERVIEW));
     animatePanels(animation, 0);
     animatePanels(rightsideIconAnimationValue, -notebookPanelWidth);
-    props.setNotebookPanelVisible(true);
+    dispatch(setNotebookPanelVisible(true));
   };
 
   const renderAllSpotsPanel = () => {
@@ -459,11 +484,11 @@ const Home = (props) => {
   };
 
   const renderFloatingViews = () => {
-    if (modalVisible === Modals.NOTEBOOK_MODALS.TAGS && props.isNotebookPanelVisible
+    if (modalVisible === Modals.NOTEBOOK_MODALS.TAGS && isNotebookPanelVisible
       && !isEmpty(selectedSpot)) {
       return (
         <TagsNotebookModal
-          close={() => props.setModalVisible(null)}
+          close={() => dispatch(setModalVisible({modal: null}))}
           onPress={() => modalHandler(null, Modals.SHORTCUT_MODALS.TAGS)}
         />
       );
@@ -471,7 +496,7 @@ const Home = (props) => {
     if (modalVisible === Modals.SHORTCUT_MODALS.TAGS) {
       return (
         <TagsShortcutModal
-          close={() => props.setModalVisible(null)}
+          close={() => dispatch(setModalVisible({modal: null}))}
           onPress={() => modalHandler(NotebookPages.TAG, Modals.NOTEBOOK_MODALS.TAGS)}
         />
       );
@@ -479,16 +504,16 @@ const Home = (props) => {
     if (modalVisible === Modals.SHORTCUT_MODALS.ADD_TAGS_TO_SPOTS) {
       return (
         <AddTagsToSpotsShortcutModal
-          close={() => props.setModalVisible(null)}
+          close={() => dispatch(setModalVisible({modal: null}))}
           onPress={() => modalHandler(NotebookPages.TAG, Modals.NOTEBOOK_MODALS.TAGS)}
         />
       );
     }
-    if (modalVisible === Modals.NOTEBOOK_MODALS.COMPASS && props.isNotebookPanelVisible
+    if (modalVisible === Modals.NOTEBOOK_MODALS.COMPASS && isNotebookPanelVisible
       && !isEmpty(selectedSpot)) {
       return (
         <NotebookCompassModal
-          close={() => props.setModalVisible(null)}
+          close={() => dispatch(setModalVisible({modal: null}))}
           onPress={() => modalHandler(null, Modals.SHORTCUT_MODALS.COMPASS)}
         />
       );
@@ -496,16 +521,16 @@ const Home = (props) => {
     if (modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {
       return (
         <ShortcutCompassModal
-          close={() => props.setModalVisible(null)}
+          close={() => dispatch(setModalVisible({modal: null}))}
           onPress={() => modalHandler(NotebookPages.MEASUREMENT, Modals.NOTEBOOK_MODALS.COMPASS)}
         />
       );
     }
-    if (modalVisible === Modals.NOTEBOOK_MODALS.SAMPLE && props.isNotebookPanelVisible
+    if (modalVisible === Modals.NOTEBOOK_MODALS.SAMPLE && isNotebookPanelVisible
       && !isEmpty(selectedSpot)) {
       return (
         <NotebookSamplesModal
-          close={() => props.setModalVisible(null)}
+          close={() => dispatch(setModalVisible({modal: null}))}
           cancel={() => samplesModalCancel()}
           onPress={() => modalHandler(null, Modals.SHORTCUT_MODALS.SAMPLE)}
         />
@@ -514,7 +539,7 @@ const Home = (props) => {
     else if (modalVisible === Modals.SHORTCUT_MODALS.SAMPLE) {
       return (
         <ShortcutSamplesModal
-          close={() => props.setModalVisible(null)}
+          close={() => dispatch(setModalVisible({modal: null}))}
           cancel={() => samplesModalCancel()}
           onPress={() => modalHandler(NotebookPages.SAMPLE, Modals.NOTEBOOK_MODALS.SAMPLE)}
         />
@@ -523,7 +548,7 @@ const Home = (props) => {
     if (modalVisible === Modals.SHORTCUT_MODALS.NOTES) {
       return (
         <ShortcutNotesModal
-          close={() => props.setModalVisible(null)}
+          close={() => dispatch(setModalVisible({modal: null}))}
           onPress={() => modalHandler(NotebookPages.NOTE)}
         />
       );
@@ -546,7 +571,7 @@ const Home = (props) => {
         dialogTitle={'Status Info'}
         style={sharedDialogStyles.dialogWarning}
         visible={isInfoMessagesModalVisible}
-        onTouchOutside={() => dispatch({type: homeReducers.SET_INFO_MESSAGES_MODAL_VISIBLE, bool: false})}
+        onTouchOutside={() => dispatch(setInfoMessagesModalVisible(false))}
       >
         <View style={{margin: 15}}>
           <Text style={sharedDialogStyles.dialogStatusMessageText}>{statusMessages.join('\n')}</Text>
@@ -554,7 +579,7 @@ const Home = (props) => {
         <Button
           title={'OK'}
           type={'clear'}
-          onPress={() => dispatch({type: homeReducers.SET_INFO_MESSAGES_MODAL_VISIBLE, bool: false})}
+          onPress={() => dispatch(setInfoMessagesModalVisible(false))}
         />
       </StatusDialogBox>
     );
@@ -571,7 +596,7 @@ const Home = (props) => {
         <Button
           title={'OK'}
           type={'clear'}
-          onPress={() => dispatch({type: homeReducers.SET_ERROR_MESSAGES_MODAL_VISIBLE, bool: false})}
+          onPress={() => dispatch(setErrorMessagesModalVisible(false))}
         />
       </StatusDialogBox>
     );
@@ -609,7 +634,7 @@ const Home = (props) => {
     return (
       <SaveMapsModal
         visible={isOfflineMapModalVisible}
-        close={() => dispatch({type: homeReducers.SET_OFFLINE_MAPS_MODAL_VISIBLE, bool: false})}
+        close={() => dispatch(setOfflineMapsModalVisible(false))}
         map={mapViewComponent.current}
       />
     );
@@ -646,6 +671,8 @@ const Home = (props) => {
         dialogTitle={'Status'}
         style={sharedDialogStyles.dialogTitleSuccess}
         visible={isStatusMessagesModalVisible}
+        onTouchOutside={() => dispatch(setStatusMessagesModalVisible(false))}
+        // disabled={progress !== 1 && !uploadErrors}
       >
         <View style={{minHeight: 100}}>
           <View style={{paddingTop: 15}}>
@@ -666,7 +693,7 @@ const Home = (props) => {
                 <Button
                   title={'OK'}
                   type={'clear'}
-                  onPress={() => dispatch({type: homeReducers.SET_STATUS_MESSAGES_MODAL_VISIBLE, bool: false})}
+                  onPress={() => dispatch(setStatusMessagesModalVisible(false))}
                 />
               )}
             </View>
@@ -737,20 +764,20 @@ const Home = (props) => {
 
   const toggleHomeDrawerButton = () => {
     if (isMainMenuPanelVisible) {
-      props.setHomePanelVisible(false);
-      props.setHomePanelPageVisible(undefined);
+      dispatch(setMainMenuPanelVisible(false));
+      dispatch(setMenuSelectionPage({name: undefined}));
       animatePanels(MainMenuPanelAnimation, -homeMenuPanelWidth);
       animatePanels(leftsideIconAnimationValue, 0);
     }
     else {
-      props.setHomePanelVisible(true);
+      dispatch(setMainMenuPanelVisible(true));
       animatePanels(MainMenuPanelAnimation, 0);
       animatePanels(leftsideIconAnimationValue, homeMenuPanelWidth);
     }
   };
 
   const toggleImageModal = () => {
-    props.setIsImageModalVisible(!props.isImageModalVisible);
+    dispatch(setImageModalVisible({bool: !isImageModalVisible}));
   };
 
   const toggleNotebookPanel = () => {
@@ -779,8 +806,7 @@ const Home = (props) => {
     <Animated.View style={[settingPanelStyles.settingsDrawer, animateSettingsPanel]}>
       <MainMenuPanel
         // openSidePanel={(view, data) => openSidePanel(view, data)}
-        openHomePanel={() => dispatch(
-          {type: mainMenuPanelReducers.SET_MENU_SELECTION_PAGE, name: MAIN_MENU_ITEMS.MANAGE.UPLOAD_BACKUP_EXPORT})}
+        openHomePanel={() => dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.UPLOAD_BACKUP_EXPORT}))}
         closeHomePanel={() => toggleHomeDrawerButton()}
         openNotebookPanel={(pageView) => openNotebookPanel(pageView)}/>
     </Animated.View>
@@ -807,7 +833,7 @@ const Home = (props) => {
         isSelectingForStereonet={isSelectingForStereonet}
         isSelectingForTagging={isSelectingForTagging}
       />
-      {props.vertexStartCoords && <VertexDrag/>}
+      {vertexStartCoords && <VertexDrag/>}
       <ToastPopup toastRef={toastRef}/>
       {Platform.OS === 'android' && (
         <View>
@@ -862,7 +888,7 @@ const Home = (props) => {
       )}
       {isHomeLoading && <LoadingSpinner/>}
       {notebookPanel}
-      {props.isAllSpotsPanelVisible && renderAllSpotsPanel()}
+      {isAllSpotsPanelVisible && renderAllSpotsPanel()}
       {MainMenu}
       {renderSaveAndCancelDrawButtons()}
       {isMainMenuPanelVisible && toggleSidePanel()}
@@ -876,40 +902,4 @@ const Home = (props) => {
   );
 };
 
-function mapStateToProps(state) {
-  return {
-    currentImageBasemap: state.map.currentImageBasemap,
-    selectedImage: state.spot.selectedAttributes[0],
-    isImageModalVisible: state.home.isImageModalVisible,
-    isOnline: state.home.isOnline,
-    isNotebookPanelVisible: state.notebook.isNotebookPanelVisible,
-    isCompassModalVisible: state.notebook.isCompassModalVisible,
-    modalVisible: state.home.modalVisible,
-    deviceDimensions: state.home.deviceDimensions,
-    spots: state.spot.spots,
-    getCurrentProject: state.project.project,
-    shortcutSwitchPosition: state.home.shortcutSwitchPosition,
-    isAllSpotsPanelVisible: state.home.isAllSpotsPanelVisible,
-    vertexStartCoords: state.map.vertexStartCoords,
-    userData: state.user.userData,
-    homePageVisible: state.mainMenu.mainMenuPageVisible,
-  };
-}
-
-const mapDispatchToProps = {
-  setHomePanelVisible: (value) => ({type: homeReducers.SET_SETTINGS_PANEL_VISIBLE, value: value}),
-  setHomePanelPageVisible: (name) => ({type: mainMenuPanelReducers.SET_MENU_SELECTION_PAGE, name: name}),
-  setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),
-  setNotebookPanelVisible: (value) => ({type: notebookReducers.SET_NOTEBOOK_PANEL_VISIBLE, value: value}),
-  setSettingsPanelVisible: (value) => ({type: homeReducers.SET_SETTINGS_PANEL_VISIBLE, value: value}),
-  setSettingsPanelPageVisible: (name) => ({type: mainMenuPanelReducers.SET_MENU_SELECTION_PAGE, name: name}),
-  setIsImageModalVisible: (value) => ({type: homeReducers.TOGGLE_IMAGE_MODAL, value: value}),
-  setAllSpotsPanelVisible: (value) => ({type: homeReducers.SET_ALLSPOTS_PANEL_VISIBLE, value: value}),
-  deleteSpot: (id) => ({type: spotReducers.DELETE_SPOT, id: id}),
-  onSpotEdit: (field, value) => ({type: spotReducers.EDIT_SPOT_PROPERTIES, field: field, value: value}),
-  setModalVisible: (modal) => ({type: homeReducers.SET_MODAL_VISIBLE, modal: modal}),
-  setDeviceDims: (dims) => ({type: homeReducers.DEVICE_DIMENSIONS, dims: dims}),
-  onShortcutSwitchChange: (switchName) => ({type: homeReducers.SHORTCUT_SWITCH_POSITION, switchName: switchName}),
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Home);
+export default Home;

@@ -71,7 +71,7 @@ function Basemap(props) {
   const onRegionDidChange = () => {
     console.log('Event onRegionDidChange');
     setShowZoom(false);
-    props.setSpotsInMapExtent();
+    props.spotsInMapExtent();
   };
 
   return (

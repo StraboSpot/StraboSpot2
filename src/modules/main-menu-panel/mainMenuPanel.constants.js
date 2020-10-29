@@ -5,16 +5,11 @@ export const SortedViews = {
 };
 
 export const mainMenuPanelReducers = {
-  SET_SIDE_PANEL_VISIBLE: 'SET_SIDE_PANEL_VISIBLE',
   SET_SIDE_PANEL_VIEW: {
     MANAGE_CUSTOM_MAP: 'manageCustomMap',
     PROJECT_DESCRIPTION: 'project description',
     TAG_DETAIL: 'tag detail',
     TAG_ADD_REMOVE_SPOTS: 'add remove tag spots',
   },
-  SET_SORTED_VIEW: ' SET_SORTED_VIEW',
-  SET_SORTED_LIST: 'SET_SORTED_LIST',
-  SET_SELECTED_BUTTON_INDEX: 'SET_SELECTED_BUTTON_INDEX',
-  SET_MENU_SELECTION_PAGE: 'SET_MENU_SELECTION_PAGE',
 };
 

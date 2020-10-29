@@ -13,26 +13,29 @@ import useServerRequests from '../../services/useServerRequests';
 import {VERSION_NUMBER} from '../../shared/app.constants';
 import {readDataUrl, isEmpty} from '../../shared/Helpers';
 import IconButton from '../../shared/ui/IconButton';
-import {homeReducers} from '../home/home.constants';
-import {USER_DATA, USER_IMAGE, ENCODED_LOGIN} from '../user/user.constants';
+import {setOnlineStatus, setSignedInStatus} from '../home/home.slice';
+import {setUserData} from '../user/userProfile.slice';
 import styles from './signIn.styles';
 
 let isUserAuthenicated = null;
 
 const SignIn = (props) => {
-  const navigation = useNavigation();
 
   const online = require('../../assets/icons/ConnectionStatusButton_connected.png');
   const offline = require('../../assets/icons/ConnectionStatusButton_offline.png');
   const [username, setUsername] = useState(__DEV__ ? USERNAME_TEST : '');
   const [password, setPassword] = useState(__DEV__ ? PASSWORD_TEST : '');
-  const isOnline = useSelector(state => state.home.isOnline);
+
   const dispatch = useDispatch();
+  const isOnline = useSelector(state => state.home.isOnline);
+  const user = useSelector(state => state.user);
+
+  const navigation = useNavigation();
   const [serverRequests] = useServerRequests();
 
   useEffect(() => {
     NetInfo.addEventListener(state => {
-      dispatch({type: homeReducers.SET_ISONLINE, online: state.isConnected});
+      dispatch(setOnlineStatus(state.isConnected));
     });
   }, [isOnline]);
 
@@ -40,7 +43,7 @@ const SignIn = (props) => {
     Sentry.configureScope((scope) => {
       scope.setUser({'id': 'GUEST'});
     });
-    if (!isEmpty(props.userData)) await dispatch({type: 'CLEAR_STORE'});
+    if (!isEmpty(user)) await dispatch({type: 'CLEAR_STORE'});
     console.log('Loading user: GUEST');
     await navigation.navigate('HomeScreen');
   };
@@ -54,8 +57,8 @@ const SignIn = (props) => {
         const encodedLogin = Base64.encode(username + ':' + password);
         updateUserResponse(encodedLogin).then((userState) => {
           console.log(`${username} is successfully logged in!`);
-          dispatch({type: USER_DATA, userData: userState});
-          dispatch({type: homeReducers.SET_IS_SIGNED_IN, bool: true});
+          dispatch(setUserData(userState));
+          dispatch(setSignedInStatus(true));
           navigation.navigate('HomeScreen');
         });
       }
@@ -144,7 +147,7 @@ const SignIn = (props) => {
     catch (err) {
       console.log('SIGN IN ERROR', err);
     }
-};
+  };
 
 const createAccount = () => {
   props.navigation.navigate('SignUp');
@@ -210,4 +213,3 @@ return (
 ;
 
 export default SignIn;
-

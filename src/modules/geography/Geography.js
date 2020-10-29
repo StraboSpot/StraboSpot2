@@ -12,19 +12,20 @@ import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {Form, formStyles, NumberInputField, TextInputField, useFormHook} from '../form';
 import useMapsHooks from '../maps/useMaps';
-import {notebookReducers} from '../notebook-panel/notebook.constants';
+import {setNotebookPageVisibleToPrev} from '../notebook-panel/notebook.slice';
 import {spotReducers} from '../spots/spot.constants';
+import {addedSpot} from '../spots/spots.slice';
 
 const Geography = (props) => {
   const [useForm] = useFormHook();
   const [useMaps] = useMapsHooks();
   const dispatch = useDispatch();
   const form = useRef(null);
-  const geomForm = useRef(null);
+  const geomForm = useRef(null)
   const spot = useSelector(state => state.spot.selectedSpot);
 
   const cancelFormAndGo = () => {
-    dispatch({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE_TO_PREV});
+    dispatch(setNotebookPageVisibleToPrev());
   };
 
   // Fill in current location
@@ -267,7 +268,8 @@ const Geography = (props) => {
           }
         }
         const editedSpot = {geometry: geometry, properties: {...geographyProperties}, type: spot.type};
-        dispatch({type: spotReducers.ADD_SPOT, spot: editedSpot});
+        // dispatch({type: spotReducers.ADD_SPOT, spot: editedSpot});
+        dispatch(addedSpot(editedSpot));
         return Promise.resolve();
       }
     }
@@ -280,7 +282,7 @@ const Geography = (props) => {
   const saveFormAndGo = () => {
     saveForm().then(() => {
       console.log('Finished saving form data to Spot');
-      dispatch({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE_TO_PREV});
+      dispatch(setNotebookPageVisibleToPrev());
     }, () => {
       console.log('Error saving form data to Spot');
     });

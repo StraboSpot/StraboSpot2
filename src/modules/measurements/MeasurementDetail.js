@@ -11,9 +11,11 @@ import * as themes from '../../shared/styles.constants';
 import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {Form, useFormHook} from '../form';
-import {homeReducers, Modals} from '../home/home.constants';
-import {notebookReducers} from '../notebook-panel/notebook.constants';
+import {Modals} from '../home/home.constants';
+import {setModalVisible} from '../home/home.slice';
+import {setNotebookPageVisibleToPrev} from '../notebook-panel/notebook.slice';
 import {spotReducers} from '../spots/spot.constants';
+import {editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
 import MeasurementItem from './MeasurementItem';
 import styles from './measurements.styles';
 
@@ -277,16 +279,18 @@ const MeasurementDetailPage = (props) => {
     orientationDataCopy.forEach((measurement, i) => {
       if (measurement.id === selectedMeasurementCopy.id) orientationDataCopy[i] = selectedMeasurementCopy;
     });
-    dispatch({type: spotReducers.EDIT_SPOT_PROPERTIES, field: 'orientation_data', value: orientationDataCopy});
-    dispatch({type: spotReducers.SET_SELECTED_ATTRIBUTES, attributes: [selectedMeasurementCopy]});
+    // dispatch({type: spotReducers.EDIT_SPOT_PROPERTIES, field: 'orientation_data', value: orientationDataCopy});
+    dispatch(editedSpotProperties({field: 'orientation_data', value: orientationDataCopy}));
+    // dispatch({type: spotReducers.SET_SELECTED_ATTRIBUTES, attributes: [selectedMeasurementCopy]});
+    dispatch(setSelectedAttributes([selectedMeasurementCopy]));
     switchActiveMeasurement(newAssociatedMeasurement);
   };
 
   const cancelFormAndGo = () => {
     if (modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {
-      dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: Modals.NOTEBOOK_MODALS.COMPASS});
+      dispatch(setModalVisible({modal: Modals.NOTEBOOK_MODALS.COMPASS}));
     }
-    dispatch({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE_TO_PREV});
+    dispatch(setNotebookPageVisibleToPrev());
   };
 
   const saveForm = async () => {
@@ -330,8 +334,10 @@ const MeasurementDetailPage = (props) => {
           });
         }
       });
-      dispatch({type: spotReducers.SET_SELECTED_ATTRIBUTES, attributes: editedSelectedMeasurements});
-      dispatch({type: spotReducers.EDIT_SPOT_PROPERTIES, field: 'orientation_data', value: orientationDataCopy});
+      // dispatch({type: spotReducers.SET_SELECTED_ATTRIBUTES, attributes: editedSelectedMeasurements});
+      dispatch(setSelectedAttributes(editedSelectedMeasurements));
+      // dispatch({type: spotReducers.EDIT_SPOT_PROPERTIES, field: 'orientation_data', value: orientationDataCopy});
+      dispatch(editedSpotProperties({field: 'orientation_data', value: orientationDataCopy}));
       return Promise.resolve();
     }, (e) => {
       console.log('Error submitting form', e);
@@ -343,9 +349,9 @@ const MeasurementDetailPage = (props) => {
     saveForm().then(() => {
       console.log('Finished saving form data to Spot');
       if (modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {
-        dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: Modals.NOTEBOOK_MODALS.COMPASS});
+        dispatch(setModalVisible({modal: Modals.NOTEBOOK_MODALS.COMPASS}));
       }
-      dispatch({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE_TO_PREV});
+      dispatch(setNotebookPageVisibleToPrev());
     }, () => {
       console.log('Error saving form data to Spot');
     });
@@ -374,12 +380,13 @@ const MeasurementDetailPage = (props) => {
     });
     if (!aborted) {
       orientationDataCopy = orientationDataCopy.filter(measurement => !isEmpty(measurement));
-      dispatch({type: spotReducers.EDIT_SPOT_PROPERTIES, field: 'orientation_data', value: orientationDataCopy});
+      // dispatch({type: spotReducers.EDIT_SPOT_PROPERTIES, field: 'orientation_data', value: orientationDataCopy});
+      dispatch(editedSpotProperties({field: 'orientation_data', value: orientationDataCopy}));
 
       if (modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {
-        dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: Modals.NOTEBOOK_MODALS.COMPASS});
+        dispatch(setModalVisible({modal: Modals.NOTEBOOK_MODALS.COMPASS}));
       }
-      dispatch({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE_TO_PREV});
+      dispatch(setNotebookPageVisibleToPrev());
     }
   };
 

@@ -7,34 +7,36 @@ import {useDispatch} from 'react-redux';
 import commonStyles from '../../shared/common.styles';
 import AddButton from '../../shared/ui/AddButton';
 import SectionDivider from '../../shared/ui/SectionDivider';
-import {homeReducers, Modals} from '../home/home.constants';
-import {NotebookPages, notebookReducers} from '../notebook-panel/notebook.constants';
+import {Modals} from '../home/home.constants';
+import {setModalVisible} from '../home/home.slice';
+import {NotebookPages} from '../notebook-panel/notebook.constants';
+import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
-import {projectReducers} from '../project/project.constants';
+import {addedTagToSelectedSpot} from '../project/projects.slice';
 import {TagDetailModal, TagsAtSpotList, useTagsHook} from '../tags';
 
 const TagsNotebook = (props) => {
-  console.log('PROPS in TAGS NOTEBOOK', props)
+  console.log('PROPS in TAGS NOTEBOOK', props);
   const [useTags] = useTagsHook();
   const dispatch = useDispatch();
   const [isDetailModalVisibile, setIsDetailModalVisible] = useState(false);
 
-  const addTag = async() => {
+  const addTag = async () => {
     await useTags.addTag();
     setIsDetailModalVisible(true);
   };
 
   const closeTagDetailModal = () => {
     setIsDetailModalVisible(false);
-    dispatch({type: projectReducers.ADD_TAG_TO_SELECTED_SPOT, addTagToSelectedSpot: false});
+    dispatch(addedTagToSelectedSpot(false));
   };
 
   return (
     <React.Fragment>
       <ReturnToOverviewButton
         onPress={() => {
-          dispatch({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: NotebookPages.OVERVIEW});
-          dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: null});
+          dispatch(setNotebookPageVisible(NotebookPages.OVERVIEW));
+          dispatch(setModalVisible({modal: null}));
         }}
       />
       <AddButton
@@ -48,7 +50,7 @@ const TagsNotebook = (props) => {
             title={'Assign/Remove'}
             type={'clear'}
             titleStyle={commonStyles.standardButtonText}
-            onPress={() => dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: Modals.NOTEBOOK_MODALS.TAGS})}
+            onPress={() => dispatch(setModalVisible({modal: Modals.NOTEBOOK_MODALS.TAGS}))}
           />
         </View>
         <TagsAtSpotList openMainMenu={props.openMainMenu}/>

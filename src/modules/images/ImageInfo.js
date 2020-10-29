@@ -3,10 +3,8 @@ import {ActivityIndicator, View} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
 import {Image} from 'react-native-elements';
-import {connect} from 'react-redux';
 
 import IconButton from '../../shared/ui/IconButton';
-import {homeReducers} from '../home/home.constants';
 import ImagePropertiesModal from './ImagePropertiesModal';
 import styles from './images.styles';
 import useImagesHook from './useImages';
@@ -72,14 +70,4 @@ const ImageInfo = (props) => {
   );
 };
 
-const mapStateToProps = (state) => {
-  // console.log('MP to P', state);
-  return {
-    getDeviceDims: state.home.deviceDimensions,
-  };
-};
-
-const mapDispatchToProps = {
-  setDeviceDims: (dims) => ({type: homeReducers.DEVICE_DIMENSIONS, dims: dims}),
-};
-export default connect(mapStateToProps, mapDispatchToProps)(ImageInfo);
+export default ImageInfo;

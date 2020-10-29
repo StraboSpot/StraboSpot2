@@ -7,7 +7,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {getNewId, isEmpty, truncateText} from '../../shared/Helpers';
 import {Form, useFormHook, labelDictionary} from '../form';
 import {Modals} from '../home/home.constants';
-import {projectReducers} from '../project/project.constants';
+import {addedTagToSelectedSpot, setSelectedTag, updatedProject} from '../project/projects.slice';
 import {tagsStyles} from './index';
 
 const useTags = () => {
@@ -22,11 +22,11 @@ const useTags = () => {
   const tagsDictionary = labelDictionary.project.tags;
 
   const addTag = () => {
-    dispatch({type: projectReducers.SET_SELECTED_TAG, tag: {}});
+    dispatch(setSelectedTag({}));
     if (modalVisible === Modals.NOTEBOOK_MODALS.TAGS) {
-      dispatch({type: projectReducers.ADD_TAG_TO_SELECTED_SPOT, addTagToSelectedSpot: true});
+      dispatch(addedTagToSelectedSpot(true));
     }
-    else dispatch({type: projectReducers.ADD_TAG_TO_SELECTED_SPOT, addTagToSelectedSpot: false});
+    else dispatch(addedTagToSelectedSpot(false));
     return;
   };
 
@@ -47,8 +47,8 @@ const useTags = () => {
 
   const deleteTag = (tagToDelete) => {
     let updatedTags = projectTags.filter(tag => tag.id !== tagToDelete.id);
-    dispatch({type: projectReducers.UPDATE_PROJECT, field: 'tags', value: updatedTags});
-    dispatch({type: projectReducers.SET_SELECTED_TAG, tag: {}});
+    dispatch(updatedProject({field: 'tags', value: updatedTags}));
+    dispatch(setSelectedTag({}));
   };
 
   const getLabel = (key) => {
@@ -160,7 +160,7 @@ const useTags = () => {
   const saveTag = (tagToSave) => {
     const updatedTags = projectTags.filter(tag => tag.id !== tagToSave.id);
     updatedTags.push(tagToSave);
-    dispatch({type: projectReducers.UPDATE_PROJECT, field: 'tags', value: updatedTags});
+    dispatch(updatedProject({field: 'tags', value: updatedTags}));
   };
 
   const addTagToSpot = (tag, spot) => {

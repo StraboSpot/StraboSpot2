@@ -14,6 +14,7 @@ import MeasurementsOverview from '../measurements/MeasurementsOverview';
 import NotesOverview from '../notes/NotesOverview';
 import SamplesNotebook from '../samples/SamplesNotebook';
 import {spotReducers} from '../spots/spot.constants';
+import {editedSpotProperties} from '../spots/spots.slice';
 import {TagsAtSpotList} from '../tags';
 import notebookStyles from './notebookPanel.styles';
 
@@ -118,11 +119,13 @@ const Overview = props => {
       console.log('Saving form data to Spot ...');
       if (spot.geometry.type === 'LineString' || spot.geometry.type === 'MultiLineString') {
         const traceValues = {...form.current.values, 'trace_feature': true};
-        dispatch({type: spotReducers.EDIT_SPOT_PROPERTIES, field: 'trace', value: traceValues});
+        // dispatch({type: spotReducers.EDIT_SPOT_PROPERTIES, field: 'trace', value: traceValues});
+        dispatch(editedSpotProperties({field: 'trace', value: traceValues}));
       }
       else if (spot.geometry.type === 'Polygon' || spot.geometry.type === 'MultiPolygon'
         || spot.geometry.type === 'GeometryCollection') {
-        dispatch({type: spotReducers.EDIT_SPOT_PROPERTIES, field: 'surface_feature', value: form.current.values});
+        // dispatch({type: spotReducers.EDIT_SPOT_PROPERTIES, field: 'surface_feature', value: form.current.values});
+        dispatch(editedSpotProperties({field: 'surface_feature', value: form.current.values}));
       }
       return Promise.resolve();
     }, (e) => {
@@ -148,7 +151,8 @@ const Overview = props => {
       if (isTraceSurfaceFeatureEnabled) {
         let field = 'surface_feature';
         if (spot.geometry.type === 'LineString' || spot.geometry.type === 'MultiLineString') field = 'trace';
-        dispatch({type: spotReducers.EDIT_SPOT_PROPERTIES, field: field, value: {}});
+        // dispatch({type: spotReducers.EDIT_SPOT_PROPERTIES, field: field, value: {}});
+        dispatch(editedSpotProperties({field: field, value: {}}));
       }
     };
 

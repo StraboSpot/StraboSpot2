@@ -5,7 +5,7 @@ import {Formik} from 'formik';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {Form, formStyles, useFormHook} from '../../form';
-import {projectReducers} from '../../project/project.constants';
+import {updatedProject} from '../../project/projects.slice';
 
 const NamingConventions = () => {
   const dispatch = useDispatch();
@@ -18,7 +18,7 @@ const NamingConventions = () => {
     await form.current.setFieldValue(name, value);
     await form.current.submitForm();
     console.log('Saving naming convention preferences to Project ...', form.current.values);
-    dispatch({type: projectReducers.UPDATE_PROJECT, field: 'preferences', value: form.current.values});
+    dispatch(updatedProject({field: 'preferences', value: form.current.values}));
   };
 
   const onSubmitForm = (values) => {

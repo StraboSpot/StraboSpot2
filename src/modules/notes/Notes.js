@@ -7,15 +7,18 @@ import {connect, useDispatch, useSelector} from 'react-redux';
 import uiStyles from '../../shared/ui/ui.styles';
 import {Modals} from '../home/home.constants';
 import useMapsHook from '../maps/useMaps';
-import {notebookReducers, NotebookPages} from '../notebook-panel/notebook.constants';
+import {NotebookPages} from '../notebook-panel/notebook.constants';
+import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import {spotReducers} from '../spots/spot.constants';
+import {editedSpotProperties, setSelectedSpotNotesTimestamp} from '../spots/spots.slice';
 import noteStyles from './notes.styles';
 
 const Notes = (props) => {
   const [useMaps] = useMapsHook();
   const dispatch = useDispatch();
   const modalVisible = useSelector(state => state.home.modalVisible);
+  const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const spots = useSelector(state => state.spots);
 
   const [date, setDate] = useState('');
@@ -25,17 +28,17 @@ const Notes = (props) => {
     if (modalVisible === Modals.SHORTCUT_MODALS.NOTES) {
       console.log('In Notes Modal view');
     }
-    else if (props.selectedSpot.properties.notes) {
-      console.log('selectedSpot.properties', props.selectedSpot.properties);
-      setNote(props.selectedSpot.properties.notes);
+    else if (selectedSpot.properties.notes) {
+      console.log('selectedSpot.properties', selectedSpot.properties);
+      setNote(selectedSpot.properties.notes);
     }
   }, []);
 
   // useEffect(() => {
-  //   if (isEmpty(props.selectedSpot.properties.notes)) {
-  //     setNote(props.selectedSpot.properties.notes);
+  //   if (isEmpty(selectedSpot.properties.notes)) {
+  //     setNote(selectedSpot.properties.notes);
   //   }
-  // },[props.selectedSpot]);
+  // },[selectedSpot]);
 
   let timeStamp = Date();
 
@@ -45,16 +48,18 @@ const Notes = (props) => {
       console.log('pointSetAtCurrentLocation', pointSetAtCurrentLocation);
     }
     console.log(note);
-    dispatch({type: spotReducers.EDIT_SPOT_PROPERTIES, field: 'notes', value: note});
-    dispatch({type: spotReducers.SET_SELECTED_SPOT_NOTES_TIMESTAMP});
+    // dispatch({type: spotReducers.EDIT_SPOT_PROPERTIES, field: 'notes', value: note});
+    dispatch(editedSpotProperties({field: 'notes', value: note}));
+    // dispatch({type: spotReducers.SET_SELECTED_SPOT_NOTES_TIMESTAMP});
+    dispatch(setSelectedSpotNotesTimestamp());
     setNote('');
-    dispatch({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: NotebookPages.OVERVIEW});
+    dispatch(setNotebookPageVisible(NotebookPages.OVERVIEW));
   };
 
   // const setPointToCurrentLocation = async () => {
   //   const pointSetAtCurrentLocation = await useMaps.setPointAtCurrentLocation();
   //   console.log('pointSetAtCurrentLocation', pointSetAtCurrentLocation);
-  //   props.selectedSpot.properties.notes = new Date().toDateString() + '- ';
+  //   selectedSpot.properties.notes = new Date().toDateString() + '- ';
   // };
 
   const renderNotebookView = () => {
@@ -69,12 +74,12 @@ const Notes = (props) => {
           )
           : (
             <ReturnToOverviewButton
-              onPress={() => props.setNotebookPageVisible(NotebookPages.OVERVIEW)}
+              onPress={() => dispatch(setNotebookPageVisible(NotebookPages.OVERVIEW))}
             />
           )
         }
         <View style={noteStyles.container}>
-          {/*{!isEmpty(props.selectedSpot) ? <Text>{props.selectedSpot.properties.notes}</Text> : <Text>'No Note'</Text>}*/}
+          {/*{!isEmpty(selectedSpot) ? <Text>{selectedSpot.properties.notes}</Text> : <Text>'No Note'</Text>}*/}
           <View style={[noteStyles.inputContainer]}>
             {/*<Text style={props.style}>{date}</Text>*/}
             <TextInput
@@ -115,15 +120,4 @@ const Notes = (props) => {
   );
 };
 
-const mapStateToProps = (state) => {
-  return {
-    selectedSpot: state.spot.selectedSpot,
-  };
-};
-
-const mapDispatchToProps = {
-  onSpotEdit: (field, value) => ({type: spotReducers.EDIT_SPOT_PROPERTIES, field: field, value: value}),
-  setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Notes);
+export default Notes;

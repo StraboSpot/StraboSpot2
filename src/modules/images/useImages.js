@@ -8,11 +8,17 @@ import RNFetchBlob from 'rn-fetch-blob';
 
 import useServerRequestsHook from '../../services/useServerRequests';
 import {getNewId, isEmpty} from '../../shared/Helpers';
-import {homeReducers} from '../home/home.constants';
+import {
+  addedStatusMessage,
+  removedLastStatusMessage,
+  setLoadingStatus,
+} from '../home/home.slice';
 import useHomeHook from '../home/useHome';
 import {mapReducers} from '../maps/maps.constants';
+import {setCurrentImageBasemap} from '../maps/maps.slice';
 import useExportHook from '../project/useExport';
 import {spotReducers} from '../spots/spot.constants';
+import {editedSpotImage, editedSpotImages, editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
 
 const RNFS = require('react-native-fs');
 
@@ -45,7 +51,7 @@ const useImages = () => {
     let imagesFailedCount = 0;
     let savedImagesCount = 0;
     let imagesFailedArr = [];
-    dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'Downloading Images...'});
+    dispatch(addedStatusMessage({statusMessage: 'Downloading Images...'}));
 
     const downloadImageAndSave = async (imageId) => {
       const imageURI = 'https://strabospot.org/pi/' + imageId;
@@ -96,19 +102,18 @@ const useImages = () => {
               imagesFailedArr.push(imageId);
             });
           }).finally(() => {
-            dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
+            dispatch(removedLastStatusMessage());
             if (imagesFailedCount > 0) {
-              dispatch({
-                type: homeReducers.ADD_STATUS_MESSAGE,
-                statusMessage: 'Downloaded Images ' + imageCount + '/' + neededImageIds.length
-                  + '\nFailed Images ' + imagesFailedCount + '/' + neededImageIds.length,
-              });
+              dispatch(addedStatusMessage(
+                {
+                  statusMessage: 'Downloaded Images ' + imageCount + '/' + neededImageIds.length
+                    + '\nFailed Images ' + imagesFailedCount + '/' + neededImageIds.length,
+                }));
             }
             else {
-              dispatch({
-                type: homeReducers.ADD_STATUS_MESSAGE,
-                statusMessage: 'Downloaded Images: ' + imageCount + '/' + neededImageIds.length,
-              });
+              dispatch(addedStatusMessage(
+                {statusMessage: 'Downloaded Images: ' + imageCount + '/' + neededImageIds.length},
+              ));
             }
           });
           promises.push(promise);
@@ -116,22 +121,20 @@ const useImages = () => {
       }
     }
     catch (e) {
-      dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
-      dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Error Downloading Images!'});
+      dispatch(removedLastStatusMessage());
+      dispatch(addedStatusMessage({statusMessage: 'Error Downloading Images!'}));
       console.warn('Error Downloading Images: ' + e);
     }
 
     return Promise.all(promises).then(() => {
       if (imagesFailedCount > 0) {
         //downloadErrors = true;
-        dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
-        dispatch(
-          {type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Image Downloads Failed: ' + imagesFailedCount});
+        dispatch(removedLastStatusMessage());
+        dispatch(addedStatusMessage({statusMessage: 'Image Downloads Failed: \' + imagesFailedCount'}));
         console.warn('Image Downloads Failed: ' + imagesFailedCount);
       }
       else {
-        dispatch({type: homeReducers.SET_LOADING, view: 'modal', bool: false});
-        // dispatch({type:  homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Download Complete!'});
+        dispatch(setLoadingStatus({bool: false}));
       }
     });
   };
@@ -147,7 +150,7 @@ const useImages = () => {
   };
 
   const editImage = (image) => {
-    dispatch({type: spotReducers.SET_SELECTED_ATTRIBUTES, attributes: [image]});
+    dispatch(setSelectedAttributes([image]));
     navigation.navigate('ImageInfo', {imageId: image.id});
   };
 
@@ -164,7 +167,7 @@ const useImages = () => {
       if (savedPhoto === 'cancelled') {
         if (newImages.length > 0) {
           console.log('ALL PHOTOS SAVED', newImages);
-          dispatch({type: spotReducers.EDIT_SPOT_IMAGES, images: newImages});
+          dispatch(editedSpotImages(newImages));
           useHome.toggleLoading(false);
           return Promise.resolve(newImages.length);
         }
@@ -222,7 +225,7 @@ const useImages = () => {
         useHome.toggleLoading(true);
         const savedPhoto = await saveFile(response);
         console.log('Saved Photo in getImagesFromCameraRoll:', savedPhoto);
-        dispatch({type: spotReducers.EDIT_SPOT_IMAGES, images: [savedPhoto]});
+        dispatch(editedSpotImages([savedPhoto]));
         useHome.toggleLoading(false);
       }
     });
@@ -243,7 +246,7 @@ const useImages = () => {
     console.log('New image data:', imageData);
     let height = imageData.height;
     let width = imageData.width;
-    const tempImageURI = Platform.OS === 'ios' ? imageData.path : 'file://' + imageData.path;
+    const tempImageURI = Platform.OS === 'ios' ? imageData.uri || imageData.path : 'file://' + imageData.path;
     if (!height || !width) ({height, width} = await getImageHeightAndWidth(tempImageURI));
     let imageId = getNewId();
     let imageURI = getLocalImageURI(imageId);
@@ -273,9 +276,9 @@ const useImages = () => {
       const updatedImages = selectedSpot.properties.images.filter(image2 => imageCopy.id !== image2.id);
       console.log(updatedImages);
       updatedImages.push(imageCopy);
-      dispatch({type: spotReducers.EDIT_SPOT_PROPERTIES, field: 'images', value: updatedImages});
+      dispatch(editedSpotProperties({field: 'images', value: updatedImages}));
     }
-    if (!imageCopy.annotated) dispatch({type: mapReducers.CURRENT_IMAGE_BASEMAP, currentImageBasemap: undefined});
+    if (!imageCopy.annotated) dispatch(setCurrentImageBasemap(undefined));
   };
 
   const setImageHeightAndWidth = async (image) => {
@@ -285,9 +288,9 @@ const useImages = () => {
       if (isValidImageURI) {
         const imageSize = await getImageHeightAndWidth(imageURI);
         const updatedImage = {...image, ...imageSize};
-        dispatch({type: spotReducers.EDIT_SPOT_IMAGE, image: updatedImage});
+        dispatch(editedSpotImage(updatedImage));
         if (currentImageBasemap.id === updatedImage.id) {
-          dispatch({type: mapReducers.CURRENT_IMAGE_BASEMAP, currentImageBasemap: updatedImage});
+          dispatch(setCurrentImageBasemap(updatedImage));
         }
       }
     }
@@ -329,7 +332,7 @@ const useImages = () => {
     let iImagesLoop = 0;
 
     console.log(datasetName + ': Looking for Images to Upload in Spots...', spots);
-    dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: datasetName + ': Looking for Images to Upload...'});
+    dispatch(addedStatusMessage({statusMessage: datasetName + ': Looking for Images to Upload...'}));
 
     const areMoreImages = (spot) => {
       return spot.properties && spot.properties.images && iImagesLoop < spot.properties.images.length;
@@ -355,15 +358,15 @@ const useImages = () => {
           let msgText = datasetName + ': No NEW Images to Upload.';
           if (imagesOnServer.length === 0) msgText = datasetName + ': No Images in Spots.';
           console.log(msgText);
-          dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
-          dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: msgText});
+          dispatch(removedLastStatusMessage());
+          dispatch(addedStatusMessage({statusMessage: msgText}));
         }
         else {
           const msgText = datasetName + ': Found ' + imagesToUpload.length + ' Image'
             + (imagesToUpload.length === 1 ? '' : 's') + ' to Upload.';
           console.log(msgText, imagesToUpload);
-          dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
-          dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: msgText});
+          dispatch(removedLastStatusMessage());
+          dispatch(addedStatusMessage({statusMessage: msgText}));
         }
         if (imagesOnServer.length > 0) console.log(datasetName + ': Images Already on Server', imagesOnServer);
       }
@@ -402,16 +405,16 @@ const useImages = () => {
       let countMsgText = datasetName + ': Images Uploaded ' + imagesUploadedCount + '/' + imagesToUpload.length;
       if (imagesUploadFailedCount > 0) countMsgText += ' (' + imagesUploadFailedCount + ' Failed)';
       console.log(msgText + '\n' + countMsgText);
-      dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
-      dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: msgText + '\n' + countMsgText});
+      dispatch(removedLastStatusMessage());
+      dispatch(addedStatusMessage({statusMessage: msgText + '\n' + countMsgText}));
       if (imagesUploadedCount + imagesUploadFailedCount < imagesToUpload.length) {
         await startUploadingImage(imagesToUpload[imagesUploadedCount + imagesUploadFailedCount]);
       }
       else {
         msgText = datasetName + ': Finished Uploading Images' + (imagesUploadFailedCount > 0 ? ' with Errors' : '') + '.';
         console.log(msgText + '\n' + countMsgText);
-        dispatch({type: homeReducers.REMOVE_LAST_STATUS_MESSAGE});
-        dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: msgText + '\n' + countMsgText});
+        dispatch(removedLastStatusMessage());
+        dispatch(addedStatusMessage({statusMessage: msgText + '\n' + countMsgText}));
       }
     };
 

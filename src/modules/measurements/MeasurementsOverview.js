@@ -4,8 +4,10 @@ import {FlatList, Text, View} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
-import {NotebookPages, notebookReducers} from '../notebook-panel/notebook.constants';
+import {NotebookPages} from '../notebook-panel/notebook.constants';
+import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import {spotReducers} from '../spots/spot.constants';
+import {setSelectedAttributes} from '../spots/spots.slice';
 import MeasurementItem from './MeasurementItem';
 
 const MeasurementsOverview = () => {
@@ -13,8 +15,9 @@ const MeasurementsOverview = () => {
   const orientationsData = useSelector(state => state.spot.selectedSpot.properties.orientation_data);
 
   const onMeasurementPressed = (item) => {
-    dispatch({type: spotReducers.SET_SELECTED_ATTRIBUTES, attributes: [item]});
-    dispatch({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: NotebookPages.MEASUREMENTDETAIL});
+    // dispatch({type: spotReducers.SET_SELECTED_ATTRIBUTES, attributes: [item]});
+    dispatch(setSelectedAttributes([item]));
+    dispatch(setNotebookPageVisible(NotebookPages.MEASUREMENTDETAIL));
   };
 
   return (

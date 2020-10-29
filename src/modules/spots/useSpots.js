@@ -1,15 +1,25 @@
+import {useEffect} from 'react';
+
 import {useDispatch, useSelector} from 'react-redux';
 
 import useServerRequestsHook from '../../services/useServerRequests';
 import {getNewId, isEmpty} from '../../shared/Helpers';
-import {homeReducers} from '../home/home.constants';
+import {
+  addedStatusMessage,
+  removedLastStatusMessage,
+  setLoadingStatus,
+  setProjectLoadComplete,
+} from '../home/home.slice';
 import useImagesHook from '../images/useImages';
-import {projectReducers} from '../project/project.constants';
-import {generalKeysIcons, sedKeysIcons, spotReducers} from './spot.constants';
+import {addedSpotsIdsToDataset, deletedSpotIdFromDataset, updatedProject} from '../project/projects.slice';
+import {generalKeysIcons, sedKeysIcons} from './spot.constants';
+import {addedSpot, addedSpots, deletedSpot, setSelectedSpot} from './spots.slice';
 
 const useSpots = (props) => {
   const dispatch = useDispatch();
 
+  const activeDatasetsIds = useSelector(state => state.project.activeDatasetsIds);
+  const selectedDatasetId = useSelector(state => state.project.selectedDatasetId);
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const datasets = useSelector(state => state.project.datasets);
   const preferences = useSelector(state => state.project.project.preferences) || {};
@@ -18,6 +28,10 @@ const useSpots = (props) => {
 
   const [useImages] = useImagesHook();
   const [useServerRequests] = useServerRequestsHook();
+
+  useEffect(() => {
+    console.log('datasets in useSpots UE', datasets);
+  }, [datasets]);
 
   // Copy Spot to a new Spot omiting specific properties
   const copySpot = async () => {
@@ -45,7 +59,8 @@ const useSpots = (props) => {
       if (orientation_data) copiedSpot.properties.orientation_data = orientation_data;
     }
     const newSpot = await createSpot(copiedSpot);
-    dispatch({type: spotReducers.SET_SELECTED_SPOT, spot: newSpot});
+    // dispatch({type: spotReducers.SET_SELECTED_SPOT, spot: newSpot});
+    dispatch(setSelectedSpot(newSpot));
     console.log('Spot Copied. New Spot', newSpot);
   };
 
@@ -65,7 +80,7 @@ const useSpots = (props) => {
     const defaultNumber = preferences.starting_number_for_spot || Object.keys(spots).length + 1;
     newSpot.properties.name = defaultName + defaultNumber;
     const updatedPreferences = {...preferences, spot_prefix: defaultName, starting_number_for_spot: defaultNumber + 1};
-    dispatch({type: projectReducers.UPDATE_PROJECT, field: 'preferences', value: updatedPreferences});
+    dispatch(updatedProject({field: 'preferences', value: updatedPreferences}));
 
     if (currentImageBasemap && newSpot.geometry && newSpot.geometry.type === 'Point') { //newSpot geometry is unavailable when spot is copied.
       const rootSpot = getRootSpot(currentImageBasemap.id);
@@ -75,31 +90,28 @@ const useSpots = (props) => {
       }
     }
     console.log('Creating new Spot:', newSpot);
-    await dispatch({type: spotReducers.ADD_SPOT, spot: newSpot});
-    const currentDataset = Object.values(datasets).find(dataset => dataset.current);
+    await dispatch(addedSpot(newSpot));
+    // await dispatch({type: spotReducers.ADD_SPOT, spot: newSpot});
+    // const currentDataset = Object.values(datasets).find(dataset => dataset.current);
+    const currentDataset = datasets[selectedDatasetId];
     console.log('Active Dataset', currentDataset);
-    await dispatch({
-      type: projectReducers.DATASETS.ADD_SPOTS_IDS_TO_DATASET,
-      datasetId: currentDataset.id,
-      spotIds: [newSpot.properties.id],
-    });
+    await dispatch(addedSpotsIdsToDataset({datasetId: currentDataset.id, spotIds: [newSpot.properties.id]}));
     console.log('Finished creating new Spot. All Spots: ', spots);
     return newSpot;
   };
 
-  const deleteSpot = async id => {
-    console.log(id);
+  const deleteSpot = async spotId => {
+    console.log(spotId);
     Object.values(datasets).map(dataset => {
       if (dataset.spotIds) {
         console.log(dataset.spotIds);
-        const exists = dataset.spotIds.includes(id);
+        const exists = dataset.spotIds.includes(spotId);
         if (exists) {
           console.log(dataset.id);
-          console.log(dataset.spotIds.filter(spotId => id !== spotId));
-          const filteredLSpotIdList = dataset.spotIds.filter(spotId => id !== spotId);
-          dispatch(
-            {type: projectReducers.DATASETS.DELETE_SPOT_ID, filteredList: filteredLSpotIdList, datasetId: dataset.id});
-          dispatch({type: spotReducers.DELETE_SPOT, id: id});
+          console.log(dataset.spotIds.filter(id => spotId !== id));
+          dispatch(deletedSpotIdFromDataset({spotId: spotId, dataset: dataset}));
+          // dispatch({type: spotReducers.DELETE_SPOT, id: spotId});
+          dispatch(deletedSpot(spotId));
         }
       }
     });
@@ -107,48 +119,62 @@ const useSpots = (props) => {
   };
 
   const deleteSpotsFromDataset = (dataset, spotId) => {
-    const updatedSpotIds = dataset.spotIds.filter(id => id !== spotId);
-    dispatch({type: projectReducers.DATASETS.DELETE_SPOT_ID, filteredList: updatedSpotIds, datasetId: dataset.id});
-    dispatch({type: spotReducers.DELETE_SPOT, id: spotId});
+    // const updatedSpotIds = dataset.spotIds.filter(id => id !== spotId);
+    dispatch(deletedSpotIdFromDataset({spotId: spotId, dataset: dataset}));
+    // dispatch({type: spotReducers.DELETE_SPOT, id: spotId});
+    dispatch(deletedSpot(spotId));
     console.log(dataset, 'Spots', spots);
     return Promise.resolve(dataset.spotIds);
   };
 
   const downloadSpots = async (dataset, encodedLogin) => {
-    // dispatch({type: 'CLEAR_STATUS_MESSAGES'});
-    dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'Downloading Spots...'});
     const datasetInfoFromServer = await useServerRequests.getDatasetSpots(dataset.id, encodedLogin);
     if (!isEmpty(datasetInfoFromServer) && datasetInfoFromServer.features) {
+      dispatch(addedStatusMessage({statusMessage: 'Downloading Spots...'}));
       const spotsOnServer = datasetInfoFromServer.features;
       if (!isEmpty(datasetInfoFromServer) && spotsOnServer) {
         console.log(spotsOnServer);
-        dispatch({type: spotReducers.ADD_SPOTS, spots: spotsOnServer});
+        // dispatch({type: spotReducers.ADD_SPOTS, spots: spotsOnServer});
+        dispatch(addedSpots(spotsOnServer));
         const spotIds = Object.values(spotsOnServer).map(spot => spot.properties.id);
-        dispatch({type: projectReducers.DATASETS.ADD_SPOTS_IDS_TO_DATASET, datasetId: dataset.id, spotIds: spotIds});
-        dispatch({type: 'REMOVE_LAST_STATUS_MESSAGE'});
-        dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'Downloaded Spots'});
+        dispatch(addedSpotsIdsToDataset({datasetId: dataset.id, spotIds: spotIds}));
+        // dispatch({type: projectReducers.DATASETS.ADD_SPOTS_IDS_TO_DATASET, datasetId: dataset.id, spotIds: spotIds});
+        dispatch(removedLastStatusMessage());
+        dispatch(addedStatusMessage({statusMessage: 'Downloaded Spots'}));
         const neededImagesIds = await useImages.gatherNeededImages(spotsOnServer);
         if (neededImagesIds.length === 0) {
-          dispatch({type: homeReducers.SET_LOADING, view: 'modal', bool: false});
-          dispatch({type: 'ADD_STATUS_MESSAGE', statusMessage: 'No New Images to Download'});
-          dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: 'Download Complete!'});
+          dispatch(setLoadingStatus({view: 'modal', bool: false}));
+          dispatch(addedStatusMessage({statusMessage: 'No New Images to Download'}));
+          dispatch(addedStatusMessage({statusMessage: 'Download Complete!'}));
         }
         else return await useImages.downloadImages(neededImagesIds);
-        dispatch({type: homeReducers.PROJECT_LOAD_COMPLETE, projectLoadComplete: true});
+        dispatch(setProjectLoadComplete(true));
       }
       return Promise.resolve({message: 'done - Spots'});
     }
-    else return Promise.reject('No Spots!');
+    else {
+      dispatch(setLoadingStatus({view: 'modal', bool: false}));
+      return Promise.resolve('No Spots!');
+    }
+
   };
 
   // Get only the Spots in the active Datasets
   const getActiveSpotsObj = () => {
-    const activeSpotIds = Object.values(datasets).flatMap(dataset => dataset.active ? dataset.spotIds || [] : []);
     let activeSpots = {};
-    activeSpotIds.map(spotId => {
-      if (spots[spotId]) activeSpots = {...activeSpots, [spotId]: spots[spotId]};
-      else console.log('Missing Spot', spotId);
-    });
+    // const activeSpotIds = Object.values(datasets).flatMap(dataset => dataset.active ? dataset.spotIds || [] : []);
+    if (!isEmpty(datasets) && !isEmpty(activeDatasetsIds)) {
+      const activeDatasets = activeDatasetsIds.map(datasetId => datasets[datasetId]);
+      console.log('getActiveDatasetsFromId', activeDatasets);
+      const activeSpotIds = activeDatasets.flatMap(dataset => {
+        if (dataset.spotIds && !isEmpty(dataset.spotIds)) return dataset.spotIds;
+        return;
+      });
+      activeSpotIds.map(spotId => {
+        if (spots[spotId]) activeSpots = {...activeSpots, [spotId]: spots[spotId]};
+        else console.log('Missing Spot', spotId);
+      });
+    }
     return activeSpots;
   };
 

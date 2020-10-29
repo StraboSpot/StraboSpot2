@@ -7,6 +7,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import {mainMenuPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
+import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import styles from './project.styles';
 
 const ActiveProjectList = (props) => {
@@ -19,11 +20,9 @@ const ActiveProjectList = (props) => {
       <View style={commonStyles.sectionContainer}>
         <ListItem
           containerStyle={styles.projectDescriptionListContainer}
-          onPress={() => dispatch({
-            type: mainMenuPanelReducers.SET_SIDE_PANEL_VISIBLE,
-            view: mainMenuPanelReducers.SET_SIDE_PANEL_VIEW.PROJECT_DESCRIPTION,
-            bool: true,
-          })}
+          onPress={() => dispatch(setSidePanelVisible(
+            {view: mainMenuPanelReducers.SET_SIDE_PANEL_VIEW.PROJECT_DESCRIPTION, bool: true})
+          )}
         >
           <ListItem.Content>
             <ListItem.Title>{isEmpty(project) ? 'No Project' : project.description.project_name}</ListItem.Title>

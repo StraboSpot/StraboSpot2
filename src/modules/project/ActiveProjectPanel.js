@@ -30,6 +30,12 @@ const ActiveProjectPanel = () => {
     setActiveDatasets(filteredDatasets);
   }, [datasets]);
 
+  const onAddDataset = async () => {
+    const addDataset = await useProject.addDataset(datasetName);
+    console.log(addDataset);
+    setIsAddDatasetModalVisible(false);
+  };
+
   const confirm = () => {
     useProject.selectProject(project);
     setIsWarningModalVisible(false);
@@ -56,7 +62,8 @@ const ActiveProjectPanel = () => {
         dialogTitle={'Warning!'}
       >
         <View style={[commonStyles.dialogContent]}>
-          <Text style={[commonStyles.standardDescriptionText, {textAlign: 'center'}]}>This will overwrite anything that has not been uploaded to
+          <Text style={[commonStyles.standardDescriptionText, {textAlign: 'center'}]}>This will overwrite anything that
+            has not been uploaded to
             the server</Text>
         </View>
         <View style={{flexDirection: 'row', justifyContent: 'space-evenly', paddingTop: 10}}>
@@ -74,11 +81,6 @@ const ActiveProjectPanel = () => {
         </View>
       </StandardModal>
     );
-  };
-
-  const onAddDataset = async () => {
-    await useProject.addDataset(datasetName);
-    setIsAddDatasetModalVisible(false);
   };
 
   return (
@@ -103,7 +105,7 @@ const ActiveProjectPanel = () => {
         <Divider sectionText={'ACTIVE DATASETS'}/>
       </View>
       <View style={[commonStyles.sectionContainer, {height: 200}]}>
-        {!isEmpty(activeDatasets) ? <ActiveDatasetsList/> : null}
+        {<ActiveDatasetsList/>}
       </View>
       <View style={{alignItems: 'center', margin: 10, marginTop: 0}}>
         <Text style={commonStyles.standardDescriptionText}>New Spots will be added to the check marked data set</Text>

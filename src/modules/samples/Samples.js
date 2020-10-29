@@ -5,19 +5,19 @@ import {Button, ButtonGroup, Input} from 'react-native-elements';
 import {connect, useDispatch, useSelector} from 'react-redux';
 
 import {getNewId} from '../../shared/Helpers';
-import * as themes from '../../shared/styles.constants';
 import Slider from '../../shared/ui/Slider';
-import {homeReducers, Modals} from '../home/home.constants';
+import {Modals} from '../home/home.constants';
 import useMapsHook from '../maps/useMaps';
-import {NotebookPages, notebookReducers} from '../notebook-panel/notebook.constants';
-import {projectReducers} from '../project/project.constants';
+import {updatedProject} from '../project/projects.slice';
 import {spotReducers} from '../spots/spot.constants';
+import {editedSpotProperties} from '../spots/spots.slice';
 import styles from './samples.style';
 
 const SamplesModalView = (props) => {
-  let modalView = null;
   const dispatch = useDispatch();
+  const modalVisible = useSelector(state => state.home.modalVisible);
   const preferences = useSelector(state => state.project.project.preferences) || {};
+  const spot = useSelector(state => state.spot.selectedSpot);
   const [useMaps] = useMapsHook();
   const [selectedButton, setSelectedButton] = useState(null);
   const [sampleOrientedValue, setSampleOrientedValue] = useState(null);
@@ -30,14 +30,14 @@ const SamplesModalView = (props) => {
   const [startingSampleNumber, setStartingSampleNumber] = useState(null);
 
   useEffect(() => {
-    console.log('useEffect SamplesModalView [props.spot]');
+    console.log('useEffect SamplesModalView [spot]');
     const defaultName = preferences.sample_prefix || 'Unnamed';
     const defaultNumber = preferences.starting_sample_number
-      || (props.spot.properties && props.spot.properties.samples && props.spot.properties.samples.length + 1) || 1;
+      || (spot.properties && spot.properties.samples && spot.properties.samples.length + 1) || 1;
     setSamplePrefix(defaultName);
     setStartingSampleNumber(defaultNumber);
     setName(defaultName + defaultNumber);
-  }, [props.spot]);
+  }, [spot]);
 
   const buttonNames = ['Oriented', 'Unoriented'];
 
@@ -48,7 +48,7 @@ const SamplesModalView = (props) => {
   };
 
   // const checkProperties = () => {
-  //   return props.spot.properties.samples.map((sample) => {
+  //   return spot.properties.samples.map((sample) => {
   //     if (!sample.name) {
   //       return 'No Sample Name'
   //     } else {
@@ -58,7 +58,7 @@ const SamplesModalView = (props) => {
   // };
 
   const saveSample = async () => {
-    if (props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE) {
+    if (modalVisible === Modals.SHORTCUT_MODALS.SAMPLE) {
       const pointSetAtCurrentLocation = await useMaps.setPointAtCurrentLocation();
       console.log('pointSetAtCurrentLocation', pointSetAtCurrentLocation);
     }
@@ -75,19 +75,21 @@ const SamplesModalView = (props) => {
     if (sample.length > 0) {
       let newSample = sample[0];
       newSample.id = getNewId();
-      if (props.modalVisible === Modals.NOTEBOOK_MODALS.SAMPLE) {
-        const samples = (typeof props.spot.properties.samples === 'undefined' ? [newSample] : [...props.spot.properties.samples, newSample]);
-        props.onSpotEdit('samples', samples);
+      if (modalVisible === Modals.NOTEBOOK_MODALS.SAMPLE) {
+        const samples = (typeof spot.properties.samples === 'undefined' ? [newSample] : [...spot.properties.samples, newSample]);
+        // props.onSpotEdit('samples', samples);
+        dispatch(editedSpotProperties({field: 'samples', value: samples}));
       }
-      else if (props.modalVisible === Modals.SHORTCUT_MODALS.SAMPLE) {
-        props.onSpotEdit('samples', [newSample]);
+      else if (modalVisible === Modals.SHORTCUT_MODALS.SAMPLE) {
+        // props.onSpotEdit('samples', [newSample]);
+        dispatch(editedSpotProperties({field: 'samples', value: [newSample]}));
       }
       const updatedPreferences = {
         ...preferences,
         sample_prefix: samplePrefix,
         starting_sample_number: startingSampleNumber + 1,
       };
-      dispatch({type: projectReducers.UPDATE_PROJECT, field: 'preferences', value: updatedPreferences});
+      dispatch(updatedProject({field: 'preferences', value: updatedPreferences}));
       setName(null);
       setLabel(null);
       setNote('');
@@ -177,15 +179,7 @@ const SamplesModalView = (props) => {
 const mapStateToProps = (state) => {
   return {
     spot: state.spot.selectedSpot,
-    modalVisible: state.home.modalVisible,
-    deviceDimensions: state.home.deviceDimensions,
   };
 };
 
-const mapDispatchToProps = {
-  onSpotEdit: (field, value) => ({type: spotReducers.EDIT_SPOT_PROPERTIES, field: field, value: value}),
-  setModalVisible: (modal) => ({type: homeReducers.SET_MODAL_VISIBLE, modal: modal}),
-  setNotebookPageVisible: (page) => ({type: notebookReducers.SET_NOTEBOOK_PAGE_VISIBLE, page: page}),
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(SamplesModalView);
+export default connect(mapStateToProps)(SamplesModalView);

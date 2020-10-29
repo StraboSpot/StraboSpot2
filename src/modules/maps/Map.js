@@ -9,12 +9,27 @@ import {useSelector, useDispatch} from 'react-redux';
 
 import {MAPBOX_KEY} from '../../MapboxConfig';
 import {getNewUUID, isEmpty} from '../../shared/Helpers';
-import {homeReducers, Modals} from '../home/home.constants';
+import {Modals} from '../home/home.constants';
+import {setModalVisible} from '../home/home.slice';
 import useImagesHook from '../images/useImages';
 import {spotReducers} from '../spots/spot.constants';
+import {
+  addedSpot,
+  addedSpots,
+  clearedSelectedSpots,
+  setIntersectedSpotsForTagging,
+  setSelectedSpot,
+} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
 import {MapLayer1, MapLayer2} from './Basemaps';
 import {geoLatLngProjection, LATITUDE, LONGITUDE, MapModes, pixelProjection, mapReducers} from './maps.constants';
+import {
+  clearedVertexes,
+  setCurrentImageBasemap,
+  setFreehandFeatureCoords,
+  setSpotsInMapExtent,
+  setVertexStartCoords,
+} from './maps.slice';
 import useMapFeaturesHook from './useMapFeatures';
 import useMapsHook from './useMaps';
 
@@ -30,6 +45,7 @@ const Map = React.forwardRef((props, ref) => {
 
   const currentBasemap = useSelector(state => state.map.currentBasemap);
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
+  const activeDatasetsIds = useSelector(state => state.project.activeDatasetsIds);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const vertexEndCoords = useSelector(state => state.map.vertexEndCoords);
   const spots = useSelector(state => state.spot.spots);
@@ -87,7 +103,7 @@ const Map = React.forwardRef((props, ref) => {
     ref: {mapRef: map, cameraRef: camera},
     onMapPress: (e) => onMapPress(e),
     onMapLongPress: (e) => onMapLongPress(e),
-    setSpotsInMapExtent: () => setSpotsInMapExtent(),
+    spotsInMapExtent: () => spotsInMapExtent(),
   };
 
   useEffect(() => {
@@ -127,7 +143,7 @@ const Map = React.forwardRef((props, ref) => {
   useEffect(() => {
     console.log('UE3 Map [user]');
     console.log('Updating DOM on first render');
-    if (!currentBasemap) useMaps.setCurrentBasemap();
+    if (!currentBasemap) useMaps.setBasemap().catch(console.error);
     if (!currentImageBasemap) setCurrentLocationAsCenter();
     clearVertexes();
   }, [user]);
@@ -156,7 +172,7 @@ const Map = React.forwardRef((props, ref) => {
     if (props.mapMode !== MapModes.EDIT) {
       setDisplayedSpots((isEmpty(selectedSpot) ? [] : [{...selectedSpot}]));
     }
-  }, [selectedSpot]);
+  }, [selectedSpot, activeDatasetsIds]);
 
   useEffect(() => {
     console.log('UE6 Map [vertexEndCoords]');
@@ -174,6 +190,10 @@ const Map = React.forwardRef((props, ref) => {
     console.log('UE9 Map [defaultGeomType]');
     if (defaultGeomType) createDefaultGeomContinued();
   }, [defaultGeomType]);
+
+  const clearVertexes = () => {
+    dispatch(clearedVertexes());
+  };
 
   // Create a default geometry for a Spot that doesn't have geometry when 'Set in Current View' is clicked
   // then make it selected for immediate editing
@@ -207,7 +227,8 @@ const Map = React.forwardRef((props, ref) => {
         ...selectedSpot,
         geometry: defaultFeature.geometry,
       };
-      dispatch(({type: spotReducers.ADD_SPOT, spot: selectedSpotCopy}));
+      // dispatch(({type: spotReducers.ADD_SPOT, spot: selectedSpotCopy}));
+      dispatch(addedSpot(selectedSpotCopy));
 
       // Set new geometry ready for editing, set the active vertex to first index of the geometry.
       startEditing(selectedSpotCopy, turf.explode(selectedSpotCopy).features[0], 0);
@@ -326,13 +347,13 @@ const Map = React.forwardRef((props, ref) => {
   const clearSelectedSpots = () => {
     console.log('Clear selected Spots.');
     setDisplayedSpots([]);
-    dispatch({type: spotReducers.CLEAR_SELECTED_SPOTS});
+    dispatch(clearedSelectedSpots());
   };
 
   const clearSelectedSpotsWhileEditing = () => {
     console.log('Clear selected Spots.');
     setDisplayedSpotsWhileEditing([], editingModeData.spotsEdited, editingModeData.spotsNotEdited);
-    dispatch({type: spotReducers.CLEAR_SELECTED_SPOTS});
+    dispatch(clearedSelectedSpots());
   };
 
   // This method is required when the draw features at press returns empty
@@ -363,7 +384,7 @@ const Map = React.forwardRef((props, ref) => {
         console.log('Selecting or unselect a feature ...');
         const {screenPointX, screenPointY} = e.properties;
         const spotFound = await getSpotAtPress(screenPointX, screenPointY);
-        if (!isEmpty(spotFound)) useMaps.setSelectedSpot(spotFound);
+        if (!isEmpty(spotFound)) useMaps.setSelectedSpotOnMap(spotFound);
         else clearSelectedSpots();
       }
       // Draw a feature
@@ -429,7 +450,7 @@ const Map = React.forwardRef((props, ref) => {
         //     If so switch selected vertex to vertex at pressed point
         const spotFound = await getSpotAtPress(screenPointX, screenPointY);
         // #114, while editing, click on a different spot to edit, should immediately identify it as the selected spot and hence update the notebook panel.
-        if (!isEmpty(spotFound)) useMaps.setSelectedSpot(spotFound);
+        if (!isEmpty(spotFound)) useMaps.setSelectedSpotOnMap(spotFound);
         if (isEmpty(editingModeData.spotEditing)) {
           if (isEmpty(spotFound)) console.log('No feature selected.');
           else setSelectedSpotToEdit(spotFound);
@@ -535,11 +556,11 @@ const Map = React.forwardRef((props, ref) => {
       const [lat, lng] = useMaps.convertCoordinateProjections(pixelProjection, geoLatLngProjection,
         [coords[0], coords[1]]);
       const vertexCoordinates = await map.current.getPointInView([lat, lng]);
-      dispatch({type: mapReducers.VERTEX_START_COORDS, vertexStartCoords: vertexCoordinates});
+      dispatch(setVertexStartCoords(vertexCoordinates));
     }
     else {
       const vertexCoordinates = await map.current.getPointInView(vertex.geometry.coordinates);
-      dispatch({type: mapReducers.VERTEX_START_COORDS, vertexStartCoords: vertexCoordinates});
+      dispatch(setVertexStartCoords(vertexCoordinates));
     }
   };
 
@@ -801,8 +822,9 @@ const Map = React.forwardRef((props, ref) => {
         else if (props.isSelectingForTagging) {
           const selectedSpots = await useMapFeatures.getLassoedSpots(mapPropsMutable.spotsNotSelected, feature);
           if (selectedSpots.length > 0) {
-            dispatch({type: spotReducers.SET_INTERSECTED_SPOTS_FOR_TAGGING, spots: selectedSpots});
-            dispatch({type: homeReducers.SET_MODAL_VISIBLE, modal: Modals.SHORTCUT_MODALS.ADD_TAGS_TO_SPOTS});
+            // dispatch({type: spotReducers.SET_INTERSECTED_SPOTS_FOR_TAGGING, spots: selectedSpots});
+            dispatch(setIntersectedSpotsForTagging(selectedSpots));
+            dispatch(setModalVisible({modal: Modals.SHORTCUT_MODALS.ADD_TAGS_TO_SPOTS}));
           }
           else {
             Alert.alert(
@@ -813,8 +835,8 @@ const Map = React.forwardRef((props, ref) => {
         }
         else {
           newOrEditedSpot = await useSpots.createSpot(feature);
-          useMaps.setSelectedSpot(newOrEditedSpot);
-          dispatch(({type: mapReducers.FREEHAND_FEATURE_COORDS, freehandFeatureCoords: undefined}));// reset the freeHandCoordinates
+          useMaps.setSelectedSpotOnMap(newOrEditedSpot);
+          dispatch(setFreehandFeatureCoords(undefined));// reset the freeHandCoordinates
         }
       }
     }
@@ -835,7 +857,7 @@ const Map = React.forwardRef((props, ref) => {
       }
       else {
         newOrEditedSpot = await useSpots.createSpot(newFeature);
-        useMaps.setSelectedSpot(newOrEditedSpot);
+        useMaps.setSelectedSpotOnMap(newOrEditedSpot);
       }
       setDrawFeatures([]);
     }
@@ -859,7 +881,8 @@ const Map = React.forwardRef((props, ref) => {
     if (!isEmpty(editingModeData.spotEditing)) {
       const spotOrig = spots[editingModeData.spotEditing.properties.id];
       setDisplayedSpots([spotOrig]);
-      await dispatch({type: spotReducers.SET_SELECTED_SPOT, spot: spotOrig});
+      // await dispatch({type: spotReducers.SET_SELECTED_SPOT, spot: spotOrig});
+      await dispatch(setSelectedSpot(spotOrig));
     }
     else setDisplayedSpots([]);
     clearEditing();
@@ -871,11 +894,13 @@ const Map = React.forwardRef((props, ref) => {
     if (isEmpty(editingModeData.spotEditing)) setDisplayedSpots([]);
     else {
       setDisplayedSpots([editingModeData.spotEditing]);
-      await dispatch({type: spotReducers.SET_SELECTED_SPOT, spot: editingModeData.spotEditing});
+      // await dispatch({type: spotReducers.SET_SELECTED_SPOT, spot: editingModeData.spotEditing});
+      await dispatch(setSelectedSpot(editingModeData.spotEditing));
     }
     if (!isEmpty(editingModeData.spotsEdited)) {
-      await dispatch(
-        {type: spotReducers.ADD_SPOTS, spots: [...editingModeData.spotsNotEdited, ...editingModeData.spotsEdited]});
+      dispatch(addedSpots([...editingModeData.spotsNotEdited, ...editingModeData.spotsEdited]));
+      //   await dispatch(
+      //     {type: spotReducers.ADD_SPOTS, spots: [...editingModeData.spotsNotEdited, ...editingModeData.spotsEdited]});
     }
     clearEditing();
   };
@@ -900,7 +925,7 @@ const Map = React.forwardRef((props, ref) => {
     }));
     spotToEdit ? console.log('Set Spot to edit:', spotToEdit) : console.log('No Spot selected to edit.');
     // #114, editing a spot should immediately identify it as the selected spot and hence update the notebook panel.
-    if (!isEmpty(spotToEdit)) useMaps.setSelectedSpot(spotToEdit);
+    if (!isEmpty(spotToEdit)) useMaps.setSelectedSpotOnMap(spotToEdit);
     setDisplayedSpotsWhileEditing(spotToEdit, [], mappableSpots);
     setEditFeatures(spotToEdit);
     // while starting to edit the spot, set the vertex active to move immediately, if available
@@ -1183,7 +1208,7 @@ const Map = React.forwardRef((props, ref) => {
     if (selectedSpot && useMaps.isOnGeoMap(selectedSpot)) {
       // spot selected is on geomap, but currently on imagebasemap mode, turn off imagebasemap mode and zoomToSpot in async mode.
       if (currentImageBasemap) {
-        dispatch(({type: mapReducers.CURRENT_IMAGE_BASEMAP, currentImageBasemap: undefined}));
+        dispatch(setCurrentImageBasemap(undefined));
         setMapPropsMutable(m => ({
           ...m,
           zoomToSpot: true,
@@ -1200,10 +1225,7 @@ const Map = React.forwardRef((props, ref) => {
         const imageBasemapData = useSpots.getImageBasemaps().find(imgBasemap => {
           return imgBasemap.id === selectedSpot.properties.image_basemap;
         });
-        dispatch(({
-          type: mapReducers.CURRENT_IMAGE_BASEMAP,
-          currentImageBasemap: imageBasemapData,
-        }));
+        dispatch(setCurrentImageBasemap(imageBasemapData));
         setMapPropsMutable(m => ({
           ...m,
           zoomToSpot: true,
@@ -1253,7 +1275,7 @@ const Map = React.forwardRef((props, ref) => {
   };
 
   // Calculate the Spots in the current map extent and send to redux
-  const setSpotsInMapExtent = async () => {
+  const spotsInMapExtent = async () => {
     if (map && map.current) {
       const mapBounds = await map.current.getVisibleBounds();
       let right = mapBounds[0][0];
@@ -1262,12 +1284,9 @@ const Map = React.forwardRef((props, ref) => {
       let bottom = mapBounds[1][1];
       let bbox = [left, bottom, right, top];
       const bboxPoly = turf.bboxPolygon(bbox);
-      const spotsInMapExtent = useMapFeatures.getLassoedSpots([...mapProps.spotsSelected, ...mapProps.spotsNotSelected],
+      const spotsInMapExtent = await useMapFeatures.getLassoedSpots([...mapProps.spotsSelected, ...mapProps.spotsNotSelected],
         bboxPoly);
-      dispatch(({
-        type: mapReducers.SET_SPOTS_IN_MAP_EXTENT,
-        spots: spotsInMapExtent,
-      }));
+      dispatch(setSpotsInMapExtent(spotsInMapExtent));
     }
   };
 
@@ -1280,7 +1299,7 @@ const Map = React.forwardRef((props, ref) => {
   const toggleUserLocation = (value) => {
     setMapPropsMutable(m => ({
       ...m,
-      showUserLocation: value ,
+      showUserLocation: value,
     }));
   };
 
@@ -1304,10 +1323,6 @@ const Map = React.forwardRef((props, ref) => {
       zoomToSpotsExtent: zoomToSpotsExtent,
     };
   });
-
-  const clearVertexes = () => {
-    dispatch(({type: mapReducers.CLEAR_VERTEXES}));
-  };
 
   return (
     <View style={{flex: 1, zIndex: -1}}>

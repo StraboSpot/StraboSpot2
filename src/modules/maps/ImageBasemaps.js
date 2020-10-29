@@ -10,6 +10,7 @@ import useImagesHook from '../images/useImages';
 import attributesStyles from '../main-menu-panel/attributes.styles';
 import useSpotsHook from '../spots/useSpots';
 import {mapReducers} from './maps.constants';
+import {setCurrentImageBasemap} from './maps.slice';
 
 const ImageBaseMaps = (props) => {
   const dispatch = useDispatch();
@@ -22,7 +23,7 @@ const ImageBaseMaps = (props) => {
     useImages.doesImageExist(image.id)
       .then((doesExist) => {
         if (!doesExist) Alert.alert('Missing Image!', 'Unable to find image file on this device.');
-        dispatch({type: mapReducers.CURRENT_IMAGE_BASEMAP, currentImageBasemap: image});
+        dispatch(setCurrentImageBasemap(image));
       })
       .catch((e) => console.error('Image not found', e));
   };

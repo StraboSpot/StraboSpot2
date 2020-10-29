@@ -8,12 +8,20 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import useServerRequestsHook from '../../services/useServerRequests';
 import {isEmpty} from '../../shared/Helpers';
-import {homeReducers} from '../home/home.constants';
+import {
+  addedStatusMessage,
+  clearedStatusMessages,
+  setErrorMessagesModalVisible,
+  setOnlineStatus,
+} from '../home/home.slice';
 import {mainMenuPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
-import {projectReducers} from '../project/project.constants';
+import {setMenuSelectionPage, setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
+import {addedProject} from '../project/projects.slice';
 import {spotReducers} from '../spots/spot.constants';
+import {setSelectedSpot} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
 import {basemaps, mapProviders, mapReducers, geoLatLngProjection, pixelProjection} from './maps.constants';
+import {addedCustomMap, deletedCustomMap, selectedCustomMapToEdit, setCurrentBasemap, setMapSymbols} from './maps.slice';
 
 const useMaps = () => {
   const [useServerRequests] = useServerRequestsHook();
@@ -47,11 +55,11 @@ const useMaps = () => {
     delete customMapsCopy[mapId];
     if (projectCopy.other_maps && projectCopy.other_maps[mapId]) {
       delete projectCopy.other_maps[mapId];
-      dispatch({type: projectReducers.PROJECTS, project: projectCopy}); // Deletes map from project
+      dispatch(addedProject(projectCopy)); // Deletes map from project
     }
-    dispatch({type: mapReducers.DELETE_CUSTOM_MAP, customMaps: customMapsCopy}); // replaces customMaps with updated object
-    dispatch({type: mainMenuPanelReducers.SET_SIDE_PANEL_VISIBLE, view: null, bool: false});
-    dispatch({type: mainMenuPanelReducers.SET_MENU_SELECTION_PAGE, name: undefined});
+    dispatch(deletedCustomMap(customMapsCopy)); // replaces customMaps with updated object
+    dispatch(setSidePanelVisible({view: null, bool: false}));
+    dispatch(setMenuSelectionPage({name: undefined}));
     console.log('Saved customMaps to Redux.');
   };
 
@@ -118,12 +126,8 @@ const useMaps = () => {
   };
 
   const customMapDetails = (map) => {
-    dispatch({type: mapReducers.SELECTED_CUSTOM_MAP_TO_EDIT, customMap: map});
-    dispatch({
-      type: mainMenuPanelReducers.SET_SIDE_PANEL_VISIBLE,
-      view: mainMenuPanelReducers.SET_SIDE_PANEL_VIEW.MANAGE_CUSTOM_MAP,
-      bool: true,
-    });
+    dispatch(selectedCustomMapToEdit(map));
+    dispatch(setSidePanelVisible({view: mainMenuPanelReducers.SET_SIDE_PANEL_VIEW.MANAGE_CUSTOM_MAP, bool: true}));
   };
 
   // Identify the coordinate span for the for the image basemap.
@@ -199,7 +203,7 @@ const useMaps = () => {
   };
 
   // Gather and set the feature types that are present in the mapped Spots
-  const setMapSymbols = (mappedSpots) => {
+  const mapSymbols = (mappedSpots) => {
     const featureTypes = mappedSpots.reduce((acc, spot) => {
       const spotFeatureTypes = spot.properties.orientation_data
         && spot.properties.orientation_data.reduce((acc1, orientation) => {
@@ -207,13 +211,13 @@ const useMaps = () => {
         }, []);
       return spotFeatureTypes ? [...new Set([...acc, ...spotFeatureTypes])] : acc;
     }, []);
-    dispatch({type: mapReducers.SET_MAP_SYMBOLS, mapSymbols: featureTypes});
+    dispatch(setMapSymbols(featureTypes));
   };
 
   // Get selected and not selected Spots to display when not editing
   const getDisplayedSpots = (selectedSpots) => {
     let mappedSpots = getAllMappedSpots();
-    setMapSymbols(mappedSpots);
+    mapSymbols(mappedSpots);
 
     // If any map symbol toggle is ON filter out the Point features & Spots that are not visible
     if (!isAllSymbolsOn) mappedSpots = getVisibleMappedSpots(mappedSpots);
@@ -236,10 +240,10 @@ const useMaps = () => {
   };
 
   const handleError = (message, err) => {
-    dispatch({type: homeReducers.CLEAR_STATUS_MESSAGES});
-    dispatch({type: homeReducers.ADD_STATUS_MESSAGE, statusMessage: `${message} \n\n${err}`});
-    dispatch({type: homeReducers.SET_OFFLINE_MAPS_MODAL_VISIBLE, bool: false});
-    dispatch({type: homeReducers.SET_ERROR_MESSAGES_MODAL_VISIBLE, bool: true});
+    dispatch(clearedStatusMessages());
+    dispatch(addedStatusMessage({statusMessage: `${message} \n\n${err}`}));
+    dispatch(setOnlineStatus({bool: false}));
+    dispatch(setErrorMessagesModalVisible(true));
   };
 
   const isGeoMap = (map) => {
@@ -269,7 +273,7 @@ const useMaps = () => {
     if (testUrlResponse) {
       if (map.overlay && map.id === currentBasemap.id) {
         console.log(('Setting Basemap to Mapbox Topo...'));
-        setCurrentBasemap(null);
+        setBasemap(null);
       }
       return customMap;
     }
@@ -280,33 +284,34 @@ const useMaps = () => {
     const userLocationCoords = await getCurrentLocation();
     let feature = turf.point(userLocationCoords);
     const newSpot = await useSpots.createSpot(feature);
-    setSelectedSpot(newSpot);
+    setSelectedSpotOnMap(newSpot);
     return Promise.resolve(newSpot);
   };
 
-  const setCurrentBasemap = (mapId) => {
+  const setBasemap = async (mapId) => {
     if (!mapId) mapId = 'mapbox.outdoors';
-    const newBasemap = basemaps.find(basemap => basemap.id === mapId);
+    const newBasemap = await basemaps.find(basemap => basemap.id === mapId);
     console.log('Setting current basemap to a default basemap...');
-    dispatch({type: mapReducers.CURRENT_BASEMAP, basemap: newBasemap});
+    dispatch(setCurrentBasemap(newBasemap));
   };
 
   const setCustomMapSwitchValue = (value, map) => {
     console.log('value', value, 'id', map.mapId);
     const customMapsCopy = {...customMaps};
-    customMapsCopy[map.id].isViewable = value;
-    dispatch({type: mapReducers.ADD_CUSTOM_MAP, customMap: customMapsCopy[map.id]});
+    // customMapsCopy[map.id].isViewable = value;
+    dispatch(addedCustomMap({...customMapsCopy[map.id], isViewable: value}));
     if (!customMapsCopy[map.id].overlay) viewCustomMap(map);
   };
 
-  const setSelectedSpot = (spotToSetAsSelected) => {
+  const setSelectedSpotOnMap = (spotToSetAsSelected) => {
     console.log('Set selected Spot:', spotToSetAsSelected);
-    dispatch({type: spotReducers.SET_SELECTED_SPOT, spot: spotToSetAsSelected});
+    // dispatch({type: spotReducers.SET_SELECTED_SPOT, spot: spotToSetAsSelected});
+    dispatch(setSelectedSpot(spotToSetAsSelected));
   };
 
   const viewCustomMap = (map) => {
     console.log('Setting current basemap to a custom basemap...');
-    dispatch({type: mapReducers.CURRENT_BASEMAP, basemap: map});
+    dispatch(setCurrentBasemap(map));
   };
 
   const zoomToSpots = async (spots, map, camera) => {
@@ -346,10 +351,10 @@ const useMaps = () => {
     isGeoMap: isGeoMap,
     isOnGeoMap: isOnGeoMap,
     saveCustomMap: saveCustomMap,
-    setCurrentBasemap: setCurrentBasemap,
+    setBasemap: setBasemap,
     setCustomMapSwitchValue: setCustomMapSwitchValue,
     setPointAtCurrentLocation: setPointAtCurrentLocation,
-    setSelectedSpot: setSelectedSpot,
+    setSelectedSpotOnMap: setSelectedSpotOnMap,
     viewCustomMap: viewCustomMap,
     zoomToSpots: zoomToSpots,
   }];

@@ -6,23 +6,25 @@ import {Button} from 'react-native-elements';
 import {Dialog, DialogTitle, DialogContent, SlideAnimation} from 'react-native-popup-dialog';
 import {useSelector, useDispatch} from 'react-redux';
 
+import {redux} from '../../shared/app.constants';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import Spacer from '../../shared/ui/Spacer';
-import {homeReducers} from '../home/home.constants';
+import {setOnlineStatus} from '../home/home.slice';
 import homeStyles from '../home/home.style';
 import {spotReducers} from '../spots/spot.constants';
+import {clearedSpots} from '../spots/spots.slice';
 import ActiveDatasetsList from './ActiveDatasetsList';
 import DatasetList from './DatasetList';
 import NewProject from './NewProjectForm';
-import {projectReducers} from './project.constants';
 import ProjectList from './ProjectList';
+import {clearedProject, clearedDatasets} from './projects.slice';
 import ProjectTypesButtons from './ProjectTypesButtons';
 
 const InitialProjectLoadModal = (props) => {
   const navigation = useNavigation();
+  const activeDatasetsId = useSelector(state => state.project.activeDatasetsIds);
   const selectedProject = useSelector(state => state.project.project);
-  const datasets = useSelector(state => state.project.datasets);
   const isOnline = useSelector(state => state.home.isOnline);
   const userName = useSelector(state => state.user.name);
   const dispatch = useDispatch();
@@ -38,9 +40,9 @@ const InitialProjectLoadModal = (props) => {
 
   const goBack = () => {
     if (visibleProjectSection === 'activeDatasetsList') {
-      dispatch({type: projectReducers.PROJECTS, project: {}});
-      dispatch({type: projectReducers.DATASETS.DATASETS_UPDATE, datasets: {}});
-      dispatch({type: spotReducers.CLEAR_SPOTS});
+      dispatch(clearedProject());
+      dispatch(clearedDatasets());
+      dispatch(clearedSpots());
       setVisibleInitialSection('none');
     }
     else if (visibleProjectSection === 'currentDatasetSelection') {
@@ -61,8 +63,8 @@ const InitialProjectLoadModal = (props) => {
           containerStyle={commonStyles.buttonContainer}
           titleStyle={commonStyles.standardButtonText}
           onPress={() => {
-            if (userName) dispatch({type: 'CLEAR_STORE'});
-            dispatch({type: homeReducers.SET_IS_SIGNED_IN, bool: false});
+            if (userName) dispatch({type: redux.CLEAR_STORE});
+            dispatch(setOnlineStatus({bool: false}));
             navigation.navigate('SignIn');
           }}
         />
@@ -82,12 +84,12 @@ const InitialProjectLoadModal = (props) => {
         <Button
           onPress={() => props.closeModal()}
           title={'Done'}
-          disabled={isEmpty(Object.keys(datasets).find(key => datasets[key].current === true))}
+          disabled={isEmpty(activeDatasetsId)}
           buttonStyle={commonStyles.standardButton}
           titleStyle={commonStyles.standardButtonText}
         />
         <View style={{alignItems: 'center', paddingTop: 10}}>
-          <Text>Set an active dataset</Text>
+          <Text>Select the dataset to add new spots.</Text>
         </View>
         <Spacer/>
         <View style={{height: 400}}>
@@ -98,14 +100,11 @@ const InitialProjectLoadModal = (props) => {
   };
 
   const renderContinueOrCloseButton = () => {
-    const activeDatasets = Object.values(datasets).filter(dataset => dataset.active === true);
-    if (activeDatasets.length > 1) {
+    if (activeDatasetsId.length > 1) {
       return (
         <Button
           onPress={() => setVisibleProjectSection('currentDatasetSelection')}
           title={'Next'}
-          // disabled={isEmpty(datasets) ||
-          // isEmpty(Object.keys(datasets).find(key =>  datasets[key].active === true))}
           buttonStyle={[commonStyles.standardButton]}
           titleStyle={commonStyles.standardButtonText}
         />
@@ -116,8 +115,7 @@ const InitialProjectLoadModal = (props) => {
         <Button
           onPress={() => props.closeModal()}
           title={'Done'}
-          disabled={isEmpty(datasets)
-          || isEmpty(Object.keys(datasets).find(key => datasets[key].active === true))}
+          disabled={isEmpty(activeDatasetsId)}
           buttonStyle={[commonStyles.standardButton]}
           titleStyle={commonStyles.standardButtonText}
         />

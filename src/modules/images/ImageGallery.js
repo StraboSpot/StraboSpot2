@@ -6,11 +6,12 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import {isEmpty} from '../../shared/Helpers';
 import * as SharedUI from '../../shared/ui/index';
-import {homeReducers} from '../home/home.constants';
+import {setImageModalVisible} from '../home/home.slice';
 import attributesStyles from '../main-menu-panel/attributes.styles';
 import {SortedViews} from '../main-menu-panel/mainMenuPanel.constants';
 import SortingButtons from '../main-menu-panel/SortingButtons';
 import {spotReducers} from '../spots/spot.constants';
+import {setSelectedAttributes} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
 import imageStyles from './images.styles';
 import useImagesHook from './useImages';
@@ -31,8 +32,9 @@ const ImageGallery = (props) => {
       .then((doesExist) => {
         if (doesExist) {
           console.log('Opening image', image.id, '...');
-          dispatch({type: spotReducers.SET_SELECTED_ATTRIBUTES, attributes: [image]});
-          dispatch({type: homeReducers.TOGGLE_IMAGE_MODAL, value: true});
+          // dispatch({type: spotReducers.SET_SELECTED_ATTRIBUTES, attributes: [image]});
+          dispatch(setSelectedAttributes([image]));
+          dispatch(setImageModalVisible({bool: true}));
         }
         else Alert.alert('Missing Image!', 'Unable to find image file on this device.');
       })
