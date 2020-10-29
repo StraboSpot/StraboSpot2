@@ -65,11 +65,11 @@ export const mapReducer = (state = initialState, action) => {
         ...state,
         customMaps: action.customMaps,
       };
-    case mapReducers.DELETE_OFFLINE_MAP:
-      console.log('Deleting Offline Map: ', action.offlineMap);
-      return {
-        state,
-      };
+    // case mapReducers.DELETE_OFFLINE_MAP:
+    //   console.log('Deleting Offline Map: ', action.offlineMap);
+    //   return {
+    //     state,
+    //   };
     case mapReducers.VERTEX_START_COORDS:
       console.log('Set vertex selected start coords: ', action.vertexStartCoords);
       return {
