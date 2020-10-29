@@ -5,20 +5,20 @@ export const generalKeysIcons = {
   images: require('../../assets/icons/Photo_transparent.png'),
   samples: require('../../assets/icons/Sample_transparent.png'),
   other_features: require('../../assets/icons/QuestionMark_pressed.png'),
-  pet: require('../../assets/icons/QuestionMark_pressed.png'),
-  fabrics: require('../../assets/icons/QuestionMark_pressed.png'),
+  pet: require('../../assets/icons/Petrology_transparent.png'),
+  fabrics: require('../../assets/icons/Fabric_transparent.png'),
   tags: require('../../assets/icons/Tag_transparent.png'),
 };
 
 export const sedKeysIcons = {
-  strat_section: require('../../assets/icons/Lithologies.png'),
-  interval: require('../../assets/icons/Lithologies.png'),
-  lithologies: require('../../assets/icons/Lithologies.png'),
-  bedding: require('../../assets/icons/Bedding.png'),
-  structures: require('../../assets/icons/SedStructure_pressed.png'),
-  diagenesis: require('../../assets/icons/Diagenesis.png'),
-  fossils: require('../../assets/icons/Fossil.png'),
-  interpretations: require('../../assets/icons/SedInterpretation.png'),
+  strat_section: require('../../assets/icons/SedStratColumn_transparent.png'),
+  interval: require('../../assets/icons/QuestionMark_pressed.png'),
+  lithologies: require('../../assets/icons/SedLithologies_transparent.png'),
+  bedding: require('../../assets/icons/SedBedding_transparent.png'),
+  structures: require('../../assets/icons/SedStructure_transparent.png'),
+  diagenesis: require('../../assets/icons/SedDiagenesis_transparent.png'),
+  fossils: require('../../assets/icons/SedFossil_transparent.png'),
+  interpretations: require('../../assets/icons/SedInterpretation_transparent.png'),
 };
 
 export const spotReducers = {

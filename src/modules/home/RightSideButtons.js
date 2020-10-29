@@ -102,7 +102,7 @@ const RightSideButtons = (props) => {
           <IconButton
             style={{top: 5}}
             source={props.mapMode === MapModes.DRAW.FREEHANDLINE
-              ? require('../../assets/icons/LineButton_pressed_copy.png')
+              ? require('../../assets/icons/LineFreehandButton_pressed.png')
               : (props.mapMode === MapModes.DRAW.LINE
                 ? require('../../assets/icons/LineButton_pressed.png')
                 : require('../../assets/icons/LineButton.png'))}
