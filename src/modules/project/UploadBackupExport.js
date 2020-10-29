@@ -26,10 +26,10 @@ const UploadBackAndExport = (props) => {
 
   const dispatch = useDispatch();
   const datasets = useSelector(state => state.project.datasets);
+  const activeDatasetsIds = useSelector(state => state.project.activeDatasetsIds)
   const isOnline = useSelector(state => state.home.isOnline);
   const project = useSelector(state => state.project.project);
 
-  const [activeDatasets, setActiveDatasets] = useState(null);
   const [dialogBoxType, setDialogBoxType] = useState(null);
   const [isUploadDialogVisible, setIsUploadDialogVisible] = useState(false);
   const [exportFileName, setExportFileName] = useState(
@@ -69,10 +69,6 @@ const UploadBackAndExport = (props) => {
   const initializeUpload = () => {
     setDialogBoxType('upload');
     console.log('Initializing Upload...');
-    const filteredDatasets = Object.values(datasets).filter(dataset => {
-      return dataset.active === true;
-    });
-    setActiveDatasets(filteredDatasets);
     setIsUploadDialogVisible(true);
   };
 
@@ -154,6 +150,7 @@ const UploadBackAndExport = (props) => {
 
   const renderDialogBox = () => {
     if (dialogBoxType === 'upload') {
+      const activeDatasets = activeDatasetsIds.map(datasetId => datasets[datasetId]);
       return (
         <UploadDialogBox
           dialogTitle={'OVERWRITE WARNING!'}

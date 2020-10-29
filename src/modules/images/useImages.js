@@ -246,7 +246,7 @@ const useImages = () => {
     console.log('New image data:', imageData);
     let height = imageData.height;
     let width = imageData.width;
-    const tempImageURI = Platform.OS === 'ios' ? imageData.path : 'file://' + imageData.path;
+    const tempImageURI = Platform.OS === 'ios' ? imageData.uri || imageData.path : 'file://' + imageData.path;
     if (!height || !width) ({height, width} = await getImageHeightAndWidth(tempImageURI));
     let imageId = getNewId();
     let imageURI = getLocalImageURI(imageId);
