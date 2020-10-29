@@ -5,8 +5,8 @@ import * as Sentry from '@sentry/react-native';
 import * as turf from '@turf/turf';
 import {Button} from 'react-native-elements';
 import {FlatListSlider} from 'react-native-flatlist-slider';
-import {BallIndicator} from 'react-native-indicators';
-import {useDispatch, useSelector} from 'react-redux';
+import {DotIndicator} from 'react-native-indicators';
+import {connect, useDispatch, useSelector} from 'react-redux';
 
 import sharedDialogStyles from '../../shared/common.styles';
 import {animatePanels, isEmpty} from '../../shared/Helpers';
@@ -258,11 +258,8 @@ const Home = (props) => {
         useMaps.setPointAtCurrentLocation().then((point) => {
           console.log('Point', point);
           useImages.launchCameraFromNotebook().then((imagesSavedLength) => {
-            imagesSavedLength === 1
-              ? toastRef.current.show(`${imagesSavedLength} photo saved in spot: ${point.properties.name}`)
-              : (
-                toastRef.current.show(`${imagesSavedLength} photos saved in spot: ${props.selectedSpot.properties.name}`)
-              );
+            toastRef.current.show(imagesSavedLength + ' photo' + (imagesSavedLength === 1 ? '' : 's')
+              + ' saved in Spot' + point.properties.name);
             openNotebookPanel();
           });
         });
@@ -417,7 +414,7 @@ const Home = (props) => {
       await mapViewComponent.current.goToCurrentLocation();
       useHome.toggleLoading(false);
     }
- catch (err) {
+    catch (err) {
       useHome.toggleLoading(false);
       Alert.alert('Geolocation Error', err);
     }
@@ -444,9 +441,7 @@ const Home = (props) => {
         break;
       case 'takePhoto':
         useImages.launchCameraFromNotebook().then((imagesSavedLength) => {
-          imagesSavedLength === 1
-            ? toastRef.current.show(`${imagesSavedLength} photo saved!`)
-            : toastRef.current.show(`${imagesSavedLength} photos saved!`);
+          toastRef.current.show(imagesSavedLength + ' photo' + (imagesSavedLength === 1 ? '' : 's') + ' saved');
         });
         break;
       case 'importPhoto':
@@ -680,28 +675,28 @@ const Home = (props) => {
         // disabled={progress !== 1 && !uploadErrors}
       >
         <View style={{minHeight: 100}}>
-          {isModalLoading && (
-            <View style={{flex: 1}}>
-              <BallIndicator
-                color={'darkgrey'}
-                count={8}
-                size={30}
-              />
-            </View>
-          )}
-          <View style={{flex: 1, paddingTop: 15}}>
+          <View style={{paddingTop: 15}}>
             <Text style={{textAlign: 'center'}}>{statusMessages.join('\n')}</Text>
-            {(statusMessages.includes('Download Complete!') || statusMessages.includes('Upload Complete!')
-            || statusMessages.includes('There are no active datasets.') || statusMessages.includes('Success!')
-            || statusMessages.includes('Project Backup Complete!') || statusMessages.includes('Project loaded!')
-              || statusMessages.includes('No Spots!') || statusMessages.includes('Datasets Saved.'))
-            && (
-              <Button
-                title={'OK'}
-                type={'clear'}
-                onPress={() => dispatch(setStatusMessagesModalVisible(false))}
-              />
-            )}
+            <View style={{paddingTop: 20}}>
+              {isModalLoading && (
+                <DotIndicator
+                  color={'darkgrey'}
+                  count={4}
+                  size={8}
+                />
+              )}
+              {(statusMessages.includes('Download Complete!') || statusMessages.includes('Upload Complete!')
+                || statusMessages.includes('There are no active datasets.') || statusMessages.includes('Success!')
+                || statusMessages.includes('Project Backup Complete!') || statusMessages.includes('Project loaded!')
+                || statusMessages.includes('Upload Failed!'))
+              && (
+                <Button
+                  title={'OK'}
+                  type={'clear'}
+                  onPress={() => dispatch(setStatusMessagesModalVisible(false))}
+                />
+              )}
+            </View>
           </View>
         </View>
       </StatusDialogBox>

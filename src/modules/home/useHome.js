@@ -9,6 +9,7 @@ import {doesBackupDirectoryExist} from '../project/projects.slice';
 import {spotReducers} from '../spots/spot.constants';
 import {clearedSelectedSpots} from '../spots/spots.slice';
 import {
+  clearedStatusMessages,
   setLoadingStatus,
   setAllSpotsPanelVisible,
   setModalVisible,
@@ -45,6 +46,7 @@ const useHome = (props) => {
     dispatch(setModalVisible({modal: null}));
     dispatch(setMainMenuPanelVisible(false));
     dispatch(setMenuSelectionPage({name: undefined}));
+    dispatch(clearedStatusMessages());
     dispatch(setStatusMessagesModalVisible(false));
     // dispatch({type: redux.CLEAR_STORE});
     await checkForDeviceBackupDir();

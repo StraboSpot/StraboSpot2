@@ -6,7 +6,6 @@ import RNSketchCanvas, {SketchCanvas} from '@terrylinla/react-native-sketch-canv
 import {useDispatch} from 'react-redux';
 
 import useImagesHook from '../images/useImages';
-import {spotReducers} from '../spots/spot.constants';
 import {editedSpotImages} from '../spots/spots.slice';
 import styles from './sketch.styles';
 
@@ -23,23 +22,26 @@ const Sketch = (props) => {
   }, [imageId]);
 
   const saveSketch = async (success, path) => {
-    console.log(success, 'Path:', path);
-    if (success) {
-      const savedSketch = await useImages.saveFile(path);
-      // dispatch({type: spotReducers.EDIT_SPOT_IMAGES, images: [{...savedSketch, image_type: 'sketch'}]});
-      dispatch(editedSpotImages([{...savedSketch, image_type: 'sketch'}]));
-      Alert.alert(`Sketch ${savedSketch.id} Saved!`,
-        null,
-        [{
-          text: 'Cancel',
-          onPress: () => console.log('Cancel Pressed'),
-          style: 'cancel',
-        }, {
-          text: 'OK', onPress: () => navigation.pop(),
-        }],
-      );
+    try {
+      console.log(success, 'Path:', path);
+      if (success) {
+        const savedSketch = await useImages.saveFile({'path': path});
+        dispatch(editedSpotImages([{...savedSketch, image_type: 'sketch'}]));
+        Alert.alert(`Sketch ${savedSketch.id} Saved!`,
+          null,
+          [{
+            text: 'Cancel',
+            onPress: () => console.log('Cancel Pressed'),
+            style: 'cancel',
+          }, {
+            text: 'OK', onPress: () => navigation.pop(),
+          }],
+        );
+      }
+      else throw Error;
     }
-    else {
+    catch (err) {
+      console.error('Error Saving Sketch', err);
       Alert.alert('Error Saving Sketch!',
         null,
         [{
