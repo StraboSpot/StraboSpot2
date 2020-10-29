@@ -8,7 +8,7 @@ import commonStyles from '../../shared/common.styles';
 import ButtonRounded from '../../shared/ui/ButtonRounded';
 import {imageStyles, useImagesHook} from '../images';
 import {mapReducers} from '../maps/maps.constants';
-import {setCurrentImageBasemap} from '../maps/mapsSliceTemp';
+import {setCurrentImageBasemap} from '../maps/maps.slice';
 import {NotebookPages} from '../notebook-panel/notebook.constants';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';

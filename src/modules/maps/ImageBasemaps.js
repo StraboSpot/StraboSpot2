@@ -10,7 +10,7 @@ import useImagesHook from '../images/useImages';
 import attributesStyles from '../main-menu-panel/attributes.styles';
 import useSpotsHook from '../spots/useSpots';
 import {mapReducers} from './maps.constants';
-import {setCurrentImageBasemap} from './mapsSliceTemp';
+import {setCurrentImageBasemap} from './maps.slice';
 
 const ImageBaseMaps = (props) => {
   const dispatch = useDispatch();

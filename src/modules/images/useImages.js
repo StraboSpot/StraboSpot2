@@ -16,7 +16,7 @@ import {
 } from '../home/home.slice';
 import useHomeHook from '../home/useHome';
 import {mapReducers} from '../maps/maps.constants';
-import {setCurrentImageBasemap} from '../maps/mapsSliceTemp';
+import {setCurrentImageBasemap} from '../maps/maps.slice';
 import useExportHook from '../project/useExport';
 import {spotReducers} from '../spots/spot.constants';
 import {editedSpotImage, editedSpotImages, editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';

@@ -29,7 +29,7 @@ import {
   setFreehandFeatureCoords,
   setSpotsInMapExtent,
   setVertexStartCoords,
-} from './mapsSliceTemp';
+} from './maps.slice';
 import useMapFeaturesHook from './useMapFeatures';
 import useMapsHook from './useMaps';
 

@@ -24,7 +24,7 @@ import sidePanelStyles from '../main-menu-panel/sidePanel.styles';
 import CustomMapDetails from '../maps/custom-maps/CustomMapDetails';
 import Map from '../maps/Map';
 import {MapModes, mapReducers} from '../maps/maps.constants';
-import {setCurrentImageBasemap} from '../maps/mapsSliceTemp';
+import {setCurrentImageBasemap} from '../maps/maps.slice';
 import SaveMapsModal from '../maps/offline-maps/SaveMapsModal';
 import useMapsHook from '../maps/useMaps';
 import VertexDrag from '../maps/VertexDrag';

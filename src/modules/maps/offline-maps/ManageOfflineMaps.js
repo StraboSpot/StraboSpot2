@@ -10,7 +10,7 @@ import {isEmpty} from '../../../shared/Helpers';
 import {setOfflineMapsModalVisible} from '../../home/home.slice';
 import Divider from '../../main-menu-panel/MainMenuPanelDivider';
 import {mapReducers} from '../maps.constants';
-import {setCurrentBasemap, setOfflineMap} from '../mapsSliceTemp';
+import {setCurrentBasemap, setOfflineMap} from '../maps.slice';
 import styles from './offlineMaps.styles';
 
 var RNFS = require('react-native-fs');

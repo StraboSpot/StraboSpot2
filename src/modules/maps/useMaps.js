@@ -21,7 +21,7 @@ import {spotReducers} from '../spots/spot.constants';
 import {setSelectedSpot} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
 import {basemaps, mapProviders, mapReducers, geoLatLngProjection, pixelProjection} from './maps.constants';
-import {addedCustomMap, deletedCustomMap, selectedCustomMapToEdit, setCurrentBasemap, setMapSymbols} from './mapsSliceTemp';
+import {addedCustomMap, deletedCustomMap, selectedCustomMapToEdit, setCurrentBasemap, setMapSymbols} from './maps.slice';
 
 const useMaps = () => {
   const [useServerRequests] = useServerRequestsHook();

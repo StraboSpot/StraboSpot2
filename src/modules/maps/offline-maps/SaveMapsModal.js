@@ -12,7 +12,7 @@ import RNFetchBlob from 'rn-fetch-blob';
 
 import {toNumberFixedValue} from '../../../shared/Helpers';
 import * as themes from '../../../shared/styles.constants';
-import {setOfflineMap} from '../mapsSliceTemp';
+import {setOfflineMap} from '../maps.slice';
 import useMapsHook from '../useMaps';
 
 const RNFS = require('react-native-fs');

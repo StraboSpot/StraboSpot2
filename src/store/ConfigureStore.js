@@ -14,7 +14,7 @@ import {
 
 import homeSlice from '../modules/home/home.slice';
 import mainMenuSlice from '../modules/main-menu-panel/mainMenuPanel.slice';
-import {mapReducer} from '../modules/maps/maps.reducer';
+import mapsSlice from '../modules/maps/maps.slice';
 import notebookSlice from '../modules/notebook-panel/notebook.slice';
 import projectSlice from '../modules/project/projects.slice';
 import spotsSlice from '../modules/spots/spots.slice';
@@ -46,7 +46,7 @@ const middleware = process.env.NODE_ENV !== 'production'
 const combinedReducers = combineReducers({
   home: homeSlice,
   notebook: persistReducer(notebookConfig, notebookSlice),
-  map: mapReducer,
+  map: mapsSlice,
   project: projectSlice,
   mainMenu: mainMenuSlice,
   spot: spotsSlice,
