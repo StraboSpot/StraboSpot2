@@ -10,6 +10,7 @@ import {isEmpty} from '../../../shared/Helpers';
 import {setOfflineMapsModalVisible} from '../../home/home.slice';
 import Divider from '../../main-menu-panel/MainMenuPanelDivider';
 import {mapReducers} from '../maps.constants';
+import {setCurrentBasemap, setOfflineMap} from '../mapsSliceTemp';
 import styles from './offlineMaps.styles';
 
 var RNFS = require('react-native-fs');
@@ -23,6 +24,7 @@ const ManageOfflineMaps = (props) => {
   const tileCacheDirectory = devicePath + tilesDirectory + '/TileCache';
   const zipsDirectory = devicePath + tilesDirectory + '/TileZips';
   const tileTempDirectory = devicePath + tilesDirectory + '/TileTemp';
+  const offlineMaps = useSelector(state => state.map.offlineMaps);
   const isOnline = useSelector(state => state.home.isOnline);
   const dispatch = useDispatch();
 
@@ -38,7 +40,7 @@ const ManageOfflineMaps = (props) => {
 
     tempCurrentBasemap = {...map, url: [url], tilePath: tilePath};
     console.log('tempCurrentBasemap: ', tempCurrentBasemap);
-    await props.onCurrentBasemap(tempCurrentBasemap);
+    dispatch(setCurrentBasemap(tempCurrentBasemap));
     // props.closeSettingsDrawer();
   };
 
@@ -88,7 +90,7 @@ const ManageOfflineMaps = (props) => {
 
     //now, delete map from Redux
     let keyToDelete;
-    let currentOfflineMaps = props.offlineMaps;
+    let currentOfflineMaps = offlineMaps;
     Object.entries(currentOfflineMaps).forEach(([key, value]) => {
       if (value.mapId === map.mapId) keyToDelete = key;
     });
@@ -97,7 +99,7 @@ const ManageOfflineMaps = (props) => {
     delete currentOfflineMaps[keyToDelete];
     // console.log(currentOfflineMaps);
 
-    await props.onOfflineMaps(currentOfflineMaps);
+    dispatch(setOfflineMap(currentOfflineMaps));
     // console.log('Saved offlineMaps to Redux.');
   };
 
@@ -112,11 +114,11 @@ const ManageOfflineMaps = (props) => {
       />
       <Divider sectionText={'offline maps'} style={styles.divider}/>
       <View style={styles.sectionsContainer}>
-        {!isEmpty(props.offlineMaps) ? (
-          Object.values(props.offlineMaps).map((item, i) => (
+        {!isEmpty(offlineMaps) ? (
+          Object.values(offlineMaps).map((item, i) => (
             <ListItem
               containerStyle={styles.list}
-              bottomDivider={i < Object.values(props.offlineMaps).length - 1}
+              bottomDivider={i < Object.values(offlineMaps).length - 1}
               key={item.id}
             >
               <ListItem.Content>
@@ -150,22 +152,4 @@ const ManageOfflineMaps = (props) => {
   );
 };
 
-const mapStateToProps = (state) => {
-  return {
-    offlineMaps: state.map.offlineMaps,
-    currentBasemap: state.map.currentBasemap,
-  };
-};
-
-const mapDispatchToProps = {
-  onOfflineMaps: (offlineMaps) => ({
-    type: mapReducers.OFFLINE_MAPS,
-    offlineMaps: offlineMaps,
-  }),
-  onCurrentBasemap: (basemap) => ({
-    type: mapReducers.CURRENT_BASEMAP,
-    basemap: basemap,
-  }),
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(ManageOfflineMaps);
+export default ManageOfflineMaps;

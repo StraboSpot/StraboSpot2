@@ -12,7 +12,7 @@ import RNFetchBlob from 'rn-fetch-blob';
 
 import {toNumberFixedValue} from '../../../shared/Helpers';
 import * as themes from '../../../shared/styles.constants';
-import {mapReducers} from '../maps.constants';
+import {setOfflineMap} from '../mapsSliceTemp';
 import useMapsHook from '../useMaps';
 
 const RNFS = require('react-native-fs');
@@ -334,7 +334,7 @@ const SaveMapsModal = (props) => {
     const mapSavedObject = Object.assign({}, ...newOfflineMapsData.map(map => ({[map.id]: map})));
     console.log('Map to save to Redux', mapSavedObject);
 
-    await dispatch({type: mapReducers.OFFLINE_MAPS, offlineMaps: mapSavedObject});
+    await dispatch(setOfflineMap(mapSavedObject));
     console.log('Saved offlineMaps to Redux.');
   };
 

@@ -91,7 +91,7 @@ const LeftSideButtons = (props) => {
         visible={dialogs.baseMapMenuVisible}
         close={() => toggleDialog('baseMapMenuVisible')}
         onPress={(name) => {
-          useMaps.setCurrentBasemap(name);
+          useMaps.setBasemap(name);
           toggleDialog('baseMapMenuVisible');
         }}
         onTouchOutside={() => toggleDialog('baseMapMenuVisible')}

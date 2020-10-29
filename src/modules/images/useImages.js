@@ -16,6 +16,7 @@ import {
 } from '../home/home.slice';
 import useHomeHook from '../home/useHome';
 import {mapReducers} from '../maps/maps.constants';
+import {setCurrentImageBasemap} from '../maps/mapsSliceTemp';
 import useExportHook from '../project/useExport';
 import {spotReducers} from '../spots/spot.constants';
 import {editedSpotImage, editedSpotImages, editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
@@ -305,7 +306,7 @@ const useImages = () => {
       updatedImages.push(imageCopy);
       dispatch(editedSpotProperties({field: 'images', value: updatedImages}));
     }
-    if (!imageCopy.annotated) dispatch({type: mapReducers.CURRENT_IMAGE_BASEMAP, currentImageBasemap: undefined});
+    if (!imageCopy.annotated) dispatch(setCurrentImageBasemap(undefined));
   };
 
   const setImageHeightAndWidth = async (imageBasemap) => {
@@ -318,7 +319,7 @@ const useImages = () => {
         dispatch(editedSpotImage(updatedImage));
         // dispatch({type: spotReducers.EDIT_SPOT_IMAGE, image: updatedImage});
         if (currentImageBasemap.id === updatedImage.id) {
-          dispatch({type: mapReducers.CURRENT_IMAGE_BASEMAP, currentImageBasemap: updatedImage});
+          dispatch(setCurrentImageBasemap(updatedImage));
         }
       }
     }

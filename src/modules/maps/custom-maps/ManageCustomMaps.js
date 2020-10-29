@@ -2,7 +2,7 @@ import React from 'react';
 import {Text, View} from 'react-native';
 
 import {ListItem} from 'react-native-elements';
-import {connect} from 'react-redux';
+import {useSelector} from 'react-redux';
 
 import {isEmpty} from '../../../shared/Helpers';
 import AddButton from '../../../shared/ui/AddButton';
@@ -12,7 +12,9 @@ import useMapHook from '../useMaps';
 import styles from './customMaps.styles';
 
 const ManageCustomMaps = (props) => {
+  const customMaps = useSelector(state => state.maps.customMaps);
   const [useMaps] = useMapHook();
+
   const mapTypeName = (source) => {
     let name;
     if (source === 'mapbox_styles') name = 'Mapbox Styles';
@@ -28,13 +30,13 @@ const ManageCustomMaps = (props) => {
         title={'Add new Custom Map'}
       />
       <Divider sectionText={'current custom maps'} style={styles.header}/>
-      {!isEmpty(props.customMaps)
+      {!isEmpty(customMaps)
         ? (
           <View style={styles.sectionsContainer}>
-            {Object.values(props.customMaps).map((item, i) => (
+            {Object.values(customMaps).map((item, i) => (
               <ListItem
                 containerStyle={styles.list}
-                bottomDivider={i < Object.values(props.customMaps).length - 1}
+                bottomDivider={i < Object.values(customMaps).length - 1}
                 key={item.id}
                 onPress={() => useMaps.customMapDetails(item)}>
                 <ListItem.Content>
@@ -60,15 +62,4 @@ const ManageCustomMaps = (props) => {
   );
 };
 
-const mapStateToProps = (state) => {
-  return {
-    customMaps: state.map.customMaps,
-    currentBasemap: state.map.currentBasemap,
-  };
-};
-
-const mapDispatchToProps = {
-  onCurrentBasemap: (basemap) => ({type: mapReducers.CURRENT_BASEMAP, basemap: basemap}),
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(ManageCustomMaps);
+export default ManageCustomMaps;

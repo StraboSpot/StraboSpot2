@@ -28,6 +28,7 @@ import Divider from '../../main-menu-panel/MainMenuPanelDivider';
 import sidePanelStyles from '../../main-menu-panel/sidePanel.styles';
 import SidePanelHeader from '../../main-menu-panel/sidePanel/SidePanelHeader';
 import {customMapTypes, mapReducers} from '../maps.constants';
+import {addedCustomMap, selectedCustomMapToEdit} from '../mapsSliceTemp';
 import useMapHook from '../useMaps';
 import styles from './customMaps.styles';
 
@@ -54,7 +55,7 @@ const AddCustomMaps = () => {
     return function cleanup() {
       Keyboard.removeListener('keyboardDidShow', handleKeyboardDidShow);
       Keyboard.removeListener('keyboardDidHide', handleKeyboardDidHide);
-      dispatch({type: mapReducers.SELECTED_CUSTOM_MAP_TO_EDIT, customMap: {}});
+      dispatch(selectedCustomMapToEdit({}));
       console.log('Listners Removed');
     };
   }, []);
@@ -77,7 +78,7 @@ const AddCustomMaps = () => {
     const customMap = await useMaps.saveCustomMap(editableCustomMapData);
     console.log(customMap);
     if (customMap !== undefined) {
-      dispatch({type: mapReducers.ADD_CUSTOM_MAP, customMap: customMap});
+      dispatch(addedCustomMap(customMap));
       dispatch(setSidePanelVisible({view: null, bool: false}));
       dispatch(setMenuSelectionPage({name: undefined}));
       dispatch(clearedStatusMessages());
@@ -242,7 +243,7 @@ const AddCustomMaps = () => {
       <SidePanelHeader
         backButton={() => {
           dispatch(setSidePanelVisible({bool: false}));
-          dispatch({type: mapReducers.SELECTED_CUSTOM_MAP_TO_EDIT, customMap: {}});
+          dispatch(selectedCustomMapToEdit({}));
         }}
         title={'Custom Maps'}
         headerTitle={'Add Map'}

@@ -17,6 +17,7 @@ import {
 } from '../home/home.slice';
 import useImagesHook from '../images/useImages';
 import {mapReducers} from '../maps/maps.constants';
+import {addedMapsFromDevice, clearedMaps} from '../maps/mapsSliceTemp';
 import {spotReducers} from '../spots/spot.constants';
 import {addedSpotsFromDevice, clearedSpots} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
@@ -180,7 +181,7 @@ const useProject = () => {
     await dispatch(clearedProject());
     await dispatch(clearedSpots());
     await dispatch(clearedDatasets());
-    await dispatch({type: mapReducers.CLEAR_MAPS});
+    await dispatch(clearedMaps());
     // }
     return Promise.resolve();
   };
@@ -240,8 +241,8 @@ const useProject = () => {
       dispatch(addedSpotsFromDevice(spotsDb));
       dispatch(addedProject(projectDb.project));
       if (!isEmpty(otherMapsDb) || !isEmpty(mapNamesDb)) {
-        dispatch({type: mapReducers.ADD_MAPS_FROM_DEVICE, field: 'customMaps', maps: otherMapsDb});
-        dispatch({type: mapReducers.ADD_MAPS_FROM_DEVICE, field: 'offlineMaps', maps: mapNamesDb});
+        dispatch(addedMapsFromDevice({mapType: 'customMaps', maps: otherMapsDb}));
+        dispatch(addedMapsFromDevice({mapType: 'offlineMaps', maps: mapNamesDb}));
       }
       return Promise.resolve(selectedProject.projectDb.project);
     }

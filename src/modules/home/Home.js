@@ -6,7 +6,7 @@ import * as turf from '@turf/turf';
 import {Button} from 'react-native-elements';
 import {FlatListSlider} from 'react-native-flatlist-slider';
 import {BallIndicator} from 'react-native-indicators';
-import {connect, useDispatch, useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 import sharedDialogStyles from '../../shared/common.styles';
 import {animatePanels, isEmpty} from '../../shared/Helpers';
@@ -24,6 +24,7 @@ import sidePanelStyles from '../main-menu-panel/sidePanel.styles';
 import CustomMapDetails from '../maps/custom-maps/CustomMapDetails';
 import Map from '../maps/Map';
 import {MapModes, mapReducers} from '../maps/maps.constants';
+import {setCurrentImageBasemap} from '../maps/mapsSliceTemp';
 import SaveMapsModal from '../maps/offline-maps/SaveMapsModal';
 import useMapsHook from '../maps/useMaps';
 import VertexDrag from '../maps/VertexDrag';
@@ -41,7 +42,6 @@ import ProjectDescription from '../project/ProjectDescription';
 import useProjectHook from '../project/useProject';
 import NotebookSamplesModal from '../samples/NotebookSamplesModal';
 import ShortcutSamplesModal from '../samples/ShortcutSamplesModal';
-import {spotReducers} from '../spots/spot.constants';
 import {addedSpot, clearedSelectedSpots, setSelectedSpot} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
 import {
@@ -326,7 +326,7 @@ const Home = (props) => {
         mapViewComponent.current.toggleUserLocation(value);
         break;
       case 'closeImageBasemap':
-        dispatch(({type: mapReducers.CURRENT_IMAGE_BASEMAP, currentImageBasemap: undefined}));
+        dispatch(setCurrentImageBasemap(undefined));
         break;
       // Map Actions
       case 'zoom':

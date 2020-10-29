@@ -13,10 +13,23 @@ import {Modals} from '../home/home.constants';
 import {setModalVisible} from '../home/home.slice';
 import useImagesHook from '../images/useImages';
 import {spotReducers} from '../spots/spot.constants';
-import {addedSpot, addedSpots, clearedSelectedSpots, setIntersectedSpotsForTagging, setSelectedSpot} from '../spots/spots.slice';
+import {
+  addedSpot,
+  addedSpots,
+  clearedSelectedSpots,
+  setIntersectedSpotsForTagging,
+  setSelectedSpot,
+} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
 import {MapLayer1, MapLayer2} from './Basemaps';
 import {geoLatLngProjection, LATITUDE, LONGITUDE, MapModes, pixelProjection, mapReducers} from './maps.constants';
+import {
+  clearedVertexes,
+  setCurrentImageBasemap,
+  setFreehandFeatureCoords,
+  setSpotsInMapExtent,
+  setVertexStartCoords,
+} from './mapsSliceTemp';
 import useMapFeaturesHook from './useMapFeatures';
 import useMapsHook from './useMaps';
 
@@ -90,7 +103,7 @@ const Map = React.forwardRef((props, ref) => {
     ref: {mapRef: map, cameraRef: camera},
     onMapPress: (e) => onMapPress(e),
     onMapLongPress: (e) => onMapLongPress(e),
-    setSpotsInMapExtent: () => setSpotsInMapExtent(),
+    spotsInMapExtent: () => spotsInMapExtent(),
   };
 
   useEffect(() => {
@@ -130,7 +143,7 @@ const Map = React.forwardRef((props, ref) => {
   useEffect(() => {
     console.log('UE3 Map [user]');
     console.log('Updating DOM on first render');
-    if (!currentBasemap) useMaps.setCurrentBasemap();
+    if (!currentBasemap) useMaps.setBasemap().catch(console.error);
     if (!currentImageBasemap) setCurrentLocationAsCenter();
     clearVertexes();
   }, [user]);
@@ -177,6 +190,10 @@ const Map = React.forwardRef((props, ref) => {
     console.log('UE9 Map [defaultGeomType]');
     if (defaultGeomType) createDefaultGeomContinued();
   }, [defaultGeomType]);
+
+  const clearVertexes = () => {
+    dispatch(clearedVertexes());
+  };
 
   // Create a default geometry for a Spot that doesn't have geometry when 'Set in Current View' is clicked
   // then make it selected for immediate editing
@@ -539,11 +556,11 @@ const Map = React.forwardRef((props, ref) => {
       const [lat, lng] = useMaps.convertCoordinateProjections(pixelProjection, geoLatLngProjection,
         [coords[0], coords[1]]);
       const vertexCoordinates = await map.current.getPointInView([lat, lng]);
-      dispatch({type: mapReducers.VERTEX_START_COORDS, vertexStartCoords: vertexCoordinates});
+      dispatch(setVertexStartCoords(vertexCoordinates));
     }
     else {
       const vertexCoordinates = await map.current.getPointInView(vertex.geometry.coordinates);
-      dispatch({type: mapReducers.VERTEX_START_COORDS, vertexStartCoords: vertexCoordinates});
+      dispatch(setVertexStartCoords(vertexCoordinates));
     }
   };
 
@@ -819,7 +836,7 @@ const Map = React.forwardRef((props, ref) => {
         else {
           newOrEditedSpot = await useSpots.createSpot(feature);
           useMaps.setSelectedSpotOnMap(newOrEditedSpot);
-          dispatch(({type: mapReducers.FREEHAND_FEATURE_COORDS, freehandFeatureCoords: undefined}));// reset the freeHandCoordinates
+          dispatch(setFreehandFeatureCoords(undefined));// reset the freeHandCoordinates
         }
       }
     }
@@ -882,8 +899,8 @@ const Map = React.forwardRef((props, ref) => {
     }
     if (!isEmpty(editingModeData.spotsEdited)) {
       dispatch(addedSpots([...editingModeData.spotsNotEdited, ...editingModeData.spotsEdited]));
-    //   await dispatch(
-    //     {type: spotReducers.ADD_SPOTS, spots: [...editingModeData.spotsNotEdited, ...editingModeData.spotsEdited]});
+      //   await dispatch(
+      //     {type: spotReducers.ADD_SPOTS, spots: [...editingModeData.spotsNotEdited, ...editingModeData.spotsEdited]});
     }
     clearEditing();
   };
@@ -1191,7 +1208,7 @@ const Map = React.forwardRef((props, ref) => {
     if (selectedSpot && useMaps.isOnGeoMap(selectedSpot)) {
       // spot selected is on geomap, but currently on imagebasemap mode, turn off imagebasemap mode and zoomToSpot in async mode.
       if (currentImageBasemap) {
-        dispatch(({type: mapReducers.CURRENT_IMAGE_BASEMAP, currentImageBasemap: undefined}));
+        dispatch(setCurrentImageBasemap(undefined));
         setMapPropsMutable(m => ({
           ...m,
           zoomToSpot: true,
@@ -1208,10 +1225,7 @@ const Map = React.forwardRef((props, ref) => {
         const imageBasemapData = useSpots.getImageBasemaps().find(imgBasemap => {
           return imgBasemap.id === selectedSpot.properties.image_basemap;
         });
-        dispatch(({
-          type: mapReducers.CURRENT_IMAGE_BASEMAP,
-          currentImageBasemap: imageBasemapData,
-        }));
+        dispatch(setCurrentImageBasemap(imageBasemapData));
         setMapPropsMutable(m => ({
           ...m,
           zoomToSpot: true,
@@ -1261,7 +1275,7 @@ const Map = React.forwardRef((props, ref) => {
   };
 
   // Calculate the Spots in the current map extent and send to redux
-  const setSpotsInMapExtent = async () => {
+  const spotsInMapExtent = async () => {
     if (map && map.current) {
       const mapBounds = await map.current.getVisibleBounds();
       let right = mapBounds[0][0];
@@ -1270,12 +1284,9 @@ const Map = React.forwardRef((props, ref) => {
       let bottom = mapBounds[1][1];
       let bbox = [left, bottom, right, top];
       const bboxPoly = turf.bboxPolygon(bbox);
-      const spotsInMapExtent = useMapFeatures.getLassoedSpots([...mapProps.spotsSelected, ...mapProps.spotsNotSelected],
+      const spotsInMapExtent = await useMapFeatures.getLassoedSpots([...mapProps.spotsSelected, ...mapProps.spotsNotSelected],
         bboxPoly);
-      dispatch(({
-        type: mapReducers.SET_SPOTS_IN_MAP_EXTENT,
-        spots: spotsInMapExtent,
-      }));
+      dispatch(setSpotsInMapExtent(spotsInMapExtent));
     }
   };
 
@@ -1288,7 +1299,7 @@ const Map = React.forwardRef((props, ref) => {
   const toggleUserLocation = (value) => {
     setMapPropsMutable(m => ({
       ...m,
-      showUserLocation: value ,
+      showUserLocation: value,
     }));
   };
 
@@ -1312,10 +1323,6 @@ const Map = React.forwardRef((props, ref) => {
       zoomToSpotsExtent: zoomToSpotsExtent,
     };
   });
-
-  const clearVertexes = () => {
-    dispatch(({type: mapReducers.CLEAR_VERTEXES}));
-  };
 
   return (
     <View style={{flex: 1, zIndex: -1}}>
