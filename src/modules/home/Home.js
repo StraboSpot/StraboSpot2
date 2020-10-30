@@ -171,14 +171,14 @@ const Home = (props) => {
   }, [currentImageBasemap, customMaps]);
 
   useEffect(() => {
-    if (props.isImageModalVisible) populateImageSlideshowData();
+    if (isImageModalVisible) populateImageSlideshowData();
     else setImageSlideshowData([]);
-  }, [props.isImageModalVisible]);
+  }, [isImageModalVisible]);
 
   const populateImageSlideshowData = () => {
     toggleHomeDrawerButton();
-    let image = props.selectedImage;
-    let firstImageID = props.selectedImage.id;
+    let image = selectedImage;
+    let firstImageID = selectedImage.id;
     let uri = useImages.getLocalImageURI(firstImageID);
     let firstSlideshowImage = {image, uri};
     const imagesForSlideshow = Object.values(useSpots.getActiveSpotsObj()).reduce((acc, spot) => {
@@ -777,7 +777,7 @@ const Home = (props) => {
   };
 
   const toggleImageModal = () => {
-    dispatch(setImageModalVisible({bool: !isImageModalVisible}));
+    dispatch(setImageModalVisible(!isImageModalVisible));
   };
 
   const toggleNotebookPanel = () => {
@@ -863,19 +863,16 @@ const Home = (props) => {
         onTouchOutside={() => toggleDialog('notebookPanelMenuVisible')}
       />
       {(imageSlideshowData.length) > 0 && (
-        <SafeAreaView>
-          <ScrollView>
+        <View>
             <FlatListSlider
               data={imageSlideshowData}
               imageKey={'uri'}
               autoscroll={false}
               separator={0}
               loop={true}
-              width={props.deviceDimensions.width}
-              height={props.deviceDimensions.height}
-              onPress={(item) => {
-                console.log(item);
-              }}
+              width={deviceDimensions.width}
+              height={deviceDimensions.height}
+              indicatorContainerStyle={{position:'absolute', top: 20}}
               component={(
                 <Preview
                   toggle={() => toggleImageModal()}
@@ -883,8 +880,7 @@ const Home = (props) => {
                 />
               )}
             />
-          </ScrollView>
-        </SafeAreaView>
+        </View>
       )}
       {isHomeLoading && <LoadingSpinner/>}
       {notebookPanel}

@@ -100,7 +100,6 @@ const imageStyles = StyleSheet.create({
   },
   modalContainer: {
     flex: 1,
-    opacity: .75,
     // maxHeight: 700,
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
     borderBottomRightRadius: 20,

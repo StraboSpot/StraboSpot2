@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, TouchableOpacity, Image, ActivityIndicator} from 'react-native';
+import {Dimensions, View, TouchableOpacity, Image, ActivityIndicator, Platform} from 'react-native';
 
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import {useDispatch, useSelector} from 'react-redux';
@@ -7,10 +7,12 @@ import {useDispatch, useSelector} from 'react-redux';
 import IconButton from '../../shared/ui/IconButton';
 import ImagePropertiesModal from '../images/ImagePropertiesModal';
 import {NotebookPages} from '../notebook-panel/notebook.constants';
-import {spotReducers} from '../spots/spot.constants';
+import {setSelectedSpot, setSelectedAttributes} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
 import styles from './images.styles';
 
+const platform = Platform.OS === 'ios' ? 'screen' : 'window';
+const height = Dimensions.get(platform).height;
 
 const Preview = (props) => {
   const [useSpots] = useSpotsHook();
@@ -38,17 +40,18 @@ const Preview = (props) => {
     props.toggle();
     const spot = spots[spotId];
     props.openNotebookPanel(NotebookPages.OVERVIEW);
-    dispatch({type: spotReducers.SET_SELECTED_SPOT, spot: spot});
+    dispatch(setSelectedSpot(spot));
   };
 
   const updateImage = (item) => {
     setDisable(true);
-    dispatch({type: spotReducers.SET_SELECTED_ATTRIBUTES, attributes: [item.image]});
+    dispatch(setSelectedAttributes([item.image]));
     setImageNoteModal(true);
   };
 
   return (
     <TouchableOpacity
+      activeOpacity={1}
       style={[{height: props.height, width: props.width}]}
       onPress={() => setButtonsDisplay(!buttonsDisplay)}>
       <View>
@@ -59,8 +62,8 @@ const Preview = (props) => {
         />
       </View>
       {imageNoteModal && noteModal}
-      {buttonsDisplay && <View>
-        <View style={{position: 'absolute', left: 10, bottom: 50}}>
+      {buttonsDisplay && <View style={{}}>
+        <View style={{position: 'absolute', right: 10, bottom: height * .90}}>
           <IconButton
             style={styles.imageInfoButtons}
             source={require('../../assets/icons/Close.png')}
