@@ -26,6 +26,6 @@ const userProfileSlice = createSlice({
   },
 });
 
-export const {setUserData, setEncodedLogin} = userProfileSlice.actions;
+export const {setUserData} = userProfileSlice.actions;
 
 export default userProfileSlice.reducer;

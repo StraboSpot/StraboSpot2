@@ -21,6 +21,7 @@ import {addedSpotsFromDevice, clearedSpots} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
 import {
   addedDataset,
+  addedDatasets,
   addedProject,
   addedProjectDescription,
   clearedDatasets,
@@ -233,6 +234,7 @@ const useProject = () => {
       // dispatch({type: spotReducers.ADD_SPOTS_FROM_DEVICE, spots: spotsDb});
       dispatch(addedSpotsFromDevice(spotsDb));
       dispatch(addedProject(projectDb.project));
+      await getDatasets(projectDb, 'device');
       if (!isEmpty(otherMapsDb) || !isEmpty(mapNamesDb)) {
         dispatch(addedMapsFromDevice({mapType: 'customMaps', maps: otherMapsDb}));
         dispatch(addedMapsFromDevice({mapType: 'offlineMaps', maps: mapNamesDb}));
@@ -268,22 +270,28 @@ const useProject = () => {
     }
   };
 
-  const getDatasets = async (project) => {
-    dispatch(addedStatusMessage({statusMessage: 'Getting datasets from server...'}));
-    const projectDatasetsFromServer = await serverRequests.getDatasets(project.id, user.encoded_login);
-    if (projectDatasetsFromServer === 401) {
-      return Promise.reject();
+  const getDatasets = async (project, source) => {
+    if (source === 'device') {
+      dispatch(addedDatasets(project.datasets));
+      return Promise.resolve();
     }
     else {
-      if (projectDatasetsFromServer.datasets.length === 1) {
-        dispatch(setActiveDatasets({bool: true, dataset: projectDatasetsFromServer.datasets[0].id}));
-        dispatch(setSelectedDataset(projectDatasetsFromServer.datasets[0].id));
+      dispatch(addedStatusMessage({statusMessage: 'Getting datasets from server...'}));
+      const projectDatasetsFromServer = await serverRequests.getDatasets(project.id, user.encoded_login);
+      if (projectDatasetsFromServer === 401) {
+        return Promise.reject();
       }
-      const datasetsReassigned = Object.assign({},
-        ...projectDatasetsFromServer.datasets.map(item => ({[item.id]: item})));
-      dispatch(updatedDatasets(datasetsReassigned));
-      console.log('Saved datasets:', projectDatasetsFromServer);
-      return Promise.resolve(projectDatasetsFromServer);
+      else {
+        if (projectDatasetsFromServer.datasets.length === 1) {
+          dispatch(setActiveDatasets({bool: true, dataset: projectDatasetsFromServer.datasets[0].id}));
+          dispatch(setSelectedDataset(projectDatasetsFromServer.datasets[0].id));
+        }
+        const datasetsReassigned = Object.assign({},
+          ...projectDatasetsFromServer.datasets.map(item => ({[item.id]: item})));
+        dispatch(updatedDatasets(datasetsReassigned));
+        console.log('Saved datasets:', projectDatasetsFromServer);
+        return Promise.resolve(projectDatasetsFromServer);
+      }
     }
   };
 

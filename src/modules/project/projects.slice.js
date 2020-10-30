@@ -19,6 +19,9 @@ const projectSlice = createSlice({
     addedDataset(state, action) {
       state.datasets = {...state.datasets, [action.payload.id]: action.payload};
     },
+    addedDatasets(state, action) {
+      state.datasets = action.payload;
+    },
     addedProject(state, action) {
       state.project = action.payload;
     },
@@ -96,6 +99,7 @@ const projectSlice = createSlice({
 
 export const {
   addedDataset,
+  addedDatasets,
   addedProject,
   addedProjectDescription,
   addedSpotsIdsToDataset,
