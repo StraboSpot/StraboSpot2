@@ -1,33 +1,31 @@
-import {redux} from '../../shared/app.constants';
-import * as UserInfo from './user.constants';
+import {createSlice} from '@reduxjs/toolkit';
 
-const initialState = {};
-
-export const userReducer = (state = initialState, action) => {
-
-  switch (action.type) {
-    case UserInfo.USER_DATA:
-      return {
-        ...state,
-        name: action.userData.name,
-        email: action.userData.email,
-        mapboxToken: action.userData.mapboxToken,
-        password: action.userData.password,
-      };
-
-    case UserInfo.ENCODED_LOGIN:
-      return {
-        ...state,
-        encoded_login: action.value,
-      };
-    case UserInfo.USER_IMAGE:
-      return {
-        ...state,
-        image: action.userImage,
-      };
-    case redux.CLEAR_STORE:
-      console.log('Clearing User Profile...');
-      return initialState;
-  }
-  return state;
+const initialUserState = {
+  encoded_login: null,
+  name: null,
+  email: null,
+  mapboxToken: null,
+  password: null,
+  image: null,
 };
+
+// createSlice combines reducers, actions, and constants
+const userProfileSlice = createSlice({
+  name: 'user',
+  initialState: initialUserState,
+  reducers: {
+    setUserData(state, action) {
+      const {name, email, mapboxToken, password, encodedLogin, image} = action.payload;
+      state.name = name;
+      state.email = email;
+      state.mapboxToken = mapboxToken;
+      state.password = password;
+      state.encoded_login = encodedLogin;
+      state.image = image;
+    },
+  },
+});
+
+export const {setUserData, setEncodedLogin} = userProfileSlice.actions;
+
+export default userProfileSlice.reducer;
