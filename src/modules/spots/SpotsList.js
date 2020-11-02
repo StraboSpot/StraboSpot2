@@ -6,7 +6,7 @@ import {useSelector} from 'react-redux';
 
 import {isEmpty} from '../../shared/Helpers';
 import attributesStyles from '../main-menu-panel/attributes.styles';
-import {SortedViews} from '../main-menu-panel/mainMenuPanel.constants';
+import {SORTED_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import SortingButtons from '../main-menu-panel/SortingButtons';
 import {useTagsHook} from '../tags';
 import useSpotsHook from './useSpots';
@@ -66,11 +66,11 @@ const SpotsList = (props) => {
   const renderSpotsList = () => {
     let sortedSpots = useSpots.getSpotsSortedReverseChronologically();
     let noSpotsText = 'No Spots';
-    if (sortedView === SortedViews.MAP_EXTENT) {
+    if (sortedView === SORTED_VIEWS.MAP_EXTENT) {
       sortedSpots = props.spotsInMapExtent;
       if (isEmpty(sortedSpots)) noSpotsText = 'No Spots in current map extent';
     }
-    else if (sortedView === SortedViews.RECENT_VIEWS) {
+    else if (sortedView === SORTED_VIEWS.RECENT_VIEWS) {
       sortedSpots = recentViews.map(spotId => spots[spotId]);
       if (isEmpty(sortedSpots)) noSpotsText = 'No recently viewed Spots';
     }

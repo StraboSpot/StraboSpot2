@@ -7,8 +7,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import {PRIMARY_ACCENT_COLOR, SECONDARY_ITEM_TEXT_COLOR} from '../../shared/styles.constants';
-import {MAIN_MENU_ITEMS} from '../main-menu-panel/mainMenu.constants';
-import {mainMenuPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
+import {MAIN_MENU_ITEMS, SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import {setMenuSelectionPage, setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import {setSelectedTag} from '../project/projects.slice';
 import {useTagsHook} from '../tags';
@@ -19,7 +18,7 @@ const TagsAtSpotList = (props) => {
   const isMainMenuPanelVisible = useSelector(state => state.home.isMainMenuPanelVisible);
 
   const openTag = (tag) => {
-    dispatch(setSidePanelVisible({bool: true, view: mainMenuPanelReducers.SET_SIDE_PANEL_VIEW.TAG_DETAIL}));
+    dispatch(setSidePanelVisible({bool: true, view: SIDE_PANEL_VIEWS.TAG_DETAIL}));
     dispatch(setSelectedTag(tag));
     dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.ATTRIBUTES.TAGS}));
     if (!isMainMenuPanelVisible) props.openMainMenu();

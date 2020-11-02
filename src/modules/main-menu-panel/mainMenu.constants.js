@@ -29,3 +29,16 @@ export const MAIN_MENU_ITEMS = {
     DOCUMENTATION: 'Documentation',
   },
 };
+
+export const SORTED_VIEWS = {
+  CHRONOLOGICAL: 'CHRONOLOGICAL',
+  MAP_EXTENT: 'MAP_EXTENT',
+  RECENT_VIEWS: 'RECENT_VIEWS',
+};
+
+export const SIDE_PANEL_VIEWS = {
+  MANAGE_CUSTOM_MAP: 'manageCustomMap',
+  PROJECT_DESCRIPTION: 'project description',
+  TAG_DETAIL: 'tag detail',
+  TAG_ADD_REMOVE_SPOTS: 'add remove tag spots',
+};

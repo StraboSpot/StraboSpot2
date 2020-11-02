@@ -7,7 +7,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import {BLUE} from '../../shared/styles.constants';
-import {mainMenuPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
+import {SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import SidePanelHeader from '../main-menu-panel/sidePanel/SidePanelHeader';
 import {useSpotsHook} from '../spots';
@@ -35,7 +35,7 @@ const AddRemoveTagSpots = () => {
     <React.Fragment>
       <SidePanelHeader
         backButton={() =>
-          dispatch(setSidePanelVisible({bool: true, view: mainMenuPanelReducers.SET_SIDE_PANEL_VIEW.TAG_DETAIL}))
+          dispatch(setSidePanelVisible({bool: true, view: SIDE_PANEL_VIEWS.TAG_DETAIL}))
         }
         title={`${selectedTag.name}`}
         headerTitle={!isEmpty(selectedTag) && `Add/Remove ${selectedTag.name}`}

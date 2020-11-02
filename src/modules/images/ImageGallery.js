@@ -8,7 +8,7 @@ import {isEmpty} from '../../shared/Helpers';
 import * as SharedUI from '../../shared/ui/index';
 import {setImageModalVisible} from '../home/home.slice';
 import attributesStyles from '../main-menu-panel/attributes.styles';
-import {SortedViews} from '../main-menu-panel/mainMenuPanel.constants';
+import {SORTED_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import SortingButtons from '../main-menu-panel/SortingButtons';
 import {setSelectedAttributes} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
@@ -87,11 +87,11 @@ const ImageGallery = (props) => {
   const renderSpotsWithImages = () => {
     let sortedSpotsWithImages = useSpots.getSpotsWithImagesSortedReverseChronologically();
     let noImagesText = 'No Spots with images';
-    if (sortedView === SortedViews.MAP_EXTENT) {
+    if (sortedView === SORTED_VIEWS.MAP_EXTENT) {
       sortedSpotsWithImages = props.spotsInMapExtent.filter(spot => spot.properties.images);
       if (isEmpty(sortedSpotsWithImages)) noImagesText = 'No Spots with images in current map extent';
     }
-    else if (sortedView === SortedViews.RECENT_VIEWS) {
+    else if (sortedView === SORTED_VIEWS.RECENT_VIEWS) {
       const recentlyViewedSpots = recentViews.map(spotId => spots[spotId]);
       sortedSpotsWithImages = recentlyViewedSpots.filter(spot => spot.properties.images);
       if (!isEmpty(sortedSpotsWithImages)) noImagesText = 'No recently viewed Spots with images';
