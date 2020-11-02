@@ -7,9 +7,9 @@ import {connect, useDispatch, useSelector} from 'react-redux';
 import {isEmpty} from '../../shared/Helpers';
 import attributesStyles from '../main-menu-panel/attributes.styles';
 import {SortedViews} from '../main-menu-panel/mainMenuPanel.constants';
-import SortingButtons from '../main-menu-panel/SortingButtons';
-import {NotebookPages, notebookReducers} from '../notebook-panel/notebook.constants';
 import {setSelectedButtonIndex, setSortedView} from '../main-menu-panel/mainMenuPanel.slice';
+import SortingButtons from '../main-menu-panel/SortingButtons';
+import {NotebookPages} from '../notebook-panel/notebook.constants';
 
 const SamplesList = (props) => {
   const dispatch = useDispatch();

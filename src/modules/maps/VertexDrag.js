@@ -5,7 +5,6 @@ import {State, PanGestureHandler} from 'react-native-gesture-handler';
 import AnimatedPoint from 'react-native-reanimated';
 import {connect, useDispatch, useSelector} from 'react-redux';
 
-import {mapReducers} from './maps.constants';
 import {setVertexEndCoords} from './maps.slice';
 import mapStyles from './maps.styles';
 

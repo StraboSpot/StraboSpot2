@@ -7,7 +7,6 @@ import {useSelector} from 'react-redux';
 import {isEmpty} from '../../../shared/Helpers';
 import AddButton from '../../../shared/ui/AddButton';
 import Divider from '../../main-menu-panel/MainMenuPanelDivider';
-import {mapReducers} from '../maps.constants';
 import useMapHook from '../useMaps';
 import styles from './customMaps.styles';
 

@@ -17,10 +17,9 @@ import {
 import {mainMenuPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 import {setMenuSelectionPage, setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import {addedProject} from '../project/projects.slice';
-import {spotReducers} from '../spots/spot.constants';
 import {setSelectedSpot} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
-import {basemaps, mapProviders, mapReducers, geoLatLngProjection, pixelProjection} from './maps.constants';
+import {basemaps, mapProviders, geoLatLngProjection, pixelProjection} from './maps.constants';
 import {addedCustomMap, deletedCustomMap, selectedCustomMapToEdit, setCurrentBasemap, setMapSymbols} from './maps.slice';
 
 const useMaps = () => {
@@ -305,7 +304,6 @@ const useMaps = () => {
 
   const setSelectedSpotOnMap = (spotToSetAsSelected) => {
     console.log('Set selected Spot:', spotToSetAsSelected);
-    // dispatch({type: spotReducers.SET_SELECTED_SPOT, spot: spotToSetAsSelected});
     dispatch(setSelectedSpot(spotToSetAsSelected));
   };
 

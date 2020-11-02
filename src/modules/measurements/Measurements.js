@@ -11,7 +11,6 @@ import {setModalVisible} from '../home/home.slice';
 import {NotebookPages} from '../notebook-panel/notebook.constants';
 import {setCompassMeasurementTypes, setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
-import {spotReducers} from '../spots/spot.constants';
 import {setSelectedAttributes} from '../spots/spots.slice';
 import {COMPASS_TOGGLE_BUTTONS} from './compass/compass.constants';
 import MeasurementItem from './MeasurementItem';

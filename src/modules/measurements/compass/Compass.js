@@ -14,7 +14,6 @@ import Slider from '../../../shared/ui/Slider';
 import uiStyles from '../../../shared/ui/ui.styles';
 import {Modals} from '../../home/home.constants';
 import {NotebookPages} from '../../notebook-panel/notebook.constants';
-import {spotReducers} from '../../spots/spot.constants';
 import {editedSpotProperties} from '../../spots/spots.slice';
 import Measurements from '../Measurements';
 import {COMPASS_TOGGLE_BUTTONS} from './compass.constants';
@@ -515,7 +514,6 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-  // onSpotEdit: (field, value) => ({type: spotReducers.EDIT_SPOT_PROPERTIES, field: field, value: value}),
   onSpotEdit: (field, value) => (editedSpotProperties({field: field, value: value})),
 };
 

@@ -18,14 +18,11 @@ import Loading from '../../shared/ui/Loading';
 import StatusDialogBox from '../../shared/ui/StatusDialogBox';
 import {addedStatusMessage, clearedStatusMessages, setStatusMessagesModalVisible} from '../home/home.slice';
 import useProjectHook from '../project/useProject';
-import useSpotsHook from '../spots/useSpots';
-import {projectReducers} from './project.constants';
 import styles from './project.styles';
-import {updatedDatasetProperties, updatedDatasets, setActiveDatasets, setSelectedDataset} from './projects.slice';
+import {updatedDatasetProperties} from './projects.slice';
 
 const DatasetList = () => {
 
-  const [useSpots] = useSpotsHook();
   const [useProject] = useProjectHook();
   const [loading, setLoading] = useState(false);
   const [selectedDataset, setSelectedDatasetProperties] = useState({});

@@ -23,7 +23,6 @@ import Slider from '../../../shared/ui/Slider';
 import uiStyles from '../../../shared/ui/ui.styles';
 import {Modals} from '../../home/home.constants';
 import useMapsHook from '../../maps/useMaps';
-import {spotReducers} from '../../spots/spot.constants';
 import {editedSpotProperties} from '../../spots/spots.slice';
 import {COMPASS_TOGGLE_BUTTONS} from './compass.constants';
 import compassStyles from './compass.styles';
@@ -323,7 +322,6 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = {
-  // onSpotEdit: (field, value) => ({type: spotReducers.EDIT_SPOT_PROPERTIES, field: field, value: value}),
   onSpotEdit: (field, value) => (editedSpotProperties({field: field, value: value})),
 };
 export default connect(mapStateToProps, mapDispatchToProps)(RNCompass);

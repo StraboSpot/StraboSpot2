@@ -14,9 +14,7 @@ import {
   setStatusMessagesModalVisible,
 } from '../home/home.slice';
 import useImagesHook from '../images/useImages';
-import {mapReducers} from '../maps/maps.constants';
 import {addedMapsFromDevice, clearedMaps} from '../maps/maps.slice';
-import {spotReducers} from '../spots/spot.constants';
 import {addedSpotsFromDevice, clearedSpots} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
 import {
@@ -231,7 +229,6 @@ const useProject = () => {
     console.log(dirExists);
     if (dirExists) {
       if (!isEmpty(project)) await destroyOldProject();
-      // dispatch({type: spotReducers.ADD_SPOTS_FROM_DEVICE, spots: spotsDb});
       dispatch(addedSpotsFromDevice(spotsDb));
       dispatch(addedProject(projectDb.project));
       await getDatasets(projectDb, 'device');

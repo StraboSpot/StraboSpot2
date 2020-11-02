@@ -23,7 +23,7 @@ import settingPanelStyles from '../main-menu-panel/mainMenuPanel.styles';
 import sidePanelStyles from '../main-menu-panel/sidePanel.styles';
 import CustomMapDetails from '../maps/custom-maps/CustomMapDetails';
 import Map from '../maps/Map';
-import {MapModes, mapReducers} from '../maps/maps.constants';
+import {MapModes} from '../maps/maps.constants';
 import {setCurrentImageBasemap} from '../maps/maps.slice';
 import SaveMapsModal from '../maps/offline-maps/SaveMapsModal';
 import useMapsHook from '../maps/useMaps';
@@ -360,13 +360,6 @@ const Home = (props) => {
     dispatch(setAllSpotsPanelVisible(false));
   };
 
-  // const closeSidePanel = () => {
-  //   console.log('Closing Side Panel');
-  //   // dispatch({type: mainMenuPanelReducers.SET_SIDE_PANEL_VISIBLE, bool: false});
-  //   animatePanels(mainMenuSidePanelAnimation, -mainMenuSidePanelWidth);
-  //   animatePanels(customMapsSidePanelAnimation, -customMapsSidePanelWidth);
-  // };
-
   const deleteSpot = id => {
     const spot = spots[id];
     Alert.alert(
@@ -454,9 +447,7 @@ const Home = (props) => {
         const currentLocation = await useMaps.getCurrentLocation();
         let editedSpot = JSON.parse(JSON.stringify(selectedSpot));
         editedSpot.geometry = turf.point(currentLocation).geometry;
-        // dispatch({type: spotReducers.ADD_SPOT, spot: editedSpot});
         dispatch(addedSpot(editedSpot));
-        // dispatch({type: spotReducers.SET_SELECTED_SPOT, spot: editedSpot});
         dispatch(setSelectedSpot(editedSpot));
         break;
       case 'setFromMap':

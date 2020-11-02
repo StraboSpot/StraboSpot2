@@ -59,7 +59,6 @@ const useSpots = (props) => {
       if (orientation_data) copiedSpot.properties.orientation_data = orientation_data;
     }
     const newSpot = await createSpot(copiedSpot);
-    // dispatch({type: spotReducers.SET_SELECTED_SPOT, spot: newSpot});
     dispatch(setSelectedSpot(newSpot));
     console.log('Spot Copied. New Spot', newSpot);
   };
@@ -91,7 +90,6 @@ const useSpots = (props) => {
     }
     console.log('Creating new Spot:', newSpot);
     await dispatch(addedSpot(newSpot));
-    // await dispatch({type: spotReducers.ADD_SPOT, spot: newSpot});
     // const currentDataset = Object.values(datasets).find(dataset => dataset.current);
     const currentDataset = datasets[selectedDatasetId];
     console.log('Active Dataset', currentDataset);
@@ -110,7 +108,6 @@ const useSpots = (props) => {
           console.log(dataset.id);
           console.log(dataset.spotIds.filter(id => spotId !== id));
           dispatch(deletedSpotIdFromDataset({spotId: spotId, dataset: dataset}));
-          // dispatch({type: spotReducers.DELETE_SPOT, id: spotId});
           dispatch(deletedSpot(spotId));
         }
       }
@@ -121,7 +118,6 @@ const useSpots = (props) => {
   const deleteSpotsFromDataset = (dataset, spotId) => {
     // const updatedSpotIds = dataset.spotIds.filter(id => id !== spotId);
     dispatch(deletedSpotIdFromDataset({spotId: spotId, dataset: dataset}));
-    // dispatch({type: spotReducers.DELETE_SPOT, id: spotId});
     dispatch(deletedSpot(spotId));
     console.log(dataset, 'Spots', spots);
     return Promise.resolve(dataset.spotIds);
@@ -134,11 +130,9 @@ const useSpots = (props) => {
       const spotsOnServer = datasetInfoFromServer.features;
       if (!isEmpty(datasetInfoFromServer) && spotsOnServer) {
         console.log(spotsOnServer);
-        // dispatch({type: spotReducers.ADD_SPOTS, spots: spotsOnServer});
         dispatch(addedSpots(spotsOnServer));
         const spotIds = Object.values(spotsOnServer).map(spot => spot.properties.id);
         dispatch(addedSpotsIdsToDataset({datasetId: dataset.id, spotIds: spotIds}));
-        // dispatch({type: projectReducers.DATASETS.ADD_SPOTS_IDS_TO_DATASET, datasetId: dataset.id, spotIds: spotIds});
         dispatch(removedLastStatusMessage());
         dispatch(addedStatusMessage({statusMessage: 'Downloaded Spots'}));
         const neededImagesIds = await useImages.gatherNeededImages(spotsOnServer);

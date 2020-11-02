@@ -27,7 +27,7 @@ import {setMenuSelectionPage, setSidePanelVisible} from '../../main-menu-panel/m
 import Divider from '../../main-menu-panel/MainMenuPanelDivider';
 import sidePanelStyles from '../../main-menu-panel/sidePanel.styles';
 import SidePanelHeader from '../../main-menu-panel/sidePanel/SidePanelHeader';
-import {customMapTypes, mapReducers} from '../maps.constants';
+import {customMapTypes} from '../maps.constants';
 import {addedCustomMap, selectedCustomMapToEdit} from '../maps.slice';
 import useMapHook from '../useMaps';
 import styles from './customMaps.styles';

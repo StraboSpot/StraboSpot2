@@ -19,7 +19,6 @@ import Nesting from '../nesting/Nesting';
 import NotesPage from '../notes/Notes';
 import SamplesPage from '../samples/SamplesNotebook';
 import {useSpotsHook} from '../spots';
-import {spotReducers} from '../spots/spot.constants';
 import {setSelectedSpot} from '../spots/spots.slice';
 import TagsPage from '../tags/TagsNotebook';
 import NotebookFooter from './notebook-footer/NotebookFooter';
@@ -140,7 +139,6 @@ const NotebookPanel = props => {
     const renderSpotName = (item) => {
       return (
         <ListItem key={item.properties.id} onPress={() => {
-          // dispatch({type: spotReducers.SET_SELECTED_SPOT, spot: item})
           dispatch(setSelectedSpot(item));
         }}>
           <Avatar source={useSpots.getSpotGemometryIconSource(item)} size={20}/>

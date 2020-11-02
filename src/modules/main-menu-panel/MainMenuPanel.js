@@ -16,7 +16,6 @@ import ActiveProject from '../project/ActiveProjectPanel';
 import MyStraboSpot from '../project/MyStraboSpot';
 import UploadBackupAndExport from '../project/UploadBackupExport';
 import SamplesList from '../samples/SamplesList';
-import {spotReducers} from '../spots/spot.constants';
 import {setSelectedSpot} from '../spots/spots.slice';
 import SpotsList from '../spots/SpotsList';
 import Tags from '../tags/Tags';

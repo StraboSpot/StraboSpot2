@@ -8,7 +8,6 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import {isEmpty, toTitleCase} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
-import {mapReducers} from '../maps/maps.constants';
 import {setAllSymbolsToggled, setSymbolsDisplayed, setTagTypeForColor} from '../maps/maps.slice';
 import styles from '../measurements/measurements.styles';
 import useMeasurementsHook from '../measurements/useMeasurements';

@@ -12,7 +12,6 @@ import {isEmpty} from '../../shared/Helpers';
 import Spacer from '../../shared/ui/Spacer';
 import {setOnlineStatus} from '../home/home.slice';
 import homeStyles from '../home/home.style';
-import {spotReducers} from '../spots/spot.constants';
 import {clearedSpots} from '../spots/spots.slice';
 import ActiveDatasetsList from './ActiveDatasetsList';
 import DatasetList from './DatasetList';

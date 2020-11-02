@@ -12,7 +12,6 @@ import {getNewUUID, isEmpty} from '../../shared/Helpers';
 import {Modals} from '../home/home.constants';
 import {setModalVisible} from '../home/home.slice';
 import useImagesHook from '../images/useImages';
-import {spotReducers} from '../spots/spot.constants';
 import {
   addedSpot,
   addedSpots,
@@ -22,7 +21,7 @@ import {
 } from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
 import {MapLayer1, MapLayer2} from './Basemaps';
-import {geoLatLngProjection, LATITUDE, LONGITUDE, MapModes, pixelProjection, mapReducers} from './maps.constants';
+import {geoLatLngProjection, LATITUDE, LONGITUDE, MapModes, pixelProjection} from './maps.constants';
 import {
   clearedVertexes,
   setCurrentImageBasemap,
@@ -227,7 +226,6 @@ const Map = React.forwardRef((props, ref) => {
         ...selectedSpot,
         geometry: defaultFeature.geometry,
       };
-      // dispatch(({type: spotReducers.ADD_SPOT, spot: selectedSpotCopy}));
       dispatch(addedSpot(selectedSpotCopy));
 
       // Set new geometry ready for editing, set the active vertex to first index of the geometry.
@@ -822,7 +820,6 @@ const Map = React.forwardRef((props, ref) => {
         else if (props.isSelectingForTagging) {
           const selectedSpots = await useMapFeatures.getLassoedSpots(mapPropsMutable.spotsNotSelected, feature);
           if (selectedSpots.length > 0) {
-            // dispatch({type: spotReducers.SET_INTERSECTED_SPOTS_FOR_TAGGING, spots: selectedSpots});
             dispatch(setIntersectedSpotsForTagging(selectedSpots));
             dispatch(setModalVisible({modal: Modals.SHORTCUT_MODALS.ADD_TAGS_TO_SPOTS}));
           }
@@ -881,7 +878,6 @@ const Map = React.forwardRef((props, ref) => {
     if (!isEmpty(editingModeData.spotEditing)) {
       const spotOrig = spots[editingModeData.spotEditing.properties.id];
       setDisplayedSpots([spotOrig]);
-      // await dispatch({type: spotReducers.SET_SELECTED_SPOT, spot: spotOrig});
       await dispatch(setSelectedSpot(spotOrig));
     }
     else setDisplayedSpots([]);
@@ -894,13 +890,10 @@ const Map = React.forwardRef((props, ref) => {
     if (isEmpty(editingModeData.spotEditing)) setDisplayedSpots([]);
     else {
       setDisplayedSpots([editingModeData.spotEditing]);
-      // await dispatch({type: spotReducers.SET_SELECTED_SPOT, spot: editingModeData.spotEditing});
       await dispatch(setSelectedSpot(editingModeData.spotEditing));
     }
     if (!isEmpty(editingModeData.spotsEdited)) {
       dispatch(addedSpots([...editingModeData.spotsNotEdited, ...editingModeData.spotsEdited]));
-      //   await dispatch(
-      //     {type: spotReducers.ADD_SPOTS, spots: [...editingModeData.spotsNotEdited, ...editingModeData.spotsEdited]});
     }
     clearEditing();
   };

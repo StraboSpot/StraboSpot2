@@ -7,9 +7,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import commonStyles from '../../shared/common.styles';
 import {truncateText} from '../../shared/Helpers';
 import * as SharedUI from '../../shared/ui/index';
-import {mapReducers} from '../maps/maps.constants';
 import {setCurrentImageBasemap} from '../maps/maps.slice';
-import {spotReducers} from '../spots/spot.constants';
 import imageStyles from './images.styles';
 import useImagesHook from './useImages';
 

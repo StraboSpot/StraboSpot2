@@ -13,7 +13,6 @@ import SectionDivider from '../../shared/ui/SectionDivider';
 import {Form, formStyles, NumberInputField, TextInputField, useFormHook} from '../form';
 import useMapsHooks from '../maps/useMaps';
 import {setNotebookPageVisibleToPrev} from '../notebook-panel/notebook.slice';
-import {spotReducers} from '../spots/spot.constants';
 import {addedSpot} from '../spots/spots.slice';
 
 const Geography = (props) => {
@@ -268,7 +267,6 @@ const Geography = (props) => {
           }
         }
         const editedSpot = {geometry: geometry, properties: {...geographyProperties}, type: spot.type};
-        // dispatch({type: spotReducers.ADD_SPOT, spot: editedSpot});
         dispatch(addedSpot(editedSpot));
         return Promise.resolve();
       }

@@ -2,14 +2,13 @@ import React from 'react';
 import {Alert, Text, View, Platform} from 'react-native';
 
 import {Button, ListItem} from 'react-native-elements';
-import {connect, useDispatch, useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import RNFetchBlob from 'rn-fetch-blob';
 
 import commonStyles from '../../../shared/common.styles';
 import {isEmpty} from '../../../shared/Helpers';
 import {setOfflineMapsModalVisible} from '../../home/home.slice';
 import Divider from '../../main-menu-panel/MainMenuPanelDivider';
-import {mapReducers} from '../maps.constants';
 import {setCurrentBasemap, setOfflineMap} from '../maps.slice';
 import styles from './offlineMaps.styles';
 

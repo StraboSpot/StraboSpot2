@@ -6,7 +6,6 @@ import RNFetchBlob from 'rn-fetch-blob';
 import {isEmpty} from '../../shared/Helpers';
 import {setMenuSelectionPage, setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import {doesBackupDirectoryExist} from '../project/projects.slice';
-import {spotReducers} from '../spots/spot.constants';
 import {clearedSelectedSpots} from '../spots/spots.slice';
 import {
   clearedStatusMessages,

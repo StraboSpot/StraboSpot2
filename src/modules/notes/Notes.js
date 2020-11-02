@@ -10,7 +10,6 @@ import useMapsHook from '../maps/useMaps';
 import {NotebookPages} from '../notebook-panel/notebook.constants';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
-import {spotReducers} from '../spots/spot.constants';
 import {editedSpotProperties, setSelectedSpotNotesTimestamp} from '../spots/spots.slice';
 import noteStyles from './notes.styles';
 
@@ -48,9 +47,7 @@ const Notes = (props) => {
       console.log('pointSetAtCurrentLocation', pointSetAtCurrentLocation);
     }
     console.log(note);
-    // dispatch({type: spotReducers.EDIT_SPOT_PROPERTIES, field: 'notes', value: note});
     dispatch(editedSpotProperties({field: 'notes', value: note}));
-    // dispatch({type: spotReducers.SET_SELECTED_SPOT_NOTES_TIMESTAMP});
     dispatch(setSelectedSpotNotesTimestamp());
     setNote('');
     dispatch(setNotebookPageVisible(NotebookPages.OVERVIEW));
