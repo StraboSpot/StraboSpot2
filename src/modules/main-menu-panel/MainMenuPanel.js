@@ -79,7 +79,7 @@ const MainMenuPanel = props => {
         <View style={styles.mainMenuContainer}>
           <ActiveProject
             // openSidePanel={(view) => props.openSidePanel(view)}
-            title={!isEmpty(project) ? project.description.project_name : null}
+            title={!isEmpty(project) && project.description ? project.description.project_name : 'Un-named'}
           />
         </View>
       );
@@ -183,7 +183,9 @@ const MainMenuPanel = props => {
             <MainMenuPanelList
               onPress={(name) => setVisibleMenu(name)}
               title={buttonTitle}
-              activeProject={!isEmpty(project) ? project.description.project_name : 'No Active Project'}
+              activeProject={!isEmpty(project) && project.description
+                ? project.description.project_name
+                : 'No Active Project'}
             />
           </View>
         </React.Fragment>
