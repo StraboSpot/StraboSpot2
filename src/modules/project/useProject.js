@@ -356,7 +356,10 @@ const useProject = () => {
         dispatch(setStatusMessagesModalVisible(true));
         dispatch(clearedStatusMessages());
         const res = await useSpots.downloadSpots(dataset, user.encoded_login);
-        if (res === 'No Spots!') dispatch(addedStatusMessage({statusMessage: 'No Spots!'}));
+        if (res === 'No Spots!') {
+          dispatch(addedStatusMessage({statusMessage: 'No Spots!'}));
+          dispatch(addedStatusMessage({statusMessage: 'Download Complete!'}));
+        }
         else dispatch(addedStatusMessage({statusMessage: 'Download Complete!'}));
       }
       // if (val && areActiveDatasetsEmpty) dispatch(setSelectedDataset(dataset.id));
