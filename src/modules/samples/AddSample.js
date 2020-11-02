@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Alert, Text, TextInput, View} from 'react-native';
 
 import {Button, ButtonGroup, Input} from 'react-native-elements';
-import {connect, useDispatch, useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 import {getNewId} from '../../shared/Helpers';
 import Slider from '../../shared/ui/Slider';
@@ -12,24 +12,25 @@ import {updatedProject} from '../project/projects.slice';
 import {editedSpotProperties} from '../spots/spots.slice';
 import styles from './samples.style';
 
-const SamplesModalView = (props) => {
+const AddSample = () => {
   const dispatch = useDispatch();
   const modalVisible = useSelector(state => state.home.modalVisible);
   const preferences = useSelector(state => state.project.project.preferences) || {};
   const spot = useSelector(state => state.spot.selectedSpot);
+
   const [useMaps] = useMapsHook();
-  const [selectedButton, setSelectedButton] = useState(null);
-  const [sampleOrientedValue, setSampleOrientedValue] = useState(null);
+
+  const [description, setDescription] = useState(null);
   const [inplaceness, setInplaceness] = useState(5);
   const [label, setLabel] = useState(null);
   const [name, setName] = useState(null);
   const [note, setNote] = useState(null);
-  const [description, setDescription] = useState(null);
+  const [orientedSample, setOrientedSample] = useState(null);
   const [samplePrefix, setSamplePrefix] = useState(null);
   const [startingSampleNumber, setStartingSampleNumber] = useState(null);
 
   useEffect(() => {
-    console.log('useEffect SamplesModalView [spot]');
+    console.log('useEffect AddSample [spot]');
     const defaultName = preferences.sample_prefix || 'Unnamed';
     const defaultNumber = preferences.starting_sample_number
       || (spot.properties && spot.properties.samples && spot.properties.samples.length + 1) || 1;
@@ -41,9 +42,10 @@ const SamplesModalView = (props) => {
   const buttonNames = ['Oriented', 'Unoriented'];
 
   const buttonSelected = (selectedButton) => {
-    setSelectedButton(selectedButton);
-    let sampleOriented = selectedButton === 0 ? 'yes' : 'no';
-    setSampleOrientedValue(sampleOriented);
+    if (!orientedSample) setOrientedSample(selectedButton === 0 ? 'yes' : 'no');
+    else if (orientedSample === 'yes' && selectedButton === 1) setOrientedSample('no');
+    else if (orientedSample === 'no' && selectedButton === 0) setOrientedSample('yes');
+    else setOrientedSample(null);
   };
 
   // const checkProperties = () => {
@@ -63,24 +65,24 @@ const SamplesModalView = (props) => {
     }
     let sample = [];
     // const propertyNameValidation = await checkProperties();
-    sample.push({
+    let newSampleData = {
       sample_id_name: name,
       inplaceness_of_sample: inplaceness,
       label: label,
-      oriented_sample: sampleOrientedValue,
+      oriented_sample: orientedSample,
       sample_notes: note,
       sample_description: description,
-    });
+    };
+    Object.entries(newSampleData).forEach(([key, value]) => !value && delete newSampleData[key]);
+    sample.push(newSampleData);
     if (sample.length > 0) {
       let newSample = sample[0];
       newSample.id = getNewId();
       if (modalVisible === MODALS.NOTEBOOK_MODALS.SAMPLE) {
         const samples = (typeof spot.properties.samples === 'undefined' ? [newSample] : [...spot.properties.samples, newSample]);
-        // props.onSpotEdit('samples', samples);
         dispatch(editedSpotProperties({field: 'samples', value: samples}));
       }
       else if (modalVisible === MODALS.SHORTCUT_MODALS.SAMPLE) {
-        // props.onSpotEdit('samples', [newSample]);
         dispatch(editedSpotProperties({field: 'samples', value: [newSample]}));
       }
       const updatedPreferences = {
@@ -93,7 +95,7 @@ const SamplesModalView = (props) => {
       setLabel(null);
       setNote('');
       setDescription('');
-      setSampleOrientedValue(null);
+      setOrientedSample(null);
       setInplaceness(0);
     }
     else Alert.alert('No Sample Type', 'Please select a samples.');
@@ -146,7 +148,7 @@ const SamplesModalView = (props) => {
       <View style={{flex: 10}}>
         <ButtonGroup
           onPress={(value) => buttonSelected(value)}
-          selectedIndex={selectedButton}
+          selectedIndex={!orientedSample ? null : orientedSample === 'yes' ? 0 : 1}
           buttons={buttonNames}
         />
       </View>
@@ -175,10 +177,4 @@ const SamplesModalView = (props) => {
   );
 };
 
-const mapStateToProps = (state) => {
-  return {
-    spot: state.spot.selectedSpot,
-  };
-};
-
-export default connect(mapStateToProps)(SamplesModalView);
+export default AddSample;

@@ -3,8 +3,7 @@ import {Platform, View} from 'react-native';
 
 import DragAnimation from '../../shared/ui/DragAmination';
 import Modal from '../../shared/ui/modal/Modal';
-import modalStyle from '../../shared/ui/modal/modal.style';
-import Samples from './Samples';
+import AddSample from './AddSample';
 import styles from './samples.style';
 
 const NotebookSamplesModal = (props) => {
@@ -17,7 +16,7 @@ const NotebookSamplesModal = (props) => {
           textStyle={{fontWeight: 'bold'}}
           onPress={props.onPress}
         >
-          <Samples/>
+          <AddSample/>
         </Modal>
       </View>
     );
@@ -31,7 +30,7 @@ const NotebookSamplesModal = (props) => {
           textStyle={{fontWeight: 'bold'}}
           onPress={props.onPress}
         >
-          <Samples/>
+          <AddSample/>
         </Modal>
       </DragAnimation>
     );

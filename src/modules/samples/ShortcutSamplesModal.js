@@ -3,7 +3,7 @@ import {Platform, View} from 'react-native';
 
 import DragAnimation from '../../shared/ui/DragAmination';
 import Modal from '../../shared/ui/modal/Modal';
-import Samples from './Samples';
+import AddSample from './AddSample';
 import styles from './samples.style';
 
 const shortcutSamplesModal = (props) => {
@@ -14,7 +14,7 @@ const shortcutSamplesModal = (props) => {
           close={props.close}
           onPress={props.onPress}
         >
-          <Samples/>
+          <AddSample/>
         </Modal>
       </View>
     );
@@ -26,7 +26,7 @@ const shortcutSamplesModal = (props) => {
           close={props.close}
           onPress={props.onPress}
         >
-          <Samples/>
+          <AddSample/>
         </Modal>
       </DragAnimation>
     );
