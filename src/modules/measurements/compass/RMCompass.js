@@ -21,7 +21,7 @@ import {getNewId, mod, roundToDecimalPlaces} from '../../../shared/Helpers';
 import modalStyle from '../../../shared/ui/modal/modal.style';
 import Slider from '../../../shared/ui/Slider';
 import uiStyles from '../../../shared/ui/ui.styles';
-import {Modals} from '../../home/home.constants';
+import {MODALS} from '../../home/home.constants';
 import useMapsHook from '../../maps/useMaps';
 import {editedSpotProperties} from '../../spots/spots.slice';
 import {COMPASS_TOGGLE_BUTTONS} from './compass.constants';
@@ -105,7 +105,7 @@ const RNCompass = (props) => {
   };
 
   const grabMeasurements = async () => {
-    if (modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {
+    if (modalVisible === MODALS.SHORTCUT_MODALS.COMPASS) {
       const pointSetAtCurrentLocation = await useMaps.setPointAtCurrentLocation();
       console.log('pointSetAtCurrentLocation', pointSetAtCurrentLocation);
     }
@@ -138,12 +138,12 @@ const RNCompass = (props) => {
         newAssociatedOrientation.id = getNewId();
         newOrientation.associated_orientation = [newAssociatedOrientation];
       }
-      if (modalVisible === Modals.NOTEBOOK_MODALS.COMPASS) {
+      if (modalVisible === MODALS.NOTEBOOK_MODALS.COMPASS) {
         const orientations = (typeof props.spot.properties.orientation_data === 'undefined')
           ? [newOrientation] : [...props.spot.properties.orientation_data, newOrientation];
         props.onSpotEdit('orientation_data', orientations);
       }
-      else if (modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {
+      else if (modalVisible === MODALS.SHORTCUT_MODALS.COMPASS) {
         props.onSpotEdit('orientation_data', [newOrientation]);
       }
       playSound();
@@ -292,7 +292,7 @@ const RNCompass = (props) => {
           <View style={modalStyle.textContainer}>
             {/*<Text style={{...modalStyle.textStyle, fontWeight: 'bold'}}>x Spots Created </Text>*/}
             <Text style={modalStyle.textStyle}>Tap compass to record</Text>
-            {modalVisible === Modals.NOTEBOOK_MODALS.COMPASS
+            {modalVisible === MODALS.NOTEBOOK_MODALS.COMPASS
               ? <Text style={modalStyle.textStyle}> a measurement</Text>
               : <Text style={modalStyle.textStyle}> a measurement in a NEW spot</Text>}
           </View>

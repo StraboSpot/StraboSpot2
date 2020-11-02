@@ -1,4 +1,13 @@
-export const NotebookPages = {
+export const NOTEBOOK_MENU_BUTTONS = {
+  COPY_SPOT: 'copySpot',
+  DELETE_SPOT: 'deleteSpot',
+  TOGGLE_ALL_SPOTS_PANEL: 'toggleAllSpotsPanel',
+  CLOSE_NOTEBOOK: 'closeNotebook',
+  SHOW_NESTING: 'showNesting',
+  ZOOM_TO_SPOT: 'zoomToSpot',
+};
+
+export const NOTEBOOK_PAGES = {
   OVERVIEW: 'Overview',
   BASIC: 'Basic',
   GEOGRAPHY: 'Geography',

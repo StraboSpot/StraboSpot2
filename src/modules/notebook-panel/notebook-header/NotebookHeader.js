@@ -6,7 +6,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import {isEmpty, toTitleCase} from '../../../shared/Helpers';
 import IconButton from '../../../shared/ui/IconButton';
-import {labelDictionary} from '../../form';
+import {LABEL_DICTIONARY} from '../../form';
 import {editedSpotProperties} from '../../spots/spots.slice';
 import useSpotsHook from '../../spots/useSpots';
 import headerStyles from './notebookHeader.styles';
@@ -65,7 +65,7 @@ const NotebookHeader = props => {
   };
 
   const getTraceText = () => {
-    const traceDictionary = labelDictionary.general.trace;
+    const traceDictionary = LABEL_DICTIONARY.general.trace;
     const key = spot.properties.trace.trace_type;
     let traceText = traceDictionary[key] || key.replace(/_/g, ' ');
     traceText = toTitleCase(traceText) + ' Trace';
@@ -80,7 +80,7 @@ const NotebookHeader = props => {
   };
 
   const getSurfaceFeatureText = () => {
-    const surfaceFeatureDictionary = labelDictionary.general.surface_feature;
+    const surfaceFeatureDictionary = LABEL_DICTIONARY.general.surface_feature;
     const key = spot.properties.surface_feature.surface_feature_type;
     let surfaceFeatureText = surfaceFeatureDictionary[key] || key.replace(/_/g, ' ');
     if (spot.properties.surface_feature.surface_feature_type === 'other'

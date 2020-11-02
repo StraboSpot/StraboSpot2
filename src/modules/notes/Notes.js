@@ -5,9 +5,9 @@ import {Button} from 'react-native-elements';
 import {connect, useDispatch, useSelector} from 'react-redux';
 
 import uiStyles from '../../shared/ui/ui.styles';
-import {Modals} from '../home/home.constants';
+import {MODALS} from '../home/home.constants';
 import useMapsHook from '../maps/useMaps';
-import {NotebookPages} from '../notebook-panel/notebook.constants';
+import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import {editedSpotProperties, setSelectedSpotNotesTimestamp} from '../spots/spots.slice';
@@ -24,7 +24,7 @@ const Notes = (props) => {
   const [note, setNote] = useState('');
 
   useEffect(() => {
-    if (modalVisible === Modals.SHORTCUT_MODALS.NOTES) {
+    if (modalVisible === MODALS.SHORTCUT_MODALS.NOTES) {
       console.log('In Notes Modal view');
     }
     else if (selectedSpot.properties.notes) {
@@ -42,7 +42,7 @@ const Notes = (props) => {
   let timeStamp = Date();
 
   const saveNote = async () => {
-    if (modalVisible === Modals.SHORTCUT_MODALS.NOTES) {
+    if (modalVisible === MODALS.SHORTCUT_MODALS.NOTES) {
       const pointSetAtCurrentLocation = await useMaps.setPointAtCurrentLocation();
       console.log('pointSetAtCurrentLocation', pointSetAtCurrentLocation);
     }
@@ -50,7 +50,7 @@ const Notes = (props) => {
     dispatch(editedSpotProperties({field: 'notes', value: note}));
     dispatch(setSelectedSpotNotesTimestamp());
     setNote('');
-    dispatch(setNotebookPageVisible(NotebookPages.OVERVIEW));
+    dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.OVERVIEW));
   };
 
   // const setPointToCurrentLocation = async () => {
@@ -62,7 +62,7 @@ const Notes = (props) => {
   const renderNotebookView = () => {
     return (
       <View>
-        {modalVisible === Modals.SHORTCUT_MODALS.NOTES
+        {modalVisible === MODALS.SHORTCUT_MODALS.NOTES
           ? (
             <View style={uiStyles.alignItemsToCenter}>
               <Text>Saving a note will create</Text>
@@ -71,7 +71,7 @@ const Notes = (props) => {
           )
           : (
             <ReturnToOverviewButton
-              onPress={() => dispatch(setNotebookPageVisible(NotebookPages.OVERVIEW))}
+              onPress={() => dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.OVERVIEW))}
             />
           )
         }
@@ -87,7 +87,7 @@ const Notes = (props) => {
               onChangeText={(text) => setNote(text)}
               // onFocus={() => setDate(timeStamp)}
               value={note}
-              // onBlur={Modals.SHORTCUT_MODALS.NOTES ? null : () => {
+              // onBlur={MODALS.SHORTCUT_MODALS.NOTES ? null : () => {
               //   console.log(note);
               //   props.onSpotEdit('notes', note);
               //   // props.setNoteTimestamp(date);

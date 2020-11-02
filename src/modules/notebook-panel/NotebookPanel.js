@@ -10,7 +10,7 @@ import {isEmpty} from '../../shared/Helpers';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import Spacer from '../../shared/ui/Spacer';
 import Geography from '../geography/Geography';
-import {Modals} from '../home/home.constants';
+import {MODALS} from '../home/home.constants';
 import {setModalVisible} from '../home/home.slice';
 import {ImagesPage} from '../images';
 import MeasurementDetailPage from '../measurements/MeasurementDetail';
@@ -23,7 +23,7 @@ import {setSelectedSpot} from '../spots/spots.slice';
 import TagsPage from '../tags/TagsNotebook';
 import NotebookFooter from './notebook-footer/NotebookFooter';
 import NotebookHeader from './notebook-header/NotebookHeader';
-import {NotebookPages, SECONDARY_NOTEBOOK_PAGES, SED_NOTEBOOK_PAGES} from './notebook.constants';
+import {NOTEBOOK_PAGES, SECONDARY_NOTEBOOK_PAGES, SED_NOTEBOOK_PAGES} from './notebook.constants';
 import {setNotebookPageVisible} from './notebook.slice';
 import notebookStyles from './notebookPanel.styles';
 import Overview from './Overview';
@@ -40,11 +40,11 @@ const NotebookPanel = props => {
 
   const notebookPageVisible = page => {
     dispatch(setNotebookPageVisible(page));
-    if (page === NotebookPages.MEASUREMENT || page === NotebookPages.MEASUREMENTDETAIL) {
-      dispatch(setModalVisible({modal: Modals.NOTEBOOK_MODALS.COMPASS}));
+    if (page === NOTEBOOK_PAGES.MEASUREMENT || page === NOTEBOOK_PAGES.MEASUREMENTDETAIL) {
+      dispatch(setModalVisible({modal: MODALS.NOTEBOOK_MODALS.COMPASS}));
     }
-    else if (page === NotebookPages.SAMPLE) dispatch(setModalVisible({modal: Modals.NOTEBOOK_MODALS.SAMPLE}));
-    else if (page === NotebookPages.TAG) dispatch(setModalVisible({modal: Modals.NOTEBOOK_MODALS.TAGS}));
+    else if (page === NOTEBOOK_PAGES.SAMPLE) dispatch(setModalVisible({modal: MODALS.NOTEBOOK_MODALS.SAMPLE}));
+    else if (page === NOTEBOOK_PAGES.TAG) dispatch(setModalVisible({modal: MODALS.NOTEBOOK_MODALS.TAGS}));
     else dispatch(setModalVisible({modal: null}));
   };
 
@@ -64,20 +64,20 @@ const NotebookPanel = props => {
           style={notebookStyles.centerContainer}>
 
           {/*Main Overview Page*/}
-          {(pageVisible === NotebookPages.OVERVIEW || pageVisible === undefined)
+          {(pageVisible === NOTEBOOK_PAGES.OVERVIEW || pageVisible === undefined)
           && <Overview openMainMenu={props.openMainMenu}/>}
 
           {/*Primary Pages*/}
-          {pageVisible === NotebookPages.MEASUREMENT && <MeasurementsPage/>}
-          {pageVisible === NotebookPages.NOTE && <NotesPage/>}
-          {pageVisible === NotebookPages.SAMPLE && <SamplesPage/>}
-          {pageVisible === NotebookPages.TAG && <TagsPage openMainMenu={props.openMainMenu}/>}
-          {pageVisible === NotebookPages.PHOTO && <ImagesPage onPress={props.onPress}/>}
+          {pageVisible === NOTEBOOK_PAGES.MEASUREMENT && <MeasurementsPage/>}
+          {pageVisible === NOTEBOOK_PAGES.NOTE && <NotesPage/>}
+          {pageVisible === NOTEBOOK_PAGES.SAMPLE && <SamplesPage/>}
+          {pageVisible === NOTEBOOK_PAGES.TAG && <TagsPage openMainMenu={props.openMainMenu}/>}
+          {pageVisible === NOTEBOOK_PAGES.PHOTO && <ImagesPage onPress={props.onPress}/>}
 
           {/*Additional Notebook Pages*/}
-          {pageVisible === NotebookPages.GEOGRAPHY && <Geography/>}
-          {pageVisible === NotebookPages.MEASUREMENTDETAIL && <MeasurementDetailPage/>}
-          {pageVisible === NotebookPages.NESTING && <Nesting/>}
+          {pageVisible === NOTEBOOK_PAGES.GEOGRAPHY && <Geography/>}
+          {pageVisible === NOTEBOOK_PAGES.MEASUREMENTDETAIL && <MeasurementDetailPage/>}
+          {pageVisible === NOTEBOOK_PAGES.NESTING && <Nesting/>}
 
           {/*Secondary Notebook Pages*/}
           {pageVisible === SECONDARY_NOTEBOOK_PAGES.THREE_D_STRUCTURES && <PlaceholderPage/>}

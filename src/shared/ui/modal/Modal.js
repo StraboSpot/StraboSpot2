@@ -4,7 +4,7 @@ import {Image, Text, View} from 'react-native';
 import {Button, ListItem} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
-import {Modals} from '../../../modules/home/home.constants';
+import {MODALS} from '../../../modules/home/home.constants';
 import compassStyles from '../../../modules/measurements/compass/compass.styles';
 import {isEmpty} from '../../Helpers';
 import * as themes from '../../styles.constants';
@@ -44,9 +44,9 @@ const Modal = (props) => {
   };
 
   const renderModalBottom = () => {
-    if (modalVisible === Modals.SHORTCUT_MODALS.COMPASS || modalVisible === Modals.SHORTCUT_MODALS.TAGS
-      || modalVisible === Modals.SHORTCUT_MODALS.TAGS || modalVisible === Modals.SHORTCUT_MODALS.SAMPLE
-      || modalVisible === Modals.SHORTCUT_MODALS.NOTES) {
+    if (modalVisible === MODALS.SHORTCUT_MODALS.COMPASS || modalVisible === MODALS.SHORTCUT_MODALS.TAGS
+      || modalVisible === MODALS.SHORTCUT_MODALS.TAGS || modalVisible === MODALS.SHORTCUT_MODALS.SAMPLE
+      || modalVisible === MODALS.SHORTCUT_MODALS.NOTES) {
       return (
         <View style={modalStyle.modalBottom}>
           {!isEmpty(selectedSpot) && (
@@ -65,15 +65,15 @@ const Modal = (props) => {
               <ListItem.Chevron/>
             </ListItem>
           )}
-          {isEmpty(selectedSpot) && modalVisible === Modals.SHORTCUT_MODALS.COMPASS
+          {isEmpty(selectedSpot) && modalVisible === MODALS.SHORTCUT_MODALS.COMPASS
           && <View style={{alignItems: 'center', paddingBottom: 20}}>
             <Text style={{fontWeight: '400'}}>Take a measurement first</Text>
           </View>}
         </View>
       );
     }
-    else if (modalVisible === Modals.NOTEBOOK_MODALS.COMPASS || modalVisible === Modals.NOTEBOOK_MODALS.TAGS
-      || modalVisible === Modals.NOTEBOOK_MODALS.SAMPLE) {
+    else if (modalVisible === MODALS.NOTEBOOK_MODALS.COMPASS || modalVisible === MODALS.NOTEBOOK_MODALS.TAGS
+      || modalVisible === MODALS.NOTEBOOK_MODALS.SAMPLE) {
       return (
         <View>
           {!isEmpty(selectedSpot) && (

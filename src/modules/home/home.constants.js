@@ -1,4 +1,4 @@
-export const Modals = {
+export const MODALS = {
   NOTEBOOK_MODALS: {
     COMPASS: 'Compass',
     SAMPLE: 'Sample',

@@ -22,7 +22,7 @@ import settingPanelStyles from '../main-menu-panel/mainMenuPanel.styles';
 import sidePanelStyles from '../main-menu-panel/sidePanel.styles';
 import CustomMapDetails from '../maps/custom-maps/CustomMapDetails';
 import Map from '../maps/Map';
-import {MapModes} from '../maps/maps.constants';
+import {MAP_MODES} from '../maps/maps.constants';
 import {setCurrentImageBasemap} from '../maps/maps.slice';
 import SaveMapsModal from '../maps/offline-maps/SaveMapsModal';
 import useMapsHook from '../maps/useMaps';
@@ -30,7 +30,7 @@ import VertexDrag from '../maps/VertexDrag';
 import NotebookCompassModal from '../measurements/compass/NotebookCompassModal';
 import ShortcutCompassModal from '../measurements/compass/ShortcutCompassModal';
 import AllSpotsPanel from '../notebook-panel/AllSpots';
-import {NotebookPages} from '../notebook-panel/notebook.constants';
+import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
 import {setNotebookPageVisible, setNotebookPanelVisible} from '../notebook-panel/notebook.slice';
 import NotebookPanel from '../notebook-panel/NotebookPanel';
 import notebookStyles from '../notebook-panel/notebookPanel.styles';
@@ -50,7 +50,7 @@ import {
   TagsShortcutModal,
   AddTagsToSpotsShortcutModal,
 } from '../tags';
-import {Modals} from './home.constants';
+import {MODALS} from './home.constants';
 import {
   gotDeviceDimensions,
   setAllSpotsPanelVisible,
@@ -124,7 +124,7 @@ const Home = (props) => {
     editButtonsVisible: false,
     userLocationButtonOn: false,
   });
-  const [mapMode, setMapMode] = useState(MapModes.VIEW);
+  const [mapMode, setMapMode] = useState(MAP_MODES.VIEW);
   // const [isProjectLoadSelectionModalVisible, setIsProjectLoadSelectionModalVisible] = useState(false);
   // const [allPhotosSaved, setAllPhotosSaved] = useState([]);
   const [animation, setAnimation] = useState(new Animated.Value(notebookPanelWidth));
@@ -201,7 +201,7 @@ const Home = (props) => {
 
   const cancelEdits = async () => {
     await mapViewComponent.current.cancelEdits();
-    setMapMode(MapModes.VIEW);
+    setMapMode(MAP_MODES.VIEW);
     setButtons({
       'editButtonsVisible': false,
       'drawButtonsVisible': true,
@@ -222,34 +222,34 @@ const Home = (props) => {
         break;
       case 'tag':
         dispatch(clearedSelectedSpots());
-        if (modalVisible === Modals.SHORTCUT_MODALS.TAGS) {
+        if (modalVisible === MODALS.SHORTCUT_MODALS.TAGS) {
           dispatch(setModalVisible({modal: null}));
         }
-        else modalHandler(null, Modals.SHORTCUT_MODALS.TAGS);
+        else modalHandler(null, MODALS.SHORTCUT_MODALS.TAGS);
         closeNotebookPanel();
         break;
       case 'measurement':
         dispatch(clearedSelectedSpots());
-        if (modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {
+        if (modalVisible === MODALS.SHORTCUT_MODALS.COMPASS) {
           dispatch(setModalVisible({modal: null}));
         }
-        else dispatch(setModalVisible({modal: Modals.SHORTCUT_MODALS.COMPASS}));
+        else dispatch(setModalVisible({modal: MODALS.SHORTCUT_MODALS.COMPASS}));
         closeNotebookPanel();
         break;
       case 'sample':
         dispatch(clearedSelectedSpots());
-        if (modalVisible === Modals.SHORTCUT_MODALS.SAMPLE) {
+        if (modalVisible === MODALS.SHORTCUT_MODALS.SAMPLE) {
           dispatch(setModalVisible({modal: null}));
         }
-        else dispatch(setModalVisible({modal: Modals.SHORTCUT_MODALS.SAMPLE}));
+        else dispatch(setModalVisible({modal: MODALS.SHORTCUT_MODALS.SAMPLE}));
         closeNotebookPanel();
         break;
       case 'note':
         dispatch(clearedSelectedSpots());
-        if (modalVisible === Modals.SHORTCUT_MODALS.NOTES) {
+        if (modalVisible === MODALS.SHORTCUT_MODALS.NOTES) {
           dispatch(setModalVisible({modal: null}));
         }
-        else dispatch(setModalVisible({modal: Modals.SHORTCUT_MODALS.NOTES}));
+        else dispatch(setModalVisible({modal: MODALS.SHORTCUT_MODALS.NOTES}));
         closeNotebookPanel();
         break;
       case 'photo':
@@ -284,7 +284,7 @@ const Home = (props) => {
         break;
       case 'copySpot':
         useSpots.copySpot();
-        dispatch(setNotebookPageVisible(NotebookPages.OVERVIEW));
+        dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.OVERVIEW));
         break;
       case 'deleteSpot':
         deleteSpot(selectedSpot.properties.id);
@@ -297,14 +297,14 @@ const Home = (props) => {
         mapViewComponent.current.zoomToSpot();
         break;
       case 'showNesting':
-        dispatch(setNotebookPageVisible(NotebookPages.NESTING));
+        dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.NESTING));
         break;
       // Map Actions
-      case MapModes.DRAW.POINT:
-      case MapModes.DRAW.LINE:
-      case MapModes.DRAW.POLYGON:
-      case MapModes.DRAW.FREEHANDPOLYGON:
-      case MapModes.DRAW.FREEHANDLINE:
+      case MAP_MODES.DRAW.POINT:
+      case MAP_MODES.DRAW.LINE:
+      case MAP_MODES.DRAW.POLYGON:
+      case MAP_MODES.DRAW.FREEHANDPOLYGON:
+      case MAP_MODES.DRAW.FREEHANDLINE:
         if (!isEmpty(selectedDataset)) setDraw(name).catch(console.error);
         else Alert.alert('No Current Dataset', 'A current dataset needs to be set before drawing Spots.');
         break;
@@ -335,13 +335,13 @@ const Home = (props) => {
         console.log(`${name}`, ' was clicked');
         mapViewComponent.current.clearSelectedSpots();
         setIsSelectingForTagging(true);
-        setDraw(MapModes.DRAW.FREEHANDPOLYGON).catch(console.error);
+        setDraw(MAP_MODES.DRAW.FREEHANDPOLYGON).catch(console.error);
         break;
       case 'stereonet':
         console.log(`${name}`, ' was clicked');
         mapViewComponent.current.clearSelectedSpots();
         setIsSelectingForStereonet(true);
-        setDraw(MapModes.DRAW.FREEHANDPOLYGON).catch(console.error);
+        setDraw(MAP_MODES.DRAW.FREEHANDPOLYGON).catch(console.error);
         break;
     }
   };
@@ -394,9 +394,9 @@ const Home = (props) => {
 
   const endDraw = async () => {
     const newOrEditedSpot = await mapViewComponent.current.endDraw();
-    setMapMode(MapModes.VIEW);
+    setMapMode(MAP_MODES.VIEW);
     toggleButton('endDrawButtonVisible', false);
-    if (!isEmpty(newOrEditedSpot) && !isSelectingForStereonet) openNotebookPanel(NotebookPages.OVERVIEW);
+    if (!isEmpty(newOrEditedSpot) && !isSelectingForStereonet) openNotebookPanel(NOTEBOOK_PAGES.OVERVIEW);
     setIsSelectingForStereonet(false);
   };
 
@@ -440,7 +440,7 @@ const Home = (props) => {
         useImages.getImagesFromCameraRoll();
         break;
       case 'showGeographyInfo':
-        dispatch(setNotebookPageVisible(NotebookPages.GEOGRAPHY));
+        dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.GEOGRAPHY));
         break;
       case 'setToCurrentLocation':
         const currentLocation = await useMaps.getCurrentLocation();
@@ -458,8 +458,8 @@ const Home = (props) => {
 
   const openNotebookPanel = pageView => {
     console.log('Opening Notebook', pageView, '...');
-    if (modalVisible !== Modals.SHORTCUT_MODALS.ADD_TAGS_TO_SPOTS) dispatch(setModalVisible({modal: null}));
-    dispatch(setNotebookPageVisible(pageView || NotebookPages.OVERVIEW));
+    if (modalVisible !== MODALS.SHORTCUT_MODALS.ADD_TAGS_TO_SPOTS) dispatch(setModalVisible({modal: null}));
+    dispatch(setNotebookPageVisible(pageView || NOTEBOOK_PAGES.OVERVIEW));
     animatePanels(animation, 0);
     animatePanels(rightsideIconAnimationValue, -notebookPanelWidth);
     dispatch(setNotebookPanelVisible(true));
@@ -474,72 +474,72 @@ const Home = (props) => {
   };
 
   const renderFloatingViews = () => {
-    if (modalVisible === Modals.NOTEBOOK_MODALS.TAGS && isNotebookPanelVisible
+    if (modalVisible === MODALS.NOTEBOOK_MODALS.TAGS && isNotebookPanelVisible
       && !isEmpty(selectedSpot)) {
       return (
         <TagsNotebookModal
           close={() => dispatch(setModalVisible({modal: null}))}
-          onPress={() => modalHandler(null, Modals.SHORTCUT_MODALS.TAGS)}
+          onPress={() => modalHandler(null, MODALS.SHORTCUT_MODALS.TAGS)}
         />
       );
     }
-    if (modalVisible === Modals.SHORTCUT_MODALS.TAGS) {
+    if (modalVisible === MODALS.SHORTCUT_MODALS.TAGS) {
       return (
         <TagsShortcutModal
           close={() => dispatch(setModalVisible({modal: null}))}
-          onPress={() => modalHandler(NotebookPages.TAG, Modals.NOTEBOOK_MODALS.TAGS)}
+          onPress={() => modalHandler(NOTEBOOK_PAGES.TAG, MODALS.NOTEBOOK_MODALS.TAGS)}
         />
       );
     }
-    if (modalVisible === Modals.SHORTCUT_MODALS.ADD_TAGS_TO_SPOTS) {
+    if (modalVisible === MODALS.SHORTCUT_MODALS.ADD_TAGS_TO_SPOTS) {
       return (
         <AddTagsToSpotsShortcutModal
           close={() => dispatch(setModalVisible({modal: null}))}
-          onPress={() => modalHandler(NotebookPages.TAG, Modals.NOTEBOOK_MODALS.TAGS)}
+          onPress={() => modalHandler(NOTEBOOK_PAGES.TAG, MODALS.NOTEBOOK_MODALS.TAGS)}
         />
       );
     }
-    if (modalVisible === Modals.NOTEBOOK_MODALS.COMPASS && isNotebookPanelVisible
+    if (modalVisible === MODALS.NOTEBOOK_MODALS.COMPASS && isNotebookPanelVisible
       && !isEmpty(selectedSpot)) {
       return (
         <NotebookCompassModal
           close={() => dispatch(setModalVisible({modal: null}))}
-          onPress={() => modalHandler(null, Modals.SHORTCUT_MODALS.COMPASS)}
+          onPress={() => modalHandler(null, MODALS.SHORTCUT_MODALS.COMPASS)}
         />
       );
     }
-    if (modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {
+    if (modalVisible === MODALS.SHORTCUT_MODALS.COMPASS) {
       return (
         <ShortcutCompassModal
           close={() => dispatch(setModalVisible({modal: null}))}
-          onPress={() => modalHandler(NotebookPages.MEASUREMENT, Modals.NOTEBOOK_MODALS.COMPASS)}
+          onPress={() => modalHandler(NOTEBOOK_PAGES.MEASUREMENT, MODALS.NOTEBOOK_MODALS.COMPASS)}
         />
       );
     }
-    if (modalVisible === Modals.NOTEBOOK_MODALS.SAMPLE && isNotebookPanelVisible
+    if (modalVisible === MODALS.NOTEBOOK_MODALS.SAMPLE && isNotebookPanelVisible
       && !isEmpty(selectedSpot)) {
       return (
         <NotebookSamplesModal
           close={() => dispatch(setModalVisible({modal: null}))}
           cancel={() => samplesModalCancel()}
-          onPress={() => modalHandler(null, Modals.SHORTCUT_MODALS.SAMPLE)}
+          onPress={() => modalHandler(null, MODALS.SHORTCUT_MODALS.SAMPLE)}
         />
       );
     }
-    else if (modalVisible === Modals.SHORTCUT_MODALS.SAMPLE) {
+    else if (modalVisible === MODALS.SHORTCUT_MODALS.SAMPLE) {
       return (
         <ShortcutSamplesModal
           close={() => dispatch(setModalVisible({modal: null}))}
           cancel={() => samplesModalCancel()}
-          onPress={() => modalHandler(NotebookPages.SAMPLE, Modals.NOTEBOOK_MODALS.SAMPLE)}
+          onPress={() => modalHandler(NOTEBOOK_PAGES.SAMPLE, MODALS.NOTEBOOK_MODALS.SAMPLE)}
         />
       );
     }
-    if (modalVisible === Modals.SHORTCUT_MODALS.NOTES) {
+    if (modalVisible === MODALS.SHORTCUT_MODALS.NOTES) {
       return (
         <ShortcutNotesModal
           close={() => dispatch(setModalVisible({modal: null}))}
-          onPress={() => modalHandler(NotebookPages.NOTE)}
+          onPress={() => modalHandler(NOTEBOOK_PAGES.NOTE)}
         />
       );
     }
@@ -699,15 +699,15 @@ const Home = (props) => {
 
   const setDraw = async mapModeToSet => {
     mapViewComponent.current.cancelDraw();
-    if (mapMode === MapModes.VIEW && mapModeToSet !== MapModes.DRAW.POINT) {
+    if (mapMode === MAP_MODES.VIEW && mapModeToSet !== MAP_MODES.DRAW.POINT) {
       toggleButton('endDrawButtonVisible', true);
     }
     else if (mapMode === mapModeToSet
-      || (mapMode === MapModes.DRAW.FREEHANDPOLYGON && mapModeToSet === MapModes.DRAW.POLYGON)
-      || (mapMode === MapModes.DRAW.FREEHANDLINE && mapModeToSet === MapModes.DRAW.LINE)
-    ) mapModeToSet = MapModes.VIEW;
+      || (mapMode === MAP_MODES.DRAW.FREEHANDPOLYGON && mapModeToSet === MAP_MODES.DRAW.POLYGON)
+      || (mapMode === MAP_MODES.DRAW.FREEHANDLINE && mapModeToSet === MAP_MODES.DRAW.LINE)
+    ) mapModeToSet = MAP_MODES.VIEW;
     setMapMode(mapModeToSet);
-    if (mapModeToSet === MapModes.VIEW) {
+    if (mapModeToSet === MAP_MODES.VIEW) {
       toggleButton('endDrawButtonVisible', false);
     }
     //props.setMapMode(mapModeToSet);
@@ -716,7 +716,7 @@ const Home = (props) => {
   const saveEdits = async () => {
     mapViewComponent.current.saveEdits();
     //cancelEdits();
-    setMapMode(MapModes.VIEW);
+    setMapMode(MAP_MODES.VIEW);
     setButtons({
       'editButtonsVisible': false,
       'drawButtonsVisible': true,
@@ -724,7 +724,7 @@ const Home = (props) => {
   };
 
   const startEdit = () => {
-    setMapMode(MapModes.EDIT);
+    setMapMode(MAP_MODES.EDIT);
     setButtons({
       editButtonsVisible: true,
       drawButtonsVisible: false,
@@ -827,9 +827,9 @@ const Home = (props) => {
       <ToastPopup toastRef={toastRef}/>
       {Platform.OS === 'android' && (
         <View>
-          {(modalVisible === Modals.NOTEBOOK_MODALS.COMPASS || modalVisible === Modals.SHORTCUT_MODALS.COMPASS)
+          {(modalVisible === MODALS.NOTEBOOK_MODALS.COMPASS || modalVisible === MODALS.SHORTCUT_MODALS.COMPASS)
           && compassModal}
-          {(modalVisible === Modals.NOTEBOOK_MODALS.SAMPLE || modalVisible === Modals.SHORTCUT_MODALS.SAMPLE)
+          {(modalVisible === MODALS.NOTEBOOK_MODALS.SAMPLE || modalVisible === MODALS.SHORTCUT_MODALS.SAMPLE)
           && samplesModal}
         </View>
       )}

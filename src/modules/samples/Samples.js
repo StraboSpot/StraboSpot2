@@ -6,7 +6,7 @@ import {connect, useDispatch, useSelector} from 'react-redux';
 
 import {getNewId} from '../../shared/Helpers';
 import Slider from '../../shared/ui/Slider';
-import {Modals} from '../home/home.constants';
+import {MODALS} from '../home/home.constants';
 import useMapsHook from '../maps/useMaps';
 import {updatedProject} from '../project/projects.slice';
 import {editedSpotProperties} from '../spots/spots.slice';
@@ -57,7 +57,7 @@ const SamplesModalView = (props) => {
   // };
 
   const saveSample = async () => {
-    if (modalVisible === Modals.SHORTCUT_MODALS.SAMPLE) {
+    if (modalVisible === MODALS.SHORTCUT_MODALS.SAMPLE) {
       const pointSetAtCurrentLocation = await useMaps.setPointAtCurrentLocation();
       console.log('pointSetAtCurrentLocation', pointSetAtCurrentLocation);
     }
@@ -74,12 +74,12 @@ const SamplesModalView = (props) => {
     if (sample.length > 0) {
       let newSample = sample[0];
       newSample.id = getNewId();
-      if (modalVisible === Modals.NOTEBOOK_MODALS.SAMPLE) {
+      if (modalVisible === MODALS.NOTEBOOK_MODALS.SAMPLE) {
         const samples = (typeof spot.properties.samples === 'undefined' ? [newSample] : [...spot.properties.samples, newSample]);
         // props.onSpotEdit('samples', samples);
         dispatch(editedSpotProperties({field: 'samples', value: samples}));
       }
-      else if (modalVisible === Modals.SHORTCUT_MODALS.SAMPLE) {
+      else if (modalVisible === MODALS.SHORTCUT_MODALS.SAMPLE) {
         // props.onSpotEdit('samples', [newSample]);
         dispatch(editedSpotProperties({field: 'samples', value: [newSample]}));
       }

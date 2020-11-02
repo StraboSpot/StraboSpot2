@@ -6,7 +6,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import IconButton from '../../shared/ui/IconButton';
 import ImagePropertiesModal from '../images/ImagePropertiesModal';
-import {NotebookPages} from '../notebook-panel/notebook.constants';
+import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
 import {setSelectedSpot, setSelectedAttributes} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
 import styles from './images.styles';
@@ -39,7 +39,7 @@ const Preview = (props) => {
   const getSpotFromId = (spotId) => {
     props.toggle();
     const spot = spots[spotId];
-    props.openNotebookPanel(NotebookPages.OVERVIEW);
+    props.openNotebookPanel(NOTEBOOK_PAGES.OVERVIEW);
     dispatch(setSelectedSpot(spot));
   };
 

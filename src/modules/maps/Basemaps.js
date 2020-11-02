@@ -9,7 +9,7 @@ import {isEmpty} from '../../shared/Helpers';
 import homeStyles from '../home/home.style';
 import useImagesHook from '../images/useImages';
 import FreehandSketch from '../sketch/FreehandSketch';
-import {symbols as symbolsConstant, geoLatLngProjection, pixelProjection} from './maps.constants';
+import {GEO_LAT_LNG_PROJECTION, PIXEL_PROJECTION, MAP_SYMBOLS} from './maps.constants';
 import useMapsHook from './useMaps';
 import useMapSymbologyHook from './useMapSymbology';
 
@@ -18,7 +18,7 @@ function Basemap(props) {
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const {mapRef, cameraRef} = props.forwardedRef;
   const [useMapSymbology] = useMapSymbologyHook();
-  const [symbols, setSymbol] = useState(symbolsConstant);
+  const [symbols, setSymbol] = useState(MAP_SYMBOLS);
   const [useImages] = useImagesHook();
   const [useMaps] = useMapsHook();
   const [showZoom, setShowZoom] = useState(false);
@@ -45,7 +45,7 @@ function Basemap(props) {
   };
 
   const defaultCenterCoordinates = () => {
-    return props.imageBasemap ? useMaps.convertCoordinateProjections(pixelProjection, geoLatLngProjection,
+    return props.imageBasemap ? useMaps.convertCoordinateProjections(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION,
       [(props.imageBasemap.width) / 2, (props.imageBasemap.height) / 2])
       : props.centerCoordinate;
   };
@@ -54,7 +54,7 @@ function Basemap(props) {
   const evaluateCenterCoordinates = () => {
     if (props.zoomToSpot && !isEmpty(selectedSpot)) {
       if (props.imageBasemap && selectedSpot.properties.image_basemap === props.imageBasemap.id) {
-        return useMaps.convertCoordinateProjections(pixelProjection, geoLatLngProjection,
+        return useMaps.convertCoordinateProjections(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION,
           turf.centroid(selectedSpot).geometry.coordinates);
       }
       else if (!selectedSpot.properties.image_basemap) return turf.centroid(selectedSpot).geometry.coordinates;

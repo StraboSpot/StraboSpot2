@@ -6,7 +6,7 @@ import {Button} from 'react-native-elements';
 import {Dialog, DialogTitle, DialogContent, SlideAnimation} from 'react-native-popup-dialog';
 import {useSelector, useDispatch} from 'react-redux';
 
-import {redux} from '../../shared/app.constants';
+import {REDUX} from '../../shared/app.constants';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import Spacer from '../../shared/ui/Spacer';
@@ -62,7 +62,7 @@ const InitialProjectLoadModal = (props) => {
           containerStyle={commonStyles.buttonContainer}
           titleStyle={commonStyles.standardButtonText}
           onPress={() => {
-            if (userName) dispatch({type: redux.CLEAR_STORE});
+            if (userName) dispatch({type: REDUX.CLEAR_STORE});
             dispatch(setOnlineStatus({bool: false}));
             navigation.navigate('SignIn');
           }}

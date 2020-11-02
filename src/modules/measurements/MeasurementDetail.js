@@ -11,7 +11,7 @@ import * as themes from '../../shared/styles.constants';
 import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {Form, useFormHook} from '../form';
-import {Modals} from '../home/home.constants';
+import {MODALS} from '../home/home.constants';
 import {setModalVisible} from '../home/home.slice';
 import {setNotebookPageVisibleToPrev} from '../notebook-panel/notebook.slice';
 import {editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
@@ -284,8 +284,8 @@ const MeasurementDetailPage = (props) => {
   };
 
   const cancelFormAndGo = () => {
-    if (modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {
-      dispatch(setModalVisible({modal: Modals.NOTEBOOK_MODALS.COMPASS}));
+    if (modalVisible === MODALS.SHORTCUT_MODALS.COMPASS) {
+      dispatch(setModalVisible({modal: MODALS.NOTEBOOK_MODALS.COMPASS}));
     }
     dispatch(setNotebookPageVisibleToPrev());
   };
@@ -343,8 +343,8 @@ const MeasurementDetailPage = (props) => {
   const saveFormAndGo = () => {
     saveForm().then(() => {
       console.log('Finished saving form data to Spot');
-      if (modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {
-        dispatch(setModalVisible({modal: Modals.NOTEBOOK_MODALS.COMPASS}));
+      if (modalVisible === MODALS.SHORTCUT_MODALS.COMPASS) {
+        dispatch(setModalVisible({modal: MODALS.NOTEBOOK_MODALS.COMPASS}));
       }
       dispatch(setNotebookPageVisibleToPrev());
     }, () => {
@@ -377,8 +377,8 @@ const MeasurementDetailPage = (props) => {
       orientationDataCopy = orientationDataCopy.filter(measurement => !isEmpty(measurement));
       dispatch(editedSpotProperties({field: 'orientation_data', value: orientationDataCopy}));
 
-      if (modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {
-        dispatch(setModalVisible({modal: Modals.NOTEBOOK_MODALS.COMPASS}));
+      if (modalVisible === MODALS.SHORTCUT_MODALS.COMPASS) {
+        dispatch(setModalVisible({modal: MODALS.NOTEBOOK_MODALS.COMPASS}));
       }
       dispatch(setNotebookPageVisibleToPrev());
     }

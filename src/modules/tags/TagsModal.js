@@ -9,11 +9,11 @@ import AddButton from '../../shared/ui/AddButton';
 import SaveButton from '../../shared/ui/ButtonRounded';
 import DefaultCheckBox from '../../shared/ui/Checkbox';
 import modalStyle from '../../shared/ui/modal/modal.style';
-import {Modals} from '../home/home.constants';
+import {MODALS} from '../home/home.constants';
 import useMapsHook from '../maps/useMaps';
+import {addedTagToSelectedSpot} from '../project/projects.slice';
 import {useTagsHook} from '../tags';
 import tagStyles from './tags.styles';
-import {addedTagToSelectedSpot} from '../project/projects.slice';
 
 const TagsModal = (props) => {
   const dispatch = useDispatch();
@@ -47,7 +47,7 @@ const TagsModal = (props) => {
   };
 
   const save = async () => {
-    if (modalVisible !== (Modals.SHORTCUT_MODALS.ADD_TAGS_TO_SPOTS)) {
+    if (modalVisible !== (MODALS.SHORTCUT_MODALS.ADD_TAGS_TO_SPOTS)) {
       useMaps.setPointAtCurrentLocation().then(spot => {
         checkedTagsTemp.map(tag => {
           useTags.addRemoveTagFromSpot(tag, spot);
@@ -80,7 +80,7 @@ const TagsModal = (props) => {
         </View>
         <View style={{maxHeight: 300}}>
           {renderSpotTagsList()}
-          {(modalVisible === Modals.SHORTCUT_MODALS.TAGS || modalVisible === Modals.SHORTCUT_MODALS.ADD_TAGS_TO_SPOTS)
+          {(modalVisible === MODALS.SHORTCUT_MODALS.TAGS || modalVisible === MODALS.SHORTCUT_MODALS.ADD_TAGS_TO_SPOTS)
           && <SaveButton
             buttonStyle={{backgroundColor: 'red'}}
             title={'Save tag(s)'}
@@ -112,11 +112,11 @@ const TagsModal = (props) => {
           <ListItem.Title style={tagStyles.listText}>{useTags.getLabel(tag.type)}</ListItem.Title>
         </ListItem.Content>
         <DefaultCheckBox
-          onPress={() => (modalVisible !== Modals.SHORTCUT_MODALS.TAGS) && (modalVisible !== Modals.SHORTCUT_MODALS.ADD_TAGS_TO_SPOTS)
+          onPress={() => (modalVisible !== MODALS.SHORTCUT_MODALS.TAGS) && (modalVisible !== MODALS.SHORTCUT_MODALS.ADD_TAGS_TO_SPOTS)
             ? useTags.addRemoveTagFromSpot(tag)
             : checkTags(tag)}
           checkedColor={'grey'}
-          checked={(modalVisible && modalVisible !== Modals.SHORTCUT_MODALS.TAGS) && (modalVisible !== Modals.SHORTCUT_MODALS.ADD_TAGS_TO_SPOTS)
+          checked={(modalVisible && modalVisible !== MODALS.SHORTCUT_MODALS.TAGS) && (modalVisible !== MODALS.SHORTCUT_MODALS.ADD_TAGS_TO_SPOTS)
             ? tag && tag.spots && tag.spots.includes(selectedSpot.properties.id)
             : checkedTagsTemp.map(checkedTag => checkedTag.id).includes(tag.id)}
         />

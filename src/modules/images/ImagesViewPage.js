@@ -8,7 +8,7 @@ import commonStyles from '../../shared/common.styles';
 import ButtonRounded from '../../shared/ui/ButtonRounded';
 import {imageStyles, useImagesHook} from '../images';
 import {setCurrentImageBasemap} from '../maps/maps.slice';
-import {NotebookPages} from '../notebook-panel/notebook.constants';
+import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 
@@ -57,7 +57,7 @@ const ImagesViewPage = (props) => {
   return (
     <View style={{flex: 1}}>
       <ReturnToOverviewButton
-        onPress={() => dispatch(setNotebookPageVisible(NotebookPages.OVERVIEW))}
+        onPress={() => dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.OVERVIEW))}
       />
       <View style={{alignItems: 'center', flex: 1}}>
         <View style={imageStyles.buttonsContainer}>

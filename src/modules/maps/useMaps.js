@@ -19,7 +19,7 @@ import {setMenuSelectionPage, setSidePanelVisible} from '../main-menu-panel/main
 import {addedProject} from '../project/projects.slice';
 import {setSelectedSpot} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
-import {basemaps, mapProviders, geoLatLngProjection, pixelProjection} from './maps.constants';
+import {BASEMAPS, GEO_LAT_LNG_PROJECTION, MAP_PROVIDERS, PIXEL_PROJECTION} from './maps.constants';
 import {addedCustomMap, deletedCustomMap, selectedCustomMapToEdit, setCurrentBasemap, setMapSymbols} from './maps.slice';
 
 const useMaps = () => {
@@ -72,14 +72,14 @@ const useMaps = () => {
     var imageX, imageY;
     let calculatedCoordinates = [];
     if (feature.geometry.type === 'Point') {
-      [imageX, imageY] = convertCoordinateProjections(geoLatLngProjection, pixelProjection,
+      [imageX, imageY] = convertCoordinateProjections(GEO_LAT_LNG_PROJECTION, PIXEL_PROJECTION,
         feature.geometry.coordinates);
       feature.geometry.coordinates = [imageX, imageY];
     }
     else if (feature.geometry.type === 'Polygon') {
       for (const subArray of feature.geometry.coordinates) {
         for (const innerSubArray of subArray) {
-          [imageX, imageY] = convertCoordinateProjections(geoLatLngProjection, pixelProjection, innerSubArray);
+          [imageX, imageY] = convertCoordinateProjections(GEO_LAT_LNG_PROJECTION, PIXEL_PROJECTION, innerSubArray);
           calculatedCoordinates.push([imageX, imageY]);
         }
       }
@@ -87,7 +87,7 @@ const useMaps = () => {
     }
     else { // LineString
       for (const subArray of feature.geometry.coordinates) {
-        [imageX, imageY] = convertCoordinateProjections(geoLatLngProjection, pixelProjection, subArray);
+        [imageX, imageY] = convertCoordinateProjections(GEO_LAT_LNG_PROJECTION, PIXEL_PROJECTION, subArray);
         calculatedCoordinates.push([imageX, imageY]);
       }
       feature.geometry.coordinates = calculatedCoordinates;
@@ -99,14 +99,14 @@ const useMaps = () => {
   const convertImagePixelsToLatLong = (feature) => {
     if (feature.geometry.type === 'Point') {
       const coords = feature.geometry.coordinates;
-      feature.geometry.coordinates = convertCoordinateProjections(pixelProjection, geoLatLngProjection,
+      feature.geometry.coordinates = convertCoordinateProjections(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION,
         [coords[0], coords[1]]);
     }
     else if (feature.geometry.type === 'Polygon') {
       let calculatedCoordinates = [];
       for (const subArray of feature.geometry.coordinates) {
         for (const innerSubArray of subArray) {
-          let [x, y] = convertCoordinateProjections(pixelProjection, geoLatLngProjection,
+          let [x, y] = convertCoordinateProjections(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION,
             [innerSubArray[0], innerSubArray[1]]);
           calculatedCoordinates.push([x, y]);
         }
@@ -116,7 +116,7 @@ const useMaps = () => {
     else {
       let calculatedCoordinates = [];
       for (const subArray of feature.geometry.coordinates) {
-        let [x, y] = convertCoordinateProjections(pixelProjection, geoLatLngProjection, [subArray[0], subArray[1]]);
+        let [x, y] = convertCoordinateProjections(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION, [subArray[0], subArray[1]]);
         calculatedCoordinates.push([x, y]);
       }
       feature.geometry.coordinates = calculatedCoordinates;
@@ -133,10 +133,10 @@ const useMaps = () => {
   const getCoordQuad = (imageBasemapProps) => {
     // identify the [lat,lng] corners of the image basemap
     var bottomLeft = [0, 0];
-    var bottomRight = convertCoordinateProjections(pixelProjection, geoLatLngProjection, [imageBasemapProps.width, 0]);
-    var topRight = convertCoordinateProjections(pixelProjection, geoLatLngProjection,
+    var bottomRight = convertCoordinateProjections(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION, [imageBasemapProps.width, 0]);
+    var topRight = convertCoordinateProjections(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION,
       [imageBasemapProps.width, imageBasemapProps.height]);
-    var topLeft = convertCoordinateProjections(pixelProjection, geoLatLngProjection, [0, imageBasemapProps.height]);
+    var topLeft = convertCoordinateProjections(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION, [0, imageBasemapProps.height]);
     var coordQuad = [topLeft, topRight, bottomRight, bottomLeft];
     console.log('The coordinates identified for image-basemap :', coordQuad);
     return coordQuad;
@@ -234,8 +234,8 @@ const useMaps = () => {
   };
 
   const getProviderInfo = (source) => {
-    console.log(mapProviders[source]);
-    return mapProviders[source];
+    console.log(MAP_PROVIDERS[source]);
+    return MAP_PROVIDERS[source];
   };
 
   const handleError = (message, err) => {
@@ -289,7 +289,7 @@ const useMaps = () => {
 
   const setBasemap = async (mapId) => {
     if (!mapId) mapId = 'mapbox.outdoors';
-    const newBasemap = await basemaps.find(basemap => basemap.id === mapId);
+    const newBasemap = await BASEMAPS.find(basemap => basemap.id === mapId);
     console.log('Setting current basemap to a default basemap...');
     dispatch(setCurrentBasemap(newBasemap));
   };

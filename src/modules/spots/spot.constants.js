@@ -1,4 +1,4 @@
-export const generalKeysIcons = {
+export const GENERAL_KEYS_ICONS = {
   orientation_data: require('../../assets/icons/Measurement_transparent.png'),
   _3d_structures: require('../../assets/icons/3DStructure_transparent.png'),
   notes: require('../../assets/icons/Note_transparent.png'),
@@ -10,7 +10,7 @@ export const generalKeysIcons = {
   tags: require('../../assets/icons/Tag_transparent.png'),
 };
 
-export const sedKeysIcons = {
+export const SED_KEYS_ICONS = {
   strat_section: require('../../assets/icons/SedStratColumn_transparent.png'),
   interval: require('../../assets/icons/QuestionMark_pressed.png'),
   lithologies: require('../../assets/icons/SedLithologies_transparent.png'),

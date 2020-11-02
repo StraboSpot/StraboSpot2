@@ -12,8 +12,8 @@ import * as themes from '../../../shared/styles.constants';
 import IconButton from '../../../shared/ui/IconButton';
 import Slider from '../../../shared/ui/Slider';
 import uiStyles from '../../../shared/ui/ui.styles';
-import {Modals} from '../../home/home.constants';
-import {NotebookPages} from '../../notebook-panel/notebook.constants';
+import {MODALS} from '../../home/home.constants';
+import {NOTEBOOK_PAGES} from '../../notebook-panel/notebook.constants';
 import {editedSpotProperties} from '../../spots/spots.slice';
 import Measurements from '../Measurements';
 import {COMPASS_TOGGLE_BUTTONS} from './compass.constants';
@@ -438,7 +438,7 @@ class Compass extends Component {
     );
 
 
-    if (this.props.modalVisible === Modals.SHORTCUT_MODALS.COMPASS) {
+    if (this.props.modalVisible === MODALS.SHORTCUT_MODALS.COMPASS) {
       if (!isEmpty(this.props.spot)) {
         modalView = <View>
           <View style={{height: 320}}>
@@ -448,18 +448,18 @@ class Compass extends Component {
             source={require('../../../assets/icons/NotebookView_pressed.png')}
             style={{marginTop: 10, flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-end', height: 25}}
             textStyle={{color: themes.BLUE, fontSize: 16, textAlign: 'center'}}
-            onPress={() => this.props.onPress(NotebookPages.MEASUREMENT)}
+            onPress={() => this.props.onPress(NOTEBOOK_PAGES.MEASUREMENT)}
           > Go to {this.props.spot.properties.name}</IconButton>
         </View>;
       }
     }
-    else if (this.props.modalVisible === Modals.NOTEBOOK_MODALS.COMPASS) {
+    else if (this.props.modalVisible === MODALS.NOTEBOOK_MODALS.COMPASS) {
       modalView = <View>
         {this.props.deviceDimensions.width > 700 ? <Button
           title={'View In Shortcut Mode'}
           type={'clear'}
           titleStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 16}}
-          onPress={() => this.props.onPress(NotebookPages.MEASUREMENT)}
+          onPress={() => this.props.onPress(NOTEBOOK_PAGES.MEASUREMENT)}
         /> : null}
         <Button
           title={'Toggle data view'}

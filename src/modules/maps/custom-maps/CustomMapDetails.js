@@ -27,7 +27,7 @@ import {setMenuSelectionPage, setSidePanelVisible} from '../../main-menu-panel/m
 import Divider from '../../main-menu-panel/MainMenuPanelDivider';
 import sidePanelStyles from '../../main-menu-panel/sidePanel.styles';
 import SidePanelHeader from '../../main-menu-panel/sidePanel/SidePanelHeader';
-import {customMapTypes} from '../maps.constants';
+import {CUSTOM_MAP_TYPES} from '../maps.constants';
 import {addedCustomMap, selectedCustomMapToEdit} from '../maps.slice';
 import useMapHook from '../useMaps';
 import styles from './customMaps.styles';
@@ -129,7 +129,7 @@ const AddCustomMaps = () => {
     return (
       <ListItem
         // containerStyle={styles.list}
-        bottomDivider={i < Object.values(customMapTypes).length - 1}
+        bottomDivider={i < Object.values(CUSTOM_MAP_TYPES).length - 1}
       >
         <ListItem.Content style={{flexDirection: 'row', justifyContent: 'space-between'}}>
           <ListItem.Title>{item.title}</ListItem.Title>
@@ -200,7 +200,7 @@ const AddCustomMaps = () => {
         <FlatList
           keyExtractor={item => item.source}
           scrollEnabled={false}
-          data={customMapTypes}
+          data={CUSTOM_MAP_TYPES}
           renderItem={({item, index}) => renderCustomMapName(item, index)}
         />
       </View>

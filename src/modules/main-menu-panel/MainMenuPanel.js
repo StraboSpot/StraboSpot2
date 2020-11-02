@@ -9,7 +9,7 @@ import ImageGallery from '../images/ImageGallery';
 import CustomMapsMenu from '../maps/custom-maps/ManageCustomMaps';
 import ImageBaseMaps from '../maps/ImageBasemaps';
 import ManageOfflineMapsMenu from '../maps/offline-maps/ManageOfflineMaps';
-import {NotebookPages} from '../notebook-panel/notebook.constants';
+import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
 import NamingConventions from '../preferences/naming-conventions/NamingConventions';
 import ShortcutMenu from '../preferences/shortcuts-menu/ShortcutsMenu';
 import ActiveProject from '../project/ActiveProjectPanel';
@@ -44,8 +44,8 @@ const MainMenuPanel = props => {
 
   const getSpotFromId = (spotId, page) => {
     const spot = spots[spotId];
-    if (page === NotebookPages.SAMPLE) props.openNotebookPanel(NotebookPages.SAMPLE);
-    else props.openNotebookPanel(NotebookPages.OVERVIEW);
+    if (page === NOTEBOOK_PAGES.SAMPLE) props.openNotebookPanel(NOTEBOOK_PAGES.SAMPLE);
+    else props.openNotebookPanel(NOTEBOOK_PAGES.OVERVIEW);
     // props.onSetSelectedSpot(spot);
     dispatch(setSelectedSpot(spot));
   };

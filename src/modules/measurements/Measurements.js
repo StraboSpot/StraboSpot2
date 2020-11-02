@@ -6,9 +6,9 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import * as themes from '../../shared/styles.constants';
 import SectionDivider from '../../shared/ui/SectionDivider';
-import {Modals} from '../home/home.constants';
+import {MODALS} from '../home/home.constants';
 import {setModalVisible} from '../home/home.slice';
-import {NotebookPages} from '../notebook-panel/notebook.constants';
+import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
 import {setCompassMeasurementTypes, setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import {setSelectedAttributes} from '../spots/spots.slice';
@@ -30,7 +30,7 @@ const MeasurementsPage = (props) => {
   };
 
   const addMeasurement = (sectionType) => {
-    dispatch(setModalVisible({modal: Modals.NOTEBOOK_MODALS.COMPASS}));
+    dispatch(setModalVisible({modal: MODALS.NOTEBOOK_MODALS.COMPASS}));
 
     let types = [];
     if (sectionType === sectionTypes.PLANAR) types = [COMPASS_TOGGLE_BUTTONS.PLANAR];
@@ -78,7 +78,7 @@ const MeasurementsPage = (props) => {
   const viewMeasurementDetail = (item) => {
     // props.setSelectedAttributes([item]);
     dispatch(setSelectedAttributes([item]));
-    dispatch(setNotebookPageVisible(NotebookPages.MEASUREMENTDETAIL));
+    dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.MEASUREMENTDETAIL));
   };
 
 
@@ -88,7 +88,7 @@ const MeasurementsPage = (props) => {
     setMultiSelectMode();
     // props.setSelectedAttributes(data);
     dispatch(setSelectedAttributes(data));
-    dispatch(setNotebookPageVisible(NotebookPages.MEASUREMENTDETAIL));
+    dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.MEASUREMENTDETAIL));
   };
 
   const startSelecting = (type) => {
@@ -106,7 +106,7 @@ const MeasurementsPage = (props) => {
     console.log('Identify Selected:', selectedFeaturesTemp);
     // props.setSelectedAttributes(selectedFeaturesTemp);
     dispatch(setSelectedAttributes(selectedFeaturesTemp));
-    dispatch(setNotebookPageVisible(NotebookPages.MEASUREMENTDETAIL));
+    dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.MEASUREMENTDETAIL));
   };
 
   const renderMeasurements = (type) => {
@@ -197,7 +197,7 @@ const MeasurementsPage = (props) => {
       <View style={styles.measurementsContentContainer}>
         <ReturnToOverviewButton
           onPress={() => {
-            dispatch(setNotebookPageVisible(NotebookPages.OVERVIEW));
+            dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.OVERVIEW));
             dispatch(setModalVisible({modal: null}));
           }}
         />
@@ -226,7 +226,7 @@ const MeasurementsPage = (props) => {
 
   return (
     <React.Fragment>
-      {modalVisible === Modals.SHORTCUT_MODALS.COMPASS ? renderMeasurementsShortcutView() : renderMeasurementsNotebookView()}
+      {modalVisible === MODALS.SHORTCUT_MODALS.COMPASS ? renderMeasurementsShortcutView() : renderMeasurementsNotebookView()}
     </React.Fragment>
   );
 };

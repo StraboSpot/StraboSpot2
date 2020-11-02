@@ -5,7 +5,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import {isEmpty} from '../../shared/Helpers';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
-import {NotebookPages} from './notebook.constants';
+import {NOTEBOOK_PAGES} from './notebook.constants';
 import {setNotebookPageVisible} from './notebook.slice';
 
 const PlaceholderPage = (props) => {
@@ -18,7 +18,7 @@ const PlaceholderPage = (props) => {
   return (
     <View>
       <ReturnToOverviewButton
-        onPress={() => dispatch(setNotebookPageVisible(NotebookPages.OVERVIEW))}
+        onPress={() => dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.OVERVIEW))}
       />
       <Text style={{paddingLeft: 20}}>Placeholder Page for {notebookPageVisible}</Text>
     </View>

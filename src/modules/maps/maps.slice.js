@@ -52,7 +52,7 @@ const mapsSlice = createSlice({
       state.symbolsOn = action.payload ? state.mapSymbols : state.symbolsOn;
     },
     setCurrentBasemap(state, action) {
-      // const newBasemap = basemaps.find(basemap => basemap.id === action.payload);
+      // const newBasemap = BASEMAPS.find(basemap => basemap.id === action.payload);
       // console.log('Setting current basemap to a default basemap...');
       state.currentBasemap = action.payload;
     },

@@ -7,9 +7,9 @@ import {useDispatch} from 'react-redux';
 import commonStyles from '../../shared/common.styles';
 import AddButton from '../../shared/ui/AddButton';
 import SectionDivider from '../../shared/ui/SectionDivider';
-import {Modals} from '../home/home.constants';
+import {MODALS} from '../home/home.constants';
 import {setModalVisible} from '../home/home.slice';
-import {NotebookPages} from '../notebook-panel/notebook.constants';
+import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import {addedTagToSelectedSpot} from '../project/projects.slice';
@@ -35,7 +35,7 @@ const TagsNotebook = (props) => {
     <React.Fragment>
       <ReturnToOverviewButton
         onPress={() => {
-          dispatch(setNotebookPageVisible(NotebookPages.OVERVIEW));
+          dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.OVERVIEW));
           dispatch(setModalVisible({modal: null}));
         }}
       />
@@ -50,7 +50,7 @@ const TagsNotebook = (props) => {
             title={'Assign/Remove'}
             type={'clear'}
             titleStyle={commonStyles.standardButtonText}
-            onPress={() => dispatch(setModalVisible({modal: Modals.NOTEBOOK_MODALS.TAGS}))}
+            onPress={() => dispatch(setModalVisible({modal: MODALS.NOTEBOOK_MODALS.TAGS}))}
           />
         </View>
         <TagsAtSpotList openMainMenu={props.openMainMenu}/>

@@ -47,7 +47,6 @@ const useHome = (props) => {
     dispatch(setMenuSelectionPage({name: undefined}));
     dispatch(clearedStatusMessages());
     dispatch(setStatusMessagesModalVisible(false));
-    // dispatch({type: redux.CLEAR_STORE});
     await checkForDeviceBackupDir();
     return checkForOpenProject();
   };

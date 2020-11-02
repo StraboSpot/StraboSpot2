@@ -9,7 +9,7 @@ import {useSelector, useDispatch} from 'react-redux';
 
 import {MAPBOX_KEY} from '../../MapboxConfig';
 import {getNewUUID, isEmpty} from '../../shared/Helpers';
-import {Modals} from '../home/home.constants';
+import {MODALS} from '../home/home.constants';
 import {setModalVisible} from '../home/home.slice';
 import useImagesHook from '../images/useImages';
 import {
@@ -21,7 +21,7 @@ import {
 } from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
 import {MapLayer1, MapLayer2} from './Basemaps';
-import {geoLatLngProjection, LATITUDE, LONGITUDE, MapModes, pixelProjection} from './maps.constants';
+import {GEO_LAT_LNG_PROJECTION, LATITUDE, LONGITUDE, MAP_MODES, PIXEL_PROJECTION} from './maps.constants';
 import {
   clearedVertexes,
   setCurrentImageBasemap,
@@ -54,9 +54,9 @@ const Map = React.forwardRef((props, ref) => {
   const isAllSymbolsOn = useSelector(state => state.map.isAllSymbolsOn);
   const user = useSelector(state => state.user);
   const isDrawFeatureModeOn = () => {
-    return (props.mapMode === MapModes.DRAW.POINT || props.mapMode === MapModes.DRAW.LINE
-      || props.mapMode === MapModes.DRAW.POLYGON || props.mapMode === MapModes.DRAW.FREEHANDPOLYGON
-      || props.mapMode === MapModes.DRAW.FREEHANDLINE);
+    return (props.mapMode === MAP_MODES.DRAW.POINT || props.mapMode === MAP_MODES.DRAW.LINE
+      || props.mapMode === MAP_MODES.DRAW.POLYGON || props.mapMode === MAP_MODES.DRAW.FREEHANDPOLYGON
+      || props.mapMode === MAP_MODES.DRAW.FREEHANDLINE);
   };
   // Data needing to be tracked when in editing mode
   const initialEditingModeData = {
@@ -96,9 +96,9 @@ const Map = React.forwardRef((props, ref) => {
   // Props that needed to pass to the map component
   const mapProps = {
     ...mapPropsMutable,
-    freehandSketchMode: (props.mapMode === MapModes.DRAW.FREEHANDPOLYGON
-      || props.mapMode === MapModes.DRAW.FREEHANDLINE),
-    allowMapViewMove: !isDrawFeatureModeOn() && props.mapMode !== MapModes.EDIT,
+    freehandSketchMode: (props.mapMode === MAP_MODES.DRAW.FREEHANDPOLYGON
+      || props.mapMode === MAP_MODES.DRAW.FREEHANDLINE),
+    allowMapViewMove: !isDrawFeatureModeOn() && props.mapMode !== MAP_MODES.EDIT,
     ref: {mapRef: map, cameraRef: camera},
     onMapPress: (e) => onMapPress(e),
     onMapLongPress: (e) => onMapLongPress(e),
@@ -168,7 +168,7 @@ const Map = React.forwardRef((props, ref) => {
       if (!currentImageBasemap) zoomToSpot();
     }
     //conditional call to avoid multiple renders during edit mode.
-    if (props.mapMode !== MapModes.EDIT) {
+    if (props.mapMode !== MAP_MODES.EDIT) {
       setDisplayedSpots((isEmpty(selectedSpot) ? [] : [{...selectedSpot}]));
     }
   }, [selectedSpot, activeDatasetsIds]);
@@ -176,13 +176,13 @@ const Map = React.forwardRef((props, ref) => {
   useEffect(() => {
     console.log('UE6 Map [vertexEndCoords]');
     console.log('Updating DOM on vertexEndsCoords changed');
-    if (!isEmpty(vertexEndCoords && props.mapMode === MapModes.EDIT)) moveVertex();
+    if (!isEmpty(vertexEndCoords && props.mapMode === MAP_MODES.EDIT)) moveVertex();
   }, [vertexEndCoords]);
 
   useEffect(() => {
     console.log('UE7 Map [mapPropsMutable.drawFeature]');
     // console.log('MapPropsMutable in useEffect', mapPropsMutable);
-    if (props.mapMode === MapModes.DRAW.POINT && mapPropsMutable.drawFeatures.length === 1) props.endDraw();
+    if (props.mapMode === MAP_MODES.DRAW.POINT && mapPropsMutable.drawFeatures.length === 1) props.endDraw();
   }, [mapPropsMutable.drawFeatures]);
 
   useEffect(() => {
@@ -239,7 +239,7 @@ const Map = React.forwardRef((props, ref) => {
     try { // on imagebasemap, if spot is not point, conversion happens in editSpotCoordinates.
       const newVertexCoords = await map.current.getCoordinateFromView(vertexEndCoords);
       if (currentImageBasemap && editingModeData.spotEditing && turf.getType(editingModeData.spotEditing) === 'Point') {
-        const vertexCoordinates = useMaps.convertCoordinateProjections(geoLatLngProjection, pixelProjection,
+        const vertexCoordinates = useMaps.convertCoordinateProjections(GEO_LAT_LNG_PROJECTION, PIXEL_PROJECTION,
           [newVertexCoords[0], newVertexCoords[1]]);
         console.log('Move vertex to:', vertexCoordinates);
         editSpotCoordinates([vertexCoordinates[0], vertexCoordinates[1]]);
@@ -372,13 +372,13 @@ const Map = React.forwardRef((props, ref) => {
 
   // Mapbox: Handle map press
   const onMapPress = async (e) => {
-    if (props.mapMode !== MapModes.DRAW.FREEHANDPOLYGON && props.mapMode !== MapModes.DRAW.FREEHANDLINE) {
+    if (props.mapMode !== MAP_MODES.DRAW.FREEHANDPOLYGON && props.mapMode !== MAP_MODES.DRAW.FREEHANDLINE) {
       console.log('props', props);
       console.log('mapProps', mapProps);
       console.log('Map press detected:', e);
       console.log('Map mode:', props.mapMode);
       // Select/Unselect a feature
-      if (props.mapMode === MapModes.VIEW) {
+      if (props.mapMode === MAP_MODES.VIEW) {
         console.log('Selecting or unselect a feature ...');
         const {screenPointX, screenPointY} = e.properties;
         const spotFound = await getSpotAtPress(screenPointX, screenPointY);
@@ -394,7 +394,7 @@ const Map = React.forwardRef((props, ref) => {
         // const lastVertexPlaced = MapboxGL.geoUtils.makeFeature(e.geometry);
         const lastVertexPlaced = turf.point(e.geometry.coordinates);
         // Draw a point (if set point to current location not working)
-        if (props.mapMode === MapModes.DRAW.POINT) setDrawFeatures([lastVertexPlaced]);
+        if (props.mapMode === MAP_MODES.DRAW.POINT) setDrawFeatures([lastVertexPlaced]);
         else if (isEmpty(mapPropsMutable.drawFeatures)) setDrawFeatures([lastVertexPlaced]);
         // Draw a line given a point and a new point
         else if (mapPropsMutable.drawFeatures.length === 1) {
@@ -404,13 +404,13 @@ const Map = React.forwardRef((props, ref) => {
           setDrawFeatures([firstVertexPlaced, feature, lastVertexPlaced]);
         }
         // Draw a line given a line and a new point
-        else if (mapPropsMutable.drawFeatures.length > 1 && props.mapMode === MapModes.DRAW.LINE) {
+        else if (mapPropsMutable.drawFeatures.length > 1 && props.mapMode === MAP_MODES.DRAW.LINE) {
           const firstVertexPlaced = mapPropsMutable.drawFeatures[0];
           const lineCoords = turf.getCoords(mapPropsMutable.drawFeatures[1]);
           feature = turf.lineString([...lineCoords, newCoord]);
           setDrawFeatures([firstVertexPlaced, feature, lastVertexPlaced]);
         }
-        else if (mapPropsMutable.drawFeatures.length > 1 && props.mapMode === MapModes.DRAW.POLYGON) {
+        else if (mapPropsMutable.drawFeatures.length > 1 && props.mapMode === MAP_MODES.DRAW.POLYGON) {
           const firstVertexPlaced = mapPropsMutable.drawFeatures[0];
           const firstVertexPlacedCoords = turf.getCoords(firstVertexPlaced);
 
@@ -429,7 +429,7 @@ const Map = React.forwardRef((props, ref) => {
         }
       }
       // Edit a Spot
-      else if (props.mapMode === MapModes.EDIT) {
+      else if (props.mapMode === MAP_MODES.EDIT) {
         // Select/Unselect new vertex to edit
         const {screenPointX, screenPointY} = e.properties;
         console.log('Select/Unselect vertex (and thus feature with the vertex) to edit');
@@ -551,7 +551,7 @@ const Map = React.forwardRef((props, ref) => {
       // !isEmpty(editingModeData.spotEditing) && editingModeData.spotEditing.properties.name != vertex.properties.name)), this check is required
       // when a polygon/linestring is selected by a long press first then a different point than the points on polygon/line is selected to edit.
       const coords = vertex.geometry.coordinates;
-      const [lat, lng] = useMaps.convertCoordinateProjections(pixelProjection, geoLatLngProjection,
+      const [lat, lng] = useMaps.convertCoordinateProjections(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION,
         [coords[0], coords[1]]);
       const vertexCoordinates = await map.current.getPointInView([lat, lng]);
       dispatch(setVertexStartCoords(vertexCoordinates));
@@ -634,7 +634,7 @@ const Map = React.forwardRef((props, ref) => {
             }
           }
           if (currentImageBasemap) {
-            newCoord = useMaps.convertCoordinateProjections(geoLatLngProjection, pixelProjection, newCoord);
+            newCoord = useMaps.convertCoordinateProjections(GEO_LAT_LNG_PROJECTION, PIXEL_PROJECTION, newCoord);
           }
           if (turf.getType(spotEditingCopy) === 'LineString') {
             if (!isEmpty(editingModeData.vertexIndex)) {
@@ -793,7 +793,7 @@ const Map = React.forwardRef((props, ref) => {
   const endDraw = async () => {
     console.log('endDraw mapProps', mapProps);
     let newOrEditedSpot = {};
-    if (props.mapMode === MapModes.DRAW.FREEHANDPOLYGON || props.mapMode === MapModes.DRAW.FREEHANDLINE) {
+    if (props.mapMode === MAP_MODES.DRAW.FREEHANDPOLYGON || props.mapMode === MAP_MODES.DRAW.FREEHANDLINE) {
       if (freehandFeatureCoords && freehandFeatureCoords.length > 2) {
         let screenCoordinates = freehandFeatureCoords;
         let featureCoordinates = [];
@@ -805,7 +805,7 @@ const Map = React.forwardRef((props, ref) => {
           featureCoordinates.push(geoCoordinates);
         }
         let feature;
-        if (props.mapMode === MapModes.DRAW.FREEHANDPOLYGON) {
+        if (props.mapMode === MAP_MODES.DRAW.FREEHANDPOLYGON) {
           featureCoordinates.push(featureCoordinates[0]); // First and Last coordinates of polygon should match
           feature = turf.polygon([featureCoordinates]);
         }
@@ -821,7 +821,7 @@ const Map = React.forwardRef((props, ref) => {
           const selectedSpots = await useMapFeatures.getLassoedSpots(mapPropsMutable.spotsNotSelected, feature);
           if (selectedSpots.length > 0) {
             dispatch(setIntersectedSpotsForTagging(selectedSpots));
-            dispatch(setModalVisible({modal: Modals.SHORTCUT_MODALS.ADD_TAGS_TO_SPOTS}));
+            dispatch(setModalVisible({modal: MODALS.SHORTCUT_MODALS.ADD_TAGS_TO_SPOTS}));
           }
           else {
             Alert.alert(
@@ -940,7 +940,7 @@ const Map = React.forwardRef((props, ref) => {
     const {screenPointX, screenPointY} = e.properties;
     const spotToEdit = await getSpotAtPress(screenPointX, screenPointY);
     const mappableSpots = useSpots.getMappableSpots();
-    if (props.mapMode === MapModes.VIEW && !isEmpty(mappableSpots)) {
+    if (props.mapMode === MAP_MODES.VIEW && !isEmpty(mappableSpots)) {
       let closestVertexDetails = {};
       let closestVertexToSelect = await getDrawFeatureAtPress(screenPointX, screenPointY);
       if (isEmpty(closestVertexToSelect)) {
@@ -950,7 +950,7 @@ const Map = React.forwardRef((props, ref) => {
         startEditing(spotToEdit, closestVertexToSelect, closestVertexDetails[1]);
       }
     }
-    else if (props.mapMode === MapModes.EDIT) {
+    else if (props.mapMode === MAP_MODES.EDIT) {
       if (isEmpty(spotToEdit)) console.log('Already in editing mode and no Spot found where pressed. No action taken.');
       else if (!isEmpty(editingModeData.spotEditing)) {
         let spotEditingCopy = JSON.parse(JSON.stringify(editingModeData.spotEditing));

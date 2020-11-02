@@ -8,9 +8,9 @@ import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
 import SectionDivider from '../../shared/ui/SectionDivider';
-import {Modals} from '../home/home.constants';
+import {MODALS} from '../home/home.constants';
 import {setModalVisible} from '../home/home.slice';
-import {NotebookPages} from '../notebook-panel/notebook.constants';
+import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import styles from './samples.style';
@@ -58,15 +58,15 @@ const SamplesNotebook = (props) => {
   const renderNotebookView = () => {
     return (
       <View>
-        {props.notebookPageVisible === NotebookPages.SAMPLE && (
+        {props.notebookPageVisible === NOTEBOOK_PAGES.SAMPLE && (
           <ReturnToOverviewButton
           onPress={() => {
-            dispatch(setNotebookPageVisible(NotebookPages.OVERVIEW));
+            dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.OVERVIEW));
             dispatch(setModalVisible({modal: null}));
           }}
         />
         )}
-        {props.notebookPageVisible === NotebookPages.SAMPLE && <SectionDivider dividerText='Samples'/>}
+        {props.notebookPageVisible === NOTEBOOK_PAGES.SAMPLE && <SectionDivider dividerText='Samples'/>}
         {/*<FlatList*/}
         {/*  keyExtractor={(item, index) => index.toString()}*/}
         {/*  data={props.spot}*/}
@@ -94,7 +94,7 @@ const SamplesNotebook = (props) => {
 
   return (
     <React.Fragment>
-      {modalVisible === Modals.SHORTCUT_MODALS.SAMPLE ? renderShortcutView() : renderNotebookView()}
+      {modalVisible === MODALS.SHORTCUT_MODALS.SAMPLE ? renderShortcutView() : renderNotebookView()}
     </React.Fragment>
   );
 };

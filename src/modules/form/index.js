@@ -5,4 +5,4 @@ export {default as NumberInputField} from './NumberInputField';
 export {default as SelectInputField} from './SelectInputField';
 export {default as TextInputField} from './TextInputField';
 export {default as useFormHook} from './useForm';
-export {labelDictionary} from './form.constants';
+export {LABEL_DICTIONARY} from './form.constants';

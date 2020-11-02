@@ -2,7 +2,7 @@ import {Alert} from 'react-native';
 
 import * as forms from '../../assets/forms/forms.index';
 import {isEmpty, toTitleCase} from '../../shared/Helpers';
-import {labelDictionary} from '../form';
+import {LABEL_DICTIONARY} from '../form';
 
 const useForm = () => {
   /*const createDefaultLabel = (data) => {
@@ -22,7 +22,7 @@ const useForm = () => {
 
   // Given a name, get the label for it
   const getLabel = (key) => {
-    return labelDictionary[key] || toTitleCase(key.replace(/_/g, ' '));
+    return LABEL_DICTIONARY[key] || toTitleCase(key.replace(/_/g, ' '));
   };
 
   // Return the survey object given the form category and name

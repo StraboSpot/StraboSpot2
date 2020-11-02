@@ -6,7 +6,7 @@ import {useSelector, useDispatch} from 'react-redux';
 
 import {isEmpty} from '../../shared/Helpers';
 import SectionDivider from '../../shared/ui/SectionDivider';
-import {NotebookPages} from '../notebook-panel/notebook.constants';
+import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import {useSpotsHook} from '../spots';
@@ -19,6 +19,7 @@ const Nesting = (props) => {
   const [useNesting] = useNestingHook();
   const [useSpots] = useSpotsHook();
   const [useTags] = useTagsHook();
+  const [useImages] = useImagesHook();
 
   const notebookPageVisible = useSelector(state => (
     !isEmpty(state.notebook.visibleNotebookPagesStack) && state.notebook.visibleNotebookPagesStack.slice(-1)[0]
@@ -31,11 +32,10 @@ const Nesting = (props) => {
   useEffect(() => {
     console.log('UE NESTING [spots]');
 
-    if (notebookPageVisible === NotebookPages.NESTING) updateNest();
+    if (notebookPageVisible === NOTEBOOK_PAGES.NESTING) updateNest();
   }, [spots, selectedSpot]);
 
   const goToSpotNesting = (spot) => {
-    // dispatch({type: spotReducers.SET_SELECTED_SPOT, spot: spot});
     dispatch(setSelectedSpot(spot));
   };
 
@@ -139,7 +139,7 @@ const Nesting = (props) => {
   return (
     <View style={{flex: 1}}>
       <ReturnToOverviewButton
-        onPress={() => dispatch(setNotebookPageVisible(NotebookPages.OVERVIEW))}
+        onPress={() => dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.OVERVIEW))}
       />
       <SectionDivider dividerText='Nesting'/>
       <FlatList

@@ -9,7 +9,7 @@ import {useSelector} from 'react-redux';
 import {isEmpty} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
 import SectionDivider from '../../shared/ui/SectionDivider';
-import {basemaps} from '../maps/maps.constants';
+import {BASEMAPS} from '../maps/maps.constants';
 import useMapsHook from '../maps/useMaps';
 import styles from './dialog.styles';
 
@@ -43,12 +43,12 @@ const BaseMapDialog = props => {
         {isOnline && (
           <View style={!isEmpty(customMaps) && {borderBottomWidth: 1}}>
             <SectionDivider dividerText={'Default Basemaps'}/>
-            {basemaps.map((map, i) => {
+            {BASEMAPS.map((map, i) => {
               return (
                 <ListItem
                   key={map.id}
                   containerStyle={styles.dialogContent}
-                  bottomDivider={i < basemaps.length - 2}
+                  bottomDivider={i < BASEMAPS.length - 2}
                   onPress={() => props.onPress(map.id)}>
                   <ListItem.Content>
                     <ListItem.Title style={styles.dialogText}>{map.title}</ListItem.Title>
@@ -70,7 +70,7 @@ const BaseMapDialog = props => {
                   <ListItem
                     key={map.id}
                     containerStyle={styles.dialogContent}
-                    bottomDivider={i < basemaps.length - 2}
+                    bottomDivider={i < BASEMAPS.length - 2}
                     onPress={() => props.onPress(map.id)}>
                     <ListItem.Content>
                       <ListItem.Title style={styles.dialogText}>{map.title}</ListItem.Title>

@@ -9,7 +9,7 @@ import attributesStyles from '../main-menu-panel/attributes.styles';
 import {SORTED_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import {setSelectedButtonIndex, setSortedView} from '../main-menu-panel/mainMenuPanel.slice';
 import SortingButtons from '../main-menu-panel/SortingButtons';
-import {NotebookPages} from '../notebook-panel/notebook.constants';
+import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
 
 const SamplesList = (props) => {
   const dispatch = useDispatch();
@@ -45,7 +45,7 @@ const SamplesList = (props) => {
             titleStyle={{fontSize: 16}}
             title={'View In Spot'}
             type={'clear'}
-            onPress={() => props.getSpotData(item.properties.id, NotebookPages.SAMPLE)}
+            onPress={() => props.getSpotData(item.properties.id, NOTEBOOK_PAGES.SAMPLE)}
           />
         </View>
         <FlatList
@@ -70,7 +70,7 @@ const SamplesList = (props) => {
               titleStyle={{fontSize: 16}}
               title={'View In Spot'}
               type={'clear'}
-              onPress={() => props.getSpotData(spot.properties.id, NotebookPages.SAMPLE)}
+              onPress={() => props.getSpotData(spot.properties.id, NOTEBOOK_PAGES.SAMPLE)}
             />
           </View>
           <FlatList

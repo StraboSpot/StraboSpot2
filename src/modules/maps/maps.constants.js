@@ -9,10 +9,10 @@ export const LATITUDE = 39.828175;       // Geographic center of US;
 export const LONGITUDE = -98.5795;      // Geographic center of US;
 export const LATITUDE_DELTA = 0.0922;
 export const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
-export const geoLatLngProjection = 'EPSG:4326';
-export const pixelProjection = 'EPSG:3857';
+export const GEO_LAT_LNG_PROJECTION = 'EPSG:4326';
+export const PIXEL_PROJECTION = 'EPSG:3857';
 
-export const MapModes = {
+export const MAP_MODES = {
   VIEW: 'view',
   DRAW: {
     POINT: 'point',
@@ -24,7 +24,7 @@ export const MapModes = {
   EDIT: 'edit',
 };
 
-const defaultMaps = [
+const DEFAULT_MAPS = [
   {
     title: 'Mapbox Topo',
     id: 'mapbox.outdoors',
@@ -43,7 +43,7 @@ const defaultMaps = [
     source: 'macrostrat',
   }];
 
-export const customMapTypes = [
+export const CUSTOM_MAP_TYPES = [
   {
     title: 'Mapbox Styles',
     source: 'mapbox_styles',
@@ -58,7 +58,7 @@ export const customMapTypes = [
   },
 ];
 
-export const mapProviders = {
+export const MAP_PROVIDERS = {
   mapbox_classic: {
     attributions: '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors.',
     imageType: 'png',
@@ -117,13 +117,13 @@ export const mapProviders = {
   },
 };
 
-export const basemaps = defaultMaps.map(map => {
+export const BASEMAPS = DEFAULT_MAPS.map(map => {
   if (map.source === 'strabo_spot_mapbox') map.key = MAPBOX_KEY;
-  return {...map, ...mapProviders[map.source]};
+  return {...map, ...MAP_PROVIDERS[map.source]};
 });
-console.log(basemaps);
+console.log(BASEMAPS);
 
-export const symbols = {
+export const MAP_SYMBOLS = {
   'default_point': require('../../assets/symbols/point.png'),
 
   // Planar Feature Symbols

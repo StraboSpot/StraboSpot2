@@ -12,7 +12,7 @@ import {
 } from '../home/home.slice';
 import useImagesHook from '../images/useImages';
 import {addedSpotsIdsToDataset, deletedSpotIdFromDataset, updatedProject} from '../project/projects.slice';
-import {generalKeysIcons, sedKeysIcons} from './spot.constants';
+import {GENERAL_KEYS_ICONS, SED_KEYS_ICONS} from './spot.constants';
 import {addedSpot, addedSpots, deletedSpot, setSelectedSpot} from './spots.slice';
 
 const useSpots = (props) => {
@@ -226,17 +226,17 @@ const useSpots = (props) => {
   };
 
   const getSpotDataIconSource = (iconKey) => {
-    const iconSources = {...generalKeysIcons, ...sedKeysIcons};
+    const iconSources = {...GENERAL_KEYS_ICONS, ...SED_KEYS_ICONS};
     if (iconSources[iconKey]) return iconSources[iconKey];
   };
 
   const getSpotDataKeys = (spot) => {
     let keysFound = Object.keys(spot.properties).filter(key => {
-      return Object.keys(generalKeysIcons).includes(key) && !isEmpty(spot.properties[key]);
+      return Object.keys(GENERAL_KEYS_ICONS).includes(key) && !isEmpty(spot.properties[key]);
     });
     if (spot.properties.sed) {
       const sedKeysFound = Object.keys(spot.properties.sed).filter(key => {
-        return Object.keys(sedKeysIcons).includes(key) && !isEmpty(spot.properties.sed[key]);
+        return Object.keys(SED_KEYS_ICONS).includes(key) && !isEmpty(spot.properties.sed[key]);
       });
       keysFound = [...keysFound, ...sedKeysFound];
     }

@@ -9,7 +9,7 @@ import AddButton from '../../shared/ui/AddButton';
 import DragAnimation from '../../shared/ui/DragAmination';
 import Modal from '../../shared/ui/modal/Modal';
 import uiStyles from '../../shared/ui/ui.styles';
-import {Modals} from '../home/home.constants';
+import {MODALS} from '../home/home.constants';
 import {addedTagToSelectedSpot} from '../project/projects.slice';
 import {TagDetailModal, TagsModal, useTagsHook} from '../tags';
 
@@ -32,7 +32,7 @@ const TagsNotebookModal = (props) => {
     dispatch(addedTagToSelectedSpot(false));
   };
 
-  if (modalVisible === Modals.NOTEBOOK_MODALS.TAGS && !isEmpty(selectedSpot)) {
+  if (modalVisible === MODALS.NOTEBOOK_MODALS.TAGS && !isEmpty(selectedSpot)) {
     if (Platform.OS === 'android') {
       return (
         <View style={uiStyles.modalPosition}>

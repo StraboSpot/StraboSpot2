@@ -5,8 +5,8 @@ import {Formik} from 'formik';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {getNewId, isEmpty, truncateText} from '../../shared/Helpers';
-import {Form, useFormHook, labelDictionary} from '../form';
-import {Modals} from '../home/home.constants';
+import {Form, useFormHook, LABEL_DICTIONARY} from '../form';
+import {MODALS} from '../home/home.constants';
 import {addedTagToSelectedSpot, setSelectedTag, updatedProject} from '../project/projects.slice';
 import {tagsStyles} from './index';
 
@@ -19,11 +19,11 @@ const useTags = () => {
   const projectTags = useSelector(state => state.project.project.tags || []);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const selectedTag = useSelector(state => state.project.selectedTag);
-  const tagsDictionary = labelDictionary.project.tags;
+  const tagsDictionary = LABEL_DICTIONARY.project.tags;
 
   const addTag = () => {
     dispatch(setSelectedTag({}));
-    if (modalVisible === Modals.NOTEBOOK_MODALS.TAGS) {
+    if (modalVisible === MODALS.NOTEBOOK_MODALS.TAGS) {
       dispatch(addedTagToSelectedSpot(true));
     }
     else dispatch(addedTagToSelectedSpot(false));

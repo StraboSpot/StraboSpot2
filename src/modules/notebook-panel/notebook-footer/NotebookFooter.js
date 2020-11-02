@@ -7,7 +7,7 @@ import {connect} from 'react-redux';
 
 import {isEmpty} from '../../../shared/Helpers';
 import IconButton from '../../../shared/ui/IconButton';
-import {NotebookPages} from '../notebook.constants';
+import {NOTEBOOK_PAGES} from '../notebook.constants';
 import MorePagesMenu from './MorePagesMenu';
 import footerStyle from './notebookFooter.styles';
 
@@ -17,30 +17,30 @@ const NotebookFooter = props => {
 
   const getPageIcon = (page) => {
     switch (page) {
-      case NotebookPages.TAG:
-        if (props.notebookPageVisible === NotebookPages.TAG) return require('../../../assets/icons/Tag_pressed.png');
+      case NOTEBOOK_PAGES.TAG:
+        if (props.notebookPageVisible === NOTEBOOK_PAGES.TAG) return require('../../../assets/icons/Tag_pressed.png');
         else return require('../../../assets/icons/Tag.png');
-      case NotebookPages.MEASUREMENT:
-        if (props.notebookPageVisible === NotebookPages.MEASUREMENT
-          || props.notebookPageVisible === NotebookPages.MEASUREMENTDETAIL) {
+      case NOTEBOOK_PAGES.MEASUREMENT:
+        if (props.notebookPageVisible === NOTEBOOK_PAGES.MEASUREMENT
+          || props.notebookPageVisible === NOTEBOOK_PAGES.MEASUREMENTDETAIL) {
           return require('../../../assets/icons/Measurement_pressed.png');
         }
         else return require('../../../assets/icons/Measurement.png');
-      case NotebookPages.SAMPLE:
-        if (props.notebookPageVisible === NotebookPages.SAMPLE) {
+      case NOTEBOOK_PAGES.SAMPLE:
+        if (props.notebookPageVisible === NOTEBOOK_PAGES.SAMPLE) {
           return require('../../../assets/icons/Sample_pressed.png');
         }
         else return require('../../../assets/icons/Sample.png');
-      case NotebookPages.NOTE:
-        if (props.notebookPageVisible === NotebookPages.NOTE) return require('../../../assets/icons/Note_pressed.png');
+      case NOTEBOOK_PAGES.NOTE:
+        if (props.notebookPageVisible === NOTEBOOK_PAGES.NOTE) return require('../../../assets/icons/Note_pressed.png');
         else return require('../../../assets/icons/Note.png');
-      case NotebookPages.PHOTO:
-        if (props.notebookPageVisible === NotebookPages.PHOTO) {
+      case NOTEBOOK_PAGES.PHOTO:
+        if (props.notebookPageVisible === NOTEBOOK_PAGES.PHOTO) {
           return require('../../../assets/icons/Photo_pressed.png');
         }
         else return require('../../../assets/icons/Photo.png');
-      case NotebookPages.SKETCH:
-        if (props.notebookPageVisible === NotebookPages.SKETCH) {
+      case NOTEBOOK_PAGES.SKETCH:
+        if (props.notebookPageVisible === NOTEBOOK_PAGES.SKETCH) {
           return require('../../../assets/icons/Sketch_pressed.png');
         }
         else return require('../../../assets/icons/Sketch.png');
@@ -51,29 +51,29 @@ const NotebookFooter = props => {
     <React.Fragment>
       <View style={footerStyle.footerIconContainer}>
         <IconButton
-          source={getPageIcon(NotebookPages.TAG)}
-          onPress={() => props.openPage(NotebookPages.TAG)}
+          source={getPageIcon(NOTEBOOK_PAGES.TAG)}
+          onPress={() => props.openPage(NOTEBOOK_PAGES.TAG)}
 
         />
         <IconButton
-          source={getPageIcon(NotebookPages.MEASUREMENT)}
-          onPress={() => props.openPage(NotebookPages.MEASUREMENT)}
+          source={getPageIcon(NOTEBOOK_PAGES.MEASUREMENT)}
+          onPress={() => props.openPage(NOTEBOOK_PAGES.MEASUREMENT)}
         />
         <IconButton
-          source={getPageIcon(NotebookPages.SAMPLE)}
-          onPress={() => props.openPage(NotebookPages.SAMPLE)}
+          source={getPageIcon(NOTEBOOK_PAGES.SAMPLE)}
+          onPress={() => props.openPage(NOTEBOOK_PAGES.SAMPLE)}
         />
         <IconButton
-          source={getPageIcon(NotebookPages.NOTE)}
-          onPress={() => props.openPage(NotebookPages.NOTE)}
+          source={getPageIcon(NOTEBOOK_PAGES.NOTE)}
+          onPress={() => props.openPage(NOTEBOOK_PAGES.NOTE)}
 
         />
         <IconButton
-          source={getPageIcon(NotebookPages.PHOTO)}
-          onPress={() => props.openPage(NotebookPages.PHOTO)}
+          source={getPageIcon(NOTEBOOK_PAGES.PHOTO)}
+          onPress={() => props.openPage(NOTEBOOK_PAGES.PHOTO)}
         />
         <IconButton
-          source={getPageIcon(NotebookPages.SKETCH)}
+          source={getPageIcon(NOTEBOOK_PAGES.SKETCH)}
           onPress={() => navigation.navigate('Sketch')}
         />
         <Button

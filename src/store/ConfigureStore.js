@@ -19,7 +19,7 @@ import notebookSlice from '../modules/notebook-panel/notebook.slice';
 import projectSlice from '../modules/project/projects.slice';
 import spotsSlice from '../modules/spots/spots.slice';
 import userSlice from '../modules/user/userProfile.slice';
-import {redux} from '../shared/app.constants';
+import {REDUX} from '../shared/app.constants';
 
 // Redux Persist
 export const persistConfig = {
@@ -54,7 +54,7 @@ const combinedReducers = combineReducers({
 });
 
 const rootReducer = (state, action) => {
-  if (action.type === redux.CLEAR_STORE) {
+  if (action.type === REDUX.CLEAR_STORE) {
     state = undefined;
   }
   return combinedReducers(state, action);

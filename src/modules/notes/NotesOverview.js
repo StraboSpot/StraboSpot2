@@ -5,7 +5,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
 import {truncateText} from '../../shared/Helpers';
-import {NotebookPages} from '../notebook-panel/notebook.constants';
+import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import noteStyles from './notes.styles';
 
@@ -24,7 +24,7 @@ const SpotNotesOverview = props => {
           <View style={noteStyles.editButton}>
             <Button
               title={'Edit'}
-              onPress={() => dispatch(setNotebookPageVisible(NotebookPages.NOTE))}
+              onPress={() => dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.NOTE))}
               style={noteStyles.editButton}
             />
           </View>
