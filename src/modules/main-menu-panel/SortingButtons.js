@@ -3,7 +3,7 @@ import React from 'react';
 import {ButtonGroup} from 'react-native-elements';
 import {connect, useDispatch, useSelector} from 'react-redux';
 
-import {SortedViews} from './mainMenuPanel.constants';
+import {SORTED_VIEWS} from './mainMenu.constants';
 import {setSelectedButtonIndex, setSortedView} from './mainMenuPanel.slice';
 
 const SortingButtons = (props) => {
@@ -15,15 +15,15 @@ const SortingButtons = (props) => {
     switch (buttonIndex) {
       case 0:
         console.log('Chronological Selected', props.spots);
-        dispatch(setSortedView({view: SortedViews.CHRONOLOGICAL}));
+        dispatch(setSortedView({view: SORTED_VIEWS.CHRONOLOGICAL}));
         break;
       case 1:
         console.log('Map Extent Selected');
-        dispatch(setSortedView({view: SortedViews.MAP_EXTENT}));
+        dispatch(setSortedView({view: SORTED_VIEWS.MAP_EXTENT}));
         break;
       case 2:
         console.log('Recent Selected');
-        dispatch(setSortedView({view: SortedViews.RECENT_VIEWS}));
+        dispatch(setSortedView({view: SORTED_VIEWS.RECENT_VIEWS}));
         break;
     }
   };
@@ -48,7 +48,6 @@ const mapStateToProps = (state) => {
     selectedSpot: state.spot.selectedSpot,
   };
 };
-
 
 
 export default connect(mapStateToProps)(SortingButtons);

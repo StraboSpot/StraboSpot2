@@ -1,9 +1,9 @@
 import {createSlice} from '@reduxjs/toolkit';
 
-import {SortedViews} from './mainMenuPanel.constants';
+import {SORTED_VIEWS} from './mainMenu.constants';
 
 const initialMainMenuState = {
-  sortedView: SortedViews.CHRONOLOGICAL,
+  sortedView: SORTED_VIEWS.CHRONOLOGICAL,
   selectedButtonIndex: 0,
   mainMenuPageVisible: undefined,
   isSidePanelVisible: false,

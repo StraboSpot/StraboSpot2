@@ -14,7 +14,7 @@ import {
   setErrorMessagesModalVisible,
   setOnlineStatus,
 } from '../home/home.slice';
-import {mainMenuPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
+import {SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import {setMenuSelectionPage, setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import {addedProject} from '../project/projects.slice';
 import {setSelectedSpot} from '../spots/spots.slice';
@@ -126,7 +126,7 @@ const useMaps = () => {
 
   const customMapDetails = (map) => {
     dispatch(selectedCustomMapToEdit(map));
-    dispatch(setSidePanelVisible({view: mainMenuPanelReducers.SET_SIDE_PANEL_VIEW.MANAGE_CUSTOM_MAP, bool: true}));
+    dispatch(setSidePanelVisible({view: SIDE_PANEL_VIEWS.MANAGE_CUSTOM_MAP, bool: true}));
   };
 
   // Identify the coordinate span for the for the image basemap.

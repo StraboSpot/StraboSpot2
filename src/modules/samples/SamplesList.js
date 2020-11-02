@@ -6,7 +6,7 @@ import {connect, useDispatch, useSelector} from 'react-redux';
 
 import {isEmpty} from '../../shared/Helpers';
 import attributesStyles from '../main-menu-panel/attributes.styles';
-import {SortedViews} from '../main-menu-panel/mainMenuPanel.constants';
+import {SORTED_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import {setSelectedButtonIndex, setSortedView} from '../main-menu-panel/mainMenuPanel.slice';
 import SortingButtons from '../main-menu-panel/SortingButtons';
 import {NotebookPages} from '../notebook-panel/notebook.constants';
@@ -24,7 +24,7 @@ const SamplesList = (props) => {
   useEffect(() => {
     console.log('Render in Samples List');
     return function cleanUp() {
-      dispatch(setSortedView({view: SortedViews.CHRONOLOGICAL}));
+      dispatch(setSortedView({view: SORTED_VIEWS.CHRONOLOGICAL}));
       dispatch(setSelectedButtonIndex({index: 0}));
     };
   }, []);
@@ -101,21 +101,21 @@ const SamplesList = (props) => {
   //   return !isEmpty(spot.properties.samples)
   // });
   if (!isEmpty(filteredList)) {
-    if (sortedListView === SortedViews.CHRONOLOGICAL) {
+    if (sortedListView === SORTED_VIEWS.CHRONOLOGICAL) {
       sortedView = <FlatList
         keyExtractor={(item) => item.properties.id.toString()}
         extraData={refresh}
         data={filteredList}
         renderItem={({item}) => renderName(item)}/>;
     }
-    else if (sortedListView === SortedViews.MAP_EXTENT) {
+    else if (sortedListView === SORTED_VIEWS.MAP_EXTENT) {
       sortedView = <FlatList
         keyExtractor={(item) => item.properties.id.toString()}
         extraData={refresh}
         data={filteredList}
         renderItem={({item}) => renderName(item)}/>;
     }
-    else if (sortedListView === SortedViews.RECENT_VIEWS) {
+    else if (sortedListView === SORTED_VIEWS.RECENT_VIEWS) {
       sortedView = <FlatList
         keyExtractor={(item) => item.toString()}
         extraData={refresh}

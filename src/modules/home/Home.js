@@ -15,9 +15,8 @@ import StatusDialogBox from '../../shared/ui/StatusDialogBox';
 import ToastPopup from '../../shared/ui/Toast';
 import Preview from '../images/Preview';
 import useImagesHook from '../images/useImages';
-import {MAIN_MENU_ITEMS} from '../main-menu-panel/mainMenu.constants';
+import {MAIN_MENU_ITEMS, SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import MainMenuPanel from '../main-menu-panel/MainMenuPanel';
-import {mainMenuPanelReducers} from '../main-menu-panel/mainMenuPanel.constants';
 import {setMenuSelectionPage} from '../main-menu-panel/mainMenuPanel.slice';
 import settingPanelStyles from '../main-menu-panel/mainMenuPanel.styles';
 import sidePanelStyles from '../main-menu-panel/sidePanel.styles';
@@ -645,13 +644,13 @@ const Home = (props) => {
 
   const renderSidePanelContent = () => {
     switch (sidePanelView) {
-      case mainMenuPanelReducers.SET_SIDE_PANEL_VIEW.MANAGE_CUSTOM_MAP:
+      case SIDE_PANEL_VIEWS.MANAGE_CUSTOM_MAP:
         return <CustomMapDetails/>;
-      case mainMenuPanelReducers.SET_SIDE_PANEL_VIEW.PROJECT_DESCRIPTION:
+      case SIDE_PANEL_VIEWS.PROJECT_DESCRIPTION:
         return <ProjectDescription/>;
-      case mainMenuPanelReducers.SET_SIDE_PANEL_VIEW.TAG_DETAIL:
+      case SIDE_PANEL_VIEWS.TAG_DETAIL:
         return <TagDetailSidePanel openNotebookPanel={(pageView) => openNotebookPanel(pageView)}/>;
-      case mainMenuPanelReducers.SET_SIDE_PANEL_VIEW.TAG_ADD_REMOVE_SPOTS:
+      case SIDE_PANEL_VIEWS.TAG_ADD_REMOVE_SPOTS:
         return <TagAddRemoveSpots/>;
     }
   };
