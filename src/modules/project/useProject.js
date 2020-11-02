@@ -1,6 +1,6 @@
 import {Alert, Platform} from 'react-native';
 
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch, useSelector, batch} from 'react-redux';
 import RNFetchBlob from 'rn-fetch-blob';
 
 import useServerRequests from '../../services/useServerRequests';
@@ -17,6 +17,7 @@ import useImagesHook from '../images/useImages';
 import {addedMapsFromDevice, clearedMaps} from '../maps/maps.slice';
 import {addedSpotsFromDevice, clearedSpots} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
+import {DEFAULT_GEOLOGIC_TYPES, DEFAULT_RELATIONSHIP_TYPES} from './project.constants';
 import {
   addedDataset,
   addedDatasets,
@@ -48,12 +49,6 @@ const useProject = () => {
   const [serverRequests] = useServerRequests();
   const [useImages] = useImagesHook();
   const [useSpots] = useSpotsHook();
-
-  const defaultTypes = ['geomorphic', 'hydrologic', 'paleontological', 'igneous', 'metamorphic', 'sedimentological',
-    'other'];
-  const defaultRelationshipTypes = ['cross-cuts', 'mutually cross-cuts', 'is cut by', 'is younger than', 'is older than',
-    'is lower metamorphic grade than', 'is higher metamorphic grade than', 'is included within', 'includes',
-    'merges with'];
 
   const addDataset = async name => {
     const datasetObj = createDataset(name);
@@ -127,8 +122,8 @@ const useProject = () => {
       description: descriptionData,
       date: newDate,
       modified_timestamp: Date.now(),
-      other_features: defaultTypes,
-      relationship_types: defaultRelationshipTypes,
+      other_features: DEFAULT_GEOLOGIC_TYPES,
+      relationship_types: DEFAULT_RELATIONSHIP_TYPES,
     };
     dispatch(addedProjectDescription(currentProject));
     const defaultDataset = await createDataset();
@@ -168,14 +163,14 @@ const useProject = () => {
     }
   };
 
-  const destroyOldProject = async () => {
-    // if (!isEmpty(project)) {
-    await dispatch(clearedProject());
-    await dispatch(clearedSpots());
-    await dispatch(clearedDatasets());
-    await dispatch(clearedMaps());
-    // }
-    return Promise.resolve();
+  const destroyOldProject = () => {
+    batch(() => {
+      dispatch(clearedProject());
+      dispatch(clearedSpots());
+      dispatch(clearedDatasets());
+      dispatch(clearedMaps());
+    });
+    console.log('Destroy batch complete');
   };
 
   const doesAppDirExist = async (subDirectory) => {

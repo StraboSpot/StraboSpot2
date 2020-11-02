@@ -25,7 +25,10 @@ const ActiveProjectList = (props) => {
           )}
         >
           <ListItem.Content>
-            <ListItem.Title>{isEmpty(project) ? 'No Project' : project.description.project_name}</ListItem.Title>
+            <ListItem.Title>{!isEmpty(project) && project.description
+              ?  project.description.project_name
+              : 'No Project'}
+            </ListItem.Title>
           </ListItem.Content>
           <ListItem.Chevron/>
         </ListItem>
