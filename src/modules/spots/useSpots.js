@@ -278,6 +278,16 @@ const useSpots = (props) => {
     }));
   };
 
+  const getSpotsWithSamples = () => {
+    return Object.values(getActiveSpotsObj()).filter(spot => !isEmpty(spot.properties.samples));
+  };
+
+  const getSpotsWithSamplesSortedReverseChronologically = () => {
+    return getSpotsWithSamples().sort(((a, b) => {
+      return new Date(b.properties.date) - new Date(a.properties.date);
+    }));
+  };
+
   return [{
     copySpot: copySpot,
     createSpot: createSpot,
@@ -297,6 +307,8 @@ const useSpots = (props) => {
     getSpotsSortedReverseChronologically: getSpotsSortedReverseChronologically,
     getSpotsWithImages: getSpotsWithImages,
     getSpotsWithImagesSortedReverseChronologically: getSpotsWithImagesSortedReverseChronologically,
+    getSpotsWithSamples: getSpotsWithSamples,
+    getSpotsWithSamplesSortedReverseChronologically: getSpotsWithSamplesSortedReverseChronologically,
   }];
 };
 

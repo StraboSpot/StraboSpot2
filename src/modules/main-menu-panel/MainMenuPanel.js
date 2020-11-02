@@ -158,6 +158,7 @@ const MainMenuPanel = props => {
         <View style={styles.mainMenuContainer}>
           <SamplesList
             getSpotData={(spotId, page) => getSpotFromId(spotId, page)}
+            spotsInMapExtent={spotsInMapExtent}
           />
         </View>
       );
