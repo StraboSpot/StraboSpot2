@@ -31,7 +31,7 @@ const mapsSlice = createSlice({
     },
     clearedMaps(state) {
       state.offlineMaps = {};
-      state.customMaps = [];
+      state.customMaps = {};
     },
     clearedVertexes(state) {
       state.vertexStartCoords = undefined;

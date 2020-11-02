@@ -11,7 +11,7 @@ import useMapHook from '../useMaps';
 import styles from './customMaps.styles';
 
 const ManageCustomMaps = (props) => {
-  const customMaps = useSelector(state => state.maps.customMaps);
+  const customMaps = useSelector(state => state.map.customMaps);
   const [useMaps] = useMapHook();
 
   const mapTypeName = (source) => {
