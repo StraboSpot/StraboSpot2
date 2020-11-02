@@ -9,7 +9,6 @@ import {DateInputField, formStyles, NumberInputField, SelectInputField, TextInpu
 const {State: TextInputState} = TextInput;
 
 const Form = (props) => {
-  //console.log('form props', props);
   const [useForm] = useFormHook();
   const [textInputAnimate] = useState(new Animated.Value(0));
 
@@ -20,12 +19,10 @@ const Form = (props) => {
     return function cleanup() {
       Keyboard.removeListener('keyboardDidShow', handleKeyboardDidShow);
       Keyboard.removeListener('keyboardDidHide', handleKeyboardDidHide);
-      //console.log('Listners Removed');
     };
   }, []);
 
   const handleKeyboardDidShow = (event) => Helpers.handleKeyboardDidShow(event, TextInputState, textInputAnimate);
-
 
   const handleKeyboardDidHide = () => Helpers.handleKeyboardDidHide(textInputAnimate);
 
@@ -105,10 +102,5 @@ const Form = (props) => {
     </Animated.View>
   );
 };
-
-// Form.propTypes = {
-//   handleSubmit: PropTypes.func.isRequired,
-//   isValid: PropTypes.bool.isRequired,
-// };
 
 export default Form;
