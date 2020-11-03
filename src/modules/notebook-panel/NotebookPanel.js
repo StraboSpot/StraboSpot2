@@ -17,6 +17,7 @@ import MeasurementDetailPage from '../measurements/MeasurementDetail';
 import MeasurementsPage from '../measurements/Measurements';
 import Nesting from '../nesting/Nesting';
 import NotesPage from '../notes/Notes';
+import SampleDetailPage from '../samples/SampleDetail';
 import SamplesPage from '../samples/SamplesNotebook';
 import {useSpotsHook} from '../spots';
 import {setSelectedSpot} from '../spots/spots.slice';
@@ -78,6 +79,7 @@ const NotebookPanel = props => {
           {pageVisible === NOTEBOOK_PAGES.GEOGRAPHY && <Geography/>}
           {pageVisible === NOTEBOOK_PAGES.MEASUREMENTDETAIL && <MeasurementDetailPage/>}
           {pageVisible === NOTEBOOK_PAGES.NESTING && <Nesting/>}
+          {pageVisible === NOTEBOOK_PAGES.SAMPLEDETAIL && <SampleDetailPage/>}
 
           {/*Secondary Notebook Pages*/}
           {pageVisible === SECONDARY_NOTEBOOK_PAGES.THREE_D_STRUCTURES && <PlaceholderPage/>}

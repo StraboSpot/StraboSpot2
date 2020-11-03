@@ -97,6 +97,12 @@ const samplesStyle = StyleSheet.create({
     paddingTop: 0,
     justifyContent: 'space-between',
   },
+  samplesSectionDividerContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    paddingTop: 20,
+    paddingBottom: 9,
+  },
 });
 
 export default samplesStyle;
