@@ -14,6 +14,7 @@ export const NOTEBOOK_PAGES = {
   TAG: 'Tag',
   MEASUREMENT: 'Measurements',
   MEASUREMENTDETAIL: 'Measurement Detail',
+  SAMPLEDETAIL: 'Sample Detail',
   SAMPLE: 'Sample',
   NESTING: 'Nesting',
   NOTE: 'Note',

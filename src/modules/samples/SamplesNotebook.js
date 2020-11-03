@@ -13,6 +13,7 @@ import {setModalVisible} from '../home/home.slice';
 import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
+import {setSelectedAttributes} from '../spots/spots.slice';
 import styles from './samples.style';
 
 const SamplesNotebook = () => {
@@ -34,6 +35,7 @@ const SamplesNotebook = () => {
             <ListItem
               key={item.id}
               containerStyle={styles.notebookListContainer}
+              onPress={() => onSamplePressed(item)}
             >
               <ListItem.Content>
                 <ListItem.Title>{item.sample_id_name
@@ -90,6 +92,11 @@ const SamplesNotebook = () => {
         </ScrollView>
       </View>
     );
+  };
+
+  const onSamplePressed = (item) => {
+    dispatch(setSelectedAttributes([item]));
+    dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.SAMPLEDETAIL));
   };
 
   return (
