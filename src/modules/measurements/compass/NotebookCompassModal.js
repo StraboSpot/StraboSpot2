@@ -3,8 +3,8 @@ import {Platform, View} from 'react-native';
 
 import DragAnimation from '../../../shared/ui/DragAmination';
 import Modal from '../../../shared/ui/modal/Modal';
+import Compass from './Compass';
 import compassStyles from './compass.styles';
-import RMCompass from './RMCompass';
 
 const NotebookCompassModal = (props) => {
   if (Platform.OS === 'android') {
@@ -16,7 +16,7 @@ const NotebookCompassModal = (props) => {
           textStyle={{fontWeight: 'bold'}}
           onPress={props.onPress}
         >
-          <RMCompass/>
+          <Compass/>
         </Modal>
       </View>
     );
@@ -30,7 +30,7 @@ const NotebookCompassModal = (props) => {
           textStyle={{fontWeight: 'bold'}}
           onPress={props.onPress}
         >
-          <RMCompass/>
+          <Compass/>
         </Modal>
       </DragAnimation>
     );

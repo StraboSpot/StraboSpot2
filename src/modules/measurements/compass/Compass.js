@@ -35,7 +35,7 @@ const buttonClick = new Sound('button_click.mp3', Sound.MAIN_BUNDLE, (error) => 
   if (error) console.log('failed to load the sound', error);
 });
 
-const RNCompass = (props) => {
+const Compass = (props) => {
   let modalView = null;
   const [useMaps] = useMapsHook();
   const modalVisible = useSelector(state => state.home.modalVisible);
@@ -410,4 +410,4 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = {
   onSpotEdit: (field, value) => (editedSpotProperties({field: field, value: value})),
 };
-export default connect(mapStateToProps, mapDispatchToProps)(RNCompass);
+export default connect(mapStateToProps, mapDispatchToProps)(Compass);
