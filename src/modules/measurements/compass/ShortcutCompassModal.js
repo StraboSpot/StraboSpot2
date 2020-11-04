@@ -3,7 +3,6 @@ import {View, Platform} from 'react-native';
 
 import DragAnimation from '../../../shared/ui/DragAmination';
 import Modal from '../../../shared/ui/modal/Modal';
-import Compass from './Compass';
 import compassStyles from './compass.styles';
 import RMCompass from './RMCompass';
 
@@ -16,7 +15,7 @@ const ShortcutCompassModal = (props) => {
           buttonTitleLeft={'Undo'}
           textStyle={{fontWeight: 'bold'}}
         >
-          <Compass/>
+          <RMCompass/>
         </Modal>
       </View>
     );
