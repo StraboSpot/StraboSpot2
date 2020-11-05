@@ -246,9 +246,21 @@ const useSpots = (props) => {
 
   const getSpotGemometryIconSource = (spot) => {
     if (spot.geometry && spot.geometry.type) {
-      if (spot.geometry.type === 'Point') return require('../../assets/icons/Point_pressed.png');
-      else if (spot.geometry.type === 'LineString') return require('../../assets/icons/Line_pressed.png');
-      else if (spot.geometry.type === 'Polygon') return require('../../assets/icons/Polygon_pressed.png');
+      if (spot.geometry.type === 'Point') {
+        if (spot.properties.image_basemap) return require('../../assets/icons/ImagePoint_pressed.png');
+        else if (spot.properties.strat_section) return require('../../assets/icons/StratPoint_pressed.png');
+        else return require('../../assets/icons/Point_pressed.png');
+      }
+      else if (spot.geometry.type === 'LineString') {
+        if (spot.properties.image_basemap) return require('../../assets/icons/ImageLine_pressed.png');
+        else if (spot.properties.strat_section) return require('../../assets/icons/StratLine_pressed.png');
+        else return require('../../assets/icons/Line_pressed.png');
+      }
+      else if (spot.geometry.type === 'Polygon') {
+        if (spot.properties.image_basemap) return require('../../assets/icons/ImagePolygon_pressed.png');
+        else if (spot.properties.strat_section) return require('../../assets/icons/StratPolygon_pressed.png');
+        else return require('../../assets/icons/Polygon_pressed.png');
+      }
     }
     else return require('../../assets/icons/QuestionMark_pressed.png');
   };
