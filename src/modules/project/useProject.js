@@ -214,7 +214,6 @@ const useProject = () => {
       if (Object.values(downloadedDatasets).length === 1) {
         await useSpots.downloadSpots(Object.values(downloadedDatasets)[0], user.encoded_login);
       }
-      console.log('Adding Images is Next');
       dispatch(addedStatusMessage({statusMessage: '------------------'}));
       dispatch(addedStatusMessage({statusMessage: 'Download Complete!'}));
       dispatch(setLoadingStatus({view: 'modal', bool: false}));

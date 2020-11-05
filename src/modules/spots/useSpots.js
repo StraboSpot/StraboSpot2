@@ -12,6 +12,7 @@ import {
 } from '../home/home.slice';
 import useImagesHook from '../images/useImages';
 import {addedSpotsIdsToDataset, deletedSpotIdFromDataset, updatedProject} from '../project/projects.slice';
+import useUploadDownloadHook from '../project/useUploadDownload';
 import {GENERAL_KEYS_ICONS, SED_KEYS_ICONS} from './spot.constants';
 import {addedSpot, addedSpots, deletedSpot, setSelectedSpot} from './spots.slice';
 
@@ -27,6 +28,7 @@ const useSpots = (props) => {
   const spots = useSelector(state => state.spot.spots);
 
   const [useImages] = useImagesHook();
+  const useUploadDownload = useUploadDownloadHook();
   const [useServerRequests] = useServerRequestsHook();
 
   useEffect(() => {
@@ -130,7 +132,7 @@ const useSpots = (props) => {
         dispatch(setLoadingStatus({view: 'modal', bool: false}));
         dispatch(addedStatusMessage({statusMessage: 'No New Images to Download'}));
       }
-      else return await useImages.initializeDownloadImages(neededImagesIds);
+      else return await useUploadDownload.initializeDownloadImages(neededImagesIds);
     }
     catch (err) {
       console.error('Error Downloading Images. Error:', err);

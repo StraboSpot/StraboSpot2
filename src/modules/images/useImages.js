@@ -7,11 +7,10 @@ import {useDispatch, useSelector} from 'react-redux';
 import RNFetchBlob from 'rn-fetch-blob';
 
 import useServerRequestsHook from '../../services/useServerRequests';
-import {getNewId, isEmpty} from '../../shared/Helpers';
+import {getNewId} from '../../shared/Helpers';
 import {
   addedStatusMessage,
   removedLastStatusMessage,
-  setLoadingStatus,
 } from '../home/home.slice';
 import useHomeHook from '../home/useHome';
 import {setCurrentImageBasemap} from '../maps/maps.slice';
@@ -21,11 +20,6 @@ import {editedSpotImage, editedSpotImages, editedSpotProperties, setSelectedAttr
 const RNFS = require('react-native-fs');
 
 const useImages = () => {
-  let imagesDownloadedCount = 0;
-  let imagesFailedCount = 0;
-  let savedImagesCount = 0;
-  let imagesFailedArr = [];
-
   const dirs = RNFetchBlob.fs.dirs;
   const devicePath = Platform.OS === 'ios' ? dirs.DocumentDir : dirs.SDCardDir; // ios : android
   const appDirectory = '/StraboSpot';
@@ -47,78 +41,6 @@ const useImages = () => {
 
   let imageCount = 0;
   let newImages = [];
-
-  const initializeDownloadImages = async (neededImageIds) => {
-    try {
-      console.log('Downloading Needed Images...');
-      dispatch(addedStatusMessage({statusMessage: 'Downloading Needed Images...'}));
-      if (!isEmpty(neededImageIds)) {
-        // Check path first, if doesn't exist, then create
-        await useExport.doesDeviceDirectoryExist(devicePath + appDirectory + imagesDirectory);
-        await Promise.all(
-          neededImageIds.map(async imageId => {
-            await downloadAndSaveImagesToDevice(imageId);
-            imagesDownloadedCount++;
-            savedImagesCount++;
-            console.log(
-              'NEW/MODIFIED Images Downloaded: ' + imagesDownloadedCount + ' of ' + neededImageIds.length
-              + ' NEW/MODIFIED Images Saved: ' + savedImagesCount + ' of ' + neededImageIds.length);
-            dispatch(removedLastStatusMessage())
-            dispatch(addedStatusMessage({
-              statusMessage: 'NEW/MODIFIED Images Saved: ' + savedImagesCount + ' of ' + neededImageIds.length
-            }));
-          }),
-        );
-        console.log('Downloaded Images ' + imageCount + '/' + neededImageIds.length
-          + '\nFailed Images ' + imagesFailedCount + '/' + neededImageIds.length);
-        dispatch(removedLastStatusMessage());
-        if (imagesFailedCount > 0) {
-          dispatch(addedStatusMessage(
-            {
-              statusMessage: 'Downloaded Images ' + imageCount + '/' + neededImageIds.length
-                + '\nFailed Images ' + imagesFailedCount + '/' + neededImageIds.length,
-            }));
-        }
-        else {
-          dispatch(addedStatusMessage(
-            {statusMessage: 'Downloaded Images: ' + imageCount + '/' + neededImageIds.length},
-          ));
-        }
-      }
-    }
-    catch (err) {
-      dispatch(removedLastStatusMessage());
-      dispatch(addedStatusMessage({statusMessage: 'Error Downloading Images!'}));
-      console.warn('Error Downloading Images: ' + err);
-    }
-  };
-
-  const downloadAndSaveImagesToDevice = async (imageId) => {
-    const imageURI = 'https://strabospot.org/pi/' + imageId;
-    return RNFetchBlob
-      .config({path: imagesDirectory + '/' + imageId + '.jpg'})
-      .fetch('GET', imageURI, {})
-      .then((res) => {
-        if (res.respInfo.status === 404) {
-          imageCount++;
-          imagesFailedCount++;
-          console.log('Error on', imageId);  // Android Error: RNFetchBlob request error: url == nullnull
-          return RNFetchBlob.fs.unlink(res.data).then(() => {
-            console.log('Failed image removed', imageId);
-            imagesFailedArr.push(imageId);
-          });
-        }
-        else {
-          imageCount++;
-          console.log(imageCount, 'File saved to', res.path());
-        }
-      })
-      .catch((errorMessage, statusCode) => {
-        imageCount++;
-        console.error('Error on', imageId, ':', errorMessage, statusCode);  // Android Error: RNFetchBlob request error: url == nullnull
-        throw Error('Response is 404!');
-      });
-  };
 
   // Check to see if image is on the local device
   const doesImageExistOnDevice = async (imageId) => {
@@ -503,7 +425,6 @@ const useImages = () => {
 
   return [{
     doesImageExistOnDevice: doesImageExistOnDevice,
-    initializeDownloadImages: initializeDownloadImages,
     editImage: editImage,
     gatherNeededImages: gatherNeededImages,
     getLocalImageURI: getLocalImageURI,
