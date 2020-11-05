@@ -68,15 +68,7 @@ const Compass = (props) => {
 
   useEffect(() => {
     displayCompassData();
-    return () => {
-      if (Platform.OS === 'ios') {
-        NativeModules.Compass.stopObserving();
-        CompassEvents.removeAllListeners('rotationMatrix');
-      }
-      else unsubscribeFromAccelerometer();
-      console.log('All compass subscription cancelled');
-    };
-  }, [displayCompassData, accelerometerData]);
+  }, [accelerometerData]);
 
   useEffect(() => {
     if (Platform.OS === 'android') {
@@ -90,6 +82,12 @@ const Compass = (props) => {
       setMagnetometer(degree || 0);
     });
     return () => {
+      if (Platform.OS === 'ios') {
+        NativeModules.Compass.stopObserving();
+        CompassEvents.removeAllListeners('rotationMatrix');
+        console.log('Ended Compass observation and rotationMatrix listener.');
+      }
+      else unsubscribeFromAccelerometer();
       RNSimpleCompass.stop();
       console.log('Heading subscription cancelled');
     };
@@ -160,6 +158,7 @@ const Compass = (props) => {
     if (Platform.OS === 'ios') {
       NativeModules.Compass.myDeviceRotation();
       CompassEvents.addListener('rotationMatrix', res => {
+        console.log('Began Compass observation and rotationMatrix listener.');
         setCompassData({
           strike: res.strike,
           dip: res.dip,
@@ -364,11 +363,13 @@ const Compass = (props) => {
   const subscribeToAccelerometer = async () => {
     const accelerometerSubscriptionTemp = await accelerometer.subscribe((data) => setAccelerometerData(data));
     setAccelerometerSubscription(accelerometerSubscriptionTemp);
+    console.log('Began accelerometer subscription.');
   };
 
   const unsubscribeFromAccelerometer = () => {
     if (accelerometerSubscription) accelerometerSubscription.unsubscribe();
     setAccelerometerSubscription(null);
+    console.log('Ended accelerometer subscription.');
   };
 
   return (
