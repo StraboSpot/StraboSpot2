@@ -561,7 +561,7 @@ const Home = (props) => {
         dialogTitle={'Status Info'}
         style={sharedDialogStyles.dialogWarning}
         visible={isInfoMessagesModalVisible}
-        onTouchOutside={() => dispatch(setInfoMessagesModalVisible(false))}
+        // onTouchOutside={() => dispatch(setInfoMessagesModalVisible(false))}
       >
         <View style={{margin: 15}}>
           <Text style={sharedDialogStyles.dialogStatusMessageText}>{statusMessages.join('\n')}</Text>
@@ -661,7 +661,7 @@ const Home = (props) => {
         dialogTitle={'Status'}
         style={sharedDialogStyles.dialogTitleSuccess}
         visible={isStatusMessagesModalVisible}
-        onTouchOutside={() => dispatch(setStatusMessagesModalVisible(false))}
+        // onTouchOutside={() => dispatch(setStatusMessagesModalVisible(false))}
         // disabled={progress !== 1 && !uploadErrors}
       >
         <View style={{minHeight: 100}}>
