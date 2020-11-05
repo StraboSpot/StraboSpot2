@@ -14,6 +14,8 @@ import {
   setStatusMessagesModalVisible,
 } from '../home/home.slice';
 import useImagesHook from '../images/useImages';
+import {MAIN_MENU_ITEMS} from '../main-menu-panel/mainMenu.constants';
+import {setMenuSelectionPage} from '../main-menu-panel/mainMenuPanel.slice';
 import {addedMapsFromDevice, clearedMaps} from '../maps/maps.slice';
 import {addedSpotsFromDevice, clearedSpots} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
@@ -130,6 +132,33 @@ const useProject = () => {
     dispatch(addedDataset(defaultDataset));
   };
 
+  const initializeDownload = async (selectedProject, source) => {
+    batch(() => {
+      dispatch(setLoadingStatus({view: 'modal', bool: true}));
+      dispatch(clearedStatusMessages());
+      dispatch(addedStatusMessage({statusMessage: `Downloading Project: ${selectedProject.name}`}));
+      dispatch(setStatusMessagesModalVisible(true));
+    });
+    try {
+      if (!isEmpty(project)) destroyOldProject();
+      await downloadProject(selectedProject);
+      const downloadedDatasets = await getDatasets(selectedProject, source);
+      if (Object.values(downloadedDatasets).length === 1) {
+        await useSpots.downloadSpots(Object.values(downloadedDatasets)[0], user.encoded_login);
+      }
+      console.log('Adding Images is Next');
+      dispatch(addedStatusMessage({statusMessage: '------------------'}));
+      dispatch(addedStatusMessage({statusMessage: 'Download Complete!'}));
+      dispatch(setLoadingStatus({view: 'modal', bool: false}));
+      dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
+    }
+    catch (err) {
+      console.error('Error Initializing Download.');
+      dispatch(addedStatusMessage({statusMessage: '\nDownload Failed!'}));
+      dispatch(setLoadingStatus({view: 'modal', bool: false}));
+    }
+  };
+
   const initializeNewProject = async (descriptionData) => {
     await destroyOldProject();
     await createProject(descriptionData);
@@ -184,6 +213,32 @@ const useProject = () => {
     else return await RNFetchBlob.fs.isDir(devicePath + appDirectoryForDistributedBackups);
   };
 
+  // Download Project Properties
+  const downloadProject = async (selectedProject) => {
+    try {
+      console.log('Downloading Project Properties...');
+      dispatch(addedStatusMessage({statusMessage: 'Downloading Project Properties...'}));
+      const projectResponse = await serverRequests.getProject(selectedProject.id, user.encoded_login);
+      dispatch(addedProject(projectResponse));
+      console.log('Finished Downloading Project Properties.', projectResponse);
+      dispatch(removedLastStatusMessage());
+      dispatch(addedStatusMessage({statusMessage: 'Finished Downloading Project Properties.'}));
+      // if (projectResponse.other_maps) {
+      // }
+      // await getDatasets(selectedProject);
+      // if (Object.values(datasets).length === 1) {
+      //   await useSpots.downloadSpots(Object.values(datasets)[0], user.encoded_login);
+      // }
+      return projectResponse;
+    }
+    catch (err) {
+      console.error('Error Downloading Project Properties.', err);
+      dispatch(removedLastStatusMessage());
+      dispatch(addedStatusMessage({statusMessage: 'Error Downloading Project Properties.'}));
+      throw Error;
+    }
+  };
+
   const getAllDeviceProjects = async () => {
     const deviceProject = await RNFetchBlob.fs.isDir(devicePath + appDirectoryForDistributedBackups).then(res => {
       console.log('/StraboProjects exists:', res);
@@ -223,7 +278,7 @@ const useProject = () => {
     const dirExists = await doesDeviceDirExist();
     console.log(dirExists);
     if (dirExists) {
-      if (!isEmpty(project)) await destroyOldProject();
+      if (!isEmpty(project)) destroyOldProject();
       dispatch(addedSpotsFromDevice(spotsDb));
       dispatch(addedProject(projectDb.project));
       await getDatasets(projectDb, 'device');
@@ -235,45 +290,17 @@ const useProject = () => {
     }
   };
 
-  const loadProjectRemote = async (selectedProject) => {
-    dispatch(addedStatusMessage(
-      {statusMessage: `Getting project: ${selectedProject.name}\n from server...\n ---------------`},
-    ));
-    console.log(`Getting ${selectedProject.name} project from server...`);
-    if (!isEmpty(project)) await destroyOldProject();
-    try {
-      const projectResponse = await serverRequests.getProject(selectedProject.id, user.encoded_login);
-      console.log('Loaded Project:', projectResponse);
-      if (!projectResponse.description) projectResponse.description = {};
-      if (!projectResponse.description.project_name) projectResponse.description.project_name = 'Unnamed';
-      if (!projectResponse.other_features) projectResponse.other_features = defaultTypes;
-      await dispatch(addedProject(projectResponse));
-      if (projectResponse.other_maps) {
-      }
-      const datasetsResponse = await getDatasets(selectedProject);
-      if (datasetsResponse.datasets.length === 1) {
-        await useSpots.downloadSpots(datasetsResponse.datasets[0], user.encoded_login);
-      }
-      return Promise.resolve(projectResponse);
-    }
-    catch (err) {
-      console.log(err);
-      return err;
-    }
-  };
-
   const getDatasets = async (project, source) => {
-    if (source === 'device') {
-      dispatch(addedDatasets(project.datasets));
-      return Promise.resolve();
-    }
-    else {
-      dispatch(addedStatusMessage({statusMessage: 'Getting datasets from server...'}));
-      const projectDatasetsFromServer = await serverRequests.getDatasets(project.id, user.encoded_login);
-      if (projectDatasetsFromServer === 401) {
-        return Promise.reject();
+    try {
+      if (source === 'device') {
+        dispatch(addedDatasets(project.datasets));
+        return Promise.resolve();
       }
       else {
+        dispatch(addedStatusMessage({statusMessage: 'Downloading datasets from server...'}));
+        const projectDatasetsFromServer = await serverRequests.getDatasets(project.id, user.encoded_login);
+        dispatch(removedLastStatusMessage());
+        dispatch(addedStatusMessage({statusMessage: 'Finished downloading datasets from server.'}));
         if (projectDatasetsFromServer.datasets.length === 1) {
           dispatch(setActiveDatasets({bool: true, dataset: projectDatasetsFromServer.datasets[0].id}));
           dispatch(setSelectedDataset(projectDatasetsFromServer.datasets[0].id));
@@ -281,9 +308,12 @@ const useProject = () => {
         const datasetsReassigned = Object.assign({},
           ...projectDatasetsFromServer.datasets.map(item => ({[item.id]: item})));
         dispatch(updatedDatasets(datasetsReassigned));
-        console.log('Saved datasets:', projectDatasetsFromServer);
-        return Promise.resolve(projectDatasetsFromServer);
+        return datasetsReassigned;
       }
+    }
+    catch (e) {
+      console.log('Error getting datasets...' + e);
+      throw Error;
     }
   };
 
@@ -302,38 +332,38 @@ const useProject = () => {
   };
 
   const selectProject = async (selectedProject, source) => {
-    console.log('Getting project...');
-    let projectResponse = null;
-    if (source === 'device') {
-      projectResponse = await readDeviceFile(selectedProject)
-        .then(async dataFile => {
-          if (!isEmpty(dataFile.mapNamesDb) || !isEmpty(dataFile.otherMapsDb)) {
-            const doMapsDirExists = await copyZipMapsForDistribution(selectedProject.fileName);
-            console.log(doMapsDirExists, '!');
-          }
-          return loadProjectFromDevice(dataFile).then((data) => {
-            return data;
+    try {
+      console.log('Getting project...');
+      let projectResponse = null;
+      if (source === 'device') {
+        projectResponse = await readDeviceFile(selectedProject)
+          .then(async dataFile => {
+            if (!isEmpty(dataFile.mapNamesDb) || !isEmpty(dataFile.otherMapsDb)) {
+              const doMapsDirExists = await copyZipMapsForDistribution(selectedProject.fileName);
+              console.log(doMapsDirExists, '!');
+            }
+            return loadProjectFromDevice(dataFile).then((data) => {
+              return data;
+            });
           });
-        });
-    }
-    else {
-      try {
+      }
+      else {
         dispatch(clearedStatusMessages());
         dispatch(setStatusMessagesModalVisible(true));
-        projectResponse = await loadProjectRemote(selectedProject);
-        return projectResponse;
-      }
-      catch (err) {
-        dispatch(clearedStatusMessages());
-        dispatch(addedStatusMessage({
-          statusMessage: `There is not a project named: 
-          \n\n${selectedProject.description.project_name}\n\n on the server...`,
-        }));
-        dispatch(setInfoMessagesModalVisible(true));
-        return err.ok;
+        return await initializeDownload(selectedProject, source);
       }
     }
-    return Promise.resolve(projectResponse);
+    catch (err) {
+      dispatch(clearedStatusMessages());
+      dispatch(addedStatusMessage({
+        statusMessage: `There is not a project named: 
+          \n\n${selectedProject.description.project_name}\n\n on the server...`,
+      }));
+      dispatch(setInfoMessagesModalVisible(true));
+      throw err.ok;
+    }
+    // }
+    // return Promise.resolve(projectResponse);
   };
 
   // Upload Dataset Properties
@@ -478,10 +508,11 @@ const useProject = () => {
     getAllServerProjects: getAllServerProjects,
     getSelectedDatasetFromId: getSelectedDatasetFromId,
     getDatasets: getDatasets,
+    initializeDownload: initializeDownload,
     makeDatasetCurrent: makeDatasetCurrent,
     initializeNewProject: initializeNewProject,
     loadProjectFromDevice: loadProjectFromDevice,
-    loadProjectRemote: loadProjectRemote,
+    downloadProject: downloadProject,
     readDeviceFile: readDeviceFile,
     selectProject: selectProject,
     setSwitchValue: setSwitchValue,

@@ -91,25 +91,30 @@ const useExport = () => {
   // };
 
   const doesDeviceDirectoryExist = async (directory) => {
-    return await RNFetchBlob.fs.isDir(directory).then(checkDirSuccess => {
-      if (checkDirSuccess) {
-        console.log('Directory', directory, 'exists.', checkDirSuccess);
-        return Promise.resolve(directory);
-      }
-      else {
-        // If directory does not exist then one is created
-        return RNFetchBlob.fs.mkdir(directory)
-          .then(checkDirectorySuccess => {
-            console.log('Directory', directory, 'created', checkDirectorySuccess);
-            dispatch(doesBackupDirectoryExist(checkDirectorySuccess));
-            return Promise.resolve(directory);
-          })
-          .catch(createDirError => {
-            console.log('Unable to create directory', directory, createDirError);
-            return Promise.reject(createDirError);
-          });
-      }
-    });
+    try {
+      return await RNFetchBlob.fs.isDir(directory).then(checkDirSuccess => {
+        if (checkDirSuccess) {
+          console.log('Directory', directory, 'exists.', checkDirSuccess);
+          // return Promise.resolve(directory);
+        }
+        else {
+          // If directory does not exist then one is created
+          return RNFetchBlob.fs.mkdir(directory)
+            .then(checkDirectorySuccess => {
+              console.log('Directory', directory, 'created', checkDirectorySuccess);
+              dispatch(doesBackupDirectoryExist(checkDirectorySuccess));
+              // return Promise.resolve(directory);
+            })
+            .catch(createDirError => {
+              console.log('Unable to create directory', directory, createDirError);
+              // return Promise.reject(createDirError);
+            });
+        }
+      });
+    }
+    catch (err) {
+      console.error('Error Checking Id Directory Exists.')
+    }
   };
 
   const exportData = (directory, data, filename) => {

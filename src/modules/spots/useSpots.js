@@ -30,7 +30,7 @@ const useSpots = (props) => {
   const [useServerRequests] = useServerRequestsHook();
 
   useEffect(() => {
-    console.log('datasets in useSpots UE', datasets);
+    // console.log('datasets in useSpots UE', datasets);
   }, [datasets]);
 
   // Copy Spot to a new Spot omiting specific properties
@@ -116,41 +116,55 @@ const useSpots = (props) => {
   };
 
   const deleteSpotsFromDataset = (dataset, spotId) => {
-    // const updatedSpotIds = dataset.spotIds.filter(id => id !== spotId);
     dispatch(deletedSpotIdFromDataset({spotId: spotId, dataset: dataset}));
     dispatch(deletedSpot(spotId));
     console.log(dataset, 'Spots', spots);
     return Promise.resolve(dataset.spotIds);
   };
 
+  const downloadImagesInSpots = async (spotsOnServer) => {
+    try {
+      const neededImagesIds = await useImages.gatherNeededImages(spotsOnServer);
+      console.log('Gathering Needed Images...');
+      if (neededImagesIds.length === 0) {
+        dispatch(setLoadingStatus({view: 'modal', bool: false}));
+        dispatch(addedStatusMessage({statusMessage: 'No New Images to Download'}));
+      }
+      else return await useImages.initializeDownloadImages(neededImagesIds);
+    }
+    catch (err) {
+      console.error('Error Downloading Images. Error:', err);
+    }
+  };
+
   const downloadSpots = async (dataset, encodedLogin) => {
-    const datasetInfoFromServer = await useServerRequests.getDatasetSpots(dataset.id, encodedLogin);
-    if (!isEmpty(datasetInfoFromServer) && datasetInfoFromServer.features) {
+    try {
+      console.log('Downloading Spots...');
       dispatch(addedStatusMessage({statusMessage: 'Downloading Spots...'}));
-      const spotsOnServer = datasetInfoFromServer.features;
-      if (!isEmpty(datasetInfoFromServer) && spotsOnServer) {
+      const downloadDatasetInfo = await useServerRequests.getDatasetSpots(dataset.id, encodedLogin);
+      console.log('Finished Downloading Spots.');
+      dispatch(removedLastStatusMessage());
+      dispatch(addedStatusMessage({statusMessage: 'Finished Downloading Spots.'}));
+      if (!isEmpty(downloadDatasetInfo) && downloadDatasetInfo.features) {
+        const spotsOnServer = downloadDatasetInfo.features;
         console.log(spotsOnServer);
         dispatch(addedSpots(spotsOnServer));
         const spotIds = Object.values(spotsOnServer).map(spot => spot.properties.id);
         dispatch(addedSpotsIdsToDataset({datasetId: dataset.id, spotIds: spotIds}));
-        dispatch(removedLastStatusMessage());
-        dispatch(addedStatusMessage({statusMessage: 'Downloaded Spots'}));
-        const neededImagesIds = await useImages.gatherNeededImages(spotsOnServer);
-        if (neededImagesIds.length === 0) {
-          dispatch(setLoadingStatus({view: 'modal', bool: false}));
-          dispatch(addedStatusMessage({statusMessage: 'No New Images to Download'}));
-          dispatch(addedStatusMessage({statusMessage: 'Download Complete!'}));
-        }
-        else return await useImages.downloadImages(neededImagesIds);
+        await downloadImagesInSpots(spotsOnServer);
+        console.log('Images Complete');
         dispatch(setProjectLoadComplete(true));
       }
-      return Promise.resolve({message: 'done - Spots'});
+      else {
+        dispatch(setLoadingStatus({view: 'modal', bool: false}));
+        return Promise.resolve('No Spots!');
+      }
     }
-    else {
-      dispatch(setLoadingStatus({view: 'modal', bool: false}));
-      return Promise.resolve('No Spots!');
+    catch (err) {
+      console.error('Error Downloading Spots.', err);
+      dispatch(addedStatusMessage({statusMessage: 'Error Downloading Spots.'}));
+      throw Error;
     }
-
   };
 
   // Get only the Spots in the active Datasets

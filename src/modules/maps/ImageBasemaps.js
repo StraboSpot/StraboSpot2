@@ -19,7 +19,7 @@ const ImageBaseMaps = (props) => {
 
   const handleImagePressed = (image) => {
     console.log('Pressed image basemap:', image);
-    useImages.doesImageExist(image.id)
+    useImages.doesImageExistOnDevice(image.id)
       .then((doesExist) => {
         if (!doesExist) Alert.alert('Missing Image!', 'Unable to find image file on this device.');
         dispatch(setCurrentImageBasemap(image));
