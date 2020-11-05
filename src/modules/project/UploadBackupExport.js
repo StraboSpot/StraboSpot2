@@ -66,9 +66,8 @@ const UploadBackAndExport = (props) => {
     setIsUploadDialogVisible(true);
   };
 
-  const initializeUpload = () => {
+  const showUploadDialog = () => {
     setDialogBoxType('upload');
-    console.log('Initializing Upload...');
     setIsUploadDialogVisible(true);
   };
 
@@ -99,7 +98,7 @@ const UploadBackAndExport = (props) => {
           title={isOnline ? 'Upload project to StraboSpot' : 'Need to be ONLINE to upload'}
           buttonStyle={commonStyles.standardButton}
           titleStyle={commonStyles.standardButtonText}
-          onPress={() => initializeUpload()}
+          onPress={() => showUploadDialog()}
           disabled={!isOnline}
         />
         <Button

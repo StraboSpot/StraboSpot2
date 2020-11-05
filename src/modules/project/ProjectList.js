@@ -135,36 +135,7 @@ const ProjectList = (props) => {
         dispatch(addedStatusMessage({statusMessage: '\nDownload Complete!'}));
         dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
       }
-      else {
-        // try {
-        //   console.log(`Downloading ${selectedProject.name} project from server...`);
-        //   dispatch(addedStatusMessage(
-        //     {statusMessage: `Downloading project: ${selectedProject.name}\n from server...`},
-        //   ));
-        await useProject.initializeDownload(selectedProject, props.source);
-        // console.log('ProjectData', currentProject);
-        // if (!currentProject || typeof currentProject === 'string') {
-        //   setShowDialog(false);
-        //
-        //   if (currentProject === 'No Spots!') {
-        //     dispatch(clearedStatusMessages());
-        //     dispatch(addedStatusMessage({statusMessage: 'Project does not have any spots'}));
-        //     dispatch(setInfoMessagesModalVisible(true));
-        //     dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
-        //   }
-        //   else Alert.alert('Error', 'No Project Data!');
-        // }
-        // else {
-        //   dispatch(addedStatusMessage({statusMessage: 'Download Complete!'}));
-        //   dispatch(setLoadingStatus({view: 'modal', bool: false}));
-        //   dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
-        // }
-        // }
-        // catch (err) {
-        //   console.error('Error Loading Project', err);
-        //   dispatch(addedStatusMessage({statusMessage: 'Download Failed!'}));
-        // }
-      }
+      else await useProject.initializeDownload(selectedProject, props.source);
     }
     else {
       setShowDialog(false);

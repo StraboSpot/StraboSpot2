@@ -63,6 +63,10 @@ const useImages = () => {
             console.log(
               'NEW/MODIFIED Images Downloaded: ' + imagesDownloadedCount + ' of ' + neededImageIds.length
               + ' NEW/MODIFIED Images Saved: ' + savedImagesCount + ' of ' + neededImageIds.length);
+            dispatch(removedLastStatusMessage())
+            dispatch(addedStatusMessage({
+              statusMessage: 'NEW/MODIFIED Images Saved: ' + savedImagesCount + ' of ' + neededImageIds.length
+            }));
           }),
         );
         console.log('Downloaded Images ' + imageCount + '/' + neededImageIds.length

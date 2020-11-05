@@ -132,39 +132,6 @@ const useProject = () => {
     dispatch(addedDataset(defaultDataset));
   };
 
-  const initializeDownload = async (selectedProject, source) => {
-    batch(() => {
-      dispatch(setLoadingStatus({view: 'modal', bool: true}));
-      dispatch(clearedStatusMessages());
-      dispatch(addedStatusMessage({statusMessage: `Downloading Project: ${selectedProject.name}`}));
-      dispatch(setStatusMessagesModalVisible(true));
-    });
-    try {
-      if (!isEmpty(project)) destroyOldProject();
-      await downloadProject(selectedProject);
-      const downloadedDatasets = await getDatasets(selectedProject, source);
-      if (Object.values(downloadedDatasets).length === 1) {
-        await useSpots.downloadSpots(Object.values(downloadedDatasets)[0], user.encoded_login);
-      }
-      console.log('Adding Images is Next');
-      dispatch(addedStatusMessage({statusMessage: '------------------'}));
-      dispatch(addedStatusMessage({statusMessage: 'Download Complete!'}));
-      dispatch(setLoadingStatus({view: 'modal', bool: false}));
-      dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
-    }
-    catch (err) {
-      console.error('Error Initializing Download.');
-      dispatch(addedStatusMessage({statusMessage: '\nDownload Failed!'}));
-      dispatch(setLoadingStatus({view: 'modal', bool: false}));
-    }
-  };
-
-  const initializeNewProject = async (descriptionData) => {
-    await destroyOldProject();
-    await createProject(descriptionData);
-    return Promise.resolve();
-  };
-
   const destroyDataset = (id) => {
     let spotsDeletedCount = 0;
     if (datasets && datasets[id] && datasets[id].spotIds) {
@@ -223,12 +190,6 @@ const useProject = () => {
       console.log('Finished Downloading Project Properties.', projectResponse);
       dispatch(removedLastStatusMessage());
       dispatch(addedStatusMessage({statusMessage: 'Finished Downloading Project Properties.'}));
-      // if (projectResponse.other_maps) {
-      // }
-      // await getDatasets(selectedProject);
-      // if (Object.values(datasets).length === 1) {
-      //   await useSpots.downloadSpots(Object.values(datasets)[0], user.encoded_login);
-      // }
       return projectResponse;
     }
     catch (err) {
@@ -237,6 +198,39 @@ const useProject = () => {
       dispatch(addedStatusMessage({statusMessage: 'Error Downloading Project Properties.'}));
       throw Error;
     }
+  };
+
+  const initializeDownload = async (selectedProject, source) => {
+    batch(() => {
+      dispatch(setLoadingStatus({view: 'modal', bool: true}));
+      dispatch(clearedStatusMessages());
+      dispatch(addedStatusMessage({statusMessage: `Downloading Project: ${selectedProject.name}`}));
+      dispatch(setStatusMessagesModalVisible(true));
+    });
+    try {
+      if (!isEmpty(project)) destroyOldProject();
+      await downloadProject(selectedProject);
+      const downloadedDatasets = await getDatasets(selectedProject, source);
+      if (Object.values(downloadedDatasets).length === 1) {
+        await useSpots.downloadSpots(Object.values(downloadedDatasets)[0], user.encoded_login);
+      }
+      console.log('Adding Images is Next');
+      dispatch(addedStatusMessage({statusMessage: '------------------'}));
+      dispatch(addedStatusMessage({statusMessage: 'Download Complete!'}));
+      dispatch(setLoadingStatus({view: 'modal', bool: false}));
+      dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
+    }
+    catch (err) {
+      console.error('Error Initializing Download.');
+      dispatch(addedStatusMessage({statusMessage: '\nDownload Failed!'}));
+      dispatch(setLoadingStatus({view: 'modal', bool: false}));
+    }
+  };
+
+  const initializeNewProject = async (descriptionData) => {
+    await destroyOldProject();
+    await createProject(descriptionData);
+    return Promise.resolve();
   };
 
   const getAllDeviceProjects = async () => {
