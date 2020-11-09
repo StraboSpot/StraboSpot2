@@ -2,19 +2,10 @@ import {useEffect} from 'react';
 
 import {useDispatch, useSelector} from 'react-redux';
 
-import useServerRequestsHook from '../../services/useServerRequests';
 import {getNewId, isEmpty} from '../../shared/Helpers';
-import {
-  addedStatusMessage,
-  removedLastStatusMessage,
-  setLoadingStatus,
-  setProjectLoadComplete,
-} from '../home/home.slice';
-import useImagesHook from '../images/useImages';
 import {addedSpotsIdsToDataset, deletedSpotIdFromDataset, updatedProject} from '../project/projects.slice';
-import useUploadDownloadHook from '../project/useUploadDownload';
 import {GENERAL_KEYS_ICONS, SED_KEYS_ICONS} from './spot.constants';
-import {addedSpot, addedSpots, deletedSpot, setSelectedSpot} from './spots.slice';
+import {addedSpot, deletedSpot, setSelectedSpot} from './spots.slice';
 
 const useSpots = (props) => {
   const dispatch = useDispatch();
@@ -26,10 +17,6 @@ const useSpots = (props) => {
   const preferences = useSelector(state => state.project.project.preferences) || {};
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const spots = useSelector(state => state.spot.spots);
-
-  const [useImages] = useImagesHook();
-  const useUploadDownload = useUploadDownloadHook();
-  const [useServerRequests] = useServerRequestsHook();
 
   useEffect(() => {
     // console.log('datasets in useSpots UE', datasets);
@@ -122,51 +109,6 @@ const useSpots = (props) => {
     dispatch(deletedSpot(spotId));
     console.log(dataset, 'Spots', spots);
     return Promise.resolve(dataset.spotIds);
-  };
-
-  const downloadImagesInSpots = async (spotsOnServer) => {
-    try {
-      const neededImagesIds = await useImages.gatherNeededImages(spotsOnServer);
-      console.log('Gathering Needed Images...');
-      if (neededImagesIds.length === 0) {
-        dispatch(setLoadingStatus({view: 'modal', bool: false}));
-        dispatch(addedStatusMessage({statusMessage: 'No New Images to Download'}));
-      }
-      else return await useUploadDownload.initializeDownloadImages(neededImagesIds);
-    }
-    catch (err) {
-      console.error('Error Downloading Images. Error:', err);
-    }
-  };
-
-  const downloadSpots = async (dataset, encodedLogin) => {
-    try {
-      console.log('Downloading Spots...');
-      dispatch(addedStatusMessage({statusMessage: 'Downloading Spots...'}));
-      const downloadDatasetInfo = await useServerRequests.getDatasetSpots(dataset.id, encodedLogin);
-      console.log('Finished Downloading Spots.');
-      dispatch(removedLastStatusMessage());
-      dispatch(addedStatusMessage({statusMessage: 'Finished Downloading Spots.'}));
-      if (!isEmpty(downloadDatasetInfo) && downloadDatasetInfo.features) {
-        const spotsOnServer = downloadDatasetInfo.features;
-        console.log(spotsOnServer);
-        dispatch(addedSpots(spotsOnServer));
-        const spotIds = Object.values(spotsOnServer).map(spot => spot.properties.id);
-        dispatch(addedSpotsIdsToDataset({datasetId: dataset.id, spotIds: spotIds}));
-        await downloadImagesInSpots(spotsOnServer);
-        console.log('Images Complete');
-        dispatch(setProjectLoadComplete(true));
-      }
-      else {
-        dispatch(setLoadingStatus({view: 'modal', bool: false}));
-        return Promise.resolve('No Spots!');
-      }
-    }
-    catch (err) {
-      console.error('Error Downloading Spots.', err);
-      dispatch(addedStatusMessage({statusMessage: 'Error Downloading Spots.'}));
-      throw Error;
-    }
   };
 
   // Get only the Spots in the active Datasets
@@ -309,7 +251,6 @@ const useSpots = (props) => {
     createSpot: createSpot,
     deleteSpot: deleteSpot,
     deleteSpotsFromDataset: deleteSpotsFromDataset,
-    downloadSpots: downloadSpots,
     getActiveSpotsObj: getActiveSpotsObj,
     getImageBasemaps: getImageBasemaps,
     getMappableSpots: getMappableSpots,

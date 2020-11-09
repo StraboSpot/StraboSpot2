@@ -7,18 +7,17 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
 import Spacer from '../../shared/ui/Spacer';
-import useImagesHook from '../images/useImages';
-import Divider from '../main-menu-panel/MainMenuPanelDivider';
-import projectStyles from './project.styles';
-import UploadDialogBox from './UploadDialogBox';
-import useExportHook from './useExport';
-import useProjectHook from './useProject';
 import {
   addedStatusMessage,
   clearedStatusMessages,
   setLoadingStatus,
   setStatusMessagesModalVisible,
 } from '../home/home.slice';
+import Divider from '../main-menu-panel/MainMenuPanelDivider';
+import projectStyles from './project.styles';
+import UploadDialogBox from './UploadDialogBox';
+import useExportHook from './useImportExport';
+import useUploadHook from './useUpload';
 
 const UploadBackAndExport = (props) => {
   const [useExport] = useExportHook();
@@ -26,7 +25,7 @@ const UploadBackAndExport = (props) => {
 
   const dispatch = useDispatch();
   const datasets = useSelector(state => state.project.datasets);
-  const activeDatasetsIds = useSelector(state => state.project.activeDatasetsIds)
+  const activeDatasetsIds = useSelector(state => state.project.activeDatasetsIds);
   const isOnline = useSelector(state => state.home.isOnline);
   const project = useSelector(state => state.project.project);
 
@@ -77,8 +76,8 @@ const UploadBackAndExport = (props) => {
     dispatch(clearedStatusMessages());
     dispatch(setStatusMessagesModalVisible(true));
     try {
-      await useProject.uploadProject();
-      await useProject.uploadDatasets();
+      await useUpload.uploadProject();
+      await useUpload.uploadDatasets();
       dispatch(setLoadingStatus({view: 'modal', bool: false}));
       dispatch(addedStatusMessage({statusMessage: 'Upload Complete!'}));
       console.log('Upload Complete');
@@ -111,34 +110,34 @@ const UploadBackAndExport = (props) => {
     );
   };
 
-  const renderExportButtons = () => {
-    return (
-      <View>
-        <Button
-          title={'Share Notebook as PDF'}
-          buttonStyle={commonStyles.standardButton}
-          titleStyle={commonStyles.standardButtonText}
-          onPress={() => onShareNotebookAsPDF()}
-        />
-        <Button
-          title={'Share Project as CSV'}
-          buttonStyle={commonStyles.standardButton}
-          titleStyle={commonStyles.standardButtonText}
-          onPress={() => onShareProjectAsCSV()}
-        />
-        <Button
-          title={'Share Project as Shapefile'}
-          buttonStyle={commonStyles.standardButton}
-          titleStyle={commonStyles.standardButtonText}
-          onPress={() => onShareProjectAsShapefile()}
-        />
-        <View style={{alignItems: 'center', margin: 10, marginTop: 10}}>
-          <Text style={commonStyles.standardDescriptionText}>Exports should not be used as the only backup. Since the
-            full database cannot be reconstructed from them.</Text>
-        </View>
-      </View>
-    );
-  };
+  // const renderExportButtons = () => {
+  //   return (
+  //     <View>
+  //       <Button
+  //         title={'Share Notebook as PDF'}
+  //         buttonStyle={commonStyles.standardButton}
+  //         titleStyle={commonStyles.standardButtonText}
+  //         onPress={() => onShareNotebookAsPDF()}
+  //       />
+  //       <Button
+  //         title={'Share Project as CSV'}
+  //         buttonStyle={commonStyles.standardButton}
+  //         titleStyle={commonStyles.standardButtonText}
+  //         onPress={() => onShareProjectAsCSV()}
+  //       />
+  //       <Button
+  //         title={'Share Project as Shapefile'}
+  //         buttonStyle={commonStyles.standardButton}
+  //         titleStyle={commonStyles.standardButtonText}
+  //         onPress={() => onShareProjectAsShapefile()}
+  //       />
+  //       <View style={{alignItems: 'center', margin: 10, marginTop: 10}}>
+  //         <Text style={commonStyles.standardDescriptionText}>Exports should not be used as the only backup. Since the
+  //           full database cannot be reconstructed from them.</Text>
+  //       </View>
+  //     </View>
+  //   );
+  // };
 
   const renderNames = (item) => {
     const name = item.name;

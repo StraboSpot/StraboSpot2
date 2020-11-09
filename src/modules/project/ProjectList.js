@@ -9,10 +9,7 @@ import * as themes from '../../shared/styles.constants';
 import Loading from '../../shared/ui/Loading';
 import {
   addedStatusMessage,
-  clearedStatusMessages,
-  setInfoMessagesModalVisible,
   setLoadingStatus,
-  setStatusMessagesModalVisible,
 } from '../home/home.slice';
 import {MAIN_MENU_ITEMS} from '../main-menu-panel/mainMenu.constants';
 import {setMenuSelectionPage} from '../main-menu-panel/mainMenuPanel.slice';
@@ -35,9 +32,7 @@ const ProjectList = (props) => {
   const [isError, setIsError] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
 
-  // const [serverRequests] = useServerRequests();
   const [useProject] = useProjectHook();
-  // const [useSpots] = useSpotsHook();
 
   useEffect(() => {
     return function cleanUp() {
@@ -128,13 +123,7 @@ const ProjectList = (props) => {
     }
     else if (action === ProjectActions.OVERWRITE) {
       setShowDialog(false);
-
-      if (props.source === 'device') {
-        await useProject.selectProject(selectedProject, props.source);
-        dispatch(setLoadingStatus({view: 'modal', bool: false}));
-        dispatch(addedStatusMessage({statusMessage: '\nDownload Complete!'}));
-        dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
-      }
+      if (props.source === 'device') await useProject.initializeImport(selectedProject, props.source);
       else await useProject.initializeDownload(selectedProject, props.source);
     }
     else {
