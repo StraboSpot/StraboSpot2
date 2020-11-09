@@ -16,7 +16,12 @@ import {isEmpty, truncateText} from '../../shared/Helpers';
 import TexInputModal from '../../shared/ui/GeneralTextInputModal';
 import Loading from '../../shared/ui/Loading';
 import StatusDialogBox from '../../shared/ui/StatusDialogBox';
-import {addedStatusMessage, clearedStatusMessages, setStatusMessagesModalVisible} from '../home/home.slice';
+import {
+  addedStatusMessage,
+  clearedStatusMessages,
+  setProjectLoadComplete,
+  setStatusMessagesModalVisible,
+} from '../home/home.slice';
 import useProjectHook from '../project/useProject';
 import styles from './project.styles';
 import {updatedDatasetProperties} from './projects.slice';
@@ -241,6 +246,7 @@ const DatasetList = () => {
     setLoading(true);
     await useProject.setSwitchValue(val, dataset);
     setLoading(false);
+    dispatch(setProjectLoadComplete(true));
   };
 
   return (
