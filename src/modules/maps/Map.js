@@ -12,6 +12,8 @@ import {getNewUUID, isEmpty} from '../../shared/Helpers';
 import {MODALS} from '../home/home.constants';
 import {setModalVisible} from '../home/home.slice';
 import useImagesHook from '../images/useImages';
+import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
+import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import {
   addedSpot,
   addedSpots,
@@ -171,6 +173,8 @@ const Map = React.forwardRef((props, ref) => {
     if (props.mapMode !== MAP_MODES.EDIT) {
       setDisplayedSpots((isEmpty(selectedSpot) ? [] : [{...selectedSpot}]));
     }
+    // set the Notebook Page to Overview when selectedSpot gets changed.
+    dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.OVERVIEW));
   }, [selectedSpot, activeDatasetsIds]);
 
   useEffect(() => {
