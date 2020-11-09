@@ -71,7 +71,7 @@ const SampleDetailPage = (props) => {
     return (
       <View>
         <View style={styles.samplesSectionDividerContainer}>
-          <SectionDivider dividerText='Feature Type'/>
+          <SectionDivider dividerText='Sample'/>
         </View>
         <View style={{flex: 1}}>
           <Formik
