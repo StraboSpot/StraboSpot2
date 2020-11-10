@@ -16,12 +16,12 @@ import {
 import Divider from '../main-menu-panel/MainMenuPanelDivider';
 import projectStyles from './project.styles';
 import UploadDialogBox from './UploadDialogBox';
-import useExportHook from './useImportExport';
+import useExportHook from './useExport';
 import useUploadHook from './useUpload';
 
 const UploadBackAndExport = (props) => {
-  const [useExport] = useExportHook();
-  const [useProject] = useProjectHook();
+  const useExport = useExportHook();
+  const useUpload = useUploadHook();
 
   const dispatch = useDispatch();
   const datasets = useSelector(state => state.project.datasets);
@@ -60,34 +60,9 @@ const UploadBackAndExport = (props) => {
     console.log('onShareProjectAsShapefile');
   };
 
-  const initializeBackup = () => {
-    setDialogBoxType('backup');
+  const showBackupUploadDialog = (type) => {
+    setDialogBoxType(type);
     setIsUploadDialogVisible(true);
-  };
-
-  const showUploadDialog = () => {
-    setDialogBoxType('upload');
-    setIsUploadDialogVisible(true);
-  };
-
-  const upload = async () => {
-    setIsUploadDialogVisible(false);
-    dispatch(setLoadingStatus({view: 'modal', bool: true}));
-    dispatch(clearedStatusMessages());
-    dispatch(setStatusMessagesModalVisible(true));
-    try {
-      await useUpload.uploadProject();
-      await useUpload.uploadDatasets();
-      dispatch(setLoadingStatus({view: 'modal', bool: false}));
-      dispatch(addedStatusMessage({statusMessage: 'Upload Complete!'}));
-      console.log('Upload Complete');
-    }
-    catch (err) {
-      dispatch(setLoadingStatus({view: 'modal', bool: false}));
-      dispatch(addedStatusMessage({statusMessage: '----------'}));
-      dispatch(addedStatusMessage({statusMessage: 'Upload Failed!'}));
-      console.error('Upload Failed!');
-    }
   };
 
   const renderUploadAndBackupButtons = () => {
@@ -97,14 +72,14 @@ const UploadBackAndExport = (props) => {
           title={isOnline ? 'Upload project to StraboSpot' : 'Need to be ONLINE to upload'}
           buttonStyle={commonStyles.standardButton}
           titleStyle={commonStyles.standardButtonText}
-          onPress={() => showUploadDialog()}
+          onPress={() => showBackupUploadDialog('upload')}
           disabled={!isOnline}
         />
         <Button
           title={'Backup project to device'}
           buttonStyle={commonStyles.standardButton}
           titleStyle={commonStyles.standardButtonText}
-          onPress={() => initializeBackup()}
+          onPress={() => showBackupUploadDialog('backup')}
         />
       </View>
     );
@@ -198,6 +173,27 @@ const UploadBackAndExport = (props) => {
       );
     }
   };
+
+  const upload = async () => {
+    setIsUploadDialogVisible(false);
+    dispatch(setLoadingStatus({view: 'modal', bool: true}));
+    dispatch(clearedStatusMessages());
+    dispatch(setStatusMessagesModalVisible(true));
+    try {
+      await useUpload.uploadProject();
+      await useUpload.uploadDatasets();
+      dispatch(setLoadingStatus({view: 'modal', bool: false}));
+      dispatch(addedStatusMessage({statusMessage: 'Upload Complete!'}));
+      console.log('Upload Complete');
+    }
+    catch (err) {
+      dispatch(setLoadingStatus({view: 'modal', bool: false}));
+      dispatch(addedStatusMessage({statusMessage: '----------'}));
+      dispatch(addedStatusMessage({statusMessage: 'Upload Failed!'}));
+      console.error('Upload Failed!');
+    }
+  };
+
 
   return (
     <React.Fragment>

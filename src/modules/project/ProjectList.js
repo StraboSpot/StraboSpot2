@@ -123,7 +123,7 @@ const ProjectList = (props) => {
     }
     else if (action === ProjectActions.OVERWRITE) {
       setShowDialog(false);
-      if (props.source === 'device') await useProject.initializeImport(selectedProject, props.source);
+      if (props.source === 'device') await useProject.selectProject(selectedProject, props.source);
       else await useProject.initializeDownload(selectedProject, props.source);
     }
     else {

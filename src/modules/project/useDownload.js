@@ -3,6 +3,7 @@ import {Platform} from 'react-native';
 import {batch, useDispatch, useSelector} from 'react-redux';
 import RNFetchBlob from 'rn-fetch-blob';
 
+import useDeviceHook from '../../services/useDevice';
 import useServerRequestsHook from '../../services/useServerRequests';
 import {isEmpty} from '../../shared/Helpers';
 import {
@@ -24,7 +25,7 @@ import {
   clearedProject,
   setActiveDatasets, setSelectedDataset, updatedDatasets,
 } from './projects.slice';
-import useImportExportHook from './useImportExport';
+import useImportExportHook from './useExport';
 
 const useDownload = () => {
   let imagesDownloadedCount = 0;
@@ -45,7 +46,8 @@ const useDownload = () => {
   const user = useSelector(state => state.user);
   const isOnline = useSelector(state => state.home.isOnline);
 
-  const useImportExport = useImportExportHook();
+  const useDevice = useDeviceHook();
+  const useExport = useImportExportHook();
   const [useImages] = useImagesHook();
   const [useServerRequests] = useServerRequestsHook();
 
@@ -153,24 +155,18 @@ const useDownload = () => {
 
   const getDatasets = async (project, source) => {
     try {
-      if (source === 'device') {
-        dispatch(addedDatasets(project.datasets));
-        return Promise.resolve();
+      dispatch(addedStatusMessage({statusMessage: 'Downloading datasets from server...'}));
+      const projectDatasetsFromServer = await useServerRequests.getDatasets(project.id, user.encoded_login);
+      dispatch(removedLastStatusMessage());
+      dispatch(addedStatusMessage({statusMessage: 'Finished downloading datasets from server.'}));
+      if (projectDatasetsFromServer.datasets.length === 1) {
+        dispatch(setActiveDatasets({bool: true, dataset: projectDatasetsFromServer.datasets[0].id}));
+        dispatch(setSelectedDataset(projectDatasetsFromServer.datasets[0].id));
       }
-      else {
-        dispatch(addedStatusMessage({statusMessage: 'Downloading datasets from server...'}));
-        const projectDatasetsFromServer = await useServerRequests.getDatasets(project.id, user.encoded_login);
-        dispatch(removedLastStatusMessage());
-        dispatch(addedStatusMessage({statusMessage: 'Finished downloading datasets from server.'}));
-        if (projectDatasetsFromServer.datasets.length === 1) {
-          dispatch(setActiveDatasets({bool: true, dataset: projectDatasetsFromServer.datasets[0].id}));
-          dispatch(setSelectedDataset(projectDatasetsFromServer.datasets[0].id));
-        }
-        const datasetsReassigned = Object.assign({},
-          ...projectDatasetsFromServer.datasets.map(item => ({[item.id]: item})));
-        dispatch(updatedDatasets(datasetsReassigned));
-        return datasetsReassigned;
-      }
+      const datasetsReassigned = Object.assign({},
+        ...projectDatasetsFromServer.datasets.map(item => ({[item.id]: item})));
+      dispatch(updatedDatasets(datasetsReassigned));
+      return datasetsReassigned;
     }
     catch (e) {
       console.log('Error getting datasets...' + e);
@@ -210,7 +206,7 @@ const useDownload = () => {
       dispatch(addedStatusMessage({statusMessage: 'Downloading Needed Images...'}));
       if (!isEmpty(neededImageIds)) {
         // Check path first, if doesn't exist, then create
-        await useImportExport.doesDeviceDirectoryExist(devicePath + appDirectory + imagesDirectory);
+        await useDevice.doesDeviceDirectoryExist(devicePath + appDirectory + imagesDirectory);
         await Promise.all(
           neededImageIds.map(async imageId => {
             await downloadAndSaveImagesToDevice(imageId);

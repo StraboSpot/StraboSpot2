@@ -27,6 +27,8 @@ import {
   setSelectedDataset,
 } from './projects.slice';
 import useDownloadHook from './useDownload';
+import useImportHook from './useImport';
+import useDeviceHook from '../../services/useDevice';
 
 const useProject = () => {
   let dirs = RNFetchBlob.fs.dirs;
@@ -43,10 +45,11 @@ const useProject = () => {
   const user = useSelector(state => state.user);
   const isOnline = useSelector(state => state.home.isOnline);
 
+  const useImport = useImportHook();
   const [serverRequests] = useServerRequests();
   const [useSpots] = useSpotsHook();
   const useDownload = useDownloadHook();
-
+  const useDevice = useDeviceHook()
 
   const addDataset = async name => {
     const datasetObj = createDataset(name);
@@ -169,7 +172,7 @@ const useProject = () => {
     return await RNFetchBlob.fs.isDir(devicePath + subDirectory);
   };
 
-  const doesDeviceDirExist = async (subDirectory) => {
+  const doesDeviceBackupDirExist = async (subDirectory) => {
     if (subDirectory !== undefined) {
       return await RNFetchBlob.fs.isDir(devicePath + appDirectoryForDistributedBackups + '/' + subDirectory);
     }
@@ -215,53 +218,53 @@ const useProject = () => {
     return datasets[selectedDatasetId];
   };
 
-  const loadProjectFromDevice = async (selectedProject) => {
-    console.log('SELECTED PROJECT', selectedProject);
-    const {projectDb, spotsDb, otherMapsDb, mapNamesDb} = selectedProject;
-    const dirExists = await doesDeviceDirExist();
-    console.log(dirExists);
-    if (dirExists) {
-      if (!isEmpty(project)) destroyOldProject();
-      dispatch(addedSpotsFromDevice(spotsDb));
-      dispatch(addedProject(projectDb.project));
-      await getDatasets(projectDb, 'device');
-      if (!isEmpty(otherMapsDb) || !isEmpty(mapNamesDb)) {
-        dispatch(addedMapsFromDevice({mapType: 'customMaps', maps: otherMapsDb}));
-        dispatch(addedMapsFromDevice({mapType: 'offlineMaps', maps: mapNamesDb}));
-      }
-      return Promise.resolve(selectedProject.projectDb.project);
-    }
-  };
+  // const loadProjectFromDevice = async (selectedProject) => {
+  //   console.log('SELECTED PROJECT', selectedProject);
+  //   const {projectDb, spotsDb, otherMapsDb, mapNamesDb} = selectedProject;
+  //   const dirExists = await doesDeviceBackupDirExist();
+  //   console.log(dirExists);
+  //   if (dirExists) {
+  //     if (!isEmpty(project)) destroyOldProject();
+  //     dispatch(addedSpotsFromDevice(spotsDb));
+  //     dispatch(addedProject(projectDb.project));
+  //     await getDatasets(projectDb, 'device');
+  //     if (!isEmpty(otherMapsDb) || !isEmpty(mapNamesDb)) {
+  //       dispatch(addedMapsFromDevice({mapType: 'customMaps', maps: otherMapsDb}));
+  //       dispatch(addedMapsFromDevice({mapType: 'offlineMaps', maps: mapNamesDb}));
+  //     }
+  //     return Promise.resolve(selectedProject.projectDb.project);
+  //   }
+  // };
 
   const makeDatasetCurrent = (dataset) => {
     dispatch(setSelectedDataset(dataset));
     return Promise.resolve();
   };
 
-  const readDeviceFile = async (selectedProject) => {
-    let data = selectedProject.fileName;
-    const dataFile = '/data.json';
-    return await RNFetchBlob.fs.readFile(devicePath + appDirectoryForDistributedBackups + '/' + data + dataFile).then(
-      response => {
-        return Promise.resolve(JSON.parse(response));
-      }, () => Alert.alert('Project Not Found'));
-  };
+  // const readDeviceFile = async (selectedProject) => {
+  //   let data = selectedProject.fileName;
+  //   const dataFile = '/data.json';
+  //   return await RNFetchBlob.fs.readFile(devicePath + appDirectoryForDistributedBackups + '/' + data + dataFile).then(
+  //     response => {
+  //       return Promise.resolve(JSON.parse(response));
+  //     }, () => Alert.alert('Project Not Found'));
+  // };
 
   const selectProject = async (selectedProject, source) => {
     try {
       console.log('Getting project...');
-      let projectResponse = null;
+      if (!isEmpty(project)) destroyOldProject();
       if (source === 'device') {
-        projectResponse = await readDeviceFile(selectedProject)
-          .then(async dataFile => {
-            if (!isEmpty(dataFile.mapNamesDb) || !isEmpty(dataFile.otherMapsDb)) {
-              const doMapsDirExists = await copyZipMapsForDistribution(selectedProject.fileName);
-              console.log(doMapsDirExists, '!');
-            }
-            return loadProjectFromDevice(dataFile).then((data) => {
-              return data;
-            });
-          });
+        const dataFile = await useImport.readDeviceFile(selectedProject);
+        if (!isEmpty(dataFile.mapNamesDb) || !isEmpty(dataFile.otherMapsDb)) {
+          await copyZipMapsForDistribution(selectedProject.fileName);
+          // await useDevice.doesDeviceDirectoryExist(devicePath + appDirectoryForDistributedBackups + '/' + selectedProject.fileName + '/maps');
+          // console.log('Maps Dir Exists? ', doMapsDirExists, '!');
+        }
+        return useImport.loadProjectFromDevice(dataFile).then((data) => {
+
+          return data;
+        });
       }
       else {
         dispatch(clearedStatusMessages());
@@ -312,14 +315,15 @@ const useProject = () => {
     checkValidDateTime: checkValidDateTime,
     createProject: createProject,
     destroyDataset: destroyDataset,
-    doesDeviceDirExist: doesDeviceDirExist,
+    destroyOldProject: destroyOldProject,
+    doesDeviceBackupDirExist: doesDeviceBackupDirExist,
     getAllDeviceProjects: getAllDeviceProjects,
     getAllServerProjects: getAllServerProjects,
     getSelectedDatasetFromId: getSelectedDatasetFromId,
     makeDatasetCurrent: makeDatasetCurrent,
     initializeNewProject: initializeNewProject,
-    loadProjectFromDevice: loadProjectFromDevice,
-    readDeviceFile: readDeviceFile,
+    // loadProjectFromDevice: loadProjectFromDevice,
+    // readDeviceFile: readDeviceFile,
     selectProject: selectProject,
     setSwitchValue: setSwitchValue,
   };
