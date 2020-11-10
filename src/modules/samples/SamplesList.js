@@ -2,33 +2,25 @@ import React from 'react';
 import {FlatList, Text, View} from 'react-native';
 
 import {Button, ListItem} from 'react-native-elements';
-import {useDispatch, useSelector} from 'react-redux';
+import {useSelector} from 'react-redux';
 
 import {isEmpty} from '../../shared/Helpers';
 import attributesStyles from '../main-menu-panel/attributes.styles';
 import {SORTED_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import SortingButtons from '../main-menu-panel/SortingButtons';
 import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
-import {setSelectedAttributes, setSelectedSpot} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
 
 const SamplesList = (props) => {
   const [useSpots] = useSpotsHook();
 
-  const dispatch = useDispatch();
   const recentViews = useSelector(state => state.spot.recentViews);
   const sortedView = useSelector(state => state.mainMenu.sortedView);
   const spots = useSelector(state => state.spot.spots);
 
-  const handleSamplePressed = (sample, spot) => {
-    dispatch(setSelectedSpot(spot));
-    dispatch(setSelectedAttributes([sample]));
-    props.openNotebookPanel(NOTEBOOK_PAGES.SAMPLEDETAIL);
-  };
-
   const renderSample = (sample, spot) => {
     return (
-      <ListItem key={sample.id} onPress={() => handleSamplePressed(sample, spot)}>
+      <ListItem key={sample.id} onPress={() => props.openSpotInNotebook(spot, NOTEBOOK_PAGES.SAMPLEDETAIL, [sample])}>
         <ListItem.Content>
           <ListItem.Title>{sample.sample_id_name}</ListItem.Title>
         </ListItem.Content>
@@ -48,11 +40,11 @@ const SamplesList = (props) => {
             titleStyle={{fontSize: 16}}
             title={'View In Spot'}
             type={'clear'}
-            onPress={() => props.getSpotData(spot.properties.id)}
+            onPress={() => props.openSpotInNotebook(spot, NOTEBOOK_PAGES.SAMPLE)}
           />
         </View>
         <FlatList
-          keyExtractor={(sample) => sample.id}
+          keyExtractor={(sample) => sample.id.toString()}
           data={spot.properties.samples}
           renderItem={({item}) => renderSample(item, spot)}
         />

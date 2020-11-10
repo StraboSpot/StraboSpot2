@@ -27,28 +27,28 @@ const SpotsList = (props) => {
     );
   };
 
-  const renderSpot = (item) => {
-    const tags = useTags.getTagsAtSpot(item.properties.id);
+  const renderSpot = (spot) => {
+    const tags = useTags.getTagsAtSpot(spot.properties.id);
     const tagsString = tags.map(tag => tag.name).sort().join(', ');
     return (
       <ListItem
-        key={item.properties.id}
-        onPress={() => props.getSpotData(item.properties.id)}
+        key={spot.properties.id}
+        onPress={() => props.openSpotInNotebook(spot)}
       >
-        <Avatar source={useSpots.getSpotGemometryIconSource(item)} size={20}/>
+        <Avatar source={useSpots.getSpotGemometryIconSource(spot)} size={20}/>
         <ListItem.Content>
-          <ListItem.Title>{item.properties.name}</ListItem.Title>
+          <ListItem.Title>{spot.properties.name}</ListItem.Title>
           {!isEmpty(tagsString) && <ListItem.Subtitle>{tagsString}</ListItem.Subtitle>}
         </ListItem.Content>
-        {renderSpotDataIcons(item)}
+        {renderSpotDataIcons(spot)}
         <ListItem.Chevron/>
       </ListItem>
     );
   };
 
-  const renderSpotDataIcons = (item) => {
-    const keysFound = useSpots.getSpotDataKeys(item);
-    if (!isEmpty(useTags.getTagsAtSpot(item.properties.id))) keysFound.push('tags');
+  const renderSpotDataIcons = (spot) => {
+    const keysFound = useSpots.getSpotDataKeys(spot);
+    if (!isEmpty(useTags.getTagsAtSpot(spot.properties.id))) keysFound.push('tags');
     return (
       <React.Fragment>
         {keysFound.map(key => {
@@ -83,7 +83,7 @@ const SpotsList = (props) => {
               ? <Text style={{padding: 10}}>{noSpotsText}</Text>
               : (
                 <FlatList
-                  keyExtractor={(item) => item.properties.id.toString()}
+                  keyExtractor={(spot) => spot.properties.id.toString()}
                   data={sortedSpots}
                   renderItem={({item}) => renderSpot(item)}
                 />

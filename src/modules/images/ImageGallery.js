@@ -10,6 +10,7 @@ import {setImageModalVisible} from '../home/home.slice';
 import attributesStyles from '../main-menu-panel/attributes.styles';
 import {SORTED_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import SortingButtons from '../main-menu-panel/SortingButtons';
+import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
 import {setSelectedAttributes} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
 import imageStyles from './images.styles';
@@ -50,7 +51,7 @@ const ImageGallery = (props) => {
             titleStyle={{fontSize: 16}}
             title={'View In Spot'}
             type={'clear'}
-            onPress={() => props.getSpotData(spot.properties.id)}
+            onPress={() => props.openSpotInNotebook(spot, NOTEBOOK_PAGES.PHOTO)}
           />
         </View>
         <FlatList

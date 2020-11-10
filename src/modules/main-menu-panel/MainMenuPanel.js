@@ -1,7 +1,7 @@
 import React from 'react';
 import {View} from 'react-native';
 
-import {connect, useDispatch, useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 import {isEmpty} from '../../shared/Helpers';
 import {shortcutSwitchPosition} from '../home/home.slice';
@@ -16,7 +16,7 @@ import ActiveProject from '../project/ActiveProjectPanel';
 import MyStraboSpot from '../project/MyStraboSpot';
 import UploadBackupAndExport from '../project/UploadBackupExport';
 import SamplesList from '../samples/SamplesList';
-import {setSelectedSpot} from '../spots/spots.slice';
+import {setSelectedAttributes, setSelectedSpot} from '../spots/spots.slice';
 import SpotsList from '../spots/SpotsList';
 import Tags from '../tags/Tags';
 import About from './About';
@@ -31,23 +31,22 @@ const MainMenuPanel = props => {
   const dispatch = useDispatch();
   const project = useSelector(state => state.project.project);
   const settingsPageVisible = useSelector(state => state.mainMenu.mainMenuPageVisible);
-  const spots = useSelector(state => state.spot.spots);
   const switchPosition = useSelector(state => state.home.shortcutSwitchPosition);
   const spotsInMapExtent = useSelector(state => state.map.spotsInMapExtent);
   const user = useSelector(state => state.user);
-  let mainMenuHeader = <MainMenuPanelHeader
-    onPress={() => dispatch(setMenuSelectionPage({name: undefined}))}>
-    {settingsPageVisible}
-  </MainMenuPanelHeader>;
-
+  const mainMenuHeader = (
+    <MainMenuPanelHeader
+      onPress={() => dispatch(setMenuSelectionPage({name: undefined}))}>
+      {settingsPageVisible}
+    </MainMenuPanelHeader>
+  );
   let page;
 
-  const getSpotFromId = (spotId, notebookPage) => {
-    const spot = spots[spotId];
-    if (notebookPage === NOTEBOOK_PAGES.SAMPLE) props.openNotebookPanel(NOTEBOOK_PAGES.SAMPLE);
-    else props.openNotebookPanel(NOTEBOOK_PAGES.OVERVIEW);
-    // props.onSetSelectedSpot(spot);
+  const openSpotInNotebook = (spot, notebookPage, attributes) => {
     dispatch(setSelectedSpot(spot));
+    if (attributes) dispatch(setSelectedAttributes(attributes));
+    if (notebookPage) props.openNotebookPanel(notebookPage);
+    else props.openNotebookPanel(NOTEBOOK_PAGES.OVERVIEW);
   };
 
   const setVisibleMenu = (name) => {
@@ -118,9 +117,7 @@ const MainMenuPanel = props => {
     case MAIN_MENU_ITEMS.MAPS.IMAGE_BASEMAPS :
       page = (
         <View style={styles.mainMenuContainer}>
-          <ImageBaseMaps
-            getSpotData={(spotId) => getSpotFromId(spotId)}
-          />
+          <ImageBaseMaps/>
         </View>
       );
       break;
@@ -137,7 +134,7 @@ const MainMenuPanel = props => {
       page = (
         <View style={styles.mainMenuContainer}>
           <SpotsList
-            getSpotData={(spotId) => getSpotFromId(spotId)}
+            openSpotInNotebook={openSpotInNotebook}
             spotsInMapExtent={spotsInMapExtent}
           />
         </View>
@@ -147,7 +144,7 @@ const MainMenuPanel = props => {
       page = (
         <View style={styles.mainMenuContainer}>
           <ImageGallery
-            getSpotData={(spotId) => getSpotFromId(spotId)}
+            openSpotInNotebook={openSpotInNotebook}
             spotsInMapExtent={spotsInMapExtent}
           />
         </View>
@@ -157,7 +154,7 @@ const MainMenuPanel = props => {
       page = (
         <View style={styles.mainMenuContainer}>
           <SamplesList
-            getSpotData={(spotId, notebookPage) => getSpotFromId(spotId, notebookPage)}
+            openSpotInNotebook={openSpotInNotebook}
             spotsInMapExtent={spotsInMapExtent}
             openNotebookPanel={(notebookPage) => props.openNotebookPanel(notebookPage)}
           />
