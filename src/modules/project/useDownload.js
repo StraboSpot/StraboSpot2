@@ -153,7 +153,7 @@ const useDownload = () => {
       });
   };
 
-  const getDatasets = async (project, source) => {
+  const downloadDatasets = async (project, source) => {
     try {
       dispatch(addedStatusMessage({statusMessage: 'Downloading datasets from server...'}));
       const projectDatasetsFromServer = await useServerRequests.getDatasets(project.id, user.encoded_login);
@@ -184,7 +184,7 @@ const useDownload = () => {
     try {
       if (!isEmpty(project)) destroyOldProject();
       await downloadProject(selectedProject);
-      const downloadedDatasets = await getDatasets(selectedProject, source);
+      const downloadedDatasets = await downloadDatasets(selectedProject, source);
       if (Object.values(downloadedDatasets).length === 1) {
         await downloadSpots(Object.values(downloadedDatasets)[0], user.encoded_login);
       }
@@ -248,7 +248,7 @@ const useDownload = () => {
   return {
     downloadProject: downloadProject,
     downloadSpots: downloadSpots,
-    getDatasets: getDatasets,
+    downloadDatasets: downloadDatasets,
     initializeDownload: initializeDownload,
     initializeDownloadImages: initializeDownloadImages,
   };

@@ -18,6 +18,7 @@ import DialogBox from './DialogBox';
 import * as ProjectActions from './project.constants';
 import styles from './project.styles';
 import {doesBackupDirectoryExist} from './projects.slice';
+import useDownloadHook from './useDownload';
 import useProjectHook from './useProject';
 
 const ProjectList = (props) => {
@@ -32,6 +33,7 @@ const ProjectList = (props) => {
   const [isError, setIsError] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
 
+  const useDownload = useDownloadHook();
   const [useProject] = useProjectHook();
 
   useEffect(() => {
@@ -124,7 +126,7 @@ const ProjectList = (props) => {
     else if (action === ProjectActions.OVERWRITE) {
       setShowDialog(false);
       if (props.source === 'device') await useProject.selectProject(selectedProject, props.source);
-      else await useProject.initializeDownload(selectedProject, props.source);
+      else await useDownload.initializeDownload(selectedProject, props.source);
     }
     else {
       setShowDialog(false);
