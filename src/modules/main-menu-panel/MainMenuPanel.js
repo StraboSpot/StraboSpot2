@@ -42,9 +42,9 @@ const MainMenuPanel = props => {
 
   let page;
 
-  const getSpotFromId = (spotId, page) => {
+  const getSpotFromId = (spotId, notebookPage) => {
     const spot = spots[spotId];
-    if (page === NOTEBOOK_PAGES.SAMPLE) props.openNotebookPanel(NOTEBOOK_PAGES.SAMPLE);
+    if (notebookPage === NOTEBOOK_PAGES.SAMPLE) props.openNotebookPanel(NOTEBOOK_PAGES.SAMPLE);
     else props.openNotebookPanel(NOTEBOOK_PAGES.OVERVIEW);
     // props.onSetSelectedSpot(spot);
     dispatch(setSelectedSpot(spot));
@@ -157,8 +157,9 @@ const MainMenuPanel = props => {
       page = (
         <View style={styles.mainMenuContainer}>
           <SamplesList
-            getSpotData={(spotId, page) => getSpotFromId(spotId, page)}
+            getSpotData={(spotId, notebookPage) => getSpotFromId(spotId, notebookPage)}
             spotsInMapExtent={spotsInMapExtent}
+            openNotebookPanel={(notebookPage) => props.openNotebookPanel(notebookPage)}
           />
         </View>
       );

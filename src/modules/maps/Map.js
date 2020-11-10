@@ -173,8 +173,6 @@ const Map = React.forwardRef((props, ref) => {
     if (props.mapMode !== MAP_MODES.EDIT) {
       setDisplayedSpots((isEmpty(selectedSpot) ? [] : [{...selectedSpot}]));
     }
-    // set the Notebook Page to Overview when selectedSpot gets changed.
-    dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.OVERVIEW));
   }, [selectedSpot, activeDatasetsIds]);
 
   useEffect(() => {
