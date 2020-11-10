@@ -66,7 +66,7 @@ const LeftSideButtons = (props) => {
         }
         {!currentImageBasemap && (
           <IconButton
-            source={require('../../assets/icons/layersButton.png')}
+            source={require('../../assets/icons/LayersButton.png')}
             onPress={() => toggleDialog('baseMapMenuVisible')}
           />
         )}
