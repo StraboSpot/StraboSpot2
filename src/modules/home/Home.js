@@ -678,7 +678,7 @@ const Home = (props) => {
               {(statusMessages.includes('Download Complete!') || statusMessages.includes('Upload Complete!')
                 || statusMessages.includes('There are no active datasets.') || statusMessages.includes('Success!')
                 || statusMessages.includes('Project Backup Complete!') || statusMessages.includes('Project loaded!')
-                || statusMessages.includes('Upload Failed!'))
+                || statusMessages.includes('Upload Failed!') || statusMessages.includes('Download Failed!'))
               && (
                 <Button
                   title={'OK'}

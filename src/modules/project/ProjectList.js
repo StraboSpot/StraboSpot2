@@ -9,10 +9,7 @@ import * as themes from '../../shared/styles.constants';
 import Loading from '../../shared/ui/Loading';
 import {
   addedStatusMessage,
-  clearedStatusMessages,
-  setInfoMessagesModalVisible,
   setLoadingStatus,
-  setStatusMessagesModalVisible,
 } from '../home/home.slice';
 import {MAIN_MENU_ITEMS} from '../main-menu-panel/mainMenu.constants';
 import {setMenuSelectionPage} from '../main-menu-panel/mainMenuPanel.slice';
@@ -21,6 +18,7 @@ import DialogBox from './DialogBox';
 import * as ProjectActions from './project.constants';
 import styles from './project.styles';
 import {doesBackupDirectoryExist} from './projects.slice';
+import useDownloadHook from './useDownload';
 import useProjectHook from './useProject';
 
 const ProjectList = (props) => {
@@ -35,9 +33,8 @@ const ProjectList = (props) => {
   const [isError, setIsError] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
 
-  // const [serverRequests] = useServerRequests();
+  const useDownload = useDownloadHook();
   const [useProject] = useProjectHook();
-  // const [useSpots] = useSpotsHook();
 
   useEffect(() => {
     return function cleanUp() {
@@ -88,15 +85,14 @@ const ProjectList = (props) => {
       setShowDialog(true);
     }
     else {
-      useProject.selectProject(project, props.source).then(currentProject => {
-        if (!currentProject) {
-          Alert.alert('Error getting selected project');
-        }
-        else {
-          setLoading(false);
-          dispatch(addedStatusMessage({statusMessage: 'Project loaded!'}));
-        }
-      });
+      await useProject.selectProject(project, props.source);
+      if (!currentProject) {
+        Alert.alert('Error getting selected project');
+      }
+      else {
+        setLoading(false);
+        // dispatch(addedStatusMessage({statusMessage: 'Project loaded!'}));
+      }
     }
   };
 
@@ -115,7 +111,7 @@ const ProjectList = (props) => {
 
         const projectData = await useProject.selectProject(selectedProject, props.source);
         console.log('PROJECT DATA', projectData);
-        await dispatch(addedStatusMessage({statusMessage: 'Project loaded!'}));
+        // await dispatch(addedStatusMessage({statusMessage: 'Project loaded!'}));
         dispatch(setLoadingStatus({view: 'modal', bool: false}));
         dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
       }
@@ -129,38 +125,8 @@ const ProjectList = (props) => {
     }
     else if (action === ProjectActions.OVERWRITE) {
       setShowDialog(false);
-      dispatch(clearedStatusMessages());
-      dispatch(setStatusMessagesModalVisible(true));
-      dispatch(setLoadingStatus({view: 'modal', bool: true}));
-      if (props.source === 'device') {
-        await useProject.selectProject(selectedProject, props.source);
-        console.log('Loaded From Device');
-        dispatch(setLoadingStatus({view: 'modal', bool: false}));
-        dispatch(addedStatusMessage({statusMessage: 'Download Complete!'}));
-        dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
-      }
-      else {
-        return useProject.loadProjectRemote(selectedProject).then(projectData => {
-          console.log('ProjectData', projectData);
-          if (!projectData || typeof projectData === 'string') {
-            setShowDialog(false);
-            dispatch(setLoadingStatus({view: 'modal', bool: false}));
-            dispatch(setStatusMessagesModalVisible(false));
-            if (projectData === 'No Spots!') {
-              dispatch(clearedStatusMessages());
-              dispatch(addedStatusMessage({statusMessage: 'Project does not have any spots'}));
-              dispatch(setInfoMessagesModalVisible(true));
-              dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
-            }
-            else Alert.alert('Error', 'No Project Data!');
-          }
-          else {
-            dispatch(addedStatusMessage({statusMessage: 'Download Complete!'}));
-            dispatch(setLoadingStatus({view: 'modal', bool: false}));
-            dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
-          }
-        });
-      }
+      if (props.source === 'device') await useProject.selectProject(selectedProject, props.source);
+      else await useDownload.initializeDownload(selectedProject, props.source);
     }
     else {
       setShowDialog(false);

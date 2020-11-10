@@ -31,7 +31,7 @@ function Basemap(props) {
   }, [props.imageBasemap]);
 
   const checkImageExistance = async () => {
-    return useImages.doesImageExist(props.imageBasemap.id).then((doesExist) => setDoesImageExist(doesExist));
+    return useImages.doesImageExistOnDevice(props.imageBasemap.id).then((doesExist) => setDoesImageExist(doesExist));
   };
 
   // Add symbology to properties of map features (not to Spots themselves) since data-driven styling

@@ -28,7 +28,7 @@ const ImageGallery = (props) => {
 
   const handleImagePressed = (image) => {
     console.log('Pressed image:', image);
-    useImages.doesImageExist(image.id)
+    useImages.doesImageExistOnDevice(image.id)
       .then((doesExist) => {
         if (doesExist) {
           console.log('Opening image', image.id, '...');

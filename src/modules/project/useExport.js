@@ -3,6 +3,7 @@ import {Alert, Platform} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import RNFetchBlob from 'rn-fetch-blob';
 
+import useDeviceHook from '../../services/useDevice';
 import {isEmpty} from '../../shared/Helpers';
 import {addedStatusMessage, removedLastStatusMessage, setErrorMessagesModalVisible} from '../home/home.slice';
 import {doesBackupDirectoryExist} from './projects.slice';
@@ -18,20 +19,22 @@ const useExport = () => {
 
   const dispatch = useDispatch();
   const dbs = useSelector(state => state);
-  const dbsStateCopy = JSON.parse(JSON.stringify(dbs));
-  let spots = dbsStateCopy.spot.spots;
-  let configDb = {user: dbsStateCopy.user, other_maps: dbsStateCopy.map.customMaps};
-  let mapNamesDb = dbsStateCopy.map.offlineMaps;
-  let mapTilesDb = {};
-  let otherMapsDb = dbsStateCopy.map.customMaps;
 
+  const dbsStateCopy = JSON.parse(JSON.stringify(dbs));
+  // let spots = dbsStateCopy.spot.spots;
+  let configDb = {user: dbsStateCopy.user, other_maps: dbsStateCopy.map.customMaps};
+  // let mapNamesDb = dbsStateCopy.map.offlineMaps;
+  // let mapTilesDb = {};
+  // let otherMapsDb = dbsStateCopy.map.customMaps;
+
+  const useDevice = useDeviceHook();
   // dbs.project = {}
   let imageCount = 0;
   let imageBackupFailures = 0;
   let imageSuccess = 0;
 
   const backupProjectToDevice = async (exportedFileName) => {
-    await doesDeviceDirectoryExist(devicePath + appDirectoryForDistributedBackups);
+    await useDevice.doesDeviceDirectoryExist(devicePath + appDirectoryForDistributedBackups);
     // console.log('Next')
     // const dataDir = await checkDistributionDataDir();
     // console.log('Next', dataDir);
@@ -40,13 +43,13 @@ const useExport = () => {
     // console.log('DataJson', dataJson);
     await exportData(devicePath + appDirectoryForDistributedBackups + '/' + exportedFileName, dataForExport,
       '/data.json');
-    // const otherMaps = await gatherOtherMapsForDistribution(exportedFileName);
+    const otherMaps = await gatherOtherMapsForDistribution(exportedFileName);
     dispatch(removedLastStatusMessage());
     // console.log('Other Maps Resolve Message:', otherMaps);
     const maps = await gatherMapsForDistribution(dataForExport, exportedFileName);
     console.log('Maps resolve message', maps.message);
     dispatch(addedStatusMessage({statusMessage: maps.message}));
-    await doesDeviceDirectoryExist(devicePath + appDirectoryForDistributedBackups + '/' + exportedFileName + '/Images');
+    await useDevice.doesDeviceDirectoryExist(devicePath + appDirectoryForDistributedBackups + '/' + exportedFileName + '/Images');
     dispatch(addedStatusMessage({statusMessage: 'Exporting Images...'}));
     const imageResolve = await gatherImagesForDistribution(dataForExport, exportedFileName);
     console.log('Images Resolve Message:', imageResolve.message);
@@ -90,33 +93,38 @@ const useExport = () => {
   //   else return Promise.reject('Device Not Found!');
   // };
 
-  const doesDeviceDirectoryExist = async (directory) => {
-    return await RNFetchBlob.fs.isDir(directory).then(checkDirSuccess => {
-      if (checkDirSuccess) {
-        console.log('Directory', directory, 'exists.', checkDirSuccess);
-        return Promise.resolve(directory);
-      }
-      else {
-        // If directory does not exist then one is created
-        return RNFetchBlob.fs.mkdir(directory)
-          .then(checkDirectorySuccess => {
-            console.log('Directory', directory, 'created', checkDirectorySuccess);
-            dispatch(doesBackupDirectoryExist(checkDirectorySuccess));
-            return Promise.resolve(directory);
-          })
-          .catch(createDirError => {
-            console.log('Unable to create directory', directory, createDirError);
-            return Promise.reject(createDirError);
-          });
-      }
-    });
-  };
+  // const doesDeviceDirectoryExist = async (directory) => {
+  //   try {
+  //     return await RNFetchBlob.fs.isDir(directory).then(checkDirSuccess => {
+  //       if (checkDirSuccess) {
+  //         console.log('Directory', directory, 'exists.', checkDirSuccess);
+  //         // return Promise.resolve(directory);
+  //       }
+  //       else {
+  //         // If directory does not exist then one is created
+  //         return RNFetchBlob.fs.mkdir(directory)
+  //           .then(checkDirectorySuccess => {
+  //             console.log('Directory', directory, 'created', checkDirectorySuccess);
+  //             dispatch(doesBackupDirectoryExist(checkDirectorySuccess));
+  //             // return Promise.resolve(directory);
+  //           })
+  //           .catch(createDirError => {
+  //             console.log('Unable to create directory', directory, createDirError);
+  //             // return Promise.reject(createDirError);
+  //           });
+  //       }
+  //     });
+  //   }
+  //   catch (err) {
+  //     console.error('Error Checking Id Directory Exists.')
+  //   }
+  // };
 
   const exportData = (directory, data, filename) => {
     // let dir = directory.split('/');
     // dir.pop();
     // const rootDir = dir.join('/');
-    return doesDeviceDirectoryExist(directory).then((fullPath) => {
+    return useDevice.doesDeviceDirectoryExist(directory).then((fullPath) => {
       console.log('ROOT', fullPath);
       return RNFetchBlob.fs.writeFile(directory + filename, JSON.stringify(data), 'utf8');
     });
@@ -163,11 +171,11 @@ const useExport = () => {
 
   const gatherDataForBackup = () => {
     let json = {
-      mapNamesDb: mapNamesDb,
-      mapTilesDb: mapTilesDb,
-      otherMapsDb: otherMapsDb,
-      projectDb: dbsStateCopy.project,
-      spotsDb: spots,
+      mapNamesDb: dbs.map.offlineMaps,
+      mapTilesDb: {},
+      otherMapsDb: dbs.map.customMaps,
+      projectDb: dbs.project,
+      spotsDb: dbs.spot.spots,
     };
     console.log('JsonCopy', json);
     return Promise.resolve(json);
@@ -204,7 +212,7 @@ const useExport = () => {
         let promises = [];
         if (!isEmpty(maps)) {
           console.log('Maps exist.', maps);
-          doesDeviceDirectoryExist(devicePath + appDirectoryForDistributedBackups + '/' + fileName + '/maps')
+          useDevice.doesDeviceDirectoryExist(devicePath + appDirectoryForDistributedBackups + '/' + fileName + '/maps')
             .then(() => {
               Object.values(maps).map(map => {
                 const promise = moveDistributedMap(map.mapId, fileName).then(moveFileSuccess => {
@@ -233,6 +241,7 @@ const useExport = () => {
       exportData(devicePath + appDirectoryForDistributedBackups + '/' + exportedFileName, configDb.other_maps,
         '/other_maps.json').then(() => {
         console.log('Other Maps Exported');
+        return 'Other Maps Exported'
       });
     }
     return Promise.resolve('Other Maps exported to device');
@@ -297,12 +306,10 @@ const useExport = () => {
     // return Promise.resolve('OK')
   };
 
-  const exportHelpers = {
+  return {
     backupProjectToDevice: backupProjectToDevice,
-    doesDeviceDirectoryExist: doesDeviceDirectoryExist,
+    // doesDeviceDirectoryExist: doesDeviceDirectoryExist,
   };
-
-  return [exportHelpers];
 };
 
 export default useExport;
