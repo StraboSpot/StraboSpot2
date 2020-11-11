@@ -38,20 +38,13 @@ const ImagesViewPage = (props) => {
         </View>
         <Button
           type={'clear'}
-          onPress={() => updateImageBasemap(image)}
-          title={'View as basemap'}
+          onPress={() => dispatch(setCurrentImageBasemap(image))}
+          title={'View as Image Basemap'}
           disabled={!image.annotated}
           disabledTitleStyle={{color: 'white'}}
           titleStyle={commonStyles.standardButtonText}/>
       </Card>
     );
-  };
-
-  const updateImageBasemap = (image) => {
-    if (image.image_type === 'sketch') {
-      Alert.alert('Function not available yet', 'Viewing a sketch as an image basemap will be done soon.');
-    }
-    else dispatch(setCurrentImageBasemap(image));
   };
 
   return (
