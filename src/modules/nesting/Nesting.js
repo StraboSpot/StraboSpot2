@@ -5,7 +5,10 @@ import {Avatar, Icon, ListItem} from 'react-native-elements';
 import {useSelector, useDispatch} from 'react-redux';
 
 import {isEmpty} from '../../shared/Helpers';
+import * as SharedUI from '../../shared/ui';
 import SectionDivider from '../../shared/ui/SectionDivider';
+import imageStyles from '../images/images.styles';
+import useImagesHook from '../images/useImages';
 import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
@@ -30,8 +33,7 @@ const Nesting = (props) => {
   const [childrenGenerations, setChildrenGenerations] = useState();
 
   useEffect(() => {
-    console.log('UE NESTING [spots]');
-
+    console.log('UE Nesting [spots]');
     if (notebookPageVisible === NOTEBOOK_PAGES.NESTING) updateNest();
   }, [spots, selectedSpot]);
 
@@ -39,9 +41,9 @@ const Nesting = (props) => {
     dispatch(setSelectedSpot(spot));
   };
 
-  const renderDataIcons = (item) => {
-    const keysFound = useSpots.getSpotDataKeys(item);
-    if (!isEmpty(useTags.getTagsAtSpot(item.properties.id))) keysFound.push('tags');
+  const renderDataIcons = (spot) => {
+    const keysFound = useSpots.getSpotDataKeys(spot);
+    if (!isEmpty(useTags.getTagsAtSpot(spot.properties.id))) keysFound.push('tags');
 
     return (
       <React.Fragment>
@@ -59,43 +61,91 @@ const Nesting = (props) => {
     );
   };
 
-  const renderName = (item) => {
-    if (item && item.properties) {
-      const children = useNesting.getChildrenGenerationsSpots(item, 10);
-      const numSubspots = children.flat().length;
-      return (
-        <ListItem
-          key={item.properties.id}
-          onPress={() => goToSpotNesting(item)}
-          containerStyle={{padding: 5, paddingLeft: 10}}
-        >
-          <Avatar source={useSpots.getSpotGemometryIconSource(item)} size={20}/>
-          <ListItem.Content>
-            <ListItem.Title>{item.properties.name}</ListItem.Title>
-            <ListItem.Subtitle>[{numSubspots} subspot{numSubspots !== 1 && 's'}]</ListItem.Subtitle>
-          </ListItem.Content>
-          {renderDataIcons(item)}
-          <ListItem.Chevron/>
-        </ListItem>
-      );
+  const renderItem = (spot) => {
+    if (spot && spot.properties) {
+      if (spot.properties.image_basemap) {
+        return (
+          <View style={{flex: 1, flexDirection: 'row'}}>
+            <View style={{alignSelf: 'center'}}>
+              {renderImageBasemapThumbnail(spot.properties.image_basemap)}
+            </View>
+            <View style={{flex: 1, alignSelf: 'center'}}>
+              {renderName(spot)}
+            </View>
+          </View>
+        );
+      }
+      else return renderName(spot);
     }
+  };
+
+  const renderName = (spot) => {
+    const children = useNesting.getChildrenGenerationsSpots(spot, 10);
+    const numSubspots = children.flat().length;
+    return (
+      <ListItem
+        key={spot.properties.id}
+        onPress={() => goToSpotNesting(spot)}
+        containerStyle={{padding: 5, paddingLeft: 10}}
+      >
+        <Avatar source={useSpots.getSpotGemometryIconSource(spot)} size={20}/>
+        <ListItem.Content>
+          <ListItem.Title>{spot.properties.name}</ListItem.Title>
+          <ListItem.Subtitle>[{numSubspots} subspot{numSubspots !== 1 && 's'}]</ListItem.Subtitle>
+        </ListItem.Content>
+        {renderDataIcons(spot)}
+        <ListItem.Chevron/>
+      </ListItem>
+    );
+  };
+
+  const renderImageBasemapThumbnail = (imageId) => {
+    return (
+      <View style={imageStyles.thumbnailContainer}>
+        <SharedUI.ImageButton
+          source={{uri: useImages.getLocalImageURI(imageId)}}
+          style={imageStyles.thumbnail}
+        />
+      </View>
+    );
   };
 
   const renderGeneration = (type, generation, i, length) => {
     const levelNum = type === 'Parents' ? length - i : i + 1;
     const generationText = levelNum + (levelNum === 1 ? ' Level' : ' Levels') + (type === 'Parents' ? ' Up' : ' Down');
+    const groupedGeneration = generation.reduce(
+      (r, v, i, a, k = v.properties.image_basemap) => ((r[k] || (r[k] = [])).push(v), r), {});
+    console.log('groupedGeneration', groupedGeneration);
     return (
       <View>
         {type === 'Children' && (
           <Icon type={'material-icons'} name={'south'} containerStyle={{paddingLeft: 8, alignItems: 'flex-start'}}/>
         )}
         <Text style={{paddingLeft: 10}}>{generationText}</Text>
-        <FlatList
-          listKey={type + i}
-          keyExtractor={(item) => item.toString()}
-          data={generation}
-          renderItem={({item}) => renderName(item)}
-        />
+        {Object.entries(groupedGeneration).map(([key, value], b) => {
+          if (key !== 'undefined') {
+            return (
+              <View style={{
+                flex: 1,
+                flexDirection: 'row',
+                borderWidth: 1,
+                borderColor: 'black',
+                marginLeft: 10,
+                marginRight: 10,
+                marginTop: 2,
+                marginBottom: 2,
+              }}>
+                <View style={{alignSelf: 'center'}}>
+                  {renderImageBasemapThumbnail(key)}
+                </View>
+                <View style={{flex: 1}}>
+                  {renderGroup(type, i, value, b)}
+                </View>
+              </View>
+            );
+          }
+          else return renderGroup(type, i, value, b);
+        })}
         {type === 'Parents' && (
           <Icon type={'material-icons'} name={'north'} containerStyle={{paddingLeft: 8, alignItems: 'flex-start'}}/>
         )}
@@ -119,10 +169,21 @@ const Nesting = (props) => {
     }
   };
 
+  const renderGroup = (type, i, group, b) => {
+    return (
+      <FlatList
+        listKey={type + i + b}
+        keyExtractor={(item) => item.toString()}
+        data={group}
+        renderItem={({item}) => renderName(item)}
+      />
+    );
+  };
+
   const renderSelf = self => {
     return (
-      <View style={{borderWidth: 1, borderColor: 'black'}}>
-        {renderName(self)}
+      <View style={{borderTopWidth: 1, borderBottomWidth: 1, borderColor: 'black'}}>
+        {renderItem(self)}
       </View>
     );
   };
