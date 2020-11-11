@@ -143,7 +143,9 @@ const NotebookPanel = props => {
         <ListItem key={item.properties.id} onPress={() => {
           dispatch(setSelectedSpot(item));
         }}>
-          <Avatar source={useSpots.getSpotGemometryIconSource(item)} size={20}/>
+          <Avatar source={useSpots.getSpotGemometryIconSource(item)}
+                  placeholderStyle={{backgroundColor: 'transparent'}}
+                  size={20}/>
           <ListItem.Content>
             <ListItem.Title>{item.properties.name}</ListItem.Title>
           </ListItem.Content>

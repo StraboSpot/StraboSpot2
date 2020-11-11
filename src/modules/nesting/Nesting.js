@@ -51,9 +51,8 @@ const Nesting = (props) => {
           return (
             <Avatar
               source={useSpots.getSpotDataIconSource(key)}
+              placeholderStyle={{ backgroundColor: 'transparent' }}
               size={20}
-              key={key}
-              title={key}  // used as placeholder while loading image
             />
           );
         })}
@@ -88,7 +87,9 @@ const Nesting = (props) => {
         onPress={() => goToSpotNesting(spot)}
         containerStyle={{padding: 5, paddingLeft: 10}}
       >
-        <Avatar source={useSpots.getSpotGemometryIconSource(spot)} size={20}/>
+        <Avatar source={useSpots.getSpotGemometryIconSource(spot)}
+                placeholderStyle={{backgroundColor: 'transparent'}}
+                size={20}/>
         <ListItem.Content>
           <ListItem.Title>{spot.properties.name}</ListItem.Title>
           <ListItem.Subtitle>[{numSubspots} subspot{numSubspots !== 1 && 's'}]</ListItem.Subtitle>

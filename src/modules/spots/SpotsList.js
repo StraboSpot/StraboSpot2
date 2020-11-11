@@ -35,7 +35,9 @@ const SpotsList = (props) => {
         key={spot.properties.id}
         onPress={() => props.openSpotInNotebook(spot)}
       >
-        <Avatar source={useSpots.getSpotGemometryIconSource(spot)} size={20}/>
+        <Avatar source={useSpots.getSpotGemometryIconSource(spot)}
+                placeholderStyle={{backgroundColor: 'transparent'}}
+                size={20}/>
         <ListItem.Content>
           <ListItem.Title>{spot.properties.name}</ListItem.Title>
           {!isEmpty(tagsString) && <ListItem.Subtitle>{tagsString}</ListItem.Subtitle>}
@@ -54,9 +56,8 @@ const SpotsList = (props) => {
         {keysFound.map(key => {
           return <Avatar
             source={useSpots.getSpotDataIconSource(key)}
+            placeholderStyle={{ backgroundColor: 'transparent' }}
             size={20}
-            key={key}
-            title={key}  // used as placeholder while loading image
           />;
         })}
       </React.Fragment>

@@ -20,7 +20,9 @@ const TagDetail = (props) => {
     if (!isEmpty(spot)) {
       return (
         <ListItem onPress={() => props.openSpot(spot)} bottomDivider>
-          <Avatar source={useSpots.getSpotGemometryIconSource(spot)} size={20}/>
+          <Avatar source={useSpots.getSpotGemometryIconSource(spot)}
+                  placeholderStyle={{backgroundColor: 'transparent'}}
+                  size={20}/>
           <ListItem.Content>
             <ListItem.Title>{spot.properties.name}</ListItem.Title>
           </ListItem.Content>
