@@ -72,7 +72,7 @@ const useSpots = (props) => {
 
     if (currentImageBasemap && newSpot.geometry && newSpot.geometry.type === 'Point') { //newSpot geometry is unavailable when spot is copied.
       const rootSpot = getRootSpot(currentImageBasemap.id);
-      if (rootSpot) {
+      if (rootSpot && rootSpot.geometry && rootSpot.geometry.type === 'Point') {
         newSpot.properties.lng = rootSpot.geometry.coordinates[0];
         newSpot.properties.lat = rootSpot.geometry.coordinates[1];
       }
