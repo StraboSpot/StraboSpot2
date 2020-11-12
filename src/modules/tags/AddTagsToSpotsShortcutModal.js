@@ -1,5 +1,5 @@
 import React from 'react';
-import {Platform, View} from 'react-native';
+import {Platform} from 'react-native';
 
 import {useSelector} from 'react-redux';
 
@@ -19,30 +19,28 @@ const AddTagsToSpotsShortcutModal = (props) => {
   if (modalVisible === MODALS.SHORTCUT_MODALS.ADD_TAGS_TO_SPOTS) {
     if (Platform.OS === 'android') {
       return (
-        <View style={uiStyles.modalPositionShortcutView}>
-          <Modal
-            style={{width: 285}}
-            close={props.close}
-            cancel={props.cancel}
-            buttonTitleLeft={'Cancel'}
-            textStyle={{fontWeight: 'bold'}}
-            onPress={(view) => props.onPress(view, NOTEBOOK_PAGES.TAG, MODALS.NOTEBOOK_MODALS.TAGS)}
-          >
-            {project.tags && !isEmpty(project.tags) && <TagsModal/>}
-          </Modal>
-        </View>
+        <Modal
+          style={{...uiStyles.modalPositionShortcutView, width: 285}}
+          close={props.close}
+          cancel={props.cancel}
+          buttonTitleLeft={'Cancel'}
+          textStyle={{fontWeight: 'bold'}}
+          onPress={(view) => props.onPress(view, NOTEBOOK_PAGES.TAG, MODALS.NOTEBOOK_MODALS.TAGS)}
+        >
+          {project.tags && !isEmpty(project.tags) && <TagsModal/>}
+        </Modal>
       );
     }
     else {
       return (
-        <DragAnimation style={uiStyles.modalPositionShortcutView}>
+        <DragAnimation>
           <Modal
-            style={{width: 285}}
+            style={{...uiStyles.modalPositionShortcutView, width: 285}}
             close={props.close}
             textStyle={{fontWeight: 'bold'}}
             onPress={(view) => props.onPress(view, NOTEBOOK_PAGES.TAG, MODALS.NOTEBOOK_MODALS.TAGS)}
           >
-             <TagsModal/>
+            <TagsModal/>
           </Modal>
         </DragAnimation>
       );

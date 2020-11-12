@@ -2,7 +2,6 @@ import {Dimensions, StyleSheet} from 'react-native';
 
 import * as themes from '../../styles.constants';
 
-// eslint-disable-next-line no-unused-vars
 const {width, height} = Dimensions.get('window');
 
 const modalStyle = StyleSheet.create({
@@ -12,17 +11,12 @@ const modalStyle = StyleSheet.create({
   },
   modalContainer: {
     width: 250,
+    maxWidth: width,
+    maxHeight: height - 40,
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
-    borderBottomRightRadius: 20,
-    borderBottomLeftRadius: 20,
-    borderTopRightRadius: 20,
-    borderTopLeftRadius: 20,
+    borderRadius: 20,
+    overflow: 'hidden',
     zIndex: 1,
-  },
-  modalBottom: {
-    borderBottomRightRadius: 20,
-    borderBottomLeftRadius: 20,
-    paddingBottom: 10,
   },
   modalTitle: {
     fontWeight: 'bold',
@@ -31,8 +25,6 @@ const modalStyle = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
-    borderTopRightRadius: 20,
-    borderTopLeftRadius: 20,
   },
   textStyle: {
     fontSize: themes.MODAL_TEXT_SIZE,
@@ -40,8 +32,6 @@ const modalStyle = StyleSheet.create({
   },
   textContainer: {
     alignItems: 'center',
-    paddingBottom: 10,
-    paddingTop: 10,
   },
 });
 

@@ -21,16 +21,6 @@ const Preview = (props) => {
   const [buttonsDisplay, setButtonsDisplay] = useState(false);
   const [disable, setDisable] = useState(false);
   const dispatch = useDispatch();
-  let noteModal = (
-    <View style={styles.modalPosition}>
-      <ImagePropertiesModal
-        close={() => closeModal()} // Saves and closes modal
-        cancel={() => closeModal()} // Closes without saving
-      >
-        Image Info
-      </ImagePropertiesModal>
-    </View>
-  );
 
   const closeModal = () => {
     setImageNoteModal(false);
@@ -61,7 +51,12 @@ const Preview = (props) => {
           PlaceholderContent={<ActivityIndicator/>}
         />
       </View>
-      {imageNoteModal && noteModal}
+      {imageNoteModal && (
+        <ImagePropertiesModal
+          close={() => closeModal()} // Saves and closes modal
+          cancel={() => closeModal()} // Closes without saving
+        />
+      )}
       {buttonsDisplay && <View style={{}}>
         <View style={{position: 'absolute', right: 10, bottom: height * .90}}>
           <IconButton
@@ -89,4 +84,5 @@ const Preview = (props) => {
     </TouchableOpacity>
   );
 };
+
 export default Preview;

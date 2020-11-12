@@ -54,16 +54,6 @@ const styles = StyleSheet.create({
     top: 50,
     resizeMode: 'contain',
   },
-  modalPosition: {
-    position: 'absolute',
-    left: 70,
-    bottom: 10,
-  },
-  modalPositionShortcutView: {
-    position: 'absolute',
-    left: 70,
-    bottom: 20,
-  },
 });
 
 export default styles;

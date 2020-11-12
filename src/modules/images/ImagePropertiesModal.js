@@ -1,10 +1,11 @@
 import React, {useState, useRef} from 'react';
-import {Text, Switch, ScrollView, View} from 'react-native';
+import {Text, Switch, View, FlatList} from 'react-native';
 
 import {Formik} from 'formik';
 import {useDispatch, useSelector} from 'react-redux';
 
 import Modal from '../../shared/ui/modal/Modal';
+import uiStyles from '../../shared/ui/ui.styles';
 import {Form, useFormHook} from '../form';
 import {editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
@@ -35,18 +36,14 @@ const ImagePropertiesModal = (props) => {
     const formName = ['general', 'images'];
     console.log('Rendering form:', formName.join('.'), 'with selected image:', selectedImage);
     return (
-      <View style={{flex: 0, maxHeight: 700}}>
-        <ScrollView>
-          <Formik
-            innerRef={form}
-            onSubmit={onSubmitForm}
-            validate={(values) => useForm.validateForm({formName: formName, values: values})}
-            component={(formProps) => Form({formName: formName, ...formProps})}
-            initialValues={selectedImage}
-            validateOnChange={false}
-          />
-        </ScrollView>
-      </View>
+      <Formik
+        innerRef={form}
+        onSubmit={onSubmitForm}
+        validate={(values) => useForm.validateForm({formName: formName, values: values})}
+        component={(formProps) => Form({formName: formName, ...formProps})}
+        initialValues={selectedImage}
+        validateOnChange={false}
+      />
     );
   };
 
@@ -73,17 +70,22 @@ const ImagePropertiesModal = (props) => {
       buttonTitleLeft={'Cancel'}
       cancel={props.cancel}
       close={() => saveFormAndGo()}
-      style={styles.modalContainer}
+      style={{...uiStyles.modalPosition, left: undefined, right: 100}}
     >
       <View>
-        {renderFormFields()}
-        <View style={styles.switch}>
-          <Text style={{marginLeft: 10, fontSize: 16}}>Use as Image-basemap</Text>
-          <Switch
-            onValueChange={(annotated) => setAnnotated(annotated)}
-            value={annotated}
-          />
-        </View>
+        <FlatList
+          contentContainerStyle={{paddingBottom: 40}}
+          ListHeaderComponent={renderFormFields()}
+          ListFooterComponent={
+            <View style={styles.switch}>
+              <Text style={{marginLeft: 10, fontSize: 16}}>Use as Image-basemap</Text>
+              <Switch
+                onValueChange={(annotated) => setAnnotated(annotated)}
+                value={annotated}
+              />
+            </View>
+          }
+        />
       </View>
     </Modal>
   );

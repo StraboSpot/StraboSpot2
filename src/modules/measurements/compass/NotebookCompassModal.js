@@ -1,34 +1,34 @@
 import React from 'react';
-import {Platform, View} from 'react-native';
+import {Platform} from 'react-native';
 
 import DragAnimation from '../../../shared/ui/DragAmination';
 import Modal from '../../../shared/ui/modal/Modal';
+import uiStyles from '../../../shared/ui/ui.styles';
 import Compass from './Compass';
-import compassStyles from './compass.styles';
 
 const NotebookCompassModal = (props) => {
   if (Platform.OS === 'android') {
     return (
-      <View style={compassStyles.modalPosition}>
-        <Modal
-          close={props.close}
-          buttonTitleLeft={'Undo'}
-          textStyle={{fontWeight: 'bold'}}
-          onPress={props.onPress}
-        >
-          <Compass/>
-        </Modal>
-      </View>
+      <Modal
+        close={props.close}
+        buttonTitleLeft={'Undo'}
+        textStyle={{fontWeight: 'bold'}}
+        onPress={props.onPress}
+        style={uiStyles.modalPosition}
+      >
+        <Compass/>
+      </Modal>
     );
   }
   else {
     return (
-      <DragAnimation style={compassStyles.modalPosition}>
+      <DragAnimation>
         <Modal
           close={props.close}
           buttonTitleLeft={'Undo'}
           textStyle={{fontWeight: 'bold'}}
           onPress={props.onPress}
+          style={uiStyles.modalPosition}
         >
           <Compass/>
         </Modal>

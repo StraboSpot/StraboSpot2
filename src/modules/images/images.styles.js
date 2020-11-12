@@ -93,18 +93,6 @@ const imageStyles = StyleSheet.create({
     width: '98%',
     resizeMode: 'contain',
   },
-  modalPosition: {
-    position: 'absolute',
-    right: 100,
-    bottom: 20,
-  },
-  modalContainer: {
-    flex: 1,
-    // maxHeight: 700,
-    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
-    borderBottomRightRadius: 20,
-    borderBottomLeftRadius: 20,
-  },
   inputContainer: {
     borderBottomWidth: 0,
     borderRadius: 10,

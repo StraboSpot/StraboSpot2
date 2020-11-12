@@ -48,10 +48,9 @@ const Modal = (props) => {
       || modalVisible === MODALS.SHORTCUT_MODALS.TAGS || modalVisible === MODALS.SHORTCUT_MODALS.SAMPLE
       || modalVisible === MODALS.SHORTCUT_MODALS.NOTES) {
       return (
-        <View style={modalStyle.modalBottom}>
+        <View>
           {!isEmpty(selectedSpot) && (
-            <ListItem containerStyle={modalStyle.modalBottom} onPress={props.onPress}>
-
+            <ListItem onPress={props.onPress}>
               <ListItem.Content style={{alignItems: 'center', flexDirection: 'row'}}>
                 <View style={{paddingRight: 10}}>
                   <Image
@@ -92,12 +91,8 @@ const Modal = (props) => {
   return (
     <View style={[modalStyle.modalContainer, props.style]}>
       {renderModalHeader()}
-      <View>
-        {props.children}
-      </View>
-      <View style={modalStyle.modalBottom}>
-        {renderModalBottom()}
-      </View>
+      {props.children}
+      {renderModalBottom()}
     </View>
   );
 };

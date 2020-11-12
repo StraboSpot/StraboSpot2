@@ -10,21 +10,10 @@ import styles from './images.styles';
 import useImagesHook from './useImages';
 
 const ImageInfo = (props) => {
-  const [imageNoteModal, setImageNoteModal] = useState(false);
+  const [isImagePropertiesModalVisible, setIsImagePropertiesModalVisible] = useState(false);
   const [imageProps] = useState(props.route.params.imageId);
   const [useImages] = useImagesHook();
   const navigation = useNavigation();
-
-  let noteModal = (
-    <View style={styles.modalPosition}>
-      <ImagePropertiesModal
-        close={() => closeModal()} // Saves and closes modal
-        cancel={() => closeModal()} // Closes without saving
-      >
-        Image Info
-      </ImagePropertiesModal>
-    </View>
-  );
 
   const clickHandler = (name) => {
     console.log(name);
@@ -36,7 +25,7 @@ const ImageInfo = (props) => {
   };
 
   const closeModal = () => {
-    setImageNoteModal(false);
+    setIsImagePropertiesModalVisible(false);
   };
 
   return (
@@ -46,7 +35,12 @@ const ImageInfo = (props) => {
         style={{width: '100%', height: '100%'}}
         PlaceholderContent={<ActivityIndicator/>}
       />
-      {imageNoteModal ? noteModal : null}
+      {isImagePropertiesModalVisible && (
+        <ImagePropertiesModal
+          close={() => closeModal()} // Saves and closes modal
+          cancel={() => closeModal()} // Closes without saving
+        />
+      )}
       <View style={styles.closeButtonContainer}>
         <IconButton
           source={require('../../assets/icons/Close.png')}
@@ -58,7 +52,7 @@ const ImageInfo = (props) => {
         <IconButton
           style={styles.imageInfoButtons}
           source={require('../../assets/icons/NoteButton.png')}
-          onPress={() => setImageNoteModal(true)}
+          onPress={() => setIsImagePropertiesModalVisible(true)}
         />
         <IconButton
           style={styles.imageInfoButtons}
