@@ -318,7 +318,7 @@ const Home = (props) => {
         saveEdits();
         break;
       case 'toggleUserLocation':
-        if (!value) goToCurrentLocation().catch(console.error);
+        if (value) goToCurrentLocation().catch(console.error);
         mapViewComponent.current.toggleUserLocation(value);
         break;
       case 'closeImageBasemap':
