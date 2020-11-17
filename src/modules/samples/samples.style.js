@@ -76,16 +76,6 @@ const samplesStyle = StyleSheet.create({
     paddingLeft: 10,
     paddingRight: 10,
   },
-  modalPosition: {
-    position: 'absolute',
-    left: 70,
-    bottom: 10,
-  },
-  modalPositionShortcutView: {
-    position: 'absolute',
-    left: 70,
-    bottom: 70,
-  },
   sampleContentContainer: {
     flex: 1,
     flexDirection: 'column',

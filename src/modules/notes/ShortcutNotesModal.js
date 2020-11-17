@@ -1,32 +1,32 @@
 import React from 'react';
-import {View, Platform} from 'react-native';
+import {Platform} from 'react-native';
 
 import DragAnimation from '../../shared/ui/DragAmination';
 import Modal from '../../shared/ui/modal/Modal';
-import compassStyles from '../measurements/compass/compass.styles';
+import uiStyles from '../../shared/ui/ui.styles';
 import Notes from './Notes';
 
 const ShortcutNotesModal = (props) => {
   if (Platform.OS === 'android') {
     return (
-      <View style={compassStyles.modalPositionShortcutView}>
-        <Modal
-          close={props.close}
-          onPress={props.onPress}
-          textStyle={{fontWeight: 'bold'}}
-        >
-          <Notes/>
-        </Modal>
-      </View>
+      <Modal
+        close={props.close}
+        onPress={props.onPress}
+        textStyle={{fontWeight: 'bold'}}
+        style={uiStyles.modalPositionShortcutView}
+      >
+        <Notes/>
+      </Modal>
     );
   }
   else {
     return (
-      <DragAnimation style={compassStyles.modalPositionShortcutView}>
+      <DragAnimation>
         <Modal
           close={props.close}
           onPress={props.onPress}
           textStyle={{fontWeight: 'bold'}}
+          style={uiStyles.modalPositionShortcutView}
         >
           <Notes/>
         </Modal>

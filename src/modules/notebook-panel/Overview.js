@@ -9,7 +9,7 @@ import {isEmpty} from '../../shared/Helpers';
 import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {Form, useFormHook} from '../form';
-import NotebookImages from '../images/ImageNotebook';
+import ImagesOverview from '../images/ImagesOverview';
 import MeasurementsOverview from '../measurements/MeasurementsOverview';
 import NotesOverview from '../notes/NotesOverview';
 import SamplesNotebook from '../samples/SamplesNotebook';
@@ -28,7 +28,7 @@ const Overview = props => {
   const SECTIONS = [
     {id: 4, title: 'Notes', content: <NotesOverview/>},
     {id: 1, title: 'Measurements', content: <MeasurementsOverview/>},
-    {id: 2, title: 'Photos and Sketches', content: <NotebookImages/>},
+    {id: 2, title: 'Photos and Sketches', content: <ImagesOverview/>},
     {id: 3, title: 'Tags', content: <TagsAtSpotList openMainMenu={props.openMainMenu}/>},
     {id: 5, title: 'Samples', content: <SamplesNotebook/>},
   ];

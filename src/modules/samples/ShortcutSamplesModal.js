@@ -1,30 +1,30 @@
 import React from 'react';
-import {Platform, View} from 'react-native';
+import {Platform} from 'react-native';
 
 import DragAnimation from '../../shared/ui/DragAmination';
 import Modal from '../../shared/ui/modal/Modal';
+import uiStyles from '../../shared/ui/ui.styles';
 import AddSample from './AddSample';
-import styles from './samples.style';
 
 const shortcutSamplesModal = (props) => {
   if (Platform.OS === 'android') {
     return (
-      <View style={styles.modalPositionShortcutView}>
-        <Modal
-          close={props.close}
-          onPress={props.onPress}
-        >
-          <AddSample/>
-        </Modal>
-      </View>
+      <Modal
+        close={props.close}
+        onPress={props.onPress}
+        style={uiStyles.modalPositionShortcutView}
+      >
+        <AddSample/>
+      </Modal>
     );
   }
   else {
     return (
-      <DragAnimation style={styles.modalPositionShortcutView}>
+      <DragAnimation>
         <Modal
           close={props.close}
           onPress={props.onPress}
+          style={uiStyles.modalPositionShortcutView}
         >
           <AddSample/>
         </Modal>
