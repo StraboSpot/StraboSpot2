@@ -22,17 +22,12 @@ const LeftSideButtons = (props) => {
     baseMapMenuVisible: false,
     notebookPanelMenuVisible: false,
   });
-  const [buttons, setButtons] = useState({
-    userLocationButtonOn: false,
-  });
+  const [buttons, setButtons] = useState({userLocationButtonOn: false});
 
   // Toggle given dialog between true (visible) and false (hidden)
   const toggleDialog = dialog => {
     console.log('Toggle', dialog);
-    setDialogs({
-      ...dialogs,
-      [dialog]: !dialogs[dialog],
-    });
+    setDialogs(d => ({...d, [dialog]: !d[dialog]}));
     console.log(dialog, 'is set to', dialogs[dialog]);
   };
 
@@ -104,7 +99,7 @@ const LeftSideButtons = (props) => {
               ? require('../../assets/icons/MyLocationButton_pressed.png')
               : require('../../assets/icons/MyLocationButton.png')}
             onPress={() => {
-              setButtons({...buttons, userLocationButtonOn: !buttons.userLocationButtonOn});
+              setButtons(b => ({...b, userLocationButtonOn: !b.userLocationButtonOn}));
               props.clickHandler('toggleUserLocation', !buttons.userLocationButtonOn);
             }}
           />
