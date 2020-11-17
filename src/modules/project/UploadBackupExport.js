@@ -35,17 +35,23 @@ const UploadBackAndExport = (props) => {
     moment(new Date()).format('YYYY-MM-DD_hmma') + '_' + project.description.project_name);
 
   const backupToDevice = async () => {
-    setIsUploadDialogVisible(false);
-    dispatch(clearedStatusMessages());
-    dispatch(addedStatusMessage({statusMessage: 'Backing up Project to Device...'}));
-    dispatch(setLoadingStatus({view: 'modal', bool: true}));
-    dispatch(setStatusMessagesModalVisible(true));
-    await useExport.backupProjectToDevice(exportFileName);
-    console.log(`File ${exportFileName} has been backed up`);
-    dispatch(addedStatusMessage({statusMessage: '---------------'}));
-    dispatch(setLoadingStatus({view: 'modal', bool: false}));
-    await dispatch(addedStatusMessage({statusMessage: 'Project Backup Complete!'}));
-
+    try {
+      setIsUploadDialogVisible(false);
+      dispatch(clearedStatusMessages());
+      dispatch(addedStatusMessage({statusMessage: 'Backing up Project to Device...'}));
+      dispatch(setLoadingStatus({view: 'modal', bool: true}));
+      dispatch(setStatusMessagesModalVisible(true));
+      await useExport.backupProjectToDevice(exportFileName);
+      console.log(`File ${exportFileName} has been backed up`);
+      dispatch(addedStatusMessage({statusMessage: '---------------'}));
+      dispatch(setLoadingStatus({view: 'modal', bool: false}));
+      await dispatch(addedStatusMessage({statusMessage: 'Project Backup Complete!'}));
+    }
+    catch (err) {
+      dispatch(setLoadingStatus({view: 'modal', bool: false}));
+      console.error('Error Backing Up Project!', err);
+      dispatch(addedStatusMessage({statusMessage: 'Error Backing Up Project!'}));
+    }
   };
 
   const onShareProjectAsCSV = () => {

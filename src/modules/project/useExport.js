@@ -5,8 +5,7 @@ import RNFetchBlob from 'rn-fetch-blob';
 
 import useDeviceHook from '../../services/useDevice';
 import {isEmpty} from '../../shared/Helpers';
-import {addedStatusMessage, removedLastStatusMessage, setErrorMessagesModalVisible} from '../home/home.slice';
-import {doesBackupDirectoryExist} from './projects.slice';
+import {addedStatusMessage, removedLastStatusMessage} from '../home/home.slice';
 
 const useExport = () => {
   let dirs = RNFetchBlob.fs.dirs;
@@ -21,263 +20,172 @@ const useExport = () => {
   const dbs = useSelector(state => state);
 
   const dbsStateCopy = JSON.parse(JSON.stringify(dbs));
-  // let spots = dbsStateCopy.spot.spots;
   let configDb = {user: dbsStateCopy.user, other_maps: dbsStateCopy.map.customMaps};
-  // let mapNamesDb = dbsStateCopy.map.offlineMaps;
-  // let mapTilesDb = {};
-  // let otherMapsDb = dbsStateCopy.map.customMaps;
 
   const useDevice = useDeviceHook();
-  // dbs.project = {}
   let imageCount = 0;
   let imageBackupFailures = 0;
   let imageSuccess = 0;
 
+  const dataForExport = {
+    mapNamesDb: dbs.map.offlineMaps,
+    mapTilesDb: {},
+    otherMapsDb: dbs.map.customMaps,
+    projectDb: dbs.project,
+    spotsDb: dbs.spot.spots,
+  };
+
   const backupProjectToDevice = async (exportedFileName) => {
     await useDevice.doesDeviceDirectoryExist(devicePath + appDirectoryForDistributedBackups);
-    // console.log('Next')
-    // const dataDir = await checkDistributionDataDir();
-    // console.log('Next', dataDir);
-    // const dataForExport = await gatherDataForDistribution();  // Data can be backwards compatible with Strabo 1 (unfinished)
-    const dataForExport = await gatherDataForBackup();
-    // console.log('DataJson', dataJson);
-    await exportData(devicePath + appDirectoryForDistributedBackups + '/' + exportedFileName, dataForExport,
-      '/data.json');
-    const otherMaps = await gatherOtherMapsForDistribution(exportedFileName);
-    dispatch(removedLastStatusMessage());
-    // console.log('Other Maps Resolve Message:', otherMaps);
-    const maps = await gatherMapsForDistribution(dataForExport, exportedFileName);
-    console.log('Maps resolve message', maps.message);
-    dispatch(addedStatusMessage({statusMessage: maps.message}));
-    await useDevice.doesDeviceDirectoryExist(devicePath + appDirectoryForDistributedBackups + '/' + exportedFileName + '/Images');
-    dispatch(addedStatusMessage({statusMessage: 'Exporting Images...'}));
-    const imageResolve = await gatherImagesForDistribution(dataForExport, exportedFileName);
-    console.log('Images Resolve Message:', imageResolve.message);
-    dispatch(addedStatusMessage({statusMessage: imageResolve.message}));
-    // const successResponse = await doesDeviceDirectoryExist(devicePath + appDirectoryForDistributedBackups + '/' + exportedFileName + '/maps');
-    // console.log('Maps directory created:', successResponse);
+    await gatherDataForBackup(exportedFileName);
+    await gatherOtherMapsForDistribution(exportedFileName);
+    await gatherMapsForDistribution(dataForExport, exportedFileName);
+    await gatherImagesForDistribution(dataForExport, exportedFileName);
+    console.log('Images Resolve Message:');
   };
 
-  // const checkDistributionDataDir = async () => {
-  //   if (devicePath){
-  //     return await RNFetchBlob.fs.isDir(devicePath + appDirectoryForDistributedBackups + '/data').then( checkDirSuccess => {
-  //       //exists. delete then add
-  //       if (checkDirSuccess) {
-  //         console.log('data folder exists', checkDirSuccess);
-  //         return RNFetchBlob.fs.unlink(devicePath + appDirectoryForDistributedBackups + '/data').then(() => {
-  //           console.log('Success removing', appDirectoryForDistributedBackups + '/data');
-  //           return RNFetchBlob.fs.mkdir(devicePath + appDirectoryForDistributedBackups + '/data').then(createDirSuccess => {
-  //             console.log('Success creating', appDirectoryForDistributedBackups + '/data');
-  //             return Promise.resolve(devicePath + appDirectoryForDistributedBackups + '/data')
-  //           })
-  //             .catch(err => {
-  //               console.log('Error making directory', err);
-  //               return Promise.reject(err.message);
-  //             });
-  //         });
-  //       }
-  //       //doesn't exist, just create
-  //       else {
-  //         console.log('Data folder does not exist');
-  //         return RNFetchBlob.fs.mkdir(devicePath + appDirectoryForDistributedBackups + '/data').then(createDirSuccess => {
-  //           console.log('Directory', appDirectoryForDistributedBackups + '/data', 'created.', createDirSuccess);
-  //           return Promise.resolve(devicePath + appDirectoryForDistributedBackups + '/data');
-  //         })
-  //           .catch(err => {
-  //             console.log('Error making directory', err);
-  //             return Promise.reject(err.message);
-  //           });
-  //       }
-  //     });
-  //   }
-  //   else return Promise.reject('Device Not Found!');
-  // };
-
-  // const doesDeviceDirectoryExist = async (directory) => {
-  //   try {
-  //     return await RNFetchBlob.fs.isDir(directory).then(checkDirSuccess => {
-  //       if (checkDirSuccess) {
-  //         console.log('Directory', directory, 'exists.', checkDirSuccess);
-  //         // return Promise.resolve(directory);
-  //       }
-  //       else {
-  //         // If directory does not exist then one is created
-  //         return RNFetchBlob.fs.mkdir(directory)
-  //           .then(checkDirectorySuccess => {
-  //             console.log('Directory', directory, 'created', checkDirectorySuccess);
-  //             dispatch(doesBackupDirectoryExist(checkDirectorySuccess));
-  //             // return Promise.resolve(directory);
-  //           })
-  //           .catch(createDirError => {
-  //             console.log('Unable to create directory', directory, createDirError);
-  //             // return Promise.reject(createDirError);
-  //           });
-  //       }
-  //     });
-  //   }
-  //   catch (err) {
-  //     console.error('Error Checking Id Directory Exists.')
-  //   }
-  // };
-
-  const exportData = (directory, data, filename) => {
-    // let dir = directory.split('/');
-    // dir.pop();
-    // const rootDir = dir.join('/');
-    return useDevice.doesDeviceDirectoryExist(directory).then((fullPath) => {
-      console.log('ROOT', fullPath);
-      return RNFetchBlob.fs.writeFile(directory + filename, JSON.stringify(data), 'utf8');
-    });
+  const exportData = async (directory, data, filename) => {
+    try {
+      const doesExist = await useDevice.doesDeviceDirectoryExist(directory);
+      if (doesExist) {
+        const res = await useDevice.writeFileToDevice(directory, filename, data);
+        console.log(res);
+      }
+    }
+    catch (err) {
+      console.error('Error is exportData()', err);
+      throw Error;
+    }
   };
 
-  // const gatherDataForDistribution = () => {
-  //   const dbsStateCopy = JSON.parse(JSON.stringify(dbs));
-  //   let activeDatasets = [];
-  //   let currentDataset = {};
-  //   let spots = dbsStateCopy.spot.spots;
-  //   let configDb = {};
-  //   let mapNamesDb = {};
-  //   let mapTilesDb = {};
-  //   let json = {
-  //     mapNamesDb: mapNamesDb,
-  //     mapTilesDb: mapTilesDb,
-  //     projectDb: dbsStateCopy.project.project,
-  //     spotsDb: spots,
-  //   };
-  //   Object.values(dbsStateCopy.project.datasets).map(dataset => {
-  //     const datasetKey = 'dataset_' + dataset.id;
-  //     const spotsInDatasetKey = 'spots_' + dataset.id;
-  //     if (dataset.current && dataset.current === true) currentDataset = dataset;
-  //     if (dataset.active && dataset.active === true) activeDatasets.push(dataset);
-  //     json.projectDb = {
-  //       ...json.projectDb,
-  //       activeDatasets: activeDatasets,
-  //       [datasetKey]: dataset,
-  //       [spotsInDatasetKey]: dataset.spotIds,
-  //       'spots_dataset': currentDataset,
-  //     };
-  //     delete dataset.active;
-  //     delete dataset.current;
-  //   });
-  //   json.projectDb.activeDatasets.map(dataset => {
-  //     delete dataset.active;
-  //     delete dataset.current;
-  //   });
-  //   delete json.projectDb.self;
-  //   delete json.projectDb.projecttype;
-  //   console.log('JsonCopy', json)
-  //   return Promise.resolve(json);
-  // };
-
-  const gatherDataForBackup = () => {
-    let json = {
-      mapNamesDb: dbs.map.offlineMaps,
-      mapTilesDb: {},
-      otherMapsDb: dbs.map.customMaps,
-      projectDb: dbs.project,
-      spotsDb: dbs.spot.spots,
-    };
-    console.log('JsonCopy', json);
-    return Promise.resolve(json);
+  const gatherDataForBackup = async (filename) => {
+    try {
+      dispatch(addedStatusMessage({statusMessage: 'Exporting Project Data...'}));
+      await exportData(devicePath + appDirectoryForDistributedBackups + '/' + filename, dataForExport,
+        'data.json');
+      console.log('Finished Exporting Project Data', dataForExport);
+      dispatch(removedLastStatusMessage());
+      dispatch(addedStatusMessage({statusMessage: 'Finished Exporting Project Data'}));
+    }
+    catch (err) {
+      console.error('Error Exporting Data!', err);
+      dispatch(removedLastStatusMessage());
+      dispatch(addedStatusMessage({statusMessage: 'Error Exporting Project Data.'}));
+    }
   };
 
-  const gatherImagesForDistribution = (data, fileName) => {
-    console.log('data:', data);
-    let promises = [];
-    if (data.spotsDb) {
-      console.log('Spots Exist!');
-      Object.values(data.spotsDb).map(spot => {
-        if (spot.properties.images) {
-          console.log('Spot with images', spot.properties.name, 'Images:', spot.properties.images);
-          spot.properties.images.map(image => {
-            const promise = moveDistributedImage(image.id, fileName).then(moveFileSuccess => {
-              console.log('Moved file:', moveFileSuccess);
-            });
-            promises.push(promise);
-          });
-          console.log('Image Promises', promises);
+  const gatherImagesForDistribution = async (data, fileName) => {
+    try {
+      console.log('data:', data);
+      let promises = [];
+      await useDevice.doesDeviceDirectoryExist(
+        devicePath + appDirectoryForDistributedBackups + '/' + fileName + '/Images');
+      dispatch(addedStatusMessage({statusMessage: 'Exporting Images...'}));
+      if (data.spotsDb) {
+        console.log('Spots Exist!');
+        await Promise.all(
+          Object.values(data.spotsDb).map(async spot => {
+            if (spot.properties.images) {
+              console.log('Spot with images', spot.properties.name, 'Images:', spot.properties.images);
+              await Promise.all(
+                spot.properties.images.map(async image => {
+                  const imageId = await moveDistributedImage(image.id, fileName);
+                  console.log('Moved file:', imageId);
+                  promises.push(imageId);
+                  console.log('Image Promises', promises);
+                }),
+              );
+            }
+          }),
+        );
+        console.log('Image Promises Finished ');
+        dispatch(removedLastStatusMessage());
+        if (imageBackupFailures > 0) {
+          dispatch(addedStatusMessage({
+            statusMessage: `Images backed up: ${imageSuccess}.\nImages NOT backed up: ${imageBackupFailures}.`,
+          }));
         }
-      });
-      return Promise.all(promises).then(() => {
-        // console.log('Finished moving all images to distribution folder.');
-        return Promise.resolve({message: 'Finished moving all images.'});
-      });
+        else dispatch(addedStatusMessage({statusMessage: `${imageSuccess} Images backed up.`}));
+      }
+    }
+    catch (err) {
+      console.error('Error Backing Up Images!');
+      dispatch(removedLastStatusMessage());
+      dispatch(addedStatusMessage({statusMessage: 'Error Exporting Images!'}));
     }
   };
 
 
-  const gatherMapsForDistribution = (data, fileName) => {
-    const maps = data.mapNamesDb;
-    return new Promise((resolve, reject) => {
-        let promises = [];
-        if (!isEmpty(maps)) {
-          console.log('Maps exist.', maps);
-          useDevice.doesDeviceDirectoryExist(devicePath + appDirectoryForDistributedBackups + '/' + fileName + '/maps')
-            .then(() => {
-              Object.values(maps).map(map => {
-                const promise = moveDistributedMap(map.mapId, fileName).then(moveFileSuccess => {
-                  console.log('Moved map:', moveFileSuccess);
-                }, moveFileError => console.log('Error moving map:', moveFileError));
-                promises.push(promise);
-                console.log(promises);
-              });
-              Promise.all(promises).then(() => {
-                console.log('Finished moving all maps.');
-                resolve({message: 'Finished moving all maps.'});
-              });
-            });
-        }
-        else {
-          return resolve({message: 'There are no offline maps to save.'});
-        }
-      },
-    );
+  const gatherMapsForDistribution = async (data, fileName) => {
+    try {
+      const maps = data.mapNamesDb;
+      let promises = [];
+      dispatch(addedStatusMessage({statusMessage: 'Exporting Offline Maps...'}));
+      if (!isEmpty(maps)) {
+        console.log('Maps exist.', maps);
+        await useDevice.doesDeviceDirectoryExist(
+          devicePath + appDirectoryForDistributedBackups + '/' + fileName + '/maps');
+        await Promise.all(
+          Object.values(maps).map(async map => {
+            const mapId = await moveDistributedMap(map.mapId, fileName);
+            console.log('Moved map:', mapId);
+            promises.push(mapId);
+            console.log(promises);
+          }),
+        );
+        console.log('Promised Finished');
+        dispatch(removedLastStatusMessage());
+        dispatch(addedStatusMessage({statusMessage: 'Finished Exporting Offline Maps.'}));
+      }
+      else {
+        dispatch(removedLastStatusMessage());
+        dispatch(addedStatusMessage({statusMessage: 'No offline maps to export.'}));
+      }
+    }
+    catch (err) {
+      console.error('Error Exporting Offline Maps.');
+      dispatch(removedLastStatusMessage());
+      dispatch(addedStatusMessage({statusMessage: 'Error Exporting Offline Maps!'}));
+    }
   };
 
-  const gatherOtherMapsForDistribution = (exportedFileName) => {
-    console.log(configDb);
-    dispatch(addedStatusMessage({statusMessage: 'Exporting Maps...'}));
-    if (!isEmpty(configDb.other_maps)) {
-      exportData(devicePath + appDirectoryForDistributedBackups + '/' + exportedFileName, configDb.other_maps,
-        '/other_maps.json').then(() => {
+  const gatherOtherMapsForDistribution = async (exportedFileName) => {
+    try {
+      console.log(configDb);
+      dispatch(addedStatusMessage({statusMessage: 'Exporting Custom Maps...'}));
+      if (!isEmpty(configDb.other_maps)) {
+        await exportData(devicePath + appDirectoryForDistributedBackups + '/' + exportedFileName, configDb.other_maps,
+          '/other_maps.json');
         console.log('Other Maps Exported');
-        return 'Other Maps Exported'
-      });
+        dispatch(removedLastStatusMessage());
+        dispatch(addedStatusMessage({statusMessage: 'Finished Exporting Custom Maps.'}));
+      }
+      else {
+        dispatch(removedLastStatusMessage());
+        dispatch(addedStatusMessage({statusMessage: 'No custom maps to export.'}));
+      }
     }
-    return Promise.resolve('Other Maps exported to device');
+    catch (err) {
+      console.error('Error Exporting Other Maps', err);
+      dispatch(removedLastStatusMessage());
+      dispatch(addedStatusMessage({statusMessage: 'Error Exporting Custom Maps!'}));
+    }
   };
 
   const moveDistributedImage = async (image_id, fileName) => {
-    return RNFetchBlob.fs.exists(devicePath + imagesDirectory + '/' + image_id + '.jpg')
-      .then(exists => {
+    try {
+      const imageExists = await useDevice.doesDeviceFileExist(image_id, '.jpg');
+      if (imageExists) {
         imageCount++;
-        return RNFetchBlob.fs.cp(devicePath + imagesDirectory + '/' + image_id + '.jpg',
-          devicePath + appDirectoryForDistributedBackups + '/' + fileName + '/Images/' + image_id + '.jpg')
-          .then(res => {
-            console.log('Image copy SUCCESS', res);
-            imageSuccess++;
-          }, err => {
-            imageBackupFailures++;
-            console.log('Image copy ERROR', err);
-          })
-          .finally(() => {
-            dispatch(removedLastStatusMessage());
-            if (imageBackupFailures > 0) {
-              dispatch(addedStatusMessage({
-                statusMessage: `Images backed up: ${imageSuccess}
-                \n Already exists images: ${imageBackupFailures}`,
-              }));
-            }
-            else {
-              dispatch(addedStatusMessage({statusMessage: `${imageSuccess} Images backed up.`}));
-            }
-            return Promise.resolve();
-          });
-      })
-      .catch(err => {
-        console.log('ERROR', err.toString());
-        dispatch(setErrorMessagesModalVisible(true));
-      });
+        await useDevice.copyFiles(devicePath + imagesDirectory + '/' + image_id + '.jpg',
+          devicePath + appDirectoryForDistributedBackups + '/' + fileName + '/Images/' + image_id + '.jpg');
+        imageSuccess++;
+      }
+    }
+    catch (err) {
+      imageBackupFailures++;
+      console.log('ERROR', err.toString());
+    }
   };
 
   const moveDistributedMap = async (mapId, fileName) => {
@@ -292,23 +200,19 @@ const useExport = () => {
               console.log('Map Copied.');
               return Promise.resolve(mapId);
             });
-          // .catch(copyError => Alert.alert('error copying map file: ', copyError));
         }
         else {
           console.log('couldn\'t find map ' + mapId + '.zip');
           return Promise.resolve();
         }
-        // return Promise.resolve(mapId);
       })
       .catch(err => {
         console.warn(err);
       });
-    // return Promise.resolve('OK')
   };
 
   return {
     backupProjectToDevice: backupProjectToDevice,
-    // doesDeviceDirectoryExist: doesDeviceDirectoryExist,
   };
 };
 
