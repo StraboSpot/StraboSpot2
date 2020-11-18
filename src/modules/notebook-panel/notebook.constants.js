@@ -39,3 +39,8 @@ export const SED_NOTEBOOK_PAGES = {
   FOSSILS: 'Fossils',
   INTERPRETATIONS: 'Interpretations',
 };
+
+export const NOTEBOOK_DETAIL_PAGE_MAIN_PAGE_DICTIONARY = {
+  'Sample Detail' : 'Sample',
+  'Measurement Detail': 'Measurements',
+};

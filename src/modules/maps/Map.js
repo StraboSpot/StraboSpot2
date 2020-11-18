@@ -12,6 +12,8 @@ import {getNewUUID, isEmpty} from '../../shared/Helpers';
 import {MODALS} from '../home/home.constants';
 import {setModalVisible} from '../home/home.slice';
 import useImagesHook from '../images/useImages';
+import {NOTEBOOK_DETAIL_PAGE_MAIN_PAGE_DICTIONARY} from '../notebook-panel/notebook.constants';
+import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import {
   addedSpot,
   addedSpots,
@@ -53,6 +55,7 @@ const Map = React.forwardRef((props, ref) => {
   const selectedSymbols = useSelector(state => state.map.symbolsOn) || [];
   const isAllSymbolsOn = useSelector(state => state.map.isAllSymbolsOn);
   const user = useSelector(state => state.user);
+  const pageVisible = useSelector(state => state.notebook.visibleNotebookPagesStack.slice(-1)[0]);
   const isDrawFeatureModeOn = () => {
     return (props.mapMode === MAP_MODES.DRAW.POINT || props.mapMode === MAP_MODES.DRAW.LINE
       || props.mapMode === MAP_MODES.DRAW.POLYGON || props.mapMode === MAP_MODES.DRAW.FREEHANDPOLYGON
@@ -171,6 +174,8 @@ const Map = React.forwardRef((props, ref) => {
     if (props.mapMode !== MAP_MODES.EDIT) {
       setDisplayedSpots((isEmpty(selectedSpot) ? [] : [{...selectedSpot}]));
     }
+    const notebookPageToDisplay = NOTEBOOK_DETAIL_PAGE_MAIN_PAGE_DICTIONARY[pageVisible];
+    if (notebookPageToDisplay) dispatch(setNotebookPageVisible(notebookPageToDisplay));
   }, [selectedSpot, activeDatasetsIds]);
 
   useEffect(() => {
@@ -1277,7 +1282,8 @@ const Map = React.forwardRef((props, ref) => {
       let bottom = mapBounds[1][1];
       let bbox = [left, bottom, right, top];
       const bboxPoly = turf.bboxPolygon(bbox);
-      const spotsInMapExtent = await useMapFeatures.getLassoedSpots([...mapProps.spotsSelected, ...mapProps.spotsNotSelected],
+      const spotsInMapExtent = await useMapFeatures.getLassoedSpots(
+        [...mapProps.spotsSelected, ...mapProps.spotsNotSelected],
         bboxPoly);
       dispatch(setSpotsInMapExtent(spotsInMapExtent));
     }
