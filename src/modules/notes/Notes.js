@@ -81,9 +81,9 @@ const Notes = (props) => {
             {/*<Text style={props.style}>{date}</Text>*/}
             <TextInput
               placeholder='Enter a note...'
-              maxLength={300}
               inputContainerStyle={{borderColor: 'transparent'}}
               multiline={true}
+              autoFocus={true}
               onChangeText={(text) => setNote(text)}
               // onFocus={() => setDate(timeStamp)}
               value={note}
