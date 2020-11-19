@@ -21,8 +21,6 @@ const useUpload = () => {
   const tempImagesDownsizedDirectory = devicePath + appDirectory + '/TempImages';
 
   const dispatch = useDispatch();
-  const activeDatasetsIds = useSelector(state => state.project.activeDatasetsIds);
-  const datasets = useSelector(state => state.project.datasets);
   const project = useSelector(state => state.project.project);
   const user = useSelector(state => state.user);
 
@@ -30,7 +28,6 @@ const useUpload = () => {
   const [useSpots] = useSpotsHook();
   const [useImages] = useImagesHook();
   const [useProject] = useProjectHook();
-  // Upload Project Properties
 
   const uploadDataset = async (dataset) => {
     try {
@@ -60,7 +57,7 @@ const useUpload = () => {
   // Synchronously Upload Datasets
   const uploadDatasets = async () => {
     let currentRequest = 0;
-    const activeDatasets = activeDatasetsIds.map(datasetId => datasets[datasetId]);
+    const activeDatasets = useProject.getActiveDatasets();
 
     const makeNextDatasetRequest = async () => {
       await uploadDataset(activeDatasets[currentRequest]);
@@ -86,6 +83,7 @@ const useUpload = () => {
     }
   };
 
+  // Upload Project Properties
   const uploadProject = async () => {
     try {
       console.log('Uploading Project Properties...');

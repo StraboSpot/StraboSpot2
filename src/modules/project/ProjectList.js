@@ -7,10 +7,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {isEmpty} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
 import Loading from '../../shared/ui/Loading';
-import {
-  addedStatusMessage,
-  setLoadingStatus,
-} from '../home/home.slice';
+import {addedStatusMessage, setLoadingStatus} from '../home/home.slice';
 import {MAIN_MENU_ITEMS} from '../main-menu-panel/mainMenu.constants';
 import {setMenuSelectionPage} from '../main-menu-panel/mainMenuPanel.slice';
 import {clearedSpots} from '../spots/spots.slice';
@@ -37,24 +34,8 @@ const ProjectList = (props) => {
   const [useProject] = useProjectHook();
 
   useEffect(() => {
-    return function cleanUp() {
-      console.log('Cleaned Up 1');
-    };
-  }, []);
-
-  useEffect(() => {
     getAllProjects().then(() => console.log('OK got projects'));
-    return function cleanUp() {
-      console.log('Cleaned Up 2');
-    };
   }, [props.source]);
-
-  useEffect(() => {
-    console.log('projectsArr', projectsArr);
-    return function cleanUp() {
-      console.log('Cleaned Up 3');
-    };
-  }, [projectsArr]);
 
   const getAllProjects = async () => {
     let projectsResponse;
@@ -86,13 +67,8 @@ const ProjectList = (props) => {
     }
     else {
       await useProject.selectProject(project, props.source);
-      if (!currentProject) {
-        Alert.alert('Error getting selected project');
-      }
-      else {
-        setLoading(false);
-        // dispatch(addedStatusMessage({statusMessage: 'Project loaded!'}));
-      }
+      if (!currentProject) Alert.alert('Error getting selected project');
+      else setLoading(false);
     }
   };
 
@@ -142,14 +118,17 @@ const ProjectList = (props) => {
         cancel={() => setShowDialog(false)}
         onPress={(action) => switchProject(action)}
       >
-        <Text>Switching projects will <Text style={{color: 'red'}}>DELETE </Text>
-          the local copy of the current project: </Text>
+        <Text>Switching projects will
+          <Text style={{color: 'red'}}> DELETE </Text>
+          the local copy of the current project:
+        </Text>
         <Text style={{color: 'red', textTransform: 'uppercase', marginTop: 5, marginBottom: 10, textAlign: 'center'}}>
-          {currentProject.description && !isEmpty(
-            currentProject.description) ? currentProject.description.project_name : 'UN-NAMED'}
+          {currentProject.description
+          && !isEmpty(currentProject.description) ? currentProject.description.project_name : 'UN-NAMED'}
         </Text>
         <Text>Including all datasets and Spots contained within this project. Make sure you have already
-          uploaded the project to the server if you wish to preserve the data. Continue?</Text>
+          uploaded the project to the server if you wish to preserve the data. Continue?
+        </Text>
       </DialogBox>
     );
   };
@@ -190,10 +169,12 @@ const ProjectList = (props) => {
       return (
         <View style={styles.signInContainer}>
           <View>
-            {props.source === 'server' && <Button
-              title={'Retry'}
-              onPress={() => getAllProjects()}
-            />}
+            {props.source === 'server' && (
+              <Button
+                title={'Retry'}
+                onPress={() => getAllProjects()}
+              />
+            )}
             {isError && renderErrorMessage()}
           </View>
         </View>

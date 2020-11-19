@@ -5,7 +5,6 @@ import {Button} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
-import {isEmpty} from '../../shared/Helpers';
 import GeneralTextInputModal from '../../shared/ui/GeneralTextInputModal';
 import StandardModal from '../../shared/ui/StandardModal';
 import Divider from '../main-menu-panel/MainMenuPanelDivider';
@@ -97,7 +96,6 @@ const ActiveProjectPanel = () => {
           onPress={() => setIsAddDatasetModalVisible(true)}
         />
       </View>
-      <Text style={[commonStyles.standardDescriptionText, styles.subHeaderText]}>Select pencil to edit name</Text>
       <View style={[commonStyles.sectionContainer, {height: 200}]}>
         <DatasetList/>
       </View>
@@ -108,7 +106,7 @@ const ActiveProjectPanel = () => {
         {<ActiveDatasetsList/>}
       </View>
       <View style={{alignItems: 'center', margin: 10, marginTop: 0}}>
-        <Text style={commonStyles.standardDescriptionText}>New Spots will be added to the check marked data set</Text>
+        <Text style={commonStyles.standardDescriptionText}>New Spots will be added to the checked dataset.</Text>
       </View>
       <View style={styles.buttonContainer}>
         <Button
@@ -120,8 +118,9 @@ const ActiveProjectPanel = () => {
           onPress={() => setIsWarningModalVisible(true)}
         />
         <View style={{alignItems: 'center', margin: 10, marginTop: 0}}>
-          <Text style={commonStyles.standardDescriptionText}>This will overwrite anything that has not been uploaded to
-            the server</Text>
+          <Text style={commonStyles.standardDescriptionText}>
+            This will overwrite anything that has not been uploaded to the server
+          </Text>
         </View>
       </View>
       {renderAddDatasetModal()}

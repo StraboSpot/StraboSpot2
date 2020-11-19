@@ -56,6 +56,7 @@ const projectSlice = createSlice({
     deletedDataset(state, action) {
       const {[action.payload]: deletedDataset, ...datasetsList} = state.datasets;  // Delete key with action.id from object
       state.datasets = datasetsList;
+      state.activeDatasetsIds = state.activeDatasetsIds.filter(activeDatasetId => activeDatasetId !== action.payload);
     },
     deletedSpotIdFromDataset(state, action) {
       const {dataset, spotId} = action.payload;
@@ -90,7 +91,7 @@ const projectSlice = createSlice({
         state.project.description = value;
       }
       else {
-        if (field === 'tags' && !isEmpty(state.selectedTag)){
+        if (field === 'tags' && !isEmpty(state.selectedTag)) {
           state.selectedTag = value.find(tag => tag.id === state.selectedTag.id);
         }
       }
@@ -99,8 +100,7 @@ const projectSlice = createSlice({
       state.project.date = new Date().toISOString();
     },
   },
-})
-;
+});
 
 export const {
   addedDataset,

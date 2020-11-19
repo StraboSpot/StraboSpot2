@@ -18,14 +18,14 @@ import {setMenuSelectionPage} from '../main-menu-panel/mainMenuPanel.slice';
 import {clearedMaps} from '../maps/maps.slice';
 import {addedSpots, clearedSpots} from '../spots/spots.slice';
 import {
-  addedDatasets,
   addedProject,
   addedSpotsIdsToDataset,
   clearedDatasets,
   clearedProject,
-  setActiveDatasets, setSelectedDataset, updatedDatasets,
+  setActiveDatasets,
+  setSelectedDataset,
+  updatedDatasets,
 } from './projects.slice';
-import useImportExportHook from './useExport';
 
 const useDownload = () => {
   let imagesDownloadedCount = 0;
@@ -44,10 +44,8 @@ const useDownload = () => {
   const dispatch = useDispatch();
   const project = useSelector(state => state.project.project);
   const user = useSelector(state => state.user);
-  const isOnline = useSelector(state => state.home.isOnline);
 
   const useDevice = useDeviceHook();
-  const useExport = useImportExportHook();
   const [useImages] = useImagesHook();
   const [useServerRequests] = useServerRequestsHook();
 
@@ -99,10 +97,6 @@ const useDownload = () => {
         console.log('Images Complete');
         dispatch(setProjectLoadComplete(true));
       }
-      else {
-        dispatch(setLoadingStatus({view: 'modal', bool: false}));
-        return Promise.resolve('No Spots!');
-      }
     }
     catch (err) {
       console.error('Error Downloading Spots.', err);
@@ -115,10 +109,7 @@ const useDownload = () => {
     try {
       const neededImagesIds = await useImages.gatherNeededImages(spotsOnServer);
       console.log('Gathering Needed Images...');
-      if (neededImagesIds.length === 0) {
-        dispatch(setLoadingStatus({view: 'modal', bool: false}));
-        dispatch(addedStatusMessage({statusMessage: 'No New Images to Download'}));
-      }
+      if (neededImagesIds.length === 0) dispatch(addedStatusMessage({statusMessage: 'No New Images to Download'}));
       else return await initializeDownloadImages(neededImagesIds);
     }
     catch (err) {
@@ -190,14 +181,13 @@ const useDownload = () => {
       }
       dispatch(addedStatusMessage({statusMessage: '------------------'}));
       dispatch(addedStatusMessage({statusMessage: 'Download Complete!'}));
-      dispatch(setLoadingStatus({view: 'modal', bool: false}));
       dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
     }
     catch (err) {
       console.error('Error Initializing Download.');
-      dispatch(addedStatusMessage({statusMessage: '\nDownload Failed!'}));
-      dispatch(setLoadingStatus({view: 'modal', bool: false}));
+      dispatch(addedStatusMessage({statusMessage: 'Download Failed!'}));
     }
+    dispatch(setLoadingStatus({view: 'modal', bool: false}));
   };
 
   const initializeDownloadImages = async (neededImageIds) => {

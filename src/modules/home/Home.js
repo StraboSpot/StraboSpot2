@@ -1,12 +1,12 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Alert, Animated, Dimensions, Platform, ScrollView, Text, View, SafeAreaView} from 'react-native';
+import {Alert, Animated, Dimensions, Platform, Text, View} from 'react-native';
 
 import * as Sentry from '@sentry/react-native';
 import * as turf from '@turf/turf';
 import {Button} from 'react-native-elements';
 import {FlatListSlider} from 'react-native-flatlist-slider';
 import {DotIndicator} from 'react-native-indicators';
-import {connect, useDispatch, useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 import sharedDialogStyles from '../../shared/common.styles';
 import {animatePanels, isEmpty} from '../../shared/Helpers';
@@ -182,9 +182,9 @@ const Home = (props) => {
     let firstSlideshowImage = {image, uri};
     const imagesForSlideshow = Object.values(useSpots.getActiveSpotsObj()).reduce((acc, spot) => {
       const imagesForSlideshow1 = spot.properties.images
-        && spot.properties.images.reduce((acc1, image) => {
-          uri = useImages.getLocalImageURI(image.id);
-          return (image.id !== firstImageID) ? [...acc1, {image, uri}] : acc1;
+        && spot.properties.images.reduce((acc1, img) => {
+          uri = useImages.getLocalImageURI(img.id);
+          return (img.id !== firstImageID) ? [...acc1, {img, uri}] : acc1;
         }, []) || [];
       return [...acc, ...imagesForSlideshow1];
     }, []);
@@ -668,25 +668,22 @@ const Home = (props) => {
           <View style={{paddingTop: 15}}>
             <Text style={{textAlign: 'center'}}>{statusMessages.join('\n')}</Text>
             <View style={{paddingTop: 20}}>
-              {isModalLoading && (
-                <DotIndicator
-                  color={'darkgrey'}
-                  count={4}
-                  size={8}
-                />
-              )}
-              {(statusMessages.includes('Download Complete!') || statusMessages.includes('Upload Complete!')
-                || statusMessages.includes('There are no active datasets.') || statusMessages.includes('Success!')
-                || statusMessages.includes('Project Backup Complete!') || statusMessages.includes('Project loaded!')
-                || statusMessages.includes('Upload Failed!') || statusMessages.includes('Download Failed!')
-                || statusMessages.includes('Error Backing Up Project!'))
-              && (
-                <Button
-                  title={'OK'}
-                  type={'clear'}
-                  onPress={() => dispatch(setStatusMessagesModalVisible(false))}
-                />
-              )}
+              {isModalLoading
+                ? (
+                  <DotIndicator
+                    color={'darkgrey'}
+                    count={4}
+                    size={8}
+                  />
+                )
+                : (
+                  <Button
+                    title={'OK'}
+                    type={'clear'}
+                    onPress={() => dispatch(setStatusMessagesModalVisible(false))}
+                  />
+                )
+              }
             </View>
           </View>
         </View>
@@ -855,22 +852,22 @@ const Home = (props) => {
       />
       {(imageSlideshowData.length) > 0 && (
         <View>
-            <FlatListSlider
-              data={imageSlideshowData}
-              imageKey={'uri'}
-              autoscroll={false}
-              separator={0}
-              loop={true}
-              width={deviceDimensions.width}
-              height={deviceDimensions.height}
-              indicatorContainerStyle={{position:'absolute', top: 20}}
-              component={(
-                <Preview
-                  toggle={() => toggleImageModal()}
-                  openNotebookPanel={(page) => openNotebookPanel(page)}
-                />
-              )}
-            />
+          <FlatListSlider
+            data={imageSlideshowData}
+            imageKey={'uri'}
+            autoscroll={false}
+            separator={0}
+            loop={true}
+            width={deviceDimensions.width}
+            height={deviceDimensions.height}
+            indicatorContainerStyle={{position: 'absolute', top: 20}}
+            component={(
+              <Preview
+                toggle={() => toggleImageModal()}
+                openNotebookPanel={(page) => openNotebookPanel(page)}
+              />
+            )}
+          />
         </View>
       )}
       {isHomeLoading && <LoadingSpinner/>}

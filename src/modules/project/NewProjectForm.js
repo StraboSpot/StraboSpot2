@@ -9,9 +9,9 @@ import styles from '../../shared/ui/ui.styles';
 import {Form, useFormHook} from '../form';
 import {setProjectLoadSelectionModalVisible} from '../home/home.slice';
 import {MAIN_MENU_ITEMS} from '../main-menu-panel/mainMenu.constants';
+import {setMenuSelectionPage} from '../main-menu-panel/mainMenuPanel.slice';
 import Divider from '../main-menu-panel/MainMenuPanelDivider';
 import useProjectHook from './useProject';
-import {setMenuSelectionPage} from '../main-menu-panel/mainMenuPanel.slice';
 
 const NewProjectForm = (props) => {
   const [useForm] = useFormHook();

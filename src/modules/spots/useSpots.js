@@ -4,13 +4,14 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import {getNewId, isEmpty} from '../../shared/Helpers';
 import {addedSpotsIdsToDataset, deletedSpotIdFromDataset, updatedProject} from '../project/projects.slice';
+import useProjectHook from '../project/useProject';
 import {GENERAL_KEYS_ICONS, SED_KEYS_ICONS} from './spot.constants';
 import {addedSpot, deletedSpot, setSelectedSpot} from './spots.slice';
 
 const useSpots = (props) => {
-  const dispatch = useDispatch();
+  const [useProject] = useProjectHook();
 
-  const activeDatasetsIds = useSelector(state => state.project.activeDatasetsIds);
+  const dispatch = useDispatch();
   const selectedDatasetId = useSelector(state => state.project.selectedDatasetId);
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const datasets = useSelector(state => state.project.datasets);
@@ -104,29 +105,19 @@ const useSpots = (props) => {
     return Promise.resolve('spot deleted');
   };
 
-  const deleteSpotsFromDataset = (dataset, spotId) => {
-    dispatch(deletedSpotIdFromDataset({spotId: spotId, dataset: dataset}));
-    dispatch(deletedSpot(spotId));
-    console.log(dataset, 'Spots', spots);
-    return Promise.resolve(dataset.spotIds);
-  };
-
   // Get only the Spots in the active Datasets
   const getActiveSpotsObj = () => {
     let activeSpots = {};
-    // const activeSpotIds = Object.values(datasets).flatMap(dataset => dataset.active ? dataset.spotIds || [] : []);
-    if (!isEmpty(datasets) && !isEmpty(activeDatasetsIds)) {
-      const activeDatasets = activeDatasetsIds.map(datasetId => datasets[datasetId]);
-      console.log('getActiveDatasetsFromId', activeDatasets);
-      const activeSpotIds = activeDatasets.flatMap(dataset => {
-        if (dataset.spotIds && !isEmpty(dataset.spotIds)) return dataset.spotIds;
-        return;
-      });
-      activeSpotIds.map(spotId => {
-        if (spots[spotId]) activeSpots = {...activeSpots, [spotId]: spots[spotId]};
-        else console.log('Missing Spot', spotId);
-      });
-    }
+    const activeDatasets = useProject.getActiveDatasets();
+    console.log('getActiveDatasetsFromId', activeDatasets);
+    const activeSpotIds = activeDatasets.flatMap(dataset => {
+      if (dataset && dataset.spotIds && !isEmpty(dataset.spotIds)) return dataset.spotIds;
+    });
+    // Check for undefined Spot Ids and Spots referenced in a dataset but do not exist in the spots object
+    activeSpotIds.map(spotId => {
+      if (spots[spotId]) activeSpots = {...activeSpots, [spotId]: spots[spotId]};
+      else console.log('Missing Spot', spotId);
+    });
     return activeSpots;
   };
 
@@ -262,7 +253,6 @@ const useSpots = (props) => {
     copySpot: copySpot,
     createSpot: createSpot,
     deleteSpot: deleteSpot,
-    deleteSpotsFromDataset: deleteSpotsFromDataset,
     getActiveSpotsObj: getActiveSpotsObj,
     getImageBasemaps: getImageBasemaps,
     getMappableSpots: getMappableSpots,

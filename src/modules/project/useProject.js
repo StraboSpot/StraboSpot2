@@ -1,8 +1,9 @@
-import {Alert, Platform} from 'react-native';
+import {Platform} from 'react-native';
 
 import {useDispatch, useSelector, batch} from 'react-redux';
 import RNFetchBlob from 'rn-fetch-blob';
 
+import useDeviceHook from '../../services/useDevice';
 import useServerRequests from '../../services/useServerRequests';
 import {getNewId, isEmpty} from '../../shared/Helpers';
 import {
@@ -10,25 +11,24 @@ import {
   clearedStatusMessages,
   removedLastStatusMessage,
   setInfoMessagesModalVisible,
+  setLoadingStatus,
   setStatusMessagesModalVisible,
 } from '../home/home.slice';
-import {addedMapsFromDevice, clearedMaps} from '../maps/maps.slice';
-import {addedSpotsFromDevice, clearedSpots} from '../spots/spots.slice';
-import useSpotsHook from '../spots/useSpots';
+import {clearedMaps} from '../maps/maps.slice';
+import {clearedSpots, deletedSpot} from '../spots/spots.slice';
 import {DEFAULT_GEOLOGIC_TYPES, DEFAULT_RELATIONSHIP_TYPES} from './project.constants';
 import {
   addedDataset,
-  addedProject,
   addedProjectDescription,
   clearedDatasets,
   clearedProject,
   deletedDataset,
+  deletedSpotIdFromDataset,
   setActiveDatasets,
   setSelectedDataset,
 } from './projects.slice';
 import useDownloadHook from './useDownload';
 import useImportHook from './useImport';
-import useDeviceHook from '../../services/useDevice';
 
 const useProject = () => {
   let dirs = RNFetchBlob.fs.dirs;
@@ -47,9 +47,8 @@ const useProject = () => {
 
   const useImport = useImportHook();
   const [serverRequests] = useServerRequests();
-  const [useSpots] = useSpotsHook();
   const useDownload = useDownloadHook();
-  const useDevice = useDeviceHook()
+  const useDevice = useDeviceHook();
 
   const addDataset = async name => {
     const datasetObj = createDataset(name);
@@ -131,31 +130,34 @@ const useProject = () => {
     dispatch(addedDataset(defaultDataset));
   };
 
-  const destroyDataset = (id) => {
-    let spotsDeletedCount = 0;
-    if (datasets && datasets[id] && datasets[id].spotIds) {
-      return Promise.all(datasets[id].spotIds.map(spotId => {
-          console.log('SpotIds', spotId);
-          useSpots.deleteSpotsFromDataset(datasets[id], spotId).then((spotIdsArr) => {
+  const destroyDataset = async (id) => {
+    try {
+      dispatch(setStatusMessagesModalVisible(true));
+      dispatch(setLoadingStatus({view: 'modal', bool: true}));
+      dispatch(clearedStatusMessages());
+      dispatch(addedStatusMessage({statusMessage: 'Deleting Dataset...'}));
+      if (datasets && datasets[id] && datasets[id].spotIds) {
+        let spotsDeletedCount = 0;
+        console.log(datasets[id].spotIds.length, 'Spot(s) in Dataset to Delete.');
+        await Promise.all(datasets[id].spotIds.map(spotId => {
+            dispatch(deletedSpotIdFromDataset({spotId: spotId, dataset: datasets[id]}));
+            dispatch(deletedSpot(spotId));
             spotsDeletedCount++;
-            console.log(spotId, 'Current Spot Deleted Count:', spotsDeletedCount);
-            console.log('DeleteSpot()', spotIdsArr);
-            if (isEmpty(spotIdsArr)) {
-              dispatch(removedLastStatusMessage());
-              dispatch(addedStatusMessage({statusMessage: `Deleted ${spotsDeletedCount} spots.`}));
-              dispatch(deletedDataset(id));
-              dispatch(addedStatusMessage({statusMessage: 'Dataset Deleted!'}));
-            }
-          });
-        }),
-      );
-    }
-    else {
+            console.log('Deleted', spotsDeletedCount, 'Spot(s)');
+            console.log('Spot Ids in Dataset:', datasets[id].spotIds);
+          }),
+        );
+      }
       dispatch(deletedDataset(id));
       dispatch(removedLastStatusMessage());
-      dispatch(addedStatusMessage({statusMessage: 'Dataset Deleted!'}));
-      return Promise.resolve();
+      dispatch(addedStatusMessage({statusMessage: 'Finished Deleting Dataset.'}));
     }
+    catch (err) {
+      console.log('Error Deleting Dataset.');
+      dispatch(removedLastStatusMessage());
+      dispatch(addedStatusMessage({statusMessage: 'Error Deleting Dataset.'}));
+    }
+    dispatch(setLoadingStatus({view: 'modal', bool: false}));
   };
 
   const destroyOldProject = () => {
@@ -177,6 +179,11 @@ const useProject = () => {
       return await RNFetchBlob.fs.isDir(devicePath + appDirectoryForDistributedBackups + '/' + subDirectory);
     }
     else return await RNFetchBlob.fs.isDir(devicePath + appDirectoryForDistributedBackups);
+  };
+
+  const getActiveDatasets = () => {
+    const activeDatasets = activeDatasetsIds.map(datasetId => datasets[datasetId]);
+    return activeDatasets.filter(activeDataset => !isEmpty(activeDataset));
   };
 
   const initializeNewProject = async (descriptionData) => {
@@ -283,31 +290,25 @@ const useProject = () => {
     }
   };
 
-  // Upload Dataset Properties
   const setSwitchValue = async (val, dataset) => {
-    const areActiveDatasetsEmpty = isEmpty(activeDatasetsIds);
-
-    if (isOnline && !isEmpty(user) && val) {
-
-      dispatch(setActiveDatasets({bool: val, dataset: dataset.id}));
-      dispatch(setSelectedDataset(dataset.id));
-      if (isEmpty(dataset.spotIds)) {
-        dispatch(setStatusMessagesModalVisible(true));
-        dispatch(clearedStatusMessages());
-        const res = await useDownload.downloadSpots(dataset, user.encoded_login);
-        if (res === 'No Spots!') {
-          dispatch(addedStatusMessage({statusMessage: 'No Spots!'}));
+    try {
+      if (isOnline && !isEmpty(user) && val) {
+        dispatch(setActiveDatasets({bool: val, dataset: dataset.id}));
+        dispatch(setSelectedDataset(dataset.id));
+        if (isEmpty(dataset.spotIds)) {
+          dispatch(setLoadingStatus({view: 'modal', bool: true}));
+          dispatch(setStatusMessagesModalVisible(true));
+          dispatch(clearedStatusMessages());
+          await useDownload.downloadSpots(dataset, user.encoded_login);
           dispatch(addedStatusMessage({statusMessage: 'Download Complete!'}));
         }
-        else dispatch(addedStatusMessage({statusMessage: 'Download Complete!'}));
       }
-      // if (val && areActiveDatasetsEmpty) dispatch(setSelectedDataset(dataset.id));
-      return Promise.resolve();
+      else dispatch(setActiveDatasets({bool: val, dataset: dataset.id}));
     }
-    else {
-      dispatch(setActiveDatasets({bool: val, dataset: dataset.id}));
+    catch (err) {
+      console.log('Error setting switch value.');
     }
-    return Promise.resolve();
+    dispatch(setLoadingStatus({view: 'modal', bool: false}));
   };
 
   const projectHelpers = {
@@ -317,6 +318,7 @@ const useProject = () => {
     destroyDataset: destroyDataset,
     destroyOldProject: destroyOldProject,
     doesDeviceBackupDirExist: doesDeviceBackupDirExist,
+    getActiveDatasets: getActiveDatasets,
     getAllDeviceProjects: getAllDeviceProjects,
     getAllServerProjects: getAllServerProjects,
     getSelectedDatasetFromId: getSelectedDatasetFromId,

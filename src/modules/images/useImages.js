@@ -6,10 +6,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import RNFetchBlob from 'rn-fetch-blob';
 
 import {getNewId} from '../../shared/Helpers';
-import {
-  addedStatusMessage,
-  removedLastStatusMessage,
-} from '../home/home.slice';
+import {addedStatusMessage, removedLastStatusMessage} from '../home/home.slice';
 import useHomeHook from '../home/useHome';
 import {setCurrentImageBasemap} from '../maps/maps.slice';
 import {
@@ -27,7 +24,6 @@ const useImages = () => {
   const devicePath = Platform.OS === 'ios' ? dirs.DocumentDir : dirs.SDCardDir; // ios : android
   const appDirectory = '/StraboSpot';
   const imagesDirectory = devicePath + appDirectory + '/Images';
-  const tempImagesDownsizedDirectory = devicePath + appDirectory + '/TempImages';
   // const testUrl = 'https://strabospot.org/testimages/images.json';
   // const missingImage = require('../../assets/images/noimage.jpg');
 
@@ -121,12 +117,12 @@ const useImages = () => {
     return imageIds;
   };
 
-  const gatherNeededImages = async (spots) => {
+  const gatherNeededImages = async (spotsOnServer) => {
     try {
       let neededImagesIds = [];
       console.log('Gathering Needed Images...');
       dispatch(addedStatusMessage({statusMessage: 'Gathering Needed Images...'}));
-      const imageIds = await getAllImagesIds(spots);
+      const imageIds = await getAllImagesIds(spotsOnServer);
       await Promise.all(
         imageIds.map(async (imageId) => {
           const doesExist = await doesImageExistOnDevice(imageId);

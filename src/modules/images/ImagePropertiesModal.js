@@ -8,7 +8,6 @@ import Modal from '../../shared/ui/modal/Modal';
 import uiStyles from '../../shared/ui/ui.styles';
 import {Form, useFormHook} from '../form';
 import {editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
-import useSpotsHook from '../spots/useSpots';
 import styles from './images.styles';
 
 const ImagePropertiesModal = (props) => {
@@ -18,18 +17,11 @@ const ImagePropertiesModal = (props) => {
   const [useForm] = useFormHook();
   const [annotated, setAnnotated] = useState(selectedImage.annotated);
   const form = useRef(null);
-  const [useSpots] = useSpotsHook();
 
+  // What happens after submitting the form is handled in saveFormAndGo since we want to show
+  // an alert message if there are errors but this function won't be called if form is invalid
   const onSubmitForm = () => {
-    // if (useForm.hasErrors(form)) useForm.showErrors(form);
-    // else {
-    //   console.log('Saving form data to Spot ...', form.current.values);
-    //   let images = props.spot.properties.images;
-    //   const i = images.findIndex(imageId => imageId.id === form.current.values.id);
-    //   images[i] = form.current.values;
-    //   props.onSpotEdit('images', images);
-    //   props.close();
-    // }
+    console.log('In onSubmitForm');
   };
 
   const renderFormFields = () => {
@@ -80,7 +72,7 @@ const ImagePropertiesModal = (props) => {
             <View style={styles.switch}>
               <Text style={{marginLeft: 10, fontSize: 16}}>Use as Image-basemap</Text>
               <Switch
-                onValueChange={(annotated) => setAnnotated(annotated)}
+                onValueChange={(a) => setAnnotated(a)}
                 value={annotated}
               />
             </View>

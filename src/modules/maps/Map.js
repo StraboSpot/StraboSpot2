@@ -1282,10 +1282,10 @@ const Map = React.forwardRef((props, ref) => {
       let bottom = mapBounds[1][1];
       let bbox = [left, bottom, right, top];
       const bboxPoly = turf.bboxPolygon(bbox);
-      const spotsInMapExtent = await useMapFeatures.getLassoedSpots(
+      const gotSpotsInMapExtent = await useMapFeatures.getLassoedSpots(
         [...mapProps.spotsSelected, ...mapProps.spotsNotSelected],
         bboxPoly);
-      dispatch(setSpotsInMapExtent(spotsInMapExtent));
+      dispatch(setSpotsInMapExtent(gotSpotsInMapExtent));
     }
   };
 

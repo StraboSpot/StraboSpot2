@@ -1,74 +1,39 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {ScrollView, Switch, Text, View} from 'react-native';
 
 import {Button, Icon, ListItem} from 'react-native-elements';
-import {BallIndicator} from 'react-native-indicators';
-import Dialog, {
-  DialogTitle,
-  DialogButton,
-  DialogFooter,
-  FadeAnimation,
-} from 'react-native-popup-dialog';
+import Dialog, {DialogButton, DialogFooter, DialogTitle, FadeAnimation} from 'react-native-popup-dialog';
 import {useDispatch, useSelector} from 'react-redux';
 
-import sharedDialogStyles from '../../shared/common.styles';
 import {isEmpty, truncateText} from '../../shared/Helpers';
 import TexInputModal from '../../shared/ui/GeneralTextInputModal';
-import Loading from '../../shared/ui/Loading';
-import StatusDialogBox from '../../shared/ui/StatusDialogBox';
-import {
-  addedStatusMessage,
-  clearedStatusMessages,
-  setProjectLoadComplete,
-  setStatusMessagesModalVisible,
-} from '../home/home.slice';
+import {setProjectLoadComplete} from '../home/home.slice';
 import useProjectHook from '../project/useProject';
 import styles from './project.styles';
 import {updatedDatasetProperties} from './projects.slice';
 
 const DatasetList = () => {
-
   const [useProject] = useProjectHook();
-  const [loading, setLoading] = useState(false);
-  const [selectedDataset, setSelectedDatasetProperties] = useState({});
+
   const [isDeleteConfirmModalVisible, setIsDeleteConfirmModalVisible] = useState(false);
   const [isDatasetNameModalVisible, setIsDatasetNameModalVisible] = useState(false);
-  const [isStatusMessagesModalVisible, setIsStatusMessagesModalVisible] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
-  const selectedDatasetId = useSelector(state => state.project.selectedDatasetId);
+  const [selectedDataset, setSelectedDatasetProperties] = useState({});
+
+  const dispatch = useDispatch();
   const activeDatasetsIds = useSelector(state => state.project.activeDatasetsIds);
   const datasets = useSelector(state => state.project.datasets);
-  const statusMessages = useSelector(state => state.home.statusMessages);
-  // const isOnline = useSelector(state => state.home.isOnline);
-  // const userData = useSelector(state => state.user);
-  const dispatch = useDispatch();
+  const selectedDatasetId = useSelector(state => state.project.selectedDatasetId);
 
-  useEffect(() => {
-    console.log('Datasets in useEffect', datasets);
-    console.log('States in useEffect', isDeleteConfirmModalVisible, isDatasetNameModalVisible);
-    deleteDataset();
-  }, [datasets, isDeleting, activeDatasetsIds, isStatusMessagesModalVisible, selectedDatasetId]);
-
-  const deleteDataset = () => {
-    if (!isDeleteConfirmModalVisible && !isDatasetNameModalVisible && isDeleting && selectedDataset && selectedDataset.id) {
-      setIsDeleting(false);
-      setLoading(true);
-      setIsStatusMessagesModalVisible(true);
-      dispatch(clearedStatusMessages());
-      dispatch(addedStatusMessage({statusMessage: 'Deleting Dataset...'}));
-      setTimeout(() => {
-        useProject.destroyDataset(selectedDataset.id).then(() => {
-          console.log('Dataset has been deleted!');
-          setLoading(false);
-        });
-      }, 500);
-    }
+  const editDataset = (id, name) => {
+    setSelectedDatasetProperties({name: name, id: id});
+    setIsDatasetNameModalVisible(true);
   };
 
-  const initializeDelete = () => {
+  const initializeDeleteDataset = () => {
     setIsDatasetNameModalVisible(false);
     setIsDeleteConfirmModalVisible(false);
-    setIsDeleting(true);
+    if (selectedDataset && selectedDataset.id) useProject.destroyDataset(selectedDataset.id).catch(console.log);
+    else console.error('Selected dataset or id is undefined!');
   };
 
   const isDisabled = (id) => {
@@ -80,35 +45,36 @@ const DatasetList = () => {
       return (
         <ScrollView>
           {Object.values(datasets).map((item, i, obj) => {
-            return <ListItem
-              key={item.id}
-              containerStyle={styles.projectDescriptionListContainer}
-              bottomDivider={i < obj.length - 1}
-            >
-              <Icon
-                name='edit'
-                type={'material'}
-                size={20}
-                color='darkgrey'
-                onPress={() => _selectedDataset(item.id, item.name)}
-              />
-              <ListItem.Content>
-                <ListItem.Title
-                  style={styles.datasetListItemText}>{truncateText(item.name, 20)}
-                </ListItem.Title>
-                <ListItem.Subtitle style={styles.datasetListItemSpotCount}>
-                  {item.spotIds
-                    ? `(${item.spotIds.length} spot${item.spotIds.length !== 1 ? 's' : ''})`
-                    : '(0 spots)'}
-                </ListItem.Subtitle>
-              </ListItem.Content>
-              <Switch
-                onValueChange={(value) => setSwitchValue(value, item)}
-                value={activeDatasetsIds.some(dataset => dataset === item.id)}
-                // value={false}
-                disabled={isDisabled(item.id)}
-              />
-            </ListItem>;
+            return (
+              <ListItem
+                key={item.id}
+                containerStyle={styles.projectDescriptionListContainer}
+                bottomDivider={i < obj.length - 1}
+              >
+                <Icon
+                  name='edit'
+                  type={'material'}
+                  size={20}
+                  color='darkgrey'
+                  onPress={() => editDataset(item.id, item.name)}
+                />
+                <ListItem.Content>
+                  <ListItem.Title
+                    style={styles.datasetListItemText}>{truncateText(item.name, 20)}
+                  </ListItem.Title>
+                  <ListItem.Subtitle style={styles.datasetListItemSpotCount}>
+                    {item.spotIds
+                      ? `(${item.spotIds.length} spot${item.spotIds.length !== 1 ? 's' : ''})`
+                      : '(0 spots)'}
+                  </ListItem.Subtitle>
+                </ListItem.Content>
+                <Switch
+                  onValueChange={(value) => setSwitchValue(value, item)}
+                  value={activeDatasetsIds.some(dataset => dataset === item.id)}
+                  disabled={isDisabled(item.id)}
+                />
+              </ListItem>
+            );
           })}
         </ScrollView>);
     }
@@ -131,7 +97,6 @@ const DatasetList = () => {
             titleStyle={{color: 'red'}}
             type={'clear'}
             disabled={isDisabled(selectedDataset.id)}
-            // disabledTitleStyle={{color: 'yellow'}}
             buttonStyle={{paddingTop: 20, padding: 0}}
             onPress={() => setIsDeleteConfirmModalVisible(true)}
             icon={
@@ -146,8 +111,9 @@ const DatasetList = () => {
           />
           {isDisabled(selectedDataset.id) && (
             <View>
-              <Text style={[styles.dialogContentImportantText, {paddingTop: 10, textAlign: 'center'}]}>{selectedDataset.name} can not be
-                deleted while still selected as the current dataset.</Text>
+              <Text style={[styles.dialogContentImportantText, {paddingTop: 10, textAlign: 'center'}]}>
+                {selectedDataset.name} can not be deleted while still selected as the current dataset.
+              </Text>
             </View>
           )}
         </TexInputModal>
@@ -155,80 +121,40 @@ const DatasetList = () => {
     );
   };
 
-  const renderDeleteConformationModal = () => {
+  const renderDeleteConfirmationModal = () => {
     return (
       <Dialog
         dialogStyle={[styles.dialogBox, {position: 'absolute', top: '25%'}]}
         width={300}
         visible={isDeleteConfirmModalVisible}
-        dialogAnimation={new FadeAnimation({
-          animationDuration: 300,
-          useNativeDriver: true,
-        })}
+        dialogAnimation={new FadeAnimation({animationDuration: 300, useNativeDriver: true})}
         useNativeDriver={true}
         dialogTitle={
           <DialogTitle
             style={styles.dialogTitle}
             textStyle={styles.dialogTitleText}
-            title={'Confirm Delete!'}/>
+            title={'Confirm Delete!'}
+          />
         }
         footer={
           <DialogFooter>
-            <DialogButton text={'Delete'} onPress={() => initializeDelete()}/>
+            <DialogButton text={'Delete'} onPress={() => initializeDeleteDataset()}/>
             <DialogButton text={'Cancel'} onPress={() => setIsDeleteConfirmModalVisible(false)}/>
           </DialogFooter>
         }
       >
         <View style={styles.dialogContent}>
-          <Text style={{textAlign: 'center'}}>Are you sure you want to delete
+          <Text style={{textAlign: 'center'}}>Are you sure you want to delete Dataset
             {selectedDataset && selectedDataset.name
-              ? <Text style={styles.dialogContentImportantText}>{'\n' + selectedDataset.name}</Text>
-              : null
-            }
+            && <Text style={styles.dialogContentImportantText}>{'\n' + selectedDataset.name}</Text>}
             ?
           </Text>
-          <Text style={styles.dialogConfirmText}>This will<Text style={styles.dialogContentImportantText}>ERASE</Text>
-            everything in this dataset including features, images, and all other data!</Text>
-          <Text style={styles.dialogConfirmText}>Do you want to delete?</Text>
+          <Text style={styles.dialogConfirmText}>This will
+            <Text style={styles.dialogContentImportantText}> ERASE </Text>
+            everything in this dataset including Spots, images, and all other data!
+          </Text>
         </View>
       </Dialog>
-    );
-  };
-
-  const renderStatusDialogBox = () => {
-    return (
-      <StatusDialogBox
-        dialogTitle={'Delete Status'}
-        style={sharedDialogStyles.dialogTitleSuccess}
-        visible={isStatusMessagesModalVisible}
-        onTouchOutside={() => dispatch(setStatusMessagesModalVisible(false))}
-        // disabled={progress !== 1 && !uploadErrors}
-      >
-        <View style={{height: 100}}>
-
-          {loading
-            ? (
-              <View style={{flex: 1}}>
-                <BallIndicator
-                  color={'darkgrey'}
-                  count={8}
-                  size={30}
-                />
-              </View>
-            )
-            : null
-          }
-          <View style={{flex: 1, paddingTop: 10}}>
-            <Text style={{textAlign: 'center'}}>{statusMessages.join('\n')}</Text>
-            {!loading && <Button
-              title={'OK'}
-              containerStyle={{paddingTop: 15}}
-              type={'clear'}
-              onPress={() => setIsStatusMessagesModalVisible(false)}
-            />}
-          </View>
-        </View>
-      </StatusDialogBox>
     );
   };
 
@@ -237,25 +163,16 @@ const DatasetList = () => {
     setIsDatasetNameModalVisible(false);
   };
 
-  const _selectedDataset = (id, name) => {
-    setSelectedDatasetProperties({name: name, id: id});
-    setIsDatasetNameModalVisible(true);
-  };
-
   const setSwitchValue = async (val, dataset) => {
-    setLoading(true);
     await useProject.setSwitchValue(val, dataset);
-    setLoading(false);
     dispatch(setProjectLoadComplete(true));
   };
 
   return (
-    <View style={{flex: 1}}>
-      {renderStatusDialogBox()}
+    <View>
       {renderDatasets()}
       {renderDatasetNameChangeModal()}
-      {renderDeleteConformationModal()}
-      {loading && <Loading style={{backgroundColor: 'transparent'}}/>}
+      {renderDeleteConfirmationModal()}
     </View>
   );
 };

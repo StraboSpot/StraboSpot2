@@ -14,6 +14,7 @@ import {
   setStatusMessagesModalVisible,
 } from '../home/home.slice';
 import Divider from '../main-menu-panel/MainMenuPanelDivider';
+import useProjectHook from '../project/useProject';
 import projectStyles from './project.styles';
 import UploadDialogBox from './UploadDialogBox';
 import useExportHook from './useExport';
@@ -21,11 +22,10 @@ import useUploadHook from './useUpload';
 
 const UploadBackAndExport = (props) => {
   const useExport = useExportHook();
+  const [useProject] = useProjectHook();
   const useUpload = useUploadHook();
 
   const dispatch = useDispatch();
-  const datasets = useSelector(state => state.project.datasets);
-  const activeDatasetsIds = useSelector(state => state.project.activeDatasetsIds);
   const isOnline = useSelector(state => state.home.isOnline);
   const project = useSelector(state => state.project.project);
 
@@ -44,14 +44,13 @@ const UploadBackAndExport = (props) => {
       await useExport.backupProjectToDevice(exportFileName);
       console.log(`File ${exportFileName} has been backed up`);
       dispatch(addedStatusMessage({statusMessage: '---------------'}));
-      dispatch(setLoadingStatus({view: 'modal', bool: false}));
       await dispatch(addedStatusMessage({statusMessage: 'Project Backup Complete!'}));
     }
     catch (err) {
-      dispatch(setLoadingStatus({view: 'modal', bool: false}));
       console.error('Error Backing Up Project!', err);
       dispatch(addedStatusMessage({statusMessage: 'Error Backing Up Project!'}));
     }
+    dispatch(setLoadingStatus({view: 'modal', bool: false}));
   };
 
   const onShareProjectAsCSV = () => {
@@ -129,7 +128,7 @@ const UploadBackAndExport = (props) => {
 
   const renderDialogBox = () => {
     if (dialogBoxType === 'upload') {
-      const activeDatasets = activeDatasetsIds.map(datasetId => datasets[datasetId]);
+      const activeDatasets = useProject.getActiveDatasets();
       return (
         <UploadDialogBox
           dialogTitle={'OVERWRITE WARNING!'}
@@ -188,16 +187,15 @@ const UploadBackAndExport = (props) => {
     try {
       await useUpload.uploadProject();
       await useUpload.uploadDatasets();
-      dispatch(setLoadingStatus({view: 'modal', bool: false}));
       dispatch(addedStatusMessage({statusMessage: 'Upload Complete!'}));
       console.log('Upload Complete');
     }
     catch (err) {
-      dispatch(setLoadingStatus({view: 'modal', bool: false}));
       dispatch(addedStatusMessage({statusMessage: '----------'}));
       dispatch(addedStatusMessage({statusMessage: 'Upload Failed!'}));
       console.error('Upload Failed!');
     }
+    dispatch(setLoadingStatus({view: 'modal', bool: false}));
   };
 
 
