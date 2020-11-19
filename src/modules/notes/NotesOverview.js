@@ -16,19 +16,23 @@ const SpotNotesOverview = props => {
 
   return (
     <View>
-      {savedNote ? <View style={noteStyles.notesOverviewContainer}>
-        <View>
-          <Text style={props.style}>{truncateText(savedNote, 750)}</Text>
+      {savedNote ? (
+        <View style={noteStyles.notesOverviewContainer}>
+          <View>
+            <Text style={props.style}>{truncateText(savedNote, 750)}</Text>
+          </View>
+          <View style={{flex: 1, justifyContent: 'flex-start'}}/>
         </View>
-        <View style={{flex: 1, justifyContent: 'flex-start'}}/>
-      </View> : <Text style={commonStyles.noValueText}>No Notes</Text>}
-      {savedNote && <View style={noteStyles.editButton}>
-        <Button
-          title={'Edit'}
-          onPress={() => dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.NOTE))}
-          style={noteStyles.editButton}
-        />
-      </View>}
+      ) : <Text style={commonStyles.noValueText}>No Notes</Text>}
+      {savedNote && (
+        <View style={noteStyles.editButton}>
+          <Button
+            title={'Edit'}
+            onPress={() => dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.NOTE))}
+            style={noteStyles.editButton}
+          />
+        </View>
+      )}
     </View>
   );
 };
