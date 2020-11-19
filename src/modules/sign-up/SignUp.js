@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Alert, Text, View, TextInput, StyleSheet, KeyboardAvoidingView, ImageBackground} from 'react-native';
+import {Text, View, KeyboardAvoidingView, ImageBackground} from 'react-native';
 
 import NetInfo from '@react-native-community/netinfo';
 import {Button, Input} from 'react-native-elements';
@@ -13,20 +13,20 @@ import DefaultCheckBox from '../../shared/ui/Checkbox';
 import IconButton from '../../shared/ui/IconButton';
 import Loading from '../../shared/ui/Loading';
 import StatusDialog from '../../shared/ui/StatusDialogBox';
-import styles from './signUp.styles';
 import {setOnlineStatus} from '../home/home.slice';
+import styles from './signUp.styles';
 
 const checkMark = {type: 'feather', name: 'check', color: 'green'};
 
-const SignUp = props => {
+const SignUp = (props) => {
   const online = require('../../assets/icons/ConnectionStatusButton_connected.png');
   const offline = require('../../assets/icons/ConnectionStatusButton_offline.png');
 
   const dispatch = useDispatch();
   const isOnline = useSelector(state => state.home.isOnline);
+
   const [serverRequests] = useServerRequests();
 
-  const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
   const [statusDialog, setStatusDialog] = useState(false);
   const [statusMessage, setStatusMessage] = useState(null);
@@ -76,12 +76,6 @@ const SignUp = props => {
   });
 
   useEffect(() => {
-    return function cleanUp() {
-      console.log('exited sign-up');
-    };
-  }, []);
-
-  useEffect(() => {
     if (isOnline === null) {
       NetInfo.fetch().then(state => {
         dispatch(setOnlineStatus({bool: state.isConnected}));
@@ -114,21 +108,21 @@ const SignUp = props => {
       };
     }
 
-    setUserData({
-      ...userData,
+    setUserData(prevState => ({
+      ...prevState,
       confirmPassword: {
-        ...userData.confirmPassword,
+        ...prevState.confirmPassword,
         valid: key === 'password'
-          ? validate(userData.confirmPassword.value, userData.confirmPassword.validationRules, connectedValue)
-          : userData.confirmPassword.valid,
+          ? validate(prevState.confirmPassword.value, prevState.confirmPassword.validationRules, connectedValue)
+          : prevState.confirmPassword.valid,
       },
       [key]: {
-        ...userData[key],
+        ...prevState[key],
         value: value,
-        valid: validate(value, userData[key].validationRules, connectedValue),
+        valid: validate(value, prevState[key].validationRules, connectedValue),
         touched: true,
       },
-    });
+    }));
   };
 
   const signUp = async () => {
@@ -139,20 +133,16 @@ const SignUp = props => {
       const newUser = await serverRequests.registerUser(userData);
       console.log('res', newUser);
       if (newUser.valid) {
-        setError(false);
         if (newUser.message.includes('A confirmation link has been emailed')) {
           setStatusDialogTitle('Welcome!');
           console.log('user successfully signed up!: ');
         }
-        else {
-          setStatusDialogTitle('Something went wrong...!');
-        }
+        else setStatusDialogTitle('Something went wrong...!');
         setLoading(false);
         setStatusDialog(true);
         setStatusMessage(newUser.message);
       }
       else {
-        setError(true);
         setLoading(false);
         setStatusDialogTitle('Uh Oh!');
         setStatusMessage(newUser.message);
@@ -160,7 +150,6 @@ const SignUp = props => {
     }
     catch (err) {
       console.log('error signing up: ', err);
-      setError(true);
       setLoading(false);
       setStatusMessage('Error signing up. \n Possible bad network connection');
       setStatusDialog(true);
@@ -168,15 +157,13 @@ const SignUp = props => {
   };
 
   const toggleCheck = () => {
-    setUserData(prevState => {
-      return {
-        ...userData,
-        password: {
-          ...userData.password,
-          showPassword: !userData.password.showPassword,
-        },
-      };
-    });
+    setUserData(prevState => ({
+      ...prevState,
+      password: {
+        ...prevState.password,
+        showPassword: !prevState.password.showPassword,
+      },
+    }));
   };
 
   const renderButtons = () => {
@@ -218,7 +205,6 @@ const SignUp = props => {
         <KeyboardAvoidingView
           behavior={'position'}
           contentContainerStyle={{alignItems: 'center', marginTop: 100}}
-          // keyboardVerticalOffset={100}
         >
           <View>
             <View style={styles.titleContainer}>
@@ -231,7 +217,6 @@ const SignUp = props => {
                   <Input
                     containerStyle={styles.input}
                     inputContainerStyle={styles.inputContainer}
-                    // label={'First Name'}
                     placeholder={'First Name'}
                     onChangeText={val => onChangeText('firstName', val)}
                   />
@@ -286,9 +271,7 @@ const SignUp = props => {
                 visible={statusDialog}
                 dialogTitle={statusDialogTitle}
                 onTouchOutside={() => setStatusDialog(false)}
-                dialogAnimation={new SlideAnimation({
-                  slideFrom: 'bottom',
-                })}
+                dialogAnimation={new SlideAnimation({slideFrom: 'bottom'})}
               >
                 <Text>{statusMessage}</Text>
               </StatusDialog>
@@ -296,7 +279,7 @@ const SignUp = props => {
           </View>
         </KeyboardAvoidingView>
       </View>
-      {loading ? <Loading/> : null}
+      {loading && <Loading/>}
     </ImageBackground>
   );
 };
