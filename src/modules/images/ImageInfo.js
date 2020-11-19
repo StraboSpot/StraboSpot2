@@ -1,10 +1,11 @@
 import React, {useState} from 'react';
-import {ActivityIndicator, View} from 'react-native';
+import {ActivityIndicator, Alert, View} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
 import {Image} from 'react-native-elements';
 
 import IconButton from '../../shared/ui/IconButton';
+import useSpotsHook from '../spots/useSpots';
 import ImagePropertiesModal from './ImagePropertiesModal';
 import styles from './images.styles';
 import useImagesHook from './useImages';
@@ -13,6 +14,7 @@ const ImageInfo = (props) => {
   const [isImagePropertiesModalVisible, setIsImagePropertiesModalVisible] = useState(false);
   const [imageProps] = useState(props.route.params.imageId);
   const [useImages] = useImagesHook();
+  const [useSpots] = useSpotsHook();
   const navigation = useNavigation();
 
   const clickHandler = (name) => {
@@ -26,6 +28,11 @@ const ImageInfo = (props) => {
 
   const closeModal = () => {
     setIsImagePropertiesModalVisible(false);
+  };
+
+  const deleteImage = async (imageId) => {
+    const isImageDeleted = await useImages.deleteImage(imageId, useSpots.getSpotByImageId(imageId));
+    if (isImageDeleted) navigation.goBack();
   };
 
   return (
@@ -58,6 +65,24 @@ const ImageInfo = (props) => {
           style={styles.imageInfoButtons}
           source={require('../../assets/icons/SketchButton.png')}
           onPress={() => clickHandler('sketch')}
+        />
+        <IconButton
+          style={styles.imageInfoButtons}
+          source={require('../../assets/icons/Delete.png')} onPress={() =>
+          Alert.alert(
+            'Deleting image ' + imageProps, 'Are you sure you want to delete image ' + imageProps,
+            [
+              {
+                text: 'Cancel',
+                onPress: () => console.log('Cancel Pressed'),
+                style: 'cancel',
+              },
+              {
+                text: 'OK', onPress: () => deleteImage(imageProps),
+              },
+            ],
+            {cancelable: false},
+          )}
         />
       </View>
     </View>

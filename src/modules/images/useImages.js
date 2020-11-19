@@ -12,7 +12,13 @@ import {
 } from '../home/home.slice';
 import useHomeHook from '../home/useHome';
 import {setCurrentImageBasemap} from '../maps/maps.slice';
-import {editedSpotImage, editedSpotImages, editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
+import {
+  editedSpotImage,
+  editedSpotImages,
+  editedSpotProperties,
+  setSelectedAttributes,
+  setSelectedSpot,
+} from '../spots/spots.slice';
 
 const RNFS = require('react-native-fs');
 
@@ -32,9 +38,28 @@ const useImages = () => {
   const dispatch = useDispatch();
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
+  const spots = useSelector(state => state.spot.spots);
 
   let imageCount = 0;
   let newImages = [];
+
+  const deleteImage = async (imageId,spotWithImage) => {
+    const spotsOnImage = Object.values(spots).filter(spot => spot.properties.image_basemap === imageId);
+    if (spotsOnImage && spotsOnImage.length >= 1) {
+      Alert.alert('Image Basemap contains Spots!', 'Delete the spots, before trying to delete the image');
+      return false;
+    }
+    else if (spotWithImage){
+      const imagesDataCopy = spotWithImage.properties.images;
+      const allOtherImages = imagesDataCopy.filter(item => imageId !== item.id);
+      dispatch(setSelectedSpot(spotWithImage));
+      dispatch(editedSpotProperties({field: 'images', value: allOtherImages}));
+      const localImageFile = getLocalImageURI(imageId);
+      const fileExists = await RNFS.exists(localImageFile);
+      if (fileExists) await RNFS.unlink(localImageFile);
+      return true;
+    }
+  };
 
   // Check to see if image is on the local device
   const doesImageExistOnDevice = async (imageId) => {
@@ -237,6 +262,7 @@ const useImages = () => {
   };
 
   return [{
+    deleteImage: deleteImage,
     doesImageExistOnDevice: doesImageExistOnDevice,
     editImage: editImage,
     gatherNeededImages: gatherNeededImages,
