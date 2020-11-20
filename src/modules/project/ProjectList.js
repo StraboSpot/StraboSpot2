@@ -151,7 +151,7 @@ const ProjectList = (props) => {
               key={props.source === 'device' ? item.id : item.id}
               containerStyle={{width: '100%'}}
               onPress={() => selectProject(item)}
-              disabled={!isOnline}
+              disabled={!isOnline && props.source !== 'device'}
               disabledStyle={{backgroundColor: 'lightgrey'}}
               bottomDivider
             >

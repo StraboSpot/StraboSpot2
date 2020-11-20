@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {View} from 'react-native';
 
 import {Button} from 'react-native-elements';
@@ -12,6 +12,10 @@ const ProjectTypesButtons = (props) => {
   const isOnline = useSelector(state => state.home.isOnline);
   const user = useSelector(state => state.user);
   const deviceBackUpDirectoryExists = useSelector(state => state.project.deviceBackUpDirectoryExists);
+
+  useEffect(() => {
+    console.log('DevdeviceBackUpDirectoryExists: ', deviceBackUpDirectoryExists);
+  }, [deviceBackUpDirectoryExists]);
 
   return (
     <View>

@@ -36,7 +36,6 @@ const useExport = () => {
   };
 
   const backupProjectToDevice = async (exportedFileName) => {
-    await useDevice.doesDeviceDirectoryExist(devicePath + appDirectoryForDistributedBackups);
     await gatherDataForBackup(exportedFileName);
     await gatherOtherMapsForDistribution(exportedFileName);
     await gatherMapsForDistribution(dataForExport, exportedFileName);
@@ -172,6 +171,21 @@ const useExport = () => {
     }
   };
 
+  const initializeBackup = async (fileName) => {
+    try {
+      const hasBackupDir = await useDevice.doesDeviceBackupDirExist(devicePath + appDirectoryForDistributedBackups);
+      console.log('Has Backup Dir?: ', hasBackupDir);
+      if (hasBackupDir) await backupProjectToDevice(fileName);
+      else {
+        await useDevice.makeDirectory(appDirectoryForDistributedBackups);
+        await backupProjectToDevice(fileName);
+      }
+    }
+    catch (err) {
+      console.error('Error Backing Up Project!: ', err);
+    }
+  };
+
   const moveDistributedImage = async (image_id, fileName) => {
     try {
       const imageExists = await useDevice.doesDeviceFileExist(image_id, '.jpg');
@@ -213,6 +227,7 @@ const useExport = () => {
 
   return {
     backupProjectToDevice: backupProjectToDevice,
+    initializeBackup: initializeBackup,
   };
 };
 

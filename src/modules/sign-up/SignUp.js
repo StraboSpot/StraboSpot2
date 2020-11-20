@@ -78,7 +78,7 @@ const SignUp = (props) => {
   useEffect(() => {
     if (isOnline === null) {
       NetInfo.fetch().then(state => {
-        dispatch(setOnlineStatus({bool: state.isConnected}));
+        dispatch(setOnlineStatus(state.isConnected));
       })
         .catch(err => {
           throw (err);

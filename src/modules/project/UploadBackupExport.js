@@ -41,7 +41,7 @@ const UploadBackAndExport = (props) => {
       dispatch(addedStatusMessage({statusMessage: 'Backing up Project to Device...'}));
       dispatch(setLoadingStatus({view: 'modal', bool: true}));
       dispatch(setStatusMessagesModalVisible(true));
-      await useExport.backupProjectToDevice(exportFileName);
+      await useExport.initializeBackup(exportFileName);
       console.log(`File ${exportFileName} has been backed up`);
       dispatch(addedStatusMessage({statusMessage: '---------------'}));
       await dispatch(addedStatusMessage({statusMessage: 'Project Backup Complete!'}));

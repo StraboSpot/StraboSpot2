@@ -6,11 +6,12 @@ import {Button} from 'react-native-elements';
 import {Dialog, DialogTitle, DialogContent, SlideAnimation} from 'react-native-popup-dialog';
 import {useSelector, useDispatch} from 'react-redux';
 
+import useDeviceHook from '../../services/useDevice';
 import {REDUX} from '../../shared/app.constants';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import Spacer from '../../shared/ui/Spacer';
-import {setOnlineStatus} from '../home/home.slice';
+import {setSignedInStatus} from '../home/home.slice';
 import homeStyles from '../home/home.style';
 import {clearedSpots} from '../spots/spots.slice';
 import ActiveDatasetsList from './ActiveDatasetsList';
@@ -30,12 +31,22 @@ const InitialProjectLoadModal = (props) => {
   const [visibleProjectSection, setVisibleProjectSection] = useState('activeDatasetsList');
   const [visibleInitialSection, setVisibleInitialSection] = useState('none');
 
+  const useDevice = useDeviceHook();
+
   useEffect(() => {
-    console.log('UE InitialProjectLoadModal [isOnline]');
-    return function cleanUp() {
-      console.log('Initial Project Modal CleanUp');
-    };
+    doesBackupDirExist().then(exists => console.log('doesBackupDirExist: ', exists));
+  }, []);
+
+  useEffect(() => {
+    console.log('UE InitialProjectLoadModal [isOnline]', isOnline);
+    // return function cleanUp() {
+    //   console.log('Initial Project Modal CleanUp');
+    // };
   }, [isOnline]);
+
+  const doesBackupDirExist = async () => {
+    return await useDevice.doesDeviceBackupDirExist();
+  };
 
   const goBack = () => {
     if (visibleProjectSection === 'activeDatasetsList') {
@@ -63,7 +74,7 @@ const InitialProjectLoadModal = (props) => {
           titleStyle={commonStyles.standardButtonText}
           onPress={() => {
             if (userName) dispatch({type: REDUX.CLEAR_STORE});
-            dispatch(setOnlineStatus({bool: false}));
+            dispatch(setSignedInStatus(false));
             navigation.navigate('SignIn');
           }}
         />

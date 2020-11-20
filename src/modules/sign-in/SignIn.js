@@ -34,7 +34,7 @@ const SignIn = (props) => {
   const [serverRequests] = useServerRequests();
 
   useEffect(() => {
-    NetInfo.addEventListener(state => {
+    NetInfo.fetch().then(state => {
       dispatch(setOnlineStatus(state.isConnected));
     });
   }, [isOnline]);
