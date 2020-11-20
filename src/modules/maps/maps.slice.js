@@ -17,7 +17,7 @@ const initialMapsState = {
 };
 
 const mapsSlice = createSlice({
-  name: 'maps',
+  name: 'map',
   initialState: initialMapsState,
   reducers: {
     addedCustomMap(state, action) {
@@ -40,9 +40,9 @@ const mapsSlice = createSlice({
     deletedCustomMap(state, action) {
       state.customMaps = action.payload;
     },
-    // deletedOfflineMap(state, action) {
-    // NOT USED YET
-    // },
+    deletedOfflineMap(state, action) {
+      delete state.offlineMaps[action.payload];
+    },
     selectedCustomMapToEdit(state, action) {
       state.selectedCustomMapToEdit = action.payload;
     },

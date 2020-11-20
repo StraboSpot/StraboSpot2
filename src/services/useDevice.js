@@ -56,7 +56,7 @@ const useDevice = () => {
       }
     }
     dispatch(deletedOfflineMap(map.id));
-    console.log(`Deleted ${map.name} offlineMap from device.`);
+    console.log(`Deleted ${map.name} offline map from device.`);
   };
 
   const doesDeviceDirectoryExist = async (directory) => {
