@@ -12,7 +12,7 @@ import {
   addedStatusMessage,
   clearedStatusMessages,
   setErrorMessagesModalVisible,
-  setOnlineStatus,
+  setOfflineMapsModalVisible,
 } from '../home/home.slice';
 import {SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import {setMenuSelectionPage, setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
@@ -241,7 +241,7 @@ const useMaps = () => {
   const handleError = (message, err) => {
     dispatch(clearedStatusMessages());
     dispatch(addedStatusMessage({statusMessage: `${message} \n\n${err}`}));
-    dispatch(setOnlineStatus({bool: false}));
+    dispatch(setOfflineMapsModalVisible(false));
     dispatch(setErrorMessagesModalVisible(true));
   };
 
