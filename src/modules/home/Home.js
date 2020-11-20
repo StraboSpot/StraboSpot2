@@ -1,6 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {Alert, Animated, Dimensions, Platform, Text, View} from 'react-native';
 
+import NetInfo from '@react-native-community/netinfo';
 import * as Sentry from '@sentry/react-native';
 import * as turf from '@turf/turf';
 import {Button} from 'react-native-elements';
@@ -62,7 +63,7 @@ import {
   setProjectLoadSelectionModalVisible,
   setOfflineMapsModalVisible,
   setMainMenuPanelVisible,
-  setStatusMessagesModalVisible,
+  setStatusMessagesModalVisible, setOnlineStatus,
 } from './home.slice';
 import homeStyles from './home.style';
 import LeftSideButtons from './LeftSideButtons';
@@ -101,6 +102,7 @@ const Home = (props) => {
   const isProjectLoadSelectionModalVisible = useSelector(state => state.home.isProjectLoadSelectionModalVisible);
   const isNotebookPanelVisible = useSelector(state => state.notebook.isNotebookPanelVisible);
   const isMainMenuPanelVisible = useSelector(state => state.home.isMainMenuPanelVisible);
+  const isOnline = useSelector(state => state.home.isOnline);
   const isSidePanelVisible = useSelector(state => state.mainMenu.isSidePanelVisible);
   const selectedImage = useSelector(state => state.spot.selectedAttributes[0]);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
@@ -140,6 +142,26 @@ const Home = (props) => {
   const toastRef = useRef();
 
   useEffect(() => {
+    // useHome.checkOnlineStatus()
+    const unsubscribe = NetInfo.addEventListener(state => {
+      console.log('Is connected?', state.isConnected);
+      dispatch(setOnlineStatus(state.isConnected));
+      return function cleanUp() {
+        console.log('NetInfo unsubscribed')
+        unsubscribe();
+      };
+    });
+  }, [isOnline]);
+
+  useEffect(() => {
+    initialize().then((res) => {
+      dispatch(setProjectLoadSelectionModalVisible(res));
+      animatePanels(MainMenuPanelAnimation, -homeMenuPanelWidth);
+      animatePanels(leftsideIconAnimationValue, 0);
+    });
+  }, []);
+
+  useEffect(() => {
     // props.setDeviceDims(dimensions);
     // if (deviceDimensions.width < 500) {
     //   Orientation.unlockAllOrientations();
@@ -152,11 +174,6 @@ const Home = (props) => {
     }
     Dimensions.addEventListener('change', deviceOrientation);
     console.log('Initializing Home page');
-    initialize().then((res) => {
-      dispatch(setProjectLoadSelectionModalVisible(res));
-      animatePanels(MainMenuPanelAnimation, -homeMenuPanelWidth);
-      animatePanels(leftsideIconAnimationValue, 0);
-    });
     return function cleanup() {
       Dimensions.removeEventListener('change', deviceOrientation);
     };

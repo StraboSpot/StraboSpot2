@@ -29,13 +29,6 @@ const useHome = (props) => {
     return isEmpty(getCurrentProject);
   };
 
-  const checkForDeviceBackupDir = () => {
-    return RNFetchBlob.fs.isDir(devicePath + appDirectoryForDistributedBackups).then(doesExist => {
-      dispatch(doesBackupDirectoryExist(doesExist));
-      return Promise.resolve();
-    });
-  };
-
   const initializeHomePage = async () => {
     dispatch(setLoadingStatus({view: 'home', bool: false}));
     dispatch(setLoadingStatus({view: 'modal', bool: false}));
@@ -47,7 +40,6 @@ const useHome = (props) => {
     dispatch(setMenuSelectionPage({name: undefined}));
     dispatch(clearedStatusMessages());
     dispatch(setStatusMessagesModalVisible(false));
-    await checkForDeviceBackupDir();
     return checkForOpenProject();
   };
 

@@ -8,7 +8,7 @@ const initialHomeState = {
     imagesDownloadedCount: 0,
     neededImageIds: 0,
   },
-  isOnline: null,
+  isOnline: false,
   loading: {
     modal: false,
     home: false,
