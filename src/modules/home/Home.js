@@ -53,7 +53,6 @@ import {
 } from '../tags';
 import {MODALS} from './home.constants';
 import {
-  gotDeviceDimensions,
   setAllSpotsPanelVisible,
   setErrorMessagesModalVisible,
   setImageModalVisible,
@@ -73,7 +72,7 @@ import useHomeHook from './useHome';
 
 const Home = () => {
   const platform = Platform.OS === 'ios' ? 'window' : 'screen';
-  const deviceWidth = Dimensions.get(platform).width;
+  const deviceDimensions = Dimensions.get(platform);
   const homeMenuPanelWidth = 300;
   const mainMenuSidePanelWidth = 300;
   const notebookPanelWidth = 400;
@@ -90,7 +89,6 @@ const Home = () => {
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const currentProject = useSelector(state => state.project.project);
   const customMaps = useSelector(state => state.map.customMaps);
-  const deviceDimensions = useSelector(state => state.home.deviceDimensions);
   const isAllSpotsPanelVisible = useSelector(state => state.home.isAllSpotsPanelVisible);
   const isErrorMessagesModalVisible = useSelector(state => state.home.isErrorMessagesModalVisible);
   const isHomeLoading = useSelector(state => state.home.loading.home);
@@ -625,7 +623,7 @@ const Home = () => {
   };
 
   const renderSidePanelView = () => {
-    if (deviceDimensions < 600) {
+    if (deviceDimensions.width < 600) {
       return <Animated.View
         style={[sidePanelStyles.sidePanelContainerPhones, animateMainMenuSidePanel]}>
         {renderSidePanelContent()}
@@ -815,6 +813,9 @@ const Home = () => {
         isSelectingForStereonet={isSelectingForStereonet}
         isSelectingForTagging={isSelectingForTagging}
       />
+      {/*<View style={{position: 'absolute', right: '40%', bottom: 10, backgroundColor: 'white', padding: 10}}>*/}
+      {/*  <Text>ONLINE STATUS: {isOnline.toString()}</Text>*/}
+      {/*</View>*/}
       {vertexStartCoords && <VertexDrag/>}
       <ToastPopup toastRef={toastRef}/>
       {Platform.OS === 'android' && (
