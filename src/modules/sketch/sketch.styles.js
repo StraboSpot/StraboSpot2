@@ -17,13 +17,14 @@ const sketchStyles = StyleSheet.create({
     borderRadius: 50,
   },
   strokeWidthButton: {
-    marginHorizontal: 50,
+    marginHorizontal: 2.5,
     marginVertical: 20,
-    padding: 10,
+    width: 30,
+    height: 30,
     borderRadius: 15,
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 1,
+    backgroundColor: themes.BLUE,
   },
   functionButton: {
     marginHorizontal: 2.5,

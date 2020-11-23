@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Alert, Text, View} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
-import RNSketchCanvas, {SketchCanvas} from '@terrylinla/react-native-sketch-canvas';
+import RNSketchCanvas from '@terrylinla/react-native-sketch-canvas';
 import {useDispatch} from 'react-redux';
 
 import useImagesHook from '../images/useImages';
@@ -59,7 +59,7 @@ const Sketch = (props) => {
     <View style={styles.container}>
       <View style={{flex: 1, flexDirection: 'row'}}>
         <RNSketchCanvas
-          containerStyle={{backgroundColor: 'transparent', flex: 0}}
+          containerStyle={{backgroundColor: 'transparent', flex: 1}}
           canvasStyle={{
             backgroundColor: 'transparent',
             flex: 1,
@@ -67,48 +67,20 @@ const Sketch = (props) => {
             borderColor: 'grey',
           }}
           localSourceImage={{
-            filename: imageId + '.jpg', // e.g. 'image.png' or '/storage/sdcard0/Pictures/image.png'
-            directory: SketchCanvas.DOCUMENT + '/StraboSpot/Images', // e.g. SketchCanvas.MAIN_BUNDLE or '/storage/sdcard0/Pictures/'
+            filename: useImages.getLocalImageURI(imageId).replace('file://', ''),
             mode: 'AspectFit',
           }}
           defaultStrokeIndex={0}
           defaultStrokeWidth={1}
           onClosePressed={() => props.navigation.goBack()}
           onSketchSaved={(success, path) => saveSketch(success, path)}
-          closeComponent={
-            <View style={styles.functionButton}>
-              <Text style={{color: 'white'}}>Close</Text>
-            </View>
-          }
-          undoComponent={
-            <View style={styles.functionButton}>
-              <Text style={{color: 'white'}}>Undo</Text>
-            </View>
-          }
-          clearComponent={
-            <View style={styles.functionButton}>
-              <Text style={{color: 'white'}}>Clear</Text>
-            </View>
-          }
-          eraseComponent={
-            <View style={styles.functionButton}>
-              <Text style={{color: 'white'}}>Eraser</Text>
-            </View>
-          }
-          strokeComponent={(color) => (
-            <View
-              style={[{backgroundColor: color}, styles.strokeColorButton]}
-            />
-          )}
+          closeComponent={<View style={styles.functionButton}><Text style={{color: 'white'}}>Close</Text></View>}
+          undoComponent={<View style={styles.functionButton}><Text style={{color: 'white'}}>Undo</Text></View>}
+          clearComponent={<View style={styles.functionButton}><Text style={{color: 'white'}}>Clear</Text></View>}
+          eraseComponent={<View style={styles.functionButton}><Text style={{color: 'white'}}>Eraser</Text></View>}
+          strokeComponent={(color) => <View style={[{backgroundColor: color}, styles.strokeColorButton]}/>}
           strokeSelectedComponent={(color, index, changed) => {
-            return (
-              <View
-                style={[
-                  {backgroundColor: color, borderWidth: 2},
-                  styles.strokeColorButton,
-                ]}
-              />
-            );
+            return <View style={[{backgroundColor: color, borderWidth: 2}, styles.strokeColorButton]}/>;
           }}
           strokeWidthStep={1}
           minStrokeWidth={1}
@@ -116,9 +88,10 @@ const Sketch = (props) => {
           strokeWidthComponent={(w) => {
             return (
               <View style={styles.strokeWidthButton}>
-                <View>
-                  <Text>Line Weight: {w}</Text>
-                </View>
+                <View style={{
+                  backgroundColor: 'white', marginHorizontal: 2.5,
+                  width: Math.sqrt(w / 3) * 10, height: Math.sqrt(w / 3) * 10, borderRadius: Math.sqrt(w / 3) * 10 / 2,
+                }}/>
               </View>
             );
           }}
