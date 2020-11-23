@@ -23,7 +23,6 @@ const initialHomeState = {
   isImageModalVisible: false,
   isAllSpotsPanelVisible: false,
   isMainMenuPanelVisible: false,
-  deviceDimensions: Dimensions.get('window'),
   shortcutSwitchPosition: {
     Tag: false,
     Measurement: false,
@@ -45,9 +44,6 @@ const homeSlice = createSlice({
     },
     clearedStatusMessages(state) {
       state.statusMessages = [];
-    },
-    gotDeviceDimensions(state, action) {
-      state.deviceDimensions = action.payload.dims;
     },
     removedLastStatusMessage(state) {
       state.statusMessages = state.statusMessages.slice(0, -1);
@@ -101,7 +97,6 @@ const homeSlice = createSlice({
 export const {
   addedStatusMessage,
   clearedStatusMessages,
-  gotDeviceDimensions,
   removedLastStatusMessage,
   setAllSpotsPanelVisible,
   setErrorMessagesModalVisible,

@@ -63,7 +63,8 @@ import {
   setProjectLoadSelectionModalVisible,
   setOfflineMapsModalVisible,
   setMainMenuPanelVisible,
-  setStatusMessagesModalVisible, setOnlineStatus,
+  setStatusMessagesModalVisible,
+  setOnlineStatus,
 } from './home.slice';
 import homeStyles from './home.style';
 import LeftSideButtons from './LeftSideButtons';
@@ -162,11 +163,7 @@ const Home = () => {
         scope.setUser({'email': user.email, username: user.name});
       });
     }
-    Dimensions.addEventListener('change', deviceOrientation);
     console.log('Initializing Home page');
-    return function cleanup() {
-      Dimensions.removeEventListener('change', deviceOrientation);
-    };
   }, [user]);
 
   useEffect(() => {
@@ -382,12 +379,6 @@ const Home = () => {
         },
       }],
     );
-  };
-
-  const deviceOrientation = () => {
-    const dimensions = Dimensions.get('window');
-    dispatch(gotDeviceDimensions({dims: dimensions}));
-    console.log(deviceDimensions);
   };
 
   const dialogClickHandler = (dialog, name, position) => {
@@ -634,7 +625,7 @@ const Home = () => {
   };
 
   const renderSidePanelView = () => {
-    if (deviceWidth < 600) {
+    if (deviceDimensions < 600) {
       return <Animated.View
         style={[sidePanelStyles.sidePanelContainerPhones, animateMainMenuSidePanel]}>
         {renderSidePanelContent()}
