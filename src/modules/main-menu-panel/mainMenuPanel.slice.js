@@ -5,7 +5,7 @@ import {SORTED_VIEWS} from './mainMenu.constants';
 const initialMainMenuState = {
   sortedView: SORTED_VIEWS.CHRONOLOGICAL,
   selectedButtonIndex: 0,
-  mainMenuPageVisible: undefined,
+  mainMenuPageVisible: null,
   isSidePanelVisible: false,
   sidePanelView: null,
 };

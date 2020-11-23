@@ -25,13 +25,28 @@ import {REDUX} from '../shared/app.constants';
 export const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
-  blacklist: ['notebook'],
+  blacklist: ['notebook', 'home', 'mainMenu'],
+};
+
+const homeConfig = {
+  key: 'home',
+  storage: AsyncStorage,
+  blacklist: ['statusMessages', 'imageProgress', 'isOnline', 'loading', 'modalVisible', 'isStatusMessagesModalVisible',
+    'isErrorMessagesModalVisible', 'isProjectLoadSelectionModalVisible', 'isOfflineMapModalVisible',
+    'isInfoModalVisible', 'isImageModalVisible', 'isAllSpotsPanelVisible', 'isMainMenuPanelVisible',
+    'isProjectLoadComplete'],
 };
 
 const notebookConfig = {
   key: 'notebook',
   storage: AsyncStorage,
   blacklist: ['visibleNotebookPagesStack', 'isNotebookPanelVisible'],
+};
+
+const mainMenuConfig = {
+  key: 'mainMenu',
+  storage: AsyncStorage,
+  blacklist: ['mainMenuPageVisible', 'isSidePanelVisible', 'sidePanelView'],
 };
 
 const loggerMiddleware = createLogger({
@@ -44,11 +59,11 @@ const middleware = process.env.NODE_ENV !== 'production'
   : [];
 
 const combinedReducers = combineReducers({
-  home: homeSlice,
+  home: persistReducer(homeConfig, homeSlice),
   notebook: persistReducer(notebookConfig, notebookSlice),
   map: mapsSlice,
   project: projectSlice,
-  mainMenu: mainMenuSlice,
+  mainMenu: persistReducer(mainMenuConfig, mainMenuSlice),
   spot: spotsSlice,
   user: userSlice,
 });

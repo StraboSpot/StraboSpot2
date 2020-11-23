@@ -70,49 +70,49 @@ import LeftSideButtons from './LeftSideButtons';
 import RightSideButtons from './RightSideButtons';
 import useHomeHook from './useHome';
 
-const homeMenuPanelWidth = 300;
-const notebookPanelWidth = 400;
-const mainMenuSidePanelWidth = 300;
-
-const Home = (props) => {
+const Home = () => {
   const platform = Platform.OS === 'ios' ? 'window' : 'screen';
   const deviceWidth = Dimensions.get(platform).width;
+  const homeMenuPanelWidth = 300;
+  const mainMenuSidePanelWidth = 300;
+  const notebookPanelWidth = 400;
+
   const [useHome] = useHomeHook();
   const [useImages] = useImagesHook();
   const [useMaps] = useMapsHook();
   const [useProject] = useProjectHook();
   const [useSpots] = useSpotsHook();
+
   const selectedDataset = useProject.getSelectedDatasetFromId();
 
   const dispatch = useDispatch();
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
+  const currentProject = useSelector(state => state.project.project);
   const customMaps = useSelector(state => state.map.customMaps);
   const deviceDimensions = useSelector(state => state.home.deviceDimensions);
-  const modalVisible = useSelector(state => state.home.modalVisible);
-  const statusMessages = useSelector(state => state.home.statusMessages);
-  const projectLoadComplete = useSelector(state => state.home.isProjectLoadComplete);
   const isAllSpotsPanelVisible = useSelector(state => state.home.isAllSpotsPanelVisible);
-  const isHomeLoading = useSelector(state => state.home.loading.home);
-  const isModalLoading = useSelector(state => state.home.loading.modal);
-  const isOfflineMapModalVisible = useSelector(state => state.home.isOfflineMapModalVisible);
-  const isStatusMessagesModalVisible = useSelector(state => state.home.isStatusMessagesModalVisible);
   const isErrorMessagesModalVisible = useSelector(state => state.home.isErrorMessagesModalVisible);
+  const isHomeLoading = useSelector(state => state.home.loading.home);
   const isImageModalVisible = useSelector(state => state.home.isImageModalVisible);
   const isInfoMessagesModalVisible = useSelector(state => state.home.isInfoModalVisible);
-  const isProjectLoadSelectionModalVisible = useSelector(state => state.home.isProjectLoadSelectionModalVisible);
-  const isNotebookPanelVisible = useSelector(state => state.notebook.isNotebookPanelVisible);
   const isMainMenuPanelVisible = useSelector(state => state.home.isMainMenuPanelVisible);
+  const isModalLoading = useSelector(state => state.home.loading.modal);
+  const isNotebookPanelVisible = useSelector(state => state.notebook.isNotebookPanelVisible);
+  const isOfflineMapModalVisible = useSelector(state => state.home.isOfflineMapModalVisible);
   const isOnline = useSelector(state => state.home.isOnline);
+  const isProjectLoadSelectionModalVisible = useSelector(state => state.home.isProjectLoadSelectionModalVisible);
   const isSidePanelVisible = useSelector(state => state.mainMenu.isSidePanelVisible);
+  const isStatusMessagesModalVisible = useSelector(state => state.home.isStatusMessagesModalVisible);
+  const modalVisible = useSelector(state => state.home.modalVisible);
+  const projectLoadComplete = useSelector(state => state.home.isProjectLoadComplete);
   const selectedImage = useSelector(state => state.spot.selectedAttributes[0]);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const sidePanelView = useSelector(state => state.mainMenu.sidePanelView);
   const spots = useSelector(state => state.spot.spots);
+  const statusMessages = useSelector(state => state.home.statusMessages);
   const user = useSelector(state => state.user);
   const vertexStartCoords = useSelector(state => state.map.vertexStartCoords);
 
-  // const imagesCount = useSelector(state => state.home.imageProgress.imagesDownloadedCount);
-  // const imagesNeeded = useSelector(state => state.home.imageProgress.neededImageIds);
   const [dialogs, setDialogs] = useState({
     mapActionsMenuVisible: false,
     mapSymbolsMenuVisible: false,
@@ -127,8 +127,6 @@ const Home = (props) => {
     userLocationButtonOn: false,
   });
   const [mapMode, setMapMode] = useState(MAP_MODES.VIEW);
-  // const [isProjectLoadSelectionModalVisible, setIsProjectLoadSelectionModalVisible] = useState(false);
-  // const [allPhotosSaved, setAllPhotosSaved] = useState([]);
   const [animation, setAnimation] = useState(new Animated.Value(notebookPanelWidth));
   const [MainMenuPanelAnimation] = useState(new Animated.Value(-homeMenuPanelWidth));
   const [mainMenuSidePanelAnimation] = useState(new Animated.Value(-mainMenuSidePanelWidth));
@@ -142,31 +140,23 @@ const Home = (props) => {
   const toastRef = useRef();
 
   useEffect(() => {
-    // useHome.checkOnlineStatus()
     const unsubscribe = NetInfo.addEventListener(state => {
       console.log('Is connected?', state.isConnected);
       dispatch(setOnlineStatus(state.isConnected));
       return function cleanUp() {
-        console.log('NetInfo unsubscribed')
+        console.log('NetInfo unsubscribed');
         unsubscribe();
       };
     });
   }, [isOnline]);
 
   useEffect(() => {
-    initialize().then((res) => {
-      dispatch(setProjectLoadSelectionModalVisible(res));
-      animatePanels(MainMenuPanelAnimation, -homeMenuPanelWidth);
-      animatePanels(leftsideIconAnimationValue, 0);
-    });
+    dispatch(setProjectLoadSelectionModalVisible(isEmpty(currentProject)));
+    animatePanels(MainMenuPanelAnimation, -homeMenuPanelWidth);
+    animatePanels(leftsideIconAnimationValue, 0);
   }, []);
 
   useEffect(() => {
-    // props.setDeviceDims(dimensions);
-    // if (deviceDimensions.width < 500) {
-    //   Orientation.unlockAllOrientations();
-    // }
-    // else Orientation.lockToLandscapeLeft();
     if (user.email && user.email) {
       Sentry.configureScope((scope) => {
         scope.setUser({'email': user.email, username: user.name});
@@ -225,10 +215,6 @@ const Home = (props) => {
     });
     // toggleButton('editButtonsVisible', false);
     // toggleButton('drawButtonsVisible', true);
-  };
-
-  const initialize = async () => {
-    return await useHome.initializeHomePage();
   };
 
   const clickHandler = (name, value) => {
