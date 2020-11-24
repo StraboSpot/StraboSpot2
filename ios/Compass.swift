@@ -20,9 +20,10 @@ class Compass: RCTEventEmitter {
   private var accelerationX: Double = 0;
   private var accelerationY:  Double = 0;
   private var accelerationZ: Double = 0;
+  private var heading: Double = 0
 
   @objc
-  func myAccelermoter() {
+  func myAccelerometer() {
     if motion.isAccelerometerAvailable {
       print("available")
       motion.accelerometerUpdateInterval = 0.1
@@ -77,6 +78,7 @@ class Compass: RCTEventEmitter {
                   let ENU_pole = self.cartesianToSpherical(mValue1: -m32Avg, mValue2: m31Avg,mValue3: m33Avg)
                   let ENU_TP = self.cartesianToSpherical(mValue1: -m22Avg, mValue2: m21Avg, mValue3: m23Avg)
 
+                  let heading = self.mod(value: (data.heading - 270), degrees: 360).rounded(toPlaces: 0)
                   let strikeAndDipData = self.strikeAndDip(array: ENU_pole)
                   let trendAndPlungeData = self.trendAndPlunge(array: ENU_TP)
                   let strike = Double(strikeAndDipData[0]).rounded(toPlaces: 0);
@@ -90,6 +92,7 @@ class Compass: RCTEventEmitter {
                             "dip": dip,
                             "trend": trend,
                             "plunge": plunge,
+                            "heading": heading,
                             ])
           })
       }
@@ -168,7 +171,7 @@ class Compass: RCTEventEmitter {
   // we need to override this method and
    // return an array of event names that we can listen to
    override func supportedEvents() -> [String]! {
-     return ["acceleration", "rotationMatrix"]
+     return ["rotationMatrix"]
    }
 
   @objc

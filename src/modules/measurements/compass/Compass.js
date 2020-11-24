@@ -15,7 +15,6 @@ import {
 
 import {ListItem} from 'react-native-elements';
 import {accelerometer, SensorTypes, setUpdateIntervalForType} from 'react-native-sensors';
-import RNSimpleCompass from 'react-native-simple-compass';
 import Sound from 'react-native-sound';
 import {connect, useSelector} from 'react-redux';
 
@@ -40,6 +39,7 @@ const Compass = (props) => {
   const [useMaps] = useMapsHook();
   const modalVisible = useSelector(state => state.home.modalVisible);
   const [compassData, setCompassData] = useState({
+    heading: null,
     strike: null,
     dip: null,
     // dipdir: null,
@@ -56,7 +56,6 @@ const Compass = (props) => {
   const [trendSpinValue] = useState(new Animated.Value(0));
   const [showData, setShowData] = useState(false);
   const CompassEvents = new NativeEventEmitter(NativeModules.Compass);
-  const degree_update_rate = 1; // Number of degrees changed before the callback is triggered
   const [magnetometer, setMagnetometer] = useState(0);
   const [accelerometerSubscription, setAccelerometerSubscription] = useState(null);
   const [accelerometerData, setAccelerometerData] = useState({
@@ -76,11 +75,6 @@ const Compass = (props) => {
       setUpdateIntervalForType(SensorTypes.magnetometer, 300);
       subscribeToAccelerometer();
     }
-    RNSimpleCompass.start(degree_update_rate, ({degree}) => {
-      const compassHeading = roundToDecimalPlaces(mod(degree - 270, 360), 0);
-      setHeading(compassHeading);
-      setMagnetometer(degree || 0);
-    });
     return () => {
       if (Platform.OS === 'ios') {
         NativeModules.Compass.stopObserving();
@@ -88,7 +82,6 @@ const Compass = (props) => {
         console.log('Ended Compass observation and rotationMatrix listener.');
       }
       else unsubscribeFromAccelerometer();
-      RNSimpleCompass.stop();
       console.log('Heading subscription cancelled');
     };
   }, []);
@@ -160,6 +153,7 @@ const Compass = (props) => {
       CompassEvents.addListener('rotationMatrix', res => {
         console.log('Began Compass observation and rotationMatrix listener.');
         setCompassData({
+          heading: res.heading,
           strike: res.strike,
           dip: res.dip,
           trend: res.trend,
@@ -258,7 +252,7 @@ const Compass = (props) => {
   const renderDataView = () => {
     return (
       <View style={uiStyles.alignItemsToCenter}>
-        <Text>Heading: {heading}</Text>
+        <Text>Heading: {compassData.heading}</Text>
         <Text>Strike: {compassData.strike}</Text>
         <Text>Dip: {compassData.dip}</Text>
         <Text>Trend: {compassData.trend}</Text>

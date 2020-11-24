@@ -22,7 +22,7 @@
 		D688C0D12383476F004931BF /* Compass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D688C0D02383476F004931BF /* Compass.swift */; };
 		D688C0D323834799004931BF /* Compass.m in Sources */ = {isa = PBXBuildFile; fileRef = D688C0D223834798004931BF /* Compass.m */; };
 		D688C0DF2385D3FC004931BF /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D688C0DE2385D3FC004931BF /* Launch Screen.storyboard */; };
-		D6AA1AF424D31CB4006219E2 /* Dummy.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6AA1AF324D31CB4006219E2 /* Dummy.swift */; };
+		D6A11FEA255EBD7D00DBF5D1 /* Dummy.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6AA1AF324D31CB4006219E2 /* Dummy.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -637,7 +637,7 @@
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
-				D6AA1AF424D31CB4006219E2 /* Dummy.swift in Sources */,
+				D6A11FEA255EBD7D00DBF5D1 /* Dummy.swift in Sources */,
 				D688C0D323834799004931BF /* Compass.m in Sources */,
 				D688C0D12383476F004931BF /* Compass.swift in Sources */,
 			);
@@ -816,7 +816,7 @@
 					"\"${PODS_ROOT}/CocoaLibEvent/lib\"",
 					"\"${PODS_ROOT}/OpenSSL-Universal/ios/lib\"",
 				);
-				MARKETING_VERSION = 0.12.1;
+				MARKETING_VERSION = 0.15.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -849,7 +849,7 @@
 				INFOPLIST_FILE = StraboSpot2/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.6;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks /usr/lib/swift $(inherited)";
-				MARKETING_VERSION = 0.12.1;
+				MARKETING_VERSION = 0.15.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
