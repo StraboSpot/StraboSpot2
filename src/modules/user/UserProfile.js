@@ -35,23 +35,17 @@ const UserProfile = (props) => {
   };
 
   const getUserInitials = () => {
-    const name = userData.name;
-    let initials = name.match(/\b\w/g) || [];
-    initials = ((initials.shift() || '') + (initials.pop() || '')).toUpperCase();
-    console.log(initials);
-    return initials;
+    return userData.name.split(' ').map(word => word.charAt(0)).join('').toUpperCase();
   };
 
   const renderAvatarImageBlock = () => {
     if (!isEmpty(userData)) {
-      if (!isEmpty(userData.image)) {
+      if (!isEmpty(userData.image) && typeof userData.image.valueOf() === 'string') {
         return (
           <View style={userStyles.profileNameAndImageContainer}>
-            <View style={userStyles.avatarImageContainer}>
+            <View>
               <Avatar
-                // containerStyle={userStyles.avatarImage}
                 source={{uri: userData.image}}
-                showEditButton={false}
                 rounded={true}
                 size={70}
                 onPress={() => console.log(userData.name)}
@@ -64,20 +58,17 @@ const UserProfile = (props) => {
           </View>
         );
       }
-      else if (isEmpty(userData.image)) {
+      else if (isEmpty(userData.image) || (userData.image && typeof userData.image.valueOf() !== 'string')) {
         return (
           <View style={userStyles.profileNameAndImageContainer}>
-            <View style={userStyles.avatarImageContainer}>
-              <Avatar
-                // source={require('../../assets/images/noimage.jpg')}
-                title={userData.name && userData.name !== '' && getUserInitials()}
-                source={userData.name === '' ? require('../../assets/images/splash.png') : null}
-                showEditButton={true}
-                rounded={true}
-                size={70}
-                onPress={() => console.log('User with no image')}
-              />
-            </View>
+            <Avatar
+              title={userData.name && userData.name !== '' && getUserInitials()}
+              titleStyle={userStyles.avatarPlaceholderTitleStyle}
+              source={(!userData.name || userData.name === '') && require('../../assets/images/noimage.jpg')}
+              rounded={true}
+              size={70}
+              onPress={() => console.log('User with no image')}
+            />
             <View style={userStyles.avatarLabelContainer}>
               <Text style={userStyles.avatarLabelName}>{userData.name}</Text>
               <Text style={userStyles.avatarLabelEmail}>{userData.email}</Text>
@@ -89,10 +80,9 @@ const UserProfile = (props) => {
     else {
       return (
         <View style={userStyles.profileNameAndImageContainer}>
-          <View style={userStyles.avatarImageContainer}>
+          <View>
             <Avatar
-              icon={isEmpty(userData) ? {name: 'user', type: 'font-awesome'} : null}
-              showEditButton={false}
+              icon={isEmpty(userData) && {name: 'user', type: 'font-awesome'}}
               rounded={true}
               size={70}
               onPress={() => console.log('GUEST')}
@@ -161,7 +151,7 @@ const UserProfile = (props) => {
 
   return (
     <React.Fragment>
-      <View style={userStyles.profileContainer}>
+      <View>
         {renderAvatarImageBlock()}
         {renderLogOutButton()}
         {renderLogoutModal()}

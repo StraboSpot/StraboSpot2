@@ -9,6 +9,9 @@ const UserStyles = StyleSheet.create({
     padding: 20,
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
   },
+  avatarPlaceholderTitleStyle: {
+    color: themes.PRIMARY_HEADER_TEXT_COLOR,
+  },
   avatarLabelContainer: {
     padding: 10,
   },
