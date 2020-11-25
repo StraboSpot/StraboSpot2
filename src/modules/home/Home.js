@@ -153,16 +153,7 @@ const Home = () => {
     dispatch(setProjectLoadSelectionModalVisible(isEmpty(currentProject)));
     animatePanels(MainMenuPanelAnimation, -homeMenuPanelWidth);
     animatePanels(leftsideIconAnimationValue, 0);
-  }, []);
-
-  useEffect(() => {
-    if (user.email && user.email) {
-      Sentry.configureScope((scope) => {
-        scope.setUser({'email': user.email, username: user.name});
-      });
-    }
-    console.log('Initializing Home page');
-  }, [user]);
+  }, [currentProject]);
 
   useEffect(() => {
     if (currentImageBasemap && isMainMenuPanelVisible) toggleHomeDrawerButton();
