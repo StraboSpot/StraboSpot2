@@ -10,10 +10,8 @@ import commonStyles from '../../../shared/common.styles';
 import {isEmpty} from '../../../shared/Helpers';
 import {setOfflineMapsModalVisible} from '../../home/home.slice';
 import Divider from '../../main-menu-panel/MainMenuPanelDivider';
-import {setCurrentBasemap, setOfflineMap} from '../maps.slice';
 import styles from './offlineMaps.styles';
-
-const RNFS = require('react-native-fs');
+import useMapsOfflineHook from './useMapsOffline';
 
 const ManageOfflineMaps = (props) => {
   console.log('Props: ', props);
@@ -22,33 +20,18 @@ const ManageOfflineMaps = (props) => {
   const devicePath = Platform.OS === 'ios' ? dirs.DocumentDir : dirs.SDCardDir; // ios : android
   const tilesDirectory = '/StraboSpotTiles';
   const tileCacheDirectory = devicePath + tilesDirectory + '/TileCache';
-  const zipsDirectory = devicePath + tilesDirectory + '/TileZips';
-  const tileTempDirectory = devicePath + tilesDirectory + '/TileTemp';
   const offlineMaps = useSelector(state => state.map.offlineMaps);
   const isOnline = useSelector(state => state.home.isOnline);
   const dispatch = useDispatch();
 
   const useDevice = useDeviceHook();
+  const useMapsOffline = useMapsOfflineHook();
 
   console.log('tileCacheDirectory: ', tileCacheDirectory);
 
   useEffect(() => {
     console.log('Is Online: ', isOnline);
   }, [isOnline]);
-
-  const viewOfflineMap = async (map) => {
-    let tempCurrentBasemap;
-    console.log('viewOfflineMap: ', map);
-
-    // let tileJSON = 'file://' + tileCacheDirectory + '/' + map.id + '/tiles/{z}_{x}_{y}.png';
-    const url = 'file://' + tileCacheDirectory + '/';
-    const tilePath = '/tiles/{z}_{x}_{y}.png';
-
-    tempCurrentBasemap = {...map, url: [url], tilePath: tilePath};
-    console.log('tempCurrentBasemap: ', tempCurrentBasemap);
-    dispatch(setCurrentBasemap(tempCurrentBasemap));
-    // props.closeSettingsDrawer();
-  };
 
   const confirmDeleteMap = async (map) => {
     console.log(map);
@@ -95,7 +78,7 @@ const ManageOfflineMaps = (props) => {
                 </View>
                 <View style={styles.itemSubContainer}>
                   <Button
-                    onPress={() => viewOfflineMap(item)}
+                    onPress={() => useMapsOffline.setOfflineMapTiles(item)}
                     disabled={isOnline}
                     titleStyle={styles.buttonText}
                     type={'clear'}

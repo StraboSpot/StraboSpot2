@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Alert, Animated, Dimensions, Platform, Text, View} from 'react-native';
+import {Alert, Animated, AppState, Dimensions, Platform, Text, View} from 'react-native';
 
 import NetInfo from '@react-native-community/netinfo';
 import * as Sentry from '@sentry/react-native';
@@ -26,6 +26,7 @@ import Map from '../maps/Map';
 import {MAP_MODES} from '../maps/maps.constants';
 import {setCurrentImageBasemap} from '../maps/maps.slice';
 import SaveMapsModal from '../maps/offline-maps/SaveMapsModal';
+import useOfflineMapsHook from '../maps/offline-maps/useMapsOffline';
 import useMapsHook from '../maps/useMaps';
 import VertexDrag from '../maps/VertexDrag';
 import NotebookCompassModal from '../measurements/compass/NotebookCompassModal';
@@ -68,6 +69,7 @@ import {
 import homeStyles from './home.style';
 import LeftSideButtons from './LeftSideButtons';
 import RightSideButtons from './RightSideButtons';
+import useDeviceHook from '../../services/useDevice';
 import useHomeHook from './useHome';
 
 const Home = () => {
@@ -82,10 +84,13 @@ const Home = () => {
   const [useMaps] = useMapsHook();
   const [useProject] = useProjectHook();
   const [useSpots] = useSpotsHook();
+  const useOfflineMaps = useOfflineMapsHook();
+  const useDevice = useDeviceHook();
 
   const selectedDataset = useProject.getSelectedDatasetFromId();
 
   const dispatch = useDispatch();
+  const currentBasemap = useSelector(state => state.map.currentBasemap);
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const currentProject = useSelector(state => state.project.project);
   const customMaps = useSelector(state => state.map.customMaps);
@@ -139,14 +144,35 @@ const Home = () => {
   const toastRef = useRef();
 
   useEffect(() => {
-    const unsubscribe = NetInfo.addEventListener(state => {
-      console.log('Is connected?', state.isConnected);
-      dispatch(setOnlineStatus(state.isConnected));
-      return function cleanUp() {
-        console.log('NetInfo unsubscribed');
-        unsubscribe();
-      };
+    // useDevice.loadOfflineMaps().catch();
+    NetInfo.addEventListener(status => {
+      setIsConnectedStatus(status.isInternetReachable);
+      if (status.isInternetReachable) {
+        dispatch(setOnlineStatus(true));
+      }
+      if (status.isInternetReachable === false) {
+        dispatch(setOnlineStatus(false));
+      }
     });
+  }, []);
+
+  useEffect(() => {
+    if (user.email && user.email) {
+      Sentry.configureScope((scope) => {
+        scope.setUser({'email': user.email, username: user.name});
+      });
+    }
+    console.log('Initializing Home page');
+  }, [user]);
+
+  useEffect(() => {
+    if (isOnline && currentBasemap) {
+      // Alert.alert('Online Basemap', `${JSON.stringify(currentBasemap.id)}`);
+      useMaps.setBasemap(currentBasemap.id).catch(error => console.log('Error Setting Basemap', error));
+    }
+    else if (!isOnline && isOnline !== null) {
+      useOfflineMaps.viewOfflineMap().catch(error => console.log('Error Setting Offline Basemap', error));
+    }
   }, [isOnline]);
 
   useEffect(() => {
