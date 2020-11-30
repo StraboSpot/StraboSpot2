@@ -54,10 +54,6 @@ const loggerMiddleware = createLogger({
   collapsed: (getState, action, logEntry) => !logEntry.error,
 });
 
-const middleware = process.env.NODE_ENV !== 'production'
-  ? [require('redux-immutable-state-invariant').default(), loggerMiddleware]
-  : [];
-
 const combinedReducers = combineReducers({
   home: persistReducer(homeConfig, homeSlice),
   notebook: persistReducer(notebookConfig, notebookSlice),
