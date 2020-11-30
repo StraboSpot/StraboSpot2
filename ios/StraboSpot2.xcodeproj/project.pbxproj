@@ -18,7 +18,7 @@
 		2DCD954D1E0B4F2C00145EB5 /* StraboSpot2Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* StraboSpot2Tests.m */; };
 		4DF0C77CBE525B72C85069A4 /* libPods-StraboSpot2-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 27534FA021E6200B166D67CC /* libPods-StraboSpot2-tvOSTests.a */; };
 		76FC8D26292DBAFE7EF34F8C /* libPods-StraboSpot2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FFDB77BC79E8B01259D0F1D4 /* libPods-StraboSpot2.a */; };
-		D6655B8724C2658900804F4A /* ButtonClick.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = D6655B8624C2658900804F4A /* ButtonClick.mp3 */; };
+		D6655B8724C2658900804F4A /* button_click.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = D6655B8624C2658900804F4A /* button_click.mp3 */; };
 		D688C0D12383476F004931BF /* Compass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D688C0D02383476F004931BF /* Compass.swift */; };
 		D688C0D323834799004931BF /* Compass.m in Sources */ = {isa = PBXBuildFile; fileRef = D688C0D223834798004931BF /* Compass.m */; };
 		D688C0DF2385D3FC004931BF /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D688C0DE2385D3FC004931BF /* Launch Screen.storyboard */; };
@@ -64,9 +64,9 @@
 		5E9ABD89187CEAC66366071B /* Pods-StraboSpot2.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StraboSpot2.debug.xcconfig"; path = "Target Support Files/Pods-StraboSpot2/Pods-StraboSpot2.debug.xcconfig"; sourceTree = "<group>"; };
 		81F5D7E2F92B28FE76304E4D /* Pods-StraboSpot2Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StraboSpot2Tests.debug.xcconfig"; path = "Target Support Files/Pods-StraboSpot2Tests/Pods-StraboSpot2Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		B8AED9122E5EBF738C0B4F51 /* libPods-StraboSpot2-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-StraboSpot2-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		D6655B8624C2658900804F4A /* ButtonClick.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = ButtonClick.mp3; path = "../../Strabo Mobile Resource Files/ButtonClick.mp3"; sourceTree = "<group>"; };
+		D6655B8624C2658900804F4A /* button_click.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = button_click.mp3; path = "../../Strabo Mobile Resource Files/button_click.mp3"; sourceTree = "<group>"; };
 		D688C0CF2383476E004931BF /* StraboSpot2-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "StraboSpot2-Bridging-Header.h"; sourceTree = "<group>"; };
-		D688C0D02383476F004931BF /* Compass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Compass.swift; sourceTree = "<group>"; };
+		D688C0D02383476F004931BF /* Compass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Compass.swift; sourceTree = "<group>"; wrapsLines = 1; };
 		D688C0D223834798004931BF /* Compass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Compass.m; sourceTree = "<group>"; };
 		D688C0DE2385D3FC004931BF /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		D6AA1AF324D31CB4006219E2 /* Dummy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dummy.swift; sourceTree = "<group>"; };
@@ -184,7 +184,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				D6655B8624C2658900804F4A /* ButtonClick.mp3 */,
+				D6655B8624C2658900804F4A /* button_click.mp3 */,
 				13B07FAE1A68108700A75B9A /* StraboSpot2 */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* StraboSpot2Tests */,
@@ -364,7 +364,7 @@
 			files = (
 				D688C0DF2385D3FC004931BF /* Launch Screen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
-				D6655B8724C2658900804F4A /* ButtonClick.mp3 in Resources */,
+				D6655B8724C2658900804F4A /* button_click.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
