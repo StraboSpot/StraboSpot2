@@ -73,7 +73,7 @@ const BaseMapDialog = props => {
                     bottomDivider={i < BASEMAPS.length - 2}
                     onPress={() => props.onPress(map.id)}>
                     <ListItem.Content>
-                      <ListItem.Title style={styles.dialogText}>{map.title}</ListItem.Title>
+                      <ListItem.Title style={styles.dialogText}>{map.name}</ListItem.Title>
                     </ListItem.Content>
                     {currentBasemap && map.id === currentBasemap.id
                     && <Icon type={'ionicon'} color={themes.BLUE} name={'checkmark-outline'}/>}
