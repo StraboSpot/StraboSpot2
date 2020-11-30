@@ -130,6 +130,7 @@ const Home = () => {
     editButtonsVisible: false,
     userLocationButtonOn: false,
   });
+  const [isConnectedStatus, setIsConnectedStatus] = useState(null);
   const [mapMode, setMapMode] = useState(MAP_MODES.VIEW);
   const [animation, setAnimation] = useState(new Animated.Value(notebookPanelWidth));
   const [MainMenuPanelAnimation] = useState(new Animated.Value(-homeMenuPanelWidth));
