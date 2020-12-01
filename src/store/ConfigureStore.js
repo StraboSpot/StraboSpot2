@@ -74,6 +74,7 @@ const rootReducer = (state, action) => {
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 const defalutMiddlewareOptions = {
+  immutableCheck: false,
   serializableCheck: {
     ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
   },
