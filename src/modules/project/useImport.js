@@ -5,7 +5,7 @@ import RNFetchBlob from 'rn-fetch-blob';
 
 import useDeviceHook from '../../services/useDevice';
 import {isEmpty} from '../../shared/Helpers';
-import {addedMapsFromDevice} from '../maps/maps.slice';
+import {addedMapsFromDevice} from '../maps/offline-maps/offlineMaps.slice';
 import {addedSpotsFromDevice} from '../spots/spots.slice';
 import {addedDatasets, addedProject} from './projects.slice';
 

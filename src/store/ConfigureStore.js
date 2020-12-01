@@ -16,6 +16,7 @@ import homeSlice from '../modules/home/home.slice';
 import mainMenuSlice from '../modules/main-menu-panel/mainMenuPanel.slice';
 import mapsSlice from '../modules/maps/maps.slice';
 import notebookSlice from '../modules/notebook-panel/notebook.slice';
+import offlineMapsSlice from '../modules/maps/offline-maps/offlineMaps.slice';
 import projectSlice from '../modules/project/projects.slice';
 import spotsSlice from '../modules/spots/spots.slice';
 import userSlice from '../modules/user/userProfile.slice';
@@ -60,6 +61,7 @@ const combinedReducers = combineReducers({
   map: mapsSlice,
   project: projectSlice,
   mainMenu: persistReducer(mainMenuConfig, mainMenuSlice),
+  offlineMap: offlineMapsSlice,
   spot: spotsSlice,
   user: userSlice,
 });

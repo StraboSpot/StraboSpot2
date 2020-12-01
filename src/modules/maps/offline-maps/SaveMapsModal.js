@@ -12,7 +12,7 @@ import RNFetchBlob from 'rn-fetch-blob';
 
 import {toNumberFixedValue} from '../../../shared/Helpers';
 import * as themes from '../../../shared/styles.constants';
-import {setOfflineMap} from '../maps.slice';
+import {setOfflineMap} from '../offline-maps/offlineMaps.slice';
 import useMapsHook from '../useMaps';
 
 const RNFS = require('react-native-fs');
@@ -33,7 +33,7 @@ const SaveMapsModal = (props) => {
 
   const currentBasemap = useSelector(state => state.map.currentBasemap);
   const customMaps = useSelector(state => state.map.customMaps);
-  const offlineMaps = useSelector(state => state.map.offlineMaps);
+  const offlineMaps = useSelector(state => state.offlineMap.offlineMaps);
   const dispatch = useDispatch();
 
   const id = currentBasemap && currentBasemap.id;

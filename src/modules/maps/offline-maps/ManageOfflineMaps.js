@@ -20,7 +20,7 @@ const ManageOfflineMaps = (props) => {
   const devicePath = Platform.OS === 'ios' ? dirs.DocumentDir : dirs.SDCardDir; // ios : android
   const tilesDirectory = '/StraboSpotTiles';
   const tileCacheDirectory = devicePath + tilesDirectory + '/TileCache';
-  const offlineMaps = useSelector(state => state.map.offlineMaps);
+  const offlineMaps = useSelector(state => state.offlineMap.offlineMaps);
   const isOnline = useSelector(state => state.home.isOnline);
   const dispatch = useDispatch();
 

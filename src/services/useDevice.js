@@ -4,8 +4,7 @@ import RNFS from 'react-native-fs';
 import {useDispatch} from 'react-redux';
 import RNFetchBlob from 'rn-fetch-blob';
 
-import {deletedOfflineMap} from '../modules/maps/maps.slice';
-
+import {deletedOfflineMap} from '../modules/maps/offline-maps/offlineMaps.slice';
 import {doesBackupDirectoryExist} from '../modules/project/projects.slice';
 
 

@@ -12,7 +12,7 @@ const useMapsOffline = () => {
   const dispatch = useDispatch();
   const currentBasemap = useSelector(state => state.map.currentBasemap);
   const isOnline = useSelector(state => state.home.isOnline);
-  const offlineMaps = useSelector(state => state.map.offlineMaps);
+  const offlineMaps = useSelector(state => state.offlineMap.offlineMaps);
 
   const devicePath = RNFS.DocumentDirectoryPath;
   const tilesDirectory = '/StraboSpotTiles';

@@ -3,7 +3,6 @@ import {createSlice} from '@reduxjs/toolkit';
 const initialMapsState = {
   currentBasemap: null,
   currentImageBasemap: undefined,
-  offlineMaps: {},
   customMaps: {},
   selectedCustomMapToEdit: {},
   vertexStartCoords: undefined,
@@ -25,12 +24,8 @@ const mapsSlice = createSlice({
       console.log('Setting custom maps: ', newMapObject);
       state.customMaps = {...state.customMaps, ...newMapObject};
     },
-    addedMapsFromDevice(state, action) {
-      const {mapType, maps} = action.payload;
-      state[mapType] = maps;
-    },
+
     clearedMaps(state) {
-      state.offlineMaps = {};
       state.customMaps = {};
     },
     clearedVertexes(state) {
@@ -39,9 +34,6 @@ const mapsSlice = createSlice({
     },
     deletedCustomMap(state, action) {
       state.customMaps = action.payload;
-    },
-    deletedOfflineMap(state, action) {
-      delete state.offlineMaps[action.payload];
     },
     selectedCustomMapToEdit(state, action) {
       state.selectedCustomMapToEdit = action.payload;
@@ -65,10 +57,6 @@ const mapsSlice = createSlice({
     setMapSymbols(state, action) {
       console.log('Set Map Symbols', action.payload);
       state.mapSymbols = action.payload;
-    },
-    setOfflineMap(state, action) {
-      console.log('Setting offline maps: ', action.payload);
-      state.offlineMaps = {...state.offlineMaps, ...action.payload};
     },
     setSpotsInMapExtent(state, action) {
       state.spotsInMapExtent = action.payload;
@@ -94,18 +82,15 @@ const mapsSlice = createSlice({
 
 export const {
   addedCustomMap,
-  addedMapsFromDevice,
   clearedMaps,
   clearedVertexes,
   deletedCustomMap,
-  deletedOfflineMap,
   selectedCustomMapToEdit,
   setAllSymbolsToggled,
   setCurrentBasemap,
   setCurrentImageBasemap,
   setFreehandFeatureCoords,
   setMapSymbols,
-  setOfflineMap,
   setSpotsInMapExtent,
   setSymbolsDisplayed,
   setTagTypeForColor,

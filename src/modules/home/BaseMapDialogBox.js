@@ -23,7 +23,7 @@ const BaseMapDialog = props => {
   const customMaps = useSelector(state => state.map.customMaps);
   const currentBasemap = useSelector(state => state.map.currentBasemap);
   const isOnline = useSelector(state => state.home.isOnline);
-  const offlineMap = useSelector(state => state.map.offlineMaps);
+  const offlineMap = useSelector(state => state.offlineMap.offlineMaps);
   const customMapsArr = Object.values(customMaps);
 
   return (
