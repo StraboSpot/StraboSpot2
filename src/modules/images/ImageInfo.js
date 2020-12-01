@@ -68,7 +68,7 @@ const ImageInfo = (props) => {
         />
         <IconButton
           style={styles.imageInfoButtons}
-          source={require('../../assets/icons/Delete.png')} onPress={() =>
+          source={require('../../assets/icons/DeleteButton.png')} onPress={() =>
           Alert.alert(
             'Deleting image ' + imageProps, 'Are you sure you want to delete image ' + imageProps,
             [
