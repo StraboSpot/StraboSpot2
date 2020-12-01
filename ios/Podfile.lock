@@ -265,7 +265,7 @@ PODS:
     - Mapbox-iOS-SDK (~> 5.8.0)
     - React
     - React-Core
-  - react-native-netinfo (5.9.9):
+  - react-native-netinfo (5.9.7):
     - React-Core
   - react-native-safe-area-context (3.1.9):
     - React-Core
@@ -341,21 +341,21 @@ PODS:
     - React
   - RNCPicker (1.8.1):
     - React-Core
-  - RNDateTimePicker (3.0.6):
+  - RNDateTimePicker (3.0.5):
     - React-Core
   - RNFS (2.16.6):
     - React
-  - RNGestureHandler (1.9.0):
-    - React-Core
+  - RNGestureHandler (1.8.0):
+    - React
   - RNReanimated (1.13.2):
     - React-Core
   - RNScreens (2.15.0):
     - React-Core
   - RNSensors (7.0.2):
     - React-Core
-  - RNSentry (2.0.2):
+  - RNSentry (2.0.0):
     - React-Core
-    - Sentry (= 6.0.9)
+    - Sentry (~> 6.0.3)
   - RNSketchCanvas (0.8.0):
     - React
   - RNSound (0.11.0):
@@ -610,7 +610,7 @@ SPEC CHECKSUMS:
   react-native-image-picker: 32d1ad2c0024ca36161ae0d5c2117e2d6c441f11
   react-native-image-resizer: bf422e1e457d7244562d919d11ba9080ccbe329b
   react-native-mapbox-gl: 2a4b1bbfb5708b4c997d312ad73337bafdc5baf5
-  react-native-netinfo: 77d133105df525d4a11f10fcaa8d0b8883ea6429
+  react-native-netinfo: e36c1bb6df27ab84aa933679b3f5bbf9d180b18f
   react-native-safe-area-context: 86612d2c9a9e94e288319262d10b5f93f0b395f5
   react-native-slider: b733e17fdd31186707146debf1f04b5d94aa1a93
   React-RCTActionSheet: 53ea72699698b0b47a6421cb1c8b4ab215a774aa
@@ -628,13 +628,13 @@ SPEC CHECKSUMS:
   RNCClipboard: 5e299c6df8e0c98f3d7416b86ae563d3a9f768a3
   RNCMaskedView: f5c7d14d6847b7b44853f7acb6284c1da30a3459
   RNCPicker: 914b557e20b3b8317b084aca9ff4b4edb95f61e4
-  RNDateTimePicker: 54bc1830e4e8d99ed00e6b6735b8517e163b2a4a
+  RNDateTimePicker: ec9dd57ccf0d8c3661ea2d182661efcc1512be24
   RNFS: 2bd9eb49dc82fa9676382f0585b992c424cd59df
-  RNGestureHandler: 9b7e605a741412e20e13c512738a31bd1611759b
+  RNGestureHandler: 7a5833d0f788dbd107fbb913e09aa0c1ff333c39
   RNReanimated: e03f7425cb7a38dcf1b644d680d1bfc91c3337ad
   RNScreens: 2ad555d4d9fa10b91bb765ca07fe9b29d59573f0
   RNSensors: e54fea720ad3e408a6225ae963300945c1263235
-  RNSentry: 5ebc2926dbcbb9b77857ba6df0754a869037123d
+  RNSentry: cb4ef23400fb6690f6ac8f6acef0c023a8a4f37d
   RNSketchCanvas: 6939b18677cd1794151cc3d8eb5a0a2158a4a05b
   RNSound: c980916b596cc15c8dcd2f6ecd3b13c4881dbe20
   RNVectorIcons: bc69e6a278b14842063605de32bec61f0b251a59
