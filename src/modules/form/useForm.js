@@ -86,7 +86,9 @@ const useForm = () => {
       const key = fieldModel.name;
       if (values[key] && typeof values[key] === 'string') values[key] = values[key].trim();
       if (isEmpty(values[key]) || !isRelevant(fieldModel, values)) delete values[key];
-      if (isEmpty(values[key]) && fieldModel.required && isRelevant(fieldModel, values)) errors[key] = 'Required';
+      if (isEmpty(values[key]) && fieldModel.required === 'true' && isRelevant(fieldModel, values)) {
+        errors[key] = 'Required';
+      }
       else if (values[key]) {
         if (fieldModel.type === 'integer') values[key] = parseInt(values[key], 10);
         else if (fieldModel.type === 'decimal') values[key] = parseFloat(values[key]);
