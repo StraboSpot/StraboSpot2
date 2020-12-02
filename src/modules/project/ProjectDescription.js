@@ -6,7 +6,7 @@ import moment from 'moment';
 import {Button, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
-import * as forms from '../../assets/forms/forms.index';
+import * as forms from '../../assets/forms';
 import commonStyles from '../../shared/common.styles';
 import {truncateText, isEmpty} from '../../shared/Helpers';
 import SaveAndCloseButtons from '../../shared/ui/SaveAndCloseButtons';
