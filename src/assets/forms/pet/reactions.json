@@ -1,0 +1,92 @@
+{
+  "survey": [
+    {
+      "type": "start",
+      "name": "start"
+    },
+    {
+      "type": "end",
+      "name": "end"
+    },
+    {
+      "type": "begin_group",
+      "name": "group_cr8sh11",
+      "label": "Reactions",
+      "required": "false"
+    },
+    {
+      "type": "text",
+      "name": "reactions",
+      "label": "Reactions",
+      "hint": "use mineral abbreviations, no spaces (e.g. Ab=Jd+Qz)",
+      "required": "false"
+    },
+    {
+      "type": "select_multiple ph6ma31",
+      "name": "based_on",
+      "label": "Based on",
+      "required": "false"
+    },
+    {
+      "type": "text",
+      "name": "other_based_on",
+      "label": "Other",
+      "required": "false",
+      "relevant": "selected(${based_on}, 'other')",
+      "constraint": ". != ''"
+    },
+    {
+      "type": "text",
+      "name": "notes",
+      "label": "Notes",
+      "required": "false",
+      "appearance": "multiline"
+    },
+    {
+      "type": "end_group"
+    },
+    {
+      "type": "calculate",
+      "name": "_version",
+      "required": "false",
+      "calculation": "'vz3ZQiUYMWhSKqG937DgJQ'"
+    },
+    {
+      "type": "calculate",
+      "name": "__version__",
+      "calculation": "'v6MD2qv5Jy6GkinAyvya5q'"
+    }
+  ],
+  "choices": [
+    {
+      "list_name": "ph6ma31",
+      "name": "corona",
+      "label": "corona"
+    },
+    {
+      "list_name": "ph6ma31",
+      "name": "pseudomorph",
+      "label": "pseudomorph"
+    },
+    {
+      "list_name": "ph6ma31",
+      "name": "breakdown",
+      "label": "breakdown"
+    },
+    {
+      "list_name": "ph6ma31",
+      "name": "mineral_degrad",
+      "label": "mineral degradation (unhappiness)"
+    },
+    {
+      "list_name": "ph6ma31",
+      "name": "other",
+      "label": "other"
+    }
+  ],
+  "settings": [
+    {
+      "version": "v6MD2qv5Jy6GkinAyvya5q"
+    }
+  ]
+}

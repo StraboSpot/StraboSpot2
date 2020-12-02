@@ -1,6 +1,6 @@
 import {Alert} from 'react-native';
 
-import * as forms from '../../assets/forms/forms.index';
+import * as forms from '../../assets/forms';
 import {isEmpty, toTitleCase} from '../../shared/Helpers';
 import {LABEL_DICTIONARY} from '../form';
 

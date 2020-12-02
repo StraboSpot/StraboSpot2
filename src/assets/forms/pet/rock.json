@@ -1,0 +1,1561 @@
+{
+  "survey": [
+    {
+      "type": "start",
+      "name": "start"
+    },
+    {
+      "type": "end",
+      "name": "end"
+    },
+    {
+      "type": "select_multiple hc7ju75",
+      "name": "rock_type",
+      "label": "Rock Type",
+      "required": "false"
+    },
+    {
+      "type": "select_multiple tf05s47",
+      "name": "igneous_rock_class",
+      "label": "Igneous Rock Class",
+      "required": "false",
+      "relevant": "selected(${rock_type}, 'igneous')"
+    },
+    {
+      "type": "begin_group",
+      "name": "group_ut73c28",
+      "label": "Plutonic",
+      "required": "false",
+      "relevant": "selected(${igneous_rock_class}, 'plutonic')"
+    },
+    {
+      "type": "select_multiple vb8zj01",
+      "name": "plutonic_rock_type",
+      "label": "Plutonic Rock Type",
+      "hint": "Specific plutonic rock type",
+      "required": "false",
+      "relevant": "selected(${igneous_rock_class}, 'plutonic')",
+      "appearance": "horizontal-compact"
+    },
+    {
+      "type": "text",
+      "name": "other_plutonic",
+      "label": "Other",
+      "required": "false",
+      "relevant": "selected(${plutonic_rock_type}, 'other')"
+    },
+    {
+      "type": "decimal",
+      "name": "color_index_pluton",
+      "label": "Color Index",
+      "required": "false",
+      "relevant": "selected(${igneous_rock_class}, 'plutonic')"
+    },
+    {
+      "type": "select_one nx1fj58",
+      "name": "color_index_source_pluton",
+      "label": "Color Index Source",
+      "required": "false",
+      "relevant": "selected(${igneous_rock_class}, 'plutonic')"
+    },
+    {
+      "type": "select_multiple cm8zx92",
+      "name": "occurence_plutonic",
+      "label": "Occurence",
+      "required": "false",
+      "relevant": "selected(${igneous_rock_class}, 'plutonic')",
+      "appearance": "horizontal-compact"
+    },
+    {
+      "type": "text",
+      "name": "other_occurence_plutonic",
+      "label": "Other",
+      "required": "false",
+      "relevant": "selected(${occurence_plutonic}, 'other')"
+    },
+    {
+      "type": "select_multiple ug9ia66",
+      "name": "texture_plutonic",
+      "label": "Texture",
+      "required": "false",
+      "relevant": "selected(${igneous_rock_class}, 'plutonic')",
+      "appearance": "horizontal-compact"
+    },
+    {
+      "type": "text",
+      "name": "other_texture_plutonic",
+      "label": "Other",
+      "required": "false",
+      "relevant": "selected(${texture_plutonic}, 'other')"
+    },
+    {
+      "type": "integer",
+      "name": "pluton_characteristic_size_of",
+      "label": "Characteristic size of crystals, mm",
+      "required": "false",
+      "relevant": "selected(${igneous_rock_class}, 'plutonic')"
+    },
+    {
+      "type": "select_multiple pt2tr54",
+      "name": "alteration_plutonic",
+      "label": "Modification ",
+      "required": "false",
+      "relevant": "selected(${igneous_rock_class}, 'plutonic')",
+      "appearance": "horizontal-compact"
+    },
+    {
+      "type": "text",
+      "name": "other_modification_plutonic",
+      "label": "Other",
+      "required": "false",
+      "relevant": "selected(${alteration_plutonic}, 'other')"
+    },
+    {
+      "type": "text",
+      "name": "notes_plutonic",
+      "label": "Notes",
+      "required": "false",
+      "relevant": "selected(${igneous_rock_class}, 'plutonic')",
+      "appearance": "multiline"
+    },
+    {
+      "type": "end_group"
+    },
+    {
+      "type": "begin_group",
+      "name": "group_sk5wf47",
+      "label": "Volcanic",
+      "required": "false",
+      "relevant": "selected(${igneous_rock_class}, 'volcanic')"
+    },
+    {
+      "type": "select_multiple hr56r07",
+      "name": "volcanic_rock_type",
+      "label": "Volcanic Rock Type",
+      "hint": "Specific volcanic rock type",
+      "required": "false",
+      "relevant": "selected(${igneous_rock_class}, 'volcanic')",
+      "appearance": "horizontal-compact"
+    },
+    {
+      "type": "text",
+      "name": "other_volcanic_rocks",
+      "label": "Other",
+      "required": "false",
+      "relevant": "selected(${volcanic_rock_type}, 'other')"
+    },
+    {
+      "type": "select_multiple ez5mj87",
+      "name": "occurence_volcanic",
+      "label": "Occurence",
+      "required": "false",
+      "relevant": "selected(${igneous_rock_class}, 'volcanic')",
+      "appearance": "horizontal-compact"
+    },
+    {
+      "type": "text",
+      "name": "other_occurance_volcanic",
+      "label": "Other",
+      "required": "false",
+      "relevant": "selected(${occurence_volcanic}, 'other')"
+    },
+    {
+      "type": "select_multiple jx1rw50",
+      "name": "texture_volcanic",
+      "label": "Texture",
+      "required": "false",
+      "relevant": "selected(${igneous_rock_class}, 'volcanic')",
+      "appearance": "horizontal-compact"
+    },
+    {
+      "type": "text",
+      "name": "plutonic_texture_other",
+      "label": "Other",
+      "required": "false",
+      "relevant": "selected(${texture_volcanic}, 'other')"
+    },
+    {
+      "type": "decimal",
+      "name": "color_index_volc",
+      "label": "Color Index",
+      "required": "false",
+      "relevant": "selected(${igneous_rock_class}, 'volcanic')"
+    },
+    {
+      "type": "select_one nx1fj58",
+      "name": "color_index_source_volc",
+      "label": "Color Index Source",
+      "required": "false",
+      "relevant": "selected(${igneous_rock_class}, 'volcanic')"
+    },
+    {
+      "type": "integer",
+      "name": "vol_characteristic_size_of_cry",
+      "label": "Characteristic size of crystals, mm",
+      "required": "false",
+      "relevant": "selected(${igneous_rock_class}, 'volcanic')"
+    },
+    {
+      "type": "select_multiple kc4rs46",
+      "name": "structure_volcanic",
+      "label": "Structure",
+      "required": "false",
+      "relevant": "selected(${igneous_rock_class}, 'volcanic')",
+      "appearance": "horizontal"
+    },
+    {
+      "type": "text",
+      "name": "other_volc_structure",
+      "label": "Other",
+      "required": "false",
+      "relevant": "selected(${structure_volcanic}, 'other')"
+    },
+    {
+      "type": "select_multiple pt2tr54",
+      "name": "alteration_volcanic",
+      "label": "Modification ",
+      "required": "false",
+      "relevant": "selected(${igneous_rock_class}, 'volcanic')",
+      "appearance": "horizontal-compact"
+    },
+    {
+      "type": "text",
+      "name": "other_modification_volcanic",
+      "label": "Other",
+      "required": "false",
+      "relevant": "selected(${alteration_volcanic}, 'other')"
+    },
+    {
+      "type": "text",
+      "name": "notes_volcanic",
+      "label": "Notes",
+      "required": "false",
+      "relevant": "selected(${igneous_rock_class}, 'volcanic')",
+      "appearance": "multiline"
+    },
+    {
+      "type": "end_group"
+    },
+    {
+      "type": "begin_group",
+      "name": "group_qo15y35",
+      "label": "Metamorphic",
+      "required": "false",
+      "relevant": "selected(${rock_type}, 'metamorphic')"
+    },
+    {
+      "type": "select_multiple zw3kc97",
+      "name": "metamorphic_rock_type",
+      "label": "Metamorphic Rock Type",
+      "hint": "Specific metamorphic rock type",
+      "required": "false",
+      "relevant": "selected(${rock_type}, 'metamorphic')",
+      "appearance": "horizontal-compact"
+    },
+    {
+      "type": "select_multiple dw4vv19",
+      "name": "metamorphic_rock_type_less_com",
+      "label": "Metamorphic Rock Type (Less Common)",
+      "required": "false",
+      "relevant": "selected(${metamorphic_rock_type}, 'less_common_ty')",
+      "appearance": "horizontal-compact"
+    },
+    {
+      "type": "text",
+      "name": "other_met_rocks",
+      "label": "Other",
+      "required": "false",
+      "relevant": "selected(${metamorphic_rock_type_less_com}, 'other')",
+      "appearance": "multiline"
+    },
+    {
+      "type": "select_one zt6bn36",
+      "name": "protolith",
+      "label": "Protolith",
+      "hint": "Metamorphic protolith",
+      "required": "false",
+      "relevant": "selected(${rock_type}, 'metamorphic')",
+      "appearance": "horizontal-compact"
+    },
+    {
+      "type": "text",
+      "name": "other_protolith",
+      "label": "Other",
+      "required": "false",
+      "relevant": "${protolith} = 'other'"
+    },
+    {
+      "type": "select_multiple kt0dp56",
+      "name": "facies",
+      "label": "Facies",
+      "required": "false",
+      "relevant": "selected(${rock_type}, 'metamorphic')",
+      "appearance": "horizontal-compact"
+    },
+    {
+      "type": "text",
+      "name": "other_facies",
+      "label": "Other",
+      "required": "false",
+      "relevant": "selected(${facies}, 'other')"
+    },
+    {
+      "type": "select_multiple nw3zz67",
+      "name": "zone",
+      "label": "Zone",
+      "required": "false",
+      "relevant": "selected(${rock_type}, 'metamorphic')",
+      "appearance": "horizontal-compact"
+    },
+    {
+      "type": "text",
+      "name": "other_zone",
+      "label": "Other",
+      "required": "false",
+      "relevant": "selected(${zone}, 'other')"
+    },
+    {
+      "type": "text",
+      "name": "notes_metamorphic",
+      "label": "Notes",
+      "required": "false",
+      "relevant": "selected(${rock_type}, 'metamorphic')",
+      "appearance": "multiline"
+    },
+    {
+      "type": "end_group"
+    },
+    {
+      "type": "begin_group",
+      "name": "group_pc7si98",
+      "label": "Alteration,Ore",
+      "required": "false",
+      "relevant": "selected(${rock_type}, 'alteration_or')"
+    },
+    {
+      "type": "select_one uq4ie19",
+      "name": "ore_type",
+      "label": "Alteration, Ore Rock Type",
+      "hint": "Specific alteration/ore rock type",
+      "required": "false",
+      "relevant": "selected(${rock_type}, 'alteration_or')",
+      "appearance": "horizontal-compact"
+    },
+    {
+      "type": "text",
+      "name": "other_alteration_type",
+      "label": "Other",
+      "required": "false",
+      "relevant": "${ore_type} = 'other'"
+    },
+    {
+      "type": "select_multiple xa5un89",
+      "name": "hydrothermal_alteration",
+      "label": "Hydrothermal Alteration",
+      "hint": "Hydrothermal alteration type",
+      "required": "false",
+      "relevant": "selected(${rock_type}, 'alteration_or')",
+      "appearance": "horizontal-compact"
+    },
+    {
+      "type": "text",
+      "name": "other_hydrothermal_alteration",
+      "label": "Other",
+      "required": "false",
+      "relevant": "selected(${hydrothermal_alteration}, 'other')"
+    },
+    {
+      "type": "text",
+      "name": "alteration_host_rock",
+      "label": "Host Rock",
+      "required": "false",
+      "relevant": "selected(${rock_type}, 'alteration_or')"
+    },
+    {
+      "type": "text",
+      "name": "magmatic_fluid_source",
+      "label": "Magmatic fluid source",
+      "required": "false",
+      "relevant": "selected(${rock_type}, 'alteration_or')"
+    },
+    {
+      "type": "text",
+      "name": "mineralized_elements",
+      "label": "Mineralized Elements",
+      "required": "false",
+      "relevant": "selected(${rock_type}, 'alteration_or')"
+    },
+    {
+      "type": "text",
+      "name": "notes_ore",
+      "label": "Notes",
+      "required": "false",
+      "relevant": "selected(${rock_type}, 'alteration_or')",
+      "appearance": "multiline"
+    },
+    {
+      "type": "end_group"
+    },
+    {
+      "type": "calculate",
+      "name": "__version__",
+      "calculation": "'vX9UbA3zEhefAS3M6unM4d'"
+    }
+  ],
+  "choices": [
+    {
+      "list_name": "hc7ju75",
+      "name": "igneous",
+      "label": "igneous"
+    },
+    {
+      "list_name": "hc7ju75",
+      "name": "metamorphic",
+      "label": "metamorphic"
+    },
+    {
+      "list_name": "hc7ju75",
+      "name": "alteration_or",
+      "label": "alteration, ore"
+    },
+    {
+      "list_name": "tf05s47",
+      "name": "volcanic",
+      "label": "volcanic"
+    },
+    {
+      "list_name": "tf05s47",
+      "name": "plutonic",
+      "label": "plutonic"
+    },
+    {
+      "list_name": "vb8zj01",
+      "name": "granite",
+      "label": "granite"
+    },
+    {
+      "list_name": "vb8zj01",
+      "name": "granodiorite",
+      "label": "granodiorite",
+      "order": "1"
+    },
+    {
+      "list_name": "vb8zj01",
+      "name": "diorite",
+      "label": "diorite",
+      "order": "2"
+    },
+    {
+      "list_name": "vb8zj01",
+      "name": "gabbro",
+      "label": "gabbro",
+      "order": "3"
+    },
+    {
+      "list_name": "vb8zj01",
+      "name": "alkali_granite",
+      "label": "alkali feldspar granite",
+      "order": "4"
+    },
+    {
+      "list_name": "vb8zj01",
+      "name": "anorthosite",
+      "label": "anorthosite",
+      "order": "5"
+    },
+    {
+      "list_name": "vb8zj01",
+      "name": "aplite",
+      "label": "aplite",
+      "order": "6"
+    },
+    {
+      "list_name": "vb8zj01",
+      "name": "diabase",
+      "label": "diabase",
+      "order": "7"
+    },
+    {
+      "list_name": "vb8zj01",
+      "name": "dunite",
+      "label": "dunite",
+      "order": "8"
+    },
+    {
+      "list_name": "vb8zj01",
+      "name": "harzburgite",
+      "label": "harzburgite",
+      "order": "9"
+    },
+    {
+      "list_name": "vb8zj01",
+      "name": "monzonite",
+      "label": "monzonite",
+      "order": "10"
+    },
+    {
+      "list_name": "vb8zj01",
+      "name": "norite",
+      "label": "norite",
+      "order": "11"
+    },
+    {
+      "list_name": "vb8zj01",
+      "name": "pegmatite",
+      "label": "pegmatite",
+      "order": "12"
+    },
+    {
+      "list_name": "vb8zj01",
+      "name": "peridotite",
+      "label": "peridotite",
+      "order": "13"
+    },
+    {
+      "list_name": "vb8zj01",
+      "name": "quartz_monz",
+      "label": "quartz monzonite",
+      "order": "14"
+    },
+    {
+      "list_name": "vb8zj01",
+      "name": "syenite",
+      "label": "syenite",
+      "order": "15"
+    },
+    {
+      "list_name": "vb8zj01",
+      "name": "tonalite",
+      "label": "tonalite",
+      "order": "16"
+    },
+    {
+      "list_name": "vb8zj01",
+      "name": "unclear",
+      "label": "unclear",
+      "order": "17"
+    },
+    {
+      "list_name": "vb8zj01",
+      "name": "other",
+      "label": "other",
+      "order": "18"
+    },
+    {
+      "list_name": "nx1fj58",
+      "name": "strabotools",
+      "label": "StraboTools"
+    },
+    {
+      "list_name": "nx1fj58",
+      "name": "visual",
+      "label": "visual"
+    },
+    {
+      "list_name": "cm8zx92",
+      "name": "pluton",
+      "label": "pluton"
+    },
+    {
+      "list_name": "cm8zx92",
+      "name": "dike",
+      "label": "dike"
+    },
+    {
+      "list_name": "cm8zx92",
+      "name": "sill",
+      "label": "sill"
+    },
+    {
+      "list_name": "cm8zx92",
+      "name": "unclear",
+      "label": "unclear"
+    },
+    {
+      "list_name": "cm8zx92",
+      "name": "other",
+      "label": "other"
+    },
+    {
+      "list_name": "ug9ia66",
+      "name": "fine_grained",
+      "label": "fine-grained"
+    },
+    {
+      "list_name": "ug9ia66",
+      "name": "medium_grained",
+      "label": "medium-grained",
+      "order": "1"
+    },
+    {
+      "list_name": "ug9ia66",
+      "name": "coarse_grained",
+      "label": "coarse-grained",
+      "order": "2"
+    },
+    {
+      "list_name": "ug9ia66",
+      "name": "porphyritic",
+      "label": "porphyritic",
+      "order": "3"
+    },
+    {
+      "list_name": "ug9ia66",
+      "name": "pegmatitic",
+      "label": "pegmatitic",
+      "order": "4"
+    },
+    {
+      "list_name": "ug9ia66",
+      "name": "equigranular",
+      "label": "equigranular",
+      "order": "5"
+    },
+    {
+      "list_name": "ug9ia66",
+      "name": "megacrystic",
+      "label": "megacrystic",
+      "order": "6"
+    },
+    {
+      "list_name": "ug9ia66",
+      "name": "aplitic",
+      "label": "aplitic",
+      "order": "7"
+    },
+    {
+      "list_name": "ug9ia66",
+      "name": "miarolitic",
+      "label": "miarolitic",
+      "order": "8"
+    },
+    {
+      "list_name": "ug9ia66",
+      "name": "diabasic",
+      "label": "diabasic",
+      "order": "9"
+    },
+    {
+      "list_name": "ug9ia66",
+      "name": "seriate",
+      "label": "seriate",
+      "order": "10"
+    },
+    {
+      "list_name": "ug9ia66",
+      "name": "other",
+      "label": "other",
+      "order": "11"
+    },
+    {
+      "list_name": "pt2tr54",
+      "name": "altered",
+      "label": "altered"
+    },
+    {
+      "list_name": "pt2tr54",
+      "name": "metamorphic_ov",
+      "label": "metamorphic overprint",
+      "order": "1"
+    },
+    {
+      "list_name": "pt2tr54",
+      "name": "shattered",
+      "label": "shattered",
+      "order": "2"
+    },
+    {
+      "list_name": "pt2tr54",
+      "name": "veined",
+      "label": "veined",
+      "order": "3"
+    },
+    {
+      "list_name": "pt2tr54",
+      "name": "faulted",
+      "label": "faulted",
+      "order": "4"
+    },
+    {
+      "list_name": "pt2tr54",
+      "name": "grus",
+      "label": "grus",
+      "order": "5"
+    },
+    {
+      "list_name": "pt2tr54",
+      "name": "jointed",
+      "label": "jointed",
+      "order": "6"
+    },
+    {
+      "list_name": "pt2tr54",
+      "name": "hydrothermal_v",
+      "label": "hydrothermal veins",
+      "order": "7"
+    },
+    {
+      "list_name": "pt2tr54",
+      "name": "other",
+      "label": "other",
+      "order": "8"
+    },
+    {
+      "list_name": "hr56r07",
+      "name": "basalt",
+      "label": "basalt"
+    },
+    {
+      "list_name": "hr56r07",
+      "name": "rhyolite",
+      "label": "rhyolite",
+      "order": "1"
+    },
+    {
+      "list_name": "hr56r07",
+      "name": "basaltic_andes",
+      "label": "basaltic-andesite",
+      "order": "2"
+    },
+    {
+      "list_name": "hr56r07",
+      "name": "andesite",
+      "label": "andesite",
+      "order": "3"
+    },
+    {
+      "list_name": "hr56r07",
+      "name": "dacite",
+      "label": "dacite",
+      "order": "4"
+    },
+    {
+      "list_name": "hr56r07",
+      "name": "obsidian",
+      "label": "obsidian",
+      "order": "5"
+    },
+    {
+      "list_name": "hr56r07",
+      "name": "tachylite",
+      "label": "tachylite",
+      "order": "6"
+    },
+    {
+      "list_name": "hr56r07",
+      "name": "trachyte",
+      "label": "trachyte",
+      "order": "7"
+    },
+    {
+      "list_name": "hr56r07",
+      "name": "rhyodacite",
+      "label": "rhyodacite",
+      "order": "8"
+    },
+    {
+      "list_name": "hr56r07",
+      "name": "trachyandesite",
+      "label": "trachyandesite",
+      "order": "9"
+    },
+    {
+      "list_name": "hr56r07",
+      "name": "trachybasalt",
+      "label": "trachybasalt",
+      "order": "10"
+    },
+    {
+      "list_name": "hr56r07",
+      "name": "latite",
+      "label": "latite",
+      "order": "11"
+    },
+    {
+      "list_name": "hr56r07",
+      "name": "tuff",
+      "label": "tuff",
+      "order": "12"
+    },
+    {
+      "list_name": "hr56r07",
+      "name": "ash_fall_tuff",
+      "label": "ash-fall tuff",
+      "order": "13"
+    },
+    {
+      "list_name": "hr56r07",
+      "name": "ash_flow_tuff",
+      "label": "ash-flow tuff",
+      "order": "14"
+    },
+    {
+      "list_name": "hr56r07",
+      "name": "vitrophyre",
+      "label": "vitrophyre",
+      "order": "15"
+    },
+    {
+      "list_name": "hr56r07",
+      "name": "tuff_breccia",
+      "label": "tuff breccia",
+      "order": "16"
+    },
+    {
+      "list_name": "hr56r07",
+      "name": "lapilli_tuff",
+      "label": "lapilli tuff",
+      "order": "17"
+    },
+    {
+      "list_name": "hr56r07",
+      "name": "unclear",
+      "label": "unclear",
+      "order": "18"
+    },
+    {
+      "list_name": "hr56r07",
+      "name": "other",
+      "label": "other",
+      "order": "19"
+    },
+    {
+      "list_name": "ez5mj87",
+      "name": "lava",
+      "label": "lava"
+    },
+    {
+      "list_name": "ez5mj87",
+      "name": "dome",
+      "label": "dome"
+    },
+    {
+      "list_name": "ez5mj87",
+      "name": "pyroclastic_fl",
+      "label": "pyroclastic flow"
+    },
+    {
+      "list_name": "ez5mj87",
+      "name": "pyroclastic_fa",
+      "label": "pyroclastic fall"
+    },
+    {
+      "list_name": "ez5mj87",
+      "name": "pyroclastic_su",
+      "label": "pyroclastic surge"
+    },
+    {
+      "list_name": "ez5mj87",
+      "name": "reworked",
+      "label": "reworked"
+    },
+    {
+      "list_name": "ez5mj87",
+      "name": "unclear",
+      "label": "unclear"
+    },
+    {
+      "list_name": "ez5mj87",
+      "name": "other",
+      "label": "other"
+    },
+    {
+      "list_name": "jx1rw50",
+      "name": "porrphyritic",
+      "label": "porphyritic"
+    },
+    {
+      "list_name": "jx1rw50",
+      "name": "clastic",
+      "label": "clastic"
+    },
+    {
+      "list_name": "jx1rw50",
+      "name": "glassy",
+      "label": "glassy"
+    },
+    {
+      "list_name": "jx1rw50",
+      "name": "vesicular",
+      "label": "vesicular"
+    },
+    {
+      "list_name": "jx1rw50",
+      "name": "eutaxitic",
+      "label": "eutaxitic"
+    },
+    {
+      "list_name": "jx1rw50",
+      "name": "devitrified",
+      "label": "devitrified"
+    },
+    {
+      "list_name": "jx1rw50",
+      "name": "aphanitic",
+      "label": "aphanitic"
+    },
+    {
+      "list_name": "jx1rw50",
+      "name": "stony",
+      "label": "stony"
+    },
+    {
+      "list_name": "jx1rw50",
+      "name": "vuggy",
+      "label": "vuggy"
+    },
+    {
+      "list_name": "jx1rw50",
+      "name": "xenoliths",
+      "label": "xenoliths"
+    },
+    {
+      "list_name": "jx1rw50",
+      "name": "other",
+      "label": "other"
+    },
+    {
+      "list_name": "kc4rs46",
+      "name": "columnar_joint",
+      "label": "columnar jointed"
+    },
+    {
+      "list_name": "kc4rs46",
+      "name": "eutaxitic",
+      "label": "banded"
+    },
+    {
+      "list_name": "kc4rs46",
+      "name": "welded",
+      "label": "welded"
+    },
+    {
+      "list_name": "kc4rs46",
+      "name": "layered",
+      "label": "layered"
+    },
+    {
+      "list_name": "kc4rs46",
+      "name": "cross_bedded",
+      "label": "cross-bedded"
+    },
+    {
+      "list_name": "kc4rs46",
+      "name": "other",
+      "label": "other"
+    },
+    {
+      "list_name": "zw3kc97",
+      "name": "slate",
+      "label": "slate"
+    },
+    {
+      "list_name": "zw3kc97",
+      "name": "phyllite",
+      "label": "phyllite",
+      "order": "1"
+    },
+    {
+      "list_name": "zw3kc97",
+      "name": "schist",
+      "label": "schist",
+      "order": "2"
+    },
+    {
+      "list_name": "zw3kc97",
+      "name": "paragneiss",
+      "label": "paragneiss",
+      "order": "3"
+    },
+    {
+      "list_name": "zw3kc97",
+      "name": "marble",
+      "label": "marble",
+      "order": "4"
+    },
+    {
+      "list_name": "zw3kc97",
+      "name": "calc_silicate",
+      "label": "calc-silicate",
+      "order": "5"
+    },
+    {
+      "list_name": "zw3kc97",
+      "name": "quartzite",
+      "label": "quartzite",
+      "order": "6"
+    },
+    {
+      "list_name": "zw3kc97",
+      "name": "metagreywacke",
+      "label": "metagreywacke",
+      "order": "7"
+    },
+    {
+      "list_name": "zw3kc97",
+      "name": "orthogneiss",
+      "label": "orthogneiss",
+      "order": "8"
+    },
+    {
+      "list_name": "zw3kc97",
+      "name": "granulite",
+      "label": "granulite",
+      "order": "9"
+    },
+    {
+      "list_name": "zw3kc97",
+      "name": "migmatite",
+      "label": "migmatite",
+      "order": "10"
+    },
+    {
+      "list_name": "zw3kc97",
+      "name": "metabasite",
+      "label": "metabasite",
+      "order": "11"
+    },
+    {
+      "list_name": "zw3kc97",
+      "name": "greenstone",
+      "label": "greenstone",
+      "order": "12"
+    },
+    {
+      "list_name": "zw3kc97",
+      "name": "greenschist",
+      "label": "greenschist",
+      "order": "13"
+    },
+    {
+      "list_name": "zw3kc97",
+      "name": "amphibolite",
+      "label": "amphibolite",
+      "order": "14"
+    },
+    {
+      "list_name": "zw3kc97",
+      "name": "blueschist",
+      "label": "blueschist",
+      "order": "15"
+    },
+    {
+      "list_name": "zw3kc97",
+      "name": "eclogite",
+      "label": "eclogite",
+      "order": "16"
+    },
+    {
+      "list_name": "zw3kc97",
+      "name": "meta_ultramafi",
+      "label": "meta-ultramafic",
+      "order": "17"
+    },
+    {
+      "list_name": "zw3kc97",
+      "name": "serpentinite",
+      "label": "serpentinite",
+      "order": "19"
+    },
+    {
+      "list_name": "zw3kc97",
+      "name": "hornfels",
+      "label": "hornfels",
+      "order": "20"
+    },
+    {
+      "list_name": "zw3kc97",
+      "name": "granofels",
+      "label": "granofels",
+      "order": "21"
+    },
+    {
+      "list_name": "zw3kc97",
+      "name": "skarn",
+      "label": "skarn",
+      "order": "22"
+    },
+    {
+      "list_name": "zw3kc97",
+      "name": "gneiss",
+      "label": "gneiss (undifferentiated)",
+      "order": "23"
+    },
+    {
+      "list_name": "zw3kc97",
+      "name": "less_common_ty",
+      "label": "less common rock types",
+      "order": "24"
+    },
+    {
+      "list_name": "dw4vv19",
+      "name": "metaigneous",
+      "label": "metaigneous"
+    },
+    {
+      "list_name": "dw4vv19",
+      "name": "metagranite",
+      "label": "metagranite",
+      "order": "1"
+    },
+    {
+      "list_name": "dw4vv19",
+      "name": "metavolcanic",
+      "label": "metavolcanic",
+      "order": "2"
+    },
+    {
+      "list_name": "dw4vv19",
+      "name": "metasomatite",
+      "label": "metasomatite",
+      "order": "3"
+    },
+    {
+      "list_name": "dw4vv19",
+      "name": "metacarbonate",
+      "label": "metacarbonate",
+      "order": "4"
+    },
+    {
+      "list_name": "dw4vv19",
+      "name": "metapelite",
+      "label": "metapelite",
+      "order": "5"
+    },
+    {
+      "list_name": "dw4vv19",
+      "name": "metaarkose",
+      "label": "metaarkose",
+      "order": "6"
+    },
+    {
+      "list_name": "dw4vv19",
+      "name": "calc_schist",
+      "label": "calc schist",
+      "order": "7"
+    },
+    {
+      "list_name": "dw4vv19",
+      "name": "cataclasite",
+      "label": "cataclasite",
+      "order": "8"
+    },
+    {
+      "list_name": "dw4vv19",
+      "name": "phyllonite",
+      "label": "phyllonite",
+      "order": "9"
+    },
+    {
+      "list_name": "dw4vv19",
+      "name": "mylonite",
+      "label": "mylonite",
+      "order": "10"
+    },
+    {
+      "list_name": "dw4vv19",
+      "name": "jadeite",
+      "label": "jadeite",
+      "order": "11"
+    },
+    {
+      "list_name": "dw4vv19",
+      "name": "glaucophanite",
+      "label": "glaucophanite",
+      "order": "12"
+    },
+    {
+      "list_name": "dw4vv19",
+      "name": "garnetite",
+      "label": "garnetite",
+      "order": "13"
+    },
+    {
+      "list_name": "dw4vv19",
+      "name": "pyroxenite",
+      "label": "pyroxenite",
+      "order": "14"
+    },
+    {
+      "list_name": "dw4vv19",
+      "name": "cordierite_ant",
+      "label": "cordierite-anthophyllite",
+      "order": "16"
+    },
+    {
+      "list_name": "dw4vv19",
+      "name": "blackwall",
+      "label": "blackwall",
+      "order": "17"
+    },
+    {
+      "list_name": "dw4vv19",
+      "name": "meta_iron_form",
+      "label": "meta-iron formation",
+      "order": "18"
+    },
+    {
+      "list_name": "dw4vv19",
+      "name": "other",
+      "label": "other",
+      "order": "19"
+    },
+    {
+      "list_name": "zt6bn36",
+      "name": "pelite",
+      "label": "mudrock/pelite"
+    },
+    {
+      "list_name": "zt6bn36",
+      "name": "sandstone",
+      "label": "sandstone",
+      "order": "1"
+    },
+    {
+      "list_name": "zt6bn36",
+      "name": "greywacke",
+      "label": "greywacke/psammite",
+      "order": "2"
+    },
+    {
+      "list_name": "zt6bn36",
+      "name": "conglomerate",
+      "label": "conglomerate",
+      "order": "3"
+    },
+    {
+      "list_name": "zt6bn36",
+      "name": "marl",
+      "label": "marl",
+      "order": "4"
+    },
+    {
+      "list_name": "zt6bn36",
+      "name": "carbonate",
+      "label": "carbonate",
+      "order": "5"
+    },
+    {
+      "list_name": "zt6bn36",
+      "name": "granitoid",
+      "label": "granitoid",
+      "order": "6"
+    },
+    {
+      "list_name": "zt6bn36",
+      "name": "mafic",
+      "label": "mafic",
+      "order": "7"
+    },
+    {
+      "list_name": "zt6bn36",
+      "name": "ultramafic",
+      "label": "ultramafic",
+      "order": "8"
+    },
+    {
+      "list_name": "zt6bn36",
+      "name": "unclear",
+      "label": "unclear",
+      "order": "9"
+    },
+    {
+      "list_name": "zt6bn36",
+      "name": "other",
+      "label": "other",
+      "order": "10"
+    },
+    {
+      "list_name": "kt0dp56",
+      "name": "zeolite",
+      "label": "zeolite"
+    },
+    {
+      "list_name": "kt0dp56",
+      "name": "prehnite_pumpy",
+      "label": "prehnite-pumpyellite",
+      "order": "1"
+    },
+    {
+      "list_name": "kt0dp56",
+      "name": "greenschist",
+      "label": "greenschist",
+      "order": "2"
+    },
+    {
+      "list_name": "kt0dp56",
+      "name": "amphibolite",
+      "label": "amphibolite",
+      "order": "3"
+    },
+    {
+      "list_name": "kt0dp56",
+      "name": "granulite",
+      "label": "granulite",
+      "order": "4"
+    },
+    {
+      "list_name": "kt0dp56",
+      "name": "blueschist",
+      "label": "blueschist",
+      "order": "5"
+    },
+    {
+      "list_name": "kt0dp56",
+      "name": "eclogite",
+      "label": "eclogite",
+      "order": "6"
+    },
+    {
+      "list_name": "kt0dp56",
+      "name": "hornfels",
+      "label": "hornfels",
+      "order": "7"
+    },
+    {
+      "list_name": "kt0dp56",
+      "name": "ultra_high_pre",
+      "label": "ultra-high pressure",
+      "order": "8"
+    },
+    {
+      "list_name": "kt0dp56",
+      "name": "ultra_high_tem",
+      "label": "ultra-high temperature",
+      "order": "9"
+    },
+    {
+      "list_name": "kt0dp56",
+      "name": "other",
+      "label": "other",
+      "order": "10"
+    },
+    {
+      "list_name": "nw3zz67",
+      "name": "chlorite",
+      "label": "chlorite"
+    },
+    {
+      "list_name": "nw3zz67",
+      "name": "biotite",
+      "label": "biotite",
+      "order": "1"
+    },
+    {
+      "list_name": "nw3zz67",
+      "name": "garnet",
+      "label": "garnet",
+      "order": "2"
+    },
+    {
+      "list_name": "nw3zz67",
+      "name": "garnet_corider",
+      "label": "garnet-coriderite",
+      "order": "3"
+    },
+    {
+      "list_name": "nw3zz67",
+      "name": "staurolite",
+      "label": "staurolite",
+      "order": "4"
+    },
+    {
+      "list_name": "nw3zz67",
+      "name": "staurolite_kya",
+      "label": "staurolite-kyanite",
+      "order": "5"
+    },
+    {
+      "list_name": "nw3zz67",
+      "name": "andalusite",
+      "label": "andalusite",
+      "order": "6"
+    },
+    {
+      "list_name": "nw3zz67",
+      "name": "kyanite",
+      "label": "kyanite",
+      "order": "7"
+    },
+    {
+      "list_name": "nw3zz67",
+      "name": "sillimanite",
+      "label": "sillimanite",
+      "order": "8"
+    },
+    {
+      "list_name": "nw3zz67",
+      "name": "sill_kspar",
+      "label": "sillimanite-K feldspar",
+      "order": "9"
+    },
+    {
+      "list_name": "nw3zz67",
+      "name": "migmatite",
+      "label": "migmatite"
+    },
+    {
+      "list_name": "nw3zz67",
+      "name": "other",
+      "label": "other"
+    },
+    {
+      "list_name": "uq4ie19",
+      "name": "skarn",
+      "label": "skarn"
+    },
+    {
+      "list_name": "uq4ie19",
+      "name": "hornfels",
+      "label": "hornfels",
+      "order": "1"
+    },
+    {
+      "list_name": "uq4ie19",
+      "name": "dolorite_mica_",
+      "label": "dolorite/mica replacement",
+      "order": "2"
+    },
+    {
+      "list_name": "uq4ie19",
+      "name": "rhodingite",
+      "label": "rodingite",
+      "order": "3"
+    },
+    {
+      "list_name": "uq4ie19",
+      "name": "carbonatite",
+      "label": "carbonatite",
+      "order": "4"
+    },
+    {
+      "list_name": "uq4ie19",
+      "name": "chromite_ore",
+      "label": "chromite ore",
+      "order": "5"
+    },
+    {
+      "list_name": "uq4ie19",
+      "name": "magmatic_hoste",
+      "label": "magmatic-hosted ore",
+      "order": "6"
+    },
+    {
+      "list_name": "uq4ie19",
+      "name": "pegmatite_host",
+      "label": "pegmatite-hosted ore",
+      "order": "7"
+    },
+    {
+      "list_name": "uq4ie19",
+      "name": "vein_hosted_or",
+      "label": "vein-hosted ore",
+      "order": "8"
+    },
+    {
+      "list_name": "uq4ie19",
+      "name": "greisen_ore",
+      "label": "greisen ore",
+      "order": "9"
+    },
+    {
+      "list_name": "uq4ie19",
+      "name": "carbonate_repl",
+      "label": "carbonate-replacement",
+      "order": "10"
+    },
+    {
+      "list_name": "uq4ie19",
+      "name": "bif",
+      "label": "BIF",
+      "order": "11"
+    },
+    {
+      "list_name": "uq4ie19",
+      "name": "sedimentary_pr",
+      "label": "sedimentary precipitated ore",
+      "order": "12"
+    },
+    {
+      "list_name": "uq4ie19",
+      "name": "sedimentary_ho",
+      "label": "sedimentary hosted ore (U)",
+      "order": "13"
+    },
+    {
+      "list_name": "uq4ie19",
+      "name": "kimberlite",
+      "label": "kimberlite",
+      "order": "14"
+    },
+    {
+      "list_name": "uq4ie19",
+      "name": "komatiites",
+      "label": "komatiites",
+      "order": "15"
+    },
+    {
+      "list_name": "uq4ie19",
+      "name": "placer",
+      "label": "placer",
+      "order": "16"
+    },
+    {
+      "list_name": "uq4ie19",
+      "name": "laterite",
+      "label": "laterite",
+      "order": "17"
+    },
+    {
+      "list_name": "uq4ie19",
+      "name": "other",
+      "label": "other",
+      "order": "18"
+    },
+    {
+      "list_name": "xa5un89",
+      "name": "propylitic",
+      "label": "propylitic"
+    },
+    {
+      "list_name": "xa5un89",
+      "name": "albite_epidote",
+      "label": "albite-epidote"
+    },
+    {
+      "list_name": "xa5un89",
+      "name": "potassic",
+      "label": "potassic"
+    },
+    {
+      "list_name": "xa5un89",
+      "name": "sodic_calcic",
+      "label": "sodic-calcic"
+    },
+    {
+      "list_name": "xa5un89",
+      "name": "chlorite_seric",
+      "label": "chlorite-sericite"
+    },
+    {
+      "list_name": "xa5un89",
+      "name": "phyllitic",
+      "label": "phyllic"
+    },
+    {
+      "list_name": "xa5un89",
+      "name": "argellic",
+      "label": "argillic"
+    },
+    {
+      "list_name": "xa5un89",
+      "name": "other",
+      "label": "other"
+    }
+  ],
+  "settings": [
+    {
+      "version": "vX9UbA3zEhefAS3M6unM4d"
+    }
+  ]
+}
