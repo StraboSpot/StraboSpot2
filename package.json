@@ -36,7 +36,7 @@
     "proj4": "^2.6.3",
     "prop-types": "^15.7.2",
     "react": "^17.0.1",
-    "react-native": "0.63.3",
+    "react-native": "^0.63.4",
     "react-native-collapsible": "^1.5.3",
     "react-native-easy-toast": "^1.2.0",
     "react-native-elements": "^3.0.0-alpha.1",
