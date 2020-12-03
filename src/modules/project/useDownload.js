@@ -166,10 +166,11 @@ const useDownload = () => {
   };
 
   const initializeDownload = async (selectedProject, source) => {
+    const projectName = selectedProject.name || selectedProject.description.project_name || 'Unknown';
     batch(() => {
       dispatch(setLoadingStatus({view: 'modal', bool: true}));
       dispatch(clearedStatusMessages());
-      dispatch(addedStatusMessage({statusMessage: `Downloading Project: ${selectedProject.name}`}));
+      dispatch(addedStatusMessage({statusMessage: `Downloading Project: ${projectName}`}));
       dispatch(setStatusMessagesModalVisible(true));
     });
     try {
