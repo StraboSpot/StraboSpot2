@@ -125,6 +125,9 @@ export const BASEMAPS = DEFAULT_MAPS.map(map => {
   return {...map, ...MAP_PROVIDERS[map.source]};
 });
 console.log(BASEMAPS);
+export const CUSTOMBASEMAPS = CUSTOM_MAP_TYPES.map(map => {
+  return {...map, ...MAP_PROVIDERS[map.source]}
+});
 
 export const MAP_SYMBOLS = {
   'default_point': require('../../assets/symbols/point.png'),
