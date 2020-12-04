@@ -457,7 +457,7 @@ const SaveMapsModal = (props) => {
                       <View>
                         <ProgressBar progress={percentDone} width={200}/>
                         <Text style={{textAlign: 'right', paddingTop: 5}}>
-                          {toNumberFixedValue(percentDone, 1)}
+                          {toNumberFixedValue(percentDone, 0)}
                         </Text>
                       </View>
                     )
