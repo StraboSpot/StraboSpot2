@@ -24,6 +24,14 @@ const useMapsOffline = () => {
 
   }, [isOnline]);
 
+  const getMapName = (map) => {
+    if (map.id === 'mapbox.outdoors' || map.id === 'mapbox.satellite' || map.id === 'osm'
+      || map.id === 'macrostrat' || map.source === 'map_warper') {
+      return map.name;
+    }
+    else return;
+  };
+
   const setOfflineMapTiles = async (map) => {
     let tempCurrentBasemap;
     console.log('viewOfflineMap: ', map);
@@ -60,6 +68,7 @@ const useMapsOffline = () => {
   };
 
   return {
+    getMapName: getMapName,
     setOfflineMapTiles: setOfflineMapTiles,
     viewOfflineMap: viewOfflineMap,
   };

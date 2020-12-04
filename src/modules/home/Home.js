@@ -158,23 +158,13 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    if (user.email && user.email) {
+    if (user.email && user.name) {
       Sentry.configureScope((scope) => {
         scope.setUser({'email': user.email, username: user.name});
       });
     }
     console.log('Initializing Home page');
   }, [user]);
-
-  useEffect(() => {
-    if (isOnline && currentBasemap) {
-      // Alert.alert('Online Basemap', `${JSON.stringify(currentBasemap.id)}`);
-      useMaps.setBasemap(currentBasemap.id).catch(error => console.log('Error Setting Basemap', error));
-    }
-    else if (!isOnline && isOnline !== null) {
-      useOfflineMaps.viewOfflineMap().catch(error => console.log('Error Setting Offline Basemap', error));
-    }
-  }, [isOnline]);
 
   useEffect(() => {
     dispatch(setProjectLoadSelectionModalVisible(isEmpty(currentProject)));

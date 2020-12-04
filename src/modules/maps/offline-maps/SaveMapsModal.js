@@ -313,6 +313,7 @@ const SaveMapsModal = (props) => {
 
     let newOfflineMapsData = [];
     let thisMap = {};
+    thisMap.source = source;
     thisMap.id = id;
     thisMap.name = mapName;
     thisMap.count = tileCount;

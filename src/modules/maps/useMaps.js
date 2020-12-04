@@ -20,7 +20,13 @@ import {addedProject} from '../project/projects.slice';
 import {setSelectedSpot} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
 import {BASEMAPS, GEO_LAT_LNG_PROJECTION, MAP_PROVIDERS, PIXEL_PROJECTION} from './maps.constants';
-import {addedCustomMap, deletedCustomMap, selectedCustomMapToEdit, setCurrentBasemap, setMapSymbols} from './maps.slice';
+import {
+  addedCustomMap,
+  deletedCustomMap,
+  selectedCustomMapToEdit,
+  setCurrentBasemap,
+  setMapSymbols,
+} from './maps.slice';
 
 const useMaps = () => {
   const [useServerRequests] = useServerRequestsHook();
@@ -133,7 +139,8 @@ const useMaps = () => {
   const getCoordQuad = (imageBasemapProps) => {
     // identify the [lat,lng] corners of the image basemap
     var bottomLeft = [0, 0];
-    var bottomRight = convertCoordinateProjections(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION, [imageBasemapProps.width, 0]);
+    var bottomRight = convertCoordinateProjections(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION,
+      [imageBasemapProps.width, 0]);
     var topRight = convertCoordinateProjections(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION,
       [imageBasemapProps.width, imageBasemapProps.height]);
     var topLeft = convertCoordinateProjections(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION, [0, imageBasemapProps.height]);
@@ -288,8 +295,15 @@ const useMaps = () => {
   };
 
   const setBasemap = async (mapId) => {
+    let newBasemap;
     if (!mapId) mapId = 'mapbox.outdoors';
-    const newBasemap = await BASEMAPS.find(basemap => basemap.id === mapId);
+    newBasemap = await BASEMAPS.find(basemap => basemap.id === mapId);
+    if (newBasemap === undefined) {
+      newBasemap = await Object.values(customMaps).find(basemap => {
+        console.log(basemap);
+        return basemap.id === mapId;
+      });
+    }
     console.log('Setting current basemap to a default basemap...');
     dispatch(setCurrentBasemap(newBasemap));
   };

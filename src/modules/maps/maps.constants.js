@@ -46,14 +46,17 @@ const DEFAULT_MAPS = [
 export const CUSTOM_MAP_TYPES = [
   {
     title: 'Mapbox Styles',
+    id: 'mapbox.styles',
     source: 'mapbox_styles',
   },
   {
     title: 'Map Warper',
+    id: 'map.warper',
     source: 'map_warper',
   },
   {
     title: 'Strabospot My Maps',
+    id: 'strabospot.mymaps',
     source: 'strabospot_mymaps',
   },
 ];
