@@ -109,7 +109,7 @@ const useSpots = (props) => {
   const getActiveSpotsObj = () => {
     let activeSpots = {};
     const activeDatasets = useProject.getActiveDatasets();
-    console.log('getActiveDatasetsFromId', activeDatasets);
+    // console.log('getActiveDatasetsFromId', activeDatasets);
     const activeSpotIds = activeDatasets.flatMap(dataset => {
       if (dataset && dataset.spotIds && !isEmpty(dataset.spotIds)) return dataset.spotIds;
     });

@@ -127,7 +127,7 @@ const UserProfile = (props) => {
         dialogTitleStyle={commonStyles.dialogWarning}>
         <Text style={commonStyles.dialogConfirmText}>Logging out will
           <Text
-            style={commonStyles.dialogContentImportantText}>ERASE</Text> local data. Please make sure you saved changes
+            style={commonStyles.dialogContentImportantText}> ERASE </Text>local data. Please make sure you saved changes
           to the server or device.
         </Text>
         <Button

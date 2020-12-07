@@ -291,53 +291,55 @@ const MeasurementDetailPage = (props) => {
   };
 
   const saveForm = async () => {
-    return form.current.submitForm().then(() => {
-      if (useForm.hasErrors(form)) {
-        useForm.showErrors(form);
-        return Promise.reject();
-      }
-      console.log('Saving form data to Spot ...');
-      let orientationDataCopy = JSON.parse(JSON.stringify(spot.properties.orientation_data));
-      let formValues = {...form.current.values};
-      let editedSelectedMeasurements = [];
-      let idsOfMeasurementsToEdit = [activeMeasurement.id];
-      if (selectedMeasurements.length > 1) {
-        const fieldsToExclude = ['id', 'associated_orientation', 'label', 'strike', 'dip_direction', 'dip', 'quality',
-          'trend', 'plunge', 'rake', 'rake_calculated'];
-        fieldsToExclude.forEach(key => delete formValues[key]);
-        if (activeMeasurement.id === selectedMeasurements[0].id) {
-          idsOfMeasurementsToEdit = selectedMeasurements.map(measurement => measurement.id);
+    return (
+      form.current.submitForm().then(() => {
+        if (useForm.hasErrors(form)) {
+          useForm.showErrors(form);
+          return Promise.reject();
         }
-        else {
-          idsOfMeasurementsToEdit = selectedMeasurements.reduce(
-            (acc, measurement) => [...acc, ...measurement.associated_orientation.map(
-              associatedOrientation => associatedOrientation.id)], []);
+        console.log('Saving form data to Spot ...');
+        let orientationDataCopy = JSON.parse(JSON.stringify(spot.properties.orientation_data));
+        let formValues = {...form.current.values};
+        let editedSelectedMeasurements = [];
+        let idsOfMeasurementsToEdit = [activeMeasurement.id];
+        if (selectedMeasurements.length > 1) {
+          const fieldsToExclude = ['id', 'associated_orientation', 'label', 'strike', 'dip_direction', 'dip', 'quality',
+            'trend', 'plunge', 'rake', 'rake_calculated'];
+          fieldsToExclude.forEach(key => delete formValues[key]);
+          if (activeMeasurement.id === selectedMeasurements[0].id) {
+            idsOfMeasurementsToEdit = selectedMeasurements.map(measurement => measurement.id);
+          }
+          else {
+            idsOfMeasurementsToEdit = selectedMeasurements.reduce(
+              (acc, measurement) => [...acc, ...measurement.associated_orientation.map(
+                associatedOrientation => associatedOrientation.id)], []);
+          }
         }
-      }
 
-      orientationDataCopy.forEach((measurement, i) => {
-        if (idsOfMeasurementsToEdit.includes(measurement.id)) {
-          orientationDataCopy[i] = selectedMeasurements.length === 1 ? formValues : {...measurement, ...formValues};
-          editedSelectedMeasurements.push(orientationDataCopy[i]);
-        }
-        else if (measurement.associated_orientation) {
-          measurement.associated_orientation.forEach((associatedMeasurement, j) => {
-            if (idsOfMeasurementsToEdit.includes(associatedMeasurement.id)) {
-              orientationDataCopy[i].associated_orientation[j] = selectedMeasurements.length === 1
-                ? formValues
-                : {...associatedMeasurement, ...formValues};
-              editedSelectedMeasurements.push(orientationDataCopy[i]);
-            }
-          });
-        }
-      });
-      dispatch(setSelectedAttributes(editedSelectedMeasurements));
-      dispatch(editedSpotProperties({field: 'orientation_data', value: orientationDataCopy}));
-      return Promise.resolve();
-    }, (e) => {
-      console.log('Error submitting form', e);
-      return Promise.reject();
-    });
+        orientationDataCopy.forEach((measurement, i) => {
+          if (idsOfMeasurementsToEdit.includes(measurement.id)) {
+            orientationDataCopy[i] = selectedMeasurements.length === 1 ? formValues : {...measurement, ...formValues};
+            editedSelectedMeasurements.push(orientationDataCopy[i]);
+          }
+          else if (measurement.associated_orientation) {
+            measurement.associated_orientation.forEach((associatedMeasurement, j) => {
+              if (idsOfMeasurementsToEdit.includes(associatedMeasurement.id)) {
+                orientationDataCopy[i].associated_orientation[j] = selectedMeasurements.length === 1
+                  ? formValues
+                  : {...associatedMeasurement, ...formValues};
+                editedSelectedMeasurements.push(orientationDataCopy[i]);
+              }
+            });
+          }
+        });
+        dispatch(setSelectedAttributes(editedSelectedMeasurements));
+        dispatch(editedSpotProperties({field: 'orientation_data', value: orientationDataCopy}));
+        return Promise.resolve();
+      }, (e) => {
+        console.log('Error submitting form', e);
+        return Promise.reject();
+      })
+    );
   };
 
   const saveFormAndGo = () => {
@@ -386,30 +388,32 @@ const MeasurementDetailPage = (props) => {
 
   return (
     <React.Fragment>
-      {activeMeasurement && <View style={styles.measurementsContentContainer}>
-        {renderCancelSaveButtons()}
-        <FlatList
-          ListHeaderComponent={
-            <View>
-              {activeMeasurement && selectedMeasurements.length === 1 && renderAssociatedMeasurements()}
-              {activeMeasurement && selectedMeasurements.length > 1 && renderMultiMeasurementsBar()}
-              {activeMeasurement && (activeMeasurement.type === 'planar_orientation'
-                || activeMeasurement.type === 'tabular_orientation') && renderPlanarTabularSwitches()}
+      {activeMeasurement && (
+        <View style={styles.measurementsContentContainer}>
+          {renderCancelSaveButtons()}
+          <FlatList
+            ListHeaderComponent={
               <View>
-                {!isEmpty(formName) && renderFormFields()}
+                {activeMeasurement && selectedMeasurements.length === 1 && renderAssociatedMeasurements()}
+                {activeMeasurement && selectedMeasurements.length > 1 && renderMultiMeasurementsBar()}
+                {activeMeasurement && (activeMeasurement.type === 'planar_orientation'
+                  || activeMeasurement.type === 'tabular_orientation') && renderPlanarTabularSwitches()}
+                <View>
+                  {!isEmpty(formName) && renderFormFields()}
+                </View>
+                {selectedMeasurements.length === 1 && (
+                  <Button
+                    titleStyle={{color: themes.RED}}
+                    title={'Delete Measurement'}
+                    type={'clear'}
+                    onPress={() => deleteMeasurement()}
+                  />
+                )}
               </View>
-              {selectedMeasurements.length === 1 && (
-                <Button
-                  titleStyle={{color: themes.RED}}
-                  title={'Delete Measurement'}
-                  type={'clear'}
-                  onPress={() => deleteMeasurement()}
-                />
-              )}
-            </View>
-          }
-        />
-      </View>}
+            }
+          />
+        </View>
+      )}
     </React.Fragment>
   );
 };

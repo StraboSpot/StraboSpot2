@@ -286,13 +286,9 @@ const SaveMapsModal = (props) => {
       await RNFS.mkdir(tileCacheDirectory + '/' + id + '/tiles');
     }
 
-    //now move files to correct location
-    //MainBundlePath // On Android, use "RNFS.DocumentDirectoryPath" (MainBundlePath is not defined)
-    if (Platform.OS === 'ios') result = await RNFS.readDir(tileTempDirectory + '/' + zipUID + '/tiles');
-    else result = await RNFS.DocumentDirectoryPath(tileTempDirectory + '/' + zipUID + '/tiles');
-
+    // Move files to correct location
+    result = await RNFS.readDir(tileTempDirectory + '/' + zipUID + '/tiles');
     console.log(result);
-
     await tileMove(result, zipUID);
 
     let tileCount = await RNFS.readDir(tileCacheDirectory + '/' + id + '/tiles');
@@ -300,16 +296,13 @@ const SaveMapsModal = (props) => {
 
     let currentOfflineMaps = Object.values(offlineMaps);
 
-    //now check for existence of AsyncStorage offlineMapsData and store new count
-    if (!currentOfflineMaps) {
-      currentOfflineMaps = [];
-    }
+    // Check for existence of AsyncStorage offlineMapsData and store new count
+    if (!currentOfflineMaps) currentOfflineMaps = [];
 
     const customMap = Object.values(customMaps).filter(map => id === map.id);
     console.log(customMap);
     if (source === 'strabo_spot_mapbox' || source === 'osm' || source === 'macrostrat') mapName = currentMapName;
     else mapName = customMap[0].title;
-
 
     let newOfflineMapsData = [];
     let thisMap = {};
@@ -432,20 +425,23 @@ const SaveMapsModal = (props) => {
               )}
             </View>
             <View style={{flex: 3}}>
-              {showMainMenu && <Picker
-                onValueChange={(value) => updatePicker(value)}
-                selectedValue={downloadZoom}
-                style={styles.picker}
-              >
-                {zoomLevels.map(i => {
-                  return <Picker.Item
-                    key={i}
-                    value={i}
-                    label={i.toString()}
-                  />;
-                })}
-              </Picker>
-              }
+              {showMainMenu && (
+                <Picker
+                  onValueChange={(value) => updatePicker(value)}
+                  selectedValue={downloadZoom}
+                  style={styles.picker}
+                >
+                  {zoomLevels.map(i => {
+                    return (
+                      <Picker.Item
+                        key={i}
+                        value={i}
+                        label={i.toString()}
+                      />
+                    );
+                  })}
+                </Picker>
+              )}
               {showLoadingBar && (
                 <View style={{height: 40, justifyContent: 'center', flexDirection: 'row'}}>
                   {isLoadingWave

@@ -128,23 +128,24 @@ const SampleDetailPage = (props) => {
 
   return (
     <React.Fragment>
-      {selectedSample && <View style={styles.sampleContentContainer}>
-        {renderCancelSaveButtons()}
-        <FlatList
-          ListHeaderComponent={
-            <View>
-              {!isEmpty(formName) && renderFormFields()}
-              <Button
-                titleStyle={{color: themes.RED}}
-                title={'Delete Sample'}
-                type={'clear'}
-                onPress={() => deleteSample()}
-              />
-            </View>
-          }
-        />
-      </View>
-      }
+      {selectedSample && (
+        <View style={styles.sampleContentContainer}>
+          {renderCancelSaveButtons()}
+          <FlatList
+            ListHeaderComponent={
+              <View>
+                {!isEmpty(formName) && renderFormFields()}
+                <Button
+                  titleStyle={{color: themes.RED}}
+                  title={'Delete Sample'}
+                  type={'clear'}
+                  onPress={() => deleteSample()}
+                />
+              </View>
+            }
+          />
+        </View>
+      )}
     </React.Fragment>
   );
 };

@@ -54,11 +54,13 @@ const SpotsList = (props) => {
     return (
       <React.Fragment>
         {keysFound.map(key => {
-          return <Avatar
-            source={useSpots.getSpotDataIconSource(key)}
-            placeholderStyle={{ backgroundColor: 'transparent' }}
-            size={20}
-          />;
+          return (
+            <Avatar
+              source={useSpots.getSpotDataIconSource(key)}
+              placeholderStyle={{backgroundColor: 'transparent'}}
+              size={20}
+            />
+          );
         })}
       </React.Fragment>
     );

@@ -41,19 +41,29 @@ const MeasurementsPage = (props) => {
 
   const getSectionData = (sectionType) => {
     if (sectionType === sectionTypes.PLANAR) {
-      return spot.properties.orientation_data.filter(measurement => {
-        return (measurement.type === 'planar_orientation' || measurement.type === 'tabular_orientation') && !measurement.associated_orientation;
-      });
+      return (
+        spot.properties.orientation_data.filter(measurement => {
+          return (
+            (measurement.type === 'planar_orientation' || measurement.type === 'tabular_orientation')
+            && !measurement.associated_orientation
+          );
+        })
+      );
     }
     else if (sectionType === sectionTypes.LINEAR) {
-      return spot.properties.orientation_data.filter(measurement => {
-        return measurement.type === 'linear_orientation' && !measurement.associated_orientation;
-      });
+      return (
+        spot.properties.orientation_data.filter(measurement => {
+          return measurement.type === 'linear_orientation' && !measurement.associated_orientation;
+        })
+      );
     }
     else if (sectionType === sectionTypes.PLANARLINEAR) {
-      return spot.properties.orientation_data.filter(measurement => {
-        return (measurement.type === 'planar_orientation' || measurement.type === 'linear_orientation' || measurement.type === 'tabular_orientation') && measurement.associated_orientation;
-      });
+      return (
+        spot.properties.orientation_data.filter(measurement => {
+          return (measurement.type === 'planar_orientation' || measurement.type === 'linear_orientation'
+            || measurement.type === 'tabular_orientation') && measurement.associated_orientation;
+        })
+      );
     }
   };
 

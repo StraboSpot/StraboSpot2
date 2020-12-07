@@ -128,16 +128,18 @@ function Basemap(props) {
 
         {/* Custom Overlay Layer */}
         {Object.values(customMaps).map(customMap => {
-          return customMap.overlay && customMap.isViewable && (
-            <MapboxGL.RasterSource
-              key={customMap.id}
-              id={customMap.id}
-              tileUrlTemplates={[useMaps.buildTileUrl(customMap)]}>
-              <MapboxGL.RasterLayer id={customMap.id + 'Layer'}
-                                    sourceID={customMap.id}
-                                    belowLayerID={'pointLayerNotSelected' || 'pointLayerSelected'}
-                                    style={{rasterOpacity: customMap.opacity}}/>
-            </MapboxGL.RasterSource>
+          return (
+            customMap.overlay && customMap.isViewable && (
+              <MapboxGL.RasterSource
+                key={customMap.id}
+                id={customMap.id}
+                tileUrlTemplates={[useMaps.buildTileUrl(customMap)]}>
+                <MapboxGL.RasterLayer id={customMap.id + 'Layer'}
+                                      sourceID={customMap.id}
+                                      belowLayerID={'pointLayerNotSelected' || 'pointLayerSelected'}
+                                      style={{rasterOpacity: customMap.opacity}}/>
+              </MapboxGL.RasterSource>
+            )
           );
         })}
 

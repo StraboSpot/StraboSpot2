@@ -154,17 +154,19 @@ const useMaps = () => {
     let geolocationOptions = {timeout: 2500, maximumAge: 10000};
     // Fixes issue with Android not getting current location if enableHighAccuracy is true
     geolocationOptions = Platform.OS === 'ios' ? {enableHighAccuracy: true, ...geolocationOptions} : geolocationOptions;
-    return new Promise((resolve, reject) => {
-      Geolocation.getCurrentPosition(
-        (position) => {
-          // setUserLocationCoords([position.coords.longitude, position.coords.latitude]);
-          console.log('Got Current Location: [', position.coords.longitude, ', ', position.coords.latitude, ']');
-          resolve([position.coords.longitude, position.coords.latitude]);
-        },
-        (error) => reject('Error getting current location: ' + (error.message ? error.message : 'Unknown Error')),
-        geolocationOptions,
-      );
-    });
+    return (
+      new Promise((resolve, reject) => {
+        Geolocation.getCurrentPosition(
+          (position) => {
+            // setUserLocationCoords([position.coords.longitude, position.coords.latitude]);
+            console.log('Got Current Location: [', position.coords.longitude, ', ', position.coords.latitude, ']');
+            resolve([position.coords.longitude, position.coords.latitude]);
+          },
+          (error) => reject('Error getting current location: ' + (error.message ? error.message : 'Unknown Error')),
+          geolocationOptions,
+        );
+      })
+    );
   };
 
   // All Spots mapped on curent map
@@ -202,10 +204,12 @@ const useMaps = () => {
 
   // Point Spots the are currently visible on the map (i.e. not toggled off in the Map Symbol Switcher)
   const getVisibleMappedSpots = (mappedSpots) => {
-    return mappedSpots.filter(spot => turf.getType(spot) !== 'Point'
-      || (spot.properties.orientation_data
-        && !isEmpty(spot.properties.orientation_data.filter(orientation => orientation.feature_type
-          && selectedSymbols.includes(orientation.feature_type)))));
+    return (
+      mappedSpots.filter(spot => turf.getType(spot) !== 'Point'
+        || (spot.properties.orientation_data
+          && !isEmpty(spot.properties.orientation_data.filter(orientation => orientation.feature_type
+            && selectedSymbols.includes(orientation.feature_type)))))
+    );
   };
 
   // Gather and set the feature types that are present in the mapped Spots
