@@ -32,7 +32,6 @@ import useMapsHook from '../maps/useMaps';
 import VertexDrag from '../maps/VertexDrag';
 import NotebookCompassModal from '../measurements/compass/NotebookCompassModal';
 import ShortcutCompassModal from '../measurements/compass/ShortcutCompassModal';
-import AllSpotsPanel from '../notebook-panel/AllSpots';
 import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
 import {setNotebookPageVisible, setNotebookPanelVisible} from '../notebook-panel/notebook.slice';
 import NotebookPanel from '../notebook-panel/NotebookPanel';
@@ -94,7 +93,6 @@ const Home = () => {
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const currentProject = useSelector(state => state.project.project);
   const customMaps = useSelector(state => state.map.customMaps);
-  const isAllSpotsPanelVisible = useSelector(state => state.home.isAllSpotsPanelVisible);
   const isErrorMessagesModalVisible = useSelector(state => state.home.isErrorMessagesModalVisible);
   const isHomeLoading = useSelector(state => state.home.loading.home);
   const isImageModalVisible = useSelector(state => state.home.isImageModalVisible);
@@ -295,10 +293,6 @@ const Home = () => {
       case 'deleteSpot':
         deleteSpot(selectedSpot.properties.id);
         break;
-      case 'toggleAllSpotsPanel':
-        if (value === 'open') dispatch(setAllSpotsPanelVisible(true));
-        else if (value === 'close') dispatch(setAllSpotsPanelVisible(false));
-        break;
       case 'zoomToSpot':
         mapViewComponent.current.zoomToSpot();
         break;
@@ -463,14 +457,6 @@ const Home = () => {
     animatePanels(animation, 0);
     animatePanels(rightsideIconAnimationValue, -notebookPanelWidth);
     dispatch(setNotebookPanelVisible(true));
-  };
-
-  const renderAllSpotsPanel = () => {
-    return (
-      <View style={[notebookStyles.allSpotsPanel]}>
-        <AllSpotsPanel/>
-      </View>
-    );
   };
 
   const renderFloatingViews = () => {
@@ -875,7 +861,6 @@ const Home = () => {
       )}
       {isHomeLoading && <LoadingSpinner/>}
       {notebookPanel}
-      {isAllSpotsPanelVisible && renderAllSpotsPanel()}
       {MainMenu}
       {renderSaveAndCancelDrawButtons()}
       {isMainMenuPanelVisible && toggleSidePanel()}

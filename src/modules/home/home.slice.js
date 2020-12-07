@@ -21,7 +21,6 @@ const initialHomeState = {
   isOfflineMapModalVisible: false,
   isInfoModalVisible: false,
   isImageModalVisible: false,
-  isAllSpotsPanelVisible: false,
   isMainMenuPanelVisible: false,
   shortcutSwitchPosition: {
     Tag: false,
@@ -47,9 +46,6 @@ const homeSlice = createSlice({
     },
     removedLastStatusMessage(state) {
       state.statusMessages = state.statusMessages.slice(0, -1);
-    },
-    setAllSpotsPanelVisible(state, action) {
-      state.isAllSpotsPanelVisible = action.payload;
     },
     setErrorMessagesModalVisible(state, action) {
       state.isErrorMessagesModalVisible = action.payload;
@@ -98,7 +94,6 @@ export const {
   addedStatusMessage,
   clearedStatusMessages,
   removedLastStatusMessage,
-  setAllSpotsPanelVisible,
   setErrorMessagesModalVisible,
   setImageModalVisible,
   setInfoMessagesModalVisible,
