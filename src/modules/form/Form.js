@@ -4,6 +4,7 @@ import {Animated, Keyboard, TextInput} from 'react-native';
 import {Field} from 'formik';
 
 import * as Helpers from '../../shared/Helpers';
+import SectionDivider from '../../shared/ui/SectionDivider';
 import {DateInputField, formStyles, NumberInputField, SelectInputField, TextInputField, useFormHook} from '../form';
 
 const {State: TextInputState} = TextInput;
@@ -26,7 +27,7 @@ const Form = (props) => {
 
   const handleKeyboardDidHide = () => Helpers.handleKeyboardDidHide(textInputAnimate);
 
-  const renderDateInput = field => {
+  const renderDateInput = (field) => {
     return (
       <Field
         component={DateInputField}
@@ -37,7 +38,13 @@ const Form = (props) => {
     );
   };
 
-  const renderTextInput = field => {
+  const renderGroupHeading = (field) => {
+    return (
+      <SectionDivider dividerText={field.label}/>
+    );
+  };
+
+  const renderTextInput = (field) => {
     return (
       <Field
         component={TextInputField}
@@ -51,7 +58,7 @@ const Form = (props) => {
     );
   };
 
-  const renderNumberInput = field => {
+  const renderNumberInput = (field) => {
     return (
       <Field
         component={NumberInputField}
@@ -86,9 +93,10 @@ const Form = (props) => {
     );
   };
 
-  const renderField = field => {
+  const renderField = (field) => {
     const fieldType = field.type.split(' ')[0];
-    if (fieldType === 'text') return renderTextInput(field);
+    if (fieldType === 'begin_group') return renderGroupHeading(field);
+    else if (fieldType === 'text') return renderTextInput(field);
     else if (fieldType === 'integer' || fieldType === 'decimal') return renderNumberInput(field);
     else if (fieldType === 'select_one' || fieldType === 'select_multiple') return renderSelectInput(field);
     else if (fieldType === 'date') return renderDateInput(field);
