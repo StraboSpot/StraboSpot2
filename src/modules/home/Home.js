@@ -54,7 +54,6 @@ import {
 } from '../tags';
 import {MODALS} from './home.constants';
 import {
-  setAllSpotsPanelVisible,
   setErrorMessagesModalVisible,
   setImageModalVisible,
   setInfoMessagesModalVisible,
@@ -356,7 +355,6 @@ const Home = () => {
     animatePanels(animation, notebookPanelWidth);
     animatePanels(rightsideIconAnimationValue, 0);
     dispatch(setNotebookPanelVisible(false));
-    dispatch(setAllSpotsPanelVisible(false));
   };
 
   const deleteSpot = id => {
