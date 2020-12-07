@@ -32,8 +32,8 @@ const useForm = () => {
     return survey;
   };
 
-  const hasErrors = (form) => {
-    return !isEmpty(form.current.errors);
+  const hasErrors = (formCurrent) => {
+    return !isEmpty(formCurrent.errors);
   };
 
   // Determine if the field should be shown or not by looking at the relevant key-value pair
@@ -60,8 +60,8 @@ const useForm = () => {
     }
   };
 
-  const showErrors = (form) => {
-    const errors = form.current.errors;
+  const showErrors = (formCurrent) => {
+    const errors = formCurrent.errors;
     let errorMessages = [];
     for (const [name, error] of Object.entries(errors)) {
       errorMessages.push(getLabel(name) + ': ' + error);
@@ -69,8 +69,8 @@ const useForm = () => {
     Alert.alert('Please Fix the Following Errors', errorMessages.join('\n'));
   };
 
-  const showErrorsTwoForms = (form1, form2) => {
-    let errors = {...form1.current.errors, ...form2.current.errors};
+  const showErrorsTwoForms = (form1Current, form2Current) => {
+    let errors = {...form1Current.errors, ...form2Current.errors};
     let errorMessages = [];
     for (const [name, error] of Object.entries(errors)) {
       errorMessages.push(getLabel(name) + ': ' + error);

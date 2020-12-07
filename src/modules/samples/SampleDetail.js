@@ -90,8 +90,8 @@ const SampleDetailPage = (props) => {
 
   const saveForm = async () => {
     return form.current.submitForm().then(() => {
-      if (useForm.hasErrors(form)) {
-        useForm.showErrors(form);
+      if (useForm.hasErrors(form.current)) {
+        useForm.showErrors(form.current);
         return Promise.reject();
       }
       let samplesDataCopy = JSON.parse(JSON.stringify(spot.properties.samples));

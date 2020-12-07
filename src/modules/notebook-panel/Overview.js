@@ -111,8 +111,8 @@ const Overview = props => {
 
   const saveForm = async () => {
     return form.current.submitForm().then(() => {
-      if (useForm.hasErrors(form)) {
-        useForm.showErrors(form);
+      if (useForm.hasErrors(form.current)) {
+        useForm.showErrors(form.current);
         return Promise.reject();
       }
       console.log('Saving form data to Spot ...');

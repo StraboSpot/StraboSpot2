@@ -33,12 +33,12 @@ const NewProjectForm = (props) => {
     const formValues = form.current.values;
     return form.current.submitForm().then(async () => {
       console.log('Saved Form');
-      if (useForm.hasErrors(form)) {
-        useForm.showErrors(form);
+      if (useForm.hasErrors(form.current)) {
+        useForm.showErrors(form.current);
         return Promise.reject('There was an error in the form');
       }
       else if (form.current.values.project_name === undefined) {
-        useForm.showErrors(form);
+        useForm.showErrors(form.current);
         return Promise.reject('Project name is undefined');
       }
       else {

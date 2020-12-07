@@ -242,8 +242,8 @@ const Geography = (props) => {
     try {
       await geomForm.current.submitForm();
       await form.current.submitForm();
-      if (useForm.hasErrors(geomForm) || useForm.hasErrors(form)) {
-        useForm.showErrorsTwoForms(geomForm, form);
+      if (useForm.hasErrors(geomForm.current) || useForm.hasErrors(form.current)) {
+        useForm.showErrorsTwoForms(geomForm.current, form.current);
         return Promise.reject();
       }
       else {
