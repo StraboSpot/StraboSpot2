@@ -2,6 +2,7 @@ import React, {useEffect, useImperativeHandle, useRef, useState} from 'react';
 import {Alert, View} from 'react-native';
 
 import MapboxGL from '@react-native-mapbox-gl/maps';
+import Logger from '@react-native-mapbox-gl/maps/javascript/utils/Logger';
 import * as turf from '@turf/turf/index';
 import {Button} from 'react-native-elements';
 import Dialog, {DialogContent, DialogTitle, SlideAnimation} from 'react-native-popup-dialog';
@@ -110,6 +111,18 @@ const Map = React.forwardRef((props, ref) => {
     onMapLongPress: (e) => onMapLongPress(e),
     spotsInMapExtent: () => spotsInMapExtent(),
   };
+
+
+  useEffect(() => {
+    Logger.setLogCallback((log) => {
+      const { message } = log;
+      // console.log('LOGGER MESSAGE IN MAPS.JS', message);
+      if (message.match(/Requesting.+failed.+MGLNativeNetworkManager/) || message.match(/offline/)) {
+        return true; // true means we've processed the log
+      }
+      return false;
+    });
+   }, []);
 
   useEffect(() => {
     console.log('UE1 Map [currentImageBasemap]');
