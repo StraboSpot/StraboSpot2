@@ -9,6 +9,7 @@ import {FlatListSlider} from 'react-native-flatlist-slider';
 import {DotIndicator} from 'react-native-indicators';
 import {useDispatch, useSelector} from 'react-redux';
 
+import useDeviceHook from '../../services/useDevice';
 import sharedDialogStyles from '../../shared/common.styles';
 import {animatePanels, isEmpty} from '../../shared/Helpers';
 import LoadingSpinner from '../../shared/ui/Loading';
@@ -69,7 +70,6 @@ import {
 import homeStyles from './home.style';
 import LeftSideButtons from './LeftSideButtons';
 import RightSideButtons from './RightSideButtons';
-import useDeviceHook from '../../services/useDevice';
 import useHomeHook from './useHome';
 
 const Home = () => {

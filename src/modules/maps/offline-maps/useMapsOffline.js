@@ -33,12 +33,17 @@ const useMapsOffline = () => {
   };
 
   const setOfflineMapTiles = async (map) => {
-    let tempCurrentBasemap;
+    let tempCurrentBasemap, tilePath;
     console.log('viewOfflineMap: ', map);
+    const url = 'file://' + tileCacheDirectory + '/';
 
     // let tileJSON = 'file://' + tileCacheDirectory + '/' + map.id + '/tiles/{z}_{x}_{y}.png';
-    const url = 'file://' + tileCacheDirectory + '/';
-    const tilePath = '/tiles/{z}_{x}_{y}.png';
+    if (map.source === 'map_warper') {
+       tilePath = 'tiles/{z}_{x}_{y}.png';
+    }
+    else {
+       tilePath = '/tiles/{z}_{x}_{y}.png';
+    }
 
     tempCurrentBasemap = {...map, url: [url], tilePath: tilePath};
     console.log('tempCurrentBasemap: ', tempCurrentBasemap);

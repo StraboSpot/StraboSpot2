@@ -159,7 +159,7 @@ const Map = React.forwardRef((props, ref) => {
     }
     if (!currentImageBasemap) setCurrentLocationAsCenter();
     clearVertexes();
-  }, [user]);
+  }, [user, isOnline]);
 
   useEffect(() => {
     console.log(

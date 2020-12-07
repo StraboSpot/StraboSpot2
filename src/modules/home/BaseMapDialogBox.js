@@ -73,7 +73,7 @@ const BaseMapDialog = props => {
                     key={map.id}
                     containerStyle={styles.dialogContent}
                     bottomDivider={i < BASEMAPS.length - 2}
-                    onPress={() => props.onPress(map.id)}>
+                    onPress={() => useMapsOffline.setOfflineMapTiles(map)}>
                     <ListItem.Content>
                       <ListItem.Title style={styles.dialogText}>{useMapsOffline.getMapName(map)}</ListItem.Title>
                     </ListItem.Content>
