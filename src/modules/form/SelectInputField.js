@@ -11,7 +11,7 @@ import * as themes from '../../shared/styles.constants';
 import {formStyles} from '../form';
 
 const SelectInputField = (props) => {
-  const placeholderText = props.name === 'copy_pet_data' ? '-- None --' : `-- Select ${props.label} --`;
+  const placeholderText = props.name === 'spot_id_for_pet_copy' ? '-- None --' : `-- Select ${props.label} --`;
 
   const fieldValueChanged = (value) => {
     if (props.single) {

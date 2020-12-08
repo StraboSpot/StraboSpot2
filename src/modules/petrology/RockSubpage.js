@@ -99,6 +99,22 @@ const RockSubpage = (props) => {
     return (
       <View style={{flex: 1}}>
         <Formik
+          innerRef={preFormRef}
+          validate={(fieldValues) => copyPetData(fieldValues.spot_id_for_pet_copy)}
+          validateOnChange={true}
+          initialValues={{}}
+        >
+          <Field
+            component={(formProps) => SelectInputField(
+              {setFieldValue: formProps.form.setFieldValue, ...formProps.field, ...formProps})}
+            name={'spot_id_for_pet_copy'}
+            key={'spot_id_for_pet_copy'}
+            label={'Copy Petrology Ig/Met Data:'}
+            choices={spotsWithPet.map(s => ({label: s.properties.name, value: s.properties.id}))}
+            single={true}
+          />
+        </Formik>
+        <Formik
           innerRef={formRef}
           onSubmit={() => console.log('Submitting form...')}
           onReset={() => console.log('Resetting form...')}
@@ -135,22 +151,6 @@ const RockSubpage = (props) => {
         cancel={() => cancelForm()}
         save={() => saveForm(formRef.current)}
       />
-      <Formik
-        innerRef={preFormRef}
-        validate={(fieldValues) => copyPetData(fieldValues.spot_id_for_pet_copy)}
-        validateOnChange={true}
-        initialValues={{}}
-      >
-        <Field
-          component={(formProps) => SelectInputField(
-            {setFieldValue: formProps.form.setFieldValue, ...formProps.field, ...formProps})}
-          name={'spot_id_for_pet_copy'}
-          key={'spot_id_for_pet_copy'}
-          label={'Copy Petrology Ig/Met Data:'}
-          choices={spotsWithPet.map(s => ({label: s.properties.name, value: s.properties.id}))}
-          single={true}
-        />
-      </Formik>
       <FlatList ListHeaderComponent={renderFormFields()}/>
     </React.Fragment>
   );
