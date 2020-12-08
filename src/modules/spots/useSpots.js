@@ -30,14 +30,49 @@ const useSpots = (props) => {
     const getNewCopyId = () => Math.floor(10000000000000 + Math.random() * 90000000000000);
 
     let copiedSpot = {'type': 'Feature'};
-    let {name, id, date, time, modified_timestamp, images, samples, viewed_timestamp, lat, lng, altitude, gps_accuracy, spot_radius, ...properties} = selectedSpot.properties;
+    let {
+      name,
+      id,
+      date,
+      time,
+      modified_timestamp,
+      images,
+      samples,
+      viewed_timestamp,
+      lat,
+      lng,
+      altitude,
+      gps_accuracy,
+      spot_radius,
+      ...properties
+    } = selectedSpot.properties;
     copiedSpot.properties = properties;
     if (properties.orientation_data) {
       const orientation_data = properties.orientation_data.map(measurement => {
-        let {id: measurementId, strike, dip_direction, dip, trend, plunge, rake, rake_calculated, ...measurementRest} = measurement;
+        let {
+          id: measurementId,
+          strike,
+          dip_direction,
+          dip,
+          trend,
+          plunge,
+          rake,
+          rake_calculated,
+          ...measurementRest
+        } = measurement;
         if (measurementRest.associated_orientation) {
           const associated_orientation = measurementRest.associated_orientation.map(assocMeasurement => {
-            let {id: measurementIdA, strike: strikeA, dip_direction: dipDirectionA, dip: dipA, trend: trendA, plunge: plungeA, rake: rakeA, rake_calculated: rakeCalculatedA, ...assocMeasurementRest} = assocMeasurement;
+            let {
+              id: measurementIdA,
+              strike: strikeA,
+              dip_direction: dipDirectionA,
+              dip: dipA,
+              trend: trendA,
+              plunge: plungeA,
+              rake: rakeA,
+              rake_calculated: rakeCalculatedA,
+              ...assocMeasurementRest
+            } = assocMeasurement;
             return {...assocMeasurementRest, id: getNewCopyId()};
           });
           if (associated_orientation) {
@@ -239,6 +274,10 @@ const useSpots = (props) => {
     }));
   };
 
+  const getSpotsWithPetrology = () => {
+    return Object.values(getActiveSpotsObj()).filter(spot => !isEmpty(spot.properties.pet));
+  };
+
   const getSpotsWithSamples = () => {
     return Object.values(getActiveSpotsObj()).filter(spot => !isEmpty(spot.properties.samples));
   };
@@ -266,6 +305,7 @@ const useSpots = (props) => {
     getSpotsSortedReverseChronologically: getSpotsSortedReverseChronologically,
     getSpotsWithImages: getSpotsWithImages,
     getSpotsWithImagesSortedReverseChronologically: getSpotsWithImagesSortedReverseChronologically,
+    getSpotsWithPetrology: getSpotsWithPetrology,
     getSpotsWithSamples: getSpotsWithSamples,
     getSpotsWithSamplesSortedReverseChronologically: getSpotsWithSamplesSortedReverseChronologically,
   }];
