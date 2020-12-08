@@ -18,10 +18,12 @@ import {addedSpot} from '../spots/spots.slice';
 const Geography = (props) => {
   const [useForm] = useFormHook();
   const [useMaps] = useMapsHooks();
+
   const dispatch = useDispatch();
-  const form = useRef(null);
-  const geomForm = useRef(null)
   const spot = useSelector(state => state.spot.selectedSpot);
+
+  const form = useRef(null);
+  const geomForm = useRef(null);
 
   const cancelFormAndGo = () => {
     dispatch(setNotebookPageVisibleToPrev());
