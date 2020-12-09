@@ -6,6 +6,7 @@ import {useDispatch} from 'react-redux';
 import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
+import MineralsSubpage from './MineralsSubpage';
 import RockSubpage from './RockSubpage';
 
 const PetrologyPage = () => {
@@ -25,6 +26,7 @@ const PetrologyPage = () => {
         buttons={petSubPages}
       />
       {subpageSelectedIndex === 0 && <RockSubpage/>}
+      {subpageSelectedIndex === 1 && <MineralsSubpage/>}
     </React.Fragment>
   );
 };
