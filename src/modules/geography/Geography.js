@@ -148,7 +148,7 @@ const Geography = (props) => {
         {!isEmpty(initialGeomValues.latitude) && !isEmpty(initialGeomValues.longitude)
           ? (
             <View style={{flex: 1, flexDirection: 'row', ...commonStyles.rowContainer}}>
-              <View style={{flex: 1, flexDirection: 'row', ...commonStyles.rowContainer}}>
+              <View style={{flex: 1, flexDirection: 'row', overflow: 'hidden', ...commonStyles.rowContainer}}>
                 <Field
                   component={NumberInputField}
                   name={'longitude'}
