@@ -4,8 +4,9 @@ import {Alert, FlatList, View, Text} from 'react-native';
 import {Button, ListItem} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
-import {isEmpty, getNewId} from '../../shared/Helpers';
-import styles from '../measurements/measurements.styles';
+import {getNewId} from '../../shared/Helpers';
+import * as themes from '../../shared/styles.constants';
+import {LABEL_DICTIONARY} from '../form';
 import MineralDetail from './MineralDetail';
 
 const MineralsSubpage = (props) => {
@@ -13,6 +14,8 @@ const MineralsSubpage = (props) => {
 
   const [isMineralDetailVisible, setIsMineralDetailVisible] = useState(false);
   const [selectedMineral, setSelectedMineral] = useState({});
+
+  const petDictionary = Object.values(LABEL_DICTIONARY.pet).reduce((acc, form) => ({...acc, ...form}), {});
 
   const addMineral = () => {
     setSelectedMineral({id: getNewId()});
@@ -24,41 +27,29 @@ const MineralsSubpage = (props) => {
     setIsMineralDetailVisible(true);
   };
 
-  const getMineralName = (mineral) => {
-    let names = [];
-    if (isEmpty(names)) {
-      const name = mineral.full_mineral_name || mineral.mineral_abbrev;
-      names.push(name);
+  const getLabel = (key) => {
+    if (Array.isArray(key)) {
+      const labelsArr = key.map(val => petDictionary[val] || val);
+      return labelsArr.join(', ');
     }
-    return names.join(', ') || 'Unknown';
+    return petDictionary[key] || key;
   };
 
   const renderMineral = (mineral) => {
-    console.log('mineral', mineral);
+    const mineralTitle = mineral.full_mineral_name || mineral.mineral_abbrev || 'Unknown';
+    const mineralFieldsText = Object.entries(mineral).reduce((acc, [key, value]) => {
+      return key === 'id' ? acc : (acc === '' ? '' : acc + '\n') + getLabel(key) + ': ' + getLabel(value);
+    }, '');
     return (
       <ListItem key={mineral.id}
                 onPress={() => editMineral(mineral)}
       >
-        <ListItem.Content>
-          <ListItem.Title>{getMineralName(mineral)}</ListItem.Title>
-          <ListItem.Subtitle>
-            <FlatList
-              data={Object.entries(mineral)}
-              renderItem={item => renderMineralField(item.item)}
-              keyExtractor={(item, index) => index.toString()}
-            />
-          </ListItem.Subtitle>
+        <ListItem.Content style={{overflow: 'hidden'}}>
+          <ListItem.Title>{mineralTitle}</ListItem.Title>
+          <ListItem.Subtitle style={{color: themes.PRIMARY_ITEM_TEXT_COLOR}}>{mineralFieldsText}</ListItem.Subtitle>
         </ListItem.Content>
         <ListItem.Chevron/>
       </ListItem>
-    );
-  };
-
-  const renderMineralField = ([key, value]) => {
-    return (
-      <React.Fragment>
-        {key !== 'id' && <Text>{key}: {value}</Text>}
-      </React.Fragment>
     );
   };
 
@@ -67,19 +58,16 @@ const MineralsSubpage = (props) => {
       {!isMineralDetailVisible && (
         <View>
           <Button
-            titleStyle={styles.buttonText}
             title={'+ Add Mineral'}
             type={'clear'}
             onPress={addMineral}
           />
           <Button
-            titleStyle={styles.buttonText}
             title={'+ Add a Mineral By Rock Class'}
             type={'clear'}
             onPress={() => Alert.alert('Not implemented yet.')}
           />
           <Button
-            titleStyle={styles.buttonText}
             title={'+ Add a Mineral By Glossary'}
             type={'clear'}
             onPress={() => Alert.alert('Not implemented yet.')}
