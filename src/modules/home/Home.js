@@ -165,8 +165,6 @@ const Home = () => {
 
   useEffect(() => {
     dispatch(setProjectLoadSelectionModalVisible(isEmpty(currentProject)));
-    animatePanels(MainMenuPanelAnimation, -homeMenuPanelWidth);
-    animatePanels(leftsideIconAnimationValue, 0);
   }, [currentProject]);
 
   useEffect(() => {
@@ -777,9 +775,7 @@ const Home = () => {
   const MainMenu = (
     <Animated.View style={[settingPanelStyles.settingsDrawer, animateSettingsPanel]}>
       <MainMenuPanel
-        // openSidePanel={(view, data) => openSidePanel(view, data)}
-        openHomePanel={() => dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.UPLOAD_BACKUP_EXPORT}))}
-        closeHomePanel={() => toggleHomeDrawerButton()}
+        closeMainMenuPanel={() => toggleHomeDrawerButton()}
         openNotebookPanel={(pageView) => openNotebookPanel(pageView)}/>
     </Animated.View>
   );

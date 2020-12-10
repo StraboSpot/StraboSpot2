@@ -35,8 +35,8 @@ const ActiveProjectPanel = () => {
     setIsAddDatasetModalVisible(false);
   };
 
-  const confirm = () => {
-    useProject.selectProject(project);
+  const confirm = async () => {
+    await useProject.selectProject(project);
     setIsWarningModalVisible(false);
   };
 

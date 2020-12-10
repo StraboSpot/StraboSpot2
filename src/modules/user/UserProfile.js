@@ -10,7 +10,7 @@ import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import StandardModal from '../../shared/ui/StandardModal';
 import {MAIN_MENU_ITEMS} from '../main-menu-panel/mainMenu.constants';
-import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
+import {setMenuSelectionPage} from '../main-menu-panel/mainMenuPanel.slice';
 import userStyles from './user.styles';
 
 const UserProfile = (props) => {
@@ -22,13 +22,14 @@ const UserProfile = (props) => {
   const openUploadAndBackupPage = () => {
     setIsLogoutModalVisible(false);
     setTimeout(() => {          // Added timeOut cause state of modal wasn't changing fast enough
-      dispatch(setSidePanelVisible({name: MAIN_MENU_ITEMS.MANAGE.UPLOAD_BACKUP_EXPORT}));
+      dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.UPLOAD_BACKUP_EXPORT}));
     }, 200);
   };
 
   const doLogOut = () => {
     setIsLogoutModalVisible(false);
     setTimeout(() => {          // Added timeOut cause state of modal wasn't changing fast enough
+      props.closeMainMenuPanel();
       dispatch({type: REDUX.CLEAR_STORE});
       navigation.navigate('SignIn');
     }, 200);
@@ -137,7 +138,6 @@ const UserProfile = (props) => {
           onPress={() => openUploadAndBackupPage()}/>
         <Button title={'Logout'}
                 titleStyle={commonStyles.dialogContentImportantText}
-
                 onPress={() => doLogOut()}
                 type={'clear'}
                 containerStyle={commonStyles.buttonContainer}/>

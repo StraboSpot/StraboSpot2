@@ -162,7 +162,7 @@ const useProject = () => {
 
   const destroyOldProject = () => {
     batch(() => {
-      dispatch(clearedProject());
+      // dispatch(clearedProject());
       dispatch(clearedSpots());
       dispatch(clearedDatasets());
       dispatch(clearedMaps());
