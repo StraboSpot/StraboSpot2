@@ -28,7 +28,7 @@ const useExport = () => {
   let imageSuccess = 0;
 
   const dataForExport = {
-    mapNamesDb: dbs.map.offlineMaps,
+    mapNamesDb: dbs.offlineMap.offlineMaps,
     mapTilesDb: {},
     otherMapsDb: dbs.map.customMaps,
     projectDb: dbs.project,
