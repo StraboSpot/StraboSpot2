@@ -167,7 +167,6 @@ const Map = React.forwardRef((props, ref) => {
       useMaps.setBasemap(currentBasemap.id).catch(error => console.log('Error Setting Basemap', error));
     }
     else if (!isOnline && isOnline !== null && currentBasemap) {
-      Alert.alert('OFFLINE');
       useOfflineMaps.viewOfflineMap().catch(error => console.log('Error Setting Offline Basemap', error));
     }
     if (!currentImageBasemap) setCurrentLocationAsCenter();

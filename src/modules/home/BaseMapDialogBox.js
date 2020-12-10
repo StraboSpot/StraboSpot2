@@ -85,7 +85,7 @@ const BaseMapDialog = props => {
             })}
           </View>
         )}
-        {!isOnline && (
+        {!isOnline && !isEmpty(customMaps)&& (
           <View>
             <SectionDivider dividerText={'Offline Custom Basemaps'}/>
             {Object.values(offlineMaps).map((map, i) => {
@@ -94,7 +94,7 @@ const BaseMapDialog = props => {
                   <ListItem
                     key={map.id}
                     bottomDivider={i < CUSTOMBASEMAPS.length - 2}
-                    onPress={() => props.onPress(map.id)}
+                    onPress={() => useMapsOffline.setOfflineMapTiles(map)}
                   >
                     <ListItem.Content>
                       <ListItem.Title style={styles.dialogText}>{useMapsOffline.getMapName(map)}</ListItem.Title>
