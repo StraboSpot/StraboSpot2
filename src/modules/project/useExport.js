@@ -1,15 +1,14 @@
 import {Alert, Platform} from 'react-native';
 
+import RNFS from 'react-native-fs';
 import {useDispatch, useSelector} from 'react-redux';
-import RNFetchBlob from 'rn-fetch-blob';
 
 import useDeviceHook from '../../services/useDevice';
 import {isEmpty} from '../../shared/Helpers';
 import {addedStatusMessage, removedLastStatusMessage} from '../home/home.slice';
 
 const useExport = () => {
-  let dirs = RNFetchBlob.fs.dirs;
-  const devicePath = Platform.OS === 'ios' ? dirs.DocumentDir : dirs.SDCardDir; // ios : android
+  const devicePath = RNFS.DocumentDirectoryPath;
   const appDirectoryTiles = '/StraboSpotTiles';
   const appDirectoryForDistributedBackups = '/StraboSpotProjects';
   const appDirectory = '/StraboSpot';
@@ -204,13 +203,13 @@ const useExport = () => {
 
   const moveDistributedMap = async (mapId, fileName) => {
     console.log('Moving Map:', mapId);
-    return RNFetchBlob.fs.exists(devicePath + zipsDirectory + '/' + mapId + '.zip')
+    return RNFS.exists(devicePath + zipsDirectory + '/' + mapId + '.zip')
       .then(exists => {
         if (exists) {
           console.log(mapId + '.zip exists?', exists);
-          return RNFetchBlob.fs.cp(devicePath + zipsDirectory + '/' + mapId + '.zip',
+          return RNFS.copyFile(devicePath + zipsDirectory + '/' + mapId + '.zip',
             devicePath + appDirectoryForDistributedBackups + '/' + fileName + '/maps/' + mapId.toString() + '.zip').then(
-            res => {
+            () => {
               console.log('Map Copied.');
               return Promise.resolve(mapId);
             });
