@@ -43,17 +43,9 @@ const useExport = () => {
   };
 
   const exportData = async (directory, data, filename) => {
-    try {
-      const doesExist = await useDevice.doesDeviceDirectoryExist(directory);
-      if (doesExist) {
-        const res = await useDevice.writeFileToDevice(directory, filename, data);
-        console.log(res);
-      }
-    }
-    catch (err) {
-      console.error('Error is exportData()', err);
-      throw Error;
-    }
+    await useDevice.doesDeviceDirectoryExist(directory);
+    const res = await useDevice.writeFileToDevice(directory, filename, data);
+    console.log(res);
   };
 
   const gatherDataForBackup = async (filename) => {
