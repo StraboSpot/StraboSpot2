@@ -1,5 +1,4 @@
-import {Platform} from 'react-native';
-
+import RNFS from 'react-native-fs';
 import {batch, useDispatch, useSelector} from 'react-redux';
 import RNFetchBlob from 'rn-fetch-blob';
 
@@ -34,8 +33,7 @@ const useDownload = () => {
   let imagesFailedArr = [];
   let imageCount = 0;
 
-  const dirs = RNFetchBlob.fs.dirs;
-  const devicePath = Platform.OS === 'ios' ? dirs.DocumentDir : dirs.SDCardDir; // ios : android
+  const devicePath = RNFS.DocumentDirectoryPath;
   const appDirectory = '/StraboSpot';
   const imagesDirectory = devicePath + appDirectory + '/Images';
   // const testUrl = 'https://strabospot.org/testimages/images.json';
@@ -126,8 +124,8 @@ const useDownload = () => {
         if (res.respInfo.status === 404) {
           imageCount++;
           imagesFailedCount++;
-          console.log('Error on', imageId);  // Android Error: RNFetchBlob request error: url == nullnull
-          return RNFetchBlob.fs.unlink(res.data).then(() => {
+          console.log('Error on', imageId);
+          return RNFS.unlink(res.data).then(() => {
             console.log('Failed image removed', imageId);
             imagesFailedArr.push(imageId);
           });
@@ -139,7 +137,7 @@ const useDownload = () => {
       })
       .catch((errorMessage, statusCode) => {
         imageCount++;
-        console.error('Error on', imageId, ':', errorMessage, statusCode);  // Android Error: RNFetchBlob request error: url == nullnull
+        console.error('Error on', imageId, ':', errorMessage, statusCode);
         throw Error('Response is 404!');
       });
   };

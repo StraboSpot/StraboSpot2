@@ -1,7 +1,7 @@
-import {Alert, Platform} from 'react-native';
+import {Alert} from 'react-native';
 
-import {useDispatch, useSelector} from 'react-redux';
-import RNFetchBlob from 'rn-fetch-blob';
+import RNFS from 'react-native-fs';
+import {useDispatch} from 'react-redux';
 
 import useDeviceHook from '../../services/useDevice';
 import {isEmpty} from '../../shared/Helpers';
@@ -11,8 +11,7 @@ import {addedDatasets, addedProject} from './projects.slice';
 
 
 const useImport = () => {
-  let dirs = RNFetchBlob.fs.dirs;
-  const devicePath = Platform.OS === 'ios' ? dirs.DocumentDir : dirs.SDCardDir; // ios : android
+  const devicePath = RNFS.DocumentDirectoryPath;
   const appDirectoryForDistributedBackups = '/StraboSpotProjects';
 
   const dispatch = useDispatch();
@@ -40,7 +39,7 @@ const useImport = () => {
   const readDeviceFile = async (selectedProject) => {
     let data = selectedProject.fileName;
     const dataFile = '/data.json';
-    return await RNFetchBlob.fs.readFile(devicePath + appDirectoryForDistributedBackups + '/' + data + dataFile).then(
+    return await RNFS.readFile(devicePath + appDirectoryForDistributedBackups + '/' + data + dataFile).then(
       response => {
         return Promise.resolve(JSON.parse(response));
       }, () => Alert.alert('Project Not Found'));

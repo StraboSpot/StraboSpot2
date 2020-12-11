@@ -1,7 +1,7 @@
 import {Platform} from 'react-native';
 
+import RNFS from 'react-native-fs';
 import {useDispatch, useSelector, batch} from 'react-redux';
-import RNFetchBlob from 'rn-fetch-blob';
 
 import useDeviceHook from '../../services/useDevice';
 import useServerRequests from '../../services/useServerRequests';
@@ -31,8 +31,7 @@ import useDownloadHook from './useDownload';
 import useImportHook from './useImport';
 
 const useProject = () => {
-  let dirs = RNFetchBlob.fs.dirs;
-  const devicePath = Platform.OS === 'ios' ? dirs.DocumentDir : dirs.SDCardDir; // ios : android
+  const devicePath = RNFS.DocumentDirectoryPath;
   const appDirectoryForDistributedBackups = '/StraboSpotProjects';
   const appDirectoryTiles = '/StraboSpotTiles';
   const zipsDirectory = appDirectoryTiles + '/TileZips';
@@ -73,17 +72,33 @@ const useProject = () => {
 
   const copyZipMapsForDistribution = (fileName) => {
     return new Promise(async (resolve, reject) => {
-      RNFetchBlob.fs.isDir(devicePath + appDirectoryForDistributedBackups + '/' + fileName + '/maps').then(exists => {
+      RNFS.exists(devicePath + appDirectoryForDistributedBackups + '/' + fileName + '/maps').then(exists => {
         console.log('Dir exists', exists);
         if (exists) {
           doesAppDirExist(appDirectoryTiles).then(res => {
             if (res) {
               doesAppDirExist(zipsDirectory).then(res => {
                 if (res) {
-                  RNFetchBlob.fs.ls(devicePath + zipsDirectory).then(files => {
-                    console.log('files', files);
-                    resolve();
-                  });
+                  RNFS.readdir(devicePath + appDirectoryForDistributedBackups + '/' + fileName + '/maps').then(
+                    async files => {
+                      console.log('files', files);
+                      if (files) {
+                        await Promise.all(
+                          files.map(async file => {
+                            const fileExists = await RNFS.exists(devicePath + zipsDirectory + '/' + file);
+                            if (!fileExists) {
+                              RNFS.copyFile(
+                                devicePath + appDirectoryForDistributedBackups + '/' + fileName + '/maps/' + file,
+                                devicePath + zipsDirectory)
+                                .catch(err => console.log('ERROR COPING MAP', err));
+                              console.log(`File ${file} Copied`);
+                            }
+                            else console.log('Zip file already exists in project');
+                          }),
+                        );
+                      }
+                      resolve();
+                    });
                   // resolve();
                 }
                 else resolve(zipsDirectory, 'does NOT exist.');
@@ -171,14 +186,14 @@ const useProject = () => {
   };
 
   const doesAppDirExist = async (subDirectory) => {
-    return await RNFetchBlob.fs.isDir(devicePath + subDirectory);
+    return await RNFS.exists(devicePath + subDirectory);
   };
 
   const doesDeviceBackupDirExist = async (subDirectory) => {
     if (subDirectory !== undefined) {
-      return await RNFetchBlob.fs.isDir(devicePath + appDirectoryForDistributedBackups + '/' + subDirectory);
+      return await RNFS.exists(devicePath + appDirectoryForDistributedBackups + '/' + subDirectory);
     }
-    else return await RNFetchBlob.fs.isDir(devicePath + appDirectoryForDistributedBackups);
+    else return await RNFS.exists(devicePath + appDirectoryForDistributedBackups);
   };
 
   const getActiveDatasets = () => {
@@ -193,10 +208,10 @@ const useProject = () => {
   };
 
   const getAllDeviceProjects = async () => {
-    const deviceProject = await RNFetchBlob.fs.isDir(devicePath + appDirectoryForDistributedBackups).then(res => {
+    const deviceProject = await RNFS.exists(devicePath + appDirectoryForDistributedBackups).then(res => {
       console.log('/StraboProjects exists:', res);
       if (res) {
-        return RNFetchBlob.fs.ls(devicePath + appDirectoryForDistributedBackups).then(files => {
+        return RNFS.readdir(devicePath + appDirectoryForDistributedBackups).then(files => {
           let id = 0;
           if (!isEmpty(files)) {
             const deviceFiles = files.map(file => {
@@ -251,7 +266,7 @@ const useProject = () => {
   // const readDeviceFile = async (selectedProject) => {
   //   let data = selectedProject.fileName;
   //   const dataFile = '/data.json';
-  //   return await RNFetchBlob.fs.readFile(devicePath + appDirectoryForDistributedBackups + '/' + data + dataFile).then(
+  //   return await RNFS.readFile.readFile(devicePath + appDirectoryForDistributedBackups + '/' + data + dataFile).then(
   //     response => {
   //       return Promise.resolve(JSON.parse(response));
   //     }, () => Alert.alert('Project Not Found'));
