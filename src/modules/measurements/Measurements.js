@@ -86,7 +86,6 @@ const MeasurementsPage = (props) => {
   };
 
   const viewMeasurementDetail = (item) => {
-    // props.setSelectedAttributes([item]);
     dispatch(setSelectedAttributes([item]));
     dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.MEASUREMENTDETAIL));
   };
