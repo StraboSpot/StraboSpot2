@@ -2,8 +2,8 @@ import React, {useEffect} from 'react';
 import {Alert, Text, View, Platform} from 'react-native';
 
 import {Button, ListItem} from 'react-native-elements';
+import RNFS from 'react-native-fs';
 import {useDispatch, useSelector} from 'react-redux';
-import RNFetchBlob from 'rn-fetch-blob';
 
 import useDeviceHook from '../../../services/useDevice';
 import commonStyles from '../../../shared/common.styles';
@@ -16,8 +16,7 @@ import useMapsOfflineHook from './useMapsOffline';
 const ManageOfflineMaps = (props) => {
   console.log('Props: ', props);
 
-  let dirs = RNFetchBlob.fs.dirs;
-  const devicePath = Platform.OS === 'ios' ? dirs.DocumentDir : dirs.SDCardDir; // ios : android
+  const devicePath = RNFS.DocumentDirectoryPath;
   const tilesDirectory = '/StraboSpotTiles';
   const tileCacheDirectory = devicePath + tilesDirectory + '/TileCache';
   const offlineMaps = useSelector(state => state.offlineMap.offlineMaps);

@@ -1,14 +1,14 @@
 import React, {useEffect, useState} from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 
 import {Picker} from '@react-native-community/picker';
 import {Button, Header} from 'react-native-elements';
+import RNFS from 'react-native-fs';
 import * as loading from 'react-native-indicators';
 import {Dialog, DialogContent, SlideAnimation} from 'react-native-popup-dialog';
 import ProgressBar from 'react-native-progress/Bar';
 import {unzip} from 'react-native-zip-archive'; /*TODO  react-native-zip-archive@3.0.1 requires a peer of react@^15.4.2 || <= 16.3.1 but none is installed */
 import {useDispatch, useSelector} from 'react-redux';
-import RNFetchBlob from 'rn-fetch-blob';
 
 import {toNumberFixedValue} from '../../../shared/Helpers';
 import * as themes from '../../../shared/styles.constants';
@@ -22,8 +22,7 @@ const SaveMapsModal = (props) => {
   const [useMaps] = useMapsHook();
 
   const tilehost = 'http://tiles.strabospot.org';
-  let dirs = RNFetchBlob.fs.dirs;
-  let devicePath = Platform.OS === 'ios' ? dirs.DocumentDir : dirs.SDCardDir; // ios : android
+  const devicePath = RNFS.DocumentDirectoryPath;
   let tilesDirectory = '/StraboSpotTiles';
   let tileZipsDirectory = devicePath + tilesDirectory + '/TileZips';
   let tileCacheDirectory = devicePath + tilesDirectory + '/TileCache';

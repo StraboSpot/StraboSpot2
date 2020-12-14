@@ -1,7 +1,5 @@
-import {Platform} from 'react-native';
-
+import RNFS from 'react-native-fs';
 import {batch, useDispatch, useSelector} from 'react-redux';
-import RNFetchBlob from 'rn-fetch-blob';
 
 import useDeviceHook from '../../services/useDevice';
 import useServerRequestsHook from '../../services/useServerRequests';
@@ -34,10 +32,9 @@ const useDownload = () => {
   let imagesFailedArr = [];
   let imageCount = 0;
 
-  const dirs = RNFetchBlob.fs.dirs;
-  const devicePath = Platform.OS === 'ios' ? dirs.DocumentDir : dirs.SDCardDir; // ios : android
+  const devicePath = RNFS.DocumentDirectoryPath;
   const appDirectory = '/StraboSpot';
-  const imagesDirectory = devicePath + appDirectory + '/Images';
+  const imagesDirectoryPath = devicePath + appDirectory + '/Images';
   // const testUrl = 'https://strabospot.org/testimages/images.json';
   // const missingImage = require('../../assets/images/noimage.jpg');
 
@@ -118,30 +115,35 @@ const useDownload = () => {
   };
 
   const downloadAndSaveImagesToDevice = async (imageId) => {
-    const imageURI = 'https://strabospot.org/pi/' + imageId;
-    return RNFetchBlob
-      .config({path: imagesDirectory + '/' + imageId + '.jpg'})
-      .fetch('GET', imageURI, {})
-      .then((res) => {
-        if (res.respInfo.status === 404) {
-          imageCount++;
-          imagesFailedCount++;
-          console.log('Error on', imageId);  // Android Error: RNFetchBlob request error: url == nullnull
-          return RNFetchBlob.fs.unlink(res.data).then(() => {
-            console.log('Failed image removed', imageId);
-            imagesFailedArr.push(imageId);
-          });
-        }
-        else {
-          imageCount++;
-          console.log(imageCount, 'File saved to', res.path());
-        }
-      })
-      .catch((errorMessage, statusCode) => {
-        imageCount++;
-        console.error('Error on', imageId, ':', errorMessage, statusCode);  // Android Error: RNFetchBlob request error: url == nullnull
-        throw Error('Response is 404!');
-      });
+    try {
+      const imageURI = 'https://strabospot.org/pi/';
+      return RNFS.downloadFile({
+        fromUrl: imageURI + imageId,
+        toFile: imagesDirectoryPath + '/' + imageId + '.jpg',
+        begin: res => console.log('IMAGE DOWNLOAD HAS BEGUN', res.jobId),
+      }).promise.then(res => {
+          console.log('Image Info', res);
+          if (res.statusCode === 200) {
+            imageCount++;
+            console.log(imageCount, `File ${imageId} saved to: ${imagesDirectoryPath}`);
+          }
+          else {
+            imageCount++;
+            imagesFailedCount++;
+            console.log('Error on', imageId);
+            return RNFS.unlink(imagesDirectoryPath + '/' + imageId + '.jpg').then(() => {
+              console.log(`Failed image ${imageId} removed`);
+            });
+          }
+        },
+      )
+        .catch(err => {
+          console.error('ERR in RNFS.downloadFile', err);
+        });
+    }
+    catch (err) {
+      console.error('Error downloading and saving image.', err);
+    }
   };
 
   const downloadDatasets = async (project, source) => {
@@ -197,7 +199,7 @@ const useDownload = () => {
       dispatch(addedStatusMessage({statusMessage: 'Downloading Needed Images...'}));
       if (!isEmpty(neededImageIds)) {
         // Check path first, if doesn't exist, then create
-        await useDevice.doesDeviceDirectoryExist(devicePath + appDirectory + imagesDirectory);
+        await useDevice.doesDeviceDirectoryExist(imagesDirectoryPath);
         await Promise.all(
           neededImageIds.map(async imageId => {
             await downloadAndSaveImagesToDevice(imageId);
