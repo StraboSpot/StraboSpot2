@@ -2,8 +2,11 @@ import React, {useEffect, useRef} from 'react';
 import {Alert, FlatList, View} from 'react-native';
 
 import {Formik} from 'formik';
+import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import {isEmpty} from '../../shared/Helpers';
+import * as themes from '../../shared/styles.constants';
 import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import {Form, useFormHook} from '../form';
 import {editedSpotProperties} from '../spots/spots.slice';
@@ -22,8 +25,7 @@ const MineralDetail = (props) => {
 
   const cancelForm = async () => {
     await formRef.current.resetForm();
-    //   Alert.alert('Data Reset');
-    props.hideMineralDetail();
+    props.showMineralsOverview();
   };
 
   const confirmLeavePage = () => {
@@ -46,6 +48,33 @@ const MineralDetail = (props) => {
     }
   };
 
+  const deleteMineral = () => {
+    let editedPetData = spot.properties.pet ? JSON.parse(JSON.stringify(spot.properties.pet)) : {};
+    if (!editedPetData.minerals) editedPetData.minerals = [];
+    editedPetData.minerals = editedPetData.minerals.filter(mineral => mineral.id !== props.selectedMineral.id);
+    if (isEmpty(editedPetData.minerals)) delete editedPetData.minerals;
+    dispatch(editedSpotProperties({field: 'pet', value: editedPetData}));
+    //await formRef.current.resetForm();
+    props.showMineralsOverview();
+  };
+
+  const deleteMineralConfirm = () => {
+    Alert.alert('Delete Mineral',
+      'Are you sure you would like to delete this mineral?',
+      [
+        {
+          text: 'No',
+          style: 'cancel',
+        },
+        {
+          text: 'Yes',
+          onPress: () => deleteMineral(),
+        },
+      ],
+      {cancelable: false},
+    );
+  };
+
   const renderFormFields = () => {
     const formName = ['pet', 'minerals'];
     console.log('Rendering form:', formName[0] + '.' + formName[1]);
@@ -61,6 +90,12 @@ const MineralDetail = (props) => {
           initialValues={props.selectedMineral}
           validateOnChange={false}
           enableReinitialize={true}
+        />
+        <Button
+          titleStyle={{color: themes.RED}}
+          title={'Delete Mineral'}
+          type={'clear'}
+          onPress={() => deleteMineralConfirm()}
         />
       </View>
     );
@@ -81,7 +116,7 @@ const MineralDetail = (props) => {
       editedPetData.minerals.push(editedMineralData);
       dispatch(editedSpotProperties({field: 'pet', value: editedPetData}));
       await formRef.current.resetForm();
-      props.hideMineralDetail();
+      props.showMineralsOverview();
     }
     catch (err) {
       console.log('Error submitting form', err);
