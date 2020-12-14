@@ -9,18 +9,22 @@ const saveAndClose = (props) => {
   return (
     <View style={styles.navButtonsContainer}>
       <View style={styles.leftContainer}>
-        <Button
-          titleStyle={styles.buttonText}
-          title={'Cancel'}
-          type={'clear'}
-          onPress={props.cancel}
-        />
-        <Button
-          titleStyle={styles.buttonText}
-          title={'Save'}
-          type={'clear'}
-          onPress={props.save}
-        />
+        {props.cancel && (
+          <Button
+            titleStyle={styles.buttonText}
+            title={'Cancel'}
+            type={'clear'}
+            onPress={props.cancel}
+          />
+        )}
+        {props.save && (
+          <Button
+            titleStyle={styles.buttonText}
+            title={'Save'}
+            type={'clear'}
+            onPress={props.save}
+          />
+        )}
       </View>
     </View>
   );
