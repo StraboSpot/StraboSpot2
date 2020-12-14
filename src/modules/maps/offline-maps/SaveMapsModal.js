@@ -12,10 +12,8 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import {toNumberFixedValue} from '../../../shared/Helpers';
 import * as themes from '../../../shared/styles.constants';
-import {setOfflineMap} from '../offline-maps/offlineMaps.slice';
 import useMapsHook from '../useMaps';
-
-const RNFS = require('react-native-fs');
+import {setOfflineMap} from './offlineMaps.slice';
 
 const SaveMapsModal = (props) => {
   // console.log(props);
