@@ -70,49 +70,33 @@ const useProject = () => {
     }
   };
 
-  const copyZipMapsForDistribution = (fileName) => {
-    return new Promise(async (resolve, reject) => {
-      RNFS.exists(devicePath + appDirectoryForDistributedBackups + '/' + fileName + '/maps').then(exists => {
-        console.log('Dir exists', exists);
-        if (exists) {
-          doesAppDirExist(appDirectoryTiles).then(res => {
-            if (res) {
-              doesAppDirExist(zipsDirectory).then(res => {
-                if (res) {
-                  RNFS.readdir(devicePath + appDirectoryForDistributedBackups + '/' + fileName + '/maps').then(
-                    async files => {
-                      console.log('files', files);
-                      if (files) {
-                        await Promise.all(
-                          files.map(async file => {
-                            const fileExists = await RNFS.exists(devicePath + zipsDirectory + '/' + file);
-                            if (!fileExists) {
-                              RNFS.copyFile(
-                                devicePath + appDirectoryForDistributedBackups + '/' + fileName + '/maps/' + file,
-                                devicePath + zipsDirectory)
-                                .catch(err => console.log('ERROR COPING MAP', err));
-                              console.log(`File ${file} Copied`);
-                            }
-                            else console.log('Zip file already exists in project');
-                          }),
-                        );
-                      }
-                      resolve();
-                    });
-                  // resolve();
-                }
-                else resolve(zipsDirectory, 'does NOT exist.');
+  const copyZipMapsForDistribution = async (fileName) => {
+    try {
+      await useDevice.doesDeviceBackupDirExist(fileName + '/maps');
+      await useDevice.doesDeviceDirectoryExist(devicePath + appDirectoryTiles);
+      await useDevice.doesDeviceDirectoryExist(devicePath + zipsDirectory);
+      const files = await RNFS.readdir(devicePath + appDirectoryForDistributedBackups + '/' + fileName + '/maps');
+      if (files) {
+        await Promise.all(
+          files.map(async file => {
+            const source = devicePath + appDirectoryForDistributedBackups + '/' + fileName + '/maps/' + file;
+            const dest = devicePath + zipsDirectory + '/' + file;
+            await RNFS.copyFile(source, dest)
+              .then(() => console.log(`File ${file} Copied`))
+              .catch(async err => {
+                console.log('ERROR COPING MAP', err);
+                await RNFS.unlink(dest);
+                console.log(`${file} removed`);
+                await RNFS.copyFile(source, dest);
+                console.log(`File ${file} Copied`);
               });
-            }
-            else resolve(appDirectoryTiles, 'does NOT exist.');
-          });
-        }
-        else resolve('Maps directory not found.');
-      })
-        .catch(err => {
-          console.log('ERROR checking directory', err);
-        });
-    });
+          }),
+        );
+      }
+    }
+    catch (err) {
+      console.error('Error Copying Maps for Distribution', err);
+    }
   };
 
   const createDataset = (name) => {
@@ -280,8 +264,6 @@ const useProject = () => {
         const dataFile = await useImport.readDeviceFile(selectedProject);
         if (!isEmpty(dataFile.mapNamesDb) || !isEmpty(dataFile.otherMapsDb)) {
           await copyZipMapsForDistribution(selectedProject.fileName);
-          // await useDevice.doesDeviceDirectoryExist(devicePath + appDirectoryForDistributedBackups + '/' + selectedProject.fileName + '/maps');
-          // console.log('Maps Dir Exists? ', doMapsDirExists, '!');
         }
         return useImport.loadProjectFromDevice(dataFile).then((data) => {
 
