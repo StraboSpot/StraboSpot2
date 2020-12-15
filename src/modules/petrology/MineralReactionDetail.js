@@ -5,13 +5,13 @@ import {Formik} from 'formik';
 import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {isEmpty} from '../../shared/Helpers';
+import {isEmpty, toTitleCase} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
 import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import {Form, useFormHook} from '../form';
 import {editedSpotProperties} from '../spots/spots.slice';
 
-const MineralDetail = (props) => {
+const MineralReactionDetail = (props) => {
   const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
 
@@ -25,7 +25,7 @@ const MineralDetail = (props) => {
 
   const cancelForm = async () => {
     await formRef.current.resetForm();
-    props.showMineralsOverview();
+    props.showMineralsReactionsOverview();
   };
 
   const confirmLeavePage = () => {
@@ -48,19 +48,19 @@ const MineralDetail = (props) => {
     }
   };
 
-  const deleteMineral = () => {
+  const deleteMineralReaction = () => {
     let editedPetData = spot.properties.pet ? JSON.parse(JSON.stringify(spot.properties.pet)) : {};
-    if (!editedPetData.minerals) editedPetData.minerals = [];
-    editedPetData.minerals = editedPetData.minerals.filter(mineral => mineral.id !== props.selectedMineral.id);
-    if (isEmpty(editedPetData.minerals)) delete editedPetData.minerals;
+    if (!editedPetData[props.type]) editedPetData[props.type] = [];
+    editedPetData[props.type] = editedPetData[props.type].filter(type => type.id !== props.selectedMineralReaction.id);
+    if (isEmpty(editedPetData[props.type])) delete editedPetData[props.type];
     dispatch(editedSpotProperties({field: 'pet', value: editedPetData}));
     //await formRef.current.resetForm();
-    props.showMineralsOverview();
+    props.showMineralsReactionsOverview();
   };
 
-  const deleteMineralConfirm = () => {
-    Alert.alert('Delete Mineral',
-      'Are you sure you would like to delete this mineral?',
+  const deleteMineralReactionConfirm = () => {
+    Alert.alert('Delete ' + toTitleCase(props.type).slice(0, -1),
+      'Are you sure you would like to delete this ' + props.type.slice(0, -1) + '?',
       [
         {
           text: 'No',
@@ -68,7 +68,7 @@ const MineralDetail = (props) => {
         },
         {
           text: 'Yes',
-          onPress: () => deleteMineral(),
+          onPress: () => deleteMineralReaction(),
         },
       ],
       {cancelable: false},
@@ -76,9 +76,9 @@ const MineralDetail = (props) => {
   };
 
   const renderFormFields = () => {
-    const formName = ['pet', 'minerals'];
+    const formName = ['pet', props.type];
     console.log('Rendering form:', formName[0] + '.' + formName[1]);
-    console.log('Mineral Data:', props.selectedMineral);
+    console.log(toTitleCase(props.type) + ' Data:', props.selectedMineralReaction);
     return (
       <View style={{flex: 1}}>
         <Formik
@@ -87,15 +87,15 @@ const MineralDetail = (props) => {
           onReset={() => console.log('Resetting form...')}
           validate={(values) => useForm.validateForm({formName: formName, values: values})}
           component={(formProps) => Form({formName: formName, ...formProps})}
-          initialValues={props.selectedMineral}
+          initialValues={props.selectedMineralReaction}
           validateOnChange={false}
           enableReinitialize={true}
         />
         <Button
           titleStyle={{color: themes.RED}}
-          title={'Delete Mineral'}
+          title={'Delete ' + toTitleCase(props.type).slice(0, -1)}
           type={'clear'}
-          onPress={() => deleteMineralConfirm()}
+          onPress={() => deleteMineralReactionConfirm()}
         />
       </View>
     );
@@ -108,15 +108,15 @@ const MineralDetail = (props) => {
         useForm.showErrors(formCurrent);
         throw Error;
       }
-      console.log('Saving mineral data to Spot ...');
-      let editedMineralData = formCurrent.values;
+      console.log('Saving ' + props.type + ' data to Spot ...');
+      let editedMineralReactionData = formCurrent.values;
       let editedPetData = spot.properties.pet ? JSON.parse(JSON.stringify(spot.properties.pet)) : {};
-      if (!editedPetData.minerals) editedPetData.minerals = [];
-      editedPetData.minerals = editedPetData.minerals.filter(mineral => mineral.id !== editedMineralData.id);
-      editedPetData.minerals.push(editedMineralData);
+      if (!editedPetData[props.type]) editedPetData[props.type] = [];
+      editedPetData[props.type] = editedPetData[props.type].filter(type => type.id !== editedMineralReactionData.id);
+      editedPetData[props.type].push(editedMineralReactionData);
       dispatch(editedSpotProperties({field: 'pet', value: editedPetData}));
       await formRef.current.resetForm();
-      props.showMineralsOverview();
+      props.showMineralsReactionsOverview();
     }
     catch (err) {
       console.log('Error submitting form', err);
@@ -134,4 +134,4 @@ const MineralDetail = (props) => {
   );
 };
 
-export default MineralDetail;
+export default MineralReactionDetail;

@@ -7,6 +7,7 @@ import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import MineralsSubpage from './MineralsSubpage';
+import ReactionsSubpage from './ReactionsSubpage';
 import RockSubpage from './RockSubpage';
 
 const PetrologyPage = () => {
@@ -27,6 +28,7 @@ const PetrologyPage = () => {
       />
       {subpageSelectedIndex === 0 && <RockSubpage/>}
       {subpageSelectedIndex === 1 && <MineralsSubpage/>}
+      {subpageSelectedIndex === 2 && <ReactionsSubpage/>}
     </React.Fragment>
   );
 };

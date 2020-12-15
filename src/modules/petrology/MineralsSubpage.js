@@ -7,7 +7,8 @@ import {useSelector} from 'react-redux';
 import {getNewId, isEmpty} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
 import {LABEL_DICTIONARY} from '../form';
-import MineralDetail from './MineralDetail';
+//import MineralDetail from './MineralDetail';
+import MineralReactionDetail from './MineralReactionDetail';
 import MineralsByRockClass from './MineralsByRockClass';
 import MineralsGlossary from './MineralsGlossary';
 import {MINERAL_VIEW} from './petrology.constants';
@@ -99,9 +100,10 @@ const MineralsSubpage = (props) => {
         </View>
       )}
       {mineralView === MINERAL_VIEW.DETAIL && (
-        <MineralDetail
-          showMineralsOverview={() => setMineralView(MINERAL_VIEW.OVERVIEW)}
-          selectedMineral={selectedMineral}
+        <MineralReactionDetail
+          type={'minerals'}
+          showMineralsReactionsOverview={() => setMineralView(MINERAL_VIEW.OVERVIEW)}
+          selectedMineralReaction={selectedMineral}
         />)}
       {mineralView === MINERAL_VIEW.ROCK_CLASS && (
         <MineralsByRockClass
