@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Alert, FlatList, View, Text} from 'react-native';
+import {FlatList, View, Text} from 'react-native';
 
 import {Button, ListItem} from 'react-native-elements';
 import {useSelector} from 'react-redux';
@@ -9,6 +9,7 @@ import * as themes from '../../shared/styles.constants';
 import {LABEL_DICTIONARY} from '../form';
 import MineralDetail from './MineralDetail';
 import MineralsByRockClass from './MineralsByRockClass';
+import MineralsGlossary from './MineralsGlossary';
 import {MINERAL_VIEW} from './petrology.constants';
 
 const MineralsSubpage = (props) => {
@@ -79,7 +80,7 @@ const MineralsSubpage = (props) => {
           <Button
             title={'+ Add a Mineral By Glossary'}
             type={'clear'}
-            onPress={() => Alert.alert('Not implemented yet.')}
+            onPress={() => setMineralView(MINERAL_VIEW.GLOSSARY)}
           />
           {(!spot.properties.pet || !spot.properties.pet.minerals) && (
             <View style={{padding: 10}}>
@@ -104,6 +105,11 @@ const MineralsSubpage = (props) => {
         />)}
       {mineralView === MINERAL_VIEW.ROCK_CLASS && (
         <MineralsByRockClass
+          showMineralsOverview={() => setMineralView(MINERAL_VIEW.OVERVIEW)}
+          addMineral={(mineral) => addMineral(mineral)}
+        />)}
+      {mineralView === MINERAL_VIEW.GLOSSARY && (
+        <MineralsGlossary
           showMineralsOverview={() => setMineralView(MINERAL_VIEW.OVERVIEW)}
           addMineral={(mineral) => addMineral(mineral)}
         />)}

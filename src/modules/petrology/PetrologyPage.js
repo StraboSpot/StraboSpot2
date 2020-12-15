@@ -13,7 +13,7 @@ const PetrologyPage = () => {
   const dispatch = useDispatch();
 
   const [subpageSelectedIndex, setSubpageSelectedIndex] = useState(0);
-  const petSubPages = ['Rock', 'Mineral', 'Reactions'];
+  const petSubPages = ['Rock', 'Minerals', 'Reactions'];
 
   return (
     <React.Fragment>
