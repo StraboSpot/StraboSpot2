@@ -31,6 +31,18 @@ const ReactionsSubpage = (props) => {
     setReactionView(REACTION_VIEW.DETAIL);
   };
 
+  const getExistingMineralsText = () => {
+    if (!spot.properties.pet || isEmpty(spot.properties.pet.minerals)) return 'No minerals at this Spot';
+    else {
+      const existingMinerals = spot.properties.pet.minerals.map(mineral => {
+        return (mineral.mineral_abbrev ? mineral.mineral_abbrev + ' ' : '')
+          + (mineral.full_mineral_name ? '(' + mineral.full_mineral_name + ')' : '');
+      });
+      const existingMineralsSorted = existingMinerals.slice().sort((a, b) => a.localeCompare(b));
+      return existingMineralsSorted.join(' - ');
+    }
+  };
+
   const getLabel = (key) => {
     if (Array.isArray(key)) {
       const labelsArr = key.map(val => petDictionary[val] || val);
@@ -50,8 +62,10 @@ const ReactionsSubpage = (props) => {
                 onPress={() => editReaction(reaction)}
       >
         <ListItem.Content style={{overflow: 'hidden'}}>
-          <ListItem.Title>{reaction.reactions}</ListItem.Title>
-          <ListItem.Subtitle style={{color: themes.PRIMARY_ITEM_TEXT_COLOR}}>{reactionFieldsText}</ListItem.Subtitle>
+          <ListItem.Title>{reaction.reactions || 'Unknown'}</ListItem.Title>
+          {reactionFieldsText !== '' && (
+            <ListItem.Subtitle style={{color: themes.PRIMARY_ITEM_TEXT_COLOR}}>{reactionFieldsText}</ListItem.Subtitle>
+          )}
         </ListItem.Content>
         <ListItem.Chevron/>
       </ListItem>
@@ -61,7 +75,15 @@ const ReactionsSubpage = (props) => {
   return (
     <React.Fragment>
       {reactionView === REACTION_VIEW.OVERVIEW && (
-        <View>
+        <View style={{flex: 1}}>
+          <View>
+            <ListItem>
+              <ListItem.Content>
+                <ListItem.Title>Existing Minerals:</ListItem.Title>
+                <ListItem.Subtitle>{getExistingMineralsText()}</ListItem.Subtitle>
+              </ListItem.Content>
+            </ListItem>
+          </View>
           <Button
             title={'+ Add a Reaction'}
             type={'clear'}
@@ -74,7 +96,7 @@ const ReactionsSubpage = (props) => {
           )}
           {spot.properties.pet && spot.properties.pet.reactions && (
             <FlatList
-              data={spot.properties.pet.reactions.slice().sort((a, b) => a.reactions.localeCompare(b.reactions))}
+              data={spot.properties.pet.reactions.slice().sort((a, b) => (a.reactions || 'Unknown').localeCompare((b.reactions || 'Unknown')))}
               renderItem={item => renderReaction(item.item)}
               keyExtractor={(item) => item.id.toString()}
               ItemSeparatorComponent={() => <View style={{borderTopWidth: 1}}/>}

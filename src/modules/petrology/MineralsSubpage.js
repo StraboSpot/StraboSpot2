@@ -57,7 +57,9 @@ const MineralsSubpage = (props) => {
       >
         <ListItem.Content style={{overflow: 'hidden'}}>
           <ListItem.Title>{mineralTitle}</ListItem.Title>
-          <ListItem.Subtitle style={{color: themes.PRIMARY_ITEM_TEXT_COLOR}}>{mineralFieldsText}</ListItem.Subtitle>
+          {mineralFieldsText !== '' && (
+            <ListItem.Subtitle style={{color: themes.PRIMARY_ITEM_TEXT_COLOR}}>{mineralFieldsText}</ListItem.Subtitle>
+          )}
         </ListItem.Content>
         <ListItem.Chevron/>
       </ListItem>
@@ -67,7 +69,7 @@ const MineralsSubpage = (props) => {
   return (
     <React.Fragment>
       {mineralView === MINERAL_VIEW.OVERVIEW && (
-        <View>
+        <View style={{flex: 1}}>
           <Button
             title={'+ Add Mineral'}
             type={'clear'}
