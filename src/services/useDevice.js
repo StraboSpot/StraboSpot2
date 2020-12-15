@@ -2,15 +2,13 @@ import {Platform} from 'react-native';
 
 import RNFS from 'react-native-fs';
 import {useDispatch} from 'react-redux';
-import RNFetchBlob from 'rn-fetch-blob';
 
 import {deletedOfflineMap} from '../modules/maps/offline-maps/offlineMaps.slice';
 import {doesBackupDirectoryExist} from '../modules/project/projects.slice';
 
 
 const useDevice = () => {
-  let dirs = RNFetchBlob.fs.dirs;
-  const devicePath = Platform.OS === 'ios' ? dirs.DocumentDir : dirs.SDCardDir; // ios : android
+  const devicePath = RNFS.DocumentDirectoryPath;
   const appDirectoryForDistributedBackups = '/StraboSpotProjects';
   const appDirectory = '/StraboSpot';
   const imagesDirectory = appDirectory + '/Images';
@@ -60,20 +58,19 @@ const useDevice = () => {
 
   const doesDeviceDirectoryExist = async (directory) => {
     try {
-      const checkDirSuccess = await RNFetchBlob.fs.isDir(directory);
+      const checkDirSuccess = await RNFS.exists(directory);
       if (checkDirSuccess) {
         console.log('Directory', directory, 'exists.', checkDirSuccess);
       }
       else {
         // If directory does not exist then one is created
-        return RNFetchBlob.fs.mkdir(directory)
-          .then(checkDirectorySuccess => {
+        return RNFS.mkdir(directory)
+          .then(() => {
             console.log('Directory:', directory, 'CREATED!');
-            return checkDirectorySuccess;
           })
-          .catch(createDirError => {
-            console.error('Unable to create directory', directory, 'ERROR:', createDirError);
-            throw Error;
+          .catch(err => {
+            console.error('Unable to create directory', directory, 'ERROR:', err);
+            throw Error(err);
           });
       }
       console.log(checkDirSuccess);
@@ -81,22 +78,22 @@ const useDevice = () => {
     }
     catch (err) {
       console.error('Error in doesDeviceDirectoryExist()', err);
-      throw Error;
+      throw Error(err);
     }
   };
 
   const doesDeviceFileExist = async (id, extension) => {
-    const imageExists = await RNFetchBlob.fs.exists(devicePath + imagesDirectory + '/' + id + extension);
+    const imageExists = await RNFS.exists(devicePath + imagesDirectory + '/' + id + extension);
     console.log('Image Exists:', imageExists);
     return imageExists;
   };
 
   const doesDeviceBackupDirExist = async (subDirectory) => {
     if (subDirectory !== undefined) {
-      return await RNFetchBlob.fs.isDir(devicePath + appDirectoryForDistributedBackups + '/' + subDirectory);
+      return await RNFS.exists(devicePath + appDirectoryForDistributedBackups + '/' + subDirectory);
     }
     else {
-      const exists = await RNFetchBlob.fs.isDir(devicePath + appDirectoryForDistributedBackups);
+      const exists = await RNFS.exists(devicePath + appDirectoryForDistributedBackups);
       dispatch(doesBackupDirectoryExist(exists));
       return exists;
     }

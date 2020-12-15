@@ -68,8 +68,8 @@ const MainMenuPanel = props => {
         <View style={styles.mainMenuContainer}>
           <MyStraboSpot
             openSidePanel={props.openSidePanel}
-            openHomePanel={props.openHomePanel}
-            closeHomePanel={props.closeHomePanel}/>
+            logout={props.logout}
+          />
         </View>
       );
       break;
@@ -86,7 +86,7 @@ const MainMenuPanel = props => {
     case MAIN_MENU_ITEMS.MANAGE.UPLOAD_BACKUP_EXPORT:
       page = (
         <View style={styles.mainMenuContainer}>
-          <UploadBackupAndExport/>
+          <UploadBackupAndExport closeMainMenuPanel={props.closeMainMenuPanel}/>
         </View>
       );
       break;

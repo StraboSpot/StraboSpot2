@@ -20,7 +20,13 @@ import {addedProject} from '../project/projects.slice';
 import {setSelectedSpot} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
 import {BASEMAPS, GEO_LAT_LNG_PROJECTION, MAP_PROVIDERS, PIXEL_PROJECTION} from './maps.constants';
-import {addedCustomMap, deletedCustomMap, selectedCustomMapToEdit, setCurrentBasemap, setMapSymbols} from './maps.slice';
+import {
+  addedCustomMap,
+  deletedCustomMap,
+  selectedCustomMapToEdit,
+  setCurrentBasemap,
+  setMapSymbols,
+} from './maps.slice';
 
 const useMaps = () => {
   const [useServerRequests] = useServerRequestsHook();
@@ -41,7 +47,7 @@ const useMaps = () => {
   const buildTileUrl = (basemap) => {
     let tileUrl = basemap.url[0];
     if (basemap.source === 'osm') tileUrl = tileUrl + basemap.tilePath;
-    if (basemap.source === 'map_warper' || basemap.source === 'strabospot_mymaps') tileUrl = tileUrl + '/' + basemap.id + '/' + basemap.tilePath;
+    if (basemap.source === 'map_warper' || basemap.source === 'strabospot_mymaps') tileUrl = tileUrl + basemap.id + '/' + basemap.tilePath;
     else tileUrl = tileUrl + basemap.id + basemap.tilePath + (basemap.key ? '?access_token=' + basemap.key : '');
     return tileUrl;
   };
@@ -133,7 +139,8 @@ const useMaps = () => {
   const getCoordQuad = (imageBasemapProps) => {
     // identify the [lat,lng] corners of the image basemap
     var bottomLeft = [0, 0];
-    var bottomRight = convertCoordinateProjections(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION, [imageBasemapProps.width, 0]);
+    var bottomRight = convertCoordinateProjections(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION,
+      [imageBasemapProps.width, 0]);
     var topRight = convertCoordinateProjections(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION,
       [imageBasemapProps.width, imageBasemapProps.height]);
     var topLeft = convertCoordinateProjections(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION, [0, imageBasemapProps.height]);
@@ -147,17 +154,19 @@ const useMaps = () => {
     let geolocationOptions = {timeout: 2500, maximumAge: 10000};
     // Fixes issue with Android not getting current location if enableHighAccuracy is true
     geolocationOptions = Platform.OS === 'ios' ? {enableHighAccuracy: true, ...geolocationOptions} : geolocationOptions;
-    return new Promise((resolve, reject) => {
-      Geolocation.getCurrentPosition(
-        (position) => {
-          // setUserLocationCoords([position.coords.longitude, position.coords.latitude]);
-          console.log('Got Current Location: [', position.coords.longitude, ', ', position.coords.latitude, ']');
-          resolve([position.coords.longitude, position.coords.latitude]);
-        },
-        (error) => reject('Error getting current location: ' + (error.message ? error.message : 'Unknown Error')),
-        geolocationOptions,
-      );
-    });
+    return (
+      new Promise((resolve, reject) => {
+        Geolocation.getCurrentPosition(
+          (position) => {
+            // setUserLocationCoords([position.coords.longitude, position.coords.latitude]);
+            console.log('Got Current Location: [', position.coords.longitude, ', ', position.coords.latitude, ']');
+            resolve([position.coords.longitude, position.coords.latitude]);
+          },
+          (error) => reject('Error getting current location: ' + (error.message ? error.message : 'Unknown Error')),
+          geolocationOptions,
+        );
+      })
+    );
   };
 
   // All Spots mapped on curent map
@@ -195,10 +204,12 @@ const useMaps = () => {
 
   // Point Spots the are currently visible on the map (i.e. not toggled off in the Map Symbol Switcher)
   const getVisibleMappedSpots = (mappedSpots) => {
-    return mappedSpots.filter(spot => turf.getType(spot) !== 'Point'
-      || (spot.properties.orientation_data
-        && !isEmpty(spot.properties.orientation_data.filter(orientation => orientation.feature_type
-          && selectedSymbols.includes(orientation.feature_type)))));
+    return (
+      mappedSpots.filter(spot => turf.getType(spot) !== 'Point'
+        || (spot.properties.orientation_data
+          && !isEmpty(spot.properties.orientation_data.filter(orientation => orientation.feature_type
+            && selectedSymbols.includes(orientation.feature_type)))))
+    );
   };
 
   // Gather and set the feature types that are present in the mapped Spots
@@ -288,8 +299,15 @@ const useMaps = () => {
   };
 
   const setBasemap = async (mapId) => {
+    let newBasemap;
     if (!mapId) mapId = 'mapbox.outdoors';
-    const newBasemap = await BASEMAPS.find(basemap => basemap.id === mapId);
+    newBasemap = await BASEMAPS.find(basemap => basemap.id === mapId);
+    if (newBasemap === undefined) {
+      newBasemap = await Object.values(customMaps).find(basemap => {
+        console.log(basemap);
+        return basemap.id === mapId;
+      });
+    }
     console.log('Setting current basemap to a default basemap...');
     dispatch(setCurrentBasemap(newBasemap));
   };

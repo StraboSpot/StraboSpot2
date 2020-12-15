@@ -2,6 +2,7 @@ import React, {useEffect, useImperativeHandle, useRef, useState} from 'react';
 import {Alert, View} from 'react-native';
 
 import MapboxGL from '@react-native-mapbox-gl/maps';
+import Logger from '@react-native-mapbox-gl/maps/javascript/utils/Logger';
 import * as turf from '@turf/turf/index';
 import {Button} from 'react-native-elements';
 import Dialog, {DialogContent, DialogTitle, SlideAnimation} from 'react-native-popup-dialog';
@@ -31,6 +32,7 @@ import {
   setSpotsInMapExtent,
   setVertexStartCoords,
 } from './maps.slice';
+import useOfflineMapsHook from './offline-maps/useMapsOffline';
 import useMapFeaturesHook from './useMapFeatures';
 import useMapsHook from './useMaps';
 
@@ -43,6 +45,7 @@ const Map = React.forwardRef((props, ref) => {
   const [useMaps] = useMapsHook();
   const [useMapFeatures] = useMapFeaturesHook();
   const [useSpots] = useSpotsHook();
+  const useOfflineMaps = useOfflineMapsHook();
 
   const currentBasemap = useSelector(state => state.map.currentBasemap);
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
@@ -54,6 +57,7 @@ const Map = React.forwardRef((props, ref) => {
   const datasets = useSelector(state => state.project.datasets);
   const selectedSymbols = useSelector(state => state.map.symbolsOn) || [];
   const isAllSymbolsOn = useSelector(state => state.map.isAllSymbolsOn);
+  const isOnline = useSelector(state => state.home.isOnline);
   const user = useSelector(state => state.user);
   const pageVisible = useSelector(state => state.notebook.visibleNotebookPagesStack.slice(-1)[0]);
   const isDrawFeatureModeOn = () => {
@@ -108,6 +112,18 @@ const Map = React.forwardRef((props, ref) => {
     spotsInMapExtent: () => spotsInMapExtent(),
   };
 
+
+  useEffect(() => {
+    Logger.setLogCallback((log) => {
+      const { message } = log;
+      // console.log('LOGGER MESSAGE IN MAPS.JS', message);
+      if (message.match(/Requesting.+failed.+MGLNativeNetworkManager/) || message.match(/offline/)) {
+        return true; // true means we've processed the log
+      }
+      return false;
+    });
+   }, []);
+
   useEffect(() => {
     console.log('UE1 Map [currentImageBasemap]');
     console.log('Changed image basemap to:', currentImageBasemap);
@@ -145,10 +161,17 @@ const Map = React.forwardRef((props, ref) => {
   useEffect(() => {
     console.log('UE3 Map [user]');
     console.log('Updating DOM on first render');
-    if (!currentBasemap) useMaps.setBasemap().catch(console.error);
+    if (isOnline && !currentBasemap) useMaps.setBasemap().catch(console.error);
+    else if (isOnline && currentBasemap) {
+      // Alert.alert('Online Basemap', `${JSON.stringify(currentBasemap.id)}`);
+      useMaps.setBasemap(currentBasemap.id).catch(error => console.log('Error Setting Basemap', error));
+    }
+    else if (!isOnline && isOnline !== null && currentBasemap) {
+      useOfflineMaps.viewOfflineMap().catch(error => console.log('Error Setting Offline Basemap', error));
+    }
     if (!currentImageBasemap) setCurrentLocationAsCenter();
     clearVertexes();
-  }, [user]);
+  }, [user, isOnline]);
 
   useEffect(() => {
     console.log(

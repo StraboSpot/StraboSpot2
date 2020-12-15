@@ -134,8 +134,8 @@ const useTags = () => {
   const saveForm = async () => {
     try {
       await form.current.submitForm();
-      if (useForm.hasErrors(form)) {
-        useForm.showErrors(form);
+      if (useForm.hasErrors(form.current)) {
+        useForm.showErrors(form.current);
         return Promise.reject();
       }
       else {

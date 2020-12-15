@@ -68,7 +68,15 @@ const combinedReducers = combineReducers({
 
 const rootReducer = (state, action) => {
   if (action.type === REDUX.CLEAR_STORE) {
-    state = undefined;
+    state = {
+      home: undefined,
+      notebook: undefined,
+      map: undefined,
+      project: undefined,
+      offlineMap: state.offlineMap,
+      spot: undefined,
+      user: undefined,
+    };
   }
   return combinedReducers(state, action);
 };

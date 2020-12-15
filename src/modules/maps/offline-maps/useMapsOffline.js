@@ -37,6 +37,14 @@ const useMapsOffline = () => {
 
   }, [isOnline]);
 
+  const getMapName = (map) => {
+    if (map.id === 'mapbox.outdoors' || map.id === 'mapbox.satellite' || map.id === 'osm'
+      || map.id === 'macrostrat' || map.source === 'map_warper') {
+      return map.name;
+    }
+    else return;
+  };
+
   const checkTileZipFileExistance = async (layerSaveId) => {
     try {
       let fileExists = await RNFS.exists(tileZipsDirectory + '/' + zipUID + '.zip');
@@ -235,12 +243,17 @@ const useMapsOffline = () => {
   };
 
   const setOfflineMapTiles = async (map) => {
-    let tempCurrentBasemap;
+    let tempCurrentBasemap, tilePath;
     console.log('viewOfflineMap: ', map);
+    const url = 'file://' + tileCacheDirectory + '/';
 
     // let tileJSON = 'file://' + tileCacheDirectory + '/' + map.id + '/tiles/{z}_{x}_{y}.png';
-    const url = 'file://' + tileCacheDirectory + '/';
-    const tilePath = '/tiles/{z}_{x}_{y}.png';
+    if (map.source === 'map_warper') {
+       tilePath = 'tiles/{z}_{x}_{y}.png';
+    }
+    else {
+       tilePath = '/tiles/{z}_{x}_{y}.png';
+    }
 
     tempCurrentBasemap = {...map, url: [url], tilePath: tilePath};
     console.log('tempCurrentBasemap: ', tempCurrentBasemap);
@@ -270,6 +283,7 @@ const useMapsOffline = () => {
   };
 
   return {
+    getMapName: getMapName,
     checkTileZipFileExistance: checkTileZipFileExistance,
     checkIfTileZipFolderExists: checkIfTileZipFolderExists,
     getMapTiles: getMapTiles,

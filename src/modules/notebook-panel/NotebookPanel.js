@@ -17,6 +17,7 @@ import MeasurementDetailPage from '../measurements/MeasurementDetail';
 import MeasurementsPage from '../measurements/Measurements';
 import Nesting from '../nesting/Nesting';
 import NotesPage from '../notes/Notes';
+import PetrologyPage from '../petrology/PetrologyPage';
 import SampleDetailPage from '../samples/SampleDetail';
 import SamplesPage from '../samples/SamplesNotebook';
 import {useSpotsHook} from '../spots';
@@ -36,7 +37,6 @@ const NotebookPanel = props => {
   const pageVisible = useSelector(state => state.notebook.visibleNotebookPagesStack.slice(-1)[0]);
   const recentlyViewedSpotIds = useSelector(state => state.spot.recentViews);
   const spot = useSelector(state => state.spot.selectedSpot);
-  const isAllSpotsPanelVisible = useSelector(state => state.home.isAllSpotsPanelVisible);
   const spots = useSelector(state => state.spot.spots);
 
   const notebookPageVisible = page => {
@@ -53,7 +53,7 @@ const NotebookPanel = props => {
     console.log('Selected Spot:', spot);
     return (
       <Animated.View
-        style={isAllSpotsPanelVisible ? [notebookStyles.panel, {right: 125}] : notebookStyles.panel}
+        style={notebookStyles.panel}
       >
         <View
           style={notebookStyles.headerContainer}>
@@ -83,7 +83,7 @@ const NotebookPanel = props => {
 
           {/*Secondary Notebook Pages*/}
           {pageVisible === SECONDARY_NOTEBOOK_PAGES.THREE_D_STRUCTURES && <PlaceholderPage/>}
-          {pageVisible === SECONDARY_NOTEBOOK_PAGES.IG_MET && <PlaceholderPage/>}
+          {pageVisible === SECONDARY_NOTEBOOK_PAGES.IG_MET && <PetrologyPage/>}
           {pageVisible === SECONDARY_NOTEBOOK_PAGES.FABRICS && <PlaceholderPage/>}
           {pageVisible === SECONDARY_NOTEBOOK_PAGES.OTHER_FEATURES && <PlaceholderPage/>}
           {pageVisible === SECONDARY_NOTEBOOK_PAGES.RELATIONSHIPS && <PlaceholderPage/>}

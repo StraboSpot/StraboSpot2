@@ -42,6 +42,7 @@ const UploadBackAndExport = (props) => {
       dispatch(setLoadingStatus({view: 'modal', bool: true}));
       dispatch(setStatusMessagesModalVisible(true));
       await useExport.initializeBackup(exportFileName);
+      props.closeMainMenuPanel();
       console.log(`File ${exportFileName} has been backed up`);
       dispatch(addedStatusMessage({statusMessage: '---------------'}));
       await dispatch(addedStatusMessage({statusMessage: 'Project Backup Complete!'}));
@@ -187,12 +188,14 @@ const UploadBackAndExport = (props) => {
     try {
       await useUpload.uploadProject();
       await useUpload.uploadDatasets();
+      props.closeMainMenuPanel();
       dispatch(addedStatusMessage({statusMessage: 'Upload Complete!'}));
       console.log('Upload Complete');
     }
     catch (err) {
       dispatch(addedStatusMessage({statusMessage: '----------'}));
       dispatch(addedStatusMessage({statusMessage: 'Upload Failed!'}));
+      props.closeMainMenuPanel();
       console.error('Upload Failed!');
     }
     dispatch(setLoadingStatus({view: 'modal', bool: false}));

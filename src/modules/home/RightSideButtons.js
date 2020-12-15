@@ -13,7 +13,6 @@ const RightSideButtons = (props) => {
   const offline = require('../../assets/icons/ConnectionStatusButton_offline.png');
 
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
-  const isAllSpotsPanelVisible = useSelector(state => state.home.isAllSpotsPanelVisible);
   const isNotebookPanelVisible = useSelector(state => state.notebook.isNotebookPanelVisible);
   const modalVisible = useSelector(state => state.home.modalVisible);
   const shortcutSwitchPosition = useSelector(state => state.home.shortcutSwitchPosition);
@@ -22,9 +21,7 @@ const RightSideButtons = (props) => {
   return (
     <React.Fragment>
       <Animated.View
-        style={isAllSpotsPanelVisible
-          ? [homeStyles.notebookButton, props.rightsideIconAnimation, {right: 125}]
-          : [homeStyles.notebookButton, props.rightsideIconAnimation]}>
+        style={[homeStyles.notebookButton, props.rightsideIconAnimation]}>
         <IconButton
           source={isNotebookPanelVisible
             ? require('../../assets/icons/NotebookViewButton_pressed.png')
@@ -37,9 +34,7 @@ const RightSideButtons = (props) => {
       </Animated.View>
       {!currentImageBasemap && (
         <Animated.View
-          style={isAllSpotsPanelVisible
-            ? [homeStyles.shortcutButtons, props.rightsideIconAnimation, {right: 125}]
-            : [homeStyles.shortcutButtons, props.rightsideIconAnimation]}>
+          style={[homeStyles.shortcutButtons, props.rightsideIconAnimation]}>
           {shortcutSwitchPosition.Tag && (
             <IconButton
               source={modalVisible === MODALS.SHORTCUT_MODALS.TAGS
@@ -89,9 +84,7 @@ const RightSideButtons = (props) => {
       )}
       {props.drawButtonsVisible && (
         <Animated.View
-          style={isAllSpotsPanelVisible
-            ? [homeStyles.drawToolsContainer, props.rightsideIconAnimation, {right: 125}]
-            : [homeStyles.drawToolsContainer, props.rightsideIconAnimation]}>
+          style={[homeStyles.drawToolsContainer, props.rightsideIconAnimation]}>
           <IconButton
             style={{top: 5}}
             source={props.mapMode === MAP_MODES.DRAW.POINT

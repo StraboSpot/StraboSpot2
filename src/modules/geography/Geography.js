@@ -18,10 +18,12 @@ import {addedSpot} from '../spots/spots.slice';
 const Geography = (props) => {
   const [useForm] = useFormHook();
   const [useMaps] = useMapsHooks();
+
   const dispatch = useDispatch();
-  const form = useRef(null);
-  const geomForm = useRef(null)
   const spot = useSelector(state => state.spot.selectedSpot);
+
+  const form = useRef(null);
+  const geomForm = useRef(null);
 
   const cancelFormAndGo = () => {
     dispatch(setNotebookPageVisibleToPrev());
@@ -146,7 +148,7 @@ const Geography = (props) => {
         {!isEmpty(initialGeomValues.latitude) && !isEmpty(initialGeomValues.longitude)
           ? (
             <View style={{flex: 1, flexDirection: 'row', ...commonStyles.rowContainer}}>
-              <View style={{flex: 1, flexDirection: 'row', ...commonStyles.rowContainer}}>
+              <View style={{flex: 1, flexDirection: 'row', overflow: 'hidden', ...commonStyles.rowContainer}}>
                 <Field
                   component={NumberInputField}
                   name={'longitude'}
@@ -242,8 +244,8 @@ const Geography = (props) => {
     try {
       await geomForm.current.submitForm();
       await form.current.submitForm();
-      if (useForm.hasErrors(geomForm) || useForm.hasErrors(form)) {
-        useForm.showErrorsTwoForms(geomForm, form);
+      if (useForm.hasErrors(geomForm.current) || useForm.hasErrors(form.current)) {
+        useForm.showErrorsTwoForms(geomForm.current, form.current);
         return Promise.reject();
       }
       else {

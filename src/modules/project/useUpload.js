@@ -1,8 +1,8 @@
 import {Platform} from 'react-native';
 
+import RNFS from 'react-native-fs';
 import ImageResizer from 'react-native-image-resizer';
 import {useDispatch, useSelector} from 'react-redux';
-import RNFetchBlob from 'rn-fetch-blob';
 
 import useServerRequestsHook from '../../services/useServerRequests';
 import {isEmpty} from '../../shared/Helpers';
@@ -11,12 +11,8 @@ import useImagesHook from '../images/useImages';
 import useProjectHook from '../project/useProject';
 import useSpotsHook from '../spots/useSpots';
 
-
-const RNFS = require('react-native-fs');
-
 const useUpload = () => {
-  const dirs = RNFetchBlob.fs.dirs;
-  const devicePath = Platform.OS === 'ios' ? dirs.DocumentDir : dirs.SDCardDir; // ios : android
+  const devicePath = RNFS.DocumentDirectoryPath;
   const appDirectory = '/StraboSpot';
   const tempImagesDownsizedDirectory = devicePath + appDirectory + '/TempImages';
 
@@ -304,13 +300,12 @@ const useUpload = () => {
     const deleteTempImagesFolder = async () => {
       try {
         let dirExists = await RNFS.exists(tempImagesDownsizedDirectory);
-        if (dirExists) await RNFetchBlob.fs.unlink(tempImagesDownsizedDirectory);
+        if (dirExists) await RNFS.unlink(tempImagesDownsizedDirectory);
       }
       catch {
         console.error(datasetName + ': Error Deleting Temp Images Folder.');
       }
     };
-
     if (spots.length > 0) await makeNextSpotRequest(spots[0]);
     if (imagesToUpload.length > 0) await startUploadingImage(imagesToUpload[0]);
     await deleteTempImagesFolder();

@@ -37,7 +37,7 @@ const MyStraboSpot = props => {
       case 'none':
         return (
           <View style={{padding: 10}}>
-            <UserProfile openMainMenu={props.openHomePanel}/>
+            <UserProfile logout={props.logout}/>
             <Spacer/>
             <ProjectTypesButtons
               onLoadProjectsFromServer={() => setShowSection('serverProjects')}
@@ -49,14 +49,13 @@ const MyStraboSpot = props => {
         return (
           <View>
             <View style={{height: 600}}>
-              <UserProfile openMainMenu={props.openHomePanel}/>
               <Divider sectionText={'Server Project List'}/>
               <Button title={'Back'} type={'clear'} onPress={() => setShowSection('none')}/>
               <ProjectList source={'server'}/>
             </View>
             <View style={{paddingTop: 40}}>
               <Divider sectionText={'Active project'}/>
-              <ActiveProjectList openSidePanel={props.openSidePanel}/>
+              <ActiveProjectList/>
             </View>
           </View>
         );
@@ -64,14 +63,13 @@ const MyStraboSpot = props => {
         return (
           <View>
             <View style={{height: 600}}>
-              <UserProfile openMainMenu={props.openHomePanel}/>
               <Divider sectionText={'Device Project List'}/>
               <Button title={'Back'} type={'clear'} onPress={() => setShowSection('none')}/>
               <ProjectList source={'device'}/>
             </View>
             <View style={{paddingTop: 40}}>
               <Divider sectionText={'Active project'}/>
-              <ActiveProjectList openSidePanel={props.openSidePanel}/>
+              <ActiveProjectList/>
             </View>
           </View>
         );
@@ -79,7 +77,7 @@ const MyStraboSpot = props => {
         return (
           <View style={{height: 600}}>
             <Button title={'Back'} type={'clear'} onPress={() => setShowSection('none')}/>
-            <NewProjectForm closeHomePanel={props.closeHomePanel}/>
+            <NewProjectForm/>
           </View>
         );
     }

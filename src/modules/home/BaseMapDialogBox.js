@@ -9,7 +9,8 @@ import {useSelector} from 'react-redux';
 import {isEmpty} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
 import SectionDivider from '../../shared/ui/SectionDivider';
-import {BASEMAPS} from '../maps/maps.constants';
+import {BASEMAPS, CUSTOMBASEMAPS} from '../maps/maps.constants';
+import useMapsOfflineHook from '../maps/offline-maps/useMapsOffline';
 import useMapsHook from '../maps/useMaps';
 import styles from './dialog.styles';
 
@@ -20,10 +21,12 @@ const slideAnimation = new ScaleAnimation({
 const BaseMapDialog = props => {
 
   const [useMaps] = useMapsHook();
+  const useMapsOffline = useMapsOfflineHook();
+
   const customMaps = useSelector(state => state.map.customMaps);
   const currentBasemap = useSelector(state => state.map.currentBasemap);
   const isOnline = useSelector(state => state.home.isOnline);
-  const offlineMap = useSelector(state => state.offlineMap.offlineMaps);
+  const offlineMaps = useSelector(state => state.offlineMap.offlineMaps);
   const customMapsArr = Object.values(customMaps);
 
   return (
@@ -63,24 +66,44 @@ const BaseMapDialog = props => {
         {!isOnline && (
           <View style={!isEmpty(customMaps) && {borderBottomWidth: 1}}>
             <SectionDivider dividerText={'Offline Default Basemaps'}/>
-            {Object.values(offlineMap).map((map, i) => {
-              if (map.id === 'mapbox.outdoors' || map.id === 'mapbox.satellite' || map.id === 'osm'
-                || map.id === 'macrostrat') {
+            {Object.values(offlineMaps).map((map, i) => {
+              if (map.source === 'strabo_spot_mapbox') {
                 return (
                   <ListItem
                     key={map.id}
                     containerStyle={styles.dialogContent}
                     bottomDivider={i < BASEMAPS.length - 2}
-                    onPress={() => props.onPress(map.id)}>
+                    onPress={() => useMapsOffline.setOfflineMapTiles(map)}>
                     <ListItem.Content>
-                      <ListItem.Title style={styles.dialogText}>{map.name}</ListItem.Title>
+                      <ListItem.Title style={styles.dialogText}>{useMapsOffline.getMapName(map)}</ListItem.Title>
                     </ListItem.Content>
                     {currentBasemap && map.id === currentBasemap.id
                     && <Icon type={'ionicon'} color={themes.BLUE} name={'checkmark-outline'}/>}
                   </ListItem>
                 );
               }
-              else return null;
+            })}
+          </View>
+        )}
+        {!isOnline && !isEmpty(customMaps)&& (
+          <View>
+            <SectionDivider dividerText={'Offline Custom Basemaps'}/>
+            {Object.values(offlineMaps).map((map, i) => {
+              if (map.source === 'map_warper' || map.source === 'strabospot_mymaps') {
+                return (
+                  <ListItem
+                    key={map.id}
+                    bottomDivider={i < CUSTOMBASEMAPS.length - 2}
+                    onPress={() => useMapsOffline.setOfflineMapTiles(map)}
+                  >
+                    <ListItem.Content>
+                      <ListItem.Title style={styles.dialogText}>{useMapsOffline.getMapName(map)}</ListItem.Title>
+                    </ListItem.Content>
+                    {currentBasemap && map.id === currentBasemap.id
+                    && <Icon type={'ionicon'} color={themes.BLUE} name={'checkmark-outline'}/>}
+                  </ListItem>
+                );
+              }
             })}
           </View>
         )}
@@ -105,8 +128,8 @@ const BaseMapDialog = props => {
                           <ListItem.Title style={styles.customBaseMapListText}>{customMap.title}</ListItem.Title>
                         </View>
                       </ListItem.Content>
-                      {isOnline && customMap.id === currentBasemap.id &&
-                      <Icon type={'ionicon'} color={themes.BLUE} name={'checkmark-outline'}/>}
+                      {isOnline && currentBasemap && customMap.id === currentBasemap.id
+                      && <Icon type={'ionicon'} color={themes.BLUE} name={'checkmark-outline'}/>}
                     </ListItem>
                   )
                 );

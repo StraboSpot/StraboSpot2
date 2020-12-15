@@ -42,7 +42,7 @@ const ImagePropertiesModal = (props) => {
   const saveFormAndGo = async () => {
     if (form.current !== null) {
       await form.current.submitForm();
-      if (useForm.hasErrors(form)) useForm.showErrors(form);
+      if (useForm.hasErrors(form.current)) useForm.showErrors(form.current);
       else {
         const images = JSON.parse(JSON.stringify(spot.properties.images));
         console.log('Saving form data to Spot ...', form.current.values);

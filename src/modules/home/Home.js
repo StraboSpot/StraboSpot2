@@ -9,6 +9,7 @@ import {FlatListSlider} from 'react-native-flatlist-slider';
 import {DotIndicator} from 'react-native-indicators';
 import {useDispatch, useSelector} from 'react-redux';
 
+import useDeviceHook from '../../services/useDevice';
 import sharedDialogStyles from '../../shared/common.styles';
 import {animatePanels, isEmpty} from '../../shared/Helpers';
 import LoadingSpinner from '../../shared/ui/Loading';
@@ -31,7 +32,6 @@ import useMapsHook from '../maps/useMaps';
 import VertexDrag from '../maps/VertexDrag';
 import NotebookCompassModal from '../measurements/compass/NotebookCompassModal';
 import ShortcutCompassModal from '../measurements/compass/ShortcutCompassModal';
-import AllSpotsPanel from '../notebook-panel/AllSpots';
 import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
 import {setNotebookPageVisible, setNotebookPanelVisible} from '../notebook-panel/notebook.slice';
 import NotebookPanel from '../notebook-panel/NotebookPanel';
@@ -54,7 +54,6 @@ import {
 } from '../tags';
 import {MODALS} from './home.constants';
 import {
-  setAllSpotsPanelVisible,
   setErrorMessagesModalVisible,
   setImageModalVisible,
   setInfoMessagesModalVisible,
@@ -69,7 +68,6 @@ import {
 import homeStyles from './home.style';
 import LeftSideButtons from './LeftSideButtons';
 import RightSideButtons from './RightSideButtons';
-import useDeviceHook from '../../services/useDevice';
 import useHomeHook from './useHome';
 
 const Home = () => {
@@ -94,7 +92,6 @@ const Home = () => {
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const currentProject = useSelector(state => state.project.project);
   const customMaps = useSelector(state => state.map.customMaps);
-  const isAllSpotsPanelVisible = useSelector(state => state.home.isAllSpotsPanelVisible);
   const isErrorMessagesModalVisible = useSelector(state => state.home.isErrorMessagesModalVisible);
   const isHomeLoading = useSelector(state => state.home.loading.home);
   const isImageModalVisible = useSelector(state => state.home.isImageModalVisible);
@@ -158,29 +155,18 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    if (user.email && user.email) {
+    if (user.email && user.name) {
       Sentry.configureScope((scope) => {
         scope.setUser({'email': user.email, username: user.name});
       });
     }
+    useDevice.doesDeviceBackupDirExist().catch(err => console.log('Error checking if backup dir exists!'));
     console.log('Initializing Home page');
   }, [user]);
 
   useEffect(() => {
-    if (isOnline && currentBasemap) {
-      // Alert.alert('Online Basemap', `${JSON.stringify(currentBasemap.id)}`);
-      useMaps.setBasemap(currentBasemap.id).catch(error => console.log('Error Setting Basemap', error));
-    }
-    else if (!isOnline && isOnline !== null) {
-      useOfflineMaps.viewOfflineMap().catch(error => console.log('Error Setting Offline Basemap', error));
-    }
-  }, [isOnline]);
-
-  useEffect(() => {
     dispatch(setProjectLoadSelectionModalVisible(isEmpty(currentProject)));
-    animatePanels(MainMenuPanelAnimation, -homeMenuPanelWidth);
-    animatePanels(leftsideIconAnimationValue, 0);
-  }, [currentProject]);
+  }, [currentProject, user]);
 
   useEffect(() => {
     if (currentImageBasemap && isMainMenuPanelVisible) toggleHomeDrawerButton();
@@ -305,10 +291,6 @@ const Home = () => {
       case 'deleteSpot':
         deleteSpot(selectedSpot.properties.id);
         break;
-      case 'toggleAllSpotsPanel':
-        if (value === 'open') dispatch(setAllSpotsPanelVisible(true));
-        else if (value === 'close') dispatch(setAllSpotsPanelVisible(false));
-        break;
       case 'zoomToSpot':
         mapViewComponent.current.zoomToSpot();
         break;
@@ -372,7 +354,6 @@ const Home = () => {
     animatePanels(animation, notebookPanelWidth);
     animatePanels(rightsideIconAnimationValue, 0);
     dispatch(setNotebookPanelVisible(false));
-    dispatch(setAllSpotsPanelVisible(false));
   };
 
   const deleteSpot = id => {
@@ -473,14 +454,6 @@ const Home = () => {
     animatePanels(animation, 0);
     animatePanels(rightsideIconAnimationValue, -notebookPanelWidth);
     dispatch(setNotebookPanelVisible(true));
-  };
-
-  const renderAllSpotsPanel = () => {
-    return (
-      <View style={[notebookStyles.allSpotsPanel]}>
-        <AllSpotsPanel/>
-      </View>
-    );
   };
 
   const renderFloatingViews = () => {
@@ -792,6 +765,11 @@ const Home = () => {
     return renderSidePanelView();
   };
 
+  const onLogout = () => {
+    toggleHomeDrawerButton();
+    closeNotebookPanel();
+  };
+
   const animateNotebookMenu = {transform: [{translateX: animation}]};
   const animateSettingsPanel = {transform: [{translateX: MainMenuPanelAnimation}]};
   const animateMainMenuSidePanel = {transform: [{translateX: mainMenuSidePanelAnimation}]};
@@ -803,9 +781,8 @@ const Home = () => {
   const MainMenu = (
     <Animated.View style={[settingPanelStyles.settingsDrawer, animateSettingsPanel]}>
       <MainMenuPanel
-        // openSidePanel={(view, data) => openSidePanel(view, data)}
-        openHomePanel={() => dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.UPLOAD_BACKUP_EXPORT}))}
-        closeHomePanel={() => toggleHomeDrawerButton()}
+        logout={() => onLogout()}
+        closeMainMenuPanel={() => toggleHomeDrawerButton()}
         openNotebookPanel={(pageView) => openNotebookPanel(pageView)}/>
     </Animated.View>
   );
@@ -885,7 +862,6 @@ const Home = () => {
       )}
       {isHomeLoading && <LoadingSpinner/>}
       {notebookPanel}
-      {isAllSpotsPanelVisible && renderAllSpotsPanel()}
       {MainMenu}
       {renderSaveAndCancelDrawButtons()}
       {isMainMenuPanelVisible && toggleSidePanel()}

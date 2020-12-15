@@ -46,14 +46,17 @@ const DEFAULT_MAPS = [
 export const CUSTOM_MAP_TYPES = [
   {
     title: 'Mapbox Styles',
+    id: 'mapbox.styles',
     source: 'mapbox_styles',
   },
   {
     title: 'Map Warper',
+    id: 'map.warper',
     source: 'map_warper',
   },
   {
     title: 'Strabospot My Maps',
+    id: 'strabospot.mymaps',
     source: 'strabospot_mymaps',
   },
 ];
@@ -121,7 +124,12 @@ export const BASEMAPS = DEFAULT_MAPS.map(map => {
   if (map.source === 'strabo_spot_mapbox') map.key = MAPBOX_KEY;
   return {...map, ...MAP_PROVIDERS[map.source]};
 });
-console.log(BASEMAPS);
+console.log('BASEMAPS', BASEMAPS);
+
+export const CUSTOMBASEMAPS = CUSTOM_MAP_TYPES.map(map => {
+  return {...map, ...MAP_PROVIDERS[map.source]};
+});
+console.log('CUSTOMBASEMAPS', BASEMAPS);
 
 export const MAP_SYMBOLS = {
   'default_point': require('../../assets/symbols/point.png'),

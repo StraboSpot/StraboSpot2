@@ -1,23 +1,21 @@
 import React, {useEffect, useState} from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 
 import {Picker} from '@react-native-community/picker';
 import {Button, Header} from 'react-native-elements';
+import RNFS from 'react-native-fs';
 import * as loading from 'react-native-indicators';
 import {Dialog, DialogContent, SlideAnimation} from 'react-native-popup-dialog';
 import ProgressBar from 'react-native-progress/Bar';
 import {unzip} from 'react-native-zip-archive'; /*TODO  react-native-zip-archive@3.0.1 requires a peer of react@^15.4.2 || <= 16.3.1 but none is installed */
 import {useDispatch, useSelector} from 'react-redux';
-import RNFetchBlob from 'rn-fetch-blob';
 
 import useDeviceHook from '../../../services/useDevice';
 import {toNumberFixedValue} from '../../../shared/Helpers';
 import * as themes from '../../../shared/styles.constants';
-import {setOfflineMap} from '../offline-maps/offlineMaps.slice';
-import useMapsOfflineHook from '../offline-maps/useMapsOffline';
+import useMapsOfflineHook from './useMapsOffline';
 import useMapsHook from '../useMaps';
-
-const RNFS = require('react-native-fs');
+import {setOfflineMap} from './offlineMaps.slice';
 
 const SaveMapsModal = (props) => {
   // console.log(props);
@@ -25,9 +23,8 @@ const SaveMapsModal = (props) => {
   const useDevice = useDeviceHook();
   const useMapsOffline = useMapsOfflineHook();
 
-  const tilehost = 'http://tiles.strabospot.org'; //Delete after move to hook
-  let dirs = RNFetchBlob.fs.dirs;
-  let devicePath = Platform.OS === 'ios' ? dirs.DocumentDir : dirs.SDCardDir; // ios : android
+  const tilehost = 'http://tiles.strabospot.org';
+  const devicePath = RNFS.DocumentDirectoryPath;
   let tilesDirectory = '/StraboSpotTiles';
   let tileZipsDirectory = devicePath + tilesDirectory + '/TileZips';
   let tileCacheDirectory = devicePath + tilesDirectory + '/TileCache';
@@ -278,33 +275,27 @@ const SaveMapsModal = (props) => {
       await RNFS.mkdir(tileCacheDirectory + '/' + currentbasemapId + '/tiles');
     }
 
-    //now move files to correct location
-    //MainBundlePath // On Android, use "RNFS.DocumentDirectoryPath" (MainBundlePath is not defined)
-    if (Platform.OS === 'ios') result = await RNFS.readDir(tileTempDirectory + '/' + zipUID + '/tiles');
-    else result = await RNFS.DocumentDirectoryPath(tileTempDirectory + '/' + zipUID + '/tiles');
-
+    // Move files to correct location
+    result = await RNFS.readDir(tileTempDirectory + '/' + zipUID + '/tiles');
     console.log(result);
-
     await tileMove(result, zipUID);
     let tileCount = await RNFS.readDir(tileCacheDirectory + '/' + currentbasemapId + '/tiles');
     tileCount = tileCount.length;
 
     let currentOfflineMaps = Object.values(offlineMaps);
 
-    //now check for existence of AsyncStorage offlineMapsData and store new count
-    if (!currentOfflineMaps) {
-      currentOfflineMaps = [];
-    }
+    // Check for existence of AsyncStorage offlineMapsData and store new count
+    if (!currentOfflineMaps) currentOfflineMaps = [];
 
     const customMap = Object.values(customMaps).filter(map => currentbasemapId === map.id);
     console.log(customMap);
     if (source === 'strabo_spot_mapbox' || source === 'osm' || source === 'macrostrat') mapName = currentMapName;
     else mapName = customMap[0].title;
 
-
     let newOfflineMapsData = [];
     let thisMap = {};
     thisMap.id = currentbasemapId;
+    thisMap.source = source;
     thisMap.name = mapName;
     thisMap.count = tileCount;
     // thisMap.mapId = new Date().valueOf();
@@ -428,20 +419,23 @@ const SaveMapsModal = (props) => {
               )}
             </View>
             <View style={{flex: 3}}>
-              {showMainMenu && <Picker
-                onValueChange={(value) => updatePicker(value)}
-                selectedValue={downloadZoom}
-                style={styles.picker}
-              >
-                {zoomLevels.map(i => {
-                  return <Picker.Item
-                    key={i}
-                    value={i}
-                    label={i.toString()}
-                  />;
-                })}
-              </Picker>
-              }
+              {showMainMenu && (
+                <Picker
+                  onValueChange={(value) => updatePicker(value)}
+                  selectedValue={downloadZoom}
+                  style={styles.picker}
+                >
+                  {zoomLevels.map(i => {
+                    return (
+                      <Picker.Item
+                        key={i}
+                        value={i}
+                        label={i.toString()}
+                      />
+                    );
+                  })}
+                </Picker>
+              )}
               {showLoadingBar && (
                 <View style={{height: 40, justifyContent: 'center', flexDirection: 'row'}}>
                   {isLoadingWave
@@ -453,7 +447,7 @@ const SaveMapsModal = (props) => {
                       <View>
                         <ProgressBar progress={percentDone} width={200}/>
                         <Text style={{textAlign: 'right', paddingTop: 5}}>
-                          {toNumberFixedValue(percentDone, 1)}
+                          {toNumberFixedValue(percentDone, 0)}
                         </Text>
                       </View>
                     )

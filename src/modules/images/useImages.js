@@ -1,9 +1,9 @@
 import {Alert, Image, Platform} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
+import RNFS from 'react-native-fs';
 import ImagePicker from 'react-native-image-picker';
 import {useDispatch, useSelector} from 'react-redux';
-import RNFetchBlob from 'rn-fetch-blob';
 
 import {getNewId} from '../../shared/Helpers';
 import {addedStatusMessage, removedLastStatusMessage} from '../home/home.slice';
@@ -17,11 +17,8 @@ import {
   setSelectedSpot,
 } from '../spots/spots.slice';
 
-const RNFS = require('react-native-fs');
-
 const useImages = () => {
-  const dirs = RNFetchBlob.fs.dirs;
-  const devicePath = Platform.OS === 'ios' ? dirs.DocumentDir : dirs.SDCardDir; // ios : android
+  const devicePath = RNFS.DocumentDirectoryPath;
   const appDirectory = '/StraboSpot';
   const imagesDirectory = devicePath + appDirectory + '/Images';
   // const testUrl = 'https://strabospot.org/testimages/images.json';

@@ -18,9 +18,9 @@ const ActiveDatasetsList = () => {
 
   const renderActiveDatasets = (datasetId, index) => {
     // const getSelectedDataset = datasets[selectedDatasetId];
-    const datasetObj = datasets[datasetId]
-    console.log(datasetObj);
-    const checked = selectedDatasetId === datasetId
+    const datasetObj = datasets[datasetId];
+    // console.log(datasetObj);
+    const checked = selectedDatasetId === datasetId;
     return (
       <View>
         {!isEmpty(datasetObj) && (

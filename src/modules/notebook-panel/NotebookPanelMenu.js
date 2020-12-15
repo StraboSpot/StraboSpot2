@@ -1,15 +1,11 @@
 import React from 'react';
 
 import Dialog, {DialogButton, DialogContent, DialogTitle} from 'react-native-popup-dialog';
-import {useSelector} from 'react-redux';
 
 import {NOTEBOOK_MENU_BUTTONS} from './notebook.constants';
 import styles from './notebookPanel.styles';
 
 const NotebookPanelMenu = (props) => {
-  const isAllSpotsPanelVisible = useSelector(state => state.home.isAllSpotsPanelVisible);
-  const selectedSpot = useSelector(state => state.spot.selectedSpot);
-
   return (
     <Dialog
       dialogStyle={styles.dialogBox}
@@ -40,24 +36,6 @@ const NotebookPanelMenu = (props) => {
           textStyle={styles.dialogText}
           onPress={() => props.onPress(NOTEBOOK_MENU_BUTTONS.DELETE_SPOT)}
         />
-        {isAllSpotsPanelVisible
-          ? (
-            <DialogButton
-              style={styles.dialogContent}
-              text='Close All Spots Panel'
-              textStyle={styles.dialogText}
-              onPress={() => props.onPress(NOTEBOOK_MENU_BUTTONS.TOGGLE_ALL_SPOTS_PANEL, 'close')}
-            />
-          )
-          : (
-            <DialogButton
-              style={styles.dialogContent}
-              text='Open All Spots Panel'
-              textStyle={styles.dialogText}
-              onPress={() => props.onPress(NOTEBOOK_MENU_BUTTONS.TOGGLE_ALL_SPOTS_PANEL, 'open')}
-            />
-          )
-        }
         <DialogButton
           style={styles.dialogContent}
           text='Show Nesting'
