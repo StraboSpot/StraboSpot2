@@ -486,8 +486,8 @@ export const MINERAL_GLOSSARY_INFO = [
     'mindat.org link': 'https://www.mindat.org/min-1740.html',
   },
   {
-    'Name': 'grossular_garnet ',
-    'Label': 'Grossular Garnet ',
+    'Name': 'grossular_garnet',
+    'Label': 'Grossular Garnet',
     'Abbreviation': 'grs',
     'Formula': 'Ca3Al2(SiO4)3',
     'Crystal System': 'Isometric',

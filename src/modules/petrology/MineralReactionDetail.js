@@ -10,6 +10,7 @@ import * as themes from '../../shared/styles.constants';
 import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import {Form, useFormHook} from '../form';
 import {editedSpotProperties} from '../spots/spots.slice';
+import {LABELS_WITH_ABBREVIATIONS, ABBREVIATIONS_WITH_LABELS} from './petrology.constants';
 
 const MineralReactionDetail = (props) => {
   const dispatch = useDispatch();
@@ -54,7 +55,6 @@ const MineralReactionDetail = (props) => {
     editedPetData[props.type] = editedPetData[props.type].filter(type => type.id !== props.selectedMineralReaction.id);
     if (isEmpty(editedPetData[props.type])) delete editedPetData[props.type];
     dispatch(editedSpotProperties({field: 'pet', value: editedPetData}));
-    //await formRef.current.resetForm();
     props.showMineralsReactionsOverview();
   };
 
@@ -75,6 +75,28 @@ const MineralReactionDetail = (props) => {
     );
   };
 
+  const getAbbrevFromFullMineralName = (name) => {
+    const keyMatch = Object.keys(LABELS_WITH_ABBREVIATIONS).find(key => key.toLowerCase() === name.toLowerCase());
+    if (keyMatch) return LABELS_WITH_ABBREVIATIONS[keyMatch].split(',')[0];
+  };
+
+  const getFullMineralNameFromAbbrev = (abbrev) => {
+    return ABBREVIATIONS_WITH_LABELS[abbrev.toLowerCase()];
+  };
+
+  const onMyChange = async (name, value) => {
+    if (name === 'mineral_abbrev') {
+      const foundFullName = getFullMineralNameFromAbbrev(value);
+      if (foundFullName) await formRef.current.setFieldValue('full_mineral_name', foundFullName);
+      await formRef.current.setFieldValue('mineral_abbrev', value);
+    }
+    else if (name === 'full_mineral_name') {
+      const foundAbbrev = getAbbrevFromFullMineralName(value);
+      if (foundAbbrev) await formRef.current.setFieldValue('mineral_abbrev', foundAbbrev);
+      await formRef.current.setFieldValue('full_mineral_name', value);
+    }
+  };
+
   const renderFormFields = () => {
     const formName = ['pet', props.type];
     console.log('Rendering form:', formName[0] + '.' + formName[1]);
@@ -86,7 +108,9 @@ const MineralReactionDetail = (props) => {
           onSubmit={() => console.log('Submitting form...')}
           onReset={() => console.log('Resetting form...')}
           validate={(values) => useForm.validateForm({formName: formName, values: values})}
-          component={(formProps) => Form({formName: formName, ...formProps})}
+          children={(formProps) => (
+            <Form {...formProps} {...{formName: formName, onMyChange: onMyChange}}/>
+          )}
           initialValues={props.selectedMineralReaction}
           validateOnChange={false}
           enableReinitialize={true}
