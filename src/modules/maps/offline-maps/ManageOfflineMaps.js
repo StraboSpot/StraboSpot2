@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Alert, Text, View, Platform} from 'react-native';
 
 import {Button, ListItem} from 'react-native-elements';
@@ -16,9 +16,12 @@ import useMapsOfflineHook from './useMapsOffline';
 const ManageOfflineMaps = (props) => {
   console.log('Props: ', props);
 
+  const [directoryExists, setDirectoryExists] = useState(false);
+  const [availableMaps, setAvailableMaps] = useState({});
+
   const devicePath = RNFS.DocumentDirectoryPath;
-  const tilesDirectory = '/StraboSpotTiles';
-  const tileCacheDirectory = devicePath + tilesDirectory + '/TileCache';
+  const tilesDirectory = devicePath + '/StraboSpotTiles';
+  const tileCacheDirectory = tilesDirectory + '/TileCache';
   const offlineMaps = useSelector(state => state.offlineMap.offlineMaps);
   const isOnline = useSelector(state => state.home.isOnline);
   const dispatch = useDispatch();
@@ -26,7 +29,9 @@ const ManageOfflineMaps = (props) => {
   const useDevice = useDeviceHook();
   const useMapsOffline = useMapsOfflineHook();
 
-  console.log('tileCacheDirectory: ', tileCacheDirectory);
+  useEffect(() => {
+    readDirectoryForMaps().catch(err => console.log(err));
+  }, [offlineMaps]);
 
   useEffect(() => {
     console.log('Is Online: ', isOnline);
@@ -45,30 +50,36 @@ const ManageOfflineMaps = (props) => {
         },
         {
           text: 'OK',
-          onPress: () => useDevice.deleteOfflineMap(map),
+          onPress: () => {
+            delete availableMaps[map.id];
+            useDevice.deleteOfflineMap(map);
+          },
         },
       ],
       {cancelable: false},
     );
   };
 
-  return (
-    <React.Fragment>
-      <Button
-        title={'Download tiles of current map'}
-        disabled={!isOnline}
-        onPress={() => dispatch(setOfflineMapsModalVisible(true))}
-        containerStyle={styles.buttonContainer}
-        buttonStyle={commonStyles.standardButton}
-        titleStyle={commonStyles.standardButtonText}
-      />
-      <Divider sectionText={'offline maps'} style={styles.divider}/>
-      <View style={styles.sectionsContainer}>
-        {!isEmpty(offlineMaps) ? (
-          Object.values(offlineMaps).map((item, i) => (
+  const readDirectoryForMaps = async () => {
+    const res = await RNFS.exists(tilesDirectory);
+    console.log('Directory exists:', res);
+    setDirectoryExists(res);
+    const files = await RNFS.readdir(tileCacheDirectory);
+    console.log(files);
+    const availableMapObj = Object.assign({}, ...files.map(file => ({[offlineMaps[file].id]: offlineMaps[file]})));
+    console.log(availableMapObj);
+    setAvailableMaps({...availableMaps, ...availableMapObj});
+  };
+
+  const renderMapsList = () => {
+    return (
+      <View style={{flex: 1}}>
+        {!isEmpty(availableMaps) && directoryExists ? (
+          Object.values(availableMaps).map((item, i) => (
+            <View style={styles.sectionsContainer}>
             <ListItem
               containerStyle={styles.list}
-              bottomDivider={i < Object.values(offlineMaps).length - 1}
+              bottomDivider={i < Object.values(availableMaps).length - 1}
               key={item.id}
             >
               <ListItem.Content>
@@ -92,13 +103,32 @@ const ManageOfflineMaps = (props) => {
                 </View>
               </ListItem.Content>
             </ListItem>
+            </View>
           ))
         ) : (
-          <View style={{alignItems: 'center', paddingTop: 20}}>
-            <Text>No Offline Maps</Text>
+          <View style={{alignItems: 'center', paddingTop: 30}}>
+            <Text>No Offline Maps:</Text>
+            <Text style={{textAlign: 'center', padding: 15}}>
+              To download a map select area and zoom level on map then select "Download tiles of current map"
+            </Text>
           </View>
         )}
       </View>
+    );
+  };
+
+  return (
+    <React.Fragment>
+      <Button
+        title={'Download tiles of current map'}
+        disabled={!isOnline}
+        onPress={() => dispatch(setOfflineMapsModalVisible(true))}
+        containerStyle={styles.buttonContainer}
+        buttonStyle={commonStyles.standardButton}
+        titleStyle={commonStyles.standardButtonText}
+      />
+      <Divider sectionText={'offline maps'} style={styles.divider}/>
+      {renderMapsList()}
     </React.Fragment>
   );
 };
