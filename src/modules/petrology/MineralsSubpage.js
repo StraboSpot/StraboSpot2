@@ -1,30 +1,36 @@
 import React, {useState} from 'react';
-import {Alert, FlatList, View, Text} from 'react-native';
+import {FlatList, View, Text} from 'react-native';
 
 import {Button, ListItem} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
-import {getNewId} from '../../shared/Helpers';
+import {getNewId, isEmpty} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
 import {LABEL_DICTIONARY} from '../form';
 import MineralDetail from './MineralDetail';
+import MineralsByRockClass from './MineralsByRockClass';
+import MineralsGlossary from './MineralsGlossary';
+import {MINERAL_VIEW} from './petrology.constants';
 
 const MineralsSubpage = (props) => {
   const spot = useSelector(state => state.spot.selectedSpot);
 
-  const [isMineralDetailVisible, setIsMineralDetailVisible] = useState(false);
   const [selectedMineral, setSelectedMineral] = useState({});
+  const [mineralView, setMineralView] = useState(MINERAL_VIEW.OVERVIEW);
 
   const petDictionary = Object.values(LABEL_DICTIONARY.pet).reduce((acc, form) => ({...acc, ...form}), {});
 
-  const addMineral = () => {
-    setSelectedMineral({id: getNewId()});
-    setIsMineralDetailVisible(true);
+  const addMineral = (mineral) => {
+    const newMineral = {id: getNewId()};
+    if (mineral && mineral.Label) newMineral.full_mineral_name = mineral.Label;
+    if (mineral && !isEmpty(mineral.Abbreviation)) newMineral.mineral_abbrev = mineral.Abbreviation.split(',')[0];
+    setSelectedMineral(newMineral);
+    setMineralView(MINERAL_VIEW.DETAIL);
   };
 
   const editMineral = (mineral) => {
     setSelectedMineral(mineral);
-    setIsMineralDetailVisible(true);
+    setMineralView(MINERAL_VIEW.DETAIL);
   };
 
   const getLabel = (key) => {
@@ -35,8 +41,12 @@ const MineralsSubpage = (props) => {
     return petDictionary[key] || key;
   };
 
+  const getMineralTitle = (mineral) => {
+    return mineral.full_mineral_name || mineral.mineral_abbrev || 'Unknown';
+  };
+
   const renderMineral = (mineral) => {
-    const mineralTitle = mineral.full_mineral_name || mineral.mineral_abbrev || 'Unknown';
+    const mineralTitle = getMineralTitle(mineral);
     const mineralFieldsText = Object.entries(mineral).reduce((acc, [key, value]) => {
       return key === 'id' ? acc : (acc === '' ? '' : acc + '\n') + getLabel(key) + ': ' + getLabel(value);
     }, '');
@@ -55,7 +65,7 @@ const MineralsSubpage = (props) => {
 
   return (
     <React.Fragment>
-      {!isMineralDetailVisible && (
+      {mineralView === MINERAL_VIEW.OVERVIEW && (
         <View>
           <Button
             title={'+ Add Mineral'}
@@ -65,12 +75,12 @@ const MineralsSubpage = (props) => {
           <Button
             title={'+ Add a Mineral By Rock Class'}
             type={'clear'}
-            onPress={() => Alert.alert('Not implemented yet.')}
+            onPress={() => setMineralView(MINERAL_VIEW.ROCK_CLASS)}
           />
           <Button
             title={'+ Add a Mineral By Glossary'}
             type={'clear'}
-            onPress={() => Alert.alert('Not implemented yet.')}
+            onPress={() => setMineralView(MINERAL_VIEW.GLOSSARY)}
           />
           {(!spot.properties.pet || !spot.properties.pet.minerals) && (
             <View style={{padding: 10}}>
@@ -79,7 +89,8 @@ const MineralsSubpage = (props) => {
           )}
           {spot.properties.pet && spot.properties.pet.minerals && (
             <FlatList
-              data={spot.properties.pet.minerals}
+              data={spot.properties.pet.minerals.slice().sort(
+                (a, b) => getMineralTitle(a).localeCompare(getMineralTitle(b)))}
               renderItem={item => renderMineral(item.item)}
               keyExtractor={(item) => item.id.toString()}
               ItemSeparatorComponent={() => <View style={{borderTopWidth: 1}}/>}
@@ -87,10 +98,20 @@ const MineralsSubpage = (props) => {
           )}
         </View>
       )}
-      {isMineralDetailVisible && (
+      {mineralView === MINERAL_VIEW.DETAIL && (
         <MineralDetail
-          hideMineralDetail={() => setIsMineralDetailVisible(false)}
+          showMineralsOverview={() => setMineralView(MINERAL_VIEW.OVERVIEW)}
           selectedMineral={selectedMineral}
+        />)}
+      {mineralView === MINERAL_VIEW.ROCK_CLASS && (
+        <MineralsByRockClass
+          showMineralsOverview={() => setMineralView(MINERAL_VIEW.OVERVIEW)}
+          addMineral={(mineral) => addMineral(mineral)}
+        />)}
+      {mineralView === MINERAL_VIEW.GLOSSARY && (
+        <MineralsGlossary
+          showMineralsOverview={() => setMineralView(MINERAL_VIEW.OVERVIEW)}
+          addMineral={(mineral) => addMineral(mineral)}
         />)}
     </React.Fragment>
   );
