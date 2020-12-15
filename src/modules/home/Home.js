@@ -160,12 +160,13 @@ const Home = () => {
         scope.setUser({'email': user.email, username: user.name});
       });
     }
+    useDevice.doesDeviceBackupDirExist().catch(err => console.log('Error checking if backup dir exists!'));
     console.log('Initializing Home page');
   }, [user]);
 
   useEffect(() => {
     dispatch(setProjectLoadSelectionModalVisible(isEmpty(currentProject)));
-  }, [currentProject]);
+  }, [currentProject, user]);
 
   useEffect(() => {
     if (currentImageBasemap && isMainMenuPanelVisible) toggleHomeDrawerButton();
@@ -764,6 +765,11 @@ const Home = () => {
     return renderSidePanelView();
   };
 
+  const onLogout = () => {
+    toggleHomeDrawerButton();
+    closeNotebookPanel();
+  };
+
   const animateNotebookMenu = {transform: [{translateX: animation}]};
   const animateSettingsPanel = {transform: [{translateX: MainMenuPanelAnimation}]};
   const animateMainMenuSidePanel = {transform: [{translateX: mainMenuSidePanelAnimation}]};
@@ -775,6 +781,7 @@ const Home = () => {
   const MainMenu = (
     <Animated.View style={[settingPanelStyles.settingsDrawer, animateSettingsPanel]}>
       <MainMenuPanel
+        logout={() => onLogout()}
         closeMainMenuPanel={() => toggleHomeDrawerButton()}
         openNotebookPanel={(pageView) => openNotebookPanel(pageView)}/>
     </Animated.View>

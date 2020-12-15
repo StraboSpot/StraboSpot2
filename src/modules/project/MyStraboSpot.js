@@ -37,7 +37,7 @@ const MyStraboSpot = props => {
       case 'none':
         return (
           <View style={{padding: 10}}>
-            <UserProfile closeMainMenuPanel={props.closeMainMenuPanel}/>
+            <UserProfile logout={props.logout}/>
             <Spacer/>
             <ProjectTypesButtons
               onLoadProjectsFromServer={() => setShowSection('serverProjects')}

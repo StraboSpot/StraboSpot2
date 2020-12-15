@@ -68,7 +68,7 @@ const MainMenuPanel = props => {
         <View style={styles.mainMenuContainer}>
           <MyStraboSpot
             openSidePanel={props.openSidePanel}
-            closeMainMenuPanel={props.closeMainMenuPanel}
+            logout={props.logout}
           />
         </View>
       );

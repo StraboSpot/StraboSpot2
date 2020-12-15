@@ -29,7 +29,7 @@ const UserProfile = (props) => {
   const doLogOut = () => {
     setIsLogoutModalVisible(false);
     setTimeout(() => {          // Added timeOut cause state of modal wasn't changing fast enough
-      props.closeMainMenuPanel();
+      props.logout();
       dispatch({type: REDUX.CLEAR_STORE});
       navigation.navigate('SignIn');
     }, 200);
