@@ -80,7 +80,9 @@ const ReactionsSubpage = (props) => {
             <ListItem>
               <ListItem.Content>
                 <ListItem.Title>Existing Minerals:</ListItem.Title>
-                <ListItem.Subtitle>{getExistingMineralsText()}</ListItem.Subtitle>
+                <ListItem.Subtitle style={{color: themes.PRIMARY_ITEM_TEXT_COLOR}}>
+                  {getExistingMineralsText()}
+                </ListItem.Subtitle>
               </ListItem.Content>
             </ListItem>
           </View>
@@ -96,7 +98,8 @@ const ReactionsSubpage = (props) => {
           )}
           {spot.properties.pet && spot.properties.pet.reactions && (
             <FlatList
-              data={spot.properties.pet.reactions.slice().sort((a, b) => (a.reactions || 'Unknown').localeCompare((b.reactions || 'Unknown')))}
+              data={spot.properties.pet.reactions.slice().sort(
+                (a, b) => (a.reactions || 'Unknown').localeCompare((b.reactions || 'Unknown')))}
               renderItem={item => renderReaction(item.item)}
               keyExtractor={(item) => item.id.toString()}
               ItemSeparatorComponent={() => <View style={{borderTopWidth: 1}}/>}

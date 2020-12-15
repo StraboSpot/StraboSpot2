@@ -1311,3 +1311,15 @@ console.log('MINERALS_BY_CLASS', MINERALS_BY_CLASS);
 export const MINERAL_VIEW = {OVERVIEW: 'Overivew', DETAIL: 'Detail', ROCK_CLASS: 'Rock Class', GLOSSARY: 'Glossay'};
 
 export const REACTION_VIEW = {OVERVIEW: 'Overivew', DETAIL: 'Detail'};
+
+export const TERNARY_MINERALS = {
+  q: ['quartz'],                                                                              // Quartz
+  a: ['k-feldspar', 'k_feldspar', 'microcline', 'orthoclase', 'sanidine'],       // Alkali feldspar, include albite?
+  p: ['plagioclase', 'plagioclase feldspar'],                                                 // Plagioclase
+  f: ['leucite', 'nepheline'],                                                                // Feldspathoids
+  ol: ['olivine'],                                                                            // Olivine
+  opx: ['orthopyroxene'],                                                                     // Orthopyroxene
+  cpx: ['clinopyroxene', 'augite', 'diopside', 'cr_diopside', 'cr-diopside', 'cr diopside', 'spodumene', 'na pyroxene', 'na_pyroxene'], // Clinopyroxene
+  pyx: ['na pyroxene', 'na_pyroxene', 'clinopyroxene', 'augite', 'diopside', 'cr_diopside', 'cr-diopside', 'cr diopside', 'spodumene', 'orthopyroxene'], // Pyroxene
+  hbl: ['hornblende', 'magnesio-hornblende', 'mg_hornblende'],                                 // Hornblende
+};
