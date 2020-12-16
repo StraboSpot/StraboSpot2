@@ -89,6 +89,7 @@ const Form = (props) => {
         choices={fieldChoicesCopy}
         setFieldValue={props.setFieldValue}
         single={fieldType === 'select_one'}
+        placeholder={field.hint}
       />
     );
   };

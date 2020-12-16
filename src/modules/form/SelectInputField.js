@@ -1,8 +1,8 @@
 import React from 'react';
-import {Text, View} from 'react-native';
+import {Alert, Text, View} from 'react-native';
 
 import PropTypes from 'prop-types';
-import {ListItem} from 'react-native-elements';
+import {Icon, ListItem} from 'react-native-elements';
 import MultiSelect from 'react-native-multiple-select';
 
 import commonStyles from '../../shared/common.styles';
@@ -32,7 +32,18 @@ const SelectInputField = (props) => {
     <View>
       <ListItem containerStyle={{...commonStyles.rowContainer, padding: 0}}>
         <ListItem.Content>
-          <ListItem.Title style={formStyles.fieldLabel}>{props.label}</ListItem.Title>
+          <View style={{width: '100%', flexDirection: 'row', justifyContent: 'space-between'}}>
+            <Text style={formStyles.fieldLabel}>{props.label}</Text>
+            {props.placeholder && (
+              <Icon
+                name={'ios-information-circle-outline'}
+                type={'ionicon'}
+                color={themes.PRIMARY_ACCENT_COLOR}
+                onPress={() => Alert.alert(props.label, props.placeholder)}
+                containerStyle={{paddingRight: 5}}
+              />
+            )}
+          </View>
           <View style={{width: '100%'}}>
             <MultiSelect
               hideSubmitButton={true}

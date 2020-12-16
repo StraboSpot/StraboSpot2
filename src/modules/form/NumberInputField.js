@@ -1,10 +1,12 @@
 import React from 'react';
-import {Text, TextInput, View} from 'react-native';
+import {Alert, Text, TextInput, View} from 'react-native';
 
 import PropTypes from 'prop-types';
+import {Icon} from 'react-native-elements';
 
 import stylesCommon from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
+import * as themes from '../../shared/styles.constants';
 import {formStyles} from '../form';
 
 const NumberInputField = ({
@@ -20,7 +22,18 @@ const NumberInputField = ({
 
   return (
     <View style={stylesCommon.rowContainer}>
-      <Text style={formStyles.fieldLabel}>{props.label}</Text>
+      <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+        <Text style={formStyles.fieldLabel}>{props.label}</Text>
+        {props.placeholder && (
+          <Icon
+            name={'ios-information-circle-outline'}
+            type={'ionicon'}
+            color={themes.PRIMARY_ACCENT_COLOR}
+            onPress={() => Alert.alert(props.label, props.placeholder)}
+            containerStyle={{paddingRight: 5}}
+          />
+        )}
+      </View>
       <TextInput
         onChangeText={onMyChange && typeof onMyChange === 'function' ? val => onMyChange(name, val) : onChange(name)}
         onBlur={onBlur(name)}
