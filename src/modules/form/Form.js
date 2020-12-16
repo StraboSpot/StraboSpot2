@@ -1,11 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {Animated, Keyboard, TextInput} from 'react-native';
+import {Alert, Animated, Keyboard, TextInput} from 'react-native';
 
 import {Field} from 'formik';
 
 import * as Helpers from '../../shared/Helpers';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {DateInputField, formStyles, NumberInputField, SelectInputField, TextInputField, useFormHook} from '../form';
+import {LABELS_WITH_ABBREVIATIONS} from '../petrology/petrology.constants';
 
 const {State: TextInputState} = TextInput;
 
@@ -54,6 +55,7 @@ const Form = (props) => {
         appearance={field.appearance}
         placeholder={field.hint}
         onMyChange={props.onMyChange}
+        onShowFieldInfo={showFieldInfo}
       />
     );
   };
@@ -67,6 +69,7 @@ const Form = (props) => {
         key={field.name}
         placeholder={field.hint}
         onMyChange={props.onMyChange}
+        onShowFieldInfo={showFieldInfo}
       />
     );
   };
@@ -89,6 +92,8 @@ const Form = (props) => {
         choices={fieldChoicesCopy}
         setFieldValue={props.setFieldValue}
         single={fieldType === 'select_one'}
+        placeholder={field.hint}
+        onShowFieldInfo={showFieldInfo}
       />
     );
   };
@@ -100,6 +105,15 @@ const Form = (props) => {
     else if (fieldType === 'integer' || fieldType === 'decimal') return renderNumberInput(field);
     else if (fieldType === 'select_one' || fieldType === 'select_multiple') return renderSelectInput(field);
     else if (fieldType === 'date') return renderDateInput(field);
+  };
+
+  const showFieldInfo = (label, info) => {
+    if (label === 'Mineral Name Abbreviation') {
+      info += '\n\n';
+      const arr = Object.entries(LABELS_WITH_ABBREVIATIONS).map(([key, value]) => key + ': ' + value);
+      info += arr.join('\n');
+    }
+    Alert.alert(label, info);
   };
 
   return (

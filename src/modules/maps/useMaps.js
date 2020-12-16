@@ -251,7 +251,7 @@ const useMaps = () => {
 
   const handleError = (message, err) => {
     dispatch(clearedStatusMessages());
-    dispatch(addedStatusMessage({statusMessage: `${message} \n\n${err}`}));
+    dispatch(addedStatusMessage(`${message} \n\n${err}`));
     dispatch(setOfflineMapsModalVisible(false));
     dispatch(setErrorMessagesModalVisible(true));
   };

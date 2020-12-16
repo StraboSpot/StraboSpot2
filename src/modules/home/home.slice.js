@@ -39,7 +39,7 @@ const homeSlice = createSlice({
   initialState: initialHomeState,
   reducers: {
     addedStatusMessage(state, action) {
-      state.statusMessages.push(action.payload.statusMessage);
+      state.statusMessages.push(action.payload);
     },
     clearedStatusMessages(state) {
       state.statusMessages = [];

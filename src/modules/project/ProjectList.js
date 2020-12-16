@@ -83,11 +83,11 @@ const ProjectList = (props) => {
         const datasets = await useProject.uploadDatasets();
         console.log(datasets);
         await dispatch(clearedSpots());
-        dispatch(addedStatusMessage({statusMessage: 'Project uploaded to server.'}));
+        dispatch(addedStatusMessage('Project uploaded to server.'));
 
         const projectData = await useProject.selectProject(selectedProject, props.source);
         console.log('PROJECT DATA', projectData);
-        // await dispatch(addedStatusMessage({statusMessage: 'Project loaded!'}));
+        // await dispatch(addedStatusMessage('Project loaded!'}));
         dispatch(setLoadingStatus({view: 'modal', bool: false}));
         dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
       }

@@ -13,9 +13,10 @@ import {useDispatch, useSelector} from 'react-redux';
 import useDeviceHook from '../../../services/useDevice';
 import {toNumberFixedValue} from '../../../shared/Helpers';
 import * as themes from '../../../shared/styles.constants';
-import useMapsOfflineHook from './useMapsOffline';
+import {addedStatusMessage, clearedStatusMessages, removedLastStatusMessage} from '../../home/home.slice';
 import useMapsHook from '../useMaps';
 import {setOfflineMap} from './offlineMaps.slice';
+import useMapsOfflineHook from './useMapsOffline';
 
 const SaveMapsModal = (props) => {
   // console.log(props);
@@ -35,6 +36,7 @@ const SaveMapsModal = (props) => {
   const currentBasemap = useSelector(state => state.map.currentBasemap);
   const customMaps = useSelector(state => state.map.customMaps);
   const offlineMaps = useSelector(state => state.offlineMap.offlineMaps);
+  const statusMessage = useSelector(state => state.home.statusMessages);
   const dispatch = useDispatch();
 
   const currentbasemapId = currentBasemap && currentBasemap.id;
@@ -54,7 +56,6 @@ const SaveMapsModal = (props) => {
   const [showLoadingMenu, setShowLoadingMenu] = useState(false);
   const [showLoadingBar, setShowLoadingBar] = useState(false);
   const [isLoadingWave, setIsLoadingWave] = useState(false);
-  const [statusMessage, setStatusMessage] = useState('');
   const [percentDone, setPercentDone] = useState(0);
   const [downloadZoom, setDownloadZoom] = useState(0);
   const [zoomLevels, setZoomLevels] = useState([]);
@@ -134,7 +135,7 @@ const SaveMapsModal = (props) => {
   //   else {
   //     setIsLoadingWave(false);
   //     progressStatus = 'Downloading Tiles...';
-  //     setStatusMessage('Downloading Tiles...');
+  //     dispatch(addedStatusMessage('Downloading Tiles...'));
   //     await downloadZip(zipUID);
   //     await delay(1000);
   //     await doUnzip(zipUID);
@@ -147,7 +148,8 @@ const SaveMapsModal = (props) => {
       // setShowLoadingBar(false);
       setPercentDone(0);
       progressStatus = 'Installing Tiles in StraboSpot...';
-      setStatusMessage('Preparing to install tiles...');
+      dispatch(removedLastStatusMessage());
+      dispatch(addedStatusMessage('Preparing to install tiles...'));
       const sourcePath = tileZipsDirectory + '/' + zipUID + '.zip';
       const targetPath = tileTempDirectory;
       await unzip(sourcePath, targetPath);
@@ -201,7 +203,7 @@ const SaveMapsModal = (props) => {
   //   try {
   //     setIsLoadingWave(true);
   //     progressStatus = 'Starting Download...';
-  //     setStatusMessage('Gathering Tiles...');
+  //     dispatch(addedStatusMessage('Gathering Tiles...'));
   //     return await useMapsOffline.getMapTiles(extentString, downloadZoom);
   //   }
   //   catch (err) {
@@ -213,8 +215,8 @@ const SaveMapsModal = (props) => {
   //   //   setIsLoadingWave(true);
   //   //   // setProgressMessage('Starting Download...');
   //   //   progressStatus = 'Starting Download...';
-  //   //   // setStatusMessage('Starting Download...');
-  //   //   setStatusMessage('Gathering Tiles...');
+  //   //   // dispatch(addedStatusMessage('Starting Download...'));
+  //   //   dispatch(addedStatusMessage('Gathering Tiles...'));
   //   //
   //   //   const layerID = currentBasemap.id;
   //   //   const layerSource = currentBasemap.source;
@@ -266,7 +268,8 @@ const SaveMapsModal = (props) => {
   // };
 
   const moveFiles = async (zipUID) => {
-    setStatusMessage('Installing tiles...');
+    dispatch(removedLastStatusMessage());
+    dispatch(addedStatusMessage('Installing tiles...'));
     let result, mapName;
     let folderExists = await RNFS.exists(tileCacheDirectory + '/' + currentbasemapId);
     if (!folderExists) {
@@ -326,10 +329,10 @@ const SaveMapsModal = (props) => {
       setShowLoadingMenu(true);
       setShowLoadingBar(true);
       setIsLoadingWave(true);
-      progressStatus = 'Starting Download...';
-      setStatusMessage('Gathering Tiles...');
+      dispatch(clearedStatusMessages());
+      dispatch(addedStatusMessage('Gathering Tiles...'));
       const zipId = await useMapsOffline.initializeSaveMap(extentString, downloadZoom);
-      setIsLoadingWave(false)
+      setIsLoadingWave(false);
       await downloadZip(zipId);
       await delay(1000);
       await doUnzip(zipId);
