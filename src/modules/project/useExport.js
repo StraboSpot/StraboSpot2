@@ -50,17 +50,17 @@ const useExport = () => {
 
   const gatherDataForBackup = async (filename) => {
     try {
-      dispatch(addedStatusMessage({statusMessage: 'Exporting Project Data...'}));
+      dispatch(addedStatusMessage('Exporting Project Data...'));
       await exportData(devicePath + appDirectoryForDistributedBackups + '/' + filename, dataForExport,
         'data.json');
       console.log('Finished Exporting Project Data', dataForExport);
       dispatch(removedLastStatusMessage());
-      dispatch(addedStatusMessage({statusMessage: 'Finished Exporting Project Data'}));
+      dispatch(addedStatusMessage('Finished Exporting Project Data'));
     }
     catch (err) {
       console.error('Error Exporting Data!', err);
       dispatch(removedLastStatusMessage());
-      dispatch(addedStatusMessage({statusMessage: 'Error Exporting Project Data.'}));
+      dispatch(addedStatusMessage('Error Exporting Project Data.'));
     }
   };
 
@@ -70,7 +70,7 @@ const useExport = () => {
       let promises = [];
       await useDevice.doesDeviceDirectoryExist(
         devicePath + appDirectoryForDistributedBackups + '/' + fileName + '/Images');
-      dispatch(addedStatusMessage({statusMessage: 'Exporting Images...'}));
+      dispatch(addedStatusMessage('Exporting Images...'));
       if (data.spotsDb) {
         console.log('Spots Exist!');
         await Promise.all(
@@ -91,17 +91,17 @@ const useExport = () => {
         console.log('Image Promises Finished ');
         dispatch(removedLastStatusMessage());
         if (imageBackupFailures > 0) {
-          dispatch(addedStatusMessage({
-            statusMessage: `Images backed up: ${imageSuccess}.\nImages NOT backed up: ${imageBackupFailures}.`,
-          }));
+          dispatch(addedStatusMessage(
+            `Images backed up: ${imageSuccess}.\nImages NOT backed up: ${imageBackupFailures}.`,
+          ));
         }
-        else dispatch(addedStatusMessage({statusMessage: `${imageSuccess} Images backed up.`}));
+        else dispatch(addedStatusMessage(`${imageSuccess} Images backed up.`));
       }
     }
     catch (err) {
       console.error('Error Backing Up Images!');
       dispatch(removedLastStatusMessage());
-      dispatch(addedStatusMessage({statusMessage: 'Error Exporting Images!'}));
+      dispatch(addedStatusMessage('Error Exporting Images!'));
     }
   };
 
@@ -110,7 +110,7 @@ const useExport = () => {
     try {
       const maps = data.mapNamesDb;
       let promises = [];
-      dispatch(addedStatusMessage({statusMessage: 'Exporting Offline Maps...'}));
+      dispatch(addedStatusMessage('Exporting Offline Maps...'));
       if (!isEmpty(maps)) {
         console.log('Maps exist.', maps);
         await useDevice.doesDeviceDirectoryExist(
@@ -125,40 +125,40 @@ const useExport = () => {
         );
         console.log('Promised Finished');
         dispatch(removedLastStatusMessage());
-        dispatch(addedStatusMessage({statusMessage: 'Finished Exporting Offline Maps.'}));
+        dispatch(addedStatusMessage('Finished Exporting Offline Maps.'));
       }
       else {
         dispatch(removedLastStatusMessage());
-        dispatch(addedStatusMessage({statusMessage: 'No offline maps to export.'}));
+        dispatch(addedStatusMessage('No offline maps to export.'));
       }
     }
     catch (err) {
       console.error('Error Exporting Offline Maps.');
       dispatch(removedLastStatusMessage());
-      dispatch(addedStatusMessage({statusMessage: 'Error Exporting Offline Maps!'}));
+      dispatch(addedStatusMessage('Error Exporting Offline Maps!'));
     }
   };
 
   const gatherOtherMapsForDistribution = async (exportedFileName) => {
     try {
       console.log(configDb);
-      dispatch(addedStatusMessage({statusMessage: 'Exporting Custom Maps...'}));
+      dispatch(addedStatusMessage('Exporting Custom Maps...'));
       if (!isEmpty(configDb.other_maps)) {
         await exportData(devicePath + appDirectoryForDistributedBackups + '/' + exportedFileName, configDb.other_maps,
           '/other_maps.json');
         console.log('Other Maps Exported');
         dispatch(removedLastStatusMessage());
-        dispatch(addedStatusMessage({statusMessage: 'Finished Exporting Custom Maps.'}));
+        dispatch(addedStatusMessage('Finished Exporting Custom Maps.'));
       }
       else {
         dispatch(removedLastStatusMessage());
-        dispatch(addedStatusMessage({statusMessage: 'No custom maps to export.'}));
+        dispatch(addedStatusMessage('No custom maps to export.'));
       }
     }
     catch (err) {
       console.error('Error Exporting Other Maps', err);
       dispatch(removedLastStatusMessage());
-      dispatch(addedStatusMessage({statusMessage: 'Error Exporting Custom Maps!'}));
+      dispatch(addedStatusMessage('Error Exporting Custom Maps!'));
     }
   };
 

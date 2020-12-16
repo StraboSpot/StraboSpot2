@@ -60,18 +60,18 @@ const useDownload = () => {
   const downloadProject = async (selectedProject) => {
     try {
       console.log('Downloading Project Properties...');
-      dispatch(addedStatusMessage({statusMessage: 'Downloading Project Properties...'}));
+      dispatch(addedStatusMessage('Downloading Project Properties...'));
       const projectResponse = await useServerRequests.getProject(selectedProject.id, user.encoded_login);
       dispatch(addedProject(projectResponse));
       console.log('Finished Downloading Project Properties.', projectResponse);
       dispatch(removedLastStatusMessage());
-      dispatch(addedStatusMessage({statusMessage: 'Finished Downloading Project Properties.'}));
+      dispatch(addedStatusMessage('Finished Downloading Project Properties.'));
       return projectResponse;
     }
     catch (err) {
       console.error('Error Downloading Project Properties.', err);
       dispatch(removedLastStatusMessage());
-      dispatch(addedStatusMessage({statusMessage: 'Error Downloading Project Properties.'}));
+      dispatch(addedStatusMessage('Error Downloading Project Properties.'));
       throw Error;
     }
   };
@@ -79,11 +79,11 @@ const useDownload = () => {
   const downloadSpots = async (dataset, encodedLogin) => {
     try {
       console.log('Downloading Spots...');
-      dispatch(addedStatusMessage({statusMessage: 'Downloading Spots...'}));
+      dispatch(addedStatusMessage('Downloading Spots...'));
       const downloadDatasetInfo = await useServerRequests.getDatasetSpots(dataset.id, encodedLogin);
       console.log('Finished Downloading Spots.');
       dispatch(removedLastStatusMessage());
-      dispatch(addedStatusMessage({statusMessage: 'Finished Downloading Spots.'}));
+      dispatch(addedStatusMessage('Finished Downloading Spots.'));
       if (!isEmpty(downloadDatasetInfo) && downloadDatasetInfo.features) {
         const spotsOnServer = downloadDatasetInfo.features;
         console.log(spotsOnServer);
@@ -97,7 +97,7 @@ const useDownload = () => {
     }
     catch (err) {
       console.error('Error Downloading Spots.', err);
-      dispatch(addedStatusMessage({statusMessage: 'Error Downloading Spots.'}));
+      dispatch(addedStatusMessage('Error Downloading Spots.'));
       throw Error;
     }
   };
@@ -106,7 +106,7 @@ const useDownload = () => {
     try {
       const neededImagesIds = await useImages.gatherNeededImages(spotsOnServer);
       console.log('Gathering Needed Images...');
-      if (neededImagesIds.length === 0) dispatch(addedStatusMessage({statusMessage: 'No New Images to Download'}));
+      if (neededImagesIds.length === 0) dispatch(addedStatusMessage('No New Images to Download'));
       else return await initializeDownloadImages(neededImagesIds);
     }
     catch (err) {
@@ -148,10 +148,10 @@ const useDownload = () => {
 
   const downloadDatasets = async (project, source) => {
     try {
-      dispatch(addedStatusMessage({statusMessage: 'Downloading datasets from server...'}));
+      dispatch(addedStatusMessage('Downloading datasets from server...'));
       const projectDatasetsFromServer = await useServerRequests.getDatasets(project.id, user.encoded_login);
       dispatch(removedLastStatusMessage());
-      dispatch(addedStatusMessage({statusMessage: 'Finished downloading datasets from server.'}));
+      dispatch(addedStatusMessage('Finished downloading datasets from server.'));
       if (projectDatasetsFromServer.datasets.length === 1) {
         dispatch(setActiveDatasets({bool: true, dataset: projectDatasetsFromServer.datasets[0].id}));
         dispatch(setSelectedDataset(projectDatasetsFromServer.datasets[0].id));
@@ -172,7 +172,7 @@ const useDownload = () => {
     batch(() => {
       dispatch(setLoadingStatus({view: 'modal', bool: true}));
       dispatch(clearedStatusMessages());
-      dispatch(addedStatusMessage({statusMessage: `Downloading Project: ${projectName}`}));
+      dispatch(addedStatusMessage(`Downloading Project: ${projectName}`));
       dispatch(setStatusMessagesModalVisible(true));
     });
     try {
@@ -182,13 +182,13 @@ const useDownload = () => {
       if (Object.values(downloadedDatasets).length === 1) {
         await downloadSpots(Object.values(downloadedDatasets)[0], user.encoded_login);
       }
-      dispatch(addedStatusMessage({statusMessage: '------------------'}));
-      dispatch(addedStatusMessage({statusMessage: 'Download Complete!'}));
+      dispatch(addedStatusMessage('------------------'));
+      dispatch(addedStatusMessage('Download Complete!'));
       dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
     }
     catch (err) {
       console.error('Error Initializing Download.');
-      dispatch(addedStatusMessage({statusMessage: 'Download Failed!'}));
+      dispatch(addedStatusMessage('Download Failed!'));
     }
     dispatch(setLoadingStatus({view: 'modal', bool: false}));
   };
@@ -196,7 +196,7 @@ const useDownload = () => {
   const initializeDownloadImages = async (neededImageIds) => {
     try {
       console.log('Downloading Needed Images...');
-      dispatch(addedStatusMessage({statusMessage: 'Downloading Needed Images...'}));
+      dispatch(addedStatusMessage('Downloading Needed Images...'));
       if (!isEmpty(neededImageIds)) {
         // Check path first, if doesn't exist, then create
         await useDevice.doesDeviceDirectoryExist(imagesDirectoryPath);
@@ -233,7 +233,7 @@ const useDownload = () => {
     }
     catch (err) {
       dispatch(removedLastStatusMessage());
-      dispatch(addedStatusMessage({statusMessage: 'Error Downloading Images!'}));
+      dispatch(addedStatusMessage('Error Downloading Images!'));
       console.warn('Error Downloading Images: ' + err);
     }
   };

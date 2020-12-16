@@ -38,18 +38,18 @@ const UploadBackAndExport = (props) => {
     try {
       setIsUploadDialogVisible(false);
       dispatch(clearedStatusMessages());
-      dispatch(addedStatusMessage({statusMessage: 'Backing up Project to Device...'}));
+      dispatch(addedStatusMessage('Backing up Project to Device...'));
       dispatch(setLoadingStatus({view: 'modal', bool: true}));
       dispatch(setStatusMessagesModalVisible(true));
       await useExport.initializeBackup(exportFileName);
       props.closeMainMenuPanel();
       console.log(`File ${exportFileName} has been backed up`);
-      dispatch(addedStatusMessage({statusMessage: '---------------'}));
-      await dispatch(addedStatusMessage({statusMessage: 'Project Backup Complete!'}));
+      dispatch(addedStatusMessage('---------------'));
+      await dispatch(addedStatusMessage('Project Backup Complete!'));
     }
     catch (err) {
       console.error('Error Backing Up Project!', err);
-      dispatch(addedStatusMessage({statusMessage: 'Error Backing Up Project!'}));
+      dispatch(addedStatusMessage('Error Backing Up Project!'));
     }
     dispatch(setLoadingStatus({view: 'modal', bool: false}));
   };
@@ -189,12 +189,12 @@ const UploadBackAndExport = (props) => {
       await useUpload.uploadProject();
       await useUpload.uploadDatasets();
       props.closeMainMenuPanel();
-      dispatch(addedStatusMessage({statusMessage: 'Upload Complete!'}));
+      dispatch(addedStatusMessage('Upload Complete!'));
       console.log('Upload Complete');
     }
     catch (err) {
-      dispatch(addedStatusMessage({statusMessage: '----------'}));
-      dispatch(addedStatusMessage({statusMessage: 'Upload Failed!'}));
+      dispatch(addedStatusMessage('----------'));
+      dispatch(addedStatusMessage('Upload Failed!'));
       props.closeMainMenuPanel();
       console.error('Upload Failed!');
     }

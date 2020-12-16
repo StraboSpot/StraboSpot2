@@ -118,7 +118,7 @@ const useImages = () => {
     try {
       let neededImagesIds = [];
       console.log('Gathering Needed Images...');
-      dispatch(addedStatusMessage({statusMessage: 'Gathering Needed Images...'}));
+      dispatch(addedStatusMessage('Gathering Needed Images...'));
       const imageIds = await getAllImagesIds(spotsOnServer);
       await Promise.all(
         imageIds.map(async (imageId) => {
@@ -133,7 +133,7 @@ const useImages = () => {
       if (neededImagesIds.length > 0) {
         console.log('Images Needed to Download: ' + neededImagesIds.length);
         dispatch(removedLastStatusMessage());
-        dispatch(addedStatusMessage({statusMessage: 'Images Needed to Download: ' + neededImagesIds.length}));
+        dispatch(addedStatusMessage('Images Needed to Download: ' + neededImagesIds.length));
       }
       console.log('Promised Finished');
       return neededImagesIds;

@@ -134,7 +134,7 @@ const useProject = () => {
       dispatch(setStatusMessagesModalVisible(true));
       dispatch(setLoadingStatus({view: 'modal', bool: true}));
       dispatch(clearedStatusMessages());
-      dispatch(addedStatusMessage({statusMessage: 'Deleting Dataset...'}));
+      dispatch(addedStatusMessage('Deleting Dataset...'));
       if (datasets && datasets[id] && datasets[id].spotIds) {
         let spotsDeletedCount = 0;
         console.log(datasets[id].spotIds.length, 'Spot(s) in Dataset to Delete.');
@@ -149,12 +149,12 @@ const useProject = () => {
       }
       dispatch(deletedDataset(id));
       dispatch(removedLastStatusMessage());
-      dispatch(addedStatusMessage({statusMessage: 'Finished Deleting Dataset.'}));
+      dispatch(addedStatusMessage('Finished Deleting Dataset.'));
     }
     catch (err) {
       console.log('Error Deleting Dataset.');
       dispatch(removedLastStatusMessage());
-      dispatch(addedStatusMessage({statusMessage: 'Error Deleting Dataset.'}));
+      dispatch(addedStatusMessage('Error Deleting Dataset.'));
     }
     dispatch(setLoadingStatus({view: 'modal', bool: false}));
   };
@@ -297,7 +297,7 @@ const useProject = () => {
           dispatch(setStatusMessagesModalVisible(true));
           dispatch(clearedStatusMessages());
           await useDownload.downloadSpots(dataset, user.encoded_login);
-          dispatch(addedStatusMessage({statusMessage: 'Download Complete!'}));
+          dispatch(addedStatusMessage('Download Complete!'));
         }
       }
       else dispatch(setActiveDatasets({bool: val, dataset: dataset.id}));

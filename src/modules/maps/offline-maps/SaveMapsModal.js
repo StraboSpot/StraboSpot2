@@ -10,14 +10,19 @@ import ProgressBar from 'react-native-progress/Bar';
 import {unzip} from 'react-native-zip-archive'; /*TODO  react-native-zip-archive@3.0.1 requires a peer of react@^15.4.2 || <= 16.3.1 but none is installed */
 import {useDispatch, useSelector} from 'react-redux';
 
+import useDeviceHook from '../../../services/useDevice';
 import {toNumberFixedValue} from '../../../shared/Helpers';
 import * as themes from '../../../shared/styles.constants';
+import {addedStatusMessage, clearedStatusMessages, removedLastStatusMessage} from '../../home/home.slice';
 import useMapsHook from '../useMaps';
 import {setOfflineMap} from './offlineMaps.slice';
+import useMapsOfflineHook from './useMapsOffline';
 
 const SaveMapsModal = (props) => {
   // console.log(props);
   const [useMaps] = useMapsHook();
+  const useDevice = useDeviceHook();
+  const useMapsOffline = useMapsOfflineHook();
 
   const tilehost = 'http://tiles.strabospot.org';
   const devicePath = RNFS.DocumentDirectoryPath;
@@ -31,9 +36,10 @@ const SaveMapsModal = (props) => {
   const currentBasemap = useSelector(state => state.map.currentBasemap);
   const customMaps = useSelector(state => state.map.customMaps);
   const offlineMaps = useSelector(state => state.offlineMap.offlineMaps);
+  const statusMessage = useSelector(state => state.home.statusMessages);
   const dispatch = useDispatch();
 
-  const id = currentBasemap && currentBasemap.id;
+  const currentbasemapId = currentBasemap && currentBasemap.id;
   const source = currentBasemap && currentBasemap.source;
   const currentMapName = currentBasemap && currentBasemap.title;
   const maxZoom = currentBasemap && currentBasemap.maxZoom;
@@ -44,11 +50,12 @@ const SaveMapsModal = (props) => {
   const [installedTiles, setInstalledTiles] = useState(0);
   const [tilesToInstall, setTilesToInstall] = useState(0);
   const [showComplete, setShowComplete] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const [showMainMenu, setShowMainMenu] = useState(true);
   const [showLoadingMenu, setShowLoadingMenu] = useState(false);
   const [showLoadingBar, setShowLoadingBar] = useState(false);
   const [isLoadingWave, setIsLoadingWave] = useState(false);
-  const [statusMessage, setStatusMessage] = useState('');
   const [percentDone, setPercentDone] = useState(0);
   const [downloadZoom, setDownloadZoom] = useState(0);
   const [zoomLevels, setZoomLevels] = useState([]);
@@ -100,76 +107,64 @@ const SaveMapsModal = (props) => {
 
   const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-  const checkStatus = async (zipUID) => {
-    const checkZipURL = tilehost + '/asyncstatus/' + zipUID;
-    try {
-      let response = await fetch(checkZipURL);
-      let responseJson = await response.json();
-      if (responseJson.error) {
-        zipError = responseJson.error;
-        // setProgressMessage(responseJson.error);
-        progressStatus = responseJson.error;
-        setPercentDone(1);
-      }
-      else {
-        progressStatus = responseJson.status;
-      }
-    }
-    catch {
-      console.log('Network Error');
-    }
-    tryCount++;
-    console.log(tryCount);
-    if (progressStatus !== 'Zip File Ready.' && zipError === '') {
-      // await delay(500);
-      await checkStatus(zipUID);
-    }
-    else {
-      setIsLoadingWave(false);
-      progressStatus = 'Downloading Tiles...';
-      setStatusMessage('Downloading Tiles...');
-      await downloadZip(zipUID);
-      await delay(1000);
-      await doUnzip(zipUID);
-    }
-  };
+  // const checkStatus = async (zipUID) => {
+  //   // const checkZipURL = tilehost + '/asyncstatus/' + zipUID;
+  //   try {
+  //     // let response = await fetch(checkZipURL);
+  //     // let responseJson = await response.json();
+  //
+  //     if (responseJson.error) {
+  //       zipError = responseJson.error;
+  //       // setProgressMessage(responseJson.error);
+  //       progressStatus = responseJson.error;
+  //       setPercentDone(1);
+  //     }
+  //     else {
+  //       progressStatus = responseJson.status;
+  //     }
+  //   }
+  //   catch {
+  //     console.log('Network Error');
+  //   }
+  //   tryCount++;
+  //   console.log(tryCount);
+  //   if (progressStatus !== 'Zip File Ready.' && zipError === '') {
+  //     // await delay(500);
+  //     await checkStatus(zipUID);
+  //   }
+  //   else {
+  //     setIsLoadingWave(false);
+  //     progressStatus = 'Downloading Tiles...';
+  //     dispatch(addedStatusMessage('Downloading Tiles...'));
+  //     await downloadZip(zipUID);
+  //     await delay(1000);
+  //     await doUnzip(zipUID);
+  //   }
+  // };
 
   const doUnzip = async (zipUID) => {
-    // hide progress bar
-    // setShowLoadingBar(false);
-    setPercentDone(0);
-    progressStatus = 'Installing Tiles in StraboSpot...';
-    setStatusMessage('Preparing to install tiles...');
-    const layerSaveId = currentBasemap.layerSaveId;
-
-    const sourcePath = tileZipsDirectory + '/' + zipUID + '.zip';
-    const targetPath = tileTempDirectory;
-
     try {
+      // hide progress bar
+      // setShowLoadingBar(false);
+      setPercentDone(0);
+      progressStatus = 'Installing Tiles in StraboSpot...';
+      dispatch(removedLastStatusMessage());
+      dispatch(addedStatusMessage('Preparing to install tiles...'));
+      const sourcePath = tileZipsDirectory + '/' + zipUID + '.zip';
+      const targetPath = tileTempDirectory;
       await unzip(sourcePath, targetPath);
       console.log('unzip completed');
-
       await moveFiles(zipUID); //move files to the correct folder based on saveId
       console.log('move done.');
     }
     catch (err) {
-      console.log('Unzip Error:', err);
-      useMaps.handleError('Something went wrong in UnZip...', err);
-      return Promise.reject();
+      console.error('Unzip Error:', err);
     }
-
-    return Promise.resolve();
   };
 
   const downloadZip = async (zipUID) => {
-    const downloadProgress = (res) => {
-      const percentage = Math.floor((res.totalBytesSent / res.totalBytesExpectedToSend) * 100);
-      console.log('UPLOAD IS ' + percentage + '% DONE!');
-    };
-
     try {
       const downloadZipURL = tilehost + '/ziptemp/' + zipUID + '/' + zipUID + '.zip';
-      const layerSaveId = currentBasemap.id;
       const downloadOptions = {
         fromUrl: downloadZipURL,
         toFile: tileZipsDirectory + '/' + zipUID + '.zip',
@@ -184,111 +179,110 @@ const SaveMapsModal = (props) => {
       };
 
       //first try to delete from temp directories
-      let fileExists = await RNFS.exists(tileZipsDirectory + '/' + layerSaveId + '.zip');
-      console.log('file Exists:', fileExists ? 'YES' : 'NO');
-      if (fileExists) {
-        //delete
-        await RNFS.unlink(tileZipsDirectory + '/' + zipUID + '.zip');
-      }
-      else await RNFS.mkdir(tileZipsDirectory);
-      let folderExists = await RNFS.exists(tileTempDirectory + '/' + zipUID);
-      console.log('Folder Exists:', folderExists ? 'YES' : 'NO');
-      if (folderExists) {
-        //delete
-        await RNFS.unlink(tileTempDirectory + '/' + zipUID);
-      }
-      else await RNFS.mkdir(tileTempDirectory);
-
-      await RNFS.downloadFile(downloadOptions).promise.then(res => {
+      await useDevice.doesDeviceDirectoryExist(tileZipsDirectory);
+      await useDevice.doesDeviceDirectoryExist(tileTempDirectory);
+      await useMapsOffline.checkTileZipFileExistance();
+      const res = await RNFS.downloadFile(downloadOptions).promise;
+      if (res.statusCode === 200) {
         console.log(res);
-      })
-        .catch(e => {
-          console.log('SERVER ERROR', e);
-        });
+      }
+      else {
+        console.error('Server Error');
+        throw new Error('Error downloading tiles from ' + downloadOptions.fromUrl);
+      }
     }
     catch (err) {
-      useMaps.handleError('Something went wrong in Download Zip...', err);
-      console.log('Download Tile Zip Error :', err);
-      return Promise.reject();
+      console.error('Server error in downloadZipUrl', err);
+      throw Error(err);
     }
   };
 
 
-  // Start getting the tiles to download by creating a zip url
-  const getMapTiles = async () => {
-    let layer, id, username;
-    let startZipURL = 'unset';
-    setIsLoadingWave(true);
-    // setProgressMessage('Starting Download...');
-    progressStatus = 'Starting Download...';
-    // setStatusMessage('Starting Download...');
-    setStatusMessage('Gathering Tiles...');
-
-    const layerID = currentBasemap.id;
-    const layerSource = currentBasemap.source;
-
-    // await checkValidMapName(currentBasemap);
-
-    //let startZipURL = tilehost + '/asynczip?mapid=' + mapID + '&layer=' + layerID + '&extent=' + extentString + '&zoom=' + downloadZoom;
-
-    if (layerSource === 'map_warper' || layerSource === 'mapbox_styles' || layerSource === 'strabospot_mymaps') {
-      //configure advanced URL for custom map types here.
-      //first, figure out what kind of map we are downloading...
-
-      let downloadMap = {};
-
-      if (customMaps[layerID].id === currentBasemap.id) {
-        downloadMap = customMaps[layerID];
-      }
-
-      console.log('DownloadMap: ', downloadMap);
-
-      if (downloadMap.source === 'Mapbox Style' || downloadMap.source === 'mapbox_styles') {
-        layer = 'mapboxstyles';
-        const parts = downloadMap.id.split('/');
-        username = parts[0];
-        id = parts[1];
-        const accessToken = downloadMap.key;
-        startZipURL = tilehost + '/asynczip?layer=' + layer + '&extent=' + extentString + '&zoom=' + downloadZoom + '&username=' + username + '&id=' + id + '&access_token=' + accessToken;
-      }
-      else if (downloadMap.source === 'Map Warper' || downloadMap.source === 'map_warper') {
-        layer = 'mapwarper';
-        id = downloadMap.id;
-        startZipURL = tilehost + '/asynczip?layer=' + layer + '&extent=' + extentString + '&zoom=' + downloadZoom + '&id=' + id;
-      }
-      else if (downloadMap.source === 'strabospot_mymaps') {
-        layer = 'strabomymaps';
-        id = downloadMap.id;
-        startZipURL = tilehost + '/asynczip?layer=' + layer + '&extent=' + extentString + '&zoom=' + downloadZoom + '&id=' + id;
-      }
-    }
-    else {
-      layer = currentBasemap.id;
-      startZipURL = tilehost + '/asynczip?layer=' + layerID + '&extent=' + extentString + '&zoom=' + downloadZoom;
-    }
-
-    console.log('startZipURL: ', startZipURL);
-
-    await saveZipMap(startZipURL);
-    return Promise.resolve();
-  };
+  // // Start getting the tiles to download by creating a zip url
+  // const getMapTiles = async () => {
+  //   try {
+  //     setIsLoadingWave(true);
+  //     progressStatus = 'Starting Download...';
+  //     dispatch(addedStatusMessage('Gathering Tiles...'));
+  //     return await useMapsOffline.getMapTiles(extentString, downloadZoom);
+  //   }
+  //   catch (err) {
+  //     console.error('Error getting map tiles');
+  //     throw new Error(err);
+  //   }
+  //   //   let layer, id, username;
+  //   //   let startZipURL = 'unset';
+  //   //   setIsLoadingWave(true);
+  //   //   // setProgressMessage('Starting Download...');
+  //   //   progressStatus = 'Starting Download...';
+  //   //   // dispatch(addedStatusMessage('Starting Download...'));
+  //   //   dispatch(addedStatusMessage('Gathering Tiles...'));
+  //   //
+  //   //   const layerID = currentBasemap.id;
+  //   //   const layerSource = currentBasemap.source;
+  //   //
+  //   //   // await checkValidMapName(currentBasemap);
+  //   //
+  //   //   //let startZipURL = tilehost + '/asynczip?mapid=' + mapID + '&layer=' + layerID + '&extent=' + extentString + '&zoom=' + downloadZoom;
+  //   //
+  //   //   if (layerSource === 'map_warper' || layerSource === 'mapbox_styles' || layerSource === 'strabospot_mymaps') {
+  //   //     //configure advanced URL for custom map types here.
+  //   //     //first, figure out what kind of map we are downloading...
+  //   //
+  //   //     let downloadMap = {};
+  //   //
+  //   //     if (customMaps[layerID].id === currentBasemap.id) {
+  //   //       downloadMap = customMaps[layerID];
+  //   //     }
+  //   //
+  //   //     console.log('DownloadMap: ', downloadMap);
+  //   //
+  //   //     if (downloadMap.source === 'Mapbox Style' || downloadMap.source === 'mapbox_styles') {
+  //   //       layer = 'mapboxstyles';
+  //   //       const parts = downloadMap.id.split('/');
+  //   //       username = parts[0];
+  //   //       id = parts[1];
+  //   //       const accessToken = downloadMap.key;
+  //   //       startZipURL = tilehost + '/asynczip?layer=' + layer + '&extent=' + extentString + '&zoom=' + downloadZoom + '&username=' + username + '&id=' + id + '&access_token=' + accessToken;
+  //   //     }
+  //   //     else if (downloadMap.source === 'Map Warper' || downloadMap.source === 'map_warper') {
+  //   //       layer = 'mapwarper';
+  //   //       id = downloadMap.id;
+  //   //       startZipURL = tilehost + '/asynczip?layer=' + layer + '&extent=' + extentString + '&zoom=' + downloadZoom + '&id=' + id;
+  //   //     }
+  //   //     else if (downloadMap.source === 'strabospot_mymaps') {
+  //   //       layer = 'strabomymaps';
+  //   //       id = downloadMap.id;
+  //   //       startZipURL = tilehost + '/asynczip?layer=' + layer + '&extent=' + extentString + '&zoom=' + downloadZoom + '&id=' + id;
+  //   //     }
+  //   //   }
+  //   //   else {
+  //   //     layer = currentBasemap.id;
+  //   //     startZipURL = tilehost + '/asynczip?layer=' + layerID + '&extent=' + extentString + '&zoom=' + downloadZoom;
+  //   //   }
+  //   //
+  //   //   console.log('startZipURL: ', startZipURL);
+  //   //
+  //   //   await saveZipMap(startZipURL);
+  //   //   return Promise.resolve();
+  // };
 
   const moveFiles = async (zipUID) => {
-    setStatusMessage('Installing tiles...');
+    dispatch(removedLastStatusMessage());
+    dispatch(addedStatusMessage('Installing tiles...'));
     let result, mapName;
-    let folderExists = await RNFS.exists(tileCacheDirectory + '/' + id);
+    let folderExists = await RNFS.exists(tileCacheDirectory + '/' + currentbasemapId);
     if (!folderExists) {
-      console.log('FOLDER DOESN\'T EXIST! ' + id);
-      await RNFS.mkdir(tileCacheDirectory + '/' + id);
-      await RNFS.mkdir(tileCacheDirectory + '/' + id + '/tiles');
+      console.log('FOLDER DOESN\'T EXIST! ' + currentbasemapId);
+      await RNFS.mkdir(tileCacheDirectory + '/' + currentbasemapId);
+      await RNFS.mkdir(tileCacheDirectory + '/' + currentbasemapId + '/tiles');
     }
 
     // Move files to correct location
     result = await RNFS.readDir(tileTempDirectory + '/' + zipUID + '/tiles');
     console.log(result);
     await tileMove(result, zipUID);
-
-    let tileCount = await RNFS.readDir(tileCacheDirectory + '/' + id + '/tiles');
+    let tileCount = await RNFS.readDir(tileCacheDirectory + '/' + currentbasemapId + '/tiles');
     tileCount = tileCount.length;
 
     let currentOfflineMaps = Object.values(offlineMaps);
@@ -296,15 +290,15 @@ const SaveMapsModal = (props) => {
     // Check for existence of AsyncStorage offlineMapsData and store new count
     if (!currentOfflineMaps) currentOfflineMaps = [];
 
-    const customMap = Object.values(customMaps).filter(map => id === map.id);
+    const customMap = Object.values(customMaps).filter(map => currentbasemapId === map.id);
     console.log(customMap);
     if (source === 'strabo_spot_mapbox' || source === 'osm' || source === 'macrostrat') mapName = currentMapName;
     else mapName = customMap[0].title;
 
     let newOfflineMapsData = [];
     let thisMap = {};
+    thisMap.id = currentbasemapId;
     thisMap.source = source;
-    thisMap.id = id;
     thisMap.name = mapName;
     thisMap.count = tileCount;
     // thisMap.mapId = new Date().valueOf();
@@ -315,7 +309,7 @@ const SaveMapsModal = (props) => {
     //loop over offlineMapsData and add any other maps (not current)
     for (let i = 0; i < currentOfflineMaps.length; i++) {
       if (currentOfflineMaps[i].id) {
-        if (currentOfflineMaps[i].id !== id) {
+        if (currentOfflineMaps[i].id !== currentbasemapId) {
           //Add it to new array for Redux Storage
           newOfflineMapsData.push(currentOfflineMaps[i]);
         }
@@ -329,26 +323,32 @@ const SaveMapsModal = (props) => {
     console.log('Saved offlineMaps to Redux.');
   };
 
-  const saveMap = () => {
-    setShowMainMenu(false);
-    setShowLoadingMenu(true);
-    setShowLoadingBar(true);
-    getMapTiles().then(() => {
+  const saveMap = async () => {
+    try {
+      setShowMainMenu(false);
+      setShowLoadingMenu(true);
+      setShowLoadingBar(true);
+      setIsLoadingWave(true);
+      dispatch(clearedStatusMessages());
+      dispatch(addedStatusMessage('Gathering Tiles...'));
+      const zipId = await useMapsOffline.initializeSaveMap(extentString, downloadZoom);
+      setIsLoadingWave(false);
+      await downloadZip(zipId);
+      await delay(1000);
+      await doUnzip(zipId);
       setShowMainMenu(false);
       setShowLoadingMenu(false);
       setShowLoadingBar(false);
       setShowComplete(true);
-    });
-  };
-
-  const saveZipMap = async (startZipURL) => {
-    let response = await fetch(startZipURL);
-    let responseJson = await response.json();
-    const zipUID = responseJson.id;
-    if (zipUID) {
-      await checkStatus(zipUID);
     }
-    return Promise.resolve();
+    catch (err) {
+      console.error('Error saving map', err);
+      setIsError(true);
+      setErrorMessage(err);
+      setShowMainMenu(false);
+      setShowLoadingMenu(false);
+      setShowLoadingBar(false);
+    }
   };
 
   const tileMove = async (tilearray, zipUID) => {
@@ -357,13 +357,13 @@ const SaveMapsModal = (props) => {
     let notNeededTiles = 0;
     for (const tile of tilearray) {
       fileCount++;
-      let fileExists = await RNFS.exists(tileCacheDirectory + '/' + id + '/tiles/' + tile.name);
+      let fileExists = await RNFS.exists(tileCacheDirectory + '/' + currentbasemapId + '/tiles/' + tile.name);
       // console.log('foo exists: ', tile.name + ' ' + fileExists);
       if (!fileExists) {
         neededTiles++;
         setTilesToInstall(neededTiles);
         await RNFS.moveFile(tileTempDirectory + '/' + zipUID + '/tiles/' + tile.name,
-          tileCacheDirectory + '/' + id + '/tiles/' + tile.name);
+          tileCacheDirectory + '/' + currentbasemapId + '/tiles/' + tile.name);
         // console.log(tile);
       }
       else {
@@ -468,6 +468,11 @@ const SaveMapsModal = (props) => {
                   )}
                 </View>
               )}
+              {isError && (
+                <View style={{height: 40, justifyContent: 'center'}}>
+                  <Text style={{fontSize: 20}}>Something Went Wrong!</Text>
+                </View>
+              )}
               {showComplete && (
                 <View style={{height: 40, justifyContent: 'center'}}>
                   <Text style={{fontSize: 20}}>Success!</Text>
@@ -503,6 +508,14 @@ const SaveMapsModal = (props) => {
                   type={'clear'}
                   buttonStyle={{borderRadius: 30, paddingRight: 50, paddingLeft: 50}}
                   title={'Continue'}
+                />
+              )}
+              {isError && (
+                <Button
+                  onPress={props.close}
+                  type={'clear'}
+                  buttonStyle={{borderRadius: 30, paddingRight: 50, paddingLeft: 50}}
+                  title={'Close'}
                 />
               )}
             </View>
