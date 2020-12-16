@@ -29,7 +29,7 @@ const NumberInputField = ({
             name={'ios-information-circle-outline'}
             type={'ionicon'}
             color={themes.PRIMARY_ACCENT_COLOR}
-            onPress={() => Alert.alert(props.label, props.placeholder)}
+            onPress={() => props.onShowFieldInfo(props.label, props.placeholder)}
             containerStyle={{paddingRight: 5}}
           />
         )}
