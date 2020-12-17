@@ -5,6 +5,7 @@ import {Icon, ListItem} from 'react-native-elements';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty, padWithLeadingZeros, toTitleCase} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
+import {FIRST_ORDER_CLASS_FIELDS, SECOND_ORDER_CLASS_FIELDS} from './measurements.constants';
 import useMeasurementsHook from './useMeasurements';
 
 // Render a measurement item in a list
@@ -13,12 +14,8 @@ const MeasurementItem = (props) => {
   const [useMeasurements] = useMeasurementsHook();
 
   const getTypeText = (item) => {
-    const firstOrderClassFields = ['feature_type', 'type'];
-    const secondOrderClassFields = ['other_feature', 'vorticity', 'bedding_type', 'contact_type',
-      'foliation_type', 'fracture_type', 'vein_type', 'fault_or_sz_type', 'strat_type', 'intrusive_body_type',
-      'injection_type', 'fracture_zone', 'fault_or_sz', 'damage_zone', 'alteration_zone', 'enveloping_surface'];
-    let firstOrderClass = firstOrderClassFields.find(firstOrderClassField => item[firstOrderClassField]);
-    let secondOrderClass = secondOrderClassFields.find(secondOrderClassField => item[secondOrderClassField]);
+    let firstOrderClass = FIRST_ORDER_CLASS_FIELDS.find(firstOrderClassField => item[firstOrderClassField]);
+    let secondOrderClass = SECOND_ORDER_CLASS_FIELDS.find(secondOrderClassField => item[secondOrderClassField]);
     let firstOrderClassLabel = firstOrderClass
       ? toTitleCase(useMeasurements.getLabel(item[firstOrderClass]))
       : 'Unknown';
@@ -69,13 +66,17 @@ const MeasurementItem = (props) => {
             <ListItem.Title
               style={props.selectedIds.includes(
                 props.item.item.id) ? commonStyles.listItemTitleInverse : commonStyles.listItemTitle}
-            >{getMeasurementText(props.item.item)}</ListItem.Title>
+            >
+              {getMeasurementText(props.item.item)}
+            </ListItem.Title>
           </ListItem.Content>
           <ListItem.Content>
             <ListItem.Title
               style={props.selectedIds.includes(
                 props.item.item.id) ? commonStyles.listItemRightTitleInverse : commonStyles.listItemRightTitle}
-            >{getTypeText(props.item.item)}</ListItem.Title>
+            >
+              {getTypeText(props.item.item)}
+            </ListItem.Title>
           </ListItem.Content>
           <Icon
             name={'ios-information-circle-outline'}
