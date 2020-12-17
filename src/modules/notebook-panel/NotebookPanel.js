@@ -25,13 +25,13 @@ import {setSelectedSpot} from '../spots/spots.slice';
 import TagsPage from '../tags/TagsNotebook';
 import NotebookFooter from './notebook-footer/NotebookFooter';
 import NotebookHeader from './notebook-header/NotebookHeader';
-import {NOTEBOOK_PAGES, SECONDARY_NOTEBOOK_PAGES, SED_NOTEBOOK_PAGES} from './notebook.constants';
+import {NOTEBOOK_PAGES, NOTEBOOK_SUBPAGES, SECONDARY_NOTEBOOK_PAGES, SED_NOTEBOOK_PAGES} from './notebook.constants';
 import {setNotebookPageVisible} from './notebook.slice';
 import notebookStyles from './notebookPanel.styles';
 import Overview from './Overview';
 import PlaceholderPage from './PlaceholderPage';
 
-const NotebookPanel = props => {
+const NotebookPanel = (props) => {
   const [useSpots] = useSpotsHook();
   const dispatch = useDispatch();
   const pageVisible = useSelector(state => state.notebook.visibleNotebookPagesStack.slice(-1)[0]);
@@ -41,7 +41,7 @@ const NotebookPanel = props => {
 
   const notebookPageVisible = page => {
     dispatch(setNotebookPageVisible(page));
-    if (page === NOTEBOOK_PAGES.MEASUREMENT || page === NOTEBOOK_PAGES.MEASUREMENTDETAIL) {
+    if (page === NOTEBOOK_PAGES.MEASUREMENT || page === NOTEBOOK_SUBPAGES.MEASUREMENTDETAIL) {
       dispatch(setModalVisible({modal: MODALS.NOTEBOOK_MODALS.COMPASS}));
     }
     else if (page === NOTEBOOK_PAGES.SAMPLE) dispatch(setModalVisible({modal: MODALS.NOTEBOOK_MODALS.SAMPLE}));
@@ -75,11 +75,11 @@ const NotebookPanel = props => {
           {pageVisible === NOTEBOOK_PAGES.TAG && <TagsPage openMainMenu={props.openMainMenu}/>}
           {pageVisible === NOTEBOOK_PAGES.PHOTO && <ImagesPage onPress={props.onPress}/>}
 
-          {/*Additional Notebook Pages*/}
-          {pageVisible === NOTEBOOK_PAGES.GEOGRAPHY && <Geography/>}
-          {pageVisible === NOTEBOOK_PAGES.MEASUREMENTDETAIL && <MeasurementDetailPage/>}
-          {pageVisible === NOTEBOOK_PAGES.NESTING && <Nesting/>}
-          {pageVisible === NOTEBOOK_PAGES.SAMPLEDETAIL && <SampleDetailPage/>}
+          {/*Notebook Subpages*/}
+          {pageVisible === NOTEBOOK_SUBPAGES.GEOGRAPHY && <Geography/>}
+          {pageVisible === NOTEBOOK_SUBPAGES.MEASUREMENTDETAIL && <MeasurementDetailPage/>}
+          {pageVisible === NOTEBOOK_SUBPAGES.NESTING && <Nesting/>}
+          {pageVisible === NOTEBOOK_SUBPAGES.SAMPLEDETAIL && <SampleDetailPage/>}
 
           {/*Secondary Notebook Pages*/}
           {pageVisible === SECONDARY_NOTEBOOK_PAGES.THREE_D_STRUCTURES && <PlaceholderPage/>}
@@ -155,8 +155,8 @@ const NotebookPanel = props => {
 
     return (
       <View style={notebookStyles.panel}>
-        <Text style={{...commonStyles.noContentText, textAlign: 'center', paddingTop: 40}}>No Spot Currently
-          Selected!</Text>
+        <Text style={{...commonStyles.noContentText, textAlign: 'center', paddingTop: 40}}>
+          No Spot Currently Selected!</Text>
         {renderSpotsList()}
       </View>
     );

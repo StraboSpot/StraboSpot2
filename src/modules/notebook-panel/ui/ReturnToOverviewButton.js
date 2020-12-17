@@ -5,7 +5,7 @@ import {Button} from 'react-native-elements';
 
 import styles from './ui.styles';
 
-const returnToOverviewButton = props => {
+const ReturnToOverviewButton = props => {
   return (
     <View style={styles.navButtonsContainer}>
       <Button
@@ -24,4 +24,4 @@ const returnToOverviewButton = props => {
   );
 };
 
-export default returnToOverviewButton;
+export default ReturnToOverviewButton;

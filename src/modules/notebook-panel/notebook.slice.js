@@ -2,16 +2,18 @@ import {createSlice} from '@reduxjs/toolkit';
 
 import {isEmpty} from '../../shared/Helpers';
 import {COMPASS_TOGGLE_BUTTONS} from '../measurements/compass/compass.constants';
+import {PRIMARY_NOTEBOOK_PAGES} from './notebook.constants';
 
 const initialNotebookState = {
   visibleNotebookPagesStack: [],
   isNotebookPanelVisible: false,
   isSamplesModalVisible: false,
   compassMeasurementTypes: [COMPASS_TOGGLE_BUTTONS.PLANAR],
+  notebookToolbarIcons: Object.values(PRIMARY_NOTEBOOK_PAGES),
 };
 
 const notebookSlice = createSlice({
-  name:'notebook',
+  name: 'notebook',
   initialState: initialNotebookState,
   reducers: {
     setCompassMeasurementTypes(state, action) {
@@ -34,6 +36,12 @@ const notebookSlice = createSlice({
     setNotebookPanelVisible(state, action) {
       state.isNotebookPanelVisible = action.payload;
     },
+    addedNotebookToolbarIcon(state, action) {
+      state.notebookToolbarIcons = [...state.notebookToolbarIcons, action.payload];
+    },
+    removedNotebookToolbarIcon(state, action) {
+      state.notebookToolbarIcons = state.notebookToolbarIcons.filter(s => s !== action.payload);
+    },
   },
 });
 
@@ -42,6 +50,8 @@ export const {
   setNotebookPageVisible,
   setNotebookPageVisibleToPrev,
   setNotebookPanelVisible,
+  addedNotebookToolbarIcon,
+  removedNotebookToolbarIcon,
 } = notebookSlice.actions;
 
 export default notebookSlice.reducer;

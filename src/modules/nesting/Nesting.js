@@ -9,7 +9,7 @@ import * as SharedUI from '../../shared/ui';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import imageStyles from '../images/images.styles';
 import useImagesHook from '../images/useImages';
-import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
+import {NOTEBOOK_PAGES, NOTEBOOK_SUBPAGES} from '../notebook-panel/notebook.constants';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import {useSpotsHook} from '../spots';
@@ -34,7 +34,7 @@ const Nesting = (props) => {
 
   useEffect(() => {
     console.log('UE Nesting [spots]');
-    if (notebookPageVisible === NOTEBOOK_PAGES.NESTING) updateNest();
+    if (notebookPageVisible === NOTEBOOK_SUBPAGES.NESTING) updateNest();
   }, [spots, selectedSpot]);
 
   const goToSpotNesting = (spot) => {

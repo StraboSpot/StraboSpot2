@@ -32,7 +32,7 @@ import useMapsHook from '../maps/useMaps';
 import VertexDrag from '../maps/VertexDrag';
 import NotebookCompassModal from '../measurements/compass/NotebookCompassModal';
 import ShortcutCompassModal from '../measurements/compass/ShortcutCompassModal';
-import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
+import {NOTEBOOK_PAGES, NOTEBOOK_SUBPAGES} from '../notebook-panel/notebook.constants';
 import {setNotebookPageVisible, setNotebookPanelVisible} from '../notebook-panel/notebook.slice';
 import NotebookPanel from '../notebook-panel/NotebookPanel';
 import notebookStyles from '../notebook-panel/notebookPanel.styles';
@@ -295,7 +295,7 @@ const Home = () => {
         mapViewComponent.current.zoomToSpot();
         break;
       case 'showNesting':
-        dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.NESTING));
+        dispatch(setNotebookPageVisible(NOTEBOOK_SUBPAGES.NESTING));
         break;
       // Map Actions
       case MAP_MODES.DRAW.POINT:
@@ -431,7 +431,7 @@ const Home = () => {
         useImages.getImagesFromCameraRoll();
         break;
       case 'showGeographyInfo':
-        dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.GEOGRAPHY));
+        dispatch(setNotebookPageVisible(NOTEBOOK_SUBPAGES.GEOGRAPHY));
         break;
       case 'setToCurrentLocation':
         const currentLocation = await useMaps.getCurrentLocation();

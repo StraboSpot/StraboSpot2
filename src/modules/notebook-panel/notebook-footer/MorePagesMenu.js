@@ -1,33 +1,60 @@
 import React from 'react';
+import {View, Switch, ScrollView} from 'react-native';
 
-import {ListItem} from 'react-native-elements';
+import {Avatar, ListItem} from 'react-native-elements';
 import Dialog, {DialogContent, DialogTitle} from 'react-native-popup-dialog';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 import SectionDivider from '../../../shared/ui/SectionDivider';
-import {SECONDARY_NOTEBOOK_PAGES, SED_NOTEBOOK_PAGES} from '../notebook.constants';
-import {setNotebookPageVisible} from '../notebook.slice';
+import {
+  PRIMARY_NOTEBOOK_PAGES,
+  SECONDARY_NOTEBOOK_PAGES,
+  SED_NOTEBOOK_PAGES,
+  NOTEBOOK_PAGES_ICONS,
+  NOTEBOOK_PAGES,
+} from '../notebook.constants';
+import {setNotebookPageVisible, addedNotebookToolbarIcon, removedNotebookToolbarIcon} from '../notebook.slice';
 import styles from '../notebookPanel.styles';
 import footerStyles from './notebookFooter.styles';
 
 const MorePagesMenu = (props) => {
   const dispatch = useDispatch();
+  const toolbarIcons = useSelector(state => state.notebook.notebookToolbarIcons);
 
   const switchPage = (page) => {
-    const moreNotebookPages = {...SECONDARY_NOTEBOOK_PAGES, ...SED_NOTEBOOK_PAGES};
-    dispatch(setNotebookPageVisible(moreNotebookPages[page]));
+    dispatch(setNotebookPageVisible(page));
     props.closeMorePagesMenu();
   };
 
-  const renderMenuItem = ([key, name], isShowBottomDivider) => {
+  const toggleSwitch = (page) => {
+    if (toolbarIcons.includes(page)) dispatch(removedNotebookToolbarIcon(page));
+    else dispatch(addedNotebookToolbarIcon(page));
+  };
+
+  const renderMenuItem = (page, isShowBottomDivider) => {
+    const pageKey = Object.keys(NOTEBOOK_PAGES).find(key => NOTEBOOK_PAGES[key] === page);
     return (
       <ListItem
         containerStyle={footerStyles.morePagesListItem}
-        onPress={() => switchPage(key)}
+        onPress={() => switchPage(page)}
         bottomDivider={isShowBottomDivider}
       >
-        <ListItem.Content>
-          <ListItem.Title>{name}</ListItem.Title>
+        <ListItem.Content style={{flexDirection: 'row'}}>
+          <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
+            <View style={{flexDirection: 'row'}}>
+              <Avatar
+                source={NOTEBOOK_PAGES_ICONS[pageKey]}
+                placeholderStyle={{backgroundColor: 'transparent'}}
+                size={20}
+                containerStyle={{alignSelf: 'center'}}
+              />
+              <ListItem.Title style={{textAlignVertical: 'center', paddingLeft: 5}}>{page}</ListItem.Title>
+            </View>
+            <Switch
+              onChange={() => toggleSwitch(page)}
+              value={toolbarIcons.includes(page)}
+            />
+          </View>
         </ListItem.Content>
       </ListItem>
     );
@@ -47,12 +74,15 @@ const MorePagesMenu = (props) => {
       }
     >
       <DialogContent>
-        {Object.entries(SECONDARY_NOTEBOOK_PAGES).map((item, i, arr) => renderMenuItem(item, i < arr.length - 1))}
-        <SectionDivider
-          dividerText={'Sedimentology'}
-          style={footerStyles.morePagesSectionDivider}
-        />
-        {Object.entries(SED_NOTEBOOK_PAGES).map((item, i, arr) => renderMenuItem(item, i < arr.length - 1))}
+        <ScrollView>
+          {Object.values({...PRIMARY_NOTEBOOK_PAGES, ...SECONDARY_NOTEBOOK_PAGES}).map(
+            (item, i, arr) => renderMenuItem(item, i < arr.length - 1))}
+          <SectionDivider
+            dividerText={'Sedimentology'}
+            style={footerStyles.morePagesSectionDivider}
+          />
+          {Object.values(SED_NOTEBOOK_PAGES).map((item, i, arr) => renderMenuItem(item, i < arr.length - 1))}
+        </ScrollView>
       </DialogContent>
     </Dialog>
   );

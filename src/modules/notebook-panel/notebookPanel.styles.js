@@ -41,7 +41,6 @@ const notebookStyles = StyleSheet.create({
     flex: 10,
   },
   footerContainer: {
-    flex: 1,
     borderTopWidth: 2,
     borderTopColor: themes.DARKGREY,
   },

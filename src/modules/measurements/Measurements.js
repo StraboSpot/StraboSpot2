@@ -8,7 +8,7 @@ import * as themes from '../../shared/styles.constants';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {MODALS} from '../home/home.constants';
 import {setModalVisible} from '../home/home.slice';
-import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
+import {NOTEBOOK_PAGES, NOTEBOOK_SUBPAGES} from '../notebook-panel/notebook.constants';
 import {setCompassMeasurementTypes, setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import {setSelectedAttributes} from '../spots/spots.slice';
@@ -87,7 +87,7 @@ const MeasurementsPage = (props) => {
 
   const viewMeasurementDetail = (item) => {
     dispatch(setSelectedAttributes([item]));
-    dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.MEASUREMENTDETAIL));
+    dispatch(setNotebookPageVisible(NOTEBOOK_SUBPAGES.MEASUREMENTDETAIL));
   };
 
 
@@ -97,7 +97,7 @@ const MeasurementsPage = (props) => {
     setMultiSelectMode();
     // props.setSelectedAttributes(data);
     dispatch(setSelectedAttributes(data));
-    dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.MEASUREMENTDETAIL));
+    dispatch(setNotebookPageVisible(NOTEBOOK_SUBPAGES.MEASUREMENTDETAIL));
   };
 
   const startSelecting = (type) => {
@@ -115,7 +115,7 @@ const MeasurementsPage = (props) => {
     console.log('Identify Selected:', selectedFeaturesTemp);
     // props.setSelectedAttributes(selectedFeaturesTemp);
     dispatch(setSelectedAttributes(selectedFeaturesTemp));
-    dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.MEASUREMENTDETAIL));
+    dispatch(setNotebookPageVisible(NOTEBOOK_SUBPAGES.MEASUREMENTDETAIL));
   };
 
   const renderMeasurements = (type) => {
@@ -164,12 +164,14 @@ const MeasurementsPage = (props) => {
           )}
           {!multiSelectMode && (
             <View style={{flexDirection: 'row'}}>
-              {modalVisible !== 'Notebook Compass Modal' && <Button
-                titleStyle={styles.measurementsSectionDividerButtonText}
-                title={'Add'}
-                type={'clear'}
-                onPress={() => addMeasurement(dividerText)}
-              />}
+              {modalVisible !== 'Notebook Compass Modal' && (
+                <Button
+                  titleStyle={styles.measurementsSectionDividerButtonText}
+                  title={'Add'}
+                  type={'clear'}
+                  onPress={() => addMeasurement(dividerText)}
+                />
+              )}
               <React.Fragment>
                 <Button
                   disabled={dataThisSection.length < 1}

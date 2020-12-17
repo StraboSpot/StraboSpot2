@@ -1,83 +1,44 @@
 import React, {useState} from 'react';
 import {View} from 'react-native';
 
-import {useNavigation} from '@react-navigation/native';
 import {Button} from 'react-native-elements';
-import {connect} from 'react-redux';
+import {useSelector} from 'react-redux';
 
 import {isEmpty} from '../../../shared/Helpers';
 import IconButton from '../../../shared/ui/IconButton';
-import {NOTEBOOK_PAGES} from '../notebook.constants';
+import {NOTEBOOK_PAGES, NOTEBOOK_SUBPAGES, NOTEBOOK_PAGES_ICONS} from '../notebook.constants';
 import MorePagesMenu from './MorePagesMenu';
 import footerStyle from './notebookFooter.styles';
 
 const NotebookFooter = props => {
-  const navigation = useNavigation();
+  const toolbarIcons = useSelector(state => state.notebook.notebookToolbarIcons);
+  const notebookPageVisible = useSelector(state => (
+    !isEmpty(state.notebook.visibleNotebookPagesStack) && state.notebook.visibleNotebookPagesStack.slice(-1)[0]
+  ));
   const [isMorePagesMenuVisible, setIsMorePagesMenuVisible] = useState(false);
 
   const getPageIcon = (page) => {
-    switch (page) {
-      case NOTEBOOK_PAGES.TAG:
-        if (props.notebookPageVisible === NOTEBOOK_PAGES.TAG) return require('../../../assets/icons/Tag_pressed.png');
-        else return require('../../../assets/icons/Tag.png');
-      case NOTEBOOK_PAGES.MEASUREMENT:
-        if (props.notebookPageVisible === NOTEBOOK_PAGES.MEASUREMENT
-          || props.notebookPageVisible === NOTEBOOK_PAGES.MEASUREMENTDETAIL) {
-          return require('../../../assets/icons/Measurement_pressed.png');
-        }
-        else return require('../../../assets/icons/Measurement.png');
-      case NOTEBOOK_PAGES.SAMPLE:
-        if (props.notebookPageVisible === NOTEBOOK_PAGES.SAMPLE) {
-          return require('../../../assets/icons/Sample_pressed.png');
-        }
-        else return require('../../../assets/icons/Sample.png');
-      case NOTEBOOK_PAGES.NOTE:
-        if (props.notebookPageVisible === NOTEBOOK_PAGES.NOTE) return require('../../../assets/icons/Note_pressed.png');
-        else return require('../../../assets/icons/Note.png');
-      case NOTEBOOK_PAGES.PHOTO:
-        if (props.notebookPageVisible === NOTEBOOK_PAGES.PHOTO) {
-          return require('../../../assets/icons/Photo_pressed.png');
-        }
-        else return require('../../../assets/icons/Photo.png');
-      case NOTEBOOK_PAGES.SKETCH:
-        if (props.notebookPageVisible === NOTEBOOK_PAGES.SKETCH) {
-          return require('../../../assets/icons/Sketch_pressed.png');
-        }
-        else return require('../../../assets/icons/Sketch.png');
+    const pageKey = Object.keys(NOTEBOOK_PAGES).find(key => NOTEBOOK_PAGES[key] === page);
+    if (notebookPageVisible === page
+      || (page === NOTEBOOK_PAGES.MEASUREMENT && notebookPageVisible === NOTEBOOK_SUBPAGES.MEASUREMENTDETAIL)
+      || (page === NOTEBOOK_PAGES.SAMPLE && notebookPageVisible === NOTEBOOK_SUBPAGES.SAMPLEDETAIL)) {
+      return NOTEBOOK_PAGES_ICONS[pageKey + '_PRESSED'];
     }
+    else return NOTEBOOK_PAGES_ICONS[pageKey];
   };
 
   return (
     <React.Fragment>
-      <View style={footerStyle.footerIconContainer}>
-        <IconButton
-          source={getPageIcon(NOTEBOOK_PAGES.TAG)}
-          onPress={() => props.openPage(NOTEBOOK_PAGES.TAG)}
-
-        />
-        <IconButton
-          source={getPageIcon(NOTEBOOK_PAGES.MEASUREMENT)}
-          onPress={() => props.openPage(NOTEBOOK_PAGES.MEASUREMENT)}
-        />
-        <IconButton
-          source={getPageIcon(NOTEBOOK_PAGES.SAMPLE)}
-          onPress={() => props.openPage(NOTEBOOK_PAGES.SAMPLE)}
-        />
-        <IconButton
-          source={getPageIcon(NOTEBOOK_PAGES.NOTE)}
-          onPress={() => props.openPage(NOTEBOOK_PAGES.NOTE)}
-
-        />
-        <IconButton
-          source={getPageIcon(NOTEBOOK_PAGES.PHOTO)}
-          onPress={() => props.openPage(NOTEBOOK_PAGES.PHOTO)}
-        />
-        <IconButton
-          source={getPageIcon(NOTEBOOK_PAGES.SKETCH)}
-          onPress={() => navigation.navigate('Sketch')}
-        />
+      <View style={toolbarIcons.length <= 6 ? footerStyle.footerIconContainer : footerStyle.footerIconContainerWrap}>
+        {toolbarIcons.map(icon => (
+          <IconButton
+            source={getPageIcon(icon)}
+            onPress={() => props.openPage(icon)}
+          />
+        ))}
         <Button
           containerStyle={{alignSelf: 'center'}}
+          buttonStyle={{padding: 15}}
           title={'MORE'}
           type='clear'
           titleStyle={footerStyle.morePagesButton}
@@ -92,14 +53,4 @@ const NotebookFooter = props => {
   );
 };
 
-function mapStateToProps(state) {
-  return {
-    notebookPageVisible: isEmpty(state.notebook.visibleNotebookPagesStack)
-      ? null
-      : state.notebook.visibleNotebookPagesStack.slice(-1)[0],
-  };
-}
-
-const mapDispatchToProps = {};
-
-export default connect(mapStateToProps, mapDispatchToProps)(NotebookFooter);
+export default NotebookFooter;

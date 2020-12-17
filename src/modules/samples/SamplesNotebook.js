@@ -10,7 +10,7 @@ import * as themes from '../../shared/styles.constants';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {MODALS} from '../home/home.constants';
 import {setModalVisible} from '../home/home.slice';
-import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
+import {NOTEBOOK_PAGES, NOTEBOOK_SUBPAGES} from '../notebook-panel/notebook.constants';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import {setSelectedAttributes} from '../spots/spots.slice';
@@ -96,7 +96,7 @@ const SamplesNotebook = () => {
 
   const onSamplePressed = (item) => {
     dispatch(setSelectedAttributes([item]));
-    dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.SAMPLEDETAIL));
+    dispatch(setNotebookPageVisible(NOTEBOOK_SUBPAGES.SAMPLEDETAIL));
   };
 
   return (

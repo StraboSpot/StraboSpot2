@@ -7,16 +7,12 @@ export const NOTEBOOK_MENU_BUTTONS = {
   ZOOM_TO_SPOT: 'zoomToSpot',
 };
 
-export const NOTEBOOK_PAGES = {
-  OVERVIEW: 'Overview',
-  BASIC: 'Basic',
-  GEOGRAPHY: 'Geography',
-  TAG: 'Tag',
+export const NOTEBOOK_OVERVIEW_PAGE = {OVERVIEW: 'Overview'};
+
+export const PRIMARY_NOTEBOOK_PAGES = {
   MEASUREMENT: 'Measurements',
-  MEASUREMENTDETAIL: 'Measurement Detail',
-  SAMPLEDETAIL: 'Sample Detail',
+  TAG: 'Tag',
   SAMPLE: 'Sample',
-  NESTING: 'Nesting',
   NOTE: 'Note',
   PHOTO: 'Photo',
   SKETCH: 'Sketch',
@@ -40,7 +36,55 @@ export const SED_NOTEBOOK_PAGES = {
   INTERPRETATIONS: 'Interpretations',
 };
 
+export const NOTEBOOK_SUBPAGES = {
+  GEOGRAPHY: 'Geography',
+  MEASUREMENTDETAIL: 'Measurement Detail',
+  SAMPLEDETAIL: 'Sample Detail',
+  NESTING: 'Nesting',
+};
+
+export const NOTEBOOK_PAGES = {NOTEBOOK_OVERVIEW_PAGE, ...PRIMARY_NOTEBOOK_PAGES, ...SECONDARY_NOTEBOOK_PAGES, ...SED_NOTEBOOK_PAGES};
+
 export const NOTEBOOK_DETAIL_PAGE_MAIN_PAGE_DICTIONARY = {
-  'Sample Detail' : 'Sample',
+  'Sample Detail': 'Sample',
   'Measurement Detail': 'Measurements',
+};
+
+export const NOTEBOOK_PAGES_ICONS = {
+  MEASUREMENT: require('../../assets/icons/Measurement.png'),
+  MEASUREMENT_PRESSED: require('../../assets/icons/Measurement_pressed.png'),
+  TAG: require('../../assets/icons/Tag.png'),
+  TAG_PRESSED: require('../../assets/icons/Tag_pressed.png'),
+  SAMPLE: require('../../assets/icons/Sample.png'),
+  SAMPLE_PRESSED: require('../../assets/icons/Sample_pressed.png'),
+  NOTE: require('../../assets/icons/Note.png'),
+  NOTE_PRESSED: require('../../assets/icons/Note_pressed.png'),
+  PHOTO: require('../../assets/icons/Photo.png'),
+  PHOTO_PRESSED: require('../../assets/icons/Photo_pressed.png'),
+  SKETCH: require('../../assets/icons/Sketch.png'),
+  SKETCH_PRESSED: require('../../assets/icons/Sketch_pressed.png'),
+  THREE_D_STRUCTURES: require('../../assets/icons/3DStructure.png'),
+  THREE_D_STRUCTURES_PRESSED: require('../../assets/icons/3DStructure_pressed.png'),
+  IG_MET: require('../../assets/icons/Petrology.png'),
+  IG_MET_PRESSED: require('../../assets/icons/Petrology_pressed.png'),
+  FABRICS: require('../../assets/icons/Fabric.png'),
+  FABRICS_PRESSED: require('../../assets/icons/Fabric_pressed.png'),
+  OTHER_FEATURES: require('../../assets/icons/OtherFeatures.png'),
+  OTHER_FEATURES_PRESSED: require('../../assets/icons/OtherFeatures_pressed.png'),
+  RELATIONSHIPS: require('../../assets/icons/MoreTools.png'),
+  RELATIONSHIPS_PRESSED: require('../../assets/icons/MoreTools_pressed.png'),
+  DATA: require('../../assets/icons/MoreTools.png'),
+  DATA_PRESSED: require('../../assets/icons/MoreTools_pressed.png'),
+  LITHOLOGIES: require('../../assets/icons/SedLithologies.png'),
+  LITHOLOGIES_PRESSED: require('../../assets/icons/SedLithologies_pressed.png'),
+  BEDDING: require('../../assets/icons/SedBedding.png'),
+  BEDDING_PRESSED: require('../../assets/icons/SedBedding_pressed.png'),
+  STRUCTURES: require('../../assets/icons/SedStructure.png'),
+  STRUCTURES_PRESSED: require('../../assets/icons/SedStructure_pressed.png'),
+  DIAGENESIS: require('../../assets/icons/SedDiagenesis.png'),
+  DIAGENESIS_PRESSED: require('../../assets/icons/SedDiagenesis_pressed.png'),
+  FOSSILS: require('../../assets/icons/SedFossil.png'),
+  FOSSILS_PRESSED: require('../../assets/icons/SedFossil_pressed.png'),
+  INTERPRETATIONS: require('../../assets/icons/SedInterpretation.png'),
+  INTERPRETATIONS_PRESSED: require('../../assets/icons/SedInterpretation_pressed.png'),
 };

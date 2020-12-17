@@ -8,7 +8,7 @@ import {isEmpty} from '../../shared/Helpers';
 import attributesStyles from '../main-menu-panel/attributes.styles';
 import {SORTED_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import SortingButtons from '../main-menu-panel/SortingButtons';
-import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
+import {NOTEBOOK_PAGES, NOTEBOOK_SUBPAGES} from '../notebook-panel/notebook.constants';
 import useSpotsHook from '../spots/useSpots';
 
 const SamplesList = (props) => {
@@ -20,7 +20,7 @@ const SamplesList = (props) => {
 
   const renderSample = (sample, spot) => {
     return (
-      <ListItem key={sample.id} onPress={() => props.openSpotInNotebook(spot, NOTEBOOK_PAGES.SAMPLEDETAIL, [sample])}>
+      <ListItem key={sample.id} onPress={() => props.openSpotInNotebook(spot, NOTEBOOK_SUBPAGES.SAMPLEDETAIL, [sample])}>
         <ListItem.Content>
           <ListItem.Title>{sample.sample_id_name}</ListItem.Title>
         </ListItem.Content>
