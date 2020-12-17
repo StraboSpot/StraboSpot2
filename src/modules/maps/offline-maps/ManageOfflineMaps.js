@@ -70,19 +70,15 @@ const ManageOfflineMaps = (props) => {
 
   const readDirectoryForMaps = async () => {
     try {
-      const res = await RNFS.exists(tilesDirectory);
-      console.log('Directory exists:', res);
-      setDirectoryExists(res);
-      const files = await RNFS.readdir(tileCacheDirectory);
-      console.log(files);
+      const files = await useDevice.readDirectoryForMaps()
+      setDirectoryExists(true);
       const availableMapObj = Object.assign({}, ...files.map(file => ({[offlineMaps[file].id]: offlineMaps[file]})));
-      console.log(availableMapObj);
       setAvailableMaps({...availableMaps, ...availableMapObj});
       setLoading(false);
     }
     catch (err) {
       console.error('Error reading directory for maps', err);
-      dispatch(setOfflineMap({}));
+      setLoading(false);
     }
   };
 
