@@ -59,7 +59,7 @@ const ManageOfflineMaps = (props) => {
         {
           text: 'OK',
           onPress: () => {
-            delete availableMaps[map.id];
+            Object.values(availableMaps).filter(mapId => mapId.id !== map.id)
             useDevice.deleteOfflineMap(map);
           },
         },
@@ -131,7 +131,10 @@ const ManageOfflineMaps = (props) => {
       <Button
         title={'Download tiles of current map'}
         disabled={!isOnline}
-        onPress={() => dispatch(setOfflineMapsModalVisible(true))}
+        onPress={() => {
+          props.closeMainMenuPanel()
+          dispatch(setOfflineMapsModalVisible(true));
+        }}
         containerStyle={styles.buttonContainer}
         buttonStyle={commonStyles.standardButton}
         titleStyle={commonStyles.standardButtonText}
