@@ -3,7 +3,7 @@ import {Platform} from 'react-native';
 import RNFS from 'react-native-fs';
 import {useDispatch} from 'react-redux';
 
-import {deletedOfflineMap} from '../modules/maps/offline-maps/offlineMaps.slice';
+import {deletedOfflineMap, setOfflineMap} from '../modules/maps/offline-maps/offlineMaps.slice';
 import {doesBackupDirectoryExist} from '../modules/project/projects.slice';
 
 
@@ -12,8 +12,8 @@ const useDevice = () => {
   const appDirectoryForDistributedBackups = '/StraboSpotProjects';
   const appDirectory = '/StraboSpot';
   const imagesDirectory = appDirectory + '/Images';
-  const tilesDirectory = '/StraboSpotTiles';
-  const tileCacheDirectory = devicePath + tilesDirectory + '/TileCache';
+  const tilesDirectory = devicePath + '/StraboSpotTiles';
+  const tileCacheDirectory = tilesDirectory  + '/TileCache';
   const tileTempDirectory = devicePath + tilesDirectory + '/TileTemp';
   const zipsDirectory = devicePath + tilesDirectory + '/TileZips';
 
@@ -108,6 +108,20 @@ const useDevice = () => {
       });
   };
 
+  const readDirectoryForMaps = async () => {
+    try {
+      await RNFS.exists(tilesDirectory);
+      const files = await RNFS.readdir(tileCacheDirectory);
+      console.log(files);
+      return files;
+    }
+    catch (err) {
+      console.error('Error reading directory for maps', err);
+      dispatch(setOfflineMap({}));
+      throw Error(err);
+    }
+  };
+
   const writeFileToDevice = (path, filename, data) => {
     return RNFS.writeFile(path + '/' + filename, JSON.stringify(data), 'utf8')
       .then(() => 'FILES WRITTEN SUCCESSFULLY!')
@@ -121,6 +135,7 @@ const useDevice = () => {
     doesDeviceDirectoryExist: doesDeviceDirectoryExist,
     doesDeviceFileExist: doesDeviceFileExist,
     makeDirectory: makeDirectory,
+    readDirectoryForMaps: readDirectoryForMaps,
     writeFileToDevice: writeFileToDevice,
   };
 };

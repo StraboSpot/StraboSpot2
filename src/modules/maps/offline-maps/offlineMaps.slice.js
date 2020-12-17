@@ -1,9 +1,10 @@
 import {createSlice} from '@reduxjs/toolkit';
-import {exp} from 'react-native-reanimated';
+
+import {isEmpty} from '../../../shared/Helpers';
 
 const initialOfflineMapsState = {
   offlineMaps: {},
-}
+};
 
 const offlineMapsSlice = createSlice({
   name: 'offlineMaps',
@@ -18,7 +19,8 @@ const offlineMapsSlice = createSlice({
     },
     setOfflineMap(state, action) {
       console.log('Setting offline maps: ', action.payload);
-      state.offlineMaps = {...state.offlineMaps, ...action.payload};
+      if (isEmpty(action.payload)) state.offlineMaps = initialOfflineMapsState.offlineMaps;
+      else state.offlineMaps = {...state.offlineMaps, ...action.payload};
     },
   },
 });

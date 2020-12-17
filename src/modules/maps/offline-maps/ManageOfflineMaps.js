@@ -10,6 +10,7 @@ import commonStyles from '../../../shared/common.styles';
 import {isEmpty} from '../../../shared/Helpers';
 import {setOfflineMapsModalVisible} from '../../home/home.slice';
 import Divider from '../../main-menu-panel/MainMenuPanelDivider';
+import {setOfflineMap} from '../offline-maps/offlineMaps.slice';
 import styles from './offlineMaps.styles';
 import useMapsOfflineHook from './useMapsOffline';
 
@@ -18,12 +19,14 @@ const ManageOfflineMaps = (props) => {
 
   const [directoryExists, setDirectoryExists] = useState(false);
   const [availableMaps, setAvailableMaps] = useState({});
+  const [loading, setLoading] = useState(true);
 
   const devicePath = RNFS.DocumentDirectoryPath;
   const tilesDirectory = devicePath + '/StraboSpotTiles';
   const tileCacheDirectory = tilesDirectory + '/TileCache';
   const offlineMaps = useSelector(state => state.offlineMap.offlineMaps);
   const isOnline = useSelector(state => state.home.isOnline);
+  const mainMenuPageVisible = useSelector(state => state.mainMenu.mainMenuPageVisible);
   const dispatch = useDispatch();
 
   const useDevice = useDeviceHook();
@@ -31,7 +34,12 @@ const ManageOfflineMaps = (props) => {
 
   useEffect(() => {
     readDirectoryForMaps().catch(err => console.log(err));
-  }, [offlineMaps]);
+  }, [mainMenuPageVisible]);
+
+  useEffect(() => {
+    console.log('Offline Maps Updated:', offlineMaps);
+    setAvailableMaps(offlineMaps)
+  }, [offlineMaps])
 
   useEffect(() => {
     console.log('Is Online: ', isOnline);
@@ -61,22 +69,24 @@ const ManageOfflineMaps = (props) => {
   };
 
   const readDirectoryForMaps = async () => {
-    const res = await RNFS.exists(tilesDirectory);
-    console.log('Directory exists:', res);
-    setDirectoryExists(res);
-    const files = await RNFS.readdir(tileCacheDirectory);
-    console.log(files);
-    const availableMapObj = Object.assign({}, ...files.map(file => ({[offlineMaps[file].id]: offlineMaps[file]})));
-    console.log(availableMapObj);
-    setAvailableMaps({...availableMaps, ...availableMapObj});
+    try {
+      const files = await useDevice.readDirectoryForMaps()
+      setDirectoryExists(true);
+      const availableMapObj = Object.assign({}, ...files.map(file => ({[offlineMaps[file].id]: offlineMaps[file]})));
+      setAvailableMaps({...availableMaps, ...availableMapObj});
+      setLoading(false);
+    }
+    catch (err) {
+      console.error('Error reading directory for maps', err);
+      setLoading(false);
+    }
   };
 
   const renderMapsList = () => {
     return (
-      <View style={{flex: 1}}>
-        {!isEmpty(availableMaps) && directoryExists ? (
+      <View>
+        {!isEmpty(availableMaps) && directoryExists && !loading ? (
           Object.values(availableMaps).map((item, i) => (
-            <View style={styles.sectionsContainer}>
             <ListItem
               containerStyle={styles.list}
               bottomDivider={i < Object.values(availableMaps).length - 1}
@@ -103,7 +113,6 @@ const ManageOfflineMaps = (props) => {
                 </View>
               </ListItem.Content>
             </ListItem>
-            </View>
           ))
         ) : (
           <View style={{alignItems: 'center', paddingTop: 30}}>
@@ -128,7 +137,7 @@ const ManageOfflineMaps = (props) => {
         titleStyle={commonStyles.standardButtonText}
       />
       <Divider sectionText={'offline maps'} style={styles.divider}/>
-      {renderMapsList()}
+      {loading ? <Text style={{textAlign: 'center', padding: 15}}>Loading...</Text> : renderMapsList()}
     </React.Fragment>
   );
 };

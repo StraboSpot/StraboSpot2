@@ -112,6 +112,11 @@ const useServerRequests = () => {
     return request('GET', '/myProjects', encodedLogin);
   };
 
+  const getMapTilesFromHost = async (zipUrl) => {
+    const response = await fetch(zipUrl);
+    return await response.json();
+  };
+
   const handleError = (response) => {
     return Promise.reject(response);
   };
@@ -123,10 +128,10 @@ const useServerRequests = () => {
     else return handleError(response);
   };
 
-  const timeoutPromise = (ms, promise) => {
+  const timeoutPromise = async (ms, promise) => {
     return new Promise((resolve, reject) => {
       const timeout = setTimeout(() => {
-        Alert.alert('There was an error getting your request');
+        // Alert.alert('There was an error getting your request');
         reject(new Error('promise timeout'));
       }, ms);
       promise.then((res) => {
@@ -204,6 +209,24 @@ const useServerRequests = () => {
     return request('GET', '/verifyimage/' + imageId, encodedLogin);
   };
 
+  const zipURLStatus = async (zipUrl) => {
+    let responseJson = {};
+    const response = await fetch(zipUrl)
+    responseJson = await response.json();
+    console.log(responseJson);
+    if (responseJson.status.includes('Error') ) {
+      throw new Error(responseJson.status)
+    }
+    else if (responseJson.status !== 'Zip File Ready.') {
+      console.log(responseJson);
+      await zipURLStatus(zipUrl);
+    }
+    else {
+      console.log(responseJson);
+      return responseJson.status;
+    }
+  };
+
   const serverRequests = {
     addDatasetToProject: addDatasetToProject,
     authenticateUser: authenticateUser,
@@ -215,13 +238,16 @@ const useServerRequests = () => {
     getProfile: getProfile,
     getProject: getProject,
     getProfileImage: getProfileImage,
+    getMapTilesFromHost: getMapTilesFromHost,
     registerUser: registerUser,
     testCustomMapUrl: testCustomMapUrl,
+    timeoutPromise: timeoutPromise,
     updateDataset: updateDataset,
     updateDatasetSpots: updateDatasetSpots,
     updateProject: updateProject,
     uploadImage: uploadImage,
     verifyImageExistence: verifyImageExistence,
+    zipURLStatus: zipURLStatus,
   };
 
   return [serverRequests];
