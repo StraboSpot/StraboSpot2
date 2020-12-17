@@ -14,13 +14,9 @@ import useDeviceHook from '../../../services/useDevice';
 import {toNumberFixedValue} from '../../../shared/Helpers';
 import * as themes from '../../../shared/styles.constants';
 import {addedStatusMessage, clearedStatusMessages, removedLastStatusMessage} from '../../home/home.slice';
-import useMapsHook from '../useMaps';
-import {setOfflineMap} from './offlineMaps.slice';
 import useMapsOfflineHook from './useMapsOffline';
 
 const SaveMapsModal = (props) => {
-  // console.log(props);
-  const [useMaps] = useMapsHook();
   const useDevice = useDeviceHook();
   const useMapsOffline = useMapsOfflineHook();
 
@@ -28,22 +24,14 @@ const SaveMapsModal = (props) => {
   const devicePath = RNFS.DocumentDirectoryPath;
   let tilesDirectory = '/StraboSpotTiles';
   let tileZipsDirectory = devicePath + tilesDirectory + '/TileZips';
-  let tileCacheDirectory = devicePath + tilesDirectory + '/TileCache';
   let tileTempDirectory = devicePath + tilesDirectory + '/TileTemp';
-  let zipError = '';
-  let tryCount = 0;
 
   const currentBasemap = useSelector(state => state.map.currentBasemap);
-  const customMaps = useSelector(state => state.map.customMaps);
-  const offlineMaps = useSelector(state => state.offlineMap.offlineMaps);
   const statusMessage = useSelector(state => state.home.statusMessages);
   const dispatch = useDispatch();
 
-  const currentbasemapId = currentBasemap && currentBasemap.id;
-  const source = currentBasemap && currentBasemap.source;
   const currentMapName = currentBasemap && currentBasemap.title;
   const maxZoom = currentBasemap && currentBasemap.maxZoom;
-  // let zoomLevels = [];
   let progressStatus = '';
 
   const [tileCount, setTileCount] = useState(0);
@@ -107,55 +95,12 @@ const SaveMapsModal = (props) => {
 
   const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-  // const checkStatus = async (zipUID) => {
-  //   // const checkZipURL = tilehost + '/asyncstatus/' + zipUID;
-  //   try {
-  //     // let response = await fetch(checkZipURL);
-  //     // let responseJson = await response.json();
-  //
-  //     if (responseJson.error) {
-  //       zipError = responseJson.error;
-  //       // setProgressMessage(responseJson.error);
-  //       progressStatus = responseJson.error;
-  //       setPercentDone(1);
-  //     }
-  //     else {
-  //       progressStatus = responseJson.status;
-  //     }
-  //   }
-  //   catch {
-  //     console.log('Network Error');
-  //   }
-  //   tryCount++;
-  //   console.log(tryCount);
-  //   if (progressStatus !== 'Zip File Ready.' && zipError === '') {
-  //     // await delay(500);
-  //     await checkStatus(zipUID);
-  //   }
-  //   else {
-  //     setIsLoadingWave(false);
-  //     progressStatus = 'Downloading Tiles...';
-  //     dispatch(addedStatusMessage('Downloading Tiles...'));
-  //     await downloadZip(zipUID);
-  //     await delay(1000);
-  //     await doUnzip(zipUID);
-  //   }
-  // };
-
-  const doUnzip = async (zipUID) => {
+  const doUnzip = async () => {
     try {
       // hide progress bar
       // setShowLoadingBar(false);
       setPercentDone(0);
-      progressStatus = 'Installing Tiles in StraboSpot...';
-      dispatch(removedLastStatusMessage());
-      dispatch(addedStatusMessage('Preparing to install tiles...'));
-      const sourcePath = tileZipsDirectory + '/' + zipUID + '.zip';
-      const targetPath = tileTempDirectory;
-      await unzip(sourcePath, targetPath);
-      console.log('unzip completed');
-      await moveFiles(zipUID); //move files to the correct folder based on saveId
-      console.log('move done.');
+      await useMapsOffline.doUnzip();
     }
     catch (err) {
       console.error('Unzip Error:', err);
@@ -197,132 +142,6 @@ const SaveMapsModal = (props) => {
     }
   };
 
-
-  // // Start getting the tiles to download by creating a zip url
-  // const getMapTiles = async () => {
-  //   try {
-  //     setIsLoadingWave(true);
-  //     progressStatus = 'Starting Download...';
-  //     dispatch(addedStatusMessage('Gathering Tiles...'));
-  //     return await useMapsOffline.getMapTiles(extentString, downloadZoom);
-  //   }
-  //   catch (err) {
-  //     console.error('Error getting map tiles');
-  //     throw new Error(err);
-  //   }
-  //   //   let layer, id, username;
-  //   //   let startZipURL = 'unset';
-  //   //   setIsLoadingWave(true);
-  //   //   // setProgressMessage('Starting Download...');
-  //   //   progressStatus = 'Starting Download...';
-  //   //   // dispatch(addedStatusMessage('Starting Download...'));
-  //   //   dispatch(addedStatusMessage('Gathering Tiles...'));
-  //   //
-  //   //   const layerID = currentBasemap.id;
-  //   //   const layerSource = currentBasemap.source;
-  //   //
-  //   //   // await checkValidMapName(currentBasemap);
-  //   //
-  //   //   //let startZipURL = tilehost + '/asynczip?mapid=' + mapID + '&layer=' + layerID + '&extent=' + extentString + '&zoom=' + downloadZoom;
-  //   //
-  //   //   if (layerSource === 'map_warper' || layerSource === 'mapbox_styles' || layerSource === 'strabospot_mymaps') {
-  //   //     //configure advanced URL for custom map types here.
-  //   //     //first, figure out what kind of map we are downloading...
-  //   //
-  //   //     let downloadMap = {};
-  //   //
-  //   //     if (customMaps[layerID].id === currentBasemap.id) {
-  //   //       downloadMap = customMaps[layerID];
-  //   //     }
-  //   //
-  //   //     console.log('DownloadMap: ', downloadMap);
-  //   //
-  //   //     if (downloadMap.source === 'Mapbox Style' || downloadMap.source === 'mapbox_styles') {
-  //   //       layer = 'mapboxstyles';
-  //   //       const parts = downloadMap.id.split('/');
-  //   //       username = parts[0];
-  //   //       id = parts[1];
-  //   //       const accessToken = downloadMap.key;
-  //   //       startZipURL = tilehost + '/asynczip?layer=' + layer + '&extent=' + extentString + '&zoom=' + downloadZoom + '&username=' + username + '&id=' + id + '&access_token=' + accessToken;
-  //   //     }
-  //   //     else if (downloadMap.source === 'Map Warper' || downloadMap.source === 'map_warper') {
-  //   //       layer = 'mapwarper';
-  //   //       id = downloadMap.id;
-  //   //       startZipURL = tilehost + '/asynczip?layer=' + layer + '&extent=' + extentString + '&zoom=' + downloadZoom + '&id=' + id;
-  //   //     }
-  //   //     else if (downloadMap.source === 'strabospot_mymaps') {
-  //   //       layer = 'strabomymaps';
-  //   //       id = downloadMap.id;
-  //   //       startZipURL = tilehost + '/asynczip?layer=' + layer + '&extent=' + extentString + '&zoom=' + downloadZoom + '&id=' + id;
-  //   //     }
-  //   //   }
-  //   //   else {
-  //   //     layer = currentBasemap.id;
-  //   //     startZipURL = tilehost + '/asynczip?layer=' + layerID + '&extent=' + extentString + '&zoom=' + downloadZoom;
-  //   //   }
-  //   //
-  //   //   console.log('startZipURL: ', startZipURL);
-  //   //
-  //   //   await saveZipMap(startZipURL);
-  //   //   return Promise.resolve();
-  // };
-
-  const moveFiles = async (zipUID) => {
-    dispatch(removedLastStatusMessage());
-    dispatch(addedStatusMessage('Installing tiles...'));
-    let result, mapName;
-    let folderExists = await RNFS.exists(tileCacheDirectory + '/' + currentbasemapId);
-    if (!folderExists) {
-      console.log('FOLDER DOESN\'T EXIST! ' + currentbasemapId);
-      await RNFS.mkdir(tileCacheDirectory + '/' + currentbasemapId);
-      await RNFS.mkdir(tileCacheDirectory + '/' + currentbasemapId + '/tiles');
-    }
-
-    // Move files to correct location
-    result = await RNFS.readDir(tileTempDirectory + '/' + zipUID + '/tiles');
-    console.log(result);
-    await tileMove(result, zipUID);
-    let tileCount = await RNFS.readDir(tileCacheDirectory + '/' + currentbasemapId + '/tiles');
-    tileCount = tileCount.length;
-
-    let currentOfflineMaps = Object.values(offlineMaps);
-
-    // Check for existence of AsyncStorage offlineMapsData and store new count
-    if (!currentOfflineMaps) currentOfflineMaps = [];
-
-    const customMap = Object.values(customMaps).filter(map => currentbasemapId === map.id);
-    console.log(customMap);
-    if (source === 'strabo_spot_mapbox' || source === 'osm' || source === 'macrostrat') mapName = currentMapName;
-    else mapName = customMap[0].title;
-
-    let newOfflineMapsData = [];
-    let thisMap = {};
-    thisMap.id = currentbasemapId;
-    thisMap.source = source;
-    thisMap.name = mapName;
-    thisMap.count = tileCount;
-    // thisMap.mapId = new Date().valueOf();
-    thisMap.mapId = zipUID;
-    thisMap.date = new Date().toLocaleString();
-    newOfflineMapsData.push(thisMap);
-
-    //loop over offlineMapsData and add any other maps (not current)
-    for (let i = 0; i < currentOfflineMaps.length; i++) {
-      if (currentOfflineMaps[i].id) {
-        if (currentOfflineMaps[i].id !== currentbasemapId) {
-          //Add it to new array for Redux Storage
-          newOfflineMapsData.push(currentOfflineMaps[i]);
-        }
-      }
-    }
-
-    const mapSavedObject = Object.assign({}, ...newOfflineMapsData.map(map => ({[map.id]: map})));
-    console.log('Map to save to Redux', mapSavedObject);
-
-    await dispatch(setOfflineMap(mapSavedObject));
-    console.log('Saved offlineMaps to Redux.');
-  };
-
   const saveMap = async () => {
     try {
       setShowMainMenu(false);
@@ -336,6 +155,11 @@ const SaveMapsModal = (props) => {
       await downloadZip(zipId);
       await delay(1000);
       await doUnzip(zipId);
+      const tileArray = await useMapsOffline.moveFiles(zipId);
+      console.log(tileArray);
+      await tileMove(tileArray, zipId);
+      await useMapsOffline.updateMapTileCount();
+      console.log('Saved offlineMaps to Redux.');
       setShowMainMenu(false);
       setShowLoadingMenu(false);
       setShowLoadingBar(false);
@@ -351,26 +175,14 @@ const SaveMapsModal = (props) => {
     }
   };
 
-  const tileMove = async (tilearray, zipUID) => {
-    let fileCount = 0;
-    let neededTiles = 0;
-    let notNeededTiles = 0;
+  const tileMove = async (tilearray) => {
+    dispatch(removedLastStatusMessage());
+    dispatch(addedStatusMessage('Installing tiles...'));
     for (const tile of tilearray) {
-      fileCount++;
-      let fileExists = await RNFS.exists(tileCacheDirectory + '/' + currentbasemapId + '/tiles/' + tile.name);
-      // console.log('foo exists: ', tile.name + ' ' + fileExists);
-      if (!fileExists) {
-        neededTiles++;
-        setTilesToInstall(neededTiles);
-        await RNFS.moveFile(tileTempDirectory + '/' + zipUID + '/tiles/' + tile.name,
-          tileCacheDirectory + '/' + currentbasemapId + '/tiles/' + tile.name);
-        // console.log(tile);
-      }
-      else {
-        notNeededTiles++;
-        setInstalledTiles(notNeededTiles);
-      }
-      setPercentDone(fileCount / tilearray.length);
+      const progress = await useMapsOffline.moveTile(tile);
+      setPercentDone(progress[0] / tilearray.length);
+      setInstalledTiles(progress[2]);
+      setTilesToInstall(progress[1]);
     }
   };
 
