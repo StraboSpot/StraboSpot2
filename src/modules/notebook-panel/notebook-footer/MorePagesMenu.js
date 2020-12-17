@@ -48,7 +48,7 @@ const MorePagesMenu = (props) => {
                 size={20}
                 containerStyle={{alignSelf: 'center'}}
               />
-              <ListItem.Title style={{textAlignVertical: 'center', paddingLeft: 5}}>{page}</ListItem.Title>
+              <ListItem.Title style={{paddingLeft: 5, alignSelf: 'center'}}>{page}</ListItem.Title>
             </View>
             <Switch
               onChange={() => toggleSwitch(page)}

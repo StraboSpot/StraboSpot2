@@ -15,7 +15,7 @@ export const PRIMARY_NOTEBOOK_PAGES = {
   SAMPLE: 'Sample',
   NOTE: 'Note',
   PHOTO: 'Photo',
-  SKETCH: 'Sketch',
+  // SKETCH: 'Sketch',
 };
 
 export const SECONDARY_NOTEBOOK_PAGES = {
@@ -63,8 +63,8 @@ export const NOTEBOOK_PAGES_ICONS = {
   PHOTO_PRESSED: require('../../assets/icons/Photo_pressed.png'),
   SKETCH: require('../../assets/icons/Sketch.png'),
   SKETCH_PRESSED: require('../../assets/icons/Sketch_pressed.png'),
-  THREE_D_STRUCTURES: require('../../assets/icons/3DStructure.png'),
-  THREE_D_STRUCTURES_PRESSED: require('../../assets/icons/3DStructure_pressed.png'),
+  THREE_D_STRUCTURES: require('../../assets/icons/3Dstructure.png'),
+  THREE_D_STRUCTURES_PRESSED: require('../../assets/icons/3Dstructure_pressed.png'),
   IG_MET: require('../../assets/icons/Petrology.png'),
   IG_MET_PRESSED: require('../../assets/icons/Petrology_pressed.png'),
   FABRICS: require('../../assets/icons/Fabric.png'),
