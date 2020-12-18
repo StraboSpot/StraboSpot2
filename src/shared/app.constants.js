@@ -3,4 +3,4 @@ export const REDUX = {
 };
 
 // Be sure to change the version in X-Code to match TODO: Change X-Code version to match
-export const VERSION_NUMBER = 'Version 0.16.8';
+export const VERSION_NUMBER = 'Version 0.17.0';
