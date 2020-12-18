@@ -212,9 +212,9 @@ const useDownload = () => {
               'NEW/MODIFIED Images Downloaded: ' + imagesDownloadedCount + ' of ' + neededImageIds.length
               + ' NEW/MODIFIED Images Saved: ' + savedImagesCount + ' of ' + neededImageIds.length);
             dispatch(removedLastStatusMessage());
-            dispatch(addedStatusMessage({
-              statusMessage: 'NEW/MODIFIED Images Saved: ' + savedImagesCount + ' of ' + neededImageIds.length,
-            }));
+            dispatch(addedStatusMessage(
+              'NEW/MODIFIED Images Saved: ' + savedImagesCount + ' of ' + neededImageIds.length,
+            ));
           }),
         );
         console.log('Downloaded Images ' + imageCount + '/' + neededImageIds.length
@@ -222,16 +222,11 @@ const useDownload = () => {
         dispatch(removedLastStatusMessage());
         if (imagesFailedCount > 0) {
           dispatch(addedStatusMessage(
-            {
-              statusMessage: 'Downloaded Images ' + imageCount + '/' + neededImageIds.length
-                + '\nFailed Images ' + imagesFailedCount + '/' + neededImageIds.length,
-            }));
-        }
-        else {
-          dispatch(addedStatusMessage(
-            {statusMessage: 'Downloaded Images: ' + imageCount + '/' + neededImageIds.length},
+            'Downloaded Images ' + imageCount + '/' + neededImageIds.length
+            + '\nFailed Images ' + imagesFailedCount + '/' + neededImageIds.length,
           ));
         }
+        else dispatch(addedStatusMessage('Downloaded Images: ' + imageCount + '/' + neededImageIds.length));
       }
     }
     catch (err) {
@@ -248,9 +243,9 @@ const useDownload = () => {
       if (map.source === 'mapbox_styles' && map.id.includes('mapbox://styles/')) {
         mapId = map.id.split('/').slice(3).join('/');
       }
-      const providerInfo = MAP_PROVIDERS[map.source]
+      const providerInfo = MAP_PROVIDERS[map.source];
       const customMap = {...map, ...providerInfo, id: mapId, key: map.accessToken, source: map.source};
-      console.log(customMap)
+      console.log(customMap);
       dispatch(addedCustomMap(customMap));
     });
   };
