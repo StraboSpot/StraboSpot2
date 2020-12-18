@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
-import {Text, View, TouchableOpacity} from 'react-native';
+import {Text, View} from 'react-native';
 
+import {Icon} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import ColorPickerModal from '../../shared/ColorPickerModal';
@@ -30,19 +31,21 @@ const TagDetailSidePanel = (props) => {
           />
         </View>
         <View style={{
-          width: 50,
-          justifyContent: 'center',
+          width: 100,
+          position: 'absolute',
+          right: 0,
+          top: 10,
           alignItems: 'center',
-          backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
         }}>
-          <TouchableOpacity
-            style={{
-              width: 30, height: 30, borderWidth: 1, borderColor: themes.PRIMARY_BACKGROUND_COLOR,
-              backgroundColor: selectedTag.color,
-            }}
-            onPress={() => setIsColorPickerModalVisible(true)}>
-            {!selectedTag.color && <Text>No Color</Text>}
-          </TouchableOpacity>
+          <Text style={{paddingBottom: 5, paddingTop: 5}}>Tag Color</Text>
+          <Icon
+            name={selectedTag.color ? 'square' : 'x-square'}
+            type={selectedTag.color ? 'ionicon' : 'feather'}
+            color={selectedTag.color}
+            containerStyle={{borderWidth: 1}}
+            size={30}
+            onPress={() => setIsColorPickerModalVisible(true)}
+          />
         </View>
       </View>
 
