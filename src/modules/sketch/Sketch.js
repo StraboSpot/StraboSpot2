@@ -30,10 +30,6 @@ const Sketch = (props) => {
         Alert.alert(`Sketch ${savedSketch.id} Saved!`,
           null,
           [{
-            text: 'Cancel',
-            onPress: () => console.log('Cancel Pressed'),
-            style: 'cancel',
-          }, {
             text: 'OK', onPress: () => navigation.pop(),
           }],
         );

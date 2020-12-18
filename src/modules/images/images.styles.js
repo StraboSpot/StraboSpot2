@@ -15,7 +15,7 @@ const imageStyles = StyleSheet.create({
     backgroundColor: 'white',
     borderColor: 'grey',
     borderWidth: 1,
-    margin: 10,
+    margin: 5,
   },
   cardContainer: {
     margin: 0,

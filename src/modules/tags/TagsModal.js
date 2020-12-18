@@ -81,18 +81,20 @@ const TagsModal = (props) => {
         <View style={{maxHeight: 300}}>
           {renderSpotTagsList()}
           {(modalVisible === MODALS.SHORTCUT_MODALS.TAGS || modalVisible === MODALS.SHORTCUT_MODALS.ADD_TAGS_TO_SPOTS)
-          && <SaveButton
-            buttonStyle={{backgroundColor: 'red'}}
-            title={'Save tag(s)'}
-            onPress={() => save()} disabled={isEmpty(checkedTagsTemp)}
-          />}
+          && (
+            <SaveButton
+              buttonStyle={{backgroundColor: 'red'}}
+              title={'Save tag(s)'}
+              onPress={() => save()} disabled={isEmpty(checkedTagsTemp)}
+            />
+          )}
         </View>
       </React.Fragment>
     );
   };
 
   const renderSpotTagsList = () => {
-    const tagsCopy = JSON.parse(JSON.stringify(tags))
+    const tagsCopy = JSON.parse(JSON.stringify(tags));
     return (
       <FlatList
         keyExtractor={item => item.id.toString()}

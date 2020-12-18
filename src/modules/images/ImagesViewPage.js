@@ -1,6 +1,7 @@
 import React from 'react';
 import {Alert, FlatList, Switch, Text, View} from 'react-native';
 
+import {useNavigation} from '@react-navigation/native';
 import {Card, Button, Icon} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -13,10 +14,11 @@ import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 
 const ImagesViewPage = (props) => {
-
+  const navigation = useNavigation();
   const [useImages] = useImagesHook();
   const dispatch = useDispatch();
   const images = useSelector(state => state.spot.selectedSpot.properties.images);
+  const spotId = useSelector(state => state.spot.selectedSpot.properties.id);
 
   const renderImage = (image) => {
     return (
@@ -81,6 +83,20 @@ const ImagesViewPage = (props) => {
             buttonStyle={imageStyles.buttonContainer}
             type={'outline'}
             onPress={() => props.onPress('importPhoto')}
+          />
+          <ButtonRounded
+            icon={
+              <Icon
+                name={'images-outline'}
+                type={'ionicon'}
+                iconStyle={imageStyles.icon}
+                color={commonStyles.iconColor.color}/>
+            }
+            title={'Sketch'}
+            titleStyle={commonStyles.standardButtonText}
+            buttonStyle={imageStyles.buttonContainer}
+            type={'outline'}
+            onPress={() => navigation.navigate('Sketch')}
           />
         </View>
         <View style={{padding: 5, flex: 1}}>
