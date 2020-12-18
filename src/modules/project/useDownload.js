@@ -13,7 +13,8 @@ import {
 import useImagesHook from '../images/useImages';
 import {MAIN_MENU_ITEMS} from '../main-menu-panel/mainMenu.constants';
 import {setMenuSelectionPage} from '../main-menu-panel/mainMenuPanel.slice';
-import {clearedMaps} from '../maps/maps.slice';
+import {MAP_PROVIDERS} from '../maps/maps.constants';
+import {addedCustomMap, clearedMaps} from '../maps/maps.slice';
 import {addedSpots, clearedSpots} from '../spots/spots.slice';
 import {
   addedProject,
@@ -63,7 +64,9 @@ const useDownload = () => {
       dispatch(addedStatusMessage('Downloading Project Properties...'));
       const projectResponse = await useServerRequests.getProject(selectedProject.id, user.encoded_login);
       dispatch(addedProject(projectResponse));
+      const customMaps = projectResponse.other_maps;
       console.log('Finished Downloading Project Properties.', projectResponse);
+      if (projectResponse.other_maps && !isEmpty(projectResponse.other_maps)) loadCustomMaps(customMaps);
       dispatch(removedLastStatusMessage());
       dispatch(addedStatusMessage('Finished Downloading Project Properties.'));
       return projectResponse;
@@ -236,6 +239,20 @@ const useDownload = () => {
       dispatch(addedStatusMessage('Error Downloading Images!'));
       console.warn('Error Downloading Images: ' + err);
     }
+  };
+
+  const loadCustomMaps = (maps) => {
+    maps.map(map => {
+      let mapId = map.id;
+      // Pull out mapbox styles map id
+      if (map.source === 'mapbox_styles' && map.id.includes('mapbox://styles/')) {
+        mapId = map.id.split('/').slice(3).join('/');
+      }
+      const providerInfo = MAP_PROVIDERS[map.source]
+      const customMap = {...map, ...providerInfo, id: mapId, key: map.accessToken, source: map.source};
+      console.log(customMap)
+      dispatch(addedCustomMap(customMap));
+    });
   };
 
   return {

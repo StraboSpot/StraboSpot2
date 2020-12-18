@@ -16,7 +16,7 @@ import {
 } from '../home/home.slice';
 import {SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import {setMenuSelectionPage, setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
-import {addedProject} from '../project/projects.slice';
+import {addedProject, updatedProject} from '../project/projects.slice';
 import {setSelectedSpot} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
 import {BASEMAPS, GEO_LAT_LNG_PROJECTION, MAP_PROVIDERS, PIXEL_PROJECTION} from './maps.constants';
@@ -58,9 +58,9 @@ const useMaps = () => {
     const projectCopy = {...project};
     const customMapsCopy = {...customMaps};
     delete customMapsCopy[mapId];
-    if (projectCopy.other_maps && projectCopy.other_maps[mapId]) {
-      delete projectCopy.other_maps[mapId];
-      dispatch(addedProject(projectCopy)); // Deletes map from project
+    if (projectCopy.other_maps) {
+      const filteredCustomMaps = projectCopy.other_maps.filter(map => map.id !== mapId);
+      dispatch(addedProject({...projectCopy, other_maps: filteredCustomMaps})); // Deletes map from project
     }
     dispatch(deletedCustomMap(customMapsCopy)); // replaces customMaps with updated object
     dispatch(setSidePanelVisible({view: null, bool: false}));
@@ -285,6 +285,12 @@ const useMaps = () => {
         console.log(('Setting Basemap to Mapbox Topo...'));
         setBasemap(null);
       }
+      if (project.other_maps) {
+        const otherMapsInProject = project.other_maps;
+        dispatch(updatedProject({field: 'other_maps', value: [...otherMapsInProject, map]}));
+      }
+      else dispatch(updatedProject({field: 'other_maps', value: [map]}));
+
       return customMap;
     }
   };

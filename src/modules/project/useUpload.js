@@ -1,5 +1,3 @@
-import {Platform} from 'react-native';
-
 import RNFS from 'react-native-fs';
 import ImageResizer from 'react-native-image-resizer';
 import {useDispatch, useSelector} from 'react-redux';
