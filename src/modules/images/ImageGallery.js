@@ -51,7 +51,7 @@ const ImageGallery = (props) => {
             titleStyle={{fontSize: 16}}
             title={'View In Spot'}
             type={'clear'}
-            onPress={() => props.openSpotInNotebook(spot, NOTEBOOK_PAGES.PHOTO)}
+            onPress={() => props.openSpotInNotebook(spot, NOTEBOOK_PAGES.IMAGE)}
           />
         </View>
         <FlatList

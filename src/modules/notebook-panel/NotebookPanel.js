@@ -73,7 +73,7 @@ const NotebookPanel = (props) => {
           {pageVisible === NOTEBOOK_PAGES.NOTE && <NotesPage/>}
           {pageVisible === NOTEBOOK_PAGES.SAMPLE && <SamplesPage/>}
           {pageVisible === NOTEBOOK_PAGES.TAG && <TagsPage openMainMenu={props.openMainMenu}/>}
-          {pageVisible === NOTEBOOK_PAGES.PHOTO && <ImagesPage onPress={props.onPress}/>}
+          {pageVisible === NOTEBOOK_PAGES.IMAGE && <ImagesPage onPress={props.onPress}/>}
 
           {/*Notebook Subpages*/}
           {pageVisible === NOTEBOOK_SUBPAGES.GEOGRAPHY && <Geography/>}
