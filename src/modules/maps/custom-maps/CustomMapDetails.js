@@ -18,10 +18,13 @@ import * as Helpers from '../../../shared/Helpers';
 import {BLUE, DARKGREY} from '../../../shared/styles.constants';
 import ButtonRounded from '../../../shared/ui/ButtonRounded';
 import Slider from '../../../shared/ui/Slider';
-import {addedStatusMessage,
+import {
+  addedStatusMessage,
   clearedStatusMessages,
+  removedLastStatusMessage,
   setErrorMessagesModalVisible,
   setStatusMessagesModalVisible,
+  setLoadingStatus,
 } from '../../home/home.slice';
 import {setMenuSelectionPage, setSidePanelVisible} from '../../main-menu-panel/mainMenuPanel.slice';
 import Divider from '../../main-menu-panel/MainMenuPanelDivider';
@@ -48,7 +51,6 @@ const AddCustomMaps = () => {
   const dispatch = useDispatch();
 
   let sliderValuePercent = editableCustomMapData && Math.round(editableCustomMapData.opacity * 100).toFixed(0);
-  console.log(sliderValuePercent);
   useEffect(() => {
     Keyboard.addListener('keyboardDidShow', handleKeyboardDidShow);
     Keyboard.addListener('keyboardDidHide', handleKeyboardDidHide);
@@ -75,18 +77,24 @@ const AddCustomMaps = () => {
   }, [customMapToEdit]);
 
   const addMap = async () => {
+    dispatch(clearedStatusMessages());
+    dispatch(setStatusMessagesModalVisible(true));
+    dispatch(setLoadingStatus({view: 'modal', bool: true}));
+    dispatch(addedStatusMessage('Saving Custom Map...'));
     const customMap = await useMaps.saveCustomMap(editableCustomMapData);
     console.log(customMap);
     if (customMap !== undefined) {
       dispatch(addedCustomMap(customMap));
       dispatch(setSidePanelVisible({view: null, bool: false}));
       dispatch(setMenuSelectionPage({name: undefined}));
-      dispatch(clearedStatusMessages());
+      dispatch(removedLastStatusMessage());
+      dispatch(setLoadingStatus({view: 'modal', bool: false}));
       dispatch(addedStatusMessage('Success!'));
       dispatch(addedStatusMessage(`\nMap ${customMap.title} has been added or updated!`));
-      dispatch(setStatusMessagesModalVisible(true));
     }
     else {
+      dispatch(setLoadingStatus({view: 'modal', bool: false}));
+      dispatch(setStatusMessagesModalVisible(false));
       dispatch(clearedStatusMessages());
       dispatch(addedStatusMessage(
         'Something Went Wrong \n\nCheck the id and map type of the map you are trying to save.'));
@@ -170,6 +178,7 @@ const AddCustomMaps = () => {
             <Input
               keyboardType={MWKeyboardType}
               defaultValue={editableCustomMapData.id}
+              errorMessage={editableCustomMapData && isEmpty(editableCustomMapData.id) && 'Map id is required'}
               onChangeText={text => setEditableCustomMapData(e => ({...e, id: text}))}
               inputContainerStyle={sidePanelStyles.textInputNameContainer}
               placeholder={'Map ID'}
@@ -213,6 +222,7 @@ const AddCustomMaps = () => {
         <Input
           containerStyle={sidePanelStyles.infoInputText}
           inputContainerStyle={sidePanelStyles.textInputNameContainer}
+          errorMessage={editableCustomMapData && isEmpty(editableCustomMapData.title) && 'Title is required'}
           style={sidePanelStyles.infoInputText}
           defaultValue={editableCustomMapData && editableCustomMapData.title}
           onChangeText={text => setEditableCustomMapData({...editableCustomMapData, title: text})}
@@ -246,7 +256,7 @@ const AddCustomMaps = () => {
           dispatch(selectedCustomMapToEdit({}));
         }}
         title={'Custom Maps'}
-        headerTitle={'Add Map'}
+        headerTitle={!isEmpty(customMapToEdit) ? 'Edit Map' : 'Add Map'}
       />
     );
   };
@@ -298,7 +308,9 @@ const AddCustomMaps = () => {
       </View>
       <View style={[sidePanelStyles.sectionContainer, {flex: 3}]}>
         <ButtonRounded
-          title={'Save'}
+          title={!isEmpty(customMapToEdit) ? 'Update' : 'Save'}
+          disabled={editableCustomMapData && (isEmpty(editableCustomMapData.title) || isEmpty(
+            editableCustomMapData.id))}
           onPress={() => addMap()}
         />
         <ButtonRounded
