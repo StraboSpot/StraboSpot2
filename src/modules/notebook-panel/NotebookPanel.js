@@ -23,6 +23,7 @@ import SamplesPage from '../samples/SamplesNotebook';
 import {useSpotsHook} from '../spots';
 import {setSelectedSpot} from '../spots/spots.slice';
 import TagsPage from '../tags/TagsNotebook';
+import ThreeDStructuresPage from '../three-d-structures/ThreeDStructuresPage';
 import NotebookFooter from './notebook-footer/NotebookFooter';
 import NotebookHeader from './notebook-header/NotebookHeader';
 import {NOTEBOOK_PAGES, NOTEBOOK_SUBPAGES, SECONDARY_NOTEBOOK_PAGES, SED_NOTEBOOK_PAGES} from './notebook.constants';
@@ -82,7 +83,7 @@ const NotebookPanel = (props) => {
           {pageVisible === NOTEBOOK_SUBPAGES.SAMPLEDETAIL && <SampleDetailPage/>}
 
           {/*Secondary Notebook Pages*/}
-          {pageVisible === SECONDARY_NOTEBOOK_PAGES.THREE_D_STRUCTURES && <PlaceholderPage/>}
+          {pageVisible === SECONDARY_NOTEBOOK_PAGES.THREE_D_STRUCTURES && <ThreeDStructuresPage/>}
           {pageVisible === SECONDARY_NOTEBOOK_PAGES.IG_MET && <PetrologyPage/>}
           {pageVisible === SECONDARY_NOTEBOOK_PAGES.FABRICS && <PlaceholderPage/>}
           {pageVisible === SECONDARY_NOTEBOOK_PAGES.OTHER_FEATURES && <PlaceholderPage/>}
