@@ -152,8 +152,7 @@ const useMapsOffline = () => {
     try {
       const startZipUrl = await getMapTiles(extentString, downloadZoom);
       await saveZipMap(startZipUrl);
-      const status = await useServerRequests.zipURLStatus(tilehost + '/asyncstatus/' + zipUID);
-      console.log('Status', status);
+      await useServerRequests.zipURLStatus(tilehost + '/asyncstatus/' + zipUID);
       return zipUID;
     }
     catch (err) {
@@ -182,6 +181,7 @@ const useMapsOffline = () => {
     }
     catch (err) {
       console.error('Error moving tiles', err);
+      throw new Error(err);
     }
   };
 
@@ -202,11 +202,7 @@ const useMapsOffline = () => {
     try {
       const tileJson = await useServerRequests.getMapTilesFromHost(startZipURL);
       zipUID = tileJson.id;
-      if (zipUID) {
-        console.log(zipUID);
-        return zipUID;
-        // await checkStatus(zipUID);
-      }
+      // if (zipUID) return;
     }
     catch (err) {
       console.error('Error in saveMapZip', err);

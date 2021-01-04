@@ -167,8 +167,9 @@ const SaveMapsModal = (props) => {
     }
     catch (err) {
       console.error('Error saving map', err);
+      const editedError = err.toString().replace('Error: Error: Error:', '');
       setIsError(true);
-      setErrorMessage(err);
+      setErrorMessage(editedError);
       setShowMainMenu(false);
       setShowLoadingMenu(false);
       setShowLoadingBar(false);
@@ -281,8 +282,9 @@ const SaveMapsModal = (props) => {
                 </View>
               )}
               {isError && (
-                <View style={{height: 40, justifyContent: 'center'}}>
-                  <Text style={{fontSize: 20}}>Something Went Wrong!</Text>
+                <View style={{justifyContent: 'center'}}>
+                  <Text style={{fontSize: 20, textAlign: 'center'}}>Something Went Wrong!</Text>
+                  <Text style={{fontSize: 20, paddingTop: 30, textAlign: 'center'}}>{errorMessage}</Text>
                 </View>
               )}
               {showComplete && (

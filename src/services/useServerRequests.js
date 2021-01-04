@@ -210,20 +210,17 @@ const useServerRequests = () => {
   };
 
   const zipURLStatus = async (zipUrl) => {
-    let responseJson = {};
-    const response = await fetch(zipUrl)
-    responseJson = await response.json();
-    console.log(responseJson);
-    if (responseJson.status.includes('Error') ) {
-      throw new Error(responseJson.status)
-    }
-    else if (responseJson.status !== 'Zip File Ready.') {
+    try {
+      let responseJson = {};
+      const response = await fetch(zipUrl);
+      responseJson = await response.json();
       console.log(responseJson);
-      await zipURLStatus(zipUrl);
+      if (responseJson.error) throw Error(responseJson.error);
+      else if (responseJson.status !== 'Zip File Ready.') await zipURLStatus(zipUrl);
     }
-    else {
-      console.log(responseJson);
-      return responseJson.status;
+    catch (err) {
+      console.error('There was an error in zipURLStatus', err);
+      throw Error(err);
     }
   };
 
