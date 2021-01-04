@@ -6,7 +6,7 @@ import {Button, ButtonGroup, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
-import {getNewId, isEmpty} from '../../shared/Helpers';
+import {getNewId, isEmpty, roundToDecimalPlaces, toDegrees, toRadians} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
 import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import SectionDivider from '../../shared/ui/SectionDivider';
@@ -32,6 +32,31 @@ const MeasurementDetailPage = (props) => {
     console.log('In MeasurementDetailPage useEffect', selectedMeasurements);
     if (selectedMeasurements && selectedMeasurements[0]) switchActiveMeasurement(selectedMeasurements[0]);
   }, []);
+
+  const calcTrendPlunge = (value) => {
+    console.log('Calculating trend and plunge...');
+    const strike = selectedMeasurements[0].strike;
+    const dip = selectedMeasurements[0].dip;
+    const rake = value;
+    let trend;
+    const beta = toDegrees(Math.atan(Math.tan(toRadians(rake)) * Math.cos(toRadians(dip))));
+    if (rake <= 90) trend = strike + beta;
+    else {
+      trend = 180 + strike + beta;
+      if (trend >= 360) trend = trend - 360;
+    }
+    const plunge = toDegrees(Math.asin(Math.sin(toRadians(dip)) * Math.sin(toRadians(rake))));
+    form.current.setFieldValue('trend', roundToDecimalPlaces(trend, 0));
+    form.current.setFieldValue('plunge', roundToDecimalPlaces(plunge, 0));
+  };
+
+  const onMyChange = async (name, value) => {
+    //console.log(name, 'changed to', value);
+    if (name === 'rake' && !isEmpty(value) && activeMeasurement.type === 'linear_orientation'
+      && selectedMeasurements[0].id !== activeMeasurement.id && !isEmpty(selectedMeasurements[0].strike)
+      && !isEmpty(selectedMeasurements[0].dip)) calcTrendPlunge(value);
+    await form.current.setFieldValue(name, value);
+  };
 
   // What happens after submitting the form is handled in saveFormAndGo since we want to show
   // an alert message if there are errors but this function won't be called if form is invalid
@@ -135,7 +160,9 @@ const MeasurementDetailPage = (props) => {
             innerRef={form}
             onSubmit={onSubmitForm}
             validate={(values) => useForm.validateForm({formName: formName, values: values})}
-            component={(formProps) => Form({formName: formName, ...formProps})}
+            children={(formProps) => (
+              <Form {...formProps} {...{formName: formName, onMyChange: onMyChange}}/>
+            )}
             initialValues={activeMeasurement}
             validateOnChange={false}
             enableReinitialize={true}
