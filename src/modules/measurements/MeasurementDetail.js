@@ -54,7 +54,7 @@ const MeasurementDetailPage = (props) => {
     //console.log(name, 'changed to', value);
     if (name === 'rake' && !isEmpty(value) && activeMeasurement.type === 'linear_orientation'
       && selectedMeasurements[0].id !== activeMeasurement.id && !isEmpty(selectedMeasurements[0].strike)
-      && !isEmpty(selectedMeasurements[0].dip)) calcTrendPlunge(value);
+      && !isEmpty(selectedMeasurements[0].dip) && value >= 0 && value <= 180) calcTrendPlunge(value);
     await form.current.setFieldValue(name, value);
   };
 
