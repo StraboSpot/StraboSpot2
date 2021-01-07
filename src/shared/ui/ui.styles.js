@@ -62,7 +62,9 @@ const styles = StyleSheet.create({
   },
   saveAndDeleteButtonStyles: {
     borderRadius: 15,
-    width: 150,
+    paddingRight: 20,
+    paddingLeft: 20,
+    // width: 150,
   },
   saveAndDeleteButtonContainer: {
     alignItems: 'center',
