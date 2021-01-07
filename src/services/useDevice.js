@@ -108,12 +108,31 @@ const useDevice = () => {
       });
   };
 
+  const readDirectoryForMapTiles = async (mapId) => {
+    try {
+      let tiles = [];
+      const exists = await RNFS.exists(tileCacheDirectory + '/' + mapId + '/tiles');
+      console.log('Map Tiles Dir Exists:', exists);
+      if (exists) {
+        tiles = await RNFS.readdir(tileCacheDirectory + '/' + mapId + '/tiles');
+        // console.log('Tiles', tiles);
+      }
+      return tiles;
+    }
+    catch (err) {
+      console.error('Error reading map tile directory', err);
+    }
+  };
+
   const readDirectoryForMaps = async () => {
     try {
-      await RNFS.exists(tilesDirectory);
-      const files = await RNFS.readdir(tileCacheDirectory);
-      console.log(files);
-      return files;
+      const exists = await RNFS.exists(tilesDirectory);
+      console.log(exists)
+      if (exists) {
+        const files = await RNFS.readdir(tileCacheDirectory);
+        console.log(files);
+        return files;
+      }
     }
     catch (err) {
       console.error('Error reading directory for maps', err);
@@ -135,6 +154,7 @@ const useDevice = () => {
     doesDeviceDirectoryExist: doesDeviceDirectoryExist,
     doesDeviceFileExist: doesDeviceFileExist,
     makeDirectory: makeDirectory,
+    readDirectoryForMapTiles: readDirectoryForMapTiles,
     readDirectoryForMaps: readDirectoryForMaps,
     writeFileToDevice: writeFileToDevice,
   };

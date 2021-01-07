@@ -110,7 +110,7 @@ const MainMenuPanel = props => {
     case MAIN_MENU_ITEMS.MAPS.MANAGE_OFFLINE_MAPS:
       page = (
         <View style={styles.mainMenuContainer}>
-          <ManageOfflineMapsMenu closeMainMenuPanel={props.closeMainMenuPanel}/>
+          <ManageOfflineMapsMenu closeMainMenuPanel={props.closeMainMenuPanel} zoomToCenterOfflineTile={props.zoomToCenterOfflineTile}/>
         </View>
       );
       break;

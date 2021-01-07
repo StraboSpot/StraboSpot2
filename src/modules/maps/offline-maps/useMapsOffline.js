@@ -34,6 +34,7 @@ const useMapsOffline = () => {
   const tileTempDirectory = devicePath + tilesDirectory + '/TileTemp';
   const tileZipsDirectory = devicePath + tilesDirectory + '/TileZips';
 
+  const useDevice = useDeviceHook();
   const [useServerRequests] = useServerRequesteHook();
 
   useEffect(() => {
@@ -46,6 +47,85 @@ const useMapsOffline = () => {
       return map.name;
     }
     else return;
+  };
+
+  const getMedian = (arr) => {
+    arr = arr.slice(0); // create copy
+    const middle = (arr.length + 1) / 2,
+      sorted = arr.sort(function (a, b) {
+        return a - b;
+      });
+    return (sorted.length % 2) ? sorted[middle - 1] : (sorted[middle - 1.5] + sorted[middle - 0.5]) / 2;
+  };
+
+
+  // borrowed from http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames
+  const tile2long = (x, z) => {
+    return (x / Math.pow(2, z) * 360 - 180);
+  };
+
+  // borrowed from http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames
+  const tile2lat = (y, z) => {
+    const n = Math.PI - 2 * Math.PI * y / Math.pow(2, z);
+    return (180 / Math.PI * Math.atan(0.5 * (Math.exp(n) - Math.exp(-n))));
+  };
+
+  const getMapCenterTile = async (mapid) => {
+    if (devicePath) {
+
+      console.log('MAP ID ', mapid);
+      const entries = await useDevice.readDirectoryForMapTiles(mapid);
+      console.log('Tiles on device', entries);
+      // loop over tiles to get center tiles
+      let maxZoom = 0;
+      let xvals = [];
+      let yvals = [];
+
+      entries.map((entry, index) => {
+        // console.log('ENTRY', entry, 'Index', index);
+        const parts = entry.replace('.png', '').split('_');
+        const z = Number(parts[0]);
+        // const x = Number(parts[1]);
+        // const y = Number(parts[2]);
+
+        if (z > maxZoom) {
+          maxZoom = z;
+        }
+      });
+      if (maxZoom > 14) {
+        maxZoom = 14;
+      }
+
+      entries.map(entry => {
+        const parts = entry.replace('.png', '').split('_');
+        const z = Number(parts[0]);
+        const x = Number(parts[1]);
+        const y = Number(parts[2]);
+
+        if (z == maxZoom) {
+          if (xvals.indexOf(x) == -1) {
+            xvals.push(x);
+          }
+          if (yvals.indexOf(y) == -1) {
+            yvals.push(y);
+          }
+        }
+      });
+
+      let middleX = Math.floor(getMedian(xvals));
+      let middleY = Math.floor(getMedian(yvals));
+
+      let centerTile = maxZoom + '_' + middleX + '_' + middleY;
+      const parts = centerTile.split('_');
+      const z = Number(parts[0]);
+      const x = Number(parts[1]);
+      const y = Number(parts[2]);
+      const lng = tile2long(x, z);
+      const lat = tile2lat(y, z);
+      console.log('LAT', lat);
+      console.log('LNG', lng);
+      return [lng, lat];
+    }
   };
 
   const checkTileZipFileExistance = async () => {
@@ -163,7 +243,7 @@ const useMapsOffline = () => {
 
   const moveFiles = async (zipUID) => {
     try {
-      let result
+      let result;
       let folderExists = await RNFS.exists(tileCacheDirectory + '/' + currentBasemap.id);
       if (!folderExists) {
         console.log('FOLDER DOESN\'T EXIST! ' + currentBasemap.id);
@@ -211,7 +291,7 @@ const useMapsOffline = () => {
 
   const setOfflineMapTiles = async (map) => {
     let tempCurrentBasemap, tilePath;
-    console.log('viewOfflineMap: ', map);
+    console.log('Switch To Offline Map: ', map);
     const url = 'file://' + tileCacheDirectory + '/';
 
     // let tileJSON = 'file://' + tileCacheDirectory + '/' + map.id + '/tiles/{z}_{x}_{y}.png';
@@ -277,10 +357,10 @@ const useMapsOffline = () => {
     }
   };
 
-  const viewOfflineMap = async () => {
+  const switchToOfflineMap = async (mapId) => {
     if (!isEmpty(offlineMaps)) {
-      const selectedOfflineMap = offlineMaps[currentBasemap.id];
-      if (selectedOfflineMap !== undefined) {
+      const selectedOfflineMap = mapId ? offlineMaps[mapId] : offlineMaps[currentBasemap.id];
+      if (selectedOfflineMap) {
         console.log('SelectedOfflineMap', selectedOfflineMap);
         // Alert.alert('Selected Offline Map', `${JSON.stringify(selectedOfflineMap)}`)
         await setOfflineMapTiles(selectedOfflineMap);
@@ -303,6 +383,7 @@ const useMapsOffline = () => {
     checkTileZipFileExistance: checkTileZipFileExistance,
     checkIfTileZipFolderExists: checkIfTileZipFolderExists,
     doUnzip: doUnzip,
+    getMapCenterTile: getMapCenterTile,
     getMapName: getMapName,
     getMapTiles: getMapTiles,
     initializeSaveMap: initializeSaveMap,
@@ -311,7 +392,7 @@ const useMapsOffline = () => {
     saveZipMap: saveZipMap,
     setOfflineMapTiles: setOfflineMapTiles,
     updateMapTileCount: updateMapTileCount,
-    viewOfflineMap: viewOfflineMap,
+    switchToOfflineMap: switchToOfflineMap,
   };
 };
 

@@ -96,6 +96,7 @@ const Map = React.forwardRef((props, ref) => {
   const [mapToggle, setMapToggle] = useState(true);
   const [showSetInCurrentViewModal, setShowSetInCurrentViewModal] = useState(false);
   const [defaultGeomType, setDefaultGeomType] = useState();
+  const [isZoomToCenterOffline, setIsZoomToCenterOffline] = useState(false);
 
   const map = useRef(null);
   const camera = useRef(null);
@@ -147,16 +148,18 @@ const Map = React.forwardRef((props, ref) => {
     const getCenter = async () => {
       const center = map && map.current ? await map.current.getCenter() : initialMapPropsMutable.centerCoordinate;
       const zoom = map && map.current ? await map.current.getZoom() : initialMapPropsMutable.zoom;
+      const latAndLng = await useOfflineMaps.getMapCenterTile(currentBasemap.id);
       setMapPropsMutable(m => ({
         ...m,
         basemap: currentBasemap,
-        centerCoordinate: center,
+        centerCoordinate: isZoomToCenterOffline ? latAndLng : center,
         zoom: zoom,
       }));
       setMapToggle(!mapToggle);
+      setIsZoomToCenterOffline(false);
     };
     getCenter();
-  }, [currentBasemap]);
+  }, [currentBasemap, isZoomToCenterOffline]);
 
   useEffect(() => {
     console.log('UE3 Map [user]');
@@ -167,7 +170,7 @@ const Map = React.forwardRef((props, ref) => {
       useMaps.setBasemap(currentBasemap.id).catch(error => console.log('Error Setting Basemap', error));
     }
     else if (!isOnline && isOnline !== null && currentBasemap) {
-      useOfflineMaps.viewOfflineMap().catch(error => console.log('Error Setting Offline Basemap', error));
+      useOfflineMaps.switchToOfflineMap().catch(error => console.log('Error Setting Offline Basemap', error));
     }
     if (!currentImageBasemap) setCurrentLocationAsCenter();
     clearVertexes();
@@ -1318,6 +1321,10 @@ const Map = React.forwardRef((props, ref) => {
     useMaps.zoomToSpots(spotsToZoomTo, map.current, camera.current);
   };
 
+  const zoomToCenterOfflineTile = () => {
+    setIsZoomToCenterOffline(true);
+  };
+
   const toggleUserLocation = (value) => {
     setMapPropsMutable(m => ({
       ...m,
@@ -1343,6 +1350,7 @@ const Map = React.forwardRef((props, ref) => {
       toggleUserLocation: toggleUserLocation,
       zoomToSpot: zoomToSpot,
       zoomToSpotsExtent: zoomToSpotsExtent,
+      zoomToCenterOfflineTile: zoomToCenterOfflineTile,
     };
   });
 

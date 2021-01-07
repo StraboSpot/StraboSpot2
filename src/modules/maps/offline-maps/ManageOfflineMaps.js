@@ -98,8 +98,11 @@ const ManageOfflineMaps = (props) => {
                 </View>
                 <View style={styles.itemSubContainer}>
                   <Button
-                    onPress={() => useMapsOffline.setOfflineMapTiles(item)}
-                    disabled={isOnline}
+                    onPress={async () => {
+                    await useMapsOffline.switchToOfflineMap(item.id);
+                    props.zoomToCenterOfflineTile();
+                    }}
+                    // disabled={isOnline}
                     titleStyle={styles.buttonText}
                     type={'clear'}
                     title={'View in map offline'}
@@ -108,7 +111,7 @@ const ManageOfflineMaps = (props) => {
                     onPress={() => confirmDeleteMap(item)}
                     titleStyle={styles.buttonText}
                     type={'clear'}
-                    title={'Delete!!'}
+                    title={'Delete'}
                   />
                 </View>
               </ListItem.Content>

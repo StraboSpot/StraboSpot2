@@ -783,7 +783,9 @@ const Home = () => {
       <MainMenuPanel
         logout={() => onLogout()}
         closeMainMenuPanel={() => toggleHomeDrawerButton()}
-        openNotebookPanel={(pageView) => openNotebookPanel(pageView)}/>
+        openNotebookPanel={(pageView) => openNotebookPanel(pageView)}
+        zoomToCenterOfflineTile={() => mapViewComponent.current.zoomToCenterOfflineTile()}
+      />
     </Animated.View>
   );
 
