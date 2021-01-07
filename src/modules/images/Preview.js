@@ -58,7 +58,7 @@ const Preview = (props) => {
         />
       )}
       {buttonsDisplay && <View style={{}}>
-        <View style={{position: 'absolute', right: 10, bottom: height * .90}}>
+        <View style={{position: 'absolute', right: 10, bottom: height * 0.90}}>
           <IconButton
             style={styles.imageInfoButtons}
             source={require('../../assets/icons/Close.png')}
@@ -73,7 +73,7 @@ const Preview = (props) => {
           />
           <IconButton
             style={styles.imageInfoButtons}
-            source={require('../../assets/icons/VelumButton.png')}
+            source={require('../../assets/icons/NotebookNavButton.png')}
             onPress={() => {
               setImageNoteModal(false);
               getSpotFromId(useSpots.getSpotByImageId(props.item.image.id).properties.id);
