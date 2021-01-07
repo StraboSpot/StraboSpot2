@@ -100,6 +100,7 @@ const MineralReactionDetail = (props) => {
       if (foundAbbrev) await formRef.current.setFieldValue('mineral_abbrev', foundAbbrev);
       await formRef.current.setFieldValue('full_mineral_name', value);
     }
+    else await formRef.current.setFieldValue(name, value);
   };
 
   const renderFormFields = () => {
