@@ -116,14 +116,14 @@ const Map = React.forwardRef((props, ref) => {
 
   useEffect(() => {
     Logger.setLogCallback((log) => {
-      const { message } = log;
+      const {message} = log;
       // console.log('LOGGER MESSAGE IN MAPS.JS', message);
       if (message.match(/Requesting.+failed.+MGLNativeNetworkManager/) || message.match(/offline/)) {
         return true; // true means we've processed the log
       }
       return false;
     });
-   }, []);
+  }, []);
 
   useEffect(() => {
     console.log('UE1 Map [currentImageBasemap]');

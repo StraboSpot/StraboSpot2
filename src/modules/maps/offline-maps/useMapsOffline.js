@@ -6,6 +6,7 @@ import {unzip} from 'react-native-zip-archive';
 import {useDispatch, useSelector} from 'react-redux';
 
 import useServerRequesteHook from '../../../services/useServerRequests';
+import useDeviceHook from '../../../services/useDevice';
 import {isEmpty} from '../../../shared/Helpers';
 import {addedStatusMessage, removedLastStatusMessage} from '../../home/home.slice';
 import {setCurrentBasemap} from '../maps.slice';

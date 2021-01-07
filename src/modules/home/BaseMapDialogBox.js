@@ -67,7 +67,7 @@ const BaseMapDialog = props => {
           <View style={!isEmpty(customMaps) && {borderBottomWidth: 1}}>
             <SectionDivider dividerText={'Offline Default Basemaps'}/>
             {Object.values(offlineMaps).map((map, i) => {
-              if (map.source === 'strabo_spot_mapbox') {
+              // if (map.source === 'strabo_spot_mapbox') {
                 return (
                   <ListItem
                     key={map.id}
@@ -75,13 +75,13 @@ const BaseMapDialog = props => {
                     bottomDivider={i < BASEMAPS.length - 2}
                     onPress={() => useMapsOffline.setOfflineMapTiles(map)}>
                     <ListItem.Content>
-                      <ListItem.Title style={styles.dialogText}>{useMapsOffline.getMapName(map)}</ListItem.Title>
+                      <ListItem.Title style={styles.dialogText}>{useMapsOffline.getMapName(map)} ({map.count} tiles)</ListItem.Title>
                     </ListItem.Content>
                     {currentBasemap && map.id === currentBasemap.id
                     && <Icon type={'ionicon'} color={themes.BLUE} name={'checkmark-outline'}/>}
                   </ListItem>
                 );
-              }
+              // }
             })}
           </View>
         )}

@@ -33,6 +33,11 @@ const MapActionsDialog = (props) => {
           textStyle={styles.dialogText}
           onPress={() => props.onPress('zoom')}
         />
+        {/*<DialogButton*/}
+        {/*  text='Zoom to Offline Map'*/}
+        {/*  textStyle={styles.dialogText}*/}
+        {/*  onPress={() => props.onPress('zoomToOfflineMap')}*/}
+        {/*/>*/}
         {isOnline ? <DialogButton
           style={styles.dialogContent}
           text='Save Map for Offline Use'
