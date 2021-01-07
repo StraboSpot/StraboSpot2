@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {FlatList, View, Text} from 'react-native';
 
 import {Button, ListItem} from 'react-native-elements';
@@ -22,6 +22,11 @@ const ThreeDStructuresPage = (props) => {
 
   const threeDStructuresDictionary = Object.values(LABEL_DICTIONARY._3d_structures).reduce(
     (acc, form) => ({...acc, ...form}), {});
+
+  useEffect(() => {
+    console.log('UE ThreeDStructuresPage: spot changed to', spot);
+    setSelected3dStructure({});
+  }, [spot]);
 
   const add3dStructure = (type) => {
     const new3dStructure = {id: getNewId(), type: type};

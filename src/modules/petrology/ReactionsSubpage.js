@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {FlatList, View, Text} from 'react-native';
 
 import {Button, ListItem} from 'react-native-elements';
@@ -17,6 +17,11 @@ const ReactionsSubpage = (props) => {
   const [reactionView, setReactionView] = useState(REACTION_VIEW.OVERVIEW);
 
   const petDictionary = Object.values(LABEL_DICTIONARY.pet).reduce((acc, form) => ({...acc, ...form}), {});
+
+  useEffect(() => {
+    console.log('UE ReactionsSubpage: spot changed to', spot);
+    setSelectedReaction({});
+  }, [spot]);
 
   const addReaction = (reaction) => {
     const newReaction = {id: getNewId()};

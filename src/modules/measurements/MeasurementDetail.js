@@ -13,7 +13,8 @@ import SectionDivider from '../../shared/ui/SectionDivider';
 import {Form, useFormHook} from '../form';
 import {MODALS} from '../home/home.constants';
 import {setModalVisible} from '../home/home.slice';
-import {setNotebookPageVisibleToPrev} from '../notebook-panel/notebook.slice';
+import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
+import {setNotebookPageVisible, setNotebookPageVisibleToPrev} from '../notebook-panel/notebook.slice';
 import {editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
 import MeasurementItem from './MeasurementItem';
 import styles from './measurements.styles';
@@ -29,9 +30,10 @@ const MeasurementDetailPage = (props) => {
   const form = useRef(null);
 
   useEffect(() => {
-    console.log('In MeasurementDetailPage useEffect', selectedMeasurements);
+    console.log('UE for selectedMeasurements changed in MeasurementDetailPage', selectedMeasurements);
     if (selectedMeasurements && selectedMeasurements[0]) switchActiveMeasurement(selectedMeasurements[0]);
-  }, []);
+    else dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.MEASUREMENT));
+  }, [selectedMeasurements]);
 
   const calcTrendPlunge = (value) => {
     console.log('Calculating trend and plunge...');

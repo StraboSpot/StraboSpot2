@@ -12,7 +12,8 @@ import SectionDivider from '../../shared/ui/SectionDivider';
 import {Form, useFormHook} from '../form';
 import {MODALS} from '../home/home.constants';
 import {setModalVisible} from '../home/home.slice';
-import {setNotebookPageVisibleToPrev} from '../notebook-panel/notebook.slice';
+import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
+import {setNotebookPageVisible, setNotebookPageVisibleToPrev} from '../notebook-panel/notebook.slice';
 import styles from '../samples/samples.style';
 import {editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
 
@@ -29,6 +30,11 @@ const SampleDetailPage = (props) => {
     console.log('In SampleDetailPage useEffect', selectedSample);
     setFormName(['general', 'sample']);
   }, []);
+
+  useEffect(() => {
+    console.log('UE for selectedSample changed in SampleDetailPage');
+    if (!selectedSample) dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.SAMPLE));
+  }, [selectedSample]);
 
   const cancelFormAndGo = () => {
     if (modalVisible === MODALS.SHORTCUT_MODALS.COMPASS) {

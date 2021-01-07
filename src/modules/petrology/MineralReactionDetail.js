@@ -24,13 +24,18 @@ const MineralReactionDetail = (props) => {
     return () => confirmLeavePage();
   }, []);
 
+  useEffect(() => {
+    console.log('UE2: MineralReactionDetail props.selectedMineralReaction changed to', props.selectedMineralReaction);
+    if (isEmpty(props.selectedMineralReaction)) props.showMineralsReactionsOverview();
+  }, [props.selectedMineralReaction]);
+
   const cancelForm = async () => {
     await formRef.current.resetForm();
     props.showMineralsReactionsOverview();
   };
 
   const confirmLeavePage = () => {
-    if (formRef.current.dirty) {
+    if (formRef.current && formRef.current.dirty) {
       const formCurrent = formRef.current;
       Alert.alert('Unsaved Changes',
         'Would you like to save your data before continuing?',
@@ -149,11 +154,15 @@ const MineralReactionDetail = (props) => {
 
   return (
     <React.Fragment>
-      <SaveAndCloseButton
-        cancel={() => cancelForm()}
-        save={() => saveForm(formRef.current)}
-      />
-      <FlatList ListHeaderComponent={renderFormFields()}/>
+      {!isEmpty(props.selectedMineralReaction) && (
+        <React.Fragment>
+          <SaveAndCloseButton
+            cancel={() => cancelForm()}
+            save={() => saveForm(formRef.current)}
+          />
+          <FlatList ListHeaderComponent={renderFormFields()}/>
+        </React.Fragment>
+      )}
     </React.Fragment>
   );
 };

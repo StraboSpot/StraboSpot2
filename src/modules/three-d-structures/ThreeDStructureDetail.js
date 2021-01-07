@@ -5,7 +5,7 @@ import {Formik} from 'formik';
 import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {toTitleCase} from '../../shared/Helpers';
+import {isEmpty, toTitleCase} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
 import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import {Form, useFormHook} from '../form';
@@ -23,13 +23,18 @@ const ThreeDStructureDetail = (props) => {
     return () => confirmLeavePage();
   }, []);
 
+  useEffect(() => {
+    console.log('UE ThreeDStructureDetail: props.selected3dStructure changed to', props.selected3dStructure);
+    if (isEmpty(props.selected3dStructure)) props.show3dStructuresOverview();
+  }, [props.selected3dStructure]);
+
   const cancelForm = async () => {
     await formRef.current.resetForm();
     props.show3dStructuresOverview();
   };
 
   const confirmLeavePage = () => {
-    if (formRef.current.dirty) {
+    if (formRef.current && formRef.current.dirty) {
       const formCurrent = formRef.current;
       Alert.alert('Unsaved Changes',
         'Would you like to save your data before continuing?',
@@ -127,11 +132,15 @@ const ThreeDStructureDetail = (props) => {
 
   return (
     <React.Fragment>
-      <SaveAndCloseButton
-        cancel={() => cancelForm()}
-        save={() => saveForm(formRef.current)}
-      />
-      <FlatList ListHeaderComponent={renderFormFields()}/>
+      {!isEmpty(props.selected3dStructure) && (
+        <React.Fragment>
+          <SaveAndCloseButton
+            cancel={() => cancelForm()}
+            save={() => saveForm(formRef.current)}
+          />
+          <FlatList ListHeaderComponent={renderFormFields()}/>
+        </React.Fragment>
+      )}
     </React.Fragment>
   );
 };

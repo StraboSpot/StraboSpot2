@@ -13,8 +13,6 @@ import {getNewUUID, isEmpty} from '../../shared/Helpers';
 import {MODALS} from '../home/home.constants';
 import {setModalVisible} from '../home/home.slice';
 import useImagesHook from '../images/useImages';
-import {NOTEBOOK_DETAIL_PAGE_MAIN_PAGE_DICTIONARY} from '../notebook-panel/notebook.constants';
-import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import {
   addedSpot,
   addedSpots,
@@ -200,8 +198,6 @@ const Map = React.forwardRef((props, ref) => {
     if (props.mapMode !== MAP_MODES.EDIT) {
       setDisplayedSpots((isEmpty(selectedSpot) ? [] : [{...selectedSpot}]));
     }
-    const notebookPageToDisplay = NOTEBOOK_DETAIL_PAGE_MAIN_PAGE_DICTIONARY[pageVisible];
-    if (notebookPageToDisplay) dispatch(setNotebookPageVisible(notebookPageToDisplay));
   }, [selectedSpot, activeDatasetsIds]);
 
   useEffect(() => {

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {FlatList, View, Text} from 'react-native';
 
 import {Button, ListItem} from 'react-native-elements';
@@ -7,7 +7,6 @@ import {useSelector} from 'react-redux';
 import {getNewId, isEmpty} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
 import {LABEL_DICTIONARY} from '../form';
-//import MineralDetail from './MineralDetail';
 import MineralReactionDetail from './MineralReactionDetail';
 import MineralsByRockClass from './MineralsByRockClass';
 import MineralsGlossary from './MineralsGlossary';
@@ -20,6 +19,11 @@ const MineralsSubpage = (props) => {
   const [mineralView, setMineralView] = useState(MINERAL_VIEW.OVERVIEW);
 
   const petDictionary = Object.values(LABEL_DICTIONARY.pet).reduce((acc, form) => ({...acc, ...form}), {});
+
+  useEffect(() => {
+    console.log('UE MineralsSubpage: spot changed to', spot);
+    setSelectedMineral({});
+  }, [spot]);
 
   const addMineral = (mineral) => {
     const newMineral = {id: getNewId()};

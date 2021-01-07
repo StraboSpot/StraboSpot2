@@ -44,11 +44,6 @@ export const NOTEBOOK_SUBPAGES = {
 
 export const NOTEBOOK_PAGES = {NOTEBOOK_OVERVIEW_PAGE, ...PRIMARY_NOTEBOOK_PAGES, ...SECONDARY_NOTEBOOK_PAGES, ...SED_NOTEBOOK_PAGES};
 
-export const NOTEBOOK_DETAIL_PAGE_MAIN_PAGE_DICTIONARY = {
-  'Sample Detail': 'Sample',
-  'Measurement Detail': 'Measurements',
-};
-
 export const NOTEBOOK_PAGES_ICONS = {
   MEASUREMENT: require('../../assets/icons/Measurement.png'),
   MEASUREMENT_PRESSED: require('../../assets/icons/Measurement_pressed.png'),
