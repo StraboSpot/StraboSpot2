@@ -85,6 +85,7 @@ const LeftSideButtons = (props) => {
       <BaseMapDialog
         visible={dialogs.baseMapMenuVisible}
         close={() => toggleDialog('baseMapMenuVisible')}
+        zoomToCustomMap={props.zoomToCustomMap}
         onPress={(name) => {
           useMaps.setBasemap(name);
           toggleDialog('baseMapMenuVisible');

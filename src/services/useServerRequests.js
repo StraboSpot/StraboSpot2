@@ -5,6 +5,7 @@ import {useSelector} from 'react-redux';
 const useServerRequests = () => {
   const user = useSelector(state => state.user);
   const baseUrl = 'https://strabospot.org/db';
+  const mapWarperApi = 'http://mapwarper.net/api/v1/maps/';
 
   const addDatasetToProject = (projectId, datasetId, encodedLogin) => {
     return post('/projectDatasets/' + projectId, encodedLogin, {id: datasetId});
@@ -70,6 +71,13 @@ const useServerRequests = () => {
 
   const downloadImage = (imageId, encodedLogin) => {
     return request('GET', '/image/' + imageId, encodedLogin, {responseType: 'blob'});
+  };
+
+  const getMapWarperBbox = async (mapId) => {
+    const response = await fetch(mapWarperApi + mapId);
+    const responseJson = await response.json();
+    console.log('MAPWARPER MAP RES', responseJson);
+    return responseJson;
   };
 
   const getProfileImage = async (encodedLogin) => {
@@ -232,6 +240,7 @@ const useServerRequests = () => {
     getDatasets: getDatasets,
     getDatasetSpots: getDatasetSpots,
     getDataset: getDataset,
+    getMapWarperBbox: getMapWarperBbox,
     getProfile: getProfile,
     getProject: getProject,
     getProfileImage: getProfileImage,

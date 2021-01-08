@@ -9,6 +9,11 @@ const commonStyles = StyleSheet.create({
   buttonPadding: {
     padding: 10,
   },
+  viewMapsButtonText: {
+    fontSize: themes.SMALL_TEXT_SIZE,
+    color: themes.PRIMARY_ACCENT_COLOR,
+    // paddingLeft: 20,
+  },
   dialogContent: {
     flex: 1,
     marginTop: 15,

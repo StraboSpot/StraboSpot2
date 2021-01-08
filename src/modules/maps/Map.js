@@ -1321,6 +1321,15 @@ const Map = React.forwardRef((props, ref) => {
     setIsZoomToCenterOffline(true);
   };
 
+  const zoomToCustomMap = (bbox) => {
+    console.log(bbox)
+    if (bbox && isOnline) {
+      const bboxArr = bbox.split(',');
+      camera.current.fitBounds([Number(bboxArr[0]), Number(bboxArr[1])],[Number(bboxArr[2]), Number(bboxArr[3])], 100, 2500);
+    }
+    else console.error('Error: not able to get Custom Map bbox coords...');
+  };
+
   const toggleUserLocation = (value) => {
     setMapPropsMutable(m => ({
       ...m,
@@ -1347,6 +1356,7 @@ const Map = React.forwardRef((props, ref) => {
       zoomToSpot: zoomToSpot,
       zoomToSpotsExtent: zoomToSpotsExtent,
       zoomToCenterOfflineTile: zoomToCenterOfflineTile,
+      zoomToCustomMap: zoomToCustomMap,
     };
   });
 

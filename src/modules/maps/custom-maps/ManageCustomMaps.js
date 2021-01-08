@@ -1,9 +1,10 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Text, View} from 'react-native';
 
-import {ListItem} from 'react-native-elements';
+import {Button, ListItem} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
+import commonStyles from '../../../shared/common.styles';
 import {isEmpty} from '../../../shared/Helpers';
 import AddButton from '../../../shared/ui/AddButton';
 import Divider from '../../main-menu-panel/MainMenuPanelDivider';
@@ -12,7 +13,12 @@ import styles from './customMaps.styles';
 
 const ManageCustomMaps = (props) => {
   const customMaps = useSelector(state => state.map.customMaps);
+  const isOnline = useSelector(state => state.home.isOnline);
   const [useMaps] = useMapHook();
+
+  useEffect(() => {
+    console.log('Is Online in ManageCustomMaps');
+  }, [isOnline]);
 
   const mapTypeName = (source) => {
     let name;
@@ -31,7 +37,7 @@ const ManageCustomMaps = (props) => {
       <Divider sectionText={'current custom maps'} style={styles.header}/>
       {!isEmpty(customMaps)
         ? (
-          <View style={styles.sectionsContainer}>
+          <View>
             {Object.values(customMaps).map((item, i) => (
               <ListItem
                 containerStyle={styles.list}
@@ -43,7 +49,23 @@ const ManageCustomMaps = (props) => {
                     <ListItem.Title style={styles.itemTextStyle}>{item.title}</ListItem.Title>
                   </View>
                   <View style={styles.itemSubContainer}>
-                    <ListItem.Subtitle style={styles.itemSubTextStyle}>({mapTypeName(item.source)})</ListItem.Subtitle>
+                    <ListItem.Subtitle style={styles.itemSubTextStyle}>({mapTypeName(
+                      item.source)} - {item.id})</ListItem.Subtitle>
+                    <Button
+                      disabled={!isOnline}
+                      titleStyle={commonStyles.viewMapsButtonText}
+                      type={'clear'}
+                      containerStyle={{paddingLeft: 20}}
+                      icon={{
+                        name: isOnline ? 'map-outline' : 'cloud-offline',
+                        type: 'ionicon',
+                        color: 'blue',
+                      }}
+                      onPress={async () => {
+                        const baseMap = await useMaps.setBasemap(item.id);
+                        setTimeout(() => props.zoomToCustomMap(baseMap.bbox), 1000);
+                      }}
+                    />
                   </View>
                 </ListItem.Content>
                 <ListItem.Chevron/>

@@ -125,6 +125,7 @@ const MainMenuPanel = props => {
       page = (
         <View style={styles.mainMenuContainer}>
           <CustomMapsMenu
+            zoomToCustomMap={props.zoomToCustomMap}
             // openSidePanel={(view, map) => props.openSidePanel(view, map)}
           />
         </View>

@@ -785,6 +785,7 @@ const Home = () => {
         closeMainMenuPanel={() => toggleHomeDrawerButton()}
         openNotebookPanel={(pageView) => openNotebookPanel(pageView)}
         zoomToCenterOfflineTile={() => mapViewComponent.current.zoomToCenterOfflineTile()}
+        zoomToCustomMap={(bbox) => mapViewComponent.current.zoomToCustomMap(bbox)}
       />
     </Animated.View>
   );
@@ -836,6 +837,7 @@ const Home = () => {
         clickHandler={(name, value) => clickHandler(name, value)}
         rightsideIconAnimation={rightsideIconAnimation}
         leftsideIconAnimation={leftsideIconAnimation}
+        zoomToCustomMap={(bbox) => mapViewComponent.current.zoomToCustomMap(bbox)}
       />
       <NotebookPanelMenu
         visible={dialogs.notebookPanelMenuVisible}

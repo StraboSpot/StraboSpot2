@@ -35,6 +35,8 @@ const styles = StyleSheet.create({
     width: '90%',
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
+
     // paddingTop: 7,
     // paddingBottom: 3,
     // paddingLeft: 10,
@@ -43,6 +45,7 @@ const styles = StyleSheet.create({
     width: '90%',
     flexDirection: 'row',
     alignItems: 'center',
+    // justifyContent: 'space-between',
     paddingTop: 3,
     paddingBottom: 7,
     paddingLeft: 10,

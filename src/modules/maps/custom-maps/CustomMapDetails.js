@@ -84,7 +84,6 @@ const AddCustomMaps = () => {
     const customMap = await useMaps.saveCustomMap(editableCustomMapData);
     console.log(customMap);
     if (customMap !== undefined) {
-      dispatch(addedCustomMap(customMap));
       dispatch(setSidePanelVisible({view: null, bool: false}));
       dispatch(setMenuSelectionPage({name: undefined}));
       dispatch(removedLastStatusMessage());
