@@ -11,26 +11,7 @@ const notebookStyles = StyleSheet.create({
     right: 0,
     zIndex: -1,
   },
-  allSpotsPanel: {
-    flex: 1,
-    zIndex: 1000,
-    justifyContent: 'center',
-    width: 125,
-    height: '100%',
-    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
-    borderWidth: 2,
-    borderBottomColor: themes.DARKGREY,
-    position: 'absolute',
-    right: 0,
-  },
-  allSpotsPanelContents: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
-    paddingTop: 20,
-    paddingBottom: 20,
-  },
-  headerContainer: {
+   headerContainer: {
     flex: 1,
     borderBottomWidth: 2,
     borderBottomColor: themes.DARKGREY,

@@ -34,8 +34,7 @@ const homeConfig = {
   storage: AsyncStorage,
   blacklist: ['statusMessages', 'imageProgress', 'isOnline', 'loading', 'modalVisible', 'isStatusMessagesModalVisible',
     'isErrorMessagesModalVisible', 'isProjectLoadSelectionModalVisible', 'isOfflineMapModalVisible',
-    'isInfoModalVisible', 'isImageModalVisible', 'isAllSpotsPanelVisible', 'isMainMenuPanelVisible',
-    'isProjectLoadComplete'],
+    'isInfoModalVisible', 'isImageModalVisible', 'isMainMenuPanelVisible', 'isProjectLoadComplete'],
 };
 
 const notebookConfig = {
