@@ -29,6 +29,12 @@ const BaseMapDialog = props => {
   const offlineMaps = useSelector(state => state.offlineMap.offlineMaps);
   const customMapsArr = Object.values(customMaps);
 
+  const conditions = ['http', 'https'];
+
+  const checkForCustomMaps = () => {
+    return Object.values(offlineMaps).some(map => map.source === 'map_warper');
+  };
+
   return (
     <Dialog
       dialogAnimation={slideAnimation}
@@ -57,6 +63,7 @@ const BaseMapDialog = props => {
                     <ListItem.Title style={styles.dialogText}>{map.title}</ListItem.Title>
                   </ListItem.Content>
                   {currentBasemap && currentBasemap.id && map.id === currentBasemap.id
+                  && conditions.some(el => currentBasemap.url[0].includes(el))
                   && <Icon type={'ionicon'} color={themes.BLUE} name={'checkmark-outline'}/>}
                 </ListItem>
               );
@@ -67,7 +74,7 @@ const BaseMapDialog = props => {
           <View style={!isEmpty(customMaps) && {borderBottomWidth: 1}}>
             <SectionDivider dividerText={'Offline Default Basemaps'}/>
             {Object.values(offlineMaps).map((map, i) => {
-              // if (map.source === 'strabo_spot_mapbox') {
+              if (map.source === 'strabo_spot_mapbox') {
                 return (
                   <ListItem
                     key={map.id}
@@ -75,18 +82,19 @@ const BaseMapDialog = props => {
                     bottomDivider={i < BASEMAPS.length - 2}
                     onPress={() => useMapsOffline.setOfflineMapTiles(map)}>
                     <ListItem.Content>
-                      <ListItem.Title style={styles.dialogText}>{useMapsOffline.getMapName(map)} ({map.count} tiles)</ListItem.Title>
+                      <ListItem.Title style={styles.dialogText}>{useMapsOffline.getMapName(map)}</ListItem.Title>
+                      <ListItem.Subtitle style={{paddingTop: 5}}>({map.count} tiles)</ListItem.Subtitle>
                     </ListItem.Content>
                     {currentBasemap && map.id === currentBasemap.id
                     && <Icon type={'ionicon'} color={themes.BLUE} name={'checkmark-outline'}/>}
                   </ListItem>
                 );
-              // }
+              }
             })}
           </View>
         )}
-        {!isOnline && !isEmpty(customMaps)&& (
-          <View>
+        {!isOnline && checkForCustomMaps() && (
+          <View style={!isEmpty(offlineMaps) && {borderBottomWidth: 1}}>
             <SectionDivider dividerText={'Offline Custom Basemaps'}/>
             {Object.values(offlineMaps).map((map, i) => {
               if (map.source === 'map_warper' || map.source === 'strabospot_mymaps') {
@@ -94,10 +102,14 @@ const BaseMapDialog = props => {
                   <ListItem
                     key={map.id}
                     bottomDivider={i < CUSTOMBASEMAPS.length - 2}
-                    onPress={() => useMapsOffline.setOfflineMapTiles(map)}
+                    onPress={() => {
+                      useMapsOffline.setOfflineMapTiles(map);
+                      props.zoomToCenterOfflineTile();
+                    }}
                   >
                     <ListItem.Content>
                       <ListItem.Title style={styles.dialogText}>{useMapsOffline.getMapName(map)}</ListItem.Title>
+                      <ListItem.Subtitle style={{paddingTop: 5}}>({map.count} tiles)</ListItem.Subtitle>
                     </ListItem.Content>
                     {currentBasemap && map.id === currentBasemap.id
                     && <Icon type={'ionicon'} color={themes.BLUE} name={'checkmark-outline'}/>}
@@ -119,9 +131,10 @@ const BaseMapDialog = props => {
                       containerStyle={styles.customBaseMapListContainer}
                       bottomDivider={i < customMapsArr.length - 1}
                       key={customMap.id}
-                      onPress={() => {
-                        useMaps.viewCustomMap(customMap);
+                      onPress={async () => {
+                        const baseMap = await useMaps.setBasemap(customMap.id);
                         props.close();
+                        setTimeout(() => props.zoomToCustomMap(baseMap.bbox), 1000);
                       }}>
                       <ListItem.Content>
                         <View style={styles.itemContainer}>
@@ -129,6 +142,7 @@ const BaseMapDialog = props => {
                         </View>
                       </ListItem.Content>
                       {isOnline && currentBasemap && customMap.id === currentBasemap.id
+                      && conditions.some(el => currentBasemap.url[0].includes(el))
                       && <Icon type={'ionicon'} color={themes.BLUE} name={'checkmark-outline'}/>}
                     </ListItem>
                   )

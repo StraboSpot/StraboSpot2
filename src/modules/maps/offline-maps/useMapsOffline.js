@@ -123,8 +123,6 @@ const useMapsOffline = () => {
       const y = Number(parts[2]);
       const lng = tile2long(x, z);
       const lat = tile2lat(y, z);
-      console.log('LAT', lat);
-      console.log('LNG', lng);
       return [lng, lat];
     }
   };
@@ -332,6 +330,7 @@ const useMapsOffline = () => {
       thisMap.id = currentBasemap.id;
       thisMap.name = mapName;
       thisMap.count = tileCount;
+      thisMap.source = source;
       // thisMap.mapId = new Date().valueOf();
       thisMap.mapId = zipUID;
       thisMap.date = new Date().toLocaleString();

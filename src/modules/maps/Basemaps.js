@@ -21,9 +21,9 @@ function Basemap(props) {
   const [symbols, setSymbol] = useState(MAP_SYMBOLS);
   const [useImages] = useImagesHook();
   const [useMaps] = useMapsHook();
-  const [showZoom, setShowZoom] = useState(false);
   const [currentZoom, setCurrentZoom] = useState(undefined);
   const [doesImageExist, setDoesImageExist] = useState(false);
+
 
   useEffect(() => {
     console.log('UE Basemap [props.imageBasemap]');
@@ -62,23 +62,21 @@ function Basemap(props) {
     return defaultCenterCoordinates();
   };
 
-  const onZoomChange = async () => {
+  const mapZoomLevel = async () => {
     const zoom = await mapRef.current.getZoom();
-    setShowZoom(true);
     setCurrentZoom(zoom);
   };
 
   const onRegionDidChange = () => {
     console.log('Event onRegionDidChange');
-    setShowZoom(false);
     props.spotsInMapExtent();
   };
 
   return (
     <View style={{flex: 1}}>
-      {showZoom && <View style={homeStyles.currentZoom}>
-        <Text>Zoom: {currentZoom && currentZoom.toFixed(1)}</Text>
-      </View>}
+      <View style={homeStyles.currentZoomContainer}>
+        <Text style={homeStyles.currentZoomText}>Zoom: {currentZoom && currentZoom.toFixed(1)}</Text>
+      </View>
       <MapboxGL.MapView
         id={props.imageBasemap ? props.imageBasemap.id : props.basemap.id}
         ref={mapRef}
@@ -94,7 +92,8 @@ function Basemap(props) {
         onLongPress={props.onMapLongPress}
         scrollEnabled={props.allowMapViewMove}
         zoomEnabled={props.allowMapViewMove}
-        onRegionIsChanging={(args) => onZoomChange()}
+        onDidFinishLoadingMap={() => mapZoomLevel()}
+        onRegionIsChanging={(args) => mapZoomLevel()}
         onRegionDidChange={() => onRegionDidChange()}
       >
 

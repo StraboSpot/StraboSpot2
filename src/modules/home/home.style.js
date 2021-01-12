@@ -50,6 +50,19 @@ const homeStyles = StyleSheet.create({
     fontSize: themes.PRIMARY_TEXT_SIZE,
     fontWeight: 'bold',
   },
+  offlineMapLabelContainer: {
+    position: 'absolute' ,
+    top: 60,
+    right: '45%',
+  },
+  offlineMapViewLabel: {
+    padding: 10,
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: 'yellow',
+    textShadowColor: 'black',
+    textShadowRadius: 10
+  },
 
   // --- Drawer Styles ---
   // --- Bottom icons (line, polygon, and point) ---
@@ -112,16 +125,18 @@ const homeStyles = StyleSheet.create({
     top: 15,
     zIndex: -1,
   },
-  currentZoom: {
-    fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,
-    backgroundColor: 'white',
-    borderRadius: 10,
-    padding: 10,
+  currentZoomContainer: {
     zIndex: 1,
-    color: themes.PRIMARY_ITEM_TEXT_COLOR,
     position: 'absolute',
-    top: 15,
-    right: '45%',
+    bottom: 30,
+    left: 100,
+  },
+  currentZoomText: {
+    color:'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+    textShadowColor: 'black',
+    textShadowRadius: 5,
   },
 
   // --- Modal Style ---

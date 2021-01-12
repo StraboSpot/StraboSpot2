@@ -76,6 +76,7 @@ const Home = () => {
   const homeMenuPanelWidth = 300;
   const mainMenuSidePanelWidth = 300;
   const notebookPanelWidth = 400;
+  const urlConditions = ['http', 'https'];
 
   const [useHome] = useHomeHook();
   const [useImages] = useImagesHook();
@@ -575,6 +576,14 @@ const Home = () => {
     );
   };
 
+  const renderOfflineMapViewLabel = () => {
+    return (
+      <View style={homeStyles.offlineMapLabelContainer}>
+        <Text style={homeStyles.offlineMapViewLabel}>Offline View</Text>
+      </View>
+    );
+  };
+
   const renderSaveAndCancelDrawButtons = () => {
     return (
       <View style={homeStyles.drawSaveAndCancelButtons}>
@@ -835,9 +844,10 @@ const Home = () => {
         toggleHomeDrawer={() => toggleHomeDrawerButton()}
         dialogClickHandler={(dialog, name) => dialogClickHandler(dialog, name)}
         clickHandler={(name, value) => clickHandler(name, value)}
-        rightsideIconAnimation={rightsideIconAnimation}
+        // rightsideIconAnimation={rightsideIconAnimation}
         leftsideIconAnimation={leftsideIconAnimation}
         zoomToCustomMap={(bbox) => mapViewComponent.current.zoomToCustomMap(bbox)}
+        zoomToCenterOfflineTile={() => mapViewComponent.current.zoomToCenterOfflineTile()}
       />
       <NotebookPanelMenu
         visible={dialogs.notebookPanelMenuVisible}
@@ -867,6 +877,7 @@ const Home = () => {
       {isHomeLoading && <LoadingSpinner/>}
       {notebookPanel}
       {MainMenu}
+      {isOnline && !urlConditions.some(el => currentBasemap.url[0].includes(el)) && renderOfflineMapViewLabel()}
       {renderSaveAndCancelDrawButtons()}
       {isMainMenuPanelVisible && toggleSidePanel()}
       {renderFloatingViews()}

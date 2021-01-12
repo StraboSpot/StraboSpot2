@@ -10,7 +10,6 @@ import commonStyles from '../../../shared/common.styles';
 import {isEmpty} from '../../../shared/Helpers';
 import {setOfflineMapsModalVisible} from '../../home/home.slice';
 import Divider from '../../main-menu-panel/MainMenuPanelDivider';
-import {setOfflineMap} from '../offline-maps/offlineMaps.slice';
 import styles from './offlineMaps.styles';
 import useMapsOfflineHook from './useMapsOffline';
 
@@ -94,7 +93,8 @@ const ManageOfflineMaps = (props) => {
             >
               <ListItem.Content>
                 <View style={styles.itemContainer}>
-                  <ListItem.Title style={styles.itemTextStyle}>{`${item.name} (${item.count} tiles)`}</ListItem.Title>
+                  <ListItem.Title style={styles.itemTextStyle}>{`${item.name}`}</ListItem.Title>
+                  <ListItem.Title style={styles.itemSubTextStyle}>{`(${item.count} tiles)`}</ListItem.Title>
                 </View>
                 <View style={styles.itemSubContainer}>
                   <Button
@@ -102,14 +102,13 @@ const ManageOfflineMaps = (props) => {
                     await useMapsOffline.switchToOfflineMap(item.id);
                     props.zoomToCenterOfflineTile();
                     }}
-                    // disabled={isOnline}
-                    titleStyle={styles.buttonText}
+                    titleStyle={commonStyles.viewMapsButtonText}
                     type={'clear'}
                     title={'View in map offline'}
                   />
                   <Button
                     onPress={() => confirmDeleteMap(item)}
-                    titleStyle={styles.buttonText}
+                    titleStyle={commonStyles.viewMapsButtonText}
                     type={'clear'}
                     title={'Delete'}
                   />
@@ -135,7 +134,7 @@ const ManageOfflineMaps = (props) => {
         title={'Download tiles of current map'}
         disabled={!isOnline}
         onPress={() => {
-          props.closeMainMenuPanel()
+          props.closeMainMenuPanel();
           dispatch(setOfflineMapsModalVisible(true));
         }}
         containerStyle={styles.buttonContainer}
