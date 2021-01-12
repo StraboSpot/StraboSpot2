@@ -22,22 +22,18 @@ const MeasurementItem = (props) => {
     firstOrderClassLabel = firstOrderClassLabel.replace('Orientation', 'Feature');
     if (firstOrderClassLabel === 'Tabular Feature') firstOrderClassLabel = 'Planar Feature (TZ)';
     const secondOrderClassLabel = secondOrderClass && useMeasurements.getLabel(item[secondOrderClass]).toUpperCase();
+    let typeText = firstOrderClassLabel + (secondOrderClass ? ' - ' + secondOrderClassLabel : '');
 
     // Is an associated orientation on an associated list
-    if (props.isAssociatedList && props.isAssociatedItem) {
-      return 'Associated ' + firstOrderClassLabel + (secondOrderClass ? ' - ' + secondOrderClassLabel : '');
-    }
+    if (props.isAssociatedList && props.isAssociatedItem) return 'Associated ' + typeText;
     // Doesn't have associated orientation(s) or is the main orientation on an associated list
-    else if (!item.associated_orientation || (props.isAssociatedList && !props.isAssociatedItem)) {
-      return firstOrderClassLabel + (secondOrderClass ? ' - ' + secondOrderClassLabel : '');
-    }
+    else if (!item.associated_orientation || (props.isAssociatedList && !props.isAssociatedItem)) return typeText;
     // Has associated orientation(s)
     else if (item.type === 'planar_orientation' || item.type === 'tabular_orientation') {
-      return firstOrderClassLabel + (secondOrderClass ? ' - ' + secondOrderClassLabel : '') + ' + Associated Linear Feature(s)';
+      typeText += ' + Associated Linear Feature' + (item.associated_orientation.length > 1 ? 's' : '');
     }
-    else {
-      return firstOrderClassLabel + (secondOrderClass ? ' - ' + secondOrderClassLabel : '') + ' + Associated Planar Feature(s)';
-    }
+    else typeText += ' + Associated Planar Feature' + (item.associated_orientation.length > 1 ? 's' : '');
+    return typeText;
   };
 
   const getMeasurementText = (item) => {
