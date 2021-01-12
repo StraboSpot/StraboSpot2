@@ -1322,7 +1322,6 @@ const Map = React.forwardRef((props, ref) => {
   };
 
   const zoomToCustomMap = (bbox) => {
-    console.log(bbox)
     if (bbox && isOnline) {
       const bboxArr = bbox.split(',');
       camera.current.fitBounds([Number(bboxArr[0]), Number(bboxArr[1])],[Number(bboxArr[2]), Number(bboxArr[3])], 100, 2500);

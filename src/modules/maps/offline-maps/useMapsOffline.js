@@ -73,22 +73,15 @@ const useMapsOffline = () => {
 
   const getMapCenterTile = async (mapid) => {
     if (devicePath) {
-
-      console.log('MAP ID ', mapid);
       const entries = await useDevice.readDirectoryForMapTiles(mapid);
-      console.log('Tiles on device', entries);
       // loop over tiles to get center tiles
       let maxZoom = 0;
       let xvals = [];
       let yvals = [];
 
       entries.map((entry, index) => {
-        // console.log('ENTRY', entry, 'Index', index);
         const parts = entry.replace('.png', '').split('_');
         const z = Number(parts[0]);
-        // const x = Number(parts[1]);
-        // const y = Number(parts[2]);
-
         if (z > maxZoom) {
           maxZoom = z;
         }
@@ -323,7 +316,6 @@ const useMapsOffline = () => {
       console.log(customMap);
       if (source === 'strabo_spot_mapbox' || source === 'osm' || source === 'macrostrat') mapName = currentMapName;
       else mapName = customMap[0].title;
-
 
       let newOfflineMapsData = [];
       let thisMap = {};

@@ -37,8 +37,8 @@ const ManageOfflineMaps = (props) => {
 
   useEffect(() => {
     console.log('Offline Maps Updated:', offlineMaps);
-    setAvailableMaps(offlineMaps)
-  }, [offlineMaps])
+    setAvailableMaps(offlineMaps);
+  }, [offlineMaps]);
 
   useEffect(() => {
     console.log('Is Online: ', isOnline);
@@ -58,7 +58,7 @@ const ManageOfflineMaps = (props) => {
         {
           text: 'OK',
           onPress: () => {
-            Object.values(availableMaps).filter(mapId => mapId.id !== map.id)
+            Object.values(availableMaps).filter(mapId => mapId.id !== map.id);
             useDevice.deleteOfflineMap(map);
           },
         },
@@ -69,7 +69,7 @@ const ManageOfflineMaps = (props) => {
 
   const readDirectoryForMaps = async () => {
     try {
-      const files = await useDevice.readDirectoryForMaps()
+      const files = await useDevice.readDirectoryForMaps();
       setDirectoryExists(true);
       const availableMapObj = Object.assign({}, ...files.map(file => ({[offlineMaps[file].id]: offlineMaps[file]})));
       setAvailableMaps({...availableMaps, ...availableMapObj});
@@ -99,8 +99,8 @@ const ManageOfflineMaps = (props) => {
                 <View style={styles.itemSubContainer}>
                   <Button
                     onPress={async () => {
-                    await useMapsOffline.switchToOfflineMap(item.id);
-                    props.zoomToCenterOfflineTile();
+                      await useMapsOffline.switchToOfflineMap(item.id);
+                      props.zoomToCenterOfflineTile();
                     }}
                     titleStyle={commonStyles.viewMapsButtonText}
                     type={'clear'}
