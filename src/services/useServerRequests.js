@@ -6,6 +6,7 @@ const useServerRequests = () => {
   const user = useSelector(state => state.user);
   const baseUrl = 'https://strabospot.org/db';
   const mapWarperApi = 'http://mapwarper.net/api/v1/maps/';
+  const straboMyMapsApi = 'https://strabospot.org/geotiff/bbox/';
 
   const addDatasetToProject = (projectId, datasetId, encodedLogin) => {
     return post('/projectDatasets/' + projectId, encodedLogin, {id: datasetId});
@@ -77,6 +78,13 @@ const useServerRequests = () => {
     const response = await fetch(mapWarperApi + mapId);
     const responseJson = await response.json();
     console.log('MAPWARPER MAP RES', responseJson);
+    return responseJson;
+  };
+
+  const getMyMapsBbox = async (mapId) => {
+    const response = await fetch(straboMyMapsApi + mapId);
+    const responseJson = await response.json();
+    console.log('MY MAPS RES', responseJson);
     return responseJson;
   };
 
@@ -241,6 +249,7 @@ const useServerRequests = () => {
     getDatasetSpots: getDatasetSpots,
     getDataset: getDataset,
     getMapWarperBbox: getMapWarperBbox,
+    getMyMapsBbox: getMyMapsBbox,
     getProfile: getProfile,
     getProject: getProject,
     getProfileImage: getProfileImage,

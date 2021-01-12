@@ -307,6 +307,7 @@ const useMaps = () => {
 
   const setBasemap = async (mapId) => {
     let newBasemap = {};
+    let bbox = '';
     if (!mapId) mapId = 'mapbox.outdoors';
     newBasemap = await BASEMAPS.find(basemap => basemap.id === mapId);
     if (newBasemap === undefined) {
@@ -314,8 +315,14 @@ const useMaps = () => {
         console.log(basemap);
         return basemap.id === mapId;
       });
-      const mapwarperData = await useServerRequests.getMapWarperBbox(mapId);
-      const bbox = mapwarperData.data.attributes.bbox;
+      if (newBasemap.source === 'map_warper') {
+        const mapwarperData = await useServerRequests.getMapWarperBbox(mapId);
+        bbox = mapwarperData.data.attributes.bbox;
+      }
+      else if (newBasemap.source === 'strabospot_mymaps') {
+        const myMapsbbox = await useServerRequests.getMyMapsBbox(mapId);
+        bbox = myMapsbbox.data.bbox;
+      }
       newBasemap = {...newBasemap, bbox: bbox};
     }
     console.log('Setting current basemap to a default basemap...');
