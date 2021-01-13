@@ -136,6 +136,7 @@ const Tags = () => {
       <AddButton
         onPress={addTag}
         title={'Add New Tag'}
+        type={'outline'}
       />
       {!isEmpty(tags) && (
         <View style={{flex: 1}}>

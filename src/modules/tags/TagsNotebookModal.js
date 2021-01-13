@@ -51,8 +51,9 @@ const TagsNotebookModal = (props) => {
                   <Text style={commonStyles.noValueText}>No tags in project.</Text>
                   <Text style={commonStyles.noValueText}>To add a tag press 'Add Tag.'</Text>
                   <AddButton
-                    title={'Create New Tag'}
+                    title={'Add New Tag'}
                     onPress={() => addTag()}
+                    type={'outline'}
                   />
                 </View>
               )
@@ -80,8 +81,9 @@ const TagsNotebookModal = (props) => {
               {project.tags && isEmpty(project.tags)
               && <Text style={commonStyles.noValueText}>No tags in project.</Text>}
               <AddButton
-                title={'Create New Tag'}
+                title={'Add New Tag'}
                 onPress={() => addTag()}
+                type={'outline'}
               />
             </View>
             <TagsModal/>

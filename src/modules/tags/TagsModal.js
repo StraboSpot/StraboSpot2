@@ -12,10 +12,10 @@ import modalStyle from '../../shared/ui/modal/modal.style';
 import {MODALS} from '../home/home.constants';
 import useMapsHook from '../maps/useMaps';
 import {addedTagToSelectedSpot} from '../project/projects.slice';
-import {useTagsHook} from '../tags';
+import {TagDetailModal, useTagsHook} from '../tags';
 import tagStyles from './tags.styles';
 
-const TagsModal = (props) => {
+const TagsModal = () => {
   const dispatch = useDispatch();
   const [useMaps] = useMapsHook();
   const [useTags] = useTagsHook();
@@ -26,17 +26,6 @@ const TagsModal = (props) => {
   const [checkedTagsTemp, setCheckedTagsTemp] = useState([]);
   const [isDetailModalVisible, setIsDetailModalVisible] = useState(false);
 
-  const addTag = async () => {
-    await useTags.addTag();
-    setIsDetailModalVisible(true);
-  };
-
-  const closeTagDetailModal = () => {
-    setIsDetailModalVisible(false);
-    dispatch(addedTagToSelectedSpot(false));
-  };
-
-
   const checkTags = (tag) => {
     const checkedTagsIds = checkedTagsTemp.map(checkedTag => checkedTag.id);
     if (checkedTagsIds.includes(tag.id)) {
@@ -44,6 +33,11 @@ const TagsModal = (props) => {
       setCheckedTagsTemp(filteredCheckedTags);
     }
     else setCheckedTagsTemp([...checkedTagsTemp, tag]);
+  };
+
+  const closeTagDetailModal = () => {
+    setIsDetailModalVisible(false);
+    dispatch(addedTagToSelectedSpot(false));
   };
 
   const save = async () => {
@@ -61,36 +55,6 @@ const TagsModal = (props) => {
         });
       });
     }
-  };
-
-  const renderTagContent = () => {
-    return (
-      <React.Fragment>
-        {/*<ListItem*/}
-        {/*  title={'Filter Tags by Type'}*/}
-        {/*  // containerStyle={{paddingTop: 20}}*/}
-        {/*  bottomDivider*/}
-        {/*  topDivider*/}
-        {/*  chevron*/}
-        {/*/>*/}
-        <View style={modalStyle.textContainer}>
-          {tags && !isEmpty(tags)
-            ? <Text style={modalStyle.textStyle}>Check all tags that apply</Text>
-            : <Text style={modalStyle.textStyle}>No Tags</Text>}
-        </View>
-        <View style={{maxHeight: 300}}>
-          {renderSpotTagsList()}
-          {(modalVisible === MODALS.SHORTCUT_MODALS.TAGS || modalVisible === MODALS.SHORTCUT_MODALS.ADD_TAGS_TO_SPOTS)
-          && (
-            <SaveButton
-              buttonStyle={{backgroundColor: 'red'}}
-              title={'Save tag(s)'}
-              onPress={() => save()} disabled={isEmpty(checkedTagsTemp)}
-            />
-          )}
-        </View>
-      </React.Fragment>
-    );
   };
 
   const renderSpotTagsList = () => {
@@ -127,9 +91,44 @@ const TagsModal = (props) => {
   };
 
   return (
-    <View>
-      {renderTagContent()}
-    </View>
+    <React.Fragment>
+      {/*<ListItem*/}
+      {/*  title={'Filter Tags by Type'}*/}
+      {/*  // containerStyle={{paddingTop: 20}}*/}
+      {/*  bottomDivider*/}
+      {/*  topDivider*/}
+      {/*  chevron*/}
+      {/*/>*/}
+      <View style={modalStyle.textContainer}>
+        {tags && !isEmpty(tags)
+          ? <Text style={modalStyle.textStyle}>Check all tags that apply</Text>
+          : <Text style={modalStyle.textStyle}>No Tags</Text>}
+      </View>
+      <View style={{maxHeight: 300}}>
+        {renderSpotTagsList()}
+        {(modalVisible === MODALS.SHORTCUT_MODALS.TAGS || modalVisible === MODALS.SHORTCUT_MODALS.ADD_TAGS_TO_SPOTS)
+        && !isEmpty(tags) ? (
+            <SaveButton
+              buttonStyle={{backgroundColor: 'red'}}
+              title={'Save tag(s)'}
+              onPress={() => save()} disabled={isEmpty(checkedTagsTemp)}
+            />
+          )
+          : modalVisible === MODALS.SHORTCUT_MODALS.TAGS && <View style={modalStyle.textContainer}>
+          <Text style={{padding: 10, textAlign: 'center'}}>Please add a tag.</Text>
+          <AddButton
+            title={'Add New Tag'}
+            type={'outline'}
+            onPress={() => setIsDetailModalVisible(true)}
+          />
+          <TagDetailModal
+            isVisible={isDetailModalVisible}
+            closeModal={closeTagDetailModal}
+          />
+        </View>}
+
+      </View>
+    </React.Fragment>
   );
 };
 

@@ -11,6 +11,7 @@ const AddButton = (props) => {
       containerStyle={commonStyles.buttonPadding}
       buttonStyle={commonStyles.standardButton}
       titleStyle={commonStyles.standardButtonText}
+      type={props.type}
       icon={{
         name: 'add',
         type: 'ionicon',

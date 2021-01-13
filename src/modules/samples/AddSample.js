@@ -48,23 +48,12 @@ const AddSample = () => {
     else setOrientedSample(null);
   };
 
-  // const checkProperties = () => {
-  //   return spot.properties.samples.map((sample) => {
-  //     if (!sample.name) {
-  //       return 'No Sample Name'
-  //     } else {
-  //      return name
-  //     }
-  //   });
-  // };
-
   const saveSample = async () => {
     if (modalVisible === MODALS.SHORTCUT_MODALS.SAMPLE) {
       const pointSetAtCurrentLocation = await useMaps.setPointAtCurrentLocation();
       console.log('pointSetAtCurrentLocation', pointSetAtCurrentLocation);
     }
     let sample = [];
-    // const propertyNameValidation = await checkProperties();
     let newSampleData = {
       sample_id_name: name,
       inplaceness_of_sample: inplaceness,

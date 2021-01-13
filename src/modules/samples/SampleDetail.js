@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Alert, FlatList, View} from 'react-native';
+import {FlatList, View} from 'react-native';
 
 import {Formik} from 'formik';
 import {Button} from 'react-native-elements';
@@ -10,14 +10,12 @@ import * as themes from '../../shared/styles.constants';
 import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {Form, useFormHook} from '../form';
-import {MODALS} from '../home/home.constants';
-import {setModalVisible} from '../home/home.slice';
 import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
 import {setNotebookPageVisible, setNotebookPageVisibleToPrev} from '../notebook-panel/notebook.slice';
 import styles from '../samples/samples.style';
 import {editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
 
-const SampleDetailPage = (props) => {
+const SampleDetailPage = () => {
   const dispatch = useDispatch();
   const [useForm] = useFormHook();
   const [formName, setFormName] = useState([]);
@@ -36,13 +34,6 @@ const SampleDetailPage = (props) => {
     if (!selectedSample) dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.SAMPLE));
   }, [selectedSample]);
 
-  const cancelFormAndGo = () => {
-    if (modalVisible === MODALS.SHORTCUT_MODALS.COMPASS) {
-      dispatch(setModalVisible({modal: MODALS.NOTEBOOK_MODALS.SAMPLE}));
-    }
-    dispatch(setNotebookPageVisibleToPrev());
-  };
-
   // Delete a sample
   const deleteSample = () => {
     let samplesDataCopy = JSON.parse(JSON.stringify(spot.properties.samples));
@@ -51,9 +42,6 @@ const SampleDetailPage = (props) => {
     });
     samplesDataCopy = samplesDataCopy.filter(sample => !isEmpty(sample));
     dispatch(editedSpotProperties({field: 'samples', value: samplesDataCopy}));
-    if (modalVisible === MODALS.SHORTCUT_MODALS.SAMPLE) {
-      dispatch(setModalVisible({modal: MODALS.NOTEBOOK_MODALS.SAMPLE}));
-    }
     dispatch(setNotebookPageVisibleToPrev());
   };
 
@@ -65,7 +53,7 @@ const SampleDetailPage = (props) => {
     return (
       <View>
         <SaveAndCloseButton
-          cancel={() => cancelFormAndGo()}
+          cancel={() => dispatch(setNotebookPageVisibleToPrev())}
           save={() => saveFormAndGo()}
         />
       </View>
@@ -103,8 +91,6 @@ const SampleDetailPage = (props) => {
       let samplesDataCopy = JSON.parse(JSON.stringify(spot.properties.samples));
       let formValues = {...form.current.values};
       let editedSelectedSample = [];
-      const fieldsToExclude = ['id', 'label'];
-      fieldsToExclude.forEach(key => delete formValues[key]);
       samplesDataCopy.forEach((sample, i) => {
         if (selectedSample.id === sample.id) {
           samplesDataCopy[i] = {...sample, ...formValues};
@@ -120,16 +106,15 @@ const SampleDetailPage = (props) => {
     });
   };
 
-  const saveFormAndGo = () => {
-    saveForm().then(() => {
+  const saveFormAndGo = async () => {
+    try {
+      await saveForm();
       console.log('Finished saving form data to Spot');
-      if (modalVisible === MODALS.SHORTCUT_MODALS.SAMPLE) {
-        dispatch(setModalVisible({modal: MODALS.NOTEBOOK_MODALS.SAMPLE}));
-      }
       dispatch(setNotebookPageVisibleToPrev());
-    }, () => {
+    }
+    catch (err) {
       console.log('Error saving form data to Spot');
-    });
+    }
   };
 
   return (

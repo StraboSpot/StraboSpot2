@@ -40,8 +40,9 @@ const TagsNotebook = (props) => {
         }}
       />
       <AddButton
-        title={'Create New Tag'}
+        title={'Add New Tag'}
         onPress={addTag}
+        type={'outline'}
       />
       <View style={{flex: 1}}>
         <View style={commonStyles.dividerWithButton}>

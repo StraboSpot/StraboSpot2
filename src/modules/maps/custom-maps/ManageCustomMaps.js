@@ -33,6 +33,7 @@ const ManageCustomMaps = (props) => {
       <AddButton
         onPress={() => useMaps.customMapDetails({})}
         title={'Add new Custom Map'}
+        type={'outline'}
       />
       <Divider sectionText={'current custom maps'} style={styles.header}/>
       {!isEmpty(customMaps)

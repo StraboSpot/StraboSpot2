@@ -140,11 +140,7 @@ const commonStyles = StyleSheet.create({
   standardButton: {
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
     height: 50,
-    borderColor: themes.MEDIUMGREY,
-    borderWidth: 1,
     borderRadius: 10,
-    // marginLeft: 5,
-    // marginRight: 5,
   },
   standardButtonText: {
     color: themes.PRIMARY_ACCENT_COLOR,
