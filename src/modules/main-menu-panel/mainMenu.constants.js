@@ -5,7 +5,7 @@ export const MAIN_MENU_ITEMS = {
     MY_STRABOSPOT: 'My StraboSpot',
     ACTIVE_PROJECTS: 'Active Project',
     UPLOAD_BACKUP_EXPORT: 'Upload, Backup & Export',
-    DATABASE_DETAILS: 'Database Details',
+    // DATABASE_DETAILS: 'Database Details',
   },
   ATTRIBUTES: {
     SPOTS_LIST: 'Spots List',
@@ -20,13 +20,13 @@ export const MAIN_MENU_ITEMS = {
   },
   PREFERENCES: {
     SHORTCUTS: 'Shortcuts',
-    NOTEBOOK_BAR: 'Notebook Bar',
+    // NOTEBOOK_BAR: 'Notebook Bar',
     NAMING_CONVENTIONS: 'Naming Conventions',
-    UNITS: 'Units',
+    // UNITS: 'Units',
   },
   HELP: {
     ABOUT: 'About Strabo',
-    DOCUMENTATION: 'Documentation',
+    // DOCUMENTATION: 'Documentation',
   },
 };
 
