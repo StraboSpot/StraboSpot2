@@ -2,7 +2,7 @@ import {Alert} from 'react-native';
 
 import RNFS from 'react-native-fs';
 import {unzip} from 'react-native-zip-archive';
-import {useDispatch} from 'react-redux';
+import {batch, useDispatch} from 'react-redux';
 
 import useDeviceHook from '../../services/useDevice';
 import {isEmpty} from '../../shared/Helpers';
@@ -59,8 +59,6 @@ const useImport = () => {
     }
     catch (err) {
       console.error('Error Copying Maps for Distribution', err);
-      console.log('ERROR COPING MAP', err);
-
     }
   };
 
@@ -123,7 +121,6 @@ const useImport = () => {
 
   const loadProjectFromDevice = async (selectedProject) => {
     let progress;
-    dispatch(clearedStatusMessages());
     dispatch(addedStatusMessage(`Importing ${selectedProject.fileName}...`));
     console.log('SELECTED PROJECT', selectedProject);
     const dirExists = await useDevice.doesDeviceBackupDirExist(selectedProject.fileName);
@@ -153,8 +150,13 @@ const useImport = () => {
       }
       dispatch(addedStatusMessage('Importing image files...'));
       await copyImages(selectedProject.fileName);
-
-      return Promise.resolve({project: dataFile.projectDb.project, progress: progress});
+      batch(() => {
+        dispatch(addedStatusMessage('---------------------'));
+        dispatch(addedStatusMessage(`Map tiles imported: ${progress.fileCount}`));
+        dispatch(addedStatusMessage(`Map tiles installed: ${progress.neededTiles}`));
+        dispatch(addedStatusMessage(`Map tiles already installed: ${progress.notNeededTiles}`));
+      })
+      return Promise.resolve({project: dataFile.projectDb.project});
     }
   };
 

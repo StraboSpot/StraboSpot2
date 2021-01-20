@@ -2,15 +2,17 @@ import React, {useEffect, useState} from 'react';
 import {Alert, ScrollView, Text, View} from 'react-native';
 
 import {ListItem, Button} from 'react-native-elements';
-import * as Spinner from 'react-native-indicators';
 import {useDispatch, useSelector} from 'react-redux';
 
-import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
 import Loading from '../../shared/ui/Loading';
-import StatusDialogBox from '../../shared/ui/StatusDialogBox';
-import {addedStatusMessage, setLoadingStatus} from '../home/home.slice';
+import {
+  addedStatusMessage,
+  clearedStatusMessages, setInfoMessagesModalVisible,
+  setLoadingStatus,
+  setStatusMessagesModalVisible,
+} from '../home/home.slice';
 import {MAIN_MENU_ITEMS} from '../main-menu-panel/mainMenu.constants';
 import {setMenuSelectionPage} from '../main-menu-panel/mainMenuPanel.slice';
 import {clearedSpots} from '../spots/spots.slice';
@@ -19,6 +21,7 @@ import * as ProjectActions from './project.constants';
 import styles from './project.styles';
 import {doesBackupDirectoryExist} from './projects.slice';
 import useDownloadHook from './useDownload';
+import useImportHook from './useImport';
 import useProjectHook from './useProject';
 
 const ProjectList = (props) => {
@@ -29,18 +32,14 @@ const ProjectList = (props) => {
   const dispatch = useDispatch();
   const [projectsArr, setProjectsArr] = useState([]);
   const [selectedProject, setSelectedProject] = useState({});
-  const [spinner, setSpinner] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
   const [isError, setIsError] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
-  const [tilesNeeded, setTileNeeded] = useState(0);
-  const [tilesNotNeeded, setTileNotNeeded] = useState(0);
-  const [fileCount, setFileCount] = useState(0);
-  const [isStatusBoxVisible, setIsStatusBoxVisible] = useState(false);
 
   const useDownload = useDownloadHook();
   const [useProject] = useProjectHook();
+  const useImport = useImportHook();
 
   useEffect(() => {
     getAllProjects().then(() => console.log('OK got projects'));
@@ -75,7 +74,30 @@ const ProjectList = (props) => {
       setShowDialog(true);
     }
     else {
-      await useProject.selectProject(project, props.source);
+      try {
+        console.log('Getting project...');
+        if (!isEmpty(project)) useProject.destroyOldProject();
+        if (props.source === 'device') {
+          dispatch(clearedStatusMessages());
+          dispatch(setStatusMessagesModalVisible(true));
+          const res = await useImport.loadProjectFromDevice(project);
+          console.log('Done loading project', res);
+        }
+        else {
+          dispatch(clearedStatusMessages());
+          dispatch(setStatusMessagesModalVisible(true));
+          await useDownload.initializeDownload(project, props.source);
+        }
+      }
+      catch (err) {
+        dispatch(clearedStatusMessages());
+        dispatch(addedStatusMessage({
+          statusMessage: `There is not a project named: 
+          \n\n${selectedProject.description.project_name}\n\n on the server...`,
+        }));
+        dispatch(setInfoMessagesModalVisible(true));
+        throw err.ok;
+      }
       if (!currentProject) Alert.alert('Error getting selected project');
       else setLoading(false);
     }
@@ -96,7 +118,6 @@ const ProjectList = (props) => {
 
         const projectData = await useProject.selectProject(selectedProject, props.source);
         console.log('PROJECT DATA', projectData);
-        // await dispatch(addedStatusMessage('Project loaded!'}));
         dispatch(setLoadingStatus({view: 'modal', bool: false}));
         dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
       }
@@ -111,14 +132,10 @@ const ProjectList = (props) => {
     else if (action === ProjectActions.OVERWRITE) {
       setShowDialog(false);
       if (props.source === 'device') {
-        setSpinner(true);
-        setIsStatusBoxVisible(true);
-        const res = await useProject.selectProject(selectedProject, props.source);
+        dispatch(clearedStatusMessages());
+        dispatch(setStatusMessagesModalVisible(true));
+        const res = await useImport.loadProjectFromDevice(selectedProject);
         console.log('Done loading project', res);
-        setTileNeeded(res.progress.neededTiles);
-        setTileNotNeeded(res.progress.notNeededTiles);
-        setFileCount(res.progress.fileCount);
-        setSpinner(false);
       }
       else await useDownload.initializeDownload(selectedProject, props.source);
     }
@@ -156,35 +173,6 @@ const ProjectList = (props) => {
       <View>
         <Text style={{color: 'red', textAlign: 'center'}}>{errorMessage}</Text>
       </View>
-    );
-  };
-
-  const renderStatusDialog = () => {
-    return (
-      <StatusDialogBox
-        visible={isStatusBoxVisible}
-        dialogTitle={'Import Status'}
-        style={commonStyles.dialogTitleSuccess}
-      >
-        <View>
-          <View style={{flex: 1}}>
-            {spinner && <Spinner.SkypeIndicator/>}
-            <Text style={commonStyles.dialogText}>{statusMessage.join('\n')}</Text>
-          </View>
-          {!spinner && <View style={{flex: 1}}>
-            <Text style={commonStyles.dialogText}>Tiles imported:{fileCount}</Text>
-            <Text style={commonStyles.dialogText}>Tiles needed:{tilesNeeded}</Text>
-            <Text style={commonStyles.dialogText}>Tiles not needed:{tilesNotNeeded}</Text>
-          </View>}
-          <View style={{flex: 1, padding: 10}}>
-            <Button
-              title={'close'}
-              disabled={spinner}
-              onPress={() => setIsStatusBoxVisible(false)}
-            />
-          </View>
-        </View>
-      </StatusDialogBox>
     );
   };
 
@@ -236,7 +224,6 @@ const ProjectList = (props) => {
         {loading ? <Loading style={{backgroundColor: themes.PRIMARY_BACKGROUND_COLOR}}/> : renderServerProjectsList()}
       </View>
       {renderDialog()}
-      {renderStatusDialog()}
     </View>
   );
 };

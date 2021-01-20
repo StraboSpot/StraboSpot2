@@ -7,7 +7,6 @@ import {
   addedStatusMessage,
   clearedStatusMessages,
   removedLastStatusMessage,
-  setInfoMessagesModalVisible,
   setLoadingStatus,
   setStatusMessagesModalVisible,
 } from '../home/home.slice';
@@ -18,14 +17,12 @@ import {
   addedDataset,
   addedProjectDescription,
   clearedDatasets,
-  clearedProject,
   deletedDataset,
   deletedSpotIdFromDataset,
   setActiveDatasets,
   setSelectedDataset,
 } from './projects.slice';
 import useDownloadHook from './useDownload';
-import useImportHook from './useImport';
 
 const useProject = () => {
   const devicePath = RNFS.DocumentDirectoryPath;
@@ -34,12 +31,10 @@ const useProject = () => {
   const dispatch = useDispatch();
   const activeDatasetsIds = useSelector(state => state.project.activeDatasetsIds);
   const datasets = useSelector(state => state.project.datasets);
-  const project = useSelector(state => state.project.project);
   const selectedDatasetId = useSelector(state => state.project.selectedDatasetId);
   const user = useSelector(state => state.user);
   const isOnline = useSelector(state => state.home.isOnline);
 
-  const useImport = useImportHook();
   const [serverRequests] = useServerRequests();
   const useDownload = useDownloadHook();
 
@@ -125,7 +120,6 @@ const useProject = () => {
 
   const destroyOldProject = () => {
     batch(() => {
-      // dispatch(clearedProject());
       dispatch(clearedSpots());
       dispatch(clearedDatasets());
       dispatch(clearedMaps());
@@ -189,30 +183,6 @@ const useProject = () => {
     return Promise.resolve();
   };
 
-  const selectProject = async (selectedProject, source) => {
-    try {
-      console.log('Getting project...');
-      if (!isEmpty(project)) destroyOldProject();
-      if (source === 'device') {
-        return await useImport.loadProjectFromDevice(selectedProject);
-      }
-      else {
-        dispatch(clearedStatusMessages());
-        dispatch(setStatusMessagesModalVisible(true));
-        await useDownload.initializeDownload(selectedProject, source);
-      }
-    }
-    catch (err) {
-      dispatch(clearedStatusMessages());
-      dispatch(addedStatusMessage({
-        statusMessage: `There is not a project named: 
-          \n\n${selectedProject.description.project_name}\n\n on the server...`,
-      }));
-      dispatch(setInfoMessagesModalVisible(true));
-      throw err.ok;
-    }
-  };
-
   const setSwitchValue = async (val, dataset) => {
     try {
       if (isOnline && !isEmpty(user) && val) {
@@ -247,7 +217,6 @@ const useProject = () => {
     getSelectedDatasetFromId: getSelectedDatasetFromId,
     makeDatasetCurrent: makeDatasetCurrent,
     initializeNewProject: initializeNewProject,
-    selectProject: selectProject,
     setSwitchValue: setSwitchValue,
   };
 
