@@ -24,7 +24,9 @@ const mapsSlice = createSlice({
       console.log('Setting custom maps: ', newMapObject);
       state.customMaps = {...state.customMaps, ...newMapObject};
     },
-
+    addedCustomMapsFromBackup(state, action) {
+      state.customMaps = action.payload;
+    },
     clearedMaps(state) {
       state.customMaps = {};
     },
@@ -82,6 +84,7 @@ const mapsSlice = createSlice({
 
 export const {
   addedCustomMap,
+  addedCustomMapsFromBackup,
   clearedMaps,
   clearedVertexes,
   deletedCustomMap,

@@ -5,12 +5,12 @@ import RNFS from 'react-native-fs';
 import {unzip} from 'react-native-zip-archive';
 import {useDispatch, useSelector} from 'react-redux';
 
-import useServerRequesteHook from '../../../services/useServerRequests';
 import useDeviceHook from '../../../services/useDevice';
+import useServerRequesteHook from '../../../services/useServerRequests';
 import {isEmpty} from '../../../shared/Helpers';
 import {addedStatusMessage, removedLastStatusMessage} from '../../home/home.slice';
 import {setCurrentBasemap} from '../maps.slice';
-import {setOfflineMap} from '../offline-maps/offlineMaps.slice';
+import {setOfflineMap} from './offlineMaps.slice';
 
 const useMapsOffline = () => {
   let progressStatus = '';
@@ -257,14 +257,16 @@ const useMapsOffline = () => {
     }
   };
 
-  const moveTile = async (tile) => {
+  const moveTile = async (tile, zipID) => {
+    let zipId = zipUID ?? zipID;
     fileCount++;
     let fileExists = await RNFS.exists(tileCacheDirectory + '/' + currentBasemap.id + '/tiles/' + tile.name);
     // console.log('foo exists: ', tile.name + ' ' + fileExists);
     if (!fileExists) {
       neededTiles++;
-      await RNFS.moveFile(tileTempDirectory + '/' + zipUID + '/tiles/' + tile.name,
+      await RNFS.moveFile(tileTempDirectory + '/' + zipId + '/tiles/' + tile.name,
         tileCacheDirectory + '/' + currentBasemap.id + '/tiles/' + tile.name);
+      console.log('Tile moved');
     }
     else notNeededTiles++;
     return [fileCount, neededTiles, notNeededTiles];

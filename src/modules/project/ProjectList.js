@@ -2,11 +2,14 @@ import React, {useEffect, useState} from 'react';
 import {Alert, ScrollView, Text, View} from 'react-native';
 
 import {ListItem, Button} from 'react-native-elements';
+import * as Spinner from 'react-native-indicators';
 import {useDispatch, useSelector} from 'react-redux';
 
+import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
 import Loading from '../../shared/ui/Loading';
+import StatusDialogBox from '../../shared/ui/StatusDialogBox';
 import {addedStatusMessage, setLoadingStatus} from '../home/home.slice';
 import {MAIN_MENU_ITEMS} from '../main-menu-panel/mainMenu.constants';
 import {setMenuSelectionPage} from '../main-menu-panel/mainMenuPanel.slice';
@@ -22,13 +25,19 @@ const ProjectList = (props) => {
   const currentProject = useSelector(state => state.project.project);
   const isOnline = useSelector(state => state.home.isOnline);
   const userData = useSelector(state => state.user);
+  const statusMessage = useSelector(state => state.home.statusMessages);
   const dispatch = useDispatch();
   const [projectsArr, setProjectsArr] = useState([]);
   const [selectedProject, setSelectedProject] = useState({});
+  const [spinner, setSpinner] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
   const [isError, setIsError] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
+  const [tilesNeeded, setTileNeeded] = useState(0);
+  const [tilesNotNeeded, setTileNotNeeded] = useState(0);
+  const [fileCount, setFileCount] = useState(0);
+  const [isStatusBoxVisible, setIsStatusBoxVisible] = useState(false);
 
   const useDownload = useDownloadHook();
   const [useProject] = useProjectHook();
@@ -101,7 +110,16 @@ const ProjectList = (props) => {
     }
     else if (action === ProjectActions.OVERWRITE) {
       setShowDialog(false);
-      if (props.source === 'device') await useProject.selectProject(selectedProject, props.source);
+      if (props.source === 'device') {
+        setSpinner(true);
+        setIsStatusBoxVisible(true);
+        const res = await useProject.selectProject(selectedProject, props.source);
+        console.log('Done loading project', res);
+        setTileNeeded(res.progress.neededTiles);
+        setTileNotNeeded(res.progress.notNeededTiles);
+        setFileCount(res.progress.fileCount);
+        setSpinner(false);
+      }
       else await useDownload.initializeDownload(selectedProject, props.source);
     }
     else {
@@ -138,6 +156,35 @@ const ProjectList = (props) => {
       <View>
         <Text style={{color: 'red', textAlign: 'center'}}>{errorMessage}</Text>
       </View>
+    );
+  };
+
+  const renderStatusDialog = () => {
+    return (
+      <StatusDialogBox
+        visible={isStatusBoxVisible}
+        dialogTitle={'Import Status'}
+        style={commonStyles.dialogTitleSuccess}
+      >
+        <View>
+          <View style={{flex: 1}}>
+            {spinner && <Spinner.SkypeIndicator/>}
+            <Text style={commonStyles.dialogText}>{statusMessage.join('\n')}</Text>
+          </View>
+          {!spinner && <View style={{flex: 1}}>
+            <Text style={commonStyles.dialogText}>Tiles imported:{fileCount}</Text>
+            <Text style={commonStyles.dialogText}>Tiles needed:{tilesNeeded}</Text>
+            <Text style={commonStyles.dialogText}>Tiles not needed:{tilesNotNeeded}</Text>
+          </View>}
+          <View style={{flex: 1, padding: 10}}>
+            <Button
+              title={'close'}
+              disabled={spinner}
+              onPress={() => setIsStatusBoxVisible(false)}
+            />
+          </View>
+        </View>
+      </StatusDialogBox>
     );
   };
 
@@ -189,6 +236,7 @@ const ProjectList = (props) => {
         {loading ? <Loading style={{backgroundColor: themes.PRIMARY_BACKGROUND_COLOR}}/> : renderServerProjectsList()}
       </View>
       {renderDialog()}
+      {renderStatusDialog()}
     </View>
   );
 };

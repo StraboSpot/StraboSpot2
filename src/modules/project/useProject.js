@@ -1,9 +1,6 @@
-import {Platform} from 'react-native';
-
 import RNFS from 'react-native-fs';
 import {useDispatch, useSelector, batch} from 'react-redux';
 
-import useDeviceHook from '../../services/useDevice';
 import useServerRequests from '../../services/useServerRequests';
 import {getNewId, isEmpty} from '../../shared/Helpers';
 import {
@@ -33,8 +30,6 @@ import useImportHook from './useImport';
 const useProject = () => {
   const devicePath = RNFS.DocumentDirectoryPath;
   const appDirectoryForDistributedBackups = '/StraboSpotProjects';
-  const appDirectoryTiles = '/StraboSpotTiles';
-  const zipsDirectory = appDirectoryTiles + '/TileZips';
 
   const dispatch = useDispatch();
   const activeDatasetsIds = useSelector(state => state.project.activeDatasetsIds);
@@ -47,13 +42,11 @@ const useProject = () => {
   const useImport = useImportHook();
   const [serverRequests] = useServerRequests();
   const useDownload = useDownloadHook();
-  const useDevice = useDeviceHook();
 
   const addDataset = async name => {
     const datasetObj = createDataset(name);
     await dispatch(addedDataset(datasetObj));
     console.log('Added datasets', datasets);
-    // await makeDatasetCurrent(datasetObj);
     return Promise.resolve();
   };
 
@@ -67,35 +60,6 @@ const useProject = () => {
       spot.properties.date = spot.properties.time = date.toISOString();
       console.log('SPOT', spot);
       return spot;
-    }
-  };
-
-  const copyZipMapsForDistribution = async (fileName) => {
-    try {
-      await useDevice.doesDeviceBackupDirExist(fileName + '/maps');
-      await useDevice.doesDeviceDirectoryExist(devicePath + appDirectoryTiles);
-      await useDevice.doesDeviceDirectoryExist(devicePath + zipsDirectory);
-      const files = await RNFS.readdir(devicePath + appDirectoryForDistributedBackups + '/' + fileName + '/maps');
-      if (files) {
-        await Promise.all(
-          files.map(async file => {
-            const source = devicePath + appDirectoryForDistributedBackups + '/' + fileName + '/maps/' + file;
-            const dest = devicePath + zipsDirectory + '/' + file;
-            await RNFS.copyFile(source, dest)
-              .then(() => console.log(`File ${file} Copied`))
-              .catch(async err => {
-                console.log('ERROR COPING MAP', err);
-                await RNFS.unlink(dest);
-                console.log(`${file} removed`);
-                await RNFS.copyFile(source, dest);
-                console.log(`File ${file} Copied`);
-              });
-          }),
-        );
-      }
-    }
-    catch (err) {
-      console.error('Error Copying Maps for Distribution', err);
     }
   };
 
@@ -169,10 +133,6 @@ const useProject = () => {
     console.log('Destroy batch complete');
   };
 
-  const doesAppDirExist = async (subDirectory) => {
-    return await RNFS.exists(devicePath + subDirectory);
-  };
-
   const doesDeviceBackupDirExist = async (subDirectory) => {
     if (subDirectory !== undefined) {
       return await RNFS.exists(devicePath + appDirectoryForDistributedBackups + '/' + subDirectory);
@@ -224,51 +184,17 @@ const useProject = () => {
     return datasets[selectedDatasetId];
   };
 
-  // const loadProjectFromDevice = async (selectedProject) => {
-  //   console.log('SELECTED PROJECT', selectedProject);
-  //   const {projectDb, spotsDb, otherMapsDb, mapNamesDb} = selectedProject;
-  //   const dirExists = await doesDeviceBackupDirExist();
-  //   console.log(dirExists);
-  //   if (dirExists) {
-  //     if (!isEmpty(project)) destroyOldProject();
-  //     dispatch(addedSpotsFromDevice(spotsDb));
-  //     dispatch(addedProject(projectDb.project));
-  //     await getDatasets(projectDb, 'device');
-  //     if (!isEmpty(otherMapsDb) || !isEmpty(mapNamesDb)) {
-  //       dispatch(addedMapsFromDevice({mapType: 'customMaps', maps: otherMapsDb}));
-  //       dispatch(addedMapsFromDevice({mapType: 'offlineMaps', maps: mapNamesDb}));
-  //     }
-  //     return Promise.resolve(selectedProject.projectDb.project);
-  //   }
-  // };
-
   const makeDatasetCurrent = (dataset) => {
     dispatch(setSelectedDataset(dataset));
     return Promise.resolve();
   };
-
-  // const readDeviceFile = async (selectedProject) => {
-  //   let data = selectedProject.fileName;
-  //   const dataFile = '/data.json';
-  //   return await RNFS.readFile.readFile(devicePath + appDirectoryForDistributedBackups + '/' + data + dataFile).then(
-  //     response => {
-  //       return Promise.resolve(JSON.parse(response));
-  //     }, () => Alert.alert('Project Not Found'));
-  // };
 
   const selectProject = async (selectedProject, source) => {
     try {
       console.log('Getting project...');
       if (!isEmpty(project)) destroyOldProject();
       if (source === 'device') {
-        const dataFile = await useImport.readDeviceFile(selectedProject);
-        if (!isEmpty(dataFile.mapNamesDb) || !isEmpty(dataFile.otherMapsDb)) {
-          await copyZipMapsForDistribution(selectedProject.fileName);
-        }
-        return useImport.loadProjectFromDevice(dataFile).then((data) => {
-
-          return data;
-        });
+        return await useImport.loadProjectFromDevice(selectedProject);
       }
       else {
         dispatch(clearedStatusMessages());
@@ -321,8 +247,6 @@ const useProject = () => {
     getSelectedDatasetFromId: getSelectedDatasetFromId,
     makeDatasetCurrent: makeDatasetCurrent,
     initializeNewProject: initializeNewProject,
-    // loadProjectFromDevice: loadProjectFromDevice,
-    // readDeviceFile: readDeviceFile,
     selectProject: selectProject,
     setSwitchValue: setSwitchValue,
   };

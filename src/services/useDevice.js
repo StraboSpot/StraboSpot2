@@ -67,6 +67,7 @@ const useDevice = () => {
         return RNFS.mkdir(directory)
           .then(() => {
             console.log('Directory:', directory, 'CREATED!');
+            return true;
           })
           .catch(err => {
             console.error('Unable to create directory', directory, 'ERROR:', err);
