@@ -877,7 +877,7 @@ const Home = () => {
       {isHomeLoading && <LoadingSpinner/>}
       {notebookPanel}
       {MainMenu}
-      {isOnline && !urlConditions.some(el => currentBasemap.url[0].includes(el)) && renderOfflineMapViewLabel()}
+      {isOnline && currentBasemap && !urlConditions.some(el => currentBasemap.url[0].includes(el)) && renderOfflineMapViewLabel()}
       {renderSaveAndCancelDrawButtons()}
       {isMainMenuPanelVisible && toggleSidePanel()}
       {renderFloatingViews()}
