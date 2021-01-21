@@ -9,7 +9,7 @@ import * as themes from '../../shared/styles.constants';
 import Loading from '../../shared/ui/Loading';
 import {
   addedStatusMessage,
-  clearedStatusMessages, setInfoMessagesModalVisible,
+  clearedStatusMessages, setBackupModalVisible, setInfoMessagesModalVisible,
   setLoadingStatus,
   setStatusMessagesModalVisible,
 } from '../home/home.slice';
@@ -23,6 +23,7 @@ import {doesBackupDirectoryExist} from './projects.slice';
 import useDownloadHook from './useDownload';
 import useImportHook from './useImport';
 import useProjectHook from './useProject';
+import useUploadHook from './useUpload';
 
 const ProjectList = (props) => {
   const currentProject = useSelector(state => state.project.project);
@@ -38,6 +39,7 @@ const ProjectList = (props) => {
   const [errorMessage, setErrorMessage] = useState(null);
 
   const useDownload = useDownloadHook();
+  const useUpload = useUploadHook();
   const [useProject] = useProjectHook();
   const useImport = useImportHook();
 
@@ -108,16 +110,23 @@ const ProjectList = (props) => {
       console.log('User wants to:', action);
       try {
         setShowDialog(false);
-        const project = await useProject.uploadProject(currentProject, userData.encoded_login);
+        const project = await useUpload.uploadProject();
         setIsError(false);
         console.log('Finished uploading project', project);
-        const datasets = await useProject.uploadDatasets();
+        const datasets = await useUpload.uploadDatasets();
         console.log(datasets);
         await dispatch(clearedSpots());
         dispatch(addedStatusMessage('Project uploaded to server.'));
+        dispatch(setLoadingStatus({view: 'modal', bool: false}));
 
-        const projectData = await useProject.selectProject(selectedProject, props.source);
-        console.log('PROJECT DATA', projectData);
+        if (props.source === 'device') {
+          const res = await useImport.loadProjectFromDevice(selectedProject);
+          console.log('Done loading project', res);
+        }
+        else {
+          const projectData = await useDownload.initializeDownload(selectedProject, props.source);
+          console.log('PROJECT DATA', projectData);
+        }
         dispatch(setLoadingStatus({view: 'modal', bool: false}));
         dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
       }
@@ -127,7 +136,8 @@ const ProjectList = (props) => {
       }
     }
     else if (action === ProjectActions.BACKUP_TO_DEVICE) {
-      console.log('User wants to:', action);
+      setShowDialog(false);
+      dispatch(setBackupModalVisible(true));
     }
     else if (action === ProjectActions.OVERWRITE) {
       setShowDialog(false);

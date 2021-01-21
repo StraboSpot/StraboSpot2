@@ -5,7 +5,12 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import useDeviceHook from '../../services/useDevice';
 import {isEmpty} from '../../shared/Helpers';
-import {addedStatusMessage, removedLastStatusMessage} from '../home/home.slice';
+import {
+  addedStatusMessage,
+  clearedStatusMessages,
+  removedLastStatusMessage, setBackupModalVisible,
+  setLoadingStatus, setStatusMessagesModalVisible,
+} from '../home/home.slice';
 
 const useExport = () => {
   const devicePath = RNFS.DocumentDirectoryPath;
@@ -67,7 +72,6 @@ const useExport = () => {
   const gatherImagesForDistribution = async (data, fileName) => {
     try {
       console.log('data:', data);
-      let promises = [];
       await useDevice.doesDeviceDirectoryExist(
         devicePath + appDirectoryForDistributedBackups + '/' + fileName + '/Images');
       dispatch(addedStatusMessage('Exporting Images...'));
@@ -79,10 +83,8 @@ const useExport = () => {
               console.log('Spot with images', spot.properties.name, 'Images:', spot.properties.images);
               await Promise.all(
                 spot.properties.images.map(async image => {
-                  const imageId = await moveDistributedImage(image.id, fileName);
-                  console.log('Moved file:', imageId);
-                  promises.push(imageId);
-                  console.log('Image Promises', promises);
+                  await moveDistributedImage(image.id, fileName);
+                  console.log('Moved file:', image.id);
                 }),
               );
             }
@@ -164,6 +166,11 @@ const useExport = () => {
 
   const initializeBackup = async (fileName) => {
     try {
+      dispatch(setBackupModalVisible(false));
+      dispatch(clearedStatusMessages());
+      dispatch(addedStatusMessage('Backing up Project to Device...'));
+      dispatch(setLoadingStatus({view: 'modal', bool: true}));
+      dispatch(setStatusMessagesModalVisible(true));
       const hasBackupDir = await useDevice.doesDeviceBackupDirExist(devicePath + appDirectoryForDistributedBackups);
       console.log('Has Backup Dir?: ', hasBackupDir);
       if (hasBackupDir) await backupProjectToDevice(fileName);
@@ -171,6 +178,9 @@ const useExport = () => {
         await useDevice.makeDirectory(appDirectoryForDistributedBackups);
         await backupProjectToDevice(fileName);
       }
+      dispatch(addedStatusMessage('---------------'));
+      dispatch(setLoadingStatus({view: 'modal', bool: false}));
+      dispatch(addedStatusMessage('Project Backup Complete!'));
     }
     catch (err) {
       console.error('Error Backing Up Project!: ', err);

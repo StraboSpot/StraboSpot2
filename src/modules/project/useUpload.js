@@ -4,7 +4,14 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import useServerRequestsHook from '../../services/useServerRequests';
 import {isEmpty} from '../../shared/Helpers';
-import {addedStatusMessage, removedLastStatusMessage} from '../home/home.slice';
+import {
+  addedStatusMessage,
+  clearedStatusMessages,
+  removedLastStatusMessage,
+  setLoadingStatus,
+  setStatusMessagesModalVisible,
+  setUploadModalVisible,
+} from '../home/home.slice';
 import useImagesHook from '../images/useImages';
 import useProjectHook from '../project/useProject';
 import useSpotsHook from '../spots/useSpots';
@@ -22,6 +29,27 @@ const useUpload = () => {
   const [useSpots] = useSpotsHook();
   const [useImages] = useImagesHook();
   const [useProject] = useProjectHook();
+
+  const initializeUpload = async () => {
+    dispatch(setUploadModalVisible(false));
+    dispatch(setLoadingStatus({view: 'modal', bool: true}));
+    dispatch(clearedStatusMessages());
+    dispatch(setStatusMessagesModalVisible(true));
+    try {
+      await uploadProject();
+      await uploadDatasets();
+      // props.closeMainMenuPanel();
+      dispatch(addedStatusMessage('Upload Complete!'));
+      console.log('Upload Complete');
+    }
+    catch (err) {
+      dispatch(addedStatusMessage('----------'));
+      dispatch(addedStatusMessage('Upload Failed!'));
+      // props.closeMainMenuPanel();
+      console.error('Upload Failed!', err);
+    }
+    dispatch(setLoadingStatus({view: 'modal', bool: false}));
+  };
 
   const uploadDataset = async (dataset) => {
     try {
@@ -80,6 +108,9 @@ const useUpload = () => {
   // Upload Project Properties
   const uploadProject = async () => {
     try {
+      dispatch(setLoadingStatus({view: 'modal', bool: true}));
+      dispatch(clearedStatusMessages());
+      dispatch(setStatusMessagesModalVisible(true));
       console.log('Uploading Project Properties...');
       dispatch(addedStatusMessage('Uploading Project Properties...'));
       await useServerRequests.updateProject(project, user.encoded_login);
@@ -310,6 +341,7 @@ const useUpload = () => {
   };
 
   return {
+    initializeUpload: initializeUpload,
     uploadDatasets: uploadDatasets,
     uploadProject: uploadProject,
   };

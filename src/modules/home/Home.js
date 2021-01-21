@@ -1,9 +1,10 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Alert, Animated, AppState, Dimensions, Platform, Text, View} from 'react-native';
+import {Alert, Animated, AppState, Dimensions, FlatList, Platform, Text, TextInput, View} from 'react-native';
 
 import NetInfo from '@react-native-community/netinfo';
 import * as Sentry from '@sentry/react-native';
 import * as turf from '@turf/turf';
+import moment from 'moment';
 import {Button} from 'react-native-elements';
 import {FlatListSlider} from 'react-native-flatlist-slider';
 import {DotIndicator} from 'react-native-indicators';
@@ -11,7 +12,8 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import useDeviceHook from '../../services/useDevice';
 import sharedDialogStyles from '../../shared/common.styles';
-import {animatePanels, isEmpty} from '../../shared/Helpers';
+import commonStyles from '../../shared/common.styles';
+import {animatePanels, isEmpty, truncateText} from '../../shared/Helpers';
 import LoadingSpinner from '../../shared/ui/Loading';
 import StatusDialogBox from '../../shared/ui/StatusDialogBox';
 import ToastPopup from '../../shared/ui/Toast';
@@ -39,8 +41,12 @@ import notebookStyles from '../notebook-panel/notebookPanel.styles';
 import NotebookPanelMenu from '../notebook-panel/NotebookPanelMenu';
 import ShortcutNotesModal from '../notes/ShortcutNotesModal';
 import InitialProjectLoadModal from '../project/InitialProjectLoadModal';
+import projectStyles from '../project/project.styles';
 import ProjectDescription from '../project/ProjectDescription';
+import UploadDialogBox from '../project/UploadDialogBox';
+import useExportHook from '../project/useExport';
 import useProjectHook from '../project/useProject';
+import useUploadHook from '../project/useUpload';
 import NotebookSamplesModal from '../samples/NotebookSamplesModal';
 import ShortcutSamplesModal from '../samples/ShortcutSamplesModal';
 import {addedSpot, clearedSelectedSpots, setSelectedSpot} from '../spots/spots.slice';
@@ -54,6 +60,7 @@ import {
 } from '../tags';
 import {MODALS} from './home.constants';
 import {
+  setBackupModalVisible,
   setErrorMessagesModalVisible,
   setImageModalVisible,
   setInfoMessagesModalVisible,
@@ -64,6 +71,7 @@ import {
   setMainMenuPanelVisible,
   setStatusMessagesModalVisible,
   setOnlineStatus,
+  setUploadModalVisible,
 } from './home.slice';
 import homeStyles from './home.style';
 import LeftSideButtons from './LeftSideButtons';
@@ -78,6 +86,7 @@ const Home = () => {
   const notebookPanelWidth = 400;
   const urlConditions = ['http', 'https'];
 
+  const useExport = useExportHook();
   const [useHome] = useHomeHook();
   const [useImages] = useImagesHook();
   const [useMaps] = useMapsHook();
@@ -85,6 +94,8 @@ const Home = () => {
   const [useSpots] = useSpotsHook();
   const useOfflineMaps = useOfflineMapsHook();
   const useDevice = useDeviceHook();
+  const useUpload = useUploadHook();
+
 
   const selectedDataset = useProject.getSelectedDatasetFromId();
 
@@ -93,6 +104,7 @@ const Home = () => {
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const currentProject = useSelector(state => state.project.project);
   const customMaps = useSelector(state => state.map.customMaps);
+  const isBackModalVisible = useSelector(state => state.home.isBackupModalVisible);
   const isErrorMessagesModalVisible = useSelector(state => state.home.isErrorMessagesModalVisible);
   const isHomeLoading = useSelector(state => state.home.loading.home);
   const isImageModalVisible = useSelector(state => state.home.isImageModalVisible);
@@ -105,6 +117,7 @@ const Home = () => {
   const isProjectLoadSelectionModalVisible = useSelector(state => state.home.isProjectLoadSelectionModalVisible);
   const isSidePanelVisible = useSelector(state => state.mainMenu.isSidePanelVisible);
   const isStatusMessagesModalVisible = useSelector(state => state.home.isStatusMessagesModalVisible);
+  const isUploadModalVisible = useSelector(state => state.home.isUploadModalVisible);
   const modalVisible = useSelector(state => state.home.modalVisible);
   const projectLoadComplete = useSelector(state => state.home.isProjectLoadComplete);
   const selectedImage = useSelector(state => state.spot.selectedAttributes[0]);
@@ -139,6 +152,8 @@ const Home = () => {
   const [isSelectingForStereonet, setIsSelectingForStereonet] = useState(false);
   const [isSelectingForTagging, setIsSelectingForTagging] = useState(false);
   const [imageSlideshowData, setImageSlideshowData] = useState([]);
+  const [exportFileName, setExportFileName] = useState(
+    moment(new Date()).format('YYYY-MM-DD_hmma') + '_' + currentProject.description.project_name);
   const mapViewComponent = useRef(null);
   const toastRef = useRef();
 
@@ -167,6 +182,7 @@ const Home = () => {
 
   useEffect(() => {
     dispatch(setProjectLoadSelectionModalVisible(isEmpty(currentProject)));
+    setExportFileName(moment(new Date()).format('YYYY-MM-DD_hmma') + '_' + currentProject.description.project_name);
   }, [currentProject, user]);
 
   useEffect(() => {
@@ -683,6 +699,66 @@ const Home = () => {
     );
   };
 
+  const renderBackUpModal = () => {
+    const fileName = exportFileName.replace(/\s/g, '');
+    return (
+      <UploadDialogBox
+        dialogTitle={'Confirm or Change Folder Name'}
+        visible={isBackModalVisible}
+        cancel={() => dispatch(setBackupModalVisible(false))}
+        onPress={() => useExport.initializeBackup(exportFileName)}
+        buttonText={'Backup'}
+        disabled={exportFileName === ''}
+      >
+        <View>
+          <Text>If you change the folder name please do not use spaces, special characters (except a dash or
+            underscore) or add a file extension.</Text>
+          <View style={projectStyles.dialogContent}>
+            <TextInput
+              value={fileName}
+              onChangeText={text => setExportFileName(text)}
+              style={commonStyles.dialogInputContainer}
+            />
+          </View>
+        </View>
+      </UploadDialogBox>
+    );
+  };
+
+  const renderUploadModal = () => {
+    const activeDatasets = useProject.getActiveDatasets();
+    return (
+      <UploadDialogBox
+        dialogTitle={'OVERWRITE WARNING!'}
+        visible={isUploadModalVisible}
+        cancel={() => dispatch(setUploadModalVisible(false))}
+        buttonText={'Upload'}
+        onPress={async () => {
+          toggleHomeDrawerButton();
+          await useUpload.initializeUpload();
+        }}
+      >
+        <View>
+          <Text>
+            <Text style={commonStyles.dialogContentImportantText}>{currentProject.description.project_name}{'\n'}</Text>
+            properties and the following active datasets will be uploaded and will
+            <Text style={commonStyles.dialogContentImportantText}> OVERWRITE</Text> any data already on the server
+            for this project.
+          </Text>
+          <View style={{alignItems: 'center', paddingTop: 15}}>
+            <Text>Datasets:</Text>
+            <FlatList
+              data={activeDatasets}
+              keyExtractor={item => item.id.toString()}
+              renderItem={({item}) => <Text>{item.name.length > 30 ? '- ' + truncateText(item.name, 30)
+                : '- ' + item.name}</Text>}
+            />
+          </View>
+        </View>
+      </UploadDialogBox>
+    );
+  };
+
   const samplesModalCancel = () => {
     console.log('Samples Modal Cancel Selected');
   };
@@ -877,7 +953,8 @@ const Home = () => {
       {isHomeLoading && <LoadingSpinner/>}
       {notebookPanel}
       {MainMenu}
-      {isOnline && currentBasemap && !urlConditions.some(el => currentBasemap.url[0].includes(el)) && renderOfflineMapViewLabel()}
+      {isOnline && currentBasemap && !urlConditions.some(
+        el => currentBasemap.url[0].includes(el)) && renderOfflineMapViewLabel()}
       {renderSaveAndCancelDrawButtons()}
       {isMainMenuPanelVisible && toggleSidePanel()}
       {renderFloatingViews()}
@@ -885,6 +962,8 @@ const Home = () => {
       {renderStatusDialogBox()}
       {renderInfoDialogBox()}
       {renderErrorMessageDialogBox()}
+      {renderUploadModal()}
+      {renderBackUpModal()}
       {isOfflineMapModalVisible && renderSaveMapsModal()}
     </View>
   );

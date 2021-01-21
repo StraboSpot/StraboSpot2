@@ -15,6 +15,7 @@ const initialHomeState = {
   },
   isSignedIn: false,
   modalVisible: null,
+  isBackupModalVisible: false,
   isStatusMessagesModalVisible: false,
   isErrorMessagesModalVisible: false,
   isProjectLoadSelectionModalVisible: false,
@@ -22,6 +23,7 @@ const initialHomeState = {
   isInfoModalVisible: false,
   isImageModalVisible: false,
   isMainMenuPanelVisible: false,
+  isUploadModalVisible: false,
   shortcutSwitchPosition: {
     Tag: false,
     Measurement: false,
@@ -46,6 +48,9 @@ const homeSlice = createSlice({
     },
     removedLastStatusMessage(state) {
       state.statusMessages = state.statusMessages.slice(0, -1);
+    },
+    setBackupModalVisible(state, action) {
+      state.isBackupModalVisible = action.payload;
     },
     setErrorMessagesModalVisible(state, action) {
       state.isErrorMessagesModalVisible = action.payload;
@@ -87,6 +92,9 @@ const homeSlice = createSlice({
     shortcutSwitchPosition(state, action) {
       state.shortcutSwitchPosition[action.payload.switchName] = !state.shortcutSwitchPosition[action.payload.switchName];
     },
+    setUploadModalVisible(state, action) {
+      state.isUploadModalVisible = action.payload;
+    },
   },
 });
 
@@ -94,6 +102,7 @@ export const {
   addedStatusMessage,
   clearedStatusMessages,
   removedLastStatusMessage,
+  setBackupModalVisible,
   setErrorMessagesModalVisible,
   setImageModalVisible,
   setInfoMessagesModalVisible,
@@ -107,6 +116,7 @@ export const {
   setSignedInStatus,
   setStatusMessagesModalVisible,
   shortcutSwitchPosition,
+  setUploadModalVisible,
 } = homeSlice.actions;
 
 export default homeSlice.reducer;
