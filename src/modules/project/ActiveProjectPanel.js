@@ -12,11 +12,13 @@ import ActiveDatasetsList from './ActiveDatasetsList';
 import ActiveProjectList from './ActiveProjectList';
 import DatasetList from './DatasetList';
 import styles from './project.styles';
+import useDownloadHook from './useDownload';
 import useProjectHook from './useProject';
 
 const ActiveProjectPanel = () => {
 
   const [useProject] = useProjectHook();
+  const useDownload = useDownloadHook();
   const [isWarningModalVisible, setIsWarningModalVisible] = useState(false);
   const [activeDatasets, setActiveDatasets] = useState(null);
   const [datasetName, setDatasetName] = useState(null);
@@ -36,7 +38,7 @@ const ActiveProjectPanel = () => {
   };
 
   const confirm = async () => {
-    await useProject.selectProject(project);
+    await useDownload.initializeDownload(project);
     setIsWarningModalVisible(false);
   };
 

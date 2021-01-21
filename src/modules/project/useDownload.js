@@ -149,7 +149,7 @@ const useDownload = () => {
     }
   };
 
-  const downloadDatasets = async (project, source) => {
+  const downloadDatasets = async (project) => {
     try {
       dispatch(addedStatusMessage('Downloading datasets from server...'));
       const projectDatasetsFromServer = await useServerRequests.getDatasets(project.id, user.encoded_login);
@@ -170,7 +170,7 @@ const useDownload = () => {
     }
   };
 
-  const initializeDownload = async (selectedProject, source) => {
+  const initializeDownload = async (selectedProject) => {
     const projectName = selectedProject.name || selectedProject.description.project_name || 'Unknown';
     batch(() => {
       dispatch(setLoadingStatus({view: 'modal', bool: true}));
@@ -181,7 +181,7 @@ const useDownload = () => {
     try {
       if (!isEmpty(project)) destroyOldProject();
       await downloadProject(selectedProject);
-      const downloadedDatasets = await downloadDatasets(selectedProject, source);
+      const downloadedDatasets = await downloadDatasets(selectedProject);
       if (Object.values(downloadedDatasets).length === 1) {
         await downloadSpots(Object.values(downloadedDatasets)[0], user.encoded_login);
       }
