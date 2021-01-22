@@ -6,7 +6,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
 import Spacer from '../../shared/ui/Spacer';
-import {setBackupModalVisible, setUploadModalVisible} from '../home/home.slice';
+import {setBackupModalVisible, setSelectedProject, setUploadModalVisible} from '../home/home.slice';
 import Divider from '../main-menu-panel/MainMenuPanelDivider';
 
 const UploadBackAndExport = () => {
@@ -33,14 +33,20 @@ const UploadBackAndExport = () => {
           title={isOnline ? 'Upload project to StraboSpot' : 'Need to be ONLINE to upload'}
           buttonStyle={commonStyles.standardButton}
           titleStyle={commonStyles.standardButtonText}
-          onPress={() => dispatch(setUploadModalVisible(true))}
+          onPress={() => {
+            dispatch(setSelectedProject({source: '', project: ''}));
+            dispatch(setUploadModalVisible(true))
+          }}
           disabled={!isOnline}
         />
         <Button
           title={'Backup project to device'}
           buttonStyle={commonStyles.standardButton}
           titleStyle={commonStyles.standardButtonText}
-          onPress={() => dispatch(setBackupModalVisible(true))}
+          onPress={() => {
+            dispatch(setSelectedProject({source: '', project: ''}));
+            dispatch(setBackupModalVisible(true))
+          }}
         />
       </View>
     );

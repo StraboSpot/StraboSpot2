@@ -10,7 +10,12 @@ import {addedCustomMapsFromBackup} from '../maps/maps.slice';
 import {addedMapsFromDevice} from '../maps/offline-maps/offlineMaps.slice';
 import {addedSpotsFromDevice} from '../spots/spots.slice';
 import {addedDatasets, addedProject} from './projects.slice';
-import {addedStatusMessage, clearedStatusMessages, removedLastStatusMessage} from '../home/home.slice';
+import {
+  addedStatusMessage,
+  clearedStatusMessages,
+  removedLastStatusMessage,
+  setLoadingStatus,
+} from '../home/home.slice';
 
 const useImport = () => {
   let fileCount = 0;
@@ -121,6 +126,7 @@ const useImport = () => {
 
   const loadProjectFromDevice = async (selectedProject) => {
     let progress;
+    dispatch(setLoadingStatus({view: 'modal', bool: true}));
     dispatch(addedStatusMessage(`Importing ${selectedProject.fileName}...`));
     console.log('SELECTED PROJECT', selectedProject);
     const dirExists = await useDevice.doesDeviceBackupDirExist(selectedProject.fileName);
@@ -155,6 +161,7 @@ const useImport = () => {
         dispatch(addedStatusMessage(`Map tiles imported: ${progress.fileCount}`));
         dispatch(addedStatusMessage(`Map tiles installed: ${progress.neededTiles}`));
         dispatch(addedStatusMessage(`Map tiles already installed: ${progress.notNeededTiles}`));
+        dispatch(setLoadingStatus({view: 'modal', bool: false}));
       })
       return Promise.resolve({project: dataFile.projectDb.project});
     }

@@ -3,6 +3,10 @@ import {Dimensions} from 'react-native';
 import {createSlice} from '@reduxjs/toolkit';
 
 const initialHomeState = {
+  selectedProject: {
+    project: '',
+    source: '',
+  },
   statusMessages: [],
   imageProgress: {
     imagesDownloadedCount: 0,
@@ -89,6 +93,10 @@ const homeSlice = createSlice({
     setStatusMessagesModalVisible(state, action) {
       state.isStatusMessagesModalVisible = action.payload;
     },
+    setSelectedProject(state, action) {
+      state.selectedProject.source = action.payload.source;
+      state.selectedProject.project = action.payload.project;
+    },
     shortcutSwitchPosition(state, action) {
       state.shortcutSwitchPosition[action.payload.switchName] = !state.shortcutSwitchPosition[action.payload.switchName];
     },
@@ -114,6 +122,7 @@ export const {
   setProjectLoadComplete,
   setProjectLoadSelectionModalVisible,
   setSignedInStatus,
+  setSelectedProject,
   setStatusMessagesModalVisible,
   shortcutSwitchPosition,
   setUploadModalVisible,

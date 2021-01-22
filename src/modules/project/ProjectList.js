@@ -9,13 +9,13 @@ import * as themes from '../../shared/styles.constants';
 import Loading from '../../shared/ui/Loading';
 import {
   addedStatusMessage,
-  clearedStatusMessages, setBackupModalVisible, setInfoMessagesModalVisible,
-  setLoadingStatus,
+  clearedStatusMessages,
+  setBackupModalVisible,
+  setInfoMessagesModalVisible,
+  setSelectedProject,
   setStatusMessagesModalVisible,
+  setUploadModalVisible,
 } from '../home/home.slice';
-import {MAIN_MENU_ITEMS} from '../main-menu-panel/mainMenu.constants';
-import {setMenuSelectionPage} from '../main-menu-panel/mainMenuPanel.slice';
-import {clearedSpots} from '../spots/spots.slice';
 import BackUpOverwriteModal from './BackUpOverwriteModal';
 import * as ProjectActions from './project.constants';
 import styles from './project.styles';
@@ -23,23 +23,20 @@ import {doesBackupDirectoryExist} from './projects.slice';
 import useDownloadHook from './useDownload';
 import useImportHook from './useImport';
 import useProjectHook from './useProject';
-import useUploadHook from './useUpload';
 
 const ProjectList = (props) => {
   const currentProject = useSelector(state => state.project.project);
   const isOnline = useSelector(state => state.home.isOnline);
   const userData = useSelector(state => state.user);
-  const statusMessage = useSelector(state => state.home.statusMessages);
   const dispatch = useDispatch();
   const [projectsArr, setProjectsArr] = useState([]);
-  const [selectedProject, setSelectedProject] = useState({});
+  const [projectSelection, setProjectSelection] = useState({});
   const [loading, setLoading] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
   const [isError, setIsError] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
 
   const useDownload = useDownloadHook();
-  const useUpload = useUploadHook();
   const [useProject] = useProjectHook();
   const useImport = useImportHook();
 
@@ -72,7 +69,7 @@ const ProjectList = (props) => {
   const selectProject = async (project) => {
     console.log('Selected Project:', project);
     if (!isEmpty(currentProject)) {
-      setSelectedProject(project);
+      setProjectSelection(project);
       setShowDialog(true);
     }
     else {
@@ -95,7 +92,7 @@ const ProjectList = (props) => {
         dispatch(clearedStatusMessages());
         dispatch(addedStatusMessage({
           statusMessage: `There is not a project named: 
-          \n\n${selectedProject.description.project_name}\n\n on the server...`,
+          \n\n${projectSelection.description.project_name}\n\n on the server...`,
         }));
         dispatch(setInfoMessagesModalVisible(true));
         throw err.ok;
@@ -110,25 +107,9 @@ const ProjectList = (props) => {
       console.log('User wants to:', action);
       try {
         setShowDialog(false);
-        const project = await useUpload.uploadProject();
         setIsError(false);
-        console.log('Finished uploading project', project);
-        const datasets = await useUpload.uploadDatasets();
-        console.log(datasets);
-        await dispatch(clearedSpots());
-        dispatch(addedStatusMessage('Project uploaded to server.'));
-        dispatch(setLoadingStatus({view: 'modal', bool: false}));
-
-        if (props.source === 'device') {
-          const res = await useImport.loadProjectFromDevice(selectedProject);
-          console.log('Done loading project', res);
-        }
-        else {
-          const projectData = await useDownload.initializeDownload(selectedProject, props.source);
-          console.log('PROJECT DATA', projectData);
-        }
-        dispatch(setLoadingStatus({view: 'modal', bool: false}));
-        dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
+        dispatch(setSelectedProject({source: props.source, project: projectSelection}));
+        dispatch(setUploadModalVisible(true));
       }
       catch (err) {
         setIsError(true);
@@ -137,6 +118,7 @@ const ProjectList = (props) => {
     }
     else if (action === ProjectActions.BACKUP_TO_DEVICE) {
       setShowDialog(false);
+      dispatch(setSelectedProject({source: props.source, project: projectSelection}));
       dispatch(setBackupModalVisible(true));
     }
     else if (action === ProjectActions.OVERWRITE) {
@@ -144,17 +126,17 @@ const ProjectList = (props) => {
       if (props.source === 'device') {
         dispatch(clearedStatusMessages());
         dispatch(setStatusMessagesModalVisible(true));
-        const res = await useImport.loadProjectFromDevice(selectedProject);
+        const res = await useImport.loadProjectFromDevice(projectSelection);
         console.log('Done loading project', res);
       }
-      else await useDownload.initializeDownload(selectedProject, props.source);
+      else await useDownload.initializeDownload(projectSelection, props.source);
     }
     else {
       setShowDialog(false);
     }
   };
 
-  const renderDialog = () => {
+  const renderBackupOverwriteModal = () => {
     return (
       <BackUpOverwriteModal
         dialogTitle={'Delete Local Project Warning!'}
@@ -186,7 +168,7 @@ const ProjectList = (props) => {
     );
   };
 
-  const renderServerProjectsList = () => {
+  const renderProjectsList = () => {
     const titleStyle = !isOnline ? {color: themes.PRIMARY_ITEM_TEXT_COLOR} : {color: themes.SECONDARY_ITEM_TEXT_COLOR};
     if (!isEmpty(projectsArr) && !isEmpty(userData)) {
       return (
@@ -231,9 +213,9 @@ const ProjectList = (props) => {
   return (
     <View style={{flex: 1}}>
       <View style={{flex: 1}}>
-        {loading ? <Loading style={{backgroundColor: themes.PRIMARY_BACKGROUND_COLOR}}/> : renderServerProjectsList()}
+        {loading ? <Loading style={{backgroundColor: themes.PRIMARY_BACKGROUND_COLOR}}/> : renderProjectsList()}
       </View>
-      {renderDialog()}
+      {renderBackupOverwriteModal()}
     </View>
   );
 };

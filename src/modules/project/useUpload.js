@@ -1,6 +1,6 @@
 import RNFS from 'react-native-fs';
 import ImageResizer from 'react-native-image-resizer';
-import {useDispatch, useSelector} from 'react-redux';
+import {batch, useDispatch, useSelector} from 'react-redux';
 
 import useServerRequestsHook from '../../services/useServerRequests';
 import {isEmpty} from '../../shared/Helpers';
@@ -15,6 +15,7 @@ import {
 import useImagesHook from '../images/useImages';
 import useProjectHook from '../project/useProject';
 import useSpotsHook from '../spots/useSpots';
+import {clearedSpots} from '../spots/spots.slice';
 
 const useUpload = () => {
   const devicePath = RNFS.DocumentDirectoryPath;
@@ -22,6 +23,7 @@ const useUpload = () => {
   const tempImagesDownsizedDirectory = devicePath + appDirectory + '/TempImages';
 
   const dispatch = useDispatch();
+  const backUpType = useSelector(state => state.home.backingUpType);
   const project = useSelector(state => state.project.project);
   const user = useSelector(state => state.user);
 
@@ -38,14 +40,17 @@ const useUpload = () => {
     try {
       await uploadProject();
       await uploadDatasets();
-      // props.closeMainMenuPanel();
-      dispatch(addedStatusMessage('Upload Complete!'));
       console.log('Upload Complete');
+      batch(() => {
+        dispatch(addedStatusMessage('Upload Complete!'));
+        dispatch(clearedSpots());
+        dispatch(addedStatusMessage('Project uploaded to server.'));
+        dispatch(setLoadingStatus({view: 'modal', bool: false}));
+      });
     }
     catch (err) {
       dispatch(addedStatusMessage('----------'));
       dispatch(addedStatusMessage('Upload Failed!'));
-      // props.closeMainMenuPanel();
       console.error('Upload Failed!', err);
     }
     dispatch(setLoadingStatus({view: 'modal', bool: false}));

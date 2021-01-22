@@ -44,7 +44,9 @@ import InitialProjectLoadModal from '../project/InitialProjectLoadModal';
 import projectStyles from '../project/project.styles';
 import ProjectDescription from '../project/ProjectDescription';
 import UploadDialogBox from '../project/UploadDialogBox';
+import useDownloadHook from '../project/useDownload';
 import useExportHook from '../project/useExport';
+import useImportHook from '../project/useImport';
 import useProjectHook from '../project/useProject';
 import useUploadHook from '../project/useUpload';
 import NotebookSamplesModal from '../samples/NotebookSamplesModal';
@@ -72,6 +74,7 @@ import {
   setStatusMessagesModalVisible,
   setOnlineStatus,
   setUploadModalVisible,
+  setSelectedProject,
 } from './home.slice';
 import homeStyles from './home.style';
 import LeftSideButtons from './LeftSideButtons';
@@ -95,6 +98,8 @@ const Home = () => {
   const useOfflineMaps = useOfflineMapsHook();
   const useDevice = useDeviceHook();
   const useUpload = useUploadHook();
+  const useDownload = useDownloadHook();
+  const useImport = useImportHook();
 
 
   const selectedDataset = useProject.getSelectedDatasetFromId();
@@ -117,6 +122,7 @@ const Home = () => {
   const isProjectLoadSelectionModalVisible = useSelector(state => state.home.isProjectLoadSelectionModalVisible);
   const isSidePanelVisible = useSelector(state => state.mainMenu.isSidePanelVisible);
   const isStatusMessagesModalVisible = useSelector(state => state.home.isStatusMessagesModalVisible);
+  const selectedProject = useSelector(state => state.home.selectedProject);
   const isUploadModalVisible = useSelector(state => state.home.isUploadModalVisible);
   const modalVisible = useSelector(state => state.home.modalVisible);
   const projectLoadComplete = useSelector(state => state.home.isProjectLoadComplete);
@@ -152,8 +158,7 @@ const Home = () => {
   const [isSelectingForStereonet, setIsSelectingForStereonet] = useState(false);
   const [isSelectingForTagging, setIsSelectingForTagging] = useState(false);
   const [imageSlideshowData, setImageSlideshowData] = useState([]);
-  const [exportFileName, setExportFileName] = useState(
-    moment(new Date()).format('YYYY-MM-DD_hmma') + '_' + currentProject.description.project_name);
+  const [exportFileName, setExportFileName] = useState('');
   const mapViewComponent = useRef(null);
   const toastRef = useRef();
 
@@ -171,6 +176,10 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
+    console.log('Se;ected Project', selectedProject);
+  }, [selectedProject]);
+
+  useEffect(() => {
     if (user.email && user.name) {
       Sentry.configureScope((scope) => {
         scope.setUser({'email': user.email, username: user.name});
@@ -182,7 +191,9 @@ const Home = () => {
 
   useEffect(() => {
     dispatch(setProjectLoadSelectionModalVisible(isEmpty(currentProject)));
-    setExportFileName(moment(new Date()).format('YYYY-MM-DD_hmma') + '_' + currentProject.description.project_name);
+    if (!isEmpty(currentProject)) {
+      setExportFileName(moment(new Date()).format('YYYY-MM-DD_hmma') + '_' + currentProject.description.project_name);
+    }
   }, [currentProject, user]);
 
   useEffect(() => {
@@ -669,8 +680,6 @@ const Home = () => {
         dialogTitle={'Status'}
         style={sharedDialogStyles.dialogTitleSuccess}
         visible={isStatusMessagesModalVisible}
-        // onTouchOutside={() => dispatch(setStatusMessagesModalVisible(false))}
-        // disabled={progress !== 1 && !uploadErrors}
       >
         <View style={{minHeight: 100}}>
           <View style={{paddingTop: 15}}>
@@ -685,11 +694,26 @@ const Home = () => {
                   />
                 )
                 : (
-                  <Button
-                    title={'OK'}
-                    type={'clear'}
-                    onPress={() => dispatch(setStatusMessagesModalVisible(false))}
-                  />
+                  <View style={{alignItems: 'center'}}>
+                    {selectedProject.source !== ''
+                    && <Text style={{fontWeight: 'bold', textAlign: 'center'}}>Press Continue to load selected
+                      project</Text>}
+                    <View style={{flexDirection: 'row'}}>
+                      <Button
+                        title={selectedProject.source !== '' ? 'Continue' : 'OK'}
+                        type={'clear'}
+                        containerStyle={{padding: 10}}
+                        onPress={() => getProjectFromSource(selectedProject)}
+                      />
+                      {selectedProject.source !== ''
+                      && <Button
+                        title={'Cancel'}
+                        containerStyle={{padding: 10}}
+                        type={'clear'}
+                        onPress={() => dispatch(setStatusMessagesModalVisible(false))}
+                      />}
+                    </View>
+                  </View>
                 )
               }
             </View>
@@ -697,6 +721,24 @@ const Home = () => {
         </View>
       </StatusDialogBox>
     );
+  };
+
+  const getProjectFromSource = async () => {
+    if (selectedProject.source === 'device') {
+      console.log('FROM DEVICE', selectedProject.project);
+      dispatch(setSelectedProject({source: '', project: ''}));
+      dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
+      const res = await useImport.loadProjectFromDevice(selectedProject.project);
+      console.log('Done loading project', res);
+    }
+    else if (selectedProject.source === 'server') {
+      console.log('FROM SERVER', selectedProject.project);
+      dispatch(setSelectedProject({source: '', project: ''}));
+      dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
+      const projectData = await useDownload.initializeDownload(selectedProject.project);
+      console.log('PROJECT DATA', projectData);
+    }
+    else dispatch(setStatusMessagesModalVisible(false));
   };
 
   const renderBackUpModal = () => {
@@ -740,7 +782,8 @@ const Home = () => {
       >
         <View>
           <Text>
-            <Text style={commonStyles.dialogContentImportantText}>{currentProject.description.project_name}{'\n'}</Text>
+            <Text style={commonStyles.dialogContentImportantText}>{!isEmpty(
+              currentProject) && currentProject.description.project_name}{'\n'}</Text>
             properties and the following active datasets will be uploaded and will
             <Text style={commonStyles.dialogContentImportantText}> OVERWRITE</Text> any data already on the server
             for this project.
