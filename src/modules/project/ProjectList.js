@@ -16,7 +16,7 @@ import {
 import {MAIN_MENU_ITEMS} from '../main-menu-panel/mainMenu.constants';
 import {setMenuSelectionPage} from '../main-menu-panel/mainMenuPanel.slice';
 import {clearedSpots} from '../spots/spots.slice';
-import DialogBox from './DialogBox';
+import BackUpOverwriteModal from './BackUpOverwriteModal';
 import * as ProjectActions from './project.constants';
 import styles from './project.styles';
 import {doesBackupDirectoryExist} from './projects.slice';
@@ -156,7 +156,7 @@ const ProjectList = (props) => {
 
   const renderDialog = () => {
     return (
-      <DialogBox
+      <BackUpOverwriteModal
         dialogTitle={'Delete Local Project Warning!'}
         visible={showDialog}
         isOnline={isOnline}
@@ -174,7 +174,7 @@ const ProjectList = (props) => {
         <Text>Including all datasets and Spots contained within this project. Make sure you have already
           uploaded the project to the server if you wish to preserve the data. Continue?
         </Text>
-      </DialogBox>
+      </BackUpOverwriteModal>
     );
   };
 

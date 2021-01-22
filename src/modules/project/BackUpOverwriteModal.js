@@ -11,7 +11,7 @@ import Dialog, {
 import * as ProjectActions from './project.constants';
 import styles from './project.styles';
 
-const DialogBox = (props) => {
+const BackUpOverwriteModal = (props) => {
   return (
     <React.Fragment>
       <Dialog
@@ -65,4 +65,4 @@ const DialogBox = (props) => {
   );
 };
 
-export default DialogBox;
+export default BackUpOverwriteModal;
