@@ -51,7 +51,7 @@ const homeStyles = StyleSheet.create({
     fontWeight: 'bold',
   },
   offlineMapLabelContainer: {
-    position: 'absolute' ,
+    position: 'absolute',
     top: 60,
     right: '45%',
   },
@@ -61,7 +61,7 @@ const homeStyles = StyleSheet.create({
     fontWeight: 'bold',
     color: 'yellow',
     textShadowColor: 'black',
-    textShadowRadius: 10
+    textShadowRadius: 10,
   },
 
   // --- Drawer Styles ---
@@ -104,8 +104,8 @@ const homeStyles = StyleSheet.create({
   },
   drawSaveAndCancelButtons: {
     position: 'absolute',
-    bottom: 90,
-    right: '45%',
+    bottom: 50,
+    left: '40%',
   },
   notebookButton: {
     position: 'absolute',
@@ -132,7 +132,7 @@ const homeStyles = StyleSheet.create({
     left: '45%',
   },
   currentZoomText: {
-    color:'white',
+    color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
     textShadowColor: 'black',

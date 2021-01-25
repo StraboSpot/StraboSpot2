@@ -621,17 +621,18 @@ const Home = () => {
           title={'End Draw'}
           onPress={clickHandler.bind(this, 'endDraw')}
         />}
-        {buttons.editButtonsVisible && <View>
+        {buttons.editButtonsVisible && <View style={{flexDirection: 'row'}}>
           <Button
+            containerStyle={{paddingRight: 35}}
             buttonStyle={homeStyles.drawToolsButtons}
             titleStyle={{color: 'black'}}
             title={'Save Edits'}
             onPress={() => clickHandler('saveEdits')}
           />
           <Button
-            buttonStyle={[homeStyles.drawToolsButtons, {marginTop: 5}]}
+            buttonStyle={homeStyles.drawToolsButtons}
             titleStyle={{color: 'black'}}
-            title={'Cancel Edits'}
+            title={'Cancel'}
             onPress={() => clickHandler('cancelEdits')}
           />
         </View>}
