@@ -128,8 +128,8 @@ const homeStyles = StyleSheet.create({
   currentZoomContainer: {
     zIndex: 1,
     position: 'absolute',
-    bottom: 30,
-    left: 100,
+    top: 30,
+    left: '45%',
   },
   currentZoomText: {
     color:'white',
