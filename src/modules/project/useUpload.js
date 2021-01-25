@@ -43,7 +43,6 @@ const useUpload = () => {
       console.log('Upload Complete');
       batch(() => {
         dispatch(addedStatusMessage('Upload Complete!'));
-        dispatch(clearedSpots());
         dispatch(addedStatusMessage('Project uploaded to server.'));
         dispatch(setLoadingStatus({view: 'modal', bool: false}));
       });
