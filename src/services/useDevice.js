@@ -13,7 +13,7 @@ const useDevice = () => {
   const appDirectory = '/StraboSpot';
   const imagesDirectory = appDirectory + '/Images';
   const tilesDirectory = devicePath + '/StraboSpotTiles';
-  const tileCacheDirectory = tilesDirectory  + '/TileCache';
+  const tileCacheDirectory = tilesDirectory + '/TileCache';
   const tileTempDirectory = devicePath + tilesDirectory + '/TileTemp';
   const zipsDirectory = devicePath + tilesDirectory + '/TileZips';
 
@@ -126,20 +126,14 @@ const useDevice = () => {
   };
 
   const readDirectoryForMaps = async () => {
-    try {
-      const exists = await RNFS.exists(tilesDirectory);
-      console.log(exists)
-      if (exists) {
-        const files = await RNFS.readdir(tileCacheDirectory);
-        console.log(files);
-        return files;
-      }
+    const exists = await RNFS.exists(tilesDirectory);
+    console.log('Offline maps directoy exists? ', exists);
+    if (exists) {
+      const files = await RNFS.readdir(tileCacheDirectory);
+      console.log(files);
+      return files;
     }
-    catch (err) {
-      console.error('Error reading directory for maps', err);
-      dispatch(setOfflineMap({}));
-      throw Error(err);
-    }
+    else throw Error('Offline maps directory does not exist!');
   };
 
   const writeFileToDevice = (path, filename, data) => {

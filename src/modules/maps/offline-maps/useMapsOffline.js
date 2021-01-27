@@ -244,9 +244,7 @@ const useMapsOffline = () => {
       }
 
       //now move files to correct location
-      //MainBundlePath // On Android, use "RNFS.DocumentDirectoryPath" (MainBundlePath is not defined)
-      if (Platform.OS === 'ios') result = await RNFS.readDir(tileTempDirectory + '/' + zipUID + '/tiles');
-      else result = await RNFS.DocumentDirectoryPath(tileTempDirectory + '/' + zipUID + '/tiles');
+      result = await RNFS.readDir(tileTempDirectory + '/' + zipUID + '/tiles');
 
       console.log(result);
       return result;

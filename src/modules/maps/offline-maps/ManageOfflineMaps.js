@@ -1,8 +1,7 @@
 import React, {useEffect, useState} from 'react';
-import {Alert, Text, View, Platform} from 'react-native';
+import {Alert, Text, View} from 'react-native';
 
 import {Button, ListItem} from 'react-native-elements';
-import RNFS from 'react-native-fs';
 import {useDispatch, useSelector} from 'react-redux';
 
 import useDeviceHook from '../../../services/useDevice';
@@ -10,19 +9,16 @@ import commonStyles from '../../../shared/common.styles';
 import {isEmpty} from '../../../shared/Helpers';
 import {setOfflineMapsModalVisible} from '../../home/home.slice';
 import Divider from '../../main-menu-panel/MainMenuPanelDivider';
+import {setOfflineMap} from './offlineMaps.slice';
 import styles from './offlineMaps.styles';
 import useMapsOfflineHook from './useMapsOffline';
 
 const ManageOfflineMaps = (props) => {
-  console.log('Props: ', props);
 
   const [directoryExists, setDirectoryExists] = useState(false);
   const [availableMaps, setAvailableMaps] = useState({});
   const [loading, setLoading] = useState(true);
 
-  const devicePath = RNFS.DocumentDirectoryPath;
-  const tilesDirectory = devicePath + '/StraboSpotTiles';
-  const tileCacheDirectory = tilesDirectory + '/TileCache';
   const offlineMaps = useSelector(state => state.offlineMap.offlineMaps);
   const isOnline = useSelector(state => state.home.isOnline);
   const mainMenuPageVisible = useSelector(state => state.mainMenu.mainMenuPageVisible);
@@ -77,6 +73,7 @@ const ManageOfflineMaps = (props) => {
     }
     catch (err) {
       console.error('Error reading directory for maps', err);
+      dispatch(setOfflineMap({}));
       setLoading(false);
     }
   };
