@@ -1,6 +1,7 @@
 import React from 'react';
 import {ActivityIndicator, Button, Dimensions, FlatList, ScrollView, Switch, Text, View} from 'react-native';
 
+import {Image} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
@@ -24,7 +25,8 @@ const ImagesOverview = () => {
     return (
       <View>
         <View style={imageStyles.imageContainer}>
-          <SharedUI.ImageButton
+          <Image
+            resizeMode={'contain'}
             source={{uri: useImages.getLocalImageURI(image.id)}}
             style={imageStyles.notebookImage}
             PlaceholderContent={<ActivityIndicator/>}

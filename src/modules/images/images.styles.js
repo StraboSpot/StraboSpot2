@@ -21,7 +21,7 @@ const imageStyles = StyleSheet.create({
     margin: 0,
     justifyContent: 'center',
     padding: 0,
-    paddingHorizontal: 10,
+    // paddingHorizontal: 10,
     paddingTop: 10,
     backgroundColor: 'white',
   },

@@ -1,11 +1,10 @@
 import React from 'react';
-import {Alert, FlatList, Text, View} from 'react-native';
+import {ActivityIndicator, Alert, FlatList, Text, View} from 'react-native';
 
-import {Button} from 'react-native-elements';
+import {Button, Image} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {isEmpty} from '../../shared/Helpers';
-import * as SharedUI from '../../shared/ui/index';
 import {setImageModalVisible} from '../home/home.slice';
 import attributesStyles from '../main-menu-panel/attributes.styles';
 import {SORTED_VIEWS} from '../main-menu-panel/mainMenu.constants';
@@ -67,10 +66,11 @@ const ImageGallery = (props) => {
   const renderImage = (image) => {
     return (
       <View style={imageStyles.thumbnailContainer}>
-        <SharedUI.ImageButton
+        <Image
           source={{uri: useImages.getLocalImageURI(image.id)}}
           style={imageStyles.thumbnail}
-          //PlaceholderContent={<ActivityIndicator/>}
+          resizeMode={'contain'}
+          PlaceholderContent={<ActivityIndicator/>}
           onPress={() => handleImagePressed(image)}
         />
       </View>

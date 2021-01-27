@@ -25,13 +25,13 @@ const ImagesViewPage = (props) => {
       <Card containerStyle={imageStyles.cardContainer}>
         <Card.Title style={{fontSize: 12}}>{image.title ?? image.id}</Card.Title>
         <Card.Image
+          resizeMode={'contain'}
           source={{uri: useImages.getLocalImageURI(image.id)}}
-          style={{width: 150, height: 130}}
           onPress={() => useImages.editImage(image)}
         />
 
-        <View style={{flexDirection: 'row', justifyContent: 'space-between', paddingTop: 10}}>
-          <Text style={{fontSize: 14, textAlign: 'left', paddingLeft: 0}}>Image as {'\n'}Basemap?</Text>
+        <View style={{flexDirection: 'row', justifyContent: 'space-evenly', paddingTop: 15}}>
+          <Text style={{fontSize: 14, textAlign: 'left'}}>Image as {'\n'}Basemap?</Text>
           <Switch
             style={{height: 20}}
             onValueChange={(annotated) => useImages.setAnnotation(image, annotated)}

@@ -36,9 +36,10 @@ const ImageInfo = (props) => {
   };
 
   return (
-    <View>
+    <View style={{backgroundColor: 'black'}}>
       <Image
         source={{uri: useImages.getLocalImageURI(imageProps)}}
+        resizeMode={'contain'}
         style={{width: '100%', height: '100%'}}
         PlaceholderContent={<ActivityIndicator/>}
       />

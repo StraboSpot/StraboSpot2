@@ -44,9 +44,10 @@ const Preview = (props) => {
       activeOpacity={1}
       style={[{height: props.height, width: props.width}]}
       onPress={() => setButtonsDisplay(!buttonsDisplay)}>
-      <View>
+      <View style={{backgroundColor: 'black'}}>
         <Image
           source={{uri: props.item.uri}}
+          resizeMode={'contain'}
           style={[{width: wp('100%'), height: hp('100%')}]}
           PlaceholderContent={<ActivityIndicator/>}
         />
