@@ -17,7 +17,7 @@ const ManageOfflineMaps = (props) => {
 
   const [directoryExists, setDirectoryExists] = useState(false);
   const [availableMaps, setAvailableMaps] = useState({});
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const offlineMaps = useSelector(state => state.offlineMap.offlineMaps);
   const isOnline = useSelector(state => state.home.isOnline);
@@ -28,7 +28,7 @@ const ManageOfflineMaps = (props) => {
   const useMapsOffline = useMapsOfflineHook();
 
   useEffect(() => {
-    readDirectoryForMaps().catch(err => console.log(err));
+    !isEmpty(offlineMaps) && readDirectoryForMaps().catch(err => console.log(err));
   }, [mainMenuPageVisible]);
 
   useEffect(() => {
@@ -65,11 +65,12 @@ const ManageOfflineMaps = (props) => {
 
   const readDirectoryForMaps = async () => {
     try {
-      const files = await useDevice.readDirectoryForMaps();
+      setLoading(true);
+      const ids = await useDevice.readDirectoryForMaps();
       setDirectoryExists(true);
-      const availableMapObj = Object.assign({}, ...files.map(file => ({[offlineMaps[file].id]: offlineMaps[file]})));
-      setAvailableMaps({...availableMaps, ...availableMapObj});
-      setLoading(false);
+        const availableMapObj = Object.assign({}, ...ids.map(id => ({[offlineMaps[id].id]: offlineMaps[id]})));
+        setAvailableMaps({...availableMaps, ...availableMapObj});
+        setLoading(false);
     }
     catch (err) {
       console.error('Error reading directory for maps', err);
