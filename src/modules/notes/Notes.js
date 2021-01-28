@@ -4,6 +4,7 @@ import {Text, TextInput, View} from 'react-native';
 import {Button} from 'react-native-elements';
 import {connect, useDispatch, useSelector} from 'react-redux';
 
+import {isEmpty} from '../../shared/Helpers';
 import uiStyles from '../../shared/ui/ui.styles';
 import {MODALS} from '../home/home.constants';
 import useMapsHook from '../maps/useMaps';
@@ -21,7 +22,7 @@ const Notes = (props) => {
   const [note, setNote] = useState('');
 
   useEffect(() => {
-    if (selectedSpot.properties.notes) {
+    if (!isEmpty(selectedSpot) && selectedSpot.properties.notes) {
       console.log('selectedSpot.properties', selectedSpot.properties);
       setNote(selectedSpot.properties.notes);
     }
@@ -37,7 +38,7 @@ const Notes = (props) => {
     setNote('');
     dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.OVERVIEW));
   };
-  
+
   return (
     <View>
       {modalVisible === MODALS.SHORTCUT_MODALS.NOTES
