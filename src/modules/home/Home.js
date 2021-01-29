@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Alert, Animated, AppState, Dimensions, FlatList, Platform, Text, TextInput, View} from 'react-native';
+import {Alert, Animated, Dimensions, FlatList, Platform, Text, TextInput, View} from 'react-native';
 
 import NetInfo from '@react-native-community/netinfo';
 import {useNavigation} from '@react-navigation/native';

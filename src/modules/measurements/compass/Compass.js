@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {
   Animated,
+  AppState,
   Easing,
   Alert,
   Image,
@@ -73,25 +74,36 @@ const Compass = (props) => {
   }, [accelerometerData]);
 
   useEffect(() => {
+    AppState.addEventListener('change', handleAppStateChange);
     if (Platform.OS === 'android') {
       setUpdateIntervalForType(SensorTypes.accelerometer, 300);
       setUpdateIntervalForType(SensorTypes.magnetometer, 300);
       subscribeToAccelerometer();
     }
     return () => {
-      if (Platform.OS === 'ios') {
-        NativeModules.Compass.stopObserving();
-        CompassEvents.removeAllListeners('rotationMatrix');
-        console.log('Ended Compass observation and rotationMatrix listener.');
-      }
-      else unsubscribeFromAccelerometer();
-      console.log('Heading subscription cancelled');
+      AppState.removeEventListener('change', handleAppStateChange);
+      unsubscribe();
     };
   }, []);
 
   useEffect(() => {
     console.log('Updating props', props.spot);
   }, [props.spot, compassMeasurementTypes]);
+
+  const handleAppStateChange = (state) => {
+    if (state === 'active') Platform.OS === 'ios' ? displayCompassData() : subscribeToAccelerometer();
+    else if (state === 'background') unsubscribe();
+  };
+
+  const unsubscribe = () => {
+    if (Platform.OS === 'ios') {
+      NativeModules.Compass.stopObserving();
+      CompassEvents.removeAllListeners('rotationMatrix');
+      console.log('Ended Compass observation and rotationMatrix listener.');
+    }
+    else unsubscribeFromAccelerometer();
+    console.log('Heading subscription cancelled');
+  };
 
   const calculateOrientation = () => {
     const x = accelerometerData.x;
