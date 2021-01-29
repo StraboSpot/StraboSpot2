@@ -158,18 +158,24 @@ const useTags = () => {
   };
 
   const saveTag = (tagToSave) => {
-    const updatedTags = projectTags.filter(tag => tag.id !== tagToSave.id);
-    updatedTags.push(tagToSave);
-    dispatch(updatedProject({field: 'tags', value: updatedTags}));
+    if (!Array.isArray(tagToSave)) {
+      const updatedTags = projectTags.filter(tag => tag.id !== tagToSave.id);
+      updatedTags.push(tagToSave);
+      dispatch(updatedProject({field: 'tags', value: updatedTags}));
+    }
+    else {
+      let tagIdsToSave = tagToSave.map(tag => tag.id);
+      let updatedTags = projectTags.filter(tag => !tagIdsToSave.includes(tag.id));
+      updatedTags = tagToSave.concat(updatedTags);
+      dispatch(updatedProject({field: 'tags', value: updatedTags}));
+    }
   };
 
-  const addTagToSpot = (tag, spot) => {
+  const tagSpotExists = (tag, spot) => {
     if (!tag.spots) tag.spots = [];
-    const spotId = spot ? spot.properties.id : selectedSpot.properties.id;
-    const i = tag.spots.indexOf(spotId);
-    if (i === -1) tag.spots.push(spotId);
-    if (isEmpty(tag.spots)) delete tag.spots;
-    saveTag(tag);
+    const i = tag.spots.indexOf(spot.properties.id);
+    if (i === -1) return false;
+    else return true;
   };
 
   return [{
@@ -185,7 +191,7 @@ const useTags = () => {
     renderTagForm: renderTagForm,
     saveForm: saveForm,
     saveTag: saveTag,
-    addTagToSpot: addTagToSpot,
+    tagSpotExists: tagSpotExists,
   }];
 };
 

@@ -49,11 +49,17 @@ const TagsModal = () => {
       });
     }
     else {
+      let tagsToUpdate = [];
       checkedTagsTemp.map(tag => {
+        let spotsListForTagging = [];
         selectedSpotsForTagging.map(spot => {
-          useTags.addTagToSpot(tag, spot);
+          if (!useTags.tagSpotExists(tag, spot)) spotsListForTagging.push(spot.properties.id);
         });
+        let tagCopy = JSON.parse(JSON.stringify(tag));
+        tagCopy.spots = tagCopy.spots.concat(spotsListForTagging);
+        tagsToUpdate.push(tagCopy);
       });
+      useTags.saveTag(tagsToUpdate);
     }
   };
 
