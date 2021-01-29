@@ -3,17 +3,24 @@ import {Alert, Text, View} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
 import RNSketchCanvas from '@terrylinla/react-native-sketch-canvas';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
+import {MODALS} from '../home/home.constants';
+import {setModalVisible} from '../home/home.slice';
 import useImagesHook from '../images/useImages';
+import useMapsHook from '../maps/useMaps';
 import {editedSpotImages} from '../spots/spots.slice';
 import styles from './sketch.styles';
 
 const Sketch = (props) => {
   const dispatch = useDispatch();
+  const modalVisible = useSelector(state => state.home.modalVisible);
+  const selectedSpot = useSelector(state => state.spot.selectedSpot);
 
   const navigation = useNavigation();
   const [useImages] = useImagesHook();
+  const [useMaps] = useMapsHook();
+
 
   const [imageId, setImageId] = useState(null);
 
@@ -21,16 +28,32 @@ const Sketch = (props) => {
     if (props.route.params?.imageId) setImageId(props.route.params.imageId);
   }, [imageId]);
 
+  useEffect(() => {
+    createSpot().catch(e => console.error(e));
+  }, []);
+
+  const createSpot = async () => {
+    if (modalVisible === MODALS.SHORTCUT_MODALS.SKETCH) {
+      const pointSetAtCurrentLocation = await useMaps.setPointAtCurrentLocation();
+      console.log('pointSetAtCurrentLocation', pointSetAtCurrentLocation);
+    }
+  };
+
   const saveSketch = async (success, path) => {
     try {
       console.log(success, 'Path:', path);
       if (success) {
         const savedSketch = await useImages.saveFile({'path': path});
         dispatch(editedSpotImages([{...savedSketch, image_type: 'sketch'}]));
-        Alert.alert(`Sketch ${savedSketch.id} Saved!`,
+        Alert.alert(modalVisible === MODALS.SHORTCUT_MODALS.SKETCH
+          ? `Sketch saved to NEW spot, ${selectedSpot.properties.name}!`
+          : `Sketch saved to ${selectedSpot.properties.name}!`,
           null,
           [{
-            text: 'OK', onPress: () => navigation.pop(),
+            text: 'OK', onPress: () => {
+              dispatch(setModalVisible({modal: null}));
+              navigation.pop();
+            },
           }],
         );
       }
@@ -68,7 +91,10 @@ const Sketch = (props) => {
           }}
           defaultStrokeIndex={0}
           defaultStrokeWidth={1}
-          onClosePressed={() => props.navigation.goBack()}
+          onClosePressed={() => {
+            dispatch(setModalVisible({modal: null}));
+            props.navigation.goBack();
+          }}
           onSketchSaved={(success, path) => saveSketch(success, path)}
           closeComponent={<View style={styles.functionButton}><Text style={{color: 'white'}}>Close</Text></View>}
           undoComponent={<View style={styles.functionButton}><Text style={{color: 'white'}}>Undo</Text></View>}

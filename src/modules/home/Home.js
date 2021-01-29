@@ -2,6 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {Alert, Animated, AppState, Dimensions, FlatList, Platform, Text, TextInput, View} from 'react-native';
 
 import NetInfo from '@react-native-community/netinfo';
+import {useNavigation} from '@react-navigation/native';
 import * as Sentry from '@sentry/react-native';
 import * as turf from '@turf/turf';
 import moment from 'moment';
@@ -93,6 +94,7 @@ const Home = () => {
   const [useHome] = useHomeHook();
   const [useImages] = useImagesHook();
   const [useMaps] = useMapsHook();
+  const navigation = useNavigation();
   const [useProject] = useProjectHook();
   const [useSpots] = useSpotsHook();
   const useOfflineMaps = useOfflineMapsHook();
@@ -292,18 +294,17 @@ const Home = () => {
             openNotebookPanel();
           });
         });
-        // toastRef.current.show('I AM A TOAST!!');
-        // useImages.takePicture();
-        // Alert.alert('Still in the works',
-        //   `The ${name.toUpperCase()} Shortcut button in the  will be functioning soon!`);
         break;
       case 'sketch':
-        Alert.alert('Still in the works',
-          `The ${name.toUpperCase()} Shortcut button in the  will be functioning soon!`);
+        dispatch(clearedSelectedSpots());
+        if (modalVisible === MODALS.SHORTCUT_MODALS.SKETCH) {
+          dispatch(setModalVisible({modal:null}));
+        }
+        else {
+          dispatch(setModalVisible({modal: MODALS.SHORTCUT_MODALS.SKETCH}));
+          navigation.navigate('Sketch');
+        }
         break;
-      // case "notebook":
-      //   console.log(`${name}`, " was clicked");
-      //   break;
       case 'home':
         toggleHomeDrawerButton();
         break;

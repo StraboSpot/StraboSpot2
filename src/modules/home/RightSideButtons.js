@@ -76,7 +76,10 @@ const RightSideButtons = (props) => {
           )}
           {shortcutSwitchPosition.Sketch && (
             <IconButton
-              source={require('../../assets/icons/SketchButton.png')}
+              source={modalVisible === MODALS.SHORTCUT_MODALS.SKETCH
+                ? require('../../assets/icons/Sketch_pressed.png')
+                : require('../../assets/icons/SketchButton.png')
+              }
               onPress={() => props.clickHandler('sketch')}
             />
           )}

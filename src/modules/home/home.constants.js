@@ -10,5 +10,6 @@ export const MODALS = {
     NOTES:  'Notes Shortcut',
     TAGS: 'Tags Shortcut',
     ADD_TAGS_TO_SPOTS: 'Add Tags To Spots',
+    SKETCH: 'Sketch Shortcut',
   },
 };
