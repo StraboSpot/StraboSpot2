@@ -3,7 +3,7 @@ import {Text, View} from 'react-native';
 
 import {Button, Icon} from 'react-native-elements';
 
-import styles from '../../project/project.styles';
+import projectStyles from '../../project/project.styles';
 import sidePanelStyles from '../sidePanel.styles';
 
 const SidePanelHeader = (props) => {
@@ -15,18 +15,18 @@ const SidePanelHeader = (props) => {
               name={'ios-arrow-back'}
               type={'ionicon'}
               color={'black'}
-              iconStyle={styles.buttons}
+              iconStyle={projectStyles.buttons}
               size={20}
             />
           }
           title={props.title}
           type={'clear'}
           containerStyle={{flex: 0, padding: 4}}
-          titleStyle={styles.buttonText}
+          titleStyle={projectStyles.buttonText}
           onPress={props.backButton}
         />
-        <View style={styles.headerTextContainer}>
-          <Text style={styles.headerText}>{props.headerTitle}</Text>
+        <View style={projectStyles.headerTextContainer}>
+          <Text style={projectStyles.headerText}>{props.headerTitle}</Text>
         </View>
       </View>
   );

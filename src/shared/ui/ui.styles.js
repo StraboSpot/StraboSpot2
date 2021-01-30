@@ -17,22 +17,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.75)',
     zIndex: 50,
   },
-  defaultCheckBox: {
-    backgroundColor: 'transparent',
-    borderColor: 'transparent',
-    padding: 0,
-    margin: 0,
-  },
   imageIcon: {
     width: 65,
     height: 65,
   },
-  loadingContainer: {
-    flex: 1,
-    position: 'absolute',
-    right: hp('60'),
-    bottom: hp('50'),
-    backgroundColor: 'transparent',
+  itemSeparator: {
+    height: 1,
   },
   leftContainer: {
     flex: 1,
@@ -64,7 +54,6 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     paddingRight: 20,
     paddingLeft: 20,
-    // width: 150,
   },
   saveAndDeleteButtonContainer: {
     alignItems: 'center',
@@ -72,19 +61,22 @@ const styles = StyleSheet.create({
   },
   sectionDivider: {
     paddingLeft: 10,
-    paddingTop: 10,
-    paddingBottom: 10,
-    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
+    paddingTop: 8,
+    paddingBottom: 2,
   },
   sectionDividerText: {
     fontSize: Platform.OS === 'ios' ? 16 : 20,
     fontWeight: 'bold',
-    textTransform: 'uppercase',
-    color: themes.SECONDARY_HEADER_TEXT_COLOR,
+    // textTransform: 'uppercase',
+    color: themes.PRIMARY_TEXT_COLOR,
+  },
+  sectionDividerWithButtonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   sliderContainer: {
-    flex:1,
-    // width: 150,
+    flex: 1,
     alignItems: 'center',
   },
   slider: {
@@ -95,14 +87,9 @@ const styles = StyleSheet.create({
   sliderTextContainer: {
     width: '100%',
     justifyContent: 'space-between',
-    // paddingBottom: 5,
     paddingRight: 10,
     paddingLeft: 10,
     flexDirection: 'row',
-  },
-  sectionTitleContainer: {
-    paddingTop: 0,
-    paddingBottom: 9,
   },
   buttonText: {
     color: themes.PRIMARY_ACCENT_COLOR,
@@ -115,10 +102,6 @@ const styles = StyleSheet.create({
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  headerText: {
-    fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,
-    fontWeight: 'bold',
   },
 });
 

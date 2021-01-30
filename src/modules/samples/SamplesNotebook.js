@@ -1,13 +1,16 @@
 import React from 'react';
-import {ScrollView, Text, View} from 'react-native';
+import {FlatList, View} from 'react-native';
 
 import {Icon, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
-import * as themes from '../../shared/styles.constants';
+import {PRIMARY_ACCENT_COLOR} from '../../shared/styles.constants';
+import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
+import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SectionDivider from '../../shared/ui/SectionDivider';
+import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
 import {MODALS} from '../home/home.constants';
 import {setModalVisible} from '../home/home.slice';
 import {NOTEBOOK_PAGES, NOTEBOOK_SUBPAGES} from '../notebook-panel/notebook.constants';
@@ -24,43 +27,35 @@ const SamplesNotebook = () => {
   ));
   const samples = useSelector(state => state.spot.selectedSpot.properties.samples);
 
+  const renderSampleListItem = (item) => {
+    let oriented = item.oriented_sample === 'yes' ? 'Oriented' : 'Unoriented';
+    return (
+      <ListItem
+        containerStyle={commonStyles.listItem}
+        key={item.id}
+        onPress={() => onSamplePressed(item)}
+        pad={5}
+      >
+        <ListItem.Content>
+          <ListItem.Title style={commonStyles.listItemTitle}>{item.sample_id_name || 'Unknown'}</ListItem.Title>
+          <ListItem.Subtitle>
+            {oriented} - {item.sample_description ? item.sample_description : 'No Description'}
+          </ListItem.Subtitle>
+        </ListItem.Content>
+        <Icon name={'information-circle-outline'} type={'ionicon'} color={PRIMARY_ACCENT_COLOR}/>
+        <ListItem.Chevron/>
+      </ListItem>
+    );
+  };
+
   const renderSampleList = () => {
     return (
-      samples.map(item => {
-        // console.log('LIST', item);
-        let oriented = item.oriented_sample === 'yes' ? 'Oriented' : 'Unoriented';
-
-        return (
-          <View key={item.id}>
-            <ListItem
-              key={item.id}
-              containerStyle={styles.notebookListContainer}
-              onPress={() => onSamplePressed(item)}
-            >
-              <ListItem.Content>
-                <ListItem.Title>{item.sample_id_name
-                  ? item.sample_id_name
-                  : <Text style={{color: 'grey'}}>Sample id: {item.id}</Text>}
-                </ListItem.Title>
-                <ListItem.Subtitle style={styles.listText}>
-                  {<Text
-                    numberOfLines={1}
-                    style={styles.listText}>{oriented} -
-                    {item.sample_description ? item.sample_description : 'No Description'}
-                  </Text>}
-                </ListItem.Subtitle>
-              </ListItem.Content>
-              <Icon
-                name='ios-information-circle-outline'
-                type='ionicon'
-                color={themes.PRIMARY_ACCENT_COLOR}
-                onPress={() => console.log('Samples item pressed', item.id)}
-              />
-              <ListItem.Chevron/>
-            </ListItem>
-          </View>
-        );
-      })
+      <FlatList
+        data={samples}
+        renderItem={({item}) => renderSampleListItem(item)}
+        ItemSeparatorComponent={FlatListItemSeparator}
+        ListEmptyComponent={<ListEmptyText text={'No Samples at this Spot'}/>}
+      />
     );
   };
 
@@ -68,17 +63,21 @@ const SamplesNotebook = () => {
     return (
       <View>
         {notebookPageVisible === NOTEBOOK_PAGES.SAMPLE && (
-          <ReturnToOverviewButton
-            onPress={() => {
-              dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.OVERVIEW));
-              dispatch(setModalVisible({modal: null}));
-            }}
-          />
+          <React.Fragment>
+            <ReturnToOverviewButton
+              onPress={() => {
+                dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.OVERVIEW));
+                dispatch(setModalVisible({modal: null}));
+              }}
+            />
+            <SectionDividerWithRightButton
+              dividerText='Samples'
+              buttonTitle={'Add'}
+              onPress={() => dispatch(setModalVisible({modal: MODALS.NOTEBOOK_MODALS.SAMPLE}))}
+            />
+          </React.Fragment>
         )}
-        {notebookPageVisible === NOTEBOOK_PAGES.SAMPLE && <SectionDivider dividerText='Samples'/>}
-        <ScrollView>
-          {samples ? renderSampleList() : <Text style={commonStyles.noValueText}>No Samples</Text>}
-        </ScrollView>
+        {renderSampleList()}
       </View>
     );
   };
@@ -87,9 +86,7 @@ const SamplesNotebook = () => {
     return (
       <View style={styles.sampleContentContainer}>
         <SectionDivider dividerText='Samples'/>
-        <ScrollView>
-          {samples && renderSampleList()}
-        </ScrollView>
+        {renderSampleList()}
       </View>
     );
   };

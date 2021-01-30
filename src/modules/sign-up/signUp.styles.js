@@ -9,8 +9,6 @@ const styles = StyleSheet.create({
   },
   buttonStyle: {
     borderRadius: 30,
-    // paddingRight: 20,
-    // paddingLeft: 50,
   },
   buttonContainer: {
     marginTop: 10,
@@ -21,21 +19,14 @@ const styles = StyleSheet.create({
   },
   input: {
     width: 350,
-    // fontSize: themes.PRIMARY_TEXT_SIZE,
-    // fontWeight: '500',
-    // height: 55,
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
     margin: 10,
-    // color: 'black',
     padding: 8,
     borderRadius: 14,
     borderColor: 'red',
   },
   inputContainerGroup: {
     alignItems: 'center',
-    // flexDirection: 'row',
-    // width: 700,
-    // flexWrap: 'wrap',
   },
   inputContainer: {
     borderColor: 'transparent',
@@ -53,17 +44,10 @@ const styles = StyleSheet.create({
   titleContainer: {
     paddingBottom: 60,
   },
-  invalid: {
-    backgroundColor: '#f9c0c0',
-    borderColor: 'red',
-  },
   container: {
     flex: 1,
-    // alignItems: 'center',
-    // backgroundColor: 'blue'
   },
   version: {
-    // color: 'black',
     textAlign: 'center',
     fontSize: 32,
     fontFamily: 'ChalkboardSE-Bold',

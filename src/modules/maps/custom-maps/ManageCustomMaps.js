@@ -1,15 +1,16 @@
 import React, {useEffect} from 'react';
-import {Text, View} from 'react-native';
+import {FlatList} from 'react-native';
 
-import {Button, ListItem} from 'react-native-elements';
+import {Icon, ListItem} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
 import commonStyles from '../../../shared/common.styles';
-import {isEmpty} from '../../../shared/Helpers';
+import {PRIMARY_ACCENT_COLOR} from '../../../shared/styles.constants';
 import AddButton from '../../../shared/ui/AddButton';
-import Divider from '../../main-menu-panel/MainMenuPanelDivider';
+import FlatListItemSeparator from '../../../shared/ui/FlatListItemSeparator';
+import ListEmptyText from '../../../shared/ui/ListEmptyText';
+import SectionDivider from '../../../shared/ui/SectionDivider';
 import useMapHook from '../useMaps';
-import styles from './customMaps.styles';
 
 const ManageCustomMaps = (props) => {
   const customMaps = useSelector(state => state.map.customMaps);
@@ -28,6 +29,31 @@ const ManageCustomMaps = (props) => {
     return name;
   };
 
+  const renderCustomMapListItem = (item) => {
+    return (
+      <ListItem
+        containerStyle={commonStyles.listItem}
+        key={item.id}
+        onPress={() => useMaps.customMapDetails(item)}>
+        <ListItem.Content>
+          <ListItem.Title style={commonStyles.listItemTitle}>{item.title}</ListItem.Title>
+          <ListItem.Subtitle>({mapTypeName(item.source)} - {item.id})</ListItem.Subtitle>
+        </ListItem.Content>
+        <Icon
+          disabled={!isOnline}
+          name={isOnline ? 'map-outline' : 'cloud-offline'}
+          type={'ionicon'}
+          color={PRIMARY_ACCENT_COLOR}
+          onPress={async () => {
+            const baseMap = await useMaps.setBasemap(item.id);
+            setTimeout(() => props.zoomToCustomMap(baseMap.bbox), 1000);
+          }}
+        />
+        <ListItem.Chevron/>
+      </ListItem>
+    );
+  };
+
   return (
     <React.Fragment>
       <AddButton
@@ -35,51 +61,14 @@ const ManageCustomMaps = (props) => {
         title={'Add new Custom Map'}
         type={'outline'}
       />
-      <Divider sectionText={'current custom maps'} style={styles.header}/>
-      {!isEmpty(customMaps)
-        ? (
-          <View>
-            {Object.values(customMaps).map((item, i) => (
-              <ListItem
-                containerStyle={styles.list}
-                bottomDivider={i < Object.values(customMaps).length - 1}
-                key={item.id}
-                onPress={() => useMaps.customMapDetails(item)}>
-                <ListItem.Content>
-                  <View style={styles.itemContainer}>
-                    <ListItem.Title style={styles.itemTextStyle}>{item.title}</ListItem.Title>
-                  </View>
-                  <View style={styles.itemSubContainer}>
-                    <ListItem.Subtitle style={styles.itemSubTextStyle}>({mapTypeName(
-                      item.source)} - {item.id})</ListItem.Subtitle>
-                    <Button
-                      disabled={!isOnline}
-                      titleStyle={commonStyles.viewMapsButtonText}
-                      type={'clear'}
-                      containerStyle={{paddingLeft: 20}}
-                      icon={{
-                        name: isOnline ? 'map-outline' : 'cloud-offline',
-                        type: 'ionicon',
-                        color: 'blue',
-                      }}
-                      onPress={async () => {
-                        const baseMap = await useMaps.setBasemap(item.id);
-                        setTimeout(() => props.zoomToCustomMap(baseMap.bbox), 1000);
-                      }}
-                    />
-                  </View>
-                </ListItem.Content>
-                <ListItem.Chevron/>
-              </ListItem>
-            ))
-            }
-          </View>
-        ) : (
-          <View style={[styles.sectionsContainer, {justifyContent: 'center', alignItems: 'center'}]}>
-            <Text>No custom maps</Text>
-          </View>
-        )
-      }
+      <SectionDivider dividerText={'Current Custom Maps'}/>
+      <FlatList
+        keyExtractor={(item) => item.toString()}
+        data={Object.values(customMaps)}
+        renderItem={({item}) => renderCustomMapListItem(item)}
+        ItemSeparatorComponent={FlatListItemSeparator}
+        ListEmptyComponent={<ListEmptyText text={'No Custom Maps'}/>}
+      />
     </React.Fragment>
   );
 };

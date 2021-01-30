@@ -1,12 +1,13 @@
 import React, {useState} from 'react';
-import {FlatList, View, Text} from 'react-native';
+import {FlatList} from 'react-native';
 
 import {Icon, ListItem} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
+import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import {BLUE} from '../../shared/styles.constants';
-import styles from './project.styles';
+import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import useProjectHook from './useProject';
 
 const ActiveDatasetsList = () => {
@@ -16,36 +17,29 @@ const ActiveDatasetsList = () => {
   const activeDatasetsIds = useSelector(state => state.project.activeDatasetsIds);
   const selectedDatasetId = useSelector(state => state.project.selectedDatasetId);
 
-  const renderActiveDatasets = (datasetId, index) => {
-    // const getSelectedDataset = datasets[selectedDatasetId];
+  const renderActiveDatasets = (datasetId,) => {
     const datasetObj = datasets[datasetId];
-    // console.log(datasetObj);
     const checked = selectedDatasetId === datasetId;
     return (
-      <View>
+      <React.Fragment>
         {!isEmpty(datasetObj) && (
           <ListItem
             key={datasetObj.id.toString()}
-            containerStyle={styles.projectDescriptionListContainer}
-            bottomDivider={index < Object.values(activeDatasetsIds).length - 1}
+            containerStyle={commonStyles.listItem}
             onPress={() => useProject.makeDatasetCurrent(datasetId)}
           >
             <ListItem.Content>
-              <ListItem.Title>{datasetObj.name}</ListItem.Title>
-              <ListItem.Subtitle>{datasetObj.spotIds
-                ? (
-                  <Text
-                    style={styles.datasetListItemSpotCount}>
-                    ({datasetObj.spotIds.length} spot{datasetObj.spotIds.length !== 1 ? 's' : ''})
-                  </Text>
-                )
-                : <Text style={styles.datasetListItemSpotCount}>(0 spots)</Text>}
+              <ListItem.Title style={commonStyles.listItemTitle}>{datasetObj.name}</ListItem.Title>
+              <ListItem.Subtitle>
+                {datasetObj.spotIds
+                  ? `(${datasetObj.spotIds.length} spot${datasetObj.spotIds.length !== 1 ? 's' : ''})`
+                  : '(0 spots)'}
               </ListItem.Subtitle>
             </ListItem.Content>
             {checked && <Icon name={'checkmark-outline'} type={'ionicon'} color={BLUE}/>}
           </ListItem>
         )}
-      </View>
+      </React.Fragment>
     );
   };
 
@@ -55,7 +49,8 @@ const ActiveDatasetsList = () => {
         keyExtractor={(item) => item.toString()}
         extraData={refresh}
         data={activeDatasetsIds}
-        renderItem={({item, index}) => renderActiveDatasets(item, index)}
+        renderItem={({item}) => renderActiveDatasets(item)}
+        ItemSeparatorComponent={FlatListItemSeparator}
       />
     </React.Fragment>
   );

@@ -1,42 +1,54 @@
 import React from 'react';
-import {ScrollView, View} from 'react-native';
+import {FlatList} from 'react-native';
 
-import {Button} from 'react-native-elements';
+import {ListItem} from 'react-native-elements';
 
+import commonStyles from '../../shared/common.styles';
+import {toTitleCase} from '../../shared/Helpers';
+import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {MAIN_MENU_ITEMS} from './mainMenu.constants';
-import styles from './mainMenuPanel.styles';
 
-const MainMenuPanelList = props => {
+const MainMenuPanelList = (props) => {
 
-  const renderButtons = (name, i) => {
+  const renderMenuListItem = (name) => {
     return (
-      <View key={i}>
-        <Button
-          title={name === MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS
-            ? MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS + ` (${props.activeProject})`
-            : name
-          }
-          type={'clear'}
-          containerStyle={styles.navItemStyle}
-          titleStyle={styles.navButtonText}
-          onPress={() => props.onPress(name)}
+      <ListItem
+        containerStyle={commonStyles.listItem}
+        onPress={() => props.onPress(name)}
+      >
+        <ListItem.Content>
+          <ListItem.Title style={commonStyles.listItemTitle}>
+            {name === MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS
+              ? MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS + ` (${props.activeProject})`
+              : name
+            }
+          </ListItem.Title>
+        </ListItem.Content>
+      </ListItem>
+    );
+  };
+
+  const renderMenuSection = ([menuItem, submenuItems]) => {
+    return (
+      <React.Fragment>
+        <SectionDivider dividerText={toTitleCase(menuItem)}/>
+        <FlatList
+          keyExtractor={(item) => item.toString()}
+          data={Object.values(submenuItems)}
+          renderItem={({item}) => renderMenuListItem(item)}
+          ItemSeparatorComponent={FlatListItemSeparator}
         />
-      </View>
+      </React.Fragment>
     );
   };
 
   return (
-    <ScrollView>
-      <View style={styles.navSectionStyle}>
-        {Object.entries(MAIN_MENU_ITEMS).map(([item, submenuItems]) => (
-          <View key={item}>
-            <SectionDivider dividerText={item}/>
-            {Object.values(submenuItems).map((submenuItem, index) => renderButtons(submenuItem, index))}
-          </View>
-        ))}
-      </View>
-    </ScrollView>
+    <FlatList
+      keyExtractor={(item) => item.toString()}
+      data={Object.entries(MAIN_MENU_ITEMS)}
+      renderItem={({item}) => renderMenuSection(item)}
+    />
   );
 };
 

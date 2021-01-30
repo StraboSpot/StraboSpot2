@@ -5,12 +5,8 @@ import * as themes from '../../shared/styles.constants';
 const styles = StyleSheet.create({
   customBaseMapListContainer: {
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
-    // paddingLeft: 15,
     paddingBottom: 10,
     paddingTop: 10,
-  },
-  customBaseMapListText: {
-    // fontSize: themes.PRIMARY_TEXT_SIZE,
   },
   dialogBox: {
     position: 'absolute',
@@ -29,7 +25,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   dialogLargerText: {
-    color: themes.PRIMARY_HEADER_TEXT_COLOR,
+    color: themes.PRIMARY_TEXT_COLOR,
     fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,
     fontWeight: 'bold',
   },
@@ -37,10 +33,9 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderColor: 'lightgrey',
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
-
   },
   dialogText: {
-    color: themes.PRIMARY_HEADER_TEXT_COLOR,
+    color: themes.PRIMARY_TEXT_COLOR,
   },
 });
 

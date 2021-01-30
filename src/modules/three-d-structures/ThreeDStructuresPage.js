@@ -1,11 +1,13 @@
 import React, {useEffect, useState} from 'react';
-import {FlatList, View, Text} from 'react-native';
+import {FlatList, View} from 'react-native';
 
 import {Button, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import commonStyles from '../../shared/common.styles';
 import {getNewId} from '../../shared/Helpers';
-import * as themes from '../../shared/styles.constants';
+import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
+import ListEmptyText from '../../shared/ui/ListEmptyText';
 import {LABEL_DICTIONARY} from '../form';
 import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
@@ -57,14 +59,15 @@ const ThreeDStructuresPage = (props) => {
       return key === 'id' ? acc : (acc === '' ? '' : acc + '\n') + getLabel(key) + ': ' + getLabel(value);
     }, '');
     return (
-      <ListItem key={threeDStructure.id}
-                onPress={() => edit3dStructure(threeDStructure)}
+      <ListItem
+        containerStyle={commonStyles.listItem}
+        key={threeDStructure.id}
+        onPress={() => edit3dStructure(threeDStructure)}
       >
         <ListItem.Content style={{overflow: 'hidden'}}>
-          <ListItem.Title>{threeDStructureTitle}</ListItem.Title>
+          <ListItem.Title style={commonStyles.listItemTitle}>{threeDStructureTitle}</ListItem.Title>
           {threeDStructureFieldsText !== '' && (
-            <ListItem.Subtitle
-              style={{color: themes.PRIMARY_ITEM_TEXT_COLOR}}>{threeDStructureFieldsText}</ListItem.Subtitle>
+            <ListItem.Subtitle>{threeDStructureFieldsText}</ListItem.Subtitle>
           )}
         </ListItem.Content>
         <ListItem.Chevron/>
@@ -101,20 +104,14 @@ const ThreeDStructuresPage = (props) => {
               onPress={() => add3dStructure('other')}
             />
           </View>
-          {!spot.properties._3d_structures && (
-            <View style={{padding: 10}}>
-              <Text>There are no 3D Structures at this Spot.</Text>
-            </View>
-          )}
-          {spot.properties._3d_structures && (
-            <FlatList
-              data={spot.properties._3d_structures.slice().sort(
-                (a, b) => get3dStructureTitle(a).localeCompare(get3dStructureTitle(b)))}
-              renderItem={item => render3dStructure(item.item)}
-              keyExtractor={(item) => item.id.toString()}
-              ItemSeparatorComponent={() => <View style={{borderTopWidth: 1}}/>}
-            />
-          )}
+          <FlatList
+            data={spot.properties && spot.properties._3d_structures && spot.properties._3d_structures.slice().sort(
+              (a, b) => get3dStructureTitle(a).localeCompare(get3dStructureTitle(b)))}
+            renderItem={item => render3dStructure(item.item)}
+            keyExtractor={(item) => item.id.toString()}
+            ItemSeparatorComponent={FlatListItemSeparator}
+            ListEmptyComponent={<ListEmptyText text={'There are no 3D Structures at this Spot.'}/>}
+          />
         </View>
       )}
       {isDetailView && (

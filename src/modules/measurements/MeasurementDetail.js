@@ -8,11 +8,10 @@ import {useDispatch, useSelector} from 'react-redux';
 import commonStyles from '../../shared/common.styles';
 import {getNewId, isEmpty, roundToDecimalPlaces, toDegrees, toRadians} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
+import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {Form, useFormHook} from '../form';
-import {MODALS} from '../home/home.constants';
-import {setModalVisible} from '../home/home.slice';
 import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
 import {setNotebookPageVisible, setNotebookPageVisibleToPrev} from '../notebook-panel/notebook.slice';
 import {editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
@@ -25,7 +24,6 @@ const MeasurementDetailPage = (props) => {
   const [formName, setFormName] = useState([]);
   const spot = useSelector(state => state.spot.selectedSpot);
   const selectedMeasurements = useSelector(state => state.spot.selectedAttributes);
-  const modalVisible = useSelector(state => state.home.modalVisible);
   const [activeMeasurement, setActiveMeasurement] = useState(null);
   const form = useRef(null);
 
@@ -154,9 +152,7 @@ const MeasurementDetailPage = (props) => {
       'and active measurement:', activeMeasurement);
     return (
       <View>
-        <View style={styles.measurementsSectionDividerContainer}>
-          <SectionDivider dividerText='Feature Type'/>
-        </View>
+        <SectionDivider dividerText='Feature Type'/>
         <View style={{flex: 1}}>
           <Formik
             innerRef={form}
@@ -191,25 +187,33 @@ const MeasurementDetailPage = (props) => {
         {/* Primary measurement */}
         {activeMeasurement && selectedMeasurements && selectedMeasurements[0]
         && selectedMeasurements[0].associated_orientation && (
-          <MeasurementItem item={{item: selectedMeasurements[0]}}
-                           selectedIds={[activeMeasurement.id]}
-                           isAssociatedItem={false}
-                           isAssociatedList={true}
-                           onPress={() => onSwitchActiveMeasurement(selectedMeasurements[0])}
-          />
+          <React.Fragment>
+            <MeasurementItem
+              item={{item: selectedMeasurements[0]}}
+              selectedIds={[activeMeasurement.id]}
+              isAssociatedItem={false}
+              isAssociatedList={true}
+              onPress={() => onSwitchActiveMeasurement(selectedMeasurements[0])}
+            />
+            <FlatListItemSeparator/>
+          </React.Fragment>
         )}
 
         {/* Associated measurements */}
         {activeMeasurement && selectedMeasurements && selectedMeasurements[0]
         && selectedMeasurements[0].associated_orientation && (
           selectedMeasurements[0].associated_orientation.map((item, i) =>
-            <MeasurementItem item={{item: item}}
-                             selectedIds={[activeMeasurement.id]}
-                             isAssociatedItem={true}
-                             isAssociatedList={true}
-                             onPress={() => onSwitchActiveMeasurement(item)}
-                             key={item.id}
-            />,
+            <React.Fragment>
+              <MeasurementItem
+                item={{item: item}}
+                selectedIds={[activeMeasurement.id]}
+                isAssociatedItem={true}
+                isAssociatedList={true}
+                onPress={() => onSwitchActiveMeasurement(item)}
+                key={item.id}
+              />
+              <FlatListItemSeparator/>
+            </React.Fragment>,
           )
         )}
 
@@ -245,45 +249,45 @@ const MeasurementDetailPage = (props) => {
     return (
       <View>
         <ListItem
-          containerStyle={activeMeasurement.id === selectedMeasurements[0].id ? commonStyles.listItemInverse : commonStyles.listItem}
+          containerStyle={activeMeasurement.id === selectedMeasurements[0].id && commonStyles.listItemInverse}
           onPress={() => onSwitchActiveMeasurement(selectedMeasurements[0])}
           pad={5}>
           <ListItem.Content>
             <ListItem.Title
               style={activeMeasurement.id === selectedMeasurements[0].id
-                ? commonStyles.listItemTitleInverse
-                : commonStyles.listItemTitle}>{mainText}</ListItem.Title>
+                ? commonStyles.listItemTitleInverse : commonStyles.listItemTitle}>{mainText}
+            </ListItem.Title>
           </ListItem.Content>
           <ListItem.Content>
             <ListItem.Title
               style={activeMeasurement.id === selectedMeasurements[0].id
-                ? commonStyles.listItemRightTitleInverse
-                : commonStyles.listItemRightTitle}
-            >{propertyText}</ListItem.Title>
+                ? commonStyles.listItemTitleInverse : commonStyles.listItemTitle}
+            >
+              {propertyText}
+            </ListItem.Title>
           </ListItem.Content>
         </ListItem>
         {hasAssociated && (
           <ListItem
-            containerStyle={activeMeasurement.id === selectedMeasurements[0].associated_orientation[0].id ? commonStyles.listItemInverse : commonStyles.listItem}
+            containerStyle={activeMeasurement.id === selectedMeasurements[0].associated_orientation[0].id && commonStyles.listItemInverse}
             onPress={() => onSwitchActiveMeasurement(selectedMeasurements[0].associated_orientation[0])}
             pad={5}
-            rightTitleStyle={activeMeasurement.id === selectedMeasurements[0].associated_orientation[0].id ? commonStyles.listItemRightTitleInverse : commonStyles.listItemRightTitle}
           >
             <ListItem.Content>
               <ListItem.Title
                 style={activeMeasurement.id === selectedMeasurements[0].associated_orientation[0].id
-                  ? commonStyles.listItemTitleInverse
-                  : commonStyles.listItemTitle}
-              >{mainText2}</ListItem.Title>
+                  ? commonStyles.listItemTitleInverse : commonStyles.listItemTitle}
+              >
+                {mainText2}
+              </ListItem.Title>
             </ListItem.Content>
             <ListItem.Content>
-              <View>
-                <ListItem.Title
-                  style={activeMeasurement.id === selectedMeasurements[0].associated_orientation[0].id
-                    ? commonStyles.listItemRightTitleInverse
-                    : commonStyles.listItemRightTitle}
-                >{propertyText2}</ListItem.Title>
-              </View>
+              <ListItem.Title
+                style={activeMeasurement.id === selectedMeasurements[0].associated_orientation[0].id
+                  ? commonStyles.listItemTitleInverse : commonStyles.listItemTitle}
+              >
+                {propertyText2}
+              </ListItem.Title>
             </ListItem.Content>
           </ListItem>
         )}
@@ -313,9 +317,6 @@ const MeasurementDetailPage = (props) => {
   };
 
   const cancelFormAndGo = () => {
-    if (modalVisible === MODALS.SHORTCUT_MODALS.COMPASS) {
-      dispatch(setModalVisible({modal: MODALS.NOTEBOOK_MODALS.COMPASS}));
-    }
     dispatch(setNotebookPageVisibleToPrev());
   };
 
@@ -374,9 +375,6 @@ const MeasurementDetailPage = (props) => {
   const saveFormAndGo = () => {
     saveForm().then(() => {
       console.log('Finished saving form data to Spot');
-      if (modalVisible === MODALS.SHORTCUT_MODALS.COMPASS) {
-        dispatch(setModalVisible({modal: MODALS.NOTEBOOK_MODALS.COMPASS}));
-      }
       dispatch(setNotebookPageVisibleToPrev());
     }, () => {
       console.log('Error saving form data to Spot');
@@ -407,10 +405,6 @@ const MeasurementDetailPage = (props) => {
     if (!aborted) {
       orientationDataCopy = orientationDataCopy.filter(measurement => !isEmpty(measurement));
       dispatch(editedSpotProperties({field: 'orientation_data', value: orientationDataCopy}));
-
-      if (modalVisible === MODALS.SHORTCUT_MODALS.COMPASS) {
-        dispatch(setModalVisible({modal: MODALS.NOTEBOOK_MODALS.COMPASS}));
-      }
       dispatch(setNotebookPageVisibleToPrev());
     }
   };

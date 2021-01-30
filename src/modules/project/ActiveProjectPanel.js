@@ -5,13 +5,13 @@ import {Button} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
-import GeneralTextInputModal from '../../shared/ui/GeneralTextInputModal';
+import TextInputModal from '../../shared/ui/GeneralTextInputModal';
+import SectionDivider from '../../shared/ui/SectionDivider';
+import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
 import StandardModal from '../../shared/ui/StandardModal';
-import Divider from '../main-menu-panel/MainMenuPanelDivider';
 import ActiveDatasetsList from './ActiveDatasetsList';
 import ActiveProjectList from './ActiveProjectList';
 import DatasetList from './DatasetList';
-import styles from './project.styles';
 import useDownloadHook from './useDownload';
 import useProjectHook from './useProject';
 
@@ -44,7 +44,7 @@ const ActiveProjectPanel = () => {
 
   const renderAddDatasetModal = () => {
     return (
-      <GeneralTextInputModal
+      <TextInputModal
         visible={isAddDatasetModalVisible}
         dialogTitle={'Add a Dataset'}
         onPress={() => onAddDataset()}
@@ -63,16 +63,17 @@ const ActiveProjectPanel = () => {
         dialogTitle={'Warning!'}
       >
         <View style={[commonStyles.dialogContent]}>
-          <Text style={[commonStyles.standardDescriptionText, {textAlign: 'center'}]}>This will overwrite anything that
-            has not been uploaded to
-            the server</Text>
+          <Text style={[commonStyles.standardDescriptionText, {textAlign: 'center'}]}>
+            This will overwrite anything that has not been uploaded to the server
+          </Text>
         </View>
         <View style={{flexDirection: 'row', justifyContent: 'space-evenly', paddingTop: 10}}>
           <Button
             title={'OK'}
             onPress={() => confirm()}
             buttonStyle={{paddingLeft: 20, paddingRight: 20}}
-            containerStyle={commonStyles.buttonContainer}/>
+            containerStyle={commonStyles.buttonContainer}
+            />
           <Button
             title={'Cancel'}
             onPress={() => setIsWarningModalVisible(false)}
@@ -86,44 +87,47 @@ const ActiveProjectPanel = () => {
 
   return (
     <React.Fragment>
-      <ActiveProjectList/>
-      <View style={styles.dividerWithButtonContainer}>
-        <Divider sectionText={'PROJECT DATASETS'}/>
-        <Button
-          title={'Add'}
-          titleStyle={{fontSize: 14}}
-          containerStyle={{paddingRight: 20}}
-          buttonStyle={{padding: 0}}
-          type={'clear'}
-          onPress={() => setIsAddDatasetModalVisible(true)}
-        />
-      </View>
-      <View style={[commonStyles.sectionContainer, {height: 200}]}>
-        <DatasetList/>
-      </View>
-      <View style={{paddingBottom: 10}}>
-        <Divider sectionText={'ACTIVE DATASETS'}/>
-      </View>
-      <View style={[commonStyles.sectionContainer, {height: 200}]}>
-        {<ActiveDatasetsList/>}
-      </View>
-      <View style={{alignItems: 'center', margin: 10, marginTop: 0}}>
-        <Text style={commonStyles.standardDescriptionText}>New Spots will be added to the checked dataset.</Text>
-      </View>
-      <View style={styles.buttonContainer}>
-        <Button
-          title={'Download server version of project'}
-          titleStyle={[styles.dialogContentImportantText, {fontSize: 15}]}
-          type={'outline'}
-          containerStyle={{padding: 10}}
-          buttonStyle={{borderRadius: 10, padding: 15}}
-          onPress={() => setIsWarningModalVisible(true)}
-        />
-        <View style={{alignItems: 'center', margin: 10, marginTop: 0}}>
-          <Text style={commonStyles.standardDescriptionText}>
-            This will overwrite anything that has not been uploaded to the server
-          </Text>
+      <View style={{flex: 1, flexDirection: 'column', justifyContent: 'space-between'}}>
+        {/*Active Projects*/}
+        <ActiveProjectList/>
+
+        <View style={{flex: 1}}>
+          {/*Project Datasets*/}
+          <View style={{flex: 1, flexGrow: 1, overflow: 'hidden'}}>
+            <SectionDividerWithRightButton
+              dividerText={'Project Datasets'}
+              buttonTitle={'Add'}
+              onPress={() => setIsAddDatasetModalVisible(true)}
+              />
+            <DatasetList/>
+          </View>
+          {/*Active Datasets*/}
+          <View style={{flex: 1, flexGrow: 1, overflow: 'hidden'}}>
+            <SectionDivider dividerText={'Active Datasets'}/>
+            <ActiveDatasetsList/>
+          </View>
         </View>
+
+        {/*Footer*/}
+        <View style={{padding: 10}}>
+          <View style={{alignItems: 'center', paddingBottom: 10}}>
+            <Text style={commonStyles.standardDescriptionText}>New Spots will be added to the checked dataset.</Text>
+          </View>
+          <View>
+            <Button
+              title={'Download server version of project'}
+              titleStyle={commonStyles.standardButtonText}
+              type={'outline'}
+              onPress={() => setIsWarningModalVisible(true)}
+            />
+            <View style={{alignItems: 'center', paddingTop: 10}}>
+              <Text style={commonStyles.standardDescriptionText}>
+                This will overwrite anything that has not been uploaded to the server
+              </Text>
+            </View>
+          </View>
+        </View>
+
       </View>
       {renderAddDatasetModal()}
       {renderWarningModal()}

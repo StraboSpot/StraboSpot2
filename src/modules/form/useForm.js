@@ -60,21 +60,9 @@ const useForm = () => {
     }
   };
 
-  const showErrors = (formCurrent) => {
-    const errors = formCurrent.errors;
-    let errorMessages = [];
-    for (const [name, error] of Object.entries(errors)) {
-      errorMessages.push(getLabel(name) + ': ' + error);
-    }
-    Alert.alert('Please Fix the Following Errors', errorMessages.join('\n'));
-  };
-
-  const showErrorsTwoForms = (form1Current, form2Current) => {
-    let errors = {...form1Current.errors, ...form2Current.errors};
-    let errorMessages = [];
-    for (const [name, error] of Object.entries(errors)) {
-      errorMessages.push(getLabel(name) + ': ' + error);
-    }
+  const showErrors = (...formsIn) => {
+    const errors = formsIn.reduce((acc, form) => ({...acc, ...form.errors}), {});
+    const errorMessages = Object.entries(errors).map(([key, value]) => getLabel(key) + ': ' + value);
     Alert.alert('Please Fix the Following Errors', errorMessages.join('\n'));
   };
 
@@ -144,7 +132,6 @@ const useForm = () => {
     hasErrors: hasErrors,
     isRelevant: isRelevant,
     showErrors: showErrors,
-    showErrorsTwoForms: showErrorsTwoForms,
     validateForm: validateForm,
   }];
 };

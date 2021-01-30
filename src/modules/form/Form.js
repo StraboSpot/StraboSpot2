@@ -1,11 +1,14 @@
 import React, {useEffect, useState} from 'react';
-import {Alert, Animated, Keyboard, TextInput} from 'react-native';
+import {Alert, Animated, FlatList, Keyboard, TextInput} from 'react-native';
 
 import {Field} from 'formik';
+import {ListItem} from 'react-native-elements';
 
+import commonStyles from '../../shared/common.styles';
 import * as Helpers from '../../shared/Helpers';
+import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import SectionDivider from '../../shared/ui/SectionDivider';
-import {DateInputField, formStyles, NumberInputField, SelectInputField, TextInputField, useFormHook} from '../form';
+import {DateInputField, NumberInputField, SelectInputField, TextInputField, useFormHook} from '../form';
 import {LABELS_WITH_ABBREVIATIONS} from '../petrology/petrology.constants';
 
 const {State: TextInputState} = TextInput;
@@ -100,11 +103,22 @@ const Form = (props) => {
 
   const renderField = (field) => {
     const fieldType = field.type.split(' ')[0];
-    if (fieldType === 'begin_group') return renderGroupHeading(field);
-    else if (fieldType === 'text') return renderTextInput(field);
-    else if (fieldType === 'integer' || fieldType === 'decimal') return renderNumberInput(field);
-    else if (fieldType === 'select_one' || fieldType === 'select_multiple') return renderSelectInput(field);
-    else if (fieldType === 'date') return renderDateInput(field);
+    return (
+      <React.Fragment>
+        {fieldType === 'begin_group' && renderGroupHeading(field)}
+        {(fieldType === 'text' || fieldType === 'integer' || fieldType === 'decimal' || fieldType === 'select_one'
+          || fieldType === 'select_multiple' || fieldType === 'date') && (
+          <ListItem containerStyle={{...commonStyles.listItem, paddingTop: 5, paddingBottom: 5}}>
+            <ListItem.Content>
+              {fieldType === 'text' && renderTextInput(field)}
+              {(fieldType === 'integer' || fieldType === 'decimal') && renderNumberInput(field)}
+              {(fieldType === 'select_one' || fieldType === 'select_multiple') && renderSelectInput(field)}
+              {fieldType === 'date' && renderDateInput(field)}
+            </ListItem.Content>
+          </ListItem>
+        )}
+      </React.Fragment>
+    );
   };
 
   const showFieldInfo = (label, info) => {
@@ -117,10 +131,13 @@ const Form = (props) => {
   };
 
   return (
-    <Animated.View style={[formStyles.formContainer, {transform: [{translateY: textInputAnimate}]}]}>
-      {useForm.getSurvey(props.formName).map((field, i) => {
-        if (useForm.isRelevant(field, props.values)) return renderField(field);
-      })}
+    <Animated.View style={{transform: [{translateY: textInputAnimate}]}}>
+      <FlatList
+        keyExtractor={(item) => item.name}
+        data={Object.values(useForm.getSurvey(props.formName).filter(item => useForm.isRelevant(item, props.values)))}
+        renderItem={({item}) => renderField(item)}
+        ItemSeparatorComponent={FlatListItemSeparator}
+      />
     </Animated.View>
   );
 };

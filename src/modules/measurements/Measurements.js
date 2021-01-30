@@ -4,7 +4,10 @@ import {Alert, FlatList, View} from 'react-native';
 import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import {isEmpty} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
+import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
+import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {MODALS} from '../home/home.constants';
 import {setModalVisible} from '../home/home.slice';
@@ -40,6 +43,7 @@ const MeasurementsPage = (props) => {
   };
 
   const getSectionData = (sectionType) => {
+    if (isEmpty(spot.properties.orientation_data)) return [];
     if (sectionType === sectionTypes.PLANAR) {
       return (
         spot.properties.orientation_data.filter(measurement => {
@@ -122,29 +126,37 @@ const MeasurementsPage = (props) => {
     const data = getSectionData(type);
     const selectedIds = getIdsOfSelected();
     return (
-      <View style={{maxHeight: '25%'}}>
-        <FlatList
-          data={data.reverse()}
-          renderItem={item =>
-            <MeasurementItem
-              item={item}
-              selectedIds={selectedIds}
-              onPress={() => onMeasurementPressed(item.item, type)}/>}
-          keyExtractor={(item, index) => index.toString()}
-        />
-      </View>
+      <FlatList
+        keyExtractor={(item, index) => index.toString()}
+        listKey={type}
+        data={data.reverse()}
+        renderItem={(item) =>
+          <MeasurementItem
+            item={item}
+            selectedIds={selectedIds}
+            onPress={() => onMeasurementPressed(item.item, type)}
+          />
+        }
+        ItemSeparatorComponent={FlatListItemSeparator}
+        ListEmptyComponent={<ListEmptyText text={'No ' + type}/>}
+      />
+    );
+  };
+
+  const renderSection = (sectionType) => {
+    return (
+      <React.Fragment>
+        {renderSectionDivider(sectionType)}
+        {renderMeasurements(sectionType)}
+      </React.Fragment>
     );
   };
 
   const renderSectionDivider = (dividerText) => {
     const dataThisSection = spot.properties.orientation_data ? getSectionData(dividerText) : [];
     return (
-      <View style={((multiSelectMode && dividerText === multiSelectMode) || !multiSelectMode)
-        ? styles.measurementsSectionDividerWithButtonsContainer
-        : styles.measurementsSectionDividerContainer}>
-        <View style={styles.measurementsSectionDividerTextContainer}>
-          <SectionDivider dividerText={dividerText}/>
-        </View>
+      <View style={styles.measurementsSectionDividerContainer}>
+        <SectionDivider dividerText={dividerText}/>
         <View style={styles.measurementsSectionDividerButtonContainer}>
           {multiSelectMode && dividerText === multiSelectMode && (
             <Button
@@ -195,50 +207,30 @@ const MeasurementsPage = (props) => {
     );
   };
 
-  const renderSectionDividerShortcutView = (dividerText) => {
-    return (
-      <View style={styles.measurementsSectionDividerContainer}>
-        <SectionDivider dividerText={dividerText}/>
-      </View>
-    );
-  };
-
-  const renderMeasurementsNotebookView = () => {
-    return (
-      <View style={styles.measurementsContentContainer}>
-        <ReturnToOverviewButton
-          onPress={() => {
-            dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.OVERVIEW));
-            dispatch(setModalVisible({modal: null}));
-          }}
-        />
-        {renderSectionDivider(sectionTypes.PLANAR)}
-        {spot.properties.orientation_data && renderMeasurements(sectionTypes.PLANAR)}
-        {renderSectionDivider(sectionTypes.LINEAR)}
-        {spot.properties.orientation_data && renderMeasurements(sectionTypes.LINEAR)}
-        {renderSectionDivider(sectionTypes.PLANARLINEAR)}
-        {spot.properties.orientation_data && renderMeasurements(sectionTypes.PLANARLINEAR)}
-      </View>
-    );
-  };
-
-  const renderMeasurementsShortcutView = () => {
-    return (
-      <View style={{backgroundColor: themes.PRIMARY_BACKGROUND_COLOR}}>
-        {renderSectionDividerShortcutView(sectionTypes.PLANAR)}
-        {spot.properties.orientation_data && renderMeasurements(sectionTypes.PLANAR)}
-        {renderSectionDividerShortcutView(sectionTypes.LINEAR)}
-        {spot.properties.orientation_data && renderMeasurements(sectionTypes.LINEAR)}
-        {renderSectionDividerShortcutView(sectionTypes.PLANARLINEAR)}
-        {spot.properties.orientation_data && renderMeasurements(sectionTypes.PLANARLINEAR)}
-      </View>
-    );
-  };
-
   return (
-    <React.Fragment>
-      {modalVisible === MODALS.SHORTCUT_MODALS.COMPASS ? renderMeasurementsShortcutView() : renderMeasurementsNotebookView()}
-    </React.Fragment>
+    <View style={styles.measurementsContentContainer}>
+      <ReturnToOverviewButton
+        onPress={() => {
+          dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.OVERVIEW));
+          dispatch(setModalVisible({modal: null}));
+        }}
+      />
+      <FlatList
+        keyExtractor={(sectionType) => sectionTypes[sectionType]}
+        data={Object.values(sectionTypes)}
+        renderItem={(item) => renderSection(item.item)}
+      />
+      {selectedFeaturesTemp.length >= 1 && (
+        <View>
+          <Button
+            titleStyle={{color: themes.RED}}
+            title={'Delete Measurement'}
+            type={'clear'}
+            onPress={() => console.log(selectedFeaturesTemp)}
+          />
+        </View>
+      )}
+    </View>
   );
 };
 

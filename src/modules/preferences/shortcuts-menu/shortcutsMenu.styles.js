@@ -9,7 +9,7 @@ const styles = StyleSheet.create({
   },
   textStyle: {
     fontSize: themes.PRIMARY_TEXT_SIZE,
-    color: themes.PRIMARY_HEADER_TEXT_COLOR,
+    color: themes.PRIMARY_TEXT_COLOR,
     fontWeight: 'bold',
   },
 });

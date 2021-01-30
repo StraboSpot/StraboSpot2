@@ -6,6 +6,7 @@ import Dialog, {DialogContent, DialogTitle} from 'react-native-popup-dialog';
 import {ScaleAnimation} from 'react-native-popup-dialog/src';
 import {useSelector} from 'react-redux';
 
+import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
 import SectionDivider from '../../shared/ui/SectionDivider';
@@ -60,7 +61,7 @@ const BaseMapDialog = props => {
                   bottomDivider={i < BASEMAPS.length - 2}
                   onPress={() => props.onPress(map.id)}>
                   <ListItem.Content>
-                    <ListItem.Title style={styles.dialogText}>{map.title}</ListItem.Title>
+                    <ListItem.Title style={commonStyles.listItemTitle}>{map.title}</ListItem.Title>
                   </ListItem.Content>
                   {currentBasemap && currentBasemap.id && map.id === currentBasemap.id
                   && conditions.some(el => currentBasemap.url[0].includes(el))
@@ -82,7 +83,8 @@ const BaseMapDialog = props => {
                     bottomDivider={i < BASEMAPS.length - 2}
                     onPress={() => useMapsOffline.setOfflineMapTiles(map)}>
                     <ListItem.Content>
-                      <ListItem.Title style={styles.dialogText}>{useMapsOffline.getMapName(map)}</ListItem.Title>
+                      <ListItem.Title style={commonStyles.listItemTitle}>{useMapsOffline.getMapName(
+                        map)}</ListItem.Title>
                       <ListItem.Subtitle style={{paddingTop: 5}}>({map.count} tiles)</ListItem.Subtitle>
                     </ListItem.Content>
                     {currentBasemap && map.id === currentBasemap.id
@@ -108,7 +110,8 @@ const BaseMapDialog = props => {
                     }}
                   >
                     <ListItem.Content>
-                      <ListItem.Title style={styles.dialogText}>{useMapsOffline.getMapName(map)}</ListItem.Title>
+                      <ListItem.Title style={commonStyles.listItemTitle}>{useMapsOffline.getMapName(
+                        map)}</ListItem.Title>
                       <ListItem.Subtitle style={{paddingTop: 5}}>({map.count} tiles)</ListItem.Subtitle>
                     </ListItem.Content>
                     {currentBasemap && map.id === currentBasemap.id
@@ -138,7 +141,7 @@ const BaseMapDialog = props => {
                       }}>
                       <ListItem.Content>
                         <View style={styles.itemContainer}>
-                          <ListItem.Title style={styles.customBaseMapListText}>{customMap.title}</ListItem.Title>
+                          <ListItem.Title style={commonStyles.listItemTitle}>{customMap.title}</ListItem.Title>
                         </View>
                       </ListItem.Content>
                       {isOnline && currentBasemap && customMap.id === currentBasemap.id
@@ -162,7 +165,7 @@ const BaseMapDialog = props => {
                   key={customMap.id}>
                   <ListItem.Content>
                     <View style={styles.itemContainer}>
-                      <ListItem.Title style={styles.customBaseMapListText}>{customMap.title}</ListItem.Title>
+                      <ListItem.Title style={commonStyles.listItemTitle}>{customMap.title}</ListItem.Title>
                     </View>
                   </ListItem.Content>
                   <Switch

@@ -12,7 +12,6 @@ import {DotIndicator} from 'react-native-indicators';
 import {useDispatch, useSelector} from 'react-redux';
 
 import useDeviceHook from '../../services/useDevice';
-import sharedDialogStyles from '../../shared/common.styles';
 import commonStyles from '../../shared/common.styles';
 import {animatePanels, isEmpty, truncateText} from '../../shared/Helpers';
 import LoadingSpinner from '../../shared/ui/Loading';
@@ -30,7 +29,6 @@ import Map from '../maps/Map';
 import {MAP_MODES} from '../maps/maps.constants';
 import {setCurrentImageBasemap} from '../maps/maps.slice';
 import SaveMapsModal from '../maps/offline-maps/SaveMapsModal';
-import useOfflineMapsHook from '../maps/offline-maps/useMapsOffline';
 import useMapsHook from '../maps/useMaps';
 import VertexDrag from '../maps/VertexDrag';
 import NotebookCompassModal from '../measurements/compass/NotebookCompassModal';
@@ -97,7 +95,6 @@ const Home = () => {
   const navigation = useNavigation();
   const [useProject] = useProjectHook();
   const [useSpots] = useSpotsHook();
-  const useOfflineMaps = useOfflineMapsHook();
   const useDevice = useDeviceHook();
   const useUpload = useUploadHook();
   const useDownload = useDownloadHook();
@@ -254,33 +251,25 @@ const Home = () => {
         break;
       case 'tag':
         dispatch(clearedSelectedSpots());
-        if (modalVisible === MODALS.SHORTCUT_MODALS.TAGS) {
-          dispatch(setModalVisible({modal: null}));
-        }
+        if (modalVisible === MODALS.SHORTCUT_MODALS.TAGS) dispatch(setModalVisible({modal: null}));
         else modalHandler(null, MODALS.SHORTCUT_MODALS.TAGS);
         closeNotebookPanel();
         break;
       case 'measurement':
         dispatch(clearedSelectedSpots());
-        if (modalVisible === MODALS.SHORTCUT_MODALS.COMPASS) {
-          dispatch(setModalVisible({modal: null}));
-        }
+        if (modalVisible === MODALS.SHORTCUT_MODALS.COMPASS) dispatch(setModalVisible({modal: null}));
         else dispatch(setModalVisible({modal: MODALS.SHORTCUT_MODALS.COMPASS}));
         closeNotebookPanel();
         break;
       case 'sample':
         dispatch(clearedSelectedSpots());
-        if (modalVisible === MODALS.SHORTCUT_MODALS.SAMPLE) {
-          dispatch(setModalVisible({modal: null}));
-        }
+        if (modalVisible === MODALS.SHORTCUT_MODALS.SAMPLE) dispatch(setModalVisible({modal: null}));
         else dispatch(setModalVisible({modal: MODALS.SHORTCUT_MODALS.SAMPLE}));
         closeNotebookPanel();
         break;
       case 'note':
         dispatch(clearedSelectedSpots());
-        if (modalVisible === MODALS.SHORTCUT_MODALS.NOTES) {
-          dispatch(setModalVisible({modal: null}));
-        }
+        if (modalVisible === MODALS.SHORTCUT_MODALS.NOTES) dispatch(setModalVisible({modal: null}));
         else dispatch(setModalVisible({modal: MODALS.SHORTCUT_MODALS.NOTES}));
         closeNotebookPanel();
         break;
@@ -571,12 +560,12 @@ const Home = () => {
     return (
       <StatusDialogBox
         dialogTitle={'Status Info'}
-        style={sharedDialogStyles.dialogWarning}
+        style={commonStyles.dialogWarning}
         visible={isInfoMessagesModalVisible}
         // onTouchOutside={() => dispatch(setInfoMessagesModalVisible(false))}
       >
         <View style={{margin: 15}}>
-          <Text style={sharedDialogStyles.dialogStatusMessageText}>{statusMessages.join('\n')}</Text>
+          <Text style={commonStyles.dialogStatusMessageText}>{statusMessages.join('\n')}</Text>
         </View>
         <Button
           title={'OK'}
@@ -591,10 +580,10 @@ const Home = () => {
     return (
       <StatusDialogBox
         dialogTitle={'Error...'}
-        style={sharedDialogStyles.dialogWarning}
+        style={commonStyles.dialogWarning}
         visible={isErrorMessagesModalVisible}
       >
-        <Text style={sharedDialogStyles.dialogStatusMessageText}>{statusMessages.join('\n')}</Text>
+        <Text style={commonStyles.dialogStatusMessageText}>{statusMessages.join('\n')}</Text>
         <Button
           title={'OK'}
           type={'clear'}
@@ -653,14 +642,18 @@ const Home = () => {
 
   const renderSidePanelView = () => {
     if (deviceDimensions.width < 600) {
-      return <Animated.View
-        style={[sidePanelStyles.sidePanelContainerPhones, animateMainMenuSidePanel]}>
-        {renderSidePanelContent()}
-      </Animated.View>;
+      return (
+        <Animated.View
+          style={[sidePanelStyles.sidePanelContainerPhones, animateMainMenuSidePanel]}>
+          {renderSidePanelContent()}
+        </Animated.View>
+      );
     }
-    return <Animated.View style={[sidePanelStyles.sidePanelContainer, animateMainMenuSidePanel]}>
-      {renderSidePanelContent()}
-    </Animated.View>;
+    return (
+      <Animated.View style={[sidePanelStyles.sidePanelContainer, animateMainMenuSidePanel]}>
+        {renderSidePanelContent()}
+      </Animated.View>
+    );
   };
 
   const renderSidePanelContent = () => {
@@ -680,15 +673,14 @@ const Home = () => {
     return (
       <StatusDialogBox
         dialogTitle={'Status'}
-        style={sharedDialogStyles.dialogTitleSuccess}
+        style={commonStyles.dialogTitleSuccess}
         visible={isStatusMessagesModalVisible}
       >
         <View style={{minHeight: 100}}>
           <View style={{paddingTop: 15}}>
             <Text style={{textAlign: 'center'}}>{statusMessages.join('\n')}</Text>
             <View style={{paddingTop: 20}}>
-              {isModalLoading
-                ? (
+              {isModalLoading ? (
                   <DotIndicator
                     color={'darkgrey'}
                     count={4}
@@ -998,8 +990,8 @@ const Home = () => {
       {isHomeLoading && <LoadingSpinner/>}
       {notebookPanel}
       {MainMenu}
-      {isOnline && currentBasemap && !urlConditions.some(
-        el => currentBasemap.url[0].includes(el)) && renderOfflineMapViewLabel()}
+      {isOnline && currentBasemap
+      && !urlConditions.some(el => currentBasemap.url[0].includes(el)) && renderOfflineMapViewLabel()}
       {renderSaveAndCancelDrawButtons()}
       {isMainMenuPanelVisible && toggleSidePanel()}
       {renderFloatingViews()}

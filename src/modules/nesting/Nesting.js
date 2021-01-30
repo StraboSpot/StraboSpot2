@@ -16,6 +16,8 @@ import {useSpotsHook} from '../spots';
 import {setSelectedSpot} from '../spots/spots.slice';
 import {useTagsHook} from '../tags';
 import useNestingHook from './useNesting';
+import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
+import commonStyles from '../../shared/common.styles';
 
 const Nesting = (props) => {
   const dispatch = useDispatch();
@@ -51,7 +53,7 @@ const Nesting = (props) => {
           return (
             <Avatar
               source={useSpots.getSpotDataIconSource(key)}
-              placeholderStyle={{ backgroundColor: 'transparent' }}
+              placeholderStyle={{backgroundColor: 'transparent'}}
               size={20}
             />
           );
@@ -85,13 +87,13 @@ const Nesting = (props) => {
       <ListItem
         key={spot.properties.id}
         onPress={() => goToSpotNesting(spot)}
-        containerStyle={{padding: 5, paddingLeft: 10}}
+        containerStyle={commonStyles.listItem}
       >
         <Avatar source={useSpots.getSpotGemometryIconSource(spot)}
                 placeholderStyle={{backgroundColor: 'transparent'}}
                 size={20}/>
         <ListItem.Content>
-          <ListItem.Title>{spot.properties.name}</ListItem.Title>
+          <ListItem.Title style={commonStyles.listItemTitle}>{spot.properties.name}</ListItem.Title>
           <ListItem.Subtitle>[{numSubspots} subspot{numSubspots !== 1 && 's'}]</ListItem.Subtitle>
         </ListItem.Content>
         {renderDataIcons(spot)}
@@ -177,6 +179,7 @@ const Nesting = (props) => {
         keyExtractor={(item) => item.toString()}
         data={group}
         renderItem={({item}) => renderName(item)}
+        ItemSeparatorComponent={FlatListItemSeparator}
       />
     );
   };

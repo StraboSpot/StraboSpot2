@@ -6,7 +6,6 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import ColorPickerModal from '../../shared/ColorPickerModal';
 import {isEmpty} from '../../shared/Helpers';
-import * as themes from '../../shared/styles.constants';
 import {SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import SidePanelHeader from '../main-menu-panel/sidePanel/SidePanelHeader';
@@ -56,9 +55,7 @@ const TagDetailSidePanel = (props) => {
             props.openNotebookPanel();
           }}
           addRemoveSpots={() => {
-            dispatch(setSidePanelVisible(
-              {bool: true, view: SIDE_PANEL_VIEWS.TAG_ADD_REMOVE_SPOTS},
-            ));
+            dispatch(setSidePanelVisible({bool: true, view: SIDE_PANEL_VIEWS.TAG_ADD_REMOVE_SPOTS}));
           }}
           setIsDetailModalVisible={() => setIsDetailModalVisible(true)}
         />

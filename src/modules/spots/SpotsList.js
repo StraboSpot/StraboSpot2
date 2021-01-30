@@ -1,11 +1,13 @@
 import React from 'react';
-import {FlatList, Text, View} from 'react-native';
+import {FlatList, View} from 'react-native';
 
 import {Avatar, ListItem} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
+import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
-import attributesStyles from '../main-menu-panel/attributes.styles';
+import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
+import ListEmptyText from '../../shared/ui/ListEmptyText';
 import {SORTED_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import SortingButtons from '../main-menu-panel/SortingButtons';
 import {useTagsHook} from '../tags';
@@ -20,11 +22,7 @@ const SpotsList = (props) => {
   const spots = useSelector(state => state.spot.spots);
 
   const renderNoSpotsText = () => {
-    return (
-      <View style={attributesStyles.textContainer}>
-        <Text style={attributesStyles.text}>No Spots in Active Datasets</Text>
-      </View>
-    );
+    return <ListEmptyText text={'No Spots in Active Datasets'}/>;
   };
 
   const renderSpot = (spot) => {
@@ -32,14 +30,16 @@ const SpotsList = (props) => {
     const tagsString = tags.map(tag => tag.name).sort().join(', ');
     return (
       <ListItem
+        containerStyle={commonStyles.listItem}
         key={spot.properties.id}
         onPress={() => props.openSpotInNotebook(spot)}
       >
         <Avatar source={useSpots.getSpotGemometryIconSource(spot)}
                 placeholderStyle={{backgroundColor: 'transparent'}}
-                size={20}/>
+                size={20}
+        />
         <ListItem.Content>
-          <ListItem.Title>{spot.properties.name}</ListItem.Title>
+          <ListItem.Title style={commonStyles.listItemTitle}>{spot.properties.name}</ListItem.Title>
           {!isEmpty(tagsString) && <ListItem.Subtitle>{tagsString}</ListItem.Subtitle>}
         </ListItem.Content>
         {renderSpotDataIcons(spot)}
@@ -78,23 +78,18 @@ const SpotsList = (props) => {
       if (isEmpty(sortedSpots)) noSpotsText = 'No recently viewed Spots';
     }
     return (
-      <React.Fragment>
+      <View style={{flex: 1}}>
+        <SortingButtons/>
         <View style={{flex: 1}}>
-          <SortingButtons/>
-          <View style={attributesStyles.spotListContainer}>
-            {isEmpty(sortedSpots)
-              ? <Text style={{padding: 10}}>{noSpotsText}</Text>
-              : (
-                <FlatList
-                  keyExtractor={(spot) => spot.properties.id.toString()}
-                  data={sortedSpots}
-                  renderItem={({item}) => renderSpot(item)}
-                />
-              )
-            }
-          </View>
+          <FlatList
+            keyExtractor={(spot) => spot.properties.id.toString()}
+            data={sortedSpots}
+            renderItem={({item}) => renderSpot(item)}
+            ItemSeparatorComponent={FlatListItemSeparator}
+            ListEmptyComponent={<ListEmptyText text={noSpotsText}/>}
+          />
         </View>
-      </React.Fragment>
+      </View>
     );
   };
 

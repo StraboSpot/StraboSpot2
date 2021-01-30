@@ -4,16 +4,16 @@ import {FlatList, Text, View} from 'react-native';
 import {ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import AddButton from '../../shared/ui/AddButton';
 import SaveButton from '../../shared/ui/ButtonRounded';
-import DefaultCheckBox from '../../shared/ui/Checkbox';
+import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import modalStyle from '../../shared/ui/modal/modal.style';
 import {MODALS} from '../home/home.constants';
 import useMapsHook from '../maps/useMaps';
 import {addedTagToSelectedSpot} from '../project/projects.slice';
 import {TagDetailModal, useTagsHook} from '../tags';
-import tagStyles from './tags.styles';
 
 const TagsModal = () => {
   const dispatch = useDispatch();
@@ -43,18 +43,10 @@ const TagsModal = () => {
   const save = async () => {
     if (modalVisible !== (MODALS.SHORTCUT_MODALS.ADD_TAGS_TO_SPOTS)) {
       useMaps.setPointAtCurrentLocation().then(spot => {
-        checkedTagsTemp.map(tag => {
-          useTags.addRemoveTagFromSpot(tag, spot);
-        });
+        checkedTagsTemp.map(tag => useTags.addRemoveTagFromSpot(tag, spot));
       });
     }
-    else {
-      checkedTagsTemp.map(tag => {
-        selectedSpotsForTagging.map(spot => {
-          useTags.addTagToSpot(tag, spot);
-        });
-      });
-    }
+    else checkedTagsTemp.map(tag => selectedSpotsForTagging.map(spot => useTags.addTagToSpot(tag, spot)));
   };
 
   const renderSpotTagsList = () => {
@@ -63,28 +55,33 @@ const TagsModal = () => {
       <FlatList
         keyExtractor={item => item.id.toString()}
         data={tagsCopy}  // alphabetize by name
-        renderItem={({item, index}) => renderTagItem(item, index)}
+        renderItem={({item}) => renderTagItem(item)}
+        ItemSeparatorComponent={FlatListItemSeparator}
       />
     );
   };
 
-  const renderTagItem = (tag, i) => {
+  const renderTagItem = (tag) => {
     return (
-      <ListItem key={tag.id} bottomDivider={i < tags.length - 1}>
+      <ListItem
+        containerStyle={commonStyles.listItem}
+        key={tag.id}
+      >
         <ListItem.Content>
-          <ListItem.Title style={{fontWeight: 'bold'}}>{tag.name}</ListItem.Title>
+          <ListItem.Title style={commonStyles.listItemTitle}>{tag.name}</ListItem.Title>
         </ListItem.Content>
         <ListItem.Content>
-          <ListItem.Title style={tagStyles.listText}>{useTags.getLabel(tag.type)}</ListItem.Title>
+          <ListItem.Title style={commonStyles.listItemTitle}>{useTags.getLabel(tag.type)}</ListItem.Title>
         </ListItem.Content>
-        <DefaultCheckBox
-          onPress={() => (modalVisible !== MODALS.SHORTCUT_MODALS.TAGS) && (modalVisible !== MODALS.SHORTCUT_MODALS.ADD_TAGS_TO_SPOTS)
-            ? useTags.addRemoveTagFromSpot(tag)
-            : checkTags(tag)}
-          checkedColor={'grey'}
-          checked={(modalVisible && modalVisible !== MODALS.SHORTCUT_MODALS.TAGS) && (modalVisible !== MODALS.SHORTCUT_MODALS.ADD_TAGS_TO_SPOTS)
+        <ListItem.CheckBox
+          checked={(modalVisible && modalVisible !== MODALS.SHORTCUT_MODALS.TAGS
+            && modalVisible !== MODALS.SHORTCUT_MODALS.ADD_TAGS_TO_SPOTS)
             ? tag && tag.spots && tag.spots.includes(selectedSpot.properties.id)
             : checkedTagsTemp.map(checkedTag => checkedTag.id).includes(tag.id)}
+          onPress={() => (modalVisible !== MODALS.SHORTCUT_MODALS.TAGS
+            && modalVisible !== MODALS.SHORTCUT_MODALS.ADD_TAGS_TO_SPOTS)
+            ? useTags.addRemoveTagFromSpot(tag)
+            : checkTags(tag)}
         />
       </ListItem>
     );
@@ -100,8 +97,7 @@ const TagsModal = () => {
       {/*  chevron*/}
       {/*/>*/}
       <View style={modalStyle.textContainer}>
-        {tags && !isEmpty(tags)
-          ? <Text style={modalStyle.textStyle}>Check all tags that apply</Text>
+        {tags && !isEmpty(tags) ? <Text style={modalStyle.textStyle}>Check all tags that apply</Text>
           : <Text style={modalStyle.textStyle}>No Tags</Text>}
       </View>
       <View style={{maxHeight: 300}}>
@@ -111,22 +107,24 @@ const TagsModal = () => {
             <SaveButton
               buttonStyle={{backgroundColor: 'red'}}
               title={'Save tag(s)'}
-              onPress={() => save()} disabled={isEmpty(checkedTagsTemp)}
+              onPress={() => save()}
+              disabled={isEmpty(checkedTagsTemp)}
             />
           )
-          : modalVisible === MODALS.SHORTCUT_MODALS.TAGS && <View style={modalStyle.textContainer}>
-          <Text style={{padding: 10, textAlign: 'center'}}>Please add a tag.</Text>
-          <AddButton
-            title={'Add New Tag'}
-            type={'outline'}
-            onPress={() => setIsDetailModalVisible(true)}
-          />
-          <TagDetailModal
-            isVisible={isDetailModalVisible}
-            closeModal={closeTagDetailModal}
-          />
-        </View>}
-
+          : modalVisible === MODALS.SHORTCUT_MODALS.TAGS && (
+          <View style={modalStyle.textContainer}>
+            <Text style={{padding: 10, textAlign: 'center'}}>Please add a tag.</Text>
+            <AddButton
+              title={'Add New Tag'}
+              type={'outline'}
+              onPress={() => setIsDetailModalVisible(true)}
+            />
+            <TagDetailModal
+              isVisible={isDetailModalVisible}
+              closeModal={closeTagDetailModal}
+            />
+          </View>
+        )}
       </View>
     </React.Fragment>
   );

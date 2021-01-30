@@ -5,6 +5,7 @@ import {Formik} from 'formik';
 import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import SectionDivider from '../../shared/ui/SectionDivider';
@@ -67,16 +68,17 @@ const Overview = props => {
       <FlatList
         keyExtractor={(section) => section.id.toString()}
         data={SECTIONS}
-        renderItem={({item}) => renderSections(item)}/>
+        renderItem={({item}) => renderSections(item)}
+      />
     );
   };
 
   const renderSections = (section) => {
     return (
-      <View style={notebookStyles.sectionContainer}>
+      <React.Fragment>
         <SectionDivider dividerText={section.title}/>
         {section.content}
-      </View>
+      </React.Fragment>
     );
   };
 

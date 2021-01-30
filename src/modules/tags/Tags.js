@@ -7,6 +7,8 @@ import {useDispatch, useSelector} from 'react-redux';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import AddButton from '../../shared/ui/AddButton';
+import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
+import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
@@ -38,19 +40,15 @@ const Tags = () => {
   ];
 
   const sectionContents = (type) => {
-    let filteredTags = {};
-    filteredTags = tags.filter(tag => tag.type === type);
-    if (isEmpty(filteredTags)) {
-      return (
-        <View style={{alignContent: 'center', justifyContent: 'center'}}>
-          <Text style={commonStyles.noValueText}>No Tags</Text>
-        </View>
-      );
-    }
+    const filteredTags = tags.filter(tag => tag.type === type);
     return (
-      <FlatList keyExtractor={(item) => item.id.toString()}
-                data={filteredTags}
-                renderItem={({item}) => renderTag(item)}/>
+      <FlatList
+        keyExtractor={(item) => item.id.toString()}
+        data={filteredTags}
+        renderItem={({item}) => renderTag(item)}
+        ItemSeparatorComponent={FlatListItemSeparator}
+        ListEmptyComponent={<ListEmptyText text='No Tags'/>}
+      />
     );
   };
 
@@ -60,15 +58,12 @@ const Tags = () => {
         <ListItem
           containerStyle={commonStyles.listItem}
           onPress={() => {
-            dispatch(setSidePanelVisible(
-              {view: SIDE_PANEL_VIEWS.TAG_DETAIL, bool: true},
-            ));
+            dispatch(setSidePanelVisible({view: SIDE_PANEL_VIEWS.TAG_DETAIL, bool: true}));
             dispatch(setSelectedTag(tag));
-          }
-          }
+          }}
         >
           <ListItem.Content>
-            <ListItem.Title>{tag.name}</ListItem.Title>
+            <ListItem.Title style={commonStyles.listItemTitle}>{tag.name}</ListItem.Title>
           </ListItem.Content>
           <ListItem.Content right>
             <ListItem.Title>{useTags.renderSpotCount(tag)}</ListItem.Title>
@@ -87,18 +82,19 @@ const Tags = () => {
     });
     console.log('tagsInMapExtent', tagsInMapExtent);
 
-    if (!isEmpty(tagsInMapExtent)) {
-      return (
-        <FlatList keyExtractor={(item) => item.id.toString()}
-                  data={tagsInMapExtent}
-                  renderItem={({item}) => renderTag(item)}/>
-      );
-    }
-    else return <Text style={{padding: 10}}>No Spots with tags in current map extent</Text>;
+    return (
+      <FlatList
+        keyExtractor={(item) => item.id.toString()}
+        data={tagsInMapExtent}
+        renderItem={({item}) => renderTag(item)}
+        ItemSeparatorComponent={FlatListItemSeparator}
+        ListEmptyComponent={<ListEmptyText text='No Spots with tags in current map extent'/>}
+      />
+    );
   };
 
   const renderTagsListByRecentlyUsed = () => {
-    return <Text style={{padding: 10}}>This has not been implemented yet</Text>;
+    return <ListEmptyText text={'This has not been implemented yet'}/>;
   };
 
   const renderTagsListByType = () => {
@@ -106,7 +102,8 @@ const Tags = () => {
       <FlatList
         keyExtractor={(section) => section.id.toString()}
         data={sections}
-        renderItem={({item}) => renderSections(item)}/>
+        renderItem={({item}) => renderSections(item)}
+      />
     );
   };
 
@@ -145,9 +142,7 @@ const Tags = () => {
           {selectedIndex === 2 && renderTagsListByRecentlyUsed()}
         </View>
       )}
-      {isEmpty(tags) && (
-        <Text style={{padding: 10, textAlign: 'center'}}>No tags have been added to this project yet</Text>
-      )}
+      {isEmpty(tags) && <ListEmptyText text={'No tags have been added to this project yet'}/>}
       <TagDetailModal
         isVisible={isDetailModalVisibile}
         closeModal={() => setIsDetailModalVisible(false)}

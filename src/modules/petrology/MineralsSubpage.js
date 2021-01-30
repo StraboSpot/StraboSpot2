@@ -11,6 +11,9 @@ import MineralReactionDetail from './MineralReactionDetail';
 import MineralsByRockClass from './MineralsByRockClass';
 import MineralsGlossary from './MineralsGlossary';
 import {MINERAL_VIEW} from './petrology.constants';
+import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
+import ListEmptyText from '../../shared/ui/ListEmptyText';
+import commonStyles from '../../shared/common.styles';
 
 const MineralsSubpage = (props) => {
   const spot = useSelector(state => state.spot.selectedSpot);
@@ -56,14 +59,14 @@ const MineralsSubpage = (props) => {
       return key === 'id' ? acc : (acc === '' ? '' : acc + '\n') + getLabel(key) + ': ' + getLabel(value);
     }, '');
     return (
-      <ListItem key={mineral.id}
-                onPress={() => editMineral(mineral)}
+      <ListItem
+        containerStyle={commonStyles.listItem}
+        key={mineral.id}
+        onPress={() => editMineral(mineral)}
       >
         <ListItem.Content style={{overflow: 'hidden'}}>
-          <ListItem.Title>{mineralTitle}</ListItem.Title>
-          {mineralFieldsText !== '' && (
-            <ListItem.Subtitle style={{color: themes.PRIMARY_ITEM_TEXT_COLOR}}>{mineralFieldsText}</ListItem.Subtitle>
-          )}
+          <ListItem.Title style={commonStyles.listItemTitle}>{mineralTitle}</ListItem.Title>
+          {mineralFieldsText !== '' && (<ListItem.Subtitle>{mineralFieldsText}</ListItem.Subtitle>)}
         </ListItem.Content>
         <ListItem.Chevron/>
       </ListItem>
@@ -89,20 +92,14 @@ const MineralsSubpage = (props) => {
             type={'clear'}
             onPress={() => setMineralView(MINERAL_VIEW.GLOSSARY)}
           />
-          {(!spot.properties.pet || !spot.properties.pet.minerals) && (
-            <View style={{padding: 10}}>
-              <Text>There are no minerals at this Spot.</Text>
-            </View>
-          )}
-          {spot.properties.pet && spot.properties.pet.minerals && (
-            <FlatList
-              data={spot.properties.pet.minerals.slice().sort(
-                (a, b) => getMineralTitle(a).localeCompare(getMineralTitle(b)))}
-              renderItem={item => renderMineral(item.item)}
-              keyExtractor={(item) => item.id.toString()}
-              ItemSeparatorComponent={() => <View style={{borderTopWidth: 1}}/>}
-            />
-          )}
+          <FlatList
+            data={spot.properties.pet && spot.properties.pet.minerals && spot.properties.pet.minerals.slice().sort(
+              (a, b) => getMineralTitle(a).localeCompare(getMineralTitle(b)))}
+            renderItem={item => renderMineral(item.item)}
+            keyExtractor={(item) => item.id.toString()}
+            ItemSeparatorComponent={FlatListItemSeparator}
+            ListEmptyComponent={<ListEmptyText text={'There are no minerals at this Spot.'}/>}
+          />
         </View>
       )}
       {mineralView === MINERAL_VIEW.DETAIL && (

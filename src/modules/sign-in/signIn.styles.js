@@ -44,9 +44,6 @@ const styles = StyleSheet.create({
     paddingRight: 50,
     paddingLeft: 50,
   },
-  icon: {
-    paddingRight: 15,
-  },
 });
 
 export default styles;

@@ -1,23 +1,18 @@
 import React, {useEffect, useState} from 'react';
-import {
-  Alert,
-  Animated,
-  Keyboard,
-  FlatList,
-  Platform,
-  Switch,
-  TextInput,
-  View,
-} from 'react-native';
+import {Alert, Animated, Keyboard, FlatList, Platform, Switch, TextInput, View, Text} from 'react-native';
 
-import {Button, Icon, Input, ListItem} from 'react-native-elements';
+import {Button, Icon, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import commonStyles from '../../../shared/common.styles';
 import {isEmpty} from '../../../shared/Helpers';
 import * as Helpers from '../../../shared/Helpers';
-import {BLUE, DARKGREY} from '../../../shared/styles.constants';
-import ButtonRounded from '../../../shared/ui/ButtonRounded';
+import {BLUE, DARKGREY, WARNING_COLOR} from '../../../shared/styles.constants';
+import FlatListItemSeparator from '../../../shared/ui/FlatListItemSeparator';
+import SectionDivider from '../../../shared/ui/SectionDivider';
 import Slider from '../../../shared/ui/Slider';
+import Spacer from '../../../shared/ui/Spacer';
+import {formStyles} from '../../form';
 import {
   addedStatusMessage,
   clearedStatusMessages,
@@ -27,13 +22,10 @@ import {
   setLoadingStatus,
 } from '../../home/home.slice';
 import {setMenuSelectionPage, setSidePanelVisible} from '../../main-menu-panel/mainMenuPanel.slice';
-import Divider from '../../main-menu-panel/MainMenuPanelDivider';
-import sidePanelStyles from '../../main-menu-panel/sidePanel.styles';
 import SidePanelHeader from '../../main-menu-panel/sidePanel/SidePanelHeader';
 import {CUSTOM_MAP_TYPES} from '../maps.constants';
-import {addedCustomMap, selectedCustomMapToEdit} from '../maps.slice';
+import {selectedCustomMapToEdit} from '../maps.slice';
 import useMapHook from '../useMaps';
-import styles from './customMaps.styles';
 
 const {State: TextInputState} = TextInput;
 
@@ -130,102 +122,102 @@ const AddCustomMaps = () => {
     setEditableCustomMapData(e => ({...e, source: source}));
   };
 
-  const renderCustomMapName = (item, i) => {
+  const renderCustomMapName = (item) => {
     const radioSelected = <Icon name={'radiobox-marked'} type={'material-community'} color={BLUE}/>;
     const radioUnslected = <Icon name={'radiobox-blank'} type={'material-community'} color={DARKGREY}/>;
     return (
-      <ListItem
-        // containerStyle={styles.list}
-        bottomDivider={i < Object.values(CUSTOM_MAP_TYPES).length - 1}
-      >
-        <ListItem.Content style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-          <ListItem.Title>{item.title}</ListItem.Title>
-          <ListItem.CheckBox
-            checked={editableCustomMapData && item.source === editableCustomMapData.source}
-            checkedIcon={radioSelected}
-            uncheckedIcon={radioUnslected}
-            onPress={() => selectMap(item.source)}
-          />
+      <ListItem containerStyle={commonStyles.listItem}>
+        <ListItem.Content>
+          <ListItem.Title style={commonStyles.listItemTitle}>{item.title}</ListItem.Title>
         </ListItem.Content>
+        <ListItem.CheckBox
+          checked={editableCustomMapData && item.source === editableCustomMapData.source}
+          checkedIcon={radioSelected}
+          uncheckedIcon={radioUnslected}
+          onPress={() => selectMap(item.source)}
+        />
       </ListItem>
     );
   };
 
   const renderMapDetails = () => {
-    switch (editableCustomMapData && editableCustomMapData.source) {
-      case 'mapbox_styles':
-        return (
-          <View style={{padding: 0}}>
-            <Input
-              value={editableCustomMapData.id}
-              inputContainerStyle={sidePanelStyles.textInputNameContainer}
-              onChangeText={text => setEditableCustomMapData(e => ({...e, id: text}))}
-              keyboardType={MBKeyboardType}
-              placeholderTextColor={'black'}
-              placeholder={'Styles URL'}/>
-            <Input
-              inputContainerStyle={sidePanelStyles.textInputNameContainer}
-              placeholderTextColor={'black'}
-              onChangeText={text => setEditableCustomMapData(e => ({...e, accessToken: text}))}
-              defaultValue={editableCustomMapData.accessToken}
-              placeholder={'Access token'}/>
-          </View>
-        );
-      case 'map_warper':
-        return (
-          <View>
-            <Input
-              keyboardType={MWKeyboardType}
-              defaultValue={editableCustomMapData.id}
-              errorMessage={editableCustomMapData && isEmpty(editableCustomMapData.id) && 'Map id is required'}
-              onChangeText={text => setEditableCustomMapData(e => ({...e, id: text}))}
-              inputContainerStyle={sidePanelStyles.textInputNameContainer}
-              placeholder={'Map ID'}
-              placeholderTextColor={'black'}
-            />
-          </View>
-        );
-      case 'strabospot_mymaps':
-        return (
-          <View>
-            <Input
-              inputContainerStyle={sidePanelStyles.textInputNameContainer}
-              placeholder={'Strabo Map ID'}
-              placeholderTextColor={'black'}
-              defaultValue={editableCustomMapData.id}
-              onChangeText={text => setEditableCustomMapData(e => ({...e, id: text}))}
-            />
-            {/*<Input inputContainerStyle={{borderBottomWidth: 0}}*/}
-            {/*       placeholder={'Access token'}/>*/}
-          </View>
-        );
-    }
+    return (
+      <React.Fragment>
+        <SectionDivider dividerText={'Map Details'}/>
+        <ListItem containerStyle={commonStyles.listItem}>
+          <ListItem.Content>
+            {editableCustomMapData && editableCustomMapData.source === 'mapbox_styles' && (
+              <React.Fragment>
+                <TextInput
+                  value={editableCustomMapData.id}
+                  onChangeText={text => setEditableCustomMapData(e => ({...e, id: text}))}
+                  keyboardType={MBKeyboardType}
+                  placeholder={'Styles URL'}
+                  style={formStyles.fieldValue}
+                />
+                <TextInput
+                  onChangeText={text => setEditableCustomMapData(e => ({...e, accessToken: text}))}
+                  defaultValue={editableCustomMapData.accessToken}
+                  placeholder={'Access token'}
+                  style={formStyles.fieldValue}
+                />
+              </React.Fragment>
+            )}
+            {editableCustomMapData && editableCustomMapData.source === 'map_warper' && (
+              <React.Fragment>
+                <TextInput
+                  keyboardType={MWKeyboardType}
+                  defaultValue={editableCustomMapData.id}
+                  onChangeText={text => setEditableCustomMapData(e => ({...e, id: text}))}
+                  // inputContainerStyle={sidePanelStyles.textInputNameContainer}
+                  placeholder={'Map ID'}
+                  style={formStyles.fieldValue}
+                />
+                {editableCustomMapData && isEmpty(editableCustomMapData.id)
+                && <Text style={formStyles.fieldError}>Map ID is required</Text>}
+              </React.Fragment>
+            )}
+            {editableCustomMapData && editableCustomMapData.source === 'strabospot_mymaps' && (
+              <TextInput
+                placeholder={'Strabo Map ID'}
+                defaultValue={editableCustomMapData.id}
+                onChangeText={text => setEditableCustomMapData(e => ({...e, id: text}))}
+                style={formStyles.fieldValue}
+              />
+            )}
+          </ListItem.Content>
+        </ListItem>
+      </React.Fragment>
+    );
   };
 
   const renderMapTypeList = () => (
-    <React.Fragment>
-      <View>
-        <FlatList
-          keyExtractor={item => item.source}
-          scrollEnabled={false}
-          data={CUSTOM_MAP_TYPES}
-          renderItem={({item, index}) => renderCustomMapName(item, index)}
-        />
-      </View>
-    </React.Fragment>
+    <View>
+      <SectionDivider dividerText={'Map Type'}/>
+      <FlatList
+        keyExtractor={item => item.source}
+        data={CUSTOM_MAP_TYPES}
+        renderItem={({item, index}) => renderCustomMapName(item, index)}
+        ItemSeparatorComponent={FlatListItemSeparator}
+      />
+    </View>
   );
 
   const renderTitle = () => {
     return (
       <React.Fragment>
-        <Input
-          containerStyle={sidePanelStyles.infoInputText}
-          inputContainerStyle={sidePanelStyles.textInputNameContainer}
-          errorMessage={editableCustomMapData && isEmpty(editableCustomMapData.title) && 'Title is required'}
-          style={sidePanelStyles.infoInputText}
-          defaultValue={editableCustomMapData && editableCustomMapData.title}
-          onChangeText={text => setEditableCustomMapData({...editableCustomMapData, title: text})}
-        />
+        <SectionDivider dividerText={'Custom Map Title'}/>
+        <ListItem containerStyle={commonStyles.listItem}>
+          <ListItem.Content>
+            <TextInput
+              style={formStyles.fieldValue}
+              defaultValue={editableCustomMapData && editableCustomMapData.title}
+              onChangeText={text => setEditableCustomMapData({...editableCustomMapData, title: text})}
+            />
+            {editableCustomMapData && isEmpty(editableCustomMapData.title)
+            && <Text style={formStyles.fieldError}>Title is required</Text>}
+          </ListItem.Content>
+        </ListItem>
       </React.Fragment>
     );
   };
@@ -233,16 +225,33 @@ const AddCustomMaps = () => {
   const renderOverlay = () => {
     return (
       <React.Fragment>
-        <ListItem containerStyle={styles.list}>
-          <ListItem.Content style={styles.listItemContentContainer}>
-            <ListItem.Title style={{textAlign: 'justify', margin: 0, paddingRight: 30}}>Display as
-              overlay</ListItem.Title>
-            <Switch
-              value={editableCustomMapData && editableCustomMapData.overlay}
-              onValueChange={val => setEditableCustomMapData(e => ({...e, overlay: val}))}
-            />
+        <SectionDivider dividerText={'Overlay Settings'}/>
+        <ListItem containerStyle={commonStyles.listItem}>
+          <ListItem.Content>
+            <ListItem.Title style={commonStyles.listItemTitle}>Display as overlay</ListItem.Title>
           </ListItem.Content>
+          <Switch
+            value={editableCustomMapData && editableCustomMapData.overlay}
+            onValueChange={val => setEditableCustomMapData(e => ({...e, overlay: val}))}
+          />
         </ListItem>
+        {editableCustomMapData && editableCustomMapData.overlay && (
+          <ListItem containerStyle={commonStyles.listItem}>
+            <ListItem.Content>
+              <ListItem.Title style={commonStyles.listItemTitle}>Opacity</ListItem.Title>
+              <ListItem.Subtitle style={{paddingLeft: 10}}>{sliderValuePercent}%</ListItem.Subtitle>
+            </ListItem.Content>
+            <View style={{flex: 2}}>
+              <Slider
+                value={editableCustomMapData && editableCustomMapData.opacity}
+                onValueChange={(val) => setEditableCustomMapData(e => ({...e, opacity: val}))}
+                maximumValue={1}
+                minimumValue={0.05}
+                step={0.05}
+              />
+            </View>
+          </ListItem>
+        )}
       </React.Fragment>
     );
   };
@@ -260,66 +269,38 @@ const AddCustomMaps = () => {
     );
   };
   return (
-    <Animated.View style={[{flex: 1}, {transform: [{translateY: textInputAnimate}]}]}>
-      {renderSidePanelHeader()}
-      <View style={[sidePanelStyles.sectionContainer, {flex: 2, paddingTop: 10}]}>
-        <Divider sectionText={'Custom Map Title'}/>
+    <Animated.View style={[{flex: 1, justifyContent: 'space-between'}, {transform: [{translateY: textInputAnimate}]}]}>
+      <View>
+        {renderSidePanelHeader()}
         {renderTitle()}
-      </View>
-      <View style={[sidePanelStyles.sectionContainer, {flex: 4}]}>
-        <Divider sectionText={'Overlay Settings'}/>
-        <View style={styles.sectionsContainer}>
-          {renderOverlay()}
-          {editableCustomMapData && editableCustomMapData.overlay && (
-            <ListItem containerStyle={styles.list}>
-              <ListItem.Content style={{}}>
-                <ListItem.Title>Opacity</ListItem.Title>
-                <ListItem.Subtitle style={{paddingLeft: 10}}>{sliderValuePercent}%</ListItem.Subtitle>
-              </ListItem.Content>
-              <View style={{flex: 2}}>
-                <Slider
-                  value={editableCustomMapData && editableCustomMapData.opacity}
-                  onValueChange={(val) => setEditableCustomMapData(e => ({...e, opacity: val}))}
-                  maximumValue={1}
-                  minimumValue={0.05}
-                  step={0.05}
-                />
-              </View>
-            </ListItem>
-          )}
-        </View>
-      </View>
-      <View style={[sidePanelStyles.sectionContainer, {flex: 5}]}>
-        <Divider sectionText={'Map Type'}/>
-        <View style={styles.sectionsContainer}>
-          {renderMapTypeList()}
-        </View>
+        {renderOverlay()}
+        {renderMapTypeList()}
         <Button
           titleStyle={{fontSize: 14}}
           type={'clear'}
           title={'More information'}
           onPress={() => console.log('More information')}
         />
-      </View>
-      <View style={[sidePanelStyles.sectionContainer, {flex: 3}]}>
-        <Divider sectionText={'Map Details'}/>
         {renderMapDetails()}
-      </View>
-      <View style={[sidePanelStyles.sectionContainer, {flex: 3}]}>
-        <ButtonRounded
+        <Spacer/>
+        <Button
           title={!isEmpty(customMapToEdit) ? 'Update' : 'Save'}
+          titleStyle={commonStyles.standardButtonText}
+          type={'outline'}
           disabled={editableCustomMapData && (isEmpty(editableCustomMapData.title) || isEmpty(
             editableCustomMapData.id))}
           onPress={() => addMap()}
         />
-        <ButtonRounded
+      </View>
+      <View>
+        <Button
           title={'Delete Map'}
-          buttonStyle={{backgroundColor: 'red'}}
+          titleStyle={{...commonStyles.standardButtonText, color: WARNING_COLOR}}
+          type={'outline'}
           onPress={() => confirmDeleteMap()}
         />
       </View>
     </Animated.View>
-
   );
 };
 

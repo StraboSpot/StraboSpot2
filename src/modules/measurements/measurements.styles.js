@@ -6,22 +6,12 @@ const styles = StyleSheet.create({
   measurementsSectionDividerContainer: {
     flex: 1,
     flexDirection: 'row',
-    paddingTop: 20,
-    paddingBottom: 9,
-  },
-  measurementsSectionDividerWithButtonsContainer: {
-    // flex: 1,
-    flexDirection: 'row',
-    paddingTop: 20,
-  },
-  measurementsSectionDividerTextContainer: {
-    justifyContent: 'center',
+    alignItems: 'center',
   },
   measurementsSectionDividerButtonContainer: {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-end',
-    paddingRight: 10,
   },
   measurementsSectionDividerButtonText: {
     color: themes.PRIMARY_ACCENT_COLOR,
@@ -32,23 +22,15 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'flex-start',
   },
-  measurementDetailSwitchesContainer: {
-    height: 50,
-  },
   measurementDetailSwitches: {
     height: 40,
     borderRadius: 10,
     borderColor: themes.PRIMARY_ACCENT_COLOR,
   },
-  measurementsOverviewContainer: {
-    flex: 1,
-    width: 500,
-    padding: 10,
-  },
   basicText: {
     paddingLeft: 10,
     fontSize: themes.SMALL_TEXT_SIZE,
-    color: themes.SECONDARY_ITEM_TEXT_COLOR,
+    color: themes.PRIMARY_TEXT_COLOR,
   },
 });
 

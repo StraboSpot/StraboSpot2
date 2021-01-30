@@ -33,10 +33,10 @@ const styles = StyleSheet.create({
   sliderHeading: {
     fontWeight: 'bold',
     fontSize: themes.PRIMARY_TEXT_SIZE - 3,
-    color: themes.SECONDARY_ITEM_TEXT_COLOR,
+    color: themes.PRIMARY_TEXT_COLOR,
   },
   sliderText: {
-    color: themes.SECONDARY_ITEM_TEXT_COLOR,
+    color: themes.PRIMARY_TEXT_COLOR,
     fontSize: 16,
   },
   strikeAndDipLine: {

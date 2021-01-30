@@ -3,8 +3,8 @@ import {Button, Text, View} from 'react-native';
 
 import {useDispatch, useSelector} from 'react-redux';
 
-import commonStyles from '../../shared/common.styles';
 import {truncateText} from '../../shared/Helpers';
+import ListEmptyText from '../../shared/ui/ListEmptyText';
 import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import noteStyles from './notes.styles';
@@ -23,7 +23,7 @@ const SpotNotesOverview = props => {
           </View>
           <View style={{flex: 1, justifyContent: 'flex-start'}}/>
         </View>
-      ) : <Text style={commonStyles.noValueText}>No Notes</Text>}
+      ) : <ListEmptyText text={'No Notes'}/>}
       {savedNote && (
         <View style={noteStyles.editButton}>
           <Button

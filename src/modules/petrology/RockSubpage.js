@@ -105,8 +105,9 @@ const RockSubpage = (props) => {
           initialValues={{}}
         >
           <Field
-            component={(formProps) => SelectInputField(
-              {setFieldValue: formProps.form.setFieldValue, ...formProps.field, ...formProps})}
+            component={(formProps) => (
+              SelectInputField({setFieldValue: formProps.form.setFieldValue, ...formProps.field, ...formProps})
+            )}
             name={'spot_id_for_pet_copy'}
             key={'spot_id_for_pet_copy'}
             label={'Copy Petrology Ig/Met Data:'}
