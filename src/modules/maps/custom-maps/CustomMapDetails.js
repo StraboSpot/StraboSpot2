@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Alert, Animated, Keyboard, FlatList, Platform, Switch, TextInput, View, Text} from 'react-native';
+import {Alert, Animated, Keyboard, FlatList, Platform, Switch, TextInput, View, Text, SafeAreaView} from 'react-native';
 
 import {Button, Icon, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
@@ -268,38 +268,38 @@ const AddCustomMaps = () => {
       />
     );
   };
+
   return (
     <Animated.View style={[{flex: 1, justifyContent: 'space-between'}, {transform: [{translateY: textInputAnimate}]}]}>
-      <View>
-        {renderSidePanelHeader()}
-        {renderTitle()}
-        {renderOverlay()}
-        {renderMapTypeList()}
-        <Button
-          titleStyle={{fontSize: 14}}
-          type={'clear'}
-          title={'More information'}
-          onPress={() => console.log('More information')}
-        />
-        {renderMapDetails()}
-        <Spacer/>
-        <Button
-          title={!isEmpty(customMapToEdit) ? 'Update' : 'Save'}
-          titleStyle={commonStyles.standardButtonText}
-          type={'outline'}
-          disabled={editableCustomMapData && (isEmpty(editableCustomMapData.title) || isEmpty(
-            editableCustomMapData.id))}
-          onPress={() => addMap()}
-        />
-      </View>
-      <View>
-        <Button
-          title={'Delete Map'}
-          titleStyle={{...commonStyles.standardButtonText, color: WARNING_COLOR}}
-          type={'outline'}
-          onPress={() => confirmDeleteMap()}
-        />
-      </View>
+      {renderSidePanelHeader()}
+      {renderTitle()}
+      {renderOverlay()}
+      {renderMapTypeList()}
+      {/*<Button*/}
+      {/*  titleStyle={{fontSize: 14}}*/}
+      {/*  type={'clear'}*/}
+      {/*  title={'More information'}*/}
+      {/*  onPress={() => console.log('More information')}*/}
+      {/*/>*/}
+      {renderMapDetails()}
+        <View>
+          <Button
+            title={!isEmpty(customMapToEdit) ? 'Update' : 'Save'}
+            titleStyle={commonStyles.standardButtonText}
+            containerStyle={commonStyles.standardButtonContainer}
+            type={'clear'}
+            disabled={editableCustomMapData && (isEmpty(editableCustomMapData.title) || isEmpty(
+              editableCustomMapData.id))}
+            onPress={() => addMap()}
+          />
+          <Button
+            title={'Delete Map'}
+            titleStyle={{...commonStyles.standardButtonText, color: WARNING_COLOR}}
+            containerStyle={commonStyles.standardButtonContainer}
+            type={'clear'}
+            onPress={() => confirmDeleteMap()}
+          />
+        </View>
     </Animated.View>
   );
 };

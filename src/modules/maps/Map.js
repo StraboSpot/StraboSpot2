@@ -145,12 +145,12 @@ const Map = React.forwardRef((props, ref) => {
     const getCenter = async () => {
       const center = map && map.current ? await map.current.getCenter() : initialMapPropsMutable.centerCoordinate;
       const zoom = map && map.current ? await map.current.getZoom() : initialMapPropsMutable.zoom;
-      const latAndLng = await useOfflineMaps.getMapCenterTile(currentBasemap.id);
+      const latAndLng = !isEmpty(currentBasemap) && await useOfflineMaps.getMapCenterTile(currentBasemap.id);
       setMapPropsMutable(m => ({
         ...m,
         basemap: currentBasemap,
         centerCoordinate: isZoomToCenterOffline ? latAndLng : center,
-        zoom: zoom,
+        zoom: isZoomToCenterOffline ? 12 : zoom,
       }));
       setMapToggle(!mapToggle);
       setIsZoomToCenterOffline(false);

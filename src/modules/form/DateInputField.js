@@ -14,13 +14,17 @@ const DateInputField = ({
                           ...props
                         }) => {
   const [isDatePickerModalVisible, setIsDatePickerModalVisible] = useState(false);
-  const [date, setDate] = useState(value);
+  const [date, setDate] = useState(Date.parse(value) ? new Date(value) : new Date());
 
   let title = value && moment(value).format('MM/DD/YYYY');
 
   const changeDate = (event, selectedDate) => {
+    Platform.OS === 'ios' ? setDate(selectedDate) : saveDate(event, selectedDate);
+  };
+
+  const saveDate = (event, selectedDate) => {
     console.log('Change Date', name, event, selectedDate);
-    if (Platform.OS === 'ios') setDate(selectedDate);
+    if (Platform.OS === 'ios') selectedDate = selectedDate.toISOString();
     else {
       setIsDatePickerModalVisible(false);
       if (event.type === 'set' || event.type === 'neutralButtonPressed') {
@@ -42,12 +46,11 @@ const DateInputField = ({
   const renderDatePicker = () => {
     return (
       <View style={{width: '100%'}}>
-        {Platform.OS === 'ios' && <Text>Date</Text>}
         <DateTimePicker
           mode={'date'}
-          value={Date.parse(date) ? new Date(date) : new Date()}
-          onChange={(e, selectedDate) => changeDate(e, selectedDate)}
-          display='default'
+          value={date}
+          onChange={changeDate}
+          display={Platform.OS === 'ios' ? 'spinner' : 'default'}
           neutralButtonLabel='clear'
         />
       </View>
@@ -62,14 +65,24 @@ const DateInputField = ({
         dialogTitle={'Pick ' + props.label}
       >
         {renderDatePicker()}
-        <Button
-          title={'Close'}
-          type={'clear'}
-          onPress={() => {
-            setFieldValue(name, date);
-            setIsDatePickerModalVisible(false);
-          }}
-        />
+        <View style={{width: '100%', flexDirection: 'row', justifyContent: 'space-evenly'}}>
+          <Button
+            title={'Clear'}
+            type={'clear'}
+            onPress={() => {
+              setFieldValue(name, undefined);
+              setIsDatePickerModalVisible(false);
+            }}
+          />
+          <Button
+            title={'Close'}
+            type={'clear'}
+            onPress={() => {
+              saveDate(null, date);
+              setIsDatePickerModalVisible(false);
+            }}
+          />
+        </View>
       </DateDialogBox>
     );
   };

@@ -1,5 +1,5 @@
 import React, {useEffect, useRef} from 'react';
-import {Alert} from 'react-native';
+import {Alert, View} from 'react-native';
 
 import {Formik} from 'formik';
 import {useDispatch, useSelector} from 'react-redux';
@@ -57,22 +57,25 @@ const ProjectDescription = () => {
   };
 
   return (
-    <React.Fragment>
+    <View style={{flex: 1}}>
       <SidePanelHeader
         title={'Active Project'}
         headerTitle={'Project Description'}
         backButton={() => dispatch(setSidePanelVisible({bool: false}))}
       />
-      <Formik
-        innerRef={formRef}
-        onSubmit={(values) => console.log('Submitting form...', values)}
-        validate={(values) => useForm.validateForm({formName: formName, values: values})}
-        component={(formProps) => Form({formName: formName, ...formProps})}
-        initialValues={projectDescription}
-        validateOnChange={true}
-        enableReinitialize={true}  // Update values if preferences change while form open, like when number incremented
-      />
-    </React.Fragment>
+      <View style={{flex: 1}}>
+        <Formik
+          innerRef={formRef}
+          onSubmit={(values) => console.log('Submitting form...', values)}
+          validate={(values) => useForm.validateForm({formName: formName, values: values})}
+          component={(formProps) => Form({formName: formName, ...formProps})}
+          initialValues={projectDescription}
+          validateOnChange={true}
+          enableReinitialize={true}  // Update values if preferences change while form open, like when number incremented
+        />
+      </View>
+
+    </View>
   );
 };
 
