@@ -14,6 +14,7 @@ import headerStyles from './notebookHeader.styles';
 const NotebookHeader = props => {
   const dispatch = useDispatch();
   const [useSpots] = useSpotsHook();
+
   const spot = useSelector(state => state.spot.selectedSpot);
   const [spotName, setSpotName] = useState(spot.properties.name);
 
@@ -94,8 +95,42 @@ const NotebookHeader = props => {
     dispatch(editedSpotProperties({field: field, value: value}));
   };
 
+  const renderCoordsText = () => {
+    return (
+      <Button
+        type='clear'
+        title={getSpotCoordText()}
+        titleStyle={{textAlign: 'left'}}
+        buttonStyle={{padding: 0, justifyContent: 'flex-start'}}
+        onPress={() => props.onPress('showGeographyInfo')}
+      />
+    );
+  };
+
+  const renderSetCoordsText = () => {
+    return (
+      <View style={{flexDirection: 'row'}}>
+        {!spot.properties.trace && !spot.properties.surface_feature && (
+          <Button
+            type='clear'
+            title={'Set To Current Location'}
+            titleStyle={{fontSize: 14}}
+            buttonStyle={{padding: 0, paddingRight: 15}}
+            onPress={() => props.onPress('setToCurrentLocation')}
+          />
+        )}
+        <Button
+          type='clear'
+          title={'Set in Current View'}
+          titleStyle={{fontSize: 14}}
+          buttonStyle={{padding: 0}}
+          onPress={() => props.onPress('setFromMap')}/>
+      </View>
+    );
+  };
+
   return (
-    <View style={headerStyles.headerContentContainer}>
+    <React.Fragment>
       <Image
         source={useSpots.getSpotGemometryIconSource(spot)}
         style={headerStyles.headerImage}
@@ -106,39 +141,7 @@ const NotebookHeader = props => {
           onChangeText={(text) => setSpotName(text)}
           onBlur={() => onSpotEdit('name', spotName)}
           style={headerStyles.headerSpotName}/>
-        {getSpotCoordText()
-          ? (
-            <Button
-              type='clear'
-              title={getSpotCoordText()}
-              titleStyle={{textAlign: 'left'}}
-              buttonStyle={{padding: 0, justifyContent: 'flex-start'}}
-              onPress={() => props.onPress('showGeographyInfo')}
-            />
-          )
-          : (
-            <View style={{flexDirection: 'row'}}>
-              {!spot.properties.trace && !spot.properties.surface_feature && (
-                <Button
-                  type='clear'
-                  title={'Set To Current Location'}
-                  titleStyle={{fontSize: 14}}
-                  buttonStyle={{padding: 0}}
-                  onPress={() => props.onPress('setToCurrentLocation')}
-                />
-              )}
-              <Button
-                type='clear'
-                title={'Set in Current View'}
-                titleStyle={{fontSize: 14}}
-                buttonStyle={{
-                  padding: 0,
-                  paddingLeft: spot.properties.trace || spot.properties.surface_feature ? 0 : 40,
-                }}
-                onPress={() => props.onPress('setFromMap')}/>
-            </View>
-          )
-        }
+        {getSpotCoordText() ? renderCoordsText() : renderSetCoordsText()}
       </View>
       <View>
         <IconButton
@@ -147,7 +150,7 @@ const NotebookHeader = props => {
           style={headerStyles.threeDotMenu}
         />
       </View>
-    </View>
+    </React.Fragment>
   );
 };
 

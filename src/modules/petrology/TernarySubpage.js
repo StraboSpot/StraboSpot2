@@ -54,7 +54,7 @@ const TernarySubpage = (props) => {
         <ListItem>
           <ListItem.Content>
             <ListItem.Title>QAP Calculations</ListItem.Title>
-            <ListItem.Subtitle style={{color: themes.PRIMARY_ITEM_TEXT_COLOR}}>
+            <ListItem.Subtitle style={{color: themes.PRIMARY_TEXT_COLOR}}>
               Q (Quartz): {ternary.q}
               {'\n'}
               A (Alkali Feldspar): {ternary.a}
@@ -76,7 +76,7 @@ const TernarySubpage = (props) => {
         <ListItem>
           <ListItem.Content>
             <ListItem.Title>APF Calculations</ListItem.Title>
-            <ListItem.Subtitle style={{color: themes.PRIMARY_ITEM_TEXT_COLOR}}>
+            <ListItem.Subtitle style={{color: themes.PRIMARY_TEXT_COLOR}}>
               A (Alkali Feldspar): {ternary.a}
               {'\n'}
               P (Plagioclase): {ternary.p}
@@ -98,7 +98,7 @@ const TernarySubpage = (props) => {
         <ListItem>
           <ListItem.Content>
             <ListItem.Title>Ultramafics (Ol, Opx, Cpx) Calculations</ListItem.Title>
-            <ListItem.Subtitle style={{color: themes.PRIMARY_ITEM_TEXT_COLOR}}>
+            <ListItem.Subtitle style={{color: themes.PRIMARY_TEXT_COLOR}}>
               Ol (Olivine): {ternary.ol}
               {'\n'}
               Opx (Orthopyroxene): {ternary.opx}
@@ -120,7 +120,7 @@ const TernarySubpage = (props) => {
         <ListItem>
           <ListItem.Content>
             <ListItem.Title>Ultramafics (Ol, Cpx, Plag) Calculations</ListItem.Title>
-            <ListItem.Subtitle style={{color: themes.PRIMARY_ITEM_TEXT_COLOR}}>
+            <ListItem.Subtitle style={{color: themes.PRIMARY_TEXT_COLOR}}>
               Ol (Olivine): {ternary.ol}
               {'\n'}
               Cpx (Clinopyroxene): {ternary.cpx}
@@ -142,7 +142,7 @@ const TernarySubpage = (props) => {
         <ListItem>
           <ListItem.Content>
             <ListItem.Title>Ultramafics (Ol, Pyx, Hbl) Calculations</ListItem.Title>
-            <ListItem.Subtitle style={{color: themes.PRIMARY_ITEM_TEXT_COLOR}}>
+            <ListItem.Subtitle style={{color: themes.PRIMARY_TEXT_COLOR}}>
               Ol (Olivine): {ternary.ol}
               {'\n'}
               Pyx (Pyroxene): {ternary.pyx}

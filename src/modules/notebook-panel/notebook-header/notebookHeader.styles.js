@@ -3,12 +3,6 @@ import {StyleSheet} from 'react-native';
 import * as themes from '../../../shared/styles.constants';
 
 const notebookHeaderStyles = StyleSheet.create({
-  headerContentContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
-    paddingLeft: 10,
-  },
   headerImage: {
     resizeMode: 'contain',
     width: 50,
@@ -28,7 +22,6 @@ const notebookHeaderStyles = StyleSheet.create({
   },
   threeDotMenu: {
     width: 50,
-    // height: 40,
   },
 });
 

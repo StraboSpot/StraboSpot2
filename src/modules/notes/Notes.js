@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {Text, TextInput, View} from 'react-native';
 
 import {Button} from 'react-native-elements';
-import {connect, useDispatch, useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 import {isEmpty} from '../../shared/Helpers';
 import uiStyles from '../../shared/ui/ui.styles';

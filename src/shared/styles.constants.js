@@ -3,21 +3,18 @@
 export const LIGHTGREY = '#f7f7f7';  //(lightgrey)
 export const MEDIUMGREY = 'darkgray';  //(#d3d3d3)
 export const DARKGREY = 'dimgray';
-//export const BLUE = 'blue';  // (#0000ff)
 export const BLUE = 'dodgerblue'; // (#1e90ff)
 export const RED = 'red';
+export const WHITE = '#ffffff';
+export const BLACK = 'black';
 
 export const PRIMARY_BACKGROUND_COLOR = LIGHTGREY;
-export const SECONDARY_BACKGROUND_COLOR = '#ffffff';
+export const SECONDARY_BACKGROUND_COLOR = WHITE;
 
-export const PRIMARY_HEADER_TEXT_COLOR = 'black';
-export const SECONDARY_HEADER_TEXT_COLOR = 'black';
-//export const SECONDARY_HEADER_TEXT_COLOR = DARKGREY;
+export const PRIMARY_TEXT_COLOR = BLACK;
 
-export const PRIMARY_ITEM_TEXT_COLOR = 'black';
-export const SECONDARY_ITEM_TEXT_COLOR = 'black';
-export const MODAL_PRIMARY_TEXT_INFORM_COLOR = RED;
-//export const SECONDARY_ITEM_TEXT_COLOR = MEDIUMGREY;
+export const WARNING_COLOR = RED;
+
 export const PRIMARY_LISTITEM_FONTWEIGHT = '500';
 
 export const PRIMARY_ACCENT_COLOR = BLUE;
@@ -31,5 +28,3 @@ export const SMALL_TEXT_SIZE = 14;
 export const MEDIUM_TEXT_SIZE = 16;
 export const SPOT_NAME_SIZE = 30;
 export const MODAL_TEXT_SIZE = 14;
-
-export const ROW_HEIGHT = 50;

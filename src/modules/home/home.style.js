@@ -5,15 +5,7 @@ import * as themes from '../../shared/styles.constants';
 const homeStyles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
   },
-  buttonWithBackground: {
-    color: 'black',
-    fontSize: 16,
-    marginTop: 5,
-    marginBottom: 5,
-  },
-
   dialogBox: {
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
     borderRadius: 10,
@@ -27,26 +19,13 @@ const homeStyles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
   },
-  dialogButton: {
-    borderTopWidth: 1,
-    borderColor: themes.LIST_BORDER_COLOR,
-    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
-  },
-  dialogButtonText: {
-    color: themes.BLUE,
-  },
-  dialogFooter: {
-    flexDirection: 'column',
-    // margin: 5,
-    height: 120,
-  },
   photosSavedToastContainer: {
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
   },
   photoSavedToastText: {
-    color: themes.SECONDARY_HEADER_TEXT_COLOR,
+    color: themes.PRIMARY_TEXT_COLOR,
     fontSize: themes.PRIMARY_TEXT_SIZE,
     fontWeight: 'bold',
   },
@@ -82,12 +61,6 @@ const homeStyles = StyleSheet.create({
     paddingTop: 3,
     paddingBottom: 3,
     backgroundColor: 'yellow',
-  },
-  drawerStyles: {
-    shadowColor: '#000000',
-    shadowOpacity: 0.8,
-    shadowRadius: 3,
-    borderTopRightRadius: 0.30,
   },
 
   // --- Left and right icon absolute positions from top ---

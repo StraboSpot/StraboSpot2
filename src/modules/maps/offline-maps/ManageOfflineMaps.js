@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Alert, Text, View} from 'react-native';
+import {Alert, Text, View, FlatList} from 'react-native';
 
 import {Button, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
@@ -7,15 +7,15 @@ import {useDispatch, useSelector} from 'react-redux';
 import useDeviceHook from '../../../services/useDevice';
 import commonStyles from '../../../shared/common.styles';
 import {isEmpty} from '../../../shared/Helpers';
+import FlatListItemSeparator from '../../../shared/ui/FlatListItemSeparator';
+import ListEmptyText from '../../../shared/ui/ListEmptyText';
+import SectionDivider from '../../../shared/ui/SectionDivider';
 import {setOfflineMapsModalVisible} from '../../home/home.slice';
-import Divider from '../../main-menu-panel/MainMenuPanelDivider';
 import {setOfflineMap} from './offlineMaps.slice';
 import styles from './offlineMaps.styles';
 import useMapsOfflineHook from './useMapsOffline';
 
 const ManageOfflineMaps = (props) => {
-
-  const [directoryExists, setDirectoryExists] = useState(false);
   const [availableMaps, setAvailableMaps] = useState({});
   const [loading, setLoading] = useState(false);
 
@@ -28,7 +28,7 @@ const ManageOfflineMaps = (props) => {
   const useMapsOffline = useMapsOfflineHook();
 
   useEffect(() => {
-    !isEmpty(offlineMaps) && readDirectoryForMaps().catch(err => console.log(err));
+    if (!isEmpty(offlineMaps)) readDirectoryForMaps().catch(err => console.log(err));
   }, [mainMenuPageVisible]);
 
   useEffect(() => {
@@ -81,48 +81,47 @@ const ManageOfflineMaps = (props) => {
 
   const renderMapsList = () => {
     return (
-      <View>
-        {!isEmpty(availableMaps) && directoryExists && !loading ? (
-          Object.values(availableMaps).map((item, i) => (
-            <ListItem
-              containerStyle={styles.list}
-              bottomDivider={i < Object.values(availableMaps).length - 1}
-              key={item.id}
-            >
-              <ListItem.Content>
-                <View style={styles.itemContainer}>
-                  <ListItem.Title style={styles.itemTextStyle}>{`${item.name}`}</ListItem.Title>
-                  <ListItem.Title style={styles.itemSubTextStyle}>{`(${item.count} tiles)`}</ListItem.Title>
-                </View>
-                <View style={styles.itemSubContainer}>
-                  <Button
-                    onPress={async () => {
-                      await useMapsOffline.switchToOfflineMap(item.id);
-                      props.zoomToCenterOfflineTile();
-                    }}
-                    titleStyle={commonStyles.viewMapsButtonText}
-                    type={'clear'}
-                    title={'View in map offline'}
-                  />
-                  <Button
-                    onPress={() => confirmDeleteMap(item)}
-                    titleStyle={commonStyles.viewMapsButtonText}
-                    type={'clear'}
-                    title={'Delete'}
-                  />
-                </View>
-              </ListItem.Content>
-            </ListItem>
-          ))
-        ) : (
-          <View style={{alignItems: 'center', paddingTop: 30}}>
-            <Text>No Offline Maps:</Text>
-            <Text style={{textAlign: 'center', padding: 15}}>
-              To download a map select area and zoom level on map then select "Download tiles of current map"
-            </Text>
+      <FlatList
+        keyExtractor={(item) => item.id}
+        data={Object.values(availableMaps)}
+        renderItem={({item}) => renderMapsListItem(item)}
+        ItemSeparatorComponent={FlatListItemSeparator}
+        ListEmptyComponent={<ListEmptyText text={'No Offline Maps. To download a map select area and zoom'
+        + ' level on map then select "Download tiles of current map"'}/>}
+      />
+    );
+  };
+
+  const renderMapsListItem = (item) => {
+    return (
+      <ListItem
+        containerStyle={commonStyles.listItem}
+        key={item.id}
+      >
+        <ListItem.Content>
+          <View style={styles.itemContainer}>
+            <ListItem.Title style={styles.itemTextStyle}>{`${item.name}`}</ListItem.Title>
+            <ListItem.Title style={styles.itemSubTextStyle}>{`(${item.count} tiles)`}</ListItem.Title>
           </View>
-        )}
-      </View>
+          <View style={styles.itemSubContainer}>
+            <Button
+              onPress={async () => {
+                await useMapsOffline.switchToOfflineMap(item.id);
+                props.zoomToCenterOfflineTile();
+              }}
+              titleStyle={commonStyles.viewMapsButtonText}
+              type={'clear'}
+              title={'View in map offline'}
+            />
+            <Button
+              onPress={() => confirmDeleteMap(item)}
+              titleStyle={commonStyles.viewMapsButtonText}
+              type={'clear'}
+              title={'Delete'}
+            />
+          </View>
+        </ListItem.Content>
+      </ListItem>
     );
   };
 
@@ -139,7 +138,7 @@ const ManageOfflineMaps = (props) => {
         buttonStyle={commonStyles.standardButton}
         titleStyle={commonStyles.standardButtonText}
       />
-      <Divider sectionText={'offline maps'} style={styles.divider}/>
+      <SectionDivider dividerText={'Offline Maps'}/>
       {loading ? <Text style={{textAlign: 'center', padding: 15}}>Loading...</Text> : renderMapsList()}
     </React.Fragment>
   );

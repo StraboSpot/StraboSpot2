@@ -1,9 +1,10 @@
 import React from 'react';
-import {FlatList, Text, View} from 'react-native';
+import {FlatList} from 'react-native';
 
 import {useDispatch, useSelector} from 'react-redux';
 
-import commonStyles from '../../shared/common.styles';
+import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
+import ListEmptyText from '../../shared/ui/ListEmptyText';
 import {NOTEBOOK_SUBPAGES} from '../notebook-panel/notebook.constants';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import {setSelectedAttributes} from '../spots/spots.slice';
@@ -18,29 +19,20 @@ const MeasurementsOverview = () => {
     dispatch(setNotebookPageVisible(NOTEBOOK_SUBPAGES.MEASUREMENTDETAIL));
   };
 
-  const renderMeasurementsOverviewList = () => {
-    return (
-      <FlatList
-        data={orientationsData}
-        renderItem={item => (
-          <MeasurementItem item={item}
-                           selectedIds={[]}
-                           onPress={() => onMeasurementPressed(item.item)}
-          />
-        )}
-        keyExtractor={(item, index) => index.toString()}
-      />
-    );
-  };
-
-  const renderNoMeasurementsText = () => {
-    return <Text style={commonStyles.noValueText}>No Measurements</Text>;
-  };
-
   return (
-    <View>
-      {orientationsData ? renderMeasurementsOverviewList() : renderNoMeasurementsText()}
-    </View>
+    <FlatList
+      keyExtractor={(item, index) => index.toString()}
+      data={orientationsData}
+      renderItem={(item) => (
+        <MeasurementItem
+          item={item}
+          selectedIds={[]}
+          onPress={() => onMeasurementPressed(item.item)}
+        />
+      )}
+      ItemSeparatorComponent={FlatListItemSeparator}
+      ListEmptyComponent={<ListEmptyText text={'No Measurements'}/>}
+    />
   );
 };
 

@@ -1,12 +1,10 @@
 import React, {useState} from 'react';
 import {View} from 'react-native';
 
-import {Button} from 'react-native-elements';
 import {useDispatch} from 'react-redux';
 
-import commonStyles from '../../shared/common.styles';
 import AddButton from '../../shared/ui/AddButton';
-import SectionDivider from '../../shared/ui/SectionDivider';
+import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
 import {MODALS} from '../home/home.constants';
 import {setModalVisible} from '../home/home.slice';
 import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
@@ -45,15 +43,11 @@ const TagsNotebook = (props) => {
         type={'outline'}
       />
       <View style={{flex: 1}}>
-        <View style={commonStyles.dividerWithButton}>
-          <SectionDivider dividerText={'Tags'}/>
-          <Button
-            title={'Assign/Remove'}
-            type={'clear'}
-            titleStyle={commonStyles.standardButtonText}
-            onPress={() => dispatch(setModalVisible({modal: MODALS.NOTEBOOK_MODALS.TAGS}))}
-          />
-        </View>
+        <SectionDividerWithRightButton
+          dividerText={'Tags'}
+          buttonTitle={'Assign/Remove'}
+          onPress={() => dispatch(setModalVisible({modal: MODALS.NOTEBOOK_MODALS.TAGS}))}
+        />
         <TagsAtSpotList openMainMenu={props.openMainMenu}/>
       </View>
       <TagDetailModal

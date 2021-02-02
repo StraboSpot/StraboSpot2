@@ -1,16 +1,18 @@
 import React, {useEffect, useState} from 'react';
-import {FlatList, View, Text} from 'react-native';
+import {FlatList, View} from 'react-native';
 
 import {Button, ListItem} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
+import commonStyles from '../../shared/common.styles';
 import {getNewId, isEmpty} from '../../shared/Helpers';
-import * as themes from '../../shared/styles.constants';
+import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
+import ListEmptyText from '../../shared/ui/ListEmptyText';
 import {LABEL_DICTIONARY} from '../form';
 import MineralReactionDetail from './MineralReactionDetail';
 import {REACTION_VIEW} from './petrology.constants';
 
-const ReactionsSubpage = (props) => {
+const ReactionsSubpage = () => {
   const spot = useSelector(state => state.spot.selectedSpot);
 
   const [selectedReaction, setSelectedReaction] = useState({});
@@ -58,19 +60,18 @@ const ReactionsSubpage = (props) => {
 
   const renderReaction = (reaction) => {
     const reactionFieldsText = Object.entries(reaction).reduce((acc, [key, value]) => {
-      return (key === 'id' || key === 'reactions')
-        ? acc
+      return (key === 'id' || key === 'reactions') ? acc
         : (acc === '' ? '' : acc + '\n') + getLabel(key) + ': ' + getLabel(value);
     }, '');
     return (
-      <ListItem key={reaction.id}
-                onPress={() => editReaction(reaction)}
+      <ListItem
+        containerStyle={commonStyles.listItem}
+        key={reaction.id}
+        onPress={() => editReaction(reaction)}
       >
         <ListItem.Content style={{overflow: 'hidden'}}>
-          <ListItem.Title>{reaction.reactions || 'Unknown'}</ListItem.Title>
-          {reactionFieldsText !== '' && (
-            <ListItem.Subtitle style={{color: themes.PRIMARY_ITEM_TEXT_COLOR}}>{reactionFieldsText}</ListItem.Subtitle>
-          )}
+          <ListItem.Title style={commonStyles.listItemTitle}>{reaction.reactions || 'Unknown'}</ListItem.Title>
+          {reactionFieldsText !== '' && (<ListItem.Subtitle>{reactionFieldsText}</ListItem.Subtitle>)}
         </ListItem.Content>
         <ListItem.Chevron/>
       </ListItem>
@@ -82,12 +83,10 @@ const ReactionsSubpage = (props) => {
       {reactionView === REACTION_VIEW.OVERVIEW && (
         <View style={{flex: 1}}>
           <View>
-            <ListItem>
+            <ListItem containerStyle={commonStyles.listItem}>
               <ListItem.Content>
-                <ListItem.Title>Existing Minerals:</ListItem.Title>
-                <ListItem.Subtitle style={{color: themes.PRIMARY_ITEM_TEXT_COLOR}}>
-                  {getExistingMineralsText()}
-                </ListItem.Subtitle>
+                <ListItem.Title style={commonStyles.listItemTitle}>Existing Minerals:</ListItem.Title>
+                <ListItem.Subtitle>{getExistingMineralsText()}</ListItem.Subtitle>
               </ListItem.Content>
             </ListItem>
           </View>
@@ -96,20 +95,14 @@ const ReactionsSubpage = (props) => {
             type={'clear'}
             onPress={addReaction}
           />
-          {(!spot.properties.pet || !spot.properties.pet.reactions) && (
-            <View style={{padding: 10}}>
-              <Text>There are no reactions at this Spot.</Text>
-            </View>
-          )}
-          {spot.properties.pet && spot.properties.pet.reactions && (
-            <FlatList
-              data={spot.properties.pet.reactions.slice().sort(
-                (a, b) => (a.reactions || 'Unknown').localeCompare((b.reactions || 'Unknown')))}
-              renderItem={item => renderReaction(item.item)}
-              keyExtractor={(item) => item.id.toString()}
-              ItemSeparatorComponent={() => <View style={{borderTopWidth: 1}}/>}
-            />
-          )}
+          <FlatList
+            data={spot.properties.pet && spot.properties.pet.reactions && spot.properties.pet.reactions.slice().sort(
+              (a, b) => (a.reactions || 'Unknown').localeCompare((b.reactions || 'Unknown')))}
+            renderItem={item => renderReaction(item.item)}
+            keyExtractor={(item) => item.id.toString()}
+            ItemSeparatorComponent={FlatListItemSeparator}
+            ListEmptyComponent={<ListEmptyText text={'There are no reactions at this Spot.'}/>}
+          />
         </View>
       )}
       {reactionView === REACTION_VIEW.DETAIL && (

@@ -1,12 +1,13 @@
 import React from 'react';
-import {FlatList, Text} from 'react-native';
+import {FlatList} from 'react-native';
 
 import {Icon, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
-import {isEmpty} from '../../shared/Helpers';
-import {PRIMARY_ACCENT_COLOR, SECONDARY_ITEM_TEXT_COLOR} from '../../shared/styles.constants';
+import {PRIMARY_ACCENT_COLOR} from '../../shared/styles.constants';
+import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
+import ListEmptyText from '../../shared/ui/ListEmptyText';
 import {MAIN_MENU_ITEMS, SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import {setMenuSelectionPage, setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import {setSelectedTag} from '../project/projects.slice';
@@ -26,29 +27,33 @@ const TagsAtSpotList = (props) => {
 
   const renderTag = (tag) => {
     return (
-      <ListItem containerStyle={commonStyles.listItem} key={tag.id} onPress={() => openTag(tag)}>
+      <ListItem
+        containerStyle={commonStyles.listItem}
+        key={tag.id}
+        onPress={() => openTag(tag)}
+        pad={5}
+      >
         <ListItem.Content>
-          <ListItem.Title>{tag.name}</ListItem.Title>
+          <ListItem.Title style={commonStyles.listItemTitle}>{tag.name}</ListItem.Title>
         </ListItem.Content>
         <ListItem.Content>
-          <ListItem.Title style={SECONDARY_ITEM_TEXT_COLOR}>{useTags.getLabel(tag.type)}</ListItem.Title>
+          <ListItem.Title style={commonStyles.listItemTitle}>{useTags.getLabel(tag.type)}</ListItem.Title>
         </ListItem.Content>
         <Icon name={'information-circle-outline'} type={'ionicon'} color={PRIMARY_ACCENT_COLOR}/>
+        <ListItem.Chevron/>
       </ListItem>
     );
   };
 
   return (
     <React.Fragment>
-      {!isEmpty(useTags.getTagsAtSpot())
-        ? (
-          <FlatList
-            keyExtractor={item => item.id.toString()}
-            data={useTags.getTagsAtSpotGeologicUnitFirst()}
-            renderItem={({item}) => renderTag(item)}/>
-        )
-        : <Text style={commonStyles.noValueText}>No Tags</Text>
-      }
+      <FlatList
+        keyExtractor={item => item.id.toString()}
+        data={useTags.getTagsAtSpotGeologicUnitFirst()}
+        renderItem={({item}) => renderTag(item)}
+        ItemSeparatorComponent={FlatListItemSeparator}
+        ListEmptyComponent={<ListEmptyText text='No Tags'/>}
+      />
     </React.Fragment>
   );
 };

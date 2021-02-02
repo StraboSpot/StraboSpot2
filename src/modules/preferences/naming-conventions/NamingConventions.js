@@ -1,10 +1,9 @@
 import React, {useRef} from 'react';
-import {FlatList, View} from 'react-native';
 
 import {Formik} from 'formik';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {Form, formStyles, useFormHook} from '../../form';
+import {Form, useFormHook} from '../../form';
 import {updatedProject} from '../../project/projects.slice';
 
 const NamingConventions = () => {
@@ -21,30 +20,18 @@ const NamingConventions = () => {
     dispatch(updatedProject({field: 'preferences', value: form.current.values}));
   };
 
-  const onSubmitForm = (values) => {
-    console.log('In onSubmitForm', values);
-  };
-
   return (
-    <React.Fragment>
-      <FlatList style={formStyles.formContainer}
-                ListHeaderComponent={
-                  <View style={{flex: 1}}>
-                    <Formik
-                      innerRef={form}
-                      onSubmit={onSubmitForm}
-                      validate={(values) => useForm.validateForm({formName: formName, values: values})}
-                      children={(formProps) => <Form {...formProps} {...{
-                        formName: formName,
-                        onMyChange: onMyChange,
-                      }} />}
-                      initialValues={preferences}
-                      validateOnChange={false}
-                      enableReinitialize={true}  // Update values if preferences change while form open, like when number incremented
-                    />
-                  </View>
-                }/>
-    </React.Fragment>
+    <Formik
+      innerRef={form}
+      onSubmit={(values) => console.log('Submitting form...', values)}
+      validate={(values) => useForm.validateForm({formName: formName, values: values})}
+      children={(formProps) => (
+        <Form {...formProps} {...{formName: formName, onMyChange: onMyChange}}/>
+      )}
+      initialValues={preferences}
+      validateOnChange={false}
+      enableReinitialize={true}  // Update values if preferences change while form open, like when number incremented
+    />
   );
 };
 

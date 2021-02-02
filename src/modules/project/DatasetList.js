@@ -1,12 +1,14 @@
 import React, {useState} from 'react';
-import {ScrollView, Switch, Text, View} from 'react-native';
+import {FlatList, Switch, Text, View} from 'react-native';
 
 import {Button, Icon, ListItem} from 'react-native-elements';
 import Dialog, {DialogButton, DialogFooter, DialogTitle, FadeAnimation} from 'react-native-popup-dialog';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {isEmpty, truncateText} from '../../shared/Helpers';
-import TexInputModal from '../../shared/ui/GeneralTextInputModal';
+import commonStyles from '../../shared/common.styles';
+import {truncateText} from '../../shared/Helpers';
+import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
+import TextInputModal from '../../shared/ui/GeneralTextInputModal';
 import {setProjectLoadComplete} from '../home/home.slice';
 import useProjectHook from '../project/useProject';
 import styles from './project.styles';
@@ -40,50 +42,40 @@ const DatasetList = () => {
     return (activeDatasetsIds.length === 1 && activeDatasetsIds[0] === id) || selectedDatasetId === id;
   };
 
-  const renderDatasets = () => {
-    if (!isEmpty(datasets)) {
-      return (
-        <ScrollView>
-          {Object.values(datasets).map((item, i, obj) => {
-            return (
-              <ListItem
-                key={item.id}
-                containerStyle={styles.projectDescriptionListContainer}
-                bottomDivider={i < obj.length - 1}
-              >
-                <Icon
-                  name='edit'
-                  type={'material'}
-                  size={20}
-                  color='darkgrey'
-                  onPress={() => editDataset(item.id, item.name)}
-                />
-                <ListItem.Content>
-                  <ListItem.Title
-                    style={styles.datasetListItemText}>{truncateText(item.name, 20)}
-                  </ListItem.Title>
-                  <ListItem.Subtitle style={styles.datasetListItemSpotCount}>
-                    {item.spotIds
-                      ? `(${item.spotIds.length} spot${item.spotIds.length !== 1 ? 's' : ''})`
-                      : '(0 spots)'}
-                  </ListItem.Subtitle>
-                </ListItem.Content>
-                <Switch
-                  onValueChange={(value) => setSwitchValue(value, item)}
-                  value={activeDatasetsIds.some(dataset => dataset === item.id)}
-                  disabled={isDisabled(item.id)}
-                />
-              </ListItem>
-            );
-          })}
-        </ScrollView>);
-    }
+  const renderDatasetListItem = (dataset) => {
+    return (
+      <ListItem
+        key={dataset.id}
+        containerStyle={commonStyles.listItem}
+      >
+        <Icon
+          name='edit'
+          type={'material'}
+          size={20}
+          color='darkgrey'
+          onPress={() => editDataset(dataset.id, dataset.name)}
+        />
+        <ListItem.Content>
+          <ListItem.Title style={commonStyles.listItemTitle}>{truncateText(dataset.name, 20)}</ListItem.Title>
+          <ListItem.Subtitle>
+            {dataset.spotIds
+              ? `(${dataset.spotIds.length} spot${dataset.spotIds.length !== 1 ? 's' : ''})`
+              : '(0 spots)'}
+          </ListItem.Subtitle>
+        </ListItem.Content>
+        <Switch
+          onValueChange={(value) => setSwitchValue(value, dataset)}
+          value={activeDatasetsIds.some(activeDatasetId => activeDatasetId === dataset.id)}
+          disabled={isDisabled(dataset.id)}
+        />
+      </ListItem>
+    );
   };
 
   const renderDatasetNameChangeModal = () => {
     return (
       <View style={{backgroundColor: 'red', alignContent: 'flex-start'}}>
-        <TexInputModal
+        <TextInputModal
           dialogTitle={'Edit or Delete Dataset'}
           style={styles.dialogTitle}
           visible={isDatasetNameModalVisible}
@@ -116,7 +108,7 @@ const DatasetList = () => {
               </Text>
             </View>
           )}
-        </TexInputModal>
+        </TextInputModal>
       </View>
     );
   };
@@ -149,7 +141,8 @@ const DatasetList = () => {
             && <Text style={styles.dialogContentImportantText}>{'\n' + selectedDataset.name}</Text>}
             ?
           </Text>
-          <Text style={styles.dialogConfirmText}>This will
+          <Text style={styles.dialogConfirmText}>
+            This will
             <Text style={styles.dialogContentImportantText}> ERASE </Text>
             everything in this dataset including Spots, images, and all other data!
           </Text>
@@ -169,8 +162,13 @@ const DatasetList = () => {
   };
 
   return (
-    <View>
-      {renderDatasets()}
+    <View style={{flex: 1}}>
+      <FlatList
+        keyExtractor={(item) => item.id}
+        data={Object.values(datasets)}
+        renderItem={({item}) => renderDatasetListItem(item)}
+        ItemSeparatorComponent={FlatListItemSeparator}
+      />
       {renderDatasetNameChangeModal()}
       {renderDeleteConfirmationModal()}
     </View>

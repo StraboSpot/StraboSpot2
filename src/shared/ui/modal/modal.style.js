@@ -5,10 +5,6 @@ import * as themes from '../../styles.constants';
 const {width, height} = Dimensions.get('window');
 
 const modalStyle = StyleSheet.create({
-  icon: {
-    width: 25,
-    height: 25,
-  },
   modalContainer: {
     width: 250,
     maxWidth: width,
@@ -28,7 +24,7 @@ const modalStyle = StyleSheet.create({
   },
   textStyle: {
     fontSize: themes.MODAL_TEXT_SIZE,
-    color: themes.MODAL_PRIMARY_TEXT_INFORM_COLOR,
+    color: themes.WARNING_COLOR,
   },
   textContainer: {
     alignItems: 'center',

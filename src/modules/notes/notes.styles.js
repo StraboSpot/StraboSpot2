@@ -15,15 +15,10 @@ const noteStyle = StyleSheet.create({
     padding: 10,
     flex: 1,
     flexDirection: 'row',
-    // justifyContent: 'space-between',
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
-  },
-  buttonContainer: {
-    // flexDirection: 'row',
   },
   editButton: {
     padding: 0,
-    // justifyContent: 'flex-start'
   },
 });
 

@@ -12,7 +12,7 @@ import Dialog, {
 
 import styles from '../../shared/common.styles';
 
-const TexInputModal = (props) => {
+const TextInputModal = (props) => {
   return (
     <View style={{}}>
       <Dialog
@@ -54,4 +54,4 @@ const TexInputModal = (props) => {
   );
 };
 
-export default TexInputModal;
+export default TextInputModal;

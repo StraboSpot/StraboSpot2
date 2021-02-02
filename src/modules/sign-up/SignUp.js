@@ -2,14 +2,13 @@ import React, {useEffect, useState} from 'react';
 import {Text, View, KeyboardAvoidingView, ImageBackground} from 'react-native';
 
 import NetInfo from '@react-native-community/netinfo';
-import {Button, Input} from 'react-native-elements';
+import {Button, CheckBox, Input} from 'react-native-elements';
 import {SlideAnimation} from 'react-native-popup-dialog';
 import {useDispatch, useSelector} from 'react-redux';
 
 import useServerRequests from '../../services/useServerRequests';
 import {VERSION_NUMBER} from '../../shared/app.constants';
 import {isEmpty, validate} from '../../shared/Helpers';
-import DefaultCheckBox from '../../shared/ui/Checkbox';
 import IconButton from '../../shared/ui/IconButton';
 import Loading from '../../shared/ui/Loading';
 import StatusDialog from '../../shared/ui/StatusDialogBox';
@@ -250,7 +249,7 @@ const SignUp = (props) => {
                     onChangeText={val => onChangeText('confirmPassword', val)}
                   />
                 </View>
-                <DefaultCheckBox
+                <CheckBox
                   title='Show Password'
                   textStyle={styles.checkBoxText}
                   checkedColor={'white'}

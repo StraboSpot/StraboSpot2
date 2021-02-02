@@ -1,12 +1,15 @@
 import React, {useEffect, useState} from 'react';
-import {Alert, ScrollView, Text, View} from 'react-native';
+import {Alert, FlatList, Text, View} from 'react-native';
 
 import {ListItem, Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
+import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import Loading from '../../shared/ui/Loading';
+import SectionDivider from '../../shared/ui/SectionDivider';
 import {
   addedStatusMessage,
   clearedStatusMessages,
@@ -18,7 +21,6 @@ import {
 } from '../home/home.slice';
 import BackUpOverwriteModal from './BackUpOverwriteModal';
 import * as ProjectActions from './project.constants';
-import styles from './project.styles';
 import {doesBackupDirectoryExist} from './projects.slice';
 import useDownloadHook from './useDownload';
 import useImportHook from './useImport';
@@ -168,55 +170,60 @@ const ProjectList = (props) => {
     );
   };
 
+  const renderProjectItem = (item) => {
+    return (
+      <ListItem
+        key={props.source === 'device' ? item.id : item.id}
+        onPress={() => selectProject(item)}
+        containerStyle={commonStyles.listItem}
+        disabled={!isOnline && props.source !== 'device'}
+        disabledStyle={{backgroundColor: 'lightgrey'}}
+      >
+        <ListItem.Content>
+          <ListItem.Title style={commonStyles.listItemTitle}>
+            {props.source === 'device' ? item.fileName : item.name}
+          </ListItem.Title>
+        </ListItem.Content>
+        <ListItem.Chevron/>
+      </ListItem>
+    );
+  };
+
   const renderProjectsList = () => {
-    const titleStyle = !isOnline ? {color: themes.PRIMARY_ITEM_TEXT_COLOR} : {color: themes.SECONDARY_ITEM_TEXT_COLOR};
     if (!isEmpty(projectsArr) && !isEmpty(userData)) {
       return (
-        <ScrollView>
-          {projectsArr.projects.map(item => {
-            return <ListItem
-              key={props.source === 'device' ? item.id : item.id}
-              containerStyle={{width: '100%'}}
-              onPress={() => selectProject(item)}
-              disabled={!isOnline && props.source !== 'device'}
-              disabledStyle={{backgroundColor: 'lightgrey'}}
-              bottomDivider
-            >
-              <ListItem.Content>
-                <ListItem.Title
-                  style={titleStyle}>{props.source === 'device' ? item.fileName : item.name}
-                </ListItem.Title>
-              </ListItem.Content>
-              <ListItem.Chevron/>
-            </ListItem>;
-          })}
-        </ScrollView>);
+        <FlatList
+          keyExtractor={(item) => item.id.toString()}
+          data={Object.values(projectsArr.projects)}
+          renderItem={({item}) => renderProjectItem(item)}
+          ItemSeparatorComponent={FlatListItemSeparator}
+        />
+      );
     }
     else {
       return (
-        <View style={styles.signInContainer}>
-          <View>
-            {props.source === 'server' && (
-              <Button
-                title={'Retry'}
-                onPress={() => getAllProjects()}
-              />
-            )}
-            {isError && renderErrorMessage()}
-          </View>
-        </View>
+        <React.Fragment>
+          {props.source === 'server' && (
+            <Button
+              title={'Retry'}
+              onPress={() => getAllProjects()}
+              buttonStyle={{width: 80, alignSelf: 'center'}}
+            />
+          )}
+          {isError && renderErrorMessage()}
+        </React.Fragment>
       );
     }
   };
 
-
   return (
-    <View style={{flex: 1}}>
-      <View style={{flex: 1}}>
-        {loading ? <Loading style={{backgroundColor: themes.PRIMARY_BACKGROUND_COLOR}}/> : renderProjectsList()}
+    <React.Fragment>
+      <View style={{alignSelf: 'center'}}>
+        <SectionDivider dividerText={props.source === 'server' ? 'Projects on Server' : 'Projects on Local Device'}/>
       </View>
+      {loading ? <Loading style={{backgroundColor: themes.PRIMARY_BACKGROUND_COLOR}}/> : renderProjectsList()}
       {renderBackupOverwriteModal()}
-    </View>
+    </React.Fragment>
   );
 };
 

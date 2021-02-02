@@ -8,16 +8,6 @@ const samplesStyle = StyleSheet.create({
     alignItems: 'center',
     paddingBottom: 10,
   },
-  header: {
-    justifyContent: 'center',
-    alignContent: 'center',
-    padding: 15,
-    color: themes.SECONDARY_HEADER_TEXT_COLOR,
-    fontSize: themes.PRIMARY_TEXT_SIZE,
-  },
-  samplesContainer: {
-    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
-  },
   input: {
     flex: 30,
   },
@@ -31,38 +21,21 @@ const samplesStyle = StyleSheet.create({
     paddingLeft: 10,
     fontSize: 16,
   },
-  listLabel: {
-    marginLeft: 10,
-  },
   listText: {
     marginLeft: 5,
-    color: themes.SECONDARY_ITEM_TEXT_COLOR,
-  },
-  notebookListContainer: {
-    flex: 1,
-    borderBottomWidth: 1,
-    padding: 5,
-    borderBottomColor: themes.LIST_BORDER_COLOR,
+    color: themes.PRIMARY_TEXT_COLOR,
   },
   headingText: {
     fontSize: themes.PRIMARY_TEXT_SIZE - 3,
     fontWeight: 'bold',
     textAlign: 'center',
-    color: themes.SECONDARY_ITEM_TEXT_COLOR,
-  },
-  listHeading: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    color: themes.PRIMARY_TEXT_COLOR,
   },
   sliderContainer: {
     flex: 1,
     padding: 10,
     justifyContent: 'center',
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
-  },
-  text: {
-    fontSize: themes.PRIMARY_HEADER_TEXT_SIZE + 5,
   },
   textbox: {
     fontSize: 14,
@@ -80,18 +53,6 @@ const samplesStyle = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'flex-start',
-  },
-  samplesListContainer: {
-    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
-    padding: 5,
-    paddingTop: 0,
-    justifyContent: 'space-between',
-  },
-  samplesSectionDividerContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    paddingTop: 20,
-    paddingBottom: 9,
   },
 });
 

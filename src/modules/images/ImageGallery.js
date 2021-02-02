@@ -1,12 +1,13 @@
 import React from 'react';
-import {ActivityIndicator, Alert, FlatList, Text, View} from 'react-native';
+import {ActivityIndicator, Alert, FlatList, View} from 'react-native';
 
-import {Button, Image} from 'react-native-elements';
+import {Image} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {isEmpty} from '../../shared/Helpers';
+import ListEmptyText from '../../shared/ui/ListEmptyText';
+import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
 import {setImageModalVisible} from '../home/home.slice';
-import attributesStyles from '../main-menu-panel/attributes.styles';
 import {SORTED_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import SortingButtons from '../main-menu-panel/SortingButtons';
 import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
@@ -41,25 +42,19 @@ const ImageGallery = (props) => {
 
   const renderImagesInSpot = (spot) => {
     return (
-      <View style={attributesStyles.listContainer}>
-        <View style={attributesStyles.listHeading}>
-          <Text style={[attributesStyles.headingText]}>
-            {spot.properties.name}
-          </Text>
-          <Button
-            titleStyle={{fontSize: 16}}
-            title={'View In Spot'}
-            type={'clear'}
-            onPress={() => props.openSpotInNotebook(spot, NOTEBOOK_PAGES.IMAGE)}
-          />
-        </View>
+      <React.Fragment>
+        <SectionDividerWithRightButton
+          dividerText={spot.properties.name}
+          buttonTitle={'View In Spot'}
+          onPress={() => props.openSpotInNotebook(spot, NOTEBOOK_PAGES.IMAGE)}
+        />
         <FlatList
           keyExtractor={(image) => image.id}
           data={spot.properties.images}
           numColumns={3}
           renderItem={({item}) => renderImage(item)}
         />
-      </View>
+      </React.Fragment>
     );
   };
 
@@ -77,12 +72,8 @@ const ImageGallery = (props) => {
     );
   };
 
-  const renderNoImages = () => {
-    return (
-      <View style={attributesStyles.textContainer}>
-        <Text style={attributesStyles.text}>No Images in Active Datasets</Text>
-      </View>
-    );
+  const renderNoImagesText = () => {
+    return <ListEmptyText text={'No Images in Active Datasets'}/>;
   };
 
   const renderSpotsWithImages = () => {
@@ -101,16 +92,12 @@ const ImageGallery = (props) => {
       <React.Fragment>
         <SortingButtons/>
         <View style={imageStyles.galleryImageContainer}>
-          {isEmpty(sortedSpotsWithImages)
-            ? <Text style={{padding: 10}}>{noImagesText}</Text>
-            : (
-              <FlatList
-                keyExtractor={(item) => item.properties.id.toString()}
-                data={sortedSpotsWithImages}
-                renderItem={({item}) => renderImagesInSpot(item)}
-              />
-            )
-          }
+          <FlatList
+            keyExtractor={(item) => item.properties.id.toString()}
+            data={sortedSpotsWithImages}
+            renderItem={({item}) => renderImagesInSpot(item)}
+            ListEmptyComponent={<ListEmptyText text={noImagesText}/>}
+          />
         </View>
       </React.Fragment>
     );
@@ -118,7 +105,7 @@ const ImageGallery = (props) => {
 
   return (
     <React.Fragment>
-      {isEmpty(useSpots.getSpotsWithImages()) ? renderNoImages() : renderSpotsWithImages()}
+      {isEmpty(useSpots.getSpotsWithImages()) ? renderNoImagesText() : renderSpotsWithImages()}
     </React.Fragment>
   );
 };

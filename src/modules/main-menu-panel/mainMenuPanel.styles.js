@@ -16,40 +16,7 @@ const styles = StyleSheet.create({
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
   },
   container: {
-    flex: 3,
-    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
-  },
-  navItemStyle: {
-    borderTopWidth: 0.5,
-    borderColor: themes.LIST_BORDER_COLOR,
-  },
-  navButtonText: {
-    color: themes.PRIMARY_ITEM_TEXT_COLOR,
-    width: '100%',
-    textAlign: 'left',
-  },
-  navSectionStyle: {
     flex: 1,
-  },
-  listContainer: {
-    flex: 6,
-    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
-  },
-  sectionHeading: {
-    paddingLeft: 10,
-    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
-  },
-  sectionHeadingTextStyle: {
-    textTransform: 'uppercase',
-    // paddingTop: 5,
-    // textAlignVertical: 'center',
-    // paddingBottom: 5,
-    fontWeight: '600',
-    fontSize: themes.PRIMARY_TEXT_SIZE,
-    color: themes.SECONDARY_ITEM_TEXT_COLOR,
-  },
-  footerContainer: {
-    padding: 20,
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
   },
   buttons: {
@@ -79,10 +46,6 @@ const styles = StyleSheet.create({
     height: 70,
     flexDirection: 'row',
     justifyContent: 'center',
-  },
-  mainMenuHeaderText: {
-    fontWeight: 'bold',
-    fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,
   },
 });
 

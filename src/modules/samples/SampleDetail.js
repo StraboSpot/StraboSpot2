@@ -64,9 +64,7 @@ const SampleDetailPage = () => {
     console.log('Rendering form:', formName[0] + '.' + formName[1], 'with selected sample ', selectedSample);
     return (
       <View>
-        <View style={styles.samplesSectionDividerContainer}>
-          <SectionDivider dividerText='Sample'/>
-        </View>
+        <SectionDivider dividerText='Sample'/>
         <View style={{flex: 1}}>
           <Formik
             innerRef={form}

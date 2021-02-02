@@ -1,11 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {Image, Text, View} from 'react-native';
+import {Text, View} from 'react-native';
 
-import {Button, ListItem} from 'react-native-elements';
+import {Avatar, Button, ListItem} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
 import {MODALS} from '../../../modules/home/home.constants';
 import compassStyles from '../../../modules/measurements/compass/compass.styles';
+import commonStyles from '../../common.styles';
 import {isEmpty} from '../../Helpers';
 import * as themes from '../../styles.constants';
 import modalStyle from './modal.style';
@@ -48,33 +49,35 @@ const Modal = (props) => {
       || modalVisible === MODALS.SHORTCUT_MODALS.TAGS || modalVisible === MODALS.SHORTCUT_MODALS.SAMPLE
       || modalVisible === MODALS.SHORTCUT_MODALS.NOTES) {
       return (
-        <View>
+        <React.Fragment>
           {!isEmpty(selectedSpot) && (
-            <ListItem onPress={props.onPress}>
-              <ListItem.Content style={{alignItems: 'center', flexDirection: 'row'}}>
-                <View style={{paddingRight: 10}}>
-                  <Image
-                    target={props.name}
-                    source={require('../../../assets/icons/NotebookView_pressed.png')}
-                    style={modalStyle.icon}
-                  />
-                </View>
-                <ListItem.Title style={modalStyle.textStyle}>'Go to last spot created'</ListItem.Title>
+            <ListItem
+              containerStyle={commonStyles.listItem}
+              onPress={props.onPress}
+            >
+              <Avatar
+                placeholderStyle={{backgroundColor: 'transparent'}}
+                size={20}
+                source={require('../../../assets/icons/NotebookView_pressed.png')}
+              />
+              <ListItem.Content>
+                <ListItem.Title style={commonStyles.listItemTitle}>Go to Last Spot Created</ListItem.Title>
               </ListItem.Content>
               <ListItem.Chevron/>
             </ListItem>
           )}
-          {isEmpty(selectedSpot) && modalVisible === MODALS.SHORTCUT_MODALS.COMPASS
-          && <View style={{alignItems: 'center', paddingBottom: 20}}>
-            <Text style={{fontWeight: '400'}}>Take a measurement first</Text>
-          </View>}
-        </View>
+          {isEmpty(selectedSpot) && modalVisible === MODALS.SHORTCUT_MODALS.COMPASS && (
+            <View style={{alignItems: 'center', paddingBottom: 20}}>
+              <Text style={{fontWeight: '400'}}>Take a measurement first</Text>
+            </View>
+          )}
+        </React.Fragment>
       );
     }
     else if (modalVisible === MODALS.NOTEBOOK_MODALS.COMPASS || modalVisible === MODALS.NOTEBOOK_MODALS.TAGS
       || modalVisible === MODALS.NOTEBOOK_MODALS.SAMPLE) {
       return (
-        <View>
+        <React.Fragment>
           {!isEmpty(selectedSpot) && (
             <Button
               title={'View In Shortcut Mode'}
@@ -83,7 +86,7 @@ const Modal = (props) => {
               onPress={props.onPress}
             />
           )}
-        </View>
+        </React.Fragment>
       );
     }
   };

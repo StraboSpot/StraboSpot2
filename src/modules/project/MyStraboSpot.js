@@ -6,7 +6,6 @@ import {useSelector} from 'react-redux';
 
 import useDeviceHook from '../../services/useDevice';
 import Spacer from '../../shared/ui/Spacer';
-import Divider from '../main-menu-panel/MainMenuPanelDivider';
 import UserProfile from '../user/UserProfile';
 import ActiveProjectList from './ActiveProjectList';
 import NewProjectForm from './NewProjectForm';
@@ -19,17 +18,14 @@ const MyStraboSpot = props => {
   const [showSection, setShowSection] = useState('none');
 
   const doesDeviceBackupDirExist = useSelector(state => state.project.deviceBackUpDirectoryExists);
-  console.log('This Rendered');
 
   useEffect(() => {
     async function dirExists() {
       const exists = await useDevice.doesDeviceBackupDirExist();
-
       console.log('Backup Directory Exists: ', exists);
     }
 
     dirExists().catch('Error Checking If Backup Dir Exists');
-
   }, [doesDeviceBackupDirExist]);
 
   const renderSectionView = () => {
@@ -47,35 +43,23 @@ const MyStraboSpot = props => {
         );
       case 'serverProjects':
         return (
-          <View>
-            <View style={{height: 600}}>
-              <Divider sectionText={'Server Project List'}/>
-              <Button title={'Back'} type={'clear'} onPress={() => setShowSection('none')}/>
-              <ProjectList source={'server'}/>
-            </View>
-            <View style={{paddingTop: 40}}>
-              <Divider sectionText={'Active project'}/>
-              <ActiveProjectList/>
-            </View>
+          <View style={{flex: 1}}>
+            <Button title={'Back'} type={'clear'} onPress={() => setShowSection('none')}/>
+            <ProjectList source={'server'}/>
+            <ActiveProjectList/>
           </View>
         );
       case 'deviceProjects':
         return (
-          <View>
-            <View style={{height: 600}}>
-              <Divider sectionText={'Device Project List'}/>
-              <Button title={'Back'} type={'clear'} onPress={() => setShowSection('none')}/>
-              <ProjectList source={'device'}/>
-            </View>
-            <View style={{paddingTop: 40}}>
-              <Divider sectionText={'Active project'}/>
-              <ActiveProjectList/>
-            </View>
+          <View style={{flex: 1}}>
+            <Button title={'Back'} type={'clear'} onPress={() => setShowSection('none')}/>
+            <ProjectList source={'device'}/>
+            <ActiveProjectList/>
           </View>
         );
       default:
         return (
-          <View style={{height: 600}}>
+          <View style={{flex: 1}}>
             <Button title={'Back'} type={'clear'} onPress={() => setShowSection('none')}/>
             <NewProjectForm/>
           </View>

@@ -7,7 +7,8 @@ import uiStyles from '../../shared/ui/ui.styles';
 import AddSample from './AddSample';
 
 const NotebookSamplesModal = (props) => {
-  if (Platform.OS === 'android') {
+
+  const renderNotebookSamplesModalContent = () => {
     return (
       <Modal
         close={props.close}
@@ -19,22 +20,10 @@ const NotebookSamplesModal = (props) => {
         <AddSample/>
       </Modal>
     );
-  }
-  else {
-    return (
-      <DragAnimation>
-        <Modal
-          close={props.close}
-          buttonTitleLeft={'Undo'}
-          textStyle={{fontWeight: 'bold'}}
-          onPress={props.onPress}
-          style={uiStyles.modalPosition}
-        >
-          <AddSample/>
-        </Modal>
-      </DragAnimation>
-    );
-  }
+  };
+
+  if (Platform.OS === 'android') return renderNotebookSamplesModalContent();
+  else return <DragAnimation>{renderNotebookSamplesModalContent()}</DragAnimation>;
 };
 
 export default NotebookSamplesModal;

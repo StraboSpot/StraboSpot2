@@ -12,6 +12,7 @@ import {setCurrentImageBasemap} from '../maps/maps.slice';
 import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
+import ListEmptyText from '../../shared/ui/ListEmptyText';
 
 const ImagesViewPage = (props) => {
   const navigation = useNavigation();
@@ -100,12 +101,12 @@ const ImagesViewPage = (props) => {
           />
         </View>
         <View style={{padding: 5, flex: 1}}>
-          {images
-          && <FlatList
+          <FlatList
             data={images}
             renderItem={({item}) => renderImage(item)}
             numColumns={2}
-          />}
+            ListEmptyComponent={<ListEmptyText text={'No Images'}/>}
+          />
         </View>
       </View>
     </View>

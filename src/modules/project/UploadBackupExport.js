@@ -5,9 +5,9 @@ import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
+import SectionDivider from '../../shared/ui/SectionDivider';
 import Spacer from '../../shared/ui/Spacer';
 import {setBackupModalVisible, setSelectedProject, setUploadModalVisible} from '../home/home.slice';
-import Divider from '../main-menu-panel/MainMenuPanelDivider';
 
 const UploadBackAndExport = () => {
 
@@ -35,7 +35,7 @@ const UploadBackAndExport = () => {
           titleStyle={commonStyles.standardButtonText}
           onPress={() => {
             dispatch(setSelectedProject({source: '', project: ''}));
-            dispatch(setUploadModalVisible(true))
+            dispatch(setUploadModalVisible(true));
           }}
           disabled={!isOnline}
         />
@@ -45,7 +45,7 @@ const UploadBackAndExport = () => {
           titleStyle={commonStyles.standardButtonText}
           onPress={() => {
             dispatch(setSelectedProject({source: '', project: ''}));
-            dispatch(setBackupModalVisible(true))
+            dispatch(setBackupModalVisible(true));
           }}
         />
       </View>
@@ -54,7 +54,7 @@ const UploadBackAndExport = () => {
 
   return (
     <React.Fragment>
-      <Divider sectionText={'upload and backup'}/>
+      <SectionDivider dividerText={'upload and backup'}/>
       <Spacer/>
       {renderUploadAndBackupButtons()}
       {/*<Divider sectionText={'export'}/>*/}

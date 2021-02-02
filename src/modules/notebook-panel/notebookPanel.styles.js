@@ -11,41 +11,22 @@ const notebookStyles = StyleSheet.create({
     right: 0,
     zIndex: -1,
   },
-   headerContainer: {
-    flex: 1,
-    borderBottomWidth: 2,
-    borderBottomColor: themes.DARKGREY,
-    paddingBottom: 5,
-    paddingTop: 5,
+  headerContainer: {
+    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingLeft: 10,
+    borderBottomWidth: 0.5,
+    borderBottomColor: themes.MEDIUMGREY,
   },
   centerContainer: {
-    flex: 10,
+    flex: 1,
+    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
   },
   footerContainer: {
-    borderTopWidth: 2,
-    borderTopColor: themes.DARKGREY,
-  },
-  noSpotContentHeaderText: {
-    fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,
-    paddingBottom: 10,
-  },
-  noSpotContentText: {
-    fontSize: themes.PRIMARY_TEXT_SIZE,
-  },
-  collapsibleSectionHeaderContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    paddingTop: 5,
-    paddingLeft: 10,
-    paddingRight: 10,
-    lineHeight: 30,
-  },
-  collapsibleSectionHeaderText: {
-    fontSize: 14,
-    lineHeight: 30,
-    textTransform: 'uppercase',
-    color: themes.SECONDARY_HEADER_TEXT_COLOR,
+    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
+    borderTopWidth: 0.5,
+    borderTopColor: themes.MEDIUMGREY,
   },
   dialogBox: {
     position: 'absolute',
@@ -74,8 +55,8 @@ const notebookStyles = StyleSheet.create({
   traceSurfaceFeatureContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    borderBottomWidth: 2,
-    borderBottomColor: themes.DARKGREY,
+    borderBottomWidth: 0.5,
+    borderBottomColor: themes.MEDIUMGREY,
   },
   traceSurfaceFeatureToggleContainer: {
     flexDirection: 'row',
@@ -88,10 +69,6 @@ const notebookStyles = StyleSheet.create({
   },
   traceSurfaceFeatureDisabledText: {
     color: themes.PRIMARY_BACKGROUND_COLOR,
-  },
-  sectionContainer: {
-    borderBottomWidth: 2,
-    borderBottomColor: themes.DARKGREY,
   },
 });
 

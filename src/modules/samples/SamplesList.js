@@ -1,11 +1,14 @@
 import React from 'react';
-import {FlatList, Text, View} from 'react-native';
+import {FlatList, View} from 'react-native';
 
-import {Button, ListItem} from 'react-native-elements';
+import {ListItem} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
+import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
-import attributesStyles from '../main-menu-panel/attributes.styles';
+import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
+import ListEmptyText from '../../shared/ui/ListEmptyText';
+import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
 import {SORTED_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import SortingButtons from '../main-menu-panel/SortingButtons';
 import {NOTEBOOK_PAGES, NOTEBOOK_SUBPAGES} from '../notebook-panel/notebook.constants';
@@ -18,11 +21,19 @@ const SamplesList = (props) => {
   const sortedView = useSelector(state => state.mainMenu.sortedView);
   const spots = useSelector(state => state.spot.spots);
 
+  const renderNoSamplesText = () => {
+    return <ListEmptyText text={'No Samples in Active Datasets'}/>;
+  };
+
   const renderSample = (sample, spot) => {
     return (
-      <ListItem key={sample.id} onPress={() => props.openSpotInNotebook(spot, NOTEBOOK_SUBPAGES.SAMPLEDETAIL, [sample])}>
+      <ListItem
+        containerStyle={commonStyles.listItem}
+        key={sample.id}
+        onPress={() => props.openSpotInNotebook(spot, NOTEBOOK_SUBPAGES.SAMPLEDETAIL, [sample])}
+      >
         <ListItem.Content>
-          <ListItem.Title>{sample.sample_id_name}</ListItem.Title>
+          <ListItem.Title style={commonStyles.listItemTitle}>{sample.sample_id_name || 'Unknown'}</ListItem.Title>
         </ListItem.Content>
         <ListItem.Chevron/>
       </ListItem>
@@ -31,24 +42,19 @@ const SamplesList = (props) => {
 
   const renderSamplesInSpot = (spot) => {
     return (
-      <View style={attributesStyles.listContainer}>
-        <View style={attributesStyles.listHeading}>
-          <Text style={[attributesStyles.headingText]}>
-            {spot.properties.name}
-          </Text>
-          <Button
-            titleStyle={{fontSize: 16}}
-            title={'View In Spot'}
-            type={'clear'}
-            onPress={() => props.openSpotInNotebook(spot, NOTEBOOK_PAGES.SAMPLE)}
-          />
-        </View>
+      <React.Fragment>
+        <SectionDividerWithRightButton
+          dividerText={spot.properties.name}
+          buttonTitle={'View In Spot'}
+          onPress={() => props.openSpotInNotebook(spot, NOTEBOOK_PAGES.SAMPLE)}
+        />
         <FlatList
           keyExtractor={(sample) => sample.id.toString()}
           data={spot.properties.samples}
           renderItem={({item}) => renderSample(item, spot)}
+          ItemSeparatorComponent={FlatListItemSeparator}
         />
-      </View>
+      </React.Fragment>
     );
   };
 
@@ -65,28 +71,16 @@ const SamplesList = (props) => {
       if (!isEmpty(sortedSpotsWithSamples)) noSamplesText = 'No recently viewed Spots with samples';
     }
     return (
-      <React.Fragment>
+      <View style={{flex: 1}}>
         <SortingButtons/>
-        <View style={attributesStyles.spotListContainer}>
-          {isEmpty(sortedSpotsWithSamples)
-            ? <Text style={{padding: 10}}>{noSamplesText}</Text>
-            : (
-              <FlatList
-                keyExtractor={(item) => item.properties.id.toString()}
-                data={sortedSpotsWithSamples}
-                renderItem={({item}) => renderSamplesInSpot(item)}
-              />
-            )
-          }
+        <View style={{flex: 1}}>
+          <FlatList
+            keyExtractor={(item) => item.properties.id.toString()}
+            data={sortedSpotsWithSamples}
+            renderItem={({item}) => renderSamplesInSpot(item)}
+            ListEmptyComponent={<ListEmptyText text={noSamplesText}/>}
+          />
         </View>
-      </React.Fragment>
-    );
-  };
-
-  const renderNoSamplesText = () => {
-    return (
-      <View style={attributesStyles.textContainer}>
-        <Text style={attributesStyles.text}>No Samples in Active Datasets</Text>
       </View>
     );
   };

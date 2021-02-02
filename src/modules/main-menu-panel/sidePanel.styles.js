@@ -4,26 +4,6 @@ import {StyleSheet} from 'react-native';
 import * as themes from '../../shared/styles.constants';
 
 const sidePanelStyles = StyleSheet.create({
-  textInputNameContainer: {
-    borderWidth: 0.5,
-    borderRadius: 10,
-    backgroundColor: 'white',
-    paddingLeft: 10,
-  },
-  textInputNameLabel: {
-    flex: 1,
-    paddingLeft: 5,
-  },
-  projectDescriptionListContainer: {
-    borderColor: themes.PRIMARY_ITEM_TEXT_COLOR,
-    backgroundColor: 'white',
-    paddingLeft: 5,
-    paddingBottom: 10,
-    paddingTop: 10,
-  },
-  sectionContainer: {
-    justifyContent: 'center',
-  },
   sidePanelContainer: {
     height: '100%',
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,

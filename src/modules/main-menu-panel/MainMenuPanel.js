@@ -110,7 +110,9 @@ const MainMenuPanel = props => {
     case MAIN_MENU_ITEMS.MAPS.MANAGE_OFFLINE_MAPS:
       page = (
         <View style={styles.mainMenuContainer}>
-          <ManageOfflineMapsMenu closeMainMenuPanel={props.closeMainMenuPanel} zoomToCenterOfflineTile={props.zoomToCenterOfflineTile}/>
+          <ManageOfflineMapsMenu
+            closeMainMenuPanel={props.closeMainMenuPanel}
+            zoomToCenterOfflineTile={props.zoomToCenterOfflineTile}/>
         </View>
       );
       break;
@@ -179,27 +181,20 @@ const MainMenuPanel = props => {
     default:
       page = (
         <React.Fragment>
-          <View style={styles.listContainer}>
-            <MainMenuPanelList
-              onPress={(name) => setVisibleMenu(name)}
-              title={buttonTitle}
-              activeProject={!isEmpty(project) && project.description
-                ? project.description.project_name
-                : 'No Active Project'}
-            />
-          </View>
+          <MainMenuPanelList
+            onPress={(name) => setVisibleMenu(name)}
+            title={buttonTitle}
+            activeProject={!isEmpty(project) && project.description ? project.description.project_name
+              : 'No Active Project'}
+          />
         </React.Fragment>
       );
   }
 
   return (
     <View style={styles.container}>
-      <View style={{flex: 1}}>
-        {mainMenuHeader}
-      </View>
-      <View style={{flex: 10}}>
-        {page}
-      </View>
+      {mainMenuHeader}
+      {page}
     </View>
   );
 };

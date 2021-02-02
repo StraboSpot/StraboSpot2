@@ -1,13 +1,14 @@
 import React, {useRef} from 'react';
-import {ScrollView, Text, View} from 'react-native';
+import {FlatList, Text, View} from 'react-native';
 
 import * as turf from '@turf/turf/index';
 import {Field, Formik} from 'formik';
-import {Button} from 'react-native-elements';
+import {Button, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
+import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {Form, formStyles, NumberInputField, TextInputField, useFormHook} from '../form';
@@ -15,7 +16,7 @@ import useMapsHooks from '../maps/useMaps';
 import {setNotebookPageVisibleToPrev} from '../notebook-panel/notebook.slice';
 import {addedSpot} from '../spots/spots.slice';
 
-const Geography = (props) => {
+const Geography = () => {
   const [useForm] = useFormHook();
   const [useMaps] = useMapsHooks();
 
@@ -36,12 +37,6 @@ const Geography = (props) => {
     if (lng) geomForm.current.setFieldValue('longitude', lng);
   };
 
-  // What happens after submitting the form is handled in saveFormAndGo since we want to show
-  // an alert message if there are errors but this function won't be called if form is invalid
-  const onSubmitForm = () => {
-    console.log('In onSubmitForm');
-  };
-
   const renderCancelSaveButtons = () => {
     return (
       <View>
@@ -60,7 +55,7 @@ const Geography = (props) => {
       <View style={{flex: 1}}>
         <Formik
           innerRef={form}
-          onSubmit={onSubmitForm}
+          onSubmit={() => console.log('Submitting form...')}
           validate={(values) => useForm.validateForm({formName: formName, values: values})}
           component={(formProps) => Form({formName: formName, ...formProps})}
           initialValues={spot.properties}
@@ -121,7 +116,7 @@ const Geography = (props) => {
     return (
       <Formik
         initialValues={initialGeomValues}
-        onSubmit={onSubmitForm}
+        onSubmit={() => console.log('Submitting form...')}
         validate={validateGeometry}
         innerRef={geomForm}
         validateOnChange={true}
@@ -129,12 +124,17 @@ const Geography = (props) => {
       >
         {() => (
           <View>
-            <Field
-              component={TextInputField}
-              name={'geomType'}
-              label={'Geometry'}
-              key={'geomType'}
-            />
+            <ListItem containerStyle={commonStyles.listItem}>
+              <ListItem.Content>
+                <Field
+                  component={TextInputField}
+                  name={'geomType'}
+                  label={'Geometry'}
+                  key={'geomType'}
+                />
+              </ListItem.Content>
+            </ListItem>
+            <FlatListItemSeparator/>
             {useMaps.isOnGeoMap(spot) ? renderGeoCoords(initialGeomValues) : renderPixelCoords(initialGeomValues)}
           </View>
         )}
@@ -144,17 +144,28 @@ const Geography = (props) => {
 
   const renderGeoCoords = (initialGeomValues) => {
     return (
-      <View>
+      <React.Fragment>
         {!isEmpty(initialGeomValues.latitude) && !isEmpty(initialGeomValues.longitude)
-          ? (
-            <View style={{flex: 1, flexDirection: 'row', ...commonStyles.rowContainer}}>
-              <View style={{flex: 1, flexDirection: 'row', overflow: 'hidden', ...commonStyles.rowContainer}}>
+          ? renderGeoFieldInputs() : renderGeoFieldText(initialGeomValues)}
+      </React.Fragment>
+    );
+  };
+
+  const renderGeoFieldInputs = () => {
+    return (
+      <ListItem containerStyle={commonStyles.listItem}>
+        <ListItem.Content>
+          <View style={{flex: 1, flexDirection: 'row'}}>
+            <View style={{flex: 1, flexDirection: 'row', overflow: 'hidden'}}>
+              <View style={{flex: 1, paddingRight: 5}}>
                 <Field
                   component={NumberInputField}
                   name={'longitude'}
                   key={'longitude'}
                   label={'Longitude'}
                 />
+              </View>
+              <View style={{flex: 1}}>
                 <Field
                   component={NumberInputField}
                   name={'latitude'}
@@ -162,81 +173,123 @@ const Geography = (props) => {
                   label={'Latitude'}
                 />
               </View>
-              <View style={commonStyles.rowContainer}>
-                <Button
-                  onPress={fillWithCurrentLocation}
-                  type='clear'
-                  icon={{
-                    name: 'locate',
-                    type: 'ionicon',
-                    size: 30,
-                    color: commonStyles.iconColor.color,
-                  }}
-                />
-              </View>
             </View>
-          )
-          : (
             <View>
-              <Text style={formStyles.fieldLabel}>Coordinates as [Longitude, Latitude]</Text>
-              <View style={formStyles.notesFieldContainer}>
-                <Text style={{...formStyles.fieldValue, paddingBottom: 5}} numberOfLines={3}>
-                  {initialGeomValues.coordsString}
-                </Text>
-              </View>
+              <Button
+                onPress={fillWithCurrentLocation}
+                type='clear'
+                icon={{
+                  name: 'locate',
+                  type: 'ionicon',
+                  size: 30,
+                  color: commonStyles.iconColor.color,
+                }}
+              />
             </View>
-          )
-        }
-      </View>
+          </View>
+        </ListItem.Content>
+      </ListItem>
+    );
+  };
+
+  const renderGeoFieldText = () => {
+    return (
+      <ListItem containerStyle={commonStyles.listItem}>
+        <ListItem.Content>
+          <Field
+            component={TextInputField}
+            name={'coordsString'}
+            label={'Coordinates as [Longitude, Latitude]'}
+            key={'coordsString'}
+            appearance={'multiline'}
+          />
+        </ListItem.Content>
+      </ListItem>
     );
   };
 
   const renderPixelCoords = (initialGeomValues) => {
     return (
-      <View>
-        <Text style={formStyles.fieldLabel}>IMAGE BASEMAP COORDINATES</Text>
+      <React.Fragment>
         {!isEmpty(initialGeomValues.x_pixels) && !isEmpty(initialGeomValues.y_pixels)
-          ? (
-            <View>
-              <Field
-                component={NumberInputField}
-                name={'x_pixels'}
-                key={'x_pixels'}
-                label={'X Pixels'}
-              />
-              <Field
-                component={NumberInputField}
-                name={'y_pixels'}
-                key={'y_pixels'}
-                label={'Y Pixels'}
-              />
+          ? renderPixelFieldInputs() : renderPixelFieldText(initialGeomValues)}
+        <FlatListItemSeparator/>
+        <ListItem containerStyle={commonStyles.listItem}>
+          <ListItem.Content>
+            <View style={formStyles.fieldLabelContainer}>
+              <Text style={formStyles.fieldLabel}>Real-World Coordinates</Text>
             </View>
-          )
-          : (
-            <View>
-              <Text style={formStyles.fieldLabel}>Coordinates as [X Pixels, Y Pixels]</Text>
-              <View style={formStyles.notesFieldContainer}>
-                <Text style={{...formStyles.fieldValue, paddingBottom: 5}} numberOfLines={3}>
-                  {initialGeomValues.coordsString}
-                </Text>
+            <View style={{flex: 1, flexDirection: 'row'}}>
+              <View style={{flex: 1, flexDirection: 'row', overflow: 'hidden'}}>
+                <View style={{flex: 1, paddingRight: 5}}>
+                  <Field
+                    component={NumberInputField}
+                    name={'longitude'}
+                    key={'longitude'}
+                    label={'Longitude'}
+                  />
+                </View>
+                <View style={{flex: 1}}>
+                  <Field
+                    component={NumberInputField}
+                    name={'latitude'}
+                    key={'latitude'}
+                    label={'Latitude'}
+                  />
+                </View>
               </View>
             </View>
-          )
-        }
-        <Text style={formStyles.fieldLabel}>REAL-WORLD COORDINATES</Text>
-        <Field
-          component={NumberInputField}
-          name={'longitude'}
-          key={'longitude'}
-          label={'Longitude'}
-        />
-        <Field
-          component={NumberInputField}
-          name={'latitude'}
-          key={'latitude'}
-          label={'Latitude'}
-        />
-      </View>
+          </ListItem.Content>
+        </ListItem>
+      </React.Fragment>
+    );
+  };
+
+  const renderPixelFieldInputs = () => {
+    return (
+      <ListItem containerStyle={commonStyles.listItem}>
+        <ListItem.Content>
+          <View style={formStyles.fieldLabelContainer}>
+            <Text style={formStyles.fieldLabel}>Image Basemap Coordinates</Text>
+          </View>
+          <View style={{flex: 1, flexDirection: 'row'}}>
+            <View style={{flex: 1, flexDirection: 'row', overflow: 'hidden'}}>
+              <View style={{flex: 1, paddingRight: 5}}>
+                <Field
+                  component={NumberInputField}
+                  name={'x_pixels'}
+                  key={'x_pixels'}
+                  label={'X Pixels'}
+                />
+              </View>
+              <View style={{flex: 1}}>
+                <Field
+                  component={NumberInputField}
+                  name={'y_pixels'}
+                  key={'y_pixels'}
+                  label={'Y Pixels'}
+                />
+              </View>
+            </View>
+          </View>
+        </ListItem.Content>
+      </ListItem>
+    );
+  };
+
+  const renderPixelFieldText = () => {
+    return (
+      <ListItem containerStyle={commonStyles.listItem}>
+        <ListItem.Content>
+          <Field
+            component={TextInputField}
+            name={'coordsString'}
+            label={'Coordinates as [X Pixels, Y Pixels]'}
+            key={'coordsString'}
+            appearance={'multiline'}
+          />
+        </ListItem.Content>
+      </ListItem>
     );
   };
 
@@ -245,7 +298,7 @@ const Geography = (props) => {
       await geomForm.current.submitForm();
       await form.current.submitForm();
       if (useForm.hasErrors(geomForm.current) || useForm.hasErrors(form.current)) {
-        useForm.showErrorsTwoForms(geomForm.current, form.current);
+        useForm.showErrors(geomForm.current, form.current);
         return Promise.reject();
       }
       else {
@@ -291,11 +344,15 @@ const Geography = (props) => {
   return (
     <React.Fragment>
       {renderCancelSaveButtons()}
-      <ScrollView style={formStyles.formContainer}>
-        <SectionDivider dividerText='Geography'/>
-        {renderGeometryForm()}
-        {renderFormFields()}
-      </ScrollView>
+      <FlatList
+        ListHeaderComponent={
+          <React.Fragment>
+            <SectionDivider dividerText='Geography'/>
+            {renderGeometryForm()}
+            {renderFormFields()}
+          </React.Fragment>
+        }
+      />
     </React.Fragment>
   );
 };
