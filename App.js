@@ -1,5 +1,6 @@
 import 'react-native-gesture-handler';
 import React from 'react';
+import {SafeAreaView} from 'react-native';
 
 import * as Sentry from '@sentry/react-native';
 import {Provider} from 'react-redux';
@@ -8,6 +9,7 @@ import {PersistGate} from 'redux-persist/integration/react';
 
 import {SENTRY_DSN} from './Config';
 import Route from './src/routes/Routes';
+import commonStyles from './src/shared/common.styles';
 import Loading from './src/shared/ui/Loading';
 import store from './src/store/ConfigureStore';
 
@@ -23,7 +25,9 @@ const App = () => {
   return (
     <Provider store={store}>
       <PersistGate loading={<Loading/>} persistor={persistor}>
-        <Route/>
+        <SafeAreaView style={commonStyles.appContainer}>
+          <Route/>
+        </SafeAreaView>
       </PersistGate>
     </Provider>
   );

@@ -3,6 +3,10 @@ import {StyleSheet} from 'react-native';
 import * as themes from './styles.constants';
 
 const commonStyles = StyleSheet.create({
+  appContainer: {
+    backgroundColor: themes.BLACK,
+    flex: 1,
+  },
   buttonContainer: {
     paddingTop: 10,
   },
