@@ -287,7 +287,7 @@ const Home = () => {
       case 'sketch':
         dispatch(clearedSelectedSpots());
         if (modalVisible === MODALS.SHORTCUT_MODALS.SKETCH) {
-          dispatch(setModalVisible({modal:null}));
+          dispatch(setModalVisible({modal: null}));
         }
         else {
           dispatch(setModalVisible({modal: MODALS.SHORTCUT_MODALS.SKETCH}));

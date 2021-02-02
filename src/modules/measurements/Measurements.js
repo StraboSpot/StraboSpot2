@@ -5,7 +5,7 @@ import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {isEmpty} from '../../shared/Helpers';
-import * as themes from '../../shared/styles.constants';
+import {WARNING_COLOR} from '../../shared/styles.constants';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SectionDivider from '../../shared/ui/SectionDivider';
@@ -223,7 +223,7 @@ const MeasurementsPage = (props) => {
       {selectedFeaturesTemp.length >= 1 && (
         <View>
           <Button
-            titleStyle={{color: themes.RED}}
+            titleStyle={{color: WARNING_COLOR}}
             title={'Delete Measurement'}
             type={'clear'}
             onPress={() => console.log(selectedFeaturesTemp)}

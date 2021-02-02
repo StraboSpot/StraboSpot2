@@ -7,7 +7,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
 import {getNewId, isEmpty, roundToDecimalPlaces, toDegrees, toRadians} from '../../shared/Helpers';
-import * as themes from '../../shared/styles.constants';
+import {WARNING_COLOR, PRIMARY_ACCENT_COLOR} from '../../shared/styles.constants';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import SectionDivider from '../../shared/ui/SectionDivider';
@@ -140,8 +140,8 @@ const MeasurementDetailPage = (props) => {
         selectedIndex={activeMeasurement.type === 'planar_orientation' ? 0 : 1}
         buttons={['Planar Feature', 'Tabular Zone']}
         containerStyle={styles.measurementDetailSwitches}
-        selectedButtonStyle={{backgroundColor: themes.PRIMARY_ACCENT_COLOR}}
-        textStyle={{color: themes.PRIMARY_ACCENT_COLOR}}
+        selectedButtonStyle={{backgroundColor: PRIMARY_ACCENT_COLOR}}
+        textStyle={{color: PRIMARY_ACCENT_COLOR}}
       />
     );
   };
@@ -426,7 +426,7 @@ const MeasurementDetailPage = (props) => {
                 </View>
                 {selectedMeasurements.length === 1 && (
                   <Button
-                    titleStyle={{color: themes.RED}}
+                    titleStyle={{color: WARNING_COLOR}}
                     title={'Delete Measurement'}
                     type={'clear'}
                     onPress={() => deleteMeasurement()}
