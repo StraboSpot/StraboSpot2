@@ -21,7 +21,7 @@ export const SECONDARY_NOTEBOOK_PAGES = {
   IG_MET: 'Ig/Met',
   FABRICS: 'Fabrics',
   OTHER_FEATURES: 'Other Features',
-  RELATIONSHIPS: 'Relationships',
+  // RELATIONSHIPS: 'Relationships',
   DATA: 'Data',
 };
 

@@ -81,7 +81,7 @@ const NotebookPanel = (props) => {
             {pageVisible === SECONDARY_NOTEBOOK_PAGES.IG_MET && <PetrologyPage/>}
             {pageVisible === SECONDARY_NOTEBOOK_PAGES.FABRICS && <FabricsPage/>}
             {pageVisible === SECONDARY_NOTEBOOK_PAGES.OTHER_FEATURES && <PlaceholderPage/>}
-            {pageVisible === SECONDARY_NOTEBOOK_PAGES.RELATIONSHIPS && <PlaceholderPage/>}
+            {/*{pageVisible === SECONDARY_NOTEBOOK_PAGES.RELATIONSHIPS && <PlaceholderPage/>}*/}
             {pageVisible === SECONDARY_NOTEBOOK_PAGES.DATA && <PlaceholderPage/>}
 
             {/*Sed Notebook Pages*/}
