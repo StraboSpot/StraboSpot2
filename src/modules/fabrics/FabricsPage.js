@@ -102,7 +102,7 @@ const FabricsPage = (props) => {
           <FlatList
             data={spot.properties && spot.properties.fabrics && spot.properties.fabrics.slice().sort(
               (a, b) => getFabricTitle(a).localeCompare(getFabricTitle(b)))}
-            renderItem={item => renderFabric(item.item)}
+            renderItem={({item}) => renderFabric(item)}
             keyExtractor={(item) => item.id.toString()}
             ItemSeparatorComponent={FlatListItemSeparator}
             ListEmptyComponent={<ListEmptyText text={'There are no Fabrics at this Spot.'}/>}

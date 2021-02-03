@@ -60,34 +60,34 @@ const MeasurementItem = (props) => {
 
   return (
     <React.Fragment>
-      {typeof (props.item.item) !== 'undefined' && (
+      {typeof (props.item) !== 'undefined' && (
         <ListItem
-          containerStyle={props.selectedIds.includes(props.item.item.id) ? commonStyles.listItemInverse
+          containerStyle={props.selectedIds.includes(props.item.id) ? commonStyles.listItemInverse
             : commonStyles.listItem}
-          key={props.item.item.id}
+          key={props.item.id}
           onPress={() => props.onPress()}
           pad={5}
         >
           <ListItem.Content>
             <ListItem.Title
-              style={props.selectedIds.includes(props.item.item.id) ? commonStyles.listItemTitleInverse
+              style={props.selectedIds.includes(props.item.id) ? commonStyles.listItemTitleInverse
                 : commonStyles.listItemTitle}
             >
-              {getMeasurementText(props.item.item)}
+              {getMeasurementText(props.item)}
             </ListItem.Title>
           </ListItem.Content>
           <ListItem.Content>
             <ListItem.Title
-              style={props.selectedIds.includes(props.item.item.id) ? commonStyles.listItemTitleInverse
+              style={props.selectedIds.includes(props.item.id) ? commonStyles.listItemTitleInverse
                 : commonStyles.listItemTitle}
             >
-              {getTypeText(props.item.item)}
+              {getTypeText(props.item)}
             </ListItem.Title>
           </ListItem.Content>
           <Icon
             name={'ios-information-circle-outline'}
             type={'ionicon'}
-            color={props.selectedIds.includes(props.item.item.id) ? themes.SECONDARY_BACKGROUND_COLOR
+            color={props.selectedIds.includes(props.item.id) ? themes.SECONDARY_BACKGROUND_COLOR
               : themes.PRIMARY_ACCENT_COLOR}
           />
           <ListItem.Chevron/>

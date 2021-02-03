@@ -98,7 +98,7 @@ const ReactionsSubpage = () => {
           <FlatList
             data={spot.properties.pet && spot.properties.pet.reactions && spot.properties.pet.reactions.slice().sort(
               (a, b) => (a.reactions || 'Unknown').localeCompare((b.reactions || 'Unknown')))}
-            renderItem={item => renderReaction(item.item)}
+            renderItem={({item}) => renderReaction(item)}
             keyExtractor={(item) => item.id.toString()}
             ItemSeparatorComponent={FlatListItemSeparator}
             ListEmptyComponent={<ListEmptyText text={'There are no reactions at this Spot.'}/>}

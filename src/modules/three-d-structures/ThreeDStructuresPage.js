@@ -107,7 +107,7 @@ const ThreeDStructuresPage = (props) => {
           <FlatList
             data={spot.properties && spot.properties._3d_structures && spot.properties._3d_structures.slice().sort(
               (a, b) => get3dStructureTitle(a).localeCompare(get3dStructureTitle(b)))}
-            renderItem={item => render3dStructure(item.item)}
+            renderItem={({item}) => render3dStructure(item)}
             keyExtractor={(item) => item.id.toString()}
             ItemSeparatorComponent={FlatListItemSeparator}
             ListEmptyComponent={<ListEmptyText text={'There are no 3D Structures at this Spot.'}/>}

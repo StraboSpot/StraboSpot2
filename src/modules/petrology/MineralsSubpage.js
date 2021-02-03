@@ -95,7 +95,7 @@ const MineralsSubpage = (props) => {
           <FlatList
             data={spot.properties.pet && spot.properties.pet.minerals && spot.properties.pet.minerals.slice().sort(
               (a, b) => getMineralTitle(a).localeCompare(getMineralTitle(b)))}
-            renderItem={item => renderMineral(item.item)}
+            renderItem={({item}) => renderMineral(item)}
             keyExtractor={(item) => item.id.toString()}
             ItemSeparatorComponent={FlatListItemSeparator}
             ListEmptyComponent={<ListEmptyText text={'There are no minerals at this Spot.'}/>}

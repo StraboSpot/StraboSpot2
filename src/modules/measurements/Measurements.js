@@ -130,11 +130,11 @@ const MeasurementsPage = (props) => {
         keyExtractor={(item, index) => index.toString()}
         listKey={type}
         data={data.reverse()}
-        renderItem={(item) =>
+        renderItem={({item}) =>
           <MeasurementItem
             item={item}
             selectedIds={selectedIds}
-            onPress={() => onMeasurementPressed(item.item, type)}
+            onPress={() => onMeasurementPressed(item, type)}
           />
         }
         ItemSeparatorComponent={FlatListItemSeparator}
@@ -218,7 +218,7 @@ const MeasurementsPage = (props) => {
       <FlatList
         keyExtractor={(sectionType) => sectionTypes[sectionType]}
         data={Object.values(sectionTypes)}
-        renderItem={(item) => renderSection(item.item)}
+        renderItem={({item}) => renderSection(item)}
       />
       {selectedFeaturesTemp.length >= 1 && (
         <View>

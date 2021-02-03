@@ -23,11 +23,11 @@ const MeasurementsOverview = () => {
     <FlatList
       keyExtractor={(item, index) => index.toString()}
       data={orientationsData}
-      renderItem={(item) => (
+      renderItem={({item}) => (
         <MeasurementItem
           item={item}
           selectedIds={[]}
-          onPress={() => onMeasurementPressed(item.item)}
+          onPress={() => onMeasurementPressed(item)}
         />
       )}
       ItemSeparatorComponent={FlatListItemSeparator}

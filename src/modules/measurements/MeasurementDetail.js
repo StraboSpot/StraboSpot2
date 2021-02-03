@@ -189,7 +189,7 @@ const MeasurementDetailPage = (props) => {
         && selectedMeasurements[0].associated_orientation && (
           <React.Fragment>
             <MeasurementItem
-              item={{item: selectedMeasurements[0]}}
+              item={selectedMeasurements[0]}
               selectedIds={[activeMeasurement.id]}
               isAssociatedItem={false}
               isAssociatedList={true}
@@ -205,7 +205,7 @@ const MeasurementDetailPage = (props) => {
           selectedMeasurements[0].associated_orientation.map((item, i) =>
             <React.Fragment>
               <MeasurementItem
-                item={{item: item}}
+                item={item}
                 selectedIds={[activeMeasurement.id]}
                 isAssociatedItem={true}
                 isAssociatedList={true}
