@@ -78,6 +78,10 @@ const TagsModal = () => {
       <ListItem
         containerStyle={commonStyles.listItem}
         key={tag.id}
+        onPress={() => (modalVisible !== MODALS.SHORTCUT_MODALS.TAGS
+          && modalVisible !== MODALS.SHORTCUT_MODALS.ADD_TAGS_TO_SPOTS)
+          ? useTags.addRemoveTagFromSpot(tag)
+          : checkTags(tag)}
       >
         <ListItem.Content>
           <ListItem.Title style={commonStyles.listItemTitle}>{tag.name}</ListItem.Title>
