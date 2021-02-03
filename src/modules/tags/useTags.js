@@ -160,7 +160,7 @@ const useTags = () => {
   const saveTag = (tagToSave) => {
     if (!Array.isArray(tagToSave)) {
       const updatedTags = projectTags.filter(tag => tag.id !== tagToSave.id);
-      updatedTags.push(tagToSave);
+      updatedTags.unshift(tagToSave);
       dispatch(updatedProject({field: 'tags', value: updatedTags}));
     }
     else {
