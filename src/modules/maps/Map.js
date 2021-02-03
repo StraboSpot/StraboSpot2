@@ -33,6 +33,7 @@ import {
 import useOfflineMapsHook from './offline-maps/useMapsOffline';
 import useMapFeaturesHook from './useMapFeatures';
 import useMapsHook from './useMaps';
+import useMapSymbology from './useMapSymbology';
 
 MapboxGL.setAccessToken(MAPBOX_KEY);
 
@@ -41,6 +42,7 @@ const Map = React.forwardRef((props, ref) => {
 
   const [useImages] = useImagesHook();
   const [useMaps] = useMapsHook();
+  const [useSymbology] = useMapSymbology();
   const [useMapFeatures] = useMapFeaturesHook();
   const [useSpots] = useSpotsHook();
   const useOfflineMaps = useOfflineMapsHook();
@@ -313,7 +315,9 @@ const Map = React.forwardRef((props, ref) => {
 
   // Set selected and not selected Spots to display while editing
   const setDisplayedSpotsWhileEditing = (spotEditingTmp, spotsEditedTmp, spotsNotEditedTmp) => {
-    spotsNotEditedTmp = spotsNotEditedTmp.filter(spot => spot.properties.id !== spotEditingTmp.properties.id);
+    if (!isEmpty(spotEditingTmp)) {
+      spotsNotEditedTmp = spotsNotEditedTmp.filter(spot => spot.properties.id !== spotEditingTmp.properties.id);
+    }
     console.log('Set displayed Spots while editing. Editing:', spotEditingTmp, 'Edited:', spotsEditedTmp, 'Not edited:',
       spotsNotEditedTmp);
     if (!currentImageBasemap) {
@@ -746,7 +750,6 @@ const Map = React.forwardRef((props, ref) => {
           editFeatureVertex: [],
         }));
         console.log('Finished editing Spot. Spot Editing: ', spotEditingCopy);
-        if (turf.getType(spotEditingCopy) === 'Point') clearSelectedFeatureToEdit();
       }
     }
   };
@@ -857,6 +860,8 @@ const Map = React.forwardRef((props, ref) => {
           }
         }
         else {
+          const symbology = useSymbology.getSymbology(feature);
+          feature.properties.symbology = symbology;
           newOrEditedSpot = await useSpots.createSpot(feature);
           useMaps.setSelectedSpotOnMap(newOrEditedSpot);
           dispatch(setFreehandFeatureCoords(undefined));// reset the freeHandCoordinates
@@ -871,6 +876,8 @@ const Map = React.forwardRef((props, ref) => {
       if (mapPropsMutable.drawFeatures.length > 1) {
         newFeature = mapPropsMutable.drawFeatures.splice(1, 1)[0];
       }
+      const symbology = useSymbology.getSymbology(newFeature);
+      newFeature.properties.symbology = symbology;
       if (currentImageBasemap) { //create new spot for imagebasemap - needs lat long to pixel conversion.
         newFeature = useMaps.convertFeatureGeometryToImagePixels(newFeature);
         newFeature.properties.image_basemap = currentImageBasemap.id;

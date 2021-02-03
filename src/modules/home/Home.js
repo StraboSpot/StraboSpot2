@@ -321,6 +321,7 @@ const Home = () => {
       case MAP_MODES.DRAW.POLYGON:
       case MAP_MODES.DRAW.FREEHANDPOLYGON:
       case MAP_MODES.DRAW.FREEHANDLINE:
+        dispatch(clearedSelectedSpots());
         if (!isEmpty(selectedDataset)) setDraw(name).catch(console.error);
         else Alert.alert('No Current Dataset', 'A current dataset needs to be set before drawing Spots.');
         break;
@@ -407,6 +408,7 @@ const Home = () => {
     toggleButton('endDrawButtonVisible', false);
     if (!isEmpty(newOrEditedSpot) && !isSelectingForStereonet) openNotebookPanel(NOTEBOOK_PAGES.OVERVIEW);
     setIsSelectingForStereonet(false);
+    setIsSelectingForTagging(false);
   };
 
   const goToCurrentLocation = async () => {
