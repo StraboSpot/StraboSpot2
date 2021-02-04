@@ -17,6 +17,7 @@ import {setNotebookPageVisible, setNotebookPageVisibleToPrev} from '../notebook-
 import {editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
 import MeasurementItem from './MeasurementItem';
 import styles from './measurements.styles';
+import useMeasurementsHook from './useMeasurements';
 
 const MeasurementDetailPage = (props) => {
   const dispatch = useDispatch();
@@ -26,6 +27,7 @@ const MeasurementDetailPage = (props) => {
   const selectedMeasurements = useSelector(state => state.spot.selectedAttributes);
   const [activeMeasurement, setActiveMeasurement] = useState(null);
   const formRef = useRef(null);
+  const [useMeasurements] = useMeasurementsHook();
 
   useEffect(() => {
     return () => confirmLeavePage();
@@ -76,6 +78,22 @@ const MeasurementDetailPage = (props) => {
     dispatch(setNotebookPageVisibleToPrev());
   };
 
+  const confirmDeleteMeasurement = () => {
+    Alert.alert(
+      'Delete Measurement',
+      'Are you sure you want to delete this measurement?',
+      [{
+        text: 'Cancel',
+        onPress: () => console.log('Cancel Pressed'),
+        style: 'cancel',
+      }, {
+        text: 'OK',
+        onPress: () => deleteMeasurement(),
+      }],
+      {cancelable: false},
+    );
+  };
+
   const confirmLeavePage = () => {
     if (formRef.current && formRef.current.dirty) {
       const formCurrent = formRef.current;
@@ -95,29 +113,12 @@ const MeasurementDetailPage = (props) => {
 
   // Delete a single measurement
   const deleteMeasurement = () => {
-    let aborted = false;
-    let orientationDataCopy = JSON.parse(JSON.stringify(spot.properties.orientation_data));
-    orientationDataCopy.forEach((measurement, i) => {
-      if (activeMeasurement.id === measurement.id && !measurement.associated_orientation) orientationDataCopy[i] = {};
-      else if (activeMeasurement.id === measurement.id && measurement.associated_orientation) {
-        Alert.alert('Please delete the associated features before deleting the primary feature.');
-        aborted = true;
-      }
-      else if (measurement.associated_orientation) {
-        measurement.associated_orientation.forEach((associatedMeasurement, j) => {
-          if (activeMeasurement.id === associatedMeasurement.id) orientationDataCopy[i].associated_orientation[j] = {};
-        });
-        orientationDataCopy[i].associated_orientation = orientationDataCopy[i].associated_orientation.filter(
-          associatedMeasurement => !isEmpty(associatedMeasurement));
-      }
-      if (measurement.associated_orientation && isEmpty(measurement.associated_orientation)) {
-        delete orientationDataCopy[i].associated_orientation;
-      }
-    });
-    if (!aborted) {
-      orientationDataCopy = orientationDataCopy.filter(measurement => !isEmpty(measurement));
-      dispatch(editedSpotProperties({field: 'orientation_data', value: orientationDataCopy}));
+    try {
+      useMeasurements.deleteMeasurements([activeMeasurement]);
       dispatch(setNotebookPageVisibleToPrev());
+    }
+    catch (e) {
+      console.log('Unable to delete measurement.');
     }
   };
 
@@ -441,7 +442,7 @@ const MeasurementDetailPage = (props) => {
                     titleStyle={{color: WARNING_COLOR}}
                     title={'Delete Measurement'}
                     type={'clear'}
-                    onPress={() => deleteMeasurement()}
+                    onPress={() => confirmDeleteMeasurement()}
                   />
                 )}
               </View>

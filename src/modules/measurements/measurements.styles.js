@@ -12,6 +12,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-end',
+    marginBottom: -10,
   },
   measurementsSectionDividerButtonText: {
     color: themes.PRIMARY_ACCENT_COLOR,

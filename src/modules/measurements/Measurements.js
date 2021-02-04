@@ -18,11 +18,15 @@ import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton'
 import {setSelectedAttributes} from '../spots/spots.slice';
 import MeasurementItem from './MeasurementItem';
 import styles from './measurements.styles';
+import useMeasurementsHook from './useMeasurements';
 
 const MeasurementsPage = (props) => {
   const dispatch = useDispatch();
   const modalVisible = useSelector(state => state.home.modalVisible);
   const spot = useSelector(state => state.spot.selectedSpot);
+
+  const [useMeasurements] = useMeasurementsHook();
+
   const [multiSelectMode, setMultiSelectMode] = useState();
   const [selectedFeaturesTemp, setSelectedFeaturesTemp] = useState([]);
 
@@ -40,6 +44,29 @@ const MeasurementsPage = (props) => {
     else if (sectionType === sectionTypes.LINEAR) types = [COMPASS_TOGGLE_BUTTONS.LINEAR];
     else types = [COMPASS_TOGGLE_BUTTONS.PLANAR, COMPASS_TOGGLE_BUTTONS.LINEAR];
     dispatch(setCompassMeasurementTypes(types));
+  };
+
+  const confirmDeleteMeasurements = (measurementsToDelete) => {
+    const deleteText = 'Are you sure you want to delete '
+      + (measurementsToDelete.length === 1 ? 'this measurement' : 'these measurements') + '?';
+    Alert.alert(
+      'Delete Measurement',
+      deleteText,
+      [{
+        text: 'Cancel',
+        onPress: () => console.log('Cancel Pressed'),
+        style: 'cancel',
+      }, {
+        text: 'OK',
+        onPress: () => deleteMeasurements(measurementsToDelete),
+      }],
+      {cancelable: false},
+    );
+  };
+
+  const deleteMeasurements = (measurementsToDelete) => {
+    useMeasurements.deleteMeasurements(measurementsToDelete);
+    cancelSelecting();
   };
 
   const getSectionData = (sectionType) => {
@@ -224,9 +251,9 @@ const MeasurementsPage = (props) => {
         <View>
           <Button
             titleStyle={{color: WARNING_COLOR}}
-            title={'Delete Measurement'}
+            title={'Delete Measurement' + (selectedFeaturesTemp.length === 1 ? '' : 's')}
             type={'clear'}
-            onPress={() => console.log(selectedFeaturesTemp)}
+            onPress={() => confirmDeleteMeasurements(selectedFeaturesTemp)}
           />
         </View>
       )}
