@@ -17,21 +17,15 @@ const ImagePropertiesModal = (props) => {
   const selectedImage = useSelector(state => state.spot.selectedAttributes[0]);
   const [useForm] = useFormHook();
   const [annotated, setAnnotated] = useState(selectedImage.annotated);
-  const form = useRef(null);
-
-  // What happens after submitting the form is handled in saveFormAndGo since we want to show
-  // an alert message if there are errors but this function won't be called if form is invalid
-  const onSubmitForm = () => {
-    console.log('In onSubmitForm');
-  };
+  const formRef = useRef(null);
 
   const renderFormFields = () => {
     const formName = ['general', 'images'];
     console.log('Rendering form:', formName.join('.'), 'with selected image:', selectedImage);
     return (
       <Formik
-        innerRef={form}
-        onSubmit={onSubmitForm}
+        innerRef={formRef}
+        onSubmit={() => console.log('Submitting form...')}
         validate={(values) => useForm.validateForm({formName: formName, values: values})}
         component={(formProps) => Form({formName: formName, ...formProps})}
         initialValues={selectedImage}
@@ -41,14 +35,14 @@ const ImagePropertiesModal = (props) => {
   };
 
   const saveFormAndGo = async () => {
-    if (form.current !== null) {
-      await form.current.submitForm();
-      if (useForm.hasErrors(form.current)) useForm.showErrors(form.current);
+    if (formRef.current !== null) {
+      await formRef.current.submitForm();
+      if (useForm.hasErrors(formRef.current)) useForm.showErrors(formRef.current);
       else {
         const images = JSON.parse(JSON.stringify(spot.properties.images));
-        console.log('Saving form data to Spot ...', form.current.values);
-        let i = images.findIndex(img => img.id === form.current.values.id);
-        images[i] = {...form.current.values, annotated: annotated};
+        console.log('Saving form data to Spot ...', formRef.current.values);
+        let i = images.findIndex(img => img.id === formRef.current.values.id);
+        images[i] = {...formRef.current.values, annotated: annotated};
         dispatch(setSelectedAttributes([images[i]]));
         dispatch(editedSpotProperties({field: 'images', value: images}));
         props.close();

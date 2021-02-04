@@ -5,7 +5,6 @@ import {Formik} from 'formik';
 import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
-import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import SectionDivider from '../../shared/ui/SectionDivider';
@@ -23,7 +22,7 @@ const Overview = props => {
   const spot = useSelector(state => state.spot.selectedSpot);
   const [isTraceSurfaceFeatureEnabled, setIsTraceSurfaceFeatureEnabled] = useState(false);
   const [isTraceSurfaceFeatureEdit, setIsTraceSurfaceFeatureEdit] = useState(false);
-  const form = useRef(null);
+  const formRef = useRef(null);
   const [useForm] = useFormHook();
 
   const SECTIONS = [
@@ -96,7 +95,7 @@ const Overview = props => {
           ListHeaderComponent={
             <View>
               <Formik
-                innerRef={form}
+                innerRef={formRef}
                 onSubmit={onSubmitForm}
                 validate={(values) => useForm.validateForm({formName: formName, values: values})}
                 component={(formProps) => Form({formName: formName, ...formProps})}
@@ -112,19 +111,19 @@ const Overview = props => {
   };
 
   const saveForm = async () => {
-    return form.current.submitForm().then(() => {
-      if (useForm.hasErrors(form.current)) {
-        useForm.showErrors(form.current);
+    return formRef.current.submitForm().then(() => {
+      if (useForm.hasErrors(formRef.current)) {
+        useForm.showErrors(formRef.current);
         return Promise.reject();
       }
       console.log('Saving form data to Spot ...');
       if (spot.geometry.type === 'LineString' || spot.geometry.type === 'MultiLineString') {
-        const traceValues = {...form.current.values, 'trace_feature': true};
+        const traceValues = {...formRef.current.values, 'trace_feature': true};
         dispatch(editedSpotProperties({field: 'trace', value: traceValues}));
       }
       else if (spot.geometry.type === 'Polygon' || spot.geometry.type === 'MultiPolygon'
         || spot.geometry.type === 'GeometryCollection') {
-        dispatch(editedSpotProperties({field: 'surface_feature', value: form.current.values}));
+        dispatch(editedSpotProperties({field: 'surface_feature', value: formRef.current.values}));
       }
       return Promise.resolve();
     }, (e) => {

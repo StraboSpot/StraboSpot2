@@ -158,8 +158,8 @@ const Home = () => {
   const [isSelectingForTagging, setIsSelectingForTagging] = useState(false);
   const [imageSlideshowData, setImageSlideshowData] = useState([]);
   const [exportFileName, setExportFileName] = useState('');
-  const mapViewComponent = useRef(null);
-  const toastRef = useRef();
+  const mapComponentRef = useRef(null);
+  const toastRef = useRef(null);
 
   useEffect(() => {
     // useDevice.loadOfflineMaps().catch();
@@ -226,14 +226,14 @@ const Home = () => {
 
   useEffect(() => {
     if (projectLoadComplete) {
-      mapViewComponent.current.zoomToSpotsExtent();
+      mapComponentRef.current.zoomToSpotsExtent();
       dispatch(setProjectLoadComplete(false));
       // toggles off whenever new project is loaded successfully to trigger the same for next project load.
     }
   }, [projectLoadComplete]);
 
   const cancelEdits = async () => {
-    await mapViewComponent.current.cancelEdits();
+    await mapComponentRef.current.cancelEdits();
     setMapMode(MAP_MODES.VIEW);
     setButtons({
       'editButtonsVisible': false,
@@ -310,7 +310,7 @@ const Home = () => {
         deleteSpot(selectedSpot.properties.id);
         break;
       case 'zoomToSpot':
-        mapViewComponent.current.zoomToSpot();
+        mapComponentRef.current.zoomToSpot();
         break;
       case 'showNesting':
         dispatch(setNotebookPageVisible(NOTEBOOK_SUBPAGES.NESTING));
@@ -336,27 +336,27 @@ const Home = () => {
         break;
       case 'toggleUserLocation':
         if (value) goToCurrentLocation().catch(console.error);
-        mapViewComponent.current.toggleUserLocation(value);
+        mapComponentRef.current.toggleUserLocation(value);
         break;
       case 'closeImageBasemap':
         dispatch(setCurrentImageBasemap(undefined));
         break;
       // Map Actions
       case 'zoom':
-        mapViewComponent.current.zoomToSpotsExtent();
+        mapComponentRef.current.zoomToSpotsExtent();
         break;
       case 'saveMap':
         dispatch(setOfflineMapsModalVisible({bool: !isOfflineMapModalVisible}));
         break;
       case 'addTag':
         console.log(`${name}`, ' was clicked');
-        mapViewComponent.current.clearSelectedSpots();
+        mapComponentRef.current.clearSelectedSpots();
         setIsSelectingForTagging(true);
         setDraw(MAP_MODES.DRAW.FREEHANDPOLYGON).catch(console.error);
         break;
       case 'stereonet':
         console.log(`${name}`, ' was clicked');
-        mapViewComponent.current.clearSelectedSpots();
+        mapComponentRef.current.clearSelectedSpots();
         setIsSelectingForStereonet(true);
         setDraw(MAP_MODES.DRAW.FREEHANDPOLYGON).catch(console.error);
         break;
@@ -403,7 +403,7 @@ const Home = () => {
   };
 
   const endDraw = async () => {
-    const newOrEditedSpot = await mapViewComponent.current.endDraw();
+    const newOrEditedSpot = await mapComponentRef.current.endDraw();
     setMapMode(MAP_MODES.VIEW);
     toggleButton('endDrawButtonVisible', false);
     if (!isEmpty(newOrEditedSpot) && !isSelectingForStereonet) openNotebookPanel(NOTEBOOK_PAGES.OVERVIEW);
@@ -414,7 +414,7 @@ const Home = () => {
   const goToCurrentLocation = async () => {
     useHome.toggleLoading(true);
     try {
-      await mapViewComponent.current.goToCurrentLocation();
+      await mapComponentRef.current.goToCurrentLocation();
       useHome.toggleLoading(false);
     }
     catch (err) {
@@ -461,7 +461,7 @@ const Home = () => {
         dispatch(setSelectedSpot(editedSpot));
         break;
       case 'setFromMap':
-        mapViewComponent.current.createDefaultGeom();
+        mapComponentRef.current.createDefaultGeom();
         closeNotebookPanel();
         break;
     }
@@ -637,7 +637,7 @@ const Home = () => {
       <SaveMapsModal
         visible={isOfflineMapModalVisible}
         close={() => dispatch(setOfflineMapsModalVisible(false))}
-        map={mapViewComponent.current}
+        map={mapComponentRef.current}
       />
     );
   };
@@ -803,7 +803,7 @@ const Home = () => {
   };
 
   const setDraw = async mapModeToSet => {
-    mapViewComponent.current.cancelDraw();
+    mapComponentRef.current.cancelDraw();
     if (mapMode === MAP_MODES.VIEW && mapModeToSet !== MAP_MODES.DRAW.POINT) {
       toggleButton('endDrawButtonVisible', true);
     }
@@ -819,7 +819,7 @@ const Home = () => {
   };
 
   const saveEdits = async () => {
-    mapViewComponent.current.saveEdits();
+    mapComponentRef.current.saveEdits();
     //cancelEdits();
     setMapMode(MAP_MODES.VIEW);
     setButtons({
@@ -908,8 +908,8 @@ const Home = () => {
         logout={() => onLogout()}
         closeMainMenuPanel={() => toggleHomeDrawerButton()}
         openNotebookPanel={(pageView) => openNotebookPanel(pageView)}
-        zoomToCenterOfflineTile={() => mapViewComponent.current.zoomToCenterOfflineTile()}
-        zoomToCustomMap={(bbox) => mapViewComponent.current.zoomToCustomMap(bbox)}
+        zoomToCenterOfflineTile={() => mapComponentRef.current.zoomToCenterOfflineTile()}
+        zoomToCustomMap={(bbox) => mapComponentRef.current.zoomToCustomMap(bbox)}
       />
     </Animated.View>
   );
@@ -928,7 +928,7 @@ const Home = () => {
   return (
     <View style={homeStyles.container}>
       <Map
-        mapComponentRef={mapViewComponent}
+        mapComponentRef={mapComponentRef}
         mapMode={mapMode}
         startEdit={startEdit}
         endDraw={endDraw}
@@ -961,8 +961,8 @@ const Home = () => {
         clickHandler={(name, value) => clickHandler(name, value)}
         // rightsideIconAnimation={rightsideIconAnimation}
         leftsideIconAnimation={leftsideIconAnimation}
-        zoomToCustomMap={(bbox) => mapViewComponent.current.zoomToCustomMap(bbox)}
-        zoomToCenterOfflineTile={() => mapViewComponent.current.zoomToCenterOfflineTile()}
+        zoomToCustomMap={(bbox) => mapComponentRef.current.zoomToCustomMap(bbox)}
+        zoomToCenterOfflineTile={() => mapComponentRef.current.zoomToCenterOfflineTile()}
       />
       <NotebookPanelMenu
         visible={dialogs.notebookPanelMenuVisible}

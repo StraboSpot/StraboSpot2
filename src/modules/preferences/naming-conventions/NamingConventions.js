@@ -10,19 +10,19 @@ const NamingConventions = () => {
   const dispatch = useDispatch();
   const formName = ['preferences', 'naming_conventions'];
   const [useForm] = useFormHook();
-  const form = useRef(null);
+  const formRef = useRef(null);
   const preferences = useSelector(state => state.project.project.preferences) || {};
 
   const onMyChange = async (name, value) => {
-    await form.current.setFieldValue(name, value);
-    await form.current.submitForm();
-    console.log('Saving naming convention preferences to Project ...', form.current.values);
-    dispatch(updatedProject({field: 'preferences', value: form.current.values}));
+    await formRef.current.setFieldValue(name, value);
+    await formRef.current.submitForm();
+    console.log('Saving naming convention preferences to Project ...', formRef.current.values);
+    dispatch(updatedProject({field: 'preferences', value: formRef.current.values}));
   };
 
   return (
     <Formik
-      innerRef={form}
+      innerRef={formRef}
       onSubmit={(values) => console.log('Submitting form...', values)}
       validate={(values) => useForm.validateForm({formName: formName, values: values})}
       children={(formProps) => (
