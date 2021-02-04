@@ -17,8 +17,7 @@ import {animatePanels, isEmpty, truncateText} from '../../shared/Helpers';
 import LoadingSpinner from '../../shared/ui/Loading';
 import StatusDialogBox from '../../shared/ui/StatusDialogBox';
 import ToastPopup from '../../shared/ui/Toast';
-import NotebookCompassModal from '../compass/NotebookCompassModal';
-import ShortcutCompassModal from '../compass/ShortcutCompassModal';
+import CompassModal from '../compass/CompassModal';
 import Preview from '../images/Preview';
 import useImagesHook from '../images/useImages';
 import {MAIN_MENU_ITEMS, SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.constants';
@@ -477,8 +476,7 @@ const Home = () => {
   };
 
   const renderFloatingViews = () => {
-    if (modalVisible === MODALS.NOTEBOOK_MODALS.TAGS && isNotebookPanelVisible
-      && !isEmpty(selectedSpot)) {
+    if (modalVisible === MODALS.NOTEBOOK_MODALS.TAGS && isNotebookPanelVisible && !isEmpty(selectedSpot)) {
       return (
         <TagsNotebookModal
           close={() => dispatch(setModalVisible({modal: null}))}
@@ -502,25 +500,25 @@ const Home = () => {
         />
       );
     }
-    if (modalVisible === MODALS.NOTEBOOK_MODALS.COMPASS && isNotebookPanelVisible
-      && !isEmpty(selectedSpot)) {
+    if (modalVisible === MODALS.NOTEBOOK_MODALS.COMPASS && isNotebookPanelVisible && !isEmpty(selectedSpot)) {
       return (
-        <NotebookCompassModal
+        <CompassModal
           close={() => dispatch(setModalVisible({modal: null}))}
           onPress={() => modalHandler(null, MODALS.SHORTCUT_MODALS.COMPASS)}
+          type={MODALS.NOTEBOOK_MODALS.COMPASS}
         />
       );
     }
     if (modalVisible === MODALS.SHORTCUT_MODALS.COMPASS) {
       return (
-        <ShortcutCompassModal
+        <CompassModal
           close={() => dispatch(setModalVisible({modal: null}))}
           onPress={() => modalHandler(NOTEBOOK_PAGES.MEASUREMENT, MODALS.NOTEBOOK_MODALS.COMPASS)}
+          type={MODALS.SHORTCUT_MODALS.COMPASS}
         />
       );
     }
-    if (modalVisible === MODALS.NOTEBOOK_MODALS.SAMPLE && isNotebookPanelVisible
-      && !isEmpty(selectedSpot)) {
+    if (modalVisible === MODALS.NOTEBOOK_MODALS.SAMPLE && isNotebookPanelVisible && !isEmpty(selectedSpot)) {
       return (
         <NotebookSamplesModal
           close={() => dispatch(setModalVisible({modal: null}))}
