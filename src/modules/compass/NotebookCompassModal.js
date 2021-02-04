@@ -1,19 +1,20 @@
 import React from 'react';
 import {Platform} from 'react-native';
 
-import DragAnimation from '../../../shared/ui/DragAmination';
-import Modal from '../../../shared/ui/modal/Modal';
-import uiStyles from '../../../shared/ui/ui.styles';
+import DragAnimation from '../../shared/ui/DragAmination';
+import Modal from '../../shared/ui/modal/Modal';
+import uiStyles from '../../shared/ui/ui.styles';
 import Compass from './Compass';
 
-const ShortcutCompassModal = (props) => {
+const NotebookCompassModal = (props) => {
   if (Platform.OS === 'android') {
     return (
       <Modal
         close={props.close}
         buttonTitleLeft={'Undo'}
         textStyle={{fontWeight: 'bold'}}
-        style={uiStyles.modalPositionShortcutView}
+        onPress={props.onPress}
+        style={uiStyles.modalPosition}
       >
         <Compass/>
       </Modal>
@@ -24,10 +25,10 @@ const ShortcutCompassModal = (props) => {
       <DragAnimation>
         <Modal
           close={props.close}
-          onPress={props.onPress}
           buttonTitleLeft={'Undo'}
           textStyle={{fontWeight: 'bold'}}
-          style={uiStyles.modalPositionShortcutView}
+          onPress={props.onPress}
+          style={uiStyles.modalPosition}
         >
           <Compass/>
         </Modal>
@@ -36,4 +37,4 @@ const ShortcutCompassModal = (props) => {
   }
 };
 
-export default ShortcutCompassModal;
+export default NotebookCompassModal;

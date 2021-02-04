@@ -4,8 +4,8 @@ import {Text, View} from 'react-native';
 import {Avatar, Button, ListItem} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
+import compassStyles from '../../../modules/compass/compass.styles';
 import {MODALS} from '../../../modules/home/home.constants';
-import compassStyles from '../../../modules/measurements/compass/compass.styles';
 import commonStyles from '../../common.styles';
 import {isEmpty} from '../../Helpers';
 import * as themes from '../../styles.constants';

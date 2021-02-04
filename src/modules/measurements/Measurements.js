@@ -9,13 +9,13 @@ import {WARNING_COLOR} from '../../shared/styles.constants';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SectionDivider from '../../shared/ui/SectionDivider';
+import {COMPASS_TOGGLE_BUTTONS} from '../compass/compass.constants';
 import {MODALS} from '../home/home.constants';
 import {setModalVisible} from '../home/home.slice';
 import {NOTEBOOK_PAGES, NOTEBOOK_SUBPAGES} from '../notebook-panel/notebook.constants';
 import {setCompassMeasurementTypes, setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import {setSelectedAttributes} from '../spots/spots.slice';
-import {COMPASS_TOGGLE_BUTTONS} from './compass/compass.constants';
 import MeasurementItem from './MeasurementItem';
 import styles from './measurements.styles';
 
