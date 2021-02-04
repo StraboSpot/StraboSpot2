@@ -86,6 +86,7 @@ const commonStyles = StyleSheet.create({
   },
   listItemTitleInverse: {
     color: themes.SECONDARY_BACKGROUND_COLOR,
+    fontSize: themes.PRIMARY_TEXT_SIZE,
   },
   standardButtonContainer: {
     paddingTop: 5,
