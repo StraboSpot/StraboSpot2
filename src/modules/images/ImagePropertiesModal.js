@@ -4,6 +4,7 @@ import {Text, Switch, View, FlatList} from 'react-native';
 import {Formik} from 'formik';
 import {useDispatch, useSelector} from 'react-redux';
 
+import {PRIMARY_BACKGROUND_COLOR} from '../../shared/styles.constants';
 import Modal from '../../shared/ui/modal/Modal';
 import uiStyles from '../../shared/ui/ui.styles';
 import {Form, useFormHook} from '../form';
@@ -62,7 +63,7 @@ const ImagePropertiesModal = (props) => {
       buttonTitleLeft={'Cancel'}
       cancel={props.cancel}
       close={() => saveFormAndGo()}
-      style={{...uiStyles.modalPosition, left: undefined, right: 100}}
+      style={{...uiStyles.modalPosition, left: undefined, right: 100, backgroundColor: PRIMARY_BACKGROUND_COLOR}}
     >
       <View>
         <FlatList
