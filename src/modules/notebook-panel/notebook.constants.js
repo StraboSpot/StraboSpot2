@@ -26,12 +26,12 @@ export const SECONDARY_NOTEBOOK_PAGES = {
 };
 
 export const SED_NOTEBOOK_PAGES = {
-  LITHOLOGIES: 'Lithologies',
-  BEDDING: 'Bedding',
-  STRUCTURES: 'Structures',
-  DIAGENESIS: 'Diagenesis',
-  FOSSILS: 'Fossils',
-  INTERPRETATIONS: 'Interpretations',
+  // LITHOLOGIES: 'Lithologies',
+  // BEDDING: 'Bedding',
+  // STRUCTURES: 'Structures',
+  // DIAGENESIS: 'Diagenesis',
+  // FOSSILS: 'Fossils',
+  // INTERPRETATIONS: 'Interpretations',
 };
 
 export const NOTEBOOK_SUBPAGES = {
