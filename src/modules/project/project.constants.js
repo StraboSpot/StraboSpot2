@@ -4,6 +4,16 @@ export const OVERWRITE = 'OVERWRITE';
 export const UPLOAD_TO_SERVER = 'UPLOAD_TO_SERVER';
 export const CANCEL = 'CANCEL';
 
+export const DEFAULT_GEOLOGIC_TYPES_DICTIONARY = [
+  {id: 1, name: 'geomorphic'},
+  {id: 2, name: 'hydrologic'},
+  {id: 3, name: 'paleontological'},
+  {id: 4, name: 'igneous'},
+  {id: 5, name: 'metamorphic'},
+  {id: 6, name: 'sedimentological'},
+  {id: 7, name: 'other'},
+];
+
 export const DEFAULT_GEOLOGIC_TYPES = [
   'geomorphic',
   'hydrologic',

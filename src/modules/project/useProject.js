@@ -12,7 +12,7 @@ import {
 } from '../home/home.slice';
 import {clearedMaps} from '../maps/maps.slice';
 import {clearedSpots, deletedSpot} from '../spots/spots.slice';
-import {DEFAULT_GEOLOGIC_TYPES, DEFAULT_RELATIONSHIP_TYPES} from './project.constants';
+import {  DEFAULT_GEOLOGIC_TYPES_DICTIONARY, DEFAULT_RELATIONSHIP_TYPES} from './project.constants';
 import {
   addedDataset,
   addedProjectDescription,
@@ -80,7 +80,7 @@ const useProject = () => {
       description: descriptionData,
       date: newDate,
       modified_timestamp: Date.now(),
-      other_features: DEFAULT_GEOLOGIC_TYPES,
+      other_features: DEFAULT_GEOLOGIC_TYPES_DICTIONARY,
       relationship_types: DEFAULT_RELATIONSHIP_TYPES,
     };
     dispatch(addedProjectDescription(currentProject));

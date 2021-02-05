@@ -19,6 +19,7 @@ import MeasurementDetailPage from '../measurements/MeasurementDetail';
 import MeasurementsPage from '../measurements/Measurements';
 import Nesting from '../nesting/Nesting';
 import NotesPage from '../notes/Notes';
+import OtherFeaturesPage from '../petrology/OtherFeaturesPage';
 import PetrologyPage from '../petrology/PetrologyPage';
 import SampleDetailPage from '../samples/SampleDetail';
 import SamplesPage from '../samples/SamplesNotebook';
@@ -80,7 +81,7 @@ const NotebookPanel = (props) => {
             {pageVisible === SECONDARY_NOTEBOOK_PAGES.THREE_D_STRUCTURES && <ThreeDStructuresPage/>}
             {pageVisible === SECONDARY_NOTEBOOK_PAGES.IG_MET && <PetrologyPage/>}
             {pageVisible === SECONDARY_NOTEBOOK_PAGES.FABRICS && <FabricsPage/>}
-            {pageVisible === SECONDARY_NOTEBOOK_PAGES.OTHER_FEATURES && <PlaceholderPage/>}
+            {pageVisible === SECONDARY_NOTEBOOK_PAGES.OTHER_FEATURES && <OtherFeaturesPage/>}
             {/*{pageVisible === SECONDARY_NOTEBOOK_PAGES.RELATIONSHIPS && <PlaceholderPage/>}*/}
             {pageVisible === SECONDARY_NOTEBOOK_PAGES.DATA && <Data/>}
 

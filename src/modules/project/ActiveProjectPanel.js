@@ -11,6 +11,7 @@ import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRig
 import StandardModal from '../../shared/ui/StandardModal';
 import ActiveDatasetsList from './ActiveDatasetsList';
 import ActiveProjectList from './ActiveProjectList';
+import CustomFeatureTypes from './CustomFeatureTypes';
 import DatasetList from './DatasetList';
 import useDownloadHook from './useDownload';
 import useProjectHook from './useProject';
@@ -105,6 +106,10 @@ const ActiveProjectPanel = () => {
           <View style={{flex: 1, flexGrow: 1, overflow: 'hidden'}}>
             <SectionDivider dividerText={'Active Datasets'}/>
             <ActiveDatasetsList/>
+          </View>
+          <View style={{flex: 1, flexGrow: 1, overflow: 'hidden'}}>
+            <SectionDivider dividerText={'Custom Feature Types'}/>
+            <CustomFeatureTypes/>
           </View>
         </View>
 

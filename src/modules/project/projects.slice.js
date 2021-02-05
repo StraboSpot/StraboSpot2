@@ -1,7 +1,7 @@
 import {createSlice, current} from '@reduxjs/toolkit';
 
 import {isEmpty} from '../../shared/Helpers';
-import {DEFAULT_GEOLOGIC_TYPES, DEFAULT_RELATIONSHIP_TYPES} from './project.constants';
+import {DEFAULT_GEOLOGIC_TYPES_DICTIONARY, DEFAULT_RELATIONSHIP_TYPES} from './project.constants';
 
 const initialProjectState = {
   activeDatasetsIds: [],
@@ -17,6 +17,9 @@ const projectSlice = createSlice({
   name: 'project',
   initialState: initialProjectState,
   reducers: {
+    addedCustomFeatureTypes(state, action) {
+      state.project.other_features =  action.payload;
+    },
     addedDataset(state, action) {
       state.datasets = {...state.datasets, [action.payload.id]: action.payload};
     },
@@ -26,7 +29,7 @@ const projectSlice = createSlice({
     addedProject(state, action) {
       if (!action.payload.description) action.payload.description = {};
       if (!action.payload.description.project_name) action.payload.description.project_name = 'Unnamed';
-      if (!action.payload.other_features) action.payload.other_features = DEFAULT_GEOLOGIC_TYPES;
+      if (!action.payload.other_features) action.payload.other_features = DEFAULT_GEOLOGIC_TYPES_DICTIONARY;
       if (!action.payload.relationship_types) action.payload.relationship_types = DEFAULT_RELATIONSHIP_TYPES;
       state.project = action.payload;
     },
@@ -103,6 +106,7 @@ const projectSlice = createSlice({
 });
 
 export const {
+  addedCustomFeatureTypes,
   addedDataset,
   addedDatasets,
   addedProject,
