@@ -2,8 +2,10 @@ import React, {useEffect, useRef, useState} from 'react';
 import {Alert, FlatList, View} from 'react-native';
 
 import {Field, Formik} from 'formik';
+import {ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import {Form, SelectInputField, useFormHook} from '../form';
@@ -104,16 +106,20 @@ const RockSubpage = (props) => {
           validateOnChange={true}
           initialValues={{}}
         >
-          <Field
-            component={(formProps) => (
-              SelectInputField({setFieldValue: formProps.form.setFieldValue, ...formProps.field, ...formProps})
-            )}
-            name={'spot_id_for_pet_copy'}
-            key={'spot_id_for_pet_copy'}
-            label={'Copy Petrology Ig/Met Data:'}
-            choices={spotsWithPet.map(s => ({label: s.properties.name, value: s.properties.id}))}
-            single={true}
-          />
+          <ListItem containerStyle={{...commonStyles.listItem, paddingTop: 5, paddingBottom: 5}}>
+            <ListItem.Content>
+              <Field
+                component={(formProps) => (
+                  SelectInputField({setFieldValue: formProps.form.setFieldValue, ...formProps.field, ...formProps})
+                )}
+                name={'spot_id_for_pet_copy'}
+                key={'spot_id_for_pet_copy'}
+                label={'Copy Petrology Ig/Met Data:'}
+                choices={spotsWithPet.map(s => ({label: s.properties.name, value: s.properties.id}))}
+                single={true}
+              />
+            </ListItem.Content>
+          </ListItem>
         </Formik>
         <Formik
           innerRef={formRef}

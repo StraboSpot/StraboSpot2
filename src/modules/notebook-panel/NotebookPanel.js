@@ -61,8 +61,7 @@ const NotebookPanel = (props) => {
           </View>
           <View style={notebookStyles.centerContainer}>
             {/*Main Overview Page*/}
-            {(pageVisible === NOTEBOOK_PAGES.OVERVIEW || pageVisible === undefined)
-            && <Overview openMainMenu={props.openMainMenu}/>}
+            {(!pageVisible || pageVisible === NOTEBOOK_PAGES.OVERVIEW) && <Overview openMainMenu={props.openMainMenu}/>}
 
             {/*Primary Pages*/}
             {pageVisible === NOTEBOOK_PAGES.MEASUREMENT && <MeasurementsPage/>}
@@ -82,16 +81,16 @@ const NotebookPanel = (props) => {
             {pageVisible === SECONDARY_NOTEBOOK_PAGES.IG_MET && <PetrologyPage/>}
             {pageVisible === SECONDARY_NOTEBOOK_PAGES.FABRICS && <FabricsPage/>}
             {pageVisible === SECONDARY_NOTEBOOK_PAGES.OTHER_FEATURES && <PlaceholderPage/>}
-            {pageVisible === SECONDARY_NOTEBOOK_PAGES.RELATIONSHIPS && <PlaceholderPage/>}
+            {/*{pageVisible === SECONDARY_NOTEBOOK_PAGES.RELATIONSHIPS && <PlaceholderPage/>}*/}
             {pageVisible === SECONDARY_NOTEBOOK_PAGES.DATA && <Data/>}
 
             {/*Sed Notebook Pages*/}
-            {pageVisible === SED_NOTEBOOK_PAGES.LITHOLOGIES && <PlaceholderPage/>}
-            {pageVisible === SED_NOTEBOOK_PAGES.BEDDING && <PlaceholderPage/>}
-            {pageVisible === SED_NOTEBOOK_PAGES.STRUCTURES && <PlaceholderPage/>}
-            {pageVisible === SED_NOTEBOOK_PAGES.DIAGENESIS && <PlaceholderPage/>}
-            {pageVisible === SED_NOTEBOOK_PAGES.FOSSILS && <PlaceholderPage/>}
-            {pageVisible === SED_NOTEBOOK_PAGES.INTERPRETATIONS && <PlaceholderPage/>}
+            {/*{pageVisible === SED_NOTEBOOK_PAGES.LITHOLOGIES && <PlaceholderPage/>}*/}
+            {/*{pageVisible === SED_NOTEBOOK_PAGES.BEDDING && <PlaceholderPage/>}*/}
+            {/*{pageVisible === SED_NOTEBOOK_PAGES.STRUCTURES && <PlaceholderPage/>}*/}
+            {/*{pageVisible === SED_NOTEBOOK_PAGES.DIAGENESIS && <PlaceholderPage/>}*/}
+            {/*{pageVisible === SED_NOTEBOOK_PAGES.FOSSILS && <PlaceholderPage/>}*/}
+            {/*{pageVisible === SED_NOTEBOOK_PAGES.INTERPRETATIONS && <PlaceholderPage/>}*/}
           </View>
         </View>
         <View style={notebookStyles.footerContainer}>

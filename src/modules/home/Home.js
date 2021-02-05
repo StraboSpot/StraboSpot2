@@ -17,6 +17,7 @@ import {animatePanels, isEmpty, truncateText} from '../../shared/Helpers';
 import LoadingSpinner from '../../shared/ui/Loading';
 import StatusDialogBox from '../../shared/ui/StatusDialogBox';
 import ToastPopup from '../../shared/ui/Toast';
+import CompassModal from '../compass/CompassModal';
 import Preview from '../images/Preview';
 import useImagesHook from '../images/useImages';
 import {MAIN_MENU_ITEMS, SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.constants';
@@ -31,8 +32,6 @@ import {setCurrentImageBasemap} from '../maps/maps.slice';
 import SaveMapsModal from '../maps/offline-maps/SaveMapsModal';
 import useMapsHook from '../maps/useMaps';
 import VertexDrag from '../maps/VertexDrag';
-import NotebookCompassModal from '../measurements/compass/NotebookCompassModal';
-import ShortcutCompassModal from '../measurements/compass/ShortcutCompassModal';
 import {NOTEBOOK_PAGES, NOTEBOOK_SUBPAGES} from '../notebook-panel/notebook.constants';
 import {setNotebookPageVisible, setNotebookPanelVisible} from '../notebook-panel/notebook.slice';
 import NotebookPanel from '../notebook-panel/NotebookPanel';
@@ -158,8 +157,8 @@ const Home = () => {
   const [isSelectingForTagging, setIsSelectingForTagging] = useState(false);
   const [imageSlideshowData, setImageSlideshowData] = useState([]);
   const [exportFileName, setExportFileName] = useState('');
-  const mapViewComponent = useRef(null);
-  const toastRef = useRef();
+  const mapComponentRef = useRef(null);
+  const toastRef = useRef(null);
 
   useEffect(() => {
     // useDevice.loadOfflineMaps().catch();
@@ -226,14 +225,14 @@ const Home = () => {
 
   useEffect(() => {
     if (projectLoadComplete) {
-      mapViewComponent.current.zoomToSpotsExtent();
+      mapComponentRef.current.zoomToSpotsExtent();
       dispatch(setProjectLoadComplete(false));
       // toggles off whenever new project is loaded successfully to trigger the same for next project load.
     }
   }, [projectLoadComplete]);
 
   const cancelEdits = async () => {
-    await mapViewComponent.current.cancelEdits();
+    await mapComponentRef.current.cancelEdits();
     setMapMode(MAP_MODES.VIEW);
     setButtons({
       'editButtonsVisible': false,
@@ -310,7 +309,7 @@ const Home = () => {
         deleteSpot(selectedSpot.properties.id);
         break;
       case 'zoomToSpot':
-        mapViewComponent.current.zoomToSpot();
+        mapComponentRef.current.zoomToSpot();
         break;
       case 'showNesting':
         dispatch(setNotebookPageVisible(NOTEBOOK_SUBPAGES.NESTING));
@@ -321,6 +320,7 @@ const Home = () => {
       case MAP_MODES.DRAW.POLYGON:
       case MAP_MODES.DRAW.FREEHANDPOLYGON:
       case MAP_MODES.DRAW.FREEHANDLINE:
+        dispatch(clearedSelectedSpots());
         if (!isEmpty(selectedDataset)) setDraw(name).catch(console.error);
         else Alert.alert('No Current Dataset', 'A current dataset needs to be set before drawing Spots.');
         break;
@@ -335,27 +335,27 @@ const Home = () => {
         break;
       case 'toggleUserLocation':
         if (value) goToCurrentLocation().catch(console.error);
-        mapViewComponent.current.toggleUserLocation(value);
+        mapComponentRef.current.toggleUserLocation(value);
         break;
       case 'closeImageBasemap':
         dispatch(setCurrentImageBasemap(undefined));
         break;
       // Map Actions
       case 'zoom':
-        mapViewComponent.current.zoomToSpotsExtent();
+        mapComponentRef.current.zoomToSpotsExtent();
         break;
       case 'saveMap':
         dispatch(setOfflineMapsModalVisible({bool: !isOfflineMapModalVisible}));
         break;
       case 'addTag':
         console.log(`${name}`, ' was clicked');
-        mapViewComponent.current.clearSelectedSpots();
+        mapComponentRef.current.clearSelectedSpots();
         setIsSelectingForTagging(true);
         setDraw(MAP_MODES.DRAW.FREEHANDPOLYGON).catch(console.error);
         break;
       case 'stereonet':
         console.log(`${name}`, ' was clicked');
-        mapViewComponent.current.clearSelectedSpots();
+        mapComponentRef.current.clearSelectedSpots();
         setIsSelectingForStereonet(true);
         setDraw(MAP_MODES.DRAW.FREEHANDPOLYGON).catch(console.error);
         break;
@@ -402,17 +402,18 @@ const Home = () => {
   };
 
   const endDraw = async () => {
-    const newOrEditedSpot = await mapViewComponent.current.endDraw();
+    const newOrEditedSpot = await mapComponentRef.current.endDraw();
     setMapMode(MAP_MODES.VIEW);
     toggleButton('endDrawButtonVisible', false);
     if (!isEmpty(newOrEditedSpot) && !isSelectingForStereonet) openNotebookPanel(NOTEBOOK_PAGES.OVERVIEW);
     setIsSelectingForStereonet(false);
+    setIsSelectingForTagging(false);
   };
 
   const goToCurrentLocation = async () => {
     useHome.toggleLoading(true);
     try {
-      await mapViewComponent.current.goToCurrentLocation();
+      await mapComponentRef.current.goToCurrentLocation();
       useHome.toggleLoading(false);
     }
     catch (err) {
@@ -459,7 +460,7 @@ const Home = () => {
         dispatch(setSelectedSpot(editedSpot));
         break;
       case 'setFromMap':
-        mapViewComponent.current.createDefaultGeom();
+        mapComponentRef.current.createDefaultGeom();
         closeNotebookPanel();
         break;
     }
@@ -475,8 +476,7 @@ const Home = () => {
   };
 
   const renderFloatingViews = () => {
-    if (modalVisible === MODALS.NOTEBOOK_MODALS.TAGS && isNotebookPanelVisible
-      && !isEmpty(selectedSpot)) {
+    if (modalVisible === MODALS.NOTEBOOK_MODALS.TAGS && isNotebookPanelVisible && !isEmpty(selectedSpot)) {
       return (
         <TagsNotebookModal
           close={() => dispatch(setModalVisible({modal: null}))}
@@ -500,25 +500,25 @@ const Home = () => {
         />
       );
     }
-    if (modalVisible === MODALS.NOTEBOOK_MODALS.COMPASS && isNotebookPanelVisible
-      && !isEmpty(selectedSpot)) {
+    if (modalVisible === MODALS.NOTEBOOK_MODALS.COMPASS && isNotebookPanelVisible && !isEmpty(selectedSpot)) {
       return (
-        <NotebookCompassModal
+        <CompassModal
           close={() => dispatch(setModalVisible({modal: null}))}
           onPress={() => modalHandler(null, MODALS.SHORTCUT_MODALS.COMPASS)}
+          type={MODALS.NOTEBOOK_MODALS.COMPASS}
         />
       );
     }
     if (modalVisible === MODALS.SHORTCUT_MODALS.COMPASS) {
       return (
-        <ShortcutCompassModal
+        <CompassModal
           close={() => dispatch(setModalVisible({modal: null}))}
           onPress={() => modalHandler(NOTEBOOK_PAGES.MEASUREMENT, MODALS.NOTEBOOK_MODALS.COMPASS)}
+          type={MODALS.SHORTCUT_MODALS.COMPASS}
         />
       );
     }
-    if (modalVisible === MODALS.NOTEBOOK_MODALS.SAMPLE && isNotebookPanelVisible
-      && !isEmpty(selectedSpot)) {
+    if (modalVisible === MODALS.NOTEBOOK_MODALS.SAMPLE && isNotebookPanelVisible && !isEmpty(selectedSpot)) {
       return (
         <NotebookSamplesModal
           close={() => dispatch(setModalVisible({modal: null}))}
@@ -635,7 +635,7 @@ const Home = () => {
       <SaveMapsModal
         visible={isOfflineMapModalVisible}
         close={() => dispatch(setOfflineMapsModalVisible(false))}
-        map={mapViewComponent.current}
+        map={mapComponentRef.current}
       />
     );
   };
@@ -801,7 +801,7 @@ const Home = () => {
   };
 
   const setDraw = async mapModeToSet => {
-    mapViewComponent.current.cancelDraw();
+    mapComponentRef.current.cancelDraw();
     if (mapMode === MAP_MODES.VIEW && mapModeToSet !== MAP_MODES.DRAW.POINT) {
       toggleButton('endDrawButtonVisible', true);
     }
@@ -817,7 +817,7 @@ const Home = () => {
   };
 
   const saveEdits = async () => {
-    mapViewComponent.current.saveEdits();
+    mapComponentRef.current.saveEdits();
     //cancelEdits();
     setMapMode(MAP_MODES.VIEW);
     setButtons({
@@ -906,8 +906,8 @@ const Home = () => {
         logout={() => onLogout()}
         closeMainMenuPanel={() => toggleHomeDrawerButton()}
         openNotebookPanel={(pageView) => openNotebookPanel(pageView)}
-        zoomToCenterOfflineTile={() => mapViewComponent.current.zoomToCenterOfflineTile()}
-        zoomToCustomMap={(bbox) => mapViewComponent.current.zoomToCustomMap(bbox)}
+        zoomToCenterOfflineTile={() => mapComponentRef.current.zoomToCenterOfflineTile()}
+        zoomToCustomMap={(bbox) => mapComponentRef.current.zoomToCustomMap(bbox)}
       />
     </Animated.View>
   );
@@ -926,7 +926,7 @@ const Home = () => {
   return (
     <View style={homeStyles.container}>
       <Map
-        mapComponentRef={mapViewComponent}
+        mapComponentRef={mapComponentRef}
         mapMode={mapMode}
         startEdit={startEdit}
         endDraw={endDraw}
@@ -959,8 +959,8 @@ const Home = () => {
         clickHandler={(name, value) => clickHandler(name, value)}
         // rightsideIconAnimation={rightsideIconAnimation}
         leftsideIconAnimation={leftsideIconAnimation}
-        zoomToCustomMap={(bbox) => mapViewComponent.current.zoomToCustomMap(bbox)}
-        zoomToCenterOfflineTile={() => mapViewComponent.current.zoomToCenterOfflineTile()}
+        zoomToCustomMap={(bbox) => mapComponentRef.current.zoomToCustomMap(bbox)}
+        zoomToCenterOfflineTile={() => mapComponentRef.current.zoomToCenterOfflineTile()}
       />
       <NotebookPanelMenu
         visible={dialogs.notebookPanelMenuVisible}

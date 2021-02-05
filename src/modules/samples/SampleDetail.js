@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {FlatList, View} from 'react-native';
+import {Alert, FlatList, View} from 'react-native';
 
 import {Formik} from 'formik';
 import {Button} from 'react-native-elements';
@@ -21,18 +21,40 @@ const SampleDetailPage = () => {
   const [formName, setFormName] = useState([]);
   const spot = useSelector(state => state.spot.selectedSpot);
   const selectedSample = useSelector(state => state.spot.selectedAttributes[0]);
-  const modalVisible = useSelector(state => state.home.modalVisible);
-  const form = useRef(null);
+  const formRef = useRef(null);
 
   useEffect(() => {
     console.log('In SampleDetailPage useEffect', selectedSample);
     setFormName(['general', 'sample']);
+    return () => confirmLeavePage();
   }, []);
 
   useEffect(() => {
     console.log('UE for selectedSample changed in SampleDetailPage');
     if (!selectedSample) dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.SAMPLE));
   }, [selectedSample]);
+
+  const cancelFormAndGo = async () => {
+    await formRef.current.resetForm();
+    dispatch(setNotebookPageVisibleToPrev());
+  };
+
+  const confirmLeavePage = () => {
+    if (formRef.current && formRef.current.dirty) {
+      const formCurrent = formRef.current;
+      Alert.alert('Unsaved Changes',
+        'Would you like to save your data before continuing?',
+        [{
+          text: 'No',
+          style: 'cancel',
+        }, {
+          text: 'Yes',
+          onPress: () => saveForm(formCurrent),
+        }],
+        {cancelable: false},
+      );
+    }
+  };
 
   // Delete a sample
   const deleteSample = () => {
@@ -53,8 +75,8 @@ const SampleDetailPage = () => {
     return (
       <View>
         <SaveAndCloseButton
-          cancel={() => dispatch(setNotebookPageVisibleToPrev())}
-          save={() => saveFormAndGo()}
+          cancel={cancelFormAndGo}
+          save={saveFormAndGo}
         />
       </View>
     );
@@ -67,7 +89,7 @@ const SampleDetailPage = () => {
         <SectionDivider dividerText='Sample'/>
         <View style={{flex: 1}}>
           <Formik
-            innerRef={form}
+            innerRef={formRef}
             onSubmit={onSubmitForm}
             validate={(values) => useForm.validateForm({formName: formName, values: values})}
             component={(formProps) => Form({formName: formName, ...formProps})}
@@ -80,34 +102,31 @@ const SampleDetailPage = () => {
     );
   };
 
-  const saveForm = async () => {
-    return form.current.submitForm().then(() => {
-      if (useForm.hasErrors(form.current)) {
-        useForm.showErrors(form.current);
-        return Promise.reject();
+  const saveForm = async (formCurrent) => {
+    await formCurrent.submitForm();
+    if (useForm.hasErrors(formCurrent)) {
+      useForm.showErrors(formCurrent);
+      console.log('Found validation errors.');
+      throw Error;
+    }
+    let samplesDataCopy = JSON.parse(JSON.stringify(spot.properties.samples));
+    let formValues = {...formCurrent.values};
+    let editedSelectedSample = [];
+    samplesDataCopy.forEach((sample, i) => {
+      if (selectedSample.id === sample.id) {
+        samplesDataCopy[i] = {...sample, ...formValues};
+        editedSelectedSample.push(samplesDataCopy[i]);
       }
-      let samplesDataCopy = JSON.parse(JSON.stringify(spot.properties.samples));
-      let formValues = {...form.current.values};
-      let editedSelectedSample = [];
-      samplesDataCopy.forEach((sample, i) => {
-        if (selectedSample.id === sample.id) {
-          samplesDataCopy[i] = {...sample, ...formValues};
-          editedSelectedSample.push(samplesDataCopy[i]);
-        }
-      });
-      dispatch(setSelectedAttributes(editedSelectedSample));
-      dispatch(editedSpotProperties({field: 'samples', value: samplesDataCopy}));
-      return Promise.resolve();
-    }, (e) => {
-      console.log('Error submitting form', e);
-      return Promise.reject();
     });
+    dispatch(setSelectedAttributes(editedSelectedSample));
+    dispatch(editedSpotProperties({field: 'samples', value: samplesDataCopy}));
+    await formCurrent.resetForm();
+    console.log('Finished saving form data to Spot');
   };
 
   const saveFormAndGo = async () => {
     try {
-      await saveForm();
-      console.log('Finished saving form data to Spot');
+      await saveForm(formRef.current);
       dispatch(setNotebookPageVisibleToPrev());
     }
     catch (err) {

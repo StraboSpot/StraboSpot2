@@ -23,8 +23,8 @@ const Geography = () => {
   const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
 
-  const form = useRef(null);
-  const geomForm = useRef(null);
+  const formRef = useRef(null);
+  const geomFormRef = useRef(null);
 
   const cancelFormAndGo = () => {
     dispatch(setNotebookPageVisibleToPrev());
@@ -33,8 +33,8 @@ const Geography = () => {
   // Fill in current location
   const fillWithCurrentLocation = async () => {
     const [lng, lat] = await useMaps.getCurrentLocation();
-    if (lat) geomForm.current.setFieldValue('latitude', lat);
-    if (lng) geomForm.current.setFieldValue('longitude', lng);
+    if (lat) geomFormRef.current.setFieldValue('latitude', lat);
+    if (lng) geomFormRef.current.setFieldValue('longitude', lng);
   };
 
   const renderCancelSaveButtons = () => {
@@ -54,7 +54,7 @@ const Geography = () => {
     return (
       <View style={{flex: 1}}>
         <Formik
-          innerRef={form}
+          innerRef={formRef}
           onSubmit={() => console.log('Submitting form...')}
           validate={(values) => useForm.validateForm({formName: formName, values: values})}
           component={(formProps) => Form({formName: formName, ...formProps})}
@@ -118,7 +118,7 @@ const Geography = () => {
         initialValues={initialGeomValues}
         onSubmit={() => console.log('Submitting form...')}
         validate={validateGeometry}
-        innerRef={geomForm}
+        innerRef={geomFormRef}
         validateOnChange={true}
         enableReinitialize={true}
       >
@@ -295,30 +295,30 @@ const Geography = () => {
 
   const saveForm = async () => {
     try {
-      await geomForm.current.submitForm();
-      await form.current.submitForm();
-      if (useForm.hasErrors(geomForm.current) || useForm.hasErrors(form.current)) {
-        useForm.showErrors(geomForm.current, form.current);
+      await geomFormRef.current.submitForm();
+      await formRef.current.submitForm();
+      if (useForm.hasErrors(geomFormRef.current) || useForm.hasErrors(formRef.current)) {
+        useForm.showErrors(geomFormRef.current, formRef.current);
         return Promise.reject();
       }
       else {
         console.log('Saving form data to Spot ...');
         let geometry = spot.geometry;
-        let geographyProperties = form.current.values;
+        let geographyProperties = formRef.current.values;
         if (useMaps.isOnGeoMap(spot)) {
-          if (!isEmpty(geomForm.current.values.longitude) && !isEmpty(geomForm.current.values.latitude)) {
-            const point = turf.point([geomForm.current.values.longitude, geomForm.current.values.latitude]);
+          if (!isEmpty(geomFormRef.current.values.longitude) && !isEmpty(geomFormRef.current.values.latitude)) {
+            const point = turf.point([geomFormRef.current.values.longitude, geomFormRef.current.values.latitude]);
             geometry = point.geometry;
           }
         }
         else if (!useMaps.isOnGeoMap(spot)) {
-          if (!isEmpty(geomForm.current.values.x_pixels) && !isEmpty(geomForm.current.values.y_pixels)) {
-            const point = turf.point([geomForm.current.values.x_pixels, geomForm.current.values.y_pixels]);
+          if (!isEmpty(geomFormRef.current.values.x_pixels) && !isEmpty(geomFormRef.current.values.y_pixels)) {
+            const point = turf.point([geomFormRef.current.values.x_pixels, geomFormRef.current.values.y_pixels]);
             geometry = point.geometry;
           }
-          if (!isEmpty(geomForm.current.values.longitude) && !isEmpty(geomForm.current.values.latitude)) {
-            geographyProperties.lng = geomForm.current.values.longitude;
-            geographyProperties.lat = geomForm.current.values.latitude;
+          if (!isEmpty(geomFormRef.current.values.longitude) && !isEmpty(geomFormRef.current.values.latitude)) {
+            geographyProperties.lng = geomFormRef.current.values.longitude;
+            geographyProperties.lat = geomFormRef.current.values.latitude;
           }
         }
         const editedSpot = {geometry: geometry, properties: {...geographyProperties}, type: spot.type};

@@ -18,7 +18,7 @@ const notebookFooterStyles = StyleSheet.create({
   morePagesDialog: {
     position: 'absolute',
     width: 250,
-    height: '95%',
+    // height: '95%',
     bottom: 10,
     right: 10,
     borderRadius: 20,

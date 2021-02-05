@@ -19,15 +19,15 @@ import {accelerometer, SensorTypes, setUpdateIntervalForType} from 'react-native
 import Sound from 'react-native-sound';
 import {connect, useDispatch, useSelector} from 'react-redux';
 
-import {getNewId, mod, roundToDecimalPlaces, toDegrees, toRadians} from '../../../shared/Helpers';
-import modalStyle from '../../../shared/ui/modal/modal.style';
-import Slider from '../../../shared/ui/Slider';
-import uiStyles from '../../../shared/ui/ui.styles';
-import {MODALS} from '../../home/home.constants';
-import useMapsHook from '../../maps/useMaps';
-import {NOTEBOOK_SUBPAGES} from '../../notebook-panel/notebook.constants';
-import {setNotebookPageVisible} from '../../notebook-panel/notebook.slice';
-import {editedSpotProperties, setSelectedAttributes} from '../../spots/spots.slice';
+import {getNewId, mod, roundToDecimalPlaces, toDegrees, toRadians} from '../../shared/Helpers';
+import modalStyle from '../../shared/ui/modal/modal.style';
+import Slider from '../../shared/ui/Slider';
+import uiStyles from '../../shared/ui/ui.styles';
+import {MODALS} from '../home/home.constants';
+import useMapsHook from '../maps/useMaps';
+import {NOTEBOOK_SUBPAGES} from '../notebook-panel/notebook.constants';
+import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
+import {editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
 import {COMPASS_TOGGLE_BUTTONS} from './compass.constants';
 import compassStyles from './compass.styles';
 
@@ -253,7 +253,7 @@ const Compass = (props) => {
   const renderCompass = () => {
     return (
       <TouchableOpacity style={compassStyles.compassImageContainer} onPress={() => grabMeasurements(true)}>
-        <Image source={require('../../../assets/images/compass/compass.png')} style={compassStyles.compassImage}/>
+        <Image source={require('../../assets/images/compass/compass.png')} style={compassStyles.compassImage}/>
         {renderCompassSymbols()}
       </TouchableOpacity>
     );
@@ -293,7 +293,7 @@ const Compass = (props) => {
 
   // Render the strike and dip symbol inside the compass
   const renderStrikeDipSymbol = () => {
-    let image = require('../../../assets/images/compass/strike-dip-centered.png');
+    let image = require('../../assets/images/compass/strike-dip-centered.png');
     const spin = strikeSpinValue.interpolate({
       inputRange: [0, compassData.strike],
       outputRange: ['0deg', compassData.strike + 'deg'],
@@ -356,7 +356,7 @@ const Compass = (props) => {
 
   // Render the strike and dip symbol inside the compass
   const renderTrendSymbol = () => {
-    let image = require('../../../assets/images/compass/trendLine.png');
+    let image = require('../../assets/images/compass/trendLine.png');
     const spin = trendSpinValue.interpolate({
       inputRange: [0, compassData.trend],
       outputRange: ['0deg', compassData.trend + 'deg'],

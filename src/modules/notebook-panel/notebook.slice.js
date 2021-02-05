@@ -1,7 +1,7 @@
 import {createSlice} from '@reduxjs/toolkit';
 
 import {isEmpty} from '../../shared/Helpers';
-import {COMPASS_TOGGLE_BUTTONS} from '../measurements/compass/compass.constants';
+import {COMPASS_TOGGLE_BUTTONS} from '../compass/compass.constants';
 import {PRIMARY_NOTEBOOK_PAGES} from './notebook.constants';
 
 const initialNotebookState = {

@@ -33,6 +33,7 @@ import {
 import useOfflineMapsHook from './offline-maps/useMapsOffline';
 import useMapFeaturesHook from './useMapFeatures';
 import useMapsHook from './useMaps';
+import useMapSymbology from './useMapSymbology';
 
 MapboxGL.setAccessToken(MAPBOX_KEY);
 
@@ -41,6 +42,7 @@ const Map = React.forwardRef((props, ref) => {
 
   const [useImages] = useImagesHook();
   const [useMaps] = useMapsHook();
+  const [useSymbology] = useMapSymbology();
   const [useMapFeatures] = useMapFeaturesHook();
   const [useSpots] = useSpotsHook();
   const useOfflineMaps = useOfflineMapsHook();
@@ -95,8 +97,8 @@ const Map = React.forwardRef((props, ref) => {
   const [defaultGeomType, setDefaultGeomType] = useState();
   const [isZoomToCenterOffline, setIsZoomToCenterOffline] = useState(false);
 
-  const map = useRef(null);
-  const camera = useRef(null);
+  const mapRef = useRef(null);
+  const cameraRef = useRef(null);
 
   // Props that needed to pass to the map component
   const mapProps = {
@@ -104,7 +106,7 @@ const Map = React.forwardRef((props, ref) => {
     freehandSketchMode: (props.mapMode === MAP_MODES.DRAW.FREEHANDPOLYGON
       || props.mapMode === MAP_MODES.DRAW.FREEHANDLINE),
     allowMapViewMove: !isDrawFeatureModeOn() && props.mapMode !== MAP_MODES.EDIT,
-    ref: {mapRef: map, cameraRef: camera},
+    ref: {mapRef: mapRef, cameraRef: cameraRef},
     onMapPress: (e) => onMapPress(e),
     onMapLongPress: (e) => onMapLongPress(e),
     spotsInMapExtent: () => spotsInMapExtent(),
@@ -143,8 +145,8 @@ const Map = React.forwardRef((props, ref) => {
     console.log('UE2 Map [currentBasemap]');
     console.log('Changed current basemap to:', currentBasemap);
     const getCenter = async () => {
-      const center = map && map.current ? await map.current.getCenter() : initialMapPropsMutable.centerCoordinate;
-      const zoom = map && map.current ? await map.current.getZoom() : initialMapPropsMutable.zoom;
+      const center = mapRef && mapRef.current ? await mapRef.current.getCenter() : initialMapPropsMutable.centerCoordinate;
+      const zoom = mapRef && mapRef.current ? await mapRef.current.getZoom() : initialMapPropsMutable.zoom;
       const latAndLng = !isEmpty(currentBasemap) && await useOfflineMaps.getMapCenterTile(currentBasemap.id);
       setMapPropsMutable(m => ({
         ...m,
@@ -223,7 +225,7 @@ const Map = React.forwardRef((props, ref) => {
   // Create a default geometry for a Spot that doesn't have geometry when 'Set in Current View' is clicked
   // then make it selected for immediate editing
   const createDefaultGeom = async () => {
-    if (selectedSpot && selectedSpot.properties && map && map.current) {
+    if (selectedSpot && selectedSpot.properties && mapRef && mapRef.current) {
       if (selectedSpot.properties.trace) setDefaultGeomType('LineString');
       else if (selectedSpot.properties.surface_feature) setDefaultGeomType('Polygon');
       else setShowSetInCurrentViewModal(true);
@@ -233,7 +235,7 @@ const Map = React.forwardRef((props, ref) => {
   };
 
   const createDefaultGeomContinued = async () => {
-    const centerCoords = await map.current.getCenter();
+    const centerCoords = await mapRef.current.getCenter();
     if (centerCoords) {
       let defaultFeature = turf.point(centerCoords);
       if (defaultGeomType === 'LineString' || defaultGeomType === 'Polygon') {
@@ -263,7 +265,7 @@ const Map = React.forwardRef((props, ref) => {
 
   const moveVertex = async () => {
     try { // on imagebasemap, if spot is not point, conversion happens in editSpotCoordinates.
-      const newVertexCoords = await map.current.getCoordinateFromView(vertexEndCoords);
+      const newVertexCoords = await mapRef.current.getCoordinateFromView(vertexEndCoords);
       if (currentImageBasemap && editingModeData.spotEditing && turf.getType(editingModeData.spotEditing) === 'Point') {
         const vertexCoordinates = useMaps.convertCoordinateProjections(GEO_LAT_LNG_PROJECTION, PIXEL_PROJECTION,
           [newVertexCoords[0], newVertexCoords[1]]);
@@ -313,7 +315,9 @@ const Map = React.forwardRef((props, ref) => {
 
   // Set selected and not selected Spots to display while editing
   const setDisplayedSpotsWhileEditing = (spotEditingTmp, spotsEditedTmp, spotsNotEditedTmp) => {
-    spotsNotEditedTmp = spotsNotEditedTmp.filter(spot => spot.properties.id !== spotEditingTmp.properties.id);
+    if (!isEmpty(spotEditingTmp)) {
+      spotsNotEditedTmp = spotsNotEditedTmp.filter(spot => spot.properties.id !== spotEditingTmp.properties.id);
+    }
     console.log('Set displayed Spots while editing. Editing:', spotEditingTmp, 'Edited:', spotsEditedTmp, 'Not edited:',
       spotsNotEditedTmp);
     if (!currentImageBasemap) {
@@ -579,11 +583,11 @@ const Map = React.forwardRef((props, ref) => {
       const coords = vertex.geometry.coordinates;
       const [lat, lng] = useMaps.convertCoordinateProjections(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION,
         [coords[0], coords[1]]);
-      const vertexCoordinates = await map.current.getPointInView([lat, lng]);
+      const vertexCoordinates = await mapRef.current.getPointInView([lat, lng]);
       dispatch(setVertexStartCoords(vertexCoordinates));
     }
     else {
-      const vertexCoordinates = await map.current.getPointInView(vertex.geometry.coordinates);
+      const vertexCoordinates = await mapRef.current.getPointInView(vertex.geometry.coordinates);
       dispatch(setVertexStartCoords(vertexCoordinates));
     }
   };
@@ -746,7 +750,6 @@ const Map = React.forwardRef((props, ref) => {
           editFeatureVertex: [],
         }));
         console.log('Finished editing Spot. Spot Editing: ', spotEditingCopy);
-        if (turf.getType(spotEditingCopy) === 'Point') clearSelectedFeatureToEdit();
       }
     }
   };
@@ -756,7 +759,7 @@ const Map = React.forwardRef((props, ref) => {
   };
 
   const getExtentString = async () => {
-    const mapBounds = await map.current.getVisibleBounds();
+    const mapBounds = await mapRef.current.getVisibleBounds();
 
     let right = mapBounds[0][0];
     let top = mapBounds[0][1];
@@ -767,7 +770,7 @@ const Map = React.forwardRef((props, ref) => {
 
   const getCurrentZoom = async () => {
     //console.log('Map.current', map);
-    return await map.current.getZoom();
+    return await mapRef.current.getZoom();
     // return 16;
   };
 
@@ -795,10 +798,10 @@ const Map = React.forwardRef((props, ref) => {
 
   // Fly the map to the current location
   const goToCurrentLocation = async () => {
-    if (camera.current) {
+    if (cameraRef.current) {
       try {
         const currentLocation = await useMaps.getCurrentLocation();
-        await camera.current.flyTo(currentLocation, 2500);
+        await cameraRef.current.flyTo(currentLocation, 2500);
       }
       catch (err) {
         throw err;
@@ -827,7 +830,7 @@ const Map = React.forwardRef((props, ref) => {
         for (let i = 0; i < screenCoordinates.length; i++) {
           screenX = screenCoordinates[i][0];
           screenY = screenCoordinates[i][1];
-          let geoCoordinates = await map.current.getCoordinateFromView([screenX, screenY]);
+          let geoCoordinates = await mapRef.current.getCoordinateFromView([screenX, screenY]);
           featureCoordinates.push(geoCoordinates);
         }
         let feature;
@@ -857,6 +860,8 @@ const Map = React.forwardRef((props, ref) => {
           }
         }
         else {
+          const symbology = useSymbology.getSymbology(feature);
+          feature.properties.symbology = symbology;
           newOrEditedSpot = await useSpots.createSpot(feature);
           useMaps.setSelectedSpotOnMap(newOrEditedSpot);
           dispatch(setFreehandFeatureCoords(undefined));// reset the freeHandCoordinates
@@ -871,6 +876,8 @@ const Map = React.forwardRef((props, ref) => {
       if (mapPropsMutable.drawFeatures.length > 1) {
         newFeature = mapPropsMutable.drawFeatures.splice(1, 1)[0];
       }
+      const symbology = useSymbology.getSymbology(newFeature);
+      newFeature.properties.symbology = symbology;
       if (currentImageBasemap) { //create new spot for imagebasemap - needs lat long to pixel conversion.
         newFeature = useMaps.convertFeatureGeometryToImagePixels(newFeature);
         newFeature.properties.image_basemap = currentImageBasemap.id;
@@ -1131,7 +1138,7 @@ const Map = React.forwardRef((props, ref) => {
   const getFeatureInRect = async (screenPointX, screenPointY, layers) => {
     const r = 30; // half the width (in pixels?) of bounding box to create
     const bbox = [screenPointY + r, screenPointX + r, screenPointY - r, screenPointX - r];
-    const featureCollectionInRect = await map.current.queryRenderedFeaturesInRect(bbox, null, layers);
+    const featureCollectionInRect = await mapRef.current.queryRenderedFeaturesInRect(bbox, null, layers);
     const featuresInRect = featureCollectionInRect.features;
     let featureFound = {};
     if (featuresInRect.length > 1) {
@@ -1168,7 +1175,7 @@ const Map = React.forwardRef((props, ref) => {
       }
       else {
         var eachFeature = JSON.parse(JSON.stringify(featuresInRect[i]));
-        screenCoords = await map.current.getPointInView(eachFeature.geometry.coordinates);
+        screenCoords = await mapRef.current.getPointInView(eachFeature.geometry.coordinates);
         eachFeature.geometry.coordinates = screenCoords;
         distances[i] = turf.distance(dummyFeature, eachFeature);
       }
@@ -1234,7 +1241,7 @@ const Map = React.forwardRef((props, ref) => {
         }));
       }
       // spot selected is on geomap and mapMode is main-map, zoomToSpot in sync mode.
-      else useMaps.zoomToSpots([selectedSpot], map.current, camera.current);
+      else useMaps.zoomToSpots([selectedSpot], mapRef.current, cameraRef.current);
     }
     else if (selectedSpot && selectedSpot.properties.image_basemap) {
       //spot selected is on imagebasemap, either if not on imagebasemap
@@ -1251,7 +1258,7 @@ const Map = React.forwardRef((props, ref) => {
         }));
       }
       //spot selected is already on the same imagebasemap, zoomToSpot in sync mode.
-      else useMaps.zoomToSpots([selectedSpot], map.current, camera.current);
+      else useMaps.zoomToSpots([selectedSpot], mapRef.current, cameraRef.current);
     }
     else {
       // handle other maps
@@ -1295,8 +1302,8 @@ const Map = React.forwardRef((props, ref) => {
 
   // Calculate the Spots in the current map extent and send to redux
   const spotsInMapExtent = async () => {
-    if (map && map.current) {
-      const mapBounds = await map.current.getVisibleBounds();
+    if (mapRef && mapRef.current) {
+      const mapBounds = await mapRef.current.getVisibleBounds();
       let right = mapBounds[0][0];
       let top = mapBounds[0][1];
       let left = mapBounds[1][0];
@@ -1313,7 +1320,7 @@ const Map = React.forwardRef((props, ref) => {
   // Zoom map to the extent of the mapped Spots
   const zoomToSpotsExtent = () => {
     const spotsToZoomTo = [...mapProps.spotsSelected, ...mapProps.spotsNotSelected];
-    useMaps.zoomToSpots(spotsToZoomTo, map.current, camera.current);
+    useMaps.zoomToSpots(spotsToZoomTo, mapRef.current, cameraRef.current);
   };
 
   const zoomToCenterOfflineTile = () => {
@@ -1323,7 +1330,8 @@ const Map = React.forwardRef((props, ref) => {
   const zoomToCustomMap = (bbox) => {
     if (bbox && isOnline) {
       const bboxArr = bbox.split(',');
-      camera.current.fitBounds([Number(bboxArr[0]), Number(bboxArr[1])],[Number(bboxArr[2]), Number(bboxArr[3])], 100, 2500);
+      cameraRef.current.fitBounds([Number(bboxArr[0]), Number(bboxArr[1])], [Number(bboxArr[2]), Number(bboxArr[3])],
+        100, 2500);
     }
     else console.error('Error: not able to get Custom Map bbox coords...');
   };

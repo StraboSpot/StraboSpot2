@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useRef} from 'react';
 import {Text, View} from 'react-native';
 
 import {Formik} from 'formik';
@@ -13,7 +13,7 @@ import {tagsStyles} from './index';
 const useTags = () => {
   const [useForm] = useFormHook();
   const dispatch = useDispatch();
-  const form = useRef(null);
+  const formRef = useRef(null);
   const addTagToSelectedSpot = useSelector(state => state.project.addTagToSelectedSpot);
   const modalVisible = useSelector(state => state.home.modalVisible);
   const projectTags = useSelector(state => state.project.project.tags || []);
@@ -27,7 +27,6 @@ const useTags = () => {
       dispatch(addedTagToSelectedSpot(true));
     }
     else dispatch(addedTagToSelectedSpot(false));
-    return;
   };
 
   const addRemoveSpotFromTag = (spotId) => {
@@ -79,12 +78,6 @@ const useTags = () => {
     return [...tagsGeologicUnit, ...tagsOther];
   };
 
-  // What happens after submitting the form is handled in saveFormAndClose since we want to show
-  // an alert message if there are errors but this function won't be called if form is invalid
-  const onSubmitForm = () => {
-    console.log('In onSubmitForm');
-  };
-
   const renderSpotCount = (tag) => {
     if (tag.spots) {
       if (tag.spots.length === 1) return `${tag.spots.length} spot`;
@@ -119,8 +112,8 @@ const useTags = () => {
     return (
       <View style={{flex: 1}}>
         <Formik
-          innerRef={form}
-          onSubmit={onSubmitForm}
+          innerRef={formRef}
+          onSubmit={() => console.log('Submitting form...')}
           validate={(values) => useForm.validateForm({formName: formName, values: values})}
           component={(formProps) => Form({formName: formName, ...formProps})}
           initialValues={selectedTag}
@@ -133,15 +126,15 @@ const useTags = () => {
 
   const saveForm = async () => {
     try {
-      await form.current.submitForm();
-      if (useForm.hasErrors(form.current)) {
-        useForm.showErrors(form.current);
+      await formRef.current.submitForm();
+      if (useForm.hasErrors(formRef.current)) {
+        useForm.showErrors(formRef.current);
         return Promise.reject();
       }
       else {
         console.log('Saving tag data to Project ...');
-        console.log('Form values', form.current.values);
-        let updatedTag = form.current.values;
+        console.log('Form values', formRef.current.values);
+        let updatedTag = formRef.current.values;
         if (!updatedTag.id) updatedTag.id = getNewId();
         if (addTagToSelectedSpot) {
           if (!updatedTag.spots) updatedTag.spots = [];
@@ -158,18 +151,23 @@ const useTags = () => {
   };
 
   const saveTag = (tagToSave) => {
-    const updatedTags = projectTags.filter(tag => tag.id !== tagToSave.id);
-    updatedTags.push(tagToSave);
-    dispatch(updatedProject({field: 'tags', value: updatedTags}));
+    if (!Array.isArray(tagToSave)) {
+      const updatedTags = projectTags.filter(tag => tag.id !== tagToSave.id);
+      updatedTags.unshift(tagToSave);
+      dispatch(updatedProject({field: 'tags', value: updatedTags}));
+    }
+    else {
+      let tagIdsToSave = tagToSave.map(tag => tag.id);
+      let updatedTags = projectTags.filter(tag => !tagIdsToSave.includes(tag.id));
+      updatedTags = tagToSave.concat(updatedTags);
+      dispatch(updatedProject({field: 'tags', value: updatedTags}));
+    }
   };
 
-  const addTagToSpot = (tag, spot) => {
+  const tagSpotExists = (tag, spot) => {
     if (!tag.spots) tag.spots = [];
-    const spotId = spot ? spot.properties.id : selectedSpot.properties.id;
-    const i = tag.spots.indexOf(spotId);
-    if (i === -1) tag.spots.push(spotId);
-    if (isEmpty(tag.spots)) delete tag.spots;
-    saveTag(tag);
+    const i = tag.spots.indexOf(spot.properties.id);
+    return i !== -1;
   };
 
   return [{
@@ -185,7 +183,7 @@ const useTags = () => {
     renderTagForm: renderTagForm,
     saveForm: saveForm,
     saveTag: saveTag,
-    addTagToSpot: addTagToSpot,
+    tagSpotExists: tagSpotExists,
   }];
 };
 

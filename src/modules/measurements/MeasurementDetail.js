@@ -17,6 +17,7 @@ import {setNotebookPageVisible, setNotebookPageVisibleToPrev} from '../notebook-
 import {editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
 import MeasurementItem from './MeasurementItem';
 import styles from './measurements.styles';
+import useMeasurementsHook from './useMeasurements';
 
 const MeasurementDetailPage = (props) => {
   const dispatch = useDispatch();
@@ -25,13 +26,35 @@ const MeasurementDetailPage = (props) => {
   const spot = useSelector(state => state.spot.selectedSpot);
   const selectedMeasurements = useSelector(state => state.spot.selectedAttributes);
   const [activeMeasurement, setActiveMeasurement] = useState(null);
-  const form = useRef(null);
+  const formRef = useRef(null);
+  const [useMeasurements] = useMeasurementsHook();
+
+  useEffect(() => {
+    return () => confirmLeavePage();
+  }, []);
 
   useEffect(() => {
     console.log('UE for selectedMeasurements changed in MeasurementDetailPage', selectedMeasurements);
     if (selectedMeasurements && selectedMeasurements[0]) switchActiveMeasurement(selectedMeasurements[0]);
     else dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.MEASUREMENT));
   }, [selectedMeasurements]);
+
+  const addAssociatedMeasurement = (type) => {
+    const newId = getNewId();
+    const newAssociatedMeasurement = {type: type, id: newId};
+    const selectedMeasurementCopy = JSON.parse(JSON.stringify(selectedMeasurements[0]));
+    if (!selectedMeasurementCopy.associated_orientation) selectedMeasurementCopy.associated_orientation = [];
+    selectedMeasurementCopy.associated_orientation.push(newAssociatedMeasurement);
+
+    console.log('Saving form data to Spot ...');
+    let orientationDataCopy = JSON.parse(JSON.stringify(spot.properties.orientation_data));
+    orientationDataCopy.forEach((measurement, i) => {
+      if (measurement.id === selectedMeasurementCopy.id) orientationDataCopy[i] = selectedMeasurementCopy;
+    });
+    dispatch(editedSpotProperties({field: 'orientation_data', value: orientationDataCopy}));
+    dispatch(setSelectedAttributes([selectedMeasurementCopy]));
+    switchActiveMeasurement(newAssociatedMeasurement);
+  };
 
   const calcTrendPlunge = (value) => {
     console.log('Calculating trend and plunge...');
@@ -46,8 +69,57 @@ const MeasurementDetailPage = (props) => {
       if (trend >= 360) trend = trend - 360;
     }
     const plunge = toDegrees(Math.asin(Math.sin(toRadians(dip)) * Math.sin(toRadians(rake))));
-    form.current.setFieldValue('trend', roundToDecimalPlaces(trend, 0));
-    form.current.setFieldValue('plunge', roundToDecimalPlaces(plunge, 0));
+    formRef.current.setFieldValue('trend', roundToDecimalPlaces(trend, 0));
+    formRef.current.setFieldValue('plunge', roundToDecimalPlaces(plunge, 0));
+  };
+
+  const cancelFormAndGo = async () => {
+    await formRef.current.resetForm();
+    dispatch(setNotebookPageVisibleToPrev());
+  };
+
+  const confirmDeleteMeasurement = () => {
+    Alert.alert(
+      'Delete Measurement',
+      'Are you sure you want to delete this measurement?',
+      [{
+        text: 'Cancel',
+        onPress: () => console.log('Cancel Pressed'),
+        style: 'cancel',
+      }, {
+        text: 'OK',
+        onPress: () => deleteMeasurement(),
+      }],
+      {cancelable: false},
+    );
+  };
+
+  const confirmLeavePage = () => {
+    if (formRef.current && formRef.current.dirty) {
+      const formCurrent = formRef.current;
+      Alert.alert('Unsaved Changes',
+        'Would you like to save your data before continuing?',
+        [{
+          text: 'No',
+          style: 'cancel',
+        }, {
+          text: 'Yes',
+          onPress: () => saveForm(formCurrent),
+        }],
+        {cancelable: false},
+      );
+    }
+  };
+
+  // Delete a single measurement
+  const deleteMeasurement = () => {
+    try {
+      useMeasurements.deleteMeasurements([activeMeasurement]);
+      dispatch(setNotebookPageVisibleToPrev());
+    }
+    catch (e) {
+      console.log('Unable to delete measurement.');
+    }
   };
 
   const onMyChange = async (name, value) => {
@@ -55,40 +127,50 @@ const MeasurementDetailPage = (props) => {
     if (name === 'rake' && !isEmpty(value) && activeMeasurement.type === 'linear_orientation'
       && selectedMeasurements[0].id !== activeMeasurement.id && !isEmpty(selectedMeasurements[0].strike)
       && !isEmpty(selectedMeasurements[0].dip) && value >= 0 && value <= 180) calcTrendPlunge(value);
-    await form.current.setFieldValue(name, value);
-  };
-
-  // What happens after submitting the form is handled in saveFormAndGo since we want to show
-  // an alert message if there are errors but this function won't be called if form is invalid
-  const onSubmitForm = () => {
-    console.log('In onSubmitForm');
+    await formRef.current.setFieldValue(name, value);
   };
 
   // Confirm switching the active measurement
   const onSwitchActiveMeasurement = (measurement) => {
     if (measurement.id !== activeMeasurement.id) {
-      if (form.current.dirty) {
+      if (formRef.current.dirty) {
         Alert.alert('Unsaved Changes',
           'Would you like to save your data before continuing?',
-          [
-            {
-              text: 'No',
-              onPress: () => switchActiveMeasurement(measurement),
-              style: 'cancel',
-            },
-            {
-              text: 'Yes',
-              onPress: () => {
-                saveForm().then(() => {
-                  switchActiveMeasurement(measurement);
-                });
-              },
-            },
-          ],
+          [{
+            text: 'No',
+            onPress: () => switchActiveMeasurement(measurement),
+            style: 'cancel',
+          }, {
+            text: 'Yes',
+            onPress: () => saveFormAndSwitchActiveMeasurement(measurement),
+          }],
           {cancelable: false},
         );
       }
       else switchActiveMeasurement(measurement);
+    }
+  };
+
+  // Confirm switch between Planar and Tabular Zone
+  const onSwitchPlanarTabular = (i) => {
+    const currentType = formRef.current.values.type;
+    if ((i === 0 && currentType === 'tabular_orientation') || (i === 1 && currentType === 'planar_orientation')) {
+      const newType = currentType === 'tabular_orientation' ? 'planar_orientation' : 'tabular_orientation';
+      const typeText = newType === 'tabular_orientation' ? 'Tabular Zone' : 'Planar Orientation';
+      const alertTextEnd = selectedMeasurements.length === 1 ? 'this measurement to a ' + typeText + '? You will '
+        + 'lose all data for this measurement not relevant to ' + typeText + '.'
+        : 'these measurements to ' + typeText + '? You will lose all data for these measurements not relevant to '
+        + typeText + '.';
+      Alert.alert('Switch to ' + typeText, 'Are you sure you want to switch ' + alertTextEnd,
+        [{
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        }, {
+          text: 'OK', onPress: () => switchPlanarTabular(newType),
+        }],
+        {cancelable: false},
+      );
     }
   };
 
@@ -99,86 +181,10 @@ const MeasurementDetailPage = (props) => {
     setFormName([formCategory, measurement.type]);
   };
 
-  // Confirm switch between Planar and Tabular Zone
-  const onSwitchPlanarTabular = (i) => {
-    const currentType = form.current.values.type;
-    if ((i === 0 && currentType === 'tabular_orientation') || (i === 1 && currentType === 'planar_orientation')) {
-      const newType = currentType === 'tabular_orientation' ? 'planar_orientation' : 'tabular_orientation';
-      const typeText = newType === 'tabular_orientation' ? 'Tabular Zone' : 'Planar Orientation';
-      const alertTextEnd = selectedMeasurements.length === 1 ? 'this measurement to a ' + typeText + '? You will '
-        + 'lose all non-relevant data for this measurement.' : 'these measurements to ' + typeText + '? You will lose'
-        + ' all non-relevant data for these measurements.';
-      Alert.alert('Switch to ' + typeText, 'Are you sure you want to switch ' + alertTextEnd,
-        [
-          {
-            text: 'Cancel',
-            onPress: () => console.log('Cancel Pressed'),
-            style: 'cancel',
-          },
-          {
-            text: 'OK', onPress: () => switchPlanarTabular(newType),
-          },
-        ],
-        {cancelable: false},
-      );
-    }
-  };
-
   // Switch between Planar and Tabular Zone
   const switchPlanarTabular = (type) => {
-    const modifiedMeasurement = {...form.current.values, type: type};
-    saveForm().then(() => {
-      switchActiveMeasurement(modifiedMeasurement);
-    });
-  };
-
-  // Render the buttons to switch between planar and tabular zone orientations
-  const renderPlanarTabularSwitches = () => {
-    return (
-      <ButtonGroup
-        onPress={i => onSwitchPlanarTabular(i)}
-        selectedIndex={activeMeasurement.type === 'planar_orientation' ? 0 : 1}
-        buttons={['Planar Feature', 'Tabular Zone']}
-        containerStyle={styles.measurementDetailSwitches}
-        selectedButtonStyle={{backgroundColor: PRIMARY_ACCENT_COLOR}}
-        textStyle={{color: PRIMARY_ACCENT_COLOR}}
-      />
-    );
-  };
-
-  const renderFormFields = () => {
-    console.log('Rendering form:', formName[0] + '.' + formName[1],
-      'with selected measurement' + (selectedMeasurements.length > 1 ? 's:' : ':'), selectedMeasurements,
-      'and active measurement:', activeMeasurement);
-    return (
-      <View>
-        <SectionDivider dividerText='Feature Type'/>
-        <View style={{flex: 1}}>
-          <Formik
-            innerRef={form}
-            onSubmit={onSubmitForm}
-            validate={(values) => useForm.validateForm({formName: formName, values: values})}
-            children={(formProps) => (
-              <Form {...formProps} {...{formName: formName, onMyChange: onMyChange}}/>
-            )}
-            initialValues={activeMeasurement}
-            validateOnChange={false}
-            enableReinitialize={true}
-          />
-        </View>
-      </View>
-    );
-  };
-
-  const renderCancelSaveButtons = () => {
-    return (
-      <View>
-        <SaveAndCloseButton
-          cancel={() => cancelFormAndGo()}
-          save={() => saveFormAndGo()}
-        />
-      </View>
-    );
+    const modifiedMeasurement = {...formRef.current.values, type: type};
+    switchActiveMeasurement(modifiedMeasurement);
   };
 
   const renderAssociatedMeasurements = () => {
@@ -189,7 +195,7 @@ const MeasurementDetailPage = (props) => {
         && selectedMeasurements[0].associated_orientation && (
           <React.Fragment>
             <MeasurementItem
-              item={{item: selectedMeasurements[0]}}
+              item={selectedMeasurements[0]}
               selectedIds={[activeMeasurement.id]}
               isAssociatedItem={false}
               isAssociatedList={true}
@@ -205,7 +211,7 @@ const MeasurementDetailPage = (props) => {
           selectedMeasurements[0].associated_orientation.map((item, i) =>
             <React.Fragment>
               <MeasurementItem
-                item={{item: item}}
+                item={item}
                 selectedIds={[activeMeasurement.id]}
                 isAssociatedItem={true}
                 isAssociatedList={true}
@@ -239,6 +245,42 @@ const MeasurementDetailPage = (props) => {
     );
   };
 
+  const renderCancelSaveButtons = () => {
+    return (
+      <View>
+        <SaveAndCloseButton
+          cancel={() => cancelFormAndGo()}
+          save={() => saveFormAndGo()}
+        />
+      </View>
+    );
+  };
+
+  const renderFormFields = () => {
+    console.log('Rendering form:', formName[0] + '.' + formName[1],
+      'with selected measurement' + (selectedMeasurements.length > 1 ? 's:' : ':'), selectedMeasurements,
+      'and active measurement:', activeMeasurement);
+    return (
+      <View>
+        <SectionDivider dividerText='Feature Type'/>
+        <View style={{flex: 1}}>
+          <Formik
+            innerRef={formRef}
+            onSubmit={() => console.log('Submitting form...')}
+            onReset={() => console.log('Resetting form...')}
+            validate={(values) => useForm.validateForm({formName: formName, values: values})}
+            children={(formProps) => (
+              <Form {...formProps} {...{formName: formName, onMyChange: onMyChange}}/>
+            )}
+            initialValues={activeMeasurement}
+            validateOnChange={true}
+            enableReinitialize={true}
+          />
+        </View>
+      </View>
+    );
+  };
+
   const renderMultiMeasurementsBar = () => {
     const mainText = selectedMeasurements[0].type === 'linear_orientation' ? 'Multiple Lines' : 'Multiple Planes';
     const propertyText = selectedMeasurements[0].type === 'linear_orientation' ? 'Plunge -> Trend' : 'Strike/Dip';
@@ -254,14 +296,14 @@ const MeasurementDetailPage = (props) => {
           pad={5}>
           <ListItem.Content>
             <ListItem.Title
-              style={activeMeasurement.id === selectedMeasurements[0].id
-                ? commonStyles.listItemTitleInverse : commonStyles.listItemTitle}>{mainText}
+              style={activeMeasurement.id === selectedMeasurements[0].id ? commonStyles.listItemTitleInverse
+                : commonStyles.listItemTitle}>{mainText}
             </ListItem.Title>
           </ListItem.Content>
           <ListItem.Content>
             <ListItem.Title
-              style={activeMeasurement.id === selectedMeasurements[0].id
-                ? commonStyles.listItemTitleInverse : commonStyles.listItemTitle}
+              style={activeMeasurement.id === selectedMeasurements[0].id ? commonStyles.listItemTitleInverse
+                : commonStyles.listItemTitle}
             >
               {propertyText}
             </ListItem.Title>
@@ -299,113 +341,84 @@ const MeasurementDetailPage = (props) => {
     );
   };
 
-  const addAssociatedMeasurement = (type) => {
-    const newId = getNewId();
-    const newAssociatedMeasurement = {type: type, id: newId};
-    const selectedMeasurementCopy = JSON.parse(JSON.stringify(selectedMeasurements[0]));
-    if (!selectedMeasurementCopy.associated_orientation) selectedMeasurementCopy.associated_orientation = [];
-    selectedMeasurementCopy.associated_orientation.push(newAssociatedMeasurement);
-
-    console.log('Saving form data to Spot ...');
-    let orientationDataCopy = JSON.parse(JSON.stringify(spot.properties.orientation_data));
-    orientationDataCopy.forEach((measurement, i) => {
-      if (measurement.id === selectedMeasurementCopy.id) orientationDataCopy[i] = selectedMeasurementCopy;
-    });
-    dispatch(editedSpotProperties({field: 'orientation_data', value: orientationDataCopy}));
-    dispatch(setSelectedAttributes([selectedMeasurementCopy]));
-    switchActiveMeasurement(newAssociatedMeasurement);
-  };
-
-  const cancelFormAndGo = () => {
-    dispatch(setNotebookPageVisibleToPrev());
-  };
-
-  const saveForm = async () => {
+  // Render the buttons to switch between planar and tabular zone orientations
+  const renderPlanarTabularSwitches = () => {
     return (
-      form.current.submitForm().then(() => {
-        if (useForm.hasErrors(form.current)) {
-          useForm.showErrors(form.current);
-          return Promise.reject();
-        }
-        console.log('Saving form data to Spot ...');
-        let orientationDataCopy = JSON.parse(JSON.stringify(spot.properties.orientation_data));
-        let formValues = {...form.current.values};
-        let editedSelectedMeasurements = [];
-        let idsOfMeasurementsToEdit = [activeMeasurement.id];
-        if (selectedMeasurements.length > 1) {
-          const fieldsToExclude = ['id', 'associated_orientation', 'label', 'strike', 'dip_direction', 'dip', 'quality',
-            'trend', 'plunge', 'rake', 'rake_calculated'];
-          fieldsToExclude.forEach(key => delete formValues[key]);
-          if (activeMeasurement.id === selectedMeasurements[0].id) {
-            idsOfMeasurementsToEdit = selectedMeasurements.map(measurement => measurement.id);
-          }
-          else {
-            idsOfMeasurementsToEdit = selectedMeasurements.reduce(
-              (acc, measurement) => [...acc, ...measurement.associated_orientation.map(
-                associatedOrientation => associatedOrientation.id)], []);
-          }
-        }
-
-        orientationDataCopy.forEach((measurement, i) => {
-          if (idsOfMeasurementsToEdit.includes(measurement.id)) {
-            orientationDataCopy[i] = selectedMeasurements.length === 1 ? formValues : {...measurement, ...formValues};
-            editedSelectedMeasurements.push(orientationDataCopy[i]);
-          }
-          else if (measurement.associated_orientation) {
-            measurement.associated_orientation.forEach((associatedMeasurement, j) => {
-              if (idsOfMeasurementsToEdit.includes(associatedMeasurement.id)) {
-                orientationDataCopy[i].associated_orientation[j] = selectedMeasurements.length === 1
-                  ? formValues
-                  : {...associatedMeasurement, ...formValues};
-                editedSelectedMeasurements.push(orientationDataCopy[i]);
-              }
-            });
-          }
-        });
-        dispatch(setSelectedAttributes(editedSelectedMeasurements));
-        dispatch(editedSpotProperties({field: 'orientation_data', value: orientationDataCopy}));
-        return Promise.resolve();
-      }, (e) => {
-        console.log('Error submitting form', e);
-        return Promise.reject();
-      })
+      <ButtonGroup
+        onPress={i => onSwitchPlanarTabular(i)}
+        selectedIndex={activeMeasurement.type === 'planar_orientation' ? 0 : 1}
+        buttons={['Planar Feature', 'Tabular Zone']}
+        containerStyle={styles.measurementDetailSwitches}
+        selectedButtonStyle={{backgroundColor: PRIMARY_ACCENT_COLOR}}
+        textStyle={{color: PRIMARY_ACCENT_COLOR}}
+      />
     );
   };
 
-  const saveFormAndGo = () => {
-    saveForm().then(() => {
-      console.log('Finished saving form data to Spot');
-      dispatch(setNotebookPageVisibleToPrev());
-    }, () => {
-      console.log('Error saving form data to Spot');
-    });
-  };
-
-  // Delete a single measurement
-  const deleteMeasurement = () => {
-    let aborted = false;
+  const saveForm = async (formCurrent) => {
+    await formCurrent.submitForm();
+    if (useForm.hasErrors(formCurrent)) {
+      useForm.showErrors(formCurrent);
+      console.log('Found validation errors.');
+      throw Error;
+    }
+    console.log('Saving form data to Spot ...');
     let orientationDataCopy = JSON.parse(JSON.stringify(spot.properties.orientation_data));
+    let formValues = {...formCurrent.values};
+    let editedSelectedMeasurements = [];
+    let idsOfMeasurementsToEdit = [formValues.id];
+    if (selectedMeasurements.length > 1) {
+      const fieldsToExclude = ['id', 'associated_orientation', 'label', 'strike', 'dip_direction', 'dip', 'quality',
+        'trend', 'plunge', 'rake', 'rake_calculated'];
+      fieldsToExclude.forEach(key => delete formValues[key]);
+      if (formValues.id === selectedMeasurements[0].id) {
+        idsOfMeasurementsToEdit = selectedMeasurements.map(measurement => measurement.id);
+      }
+      else {
+        idsOfMeasurementsToEdit = selectedMeasurements.reduce(
+          (acc, measurement) => [...acc, ...measurement.associated_orientation.map(
+            associatedOrientation => associatedOrientation.id)], []);
+      }
+    }
+
     orientationDataCopy.forEach((measurement, i) => {
-      if (activeMeasurement.id === measurement.id && !measurement.associated_orientation) orientationDataCopy[i] = {};
-      else if (activeMeasurement.id === measurement.id && measurement.associated_orientation) {
-        Alert.alert('Please delete the associated features before deleting the primary feature.');
-        aborted = true;
+      if (idsOfMeasurementsToEdit.includes(measurement.id)) {
+        orientationDataCopy[i] = selectedMeasurements.length === 1 ? formValues : {...measurement, ...formValues};
+        editedSelectedMeasurements.push(orientationDataCopy[i]);
       }
       else if (measurement.associated_orientation) {
         measurement.associated_orientation.forEach((associatedMeasurement, j) => {
-          if (activeMeasurement.id === associatedMeasurement.id) orientationDataCopy[i].associated_orientation[j] = {};
+          if (idsOfMeasurementsToEdit.includes(associatedMeasurement.id)) {
+            orientationDataCopy[i].associated_orientation[j] = selectedMeasurements.length === 1 ? formValues
+              : {...associatedMeasurement, ...formValues};
+            editedSelectedMeasurements.push(orientationDataCopy[i]);
+          }
         });
-        orientationDataCopy[i].associated_orientation = orientationDataCopy[i].associated_orientation.filter(
-          associatedMeasurement => !isEmpty(associatedMeasurement));
-      }
-      if (measurement.associated_orientation && isEmpty(measurement.associated_orientation)) {
-        delete orientationDataCopy[i].associated_orientation;
       }
     });
-    if (!aborted) {
-      orientationDataCopy = orientationDataCopy.filter(measurement => !isEmpty(measurement));
-      dispatch(editedSpotProperties({field: 'orientation_data', value: orientationDataCopy}));
+    dispatch(setSelectedAttributes(editedSelectedMeasurements));
+    dispatch(editedSpotProperties({field: 'orientation_data', value: orientationDataCopy}));
+    await formCurrent.resetForm();
+    console.log('Finished saving form data to Spot');
+  };
+
+  const saveFormAndGo = async () => {
+    try {
+      await saveForm(formRef.current);
       dispatch(setNotebookPageVisibleToPrev());
+    }
+    catch (e) {
+      console.log('Error saving form data to Spot');
+    }
+  };
+
+  const saveFormAndSwitchActiveMeasurement = async (measurement) => {
+    try {
+      await saveForm(formRef.current);
+      switchActiveMeasurement(measurement);
+    }
+    catch (e) {
+      console.log('Error saving form data to Spot');
     }
   };
 
@@ -429,7 +442,7 @@ const MeasurementDetailPage = (props) => {
                     titleStyle={{color: WARNING_COLOR}}
                     title={'Delete Measurement'}
                     type={'clear'}
-                    onPress={() => deleteMeasurement()}
+                    onPress={() => confirmDeleteMeasurement()}
                   />
                 )}
               </View>
