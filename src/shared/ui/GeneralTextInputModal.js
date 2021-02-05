@@ -14,7 +14,7 @@ import styles from '../../shared/common.styles';
 
 const TextInputModal = (props) => {
   return (
-    <View style={{}}>
+    <View>
       <Dialog
         dialogStyle={[styles.dialogBox, {position: 'absolute', top: '25%'}]}
         width={300}
@@ -40,10 +40,13 @@ const TextInputModal = (props) => {
       >
         <DialogContent style={[styles.dialogContent, props.dialogContent]}>
           <Input
+            multiline={props.multiline}
+            numberOfLines={5}
             value={props.value}
-            maxLength={25}
+            returnKeyType={'done'}
+            keyboardType={props.keyboardType}
             inputContainerStyle={{borderColor: 'transparent'}}
-            inputStyle={{backgroundColor: 'white', height: 50, width: 200, paddingLeft: 20}}
+            inputStyle={[styles.textInput, props.textInputStyle]}
             onChangeText={props.onChangeText}
             placeholder={'Enter text here...'}
           />

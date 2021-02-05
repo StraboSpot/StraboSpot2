@@ -105,6 +105,11 @@ const commonStyles = StyleSheet.create({
     color: themes.PRIMARY_TEXT_COLOR,
     fontSize: themes.SMALL_TEXT_SIZE,
   },
+  textInput: {
+    backgroundColor: 'white',
+    width: 200,
+    paddingLeft: 20,
+  },
 });
 
 export default commonStyles;

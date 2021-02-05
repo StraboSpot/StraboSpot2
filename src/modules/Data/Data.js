@@ -99,7 +99,7 @@ const Data = (props) => {
         close={() => setIsEditModalVisible(false)}
         value={urlToEdit.url}
         onChangeText={(text) => setUrlToEdit({...urlToEdit, url: text})}
-       />
+      />
     );
   };
 
@@ -133,8 +133,6 @@ const Data = (props) => {
       console.log('Not Valid URL Yet');
     }
   };
-
-
 
   return (
     <View style={{flex: 1}}>
@@ -181,7 +179,7 @@ const Data = (props) => {
           </View>
         </ListItem.Content>
       </ListItem>
-      {error &&<Text style={formStyles.fieldError}>Not a valid url</Text>}
+      {error && <Text style={formStyles.fieldError}>Not a valid url</Text>}
       <View style={{flexDirection: 'row', justifyContent: 'space-around', padding: 10}}>
         <Button
           title={'Add Link'}

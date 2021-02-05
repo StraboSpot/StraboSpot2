@@ -89,7 +89,7 @@ const DatasetList = () => {
             titleStyle={{color: 'red'}}
             type={'clear'}
             disabled={isDisabled(selectedDataset.id)}
-            buttonStyle={{paddingTop: 20, padding: 0}}
+            buttonStyle={{padding: 0}}
             onPress={() => setIsDeleteConfirmModalVisible(true)}
             icon={
               <Icon
