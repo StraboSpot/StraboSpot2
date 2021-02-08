@@ -6,6 +6,7 @@ import {useSelector} from 'react-redux';
 
 import compassStyles from '../../../modules/compass/compass.styles';
 import {MODALS} from '../../../modules/home/home.constants';
+import {NOTEBOOK_SUBPAGES} from '../../../modules/notebook-panel/notebook.constants';
 import commonStyles from '../../common.styles';
 import {isEmpty} from '../../Helpers';
 import * as themes from '../../styles.constants';
@@ -15,6 +16,7 @@ const Modal = (props) => {
   const [modalTitle, setModalTitle] = useState('');
   const modalVisible = useSelector(state => state.home.modalVisible);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
+  const pageVisible = useSelector(state => state.notebook.visibleNotebookPagesStack.slice(-1)[0]);
 
   useEffect(() => setModalTitle(modalVisible), [modalVisible]);
 
@@ -95,7 +97,7 @@ const Modal = (props) => {
     <View style={[modalStyle.modalContainer, props.style]}>
       {renderModalHeader()}
       {props.children}
-      {renderModalBottom()}
+      {pageVisible !== NOTEBOOK_SUBPAGES.MEASUREMENTDETAIL && renderModalBottom()}
     </View>
   );
 };

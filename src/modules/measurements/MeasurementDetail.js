@@ -75,6 +75,10 @@ const MeasurementDetailPage = (props) => {
 
   const cancelFormAndGo = async () => {
     await formRef.current.resetForm();
+    if (isEmptyMeasurement(selectedMeasurements[0])) {
+      const aOs = selectedMeasurements[0].associated_orientation || [];
+      useMeasurements.deleteMeasurements([...aOs, selectedMeasurements[0]]);
+    }
     dispatch(setNotebookPageVisibleToPrev());
   };
 
@@ -120,6 +124,14 @@ const MeasurementDetailPage = (props) => {
     catch (e) {
       console.log('Unable to delete measurement.');
     }
+  };
+
+  const isEmptyMeasurement = (measurement) => {
+    return isEmpty(measurement)
+      || (!isEmpty(measurement) && ((Object.keys(measurement).length === 2 && measurement.id && measurement.type)
+        || (Object.keys(measurement).length === 3 && measurement.id && measurement.type
+          && measurement.associated_orientation
+          && isEmpty(measurement.associated_orientation.filter(aO => !isEmptyMeasurement(aO))))));
   };
 
   const onMyChange = async (name, value) => {

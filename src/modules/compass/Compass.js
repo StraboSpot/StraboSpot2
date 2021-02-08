@@ -20,6 +20,7 @@ import Sound from 'react-native-sound';
 import {connect, useDispatch, useSelector} from 'react-redux';
 
 import {getNewId, mod, roundToDecimalPlaces, toDegrees, toRadians} from '../../shared/Helpers';
+import ListEmptyText from '../../shared/ui/ListEmptyText';
 import modalStyle from '../../shared/ui/modal/modal.style';
 import Slider from '../../shared/ui/Slider';
 import uiStyles from '../../shared/ui/ui.styles';
@@ -39,9 +40,13 @@ const buttonClick = new Sound('button_click.mp3', Sound.MAIN_BUNDLE, (error) => 
 
 const Compass = (props) => {
   const dispatch = useDispatch();
+  const compassMeasurementTypes = useSelector(state => state.notebook.compassMeasurementTypes);
+  const modalVisible = useSelector(state => state.home.modalVisible);
+  const pageVisible = useSelector(state => state.notebook.visibleNotebookPagesStack.slice(-1)[0]);
+
   let modalView = null;
   const [useMaps] = useMapsHook();
-  const modalVisible = useSelector(state => state.home.modalVisible);
+
   const [compassData, setCompassData] = useState({
     heading: null,
     strike: null,
@@ -53,7 +58,6 @@ const Compass = (props) => {
     //   // rake_calculated: 'no'
   });
   const [heading, setHeading] = useState(null);
-  const compassMeasurementTypes = useSelector(state => state.notebook.compassMeasurementTypes);
   const [toggles, setToggles] = useState(compassMeasurementTypes);
   const [sliderValue, setSliderValue] = useState(5);
   const [strikeSpinValue] = useState(new Animated.Value(0));
@@ -195,24 +199,19 @@ const Compass = (props) => {
     }
     let measurements = [];
     if (toggles.includes(COMPASS_TOGGLE_BUTTONS.PLANAR)) {
-      let newPlanarMeasurement = {
-        type: 'planar_orientation',
-        quality: sliderValue.toString(),
-      };
+      let newPlanarMeasurement = {type: 'planar_orientation'};
       if (isCompassMeasurement) {
         newPlanarMeasurement = {
           ...newPlanarMeasurement,
           strike: compassData.strike,
           dip: compassData.dip,
+          quality: sliderValue.toString(),
         };
       }
       measurements.push(newPlanarMeasurement);
     }
     if (toggles.includes(COMPASS_TOGGLE_BUTTONS.LINEAR)) {
-      let newLinearMeasurement = {
-        type: 'linear_orientation',
-        quality: sliderValue.toString(),
-      };
+      let newLinearMeasurement = {type: 'linear_orientation'};
       if (isCompassMeasurement) {
         newLinearMeasurement = {
           ...newLinearMeasurement,
@@ -220,6 +219,7 @@ const Compass = (props) => {
           plunge: compassData.plunge,
           rake: compassData.rake,
           rake_calculated: 'yes',
+          quality: sliderValue.toString(),
         };
       }
       measurements.push(newLinearMeasurement);
@@ -231,11 +231,12 @@ const Compass = (props) => {
       if (measurements.length > 1) {
         let newAssociatedOrientation = measurements[1];
         newAssociatedOrientation.id = getNewId();
+        while (newOrientation.id === newAssociatedOrientation.id) newAssociatedOrientation.id = getNewId();
         newOrientation.associated_orientation = [newAssociatedOrientation];
       }
       if (modalVisible === MODALS.NOTEBOOK_MODALS.COMPASS) {
-        const orientations = (typeof props.spot.properties.orientation_data === 'undefined')
-          ? [newOrientation] : [...props.spot.properties.orientation_data, newOrientation];
+        const orientations = (typeof props.spot.properties.orientation_data === 'undefined') ? [newOrientation]
+          : [...props.spot.properties.orientation_data, newOrientation];
         props.onSpotEdit('orientation_data', orientations);
       }
       else if (modalVisible === MODALS.SHORTCUT_MODALS.COMPASS) {
@@ -265,18 +266,10 @@ const Compass = (props) => {
     const plannerInToggleOn = toggles.includes(COMPASS_TOGGLE_BUTTONS.PLANAR);
 
     if (linearInToggleOn && plannerInToggleOn && compassData.trend !== null && compassData.strike !== null) {
-      return (
-        [renderTrendSymbol(), renderStrikeDipSymbol()]
-      );
+      return [renderTrendSymbol(), renderStrikeDipSymbol()];
     }
-    else if (linearInToggleOn && compassData.trend !== null) {
-      return renderTrendSymbol();
-
-    }
-    else if (plannerInToggleOn && compassData.strike !== null) {
-      return renderStrikeDipSymbol();
-    }
-
+    else if (linearInToggleOn && compassData.trend !== null) return renderTrendSymbol();
+    else if (plannerInToggleOn && compassData.strike !== null) return renderStrikeDipSymbol();
   };
 
   const renderDataView = () => {
@@ -313,10 +306,7 @@ const Compass = (props) => {
       <Animated.Image
         key={image}
         source={image}
-        style={
-          [compassStyles.strikeAndDipLine,
-            {transform: [{rotate: spin}]},
-          ]}/>
+        style={[compassStyles.strikeAndDipLine, {transform: [{rotate: spin}]}]}/>
     );
   };
 
@@ -396,32 +386,43 @@ const Compass = (props) => {
     console.log('Ended accelerometer subscription.');
   };
 
-  return (
-    <View>
-      <View>
-        <View style={compassStyles.compassContainer}>
-          <TouchableOpacity style={modalStyle.textContainer} onPress={() => grabMeasurements()}>
-            {/*<Text style={{...modalStyle.textStyle, fontWeight: 'bold'}}>x Spots Created </Text>*/}
-            <Text style={modalStyle.textStyle}>Tap compass to record a measurement</Text>
-            {modalVisible !== MODALS.NOTEBOOK_MODALS.COMPASS && <Text style={modalStyle.textStyle}>in a NEW Spot</Text>}
-            <Text style={modalStyle.textStyle}>or tap HERE to record manually</Text>
-          </TouchableOpacity>
-          {renderCompass()}
-        </View>
-        <View style={compassStyles.toggleButtonsRowContainer}>
+  const renderCompassContent = () => {
+    return (
+      <React.Fragment>
+        <View>
+          <View style={compassStyles.compassContainer}>
+            <TouchableOpacity style={modalStyle.textContainer} onPress={() => grabMeasurements()}>
+              {/*<Text style={{...modalStyle.textStyle, fontWeight: 'bold'}}>x Spots Created </Text>*/}
+              <Text style={modalStyle.textStyle}>Tap compass to record a measurement</Text>
+              {modalVisible !== MODALS.NOTEBOOK_MODALS.COMPASS
+              && <Text style={modalStyle.textStyle}>in a NEW Spot</Text>}
+              <Text style={modalStyle.textStyle}>or tap HERE to record manually</Text>
+            </TouchableOpacity>
+            {renderCompass()}
+          </View>
           {renderToggles()}
+          <View style={compassStyles.sliderContainer}>
+            <Text style={compassStyles.sliderHeading}>Quality of Measurement</Text>
+            {renderSlider()}
+          </View>
         </View>
-        <View style={compassStyles.sliderContainer}>
-          <Text style={compassStyles.sliderHeading}>Quality of Measurement</Text>
-          {renderSlider()}
+        <View style={compassStyles.buttonContainer}>
+          {modalView}
+          {showData && renderDataView()}
         </View>
+      </React.Fragment>
+    );
+  };
+
+  const renderSaveOrCancelFirst = () => {
+    return (
+      <View style={{height: 350, justifyContent: 'center'}}>
+        <ListEmptyText text={'Save or Cancel current measurement before making a new one.'}/>
       </View>
-      <View style={compassStyles.buttonContainer}>
-        {modalView}
-        {showData && renderDataView()}
-      </View>
-    </View>
-  );
+    );
+  };
+
+  return pageVisible === NOTEBOOK_SUBPAGES.MEASUREMENTDETAIL ? renderSaveOrCancelFirst() : renderCompassContent();
 };
 
 const mapStateToProps = (state) => {
