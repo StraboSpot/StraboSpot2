@@ -2,7 +2,7 @@ import {useEffect} from 'react';
 import {Platform} from 'react-native';
 
 import Geolocation from '@react-native-community/geolocation';
-import * as turf from '@turf/turf/index';
+import * as turf from '@turf/turf';
 import proj4 from 'proj4';
 import {useDispatch, useSelector} from 'react-redux';
 

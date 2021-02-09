@@ -26,7 +26,7 @@
     "@sentry/cli": "^1.62.0",
     "@sentry/react-native": "^2.2.0",
     "@terrylinla/react-native-sketch-canvas": "^0.8.0",
-    "@turf/turf": "^5.1.6",
+    "@turf/turf": "^6.3.0",
     "formik": "^2.2.6",
     "js-base64": "^3.6.0",
     "lodash.isequal": "^4.5.0",

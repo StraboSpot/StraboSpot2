@@ -3,7 +3,7 @@ import {Alert, View} from 'react-native';
 
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import Logger from '@react-native-mapbox-gl/maps/javascript/utils/Logger';
-import * as turf from '@turf/turf/index';
+import * as turf from '@turf/turf';
 import {Button} from 'react-native-elements';
 import Dialog, {DialogContent, DialogTitle, SlideAnimation} from 'react-native-popup-dialog';
 import {useSelector, useDispatch} from 'react-redux';
