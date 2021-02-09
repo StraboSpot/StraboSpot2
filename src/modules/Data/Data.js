@@ -1,14 +1,15 @@
-import React, {useState} from 'react';
-import {Alert, FlatList, Linking, Text, TextInput, View} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {Alert, FlatList, Linking, ScrollView, Image, Text, TextInput, View} from 'react-native';
 
 import DocumentPicker from 'react-native-document-picker';
-import {Button, ButtonGroup, Icon, ListItem} from 'react-native-elements';
+import {Button, ButtonGroup, Icon, ListItem, Overlay} from 'react-native-elements';
 import RNFS from 'react-native-fs';
+import {Dialog, DialogContent, DialogTitle} from 'react-native-popup-dialog';
+import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from 'react-native-table-component';
 import {useDispatch, useSelector} from 'react-redux';
-import {Dialog, DialogContent, DialogTitle, } from 'react-native-popup-dialog';
 
 import commonStyles from '../../shared/common.styles';
-import {csvToArray, getNewUUID, truncateText, urlValidator} from '../../shared/Helpers';
+import {csvToArray, getNewUUID, isEmpty, truncateText, urlValidator} from '../../shared/Helpers';
 import {BLUE, PRIMARY_ACCENT_COLOR} from '../../shared/styles.constants';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import TextInputModal from '../../shared/ui/GeneralTextInputModal';
@@ -20,7 +21,7 @@ import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import {editedSpotProperties} from '../spots/spots.slice';
 import useDataHook from './useData';
-import Overlay from 'react-native-popup-dialog/dist/components/Overlay';
+
 
 const Data = (props) => {
   const dispatch = useDispatch();
@@ -29,6 +30,7 @@ const Data = (props) => {
   const [error, setError] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [isTableVisible, setIsTableVisible] = useState(false);
+  const [selectedTable, setSelectedTable] = useState({});
   const [urlToEdit, setUrlToEdit] = useState({});
   const [protocol, setProtocol] = useState('http://');
   const [url, setUrl] = useState('');
@@ -49,43 +51,50 @@ const Data = (props) => {
     setIsEditModalVisible(true);
   };
 
+  const selectTable = (table) => {
+    setSelectedTable(table);
+    setIsTableVisible(true);
+  };
+
+  const transpose = (matrix) => {
+    let [row] = matrix
+    return row.map((value, column) => matrix.map(row => row[column]))
+  }
+
+
   const renderTable = () => {
-    return (
-      <Overlay
-        visible={isTableVisible}
-      />
-    )
+    if (!isEmpty(selectedTable)) {
+      const filteredData = selectedTable.data.filter(row => row.length > 1);
+      const tableData = transpose(filteredData)
+      console.log('Table Data', tableData)
+      const data = [1, 2, 3, 4, 5];
+      return (
+        <View style={{}}>
+          <Overlay
+            overlayStyle={{width: '90%', height: '90%'}}
+            isVisible={isTableVisible}
+            onBackdropPress={() => setIsTableVisible(!isTableVisible)}>
+            <Text>{selectedTable.name}</Text>
+            <ScrollView style={{flex: 1}}>
+              <Table borderStyle={{borderWidth: 2, borderColor: '#c8e1ff'}}>
+                <Row data={filteredData[0]}  style={{height: 70}} textStyle={{textAlign: 'center', fontWeight: 'bold'}}/>
+                <Rows data={filteredData.slice(1)} style={{height: 50}} textStyle={{textAlign: 'center'}}/>
+              </Table>
+            </ScrollView>
+          </Overlay>
+        </View>
+      );
+    }
   };
 
 
-  const renderTableList = (table) => {
+  const renderTableListItem = (table) => {
     return (
-      <ListItem>
-        <ListItem.Content style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-          <ListItem.Title
-            style={[commonStyles.listItemTitle, {color: BLUE}]}
-            onPress={() => console.log(table)}
-            >
+      <ListItem onPress={() => selectTable(table)} containerStyle={commonStyles.listItem}>
+        <ListItem.Content>
+          <ListItem.Title style={commonStyles.listItemTitle}>
             {table.name}
           </ListItem.Title>
-      {/*    <View style={{flexDirection: 'row'}}>*/}
-      {/*      <Icon*/}
-      {/*        name='edit'*/}
-      {/*        type={'material'}*/}
-      {/*        size={20}*/}
-      {/*        color='darkgrey'*/}
-      {/*        containerStyle={{paddingRight: 10, paddingLeft: 10}}*/}
-      {/*        // onPress={() => editUrl(url, i)}*/}
-      {/*      />*/}
-      {/*      <Icon*/}
-      {/*        name='trash'*/}
-      {/*        type={'font-awesome'}*/}
-      {/*        size={20}*/}
-      {/*        color='darkgrey'*/}
-      {/*        containerStyle={{paddingRight: 10, paddingLeft: 10}}*/}
-      {/*        // onPress={() => deleteUrl(url, i)}*/}
-      {/*      />*/}
-      {/*    </View>*/}
         </ListItem.Content>
       </ListItem>
     );
@@ -194,7 +203,7 @@ const Data = (props) => {
           type: res.type, // mime type
           name: res.name,
           size: res.size,
-        }
+        },
       );
       const id = getNewUUID();
       const CSVData = await RNFS.readFile(res.uri);
@@ -293,7 +302,7 @@ const Data = (props) => {
         title={'Attach table from a .CSV file'}
         type={'outline'}
         icon={{
-          name : 'attach-outline',
+          name: 'attach-outline',
           type: 'ionicon',
 
         }}
@@ -305,11 +314,12 @@ const Data = (props) => {
       <FlatList
         keyExtractor={(index) => index}
         data={spot.properties?.data?.tables}
-        renderItem={({item}) => renderTableList(item)}
+        renderItem={({item}) => renderTableListItem(item)}
         ItemSeparatorComponent={FlatListItemSeparator}
         ListEmptyComponent={<ListEmptyText text={'No tables saved'}/>}
       />
       {renderURLEditModal()}
+      {renderTable()}
     </View>
   );
 };
