@@ -1,11 +1,14 @@
 import React, {useState} from 'react';
 import {Alert, FlatList, Linking, Text, TextInput, View} from 'react-native';
 
+import DocumentPicker from 'react-native-document-picker';
 import {Button, ButtonGroup, Icon, ListItem} from 'react-native-elements';
+import RNFS from 'react-native-fs';
 import {useDispatch, useSelector} from 'react-redux';
+import {Dialog, DialogContent, DialogTitle, } from 'react-native-popup-dialog';
 
 import commonStyles from '../../shared/common.styles';
-import {truncateText, urlValidator} from '../../shared/Helpers';
+import {csvToArray, getNewUUID, truncateText, urlValidator} from '../../shared/Helpers';
 import {BLUE, PRIMARY_ACCENT_COLOR} from '../../shared/styles.constants';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import TextInputModal from '../../shared/ui/GeneralTextInputModal';
@@ -16,6 +19,8 @@ import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import {editedSpotProperties} from '../spots/spots.slice';
+import useDataHook from './useData';
+import Overlay from 'react-native-popup-dialog/dist/components/Overlay';
 
 const Data = (props) => {
   const dispatch = useDispatch();
@@ -23,9 +28,12 @@ const Data = (props) => {
 
   const [error, setError] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+  const [isTableVisible, setIsTableVisible] = useState(false);
   const [urlToEdit, setUrlToEdit] = useState({});
   const [protocol, setProtocol] = useState('http://');
   const [url, setUrl] = useState('');
+
+  const useData = useDataHook();
 
   const deleteUrl = (urlToDelete, index) => {
     const urlCopy = JSON.parse(JSON.stringify(spot.properties.data.urls));
@@ -39,6 +47,48 @@ const Data = (props) => {
     console.log(urlToEdit, i);
     setUrlToEdit({index: i, url: urlToEdit});
     setIsEditModalVisible(true);
+  };
+
+  const renderTable = () => {
+    return (
+      <Overlay
+        visible={isTableVisible}
+      />
+    )
+  };
+
+
+  const renderTableList = (table) => {
+    return (
+      <ListItem>
+        <ListItem.Content style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <ListItem.Title
+            style={[commonStyles.listItemTitle, {color: BLUE}]}
+            onPress={() => console.log(table)}
+            >
+            {table.name}
+          </ListItem.Title>
+      {/*    <View style={{flexDirection: 'row'}}>*/}
+      {/*      <Icon*/}
+      {/*        name='edit'*/}
+      {/*        type={'material'}*/}
+      {/*        size={20}*/}
+      {/*        color='darkgrey'*/}
+      {/*        containerStyle={{paddingRight: 10, paddingLeft: 10}}*/}
+      {/*        // onPress={() => editUrl(url, i)}*/}
+      {/*      />*/}
+      {/*      <Icon*/}
+      {/*        name='trash'*/}
+      {/*        type={'font-awesome'}*/}
+      {/*        size={20}*/}
+      {/*        color='darkgrey'*/}
+      {/*        containerStyle={{paddingRight: 10, paddingLeft: 10}}*/}
+      {/*        // onPress={() => deleteUrl(url, i)}*/}
+      {/*      />*/}
+      {/*    </View>*/}
+        </ListItem.Content>
+      </ListItem>
+    );
   };
 
   const renderUrlListItem = (url, i) => {
@@ -134,6 +184,43 @@ const Data = (props) => {
     }
   };
 
+  const CSVPicker = async () => {
+    try {
+      const res = await DocumentPicker.pick({
+        type: [DocumentPicker.types.csv],
+      });
+      console.log({
+          uri: res.uri,
+          type: res.type, // mime type
+          name: res.name,
+          size: res.size,
+        }
+      );
+      const id = getNewUUID();
+      const CSVData = await RNFS.readFile(res.uri);
+      const csvToArrayRes = csvToArray(CSVData);
+      // console.log(csvToArrayRes);
+      const CSVObject = {
+        id: id,
+        name: res.name,
+        data: csvToArrayRes,
+        size: res.size,
+      };
+      console.log('CSVObject', CSVObject);
+      useData.saveCSV(CSVObject);
+      console.log('.CSV saved successfully!');
+    }
+    catch (err) {
+      if (DocumentPicker.isCancel(err)) {
+        console.log('User canceled', err);
+        // User cancelled the picker, exit any dialogs or menus and move on
+      }
+      else {
+        throw err;
+      }
+    }
+  };
+
   return (
     <View style={{flex: 1}}>
       <ReturnToOverviewButton
@@ -188,7 +275,7 @@ const Data = (props) => {
           onPress={() => saveUrl()}
         />
         <Button
-          title={'Clear Link'}
+          title={'Clear'}
           type={'clear'}
           containerStyle={commonStyles.standardButtonContainer}
           onPress={() => setUrl('')}
@@ -200,6 +287,27 @@ const Data = (props) => {
         renderItem={({item, index}) => renderUrlListItem(item, index)}
         ItemSeparatorComponent={FlatListItemSeparator}
         ListEmptyComponent={<ListEmptyText text={'No URLs saved'}/>}
+      />
+      <SectionDivider dividerText={'Tables'}/>
+      <Button
+        title={'Attach table from a .CSV file'}
+        type={'outline'}
+        icon={{
+          name : 'attach-outline',
+          type: 'ionicon',
+
+        }}
+        containerStyle={commonStyles.buttonPadding}
+        buttonStyle={commonStyles.standardButton}
+        titleStyle={commonStyles.standardButtonText}
+        onPress={() => CSVPicker()}
+      />
+      <FlatList
+        keyExtractor={(index) => index}
+        data={spot.properties?.data?.tables}
+        renderItem={({item}) => renderTableList(item)}
+        ItemSeparatorComponent={FlatListItemSeparator}
+        ListEmptyComponent={<ListEmptyText text={'No tables saved'}/>}
       />
       {renderURLEditModal()}
     </View>
