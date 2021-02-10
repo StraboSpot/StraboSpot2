@@ -1,7 +1,7 @@
 import React, {useRef} from 'react';
 import {FlatList, Text, View} from 'react-native';
 
-import * as turf from '@turf/turf/index';
+import * as turf from '@turf/turf';
 import {Field, Formik} from 'formik';
 import {Button, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';

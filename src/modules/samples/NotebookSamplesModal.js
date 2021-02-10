@@ -12,7 +12,6 @@ const NotebookSamplesModal = (props) => {
     return (
       <Modal
         close={props.close}
-        buttonTitleLeft={'Undo'}
         textStyle={{fontWeight: 'bold'}}
         onPress={props.onPress}
         style={uiStyles.modalPosition}

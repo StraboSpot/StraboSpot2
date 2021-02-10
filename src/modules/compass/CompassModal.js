@@ -13,7 +13,6 @@ const CompassModal = (props) => {
     return (
       <Modal
         close={props.close}
-        buttonTitleLeft={'Undo'}
         textStyle={{fontWeight: 'bold'}}
         onPress={props.onPress}
         style={props.type === MODALS.NOTEBOOK_MODALS.COMPASS ? uiStyles.modalPosition : uiStyles.modalPositionShortcutView}
