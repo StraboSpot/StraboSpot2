@@ -9,7 +9,7 @@ import {isEmpty} from '../../shared/Helpers';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SectionDivider from '../../shared/ui/SectionDivider';
-import Data from '../Data/Data';
+import Data from '../data/Data';
 import FabricsPage from '../fabrics/FabricsPage';
 import Geography from '../geography/Geography';
 import {MODALS} from '../home/home.constants';
