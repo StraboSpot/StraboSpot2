@@ -9,6 +9,7 @@ target 'StraboSpot2' do
     inherit! :complete
 
   use_react_native!(:path => config["reactNativePath"])
+  ReactNativeMapboxGLIOSVersion = '~> 6.1'
 
   # Enables Flipper.
   #
