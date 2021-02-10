@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Alert, FlatList, TextInput, View} from 'react-native';
+import {Alert, FlatList, Text, TextInput, View} from 'react-native';
 
 import {Field, Formik} from 'formik';
 import {Button, ListItem} from 'react-native-elements';
@@ -7,7 +7,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
 import {isEmpty, toTitleCase} from '../../shared/Helpers';
-import * as themes from '../../shared/styles.constants';
+import {WARNING_COLOR} from '../../shared/styles.constants';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import {formStyles, SelectInputField, TextInputField, useFormHook} from '../form';
@@ -87,14 +87,7 @@ const OtherFeatureDetail = (props) => {
     );
   };
 
-  const isOtherType = () => {
-    if (type === 'other' || formRef.current && formRef.current.values.type === 'other') return true;
-    else return false;
-  };
-
-  const onSubmitForm = () => {
-    // No op
-  };
+  const isOtherType = () => type === 'other' || (formRef.current && formRef.current.values.type) === 'other';
 
   const saveForm = async (formCurrent) => {
     try {
@@ -131,7 +124,7 @@ const OtherFeatureDetail = (props) => {
         props.hideFeatureDetail();
       }
     }
- catch (err) {
+    catch (err) {
       console.log('Error submitting form', err);
     }
   };
@@ -192,7 +185,7 @@ const OtherFeatureDetail = (props) => {
       <View style={{flex: 1}}>
         <Formik
           initialValues={initialFeatureValues}
-          onSubmit={onSubmitForm}
+          onSubmit={(values) => console.log('Submitting form...', values)}
           validate={validateFeature}
           innerRef={formRef}
           validateOnChange={true}
@@ -238,19 +231,23 @@ const OtherFeatureDetail = (props) => {
               </ListItem>
               <FlatListItemSeparator/>
               {isOtherType() && (
-                <ListItem containerStyle={commonStyles.listItemFormField}>
-                  <ListItem.Title style={formStyles.fieldLabel}>{'Other Feature Type'}</ListItem.Title>
-                  <ListItem.Content>
-                    <TextInput
-                      style={formStyles.fieldValue}
-                      placeholder={'Type of feature ...'}
-                      onChangeText={newType => setOtherType(newType)}
-                      value={otherType}
-                    />
-                  </ListItem.Content>
-                </ListItem>
+                <React.Fragment>
+                  <ListItem containerStyle={commonStyles.listItemFormField}>
+                    <ListItem.Content>
+                      <View style={formStyles.fieldLabelContainer}>
+                        <Text style={formStyles.fieldLabel}>{'Other Feature Type'}</Text>
+                      </View>
+                      <TextInput
+                        style={formStyles.fieldValue}
+                        placeholder={'Type of feature ...'}
+                        onChangeText={newType => setOtherType(newType)}
+                        value={otherType}
+                      />
+                    </ListItem.Content>
+                  </ListItem>
+                  <FlatListItemSeparator/>
+                </React.Fragment>
               )}
-              {isOtherType() && <FlatListItemSeparator/>}
               <ListItem containerStyle={commonStyles.listItemFormField}>
                 <ListItem.Content>
                   <Field
@@ -258,17 +255,16 @@ const OtherFeatureDetail = (props) => {
                     name={'description'}
                     label={'Feature Description'}
                     key={'description'}
+                    appearance={'multiline'}
                   />
                 </ListItem.Content>
               </ListItem>
-              {!isEmpty(props.selectedFeature.name) && (
-                <Button
-                  titleStyle={{color: themes.RED}}
-                  title={'Delete Feature'}
-                  type={'clear'}
-                  onPress={() => deleteFeatureConfirm()}
-                />
-              )}
+              <Button
+                titleStyle={{color: WARNING_COLOR}}
+                title={'Delete Feature'}
+                type={'clear'}
+                onPress={() => deleteFeatureConfirm()}
+              />
             </View>
           )}
         </Formik>

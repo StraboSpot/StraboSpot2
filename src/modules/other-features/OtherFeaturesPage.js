@@ -7,6 +7,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import commonStyles from '../../shared/common.styles';
 import {getNewId, toTitleCase} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
+import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
@@ -50,9 +51,11 @@ const OtherFeaturesPage = () => {
 
   return (
     <React.Fragment>
-      {!isFeatureDetailVisible && <ReturnToOverviewButton
-        onPress={() => dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.OVERVIEW))}
-      />}
+      {!isFeatureDetailVisible && (
+        <ReturnToOverviewButton
+          onPress={() => dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.OVERVIEW))}
+        />
+      )}
       {!isFeatureDetailVisible && (
         <View>
           <Button
@@ -64,7 +67,7 @@ const OtherFeaturesPage = () => {
             data={spot.properties.other_features}
             renderItem={item => renderFeature(item.item)}
             keyExtractor={(item) => item.id.toString()}
-            ItemSeparatorComponent={() => <View style={{borderTopWidth: 1, paddingTop: 10}}/>}
+            ItemSeparatorComponent={FlatListItemSeparator}
             ListEmptyComponent={<ListEmptyText text={'There are no other features at this Spot.'}/>}
           />
         </View>
