@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import {Dimensions, View, TouchableOpacity, Image, ActivityIndicator, Platform} from 'react-native';
 
-import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import {useDispatch, useSelector} from 'react-redux';
 
 import IconButton from '../../shared/ui/IconButton';
@@ -13,6 +12,7 @@ import styles from './images.styles';
 
 const platform = Platform.OS === 'ios' ? 'screen' : 'window';
 const height = Dimensions.get(platform).height;
+const width = Dimensions.get(platform).width;
 
 const Preview = (props) => {
   const [useSpots] = useSpotsHook();
@@ -48,7 +48,7 @@ const Preview = (props) => {
         <Image
           source={{uri: props.item.uri}}
           resizeMode={'contain'}
-          style={[{width: wp('100%'), height: hp('100%')}]}
+          style={[{width: width, height: height}]}
           PlaceholderContent={<ActivityIndicator/>}
         />
       </View>

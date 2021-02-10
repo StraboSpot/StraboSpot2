@@ -1,7 +1,5 @@
 import {Platform, StyleSheet} from 'react-native';
 
-import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
-
 import * as themes from '../styles.constants';
 
 const styles = StyleSheet.create({
