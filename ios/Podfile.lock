@@ -195,7 +195,7 @@ PODS:
     - React
   - react-native-get-random-values (1.5.1):
     - React-Core
-  - react-native-image-picker (2.3.4):
+  - react-native-image-picker (3.1.4):
     - React-Core
   - react-native-image-resizer (1.4.1):
     - React-Core
@@ -515,7 +515,7 @@ SPEC CHECKSUMS:
   react-native-document-picker: 5a7dc439cc7ce9bc7644605458bfc7e3f4b524d5
   react-native-geolocation: cbd9d6bd06bac411eed2671810f454d4908484a8
   react-native-get-random-values: 41f0c91ac0da870e47b307e07752e9e54bc2dc7e
-  react-native-image-picker: 32d1ad2c0024ca36161ae0d5c2117e2d6c441f11
+  react-native-image-picker: 248afb60a0c5a24153cb7c7483b257f30541323b
   react-native-image-resizer: af7fa48fe7913b7b96fa079d16dd97ada31d6833
   react-native-mapbox-gl: eec7e5be5b874cfceb79fcfe24d595411015153a
   react-native-netinfo: 52cf0ee8342548a485e28f4b09e56b477567244d

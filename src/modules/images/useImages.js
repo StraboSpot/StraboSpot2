@@ -2,7 +2,7 @@ import {Alert, Image, Platform} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
 import RNFS from 'react-native-fs';
-import ImagePicker from 'react-native-image-picker';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {getNewId} from '../../shared/Helpers';
@@ -149,7 +149,7 @@ const useImages = () => {
   };
 
   const getImagesFromCameraRoll = async () => {
-    ImagePicker.launchImageLibrary({}, async response => {
+    launchImageLibrary({}, async response => {
       console.log('RES', response);
       if (response.didCancel) useHome.toggleLoading(false);
       else {
@@ -241,7 +241,7 @@ const useImages = () => {
     };
     return new Promise((resolve, reject) => {
       try {
-        ImagePicker.launchCamera(imageOptionsCamera, (response) => {
+        launchCamera(imageOptionsCamera, (response) => {
           console.log('Response = ', response);
           if (response.didCancel) resolve('cancelled');
           else if (response.error) reject();
