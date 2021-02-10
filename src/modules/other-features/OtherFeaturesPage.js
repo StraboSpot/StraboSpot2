@@ -1,15 +1,16 @@
 import React, {useState} from 'react';
-import {FlatList, Text, View} from 'react-native';
+import {FlatList, View} from 'react-native';
 
 import {Button, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {getNewId, toTitleCase} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
+import ListEmptyText from '../../shared/ui/ListEmptyText';
 import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
-import FeatureDetail from './FeatureDetail';
+import OtherFeatureDetail from './OtherFeatureDetail';
 
 const OtherFeaturesPage = () => {
   const dispatch = useDispatch();
@@ -60,23 +61,17 @@ const OtherFeaturesPage = () => {
             type={'clear'}
             onPress={addFeature}
           />
-          {(!spot.properties.other_features || !spot.properties.other_features.length > 0) && (
-            <View style={{padding: 10}}>
-              <Text>There are no other features to this Spot.</Text>
-            </View>
-          )}
-          {spot.properties.other_features && spot.properties.other_features.length > 0 && (
-            <FlatList
-              data={spot.properties.other_features}
-              renderItem={item => renderFeature(item.item)}
-              keyExtractor={(item) => item.id.toString()}
-              ItemSeparatorComponent={() => <View style={{borderTopWidth: 1, paddingTop: 10}}/>}
-            />
-          )}
+          <FlatList
+            data={spot.properties.other_features}
+            renderItem={item => renderFeature(item.item)}
+            keyExtractor={(item) => item.id.toString()}
+            ItemSeparatorComponent={() => <View style={{borderTopWidth: 1, paddingTop: 10}}/>}
+            ListEmptyComponent={<ListEmptyText text={'There are no other features at this Spot.'}/>}
+          />
         </View>
       )}
       {isFeatureDetailVisible && (
-        <FeatureDetail
+        <OtherFeatureDetail
           featureTypes={otherFeatures}
           hideFeatureDetail={() => setIsFeatureDetailVisible(false)}
           selectedFeature={selectedFeature}

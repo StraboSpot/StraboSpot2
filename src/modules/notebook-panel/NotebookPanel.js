@@ -19,7 +19,7 @@ import MeasurementDetailPage from '../measurements/MeasurementDetail';
 import MeasurementsPage from '../measurements/Measurements';
 import Nesting from '../nesting/Nesting';
 import NotesPage from '../notes/Notes';
-import OtherFeaturesPage from '../petrology/OtherFeaturesPage';
+import OtherFeaturesPage from '../other-features/OtherFeaturesPage';
 import PetrologyPage from '../petrology/PetrologyPage';
 import SampleDetailPage from '../samples/SampleDetail';
 import SamplesPage from '../samples/SamplesNotebook';
