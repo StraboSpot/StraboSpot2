@@ -200,7 +200,7 @@ const OtherFeatureDetail = (props) => {
         >
           {() => (
             <View>
-              <ListItem containerStyle={commonStyles.listItemMinimalVerticalPadding}>
+              <ListItem containerStyle={commonStyles.listItem}>
                 <ListItem.Content>
                   <Field
                     component={TextInputField}
@@ -211,7 +211,7 @@ const OtherFeatureDetail = (props) => {
                 </ListItem.Content>
               </ListItem>
               <FlatListItemSeparator/>
-              <ListItem containerStyle={commonStyles.listItemMinimalVerticalPadding}>
+              <ListItem containerStyle={commonStyles.listItem}>
                 <ListItem.Content>
                   <Field
                     component={TextInputField}
@@ -222,7 +222,7 @@ const OtherFeatureDetail = (props) => {
                 </ListItem.Content>
               </ListItem>
               <FlatListItemSeparator/>
-              <ListItem containerStyle={commonStyles.listItemMinimalVerticalPadding}>
+              <ListItem containerStyle={commonStyles.listItem}>
                 <ListItem.Content>
                   <Field
                     component={(formProps) => (
@@ -238,11 +238,11 @@ const OtherFeatureDetail = (props) => {
               </ListItem>
               <FlatListItemSeparator/>
               {isOtherType() && (
-                <ListItem containerStyle={commonStyles.listItemMinimalVerticalPadding}>
+                <ListItem containerStyle={commonStyles.listItem}>
                   <ListItem.Title style={formStyles.fieldLabel}>{'Other Feature Type'}</ListItem.Title>
                   <ListItem.Content>
                     <TextInput
-                      style={[formStyles.fieldValue, formStyles.fieldValue]}
+                      style={formStyles.fieldValue}
                       placeholder={'Type of feature ...'}
                       onChangeText={newType => setOtherType(newType)}
                       value={otherType}
@@ -251,7 +251,7 @@ const OtherFeatureDetail = (props) => {
                 </ListItem>
               )}
               {isOtherType() && <FlatListItemSeparator/>}
-              <ListItem containerStyle={commonStyles.listItemMinimalVerticalPadding}>
+              <ListItem containerStyle={commonStyles.listItem}>
                 <ListItem.Content>
                   <Field
                     component={TextInputField}
