@@ -4,6 +4,7 @@ import {FlatList, View} from 'react-native';
 import {Button, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import commonStyles from '../../shared/common.styles';
 import {getNewId, toTitleCase} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
@@ -35,11 +36,9 @@ const OtherFeaturesPage = () => {
       return key === 'id' ? acc : (acc === '' ? '' : acc + '\n') + toTitleCase(key) + ': ' + toTitleCase(value);
     }, '');
     return (
-      <ListItem key={feature.id}
-                onPress={() => editFeature(feature)}
-      >
+      <ListItem containerStyle={commonStyles.listItem} key={feature.id} onPress={() => editFeature(feature)}>
         <ListItem.Content style={{overflow: 'hidden'}}>
-          <ListItem.Title>{featureTitle}</ListItem.Title>
+          <ListItem.Title style={commonStyles.listItemTitle}>{featureTitle}</ListItem.Title>
           {featureText !== '' && (
             <ListItem.Subtitle style={{color: themes.PRIMARY_TEXT_COLOR}}>{featureText}</ListItem.Subtitle>
           )}

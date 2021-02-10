@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Alert, FlatList, Text, View} from 'react-native';
+import {Alert, FlatList, View} from 'react-native';
 
 import {Button, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
@@ -11,8 +11,6 @@ import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import {useSpotsHook} from '../spots';
 import {DEFAULT_GEOLOGIC_TYPES} from './project.constants';
-import styles from './project.styles';
-import dialogStyles from './project.styles';
 import {addedCustomFeatureTypes} from './projects.slice';
 
 
@@ -69,12 +67,9 @@ const CustomFeatureTypes = () => {
   const renderFeature = (feature) => {
     return (
       <View>
-        <ListItem
-          key={feature.name}
-          containerStyle={commonStyles.listItem}
-        >
+        <ListItem key={feature.name} containerStyle={commonStyles.listItem}>
           <ListItem.Content>
-            <ListItem.Title>{feature}</ListItem.Title>
+            <ListItem.Title style={commonStyles.listItemTitle}>{feature}</ListItem.Title>
           </ListItem.Content>
           <Button
             titleStyle={{color: themes.RED}}
