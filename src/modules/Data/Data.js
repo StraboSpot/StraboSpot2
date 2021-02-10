@@ -1,11 +1,15 @@
-import React, {useState} from 'react';
-import {Alert, FlatList, Linking, Text, TextInput, View} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {Alert, FlatList, Linking, ScrollView, Image, Text, TextInput, View} from 'react-native';
 
-import {Button, ButtonGroup, Icon, ListItem} from 'react-native-elements';
+import DocumentPicker from 'react-native-document-picker';
+import {Button, ButtonGroup, Icon, ListItem, Overlay} from 'react-native-elements';
+import RNFS from 'react-native-fs';
+import {Dialog, DialogContent, DialogTitle} from 'react-native-popup-dialog';
+import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from 'react-native-table-component';
 import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
-import {truncateText, urlValidator} from '../../shared/Helpers';
+import {csvToArray, getNewUUID, isEmpty, truncateText, urlValidator} from '../../shared/Helpers';
 import {BLUE, PRIMARY_ACCENT_COLOR} from '../../shared/styles.constants';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import TextInputModal from '../../shared/ui/GeneralTextInputModal';
@@ -16,6 +20,8 @@ import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import {editedSpotProperties} from '../spots/spots.slice';
+import useDataHook from './useData';
+
 
 const Data = (props) => {
   const dispatch = useDispatch();
@@ -23,9 +29,13 @@ const Data = (props) => {
 
   const [error, setError] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+  const [isTableVisible, setIsTableVisible] = useState(false);
+  const [selectedTable, setSelectedTable] = useState({});
   const [urlToEdit, setUrlToEdit] = useState({});
   const [protocol, setProtocol] = useState('http://');
   const [url, setUrl] = useState('');
+
+  const useData = useDataHook();
 
   const deleteUrl = (urlToDelete, index) => {
     const urlCopy = JSON.parse(JSON.stringify(spot.properties.data.urls));
@@ -39,6 +49,55 @@ const Data = (props) => {
     console.log(urlToEdit, i);
     setUrlToEdit({index: i, url: urlToEdit});
     setIsEditModalVisible(true);
+  };
+
+  const selectTable = (table) => {
+    setSelectedTable(table);
+    setIsTableVisible(true);
+  };
+
+  const transpose = (matrix) => {
+    let [row] = matrix
+    return row.map((value, column) => matrix.map(row => row[column]))
+  }
+
+
+  const renderTable = () => {
+    if (!isEmpty(selectedTable)) {
+      const filteredData = selectedTable.data.filter(row => row.length > 1);
+      const tableData = transpose(filteredData)
+      console.log('Table Data', tableData)
+      const data = [1, 2, 3, 4, 5];
+      return (
+        <View style={{}}>
+          <Overlay
+            overlayStyle={{width: '90%', height: '90%'}}
+            isVisible={isTableVisible}
+            onBackdropPress={() => setIsTableVisible(!isTableVisible)}>
+            <Text>{selectedTable.name}</Text>
+            <ScrollView style={{flex: 1}}>
+              <Table borderStyle={{borderWidth: 2, borderColor: '#c8e1ff'}}>
+                <Row data={filteredData[0]}  style={{height: 70}} textStyle={{textAlign: 'center', fontWeight: 'bold'}}/>
+                <Rows data={filteredData.slice(1)} style={{height: 50}} textStyle={{textAlign: 'center'}}/>
+              </Table>
+            </ScrollView>
+          </Overlay>
+        </View>
+      );
+    }
+  };
+
+
+  const renderTableListItem = (table) => {
+    return (
+      <ListItem onPress={() => selectTable(table)} containerStyle={commonStyles.listItem}>
+        <ListItem.Content>
+          <ListItem.Title style={commonStyles.listItemTitle}>
+            {table.name}
+          </ListItem.Title>
+        </ListItem.Content>
+      </ListItem>
+    );
   };
 
   const renderUrlListItem = (url, i) => {
@@ -134,6 +193,43 @@ const Data = (props) => {
     }
   };
 
+  const CSVPicker = async () => {
+    try {
+      const res = await DocumentPicker.pick({
+        type: [DocumentPicker.types.csv],
+      });
+      console.log({
+          uri: res.uri,
+          type: res.type, // mime type
+          name: res.name,
+          size: res.size,
+        },
+      );
+      const id = getNewUUID();
+      const CSVData = await RNFS.readFile(res.uri);
+      const csvToArrayRes = csvToArray(CSVData);
+      // console.log(csvToArrayRes);
+      const CSVObject = {
+        id: id,
+        name: res.name,
+        data: csvToArrayRes,
+        size: res.size,
+      };
+      console.log('CSVObject', CSVObject);
+      useData.saveCSV(CSVObject);
+      console.log('.CSV saved successfully!');
+    }
+    catch (err) {
+      if (DocumentPicker.isCancel(err)) {
+        console.log('User canceled', err);
+        // User cancelled the picker, exit any dialogs or menus and move on
+      }
+      else {
+        throw err;
+      }
+    }
+  };
+
   return (
     <View style={{flex: 1}}>
       <ReturnToOverviewButton
@@ -188,7 +284,7 @@ const Data = (props) => {
           onPress={() => saveUrl()}
         />
         <Button
-          title={'Clear Link'}
+          title={'Clear'}
           type={'clear'}
           containerStyle={commonStyles.standardButtonContainer}
           onPress={() => setUrl('')}
@@ -201,7 +297,29 @@ const Data = (props) => {
         ItemSeparatorComponent={FlatListItemSeparator}
         ListEmptyComponent={<ListEmptyText text={'No URLs saved'}/>}
       />
+      <SectionDivider dividerText={'Tables'}/>
+      <Button
+        title={'Attach table from a .CSV file'}
+        type={'outline'}
+        icon={{
+          name: 'attach-outline',
+          type: 'ionicon',
+
+        }}
+        containerStyle={commonStyles.buttonPadding}
+        buttonStyle={commonStyles.standardButton}
+        titleStyle={commonStyles.standardButtonText}
+        onPress={() => CSVPicker()}
+      />
+      <FlatList
+        keyExtractor={(index) => index}
+        data={spot.properties?.data?.tables}
+        renderItem={({item}) => renderTableListItem(item)}
+        ItemSeparatorComponent={FlatListItemSeparator}
+        ListEmptyComponent={<ListEmptyText text={'No tables saved'}/>}
+      />
       {renderURLEditModal()}
+      {renderTable()}
     </View>
   );
 };
