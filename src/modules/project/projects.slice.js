@@ -17,6 +17,9 @@ const projectSlice = createSlice({
   name: 'project',
   initialState: initialProjectState,
   reducers: {
+    addedCustomFeatureTypes(state, action) {
+      state.project.other_features =  action.payload;
+    },
     addedDataset(state, action) {
       state.datasets = {...state.datasets, [action.payload.id]: action.payload};
     },
@@ -103,6 +106,7 @@ const projectSlice = createSlice({
 });
 
 export const {
+  addedCustomFeatureTypes,
   addedDataset,
   addedDatasets,
   addedProject,

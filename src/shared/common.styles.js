@@ -80,6 +80,11 @@ const commonStyles = StyleSheet.create({
     padding: 10,
     backgroundColor: themes.PRIMARY_ACCENT_COLOR,
   },
+  listItemMinimalVerticalPadding: {
+    padding: 10,
+    paddingBottom:2.5,
+    paddingTop:2.5,
+  },
   listItemTitle: {
     color: themes.PRIMARY_TEXT_COLOR,
     fontSize: themes.PRIMARY_TEXT_SIZE,
