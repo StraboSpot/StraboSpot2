@@ -832,7 +832,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.StraboSpot2-mobile.2021";
+				PRODUCT_BUNDLE_IDENTIFIER = org.StraboSpot2;
 				PRODUCT_NAME = StraboSpot2;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "StraboSpot2-Bridging-Header.h";
@@ -869,7 +869,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.StraboSpot2-mobile.2021";
+				PRODUCT_BUNDLE_IDENTIFIER = org.StraboSpot2;
 				PRODUCT_NAME = StraboSpot2;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "StraboSpot2-Bridging-Header.h";
