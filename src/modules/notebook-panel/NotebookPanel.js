@@ -9,7 +9,7 @@ import {isEmpty} from '../../shared/Helpers';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SectionDivider from '../../shared/ui/SectionDivider';
-import Data from '../data/Data';
+import ExternalData from '../external-data/ExternalData';
 import FabricsPage from '../fabrics/FabricsPage';
 import Geography from '../geography/Geography';
 import {MODALS} from '../home/home.constants';
@@ -83,7 +83,7 @@ const NotebookPanel = (props) => {
             {pageVisible === SECONDARY_NOTEBOOK_PAGES.FABRICS && <FabricsPage/>}
             {pageVisible === SECONDARY_NOTEBOOK_PAGES.OTHER_FEATURES && <OtherFeaturesPage/>}
             {/*{pageVisible === SECONDARY_NOTEBOOK_PAGES.RELATIONSHIPS && <PlaceholderPage/>}*/}
-            {pageVisible === SECONDARY_NOTEBOOK_PAGES.DATA && <Data/>}
+            {pageVisible === SECONDARY_NOTEBOOK_PAGES.DATA && <ExternalData/>}
 
             {/*Sed Notebook Pages*/}
             {/*{pageVisible === SED_NOTEBOOK_PAGES.LITHOLOGIES && <PlaceholderPage/>}*/}

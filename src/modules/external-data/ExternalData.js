@@ -1,11 +1,10 @@
-import React, {useState, useEffect} from 'react';
-import {Alert, FlatList, Linking, ScrollView, Image, Text, TextInput, View} from 'react-native';
+import React, {useState} from 'react';
+import {Alert, FlatList, Linking, ScrollView, Text, TextInput, View} from 'react-native';
 
 import DocumentPicker from 'react-native-document-picker';
 import {Button, ButtonGroup, Icon, ListItem, Overlay} from 'react-native-elements';
 import RNFS from 'react-native-fs';
-import {Dialog, DialogContent, DialogTitle} from 'react-native-popup-dialog';
-import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from 'react-native-table-component';
+import {Table, Row, Rows} from 'react-native-table-component';
 import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
@@ -20,10 +19,10 @@ import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import {editedSpotProperties} from '../spots/spots.slice';
-import useDataHook from './useData';
+import useDataHook from './useExternalData';
 
 
-const Data = (props) => {
+const ExternalData = () => {
   const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
 
@@ -37,7 +36,7 @@ const Data = (props) => {
 
   const useData = useDataHook();
 
-  const deleteUrl = (urlToDelete, index) => {
+  const deleteUrl = (urlToDelete) => {
     const urlCopy = JSON.parse(JSON.stringify(spot.properties.data.urls));
     console.log(urlCopy);
     const filteredArr = urlCopy.filter(url => url !== urlToDelete);
@@ -57,19 +56,18 @@ const Data = (props) => {
   };
 
   const transpose = (matrix) => {
-    let [row] = matrix
-    return row.map((value, column) => matrix.map(row => row[column]))
-  }
+    let [row] = matrix;
+    return row.map((value, column) => matrix.map(row => row[column]));
+  };
 
 
   const renderTable = () => {
     if (!isEmpty(selectedTable)) {
       const filteredData = selectedTable.data.filter(row => row.length > 1);
-      const tableData = transpose(filteredData)
-      console.log('Table Data', tableData)
-      const data = [1, 2, 3, 4, 5];
+      const tableData = transpose(filteredData);
+      console.log('Table ExternalData', tableData);
       return (
-        <View style={{}}>
+        <View>
           <Overlay
             overlayStyle={{width: '90%', height: '90%'}}
             isVisible={isTableVisible}
@@ -77,7 +75,7 @@ const Data = (props) => {
             <Text>{selectedTable.name}</Text>
             <ScrollView style={{flex: 1}}>
               <Table borderStyle={{borderWidth: 2, borderColor: '#c8e1ff'}}>
-                <Row data={filteredData[0]}  style={{height: 70}} textStyle={{textAlign: 'center', fontWeight: 'bold'}}/>
+                <Row data={filteredData[0]} style={{height: 70}} textStyle={{textAlign: 'center', fontWeight: 'bold'}}/>
                 <Rows data={filteredData.slice(1)} style={{height: 50}} textStyle={{textAlign: 'center'}}/>
               </Table>
             </ScrollView>
@@ -324,4 +322,4 @@ const Data = (props) => {
   );
 };
 
-export default Data;
+export default ExternalData;

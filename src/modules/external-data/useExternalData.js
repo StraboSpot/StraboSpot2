@@ -1,10 +1,8 @@
-import React from 'react';
-
 import {useDispatch, useSelector} from 'react-redux';
 
 import {editedSpotProperties} from '../spots/spots.slice';
 
-const useData = () => {
+const useExternalData = () => {
   const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
 
@@ -29,4 +27,4 @@ const useData = () => {
   };
 };
 
-export default useData;
+export default useExternalData;
