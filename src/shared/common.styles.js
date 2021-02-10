@@ -80,10 +80,10 @@ const commonStyles = StyleSheet.create({
     padding: 10,
     backgroundColor: themes.PRIMARY_ACCENT_COLOR,
   },
-  listItemMinimalVerticalPadding: {
+  listItemFormField: {
     padding: 10,
-    paddingBottom:2.5,
-    paddingTop:2.5,
+    paddingBottom: 5,
+    paddingTop: 5,
   },
   listItemTitle: {
     color: themes.PRIMARY_TEXT_COLOR,

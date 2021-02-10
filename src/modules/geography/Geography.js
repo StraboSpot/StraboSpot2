@@ -124,7 +124,7 @@ const Geography = () => {
       >
         {() => (
           <View>
-            <ListItem containerStyle={commonStyles.listItem}>
+            <ListItem containerStyle={commonStyles.listItemFormField}>
               <ListItem.Content>
                 <Field
                   component={TextInputField}
@@ -153,7 +153,7 @@ const Geography = () => {
 
   const renderGeoFieldInputs = () => {
     return (
-      <ListItem containerStyle={commonStyles.listItem}>
+      <ListItem containerStyle={commonStyles.listItemFormField}>
         <ListItem.Content>
           <View style={{flex: 1, flexDirection: 'row'}}>
             <View style={{flex: 1, flexDirection: 'row', overflow: 'hidden'}}>
@@ -194,7 +194,7 @@ const Geography = () => {
 
   const renderGeoFieldText = () => {
     return (
-      <ListItem containerStyle={commonStyles.listItem}>
+      <ListItem containerStyle={commonStyles.listItemFormField}>
         <ListItem.Content>
           <Field
             component={TextInputField}
@@ -214,7 +214,7 @@ const Geography = () => {
         {!isEmpty(initialGeomValues.x_pixels) && !isEmpty(initialGeomValues.y_pixels)
           ? renderPixelFieldInputs() : renderPixelFieldText(initialGeomValues)}
         <FlatListItemSeparator/>
-        <ListItem containerStyle={commonStyles.listItem}>
+        <ListItem containerStyle={commonStyles.listItemFormField}>
           <ListItem.Content>
             <View style={formStyles.fieldLabelContainer}>
               <Text style={formStyles.fieldLabel}>Real-World Coordinates</Text>
@@ -247,7 +247,7 @@ const Geography = () => {
 
   const renderPixelFieldInputs = () => {
     return (
-      <ListItem containerStyle={commonStyles.listItem}>
+      <ListItem containerStyle={commonStyles.listItemFormField}>
         <ListItem.Content>
           <View style={formStyles.fieldLabelContainer}>
             <Text style={formStyles.fieldLabel}>Image Basemap Coordinates</Text>
@@ -279,7 +279,7 @@ const Geography = () => {
 
   const renderPixelFieldText = () => {
     return (
-      <ListItem containerStyle={commonStyles.listItem}>
+      <ListItem containerStyle={commonStyles.listItemFormField}>
         <ListItem.Content>
           <Field
             component={TextInputField}

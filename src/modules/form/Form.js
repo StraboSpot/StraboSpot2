@@ -108,7 +108,7 @@ const Form = (props) => {
         {fieldType === 'begin_group' && renderGroupHeading(field)}
         {(fieldType === 'text' || fieldType === 'integer' || fieldType === 'decimal' || fieldType === 'select_one'
           || fieldType === 'select_multiple' || fieldType === 'date') && (
-          <ListItem containerStyle={{...commonStyles.listItem, paddingTop: 5, paddingBottom: 5}}>
+          <ListItem containerStyle={commonStyles.listItemFormField}>
             <ListItem.Content>
               {fieldType === 'text' && renderTextInput(field)}
               {(fieldType === 'integer' || fieldType === 'decimal') && renderNumberInput(field)}

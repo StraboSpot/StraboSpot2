@@ -200,7 +200,7 @@ const OtherFeatureDetail = (props) => {
         >
           {() => (
             <View>
-              <ListItem containerStyle={commonStyles.listItem}>
+              <ListItem containerStyle={commonStyles.listItemFormField}>
                 <ListItem.Content>
                   <Field
                     component={TextInputField}
@@ -211,7 +211,7 @@ const OtherFeatureDetail = (props) => {
                 </ListItem.Content>
               </ListItem>
               <FlatListItemSeparator/>
-              <ListItem containerStyle={commonStyles.listItem}>
+              <ListItem containerStyle={commonStyles.listItemFormField}>
                 <ListItem.Content>
                   <Field
                     component={TextInputField}
@@ -222,7 +222,7 @@ const OtherFeatureDetail = (props) => {
                 </ListItem.Content>
               </ListItem>
               <FlatListItemSeparator/>
-              <ListItem containerStyle={commonStyles.listItem}>
+              <ListItem containerStyle={commonStyles.listItemFormField}>
                 <ListItem.Content>
                   <Field
                     component={(formProps) => (
@@ -238,7 +238,7 @@ const OtherFeatureDetail = (props) => {
               </ListItem>
               <FlatListItemSeparator/>
               {isOtherType() && (
-                <ListItem containerStyle={commonStyles.listItem}>
+                <ListItem containerStyle={commonStyles.listItemFormField}>
                   <ListItem.Title style={formStyles.fieldLabel}>{'Other Feature Type'}</ListItem.Title>
                   <ListItem.Content>
                     <TextInput
@@ -251,7 +251,7 @@ const OtherFeatureDetail = (props) => {
                 </ListItem>
               )}
               {isOtherType() && <FlatListItemSeparator/>}
-              <ListItem containerStyle={commonStyles.listItem}>
+              <ListItem containerStyle={commonStyles.listItemFormField}>
                 <ListItem.Content>
                   <Field
                     component={TextInputField}

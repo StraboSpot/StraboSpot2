@@ -106,7 +106,7 @@ const RockSubpage = (props) => {
           validateOnChange={true}
           initialValues={{}}
         >
-          <ListItem containerStyle={{...commonStyles.listItem, paddingTop: 5, paddingBottom: 5}}>
+          <ListItem containerStyle={commonStyles.listItemFormField}>
             <ListItem.Content>
               <Field
                 component={(formProps) => (
