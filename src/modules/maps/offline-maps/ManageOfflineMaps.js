@@ -67,10 +67,9 @@ const ManageOfflineMaps = (props) => {
     try {
       setLoading(true);
       const ids = await useDevice.readDirectoryForMaps();
-      setDirectoryExists(true);
-        const availableMapObj = Object.assign({}, ...ids.map(id => ({[offlineMaps[id].id]: offlineMaps[id]})));
-        setAvailableMaps({...availableMaps, ...availableMapObj});
-        setLoading(false);
+      const availableMapObj = Object.assign({}, ...ids.map(id => ({[offlineMaps[id].id]: offlineMaps[id]})));
+      setAvailableMaps({...availableMaps, ...availableMapObj});
+      setLoading(false);
     }
     catch (err) {
       console.error('Error reading directory for maps', err);
