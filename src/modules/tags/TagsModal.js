@@ -66,7 +66,7 @@ const TagsModal = () => {
     return (
       <FlatList
         keyExtractor={item => item.id.toString()}
-        data={tagsCopy}  // alphabetize by name
+        data={tagsCopy.sort((tagA, tagB) => tagA.name.localeCompare(tagB.name))}  // alphabetize by name
         renderItem={({item}) => renderTagItem(item)}
         ItemSeparatorComponent={FlatListItemSeparator}
       />
