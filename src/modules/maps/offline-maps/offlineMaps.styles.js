@@ -11,16 +11,15 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
   },
   itemSubContainer: {
-    justifyContent: 'space-between',
+    width: '100%',
+    justifyContent: 'space-evenly',
     flexDirection: 'row',
-    paddingLeft: 10,
   },
   itemTextStyle: {
     fontSize: themes.PRIMARY_TEXT_SIZE,
-    marginLeft: 15,
   },
   itemSubTextStyle: {
     fontSize: 14,

@@ -94,12 +94,12 @@ const ManageOfflineMaps = (props) => {
   const renderMapsListItem = (item) => {
     return (
       <ListItem
-        containerStyle={commonStyles.listItem}
+        containerStyle={commonStyles.listItemFormField}
         key={item.id}
       >
         <ListItem.Content>
           <View style={styles.itemContainer}>
-            <ListItem.Title style={styles.itemTextStyle}>{`${item.name}`}</ListItem.Title>
+            <ListItem.Title style={commonStyles.listItemTitle}>{`${item.name}`}</ListItem.Title>
             <ListItem.Title style={styles.itemSubTextStyle}>{`(${item.count} tiles)`}</ListItem.Title>
           </View>
           <View style={styles.itemSubContainer}>
