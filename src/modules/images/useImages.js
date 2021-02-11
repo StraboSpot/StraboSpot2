@@ -36,13 +36,13 @@ const useImages = () => {
   let imageCount = 0;
   let newImages = [];
 
-  const deleteImage = async (imageId,spotWithImage) => {
+  const deleteImage = async (imageId, spotWithImage) => {
     const spotsOnImage = Object.values(spots).filter(spot => spot.properties.image_basemap === imageId);
     if (spotsOnImage && spotsOnImage.length >= 1) {
       Alert.alert('Image Basemap contains Spots!', 'Delete the spots, before trying to delete the image');
       return false;
     }
-    else if (spotWithImage){
+    else if (spotWithImage) {
       const imagesDataCopy = spotWithImage.properties.images;
       const allOtherImages = imagesDataCopy.filter(item => imageId !== item.id);
       dispatch(setSelectedSpot(spotWithImage));
@@ -86,13 +86,10 @@ const useImages = () => {
         if (newImages.length > 0) {
           console.log('ALL PHOTOS SAVED', newImages);
           dispatch(editedSpotImages(newImages));
-          useHome.toggleLoading(false);
-          return Promise.resolve(newImages.length);
         }
-        else {
-          useHome.toggleLoading(false);
-          Alert.alert('No Photos To Save', 'please try again...');
-        }
+        else Alert.alert('No Photos To Save', 'Please try again...');
+        useHome.toggleLoading(false);
+        return newImages.length;
       }
       else {
         console.log('Photos to Save:', [...newImages, photoProperties]);
@@ -101,7 +98,7 @@ const useImages = () => {
       }
     }
     catch (e) {
-      Alert.alert('Error Getting Photo!');
+      Alert.alert('Error Getting Photo!', 'Please try again...');
       useHome.toggleLoading(false);
     }
   };
@@ -177,7 +174,7 @@ const useImages = () => {
     console.log('New image data:', imageData);
     let height = imageData.height;
     let width = imageData.width;
-    const tempImageURI = Platform.OS === 'ios' ? imageData.uri || imageData.path : 'file://' + imageData.path;
+    const tempImageURI = Platform.OS === 'ios' ? imageData.uri || imageData.path : imageData.uri || 'file://' + imageData.path;
     if (!height || !width) ({height, width} = await getImageHeightAndWidth(tempImageURI));
     let imageId = getNewId();
     let imageURI = getLocalImageURI(imageId);

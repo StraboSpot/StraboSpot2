@@ -242,7 +242,7 @@ const Home = () => {
     // toggleButton('drawButtonsVisible', true);
   };
 
-  const clickHandler = (name, value) => {
+  const clickHandler = async (name, value) => {
     switch (name) {
       case 'search':
         Alert.alert('Still in the works',
@@ -274,14 +274,14 @@ const Home = () => {
         break;
       case 'photo':
         dispatch(clearedSelectedSpots());
-        useMaps.setPointAtCurrentLocation().then((point) => {
-          console.log('Point', point);
-          useImages.launchCameraFromNotebook().then((imagesSavedLength) => {
-            toastRef.current.show(imagesSavedLength + ' photo' + (imagesSavedLength === 1 ? '' : 's')
-              + ' saved in Spot' + point.properties.name);
-            openNotebookPanel();
-          });
-        });
+        const point = await useMaps.setPointAtCurrentLocation();
+        if (point) {
+          console.log('New Spot at current location:', point);
+          const imagesSavedLength = await useImages.launchCameraFromNotebook();
+          imagesSavedLength > 0 && toastRef.current.show(
+            imagesSavedLength + ' photo' + (imagesSavedLength === 1 ? '' : 's') + ' saved in new Spot ' + point.properties.name);
+          openNotebookPanel();
+        }
         break;
       case 'sketch':
         dispatch(clearedSelectedSpots());
@@ -442,9 +442,9 @@ const Home = () => {
         console.log('Export button was pressed');
         break;
       case 'takePhoto':
-        useImages.launchCameraFromNotebook().then((imagesSavedLength) => {
-          toastRef.current.show(imagesSavedLength + ' photo' + (imagesSavedLength === 1 ? '' : 's') + ' saved');
-        });
+        const imagesSavedLength = await useImages.launchCameraFromNotebook();
+        imagesSavedLength > 0 && toastRef.current.show(
+          imagesSavedLength + ' photo' + (imagesSavedLength === 1 ? '' : 's') + ' saved');
         break;
       case 'importPhoto':
         useImages.getImagesFromCameraRoll();
