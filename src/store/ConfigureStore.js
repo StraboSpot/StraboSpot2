@@ -86,6 +86,7 @@ const defalutMiddlewareOptions = {
   immutableCheck: false,
   serializableCheck: {
     ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+    warnAfter: 50
   },
 };
 
