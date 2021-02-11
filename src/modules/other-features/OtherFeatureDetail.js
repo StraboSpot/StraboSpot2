@@ -6,7 +6,7 @@ import {Button, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
-import {isEmpty, toTitleCase} from '../../shared/Helpers';
+import {isEmpty} from '../../shared/Helpers';
 import {WARNING_COLOR} from '../../shared/styles.constants';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
@@ -71,22 +71,20 @@ const OtherFeatureDetail = (props) => {
   };
 
   const deleteFeatureConfirm = () => {
-    if (props.selectedFeature.name) {
-      Alert.alert('Delete Feature ' + toTitleCase(props.selectedFeature.name),
-        'Are you sure you would like to delete ' + props.selectedFeature.name + '?',
-        [
-          {
-            text: 'No',
-            style: 'cancel',
-          },
-          {
-            text: 'Yes',
-            onPress: () => deleteFeature(),
-          },
-        ],
-        {cancelable: false},
-      );
-    }
+    Alert.alert('Delete Feature',
+      'Are you sure you would like to delete this feature?',
+      [
+        {
+          text: 'No',
+          style: 'cancel',
+        },
+        {
+          text: 'Yes',
+          onPress: () => deleteFeature(),
+        },
+      ],
+      {cancelable: false},
+    );
   };
 
   const isOtherType = () => type === 'other' || (formRef.current && formRef.current.values.type) === 'other';
@@ -233,7 +231,7 @@ const OtherFeatureDetail = (props) => {
         props.hideFeatureDetail();
       }
     }
- catch (err) {
+    catch (err) {
       console.log('Error submitting form', err);
     }
   };
@@ -268,8 +266,7 @@ const OtherFeatureDetail = (props) => {
       return false;
     }
     else if (isEmpty(otherType)) {
-      Alert.alert('Alert!',
-        'The new type being defined is empty');
+      Alert.alert('Alert!', 'The new type being defined is empty');
       return false;
     }
     else return true;
