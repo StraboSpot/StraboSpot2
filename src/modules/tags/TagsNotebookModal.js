@@ -38,8 +38,6 @@ const TagsNotebookModal = (props) => {
         <Modal
           style={{...uiStyles.modalPosition, width: 285}}
           close={props.close}
-          cancel={props.cancel}
-          buttonTitleLeft={'Cancel'}
           textStyle={{fontWeight: 'bold'}}
           onPress={props.onPress}
         >
