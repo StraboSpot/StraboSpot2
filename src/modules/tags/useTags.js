@@ -151,17 +151,18 @@ const useTags = () => {
   };
 
   const saveTag = (tagToSave) => {
+    let updatedTags;
     if (!Array.isArray(tagToSave)) {
-      const updatedTags = projectTags.filter(tag => tag.id !== tagToSave.id);
-      updatedTags.unshift(tagToSave);
-      dispatch(updatedProject({field: 'tags', value: updatedTags}));
+      updatedTags = projectTags.filter(tag => tag.id !== tagToSave.id);
+      updatedTags.push(tagToSave);
     }
     else {
       let tagIdsToSave = tagToSave.map(tag => tag.id);
-      let updatedTags = projectTags.filter(tag => !tagIdsToSave.includes(tag.id));
+      updatedTags = projectTags.filter(tag => !tagIdsToSave.includes(tag.id));
       updatedTags = tagToSave.concat(updatedTags);
-      dispatch(updatedProject({field: 'tags', value: updatedTags}));
     }
+    updatedTags = updatedTags.sort((tagA, tagB) => tagA.name.localeCompare(tagB.name));
+    dispatch(updatedProject({field: 'tags', value: updatedTags}));
   };
 
   const tagSpotExists = (tag, spot) => {
