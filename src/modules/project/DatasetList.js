@@ -2,11 +2,11 @@ import React, {useState} from 'react';
 import {FlatList, Switch, Text, View} from 'react-native';
 
 import {Button, Icon, ListItem} from 'react-native-elements';
-import Dialog, {DialogButton, DialogFooter, DialogTitle, FadeAnimation} from 'react-native-popup-dialog';
 import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
 import {truncateText} from '../../shared/Helpers';
+import DeleteConformationDialogBox from '../../shared/ui/DeleteConformationDialogBox';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import TextInputModal from '../../shared/ui/GeneralTextInputModal';
 import {setProjectLoadComplete} from '../home/home.slice';
@@ -115,39 +115,23 @@ const DatasetList = () => {
 
   const renderDeleteConfirmationModal = () => {
     return (
-      <Dialog
-        dialogStyle={[styles.dialogBox, {position: 'absolute', top: '25%'}]}
-        width={300}
+      <DeleteConformationDialogBox
+        title={'Confirm Delete!'}
         visible={isDeleteConfirmModalVisible}
-        dialogAnimation={new FadeAnimation({animationDuration: 300, useNativeDriver: true})}
-        useNativeDriver={true}
-        dialogTitle={
-          <DialogTitle
-            style={styles.dialogTitle}
-            textStyle={styles.dialogTitleText}
-            title={'Confirm Delete!'}
-          />
-        }
-        footer={
-          <DialogFooter>
-            <DialogButton text={'Delete'} onPress={() => initializeDeleteDataset()}/>
-            <DialogButton text={'Cancel'} onPress={() => setIsDeleteConfirmModalVisible(false)}/>
-          </DialogFooter>
-        }
+        cancel={() => setIsDeleteConfirmModalVisible(false)}
+        delete={() => initializeDeleteDataset()}
       >
-        <View style={styles.dialogContent}>
-          <Text style={{textAlign: 'center'}}>Are you sure you want to delete Dataset
-            {selectedDataset && selectedDataset.name
-            && <Text style={styles.dialogContentImportantText}>{'\n' + selectedDataset.name}</Text>}
-            ?
-          </Text>
-          <Text style={styles.dialogConfirmText}>
-            This will
-            <Text style={styles.dialogContentImportantText}> ERASE </Text>
-            everything in this dataset including Spots, images, and all other data!
-          </Text>
-        </View>
-      </Dialog>
+        <Text style={{textAlign: 'center'}}>Are you sure you want to delete Dataset
+          {selectedDataset && selectedDataset.name
+          && <Text style={styles.dialogContentImportantText}>{'\n' + selectedDataset.name}</Text>}
+          ?
+        </Text>
+        <Text style={styles.dialogConfirmText}>
+          This will
+          <Text style={styles.dialogContentImportantText}> ERASE </Text>
+          everything in this dataset including Spots, images, and all other data!
+        </Text>
+      </DeleteConformationDialogBox>
     );
   };
 
