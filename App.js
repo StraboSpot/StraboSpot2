@@ -19,15 +19,13 @@ Sentry.init({
 });
 
 const App = () => {
-    const persistor = persistStore(store);
-    // const persistorPurge = persistStore(store).purge(); // Use this to clear persistStore completely
+  const persistor = persistStore(store);
+  // const persistorPurge = persistStore(store).purge(); // Use this to clear persistStore completely
 
   return (
     <Provider store={store}>
       <PersistGate loading={<Loading/>} persistor={persistor}>
-        <SafeAreaView style={commonStyles.appContainer}>
-          <Route/>
-        </SafeAreaView>
+        <Route/>
       </PersistGate>
     </Provider>
   );
