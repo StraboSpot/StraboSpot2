@@ -1,25 +1,30 @@
-import React, {useState} from 'react';
-import {Alert, FlatList, Linking, ScrollView, Text, TextInput, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {FlatList, ScrollView, Text, TextInput, View} from 'react-native';
 
-import DocumentPicker from 'react-native-document-picker';
 import {Button, ButtonGroup, Icon, ListItem, Overlay} from 'react-native-elements';
-import RNFS from 'react-native-fs';
 import {Table, Row, Rows} from 'react-native-table-component';
 import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
-import {csvToArray, getNewUUID, isEmpty, truncateText, urlValidator} from '../../shared/Helpers';
+import {isEmpty, truncateText, urlValidator} from '../../shared/Helpers';
 import {BLUE, PRIMARY_ACCENT_COLOR} from '../../shared/styles.constants';
+import DeleteConformationDialogBox from '../../shared/ui/DeleteConformationDialogBox';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import TextInputModal from '../../shared/ui/GeneralTextInputModal';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
+import Loading from '../../shared/ui/Loading';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {formStyles} from '../form';
+import {
+  setErrorMessagesModalVisible,
+  addedStatusMessage,
+  clearedStatusMessages,
+} from '../home/home.slice';
 import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
-import {editedSpotProperties} from '../spots/spots.slice';
-import useDataHook from './useExternalData';
+import externalDataStyles from './ExternalData.styles';
+import useExternalDataHook from './useExternalData';
 
 
 const ExternalData = () => {
@@ -27,121 +32,177 @@ const ExternalData = () => {
   const spot = useSelector(state => state.spot.selectedSpot);
 
   const [error, setError] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState({});
+  const [isDeleteConfirmModalVisible, setIsDeleteConfirmModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [isTableVisible, setIsTableVisible] = useState(false);
   const [selectedTable, setSelectedTable] = useState({});
+  const [tableHead, setTableHead] = useState([]);
+  const [tableData, setTableData] = useState([]);
   const [urlToEdit, setUrlToEdit] = useState({});
   const [protocol, setProtocol] = useState('http://');
   const [url, setUrl] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const useData = useDataHook();
+  const useExternalData = useExternalDataHook();
+  useEffect(() => {
+    !isEmpty(selectedTable) && isTableVisible && setLoading(false);
+  }, [selectedTable]);
 
-  const deleteUrl = (urlToDelete) => {
-    const urlCopy = JSON.parse(JSON.stringify(spot.properties.data.urls));
-    console.log(urlCopy);
-    const filteredArr = urlCopy.filter(url => url !== urlToDelete);
-    console.log(filteredArr);
-    dispatch(editedSpotProperties({field: 'data', value: {urls: filteredArr}}));
+  useEffect(() => {
+    !isTableVisible && setSelectedTable({});
+  }, [isTableVisible]);
+
+  const deleteSelection = () => {
+    itemToDelete.type === 'url'
+      ? useExternalData.deleteUrl(itemToDelete.item)
+      : useExternalData.deleteCVS(itemToDelete.item);
+    setIsDeleteConfirmModalVisible(false);
   };
 
   const editUrl = (urlToEdit, i) => {
-    console.log(urlToEdit, i);
     setUrlToEdit({index: i, url: urlToEdit});
     setIsEditModalVisible(true);
   };
 
+  const initializeDelete = (type, whatToDelete) => {
+    setItemToDelete({type: type, item: whatToDelete});
+    setIsDeleteConfirmModalVisible(true);
+  };
+
   const selectTable = (table) => {
+    setLoading(true);
+    const filteredData = table.data.filter(row => row.length > 1);
     setSelectedTable(table);
+    setTableHead(filteredData[0]);
+    setTableData(filteredData.slice(1));
     setIsTableVisible(true);
   };
 
-  const transpose = (matrix) => {
-    let [row] = matrix;
-    return row.map((value, column) => matrix.map(row => row[column]));
+  const renderDeleteConformation = () => {
+    const title = itemToDelete?.type === 'url' ? `${itemToDelete.item}` : `${itemToDelete.item.name}`;
+    return (
+      <DeleteConformationDialogBox
+        title={`${itemToDelete.type.toUpperCase()} to delete`}
+        visible={isDeleteConfirmModalVisible}
+        delete={() => deleteSelection()}
+        cancel={() => setIsDeleteConfirmModalVisible(false)}
+      >
+        <Text>Are you sure you want to delete</Text>
+        <Text>{title}?</Text>
+      </DeleteConformationDialogBox>
+    );
   };
 
-
   const renderTable = () => {
-    if (!isEmpty(selectedTable)) {
-      const filteredData = selectedTable.data.filter(row => row.length > 1);
-      const tableData = transpose(filteredData);
-      console.log('Table ExternalData', tableData);
-      return (
-        <View>
-          <Overlay
-            overlayStyle={{width: '90%', height: '90%'}}
-            isVisible={isTableVisible}
-            onBackdropPress={() => setIsTableVisible(!isTableVisible)}>
-            <Text>{selectedTable.name}</Text>
-            <ScrollView style={{flex: 1}}>
-              <Table borderStyle={{borderWidth: 2, borderColor: '#c8e1ff'}}>
-                <Row data={filteredData[0]} style={{height: 70}} textStyle={{textAlign: 'center', fontWeight: 'bold'}}/>
-                <Rows data={filteredData.slice(1)} style={{height: 50}} textStyle={{textAlign: 'center'}}/>
-              </Table>
-            </ScrollView>
-          </Overlay>
+    return (
+      <Overlay
+        animationType='slide'
+        overlayStyle={externalDataStyles.overlayContainer}
+        visible={isTableVisible}
+      >
+        <View style={externalDataStyles.centeredView}>
+          <View style={externalDataStyles.buttonClose}>
+            <Button
+              onPress={() => {
+                // setSelectedTable({});
+                setIsTableVisible(!isTableVisible);
+              }}
+              type={'clear'}
+              icon={{
+                name: 'close',
+                type: 'ionicon',
+                size: 40,
+              }}
+            />
+          </View>
+          <Text style={externalDataStyles.modalText}>{selectedTable.name}</Text>
+          <ScrollView>
+            <Table borderStyle={{borderWidth: 1}}>
+              <Row data={tableHead} style={externalDataStyles.tableHeader}
+                   textStyle={{textAlign: 'center', fontWeight: 'bold', padding: 30}}/>
+              <Rows data={tableData} textStyle={{textAlign: 'center', padding: 20}}/>
+            </Table>
+          </ScrollView>
         </View>
-      );
-    }
+      </Overlay>
+    );
   };
 
 
   const renderTableListItem = (table) => {
     return (
-      <ListItem onPress={() => selectTable(table)} containerStyle={commonStyles.listItem}>
-        <ListItem.Content>
-          <ListItem.Title style={commonStyles.listItemTitle}>
-            {table.name}
-          </ListItem.Title>
-        </ListItem.Content>
-      </ListItem>
+      <View>
+        <ListItem
+          onPress={() => selectTable(table)}
+          containerStyle={commonStyles.listItem}
+        >
+          <ListItem.Content style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+            <ListItem.Title style={commonStyles.listItemTitle}>
+              {table.name}
+            </ListItem.Title>
+            <Button
+              buttonStyle={externalDataStyles.iconButton}
+              onPress={() => initializeDelete('csv', table)}
+              type={'clear'}
+              icon={
+                <Icon
+                  name='trash'
+                  type={'font-awesome'}
+                  size={20}
+                  color='darkgrey'
+                  containerStyle={externalDataStyles.iconContainer}
+                />
+              }
+            />
+          </ListItem.Content>
+        </ListItem>
+      </View>
     );
   };
 
-  const renderUrlListItem = (url, i) => {
+  const renderUrlListItem = (urlItem, i) => {
     return (
       <ListItem containerStyle={commonStyles.listItem}>
         <ListItem.Content style={{flexDirection: 'row', justifyContent: 'space-between'}}>
           <ListItem.Title
             style={[commonStyles.listItemTitle, {color: BLUE}]}
-            onPress={() => openUrl(url)}>
-            {truncateText(url, 33)}
+            onPress={() => useExternalData.openUrl(urlItem)}>
+            {truncateText(urlItem, 33)}
           </ListItem.Title>
           <View style={{flexDirection: 'row'}}>
-            <Icon
-              name='edit'
-              type={'material'}
-              size={20}
-              color='darkgrey'
-              containerStyle={{paddingRight: 10, paddingLeft: 10}}
-              onPress={() => editUrl(url, i)}
+            <Button
+              buttonStyle={externalDataStyles.iconButton}
+              type={'clear'}
+              onPress={() => editUrl(urlItem, i)}
+              icon={
+                <Icon
+                  name='edit'
+                  type={'material'}
+                  size={20}
+                  color='darkgrey'
+                  containerStyle={externalDataStyles.iconContainer}
+                />
+              }
             />
-            <Icon
-              name='trash'
-              type={'font-awesome'}
-              size={20}
-              color='darkgrey'
-              containerStyle={{paddingRight: 10, paddingLeft: 10}}
-              onPress={() => deleteUrl(url, i)}
+            <Button
+              buttonStyle={externalDataStyles.iconButton}
+              type={'clear'}
+              onPress={() => initializeDelete('url', urlItem)}
+              icon={
+                <Icon
+                  name='trash'
+                  type={'font-awesome'}
+                  size={20}
+                  color='darkgrey'
+                  containerStyle={externalDataStyles.iconContainer}
+                />
+              }
             />
           </View>
         </ListItem.Content>
       </ListItem>
     );
-  };
-
-  const openUrl = async (urlToOpen) => {
-    try {
-      const supported = await Linking.canOpenURL(urlToOpen);
-      console.log(supported);
-      if (supported) await Linking.openURL(urlToOpen);
-      else {
-        console.log('Could not open:', urlToOpen);
-      }
-    }
-    catch (err) {
-      console.error('Error opening url', urlToOpen, ':', err);
-    }
   };
 
   const renderURLEditModal = () => {
@@ -161,70 +222,31 @@ const ExternalData = () => {
   };
 
   const saveEdits = () => {
-    const urlArrCopy = JSON.parse(JSON.stringify(spot.properties.data.urls));
-    urlArrCopy.splice(urlToEdit.index, 1, urlToEdit.url);
-    dispatch(editedSpotProperties({field: 'data', value: {urls: urlArrCopy}}));
-    setIsEditModalVisible(false);
-  };
-
-  const saveUrl = () => {
-    let savedUrls;
-    const fullURL = (protocol + url).toLowerCase();
-    console.log(fullURL);
-    let editedData = spot.properties.data ? JSON.parse(JSON.stringify(spot.properties.data)) : {};
-    if (spot.properties.data?.urls) savedUrls = spot.properties.data.urls;
-    const valid = urlValidator(fullURL, 'urlValidator');
-    if (valid) {
-      if (!savedUrls?.includes(fullURL)) {
-        if (!editedData?.urls) editedData.urls = [];
-        editedData.urls.push(fullURL.toLowerCase());
-        dispatch(editedSpotProperties({field: 'data', value: editedData}));
-        setUrl('');
-        setError(false);
-      }
-      else Alert.alert('URL is already in list.');
-    }
-    else {
-      setError(true);
-      setTimeout(() => setError(false), 3000);
-      console.log('Not Valid URL Yet');
-    }
-  };
-
-  const CSVPicker = async () => {
     try {
-      const res = await DocumentPicker.pick({
-        type: [DocumentPicker.types.csv],
-      });
-      console.log({
-          uri: res.uri,
-          type: res.type, // mime type
-          name: res.name,
-          size: res.size,
-        },
-      );
-      const id = getNewUUID();
-      const CSVData = await RNFS.readFile(res.uri);
-      const csvToArrayRes = csvToArray(CSVData);
-      // console.log(csvToArrayRes);
-      const CSVObject = {
-        id: id,
-        name: res.name,
-        data: csvToArrayRes,
-        size: res.size,
-      };
-      console.log('CSVObject', CSVObject);
-      useData.saveCSV(CSVObject);
-      console.log('.CSV saved successfully!');
+      if (urlValidator(urlToEdit.url)) {
+        useExternalData.saveEdits(urlToEdit);
+        setIsEditModalVisible(false);
+      }
+      else throw Error('Not valid URL.');
     }
     catch (err) {
-      if (DocumentPicker.isCancel(err)) {
-        console.log('User canceled', err);
-        // User cancelled the picker, exit any dialogs or menus and move on
-      }
-      else {
-        throw err;
-      }
+      console.error('Error saving edits', err);
+      dispatch(clearedStatusMessages());
+      dispatch(addedStatusMessage('Please make sure you enter a valid url.'));
+      dispatch(setErrorMessagesModalVisible(true));
+    }
+  };
+
+  const saveUrl = async () => {
+    try {
+      await useExternalData.saveURL(protocol, url);
+      setUrl('');
+      setError(false);
+    }
+    catch (err) {
+      setError(true);
+      setTimeout(() => setError(false), 3000);
+      console.error('Not Valid URL Yet');
     }
   };
 
@@ -234,90 +256,86 @@ const ExternalData = () => {
         onPress={() => dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.OVERVIEW))}
       />
       <SectionDivider dividerText={'Links To Web Resources'}/>
-      <View style={{flexDirection: 'row'}}>
-        <View style={{flex: 1}}>
-          <ButtonGroup
-            onPress={i => i === 0 ? setProtocol('http://') : setProtocol('https://')}
-            selectedIndex={protocol === 'http://' ? 0 : 1}
-            buttons={['http://', 'https://']}
-            containerStyle={{borderRadius: 10}}
-            selectedButtonStyle={{backgroundColor: PRIMARY_ACCENT_COLOR}}
-            textStyle={{color: PRIMARY_ACCENT_COLOR}}
+      <View style={{flex: 1}}>
+        <ButtonGroup
+          onPress={i => i === 0 ? setProtocol('http://') : setProtocol('https://')}
+          selectedIndex={protocol === 'http://' ? 0 : 1}
+          buttons={['http://', 'https://']}
+          containerStyle={{borderRadius: 10}}
+          selectedButtonStyle={{backgroundColor: PRIMARY_ACCENT_COLOR}}
+          textStyle={{color: PRIMARY_ACCENT_COLOR}}
+        />
+        <ListItem containerStyle={commonStyles.listItem}>
+          <ListItem.Content style={{flexDirection: 'row', justifyContent: 'flex-start'}}>
+            <View style={{justifyContent: 'center'}}>
+              <TextInput
+                multiline={true}
+                editable={false}
+                style={formStyles.fieldValue}
+                value={protocol}
+              />
+            </View>
+            <View style={{width: 300}}>
+              <TextInput
+                onFocus={() => setError(false)}
+                autoCapitalize={'none'}
+                multiline={true}
+                placeholder={'Example -> www.usgs.gov'}
+                style={[formStyles.fieldValue]}
+                onChangeText={(text) => setUrl(text)}
+                textContentType={'URL'}
+                keyboardType={'url'}
+                value={url}
+              />
+            </View>
+          </ListItem.Content>
+        </ListItem>
+        {error && <Text style={formStyles.fieldError}>Not a valid url</Text>}
+        <View style={{flexDirection: 'row', justifyContent: 'space-around', padding: 10}}>
+          <Button
+            title={'Add Link'}
+            type={'clear'}
+            disabled={url === ''}
+            containerStyle={commonStyles.standardButtonContainer}
+            onPress={() => saveUrl()}
           />
         </View>
-      </View>
-      <ListItem containerStyle={commonStyles.listItem}>
-        <ListItem.Content style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-start'}}>
-          <View style={{justifyContent: 'center'}}>
-            <TextInput
-              multiline={true}
-              editable={false}
-              style={formStyles.fieldValue}
-              value={protocol}
-            />
-          </View>
-          <View style={{width: 300}}>
-            <TextInput
-              onFocus={() => setError(false)}
-              autoCapitalize={'none'}
-              multiline={true}
-              placeholder={'Example -> www.usgs.gov'}
-              style={[formStyles.fieldValue]}
-              onChangeText={(text) => setUrl(text)}
-              textContentType={'URL'}
-              keyboardType={'url'}
-              onSubmitEditing={() => saveUrl()}
-              returnKeyType={'go'}
-              value={url}
-            />
-          </View>
-        </ListItem.Content>
-      </ListItem>
-      {error && <Text style={formStyles.fieldError}>Not a valid url</Text>}
-      <View style={{flexDirection: 'row', justifyContent: 'space-around', padding: 10}}>
-        <Button
-          title={'Add Link'}
-          type={'clear'}
-          containerStyle={commonStyles.standardButtonContainer}
-          onPress={() => saveUrl()}
-        />
-        <Button
-          title={'Clear'}
-          type={'clear'}
-          containerStyle={commonStyles.standardButtonContainer}
-          onPress={() => setUrl('')}
+        <FlatList
+          keyExtractor={(index) => index}
+          data={spot.properties?.data?.urls}
+          renderItem={({item, index}) => renderUrlListItem(item, index)}
+          ItemSeparatorComponent={FlatListItemSeparator}
+          ListEmptyComponent={<ListEmptyText text={'No URLs saved'}/>}
         />
       </View>
-      <FlatList
-        keyExtractor={(index) => index}
-        data={spot.properties?.data?.urls}
-        renderItem={({item, index}) => renderUrlListItem(item, index)}
-        ItemSeparatorComponent={FlatListItemSeparator}
-        ListEmptyComponent={<ListEmptyText text={'No URLs saved'}/>}
-      />
-      <SectionDivider dividerText={'Tables'}/>
-      <Button
-        title={'Attach table from a .CSV file'}
-        type={'outline'}
-        icon={{
-          name: 'attach-outline',
-          type: 'ionicon',
-
-        }}
-        containerStyle={commonStyles.buttonPadding}
-        buttonStyle={commonStyles.standardButton}
-        titleStyle={commonStyles.standardButtonText}
-        onPress={() => CSVPicker()}
-      />
-      <FlatList
-        keyExtractor={(index) => index}
-        data={spot.properties?.data?.tables}
-        renderItem={({item}) => renderTableListItem(item)}
-        ItemSeparatorComponent={FlatListItemSeparator}
-        ListEmptyComponent={<ListEmptyText text={'No tables saved'}/>}
-      />
-      {renderURLEditModal()}
-      {renderTable()}
+      <View style={{flex: 1}}>
+        <View style={{paddingTop: 15}}>
+          <SectionDivider dividerText={'Tables'}/>
+          <Button
+            title={'Attach table from a .CSV file'}
+            type={'outline'}
+            icon={{
+              name: 'attach-outline',
+              type: 'ionicon',
+            }}
+            containerStyle={commonStyles.buttonPadding}
+            buttonStyle={commonStyles.standardButton}
+            titleStyle={commonStyles.standardButtonText}
+            onPress={() => useExternalData.CSVPicker()}
+          />
+        </View>
+        {loading ? <Loading style={externalDataStyles.loadingSpinner}/>
+          : <FlatList
+            keyExtractor={(index) => index}
+            data={spot.properties?.data?.tables}
+            renderItem={({item}) => renderTableListItem(item)}
+            ItemSeparatorComponent={FlatListItemSeparator}
+            ListEmptyComponent={<ListEmptyText text={'No tables saved'}/>}
+          />}
+        {renderURLEditModal()}
+        {!loading && renderTable()}
+        {!isEmpty(itemToDelete) && renderDeleteConformation()}
+      </View>
     </View>
   );
 };
