@@ -16,6 +16,7 @@ Sentry.init({
   dsn: SENTRY_DSN,
   enableNative: true,
   release: `StraboSpot2@${VERSION_NUMBER}`,
+  autoSessionTracking: true,
 });
 
 const App = () => {
