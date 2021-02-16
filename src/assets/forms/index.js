@@ -21,7 +21,7 @@ import tensor from './three-d-structures/tensor.json';
 import trace from './trace.json';
 
 const getMeasurementSurveyForBulkInput = (form) => {
-  const fieldsToExclude = ['label', 'strike', 'dip_direction', 'dip', 'quality', 'trend', 'plunge', 'rake', 'rake_calculated'];
+  const fieldsToExclude = ['label', 'strike', 'dip_direction', 'dip', 'trend', 'plunge', 'rake', 'rake_calculated'];
   return form.filter(field => !fieldsToExclude.includes(field.name));
 };
 
