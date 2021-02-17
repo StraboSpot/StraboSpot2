@@ -198,7 +198,7 @@ const Compass = (props) => {
       console.log('pointSetAtCurrentLocation', pointSetAtCurrentLocation);
     }
     let measurements = [];
-    if (toggles.includes(COMPASS_TOGGLE_BUTTONS.PLANAR)) {
+    if (toggles.includes(COMPASS_TOGGLE_BUTTONS.PLANAR) || toggles.includes(COMPASS_TOGGLE_BUTTONS.ASSOCIATED_PLANAR)) {
       let newPlanarMeasurement = {type: 'planar_orientation'};
       if (isCompassMeasurement) {
         newPlanarMeasurement = {
@@ -210,7 +210,7 @@ const Compass = (props) => {
       }
       measurements.push(newPlanarMeasurement);
     }
-    if (toggles.includes(COMPASS_TOGGLE_BUTTONS.LINEAR)) {
+    if (toggles.includes(COMPASS_TOGGLE_BUTTONS.LINEAR) || toggles.includes(COMPASS_TOGGLE_BUTTONS.ASSOCIATED_LINEAR)) {
       let newLinearMeasurement = {type: 'linear_orientation'};
       if (isCompassMeasurement) {
         newLinearMeasurement = {
@@ -235,9 +235,26 @@ const Compass = (props) => {
         newOrientation.associated_orientation = [newAssociatedOrientation];
       }
       if (modalVisible === MODALS.NOTEBOOK_MODALS.COMPASS) {
-        const orientations = (typeof props.spot.properties.orientation_data === 'undefined') ? [newOrientation]
-          : [...props.spot.properties.orientation_data, newOrientation];
-        props.onSpotEdit('orientation_data', orientations);
+        if (toggles.includes(COMPASS_TOGGLE_BUTTONS.ASSOCIATED_PLANAR)
+          || toggles.includes(COMPASS_TOGGLE_BUTTONS.ASSOCIATED_LINEAR)) {
+          delete newOrientation.id;
+          delete newOrientation.type;
+          let selectedMeasurementCopy = JSON.parse(JSON.stringify(props.selectedMeasurement));
+          let associatedOrientations = selectedMeasurementCopy.associated_orientation;
+          let lastAssociatedOrientation = associatedOrientations[associatedOrientations.length - 1];
+          lastAssociatedOrientation = {...lastAssociatedOrientation, ...newOrientation};
+          associatedOrientations.splice(-1, 1, lastAssociatedOrientation);
+          selectedMeasurementCopy.associated_orientation = associatedOrientations;
+          const orientations = props.spot.properties.orientation_data.filter(
+            m => m.id !== props.selectedMeasurement.id);
+          props.onSpotEdit('orientation_data', [...orientations, selectedMeasurementCopy]);
+          dispatch(setSelectedAttributes([selectedMeasurementCopy]));
+        }
+        else {
+          const orientations = (typeof props.spot.properties.orientation_data === 'undefined') ? [newOrientation]
+            : [...props.spot.properties.orientation_data, newOrientation];
+          props.onSpotEdit('orientation_data', orientations);
+        }
       }
       else if (modalVisible === MODALS.SHORTCUT_MODALS.COMPASS) {
         props.onSpotEdit('orientation_data', [newOrientation]);
@@ -262,8 +279,10 @@ const Compass = (props) => {
 
   const renderCompassSymbols = () => {
     // console.log('Strike', compassData.strike + '\n' + 'Trend', compassData.trend);
-    const linearInToggleOn = toggles.includes(COMPASS_TOGGLE_BUTTONS.LINEAR);
-    const plannerInToggleOn = toggles.includes(COMPASS_TOGGLE_BUTTONS.PLANAR);
+    const linearInToggleOn = toggles.includes(COMPASS_TOGGLE_BUTTONS.LINEAR) || toggles.includes(
+      COMPASS_TOGGLE_BUTTONS.ASSOCIATED_LINEAR);
+    const plannerInToggleOn = toggles.includes(COMPASS_TOGGLE_BUTTONS.PLANAR) || toggles.includes(
+      COMPASS_TOGGLE_BUTTONS.ASSOCIATED_PLANAR);
 
     if (linearInToggleOn && plannerInToggleOn && compassData.trend !== null && compassData.strike !== null) {
       return [renderTrendSymbol(), renderStrikeDipSymbol()];
@@ -325,16 +344,28 @@ const Compass = (props) => {
     );
   };
 
+  const renderToggleListItem = (value) => {
+    return (
+      <ListItem key={value}>
+        <ListItem.Content>
+          <ListItem.Title>{value}</ListItem.Title>
+        </ListItem.Content>
+        <Switch onValueChange={() => toggleSwitch(value)} value={toggles.includes(value)}/>
+      </ListItem>
+    );
+  };
+
   const renderToggles = () => {
     return (
-      Object.entries(COMPASS_TOGGLE_BUTTONS).map(([key, value], i) => (
-        <ListItem key={key}>
-          <ListItem.Content>
-            <ListItem.Title>{value}</ListItem.Title>
-          </ListItem.Content>
-          <Switch onValueChange={() => toggleSwitch(value)} value={toggles.includes(value)}/>
-        </ListItem>
-      ))
+      <React.Fragment>
+        {!compassMeasurementTypes.includes(COMPASS_TOGGLE_BUTTONS.ASSOCIATED_PLANAR)
+        && !compassMeasurementTypes.includes(COMPASS_TOGGLE_BUTTONS.ASSOCIATED_LINEAR) && (
+          <React.Fragment>
+            {renderToggleListItem(COMPASS_TOGGLE_BUTTONS.PLANAR)}
+            {renderToggleListItem(COMPASS_TOGGLE_BUTTONS.LINEAR)}
+          </React.Fragment>
+        )}
+      </React.Fragment>
     );
   };
 
@@ -422,12 +453,16 @@ const Compass = (props) => {
     );
   };
 
-  return pageVisible === NOTEBOOK_SUBPAGES.MEASUREMENTDETAIL ? renderSaveOrCancelFirst() : renderCompassContent();
+  return pageVisible === NOTEBOOK_SUBPAGES.MEASUREMENTDETAIL
+  && !compassMeasurementTypes.includes(COMPASS_TOGGLE_BUTTONS.ASSOCIATED_PLANAR)
+  && !compassMeasurementTypes.includes(COMPASS_TOGGLE_BUTTONS.ASSOCIATED_LINEAR) ? renderSaveOrCancelFirst()
+    : renderCompassContent();
 };
 
 const mapStateToProps = (state) => {
   return {
     spot: state.spot.selectedSpot,
+    selectedMeasurement: state.spot.selectedAttributes[0],
     isNotebookPanelVisible: state.notebook.isNotebookPanelVisible,
   };
 };

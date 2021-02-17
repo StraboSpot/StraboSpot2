@@ -13,11 +13,18 @@ import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {Form, useFormHook} from '../form';
 import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
-import {setNotebookPageVisible, setNotebookPageVisibleToPrev} from '../notebook-panel/notebook.slice';
+import {
+  setCompassMeasurementTypes,
+  setNotebookPageVisible,
+  setNotebookPageVisibleToPrev,
+} from '../notebook-panel/notebook.slice';
 import {editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
 import MeasurementItem from './MeasurementItem';
 import styles from './measurements.styles';
 import useMeasurementsHook from './useMeasurements';
+import {setModalVisible} from '../home/home.slice';
+import {MODALS} from '../home/home.constants';
+import {COMPASS_TOGGLE_BUTTONS} from '../compass/compass.constants';
 
 const MeasurementDetailPage = (props) => {
   const dispatch = useDispatch();
@@ -35,11 +42,30 @@ const MeasurementDetailPage = (props) => {
 
   useEffect(() => {
     console.log('UE for selectedMeasurements changed in MeasurementDetailPage', selectedMeasurements);
-    if (selectedMeasurements && selectedMeasurements[0]) switchActiveMeasurement(selectedMeasurements[0]);
-    else dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.MEASUREMENT));
+    if (selectedMeasurements && selectedMeasurements[0] && selectedMeasurements[0].associated_orientation
+      && activeMeasurement) {
+      const flattenedOrientations = [selectedMeasurements[0], ...selectedMeasurements[0].associated_orientation];
+      const activeMeasurementUpdated = flattenedOrientations.find(o => o.id === activeMeasurement.id);
+      switchActiveMeasurement(activeMeasurementUpdated);
+    }
+    else if (selectedMeasurements && selectedMeasurements[0] && !activeMeasurement) {
+      switchActiveMeasurement(selectedMeasurements[0]);
+    }
+    else if (!selectedMeasurements || !selectedMeasurements[0]) {
+      dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.MEASUREMENT));
+    }
   }, [selectedMeasurements]);
 
   const addAssociatedMeasurement = (type) => {
+
+
+    let types = [];
+    if (selectedMeasurements[0].type === 'linear_orientation') types = [COMPASS_TOGGLE_BUTTONS.ASSOCIATED_PLANAR];
+    else types = [COMPASS_TOGGLE_BUTTONS.ASSOCIATED_LINEAR];
+    dispatch(setCompassMeasurementTypes(types));
+    dispatch(setModalVisible({modal: MODALS.NOTEBOOK_MODALS.COMPASS}));
+
+
     const newId = getNewId();
     const newAssociatedMeasurement = {type: type, id: newId};
     const selectedMeasurementCopy = JSON.parse(JSON.stringify(selectedMeasurements[0]));

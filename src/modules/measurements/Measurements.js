@@ -37,13 +37,12 @@ const MeasurementsPage = (props) => {
   };
 
   const addMeasurement = (sectionType) => {
-    dispatch(setModalVisible({modal: MODALS.NOTEBOOK_MODALS.COMPASS}));
-
     let types = [];
     if (sectionType === sectionTypes.PLANAR) types = [COMPASS_TOGGLE_BUTTONS.PLANAR];
     else if (sectionType === sectionTypes.LINEAR) types = [COMPASS_TOGGLE_BUTTONS.LINEAR];
     else types = [COMPASS_TOGGLE_BUTTONS.PLANAR, COMPASS_TOGGLE_BUTTONS.LINEAR];
     dispatch(setCompassMeasurementTypes(types));
+    dispatch(setModalVisible({modal: MODALS.NOTEBOOK_MODALS.COMPASS}));
   };
 
   const confirmDeleteMeasurements = (measurementsToDelete) => {
