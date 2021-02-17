@@ -1,13 +1,13 @@
 import React from 'react';
-import {ActivityIndicator, Alert, FlatList, View} from 'react-native';
+import {Alert, FlatList, Pressable, View} from 'react-native';
 
-import {Image} from 'react-native-elements';
+import FastImage from 'react-native-fast-image';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {isEmpty} from '../../shared/Helpers';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
-import {setImageModalVisible} from '../home/home.slice';
+import {setImageModalVisible, setLoadingStatus} from '../home/home.slice';
 import {SORTED_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import SortingButtons from '../main-menu-panel/SortingButtons';
 import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
@@ -28,12 +28,14 @@ const ImageGallery = (props) => {
 
   const handleImagePressed = (image) => {
     console.log('Pressed image:', image);
+    dispatch(setLoadingStatus({view: 'home', bool: true}));
     useImages.doesImageExistOnDevice(image.id)
       .then((doesExist) => {
         if (doesExist) {
           console.log('Opening image', image.id, '...');
           dispatch(setSelectedAttributes([image]));
           dispatch(setImageModalVisible(true));
+          dispatch(setLoadingStatus({view: 'home', bool: false}));
         }
         else Alert.alert('Missing Image!', 'Unable to find image file on this device.');
       })
@@ -61,13 +63,14 @@ const ImageGallery = (props) => {
   const renderImage = (image) => {
     return (
       <View style={imageStyles.thumbnailContainer}>
-        <Image
-          source={{uri: useImages.getLocalImageURI(image.id)}}
-          style={imageStyles.thumbnail}
-          resizeMode={'contain'}
-          PlaceholderContent={<ActivityIndicator/>}
-          onPress={() => handleImagePressed(image)}
-        />
+        <Pressable onPress={() => handleImagePressed(image)}>
+          {({pressed}) => (
+            <FastImage
+              style={[imageStyles.thumbnail, {opacity: pressed ? 0.5 : 1}]}
+              source={{uri: useImages.getLocalImageURI(image.id)}}
+            />
+          )}
+        </Pressable>
       </View>
     );
   };
