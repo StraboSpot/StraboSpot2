@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {FlatList, Text, View} from 'react-native';
+import {FlatList, Text, TextInput, View} from 'react-native';
 
 import {ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
@@ -10,6 +10,7 @@ import AddButton from '../../shared/ui/AddButton';
 import SaveButton from '../../shared/ui/ButtonRounded';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import modalStyle from '../../shared/ui/modal/modal.style';
+import {formStyles} from '../form';
 import {MODALS} from '../home/home.constants';
 import useMapsHook from '../maps/useMaps';
 import {addedTagToSelectedSpot} from '../project/projects.slice';
@@ -25,6 +26,8 @@ const TagsModal = () => {
   const tags = useSelector(state => state.project.project.tags) || [];
   const [checkedTagsTemp, setCheckedTagsTemp] = useState([]);
   const [isDetailModalVisible, setIsDetailModalVisible] = useState(false);
+  const [searchText,setSearchText] = useState('');
+  const [relevantTags,setRelevantTags] = useState(useTags.getTagsAtSpotGeologicUnitFirst());
 
   const checkTags = (tag) => {
     const checkedTagsIds = checkedTagsTemp.map(checkedTag => checkedTag.id);
@@ -62,14 +65,22 @@ const TagsModal = () => {
   };
 
   const renderSpotTagsList = () => {
-    const tagsCopy = JSON.parse(JSON.stringify(tags));
+    const tagsCopy = isEmpty(searchText) ? JSON.parse(JSON.stringify(tags)) : relevantTags;
     return (
-      <FlatList
-        keyExtractor={item => item.id.toString()}
-        data={tagsCopy.sort((tagA, tagB) => tagA.name.localeCompare(tagB.name))}  // alphabetize by name
-        renderItem={({item}) => renderTagItem(item)}
-        ItemSeparatorComponent={FlatListItemSeparator}
-      />
+      <React.Fragment>
+        <TextInput
+          style={formStyles.filterFieldValue}
+          onChangeText={tagType => searchTagsByType(tagType)}
+          value={searchText}
+          placeholder='Search tags by type'
+        />
+        <FlatList
+          keyExtractor={item => item.id.toString()}
+          data={tagsCopy.sort((tagA, tagB) => tagA.name.localeCompare(tagB.name))}  // alphabetize by name
+          renderItem={({item}) => renderTagItem(item)}
+          ItemSeparatorComponent={FlatListItemSeparator}
+        />
+      </React.Fragment>
     );
   };
 
@@ -101,6 +112,12 @@ const TagsModal = () => {
         />
       </ListItem>
     );
+  };
+
+  const searchTagsByType = (tagType) => {
+    setSearchText(tagType);
+    const tagsCopy = JSON.parse(JSON.stringify(tags));
+    setRelevantTags(useTags.filterTagsByTagType(tagsCopy,tagType));
   };
 
   return (
