@@ -73,6 +73,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
+  sectionHeaderBackground: {
+    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR
+  },
   sliderContainer: {
     flex: 1,
     alignItems: 'center',

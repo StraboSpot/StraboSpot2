@@ -1,5 +1,5 @@
 import React from 'react';
-import {Alert, FlatList, Pressable, View} from 'react-native';
+import {Alert, FlatList, Pressable, SectionList, View} from 'react-native';
 
 import FastImage from 'react-native-fast-image';
 import {useDispatch, useSelector} from 'react-redux';
@@ -7,6 +7,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {isEmpty} from '../../shared/Helpers';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
+import uiStyles from '../../shared/ui/ui.styles';
 import {setImageModalVisible, setLoadingStatus} from '../home/home.slice';
 import {SORTED_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import SortingButtons from '../main-menu-panel/SortingButtons';
@@ -37,26 +38,22 @@ const ImageGallery = (props) => {
           dispatch(setImageModalVisible(true));
           dispatch(setLoadingStatus({view: 'home', bool: false}));
         }
-        else Alert.alert('Missing Image!', 'Unable to find image file on this device.');
+        else {
+          Alert.alert('Missing Image!', 'Unable to find image file on this device.');
+          dispatch(setLoadingStatus({view: 'home', bool: false}));
+        }
       })
       .catch((e) => console.error('Image not found', e));
   };
 
-  const renderImagesInSpot = (spot) => {
+  const renderImagesInSpot = (images) => {
     return (
-      <React.Fragment>
-        <SectionDividerWithRightButton
-          dividerText={spot.properties.name}
-          buttonTitle={'View In Spot'}
-          onPress={() => props.openSpotInNotebook(spot, NOTEBOOK_PAGES.IMAGE)}
-        />
-        <FlatList
-          keyExtractor={(image) => image.id}
-          data={spot.properties.images}
-          numColumns={3}
-          renderItem={({item}) => renderImage(item)}
-        />
-      </React.Fragment>
+      <FlatList
+        keyExtractor={(image) => image.id}
+        data={images}
+        numColumns={3}
+        renderItem={({item}) => renderImage(item)}
+      />
     );
   };
 
@@ -67,7 +64,10 @@ const ImageGallery = (props) => {
           {({pressed}) => (
             <FastImage
               style={[imageStyles.thumbnail, {opacity: pressed ? 0.5 : 1}]}
-              source={{uri: useImages.getLocalImageURI(image.id)}}
+              source={{
+                uri: useImages.getLocalImageURI(image.id),
+                priority: FastImage.priority.high,
+              }}
             />
           )}
         </Pressable>
@@ -77,6 +77,18 @@ const ImageGallery = (props) => {
 
   const renderNoImagesText = () => {
     return <ListEmptyText text={'No Images in Active Datasets'}/>;
+  };
+
+  const renderSectionHeader = ({spot}) => {
+    return (
+      <View style={uiStyles.sectionHeaderBackground}>
+        <SectionDividerWithRightButton
+          dividerText={spot.properties.name}
+          buttonTitle={'View In Spot'}
+          onPress={() => props.openSpotInNotebook(spot, NOTEBOOK_PAGES.IMAGE)}
+        />
+      </View>
+    );
   };
 
   const renderSpotsWithImages = () => {
@@ -91,15 +103,19 @@ const ImageGallery = (props) => {
       sortedSpotsWithImages = recentlyViewedSpots.filter(spot => spot.properties.images);
       if (!isEmpty(sortedSpotsWithImages)) noImagesText = 'No recently viewed Spots with images';
     }
+    const spotsAsSections = sortedSpotsWithImages.reduce(
+      (acc, spot) => [...acc, {spot: spot, data: [spot.properties.images]}], []);
     return (
       <React.Fragment>
         <SortingButtons/>
         <View style={imageStyles.galleryImageContainer}>
-          <FlatList
-            keyExtractor={(item) => item.properties.id.toString()}
-            data={sortedSpotsWithImages}
+          <SectionList
+            keyExtractor={(item, index) => item + index}
+            sections={spotsAsSections}
+            renderSectionHeader={({section}) => renderSectionHeader(section)}
             renderItem={({item}) => renderImagesInSpot(item)}
             ListEmptyComponent={<ListEmptyText text={noImagesText}/>}
+            stickySectionHeadersEnabled={true}
           />
         </View>
       </React.Fragment>
