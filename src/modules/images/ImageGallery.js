@@ -1,11 +1,13 @@
-import React from 'react';
-import {Alert, FlatList, Pressable, SectionList, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {Alert, FlatList, Pressable, SectionList, Text, View} from 'react-native';
 
 import FastImage from 'react-native-fast-image';
 import {useDispatch, useSelector} from 'react-redux';
 
+import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
+import Loading from '../../shared/ui/Loading';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
 import uiStyles from '../../shared/ui/ui.styles';
 import {setImageModalVisible, setLoadingStatus} from '../home/home.slice';
@@ -27,8 +29,30 @@ const ImageGallery = (props) => {
   const sortedView = useSelector(state => state.mainMenu.sortedView);
   const spots = useSelector(state => state.spot.spots);
 
+  const [isReady, setIsReady] = useState(false);
+  const [imageThumbnails, setImageThumbnails] = useState({});
+  const [isError, setIsError] = useState(false);
+
+  useEffect(() => {
+    getImageThumbnailURIs().catch(err => console.error(err));
+  }, []);
+
+  const getImageThumbnailURIs = async () => {
+    try {
+      const spotsWithImages = useSpots.getSpotsWithImages();
+      const imageThumbnailURIsTemp = await useImages.getImageThumbnailURIs(spotsWithImages);
+      setImageThumbnails(imageThumbnailURIsTemp);
+      setIsReady(true);
+      setIsError(false);
+    }
+    catch (err) {
+      console.error('Error in getImageThumbnailURIs', err);
+      setIsError(true);
+      setIsReady(true);
+    }
+  };
+
   const handleImagePressed = (image) => {
-    console.log('Pressed image:', image);
     dispatch(setLoadingStatus({view: 'home', bool: true}));
     useImages.doesImageExistOnDevice(image.id)
       .then((doesExist) => {
@@ -65,7 +89,7 @@ const ImageGallery = (props) => {
             <FastImage
               style={[imageStyles.thumbnail, {opacity: pressed ? 0.5 : 1}]}
               source={{
-                uri: useImages.getLocalImageURI(image.id),
+                uri: imageThumbnails[image.id],
                 priority: FastImage.priority.high,
               }}
             />
@@ -124,7 +148,10 @@ const ImageGallery = (props) => {
 
   return (
     <React.Fragment>
-      {isEmpty(useSpots.getSpotsWithImages()) ? renderNoImagesText() : renderSpotsWithImages()}
+      {isEmpty(useSpots.getSpotsWithImages()) ? renderNoImagesText()
+        : !isReady ? <Loading style={{backgroundColor: 'transparent'}}/>
+          : !isError ? renderSpotsWithImages()
+            : <Text style={[commonStyles.noValueText, {paddingTop: 75}]}>Problem getting thumbnail images...</Text>}
     </React.Fragment>
   );
 };

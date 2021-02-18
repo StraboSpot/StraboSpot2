@@ -16,6 +16,7 @@ import {
   setSelectedAttributes,
   setSelectedSpot,
 } from '../spots/spots.slice';
+import ImageResizer from 'react-native-image-resizer';
 
 const useImages = () => {
   const devicePath = RNFS.DocumentDirectoryPath;
@@ -170,6 +171,25 @@ const useImages = () => {
     });
   };
 
+  const getImageThumbnailURIs = async (spotsWithImages) => {
+    try {
+      let imageThumbnailURIs = {};
+      await Promise.all(spotsWithImages.map(async (spot) => {
+        await Promise.all(spot.properties.images.map(async (image) => {
+          const imageUri = getLocalImageURI(image.id);
+          const createResizedImageProps = [imageUri, 200, 200, 'JPEG', 100, 0];
+          const resizedImage = await ImageResizer.createResizedImage(...createResizedImageProps);
+          imageThumbnailURIs = {...imageThumbnailURIs, [image.id]: resizedImage.uri};
+        }));
+      }));
+      return imageThumbnailURIs;
+    }
+    catch (err) {
+      console.error('Error creating thumbnails', err);
+      throw Error(err);
+    }
+  };
+
   const saveFile = async (imageData) => {
     console.log('New image data:', imageData);
     let height = imageData.height;
@@ -259,6 +279,7 @@ const useImages = () => {
     getLocalImageURI: getLocalImageURI,
     getImagesFromCameraRoll: getImagesFromCameraRoll,
     getImageHeightAndWidth: getImageHeightAndWidth,
+    getImageThumbnailURIs: getImageThumbnailURIs,
     launchCameraFromNotebook: launchCameraFromNotebook,
     saveFile: saveFile,
     setAnnotation: setAnnotation,
