@@ -43,16 +43,6 @@ const styles = StyleSheet.create({
     fontSize: themes.PRIMARY_TEXT_SIZE,
     color: themes.PRIMARY_TEXT_COLOR,
   },
-  filterFieldValue: {
-    width: '100%',
-    padding: 5,
-    paddingLeft: 10,
-    fontSize: themes.PRIMARY_TEXT_SIZE,
-    color: themes.PRIMARY_TEXT_COLOR,
-    backgroundColor: themes.WHITE,
-    borderBottomWidth: 1,
-    borderColor: themes.PRIMARY_BACKGROUND_COLOR,
-  },
   fieldError: {
     color: themes.WARNING_COLOR,
     textAlign: 'center',
