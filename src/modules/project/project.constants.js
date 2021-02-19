@@ -4,6 +4,15 @@ export const OVERWRITE = 'OVERWRITE';
 export const UPLOAD_TO_SERVER = 'UPLOAD_TO_SERVER';
 export const CANCEL = 'CANCEL';
 
+export const TAG_TYPES = [
+  'geologic_unit',
+  'concept',
+  'documentation',
+  'rosetta',
+  'experimental_apparatus',
+  'other',
+];
+
 export const DEFAULT_GEOLOGIC_TYPES = [
   'geomorphic',
   'hydrologic',
