@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
-import {Alert, FlatList, Pressable, SectionList, Text, View} from 'react-native';
+import {Alert, FlatList, SectionList, Text, View} from 'react-native';
 
-import FastImage from 'react-native-fast-image';
+import {Image, Icon} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
@@ -29,7 +29,6 @@ const ImageGallery = (props) => {
   const sortedView = useSelector(state => state.mainMenu.sortedView);
   const spots = useSelector(state => state.spot.spots);
 
-  const [isReady, setIsReady] = useState(false);
   const [imageThumbnails, setImageThumbnails] = useState({});
   const [isError, setIsError] = useState(false);
 
@@ -42,13 +41,11 @@ const ImageGallery = (props) => {
       const spotsWithImages = useSpots.getSpotsWithImages();
       const imageThumbnailURIsTemp = await useImages.getImageThumbnailURIs(spotsWithImages);
       setImageThumbnails(imageThumbnailURIsTemp);
-      setIsReady(true);
       setIsError(false);
     }
     catch (err) {
       console.error('Error in getImageThumbnailURIs', err);
       setIsError(true);
-      setIsReady(true);
     }
   };
 
@@ -84,17 +81,13 @@ const ImageGallery = (props) => {
   const renderImage = (image) => {
     return (
       <View style={imageStyles.thumbnailContainer}>
-        <Pressable onPress={() => handleImagePressed(image)}>
-          {({pressed}) => (
-            <FastImage
-              style={[imageStyles.thumbnail, {opacity: pressed ? 0.5 : 1}]}
-              source={{
-                uri: imageThumbnails[image.id],
-                priority: FastImage.priority.high,
-              }}
-            />
-          )}
-        </Pressable>
+        <Image
+          style={imageStyles.thumbnail}
+          onPress={() => handleImagePressed(image)}
+          source={{uri: imageThumbnails[image.id]}}
+          PlaceholderContent={<Loading style={{backgroundColor: 'transparent'}} size={20}/>}
+          placeholderStyle={{backgroundColor: 'transparent'}}
+        />
       </View>
     );
   };
@@ -102,6 +95,13 @@ const ImageGallery = (props) => {
   const renderNoImagesText = () => {
     return <ListEmptyText text={'No Images in Active Datasets'}/>;
   };
+
+  const renderError = () => (
+    <View style={{paddingTop: 75}}>
+      <Icon name={'alert-circle-outline'} type={'ionicon'} size={100}/>
+      <Text style={[commonStyles.noValueText, {paddingTop: 50}]}>Problem getting thumbnail images...</Text>
+    </View>
+  );
 
   const renderSectionHeader = ({spot}) => {
     return (
@@ -149,9 +149,8 @@ const ImageGallery = (props) => {
   return (
     <React.Fragment>
       {isEmpty(useSpots.getSpotsWithImages()) ? renderNoImagesText()
-        : !isReady ? <Loading style={{backgroundColor: 'transparent'}}/>
-          : !isError ? renderSpotsWithImages()
-            : <Text style={[commonStyles.noValueText, {paddingTop: 75}]}>Problem getting thumbnail images...</Text>}
+        : !isError ? renderSpotsWithImages()
+          : renderError()}
     </React.Fragment>
   );
 };
