@@ -14,7 +14,7 @@ const Loading = props => {
         <BallIndicator
           color={'darkgrey'}
           count={8}
-          size={40}
+          size={props.size || 40}
         />
       </View>
       {/*</View>*/}
