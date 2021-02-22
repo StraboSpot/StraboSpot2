@@ -31,7 +31,7 @@ const useExport = () => {
   let imageBackupFailures = 0;
   let imageSuccess = 0;
 
-  const dataForExport = {
+  let dataForExport = {
     mapNamesDb: dbs.offlineMap.offlineMaps,
     mapTilesDb: {},
     otherMapsDb: dbs.map.customMaps,
@@ -53,9 +53,19 @@ const useExport = () => {
     console.log(res);
   };
 
+  const getActiveDatasets = () => {
+    const activeDatasets = dataForExport.projectDb.activeDatasetsIds.map(x => dataForExport.projectDb.datasets[x]);
+    dataForExport.projectDb = {
+      ...dataForExport.projectDb,
+      datasets: Object.assign({}, ...activeDatasets.map(dataset => ({[dataset.id]: dataset}))),
+    };
+  };
+
   const gatherDataForBackup = async (filename) => {
     try {
+      getActiveDatasets();
       dispatch(addedStatusMessage('Exporting Project Data...'));
+      console.log(dataForExport);
       await exportData(devicePath + appDirectoryForDistributedBackups + '/' + filename, dataForExport,
         'data.json');
       console.log('Finished Exporting Project Data', dataForExport);
