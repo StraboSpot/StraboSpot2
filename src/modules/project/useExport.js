@@ -1,5 +1,3 @@
-import {Alert, Platform} from 'react-native';
-
 import RNFS from 'react-native-fs';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -11,6 +9,7 @@ import {
   removedLastStatusMessage, setBackupModalVisible,
   setLoadingStatus, setStatusMessagesModalVisible,
 } from '../home/home.slice';
+import useProjectHook from './useProject';
 
 const useExport = () => {
   const devicePath = RNFS.DocumentDirectoryPath;
@@ -22,6 +21,8 @@ const useExport = () => {
 
   const dispatch = useDispatch();
   const dbs = useSelector(state => state);
+
+  const [useProject] = useProjectHook();
 
   const dbsStateCopy = JSON.parse(JSON.stringify(dbs));
   let configDb = {user: dbsStateCopy.user, other_maps: dbsStateCopy.map.customMaps};
@@ -54,7 +55,7 @@ const useExport = () => {
   };
 
   const getActiveDatasets = () => {
-    const activeDatasets = dataForExport.projectDb.activeDatasetsIds.map(x => dataForExport.projectDb.datasets[x]);
+    const activeDatasets = useProject.getActiveDatasets();
     dataForExport.projectDb = {
       ...dataForExport.projectDb,
       datasets: Object.assign({}, ...activeDatasets.map(dataset => ({[dataset.id]: dataset}))),

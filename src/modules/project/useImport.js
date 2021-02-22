@@ -6,16 +6,17 @@ import {batch, useDispatch} from 'react-redux';
 
 import useDeviceHook from '../../services/useDevice';
 import {isEmpty} from '../../shared/Helpers';
-import {addedCustomMapsFromBackup} from '../maps/maps.slice';
-import {addedMapsFromDevice} from '../maps/offline-maps/offlineMaps.slice';
-import {addedSpotsFromDevice} from '../spots/spots.slice';
-import {addedDatasets, addedProject} from './projects.slice';
 import {
   addedStatusMessage,
   clearedStatusMessages,
   removedLastStatusMessage,
-  setLoadingStatus,
+  setStatusMessagesModalVisible,
+  setLoadingStatus, setErrorMessagesModalVisible,
 } from '../home/home.slice';
+import {addedCustomMapsFromBackup} from '../maps/maps.slice';
+import {addedMapsFromDevice} from '../maps/offline-maps/offlineMaps.slice';
+import {addedSpotsFromDevice} from '../spots/spots.slice';
+import {addedDatasets, addedProject} from './projects.slice';
 
 const useImport = () => {
   let fileCount = 0;
@@ -162,7 +163,7 @@ const useImport = () => {
         dispatch(addedStatusMessage(`Map tiles installed: ${progress.neededTiles}`));
         dispatch(addedStatusMessage(`Map tiles already installed: ${progress.notNeededTiles}`));
         dispatch(setLoadingStatus({view: 'modal', bool: false}));
-      })
+      });
       return Promise.resolve({project: dataFile.projectDb.project});
     }
   };
@@ -200,7 +201,14 @@ const useImport = () => {
     return await RNFS.readFile(devicePath + appDirectoryForDistributedBackups + '/' + fileName + dataFile).then(
       response => {
         return Promise.resolve(JSON.parse(response));
-      }, () => Alert.alert('Project Not Found'));
+      }, () => {
+        batch(() => {
+          dispatch(setStatusMessagesModalVisible(false));
+          dispatch(clearedStatusMessages());
+          dispatch(addedStatusMessage('Project Not Found'));
+          dispatch(setErrorMessagesModalVisible(true));
+        });
+      });
   };
 
   return {
