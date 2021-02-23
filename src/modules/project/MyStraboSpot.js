@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {View} from 'react-native';
+import {Linking, View} from 'react-native';
 
 import {Button} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
 import useDeviceHook from '../../services/useDevice';
+import commonStyles from '../../shared/common.styles';
 import Spacer from '../../shared/ui/Spacer';
 import UserProfile from '../user/UserProfile';
 import ActiveProjectList from './ActiveProjectList';
@@ -27,6 +28,16 @@ const MyStraboSpot = props => {
 
     dirExists().catch('Error Checking If Backup Dir Exists');
   }, [doesDeviceBackupDirExist]);
+
+
+
+  const openFilesApp = async () => {
+    const initialUrl = await Linking.canOpenURL('shareddocuments://')
+    console.log(initialUrl)
+    if (initialUrl) {
+      Linking.openURL('shareddocuments://').catch(err => console.error('ERROR', err))
+    }
+  };
 
   const renderSectionView = () => {
     switch (showSection) {
@@ -54,7 +65,17 @@ const MyStraboSpot = props => {
           <View style={{flex: 1}}>
             <Button title={'Back'} type={'clear'} onPress={() => setShowSection('none')}/>
             <ProjectList source={'device'}/>
-            <ActiveProjectList/>
+            <View style={{flex: 1}}>
+              <ActiveProjectList/>
+              <Button
+                title={'View/Edit Files on Device'}
+                type={'outline'}
+                containerStyle={commonStyles.buttonPadding}
+                buttonStyle={commonStyles.standardButton}
+                titleStyle={commonStyles.standardButtonText}
+                onPress={() => openFilesApp()}
+              />
+            </View>
           </View>
         );
       default:
