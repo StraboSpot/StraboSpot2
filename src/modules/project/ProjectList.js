@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Alert, FlatList, Text, View} from 'react-native';
+import {AppState, Alert, FlatList, Text, View} from 'react-native';
 
 import {ListItem, Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
@@ -43,13 +43,29 @@ const ProjectList = (props) => {
   const useImport = useImportHook();
 
   useEffect(() => {
+    AppState.addEventListener('change', handleStateChange);
+    return () => {
+      AppState.removeEventListener();
+      console.log('Listners removed');
+    };
+  }, []);
+
+  useEffect(() => {
     getAllProjects().then(() => console.log('OK got projects'));
   }, [props.source]);
+
+  const handleStateChange = async (state) => {
+    state === 'active'
+    && props.source === 'device'
+    && useProject.getAllDeviceProjects().then(() => console.log('Updated Project List'));
+  };
 
   const getAllProjects = async () => {
     let projectsResponse;
     setLoading(true);
-    if (props.source === 'server') projectsResponse = await useProject.getAllServerProjects();
+    if (props.source === 'server') {
+      projectsResponse = await useProject.getAllServerProjects();
+    }
     else if (props.source === 'device') projectsResponse = await useProject.getAllDeviceProjects();
     if (!projectsResponse) {
       if (props.source === 'device') {
@@ -62,7 +78,7 @@ const ProjectList = (props) => {
     }
     else {
       setIsError(false);
-      console.log('List of Projects on Server:', projectsResponse);
+      console.log('List of Projects:', projectsResponse);
       setProjectsArr(projectsResponse);
       setLoading(false);
     }
