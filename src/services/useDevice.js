@@ -9,7 +9,7 @@ import {doesBackupDirectoryExist} from '../modules/project/projects.slice';
 
 const useDevice = () => {
   const devicePath = RNFS.DocumentDirectoryPath;
-  const appDirectoryForDistributedBackups = '/StraboSpotProjects';
+  const appDirectoryForDistributedBackups = '/ProjectBackups';
   const appDirectory = '/StraboSpot';
   const imagesDirectory = appDirectory + '/Images';
   const tilesDirectory = devicePath + '/StraboSpotTiles';

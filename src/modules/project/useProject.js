@@ -26,7 +26,7 @@ import useDownloadHook from './useDownload';
 
 const useProject = () => {
   const devicePath = RNFS.DocumentDirectoryPath;
-  const appDirectoryForDistributedBackups = '/StraboSpotProjects';
+  const appDirectoryForDistributedBackups = '/ProjectBackups';
 
   const dispatch = useDispatch();
   const activeDatasetsIds = useSelector(state => state.project.activeDatasetsIds);

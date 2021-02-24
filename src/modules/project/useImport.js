@@ -24,7 +24,7 @@ const useImport = () => {
   let notNeededTiles = 0;
 
   const devicePath = RNFS.DocumentDirectoryPath;
-  const appDirectoryForDistributedBackups = '/StraboSpotProjects';
+  const appDirectoryForDistributedBackups = '/ProjectBackups';
   const appDirectory = '/StraboSpot';
   const imagesDirectory = appDirectory + '/Images';
   const appDirectoryTiles = '/StraboSpotTiles';
