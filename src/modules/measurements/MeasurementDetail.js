@@ -73,12 +73,10 @@ const MeasurementDetailPage = () => {
   // Set compass measurement type on changing the selected measurement type
   useEffect(() => {
     if (!isEmpty(selectedMeasurement) && selectedMeasurement.type) {
-      if (selectedMeasurement.type === 'planer_orientation' || selectedMeasurement.type === 'tabular_orientation') {
+      if (selectedMeasurement.type === 'planar_orientation' || selectedMeasurement.type === 'tabular_orientation') {
         dispatch(setCompassMeasurementTypes([COMPASS_TOGGLE_BUTTONS.PLANAR]));
       }
-      else if (selectedMeasurement.type === COMPASS_TOGGLE_BUTTONS.LINEAR) {
-        dispatch(setCompassMeasurementTypes([COMPASS_TOGGLE_BUTTONS.LINEAR]));
-      }
+      else dispatch(setCompassMeasurementTypes([COMPASS_TOGGLE_BUTTONS.LINEAR]));
     }
   }, [selectedMeasurement]);
 

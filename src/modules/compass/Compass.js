@@ -41,9 +41,13 @@ const Compass = () => {
   const [compassData, setCompassData] = useState({
     heading: null,
     strike: null,
+    dip_direction: null,
     dip: null,
     trend: null,
     plunge: null,
+    rake: null,
+    rake_calculated: 'yes',
+    quality: null,
   });
   const [magnetometer, setMagnetometer] = useState(0);
   const [showData, setShowData] = useState(false);
@@ -146,7 +150,7 @@ const Compass = () => {
     rake = toDegrees(R);
 
     setCompassData({
-      actualHeading: roundToDecimalPlaces(actualHeading, 4),
+      heading: roundToDecimalPlaces(actualHeading, 4),
       strike: roundToDecimalPlaces(strike, 0),
       dip_direction: roundToDecimalPlaces(dipdir, 0),
       dip: roundToDecimalPlaces(dip, 0),
@@ -162,7 +166,7 @@ const Compass = () => {
     if (Platform.OS === 'ios') {
       NativeModules.Compass.myDeviceRotation();
       CompassEvents.addListener('rotationMatrix', res => {
-        console.log('Began Compass observation and rotationMatrix listener.');
+        // console.log('Began Compass observation and rotationMatrix listener.');
         setCompassData({
           heading: res.heading,
           strike: res.strike,
