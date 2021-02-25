@@ -6,6 +6,7 @@ import {useSelector} from 'react-redux';
 
 import useDeviceHook from '../../services/useDevice';
 import commonStyles from '../../shared/common.styles';
+import {BLUE} from '../../shared/styles.constants';
 import Spacer from '../../shared/ui/Spacer';
 import UserProfile from '../user/UserProfile';
 import ActiveProjectList from './ActiveProjectList';
@@ -29,11 +30,9 @@ const MyStraboSpot = props => {
     dirExists().catch('Error Checking If Backup Dir Exists');
   }, [doesDeviceBackupDirExist]);
 
-
-
   const openFilesApp = async () => {
-    const initialUrl = await Linking.canOpenURL('shareddocuments://')
-    console.log(initialUrl)
+    const initialUrl = await Linking.canOpenURL('shareddocuments://');
+    console.log(initialUrl);
     if (initialUrl) {
       Linking.openURL('shareddocuments://').catch(err => console.error('ERROR', err))
     }
@@ -65,7 +64,7 @@ const MyStraboSpot = props => {
           <View style={{flex: 1}}>
             <Button title={'Back'} type={'clear'} onPress={() => setShowSection('none')}/>
             <ProjectList source={'device'}/>
-            <View style={{flex: 1}}>
+            <View style={{marginBottom: 20}}>
               <ActiveProjectList/>
               <Button
                 title={'View/Edit Files on Device'}

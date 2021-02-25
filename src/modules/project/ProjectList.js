@@ -45,7 +45,7 @@ const ProjectList = (props) => {
   useEffect(() => {
     AppState.addEventListener('change', handleStateChange);
     return () => {
-      AppState.removeEventListener();
+      AppState.removeEventListener('change');
       console.log('Listners removed');
     };
   }, []);
@@ -57,7 +57,7 @@ const ProjectList = (props) => {
   const handleStateChange = async (state) => {
     state === 'active'
     && props.source === 'device'
-    && useProject.getAllDeviceProjects().then(() => console.log('Updated Project List'));
+    && getAllProjects().then(() => console.log('Updated Project List'));
   };
 
   const getAllProjects = async () => {
@@ -86,6 +86,11 @@ const ProjectList = (props) => {
 
   const selectProject = async (project) => {
     console.log('Selected Project:', project);
+    if (project?.fileName?.includes('.zip')) {
+      const unzippedFile = await useImport.unzipBackupFile(project.fileName);
+      console.log(unzippedFile);
+      project = unzippedFile;
+    }
     if (!isEmpty(currentProject)) {
       setProjectSelection(project);
       setShowDialog(true);
