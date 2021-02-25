@@ -1,6 +1,7 @@
-import React, {useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {FlatList, Text, View} from 'react-native';
 
+import {Field, Formik} from 'formik';
 import {ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -9,9 +10,12 @@ import {isEmpty} from '../../shared/Helpers';
 import AddButton from '../../shared/ui/AddButton';
 import SaveButton from '../../shared/ui/ButtonRounded';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
+import ListEmptyText from '../../shared/ui/ListEmptyText';
 import modalStyle from '../../shared/ui/modal/modal.style';
+import {SelectInputField} from '../form';
 import {MODALS} from '../home/home.constants';
 import useMapsHook from '../maps/useMaps';
+import {TAG_TYPES} from '../project/project.constants';
 import {addedTagToSelectedSpot} from '../project/projects.slice';
 import {TagDetailModal, useTagsHook} from '../tags';
 
@@ -25,6 +29,8 @@ const TagsModal = () => {
   const tags = useSelector(state => state.project.project.tags) || [];
   const [checkedTagsTemp, setCheckedTagsTemp] = useState([]);
   const [isDetailModalVisible, setIsDetailModalVisible] = useState(false);
+  const [searchText,setSearchText] = useState('');
+  const formRef = useRef(null);
 
   const checkTags = (tag) => {
     const checkedTagsIds = checkedTagsTemp.map(checkedTag => checkedTag.id);
@@ -38,6 +44,15 @@ const TagsModal = () => {
   const closeTagDetailModal = () => {
     setIsDetailModalVisible(false);
     dispatch(addedTagToSelectedSpot(false));
+  };
+
+  const getRelevantTags = () => {
+    if (isEmpty(searchText)){
+      return JSON.parse(JSON.stringify(tags));
+    }
+    else {
+      return searchTagsByType(searchText);
+    }
   };
 
   const save = async () => {
@@ -62,14 +77,39 @@ const TagsModal = () => {
   };
 
   const renderSpotTagsList = () => {
-    const tagsCopy = JSON.parse(JSON.stringify(tags));
     return (
-      <FlatList
-        keyExtractor={item => item.id.toString()}
-        data={tagsCopy.sort((tagA, tagB) => tagA.name.localeCompare(tagB.name))}  // alphabetize by name
-        renderItem={({item}) => renderTagItem(item)}
-        ItemSeparatorComponent={FlatListItemSeparator}
-      />
+      <React.Fragment>
+        <Formik
+          initialValues={{}}
+          validate={(fieldValues) => setSearchText(fieldValues.searchText)}
+          onSubmit={(values) => console.log('Submitting form...', values)}
+          innerRef={formRef}
+        >
+          {() => (
+            <ListItem containerStyle={commonStyles.listItemFormField}>
+              <ListItem.Content>
+                <Field
+                  component={(formProps) => (
+                    SelectInputField({setFieldValue: formProps.form.setFieldValue, ...formProps.field, ...formProps})
+                  )}
+                  name={'searchText'}
+                  key={'searchText'}
+                  label={'Tag Type'}
+                  choices={TAG_TYPES.map(tagType => ({label: tagType, value: tagType}))}
+                  single={true}
+                />
+              </ListItem.Content>
+            </ListItem>
+          )}
+        </Formik>
+        <FlatList
+          keyExtractor={item => item.id.toString()}
+          data={getRelevantTags().sort((tagA, tagB) => tagA.name.localeCompare(tagB.name))}  // alphabetize by name
+          renderItem={({item}) => renderTagItem(item)}
+          ItemSeparatorComponent={FlatListItemSeparator}
+          ListEmptyComponent={<ListEmptyText text={'There are no tags with this type.'}/>}
+        />
+      </React.Fragment>
     );
   };
 
@@ -101,6 +141,11 @@ const TagsModal = () => {
         />
       </ListItem>
     );
+  };
+
+  const searchTagsByType = (tagType) => {
+    const tagsCopy = JSON.parse(JSON.stringify(tags));
+    return useTags.filterTagsByTagType(tagsCopy,tagType);
   };
 
   return (

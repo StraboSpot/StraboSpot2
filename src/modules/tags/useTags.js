@@ -50,6 +50,12 @@ const useTags = () => {
     dispatch(setSelectedTag({}));
   };
 
+  const filterTagsByTagType = (tags,tagType) => {
+    if (isEmpty(tagType)) return tags;
+    const tagsByTagsType = tags.filter(tag => tag.type.toUpperCase().startsWith(tagType.toUpperCase()));
+    return tagsByTagsType;
+  };
+
   const getLabel = (key) => {
     if (key) return tagsDictionary[key] || key.replace(/_/g, ' ');
     return 'No Type Specified';
@@ -176,6 +182,7 @@ const useTags = () => {
     addRemoveSpotFromTag: addRemoveSpotFromTag,
     addRemoveTagFromSpot: addRemoveTagFromSpot,
     deleteTag: deleteTag,
+    filterTagsByTagType:filterTagsByTagType,
     getLabel: getLabel,
     getTagsAtSpot: getTagsAtSpot,
     getTagsAtSpotGeologicUnitFirst: getTagsAtSpotGeologicUnitFirst,

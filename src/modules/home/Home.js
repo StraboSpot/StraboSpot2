@@ -733,6 +733,19 @@ const Home = () => {
     else dispatch(setStatusMessagesModalVisible(false));
   };
 
+  const renderDatasetNames = () => {
+    const activeDatasets = useProject.getActiveDatasets();
+    return (
+      <FlatList
+        data={activeDatasets}
+        renderItem={({item}) =>
+          <Text>{item.name.length > 30 ? '- ' + truncateText(item.name, 30)
+            : '- ' + item.name}</Text>
+        }
+      />
+    );
+  };
+
   const renderBackUpModal = () => {
     const fileName = exportFileName.replace(/\s/g, '');
     return (
@@ -745,8 +758,13 @@ const Home = () => {
         disabled={exportFileName === ''}
       >
         <View>
-          <Text>If you change the folder name please do not use spaces, special characters (except a dash or
-            underscore) or add a file extension.</Text>
+          <View style={{alignItems: 'center', paddingTop: 15}}>
+            <Text style={{...commonStyles.dialogText, textAlign: undefined}}>The following are the datasets that will be
+              exported:</Text>
+            <Text style={{...commonStyles.dialogText, textAlign: undefined}}>{renderDatasetNames()}</Text>
+            <Text>If you change the folder name please do not use spaces, special characters (except a dash or
+              underscore), or add a file extension.</Text>
+          </View>
           <View style={projectStyles.dialogContent}>
             <TextInput
               value={fileName}
@@ -775,13 +793,12 @@ const Home = () => {
         <View>
           <Text>
             <Text style={commonStyles.dialogContentImportantText}>{!isEmpty(
-              currentProject) && currentProject.description.project_name}{'\n'}</Text>
-            properties and the following active datasets will be uploaded and will
+              currentProject) && currentProject.description.project_name} </Text>
+            project properties and the following active datasets will be uploaded and will
             <Text style={commonStyles.dialogContentImportantText}> OVERWRITE</Text> any data already on the server
-            for this project.
+            for this project:
           </Text>
-          <View style={{alignItems: 'center', paddingTop: 15}}>
-            <Text>Datasets:</Text>
+          <View style={{alignItems: 'center', paddingTop: 15, paddingBottom: 10}}>
             <FlatList
               data={activeDatasets}
               keyExtractor={item => item.id.toString()}
