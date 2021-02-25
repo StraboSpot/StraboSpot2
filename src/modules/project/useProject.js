@@ -12,7 +12,7 @@ import {
 } from '../home/home.slice';
 import {clearedMaps} from '../maps/maps.slice';
 import {clearedSpots, deletedSpot} from '../spots/spots.slice';
-import {  DEFAULT_GEOLOGIC_TYPES, DEFAULT_RELATIONSHIP_TYPES} from './project.constants';
+import {DEFAULT_GEOLOGIC_TYPES, DEFAULT_RELATIONSHIP_TYPES} from './project.constants';
 import {
   addedDataset,
   addedProjectDescription,
@@ -26,7 +26,7 @@ import useDownloadHook from './useDownload';
 
 const useProject = () => {
   const devicePath = RNFS.DocumentDirectoryPath;
-  const appDirectoryForDistributedBackups = '/StraboSpotProjects';
+  const appDirectoryForDistributedBackups = '/ProjectBackups';
 
   const dispatch = useDispatch();
   const activeDatasetsIds = useSelector(state => state.project.activeDatasetsIds);

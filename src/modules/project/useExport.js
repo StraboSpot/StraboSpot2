@@ -14,7 +14,7 @@ import useProjectHook from './useProject';
 const useExport = () => {
   const devicePath = RNFS.DocumentDirectoryPath;
   const appDirectoryTiles = '/StraboSpotTiles';
-  const appDirectoryForDistributedBackups = '/StraboSpotProjects';
+  const appDirectoryForDistributedBackups = '/ProjectBackups';
   const appDirectory = '/StraboSpot';
   const imagesDirectory = appDirectory + '/Images';
   const zipsDirectory = appDirectoryTiles + '/TileZips';

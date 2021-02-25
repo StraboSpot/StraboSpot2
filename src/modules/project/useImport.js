@@ -24,7 +24,7 @@ const useImport = () => {
   let notNeededTiles = 0;
 
   const devicePath = RNFS.DocumentDirectoryPath;
-  const appDirectoryForDistributedBackups = '/StraboSpotProjects';
+  const appDirectoryForDistributedBackups = '/ProjectBackups';
   const appDirectory = '/StraboSpot';
   const imagesDirectory = appDirectory + '/Images';
   const appDirectoryTiles = '/StraboSpotTiles';
@@ -85,8 +85,24 @@ const useImport = () => {
         );
       }
     }
-    catch (e) {
-      console.error('Error unzipping files', e);
+    catch (err) {
+      console.error('Error unzipping files', err);
+    }
+  };
+
+  const unzipBackupFile = async (zipFile) => {
+    try {
+      const source = devicePath + appDirectoryForDistributedBackups + '/' + zipFile;
+      const target = devicePath + appDirectoryForDistributedBackups + '/';
+
+      const unzippedFile = await unzip(source, target);
+      console.log('backup file unzipped successfully!');
+      await RNFS.unlink(source);
+      console.log('.zip file removed successfully!');
+      return unzippedFile;
+    }
+    catch (err) {
+      console.error('Error unzipping backup files', err);
     }
   };
 
@@ -217,7 +233,7 @@ const useImport = () => {
     moveFiles: moveFiles,
     readDeviceJSONFile: readDeviceJSONFile,
     unzipFile: unzipFile,
-
+    unzipBackupFile: unzipBackupFile,
   };
 };
 

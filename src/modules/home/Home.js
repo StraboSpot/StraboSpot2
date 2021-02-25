@@ -174,7 +174,7 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    console.log('Se;ected Project', selectedProject);
+    console.log('Selected Project', selectedProject);
   }, [selectedProject]);
 
   useEffect(() => {
@@ -183,7 +183,7 @@ const Home = () => {
         scope.setUser({'email': user.email, username: user.name});
       });
     }
-    useDevice.doesDeviceBackupDirExist().catch(err => console.log('Error checking if backup dir exists!'));
+    useDevice.doesDeviceBackupDirExist().catch(err => console.log('Error checking if backup dir exists!', err));
     console.log('Initializing Home page');
   }, [user]);
 
