@@ -73,6 +73,12 @@ const MyStraboSpot = props => {
                 buttonStyle={commonStyles.standardButton}
                 titleStyle={commonStyles.standardButtonText}
                 onPress={() => openFilesApp()}
+                iconContainerStyle={{paddingRight: 10}}
+                icon={{
+                  name: 'file-tray-full-outline',
+                  type: 'ionicon',
+                  color: BLUE,
+                }}
               />
             </View>
           </View>
