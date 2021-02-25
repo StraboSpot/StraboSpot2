@@ -1,9 +1,7 @@
-import {Platform} from 'react-native';
-
 import RNFS from 'react-native-fs';
 import {useDispatch} from 'react-redux';
 
-import {deletedOfflineMap, setOfflineMap} from '../modules/maps/offline-maps/offlineMaps.slice';
+import {deletedOfflineMap} from '../modules/maps/offline-maps/offlineMaps.slice';
 import {doesBackupDirectoryExist} from '../modules/project/projects.slice';
 
 
