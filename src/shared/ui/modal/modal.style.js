@@ -25,6 +25,7 @@ const modalStyle = StyleSheet.create({
   textStyle: {
     fontSize: themes.MODAL_TEXT_SIZE,
     color: themes.WARNING_COLOR,
+    textAlign: 'center',
   },
   textContainer: {
     alignItems: 'center',

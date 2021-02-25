@@ -30,28 +30,22 @@ import ThreeDStructuresPage from '../three-d-structures/ThreeDStructuresPage';
 import NotebookFooter from './notebook-footer/NotebookFooter';
 import NotebookHeader from './notebook-header/NotebookHeader';
 import {NOTEBOOK_PAGES, NOTEBOOK_SUBPAGES, SECONDARY_NOTEBOOK_PAGES, SED_NOTEBOOK_PAGES} from './notebook.constants';
-import {setCompassMeasurementTypes, setNotebookPageVisible} from './notebook.slice';
+import {setNotebookPageVisible} from './notebook.slice';
 import notebookStyles from './notebookPanel.styles';
 import Overview from './Overview';
 import PlaceholderPage from './PlaceholderPage';
-import {COMPASS_TOGGLE_BUTTONS} from '../compass/compass.constants';
 
 const NotebookPanel = (props) => {
   const [useSpots] = useSpotsHook();
   const dispatch = useDispatch();
-  const compassMeasurementTypes = useSelector(state => state.notebook.compassMeasurementTypes);
   const pageVisible = useSelector(state => state.notebook.visibleNotebookPagesStack.slice(-1)[0]);
   const recentlyViewedSpotIds = useSelector(state => state.spot.recentViews);
   const spot = useSelector(state => state.spot.selectedSpot);
   const spots = useSelector(state => state.spot.spots);
 
-  const notebookPageVisible = page => {
+  const onNotebookPageVisible = (page) => {
     dispatch(setNotebookPageVisible(page));
     if (page === NOTEBOOK_PAGES.MEASUREMENT || page === NOTEBOOK_SUBPAGES.MEASUREMENTDETAIL) {
-      if (compassMeasurementTypes.includes(COMPASS_TOGGLE_BUTTONS.ASSOCIATED_PLANAR)
-        || compassMeasurementTypes.includes(COMPASS_TOGGLE_BUTTONS.ASSOCIATED_LINEAR)) {
-        dispatch(setCompassMeasurementTypes([COMPASS_TOGGLE_BUTTONS.PLANAR]));
-      }
     dispatch(setModalVisible({modal: MODALS.NOTEBOOK_MODALS.COMPASS}));
     }
     else if (page === NOTEBOOK_PAGES.SAMPLE) dispatch(setModalVisible({modal: MODALS.NOTEBOOK_MODALS.SAMPLE}));
@@ -102,7 +96,7 @@ const NotebookPanel = (props) => {
         </View>
         <View style={notebookStyles.footerContainer}>
           <NotebookFooter
-            openPage={(page) => notebookPageVisible(page)}
+            openPage={(page) => onNotebookPageVisible(page)}
             onPress={(camera) => props.onPress(camera)}
           />
         </View>

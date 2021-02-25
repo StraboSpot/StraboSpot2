@@ -503,7 +503,6 @@ const Home = () => {
     if (modalVisible === MODALS.NOTEBOOK_MODALS.COMPASS && isNotebookPanelVisible && !isEmpty(selectedSpot)) {
       return (
         <CompassModal
-          close={() => dispatch(setModalVisible({modal: null}))}
           onPress={() => modalHandler(null, MODALS.SHORTCUT_MODALS.COMPASS)}
           type={MODALS.NOTEBOOK_MODALS.COMPASS}
         />
@@ -512,7 +511,6 @@ const Home = () => {
     if (modalVisible === MODALS.SHORTCUT_MODALS.COMPASS) {
       return (
         <CompassModal
-          close={() => dispatch(setModalVisible({modal: null}))}
           onPress={() => modalHandler(NOTEBOOK_PAGES.MEASUREMENT, MODALS.NOTEBOOK_MODALS.COMPASS)}
           type={MODALS.SHORTCUT_MODALS.COMPASS}
         />

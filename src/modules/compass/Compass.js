@@ -3,12 +3,10 @@ import {
   Animated,
   AppState,
   Easing,
-  Alert,
   Image,
   View,
   Switch,
   Text,
-  Dimensions,
   TouchableOpacity,
   NativeModules,
   NativeEventEmitter, Platform,
@@ -17,72 +15,57 @@ import {
 import {ListItem} from 'react-native-elements';
 import {accelerometer, SensorTypes, setUpdateIntervalForType} from 'react-native-sensors';
 import Sound from 'react-native-sound';
-import {connect, useDispatch, useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
-import {getNewId, mod, roundToDecimalPlaces, toDegrees, toRadians} from '../../shared/Helpers';
-import ListEmptyText from '../../shared/ui/ListEmptyText';
+import commonStyles from '../../shared/common.styles';
+import {isEmpty, mod, roundToDecimalPlaces, toDegrees, toRadians} from '../../shared/Helpers';
 import modalStyle from '../../shared/ui/modal/modal.style';
 import Slider from '../../shared/ui/Slider';
 import uiStyles from '../../shared/ui/ui.styles';
 import {MODALS} from '../home/home.constants';
 import useMapsHook from '../maps/useMaps';
-import {NOTEBOOK_SUBPAGES} from '../notebook-panel/notebook.constants';
-import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
-import {editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
+import useMeasurementsHook from '../measurements/useMeasurements';
 import {COMPASS_TOGGLE_BUTTONS} from './compass.constants';
+import {setCompassMeasurements, setCompassMeasurementTypes} from './compass.slice';
 import compassStyles from './compass.styles';
 
-// eslint-disable-next-line no-unused-vars
-const {height, width} = Dimensions.get('window');
-const buttonClick = new Sound('button_click.mp3', Sound.MAIN_BUNDLE, (error) => {
-  if (error) console.log('failed to load the sound', error);
-});
-
-const Compass = (props) => {
+const Compass = () => {
   const dispatch = useDispatch();
-  const compassMeasurementTypes = useSelector(state => state.notebook.compassMeasurementTypes);
+  const compassMeasurementTypes = useSelector(state => state.compass.measurementTypes);
+  const compassMeasurements = useSelector(state => state.compass.measurements);
   const modalVisible = useSelector(state => state.home.modalVisible);
-  const pageVisible = useSelector(state => state.notebook.visibleNotebookPagesStack.slice(-1)[0]);
+  const selectedMeasurement = useSelector(state => state.spot.selectedMeasurement);
 
-  let modalView = null;
-  const [useMaps] = useMapsHook();
-
+  const [accelerometerData, setAccelerometerData] = useState({x: 0, y: 0, z: 0, timestamp: null});
+  const [accelerometerSubscription, setAccelerometerSubscription] = useState(null);
   const [compassData, setCompassData] = useState({
     heading: null,
     strike: null,
     dip: null,
-    // dipdir: null,
     trend: null,
     plunge: null,
-    //   // rake: null,
-    //   // rake_calculated: 'no'
   });
-  const [heading, setHeading] = useState(null);
-  const [toggles, setToggles] = useState(compassMeasurementTypes);
+  const [magnetometer, setMagnetometer] = useState(0);
+  const [showData, setShowData] = useState(false);
   const [sliderValue, setSliderValue] = useState(5);
   const [strikeSpinValue] = useState(new Animated.Value(0));
   const [trendSpinValue] = useState(new Animated.Value(0));
-  const [showData, setShowData] = useState(false);
-  const CompassEvents = new NativeEventEmitter(NativeModules.Compass);
-  const [magnetometer, setMagnetometer] = useState(0);
-  const [accelerometerSubscription, setAccelerometerSubscription] = useState(null);
-  const [accelerometerData, setAccelerometerData] = useState({
-    x: 0,
-    y: 0,
-    z: 0,
-    timestamp: null,
-  });
+  const [toggles, setToggles] = useState(compassMeasurementTypes);
 
-  useEffect(() => {
-    displayCompassData();
-  }, [accelerometerData]);
+  const [useMaps] = useMapsHook();
+  const [useMeasurements] = useMeasurementsHook();
+
+  const buttonClick = new Sound('button_click.mp3', Sound.MAIN_BUNDLE, (error) => {
+    if (error) console.log('Failed to load sound', error);
+  });
+  const CompassEvents = new NativeEventEmitter(NativeModules.Compass);
 
   useEffect(() => {
     AppState.addEventListener('change', handleAppStateChange);
     if (Platform.OS === 'android') {
       setUpdateIntervalForType(SensorTypes.accelerometer, 300);
       setUpdateIntervalForType(SensorTypes.magnetometer, 300);
-      subscribeToAccelerometer();
+      subscribeToAccelerometer().catch(e => console.log('Error with Accelerometer', e));
     }
     return () => {
       AppState.removeEventListener('change', handleAppStateChange);
@@ -90,24 +73,32 @@ const Compass = (props) => {
     };
   }, []);
 
+  // Update compass data on accelerometer data changed
   useEffect(() => {
-    console.log('Updating props', props.spot);
-  }, [props.spot, compassMeasurementTypes]);
+    displayCompassData();
+  }, [accelerometerData]);
 
-  const handleAppStateChange = (state) => {
-    if (state === 'active') Platform.OS === 'ios' ? displayCompassData() : subscribeToAccelerometer();
-    else if (state === 'background') unsubscribe();
-  };
-
-  const unsubscribe = () => {
-    if (Platform.OS === 'ios') {
-      NativeModules.Compass.stopObserving();
-      CompassEvents.removeAllListeners('rotationMatrix');
-      console.log('Ended Compass observation and rotationMatrix listener.');
+  // Create a new measurement on grabbing new compass measurements from shortcut modal
+  useEffect(() => {
+    if (!isEmpty(compassMeasurements) && modalVisible === MODALS.SHORTCUT_MODALS.COMPASS) {
+      console.log('New compass measurement recorded in Measurements.', compassMeasurements);
+      useMeasurements.createNewMeasurement();
+      dispatch(setCompassMeasurements({}));
     }
-    else unsubscribeFromAccelerometer();
-    console.log('Heading subscription cancelled');
-  };
+  }, [compassMeasurements]);
+
+  // Update quality slider on active measurement changed
+  useEffect(() => {
+    if (!isEmpty(selectedMeasurement) && selectedMeasurement.quality) {
+      setSliderValue(parseInt(selectedMeasurement.quality, 10));
+    }
+  }, [selectedMeasurement]);
+
+  // Update compass on measurement type changed
+  useEffect(() => {
+    console.log('compassMeasurementTypes', compassMeasurementTypes);
+    setToggles(compassMeasurementTypes);
+  }, [compassMeasurementTypes]);
 
   const calculateOrientation = () => {
     const x = accelerometerData.x;
@@ -157,12 +148,13 @@ const Compass = (props) => {
     setCompassData({
       actualHeading: roundToDecimalPlaces(actualHeading, 4),
       strike: roundToDecimalPlaces(strike, 0),
-      dipdir: roundToDecimalPlaces(dipdir, 0),
+      dip_direction: roundToDecimalPlaces(dipdir, 0),
       dip: roundToDecimalPlaces(dip, 0),
       trend: roundToDecimalPlaces(trend, 0),
       plunge: roundToDecimalPlaces(plunge, 0),
       rake: roundToDecimalPlaces(rake, 0),
       rake_calculated: 'yes',
+      quality: sliderValue.toString(),
     });
   };
 
@@ -180,92 +172,24 @@ const Compass = (props) => {
         });
       });
     }
-    else {
-      calculateOrientation();
-    }
-  };
-
-  const playSound = () => {
-    buttonClick.play(success => {
-      if (success) console.log('successfully finished playing');
-      else console.log('playback failed due to audio decoding errors');
-    });
+    else calculateOrientation();
   };
 
   const grabMeasurements = async (isCompassMeasurement) => {
-    if (modalVisible === MODALS.SHORTCUT_MODALS.COMPASS) {
-      const pointSetAtCurrentLocation = await useMaps.setPointAtCurrentLocation();
-      console.log('pointSetAtCurrentLocation', pointSetAtCurrentLocation);
+    if (modalVisible === MODALS.SHORTCUT_MODALS.COMPASS) await useMaps.setPointAtCurrentLocation();
+    try {
+      buttonClick.play();
     }
-    let measurements = [];
-    if (toggles.includes(COMPASS_TOGGLE_BUTTONS.PLANAR) || toggles.includes(COMPASS_TOGGLE_BUTTONS.ASSOCIATED_PLANAR)) {
-      let newPlanarMeasurement = {type: 'planar_orientation'};
-      if (isCompassMeasurement) {
-        newPlanarMeasurement = {
-          ...newPlanarMeasurement,
-          strike: compassData.strike,
-          dip: compassData.dip,
-          quality: sliderValue.toString(),
-        };
-      }
-      measurements.push(newPlanarMeasurement);
+    catch (e) {
+      console.log('Compass click sound playback failed due to audio decoding errors', e);
     }
-    if (toggles.includes(COMPASS_TOGGLE_BUTTONS.LINEAR) || toggles.includes(COMPASS_TOGGLE_BUTTONS.ASSOCIATED_LINEAR)) {
-      let newLinearMeasurement = {type: 'linear_orientation'};
-      if (isCompassMeasurement) {
-        newLinearMeasurement = {
-          ...newLinearMeasurement,
-          trend: compassData.trend,
-          plunge: compassData.plunge,
-          rake: compassData.rake,
-          rake_calculated: 'yes',
-          quality: sliderValue.toString(),
-        };
-      }
-      measurements.push(newLinearMeasurement);
-    }
+    if (isCompassMeasurement) dispatch(setCompassMeasurements(compassData));
+    else dispatch(setCompassMeasurements({...compassData, manual: true}));
+  };
 
-    if (measurements.length > 0) {
-      let newOrientation = measurements[0];
-      newOrientation.id = getNewId();
-      if (measurements.length > 1) {
-        let newAssociatedOrientation = measurements[1];
-        newAssociatedOrientation.id = getNewId();
-        while (newOrientation.id === newAssociatedOrientation.id) newAssociatedOrientation.id = getNewId();
-        newOrientation.associated_orientation = [newAssociatedOrientation];
-      }
-      if (modalVisible === MODALS.NOTEBOOK_MODALS.COMPASS) {
-        if (toggles.includes(COMPASS_TOGGLE_BUTTONS.ASSOCIATED_PLANAR)
-          || toggles.includes(COMPASS_TOGGLE_BUTTONS.ASSOCIATED_LINEAR)) {
-          delete newOrientation.id;
-          delete newOrientation.type;
-          let selectedMeasurementCopy = JSON.parse(JSON.stringify(props.selectedMeasurement));
-          let associatedOrientations = selectedMeasurementCopy.associated_orientation;
-          let lastAssociatedOrientation = associatedOrientations[associatedOrientations.length - 1];
-          lastAssociatedOrientation = {...lastAssociatedOrientation, ...newOrientation};
-          associatedOrientations.splice(-1, 1, lastAssociatedOrientation);
-          selectedMeasurementCopy.associated_orientation = associatedOrientations;
-          const orientations = props.spot.properties.orientation_data.filter(
-            m => m.id !== props.selectedMeasurement.id);
-          props.onSpotEdit('orientation_data', [...orientations, selectedMeasurementCopy]);
-          dispatch(setSelectedAttributes([selectedMeasurementCopy]));
-        }
-        else {
-          const orientations = (typeof props.spot.properties.orientation_data === 'undefined') ? [newOrientation]
-            : [...props.spot.properties.orientation_data, newOrientation];
-          props.onSpotEdit('orientation_data', orientations);
-        }
-      }
-      else if (modalVisible === MODALS.SHORTCUT_MODALS.COMPASS) {
-        props.onSpotEdit('orientation_data', [newOrientation]);
-      }
-      if (isCompassMeasurement) playSound();
-      else {
-        dispatch(setSelectedAttributes([newOrientation]));
-        dispatch(setNotebookPageVisible(NOTEBOOK_SUBPAGES.MEASUREMENTDETAIL));
-      }
-    }
-    else Alert.alert('No Measurement Type', 'Please select a measurement type using the toggles.');
+  const handleAppStateChange = (state) => {
+    if (state === 'active') Platform.OS === 'ios' ? displayCompassData() : subscribeToAccelerometer();
+    else if (state === 'background') unsubscribe();
   };
 
   const renderCompass = () => {
@@ -279,16 +203,14 @@ const Compass = (props) => {
 
   const renderCompassSymbols = () => {
     // console.log('Strike', compassData.strike + '\n' + 'Trend', compassData.trend);
-    const linearInToggleOn = toggles.includes(COMPASS_TOGGLE_BUTTONS.LINEAR) || toggles.includes(
-      COMPASS_TOGGLE_BUTTONS.ASSOCIATED_LINEAR);
-    const plannerInToggleOn = toggles.includes(COMPASS_TOGGLE_BUTTONS.PLANAR) || toggles.includes(
-      COMPASS_TOGGLE_BUTTONS.ASSOCIATED_PLANAR);
+    const linearToggleOn = toggles.includes(COMPASS_TOGGLE_BUTTONS.LINEAR);
+    const planerToggleOn = toggles.includes(COMPASS_TOGGLE_BUTTONS.PLANAR);
 
-    if (linearInToggleOn && plannerInToggleOn && compassData.trend !== null && compassData.strike !== null) {
+    if (linearToggleOn && planerToggleOn && compassData.trend !== null && compassData.strike !== null) {
       return [renderTrendSymbol(), renderStrikeDipSymbol()];
     }
-    else if (linearInToggleOn && compassData.trend !== null) return renderTrendSymbol();
-    else if (plannerInToggleOn && compassData.strike !== null) return renderStrikeDipSymbol();
+    else if (linearToggleOn && compassData.trend !== null) return renderTrendSymbol();
+    else if (planerToggleOn && compassData.strike !== null) return renderStrikeDipSymbol();
   };
 
   const renderDataView = () => {
@@ -300,6 +222,21 @@ const Compass = (props) => {
         <Text>Trend: {compassData.trend}</Text>
         <Text>Plunge: {compassData.plunge}</Text>
       </View>
+    );
+  };
+
+  const renderSlider = () => {
+    return (
+      <Slider
+        onSlidingComplete={(value) => setSliderValue(value)}
+        value={sliderValue}
+        step={1}
+        maximumValue={5}
+        minimumValue={1}
+        thumbTouchSize={{width: 40, height: 40}}
+        leftText={'Low'}
+        rightText={'High'}
+      />
     );
   };
 
@@ -329,26 +266,11 @@ const Compass = (props) => {
     );
   };
 
-  const renderSlider = () => {
-    return (
-      <Slider
-        onSlidingComplete={(value) => setSliderValue(value)}
-        value={sliderValue}
-        step={1}
-        maximumValue={5}
-        minimumValue={1}
-        thumbTouchSize={{width: 40, height: 40}}
-        leftText={'Low'}
-        rightText={'High'}
-      />
-    );
-  };
-
   const renderToggleListItem = (value) => {
     return (
-      <ListItem key={value}>
+      <ListItem containerStyle={commonStyles.listItem} key={value}>
         <ListItem.Content>
-          <ListItem.Title>{value}</ListItem.Title>
+          <ListItem.Title style={commonStyles.listItemTitle}>{value}</ListItem.Title>
         </ListItem.Content>
         <Switch onValueChange={() => toggleSwitch(value)} value={toggles.includes(value)}/>
       </ListItem>
@@ -358,8 +280,7 @@ const Compass = (props) => {
   const renderToggles = () => {
     return (
       <React.Fragment>
-        {!compassMeasurementTypes.includes(COMPASS_TOGGLE_BUTTONS.ASSOCIATED_PLANAR)
-        && !compassMeasurementTypes.includes(COMPASS_TOGGLE_BUTTONS.ASSOCIATED_LINEAR) && (
+        {isEmpty(selectedMeasurement) && (
           <React.Fragment>
             {renderToggleListItem(COMPASS_TOGGLE_BUTTONS.PLANAR)}
             {renderToggleListItem(COMPASS_TOGGLE_BUTTONS.LINEAR)}
@@ -367,12 +288,6 @@ const Compass = (props) => {
         )}
       </React.Fragment>
     );
-  };
-
-  const toggleSwitch = (switchType) => {
-    const has = toggles.includes(switchType);
-    console.log(toggles, has);
-    setToggles(has ? toggles.filter(i => i !== switchType) : toggles.concat(switchType));
   };
 
   // Render the strike and dip symbol inside the compass
@@ -411,63 +326,60 @@ const Compass = (props) => {
     console.log('Began accelerometer subscription.');
   };
 
+  const toggleSwitch = (switchType) => {
+    const has = toggles.includes(switchType);
+    let switchedToggles = has ? toggles.filter(i => i !== switchType) : toggles.concat(switchType);
+    if (isEmpty(switchedToggles)) {
+      if (switchType === COMPASS_TOGGLE_BUTTONS.PLANAR) switchedToggles = [COMPASS_TOGGLE_BUTTONS.LINEAR];
+      else switchedToggles = [COMPASS_TOGGLE_BUTTONS.PLANAR];
+    }
+    setToggles(switchedToggles);
+    dispatch(setCompassMeasurementTypes(switchedToggles));
+  };
+
+  const unsubscribe = () => {
+    if (Platform.OS === 'ios') {
+      NativeModules.Compass.stopObserving();
+      CompassEvents.removeAllListeners('rotationMatrix');
+      console.log('Ended Compass observation and rotationMatrix listener.');
+    }
+    else unsubscribeFromAccelerometer();
+    console.log('Heading subscription cancelled');
+  };
+
   const unsubscribeFromAccelerometer = () => {
     if (accelerometerSubscription) accelerometerSubscription.unsubscribe();
     setAccelerometerSubscription(null);
     console.log('Ended accelerometer subscription.');
   };
 
-  const renderCompassContent = () => {
-    return (
-      <React.Fragment>
-        <View>
-          <View style={compassStyles.compassContainer}>
-            <TouchableOpacity style={modalStyle.textContainer} onPress={() => grabMeasurements()}>
-              {/*<Text style={{...modalStyle.textStyle, fontWeight: 'bold'}}>x Spots Created </Text>*/}
-              <Text style={modalStyle.textStyle}>Tap compass to record a measurement</Text>
-              {modalVisible !== MODALS.NOTEBOOK_MODALS.COMPASS
-              && <Text style={modalStyle.textStyle}>in a NEW Spot</Text>}
-              <Text style={modalStyle.textStyle}>or tap HERE to record manually</Text>
-            </TouchableOpacity>
-            {renderCompass()}
-          </View>
-          {renderToggles()}
-          <View style={compassStyles.sliderContainer}>
-            <Text style={compassStyles.sliderHeading}>Quality of Measurement</Text>
-            {renderSlider()}
-          </View>
+  return (
+    <React.Fragment>
+      <View>
+        <View style={compassStyles.compassContainer}>
+          <TouchableOpacity style={modalStyle.textContainer} onPress={() => grabMeasurements()}>
+            <Text style={modalStyle.textStyle}>
+              Tap compass to
+              {modalVisible === MODALS.SHORTCUT_MODALS.COMPASS && ' record a new \nmeasurement in a NEW Spot'}
+              {modalVisible === MODALS.NOTEBOOK_MODALS.COMPASS
+              && (isEmpty(selectedMeasurement) ? ' record \na new measurement \nor tap HERE to record manually'
+                : ' edit current measurement')
+              }
+            </Text>
+          </TouchableOpacity>
+          {renderCompass()}
         </View>
-        <View style={compassStyles.buttonContainer}>
-          {modalView}
-          {showData && renderDataView()}
+        {renderToggles()}
+        <View style={compassStyles.sliderContainer}>
+          <Text style={compassStyles.sliderHeading}>Quality of Measurement</Text>
+          {renderSlider()}
         </View>
-      </React.Fragment>
-    );
-  };
-
-  const renderSaveOrCancelFirst = () => {
-    return (
-      <View style={{height: 350, justifyContent: 'center'}}>
-        <ListEmptyText text={'Save or Cancel current measurement before making a new one.'}/>
       </View>
-    );
-  };
-
-  return pageVisible === NOTEBOOK_SUBPAGES.MEASUREMENTDETAIL
-  && !compassMeasurementTypes.includes(COMPASS_TOGGLE_BUTTONS.ASSOCIATED_PLANAR)
-  && !compassMeasurementTypes.includes(COMPASS_TOGGLE_BUTTONS.ASSOCIATED_LINEAR) ? renderSaveOrCancelFirst()
-    : renderCompassContent();
+      <View style={compassStyles.buttonContainer}>
+        {showData && renderDataView()}
+      </View>
+    </React.Fragment>
+  );
 };
 
-const mapStateToProps = (state) => {
-  return {
-    spot: state.spot.selectedSpot,
-    selectedMeasurement: state.spot.selectedAttributes[0],
-    isNotebookPanelVisible: state.notebook.isNotebookPanelVisible,
-  };
-};
-
-const mapDispatchToProps = {
-  onSpotEdit: (field, value) => (editedSpotProperties({field: field, value: value})),
-};
-export default connect(mapStateToProps, mapDispatchToProps)(Compass);
+export default Compass;

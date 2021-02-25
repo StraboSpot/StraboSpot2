@@ -144,10 +144,10 @@ const useSpots = (props) => {
   const getActiveSpotsObj = () => {
     let activeSpots = {};
     const activeDatasets = useProject.getActiveDatasets();
-    // console.log('getActiveDatasetsFromId', activeDatasets);
-    const activeSpotIds = activeDatasets.flatMap(dataset => {
-      if (dataset && dataset.spotIds && !isEmpty(dataset.spotIds)) return dataset.spotIds;
-    });
+    //console.log('getActiveDatasetsFromId', activeDatasets);
+    const activeSpotIds = Object.values(activeDatasets).reduce((acc, dataset) => {
+      return (dataset && dataset.spotIds && !isEmpty(dataset.spotIds)) ? [...acc, ...dataset.spotIds] : acc;
+    }, []);
     // Check for undefined Spot Ids and Spots referenced in a dataset but do not exist in the spots object
     activeSpotIds.map(spotId => {
       if (spots[spotId]) activeSpots = {...activeSpots, [spotId]: spots[spotId]};

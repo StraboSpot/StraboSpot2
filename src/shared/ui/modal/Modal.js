@@ -68,11 +68,6 @@ const Modal = (props) => {
               <ListItem.Chevron/>
             </ListItem>
           )}
-          {isEmpty(selectedSpot) && modalVisible === MODALS.SHORTCUT_MODALS.COMPASS && (
-            <View style={{alignItems: 'center', paddingBottom: 20}}>
-              <Text style={{fontWeight: '400'}}>Take a measurement first</Text>
-            </View>
-          )}
         </React.Fragment>
       );
     }

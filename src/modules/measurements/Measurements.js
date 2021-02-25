@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Alert, FlatList, View} from 'react-native';
 
 import {Button} from 'react-native-elements';
@@ -10,10 +10,11 @@ import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {COMPASS_TOGGLE_BUTTONS} from '../compass/compass.constants';
+import {setCompassMeasurements, setCompassMeasurementTypes} from '../compass/compass.slice';
 import {MODALS} from '../home/home.constants';
 import {setModalVisible} from '../home/home.slice';
 import {NOTEBOOK_PAGES, NOTEBOOK_SUBPAGES} from '../notebook-panel/notebook.constants';
-import {setCompassMeasurementTypes, setNotebookPageVisible} from '../notebook-panel/notebook.slice';
+import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import {setSelectedAttributes} from '../spots/spots.slice';
 import MeasurementItem from './MeasurementItem';
@@ -24,6 +25,7 @@ const MeasurementsPage = (props) => {
   const dispatch = useDispatch();
   const modalVisible = useSelector(state => state.home.modalVisible);
   const spot = useSelector(state => state.spot.selectedSpot);
+  const compassMeasurements = useSelector(state => state.compass.measurements);
 
   const [useMeasurements] = useMeasurementsHook();
 
@@ -35,6 +37,16 @@ const MeasurementsPage = (props) => {
     LINEAR: 'Linear Measurements',
     PLANARLINEAR: 'P + L Measurements',
   };
+
+  // Create a new measurement on grabbing new compass measurements
+  useEffect(() => {
+    if (!isEmpty(compassMeasurements)) {
+      console.log('New compass measurement recorded in Measurements.', compassMeasurements);
+      useMeasurements.createNewMeasurement();
+      // if (compassMeasurementTypes === MODALS.SHORTCUT_MODALS.COMPASS) createNewSpotWithMeasurement();
+      dispatch(setCompassMeasurements({}));
+    }
+  }, [compassMeasurements]);
 
   const addMeasurement = (sectionType) => {
     let types = [];

@@ -3,12 +3,13 @@ import {createSlice, current} from '@reduxjs/toolkit';
 import {isEmpty, isEqual} from '../../shared/Helpers';
 
 const initialSpotState = {
-  selectedSpots: [],
-  selectedSpot: {},
-  selectedAttributes: [],
-  recentViews: [],
-  spots: {},
   intersectedSpotsForTagging: [],
+  recentViews: [],
+  selectedAttributes: [],
+  selectedMeasurement: {},
+  selectedSpot: {},
+  selectedSpots: [],
+  spots: {},
 };
 
 const spotSlice = createSlice({
@@ -81,9 +82,7 @@ const spotSlice = createSlice({
         state.selectedSpot.properties[field] = value;
         state.modified_timestamp = Date.now();
       }
-      else if (isEmpty(value)) {
-        delete state.selectedSpot.properties[field];
-      }
+      else if (isEmpty(value)) delete state.selectedSpot.properties[field];
       state.spots = {...state.spots, [state.selectedSpot.properties.id]: state.selectedSpot};
     },
     setIntersectedSpotsForTagging(state, action) {
@@ -91,6 +90,9 @@ const spotSlice = createSlice({
     },
     setSelectedAttributes(state, action) {
       state.selectedAttributes = action.payload;
+    },
+    setSelectedMeasurement(state, action) {
+      state.selectedMeasurement = action.payload;
     },
     setSelectedSpot(state, action) {
       let recentViewsArr = Object.assign([], state.recentViews);
@@ -122,6 +124,7 @@ export const {
   editedSpotProperties,
   setIntersectedSpotsForTagging,
   setSelectedAttributes,
+  setSelectedMeasurement,
   setSelectedSpot,
   setSelectedSpotNotesTimestamp,
 } = spotSlice.actions;
