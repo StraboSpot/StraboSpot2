@@ -5,6 +5,7 @@ import {Button, ButtonGroup, Icon, ListItem, Overlay} from 'react-native-element
 import {Table, Row, Rows} from 'react-native-table-component';
 import {useDispatch, useSelector} from 'react-redux';
 
+import useDeviceHook from '../../services/useDevice';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty, truncateText, urlValidator} from '../../shared/Helpers';
 import {BLUE, PRIMARY_ACCENT_COLOR} from '../../shared/styles.constants';
@@ -26,7 +27,6 @@ import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton'
 import externalDataStyles from './ExternalData.styles';
 import useExternalDataHook from './useExternalData';
 
-
 const ExternalData = () => {
   const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
@@ -45,6 +45,8 @@ const ExternalData = () => {
   const [loading, setLoading] = useState(false);
 
   const useExternalData = useExternalDataHook();
+  const useDevice = useDeviceHook();
+
   useEffect(() => {
     !isEmpty(selectedTable) && isTableVisible && setLoading(false);
   }, [selectedTable]);
@@ -167,7 +169,7 @@ const ExternalData = () => {
         <ListItem.Content style={{flexDirection: 'row', justifyContent: 'space-between'}}>
           <ListItem.Title
             style={[commonStyles.listItemTitle, {color: BLUE}]}
-            onPress={() => useExternalData.openUrl(urlItem)}>
+            onPress={() => useDevice.openURL(urlItem)}>
             {truncateText(urlItem, 33)}
           </ListItem.Title>
           <View style={{flexDirection: 'row'}}>

@@ -1,3 +1,5 @@
+import {Linking} from 'react-native';
+
 import RNFS from 'react-native-fs';
 import {useDispatch} from 'react-redux';
 
@@ -9,6 +11,7 @@ const useDevice = () => {
   const devicePath = RNFS.DocumentDirectoryPath;
   const appDirectoryForDistributedBackups = '/ProjectBackups';
   const appDirectory = '/StraboSpot';
+  const sharedDocumentsPathIOS = 'shareddocuments://'; // To access Files.app on iOS
   const imagesDirectory = appDirectory + '/Images';
   const tilesDirectory = devicePath + '/StraboSpotTiles';
   const tileCacheDirectory = tilesDirectory + '/TileCache';
@@ -98,6 +101,24 @@ const useDevice = () => {
     }
   };
 
+  const openURL = async (url) => {
+    console.log(url + devicePath + appDirectoryForDistributedBackups);
+    try {
+      if (url === 'ProjectBackups') {
+        url = sharedDocumentsPathIOS + devicePath + appDirectoryForDistributedBackups + url;
+      }
+      const initialUrl = await Linking.canOpenURL(url);
+      console.log(initialUrl);
+      if (initialUrl) {
+        Linking.openURL(url).catch(err => console.error('ERROR', err));
+      }
+      else console.log('Could not open:', url);
+    }
+    catch (err) {
+      console.error('Error opening url', url, ':', err);
+    }
+  };
+
   const makeDirectory = (directory) => {
     return RNFS.mkdir(devicePath + directory)
       .then(() => 'DIRECTORY HAS BEEN CREATED')
@@ -146,6 +167,7 @@ const useDevice = () => {
     doesDeviceBackupDirExist: doesDeviceBackupDirExist,
     doesDeviceDirectoryExist: doesDeviceDirectoryExist,
     doesDeviceFileExist: doesDeviceFileExist,
+    openURL: openURL,
     makeDirectory: makeDirectory,
     readDirectoryForMapTiles: readDirectoryForMapTiles,
     readDirectoryForMaps: readDirectoryForMaps,

@@ -79,20 +79,6 @@ const useExternalData = () => {
     dispatch(editedSpotProperties({field: 'data', value: {urls: filteredArr}}));
   };
 
-  const openUrl = async (urlToOpen) => {
-    try {
-      const supported = await Linking.canOpenURL(urlToOpen);
-      console.log(supported);
-      if (supported) await Linking.openURL(urlToOpen);
-      else {
-        console.log('Could not open:', urlToOpen);
-      }
-    }
-    catch (err) {
-      console.error('Error opening url', urlToOpen, ':', err);
-    }
-  };
-
   const saveCSV = () => {
     try {
       let savedTables;
@@ -141,7 +127,6 @@ const useExternalData = () => {
     CSVPicker: CSVPicker,
     deleteCVS: deleteCVS,
     deleteUrl: deleteUrl,
-    openUrl: openUrl,
     saveCSV: saveCSV,
     saveEdits: saveEdits,
     saveURL: saveURL,

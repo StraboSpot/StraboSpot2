@@ -30,14 +30,6 @@ const MyStraboSpot = props => {
     dirExists().catch('Error Checking If Backup Dir Exists');
   }, [doesDeviceBackupDirExist]);
 
-  const openFilesApp = async () => {
-    const initialUrl = await Linking.canOpenURL('shareddocuments://');
-    console.log(initialUrl);
-    if (initialUrl) {
-      Linking.openURL('shareddocuments://').catch(err => console.error('ERROR', err))
-    }
-  };
-
   const renderSectionView = () => {
     switch (showSection) {
       case 'none':
@@ -72,7 +64,7 @@ const MyStraboSpot = props => {
                 containerStyle={commonStyles.buttonPadding}
                 buttonStyle={commonStyles.standardButton}
                 titleStyle={commonStyles.standardButtonText}
-                onPress={() => openFilesApp()}
+                onPress={() => useDevice.openURL('ProjectBackups')}
                 iconContainerStyle={{paddingRight: 10}}
                 icon={{
                   name: 'file-tray-full-outline',
