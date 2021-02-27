@@ -40,7 +40,7 @@ const AddTagsToSpotsShortcutModal = (props) => {
             textStyle={{fontWeight: 'bold'}}
             onPress={(view) => props.onPress(view, NOTEBOOK_PAGES.TAG, MODALS.NOTEBOOK_MODALS.TAGS)}
           >
-            <TagsModal/>
+            <TagsModal close={props.close}/>
           </Modal>
         </DragAnimation>
       );
