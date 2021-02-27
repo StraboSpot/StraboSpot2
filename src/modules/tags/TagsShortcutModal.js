@@ -26,7 +26,7 @@ const TagsShortcutModal = (props) => {
           textStyle={{fontWeight: 'bold'}}
           onPress={(view) => props.onPress(view, NOTEBOOK_PAGES.TAG, MODALS.NOTEBOOK_MODALS.TAGS)}
         >
-          {project.tags && !isEmpty(project.tags) && <TagsModal/>}
+          <TagsModal/>
         </Modal>
       );
     }
@@ -41,7 +41,7 @@ const TagsShortcutModal = (props) => {
             textStyle={{fontWeight: 'bold'}}
             onPress={(view) => props.onPress(view, NOTEBOOK_PAGES.TAG, MODALS.NOTEBOOK_MODALS.TAGS)}
           >
-            {project.tags && <TagsModal/>}
+            <TagsModal/>
           </Modal>
         </DragAnimation>
       );

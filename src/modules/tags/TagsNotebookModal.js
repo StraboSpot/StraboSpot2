@@ -6,8 +6,8 @@ import {useDispatch, useSelector} from 'react-redux';
 import {isEmpty} from '../../shared/Helpers';
 import AddButton from '../../shared/ui/AddButton';
 import DragAnimation from '../../shared/ui/DragAmination';
-import ListEmptyText from '../../shared/ui/ListEmptyText';
 import Modal from '../../shared/ui/modal/Modal';
+import modalStyle from '../../shared/ui/modal/modal.style';
 import uiStyles from '../../shared/ui/ui.styles';
 import {MODALS} from '../home/home.constants';
 import {addedTagToSelectedSpot} from '../project/projects.slice';
@@ -17,7 +17,6 @@ const TagsNotebookModal = (props) => {
   const dispatch = useDispatch();
   const [useTags] = useTagsHook();
   const modalVisible = useSelector(state => state.home.modalVisible);
-  const project = useSelector(state => state.project.project);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
 
   const [isDetailModalVisible, setIsDetailModalVisible] = useState(false);
@@ -41,8 +40,7 @@ const TagsNotebookModal = (props) => {
           textStyle={{fontWeight: 'bold'}}
           onPress={props.onPress}
         >
-          <View style={{paddingTop: 10, paddingBottom: 10}}>
-            {project.tags && isEmpty(project.tags) && <ListEmptyText text={'No tags in project.'}/>}
+          <View style={[modalStyle.textContainer]}>
             <AddButton
               title={'Add New Tag'}
               onPress={() => addTag()}

@@ -12,9 +12,9 @@ const {cond, eq, add, call, set, Value, event} = AnimatedPoint;
 // eslint-disable-next-line no-unused-vars
 const {height, width} = Dimensions.get('window');
 
-const VertexDrag = (props) => {
+const VertexDrag = () => {
   const dispatch = useDispatch();
-  // const vertexStartCoords = useSelector(state => state.map.vertexStartCoords); // See note at bottom.
+  const vertexStartCoords = useSelector(state => state.map.vertexStartCoords); // See note at bottom.
   const [dragX, setDragX] = useState(new Value(0));
   const [dragY, setDragY] = useState(new Value(0));
   const [offsetX, setOffsetX] = useState(new Value(0));
@@ -47,7 +47,7 @@ const VertexDrag = (props) => {
 
   const onDrop = (coords) => {
     // console.log(`You are at x: ${coords[0]} and y: ${coords[1]}!`);
-    let endCoords = [props.vertexStartCoords[0] + coords[0], props.vertexStartCoords[1] + coords[1]];
+    let endCoords = [vertexStartCoords[0] + coords[0], vertexStartCoords[1] + coords[1]];
     console.log('x from comp', coords[0], 'y from comp', coords[1], 'endCoords:', endCoords);
     dispatch(setVertexEndCoords(endCoords));
   };
@@ -72,8 +72,8 @@ const VertexDrag = (props) => {
           style={[
             mapStyles.vertexEditPoint,
             {
-              bottom: props.vertexStartCoords ? height - props.vertexStartCoords[1] - 10 : 0,
-              left: props.vertexStartCoords ? props.vertexStartCoords[0] - 10 : 0,
+              bottom: vertexStartCoords ? height - vertexStartCoords[1] - 10 : 0,
+              left: vertexStartCoords ? vertexStartCoords[0] - 10 : 0,
             },
             {
               transform: [
@@ -88,12 +88,5 @@ const VertexDrag = (props) => {
   );
 };
 
-// TODO Getting rid of mapStateToProps and using useSelector messes up dragging a point and continues to set a new
-//  endVertexCoord. Leaving mapStateToProps...for now.
-const mapStateToProps = (state) => {
-  return {
-    vertexStartCoords: state.map.vertexStartCoords,
-  };
-};
-
-export default connect(mapStateToProps)(VertexDrag);
+// TODO evaluate the need for connect(default dispatchProps)
+export default connect()(VertexDrag);
