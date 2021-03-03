@@ -20,6 +20,7 @@ const RockSubpage = (props) => {
   const [useSpots] = useSpotsHook();
 
   const [spotsWithPet, setSpotsWithPet] = useState([]);
+  const [petData, setPetData] = useState(spot.properties.pet || {});
 
   const formRef = useRef(null);
   const preFormRef = useRef(null);
@@ -30,8 +31,9 @@ const RockSubpage = (props) => {
   }, []);
 
   const cancelForm = async () => {
+    if (formRef.current.dirty) Alert.alert('Data Reset', 'Rock data for Spot reset.');
+    setPetData(spot.properties.pet || {});
     await formRef.current.resetForm();
-    Alert.alert('Data Reset');
   };
 
   const confirmLeavePage = () => {
@@ -63,15 +65,17 @@ const RockSubpage = (props) => {
       copiedPetData.minerals && copiedPetData.minerals.each((mineral, i) => {
         if (mineral.modal) delete copiedPetData.minerals[i].modal;
       });
-      dispatch(editedSpotProperties({field: 'pet', value: copiedPetData}));
-      Alert.alert('Copied Data Saved to Spot');
+      setPetData(copiedPetData);
+      formRef.current.resetForm();
+      preFormRef.current.resetForm();
     };
 
     if (!isEmpty(spotToCopy)) {
       console.log('Copying Petrology from Spot:', spotToCopy);
       if (!isEmpty(spot.properties.pet)) {
-        Alert.alert('Existing Petrology Rock and Mineral Data',
-          'Are you sure you want to overwrite the current Petrology Rock and Mineral data?',
+        Alert.alert('Overwrite Existing Data',
+          'Are you sure you want to overwrite the current Petrology Rock and Mineral data '
+          + 'with the Rock and Mineral data from ' + spotToCopy.properties.name + '?',
           [
             {
               text: 'No',
@@ -97,7 +101,6 @@ const RockSubpage = (props) => {
   const renderFormFields = () => {
     const formName = ['pet', 'rock'];
     console.log('Rendering form:', formName[0] + '.' + formName[1]);
-    const petData = spot.properties.pet || {};
     return (
       <View style={{flex: 1}}>
         <Formik
@@ -123,12 +126,12 @@ const RockSubpage = (props) => {
         </Formik>
         <Formik
           innerRef={formRef}
-          onSubmit={() => console.log('Submitting form...')}
-          onReset={() => console.log('Resetting form...')}
+          onSubmit={(values) => console.log('Submitting form with', values)}
+          onReset={(values) => console.log('Resetting form to', values)}
           validate={(values) => useForm.validateForm({formName: formName, values: values})}
           component={(formProps) => Form({formName: formName, ...formProps})}
           initialValues={petData}
-          validateOnChange={false}
+          validateOnChange={true}
           enableReinitialize={true}
         />
       </View>
@@ -144,8 +147,10 @@ const RockSubpage = (props) => {
       }
       console.log('Saving form data to Spot ...');
       let editedPetData = formCurrent.values;
+      setPetData(editedPetData);
       dispatch(editedSpotProperties({field: 'pet', value: editedPetData}));
-      Alert.alert('Data Saved to Spot');
+      await formCurrent.resetForm();
+      Alert.alert('Data Saved', 'Rock data saved to Spot.');
     }
     catch (err) {
       console.log('Error submitting form', err);
