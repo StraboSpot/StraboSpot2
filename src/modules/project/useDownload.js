@@ -63,6 +63,7 @@ const useDownload = () => {
       console.log('Downloading Project Properties...');
       dispatch(addedStatusMessage('Downloading Project Properties...'));
       const projectResponse = await useServerRequests.getProject(selectedProject.id, user.encoded_login);
+      if (!isEmpty(project)) destroyOldProject();
       dispatch(addedProject(projectResponse));
       const customMaps = projectResponse.other_maps;
       console.log('Finished Downloading Project Properties.', projectResponse);
@@ -179,7 +180,6 @@ const useDownload = () => {
       dispatch(setStatusMessagesModalVisible(true));
     });
     try {
-      if (!isEmpty(project)) destroyOldProject();
       await downloadProject(selectedProject);
       const downloadedDatasets = await downloadDatasets(selectedProject);
       if (Object.values(downloadedDatasets).length === 1) {
