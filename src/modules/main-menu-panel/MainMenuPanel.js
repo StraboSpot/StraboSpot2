@@ -86,7 +86,7 @@ const MainMenuPanel = props => {
     case MAIN_MENU_ITEMS.MANAGE.UPLOAD_BACKUP_EXPORT:
       page = (
         <View style={styles.mainMenuContainer}>
-          <UploadBackupAndExport closeMainMenuPanel={props.closeMainMenuPanel}/>
+          <UploadBackupAndExport closeMainMenuPanel={props.closeMainMenuPanel} openMainMenu={props.openMainMenu}/>
         </View>
       );
       break;

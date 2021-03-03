@@ -9,12 +9,20 @@ import commonStyles from '../../shared/common.styles';
 import {BLUE} from '../../shared/styles.constants';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import Spacer from '../../shared/ui/Spacer';
-import {setBackupModalVisible, setSelectedProject, setUploadModalVisible} from '../home/home.slice';
+import {
+  addedStatusMessage,
+  clearedStatusMessages,
+  setBackupModalVisible,
+  setErrorMessagesModalVisible,
+  setSelectedProject,
+  setUploadModalVisible,
+} from '../home/home.slice';
 
-const UploadBackAndExport = () => {
+const UploadBackAndExport = (props) => {
 
   const dispatch = useDispatch();
   const isOnline = useSelector(state => state.home.isOnline);
+  const activeDatasets = useSelector(state => state.project.activeDatasetsIds);
 
   const useDevice = useDeviceHook();
 
@@ -28,6 +36,21 @@ const UploadBackAndExport = () => {
 
   const onShareProjectAsShapefile = () => {
     console.log('onShareProjectAsShapefile');
+  };
+
+  const checkforActiveDatasets = () => {
+    if (activeDatasets > 0) {
+      dispatch(setSelectedProject({source: '', project: ''}));
+      dispatch(setBackupModalVisible(true));
+    }
+    else {
+      props.openMainMenu('Active Project');
+      dispatch(clearedStatusMessages());
+      dispatch(addedStatusMessage('There are no active datasets selected.'));
+      dispatch(addedStatusMessage(
+        'Pressing "OK" will direct you to the Active Projects panel where you can make selecitions.'));
+      dispatch(setErrorMessagesModalVisible(true));
+    }
   };
 
   const renderUploadAndBackupButtons = () => {
@@ -47,10 +70,7 @@ const UploadBackAndExport = () => {
           title={'Backup project to device'}
           buttonStyle={commonStyles.standardButton}
           titleStyle={commonStyles.standardButtonText}
-          onPress={() => {
-            dispatch(setSelectedProject({source: '', project: ''}));
-            dispatch(setBackupModalVisible(true));
-          }}
+          onPress={() => checkforActiveDatasets()}
         />
       </View>
     );

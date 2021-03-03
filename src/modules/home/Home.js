@@ -120,6 +120,7 @@ const Home = () => {
   const isProjectLoadSelectionModalVisible = useSelector(state => state.home.isProjectLoadSelectionModalVisible);
   const isSidePanelVisible = useSelector(state => state.mainMenu.isSidePanelVisible);
   const isStatusMessagesModalVisible = useSelector(state => state.home.isStatusMessagesModalVisible);
+  const [openMenu, setOpenMenu] = useState('');
   const selectedProject = useSelector(state => state.home.selectedProject);
   const isUploadModalVisible = useSelector(state => state.home.isUploadModalVisible);
   const modalVisible = useSelector(state => state.home.modalVisible);
@@ -585,7 +586,14 @@ const Home = () => {
         <Button
           title={'OK'}
           type={'clear'}
-          onPress={() => dispatch(setErrorMessagesModalVisible(false))}
+          onPress={() => {
+            if (openMenu === 'Active Project') {
+              dispatch(setMenuSelectionPage({name:MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}))
+              setOpenMenu('');
+              dispatch(setStatusMessagesModalVisible(false))
+            }
+            dispatch(setErrorMessagesModalVisible(false))
+          }}
         />
       </StatusDialogBox>
     );
@@ -919,6 +927,7 @@ const Home = () => {
     <Animated.View style={[settingPanelStyles.settingsDrawer, animateSettingsPanel]}>
       <MainMenuPanel
         logout={() => onLogout()}
+        openMainMenu={(action) => setOpenMenu(action)}
         closeMainMenuPanel={() => toggleHomeDrawerButton()}
         openNotebookPanel={(pageView) => openNotebookPanel(pageView)}
         zoomToCenterOfflineTile={() => mapComponentRef.current.zoomToCenterOfflineTile()}
