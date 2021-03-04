@@ -26,7 +26,7 @@ const ProjectTypesButtons = (props) => {
         titleStyle={commonStyles.standardButtonText}
         onPress={() => props.onStartNewProject()}
       />
-      {isOnline && !isEmpty(user) && <Button
+      {isOnline && !isEmpty(user.name) && <Button
         title={'Load a Project from Server'}
         containerStyle={commonStyles.standardButtonContainer}
         buttonStyle={commonStyles.standardButton}

@@ -39,7 +39,7 @@ const UploadBackAndExport = (props) => {
   };
 
   const checkforActiveDatasets = () => {
-    if (activeDatasets > 0) {
+    if (activeDatasets.length > 0) {
       dispatch(setSelectedProject({source: '', project: ''}));
       dispatch(setBackupModalVisible(true));
     }
