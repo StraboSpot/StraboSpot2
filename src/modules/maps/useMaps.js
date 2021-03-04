@@ -160,7 +160,7 @@ const useMaps = () => {
           (position) => {
             // setUserLocationCoords([position.coords.longitude, position.coords.latitude]);
             console.log('Got Current Location: [', position.coords.longitude, ', ', position.coords.latitude, ']');
-            resolve([position.coords.longitude, position.coords.latitude]);
+            resolve(position.coords);
           },
           (error) => reject('Error getting current location: ' + (error.message ? error.message : 'Unknown Error')),
           geolocationOptions,
@@ -298,8 +298,10 @@ const useMaps = () => {
 
   // Create a point feature at the current location
   const setPointAtCurrentLocation = async () => {
-    const userLocationCoords = await getCurrentLocation();
-    let feature = turf.point(userLocationCoords);
+    const currentLocation = await getCurrentLocation();
+    let feature = turf.point([currentLocation.longitude, currentLocation.latitude]);
+    if (currentLocation.altitude) feature.properties.altitude = currentLocation.altitude;
+    if (currentLocation.accuracy) feature.properties.gps_accuracy = currentLocation.accuracy;
     const newSpot = await useSpots.createSpot(feature);
     setSelectedSpotOnMap(newSpot);
     return Promise.resolve(newSpot);

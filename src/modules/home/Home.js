@@ -456,7 +456,9 @@ const Home = () => {
       case 'setToCurrentLocation':
         const currentLocation = await useMaps.getCurrentLocation();
         let editedSpot = JSON.parse(JSON.stringify(selectedSpot));
-        editedSpot.geometry = turf.point(currentLocation).geometry;
+        editedSpot.geometry = turf.point([currentLocation.longitude, currentLocation.latitude]).geometry;
+        if (currentLocation.altitude) editedSpot.properties.altitude = currentLocation.altitude;
+        if (currentLocation.accuracy) editedSpot.properties.gps_accuracy = currentLocation.accuracy;
         dispatch(addedSpot(editedSpot));
         dispatch(setSelectedSpot(editedSpot));
         break;
@@ -588,11 +590,11 @@ const Home = () => {
           type={'clear'}
           onPress={() => {
             if (openMenu === 'Active Project') {
-              dispatch(setMenuSelectionPage({name:MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}))
+              dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
               setOpenMenu('');
-              dispatch(setStatusMessagesModalVisible(false))
+              dispatch(setStatusMessagesModalVisible(false));
             }
-            dispatch(setErrorMessagesModalVisible(false))
+            dispatch(setErrorMessagesModalVisible(false));
           }}
         />
       </StatusDialogBox>

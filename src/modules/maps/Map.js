@@ -801,7 +801,7 @@ const Map = React.forwardRef((props, ref) => {
     if (cameraRef.current) {
       try {
         const currentLocation = await useMaps.getCurrentLocation();
-        await cameraRef.current.flyTo(currentLocation, 2500);
+        await cameraRef.current.flyTo([currentLocation.longitude, currentLocation.latitude], 2500);
       }
       catch (err) {
         throw err;
@@ -815,7 +815,7 @@ const Map = React.forwardRef((props, ref) => {
     const currentLocation = await useMaps.getCurrentLocation();
     setMapPropsMutable(m => ({
       ...m,
-      centerCoordinate: currentLocation,
+      centerCoordinate: [currentLocation.longitude, currentLocation.latitude],
     }));
   };
 

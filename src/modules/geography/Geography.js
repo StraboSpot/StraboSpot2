@@ -32,9 +32,11 @@ const Geography = () => {
 
   // Fill in current location
   const fillWithCurrentLocation = async () => {
-    const [lng, lat] = await useMaps.getCurrentLocation();
-    if (lat) geomFormRef.current.setFieldValue('latitude', lat);
-    if (lng) geomFormRef.current.setFieldValue('longitude', lng);
+    const currentLocation = await useMaps.getCurrentLocation();
+    if (currentLocation.latitude) geomFormRef.current.setFieldValue('latitude', currentLocation.latitude);
+    if (currentLocation.longitude) geomFormRef.current.setFieldValue('longitude', currentLocation.longitude);
+    if (currentLocation.altitude) formRef.current.setFieldValue('altitude', currentLocation.altitude);
+    if (currentLocation.accuracy) formRef.current.setFieldValue('gps_accuracy', currentLocation.accuracy);
   };
 
   const renderCancelSaveButtons = () => {
