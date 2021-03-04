@@ -199,6 +199,8 @@ PODS:
     - React-Core
   - react-native-image-resizer (1.4.3):
     - React-Core
+  - react-native-keep-awake (4.0.0):
+    - React
   - react-native-mapbox-gl (8.1.0):
     - "@react-native-mapbox-gl-mapbox-static (~> 5.9.0)"
     - Mapbox-iOS-SDK (~> 5.9.0)
@@ -350,6 +352,7 @@ DEPENDENCIES:
   - react-native-get-random-values (from `../node_modules/react-native-get-random-values`)
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
   - react-native-image-resizer (from `../node_modules/react-native-image-resizer`)
+  - react-native-keep-awake (from `../node_modules/react-native-keep-awake`)
   - "react-native-mapbox-gl (from `../node_modules/@react-native-mapbox-gl/maps`)"
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
@@ -431,6 +434,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-image-picker"
   react-native-image-resizer:
     :path: "../node_modules/react-native-image-resizer"
+  react-native-keep-awake:
+    :path: "../node_modules/react-native-keep-awake"
   react-native-mapbox-gl:
     :path: "../node_modules/@react-native-mapbox-gl/maps"
   react-native-netinfo:
@@ -517,6 +522,7 @@ SPEC CHECKSUMS:
   react-native-get-random-values: f0fc24a5887a3341589515a86282a574407b59e4
   react-native-image-picker: 64d12e81f3d9dad0af107fe6536b295d51932ec0
   react-native-image-resizer: 5dfbf934fe5788c11ed06ebbcdb6e6fb6beec20c
+  react-native-keep-awake: afad8a51dfef9fe9655a6344771be32c8596d774
   react-native-mapbox-gl: eec7e5be5b874cfceb79fcfe24d595411015153a
   react-native-netinfo: 30fb89fa913c342be82a887b56e96be6d71201dd
   react-native-safe-area-context: b6e0e284002381d2ff29fa4fff42b4d8282e3c94

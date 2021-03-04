@@ -1,5 +1,6 @@
 import RNFS from 'react-native-fs';
 import ImageResizer from 'react-native-image-resizer';
+import KeepAwake from 'react-native-keep-awake';
 import {batch, useDispatch, useSelector} from 'react-redux';
 
 import useServerRequestsHook from '../../services/useServerRequests';
@@ -33,6 +34,7 @@ const useUpload = () => {
   const [useProject] = useProjectHook();
 
   const initializeUpload = async () => {
+    KeepAwake.activate();
     dispatch(setUploadModalVisible(false));
     dispatch(setLoadingStatus({view: 'modal', bool: true}));
     dispatch(clearedStatusMessages());
@@ -45,6 +47,7 @@ const useUpload = () => {
         dispatch(addedStatusMessage('Upload Complete!'));
         dispatch(addedStatusMessage('Project uploaded to server.'));
         dispatch(setLoadingStatus({view: 'modal', bool: false}));
+        KeepAwake.deactivate();
       });
     }
     catch (err) {
