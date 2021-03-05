@@ -86,7 +86,8 @@ function Basemap(props) {
         logoEnabled={false}
         rotateEnabled={false}
         pitchEnable={false}
-        attributionEnabled={false}
+        attributionEnabled={true}
+        attributionPosition={homeStyles.mapboxAttributionPosition}
         compassEnabled={true}
         onPress={props.onMapPress}
         onLongPress={props.onMapLongPress}

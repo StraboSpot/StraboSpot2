@@ -19,6 +19,10 @@ const homeStyles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
   },
+  mapboxAttributionPosition: {
+    bottom: 0,
+    right: 200,
+  },
   photosSavedToastContainer: {
     alignItems: 'center',
     justifyContent: 'center',
@@ -49,7 +53,7 @@ const homeStyles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     position: 'absolute',
-    bottom: 20,
+    bottom: 10,
     right: 0,
     alignItems: 'center',
     zIndex: -1,
@@ -95,7 +99,7 @@ const homeStyles = StyleSheet.create({
   homeIconContainer: {
     position: 'absolute',
     left: 0,
-    top: 15,
+    top: 10,
     zIndex: -1,
   },
   currentZoomContainer: {
