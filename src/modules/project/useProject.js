@@ -185,7 +185,7 @@ const useProject = () => {
 
   const setSwitchValue = async (val, dataset) => {
     try {
-      if (isOnline && !isEmpty(user) && val) {
+      if (isOnline && !isEmpty(user.name) && val) {
         dispatch(setActiveDatasets({bool: val, dataset: dataset.id}));
         dispatch(setSelectedDataset(dataset.id));
         if (isEmpty(dataset.spotIds)) {

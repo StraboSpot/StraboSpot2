@@ -25,6 +25,7 @@ const ActiveProjectPanel = () => {
   const [datasetName, setDatasetName] = useState(null);
   const [isAddDatasetModalVisible, setIsAddDatasetModalVisible] = useState(false);
   const project = useSelector(state => state.project.project);
+  const user = useSelector(state => state.user);
   const datasets = useSelector(state => state.project.datasets);
 
   useEffect(() => {
@@ -118,7 +119,7 @@ const ActiveProjectPanel = () => {
           <View style={{alignItems: 'center', paddingBottom: 10}}>
             <Text style={commonStyles.standardDescriptionText}>New Spots will be added to the checked dataset.</Text>
           </View>
-          <View>
+          {user.name && <View>
             <Button
               title={'Download server version of project'}
               titleStyle={commonStyles.standardButtonText}
@@ -130,7 +131,7 @@ const ActiveProjectPanel = () => {
                 This will overwrite anything that has not been uploaded to the server
               </Text>
             </View>
-          </View>
+          </View>}
         </View>
 
       </View>

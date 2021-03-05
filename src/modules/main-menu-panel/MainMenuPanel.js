@@ -27,7 +27,7 @@ import MainMenuPanelHeader from './MainMenuPanelHeader';
 import MainMenuPanelList from './MainMenuPanelList';
 
 const MainMenuPanel = props => {
-  let buttonTitle = null;
+  // let buttonTitle = null;
   const dispatch = useDispatch();
   const project = useSelector(state => state.project.project);
   const settingsPageVisible = useSelector(state => state.mainMenu.mainMenuPageVisible);
@@ -58,9 +58,6 @@ const MainMenuPanel = props => {
     dispatch(shortcutSwitchPosition({switchName: switchName}));
     console.log(shortcutSwitchPosition);
   };
-
-  if (isEmpty(user)) buttonTitle = 'Sign In';
-  else buttonTitle = 'Sign Out';
 
   switch (settingsPageVisible) {
     case MAIN_MENU_ITEMS.MANAGE.MY_STRABOSPOT:
@@ -183,7 +180,6 @@ const MainMenuPanel = props => {
         <React.Fragment>
           <MainMenuPanelList
             onPress={(name) => setVisibleMenu(name)}
-            title={buttonTitle}
             activeProject={!isEmpty(project) && project.description ? project.description.project_name
               : 'No Active Project'}
           />
