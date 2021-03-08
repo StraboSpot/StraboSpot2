@@ -140,8 +140,6 @@ const Home = () => {
     notebookPanelMenuVisible: false,
   });
   const [buttons, setButtons] = useState({
-    endDrawButtonVisible: false,
-    drawButtonOn: undefined,
     drawButtonsVisible: true,
     editButtonsVisible: false,
     userLocationButtonOn: false,
@@ -405,7 +403,6 @@ const Home = () => {
   const endDraw = async () => {
     const newOrEditedSpot = await mapComponentRef.current.endDraw();
     setMapMode(MAP_MODES.VIEW);
-    toggleButton('endDrawButtonVisible', false);
     if (!isEmpty(newOrEditedSpot) && !isSelectingForStereonet) openNotebookPanel(NOTEBOOK_PAGES.OVERVIEW);
     setIsSelectingForStereonet(false);
     setIsSelectingForTagging(false);
@@ -611,25 +608,21 @@ const Home = () => {
 
   const renderSaveAndCancelDrawButtons = () => {
     return (
-      <View style={homeStyles.drawSaveAndCancelButtons}>
-        {buttons.endDrawButtonVisible && <Button
-          containerStyle={{alignContent: 'center'}}
-          buttonStyle={homeStyles.drawToolsButtons}
-          titleStyle={{color: 'black'}}
-          title={'End Draw'}
-          onPress={clickHandler.bind(this, 'endDraw')}
-        />}
-        {buttons.editButtonsVisible && <View style={{flexDirection: 'row'}}>
+      <View>
+        {buttons.editButtonsVisible && <View style={homeStyles.editButtonsContainer}>
           <Button
-            containerStyle={{paddingRight: 35}}
+            containerStyle={{padding: 5}}
             buttonStyle={homeStyles.drawToolsButtons}
             titleStyle={{color: 'black'}}
+            type={'clear'}
             title={'Save Edits'}
             onPress={() => clickHandler('saveEdits')}
           />
           <Button
+            containerStyle={{padding: 5}}
             buttonStyle={homeStyles.drawToolsButtons}
             titleStyle={{color: 'black'}}
+            type={'clear'}
             title={'Cancel'}
             onPress={() => clickHandler('cancelEdits')}
           />
@@ -827,18 +820,11 @@ const Home = () => {
 
   const setDraw = async mapModeToSet => {
     mapComponentRef.current.cancelDraw();
-    if (mapMode === MAP_MODES.VIEW && mapModeToSet !== MAP_MODES.DRAW.POINT) {
-      toggleButton('endDrawButtonVisible', true);
-    }
-    else if (mapMode === mapModeToSet
+    if (mapMode === mapModeToSet
       || (mapMode === MAP_MODES.DRAW.FREEHANDPOLYGON && mapModeToSet === MAP_MODES.DRAW.POLYGON)
       || (mapMode === MAP_MODES.DRAW.FREEHANDLINE && mapModeToSet === MAP_MODES.DRAW.LINE)
     ) mapModeToSet = MAP_MODES.VIEW;
     setMapMode(mapModeToSet);
-    if (mapModeToSet === MAP_MODES.VIEW) {
-      toggleButton('endDrawButtonVisible', false);
-    }
-    //props.setMapMode(mapModeToSet);
   };
 
   const saveEdits = async () => {
@@ -977,6 +963,7 @@ const Home = () => {
         clickHandler={name => clickHandler(name)}
         drawButtonsVisible={buttons.drawButtonsVisible}
         mapMode={mapMode}
+        endDraw={() => endDraw()}
         rightsideIconAnimation={rightsideIconAnimation}
       />
       <LeftSideButtons

@@ -1,8 +1,10 @@
 import React from 'react';
 import {Animated, Text, View} from 'react-native';
 
+import {Button} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
+import commonStyles from '../../shared/common.styles';
 import {isEmpty, truncateText} from '../../shared/Helpers';
 import IconButton from '../../shared/ui/IconButton';
 import {MAP_MODES} from '../maps/maps.constants';
@@ -103,6 +105,17 @@ const RightSideButtons = (props) => {
               <Text style={{textAlign: 'center', fontWeight: 'bold'}}>{truncateText(
                 useProject.getSelectedDatasetFromId().name, 20)}
               </Text>
+              <View style={commonStyles.buttonContainer}>
+                <Button
+                  containerStyle={{alignContent: 'center'}}
+                  buttonStyle={homeStyles.drawToolsButtons}
+                  titleStyle={{color: 'black'}}
+                  title={'End Draw'}
+                  type={'clear'}
+                  disabled={props.mapMode === MAP_MODES.DRAW.POINT}
+                  onPress={props.endDraw}
+                />
+              </View>
             </View>
           )}
           <View style={{flexDirection: 'row'}}>
