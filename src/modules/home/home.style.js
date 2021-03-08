@@ -51,7 +51,6 @@ const homeStyles = StyleSheet.create({
   // --- Bottom icons (line, polygon, and point) ---
   drawToolsContainer: {
     flex: 1,
-    flexDirection: 'row',
     position: 'absolute',
     bottom: 10,
     right: 0,
@@ -60,11 +59,21 @@ const homeStyles = StyleSheet.create({
   },
   drawToolsButtons: {
     borderRadius: 30,
-    paddingLeft: 10,
-    paddingRight: 10,
+    // paddingLeft: 10,
+    // paddingRight: 10,
     paddingTop: 3,
     paddingBottom: 3,
     backgroundColor: 'yellow',
+  },
+  selectedDatasetContainer: {
+    backgroundColor: themes.LIGHTGREY,
+    borderRadius: 10,
+    padding: 10,
+    width: 185,
+    shadowColor: 'black',
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 2,
   },
 
   // --- Left and right icon absolute positions from top ---

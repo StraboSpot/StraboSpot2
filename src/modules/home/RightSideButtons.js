@@ -1,10 +1,12 @@
 import React from 'react';
-import {Animated} from 'react-native';
+import {Animated, Text, View} from 'react-native';
 
 import {useSelector} from 'react-redux';
 
+import {isEmpty, truncateText} from '../../shared/Helpers';
 import IconButton from '../../shared/ui/IconButton';
 import {MAP_MODES} from '../maps/maps.constants';
+import useProjectHook from '../project/useProject';
 import {MODALS} from './home.constants';
 import homeStyles from './home.style';
 
@@ -17,6 +19,10 @@ const RightSideButtons = (props) => {
   const modalVisible = useSelector(state => state.home.modalVisible);
   const shortcutSwitchPosition = useSelector(state => state.home.shortcutSwitchPosition);
   const isOnline = useSelector(state => state.home.isOnline);
+  const selectedDatasetId = useSelector(state => state.project.selectedDatasetId);
+  // const zoom = useSelector(state => state.map.currentZoom);
+
+  const [useProject] = useProjectHook();
 
   return (
     <React.Fragment>
@@ -88,33 +94,46 @@ const RightSideButtons = (props) => {
       {props.drawButtonsVisible && (
         <Animated.View
           style={[homeStyles.drawToolsContainer, props.rightsideIconAnimation]}>
-          <IconButton
-            style={{top: 5}}
-            source={props.mapMode === MAP_MODES.DRAW.POINT
-              ? require('../../assets/icons/PointButton_pressed.png')
-              : require('../../assets/icons/PointButton.png')}
-            onPress={() => props.clickHandler(MAP_MODES.DRAW.POINT)}
-          />
-          <IconButton
-            style={{top: 5}}
-            source={props.mapMode === MAP_MODES.DRAW.FREEHANDLINE
-              ? require('../../assets/icons/LineFreehandButton_pressed.png')
-              : (props.mapMode === MAP_MODES.DRAW.LINE
-                ? require('../../assets/icons/LineButton_pressed.png')
-                : require('../../assets/icons/LineButton.png'))}
-            onPress={() => props.clickHandler(MAP_MODES.DRAW.LINE)}
-            onLongPress={() => props.clickHandler(MAP_MODES.DRAW.FREEHANDLINE)}
-          />
-          <IconButton
-            style={{top: 5}}
-            source={props.mapMode === MAP_MODES.DRAW.FREEHANDPOLYGON
-              ? require('../../assets/icons/PolygonFreehandButton_pressed.png')
-              : (props.mapMode === MAP_MODES.DRAW.POLYGON
-                ? require('../../assets/icons/PolygonButton_pressed.png')
-                : require('../../assets/icons/PolygonButton.png'))}
-            onPress={() => props.clickHandler(MAP_MODES.DRAW.POLYGON)}
-            onLongPress={() => props.clickHandler(MAP_MODES.DRAW.FREEHANDPOLYGON)}
-          />
+          {!isEmpty(selectedDatasetId)
+          && [MAP_MODES.DRAW.POINT, MAP_MODES.DRAW.LINE, MAP_MODES.DRAW.FREEHANDLINE, MAP_MODES.DRAW.FREEHANDPOLYGON,
+            MAP_MODES.DRAW.POLYGON].includes(props.mapMode)
+          && (
+            <View style={homeStyles.selectedDatasetContainer}>
+              <Text style={{textAlign: 'center'}}>Selected Dataset:</Text>
+              <Text style={{textAlign: 'center', fontWeight: 'bold'}}>{truncateText(
+                useProject.getSelectedDatasetFromId().name, 20)}
+              </Text>
+            </View>
+          )}
+          <View style={{flexDirection: 'row'}}>
+            <IconButton
+              style={{top: 5}}
+              source={props.mapMode === MAP_MODES.DRAW.POINT
+                ? require('../../assets/icons/PointButton_pressed.png')
+                : require('../../assets/icons/PointButton.png')}
+              onPress={() => props.clickHandler(MAP_MODES.DRAW.POINT)}
+            />
+            <IconButton
+              style={{top: 5}}
+              source={props.mapMode === MAP_MODES.DRAW.FREEHANDLINE
+                ? require('../../assets/icons/LineFreehandButton_pressed.png')
+                : (props.mapMode === MAP_MODES.DRAW.LINE
+                  ? require('../../assets/icons/LineButton_pressed.png')
+                  : require('../../assets/icons/LineButton.png'))}
+              onPress={() => props.clickHandler(MAP_MODES.DRAW.LINE)}
+              onLongPress={() => props.clickHandler(MAP_MODES.DRAW.FREEHANDLINE)}
+            />
+            <IconButton
+              style={{top: 5}}
+              source={props.mapMode === MAP_MODES.DRAW.FREEHANDPOLYGON
+                ? require('../../assets/icons/PolygonFreehandButton_pressed.png')
+                : (props.mapMode === MAP_MODES.DRAW.POLYGON
+                  ? require('../../assets/icons/PolygonButton_pressed.png')
+                  : require('../../assets/icons/PolygonButton.png'))}
+              onPress={() => props.clickHandler(MAP_MODES.DRAW.POLYGON)}
+              onLongPress={() => props.clickHandler(MAP_MODES.DRAW.FREEHANDPOLYGON)}
+            />
+          </View>
         </Animated.View>
       )}
     </React.Fragment>
