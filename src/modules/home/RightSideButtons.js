@@ -40,7 +40,7 @@ const RightSideButtons = (props) => {
           source={isOnline ? online : offline}
         />
       </Animated.View>
-      {!currentImageBasemap && (
+      {!currentImageBasemap && !isNotebookPanelVisible && (
         <Animated.View
           style={[homeStyles.shortcutButtons, props.rightsideIconAnimation]}>
           {shortcutSwitchPosition.Tag && (
@@ -109,7 +109,7 @@ const RightSideButtons = (props) => {
                 <Button
                   containerStyle={{alignContent: 'center'}}
                   buttonStyle={homeStyles.drawToolsButtons}
-                  titleStyle={{color: 'black'}}
+                  titleStyle={homeStyles.drawToolsTitle}
                   title={'End Draw'}
                   type={'clear'}
                   disabled={props.mapMode === MAP_MODES.DRAW.POINT}

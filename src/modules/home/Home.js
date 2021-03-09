@@ -613,7 +613,7 @@ const Home = () => {
           <Button
             containerStyle={{padding: 5}}
             buttonStyle={homeStyles.drawToolsButtons}
-            titleStyle={{color: 'black'}}
+            titleStyle={homeStyles.drawToolsTitle}
             type={'clear'}
             title={'Save Edits'}
             onPress={() => clickHandler('saveEdits')}
@@ -621,7 +621,7 @@ const Home = () => {
           <Button
             containerStyle={{padding: 5}}
             buttonStyle={homeStyles.drawToolsButtons}
-            titleStyle={{color: 'black'}}
+            titleStyle={homeStyles.drawToolsTitle}
             type={'clear'}
             title={'Cancel'}
             onPress={() => clickHandler('cancelEdits')}

@@ -62,7 +62,11 @@ const homeStyles = StyleSheet.create({
     borderWidth: 1,
     paddingTop: 3,
     paddingBottom: 3,
-    borderColor:themes.LIST_BORDER_COLOR,
+    backgroundColor: themes.BLUE,
+    borderColor: themes.LIST_BORDER_COLOR,
+  },
+  drawToolsTitle: {
+    color: 'white',
   },
   editButtonsContainer: {
     width: 185,
