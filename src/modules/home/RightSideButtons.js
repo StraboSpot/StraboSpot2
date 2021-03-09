@@ -46,24 +46,24 @@ const RightSideButtons = (props) => {
           {shortcutSwitchPosition.Tag && (
             <IconButton
               source={modalVisible === MODALS.SHORTCUT_MODALS.TAGS
-                ? require('../../assets/icons/TagButton_pressed.png')
-                : require('../../assets/icons/TagButton.png')}
+                ? require('../../assets/icons/TagButtonShortcut_pressed.png')
+                : require('../../assets/icons/TagButtonShortcut.png')}
               onPress={() => props.clickHandler('tag')}
             />
           )}
           {shortcutSwitchPosition.Measurement && (
             <IconButton
               source={modalVisible === MODALS.SHORTCUT_MODALS.COMPASS
-                ? require('../../assets/icons/MeasurementButton_pressed.png')
-                : require('../../assets/icons/MeasurementButton.png')}
+                ? require('../../assets/icons/MeasurementButtonShortcut_pressed.png')
+                : require('../../assets/icons/MeasurementButtonShortcut.png')}
               onPress={() => props.clickHandler('measurement')}
             />
           )}
           {shortcutSwitchPosition.Sample && (
             <IconButton
               source={modalVisible === MODALS.SHORTCUT_MODALS.SAMPLE
-                ? require('../../assets/icons/SampleButton_pressed.png')
-                : require('../../assets/icons/SampleButton.png')}
+                ? require('../../assets/icons/SampleButtonShortcut_pressed.png')
+                : require('../../assets/icons/SampleButtonShortcut.png')}
               onPress={() => props.clickHandler('sample')}
             />
           )}
@@ -71,22 +71,20 @@ const RightSideButtons = (props) => {
             <IconButton
               name={'Note'}
               source={modalVisible === MODALS.SHORTCUT_MODALS.NOTES
-                ? require('../../assets/icons/NoteButton_pressed.png')
-                : require('../../assets/icons/NoteButton.png')}
+                ? require('../../assets/icons/NoteButtonShortcut_pressed.png')
+                : require('../../assets/icons/NoteButtonShortcut.png')}
               onPress={() => props.clickHandler('note')}
             />
           )}
           {shortcutSwitchPosition.Photo && (
             <IconButton
-              source={require('../../assets/icons/PhotoButton.png')}
+              source={require('../../assets/icons/PhotoButtonShortcut.png')}
               onPress={() => props.clickHandler('photo')}
             />
           )}
           {shortcutSwitchPosition.Sketch && (
             <IconButton
-              source={modalVisible === MODALS.SHORTCUT_MODALS.SKETCH
-                ? require('../../assets/icons/Sketch_pressed.png')
-                : require('../../assets/icons/SketchButton.png')
+              source={require('../../assets/icons/SketchButtonShortcut.png')
               }
               onPress={() => props.clickHandler('sketch')}
             />
