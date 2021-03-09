@@ -14,7 +14,7 @@ import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import ThreeDStructureDetail from './ThreeDStructureDetail';
 
-const ThreeDStructuresPage = (props) => {
+const ThreeDStructuresPage = () => {
   const dispatch = useDispatch();
 
   const spot = useSelector(state => state.spot.selectedSpot);
@@ -75,6 +75,20 @@ const ThreeDStructuresPage = (props) => {
     );
   };
 
+  const render3DStructuresList = () => {
+    const data = spot?.properties?._3d_structures.reduce((acc, d) => d.type !== 'fabric' ? [...acc, d] : acc, []);
+    console.log(data);
+    return (
+      <FlatList
+        data={data.slice().sort((a, b) => get3dStructureTitle(a).localeCompare(get3dStructureTitle(b)))}
+        renderItem={({item}) => render3dStructure(item)}
+        keyExtractor={(item) => item.id.toString()}
+        ItemSeparatorComponent={FlatListItemSeparator}
+        ListEmptyComponent={<ListEmptyText text={'There are no 3D Structures at this Spot.'}/>}
+      />
+    );
+  };
+
   return (
     <React.Fragment>
       {!isDetailView && (
@@ -83,11 +97,6 @@ const ThreeDStructuresPage = (props) => {
             onPress={() => dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.OVERVIEW))}
           />
           <View style={{flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between'}}>
-            <Button
-              title={'+ Add Fabric'}
-              type={'clear'}
-              onPress={() => add3dStructure('fabric')}
-            />
             <Button
               title={'+ Add Fold'}
               type={'clear'}
@@ -104,21 +113,15 @@ const ThreeDStructuresPage = (props) => {
               onPress={() => add3dStructure('other')}
             />
           </View>
-          <FlatList
-            data={spot.properties && spot.properties._3d_structures && spot.properties._3d_structures.slice().sort(
-              (a, b) => get3dStructureTitle(a).localeCompare(get3dStructureTitle(b)))}
-            renderItem={({item}) => render3dStructure(item)}
-            keyExtractor={(item) => item.id.toString()}
-            ItemSeparatorComponent={FlatListItemSeparator}
-            ListEmptyComponent={<ListEmptyText text={'There are no 3D Structures at this Spot.'}/>}
-          />
+          {render3DStructuresList()}
         </View>
       )}
       {isDetailView && (
         <ThreeDStructureDetail
           show3dStructuresOverview={() => setIsDetailView(false)}
           selected3dStructure={selected3dStructure}
-        />)}
+        />
+      )}
     </React.Fragment>
   );
 };

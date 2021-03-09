@@ -1,20 +1,24 @@
 import React, {useEffect, useState} from 'react';
-import {FlatList, View} from 'react-native';
+import {SectionList, View} from 'react-native';
 
-import {Button, ListItem} from 'react-native-elements';
+import {ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
 import {getNewId} from '../../shared/Helpers';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
+import SectionDivider from '../../shared/ui/SectionDivider';
+import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
+import uiStyles from '../../shared/ui/ui.styles';
 import {LABEL_DICTIONARY} from '../form';
 import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
+import ThreeDStructureDetail from '../three-d-structures/ThreeDStructureDetail';
 import FabricDetail from './FabricDetail';
 
-const FabricsPage = (props) => {
+const FabricsPage = () => {
   const dispatch = useDispatch();
 
   const spot = useSelector(state => state.spot.selectedSpot);
@@ -24,6 +28,12 @@ const FabricsPage = (props) => {
 
   const fabricsDictionary = Object.values(LABEL_DICTIONARY.fabrics).reduce(
     (acc, form) => ({...acc, ...form}), {});
+  const FABRIC_SECTIONS = {
+    FAULT_ROCK: {title: 'Fault Rock Fabrics', key: 'fault_rock'},
+    IGNEOUS: {title: 'Igneous Fabrics', key: 'igneous_rock'},
+    METAMORPHIC: {title: 'Metamorphic Fabrics', key: 'metamorphic_rock'},
+    DEPRECIATED: {title: 'Fabrics (Depreciated Version)', key: null},
+  };
 
   useEffect(() => {
     console.log('UE FabricsPage: spot changed to', spot);
@@ -75,6 +85,46 @@ const FabricsPage = (props) => {
     );
   };
 
+  const renderFabricSections = () => {
+    let fabricsGrouped = Object.values(FABRIC_SECTIONS).reduce((acc, {title, key}) => {
+      const data = key ? spot?.properties?.fabrics?.filter(fabric => fabric.type === key) || []
+        : spot?.properties?._3d_structures?.filter(struct => struct.type === 'fabric') || [];
+      const dataSorted = data.slice().sort((a, b) => getFabricTitle(a).localeCompare(getFabricTitle(b)));
+      return [...acc, {title: title, data: dataSorted}];
+    }, []);
+
+    return (
+      <SectionList
+        keyExtractor={(item, index) => item + index}
+        sections={fabricsGrouped}
+        renderSectionHeader={({section: {title}}) => renderSectionHeader(title)}
+        renderItem={({item}) => renderFabric(item)}
+        renderSectionFooter={({section}) => {
+          return section.data.length === 0 && <ListEmptyText text={'No ' + section.title}/>;
+        }}
+        stickySectionHeadersEnabled={true}
+        ItemSeparatorComponent={FlatListItemSeparator}
+      />
+    );
+  };
+
+  const renderSectionHeader = (sectionTitle) => {
+    const sectionKey = Object.values(FABRIC_SECTIONS).reduce((acc, {title, key}) => sectionTitle === title ? key : acc,
+      '');
+    if (sectionKey) {
+      return (
+        <View style={uiStyles.sectionHeaderBackground}>
+          <SectionDividerWithRightButton
+            dividerText={sectionTitle}
+            buttonTitle={'Add'}
+            onPress={() => addFabric(sectionKey)}
+          />
+        </View>
+      );
+    }
+    else return <SectionDivider dividerText={sectionTitle}/>;
+  };
+
   return (
     <React.Fragment>
       {!isDetailView && (
@@ -82,38 +132,25 @@ const FabricsPage = (props) => {
           <ReturnToOverviewButton
             onPress={() => dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.OVERVIEW))}
           />
-          <View style={{flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between'}}>
-            <Button
-              title={'+ Add a Fault Rock Fabric'}
-              type={'clear'}
-              onPress={() => addFabric('fault_rock')}
-            />
-            <Button
-              title={'+ Add an Igneous Fabric'}
-              type={'clear'}
-              onPress={() => addFabric('igneous_rock')}
-            />
-            <Button
-              title={'+ Add a Metamorphic Fabric'}
-              type={'clear'}
-              onPress={() => addFabric('metamorphic_rock')}
-            />
-          </View>
-          <FlatList
-            data={spot.properties && spot.properties.fabrics && spot.properties.fabrics.slice().sort(
-              (a, b) => getFabricTitle(a).localeCompare(getFabricTitle(b)))}
-            renderItem={({item}) => renderFabric(item)}
-            keyExtractor={(item) => item.id.toString()}
-            ItemSeparatorComponent={FlatListItemSeparator}
-            ListEmptyComponent={<ListEmptyText text={'There are no Fabrics at this Spot.'}/>}
-          />
+          {renderFabricSections()}
         </View>
       )}
       {isDetailView && (
-        <FabricDetail
-          showFabricsOverview={() => setIsDetailView(false)}
-          selectedFabric={selectedFabric}
-        />)}
+        <React.Fragment>
+          {selectedFabric.type === 'fabric' ? (
+              <ThreeDStructureDetail
+                show3dStructuresOverview={() => setIsDetailView(false)}
+                selected3dStructure={selectedFabric}
+              />
+            )
+            : (
+              <FabricDetail
+                showFabricsOverview={() => setIsDetailView(false)}
+                selectedFabric={selectedFabric}
+              />
+            )}
+        </React.Fragment>
+      )}
     </React.Fragment>
   );
 };
