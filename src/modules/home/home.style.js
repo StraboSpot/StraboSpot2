@@ -130,14 +130,19 @@ const homeStyles = StyleSheet.create({
   currentZoomContainer: {
     zIndex: 1,
     position: 'absolute',
-    top: 30,
-    left: '45%',
+    bottom: 30,
+    right: '47.5%',
   },
-  currentZoomText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
-    textShadowColor: 'black',
+  currentZoomTextBlack: {
+    color: themes.BLACK,
+    fontSize: 14,
+    textShadowColor: themes.LIGHTGREY,
+    textShadowRadius: 5,
+  },
+  currentZoomTextWhite: {
+    color: themes.LIGHTGREY,
+    fontSize: 14,
+    textShadowColor: themes.BLACK,
     textShadowRadius: 5,
   },
 

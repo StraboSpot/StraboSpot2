@@ -75,7 +75,10 @@ function Basemap(props) {
   return (
     <View style={{flex: 1}}>
       <View style={homeStyles.currentZoomContainer}>
-        <Text style={homeStyles.currentZoomText}>Zoom: {currentZoom && currentZoom.toFixed(1)}</Text>
+        <Text style={props.basemap.id === 'mapbox.satellite' ? homeStyles.currentZoomTextWhite
+          : homeStyles.currentZoomTextBlack}>
+          Zoom: {currentZoom && currentZoom.toFixed(1)}
+        </Text>
       </View>
       <MapboxGL.MapView
         id={props.imageBasemap ? props.imageBasemap.id : props.basemap.id}

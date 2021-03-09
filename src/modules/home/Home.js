@@ -620,8 +620,8 @@ const Home = () => {
           />
           <Button
             containerStyle={{padding: 5}}
-            buttonStyle={homeStyles.drawToolsButtons}
-            titleStyle={homeStyles.drawToolsTitle}
+            buttonStyle={{...homeStyles.drawToolsButtons, backgroundColor: 'white'}}
+            titleStyle={{color: 'black'}}
             type={'clear'}
             title={'Cancel'}
             onPress={() => clickHandler('cancelEdits')}
