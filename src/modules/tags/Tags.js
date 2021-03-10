@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {FlatList, Text, View} from 'react-native';
+import {FlatList, SectionList, View} from 'react-native';
 
 import {ButtonGroup, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
@@ -10,6 +10,7 @@ import AddButton from '../../shared/ui/AddButton';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SectionDivider from '../../shared/ui/SectionDivider';
+import uiStyles from '../../shared/ui/ui.styles';
 import {SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import {setSelectedTag} from '../project/projects.slice';
@@ -24,55 +25,51 @@ const Tags = () => {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isDetailModalVisibile, setIsDetailModalVisible] = useState(false);
 
+  const SECTIONS = [
+    {title: 'Geologic Units', key: 'geologic_unit'},
+    {title: 'Concepts', key: 'concept'},
+    {title: 'Documentation', key: 'documentation'},
+    {title: 'Rosetta', key: 'rosetta'},
+    {title: 'Experimental Apparatus', key: 'experimental_apparatus'},
+    {title: 'Other', key: 'other'},
+    {title: 'No Type Specified', key: undefined},
+  ];
+
   const addTag = () => {
     dispatch(setSelectedTag({}));
     setIsDetailModalVisible(true);
   };
 
-  const sections = [
-    {id: 1, title: 'Geologic Units', content: 'geologic_unit'},
-    {id: 2, title: 'Concepts', content: 'concept'},
-    {id: 3, title: 'Documentation', content: 'documentation'},
-    {id: 4, title: 'Rosetta', content: 'rosetta'},
-    {id: 5, title: 'Experimental Apparatus', content: 'experimental_apparatus'},
-    {id: 6, title: 'Other', content: 'other'},
-    {id: 7, title: 'No Type Specified', content: undefined},
-  ];
+  const getTagTitle = (tag) => {
+    return tag.name || '';
+  };
 
-  const sectionContents = (type) => {
-    const filteredTags = tags.filter(tag => tag.type === type);
+  const renderSectionHeader = (title) => {
     return (
-      <FlatList
-        keyExtractor={(item) => item.id.toString()}
-        data={filteredTags}
-        renderItem={({item}) => renderTag(item)}
-        ItemSeparatorComponent={FlatListItemSeparator}
-        ListEmptyComponent={<ListEmptyText text='No Tags'/>}
-      />
+      <View style={uiStyles.sectionHeaderBackground}>
+        <SectionDivider dividerText={title}/>
+      </View>
     );
   };
 
   const renderTag = (tag) => {
-    if (!isEmpty(tag)) {
-      return (
-        <ListItem
-          containerStyle={commonStyles.listItem}
-          onPress={() => {
-            dispatch(setSidePanelVisible({view: SIDE_PANEL_VIEWS.TAG_DETAIL, bool: true}));
-            dispatch(setSelectedTag(tag));
-          }}
-        >
-          <ListItem.Content>
-            <ListItem.Title style={commonStyles.listItemTitle}>{tag.name}</ListItem.Title>
-          </ListItem.Content>
-          <ListItem.Content right>
-            <ListItem.Title>{useTags.renderSpotCount(tag)}</ListItem.Title>
-          </ListItem.Content>
-          <ListItem.Chevron/>
-        </ListItem>
-      );
-    }
-    else return <Text>No Data</Text>;
+    return (
+      <ListItem
+        containerStyle={commonStyles.listItem}
+        onPress={() => {
+          dispatch(setSidePanelVisible({view: SIDE_PANEL_VIEWS.TAG_DETAIL, bool: true}));
+          dispatch(setSelectedTag(tag));
+        }}
+      >
+        <ListItem.Content>
+          <ListItem.Title style={commonStyles.listItemTitle}>{getTagTitle(tag)}</ListItem.Title>
+        </ListItem.Content>
+        <ListItem.Content right>
+          <ListItem.Title>{useTags.renderSpotCount(tag)}</ListItem.Title>
+        </ListItem.Content>
+        <ListItem.Chevron/>
+      </ListItem>
+    );
   };
 
   const renderTagsListByMapExtent = () => {
@@ -98,24 +95,25 @@ const Tags = () => {
   };
 
   const renderTagsListByType = () => {
+    const dataSectioned = Object.values(SECTIONS).reduce((acc, {title, key}) => {
+      const data = tags?.filter(d => d.type === key) || [];
+      const dataSorted = data.slice().sort((a, b) => getTagTitle(a).localeCompare(getTagTitle(b)));
+      return [...acc, {title: title, data: dataSorted}];
+    }, []);
+
     return (
-      <FlatList
-        keyExtractor={(section) => section.id.toString()}
-        data={sections}
-        renderItem={({item}) => renderSections(item)}
+      <SectionList
+        keyExtractor={(item, index) => item + index}
+        sections={dataSectioned}
+        renderSectionHeader={({section: {title}}) => renderSectionHeader(title)}
+        renderItem={({item}) => renderTag(item)}
+        renderSectionFooter={({section: {data, title}}) => {
+          return data.length === 0 && <ListEmptyText text={'No ' + title + ' Tags'}/>;
+        }}
+        stickySectionHeadersEnabled={true}
+        ItemSeparatorComponent={FlatListItemSeparator}
       />
     );
-  };
-
-  const renderSections = (section) => {
-    if (section.id !== 7 || (section.id === 7 && !isEmpty(tags.filter(tag => tag.type === section.content)))) {
-      return (
-        <View>
-          <SectionDivider dividerText={section.title}/>
-          {sectionContents(section.content)}
-        </View>
-      );
-    }
   };
 
   return (
@@ -124,7 +122,7 @@ const Tags = () => {
         <ButtonGroup
           selectedIndex={selectedIndex}
           onPress={(index) => setSelectedIndex(index)}
-          buttons={['Categorized', 'Map Extent', 'Recently Used']}
+          buttons={['Categorized', 'Map Extent']}
           containerStyle={{height: 50}}
           buttonStyle={{padding: 5}}
           textStyle={{fontSize: 12}}
