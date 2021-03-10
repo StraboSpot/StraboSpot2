@@ -95,6 +95,7 @@ const MeasurementsPage = () => {
   const onIdentifyAll = (type, data) => {
     console.log('Identify All:', data);
     setMultiSelectMode();
+    dispatch(setModalVisible({modal: null}));
     dispatch(setSelectedAttributes(data));
     dispatch(setNotebookPageVisible(NOTEBOOK_SUBPAGES.MEASUREMENTDETAIL));
   };
@@ -122,6 +123,7 @@ const MeasurementsPage = () => {
 
   const onSelectingEnd = () => {
     console.log('Identify Selected:', selectedFeaturesTemp);
+    if (selectedFeaturesTemp.length > 1) dispatch(setModalVisible({modal: null}));
     dispatch(setSelectedAttributes(selectedFeaturesTemp));
     dispatch(setNotebookPageVisible(NOTEBOOK_SUBPAGES.MEASUREMENTDETAIL));
   };
