@@ -1,13 +1,15 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Alert, FlatList, Switch, Text, View} from 'react-native';
+import {Alert, FlatList, SectionList, Switch, Text, View} from 'react-native';
 
 import {Formik} from 'formik';
 import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {isEmpty} from '../../shared/Helpers';
+import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import SectionDivider from '../../shared/ui/SectionDivider';
+import uiStyles from '../../shared/ui/ui.styles';
 import {Form, useFormHook} from '../form';
 import ImagesOverview from '../images/ImagesOverview';
 import MeasurementsOverview from '../measurements/MeasurementsOverview';
@@ -26,11 +28,11 @@ const Overview = props => {
   const [useForm] = useFormHook();
 
   const SECTIONS = [
-    {id: 4, title: 'Notes', content: <NotesOverview/>},
-    {id: 1, title: 'Measurements', content: <MeasurementsOverview/>},
-    {id: 2, title: 'Photos and Sketches', content: <ImagesOverview/>},
-    {id: 3, title: 'Tags', content: <TagsAtSpotList openMainMenu={props.openMainMenu}/>},
-    {id: 5, title: 'Samples', content: <SamplesNotebook/>},
+    {title: 'Notes', data: [<NotesOverview/>]},
+    {title: 'Measurements', data: [<MeasurementsOverview/>]},
+    {title: 'Photos and Sketches', data: [<ImagesOverview/>]},
+    {title: 'Tags', data: [<TagsAtSpotList openMainMenu={props.openMainMenu}/>]},
+    {title: 'Samples', data: [<SamplesNotebook/>]},
   ];
 
   useEffect(() => {
@@ -62,25 +64,6 @@ const Overview = props => {
     );
   };
 
-  const renderSectionsList = () => {
-    return (
-      <FlatList
-        keyExtractor={(section) => section.id.toString()}
-        data={SECTIONS}
-        renderItem={({item}) => renderSections(item)}
-      />
-    );
-  };
-
-  const renderSections = (section) => {
-    return (
-      <React.Fragment>
-        <SectionDivider dividerText={section.title}/>
-        {section.content}
-      </React.Fragment>
-    );
-  };
-
   const renderTraceSurfaceFeatureForm = () => {
     let formName = ['general', 'surface_feature'];
     let initialValues = spot.properties.trace || spot.properties.surface_feature || {};
@@ -107,6 +90,27 @@ const Overview = props => {
           }
         />
       </View>
+    );
+  };
+
+  const renderSectionHeader = (title) => {
+    return (
+      <View style={uiStyles.sectionHeaderBackground}>
+        <SectionDivider dividerText={title}/>
+      </View>
+    );
+  };
+
+  const renderSections = () => {
+    return (
+      <SectionList
+        keyExtractor={(item, index) => item + index}
+        sections={SECTIONS}
+        renderSectionHeader={({section: {title}}) => renderSectionHeader(title)}
+        renderItem={({item}) => item}
+        stickySectionHeadersEnabled={true}
+        ItemSeparatorComponent={FlatListItemSeparator}
+      />
     );
   };
 
@@ -198,7 +202,7 @@ const Overview = props => {
           </View>
         </View>
       )}
-      {isTraceSurfaceFeatureEdit ? renderTraceSurfaceFeatureForm() : renderSectionsList()}
+      {isTraceSurfaceFeatureEdit ? renderTraceSurfaceFeatureForm() : renderSections()}
     </View>
   );
 };
