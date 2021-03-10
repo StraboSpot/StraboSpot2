@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Alert, FlatList, View} from 'react-native';
+import {Alert, SectionList, View} from 'react-native';
 
 import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
@@ -9,6 +9,7 @@ import {WARNING_COLOR} from '../../shared/styles.constants';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SectionDivider from '../../shared/ui/SectionDivider';
+import uiStyles from '../../shared/ui/ui.styles';
 import {COMPASS_TOGGLE_BUTTONS} from '../compass/compass.constants';
 import {setCompassMeasurements, setCompassMeasurementTypes} from '../compass/compass.slice';
 import {MODALS} from '../home/home.constants';
@@ -21,7 +22,7 @@ import MeasurementItem from './MeasurementItem';
 import styles from './measurements.styles';
 import useMeasurementsHook from './useMeasurements';
 
-const MeasurementsPage = (props) => {
+const MeasurementsPage = () => {
   const dispatch = useDispatch();
   const modalVisible = useSelector(state => state.home.modalVisible);
   const spot = useSelector(state => state.spot.selectedSpot);
@@ -32,10 +33,22 @@ const MeasurementsPage = (props) => {
   const [multiSelectMode, setMultiSelectMode] = useState();
   const [selectedFeaturesTemp, setSelectedFeaturesTemp] = useState([]);
 
-  const sectionTypes = {
-    PLANAR: 'Planar Measurements',
-    LINEAR: 'Linear Measurements',
-    PLANARLINEAR: 'P + L Measurements',
+  const SECTIONS = {
+    PLANAR: {
+      title: 'Planar Measurements',
+      keys: ['planar_orientation', 'tabular_orientation'],
+      compass_toggles: [COMPASS_TOGGLE_BUTTONS.PLANAR],
+    },
+    LINEAR: {
+      title: 'Linear Measurements',
+      keys: ['linear_orientation'],
+      compass_toggles: [COMPASS_TOGGLE_BUTTONS.LINEAR],
+    },
+    PLANARLINEAR: {
+      title: 'P + L Measurements',
+      keys: ['linear_orientation', 'planar_orientation', 'tabular_orientation'],
+      compass_toggles: [COMPASS_TOGGLE_BUTTONS.PLANAR, COMPASS_TOGGLE_BUTTONS.LINEAR],
+    },
   };
 
   // Create a new measurement on grabbing new compass measurements
@@ -43,21 +56,21 @@ const MeasurementsPage = (props) => {
     if (!isEmpty(compassMeasurements)) {
       console.log('New compass measurement recorded in Measurements.', compassMeasurements);
       useMeasurements.createNewMeasurement();
-      // if (compassMeasurementTypes === MODALS.SHORTCUT_MODALS.COMPASS) createNewSpotWithMeasurement();
       dispatch(setCompassMeasurements({}));
     }
   }, [compassMeasurements]);
 
-  const addMeasurement = (sectionType) => {
-    let types = [];
-    if (sectionType === sectionTypes.PLANAR) types = [COMPASS_TOGGLE_BUTTONS.PLANAR];
-    else if (sectionType === sectionTypes.LINEAR) types = [COMPASS_TOGGLE_BUTTONS.LINEAR];
-    else types = [COMPASS_TOGGLE_BUTTONS.PLANAR, COMPASS_TOGGLE_BUTTONS.LINEAR];
-    dispatch(setCompassMeasurementTypes(types));
+  const addMeasurement = (type) => {
+    dispatch(setCompassMeasurementTypes(SECTIONS[type].compass_toggles));
     dispatch(setModalVisible({modal: MODALS.NOTEBOOK_MODALS.COMPASS}));
   };
 
-  const confirmDeleteMeasurements = (measurementsToDelete) => {
+  const deleteMeasurements = (measurementsToDelete) => {
+    useMeasurements.deleteMeasurements(measurementsToDelete);
+    onSelectingCancel();
+  };
+
+  const deleteMeasurementsConfirm = (measurementsToDelete) => {
     const deleteText = 'Are you sure you want to delete '
       + (measurementsToDelete.length === 1 ? 'this measurement' : 'these measurements') + '?';
     Alert.alert(
@@ -75,48 +88,23 @@ const MeasurementsPage = (props) => {
     );
   };
 
-  const deleteMeasurements = (measurementsToDelete) => {
-    useMeasurements.deleteMeasurements(measurementsToDelete);
-    cancelSelecting();
-  };
-
-  const getSectionData = (sectionType) => {
-    if (isEmpty(spot.properties.orientation_data)) return [];
-    if (sectionType === sectionTypes.PLANAR) {
-      return (
-        spot.properties.orientation_data.filter(measurement => {
-          return (
-            (measurement.type === 'planar_orientation' || measurement.type === 'tabular_orientation')
-            && !measurement.associated_orientation
-          );
-        })
-      );
-    }
-    else if (sectionType === sectionTypes.LINEAR) {
-      return (
-        spot.properties.orientation_data.filter(measurement => {
-          return measurement.type === 'linear_orientation' && !measurement.associated_orientation;
-        })
-      );
-    }
-    else if (sectionType === sectionTypes.PLANARLINEAR) {
-      return (
-        spot.properties.orientation_data.filter(measurement => {
-          return (measurement.type === 'planar_orientation' || measurement.type === 'linear_orientation'
-            || measurement.type === 'tabular_orientation') && measurement.associated_orientation;
-        })
-      );
-    }
-  };
-
   const getIdsOfSelected = () => {
     return selectedFeaturesTemp.map(value => value.id);
   };
 
-  const onMeasurementPressed = (item, type) => {
+  const onIdentifyAll = (type, data) => {
+    console.log('Identify All:', data);
+    setMultiSelectMode();
+    dispatch(setSelectedAttributes(data));
+    dispatch(setNotebookPageVisible(NOTEBOOK_SUBPAGES.MEASUREMENTDETAIL));
+  };
+
+  const onMeasurementPressed = (item, title) => {
+    const sectionType = Object.keys(SECTIONS).find(k => SECTIONS[k].title === title);
+    console.log('type', sectionType);
     if (!multiSelectMode) viewMeasurementDetail(item);
     else {
-      if (type === multiSelectMode && (selectedFeaturesTemp.length === 0
+      if (sectionType === multiSelectMode && (selectedFeaturesTemp.length === 0
         || (selectedFeaturesTemp.length > 0 && selectedFeaturesTemp[0].type === item.type))) {
         const i = selectedFeaturesTemp.find(selectedFeature => selectedFeature.id === item.id);
         if (i) setSelectedFeaturesTemp(selectedFeaturesTemp.filter(selectedFeature => selectedFeature.id !== item.id));
@@ -127,89 +115,43 @@ const MeasurementsPage = (props) => {
     }
   };
 
-  const viewMeasurementDetail = (item) => {
-    dispatch(setSelectedAttributes([item]));
-    dispatch(setNotebookPageVisible(NOTEBOOK_SUBPAGES.MEASUREMENTDETAIL));
-  };
-
-
-  const identifyAll = (type) => {
-    const data = getSectionData(type);
-    console.log('Identify All:', data);
+  const onSelectingCancel = () => {
+    setSelectedFeaturesTemp([]);
     setMultiSelectMode();
-    // props.setSelectedAttributes(data);
-    dispatch(setSelectedAttributes(data));
+  };
+
+  const onSelectingEnd = () => {
+    console.log('Identify Selected:', selectedFeaturesTemp);
+    dispatch(setSelectedAttributes(selectedFeaturesTemp));
     dispatch(setNotebookPageVisible(NOTEBOOK_SUBPAGES.MEASUREMENTDETAIL));
   };
 
-  const startSelecting = (type) => {
+  const onSelectingStart = (type) => {
     console.log('Start Selecting for', type, ' ...');
     setSelectedFeaturesTemp([]);
     setMultiSelectMode(type);
   };
 
-  const cancelSelecting = () => {
-    setSelectedFeaturesTemp([]);
-    setMultiSelectMode();
-  };
-
-  const endSelecting = () => {
-    console.log('Identify Selected:', selectedFeaturesTemp);
-    // props.setSelectedAttributes(selectedFeaturesTemp);
-    dispatch(setSelectedAttributes(selectedFeaturesTemp));
-    dispatch(setNotebookPageVisible(NOTEBOOK_SUBPAGES.MEASUREMENTDETAIL));
-  };
-
-  const renderMeasurements = (type) => {
-    const data = getSectionData(type);
-    const selectedIds = getIdsOfSelected();
+  const renderSectionHeader = ({title, data}) => {
+    const sectionType = Object.keys(SECTIONS).find(k => SECTIONS[k].title === title);
     return (
-      <FlatList
-        keyExtractor={(item, index) => index.toString()}
-        listKey={type}
-        data={data.reverse()}
-        renderItem={({item}) =>
-          <MeasurementItem
-            item={item}
-            selectedIds={selectedIds}
-            onPress={() => onMeasurementPressed(item, type)}
-          />
-        }
-        ItemSeparatorComponent={FlatListItemSeparator}
-        ListEmptyComponent={<ListEmptyText text={'No ' + type}/>}
-      />
-    );
-  };
-
-  const renderSection = (sectionType) => {
-    return (
-      <React.Fragment>
-        {renderSectionDivider(sectionType)}
-        {renderMeasurements(sectionType)}
-      </React.Fragment>
-    );
-  };
-
-  const renderSectionDivider = (dividerText) => {
-    const dataThisSection = spot.properties.orientation_data ? getSectionData(dividerText) : [];
-    return (
-      <View style={styles.measurementsSectionDividerContainer}>
-        <SectionDivider dividerText={dividerText}/>
+      <View style={[styles.measurementsSectionDividerContainer, uiStyles.sectionHeaderBackground]}>
+        <SectionDivider dividerText={title}/>
         <View style={styles.measurementsSectionDividerButtonContainer}>
-          {multiSelectMode && dividerText === multiSelectMode && (
+          {multiSelectMode && sectionType === multiSelectMode && (
             <Button
               titleStyle={styles.measurementsSectionDividerButtonText}
               title={'Cancel'}
               type={'clear'}
-              onPress={() => cancelSelecting()}
+              onPress={() => onSelectingCancel()}
             />
           )}
-          {multiSelectMode && selectedFeaturesTemp.length >= 1 && dividerText === multiSelectMode && (
+          {multiSelectMode && selectedFeaturesTemp.length >= 1 && sectionType === multiSelectMode && (
             <Button
               titleStyle={styles.measurementsSectionDividerButtonText}
               title={'Identify Selected'}
               type={'clear'}
-              onPress={() => endSelecting()}
+              onPress={() => onSelectingEnd()}
             />
           )}
           {!multiSelectMode && (
@@ -219,23 +161,23 @@ const MeasurementsPage = (props) => {
                   titleStyle={styles.measurementsSectionDividerButtonText}
                   title={'Add'}
                   type={'clear'}
-                  onPress={() => addMeasurement(dividerText)}
+                  onPress={() => addMeasurement(sectionType)}
                 />
               )}
               <React.Fragment>
                 <Button
-                  disabled={dataThisSection.length < 1}
+                  disabled={data.length < 1}
                   titleStyle={styles.measurementsSectionDividerButtonText}
                   title={'Identify All'}
                   type={'clear'}
-                  onPress={() => identifyAll(dividerText)}
+                  onPress={() => onIdentifyAll(sectionType, data)}
                 />
                 <Button
-                  disabled={dataThisSection.length < 1}
+                  disabled={data.length < 1}
                   titleStyle={styles.measurementsSectionDividerButtonText}
                   title={'Select'}
                   type={'clear'}
-                  onPress={() => startSelecting(dividerText)}
+                  onPress={() => onSelectingStart(sectionType)}
                 />
               </React.Fragment>
             </View>
@@ -243,6 +185,41 @@ const MeasurementsPage = (props) => {
         </View>
       </View>
     );
+  };
+
+  const renderSections = () => {
+    const sections = Object.values(SECTIONS).reduce((acc, {title, keys}) => {
+      const data = spot?.properties?.orientation_data?.filter(meas => {
+        return ((keys.length !== 3 && !meas.associated_orientation)
+          || (keys.length === 3 && meas.associated_orientation)) && keys.includes(meas.type);
+      }) || [];
+      return [...acc, {title: title, data: data.reverse()}];
+    }, []);
+
+    return (
+      <SectionList
+        keyExtractor={(item, index) => item + index}
+        sections={sections}
+        renderSectionHeader={({section}) => renderSectionHeader(section)}
+        renderItem={({item, i, section}) => (
+          <MeasurementItem
+            item={item}
+            selectedIds={getIdsOfSelected()}
+            onPress={() => onMeasurementPressed(item, section.title)}
+          />
+        )}
+        renderSectionFooter={({section}) => {
+          return section.data.length === 0 && <ListEmptyText text={'No ' + section.title}/>;
+        }}
+        stickySectionHeadersEnabled={true}
+        ItemSeparatorComponent={FlatListItemSeparator}
+      />
+    );
+  };
+
+  const viewMeasurementDetail = (item) => {
+    dispatch(setSelectedAttributes([item]));
+    dispatch(setNotebookPageVisible(NOTEBOOK_SUBPAGES.MEASUREMENTDETAIL));
   };
 
   return (
@@ -253,18 +230,14 @@ const MeasurementsPage = (props) => {
           dispatch(setModalVisible({modal: null}));
         }}
       />
-      <FlatList
-        keyExtractor={(sectionType) => sectionTypes[sectionType]}
-        data={Object.values(sectionTypes)}
-        renderItem={({item}) => renderSection(item)}
-      />
+      {renderSections()}
       {selectedFeaturesTemp.length >= 1 && (
         <View>
           <Button
             titleStyle={{color: WARNING_COLOR}}
             title={'Delete Measurement' + (selectedFeaturesTemp.length === 1 ? '' : 's')}
             type={'clear'}
-            onPress={() => confirmDeleteMeasurements(selectedFeaturesTemp)}
+            onPress={() => deleteMeasurementsConfirm(selectedFeaturesTemp)}
           />
         </View>
       )}
