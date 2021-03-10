@@ -1,5 +1,5 @@
 import React from 'react';
-import {FlatList, View} from 'react-native';
+import {SectionList, View} from 'react-native';
 
 import {ListItem} from 'react-native-elements';
 import {useSelector} from 'react-redux';
@@ -9,6 +9,7 @@ import {isEmpty} from '../../shared/Helpers';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
+import uiStyles from '../../shared/ui/ui.styles';
 import {SORTED_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import SortingButtons from '../main-menu-panel/SortingButtons';
 import {NOTEBOOK_PAGES, NOTEBOOK_SUBPAGES} from '../notebook-panel/notebook.constants';
@@ -40,24 +41,6 @@ const SamplesList = (props) => {
     );
   };
 
-  const renderSamplesInSpot = (spot) => {
-    return (
-      <React.Fragment>
-        <SectionDividerWithRightButton
-          dividerText={spot.properties.name}
-          buttonTitle={'View In Spot'}
-          onPress={() => props.openSpotInNotebook(spot, NOTEBOOK_PAGES.SAMPLE)}
-        />
-        <FlatList
-          keyExtractor={(sample) => sample.id.toString()}
-          data={spot.properties.samples}
-          renderItem={({item}) => renderSample(item, spot)}
-          ItemSeparatorComponent={FlatListItemSeparator}
-        />
-      </React.Fragment>
-    );
-  };
-
   const renderSamplesList = () => {
     let sortedSpotsWithSamples = useSpots.getSpotsWithSamplesSortedReverseChronologically();
     let noSamplesText = 'No Spots with Samples';
@@ -70,17 +53,35 @@ const SamplesList = (props) => {
       sortedSpotsWithSamples = recentlyViewedSpots.filter(spot => spot.properties.samples);
       if (!isEmpty(sortedSpotsWithSamples)) noSamplesText = 'No recently viewed Spots with samples';
     }
+    const dataSectioned = sortedSpotsWithSamples.map(
+      s => ({title: s.properties.name, data: s.properties.samples, spot: s}));
+
     return (
       <View style={{flex: 1}}>
         <SortingButtons/>
         <View style={{flex: 1}}>
-          <FlatList
-            keyExtractor={(item) => item.properties.id.toString()}
-            data={sortedSpotsWithSamples}
-            renderItem={({item}) => renderSamplesInSpot(item)}
+          <SectionList
+            keyExtractor={(item, index) => item + index}
+            sections={dataSectioned}
+            renderSectionHeader={({section}) => renderSectionHeader(section)}
+            renderItem={({item, i, section}) => renderSample(item, section.spot)}
+            stickySectionHeadersEnabled={true}
+            ItemSeparatorComponent={FlatListItemSeparator}
             ListEmptyComponent={<ListEmptyText text={noSamplesText}/>}
           />
         </View>
+      </View>
+    );
+  };
+
+  const renderSectionHeader = ({title, spot}) => {
+    return (
+      <View style={uiStyles.sectionHeaderBackground}>
+        <SectionDividerWithRightButton
+          dividerText={title}
+          buttonTitle={'View In Spot'}
+          onPress={() => props.openSpotInNotebook(spot, NOTEBOOK_PAGES.SAMPLE)}
+        />
       </View>
     );
   };
