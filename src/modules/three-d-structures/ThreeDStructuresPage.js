@@ -1,13 +1,15 @@
 import React, {useEffect, useState} from 'react';
-import {FlatList, View} from 'react-native';
+import {SectionList, View} from 'react-native';
 
-import {Button, ListItem} from 'react-native-elements';
+import {ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
 import {getNewId} from '../../shared/Helpers';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
+import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
+import uiStyles from '../../shared/ui/ui.styles';
 import {LABEL_DICTIONARY} from '../form';
 import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
@@ -24,6 +26,11 @@ const ThreeDStructuresPage = () => {
 
   const threeDStructuresDictionary = Object.values(LABEL_DICTIONARY._3d_structures).reduce(
     (acc, form) => ({...acc, ...form}), {});
+  const SECTIONS = {
+    FOLDS: {title: 'Folds', key: 'fold'},
+    TENSORS: {title: 'Tensors', key: 'tensor'},
+    OTHER: {title: 'Other', key: 'other'},
+  };
 
   useEffect(() => {
     console.log('UE ThreeDStructuresPage: spot changed to', spot);
@@ -75,16 +82,38 @@ const ThreeDStructuresPage = () => {
     );
   };
 
-  const render3DStructuresList = () => {
-    const data = spot?.properties?._3d_structures.reduce((acc, d) => d.type !== 'fabric' ? [...acc, d] : acc, []);
-    console.log(data);
+  const renderSectionHeader = (sectionTitle) => {
+    const sectionKey = Object.values(SECTIONS).reduce((acc, {title, key}) => sectionTitle === title ? key : acc,
+      '');
     return (
-      <FlatList
-        data={data.slice().sort((a, b) => get3dStructureTitle(a).localeCompare(get3dStructureTitle(b)))}
+      <View style={uiStyles.sectionHeaderBackground}>
+        <SectionDividerWithRightButton
+          dividerText={sectionTitle}
+          buttonTitle={'Add'}
+          onPress={() => add3dStructure(sectionKey)}
+        />
+      </View>
+    );
+  };
+
+  const renderSections = () => {
+    const dataSectioned = Object.values(SECTIONS).reduce((acc, {title, key}) => {
+      const data = spot?.properties?._3d_structures?.filter(d => d.type === key) || [];
+      const dataSorted = data.slice().sort((a, b) => get3dStructureTitle(a).localeCompare(get3dStructureTitle(b)));
+      return [...acc, {title: title, data: dataSorted}];
+    }, []);
+
+    return (
+      <SectionList
+        keyExtractor={(item, index) => item + index}
+        sections={dataSectioned}
+        renderSectionHeader={({section: {title}}) => renderSectionHeader(title)}
         renderItem={({item}) => render3dStructure(item)}
-        keyExtractor={(item) => item.id.toString()}
+        renderSectionFooter={({section: {data, title}}) => {
+          return data.length === 0 && <ListEmptyText text={'No ' + title + ' Observations'}/>;
+        }}
+        stickySectionHeadersEnabled={true}
         ItemSeparatorComponent={FlatListItemSeparator}
-        ListEmptyComponent={<ListEmptyText text={'There are no 3D Structures at this Spot.'}/>}
       />
     );
   };
@@ -93,27 +122,8 @@ const ThreeDStructuresPage = () => {
     <React.Fragment>
       {!isDetailView && (
         <View style={{flex: 1}}>
-          <ReturnToOverviewButton
-            onPress={() => dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.OVERVIEW))}
-          />
-          <View style={{flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between'}}>
-            <Button
-              title={'+ Add Fold'}
-              type={'clear'}
-              onPress={() => add3dStructure('fold')}
-            />
-            <Button
-              title={'+ Add Tensor'}
-              type={'clear'}
-              onPress={() => add3dStructure('tensor')}
-            />
-            <Button
-              title={'+ Add Other'}
-              type={'clear'}
-              onPress={() => add3dStructure('other')}
-            />
-          </View>
-          {render3DStructuresList()}
+          <ReturnToOverviewButton onPress={() => dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.OVERVIEW))}/>
+          {renderSections()}
         </View>
       )}
       {isDetailView && (
