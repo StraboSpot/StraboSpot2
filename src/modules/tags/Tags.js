@@ -122,7 +122,7 @@ const Tags = () => {
         <ButtonGroup
           selectedIndex={selectedIndex}
           onPress={(index) => setSelectedIndex(index)}
-          buttons={['Categorized', 'Map Extent', 'Recently Used']}
+          buttons={['Categorized', 'Map Extent']}
           containerStyle={{height: 50}}
           buttonStyle={{padding: 5}}
           textStyle={{fontSize: 12}}
