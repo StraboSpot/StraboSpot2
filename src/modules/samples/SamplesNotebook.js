@@ -54,7 +54,7 @@ const SamplesNotebook = () => {
         data={samples}
         renderItem={({item}) => renderSampleListItem(item)}
         ItemSeparatorComponent={FlatListItemSeparator}
-        ListEmptyComponent={<ListEmptyText text={'No Samples at this Spot'}/>}
+        ListEmptyComponent={<ListEmptyText text={'No Samples'}/>}
       />
     );
   };

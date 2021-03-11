@@ -4,21 +4,9 @@ import * as themes from '../../shared/styles.constants';
 
 const noteStyle = StyleSheet.create({
   container: {
-    paddingTop: 25,
-  },
-  inputContainer: {
-    height: 300,
-    paddingTop: 10,
-    paddingLeft: 10,
-  },
-  notesOverviewContainer: {
-    padding: 10,
     flex: 1,
-    flexDirection: 'row',
+    padding: 10,
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
-  },
-  editButton: {
-    padding: 0,
   },
 });
 
