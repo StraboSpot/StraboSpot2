@@ -59,6 +59,8 @@ const SignIn = (props) => {
             console.log(`${username} is successfully logged in!`);
             dispatch(setUserData(userState));
             dispatch(setSignedInStatus(true));
+            setUsername('');
+            setPassword('');
             navigation.navigate('HomeScreen');
           });
         }
