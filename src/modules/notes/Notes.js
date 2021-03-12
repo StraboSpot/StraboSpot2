@@ -1,11 +1,11 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {Text, TextInput, View} from 'react-native';
 
-import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {isEmpty} from '../../shared/Helpers';
+import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import uiStyles from '../../shared/ui/ui.styles';
+import {formStyles} from '../form';
 import {MODALS} from '../home/home.constants';
 import useMapsHook from '../maps/useMaps';
 import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
@@ -14,19 +14,12 @@ import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton'
 import {editedSpotProperties, setSelectedSpotNotesTimestamp} from '../spots/spots.slice';
 import noteStyles from './notes.styles';
 
-const Notes = (props) => {
+const Notes = () => {
   const [useMaps] = useMapsHook();
   const dispatch = useDispatch();
   const modalVisible = useSelector(state => state.home.modalVisible);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
-  const [note, setNote] = useState('');
-
-  useEffect(() => {
-    if (!isEmpty(selectedSpot) && selectedSpot.properties.notes) {
-      console.log('selectedSpot.properties', selectedSpot.properties);
-      setNote(selectedSpot.properties.notes);
-    }
-  }, []);
+  const [note, setNote] = useState(selectedSpot?.properties?.notes || null);
 
   const saveNote = async () => {
     if (modalVisible === MODALS.SHORTCUT_MODALS.NOTES) {
@@ -35,12 +28,11 @@ const Notes = (props) => {
     }
     dispatch(editedSpotProperties({field: 'notes', value: note}));
     dispatch(setSelectedSpotNotesTimestamp());
-    setNote('');
     dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.OVERVIEW));
   };
 
   return (
-    <View>
+    <View style={{flex: 1}}>
       {modalVisible === MODALS.SHORTCUT_MODALS.NOTES
         ? (
           <View style={uiStyles.alignItemsToCenter}>
@@ -49,32 +41,26 @@ const Notes = (props) => {
           </View>
         )
         : (
-          <ReturnToOverviewButton
-            onPress={() => dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.OVERVIEW))}
-          />
+          <React.Fragment>
+            <ReturnToOverviewButton
+              onPress={() => dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.OVERVIEW))}
+            />
+            <SaveAndCloseButton
+              cancel={() => dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.OVERVIEW))}
+              save={() => saveNote()}
+            />
+          </React.Fragment>
         )
       }
       <View style={noteStyles.container}>
-        <View style={[noteStyles.inputContainer]}>
-          <TextInput
-            placeholder='Enter a note...'
-            inputContainerStyle={{borderColor: 'transparent'}}
-            multiline={true}
-            autoFocus={true}
-            onChangeText={(text) => setNote(text)}
-            value={note}
-          />
-        </View>
-        <View style={{alignContent: 'flex-end'}}>
-          <Button
-            title={'Save Note'}
-            onPress={() => saveNote()}
-            color={'red'}
-            type={'solid'}
-            containerStyle={{paddingBottom: 10, paddingTop: 20}}
-            buttonStyle={{borderRadius: 10, backgroundColor: 'red'}}
-          />
-        </View>
+        <TextInput
+          placeholder='Enter a note...'
+          multiline={true}
+          autoFocus={true}
+          onChangeText={(text) => setNote(text)}
+          value={note}
+          style={formStyles.fieldValue}
+        />
       </View>
     </View>
   );
