@@ -3,6 +3,7 @@ import {Alert, Image, Platform} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import RNFS from 'react-native-fs';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import ImageResizer from 'react-native-image-resizer';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {getNewId} from '../../shared/Helpers';
@@ -16,7 +17,6 @@ import {
   setSelectedAttributes,
   setSelectedSpot,
 } from '../spots/spots.slice';
-import ImageResizer from 'react-native-image-resizer';
 
 const useImages = () => {
   const devicePath = RNFS.DocumentDirectoryPath;

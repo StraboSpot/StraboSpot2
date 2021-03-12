@@ -7,12 +7,12 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
 import ButtonRounded from '../../shared/ui/ButtonRounded';
+import ListEmptyText from '../../shared/ui/ListEmptyText';
 import {imageStyles, useImagesHook} from '../images';
 import {setCurrentImageBasemap} from '../maps/maps.slice';
 import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
-import ListEmptyText from '../../shared/ui/ListEmptyText';
 
 const ImagesViewPage = (props) => {
   const navigation = useNavigation();
