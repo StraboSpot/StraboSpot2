@@ -19,6 +19,7 @@ import fold from './three-d-structures/fold.json';
 import other from './three-d-structures/other.json';
 import tensor from './three-d-structures/tensor.json';
 import trace from './trace.json';
+import userProfile from './user-profile.json';
 
 const getMeasurementSurveyForBulkInput = (form) => {
   const fieldsToExclude = ['label', 'strike', 'dip_direction', 'dip', 'trend', 'plunge', 'rake', 'rake_calculated'];
@@ -44,6 +45,7 @@ const forms = {
     trace: trace,
     sample: sample,
     surface_feature: surfaceFeature,
+    user_profile: userProfile,
   },
   measurement: {
     linear_orientation: linearOrientation,
