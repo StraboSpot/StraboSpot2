@@ -78,6 +78,7 @@ import homeStyles from './home.style';
 import LeftSideButtons from './LeftSideButtons';
 import RightSideButtons from './RightSideButtons';
 import useHomeHook from './useHome';
+import UserProfile from '../user/UserProfilePage';
 
 const Home = () => {
   const platform = Platform.OS === 'ios' ? 'window' : 'screen';
@@ -667,6 +668,8 @@ const Home = () => {
         return <TagDetailSidePanel openNotebookPanel={(pageView) => openNotebookPanel(pageView)}/>;
       case SIDE_PANEL_VIEWS.TAG_ADD_REMOVE_SPOTS:
         return <TagAddRemoveSpots/>;
+      case SIDE_PANEL_VIEWS.USER_PROFILE:
+        return <UserProfile/>
     }
   };
 

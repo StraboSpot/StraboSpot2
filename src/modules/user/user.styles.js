@@ -16,6 +16,7 @@ const UserStyles = StyleSheet.create({
     padding: 10,
   },
   avatarLabelName: {
+    paddingBottom: 5,
     fontWeight: 'bold',
     fontSize: themes.PRIMARY_TEXT_SIZE,
   },
