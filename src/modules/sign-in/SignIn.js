@@ -143,7 +143,7 @@ const SignIn = (props) => {
         const userProfileImage = await serverRequests.getProfileImage(encodedLogin);
         console.log('userProfileImage', userProfileImage);
         const image = await getUserImage(userProfileImage);
-        userState = {...userProfile, image: image, encodedLogin: encodedLogin};
+        userState = {...userProfile, image: image, encoded_login: encodedLogin};
         return Promise.resolve(userState);
       }
       catch (err) {
