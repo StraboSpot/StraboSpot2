@@ -1,15 +1,15 @@
 import RNFS from 'react-native-fs';
 import {useDispatch, useSelector} from 'react-redux';
 
-import useDeviceHook from '../../services/useDevice';
-import {isEmpty} from '../../shared/Helpers';
+import useDeviceHook from './useDevice';
+import {isEmpty} from '../shared/Helpers';
 import {
   addedStatusMessage,
   clearedStatusMessages,
   removedLastStatusMessage, setBackupModalVisible,
   setLoadingStatus, setStatusMessagesModalVisible,
-} from '../home/home.slice';
-import useProjectHook from './useProject';
+} from '../modules/home/home.slice';
+import useProjectHook from '../modules/project/useProject';
 
 const useExport = () => {
   const devicePath = RNFS.DocumentDirectoryPath;

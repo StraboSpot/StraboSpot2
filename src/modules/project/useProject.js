@@ -1,6 +1,7 @@
 import RNFS from 'react-native-fs';
 import {useDispatch, useSelector, batch} from 'react-redux';
 
+import useDownloadHook from '../../services/useDownload';
 import useServerRequests from '../../services/useServerRequests';
 import {getNewId, isEmpty} from '../../shared/Helpers';
 import {
@@ -22,7 +23,6 @@ import {
   setActiveDatasets,
   setSelectedDataset,
 } from './projects.slice';
-import useDownloadHook from './useDownload';
 
 const useProject = () => {
   const devicePath = RNFS.DocumentDirectoryPath;

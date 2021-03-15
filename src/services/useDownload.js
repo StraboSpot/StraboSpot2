@@ -1,21 +1,21 @@
 import RNFS from 'react-native-fs';
 import {batch, useDispatch, useSelector} from 'react-redux';
 
-import useDeviceHook from '../../services/useDevice';
-import useServerRequestsHook from '../../services/useServerRequests';
-import {isEmpty} from '../../shared/Helpers';
+import useDeviceHook from './useDevice';
+import useServerRequestsHook from './useServerRequests';
+import {isEmpty} from '../shared/Helpers';
 import {
   addedStatusMessage, clearedStatusMessages,
   removedLastStatusMessage,
   setLoadingStatus,
   setProjectLoadComplete, setStatusMessagesModalVisible,
-} from '../home/home.slice';
-import useImagesHook from '../images/useImages';
-import {MAIN_MENU_ITEMS} from '../main-menu-panel/mainMenu.constants';
-import {setMenuSelectionPage} from '../main-menu-panel/mainMenuPanel.slice';
-import {MAP_PROVIDERS} from '../maps/maps.constants';
-import {addedCustomMap, clearedMaps} from '../maps/maps.slice';
-import {addedSpots, clearedSpots} from '../spots/spots.slice';
+} from '../modules/home/home.slice';
+import useImagesHook from '../modules/images/useImages';
+import {MAIN_MENU_ITEMS} from '../modules/main-menu-panel/mainMenu.constants';
+import {setMenuSelectionPage} from '../modules/main-menu-panel/mainMenuPanel.slice';
+import {MAP_PROVIDERS} from '../modules/maps/maps.constants';
+import {addedCustomMap, clearedMaps} from '../modules/maps/maps.slice';
+import {addedSpots, clearedSpots} from '../modules/spots/spots.slice';
 import {
   addedProject,
   addedSpotsIdsToDataset,
@@ -24,7 +24,7 @@ import {
   setActiveDatasets,
   setSelectedDataset,
   updatedDatasets,
-} from './projects.slice';
+} from '../modules/project/projects.slice';
 
 const useDownload = () => {
   let imagesDownloadedCount = 0;

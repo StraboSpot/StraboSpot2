@@ -4,6 +4,7 @@ import {Text, View} from 'react-native';
 import {Button} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
+import useDownloadHook from '../../services/useDownload';
 import commonStyles from '../../shared/common.styles';
 import TextInputModal from '../../shared/ui/GeneralTextInputModal';
 import SectionDivider from '../../shared/ui/SectionDivider';
@@ -13,7 +14,6 @@ import ActiveDatasetsList from './ActiveDatasetsList';
 import ActiveProjectList from './ActiveProjectList';
 import CustomFeatureTypes from './CustomFeatureTypes';
 import DatasetList from './DatasetList';
-import useDownloadHook from './useDownload';
 import useProjectHook from './useProject';
 
 const ActiveProjectPanel = () => {
