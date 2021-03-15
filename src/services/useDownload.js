@@ -1,36 +1,36 @@
 import RNFS from 'react-native-fs';
 import {batch, useDispatch, useSelector} from 'react-redux';
 
-import useDeviceHook from './useDevice';
-import useServerRequestsHook from './useServerRequests';
-import {isEmpty} from '../shared/Helpers';
 import {
-  addedStatusMessage, clearedStatusMessages,
+  addedStatusMessage,
+  clearedStatusMessages,
   removedLastStatusMessage,
   setLoadingStatus,
-  setProjectLoadComplete, setStatusMessagesModalVisible,
+  setProjectLoadComplete,
+  setStatusMessagesModalVisible,
 } from '../modules/home/home.slice';
 import useImagesHook from '../modules/images/useImages';
 import {MAIN_MENU_ITEMS} from '../modules/main-menu-panel/mainMenu.constants';
 import {setMenuSelectionPage} from '../modules/main-menu-panel/mainMenuPanel.slice';
 import {MAP_PROVIDERS} from '../modules/maps/maps.constants';
 import {addedCustomMap, clearedMaps} from '../modules/maps/maps.slice';
-import {addedSpots, clearedSpots} from '../modules/spots/spots.slice';
 import {
   addedProject,
   addedSpotsIdsToDataset,
   clearedDatasets,
-  clearedProject,
   setActiveDatasets,
   setSelectedDataset,
   updatedDatasets,
 } from '../modules/project/projects.slice';
+import {addedSpots, clearedSpots} from '../modules/spots/spots.slice';
+import {isEmpty} from '../shared/Helpers';
+import useDeviceHook from './useDevice';
+import useServerRequestsHook from './useServerRequests';
 
 const useDownload = () => {
   let imagesDownloadedCount = 0;
   let imagesFailedCount = 0;
   let savedImagesCount = 0;
-  let imagesFailedArr = [];
   let imageCount = 0;
 
   const devicePath = RNFS.DocumentDirectoryPath;

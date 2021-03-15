@@ -1,22 +1,21 @@
-import {Alert} from 'react-native';
-
 import RNFS from 'react-native-fs';
 import {unzip} from 'react-native-zip-archive';
 import {batch, useDispatch} from 'react-redux';
 
-import useDeviceHook from './useDevice';
-import {isEmpty} from '../shared/Helpers';
 import {
   addedStatusMessage,
   clearedStatusMessages,
   removedLastStatusMessage,
   setStatusMessagesModalVisible,
-  setLoadingStatus, setErrorMessagesModalVisible,
+  setLoadingStatus,
+  setErrorMessagesModalVisible,
 } from '../modules/home/home.slice';
 import {addedCustomMapsFromBackup} from '../modules/maps/maps.slice';
 import {addedMapsFromDevice} from '../modules/maps/offline-maps/offlineMaps.slice';
-import {addedSpotsFromDevice} from '../modules/spots/spots.slice';
 import {addedDatasets, addedProject} from '../modules/project/projects.slice';
+import {addedSpotsFromDevice} from '../modules/spots/spots.slice';
+import {isEmpty} from '../shared/Helpers';
+import useDeviceHook from './useDevice';
 
 const useImport = () => {
   let fileCount = 0;

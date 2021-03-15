@@ -13,7 +13,6 @@ import {
 } from '../modules/home/home.slice';
 import useImagesHook from '../modules/images/useImages';
 import useProjectHook from '../modules/project/useProject';
-import {clearedSpots} from '../modules/spots/spots.slice';
 import useSpotsHook from '../modules/spots/useSpots';
 import {isEmpty} from '../shared/Helpers';
 import useServerRequestsHook from './useServerRequests';
@@ -24,7 +23,6 @@ const useUpload = () => {
   const tempImagesDownsizedDirectory = devicePath + appDirectory + '/TempImages';
 
   const dispatch = useDispatch();
-  const backUpType = useSelector(state => state.home.backingUpType);
   const project = useSelector(state => state.project.project);
   const user = useSelector(state => state.user);
 
