@@ -3,8 +3,6 @@ import ImageResizer from 'react-native-image-resizer';
 import KeepAwake from 'react-native-keep-awake';
 import {batch, useDispatch, useSelector} from 'react-redux';
 
-import useServerRequestsHook from '../../services/useServerRequests';
-import {isEmpty} from '../../shared/Helpers';
 import {
   addedStatusMessage,
   clearedStatusMessages,
@@ -12,11 +10,13 @@ import {
   setLoadingStatus,
   setStatusMessagesModalVisible,
   setUploadModalVisible,
-} from '../home/home.slice';
-import useImagesHook from '../images/useImages';
-import useProjectHook from '../project/useProject';
-import useSpotsHook from '../spots/useSpots';
-import {clearedSpots} from '../spots/spots.slice';
+} from '../modules/home/home.slice';
+import useImagesHook from '../modules/images/useImages';
+import useProjectHook from '../modules/project/useProject';
+import {clearedSpots} from '../modules/spots/spots.slice';
+import useSpotsHook from '../modules/spots/useSpots';
+import {isEmpty} from '../shared/Helpers';
+import useServerRequestsHook from './useServerRequests';
 
 const useUpload = () => {
   const devicePath = RNFS.DocumentDirectoryPath;

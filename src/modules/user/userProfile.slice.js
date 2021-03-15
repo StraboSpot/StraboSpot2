@@ -15,12 +15,12 @@ const userProfileSlice = createSlice({
   initialState: initialUserState,
   reducers: {
     setUserData(state, action) {
-      const {name, email, mapboxToken, password, encodedLogin, image} = action.payload;
+      const {name, email, mapboxToken, password, encoded_login, image} = action.payload;
       state.name = name;
       state.email = email;
       state.mapboxToken = mapboxToken;
       state.password = password;
-      state.encoded_login = encodedLogin;
+      state.encoded_login = encoded_login;
       state.image = image;
     },
   },

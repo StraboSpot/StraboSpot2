@@ -4,6 +4,8 @@ import {AppState, Alert, FlatList, Text, View} from 'react-native';
 import {ListItem, Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import useDownloadHook from '../../services/useDownload';
+import useImportHook from '../../services/useImport';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
@@ -22,8 +24,6 @@ import {
 import BackUpOverwriteModal from './BackUpOverwriteModal';
 import * as ProjectActions from './project.constants';
 import {doesBackupDirectoryExist} from './projects.slice';
-import useDownloadHook from './useDownload';
-import useImportHook from './useImport';
 import useProjectHook from './useProject';
 
 const ProjectList = (props) => {
