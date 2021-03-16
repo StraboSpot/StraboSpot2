@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {Text, View} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
-import {Button} from 'react-native-elements';
+import {Avatar, Button} from 'react-native-elements';
 import {Dialog, DialogTitle, DialogContent, SlideAnimation} from 'react-native-popup-dialog';
 import {useSelector, useDispatch} from 'react-redux';
 
@@ -26,7 +26,7 @@ const InitialProjectLoadModal = (props) => {
   const activeDatasetsId = useSelector(state => state.project.activeDatasetsIds);
   const selectedProject = useSelector(state => state.project.project);
   const isOnline = useSelector(state => state.home.isOnline);
-  const userName = useSelector(state => state.user.name);
+  const user = useSelector(state => state.user);
   const dispatch = useDispatch();
   const [visibleProjectSection, setVisibleProjectSection] = useState('activeDatasetsList');
   const [visibleInitialSection, setVisibleInitialSection] = useState('none');
@@ -67,17 +67,6 @@ const InitialProjectLoadModal = (props) => {
           onLoadProjectsFromServer={() => setVisibleInitialSection('serverProjects')}
           onLoadProjectsFromDevice={() => setVisibleInitialSection('deviceProjects')}
           onStartNewProject={() => setVisibleInitialSection('project')}/>
-        <Button
-          title={userName ? `Not ${userName}?` : 'Sign in?'}
-          type={'clear'}
-          containerStyle={commonStyles.buttonContainer}
-          titleStyle={commonStyles.standardButtonText}
-          onPress={() => {
-            if (userName) dispatch({type: REDUX.CLEAR_STORE});
-            dispatch(setSignedInStatus(false));
-            navigation.navigate('SignIn');
-          }}
-        />
       </View>
     );
   };
@@ -224,7 +213,7 @@ const InitialProjectLoadModal = (props) => {
   };
 
   const displayFirstName = () => {
-    if (userName && !isEmpty(userName)) return userName.split(' ')[0];
+    if (user.name && !isEmpty(user.name)) return user.name.split(' ')[0];
     else return 'Guest';
   };
 
@@ -240,14 +229,29 @@ const InitialProjectLoadModal = (props) => {
         })}
         dialogTitle={
           <DialogTitle
-            title={`Welcome to StraboSpot, \n ${firstName}!`}
+            title={`Welcome to StraboSpot`}
             style={homeStyles.dialogTitleContainer}
             textStyle={homeStyles.dialogTitleText}
           />
         }
       >
         <DialogContent>
-          <Spacer/>
+          <View style={{flexDirection: 'row', padding: 10, alignItems: 'center', justifyContent: 'space-evenly'}}>
+            <Avatar source={{uri: user.image}} size={80} rounded avatarStyle={{}}/>
+            <View>
+              <Text style={{fontSize: 22}}>Hello, {firstName}!</Text>
+              <Button
+                title={user.name ? `Not ${user.name}?` : 'Sign in?'}
+                type={'clear'}
+                titleStyle={{...commonStyles.standardButtonText, fontSize: 10}}
+                onPress={() => {
+                  if (user.name) dispatch({type: REDUX.CLEAR_STORE});
+                  dispatch(setSignedInStatus(false));
+                  navigation.navigate('SignIn');
+                }}
+              />
+            </View>
+          </View>
           {renderSectionView()}
         </DialogContent>
       </Dialog>
