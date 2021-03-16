@@ -221,6 +221,23 @@ const useServerRequests = () => {
     return handleResponse(response);
   };
 
+  const uploadProfileImage = async (formdata, encodedLogin) => {
+    const response = await fetch(`${baseUrl}/profileImage`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        'Authorization': 'Basic ' + encodedLogin,
+      },
+      body: formdata,
+    });
+    return handleResponse(response);
+  };
+
+  const updateProfile = (data) => {
+    console.log(data);
+    return post('/profile', user.encoded_login, data);
+  };
+
   const verifyImageExistence = (imageId, encodedLogin) => {
     return request('GET', '/verifyimage/' + imageId, encodedLogin);
   };
@@ -259,8 +276,10 @@ const useServerRequests = () => {
     timeoutPromise: timeoutPromise,
     updateDataset: updateDataset,
     updateDatasetSpots: updateDatasetSpots,
+    updateProfile: updateProfile,
     updateProject: updateProject,
     uploadImage: uploadImage,
+    uploadProfileImage: uploadProfileImage,
     verifyImageExistence: verifyImageExistence,
     zipURLStatus: zipURLStatus,
   };

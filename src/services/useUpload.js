@@ -13,7 +13,6 @@ import {
 } from '../modules/home/home.slice';
 import useImagesHook from '../modules/images/useImages';
 import useProjectHook from '../modules/project/useProject';
-import {clearedSpots} from '../modules/spots/spots.slice';
 import useSpotsHook from '../modules/spots/useSpots';
 import {isEmpty} from '../shared/Helpers';
 import useServerRequestsHook from './useServerRequests';
@@ -24,7 +23,6 @@ const useUpload = () => {
   const tempImagesDownsizedDirectory = devicePath + appDirectory + '/TempImages';
 
   const dispatch = useDispatch();
-  const backUpType = useSelector(state => state.home.backingUpType);
   const project = useSelector(state => state.project.project);
   const user = useSelector(state => state.user);
 
@@ -238,7 +236,7 @@ const useUpload = () => {
     const startUploadingImage = async (imageProps) => {
       try {
         const imageURI = await getImageFile(imageProps);
-        const resizedImage = await resizeImageForUpload(imageProps, imageURI);
+        const resizedImage = await resizeImageForUpload(imageProps, imageURI, datasetName);
         await uploadImage(imageProps.id, resizedImage);
         imagesUploadedCount++;
       }
@@ -276,44 +274,6 @@ const useUpload = () => {
       }
     };
 
-    // Downsize image for upload
-    const resizeImageForUpload = async (imageProps, imageURI) => {
-      try {
-        console.log(datasetName + ': Resizing Image', imageProps.id, '...');
-        let height = imageProps.height;
-        let width = imageProps.width;
-
-        if (!width || !height) ({width, height} = await useImages.getImageHeightAndWidth(imageURI));
-
-        if (width && height) {
-          const max_size = 2000;
-          if (width > height && width > max_size) {
-            height = max_size * height / width;
-            width = max_size;
-          }
-          else if (height > max_size) {
-            width = max_size * width / height;
-            height = max_size;
-          }
-
-          await RNFS.mkdir(tempImagesDownsizedDirectory);
-          const createResizedImageProps = [imageURI, width, height, 'JPEG', 100, 0, tempImagesDownsizedDirectory];
-          const resizedImage = await ImageResizer.createResizedImage(...createResizedImageProps);
-          let imageSizeText;
-          if (resizedImage.size < 1024) imageSizeText = resizedImage.size + ' bytes';
-          else if (resizedImage.size < 1048576) imageSizeText = (resizedImage.size / 1024).toFixed(3) + ' kB';
-          else if (resizedImage.size < 1073741824) imageSizeText = (resizedImage.size / 1048576).toFixed(2) + ' MB';
-          else imageSizeText = (resizedImage.size / 1073741824).toFixed(3) + ' GB';
-          console.log(datasetName + ': Finished Resizing Image', imageProps.id, 'New Size', imageSizeText);
-          return resizedImage;
-        }
-      }
-      catch (err) {
-        console.error(datasetName + ': Error Resizing Image.', err);
-        throw Error;
-      }
-    };
-
     // Upload the image to server
     const uploadImage = async (imageId, resizedImage) => {
       try {
@@ -347,10 +307,64 @@ const useUpload = () => {
     await deleteTempImagesFolder();
   };
 
+  const uploadProfile = async (userValues) => {
+    try {
+      const profileData = {name: userValues.name, password: userValues.password, mapboxToken: userValues.mapboxToken};
+      const formData = new FormData();
+      formData.append('image_file', {uri: userValues.image, name: 'image.jpg', type: 'image/jpeg'});
+      await useServerRequests.uploadProfileImage(formData, user.encoded_login);
+      await useServerRequests.updateProfile(profileData);
+    }
+    catch (err) {
+      console.error('Error uploading profile image', err);
+      throw Error('Error uploading profile image', err);
+    }
+  };
+
+  // Downsize image for upload
+  const resizeImageForUpload = async (imageProps, imageURI, name) => {
+    try {
+      console.log(name + ': Resizing Image', imageProps.id, '...');
+      let height = imageProps.height;
+      let width = imageProps.width;
+
+      if (!width || !height) ({width, height} = await useImages.getImageHeightAndWidth(imageURI));
+
+      if (width && height) {
+        const max_size = name === 'profileImage' ? 300 : 2000;
+        if (width > height && width > max_size) {
+          height = max_size * height / width;
+          width = max_size;
+        }
+        else if (height > max_size) {
+          width = max_size * width / height;
+          height = max_size;
+        }
+
+        await RNFS.mkdir(tempImagesDownsizedDirectory);
+        const createResizedImageProps = [imageURI, width, height, 'JPEG', 100, 0, tempImagesDownsizedDirectory];
+        const resizedImage = await ImageResizer.createResizedImage(...createResizedImageProps);
+        let imageSizeText;
+        if (resizedImage.size < 1024) imageSizeText = resizedImage.size + ' bytes';
+        else if (resizedImage.size < 1048576) imageSizeText = (resizedImage.size / 1024).toFixed(3) + ' kB';
+        else if (resizedImage.size < 1073741824) imageSizeText = (resizedImage.size / 1048576).toFixed(2) + ' MB';
+        else imageSizeText = (resizedImage.size / 1073741824).toFixed(3) + ' GB';
+        console.log(name + ': Finished Resizing Image', imageProps.id, 'New Size', imageSizeText);
+        return resizedImage;
+      }
+    }
+    catch (err) {
+      console.error('Error Resizing Image.', err);
+      throw Error;
+    }
+  };
+
   return {
     initializeUpload: initializeUpload,
     uploadDatasets: uploadDatasets,
+    uploadProfile: uploadProfile,
     uploadProject: uploadProject,
+    resizeImageForUpload: resizeImageForUpload,
   };
 };
 
