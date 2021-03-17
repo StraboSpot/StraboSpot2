@@ -22,7 +22,7 @@ export const PRIMARY_ACCENT_COLOR = BLUE;
 
 export const LIST_BORDER_COLOR = MEDIUMGREY;
 
-export const PRIMARY_TEXT_SIZE = 18;
+export const PRIMARY_TEXT_SIZE = 16;
 export const STATUS_MESSAGE_TEXT_SIZE = 18;
 export const PRIMARY_HEADER_TEXT_SIZE = 20;
 export const SMALL_TEXT_SIZE = 14;
