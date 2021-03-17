@@ -6,7 +6,8 @@ const UserStyles = StyleSheet.create({
   profileNameAndImageContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 20,
+    justifyContent: 'space-evenly',
+    padding: 10,
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
   },
   avatarPlaceholderTitleStyle: {
@@ -14,6 +15,7 @@ const UserStyles = StyleSheet.create({
   },
   avatarLabelContainer: {
     padding: 10,
+    justifyContent: 'space-around'
   },
   avatarLabelName: {
     paddingBottom: 5,
@@ -28,6 +30,16 @@ const UserStyles = StyleSheet.create({
     alignContent: 'center',
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
   },
+  imageSelectionModal: {
+    borderRadius: 20,
+    padding: 20,
+    width: 300,
+  },
+  profilePageAvatarContainer: {
+    borderWidth: 7,
+    borderColor: 'white',
+  },
+
 });
 
 export default UserStyles;

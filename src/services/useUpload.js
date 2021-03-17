@@ -77,7 +77,6 @@ const useUpload = () => {
       dispatch(addedStatusMessage(dataset.name + ': Error Uploading Dataset Properties.'));
       throw Error;
     }
-
     await uploadSpots(dataset);
   };
 

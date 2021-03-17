@@ -19,6 +19,7 @@ import {
 } from '../home/home.slice';
 import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import SidePanelHeader from '../main-menu-panel/sidePanel/SidePanelHeader';
+import userStyles from './user.styles';
 import {setUserData} from './userProfile.slice';
 
 
@@ -117,7 +118,7 @@ const UserProfile = (props) => {
   const ImageModal = () => {
     return (
       <Overlay
-        overlayStyle={{borderRadius: 20, padding: 20, width: 300}}
+        overlayStyle={userStyles.imageSelectionModal}
         isVisible={isImageDialogVisible}
       >
         <View style={{alignItems: 'flex-end'}}>
@@ -184,11 +185,10 @@ const UserProfile = (props) => {
       <Animated.View style={{transform: [{translateY: textInputAnimate}], flex: 1}}>
         <View style={{alignItems: 'center', marginTop: 15}}>
           <Avatar
-            containerStyle={{padding: 10}}
-            avatarStyle={{borderWidth: 7, borderColor: 'white'}}
+            containerStyle={userStyles.avatarLabelContainer}
+            avatarStyle={userStyles.profilePageAvatarContainer}
             size={200}
             activeOpacity={0.7}
-            // renderPlaceholderContent={<Text>NN</Text>}
             rounded={true}
             source={{uri: userData.image}}
           />
