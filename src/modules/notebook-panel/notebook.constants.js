@@ -18,11 +18,19 @@ export const PRIMARY_NOTEBOOK_PAGES = {
 
 export const SECONDARY_NOTEBOOK_PAGES = {
   THREE_D_STRUCTURES: '3D Structures',
-  IG_MET: 'Ig/Met',
   FABRICS: 'Fabrics',
   OTHER_FEATURES: 'Other Features',
   // RELATIONSHIPS: 'Relationships',
   DATA: 'Data',
+};
+
+export const PET_NOTEBOOK_PAGES = {
+  ROCK_TYPE_IGNEOUS: 'Igenous Rock',
+  ROCK_TYPE_METAMORPHIC: 'Metamorphic Rock',
+  MINERALS: 'Minerals',
+  REACTION_TEXTURES: 'Reaction Textures',
+  ECONOMIC: 'Economic',
+  TERNARY: 'Ternary',
 };
 
 export const SED_NOTEBOOK_PAGES = {
@@ -41,7 +49,7 @@ export const NOTEBOOK_SUBPAGES = {
   NESTING: 'Nesting',
 };
 
-export const NOTEBOOK_PAGES = {NOTEBOOK_OVERVIEW_PAGE, ...PRIMARY_NOTEBOOK_PAGES, ...SECONDARY_NOTEBOOK_PAGES, ...SED_NOTEBOOK_PAGES};
+export const NOTEBOOK_PAGES = {NOTEBOOK_OVERVIEW_PAGE, ...PRIMARY_NOTEBOOK_PAGES, ...SECONDARY_NOTEBOOK_PAGES, ...PET_NOTEBOOK_PAGES, ...SED_NOTEBOOK_PAGES};
 
 export const NOTEBOOK_PAGES_ICONS = {
   MEASUREMENT: require('../../assets/icons/Measurement.png'),
@@ -82,4 +90,16 @@ export const NOTEBOOK_PAGES_ICONS = {
   FOSSILS_PRESSED: require('../../assets/icons/SedFossil_pressed.png'),
   INTERPRETATIONS: require('../../assets/icons/SedInterpretation.png'),
   INTERPRETATIONS_PRESSED: require('../../assets/icons/SedInterpretation_pressed.png'),
+  ROCK_TYPE_IGNEOUS: require('../../assets/icons/Igneous.png'),
+  ROCK_TYPE_IGNEOUS_PRESSED: require('../../assets/icons/Igneous_pressed.png'),
+  ROCK_TYPE_METAMORPHIC: require('../../assets/icons/Metamorphic.png'),
+  ROCK_TYPE_METAMORPHIC_PRESSED: require('../../assets/icons/Metamorphic_pressed.png'),
+  MINERALS: require('../../assets/icons/Minerals.png'),
+  MINERALS_PRESSED: require('../../assets/icons/Minerals_pressed.png'),
+  REACTION_TEXTURES: require('../../assets/icons/Reactions.png'),
+  REACTION_TEXTURES_PRESSED: require('../../assets/icons/Reactions_pressed.png'),
+  ECONOMIC: require('../../assets/icons/Economic.png'),
+  ECONOMIC_PRESSED: require('../../assets/icons/Economic_pressed.png'),
+  TERNARY: require('../../assets/icons/Ternary.png'),
+  TERNARY_PRESSED: require('../../assets/icons/Ternary_pressed.png'),
 };

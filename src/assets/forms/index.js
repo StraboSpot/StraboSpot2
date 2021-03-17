@@ -7,9 +7,11 @@ import linearOrientation from './measurement/linear-orientation.json';
 import planarOrientation from './measurement/planar-orientation.json';
 import tabularZoneOrientation from './measurement/tabular-zone-orientation.json';
 import namingConventions from './naming-conventions.json';
+import economic from './pet/economic.json';
 import minerals from './pet/minerals.json';
-import reactions from './pet/reactions.json';
-import rock from './pet/rock.json';
+import reactionTextures from './pet/reaction-textures.json';
+import rockTypeIgneous from './pet/rock-type-igneous.json';
+import rockTypeMetamorphic from './pet/rock-type-metamorphic.json';
 import projectDescription from './project-description.json';
 import sample from './sample.json';
 import surfaceFeature from './surface-feature.json';
@@ -68,8 +70,10 @@ const forms = {
   },
   pet: {
     minerals: minerals,
-    reactions: reactions,
-    rock: rock,
+    reactions: reactionTextures,
+    metamorphic: rockTypeMetamorphic,
+    igneous: rockTypeIgneous,
+    alteration_or: economic,
   },
   preferences: {
     naming_conventions: namingConventions,

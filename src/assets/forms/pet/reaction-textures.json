@@ -9,12 +9,6 @@
       "name": "end"
     },
     {
-      "type": "begin_group",
-      "name": "group_cr8sh11",
-      "label": "Reactions",
-      "required": "false"
-    },
-    {
       "type": "text",
       "name": "reactions",
       "label": "Reactions",
@@ -33,7 +27,7 @@
       "label": "Other",
       "required": "false",
       "relevant": "selected(${based_on}, 'other')",
-      "constraint": ". != ''"
+      "constraint": ". = ''"
     },
     {
       "type": "text",
@@ -41,9 +35,6 @@
       "label": "Notes",
       "required": "false",
       "appearance": "multiline"
-    },
-    {
-      "type": "end_group"
     },
     {
       "type": "calculate",
@@ -54,20 +45,10 @@
     {
       "type": "calculate",
       "name": "__version__",
-      "calculation": "'v6MD2qv5Jy6GkinAyvya5q'"
+      "calculation": "'vJbTGjHtsz3UByyUewAiC5'"
     }
   ],
   "choices": [
-    {
-      "list_name": "ph6ma31",
-      "name": "corona",
-      "label": "corona"
-    },
-    {
-      "list_name": "ph6ma31",
-      "name": "pseudomorph",
-      "label": "pseudomorph"
-    },
     {
       "list_name": "ph6ma31",
       "name": "breakdown",
@@ -75,18 +56,44 @@
     },
     {
       "list_name": "ph6ma31",
+      "name": "corona",
+      "label": "corona",
+      "order": "1"
+    },
+    {
+      "list_name": "ph6ma31",
       "name": "mineral_degrad",
-      "label": "mineral degradation (unhappiness)"
+      "label": "mineral degradation (unhappiness)",
+      "order": "2"
+    },
+    {
+      "list_name": "ph6ma31",
+      "name": "pseudomorph",
+      "label": "pseudomorph",
+      "order": "3"
+    },
+    {
+      "list_name": "ph6ma31",
+      "name": "replacement",
+      "label": "replacement or partial replacement",
+      "order": "4"
+    },
+    {
+      "list_name": "ph6ma31",
+      "name": "symplectite",
+      "label": "symplectite",
+      "order": "5"
     },
     {
       "list_name": "ph6ma31",
       "name": "other",
-      "label": "other"
+      "label": "other",
+      "order": "6"
     }
   ],
   "settings": [
     {
-      "version": "v6MD2qv5Jy6GkinAyvya5q"
+      "version": "vJbTGjHtsz3UByyUewAiC5"
     }
   ]
 }

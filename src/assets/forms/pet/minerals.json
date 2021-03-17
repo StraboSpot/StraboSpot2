@@ -23,9 +23,22 @@
       "required": "false"
     },
     {
+      "type": "select_one sc0qv19",
+      "name": "igneous_or_metamorphic",
+      "label": "Igneous or Metamorphic",
+      "required": "false",
+      "appearance": "horizontal-compact"
+    },
+    {
+      "type": "begin_group",
+      "name": "group_si21s81",
+      "label": "Igneous",
+      "required": "false"
+    },
+    {
       "type": "select_one tg2fy55",
       "name": "habit",
-      "label": "Habit",
+      "label": "Habit - Igneous",
       "required": "false"
     },
     {
@@ -46,7 +59,7 @@
       "type": "select_multiple qt9di73",
       "name": "textural_setting_igneous",
       "label": "Textural Setting - Igneous",
-      "hint": "If mineral is in igneous rock, choose textural setting",
+      "hint": "If the mineral is in an igneous rock, choose a textural setting",
       "required": "false"
     },
     {
@@ -57,11 +70,40 @@
       "relevant": "selected(${textural_setting_igneous}, 'other')"
     },
     {
+      "type": "end_group"
+    },
+    {
+      "type": "begin_group",
+      "name": "group_rj4sl11",
+      "label": "Metamorphic",
+      "required": "false"
+    },
+    {
+      "type": "select_one sn45t20",
+      "name": "habit_met",
+      "label": "Habit - Metamorphic",
+      "required": "false"
+    },
+    {
+      "type": "text",
+      "name": "other_habit_met",
+      "label": "Other",
+      "required": "false",
+      "relevant": "${habit_met} = 'other'"
+    },
+    {
       "type": "select_multiple bv8rk19",
       "name": "textural_setting_metamorphic",
       "label": "Textural Setting - Metamorphic/Structural",
-      "hint": "If mineral is metamorphic, or displays structural significance, choose textural setting",
+      "hint": "If the mineral is metamorphic, or displays structural significance, choose a textural setting",
       "required": "false"
+    },
+    {
+      "type": "text",
+      "name": "min_inclusion",
+      "label": "Mineralogy of inclusions",
+      "required": "false",
+      "relevant": "selected(${textural_setting_metamorphic}, 'poikiloblast') or selected(${textural_setting_metamorphic}, 'inc_trails')"
     },
     {
       "type": "text",
@@ -69,6 +111,9 @@
       "label": "Other ",
       "required": "false",
       "relevant": "selected(${textural_setting_metamorphic}, 'other')"
+    },
+    {
+      "type": "end_group"
     },
     {
       "type": "decimal",
@@ -105,10 +150,20 @@
     {
       "type": "calculate",
       "name": "__version__",
-      "calculation": "'vZK3LYiYADs3X8JXXJdmCT'"
+      "calculation": "'vnEGJinT3Mb2dPE6GBDJoQ'"
     }
   ],
   "choices": [
+    {
+      "list_name": "sc0qv19",
+      "name": "ig_min",
+      "label": "Igneous"
+    },
+    {
+      "list_name": "sc0qv19",
+      "name": "met_min",
+      "label": "Metamorphic"
+    },
     {
       "list_name": "tg2fy55",
       "name": "anhedral",
@@ -134,14 +189,14 @@
     },
     {
       "list_name": "tg2fy55",
-      "name": "amygdaloidal",
-      "label": "cubic",
+      "name": "bladed",
+      "label": "equant",
       "order": "4"
     },
     {
       "list_name": "tg2fy55",
-      "name": "bladed",
-      "label": "equant",
+      "name": "granular",
+      "label": "granular",
       "order": "5"
     },
     {
@@ -152,45 +207,51 @@
     },
     {
       "list_name": "tg2fy55",
-      "name": "granular",
-      "label": "granular",
+      "name": "radiating",
+      "label": "radiating",
       "order": "7"
+    },
+    {
+      "list_name": "tg2fy55",
+      "name": "prismatic",
+      "label": "prismatic",
+      "order": "8"
+    },
+    {
+      "list_name": "tg2fy55",
+      "name": "amygdaloidal",
+      "label": "cubic",
+      "order": "9"
     },
     {
       "list_name": "tg2fy55",
       "name": "hexagonal",
       "label": "hexagonal",
-      "order": "8"
+      "order": "10"
     },
     {
       "list_name": "tg2fy55",
       "name": "octahedral",
       "label": "octahedral",
-      "order": "9"
-    },
-    {
-      "list_name": "tg2fy55",
-      "name": "radiating",
-      "label": "radiating",
-      "order": "10"
+      "order": "11"
     },
     {
       "list_name": "tg2fy55",
       "name": "tabular",
       "label": "tabular",
-      "order": "11"
+      "order": "12"
     },
     {
       "list_name": "tg2fy55",
       "name": "complete_habit_list",
       "label": "complete habit list",
-      "order": "12"
+      "order": "13"
     },
     {
       "list_name": "tg2fy55",
       "name": "other",
       "label": "other",
-      "order": "13"
+      "order": "14"
     },
     {
       "list_name": "oz3ot82",
@@ -223,74 +284,74 @@
     },
     {
       "list_name": "oz3ot82",
+      "name": "colloform",
+      "label": "colloform",
+      "order": "5"
+    },
+    {
+      "list_name": "oz3ot82",
       "name": "columnar",
       "label": "columnar",
-      "order": "5"
+      "order": "6"
     },
     {
       "list_name": "oz3ot82",
       "name": "coxcomb",
       "label": "coxcomb",
-      "order": "6"
+      "order": "7"
     },
     {
       "list_name": "oz3ot82",
       "name": "cubic",
       "label": "cubic",
-      "order": "7"
+      "order": "8"
     },
     {
       "list_name": "oz3ot82",
       "name": "dendritic",
       "label": "dendritic",
-      "order": "8"
+      "order": "9"
     },
     {
       "list_name": "oz3ot82",
       "name": "dodecahedral",
       "label": "dodecahedral",
-      "order": "9"
+      "order": "10"
     },
     {
       "list_name": "oz3ot82",
       "name": "drussy",
       "label": "drussy",
-      "order": "10"
+      "order": "11"
     },
     {
       "list_name": "oz3ot82",
       "name": "enantiomorphic",
       "label": "enantiomorphic",
-      "order": "11"
+      "order": "12"
     },
     {
       "list_name": "oz3ot82",
       "name": "equant",
       "label": "equant",
-      "order": "12"
+      "order": "13"
     },
     {
       "list_name": "oz3ot82",
       "name": "euhedral",
       "label": "euhedral",
-      "order": "13"
+      "order": "14"
     },
     {
       "list_name": "oz3ot82",
       "name": "fibrous",
       "label": "fibrous",
-      "order": "14"
+      "order": "15"
     },
     {
       "list_name": "oz3ot82",
       "name": "filiform",
       "label": "filiform",
-      "order": "15"
-    },
-    {
-      "list_name": "oz3ot82",
-      "name": "micaceous",
-      "label": "micaceous",
       "order": "16"
     },
     {
@@ -331,44 +392,44 @@
     },
     {
       "list_name": "oz3ot82",
+      "name": "micaceous",
+      "label": "micaceous",
+      "order": "23"
+    },
+    {
+      "list_name": "oz3ot82",
       "name": "nodular",
       "label": "nodular",
-      "order": "23"
+      "order": "24"
     },
     {
       "list_name": "oz3ot82",
       "name": "octahedral",
       "label": "octahedral",
-      "order": "24"
+      "order": "25"
     },
     {
       "list_name": "oz3ot82",
       "name": "platy",
       "label": "platy",
-      "order": "25"
+      "order": "26"
     },
     {
       "list_name": "oz3ot82",
       "name": "plumose",
       "label": "plumose",
-      "order": "26"
+      "order": "27"
     },
     {
       "list_name": "oz3ot82",
       "name": "prismatic",
       "label": "prismatic",
-      "order": "27"
+      "order": "28"
     },
     {
       "list_name": "oz3ot82",
       "name": "radiating",
       "label": "radiating",
-      "order": "28"
-    },
-    {
-      "list_name": "oz3ot82",
-      "name": "colloform",
-      "label": "colloform",
       "order": "29"
     },
     {
@@ -379,38 +440,38 @@
     },
     {
       "list_name": "oz3ot82",
-      "name": "wedge_shaped",
-      "label": "wedge-shaped",
-      "order": "31"
-    },
-    {
-      "list_name": "oz3ot82",
       "name": "stalactitic",
       "label": "stalactitic",
-      "order": "32"
+      "order": "31"
     },
     {
       "list_name": "oz3ot82",
       "name": "stellate",
       "label": "stellate",
-      "order": "33"
+      "order": "32"
     },
     {
       "list_name": "oz3ot82",
       "name": "subhedral",
       "label": "subhedral",
-      "order": "34"
+      "order": "33"
     },
     {
       "list_name": "oz3ot82",
       "name": "tabular",
       "label": "tabular",
-      "order": "35"
+      "order": "34"
     },
     {
       "list_name": "oz3ot82",
       "name": "tetrahedral",
       "label": "tetrahedral",
+      "order": "35"
+    },
+    {
+      "list_name": "oz3ot82",
+      "name": "wedge_shaped",
+      "label": "wedge-shaped",
       "order": "36"
     },
     {
@@ -427,61 +488,92 @@
     {
       "list_name": "qt9di73",
       "name": "xenocryst",
-      "label": "xenocryst"
+      "label": "xenocryst",
+      "order": "1"
+    },
+    {
+      "list_name": "qt9di73",
+      "name": "ig_matrix",
+      "label": "matrix",
+      "order": "2"
     },
     {
       "list_name": "qt9di73",
       "name": "groundmass",
-      "label": "groundmass"
+      "label": "groundmass",
+      "order": "3"
     },
     {
       "list_name": "qt9di73",
       "name": "vesicle",
-      "label": "vesicle"
+      "label": "vesicle",
+      "order": "4"
     },
     {
       "list_name": "qt9di73",
       "name": "vein",
-      "label": "vein"
+      "label": "vein",
+      "order": "5"
     },
     {
       "list_name": "qt9di73",
+      "name": "other",
+      "label": "other",
+      "order": "6"
+    },
+    {
+      "list_name": "sn45t20",
+      "name": "idioblast",
+      "label": "idioblastic (euhedral)"
+    },
+    {
+      "list_name": "sn45t20",
+      "name": "subidioblast",
+      "label": "subidioblastic (subhedral)"
+    },
+    {
+      "list_name": "sn45t20",
+      "name": "xenoblast",
+      "label": "xenoblastic (anhedral)"
+    },
+    {
+      "list_name": "sn45t20",
       "name": "other",
       "label": "other"
     },
     {
       "list_name": "bv8rk19",
-      "name": "phenocryst",
-      "label": "phenocryst"
-    },
-    {
-      "list_name": "bv8rk19",
       "name": "xenocryst",
-      "label": "xenocryst",
-      "order": "1"
+      "label": "xenocryst"
     },
     {
       "list_name": "bv8rk19",
       "name": "foliation_def",
       "label": "foliation defining",
-      "order": "2"
+      "order": "1"
     },
     {
       "list_name": "bv8rk19",
       "name": "lineation_defi",
       "label": "lineation defining",
-      "order": "3"
+      "order": "2"
     },
     {
       "list_name": "bv8rk19",
       "name": "shear_band_def",
       "label": "shear band defining",
+      "order": "3"
+    },
+    {
+      "list_name": "bv8rk19",
+      "name": "met_matrix",
+      "label": "matrix",
       "order": "4"
     },
     {
       "list_name": "bv8rk19",
-      "name": "prophyoblast",
-      "label": "prophyoblast",
+      "name": "met_groundmass",
+      "label": "groundmass",
       "order": "5"
     },
     {
@@ -492,38 +584,68 @@
     },
     {
       "list_name": "bv8rk19",
+      "name": "prophyoblast",
+      "label": "porphyoblast",
+      "order": "7"
+    },
+    {
+      "list_name": "bv8rk19",
+      "name": "poikiloblast",
+      "label": "poikiloblast",
+      "order": "8"
+    },
+    {
+      "list_name": "bv8rk19",
+      "name": "inc_trails",
+      "label": "inclusion trails",
+      "order": "9"
+    },
+    {
+      "list_name": "bv8rk19",
       "name": "ribbons",
       "label": "ribbons",
-      "order": "7"
+      "order": "10"
     },
     {
       "list_name": "bv8rk19",
       "name": "wrapping",
       "label": "wrapping",
-      "order": "8"
+      "order": "11"
     },
     {
       "list_name": "bv8rk19",
       "name": "wrapped",
       "label": "wrapped",
-      "order": "9"
+      "order": "12"
     },
     {
       "list_name": "bv8rk19",
       "name": "pressure_shado",
       "label": "pressure shadows",
-      "order": "10"
+      "order": "13"
+    },
+    {
+      "list_name": "bv8rk19",
+      "name": "met_vein",
+      "label": "vein",
+      "order": "14"
+    },
+    {
+      "list_name": "bv8rk19",
+      "name": "phenocryst",
+      "label": "phenocryst",
+      "order": "15"
     },
     {
       "list_name": "bv8rk19",
       "name": "other",
       "label": "other",
-      "order": "11"
+      "order": "16"
     }
   ],
   "settings": [
     {
-      "version": "vZK3LYiYADs3X8JXXJdmCT"
+      "version": "vnEGJinT3Mb2dPE6GBDJoQ"
     }
   ]
 }

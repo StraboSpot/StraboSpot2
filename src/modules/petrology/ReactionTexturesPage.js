@@ -2,17 +2,22 @@ import React, {useEffect, useState} from 'react';
 import {FlatList, View} from 'react-native';
 
 import {Button, ListItem} from 'react-native-elements';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
 import {getNewId, isEmpty} from '../../shared/Helpers';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
+import SectionDivider from '../../shared/ui/SectionDivider';
 import {LABEL_DICTIONARY} from '../form';
+import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
+import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
+import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import MineralReactionDetail from './MineralReactionDetail';
 import {REACTION_VIEW} from './petrology.constants';
 
-const ReactionsSubpage = () => {
+const ReactionTexturesPage = () => {
+  const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
 
   const [selectedReaction, setSelectedReaction] = useState({});
@@ -21,7 +26,7 @@ const ReactionsSubpage = () => {
   const petDictionary = Object.values(LABEL_DICTIONARY.pet).reduce((acc, form) => ({...acc, ...form}), {});
 
   useEffect(() => {
-    console.log('UE ReactionsSubpage: spot changed to', spot);
+    console.log('UE ReactionTextures: spot changed to', spot);
     setSelectedReaction({});
   }, [spot]);
 
@@ -82,6 +87,9 @@ const ReactionsSubpage = () => {
     <React.Fragment>
       {reactionView === REACTION_VIEW.OVERVIEW && (
         <View style={{flex: 1}}>
+          <ReturnToOverviewButton
+            onPress={() => dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.OVERVIEW))}
+          />
           <View>
             <ListItem containerStyle={commonStyles.listItem}>
               <ListItem.Content>
@@ -95,13 +103,14 @@ const ReactionsSubpage = () => {
             type={'clear'}
             onPress={addReaction}
           />
+          <SectionDivider dividerText={'Reaction Textures'}/>
           <FlatList
             data={spot.properties.pet && spot.properties.pet.reactions && spot.properties.pet.reactions.slice().sort(
               (a, b) => (a.reactions || 'Unknown').localeCompare((b.reactions || 'Unknown')))}
             renderItem={({item}) => renderReaction(item)}
             keyExtractor={(item) => item.id.toString()}
             ItemSeparatorComponent={FlatListItemSeparator}
-            ListEmptyComponent={<ListEmptyText text={'There are no reactions at this Spot.'}/>}
+            ListEmptyComponent={<ListEmptyText text={'There are no reaction textures at this Spot.'}/>}
           />
         </View>
       )}
@@ -115,4 +124,4 @@ const ReactionsSubpage = () => {
   );
 };
 
-export default ReactionsSubpage;
+export default ReactionTexturesPage;

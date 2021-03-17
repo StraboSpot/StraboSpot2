@@ -2,13 +2,18 @@ import React from 'react';
 import {View, Text} from 'react-native';
 
 import {ListItem} from 'react-native-elements';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 import {roundToDecimalPlaces} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
+import SectionDivider from '../../shared/ui/SectionDivider';
+import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
+import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
+import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import {TERNARY_MINERALS} from './petrology.constants';
 
-const TernarySubpage = (props) => {
+const TernaryPage = (props) => {
+  const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
 
   const gatherTernaryValues = () => {
@@ -38,6 +43,10 @@ const TernarySubpage = (props) => {
 
   return (
     <React.Fragment>
+      <ReturnToOverviewButton
+        onPress={() => dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.OVERVIEW))}
+      />
+      <SectionDivider dividerText={'Ternary'}/>
       {!((ternary.q > 0 && ternary.a > 0 && ternary.p > 0)
         || (ternary.a > 0 && ternary.p > 0 && ternary.f > 0)
         || (ternary.ol > 0 && ternary.opx > 0 && ternary.cpx > 0)
@@ -164,4 +173,4 @@ const TernarySubpage = (props) => {
   );
 };
 
-export default TernarySubpage;
+export default TernaryPage;

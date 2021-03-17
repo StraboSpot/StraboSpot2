@@ -9,6 +9,7 @@ import SectionDivider from '../../../shared/ui/SectionDivider';
 import {
   PRIMARY_NOTEBOOK_PAGES,
   SECONDARY_NOTEBOOK_PAGES,
+  PET_NOTEBOOK_PAGES,
   SED_NOTEBOOK_PAGES,
   NOTEBOOK_PAGES_ICONS,
   NOTEBOOK_PAGES,
@@ -77,6 +78,11 @@ const MorePagesMenu = (props) => {
         <ScrollView>
           {Object.values({...PRIMARY_NOTEBOOK_PAGES, ...SECONDARY_NOTEBOOK_PAGES}).map(
             (item, i, arr) => renderMenuItem(item, i < arr.length - 1))}
+          <SectionDivider
+            dividerText={'Ig/Met'}
+            style={footerStyles.morePagesSectionDivider}
+          />
+          {Object.values(PET_NOTEBOOK_PAGES).map((item, i, arr) => renderMenuItem(item, i < arr.length - 1))}
           {/*<SectionDivider*/}
           {/*  dividerText={'Sedimentology'}*/}
           {/*  style={footerStyles.morePagesSectionDivider}*/}

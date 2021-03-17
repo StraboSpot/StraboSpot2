@@ -20,7 +20,10 @@ import MeasurementsPage from '../measurements/Measurements';
 import Nesting from '../nesting/Nesting';
 import NotesPage from '../notes/Notes';
 import OtherFeaturesPage from '../other-features/OtherFeaturesPage';
-import PetrologyPage from '../petrology/PetrologyPage';
+import MineralsPage from '../petrology/MineralsPage';
+import ReactionTexturesPage from '../petrology/ReactionTexturesPage';
+import RockTypePage from '../petrology/RockTypePage';
+import TernaryPage from '../petrology/TernaryPage';
 import SampleDetailPage from '../samples/SampleDetail';
 import SamplesPage from '../samples/SamplesNotebook';
 import {useSpotsHook} from '../spots';
@@ -29,7 +32,13 @@ import TagsPage from '../tags/TagsNotebook';
 import ThreeDStructuresPage from '../three-d-structures/ThreeDStructuresPage';
 import NotebookFooter from './notebook-footer/NotebookFooter';
 import NotebookHeader from './notebook-header/NotebookHeader';
-import {NOTEBOOK_PAGES, NOTEBOOK_SUBPAGES, SECONDARY_NOTEBOOK_PAGES, SED_NOTEBOOK_PAGES} from './notebook.constants';
+import {
+  NOTEBOOK_PAGES,
+  NOTEBOOK_SUBPAGES,
+  PET_NOTEBOOK_PAGES,
+  SECONDARY_NOTEBOOK_PAGES,
+  SED_NOTEBOOK_PAGES,
+} from './notebook.constants';
 import {setNotebookPageVisible} from './notebook.slice';
 import notebookStyles from './notebookPanel.styles';
 import Overview from './Overview';
@@ -79,11 +88,18 @@ const NotebookPanel = (props) => {
 
             {/*Secondary Notebook Pages*/}
             {pageVisible === SECONDARY_NOTEBOOK_PAGES.THREE_D_STRUCTURES && <ThreeDStructuresPage/>}
-            {pageVisible === SECONDARY_NOTEBOOK_PAGES.IG_MET && <PetrologyPage/>}
             {pageVisible === SECONDARY_NOTEBOOK_PAGES.FABRICS && <FabricsPage/>}
             {pageVisible === SECONDARY_NOTEBOOK_PAGES.OTHER_FEATURES && <OtherFeaturesPage/>}
             {/*{pageVisible === SECONDARY_NOTEBOOK_PAGES.RELATIONSHIPS && <PlaceholderPage/>}*/}
             {pageVisible === SECONDARY_NOTEBOOK_PAGES.DATA && <ExternalData/>}
+
+            {/*Pet Notebook Pages*/}
+            {pageVisible === PET_NOTEBOOK_PAGES.ROCK_TYPE_IGNEOUS && <RockTypePage type={'igneous'}/>}
+            {pageVisible === PET_NOTEBOOK_PAGES.ROCK_TYPE_METAMORPHIC && <RockTypePage type={'metamorphic'}/>}
+            {pageVisible === PET_NOTEBOOK_PAGES.ECONOMIC && <RockTypePage type={'alteration_or'}/>}
+            {pageVisible === PET_NOTEBOOK_PAGES.MINERALS && <MineralsPage/>}
+            {pageVisible === PET_NOTEBOOK_PAGES.REACTION_TEXTURES && <ReactionTexturesPage/>}
+            {pageVisible === PET_NOTEBOOK_PAGES.TERNARY && <TernaryPage/>}
 
             {/*Sed Notebook Pages*/}
             {/*{pageVisible === SED_NOTEBOOK_PAGES.LITHOLOGIES && <PlaceholderPage/>}*/}
