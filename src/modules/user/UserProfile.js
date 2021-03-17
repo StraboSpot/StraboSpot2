@@ -2,22 +2,26 @@ import React, {useState} from 'react';
 import {View, Text} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
-import {Button, Avatar} from 'react-native-elements';
+import {Button, Avatar, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {REDUX} from '../../shared/app.constants';
 import commonStyles from '../../shared/common.styles';
-import {isEmpty} from '../../shared/Helpers';
+import {isEmpty, truncateText} from '../../shared/Helpers';
 import StandardModal from '../../shared/ui/StandardModal';
-import {MAIN_MENU_ITEMS} from '../main-menu-panel/mainMenu.constants';
-import {setMenuSelectionPage} from '../main-menu-panel/mainMenuPanel.slice';
+import {setSignedInStatus} from '../home/home.slice';
+import {MAIN_MENU_ITEMS, SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.constants';
+import {setMenuSelectionPage, setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import userStyles from './user.styles';
+import useUserProfileHook from './useUserProfile';
 
 const UserProfile = (props) => {
   const dispatch = useDispatch();
   const userData = useSelector(state => state.user);
-  const navigation = useNavigation();
   const [isLogoutModalVisible, setIsLogoutModalVisible] = useState(false);
+
+  const navigation = useNavigation();
+  const useUserProfile = useUserProfileHook();
 
   const openUploadAndBackupPage = () => {
     setIsLogoutModalVisible(false);
@@ -28,34 +32,34 @@ const UserProfile = (props) => {
 
   const doLogOut = () => {
     setIsLogoutModalVisible(false);
-    setTimeout(() => {          // Added timeOut cause state of modal wasn't changing fast enough
-      props.logout();
+    setTimeout(() => { // Added timeOut cause state of modal wasn't changing fast enough
+      dispatch(setSignedInStatus(false));
       dispatch({type: REDUX.CLEAR_STORE});
-      navigation.navigate('SignIn');
+      props.logout();
+      navigation.navigate('SignIn', userData);
     }, 200);
   };
 
-  const getUserInitials = () => {
-    return userData.name.split(' ').map(word => word.charAt(0)).join('').toUpperCase();
-  };
-
   const renderAvatarImageBlock = () => {
-    if (!isEmpty(userData)) {
+    if (!isEmpty(userData.name || userData.image)) {
       if (!isEmpty(userData.image) && typeof userData.image.valueOf() === 'string') {
         return (
-          <View style={userStyles.profileNameAndImageContainer}>
-            <View>
+          <View>
+            <ListItem
+              onPress={() => dispatch(setSidePanelVisible({view: SIDE_PANEL_VIEWS.USER_PROFILE, bool: true}))}
+            >
               <Avatar
                 source={{uri: userData.image}}
-                rounded={true}
                 size={70}
-                onPress={() => console.log(userData.name)}
+                rounded={true}
               />
-            </View>
-            <View style={userStyles.avatarLabelContainer}>
-              <Text style={userStyles.avatarLabelName}>{userData.name}</Text>
-              <Text style={userStyles.avatarLabelEmail}>{userData.email}</Text>
-            </View>
+              <ListItem.Content>
+                <ListItem.Title style={userStyles.avatarLabelName}>{userData.name}</ListItem.Title>
+                <ListItem.Subtitle style={userStyles.avatarLabelEmail}>{truncateText(userData.email,
+                  16)}</ListItem.Subtitle>
+              </ListItem.Content>
+              <ListItem.Chevron/>
+            </ListItem>
           </View>
         );
       }
@@ -63,9 +67,9 @@ const UserProfile = (props) => {
         return (
           <View style={userStyles.profileNameAndImageContainer}>
             <Avatar
-              title={userData.name && userData.name !== '' && getUserInitials()}
+              title={userData.name && userData.name !== '' && useUserProfile.getUserInitials()}
               titleStyle={userStyles.avatarPlaceholderTitleStyle}
-              source={(!userData.name || userData.name === '') && require('../../assets/images/noimage.jpg')}
+              source={(!userData.name || userData.name === '') && require('../../assets/images/splash.png')}
               rounded={true}
               size={70}
               onPress={() => console.log('User with no image')}
@@ -83,10 +87,9 @@ const UserProfile = (props) => {
         <View style={userStyles.profileNameAndImageContainer}>
           <View>
             <Avatar
-              icon={isEmpty(userData) && {name: 'user', type: 'font-awesome'}}
+              source={require('../../assets/images/splash.png')}
               rounded={true}
               size={70}
-              onPress={() => console.log('GUEST')}
             />
           </View>
           <View style={userStyles.avatarLabelContainer}>
@@ -101,21 +104,21 @@ const UserProfile = (props) => {
   const renderLogOutButton = () => {
     return (
       <View>
-        <Button
-          onPress={() => setIsLogoutModalVisible(true)}
-          title={'Log out'}
-          containerStyle={commonStyles.standardButtonContainer}
-          buttonStyle={commonStyles.standardButton}
-          titleStyle={commonStyles.standardButtonText}
-        />
-        {isEmpty(userData)
-        && <Button
-          onPress={() => navigation.navigate('SignIn')}
-          title={'Go To Sign In'}
-          containerStyle={commonStyles.standardButtonContainer}
-          buttonStyle={commonStyles.standardButton}
-          titleStyle={commonStyles.standardButtonText}
-        />}
+        {isEmpty(userData.name)
+          ? <Button
+            onPress={() => navigation.navigate('SignIn')}
+            title={'Sign In'}
+            containerStyle={commonStyles.standardButtonContainer}
+            buttonStyle={commonStyles.standardButton}
+            titleStyle={commonStyles.standardButtonText}
+          />
+          : <Button
+            onPress={() => setIsLogoutModalVisible(true)}
+            title={'Log out'}
+            containerStyle={commonStyles.standardButtonContainer}
+            buttonStyle={commonStyles.standardButton}
+            titleStyle={commonStyles.standardButtonText}
+          />}
       </View>
     );
   };
