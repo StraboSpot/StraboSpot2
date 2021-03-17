@@ -14,6 +14,8 @@ import Spacer from '../../shared/ui/Spacer';
 import {setSignedInStatus} from '../home/home.slice';
 import homeStyles from '../home/home.style';
 import {clearedSpots} from '../spots/spots.slice';
+import userStyles from '../user/user.styles';
+import useUserProfileHook from '../user/useUserProfile';
 import ActiveDatasetsList from './ActiveDatasetsList';
 import DatasetList from './DatasetList';
 import NewProject from './NewProjectForm';
@@ -32,6 +34,7 @@ const InitialProjectLoadModal = (props) => {
   const [visibleInitialSection, setVisibleInitialSection] = useState('none');
 
   const useDevice = useDeviceHook();
+  const useUserProfile = useUserProfileHook();
 
   useEffect(() => {
     doesBackupDirExist().then(exists => console.log('doesBackupDirExist: ', exists));
@@ -39,9 +42,6 @@ const InitialProjectLoadModal = (props) => {
 
   useEffect(() => {
     console.log('UE InitialProjectLoadModal [isOnline]', isOnline);
-    // return function cleanUp() {
-    //   console.log('Initial Project Modal CleanUp');
-    // };
   }, [isOnline]);
 
   const doesBackupDirExist = async () => {
@@ -212,6 +212,32 @@ const InitialProjectLoadModal = (props) => {
     );
   };
 
+  const renderUserProfile = () => {
+    return (
+      <View style={{flexDirection: 'row', padding: 10, alignItems: 'center', justifyContent: 'space-evenly'}}>
+        {user.name && <Avatar
+          source={user.image && {uri: user.image}}
+          title={useUserProfile.getUserInitials()}
+          titleStyle={userStyles.avatarPlaceholderTitleStyle}
+          size={80} rounded
+        />}
+        <View>
+          <Text style={{fontSize: 22}}>Hello, {firstName}!</Text>
+          <Button
+            title={user.name ? `Not ${user.name}?` : 'Sign in?'}
+            type={'clear'}
+            titleStyle={{...commonStyles.standardButtonText, fontSize: 10}}
+            onPress={() => {
+              if (user.name) dispatch({type: REDUX.CLEAR_STORE});
+              dispatch(setSignedInStatus(false));
+              navigation.navigate('SignIn');
+            }}
+          />
+        </View>
+      </View>
+    );
+  };
+
   const displayFirstName = () => {
     if (user.name && !isEmpty(user.name)) return user.name.split(' ')[0];
     else return 'Guest';
@@ -229,29 +255,14 @@ const InitialProjectLoadModal = (props) => {
         })}
         dialogTitle={
           <DialogTitle
-            title={`Welcome to StraboSpot`}
+            title={'Welcome to StraboSpot'}
             style={homeStyles.dialogTitleContainer}
             textStyle={homeStyles.dialogTitleText}
           />
         }
       >
         <DialogContent>
-          <View style={{flexDirection: 'row', padding: 10, alignItems: 'center', justifyContent: 'space-evenly'}}>
-            <Avatar source={{uri: user.image}} size={80} rounded avatarStyle={{}}/>
-            <View>
-              <Text style={{fontSize: 22}}>Hello, {firstName}!</Text>
-              <Button
-                title={user.name ? `Not ${user.name}?` : 'Sign in?'}
-                type={'clear'}
-                titleStyle={{...commonStyles.standardButtonText, fontSize: 10}}
-                onPress={() => {
-                  if (user.name) dispatch({type: REDUX.CLEAR_STORE});
-                  dispatch(setSignedInStatus(false));
-                  navigation.navigate('SignIn');
-                }}
-              />
-            </View>
-          </View>
+          {renderUserProfile()}
           {renderSectionView()}
         </DialogContent>
       </Dialog>

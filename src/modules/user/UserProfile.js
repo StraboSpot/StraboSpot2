@@ -105,14 +105,14 @@ const UserProfile = (props) => {
     return (
       <View>
         {isEmpty(userData.name)
-        ? <Button
-          onPress={() => navigation.navigate('SignIn')}
-          title={'Sign In'}
-          containerStyle={commonStyles.standardButtonContainer}
-          buttonStyle={commonStyles.standardButton}
-          titleStyle={commonStyles.standardButtonText}
-        />
-        : <Button
+          ? <Button
+            onPress={() => navigation.navigate('SignIn')}
+            title={'Sign In'}
+            containerStyle={commonStyles.standardButtonContainer}
+            buttonStyle={commonStyles.standardButton}
+            titleStyle={commonStyles.standardButtonText}
+          />
+          : <Button
             onPress={() => setIsLogoutModalVisible(true)}
             title={'Log out'}
             containerStyle={commonStyles.standardButtonContainer}
