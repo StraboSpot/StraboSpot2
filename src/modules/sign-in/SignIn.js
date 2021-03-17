@@ -25,6 +25,7 @@ const SignIn = (props) => {
     const offline = require('../../assets/icons/ConnectionStatusButton_offline.png');
     const [username, setUsername] = useState(__DEV__ ? USERNAME_TEST : '');
     const [password, setPassword] = useState(__DEV__ ? PASSWORD_TEST : '');
+    const [userProfile, setUserProfile] = useState({})
 
     const dispatch = useDispatch();
     const isOnline = useSelector(state => state.home.isOnline);
@@ -38,6 +39,11 @@ const SignIn = (props) => {
         dispatch(setOnlineStatus(state.isConnected));
       });
     }, [isOnline]);
+
+    useEffect(() => {
+      console.log('UserProfile', userProfile)
+      dispatch(setUserData(userProfile));
+    }, [userProfile])
 
     const guestSignIn = async () => {
       Sentry.configureScope((scope) => {
@@ -57,7 +63,6 @@ const SignIn = (props) => {
           const encodedLogin = Base64.encode(username + ':' + password);
           updateUserResponse(encodedLogin).then((userState) => {
             console.log(`${username} is successfully logged in!`);
-            dispatch(setUserData(userState));
             dispatch(setSignedInStatus(true));
             setUsername('');
             setPassword('');
@@ -128,7 +133,7 @@ const SignIn = (props) => {
       if (userProfileImage) {
         return new Promise((resolve, reject) => {
           readDataUrl(userProfileImage, (base64Image) => {
-            if (base64Image) resolve(base64Image);
+            if (base64Image && typeof base64Image === 'string') resolve(base64Image);
             else reject('Could not convert image to base64');
           });
         });
@@ -137,14 +142,16 @@ const SignIn = (props) => {
     };
 
     const updateUserResponse = async (encodedLogin) => {
-      let userState = {};
       try {
-        let userProfile = await serverRequests.getProfile(encodedLogin);
+        let userProfileRes = await serverRequests.getProfile(encodedLogin);
         const userProfileImage = await serverRequests.getProfileImage(encodedLogin);
         console.log('userProfileImage', userProfileImage);
-        const image = await getUserImage(userProfileImage);
-        userState = {...userProfile, image: image, encoded_login: encodedLogin};
-        return Promise.resolve(userState);
+        if (!isEmpty(userProfileImage)) {
+          const profileImage = await getUserImage(userProfileImage);
+          setUserProfile(prevState => ({...userProfileRes, image: profileImage, encoded_login: encodedLogin}));
+        }
+        else setUserProfile(prevState => ({...userProfileRes, image: null, encoded_login: encodedLogin}));
+        console.log(userProfile)
       }
       catch (err) {
         console.log('SIGN IN ERROR', err);

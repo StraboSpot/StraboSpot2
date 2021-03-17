@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, View} from 'react-native';
+
 import {useSelector} from 'react-redux';
 
 const useUserProfile = (props) => {
@@ -11,7 +11,7 @@ const useUserProfile = (props) => {
 
   return {
     getUserInitials: getUserInitials,
-  }
+  };
 };
 
 export default useUserProfile;
