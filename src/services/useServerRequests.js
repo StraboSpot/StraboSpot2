@@ -1,9 +1,13 @@
 import {Alert} from 'react-native';
 
+import {useSelector} from 'react-redux';
+
 const useServerRequests = () => {
   const baseUrl = 'https://strabospot.org/db';
   const mapWarperApi = 'http://mapwarper.net/api/v1/maps/';
   const straboMyMapsApi = 'https://strabospot.org/geotiff/bbox/';
+
+  const user = useSelector(state => state.user);
 
   const addDatasetToProject = (projectId, datasetId, encodedLogin) => {
     return post('/projectDatasets/' + projectId, encodedLogin, {id: datasetId});
@@ -12,7 +16,7 @@ const useServerRequests = () => {
   const authenticateUser = async (username, password) => {
     const authenticationBaseUrl = baseUrl.slice(0, baseUrl.lastIndexOf('/')); //URL to send authentication API call
     try {
-      let response = await fetch(authenticationBaseUrl + '/userAuthenticate',
+      let response = await timeoutPromise(30000, fetch(authenticationBaseUrl + '/userAuthenticate',
         {
           method: 'POST',
           headers: {
@@ -24,13 +28,13 @@ const useServerRequests = () => {
             {email: username, password: password},
           ),
         },
-      );
+      ));
       let responseJson = await response.json();
-      return responseJson.valid;
+      return responseJson;
     }
     catch (error) {
       console.error(error);
-      Alert.alert(error);
+      Alert.alert(`${error}`)
     }
   };
 
@@ -145,7 +149,7 @@ const useServerRequests = () => {
     return new Promise((resolve, reject) => {
       const timeout = setTimeout(() => {
         // Alert.alert('There was an error getting your request');
-        reject(new Error('promise timeout'));
+        reject(new Error('Network timeout'));
       }, ms);
       promise.then((res) => {
           clearTimeout(timeout);

@@ -17,8 +17,6 @@ import {setOnlineStatus, setSignedInStatus} from '../home/home.slice';
 import {setUserData} from '../user/userProfile.slice';
 import styles from './signIn.styles';
 
-let isUserAuthenicated = null;
-
 const SignIn = (props) => {
 
     const online = require('../../assets/icons/ConnectionStatusButton_connected.png');
@@ -57,9 +55,9 @@ const SignIn = (props) => {
     const signIn = async () => {
       console.log(`Authenticating ${username} and signing in...`);
       try {
-        isUserAuthenicated = await serverRequests.authenticateUser(username, password);
+        const userAuthResponse = await serverRequests.authenticateUser(username, password);
         // login with provider
-        if (isUserAuthenicated === 'true') {
+        if (userAuthResponse.valid === 'true') {
           const encodedLogin = Base64.encode(username + ':' + password);
           updateUserResponse(encodedLogin).then((userState) => {
             console.log(`${username} is successfully logged in!`);
