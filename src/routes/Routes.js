@@ -21,8 +21,9 @@ const navigationOptions = {
 
 const AppScreens = () => {
   const isSignedIn = useSelector(state => state.home.isSignedIn);
+  const user = useSelector(state => state.user);
   return (
-    <AppStack.Navigator initialRouteName={isSignedIn ? 'HomeScreen' : 'SignIn'}>
+    <AppStack.Navigator initialRouteName={isSignedIn && user.name ? 'HomeScreen' : 'SignIn'}>
       <Stack.Screen
         name={'SignIn'}
         component={SignIn}
