@@ -32,6 +32,7 @@ const homeStyles = StyleSheet.create({
     color: themes.PRIMARY_TEXT_COLOR,
     fontSize: themes.PRIMARY_TEXT_SIZE,
     fontWeight: 'bold',
+    textAlign: 'center',
   },
   offlineMapLabelContainer: {
     position: 'absolute',

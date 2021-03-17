@@ -104,25 +104,28 @@ const RightSideButtons = (props) => {
                 useProject.getSelectedDatasetFromId().name, 20)}
               </Text>
               <View style={commonStyles.buttonContainer}>
-                <Button
+                {props.mapMode !== MAP_MODES.DRAW.POINT ? <Button
                   containerStyle={{alignContent: 'center'}}
                   buttonStyle={homeStyles.drawToolsButtons}
                   titleStyle={homeStyles.drawToolsTitle}
                   title={'End Draw'}
                   type={'clear'}
-                  disabled={props.mapMode === MAP_MODES.DRAW.POINT}
                   onPress={props.endDraw}
                 />
+                : <Text style={{textAlign: 'center'}}>Place a point on the map</Text>}
               </View>
             </View>
           )}
           <View style={{flexDirection: 'row'}}>
             <IconButton
               style={{top: 5}}
-              source={props.mapMode === MAP_MODES.DRAW.POINT
+              source={(props.mapMode === MAP_MODES.DRAW.POINT)
                 ? require('../../assets/icons/PointButton_pressed.png')
-                : require('../../assets/icons/PointButton.png')}
-              onPress={() => props.clickHandler(MAP_MODES.DRAW.POINT)}
+                : (props.mapMode === MAP_MODES.DRAW.POINTLOCATION)
+                ? require('../../assets/icons/PointButtonCurrentLocation_pressed.png')
+                : require('../../assets/icons/PointButtonCurrentLocation.png')}
+              onPress={() => props.mapMode !== MAP_MODES.DRAW.POINT && props.clickHandler(MAP_MODES.DRAW.POINTLOCATION)}
+              onLongPress={() => props.clickHandler(MAP_MODES.DRAW.POINT)}
             />
             <IconButton
               style={{top: 5}}

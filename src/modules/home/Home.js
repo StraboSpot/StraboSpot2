@@ -320,8 +320,12 @@ const Home = () => {
       case MAP_MODES.DRAW.POLYGON:
       case MAP_MODES.DRAW.FREEHANDPOLYGON:
       case MAP_MODES.DRAW.FREEHANDLINE:
+      case MAP_MODES.DRAW.POINTLOCATION:
         dispatch(clearedSelectedSpots());
-        if (!isEmpty(selectedDataset)) setDraw(name).catch(console.error);
+        if (!isEmpty(selectedDataset) && name === MAP_MODES.DRAW.POINTLOCATION) {
+          setPointAtCurrentLocation()
+        }
+        else if (!isEmpty(selectedDataset)) setDraw(name).catch(console.error);
         else Alert.alert('No Current Dataset', 'A current dataset needs to be set before drawing Spots.');
         break;
       case 'endDraw':
@@ -838,6 +842,19 @@ const Home = () => {
       'editButtonsVisible': false,
       'drawButtonsVisible': true,
     });
+  };
+
+  const setPointAtCurrentLocation = async () => {
+    try{
+      await useMaps.setPointAtCurrentLocation();
+      toastRef.current.show(
+        `Point Spot Added at Current\n Location to Dataset ${useProject.getSelectedDatasetFromId().name.toUpperCase()}`
+      );
+      openNotebookPanel();
+    }
+    catch (err){
+      console.error('Error setting point to current location', err);
+    }
   };
 
   const startEdit = () => {

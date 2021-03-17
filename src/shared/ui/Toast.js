@@ -12,8 +12,8 @@ const ToastPopup = (props) => {
       position='top'
       positionValue={300}
       fadeInDuration={500}
-      fadeOutDuration={1000}
-      opacity={0.8}
+      fadeOutDuration={2000}
+      opacity={0.9}
       textStyle={homeStyles.photoSavedToastText}
     />
   );
