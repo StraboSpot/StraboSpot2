@@ -14,8 +14,8 @@ const useMeasurements = () => {
   const compassMeasurements = useSelector(state => state.compass.measurements);
   const compassMeasurementTypes = useSelector(state => state.compass.measurementTypes);
   const spot = useSelector(state => state.spot.selectedSpot);
-  const useMeasurementTemplates = useSelector(state => state.project.project.templates.useMeasurementTemplates);
-  const activeMeasurementTemplates = useSelector(state => state.project.project.templates.activeMeasurementTemplates);
+  const useMeasurementTemplates = useSelector(state => state.project.project?.templates?.useMeasurementTemplates);
+  const activeMeasurementTemplates = useSelector(state => state.project.project?.templates?.activeMeasurementTemplates);
 
   const createNewMeasurement = () => {
     let measurements = [];
