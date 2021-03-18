@@ -751,7 +751,7 @@
 				CODE_SIGN_ENTITLEMENTS = StraboSpot2/StraboSpot2.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = 7WNF3AUFF8;
 				ENABLE_BITCODE = NO;
@@ -826,7 +826,7 @@
 					"\"${PODS_ROOT}/CocoaLibEvent/lib\"",
 					"\"${PODS_ROOT}/OpenSSL-Universal/ios/lib\"",
 				);
-				MARKETING_VERSION = 0.30.2;
+				MARKETING_VERSION = 0.31.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -853,7 +853,7 @@
 				CODE_SIGN_ENTITLEMENTS = StraboSpot2/StraboSpot2.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 7WNF3AUFF8;
 				ENABLE_BITCODE = YES;
 				HEADER_SEARCH_PATHS = (
@@ -863,7 +863,7 @@
 				INFOPLIST_FILE = StraboSpot2/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.6;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks /usr/lib/swift $(inherited)";
-				MARKETING_VERSION = 0.30.2;
+				MARKETING_VERSION = 0.31.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
