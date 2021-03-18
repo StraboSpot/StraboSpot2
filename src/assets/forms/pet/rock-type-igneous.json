@@ -32,7 +32,7 @@
     },
     {
       "type": "select_one ls02q17",
-      "name": "Characterize_migmatite",
+      "name": "char_mig_ig",
       "label": "Characterize migmatite",
       "required": "false",
       "relevant": "selected(${plutonic_rock_type}, 'migmatite')"
@@ -86,12 +86,12 @@
       "name": "color_index_source_pluton",
       "label": "Color Index Source",
       "required": "false",
-      "relevant": "selected(${igneous_rock_class}, 'plutonic')"
+      "relevant": "${color_index_pluton} != ''"
     },
     {
       "type": "integer",
       "name": "pluton_characteristic_size_of",
-      "label": "Characteristic size of crystals, mm",
+      "label": "Characteristic size of crystals (mm)",
       "required": "false",
       "relevant": "selected(${igneous_rock_class}, 'plutonic')"
     },
@@ -186,7 +186,7 @@
       "name": "color_index_source_volc",
       "label": "Color Index Source",
       "required": "false",
-      "relevant": "selected(${igneous_rock_class}, 'volcanic')"
+      "relevant": "${color_index_volc} != ''"
     },
     {
       "type": "integer",
@@ -237,73 +237,16 @@
       "type": "end_group"
     },
     {
-      "type": "begin_group",
-      "name": "group_pc7si98",
-      "label": "Alteration,Ore",
-      "required": "false"
-    },
-    {
-      "type": "select_one uq4ie19",
-      "name": "ore_type",
-      "label": "Alteration, Ore Rock Type",
-      "hint": "Specific alteration/ore rock type",
-      "required": "false",
-      "appearance": "horizontal-compact"
-    },
-    {
       "type": "text",
-      "name": "other_alteration_type",
-      "label": "Other",
-      "required": "false",
-      "relevant": "${ore_type} = 'other'"
-    },
-    {
-      "type": "select_multiple xa5un89",
-      "name": "hydrothermal_alteration",
-      "label": "Hydrothermal Alteration",
-      "hint": "Hydrothermal alteration type",
-      "required": "false",
-      "appearance": "horizontal-compact"
-    },
-    {
-      "type": "text",
-      "name": "other_hydrothermal_alteration",
-      "label": "Other",
-      "required": "false",
-      "relevant": "selected(${hydrothermal_alteration}, 'other')"
-    },
-    {
-      "type": "text",
-      "name": "alteration_host_rock",
-      "label": "Host Rock",
-      "required": "false"
-    },
-    {
-      "type": "text",
-      "name": "magmatic_fluid_source",
-      "label": "Magmatic fluid source",
-      "required": "false"
-    },
-    {
-      "type": "text",
-      "name": "mineralized_elements",
-      "label": "Mineralized Elements",
-      "required": "false"
-    },
-    {
-      "type": "text",
-      "name": "notes_ore",
+      "name": "notes_igneous",
       "label": "Notes",
       "required": "false",
       "appearance": "multiline"
     },
     {
-      "type": "end_group"
-    },
-    {
       "type": "calculate",
       "name": "__version__",
-      "calculation": "'vFoezyVPpG4QPScd8zuEKq'"
+      "calculation": "'vUjCS4SxaLStxFCtqytWEY'"
     }
   ],
   "choices": [
@@ -848,164 +791,11 @@
       "list_name": "kc4rs46",
       "name": "other",
       "label": "other"
-    },
-    {
-      "list_name": "uq4ie19",
-      "name": "skarn",
-      "label": "skarn"
-    },
-    {
-      "list_name": "uq4ie19",
-      "name": "hornfels",
-      "label": "hornfels",
-      "order": "1"
-    },
-    {
-      "list_name": "uq4ie19",
-      "name": "dolorite_mica_",
-      "label": "dolorite/mica replacement",
-      "order": "2"
-    },
-    {
-      "list_name": "uq4ie19",
-      "name": "rhodingite",
-      "label": "rodingite",
-      "order": "3"
-    },
-    {
-      "list_name": "uq4ie19",
-      "name": "carbonatite",
-      "label": "carbonatite",
-      "order": "4"
-    },
-    {
-      "list_name": "uq4ie19",
-      "name": "chromite_ore",
-      "label": "chromite ore",
-      "order": "5"
-    },
-    {
-      "list_name": "uq4ie19",
-      "name": "magmatic_hoste",
-      "label": "magmatic-hosted ore",
-      "order": "6"
-    },
-    {
-      "list_name": "uq4ie19",
-      "name": "pegmatite_host",
-      "label": "pegmatite-hosted ore",
-      "order": "7"
-    },
-    {
-      "list_name": "uq4ie19",
-      "name": "vein_hosted_or",
-      "label": "vein-hosted ore",
-      "order": "8"
-    },
-    {
-      "list_name": "uq4ie19",
-      "name": "greisen_ore",
-      "label": "greisen ore",
-      "order": "9"
-    },
-    {
-      "list_name": "uq4ie19",
-      "name": "carbonate_repl",
-      "label": "carbonate-replacement",
-      "order": "10"
-    },
-    {
-      "list_name": "uq4ie19",
-      "name": "bif",
-      "label": "BIF",
-      "order": "11"
-    },
-    {
-      "list_name": "uq4ie19",
-      "name": "sedimentary_pr",
-      "label": "sedimentary precipitated ore",
-      "order": "12"
-    },
-    {
-      "list_name": "uq4ie19",
-      "name": "sedimentary_ho",
-      "label": "sedimentary hosted ore (U)",
-      "order": "13"
-    },
-    {
-      "list_name": "uq4ie19",
-      "name": "kimberlite",
-      "label": "kimberlite",
-      "order": "14"
-    },
-    {
-      "list_name": "uq4ie19",
-      "name": "komatiites",
-      "label": "komatiites",
-      "order": "15"
-    },
-    {
-      "list_name": "uq4ie19",
-      "name": "placer",
-      "label": "placer",
-      "order": "16"
-    },
-    {
-      "list_name": "uq4ie19",
-      "name": "laterite",
-      "label": "laterite",
-      "order": "17"
-    },
-    {
-      "list_name": "uq4ie19",
-      "name": "other",
-      "label": "other",
-      "order": "18"
-    },
-    {
-      "list_name": "xa5un89",
-      "name": "propylitic",
-      "label": "propylitic"
-    },
-    {
-      "list_name": "xa5un89",
-      "name": "albite_epidote",
-      "label": "albite-epidote"
-    },
-    {
-      "list_name": "xa5un89",
-      "name": "potassic",
-      "label": "potassic"
-    },
-    {
-      "list_name": "xa5un89",
-      "name": "sodic_calcic",
-      "label": "sodic-calcic"
-    },
-    {
-      "list_name": "xa5un89",
-      "name": "chlorite_seric",
-      "label": "chlorite-sericite"
-    },
-    {
-      "list_name": "xa5un89",
-      "name": "phyllitic",
-      "label": "phyllic"
-    },
-    {
-      "list_name": "xa5un89",
-      "name": "argellic",
-      "label": "argillic"
-    },
-    {
-      "list_name": "xa5un89",
-      "name": "other",
-      "label": "other"
     }
   ],
   "settings": [
     {
-      "version": "vFoezyVPpG4QPScd8zuEKq"
+      "version": "vUjCS4SxaLStxFCtqytWEY"
     }
   ]
 }
