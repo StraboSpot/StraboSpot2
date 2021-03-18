@@ -12,19 +12,22 @@ import {
   NativeEventEmitter, Platform,
 } from 'react-native';
 
-import {ListItem} from 'react-native-elements';
+import {Button, ListItem} from 'react-native-elements';
 import {accelerometer, SensorTypes, setUpdateIntervalForType} from 'react-native-sensors';
 import Sound from 'react-native-sound';
 import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
 import {isEmpty, mod, roundToDecimalPlaces, toDegrees, toRadians} from '../../shared/Helpers';
+import * as themes from '../../shared/styles.constants';
 import modalStyle from '../../shared/ui/modal/modal.style';
 import Slider from '../../shared/ui/Slider';
 import uiStyles from '../../shared/ui/ui.styles';
 import {MODALS} from '../home/home.constants';
+import {setModalVisible} from '../home/home.slice';
 import useMapsHook from '../maps/useMaps';
 import useMeasurementsHook from '../measurements/useMeasurements';
+import {setUseMeasurementTemplates} from '../project/projects.slice';
 import {COMPASS_TOGGLE_BUTTONS} from './compass.constants';
 import {setCompassMeasurements, setCompassMeasurementTypes} from './compass.slice';
 import compassStyles from './compass.styles';
@@ -35,6 +38,8 @@ const Compass = () => {
   const compassMeasurements = useSelector(state => state.compass.measurements);
   const modalVisible = useSelector(state => state.home.modalVisible);
   const selectedMeasurement = useSelector(state => state.spot.selectedMeasurement);
+  const useMeasurementTemplates = useSelector(state => state.project.project.templates.useMeasurementTemplates);
+  const activeMeasurementTemplates = useSelector(state => state.project.project.templates.activeMeasurementTemplates);
 
   const [accelerometerData, setAccelerometerData] = useState({x: 0, y: 0, z: 0, timestamp: null});
   const [accelerometerSubscription, setAccelerometerSubscription] = useState(null);
@@ -184,7 +189,7 @@ const Compass = () => {
     try {
       buttonClick.play();
     }
-    catch (e) {
+ catch (e) {
       console.log('Compass click sound playback failed due to audio decoding errors', e);
     }
     if (isCompassMeasurement) dispatch(setCompassMeasurements(compassData));
@@ -227,6 +232,79 @@ const Compass = () => {
         <Text>Plunge: {compassData.plunge}</Text>
       </View>
     );
+  };
+
+  const renderMeasurementTemplates = () => {
+    return (
+      <React.Fragment>
+        <View style={{borderBottomWidth: 1}}>
+          <ListItem containerStyle={commonStyles.listItem}>
+            <ListItem.Content>
+              <ListItem.Title
+                style={{fontSize: 12, color: themes.PRIMARY_TEXT_COLOR}}>{'Use measurement type templates'}
+              </ListItem.Title>
+            </ListItem.Content>
+            <Switch onValueChange={(value) => dispatch(setUseMeasurementTemplates(value))}
+                    value={useMeasurementTemplates}/>
+          </ListItem>
+        </View>
+        {useMeasurementTemplates && (
+          <View style={{borderBottomWidth: 1}}>
+            {isEmpty(activeMeasurementTemplates[0]) ? (
+                <Button
+                  titleStyle={commonStyles.standardButtonText}
+                  title={'Select Planar Template'}
+                  type={'clear'}
+                  onPress={() => dispatch(setModalVisible({modal: MODALS.NOTEBOOK_MODALS.MEASUREMENT_TEMPLATES_PLANAR}))}
+                />
+              )
+              : (
+                <ListItem containerStyle={commonStyles.listItem}>
+                  <ListItem.Content>
+                    <ListItem.Title
+                      style={commonStyles.listItemTitle}>{activeMeasurementTemplates[0].name}
+                    </ListItem.Title>
+                  </ListItem.Content>
+                  <Button
+                    titleStyle={commonStyles.standardButtonText}
+                    title={'Change'}
+                    type={'clear'}
+                    onPress={() => dispatch(
+                      setModalVisible({modal: MODALS.NOTEBOOK_MODALS.MEASUREMENT_TEMPLATES_PLANAR}))}
+                  />
+                </ListItem>
+              )}
+          </View>
+        )}
+        {useMeasurementTemplates && (
+          <View style={{borderBottomWidth: 1}}>
+            {isEmpty(activeMeasurementTemplates[1]) ? (
+                <Button
+                  titleStyle={commonStyles.standardButtonText}
+                  title={'Select Linear Template'}
+                  type={'clear'}
+                  onPress={() => dispatch(setModalVisible({modal: MODALS.NOTEBOOK_MODALS.MEASUREMENT_TEMPLATES_LINEAR}))}
+                />
+              )
+              : (
+                <ListItem containerStyle={commonStyles.listItem}>
+                  <ListItem.Content>
+                    <ListItem.Title
+                      style={commonStyles.listItemTitle}>{activeMeasurementTemplates[1].name}</ListItem.Title>
+                  </ListItem.Content>
+                  <Button
+                    titleStyle={commonStyles.standardButtonText}
+                    title={'Change'}
+                    type={'clear'}
+                    onPress={() => dispatch(
+                      setModalVisible({modal: MODALS.NOTEBOOK_MODALS.MEASUREMENT_TEMPLATES_LINEAR}))}
+                  />
+                </ListItem>
+              )}
+          </View>
+
+        )}
+      </React.Fragment>);
   };
 
   const renderSlider = () => {
@@ -360,9 +438,10 @@ const Compass = () => {
   return (
     <React.Fragment>
       <View>
+        {renderMeasurementTemplates()}
         <View style={compassStyles.compassContainer}>
           <TouchableOpacity style={modalStyle.textContainer} onPress={() => grabMeasurements()}>
-            <Text style={modalStyle.textStyle}>
+            <Text style={[modalStyle.textStyle, {'paddingTop': 5}]}>
               Tap compass to
               {modalVisible === MODALS.SHORTCUT_MODALS.COMPASS && ' record a new \nmeasurement in a NEW Spot'}
               {modalVisible === MODALS.NOTEBOOK_MODALS.COMPASS

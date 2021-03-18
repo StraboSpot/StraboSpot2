@@ -26,11 +26,21 @@ const projectSlice = createSlice({
     addedDatasets(state, action) {
       state.datasets = action.payload;
     },
+    addedMeasurementTemplates(state, action) {
+      state.project.templates.measurementTemplates = action.payload;
+    },
     addedProject(state, action) {
       if (!action.payload.description) action.payload.description = {};
       if (!action.payload.description.project_name) action.payload.description.project_name = 'Unnamed';
       if (!action.payload.other_features) action.payload.other_features = DEFAULT_GEOLOGIC_TYPES;
       if (!action.payload.relationship_types) action.payload.relationship_types = DEFAULT_RELATIONSHIP_TYPES;
+      if (!action.payload.templates) {
+        action.payload.templates = {
+        useMeasurementTemplates: false,
+        measurementTemplates: [],
+        activeMeasurementTemplates: [],
+      };
+}
       state.project = action.payload;
     },
     addedProjectDescription(state, action) {
@@ -75,11 +85,17 @@ const projectSlice = createSlice({
       if (bool) state.activeDatasetsIds = [...state.activeDatasetsIds, dataset];
       else state.activeDatasetsIds = state.activeDatasetsIds.filter(data => data !== dataset);
     },
+    setActiveMeasurementTemplates(state, action) {
+      state.project.templates.activeMeasurementTemplates = action.payload;
+    },
     setSelectedDataset(state, action) {
       state.selectedDatasetId = action.payload;
     },
     setSelectedTag(state, action) {
       state.selectedTag = action.payload;
+    },
+    setUseMeasurementTemplates(state, action) {
+      state.project.templates.useMeasurementTemplates = action.payload;
     },
     updatedDatasetProperties(state, action) {
       console.log('UpdatedDataset', action.payload);
@@ -109,6 +125,7 @@ export const {
   addedCustomFeatureTypes,
   addedDataset,
   addedDatasets,
+  addedMeasurementTemplates,
   addedProject,
   addedProjectDescription,
   addedSpotsIdsToDataset,
@@ -119,8 +136,10 @@ export const {
   deletedSpotIdFromDataset,
   doesBackupDirectoryExist,
   setActiveDatasets,
+  setActiveMeasurementTemplates,
   setSelectedDataset,
   setSelectedTag,
+  setUseMeasurementTemplates,
   updatedDatasetProperties,
   updatedDatasets,
   updatedProject,

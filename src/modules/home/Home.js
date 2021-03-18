@@ -22,6 +22,7 @@ import LoadingSpinner from '../../shared/ui/Loading';
 import StatusDialogBox from '../../shared/ui/StatusDialogBox';
 import ToastPopup from '../../shared/ui/Toast';
 import CompassModal from '../compass/CompassModal';
+import MeasurementTemplatesModal from '../compass/MeasurementTemplatesModal';
 import Preview from '../images/Preview';
 import useImagesHook from '../images/useImages';
 import {MAIN_MENU_ITEMS, SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.constants';
@@ -519,6 +520,18 @@ const Home = () => {
           onPress={() => modalHandler(NOTEBOOK_PAGES.MEASUREMENT, MODALS.NOTEBOOK_MODALS.COMPASS)}
           type={MODALS.SHORTCUT_MODALS.COMPASS}
         />
+      );
+    }
+    if (modalVisible === MODALS.NOTEBOOK_MODALS.MEASUREMENT_TEMPLATES_PLANAR
+      || modalVisible === MODALS.NOTEBOOK_MODALS.MEASUREMENT_PLANAR_TEMPLATE_FORM) {
+      return (
+        <MeasurementTemplatesModal type={'planar_orientation'}/>
+      );
+    }
+    if (modalVisible === MODALS.NOTEBOOK_MODALS.MEASUREMENT_TEMPLATES_LINEAR
+      || modalVisible === MODALS.NOTEBOOK_MODALS.MEASUREMENT_LINEAR_TEMPLATE_FORM) {
+      return (
+        <MeasurementTemplatesModal type={'linear_orientation'}/>
       );
     }
     if (modalVisible === MODALS.NOTEBOOK_MODALS.SAMPLE && isNotebookPanelVisible && !isEmpty(selectedSpot)) {
