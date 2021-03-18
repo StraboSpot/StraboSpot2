@@ -68,9 +68,10 @@ const RockTypePage = (props) => {
         return fieldNames.includes(key) ? acc : {...acc, [key]: value};
       }, {});
       const updatedRockType = petData.rock_type ? [...new Set([...petData.rock_type, props.type])] : [props.type];
-
-      setPetData({...petDataFiltered, ...petDataToCopyFiltered, rock_type: updatedRockType});
-      formRef.current.resetForm();
+      const updatedPetData = {...petDataFiltered, ...petDataToCopyFiltered, rock_type: updatedRockType};
+      Object.keys(formRef.current.values).map(key => formRef.current.setFieldValue(key, undefined, false));
+      Object.entries(updatedPetData).map(([key, value]) => formRef.current.setFieldValue(key, value, false));
+      setPetData(updatedPetData);
       preFormRef.current.resetForm();
     };
 
@@ -145,7 +146,7 @@ const RockTypePage = (props) => {
           component={(formProps) => Form({formName: formName, ...formProps})}
           initialValues={petData}
           validateOnChange={true}
-          enableReinitialize={true}
+          enableReinitialize={false}
         />
       </View>
     );
@@ -164,7 +165,8 @@ const RockTypePage = (props) => {
       setPetData(editedPetData);
       dispatch(editedSpotProperties({field: 'pet', value: editedPetData}));
       await formCurrent.resetForm();
-      Alert.alert('Data Saved', 'Rock data saved to Spot.');
+      Alert.alert('Data Saved',
+        (props.type === 'alteration_or' ? 'Economic' : toTitleCase(props.type) + ' Rock') + ' data saved to Spot.');
     }
     catch (err) {
       console.log('Error submitting form', err);
