@@ -189,7 +189,7 @@ const Compass = () => {
     try {
       buttonClick.play();
     }
-    catch (e) {
+ catch (e) {
       console.log('Compass click sound playback failed due to audio decoding errors', e);
     }
     if (isCompassMeasurement) dispatch(setCompassMeasurements(compassData));
@@ -239,11 +239,10 @@ const Compass = () => {
       <React.Fragment>
         <View style={{borderBottomWidth: 1}}>
           <ListItem containerStyle={commonStyles.listItem}>
-            <ListItem.Content containerStyle={commonStyles.listItem}>
-              <ListItem.Title style={{
-                fontSize: 12,
-                color: themes.PRIMARY_TEXT_COLOR,
-              }}>{'Use measurement type templates'}</ListItem.Title>
+            <ListItem.Content>
+              <ListItem.Title
+                style={{fontSize: 12, color: themes.PRIMARY_TEXT_COLOR}}>{'Use measurement type templates'}
+              </ListItem.Title>
             </ListItem.Content>
             <Switch onValueChange={(value) => dispatch(setUseMeasurementTemplates(value))}
                     value={useMeasurementTemplates}/>
@@ -252,51 +251,56 @@ const Compass = () => {
         {useMeasurementTemplates && (
           <View style={{borderBottomWidth: 1}}>
             {isEmpty(activeMeasurementTemplates[0]) ? (
-              <Button
-                titleStyle={commonStyles.standardButtonText}
-                title={'Select Planar Template'}
-                type={'clear'}
-                onPress={() => dispatch(setModalVisible({modal: MODALS.NOTEBOOK_MODALS.MEASUREMENT_TEMPLATES_PLANAR}))}
-              />) : (
-              <ListItem containerStyle={commonStyles.listItem}>
-                <ListItem.Content>
-                  <ListItem.Title
-                    style={commonStyles.listItemTitle}>{activeMeasurementTemplates[0].name}</ListItem.Title>
-                </ListItem.Content>
                 <Button
                   titleStyle={commonStyles.standardButtonText}
-                  title={'Change'}
+                  title={'Select Planar Template'}
                   type={'clear'}
-                  onPress={() => dispatch(
-                    setModalVisible({modal: MODALS.NOTEBOOK_MODALS.MEASUREMENT_TEMPLATES_PLANAR}))}
+                  onPress={() => dispatch(setModalVisible({modal: MODALS.NOTEBOOK_MODALS.MEASUREMENT_TEMPLATES_PLANAR}))}
                 />
-              </ListItem>
-            )}
+              )
+              : (
+                <ListItem containerStyle={commonStyles.listItem}>
+                  <ListItem.Content>
+                    <ListItem.Title
+                      style={commonStyles.listItemTitle}>{activeMeasurementTemplates[0].name}
+                    </ListItem.Title>
+                  </ListItem.Content>
+                  <Button
+                    titleStyle={commonStyles.standardButtonText}
+                    title={'Change'}
+                    type={'clear'}
+                    onPress={() => dispatch(
+                      setModalVisible({modal: MODALS.NOTEBOOK_MODALS.MEASUREMENT_TEMPLATES_PLANAR}))}
+                  />
+                </ListItem>
+              )}
           </View>
         )}
         {useMeasurementTemplates && (
           <View style={{borderBottomWidth: 1}}>
             {isEmpty(activeMeasurementTemplates[1]) ? (
-              <Button
-                titleStyle={commonStyles.standardButtonText}
-                title={'Select Linear Template'}
-                type={'clear'}
-                onPress={() => dispatch(setModalVisible({modal: MODALS.NOTEBOOK_MODALS.MEASUREMENT_TEMPLATES_LINEAR}))}
-              />) : (
-              <ListItem containerStyle={commonStyles.listItem}>
-                <ListItem.Content containerStyle={commonStyles.listItem}>
-                  <ListItem.Title
-                    style={commonStyles.listItemTitle}>{activeMeasurementTemplates[1].name}</ListItem.Title>
-                </ListItem.Content>
                 <Button
                   titleStyle={commonStyles.standardButtonText}
-                  title={'Change'}
+                  title={'Select Linear Template'}
                   type={'clear'}
-                  onPress={() => dispatch(
-                    setModalVisible({modal: MODALS.NOTEBOOK_MODALS.MEASUREMENT_TEMPLATES_LINEAR}))}
+                  onPress={() => dispatch(setModalVisible({modal: MODALS.NOTEBOOK_MODALS.MEASUREMENT_TEMPLATES_LINEAR}))}
                 />
-              </ListItem>
-            )}
+              )
+              : (
+                <ListItem containerStyle={commonStyles.listItem}>
+                  <ListItem.Content>
+                    <ListItem.Title
+                      style={commonStyles.listItemTitle}>{activeMeasurementTemplates[1].name}</ListItem.Title>
+                  </ListItem.Content>
+                  <Button
+                    titleStyle={commonStyles.standardButtonText}
+                    title={'Change'}
+                    type={'clear'}
+                    onPress={() => dispatch(
+                      setModalVisible({modal: MODALS.NOTEBOOK_MODALS.MEASUREMENT_TEMPLATES_LINEAR}))}
+                  />
+                </ListItem>
+              )}
           </View>
 
         )}

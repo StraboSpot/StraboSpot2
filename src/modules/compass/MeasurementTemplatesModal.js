@@ -38,12 +38,8 @@ const MeasurementTemplatesModal = (props) => {
   }, [selectedTemplate]);
 
   useEffect(() => {
-    if (tabularOrientation) {
-      setFormName(['measurement_bulk', 'tabular_orientation']);
-    }
-    else {
-      setFormName(['measurement_bulk', props.type]);
-    }
+    tabularOrientation ? setFormName(['measurement_bulk', 'tabular_orientation']) : setFormName(
+      ['measurement_bulk', props.type]);
   }, [tabularOrientation]);
 
   const clearTemplate = () => {
@@ -56,8 +52,8 @@ const MeasurementTemplatesModal = (props) => {
     if (displayForm) {
       setDisplayForm(false);
       props.type === 'planar_orientation' ? dispatch(
-        setModalVisible({modal: MODALS.NOTEBOOK_MODALS.MEASUREMENT_TEMPLATES_PLANAR})) : dispatch(
-        setModalVisible({modal: MODALS.NOTEBOOK_MODALS.MEASUREMENT_TEMPLATES_LINEAR}));
+        setModalVisible({modal: MODALS.NOTEBOOK_MODALS.MEASUREMENT_TEMPLATES_PLANAR}))
+        : dispatch(setModalVisible({modal: MODALS.NOTEBOOK_MODALS.MEASUREMENT_TEMPLATES_LINEAR}));
     }
     else dispatch(setModalVisible({modal: MODALS.NOTEBOOK_MODALS.COMPASS}));
   };
