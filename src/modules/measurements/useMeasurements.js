@@ -14,11 +14,17 @@ const useMeasurements = () => {
   const compassMeasurements = useSelector(state => state.compass.measurements);
   const compassMeasurementTypes = useSelector(state => state.compass.measurementTypes);
   const spot = useSelector(state => state.spot.selectedSpot);
+  const useMeasurementTemplates = useSelector(state => state.project.project.templates.useMeasurementTemplates);
+  const activeMeasurementTemplates = useSelector(state => state.project.project.templates.activeMeasurementTemplates);
 
   const createNewMeasurement = () => {
     let measurements = [];
     if (compassMeasurementTypes.includes(COMPASS_TOGGLE_BUTTONS.PLANAR)) {
       let newPlanarMeasurement = {type: 'planar_orientation'};
+      if (useMeasurementTemplates && !isEmpty(activeMeasurementTemplates[0])) {
+        if (activeMeasurementTemplates[0].subType === 'tabular_orientation') newPlanarMeasurement.type = 'tabular_orientation';
+        Object.assign(newPlanarMeasurement, activeMeasurementTemplates[0].values);
+      }
       if (!compassMeasurements.manual) {
         newPlanarMeasurement = {
           ...newPlanarMeasurement,
@@ -32,6 +38,9 @@ const useMeasurements = () => {
     }
     if (compassMeasurementTypes.includes(COMPASS_TOGGLE_BUTTONS.LINEAR)) {
       let newLinearMeasurement = {type: 'linear_orientation'};
+      if (useMeasurementTemplates && !isEmpty(activeMeasurementTemplates[1])) {
+        Object.assign(newLinearMeasurement, activeMeasurementTemplates[1].values);
+      }
       if (!compassMeasurements.manual) {
         newLinearMeasurement = {
           ...newLinearMeasurement,

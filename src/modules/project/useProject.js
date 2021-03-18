@@ -82,6 +82,7 @@ const useProject = () => {
       modified_timestamp: Date.now(),
       other_features: DEFAULT_GEOLOGIC_TYPES,
       relationship_types: DEFAULT_RELATIONSHIP_TYPES,
+      templates: {useMeasurementTemplates: false, activeMeasurementTemplates: [], measurementTemplates: []},
     };
     dispatch(addedProjectDescription(currentProject));
     const defaultDataset = await createDataset();
