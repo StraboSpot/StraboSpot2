@@ -74,6 +74,7 @@ import {
   setOnlineStatus,
   setUploadModalVisible,
   setSelectedProject,
+  setLoadingStatus,
 } from './home.slice';
 import homeStyles from './home.style';
 import LeftSideButtons from './LeftSideButtons';
@@ -324,7 +325,7 @@ const Home = () => {
       case MAP_MODES.DRAW.POINTLOCATION:
         dispatch(clearedSelectedSpots());
         if (!isEmpty(selectedDataset) && name === MAP_MODES.DRAW.POINTLOCATION) {
-          setPointAtCurrentLocation()
+          setPointAtCurrentLocation();
         }
         else if (!isEmpty(selectedDataset)) setDraw(name).catch(console.error);
         else Alert.alert('No Current Dataset', 'A current dataset needs to be set before drawing Spots.');
@@ -407,11 +408,13 @@ const Home = () => {
   };
 
   const endDraw = async () => {
+    dispatch(setLoadingStatus({view: 'home', bool: true}));
     const newOrEditedSpot = await mapComponentRef.current.endDraw();
     setMapMode(MAP_MODES.VIEW);
     if (!isEmpty(newOrEditedSpot) && !isSelectingForStereonet) openNotebookPanel(NOTEBOOK_PAGES.OVERVIEW);
     setIsSelectingForStereonet(false);
     setIsSelectingForTagging(false);
+    dispatch(setLoadingStatus({view: 'home', bool: false}));
   };
 
   const goToCurrentLocation = async () => {
@@ -686,7 +689,7 @@ const Home = () => {
       case SIDE_PANEL_VIEWS.TAG_ADD_REMOVE_SPOTS:
         return <TagAddRemoveSpots/>;
       case SIDE_PANEL_VIEWS.USER_PROFILE:
-        return <UserProfile/>
+        return <UserProfile/>;
     }
   };
 
@@ -800,6 +803,10 @@ const Home = () => {
     );
   };
 
+  const renderToastMessage = () => {
+    toastRef.current.show('HELLO!!!');
+  };
+
   const renderUploadModal = () => {
     const activeDatasets = useProject.getActiveDatasets();
     return (
@@ -858,14 +865,17 @@ const Home = () => {
   };
 
   const setPointAtCurrentLocation = async () => {
-    try{
+    try {
+      dispatch(setLoadingStatus({view: 'home', bool: true}));
       await useMaps.setPointAtCurrentLocation();
+      dispatch(setLoadingStatus({view: 'home', bool: false}));
       toastRef.current.show(
-        `Point Spot Added at Current\n Location to Dataset ${useProject.getSelectedDatasetFromId().name.toUpperCase()}`
+        `Point Spot Added at Current\n Location to Dataset ${useProject.getSelectedDatasetFromId().name.toUpperCase()}`,
       );
       openNotebookPanel();
     }
-    catch (err){
+    catch (err) {
+      dispatch(setLoadingStatus({view: 'home', bool: false}));
       console.error('Error setting point to current location', err);
     }
   };
