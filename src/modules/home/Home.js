@@ -351,7 +351,7 @@ const Home = () => {
         mapComponentRef.current.zoomToSpotsExtent();
         break;
       case 'saveMap':
-        dispatch(setOfflineMapsModalVisible({bool: !isOfflineMapModalVisible}));
+        dispatch(setOfflineMapsModalVisible(!isOfflineMapModalVisible));
         break;
       case 'addTag':
         console.log(`${name}`, ' was clicked');
