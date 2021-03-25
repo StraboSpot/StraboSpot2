@@ -30,13 +30,12 @@
     "formik": "^2.2.6",
     "js-base64": "^3.6.0",
     "lodash.isequal": "^4.5.0",
-    "metro-react-native-babel-preset": "^0.65.2",
     "moment": "^2.29.1",
     "password-validator": "^5.1.1",
     "proj4": "^2.7.2",
     "prop-types": "^15.7.2",
-    "react": "16.13.1",
-    "react-native": "^0.63.4",
+    "react": "17.0.1",
+    "react-native": "0.64.0",
     "react-native-collapsible": "^1.5.3",
     "react-native-document-picker": "^5.0.1",
     "react-native-easy-toast": "^2.0.0",
@@ -76,7 +75,9 @@
     "babel-plugin-transform-remove-console": "^6.9.4",
     "eslint": "^7.22.0",
     "eslint-plugin-import": "^2.22.1",
-    "jest": "^26.6.3"
+    "jest": "^26.6.3",
+    "metro-react-native-babel-preset": "^0.65.2",
+    "react-test-renderer": "17.0.1"
   },
   "jest": {
     "preset": "react-native"
