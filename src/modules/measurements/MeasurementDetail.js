@@ -459,6 +459,7 @@ const MeasurementDetailPage = () => {
     });
     dispatch(setSelectedAttributes(editedSelectedMeasurements));
     dispatch(editedSpotProperties({field: 'orientation_data', value: orientationDataCopy}));
+    dispatch(setSelectedMeasurement({}));
     await formCurrent.resetForm();
     console.log('Finished saving form data to Spot');
   };
