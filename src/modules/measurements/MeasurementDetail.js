@@ -129,6 +129,11 @@ const MeasurementDetailPage = () => {
     dispatch(setNotebookPageVisibleToPrev());
   };
 
+  const clearSelectedMeasurements = () => {
+    dispatch(setSelectedMeasurement({}));
+    dispatch(setSelectedAttributes([]));
+  }
+
   const confirmDeleteMeasurement = () => {
     Alert.alert(
       'Delete Measurement',
@@ -156,12 +161,16 @@ const MeasurementDetailPage = () => {
           onPress: () => dispatch(setSelectedMeasurement({})),
         }, {
           text: 'Yes',
-          onPress: () => saveForm(formCurrent),
+          onPress:async () => {
+            const saved = await saveForm(formCurrent);
+            console.log(saved)
+            clearSelectedMeasurements()
+          },
         }],
         {cancelable: false},
       );
     }
-    else dispatch(setSelectedMeasurement({}));
+    else clearSelectedMeasurements();
   };
 
   // Delete a single measurement
@@ -459,9 +468,9 @@ const MeasurementDetailPage = () => {
     });
     dispatch(setSelectedAttributes(editedSelectedMeasurements));
     dispatch(editedSpotProperties({field: 'orientation_data', value: orientationDataCopy}));
-    dispatch(setSelectedMeasurement({}));
     await formCurrent.resetForm();
     console.log('Finished saving form data to Spot');
+    return 'Saved!';
   };
 
   const saveFormAndGo = async () => {
