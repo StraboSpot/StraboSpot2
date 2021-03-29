@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect, useLayoutEffect, useRef} from 'react';
 import {Alert, FlatList, View} from 'react-native';
 
 import {Formik} from 'formik';
@@ -20,7 +20,7 @@ const MineralReactionDetail = (props) => {
 
   const formRef = useRef(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     return () => confirmLeavePage();
   }, []);
 

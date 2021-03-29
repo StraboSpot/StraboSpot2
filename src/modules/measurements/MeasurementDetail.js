@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
 import {Alert, FlatList, Text, View} from 'react-native';
 
 import {Formik} from 'formik';
@@ -37,7 +37,7 @@ const MeasurementDetailPage = () => {
   const [formName, setFormName] = useState([]);
   const [isAddingAssociatedMeasurementAfterSave, setIsAddingAssociatedMeasurementAfterSave] = useState(false);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     return () => confirmLeavePage();
   }, []);
 

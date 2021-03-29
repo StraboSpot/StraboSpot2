@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useLayoutEffect, useRef, useState} from 'react';
 import {Alert, FlatList, View} from 'react-native';
 
 import {Field, Formik} from 'formik';
@@ -29,7 +29,7 @@ const RockTypePage = (props) => {
   const formRef = useRef(null);
   const preFormRef = useRef(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     console.log('Pet Data', petData);
     getSpotsWithRockType();
     return () => confirmLeavePage();

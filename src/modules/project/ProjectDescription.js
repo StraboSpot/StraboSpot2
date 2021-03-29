@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect, useLayoutEffect, useRef} from 'react';
 import {Alert, View} from 'react-native';
 
 import {Formik} from 'formik';
@@ -25,11 +25,11 @@ const ProjectDescription = () => {
     magnetic_declination: project.description.magnetic_declination || 0,
   };
 
-  useEffect(() => {
-    console.log('UE ProjectDescription []');
-    console.log('Project Description', projectDescription);
-    return () => saveForm();
-  }, []);
+  useLayoutEffect(() => {
+      console.log('UE ProjectDescription []');
+      console.log('Project Description', projectDescription);
+      return () => saveForm();
+  },[])
 
   // Given a name, get the label for it
   const getLabel = (key) => {

@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
 import {View, TextInput, Keyboard, Animated} from 'react-native';
 
 import {Formik} from 'formik';
@@ -50,7 +50,7 @@ const UserProfile = (props) => {
     };
   }, []);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     console.log('UE userProfile []');
     return () => saveForm();
   }, []);

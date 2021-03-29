@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
 import {Alert, FlatList, View} from 'react-native';
 
 import {Formik} from 'formik';
@@ -23,7 +23,7 @@ const SampleDetailPage = () => {
   const selectedSample = useSelector(state => state.spot.selectedAttributes[0]);
   const formRef = useRef(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     console.log('In SampleDetailPage useEffect', selectedSample);
     setFormName(['general', 'sample']);
     return () => confirmLeavePage();

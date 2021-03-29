@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useLayoutEffect, useRef, useState} from 'react';
 import {Alert, FlatList, Text, TextInput, View} from 'react-native';
 
 import {Field, Formik} from 'formik';
@@ -30,7 +30,7 @@ const OtherFeatureDetail = (props) => {
   let description = useState(selectedFeature.description === undefined ? '' : selectedFeature.description);
   const formRef = useRef(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     return () => confirmLeavePage();
   }, []);
 
