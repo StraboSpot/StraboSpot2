@@ -1,5 +1,5 @@
-import React, {useRef, useState} from 'react';
-import {Animated, Image, Text, View} from 'react-native';
+import React, {useState} from 'react';
+import {Animated, Text, View} from 'react-native';
 
 import {Button} from 'react-native-elements';
 import {useSelector} from 'react-redux';
@@ -152,26 +152,37 @@ const RightSideButtons = (props) => {
             </View>
           )}
           <View style={{flexDirection: 'row'}}>
+            {currentImageBasemap ? (
+                <IconButton
+                  style={{top: 5}}
+                  source={props.mapMode === MAP_MODES.DRAW.POINT
+                    ? require('../../assets/icons/PointButton_pressed.png')
+                    : require('../../assets/icons/PointButton.png')}
+                  onPress={() => {
+                    props.clickHandler(MAP_MODES.DRAW.POINT);
+                  }}
+                />)
+              : (
+                <IconButton
+                  style={{top: 5}}
+                  source={changeDrawType(MAP_MODES.DRAW.POINT)}
+                  onPress={() => {
+                    if (pointIconType.point === MAP_MODES.DRAW.POINT) props.clickHandler(MAP_MODES.DRAW.POINT);
+                    else props.clickHandler(MAP_MODES.DRAW.POINTLOCATION);
+                  }}
+                  onLongPress={() => {
+                    setPointIconType(prevState => ({
+                        ...prevState,
+                        point: pointIconType.point === MAP_MODES.DRAW.POINT
+                          ? MAP_MODES.DRAW.POINTLOCATION
+                          : MAP_MODES.DRAW.POINT,
+                      }),
+                    );
+                  }}
+                />)}
             <IconButton
               style={{top: 5}}
-              source={changeDrawType('point')}
-              onPress={() => {
-                if (pointIconType.point === MAP_MODES.DRAW.POINT) props.clickHandler(MAP_MODES.DRAW.POINT);
-                else props.clickHandler(MAP_MODES.DRAW.POINTLOCATION);
-              }}
-              onLongPress={() => {
-                setPointIconType(prevState => ({
-                    ...prevState,
-                    point: pointIconType.point === MAP_MODES.DRAW.POINT
-                      ? MAP_MODES.DRAW.POINTLOCATION
-                      : MAP_MODES.DRAW.POINT,
-                  }),
-                );
-              }}
-            />
-            <IconButton
-              style={{top: 5}}
-              source={changeDrawType('line')}
+              source={changeDrawType(MAP_MODES.DRAW.LINE)}
               onPress={() => {
                 if (pointIconType.line === MAP_MODES.DRAW.LINE) props.clickHandler(MAP_MODES.DRAW.LINE);
                 else props.clickHandler(MAP_MODES.DRAW.FREEHANDLINE);
@@ -186,7 +197,7 @@ const RightSideButtons = (props) => {
             />
             <IconButton
               style={{top: 5}}
-              source={changeDrawType('polygon')}
+              source={changeDrawType(MAP_MODES.DRAW.POLYGON)}
               onPress={() => {
                 if (pointIconType.polygon === MAP_MODES.DRAW.POLYGON) props.clickHandler(MAP_MODES.DRAW.POLYGON);
                 else props.clickHandler(MAP_MODES.DRAW.FREEHANDPOLYGON);
