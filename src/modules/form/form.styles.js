@@ -43,6 +43,10 @@ const styles = StyleSheet.create({
     fontSize: themes.PRIMARY_TEXT_SIZE,
     color: themes.PRIMARY_TEXT_COLOR,
   },
+  fieldValueMultiline: {
+    height: 75,
+    textAlignVertical: 'top',
+  },
   fieldError: {
     color: themes.WARNING_COLOR,
     textAlign: 'center',

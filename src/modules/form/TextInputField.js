@@ -30,11 +30,10 @@ const TextInputField = ({
       <TextInput
         onChangeText={onMyChange && typeof onMyChange === 'function' ? val => onMyChange(name, val) : onChange(name)}
         onBlur={onBlur(name)}
-        style={formStyles.fieldValue}
+        style={props.appearance === 'multiline' ? {...formStyles.fieldValue, ...formStyles.fieldValueMultiline} : formStyles.fieldValue}
         value={value}
         placeholder={props.placeholder}
         multiline={props.appearance === 'multiline'}
-        numberOfLines={props.appearance === 'multiline' ? 3 : 1}
       />
       {errors[name] && <Text style={formStyles.fieldError}>{errors[name]}</Text>}
     </React.Fragment>
