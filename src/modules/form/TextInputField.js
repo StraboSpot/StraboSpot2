@@ -30,10 +30,12 @@ const TextInputField = ({
       <TextInput
         onChangeText={onMyChange && typeof onMyChange === 'function' ? val => onMyChange(name, val) : onChange(name)}
         onBlur={onBlur(name)}
-        style={props.appearance === 'multiline' ? {...formStyles.fieldValue, ...formStyles.fieldValueMultiline} : formStyles.fieldValue}
+        style={props.appearance === 'multiline' ? {...formStyles.fieldValue, ...formStyles.fieldValueMultiline}
+        : props.appearance === 'full' ? {...formStyles.fieldValue, ...formStyles.fieldValueFull}
+        : formStyles.fieldValue}
         value={value}
         placeholder={props.placeholder}
-        multiline={props.appearance === 'multiline'}
+        multiline={props.appearance === 'multiline' || props.appearance === 'full'}
         autoFocus={props.autoFocus}
       />
       {errors[name] && <Text style={formStyles.fieldError}>{errors[name]}</Text>}

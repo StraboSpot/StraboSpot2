@@ -47,6 +47,10 @@ const styles = StyleSheet.create({
     height: 75,
     textAlignVertical: 'top',
   },
+  fieldValueFull: {
+    height: '100%',
+    textAlignVertical: 'top',
+  },
   fieldError: {
     color: themes.WARNING_COLOR,
     textAlign: 'center',

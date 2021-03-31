@@ -57,7 +57,7 @@ const Notes = () => {
       await saveNote(currentForm.values.note, pageTransition);
       await currentForm.resetForm();
     }
- catch (err) {
+    catch (err) {
       console.log('Error submitting form', err);
     }
   };
@@ -107,7 +107,7 @@ const Notes = () => {
                   component={TextInputField}
                   name={'note'}
                   key={'note'}
-                  appearance={'multiline'}
+                  appearance={'full'}
                   autoFocus={true}
                 />
               </ListItem.Content>
