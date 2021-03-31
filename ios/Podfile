@@ -29,3 +29,15 @@ target 'StraboSpot2-tvOS' do
     # Pods for testing
   end
 end
+
+pre_install do |installer|
+  fix_mapbox_events(installer)
+end
+
+pre_install do |installer|
+    $RNMBGL.pre_install(installer)
+  end
+
+  post_install do |installer|
+    $RNMBGL.post_install(installer)
+  end
