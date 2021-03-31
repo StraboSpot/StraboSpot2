@@ -67,18 +67,7 @@ const TagsModal = (props) => {
         useTags.saveTag(tagsToUpdate);
       });
     }
-    else {
-      checkedTagsTemp.map(tag => {
-        let spotsListForTagging = [];
-        selectedSpotsForTagging.map(spot => {
-          if (!useTags.tagSpotExists(tag, spot)) spotsListForTagging.push(spot.properties.id);
-        });
-        let tagCopy = JSON.parse(JSON.stringify(tag));
-        tagCopy.spots = tagCopy.spots.concat(spotsListForTagging);
-        tagsToUpdate.push(tagCopy);
-      });
-      useTags.saveTag(tagsToUpdate);
-    }
+    else useTags.addSpotsToTags(checkedTagsTemp, selectedSpotsForTagging);
     if (props.close) props.close();
   };
 
@@ -102,7 +91,7 @@ const TagsModal = (props) => {
                     name={'searchText'}
                     key={'searchText'}
                     label={'Tag Type'}
-                    choices={TAG_TYPES.map(tagType => ({label: tagType, value: tagType}))}
+                    choices={TAG_TYPES.map(tagType => ({label: useTags.getLabel(tagType), value: tagType}))}
                     single={true}
                   />
                 </ListItem.Content>

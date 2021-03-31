@@ -21,6 +21,20 @@ const useTags = () => {
   const selectedTag = useSelector(state => state.project.selectedTag);
   const tagsDictionary = LABEL_DICTIONARY.project.tags;
 
+  const addSpotsToTags = (tagsList, spotsList) => {
+    let tagsToUpdate = [];
+    tagsList.map(tag => {
+      let spotsListForTagging = [];
+      spotsList.map(spot => {
+        if (!tagSpotExists(tag, spot)) spotsListForTagging.push(spot.properties.id);
+      });
+      let tagCopy = JSON.parse(JSON.stringify(tag));
+      tagCopy.spots = isEmpty(tagCopy.spots) ? spotsListForTagging : tagCopy.spots.concat(spotsListForTagging);
+      tagsToUpdate.push(tagCopy);
+    });
+    saveTag(tagsToUpdate);
+  };
+
   const addTag = () => {
     dispatch(setSelectedTag({}));
     if (modalVisible === MODALS.NOTEBOOK_MODALS.TAGS) {
@@ -86,10 +100,9 @@ const useTags = () => {
 
   const renderSpotCount = (tag) => {
     if (tag.spots) {
-      if (tag.spots.length === 1) return `${tag.spots.length} spot`;
-      return `${tag.spots.length} spots`;
+      return `(${tag.spots.length})`;
     }
-    else return '0 spots';
+    else return '(0)';
   };
 
   const renderTagInfo = () => {
@@ -172,17 +185,24 @@ const useTags = () => {
   };
 
   const tagSpotExists = (tag, spot) => {
-    if (!tag.spots) tag.spots = [];
+    if (isEmpty(tag.spots)) return false;
     const i = tag.spots.indexOf(spot.properties.id);
     return i !== -1;
   };
 
+  const toggleContinuousTagging = (tag) => {
+    let tagCopy = JSON.parse(JSON.stringify(tag));
+    tagCopy.continuousTagging = !tag.continuousTagging;
+    saveTag(tagCopy);
+  };
+
   return [{
+    addSpotsToTags: addSpotsToTags,
     addTag: addTag,
     addRemoveSpotFromTag: addRemoveSpotFromTag,
     addRemoveTagFromSpot: addRemoveTagFromSpot,
     deleteTag: deleteTag,
-    filterTagsByTagType:filterTagsByTagType,
+    filterTagsByTagType: filterTagsByTagType,
     getLabel: getLabel,
     getTagsAtSpot: getTagsAtSpot,
     getTagsAtSpotGeologicUnitFirst: getTagsAtSpotGeologicUnitFirst,
@@ -192,6 +212,7 @@ const useTags = () => {
     saveForm: saveForm,
     saveTag: saveTag,
     tagSpotExists: tagSpotExists,
+    toggleContinuousTagging: toggleContinuousTagging,
   }];
 };
 

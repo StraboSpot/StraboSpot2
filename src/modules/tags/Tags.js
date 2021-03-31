@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {FlatList, SectionList, View} from 'react-native';
+import {FlatList, SectionList, Switch, View} from 'react-native';
 
 import {ButtonGroup, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
@@ -13,7 +13,7 @@ import SectionDivider from '../../shared/ui/SectionDivider';
 import uiStyles from '../../shared/ui/ui.styles';
 import {SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
-import {setSelectedTag} from '../project/projects.slice';
+import {setSelectedTag, setUseContinuousTagging} from '../project/projects.slice';
 import {TagDetailModal, useTagsHook} from '../tags';
 
 const Tags = () => {
@@ -21,7 +21,7 @@ const Tags = () => {
   const dispatch = useDispatch();
   const tags = useSelector(state => state.project.project.tags || []);
   const spotsInMapExtent = useSelector(state => state.map.spotsInMapExtent);
-
+  const useContinuousTagging = useSelector(state => state.project.project.useContinuousTagging);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isDetailModalVisibile, setIsDetailModalVisible] = useState(false);
 
@@ -61,6 +61,12 @@ const Tags = () => {
           dispatch(setSelectedTag(tag));
         }}
       >
+        {useContinuousTagging && (
+          <ListItem.CheckBox
+            checked={tag.continuousTagging}
+            onPress={() => useTags.toggleContinuousTagging(tag)}
+          />
+        )}
         <ListItem.Content>
           <ListItem.Title style={commonStyles.listItemTitle}>{getTagTitle(tag)}</ListItem.Title>
         </ListItem.Content>
@@ -133,6 +139,15 @@ const Tags = () => {
         title={'Add New Tag'}
         type={'outline'}
       />
+      <ListItem containerStyle={commonStyles.listItem}>
+        <ListItem.Content>
+          <ListItem.Title
+            style={commonStyles.listItemTitle}>{'Continuous Tagging'}
+          </ListItem.Title>
+        </ListItem.Content>
+        <Switch onValueChange={(value) => dispatch(setUseContinuousTagging(value))}
+                value={useContinuousTagging}/>
+      </ListItem>
       {!isEmpty(tags) && (
         <View style={{flex: 1}}>
           {selectedIndex === 0 && renderTagsListByType()}
