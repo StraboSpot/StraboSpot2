@@ -36,11 +36,14 @@ const projectSlice = createSlice({
       if (!action.payload.relationship_types) action.payload.relationship_types = DEFAULT_RELATIONSHIP_TYPES;
       if (!action.payload.templates) {
         action.payload.templates = {
-        useMeasurementTemplates: false,
-        measurementTemplates: [],
-        activeMeasurementTemplates: [],
-      };
-}
+          useMeasurementTemplates: false,
+          measurementTemplates: [],
+          activeMeasurementTemplates: [],
+        };
+      }
+      if (!action.payload.useContinuousTagging) {
+        action.payload.useContinuousTagging = false;
+      }
       state.project = action.payload;
     },
     addedProjectDescription(state, action) {
@@ -97,6 +100,9 @@ const projectSlice = createSlice({
     setUseMeasurementTemplates(state, action) {
       state.project.templates.useMeasurementTemplates = action.payload;
     },
+    setUseContinuousTagging(state, action) {
+      state.project.useContinuousTagging = action.payload;
+    },
     updatedDatasetProperties(state, action) {
       console.log('UpdatedDataset', action.payload);
       state.datasets[action.payload.id].name = action.payload.name;
@@ -139,6 +145,7 @@ export const {
   setActiveMeasurementTemplates,
   setSelectedDataset,
   setSelectedTag,
+  setUseContinuousTagging,
   setUseMeasurementTemplates,
   updatedDatasetProperties,
   updatedDatasets,

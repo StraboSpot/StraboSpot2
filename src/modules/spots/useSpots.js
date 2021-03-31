@@ -5,11 +5,13 @@ import {useDispatch, useSelector} from 'react-redux';
 import {getNewId, isEmpty} from '../../shared/Helpers';
 import {addedSpotsIdsToDataset, deletedSpotIdFromDataset, updatedProject} from '../project/projects.slice';
 import useProjectHook from '../project/useProject';
+import {useTagsHook} from '../tags';
 import {GENERAL_KEYS_ICONS, SED_KEYS_ICONS} from './spot.constants';
 import {addedSpot, deletedSpot, setSelectedSpot} from './spots.slice';
 
 const useSpots = (props) => {
   const [useProject] = useProjectHook();
+  const [useTags] = useTagsHook();
 
   const dispatch = useDispatch();
   const selectedDatasetId = useSelector(state => state.project.selectedDatasetId);
@@ -18,6 +20,8 @@ const useSpots = (props) => {
   const preferences = useSelector(state => state.project.project.preferences) || {};
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const spots = useSelector(state => state.spot.spots);
+  const useContinuousTagging = useSelector(state => state.project.project.useContinuousTagging);
+  const tags = useSelector(state => state.project.project.tags || []);
 
   useEffect(() => {
     // console.log('datasets in useSpots UE', datasets);
@@ -112,6 +116,11 @@ const useSpots = (props) => {
         newSpot.properties.lng = rootSpot.geometry.coordinates[0];
         newSpot.properties.lat = rootSpot.geometry.coordinates[1];
       }
+    }
+    // Continuous tagging
+    if (newSpot.geometry.type === 'Point' && useContinuousTagging) {
+      let continuousTaggingList = tags.filter(tag => tag.continuousTagging);
+      useTags.addSpotsToTags(continuousTaggingList,[newSpot]);
     }
     console.log('Creating new Spot:', newSpot);
     await dispatch(addedSpot(newSpot));
