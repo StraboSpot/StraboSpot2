@@ -3,6 +3,7 @@ import {Text, View} from 'react-native';
 
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import * as turf from '@turf/turf';
+import ScaleBar from 'react-native-scale-bar';
 import {useSelector} from 'react-redux';
 
 import {isEmpty} from '../../shared/Helpers';
@@ -74,12 +75,19 @@ function Basemap(props) {
 
   return (
     <View style={{flex: 1}}>
-      <View style={homeStyles.currentZoomContainer}>
-        <Text style={props.basemap.id === 'mapbox.satellite' ? homeStyles.currentZoomTextWhite
-          : homeStyles.currentZoomTextBlack}>
-          Zoom: {currentZoom && currentZoom.toFixed(1)}
-        </Text>
-      </View>
+      {currentZoom && <View style={homeStyles.currentZoomContainer}>
+          <Text style={props.basemap.id === 'mapbox.satellite' ? homeStyles.currentZoomTextWhite
+            : homeStyles.currentZoomTextBlack}>
+            Zoom: {currentZoom && currentZoom.toFixed(1)}
+          </Text>
+          <ScaleBar
+            zoom={currentZoom}
+            bottom={0}
+            lineWidth={2}
+            color={props.basemap.id === 'mapbox.satellite' ? 'white' : 'black'}
+          />
+      </View>}
+
       <MapboxGL.MapView
         id={props.imageBasemap ? props.imageBasemap.id : props.basemap.id}
         ref={mapRef}
