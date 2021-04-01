@@ -247,18 +247,9 @@ const useImages = () => {
 
   // Called from Notebook Panel Footer and opens camera only
   const takePicture = async () => {
-    const imageOptionsCamera = {
-      storageOptions: {
-        skipBackup: true,
-        takePhotoButtonTitle: 'Take Photo',
-        chooseFromLibraryButtonTitle: 'Choose Photo From Library',
-        waitUntilSaved: true,
-      },
-      noData: true,
-    };
     return new Promise((resolve, reject) => {
       try {
-        launchCamera(imageOptionsCamera, (response) => {
+        launchCamera({}, (response) => {
           console.log('Response = ', response);
           if (response.didCancel) resolve('cancelled');
           else if (response.error) reject();
