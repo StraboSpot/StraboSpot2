@@ -55,7 +55,7 @@ const NotebookPanel = (props) => {
   const onNotebookPageVisible = (page) => {
     dispatch(setNotebookPageVisible(page));
     if (page === NOTEBOOK_PAGES.MEASUREMENT || page === NOTEBOOK_SUBPAGES.MEASUREMENTDETAIL) {
-    dispatch(setModalVisible({modal: MODALS.NOTEBOOK_MODALS.COMPASS}));
+      dispatch(setModalVisible({modal: MODALS.NOTEBOOK_MODALS.COMPASS}));
     }
     else if (page === NOTEBOOK_PAGES.SAMPLE) dispatch(setModalVisible({modal: MODALS.NOTEBOOK_MODALS.SAMPLE}));
     else if (page === NOTEBOOK_PAGES.TAG) dispatch(setModalVisible({modal: MODALS.NOTEBOOK_MODALS.TAGS}));

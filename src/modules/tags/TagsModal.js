@@ -155,7 +155,7 @@ const TagsModal = (props) => {
       {/*  topDivider*/}
       {/*  chevron*/}
       {/*/>*/}
-      <View style={{maxHeight: 500,paddingBottom: 10}}>
+      <View style={{maxHeight: 500, paddingBottom: 10}}>
         {modalVisible !== MODALS.NOTEBOOK_MODALS.TAGS && (
           <View style={modalStyle.textContainer}>
             <AddButton

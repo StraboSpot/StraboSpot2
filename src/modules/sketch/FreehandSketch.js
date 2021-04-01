@@ -7,7 +7,7 @@ import {useDispatch} from 'react-redux';
 import {setFreehandFeatureCoords} from '../maps/maps.slice';
 import styles from './sketch.styles';
 
-let freehandFeatureCoords = new Array();
+let freehandFeatureCoords = [];
 const Sketch = (props) => {
   const dispatch = useDispatch();
 
@@ -20,12 +20,12 @@ const Sketch = (props) => {
   };
 
   return (
-    <View style={{...styles.container,opacity:0.3 }}>
+    <View style={{...styles.container, opacity: 0.3}}>
       <View style={{flex: 1, flexDirection: 'row'}}>
         <RNSketchCanvas
-          onStrokeStart={() => freehandFeatureCoords = new Array()}
-          onStrokeChanged={(x, y) => freeDraw([x,y])}
-          onStrokeEnd={(x,y) => onDrop()}
+          onStrokeStart={() => freehandFeatureCoords = []}
+          onStrokeChanged={(x, y) => freeDraw([x, y])}
+          onStrokeEnd={(x, y) => onDrop()}
           containerStyle={{backgroundColor: 'transparent', flex: 1}}
           canvasStyle={{backgroundColor: 'transparent', flex: 1, borderWidth: 2}}
           defaultStrokeIndex={13} // orange color.

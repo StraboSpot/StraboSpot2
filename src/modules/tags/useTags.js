@@ -64,7 +64,7 @@ const useTags = () => {
     dispatch(setSelectedTag({}));
   };
 
-  const filterTagsByTagType = (tags,tagType) => {
+  const filterTagsByTagType = (tags, tagType) => {
     if (isEmpty(tagType)) return tags;
     const tagsByTagsType = tags.filter(tag => tag.type.toUpperCase().startsWith(tagType.toUpperCase()));
     return tagsByTagsType;

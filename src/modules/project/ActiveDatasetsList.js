@@ -17,7 +17,7 @@ const ActiveDatasetsList = () => {
   const activeDatasetsIds = useSelector(state => state.project.activeDatasetsIds);
   const selectedDatasetId = useSelector(state => state.project.selectedDatasetId);
 
-  const renderActiveDatasets = (datasetId,) => {
+  const renderActiveDatasets = (datasetId) => {
     const datasetObj = datasets[datasetId];
     const checked = selectedDatasetId === datasetId;
     return (

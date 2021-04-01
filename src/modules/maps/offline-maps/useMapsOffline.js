@@ -47,7 +47,7 @@ const useMapsOffline = () => {
       || map.id === 'macrostrat' || map.source === 'map_warper') {
       return map.name;
     }
-    else return;
+    else return null;
   };
 
   const getMedian = (arr) => {

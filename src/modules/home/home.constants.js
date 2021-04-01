@@ -11,7 +11,7 @@ export const MODALS = {
   SHORTCUT_MODALS: {
     COMPASS: 'Compass Shortcut',
     SAMPLE: 'Sample Shortcut',
-    NOTES:  'Notes Shortcut',
+    NOTES: 'Notes Shortcut',
     TAGS: 'Tags Shortcut',
     ADD_TAGS_TO_SPOTS: 'Add Tags To Spots',
     SKETCH: 'Sketch Shortcut',

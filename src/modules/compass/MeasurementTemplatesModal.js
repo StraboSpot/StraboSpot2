@@ -23,7 +23,8 @@ import {addedMeasurementTemplates, setActiveMeasurementTemplates} from '../proje
 const MeasurementTemplatesModal = (props) => {
   const dispatch = useDispatch();
   const measurementTemplates = useSelector(state => state.project.project?.templates?.measurementTemplates);
-  const activeMeasurementTemplates = useSelector(state => state.project.project?.templates?.activeMeasurementTemplates) || [];
+  const activeMeasurementTemplates = useSelector(
+    state => state.project.project?.templates?.activeMeasurementTemplates) || [];
   const [displayForm, setDisplayForm] = useState(false);
   const [formName, setFormName] = useState([]);
   const [name, setName] = useState('');

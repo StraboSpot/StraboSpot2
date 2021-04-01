@@ -15,7 +15,7 @@ const UserStyles = StyleSheet.create({
   },
   avatarLabelContainer: {
     padding: 10,
-    justifyContent: 'space-around'
+    justifyContent: 'space-around',
   },
   avatarLabelName: {
     paddingBottom: 5,

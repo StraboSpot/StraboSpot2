@@ -132,7 +132,7 @@ const MeasurementDetailPage = () => {
   const clearSelectedMeasurements = () => {
     dispatch(setSelectedMeasurement({}));
     dispatch(setSelectedAttributes([]));
-  }
+  };
 
   const confirmDeleteMeasurement = () => {
     Alert.alert(
@@ -161,10 +161,10 @@ const MeasurementDetailPage = () => {
           onPress: () => dispatch(setSelectedMeasurement({})),
         }, {
           text: 'Yes',
-          onPress:async () => {
+          onPress: async () => {
             const saved = await saveForm(formCurrent);
-            console.log(saved)
-            clearSelectedMeasurements()
+            console.log(saved);
+            clearSelectedMeasurements();
           },
         }],
         {cancelable: false},

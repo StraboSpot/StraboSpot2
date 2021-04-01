@@ -82,7 +82,7 @@ const VertexDrag = () => {
               ],
             },
           ]}
-         />
+        />
       </PanGestureHandler>
     </React.Fragment>
   );

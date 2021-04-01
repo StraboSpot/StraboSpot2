@@ -23,7 +23,7 @@ const SignIn = (props) => {
     const offline = require('../../assets/icons/ConnectionStatusButton_offline.png');
     const [username, setUsername] = useState(__DEV__ ? USERNAME_TEST : '');
     const [password, setPassword] = useState(__DEV__ ? PASSWORD_TEST : '');
-    const [userProfile, setUserProfile] = useState({})
+    const [userProfile, setUserProfile] = useState({});
 
     const dispatch = useDispatch();
     const isOnline = useSelector(state => state.home.isOnline);
@@ -39,9 +39,9 @@ const SignIn = (props) => {
     }, [isOnline]);
 
     useEffect(() => {
-      console.log('UserProfile', userProfile)
+      console.log('UserProfile', userProfile);
       dispatch(setUserData(userProfile));
-    }, [userProfile])
+    }, [userProfile]);
 
     const guestSignIn = async () => {
       Sentry.configureScope((scope) => {
@@ -149,7 +149,7 @@ const SignIn = (props) => {
           setUserProfile(prevState => ({...userProfileRes, image: profileImage, encoded_login: encodedLogin}));
         }
         else setUserProfile(prevState => ({...userProfileRes, image: null, encoded_login: encodedLogin}));
-        console.log(userProfile)
+        console.log(userProfile);
       }
       catch (err) {
         console.log('SIGN IN ERROR', err);

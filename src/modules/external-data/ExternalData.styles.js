@@ -29,7 +29,7 @@ const externalDataStyles = StyleSheet.create({
     paddingLeft: 10,
   },
   iconButton: {
-    padding: 0
+    padding: 0,
   },
   loadingSpinner: {
     backgroundColor: 'transparent',
@@ -42,7 +42,7 @@ const externalDataStyles = StyleSheet.create({
     borderRadius: 20,
   },
   tableHeader: {
-    backgroundColor: themes.TABLE_HEADER_COLOR
+    backgroundColor: themes.TABLE_HEADER_COLOR,
   },
   textStyle: {
     color: 'black',

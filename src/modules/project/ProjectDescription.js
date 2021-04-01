@@ -1,4 +1,4 @@
-import React, {useEffect, useLayoutEffect, useRef} from 'react';
+import React, {useLayoutEffect, useRef} from 'react';
 import {Alert, View} from 'react-native';
 
 import {Formik} from 'formik';
@@ -26,10 +26,10 @@ const ProjectDescription = () => {
   };
 
   useLayoutEffect(() => {
-      console.log('UE ProjectDescription []');
-      console.log('Project Description', projectDescription);
-      return () => saveForm();
-  },[])
+    console.log('UE ProjectDescription []');
+    console.log('Project Description', projectDescription);
+    return () => saveForm();
+  }, []);
 
   // Given a name, get the label for it
   const getLabel = (key) => {
