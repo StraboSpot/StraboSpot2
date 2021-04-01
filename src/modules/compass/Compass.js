@@ -39,7 +39,7 @@ const Compass = () => {
   const modalVisible = useSelector(state => state.home.modalVisible);
   const selectedMeasurement = useSelector(state => state.spot.selectedMeasurement);
   const useMeasurementTemplates = useSelector(state => state.project.project?.templates?.useMeasurementTemplates);
-  const activeMeasurementTemplates = useSelector(state => state.project.project?.templates?.activeMeasurementTemplates);
+  const activeMeasurementTemplates = useSelector(state => state.project.project?.templates?.activeMeasurementTemplates) || [];
 
   const [accelerometerData, setAccelerometerData] = useState({x: 0, y: 0, z: 0, timestamp: null});
   const [accelerometerSubscription, setAccelerometerSubscription] = useState(null);
