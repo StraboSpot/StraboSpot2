@@ -145,6 +145,9 @@ const useMaps = () => {
       [imageBasemapProps.width, imageBasemapProps.height]);
     var topLeft = convertCoordinateProjections(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION, [0, imageBasemapProps.height]);
     var coordQuad = [topLeft, topRight, bottomRight, bottomLeft];
+    if (imageBasemapProps.width < imageBasemapProps.height){
+       coordQuad = [topRight, bottomRight, bottomLeft , topLeft];
+    }
     console.log('The coordinates identified for image-basemap :', coordQuad);
     return coordQuad;
   };
