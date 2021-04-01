@@ -32,17 +32,10 @@ import TagsPage from '../tags/TagsNotebook';
 import ThreeDStructuresPage from '../three-d-structures/ThreeDStructuresPage';
 import NotebookFooter from './notebook-footer/NotebookFooter';
 import NotebookHeader from './notebook-header/NotebookHeader';
-import {
-  NOTEBOOK_PAGES,
-  NOTEBOOK_SUBPAGES,
-  PET_NOTEBOOK_PAGES,
-  SECONDARY_NOTEBOOK_PAGES,
-  SED_NOTEBOOK_PAGES,
-} from './notebook.constants';
+import {NOTEBOOK_PAGES, NOTEBOOK_SUBPAGES, PET_NOTEBOOK_PAGES, SECONDARY_NOTEBOOK_PAGES} from './notebook.constants';
 import {setNotebookPageVisible} from './notebook.slice';
 import notebookStyles from './notebookPanel.styles';
 import Overview from './Overview';
-import PlaceholderPage from './PlaceholderPage';
 
 const NotebookPanel = (props) => {
   const [useSpots] = useSpotsHook();

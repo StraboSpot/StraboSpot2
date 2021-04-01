@@ -1,5 +1,3 @@
-import {Dimensions} from 'react-native';
-
 import {createSlice} from '@reduxjs/toolkit';
 
 const initialHomeState = {

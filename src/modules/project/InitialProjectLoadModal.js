@@ -1,10 +1,10 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Text, View} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
 import {Avatar, Button} from 'react-native-elements';
-import {Dialog, DialogTitle, DialogContent, SlideAnimation} from 'react-native-popup-dialog';
-import {useSelector, useDispatch} from 'react-redux';
+import {Dialog, DialogContent, DialogTitle, SlideAnimation} from 'react-native-popup-dialog';
+import {useDispatch, useSelector} from 'react-redux';
 
 import useDeviceHook from '../../services/useDevice';
 import {REDUX} from '../../shared/app.constants';
@@ -20,7 +20,7 @@ import ActiveDatasetsList from './ActiveDatasetsList';
 import DatasetList from './DatasetList';
 import NewProject from './NewProjectForm';
 import ProjectList from './ProjectList';
-import {clearedProject, clearedDatasets} from './projects.slice';
+import {clearedDatasets, clearedProject} from './projects.slice';
 import ProjectTypesButtons from './ProjectTypesButtons';
 
 const InitialProjectLoadModal = (props) => {

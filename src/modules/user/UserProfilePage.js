@@ -1,5 +1,5 @@
 import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
-import {View, TextInput, Keyboard, Animated} from 'react-native';
+import {Animated, Keyboard, TextInput, View} from 'react-native';
 
 import {Formik} from 'formik';
 import {Avatar, Button, Icon, Overlay} from 'react-native-elements';

@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {FlatList, Text, View} from 'react-native';
 
 import {Avatar, Icon, ListItem} from 'react-native-elements';
-import {useSelector, useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 import {isEmpty} from '../../shared/Helpers';
 import * as SharedUI from '../../shared/ui';

@@ -7,7 +7,6 @@ import RNFS from 'react-native-fs';
 import * as loading from 'react-native-indicators';
 import {Dialog, DialogContent, SlideAnimation} from 'react-native-popup-dialog';
 import ProgressBar from 'react-native-progress/Bar';
-import {unzip} from 'react-native-zip-archive'; /*TODO  react-native-zip-archive@3.0.1 requires a peer of react@^15.4.2 || <= 16.3.1 but none is installed */
 import {useDispatch, useSelector} from 'react-redux';
 
 import useDeviceHook from '../../../services/useDevice';

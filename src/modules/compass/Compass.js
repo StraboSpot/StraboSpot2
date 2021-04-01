@@ -1,15 +1,16 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Animated,
   AppState,
   Easing,
   Image,
-  View,
+  NativeEventEmitter,
+  NativeModules,
+  Platform,
   Switch,
   Text,
   TouchableOpacity,
-  NativeModules,
-  NativeEventEmitter, Platform,
+  View,
 } from 'react-native';
 
 import {Button, ListItem} from 'react-native-elements';

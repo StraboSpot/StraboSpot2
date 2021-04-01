@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
-import {View, Text} from 'react-native';
+import {Text, View} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
-import {Button, Avatar, ListItem} from 'react-native-elements';
+import {Avatar, Button, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {REDUX} from '../../shared/app.constants';

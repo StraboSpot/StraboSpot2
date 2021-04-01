@@ -1,5 +1,5 @@
-import React, {useState, useRef} from 'react';
-import {Text, Switch, View, FlatList} from 'react-native';
+import React, {useRef, useState} from 'react';
+import {FlatList, Switch, Text, View} from 'react-native';
 
 import {Formik} from 'formik';
 import {useDispatch, useSelector} from 'react-redux';

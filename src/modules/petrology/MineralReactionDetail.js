@@ -10,7 +10,7 @@ import * as themes from '../../shared/styles.constants';
 import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import {Form, useFormHook} from '../form';
 import {editedSpotProperties} from '../spots/spots.slice';
-import {LABELS_WITH_ABBREVIATIONS, ABBREVIATIONS_WITH_LABELS} from './petrology.constants';
+import {ABBREVIATIONS_WITH_LABELS, LABELS_WITH_ABBREVIATIONS} from './petrology.constants';
 
 const MineralReactionDetail = (props) => {
   const dispatch = useDispatch();

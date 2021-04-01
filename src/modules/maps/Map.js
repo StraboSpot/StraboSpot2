@@ -6,7 +6,7 @@ import Logger from '@react-native-mapbox-gl/maps/javascript/utils/Logger';
 import * as turf from '@turf/turf';
 import {Button} from 'react-native-elements';
 import Dialog, {DialogContent, DialogTitle, SlideAnimation} from 'react-native-popup-dialog';
-import {useSelector, useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 import {MAPBOX_KEY} from '../../MapboxConfig';
 import {getNewUUID, isEmpty} from '../../shared/Helpers';

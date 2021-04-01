@@ -1,24 +1,23 @@
 import React, {useEffect, useState} from 'react';
-import {Alert, Animated, Keyboard, FlatList, Platform, Switch, TextInput, View, Text, SafeAreaView} from 'react-native';
+import {Alert, Animated, FlatList, Keyboard, Platform, Switch, Text, TextInput, View} from 'react-native';
 
 import {Button, Icon, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../../shared/common.styles';
-import {isEmpty, handleKeyboardDidHide, handleKeyboardDidShow} from '../../../shared/Helpers';
+import {handleKeyboardDidHide, handleKeyboardDidShow, isEmpty} from '../../../shared/Helpers';
 import {BLUE, DARKGREY, WARNING_COLOR} from '../../../shared/styles.constants';
 import FlatListItemSeparator from '../../../shared/ui/FlatListItemSeparator';
 import SectionDivider from '../../../shared/ui/SectionDivider';
 import Slider from '../../../shared/ui/Slider';
-import Spacer from '../../../shared/ui/Spacer';
 import {formStyles} from '../../form';
 import {
   addedStatusMessage,
   clearedStatusMessages,
   removedLastStatusMessage,
   setErrorMessagesModalVisible,
-  setStatusMessagesModalVisible,
   setLoadingStatus,
+  setStatusMessagesModalVisible,
 } from '../../home/home.slice';
 import {setMenuSelectionPage, setSidePanelVisible} from '../../main-menu-panel/mainMenuPanel.slice';
 import SidePanelHeader from '../../main-menu-panel/sidePanel/SidePanelHeader';

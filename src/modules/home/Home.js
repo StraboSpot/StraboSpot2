@@ -53,11 +53,11 @@ import ShortcutSamplesModal from '../samples/ShortcutSamplesModal';
 import {addedSpot, clearedSelectedSpots, setSelectedSpot} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
 import {
-  TagsNotebookModal,
+  AddTagsToSpotsShortcutModal,
   TagAddRemoveSpots,
   TagDetailSidePanel,
+  TagsNotebookModal,
   TagsShortcutModal,
-  AddTagsToSpotsShortcutModal,
 } from '../tags';
 import UserProfile from '../user/UserProfilePage';
 import {MODALS} from './home.constants';
@@ -66,16 +66,16 @@ import {
   setErrorMessagesModalVisible,
   setImageModalVisible,
   setInfoMessagesModalVisible,
+  setLoadingStatus,
+  setMainMenuPanelVisible,
   setModalVisible,
+  setOfflineMapsModalVisible,
+  setOnlineStatus,
   setProjectLoadComplete,
   setProjectLoadSelectionModalVisible,
-  setOfflineMapsModalVisible,
-  setMainMenuPanelVisible,
-  setStatusMessagesModalVisible,
-  setOnlineStatus,
-  setUploadModalVisible,
   setSelectedProject,
-  setLoadingStatus,
+  setStatusMessagesModalVisible,
+  setUploadModalVisible,
 } from './home.slice';
 import homeStyles from './home.style';
 import LeftSideButtons from './LeftSideButtons';

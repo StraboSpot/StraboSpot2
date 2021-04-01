@@ -3,7 +3,6 @@ import {Platform} from 'react-native';
 
 import {useSelector} from 'react-redux';
 
-import {isEmpty} from '../../shared/Helpers';
 import DragAnimation from '../../shared/ui/DragAmination';
 import Modal from '../../shared/ui/modal/Modal';
 import uiStyles from '../../shared/ui/ui.styles';
@@ -13,7 +12,6 @@ import {TagsModal} from './index';
 
 const TagsShortcutModal = (props) => {
   const modalVisible = useSelector(state => state.home.modalVisible);
-  const project = useSelector(state => state.project.project);
 
   if (modalVisible === MODALS.SHORTCUT_MODALS.TAGS) {
     if (Platform.OS === 'android') {

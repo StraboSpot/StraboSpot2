@@ -1,5 +1,3 @@
-import {Linking} from 'react-native';
-
 import DocumentPicker from 'react-native-document-picker';
 import RNFS from 'react-native-fs';
 import {useDispatch, useSelector} from 'react-redux';
@@ -8,8 +6,9 @@ import {csvToArray, getNewUUID, urlValidator} from '../../shared/Helpers';
 import {
   addedStatusMessage,
   clearedStatusMessages,
+  setErrorMessagesModalVisible,
+  setLoadingStatus,
   setStatusMessagesModalVisible,
-  setLoadingStatus, setErrorMessagesModalVisible,
 } from '../home/home.slice';
 import {editedSpotProperties} from '../spots/spots.slice';
 

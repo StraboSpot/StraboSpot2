@@ -5,7 +5,7 @@ import {Formik} from 'formik';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {getNewId, isEmpty, truncateText} from '../../shared/Helpers';
-import {Form, useFormHook, LABEL_DICTIONARY} from '../form';
+import {Form, LABEL_DICTIONARY, useFormHook} from '../form';
 import {MODALS} from '../home/home.constants';
 import {addedTagToSelectedSpot, setSelectedTag, updatedProject} from '../project/projects.slice';
 import {tagsStyles} from './index';

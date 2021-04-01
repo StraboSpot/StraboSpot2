@@ -1,17 +1,17 @@
-import React, {useState, useEffect} from 'react';
-import {View, Text, TextInput, Alert, ImageBackground, KeyboardAvoidingView} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {Alert, ImageBackground, KeyboardAvoidingView, Text, TextInput, View} from 'react-native';
 
 import NetInfo from '@react-native-community/netinfo';
 import {useNavigation} from '@react-navigation/native';
 import * as Sentry from '@sentry/react-native';
 import {Base64} from 'js-base64';
 import {Button} from 'react-native-elements';
-import {useSelector, useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
-import {USERNAME_TEST, PASSWORD_TEST} from '../../../Config';
+import {PASSWORD_TEST, USERNAME_TEST} from '../../../Config';
 import useServerRequests from '../../services/useServerRequests';
 import {VERSION_NUMBER} from '../../shared/app.constants';
-import {readDataUrl, isEmpty} from '../../shared/Helpers';
+import {isEmpty, readDataUrl} from '../../shared/Helpers';
 import IconButton from '../../shared/ui/IconButton';
 import {setOnlineStatus, setSignedInStatus} from '../home/home.slice';
 import {setUserData} from '../user/userProfile.slice';

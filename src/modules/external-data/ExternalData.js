@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {FlatList, ScrollView, Text, TextInput, View} from 'react-native';
 
 import {Button, ButtonGroup, Icon, ListItem, Overlay} from 'react-native-elements';
-import {Table, Row, Rows} from 'react-native-table-component';
+import {Row, Rows, Table} from 'react-native-table-component';
 import {useDispatch, useSelector} from 'react-redux';
 
 import useDeviceHook from '../../services/useDevice';
@@ -16,11 +16,7 @@ import ListEmptyText from '../../shared/ui/ListEmptyText';
 import Loading from '../../shared/ui/Loading';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {formStyles} from '../form';
-import {
-  setErrorMessagesModalVisible,
-  addedStatusMessage,
-  clearedStatusMessages,
-} from '../home/home.slice';
+import {addedStatusMessage, clearedStatusMessages, setErrorMessagesModalVisible} from '../home/home.slice';
 import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';

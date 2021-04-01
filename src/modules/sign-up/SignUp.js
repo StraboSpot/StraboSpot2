@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Text, View, KeyboardAvoidingView, ImageBackground} from 'react-native';
+import {ImageBackground, KeyboardAvoidingView, Text, View} from 'react-native';
 
 import NetInfo from '@react-native-community/netinfo';
 import {Button, CheckBox, Input} from 'react-native-elements';

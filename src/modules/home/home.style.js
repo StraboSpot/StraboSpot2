@@ -141,7 +141,7 @@ const homeStyles = StyleSheet.create({
     textShadowRadius: 5,
     marginLeft: 10,
     marginBottom: 20,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   currentZoomTextWhite: {
     color: themes.LIGHTGREY,
@@ -149,7 +149,7 @@ const homeStyles = StyleSheet.create({
     textShadowColor: themes.BLACK,
     textShadowRadius: 5,
     marginLeft: 10,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
 
   // --- Modal Style ---
