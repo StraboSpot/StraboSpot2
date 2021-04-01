@@ -59,6 +59,7 @@ import {
   TagsShortcutModal,
   AddTagsToSpotsShortcutModal,
 } from '../tags';
+import UserProfile from '../user/UserProfilePage';
 import {MODALS} from './home.constants';
 import {
   setBackupModalVisible,
@@ -80,7 +81,6 @@ import homeStyles from './home.style';
 import LeftSideButtons from './LeftSideButtons';
 import RightSideButtons from './RightSideButtons';
 import useHomeHook from './useHome';
-import UserProfile from '../user/UserProfilePage';
 
 const Home = () => {
   const platform = Platform.OS === 'ios' ? 'window' : 'screen';
@@ -180,7 +180,7 @@ const Home = () => {
   }, [selectedProject]);
 
   useEffect(() => {
-    if (user.email && user.name) {
+    if (user.email && user.name && !__DEV__) {
       Sentry.configureScope((scope) => {
         scope.setUser({'email': user.email, username: user.name});
       });

@@ -5,8 +5,7 @@ import {Button, Icon, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../../shared/common.styles';
-import {isEmpty} from '../../../shared/Helpers';
-import * as Helpers from '../../../shared/Helpers';
+import {isEmpty, handleKeyboardDidHide, handleKeyboardDidShow} from '../../../shared/Helpers';
 import {BLUE, DARKGREY, WARNING_COLOR} from '../../../shared/styles.constants';
 import FlatListItemSeparator from '../../../shared/ui/FlatListItemSeparator';
 import SectionDivider from '../../../shared/ui/SectionDivider';
@@ -44,11 +43,11 @@ const AddCustomMaps = () => {
 
   let sliderValuePercent = editableCustomMapData && Math.round(editableCustomMapData.opacity * 100).toFixed(0);
   useEffect(() => {
-    Keyboard.addListener('keyboardDidShow', handleKeyboardDidShow);
-    Keyboard.addListener('keyboardDidHide', handleKeyboardDidHide);
+    Keyboard.addListener('keyboardDidShow', handleKeyboardShown);
+    Keyboard.addListener('keyboardDidHide', handleKeyboardHidden);
     return function cleanup() {
-      Keyboard.removeListener('keyboardDidShow', handleKeyboardDidShow);
-      Keyboard.removeListener('keyboardDidHide', handleKeyboardDidHide);
+      Keyboard.removeListener('keyboardDidShow', handleKeyboardShown);
+      Keyboard.removeListener('keyboardDidHide', handleKeyboardHidden);
       dispatch(selectedCustomMapToEdit({}));
       console.log('Listners Removed');
     };
@@ -113,9 +112,9 @@ const AddCustomMaps = () => {
     );
   };
 
-  const handleKeyboardDidShow = (event) => Helpers.handleKeyboardDidShow(event, TextInputState, textInputAnimate);
+  const handleKeyboardShown = (event) => handleKeyboardDidShow(event, TextInputState, textInputAnimate);
 
-  const handleKeyboardDidHide = () => Helpers.handleKeyboardDidHide(textInputAnimate);
+  const handleKeyboardHidden = () => handleKeyboardDidHide(textInputAnimate);
 
   const selectMap = (source) => {
     console.log(source);
