@@ -138,16 +138,13 @@ const useMaps = () => {
   // Identify the coordinate span for the for the image basemap.
   const getCoordQuad = (imageBasemapProps) => {
     // identify the [lat,lng] corners of the image basemap
-    var bottomLeft = [0, 0];
-    var bottomRight = convertCoordinateProjections(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION,
+    const bottomLeft = [0, 0];
+    const bottomRight = convertCoordinateProjections(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION,
       [imageBasemapProps.width, 0]);
-    var topRight = convertCoordinateProjections(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION,
+    const topRight = convertCoordinateProjections(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION,
       [imageBasemapProps.width, imageBasemapProps.height]);
-    var topLeft = convertCoordinateProjections(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION, [0, imageBasemapProps.height]);
-    var coordQuad = [topLeft, topRight, bottomRight, bottomLeft];
-    if (imageBasemapProps.width < imageBasemapProps.height){
-       coordQuad = [topRight, bottomRight, bottomLeft , topLeft];
-    }
+    const topLeft = convertCoordinateProjections(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION, [0, imageBasemapProps.height]);
+    let coordQuad = [topLeft, topRight, bottomRight, bottomLeft];
     console.log('The coordinates identified for image-basemap :', coordQuad);
     return coordQuad;
   };

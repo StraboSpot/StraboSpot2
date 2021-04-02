@@ -249,11 +249,16 @@ const useImages = () => {
   const takePicture = async () => {
     return new Promise((resolve, reject) => {
       try {
-        launchCamera({}, (response) => {
+        launchCamera({}, async (response) => {
           console.log('Response = ', response);
           if (response.didCancel) resolve('cancelled');
           else if (response.error) reject();
-          else resolve(saveFile(response));
+          else {
+            const createResizedImageProps = [response.uri, response.width, response.height, 'JPEG', 100, 0];
+            const resizedImage = await ImageResizer.createResizedImage(...createResizedImageProps);
+            console.log('resizedImage', resizedImage);
+            resolve(saveFile(resizedImage));
+          }
         });
       }
       catch (e) {
