@@ -254,7 +254,7 @@ const useImages = () => {
           if (response.didCancel) resolve('cancelled');
           else if (response.error) reject();
           else {
-            const createResizedImageProps = [response.uri, response.width, response.height, 'JPEG', 100, 0];
+            const createResizedImageProps = [response.uri, response.height, response.width, 'JPEG', 100, 0];
             const resizedImage = await ImageResizer.createResizedImage(...createResizedImageProps);
             console.log('resizedImage', resizedImage);
             resolve(saveFile(resizedImage));
