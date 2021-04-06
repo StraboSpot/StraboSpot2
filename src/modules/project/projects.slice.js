@@ -1,4 +1,4 @@
-import {createSlice, current} from '@reduxjs/toolkit';
+import {createSlice} from '@reduxjs/toolkit';
 
 import {isEmpty} from '../../shared/Helpers';
 import {DEFAULT_GEOLOGIC_TYPES, DEFAULT_RELATIONSHIP_TYPES} from './project.constants';
@@ -75,10 +75,12 @@ const projectSlice = createSlice({
       state.activeDatasetsIds = state.activeDatasetsIds.filter(activeDatasetId => activeDatasetId !== action.payload);
     },
     deletedSpotIdFromDataset(state, action) {
-      const {dataset, spotId} = action.payload;
-      const updatedSpotIds = dataset.spotIds.filter(id => id !== spotId);
-      state.datasets[dataset.id].spotIds = updatedSpotIds;
-      console.log(current(state));
+      const spotId = action.payload;
+      const updatedDatatsets = Object.entries(state.datasets).reduce((acc, [datasetId, dataset]) => {
+        const remainingSpotIds = dataset.spotIds?.filter(id => id !== spotId) || [];
+        return {...acc, [datasetId]: {...dataset, spotIds: remainingSpotIds}};
+      }, {});
+      state.datasets = updatedDatatsets;
     },
     doesBackupDirectoryExist(state, action) {
       state.deviceBackUpDirectoryExists = action.payload;

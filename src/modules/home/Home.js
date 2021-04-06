@@ -4,7 +4,6 @@ import {Alert, Animated, Dimensions, FlatList, Platform, Text, TextInput, View} 
 import NetInfo from '@react-native-community/netinfo';
 import {useNavigation} from '@react-navigation/native';
 import * as Sentry from '@sentry/react-native';
-import * as turf from '@turf/turf';
 import moment from 'moment';
 import {Button} from 'react-native-elements';
 import {FlatListSlider} from 'react-native-flatlist-slider';
@@ -37,11 +36,10 @@ import {setCurrentImageBasemap} from '../maps/maps.slice';
 import SaveMapsModal from '../maps/offline-maps/SaveMapsModal';
 import useMapsHook from '../maps/useMaps';
 import VertexDrag from '../maps/VertexDrag';
-import {NOTEBOOK_PAGES, NOTEBOOK_SUBPAGES} from '../notebook-panel/notebook.constants';
+import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
 import {setNotebookPageVisible, setNotebookPanelVisible} from '../notebook-panel/notebook.slice';
 import NotebookPanel from '../notebook-panel/NotebookPanel';
 import notebookStyles from '../notebook-panel/notebookPanel.styles';
-import NotebookPanelMenu from '../notebook-panel/NotebookPanelMenu';
 import ShortcutNotesModal from '../notes/ShortcutNotesModal';
 import InitialProjectLoadModal from '../project/InitialProjectLoadModal';
 import projectStyles from '../project/project.styles';
@@ -50,7 +48,7 @@ import UploadDialogBox from '../project/UploadDialogBox';
 import useProjectHook from '../project/useProject';
 import NotebookSamplesModal from '../samples/NotebookSamplesModal';
 import ShortcutSamplesModal from '../samples/ShortcutSamplesModal';
-import {addedSpot, clearedSelectedSpots, setSelectedSpot} from '../spots/spots.slice';
+import {clearedSelectedSpots} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
 import {
   AddTagsToSpotsShortcutModal,
@@ -102,7 +100,6 @@ const Home = () => {
   const useDownload = useDownloadHook();
   const useImport = useImportHook();
 
-
   const selectedDataset = useProject.getSelectedDatasetFromId();
 
   const dispatch = useDispatch();
@@ -131,7 +128,6 @@ const Home = () => {
   const selectedImage = useSelector(state => state.spot.selectedAttributes[0]);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const sidePanelView = useSelector(state => state.mainMenu.sidePanelView);
-  const spots = useSelector(state => state.spot.spots);
   const statusMessages = useSelector(state => state.home.statusMessages);
   const user = useSelector(state => state.user);
   const vertexStartCoords = useSelector(state => state.map.vertexStartCoords);
@@ -140,7 +136,6 @@ const Home = () => {
     mapActionsMenuVisible: false,
     mapSymbolsMenuVisible: false,
     baseMapMenuVisible: false,
-    notebookPanelMenuVisible: false,
   });
   const [buttons, setButtons] = useState({
     drawButtonsVisible: true,
@@ -152,7 +147,6 @@ const Home = () => {
   const [animation, setAnimation] = useState(new Animated.Value(notebookPanelWidth));
   const [MainMenuPanelAnimation] = useState(new Animated.Value(-homeMenuPanelWidth));
   const [mainMenuSidePanelAnimation] = useState(new Animated.Value(-mainMenuSidePanelWidth));
-  // const [customMapsSidePanelAnimation] = useState(new Animated.Value(-customMapsSidePanelWidth));
   const [leftsideIconAnimationValue, setLeftsideIconAnimationValue] = useState(new Animated.Value(0));
   const [rightsideIconAnimationValue, setRightsideIconAnimationValue] = useState(new Animated.Value(0));
   const [isSelectingForStereonet, setIsSelectingForStereonet] = useState(false);
@@ -240,8 +234,6 @@ const Home = () => {
       'editButtonsVisible': false,
       'drawButtonsVisible': true,
     });
-    // toggleButton('editButtonsVisible', false);
-    // toggleButton('drawButtonsVisible', true);
   };
 
   const clickHandler = async (name, value) => {
@@ -299,23 +291,6 @@ const Home = () => {
         toggleHomeDrawerButton();
         break;
 
-      // Notebook Panel three-dot menu
-      case 'closeNotebook':
-        closeNotebookPanel();
-        break;
-      case 'copySpot':
-        useSpots.copySpot();
-        dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.OVERVIEW));
-        break;
-      case 'deleteSpot':
-        deleteSpot(selectedSpot.properties.id);
-        break;
-      case 'zoomToSpot':
-        mapComponentRef.current.zoomToSpot();
-        break;
-      case 'showNesting':
-        dispatch(setNotebookPageVisible(NOTEBOOK_SUBPAGES.NESTING));
-        break;
       // Map Actions
       case MAP_MODES.DRAW.POINT:
       case MAP_MODES.DRAW.LINE:
@@ -324,9 +299,7 @@ const Home = () => {
       case MAP_MODES.DRAW.FREEHANDLINE:
       case MAP_MODES.DRAW.POINTLOCATION:
         dispatch(clearedSelectedSpots());
-        if (!isEmpty(selectedDataset) && name === MAP_MODES.DRAW.POINTLOCATION) {
-          setPointAtCurrentLocation();
-        }
+        if (!isEmpty(selectedDataset) && name === MAP_MODES.DRAW.POINTLOCATION) setPointAtCurrentLocation();
         else if (!isEmpty(selectedDataset)) setDraw(name).catch(console.error);
         else Alert.alert('No Current Dataset', 'A current dataset needs to be set before drawing Spots.');
         break;
@@ -374,32 +347,10 @@ const Home = () => {
   };
 
   const closeNotebookPanel = () => {
-    console.log('closing notebook');
+    console.log('Closing Notebook...');
     animatePanels(animation, notebookPanelWidth);
     animatePanels(rightsideIconAnimationValue, 0);
     dispatch(setNotebookPanelVisible(false));
-  };
-
-  const deleteSpot = id => {
-    const spot = spots[id];
-    Alert.alert(
-      'Delete Spot?',
-      'Are you sure you want to delete Spot: ' + spot.properties.name,
-      [{
-        text: 'Cancel',
-        onPress: () => console.log('Cancel Pressed'),
-        style: 'cancel',
-      }, {
-        text: 'Delete',
-        onPress: () => {
-          useSpots.deleteSpot(id)
-            .then((res) => {
-              console.log(res);
-              closeNotebookPanel();
-            });
-        },
-      }],
-    );
   };
 
   const dialogClickHandler = (dialog, name, position) => {
@@ -437,41 +388,6 @@ const Home = () => {
     else {
       openNotebookPanel(page);
       dispatch(setModalVisible({modal: modalType}));
-    }
-  };
-
-  const notebookClickHandler = async name => {
-    switch (name) {
-      case 'menu':
-        toggleDialog('notebookPanelMenuVisible');
-        break;
-      case 'export':
-        console.log('Export button was pressed');
-        break;
-      case 'takePhoto':
-        const imagesSavedLength = await useImages.launchCameraFromNotebook();
-        imagesSavedLength > 0 && toastRef.current.show(
-          imagesSavedLength + ' photo' + (imagesSavedLength === 1 ? '' : 's') + ' saved');
-        break;
-      case 'importPhoto':
-        useImages.getImagesFromCameraRoll();
-        break;
-      case 'showGeographyInfo':
-        dispatch(setNotebookPageVisible(NOTEBOOK_SUBPAGES.GEOGRAPHY));
-        break;
-      case 'setToCurrentLocation':
-        const currentLocation = await useMaps.getCurrentLocation();
-        let editedSpot = JSON.parse(JSON.stringify(selectedSpot));
-        editedSpot.geometry = turf.point([currentLocation.longitude, currentLocation.latitude]).geometry;
-        if (currentLocation.altitude) editedSpot.properties.altitude = currentLocation.altitude;
-        if (currentLocation.accuracy) editedSpot.properties.gps_accuracy = currentLocation.accuracy;
-        dispatch(addedSpot(editedSpot));
-        dispatch(setSelectedSpot(editedSpot));
-        break;
-      case 'setFromMap':
-        mapComponentRef.current.createDefaultGeom();
-        closeNotebookPanel();
-        break;
     }
   };
 
@@ -803,10 +719,6 @@ const Home = () => {
     );
   };
 
-  const renderToastMessage = () => {
-    toastRef.current.show('HELLO!!!');
-  };
-
   const renderUploadModal = () => {
     const activeDatasets = useProject.getActiveDatasets();
     return (
@@ -886,21 +798,10 @@ const Home = () => {
       editButtonsVisible: true,
       drawButtonsVisible: false,
     });
-    //  toggleButton('editButtonsVisible', true);
-    //   toggleButton('drawButtonsVisible', false);
-  };
-
-  // Toggle given button between true (on) and false (off)
-  const toggleButton = (button, isVisible) => {
-    console.log('Toggle Button', button, isVisible || !buttons[button]);
-    setButtons({
-      ...buttons,
-      [button]: isVisible !== undefined ? isVisible : !buttons[button],
-    });
   };
 
   // Toggle given dialog between true (visible) and false (hidden)
-  const toggleDialog = dialog => {
+  const toggleDialog = (dialog) => {
     console.log('Toggle', dialog);
     setDialogs({
       ...dialogs,
@@ -970,11 +871,11 @@ const Home = () => {
   const notebookPanel = (
     <Animated.View style={[notebookStyles.panel, animateNotebookMenu]}>
       <NotebookPanel
-        // onHandlerStateChange={(ev, name) => flingHandlerNotebook(ev, name)}
-        closeNotebook={closeNotebookPanel}
-        textStyle={{fontWeight: 'bold', fontSize: 12}}
+        closeNotebookPanel={closeNotebookPanel}
+        createDefaultGeom={() => mapComponentRef.current.createDefaultGeom()}
         openMainMenu={() => toggleHomeDrawerButton()}
-        onPress={name => notebookClickHandler(name)}/>
+        zoomToSpot={() => mapComponentRef.current.zoomToSpot()}
+      />
     </Animated.View>
   );
 
@@ -1017,11 +918,6 @@ const Home = () => {
         leftsideIconAnimation={leftsideIconAnimation}
         zoomToCustomMap={(bbox) => mapComponentRef.current.zoomToCustomMap(bbox)}
         zoomToCenterOfflineTile={() => mapComponentRef.current.zoomToCenterOfflineTile()}
-      />
-      <NotebookPanelMenu
-        visible={dialogs.notebookPanelMenuVisible}
-        onPress={(name, position) => dialogClickHandler('notebookPanelMenuVisible', name, position)}
-        onTouchOutside={() => toggleDialog('notebookPanelMenuVisible')}
       />
       {(imageSlideshowData.length) > 0 && (
         <View>

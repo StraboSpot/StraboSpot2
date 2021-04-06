@@ -9,7 +9,7 @@ import {useTagsHook} from '../tags';
 import {GENERAL_KEYS_ICONS, SED_KEYS_ICONS} from './spot.constants';
 import {addedSpot, deletedSpot, setSelectedSpot} from './spots.slice';
 
-const useSpots = (props) => {
+const useSpots = () => {
   const [useProject] = useProjectHook();
   const [useTags] = useTagsHook();
 
@@ -26,6 +26,27 @@ const useSpots = (props) => {
   useEffect(() => {
     // console.log('datasets in useSpots UE', datasets);
   }, [datasets]);
+
+  const checkIsSafeDelete = (spotToDelete) => {
+    // Check if Spot is manually nested - get the the first Spot that has this Spot nested manually in spot.properties.nesting
+    const spotWithManualNest = Object.values(spots).find(
+      spot => spot.properties?.nesting?.includes(spotToDelete.properties.id));
+    if (spotWithManualNest) {
+      return 'Remove the link to this Spot from the Samples page in Spot ' + spotWithManualNest.properties.name
+        + ' before deleting.';
+    }
+    if (spotToDelete.properties?.sed?.strat_section) return 'Remove the strat section from this Spot before deleting.';
+    if (!isEmpty(spotToDelete.properties?.images)) return 'Remove all images from this Spot before deleting.';
+    //var childrenSpots = getChildrenGenerationsSpots(spotToDelete, 1)[0];
+    // Get only children that are mapped on an image basemap or strat section which is
+    // different from the image basemap or strat section of the Spot being deleted
+    // var altMappedChildrenSpots = _.filter(childrenSpots, function (spot) {
+    //   return spotToDelete.properties.imageBasemap !== spot.properties.image_basemap || spotToDelete.properties.strat_section_id !== spot.properties.strat_section_id;
+    // });
+    // if (!_.isEmpty(altMappedChildrenSpots)) return 'Delete the nested Spots for this Spot before deleting.';
+
+    return null;
+  };
 
   // Copy Spot to a new Spot omiting specific properties
   const copySpot = async () => {
@@ -132,21 +153,10 @@ const useSpots = (props) => {
     return newSpot;
   };
 
-  const deleteSpot = async spotId => {
-    console.log(spotId);
-    Object.values(datasets).map(dataset => {
-      if (dataset.spotIds) {
-        console.log(dataset.spotIds);
-        const exists = dataset.spotIds.includes(spotId);
-        if (exists) {
-          console.log(dataset.id);
-          console.log(dataset.spotIds.filter(id => spotId !== id));
-          dispatch(deletedSpotIdFromDataset({spotId: spotId, dataset: dataset}));
-          dispatch(deletedSpot(spotId));
-        }
-      }
-    });
-    return Promise.resolve('spot deleted');
+  const deleteSpot = (spotId) => {
+    console.log('Deleting Spot ID', spotId, '...');
+    dispatch(deletedSpotIdFromDataset(spotId));
+    dispatch(deletedSpot(spotId));
   };
 
   // Get only the Spots in the active Datasets
@@ -298,6 +308,7 @@ const useSpots = (props) => {
   };
 
   return [{
+    checkIsSafeDelete: checkIsSafeDelete,
     copySpot: copySpot,
     createSpot: createSpot,
     deleteSpot: deleteSpot,

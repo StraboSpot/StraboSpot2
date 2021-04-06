@@ -1,22 +1,29 @@
 import React, {useState} from 'react';
 import {Image, TextInput, View} from 'react-native';
 
+import * as turf from '@turf/turf';
 import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {isEmpty, toTitleCase} from '../../../shared/Helpers';
 import IconButton from '../../../shared/ui/IconButton';
 import {LABEL_DICTIONARY} from '../../form';
-import {editedSpotProperties} from '../../spots/spots.slice';
+import useMapsHook from '../../maps/useMaps';
+import {addedSpot, editedSpotProperties, setSelectedSpot} from '../../spots/spots.slice';
 import useSpotsHook from '../../spots/useSpots';
+import {NOTEBOOK_SUBPAGES} from '../notebook.constants';
+import {setNotebookPageVisible} from '../notebook.slice';
 import headerStyles from './notebookHeader.styles';
+import NotebookPanelMenu from './NotebookPanelMenu';
 
-const NotebookHeader = props => {
+const NotebookHeader = (props) => {
   const dispatch = useDispatch();
+  const [useMaps] = useMapsHook();
   const [useSpots] = useSpotsHook();
 
   const spot = useSelector(state => state.spot.selectedSpot);
   const [spotName, setSpotName] = useState(spot.properties.name);
+  const [isNotebookPanelMenuVisible, setIsNotebookPanelMenuVisible] = useState(false);
 
   const getSpotCoordText = () => {
     if (spot.geometry && spot.geometry.type) {
@@ -102,7 +109,7 @@ const NotebookHeader = props => {
         title={getSpotCoordText()}
         titleStyle={{textAlign: 'left'}}
         buttonStyle={{padding: 0, justifyContent: 'flex-start'}}
-        onPress={() => props.onPress('showGeographyInfo')}
+        onPress={() => dispatch(setNotebookPageVisible(NOTEBOOK_SUBPAGES.GEOGRAPHY))}
       />
     );
   };
@@ -116,7 +123,7 @@ const NotebookHeader = props => {
             title={'Set To Current Location'}
             titleStyle={{fontSize: 14}}
             buttonStyle={{padding: 0, paddingRight: 15}}
-            onPress={() => props.onPress('setToCurrentLocation')}
+            onPress={setToCurrentLocation}
           />
         )}
         <Button
@@ -124,9 +131,23 @@ const NotebookHeader = props => {
           title={'Set in Current View'}
           titleStyle={{fontSize: 14}}
           buttonStyle={{padding: 0}}
-          onPress={() => props.onPress('setFromMap')}/>
+          onPress={() => {
+            props.createDefaultGeom();
+            props.closeNotebookPanel();
+          }}
+        />
       </View>
     );
+  };
+
+  const setToCurrentLocation = async () => {
+    const currentLocation = await useMaps.getCurrentLocation();
+    let editedSpot = JSON.parse(JSON.stringify(spot));
+    editedSpot.geometry = turf.point([currentLocation.longitude, currentLocation.latitude]).geometry;
+    if (currentLocation.altitude) editedSpot.properties.altitude = currentLocation.altitude;
+    if (currentLocation.accuracy) editedSpot.properties.gps_accuracy = currentLocation.accuracy;
+    dispatch(addedSpot(editedSpot));
+    dispatch(setSelectedSpot(editedSpot));
   };
 
   return (
@@ -145,11 +166,18 @@ const NotebookHeader = props => {
       </View>
       <View>
         <IconButton
-          onPress={() => props.onPress('menu')}
+          onPress={() => setIsNotebookPanelMenuVisible(prevState => !prevState)}
           source={require('../../../assets/icons/MapActions.png')}
           style={headerStyles.threeDotMenu}
         />
       </View>
+      <NotebookPanelMenu
+        visible={isNotebookPanelMenuVisible}
+        onTouchOutside={() => setIsNotebookPanelMenuVisible(false)}
+        closeNotebookPanel={props.closeNotebookPanel}
+        closeNotebookPanelMenu={() => setIsNotebookPanelMenuVisible(false)}
+        zoomToSpot={props.zoomToSpot}
+      />
     </React.Fragment>
   );
 };

@@ -1,10 +1,3 @@
-export const NOTEBOOK_MENU_BUTTONS = {
-  COPY_SPOT: 'copySpot',
-  DELETE_SPOT: 'deleteSpot',
-  CLOSE_NOTEBOOK: 'closeNotebook',
-  SHOW_NESTING: 'showNesting',
-  ZOOM_TO_SPOT: 'zoomToSpot',
-};
 
 export const NOTEBOOK_OVERVIEW_PAGE = {OVERVIEW: 'Overview'};
 

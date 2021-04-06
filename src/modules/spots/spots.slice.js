@@ -44,11 +44,12 @@ const spotSlice = createSlice({
       state.recentViews = [];
     },
     deletedSpot(state, action) {
-      const {[action.payload]: deletedSpot, ...newSpots} = state.spots;
-      console.log('DELETED Spot: ', action.payload, deletedSpot);
+      const {[action.payload]: deletedSpot, ...remainingSpots} = state.spots;
+      console.log('DELETED Spot:', action.payload, deletedSpot);
+      console.log('Remaining Spots:', remainingSpots);
       state.selectedSpot = {};
       state.selectedSpots = [];
-      state.spots = newSpots;
+      state.spots = remainingSpots;
       state.recentViews = state.recentViews.filter(id => id !== action.payload);
     },
     editedSpotImage(state, action) {

@@ -100,7 +100,7 @@ const useProject = () => {
         let spotsDeletedCount = 0;
         console.log(datasets[id].spotIds.length, 'Spot(s) in Dataset to Delete.');
         await Promise.all(datasets[id].spotIds.map(spotId => {
-            dispatch(deletedSpotIdFromDataset({spotId: spotId, dataset: datasets[id]}));
+            dispatch(deletedSpotIdFromDataset(spotId));
             dispatch(deletedSpot(spotId));
             spotsDeletedCount++;
             console.log('Deleted', spotsDeletedCount, 'Spot(s)');

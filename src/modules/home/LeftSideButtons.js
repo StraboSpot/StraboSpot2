@@ -20,7 +20,6 @@ const LeftSideButtons = (props) => {
     mapActionsMenuVisible: false,
     mapSymbolsMenuVisible: false,
     baseMapMenuVisible: false,
-    notebookPanelMenuVisible: false,
   });
   const [buttons, setButtons] = useState({userLocationButtonOn: false});
 

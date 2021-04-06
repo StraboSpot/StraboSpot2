@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useRef} from 'react';
 import {FlatList, Switch, Text, View} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
@@ -8,18 +8,27 @@ import {useDispatch, useSelector} from 'react-redux';
 import commonStyles from '../../shared/common.styles';
 import ButtonRounded from '../../shared/ui/ButtonRounded';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
+import ToastPopup from '../../shared/ui/Toast';
 import {imageStyles, useImagesHook} from '../images';
 import {setCurrentImageBasemap} from '../maps/maps.slice';
 import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 
-const ImagesViewPage = (props) => {
+const ImagesViewPage = () => {
   const navigation = useNavigation();
   const [useImages] = useImagesHook();
+
   const dispatch = useDispatch();
   const images = useSelector(state => state.spot.selectedSpot.properties.images);
-  const spotId = useSelector(state => state.spot.selectedSpot.properties.id);
+
+  const toastRef = useRef(null);
+
+  const takePhoto = async () => {
+    const imagesSavedLength = await useImages.launchCameraFromNotebook();
+    imagesSavedLength > 0 && toastRef.current.show(
+      imagesSavedLength + ' photo' + (imagesSavedLength === 1 ? '' : 's') + ' saved');
+  };
 
   const renderImage = (image) => {
     return (
@@ -69,7 +78,7 @@ const ImagesViewPage = (props) => {
             titleStyle={commonStyles.standardButtonText}
             buttonStyle={imageStyles.buttonContainer}
             type={'outline'}
-            onPress={() => props.onPress('takePhoto')}
+            onPress={takePhoto}
           />
           <ButtonRounded
             icon={
@@ -83,7 +92,7 @@ const ImagesViewPage = (props) => {
             titleStyle={commonStyles.standardButtonText}
             buttonStyle={imageStyles.buttonContainer}
             type={'outline'}
-            onPress={() => props.onPress('importPhoto')}
+            onPress={() => useImages.getImagesFromCameraRoll()}
           />
           <ButtonRounded
             icon={
@@ -109,6 +118,7 @@ const ImagesViewPage = (props) => {
           />
         </View>
       </View>
+      <ToastPopup toastRef={toastRef}/>
     </View>
   );
 };

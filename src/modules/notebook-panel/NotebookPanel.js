@@ -60,7 +60,11 @@ const NotebookPanel = (props) => {
       <React.Fragment>
         <View style={{flex: 1}}>
           <View style={notebookStyles.headerContainer}>
-            <NotebookHeader onPress={props.onPress}/>
+            <NotebookHeader
+              closeNotebookPanel={props.closeNotebookPanel}
+              createDefaultGeom={props.createDefaultGeom}
+              zoomToSpot={props.zoomToSpot}
+            />
           </View>
           <View style={notebookStyles.centerContainer}>
             {/*Main Overview Page*/}
@@ -71,7 +75,7 @@ const NotebookPanel = (props) => {
             {pageVisible === NOTEBOOK_PAGES.NOTE && <NotesPage/>}
             {pageVisible === NOTEBOOK_PAGES.SAMPLE && <SamplesPage/>}
             {pageVisible === NOTEBOOK_PAGES.TAG && <TagsPage openMainMenu={props.openMainMenu}/>}
-            {pageVisible === NOTEBOOK_PAGES.IMAGE && <ImagesPage onPress={props.onPress}/>}
+            {pageVisible === NOTEBOOK_PAGES.IMAGE && <ImagesPage/>}
 
             {/*Notebook Subpages*/}
             {pageVisible === NOTEBOOK_SUBPAGES.GEOGRAPHY && <Geography/>}
@@ -104,10 +108,7 @@ const NotebookPanel = (props) => {
           </View>
         </View>
         <View style={notebookStyles.footerContainer}>
-          <NotebookFooter
-            openPage={(page) => onNotebookPageVisible(page)}
-            onPress={(camera) => props.onPress(camera)}
-          />
+          <NotebookFooter openPage={onNotebookPageVisible}/>
         </View>
       </React.Fragment>
     );
@@ -141,7 +142,7 @@ const NotebookPanel = (props) => {
           title={'Close Notebook'}
           type={'clear'}
           titleStyle={commonStyles.standardButtonText}
-          onPress={() => props.closeNotebook()}/>
+          onPress={props.closeNotebookPanel}/>
       </View>
     );
   };
