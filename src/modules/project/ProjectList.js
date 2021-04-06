@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
-import {AppState, Alert, FlatList, Text, View} from 'react-native';
+import {Alert, AppState, FlatList, Text, View} from 'react-native';
 
-import {ListItem, Button} from 'react-native-elements';
+import {Button, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import useDownloadHook from '../../services/useDownload';

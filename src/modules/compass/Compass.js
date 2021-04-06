@@ -1,15 +1,16 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Animated,
   AppState,
   Easing,
   Image,
-  View,
+  NativeEventEmitter,
+  NativeModules,
+  Platform,
   Switch,
   Text,
   TouchableOpacity,
-  NativeModules,
-  NativeEventEmitter, Platform,
+  View,
 } from 'react-native';
 
 import {Button, ListItem} from 'react-native-elements';
@@ -39,7 +40,8 @@ const Compass = () => {
   const modalVisible = useSelector(state => state.home.modalVisible);
   const selectedMeasurement = useSelector(state => state.spot.selectedMeasurement);
   const useMeasurementTemplates = useSelector(state => state.project.project?.templates?.useMeasurementTemplates);
-  const activeMeasurementTemplates = useSelector(state => state.project.project?.templates?.activeMeasurementTemplates);
+  const activeMeasurementTemplates = useSelector(
+    state => state.project.project?.templates?.activeMeasurementTemplates) || [];
 
   const [accelerometerData, setAccelerometerData] = useState({x: 0, y: 0, z: 0, timestamp: null});
   const [accelerometerSubscription, setAccelerometerSubscription] = useState(null);
@@ -189,7 +191,7 @@ const Compass = () => {
     try {
       buttonClick.play();
     }
- catch (e) {
+    catch (e) {
       console.log('Compass click sound playback failed due to audio decoding errors', e);
     }
     if (isCompassMeasurement) dispatch(setCompassMeasurements(compassData));

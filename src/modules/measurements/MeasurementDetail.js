@@ -7,7 +7,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
 import {getNewId, isEmpty, roundToDecimalPlaces, toDegrees, toRadians} from '../../shared/Helpers';
-import {WARNING_COLOR, PRIMARY_ACCENT_COLOR} from '../../shared/styles.constants';
+import {PRIMARY_ACCENT_COLOR, WARNING_COLOR} from '../../shared/styles.constants';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import SectionDivider from '../../shared/ui/SectionDivider';
@@ -132,7 +132,7 @@ const MeasurementDetailPage = () => {
   const clearSelectedMeasurements = () => {
     dispatch(setSelectedMeasurement({}));
     dispatch(setSelectedAttributes([]));
-  }
+  };
 
   const confirmDeleteMeasurement = () => {
     Alert.alert(
@@ -161,10 +161,10 @@ const MeasurementDetailPage = () => {
           onPress: () => dispatch(setSelectedMeasurement({})),
         }, {
           text: 'Yes',
-          onPress:async () => {
+          onPress: async () => {
             const saved = await saveForm(formCurrent);
-            console.log(saved)
-            clearSelectedMeasurements()
+            console.log(saved);
+            clearSelectedMeasurements();
           },
         }],
         {cancelable: false},

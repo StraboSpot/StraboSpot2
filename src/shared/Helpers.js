@@ -27,7 +27,7 @@ export const csvToArray = (strData, strDelimiter) => {
       // Standard fields.
       '([^"\\' + strDelimiter + '\\r\\n]*))'
     ),
-    'gi'
+    'gi',
   );
   // Create an array to hold our data. Give the array
   // a default empty first row.
@@ -62,7 +62,7 @@ export const csvToArray = (strData, strDelimiter) => {
       // this value, unescape any double quotes.
       strMatchedValue = arrMatches[2].replace(
         new RegExp('""', 'g'),
-        '"'
+        '"',
       );
     }
     else {
@@ -75,7 +75,7 @@ export const csvToArray = (strData, strDelimiter) => {
   }
   // Return the parsed data.
   return (arrData);
-}
+};
 
 export const getDimensions = () => {
   const platform = Platform.OS === 'ios' ? 'window' : 'screen';
@@ -111,7 +111,7 @@ export const handleKeyboardDidHide = (textInputAnimate) => {
 export const handleKeyboardDidShow = (event, TextInputState, textInputAnimate) => {
   const keyboardHeight = event.endCoordinates.height;
   const currentlyFocusedField = TextInputState.currentlyFocusedField();
-  if (currentlyFocusedField === null) return;
+  if (currentlyFocusedField === null) return null;
   else {
     UIManager.measure(currentlyFocusedField, (originX, originY, width, height, pageX, pageY) => {
       const fieldHeight = height;

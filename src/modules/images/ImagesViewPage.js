@@ -1,8 +1,8 @@
 import React from 'react';
-import {Alert, FlatList, Switch, Text, View} from 'react-native';
+import {FlatList, Switch, Text, View} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
-import {Card, Button, Icon} from 'react-native-elements';
+import {Button, Card, Icon} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';

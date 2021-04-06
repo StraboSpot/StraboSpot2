@@ -1,11 +1,11 @@
 import React from 'react';
 
 import Dialog, {
-  DialogTitle,
-  DialogContent,
-  SlideAnimation,
-  DialogFooter,
   DialogButton,
+  DialogContent,
+  DialogFooter,
+  DialogTitle,
+  SlideAnimation,
 } from 'react-native-popup-dialog';
 
 import * as ProjectActions from './project.constants';

@@ -1,25 +1,23 @@
 import React, {useEffect, useState} from 'react';
-import {Alert, Animated, Keyboard, FlatList, Platform, Switch, TextInput, View, Text, SafeAreaView} from 'react-native';
+import {Alert, Animated, FlatList, Keyboard, Platform, Switch, Text, TextInput, View} from 'react-native';
 
 import {Button, Icon, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../../shared/common.styles';
-import {isEmpty} from '../../../shared/Helpers';
-import * as Helpers from '../../../shared/Helpers';
+import {handleKeyboardDidHide, handleKeyboardDidShow, isEmpty} from '../../../shared/Helpers';
 import {BLUE, DARKGREY, WARNING_COLOR} from '../../../shared/styles.constants';
 import FlatListItemSeparator from '../../../shared/ui/FlatListItemSeparator';
 import SectionDivider from '../../../shared/ui/SectionDivider';
 import Slider from '../../../shared/ui/Slider';
-import Spacer from '../../../shared/ui/Spacer';
 import {formStyles} from '../../form';
 import {
   addedStatusMessage,
   clearedStatusMessages,
   removedLastStatusMessage,
   setErrorMessagesModalVisible,
-  setStatusMessagesModalVisible,
   setLoadingStatus,
+  setStatusMessagesModalVisible,
 } from '../../home/home.slice';
 import {setMenuSelectionPage, setSidePanelVisible} from '../../main-menu-panel/mainMenuPanel.slice';
 import SidePanelHeader from '../../main-menu-panel/sidePanel/SidePanelHeader';
@@ -44,11 +42,11 @@ const AddCustomMaps = () => {
 
   let sliderValuePercent = editableCustomMapData && Math.round(editableCustomMapData.opacity * 100).toFixed(0);
   useEffect(() => {
-    Keyboard.addListener('keyboardDidShow', handleKeyboardDidShow);
-    Keyboard.addListener('keyboardDidHide', handleKeyboardDidHide);
+    Keyboard.addListener('keyboardDidShow', handleKeyboardShown);
+    Keyboard.addListener('keyboardDidHide', handleKeyboardHidden);
     return function cleanup() {
-      Keyboard.removeListener('keyboardDidShow', handleKeyboardDidShow);
-      Keyboard.removeListener('keyboardDidHide', handleKeyboardDidHide);
+      Keyboard.removeListener('keyboardDidShow', handleKeyboardShown);
+      Keyboard.removeListener('keyboardDidHide', handleKeyboardHidden);
       dispatch(selectedCustomMapToEdit({}));
       console.log('Listners Removed');
     };
@@ -113,9 +111,9 @@ const AddCustomMaps = () => {
     );
   };
 
-  const handleKeyboardDidShow = (event) => Helpers.handleKeyboardDidShow(event, TextInputState, textInputAnimate);
+  const handleKeyboardShown = (event) => handleKeyboardDidShow(event, TextInputState, textInputAnimate);
 
-  const handleKeyboardDidHide = () => Helpers.handleKeyboardDidHide(textInputAnimate);
+  const handleKeyboardHidden = () => handleKeyboardDidHide(textInputAnimate);
 
   const selectMap = (source) => {
     console.log(source);

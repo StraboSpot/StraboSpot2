@@ -120,7 +120,7 @@ const useSpots = (props) => {
     // Continuous tagging
     if (newSpot.geometry.type === 'Point' && useContinuousTagging) {
       let continuousTaggingList = tags.filter(tag => tag.continuousTagging);
-      useTags.addSpotsToTags(continuousTaggingList,[newSpot]);
+      useTags.addSpotsToTags(continuousTaggingList, [newSpot]);
     }
     console.log('Creating new Spot:', newSpot);
     await dispatch(addedSpot(newSpot));

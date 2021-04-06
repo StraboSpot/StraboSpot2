@@ -1,5 +1,5 @@
 import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
-import {View, TextInput, Keyboard, Animated} from 'react-native';
+import {Animated, Keyboard, TextInput, View} from 'react-native';
 
 import {Formik} from 'formik';
 import {Avatar, Button, Icon, Overlay} from 'react-native-elements';
@@ -60,13 +60,6 @@ const UserProfile = (props) => {
   const handleKeyboardDidHide = () => Helpers.handleKeyboardDidHide(textInputAnimate);
 
   const pickImageSource = async (source) => {
-    const imageOptionsCamera = {
-      storageOptions: {
-        skipBackup: true,
-        waitUntilSaved: true,
-      },
-      noData: true,
-    };
     if (source === 'gallery') {
       launchImageLibrary({}, async response => {
         console.log(response);
@@ -75,7 +68,7 @@ const UserProfile = (props) => {
       });
     }
     else {
-      launchCamera(imageOptionsCamera, (response) => {
+      launchCamera({}, (response) => {
         console.log('Response = ', response);
         if (response) setAvatar(response);
         else return require('../../assets/images/noimage.jpg');

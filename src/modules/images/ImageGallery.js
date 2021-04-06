@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Alert, FlatList, SectionList, Text, View} from 'react-native';
 
-import {Image, Icon} from 'react-native-elements';
+import {Icon, Image} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';

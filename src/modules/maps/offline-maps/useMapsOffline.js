@@ -1,5 +1,5 @@
-import {useEffect, useState, useRef} from 'react';
-import {Alert, Platform} from 'react-native';
+import {useEffect} from 'react';
+import {Alert} from 'react-native';
 
 import RNFS from 'react-native-fs';
 import {unzip} from 'react-native-zip-archive';
@@ -47,7 +47,7 @@ const useMapsOffline = () => {
       || map.id === 'macrostrat' || map.source === 'map_warper') {
       return map.name;
     }
-    else return;
+    else return null;
   };
 
   const getMedian = (arr) => {

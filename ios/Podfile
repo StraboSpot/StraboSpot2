@@ -15,8 +15,8 @@ target 'StraboSpot2' do
   #
   # Note that if you have use_frameworks! enabled, Flipper will not work and
   # you should disable these next few lines.
-  #use_flipper!
-  #post_install do |installer|
+  use_flipper!({ 'Flipper' => '0.83.0' })
+#  post_install do |installer|
     #flipper_post_install(installer)
   #end
 end
@@ -39,5 +39,6 @@ pre_install do |installer|
   end
 
   post_install do |installer|
+     flipper_post_install(installer)
     $RNMBGL.post_install(installer)
   end

@@ -1,5 +1,5 @@
 import RNFS from 'react-native-fs';
-import {useDispatch, useSelector, batch} from 'react-redux';
+import {batch, useDispatch, useSelector} from 'react-redux';
 
 import useDownloadHook from '../../services/useDownload';
 import useServerRequests from '../../services/useServerRequests';

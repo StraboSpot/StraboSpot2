@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {Dimensions} from 'react-native';
 
-import {State, PanGestureHandler} from 'react-native-gesture-handler';
+import {PanGestureHandler, State} from 'react-native-gesture-handler';
 import AnimatedPoint from 'react-native-reanimated';
 import {connect, useDispatch, useSelector} from 'react-redux';
 
@@ -82,7 +82,7 @@ const VertexDrag = () => {
               ],
             },
           ]}
-         />
+        />
       </PanGestureHandler>
     </React.Fragment>
   );

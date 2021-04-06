@@ -1,12 +1,12 @@
 import React, {useState} from 'react';
-import {Dimensions, View, TouchableOpacity, Image, ActivityIndicator, Platform} from 'react-native';
+import {ActivityIndicator, Dimensions, Image, Platform, TouchableOpacity, View} from 'react-native';
 
 import {useDispatch, useSelector} from 'react-redux';
 
 import IconButton from '../../shared/ui/IconButton';
 import ImagePropertiesModal from '../images/ImagePropertiesModal';
 import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
-import {setSelectedSpot, setSelectedAttributes} from '../spots/spots.slice';
+import {setSelectedAttributes, setSelectedSpot} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
 import styles from './images.styles';
 

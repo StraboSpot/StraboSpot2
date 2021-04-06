@@ -32,17 +32,10 @@ import TagsPage from '../tags/TagsNotebook';
 import ThreeDStructuresPage from '../three-d-structures/ThreeDStructuresPage';
 import NotebookFooter from './notebook-footer/NotebookFooter';
 import NotebookHeader from './notebook-header/NotebookHeader';
-import {
-  NOTEBOOK_PAGES,
-  NOTEBOOK_SUBPAGES,
-  PET_NOTEBOOK_PAGES,
-  SECONDARY_NOTEBOOK_PAGES,
-  SED_NOTEBOOK_PAGES,
-} from './notebook.constants';
+import {NOTEBOOK_PAGES, NOTEBOOK_SUBPAGES, PET_NOTEBOOK_PAGES, SECONDARY_NOTEBOOK_PAGES} from './notebook.constants';
 import {setNotebookPageVisible} from './notebook.slice';
 import notebookStyles from './notebookPanel.styles';
 import Overview from './Overview';
-import PlaceholderPage from './PlaceholderPage';
 
 const NotebookPanel = (props) => {
   const [useSpots] = useSpotsHook();
@@ -55,7 +48,7 @@ const NotebookPanel = (props) => {
   const onNotebookPageVisible = (page) => {
     dispatch(setNotebookPageVisible(page));
     if (page === NOTEBOOK_PAGES.MEASUREMENT || page === NOTEBOOK_SUBPAGES.MEASUREMENTDETAIL) {
-    dispatch(setModalVisible({modal: MODALS.NOTEBOOK_MODALS.COMPASS}));
+      dispatch(setModalVisible({modal: MODALS.NOTEBOOK_MODALS.COMPASS}));
     }
     else if (page === NOTEBOOK_PAGES.SAMPLE) dispatch(setModalVisible({modal: MODALS.NOTEBOOK_MODALS.SAMPLE}));
     else if (page === NOTEBOOK_PAGES.TAG) dispatch(setModalVisible({modal: MODALS.NOTEBOOK_MODALS.TAGS}));

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Linking, View} from 'react-native';
+import {View} from 'react-native';
 
 import {Button} from 'react-native-elements';
 import {useSelector} from 'react-redux';

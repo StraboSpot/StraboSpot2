@@ -9,7 +9,7 @@ import {isEmpty} from '../../shared/Helpers';
 import homeStyles from '../home/home.style';
 import useImagesHook from '../images/useImages';
 import FreehandSketch from '../sketch/FreehandSketch';
-import {GEO_LAT_LNG_PROJECTION, PIXEL_PROJECTION, MAP_SYMBOLS} from './maps.constants';
+import {GEO_LAT_LNG_PROJECTION, MAP_SYMBOLS, PIXEL_PROJECTION} from './maps.constants';
 import useMapsHook from './useMaps';
 import useMapSymbologyHook from './useMapSymbology';
 

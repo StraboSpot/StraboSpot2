@@ -53,34 +53,34 @@ import ShortcutSamplesModal from '../samples/ShortcutSamplesModal';
 import {addedSpot, clearedSelectedSpots, setSelectedSpot} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
 import {
-  TagsNotebookModal,
+  AddTagsToSpotsShortcutModal,
   TagAddRemoveSpots,
   TagDetailSidePanel,
+  TagsNotebookModal,
   TagsShortcutModal,
-  AddTagsToSpotsShortcutModal,
 } from '../tags';
+import UserProfile from '../user/UserProfilePage';
 import {MODALS} from './home.constants';
 import {
   setBackupModalVisible,
   setErrorMessagesModalVisible,
   setImageModalVisible,
   setInfoMessagesModalVisible,
+  setLoadingStatus,
+  setMainMenuPanelVisible,
   setModalVisible,
+  setOfflineMapsModalVisible,
+  setOnlineStatus,
   setProjectLoadComplete,
   setProjectLoadSelectionModalVisible,
-  setOfflineMapsModalVisible,
-  setMainMenuPanelVisible,
-  setStatusMessagesModalVisible,
-  setOnlineStatus,
-  setUploadModalVisible,
   setSelectedProject,
-  setLoadingStatus,
+  setStatusMessagesModalVisible,
+  setUploadModalVisible,
 } from './home.slice';
 import homeStyles from './home.style';
 import LeftSideButtons from './LeftSideButtons';
 import RightSideButtons from './RightSideButtons';
 import useHomeHook from './useHome';
-import UserProfile from '../user/UserProfilePage';
 
 const Home = () => {
   const platform = Platform.OS === 'ios' ? 'window' : 'screen';
@@ -180,7 +180,7 @@ const Home = () => {
   }, [selectedProject]);
 
   useEffect(() => {
-    if (user.email && user.name) {
+    if (user.email && user.name && !__DEV__) {
       Sentry.configureScope((scope) => {
         scope.setUser({'email': user.email, username: user.name});
       });

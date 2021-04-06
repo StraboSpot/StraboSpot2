@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Switch, ScrollView} from 'react-native';
+import {ScrollView, Switch, View} from 'react-native';
 
 import {Avatar, ListItem} from 'react-native-elements';
 import Dialog, {DialogContent, DialogTitle} from 'react-native-popup-dialog';
@@ -7,14 +7,13 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import SectionDivider from '../../../shared/ui/SectionDivider';
 import {
+  NOTEBOOK_PAGES,
+  NOTEBOOK_PAGES_ICONS,
+  PET_NOTEBOOK_PAGES,
   PRIMARY_NOTEBOOK_PAGES,
   SECONDARY_NOTEBOOK_PAGES,
-  PET_NOTEBOOK_PAGES,
-  SED_NOTEBOOK_PAGES,
-  NOTEBOOK_PAGES_ICONS,
-  NOTEBOOK_PAGES,
 } from '../notebook.constants';
-import {setNotebookPageVisible, addedNotebookToolbarIcon, removedNotebookToolbarIcon} from '../notebook.slice';
+import {addedNotebookToolbarIcon, removedNotebookToolbarIcon, setNotebookPageVisible} from '../notebook.slice';
 import styles from '../notebookPanel.styles';
 import footerStyles from './notebookFooter.styles';
 

@@ -54,7 +54,8 @@ const ThreeDStructureDetail = (props) => {
   };
 
   const delete3dStructure = () => {
-    let edited3dStructuresData = spot.properties._3d_structures ? JSON.parse(JSON.stringify(spot.properties._3d_structures)) : [];
+    let edited3dStructuresData = spot.properties._3d_structures ? JSON.parse(
+      JSON.stringify(spot.properties._3d_structures)) : [];
     if (!edited3dStructuresData) edited3dStructuresData = [];
     edited3dStructuresData = edited3dStructuresData.filter(struct => struct.id !== props.selected3dStructure.id);
     dispatch(editedSpotProperties({field: '_3d_structures', value: edited3dStructuresData}));
@@ -118,7 +119,8 @@ const ThreeDStructureDetail = (props) => {
       }
       let edited3dStructureData = formCurrent.values;
       console.log('Saving ' + type + ' data to Spot ...');
-      let edited3dStructuresData = spot.properties._3d_structures ? JSON.parse(JSON.stringify(spot.properties._3d_structures)) : [];
+      let edited3dStructuresData = spot.properties._3d_structures ? JSON.parse(
+        JSON.stringify(spot.properties._3d_structures)) : [];
       edited3dStructuresData = edited3dStructuresData.filter(struct => struct.id !== edited3dStructureData.id);
       edited3dStructuresData.push(edited3dStructureData);
       dispatch(editedSpotProperties({field: '_3d_structures', value: edited3dStructuresData}));

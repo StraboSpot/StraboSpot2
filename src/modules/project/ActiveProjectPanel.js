@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Text, View} from 'react-native';
 
 import {Button} from 'react-native-elements';
@@ -75,7 +75,7 @@ const ActiveProjectPanel = () => {
             onPress={() => confirm()}
             buttonStyle={{paddingLeft: 20, paddingRight: 20}}
             containerStyle={commonStyles.buttonContainer}
-            />
+          />
           <Button
             title={'Cancel'}
             onPress={() => setIsWarningModalVisible(false)}
@@ -100,7 +100,7 @@ const ActiveProjectPanel = () => {
               dividerText={'Project Datasets'}
               buttonTitle={'Add'}
               onPress={() => setIsAddDatasetModalVisible(true)}
-              />
+            />
             <DatasetList/>
           </View>
           {/*Active Datasets*/}

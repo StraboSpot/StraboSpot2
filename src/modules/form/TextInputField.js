@@ -31,8 +31,8 @@ const TextInputField = ({
         onChangeText={onMyChange && typeof onMyChange === 'function' ? val => onMyChange(name, val) : onChange(name)}
         onBlur={onBlur(name)}
         style={props.appearance === 'multiline' ? {...formStyles.fieldValue, ...formStyles.fieldValueMultiline}
-        : props.appearance === 'full' ? {...formStyles.fieldValue, ...formStyles.fieldValueFull}
-        : formStyles.fieldValue}
+          : props.appearance === 'full' ? {...formStyles.fieldValue, ...formStyles.fieldValueFull}
+            : formStyles.fieldValue}
         value={value}
         placeholder={props.placeholder}
         multiline={props.appearance === 'multiline' || props.appearance === 'full'}

@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   sectionHeaderBackground: {
-    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR
+    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
   },
   sliderContainer: {
     flex: 1,

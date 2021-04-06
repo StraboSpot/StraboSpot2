@@ -34,7 +34,7 @@ const useServerRequests = () => {
     }
     catch (error) {
       console.error(error);
-      Alert.alert(`${error}`)
+      Alert.alert(`${error}`);
     }
   };
 
