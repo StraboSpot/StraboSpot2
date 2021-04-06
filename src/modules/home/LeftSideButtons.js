@@ -1,9 +1,10 @@
-import React, {useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Animated} from 'react-native';
 
 import {useSelector} from 'react-redux';
 
 import IconButton from '../../shared/ui/IconButton';
+import ToastPopup from '../../shared/ui/Toast';
 import UseMapsHook from '../maps/useMaps';
 import BaseMapDialog from './BaseMapDialogBox';
 import homeStyles from './home.style';
@@ -21,13 +22,37 @@ const LeftSideButtons = (props) => {
     mapSymbolsMenuVisible: false,
     baseMapMenuVisible: false,
   });
-  const [buttons, setButtons] = useState({userLocationButtonOn: false});
+  const [userLocationButtonOn, setUserLocationButtonOn] = useState(false);
+
+  const toastRef = useRef(null);
+
+  let timeout;
+
+  useEffect(() => {
+    console.log('User Location button is:', userLocationButtonOn);
+    if (userLocationButtonOn) startLocationReminderTimer();
+    return () => clearTimeout(timeout);
+  }, [userLocationButtonOn]);
 
   // Toggle given dialog between true (visible) and false (hidden)
   const toggleDialog = dialog => {
     console.log('Toggle', dialog);
     setDialogs(d => ({...d, [dialog]: !d[dialog]}));
     console.log(dialog, 'is set to', dialogs[dialog]);
+  };
+
+  const startLocationReminderTimer = () => {
+    timeout = setTimeout(() => {
+      console.log(timeout);
+      clearLocationTimer();
+    }, 60000);
+  };
+
+  const clearLocationTimer = () => {
+    setUserLocationButtonOn(false);
+    props.clickHandler('toggleUserLocation', false);
+    toastRef.current.show('Geolocation turned off automatically to conserve battery.');
+    console.log('Location timer cleared');
   };
 
   return (
@@ -96,12 +121,12 @@ const LeftSideButtons = (props) => {
         <Animated.View style={[homeStyles.bottomLeftIcons, props.leftsideIconAnimation]}>
           <IconButton
             style={{top: 5}}
-            source={buttons.userLocationButtonOn
+            source={userLocationButtonOn
               ? require('../../assets/icons/MyLocationButton_pressed.png')
               : require('../../assets/icons/MyLocationButton.png')}
             onPress={() => {
-              setButtons(b => ({...b, userLocationButtonOn: !b.userLocationButtonOn}));
-              props.clickHandler('toggleUserLocation', !buttons.userLocationButtonOn);
+              setUserLocationButtonOn(!userLocationButtonOn);
+              props.clickHandler('toggleUserLocation', !userLocationButtonOn);
             }}
           />
         </Animated.View>
@@ -114,6 +139,11 @@ const LeftSideButtons = (props) => {
           />
         </Animated.View>
       )}
+      <ToastPopup
+        toastRef={toastRef}
+        positionValue={50}
+        style={{backgroundColor: 'lightyellow'}}
+      />
     </React.Fragment>
   );
 };

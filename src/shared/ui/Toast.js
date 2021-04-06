@@ -8,13 +8,13 @@ const ToastPopup = (props) => {
   return (
     <Toast
       ref={props.toastRef}
-      style={homeStyles.photosSavedToastContainer}
+      style={[homeStyles.toastContainer, props.style]}
       position='top'
-      positionValue={300}
+      positionValue={props.positionValue || 300}
       fadeInDuration={500}
       fadeOutDuration={2000}
       opacity={0.9}
-      textStyle={homeStyles.photoSavedToastText}
+      textStyle={homeStyles.toastText}
     />
   );
 };

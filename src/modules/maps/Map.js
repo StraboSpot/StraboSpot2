@@ -112,7 +112,6 @@ const Map = React.forwardRef((props, ref) => {
     spotsInMapExtent: () => spotsInMapExtent(),
   };
 
-
   useEffect(() => {
     Logger.setLogCallback((log) => {
       const {message} = log;

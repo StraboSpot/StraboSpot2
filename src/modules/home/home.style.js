@@ -23,12 +23,12 @@ const homeStyles = StyleSheet.create({
     bottom: 0,
     right: 200,
   },
-  photosSavedToastContainer: {
+  toastContainer: {
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
   },
-  photoSavedToastText: {
+  toastText: {
     color: themes.PRIMARY_TEXT_COLOR,
     fontSize: themes.PRIMARY_TEXT_SIZE,
     fontWeight: 'bold',
@@ -140,7 +140,7 @@ const homeStyles = StyleSheet.create({
     textShadowColor: themes.LIGHTGREY,
     textShadowRadius: 5,
     marginLeft: 10,
-    marginBottom: 20,
+    // marginBottom: 20,
     fontWeight: 'bold',
   },
   currentZoomTextWhite: {
