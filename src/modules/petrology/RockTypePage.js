@@ -146,7 +146,7 @@ const RockTypePage = (props) => {
           component={(formProps) => Form({formName: formName, ...formProps})}
           initialValues={petData}
           validateOnChange={true}
-          enableReinitialize={false}
+          enableReinitialize={true}
         />
       </View>
     );
