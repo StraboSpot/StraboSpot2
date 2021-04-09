@@ -58,6 +58,13 @@ const projectSlice = createSlice({
       const dataset = {...state.datasets[datasetId], spotIds: spotIdsUnique};
       state.datasets = {...state.datasets, [datasetId]: dataset};
     },
+    addedNeededImagesToDataset(state, action) {
+      const {datasetId, images} = action.payload;
+      const imagesInDataset = state.datasets[datasetId].images
+      ? {...state.datasets[datasetId].images, ...images}
+      : images;
+      state.datasets = {...state.datasets, [datasetId]: {...state.datasets[datasetId], images: imagesInDataset}};
+    },
     addedTagToSelectedSpot(state, action) {
       state.addTagToSelectedSpot = action.payload;
     },
@@ -137,6 +144,7 @@ export const {
   addedProject,
   addedProjectDescription,
   addedSpotsIdsToDataset,
+  addedNeededImagesToDataset,
   addedTagToSelectedSpot,
   clearedDatasets,
   clearedProject,

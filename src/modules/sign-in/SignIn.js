@@ -13,7 +13,7 @@ import useServerRequests from '../../services/useServerRequests';
 import {VERSION_NUMBER} from '../../shared/app.constants';
 import {isEmpty, readDataUrl} from '../../shared/Helpers';
 import IconButton from '../../shared/ui/IconButton';
-import {setOnlineStatus, setSignedInStatus} from '../home/home.slice';
+import {setOnlineStatus, setProjectLoadSelectionModalVisible, setSignedInStatus} from '../home/home.slice';
 import {setUserData} from '../user/userProfile.slice';
 import styles from './signIn.styles';
 
@@ -61,6 +61,7 @@ const SignIn = (props) => {
           const encodedLogin = Base64.encode(username + ':' + password);
           updateUserResponse(encodedLogin).then((userState) => {
             console.log(`${username} is successfully logged in!`);
+            dispatch(setProjectLoadSelectionModalVisible(true));
             dispatch(setSignedInStatus(true));
             setUsername('');
             setPassword('');
