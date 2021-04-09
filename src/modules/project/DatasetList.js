@@ -1,11 +1,12 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {FlatList, Switch, Text, View} from 'react-native';
 
 import {Button, Icon, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import useDownloadHook from '../../services/useDownload';
 import commonStyles from '../../shared/common.styles';
-import {truncateText} from '../../shared/Helpers';
+import {truncateText,isEmpty} from '../../shared/Helpers';
 import DeleteConformationDialogBox from '../../shared/ui/DeleteConformationDialogBox';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import TextInputModal from '../../shared/ui/GeneralTextInputModal';
@@ -16,6 +17,7 @@ import {updatedDatasetProperties} from './projects.slice';
 
 const DatasetList = () => {
   const [useProject] = useProjectHook();
+  const useDownload = useDownloadHook();
 
   const [isDeleteConfirmModalVisible, setIsDeleteConfirmModalVisible] = useState(false);
   const [isDatasetNameModalVisible, setIsDatasetNameModalVisible] = useState(false);
@@ -25,6 +27,12 @@ const DatasetList = () => {
   const activeDatasetsIds = useSelector(state => state.project.activeDatasetsIds);
   const datasets = useSelector(state => state.project.datasets);
   const selectedDatasetId = useSelector(state => state.project.selectedDatasetId);
+
+  useEffect(() => {
+    console.log('In Dataset List UE');
+    console.log('DATASET WITH IMAGES', datasets);
+
+  }, [datasets]);
 
   const editDataset = (id, name) => {
     setSelectedDatasetProperties({name: name, id: id});
@@ -43,6 +51,10 @@ const DatasetList = () => {
   };
 
   const renderDatasetListItem = (dataset) => {
+    const spotsInDataset = dataset.spotIds
+      ? `${dataset?.spotIds.length} spot${dataset?.spotIds.length !== 1 ? 's' : ''}`
+      : '0 spots';
+    const imagesNeededOfTotal = `${dataset?.images?.neededImagesIds?.length}/${dataset?.images?.imageIds?.length} images needed`;
     return (
       <ListItem
         key={dataset.id}
@@ -56,11 +68,9 @@ const DatasetList = () => {
           onPress={() => editDataset(dataset.id, dataset.name)}
         />
         <ListItem.Content>
-          <ListItem.Title style={commonStyles.listItemTitle}>{truncateText(dataset.name, 20)}</ListItem.Title>
+          <ListItem.Title style={commonStyles.listItemTitle}>{truncateText(dataset.name, 18)}</ListItem.Title>
           <ListItem.Subtitle>
-            {dataset.spotIds
-              ? `(${dataset.spotIds.length} spot${dataset.spotIds.length !== 1 ? 's' : ''})`
-              : '(0 spots)'}
+            {spotsInDataset},{'\n'} {imagesNeededOfTotal}
           </ListItem.Subtitle>
         </ListItem.Content>
         <Switch
@@ -68,6 +78,21 @@ const DatasetList = () => {
           value={activeDatasetsIds.some(activeDatasetId => activeDatasetId === dataset.id)}
           disabled={isDisabled(dataset.id)}
         />
+        <View >
+          <Icon
+            name={'image-outline'}
+            type={'ionicon'}
+            size={20}
+            containerStyle={{paddingBottom: 5}}
+          />
+          <Icon
+            name={isEmpty(dataset?.images?.neededImagesIds) ? 'checkmark-outline' : 'file-download'}
+            type={isEmpty(dataset?.images?.neededImagesIds) ? 'ionicon' : 'material'}
+            size={20}
+            color={isEmpty(dataset?.images?.neededImagesIds) && 'green'}
+            onPress={() => useDownload.initializeDownloadImages(dataset?.images?.neededImagesIds, dataset)}
+          />
+        </View>
       </ListItem>
     );
   };

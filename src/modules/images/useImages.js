@@ -112,12 +112,16 @@ const useImages = () => {
     return imageIds;
   };
 
-  const gatherNeededImages = async (spotsOnServer) => {
+  const gatherNeededImages = async (spotsOnServer, dataset) => {
     try {
       let neededImagesIds = [];
+      let imageIds;
       console.log('Gathering Needed Images...');
-      dispatch(addedStatusMessage('Gathering Needed Images...'));
-      const imageIds = await getAllImagesIds(spotsOnServer);
+      // dispatch(addedStatusMessage('Gathering Needed Images...'));
+      if (dataset?.images?.neededImagesIds) {
+        imageIds = dataset.images.neededImagesIds;
+      }
+      else imageIds = await getAllImagesIds(spotsOnServer);
       await Promise.all(
         imageIds.map(async (imageId) => {
           const doesExist = await doesImageExistOnDevice(imageId);
@@ -129,12 +133,12 @@ const useImages = () => {
         }),
       );
       if (neededImagesIds.length > 0) {
-        console.log('Images Needed to Download: ' + neededImagesIds.length);
-        dispatch(removedLastStatusMessage());
-        dispatch(addedStatusMessage('Images Needed to Download: ' + neededImagesIds.length));
+        console.log('Images Needed to Download: ' + neededImagesIds.length, '/', imageIds.length);
+        // dispatch(removedLastStatusMessage());
+        // dispatch(addedStatusMessage('Images Needed to Download: ' + neededImagesIds.length));
       }
       console.log('Promised Finished');
-      return neededImagesIds;
+      return {neededImagesIds: neededImagesIds, imageIds: imageIds};
     }
     catch (err) {
       console.error('Error Gathering Images.');
