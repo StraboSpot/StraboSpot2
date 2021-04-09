@@ -184,7 +184,6 @@ const Home = () => {
   }, [user]);
 
   useEffect(() => {
-    dispatch(setProjectLoadSelectionModalVisible(isEmpty(currentProject)));
     if (!isEmpty(currentProject)) {
       setExportFileName(moment(new Date()).format('YYYY-MM-DD_hmma') + '_' + currentProject.description.project_name);
     }
