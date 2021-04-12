@@ -136,7 +136,7 @@ const Tags = () => {
       )}
       <AddButton
         onPress={addTag}
-        title={'Add New Tag'}
+        title={'Create New Tag'}
         type={'outline'}
       />
       <ListItem containerStyle={commonStyles.listItem}>
