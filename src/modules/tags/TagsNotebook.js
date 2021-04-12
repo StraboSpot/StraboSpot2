@@ -3,7 +3,6 @@ import {View} from 'react-native';
 
 import {useDispatch} from 'react-redux';
 
-import AddButton from '../../shared/ui/AddButton';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
 import {MODALS} from '../home/home.constants';
 import {setModalVisible} from '../home/home.slice';
@@ -11,18 +10,12 @@ import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import {addedTagToSelectedSpot} from '../project/projects.slice';
-import {TagDetailModal, TagsAtSpotList, useTagsHook} from '../tags';
+import {TagDetailModal, TagsAtSpotList} from '../tags';
 
 const TagsNotebook = (props) => {
   console.log('PROPS in TAGS NOTEBOOK', props);
-  const [useTags] = useTagsHook();
   const dispatch = useDispatch();
   const [isDetailModalVisibile, setIsDetailModalVisible] = useState(false);
-
-  const addTag = async () => {
-    await useTags.addTag();
-    setIsDetailModalVisible(true);
-  };
 
   const closeTagDetailModal = () => {
     setIsDetailModalVisible(false);
@@ -36,11 +29,6 @@ const TagsNotebook = (props) => {
           dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.OVERVIEW));
           dispatch(setModalVisible({modal: null}));
         }}
-      />
-      <AddButton
-        title={'Add New Tag'}
-        onPress={addTag}
-        type={'outline'}
       />
       <View style={{flex: 1}}>
         <SectionDividerWithRightButton
