@@ -213,6 +213,7 @@ const useDownload = () => {
 
   const initializeDownloadImages = async (neededImageIds, dataset) => {
     try {
+      dispatch(setLoadingStatus({view: 'modal', bool: true}));
       dispatch(clearedStatusMessages());
       dispatch(setStatusMessagesModalVisible(true));
       console.log('Downloading Needed Images...');
@@ -238,6 +239,7 @@ const useDownload = () => {
           + '\nFailed Images ' + imagesFailedCount + '/' + neededImageIds.length);
         dispatch(removedLastStatusMessage());
         if (imagesFailedCount > 0) {
+          dispatch(setLoadingStatus({view: 'modal', bool: false}));
           dispatch(addedStatusMessage(
             'Downloaded Images ' + imageCount + '/' + neededImageIds.length
             + '\nFailed Images ' + imagesFailedCount + '/' + neededImageIds.length,
@@ -245,7 +247,8 @@ const useDownload = () => {
         }
         else {
           const neededDatasetImagesUpdated = await useImages.gatherNeededImages(null, dataset);
-          console.log(neededDatasetImagesUpdated)
+          console.log(neededDatasetImagesUpdated);
+          dispatch(setLoadingStatus({view: 'modal', bool: false}));
           dispatch(addedNeededImagesToDataset({datasetId: dataset.id, images: neededDatasetImagesUpdated}));
           dispatch(addedStatusMessage('Downloaded Images: ' + imageCount + '/' + neededImageIds.length));
         }
@@ -255,6 +258,7 @@ const useDownload = () => {
       dispatch(removedLastStatusMessage());
       dispatch(addedStatusMessage('Error Downloading Images!'));
       console.warn('Error Downloading Images: ' + err);
+      dispatch(setLoadingStatus({view: 'modal', bool: false}));
     }
   };
 
