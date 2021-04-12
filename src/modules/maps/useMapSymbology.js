@@ -6,6 +6,7 @@ import useTagsHook from '../tags/useTags';
 const useMapSymbology = (props) => {
   const [useTags] = useTagsHook();
   const tagTypeForColor = useSelector(state => state.map.tagTypeForColor);
+  const showSpotLabels = useSelector(state => state.project.project.showSpotLabels);
 
   const linePatterns = {
     solid: [1, 0],
@@ -314,7 +315,7 @@ const useMapSymbology = (props) => {
   const mapStyles = {
     point: {
       textIgnorePlacement: true,  // Need to be able to stack symbols at same location
-      textField: getPointLabel(),
+      textField: showSpotLabels ? getPointLabel() : '',
       textAnchor: 'left',
       textOffset: getLabelOffset(),
       iconImage: getIconImage(),

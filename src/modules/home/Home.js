@@ -209,9 +209,9 @@ const Home = () => {
     let firstSlideshowImage = {image, uri};
     const imagesForSlideshow = Object.values(useSpots.getActiveSpotsObj()).reduce((acc, spot) => {
       const imagesForSlideshow1 = spot.properties.images
-        && spot.properties.images.reduce((acc1, img) => {
-          uri = useImages.getLocalImageURI(img.id);
-          return (img.id !== firstImageID) ? [...acc1, {img, uri}] : acc1;
+        && spot.properties.images.reduce((acc1, image) => {
+          uri = useImages.getLocalImageURI(image.id);
+          return (image.id !== firstImageID) ? [...acc1, {image, uri}] : acc1;
         }, []) || [];
       return [...acc, ...imagesForSlideshow1];
     }, []);

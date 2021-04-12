@@ -37,11 +37,6 @@ const TagsNotebook = (props) => {
           dispatch(setModalVisible({modal: null}));
         }}
       />
-      <AddButton
-        title={'Add New Tag'}
-        onPress={addTag}
-        type={'outline'}
-      />
       <View style={{flex: 1}}>
         <SectionDividerWithRightButton
           dividerText={'Tags'}
