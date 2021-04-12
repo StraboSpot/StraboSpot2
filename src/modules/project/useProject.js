@@ -84,6 +84,7 @@ const useProject = () => {
       relationship_types: DEFAULT_RELATIONSHIP_TYPES,
       templates: {useMeasurementTemplates: false, activeMeasurementTemplates: [], measurementTemplates: []},
       useContinuousTagging: false,
+      showSpotLabels: false,
     };
     dispatch(addedProjectDescription(currentProject));
     const defaultDataset = await createDataset();

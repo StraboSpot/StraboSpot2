@@ -42,7 +42,7 @@ const TagsNotebookModal = (props) => {
         >
           <View style={[modalStyle.textContainer]}>
             <AddButton
-              title={'Add New Tag'}
+              title={'Create New Tag'}
               onPress={() => addTag()}
               type={'outline'}
             />

@@ -159,7 +159,7 @@ const TagsModal = (props) => {
         {modalVisible !== MODALS.NOTEBOOK_MODALS.TAGS && (
           <View style={modalStyle.textContainer}>
             <AddButton
-              title={'Add New Tag'}
+              title={'Create New Tag'}
               type={'outline'}
               onPress={() => setIsDetailModalVisible(true)}
             />
