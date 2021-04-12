@@ -9,6 +9,7 @@ import ImageInfo from '../modules/images/ImageInfo';
 import SignIn from '../modules/sign-in/SignIn';
 import SignUp from '../modules/sign-up/SignUp';
 import Sketch from '../modules/sketch/Sketch';
+import {isEmpty} from '../shared/Helpers';
 
 const Stack = createStackNavigator();
 const AuthStack = createStackNavigator();
@@ -22,8 +23,9 @@ const navigationOptions = {
 const AppScreens = () => {
   const isSignedIn = useSelector(state => state.home.isSignedIn);
   const user = useSelector(state => state.user);
+  const currentProject = useSelector(state => state.project.project);
   return (
-    <AppStack.Navigator initialRouteName={isSignedIn && user.name ? 'HomeScreen' : 'SignIn'}>
+    <AppStack.Navigator initialRouteName={isSignedIn && user.name && !isEmpty(currentProject) ? 'HomeScreen' : 'SignIn'}>
       <Stack.Screen
         name={'SignIn'}
         component={SignIn}

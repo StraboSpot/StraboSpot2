@@ -19,7 +19,8 @@ const CustomFeatureTypes = () => {
   const [useSpots] = useSpotsHook();
   const dispatch = useDispatch();
   const projectFeatures = useSelector(state => state.project.project.other_features);
-  const customFeatureTypes = projectFeatures.filter(feature => !DEFAULT_GEOLOGIC_TYPES.includes(feature));
+  const customFeatureTypes = projectFeatures
+    && projectFeatures.filter(feature => !DEFAULT_GEOLOGIC_TYPES.includes(feature));
 
   const deleteCustomFeature = (feature) => {
     let projectFeaturesCopy = projectFeatures.filter(projectFeature => feature !== projectFeature);

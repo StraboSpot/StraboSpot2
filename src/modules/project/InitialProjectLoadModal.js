@@ -230,6 +230,7 @@ const InitialProjectLoadModal = (props) => {
             onPress={() => {
               if (user.name) dispatch({type: REDUX.CLEAR_STORE});
               dispatch(setSignedInStatus(false));
+              setVisibleInitialSection('none');
               navigation.navigate('SignIn');
             }}
           />
