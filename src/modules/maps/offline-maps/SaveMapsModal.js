@@ -10,6 +10,7 @@ import ProgressBar from 'react-native-progress/Bar';
 import {useDispatch, useSelector} from 'react-redux';
 
 import useDeviceHook from '../../../services/useDevice';
+import useServerRequestHook from '../../../services/useServerRequests';
 import {toNumberFixedValue} from '../../../shared/Helpers';
 import * as themes from '../../../shared/styles.constants';
 import {addedStatusMessage, clearedStatusMessages, removedLastStatusMessage} from '../../home/home.slice';
@@ -18,6 +19,7 @@ import useMapsOfflineHook from './useMapsOffline';
 const SaveMapsModal = (props) => {
   const useDevice = useDeviceHook();
   const useMapsOffline = useMapsOfflineHook();
+  const [useServerRequests] = useServerRequestHook();
 
   const tilehost = 'http://tiles.strabospot.org';
   const devicePath = RNFS.DocumentDirectoryPath;
@@ -92,6 +94,21 @@ const SaveMapsModal = (props) => {
     console.log('progressStatus', progressStatus);
   }, [progressStatus]);
 
+  const checkZipStatus = async (zipId) => {
+    try {
+      const status = await useServerRequests.zipURLStatus(zipId);
+      if (status.status && status.status !== 'Zip File Ready.') {
+        console.log('ZIP STATUS', status.status);
+        await checkZipStatus(zipId);
+        dispatch(removedLastStatusMessage());
+        dispatch(addedStatusMessage(`${status.status}...`));
+      }
+    }
+    catch (err) {
+      console.error('Error checking zip status', err);
+    }
+  };
+
   const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
   const doUnzip = async () => {
@@ -114,6 +131,8 @@ const SaveMapsModal = (props) => {
         toFile: tileZipsDirectory + '/' + zipUID + '.zip',
         begin: (response) => {
           const jobId = response.jobId;
+          dispatch(removedLastStatusMessage());
+          dispatch(addedStatusMessage('Downloading...'));
           console.log('UPLOAD HAS BEGUN! JobId: ' + jobId);
         },
         progress: (res) => {
@@ -150,12 +169,12 @@ const SaveMapsModal = (props) => {
       dispatch(clearedStatusMessages());
       dispatch(addedStatusMessage('Gathering Tiles...'));
       const zipId = await useMapsOffline.initializeSaveMap(extentString, downloadZoom);
+      await checkZipStatus(zipId);
       setIsLoadingWave(false);
       await downloadZip(zipId);
       await delay(1000);
       await doUnzip(zipId);
       const tileArray = await useMapsOffline.moveFiles(zipId);
-      console.log(tileArray);
       await tileMove(tileArray, zipId);
       await useMapsOffline.updateMapTileCount();
       console.log('Saved offlineMaps to Redux.');

@@ -31,7 +31,6 @@ const useMapsOffline = () => {
   const devicePath = RNFS.DocumentDirectoryPath;
   const tilesDirectory = '/StraboSpotTiles';
   const tileCacheDirectory = devicePath + tilesDirectory + '/TileCache';
-  const tilehost = 'http://tiles.strabospot.org';
   const tileTempDirectory = devicePath + tilesDirectory + '/TileTemp';
   const tileZipsDirectory = devicePath + tilesDirectory + '/TileZips';
 
@@ -174,6 +173,7 @@ const useMapsOffline = () => {
       let startZipURL = 'unset';
       const layerID = currentBasemap.id;
       const layerSource = currentBasemap.source;
+      const tilehost = 'http://tiles.strabospot.org';
 
       if (layerSource === 'map_warper' || layerSource === 'mapbox_styles' || layerSource === 'strabospot_mymaps') {
         //configure advanced URL for custom map types here.
@@ -224,7 +224,6 @@ const useMapsOffline = () => {
     try {
       const startZipUrl = await getMapTiles(extentString, downloadZoom);
       await saveZipMap(startZipUrl);
-      await useServerRequests.zipURLStatus(tilehost + '/asyncstatus/' + zipUID);
       return zipUID;
     }
     catch (err) {
@@ -242,11 +241,8 @@ const useMapsOffline = () => {
         await RNFS.mkdir(tileCacheDirectory + '/' + currentBasemap.id);
         await RNFS.mkdir(tileCacheDirectory + '/' + currentBasemap.id + '/tiles');
       }
-
       //now move files to correct location
       result = await RNFS.readDir(tileTempDirectory + '/' + zipUID + '/tiles');
-
-      console.log(result);
       return result;
     }
     catch (err) {

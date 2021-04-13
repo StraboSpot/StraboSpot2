@@ -6,6 +6,7 @@ const useServerRequests = () => {
   const baseUrl = 'https://strabospot.org/db';
   const mapWarperApi = 'http://mapwarper.net/api/v1/maps/';
   const straboMyMapsApi = 'https://strabospot.org/geotiff/bbox/';
+  const tilehost = 'http://tiles.strabospot.org/';
 
   const user = useSelector(state => state.user);
 
@@ -243,14 +244,14 @@ const useServerRequests = () => {
     return request('GET', '/verifyimage/' + imageId, encodedLogin);
   };
 
-  const zipURLStatus = async (zipUrl) => {
+  const zipURLStatus = async (zipId) => {
     try {
       let responseJson = {};
       const response = await fetch(zipUrl);
       responseJson = await response.json();
       console.log(responseJson);
       if (responseJson.error) throw Error(responseJson.error);
-      else if (responseJson.status !== 'Zip File Ready.') await zipURLStatus(zipUrl);
+      return responseJson;
     }
     catch (err) {
       console.error('There was an error in zipURLStatus', err);
