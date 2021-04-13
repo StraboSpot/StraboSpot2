@@ -13,7 +13,6 @@ import {setCurrentBasemap} from '../maps.slice';
 import {setOfflineMap} from './offlineMaps.slice';
 
 const useMapsOffline = () => {
-  let progressStatus = '';
   let zipUID;
   let fileCount = 0;
   let neededTiles = 0;
@@ -151,14 +150,11 @@ const useMapsOffline = () => {
 
   const doUnzip = async () => {
     try {
-      progressStatus = 'Installing Tiles in StraboSpot...';
       dispatch(removedLastStatusMessage());
       dispatch(addedStatusMessage('Preparing to install tiles...'));
       const sourcePath = tileZipsDirectory + '/' + zipUID + '.zip';
-      const targetPath = tileTempDirectory;
-      await unzip(sourcePath, targetPath);
+      await unzip(sourcePath, tileTempDirectory);
       console.log('unzip completed');
-      // await moveFiles(zipUID); //move files to the correct folder based on saveId
       console.log('move done.');
     }
     catch (err) {
@@ -274,6 +270,7 @@ const useMapsOffline = () => {
     }
     catch (err) {
       console.error('Error in saveMapZip', err);
+      throw new Error(err);
     }
   };
 

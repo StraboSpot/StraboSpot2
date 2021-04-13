@@ -131,7 +131,7 @@ const useServerRequests = () => {
   };
 
   const getMapTilesFromHost = async (zipUrl) => {
-    const response = await fetch(zipUrl);
+    const response = await timeoutPromise(30000,fetch(zipUrl));
     return await response.json();
   };
 
@@ -247,7 +247,7 @@ const useServerRequests = () => {
   const zipURLStatus = async (zipId) => {
     try {
       let responseJson = {};
-      const response = await fetch(zipUrl);
+      const response = await timeoutPromise(30000, fetch(tilehost + 'asyncstatus/' + zipId));
       responseJson = await response.json();
       console.log(responseJson);
       if (responseJson.error) throw Error(responseJson.error);
@@ -255,7 +255,7 @@ const useServerRequests = () => {
     }
     catch (err) {
       console.error('There was an error in zipURLStatus', err);
-      throw Error(err);
+      throw new Error(err);
     }
   };
 

@@ -28,7 +28,7 @@ const SaveMapsModal = (props) => {
   let tileTempDirectory = devicePath + tilesDirectory + '/TileTemp';
 
   const currentBasemap = useSelector(state => state.map.currentBasemap);
-  const statusMessage = useSelector(state => state.home.statusMessages);
+  const statusMessages = useSelector(state => state.home.statusMessages);
   const dispatch = useDispatch();
 
   const currentMapName = currentBasemap && currentBasemap.title;
@@ -97,8 +97,8 @@ const SaveMapsModal = (props) => {
   const checkZipStatus = async (zipId) => {
     try {
       const status = await useServerRequests.zipURLStatus(zipId);
-      if (status.status && status.status !== 'Zip File Ready.') {
-        console.log('ZIP STATUS', status.status);
+      if (status.status !== 'Zip File Ready.') {
+        // console.log('ZIP STATUS', status.status);
         await checkZipStatus(zipId);
         dispatch(removedLastStatusMessage());
         dispatch(addedStatusMessage(`${status.status}...`));
@@ -106,6 +106,7 @@ const SaveMapsModal = (props) => {
     }
     catch (err) {
       console.error('Error checking zip status', err);
+      throw new Error(err);
     }
   };
 
@@ -139,13 +140,14 @@ const SaveMapsModal = (props) => {
           console.log(((res.bytesWritten / res.contentLength) * 100).toFixed(2));
           setPercentDone(res.bytesWritten / res.contentLength);
         },
+        discretionary: true,
       };
 
       //first try to delete from temp directories
       await useDevice.doesDeviceDirectoryExist(tileZipsDirectory);
       await useDevice.doesDeviceDirectoryExist(tileTempDirectory);
       await useMapsOffline.checkTileZipFileExistance();
-      const res = await RNFS.downloadFile(downloadOptions).promise;
+      const res = await useServerRequests.timeoutPromise(60000, RNFS.downloadFile(downloadOptions).promise);
       if (res.statusCode === 200) {
         console.log(res);
       }
@@ -290,8 +292,8 @@ const SaveMapsModal = (props) => {
               )}
               {showLoadingMenu && (
                 <View style={{height: 40, justifyContent: 'center'}}>
-                  <Text style={{fontSize: 15}}>{statusMessage}</Text>
-                  {statusMessage.includes('Installing tiles...') && !statusMessage.includes('Downloading Tiles...') && (
+                  <Text style={{fontSize: 15}}>{statusMessages}</Text>
+                  {statusMessages.includes('Installing tiles...') && !statusMessages.includes('Downloading Tiles...') && (
                     <View>
                       <Text style={{fontSize: 15}}>Installing: {tilesToInstall}</Text>
                       <Text style={{fontSize: 15}}>Already Installed: {installedTiles}</Text>
