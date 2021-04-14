@@ -1,8 +1,10 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 
 import Dialog, {DialogButton, DialogContent, DialogTitle} from 'react-native-popup-dialog';
 import {ScaleAnimation} from 'react-native-popup-dialog/src';
 import {useSelector} from 'react-redux';
+
+import * as themes from '../../shared/styles.constants';
 
 // Styles
 import styles from './dialog.styles';
@@ -11,8 +13,16 @@ const slideAnimation = new ScaleAnimation({
   useNativeDriver: true,
 });
 
-const MapActionsDialog = (props) => {
+const MapActionsDialog = props => {
+  const [isVisible, setIsVisible] = useState(false);
   const isOnline = useSelector(state => state.home.isOnline);
+  const offlineMaps = useSelector(state => state.offlineMap.offlineMaps);
+
+  useEffect(() => {
+    setIsVisible(
+      Object.values(offlineMaps).some(map => map.isOfflineMapVisible === true),
+    );
+  }, [offlineMaps]);
 
   return (
     <Dialog
@@ -38,13 +48,23 @@ const MapActionsDialog = (props) => {
         {/*  textStyle={styles.dialogText}*/}
         {/*  onPress={() => props.onPress('zoomToOfflineMap')}*/}
         {/*/>*/}
-        {isOnline ? <DialogButton
-          style={styles.dialogContent}
-          text='Save Map for Offline Use'
-          textStyle={styles.dialogText}
-          onPress={() => props.onPress('saveMap')}
-          disabled={props.disabled}
-        /> : null}
+        {isOnline ? (
+          <DialogButton
+            style={styles.dialogContent}
+            text={
+              isVisible
+                ? 'Not available in offline map view'
+                : 'Save Map for Offline Use'
+            }
+            textStyle={
+              isVisible
+                ? {...styles.dialogText, color: themes.DARKGREY}
+                : styles.dialogText
+            }
+            onPress={() => props.onPress('saveMap')}
+            disabled={isVisible}
+          />
+        ) : null}
         <DialogButton
           style={styles.dialogContent}
           text='Add Tag(s) to Spot(s)'

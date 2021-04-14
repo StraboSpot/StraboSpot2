@@ -22,6 +22,15 @@ const offlineMapsSlice = createSlice({
       if (isEmpty(action.payload)) state.offlineMaps = initialOfflineMapsState.offlineMaps;
       else state.offlineMaps = {...state.offlineMaps, ...action.payload};
     },
+    setOfflineMapVisible(state, action) {
+      const {mapId, viewable} = action.payload;
+      const toggleFalse = Object.values(state.offlineMaps).map(offlineMap => {
+        offlineMap.isOfflineMapVisible = false;
+        return offlineMap;
+      });
+      console.log(toggleFalse);
+      state.offlineMaps[mapId] = {...state.offlineMaps[mapId], isOfflineMapVisible: viewable};
+    },
   },
 });
 
@@ -29,6 +38,7 @@ export const {
   addedMapsFromDevice,
   deletedOfflineMap,
   setOfflineMap,
+  setOfflineMapVisible,
 } = offlineMapsSlice.actions;
 
 export default offlineMapsSlice.reducer;

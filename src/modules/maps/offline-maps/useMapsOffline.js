@@ -319,6 +319,7 @@ const useMapsOffline = () => {
       // thisMap.mapId = new Date().valueOf();
       thisMap.mapId = zipUID;
       thisMap.date = new Date().toLocaleString();
+      thisMap.isOfflineMapVisible = false;
       newOfflineMapsData.push(thisMap);
 
       //loop over offlineMapsData and add any other maps (not current)

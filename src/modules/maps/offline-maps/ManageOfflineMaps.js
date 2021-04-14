@@ -11,7 +11,8 @@ import FlatListItemSeparator from '../../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../../shared/ui/ListEmptyText';
 import SectionDivider from '../../../shared/ui/SectionDivider';
 import {setOfflineMapsModalVisible} from '../../home/home.slice';
-import {setOfflineMap} from './offlineMaps.slice';
+import useMapsHook from '../useMaps';
+import {setOfflineMap, setOfflineMapVisible} from './offlineMaps.slice';
 import styles from './offlineMaps.styles';
 import useMapsOfflineHook from './useMapsOffline';
 
@@ -25,6 +26,7 @@ const ManageOfflineMaps = (props) => {
   const dispatch = useDispatch();
 
   const useDevice = useDeviceHook();
+  const [useMaps] = useMapsHook();
   const useMapsOffline = useMapsOfflineHook();
 
   useEffect(() => {
@@ -102,16 +104,13 @@ const ManageOfflineMaps = (props) => {
             <ListItem.Title style={commonStyles.listItemTitle}>{`${item.name}`}</ListItem.Title>
             <ListItem.Title style={styles.itemSubTextStyle}>{`(${item.count} tiles)`}</ListItem.Title>
           </View>
-          <View style={styles.itemSubContainer}>
-            <Button
-              onPress={async () => {
-                await useMapsOffline.switchToOfflineMap(item.id);
-                props.zoomToCenterOfflineTile();
-              }}
+           <View style={styles.itemSubContainer}>
+             {isOnline && <Button
+              onPress={() => toggleOfflineMap(item)}
               titleStyle={commonStyles.viewMapsButtonText}
               type={'clear'}
-              title={'View in map offline'}
-            />
+              title={item.isOfflineMapVisible ? 'Stop viewing offline maps' : 'View offline map'}
+            />}
             <Button
               onPress={() => confirmDeleteMap(item)}
               titleStyle={commonStyles.viewMapsButtonText}
@@ -124,11 +123,23 @@ const ManageOfflineMaps = (props) => {
     );
   };
 
+  const toggleOfflineMap = async (item) => {
+    if (item.isOfflineMapVisible) {
+      dispatch(setOfflineMapVisible({mapId: item.id, viewable: false}));
+      await useMaps.setBasemap(item.id);
+    }
+    else {
+      dispatch(setOfflineMapVisible({mapId: item.id, viewable: true}));
+      await useMapsOffline.switchToOfflineMap(item.id);
+      props.zoomToCenterOfflineTile();
+    }
+  };
+
   return (
     <React.Fragment>
       <Button
         title={'Download tiles of current map'}
-        disabled={!isOnline}
+        disabled={!isOnline || Object.values(offlineMaps).some(map => map.isOfflineMapVisible === true)}
         onPress={() => {
           props.closeMainMenuPanel();
           dispatch(setOfflineMapsModalVisible(true));

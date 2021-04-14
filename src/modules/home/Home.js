@@ -115,6 +115,7 @@ const Home = () => {
   const isMainMenuPanelVisible = useSelector(state => state.home.isMainMenuPanelVisible);
   const isModalLoading = useSelector(state => state.home.loading.modal);
   const isNotebookPanelVisible = useSelector(state => state.notebook.isNotebookPanelVisible);
+  const offlineMaps = useSelector(state => state.offlineMap.offlineMaps);
   const isOfflineMapModalVisible = useSelector(state => state.home.isOfflineMapModalVisible);
   const isOnline = useSelector(state => state.home.isOnline);
   const isProjectLoadSelectionModalVisible = useSelector(state => state.home.isProjectLoadSelectionModalVisible);
@@ -846,6 +847,10 @@ const Home = () => {
     closeNotebookPanel();
   };
 
+  const toggleOfflineMapLabel = () => {
+    return Object.values(offlineMaps).some(offlineMap => offlineMap.isOfflineMapVisible === true);
+  };
+
   const animateNotebookMenu = {transform: [{translateX: animation}]};
   const animateSettingsPanel = {transform: [{translateX: MainMenuPanelAnimation}]};
   const animateMainMenuSidePanel = {transform: [{translateX: mainMenuSidePanelAnimation}]};
@@ -941,8 +946,7 @@ const Home = () => {
       {isHomeLoading && <LoadingSpinner/>}
       {notebookPanel}
       {MainMenu}
-      {isOnline && currentBasemap
-      && !urlConditions.some(el => currentBasemap.url[0].includes(el)) && renderOfflineMapViewLabel()}
+      {isOnline && toggleOfflineMapLabel() && renderOfflineMapViewLabel()}
       {renderSaveAndCancelDrawButtons()}
       {isMainMenuPanelVisible && toggleSidePanel()}
       {renderFloatingViews()}
