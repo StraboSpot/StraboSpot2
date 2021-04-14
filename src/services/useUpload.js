@@ -64,6 +64,7 @@ const useUpload = () => {
 
       let datasetCopy = JSON.parse(JSON.stringify(dataset));
       delete datasetCopy.spotIds;
+      datasetCopy.images && delete datasetCopy.images;
 
       await useServerRequests.updateDataset(datasetCopy, user.encoded_login);
       await useServerRequests.addDatasetToProject(project.id, dataset.id, user.encoded_login);
@@ -72,7 +73,7 @@ const useUpload = () => {
       dispatch(addedStatusMessage(dataset.name + ': Finished Uploading Dataset Properties.'));
     }
     catch (err) {
-      console.error(dataset.name + ': Error Uploading Dataset Properties...');
+      console.error(dataset.name + ': Error Uploading Dataset Properties...', err);
       dispatch(removedLastStatusMessage());
       dispatch(addedStatusMessage(dataset.name + ': Error Uploading Dataset Properties.'));
       throw Error;
