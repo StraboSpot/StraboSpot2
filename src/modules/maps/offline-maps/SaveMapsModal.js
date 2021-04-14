@@ -97,12 +97,7 @@ const SaveMapsModal = (props) => {
   const checkZipStatus = async (zipId) => {
     try {
       const status = await useServerRequests.zipURLStatus(zipId);
-      if (status.status !== 'Zip File Ready.') {
-        // console.log('ZIP STATUS', status.status);
-        await checkZipStatus(zipId);
-        dispatch(removedLastStatusMessage());
-        dispatch(addedStatusMessage(`${status.status}...`));
-      }
+      if (status.status !== 'Zip File Ready.') await checkZipStatus(zipId);
     }
     catch (err) {
       console.error('Error checking zip status', err);
@@ -114,8 +109,7 @@ const SaveMapsModal = (props) => {
 
   const doUnzip = async () => {
     try {
-      // hide progress bar
-      // setShowLoadingBar(false);
+      setIsLoadingWave(true)
       setPercentDone(0);
       await useMapsOffline.doUnzip();
     }
@@ -132,6 +126,8 @@ const SaveMapsModal = (props) => {
         toFile: tileZipsDirectory + '/' + zipUID + '.zip',
         begin: (response) => {
           const jobId = response.jobId;
+          setShowLoadingBar(true);
+          setIsLoadingWave(false);
           dispatch(removedLastStatusMessage());
           dispatch(addedStatusMessage('Downloading...'));
           console.log('UPLOAD HAS BEGUN! JobId: ' + jobId);
@@ -171,8 +167,12 @@ const SaveMapsModal = (props) => {
       dispatch(clearedStatusMessages());
       dispatch(addedStatusMessage('Gathering Tiles...'));
       const zipId = await useMapsOffline.initializeSaveMap(extentString, downloadZoom);
+      dispatch(removedLastStatusMessage());
+      dispatch(addedStatusMessage('Preparing Data...'));
       await checkZipStatus(zipId);
-      setIsLoadingWave(false);
+      setShowLoadingBar(false);
+      dispatch(removedLastStatusMessage());
+      dispatch(addedStatusMessage('Data ready to download.'));
       await downloadZip(zipId);
       await delay(1000);
       await doUnzip(zipId);
@@ -197,6 +197,7 @@ const SaveMapsModal = (props) => {
   };
 
   const tileMove = async (tilearray) => {
+    setIsLoadingWave(false);
     dispatch(removedLastStatusMessage());
     dispatch(addedStatusMessage('Installing tiles...'));
     for (const tile of tilearray) {
