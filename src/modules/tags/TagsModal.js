@@ -148,41 +148,32 @@ const TagsModal = (props) => {
 
   return (
     <React.Fragment>
-      {/*<ListItem*/}
-      {/*  title={'Filter Tags by Type'}*/}
-      {/*  // containerStyle={{paddingTop: 20}}*/}
-      {/*  bottomDivider*/}
-      {/*  topDivider*/}
-      {/*  chevron*/}
-      {/*/>*/}
-      <View style={{maxHeight: 500, paddingBottom: 10}}>
-        {modalVisible !== MODALS.NOTEBOOK_MODALS.TAGS && (
-          <View style={modalStyle.textContainer}>
-            <AddButton
-              title={'Create New Tag'}
-              type={'outline'}
-              onPress={() => setIsDetailModalVisible(true)}
-            />
-            <TagDetailModal
-              isVisible={isDetailModalVisible}
-              closeModal={closeTagDetailModal}
-            />
-          </View>
-        )}
+      {modalVisible !== MODALS.NOTEBOOK_MODALS.TAGS && (
         <View style={modalStyle.textContainer}>
-          {tags && !isEmpty(tags) ? <Text style={modalStyle.textStyle}>Check all tags that apply</Text>
-            : <Text style={modalStyle.textStyle}>No Tags</Text>}
-        </View>
-        {renderSpotTagsList()}
-        {!isEmpty(tags) && modalVisible !== MODALS.NOTEBOOK_MODALS.TAGS && (
-          <SaveButton
-            buttonStyle={{backgroundColor: 'red'}}
-            title={'Save tag(s)'}
-            onPress={() => save()}
-            disabled={isEmpty(checkedTagsTemp)}
+          <AddButton
+            title={'Create New Tag'}
+            type={'outline'}
+            onPress={() => setIsDetailModalVisible(true)}
           />
-        )}
+          <TagDetailModal
+            isVisible={isDetailModalVisible}
+            closeModal={closeTagDetailModal}
+          />
+        </View>
+      )}
+      <View style={modalStyle.textContainer}>
+        {tags && !isEmpty(tags) ? <Text style={modalStyle.textStyle}>Check all tags that apply</Text>
+          : <Text style={modalStyle.textStyle}>No Tags</Text>}
       </View>
+      {renderSpotTagsList()}
+      {!isEmpty(tags) && modalVisible !== MODALS.NOTEBOOK_MODALS.TAGS && (
+        <SaveButton
+          buttonStyle={{backgroundColor: 'red'}}
+          title={'Save tag(s)'}
+          onPress={() => save()}
+          disabled={isEmpty(checkedTagsTemp)}
+        />
+      )}
     </React.Fragment>
   );
 };
