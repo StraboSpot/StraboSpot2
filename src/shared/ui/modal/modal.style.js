@@ -8,7 +8,7 @@ const modalStyle = StyleSheet.create({
   modalContainer: {
     width: 250,
     maxWidth: width,
-    maxHeight: height - 40,
+    maxHeight: height - 100,
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
     borderRadius: 20,
     overflow: 'hidden',

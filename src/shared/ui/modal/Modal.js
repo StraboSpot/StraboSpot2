@@ -91,14 +91,7 @@ const Modal = (props) => {
   return (
     <View style={[modalStyle.modalContainer, props.style]}>
       {renderModalHeader()}
-      <FlatList
-        bounces={false}
-        ListHeaderComponent={
-          <View style={{flex: 1, paddingTop: 10, paddingBottom: 10}}>
-            {props.children}
-          </View>
-        }
-      />
+      {props.children}
       {pageVisible !== NOTEBOOK_SUBPAGES.MEASUREMENTDETAIL && renderModalBottom()}
     </View>
   );
