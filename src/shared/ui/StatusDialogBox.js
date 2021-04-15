@@ -1,4 +1,5 @@
-import React from 'react';
+import React, {useRef} from 'react';
+import {ScrollView} from 'react-native';
 
 import Dialog, {
   DialogTitle,
@@ -8,29 +9,39 @@ import Dialog, {
 
 import styles from '../../shared/common.styles';
 
-const StatusDialogBox = (props) => {
+const StatusDialogBox = props => {
+  const scrollView = useRef();
+
   return (
     <React.Fragment>
       <Dialog
         dialogStyle={styles.dialogBox}
         width={300}
         visible={props.visible}
-        dialogAnimation={new FadeAnimation({
-          animationDuration: 300,
-          useNativeDriver: true,
-        })}
+        dialogAnimation={
+          new FadeAnimation({
+            animationDuration: 300,
+            useNativeDriver: true,
+          })
+        }
         onTouchOutside={props.onTouchOutside}
         useNativeDriver={true}
         dialogTitle={
           <DialogTitle
             style={props.style}
             textStyle={styles.dialogTitleText}
-            title={props.dialogTitle}/>
-        }
-      >
-        <DialogContent style={[styles.dialogContent, props.dialogContent]}>
-          {props.children}
-        </DialogContent>
+            title={props.dialogTitle}
+          />
+        }>
+        <ScrollView
+          ref={scrollView}
+          onContentSizeChange={() =>
+            scrollView.current.scrollToEnd({animated: true})
+          }>
+          <DialogContent style={[styles.dialogContent, props.dialogContent]}>
+            {props.children}
+          </DialogContent>
+        </ScrollView>
       </Dialog>
     </React.Fragment>
   );

@@ -1,6 +1,9 @@
-import {StyleSheet} from 'react-native';
+import {Dimensions, Platform, StyleSheet} from 'react-native';
 
 import * as themes from './styles.constants';
+
+const type = Platform.OS === 'ios' ? 'screen' : 'window';
+const height = Dimensions.get(type).height;
 
 const commonStyles = StyleSheet.create({
   buttonContainer: {
@@ -23,6 +26,7 @@ const commonStyles = StyleSheet.create({
     borderRadius: 30,
     position: 'absolute',
     top: '15%',
+    maxHeight: height * 0.60,
   },
   dialogContentImportantText: {
     color: 'red',
