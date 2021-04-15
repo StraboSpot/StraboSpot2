@@ -91,12 +91,12 @@ const NotebookPanel = (props) => {
             {pageVisible === SECONDARY_NOTEBOOK_PAGES.DATA && <ExternalData/>}
 
             {/*Pet Notebook Pages*/}
-            {pageVisible === PET_NOTEBOOK_PAGES.ROCK_TYPE_IGNEOUS && <RockTypePage type={'igneous'}/>}
-            {pageVisible === PET_NOTEBOOK_PAGES.ROCK_TYPE_METAMORPHIC && <RockTypePage type={'metamorphic'}/>}
-            {pageVisible === PET_NOTEBOOK_PAGES.ECONOMIC && <RockTypePage type={'alteration_or'}/>}
-            {pageVisible === PET_NOTEBOOK_PAGES.MINERALS && <MineralsPage/>}
-            {pageVisible === PET_NOTEBOOK_PAGES.REACTION_TEXTURES && <ReactionTexturesPage/>}
-            {pageVisible === PET_NOTEBOOK_PAGES.TERNARY && <TernaryPage/>}
+            {/*{pageVisible === PET_NOTEBOOK_PAGES.ROCK_TYPE_IGNEOUS && <RockTypePage type={'igneous'}/>}*/}
+            {/*{pageVisible === PET_NOTEBOOK_PAGES.ROCK_TYPE_METAMORPHIC && <RockTypePage type={'metamorphic'}/>}*/}
+            {/*{pageVisible === PET_NOTEBOOK_PAGES.ECONOMIC && <RockTypePage type={'alteration_or'}/>}*/}
+            {/*{pageVisible === PET_NOTEBOOK_PAGES.MINERALS && <MineralsPage/>}*/}
+            {/*{pageVisible === PET_NOTEBOOK_PAGES.REACTION_TEXTURES && <ReactionTexturesPage/>}*/}
+            {/*{pageVisible === PET_NOTEBOOK_PAGES.TERNARY && <TernaryPage/>}*/}
 
             {/*Sed Notebook Pages*/}
             {/*{pageVisible === SED_NOTEBOOK_PAGES.LITHOLOGIES && <PlaceholderPage/>}*/}

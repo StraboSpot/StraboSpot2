@@ -77,11 +77,11 @@ const MorePagesMenu = (props) => {
         <ScrollView>
           {Object.values({...PRIMARY_NOTEBOOK_PAGES, ...SECONDARY_NOTEBOOK_PAGES}).map(
             (item, i, arr) => renderMenuItem(item, i < arr.length - 1))}
-          <SectionDivider
-            dividerText={'Ig/Met'}
-            style={footerStyles.morePagesSectionDivider}
-          />
-          {Object.values(PET_NOTEBOOK_PAGES).map((item, i, arr) => renderMenuItem(item, i < arr.length - 1))}
+          {/*<SectionDivider*/}
+          {/*  dividerText={'Ig/Met'}*/}
+          {/*  style={footerStyles.morePagesSectionDivider}*/}
+          {/*/>*/}
+          {/*{Object.values(PET_NOTEBOOK_PAGES).map((item, i, arr) => renderMenuItem(item, i < arr.length - 1))}*/}
           {/*<SectionDivider*/}
           {/*  dividerText={'Sedimentology'}*/}
           {/*  style={footerStyles.morePagesSectionDivider}*/}
