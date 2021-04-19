@@ -109,7 +109,8 @@ const useDownload = () => {
     try {
       console.log('Gathering Needed Images...', dataset.name);
       const spotImages = await useImages.gatherNeededImages(spotsOnServer);
-      console.log('Images needed', spotImages.neededImagesIds.length, 'of', spotImages?.imageIds.length, 'for', dataset.name);
+      console.log('Images needed', spotImages.neededImagesIds.length, 'of', spotImages?.imageIds.length, 'for',
+        dataset.name);
       dispatch(addedNeededImagesToDataset({datasetId: dataset.id, images: spotImages}));
     }
     catch (err) {
@@ -183,7 +184,7 @@ const useDownload = () => {
           const datasetSpots = await downloadSpots(dataset, user.encoded_login);
           console.log(`Finished downloading ${dataset.name}'s spots:`, datasetSpots);
           return {dataset: dataset, spots: datasetSpots};
-        })
+        }),
       );
     }
   };
@@ -203,12 +204,13 @@ const useDownload = () => {
       dispatch(addedStatusMessage('------------------'));
       dispatch(addedStatusMessage('Downloading Datasets Complete!'));
       dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
+      dispatch(setLoadingStatus({view: 'modal', bool: false}));
     }
     catch (err) {
       console.error('Error Initializing Download.', err);
       dispatch(addedStatusMessage('Download Failed!'));
+      dispatch(setLoadingStatus({view: 'modal', bool: false}));
     }
-    dispatch(setLoadingStatus({view: 'modal', bool: false}));
   };
 
   const initializeDownloadImages = async (neededImageIds, dataset) => {
@@ -253,6 +255,11 @@ const useDownload = () => {
           dispatch(addedStatusMessage('Downloaded Images: ' + imageCount + '/' + neededImageIds.length));
         }
       }
+      else {
+      }
+      dispatch(clearedStatusMessages());
+      dispatch(addedStatusMessage('Needed images have been downloaded for this dataset'));
+      dispatch(setLoadingStatus({view: 'modal', bool: false}));
     }
     catch (err) {
       dispatch(removedLastStatusMessage());

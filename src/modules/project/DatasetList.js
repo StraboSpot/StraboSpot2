@@ -6,7 +6,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import useDownloadHook from '../../services/useDownload';
 import commonStyles from '../../shared/common.styles';
-import {truncateText,isEmpty} from '../../shared/Helpers';
+import {truncateText, isEmpty} from '../../shared/Helpers';
 import DeleteConformationDialogBox from '../../shared/ui/DeleteConformationDialogBox';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import TextInputModal from '../../shared/ui/GeneralTextInputModal';
@@ -31,7 +31,6 @@ const DatasetList = () => {
   useEffect(() => {
     console.log('In Dataset List UE');
     console.log('DATASET WITH IMAGES', datasets);
-
   }, [datasets]);
 
   const editDataset = (id, name) => {
@@ -51,26 +50,30 @@ const DatasetList = () => {
   };
 
   const renderDatasetListItem = (dataset) => {
-    const spotsInDataset = dataset.spotIds
+    const needImages = isEmpty(dataset?.images?.neededImagesIds);
+    const spotIds = dataset.spotIds
       ? `${dataset?.spotIds.length} spot${dataset?.spotIds.length !== 1 ? 's' : ''}`
       : '0 spots';
-    const imagesNeededOfTotal = `${dataset?.images?.neededImagesIds?.length}/${dataset?.images?.imageIds?.length} images needed`;
+    const imagesNeededOfTotal = dataset.images
+      && `${dataset?.images?.neededImagesIds?.length}/${dataset?.images?.imageIds?.length}`;
+    const spotsText = spotIds?.length > 1 && `${spotIds}`;
+    const imagesText = imagesNeededOfTotal?.length > 1 ? `${imagesNeededOfTotal}` : '0/0';
     return (
       <ListItem
         key={dataset.id}
         containerStyle={commonStyles.listItem}
       >
         <Icon
-          name='edit'
+          name="edit"
           type={'material'}
           size={20}
-          color='darkgrey'
+          color="darkgrey"
           onPress={() => editDataset(dataset.id, dataset.name)}
         />
         <ListItem.Content>
           <ListItem.Title style={commonStyles.listItemTitle}>{truncateText(dataset.name, 18)}</ListItem.Title>
           <ListItem.Subtitle>
-            {spotsInDataset},{'\n'} {imagesNeededOfTotal}
+            {spotsText}, {'\n'}{imagesText} images needed
           </ListItem.Subtitle>
         </ListItem.Content>
         <Switch
@@ -78,20 +81,23 @@ const DatasetList = () => {
           value={activeDatasetsIds.some(activeDatasetId => activeDatasetId === dataset.id)}
           disabled={isDisabled(dataset.id)}
         />
-        <View >
-          <Icon
-            name={'image-outline'}
-            type={'ionicon'}
+        <View
+        >
+          {dataset.images?.imageIds && <Icon
+            name={spotIds && 'image-outline'}
+            type={spotIds && 'ionicon'}
             size={20}
             containerStyle={{paddingBottom: 5}}
-          />
-          <Icon
-            name={isEmpty(dataset?.images?.neededImagesIds) ? 'checkmark-outline' : 'file-download'}
-            type={isEmpty(dataset?.images?.neededImagesIds) ? 'ionicon' : 'material'}
+          />}
+          {<Icon
+            name={spotIds ? (needImages ? 'checkmark-outline' : 'download-circle-outline') : 'image-off-outline'}
+            type={spotIds ? (needImages ? 'ionicon' : 'material-community') : 'material-community'}
             size={20}
-            color={isEmpty(dataset?.images?.neededImagesIds) && 'green'}
+            color={spotIds ? needImages && 'green' : 'black'}
+            disabled={needImages}
+            disabledStyle={{backgroundColor: 'transparent'}}
             onPress={() => useDownload.initializeDownloadImages(dataset?.images?.neededImagesIds, dataset)}
-          />
+          />}
         </View>
       </ListItem>
     );
@@ -119,10 +125,10 @@ const DatasetList = () => {
             icon={
               <Icon
                 iconStyle={{paddingRight: 10}}
-                name='trash'
+                name="trash"
                 type={'font-awesome'}
                 size={20}
-                color='red'
+                color="red"
               />
             }
           />

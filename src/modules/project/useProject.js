@@ -69,6 +69,11 @@ const useProject = () => {
       modified_timestamp: modifiedTimeStamp,
       current: true,
       active: true,
+      spotIds: [],
+      images: {
+        neededImagesIds: [],
+        imageIds: [],
+      },
     };
   };
 
@@ -191,13 +196,6 @@ const useProject = () => {
       if (isOnline && !isEmpty(user.name) && val) {
         dispatch(setActiveDatasets({bool: val, dataset: dataset.id}));
         dispatch(setSelectedDataset(dataset.id));
-        if (isEmpty(dataset.spotIds)) {
-          dispatch(setLoadingStatus({view: 'modal', bool: true}));
-          dispatch(setStatusMessagesModalVisible(true));
-          dispatch(clearedStatusMessages());
-          await useDownload.downloadSpots(dataset, user.encoded_login);
-          dispatch(addedStatusMessage('Download Complete!'));
-        }
       }
       else dispatch(setActiveDatasets({bool: val, dataset: dataset.id}));
     }
