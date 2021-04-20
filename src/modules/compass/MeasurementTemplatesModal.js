@@ -142,15 +142,16 @@ const MeasurementTemplatesModal = (props) => {
   const renderFormFields = () => {
     return (
       <View style={{flex: 1}}>
-        {props.type === 'planar_orientation'
-        && <ButtonGroup
-          onPress={i => onSwitchPlanarTabular(i)}
-          selectedIndex={tabularOrientation ? 1 : 0}
-          buttons={['Planar Feature', 'Tabular Zone']}
-          containerStyle={styles.measurementDetailSwitches}
-          selectedButtonStyle={{backgroundColor: PRIMARY_ACCENT_COLOR}}
-          textStyle={{color: PRIMARY_ACCENT_COLOR}}
-        />}
+        {props.type === 'planar_orientation' && (
+          <ButtonGroup
+            onPress={i => onSwitchPlanarTabular(i)}
+            selectedIndex={tabularOrientation ? 1 : 0}
+            buttons={['Planar Feature', 'Tabular Zone']}
+            containerStyle={styles.measurementDetailSwitches}
+            selectedButtonStyle={{backgroundColor: PRIMARY_ACCENT_COLOR}}
+            textStyle={{color: PRIMARY_ACCENT_COLOR}}
+          />
+        )}
         <TextInput
           style={[formStyles.fieldValue, {paddingLeft: 15, paddingTop: 5}]}
           placeholder={'Name of the Template ...'}

@@ -35,10 +35,6 @@ const styles = StyleSheet.create({
     fontSize: themes.PRIMARY_TEXT_SIZE - 3,
     color: themes.PRIMARY_TEXT_COLOR,
   },
-  sliderText: {
-    color: themes.PRIMARY_TEXT_COLOR,
-    fontSize: 16,
-  },
   strikeAndDipLine: {
     zIndex: 10,
     height: 125,

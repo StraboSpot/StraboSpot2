@@ -46,8 +46,7 @@ import projectStyles from '../project/project.styles';
 import ProjectDescription from '../project/ProjectDescription';
 import UploadDialogBox from '../project/UploadDialogBox';
 import useProjectHook from '../project/useProject';
-import NotebookSamplesModal from '../samples/NotebookSamplesModal';
-import ShortcutSamplesModal from '../samples/ShortcutSamplesModal';
+import SamplesModal from '../samples/SamplesModal';
 import {clearedSelectedSpots} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
 import {
@@ -429,7 +428,7 @@ const Home = () => {
       return (
         <CompassModal
           onPress={() => modalHandler(null, MODALS.SHORTCUT_MODALS.COMPASS)}
-          type={MODALS.NOTEBOOK_MODALS.COMPASS}
+          type={modalVisible}
         />
       );
     }
@@ -437,7 +436,7 @@ const Home = () => {
       return (
         <CompassModal
           onPress={() => modalHandler(NOTEBOOK_PAGES.MEASUREMENT, MODALS.NOTEBOOK_MODALS.COMPASS)}
-          type={MODALS.SHORTCUT_MODALS.COMPASS}
+          type={modalVisible}
         />
       );
     }
@@ -455,19 +454,17 @@ const Home = () => {
     }
     if (modalVisible === MODALS.NOTEBOOK_MODALS.SAMPLE && isNotebookPanelVisible && !isEmpty(selectedSpot)) {
       return (
-        <NotebookSamplesModal
-          close={() => dispatch(setModalVisible({modal: null}))}
-          cancel={() => samplesModalCancel()}
+        <SamplesModal
           onPress={() => modalHandler(null, MODALS.SHORTCUT_MODALS.SAMPLE)}
+          type={modalVisible}
         />
       );
     }
     else if (modalVisible === MODALS.SHORTCUT_MODALS.SAMPLE) {
       return (
-        <ShortcutSamplesModal
-          close={() => dispatch(setModalVisible({modal: null}))}
-          cancel={() => samplesModalCancel()}
+        <SamplesModal
           onPress={() => modalHandler(NOTEBOOK_PAGES.SAMPLE, MODALS.NOTEBOOK_MODALS.SAMPLE)}
+          type={modalVisible}
         />
       );
     }
@@ -629,9 +626,11 @@ const Home = () => {
                 )
                 : (
                   <View style={{alignItems: 'center'}}>
-                    {selectedProject.source !== ''
-                    && <Text style={{fontWeight: 'bold', textAlign: 'center'}}>Press Continue to load selected
-                      project</Text>}
+                    {selectedProject.source !== '' && (
+                      <Text style={{fontWeight: 'bold', textAlign: 'center'}}>
+                        Press Continue to load selected project
+                      </Text>
+                    )}
                     <View style={{flexDirection: 'row'}}>
                       <Button
                         title={selectedProject.source !== '' ? 'Continue' : 'OK'}
@@ -639,13 +638,14 @@ const Home = () => {
                         containerStyle={{padding: 10}}
                         onPress={() => getProjectFromSource(selectedProject)}
                       />
-                      {selectedProject.source !== ''
-                      && <Button
-                        title={'Cancel'}
-                        containerStyle={{padding: 10}}
-                        type={'clear'}
-                        onPress={() => dispatch(setStatusMessagesModalVisible(false))}
-                      />}
+                      {selectedProject.source !== '' && (
+                        <Button
+                          title={'Cancel'}
+                          containerStyle={{padding: 10}}
+                          type={'clear'}
+                          onPress={() => dispatch(setStatusMessagesModalVisible(false))}
+                        />
+                      )}
                     </View>
                   </View>
                 )
@@ -751,10 +751,6 @@ const Home = () => {
         </View>
       </UploadDialogBox>
     );
-  };
-
-  const samplesModalCancel = () => {
-    console.log('Samples Modal Cancel Selected');
   };
 
   const setDraw = async mapModeToSet => {

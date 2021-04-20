@@ -81,15 +81,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   slider: {
-    width: '90%',
-    paddingRight: 10,
-    paddingLeft: 10,
+    width: '100%',
   },
   sliderTextContainer: {
     width: '100%',
     justifyContent: 'space-between',
-    paddingRight: 10,
-    paddingLeft: 10,
     flexDirection: 'row',
   },
   buttonText: {

@@ -16,6 +16,7 @@ const initialHomeState = {
     home: false,
   },
   isSignedIn: false,
+  modalValues: {},
   modalVisible: null,
   isBackupModalVisible: false,
   isStatusMessagesModalVisible: false,
@@ -70,6 +71,9 @@ const homeSlice = createSlice({
     setMainMenuPanelVisible(state, action) {
       state.isMainMenuPanelVisible = action.payload;
     },
+    setModalValues(state, action) {
+      state.modalValues = action.payload;
+    },
     setModalVisible(state, action) {
       state.modalVisible = action.payload.modal;
     },
@@ -114,6 +118,7 @@ export const {
   setInfoMessagesModalVisible,
   setLoadingStatus,
   setMainMenuPanelVisible,
+  setModalValues,
   setModalVisible,
   setOfflineMapsModalVisible,
   setOnlineStatus,

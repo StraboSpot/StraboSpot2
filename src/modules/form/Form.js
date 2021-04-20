@@ -17,6 +17,8 @@ const Form = (props) => {
   const [useForm] = useFormHook();
   const [textInputAnimate] = useState(new Animated.Value(0));
 
+  const survey = props.surveyFragment || useForm.getSurvey(props.formName);
+
   useEffect(() => {
     console.log('useEffect Form []');
     Keyboard.addListener('keyboardDidShow', handleKeyboardDidShow);
@@ -77,7 +79,7 @@ const Form = (props) => {
     );
   };
 
-  const renderSelectInput = (field) => {
+  const renderSelectInput = (field, isExpanded) => {
     const [fieldType, choicesListName] = field.type.split(' ');
     const fieldChoices = useForm.getChoices(props.formName).filter(choice => choice.list_name === choicesListName);
     const fieldChoicesCopy = JSON.parse(JSON.stringify(fieldChoices));
@@ -97,6 +99,7 @@ const Form = (props) => {
         single={fieldType === 'select_one'}
         placeholder={field.hint}
         onShowFieldInfo={showFieldInfo}
+        showExpandedChoices={isExpanded}
       />
     );
   };
@@ -108,14 +111,19 @@ const Form = (props) => {
         {fieldType === 'begin_group' && renderGroupHeading(field)}
         {(fieldType === 'text' || fieldType === 'integer' || fieldType === 'decimal' || fieldType === 'select_one'
           || fieldType === 'select_multiple' || fieldType === 'date') && (
-          <ListItem containerStyle={commonStyles.listItemFormField}>
-            <ListItem.Content>
-              {fieldType === 'text' && renderTextInput(field)}
-              {(fieldType === 'integer' || fieldType === 'decimal') && renderNumberInput(field)}
-              {(fieldType === 'select_one' || fieldType === 'select_multiple') && renderSelectInput(field)}
-              {fieldType === 'date' && renderDateInput(field)}
-            </ListItem.Content>
-          </ListItem>
+          <React.Fragment>
+            {props.surveyFragment && (fieldType === 'select_one' || fieldType === 'select_multiple')
+            && renderSelectInput(field, true)}
+            <ListItem containerStyle={commonStyles.listItemFormField}>
+              <ListItem.Content>
+                {fieldType === 'text' && renderTextInput(field)}
+                {(fieldType === 'integer' || fieldType === 'decimal') && renderNumberInput(field)}
+                {(!props.surveyFragment && (fieldType === 'select_one' || fieldType === 'select_multiple'))
+                && renderSelectInput(field)}
+                {fieldType === 'date' && renderDateInput(field)}
+              </ListItem.Content>
+            </ListItem>
+          </React.Fragment>
         )}
       </React.Fragment>
     );
@@ -134,7 +142,7 @@ const Form = (props) => {
     <Animated.View style={{transform: [{translateY: textInputAnimate}]}}>
       <FlatList
         keyExtractor={(item) => item.name}
-        data={Object.values(useForm.getSurvey(props.formName).filter(item => useForm.isRelevant(item, props.values)))}
+        data={Object.values(survey.filter(item => useForm.isRelevant(item, props.values, props.setFieldValue)))}
         renderItem={({item}) => renderField(item)}
         ItemSeparatorComponent={FlatListItemSeparator}
       />

@@ -18,15 +18,20 @@ const slider = (props) => {
           minimumValue={props.minimumValue}
           style={styles.slider}
           step={props.step || 1}
-          thumbStyle={{borderWidth: 1, borderColor: 'grey'}}
-          minimumTrackTintColor={themes.PRIMARY_ACCENT_COLOR}
-          maximumTrackTintColor={themes.PRIMARY_BACKGROUND_COLOR}
-          thumbTintColor={props.thumbTintColor || themes.PRIMARY_BACKGROUND_COLOR}
+          minimumTrackTintColor={themes.PRIMARY_TEXT_COLOR}
+          maximumTrackTintColor={themes.PRIMARY_TEXT_COLOR}
+          thumbTintColor={props.thumbTintColor || themes.PRIMARY_TEXT_COLOR}
         />
       </View>
-      <View style={styles.sliderTextContainer}>
-        <Text style={styles.sliderText}>{props.leftText}</Text>
-        <Text style={styles.sliderText}>{props.rightText}</Text>
+      <View style={props.rotateLabels ? {...styles.sliderTextContainer, paddingTop: 10, paddingBottom: 10}
+        : {...styles.sliderTextContainer}}>
+        {props.labels.map(label => {
+          return (
+            <Text style={props.rotateLabels && {transform: [{rotate: '290deg'}]}}>
+              {label}
+            </Text>
+          );
+        })}
       </View>
     </React.Fragment>
   );

@@ -317,9 +317,7 @@ const Compass = () => {
         step={1}
         maximumValue={5}
         minimumValue={1}
-        thumbTouchSize={{width: 40, height: 40}}
-        leftText={'Low'}
-        rightText={'High'}
+        labels={['Low', 'High']}
       />
     );
   };

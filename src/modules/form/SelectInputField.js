@@ -1,11 +1,14 @@
 import React from 'react';
-import {Text, View} from 'react-native';
+import {FlatList, Text, View} from 'react-native';
 
-import {Icon} from 'react-native-elements';
+import {Icon, ListItem} from 'react-native-elements';
 import MultiSelect from 'react-native-multiple-select';
 
+import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
+import {DARKGREY, PRIMARY_ACCENT_COLOR} from '../../shared/styles.constants';
+import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import {formStyles} from '../form';
 
 const SelectInputField = (props) => {
@@ -26,8 +29,57 @@ const SelectInputField = (props) => {
     return choiceFound ? choiceFound.label : '';
   };
 
-  return (
-    <React.Fragment>
+  const renderChoiceItem = (item) => {
+    const radioSelected = <Icon name={'radiobox-marked'} type={'material-community'} color={PRIMARY_ACCENT_COLOR}/>;
+    const radioUnslected = <Icon name={'radiobox-blank'} type={'material-community'} color={DARKGREY}/>;
+    return (
+      <React.Fragment>
+        <ListItem containerStyle={commonStyles.listItemFormField}>
+          <ListItem.Content>
+            <ListItem.Title style={commonStyles.listItemTitle}>{item.label}</ListItem.Title>
+          </ListItem.Content>
+          {props.single && (
+            <ListItem.CheckBox
+              checked={props.value === item.value}
+              checkedIcon={radioSelected}
+              uncheckedIcon={radioUnslected}
+              onPress={() => fieldValueChanged([item.value])}
+            />
+          )}
+          {!props.single && (
+            <ListItem.CheckBox
+              checked={props.value?.includes(item.value)}
+              onPress={() => props.value?.includes(item.value)
+                ? fieldValueChanged(props.value.filter(v => v !== item.value))
+                : fieldValueChanged([...props.value || [], item.value])}
+            />
+          )}
+        </ListItem>
+      </React.Fragment>
+    );
+  };
+
+  const renderChoices = () => {
+    // console.log('Field Choices', props.choices);
+    return (
+      <React.Fragment>
+        <ListItem containerStyle={commonStyles.listItemFormField}>
+          <ListItem.Content>
+            {renderFieldLabel()}
+          </ListItem.Content>
+        </ListItem>
+        <FlatList
+          keyExtractor={item => item.value}
+          data={props.choices}
+          renderItem={({item, index}) => renderChoiceItem(item, index)}
+          ItemSeparatorComponent={FlatListItemSeparator}
+        />
+      </React.Fragment>
+    );
+  };
+
+  const renderFieldLabel = () => {
+    return (
       <View style={formStyles.fieldLabelContainer}>
         <Text style={formStyles.fieldLabel}>{props.label}</Text>
         {props.placeholder && (
@@ -39,34 +91,48 @@ const SelectInputField = (props) => {
           />
         )}
       </View>
-      <View style={formStyles.fieldValue}>
-        <MultiSelect
-          hideSubmitButton={true}
-          hideTags={false}
-          single={props.single}
-          hideDropdown={true}
-          searchIcon={false}
-          items={props.choices}
-          uniqueKey='value'
-          displayKey='label'
-          onSelectedItemsChange={fieldValueChanged}
-          selectedItems={isEmpty(props.value) || typeof props.value === 'object' ? props.value : [props.value]}
-          textInputProps={{editable: false}}
-          selectText={isEmpty(props.value) ? placeholderText : getChoiceLabel(props.value)}
-          searchInputPlaceholderText={isEmpty(props.value) ? placeholderText : getChoiceLabel(props.value)}
-          searchInputStyle={formStyles.dropdownSelectionListHeader}
-          fontSize={themes.PRIMARY_TEXT_SIZE}
-          selectedItemTextColor={themes.PRIMARY_TEXT_COLOR}
-          selectedItemIconColor={themes.PRIMARY_TEXT_COLOR}
-          textColor={themes.PRIMARY_TEXT_COLOR}
-          itemTextColor={themes.PRIMARY_TEXT_COLOR}
-          styleDropdownMenu={formStyles.dropdownContainer}
-          styleDropdownMenuSubsection={formStyles.dropdownSelectedContainer}
-          styleSelectorContainer={formStyles.selectorContainer}
-          tagBorderColor={themes.PRIMARY_TEXT_COLOR}
-          tagTextColor={themes.PRIMARY_TEXT_COLOR}
-        />
-      </View>
+    );
+  };
+
+  const renderMultiSelect = () => {
+    return (
+      <React.Fragment>
+        {renderFieldLabel()}
+        <View style={formStyles.fieldValue}>
+          <MultiSelect
+            hideSubmitButton={true}
+            hideTags={false}
+            single={props.single}
+            hideDropdown={true}
+            searchIcon={false}
+            items={props.choices}
+            uniqueKey="value"
+            displayKey="label"
+            onSelectedItemsChange={fieldValueChanged}
+            selectedItems={isEmpty(props.value) || typeof props.value === 'object' ? props.value : [props.value]}
+            textInputProps={{editable: false}}
+            selectText={isEmpty(props.value) ? placeholderText : getChoiceLabel(props.value)}
+            searchInputPlaceholderText={isEmpty(props.value) ? placeholderText : getChoiceLabel(props.value)}
+            searchInputStyle={formStyles.dropdownSelectionListHeader}
+            fontSize={themes.PRIMARY_TEXT_SIZE}
+            selectedItemTextColor={themes.PRIMARY_TEXT_COLOR}
+            selectedItemIconColor={themes.PRIMARY_TEXT_COLOR}
+            textColor={themes.PRIMARY_TEXT_COLOR}
+            itemTextColor={themes.PRIMARY_TEXT_COLOR}
+            styleDropdownMenu={formStyles.dropdownContainer}
+            styleDropdownMenuSubsection={formStyles.dropdownSelectedContainer}
+            styleSelectorContainer={formStyles.selectorContainer}
+            tagBorderColor={themes.PRIMARY_TEXT_COLOR}
+            tagTextColor={themes.PRIMARY_TEXT_COLOR}
+          />
+        </View>
+      </React.Fragment>
+    );
+  };
+
+  return (
+    <React.Fragment>
+      {props.showExpandedChoices ? renderChoices() : renderMultiSelect()}
     </React.Fragment>
   );
 };

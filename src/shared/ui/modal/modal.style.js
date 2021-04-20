@@ -9,7 +9,9 @@ const modalStyle = StyleSheet.create({
     width: 250,
     maxWidth: width,
     maxHeight: height - 100,
-    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
+    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
+    borderColor: themes.MEDIUMGREY,
+    borderWidth: 0.5,
     borderRadius: 20,
     overflow: 'hidden',
     zIndex: 1,
@@ -20,7 +22,7 @@ const modalStyle = StyleSheet.create({
   modalTop: {
     alignItems: 'center',
     flexDirection: 'row',
-    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
+    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
   },
   textStyle: {
     fontSize: themes.MODAL_TEXT_SIZE,

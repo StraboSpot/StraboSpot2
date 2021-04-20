@@ -9,7 +9,6 @@ import {isEmpty} from '../../shared/Helpers';
 import {PRIMARY_ACCENT_COLOR} from '../../shared/styles.constants';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
-import SectionDivider from '../../shared/ui/SectionDivider';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
 import {MODALS} from '../home/home.constants';
 import {setModalVisible} from '../home/home.slice';
@@ -17,11 +16,9 @@ import {NOTEBOOK_PAGES, NOTEBOOK_SUBPAGES} from '../notebook-panel/notebook.cons
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import {setSelectedAttributes} from '../spots/spots.slice';
-import styles from './samples.style';
 
 const SamplesNotebook = () => {
   const dispatch = useDispatch();
-  const modalVisible = useSelector(state => state.home.modalVisible);
   const notebookPageVisible = useSelector(state => (
     !isEmpty(state.notebook.visibleNotebookPagesStack) && state.notebook.visibleNotebookPagesStack.slice(-1)[0]
   ));
@@ -59,8 +56,13 @@ const SamplesNotebook = () => {
     );
   };
 
-  const renderNotebookView = () => {
-    return (
+  const onSamplePressed = (item) => {
+    dispatch(setSelectedAttributes([item]));
+    dispatch(setNotebookPageVisible(NOTEBOOK_SUBPAGES.SAMPLEDETAIL));
+  };
+
+  return (
+    <React.Fragment>
       <View>
         {notebookPageVisible === NOTEBOOK_PAGES.SAMPLE && (
           <React.Fragment>
@@ -71,7 +73,7 @@ const SamplesNotebook = () => {
               }}
             />
             <SectionDividerWithRightButton
-              dividerText='Samples'
+              dividerText={'Samples'}
               buttonTitle={'Add'}
               onPress={() => dispatch(setModalVisible({modal: MODALS.NOTEBOOK_MODALS.SAMPLE}))}
             />
@@ -79,26 +81,6 @@ const SamplesNotebook = () => {
         )}
         {renderSampleList()}
       </View>
-    );
-  };
-
-  const renderShortcutView = () => {
-    return (
-      <View style={styles.sampleContentContainer}>
-        <SectionDivider dividerText='Samples'/>
-        {renderSampleList()}
-      </View>
-    );
-  };
-
-  const onSamplePressed = (item) => {
-    dispatch(setSelectedAttributes([item]));
-    dispatch(setNotebookPageVisible(NOTEBOOK_SUBPAGES.SAMPLEDETAIL));
-  };
-
-  return (
-    <React.Fragment>
-      {modalVisible === MODALS.SHORTCUT_MODALS.SAMPLE ? renderShortcutView() : renderNotebookView()}
     </React.Fragment>
   );
 };

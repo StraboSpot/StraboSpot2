@@ -12,15 +12,17 @@ import SectionDivider from '../../shared/ui/SectionDivider';
 import {Form, useFormHook} from '../form';
 import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
 import {setNotebookPageVisible, setNotebookPageVisibleToPrev} from '../notebook-panel/notebook.slice';
-import styles from '../samples/samples.style';
 import {editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
 
 const SampleDetailPage = () => {
   const dispatch = useDispatch();
-  const [useForm] = useFormHook();
-  const [formName, setFormName] = useState([]);
   const spot = useSelector(state => state.spot.selectedSpot);
   const selectedSample = useSelector(state => state.spot.selectedAttributes[0]);
+
+  const [useForm] = useFormHook();
+
+  const [formName, setFormName] = useState([]);
+
   const formRef = useRef(null);
 
   useLayoutEffect(() => {
@@ -86,7 +88,7 @@ const SampleDetailPage = () => {
     console.log('Rendering form:', formName[0] + '.' + formName[1], 'with selected sample ', selectedSample);
     return (
       <View>
-        <SectionDivider dividerText='Sample'/>
+        <SectionDivider dividerText="Sample"/>
         <View style={{flex: 1}}>
           <Formik
             innerRef={formRef}
@@ -137,7 +139,7 @@ const SampleDetailPage = () => {
   return (
     <React.Fragment>
       {selectedSample && (
-        <View style={styles.sampleContentContainer}>
+        <React.Fragment>
           {renderCancelSaveButtons()}
           <FlatList
             ListHeaderComponent={
@@ -152,7 +154,7 @@ const SampleDetailPage = () => {
               </View>
             }
           />
-        </View>
+        </React.Fragment>
       )}
     </React.Fragment>
   );

@@ -12,6 +12,8 @@ import SectionDivider from '../../shared/ui/SectionDivider';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
 import uiStyles from '../../shared/ui/ui.styles';
 import {LABEL_DICTIONARY} from '../form';
+import {MODALS} from '../home/home.constants';
+import {setModalValues, setModalVisible} from '../home/home.slice';
 import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
@@ -41,9 +43,8 @@ const FabricsPage = () => {
   }, [spot]);
 
   const addFabric = (type) => {
-    const newFabric = {id: getNewId(), type: type};
-    setSelectedFabric(newFabric);
-    setIsDetailView(true);
+    dispatch(setModalValues({type: type}));
+    dispatch(setModalVisible({modal: MODALS.NOTEBOOK_MODALS.FABRIC}));
   };
 
   const editFabric = (fabric) => {
@@ -56,7 +57,7 @@ const FabricsPage = () => {
       const labelsArr = key.map(val => fabricsDictionary[val] || val);
       return labelsArr.join(', ');
     }
-    return fabricsDictionary[key] || key.replace('_', ' ');
+    return fabricsDictionary[key] || key.toString().replace('_', ' ');
   };
 
   const getFabricTitle = (fabric) => {

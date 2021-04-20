@@ -55,5 +55,26 @@ const styles = StyleSheet.create({
     color: themes.WARNING_COLOR,
     textAlign: 'center',
   },
+  choiceButton: {
+    borderRadius: 10,
+    borderColor: themes.MEDIUMGREY,
+  },
+  formButton: {
+    height: 60,
+    width: 110,
+    borderRadius: 10,
+    borderColor: themes.MEDIUMGREY,
+  },
+  formButtonContainer: {
+    padding: 2.5,
+  },
+  formButtonTitle: {
+    color: themes.PRIMARY_TEXT_COLOR,
+    fontWeight: '100',
+  },
+  formButtonSelectedTitle: {
+    color: themes.WHITE,
+    fontWeight: '400',
+  },
 });
 export default styles;

@@ -20,9 +20,30 @@ const useForm = () => {
     return choices;
   };
 
-  // Given a name, get the label for it
+  // Get the choices for a given key
+  const getChoicesByKey = (survey, choices, key) => {
+    const field = survey.find(f => f.name === key);
+    const [fieldType, choicesListName] = field.type.split(' ');
+    return choices.filter(choice => choice.list_name === choicesListName);
+  };
+
+  // Get a label for a given a key
   const getLabel = (key) => {
-    return LABEL_DICTIONARY[key] || toTitleCase(key.replace(/_/g, ' '));
+    return LABEL_DICTIONARY[key] || toTitleCase(key.toString().replace(/_/g, ' '));
+  };
+
+  // Get the fields relevant to a given field, meaning the field itself and any fields related by skip-logic
+  const getRelevantFields = (survey, key) => {
+    let relevantKeys = [key];
+    let relevantFields = survey.reduce((acc, f) => {
+      if (relevantKeys.includes(f.name) || !isEmpty(relevantKeys.filter(k => f.relevant?.includes('${' + k + '}')))) {
+        relevantKeys = [...relevantKeys, f.name];
+        return [...acc, f];
+      }
+      else return acc;
+    }, []);
+    // console.log('Relevant Fields', relevantFields);
+    return relevantFields;
   };
 
   // Return the survey object given the form category and name
@@ -127,7 +148,9 @@ const useForm = () => {
 
   return [{
     getChoices: getChoices,
+    getChoicesByKey: getChoicesByKey,
     getLabel: getLabel,
+    getRelevantFields: getRelevantFields,
     getSurvey: getSurvey,
     hasErrors: hasErrors,
     isRelevant: isRelevant,

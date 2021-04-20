@@ -246,6 +246,7 @@ const AddCustomMaps = () => {
                 maximumValue={1}
                 minimumValue={0.05}
                 step={0.05}
+                labels={[]}
               />
             </View>
           </ListItem>
