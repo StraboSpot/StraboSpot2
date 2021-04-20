@@ -1,22 +1,25 @@
-import React, {useLayoutEffect, useRef} from 'react';
-import {Alert, View} from 'react-native';
+import React, {useLayoutEffect, useRef, useState} from 'react';
+import {Alert, Switch, Text, View} from 'react-native';
 
 import {Formik} from 'formik';
+import {ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {toTitleCase} from '../../shared/Helpers';
+import SectionDivider from '../../shared/ui/SectionDivider';
 import {Form, LABEL_DICTIONARY, useFormHook} from '../form';
 import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import SidePanelHeader from '../main-menu-panel/sidePanel/SidePanelHeader';
 import {updatedProject} from './projects.slice';
 
-const ProjectDescription = () => {
+const ProjectDescription = (props) => {
   const dispatch = useDispatch();
   const project = useSelector(state => state.project.project);
 
   const [useForm] = useFormHook();
 
   const formRef = useRef(null);
+  const publicRef = useRef(null);
 
   const formName = ['general', 'project_description'];
   const projectDescription = {
@@ -28,6 +31,7 @@ const ProjectDescription = () => {
   useLayoutEffect(() => {
     console.log('UE ProjectDescription []');
     console.log('Project Description', projectDescription);
+    console.log('Project Preferences', publicRef.current);
     return () => saveForm();
   }, []);
 
@@ -38,22 +42,32 @@ const ProjectDescription = () => {
 
   const saveForm = async () => {
     const formCurrent = formRef.current;
-    await formRef.current.submitForm();
-    let newValues = JSON.parse(JSON.stringify(formCurrent.values));
-    if (useForm.hasErrors(formCurrent)) {
-      const errorMessages = Object.entries(formCurrent.errors).map(([key, value]) => getLabel(key) + ': ' + value);
-      Alert.alert('Project Description Errors!', 'Changes in the following fields were not saved.'
-        + ' Please fix the errors:\n\n' + errorMessages.join('\n'));
-      const newValuesWithoutErrors = Object.keys(formCurrent.values).reduce((acc, key) => {
-        return Object.keys(formCurrent.errors).includes(key) ? acc : {...acc, [key]: formCurrent.values[key]};
-      }, {});
-      const erroredFieldsInitialValues = Object.keys(projectDescription).reduce((acc, key) => {
-        return Object.keys(formCurrent.errors).includes(key) ? {...acc, [key]: projectDescription[key]} : acc;
-      }, {});
-      newValues = {...newValuesWithoutErrors, ...erroredFieldsInitialValues};
+    const publicCurrent = publicRef.current;
+    if (formCurrent.dirty) {
+      await formCurrent.submitForm();
+      let newDescriptionValues = JSON.parse(JSON.stringify(formCurrent.values));
+      // const newPublicPreferenceValue =
+      if (useForm.hasErrors(formCurrent)) {
+        const errorMessages = Object.entries(formCurrent.errors).map(([key, value]) => getLabel(key) + ': ' + value);
+        Alert.alert('Project Description Errors!', 'Changes in the following fields were not saved.'
+          + ' Please fix the errors:\n\n' + errorMessages.join('\n'));
+        const newValuesWithoutErrors = Object.keys(formCurrent.values).reduce((acc, key) => {
+          return Object.keys(formCurrent.errors).includes(key) ? acc : {...acc, [key]: formCurrent.values[key]};
+        }, {});
+        const erroredFieldsInitialValues = Object.keys(projectDescription).reduce((acc, key) => {
+          return Object.keys(formCurrent.errors).includes(key) ? {...acc, [key]: projectDescription[key]} : acc;
+        }, {});
+        newDescriptionValues = {...newValuesWithoutErrors, ...erroredFieldsInitialValues};
+      }
+      console.log('Saving project description to Project ...', newDescriptionValues);
+      dispatch(updatedProject({field: 'description', value: newDescriptionValues}));
     }
-    console.log('Saving project description to Project ...', newValues);
-    dispatch(updatedProject({field: 'description', value: newValues}));
+    else if (publicCurrent.dirty) {
+      console.log('Saving Project Preferences', publicCurrent.values);
+      await publicCurrent.submitForm();
+      dispatch(updatedProject({field: 'preferences', value: publicCurrent.values}));
+    }
+    // else toastRef.current.show('No changes were made.');
   };
 
   return (
@@ -61,20 +75,57 @@ const ProjectDescription = () => {
       <SidePanelHeader
         title={'Active Project'}
         headerTitle={'Project Description'}
-        backButton={() => dispatch(setSidePanelVisible({bool: false}))}
+        backButton={() => {
+          console.log('DIRTY', publicRef.current.dirty);
+          if (!publicRef?.current.dirty && !formRef?.current.dirty) {
+            props.toastMessage('No Changes Were Made.');
+          }
+          else props.toastMessage('Changes Saved!');
+          dispatch(setSidePanelVisible({bool: false}));
+        }}
       />
       <View style={{flex: 1}}>
-        <Formik
-          innerRef={formRef}
-          onSubmit={(values) => console.log('Submitting form...', values)}
-          validate={(values) => useForm.validateForm({formName: formName, values: values})}
-          component={(formProps) => Form({formName: formName, ...formProps})}
-          initialValues={projectDescription}
-          validateOnChange={true}
-          enableReinitialize={true}  // Update values if preferences change while form open, like when number incremented
-        />
+        <View style={{flex: 2}}>
+          <Formik
+            innerRef={formRef}
+            onSubmit={(values) => console.log('Submitting form...', values)}
+            validate={(values) => useForm.validateForm({formName: formName, values: values})}
+            component={(formProps) => Form({formName: formName, ...formProps})}
+            initialValues={projectDescription}
+            validateOnChange={true}
+            enableReinitialize={true}  // Update values if preferences change while form open, like when number incremented
+          />
+        </View>
+        <View style={{flex: 1}}>
+          <Formik
+            initialValues={project.preferences || {}}
+            onSubmit={() => console.log('Submitting form project preferences...')}
+            innerRef={publicRef}
+          >
+            {(formProps) =>
+              <View>
+                <SectionDivider dividerText={'Privacy Settings'}/>
+                <ListItem>
+                  <ListItem.Content>
+                    <ListItem.Title>Make Project Public? </ListItem.Title>
+                  </ListItem.Content>
+                  <Switch
+                    value={formProps.values.public}
+                    onValueChange={(bool) => formProps.setFieldValue('public', bool)}/>
+                </ListItem>
+                <View style={{paddingBottom: 15}}>
+                  <Text style={{padding: 10}}>Datasets that are made public can be accessed by anyone at
+                    Strabospot.org/search.
+                  </Text>
+                  <Text style={{padding: 10, paddingTop: 0}}>Privacy settings are reversible.
+                    Settings will be updated when you upload the project to the server.
+                  </Text>
+                </View>
+              </View>
+            }
+          </Formik>
+        </View>
       </View>
-
     </View>
   );
 };

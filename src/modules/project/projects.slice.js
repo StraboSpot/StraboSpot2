@@ -130,6 +130,9 @@ const projectSlice = createSlice({
       if (field === 'description') {
         state.project.description = value;
       }
+      if (field === 'preferences') {
+        state.project.preferences = value;
+      }
       else {
         if (field === 'tags' && !isEmpty(state.selectedTag)) {
           state.selectedTag = value.find(tag => tag.id === state.selectedTag.id);
