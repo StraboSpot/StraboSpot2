@@ -10,9 +10,9 @@ const ToastPopup = (props) => {
       ref={props.toastRef}
       style={[homeStyles.toastContainer, props.style]}
       position='top'
-      positionValue={props.positionValue || 300}
+      positionValue={props.positionValue || 150}
       fadeInDuration={500}
-      fadeOutDuration={2000}
+      fadeOutDuration={props.fadeOutDuration || 2000}
       opacity={0.9}
       textStyle={homeStyles.toastText}
     />

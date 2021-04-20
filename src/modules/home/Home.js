@@ -599,7 +599,7 @@ const Home = () => {
       case SIDE_PANEL_VIEWS.MANAGE_CUSTOM_MAP:
         return <CustomMapDetails/>;
       case SIDE_PANEL_VIEWS.PROJECT_DESCRIPTION:
-        return <ProjectDescription/>;
+        return <ProjectDescription toastMessage={(message) => toastRef.current.show(message)}/>;
       case SIDE_PANEL_VIEWS.TAG_DETAIL:
         return <TagDetailSidePanel openNotebookPanel={(pageView) => openNotebookPanel(pageView)}/>;
       case SIDE_PANEL_VIEWS.TAG_ADD_REMOVE_SPOTS:
