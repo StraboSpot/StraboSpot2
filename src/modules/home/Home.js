@@ -22,6 +22,7 @@ import StatusDialogBox from '../../shared/ui/StatusDialogBox';
 import ToastPopup from '../../shared/ui/Toast';
 import CompassModal from '../compass/CompassModal';
 import MeasurementTemplatesModal from '../compass/MeasurementTemplatesModal';
+import NotebookFabricModal from '../fabrics/NotebookFabricModal';
 import Preview from '../images/Preview';
 import useImagesHook from '../images/useImages';
 import {MAIN_MENU_ITEMS, SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.constants';
@@ -475,6 +476,9 @@ const Home = () => {
           onPress={() => modalHandler(NOTEBOOK_PAGES.NOTE)}
         />
       );
+    }
+    if (modalVisible === MODALS.NOTEBOOK_MODALS.FABRIC && isNotebookPanelVisible && !isEmpty(selectedSpot)) {
+      return <NotebookFabricModal close={() => dispatch(setModalVisible({modal: null}))}/>;
     }
   };
 

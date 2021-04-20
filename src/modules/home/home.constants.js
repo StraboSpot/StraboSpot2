@@ -1,6 +1,7 @@
 export const MODALS = {
   NOTEBOOK_MODALS: {
     COMPASS: 'Compass',
+    FABRIC: 'Fabric',
     SAMPLE: 'Sample',
     TAGS: 'Tags',
     MEASUREMENT_TEMPLATES_PLANAR: 'Choose a Planar Template',
