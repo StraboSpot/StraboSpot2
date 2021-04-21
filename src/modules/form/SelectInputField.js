@@ -19,7 +19,7 @@ const SelectInputField = (props) => {
       if (value[0] === props.value) props.setFieldValue(props.name, undefined);
       else props.setFieldValue(props.name, value[0]);
     }
-    else props.setFieldValue(props.name, value);
+    else props.setFieldValue(props.name, isEmpty(value) ? undefined : value);
   };
 
   const getChoiceLabel = (value) => {
