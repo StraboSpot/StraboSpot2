@@ -154,7 +154,7 @@ const useImport = () => {
       dispatch(addedProject(projectDb.project));
       dispatch(addedDatasets(projectDb.datasets));
       dispatch(removedLastStatusMessage());
-      dispatch(addedStatusMessage('Project loaded.'));
+      dispatch(addedStatusMessage(`${selectedProject.fileName}\nProject loaded.`));
       if (!isEmpty(mapNamesDb) || !isEmpty(otherMapsDb)) {
         dispatch(addedStatusMessage('Importing maps...'));
         await copyZipMapsForDistribution(selectedProject.fileName, dataFile);
@@ -164,21 +164,24 @@ const useImport = () => {
         await unzipFile(selectedProject.fileName);
         console.log('Finished unzipping all files');
         dispatch(addedStatusMessage(`Finished copying and ${'\n'}unzipping all files`));
+        dispatch(addedStatusMessage('Moving Maps...'));
         progress = await moveFiles(dataFile);
         console.log('fileCount', progress);
         dispatch(addedCustomMapsFromBackup(otherMapsDb));
         dispatch(addedMapsFromDevice({mapType: 'offlineMaps', maps: mapNamesDb}));
-        dispatch(addedStatusMessage('Finished moving tiles'));
+        dispatch(removedLastStatusMessage());
+        batch(() => {
+          dispatch(addedStatusMessage('---------------------'));
+          dispatch(addedStatusMessage(`Map tiles imported: ${progress.fileCount}`));
+          dispatch(addedStatusMessage(`Map tiles installed: ${progress.neededTiles}`));
+          dispatch(addedStatusMessage(`Map tiles already installed: ${progress.notNeededTiles}`));
+          dispatch(addedStatusMessage('Finished moving tiles'));
+        });
       }
+      else dispatch(addedStatusMessage('No maps to import.'));
       dispatch(addedStatusMessage('Importing image files...'));
       await copyImages(selectedProject.fileName);
-      batch(() => {
-        dispatch(addedStatusMessage('---------------------'));
-        dispatch(addedStatusMessage(`Map tiles imported: ${progress.fileCount}`));
-        dispatch(addedStatusMessage(`Map tiles installed: ${progress.neededTiles}`));
-        dispatch(addedStatusMessage(`Map tiles already installed: ${progress.notNeededTiles}`));
-        dispatch(setLoadingStatus({view: 'modal', bool: false}));
-      });
+      dispatch(setLoadingStatus({view: 'modal', bool: false}));
       return Promise.resolve({project: dataFile.projectDb.project});
     }
   };
