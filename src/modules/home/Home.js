@@ -41,7 +41,7 @@ import InitialProjectLoadModal from '../project/InitialProjectLoadModal';
 import ProjectDescription from '../project/ProjectDescription';
 import UploadDialogBox from '../project/UploadDialogBox';
 import useProjectHook from '../project/useProject';
-import SamplesModal from '../samples/SamplesModal';
+import SampleModal from '../samples/SampleModal';
 import {clearedSelectedSpots} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
 import {
@@ -436,7 +436,7 @@ const Home = () => {
     }
     if (modalVisible === MODALS.NOTEBOOK_MODALS.SAMPLE && isNotebookPanelVisible && !isEmpty(selectedSpot)) {
       return (
-        <SamplesModal
+        <SampleModal
           onPress={() => modalHandler(null, MODALS.SHORTCUT_MODALS.SAMPLE)}
           type={modalVisible}
         />
@@ -444,7 +444,7 @@ const Home = () => {
     }
     else if (modalVisible === MODALS.SHORTCUT_MODALS.SAMPLE) {
       return (
-        <SamplesModal
+        <SampleModal
           onPress={() => modalHandler(NOTEBOOK_PAGES.SAMPLE, MODALS.NOTEBOOK_MODALS.SAMPLE)}
           type={modalVisible}
         />

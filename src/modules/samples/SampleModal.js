@@ -21,7 +21,7 @@ import useMapsHook from '../maps/useMaps';
 import {updatedProject} from '../project/projects.slice';
 import {editedSpotProperties} from '../spots/spots.slice';
 
-const SamplesModal = (props) => {
+const SampleModal = (props) => {
     const dispatch = useDispatch();
     const modalVisible = useSelector(state => state.home.modalVisible);
     const preferences = useSelector(state => state.project.project.preferences) || {};
@@ -186,4 +186,4 @@ const SamplesModal = (props) => {
   }
 ;
 
-export default SamplesModal;
+export default SampleModal;

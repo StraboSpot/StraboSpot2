@@ -14,7 +14,7 @@ import {Form, useFormHook} from '../form';
 import ImagesOverview from '../images/ImagesOverview';
 import MeasurementsOverview from '../measurements/MeasurementsOverview';
 import NotesOverview from '../notes/NotesOverview';
-import SamplesNotebook from '../samples/SamplesNotebook';
+import SamplesPage from '../samples/SamplesPage';
 import {editedSpotProperties} from '../spots/spots.slice';
 import {TagsAtSpotList} from '../tags';
 import notebookStyles from './notebookPanel.styles';
@@ -32,7 +32,7 @@ const Overview = props => {
     {title: 'Measurements', data: [<MeasurementsOverview/>]},
     {title: 'Photos and Sketches', data: [<ImagesOverview/>]},
     {title: 'Tags', data: [<TagsAtSpotList openMainMenu={props.openMainMenu}/>]},
-    {title: 'Samples', data: [<SamplesNotebook/>]},
+    {title: 'Samples', data: [<SamplesPage/>]},
   ];
 
   useEffect(() => {

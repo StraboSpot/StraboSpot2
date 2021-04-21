@@ -17,7 +17,7 @@ import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import {setSelectedAttributes} from '../spots/spots.slice';
 
-const SamplesNotebook = () => {
+const SamplesPage = () => {
   const dispatch = useDispatch();
   const notebookPageVisible = useSelector(state => (
     !isEmpty(state.notebook.visibleNotebookPagesStack) && state.notebook.visibleNotebookPagesStack.slice(-1)[0]
@@ -85,4 +85,4 @@ const SamplesNotebook = () => {
   );
 };
 
-export default SamplesNotebook;
+export default SamplesPage;

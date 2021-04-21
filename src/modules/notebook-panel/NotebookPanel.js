@@ -25,7 +25,7 @@ import ReactionTexturesPage from '../petrology/ReactionTexturesPage';
 import RockTypePage from '../petrology/RockTypePage';
 import TernaryPage from '../petrology/TernaryPage';
 import SampleDetailPage from '../samples/SampleDetail';
-import SamplesPage from '../samples/SamplesNotebook';
+import SamplesPage from '../samples/SamplesPage';
 import {useSpotsHook} from '../spots';
 import {setSelectedSpot} from '../spots/spots.slice';
 import TagsPage from '../tags/TagsNotebook';
