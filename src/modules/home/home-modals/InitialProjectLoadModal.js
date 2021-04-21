@@ -6,22 +6,22 @@ import {Avatar, Button} from 'react-native-elements';
 import {Dialog, DialogContent, DialogTitle, SlideAnimation} from 'react-native-popup-dialog';
 import {useDispatch, useSelector} from 'react-redux';
 
-import useDeviceHook from '../../services/useDevice';
-import {REDUX} from '../../shared/app.constants';
-import commonStyles from '../../shared/common.styles';
-import {isEmpty} from '../../shared/Helpers';
-import Spacer from '../../shared/ui/Spacer';
-import {setSignedInStatus} from '../home/home.slice';
-import homeStyles from '../home/home.style';
-import {clearedSpots} from '../spots/spots.slice';
-import userStyles from '../user/user.styles';
-import useUserProfileHook from '../user/useUserProfile';
-import ActiveDatasetsList from './ActiveDatasetsList';
-import DatasetList from './DatasetList';
-import NewProject from './NewProjectForm';
-import ProjectList from './ProjectList';
-import {clearedDatasets, clearedProject} from './projects.slice';
-import ProjectTypesButtons from './ProjectTypesButtons';
+import useDeviceHook from '../../../services/useDevice';
+import {REDUX} from '../../../shared/app.constants';
+import commonStyles from '../../../shared/common.styles';
+import {isEmpty} from '../../../shared/Helpers';
+import Spacer from '../../../shared/ui/Spacer';
+import ActiveDatasetsList from '../../project/ActiveDatasetsList';
+import DatasetList from '../../project/DatasetList';
+import NewProject from '../../project/NewProjectForm';
+import ProjectList from '../../project/ProjectList';
+import {clearedDatasets, clearedProject} from '../../project/projects.slice';
+import ProjectTypesButtons from '../../project/ProjectTypesButtons';
+import {clearedSpots} from '../../spots/spots.slice';
+import userStyles from '../../user/user.styles';
+import useUserProfileHook from '../../user/useUserProfile';
+import {setSignedInStatus} from '../home.slice';
+import homeStyles from '../home.style';
 
 const InitialProjectLoadModal = (props) => {
   const navigation = useNavigation();

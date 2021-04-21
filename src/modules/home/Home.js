@@ -37,7 +37,6 @@ import {setNotebookPageVisible, setNotebookPanelVisible} from '../notebook-panel
 import NotebookPanel from '../notebook-panel/NotebookPanel';
 import notebookStyles from '../notebook-panel/notebookPanel.styles';
 import ShortcutNotesModal from '../notes/ShortcutNotesModal';
-import InitialProjectLoadModal from '../project/InitialProjectLoadModal';
 import ProjectDescription from '../project/ProjectDescription';
 import UploadDialogBox from '../project/UploadDialogBox';
 import useProjectHook from '../project/useProject';
@@ -53,12 +52,14 @@ import {
 } from '../tags';
 import UserProfile from '../user/UserProfilePage';
 import BackupModal from './home-modals/BackupModal';
+import InfoModal from './home-modals/InfoModal';
+import InitialProjectLoadModal from './home-modals/InitialProjectLoadModal';
 import StatusModal from './home-modals/StatusModal';
+import UploadModal from './home-modals/UploadModal';
 import {MODALS} from './home.constants';
 import {
   setErrorMessagesModalVisible,
   setImageModalVisible,
-  setInfoMessagesModalVisible,
   setLoadingStatus,
   setMainMenuPanelVisible,
   setModalVisible,
@@ -67,7 +68,6 @@ import {
   setProjectLoadComplete,
   setProjectLoadSelectionModalVisible,
   setStatusMessagesModalVisible,
-  setUploadModalVisible,
 } from './home.slice';
 import homeStyles from './home.style';
 import LeftSideButtons from './LeftSideButtons';
@@ -89,19 +89,16 @@ const Home = () => {
   const [useProject] = useProjectHook();
   const [useSpots] = useSpotsHook();
   const useDevice = useDeviceHook();
-  const useUpload = useUploadHook();
 
   const selectedDataset = useProject.getSelectedDatasetFromId();
 
   const dispatch = useDispatch();
   const currentBasemap = useSelector(state => state.map.currentBasemap);
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
-  const currentProject = useSelector(state => state.project.project);
   const customMaps = useSelector(state => state.map.customMaps);
   const isErrorMessagesModalVisible = useSelector(state => state.home.isErrorMessagesModalVisible);
   const isHomeLoading = useSelector(state => state.home.loading.home);
   const isImageModalVisible = useSelector(state => state.home.isImageModalVisible);
-  const isInfoMessagesModalVisible = useSelector(state => state.home.isInfoModalVisible);
   const isMainMenuPanelVisible = useSelector(state => state.home.isMainMenuPanelVisible);
   const isNotebookPanelVisible = useSelector(state => state.notebook.isNotebookPanelVisible);
   const offlineMaps = useSelector(state => state.offlineMap.offlineMaps);
@@ -111,7 +108,6 @@ const Home = () => {
   const isSidePanelVisible = useSelector(state => state.mainMenu.isSidePanelVisible);
   const [openMenu, setOpenMenu] = useState('');
   const selectedProject = useSelector(state => state.home.selectedProject);
-  const isUploadModalVisible = useSelector(state => state.home.isUploadModalVisible);
   const modalVisible = useSelector(state => state.home.modalVisible);
   const projectLoadComplete = useSelector(state => state.home.isProjectLoadComplete);
   const selectedImage = useSelector(state => state.spot.selectedAttributes[0]);
@@ -463,36 +459,6 @@ const Home = () => {
     }
   };
 
-  const renderLoadProjectFromModal = () => {
-    return (
-      <InitialProjectLoadModal
-        openMainMenu={() => toggleHomeDrawerButton()}
-        visible={isProjectLoadSelectionModalVisible}
-        closeModal={() => closeInitialProjectLoadModal()}
-      />
-    );
-  };
-
-  const renderInfoDialogBox = () => {
-    return (
-      <StatusDialogBox
-        dialogTitle={'Status Info'}
-        style={commonStyles.dialogWarning}
-        visible={isInfoMessagesModalVisible}
-        // onTouchOutside={() => dispatch(setInfoMessagesModalVisible(false))}
-      >
-        <View style={{margin: 15}}>
-          <Text style={commonStyles.dialogStatusMessageText}>{statusMessages.join('\n')}</Text>
-        </View>
-        <Button
-          title={'OK'}
-          type={'clear'}
-          onPress={() => dispatch(setInfoMessagesModalVisible(false))}
-        />
-      </StatusDialogBox>
-    );
-  };
-
   const renderErrorMessageDialogBox = () => {
     return (
       <StatusDialogBox
@@ -589,40 +555,6 @@ const Home = () => {
       case SIDE_PANEL_VIEWS.USER_PROFILE:
         return <UserProfile/>;
     }
-  };
-
-  const renderUploadModal = () => {
-    const activeDatasets = useProject.getActiveDatasets();
-    return (
-      <UploadDialogBox
-        dialogTitle={'OVERWRITE WARNING!'}
-        visible={isUploadModalVisible}
-        cancel={() => dispatch(setUploadModalVisible(false))}
-        buttonText={'Upload'}
-        onPress={async () => {
-          toggleHomeDrawerButton();
-          await useUpload.initializeUpload();
-        }}
-      >
-        <View>
-          <Text>
-            <Text style={commonStyles.dialogContentImportantText}>{!isEmpty(
-              currentProject) && currentProject.description.project_name} </Text>
-            project properties and the following active datasets will be uploaded and will
-            <Text style={commonStyles.dialogContentImportantText}> OVERWRITE</Text> any data already on the server
-            for this project:
-          </Text>
-          <View style={{alignItems: 'center', paddingTop: 15, paddingBottom: 10}}>
-            <FlatList
-              data={activeDatasets}
-              keyExtractor={item => item.id.toString()}
-              renderItem={({item}) => <Text>{item.name.length > 30 ? '- ' + truncateText(item.name, 30)
-                : '- ' + item.name}</Text>}
-            />
-          </View>
-        </View>
-      </UploadDialogBox>
-    );
   };
 
   const setDraw = async mapModeToSet => {
@@ -813,7 +745,14 @@ const Home = () => {
       )}
       {/*Modals for Home Page*/}
       <BackupModal/>
+      <InfoModal/>
+      <InitialProjectLoadModal
+        openMainMenu={() => toggleHomeDrawerButton()}
+        visible={isProjectLoadSelectionModalVisible}
+        closeModal={() => closeInitialProjectLoadModal()}
+      />
       <StatusModal/>
+      <UploadModal toggleHomeDrawer={() => toggleHomeDrawerButton()}/>
       {/*------------------------*/}
       {isHomeLoading && <LoadingSpinner/>}
       {notebookPanel}
@@ -822,10 +761,7 @@ const Home = () => {
       {renderSaveAndCancelDrawButtons()}
       {isMainMenuPanelVisible && toggleSidePanel()}
       {renderFloatingViews()}
-      {renderLoadProjectFromModal()}
-      {renderInfoDialogBox()}
       {renderErrorMessageDialogBox()}
-      {renderUploadModal()}
       {isOfflineMapModalVisible && renderSaveMapsModal()}
     </View>
   );
