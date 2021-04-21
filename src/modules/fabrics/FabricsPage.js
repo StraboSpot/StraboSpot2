@@ -5,7 +5,6 @@ import {ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
-import {getNewId} from '../../shared/Helpers';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SectionDivider from '../../shared/ui/SectionDivider';
@@ -48,6 +47,7 @@ const FabricsPage = () => {
   };
 
   const editFabric = (fabric) => {
+    dispatch(setModalVisible({modal: null}));
     setSelectedFabric(fabric);
     setIsDetailView(true);
   };

@@ -1,21 +1,20 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {FlatList, Platform, View} from 'react-native';
 
-import {Field, Formik} from 'formik';
-import {Button, ButtonGroup, ListItem} from 'react-native-elements';
+import {Formik} from 'formik';
+import {Button, ButtonGroup} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
-import commonStyles from '../../shared/common.styles';
 import {getNewId, isEmpty} from '../../shared/Helpers';
 import SaveButton from '../../shared/SaveButton';
 import {PRIMARY_ACCENT_COLOR, PRIMARY_TEXT_COLOR} from '../../shared/styles.constants';
 import DragAnimation from '../../shared/ui/DragAmination';
-import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import Modal from '../../shared/ui/modal/Modal';
 import uiStyles from '../../shared/ui/ui.styles';
-import {Form, LABEL_DICTIONARY, TextInputField, useFormHook} from '../form';
+import {Form, LABEL_DICTIONARY, useFormHook} from '../form';
 import {editedSpotProperties} from '../spots/spots.slice';
 import FaultRockFabric from './FaultRockFabric';
+import IgneousFabric from './IgneousFabric';
 
 const FabricModal = (props) => {
   const [useForm] = useFormHook();
@@ -73,29 +72,26 @@ const FabricModal = (props) => {
           textStyle={{color: PRIMARY_TEXT_COLOR}}
         />
         {types[selectedTypeIndex] === 'fault_rock' && (
-          <React.Fragment>
-            <ListItem containerStyle={commonStyles.listItemFormField}>
-              <ListItem.Content>
-                <Field
-                  component={TextInputField}
-                  name={'label'}
-                  label={'Label'}
-                  key={'label'}
-                />
-              </ListItem.Content>
-            </ListItem>
-            <FlatListItemSeparator/>
-            <FaultRockFabric
-              formRef={formRef}
-              survey={survey}
-              choices={choices}
-              getLabel={getLabel}
-              setChoicesViewKey={setChoicesViewKey}
-            />
-          </React.Fragment>
+          <FaultRockFabric
+            formRef={formRef}
+            survey={survey}
+            choices={choices}
+            getLabel={getLabel}
+            setChoicesViewKey={setChoicesViewKey}
+            formName={['fabrics', types[selectedTypeIndex]]}
+            formProps={formProps}
+          />
         )}
         {types[selectedTypeIndex] === 'igneous_rock' && (
-          <Form {...{formName: ['fabrics', formRef.current?.values?.type], ...formProps}}/>
+          <IgneousFabric
+            formRef={formRef}
+            survey={survey}
+            choices={choices}
+            getLabel={getLabel}
+            setChoicesViewKey={setChoicesViewKey}
+            formName={['fabrics', types[selectedTypeIndex]]}
+            formProps={formProps}
+          />
         )}
         {types[selectedTypeIndex] === 'metamorphic_rock' && (
           <Form {...{formName: ['fabrics', formRef.current?.values?.type], ...formProps}}/>

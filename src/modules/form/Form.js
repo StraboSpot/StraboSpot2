@@ -141,8 +141,9 @@ const Form = (props) => {
   return (
     <Animated.View style={{transform: [{translateY: textInputAnimate}]}}>
       <FlatList
+        listKey={JSON.stringify(survey)}
         keyExtractor={(item) => item.name}
-        data={Object.values(survey.filter(item => useForm.isRelevant(item, props.values, props.setFieldValue)))}
+        data={Object.values(survey.filter(item => useForm.isRelevant(item, props.values)))}
         renderItem={({item}) => renderField(item)}
         ItemSeparatorComponent={FlatListItemSeparator}
       />
