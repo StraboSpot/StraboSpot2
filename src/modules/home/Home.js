@@ -1,19 +1,14 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Alert, Animated, Dimensions, FlatList, Platform, Text, TextInput, View} from 'react-native';
+import {Alert, Animated, Dimensions, FlatList, Platform, Text, View} from 'react-native';
 
 import NetInfo from '@react-native-community/netinfo';
 import {useNavigation} from '@react-navigation/native';
 import * as Sentry from '@sentry/react-native';
-import moment from 'moment';
 import {Button} from 'react-native-elements';
 import {FlatListSlider} from 'react-native-flatlist-slider';
-import {DotIndicator} from 'react-native-indicators';
 import {useDispatch, useSelector} from 'react-redux';
 
 import useDeviceHook from '../../services/useDevice';
-import useDownloadHook from '../../services/useDownload';
-import useExportHook from '../../services/useExport';
-import useImportHook from '../../services/useImport';
 import useUploadHook from '../../services/useUpload';
 import commonStyles from '../../shared/common.styles';
 import {animatePanels, isEmpty, truncateText} from '../../shared/Helpers';
@@ -43,7 +38,6 @@ import NotebookPanel from '../notebook-panel/NotebookPanel';
 import notebookStyles from '../notebook-panel/notebookPanel.styles';
 import ShortcutNotesModal from '../notes/ShortcutNotesModal';
 import InitialProjectLoadModal from '../project/InitialProjectLoadModal';
-import projectStyles from '../project/project.styles';
 import ProjectDescription from '../project/ProjectDescription';
 import UploadDialogBox from '../project/UploadDialogBox';
 import useProjectHook from '../project/useProject';
@@ -58,9 +52,10 @@ import {
   TagsShortcutModal,
 } from '../tags';
 import UserProfile from '../user/UserProfilePage';
+import BackupModal from './home-modals/BackupModal';
+import StatusModal from './home-modals/StatusModal';
 import {MODALS} from './home.constants';
 import {
-  setBackupModalVisible,
   setErrorMessagesModalVisible,
   setImageModalVisible,
   setInfoMessagesModalVisible,
@@ -71,7 +66,6 @@ import {
   setOnlineStatus,
   setProjectLoadComplete,
   setProjectLoadSelectionModalVisible,
-  setSelectedProject,
   setStatusMessagesModalVisible,
   setUploadModalVisible,
 } from './home.slice';
@@ -88,7 +82,6 @@ const Home = () => {
   const notebookPanelWidth = 400;
   const urlConditions = ['http', 'https'];
 
-  const useExport = useExportHook();
   const [useHome] = useHomeHook();
   const [useImages] = useImagesHook();
   const [useMaps] = useMapsHook();
@@ -97,8 +90,6 @@ const Home = () => {
   const [useSpots] = useSpotsHook();
   const useDevice = useDeviceHook();
   const useUpload = useUploadHook();
-  const useDownload = useDownloadHook();
-  const useImport = useImportHook();
 
   const selectedDataset = useProject.getSelectedDatasetFromId();
 
@@ -107,20 +98,17 @@ const Home = () => {
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const currentProject = useSelector(state => state.project.project);
   const customMaps = useSelector(state => state.map.customMaps);
-  const isBackModalVisible = useSelector(state => state.home.isBackupModalVisible);
   const isErrorMessagesModalVisible = useSelector(state => state.home.isErrorMessagesModalVisible);
   const isHomeLoading = useSelector(state => state.home.loading.home);
   const isImageModalVisible = useSelector(state => state.home.isImageModalVisible);
   const isInfoMessagesModalVisible = useSelector(state => state.home.isInfoModalVisible);
   const isMainMenuPanelVisible = useSelector(state => state.home.isMainMenuPanelVisible);
-  const isModalLoading = useSelector(state => state.home.loading.modal);
   const isNotebookPanelVisible = useSelector(state => state.notebook.isNotebookPanelVisible);
   const offlineMaps = useSelector(state => state.offlineMap.offlineMaps);
   const isOfflineMapModalVisible = useSelector(state => state.home.isOfflineMapModalVisible);
   const isOnline = useSelector(state => state.home.isOnline);
   const isProjectLoadSelectionModalVisible = useSelector(state => state.home.isProjectLoadSelectionModalVisible);
   const isSidePanelVisible = useSelector(state => state.mainMenu.isSidePanelVisible);
-  const isStatusMessagesModalVisible = useSelector(state => state.home.isStatusMessagesModalVisible);
   const [openMenu, setOpenMenu] = useState('');
   const selectedProject = useSelector(state => state.home.selectedProject);
   const isUploadModalVisible = useSelector(state => state.home.isUploadModalVisible);
@@ -153,7 +141,6 @@ const Home = () => {
   const [isSelectingForStereonet, setIsSelectingForStereonet] = useState(false);
   const [isSelectingForTagging, setIsSelectingForTagging] = useState(false);
   const [imageSlideshowData, setImageSlideshowData] = useState([]);
-  const [exportFileName, setExportFileName] = useState('');
   const mapComponentRef = useRef(null);
   const toastRef = useRef(null);
 
@@ -183,12 +170,6 @@ const Home = () => {
     useDevice.doesDeviceBackupDirExist().catch(err => console.log('Error checking if backup dir exists!', err));
     console.log('Initializing Home page');
   }, [user]);
-
-  useEffect(() => {
-    if (!isEmpty(currentProject)) {
-      setExportFileName(moment(new Date()).format('YYYY-MM-DD_hmma') + '_' + currentProject.description.project_name);
-    }
-  }, [currentProject, user]);
 
   useEffect(() => {
     if (currentImageBasemap && isMainMenuPanelVisible) toggleHomeDrawerButton();
@@ -610,119 +591,6 @@ const Home = () => {
     }
   };
 
-  const renderStatusDialogBox = () => {
-    return (
-      <StatusDialogBox
-        dialogTitle={'Status'}
-        style={commonStyles.dialogTitleSuccess}
-        visible={isStatusMessagesModalVisible}
-      >
-        <View style={{minHeight: 100}}>
-          <View style={{paddingTop: 15}}>
-            <Text style={{textAlign: 'center'}}>{statusMessages.join('\n')}</Text>
-            <View style={{paddingTop: 20}}>
-              {isModalLoading ? (
-                  <DotIndicator
-                    color={'darkgrey'}
-                    count={4}
-                    size={8}
-                  />
-                )
-                : (
-                  <View style={{alignItems: 'center'}}>
-                    {selectedProject.source !== '' && (
-                      <Text style={{fontWeight: 'bold', textAlign: 'center'}}>
-                        Press Continue to load selected project
-                      </Text>
-                    )}
-                    <View style={{flexDirection: 'row'}}>
-                      <Button
-                        title={selectedProject.source !== '' ? 'Continue' : 'OK'}
-                        type={'clear'}
-                        containerStyle={{padding: 10}}
-                        onPress={() => getProjectFromSource(selectedProject)}
-                      />
-                      {selectedProject.source !== '' && (
-                        <Button
-                          title={'Cancel'}
-                          containerStyle={{padding: 10}}
-                          type={'clear'}
-                          onPress={() => dispatch(setStatusMessagesModalVisible(false))}
-                        />
-                      )}
-                    </View>
-                  </View>
-                )
-              }
-            </View>
-          </View>
-        </View>
-      </StatusDialogBox>
-    );
-  };
-
-  const getProjectFromSource = async () => {
-    if (selectedProject.source === 'device') {
-      console.log('FROM DEVICE', selectedProject.project);
-      dispatch(setSelectedProject({source: '', project: ''}));
-      dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
-      const res = await useImport.loadProjectFromDevice(selectedProject.project);
-      console.log('Done loading project', res);
-    }
-    else if (selectedProject.source === 'server') {
-      console.log('FROM SERVER', selectedProject.project);
-      dispatch(setSelectedProject({source: '', project: ''}));
-      dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
-      const projectData = await useDownload.initializeDownload(selectedProject.project);
-      console.log('PROJECT DATA', projectData);
-    }
-    else dispatch(setStatusMessagesModalVisible(false));
-  };
-
-  const renderDatasetNames = () => {
-    const activeDatasets = useProject.getActiveDatasets();
-    return (
-      <FlatList
-        data={activeDatasets}
-        renderItem={({item}) =>
-          <Text>{item.name.length > 30 ? '- ' + truncateText(item.name, 30)
-            : '- ' + item.name}</Text>
-        }
-      />
-    );
-  };
-
-  const renderBackUpModal = () => {
-    const fileName = exportFileName.replace(/\s/g, '');
-    return (
-      <UploadDialogBox
-        dialogTitle={'Confirm or Change Folder Name'}
-        visible={isBackModalVisible}
-        cancel={() => dispatch(setBackupModalVisible(false))}
-        onPress={() => useExport.initializeBackup(exportFileName)}
-        buttonText={'Backup'}
-        disabled={exportFileName === ''}
-      >
-        <View>
-          <View style={{alignItems: 'center', paddingTop: 15}}>
-            <Text style={{...commonStyles.dialogText, textAlign: undefined}}>The following are the datasets that will be
-              exported:</Text>
-            <Text style={{...commonStyles.dialogText, textAlign: undefined}}>{renderDatasetNames()}</Text>
-            <Text>If you change the folder name please do not use spaces, special characters (except a dash or
-              underscore), or add a file extension.</Text>
-          </View>
-          <View style={projectStyles.dialogContent}>
-            <TextInput
-              value={fileName}
-              onChangeText={text => setExportFileName(text)}
-              style={commonStyles.dialogInputContainer}
-            />
-          </View>
-        </View>
-      </UploadDialogBox>
-    );
-  };
-
   const renderUploadModal = () => {
     const activeDatasets = useProject.getActiveDatasets();
     return (
@@ -943,6 +811,10 @@ const Home = () => {
           />
         </View>
       )}
+      {/*Modals for Home Page*/}
+      <BackupModal/>
+      <StatusModal/>
+      {/*------------------------*/}
       {isHomeLoading && <LoadingSpinner/>}
       {notebookPanel}
       {MainMenu}
@@ -951,11 +823,9 @@ const Home = () => {
       {isMainMenuPanelVisible && toggleSidePanel()}
       {renderFloatingViews()}
       {renderLoadProjectFromModal()}
-      {renderStatusDialogBox()}
       {renderInfoDialogBox()}
       {renderErrorMessageDialogBox()}
       {renderUploadModal()}
-      {renderBackUpModal()}
       {isOfflineMapModalVisible && renderSaveMapsModal()}
     </View>
   );
