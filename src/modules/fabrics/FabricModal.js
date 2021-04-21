@@ -13,18 +13,18 @@ import DragAnimation from '../../shared/ui/DragAmination';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import Modal from '../../shared/ui/modal/Modal';
 import uiStyles from '../../shared/ui/ui.styles';
-import {Form, LABEL_DICTIONARY, TextInputField, useFormHook, formStyles} from '../form';
+import {Form, LABEL_DICTIONARY, TextInputField, useFormHook} from '../form';
 import {editedSpotProperties} from '../spots/spots.slice';
 import FaultRockFabric from './FaultRockFabric';
 
-const NotebookFabricModal = (props) => {
+const FabricModal = (props) => {
   const [useForm] = useFormHook();
 
   const dispatch = useDispatch();
   const modalValues = useSelector(state => state.home.modalValues);
   const spot = useSelector(state => state.spot.selectedSpot);
 
-  const [selectedTypeIndex, setSelectedTypeIndex] = useState(0);
+  const [selectedTypeIndex, setSelectedTypeIndex] = useState(null);
   const [choicesViewKey, setChoicesViewKey] = useState(null);
   const [survey, setSurvey] = useState({});
   const [choices, setChoices] = useState({});
@@ -55,23 +55,13 @@ const NotebookFabricModal = (props) => {
   const onFabricTypePress = (i) => {
     setSelectedTypeIndex(i);
     const type = types[i];
-    const formName = ['fabrics', type];
     formRef.current?.setFieldValue('type', type);
+    const formName = ['fabrics', type];
     setSurvey(useForm.getSurvey(formName));
     setChoices(useForm.getChoices(formName));
   };
 
-  const renderSubform = (formProps) => {
-    const relevantFields = useForm.getRelevantFields(survey, choicesViewKey);
-    return (
-      <Form {...{
-        formName: ['fabrics', formRef.current?.values?.type],
-        surveyFragment: relevantFields, ...formProps,
-      }}/>
-    );
-  };
-
-  const renderForm = () => {
+  const renderForm = (formProps) => {
     return (
       <React.Fragment>
         <ButtonGroup
@@ -82,25 +72,33 @@ const NotebookFabricModal = (props) => {
           buttonStyle={{padding: 5}}
           textStyle={{color: PRIMARY_TEXT_COLOR}}
         />
-        <ListItem containerStyle={commonStyles.listItemFormField}>
-          <ListItem.Content>
-            <Field
-              component={TextInputField}
-              name={'label'}
-              label={'Label'}
-              key={'label'}
+        {types[selectedTypeIndex] === 'fault_rock' && (
+          <React.Fragment>
+            <ListItem containerStyle={commonStyles.listItemFormField}>
+              <ListItem.Content>
+                <Field
+                  component={TextInputField}
+                  name={'label'}
+                  label={'Label'}
+                  key={'label'}
+                />
+              </ListItem.Content>
+            </ListItem>
+            <FlatListItemSeparator/>
+            <FaultRockFabric
+              formRef={formRef}
+              survey={survey}
+              choices={choices}
+              getLabel={getLabel}
+              setChoicesViewKey={setChoicesViewKey}
             />
-          </ListItem.Content>
-        </ListItem>
-        <FlatListItemSeparator/>
-        {formRef.current?.values?.type === 'fault_rock' && (
-          <FaultRockFabric
-            formRef={formRef}
-            survey={survey}
-            choices={choices}
-            getLabel={getLabel}
-            setChoicesViewKey={setChoicesViewKey}
-          />
+          </React.Fragment>
+        )}
+        {types[selectedTypeIndex] === 'igneous_rock' && (
+          <Form {...{formName: ['fabrics', formRef.current?.values?.type], ...formProps}}/>
+        )}
+        {types[selectedTypeIndex] === 'metamorphic_rock' && (
+          <Form {...{formName: ['fabrics', formRef.current?.values?.type], ...formProps}}/>
         )}
       </React.Fragment>
     );
@@ -123,13 +121,10 @@ const NotebookFabricModal = (props) => {
                   innerRef={formRef}
                   initialValues={{}}
                   onSubmit={(values) => console.log('Submitting form...', values)}
-                  // validate={(item) => console.log(item, formRef)}
-                  // validateOnChange={true}
-                  // enableReinitialize={true}
                 >
                   {(formProps) => (
                     <View style={{flex: 1}}>
-                      {choicesViewKey ? renderSubform(formProps) : renderForm()}
+                      {choicesViewKey ? renderSubform(formProps) : renderForm(formProps)}
                     </View>
                   )}
                 </Formik>
@@ -147,6 +142,16 @@ const NotebookFabricModal = (props) => {
           )
           : <SaveButton title={'Save Fabric'} onPress={saveFabric}/>}
       </Modal>
+    );
+  };
+
+  const renderSubform = (formProps) => {
+    const relevantFields = useForm.getRelevantFields(survey, choicesViewKey);
+    return (
+      <Form {...{
+        formName: ['fabrics', formRef.current?.values?.type],
+        surveyFragment: relevantFields, ...formProps,
+      }}/>
     );
   };
 
@@ -172,4 +177,4 @@ const NotebookFabricModal = (props) => {
   else return <DragAnimation>{renderNotebookFabricModalContent()}</DragAnimation>;
 };
 
-export default NotebookFabricModal;
+export default FabricModal;

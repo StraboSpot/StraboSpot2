@@ -23,8 +23,11 @@ const useForm = () => {
   // Get the choices for a given key
   const getChoicesByKey = (survey, choices, key) => {
     const field = survey.find(f => f.name === key);
-    const [fieldType, choicesListName] = field.type.split(' ');
-    return choices.filter(choice => choice.list_name === choicesListName);
+    if (field) {
+      const [fieldType, choicesListName] = field.type?.split(' ');
+      return choices.filter(choice => choice.list_name === choicesListName);
+    }
+    else return {};
   };
 
   // Get a label for a given a key
