@@ -63,8 +63,8 @@ const SamplesPage = () => {
 
   return (
     <React.Fragment>
-      <View>
-        {notebookPageVisible === NOTEBOOK_PAGES.SAMPLE && (
+      <View style={{flex: 1}}>
+      {notebookPageVisible === NOTEBOOK_PAGES.SAMPLE && (
           <React.Fragment>
             <ReturnToOverviewButton
               onPress={() => {

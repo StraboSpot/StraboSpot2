@@ -30,8 +30,8 @@ const FormSlider = (props) => {
           step={1}
           maximumValue={choices.length}
           minimumValue={0}
-          labels={['None', ...choices.map(c => c.label)]}
-          rotateLabels={true}
+          labels={props.labels ? props.labels : ['None', ...choices.map(c => c.label)]}
+          rotateLabels={props.hasOwnProperty('rotateLabels') ? props.rotateLabels : true}
         />
       </View>
     </React.Fragment>

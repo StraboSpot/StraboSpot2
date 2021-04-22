@@ -1,20 +1,17 @@
 import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
-import {Alert, FlatList, Platform, View} from 'react-native';
+import {Alert, Platform, View} from 'react-native';
 
-import {Field, Formik} from 'formik';
-import {ButtonGroup, ListItem} from 'react-native-elements';
+import {Formik} from 'formik';
+import {ButtonGroup} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
-import commonStyles from '../../shared/common.styles';
 import {getNewId} from '../../shared/Helpers';
 import SaveButton from '../../shared/SaveButton';
-import {PRIMARY_TEXT_COLOR, SECONDARY_BACKGROUND_COLOR} from '../../shared/styles.constants';
+import {PRIMARY_TEXT_COLOR} from '../../shared/styles.constants';
 import DragAnimation from '../../shared/ui/DragAmination';
-import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import Modal from '../../shared/ui/modal/Modal';
-import Slider from '../../shared/ui/Slider';
 import uiStyles from '../../shared/ui/ui.styles';
-import {TextInputField, useFormHook} from '../form';
+import {Form, FormSlider, useFormHook} from '../form';
 import {MODALS} from '../home/home.constants';
 import {setModalVisible} from '../home/home.slice';
 import useMapsHook from '../maps/useMaps';
@@ -36,13 +33,18 @@ const SampleModal = (props) => {
     const formRef = useRef(null);
 
     const formName = ['general', 'sample'];
-    // Keys of fields to display in order
-    const keys = ['sample_id_name', 'label', 'sample_description', 'inplaceness_of_sample', 'oriented_sample', 'sample_notes'];
 
+    // Relevant keys for quick-entry modal
+    const firstKeys = ['sample_id_name', 'label', 'sample_description'];
+    const inplacenessKey = 'inplaceness_of_sample';
+    const orientedKey = 'oriented_sample';
+    const lastKeys = ['sample_notes'];
+
+    // Relevant fields for quick-entry modal
     const survey = useForm.getSurvey(formName);
     const choices = useForm.getChoices(formName);
-    const fields = keys.map(k => survey.find(f => f.name === k));
-    const inplacenessChoices = useForm.getChoicesByKey(survey, choices, 'inplaceness_of_sample').reverse();
+    const firstKeysFields = firstKeys.map(k => survey.find(f => f.name === k));
+    const lastKeysFields = lastKeys.map(k => survey.find(f => f.name === k));
 
     useLayoutEffect(() => {
       return () => confirmLeavePage();
@@ -74,61 +76,54 @@ const SampleModal = (props) => {
       }
     };
 
-    const renderField = (f) => {
-      if (['sample_id_name', 'label', 'sample_description', 'sample_notes'].includes(f.name)) {
-        return (
-          <ListItem containerStyle={commonStyles.listItemFormField}>
-            <ListItem.Content>
-              <Field
-                component={TextInputField}
-                name={f.name}
-                label={f.label}
-                key={f.name}
-                appearance={f.appearance}
-              />
-            </ListItem.Content>
-          </ListItem>
-        );
+    const onOrientedButtonPress = (i) => {
+      if (i === 0 && formRef.current?.values[orientedKey] === 'yes') {
+        formRef.current?.setFieldValue(orientedKey, undefined);
       }
-      else if (f.name === 'inplaceness_of_sample') {
-        return (
-          <React.Fragment>
-            <ListItem containerStyle={commonStyles.listItemFormField}>
-              <ListItem.Content>
-                <ListItem.Title
-                  style={{...commonStyles.listItemTitle, fontWeight: 'bold'}}>
-                  {fields[3].label}</ListItem.Title>
-              </ListItem.Content>
-            </ListItem>
-            <View
-              style={{backgroundColor: SECONDARY_BACKGROUND_COLOR, paddingLeft: 10, paddingRight: 10}}>
-              <Slider
-                onSlidingComplete={(value) => formRef.current?.setFieldValue(fields[3].name,
-                  inplacenessChoices.map(c => c.name)[value])}
-                value={inplacenessChoices.map(c => c.name).indexOf(formRef.current?.values[fields[3].name]) || undefined}
-                step={1}
-                minimumValue={0}
-                maximumValue={4}
-                labels={['Float', 'In Place']}
-              />
-            </View>
-          </React.Fragment>
-        );
+      else if (i === 0) formRef.current?.setFieldValue(orientedKey, 'yes');
+      else if (i === 1 && formRef.current?.values[orientedKey] === 'no') {
+        formRef.current?.setFieldValue(orientedKey, undefined);
       }
-      else if (f.name === 'oriented_sample') {
-        return (
+      else formRef.current?.setFieldValue(orientedKey, 'no');
+    };
+
+    const renderForm = (formProps) => {
+      return (
+        <React.Fragment>
+          <Form {...{
+            formName: props.formName,
+            surveyFragment: firstKeysFields,
+            ...props.formProps,
+          }}
+          />
+          <FormSlider {...{
+            fieldKey: inplacenessKey,
+            formRef: formRef,
+            survey: survey,
+            choices: choices,
+            labels: ['In Place', 'Float'],
+            rotateLabels: false,
+            ...formProps,
+          }}
+          />
           <ButtonGroup
-            selectedIndex={formRef.current?.values[fields[4].name] === 'yes' ? 0
-              : formRef.current?.values[fields[4].name] === 'no' ? 1
+            selectedIndex={formRef.current?.values[orientedKey] === 'yes' ? 0
+              : formRef.current?.values[orientedKey] === 'no' ? 1
                 : undefined}
-            onPress={(i) => formRef.current?.setFieldValue([fields[4].name], i === 0 ? 'yes' : 'no')}
+            onPress={onOrientedButtonPress}
             buttons={['Oriented', 'Unoriented']}
             containerStyle={{height: 40, borderRadius: 10}}
             buttonStyle={{padding: 5}}
             textStyle={{color: PRIMARY_TEXT_COLOR}}
           />
-        );
-      }
+          <Form {...{
+            formName: props.formName,
+            surveyFragment: lastKeysFields,
+            ...props.formProps,
+          }}
+          />
+        </React.Fragment>
+      );
     };
 
     const renderSamplesModal = () => {
@@ -147,13 +142,9 @@ const SampleModal = (props) => {
               enableReinitialize={true}
             >
               {(formProps) => (
-                <FlatList
-                  bounces={false}
-                  keyExtractor={(item) => item.name}
-                  data={fields}
-                  renderItem={({item}) => renderField(item)}
-                  ItemSeparatorComponent={FlatListItemSeparator}
-                />
+                <View style={{flex: 1}}>
+                  {renderForm(formProps)}
+                </View>
               )}
             </Formik>
             <SaveButton title={'Save Sample'} onPress={() => saveForm(formRef.current)}/>
