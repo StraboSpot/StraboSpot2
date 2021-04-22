@@ -1,25 +1,33 @@
-import React, {useRef} from 'react';
+import React, {useEffect, useRef} from 'react';
 import {FlatList, View} from 'react-native';
 
 import {Formik} from 'formik';
 import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import {isEmpty} from '../../shared/Helpers';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {Form, useFormHook} from '../form';
-import {setProjectLoadSelectionModalVisible} from '../home/home.slice';
+import {setBackupOverwriteModalVisible, setProjectLoadSelectionModalVisible} from '../home/home.slice';
 import {MAIN_MENU_ITEMS} from '../main-menu-panel/mainMenu.constants';
 import {setMenuSelectionPage} from '../main-menu-panel/mainMenuPanel.slice';
 import useProjectHook from './useProject';
 
 const NewProjectForm = (props) => {
   const dispatch = useDispatch();
+  const currentProject = useSelector(state => state.project.project);
   const isProjectLoadSelectionModalVisible = useSelector(state => state.home.isProjectLoadSelectionModalVisible);
 
   const [useForm] = useFormHook();
   const [useProject] = useProjectHook();
 
   const formRef = useRef(null);
+
+  useEffect(() => {
+    if (!isEmpty(currentProject)) {
+      dispatch(setBackupOverwriteModalVisible(true));
+    }
+  },[]);
 
   const initialValues = {
     start_date: new Date().toISOString(),

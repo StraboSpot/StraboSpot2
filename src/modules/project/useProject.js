@@ -26,6 +26,7 @@ import {
   deletedSpotIdFromDataset,
   setActiveDatasets,
   setSelectedDataset,
+  setSelectedProject,
 } from './projects.slice';
 
 const useProject = () => {
@@ -224,7 +225,10 @@ const useProject = () => {
           const res = await useImport.loadProjectFromDevice(selectedProject.project);
           console.log('Done loading project', res);
         }
-        else await useDownload.initializeDownload(selectedProject.project, selectedProject.source);
+        else if (selectedProject.source === 'server') {
+          dispatch(setSelectedProject({project: '', source: ''}));
+          await useDownload.initializeDownload(selectedProject.project, selectedProject.source);
+        }
       }
     }
     catch (err) {

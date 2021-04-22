@@ -6,10 +6,8 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import useDeviceHook from '../../services/useDevice';
 import commonStyles from '../../shared/common.styles';
-import {isEmpty} from '../../shared/Helpers';
 import {BLUE} from '../../shared/styles.constants';
 import Spacer from '../../shared/ui/Spacer';
-import {setBackupOverwriteModalVisible} from '../home/home.slice';
 import UserProfile from '../user/UserProfile';
 import ActiveProjectList from './ActiveProjectList';
 import NewProjectForm from './NewProjectForm';
@@ -17,11 +15,10 @@ import ProjectList from './ProjectList';
 import ProjectTypesButtons from './ProjectTypesButtons';
 
 const MyStraboSpot = props => {
-  const useDevice = useDeviceHook();
-
+  const doesDeviceBackupDirExist = useSelector(state => state.project.deviceBackUpDirectoryExists);
   const [showSection, setShowSection] = useState('none');
 
-  const doesDeviceBackupDirExist = useSelector(state => state.project.deviceBackUpDirectoryExists);
+  const useDevice = useDeviceHook();
 
   useEffect(() => {
     async function dirExists() {
@@ -42,7 +39,7 @@ const MyStraboSpot = props => {
             <ProjectTypesButtons
               onLoadProjectsFromServer={() => setShowSection('serverProjects')}
               onLoadProjectsFromDevice={() => setShowSection('deviceProjects')}
-              onStartNewProject={() => setShowSection('project')}/>
+              onStartNewProject={() => setShowSection('new')}/>
           </View>
         );
       case 'serverProjects':
@@ -77,7 +74,7 @@ const MyStraboSpot = props => {
             </View>
           </View>
         );
-      default:
+      case 'new':
         return (
           <View style={{flex: 1}}>
             <Button title={'Back'} type={'clear'} onPress={() => setShowSection('none')}/>
