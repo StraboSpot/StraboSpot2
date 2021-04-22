@@ -36,7 +36,7 @@ const useProject = () => {
   const activeDatasetsIds = useSelector(state => state.project.activeDatasetsIds);
   const datasets = useSelector(state => state.project.datasets);
   const selectedDatasetId = useSelector(state => state.project.selectedDatasetId);
-  const selectedProject = useSelector(state => state.project.selectedProject);
+  const selectedProject = useSelector(state => state.project.selectedProject || {});
   const user = useSelector(state => state.user);
   const isOnline = useSelector(state => state.home.isOnline);
 
