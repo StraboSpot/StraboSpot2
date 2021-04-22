@@ -2,12 +2,14 @@ import React, {useEffect, useState} from 'react';
 import {View} from 'react-native';
 
 import {Button} from 'react-native-elements';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 import useDeviceHook from '../../services/useDevice';
 import commonStyles from '../../shared/common.styles';
+import {isEmpty} from '../../shared/Helpers';
 import {BLUE} from '../../shared/styles.constants';
 import Spacer from '../../shared/ui/Spacer';
+import {setBackupOverwriteModalVisible} from '../home/home.slice';
 import UserProfile from '../user/UserProfile';
 import ActiveProjectList from './ActiveProjectList';
 import NewProjectForm from './NewProjectForm';

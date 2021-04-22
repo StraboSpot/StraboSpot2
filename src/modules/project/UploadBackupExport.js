@@ -14,9 +14,9 @@ import {
   clearedStatusMessages,
   setBackupModalVisible,
   setErrorMessagesModalVisible,
-  setSelectedProject,
   setUploadModalVisible,
 } from '../home/home.slice';
+import {setSelectedProject} from './projects.slice';
 
 const UploadBackAndExport = (props) => {
 

@@ -11,13 +11,14 @@ import commonStyles from '../../../shared/common.styles';
 import StatusDialogBox from '../../../shared/ui/StatusDialogBox';
 import {MAIN_MENU_ITEMS} from '../../main-menu-panel/mainMenu.constants';
 import {setMenuSelectionPage} from '../../main-menu-panel/mainMenuPanel.slice';
-import {setSelectedProject, setStatusMessagesModalVisible} from '../home.slice';
+import {setSelectedProject} from '../../project/projects.slice';
+import {setStatusMessagesModalVisible} from '../home.slice';
 
-const StatusModal = (props) => {
+const StatusModal = () => {
   const dispatch = useDispatch();
   const isStatusMessagesModalVisible = useSelector(state => state.home.isStatusMessagesModalVisible);
   const isModalLoading = useSelector(state => state.home.loading.modal);
-  const selectedProject = useSelector(state => state.home.selectedProject);
+  const selectedProject = useSelector(state => state.project.selectedProject);
   const statusMessages = useSelector(state => state.home.statusMessages);
 
   const useImport = useImportHook();

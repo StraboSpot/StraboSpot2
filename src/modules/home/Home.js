@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Alert, Animated, Dimensions, FlatList, Platform, Text, View} from 'react-native';
+import {Alert, Animated, Dimensions, Platform, Text, View} from 'react-native';
 
 import NetInfo from '@react-native-community/netinfo';
 import {useNavigation} from '@react-navigation/native';
@@ -9,9 +9,8 @@ import {FlatListSlider} from 'react-native-flatlist-slider';
 import {useDispatch, useSelector} from 'react-redux';
 
 import useDeviceHook from '../../services/useDevice';
-import useUploadHook from '../../services/useUpload';
 import commonStyles from '../../shared/common.styles';
-import {animatePanels, isEmpty, truncateText} from '../../shared/Helpers';
+import {animatePanels, isEmpty} from '../../shared/Helpers';
 import LoadingSpinner from '../../shared/ui/Loading';
 import StatusDialogBox from '../../shared/ui/StatusDialogBox';
 import ToastPopup from '../../shared/ui/Toast';
@@ -38,7 +37,6 @@ import NotebookPanel from '../notebook-panel/NotebookPanel';
 import notebookStyles from '../notebook-panel/notebookPanel.styles';
 import ShortcutNotesModal from '../notes/ShortcutNotesModal';
 import ProjectDescription from '../project/ProjectDescription';
-import UploadDialogBox from '../project/UploadDialogBox';
 import useProjectHook from '../project/useProject';
 import SampleModal from '../samples/SampleModal';
 import {clearedSelectedSpots} from '../spots/spots.slice';
@@ -52,6 +50,7 @@ import {
 } from '../tags';
 import UserProfile from '../user/UserProfilePage';
 import BackupModal from './home-modals/BackupModal';
+import BackUpOverwriteModal from './home-modals/BackUpOverwriteModal';
 import InfoModal from './home-modals/InfoModal';
 import InitialProjectLoadModal from './home-modals/InitialProjectLoadModal';
 import StatusModal from './home-modals/StatusModal';
@@ -80,7 +79,6 @@ const Home = () => {
   const homeMenuPanelWidth = 300;
   const mainMenuSidePanelWidth = 300;
   const notebookPanelWidth = 400;
-  const urlConditions = ['http', 'https'];
 
   const [useHome] = useHomeHook();
   const [useImages] = useImagesHook();
@@ -93,7 +91,6 @@ const Home = () => {
   const selectedDataset = useProject.getSelectedDatasetFromId();
 
   const dispatch = useDispatch();
-  const currentBasemap = useSelector(state => state.map.currentBasemap);
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const customMaps = useSelector(state => state.map.customMaps);
   const isErrorMessagesModalVisible = useSelector(state => state.home.isErrorMessagesModalVisible);
@@ -693,9 +690,6 @@ const Home = () => {
         isSelectingForStereonet={isSelectingForStereonet}
         isSelectingForTagging={isSelectingForTagging}
       />
-      {/*<View style={{position: 'absolute', right: '40%', bottom: 10, backgroundColor: 'white', padding: 10}}>*/}
-      {/*  <Text>ONLINE STATUS: {isOnline.toString()}</Text>*/}
-      {/*</View>*/}
       {vertexStartCoords && <VertexDrag/>}
       <ToastPopup toastRef={toastRef}/>
       {Platform.OS === 'android' && (
@@ -745,6 +739,7 @@ const Home = () => {
       )}
       {/*Modals for Home Page*/}
       <BackupModal/>
+      <BackUpOverwriteModal onPress={(action) => useProject.switchProject(action)}/>
       <InfoModal/>
       <InitialProjectLoadModal
         openMainMenu={() => toggleHomeDrawerButton()}

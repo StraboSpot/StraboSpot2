@@ -1,10 +1,6 @@
 import {createSlice} from '@reduxjs/toolkit';
 
 const initialHomeState = {
-  selectedProject: {
-    project: '',
-    source: '',
-  },
   statusMessages: [],
   imageProgress: {
     imagesDownloadedCount: 0,
@@ -19,6 +15,7 @@ const initialHomeState = {
   modalValues: {},
   modalVisible: null,
   isBackupModalVisible: false,
+  isBackupOverwriteModalVisible: false,
   isStatusMessagesModalVisible: false,
   isErrorMessagesModalVisible: false,
   isProjectLoadSelectionModalVisible: false,
@@ -54,6 +51,9 @@ const homeSlice = createSlice({
     },
     setBackupModalVisible(state, action) {
       state.isBackupModalVisible = action.payload;
+    },
+    setBackupOverwriteModalVisible(state, action) {
+      state.isBackupOverwriteModalVisible = action.payload;
     },
     setErrorMessagesModalVisible(state, action) {
       state.isErrorMessagesModalVisible = action.payload;
@@ -95,10 +95,6 @@ const homeSlice = createSlice({
     setStatusMessagesModalVisible(state, action) {
       state.isStatusMessagesModalVisible = action.payload;
     },
-    setSelectedProject(state, action) {
-      state.selectedProject.source = action.payload.source;
-      state.selectedProject.project = action.payload.project;
-    },
     shortcutSwitchPosition(state, action) {
       state.shortcutSwitchPosition[action.payload.switchName] = !state.shortcutSwitchPosition[action.payload.switchName];
     },
@@ -113,6 +109,7 @@ export const {
   clearedStatusMessages,
   removedLastStatusMessage,
   setBackupModalVisible,
+  setBackupOverwriteModalVisible,
   setErrorMessagesModalVisible,
   setImageModalVisible,
   setInfoMessagesModalVisible,
@@ -125,7 +122,6 @@ export const {
   setProjectLoadComplete,
   setProjectLoadSelectionModalVisible,
   setSignedInStatus,
-  setSelectedProject,
   setStatusMessagesModalVisible,
   shortcutSwitchPosition,
   setUploadModalVisible,

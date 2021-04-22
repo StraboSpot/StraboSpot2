@@ -9,6 +9,10 @@ const initialProjectState = {
   project: {},
   datasets: {},
   deviceBackUpDirectoryExists: false,
+  selectedProject: {
+    project: '',
+    source: '',
+  },
   selectedTag: {},
   addTagToSelectedSpot: false,
 };
@@ -106,6 +110,11 @@ const projectSlice = createSlice({
     setSelectedDataset(state, action) {
       state.selectedDatasetId = action.payload;
     },
+    setSelectedProject(state, action) {
+      const {project, source} = action.payload;
+      state.selectedProject.project = project;
+      state.selectedProject.source = source;
+    },
     setSelectedTag(state, action) {
       state.selectedTag = action.payload;
     },
@@ -163,6 +172,7 @@ export const {
   setActiveDatasets,
   setActiveMeasurementTemplates,
   setSelectedDataset,
+  setSelectedProject,
   setSelectedTag,
   setShowSpotLabels,
   setUseContinuousTagging,

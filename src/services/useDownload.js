@@ -190,7 +190,7 @@ const useDownload = () => {
   };
 
   const initializeDownload = async (selectedProject) => {
-    const projectName = selectedProject.name || selectedProject.description.project_name || 'Unknown';
+    const projectName = selectedProject.name || selectedProject?.description?.project_name || 'Unknown';
     batch(() => {
       dispatch(setLoadingStatus({view: 'modal', bool: true}));
       dispatch(clearedStatusMessages());

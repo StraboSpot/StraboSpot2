@@ -2,18 +2,22 @@ import RNFS from 'react-native-fs';
 import {batch, useDispatch, useSelector} from 'react-redux';
 
 import useDownloadHook from '../../services/useDownload';
+import useImportHook from '../../services/useImport';
 import useServerRequests from '../../services/useServerRequests';
 import {getNewId, isEmpty} from '../../shared/Helpers';
 import {
   addedStatusMessage,
   clearedStatusMessages,
   removedLastStatusMessage,
+  setBackupModalVisible, setBackupOverwriteModalVisible,
   setLoadingStatus,
   setStatusMessagesModalVisible,
+  setUploadModalVisible,
 } from '../home/home.slice';
 import {clearedMaps} from '../maps/maps.slice';
 import {clearedSpots, deletedSpot} from '../spots/spots.slice';
 import {DEFAULT_GEOLOGIC_TYPES, DEFAULT_RELATIONSHIP_TYPES} from './project.constants';
+import * as ProjectActions from './project.constants';
 import {
   addedDataset,
   addedProjectDescription,
@@ -32,11 +36,13 @@ const useProject = () => {
   const activeDatasetsIds = useSelector(state => state.project.activeDatasetsIds);
   const datasets = useSelector(state => state.project.datasets);
   const selectedDatasetId = useSelector(state => state.project.selectedDatasetId);
+  const selectedProject = useSelector(state => state.project.selectedProject);
   const user = useSelector(state => state.user);
   const isOnline = useSelector(state => state.home.isOnline);
 
   const [serverRequests] = useServerRequests();
   const useDownload = useDownloadHook();
+  const useImport = useImportHook();
 
   const addDataset = async name => {
     const datasetObj = createDataset(name);
@@ -205,6 +211,27 @@ const useProject = () => {
     dispatch(setLoadingStatus({view: 'modal', bool: false}));
   };
 
+  const switchProject = async (action) => {
+    try {
+      console.log('User wants to:', action);
+      dispatch(setBackupOverwriteModalVisible(false));
+      if (action === ProjectActions.BACKUP_TO_SERVER) dispatch(setUploadModalVisible(true));
+      else if (action === ProjectActions.BACKUP_TO_DEVICE) dispatch(setBackupModalVisible(true));
+      else if (action === ProjectActions.OVERWRITE) {
+        if (selectedProject.source === 'device') {
+          dispatch(clearedStatusMessages());
+          dispatch(setStatusMessagesModalVisible(true));
+          const res = await useImport.loadProjectFromDevice(selectedProject.project);
+          console.log('Done loading project', res);
+        }
+        else await useDownload.initializeDownload(selectedProject.project, selectedProject.source);
+      }
+    }
+    catch (err) {
+      console.error('Error switching project in useProject', err);
+    }
+  };
+
   const projectHelpers = {
     addDataset: addDataset,
     checkValidDateTime: checkValidDateTime,
@@ -219,6 +246,7 @@ const useProject = () => {
     makeDatasetCurrent: makeDatasetCurrent,
     initializeNewProject: initializeNewProject,
     setSwitchValue: setSwitchValue,
+    switchProject: switchProject,
   };
 
   return [projectHelpers];

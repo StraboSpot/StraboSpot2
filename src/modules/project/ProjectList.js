@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Alert, AppState, FlatList, Text, View} from 'react-native';
+import {AppState, FlatList, Text, View} from 'react-native';
 
 import {Button, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
@@ -13,18 +13,13 @@ import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import Loading from '../../shared/ui/Loading';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {
-  addedStatusMessage,
   clearedStatusMessages,
-  setBackupModalVisible,
-  setInfoMessagesModalVisible,
-  setSelectedProject,
   setStatusMessagesModalVisible,
-  setUploadModalVisible,
+  setBackupOverwriteModalVisible,
 } from '../home/home.slice';
-import BackUpOverwriteModal from './BackUpOverwriteModal';
-import * as ProjectActions from './project.constants';
-import {doesBackupDirectoryExist} from './projects.slice';
+import {doesBackupDirectoryExist, setSelectedProject} from './projects.slice';
 import useProjectHook from './useProject';
+
 
 const ProjectList = (props) => {
   const currentProject = useSelector(state => state.project.project);
@@ -32,9 +27,7 @@ const ProjectList = (props) => {
   const userData = useSelector(state => state.user);
   const dispatch = useDispatch();
   const [projectsArr, setProjectsArr] = useState([]);
-  const [projectSelection, setProjectSelection] = useState({});
   const [loading, setLoading] = useState(false);
-  const [showDialog, setShowDialog] = useState(false);
   const [isError, setIsError] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
 
@@ -92,95 +85,24 @@ const ProjectList = (props) => {
       project = unzippedFile;
     }
     if (!isEmpty(currentProject)) {
-      setProjectSelection(project);
-      setShowDialog(true);
+      dispatch(setSelectedProject({project: project, source: props.source}));
+      dispatch(setBackupOverwriteModalVisible(true));
     }
     else {
-      try {
-        console.log('Getting project...');
-        if (!isEmpty(project)) useProject.destroyOldProject();
-        if (props.source === 'device') {
-          dispatch(clearedStatusMessages());
-          dispatch(setStatusMessagesModalVisible(true));
-          const res = await useImport.loadProjectFromDevice(project);
-          console.log('Done loading project', res);
-        }
-        else {
-          dispatch(clearedStatusMessages());
-          dispatch(setStatusMessagesModalVisible(true));
-          await useDownload.initializeDownload(project, props.source);
-        }
-      }
-      catch (err) {
-        dispatch(clearedStatusMessages());
-        dispatch(addedStatusMessage({
-          statusMessage: `There is not a project named: 
-          \n\n${projectSelection.description.project_name}\n\n on the server...`,
-        }));
-        dispatch(setInfoMessagesModalVisible(true));
-        throw err.ok;
-      }
-      if (!currentProject) Alert.alert('Error getting selected project');
-      else setLoading(false);
-    }
-  };
-
-  const switchProject = async (action) => {
-    if (action === ProjectActions.BACKUP_TO_SERVER) {
-      console.log('User wants to:', action);
-      try {
-        setShowDialog(false);
-        setIsError(false);
-        dispatch(setSelectedProject({source: props.source, project: projectSelection}));
-        dispatch(setUploadModalVisible(true));
-      }
-      catch (err) {
-        setIsError(true);
-        console.log('Error', err);
-      }
-    }
-    else if (action === ProjectActions.BACKUP_TO_DEVICE) {
-      setShowDialog(false);
-      dispatch(setSelectedProject({source: props.source, project: projectSelection}));
-      dispatch(setBackupModalVisible(true));
-    }
-    else if (action === ProjectActions.OVERWRITE) {
-      setShowDialog(false);
+      console.log('Getting project...');
+      if (!isEmpty(project)) useProject.destroyOldProject();
       if (props.source === 'device') {
         dispatch(clearedStatusMessages());
         dispatch(setStatusMessagesModalVisible(true));
-        const res = await useImport.loadProjectFromDevice(projectSelection);
+        const res = await useImport.loadProjectFromDevice(project);
         console.log('Done loading project', res);
       }
-      else await useDownload.initializeDownload(projectSelection, props.source);
+      else {
+        dispatch(clearedStatusMessages());
+        dispatch(setStatusMessagesModalVisible(true));
+        await useDownload.initializeDownload(project, props.source);
+      }
     }
-    else {
-      setShowDialog(false);
-    }
-  };
-
-  const renderBackupOverwriteModal = () => {
-    return (
-      <BackUpOverwriteModal
-        dialogTitle={'Delete Local Project Warning!'}
-        visible={showDialog}
-        isOnline={isOnline}
-        cancel={() => setShowDialog(false)}
-        onPress={(action) => switchProject(action)}
-      >
-        <Text>Switching projects will
-          <Text style={{color: 'red'}}> DELETE </Text>
-          the local copy of the current project:
-        </Text>
-        <Text style={{color: 'red', textTransform: 'uppercase', marginTop: 5, marginBottom: 10, textAlign: 'center'}}>
-          {currentProject.description
-          && !isEmpty(currentProject.description) ? currentProject.description.project_name : 'UN-NAMED'}
-        </Text>
-        <Text>Including all datasets and Spots contained within this project. Make sure you have already
-          uploaded the project to the server if you wish to preserve the data. Continue?
-        </Text>
-      </BackUpOverwriteModal>
-    );
   };
 
   const renderErrorMessage = () => {
@@ -243,7 +165,6 @@ const ProjectList = (props) => {
         <SectionDivider dividerText={props.source === 'server' ? 'Projects on Server' : 'Projects on Local Device'}/>
       </View>
       {loading ? <Loading style={{backgroundColor: themes.PRIMARY_BACKGROUND_COLOR}}/> : renderProjectsList()}
-      {renderBackupOverwriteModal()}
     </React.Fragment>
   );
 };

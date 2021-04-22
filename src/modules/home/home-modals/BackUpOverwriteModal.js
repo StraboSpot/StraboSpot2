@@ -1,4 +1,5 @@
 import React from 'react';
+import {Text} from 'react-native';
 
 import Dialog, {
   DialogButton,
@@ -7,17 +8,32 @@ import Dialog, {
   DialogTitle,
   SlideAnimation,
 } from 'react-native-popup-dialog';
+import {useDispatch, useSelector} from 'react-redux';
 
-import * as ProjectActions from './project.constants';
-import styles from './project.styles';
+import {isEmpty} from '../../../shared/Helpers';
+import * as ProjectActions from '../../project/project.constants';
+import styles from '../../project/project.styles';
+import {setSelectedProject} from '../../project/projects.slice';
+import {setBackupOverwriteModalVisible} from '../home.slice';
+
 
 const BackUpOverwriteModal = (props) => {
+  const dispatch = useDispatch();
+  const currentProject = useSelector(state => state.project.project);
+  const isBackupOverwriteModalVisible = useSelector(state => state.home.isBackupOverwriteModalVisible);
+  const isOnline = useSelector(state => state.home.isOnline);
+
+  const cancel = () => {
+    dispatch(setSelectedProject({project: '', source: ''}));
+    dispatch(setBackupOverwriteModalVisible(false));
+  };
+
   return (
     <React.Fragment>
       <Dialog
         dialogStyle={styles.dialogBox}
         width={275}
-        visible={props.visible}
+        visible={isBackupOverwriteModalVisible}
         dialogAnimation={new SlideAnimation({
           slideFrom: 'top',
         })}
@@ -30,7 +46,7 @@ const BackUpOverwriteModal = (props) => {
               style={styles.dialogButton}
               textStyle={styles.dialogButtonText}
             />
-            {props.isOnline && <DialogButton
+            {isOnline && <DialogButton
               text={'Backup Project to Server'}
               onPress={() => props.onPress(ProjectActions.BACKUP_TO_SERVER)}
               style={styles.dialogButton}
@@ -44,7 +60,7 @@ const BackUpOverwriteModal = (props) => {
             />
             <DialogButton
               text='CANCEL'
-              onPress={props.cancel}
+              onPress={() => cancel()}
               style={styles.dialogButton}
               textStyle={[styles.dialogButtonText, {color: 'red'}]}
             />
@@ -54,11 +70,24 @@ const BackUpOverwriteModal = (props) => {
           <DialogTitle
             style={styles.dialogTitleContainer}
             textStyle={styles.dialogTitleText}
-            title={props.dialogTitle}/>
+            // title={props.dialogTitle}
+            title={'Delete Local Project Warning!'}
+          />
         }
       >
         <DialogContent style={styles.dialogContent}>
-          {props.children}
+          {/*{props.children}*/}
+          <Text>Switching projects will
+            <Text style={{color: 'red'}}> DELETE </Text>
+            the local copy of the current project:
+          </Text>
+          <Text style={{color: 'red', textTransform: 'uppercase', marginTop: 5, marginBottom: 10, textAlign: 'center'}}>
+            {currentProject.description
+            && !isEmpty(currentProject.description) ? currentProject.description.project_name : 'UN-NAMED'}
+          </Text>
+          <Text>Including all datasets and Spots contained within this project. Make sure you have already
+            uploaded the project to the server if you wish to preserve the data. Continue?
+          </Text>
         </DialogContent>
       </Dialog>
     </React.Fragment>
