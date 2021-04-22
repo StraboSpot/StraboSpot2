@@ -3,7 +3,7 @@ import React from 'react';
 import {Form, useFormHook} from '../form';
 import MainButtons from '../form/MainButtons';
 
-const FaultRockFabric = (props) => {
+const IgneousRockFabric = (props) => {
   const [useForm] = useFormHook();
 
   // Relevant keys for quick-entry modal
@@ -33,4 +33,4 @@ const FaultRockFabric = (props) => {
   );
 };
 
-export default FaultRockFabric;
+export default IgneousRockFabric;

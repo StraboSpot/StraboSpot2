@@ -14,7 +14,8 @@ import uiStyles from '../../shared/ui/ui.styles';
 import {Form, LABEL_DICTIONARY, useFormHook} from '../form';
 import {editedSpotProperties} from '../spots/spots.slice';
 import FaultRockFabric from './FaultRockFabric';
-import IgneousFabric from './IgneousFabric';
+import IgneousRockFabric from './IgneousRockFabric';
+import MetamRockFabric from './MetamRockFabric';
 
 const FabricModal = (props) => {
   const [useForm] = useFormHook();
@@ -83,7 +84,7 @@ const FabricModal = (props) => {
           />
         )}
         {types[selectedTypeIndex] === 'igneous_rock' && (
-          <IgneousFabric
+          <IgneousRockFabric
             formRef={formRef}
             survey={survey}
             choices={choices}
@@ -94,7 +95,15 @@ const FabricModal = (props) => {
           />
         )}
         {types[selectedTypeIndex] === 'metamorphic_rock' && (
-          <Form {...{formName: ['fabrics', formRef.current?.values?.type], ...formProps}}/>
+          <MetamRockFabric
+            formRef={formRef}
+            survey={survey}
+            choices={choices}
+            getLabel={getLabel}
+            setChoicesViewKey={setChoicesViewKey}
+            formName={['fabrics', types[selectedTypeIndex]]}
+            formProps={formProps}
+          />
         )}
       </React.Fragment>
     );
