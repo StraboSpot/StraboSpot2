@@ -1,11 +1,7 @@
 import React from 'react';
 
 import {isEmpty} from '../../shared/Helpers';
-import {Form, useFormHook} from '../form';
-import BoolButton from '../form/BoolButton';
-import ChoiceButtons from '../form/ChoiceButtons';
-import FormSlider from '../form/FormSlider';
-import MainButtons from '../form/MainButtons';
+import {BoolButton, ChoiceButtons, Form, FormSlider, MainButtons, useFormHook} from '../form';
 
 const FaultRockFabric = (props) => {
   const [useForm] = useFormHook();

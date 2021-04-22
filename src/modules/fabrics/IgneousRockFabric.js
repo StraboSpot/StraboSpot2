@@ -1,7 +1,6 @@
 import React from 'react';
 
-import {Form, useFormHook} from '../form';
-import MainButtons from '../form/MainButtons';
+import {Form, MainButtons, useFormHook} from '../form';
 
 const IgneousRockFabric = (props) => {
   const [useForm] = useFormHook();

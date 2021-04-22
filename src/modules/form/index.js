@@ -1,6 +1,10 @@
+export {default as BoolButton} from './BoolButton';
+export {default as ChoiceButtons} from './ChoiceButtons';
 export {default as DateInputField} from './DateInputField';
 export {default as Form} from './Form';
+export {default as FormSlider} from './FormSlider';
 export {default as formStyles} from './form.styles';
+export {default as MainButtons} from './MainButtons';
 export {default as NumberInputField} from './NumberInputField';
 export {default as SelectInputField} from './SelectInputField';
 export {default as TextInputField} from './TextInputField';
