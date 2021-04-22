@@ -24,7 +24,6 @@ const UploadModal = (props) => {
       cancel={() => dispatch(setUploadModalVisible(false))}
       buttonText={'Upload'}
       onPress={async () => {
-        props.toggleHomeDrawer();
         await useUpload.initializeUpload();
       }}
     >

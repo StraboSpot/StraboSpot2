@@ -61,7 +61,7 @@ const StatusModal = () => {
               : (
                 <View style={{alignItems: 'center'}}>
                   {selectedProject.source !== ''
-                  && <Text style={{fontWeight: 'bold', textAlign: 'center'}}>Press Continue to load selected
+                  && <Text style={{fontWeight: 'bold', textAlign: 'center'}}>Press Continue to load
                     project</Text>}
                   <View style={{flexDirection: 'row'}}>
                     <Button
