@@ -18,16 +18,16 @@ const slider = (props) => {
           minimumValue={props.minimumValue}
           style={styles.slider}
           step={props.step || 1}
-          minimumTrackTintColor={themes.PRIMARY_TEXT_COLOR}
-          maximumTrackTintColor={themes.PRIMARY_TEXT_COLOR}
-          thumbTintColor={props.thumbTintColor || themes.PRIMARY_TEXT_COLOR}
+          minimumTrackTintColor={themes.MEDIUMGREY}
+          maximumTrackTintColor={themes.MEDIUMGREY}
+          thumbTintColor={props.thumbTintColor || themes.DARKGREY}
         />
       </View>
       <View style={props.rotateLabels ? {...styles.sliderTextContainer, paddingTop: 10, paddingBottom: 10}
         : {...styles.sliderTextContainer}}>
         {props.labels.map(label => {
           return (
-            <Text style={props.rotateLabels && {transform: [{rotate: '290deg'}]}}>
+            <Text style={props.rotateLabels && {transform: [{rotate: '290deg'}], marginLeft: -12}}>
               {label}
             </Text>
           );
