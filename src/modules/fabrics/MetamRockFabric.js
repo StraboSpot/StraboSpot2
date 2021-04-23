@@ -31,6 +31,8 @@ const MetamRockFabric = (props) => {
       }}/>
       <FormSlider {...{
         fieldKey: tectoniteTypesKey,
+        hasNoneChoice: true,
+        hasRotatedLabels: true,
         ...props,
       }}
       />

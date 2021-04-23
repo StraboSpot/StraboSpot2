@@ -1,6 +1,7 @@
 import React from 'react';
 
 import {isEmpty} from '../../shared/Helpers';
+import LittleSpacer from '../../shared/ui/LittleSpacer';
 import {BoolButton, ChoiceButtons, Form, FormSlider, MainButtons, useFormHook} from '../form';
 
 const FaultRockFabric = (props) => {
@@ -44,7 +45,9 @@ const FaultRockFabric = (props) => {
         ...props.formProps,
       }}
       />
+      <LittleSpacer/>
       <MainButtons {...{mainKeys: mainButttonsKeys, ...props}}/>
+      <LittleSpacer/>
       <ChoiceButtons {...{
         choiceFieldKey: spatialConfigKey,
         onPress: onSpatialConfigSelected,
@@ -57,6 +60,7 @@ const FaultRockFabric = (props) => {
           ...props.formProps,
         }}/>
       )}
+      <LittleSpacer/>
       <BoolButton {...{
         fieldKey: [kinIndPresentKey],
         selectedKey: 'yes_kin',
@@ -64,14 +68,18 @@ const FaultRockFabric = (props) => {
         ...props,
       }}
       />
+      <LittleSpacer/>
       <Form {...{
         formName: props.formName,
         surveyFragment: lastKeysFields,
         ...props.formProps,
       }}
       />
+      <LittleSpacer/>
       <FormSlider {...{
         fieldKey: tectoniteTypesKey,
+        hasNoneChoice: true,
+        hasRotatedLabels: true,
         ...props,
       }}
       />
