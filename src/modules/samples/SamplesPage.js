@@ -57,6 +57,7 @@ const SamplesPage = () => {
   };
 
   const onSamplePressed = (item) => {
+    dispatch(setModalVisible({modal: null}));
     dispatch(setSelectedAttributes([item]));
     dispatch(setNotebookPageVisible(NOTEBOOK_SUBPAGES.SAMPLEDETAIL));
   };

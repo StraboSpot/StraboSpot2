@@ -102,7 +102,6 @@ const SampleModal = (props) => {
             survey: survey,
             choices: choices,
             labels: ['In Place', 'Float'],
-            rotateLabels: false,
             ...formProps,
           }}
           />

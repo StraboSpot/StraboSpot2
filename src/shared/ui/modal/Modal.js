@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Text, View} from 'react-native';
+import {Animated, Keyboard, Text, TextInput, View} from 'react-native';
 
 import {Avatar, Button, ListItem} from 'react-native-elements';
 import {useSelector} from 'react-redux';
@@ -11,14 +11,32 @@ import commonStyles from '../../common.styles';
 import {isEmpty} from '../../Helpers';
 import * as themes from '../../styles.constants';
 import modalStyle from './modal.style';
+import * as Helpers from '../../Helpers';
+
+const {State: TextInputState} = TextInput;
 
 const Modal = (props) => {
   const [modalTitle, setModalTitle] = useState('');
+  const [textInputAnimate] = useState(new Animated.Value(0));
   const modalVisible = useSelector(state => state.home.modalVisible);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const pageVisible = useSelector(state => state.notebook.visibleNotebookPagesStack.slice(-1)[0]);
 
   useEffect(() => setModalTitle(modalVisible), [modalVisible]);
+
+  useEffect(() => {
+    console.log('useEffect Form []');
+    Keyboard.addListener('keyboardDidShow', handleKeyboardDidShow);
+    Keyboard.addListener('keyboardDidHide', handleKeyboardDidHide);
+    return function cleanup() {
+      Keyboard.removeListener('keyboardDidShow', handleKeyboardDidShow);
+      Keyboard.removeListener('keyboardDidHide', handleKeyboardDidHide);
+    };
+  }, []);
+
+  const handleKeyboardDidShow = (event) => Helpers.handleKeyboardDidShow(event, TextInputState, textInputAnimate);
+
+  const handleKeyboardDidHide = () => Helpers.handleKeyboardDidHide(textInputAnimate);
 
   const renderModalHeader = () => {
     return (
@@ -89,11 +107,11 @@ const Modal = (props) => {
   };
 
   return (
-    <View style={[modalStyle.modalContainer, props.style]}>
+    <Animated.View style={[modalStyle.modalContainer, props.style, {transform: [{translateY: textInputAnimate}]}]}>
       {renderModalHeader()}
-      {props.children}
+        {props.children}
       {pageVisible !== NOTEBOOK_SUBPAGES.MEASUREMENTDETAIL && renderModalBottom()}
-    </View>
+    </Animated.View>
   );
 };
 

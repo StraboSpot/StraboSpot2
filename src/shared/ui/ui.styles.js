@@ -94,6 +94,9 @@ const styles = StyleSheet.create({
   spacer: {
     padding: 10,
   },
+  littleSpacer: {
+    padding: 5,
+  },
   headerContainer: {
     height: 60,
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
