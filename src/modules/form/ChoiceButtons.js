@@ -10,7 +10,7 @@ const ChoiceButtons = (props) => {
   const [useForm] = useFormHook();
 
   return (
-    <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center'}}>
+    <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center', flexWrap: 'wrap'}}>
       {useForm.getChoicesByKey(props.survey, props.choices, props.choiceFieldKey).map(choice => {
         return (
           <Button

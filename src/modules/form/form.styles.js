@@ -70,7 +70,8 @@ const styles = StyleSheet.create({
   },
   formButtonTitle: {
     color: themes.PRIMARY_TEXT_COLOR,
-    fontWeight: '100',
+    fontSize: themes.PRIMARY_TEXT_SIZE,
+    // fontWeight: '100',
   },
   formButtonSelectedTitle: {
     color: themes.WHITE,
