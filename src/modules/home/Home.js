@@ -190,7 +190,7 @@ const Home = () => {
     };
   }, []);
 
-  const handleKeyboardDidShow = (event) => Helpers.handleKeyboardDidShow(event, TextInputState, homeTextInputAnimate)};
+  const handleKeyboardDidShow = (event) => Helpers.handleKeyboardDidShow(event, TextInputState, homeTextInputAnimate);
 
   const handleKeyboardDidHide = () => Helpers.handleKeyboardDidHide(homeTextInputAnimate);
 
