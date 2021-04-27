@@ -114,7 +114,7 @@ export const handleKeyboardDidShow = (event, TextInputState, textInputAnimate) =
   if (currentlyFocusedField === null) return null;
   else {
     UIManager.measure(currentlyFocusedField, (originX, originY, width, height, pageX, pageY) => {
-      const fieldHeight = height;
+      const fieldHeight = height + 30;
       const fieldTop = pageY;
       const gap = (windowHeight - keyboardHeight) - (fieldTop + fieldHeight);
       if (gap >= 0) {

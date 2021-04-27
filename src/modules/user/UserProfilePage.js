@@ -39,16 +39,16 @@ const UserProfile = (props) => {
   const useUpload = useUploadHook();
 
   const formName = ['general', 'user_profile'];
-
-  useEffect(() => {
-    console.log('useEffect Form []');
-    Keyboard.addListener('keyboardDidShow', handleKeyboardDidShow);
-    Keyboard.addListener('keyboardDidHide', handleKeyboardDidHide);
-    return function cleanup() {
-      Keyboard.removeListener('keyboardDidShow', handleKeyboardDidShow);
-      Keyboard.removeListener('keyboardDidHide', handleKeyboardDidHide);
-    };
-  }, []);
+  //
+  // useEffect(() => {
+  //   console.log('useEffect Form []');
+  //   Keyboard.addListener('keyboardDidShow', handleKeyboardDidShow);
+  //   Keyboard.addListener('keyboardDidHide', handleKeyboardDidHide);
+  //   return function cleanup() {
+  //     Keyboard.removeListener('keyboardDidShow', handleKeyboardDidShow);
+  //     Keyboard.removeListener('keyboardDidHide', handleKeyboardDidHide);
+  //   };
+  // }, []);
 
   useLayoutEffect(() => {
     console.log('UE userProfile []');

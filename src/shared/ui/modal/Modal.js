@@ -9,9 +9,9 @@ import {MODALS} from '../../../modules/home/home.constants';
 import {NOTEBOOK_SUBPAGES} from '../../../modules/notebook-panel/notebook.constants';
 import commonStyles from '../../common.styles';
 import {isEmpty} from '../../Helpers';
+import * as Helpers from '../../Helpers';
 import * as themes from '../../styles.constants';
 import modalStyle from './modal.style';
-import * as Helpers from '../../Helpers';
 
 const {State: TextInputState} = TextInput;
 

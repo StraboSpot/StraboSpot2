@@ -1,11 +1,12 @@
-import React from 'react';
-import {Animated, FlatList, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {Animated, FlatList, Keyboard, TextInput, View} from 'react-native';
 
 import {Avatar, Button, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
+import * as Helpers from '../../shared/Helpers';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SectionDivider from '../../shared/ui/SectionDivider';
@@ -37,6 +38,8 @@ import {setNotebookPageVisible} from './notebook.slice';
 import notebookStyles from './notebookPanel.styles';
 import Overview from './Overview';
 
+const {State: TextInputState} = TextInput;
+
 const NotebookPanel = (props) => {
   const [useSpots] = useSpotsHook();
   const dispatch = useDispatch();
@@ -44,6 +47,21 @@ const NotebookPanel = (props) => {
   const recentlyViewedSpotIds = useSelector(state => state.spot.recentViews);
   const spot = useSelector(state => state.spot.selectedSpot);
   const spots = useSelector(state => state.spot.spots);
+  const [textInputAnimate] = useState(new Animated.Value(0));
+
+  useEffect(() => {
+    console.log('useEffect Form []');
+    Keyboard.addListener('keyboardDidShow', handleKeyboardDidShow);
+    Keyboard.addListener('keyboardDidHide', handleKeyboardDidHide);
+    return function cleanup() {
+      Keyboard.removeListener('keyboardDidShow', handleKeyboardDidShow);
+      Keyboard.removeListener('keyboardDidHide', handleKeyboardDidHide);
+    };
+  }, []);
+
+  const handleKeyboardDidShow = (event) => Helpers.handleKeyboardDidShow(event, TextInputState, textInputAnimate);
+
+  const handleKeyboardDidHide = () => Helpers.handleKeyboardDidHide(textInputAnimate);
 
   const onNotebookPageVisible = (page) => {
     dispatch(setNotebookPageVisible(page));
@@ -52,7 +70,9 @@ const NotebookPanel = (props) => {
     }
     else if (page === NOTEBOOK_PAGES.SAMPLE) dispatch(setModalVisible({modal: MODALS.NOTEBOOK_MODALS.SAMPLE}));
     else if (page === NOTEBOOK_PAGES.TAG) dispatch(setModalVisible({modal: MODALS.NOTEBOOK_MODALS.TAGS}));
-    else if (page === SECONDARY_NOTEBOOK_PAGES.FABRICS) dispatch(setModalVisible({modal: MODALS.NOTEBOOK_MODALS.FABRIC}));
+    else if (page === SECONDARY_NOTEBOOK_PAGES.FABRICS) {
+      dispatch(setModalVisible({modal: MODALS.NOTEBOOK_MODALS.FABRIC}));
+    }
     else dispatch(setModalVisible({modal: null}));
   };
 
@@ -67,7 +87,7 @@ const NotebookPanel = (props) => {
               zoomToSpot={props.zoomToSpot}
             />
           </View>
-          <View style={notebookStyles.centerContainer}>
+          <Animated.View style={{...notebookStyles.centerContainer, transform: [{translateY: textInputAnimate}]}}>
             {/*Main Overview Page*/}
             {(!pageVisible || pageVisible === NOTEBOOK_PAGES.OVERVIEW) && <Overview openMainMenu={props.openMainMenu}/>}
 
@@ -106,7 +126,7 @@ const NotebookPanel = (props) => {
             {/*{pageVisible === SED_NOTEBOOK_PAGES.DIAGENESIS && <PlaceholderPage/>}*/}
             {/*{pageVisible === SED_NOTEBOOK_PAGES.FOSSILS && <PlaceholderPage/>}*/}
             {/*{pageVisible === SED_NOTEBOOK_PAGES.INTERPRETATIONS && <PlaceholderPage/>}*/}
-          </View>
+          </Animated.View>
         </View>
         <View style={notebookStyles.footerContainer}>
           <NotebookFooter openPage={onNotebookPageVisible}/>
@@ -165,9 +185,9 @@ const NotebookPanel = (props) => {
   };
 
   return (
-    <Animated.View style={notebookStyles.panel}>
+    <View style={notebookStyles.panel}>
       {isEmpty(spot) ? renderNotebookContentNoSpot() : renderNotebookContent()}
-    </Animated.View>
+    </View>
   );
 };
 

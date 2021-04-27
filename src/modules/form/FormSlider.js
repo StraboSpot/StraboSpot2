@@ -26,7 +26,7 @@ const FormSlider = (props) => {
         <Slider
           onSlidingComplete={(value) => {
             props.formRef.current?.setFieldValue(props.fieldKey,
-              choices.map(c => c.name)[value]);
+              choices.map(c => c.name)[value])
           }}
           value={choices.map(c => c.name).indexOf(props.formRef.current?.values[props.fieldKey]) || undefined}
           step={1}

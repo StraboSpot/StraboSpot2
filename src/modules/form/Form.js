@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Alert, Animated, FlatList, Keyboard, TextInput} from 'react-native';
+import {Animated, FlatList, TextInput, View} from 'react-native';
 
 import {Field} from 'formik';
 import {ListItem} from 'react-native-elements';
@@ -11,27 +11,10 @@ import SectionDivider from '../../shared/ui/SectionDivider';
 import {DateInputField, NumberInputField, SelectInputField, TextInputField, useFormHook} from '../form';
 import {LABELS_WITH_ABBREVIATIONS} from '../petrology/petrology.constants';
 
-const {State: TextInputState} = TextInput;
-
 const Form = (props) => {
   const [useForm] = useFormHook();
-  const [textInputAnimate] = useState(new Animated.Value(0));
 
   const survey = props.surveyFragment || useForm.getSurvey(props.formName);
-
-  useEffect(() => {
-    console.log('useEffect Form []');
-    Keyboard.addListener('keyboardDidShow', handleKeyboardDidShow);
-    Keyboard.addListener('keyboardDidHide', handleKeyboardDidHide);
-    return function cleanup() {
-      Keyboard.removeListener('keyboardDidShow', handleKeyboardDidShow);
-      Keyboard.removeListener('keyboardDidHide', handleKeyboardDidHide);
-    };
-  }, []);
-
-  const handleKeyboardDidShow = (event) => Helpers.handleKeyboardDidShow(event, TextInputState, textInputAnimate);
-
-  const handleKeyboardDidHide = () => Helpers.handleKeyboardDidHide(textInputAnimate);
 
   const renderDateInput = (field) => {
     return (
@@ -139,7 +122,7 @@ const Form = (props) => {
   };
 
   return (
-    <Animated.View style={{transform: [{translateY: textInputAnimate}]}}>
+    <View>
       <FlatList
         listKey={JSON.stringify(survey)}
         keyExtractor={(item) => item.name}
@@ -147,7 +130,7 @@ const Form = (props) => {
         renderItem={({item}) => renderField(item)}
         ItemSeparatorComponent={FlatListItemSeparator}
       />
-    </Animated.View>
+    </View>
   );
 };
 

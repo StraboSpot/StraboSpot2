@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Alert, Animated, Dimensions, Platform, Text, View} from 'react-native';
+import {Animated, Dimensions, Keyboard, Platform, Text, TextInput, View} from 'react-native';
 
 import NetInfo from '@react-native-community/netinfo';
 import {useNavigation} from '@react-navigation/native';
@@ -11,6 +11,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import useDeviceHook from '../../services/useDevice';
 import commonStyles from '../../shared/common.styles';
 import {animatePanels, isEmpty} from '../../shared/Helpers';
+import * as Helpers from '../../shared/Helpers';
 import LoadingSpinner from '../../shared/ui/Loading';
 import StatusDialogBox from '../../shared/ui/StatusDialogBox';
 import ToastPopup from '../../shared/ui/Toast';
@@ -73,6 +74,8 @@ import LeftSideButtons from './LeftSideButtons';
 import RightSideButtons from './RightSideButtons';
 import useHomeHook from './useHome';
 
+const {State: TextInputState} = TextInput;
+
 const Home = () => {
   const platform = Platform.OS === 'ios' ? 'window' : 'screen';
   const deviceDimensions = Dimensions.get(platform);
@@ -134,6 +137,7 @@ const Home = () => {
   const [isSelectingForStereonet, setIsSelectingForStereonet] = useState(false);
   const [isSelectingForTagging, setIsSelectingForTagging] = useState(false);
   const [imageSlideshowData, setImageSlideshowData] = useState([]);
+  const [homeTextInputAnimate] = useState(new Animated.Value(0));
   const mapComponentRef = useRef(null);
   const toastRef = useRef(null);
 
@@ -175,6 +179,20 @@ const Home = () => {
     if (isImageModalVisible) populateImageSlideshowData();
     else setImageSlideshowData([]);
   }, [isImageModalVisible]);
+
+  useEffect(() => {
+    console.log('useEffect Form []');
+    Keyboard.addListener('keyboardDidShow', handleKeyboardDidShow);
+    Keyboard.addListener('keyboardDidHide', handleKeyboardDidHide);
+    return function cleanup() {
+      Keyboard.removeListener('keyboardDidShow', handleKeyboardDidShow);
+      Keyboard.removeListener('keyboardDidHide', handleKeyboardDidHide);
+    };
+  }, []);
+
+  const handleKeyboardDidShow = (event) => Helpers.handleKeyboardDidShow(event, TextInputState, homeTextInputAnimate)};
+
+  const handleKeyboardDidHide = () => Helpers.handleKeyboardDidHide(homeTextInputAnimate);
 
   const populateImageSlideshowData = () => {
     toggleHomeDrawerButton();
@@ -528,13 +546,17 @@ const Home = () => {
       return (
         <Animated.View
           style={[sidePanelStyles.sidePanelContainerPhones, animateMainMenuSidePanel]}>
-          {renderSidePanelContent()}
+          <Animated.View style={{transform: [{translateY: homeTextInputAnimate}]}}>
+            {renderSidePanelContent()}
+          </Animated.View>
         </Animated.View>
       );
     }
     return (
       <Animated.View style={[sidePanelStyles.sidePanelContainer, animateMainMenuSidePanel]}>
-        {renderSidePanelContent()}
+        <Animated.View style={{flex: 1, transform: [{translateY: homeTextInputAnimate}]}}>
+          {renderSidePanelContent()}
+        </Animated.View>
       </Animated.View>
     );
   };
