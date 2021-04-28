@@ -1,4 +1,4 @@
-import {Alert, Image, Platform} from 'react-native';
+import {Alert, Dimensions, Image, Platform} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
 import RNFS from 'react-native-fs';
@@ -6,8 +6,7 @@ import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import ImageResizer from 'react-native-image-resizer';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {getNewId} from '../../shared/Helpers';
-import {addedStatusMessage, removedLastStatusMessage} from '../home/home.slice';
+import {getNewId, isEmpty} from '../../shared/Helpers';
 import useHomeHook from '../home/useHome';
 import {setCurrentImageBasemap} from '../maps/maps.slice';
 import {
@@ -33,6 +32,8 @@ const useImages = () => {
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const spots = useSelector(state => state.spot.spots);
+  const platform = Platform.OS === 'ios' ? 'window' : 'screen';
+  const deviceDimensions = Dimensions.get(platform);
 
   let imageCount = 0;
   let newImages = [];
@@ -150,12 +151,26 @@ const useImages = () => {
     return Platform.OS === 'ios' ? imageURI : 'file://' + imageURI;
   };
 
+  const resizeImageIfNecessary = async (imageData) => {
+    let height = imageData.height;
+    let width = imageData.width;
+    const tempImageURI = Platform.OS === 'ios' ? imageData.uri || imageData.path : imageData.uri || 'file://' + imageData.path;
+    if (!height || !width) ({height, width} = await getImageHeightAndWidth(tempImageURI));
+    let resizedImage = {};
+    if (height > (deviceDimensions.width * 4) || width > (deviceDimensions.width * 4)) {
+      const createResizedImageProps = [tempImageURI, deviceDimensions.width * 4,  deviceDimensions.width * 4, 'JPEG', 100, 0];
+      resizedImage = await ImageResizer.createResizedImage(...createResizedImageProps);
+    }
+    return !isEmpty(resizedImage) ? resizedImage : imageData;
+  };
+
   const getImagesFromCameraRoll = async () => {
     launchImageLibrary({}, async response => {
       console.log('RES', response);
       if (response.didCancel) useHome.toggleLoading(false);
       else {
         useHome.toggleLoading(true);
+        response = await resizeImageIfNecessary(response);
         const savedPhoto = await saveFile(response);
         console.log('Saved Photo in getImagesFromCameraRoll:', savedPhoto);
         dispatch(editedSpotImages([savedPhoto]));
