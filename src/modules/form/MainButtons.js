@@ -1,8 +1,9 @@
 import React from 'react';
-import {Text, View} from 'react-native';
+import {Text, ScrollView, View} from 'react-native';
 
 import {Button} from 'react-native-elements';
 
+import {truncateText} from '../../shared/Helpers';
 import {REACT_NATIVE_ELEMENTS_BLUE, SECONDARY_BACKGROUND_COLOR} from '../../shared/styles.constants';
 import {formStyles} from '../form';
 
@@ -16,9 +17,9 @@ const MainButtons = (props) => {
           {props.getLabel(key)}
         </Text>
         {props.formRef.current?.values[key] && (
-          <Text style={{...formStyles.formButtonSelectedTitle, fontWeight: 'bold'}}>
-            {props.getLabel(props.formRef.current.values[key])}
-          </Text>
+            <Text style={{...formStyles.formButtonSelectedTitle, fontWeight: 'bold'}}>
+               {truncateText(props.getLabel(props.formRef.current.values[key]), 23)}
+            </Text>
         )}
       </View>
     </React.Fragment>

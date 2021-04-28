@@ -110,7 +110,9 @@ const FabricsPage = () => {
   };
 
   const renderSectionHeader = (sectionTitle) => {
-    const sectionKey = Object.values(FABRIC_SECTIONS).reduce((acc, {title, key}) => sectionTitle === title ? key : acc,
+    const sectionKey = Object.values(FABRIC_SECTIONS).reduce((acc, {title, key}) => {
+        return sectionTitle === title ? key : acc;
+      },
       '');
     if (sectionKey) {
       return (
