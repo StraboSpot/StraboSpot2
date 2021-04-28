@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
     borderColor: themes.MEDIUMGREY,
   },
   formButton: {
-    height: 60,
+    height: 80,
     width: 110,
     borderRadius: 10,
     borderColor: themes.MEDIUMGREY,
@@ -70,12 +70,12 @@ const styles = StyleSheet.create({
   },
   formButtonTitle: {
     color: themes.PRIMARY_TEXT_COLOR,
-    fontSize: themes.PRIMARY_TEXT_SIZE,
-    // fontWeight: '100',
+    fontSize: themes.SMALL_TEXT_SIZE,
   },
   formButtonSelectedTitle: {
     color: themes.WHITE,
     fontWeight: '400',
+    fontSize: themes.SMALL_TEXT_SIZE,
   },
 });
 export default styles;

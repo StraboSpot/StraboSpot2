@@ -12,6 +12,7 @@ import DragAnimation from '../../shared/ui/DragAmination';
 import Modal from '../../shared/ui/modal/Modal';
 import uiStyles from '../../shared/ui/ui.styles';
 import {Form, LABEL_DICTIONARY, useFormHook} from '../form';
+import {setModalValues} from '../home/home.slice';
 import {editedSpotProperties} from '../spots/spots.slice';
 import FaultRockFabric from './FaultRockFabric';
 import IgneousRockFabric from './IgneousRockFabric';
@@ -34,6 +35,12 @@ const FabricModal = (props) => {
   const fabricsDictionary = Object.values(LABEL_DICTIONARY.fabrics).reduce(
     (acc, form) => ({...acc, ...form}), {});
   const types = ['fault_rock', 'igneous_rock', 'metamorphic_rock'];
+
+  useEffect(() => {
+    return () => {
+      dispatch(setModalValues({}));
+    };
+  }, []);
 
   useEffect(() => {
     const initialValues = isEmpty(modalValues) ? {id: getNewId(), type: 'fault_rock'} : modalValues;
