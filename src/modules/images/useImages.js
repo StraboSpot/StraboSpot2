@@ -32,8 +32,6 @@ const useImages = () => {
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const spots = useSelector(state => state.spot.spots);
-  const platform = Platform.OS === 'ios' ? 'window' : 'screen';
-  const deviceDimensions = Dimensions.get(platform);
 
   let imageCount = 0;
   let newImages = [];
@@ -156,12 +154,11 @@ const useImages = () => {
     let width = imageData.width;
     const tempImageURI = Platform.OS === 'ios' ? imageData.uri || imageData.path : imageData.uri || 'file://' + imageData.path;
     if (!height || !width) ({height, width} = await getImageHeightAndWidth(tempImageURI));
-    let resizedImage = {};
-    if (height > (deviceDimensions.width * 4) || width > (deviceDimensions.width * 4)) {
-      const createResizedImageProps = [tempImageURI, deviceDimensions.width * 4,  deviceDimensions.width * 4, 'JPEG', 100, 0];
-      resizedImage = await ImageResizer.createResizedImage(...createResizedImageProps);
-    }
-    return !isEmpty(resizedImage) ? resizedImage : imageData;
+    let resizedImage, createResizedImageProps = {};
+    createResizedImageProps = (height > 4096 || width > 4096) ? [tempImageURI, 4096, 4096, 'JPEG', 100, 0]
+      : [tempImageURI, width, height, 'JPEG', 100, 0];
+    resizedImage = await ImageResizer.createResizedImage(...createResizedImageProps);
+    return resizedImage;
   };
 
   const getImagesFromCameraRoll = async () => {
