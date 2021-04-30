@@ -395,6 +395,8 @@ const Home = () => {
     dispatch(setNotebookPanelVisible(true));
   };
 
+  const openStraboSpotURL = () => useDevice.openURL('https://www.strabospot.org/login');
+
   const renderFloatingViews = () => {
     if (modalVisible === MODALS.NOTEBOOK_MODALS.TAGS && isNotebookPanelVisible && !isEmpty(selectedSpot)) {
       return (
@@ -773,7 +775,7 @@ const Home = () => {
         visible={isProjectLoadSelectionModalVisible}
         closeModal={() => closeInitialProjectLoadModal()}
       />
-      <StatusModal/>
+      <StatusModal openUrl={openStraboSpotURL}/>
       <UploadModal toggleHomeDrawer={() => toggleHomeDrawerButton()}/>
       {/*------------------------*/}
       {isHomeLoading && <LoadingSpinner/>}
