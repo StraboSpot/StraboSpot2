@@ -1,12 +1,13 @@
 import React, {useState} from 'react';
 import {Animated, Text, View} from 'react-native';
 
-import {Button} from 'react-native-elements';
+import {Button, Image} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
 import {isEmpty, truncateText} from '../../shared/Helpers';
 import IconButton from '../../shared/ui/IconButton';
+import uiStyles from '../../shared/ui/ui.styles';
 import {MAP_MODES} from '../maps/maps.constants';
 import useProjectHook from '../project/useProject';
 import {MODALS} from './home.constants';
@@ -71,8 +72,8 @@ const RightSideButtons = (props) => {
             : require('../../assets/icons/NotebookViewButton.png')}
           onPress={() => props.toggleNotebookPanel()}
         />
-        <IconButton
-          source={isOnline ? online : offline}
+        <Image
+          source={isOnline ? online : offline} style={uiStyles.imageIcon}
         />
       </Animated.View>
       {!currentImageBasemap && !isNotebookPanelVisible && (
