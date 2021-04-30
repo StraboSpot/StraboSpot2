@@ -63,9 +63,9 @@ const NotebookPanel = (props) => {
     };
   }, [isNotebookPanelVisible]);
 
-  const handleKeyboardDidShow = (event) => Helpers.handleKeyboardDidShow(event, TextInputState, textInputAnimate);
+  const handleKeyboardDidShowNotebook = (event) => Helpers.handleKeyboardDidShow(event, TextInputState, textInputAnimate);
 
-  const handleKeyboardDidHide = () => Helpers.handleKeyboardDidHide(textInputAnimate);
+  const handleKeyboardDidHideNotebook = () => Helpers.handleKeyboardDidHide(textInputAnimate);
 
   const onNotebookPageVisible = (page) => {
     dispatch(setNotebookPageVisible(page));
