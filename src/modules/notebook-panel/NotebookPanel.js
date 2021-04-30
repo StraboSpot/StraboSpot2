@@ -45,19 +45,23 @@ const NotebookPanel = (props) => {
   const dispatch = useDispatch();
   const pageVisible = useSelector(state => state.notebook.visibleNotebookPagesStack.slice(-1)[0]);
   const recentlyViewedSpotIds = useSelector(state => state.spot.recentViews);
+  const isNotebookPanelVisible = useSelector(state => state.notebook.isNotebookPanelVisible);
   const spot = useSelector(state => state.spot.selectedSpot);
   const spots = useSelector(state => state.spot.spots);
   const [textInputAnimate] = useState(new Animated.Value(0));
 
   useEffect(() => {
-    console.log('useEffect Form []');
-    Keyboard.addListener('keyboardDidShow', handleKeyboardDidShow);
-    Keyboard.addListener('keyboardDidHide', handleKeyboardDidHide);
+    if (isNotebookPanelVisible) {
+      console.log('NB Keyboard Listeners Added')
+      Keyboard.addListener('keyboardDidShow', handleKeyboardDidShowNotebook);
+      Keyboard.addListener('keyboardDidHide', handleKeyboardDidHideNotebook);
+    }
     return function cleanup() {
-      Keyboard.removeListener('keyboardDidShow', handleKeyboardDidShow);
-      Keyboard.removeListener('keyboardDidHide', handleKeyboardDidHide);
+      Keyboard.removeListener('keyboardDidShow', handleKeyboardDidShowNotebook);
+      Keyboard.removeListener('keyboardDidHide', handleKeyboardDidHideNotebook);
+      console.log('NB Keyboard Listeners Removed')
     };
-  }, []);
+  }, [isNotebookPanelVisible]);
 
   const handleKeyboardDidShow = (event) => Helpers.handleKeyboardDidShow(event, TextInputState, textInputAnimate);
 
@@ -186,7 +190,7 @@ const NotebookPanel = (props) => {
 
   return (
     <View style={notebookStyles.panel}>
-      {isEmpty(spot) ? renderNotebookContentNoSpot() : renderNotebookContent()}
+      {isNotebookPanelVisible && (!isEmpty(spot) ? renderNotebookContent() : renderNotebookContentNoSpot())}
     </View>
   );
 };

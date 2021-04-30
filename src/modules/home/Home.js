@@ -182,17 +182,20 @@ const Home = () => {
 
   useEffect(() => {
     console.log('useEffect Form []');
-    Keyboard.addListener('keyboardDidShow', handleKeyboardDidShow);
-    Keyboard.addListener('keyboardDidHide', handleKeyboardDidHide);
+    console.log('Home Keyboard Listeners Added');
+    Keyboard.addListener('keyboardDidShow', handleKeyboardDidShowHome);
+    Keyboard.addListener('keyboardDidHide', handleKeyboardDidHideHome);
     return function cleanup() {
-      Keyboard.removeListener('keyboardDidShow', handleKeyboardDidShow);
-      Keyboard.removeListener('keyboardDidHide', handleKeyboardDidHide);
+      Keyboard.removeListener('keyboardDidShow', handleKeyboardDidShowHome);
+      Keyboard.removeListener('keyboardDidHide', handleKeyboardDidHideHome);
+      console.log('Home Keyboard Listeners Removed');
     };
-  }, []);
+  }, [modalVisible]);
 
-  const handleKeyboardDidShow = (event) => Helpers.handleKeyboardDidShow(event, TextInputState, homeTextInputAnimate);
+  const handleKeyboardDidShowHome = (event) => Helpers.handleKeyboardDidShow(event, TextInputState,
+    homeTextInputAnimate);
 
-  const handleKeyboardDidHide = () => Helpers.handleKeyboardDidHide(homeTextInputAnimate);
+  const handleKeyboardDidHideHome = () => Helpers.handleKeyboardDidHide(homeTextInputAnimate);
 
   const populateImageSlideshowData = () => {
     toggleHomeDrawerButton();
@@ -691,16 +694,18 @@ const Home = () => {
     </Animated.View>
   );
 
-  const notebookPanel = (
-    <Animated.View style={[notebookStyles.panel, animateNotebookMenu]}>
-      <NotebookPanel
-        closeNotebookPanel={closeNotebookPanel}
-        createDefaultGeom={() => mapComponentRef.current.createDefaultGeom()}
-        openMainMenu={() => toggleHomeDrawerButton()}
-        zoomToSpot={() => mapComponentRef.current.zoomToSpot()}
-      />
-    </Animated.View>
-  );
+  const renderNotebookPanel = () => {
+    return (
+      <Animated.View style={[notebookStyles.panel, animateNotebookMenu]}>
+        <NotebookPanel
+          closeNotebookPanel={closeNotebookPanel}
+          createDefaultGeom={() => mapComponentRef.current.createDefaultGeom()}
+          openMainMenu={() => toggleHomeDrawerButton()}
+          zoomToSpot={() => mapComponentRef.current.zoomToSpot()}
+        />
+      </Animated.View>
+    );
+  };
 
   return (
     <View style={homeStyles.container}>
@@ -772,7 +777,7 @@ const Home = () => {
       <UploadModal toggleHomeDrawer={() => toggleHomeDrawerButton()}/>
       {/*------------------------*/}
       {isHomeLoading && <LoadingSpinner/>}
-      {notebookPanel}
+      {renderNotebookPanel()}
       {MainMenu}
       {isOnline && toggleOfflineMapLabel() && renderOfflineMapViewLabel()}
       {renderSaveAndCancelDrawButtons()}

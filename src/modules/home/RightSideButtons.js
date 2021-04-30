@@ -52,7 +52,7 @@ const RightSideButtons = (props) => {
           : require('../../assets/icons/LineFreehandButton.png');
       case MAP_MODES.DRAW.POLYGON:
         return props.mapMode === MAP_MODES.DRAW.POLYGON
-          ? require('../../assets/icons/Polygon_pressed.png')
+          ? require('../../assets/icons/PolygonButton_pressed.png')
           : require('../../assets/icons/PolygonButton.png');
       case MAP_MODES.DRAW.FREEHANDPOLYGON:
         return props.mapMode === MAP_MODES.DRAW.FREEHANDPOLYGON
