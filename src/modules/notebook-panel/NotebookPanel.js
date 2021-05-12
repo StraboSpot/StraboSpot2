@@ -83,7 +83,7 @@ const NotebookPanel = (props) => {
   const renderNotebookContent = () => {
     return (
       <React.Fragment>
-        <View style={{flex: 1}}>
+        <Animated.View style={{flex: 1, transform: [{translateY: textInputAnimate}]}}>
           <View style={notebookStyles.headerContainer}>
             <NotebookHeader
               closeNotebookPanel={props.closeNotebookPanel}
@@ -91,7 +91,7 @@ const NotebookPanel = (props) => {
               zoomToSpot={props.zoomToSpot}
             />
           </View>
-          <Animated.View style={{...notebookStyles.centerContainer, transform: [{translateY: textInputAnimate}]}}>
+          <View style={{...notebookStyles.centerContainer}}>
             {/*Main Overview Page*/}
             {(!pageVisible || pageVisible === NOTEBOOK_PAGES.OVERVIEW) && <Overview openMainMenu={props.openMainMenu}/>}
 
@@ -130,8 +130,8 @@ const NotebookPanel = (props) => {
             {/*{pageVisible === SED_NOTEBOOK_PAGES.DIAGENESIS && <PlaceholderPage/>}*/}
             {/*{pageVisible === SED_NOTEBOOK_PAGES.FOSSILS && <PlaceholderPage/>}*/}
             {/*{pageVisible === SED_NOTEBOOK_PAGES.INTERPRETATIONS && <PlaceholderPage/>}*/}
-          </Animated.View>
-        </View>
+          </View>
+        </Animated.View>
         <View style={notebookStyles.footerContainer}>
           <NotebookFooter openPage={onNotebookPageVisible}/>
         </View>
