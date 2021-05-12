@@ -5,8 +5,8 @@ import {Avatar, Button, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
-import {isEmpty} from '../../shared/Helpers';
 import * as Helpers from '../../shared/Helpers';
+import {isEmpty} from '../../shared/Helpers';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SectionDivider from '../../shared/ui/SectionDivider';
@@ -52,14 +52,14 @@ const NotebookPanel = (props) => {
 
   useEffect(() => {
     if (isNotebookPanelVisible) {
-      console.log('NB Keyboard Listeners Added')
+      console.log('NB Keyboard Listeners Added');
       Keyboard.addListener('keyboardDidShow', handleKeyboardDidShowNotebook);
       Keyboard.addListener('keyboardDidHide', handleKeyboardDidHideNotebook);
     }
     return function cleanup() {
       Keyboard.removeListener('keyboardDidShow', handleKeyboardDidShowNotebook);
       Keyboard.removeListener('keyboardDidHide', handleKeyboardDidHideNotebook);
-      console.log('NB Keyboard Listeners Removed')
+      console.log('NB Keyboard Listeners Removed');
     };
   }, [isNotebookPanelVisible]);
 

@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Animated, Dimensions, Keyboard, Platform, Text, TextInput, View} from 'react-native';
+import {Alert, Animated, Dimensions, Keyboard, Platform, Text, TextInput, View} from 'react-native';
 
 import NetInfo from '@react-native-community/netinfo';
 import {useNavigation} from '@react-navigation/native';
@@ -10,8 +10,8 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import useDeviceHook from '../../services/useDevice';
 import commonStyles from '../../shared/common.styles';
-import {animatePanels, isEmpty} from '../../shared/Helpers';
 import * as Helpers from '../../shared/Helpers';
+import {animatePanels, isEmpty} from '../../shared/Helpers';
 import LoadingSpinner from '../../shared/ui/Loading';
 import StatusDialogBox from '../../shared/ui/StatusDialogBox';
 import ToastPopup from '../../shared/ui/Toast';

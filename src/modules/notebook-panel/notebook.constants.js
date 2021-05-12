@@ -18,12 +18,12 @@ export const SECONDARY_NOTEBOOK_PAGES = {
 };
 
 export const PET_NOTEBOOK_PAGES = {
-  ROCK_TYPE_IGNEOUS: 'Igenous Rock',
-  ROCK_TYPE_METAMORPHIC: 'Metamorphic Rock',
-  MINERALS: 'Minerals',
-  REACTION_TEXTURES: 'Reaction Textures',
-  ECONOMIC: 'Economic',
-  TERNARY: 'Ternary',
+  // ROCK_TYPE_IGNEOUS: 'Igenous Rock',
+  // ROCK_TYPE_METAMORPHIC: 'Metamorphic Rock',
+  // MINERALS: 'Minerals',
+  // REACTION_TEXTURES: 'Reaction Textures',
+  // ECONOMIC: 'Economic',
+  // TERNARY: 'Ternary',
 };
 
 export const SED_NOTEBOOK_PAGES = {
