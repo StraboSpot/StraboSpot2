@@ -551,7 +551,7 @@ const Home = () => {
       return (
         <Animated.View
           style={[sidePanelStyles.sidePanelContainerPhones, animateMainMenuSidePanel]}>
-          <Animated.View style={{transform: [{translateY: homeTextInputAnimate}]}}>
+          <Animated.View style={{flex: 1, transform: [{translateY: homeTextInputAnimate}]}}>
             {renderSidePanelContent()}
           </Animated.View>
         </Animated.View>
