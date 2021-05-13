@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react';
 import {View} from 'react-native';
 
 import {Button} from 'react-native-elements';
-import {useDispatch, useSelector} from 'react-redux';
 
 import useDeviceHook from '../../services/useDevice';
 import commonStyles from '../../shared/common.styles';
@@ -15,7 +14,6 @@ import ProjectList from './ProjectList';
 import ProjectTypesButtons from './ProjectTypesButtons';
 
 const MyStraboSpot = props => {
-    const doesDeviceBackupDirExist = useSelector(state => state.project.deviceBackUpDirectoryExists);
     const [showSection, setShowSection] = useState('none');
 
     const useDevice = useDeviceHook();
@@ -25,9 +23,8 @@ const MyStraboSpot = props => {
         const exists = await useDevice.doesDeviceBackupDirExist();
         console.log('Backup Directory Exists: ', exists);
       }
-
       dirExists().catch('Error Checking If Backup Dir Exists');
-    }, [doesDeviceBackupDirExist]);
+    }, []);
 
     const renderSectionView = () => {
       switch (showSection) {
