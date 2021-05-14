@@ -14,9 +14,11 @@ import {Form, useFormHook} from '../form';
 import ImagesOverview from '../images/ImagesOverview';
 import MeasurementsOverview from '../measurements/MeasurementsOverview';
 import NotesOverview from '../notes/NotesOverview';
+import OtherFeaturesOverview from '../other-features/OtherFeaturesOverview';
 import SamplesPage from '../samples/SamplesPage';
 import {editedSpotProperties} from '../spots/spots.slice';
 import {TagsAtSpotList} from '../tags';
+import ThreeDStructuresOverview from '../three-d-structures/ThreeDStructuresOverview';
 import notebookStyles from './notebookPanel.styles';
 
 const Overview = props => {
@@ -24,16 +26,34 @@ const Overview = props => {
   const spot = useSelector(state => state.spot.selectedSpot);
   const [isTraceSurfaceFeatureEnabled, setIsTraceSurfaceFeatureEnabled] = useState(false);
   const [isTraceSurfaceFeatureEdit, setIsTraceSurfaceFeatureEdit] = useState(false);
+  const [refresh, setRefresh] = useState(false);
   const formRef = useRef(null);
   const [useForm] = useFormHook();
+  const featuresData = useSelector(state => state.spot.selectedSpot?.properties?.other_features || []);
+  const threeDStructuresData = useSelector(state => state.spot.selectedSpot?.properties?._3d_structures || []);
+  const [SECTIONS, setSections] = useState(
+    [
+      {title: 'Notes', data: [<NotesOverview/>]},
+      {title: 'Measurements', data: [<MeasurementsOverview/>]},
+      {title: 'Photos and Sketches', data: [<ImagesOverview/>]},
+      {title: 'Tags', data: [<TagsAtSpotList openMainMenu={props.openMainMenu}/>]},
+      {title: 'Samples', data: [<SamplesPage/>]},
+    ]);
 
-  const SECTIONS = [
-    {title: 'Notes', data: [<NotesOverview/>]},
-    {title: 'Measurements', data: [<MeasurementsOverview/>]},
-    {title: 'Photos and Sketches', data: [<ImagesOverview/>]},
-    {title: 'Tags', data: [<TagsAtSpotList openMainMenu={props.openMainMenu}/>]},
-    {title: 'Samples', data: [<SamplesPage/>]},
-  ];
+  useEffect(() => {
+  }, [refresh]);
+
+  useEffect(() => {
+    if (!isEmpty(featuresData)) {
+      SECTIONS.push({title: 'Other Features', data: [<OtherFeaturesOverview/>]});
+      setSections(SECTIONS);
+    }
+    if (!isEmpty(threeDStructuresData)) {
+      SECTIONS.push({title: 'Three D Structures', data: [<ThreeDStructuresOverview/>]});
+      setSections(SECTIONS);
+    }
+    setRefresh(true);
+  }, [featuresData], [threeDStructuresData]);
 
   useEffect(() => {
     setIsTraceSurfaceFeatureEnabled((spot.properties.hasOwnProperty('trace') && spot.properties.trace.trace_feature)
