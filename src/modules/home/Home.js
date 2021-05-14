@@ -721,10 +721,10 @@ const Home = () => {
         isSelectingForStereonet={isSelectingForStereonet}
         isSelectingForTagging={isSelectingForTagging}
       />
-      <View style={uiStyles.offlineImageIcon}>
+      <View style={uiStyles.offlineImageIconContainer}>
         {!isOnline && <Image
           source={offlineIcon}
-          style={{width: 40, height: 40}}
+          style={uiStyles.offlineIcon}
         />}
       </View>
       {vertexStartCoords && <VertexDrag/>}
