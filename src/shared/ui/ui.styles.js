@@ -19,6 +19,11 @@ const styles = StyleSheet.create({
     width: 65,
     height: 65,
   },
+  offlineImageIcon: {
+    position: 'absolute',
+    top: 10, width: '100%',
+    alignItems: 'center',
+  },
   itemSeparator: {
     height: 1,
   },

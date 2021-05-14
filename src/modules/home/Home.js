@@ -4,7 +4,7 @@ import {Alert, Animated, Dimensions, Keyboard, Platform, Text, TextInput, View} 
 import NetInfo from '@react-native-community/netinfo';
 import {useNavigation} from '@react-navigation/native';
 import * as Sentry from '@sentry/react-native';
-import {Button} from 'react-native-elements';
+import {Button, Image} from 'react-native-elements';
 import {FlatListSlider} from 'react-native-flatlist-slider';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -15,6 +15,7 @@ import {animatePanels, isEmpty} from '../../shared/Helpers';
 import LoadingSpinner from '../../shared/ui/Loading';
 import StatusDialogBox from '../../shared/ui/StatusDialogBox';
 import ToastPopup from '../../shared/ui/Toast';
+import uiStyles from '../../shared/ui/ui.styles';
 import CompassModal from '../compass/CompassModal';
 import MeasurementTemplatesModal from '../compass/MeasurementTemplatesModal';
 import FabricModal from '../fabrics/FabricModal';
@@ -77,6 +78,7 @@ import useHomeHook from './useHome';
 const {State: TextInputState} = TextInput;
 
 const Home = () => {
+  const offlineIcon = require('../../assets/icons/ConnectionStatusButton_offline.png');
   const platform = Platform.OS === 'ios' ? 'window' : 'screen';
   const deviceDimensions = Dimensions.get(platform);
   const homeMenuPanelWidth = 300;
@@ -719,6 +721,12 @@ const Home = () => {
         isSelectingForStereonet={isSelectingForStereonet}
         isSelectingForTagging={isSelectingForTagging}
       />
+      <View style={uiStyles.offlineImageIcon}>
+        {!isOnline && <Image
+          source={offlineIcon}
+          style={{width: 40, height: 40}}
+        />}
+      </View>
       {vertexStartCoords && <VertexDrag/>}
       <ToastPopup toastRef={toastRef}/>
       {Platform.OS === 'android' && (
