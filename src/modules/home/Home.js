@@ -579,7 +579,7 @@ const Home = () => {
       case SIDE_PANEL_VIEWS.TAG_ADD_REMOVE_SPOTS:
         return <TagAddRemoveSpots/>;
       case SIDE_PANEL_VIEWS.USER_PROFILE:
-        return <UserProfile/>;
+        return <UserProfile toast={(message) => toastRef.current.show(message)}/>;
     }
   };
 
