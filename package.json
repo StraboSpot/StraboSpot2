@@ -34,7 +34,7 @@
     "password-validator": "^5.1.1",
     "proj4": "^2.7.2",
     "prop-types": "^15.7.2",
-    "react": "17.0.1",
+    "react": "^17.0.2",
     "react-native": "^0.64.1",
     "react-native-document-picker": "^5.0.2",
     "react-native-easy-toast": "^2.0.0",
