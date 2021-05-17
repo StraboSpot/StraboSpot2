@@ -2,9 +2,6 @@ import {Platform, Dimensions, StyleSheet} from 'react-native';
 
 import * as themes from '../styles.constants';
 
-const platform = Platform.OS === 'ios' ? 'window' : 'screen';
-const deviceDimensions = Dimensions.get(platform);
-
 const styles = StyleSheet.create({
   alignItemsToCenter: {
     alignItems: 'center',
