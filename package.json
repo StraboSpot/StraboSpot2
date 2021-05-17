@@ -58,9 +58,8 @@
     "react-native-table-component": "^1.2.1",
     "react-native-vector-icons": "^8.1.0",
     "react-native-zip-archive": "^6.0.3",
-    "react-redux": "^7.2.3",
-    "react-test-renderer": "^17.0.1",
-    "redux": "^4.0.5",
+    "react-redux": "^7.2.4",
+    "redux": "^4.1.0",
     "redux-logger": "^3.0.6",
     "redux-persist": "^6.0.0",
     "uuid": "^8.3.2"
@@ -75,7 +74,7 @@
     "eslint-plugin-import": "^2.23.2",
     "jest": "^26.6.3",
     "metro-react-native-babel-preset": "^0.65.2",
-    "react-test-renderer": "17.0.1"
+    "react-test-renderer": "^17.0.2"
   },
   "jest": {
     "preset": "react-native"
