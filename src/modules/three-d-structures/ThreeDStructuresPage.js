@@ -3,20 +3,21 @@ import {SectionList, View} from 'react-native';
 
 import {useDispatch, useSelector} from 'react-redux';
 
-import {getNewId} from '../../shared/Helpers';
+import {getNewId, toTitleCase} from '../../shared/Helpers';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
 import uiStyles from '../../shared/ui/ui.styles';
+import {useFormHook} from '../form';
 import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import ThreeDStructureDetail from './ThreeDStructureDetail';
 import ThreeDStructureItem from './ThreeDStructureItem';
-import {get3dStructureTitle, getLabel} from './ThreeDStructureUtil';
 
 const ThreeDStructuresPage = () => {
   const dispatch = useDispatch();
+  const [useForm] = useFormHook();
 
   const spot = useSelector(state => state.spot.selectedSpot);
 
@@ -45,11 +46,16 @@ const ThreeDStructuresPage = () => {
     setIsDetailView(true);
   };
 
+  const get3dStructureTitle = (threeDStructure) => {
+    return threeDStructure.label
+      || toTitleCase(useForm.getLabel(threeDStructure.feature_type, ['_3d_structures', threeDStructure.feature_type]))
+      || toTitleCase(useForm.getLabel(threeDStructure.type, ['_3d_structures', threeDStructure.feature_type]))
+      || '';
+  };
+
   const render3dStructure = (threeDStructure) => {
     return (
       <ThreeDStructureItem item={threeDStructure} edit3dStructure={(item) => edit3dStructure((item))}
-                           getLabel={(value) => getLabel(value)}
-                           get3dStructureTitle={(item) => get3dStructureTitle(item)}
       />
     );
   };

@@ -26,11 +26,10 @@ const Overview = props => {
   const spot = useSelector(state => state.spot.selectedSpot);
   const [isTraceSurfaceFeatureEnabled, setIsTraceSurfaceFeatureEnabled] = useState(false);
   const [isTraceSurfaceFeatureEdit, setIsTraceSurfaceFeatureEdit] = useState(false);
-  const [refresh, setRefresh] = useState(false);
   const formRef = useRef(null);
   const [useForm] = useFormHook();
-  const featuresData = useSelector(state => state.spot.selectedSpot?.properties?.other_features || []);
-  const threeDStructuresData = useSelector(state => state.spot.selectedSpot?.properties?._3d_structures || []);
+  const hasOtherFeatures = !isEmpty(spot.properties?.other_features || []);
+  const hasThreeDStructures = !isEmpty(spot.properties?._3d_structures || []);
   const [SECTIONS, setSections] = useState(
     [
       {title: 'Notes', data: [<NotesOverview/>]},
@@ -41,19 +40,15 @@ const Overview = props => {
     ]);
 
   useEffect(() => {
-  }, [refresh]);
-
-  useEffect(() => {
-    if (!isEmpty(featuresData)) {
-      SECTIONS.push({title: 'Other Features', data: [<OtherFeaturesOverview/>]});
-      setSections(SECTIONS);
+    let updatedSections = [...SECTIONS];
+    if (hasOtherFeatures) {
+      updatedSections.push({title: 'Other Features', data: [<OtherFeaturesOverview/>]});
     }
-    if (!isEmpty(threeDStructuresData)) {
-      SECTIONS.push({title: 'Three D Structures', data: [<ThreeDStructuresOverview/>]});
-      setSections(SECTIONS);
+    if (hasThreeDStructures) {
+      updatedSections.push({title: 'Three D Structures', data: [<ThreeDStructuresOverview/>]});
     }
-    setRefresh(true);
-  }, [featuresData], [threeDStructuresData]);
+    setSections(updatedSections);
+  }, [hasOtherFeatures], [hasThreeDStructures]);
 
   useEffect(() => {
     setIsTraceSurfaceFeatureEnabled((spot.properties.hasOwnProperty('trace') && spot.properties.trace.trace_feature)

@@ -17,8 +17,6 @@ function ThreeDStructuresOverview(props) {
     return (
       <ThreeDStructureItem item={threeDStructure} edit3dStructure={() =>
         dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.THREE_D_STRUCTURES))}
-                           getLabel={(value) => console.log('No-op')}
-                           get3dStructureTitle={(item) => console.log('No-op')}
       />
     );
   };

@@ -37,7 +37,6 @@ const ImageInfo = (props) => {
   const deleteImage = async (imageId) => {
     const isImageDeleted = await useImages.deleteImage(imageId, useSpots.getSpotByImageId(imageId));
     if (isImageDeleted) {
-      if (currentImageBasemap && currentImageBasemap.id == imageId) dispatch(setCurrentImageBasemap(undefined));
       navigation.goBack();
     }
   };

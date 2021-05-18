@@ -50,6 +50,7 @@ const useImages = () => {
       const localImageFile = getLocalImageURI(imageId);
       const fileExists = await RNFS.exists(localImageFile);
       if (fileExists) await RNFS.unlink(localImageFile);
+      if (currentImageBasemap && currentImageBasemap.id == imageId) dispatch(setCurrentImageBasemap(undefined));
       return true;
     }
   };
