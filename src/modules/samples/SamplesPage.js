@@ -1,12 +1,11 @@
 import React from 'react';
 import {FlatList, View} from 'react-native';
 
-import {Icon, ListItem} from 'react-native-elements';
+import {ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
-import {PRIMARY_ACCENT_COLOR} from '../../shared/styles.constants';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
@@ -39,7 +38,6 @@ const SamplesPage = () => {
             {oriented} - {item.sample_description ? item.sample_description : 'No Description'}
           </ListItem.Subtitle>
         </ListItem.Content>
-        <Icon name={'information-circle-outline'} type={'ionicon'} color={PRIMARY_ACCENT_COLOR}/>
         <ListItem.Chevron/>
       </ListItem>
     );
@@ -65,7 +63,7 @@ const SamplesPage = () => {
   return (
     <React.Fragment>
       <View style={{flex: 1}}>
-      {notebookPageVisible === NOTEBOOK_PAGES.SAMPLE && (
+        {notebookPageVisible === NOTEBOOK_PAGES.SAMPLE && (
           <React.Fragment>
             <ReturnToOverviewButton
               onPress={() => {
