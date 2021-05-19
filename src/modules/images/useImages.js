@@ -1,4 +1,4 @@
-import {Alert, Dimensions, Image, Platform} from 'react-native';
+import {Alert, Image, Platform} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
 import RNFS from 'react-native-fs';
@@ -6,7 +6,7 @@ import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import ImageResizer from 'react-native-image-resizer';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {getNewId, isEmpty} from '../../shared/Helpers';
+import {getNewId} from '../../shared/Helpers';
 import useHomeHook from '../home/useHome';
 import {setCurrentImageBasemap} from '../maps/maps.slice';
 import {
@@ -50,6 +50,7 @@ const useImages = () => {
       const localImageFile = getLocalImageURI(imageId);
       const fileExists = await RNFS.exists(localImageFile);
       if (fileExists) await RNFS.unlink(localImageFile);
+      if (currentImageBasemap && currentImageBasemap.id == imageId) dispatch(setCurrentImageBasemap(undefined));
       return true;
     }
   };

@@ -14,9 +14,11 @@ import {Form, useFormHook} from '../form';
 import ImagesOverview from '../images/ImagesOverview';
 import MeasurementsOverview from '../measurements/MeasurementsOverview';
 import NotesOverview from '../notes/NotesOverview';
+import OtherFeaturesOverview from '../other-features/OtherFeaturesOverview';
 import SamplesPage from '../samples/SamplesPage';
 import {editedSpotProperties} from '../spots/spots.slice';
 import {TagsAtSpotList} from '../tags';
+import ThreeDStructuresOverview from '../three-d-structures/ThreeDStructuresOverview';
 import notebookStyles from './notebookPanel.styles';
 
 const Overview = props => {
@@ -26,14 +28,25 @@ const Overview = props => {
   const [isTraceSurfaceFeatureEdit, setIsTraceSurfaceFeatureEdit] = useState(false);
   const formRef = useRef(null);
   const [useForm] = useFormHook();
+  const [sections, setSections] = useState(
+    [
+      {title: 'Notes', data: [<NotesOverview/>]},
+      {title: 'Measurements', data: [<MeasurementsOverview/>]},
+      {title: 'Photos and Sketches', data: [<ImagesOverview/>]},
+      {title: 'Tags', data: [<TagsAtSpotList openMainMenu={props.openMainMenu}/>]},
+      {title: 'Samples', data: [<SamplesPage/>]},
+    ]);
 
-  const SECTIONS = [
-    {title: 'Notes', data: [<NotesOverview/>]},
-    {title: 'Measurements', data: [<MeasurementsOverview/>]},
-    {title: 'Photos and Sketches', data: [<ImagesOverview/>]},
-    {title: 'Tags', data: [<TagsAtSpotList openMainMenu={props.openMainMenu}/>]},
-    {title: 'Samples', data: [<SamplesPage/>]},
-  ];
+  useEffect(() => {
+    let updatedSections = [...sections];
+    if (spot.properties?.other_features) {
+      updatedSections.push({title: 'Other Features', data: [<OtherFeaturesOverview/>]});
+    }
+    if (spot.properties?._3d_structures) {
+      updatedSections.push({title: 'Three D Structures', data: [<ThreeDStructuresOverview/>]});
+    }
+    setSections(updatedSections);
+  }, []);
 
   useEffect(() => {
     setIsTraceSurfaceFeatureEnabled((spot.properties.hasOwnProperty('trace') && spot.properties.trace.trace_feature)
@@ -105,7 +118,7 @@ const Overview = props => {
     return (
       <SectionList
         keyExtractor={(item, index) => item + index}
-        sections={SECTIONS}
+        sections={sections}
         renderSectionHeader={({section: {title}}) => renderSectionHeader(title)}
         renderItem={({item}) => item}
         stickySectionHeadersEnabled={true}

@@ -1,10 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {SectionList, View} from 'react-native';
 
-import {ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
-import commonStyles from '../../shared/common.styles';
 import {getNewId, toTitleCase} from '../../shared/Helpers';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
@@ -15,16 +13,16 @@ import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import ThreeDStructureDetail from './ThreeDStructureDetail';
+import ThreeDStructureItem from './ThreeDStructureItem';
 
 const ThreeDStructuresPage = () => {
   const dispatch = useDispatch();
+  const [useForm] = useFormHook();
 
   const spot = useSelector(state => state.spot.selectedSpot);
 
   const [selected3dStructure, setSelected3dStructure] = useState({});
   const [isDetailView, setIsDetailView] = useState(false);
-
-  const [useForm] = useFormHook();
 
   const SECTIONS = {
     FOLDS: {title: 'Folds', key: 'fold'},
@@ -56,28 +54,7 @@ const ThreeDStructuresPage = () => {
   };
 
   const render3dStructure = (threeDStructure) => {
-    const threeDStructureTitle = get3dStructureTitle(threeDStructure);
-    const threeDStructureFieldsText = Object.entries(threeDStructure).reduce((acc, [key, value]) => {
-      return key === 'id' ? acc
-        : (acc === '' ? '' : acc + '\n')
-        + toTitleCase(useForm.getLabel(key, ['_3d_structures', threeDStructure.feature_type])) + ': '
-        + useForm.getLabels(value, ['_3d_structures', threeDStructure.feature_type]);
-    }, '');
-    return (
-      <ListItem
-        containerStyle={commonStyles.listItem}
-        key={threeDStructure.id}
-        onPress={() => edit3dStructure(threeDStructure)}
-      >
-        <ListItem.Content style={{overflow: 'hidden'}}>
-          <ListItem.Title style={commonStyles.listItemTitle}>{threeDStructureTitle}</ListItem.Title>
-          {threeDStructureFieldsText !== '' && (
-            <ListItem.Subtitle>{threeDStructureFieldsText}</ListItem.Subtitle>
-          )}
-        </ListItem.Content>
-        <ListItem.Chevron/>
-      </ListItem>
-    );
+    return <ThreeDStructureItem item={threeDStructure} edit3dStructure={(item) => edit3dStructure((item))}/>;
   };
 
   const renderSectionHeader = (sectionTitle) => {

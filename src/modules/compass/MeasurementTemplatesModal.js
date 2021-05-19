@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Alert, FlatList, Platform, TextInput, View} from 'react-native';
+import {Alert, FlatList, Platform, Text, TextInput, View} from 'react-native';
 
 import {Formik} from 'formik';
 import {Button, ButtonGroup, ListItem} from 'react-native-elements';
@@ -152,12 +152,17 @@ const MeasurementTemplatesModal = (props) => {
             textStyle={{color: PRIMARY_ACCENT_COLOR}}
           />
         )}
-        <TextInput
-          style={[formStyles.fieldValue, {paddingLeft: 15, paddingTop: 5}]}
-          placeholder={'Name of the Template ...'}
-          onChangeText={value => setName(value)}
-          value={name}
-        />
+        <View style={[commonStyles.listItemFormField,{backgroundColor:themes.SECONDARY_BACKGROUND_COLOR}]}>
+          <View style={formStyles.fieldLabelContainer}>
+            <Text style={formStyles.fieldLabel}>{'Name of the Template'}</Text>
+          </View>
+          <TextInput
+            style={formStyles.fieldValue}
+            onChangeText={value => setName(value)}
+            value={name}
+            autoFocus={isEmpty(name)}
+          />
+        </View>
         <Formik
           innerRef={formRef}
           onSubmit={() => console.log('Submitting form...')}
