@@ -107,7 +107,8 @@ const FabricModal = (props) => {
   const renderNotebookFabricModalContent = () => {
     return (
       <Modal
-        close={props.close}
+        close={() => choicesViewKey ? setChoicesViewKey(null) : props.close()}
+        title={choicesViewKey && 'Done'}
         textStyle={{fontWeight: 'bold'}}
         onPress={props.onPress}
         style={uiStyles.modalPosition}
@@ -132,15 +133,7 @@ const FabricModal = (props) => {
             }
           />
         </React.Fragment>
-        {choicesViewKey ? (
-            <Button
-              titleStyle={{color: PRIMARY_ACCENT_COLOR}}
-              title={'Done'}
-              type={'save'}
-              onPress={() => setChoicesViewKey(null)}
-            />
-          )
-          : <SaveButton title={'Save Fabric'} onPress={saveFabric}/>}
+        {!choicesViewKey && <SaveButton title={'Save Fabric'} onPress={saveFabric}/>}
       </Modal>
     );
   };
