@@ -40,7 +40,7 @@ const RockTypePage = (props) => {
   const IGNEOUS_SECTIONS = {
     PLUTONIC: {title: 'Plutonic Rocks', key: 'plutonic'},
     VOLCANIC: {title: 'Volcanic Rocks', key: 'volcanic'},
-    DEPRECATED: {title: 'Igenous Rocks (Deprecated Version)', key: null},
+    DEPRECATED: {title: 'Igneous Rocks (Deprecated Version)', key: null},
   };
 
   const METAMORPHIC_SECTIONS = {

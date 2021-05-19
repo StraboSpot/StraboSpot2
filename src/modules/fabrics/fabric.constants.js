@@ -1,6 +1,6 @@
 export const FABRIC_TYPES = {
   fault_rock: 'Fault',
-  igneous_rock: 'Igenous',
+  igneous_rock: 'Igneous',
   metamorphic_rock: 'Metam.',
 };
 

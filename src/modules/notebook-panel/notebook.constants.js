@@ -19,7 +19,7 @@ export const SECONDARY_NOTEBOOK_PAGES = {
 
 export const PET_NOTEBOOK_PAGES = {
   // ROCK_TYPE_ALTERATION_ORE: 'Alteration, Ore Rock',
-  // ROCK_TYPE_IGNEOUS: 'Igenous Rock',
+  // ROCK_TYPE_IGNEOUS: 'Igneous Rock',
   // ROCK_TYPE_METAMORPHIC: 'Metamorphic Rock',
   // MINERALS: 'Minerals',
   // REACTION_TEXTURES: 'Reaction Textures',
