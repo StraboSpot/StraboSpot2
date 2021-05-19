@@ -24,13 +24,16 @@ const useForm = () => {
 
   // Get a label for a given key with the option of giving a form category and name
   const getLabel = (key, [category, name]) => {
-    let dictionary = {};
-    if (category && name) dictionary = LABEL_DICTIONARY[category][name];
-    else if (category) {
-      dictionary = Object.values(LABEL_DICTIONARY[category]).reduce((acc, form) => ({...acc, ...form}), {});
+    if (key) {
+      let dictionary = {};
+      if (category && name) dictionary = LABEL_DICTIONARY[category][name];
+      else if (category) {
+        dictionary = Object.values(LABEL_DICTIONARY[category]).reduce((acc, form) => ({...acc, ...form}), {});
+      }
+      if (dictionary) return dictionary[key.toString()] || key.toString().replace(/_/g, ' ');
+      else return key.toString().replace(/_/g, ' ');
     }
-    if (dictionary) return dictionary[key.toString()] || key.toString().replace(/_/g, ' ');
-    else return key.toString().replace(/_/g, ' ');
+    else return 'Unknown';
   };
 
   // Get a labels as string for given keys with the option of giving a form category and name
