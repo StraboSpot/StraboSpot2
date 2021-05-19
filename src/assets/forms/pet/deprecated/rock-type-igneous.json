@@ -31,18 +31,25 @@
       "appearance": "horizontal-compact"
     },
     {
-      "type": "select_one ls02q17",
-      "name": "char_mig_ig",
-      "label": "Characterize migmatite",
-      "required": "false",
-      "relevant": "selected(${plutonic_rock_type}, 'migmatite')"
-    },
-    {
       "type": "text",
       "name": "other_plutonic",
       "label": "Other",
       "required": "false",
       "relevant": "selected(${plutonic_rock_type}, 'other')"
+    },
+    {
+      "type": "decimal",
+      "name": "color_index_pluton",
+      "label": "Color Index",
+      "required": "false",
+      "relevant": "selected(${igneous_rock_class}, 'plutonic')"
+    },
+    {
+      "type": "select_one nx1fj58",
+      "name": "color_index_source_pluton",
+      "label": "Color Index Source",
+      "required": "false",
+      "relevant": "selected(${igneous_rock_class}, 'plutonic')"
     },
     {
       "type": "select_multiple cm8zx92",
@@ -75,30 +82,16 @@
       "relevant": "selected(${texture_plutonic}, 'other')"
     },
     {
-      "type": "decimal",
-      "name": "color_index_pluton",
-      "label": "Color Index",
-      "required": "false",
-      "relevant": "selected(${igneous_rock_class}, 'plutonic')"
-    },
-    {
-      "type": "select_one nx1fj58",
-      "name": "color_index_source_pluton",
-      "label": "Color Index Source",
-      "required": "false",
-      "relevant": "${color_index_pluton} != ''"
-    },
-    {
       "type": "integer",
       "name": "pluton_characteristic_size_of",
-      "label": "Characteristic size of crystals (mm)",
+      "label": "Characteristic size of crystals, mm",
       "required": "false",
       "relevant": "selected(${igneous_rock_class}, 'plutonic')"
     },
     {
       "type": "select_multiple pt2tr54",
       "name": "alteration_plutonic",
-      "label": "Modification ",
+      "label": "Modification",
       "required": "false",
       "relevant": "selected(${igneous_rock_class}, 'plutonic')",
       "appearance": "horizontal-compact"
@@ -186,7 +179,7 @@
       "name": "color_index_source_volc",
       "label": "Color Index Source",
       "required": "false",
-      "relevant": "${color_index_volc} != ''"
+      "relevant": "selected(${igneous_rock_class}, 'volcanic')"
     },
     {
       "type": "integer",
@@ -213,7 +206,7 @@
     {
       "type": "select_multiple pt2tr54",
       "name": "alteration_volcanic",
-      "label": "Modification ",
+      "label": "Modification",
       "required": "false",
       "relevant": "selected(${igneous_rock_class}, 'volcanic')",
       "appearance": "horizontal-compact"
@@ -237,16 +230,16 @@
       "type": "end_group"
     },
     {
-      "type": "text",
-      "name": "notes_igneous",
-      "label": "Notes",
+      "type": "calculate",
+      "name": "__version__",
       "required": "false",
-      "appearance": "multiline"
+      "calculation": "'vX9UbA3zEhefAS3M6unM4d'"
     },
     {
       "type": "calculate",
-      "name": "__version__",
-      "calculation": "'vUjCS4SxaLStxFCtqytWEY'"
+      "name": "_version_",
+      "calculation": "'vYUw6YcNdWGmyCMKMCPpR6'",
+      "$given_name": "__version__"
     }
   ],
   "choices": [
@@ -363,31 +356,25 @@
     },
     {
       "list_name": "vb8zj01",
-      "name": "migmatite",
-      "label": "migmatite",
-      "order": "17"
-    },
-    {
-      "list_name": "vb8zj01",
       "name": "unclear",
       "label": "unclear",
-      "order": "18"
+      "order": "17"
     },
     {
       "list_name": "vb8zj01",
       "name": "other",
       "label": "other",
-      "order": "19"
+      "order": "18"
     },
     {
-      "list_name": "ls02q17",
-      "name": "metatexite",
-      "label": "metatexite"
+      "list_name": "nx1fj58",
+      "name": "strabotools",
+      "label": "StraboTools"
     },
     {
-      "list_name": "ls02q17",
-      "name": "diatexite",
-      "label": "diatexite"
+      "list_name": "nx1fj58",
+      "name": "visual",
+      "label": "visual"
     },
     {
       "list_name": "cm8zx92",
@@ -484,16 +471,6 @@
       "name": "other",
       "label": "other",
       "order": "11"
-    },
-    {
-      "list_name": "nx1fj58",
-      "name": "strabotools",
-      "label": "StraboTools"
-    },
-    {
-      "list_name": "nx1fj58",
-      "name": "visual",
-      "label": "visual"
     },
     {
       "list_name": "pt2tr54",
@@ -795,7 +772,7 @@
   ],
   "settings": [
     {
-      "version": "vUjCS4SxaLStxFCtqytWEY"
+      "version": "2 (2021-05-18 16:17:26)"
     }
   ]
 }

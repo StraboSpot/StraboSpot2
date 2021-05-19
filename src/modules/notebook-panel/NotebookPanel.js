@@ -118,7 +118,7 @@ const NotebookPanel = (props) => {
             {/*Pet Notebook Pages*/}
             {/*{pageVisible === PET_NOTEBOOK_PAGES.ROCK_TYPE_IGNEOUS && <RockTypePage type={'igneous'}/>}*/}
             {/*{pageVisible === PET_NOTEBOOK_PAGES.ROCK_TYPE_METAMORPHIC && <RockTypePage type={'metamorphic'}/>}*/}
-            {/*{pageVisible === PET_NOTEBOOK_PAGES.ECONOMIC && <RockTypePage type={'alteration_or'}/>}*/}
+            {/*{pageVisible === PET_NOTEBOOK_PAGES.ROCK_TYPE_ALTERATION_ORE && <RockTypePage type={'alteration_or'}/>}*/}
             {/*{pageVisible === PET_NOTEBOOK_PAGES.MINERALS && <MineralsPage/>}*/}
             {/*{pageVisible === PET_NOTEBOOK_PAGES.REACTION_TEXTURES && <ReactionTexturesPage/>}*/}
             {/*{pageVisible === PET_NOTEBOOK_PAGES.TERNARY && <TernaryPage/>}*/}

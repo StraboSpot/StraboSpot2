@@ -28,7 +28,7 @@ const FabricsPage = () => {
     FAULT_ROCK: {title: 'Fault Rock Fabrics', key: 'fault_rock'},
     IGNEOUS: {title: 'Igneous Fabrics', key: 'igneous_rock'},
     METAMORPHIC: {title: 'Metamorphic Fabrics', key: 'metamorphic_rock'},
-    DEPRECIATED: {title: 'Fabrics (Depreciated Version)', key: null},
+    DEPRECATED: {title: 'Fabrics (Deprecated Version)', key: null},
   };
 
   useEffect(() => {
