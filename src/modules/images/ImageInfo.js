@@ -3,23 +3,19 @@ import {ActivityIndicator, Alert, View} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
 import {Image} from 'react-native-elements';
-import {useDispatch, useSelector} from 'react-redux';
 
 import IconButton from '../../shared/ui/IconButton';
-import {setCurrentImageBasemap} from '../maps/maps.slice';
 import useSpotsHook from '../spots/useSpots';
 import ImagePropertiesModal from './ImagePropertiesModal';
 import styles from './images.styles';
 import useImagesHook from './useImages';
 
 const ImageInfo = (props) => {
-  const dispatch = useDispatch();
   const [isImagePropertiesModalVisible, setIsImagePropertiesModalVisible] = useState(false);
   const [imageProps] = useState(props.route.params.imageId);
   const [useImages] = useImagesHook();
   const [useSpots] = useSpotsHook();
   const navigation = useNavigation();
-  const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
 
   const clickHandler = (name) => {
     console.log(name);
@@ -36,9 +32,7 @@ const ImageInfo = (props) => {
 
   const deleteImage = async (imageId) => {
     const isImageDeleted = await useImages.deleteImage(imageId, useSpots.getSpotByImageId(imageId));
-    if (isImageDeleted) {
-      navigation.goBack();
-    }
+    if (isImageDeleted) navigation.goBack();
   };
 
   return (

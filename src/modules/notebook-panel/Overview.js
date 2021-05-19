@@ -28,9 +28,7 @@ const Overview = props => {
   const [isTraceSurfaceFeatureEdit, setIsTraceSurfaceFeatureEdit] = useState(false);
   const formRef = useRef(null);
   const [useForm] = useFormHook();
-  const hasOtherFeatures = !isEmpty(spot.properties?.other_features || []);
-  const hasThreeDStructures = !isEmpty(spot.properties?._3d_structures || []);
-  const [SECTIONS, setSections] = useState(
+  const [sections, setSections] = useState(
     [
       {title: 'Notes', data: [<NotesOverview/>]},
       {title: 'Measurements', data: [<MeasurementsOverview/>]},
@@ -40,15 +38,15 @@ const Overview = props => {
     ]);
 
   useEffect(() => {
-    let updatedSections = [...SECTIONS];
-    if (hasOtherFeatures) {
+    let updatedSections = [...sections];
+    if (spot.properties?.other_features) {
       updatedSections.push({title: 'Other Features', data: [<OtherFeaturesOverview/>]});
     }
-    if (hasThreeDStructures) {
+    if (spot.properties?._3d_structures) {
       updatedSections.push({title: 'Three D Structures', data: [<ThreeDStructuresOverview/>]});
     }
     setSections(updatedSections);
-  }, [hasOtherFeatures], [hasThreeDStructures]);
+  }, []);
 
   useEffect(() => {
     setIsTraceSurfaceFeatureEnabled((spot.properties.hasOwnProperty('trace') && spot.properties.trace.trace_feature)
@@ -120,7 +118,7 @@ const Overview = props => {
     return (
       <SectionList
         keyExtractor={(item, index) => item + index}
-        sections={SECTIONS}
+        sections={sections}
         renderSectionHeader={({section: {title}}) => renderSectionHeader(title)}
         renderItem={({item}) => item}
         stickySectionHeadersEnabled={true}

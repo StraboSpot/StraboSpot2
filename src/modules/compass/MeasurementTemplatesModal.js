@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {Alert, FlatList, Platform, Text, TextInput, View} from 'react-native';
 
 import {Formik} from 'formik';
-import {Button, ButtonGroup, Icon, ListItem} from 'react-native-elements';
+import {Button, ButtonGroup, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
