@@ -34,7 +34,6 @@ const OtherFeatureItem = (props) => {
     <React.Fragment>
       {renderFeature(props.feature)}
     </React.Fragment>
-  )
-    ;
+  );
 };
 export default OtherFeatureItem;

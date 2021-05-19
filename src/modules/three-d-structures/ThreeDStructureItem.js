@@ -46,8 +46,7 @@ function ThreeDStructureItem(props) {
     <React.Fragment>
       {render3dStructure(props.item)}
     </React.Fragment>
-  )
-    ;
+  );
 }
 
 export default ThreeDStructureItem;

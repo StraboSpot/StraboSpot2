@@ -28,7 +28,7 @@ function ThreeDStructuresOverview(props) {
         data={spot?.properties?._3d_structures || []}
         renderItem={({item}) => render3dStructure(item)}
         ItemSeparatorComponent={FlatListItemSeparator}
-        ListEmptyComponent={<ListEmptyText text={'No Three D Structures yet'}/>}
+        ListEmptyComponent={<ListEmptyText text={'No 3D Structures yet'}/>}
       />
     </React.Fragment>
   );
