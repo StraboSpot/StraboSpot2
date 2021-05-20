@@ -42,7 +42,7 @@ const useMapsOffline = () => {
 
   const getMapName = (map) => {
     if (map.id === 'mapbox.outdoors' || map.id === 'mapbox.satellite' || map.id === 'osm'
-      || map.id === 'macrostrat' || map.source === 'map_warper') {
+      || map.id === 'macrostrat' || map.source === 'map_warper' || map.source === 'strabospot_mymaps') {
       return map.name;
     }
     else return null;

@@ -33,7 +33,9 @@ const BaseMapDialog = props => {
   const conditions = ['http', 'https'];
 
   const checkForCustomMaps = () => {
-    return Object.values(offlineMaps).some(map => map.source === 'map_warper');
+    return Object.values(offlineMaps).some(map => {
+      return map.source === 'map_warper' || map.source === 'strabospot_mymaps';
+    });
   };
 
   return (
@@ -43,7 +45,7 @@ const BaseMapDialog = props => {
       visible={props.visible}
       dialogTitle={
         <DialogTitle
-          title='Map Layers'
+          title={'Map Layers'}
           style={styles.dialogTitle}
           textStyle={styles.dialogTitleText}
         />}
@@ -110,8 +112,9 @@ const BaseMapDialog = props => {
                     }}
                   >
                     <ListItem.Content>
-                      <ListItem.Title style={commonStyles.listItemTitle}>{useMapsOffline.getMapName(
-                        map)}</ListItem.Title>
+                      <ListItem.Title style={commonStyles.listItemTitle}>
+                        {useMapsOffline.getMapName(map)}
+                      </ListItem.Title>
                       <ListItem.Subtitle style={{paddingTop: 5}}>({map.count} tiles)</ListItem.Subtitle>
                     </ListItem.Content>
                     {currentBasemap && map.id === currentBasemap.id

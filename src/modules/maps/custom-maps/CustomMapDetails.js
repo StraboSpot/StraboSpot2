@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {Alert, Animated, FlatList, Keyboard, Platform, Switch, Text, TextInput, View} from 'react-native';
+import {Alert, FlatList, Platform, Switch, View} from 'react-native';
 
-import {Button, Icon, ListItem} from 'react-native-elements';
+import {Button, Icon, ListItem, Input} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../../shared/common.styles';
-import {handleKeyboardDidHide, handleKeyboardDidShow, isEmpty} from '../../../shared/Helpers';
+import {isEmpty} from '../../../shared/Helpers';
 import {BLUE, DARKGREY, WARNING_COLOR} from '../../../shared/styles.constants';
 import FlatListItemSeparator from '../../../shared/ui/FlatListItemSeparator';
 import SectionDivider from '../../../shared/ui/SectionDivider';
@@ -97,10 +97,6 @@ const AddCustomMaps = () => {
     );
   };
 
-  const handleKeyboardShown = (event) => handleKeyboardDidShow(event, TextInputState, textInputAnimate);
-
-  const handleKeyboardHidden = () => handleKeyboardDidHide(textInputAnimate);
-
   const selectMap = (source) => {
     console.log(source);
     setEditableCustomMapData(e => ({...e, source: source}));
@@ -128,49 +124,44 @@ const AddCustomMaps = () => {
     return (
       <React.Fragment>
         <SectionDivider dividerText={'Map Details'}/>
-        <ListItem containerStyle={commonStyles.listItem}>
-          <ListItem.Content>
-            {editableCustomMapData && editableCustomMapData.source === 'mapbox_styles' && (
-              <React.Fragment>
-                <TextInput
-                  value={editableCustomMapData.id}
-                  onChangeText={text => setEditableCustomMapData(e => ({...e, id: text}))}
-                  keyboardType={MBKeyboardType}
-                  placeholder={'Styles URL'}
-                  style={formStyles.fieldValue}
-                />
-                <TextInput
-                  onChangeText={text => setEditableCustomMapData(e => ({...e, accessToken: text}))}
-                  defaultValue={editableCustomMapData.accessToken}
-                  placeholder={'Access token'}
-                  style={formStyles.fieldValue}
-                />
-              </React.Fragment>
-            )}
-            {editableCustomMapData && editableCustomMapData.source === 'map_warper' && (
-              <React.Fragment>
-                <TextInput
-                  keyboardType={MWKeyboardType}
-                  defaultValue={editableCustomMapData.id}
-                  onChangeText={text => setEditableCustomMapData(e => ({...e, id: text}))}
-                  // inputContainerStyle={sidePanelStyles.textInputNameContainer}
-                  placeholder={'Map ID'}
-                  style={formStyles.fieldValue}
-                />
-                {editableCustomMapData && isEmpty(editableCustomMapData.id)
-                && <Text style={formStyles.fieldError}>Map ID is required</Text>}
-              </React.Fragment>
-            )}
-            {editableCustomMapData && editableCustomMapData.source === 'strabospot_mymaps' && (
-              <TextInput
-                placeholder={'Strabo Map ID'}
-                defaultValue={editableCustomMapData.id}
-                onChangeText={text => setEditableCustomMapData(e => ({...e, id: text}))}
-                style={formStyles.fieldValue}
-              />
-            )}
-          </ListItem.Content>
-        </ListItem>
+        <View>
+          {editableCustomMapData?.source === 'mapbox_styles' && (
+            <Input
+              inputStyle={{...formStyles.fieldValue, backgroundColor: 'white'}}
+              containerStyle={{paddingHorizontal: 0}}
+              inputContainerStyle={{borderBottomWidth: 0}}
+              keyboardType={MBKeyboardType}
+              defaultValue={editableCustomMapData.id}
+              onChangeText={text => setEditableCustomMapData(e => ({...e, id: text}))}
+              placeholder={'Style URL'}
+              errorMessage={editableCustomMapData && isEmpty(editableCustomMapData.id) && 'Map ID is required'}
+            />
+          )}
+          {editableCustomMapData?.source === 'map_warper' && (
+            <Input
+              inputStyle={{...formStyles.fieldValue, backgroundColor: 'white'}}
+              containerStyle={{paddingHorizontal: 0}}
+              inputContainerStyle={{borderBottomWidth: 0}}
+              keyboardType={MWKeyboardType}
+              defaultValue={editableCustomMapData.id}
+              onChangeText={text => setEditableCustomMapData(e => ({...e, id: text}))}
+              placeholder={'Map ID'}
+              errorMessage={editableCustomMapData && isEmpty(editableCustomMapData.id) && 'Map ID is required'}
+            />
+          )}
+          {editableCustomMapData?.source === 'strabospot_mymaps' && (
+            <Input
+              inputStyle={{...formStyles.fieldValue, backgroundColor: 'white'}}
+              containerStyle={{paddingHorizontal: 0}}
+              inputContainerStyle={{borderBottomWidth: 0}}
+              keyboardType={MWKeyboardType}
+              defaultValue={editableCustomMapData.id}
+              onChangeText={text => setEditableCustomMapData(e => ({...e, id: text}))}
+              placeholder={'Strabo My Maps ID'}
+              errorMessage={editableCustomMapData && isEmpty(editableCustomMapData.id) && 'Map ID is required'}
+            />
+          )}
+        </View>
       </React.Fragment>
     );
   };
@@ -191,17 +182,14 @@ const AddCustomMaps = () => {
     return (
       <React.Fragment>
         <SectionDivider dividerText={'Custom Map Title'}/>
-        <ListItem containerStyle={commonStyles.listItem}>
-          <ListItem.Content>
-            <TextInput
-              style={formStyles.fieldValue}
-              defaultValue={editableCustomMapData && editableCustomMapData.title}
-              onChangeText={text => setEditableCustomMapData({...editableCustomMapData, title: text})}
-            />
-            {editableCustomMapData && isEmpty(editableCustomMapData.title)
-            && <Text style={formStyles.fieldError}>Title is required</Text>}
-          </ListItem.Content>
-        </ListItem>
+        <Input
+          inputStyle={{...formStyles.fieldValue, backgroundColor: 'white'}}
+          containerStyle={{paddingHorizontal: 0}}
+          inputContainerStyle={{borderBottomWidth: 0}}
+          onChangeText={text => setEditableCustomMapData({...editableCustomMapData, title: text})}
+          defaultValue={editableCustomMapData && editableCustomMapData.title}
+          errorMessage={editableCustomMapData && isEmpty(editableCustomMapData.title) && 'Title is required'}
+        />
       </React.Fragment>
     );
   };
@@ -269,7 +257,7 @@ const AddCustomMaps = () => {
         {/*/>*/}
         {renderMapDetails()}
       </View>
-      <View>
+      <View style={{paddingBottom: 20}}>
         <Button
           title={!isEmpty(customMapToEdit) ? 'Update' : 'Save'}
           containerStyle={commonStyles.standardButtonContainer}
