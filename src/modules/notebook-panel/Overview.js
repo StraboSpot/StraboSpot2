@@ -10,6 +10,8 @@ import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import uiStyles from '../../shared/ui/ui.styles';
+import DataWrapper from '../external-data/DataWrapper';
+import UrlData from '../external-data/URLData';
 import {Form, useFormHook} from '../form';
 import ImagesOverview from '../images/ImagesOverview';
 import MeasurementsOverview from '../measurements/MeasurementsOverview';
@@ -44,6 +46,12 @@ const Overview = props => {
     }
     if (spot.properties?._3d_structures) {
       updatedSections.push({title: '3D Structures', data: [<ThreeDStructuresOverview/>]});
+    }
+    if (!isEmpty(spot.properties?.data?.urls)) {
+      updatedSections.push({title: 'Links to Web Resources', data: [<DataWrapper spot={spot} editable={false} urlData={true}/>]});
+    }
+    if (!isEmpty(spot.properties?.data?.tables)) {
+      updatedSections.push({title: 'Tables', data: [<DataWrapper spot={spot} editable={false} urlData={false}/>]});
     }
     setSections(updatedSections);
   }, []);

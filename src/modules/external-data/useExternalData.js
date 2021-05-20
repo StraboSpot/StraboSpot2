@@ -67,7 +67,7 @@ const useExternalData = () => {
     console.log(CSVcopy);
     const filteredArr = CSVcopy.filter(table => table.id !== tableToDelete.id);
     console.log(filteredArr);
-    dispatch(editedSpotProperties({field: 'data', value: {tables: filteredArr}}));
+    dispatch(editedSpotProperties({field: 'data', value: {tables: filteredArr, urls: spot.properties.data.urls}}));
   };
 
   const deleteUrl = (urlToDelete) => {
@@ -75,7 +75,7 @@ const useExternalData = () => {
     console.log(urlCopy);
     const filteredArr = urlCopy.filter(url => url !== urlToDelete);
     console.log(filteredArr);
-    dispatch(editedSpotProperties({field: 'data', value: {urls: filteredArr}}));
+    dispatch(editedSpotProperties({field: 'data', value: {urls: filteredArr, tables: spot.properties.data.tables}}));
   };
 
   const saveCSV = () => {
