@@ -7,10 +7,14 @@ import linearOrientation from './measurement/linear-orientation.json';
 import planarOrientation from './measurement/planar-orientation.json';
 import tabularZoneOrientation from './measurement/tabular-zone-orientation.json';
 import namingConventions from './naming-conventions.json';
-import economic from './pet/economic.json';
+import rockTypeAlterationOreDeprecated from './pet/deprecated/rock-type-alteration-ore.json';
+import rockTypeIgneousDeprecated from './pet/deprecated/rock-type-igneous.json';
+import rockTypeMetamorphicDeprecated from './pet/deprecated/rock-type-metamorphic.json';
 import minerals from './pet/minerals.json';
 import reactionTextures from './pet/reaction-textures.json';
-import rockTypeIgneous from './pet/rock-type-igneous.json';
+import rockTypeAlterationOre from './pet/rock-type-alteration-ore.json';
+import rockTypePlutonic from './pet/rock-type-igneous-plutonic.json';
+import rockTypeVolcanic from './pet/rock-type-igneous-volcanic.json';
 import rockTypeMetamorphic from './pet/rock-type-metamorphic.json';
 import projectDescription from './project-description.json';
 import sample from './sample.json';
@@ -69,11 +73,17 @@ const forms = {
     },
   },
   pet: {
-    minerals: minerals,
-    reactions: reactionTextures,
+    alteration_or: rockTypeAlterationOre,
     metamorphic: rockTypeMetamorphic,
-    igneous: rockTypeIgneous,
-    alteration_or: economic,
+    minerals: minerals,
+    plutonic: rockTypePlutonic,
+    reactions: reactionTextures,
+    volcanic: rockTypeVolcanic,
+  },
+  pet_deprecated: {
+    alteration_or: rockTypeAlterationOreDeprecated,
+    igneous: rockTypeIgneousDeprecated,
+    metamorphic: rockTypeMetamorphicDeprecated,
   },
   preferences: {
     naming_conventions: namingConventions,

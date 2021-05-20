@@ -10,21 +10,15 @@ function ThreeDStructureItem(props) {
   const [useForm] = useFormHook();
 
   const get3dStructureTitle = (threeDStructure) => {
-    return threeDStructure.label
-      || toTitleCase(useForm.getLabel(threeDStructure.feature_type, ['_3d_structures', threeDStructure.feature_type]))
-      || toTitleCase(useForm.getLabel(threeDStructure.type, ['_3d_structures', threeDStructure.feature_type]))
+    const firstClassTitle = toTitleCase(threeDStructure.type);
+    const secondClassTitle = toTitleCase(useForm.getLabel(threeDStructure.feature_type, ['_3d_structures', threeDStructure.type]))
+      || toTitleCase(useForm.getLabel(threeDStructure.type, ['_3d_structures', threeDStructure.type]))
       || '';
+    return toTitleCase(firstClassTitle) + ' - ' + secondClassTitle.toUpperCase();
   };
 
   const render3dStructure = (threeDStructure) => {
     const threeDStructureTitle = get3dStructureTitle(threeDStructure);
-    const threeDStructureFieldsText = Object.entries(threeDStructure).reduce((acc, [key, value]) => {
-      return key === 'id' ? acc
-        : (acc === '' ? '' : acc + '\n')
-        + toTitleCase(useForm.getLabel(key, ['_3d_structures', threeDStructure.feature_type])) + ': '
-        + useForm.getLabels(value, ['_3d_structures', threeDStructure.feature_type]);
-    }, '');
-
     return (
       <ListItem
         containerStyle={commonStyles.listItem}
@@ -33,9 +27,6 @@ function ThreeDStructureItem(props) {
       >
         <ListItem.Content style={{overflow: 'hidden'}}>
           <ListItem.Title style={commonStyles.listItemTitle}>{threeDStructureTitle}</ListItem.Title>
-          {threeDStructureFieldsText !== '' && (
-            <ListItem.Subtitle>{threeDStructureFieldsText}</ListItem.Subtitle>
-          )}
         </ListItem.Content>
         <ListItem.Chevron/>
       </ListItem>

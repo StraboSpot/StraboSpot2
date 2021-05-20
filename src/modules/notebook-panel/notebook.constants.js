@@ -18,11 +18,11 @@ export const SECONDARY_NOTEBOOK_PAGES = {
 };
 
 export const PET_NOTEBOOK_PAGES = {
-  // ROCK_TYPE_IGNEOUS: 'Igenous Rock',
+  // ROCK_TYPE_ALTERATION_ORE: 'Alteration, Ore Rock',
+  // ROCK_TYPE_IGNEOUS: 'Igneous Rock',
   // ROCK_TYPE_METAMORPHIC: 'Metamorphic Rock',
   // MINERALS: 'Minerals',
   // REACTION_TEXTURES: 'Reaction Textures',
-  // ECONOMIC: 'Economic',
   // TERNARY: 'Ternary',
 };
 
@@ -83,6 +83,8 @@ export const NOTEBOOK_PAGES_ICONS = {
   FOSSILS_PRESSED: require('../../assets/icons/SedFossil_pressed.png'),
   INTERPRETATIONS: require('../../assets/icons/SedInterpretation.png'),
   INTERPRETATIONS_PRESSED: require('../../assets/icons/SedInterpretation_pressed.png'),
+  ROCK_TYPE_ALTERATION_ORE: require('../../assets/icons/Economic.png'),
+  ROCK_TYPE_ALTERATION_ORE_PRESSED: require('../../assets/icons/Economic_pressed.png'),
   ROCK_TYPE_IGNEOUS: require('../../assets/icons/Igneous.png'),
   ROCK_TYPE_IGNEOUS_PRESSED: require('../../assets/icons/Igneous_pressed.png'),
   ROCK_TYPE_METAMORPHIC: require('../../assets/icons/Metamorphic.png'),
@@ -91,8 +93,6 @@ export const NOTEBOOK_PAGES_ICONS = {
   MINERALS_PRESSED: require('../../assets/icons/Minerals_pressed.png'),
   REACTION_TEXTURES: require('../../assets/icons/Reactions.png'),
   REACTION_TEXTURES_PRESSED: require('../../assets/icons/Reactions_pressed.png'),
-  ECONOMIC: require('../../assets/icons/Economic.png'),
-  ECONOMIC_PRESSED: require('../../assets/icons/Economic_pressed.png'),
   TERNARY: require('../../assets/icons/Ternary.png'),
   TERNARY_PRESSED: require('../../assets/icons/Ternary_pressed.png'),
 };

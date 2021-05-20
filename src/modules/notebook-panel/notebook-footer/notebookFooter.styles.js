@@ -33,6 +33,12 @@ const notebookFooterStyles = StyleSheet.create({
   morePagesSectionDivider: {
     borderBottomWidth: 1,
   },
+  morePagesListItemTitle: {
+    paddingLeft: 5,
+    alignSelf: 'center',
+    color: themes.PRIMARY_TEXT_COLOR,
+    fontSize: themes.SMALL_TEXT_SIZE,
+  },
 });
 
 export default notebookFooterStyles;

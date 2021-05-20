@@ -25,7 +25,7 @@ function ThreeDStructuresOverview(props) {
     <React.Fragment>
       <FlatList
         keyExtractor={(item, index) => index.toString()}
-        data={spot?.properties?._3d_structures || []}
+        data={spot?.properties?._3d_structures?.filter(d => d.type !== 'fabric') || []}
         renderItem={({item}) => render3dStructure(item)}
         ItemSeparatorComponent={FlatListItemSeparator}
         ListEmptyComponent={<ListEmptyText text={'No 3D Structures yet'}/>}

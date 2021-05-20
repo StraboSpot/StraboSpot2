@@ -43,7 +43,7 @@ const Overview = props => {
       updatedSections.push({title: 'Other Features', data: [<OtherFeaturesOverview/>]});
     }
     if (spot.properties?._3d_structures) {
-      updatedSections.push({title: 'Three D Structures', data: [<ThreeDStructuresOverview/>]});
+      updatedSections.push({title: '3D Structures', data: [<ThreeDStructuresOverview/>]});
     }
     setSections(updatedSections);
   }, []);

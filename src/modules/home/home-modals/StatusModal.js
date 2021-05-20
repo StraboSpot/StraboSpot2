@@ -62,9 +62,9 @@ const StatusModal = (props) => {
               )
               : (
                 <View style={{alignItems: 'center'}}>
-                  {selectedProject.source !== ''
-                  && <Text style={{fontWeight: 'bold', textAlign: 'center'}}>Press Continue to load
-                    project</Text>}
+                  {selectedProject.source !== '' && (
+                    <Text style={{fontWeight: 'bold', textAlign: 'center'}}>Press Continue to load project</Text>
+                  )}
                   <View style={{flexDirection: 'row'}}>
                     <Button
                       title={selectedProject.source !== '' ? 'Continue' : 'OK'}
@@ -72,13 +72,14 @@ const StatusModal = (props) => {
                       containerStyle={{padding: 10}}
                       onPress={() => getProjectFromSource(selectedProject)}
                     />
-                    {selectedProject.source !== ''
-                    && <Button
-                      title={'Cancel'}
-                      containerStyle={{padding: 10}}
-                      type={'clear'}
-                      onPress={() => dispatch(setStatusMessagesModalVisible(false))}
-                    />}
+                    {selectedProject.source !== '' && (
+                      <Button
+                        title={'Cancel'}
+                        containerStyle={{padding: 10}}
+                        type={'clear'}
+                        onPress={() => dispatch(setStatusMessagesModalVisible(false))}
+                      />
+                    )}
                   </View>
                   <Button
                     titleStyle={homeStyles.urlText}

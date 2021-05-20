@@ -1,10 +1,9 @@
 import React from 'react';
 
-import {Icon, ListItem} from 'react-native-elements';
+import {ListItem} from 'react-native-elements';
 
 import commonStyles from '../../shared/common.styles';
 import {isEmpty, padWithLeadingZeros, toTitleCase} from '../../shared/Helpers';
-import * as themes from '../../shared/styles.constants';
 import useFormHook from '../form/useForm';
 import {FIRST_ORDER_CLASS_FIELDS, SECOND_ORDER_CLASS_FIELDS} from './measurements.constants';
 import useMeasurementsHook from './useMeasurements';
@@ -86,12 +85,6 @@ const MeasurementItem = (props) => {
               {getTypeText(props.item)}
             </ListItem.Title>
           </ListItem.Content>
-          <Icon
-            name={'ios-information-circle-outline'}
-            type={'ionicon'}
-            color={props.selectedIds.includes(props.item.id) ? themes.SECONDARY_BACKGROUND_COLOR
-              : themes.PRIMARY_ACCENT_COLOR}
-          />
           <ListItem.Chevron/>
         </ListItem>
       )}
