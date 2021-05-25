@@ -11,7 +11,12 @@ import {useDispatch, useSelector} from 'react-redux';
 import {MAPBOX_KEY} from '../../MapboxConfig';
 import {getNewUUID, isEmpty} from '../../shared/Helpers';
 import {MODALS} from '../home/home.constants';
-import {setModalVisible} from '../home/home.slice';
+import {
+  addedStatusMessage,
+  clearedStatusMessages,
+  setErrorMessagesModalVisible,
+  setModalVisible,
+} from '../home/home.slice';
 import useImagesHook from '../images/useImages';
 import {
   addedSpot,
@@ -165,7 +170,12 @@ const Map = React.forwardRef((props, ref) => {
     if (isOnline && !currentBasemap) useMaps.setBasemap().catch(console.error);
     else if (isOnline && currentBasemap) {
       // Alert.alert('Online Basemap', `${JSON.stringify(currentBasemap.id)}`);
-      useMaps.setBasemap(currentBasemap.id).catch(error => console.log('Error Setting Basemap', error));
+      useMaps.setBasemap(currentBasemap.id).catch(error => {
+        console.log('Error Setting Basemap', error);
+        dispatch(clearedStatusMessages());
+        dispatch(addedStatusMessage('Error setting custom basemap.\n Make sure it still exists.'));
+        dispatch(setErrorMessagesModalVisible(true));
+      });
     }
     else if (!isOnline && isOnline !== null && currentBasemap) {
       useOfflineMaps.switchToOfflineMap().catch(error => console.log('Error Setting Offline Basemap', error));
