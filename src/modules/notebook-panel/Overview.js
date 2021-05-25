@@ -11,7 +11,7 @@ import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import uiStyles from '../../shared/ui/ui.styles';
 import DataWrapper from '../external-data/DataWrapper';
-import UrlData from '../external-data/URLData';
+import FabricsOverview from '../fabrics/FabricsOverview';
 import {Form, useFormHook} from '../form';
 import ImagesOverview from '../images/ImagesOverview';
 import MeasurementsOverview from '../measurements/MeasurementsOverview';
@@ -44,9 +44,12 @@ const Overview = props => {
     if (spot.properties?.other_features) {
       updatedSections.push({title: 'Other Features', data: [<OtherFeaturesOverview/>]});
     }
-    if (spot.properties?._3d_structures) {
+    if (spot.properties?._3d_structures && !isEmpty(spot?.properties?._3d_structures?.filter(s => s.type !== 'fabric'))) {
       updatedSections.push({title: '3D Structures', data: [<ThreeDStructuresOverview/>]});
     }
+    // if (spot.properties?.fabrics || !isEmpty(spot?.properties?._3d_structures?.filter(s => s.type === 'fabric'))) {
+    //   updatedSections.push({title: 'Fabrics', data: [<FabricsOverview/>]});
+    // }
     if (!isEmpty(spot.properties?.data?.urls)) {
       updatedSections.push({title: 'Links to Web Resources', data: [<DataWrapper spot={spot} editable={false} urlData={true}/>]});
     }

@@ -3,7 +3,7 @@ import {SectionList, View} from 'react-native';
 
 import {useDispatch, useSelector} from 'react-redux';
 
-import {getNewId, toTitleCase} from '../../shared/Helpers';
+import {getNewId, isEmpty, toTitleCase} from '../../shared/Helpers';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
@@ -12,17 +12,19 @@ import {useFormHook} from '../form';
 import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
+import {setSelectedAttributes} from '../spots/spots.slice';
 import ThreeDStructureDetail from './ThreeDStructureDetail';
 import ThreeDStructureItem from './ThreeDStructureItem';
 
 const ThreeDStructuresPage = () => {
   const dispatch = useDispatch();
-  const [useForm] = useFormHook();
-
+  const selectedAttributes = useSelector(state => state.spot.selectedAttributes);
   const spot = useSelector(state => state.spot.selectedSpot);
 
   const [selected3dStructure, setSelected3dStructure] = useState({});
   const [isDetailView, setIsDetailView] = useState(false);
+
+  const [useForm] = useFormHook();
 
   const SECTIONS = {
     FOLDS: {title: 'Folds', key: 'fold'},
@@ -32,7 +34,12 @@ const ThreeDStructuresPage = () => {
 
   useEffect(() => {
     console.log('UE ThreeDStructuresPage: spot changed to', spot);
-    setSelected3dStructure({});
+    if (!isEmpty(selectedAttributes)) {
+      setSelected3dStructure(selectedAttributes[0]);
+      dispatch(setSelectedAttributes([]));
+      setIsDetailView(true);
+    }
+    else setSelected3dStructure({});
   }, [spot]);
 
   const add3dStructure = (type) => {

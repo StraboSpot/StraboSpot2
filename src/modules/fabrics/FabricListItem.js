@@ -11,16 +11,23 @@ const FabricListItem = (props) => {
   const [useForm] = useFormHook();
 
   const getTitle = (fabric) => {
-    const labelsArr = FIRST_ORDER_FABRIC_FIELDS[fabric.type].reduce((acc, fieldName) => {
-      if (fabric[fieldName]) {
-        const mainLabel = useForm.getLabel(fieldName, ['fabrics', fabric.type]);
-        const choiceLabels = useForm.getLabels(fabric[fieldName], ['fabrics', fabric.type]);
-        return [...acc, toTitleCase(mainLabel) + ' - ' + choiceLabels.toUpperCase()];
-      }
-      else return acc;
-    }, []);
-    if (isEmpty(labelsArr)) return toTitleCase(useForm.getLabel(fabric.type, ['fabrics', fabric.type]));
-    else return labelsArr.join(', ');
+    if (fabric.type === 'fabric') {
+      if (fabric.feature_type) return toTitleCase(useForm.getLabel(fabric.feature_type, ['_3d_structures', 'fabric']));
+      else return 'Fabric';
+    }
+    else {
+      const labelsArr = FIRST_ORDER_FABRIC_FIELDS[fabric.type]
+        && FIRST_ORDER_FABRIC_FIELDS[fabric.type].reduce((acc, fieldName) => {
+          if (fabric[fieldName]) {
+            const mainLabel = useForm.getLabel(fieldName, ['fabrics', fabric.type]);
+            const choiceLabels = useForm.getLabels(fabric[fieldName], ['fabrics', fabric.type]);
+            return [...acc, toTitleCase(mainLabel) + ' - ' + choiceLabels.toUpperCase()];
+          }
+          else return acc;
+        }, []);
+      if (isEmpty(labelsArr)) return toTitleCase(useForm.getLabel(fabric.type, ['fabrics', fabric.type]));
+      else return labelsArr.join(', ');
+    }
   };
 
   return (

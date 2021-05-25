@@ -7,18 +7,16 @@ import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
+import {setSelectedAttributes} from '../spots/spots.slice';
 import ThreeDStructureItem from './ThreeDStructureItem';
 
-function ThreeDStructuresOverview(props) {
+const ThreeDStructuresOverview = () => {
   const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
 
-  const render3dStructure = (threeDStructure) => {
-    return (
-      <ThreeDStructureItem item={threeDStructure} edit3dStructure={() =>
-        dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.THREE_D_STRUCTURES))}
-      />
-    );
+  const on3DStructurePressed = (threeDStructure) => {
+    dispatch(setSelectedAttributes([threeDStructure]));
+    dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.THREE_D_STRUCTURES));
   };
 
   return (
@@ -26,12 +24,12 @@ function ThreeDStructuresOverview(props) {
       <FlatList
         keyExtractor={(item, index) => index.toString()}
         data={spot?.properties?._3d_structures?.filter(d => d.type !== 'fabric') || []}
-        renderItem={({item}) => render3dStructure(item)}
+        renderItem={({item}) => <ThreeDStructureItem item={item} edit3dStructure={() => on3DStructurePressed(item)}/>}
         ItemSeparatorComponent={FlatListItemSeparator}
         ListEmptyComponent={<ListEmptyText text={'No 3D Structures yet'}/>}
       />
     </React.Fragment>
   );
-}
+};
 
 export default ThreeDStructuresOverview;

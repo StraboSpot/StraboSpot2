@@ -3,6 +3,7 @@ import {SectionList, View} from 'react-native';
 
 import {batch, useDispatch, useSelector} from 'react-redux';
 
+import {isEmpty} from '../../shared/Helpers';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SectionDivider from '../../shared/ui/SectionDivider';
@@ -13,12 +14,14 @@ import {setModalValues, setModalVisible} from '../home/home.slice';
 import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
+import {setSelectedAttributes} from '../spots/spots.slice';
 import ThreeDStructureDetail from '../three-d-structures/ThreeDStructureDetail';
 import FabricDetail from './FabricDetail';
 import FabricListItem from './FabricListItem';
 
 const FabricsPage = () => {
   const dispatch = useDispatch();
+  const selectedAttributes = useSelector(state => state.spot.selectedAttributes);
   const spot = useSelector(state => state.spot.selectedSpot);
 
   const [selectedFabric, setSelectedFabric] = useState({});
@@ -33,7 +36,12 @@ const FabricsPage = () => {
 
   useEffect(() => {
     console.log('UE FabricsPage: spot changed to', spot);
-    setSelectedFabric({});
+    if (!isEmpty(selectedAttributes)) {
+      setSelectedFabric(selectedAttributes[0]);
+      dispatch(setSelectedAttributes([]));
+      setIsDetailView(true);
+    }
+    else setSelectedFabric({});
   }, [spot]);
 
   const addFabric = (type) => {
