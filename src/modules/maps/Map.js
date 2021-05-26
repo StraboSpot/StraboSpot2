@@ -173,8 +173,9 @@ const Map = React.forwardRef((props, ref) => {
       useMaps.setBasemap(currentBasemap.id).catch(error => {
         console.log('Error Setting Basemap', error);
         dispatch(clearedStatusMessages());
-        dispatch(addedStatusMessage('Error setting custom basemap.\n Make sure it still exists.'));
+        dispatch(addedStatusMessage('Error setting custom basemap.\n Setting basemap Mapbox Topo.'));
         dispatch(setErrorMessagesModalVisible(true));
+        useMaps.setBasemap();
       });
     }
     else if (!isOnline && isOnline !== null && currentBasemap) {
