@@ -9,34 +9,24 @@ import {useFormHook} from '../form';
 function ThreeDStructureItem(props) {
   const [useForm] = useFormHook();
 
-  const get3dStructureTitle = (threeDStructure) => {
-    const firstClassTitle = toTitleCase(threeDStructure.type);
-    const secondClassTitle = toTitleCase(useForm.getLabel(threeDStructure.feature_type, ['_3d_structures', threeDStructure.type]))
-      || toTitleCase(useForm.getLabel(threeDStructure.type, ['_3d_structures', threeDStructure.type]))
-      || '';
-    return toTitleCase(firstClassTitle) + ' - ' + secondClassTitle.toUpperCase();
-  };
-
-  const render3dStructure = (threeDStructure) => {
-    const threeDStructureTitle = get3dStructureTitle(threeDStructure);
-    return (
-      <ListItem
-        containerStyle={commonStyles.listItem}
-        key={threeDStructure.id}
-        onPress={() => props.edit3dStructure(threeDStructure)}
-      >
-        <ListItem.Content style={{overflow: 'hidden'}}>
-          <ListItem.Title style={commonStyles.listItemTitle}>{threeDStructureTitle}</ListItem.Title>
-        </ListItem.Content>
-        <ListItem.Chevron/>
-      </ListItem>
-    );
+  const getTitle = (threeDStructure) => {
+    const firstClassTitle = toTitleCase(threeDStructure.type || '3D Structure');
+    const secondClassTitle = useForm.getLabel(threeDStructure.feature_type,
+      ['_3d_structures', threeDStructure.type]).toUpperCase();
+    return firstClassTitle + ' - ' + secondClassTitle;
   };
 
   return (
-    <React.Fragment>
-      {render3dStructure(props.item)}
-    </React.Fragment>
+    <ListItem
+      containerStyle={commonStyles.listItem}
+      key={props.item.id}
+      onPress={() => props.edit3dStructure(props.item)}
+    >
+      <ListItem.Content style={{overflow: 'hidden'}}>
+        <ListItem.Title style={commonStyles.listItemTitle}>{getTitle(props.item)}</ListItem.Title>
+      </ListItem.Content>
+      <ListItem.Chevron/>
+    </ListItem>
   );
 }
 
