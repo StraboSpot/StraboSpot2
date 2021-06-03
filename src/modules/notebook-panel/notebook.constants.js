@@ -113,14 +113,14 @@ export const SECONDARY_PAGES = [
     icon_pressed_src: require('../../assets/icons/3DStructure_pressed.png'),
     overview_component: ThreeDStructuresOverview,
     page_component: ThreeDStructuresPage,
-  }, {
-    key: PAGE_KEYS.FABRICS,
-    label: 'Fabrics',
-    icon_src: require('../../assets/icons/Fabric.png'),
-    icon_pressed_src: require('../../assets/icons/Fabric_pressed.png'),
-    overview_component: FabricsOverview,
-    page_component: FabricsPage,
-    modal: MODALS.NOTEBOOK_MODALS.FABRIC,
+  // }, {
+  //   key: PAGE_KEYS.FABRICS,
+  //   label: 'Fabrics',
+  //   icon_src: require('../../assets/icons/Fabric.png'),
+  //   icon_pressed_src: require('../../assets/icons/Fabric_pressed.png'),
+  //   overview_component: FabricsOverview,
+  //   page_component: FabricsPage,
+  //   modal: MODALS.NOTEBOOK_MODALS.FABRIC,
   }, {
     key: PAGE_KEYS.OTHER_FEATURES,
     label: 'Other Features',
@@ -158,83 +158,83 @@ export const SUBPAGES = [
 ];
 
 export const PET_PAGES = [
-  {
-    key: PAGE_KEYS.ROCK_TYPE_ALTERATION_ORE,
-    label: 'Alteration, Ore Rock',
-    icon_src: require('../../assets/icons/Economic.png'),
-    icon_pressed_src: require('../../assets/icons/Economic_pressed.png'),
-    page_component: RockTypePage,
-  }, {
-    key: PAGE_KEYS.ROCK_TYPE_IGNEOUS,
-    label: 'Igneous Rock',
-    icon_src: require('../../assets/icons/Igneous.png'),
-    icon_pressed_src: require('../../assets/icons/Igneous_pressed.png'),
-    page_component: RockTypePage,
-  }, {
-    key: PAGE_KEYS.ROCK_TYPE_METAMORPHIC,
-    label: 'Metamorphic Rock',
-    icon_src: require('../../assets/icons/Metamorphic.png'),
-    icon_pressed_src: require('../../assets/icons/Metamorphic_pressed.png'),
-    page_component: RockTypePage,
-  }, {
-    key: PAGE_KEYS.MINERALS,
-    label: 'Minerals',
-    icon_src: require('../../assets/icons/Minerals.png'),
-    icon_pressed_src: require('../../assets/icons/Minerals_pressed.png'),
-    page_component: MineralsPage,
-  }, {
-    key: PAGE_KEYS.REACTIONS,
-    label: 'Reaction Textures',
-    icon_src: require('../../assets/icons/Reactions.png'),
-    icon_pressed_src: require('../../assets/icons/Reactions_pressed.png'),
-    page_component: ReactionTexturesPage,
-  }, {
-    key: PAGE_KEYS.TERNARY,
-    label: 'Ternary',
-    icon_src: require('../../assets/icons/Ternary.png'),
-    icon_pressed_src: require('../../assets/icons/Ternary_pressed.png'),
-    page_component: TernaryPage,
-  },
+  // {
+  //   key: PAGE_KEYS.ROCK_TYPE_ALTERATION_ORE,
+  //   label: 'Alteration, Ore Rock',
+  //   icon_src: require('../../assets/icons/Economic.png'),
+  //   icon_pressed_src: require('../../assets/icons/Economic_pressed.png'),
+  //   page_component: RockTypePage,
+  // }, {
+  //   key: PAGE_KEYS.ROCK_TYPE_IGNEOUS,
+  //   label: 'Igneous Rock',
+  //   icon_src: require('../../assets/icons/Igneous.png'),
+  //   icon_pressed_src: require('../../assets/icons/Igneous_pressed.png'),
+  //   page_component: RockTypePage,
+  // }, {
+  //   key: PAGE_KEYS.ROCK_TYPE_METAMORPHIC,
+  //   label: 'Metamorphic Rock',
+  //   icon_src: require('../../assets/icons/Metamorphic.png'),
+  //   icon_pressed_src: require('../../assets/icons/Metamorphic_pressed.png'),
+  //   page_component: RockTypePage,
+  // }, {
+  //   key: PAGE_KEYS.MINERALS,
+  //   label: 'Minerals',
+  //   icon_src: require('../../assets/icons/Minerals.png'),
+  //   icon_pressed_src: require('../../assets/icons/Minerals_pressed.png'),
+  //   page_component: MineralsPage,
+  // }, {
+  //   key: PAGE_KEYS.REACTIONS,
+  //   label: 'Reaction Textures',
+  //   icon_src: require('../../assets/icons/Reactions.png'),
+  //   icon_pressed_src: require('../../assets/icons/Reactions_pressed.png'),
+  //   page_component: ReactionTexturesPage,
+  // }, {
+  //   key: PAGE_KEYS.TERNARY,
+  //   label: 'Ternary',
+  //   icon_src: require('../../assets/icons/Ternary.png'),
+  //   icon_pressed_src: require('../../assets/icons/Ternary_pressed.png'),
+  //   page_component: TernaryPage,
+  // },
 ];
 
 export const SED_PAGES = [
-  {
-    key: PAGE_KEYS.LITHOLOGIES,
-    label: 'Lithologies',
-    icon_src: require('../../assets/icons/SedLithologies.png'),
-    icon_pressed_src: require('../../assets/icons/SedLithologies_pressed.png'),
-    page_component: PlaceholderPage,
-  }, {
-    key: PAGE_KEYS.BEDDING,
-    label: 'Bedding',
-    icon_src: require('../../assets/icons/SedBedding.png'),
-    icon_pressed_src: require('../../assets/icons/SedBedding_pressed.png'),
-    page_component: PlaceholderPage,
-  }, {
-    key: PAGE_KEYS.STRUCTURES,
-    label: 'Structures',
-    icon_src: require('../../assets/icons/SedStructure.png'),
-    icon_pressed_src: require('../../assets/icons/SedStructure_pressed.png'),
-    page_component: PlaceholderPage,
-  }, {
-    key: PAGE_KEYS.DIAGENESIS,
-    label: 'Diagenesis',
-    icon_src: require('../../assets/icons/SedDiagenesis.png'),
-    icon_pressed_src: require('../../assets/icons/SedDiagenesis_pressed.png'),
-    page_component: PlaceholderPage,
-  }, {
-    key: PAGE_KEYS.FOSSILS,
-    label: 'Fossils',
-    icon_src: require('../../assets/icons/SedFossil.png'),
-    icon_pressed_src: require('../../assets/icons/SedFossil_pressed.png'),
-    page_component: PlaceholderPage,
-  }, {
-    key: PAGE_KEYS.INTERPRETATIONS,
-    label: 'Interpretations',
-    icon_src: require('../../assets/icons/SedInterpretation.png'),
-    icon_pressed_src: require('../../assets/icons/SedInterpretation_pressed.png'),
-    page_component: PlaceholderPage,
-  },
+  // {
+  //   key: PAGE_KEYS.LITHOLOGIES,
+  //   label: 'Lithologies',
+  //   icon_src: require('../../assets/icons/SedLithologies.png'),
+  //   icon_pressed_src: require('../../assets/icons/SedLithologies_pressed.png'),
+  //   page_component: PlaceholderPage,
+  // }, {
+  //   key: PAGE_KEYS.BEDDING,
+  //   label: 'Bedding',
+  //   icon_src: require('../../assets/icons/SedBedding.png'),
+  //   icon_pressed_src: require('../../assets/icons/SedBedding_pressed.png'),
+  //   page_component: PlaceholderPage,
+  // }, {
+  //   key: PAGE_KEYS.STRUCTURES,
+  //   label: 'Structures',
+  //   icon_src: require('../../assets/icons/SedStructure.png'),
+  //   icon_pressed_src: require('../../assets/icons/SedStructure_pressed.png'),
+  //   page_component: PlaceholderPage,
+  // }, {
+  //   key: PAGE_KEYS.DIAGENESIS,
+  //   label: 'Diagenesis',
+  //   icon_src: require('../../assets/icons/SedDiagenesis.png'),
+  //   icon_pressed_src: require('../../assets/icons/SedDiagenesis_pressed.png'),
+  //   page_component: PlaceholderPage,
+  // }, {
+  //   key: PAGE_KEYS.FOSSILS,
+  //   label: 'Fossils',
+  //   icon_src: require('../../assets/icons/SedFossil.png'),
+  //   icon_pressed_src: require('../../assets/icons/SedFossil_pressed.png'),
+  //   page_component: PlaceholderPage,
+  // }, {
+  //   key: PAGE_KEYS.INTERPRETATIONS,
+  //   label: 'Interpretations',
+  //   icon_src: require('../../assets/icons/SedInterpretation.png'),
+  //   icon_pressed_src: require('../../assets/icons/SedInterpretation_pressed.png'),
+  //   page_component: PlaceholderPage,
+  // },
 ];
 
 export const NOTEBOOK_PAGES = [OVERVIEW_PAGE, ...PRIMARY_PAGES, ...SECONDARY_PAGES, ...SUBPAGES, ...PET_PAGES, ...SED_PAGES];
