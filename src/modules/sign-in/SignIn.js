@@ -38,6 +38,7 @@ const SignIn = (props) => {
 
     useEffect(() => {
       NetInfo.fetch().then(state => {
+        console.log('NET INFO STATE', state)
         dispatch(setOnlineStatus(state.isConnected));
       });
     }, [isOnline]);
@@ -64,9 +65,9 @@ const SignIn = (props) => {
     const handleKeyboardDidHideSignIn = () => Helpers.handleKeyboardDidHide(textInputAnimate);
 
     const guestSignIn = async () => {
-      Sentry.configureScope((scope) => {
-        scope.setUser({'id': 'GUEST'});
-      });
+      // Sentry.configureScope((scope) => {
+      //   scope.setUser({'id': 'GUEST'});
+      // });
       if (!isEmpty(user.name)) await dispatch({type: 'CLEAR_STORE'});
       console.log('Loading user: GUEST');
       await navigation.navigate('HomeScreen');
@@ -95,7 +96,7 @@ const SignIn = (props) => {
       }
       catch (err) {
         console.log('error:', err);
-        Sentry.captureException(err);
+        // Sentry.captureException(err);
       }
     };
 
