@@ -129,7 +129,7 @@ const Home = () => {
     editButtonsVisible: false,
     userLocationButtonOn: false,
   });
-  const [isConnectedStatus, setIsConnectedStatus] = useState(null);
+  const [isConnectedStatus, setIsConnectedStatus] = useState({});
   const [mapMode, setMapMode] = useState(MAP_MODES.VIEW);
   const [animation, setAnimation] = useState(new Animated.Value(notebookPanelWidth));
   const [MainMenuPanelAnimation] = useState(new Animated.Value(-homeMenuPanelWidth));
@@ -151,7 +151,8 @@ const Home = () => {
     //   + 'the App Store.\n\nThanks for your help and feedback!\n\n-StraboSpot Team', [{text: 'Acknowledge'}]);
     // useDevice.loadOfflineMaps().catch();
     NetInfo.addEventListener(status => {
-      setIsConnectedStatus(status.isInternetReachable);
+      setIsConnectedStatus(status);
+      console.log('Connected Status', status);
       if (status.isInternetReachable) {
         dispatch(setOnlineStatus(true));
       }
@@ -166,10 +167,11 @@ const Home = () => {
   }, [selectedProject]);
 
   useEffect(() => {
-    if (user.email && user.name && !__DEV__) {
-      Sentry.configureScope((scope) => {
-        scope.setUser({'email': user.email, username: user.name});
-      });
+    if (user.email && user.name) {
+      // Sentry.configureScope((scope) => {
+      //   scope.setUser({'email': user.email, 'username': user.name});
+      // });
+      // Sentry.captureMessage(`Hello there, ${user.name}`);
     }
     useDevice.doesDeviceBackupDirExist().catch(err => console.log('Error checking if backup dir exists!', err));
     console.log('Initializing Home page');
@@ -726,7 +728,10 @@ const Home = () => {
         isSelectingForStereonet={isSelectingForStereonet}
         isSelectingForTagging={isSelectingForTagging}
       />
-      <View style={uiStyles.offlineImageIconContainer}>
+      <View style={{...uiStyles.offlineImageIconContainer, marginTop: 100}}>
+        <View style={{backgroundColor: 'white'}}>
+          <Text>{JSON.stringify(isConnectedStatus)}</Text>
+        </View>
         {!isOnline && <Image
           source={offlineIcon}
           style={uiStyles.offlineIcon}

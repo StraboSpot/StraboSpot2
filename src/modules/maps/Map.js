@@ -39,6 +39,7 @@ import useOfflineMapsHook from './offline-maps/useMapsOffline';
 import useMapFeaturesHook from './useMapFeatures';
 import useMapsHook from './useMaps';
 import useMapSymbology from './useMapSymbology';
+// import * as Sentry from '@sentry/react-native';
 
 MapboxGL.setAccessToken(MAPBOX_KEY);
 
@@ -172,10 +173,12 @@ const Map = React.forwardRef((props, ref) => {
       // Alert.alert('Online Basemap', `${JSON.stringify(currentBasemap.id)}`);
       useMaps.setBasemap(currentBasemap.id).catch(error => {
         console.log('Error Setting Basemap', error);
+        // Sentry.captureMessage('Something went wrong', error);
         dispatch(clearedStatusMessages());
         dispatch(addedStatusMessage('Error setting custom basemap.\n Setting basemap Mapbox Topo.'));
         dispatch(setErrorMessagesModalVisible(true));
-        useMaps.setBasemap();
+        // useMaps.setBasemap();
+        // Sentry.captureException(error);
       });
     }
     else if (!isOnline && isOnline !== null && currentBasemap) {

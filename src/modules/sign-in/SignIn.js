@@ -46,6 +46,11 @@ const SignIn = (props) => {
     useEffect(() => {
       console.log('UserProfile', userProfile);
       dispatch(setUserData(userProfile));
+      // if (!isEmpty(userProfile) && !__DEV__) {
+      //   Sentry.configureScope(scope => {
+      //     scope.setUser({'username': userProfile.name, 'email': userProfile.email});
+      //   });
+      // }
     }, [userProfile]);
 
     useEffect(() => {
