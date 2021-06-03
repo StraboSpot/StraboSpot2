@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Alert, FlatList, SectionList, Switch, Text, View} from 'react-native';
+import {Alert, FlatList, Pressable, SectionList, Switch, Text, View} from 'react-native';
 
 import {Formik} from 'formik';
 import {Button} from 'react-native-elements';
@@ -13,6 +13,7 @@ import uiStyles from '../../shared/ui/ui.styles';
 import {Form, useFormHook} from '../form';
 import {editedSpotProperties} from '../spots/spots.slice';
 import {NOTEBOOK_PAGES, PRIMARY_PAGES} from './notebook.constants';
+import {setNotebookPageVisible} from './notebook.slice';
 import notebookStyles from './notebookPanel.styles';
 
 const Overview = (props) => {
@@ -58,7 +59,7 @@ const Overview = (props) => {
     if (isSectionOverviewVisible) {
       const SectionOverview = page.overview_component;
       const sectionOverview = {
-        title: page.label,
+        title: page,
         data: [<SectionOverview page={page} openMainMenu={props.openMainMenu}/>],
       };
       return [...acc, sectionOverview];
@@ -124,11 +125,11 @@ const Overview = (props) => {
     );
   };
 
-  const renderSectionHeader = (title) => {
+  const renderSectionHeader = (page) => {
     return (
-      <View style={uiStyles.sectionHeaderBackground}>
-        <SectionDivider dividerText={title}/>
-      </View>
+      <Pressable style={uiStyles.sectionHeaderBackground} onPress={()=> dispatch(setNotebookPageVisible(page.key))}>
+        <SectionDivider dividerText={page.label}/>
+      </Pressable>
     );
   };
 
