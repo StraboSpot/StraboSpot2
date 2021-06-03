@@ -11,7 +11,7 @@ import {LABEL_DICTIONARY} from '../../form';
 import useMapsHook from '../../maps/useMaps';
 import {addedSpot, editedSpotProperties, setSelectedSpot} from '../../spots/spots.slice';
 import useSpotsHook from '../../spots/useSpots';
-import {NOTEBOOK_SUBPAGES} from '../notebook.constants';
+import {PAGE_KEYS} from '../notebook.constants';
 import {setNotebookPageVisible} from '../notebook.slice';
 import headerStyles from './notebookHeader.styles';
 import NotebookPanelMenu from './NotebookPanelMenu';
@@ -108,7 +108,7 @@ const NotebookHeader = (props) => {
         title={getSpotCoordText()}
         titleStyle={{textAlign: 'left'}}
         buttonStyle={{padding: 0, justifyContent: 'flex-start'}}
-        onPress={() => dispatch(setNotebookPageVisible(NOTEBOOK_SUBPAGES.GEOGRAPHY))}
+        onPress={() => dispatch(setNotebookPageVisible(PAGE_KEYS.GEOGRAPHY))}
       />
     );
   };

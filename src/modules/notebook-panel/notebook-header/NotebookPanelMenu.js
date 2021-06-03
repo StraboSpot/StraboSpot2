@@ -5,7 +5,7 @@ import Dialog, {DialogButton, DialogContent, DialogTitle} from 'react-native-pop
 import {useDispatch, useSelector} from 'react-redux';
 
 import useSpotsHook from '../../spots/useSpots';
-import {NOTEBOOK_PAGES, NOTEBOOK_SUBPAGES} from '../notebook.constants';
+import {PAGE_KEYS} from '../notebook.constants';
 import {setNotebookPageVisible} from '../notebook.slice';
 import styles from '../notebookPanel.styles';
 
@@ -53,7 +53,7 @@ const NotebookPanelMenu = (props) => {
           textStyle={styles.dialogText}
           onPress={() => {
             useSpots.copySpot().catch(err => console.log('Error copying Spot!', err));
-            dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.OVERVIEW));
+            dispatch(setNotebookPageVisible(PAGE_KEYS.OVERVIEW));
             props.closeNotebookPanelMenu();
           }}
         />
@@ -80,7 +80,7 @@ const NotebookPanelMenu = (props) => {
           text='Show Nesting'
           textStyle={styles.dialogText}
           onPress={() => {
-            dispatch(setNotebookPageVisible(NOTEBOOK_SUBPAGES.NESTING));
+            dispatch(setNotebookPageVisible(PAGE_KEYS.NESTING));
             props.closeNotebookPanelMenu();
           }}
         />

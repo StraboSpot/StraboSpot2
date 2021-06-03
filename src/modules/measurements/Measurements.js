@@ -12,9 +12,7 @@ import SectionDivider from '../../shared/ui/SectionDivider';
 import uiStyles from '../../shared/ui/ui.styles';
 import {COMPASS_TOGGLE_BUTTONS} from '../compass/compass.constants';
 import {setCompassMeasurements, setCompassMeasurementTypes} from '../compass/compass.slice';
-import {MODALS} from '../home/home.constants';
 import {setModalVisible} from '../home/home.slice';
-import {NOTEBOOK_PAGES, NOTEBOOK_SUBPAGES} from '../notebook-panel/notebook.constants';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import {setSelectedAttributes} from '../spots/spots.slice';
@@ -22,7 +20,7 @@ import MeasurementItem from './MeasurementItem';
 import styles from './measurements.styles';
 import useMeasurementsHook from './useMeasurements';
 
-const MeasurementsPage = () => {
+const MeasurementsPage = (props) => {
   const dispatch = useDispatch();
   const modalVisible = useSelector(state => state.home.modalVisible);
   const spot = useSelector(state => state.spot.selectedSpot);
@@ -62,7 +60,7 @@ const MeasurementsPage = () => {
 
   const addMeasurement = (type) => {
     dispatch(setCompassMeasurementTypes(SECTIONS[type].compass_toggles));
-    dispatch(setModalVisible({modal: MODALS.NOTEBOOK_MODALS.COMPASS}));
+    dispatch(setModalVisible({modal: props.page.modal}));
   };
 
   const deleteMeasurements = (measurementsToDelete) => {
@@ -97,7 +95,7 @@ const MeasurementsPage = () => {
     setMultiSelectMode();
     dispatch(setModalVisible({modal: null}));
     dispatch(setSelectedAttributes(data));
-    dispatch(setNotebookPageVisible(NOTEBOOK_SUBPAGES.MEASUREMENTDETAIL));
+    dispatch(setNotebookPageVisible(props.page.subpage_key));
   };
 
   const onMeasurementPressed = (item, title) => {
@@ -125,7 +123,7 @@ const MeasurementsPage = () => {
     console.log('Identify Selected:', selectedFeaturesTemp);
     if (selectedFeaturesTemp.length > 1) dispatch(setModalVisible({modal: null}));
     dispatch(setSelectedAttributes(selectedFeaturesTemp));
-    dispatch(setNotebookPageVisible(NOTEBOOK_SUBPAGES.MEASUREMENTDETAIL));
+    dispatch(setNotebookPageVisible(props.page.subpage_key));
   };
 
   const onSelectingStart = (type) => {
@@ -221,17 +219,12 @@ const MeasurementsPage = () => {
 
   const viewMeasurementDetail = (item) => {
     dispatch(setSelectedAttributes([item]));
-    dispatch(setNotebookPageVisible(NOTEBOOK_SUBPAGES.MEASUREMENTDETAIL));
+    dispatch(setNotebookPageVisible(props.page.subpage_key));
   };
 
   return (
     <View style={styles.measurementsContentContainer}>
-      <ReturnToOverviewButton
-        onPress={() => {
-          dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.OVERVIEW));
-          dispatch(setModalVisible({modal: null}));
-        }}
-      />
+      <ReturnToOverviewButton/>
       {renderSections()}
       {selectedFeaturesTemp.length >= 1 && (
         <View>

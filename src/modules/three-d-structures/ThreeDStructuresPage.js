@@ -9,8 +9,6 @@ import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
 import uiStyles from '../../shared/ui/ui.styles';
 import {useFormHook} from '../form';
-import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
-import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import {setSelectedAttributes} from '../spots/spots.slice';
 import ThreeDStructureDetail from './ThreeDStructureDetail';
@@ -104,7 +102,7 @@ const ThreeDStructuresPage = () => {
     <React.Fragment>
       {!isDetailView && (
         <View style={{flex: 1}}>
-          <ReturnToOverviewButton onPress={() => dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.OVERVIEW))}/>
+          <ReturnToOverviewButton/>
           {renderSections()}
         </View>
       )}

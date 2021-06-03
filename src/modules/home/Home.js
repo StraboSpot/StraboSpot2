@@ -33,7 +33,7 @@ import {setCurrentImageBasemap} from '../maps/maps.slice';
 import SaveMapsModal from '../maps/offline-maps/SaveMapsModal';
 import useMapsHook from '../maps/useMaps';
 import VertexDrag from '../maps/VertexDrag';
-import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
+import {PAGE_KEYS} from '../notebook-panel/notebook.constants';
 import {setNotebookPageVisible, setNotebookPanelVisible} from '../notebook-panel/notebook.slice';
 import NotebookPanel from '../notebook-panel/NotebookPanel';
 import notebookStyles from '../notebook-panel/notebookPanel.styles';
@@ -364,7 +364,7 @@ const Home = () => {
     dispatch(setLoadingStatus({view: 'home', bool: true}));
     const newOrEditedSpot = await mapComponentRef.current.endDraw();
     setMapMode(MAP_MODES.VIEW);
-    if (!isEmpty(newOrEditedSpot) && !isSelectingForStereonet) openNotebookPanel(NOTEBOOK_PAGES.OVERVIEW);
+    if (!isEmpty(newOrEditedSpot) && !isSelectingForStereonet) openNotebookPanel(PAGE_KEYS.OVERVIEW);
     setIsSelectingForStereonet(false);
     setIsSelectingForTagging(false);
     dispatch(setLoadingStatus({view: 'home', bool: false}));
@@ -393,10 +393,10 @@ const Home = () => {
     }
   };
 
-  const openNotebookPanel = pageView => {
+  const openNotebookPanel = (pageView) => {
     console.log('Opening Notebook', pageView, '...');
     if (modalVisible !== MODALS.SHORTCUT_MODALS.ADD_TAGS_TO_SPOTS) dispatch(setModalVisible({modal: null}));
-    dispatch(setNotebookPageVisible(pageView || NOTEBOOK_PAGES.OVERVIEW));
+    dispatch(setNotebookPageVisible(pageView || PAGE_KEYS.OVERVIEW));
     animatePanels(animation, 0);
     animatePanels(rightsideIconAnimationValue, -notebookPanelWidth);
     dispatch(setNotebookPanelVisible(true));
@@ -417,7 +417,7 @@ const Home = () => {
       return (
         <TagsShortcutModal
           close={() => dispatch(setModalVisible({modal: null}))}
-          onPress={() => modalHandler(NOTEBOOK_PAGES.TAG, MODALS.NOTEBOOK_MODALS.TAGS)}
+          onPress={() => modalHandler(PAGE_KEYS.TAGS, MODALS.NOTEBOOK_MODALS.TAGS)}
         />
       );
     }
@@ -425,7 +425,7 @@ const Home = () => {
       return (
         <AddTagsToSpotsShortcutModal
           close={() => dispatch(setModalVisible({modal: null}))}
-          onPress={() => modalHandler(NOTEBOOK_PAGES.TAG, MODALS.NOTEBOOK_MODALS.TAGS)}
+          onPress={() => modalHandler(PAGE_KEYS.TAGS, MODALS.NOTEBOOK_MODALS.TAGS)}
         />
       );
     }
@@ -440,7 +440,7 @@ const Home = () => {
     if (modalVisible === MODALS.SHORTCUT_MODALS.COMPASS) {
       return (
         <CompassModal
-          onPress={() => modalHandler(NOTEBOOK_PAGES.MEASUREMENT, MODALS.NOTEBOOK_MODALS.COMPASS)}
+          onPress={() => modalHandler(PAGE_KEYS.MEASUREMENTS, MODALS.NOTEBOOK_MODALS.COMPASS)}
           type={modalVisible}
         />
       );
@@ -468,7 +468,7 @@ const Home = () => {
     else if (modalVisible === MODALS.SHORTCUT_MODALS.SAMPLE) {
       return (
         <SampleModal
-          onPress={() => modalHandler(NOTEBOOK_PAGES.SAMPLE, MODALS.NOTEBOOK_MODALS.SAMPLE)}
+          onPress={() => modalHandler(PAGE_KEYS.SAMPLES, MODALS.NOTEBOOK_MODALS.SAMPLE)}
           type={modalVisible}
         />
       );
@@ -477,7 +477,7 @@ const Home = () => {
       return (
         <ShortcutNotesModal
           close={() => dispatch(setModalVisible({modal: null}))}
-          onPress={() => modalHandler(NOTEBOOK_PAGES.NOTE)}
+          onPress={() => modalHandler(PAGE_KEYS.NOTES)}
         />
       );
     }

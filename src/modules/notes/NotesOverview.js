@@ -6,10 +6,9 @@ import {useDispatch, useSelector} from 'react-redux';
 import commonStyles from '../../shared/common.styles';
 import {truncateText} from '../../shared/Helpers';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
-import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 
-const SpotNotesOverview = () => {
+const SpotNotesOverview = (props) => {
 
   const dispatch = useDispatch();
   const savedNote = useSelector(state => state.spot.selectedSpot.properties.notes);
@@ -19,7 +18,7 @@ const SpotNotesOverview = () => {
       {savedNote ? (
           <ListItem
             containerStyle={commonStyles.listItem}
-            onPress={() => dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.NOTE))}
+            onPress={() => dispatch(setNotebookPageVisible(props.page.key))}
           >
             <ListItem.Content>
               <ListItem.Title style={commonStyles.listItemTitle}>{truncateText(savedNote, 750)}</ListItem.Title>

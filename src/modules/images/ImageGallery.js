@@ -13,7 +13,7 @@ import uiStyles from '../../shared/ui/ui.styles';
 import {setImageModalVisible, setLoadingStatus} from '../home/home.slice';
 import {SORTED_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import SortingButtons from '../main-menu-panel/SortingButtons';
-import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
+import {PAGE_KEYS} from '../notebook-panel/notebook.constants';
 import {setSelectedAttributes} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
 import imageStyles from './images.styles';
@@ -109,7 +109,7 @@ const ImageGallery = (props) => {
         <SectionDividerWithRightButton
           dividerText={spot.properties.name}
           buttonTitle={'View In Spot'}
-          onPress={() => props.openSpotInNotebook(spot, NOTEBOOK_PAGES.IMAGE)}
+          onPress={() => props.openSpotInNotebook(spot, PAGE_KEYS.IMAGES)}
         />
       </View>
     );

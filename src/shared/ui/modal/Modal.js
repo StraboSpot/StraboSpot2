@@ -6,10 +6,10 @@ import {useSelector} from 'react-redux';
 
 import compassStyles from '../../../modules/compass/compass.styles';
 import {MODALS} from '../../../modules/home/home.constants';
-import {NOTEBOOK_SUBPAGES} from '../../../modules/notebook-panel/notebook.constants';
+import {PAGE_KEYS} from '../../../modules/notebook-panel/notebook.constants';
 import commonStyles from '../../common.styles';
-import {isEmpty} from '../../Helpers';
 import * as Helpers from '../../Helpers';
+import {isEmpty} from '../../Helpers';
 import * as themes from '../../styles.constants';
 import modalStyle from './modal.style';
 
@@ -109,8 +109,8 @@ const Modal = (props) => {
   return (
     <Animated.View style={[modalStyle.modalContainer, props.style, {transform: [{translateY: textInputAnimate}]}]}>
       {renderModalHeader()}
-        {props.children}
-      {pageVisible !== NOTEBOOK_SUBPAGES.MEASUREMENTDETAIL && renderModalBottom()}
+      {props.children}
+      {pageVisible !== PAGE_KEYS.MEASUREMENT_DETAIL && renderModalBottom()}
     </Animated.View>
   );
 };

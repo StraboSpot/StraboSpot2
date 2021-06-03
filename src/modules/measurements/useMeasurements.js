@@ -5,7 +5,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {getNewId, isEmpty} from '../../shared/Helpers';
 import {COMPASS_TOGGLE_BUTTONS} from '../compass/compass.constants';
 import {useFormHook} from '../form';
-import {NOTEBOOK_SUBPAGES} from '../notebook-panel/notebook.constants';
+import {PAGE_KEYS} from '../notebook-panel/notebook.constants';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import {editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
 
@@ -73,7 +73,7 @@ const useMeasurements = () => {
 
       if (compassMeasurements.manual) {
         dispatch(setSelectedAttributes([newOrientation]));
-        dispatch(setNotebookPageVisible(NOTEBOOK_SUBPAGES.MEASUREMENTDETAIL));
+        dispatch(setNotebookPageVisible(PAGE_KEYS.MEASUREMENT_DETAIL));
       }
     }
     else Alert.alert('No Measurement Type', 'Please select a measurement type using the toggles.');

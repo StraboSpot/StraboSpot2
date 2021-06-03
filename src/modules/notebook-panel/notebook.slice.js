@@ -2,14 +2,14 @@ import {createSlice} from '@reduxjs/toolkit';
 
 import {isEmpty} from '../../shared/Helpers';
 import {COMPASS_TOGGLE_BUTTONS} from '../compass/compass.constants';
-import {PRIMARY_NOTEBOOK_PAGES} from './notebook.constants';
+import {PRIMARY_PAGES} from './notebook.constants';
 
 const initialNotebookState = {
   visibleNotebookPagesStack: [],
   isNotebookPanelVisible: false,
   isSamplesModalVisible: false,
   compassMeasurementTypes: [COMPASS_TOGGLE_BUTTONS.PLANAR],
-  notebookToolbarIcons: Object.values(PRIMARY_NOTEBOOK_PAGES),
+  notebookPagesOn: PRIMARY_PAGES.map(p => p.key),
 };
 
 const notebookSlice = createSlice({
@@ -36,11 +36,11 @@ const notebookSlice = createSlice({
     setNotebookPanelVisible(state, action) {
       state.isNotebookPanelVisible = action.payload;
     },
-    addedNotebookToolbarIcon(state, action) {
-      state.notebookToolbarIcons = [...state.notebookToolbarIcons, action.payload];
+    addedNotebookPageOn(state, action) {
+      state.notebookPagesOn = [...state.notebookPagesOn, action.payload];
     },
-    removedNotebookToolbarIcon(state, action) {
-      state.notebookToolbarIcons = state.notebookToolbarIcons.filter(s => s !== action.payload);
+    removedNotebookPageOn(state, action) {
+      state.notebookPagesOn = state.notebookPagesOn.filter(s => s !== action.payload);
     },
   },
 });
@@ -50,8 +50,8 @@ export const {
   setNotebookPageVisible,
   setNotebookPageVisibleToPrev,
   setNotebookPanelVisible,
-  addedNotebookToolbarIcon,
-  removedNotebookToolbarIcon,
+  addedNotebookPageOn,
+  removedNotebookPageOn,
 } = notebookSlice.actions;
 
 export default notebookSlice.reducer;

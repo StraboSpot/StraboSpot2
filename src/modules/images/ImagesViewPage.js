@@ -11,8 +11,6 @@ import ListEmptyText from '../../shared/ui/ListEmptyText';
 import ToastPopup from '../../shared/ui/Toast';
 import {imageStyles, useImagesHook} from '../images';
 import {setCurrentImageBasemap} from '../maps/maps.slice';
-import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
-import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 
 const ImagesViewPage = () => {
@@ -61,9 +59,7 @@ const ImagesViewPage = () => {
 
   return (
     <View style={{flex: 1}}>
-      <ReturnToOverviewButton
-        onPress={() => dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.OVERVIEW))}
-      />
+      <ReturnToOverviewButton/>
       <View style={{alignItems: 'center', flex: 1}}>
         <View style={imageStyles.buttonsContainer}>
           <ButtonRounded

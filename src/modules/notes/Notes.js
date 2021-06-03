@@ -11,7 +11,7 @@ import uiStyles from '../../shared/ui/ui.styles';
 import {TextInputField} from '../form';
 import {MODALS} from '../home/home.constants';
 import useMapsHook from '../maps/useMaps';
-import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
+import {PAGE_KEYS} from '../notebook-panel/notebook.constants';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import {editedSpotProperties, setSelectedSpotNotesTimestamp} from '../spots/spots.slice';
@@ -69,7 +69,7 @@ const Notes = () => {
     }
     dispatch(editedSpotProperties({field: 'notes', value: note}));
     dispatch(setSelectedSpotNotesTimestamp());
-    if (pageTransition) dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.OVERVIEW));
+    if (pageTransition) dispatch(setNotebookPageVisible(PAGE_KEYS.OVERVIEW));
   };
 
   return (
@@ -83,11 +83,9 @@ const Notes = () => {
         )
         : (
           <React.Fragment>
-            <ReturnToOverviewButton
-              onPress={() => dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.OVERVIEW))}
-            />
+            <ReturnToOverviewButton/>
             <SaveAndCloseButton
-              cancel={() => dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.OVERVIEW))}
+              cancel={() => dispatch(setNotebookPageVisible(PAGE_KEYS.OVERVIEW))}
               save={() => saveForm(formRef.current, true)}
             />
           </React.Fragment>
@@ -100,17 +98,17 @@ const Notes = () => {
         enableReinitialize={true}
       >
         {() => (
-            <ListItem containerStyle={commonStyles.listItemFormField}>
-              <ListItem.Content >
-                <Field
-                  component={TextInputField}
-                  name={'note'}
-                  key={'note'}
-                  appearance={'full'}
-                  autoFocus={true}
-                />
-              </ListItem.Content>
-            </ListItem>
+          <ListItem containerStyle={commonStyles.listItemFormField}>
+            <ListItem.Content>
+              <Field
+                component={TextInputField}
+                name={'note'}
+                key={'note'}
+                appearance={'full'}
+                autoFocus={true}
+              />
+            </ListItem.Content>
+          </ListItem>
         )}
       </Formik>
     </View>

@@ -5,21 +5,20 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
-import {SECONDARY_NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import {setSelectedAttributes} from '../spots/spots.slice';
 import FabricListItem from './FabricListItem';
 
-const FabricsOverview = () => {
+const FabricsOverview = (props) => {
   const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
 
-  const fabrics = [...spot?.properties?.fabrics,
-    ...spot?.properties?._3d_structures?.filter(struct => struct.type === 'fabric')];
+  const fabrics = [...(spot?.properties?.fabrics || []),
+    ...(spot?.properties?._3d_structures?.filter(struct => struct.type === 'fabric') || [])];
 
   const onFabricPressed = (fabric) => {
     dispatch(setSelectedAttributes([fabric]));
-    dispatch(setNotebookPageVisible(SECONDARY_NOTEBOOK_PAGES.FABRICS));
+    dispatch(setNotebookPageVisible(props.page.key));
   };
 
   return (

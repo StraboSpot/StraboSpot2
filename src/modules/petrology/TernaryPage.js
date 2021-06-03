@@ -2,18 +2,15 @@ import React from 'react';
 import {Text, View} from 'react-native';
 
 import {ListItem} from 'react-native-elements';
-import {useDispatch, useSelector} from 'react-redux';
+import {useSelector} from 'react-redux';
 
 import {roundToDecimalPlaces} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
 import SectionDivider from '../../shared/ui/SectionDivider';
-import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
-import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import {TERNARY_MINERALS} from './petrology.constants';
 
 const TernaryPage = (props) => {
-  const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
 
   const gatherTernaryValues = () => {
@@ -43,9 +40,7 @@ const TernaryPage = (props) => {
 
   return (
     <React.Fragment>
-      <ReturnToOverviewButton
-        onPress={() => dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.OVERVIEW))}
-      />
+      <ReturnToOverviewButton/>
       <SectionDivider dividerText={'Ternary'}/>
       {!((ternary.q > 0 && ternary.a > 0 && ternary.p > 0)
         || (ternary.a > 0 && ternary.p > 0 && ternary.f > 0)

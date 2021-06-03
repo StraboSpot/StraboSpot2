@@ -12,12 +12,12 @@ import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import TextInputModal from '../../shared/ui/GeneralTextInputModal';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import {addedStatusMessage, clearedStatusMessages, setErrorMessagesModalVisible} from '../home/home.slice';
-import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
+import {PAGE_KEYS} from '../notebook-panel/notebook.constants';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import externalDataStyles from './ExternalData.styles';
 import useExternalDataHook from './useExternalData';
 
-function UrlData(props) {
+const UrlData = (props) => {
   const useDevice = useDeviceHook();
   const dispatch = useDispatch();
   const [urlToEdit, setUrlToEdit] = useState({});
@@ -29,9 +29,7 @@ function UrlData(props) {
       setUrlToEdit({index: i, url: urlToEdit});
       setIsEditModalVisible(true);
     }
-    else {
-      dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.DATA));
-    }
+    else dispatch(setNotebookPageVisible(PAGE_KEYS.DATA));
   };
 
   const renderURLEditModal = () => {
@@ -105,7 +103,7 @@ function UrlData(props) {
       }
       else throw Error('Not valid URL.');
     }
- catch (err) {
+    catch (err) {
       console.error('Error saving edits', err);
       dispatch(clearedStatusMessages());
       dispatch(addedStatusMessage('Please make sure you enter a valid url.'));
@@ -125,6 +123,6 @@ function UrlData(props) {
       {renderURLEditModal()}
     </View>
   );
-}
+};
 
 export default UrlData;

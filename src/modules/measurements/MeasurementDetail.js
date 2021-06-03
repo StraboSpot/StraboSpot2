@@ -16,14 +16,13 @@ import {setCompassMeasurements, setCompassMeasurementTypes} from '../compass/com
 import {Form, useFormHook} from '../form';
 import {MODALS} from '../home/home.constants';
 import {setModalVisible} from '../home/home.slice';
-import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
 import {setNotebookPageVisible, setNotebookPageVisibleToPrev} from '../notebook-panel/notebook.slice';
 import {editedSpotProperties, setSelectedAttributes, setSelectedMeasurement} from '../spots/spots.slice';
 import MeasurementItem from './MeasurementItem';
 import styles from './measurements.styles';
 import useMeasurementsHook from './useMeasurements';
 
-const MeasurementDetailPage = () => {
+const MeasurementDetailPage = (props) => {
   const dispatch = useDispatch();
   const compassMeasurements = useSelector(state => state.compass.measurements);
   const selectedAttitudes = useSelector(state => state.spot.selectedAttributes);
@@ -44,7 +43,7 @@ const MeasurementDetailPage = () => {
   // Update selected Measurement on selected Attitudes changed or return to Measurements page if no selected Attitude
   useEffect(() => {
     console.log('UE for selectedAttitudes changed in MeasurementDetailPage', selectedAttitudes);
-    if (isEmpty(selectedAttitudes)) dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.MEASUREMENT));
+    if (isEmpty(selectedAttitudes)) dispatch(setNotebookPageVisible(props.page.key));
     else {
       if (isEmpty(selectedMeasurement) && selectedAttitudes[0]) switchSelectedMeasurement(selectedAttitudes[0]);
       else if (isAddingAssociatedMeasurementAfterSave) {

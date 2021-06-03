@@ -12,7 +12,7 @@ import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRig
 import uiStyles from '../../shared/ui/ui.styles';
 import {SORTED_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import SortingButtons from '../main-menu-panel/SortingButtons';
-import {NOTEBOOK_PAGES, NOTEBOOK_SUBPAGES} from '../notebook-panel/notebook.constants';
+import {PAGE_KEYS} from '../notebook-panel/notebook.constants';
 import useSpotsHook from '../spots/useSpots';
 
 const SamplesList = (props) => {
@@ -31,7 +31,7 @@ const SamplesList = (props) => {
       <ListItem
         containerStyle={commonStyles.listItem}
         key={sample.id}
-        onPress={() => props.openSpotInNotebook(spot, NOTEBOOK_SUBPAGES.SAMPLEDETAIL, [sample])}
+        onPress={() => props.openSpotInNotebook(spot, PAGE_KEYS.SAMPLE_DETAIL, [sample])}
       >
         <ListItem.Content>
           <ListItem.Title style={commonStyles.listItemTitle}>{sample.sample_id_name || 'Unknown'}</ListItem.Title>
@@ -80,7 +80,7 @@ const SamplesList = (props) => {
         <SectionDividerWithRightButton
           dividerText={title}
           buttonTitle={'View In Spot'}
-          onPress={() => props.openSpotInNotebook(spot, NOTEBOOK_PAGES.SAMPLE)}
+          onPress={() => props.openSpotInNotebook(spot, PAGE_KEYS.SAMPLES)}
         />
       </View>
     );

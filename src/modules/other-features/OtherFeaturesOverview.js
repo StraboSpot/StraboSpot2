@@ -5,18 +5,20 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
-import {NOTEBOOK_PAGES, NOTEBOOK_SUBPAGES} from '../notebook-panel/notebook.constants';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import OtherFeatureItem from './OtherFeatureItem';
 
-const OtherFeaturesOverview = () => {
+const OtherFeaturesOverview = (props) => {
   const dispatch = useDispatch();
   const featuresData = useSelector(state => state.spot.selectedSpot.properties.other_features);
 
   const renderFeature = (feature) => {
-    return <OtherFeatureItem feature={feature} editFeature={(feature) => {
-      dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.OTHER_FEATURES));
-    }}/>;
+    return (
+      <OtherFeatureItem
+        feature={feature}
+        editFeature={() => dispatch(setNotebookPageVisible(props.page.key))}
+      />
+    );
   };
 
   return (

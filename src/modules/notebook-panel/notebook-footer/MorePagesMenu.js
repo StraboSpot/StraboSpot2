@@ -5,54 +5,48 @@ import {Avatar, ListItem} from 'react-native-elements';
 import Dialog, {DialogContent, DialogTitle} from 'react-native-popup-dialog';
 import {useDispatch, useSelector} from 'react-redux';
 
+import {isEmpty} from '../../../shared/Helpers';
 import SectionDivider from '../../../shared/ui/SectionDivider';
-import {
-  NOTEBOOK_PAGES,
-  NOTEBOOK_PAGES_ICONS,
-  PET_NOTEBOOK_PAGES,
-  PRIMARY_NOTEBOOK_PAGES,
-  SECONDARY_NOTEBOOK_PAGES,
-} from '../notebook.constants';
-import {addedNotebookToolbarIcon, removedNotebookToolbarIcon, setNotebookPageVisible} from '../notebook.slice';
+import {PET_PAGES, PRIMARY_PAGES, SECONDARY_PAGES, SED_PAGES} from '../notebook.constants';
+import {addedNotebookPageOn, removedNotebookPageOn, setNotebookPageVisible} from '../notebook.slice';
 import styles from '../notebookPanel.styles';
 import footerStyles from './notebookFooter.styles';
 
 const MorePagesMenu = (props) => {
   const dispatch = useDispatch();
-  const toolbarIcons = useSelector(state => state.notebook.notebookToolbarIcons);
+  const notebookPagesOn = useSelector(state => state.notebook.notebookPagesOn);
 
-  const switchPage = (page) => {
-    dispatch(setNotebookPageVisible(page));
+  const switchPage = (key) => {
+    dispatch(setNotebookPageVisible(key));
     props.closeMorePagesMenu();
   };
 
-  const toggleSwitch = (page) => {
-    if (toolbarIcons.includes(page)) dispatch(removedNotebookToolbarIcon(page));
-    else dispatch(addedNotebookToolbarIcon(page));
+  const togglePageSwitch = (key) => {
+    if (notebookPagesOn.includes(key)) dispatch(removedNotebookPageOn(key));
+    else dispatch(addedNotebookPageOn(key));
   };
 
   const renderMenuItem = (page, isShowBottomDivider) => {
-    const pageKey = Object.keys(NOTEBOOK_PAGES).find(key => NOTEBOOK_PAGES[key] === page);
     return (
       <ListItem
         containerStyle={footerStyles.morePagesListItem}
-        onPress={() => switchPage(page)}
+        onPress={() => switchPage(page.key)}
         bottomDivider={isShowBottomDivider}
       >
         <ListItem.Content style={{flexDirection: 'row'}}>
           <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
             <View style={{flexDirection: 'row'}}>
               <Avatar
-                source={NOTEBOOK_PAGES_ICONS[pageKey]}
+                source={page.icon_src}
                 placeholderStyle={{backgroundColor: 'transparent'}}
                 size={20}
                 containerStyle={{alignSelf: 'center'}}
               />
-              <ListItem.Title style={footerStyles.morePagesListItemTitle}>{page}</ListItem.Title>
+              <ListItem.Title style={footerStyles.morePagesListItemTitle}>{page.label}</ListItem.Title>
             </View>
             <Switch
-              onChange={() => toggleSwitch(page)}
-              value={toolbarIcons.includes(page)}
+              onChange={() => togglePageSwitch(page.key)}
+              value={notebookPagesOn.includes(page.key)}
             />
           </View>
         </ListItem.Content>
@@ -75,18 +69,26 @@ const MorePagesMenu = (props) => {
     >
       <DialogContent>
         <ScrollView>
-          {Object.values({...PRIMARY_NOTEBOOK_PAGES, ...SECONDARY_NOTEBOOK_PAGES}).map(
-            (item, i, arr) => renderMenuItem(item, i < arr.length - 1))}
-          {/*<SectionDivider*/}
-          {/*  dividerText={'Ig/Met'}*/}
-          {/*  style={footerStyles.morePagesSectionDivider}*/}
-          {/*/>*/}
-          {/*{Object.values(PET_NOTEBOOK_PAGES).map((item, i, arr) => renderMenuItem(item, i < arr.length - 1))}*/}
-          {/*<SectionDivider*/}
-          {/*  dividerText={'Sedimentology'}*/}
-          {/*  style={footerStyles.morePagesSectionDivider}*/}
-          {/*/>*/}
-          {/*{Object.values(SED_NOTEBOOK_PAGES).map((item, i, arr) => renderMenuItem(item, i < arr.length - 1))}*/}
+          {[...PRIMARY_PAGES, ...SECONDARY_PAGES].map(
+            (page, i, arr) => renderMenuItem(page, i < arr.length - 1))}
+          {!isEmpty(PET_PAGES) && (
+            <React.Fragment>
+              <SectionDivider
+                dividerText={'Ig/Met'}
+                style={footerStyles.morePagesSectionDivider}
+              />
+              {PET_PAGES.map((page, i, arr) => renderMenuItem(page, i < arr.length - 1))}
+            </React.Fragment>
+          )}
+          {!isEmpty(SED_PAGES) && (
+            <React.Fragment>
+              <SectionDivider
+                dividerText={'Sedimentology'}
+                style={footerStyles.morePagesSectionDivider}
+              />
+              {SED_PAGES.map((page, i, arr) => renderMenuItem(page, i < arr.length - 1))}
+            </React.Fragment>
+          )}
         </ScrollView>
       </DialogContent>
     </Dialog>
