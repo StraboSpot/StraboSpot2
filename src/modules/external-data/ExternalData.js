@@ -2,20 +2,17 @@ import React, {useState} from 'react';
 import {Text, TextInput, View} from 'react-native';
 
 import {Button, ButtonGroup, ListItem} from 'react-native-elements';
-import {useDispatch, useSelector} from 'react-redux';
+import {useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
 import {PRIMARY_ACCENT_COLOR} from '../../shared/styles.constants';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {formStyles} from '../form';
-import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
-import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import DataWrapper from './DataWrapper';
 import useExternalDataHook from './useExternalData';
 
 const ExternalData = () => {
-  const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
   const [error, setError] = useState(false);
   const [protocol, setProtocol] = useState('http://');
@@ -45,9 +42,7 @@ const ExternalData = () => {
 
   return (
     <View style={{flex: 1}}>
-      <ReturnToOverviewButton
-        onPress={() => dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.OVERVIEW))}
-      />
+      <ReturnToOverviewButton/>
       <SectionDivider dividerText={'Links To Web Resources'}/>
       <View style={{flex: 1}}>
         <ButtonGroup

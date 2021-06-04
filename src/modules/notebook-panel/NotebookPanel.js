@@ -10,30 +10,12 @@ import {isEmpty} from '../../shared/Helpers';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SectionDivider from '../../shared/ui/SectionDivider';
-import ExternalData from '../external-data/ExternalData';
-import FabricsPage from '../fabrics/FabricsPage';
-import Geography from '../geography/Geography';
-import {MODALS} from '../home/home.constants';
 import {setModalVisible} from '../home/home.slice';
-import {ImagesPage} from '../images';
-import MeasurementDetailPage from '../measurements/MeasurementDetail';
-import MeasurementsPage from '../measurements/Measurements';
-import Nesting from '../nesting/Nesting';
-import NotesPage from '../notes/Notes';
-import OtherFeaturesPage from '../other-features/OtherFeaturesPage';
-import MineralsPage from '../petrology/MineralsPage';
-import ReactionTexturesPage from '../petrology/ReactionTexturesPage';
-import RockTypePage from '../petrology/RockTypePage';
-import TernaryPage from '../petrology/TernaryPage';
-import SampleDetailPage from '../samples/SampleDetail';
-import SamplesPage from '../samples/SamplesPage';
 import {useSpotsHook} from '../spots';
 import {setSelectedSpot} from '../spots/spots.slice';
-import TagsPage from '../tags/TagsNotebook';
-import ThreeDStructuresPage from '../three-d-structures/ThreeDStructuresPage';
 import NotebookFooter from './notebook-footer/NotebookFooter';
 import NotebookHeader from './notebook-header/NotebookHeader';
-import {NOTEBOOK_PAGES, NOTEBOOK_SUBPAGES, PET_NOTEBOOK_PAGES, SECONDARY_NOTEBOOK_PAGES} from './notebook.constants';
+import {NOTEBOOK_PAGES, PAGE_KEYS} from './notebook.constants';
 import {setNotebookPageVisible} from './notebook.slice';
 import notebookStyles from './notebookPanel.styles';
 import Overview from './Overview';
@@ -67,20 +49,16 @@ const NotebookPanel = (props) => {
 
   const handleKeyboardDidHideNotebook = () => Helpers.handleKeyboardDidHide(textInputAnimate);
 
-  const onNotebookPageVisible = (page) => {
-    dispatch(setNotebookPageVisible(page));
-    if (page === NOTEBOOK_PAGES.MEASUREMENT || page === NOTEBOOK_SUBPAGES.MEASUREMENTDETAIL) {
-      dispatch(setModalVisible({modal: MODALS.NOTEBOOK_MODALS.COMPASS}));
-    }
-    else if (page === NOTEBOOK_PAGES.SAMPLE) dispatch(setModalVisible({modal: MODALS.NOTEBOOK_MODALS.SAMPLE}));
-    else if (page === NOTEBOOK_PAGES.TAG) dispatch(setModalVisible({modal: MODALS.NOTEBOOK_MODALS.TAGS}));
-    else if (page === SECONDARY_NOTEBOOK_PAGES.FABRICS) {
-      dispatch(setModalVisible({modal: MODALS.NOTEBOOK_MODALS.FABRIC}));
-    }
+  const openPage = (key) => {
+    dispatch(setNotebookPageVisible(key));
+    const page = NOTEBOOK_PAGES.find(p => p.key === key);
+    if (page.modal) dispatch(setModalVisible({modal: page.modal}));
     else dispatch(setModalVisible({modal: null}));
   };
 
   const renderNotebookContent = () => {
+    const page = NOTEBOOK_PAGES.find(p => p.key === (pageVisible || PAGE_KEYS.OVERVIEW));
+    const Page = page?.page_component || Overview;
     return (
       <React.Fragment>
         <Animated.View style={{flex: 1, transform: [{translateY: textInputAnimate}]}}>
@@ -92,48 +70,11 @@ const NotebookPanel = (props) => {
             />
           </View>
           <View style={{...notebookStyles.centerContainer}}>
-            {/*Main Overview Page*/}
-            {(!pageVisible || pageVisible === NOTEBOOK_PAGES.OVERVIEW) && <Overview openMainMenu={props.openMainMenu}/>}
-
-            {/*Primary Pages*/}
-            {pageVisible === NOTEBOOK_PAGES.MEASUREMENT && <MeasurementsPage/>}
-            {pageVisible === NOTEBOOK_PAGES.NOTE && <NotesPage/>}
-            {pageVisible === NOTEBOOK_PAGES.SAMPLE && <SamplesPage/>}
-            {pageVisible === NOTEBOOK_PAGES.TAG && <TagsPage openMainMenu={props.openMainMenu}/>}
-            {pageVisible === NOTEBOOK_PAGES.IMAGE && <ImagesPage/>}
-
-            {/*Notebook Subpages*/}
-            {pageVisible === NOTEBOOK_SUBPAGES.GEOGRAPHY && <Geography/>}
-            {pageVisible === NOTEBOOK_SUBPAGES.MEASUREMENTDETAIL && <MeasurementDetailPage/>}
-            {pageVisible === NOTEBOOK_SUBPAGES.NESTING && <Nesting/>}
-            {pageVisible === NOTEBOOK_SUBPAGES.SAMPLEDETAIL && <SampleDetailPage/>}
-
-            {/*Secondary Notebook Pages*/}
-            {pageVisible === SECONDARY_NOTEBOOK_PAGES.THREE_D_STRUCTURES && <ThreeDStructuresPage/>}
-            {/*{pageVisible === SECONDARY_NOTEBOOK_PAGES.FABRICS && <FabricsPage/>}*/}
-            {pageVisible === SECONDARY_NOTEBOOK_PAGES.OTHER_FEATURES && <OtherFeaturesPage/>}
-            {/*{pageVisible === SECONDARY_NOTEBOOK_PAGES.RELATIONSHIPS && <PlaceholderPage/>}*/}
-            {pageVisible === SECONDARY_NOTEBOOK_PAGES.DATA && <ExternalData/>}
-
-            {/*Pet Notebook Pages*/}
-            {/*{pageVisible === PET_NOTEBOOK_PAGES.ROCK_TYPE_IGNEOUS && <RockTypePage type={'igneous'}/>}*/}
-            {/*{pageVisible === PET_NOTEBOOK_PAGES.ROCK_TYPE_METAMORPHIC && <RockTypePage type={'metamorphic'}/>}*/}
-            {/*{pageVisible === PET_NOTEBOOK_PAGES.ROCK_TYPE_ALTERATION_ORE && <RockTypePage type={'alteration_or'}/>}*/}
-            {/*{pageVisible === PET_NOTEBOOK_PAGES.MINERALS && <MineralsPage/>}*/}
-            {/*{pageVisible === PET_NOTEBOOK_PAGES.REACTION_TEXTURES && <ReactionTexturesPage/>}*/}
-            {/*{pageVisible === PET_NOTEBOOK_PAGES.TERNARY && <TernaryPage/>}*/}
-
-            {/*Sed Notebook Pages*/}
-            {/*{pageVisible === SED_NOTEBOOK_PAGES.LITHOLOGIES && <PlaceholderPage/>}*/}
-            {/*{pageVisible === SED_NOTEBOOK_PAGES.BEDDING && <PlaceholderPage/>}*/}
-            {/*{pageVisible === SED_NOTEBOOK_PAGES.STRUCTURES && <PlaceholderPage/>}*/}
-            {/*{pageVisible === SED_NOTEBOOK_PAGES.DIAGENESIS && <PlaceholderPage/>}*/}
-            {/*{pageVisible === SED_NOTEBOOK_PAGES.FOSSILS && <PlaceholderPage/>}*/}
-            {/*{pageVisible === SED_NOTEBOOK_PAGES.INTERPRETATIONS && <PlaceholderPage/>}*/}
+            <Page page={page} openMainMenu={props.openMainMenu}/>
           </View>
         </Animated.View>
         <View style={notebookStyles.footerContainer}>
-          <NotebookFooter openPage={onNotebookPageVisible}/>
+          <NotebookFooter openPage={openPage}/>
         </View>
       </React.Fragment>
     );

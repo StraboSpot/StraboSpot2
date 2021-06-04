@@ -11,8 +11,6 @@ import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRig
 import uiStyles from '../../shared/ui/ui.styles';
 import {MODALS} from '../home/home.constants';
 import {setModalValues, setModalVisible} from '../home/home.slice';
-import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
-import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import {setSelectedAttributes} from '../spots/spots.slice';
 import ThreeDStructureDetail from '../three-d-structures/ThreeDStructureDetail';
@@ -102,9 +100,7 @@ const FabricsPage = () => {
     <React.Fragment>
       {!isDetailView && (
         <View style={{flex: 1}}>
-          <ReturnToOverviewButton
-            onPress={() => dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.OVERVIEW))}
-          />
+          <ReturnToOverviewButton/>
           {renderFabricSections()}
         </View>
       )}

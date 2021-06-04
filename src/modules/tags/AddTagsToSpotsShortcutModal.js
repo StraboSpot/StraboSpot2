@@ -8,9 +8,8 @@ import DragAnimation from '../../shared/ui/DragAmination';
 import Modal from '../../shared/ui/modal/Modal';
 import uiStyles from '../../shared/ui/ui.styles';
 import {MODALS} from '../home/home.constants';
-import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
+import {PAGE_KEYS} from '../notebook-panel/notebook.constants';
 import {TagsModal} from './index';
-
 
 const AddTagsToSpotsShortcutModal = (props) => {
   const modalVisible = useSelector(state => state.home.modalVisible);
@@ -25,7 +24,7 @@ const AddTagsToSpotsShortcutModal = (props) => {
           cancel={props.cancel}
           buttonTitleLeft={'Cancel'}
           textStyle={{fontWeight: 'bold'}}
-          onPress={(view) => props.onPress(view, NOTEBOOK_PAGES.TAG, MODALS.NOTEBOOK_MODALS.TAGS)}
+          onPress={(view) => props.onPress(view, PAGE_KEYS.TAGS, MODALS.NOTEBOOK_MODALS.TAGS)}
         >
           {project.tags && !isEmpty(project.tags) && <TagsModal/>}
         </Modal>
@@ -38,7 +37,7 @@ const AddTagsToSpotsShortcutModal = (props) => {
             style={{...uiStyles.modalPositionShortcutView, width: 285}}
             close={props.close}
             textStyle={{fontWeight: 'bold'}}
-            onPress={(view) => props.onPress(view, NOTEBOOK_PAGES.TAG, MODALS.NOTEBOOK_MODALS.TAGS)}
+            onPress={(view) => props.onPress(view, PAGE_KEYS.TAGS, MODALS.NOTEBOOK_MODALS.TAGS)}
           >
             <TagsModal close={props.close}/>
           </Modal>

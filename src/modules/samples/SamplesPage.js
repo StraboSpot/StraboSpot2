@@ -11,12 +11,11 @@ import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
 import {MODALS} from '../home/home.constants';
 import {setModalVisible} from '../home/home.slice';
-import {NOTEBOOK_PAGES, NOTEBOOK_SUBPAGES} from '../notebook-panel/notebook.constants';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import {setSelectedAttributes} from '../spots/spots.slice';
 
-const SamplesPage = () => {
+const SamplesPage = (props) => {
   const dispatch = useDispatch();
   const notebookPageVisible = useSelector(state => (
     !isEmpty(state.notebook.visibleNotebookPagesStack) && state.notebook.visibleNotebookPagesStack.slice(-1)[0]
@@ -57,20 +56,15 @@ const SamplesPage = () => {
   const onSamplePressed = (item) => {
     dispatch(setModalVisible({modal: null}));
     dispatch(setSelectedAttributes([item]));
-    dispatch(setNotebookPageVisible(NOTEBOOK_SUBPAGES.SAMPLEDETAIL));
+    dispatch(setNotebookPageVisible(props.page.subpage_key));
   };
 
   return (
     <React.Fragment>
       <View style={{flex: 1}}>
-        {notebookPageVisible === NOTEBOOK_PAGES.SAMPLE && (
+        {notebookPageVisible === props.page.key && (
           <React.Fragment>
-            <ReturnToOverviewButton
-              onPress={() => {
-                dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.OVERVIEW));
-                dispatch(setModalVisible({modal: null}));
-              }}
-            />
+            <ReturnToOverviewButton/>
             <SectionDividerWithRightButton
               dividerText={'Samples'}
               buttonTitle={'Add'}

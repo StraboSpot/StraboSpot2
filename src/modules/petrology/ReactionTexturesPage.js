@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {FlatList, View} from 'react-native';
 
 import {Button, ListItem} from 'react-native-elements';
-import {useDispatch, useSelector} from 'react-redux';
+import {useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
 import {getNewId, isEmpty} from '../../shared/Helpers';
@@ -10,14 +10,11 @@ import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {useFormHook} from '../form';
-import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
-import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import MineralReactionDetail from './MineralReactionDetail';
 import {REACTION_VIEW} from './petrology.constants';
 
 const ReactionTexturesPage = () => {
-  const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
 
   const [selectedReaction, setSelectedReaction] = useState({});
@@ -81,9 +78,7 @@ const ReactionTexturesPage = () => {
     <React.Fragment>
       {reactionView === REACTION_VIEW.OVERVIEW && (
         <View style={{flex: 1}}>
-          <ReturnToOverviewButton
-            onPress={() => dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.OVERVIEW))}
-          />
+          <ReturnToOverviewButton/>
           <View>
             <ListItem containerStyle={commonStyles.listItem}>
               <ListItem.Content>

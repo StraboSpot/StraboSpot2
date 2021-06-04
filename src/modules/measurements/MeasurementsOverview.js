@@ -5,18 +5,17 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
-import {NOTEBOOK_SUBPAGES} from '../notebook-panel/notebook.constants';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import {setSelectedAttributes} from '../spots/spots.slice';
 import MeasurementItem from './MeasurementItem';
 
-const MeasurementsOverview = () => {
+const MeasurementsOverview = (props) => {
   const dispatch = useDispatch();
   const orientationsData = useSelector(state => state.spot.selectedSpot.properties.orientation_data);
 
   const onMeasurementPressed = (item) => {
     dispatch(setSelectedAttributes([item]));
-    dispatch(setNotebookPageVisible(NOTEBOOK_SUBPAGES.MEASUREMENTDETAIL));
+    dispatch(setNotebookPageVisible(props.page.subpage_key));
   };
 
   return (

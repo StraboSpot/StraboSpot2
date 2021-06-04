@@ -2,19 +2,16 @@ import React, {useState} from 'react';
 import {FlatList, View} from 'react-native';
 
 import {Button} from 'react-native-elements';
-import {useDispatch, useSelector} from 'react-redux';
+import {useSelector} from 'react-redux';
 
 import {getNewId} from '../../shared/Helpers';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
-import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
-import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import OtherFeatureDetail from './OtherFeatureDetail';
 import OtherFeatureItem from './OtherFeatureItem';
 
 const OtherFeaturesPage = () => {
-  const dispatch = useDispatch();
   const [isFeatureDetailVisible, setIsFeatureDetailVisible] = useState(false);
   const [selectedFeature, setSelectedFeature] = useState({});
   const spot = useSelector(state => state.spot.selectedSpot);
@@ -32,19 +29,13 @@ const OtherFeaturesPage = () => {
 
   const renderFeature = (feature) => {
     return (
-      <OtherFeatureItem
-        feature={feature} editFeature={(feature) => editFeature(feature)}
-      />
+      <OtherFeatureItem feature={feature} editFeature={() => editFeature(feature)}/>
     );
   };
 
   return (
     <React.Fragment>
-      {!isFeatureDetailVisible && (
-        <ReturnToOverviewButton
-          onPress={() => dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.OVERVIEW))}
-        />
-      )}
+      {!isFeatureDetailVisible && <ReturnToOverviewButton/>}
       {!isFeatureDetailVisible && (
         <View>
           <Button

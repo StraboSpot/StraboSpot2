@@ -11,8 +11,6 @@ import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {SelectInputField, useFormHook} from '../form';
-import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
-import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import {editedSpotProperties} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
@@ -132,9 +130,7 @@ const MineralsPage = () => {
     <React.Fragment>
       {mineralView === MINERAL_VIEW.OVERVIEW && (
         <View style={{flex: 1}}>
-          <ReturnToOverviewButton
-            onPress={() => dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.OVERVIEW))}
-          />
+          <ReturnToOverviewButton/>
           <Button
             title={'+ Add Mineral'}
             type={'clear'}

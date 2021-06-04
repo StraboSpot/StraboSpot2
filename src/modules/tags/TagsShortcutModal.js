@@ -7,7 +7,7 @@ import DragAnimation from '../../shared/ui/DragAmination';
 import Modal from '../../shared/ui/modal/Modal';
 import uiStyles from '../../shared/ui/ui.styles';
 import {MODALS} from '../home/home.constants';
-import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
+import {PAGE_KEYS} from '../notebook-panel/notebook.constants';
 import {TagsModal} from './index';
 
 const TagsShortcutModal = (props) => {
@@ -22,7 +22,7 @@ const TagsShortcutModal = (props) => {
           cancel={props.cancel}
           buttonTitleLeft={'Cancel'}
           textStyle={{fontWeight: 'bold'}}
-          onPress={(view) => props.onPress(view, NOTEBOOK_PAGES.TAG, MODALS.NOTEBOOK_MODALS.TAGS)}
+          onPress={(view) => props.onPress(view, PAGE_KEYS.TAGS, MODALS.NOTEBOOK_MODALS.TAGS)}
         >
           <TagsModal/>
         </Modal>
@@ -37,7 +37,7 @@ const TagsShortcutModal = (props) => {
             // cancel={props.cancel}
             // buttonTitleLeft={'Cancel'}
             textStyle={{fontWeight: 'bold'}}
-            onPress={(view) => props.onPress(view, NOTEBOOK_PAGES.TAG, MODALS.NOTEBOOK_MODALS.TAGS)}
+            onPress={(view) => props.onPress(view, PAGE_KEYS.TAGS, MODALS.NOTEBOOK_MODALS.TAGS)}
           >
             <TagsModal/>
           </Modal>

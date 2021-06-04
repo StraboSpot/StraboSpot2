@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Alert, FlatList, SectionList, Switch, Text, View} from 'react-native';
+import {Alert, FlatList, Pressable, SectionList, Switch, Text, View} from 'react-native';
 
 import {Formik} from 'formik';
 import {Button} from 'react-native-elements';
@@ -10,53 +10,61 @@ import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import uiStyles from '../../shared/ui/ui.styles';
-import DataWrapper from '../external-data/DataWrapper';
-import FabricsOverview from '../fabrics/FabricsOverview';
 import {Form, useFormHook} from '../form';
-import ImagesOverview from '../images/ImagesOverview';
-import MeasurementsOverview from '../measurements/MeasurementsOverview';
-import NotesOverview from '../notes/NotesOverview';
-import OtherFeaturesOverview from '../other-features/OtherFeaturesOverview';
-import SamplesPage from '../samples/SamplesPage';
 import {editedSpotProperties} from '../spots/spots.slice';
-import {TagsAtSpotList} from '../tags';
-import ThreeDStructuresOverview from '../three-d-structures/ThreeDStructuresOverview';
+import {NOTEBOOK_PAGES, PRIMARY_PAGES} from './notebook.constants';
+import {setNotebookPageVisible} from './notebook.slice';
 import notebookStyles from './notebookPanel.styles';
 
-const Overview = props => {
+const Overview = (props) => {
   const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
+
   const [isTraceSurfaceFeatureEnabled, setIsTraceSurfaceFeatureEnabled] = useState(false);
   const [isTraceSurfaceFeatureEdit, setIsTraceSurfaceFeatureEdit] = useState(false);
-  const formRef = useRef(null);
-  const [useForm] = useFormHook();
-  const [sections, setSections] = useState(
-    [
-      {title: 'Notes', data: [<NotesOverview/>]},
-      {title: 'Measurements', data: [<MeasurementsOverview/>]},
-      {title: 'Photos and Sketches', data: [<ImagesOverview/>]},
-      {title: 'Tags', data: [<TagsAtSpotList openMainMenu={props.openMainMenu}/>]},
-      {title: 'Samples', data: [<SamplesPage/>]},
-    ]);
 
-  useEffect(() => {
-    let updatedSections = [...sections];
-    if (spot.properties?.other_features) {
-      updatedSections.push({title: 'Other Features', data: [<OtherFeaturesOverview/>]});
+  const formRef = useRef(null);
+
+  const [useForm] = useFormHook();
+
+  const sections = NOTEBOOK_PAGES.reduce((acc, page) => {
+    let isSectionOverviewVisible = false;
+    if (page.overview_component) {
+      if (PRIMARY_PAGES.find(p => p.key === page.key)) isSectionOverviewVisible = true;
+      else {
+        switch (page.key) {
+          case '_3d_structures':
+            if (!isEmpty(spot?.properties?._3d_structures?.filter(s => s.type !== 'fabric'))) {
+              isSectionOverviewVisible = true;
+            }
+            break;
+          case 'fabrics':
+            if (spot.properties?.fabrics
+              || !isEmpty(spot?.properties?._3d_structures?.filter(s => s.type === 'fabric'))) {
+              isSectionOverviewVisible = true;
+            }
+            break;
+          // case 'data':
+          //   if (!isEmpty(spot.properties?.data?.urls)) {
+          //     updatedSections.push({title: 'Links to Web Resources', data: [<DataWrapper spot={spot} editable={false} urlData={true}/>]});
+          //   }
+          //   if (!isEmpty(spot.properties?.data?.tables)) {
+          //     updatedSections.push({title: 'Tables', data: [<DataWrapper spot={spot} editable={false} urlData={false}/>]});
+          //   }
+          default:
+            if (spot.properties && spot.properties[page.key]) isSectionOverviewVisible = true;
+        }
+      }
     }
-    if (spot.properties?._3d_structures && !isEmpty(spot?.properties?._3d_structures?.filter(s => s.type !== 'fabric'))) {
-      updatedSections.push({title: '3D Structures', data: [<ThreeDStructuresOverview/>]});
+    if (isSectionOverviewVisible) {
+      const SectionOverview = page.overview_component;
+      const sectionOverview = {
+        title: page,
+        data: [<SectionOverview page={page} openMainMenu={props.openMainMenu}/>],
+      };
+      return [...acc, sectionOverview];
     }
-    // if (spot.properties?.fabrics || !isEmpty(spot?.properties?._3d_structures?.filter(s => s.type === 'fabric'))) {
-    //   updatedSections.push({title: 'Fabrics', data: [<FabricsOverview/>]});
-    // }
-    if (!isEmpty(spot.properties?.data?.urls)) {
-      updatedSections.push({title: 'Links to Web Resources', data: [<DataWrapper spot={spot} editable={false} urlData={true}/>]});
-    }
-    if (!isEmpty(spot.properties?.data?.tables)) {
-      updatedSections.push({title: 'Tables', data: [<DataWrapper spot={spot} editable={false} urlData={false}/>]});
-    }
-    setSections(updatedSections);
+    else return acc;
   }, []);
 
   useEffect(() => {
@@ -117,11 +125,11 @@ const Overview = props => {
     );
   };
 
-  const renderSectionHeader = (title) => {
+  const renderSectionHeader = (page) => {
     return (
-      <View style={uiStyles.sectionHeaderBackground}>
-        <SectionDivider dividerText={title}/>
-      </View>
+      <Pressable style={uiStyles.sectionHeaderBackground} onPress={()=> dispatch(setNotebookPageVisible(page.key))}>
+        <SectionDivider dividerText={page.label}/>
+      </Pressable>
     );
   };
 

@@ -6,36 +6,34 @@ import {useSelector} from 'react-redux';
 
 import {isEmpty} from '../../../shared/Helpers';
 import IconButton from '../../../shared/ui/IconButton';
-import {NOTEBOOK_PAGES, NOTEBOOK_PAGES_ICONS, NOTEBOOK_SUBPAGES} from '../notebook.constants';
+import {NOTEBOOK_PAGES} from '../notebook.constants';
 import MorePagesMenu from './MorePagesMenu';
 import footerStyle from './notebookFooter.styles';
 
-const NotebookFooter = props => {
-  const toolbarIcons = useSelector(state => state.notebook.notebookToolbarIcons);
+const NotebookFooter = (props) => {
+  const notebookPagesOn = useSelector(state => state.notebook.notebookPagesOn);
   const notebookPageVisible = useSelector(state => (
     !isEmpty(state.notebook.visibleNotebookPagesStack) && state.notebook.visibleNotebookPagesStack.slice(-1)[0]
   ));
   const [isMorePagesMenuVisible, setIsMorePagesMenuVisible] = useState(false);
 
-  const toolbarIconsKeys = toolbarIcons.filter(i => Object.values(NOTEBOOK_PAGES).includes(i));
+  const notebookPagesValidOn = notebookPagesOn.filter(i => NOTEBOOK_PAGES.map(p => p.key).includes(i));
 
-  const getPageIcon = (page) => {
-    const pageKey = Object.keys(NOTEBOOK_PAGES).find(key => NOTEBOOK_PAGES[key] === page);
-    if (notebookPageVisible === page
-      || (page === NOTEBOOK_PAGES.MEASUREMENT && notebookPageVisible === NOTEBOOK_SUBPAGES.MEASUREMENTDETAIL)
-      || (page === NOTEBOOK_PAGES.SAMPLE && notebookPageVisible === NOTEBOOK_SUBPAGES.SAMPLEDETAIL)) {
-      return NOTEBOOK_PAGES_ICONS[pageKey + '_PRESSED'];
-    }
-    else return NOTEBOOK_PAGES_ICONS[pageKey];
+  const getPageIcon = (key) => {
+    const page = NOTEBOOK_PAGES.find(p => p.key === key);
+    return notebookPageVisible === key || notebookPageVisible === page.subpage_key ? page.icon_pressed_src
+      : page.icon_src;
   };
 
   return (
     <React.Fragment>
-      <View style={toolbarIconsKeys.length <= 6 ? footerStyle.footerIconContainer : footerStyle.footerIconContainerWrap}>
-        {toolbarIconsKeys.map(icon => (
+      <View
+        style={notebookPagesValidOn.length <= 6 ? footerStyle.footerIconContainer : footerStyle.footerIconContainerWrap}
+      >
+        {notebookPagesValidOn.map(key => (
           <IconButton
-            source={getPageIcon(icon)}
-            onPress={() => props.openPage(icon)}
+            source={getPageIcon(key)}
+            onPress={() => props.openPage(key)}
           />
         ))}
         <Button

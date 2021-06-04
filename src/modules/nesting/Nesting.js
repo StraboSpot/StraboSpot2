@@ -4,20 +4,19 @@ import {FlatList, Text, View} from 'react-native';
 import {Avatar, Icon, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import * as SharedUI from '../../shared/ui';
+import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import imageStyles from '../images/images.styles';
 import useImagesHook from '../images/useImages';
-import {NOTEBOOK_PAGES, NOTEBOOK_SUBPAGES} from '../notebook-panel/notebook.constants';
-import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
+import {PAGE_KEYS} from '../notebook-panel/notebook.constants';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import {useSpotsHook} from '../spots';
 import {setSelectedSpot} from '../spots/spots.slice';
 import {useTagsHook} from '../tags';
 import useNestingHook from './useNesting';
-import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
-import commonStyles from '../../shared/common.styles';
 
 const Nesting = (props) => {
   const dispatch = useDispatch();
@@ -36,7 +35,7 @@ const Nesting = (props) => {
 
   useEffect(() => {
     console.log('UE Nesting [spots]');
-    if (notebookPageVisible === NOTEBOOK_SUBPAGES.NESTING) updateNest();
+    if (notebookPageVisible === PAGE_KEYS.NESTING) updateNest();
   }, [spots, selectedSpot]);
 
   const goToSpotNesting = (spot) => {
@@ -203,9 +202,7 @@ const Nesting = (props) => {
 
   return (
     <View style={{flex: 1}}>
-      <ReturnToOverviewButton
-        onPress={() => dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.OVERVIEW))}
-      />
+      <ReturnToOverviewButton/>
       <SectionDivider dividerText='Nesting'/>
       <FlatList
         ListHeaderComponent={renderGenerations('Parents')}

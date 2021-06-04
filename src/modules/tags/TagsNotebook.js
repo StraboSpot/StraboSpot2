@@ -6,8 +6,6 @@ import {useDispatch} from 'react-redux';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
 import {MODALS} from '../home/home.constants';
 import {setModalVisible} from '../home/home.slice';
-import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
-import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import {addedTagToSelectedSpot} from '../project/projects.slice';
 import {TagDetailModal, TagsAtSpotList} from '../tags';
@@ -24,12 +22,7 @@ const TagsNotebook = (props) => {
 
   return (
     <React.Fragment>
-      <ReturnToOverviewButton
-        onPress={() => {
-          dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.OVERVIEW));
-          dispatch(setModalVisible({modal: null}));
-        }}
-      />
+      <ReturnToOverviewButton/>
       <View style={{flex: 1}}>
         <SectionDividerWithRightButton
           dividerText={'Tags'}

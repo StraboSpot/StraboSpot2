@@ -9,7 +9,7 @@ import ImageGallery from '../images/ImageGallery';
 import CustomMapsMenu from '../maps/custom-maps/ManageCustomMaps';
 import ImageBaseMaps from '../maps/ImageBasemaps';
 import ManageOfflineMapsMenu from '../maps/offline-maps/ManageOfflineMaps';
-import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
+import {PAGE_KEYS} from '../notebook-panel/notebook.constants';
 import NamingConventions from '../preferences/naming-conventions/NamingConventions';
 import ShortcutMenu from '../preferences/shortcuts-menu/ShortcutsMenu';
 import ActiveProject from '../project/ActiveProjectPanel';
@@ -46,7 +46,7 @@ const MainMenuPanel = props => {
     dispatch(setSelectedSpot(spot));
     if (attributes) dispatch(setSelectedAttributes(attributes));
     if (notebookPage) props.openNotebookPanel(notebookPage);
-    else props.openNotebookPanel(NOTEBOOK_PAGES.OVERVIEW);
+    else props.openNotebookPanel(PAGE_KEYS.OVERVIEW);
   };
 
   const setVisibleMenu = (name) => {

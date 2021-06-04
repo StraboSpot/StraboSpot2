@@ -23,7 +23,7 @@ const Tags = () => {
   const spotsInMapExtent = useSelector(state => state.map.spotsInMapExtent);
   const useContinuousTagging = useSelector(state => state.project.project.useContinuousTagging);
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const [isDetailModalVisibile, setIsDetailModalVisible] = useState(false);
+  const [isDetailModalVisible, setIsDetailModalVisible] = useState(false);
 
   const SECTIONS = [
     {title: 'Geologic Units', key: 'geologic_unit'},
@@ -157,7 +157,7 @@ const Tags = () => {
       )}
       {isEmpty(tags) && <ListEmptyText text={'No tags have been added to this project yet'}/>}
       <TagDetailModal
-        isVisible={isDetailModalVisibile}
+        isVisible={isDetailModalVisible}
         closeModal={() => setIsDetailModalVisible(false)}
       />
     </View>

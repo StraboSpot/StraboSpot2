@@ -10,11 +10,10 @@ import * as themes from '../../shared/styles.constants';
 import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {Form, useFormHook} from '../form';
-import {NOTEBOOK_PAGES} from '../notebook-panel/notebook.constants';
 import {setNotebookPageVisible, setNotebookPageVisibleToPrev} from '../notebook-panel/notebook.slice';
 import {editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
 
-const SampleDetailPage = () => {
+const SampleDetailPage = (props) => {
   const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
   const selectedSample = useSelector(state => state.spot.selectedAttributes[0]);
@@ -33,7 +32,7 @@ const SampleDetailPage = () => {
 
   useEffect(() => {
     console.log('UE for selectedSample changed in SampleDetailPage');
-    if (!selectedSample) dispatch(setNotebookPageVisible(NOTEBOOK_PAGES.SAMPLE));
+    if (!selectedSample) dispatch(setNotebookPageVisible(props.page.key));
   }, [selectedSample]);
 
   const cancelFormAndGo = async () => {
