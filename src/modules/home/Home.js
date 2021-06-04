@@ -728,10 +728,7 @@ const Home = () => {
         isSelectingForStereonet={isSelectingForStereonet}
         isSelectingForTagging={isSelectingForTagging}
       />
-      <View style={{...uiStyles.offlineImageIconContainer, marginTop: 100}}>
-        <View style={{backgroundColor: 'white'}}>
-          <Text>{JSON.stringify(isConnectedStatus)}</Text>
-        </View>
+      <View style={{...uiStyles.offlineImageIconContainer}}>
         {!isOnline && <Image
           source={offlineIcon}
           style={uiStyles.offlineIcon}
