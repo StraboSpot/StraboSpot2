@@ -168,9 +168,9 @@ const Home = () => {
 
   useEffect(() => {
     if (user.email && user.name) {
-      // Sentry.configureScope((scope) => {
-      //   scope.setUser({'email': user.email, 'username': user.name});
-      // });
+      Sentry.configureScope((scope) => {
+        scope.setUser({'email': user.email, 'username': user.name});
+      });
       // Sentry.captureMessage(`Hello there, ${user.name}`);
     }
     useDevice.doesDeviceBackupDirExist().catch(err => console.log('Error checking if backup dir exists!', err));
