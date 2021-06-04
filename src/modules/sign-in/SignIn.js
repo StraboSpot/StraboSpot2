@@ -46,11 +46,11 @@ const SignIn = (props) => {
     useEffect(() => {
       console.log('UserProfile', userProfile);
       dispatch(setUserData(userProfile));
-      // if (!isEmpty(userProfile) && !__DEV__) {
-      //   Sentry.configureScope(scope => {
-      //     scope.setUser({'username': userProfile.name, 'email': userProfile.email});
-      //   });
-      // }
+      if (!isEmpty(userProfile)) {
+        Sentry.configureScope(scope => {
+          scope.setUser({'username': userProfile.name, 'email': userProfile.email});
+        });
+      }
     }, [userProfile]);
 
     useEffect(() => {
@@ -70,9 +70,9 @@ const SignIn = (props) => {
     const handleKeyboardDidHideSignIn = () => Helpers.handleKeyboardDidHide(textInputAnimate);
 
     const guestSignIn = async () => {
-      // Sentry.configureScope((scope) => {
-      //   scope.setUser({'id': 'GUEST'});
-      // });
+      Sentry.configureScope((scope) => {
+        scope.setUser({'id': 'GUEST'});
+      });
       if (!isEmpty(user.name)) await dispatch({type: 'CLEAR_STORE'});
       console.log('Loading user: GUEST');
       await navigation.navigate('HomeScreen');
@@ -101,7 +101,7 @@ const SignIn = (props) => {
       }
       catch (err) {
         console.log('error:', err);
-        // Sentry.captureException(err);
+        Sentry.captureException(err);
       }
     };
 
