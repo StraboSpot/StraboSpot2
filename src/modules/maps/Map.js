@@ -417,7 +417,7 @@ const Map = React.forwardRef((props, ref) => {
   const onMapPress = async (e) => {
     if (props.mapMode !== MAP_MODES.DRAW.FREEHANDPOLYGON && props.mapMode !== MAP_MODES.DRAW.FREEHANDLINE) {
       console.log('props', props);
-      console.log('mapProps', mapProps);
+      // console.log('mapProps', mapProps); // Commented out because it throws an error about circular structure in JSON
       console.log('Map press detected:', e);
       console.log('Map mode:', props.mapMode);
       // Select/Unselect a feature
@@ -833,7 +833,7 @@ const Map = React.forwardRef((props, ref) => {
   };
 
   const endDraw = async () => {
-    console.log('endDraw mapProps', mapProps);
+    // console.log('endDraw mapProps', mapProps); // Commented out because it throws an error about circular structure in JSON
     let newOrEditedSpot = {};
     if (props.mapMode === MAP_MODES.DRAW.FREEHANDPOLYGON || props.mapMode === MAP_MODES.DRAW.FREEHANDLINE) {
       if (freehandFeatureCoords && freehandFeatureCoords.length > 2) {
