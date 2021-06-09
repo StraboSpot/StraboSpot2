@@ -8,10 +8,9 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import {isEmpty, toTitleCase} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
-import {setAllSymbolsToggled, setSymbolsDisplayed, setTagTypeForColor} from '../maps/maps.slice';
+import {setAllSymbolsToggled, setIsShowSpotLabelsOn, setSymbolsDisplayed, setTagTypeForColor} from '../maps/maps.slice';
 import styles from '../measurements/measurements.styles';
 import useMeasurementsHook from '../measurements/useMeasurements';
-import {setShowSpotLabels} from '../project/projects.slice';
 import dialogStyles from './dialog.styles';
 
 const scaleAnimation = new ScaleAnimation({
@@ -24,7 +23,7 @@ const MapSymbolsDialog = (props) => {
   const mapSymbols = useSelector(state => state.map.mapSymbols);
   const symbolsOn = useSelector(state => state.map.symbolsOn) || [];
   const tagTypeForColor = useSelector(state => state.map.tagTypeForColor);
-  const showSpotLabels = useSelector(state => state.project.project.showSpotLabels);
+  const isShowSpotLabelsOn = useSelector(state => state.map.isShowSpotLabelsOn);
   const [useMeasurements] = useMeasurementsHook();
 
   const getSymbolTitle = (symbol) => {
@@ -86,7 +85,7 @@ const MapSymbolsDialog = (props) => {
           <ListItem.Content>
             <ListItem.Title style={dialogStyles.dialogLargerText}>{'Symbol Labels'}</ListItem.Title>
           </ListItem.Content>
-          <Switch onChange={() => dispatch(setShowSpotLabels(!showSpotLabels))} value={showSpotLabels}/>
+          <Switch onChange={() => dispatch(setIsShowSpotLabelsOn(!isShowSpotLabelsOn))} value={isShowSpotLabelsOn}/>
         </ListItem>
         <ListItem key={'tag_color'} containerStyle={{...dialogStyles.dialogContent}}>
           <ListItem.Content>

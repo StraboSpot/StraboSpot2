@@ -13,6 +13,7 @@ const initialMapsState = {
   isAllSymbolsOn: true,
   mapSymbols: [],
   tagTypeForColor: undefined,
+  isShowSpotLabelsOn: true,
 };
 
 const mapsSlice = createSlice({
@@ -56,6 +57,9 @@ const mapsSlice = createSlice({
     setFreehandFeatureCoords(state, action) {
       state.freehandFeatureCoords = action.payload;
     },
+    setIsShowSpotLabelsOn(state, action) {
+      state.isShowSpotLabelsOn = action.payload;
+    },
     setMapSymbols(state, action) {
       console.log('Set Map Symbols', action.payload);
       state.mapSymbols = action.payload;
@@ -94,6 +98,7 @@ export const {
   setCurrentImageBasemap,
   setFreehandFeatureCoords,
   setMapSymbols,
+  setIsShowSpotLabelsOn,
   setSpotsInMapExtent,
   setSymbolsDisplayed,
   setTagTypeForColor,

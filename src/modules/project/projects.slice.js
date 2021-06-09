@@ -48,9 +48,6 @@ const projectSlice = createSlice({
       if (!action.payload.useContinuousTagging) {
         action.payload.useContinuousTagging = false;
       }
-      if (!action.payload.showSpotLabels) {
-        action.payload.showSpotLabels = false;
-      }
       state.project = action.payload;
     },
     addedProjectDescription(state, action) {
@@ -124,9 +121,6 @@ const projectSlice = createSlice({
     setUseContinuousTagging(state, action) {
       state.project.useContinuousTagging = action.payload;
     },
-    setShowSpotLabels(state, action) {
-      state.project.showSpotLabels = action.payload;
-    },
     updatedDatasetProperties(state, action) {
       console.log('UpdatedDataset', action.payload);
       state.datasets[action.payload.id].name = action.payload.name;
@@ -174,7 +168,6 @@ export const {
   setSelectedDataset,
   setSelectedProject,
   setSelectedTag,
-  setShowSpotLabels,
   setUseContinuousTagging,
   setUseMeasurementTemplates,
   updatedDatasetProperties,
