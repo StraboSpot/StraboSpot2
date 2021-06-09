@@ -1,0 +1,52 @@
+{
+  "survey": [
+    {
+      "type": "start",
+      "name": "start"
+    },
+    {
+      "type": "end",
+      "name": "end"
+    },
+    {
+      "type": "text",
+      "name": "spot_prefix",
+      "label": "SPOT Prefix Label",
+      "hint": "Label prefix based on location or other",
+      "required": "false"
+    },
+    {
+      "type": "integer",
+      "name": "starting_number_for_spot",
+      "label": "Starting Number for SPOTs",
+      "required": "false",
+      "constraint": ". >= 0",
+      "constraint_message": "Must start with 0 or greater"
+    },
+    {
+      "type": "text",
+      "name": "sample_prefix",
+      "label": "Sample Prefix Label",
+      "hint": "Short label based on location or IGSN prefix (exactly 3 characters) or something else associated with the user",
+      "required": "false"
+    },
+    {
+      "type": "integer",
+      "name": "starting_sample_number",
+      "label": "Starting Sample Number",
+      "hint": "Use exactly 6 numbers if creating an IGSN code",
+      "required": "false",
+      "constraint_message": "Must start with 0 or greater"
+    },
+    {
+      "type": "calculate",
+      "name": "__version__",
+      "calculation": "'vkjJAv5X8aW7TDWWww6Baw'"
+    }
+  ],
+  "settings": [
+    {
+      "version": "vkjJAv5X8aW7TDWWww6Baw"
+    }
+  ]
+}

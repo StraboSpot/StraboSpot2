@@ -363,13 +363,20 @@ const Home = () => {
   };
 
   const endDraw = async () => {
-    dispatch(setLoadingStatus({view: 'home', bool: true}));
-    const newOrEditedSpot = await mapComponentRef.current.endDraw();
-    setMapMode(MAP_MODES.VIEW);
-    if (!isEmpty(newOrEditedSpot) && !isSelectingForStereonet) openNotebookPanel(PAGE_KEYS.OVERVIEW);
-    setIsSelectingForStereonet(false);
-    setIsSelectingForTagging(false);
-    dispatch(setLoadingStatus({view: 'home', bool: false}));
+    try {
+      dispatch(setLoadingStatus({view: 'home', bool: true}));
+      const newOrEditedSpot = await mapComponentRef.current.endDraw();
+      setMapMode(MAP_MODES.VIEW);
+      if (!isEmpty(newOrEditedSpot) && !isSelectingForStereonet) openNotebookPanel(PAGE_KEYS.OVERVIEW);
+      setIsSelectingForStereonet(false);
+      setIsSelectingForTagging(false);
+      dispatch(setLoadingStatus({view: 'home', bool: false}));
+    }
+    catch (err) {
+      console.error('Error at endDraw()', err);
+      dispatch(setLoadingStatus({view: 'home', bool: false}));
+    }
+
   };
 
   const goToCurrentLocation = async () => {

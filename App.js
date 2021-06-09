@@ -9,7 +9,7 @@ import {PersistGate} from 'redux-persist/integration/react';
 
 import {SENTRY_DSN} from './Config';
 import Route from './src/routes/Routes';
-import {VERSION_NUMBER} from './src/shared/app.constants';
+import {BUNDLE_ID, RELEASE_NAME, VERSION_NUMBER} from './src/shared/app.constants';
 import Loading from './src/shared/ui/Loading';
 import store from './src/store/ConfigureStore';
 
@@ -17,8 +17,8 @@ Sentry.init({
   dsn: SENTRY_DSN,
   enableNative: true,
   debug: __DEV__,
-  release: `org.StraboSpot2-${VERSION_NUMBER}`,
-  dist:'org.StraboSpot2',
+  release: RELEASE_NAME,
+  dist: BUNDLE_ID,
   autoSessionTracking: true,
   environment: __DEV__ ? 'development' : 'production',
 });
@@ -27,7 +27,7 @@ NetInfo.configure({
   reachabilityUrl: 'https://clients3.google.com/generate_204',
   reachabilityTest: async (response) => {
     console.log('Response Status', response.status);
-    return response.status === 204
+    return response.status === 204;
   },
   reachabilityLongTimeout: 60 * 1000, // 60s
   reachabilityShortTimeout: 5 * 1000, // 5s
@@ -41,7 +41,9 @@ const App = () => {
   return (
     <Provider store={store}>
       <PersistGate loading={<Loading/>} persistor={persistor}>
-        <Route/>
+        {/*<Sentry.TouchEventBoundary>*/}
+          <Route/>
+        {/*</Sentry.TouchEventBoundary>*/}
       </PersistGate>
     </Provider>
   );
