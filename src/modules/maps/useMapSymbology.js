@@ -325,6 +325,17 @@ const useMapSymbology = (props) => {
       iconSize: 0.08,
       symbolSpacing: 0,
     },
+    pointOffline: {
+      textIgnorePlacement: true,  // Need to be able to stack symbols at same location
+      textAnchor: 'left',
+      textOffset: getLabelOffset(),
+      iconImage: getIconImage(),
+      iconRotate: getIconRotation(),
+      iconAllowOverlap: true,     // Need to be able to stack symbols at same location
+      iconIgnorePlacement: true,  // Need to be able to stack symbols at same location
+      iconSize: 0.08,
+      symbolSpacing: 0,
+    },
     pointColorHalo: {
       circleRadius: 17,
       circleColor: ['get', 'circleColor', ['get', 'symbology']],

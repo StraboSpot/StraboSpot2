@@ -16,6 +16,8 @@ import useMapSymbologyHook from './useMapSymbology';
 function Basemap(props) {
   const customMaps = useSelector(state => state.map.customMaps);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
+  const isOnline = useSelector(state => state.home.isOnline);
+
   const {mapRef, cameraRef} = props.forwardedRef;
   const [useMapSymbology] = useMapSymbologyHook();
   const [symbols, setSymbol] = useState(MAP_SYMBOLS);
@@ -238,7 +240,7 @@ function Basemap(props) {
             id='pointLayerNotSelected'
             minZoomLevel={1}
             filter={['==', ['geometry-type'], 'Point']}
-            style={useMapSymbology.getMapSymbology().point}
+            style={isOnline ? useMapSymbology.getMapSymbology().point : useMapSymbology.getMapSymbology().pointOffline}
           />
         </MapboxGL.ShapeSource>
 
