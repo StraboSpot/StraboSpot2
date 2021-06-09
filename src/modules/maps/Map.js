@@ -127,6 +127,7 @@ const Map = React.forwardRef((props, ref) => {
       }
       return false;
     });
+    if (!currentImageBasemap) setCurrentLocationAsCenter().catch(err => console.error('Error', err));
   }, []);
 
   useEffect(() => {
@@ -170,6 +171,7 @@ const Map = React.forwardRef((props, ref) => {
     console.log('Updating DOM on first render');
     if (isOnline && !currentBasemap) useMaps.setBasemap().catch(console.error);
     else if (isOnline && currentBasemap) {
+      console.log('ITS IN THIS ONE!!!! -isOnline && currentBasemap');
       // Alert.alert('Online Basemap', `${JSON.stringify(currentBasemap.id)}`);
       useMaps.setBasemap(currentBasemap.id).catch(error => {
         console.log('Error Setting Basemap', error);
@@ -182,9 +184,10 @@ const Map = React.forwardRef((props, ref) => {
       });
     }
     else if (!isOnline && isOnline !== null && currentBasemap) {
+      console.log('ITS IN THIS ONE!!!! -!isOnline && isOnline !== null && currentBasemap');
       useOfflineMaps.switchToOfflineMap().catch(error => console.log('Error Setting Offline Basemap', error));
     }
-    if (!currentImageBasemap) setCurrentLocationAsCenter();
+    // if (!currentImageBasemap) setCurrentLocationAsCenter();
     clearVertexes();
   }, [user, isOnline]);
 
@@ -813,6 +816,7 @@ const Map = React.forwardRef((props, ref) => {
   const goToCurrentLocation = async () => {
     if (cameraRef.current) {
       try {
+        console.log('%cFlying to location', 'color: red');
         const currentLocation = await useMaps.getCurrentLocation();
         await cameraRef.current.flyTo([currentLocation.longitude, currentLocation.latitude], 2500);
       }
@@ -825,6 +829,7 @@ const Map = React.forwardRef((props, ref) => {
 
   // Get the current location from the device and set it in the state as the map center
   const setCurrentLocationAsCenter = async () => {
+    console.log('%cFlying to location MAP.JS 829', 'color: red');
     const currentLocation = await useMaps.getCurrentLocation();
     setMapPropsMutable(m => ({
       ...m,
