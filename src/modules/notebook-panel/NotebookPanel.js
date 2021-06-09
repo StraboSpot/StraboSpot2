@@ -73,9 +73,11 @@ const NotebookPanel = (props) => {
             <Page page={page} openMainMenu={props.openMainMenu}/>
           </View>
         </Animated.View>
-        <View style={notebookStyles.footerContainer}>
-          <NotebookFooter openPage={openPage}/>
-        </View>
+        {pageVisible !== PAGE_KEYS.MEASUREMENT_DETAIL && pageVisible !== PAGE_KEYS.SAMPLE_DETAIL && (
+          <View style={notebookStyles.footerContainer}>
+            <NotebookFooter openPage={openPage}/>
+          </View>
+        )}
       </React.Fragment>
     );
   };
