@@ -129,7 +129,7 @@ const Home = () => {
     editButtonsVisible: false,
     userLocationButtonOn: false,
   });
-  const [isConnectedStatus, setIsConnectedStatus] = useState({});
+  const [isConnectedStatus, setIsConnectedStatus] = useState(false);
   const [mapMode, setMapMode] = useState(MAP_MODES.VIEW);
   const [animation, setAnimation] = useState(new Animated.Value(notebookPanelWidth));
   const [MainMenuPanelAnimation] = useState(new Animated.Value(-homeMenuPanelWidth));
@@ -143,24 +143,25 @@ const Home = () => {
   const mapComponentRef = useRef(null);
   const toastRef = useRef(null);
 
-  useEffect(() => {
-    // TODO take this message off after Test Flight version is moved.
-    // Alert.alert('ATTENTION\n', 'This Test Flight version will NO LONGER be available after 5/24/2021. '
-    //   + 'Please go to the App Store and download from there. '
-    //   + 'Upload any data you want to save and remove this Test Flight version before downloading from '
-    //   + 'the App Store.\n\nThanks for your help and feedback!\n\n-StraboSpot Team', [{text: 'Acknowledge'}]);
-    // useDevice.loadOfflineMaps().catch();
-    NetInfo.addEventListener(status => {
-      setIsConnectedStatus(status);
-      console.log('Connected Status', status);
-      if (status.isInternetReachable) {
-        dispatch(setOnlineStatus(true));
-      }
-      if (status.isInternetReachable === false) {
-        dispatch(setOnlineStatus(false));
-      }
-    });
-  }, []);
+  // useEffect(() => {
+  //   const unsubscribe = NetInfo.addEventListener(state => {
+  //     const offline = (state.isConnected && state.isInternetReachable);
+  //     setIsConnectedStatus(offline);
+  //     dispatch(setOnlineStatus(offline));
+  //   });
+  //   return () => {
+  //     console.log('Unsubscribed from NetInfo');
+  //     unsubscribe();
+  //   }
+  // }, []);
+
+  // useEffect(() => {
+  //   const networkConnection = CheckConnection();
+  //   console.log('NETWORK CONNECTION', networkConnection)
+  //   // if (props.network) {
+  //   //   dispatch(setOnlineStatus(props.network?.isConnected && props.network?.isInternetReachable));
+  //   // }
+  // }, [])
 
   useEffect(() => {
     console.log('Selected Project', selectedProject);

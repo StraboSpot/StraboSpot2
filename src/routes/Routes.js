@@ -1,10 +1,12 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 
+import NetInfo from '@react-native-community/netinfo';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 import Home from '../modules/home/Home';
+import {setOnlineStatus} from '../modules/home/home.slice';
 import ImageInfo from '../modules/images/ImageInfo';
 import SignIn from '../modules/sign-in/SignIn';
 import SignUp from '../modules/sign-up/SignUp';
@@ -56,6 +58,21 @@ const AppScreens = () => {
 };
 
 const Route = () => {
+  const dispatch = useDispatch();
+  const [isConnectedStatus, setIsConnectedStatus] = useState(false);
+
+  useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener(state => {
+      const offline = (state.isConnected && state.isInternetReachable);
+      setIsConnectedStatus(offline);
+      dispatch(setOnlineStatus(offline));
+    });
+    return () => {
+      console.log('Unsubscribed from NetInfo');
+      unsubscribe();
+    };
+  }, []);
+
   return (
     <NavigationContainer>
       <AppScreens/>
