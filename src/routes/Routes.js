@@ -57,21 +57,11 @@ const AppScreens = () => {
   );
 };
 
-const Route = () => {
+const Route = (props) => {
   const dispatch = useDispatch();
-  const [isConnectedStatus, setIsConnectedStatus] = useState(false);
 
-  useEffect(() => {
-    const unsubscribe = NetInfo.addEventListener(state => {
-      const offline = (state.isConnected && state.isInternetReachable);
-      setIsConnectedStatus(offline);
-      dispatch(setOnlineStatus(offline));
-    });
-    return () => {
-      console.log('Unsubscribed from NetInfo');
-      unsubscribe();
-    };
-  }, []);
+  const offline = (props.network?.isConnected && props.network?.isInternetReachable);
+  dispatch(setOnlineStatus(offline));
 
   return (
     <NavigationContainer>
