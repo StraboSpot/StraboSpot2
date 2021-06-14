@@ -3,6 +3,6 @@ export const REDUX = {
 };
 
 // Be sure to change the version in X-Code to match TODO: Change X-Code version to match
-export const VERSION_NUMBER = '1.2.2';
+export const VERSION_NUMBER = '1.3.1';
 export const BUNDLE_ID = 'org.StraboSpot2';
 export const RELEASE_NAME = `${BUNDLE_ID}-${VERSION_NUMBER}`;
