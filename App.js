@@ -10,6 +10,7 @@ import {PersistGate} from 'redux-persist/integration/react';
 import {SENTRY_DSN} from './Config';
 import Route from './src/routes/Routes';
 import {BUNDLE_ID, RELEASE_NAME, VERSION_NUMBER} from './src/shared/app.constants';
+import CheckConnection from './src/shared/CheckConnection';
 import Loading from './src/shared/ui/Loading';
 import store from './src/store/ConfigureStore';
 
@@ -23,27 +24,18 @@ Sentry.init({
   environment: __DEV__ ? 'development' : 'production',
 });
 
-NetInfo.configure({
-  reachabilityUrl: 'https://clients3.google.com/generate_204',
-  reachabilityTest: async (response) => {
-    console.log('Response Status', response.status);
-    return response.status === 204;
-  },
-  reachabilityLongTimeout: 60 * 1000, // 60s
-  reachabilityShortTimeout: 5 * 1000, // 5s
-  reachabilityRequestTimeout: 15 * 1000, // 15s
-});
-
-const App = () => {
+const App = async () => {
   const persistor = persistStore(store);
   // const persistorPurge = persistStore(store).purge(); // Use this to clear persistStore completely
+
+  let networkStatus = await CheckConnection();
 
   return (
     <Provider store={store}>
       <PersistGate loading={<Loading/>} persistor={persistor}>
-        {/*<Sentry.TouchEventBoundary>*/}
-          <Route/>
-        {/*</Sentry.TouchEventBoundary>*/}
+        <Sentry.TouchEventBoundary>
+          <Route network={networkStatus}/>
+        </Sentry.TouchEventBoundary>
       </PersistGate>
     </Provider>
   );
