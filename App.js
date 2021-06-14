@@ -1,9 +1,9 @@
 import 'react-native-gesture-handler';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 
 import NetInfo from '@react-native-community/netinfo';
 import * as Sentry from '@sentry/react-native';
-import {Provider} from 'react-redux';
+import {Provider, useDispatch} from 'react-redux';
 import {persistStore} from 'redux-persist';
 import {PersistGate} from 'redux-persist/integration/react';
 
@@ -24,11 +24,12 @@ Sentry.init({
   environment: __DEV__ ? 'development' : 'production',
 });
 
-const App = async () => {
+const App = () => {
+  // const network = CheckConnection();
   const persistor = persistStore(store);
   // const persistorPurge = persistStore(store).purge(); // Use this to clear persistStore completely
 
-  let networkStatus = await CheckConnection();
+  let networkStatus = CheckConnection();
 
   return (
     <Provider store={store}>
