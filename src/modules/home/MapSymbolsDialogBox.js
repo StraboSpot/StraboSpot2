@@ -20,7 +20,6 @@ const scaleAnimation = new ScaleAnimation({
 const MapSymbolsDialog = (props) => {
   const dispatch = useDispatch();
   const isAllSymbolsOn = useSelector(state => state.map.isAllSymbolsOn);
-  const isOnline = useSelector(state => state.home.isOnline);
   const mapSymbols = useSelector(state => state.map.mapSymbols);
   const symbolsOn = useSelector(state => state.map.symbolsOn) || [];
   const tagTypeForColor = useSelector(state => state.map.tagTypeForColor);
@@ -82,14 +81,12 @@ const MapSymbolsDialog = (props) => {
           </ListItem.Content>
           <Switch onChange={() => toggleAllSymbolsOn()} value={isAllSymbolsOn}/>
         </ListItem>
-        {isOnline && (
-          <ListItem key={'spotLabels'} containerStyle={{...dialogStyles.dialogContent}}>
-            <ListItem.Content>
-              <ListItem.Title style={dialogStyles.dialogLargerText}>{'Symbol Labels'}</ListItem.Title>
-            </ListItem.Content>
-            <Switch onChange={() => dispatch(setIsShowSpotLabelsOn(!isShowSpotLabelsOn))} value={isShowSpotLabelsOn}/>
-          </ListItem>
-        )}
+        <ListItem key={'spotLabels'} containerStyle={{...dialogStyles.dialogContent}}>
+          <ListItem.Content>
+            <ListItem.Title style={dialogStyles.dialogLargerText}>{'Symbol Labels'}</ListItem.Title>
+          </ListItem.Content>
+          <Switch onChange={() => dispatch(setIsShowSpotLabelsOn(!isShowSpotLabelsOn))} value={isShowSpotLabelsOn}/>
+        </ListItem>
         <ListItem key={'tag_color'} containerStyle={{...dialogStyles.dialogContent}}>
           <ListItem.Content>
             <ListItem.Title style={dialogStyles.dialogLargerText}>{'Show Tag Color'}</ListItem.Title>
