@@ -2,10 +2,11 @@ import React, {useEffect, useState} from 'react';
 import {Text, View} from 'react-native';
 
 import {Button} from 'react-native-elements';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 import useDownloadHook from '../../services/useDownload';
 import commonStyles from '../../shared/common.styles';
+import {isEmpty} from '../../shared/Helpers';
 import TextInputModal from '../../shared/ui/GeneralTextInputModal';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
@@ -14,23 +15,30 @@ import ActiveDatasetsList from './ActiveDatasetsList';
 import ActiveProjectList from './ActiveProjectList';
 import CustomFeatureTypes from './CustomFeatureTypes';
 import DatasetList from './DatasetList';
+import {setActiveDatasets, setSelectedDataset} from './projects.slice';
 import useProjectHook from './useProject';
 
 const ActiveProjectPanel = () => {
-
+  const dispatch = useDispatch();
   const [useProject] = useProjectHook();
   const useDownload = useDownloadHook();
   const [isWarningModalVisible, setIsWarningModalVisible] = useState(false);
-  const [activeDatasets, setActiveDatasets] = useState(null);
   const [datasetName, setDatasetName] = useState(null);
   const [isAddDatasetModalVisible, setIsAddDatasetModalVisible] = useState(false);
   const project = useSelector(state => state.project.project);
   const user = useSelector(state => state.user);
   const datasets = useSelector(state => state.project.datasets);
+  const activeDatasetsIds = useSelector(state => state.project.activeDatasetsIds);
+  const selectedDatasetId = useSelector(state => state.project.selectedDatasetId);
 
   useEffect(() => {
-    const filteredDatasets = Object.values(datasets).filter(dataset => dataset.active === true);
-    setActiveDatasets(filteredDatasets);
+    if (Object.values(datasets).length > 0 && !isEmpty(Object.values(datasets)[0])) {
+      if (activeDatasetsIds.length === 0) {
+        dispatch(setActiveDatasets({bool: true, dataset: Object.values(datasets)[0].id}));
+        dispatch(setSelectedDataset(Object.values(datasets)[0].id));
+      }
+      else if (!selectedDatasetId) dispatch(setSelectedDataset(activeDatasetsIds[0]));
+    }
   }, [datasets]);
 
   const onAddDataset = async () => {

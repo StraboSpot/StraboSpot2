@@ -6,7 +6,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import useDownloadHook from '../../services/useDownload';
 import commonStyles from '../../shared/common.styles';
-import {truncateText, isEmpty} from '../../shared/Helpers';
+import {isEmpty, truncateText} from '../../shared/Helpers';
 import DeleteConformationDialogBox from '../../shared/ui/DeleteConformationDialogBox';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import TextInputModal from '../../shared/ui/GeneralTextInputModal';
@@ -46,7 +46,8 @@ const DatasetList = () => {
   };
 
   const isDisabled = (id) => {
-    return (activeDatasetsIds.length === 1 && activeDatasetsIds[0] === id) || selectedDatasetId === id;
+    return (activeDatasetsIds.length === 1 && activeDatasetsIds[0] === id)
+      || (selectedDatasetId && selectedDatasetId === id);
   };
 
   const renderDatasetListItem = (dataset) => {

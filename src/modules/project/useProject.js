@@ -74,8 +74,6 @@ const useProject = () => {
       name: name ? name : 'Default',
       date: newDate,
       modified_timestamp: modifiedTimeStamp,
-      current: true,
-      active: true,
       spotIds: [],
       images: {
         neededImagesIds: [],
@@ -189,11 +187,11 @@ const useProject = () => {
   };
 
   const getSelectedDatasetFromId = () => {
-    return datasets[selectedDatasetId];
+    return selectedDatasetId ? datasets[selectedDatasetId] : 'Unknown';
   };
 
-  const makeDatasetCurrent = (dataset) => {
-    dispatch(setSelectedDataset(dataset));
+  const makeDatasetCurrent = (datasetId) => {
+    dispatch(setSelectedDataset(datasetId));
     return Promise.resolve();
   };
 

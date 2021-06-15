@@ -19,7 +19,7 @@ const ActiveDatasetsList = () => {
 
   const renderActiveDatasets = (datasetId) => {
     const datasetObj = datasets[datasetId];
-    const checked = selectedDatasetId === datasetId;
+    const checked = selectedDatasetId && selectedDatasetId === datasetId;
     return (
       <React.Fragment>
         {!isEmpty(datasetObj) && (

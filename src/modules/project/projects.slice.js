@@ -5,7 +5,7 @@ import {DEFAULT_GEOLOGIC_TYPES, DEFAULT_RELATIONSHIP_TYPES} from './project.cons
 
 const initialProjectState = {
   activeDatasetsIds: [],
-  selectedDatasetId: {},
+  selectedDatasetId: undefined,
   project: {},
   datasets: {},
   deviceBackUpDirectoryExists: false,
@@ -75,7 +75,7 @@ const projectSlice = createSlice({
     clearedDatasets(state) {
       state.datasets = {};
       state.activeDatasetsIds = [];
-      state.selectedDatasetId = {};
+      state.selectedDatasetId = undefined;
     },
     clearedProject(state) {
       state.project = {};
