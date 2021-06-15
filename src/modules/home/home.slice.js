@@ -6,7 +6,7 @@ const initialHomeState = {
     imagesDownloadedCount: 0,
     neededImageIds: 0,
   },
-  isOnline: false,
+  isOnline: true,
   loading: {
     modal: false,
     home: false,
