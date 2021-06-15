@@ -1,7 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {Alert, Animated, Dimensions, Keyboard, Platform, Text, TextInput, View} from 'react-native';
 
-import NetInfo from '@react-native-community/netinfo';
 import {useNavigation} from '@react-navigation/native';
 import * as Sentry from '@sentry/react-native';
 import {Button, Image} from 'react-native-elements';
@@ -65,7 +64,6 @@ import {
   setMainMenuPanelVisible,
   setModalVisible,
   setOfflineMapsModalVisible,
-  setOnlineStatus,
   setProjectLoadComplete,
   setProjectLoadSelectionModalVisible,
   setStatusMessagesModalVisible,
@@ -129,7 +127,6 @@ const Home = () => {
     editButtonsVisible: false,
     userLocationButtonOn: false,
   });
-  const [isConnectedStatus, setIsConnectedStatus] = useState(false);
   const [mapMode, setMapMode] = useState(MAP_MODES.VIEW);
   const [animation, setAnimation] = useState(new Animated.Value(notebookPanelWidth));
   const [MainMenuPanelAnimation] = useState(new Animated.Value(-homeMenuPanelWidth));
@@ -142,26 +139,6 @@ const Home = () => {
   const [homeTextInputAnimate] = useState(new Animated.Value(0));
   const mapComponentRef = useRef(null);
   const toastRef = useRef(null);
-
-  // useEffect(() => {
-  //   const unsubscribe = NetInfo.addEventListener(state => {
-  //     const offline = (state.isConnected && state.isInternetReachable);
-  //     setIsConnectedStatus(offline);
-  //     dispatch(setOnlineStatus(offline));
-  //   });
-  //   return () => {
-  //     console.log('Unsubscribed from NetInfo');
-  //     unsubscribe();
-  //   }
-  // }, []);
-
-  // useEffect(() => {
-  //   const networkConnection = CheckConnection();
-  //   console.log('NETWORK CONNECTION', networkConnection)
-  //   // if (props.network) {
-  //   //   dispatch(setOnlineStatus(props.network?.isConnected && props.network?.isInternetReachable));
-  //   // }
-  // }, [])
 
   useEffect(() => {
     console.log('Selected Project', selectedProject);
@@ -737,10 +714,12 @@ const Home = () => {
         isSelectingForTagging={isSelectingForTagging}
       />
       <View style={{...uiStyles.offlineImageIconContainer}}>
-        {!isOnline && <Image
-          source={offlineIcon}
-          style={uiStyles.offlineIcon}
-        />}
+        {!isOnline && (
+          <Image
+            source={offlineIcon}
+            style={uiStyles.offlineIcon}
+          />
+        )}
       </View>
       {vertexStartCoords && <VertexDrag/>}
       <ToastPopup toastRef={toastRef}/>
