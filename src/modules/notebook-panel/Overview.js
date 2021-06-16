@@ -11,6 +11,7 @@ import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import uiStyles from '../../shared/ui/ui.styles';
 import {Form, useFormHook} from '../form';
+import {setModalVisible} from '../home/home.slice';
 import {editedSpotProperties} from '../spots/spots.slice';
 import {NOTEBOOK_PAGES, PRIMARY_PAGES} from './notebook.constants';
 import {setNotebookPageVisible} from './notebook.slice';
@@ -79,6 +80,12 @@ const Overview = (props) => {
       && !spot.properties.hasOwnProperty('surface_feature')) setIsTraceSurfaceFeatureEnabled(false);
   };
 
+  const openPage = (page) => {
+    dispatch(setNotebookPageVisible(page.key));
+    if (page.modal) dispatch(setModalVisible({modal: page.modal}));
+    else dispatch(setModalVisible({modal: null}));
+  };
+
   // What happens after submitting the form is handled in saveFormAndGo since we want to show
   // an alert message if there are errors but this function won't be called if form is invalid
   const onSubmitForm = () => {
@@ -127,7 +134,7 @@ const Overview = (props) => {
 
   const renderSectionHeader = (page) => {
     return (
-      <Pressable style={uiStyles.sectionHeaderBackground} onPress={()=> dispatch(setNotebookPageVisible(page.key))}>
+      <Pressable style={uiStyles.sectionHeaderBackground} onPress={()=> openPage(page)}>
         <SectionDivider dividerText={page.label}/>
       </Pressable>
     );

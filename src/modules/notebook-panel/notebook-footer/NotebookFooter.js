@@ -21,8 +21,7 @@ const NotebookFooter = (props) => {
 
   const getPageIcon = (key) => {
     const page = NOTEBOOK_PAGES.find(p => p.key === key);
-    return notebookPageVisible === key || notebookPageVisible === page.subpage_key ? page.icon_pressed_src
-      : page.icon_src;
+    return notebookPageVisible === key ? page.icon_pressed_src : page.icon_src;
   };
 
   return (

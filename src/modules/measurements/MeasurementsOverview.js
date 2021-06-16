@@ -15,7 +15,7 @@ const MeasurementsOverview = (props) => {
 
   const onMeasurementPressed = (item) => {
     dispatch(setSelectedAttributes([item]));
-    dispatch(setNotebookPageVisible(props.page.subpage_key));
+    dispatch(setNotebookPageVisible(props.page.key));
   };
 
   return (

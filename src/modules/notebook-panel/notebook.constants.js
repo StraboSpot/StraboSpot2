@@ -36,7 +36,6 @@ export const PAGE_KEYS = {
   IMAGES: 'images',
   INTERPRETATIONS: 'interpretations',
   LITHOLOGIES: 'lithologies',
-  MEASUREMENT_DETAIL: 'measurement_detail',
   MEASUREMENTS: 'orientation_data',
   MINERALS: 'minerals',
   NESTING: 'nesting',

@@ -23,7 +23,6 @@ import Overview from './Overview';
 const {State: TextInputState} = TextInput;
 
 const NotebookPanel = (props) => {
-  const [useSpots] = useSpotsHook();
   const dispatch = useDispatch();
   const isNotebookPanelVisible = useSelector(state => state.notebook.isNotebookPanelVisible);
   const pageVisible = useSelector(state => state.notebook.visibleNotebookPagesStack.slice(-1)[0]);
@@ -76,11 +75,9 @@ const NotebookPanel = (props) => {
             <Page page={page} openMainMenu={props.openMainMenu}/>
           </View>
         </Animated.View>
-        {pageVisible !== PAGE_KEYS.MEASUREMENT_DETAIL && (
-          <View style={notebookStyles.footerContainer}>
-            <NotebookFooter openPage={openPage}/>
-          </View>
-        )}
+        <View style={notebookStyles.footerContainer}>
+          <NotebookFooter openPage={openPage}/>
+        </View>
       </React.Fragment>
     );
   };

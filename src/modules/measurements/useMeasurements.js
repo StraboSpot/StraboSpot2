@@ -73,7 +73,7 @@ const useMeasurements = () => {
 
       if (compassMeasurements.manual) {
         dispatch(setSelectedAttributes([newOrientation]));
-        dispatch(setNotebookPageVisible(PAGE_KEYS.MEASUREMENT_DETAIL));
+        dispatch(setNotebookPageVisible(PAGE_KEYS.MEASUREMENTS));
       }
     }
     else Alert.alert('No Measurement Type', 'Please select a measurement type using the toggles.');

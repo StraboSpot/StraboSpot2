@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Alert, SectionList, View} from 'react-native';
 
 import {Button} from 'react-native-elements';
-import {useDispatch, useSelector} from 'react-redux';
+import {batch, useDispatch, useSelector} from 'react-redux';
 
 import {isEmpty} from '../../shared/Helpers';
 import {WARNING_COLOR} from '../../shared/styles.constants';
@@ -13,9 +13,9 @@ import uiStyles from '../../shared/ui/ui.styles';
 import {COMPASS_TOGGLE_BUTTONS} from '../compass/compass.constants';
 import {setCompassMeasurements, setCompassMeasurementTypes} from '../compass/compass.slice';
 import {setModalVisible} from '../home/home.slice';
-import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import {setSelectedAttributes} from '../spots/spots.slice';
+import MeasurementDetail from './MeasurementDetail';
 import MeasurementItem from './MeasurementItem';
 import styles from './measurements.styles';
 import useMeasurementsHook from './useMeasurements';
@@ -25,11 +25,14 @@ const MeasurementsPage = (props) => {
   const modalVisible = useSelector(state => state.home.modalVisible);
   const spot = useSelector(state => state.spot.selectedSpot);
   const compassMeasurements = useSelector(state => state.compass.measurements);
+  const selectedAttributes = useSelector(state => state.spot.selectedAttributes);
 
-  const [useMeasurements] = useMeasurementsHook();
-
+  const [isDetailView, setIsDetailView] = useState(false);
   const [multiSelectMode, setMultiSelectMode] = useState();
   const [selectedFeaturesTemp, setSelectedFeaturesTemp] = useState([]);
+  const [selectedAttitudes, setSelectedAttitudes] = useState({});
+
+  const [useMeasurements] = useMeasurementsHook();
 
   const SECTIONS = {
     PLANAR: {
@@ -49,9 +52,22 @@ const MeasurementsPage = (props) => {
     },
   };
 
+  useEffect(() => {
+    return () => dispatch(setSelectedAttributes([]));
+  }, []);
+
+  useEffect(() => {
+    console.log('UE Rendered MeasurementsPage\nSpot:', spot, '\nSelectedAttributes:', selectedAttributes);
+    if (!isEmpty(selectedAttributes)) {
+      setSelectedAttitudes(selectedAttributes);
+      setIsDetailView(true);
+    }
+    else setSelectedAttitudes([]);
+  }, [spot, selectedAttributes]);
+
   // Create a new measurement on grabbing new compass measurements
   useEffect(() => {
-    if (!isEmpty(compassMeasurements)) {
+    if (!isEmpty(compassMeasurements) && !isDetailView) {
       console.log('New compass measurement recorded in Measurements.', compassMeasurements);
       useMeasurements.createNewMeasurement();
       dispatch(setCompassMeasurements({}));
@@ -86,6 +102,14 @@ const MeasurementsPage = (props) => {
     );
   };
 
+  const editMeasurement = (measurements) => {
+    batch(() => {
+      setIsDetailView(true);
+      setSelectedAttitudes(measurements);
+      if (measurements.length > 1) dispatch(setModalVisible({modal: null}));
+    });
+  };
+
   const getIdsOfSelected = () => {
     return selectedFeaturesTemp.map(value => value.id);
   };
@@ -95,13 +119,13 @@ const MeasurementsPage = (props) => {
     setMultiSelectMode();
     dispatch(setModalVisible({modal: null}));
     dispatch(setSelectedAttributes(data));
-    dispatch(setNotebookPageVisible(props.page.subpage_key));
+    setIsDetailView(true);
   };
 
   const onMeasurementPressed = (item, title) => {
     const sectionType = Object.keys(SECTIONS).find(k => SECTIONS[k].title === title);
     console.log('type', sectionType);
-    if (!multiSelectMode) viewMeasurementDetail(item);
+    if (!multiSelectMode) editMeasurement([item]);
     else {
       if (sectionType === multiSelectMode && (selectedFeaturesTemp.length === 0
         || (selectedFeaturesTemp.length > 0 && selectedFeaturesTemp[0].type === item.type))) {
@@ -123,7 +147,7 @@ const MeasurementsPage = (props) => {
     console.log('Identify Selected:', selectedFeaturesTemp);
     if (selectedFeaturesTemp.length > 1) dispatch(setModalVisible({modal: null}));
     dispatch(setSelectedAttributes(selectedFeaturesTemp));
-    dispatch(setNotebookPageVisible(props.page.subpage_key));
+    setIsDetailView(true);
   };
 
   const onSelectingStart = (type) => {
@@ -217,26 +241,39 @@ const MeasurementsPage = (props) => {
     );
   };
 
-  const viewMeasurementDetail = (item) => {
-    dispatch(setSelectedAttributes([item]));
-    dispatch(setNotebookPageVisible(props.page.subpage_key));
+  const renderMeasurementDetail = () => {
+    return (
+      <MeasurementDetail
+        closeDetailView={() => setIsDetailView(false)}
+        page={props.page}
+        selectedAttitudes={selectedAttitudes}
+      />
+    );
+  };
+
+  const renderMeasurementsMain = () => {
+    return (
+      <View style={{flex: 1}}>
+        <ReturnToOverviewButton/>
+        {renderSections()}
+        {selectedFeaturesTemp.length >= 1 && (
+          <View>
+            <Button
+              titleStyle={{color: WARNING_COLOR}}
+              title={'Delete Measurement' + (selectedFeaturesTemp.length === 1 ? '' : 's')}
+              type={'clear'}
+              onPress={() => deleteMeasurementsConfirm(selectedFeaturesTemp)}
+            />
+          </View>
+        )}
+      </View>
+    );
   };
 
   return (
-    <View style={styles.measurementsContentContainer}>
-      <ReturnToOverviewButton/>
-      {renderSections()}
-      {selectedFeaturesTemp.length >= 1 && (
-        <View>
-          <Button
-            titleStyle={{color: WARNING_COLOR}}
-            title={'Delete Measurement' + (selectedFeaturesTemp.length === 1 ? '' : 's')}
-            type={'clear'}
-            onPress={() => deleteMeasurementsConfirm(selectedFeaturesTemp)}
-          />
-        </View>
-      )}
-    </View>
+    <React.Fragment>
+      {isDetailView ? renderMeasurementDetail() : renderMeasurementsMain()}
+    </React.Fragment>
   );
 };
 
