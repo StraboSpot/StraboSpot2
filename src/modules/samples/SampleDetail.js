@@ -1,4 +1,4 @@
-import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
+import React, {useEffect, useLayoutEffect, useRef} from 'react';
 import {Alert, FlatList, View} from 'react-native';
 
 import {Formik} from 'formik';
@@ -10,34 +10,29 @@ import * as themes from '../../shared/styles.constants';
 import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {Form, useFormHook} from '../form';
-import {setNotebookPageVisible, setNotebookPageVisibleToPrev} from '../notebook-panel/notebook.slice';
-import {editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
+import {setNotebookPageVisibleToPrev} from '../notebook-panel/notebook.slice';
+import {editedSpotProperties} from '../spots/spots.slice';
 
 const SampleDetailPage = (props) => {
   const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
-  const selectedSample = useSelector(state => state.spot.selectedAttributes[0]);
 
   const [useForm] = useFormHook();
-
-  const [formName, setFormName] = useState([]);
 
   const formRef = useRef(null);
 
   useLayoutEffect(() => {
-    console.log('In SampleDetailPage useEffect', selectedSample);
-    setFormName(['general', 'sample']);
     return () => confirmLeavePage();
   }, []);
 
   useEffect(() => {
-    console.log('UE for selectedSample changed in SampleDetailPage');
-    if (!selectedSample) dispatch(setNotebookPageVisible(props.page.key));
-  }, [selectedSample]);
+    console.log('UE Rendered SampleDetailPage\nSelectedSample:', props.selectedSample);
+    if (isEmpty(props.selectedSample)) props.closeDetailView();
+  }, [props.selectedSample]);
 
-  const cancelFormAndGo = async () => {
+  const cancelForm = async () => {
     await formRef.current.resetForm();
-    dispatch(setNotebookPageVisibleToPrev());
+    props.closeDetailView();
   };
 
   const confirmLeavePage = () => {
@@ -61,44 +56,37 @@ const SampleDetailPage = (props) => {
   const deleteSample = () => {
     let samplesDataCopy = JSON.parse(JSON.stringify(spot.properties.samples));
     samplesDataCopy.forEach((sample, i) => {
-      if (selectedSample.id === sample.id) samplesDataCopy[i] = {};
+      if (props.selectedSample.id === sample.id) samplesDataCopy[i] = {};
     });
     samplesDataCopy = samplesDataCopy.filter(sample => !isEmpty(sample));
     dispatch(editedSpotProperties({field: 'samples', value: samplesDataCopy}));
     dispatch(setNotebookPageVisibleToPrev());
   };
 
-  const onSubmitForm = () => {
-    console.log('OnSubmit Executed');
-  };
-
-  const renderCancelSaveButtons = () => {
-    return (
-      <View>
-        <SaveAndCloseButton
-          cancel={cancelFormAndGo}
-          save={saveFormAndGo}
-        />
-      </View>
-    );
-  };
-
   const renderFormFields = () => {
-    console.log('Rendering form:', formName[0] + '.' + formName[1], 'with selected sample ', selectedSample);
+    const formName = ['general', props.page.key];
+    console.log('Rendering form:', formName[0] + '.' + formName[1], 'with selected sample ', props.selectedSample);
     return (
       <View>
-        <SectionDivider dividerText="Sample"/>
+        <SectionDivider dividerText='Sample'/>
         <View style={{flex: 1}}>
           <Formik
             innerRef={formRef}
-            onSubmit={onSubmitForm}
+            onSubmit={() => console.log('Submitting form...')}
+            onReset={() => console.log('Resetting form...')}
             validate={(values) => useForm.validateForm({formName: formName, values: values})}
             component={(formProps) => Form({formName: formName, ...formProps})}
-            initialValues={selectedSample}
+            initialValues={props.selectedSample}
             validateOnChange={false}
             enableReinitialize={true}
           />
         </View>
+        <Button
+          titleStyle={{color: themes.RED}}
+          title={'Delete Sample'}
+          type={'clear'}
+          onPress={() => deleteSample()}
+        />
       </View>
     );
   };
@@ -110,49 +98,26 @@ const SampleDetailPage = (props) => {
       console.log('Found validation errors.');
       throw Error;
     }
-    let samplesDataCopy = JSON.parse(JSON.stringify(spot.properties.samples));
+    let samplesDataCopy = JSON.parse(JSON.stringify(spot.properties[props.page.key]));
     let formValues = {...formCurrent.values};
-    let editedSelectedSample = [];
     samplesDataCopy.forEach((sample, i) => {
-      if (selectedSample.id === sample.id) {
-        samplesDataCopy[i] = {...sample, ...formValues};
-        editedSelectedSample.push(samplesDataCopy[i]);
-      }
+      if (props.selectedSample.id === sample.id) samplesDataCopy[i] = {...sample, ...formValues};
     });
-    dispatch(setSelectedAttributes(editedSelectedSample));
-    dispatch(editedSpotProperties({field: 'samples', value: samplesDataCopy}));
+    dispatch(editedSpotProperties({field: props.page.key, value: samplesDataCopy}));
     await formCurrent.resetForm();
     console.log('Finished saving form data to Spot');
-  };
-
-  const saveFormAndGo = async () => {
-    try {
-      await saveForm(formRef.current);
-      dispatch(setNotebookPageVisibleToPrev());
-    }
-    catch (err) {
-      console.log('Error saving form data to Spot');
-    }
+    props.closeDetailView();
   };
 
   return (
     <React.Fragment>
-      {selectedSample && (
+      {!isEmpty(props.selectedSample) && (
         <React.Fragment>
-          {renderCancelSaveButtons()}
-          <FlatList
-            ListHeaderComponent={
-              <View>
-                {!isEmpty(formName) && renderFormFields()}
-                <Button
-                  titleStyle={{color: themes.RED}}
-                  title={'Delete Sample'}
-                  type={'clear'}
-                  onPress={() => deleteSample()}
-                />
-              </View>
-            }
+          <SaveAndCloseButton
+            cancel={cancelForm}
+            save={() => saveForm(formRef.current)}
           />
+          <FlatList ListHeaderComponent={renderFormFields()}/>
         </React.Fragment>
       )}
     </React.Fragment>

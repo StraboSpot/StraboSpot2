@@ -32,7 +32,7 @@ const SampleModal = (props) => {
 
     const formRef = useRef(null);
 
-    const formName = ['general', 'sample'];
+    const formName = ['general', 'samples'];
 
     // Relevant keys for quick-entry modal
     const firstKeys = ['sample_id_name', 'label', 'sample_description'];

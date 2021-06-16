@@ -15,7 +15,7 @@ import ShortcutMenu from '../preferences/shortcuts-menu/ShortcutsMenu';
 import ActiveProject from '../project/ActiveProjectPanel';
 import MyStraboSpot from '../project/MyStraboSpot';
 import UploadBackupAndExport from '../project/UploadBackupExport';
-import SamplesList from '../samples/SamplesList';
+import SamplesMenuItem from '../samples/SamplesMenuItem';
 import {setSelectedAttributes, setSelectedSpot} from '../spots/spots.slice';
 import SpotsList from '../spots/SpotsList';
 import Tags from '../tags/Tags';
@@ -27,13 +27,12 @@ import MainMenuPanelHeader from './MainMenuPanelHeader';
 import MainMenuPanelList from './MainMenuPanelList';
 
 const MainMenuPanel = props => {
-  // let buttonTitle = null;
   const dispatch = useDispatch();
   const project = useSelector(state => state.project.project);
   const settingsPageVisible = useSelector(state => state.mainMenu.mainMenuPageVisible);
-  const switchPosition = useSelector(state => state.home.shortcutSwitchPosition);
   const spotsInMapExtent = useSelector(state => state.map.spotsInMapExtent);
-  const user = useSelector(state => state.user);
+  const switchPosition = useSelector(state => state.home.shortcutSwitchPosition);
+
   const mainMenuHeader = (
     <MainMenuPanelHeader
       onPress={() => dispatch(setMenuSelectionPage({name: undefined}))}>
@@ -153,7 +152,7 @@ const MainMenuPanel = props => {
     case MAIN_MENU_ITEMS.ATTRIBUTES.SAMPLES:
       page = (
         <View style={styles.mainMenuContainer}>
-          <SamplesList
+          <SamplesMenuItem
             openSpotInNotebook={openSpotInNotebook}
             spotsInMapExtent={spotsInMapExtent}
             openNotebookPanel={(notebookPage) => props.openNotebookPanel(notebookPage)}

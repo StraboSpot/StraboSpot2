@@ -25,11 +25,14 @@ const {State: TextInputState} = TextInput;
 const NotebookPanel = (props) => {
   const [useSpots] = useSpotsHook();
   const dispatch = useDispatch();
+  const isNotebookPanelVisible = useSelector(state => state.notebook.isNotebookPanelVisible);
   const pageVisible = useSelector(state => state.notebook.visibleNotebookPagesStack.slice(-1)[0]);
   const recentlyViewedSpotIds = useSelector(state => state.spot.recentViews);
-  const isNotebookPanelVisible = useSelector(state => state.notebook.isNotebookPanelVisible);
   const spot = useSelector(state => state.spot.selectedSpot);
   const spots = useSelector(state => state.spot.spots);
+
+  const [useSpots] = useSpotsHook();
+
   const [textInputAnimate] = useState(new Animated.Value(0));
 
   useEffect(() => {
@@ -73,7 +76,7 @@ const NotebookPanel = (props) => {
             <Page page={page} openMainMenu={props.openMainMenu}/>
           </View>
         </Animated.View>
-        {pageVisible !== PAGE_KEYS.MEASUREMENT_DETAIL && pageVisible !== PAGE_KEYS.SAMPLE_DETAIL && (
+        {pageVisible !== PAGE_KEYS.MEASUREMENT_DETAIL && (
           <View style={notebookStyles.footerContainer}>
             <NotebookFooter openPage={openPage}/>
           </View>

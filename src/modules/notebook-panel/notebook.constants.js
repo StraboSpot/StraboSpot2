@@ -17,7 +17,7 @@ import MineralsPage from '../petrology/MineralsPage';
 import ReactionTexturesPage from '../petrology/ReactionTexturesPage';
 import RockTypePage from '../petrology/RockTypePage';
 import TernaryPage from '../petrology/TernaryPage';
-import SampleDetail from '../samples/SampleDetail';
+import SamplesOverview from '../samples/SamplesOverview';
 import SamplesPage from '../samples/SamplesPage';
 import {TagsAtSpotList} from '../tags';
 import TagsNotebook from '../tags/TagsNotebook';
@@ -48,7 +48,6 @@ export const PAGE_KEYS = {
   ROCK_TYPE_IGNEOUS: 'igneous',
   ROCK_TYPE_METAMORPHIC: 'metamorphic',
   SAMPLES: 'samples',
-  SAMPLE_DETAIL: 'sample_detail',
   STRUCTURES: 'structures',
   TAGS: 'tags',
   TERNARY: 'ternary',
@@ -98,10 +97,9 @@ export const PRIMARY_PAGES = [
     label: 'Samples',
     icon_src: require('../../assets/icons/Sample.png'),
     icon_pressed_src: require('../../assets/icons/Sample_pressed.png'),
-    overview_component: SamplesPage,
+    overview_component: SamplesOverview,
     page_component: SamplesPage,
     modal: MODALS.NOTEBOOK_MODALS.SAMPLE,
-    subpage_key: PAGE_KEYS.SAMPLE_DETAIL,
   },
 ];
 
@@ -146,10 +144,6 @@ export const SUBPAGES = [
     key: PAGE_KEYS.MEASUREMENT_DETAIL,
     label: 'Measurement Detail',
     page_component: MeasurementDetailPage,
-  }, {
-    key: PAGE_KEYS.SAMPLE_DETAIL,
-    label: 'Sample Detail',
-    page_component: SampleDetail,
   }, {
     key: PAGE_KEYS.NESTING,
     label: 'Nesting',

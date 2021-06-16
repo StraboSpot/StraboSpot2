@@ -1,79 +1,79 @@
-import React from 'react';
-import {FlatList, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {View} from 'react-native';
 
-import {ListItem} from 'react-native-elements';
-import {useDispatch, useSelector} from 'react-redux';
+import {batch, useDispatch, useSelector} from 'react-redux';
 
-import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
-import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
-import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
-import {MODALS} from '../home/home.constants';
 import {setModalVisible} from '../home/home.slice';
-import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import {setSelectedAttributes} from '../spots/spots.slice';
+import SampleDetail from './SampleDetail';
+import SamplesList from './SamplesList';
 
 const SamplesPage = (props) => {
   const dispatch = useDispatch();
-  const notebookPageVisible = useSelector(state => (
-    !isEmpty(state.notebook.visibleNotebookPagesStack) && state.notebook.visibleNotebookPagesStack.slice(-1)[0]
-  ));
-  const samples = useSelector(state => state.spot.selectedSpot.properties.samples);
 
-  const renderSampleListItem = (item) => {
-    let oriented = item.oriented_sample === 'yes' ? 'Oriented' : 'Unoriented';
-    return (
-      <ListItem
-        containerStyle={commonStyles.listItem}
-        key={item.id}
-        onPress={() => onSamplePressed(item)}
-        pad={5}
-      >
-        <ListItem.Content>
-          <ListItem.Title style={commonStyles.listItemTitle}>{item.sample_id_name || 'Unknown'}</ListItem.Title>
-          <ListItem.Subtitle>
-            {oriented} - {item.sample_description ? item.sample_description : 'No Description'}
-          </ListItem.Subtitle>
-        </ListItem.Content>
-        <ListItem.Chevron/>
-      </ListItem>
-    );
+  const selectedAttributes = useSelector(state => state.spot.selectedAttributes);
+  const spot = useSelector(state => state.spot.selectedSpot);
+
+  const [isDetailView, setIsDetailView] = useState(false);
+  const [selectedSample, setSelectedSample] = useState({});
+
+  useEffect(() => {
+    return () => dispatch(setSelectedAttributes([]));
+  }, []);
+
+  useEffect(() => {
+    console.log('UE Rendered SamplesPage\nSpot:', spot, '\nSelectedAttributes:', selectedAttributes);
+    if (!isEmpty(selectedAttributes)) {
+      setSelectedSample(selectedAttributes[0]);
+      dispatch(setModalVisible({modal: null}));
+      setIsDetailView(true);
+    }
+    else setSelectedSample({});
+  }, [spot, selectedAttributes]);
+
+  const editSample = (sample) => {
+    batch(() => {
+      setIsDetailView(true);
+      setSelectedSample(sample);
+      dispatch(setModalVisible({modal: null}));
+    });
   };
 
-  const renderSampleList = () => {
+  const renderSamplesDetail = () => {
     return (
-      <FlatList
-        data={samples}
-        renderItem={({item}) => renderSampleListItem(item)}
-        ItemSeparatorComponent={FlatListItemSeparator}
-        ListEmptyComponent={<ListEmptyText text={'No Samples'}/>}
+      <SampleDetail
+        closeDetailView={() => setIsDetailView(false)}
+        page={props.page}
+        selectedSample={selectedSample}
       />
     );
   };
 
-  const onSamplePressed = (item) => {
-    dispatch(setModalVisible({modal: null}));
-    dispatch(setSelectedAttributes([item]));
-    dispatch(setNotebookPageVisible(props.page.subpage_key));
+  const renderSamplesMain = () => {
+    return (
+      <View style={{flex: 1}}>
+        <React.Fragment>
+          <ReturnToOverviewButton/>
+          <SectionDividerWithRightButton
+            dividerText={props.page.label}
+            buttonTitle={'Add'}
+            onPress={() => dispatch(setModalVisible({modal: props.page.modal}))}
+          />
+        </React.Fragment>
+        <SamplesList
+          onPress={editSample}
+          page={props.page}
+        />
+      </View>
+    );
   };
 
   return (
     <React.Fragment>
-      <View style={{flex: 1}}>
-        {notebookPageVisible === props.page.key && (
-          <React.Fragment>
-            <ReturnToOverviewButton/>
-            <SectionDividerWithRightButton
-              dividerText={'Samples'}
-              buttonTitle={'Add'}
-              onPress={() => dispatch(setModalVisible({modal: MODALS.NOTEBOOK_MODALS.SAMPLE}))}
-            />
-          </React.Fragment>
-        )}
-        {renderSampleList()}
-      </View>
+      {isDetailView ? renderSamplesDetail() : renderSamplesMain()}
     </React.Fragment>
   );
 };

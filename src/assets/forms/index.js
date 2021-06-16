@@ -49,7 +49,7 @@ const forms = {
     images: imageProperties,
     project_description: projectDescription,
     trace: trace,
-    sample: sample,
+    samples: sample,
     surface_feature: surfaceFeature,
     user_profile: userProfile,
   },
