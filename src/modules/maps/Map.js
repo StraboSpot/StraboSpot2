@@ -127,7 +127,7 @@ const Map = React.forwardRef((props, ref) => {
       }
       return false;
     });
-    if (!currentImageBasemap) setCurrentLocationAsCenter().catch(err => console.error('Error', err));
+    // if (!currentImageBasemap) setCurrentLocationAsCenter().catch(err => console.error('Error', err));
   }, []);
 
   useEffect(() => {
@@ -187,7 +187,7 @@ const Map = React.forwardRef((props, ref) => {
       console.log('ITS IN THIS ONE!!!! -!isOnline && isOnline !== null && currentBasemap');
       useOfflineMaps.switchToOfflineMap().catch(error => console.log('Error Setting Offline Basemap', error));
     }
-    // if (!currentImageBasemap) setCurrentLocationAsCenter();
+    if (!currentImageBasemap) setCurrentLocationAsCenter();
     clearVertexes();
   }, [user, isOnline]);
 
