@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {
+  Alert,
   Animated,
   AppState,
   Easing,
@@ -62,14 +63,19 @@ const Compass = () => {
   const [strikeSpinValue] = useState(new Animated.Value(0));
   const [trendSpinValue] = useState(new Animated.Value(0));
   const [toggles, setToggles] = useState(compassMeasurementTypes);
+  const [buttonSound, setButtonSound] = useState(null);
 
   const [useMaps] = useMapsHook();
   const [useMeasurements] = useMeasurementsHook();
 
-  const buttonClick = new Sound('button_click.mp3', Sound.MAIN_BUNDLE, (error) => {
-    if (error) console.log('Failed to load sound', error);
-  });
   const CompassEvents = new NativeEventEmitter(NativeModules.Compass);
+
+  useEffect(() => {
+    const buttonClick = new Sound('button_click.mp3', Sound.MAIN_BUNDLE, (error) => {
+      if (error) console.log('Failed to load sound', error);
+    });
+    setButtonSound(buttonClick);
+  }, []);
 
   useEffect(() => {
     AppState.addEventListener('change', handleAppStateChange);
@@ -171,17 +177,9 @@ const Compass = () => {
 
   const displayCompassData = () => {
     if (Platform.OS === 'ios') {
+      console.log('%cSUBSCRIBING to native compass data', 'color: red');
       NativeModules.Compass.myDeviceRotation();
-      CompassEvents.addListener('rotationMatrix', res => {
-        // console.log('Began Compass observation and rotationMatrix listener.');
-        setCompassData({
-          heading: res.heading,
-          strike: res.strike,
-          dip: res.dip,
-          trend: res.trend,
-          plunge: res.plunge,
-        });
-      });
+      CompassEvents.addListener('rotationMatrix', matrixRotation);
     }
     else calculateOrientation();
   };
@@ -189,18 +187,35 @@ const Compass = () => {
   const grabMeasurements = async (isCompassMeasurement) => {
     if (modalVisible === MODALS.SHORTCUT_MODALS.COMPASS) await useMaps.setPointAtCurrentLocation();
     try {
-      buttonClick.play();
+      buttonSound.play();
+      if (isCompassMeasurement) dispatch(setCompassMeasurements(compassData));
+      else dispatch(setCompassMeasurements({...compassData, manual: true}));
     }
     catch (e) {
       console.log('Compass click sound playback failed due to audio decoding errors', e);
     }
-    if (isCompassMeasurement) dispatch(setCompassMeasurements(compassData));
-    else dispatch(setCompassMeasurements({...compassData, manual: true}));
   };
 
   const handleAppStateChange = (state) => {
     if (state === 'active') Platform.OS === 'ios' ? displayCompassData() : subscribeToAccelerometer();
-    else if (state === 'background') unsubscribe();
+    else if (state === 'background' || state === 'inactive') {
+      dispatch(setModalVisible({modal: null}));
+      unsubscribe();
+    }
+    ;
+  };
+
+  const matrixRotation = res => {
+    if (res) {
+      setCompassData({
+        heading: res.heading,
+        strike: res.strike,
+        dip: res.dip,
+        trend: res.trend,
+        plunge: res.plunge,
+      });
+    }
+    else Alert.alert('Having trouble getting compass data from device!');
   };
 
   const renderCompass = () => {
@@ -421,12 +436,11 @@ const Compass = () => {
 
   const unsubscribe = () => {
     if (Platform.OS === 'ios') {
-      NativeModules.Compass.stopObserving();
-      CompassEvents.removeAllListeners('rotationMatrix');
-      console.log('Ended Compass observation and rotationMatrix listener.');
+      CompassEvents.removeListener('rotationMatrix', matrixRotation);
+      console.log('%cEnded Compass observation and rotationMatrix listener.', 'color: red');
     }
     else unsubscribeFromAccelerometer();
-    console.log('Heading subscription cancelled');
+    console.log('%cHeading subscription cancelled', 'color: red');
   };
 
   const unsubscribeFromAccelerometer = () => {
