@@ -165,7 +165,7 @@ class Compass: RCTEventEmitter {
     motion.stopAccelerometerUpdates()
     motion.stopDeviceMotionUpdates()
     locationManager.stopUpdatingHeading()
-    print("Events Stopped")
+    print("Compass Events Stopped in iOS code")
   }
 
   // we need to override this method and
