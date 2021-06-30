@@ -9,12 +9,12 @@ import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
 import uiStyles from '../../shared/ui/ui.styles';
 import {useFormHook} from '../form';
+import BasicDetail from '../notebook-panel/BasicDetail';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import {setSelectedAttributes} from '../spots/spots.slice';
-import ThreeDStructureDetail from './ThreeDStructureDetail';
 import ThreeDStructureItem from './ThreeDStructureItem';
 
-const ThreeDStructuresPage = () => {
+const ThreeDStructuresPage = (props) => {
   const dispatch = useDispatch();
   const selectedAttributes = useSelector(state => state.spot.selectedAttributes);
   const spot = useSelector(state => state.spot.selectedSpot);
@@ -25,6 +25,7 @@ const ThreeDStructuresPage = () => {
   const [useForm] = useFormHook();
 
   const SECTIONS = {
+    // FABRICS: {title: 'Fabrics', key: 'fabric'}, // Hidden here and displayed on Fabrics page as deprecated
     FOLDS: {title: 'Folds', key: 'fold'},
     TENSORS: {title: 'Tensors', key: 'tensor'},
     OTHER: {title: 'Other', key: 'other'},
@@ -110,9 +111,10 @@ const ThreeDStructuresPage = () => {
         </View>
       )}
       {isDetailView && (
-        <ThreeDStructureDetail
-          show3dStructuresOverview={() => setIsDetailView(false)}
-          selected3dStructure={selected3dStructure}
+        <BasicDetail
+          closeDetailView={() => setIsDetailView(false)}
+          page={props.page}
+          selectedFeature={selected3dStructure}
         />
       )}
     </React.Fragment>

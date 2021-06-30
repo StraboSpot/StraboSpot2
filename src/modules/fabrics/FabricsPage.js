@@ -11,13 +11,12 @@ import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRig
 import uiStyles from '../../shared/ui/ui.styles';
 import {MODALS} from '../home/home.constants';
 import {setModalValues, setModalVisible} from '../home/home.slice';
+import BasicDetail from '../notebook-panel/BasicDetail';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import {setSelectedAttributes} from '../spots/spots.slice';
-import ThreeDStructureDetail from '../three-d-structures/ThreeDStructureDetail';
-import FabricDetail from './FabricDetail';
 import FabricListItem from './FabricListItem';
 
-const FabricsPage = () => {
+const FabricsPage = (props) => {
   const dispatch = useDispatch();
   const selectedAttributes = useSelector(state => state.spot.selectedAttributes);
   const spot = useSelector(state => state.spot.selectedSpot);
@@ -40,7 +39,6 @@ const FabricsPage = () => {
     console.log('UE Rendered FabricsPage\nSpot:', spot, '\nSelectedAttributes:', selectedAttributes);
     if (!isEmpty(selectedAttributes)) {
       setSelectedFabric(selectedAttributes[0]);
-      dispatch(setSelectedAttributes([]));
       setIsDetailView(true);
     }
     else setSelectedFabric({});
@@ -109,20 +107,11 @@ const FabricsPage = () => {
         </View>
       )}
       {isDetailView && (
-        <React.Fragment>
-          {selectedFabric.type === 'fabric' ? (
-              <ThreeDStructureDetail
-                show3dStructuresOverview={() => setIsDetailView(false)}
-                selected3dStructure={selectedFabric}
-              />
-            )
-            : (
-              <FabricDetail
-                showFabricsOverview={() => setIsDetailView(false)}
-                selectedFabric={selectedFabric}
-              />
-            )}
-        </React.Fragment>
+        <BasicDetail
+          closeDetailView={() => setIsDetailView(false)}
+          page={props.page}
+          selectedFeature={selectedFabric}
+        />
       )}
     </React.Fragment>
   );

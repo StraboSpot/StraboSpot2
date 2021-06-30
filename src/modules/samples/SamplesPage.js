@@ -6,9 +6,9 @@ import {batch, useDispatch, useSelector} from 'react-redux';
 import {isEmpty} from '../../shared/Helpers';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
 import {setModalVisible} from '../home/home.slice';
+import BasicDetail from '../notebook-panel/BasicDetail';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import {setSelectedAttributes} from '../spots/spots.slice';
-import SampleDetail from './SampleDetail';
 import SamplesList from './SamplesList';
 
 const SamplesPage = (props) => {
@@ -43,10 +43,10 @@ const SamplesPage = (props) => {
 
   const renderSamplesDetail = () => {
     return (
-      <SampleDetail
+      <BasicDetail
         closeDetailView={() => setIsDetailView(false)}
         page={props.page}
-        selectedSample={selectedSample}
+        selectedFeature={selectedSample}
       />
     );
   };

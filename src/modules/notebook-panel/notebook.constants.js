@@ -5,7 +5,6 @@ import Geography from '../geography/Geography';
 import {MODALS} from '../home/home.constants';
 import ImagesOverview from '../images/ImagesOverview';
 import ImagesViewPage from '../images/ImagesViewPage';
-import MeasurementDetailPage from '../measurements/MeasurementDetail';
 import MeasurementsOverview from '../measurements/MeasurementsOverview';
 import MeasurementsPage from '../measurements/MeasurementsPage';
 import Nesting from '../nesting/Nesting';
@@ -75,10 +74,10 @@ export const PRIMARY_PAGES = [
     overview_component: MeasurementsOverview,
     page_component: MeasurementsPage,
     modal: MODALS.NOTEBOOK_MODALS.COMPASS,
-    subpage_key: PAGE_KEYS.MEASUREMENT_DETAIL,
   }, {
     key: PAGE_KEYS.IMAGES,
     label: 'Photos & Sketches',
+    label_singular: 'Photo/Sketch',
     icon_src: require('../../assets/icons/Photo.png'),
     icon_pressed_src: require('../../assets/icons/Photo_pressed.png'),
     overview_component: ImagesOverview,
@@ -106,6 +105,7 @@ export const SECONDARY_PAGES = [
   {
     key: PAGE_KEYS.THREE_D_STRUCTURES,
     label: '3D Structures',
+    label_singular: '3D Structure',
     icon_src: require('../../assets/icons/3DStructure.png'),
     icon_pressed_src: require('../../assets/icons/3DStructure_pressed.png'),
     overview_component: ThreeDStructuresOverview,
@@ -128,6 +128,7 @@ export const SECONDARY_PAGES = [
   }, {
     key: PAGE_KEYS.DATA,
     label: 'Data',
+    label_singular: 'Data',
     icon_src: require('../../assets/icons/Data.png'),
     icon_pressed_src: require('../../assets/icons/Data_pressed.png'),
     page_component: ExternalData,
@@ -139,10 +140,6 @@ export const SUBPAGES = [
     key: PAGE_KEYS.GEOGRAPHY,
     label: 'Geography',
     page_component: Geography,
-  }, {
-    key: PAGE_KEYS.MEASUREMENT_DETAIL,
-    label: 'Measurement Detail',
-    page_component: MeasurementDetailPage,
   }, {
     key: PAGE_KEYS.NESTING,
     label: 'Nesting',

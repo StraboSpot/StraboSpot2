@@ -11,7 +11,7 @@ import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import {Form, useFormHook} from '../form';
 import {editedSpotProperties} from '../spots/spots.slice';
 
-const FabricDetail = (props) => {
+const BasicDetail = (props) => {
   const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
 
@@ -19,18 +19,23 @@ const FabricDetail = (props) => {
 
   const formRef = useRef(null);
 
+  const pageKey = props.page.key === 'fabrics' && props.selectedFeature.type === 'fabric' ? '_3d_structures'
+    : props.page.key;
+  const pageData = spot.properties[pageKey] || [];
+  const title = props.page.label_singular || toTitleCase(props.page.label).slice(0, -1);
+
   useLayoutEffect(() => {
     return () => confirmLeavePage();
   }, []);
 
   useEffect(() => {
-    console.log('UE FabricDetail: props.selectedFabric changed to', props.selectedFabric);
-    if (isEmpty(props.selectedFabric)) props.showFabricsOverview();
-  }, [props.selectedFabric]);
+    console.log('UE BasicDetail Selected Feature', title, props.selectedFeature);
+    if (isEmpty(props.selectedFeature)) props.closeDetailView();
+  }, [props.selectedFeature]);
 
   const cancelForm = async () => {
     await formRef.current.resetForm();
-    props.showFabricsOverview();
+    props.closeDetailView();
   };
 
   const confirmLeavePage = () => {
@@ -38,33 +43,28 @@ const FabricDetail = (props) => {
       const formCurrent = formRef.current;
       Alert.alert('Unsaved Changes',
         'Would you like to save your data before continuing?',
-        [
-          {
-            text: 'No',
-            style: 'cancel',
-          },
-          {
-            text: 'Yes',
-            onPress: () => saveForm(formCurrent),
-          },
-        ],
+        [{
+          text: 'No',
+          style: 'cancel',
+        }, {
+          text: 'Yes',
+          onPress: () => saveForm(formCurrent),
+        }],
         {cancelable: false},
       );
     }
   };
 
-  const deleteFabric = () => {
-    let editedFabricsData = spot.properties.fabrics ? JSON.parse(JSON.stringify(spot.properties.fabrics)) : [];
-    if (!editedFabricsData) editedFabricsData = [];
-    editedFabricsData = editedFabricsData.filter(f => f.id !== props.selectedFabric.id);
-    dispatch(editedSpotProperties({field: 'fabrics', value: editedFabricsData}));
-    props.showFabricsOverview();
+  const deleteFeature = () => {
+    let editedPageData = pageData ? JSON.parse(JSON.stringify(pageData)) : [];
+    editedPageData = editedPageData.filter(f => f.id !== props.selectedFeature.id);
+    dispatch(editedSpotProperties({field: pageKey, value: editedPageData}));
+    props.closeDetailView();
   };
 
-  const deleteFabricConfirm = () => {
-    const type = props.selectedFabric.type;
-    Alert.alert('Delete ' + toTitleCase(type.replace('_', ' ')),
-      'Are you sure you would like to delete this ' + type.replace('_', ' ') + '?',
+  const deleteFeatureConfirm = () => {
+    Alert.alert('Delete ' + title,
+      'Are you sure you would like to delete this ' + title + '?',
       [
         {
           text: 'No',
@@ -72,7 +72,7 @@ const FabricDetail = (props) => {
         },
         {
           text: 'Yes',
-          onPress: () => deleteFabric(),
+          onPress: () => deleteFeature(),
         },
       ],
       {cancelable: false},
@@ -80,10 +80,9 @@ const FabricDetail = (props) => {
   };
 
   const renderFormFields = () => {
-    const type = props.selectedFabric.type;
-    const formName = ['fabrics', type];
+    let formName = ['general', pageKey];
+    if (pageKey === '_3d_structures' || pageKey === 'fabrics') formName = [pageKey, props.selectedFeature.type];
     console.log('Rendering form:', formName[0] + '.' + formName[1]);
-    console.log(toTitleCase(type) + ' Data:', props.selectedFabric);
     return (
       <View style={{flex: 1}}>
         <Formik
@@ -92,50 +91,56 @@ const FabricDetail = (props) => {
           onReset={() => console.log('Resetting form...')}
           validate={(values) => useForm.validateForm({formName: formName, values: values})}
           children={(formProps) => (
-            <Form {...formProps} {...{formName: formName}}/>
+            <Form
+              {...formProps}
+              {...{
+                formName: formName,
+                onMyChange: props.onChange && ((name, value) => props.onChange(formRef.current, name, value)),
+              }}
+            />
           )}
-          initialValues={props.selectedFabric}
+          initialValues={props.selectedFeature}
           validateOnChange={false}
           enableReinitialize={true}
         />
         <Button
           titleStyle={{color: themes.RED}}
-          title={'Delete ' + toTitleCase(type.replace('_', ' '))}
+          title={'Delete ' + title}
           type={'clear'}
-          onPress={() => deleteFabricConfirm()}
+          onPress={() => deleteFeatureConfirm()}
         />
       </View>
     );
   };
 
   const saveForm = async (formCurrent) => {
-    const type = props.selectedFabric.type;
     try {
       await formCurrent.submitForm();
       if (useForm.hasErrors(formCurrent)) {
         useForm.showErrors(formCurrent);
         throw Error;
       }
-      let editedFabricData = formCurrent.values;
-      console.log('Saving ' + type + ' data to Spot ...');
-      let editedFabricsData = spot.properties.fabrics ? JSON.parse(JSON.stringify(spot.properties.fabrics)) : [];
-      editedFabricsData = editedFabricsData.filter(f => f.id !== editedFabricData.id);
-      editedFabricsData.push(editedFabricData);
-      dispatch(editedSpotProperties({field: 'fabrics', value: editedFabricsData}));
-      await formRef.current.resetForm();
-      props.showFabricsOverview();
+      const editedFeatureData = formCurrent.values;
+      console.log('Saving', props.page.label, 'data', editedFeatureData, 'to Spot', pageData);
+      let editedPageData = pageData ? JSON.parse(JSON.stringify(pageData)) : [];
+      editedPageData = editedPageData.filter(f => f.id !== editedFeatureData.id);
+      editedPageData.push(editedFeatureData);
+      dispatch(editedSpotProperties({field: pageKey, value: editedPageData}));
+      await formCurrent.resetForm();
+      props.closeDetailView();
     }
     catch (err) {
-      console.log('Error submitting form', err);
+      console.log('Error saving', pageKey, err);
+      throw Error;
     }
   };
 
   return (
     <React.Fragment>
-      {!isEmpty(props.selectedFabric) && (
+      {!isEmpty(props.selectedFeature) && (
         <React.Fragment>
           <SaveAndCloseButton
-            cancel={() => cancelForm()}
+            cancel={cancelForm}
             save={() => saveForm(formRef.current)}
           />
           <FlatList ListHeaderComponent={renderFormFields()}/>
@@ -145,4 +150,4 @@ const FabricDetail = (props) => {
   );
 };
 
-export default FabricDetail;
+export default BasicDetail;
