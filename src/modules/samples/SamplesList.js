@@ -35,7 +35,8 @@ const SamplesList = (props) => {
 
   return (
     <FlatList
-      data={samples}
+      data={samples.slice().sort(
+        (a, b) => (a.sample_id_name || 'Unknown').localeCompare((b.sample_id_name || 'Unknown')))}
       renderItem={({item}) => renderSamplesListItem(item)}
       ItemSeparatorComponent={FlatListItemSeparator}
       ListEmptyComponent={<ListEmptyText text={'No Samples'}/>}
