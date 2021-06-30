@@ -21,7 +21,7 @@ import MeasurementItem from './MeasurementItem';
 import styles from './measurements.styles';
 import useMeasurementsHook from './useMeasurements';
 
-const MeasurementDetailPage = (props) => {
+const MeasurementDetail = (props) => {
   const dispatch = useDispatch();
   const compassMeasurements = useSelector(state => state.compass.measurements);
   const selectedMeasurement = useSelector(state => state.spot.selectedMeasurement);
@@ -41,7 +41,7 @@ const MeasurementDetailPage = (props) => {
 
   // Update selected Measurement on selected Attitudes changed or return to Measurements page if no selected Attitude
   useEffect(() => {
-    console.log('UE for selectedAttitudes changed in MeasurementDetailPage', props.selectedAttitudes);
+    console.log('UE for selectedAttitudes changed in MeasurementDetail', props.selectedAttitudes);
     if (isEmpty(props.selectedAttitudes)) props.closeDetailView();
     else {
       if (isEmpty(selectedMeasurement) && props.selectedAttitudes[0]) {
@@ -547,4 +547,4 @@ const MeasurementDetailPage = (props) => {
   );
 };
 
-export default MeasurementDetailPage;
+export default MeasurementDetail;
