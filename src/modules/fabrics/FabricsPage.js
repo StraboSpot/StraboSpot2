@@ -33,14 +33,18 @@ const FabricsPage = () => {
   };
 
   useEffect(() => {
-    console.log('UE FabricsPage: spot changed to', spot);
+    return () => dispatch(setSelectedAttributes([]));
+  }, []);
+
+  useEffect(() => {
+    console.log('UE Rendered FabricsPage\nSpot:', spot, '\nSelectedAttributes:', selectedAttributes);
     if (!isEmpty(selectedAttributes)) {
       setSelectedFabric(selectedAttributes[0]);
       dispatch(setSelectedAttributes([]));
       setIsDetailView(true);
     }
     else setSelectedFabric({});
-  }, [spot]);
+  }, [selectedAttributes, spot]);
 
   const addFabric = (type) => {
     dispatch(setModalValues({type: type}));

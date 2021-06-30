@@ -28,11 +28,10 @@ const SamplesPage = (props) => {
     console.log('UE Rendered SamplesPage\nSpot:', spot, '\nSelectedAttributes:', selectedAttributes);
     if (!isEmpty(selectedAttributes)) {
       setSelectedSample(selectedAttributes[0]);
-      dispatch(setModalVisible({modal: null}));
       setIsDetailView(true);
     }
     else setSelectedSample({});
-  }, [spot, selectedAttributes]);
+  }, [selectedAttributes, spot]);
 
   const editSample = (sample) => {
     batch(() => {

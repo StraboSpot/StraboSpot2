@@ -31,14 +31,17 @@ const ThreeDStructuresPage = () => {
   };
 
   useEffect(() => {
-    console.log('UE ThreeDStructuresPage: spot changed to', spot);
+    return () => dispatch(setSelectedAttributes([]));
+  }, []);
+
+  useEffect(() => {
+    console.log('UE Rendered ThreeDStructuresPage\nSpot:', spot, '\nSelectedAttributes:', selectedAttributes);
     if (!isEmpty(selectedAttributes)) {
       setSelected3dStructure(selectedAttributes[0]);
-      dispatch(setSelectedAttributes([]));
       setIsDetailView(true);
     }
     else setSelected3dStructure({});
-  }, [spot]);
+  }, [selectedAttributes, spot]);
 
   const add3dStructure = (type) => {
     const new3dStructure = {id: getNewId(), type: type};
