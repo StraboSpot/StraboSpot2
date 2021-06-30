@@ -20,6 +20,7 @@ Sentry.init({
   dist: BUNDLE_ID,
   autoSessionTracking: true,
   environment: __DEV__ ? 'development' : 'production',
+  deactivateStacktraceMerging: true,
 });
 
 const App = () => {
