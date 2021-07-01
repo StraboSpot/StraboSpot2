@@ -58,7 +58,7 @@ const Compass = () => {
     quality: null,
   });
   const [magnetometer, setMagnetometer] = useState(0);
-  const [showData, setShowData] = useState(false);
+  // const [showData, setShowData] = useState(false);
   const [sliderValue, setSliderValue] = useState(5);
   const [strikeSpinValue] = useState(new Animated.Value(0));
   const [trendSpinValue] = useState(new Animated.Value(0));
@@ -187,8 +187,12 @@ const Compass = () => {
   const grabMeasurements = async (isCompassMeasurement) => {
     if (modalVisible === MODALS.SHORTCUT_MODALS.COMPASS) await useMaps.setPointAtCurrentLocation();
     try {
-      buttonSound.play();
-      if (isCompassMeasurement) dispatch(setCompassMeasurements(compassData));
+      if (isCompassMeasurement) {
+        buttonSound.play();
+        console.log('Compass measurements', compassData, sliderValue);
+        dispatch(setCompassMeasurements(compassData.quality ? compassData
+          : {...compassData, quality: sliderValue.toString()}));
+      }
       else dispatch(setCompassMeasurements({...compassData, manual: true}));
     }
     catch (e) {
@@ -239,17 +243,17 @@ const Compass = () => {
     else if (planerToggleOn && compassData.strike !== null) return renderStrikeDipSymbol();
   };
 
-  const renderDataView = () => {
-    return (
-      <View style={uiStyles.alignItemsToCenter}>
-        <Text>Heading: {compassData.heading}</Text>
-        <Text>Strike: {compassData.strike}</Text>
-        <Text>Dip: {compassData.dip}</Text>
-        <Text>Trend: {compassData.trend}</Text>
-        <Text>Plunge: {compassData.plunge}</Text>
-      </View>
-    );
-  };
+  // const renderDataView = () => {
+  //   return (
+  //     <View style={uiStyles.alignItemsToCenter}>
+  //       <Text>Heading: {compassData.heading}</Text>
+  //       <Text>Strike: {compassData.strike}</Text>
+  //       <Text>Dip: {compassData.dip}</Text>
+  //       <Text>Trend: {compassData.trend}</Text>
+  //       <Text>Plunge: {compassData.plunge}</Text>
+  //     </View>
+  //   );
+  // };
 
   const renderMeasurementTemplates = () => {
     return (
@@ -472,9 +476,9 @@ const Compass = () => {
           {renderSlider()}
         </View>
       </View>
-      <View style={compassStyles.buttonContainer}>
-        {showData && renderDataView()}
-      </View>
+      {/*<View style={compassStyles.buttonContainer}>*/}
+      {/*{showData && renderDataView()}*/}
+      {/*</View>*/}
     </React.Fragment>
   );
 };

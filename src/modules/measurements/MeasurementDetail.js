@@ -437,7 +437,7 @@ const MeasurementDetail = (props) => {
     let editedSelectedMeasurements = [];
     let idsOfMeasurementsToEdit = [formValues.id];
     if (props.selectedAttitudes.length > 1) {
-      const fieldsToExclude = ['id', 'associated_orientation', 'label', 'strike', 'dip_direction', 'dip', 'quality',
+      const fieldsToExclude = ['id', 'associated_orientation', 'label', 'strike', 'dip_direction', 'dip',
         'trend', 'plunge', 'rake', 'rake_calculated'];
       fieldsToExclude.forEach(key => delete formValues[key]);
       if (formCurrent.values.id === props.selectedAttitudes[0].id) {
