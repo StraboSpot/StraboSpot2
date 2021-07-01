@@ -5,8 +5,6 @@ import {Overlay, Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import * as themes from '../../shared/styles.constants';
-import DragAnimation from '../../shared/ui/DragAmination';
-import Modal from '../../shared/ui/modal/Modal';
 import modalStyle from '../../shared/ui/modal/modal.style';
 import uiStyles from '../../shared/ui/ui.styles';
 import {MODALS} from '../home/home.constants';
@@ -21,19 +19,6 @@ const CompassModal = (props) => {
   const closeCompassModal = () => {
     dispatch(setModalVisible({modal: null}));
     dispatch(setCompassMeasurements({}));
-  };
-
-  const renderCompassModalContent = () => {
-    return (
-      <Modal
-        close={closeCompassModal}
-        textStyle={{fontWeight: 'bold'}}
-        onPress={props.onPress}
-        style={props.type === MODALS.NOTEBOOK_MODALS.COMPASS ? uiStyles.modalPosition : uiStyles.modalPositionShortcutView}
-      >
-        <Compass/>
-      </Modal>
-    );
   };
 
   const renderFixedCompassModal = () => {
@@ -62,15 +47,12 @@ const CompassModal = (props) => {
             </View>
           </View>
           <Compass/>
-
         </Overlay>
       </View>
     );
   };
 
-  if (Platform.OS === 'android') return renderCompassModalContent();
-  // else return <DragAnimation>{renderCompassModalContent()}</DragAnimation>;
-  else return renderFixedCompassModal();
+  return renderFixedCompassModal();
 };
 
 export default CompassModal;

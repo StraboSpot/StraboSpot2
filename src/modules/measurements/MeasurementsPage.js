@@ -69,7 +69,8 @@ const MeasurementsPage = (props) => {
   useEffect(() => {
     if (!isEmpty(compassMeasurements) && !isDetailView) {
       console.log('New compass measurement recorded in Measurements.', compassMeasurements);
-      useMeasurements.createNewMeasurement();
+      if (compassMeasurements.manual) dispatch(setModalVisible({modal: false}));
+      {useMeasurements.createNewMeasurement();}
       dispatch(setCompassMeasurements({}));
     }
   }, [compassMeasurements]);
