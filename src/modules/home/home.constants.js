@@ -4,6 +4,7 @@ export const MODALS = {
     FABRIC: 'Fabric',
     SAMPLE: 'Sample',
     TAGS: 'Tags',
+    FEATURE_TAGS: 'Feature Tags',
     MEASUREMENT_TEMPLATES_PLANAR: 'Choose a Planar Template',
     MEASUREMENT_TEMPLATES_LINEAR: 'Choose a Linear Template',
     MEASUREMENT_PLANAR_TEMPLATE_FORM: 'Define Planar Template',

@@ -10,7 +10,8 @@ import Modal from '../../shared/ui/modal/Modal';
 import modalStyle from '../../shared/ui/modal/modal.style';
 import uiStyles from '../../shared/ui/ui.styles';
 import {MODALS} from '../home/home.constants';
-import {addedTagToSelectedSpot} from '../project/projects.slice';
+import {addedTagToSelectedSpot, setMultipleFeaturesTaggingEnabled} from '../project/projects.slice';
+import {setSelectedAttributes} from '../spots/spots.slice';
 import {TagDetailModal, TagsModal, useTagsHook} from '../tags';
 
 const TagsNotebookModal = (props) => {
@@ -36,7 +37,11 @@ const TagsNotebookModal = (props) => {
       <React.Fragment>
         <Modal
           style={{...uiStyles.modalPosition, width: 285}}
-          close={props.close}
+          close={() => {
+            props.close();
+            dispatch(setMultipleFeaturesTaggingEnabled(false));
+            dispatch(setSelectedAttributes([]));
+          }}
           textStyle={{fontWeight: 'bold'}}
           onPress={props.onPress}
         >
@@ -47,7 +52,7 @@ const TagsNotebookModal = (props) => {
               type={'outline'}
             />
           </View>
-          <TagsModal/>
+          <TagsModal isFeatureLevelTagging={props.isFeatureLevelTagging}/>
         </Modal>
         <TagDetailModal
           isVisible={isDetailModalVisible}
@@ -57,7 +62,8 @@ const TagsNotebookModal = (props) => {
     );
   };
 
-  if (modalVisible === MODALS.NOTEBOOK_MODALS.TAGS && !isEmpty(selectedSpot)) {
+  if (modalVisible === MODALS.NOTEBOOK_MODALS.TAGS || modalVisible === MODALS.NOTEBOOK_MODALS.FEATURE_TAGS
+    && !isEmpty(selectedSpot)) {
     if (Platform.OS === 'android') return renderTagsModalContent();
     else return <DragAnimation>{renderTagsModalContent()}</DragAnimation>;
   }

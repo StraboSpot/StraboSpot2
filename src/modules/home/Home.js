@@ -45,6 +45,7 @@ import useSpotsHook from '../spots/useSpots';
 import {
   AddTagsToSpotsShortcutModal,
   TagAddRemoveSpots,
+  TagAddRemoveFeatures,
   TagDetailSidePanel,
   TagsNotebookModal,
   TagsShortcutModal,
@@ -392,11 +393,13 @@ const Home = () => {
   const openStraboSpotURL = () => useDevice.openURL('https://www.strabospot.org/login');
 
   const renderFloatingViews = () => {
-    if (modalVisible === MODALS.NOTEBOOK_MODALS.TAGS && isNotebookPanelVisible && !isEmpty(selectedSpot)) {
+    if ((modalVisible === MODALS.NOTEBOOK_MODALS.TAGS || modalVisible === MODALS.NOTEBOOK_MODALS.FEATURE_TAGS)
+      && isNotebookPanelVisible && !isEmpty(selectedSpot)) {
       return (
         <TagsNotebookModal
           close={() => dispatch(setModalVisible({modal: null}))}
           onPress={() => modalHandler(null, MODALS.SHORTCUT_MODALS.TAGS)}
+          isFeatureLevelTagging={modalVisible === MODALS.NOTEBOOK_MODALS.FEATURE_TAGS}
         />
       );
     }
@@ -570,6 +573,8 @@ const Home = () => {
         return <TagDetailSidePanel openNotebookPanel={(pageView) => openNotebookPanel(pageView)}/>;
       case SIDE_PANEL_VIEWS.TAG_ADD_REMOVE_SPOTS:
         return <TagAddRemoveSpots/>;
+      case SIDE_PANEL_VIEWS.TAG_ADD_REMOVE_FEATURES:
+        return <TagAddRemoveFeatures/>;
       case SIDE_PANEL_VIEWS.USER_PROFILE:
         return <UserProfile toast={(message) => toastRef.current.show(message)}/>;
     }
