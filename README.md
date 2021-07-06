@@ -11,3 +11,8 @@ Running for development:
 
 - Run `npm install`
 - Run `npx react-native run-ios` or `npx react-native run-android`
+
+#iOS
+
+You will have to create a main.jsbundle by running:
+`react-native bundle --entry-file index.js --platform ios --dev false --bundle-output ios/main.jsbundle --assets-dest ios`
