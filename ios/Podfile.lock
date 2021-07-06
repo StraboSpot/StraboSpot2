@@ -218,17 +218,17 @@ PODS:
     - React-Core
   - react-native-keep-awake (4.0.0):
     - React
-  - react-native-mapbox-gl (8.2.0-beta1):
+  - react-native-mapbox-gl (8.2.1):
     - Mapbox-iOS-SDK (~> 5.9.0)
     - React
     - React-Core
-    - react-native-mapbox-gl/DynamicLibrary (= 8.2.0-beta1)
-    - react-native-mapbox-gl/StaticLibraryFixer (= 8.2.0-beta1)
-  - react-native-mapbox-gl/DynamicLibrary (8.2.0-beta1):
+    - react-native-mapbox-gl/DynamicLibrary (= 8.2.1)
+    - react-native-mapbox-gl/StaticLibraryFixer (= 8.2.1)
+  - react-native-mapbox-gl/DynamicLibrary (8.2.1):
     - Mapbox-iOS-SDK (~> 5.9.0)
     - React
     - React-Core
-  - react-native-mapbox-gl/StaticLibraryFixer (8.2.0-beta1):
+  - react-native-mapbox-gl/StaticLibraryFixer (8.2.1):
     - Mapbox-iOS-SDK (~> 5.9.0)
     - React
     - React-Core
@@ -572,7 +572,7 @@ SPEC CHECKSUMS:
   react-native-image-picker: 5bb3325530fd4dc3053a77a73d4f65b6649de820
   react-native-image-resizer: 13ac4af788f88af36d0353a1324401ebabd04fe4
   react-native-keep-awake: afad8a51dfef9fe9655a6344771be32c8596d774
-  react-native-mapbox-gl: b147c5e106c69870198ae6bd16b190a261ecbbcc
+  react-native-mapbox-gl: b79f2d7522556eeabd9fe5c4c94f8f6ce4412304
   react-native-netinfo: e849fc21ca2f4128a5726c801a82fc6f4a6db50d
   react-native-safe-area-context: f0906bf8bc9835ac9a9d3f97e8bde2a997d8da79
   react-native-slider: e99fc201cefe81270fc9d81714a7a0f5e566b168
