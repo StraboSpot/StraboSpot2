@@ -56,17 +56,8 @@ const useExport = () => {
     console.log(res);
   };
 
-  const getActiveDatasets = () => {
-    const activeDatasets = useProject.getActiveDatasets();
-    dataForExport.projectDb = {
-      ...dataForExport.projectDb,
-      datasets: Object.assign({}, ...activeDatasets.map(dataset => ({[dataset.id]: dataset}))),
-    };
-  };
-
   const gatherDataForBackup = async (filename) => {
     try {
-      getActiveDatasets();
       dispatch(addedStatusMessage('Exporting Project Data...'));
       console.log(dataForExport);
       await exportData(devicePath + appDirectoryForDistributedBackups + '/' + filename, dataForExport,
