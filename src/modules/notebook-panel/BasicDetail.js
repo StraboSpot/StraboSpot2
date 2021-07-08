@@ -58,7 +58,7 @@ const BasicDetail = (props) => {
 
   const deleteFeature = () => {
     let editedPageData = pageData ? JSON.parse(JSON.stringify(pageData)) : [];
-    if (pageKey === '_3d_structures') useTags.deleteFeatureTags([props.selectedFeature]);
+    useTags.deleteFeatureTags([props.selectedFeature]);
     editedPageData = editedPageData.filter(f => f.id !== props.selectedFeature.id);
     dispatch(editedSpotProperties({field: pageKey, value: editedPageData}));
     props.closeDetailView();
