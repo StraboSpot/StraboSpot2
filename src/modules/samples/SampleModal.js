@@ -10,10 +10,8 @@ import SaveButton from '../../shared/SaveButton';
 import {PRIMARY_TEXT_COLOR} from '../../shared/styles.constants';
 import DragAnimation from '../../shared/ui/DragAmination';
 import Modal from '../../shared/ui/modal/Modal';
-import uiStyles from '../../shared/ui/ui.styles';
 import {Form, FormSlider, useFormHook} from '../form';
-import {MODALS} from '../home/home.constants';
-import {setModalVisible} from '../home/home.slice';
+import {MODAL_KEYS} from '../home/home.constants';
 import useMapsHook from '../maps/useMaps';
 import {updatedProject} from '../project/projects.slice';
 import {editedSpotProperties} from '../spots/spots.slice';
@@ -127,12 +125,7 @@ const SampleModal = (props) => {
 
     const renderSamplesModal = () => {
       return (
-        <Modal
-          close={() => dispatch(setModalVisible({modal: null}))}
-          textStyle={{fontWeight: 'bold'}}
-          onPress={props.onPress}
-          style={props.type === MODALS.NOTEBOOK_MODALS.SAMPLE ? uiStyles.modalPosition : uiStyles.modalPositionShortcutView}
-        >
+        <Modal onPress={props.onPress}>
           <React.Fragment>
             <Formik
               innerRef={formRef}
@@ -153,7 +146,7 @@ const SampleModal = (props) => {
     };
 
     const saveForm = async (currentForm) => {
-      if (modalVisible === MODALS.SHORTCUT_MODALS.SAMPLE) {
+      if (modalVisible === MODAL_KEYS.SHORTCUTS.SAMPLE) {
         const pointSetAtCurrentLocation = await useMaps.setPointAtCurrentLocation();
         console.log('pointSetAtCurrentLocation', pointSetAtCurrentLocation);
       }

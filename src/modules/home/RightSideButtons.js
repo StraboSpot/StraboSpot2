@@ -1,29 +1,33 @@
 import React, {useState} from 'react';
 import {Animated, Text, View} from 'react-native';
 
+import {useNavigation} from '@react-navigation/native';
 import {Button} from 'react-native-elements';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
 import {isEmpty, truncateText} from '../../shared/Helpers';
 import IconButton from '../../shared/ui/IconButton';
-import uiStyles from '../../shared/ui/ui.styles';
+import useImagesHook from '../images/useImages';
 import {MAP_MODES} from '../maps/maps.constants';
+import useMapsHook from '../maps/useMaps';
 import useProjectHook from '../project/useProject';
-import {MODALS} from './home.constants';
+import {clearedSelectedSpots} from '../spots/spots.slice';
+import {SHORTCUT_MODALS} from './home.constants';
+import {setModalVisible} from './home.slice';
 import homeStyles from './home.style';
 
 const RightSideButtons = (props) => {
-  const online = require('../../assets/icons/ConnectionStatusButton_connected.png');
-  const offline = require('../../assets/icons/ConnectionStatusButton_offline.png');
-
+  const dispatch = useDispatch();
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const isNotebookPanelVisible = useSelector(state => state.notebook.isNotebookPanelVisible);
   const modalVisible = useSelector(state => state.home.modalVisible);
   const shortcutSwitchPosition = useSelector(state => state.home.shortcutSwitchPosition);
-  const isOnline = useSelector(state => state.home.isOnline);
   const selectedDatasetId = useSelector(state => state.project.selectedDatasetId);
-  // const zoom = useSelector(state => state.map.currentZoom);
+
+  const [useImages] = useImagesHook();
+  const [useMaps] = useMapsHook();
+  const navigation = useNavigation();
 
   const [pointIconType, setPointIconType] = useState({
     point: MAP_MODES.DRAW.POINT,
@@ -62,6 +66,47 @@ const RightSideButtons = (props) => {
     }
   };
 
+  const renderShortcutIcons = () => {
+    const toggleShortcutModal = async (key) => {
+      dispatch(clearedSelectedSpots());
+      switch (key) {
+        case 'photo':
+          const point = await useMaps.setPointAtCurrentLocation();
+          if (point) {
+            console.log('New Spot at current location:', point);
+            const imagesSavedLength = await useImages.launchCameraFromNotebook();
+            imagesSavedLength > 0 && props.toastRef.current.show(
+              imagesSavedLength + ' photo' + (imagesSavedLength === 1 ? '' : 's') + ' saved in new Spot ' + point.properties.name);
+            props.openNotebookPanel();
+          }
+          break;
+        default:
+          if (modalVisible === key) await dispatch(setModalVisible({modal: null}));
+          else await dispatch(setModalVisible({modal: key}));
+          props.closeNotebookPanel();
+      }
+      if (key === 'sketch') navigation.navigate('Sketch');
+    };
+
+    return (
+      <Animated.View
+        style={[homeStyles.shortcutButtons, props.rightsideIconAnimation]}>
+        {SHORTCUT_MODALS.reduce((acc, sm) => {
+            return (
+              shortcutSwitchPosition[sm.key] ? [...acc, (
+                  <IconButton
+                    source={modalVisible === sm.key ? sm.icon_pressed_src : sm.icon_src}
+                    onPress={() => toggleShortcutModal(sm.key)}
+                  />
+                )]
+                : acc
+            );
+          }, [],
+        )}
+      </Animated.View>
+    );
+  };
+
   return (
     <React.Fragment>
       <Animated.View
@@ -73,57 +118,7 @@ const RightSideButtons = (props) => {
           onPress={() => props.toggleNotebookPanel()}
         />
       </Animated.View>
-      {!currentImageBasemap && !isNotebookPanelVisible && (
-        <Animated.View
-          style={[homeStyles.shortcutButtons, props.rightsideIconAnimation]}>
-          {shortcutSwitchPosition.Tag && (
-            <IconButton
-              source={modalVisible === MODALS.SHORTCUT_MODALS.TAGS
-                ? require('../../assets/icons/TagButtonShortcut_pressed.png')
-                : require('../../assets/icons/TagButtonShortcut.png')}
-              onPress={() => props.clickHandler('tag')}
-            />
-          )}
-          {shortcutSwitchPosition.Measurement && (
-            <IconButton
-              source={modalVisible === MODALS.SHORTCUT_MODALS.COMPASS
-                ? require('../../assets/icons/MeasurementButtonShortcut_pressed.png')
-                : require('../../assets/icons/MeasurementButtonShortcut.png')}
-              onPress={() => props.clickHandler('measurement')}
-            />
-          )}
-          {shortcutSwitchPosition.Sample && (
-            <IconButton
-              source={modalVisible === MODALS.SHORTCUT_MODALS.SAMPLE
-                ? require('../../assets/icons/SampleButtonShortcut_pressed.png')
-                : require('../../assets/icons/SampleButtonShortcut.png')}
-              onPress={() => props.clickHandler('sample')}
-            />
-          )}
-          {shortcutSwitchPosition.Note && (
-            <IconButton
-              name={'Note'}
-              source={modalVisible === MODALS.SHORTCUT_MODALS.NOTES
-                ? require('../../assets/icons/NoteButtonShortcut_pressed.png')
-                : require('../../assets/icons/NoteButtonShortcut.png')}
-              onPress={() => props.clickHandler('note')}
-            />
-          )}
-          {shortcutSwitchPosition.Photo && (
-            <IconButton
-              source={require('../../assets/icons/PhotoButtonShortcut.png')}
-              onPress={() => props.clickHandler('photo')}
-            />
-          )}
-          {shortcutSwitchPosition.Sketch && (
-            <IconButton
-              source={require('../../assets/icons/SketchButtonShortcut.png')
-              }
-              onPress={() => props.clickHandler('sketch')}
-            />
-          )}
-        </Animated.View>
-      )}
+      {!currentImageBasemap && !isNotebookPanelVisible && renderShortcutIcons()}
       {props.drawButtonsVisible && (
         <Animated.View
           style={[homeStyles.drawToolsContainer, props.rightsideIconAnimation]}>

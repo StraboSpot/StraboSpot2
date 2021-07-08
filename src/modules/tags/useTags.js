@@ -6,7 +6,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import {getNewId, isEmpty, truncateText} from '../../shared/Helpers';
 import {Form, useFormHook} from '../form';
-import {MODALS} from '../home/home.constants';
+import {MODAL_KEYS} from '../home/home.constants';
 import {addedTagToSelectedSpot, setSelectedTag, updatedProject} from '../project/projects.slice';
 import {tagsStyles} from './index';
 
@@ -40,7 +40,7 @@ const useTags = () => {
 
   const addTag = () => {
     dispatch(setSelectedTag({}));
-    if (modalVisible === MODALS.NOTEBOOK_MODALS.TAGS) {
+    if (modalVisible === MODAL_KEYS.NOTEBOOK.TAGS) {
       dispatch(addedTagToSelectedSpot(true));
     }
     else dispatch(addedTagToSelectedSpot(false));

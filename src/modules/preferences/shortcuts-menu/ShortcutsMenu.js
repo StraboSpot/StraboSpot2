@@ -5,7 +5,7 @@ import {Avatar, ListItem} from 'react-native-elements';
 
 import commonStyles from '../../../shared/common.styles';
 import FlatListItemSeparator from '../../../shared/ui/FlatListItemSeparator';
-import {SHORTCUT_TOGGLE_BUTTONS} from './shortcuts.constants';
+import {SHORTCUT_MODALS} from '../../home/home.constants';
 import shortcutMenuStyles from './shortcutsMenu.styles';
 
 const ShortcutMenu = (props) => {
@@ -14,15 +14,15 @@ const ShortcutMenu = (props) => {
     return (
       <ListItem containerStyle={commonStyles.listItem}>
         <Avatar
-          source={toggleButton.ICON}
+          source={toggleButton.icon_src}
           placeholderStyle={{backgroundColor: 'transparent'}}
         />
         <ListItem.Content>
-          <ListItem.Title style={commonStyles.listItemTitle}>{toggleButton.NAME}</ListItem.Title>
+          <ListItem.Title style={commonStyles.listItemTitle}>{toggleButton.label}</ListItem.Title>
         </ListItem.Content>
         <Switch
-          onChange={() => props.toggleSwitch(toggleButton.NAME)}
-          value={props.shortcutSwitchPosition[toggleButton.NAME]}
+          onChange={() => props.toggleSwitch(toggleButton.key)}
+          value={props.shortcutSwitchPosition[toggleButton.key]}
         />
       </ListItem>
     );
@@ -35,7 +35,7 @@ const ShortcutMenu = (props) => {
       </View>
       <FlatList
         keyExtractor={(item) => item.toString()}
-        data={Object.values(SHORTCUT_TOGGLE_BUTTONS)}
+        data={SHORTCUT_MODALS}
         renderItem={({item}) => renderShortcutListItem(item)}
         ItemSeparatorComponent={FlatListItemSeparator}
       />

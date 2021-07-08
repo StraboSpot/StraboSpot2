@@ -2,11 +2,11 @@ import React, {useEffect, useState} from 'react';
 import {Animated, Keyboard, Text, TextInput, View} from 'react-native';
 
 import {Avatar, Button, ListItem} from 'react-native-elements';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 import compassStyles from '../../../modules/compass/compass.styles';
-import {MODALS} from '../../../modules/home/home.constants';
-import {PAGE_KEYS} from '../../../modules/notebook-panel/notebook.constants';
+import {MODALS, NOTEBOOK_MODELS, SHORTCUT_MODALS} from '../../../modules/home/home.constants';
+import {setModalVisible} from '../../../modules/home/home.slice';
 import commonStyles from '../../common.styles';
 import * as Helpers from '../../Helpers';
 import {isEmpty} from '../../Helpers';
@@ -16,13 +16,13 @@ import modalStyle from './modal.style';
 const {State: TextInputState} = TextInput;
 
 const Modal = (props) => {
-  const [modalTitle, setModalTitle] = useState('');
-  const [textInputAnimate] = useState(new Animated.Value(0));
+  const dispatch = useDispatch();
   const modalVisible = useSelector(state => state.home.modalVisible);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
-  const pageVisible = useSelector(state => state.notebook.visibleNotebookPagesStack.slice(-1)[0]);
 
-  useEffect(() => setModalTitle(modalVisible), [modalVisible]);
+  const [textInputAnimate] = useState(new Animated.Value(0));
+
+  const modalInfo = MODALS.find(p => p.key === modalVisible);
 
   useEffect(() => {
     console.log('useEffect Form []');
@@ -50,14 +50,16 @@ const Modal = (props) => {
           />
         </View>
         <View>
-          <Text style={modalStyle.modalTitle}>{modalTitle}</Text>
+          <Text style={modalStyle.modalTitle}>
+            {modalInfo && (modalInfo.action_label || modalInfo.label)}
+          </Text>
         </View>
         <View style={{flex: 1, alignItems: 'flex-end'}}>
           <Button
             titleStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 16}}
-            title={props.title || 'Close'}
+            title={props.buttonTitleRight || 'Close'}
             type={'clear'}
-            onPress={props.close}
+            onPress={props.close || (() => dispatch(setModalVisible({modal: null})))}
           />
         </View>
       </View>
@@ -65,52 +67,50 @@ const Modal = (props) => {
   };
 
   const renderModalBottom = () => {
-    if (modalVisible === MODALS.SHORTCUT_MODALS.COMPASS || modalVisible === MODALS.SHORTCUT_MODALS.TAGS
-      || modalVisible === MODALS.SHORTCUT_MODALS.TAGS || modalVisible === MODALS.SHORTCUT_MODALS.SAMPLE
-      || modalVisible === MODALS.SHORTCUT_MODALS.NOTES) {
+    const shortcutModal = SHORTCUT_MODALS.find(m => m.key === modalVisible);
+    const notebookModal = NOTEBOOK_MODELS.find(m => m.key === modalVisible);
+
+    if (shortcutModal && shortcutModal.notebook_modal_key) {
       return (
-        <React.Fragment>
-          {!isEmpty(selectedSpot) && (
-            <ListItem
-              containerStyle={commonStyles.listItem}
-              onPress={props.onPress}
-            >
-              <Avatar
-                placeholderStyle={{backgroundColor: 'transparent'}}
-                size={20}
-                source={require('../../../assets/icons/NotebookView_pressed.png')}
-              />
-              <ListItem.Content>
-                <ListItem.Title style={commonStyles.listItemTitle}>Go to Last Spot Created</ListItem.Title>
-              </ListItem.Content>
-              <ListItem.Chevron/>
-            </ListItem>
-          )}
-        </React.Fragment>
+        <ListItem
+          containerStyle={commonStyles.listItem}
+          onPress={() => props.onPress(shortcutModal.notebook_modal_key)}
+        >
+          <Avatar
+            placeholderStyle={{backgroundColor: 'transparent'}}
+            size={20}
+            source={require('../../../assets/icons/NotebookView_pressed.png')}
+          />
+          <ListItem.Content>
+            <ListItem.Title style={commonStyles.listItemTitle}>Go to Last Spot Created</ListItem.Title>
+          </ListItem.Content>
+          <ListItem.Chevron/>
+        </ListItem>
       );
     }
-    else if (modalVisible === MODALS.NOTEBOOK_MODALS.COMPASS || modalVisible === MODALS.NOTEBOOK_MODALS.TAGS
-      || modalVisible === MODALS.NOTEBOOK_MODALS.SAMPLE) {
-      return (
-        <React.Fragment>
-          {!isEmpty(selectedSpot) && (
-            <Button
-              title={'View In Shortcut Mode'}
-              type={'clear'}
-              titleStyle={compassStyles.buttonTitleStyle}
-              onPress={props.onPress}
-            />
-          )}
-        </React.Fragment>
-      );
+    else if (notebookModal) {
+      const shortcutModalSwitch = SHORTCUT_MODALS.find(m => m.notebook_modal_key === modalVisible);
+      if (shortcutModalSwitch) {
+        return (
+          <Button
+            title={'View In Shortcut Mode'}
+            type={'clear'}
+            titleStyle={compassStyles.buttonTitleStyle}
+            onPress={() => props.onPress(shortcutModalSwitch.key)}
+          />
+        );
+      }
     }
   };
 
   return (
-    <Animated.View style={[modalStyle.modalContainer, props.style, {transform: [{translateY: textInputAnimate}]}]}>
+    <Animated.View
+      style={[modalStyle.modalContainer, modalStyle.modalPosition, props.style,
+        {transform: [{translateY: textInputAnimate}]}]}
+    >
       {renderModalHeader()}
       {props.children}
-      {pageVisible !== PAGE_KEYS.MEASUREMENT_DETAIL && renderModalBottom()}
+      {!isEmpty(selectedSpot) && renderModalBottom()}
     </Animated.View>
   );
 };

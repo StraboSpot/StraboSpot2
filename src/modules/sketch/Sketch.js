@@ -5,7 +5,7 @@ import {useNavigation} from '@react-navigation/native';
 import RNSketchCanvas from '@terrylinla/react-native-sketch-canvas';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {MODALS} from '../home/home.constants';
+import {MODAL_KEYS} from '../home/home.constants';
 import {setModalVisible} from '../home/home.slice';
 import useImagesHook from '../images/useImages';
 import useMapsHook from '../maps/useMaps';
@@ -33,7 +33,7 @@ const Sketch = (props) => {
   }, []);
 
   const createSpot = async () => {
-    if (modalVisible === MODALS.SHORTCUT_MODALS.SKETCH) {
+    if (modalVisible === MODAL_KEYS.SHORTCUTS.SKETCH) {
       const pointSetAtCurrentLocation = await useMaps.setPointAtCurrentLocation();
       console.log('pointSetAtCurrentLocation', pointSetAtCurrentLocation);
     }
@@ -45,7 +45,7 @@ const Sketch = (props) => {
       if (success) {
         const savedSketch = await useImages.saveFile({'path': path});
         dispatch(editedSpotImages([{...savedSketch, image_type: 'sketch'}]));
-        Alert.alert(modalVisible === MODALS.SHORTCUT_MODALS.SKETCH
+        Alert.alert(modalVisible === MODAL_KEYS.SHORTCUTS.SKETCH
           ? `Sketch saved to NEW spot, ${selectedSpot.properties.name}!`
           : `Sketch saved to ${selectedSpot.properties.name}!`,
           null,

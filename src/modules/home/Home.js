@@ -15,9 +15,6 @@ import LoadingSpinner from '../../shared/ui/Loading';
 import StatusDialogBox from '../../shared/ui/StatusDialogBox';
 import ToastPopup from '../../shared/ui/Toast';
 import uiStyles from '../../shared/ui/ui.styles';
-import CompassModal from '../compass/CompassModal';
-import MeasurementTemplatesModal from '../compass/MeasurementTemplatesModal';
-import FabricModal from '../fabrics/FabricModal';
 import Preview from '../images/Preview';
 import useImagesHook from '../images/useImages';
 import {MAIN_MENU_ITEMS, SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.constants';
@@ -36,19 +33,11 @@ import {PAGE_KEYS} from '../notebook-panel/notebook.constants';
 import {setNotebookPageVisible, setNotebookPanelVisible} from '../notebook-panel/notebook.slice';
 import NotebookPanel from '../notebook-panel/NotebookPanel';
 import notebookStyles from '../notebook-panel/notebookPanel.styles';
-import ShortcutNotesModal from '../notes/ShortcutNotesModal';
 import ProjectDescription from '../project/ProjectDescription';
 import useProjectHook from '../project/useProject';
-import SampleModal from '../samples/SampleModal';
 import {clearedSelectedSpots} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
-import {
-  AddTagsToSpotsShortcutModal,
-  TagAddRemoveSpots,
-  TagDetailSidePanel,
-  TagsNotebookModal,
-  TagsShortcutModal,
-} from '../tags';
+import {TagAddRemoveSpots, TagDetailSidePanel} from '../tags';
 import UserProfile from '../user/UserProfilePage';
 import BackupModal from './home-modals/BackupModal';
 import BackUpOverwriteModal from './home-modals/BackUpOverwriteModal';
@@ -56,7 +45,7 @@ import InfoModal from './home-modals/InfoModal';
 import InitialProjectLoadModal from './home-modals/InitialProjectLoadModal';
 import StatusModal from './home-modals/StatusModal';
 import UploadModal from './home-modals/UploadModal';
-import {MODALS} from './home.constants';
+import {MODAL_KEYS, MODALS} from './home.constants';
 import {
   setErrorMessagesModalVisible,
   setImageModalVisible,
@@ -224,51 +213,6 @@ const Home = () => {
         Alert.alert('Still in the works',
           `The ${name.toUpperCase()} Shortcut button in the  will be functioning soon!`);
         break;
-      case 'tag':
-        dispatch(clearedSelectedSpots());
-        if (modalVisible === MODALS.SHORTCUT_MODALS.TAGS) dispatch(setModalVisible({modal: null}));
-        else modalHandler(null, MODALS.SHORTCUT_MODALS.TAGS);
-        closeNotebookPanel();
-        break;
-      case 'measurement':
-        dispatch(clearedSelectedSpots());
-        if (modalVisible === MODALS.SHORTCUT_MODALS.COMPASS) dispatch(setModalVisible({modal: null}));
-        else dispatch(setModalVisible({modal: MODALS.SHORTCUT_MODALS.COMPASS}));
-        closeNotebookPanel();
-        break;
-      case 'sample':
-        dispatch(clearedSelectedSpots());
-        if (modalVisible === MODALS.SHORTCUT_MODALS.SAMPLE) dispatch(setModalVisible({modal: null}));
-        else dispatch(setModalVisible({modal: MODALS.SHORTCUT_MODALS.SAMPLE}));
-        closeNotebookPanel();
-        break;
-      case 'note':
-        dispatch(clearedSelectedSpots());
-        if (modalVisible === MODALS.SHORTCUT_MODALS.NOTES) dispatch(setModalVisible({modal: null}));
-        else dispatch(setModalVisible({modal: MODALS.SHORTCUT_MODALS.NOTES}));
-        closeNotebookPanel();
-        break;
-      case 'photo':
-        dispatch(clearedSelectedSpots());
-        const point = await useMaps.setPointAtCurrentLocation();
-        if (point) {
-          console.log('New Spot at current location:', point);
-          const imagesSavedLength = await useImages.launchCameraFromNotebook();
-          imagesSavedLength > 0 && toastRef.current.show(
-            imagesSavedLength + ' photo' + (imagesSavedLength === 1 ? '' : 's') + ' saved in new Spot ' + point.properties.name);
-          openNotebookPanel();
-        }
-        break;
-      case 'sketch':
-        dispatch(clearedSelectedSpots());
-        if (modalVisible === MODALS.SHORTCUT_MODALS.SKETCH) {
-          dispatch(setModalVisible({modal: null}));
-        }
-        else {
-          dispatch(setModalVisible({modal: MODALS.SHORTCUT_MODALS.SKETCH}));
-          navigation.navigate('Sketch');
-        }
-        break;
       case 'home':
         toggleHomeDrawerButton();
         break;
@@ -369,20 +313,20 @@ const Home = () => {
     }
   };
 
-  const modalHandler = (page, modalType) => {
+  const modalHandler = (modalKey) => {
     if (isNotebookPanelVisible) {
       closeNotebookPanel();
-      dispatch(setModalVisible({modal: modalType}));
+      dispatch(setModalVisible({modal: modalKey}));
     }
     else {
-      openNotebookPanel(page);
-      dispatch(setModalVisible({modal: modalType}));
+      openNotebookPanel(modalKey);
+      dispatch(setModalVisible({modal: modalKey}));
     }
   };
 
   const openNotebookPanel = (pageView) => {
     console.log('Opening Notebook', pageView, '...');
-    if (modalVisible !== MODALS.SHORTCUT_MODALS.ADD_TAGS_TO_SPOTS) dispatch(setModalVisible({modal: null}));
+    if (modalVisible !== MODAL_KEYS.OTHER.ADD_TAGS_TO_SPOTS) dispatch(setModalVisible({modal: null}));
     dispatch(setNotebookPageVisible(pageView || PAGE_KEYS.OVERVIEW));
     animatePanels(animation, 0);
     animatePanels(rightsideIconAnimationValue, -notebookPanelWidth);
@@ -391,85 +335,11 @@ const Home = () => {
 
   const openStraboSpotURL = () => useDevice.openURL('https://www.strabospot.org/login');
 
-  const renderFloatingViews = () => {
-    if (modalVisible === MODALS.NOTEBOOK_MODALS.TAGS && isNotebookPanelVisible && !isEmpty(selectedSpot)) {
-      return (
-        <TagsNotebookModal
-          close={() => dispatch(setModalVisible({modal: null}))}
-          onPress={() => modalHandler(null, MODALS.SHORTCUT_MODALS.TAGS)}
-        />
-      );
-    }
-    if (modalVisible === MODALS.SHORTCUT_MODALS.TAGS) {
-      return (
-        <TagsShortcutModal
-          close={() => dispatch(setModalVisible({modal: null}))}
-          onPress={() => modalHandler(PAGE_KEYS.TAGS, MODALS.NOTEBOOK_MODALS.TAGS)}
-        />
-      );
-    }
-    if (modalVisible === MODALS.SHORTCUT_MODALS.ADD_TAGS_TO_SPOTS) {
-      return (
-        <AddTagsToSpotsShortcutModal
-          close={() => dispatch(setModalVisible({modal: null}))}
-          onPress={() => modalHandler(PAGE_KEYS.TAGS, MODALS.NOTEBOOK_MODALS.TAGS)}
-        />
-      );
-    }
-    if (modalVisible === MODALS.NOTEBOOK_MODALS.COMPASS && isNotebookPanelVisible && !isEmpty(selectedSpot)) {
-      return (
-        <CompassModal
-          onPress={() => modalHandler(null, MODALS.SHORTCUT_MODALS.COMPASS)}
-          type={modalVisible}
-        />
-      );
-    }
-    if (modalVisible === MODALS.SHORTCUT_MODALS.COMPASS) {
-      return (
-        <CompassModal
-          onPress={() => modalHandler(PAGE_KEYS.MEASUREMENTS, MODALS.NOTEBOOK_MODALS.COMPASS)}
-          type={modalVisible}
-        />
-      );
-    }
-    if (modalVisible === MODALS.NOTEBOOK_MODALS.MEASUREMENT_TEMPLATES_PLANAR
-      || modalVisible === MODALS.NOTEBOOK_MODALS.MEASUREMENT_PLANAR_TEMPLATE_FORM) {
-      return (
-        <MeasurementTemplatesModal type={'planar_orientation'}/>
-      );
-    }
-    if (modalVisible === MODALS.NOTEBOOK_MODALS.MEASUREMENT_TEMPLATES_LINEAR
-      || modalVisible === MODALS.NOTEBOOK_MODALS.MEASUREMENT_LINEAR_TEMPLATE_FORM) {
-      return (
-        <MeasurementTemplatesModal type={'linear_orientation'}/>
-      );
-    }
-    if (modalVisible === MODALS.NOTEBOOK_MODALS.SAMPLE && isNotebookPanelVisible && !isEmpty(selectedSpot)) {
-      return (
-        <SampleModal
-          onPress={() => modalHandler(null, MODALS.SHORTCUT_MODALS.SAMPLE)}
-          type={modalVisible}
-        />
-      );
-    }
-    else if (modalVisible === MODALS.SHORTCUT_MODALS.SAMPLE) {
-      return (
-        <SampleModal
-          onPress={() => modalHandler(PAGE_KEYS.SAMPLES, MODALS.NOTEBOOK_MODALS.SAMPLE)}
-          type={modalVisible}
-        />
-      );
-    }
-    if (modalVisible === MODALS.SHORTCUT_MODALS.NOTES) {
-      return (
-        <ShortcutNotesModal
-          close={() => dispatch(setModalVisible({modal: null}))}
-          onPress={() => modalHandler(PAGE_KEYS.NOTES)}
-        />
-      );
-    }
-    if (modalVisible === MODALS.NOTEBOOK_MODALS.FABRIC && isNotebookPanelVisible && !isEmpty(selectedSpot)) {
-      return <FabricModal close={() => dispatch(setModalVisible({modal: null}))}/>;
+  const renderFloatingView = () => {
+    const modal = MODALS.find(m => m.key === modalVisible);
+    if (modal && modal.modal_component) {
+      const ModalDisplayed = modal.modal_component;
+      return <ModalDisplayed onPress={modalHandler}/>;
     }
   };
 
@@ -723,21 +593,16 @@ const Home = () => {
       </View>
       {vertexStartCoords && <VertexDrag/>}
       <ToastPopup toastRef={toastRef}/>
-      {Platform.OS === 'android' && (
-        <View>
-          {(modalVisible === MODALS.NOTEBOOK_MODALS.COMPASS || modalVisible === MODALS.SHORTCUT_MODALS.COMPASS)
-          && compassModal}
-          {(modalVisible === MODALS.NOTEBOOK_MODALS.SAMPLE || modalVisible === MODALS.SHORTCUT_MODALS.SAMPLE)
-          && samplesModal}
-        </View>
-      )}
       <RightSideButtons
+        closeNotebookPanel={closeNotebookPanel}
+        openNotebookPanel={openNotebookPanel}
         toggleNotebookPanel={() => toggleNotebookPanel()}
         clickHandler={name => clickHandler(name)}
         drawButtonsVisible={buttons.drawButtonsVisible}
         mapMode={mapMode}
         endDraw={() => endDraw()}
         rightsideIconAnimation={rightsideIconAnimation}
+        toastRef={toastRef}
       />
       <LeftSideButtons
         toggleHomeDrawer={() => toggleHomeDrawerButton()}
@@ -786,7 +651,7 @@ const Home = () => {
       {isOnline && toggleOfflineMapLabel() && renderOfflineMapViewLabel()}
       {renderSaveAndCancelDrawButtons()}
       {isMainMenuPanelVisible && toggleSidePanel()}
-      {renderFloatingViews()}
+      {modalVisible && renderFloatingView()}
       {renderErrorMessageDialogBox()}
       {isOfflineMapModalVisible && renderSaveMapsModal()}
     </View>

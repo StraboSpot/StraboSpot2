@@ -13,18 +13,19 @@ import DragAnimation from '../../shared/ui/DragAmination';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import Modal from '../../shared/ui/modal/Modal';
-import uiStyles from '../../shared/ui/ui.styles';
 import {Form, formStyles, useFormHook} from '../form';
-import {MODALS} from '../home/home.constants';
+import {MODAL_KEYS} from '../home/home.constants';
 import {setModalVisible} from '../home/home.slice';
 import styles from '../measurements/measurements.styles';
 import {addedMeasurementTemplates, setActiveMeasurementTemplates} from '../project/projects.slice';
 
 const MeasurementTemplatesModal = (props) => {
   const dispatch = useDispatch();
-  const measurementTemplates = useSelector(state => state.project.project?.templates?.measurementTemplates);
   const activeMeasurementTemplates = useSelector(
     state => state.project.project?.templates?.activeMeasurementTemplates) || [];
+  const measurementTemplates = useSelector(state => state.project.project?.templates?.measurementTemplates);
+  const modalVisible = useSelector(state => state.home.modalVisible);
+
   const [displayForm, setDisplayForm] = useState(false);
   const [formName, setFormName] = useState([]);
   const [name, setName] = useState('');
@@ -33,18 +34,22 @@ const MeasurementTemplatesModal = (props) => {
   const [useForm] = useFormHook();
   const formRef = useRef(null);
 
+  const templateType = modalVisible === MODAL_KEYS.OTHER.MEASUREMENT_TEMPLATES_LINEAR
+  || modalVisible === MODAL_KEYS.OTHER.MEASUREMENT_LINEAR_TEMPLATE_FORM ? 'linear_orientation'
+    : 'planar_orientation';
+
   useEffect(() => {
     if (selectedTemplate.subType === 'tabular_orientation') setTabularOrientation(true);
     else setTabularOrientation(false);
   }, [selectedTemplate]);
 
   useEffect(() => {
-    tabularOrientation ? setFormName(['measurement_bulk', 'tabular_orientation']) : setFormName(
-      ['measurement_bulk', props.type]);
+    tabularOrientation ? setFormName(['measurement_bulk', 'tabular_orientation'])
+      : setFormName(['measurement_bulk', templateType]);
   }, [tabularOrientation]);
 
   const clearTemplate = () => {
-    props.type === 'linear_orientation' ? dispatch(setActiveMeasurementTemplates([activeMeasurementTemplates[0]]))
+    templateType === 'linear_orientation' ? dispatch(setActiveMeasurementTemplates([activeMeasurementTemplates[0]]))
       : dispatch(setActiveMeasurementTemplates([, activeMeasurementTemplates[1]]));
     closeMeasurementTemplatesModal();
   };
@@ -52,11 +57,11 @@ const MeasurementTemplatesModal = (props) => {
   const closeMeasurementTemplatesModal = () => {
     if (displayForm) {
       setDisplayForm(false);
-      props.type === 'planar_orientation' ? dispatch(
-        setModalVisible({modal: MODALS.NOTEBOOK_MODALS.MEASUREMENT_TEMPLATES_PLANAR}))
-        : dispatch(setModalVisible({modal: MODALS.NOTEBOOK_MODALS.MEASUREMENT_TEMPLATES_LINEAR}));
+      templateType === 'planar_orientation' ? dispatch(
+        setModalVisible({modal: MODAL_KEYS.OTHER.MEASUREMENT_TEMPLATES_PLANAR}))
+        : dispatch(setModalVisible({modal: MODAL_KEYS.OTHER.MEASUREMENT_TEMPLATES_LINEAR}));
     }
-    else dispatch(setModalVisible({modal: MODALS.NOTEBOOK_MODALS.COMPASS}));
+    else dispatch(setModalVisible({modal: MODAL_KEYS.NOTEBOOK.MEASUREMENTS}));
   };
 
   const confirmDeleteTemplate = () => {
@@ -85,15 +90,15 @@ const MeasurementTemplatesModal = (props) => {
       setSelectedTemplate({values: {}});
     }
     if (tabularOrientation) setFormName(['measurement_bulk', 'tabular_orientation']);
-    else setFormName(['measurement_bulk', props.type]);
-    props.type === 'planar_orientation' ? dispatch(
-      setModalVisible({modal: MODALS.NOTEBOOK_MODALS.MEASUREMENT_PLANAR_TEMPLATE_FORM})) : dispatch(
-      setModalVisible({modal: MODALS.NOTEBOOK_MODALS.MEASUREMENT_LINEAR_TEMPLATE_FORM}));
+    else setFormName(['measurement_bulk', templateType]);
+    templateType === 'planar_orientation' ? dispatch(
+      setModalVisible({modal: MODAL_KEYS.OTHER.MEASUREMENT_PLANAR_TEMPLATE_FORM})) : dispatch(
+      setModalVisible({modal: MODAL_KEYS.OTHER.MEASUREMENT_LINEAR_TEMPLATE_FORM}));
   };
 
   const deleteTemplate = (template) => {
     const existingTemplatesButCurrentTemplate = measurementTemplates.filter(
-      templateId => selectedTemplate.id != templateId.id);
+      templateId => selectedTemplate.id !== templateId.id);
     dispatch(addedMeasurementTemplates(existingTemplatesButCurrentTemplate));
     if ((!isEmpty(activeMeasurementTemplates[0]) && activeMeasurementTemplates[0].id === template.id) || (!isEmpty(
       activeMeasurementTemplates[1]) && activeMeasurementTemplates[1].id === template.id)) {
@@ -142,7 +147,7 @@ const MeasurementTemplatesModal = (props) => {
   const renderFormFields = () => {
     return (
       <View style={{flex: 1}}>
-        {props.type === 'planar_orientation' && (
+        {templateType === 'planar_orientation' && (
           <ButtonGroup
             onPress={i => onSwitchPlanarTabular(i)}
             selectedIndex={tabularOrientation ? 1 : 0}
@@ -152,7 +157,7 @@ const MeasurementTemplatesModal = (props) => {
             textStyle={{color: PRIMARY_ACCENT_COLOR}}
           />
         )}
-        <View style={[commonStyles.listItemFormField,{backgroundColor:themes.SECONDARY_BACKGROUND_COLOR}]}>
+        <View style={[commonStyles.listItemFormField, {backgroundColor: themes.SECONDARY_BACKGROUND_COLOR}]}>
           <View style={formStyles.fieldLabelContainer}>
             <Text style={formStyles.fieldLabel}>{'Name of the Template'}</Text>
           </View>
@@ -217,7 +222,7 @@ const MeasurementTemplatesModal = (props) => {
       <React.Fragment>
         <View>
           <FlatList
-            data={getRelevantMeasurementTemplates(props.type)}
+            data={getRelevantMeasurementTemplates(templateType)}
             keyExtractor={(item) => item.name}
             renderItem={({item}) => renderTemplate(item)}
             ItemSeparatorComponent={FlatListItemSeparator}
@@ -244,8 +249,7 @@ const MeasurementTemplatesModal = (props) => {
     return (
       <Modal
         close={closeMeasurementTemplatesModal}
-        textStyle={{fontWeight: 'bold'}}
-        style={[uiStyles.modalPosition, {'width': 300}]}
+        style={{'width': 300}}
       >
         {displayForm && (
           <FlatList
@@ -278,18 +282,18 @@ const MeasurementTemplatesModal = (props) => {
         'values': formRef.current.values,
       };
       existingTemplatesCopy = existingTemplatesCopy.filter((templateId) => {
-        return templateObject.id != templateId.id;
+        return templateObject.id !== templateId.id;
       });
     }
     else {
       templateObject = {
         'id': getNewUUID(),
         'name': name,
-        'type': props.type,
+        'type': templateType,
         'values': formRef.current.values,
       };
     }
-    props.type === 'planar_orientation' && tabularOrientation ? templateObject.subType = 'tabular_orientation'
+    templateType === 'planar_orientation' && tabularOrientation ? templateObject.subType = 'tabular_orientation'
       : templateObject.subType = '';
     existingTemplatesCopy.push(templateObject);
     existingTemplatesCopy = existingTemplatesCopy.sort(

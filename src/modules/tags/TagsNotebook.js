@@ -4,7 +4,7 @@ import {View} from 'react-native';
 import {useDispatch} from 'react-redux';
 
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
-import {MODALS} from '../home/home.constants';
+import {MODAL_KEYS} from '../home/home.constants';
 import {setModalVisible} from '../home/home.slice';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
 import {addedTagToSelectedSpot} from '../project/projects.slice';
@@ -27,7 +27,7 @@ const TagsNotebook = (props) => {
         <SectionDividerWithRightButton
           dividerText={'Tags'}
           buttonTitle={'Assign/Remove'}
-          onPress={() => dispatch(setModalVisible({modal: MODALS.NOTEBOOK_MODALS.TAGS}))}
+          onPress={() => dispatch(setModalVisible({modal: MODAL_KEYS.NOTEBOOK.TAGS}))}
         />
         <TagsAtSpotList openMainMenu={props.openMainMenu}/>
       </View>

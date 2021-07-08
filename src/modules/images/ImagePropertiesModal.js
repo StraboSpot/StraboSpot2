@@ -57,7 +57,6 @@ const ImagePropertiesModal = (props) => {
       buttonTitleLeft={'Cancel'}
       cancel={props.cancel}
       close={() => saveFormAndGo()}
-      style={{...uiStyles.modalPosition, left: undefined, right: 100, backgroundColor: PRIMARY_BACKGROUND_COLOR}}
     >
       <View>
         <FlatList

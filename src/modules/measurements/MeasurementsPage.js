@@ -69,15 +69,17 @@ const MeasurementsPage = (props) => {
   useEffect(() => {
     if (!isEmpty(compassMeasurements) && !isDetailView) {
       console.log('New compass measurement recorded in Measurements.', compassMeasurements);
-      if (compassMeasurements.manual) dispatch(setModalVisible({modal: false}));
-      {useMeasurements.createNewMeasurement();}
+      if (compassMeasurements.manual) {
+        dispatch(setModalVisible({modal: false}));
+        useMeasurements.createNewMeasurement();
+      }
       dispatch(setCompassMeasurements({}));
     }
   }, [compassMeasurements]);
 
   const addMeasurement = (type) => {
     dispatch(setCompassMeasurementTypes(SECTIONS[type].compass_toggles));
-    dispatch(setModalVisible({modal: props.page.modal}));
+    dispatch(setModalVisible({modal: props.page.key}));
   };
 
   const deleteMeasurements = (measurementsToDelete) => {
@@ -181,7 +183,7 @@ const MeasurementsPage = (props) => {
           )}
           {!multiSelectMode && (
             <View style={{flexDirection: 'row'}}>
-              {modalVisible !== 'Notebook Compass Modal' && (
+              {modalVisible && (
                 <Button
                   titleStyle={styles.measurementsSectionDividerButtonText}
                   title={'Add'}
