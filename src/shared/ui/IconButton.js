@@ -1,18 +1,22 @@
 import React from 'react';
-import {Image, TouchableOpacity} from 'react-native';
+import {Image, Pressable} from 'react-native';
 
 import uiStyles from '../ui/ui.styles';
 
 const IconButton = props => {
 
   return (
-    <TouchableOpacity onPress={props.onPress} onLongPress={props.onLongPress}>
+    <Pressable
+      onPress={props.onPress}
+      onLongPress={props.onLongPress}
+      delayLongPress={2000}
+    >
       <Image
         containerStyle={props.containerStyle}
         style={uiStyles.imageIcon}
         source={props.source}
       />
-    </TouchableOpacity>
+    </Pressable>
   );
 };
 
