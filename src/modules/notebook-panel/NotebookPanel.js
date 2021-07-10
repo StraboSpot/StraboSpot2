@@ -54,7 +54,7 @@ const NotebookPanel = (props) => {
   const openPage = (key) => {
     dispatch(setNotebookPageVisible(key));
     const page = NOTEBOOK_PAGES.find(p => p.key === key);
-    if (page.modal) dispatch(setModalVisible({modal: page.modal}));
+    if (page.modal_component) dispatch(setModalVisible({modal: page.key}));
     else dispatch(setModalVisible({modal: null}));
   };
 

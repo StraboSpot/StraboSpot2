@@ -1,4 +1,4 @@
-import {Platform, Dimensions, StyleSheet} from 'react-native';
+import {Platform, StyleSheet} from 'react-native';
 
 import * as themes from '../styles.constants';
 
@@ -44,16 +44,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
     alignItems: 'flex-start',
   },
-  modalPosition: {
-    position: 'absolute',
-    left: 70,
-    bottom: 20,
-  },
-  modalPositionShortcutView: {
-    position: 'absolute',
-    left: 70,
-    bottom: 20,
-  },
   navButtonsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -72,6 +62,7 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     paddingTop: 8,
     paddingBottom: 2,
+    flexShrink: 1,
   },
   sectionDividerText: {
     fontSize: Platform.OS === 'ios' ? 16 : 20,

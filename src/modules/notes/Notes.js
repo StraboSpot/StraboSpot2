@@ -9,7 +9,7 @@ import commonStyles from '../../shared/common.styles';
 import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import uiStyles from '../../shared/ui/ui.styles';
 import {TextInputField} from '../form';
-import {MODALS} from '../home/home.constants';
+import {MODAL_KEYS} from '../home/home.constants';
 import useMapsHook from '../maps/useMaps';
 import {PAGE_KEYS} from '../notebook-panel/notebook.constants';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
@@ -63,7 +63,7 @@ const Notes = () => {
   };
 
   const saveNote = async (note, pageTransition) => {
-    if (modalVisible === MODALS.SHORTCUT_MODALS.NOTES) {
+    if (modalVisible === MODAL_KEYS.SHORTCUTS.NOTE) {
       const pointSetAtCurrentLocation = await useMaps.setPointAtCurrentLocation();
       console.log('pointSetAtCurrentLocation', pointSetAtCurrentLocation);
     }
@@ -74,7 +74,7 @@ const Notes = () => {
 
   return (
     <View style={{flex: 1}}>
-      {modalVisible === MODALS.SHORTCUT_MODALS.NOTES
+      {modalVisible === MODAL_KEYS.SHORTCUTS.NOTE
         ? (
           <View style={uiStyles.alignItemsToCenter}>
             <Text>Saving a note will create</Text>

@@ -59,7 +59,7 @@ const SamplesPage = (props) => {
           <SectionDividerWithRightButton
             dividerText={props.page.label}
             buttonTitle={'Add'}
-            onPress={() => dispatch(setModalVisible({modal: props.page.modal}))}
+            onPress={() => dispatch(setModalVisible({modal: props.page.key}))}
           />
         </React.Fragment>
         <SamplesList

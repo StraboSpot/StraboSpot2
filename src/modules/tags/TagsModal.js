@@ -13,7 +13,7 @@ import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import modalStyle from '../../shared/ui/modal/modal.style';
 import {SelectInputField} from '../form';
-import {MODALS} from '../home/home.constants';
+import {MODAL_KEYS} from '../home/home.constants';
 import useMapsHook from '../maps/useMaps';
 import {TAG_TYPES} from '../project/project.constants';
 import {addedTagToSelectedSpot} from '../project/projects.slice';
@@ -57,7 +57,7 @@ const TagsModal = (props) => {
 
   const save = async () => {
     let tagsToUpdate = [];
-    if (modalVisible === (MODALS.SHORTCUT_MODALS.TAGS)) {
+    if (modalVisible === (MODAL_KEYS.SHORTCUTS.TAG)) {
       useMaps.setPointAtCurrentLocation().then(spot => {
         checkedTagsTemp.map(tag => {
           if (isEmpty(tag.spots)) tag.spots = [];
@@ -116,8 +116,8 @@ const TagsModal = (props) => {
       <ListItem
         containerStyle={commonStyles.listItem}
         key={tag.id}
-        onPress={() => (modalVisible !== MODALS.SHORTCUT_MODALS.TAGS
-          && modalVisible !== MODALS.SHORTCUT_MODALS.ADD_TAGS_TO_SPOTS)
+        onPress={() => (modalVisible !== MODAL_KEYS.SHORTCUTS.TAG
+          && modalVisible !== MODAL_KEYS.OTHER.ADD_TAGS_TO_SPOTS)
           ? useTags.addRemoveTagFromSpot(tag)
           : checkTags(tag)}
       >
@@ -128,12 +128,12 @@ const TagsModal = (props) => {
           <ListItem.Title style={commonStyles.listItemTitle}>{useTags.getLabel(tag.type)}</ListItem.Title>
         </ListItem.Content>
         <ListItem.CheckBox
-          checked={(modalVisible && modalVisible !== MODALS.SHORTCUT_MODALS.TAGS
-            && modalVisible !== MODALS.SHORTCUT_MODALS.ADD_TAGS_TO_SPOTS)
+          checked={(modalVisible && modalVisible !== MODAL_KEYS.SHORTCUTS.TAG
+            && modalVisible !== MODAL_KEYS.OTHER.ADD_TAGS_TO_SPOTS)
             ? tag && tag.spots && tag.spots.includes(selectedSpot.properties.id)
             : checkedTagsTemp.map(checkedTag => checkedTag.id).includes(tag.id)}
-          onPress={() => (modalVisible !== MODALS.SHORTCUT_MODALS.TAGS
-            && modalVisible !== MODALS.SHORTCUT_MODALS.ADD_TAGS_TO_SPOTS)
+          onPress={() => (modalVisible !== MODAL_KEYS.SHORTCUTS.TAG
+            && modalVisible !== MODAL_KEYS.OTHER.ADD_TAGS_TO_SPOTS)
             ? useTags.addRemoveTagFromSpot(tag)
             : checkTags(tag)}
         />
@@ -148,7 +148,7 @@ const TagsModal = (props) => {
 
   return (
     <React.Fragment>
-      {modalVisible !== MODALS.NOTEBOOK_MODALS.TAGS && (
+      {modalVisible !== MODAL_KEYS.NOTEBOOK.TAGS && (
         <View style={modalStyle.textContainer}>
           <AddButton
             title={'Create New Tag'}
@@ -166,7 +166,7 @@ const TagsModal = (props) => {
           : <Text style={modalStyle.textStyle}>No Tags</Text>}
       </View>
       {renderSpotTagsList()}
-      {!isEmpty(tags) && modalVisible !== MODALS.NOTEBOOK_MODALS.TAGS && (
+      {!isEmpty(tags) && modalVisible !== MODAL_KEYS.NOTEBOOK.TAGS && (
         <SaveButton
           buttonStyle={{backgroundColor: 'red'}}
           title={'Save tag(s)'}

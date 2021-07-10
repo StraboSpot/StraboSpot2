@@ -24,8 +24,7 @@ import {isEmpty, mod, roundToDecimalPlaces, toDegrees, toRadians} from '../../sh
 import * as themes from '../../shared/styles.constants';
 import modalStyle from '../../shared/ui/modal/modal.style';
 import Slider from '../../shared/ui/Slider';
-import uiStyles from '../../shared/ui/ui.styles';
-import {MODALS} from '../home/home.constants';
+import {MODAL_KEYS} from '../home/home.constants';
 import {setModalVisible} from '../home/home.slice';
 import useMapsHook from '../maps/useMaps';
 import useMeasurementsHook from '../measurements/useMeasurements';
@@ -97,7 +96,7 @@ const Compass = () => {
 
   // Create a new measurement on grabbing new compass measurements from shortcut modal
   useEffect(() => {
-    if (!isEmpty(compassMeasurements) && modalVisible === MODALS.SHORTCUT_MODALS.COMPASS) {
+    if (!isEmpty(compassMeasurements) && modalVisible === MODAL_KEYS.SHORTCUTS.MEASUREMENT) {
       console.log('New compass measurement recorded in Measurements.', compassMeasurements);
       useMeasurements.createNewMeasurement();
       dispatch(setCompassMeasurements({}));
@@ -185,7 +184,7 @@ const Compass = () => {
   };
 
   const grabMeasurements = async (isCompassMeasurement) => {
-    if (modalVisible === MODALS.SHORTCUT_MODALS.COMPASS) await useMaps.setPointAtCurrentLocation();
+    if (modalVisible === MODAL_KEYS.SHORTCUTS.MEASUREMENT) await useMaps.setPointAtCurrentLocation();
     try {
       if (isCompassMeasurement) {
         buttonSound.play();
@@ -206,7 +205,6 @@ const Compass = () => {
       dispatch(setModalVisible({modal: null}));
       unsubscribe();
     }
-    ;
   };
 
   const matrixRotation = res => {
@@ -276,7 +274,7 @@ const Compass = () => {
                   titleStyle={commonStyles.standardButtonText}
                   title={'Select Planar Template'}
                   type={'clear'}
-                  onPress={() => dispatch(setModalVisible({modal: MODALS.NOTEBOOK_MODALS.MEASUREMENT_TEMPLATES_PLANAR}))}
+                  onPress={() => dispatch(setModalVisible({modal: MODAL_KEYS.OTHER.MEASUREMENT_TEMPLATES_PLANAR}))}
                 />
               )
               : (
@@ -291,7 +289,7 @@ const Compass = () => {
                     title={'Change'}
                     type={'clear'}
                     onPress={() => dispatch(
-                      setModalVisible({modal: MODALS.NOTEBOOK_MODALS.MEASUREMENT_TEMPLATES_PLANAR}))}
+                      setModalVisible({modal: MODAL_KEYS.OTHER.MEASUREMENT_TEMPLATES_PLANAR}))}
                   />
                 </ListItem>
               )}
@@ -304,7 +302,7 @@ const Compass = () => {
                   titleStyle={commonStyles.standardButtonText}
                   title={'Select Linear Template'}
                   type={'clear'}
-                  onPress={() => dispatch(setModalVisible({modal: MODALS.NOTEBOOK_MODALS.MEASUREMENT_TEMPLATES_LINEAR}))}
+                  onPress={() => dispatch(setModalVisible({modal: MODAL_KEYS.OTHER.MEASUREMENT_TEMPLATES_LINEAR}))}
                 />
               )
               : (
@@ -318,7 +316,7 @@ const Compass = () => {
                     title={'Change'}
                     type={'clear'}
                     onPress={() => dispatch(
-                      setModalVisible({modal: MODALS.NOTEBOOK_MODALS.MEASUREMENT_TEMPLATES_LINEAR}))}
+                      setModalVisible({modal: MODAL_KEYS.OTHER.MEASUREMENT_TEMPLATES_LINEAR}))}
                   />
                 </ListItem>
               )}
@@ -461,8 +459,8 @@ const Compass = () => {
           <TouchableOpacity style={modalStyle.textContainer} onPress={() => grabMeasurements()}>
             <Text style={[modalStyle.textStyle, {'paddingTop': 5}]}>
               Tap compass to
-              {modalVisible === MODALS.SHORTCUT_MODALS.COMPASS && ' record a new \nmeasurement in a NEW Spot'}
-              {modalVisible === MODALS.NOTEBOOK_MODALS.COMPASS
+              {modalVisible === MODAL_KEYS.SHORTCUTS.MEASUREMENT && ' record a new \nmeasurement in a NEW Spot'}
+              {modalVisible === MODAL_KEYS.NOTEBOOK.MEASUREMENTS
               && (isEmpty(selectedMeasurement) ? ' record \na new measurement \nor tap HERE to record manually'
                 : ' edit current measurement')
               }

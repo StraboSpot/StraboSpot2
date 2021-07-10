@@ -9,7 +9,6 @@ import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
 import uiStyles from '../../shared/ui/ui.styles';
-import {MODALS} from '../home/home.constants';
 import {setModalValues, setModalVisible} from '../home/home.slice';
 import BasicDetail from '../notebook-panel/BasicDetail';
 import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
@@ -46,7 +45,7 @@ const FabricsPage = (props) => {
 
   const addFabric = (type) => {
     dispatch(setModalValues({type: type}));
-    dispatch(setModalVisible({modal: MODALS.NOTEBOOK_MODALS.FABRIC}));
+    dispatch(setModalVisible({modal: props.page.key}));
   };
 
   const editFabric = (fabric) => {

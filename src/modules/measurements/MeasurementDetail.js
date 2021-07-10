@@ -14,7 +14,7 @@ import SectionDivider from '../../shared/ui/SectionDivider';
 import {COMPASS_TOGGLE_BUTTONS} from '../compass/compass.constants';
 import {setCompassMeasurements, setCompassMeasurementTypes} from '../compass/compass.slice';
 import {Form, useFormHook} from '../form';
-import {MODALS} from '../home/home.constants';
+import {MODAL_KEYS} from '../home/home.constants';
 import {setModalVisible} from '../home/home.slice';
 import {editedSpotProperties, setSelectedAttributes, setSelectedMeasurement} from '../spots/spots.slice';
 import MeasurementItem from './MeasurementItem';
@@ -84,7 +84,7 @@ const MeasurementDetail = (props) => {
     const types = props.selectedAttitudes[0].type === 'linear_orientation' ? [COMPASS_TOGGLE_BUTTONS.PLANAR] : [COMPASS_TOGGLE_BUTTONS.LINEAR];
     const type = props.selectedAttitudes[0].type === 'linear_orientation' ? 'planar_orientation' : 'linear_orientation';
     dispatch(setCompassMeasurementTypes(types));
-    dispatch(setModalVisible({modal: MODALS.NOTEBOOK_MODALS.COMPASS}));
+    dispatch(setModalVisible({modal: MODAL_KEYS.NOTEBOOK.MEASUREMENTS}));
 
     const newId = getNewId();
     const newAssociatedMeasurement = {type: type, id: newId};

@@ -1,8 +1,9 @@
+import CompassModal from '../compass/CompassModal';
 import ExternalData from '../external-data/ExternalData';
+import FabricModal from '../fabrics/FabricModal';
 import FabricsOverview from '../fabrics/FabricsOverview';
 import FabricsPage from '../fabrics/FabricsPage';
 import Geography from '../geography/Geography';
-import {MODALS} from '../home/home.constants';
 import ImagesOverview from '../images/ImagesOverview';
 import ImagesViewPage from '../images/ImagesViewPage';
 import MeasurementsOverview from '../measurements/MeasurementsOverview';
@@ -16,14 +17,14 @@ import MineralsPage from '../petrology/MineralsPage';
 import ReactionTexturesPage from '../petrology/ReactionTexturesPage';
 import RockTypePage from '../petrology/RockTypePage';
 import TernaryPage from '../petrology/TernaryPage';
+import SampleModal from '../samples/SampleModal';
 import SamplesOverview from '../samples/SamplesOverview';
 import SamplesPage from '../samples/SamplesPage';
-import {TagsAtSpotList} from '../tags';
+import {TagsAtSpotList, TagsNotebookModal} from '../tags';
 import TagsNotebook from '../tags/TagsNotebook';
 import ThreeDStructuresOverview from '../three-d-structures/ThreeDStructuresOverview';
 import ThreeDStructuresPage from '../three-d-structures/ThreeDStructuresPage';
 import Overview from './Overview';
-import PlaceholderPage from './PlaceholderPage';
 
 export const PAGE_KEYS = {
   BEDDING: 'bedding',
@@ -73,7 +74,7 @@ export const PRIMARY_PAGES = [
     icon_pressed_src: require('../../assets/icons/Measurement_pressed.png'),
     overview_component: MeasurementsOverview,
     page_component: MeasurementsPage,
-    modal: MODALS.NOTEBOOK_MODALS.COMPASS,
+    modal_component: CompassModal,
   }, {
     key: PAGE_KEYS.IMAGES,
     label: 'Photos & Sketches',
@@ -89,7 +90,8 @@ export const PRIMARY_PAGES = [
     icon_pressed_src: require('../../assets/icons/Tag_pressed.png'),
     overview_component: TagsAtSpotList,
     page_component: TagsNotebook,
-    modal: MODALS.NOTEBOOK_MODALS.TAGS,
+    modal_component: TagsNotebookModal,
+    action_label: 'Add Tags',
   }, {
     key: PAGE_KEYS.SAMPLES,
     label: 'Samples',
@@ -97,7 +99,8 @@ export const PRIMARY_PAGES = [
     icon_pressed_src: require('../../assets/icons/Sample_pressed.png'),
     overview_component: SamplesOverview,
     page_component: SamplesPage,
-    modal: MODALS.NOTEBOOK_MODALS.SAMPLE,
+    modal_component: SampleModal,
+    action_label: 'Add a Sample',
   },
 ];
 
@@ -117,7 +120,8 @@ export const SECONDARY_PAGES = [
   //   icon_pressed_src: require('../../assets/icons/Fabric_pressed.png'),
   //   overview_component: FabricsOverview,
   //   page_component: FabricsPage,
-  //   modal: MODALS.NOTEBOOK_MODALS.FABRIC,
+  //   modal_component: FabricModal,
+  //   action_label: 'Add a Fabric',
   }, {
     key: PAGE_KEYS.OTHER_FEATURES,
     label: 'Other Features',
@@ -148,43 +152,45 @@ export const SUBPAGES = [
 ];
 
 export const PET_PAGES = [
-  // {
-  //   key: PAGE_KEYS.ROCK_TYPE_ALTERATION_ORE,
-  //   label: 'Alteration, Ore Rock',
-  //   icon_src: require('../../assets/icons/Economic.png'),
-  //   icon_pressed_src: require('../../assets/icons/Economic_pressed.png'),
-  //   page_component: RockTypePage,
-  // }, {
-  //   key: PAGE_KEYS.ROCK_TYPE_IGNEOUS,
-  //   label: 'Igneous Rock',
-  //   icon_src: require('../../assets/icons/Igneous.png'),
-  //   icon_pressed_src: require('../../assets/icons/Igneous_pressed.png'),
-  //   page_component: RockTypePage,
-  // }, {
-  //   key: PAGE_KEYS.ROCK_TYPE_METAMORPHIC,
-  //   label: 'Metamorphic Rock',
-  //   icon_src: require('../../assets/icons/Metamorphic.png'),
-  //   icon_pressed_src: require('../../assets/icons/Metamorphic_pressed.png'),
-  //   page_component: RockTypePage,
-  // }, {
-  //   key: PAGE_KEYS.MINERALS,
-  //   label: 'Minerals',
-  //   icon_src: require('../../assets/icons/Minerals.png'),
-  //   icon_pressed_src: require('../../assets/icons/Minerals_pressed.png'),
-  //   page_component: MineralsPage,
-  // }, {
-  //   key: PAGE_KEYS.REACTIONS,
-  //   label: 'Reaction Textures',
-  //   icon_src: require('../../assets/icons/Reactions.png'),
-  //   icon_pressed_src: require('../../assets/icons/Reactions_pressed.png'),
-  //   page_component: ReactionTexturesPage,
-  // }, {
-  //   key: PAGE_KEYS.TERNARY,
-  //   label: 'Ternary',
-  //   icon_src: require('../../assets/icons/Ternary.png'),
-  //   icon_pressed_src: require('../../assets/icons/Ternary_pressed.png'),
-  //   page_component: TernaryPage,
-  // },
+  {
+    key: PAGE_KEYS.ROCK_TYPE_ALTERATION_ORE,
+    label: 'Alteration, Ore Rocks',
+    icon_src: require('../../assets/icons/Economic.png'),
+    icon_pressed_src: require('../../assets/icons/Economic_pressed.png'),
+    page_component: RockTypePage,
+  }, {
+    key: PAGE_KEYS.ROCK_TYPE_IGNEOUS,
+    label: 'Igneous Rocks',
+    icon_src: require('../../assets/icons/Igneous.png'),
+    icon_pressed_src: require('../../assets/icons/Igneous_pressed.png'),
+    page_component: RockTypePage,
+  }, {
+    key: PAGE_KEYS.ROCK_TYPE_METAMORPHIC,
+    label: 'Metamorphic Rocks',
+    icon_src: require('../../assets/icons/Metamorphic.png'),
+    icon_pressed_src: require('../../assets/icons/Metamorphic_pressed.png'),
+    page_component: RockTypePage,
+  }, {
+    key: PAGE_KEYS.MINERALS,
+    label: 'Minerals',
+    icon_src: require('../../assets/icons/Minerals.png'),
+    icon_pressed_src: require('../../assets/icons/Minerals_pressed.png'),
+    page_component: MineralsPage,
+    action_label: 'Add Mineral Data',
+  }, {
+    key: PAGE_KEYS.REACTIONS,
+    label: 'Reaction Textures',
+    icon_src: require('../../assets/icons/Reactions.png'),
+    icon_pressed_src: require('../../assets/icons/Reactions_pressed.png'),
+    page_component: ReactionTexturesPage,
+  }, {
+    key: PAGE_KEYS.TERNARY,
+    label: 'Ternary',
+    label_singular: 'Ternary',
+    icon_src: require('../../assets/icons/Ternary.png'),
+    icon_pressed_src: require('../../assets/icons/Ternary_pressed.png'),
+    page_component: TernaryPage,
+  },
 ];
 
 export const SED_PAGES = [

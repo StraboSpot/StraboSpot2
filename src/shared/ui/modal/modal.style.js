@@ -16,6 +16,12 @@ const modalStyle = StyleSheet.create({
     overflow: 'hidden',
     zIndex: 1,
   },
+  modalPosition: {
+    position: 'absolute',
+    left: 70,
+    bottom: 20,
+    borderRadius: 20,
+  },
   modalTitle: {
     fontWeight: 'bold',
   },

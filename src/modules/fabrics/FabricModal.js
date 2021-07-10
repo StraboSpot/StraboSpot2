@@ -2,17 +2,16 @@ import React, {useEffect, useRef, useState} from 'react';
 import {FlatList, Platform, View} from 'react-native';
 
 import {Formik} from 'formik';
-import {Button, ButtonGroup} from 'react-native-elements';
+import {ButtonGroup} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {getNewId, isEmpty} from '../../shared/Helpers';
 import SaveButton from '../../shared/SaveButton';
-import {PRIMARY_ACCENT_COLOR, PRIMARY_TEXT_COLOR} from '../../shared/styles.constants';
+import {PRIMARY_TEXT_COLOR} from '../../shared/styles.constants';
 import DragAnimation from '../../shared/ui/DragAmination';
 import Modal from '../../shared/ui/modal/Modal';
-import uiStyles from '../../shared/ui/ui.styles';
 import {Form, useFormHook} from '../form';
-import {setModalValues} from '../home/home.slice';
+import {setModalValues, setModalVisible} from '../home/home.slice';
 import {editedSpotProperties} from '../spots/spots.slice';
 import {FABRIC_TYPES} from './fabric.constants';
 import FaultRockFabric from './FaultRockFabric';
@@ -20,8 +19,6 @@ import IgneousRockFabric from './IgneousRockFabric';
 import MetamRockFabric from './MetamRockFabric';
 
 const FabricModal = (props) => {
-  const [useForm] = useFormHook();
-
   const dispatch = useDispatch();
   const modalValues = useSelector(state => state.home.modalValues);
   const spot = useSelector(state => state.spot.selectedSpot);
@@ -30,6 +27,8 @@ const FabricModal = (props) => {
   const [choicesViewKey, setChoicesViewKey] = useState(null);
   const [survey, setSurvey] = useState({});
   const [choices, setChoices] = useState({});
+
+  const [useForm] = useFormHook();
 
   const formRef = useRef(null);
 
@@ -107,11 +106,9 @@ const FabricModal = (props) => {
   const renderNotebookFabricModalContent = () => {
     return (
       <Modal
-        close={() => choicesViewKey ? setChoicesViewKey(null) : props.close()}
-        title={choicesViewKey && 'Done'}
-        textStyle={{fontWeight: 'bold'}}
+        close={() => choicesViewKey ? setChoicesViewKey(null) : dispatch(setModalVisible({modal: null}))}
+        buttonTitleRight={choicesViewKey && 'Done'}
         onPress={props.onPress}
-        style={uiStyles.modalPosition}
       >
         <React.Fragment>
           <FlatList

@@ -1,50 +1,25 @@
 import React from 'react';
 import {Platform} from 'react-native';
 
-import {useSelector} from 'react-redux';
-
 import DragAnimation from '../../shared/ui/DragAmination';
 import Modal from '../../shared/ui/modal/Modal';
-import uiStyles from '../../shared/ui/ui.styles';
-import {MODALS} from '../home/home.constants';
-import {PAGE_KEYS} from '../notebook-panel/notebook.constants';
 import {TagsModal} from './index';
 
 const TagsShortcutModal = (props) => {
-  const modalVisible = useSelector(state => state.home.modalVisible);
 
-  if (modalVisible === MODALS.SHORTCUT_MODALS.TAGS) {
-    if (Platform.OS === 'android') {
-      return (
-        <Modal
-          style={{...uiStyles.modalPositionShortcutView, width: 285}}
-          close={props.close}
-          cancel={props.cancel}
-          buttonTitleLeft={'Cancel'}
-          textStyle={{fontWeight: 'bold'}}
-          onPress={(view) => props.onPress(view, PAGE_KEYS.TAGS, MODALS.NOTEBOOK_MODALS.TAGS)}
-        >
-          <TagsModal/>
-        </Modal>
-      );
-    }
-    else {
-      return (
-        <DragAnimation>
-          <Modal
-            style={{...uiStyles.modalPositionShortcutView, width: 285}}
-            close={props.close}
-            // cancel={props.cancel}
-            // buttonTitleLeft={'Cancel'}
-            textStyle={{fontWeight: 'bold'}}
-            onPress={(view) => props.onPress(view, PAGE_KEYS.TAGS, MODALS.NOTEBOOK_MODALS.TAGS)}
-          >
-            <TagsModal/>
-          </Modal>
-        </DragAnimation>
-      );
-    }
-  }
+  const renderTagsShortcutModal = () => {
+    return (
+      <Modal
+        style={{width: 285}}
+        onPress={props.onPress}
+      >
+        <TagsModal/>
+      </Modal>
+    );
+  };
+
+  if (Platform.OS === 'android') return renderTagsShortcutModal();
+  else return <DragAnimation>{renderTagsShortcutModal()}</DragAnimation>;
 };
 
 export default TagsShortcutModal;

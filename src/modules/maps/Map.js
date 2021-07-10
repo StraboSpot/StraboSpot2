@@ -10,7 +10,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import {MAPBOX_KEY} from '../../MapboxConfig';
 import {getNewUUID, isEmpty} from '../../shared/Helpers';
-import {MODALS} from '../home/home.constants';
+import {MODAL_KEYS} from '../home/home.constants';
 import {
   addedStatusMessage,
   clearedStatusMessages,
@@ -868,7 +868,7 @@ const Map = React.forwardRef((props, ref) => {
           const selectedSpots = await useMapFeatures.getLassoedSpots(mapPropsMutable.spotsNotSelected, feature);
           if (selectedSpots.length > 0) {
             dispatch(setIntersectedSpotsForTagging(selectedSpots));
-            dispatch(setModalVisible({modal: MODALS.SHORTCUT_MODALS.ADD_TAGS_TO_SPOTS}));
+            dispatch(setModalVisible({modal: MODAL_KEYS.OTHER.ADD_TAGS_TO_SPOTS}));
           }
           else {
             Alert.alert(
