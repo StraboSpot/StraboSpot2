@@ -9,7 +9,7 @@ const IconButton = props => {
     <Pressable
       onPress={props.onPress}
       onLongPress={props.onLongPress}
-      delayLongPress={2000}
+      delayLongPress={1000}
     >
       <Image
         containerStyle={props.containerStyle}
