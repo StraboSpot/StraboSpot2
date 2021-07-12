@@ -135,8 +135,9 @@ const useServerRequests = () => {
     return await response.json();
   };
 
-  const handleError = (response) => {
-    return Promise.reject(response);
+  const handleError = async (response) => {
+    const errorMessage = JSON.parse(await response.text());
+    return Promise.reject(errorMessage.Error);
   };
 
   const handleResponse = response => {

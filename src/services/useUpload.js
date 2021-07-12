@@ -159,7 +159,7 @@ const useUpload = () => {
       catch (err) {
         console.error(dataset.name + ': Error Uploading Project Spots.', err);
         dispatch(removedLastStatusMessage());
-        dispatch(addedStatusMessage(dataset.name + ': Error Uploading Spots.'));
+        dispatch(addedStatusMessage(`${dataset.name}: Error Uploading Spots.\n\n ${err}\n`));
         throw Error;
       }
     }
