@@ -1,5 +1,5 @@
 import React from 'react';
-import {Switch} from 'react-native';
+import {FlatList, Platform, Dimensions, Switch, View} from 'react-native';
 
 import {ButtonGroup, ListItem} from 'react-native-elements';
 import Dialog, {DialogContent, DialogTitle} from 'react-native-popup-dialog';
@@ -8,10 +8,13 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import {isEmpty, toTitleCase} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
+import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import {setAllSymbolsToggled, setIsShowSpotLabelsOn, setSymbolsDisplayed, setTagTypeForColor} from '../maps/maps.slice';
 import styles from '../measurements/measurements.styles';
 import useMeasurementsHook from '../measurements/useMeasurements';
 import dialogStyles from './dialog.styles';
+
+const deviceHeight = Dimensions.get(Platform.OS === 'ios' ? 'window' : 'screen').height;
 
 const scaleAnimation = new ScaleAnimation({
   useNativeDriver: true,
@@ -29,6 +32,20 @@ const MapSymbolsDialog = (props) => {
   const getSymbolTitle = (symbol) => {
     const label = toTitleCase(useMeasurements.getLabel(symbol));
     return label.endsWith('y') ? label.slice(0, -1) + 'ies' : label + 's';
+  };
+
+  const renderSymbolsList = ({item, index}) => {
+    return (
+      <ListItem
+        key={item}
+        containerStyle={dialogStyles.dialogContent}
+        bottomDivider={index < mapSymbols.length - 2}>
+        <ListItem.Content>
+          <ListItem.Title style={dialogStyles.dialogText}>{getSymbolTitle(item)}</ListItem.Title>
+        </ListItem.Content>
+        <Switch onChange={() => toggleSymbolSelected(item)} value={symbolsOn.includes(item)}/>
+      </ListItem>
+    );
   };
 
   const toggleAllSymbolsOn = () => {
@@ -62,19 +79,16 @@ const MapSymbolsDialog = (props) => {
       onTouchOutside={props.onTouchOutside}
     >
       <DialogContent>
-        {!isEmpty(mapSymbols) && mapSymbols.map((symbol, i) => {
-          return (
-            <ListItem
-              key={symbol}
-              containerStyle={dialogStyles.dialogContent}
-              bottomDivider={i < mapSymbols.length - 2}>
-              <ListItem.Content>
-                <ListItem.Title style={dialogStyles.dialogText}>{getSymbolTitle(symbol)}</ListItem.Title>
-              </ListItem.Content>
-              <Switch onChange={() => toggleSymbolSelected(symbol)} value={symbolsOn.includes(symbol)}/>
-            </ListItem>
-          );
-        })}
+        {!isEmpty(mapSymbols)
+        && <View style={{maxHeight: deviceHeight * 0.60}}>
+          <FlatList
+            keyExtractor={item => item}
+            data={mapSymbols}
+            renderItem={renderSymbolsList}
+            ItemSeparatorComponent={FlatListItemSeparator}
+          />
+        </View>
+        }
         <ListItem key={'all'} containerStyle={{...dialogStyles.dialogContent, paddingTop: 40}}>
           <ListItem.Content>
             <ListItem.Title style={dialogStyles.dialogLargerText}>{'All Symbols'}</ListItem.Title>
