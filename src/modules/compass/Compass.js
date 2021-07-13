@@ -33,7 +33,7 @@ import {COMPASS_TOGGLE_BUTTONS} from './compass.constants';
 import {setCompassMeasurements, setCompassMeasurementTypes} from './compass.slice';
 import compassStyles from './compass.styles';
 
-const Compass = () => {
+const Compass = (props) => {
   const dispatch = useDispatch();
   const compassMeasurementTypes = useSelector(state => state.compass.measurementTypes);
   const compassMeasurements = useSelector(state => state.compass.measurements);
@@ -184,7 +184,10 @@ const Compass = () => {
   };
 
   const grabMeasurements = async (isCompassMeasurement) => {
-    if (modalVisible === MODAL_KEYS.SHORTCUTS.MEASUREMENT) await useMaps.setPointAtCurrentLocation();
+    if (modalVisible === MODAL_KEYS.SHORTCUTS.MEASUREMENT) {
+      await useMaps.setPointAtCurrentLocation();
+      await props.goToCurrentLocation();
+    }
     try {
       if (isCompassMeasurement) {
         buttonSound.play();

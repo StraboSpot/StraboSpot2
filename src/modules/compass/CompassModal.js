@@ -9,7 +9,7 @@ import {setModalVisible} from '../home/home.slice';
 import Compass from './Compass';
 import {setCompassMeasurements} from './compass.slice';
 
-const CompassModal = () => {
+const CompassModal = (props) => {
   const dispatch = useDispatch();
 
   const closeCompassModal = () => {
@@ -26,7 +26,7 @@ const CompassModal = () => {
           <Button title={'Close'} type={'clear'} onPress={() => closeCompassModal()}/>
         </View>
       </View>
-      <Compass/>
+      <Compass {...props}/>
     </Overlay>
   );
 };
