@@ -97,21 +97,29 @@ const FabricsPage = (props) => {
     else return <SectionDivider dividerText={sectionTitle}/>;
   };
 
+  const renderFabricDetail = () => {
+    return (
+      <BasicPageDetail
+        closeDetailView={() => setIsDetailView(false)}
+        page={props.page}
+        selectedFeature={selectedFabric}
+        groupKey={'pet'}
+      />
+    );
+  };
+
+  const renderFabricsMain = () => {
+    return (
+      <View style={{flex: 1}}>
+        <ReturnToOverviewButton/>
+        {renderFabricSections()}
+      </View>
+    );
+  };
+
   return (
     <React.Fragment>
-      {!isDetailView && (
-        <View style={{flex: 1}}>
-          <ReturnToOverviewButton/>
-          {renderFabricSections()}
-        </View>
-      )}
-      {isDetailView && (
-        <BasicDetail
-          closeDetailView={() => setIsDetailView(false)}
-          page={props.page}
-          selectedFeature={selectedFabric}
-        />
-      )}
+      {isDetailView ? renderFabricDetail() : renderFabricsMain()}
     </React.Fragment>
   );
 };

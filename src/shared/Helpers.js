@@ -88,9 +88,14 @@ export const getNewId = () => {
   //   c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
 };
 
+// Ids are generated in such quick succession when copying that using
+// the getNewId doesn't work since that is based on a timestamp
+export const getNewCopyId = () => Math.floor(10000000000000 + Math.random() * 90000000000000);
+
 export const getNewUUID = () => {
   return uuidv4();
 };
+
 // Truncate the decimal part of a number to 5 digits and return as a string
 export const truncDecimal = (num) => {
   const numParts = num.toString().split('.');

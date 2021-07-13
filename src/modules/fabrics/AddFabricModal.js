@@ -18,7 +18,7 @@ import FaultRockFabric from './FaultRockFabric';
 import IgneousRockFabric from './IgneousRockFabric';
 import MetamRockFabric from './MetamRockFabric';
 
-const FabricModal = (props) => {
+const AddFabricModal = (props) => {
   const dispatch = useDispatch();
   const modalValues = useSelector(state => state.home.modalValues);
   const spot = useSelector(state => state.spot.selectedSpot);
@@ -35,9 +35,7 @@ const FabricModal = (props) => {
   const types = Object.keys(FABRIC_TYPES);
 
   useEffect(() => {
-    return () => {
-      dispatch(setModalValues({}));
-    };
+    return () => dispatch(setModalValues({}));
   }, []);
 
   useEffect(() => {
@@ -167,4 +165,4 @@ const FabricModal = (props) => {
   else return <DragAnimation>{renderNotebookFabricModalContent()}</DragAnimation>;
 };
 
-export default FabricModal;
+export default AddFabricModal;
