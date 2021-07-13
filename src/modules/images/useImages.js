@@ -266,7 +266,7 @@ const useImages = () => {
   const takePicture = async () => {
     return new Promise((resolve, reject) => {
       try {
-        launchCamera({}, async (response) => {
+        launchCamera({saveToPhotos: true}, async (response) => {
           console.log('Response = ', response);
           if (response.didCancel) resolve('cancelled');
           else if (response.error) reject();
