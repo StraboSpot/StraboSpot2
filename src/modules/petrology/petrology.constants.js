@@ -1308,10 +1308,6 @@ export const MINERALS_BY_CLASS = (
 );
 console.log('MINERALS_BY_CLASS', MINERALS_BY_CLASS);
 
-export const MINERAL_VIEW = {OVERVIEW: 'Overivew', DETAIL: 'Detail', ROCK_CLASS: 'Rock Class', GLOSSARY: 'Glossay'};
-
-export const REACTION_VIEW = {OVERVIEW: 'Overivew', DETAIL: 'Detail'};
-
 export const TERNARY_MINERALS = {
   q: ['quartz'],                                                                              // Quartz
   a: ['k-feldspar', 'k_feldspar', 'microcline', 'orthoclase', 'sanidine'],       // Alkali feldspar, include albite?

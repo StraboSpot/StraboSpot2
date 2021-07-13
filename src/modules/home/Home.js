@@ -340,7 +340,7 @@ const Home = () => {
     const modal = MODALS.find(m => m.key === modalVisible);
     if (modal && modal.modal_component) {
       const ModalDisplayed = modal.modal_component;
-      return <ModalDisplayed onPress={modalHandler}/>;
+      return <ModalDisplayed modalKey={modal.key} onPress={modalHandler}/>;
     }
   };
 

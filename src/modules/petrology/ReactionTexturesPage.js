@@ -1,114 +1,112 @@
 import React, {useEffect, useState} from 'react';
 import {FlatList, View} from 'react-native';
 
-import {Button, ListItem} from 'react-native-elements';
-import {useSelector} from 'react-redux';
+import {ListItem} from 'react-native-elements';
+import {batch, useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
-import {getNewId, isEmpty} from '../../shared/Helpers';
+import {isEmpty} from '../../shared/Helpers';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SectionDivider from '../../shared/ui/SectionDivider';
-import {useFormHook} from '../form';
-import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
-import MineralReactionDetail from './MineralReactionDetail';
-import {REACTION_VIEW} from './petrology.constants';
+import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
+import {setModalVisible} from '../home/home.slice';
+import BasicPageDetail from '../page/BasicPageDetail';
+import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
+import {setSelectedAttributes} from '../spots/spots.slice';
+import BasicPetListItem from './BasicPetListItem';
+import usePetrologyHook from './usePetrology';
 
-const ReactionTexturesPage = () => {
+const ReactionTexturesPage = (props) => {
+  const dispatch = useDispatch();
+  const selectedAttributes = useSelector(state => state.spot.selectedAttributes);
   const spot = useSelector(state => state.spot.selectedSpot);
 
   const [selectedReaction, setSelectedReaction] = useState({});
-  const [reactionView, setReactionView] = useState(REACTION_VIEW.OVERVIEW);
+  const [isDetailView, setIsDetailView] = useState(false);
 
-  const [useForm] = useFormHook();
-
-  const formName = ['pet', 'reactions'];
+  const usePetrology = usePetrologyHook();
 
   useEffect(() => {
-    console.log('UE ReactionTextures: spot changed to', spot);
-    setSelectedReaction({});
-  }, [spot]);
+    return () => dispatch(setSelectedAttributes([]));
+  }, []);
 
-  const addReaction = (reaction) => {
-    const newReaction = {id: getNewId()};
-    if (reaction && reaction.Label) newReaction.full_reaction_name = reaction.Label;
-    if (reaction && !isEmpty(reaction.Abbreviation)) newReaction.reaction_abbrev = reaction.Abbreviation.split(',')[0];
-    setSelectedReaction(newReaction);
-    setReactionView(REACTION_VIEW.DETAIL);
+  useEffect(() => {
+    console.log('UE', props.page.label, 'Spot', spot);
+    if (!isEmpty(selectedAttributes)) {
+      setSelectedReaction(selectedAttributes[0]);
+      setIsDetailView(true);
+    }
+    else setSelectedReaction({});
+  }, [selectedAttributes, spot]);
+
+  const addReaction = () => {
+    dispatch(setModalVisible({modal: props.page.key}));
   };
 
   const editReaction = (reaction) => {
-    setSelectedReaction(reaction);
-    setReactionView(REACTION_VIEW.DETAIL);
+    batch(() => {
+      setIsDetailView(true);
+      setSelectedReaction(reaction);
+      dispatch(setModalVisible({modal: null}));
+    });
   };
 
   const getExistingMineralsText = () => {
-    if (!spot.properties.pet || isEmpty(spot.properties.pet.minerals)) return 'No minerals at this Spot';
+    if (!spot.properties.pet || isEmpty(spot.properties.pet.minerals)) return 'No Minerals at this Spot';
     else {
-      const existingMinerals = spot.properties.pet.minerals.map(mineral => {
-        return (mineral.mineral_abbrev ? mineral.mineral_abbrev + ' ' : '')
-          + (mineral.full_mineral_name ? '(' + mineral.full_mineral_name + ')' : '');
-      });
+      const existingMinerals = spot.properties.pet.minerals.map(mineral => usePetrology.getMineralTitle(mineral));
       const existingMineralsSorted = existingMinerals.slice().sort((a, b) => a.localeCompare(b));
       return existingMineralsSorted.join(' - ');
     }
   };
 
-  const renderReaction = (reaction) => {
-    const reactionFieldsText = Object.entries(reaction).reduce((acc, [key, value]) => {
-      return (key === 'id' || key === 'reactions') ? acc
-        : (acc === '' ? '' : acc + '\n') + useForm.getLabel(key, formName) + ': ' + useForm.getLabels(value, formName);
-    }, '');
+  const renderReactionDetail = () => {
     return (
-      <ListItem
-        containerStyle={commonStyles.listItem}
-        key={reaction.id}
-        onPress={() => editReaction(reaction)}
-      >
-        <ListItem.Content style={{overflow: 'hidden'}}>
-          <ListItem.Title style={commonStyles.listItemTitle}>{reaction.reactions || 'Unknown'}</ListItem.Title>
-          {reactionFieldsText !== '' && (<ListItem.Subtitle>{reactionFieldsText}</ListItem.Subtitle>)}
-        </ListItem.Content>
-        <ListItem.Chevron/>
-      </ListItem>
+      <BasicPageDetail
+        closeDetailView={() => setIsDetailView(false)}
+        page={props.page}
+        selectedFeature={selectedReaction}
+        groupKey={'pet'}
+      />
+    );
+  };
+
+  const renderReactionsMain = () => {
+    return (
+      <View style={{flex: 1}}>
+        <ReturnToOverviewButton/>
+        <View>
+          <SectionDivider
+            dividerText={'Minerals Added to this Spot'}
+          />
+          <ListItem containerStyle={commonStyles.listItem}>
+            <ListItem.Content>
+              <ListItem.Title style={commonStyles.listItemTitle}>{getExistingMineralsText()}</ListItem.Title>
+            </ListItem.Content>
+          </ListItem>
+        </View>
+        <SectionDividerWithRightButton
+          dividerText={props.page.label}
+          buttonTitle={'Add'}
+          onPress={addReaction}
+        />
+        <FlatList
+          data={spot.properties.pet && spot.properties.pet[props.page.key]
+          && spot.properties.pet[props.page.key].slice().sort(
+            (a, b) => (a[props.page.key] || 'Unknown').localeCompare((b[props.page.key] || 'Unknown')))}
+          renderItem={({item}) => <BasicPetListItem page={props.page} item={item} editItem={editReaction}/>}
+          keyExtractor={(item) => item.id.toString()}
+          ItemSeparatorComponent={FlatListItemSeparator}
+          ListEmptyComponent={<ListEmptyText text={'No ' + props.page.label.toLowerCase() + ' at this Spot.'}/>}
+        />
+      </View>
     );
   };
 
   return (
     <React.Fragment>
-      {reactionView === REACTION_VIEW.OVERVIEW && (
-        <View style={{flex: 1}}>
-          <ReturnToOverviewButton/>
-          <View>
-            <ListItem containerStyle={commonStyles.listItem}>
-              <ListItem.Content>
-                <ListItem.Title style={commonStyles.listItemTitle}>Existing Minerals:</ListItem.Title>
-                <ListItem.Subtitle>{getExistingMineralsText()}</ListItem.Subtitle>
-              </ListItem.Content>
-            </ListItem>
-          </View>
-          <Button
-            title={'+ Add a Reaction'}
-            type={'clear'}
-            onPress={addReaction}
-          />
-          <SectionDivider dividerText={'Reaction Textures'}/>
-          <FlatList
-            data={spot.properties.pet && spot.properties.pet.reactions && spot.properties.pet.reactions.slice().sort(
-              (a, b) => (a.reactions || 'Unknown').localeCompare((b.reactions || 'Unknown')))}
-            renderItem={({item}) => renderReaction(item)}
-            keyExtractor={(item) => item.id.toString()}
-            ItemSeparatorComponent={FlatListItemSeparator}
-            ListEmptyComponent={<ListEmptyText text={'There are no reaction textures at this Spot.'}/>}
-          />
-        </View>
-      )}
-      {reactionView === REACTION_VIEW.DETAIL && (
-        <MineralReactionDetail
-          type={'reactions'}
-          showMineralsReactionsOverview={() => setReactionView(REACTION_VIEW.OVERVIEW)}
-          selectedMineralReaction={selectedReaction}
-        />)}
+      {isDetailView ? renderReactionDetail() : renderReactionsMain()}
     </React.Fragment>
   );
 };

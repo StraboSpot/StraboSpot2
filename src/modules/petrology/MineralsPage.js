@@ -2,61 +2,65 @@ import React, {useEffect, useRef, useState} from 'react';
 import {FlatList, View} from 'react-native';
 
 import {Field, Formik} from 'formik';
-import {Button, ListItem} from 'react-native-elements';
-import {useDispatch, useSelector} from 'react-redux';
+import {ListItem} from 'react-native-elements';
+import {batch, useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
-import {getNewId, isEmpty} from '../../shared/Helpers';
+import {getNewCopyId, isEmpty} from '../../shared/Helpers';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
-import SectionDivider from '../../shared/ui/SectionDivider';
-import {SelectInputField, useFormHook} from '../form';
-import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
-import {editedSpotProperties} from '../spots/spots.slice';
+import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
+import {SelectInputField} from '../form';
+import {setModalVisible} from '../home/home.slice';
+import BasicPageDetail from '../page/BasicPageDetail';
+import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
+import {editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
-import MineralReactionDetail from './MineralReactionDetail';
-import MineralsByRockClass from './MineralsByRockClass';
-import MineralsGlossary from './MineralsGlossary';
-import {MINERAL_VIEW} from './petrology.constants';
+import BasicPetListItem from './BasicPetListItem';
+import usePetrologyHook from './usePetrology';
 
-const MineralsPage = () => {
+const MineralsPage = (props) => {
   const dispatch = useDispatch();
+  const selectedAttributes = useSelector(state => state.spot.selectedAttributes);
   const spot = useSelector(state => state.spot.selectedSpot);
 
+  const [isDetailView, setIsDetailView] = useState(false);
   const [selectedMineral, setSelectedMineral] = useState({});
-  const [mineralView, setMineralView] = useState(MINERAL_VIEW.OVERVIEW);
   const [spotsWithMinerals, setSpotsWithMinerals] = useState([]);
 
   const preFormRef = useRef(null);
 
-  const [useForm] = useFormHook();
   const [useSpots] = useSpotsHook();
-
-  const formName = ['pet', 'minerals'];
+  const usePetrology = usePetrologyHook();
 
   useEffect(() => {
-    console.log('UE Minerals: spot changed to', spot);
-    setSelectedMineral({});
-    getSpotsWithMinerals();
-  }, [spot]);
+    return () => dispatch(setSelectedAttributes([]));
+  }, []);
 
-  const addMineral = (mineral) => {
-    const newMineral = {id: getNewId()};
-    if (mineral && mineral.Label) newMineral.full_mineral_name = mineral.Label;
-    if (mineral && !isEmpty(mineral.Abbreviation)) newMineral.mineral_abbrev = mineral.Abbreviation.split(',')[0];
-    setSelectedMineral(newMineral);
-    setMineralView(MINERAL_VIEW.DETAIL);
+  useEffect(() => {
+    console.log('UE', props.page.label, 'Spot', spot);
+    if (!isEmpty(selectedAttributes)) {
+      setSelectedMineral(selectedAttributes[0]);
+      setIsDetailView(true);
+    }
+    else setSelectedMineral({});
+    getSpotsWithMinerals();
+  }, [selectedAttributes, spot]);
+
+  const addMineral = () => {
+    dispatch(setModalVisible({modal: props.page.key}));
   };
 
   const copyMineralData = (spotId) => {
     const spotToCopy = useSpots.getSpotById(spotId);
     if (!isEmpty(spotToCopy)) {
-      const mineralsToCopy = JSON.parse(JSON.stringify(spotToCopy.properties.pet.minerals));
+      const mineralsToCopy = JSON.parse(JSON.stringify(spotToCopy.properties.pet[props.page.key]));
       mineralsToCopy.forEach((mineral, i) => {
         if (mineral.modal) delete mineralsToCopy[i].modal;
-        mineralsToCopy[i].id = getNewId();
+        mineralsToCopy[i].id = getNewCopyId();
       });
-      const updatedMinerals = spot.properties?.pet?.minerals ? [...spot.properties.pet.minerals, ...mineralsToCopy] : mineralsToCopy;
+      const updatedMinerals = spot.properties?.pet && spot.properties.pet[props.page.key]
+        ? [...spot.properties.pet[props.page.key], ...mineralsToCopy] : mineralsToCopy;
       const updatedPet = spot.properties?.pet ? {...spot.properties.pet, minerals: updatedMinerals}
         : {minerals: updatedMinerals};
       dispatch(editedSpotProperties({field: 'pet', value: updatedPet}));
@@ -65,18 +69,17 @@ const MineralsPage = () => {
   };
 
   const editMineral = (mineral) => {
-    setSelectedMineral(mineral);
-    setMineralView(MINERAL_VIEW.DETAIL);
-  };
-
-  const getMineralTitle = (mineral) => {
-    return mineral.full_mineral_name || mineral.mineral_abbrev || 'Unknown';
+    batch(() => {
+      setIsDetailView(true);
+      setSelectedMineral(mineral);
+      dispatch(setModalVisible({modal: null}));
+    });
   };
 
   const getSpotsWithMinerals = () => {
     const allSpotsWithPet = useSpots.getSpotsWithPetrology();
     setSpotsWithMinerals(allSpotsWithPet.filter(s => s.properties.id !== spot.properties.id
-      && s.properties?.pet?.minerals));
+      && s.properties.pet && s.properties.pet[props.page.key]));
   };
 
   const renderCopyDataSelectBox = () => {
@@ -95,7 +98,7 @@ const MineralsPage = () => {
               )}
               name={'spot_id_for_pet_copy'}
               key={'spot_id_for_pet_copy'}
-              label={'Copy Mineral Data From:'}
+              label={'Copy ' + props.page.label + ' Data From:'}
               choices={spotsWithMinerals.map(s => ({label: s.properties.name, value: s.properties.id}))}
               single={true}
             />
@@ -105,75 +108,51 @@ const MineralsPage = () => {
     );
   };
 
-  const renderMineral = (mineral) => {
-    const mineralTitle = getMineralTitle(mineral);
-    const mineralFieldsText = Object.entries(mineral).reduce((acc, [key, value]) => {
-      return key === 'id' ? acc : (acc === '' ? '' : acc + '\n') + useForm.getLabel(key, formName) + ': '
-        + useForm.getLabels(value, formName);
-    }, '');
+  const renderMineralsList = () => {
     return (
-      <ListItem
-        containerStyle={commonStyles.listItem}
-        key={mineral.id}
-        onPress={() => editMineral(mineral)}
-      >
-        <ListItem.Content style={{overflow: 'hidden'}}>
-          <ListItem.Title style={commonStyles.listItemTitle}>{mineralTitle}</ListItem.Title>
-          {mineralFieldsText !== '' && (<ListItem.Subtitle>{mineralFieldsText}</ListItem.Subtitle>)}
-        </ListItem.Content>
-        <ListItem.Chevron/>
-      </ListItem>
+      <React.Fragment>
+        <SectionDividerWithRightButton
+          dividerText={props.page.label}
+          buttonTitle={'Add'}
+          onPress={addMineral}
+        />
+        <FlatList
+          data={spot.properties.pet && spot.properties.pet[props.page.key]
+          && spot.properties.pet[props.page.key].slice().sort(
+            (a, b) => usePetrology.getMineralTitle(a).localeCompare(usePetrology.getMineralTitle(b)))}
+          renderItem={({item}) => <BasicPetListItem page={props.page} item={item} editItem={editMineral}/>}
+          keyExtractor={(item) => item.id.toString()}
+          ItemSeparatorComponent={FlatListItemSeparator}
+          ListEmptyComponent={<ListEmptyText text={'There are no minerals at this Spot.'}/>}
+        />
+      </React.Fragment>
+    );
+  };
+
+  const renderMineralDetail = () => {
+    return (
+      <BasicPageDetail
+        closeDetailView={() => setIsDetailView(false)}
+        page={props.page}
+        selectedFeature={selectedMineral}
+        groupKey={'pet'}
+      />
+    );
+  };
+
+  const renderMineralsMain = () => {
+    return (
+      <View style={{flex: 1}}>
+        <ReturnToOverviewButton/>
+        {renderCopyDataSelectBox()}
+        {renderMineralsList()}
+      </View>
     );
   };
 
   return (
     <React.Fragment>
-      {mineralView === MINERAL_VIEW.OVERVIEW && (
-        <View style={{flex: 1}}>
-          <ReturnToOverviewButton/>
-          <Button
-            title={'+ Add Mineral'}
-            type={'clear'}
-            onPress={addMineral}
-          />
-          <Button
-            title={'+ Add a Mineral By Rock Class'}
-            type={'clear'}
-            onPress={() => setMineralView(MINERAL_VIEW.ROCK_CLASS)}
-          />
-          <Button
-            title={'+ Add a Mineral By Glossary'}
-            type={'clear'}
-            onPress={() => setMineralView(MINERAL_VIEW.GLOSSARY)}
-          />
-          <SectionDivider dividerText={'Minerals'}/>
-          {renderCopyDataSelectBox()}
-          <FlatList
-            data={spot.properties.pet && spot.properties.pet.minerals && spot.properties.pet.minerals.slice().sort(
-              (a, b) => getMineralTitle(a).localeCompare(getMineralTitle(b)))}
-            renderItem={({item}) => renderMineral(item)}
-            keyExtractor={(item) => item.id.toString()}
-            ItemSeparatorComponent={FlatListItemSeparator}
-            ListEmptyComponent={<ListEmptyText text={'There are no minerals at this Spot.'}/>}
-          />
-        </View>
-      )}
-      {mineralView === MINERAL_VIEW.DETAIL && (
-        <MineralReactionDetail
-          type={'minerals'}
-          showMineralsReactionsOverview={() => setMineralView(MINERAL_VIEW.OVERVIEW)}
-          selectedMineralReaction={selectedMineral}
-        />)}
-      {mineralView === MINERAL_VIEW.ROCK_CLASS && (
-        <MineralsByRockClass
-          showMineralsOverview={() => setMineralView(MINERAL_VIEW.OVERVIEW)}
-          addMineral={(mineral) => addMineral(mineral)}
-        />)}
-      {mineralView === MINERAL_VIEW.GLOSSARY && (
-        <MineralsGlossary
-          showMineralsOverview={() => setMineralView(MINERAL_VIEW.OVERVIEW)}
-          addMineral={(mineral) => addMineral(mineral)}
-        />)}
+      {isDetailView ? renderMineralDetail() : renderMineralsMain()}
     </React.Fragment>
   );
 };

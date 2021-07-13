@@ -1,4 +1,4 @@
-import React, {useLayoutEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Alert, SectionList, View} from 'react-native';
 
 import {Field, Formik} from 'formik';
@@ -6,23 +6,24 @@ import {ListItem} from 'react-native-elements';
 import {batch, useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
-import {getNewId, isEmpty} from '../../shared/Helpers';
+import {getNewCopyId, getNewId, isEmpty} from '../../shared/Helpers';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
 import uiStyles from '../../shared/ui/ui.styles';
 import {SelectInputField, useFormHook} from '../form';
-import {setModalVisible} from '../home/home.slice';
-import {PAGE_KEYS} from '../notebook-panel/notebook.constants';
-import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
+import {setModalValues, setModalVisible} from '../home/home.slice';
+import BasicPageDetail from '../page/BasicPageDetail';
+import {PAGE_KEYS} from '../page/page.constants';
+import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
 import {editedSpotProperties} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
-import RockDetail from './RockDetail';
 import RockListItem from './RockListItem';
 
-const RockTypePage = (props) => {
+const RockPage = (props) => {
   const dispatch = useDispatch();
+  const selectedAttributes = useSelector(state => state.spot.selectedAttributes);
   const spot = useSelector(state => state.spot.selectedSpot);
 
   const [useForm] = useFormHook();
@@ -56,17 +57,21 @@ const RockTypePage = (props) => {
     : props.page.key === PAGE_KEYS.ROCK_TYPE_METAMORPHIC ? METAMORPHIC_SECTIONS
       : ALTERATION_ORE_SECTIONS;
 
-  useLayoutEffect(() => {
-    console.log('Pet Data', petData);
+  useEffect(() => {
+    console.log('UE', props.page.label, 'Spot', spot);
+    if (!isEmpty(selectedAttributes)) {
+      setSelectedRock(selectedAttributes[0]);
+      setIsDetailView(true);
+    }
+    else setSelectedRock({});
     getSpotsWithRockType();
-    setSelectedRock({});
-  }, []);
-
+  }, [selectedAttributes, spot]);
 
   const addRock = (sectionKey) => {
-    setIsDetailView(true);
-    const newRock = props.page.key === PAGE_KEYS.ROCK_TYPE_IGNEOUS ? {igneous_rock_class: sectionKey} : {};
-    setSelectedRock({...newRock, id: getNewId()});
+    let newRock = props.page.key === PAGE_KEYS.ROCK_TYPE_IGNEOUS ? {id: getNewId(), igneous_rock_class: sectionKey}
+      : {id: getNewId()};
+    dispatch(setModalValues(newRock));
+    dispatch(setModalVisible({modal: props.page.key}));
   };
 
   const editRock = (rock) => {
@@ -96,7 +101,7 @@ const RockTypePage = (props) => {
         updatedPetData = {...petDataFiltered, ...petDataToCopyFiltered, rock_type: updatedRockType};
       }
       if (spotToCopy.properties.pet[props.page.key]) {
-        const copyDataWithNewIds = spotToCopy.properties.pet[props.page.key].map(r => ({...r, id: getNewId()}));
+        const copyDataWithNewIds = spotToCopy.properties.pet[props.page.key].map(r => ({...r, id: getNewCopyId()}));
         updatedPetData[props.page.key] = petData[props.page.key] ? [...petData[props.page.key], ...copyDataWithNewIds] : spotToCopy.properties.pet[props.page.key];
       }
       dispatch(editedSpotProperties({field: 'pet', value: updatedPetData}));
@@ -206,24 +211,32 @@ const RockTypePage = (props) => {
     );
   };
 
+  const renderRockDetail = () => {
+    return (
+      <BasicPageDetail
+        closeDetailView={() => setIsDetailView(false)}
+        page={props.page}
+        selectedFeature={selectedRock}
+        groupKey={'pet'}
+      />
+    );
+  };
+
+  const renderRockMain = () => {
+    return (
+      <View style={{flex: 1}}>
+        <ReturnToOverviewButton/>
+        {renderCopySelect()}
+        {renderSections()}
+      </View>
+    );
+  };
+
   return (
     <React.Fragment>
-      {!isDetailView && (
-        <View style={{flex: 1}}>
-          <ReturnToOverviewButton/>
-          {renderCopySelect()}
-          {renderSections()}
-        </View>
-      )}
-      {isDetailView && (
-        <RockDetail
-          showRocksOverview={() => setIsDetailView(false)}
-          selectedRock={selectedRock}
-          type={props.page.key}
-        />
-      )}
+      {isDetailView ? renderRockDetail() : renderRockMain()}
     </React.Fragment>
   );
 };
 
-export default RockTypePage;
+export default RockPage;

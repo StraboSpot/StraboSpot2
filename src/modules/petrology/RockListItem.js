@@ -16,8 +16,6 @@ const RockListItem = (props) => {
   };
 
   const getTitle = (rock) => {
-    console.log('Rock', props.type, rock);
-    // return toTitleCase(useForm.getLabel(props.type, ['pet']) + ' Rock');
     const formName = props.type === 'igneous' ? ['pet', rock.igneous_rock_class] : ['pet', props.type];
     const labelsArr = FIRST_ORDER_CLASS_FIELDS[props.type].reduce((acc, fieldName) => {
       if (rock[fieldName]) {
