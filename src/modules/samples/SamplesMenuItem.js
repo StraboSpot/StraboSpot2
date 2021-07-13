@@ -12,7 +12,7 @@ import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRig
 import uiStyles from '../../shared/ui/ui.styles';
 import {SORTED_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import SortingButtons from '../main-menu-panel/SortingButtons';
-import {PAGE_KEYS} from '../notebook-panel/notebook.constants';
+import {PAGE_KEYS} from '../page/page.constants';
 import useSpotsHook from '../spots/useSpots';
 
 const SamplesMenuItem = (props) => {

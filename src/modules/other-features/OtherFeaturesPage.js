@@ -7,7 +7,7 @@ import {useSelector} from 'react-redux';
 import {getNewId} from '../../shared/Helpers';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
-import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
+import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
 import OtherFeatureDetail from './OtherFeatureDetail';
 import OtherFeatureItem from './OtherFeatureItem';
 

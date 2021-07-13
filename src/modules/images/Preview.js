@@ -5,7 +5,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import IconButton from '../../shared/ui/IconButton';
 import ImagePropertiesModal from '../images/ImagePropertiesModal';
-import {PAGE_KEYS} from '../notebook-panel/notebook.constants';
+import {PAGE_KEYS} from '../page/page.constants';
 import {setSelectedAttributes, setSelectedSpot} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
 import styles from './images.styles';

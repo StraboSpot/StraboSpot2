@@ -10,8 +10,8 @@ import SectionDivider from '../../shared/ui/SectionDivider';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
 import uiStyles from '../../shared/ui/ui.styles';
 import {setModalValues, setModalVisible} from '../home/home.slice';
-import BasicDetail from '../notebook-panel/BasicDetail';
-import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
+import BasicPageDetail from '../page/BasicPageDetail';
+import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
 import {setSelectedAttributes} from '../spots/spots.slice';
 import FabricListItem from './FabricListItem';
 

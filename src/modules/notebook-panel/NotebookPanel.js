@@ -11,14 +11,14 @@ import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {setModalVisible} from '../home/home.slice';
+import Overview from '../page/Overview';
+import {NOTEBOOK_PAGES, PAGE_KEYS} from '../page/page.constants';
 import {useSpotsHook} from '../spots';
 import {setSelectedSpot} from '../spots/spots.slice';
 import NotebookFooter from './notebook-footer/NotebookFooter';
 import NotebookHeader from './notebook-header/NotebookHeader';
-import {NOTEBOOK_PAGES, PAGE_KEYS} from './notebook.constants';
 import {setNotebookPageVisible} from './notebook.slice';
 import notebookStyles from './notebookPanel.styles';
-import Overview from './Overview';
 
 const {State: TextInputState} = TextInput;
 

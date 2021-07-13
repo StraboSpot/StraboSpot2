@@ -12,8 +12,8 @@ import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import TextInputModal from '../../shared/ui/GeneralTextInputModal';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import {addedStatusMessage, clearedStatusMessages, setErrorMessagesModalVisible} from '../home/home.slice';
-import {PAGE_KEYS} from '../notebook-panel/notebook.constants';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
+import {PAGE_KEYS} from '../page/page.constants';
 import externalDataStyles from './ExternalData.styles';
 import useExternalDataHook from './useExternalData';
 

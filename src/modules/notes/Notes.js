@@ -11,9 +11,9 @@ import uiStyles from '../../shared/ui/ui.styles';
 import {TextInputField} from '../form';
 import {MODAL_KEYS} from '../home/home.constants';
 import useMapsHook from '../maps/useMaps';
-import {PAGE_KEYS} from '../notebook-panel/notebook.constants';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
-import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
+import {PAGE_KEYS} from '../page/page.constants';
+import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
 import {editedSpotProperties, setSelectedSpotNotesTimestamp} from '../spots/spots.slice';
 
 const Notes = () => {

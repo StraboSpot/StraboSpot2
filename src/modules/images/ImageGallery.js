@@ -13,7 +13,7 @@ import uiStyles from '../../shared/ui/ui.styles';
 import {setImageModalVisible, setLoadingStatus} from '../home/home.slice';
 import {SORTED_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import SortingButtons from '../main-menu-panel/SortingButtons';
-import {PAGE_KEYS} from '../notebook-panel/notebook.constants';
+import {PAGE_KEYS} from '../page/page.constants';
 import {setSelectedAttributes} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
 import imageStyles from './images.styles';

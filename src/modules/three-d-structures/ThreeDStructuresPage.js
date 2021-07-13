@@ -9,8 +9,8 @@ import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
 import uiStyles from '../../shared/ui/ui.styles';
 import {useFormHook} from '../form';
-import BasicDetail from '../notebook-panel/BasicDetail';
-import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
+import BasicPageDetail from '../page/BasicPageDetail';
+import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
 import {setSelectedAttributes} from '../spots/spots.slice';
 import ThreeDStructureItem from './ThreeDStructureItem';
 
@@ -111,7 +111,7 @@ const ThreeDStructuresPage = (props) => {
         </View>
       )}
       {isDetailView && (
-        <BasicDetail
+        <BasicPageDetail
           closeDetailView={() => setIsDetailView(false)}
           page={props.page}
           selectedFeature={selected3dStructure}

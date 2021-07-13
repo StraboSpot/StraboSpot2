@@ -1,7 +1,7 @@
 import CompassModal from '../compass/CompassModal';
 import MeasurementTemplatesModal from '../compass/MeasurementTemplatesModal';
-import {NOTEBOOK_PAGES, PAGE_KEYS} from '../notebook-panel/notebook.constants';
 import ShortcutNotesModal from '../notes/ShortcutNotesModal';
+import {NOTEBOOK_PAGES, PAGE_KEYS} from '../page/page.constants';
 import SampleModal from '../samples/SampleModal';
 import {AddTagsToSpotsShortcutModal} from '../tags';
 import TagsShortcutModal from '../tags/TagsShortcutModal';

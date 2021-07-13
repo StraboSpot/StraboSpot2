@@ -13,7 +13,7 @@ import uiStyles from '../../shared/ui/ui.styles';
 import {COMPASS_TOGGLE_BUTTONS} from '../compass/compass.constants';
 import {setCompassMeasurements, setCompassMeasurementTypes} from '../compass/compass.slice';
 import {setModalVisible} from '../home/home.slice';
-import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
+import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
 import {setSelectedAttributes} from '../spots/spots.slice';
 import MeasurementDetail from './MeasurementDetail';
 import MeasurementItem from './MeasurementItem';

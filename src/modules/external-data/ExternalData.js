@@ -8,7 +8,7 @@ import commonStyles from '../../shared/common.styles';
 import {PRIMARY_ACCENT_COLOR} from '../../shared/styles.constants';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {formStyles} from '../form';
-import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
+import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
 import DataWrapper from './DataWrapper';
 import useExternalDataHook from './useExternalData';
 

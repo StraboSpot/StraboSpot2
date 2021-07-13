@@ -9,27 +9,35 @@ import {isEmpty, toTitleCase} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
 import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import {Form, useFormHook} from '../form';
+import usePetrologyHook from '../petrology/usePetrology';
 import {editedSpotProperties} from '../spots/spots.slice';
+import {PAGE_KEYS} from './page.constants';
 
-const BasicDetail = (props) => {
+const BasicPageDetail = (props) => {
   const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
 
   const [useForm] = useFormHook();
+  const usePetrology = usePetrologyHook();
 
   const formRef = useRef(null);
 
-  const pageKey = props.page.key === 'fabrics' && props.selectedFeature.type === 'fabric' ? '_3d_structures'
+  const groupKey = props.groupKey || 'general';
+  const pageKey = props.page.key === PAGE_KEYS.FABRICS && props.selectedFeature.type === 'fabric' ? '_3d_structures'
     : props.page.key;
-  const pageData = spot.properties[pageKey] || [];
-  const title = props.page.label_singular || toTitleCase(props.page.label).slice(0, -1);
+  const pageData = props.groupKey && spot.properties[groupKey] ? spot.properties[groupKey][pageKey] || []
+    : spot.properties[pageKey] || [];
+  const title = groupKey === 'pet' && pageKey === PAGE_KEYS.ROCK_TYPE_IGNEOUS
+  && !props.selectedFeature.rock_type && props.selectedFeature.igneous_rock_class
+    ? toTitleCase(props.selectedFeature.igneous_rock_class.replace('_', ' ') + ' Rock')
+    : props.page.label_singular || toTitleCase(props.page.label).slice(0, -1);
 
   useLayoutEffect(() => {
     return () => confirmLeavePage();
   }, []);
 
   useEffect(() => {
-    console.log('UE BasicDetail Selected Feature', title, props.selectedFeature);
+    console.log('UE BasicPageDetail Selected Feature', title, props.selectedFeature);
     if (isEmpty(props.selectedFeature)) props.closeDetailView();
   }, [props.selectedFeature]);
 
@@ -56,9 +64,12 @@ const BasicDetail = (props) => {
   };
 
   const deleteFeature = () => {
-    let editedPageData = pageData ? JSON.parse(JSON.stringify(pageData)) : [];
-    editedPageData = editedPageData.filter(f => f.id !== props.selectedFeature.id);
-    dispatch(editedSpotProperties({field: pageKey, value: editedPageData}));
+    if (groupKey === 'pet') usePetrology.deletePetFeature(pageKey, spot, props.selectedFeature);
+    else {
+      let editedPageData = pageData ? JSON.parse(JSON.stringify(pageData)) : [];
+      editedPageData = editedPageData.filter(f => f.id !== props.selectedFeature.id);
+      dispatch(editedSpotProperties({field: pageKey, value: editedPageData}));
+    }
     props.closeDetailView();
   };
 
@@ -80,8 +91,10 @@ const BasicDetail = (props) => {
   };
 
   const renderFormFields = () => {
-    let formName = ['general', pageKey];
-    if (pageKey === '_3d_structures' || pageKey === 'fabrics') formName = [pageKey, props.selectedFeature.type];
+    let formName = [groupKey, pageKey];
+    if (groupKey === 'pet' && props.selectedFeature.rock_type) formName = ['pet_deprecated', pageKey];
+    else if (groupKey === 'pet' && pageKey === 'igneous') formName = [groupKey, props.selectedFeature.igneous_rock_class];
+    else if (pageKey === '_3d_structures' || pageKey === 'fabrics') formName = [pageKey, props.selectedFeature.type];
     console.log('Rendering form:', formName[0] + '.' + formName[1]);
     return (
       <View style={{flex: 1}}>
@@ -113,7 +126,7 @@ const BasicDetail = (props) => {
     );
   };
 
-  const saveForm = async (formCurrent) => {
+  const saveFeature = async (formCurrent) => {
     try {
       await formCurrent.submitForm();
       if (useForm.hasErrors(formCurrent)) {
@@ -126,13 +139,18 @@ const BasicDetail = (props) => {
       editedPageData = editedPageData.filter(f => f.id !== editedFeatureData.id);
       editedPageData.push(editedFeatureData);
       dispatch(editedSpotProperties({field: pageKey, value: editedPageData}));
-      await formCurrent.resetForm();
-      props.closeDetailView();
     }
     catch (err) {
       console.log('Error saving', pageKey, err);
       throw Error;
     }
+  };
+
+  const saveForm = async (formCurrent) => {
+    if (groupKey === 'pet') await usePetrology.savePetFeature(pageKey, spot, formCurrent);
+    else await saveFeature(formCurrent);
+    await formCurrent.resetForm();
+    props.closeDetailView();
   };
 
   return (
@@ -150,4 +168,4 @@ const BasicDetail = (props) => {
   );
 };
 
-export default BasicDetail;
+export default BasicPageDetail;

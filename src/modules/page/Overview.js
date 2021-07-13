@@ -12,10 +12,10 @@ import SectionDivider from '../../shared/ui/SectionDivider';
 import uiStyles from '../../shared/ui/ui.styles';
 import {Form, useFormHook} from '../form';
 import {setModalVisible} from '../home/home.slice';
+import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
+import notebookStyles from '../notebook-panel/notebookPanel.styles';
 import {editedSpotProperties} from '../spots/spots.slice';
-import {NOTEBOOK_PAGES, PRIMARY_PAGES} from './notebook.constants';
-import {setNotebookPageVisible} from './notebook.slice';
-import notebookStyles from './notebookPanel.styles';
+import {NOTEBOOK_PAGES, PRIMARY_PAGES} from './page.constants';
 
 const Overview = (props) => {
   const dispatch = useDispatch();
@@ -27,6 +27,10 @@ const Overview = (props) => {
   const formRef = useRef(null);
 
   const [useForm] = useFormHook();
+
+  useEffect(() => {
+    dispatch(setModalVisible({modal: null}));
+  }, []);
 
   const sections = NOTEBOOK_PAGES.reduce((acc, page) => {
     let isSectionOverviewVisible = false;
@@ -134,7 +138,7 @@ const Overview = (props) => {
 
   const renderSectionHeader = (page) => {
     return (
-      <Pressable style={uiStyles.sectionHeaderBackground} onPress={()=> openPage(page)}>
+      <Pressable style={uiStyles.sectionHeaderBackground} onPress={() => openPage(page)}>
         <SectionDivider dividerText={page.label}/>
       </Pressable>
     );
@@ -233,8 +237,8 @@ const Overview = (props) => {
           </View>
           <View>
             <Button
-              title='Edit'
-              type='clear'
+              title="Edit"
+              type="clear"
               disabled={!isTraceSurfaceFeatureEnabled}
               disabledTitleStyle={notebookStyles.traceSurfaceFeatureDisabledText}
               onPress={() => setIsTraceSurfaceFeatureEdit(true)}/>

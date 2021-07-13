@@ -9,7 +9,7 @@ import ImageGallery from '../images/ImageGallery';
 import CustomMapsMenu from '../maps/custom-maps/ManageCustomMaps';
 import ImageBaseMaps from '../maps/ImageBasemaps';
 import ManageOfflineMapsMenu from '../maps/offline-maps/ManageOfflineMaps';
-import {PAGE_KEYS} from '../notebook-panel/notebook.constants';
+import {PAGE_KEYS} from '../page/page.constants';
 import NamingConventions from '../preferences/naming-conventions/NamingConventions';
 import ShortcutMenu from '../preferences/shortcuts-menu/ShortcutsMenu';
 import ActiveProject from '../project/ActiveProjectPanel';

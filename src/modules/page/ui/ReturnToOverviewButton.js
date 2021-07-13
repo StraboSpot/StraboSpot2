@@ -4,12 +4,11 @@ import {View} from 'react-native';
 import {Button} from 'react-native-elements';
 import {useDispatch} from 'react-redux';
 
-import {setModalVisible} from '../../home/home.slice';
-import {PAGE_KEYS} from '../notebook.constants';
-import {setNotebookPageVisible} from '../notebook.slice';
+import {setNotebookPageVisible} from '../../notebook-panel/notebook.slice';
+import {PAGE_KEYS} from '../page.constants';
 import styles from './ui.styles';
 
-const ReturnToOverviewButton = (props) => {
+const ReturnToOverviewButton = () => {
   const dispatch = useDispatch();
 
   return (
@@ -24,10 +23,7 @@ const ReturnToOverviewButton = (props) => {
         titleStyle={styles.buttonText}
         title={'Return to Overview'}
         type={'clear'}
-        onPress={() => {
-          dispatch(setNotebookPageVisible(PAGE_KEYS.OVERVIEW));
-          dispatch(setModalVisible({modal: null}));
-        }}
+        onPress={() => dispatch(setNotebookPageVisible(PAGE_KEYS.OVERVIEW))}
       />
     </View>
   );

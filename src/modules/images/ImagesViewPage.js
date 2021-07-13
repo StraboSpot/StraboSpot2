@@ -11,7 +11,7 @@ import ListEmptyText from '../../shared/ui/ListEmptyText';
 import ToastPopup from '../../shared/ui/Toast';
 import {imageStyles, useImagesHook} from '../images';
 import {setCurrentImageBasemap} from '../maps/maps.slice';
-import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
+import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
 
 const ImagesViewPage = () => {
   const navigation = useNavigation();

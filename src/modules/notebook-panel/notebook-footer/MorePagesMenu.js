@@ -7,7 +7,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import {isEmpty} from '../../../shared/Helpers';
 import SectionDivider from '../../../shared/ui/SectionDivider';
-import {PET_PAGES, PRIMARY_PAGES, SECONDARY_PAGES, SED_PAGES} from '../notebook.constants';
+import {PET_PAGES, PRIMARY_PAGES, SECONDARY_PAGES, SED_PAGES} from '../../page/page.constants';
 import {addedNotebookPageOn, removedNotebookPageOn, setNotebookPageVisible} from '../notebook.slice';
 import styles from '../notebookPanel.styles';
 import footerStyles from './notebookFooter.styles';

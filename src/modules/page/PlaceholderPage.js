@@ -4,7 +4,7 @@ import {Text, View} from 'react-native';
 import {useSelector} from 'react-redux';
 
 import {isEmpty} from '../../shared/Helpers';
-import ReturnToOverviewButton from '../notebook-panel/ui/ReturnToOverviewButton';
+import ReturnToOverviewButton from './ui/ReturnToOverviewButton';
 
 const PlaceholderPage = (props) => {
   const notebookPageVisible = useSelector(state => (

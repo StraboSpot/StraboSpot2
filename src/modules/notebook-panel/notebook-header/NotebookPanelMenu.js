@@ -4,8 +4,8 @@ import {Alert} from 'react-native';
 import Dialog, {DialogButton, DialogContent, DialogTitle} from 'react-native-popup-dialog';
 import {useDispatch, useSelector} from 'react-redux';
 
+import {PAGE_KEYS} from '../../page/page.constants';
 import useSpotsHook from '../../spots/useSpots';
-import {PAGE_KEYS} from '../notebook.constants';
 import {setNotebookPageVisible} from '../notebook.slice';
 import styles from '../notebookPanel.styles';
 
