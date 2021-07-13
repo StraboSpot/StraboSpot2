@@ -10,11 +10,12 @@ import * as themes from '../../shared/styles.constants';
 import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import {Form, useFormHook} from '../form';
 import {editedSpotProperties} from '../spots/spots.slice';
+import {useTagsHook} from '../tags';
 
 const BasicDetail = (props) => {
   const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
-
+  const [useTags] = useTagsHook();
   const [useForm] = useFormHook();
 
   const formRef = useRef(null);
@@ -57,6 +58,7 @@ const BasicDetail = (props) => {
 
   const deleteFeature = () => {
     let editedPageData = pageData ? JSON.parse(JSON.stringify(pageData)) : [];
+    useTags.deleteFeatureTags([props.selectedFeature]);
     editedPageData = editedPageData.filter(f => f.id !== props.selectedFeature.id);
     dispatch(editedSpotProperties({field: pageKey, value: editedPageData}));
     props.closeDetailView();

@@ -1,8 +1,6 @@
 import CompassModal from '../compass/CompassModal';
+import DataOverview from '../external-data/DataOverview';
 import ExternalData from '../external-data/ExternalData';
-import FabricModal from '../fabrics/FabricModal';
-import FabricsOverview from '../fabrics/FabricsOverview';
-import FabricsPage from '../fabrics/FabricsPage';
 import Geography from '../geography/Geography';
 import ImagesOverview from '../images/ImagesOverview';
 import ImagesViewPage from '../images/ImagesViewPage';
@@ -136,6 +134,7 @@ export const SECONDARY_PAGES = [
     icon_src: require('../../assets/icons/Data.png'),
     icon_pressed_src: require('../../assets/icons/Data_pressed.png'),
     page_component: ExternalData,
+    overview_component: DataOverview,
   },
 ];
 
