@@ -277,7 +277,9 @@ const Home = () => {
     animatePanels(animation, notebookPanelWidth);
     animatePanels(rightsideIconAnimationValue, 0);
     dispatch(setNotebookPanelVisible(false));
-    dispatch(setModalVisible({modal: null}));
+    if (modalVisible && !Object.keys(MODAL_KEYS.SHORTCUTS).find(s => s.key === modalVisible)) {
+      dispatch(setModalVisible({modal: null}));
+    }
   };
 
   const dialogClickHandler = (dialog, name, position) => {
