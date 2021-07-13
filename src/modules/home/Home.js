@@ -277,6 +277,7 @@ const Home = () => {
     animatePanels(animation, notebookPanelWidth);
     animatePanels(rightsideIconAnimationValue, 0);
     dispatch(setNotebookPanelVisible(false));
+    dispatch(setModalVisible({modal: null}));
   };
 
   const dialogClickHandler = (dialog, name, position) => {

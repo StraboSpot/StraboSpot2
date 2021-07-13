@@ -2,7 +2,8 @@ import {useEffect} from 'react';
 
 import {useDispatch, useSelector} from 'react-redux';
 
-import {getNewId, isEmpty} from '../../shared/Helpers';
+import {getNewId, isEmpty, getNewCopyId} from '../../shared/Helpers';
+import {setModalVisible} from '../home/home.slice';
 import {addedSpotsIdsToDataset, deletedSpotIdFromDataset, updatedProject} from '../project/projects.slice';
 import useProjectHook from '../project/useProject';
 import {useTagsHook} from '../tags';
@@ -50,10 +51,6 @@ const useSpots = () => {
 
   // Copy Spot to a new Spot omiting specific properties
   const copySpot = async () => {
-    // Ids are generated in such quick succession here that using the getNewId function from Helpers.js doesn't
-    // work since that is based on a timestamp
-    const getNewCopyId = () => Math.floor(10000000000000 + Math.random() * 90000000000000);
-
     let copiedSpot = {'type': 'Feature'};
     let {
       name,
@@ -157,6 +154,7 @@ const useSpots = () => {
     console.log('Deleting Spot ID', spotId, '...');
     dispatch(deletedSpotIdFromDataset(spotId));
     dispatch(deletedSpot(spotId));
+    dispatch(setModalVisible({modal: null}));
   };
 
   // Get only the Spots in the active Datasets
