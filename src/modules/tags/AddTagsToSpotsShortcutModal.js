@@ -10,7 +10,7 @@ const AddTagsToSpotsShortcutModal = (props) => {
   const renderAddTagsToSpotsShortcutModal = () => {
     return (
       <Modal style={{width: 285}}>
-        <TagsModal close={props.close}/>
+        <TagsModal close={props.close} goToCurrentLocation={props.goToCurrentLocation}/>
       </Modal>
     );
   };

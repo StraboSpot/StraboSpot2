@@ -18,6 +18,7 @@ import useMapsHook from '../maps/useMaps';
 import {TAG_TYPES} from '../project/project.constants';
 import {addedTagToSelectedSpot} from '../project/projects.slice';
 import {TagDetailModal, useTagsHook} from '../tags';
+import {setModalVisible} from '../home/home.slice';
 
 const TagsModal = (props) => {
   const dispatch = useDispatch();
@@ -65,10 +66,12 @@ const TagsModal = (props) => {
           tagsToUpdate.push(tag);
         });
         useTags.saveTag(tagsToUpdate);
+        props.goToCurrentLocation();
       });
     }
     else useTags.addSpotsToTags(checkedTagsTemp, selectedSpotsForTagging);
-    if (props.close) props.close();
+    // if (props.close) props.close();
+    dispatch(setModalVisible({modal: null}));
   };
 
   const renderSpotTagsList = () => {

@@ -5,12 +5,12 @@ import DragAnimation from '../../shared/ui/DragAmination';
 import Modal from '../../shared/ui/modal/Modal';
 import Notes from './Notes';
 
-const ShortcutNotesModal = () => {
+const ShortcutNotesModal = (props) => {
 
   const renderNotesShortcutModal = () => {
     return (
-      <Modal>
-        <Notes/>
+      <Modal onPress={props.onPress}>
+        <Notes goToCurrentLocation={props.goToCurrentLocation}/>
       </Modal>
     );
   };

@@ -13,7 +13,7 @@ const TagsShortcutModal = (props) => {
         style={{width: 285}}
         onPress={props.onPress}
       >
-        <TagsModal/>
+        <TagsModal goToCurrentLocation={props.goToCurrentLocation}/>
       </Modal>
     );
   };

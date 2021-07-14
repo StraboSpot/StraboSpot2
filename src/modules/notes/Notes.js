@@ -15,8 +15,9 @@ import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import {PAGE_KEYS} from '../page/page.constants';
 import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
 import {editedSpotProperties, setSelectedSpotNotesTimestamp} from '../spots/spots.slice';
+import SaveButton from '../../shared/SaveButton';
 
-const Notes = () => {
+const Notes = (props) => {
   const [useMaps] = useMapsHook();
   const dispatch = useDispatch();
   const modalVisible = useSelector(state => state.home.modalVisible);
@@ -53,9 +54,14 @@ const Notes = () => {
 
   const saveForm = async (currentForm, pageTransition) => {
     try {
+      if (modalVisible === MODAL_KEYS.SHORTCUTS.NOTE) {
+        const pointSetAtCurrentLocation = await useMaps.setPointAtCurrentLocation();
+        console.log('pointSetAtCurrentLocation', pointSetAtCurrentLocation);
+      }
       await currentForm.submitForm();
       await saveNote(currentForm.values.note, pageTransition);
       await currentForm.resetForm();
+      await props.goToCurrentLocation();
     }
     catch (err) {
       console.log('Error submitting form', err);
@@ -63,10 +69,6 @@ const Notes = () => {
   };
 
   const saveNote = async (note, pageTransition) => {
-    if (modalVisible === MODAL_KEYS.SHORTCUTS.NOTE) {
-      const pointSetAtCurrentLocation = await useMaps.setPointAtCurrentLocation();
-      console.log('pointSetAtCurrentLocation', pointSetAtCurrentLocation);
-    }
     dispatch(editedSpotProperties({field: 'notes', value: note}));
     dispatch(setSelectedSpotNotesTimestamp());
     if (pageTransition) dispatch(setNotebookPageVisible(PAGE_KEYS.OVERVIEW));
@@ -111,6 +113,13 @@ const Notes = () => {
           </ListItem>
         )}
       </Formik>
+      {modalVisible === MODAL_KEYS.SHORTCUTS.NOTE
+      && (
+        <SaveButton
+          title={'Save Note'}
+          onPress={() => saveForm(formRef.current, false)}
+        />
+      )}
     </View>
   );
 };

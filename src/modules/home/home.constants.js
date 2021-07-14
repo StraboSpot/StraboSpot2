@@ -63,6 +63,7 @@ export const SHORTCUT_MODALS = [
     icon_src: require('../../assets/icons/NoteButtonShortcut.png'),
     icon_pressed_src: require('../../assets/icons/NoteButtonShortcut_pressed.png'),
     modal_component: ShortcutNotesModal,
+    notebook_modal_key: PAGE_KEYS.NOTES,
   }, {
     key: MODAL_KEYS.SHORTCUTS.PHOTO,
     label: 'Photo',
