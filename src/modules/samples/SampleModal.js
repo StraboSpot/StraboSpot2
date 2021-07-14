@@ -149,6 +149,7 @@ const SampleModal = (props) => {
       if (modalVisible === MODAL_KEYS.SHORTCUTS.SAMPLE) {
         const pointSetAtCurrentLocation = await useMaps.setPointAtCurrentLocation();
         console.log('pointSetAtCurrentLocation', pointSetAtCurrentLocation);
+        await props.goToCurrentLocation();
       }
       let newSample = currentForm.values;
       newSample.id = getNewId();

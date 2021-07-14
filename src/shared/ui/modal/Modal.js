@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import {Animated, Keyboard, Text, TextInput, View} from 'react-native';
 
-import {Avatar, Button, ListItem} from 'react-native-elements';
+import {Avatar, Button, ListItem, Overlay} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import compassStyles from '../../../modules/compass/compass.styles';
-import {MODALS, NOTEBOOK_MODELS, SHORTCUT_MODALS} from '../../../modules/home/home.constants';
+import {MODAL_KEYS, MODALS, NOTEBOOK_MODELS, SHORTCUT_MODALS} from '../../../modules/home/home.constants';
 import {setModalVisible} from '../../../modules/home/home.slice';
 import commonStyles from '../../common.styles';
 import * as Helpers from '../../Helpers';
@@ -103,6 +103,15 @@ const Modal = (props) => {
     }
   };
 
+  if (modalVisible === MODAL_KEYS.NOTEBOOK.MEASUREMENTS || modalVisible === MODAL_KEYS.SHORTCUTS.MEASUREMENT) {
+    return (
+      <Overlay overlayStyle={[modalStyle.modalContainer, modalStyle.modalPosition]}>
+        {renderModalHeader()}
+        {props.children}
+        {!isEmpty(selectedSpot) && renderModalBottom()}
+      </Overlay>
+    );
+  }
   return (
     <Animated.View
       style={[modalStyle.modalContainer, modalStyle.modalPosition, props.style,
