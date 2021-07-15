@@ -38,7 +38,7 @@ const AddMineralModal = () => {
     return () => dispatch(setModalValues({}));
   }, []);
 
-  const addMineralFromGlossary = (mineralInfo) => {
+  const addMineral = (mineralInfo) => {
     setInitialValues({id: getNewId(), mineral_abbrev: mineralInfo.Abbreviation, full_mineral_name: mineralInfo.Label});
     setSelectedTypeIndex(null);
   };
@@ -60,8 +60,8 @@ const AddMineralModal = () => {
           textStyle={{color: PRIMARY_TEXT_COLOR}}
         />
         {isEmpty(selectedTypeIndex) && renderForms()}
-        {selectedTypeIndex === 0 && <MineralsByRockClass/>}
-        {selectedTypeIndex === 1 && <MineralsGlossary addMineral={addMineralFromGlossary}/>}
+        {selectedTypeIndex === 0 && <MineralsByRockClass addMineral={addMineral}/>}
+        {selectedTypeIndex === 1 && <MineralsGlossary addMineral={addMineral}/>}
       </Modal>
     );
   };
