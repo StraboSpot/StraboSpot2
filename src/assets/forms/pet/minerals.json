@@ -33,13 +33,15 @@
       "type": "begin_group",
       "name": "group_si21s81",
       "label": "Igneous",
-      "required": "false"
+      "required": "false",
+      "relevant": "${igneous_or_metamorphic} = 'ig_min'"
     },
     {
       "type": "select_one tg2fy55",
       "name": "habit",
       "label": "Habit - Igneous",
-      "required": "false"
+      "required": "false",
+      "relevant": "${igneous_or_metamorphic} = 'ig_min'"
     },
     {
       "type": "text",
@@ -60,7 +62,8 @@
       "name": "textural_setting_igneous",
       "label": "Textural Setting - Igneous",
       "hint": "If the mineral is in an igneous rock, choose a textural setting",
-      "required": "false"
+      "required": "false",
+      "relevant": "${igneous_or_metamorphic} = 'ig_min'"
     },
     {
       "type": "text",
@@ -76,13 +79,15 @@
       "type": "begin_group",
       "name": "group_rj4sl11",
       "label": "Metamorphic",
-      "required": "false"
+      "required": "false",
+      "relevant": "${igneous_or_metamorphic} = 'met_min'"
     },
     {
       "type": "select_one sn45t20",
       "name": "habit_met",
       "label": "Habit - Metamorphic",
-      "required": "false"
+      "required": "false",
+      "relevant": "${igneous_or_metamorphic} = 'met_min'"
     },
     {
       "type": "text",
@@ -96,7 +101,8 @@
       "name": "textural_setting_metamorphic",
       "label": "Textural Setting - Metamorphic/Structural",
       "hint": "If the mineral is metamorphic, or displays structural significance, choose a textural setting",
-      "required": "false"
+      "required": "false",
+      "relevant": "${igneous_or_metamorphic} = 'met_min'"
     },
     {
       "type": "text",
@@ -150,7 +156,7 @@
     {
       "type": "calculate",
       "name": "__version__",
-      "calculation": "'vnEGJinT3Mb2dPE6GBDJoQ'"
+      "calculation": "'vhNoKzmAa6HCJsBC9N43cN'"
     }
   ],
   "choices": [
@@ -645,7 +651,7 @@
   ],
   "settings": [
     {
-      "version": "vnEGJinT3Mb2dPE6GBDJoQ"
+      "version": "2 (2021-07-19 18:52:32)"
     }
   ]
 }
