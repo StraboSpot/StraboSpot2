@@ -54,7 +54,6 @@ const usePetrology = () => {
   };
 
   const getRockTitle = (rock, type) => {
-    console.log('inrocktite', rock, type);
     const formName = type === 'igneous' ? ['pet', rock.igneous_rock_class] : ['pet', type];
     const labelsArr = ROCK_FIRST_ORDER_CLASS_FIELDS[type].reduce((acc, fieldName) => {
       if (rock[fieldName]) {

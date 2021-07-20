@@ -56,6 +56,12 @@ const Overview = (props) => {
         //   if (!isEmpty(spot.properties?.data?.tables)) {
         //     updatedSections.push({title: 'Tables', data: [<DataWrapper spot={spot} editable={false} urlData={false}/>]});
         //   }
+        case PAGE_KEYS.ROCK_TYPE_ALTERATION_ORE:
+        case PAGE_KEYS.ROCK_TYPE_IGNEOUS:
+        case PAGE_KEYS.ROCK_TYPE_METAMORPHIC:
+          if (spot.properties.pet[page.key]
+            || spot?.properties?.pet?.rock_type?.includes(page.key)) isSectionOverviewVisible = true;
+          break;
         default:
           if (spot.properties && (spot.properties[page.key]
             || (PET_PAGES.find(p => p.key === page.key) && spot.properties.pet[page.key]))) {
