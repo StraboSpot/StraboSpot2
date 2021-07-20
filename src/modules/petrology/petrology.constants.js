@@ -1319,3 +1319,9 @@ export const TERNARY_MINERALS = {
   pyx: ['na pyroxene', 'na_pyroxene', 'clinopyroxene', 'augite', 'diopside', 'cr_diopside', 'cr-diopside', 'cr diopside', 'spodumene', 'orthopyroxene'], // Pyroxene
   hbl: ['hornblende', 'magnesio-hornblende', 'mg_hornblende'],                                 // Hornblende
 };
+
+export const ROCK_FIRST_ORDER_CLASS_FIELDS = {
+  igneous: ['plutonic_rock_type', 'volcanic_rock_type'],
+  metamorphic: ['metamorphic_rock_type'],
+  alteration_or: ['ore_type'],
+};

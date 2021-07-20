@@ -15,7 +15,7 @@ import {setModalVisible} from '../home/home.slice';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import notebookStyles from '../notebook-panel/notebookPanel.styles';
 import {editedSpotProperties} from '../spots/spots.slice';
-import {NOTEBOOK_PAGES, PRIMARY_PAGES} from './page.constants';
+import {NOTEBOOK_PAGES, PAGE_KEYS, PET_PAGES, PRIMARY_PAGES} from './page.constants';
 
 const Overview = (props) => {
   const dispatch = useDispatch();
@@ -36,29 +36,37 @@ const Overview = (props) => {
     let isSectionOverviewVisible = false;
     if (page.overview_component) {
       if (PRIMARY_PAGES.find(p => p.key === page.key)) isSectionOverviewVisible = true;
-      else {
-        switch (page.key) {
-          case '_3d_structures':
-            if (!isEmpty(spot?.properties?._3d_structures?.filter(s => s.type !== 'fabric'))) {
-              isSectionOverviewVisible = true;
-            }
-            break;
-          case 'fabrics':
-            if (spot.properties?.fabrics
-              || !isEmpty(spot?.properties?._3d_structures?.filter(s => s.type === 'fabric'))) {
-              isSectionOverviewVisible = true;
-            }
-            break;
-          // case 'data':
-          //   if (!isEmpty(spot.properties?.data?.urls)) {
-          //     updatedSections.push({title: 'Links to Web Resources', data: [<DataWrapper spot={spot} editable={false} urlData={true}/>]});
-          //   }
-          //   if (!isEmpty(spot.properties?.data?.tables)) {
-          //     updatedSections.push({title: 'Tables', data: [<DataWrapper spot={spot} editable={false} urlData={false}/>]});
-          //   }
-          default:
-            if (spot.properties && spot.properties[page.key]) isSectionOverviewVisible = true;
-        }
+      switch (page.key) {
+        case PAGE_KEYS.THREE_D_STRUCTURES:
+          if (spot.properties[PAGE_KEYS.THREE_D_STRUCTURES]
+            && !isEmpty(spot.properties[PAGE_KEYS.THREE_D_STRUCTURES].filter(s => s.type !== 'fabric'))) {
+            isSectionOverviewVisible = true;
+          }
+          break;
+        case PAGE_KEYS.FABRICS:
+          if (spot.properties[PAGE_KEYS.FABRICS] || (spot.properties[PAGE_KEYS.THREE_D_STRUCTURES]
+            && !isEmpty(spot.properties[PAGE_KEYS.THREE_D_STRUCTURES].filter(s => s.type === 'fabric')))) {
+            isSectionOverviewVisible = true;
+          }
+          break;
+        // case 'data':
+        //   if (!isEmpty(spot.properties?.data?.urls)) {
+        //     updatedSections.push({title: 'Links to Web Resources', data: [<DataWrapper spot={spot} editable={false} urlData={true}/>]});
+        //   }
+        //   if (!isEmpty(spot.properties?.data?.tables)) {
+        //     updatedSections.push({title: 'Tables', data: [<DataWrapper spot={spot} editable={false} urlData={false}/>]});
+        //   }
+        case PAGE_KEYS.ROCK_TYPE_ALTERATION_ORE:
+        case PAGE_KEYS.ROCK_TYPE_IGNEOUS:
+        case PAGE_KEYS.ROCK_TYPE_METAMORPHIC:
+          if (spot.properties.pet[page.key]
+            || spot?.properties?.pet?.rock_type?.includes(page.key)) isSectionOverviewVisible = true;
+          break;
+        default:
+          if (spot.properties && (spot.properties[page.key]
+            || (PET_PAGES.find(p => p.key === page.key) && spot.properties.pet[page.key]))) {
+            isSectionOverviewVisible = true;
+          }
       }
     }
     if (isSectionOverviewVisible) {

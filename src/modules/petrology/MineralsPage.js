@@ -12,11 +12,11 @@ import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
 import {SelectInputField} from '../form';
 import {setModalVisible} from '../home/home.slice';
+import BasicListItem from '../page/BasicListItem';
 import BasicPageDetail from '../page/BasicPageDetail';
 import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
 import {editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
-import BasicPetListItem from './BasicPetListItem';
 import usePetrologyHook from './usePetrology';
 
 const MineralsPage = (props) => {
@@ -120,7 +120,7 @@ const MineralsPage = (props) => {
           data={spot.properties.pet && spot.properties.pet[props.page.key]
           && spot.properties.pet[props.page.key].slice().sort(
             (a, b) => usePetrology.getMineralTitle(a).localeCompare(usePetrology.getMineralTitle(b)))}
-          renderItem={({item}) => <BasicPetListItem page={props.page} item={item} editItem={editMineral}/>}
+          renderItem={({item}) => <BasicListItem page={props.page} item={item} editItem={editMineral}/>}
           keyExtractor={(item) => item.id.toString()}
           ItemSeparatorComponent={FlatListItemSeparator}
           ListEmptyComponent={<ListEmptyText text={'There are no minerals at this Spot.'}/>}

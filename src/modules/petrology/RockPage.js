@@ -14,12 +14,12 @@ import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRig
 import uiStyles from '../../shared/ui/ui.styles';
 import {SelectInputField, useFormHook} from '../form';
 import {setModalValues, setModalVisible} from '../home/home.slice';
+import BasicListItem from '../page/BasicListItem';
 import BasicPageDetail from '../page/BasicPageDetail';
 import {PAGE_KEYS} from '../page/page.constants';
 import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
 import {editedSpotProperties} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
-import RockListItem from './RockListItem';
 
 const RockPage = (props) => {
   const dispatch = useDispatch();
@@ -201,7 +201,7 @@ const RockPage = (props) => {
         keyExtractor={(item, index) => item + index}
         sections={rocksGrouped}
         renderSectionHeader={({section: {title}}) => renderSectionHeader(title)}
-        renderItem={({item}) => <RockListItem rock={item} type={props.page.key} editRock={editRock}/>}
+        renderItem={({item}) => <BasicListItem item={item} page={props.page} editItem={editRock}/>}
         renderSectionFooter={({section}) => {
           return section.data.length === 0 && <ListEmptyText text={'No ' + section.title}/>;
         }}
