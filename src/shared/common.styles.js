@@ -26,7 +26,7 @@ const commonStyles = StyleSheet.create({
     borderRadius: 30,
     position: 'absolute',
     top: '15%',
-    maxHeight: height * 0.60,
+    maxHeight: height * 0.90,
   },
   dialogContentImportantText: {
     color: 'red',

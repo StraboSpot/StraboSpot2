@@ -52,14 +52,16 @@ const BackupModal = (props) => {
       buttonText={'Backup'}
       disabled={exportFileName === ''}
     >
-      <View>
-        <View style={{alignItems: 'center', paddingTop: 15}}>
-          <Text style={{...commonStyles.dialogText, textAlign: undefined}}>The following are the datasets that will be
-            exported:</Text>
-          <Text style={{...commonStyles.dialogText, textAlign: undefined}}>{renderDatasetNames()}</Text>
-          <Text>If you change the folder name please do not use spaces, special characters (except a dash or
-            underscore), or add a file extension.</Text>
-        </View>
+      <View style={{maxHeight: 400}}>
+        <FlatList ListHeaderComponent={(
+          <View style={{alignItems: 'center', paddingTop: 15}}>
+            <Text style={{...commonStyles.dialogText, textAlign: undefined}}>The following are the datasets that will be
+              exported:</Text>
+            <Text style={{...commonStyles.dialogText, textAlign: undefined}}>{renderDatasetNames()}</Text>
+            <Text>If you change the folder name please do not use spaces, special characters (except a dash or
+              underscore), or add a file extension.</Text>
+          </View>
+        )}/>
         <View style={projectStyles.dialogContent}>
           <TextInput
             value={fileName}
