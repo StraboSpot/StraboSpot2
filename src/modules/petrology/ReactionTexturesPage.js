@@ -11,10 +11,10 @@ import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
 import {setModalVisible} from '../home/home.slice';
+import BasicListItem from '../page/BasicListItem';
 import BasicPageDetail from '../page/BasicPageDetail';
 import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
 import {setSelectedAttributes} from '../spots/spots.slice';
-import BasicPetListItem from './BasicPetListItem';
 import usePetrologyHook from './usePetrology';
 
 const ReactionTexturesPage = (props) => {
@@ -95,7 +95,7 @@ const ReactionTexturesPage = (props) => {
           data={spot.properties.pet && spot.properties.pet[props.page.key]
           && spot.properties.pet[props.page.key].slice().sort(
             (a, b) => (a[props.page.key] || 'Unknown').localeCompare((b[props.page.key] || 'Unknown')))}
-          renderItem={({item}) => <BasicPetListItem page={props.page} item={item} editItem={editReaction}/>}
+          renderItem={({item}) => <BasicListItem page={props.page} item={item} editItem={editReaction}/>}
           keyExtractor={(item) => item.id.toString()}
           ItemSeparatorComponent={FlatListItemSeparator}
           ListEmptyComponent={<ListEmptyText text={'No ' + props.page.label.toLowerCase() + ' at this Spot.'}/>}

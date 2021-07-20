@@ -29,6 +29,7 @@ import {TagsAtSpotList, TagsNotebookModal} from '../tags';
 import TagsNotebook from '../tags/TagsNotebook';
 import ThreeDStructuresOverview from '../three-d-structures/ThreeDStructuresOverview';
 import ThreeDStructuresPage from '../three-d-structures/ThreeDStructuresPage';
+import BasicOverviewList from './BasicOverviewList';
 import Overview from './Overview';
 
 export const PAGE_KEYS = {
@@ -118,15 +119,15 @@ export const SECONDARY_PAGES = [
     icon_pressed_src: require('../../assets/icons/3DStructure_pressed.png'),
     overview_component: ThreeDStructuresOverview,
     page_component: ThreeDStructuresPage,
-    // }, {
-    //   key: PAGE_KEYS.FABRICS,
-    //   label: 'Fabrics',
-    //   icon_src: require('../../assets/icons/Fabric.png'),
-    //   icon_pressed_src: require('../../assets/icons/Fabric_pressed.png'),
-    //   overview_component: FabricsOverview,
-    //   page_component: FabricsPage,
-    //   modal_component: AddFabricModal,
-    //   action_label: 'Add a Fabric',
+  // }, {
+  //   key: PAGE_KEYS.FABRICS,
+  //   label: 'Fabrics',
+  //   icon_src: require('../../assets/icons/Fabric.png'),
+  //   icon_pressed_src: require('../../assets/icons/Fabric_pressed.png'),
+  //   overview_component: FabricsOverview,
+  //   page_component: FabricsPage,
+  //   modal_component: AddFabricModal,
+  //   action_label: 'Add a Fabric',
   }, {
     key: PAGE_KEYS.OTHER_FEATURES,
     label: 'Other Features',
@@ -162,6 +163,7 @@ export const PET_PAGES = [
   //   label: 'Alteration, Ore Rocks',
   //   icon_src: require('../../assets/icons/Economic.png'),
   //   icon_pressed_src: require('../../assets/icons/Economic_pressed.png'),
+  //   overview_component: BasicOverviewList,
   //   page_component: RockAlterationOrePage,
   //   modal_component: AddRockModal,
   //   action_label: 'Add an Alteration, Ore Rock',
@@ -170,6 +172,7 @@ export const PET_PAGES = [
   //   label: 'Igneous Rocks',
   //   icon_src: require('../../assets/icons/Igneous.png'),
   //   icon_pressed_src: require('../../assets/icons/Igneous_pressed.png'),
+  //   overview_component: BasicOverviewList,
   //   page_component: RockIgneousPage,
   //   modal_component: AddRockModal,
   //   action_label: 'Add an Igenous Rock',
@@ -178,6 +181,7 @@ export const PET_PAGES = [
   //   label: 'Metamorphic Rocks',
   //   icon_src: require('../../assets/icons/Metamorphic.png'),
   //   icon_pressed_src: require('../../assets/icons/Metamorphic_pressed.png'),
+  //   overview_component: BasicOverviewList,
   //   page_component: RockMetamorphicPage,
   //   modal_component: AddRockModal,
   //   action_label: 'Add a Metamorphic Rock',
@@ -186,6 +190,7 @@ export const PET_PAGES = [
   //   label: 'Minerals',
   //   icon_src: require('../../assets/icons/Minerals.png'),
   //   icon_pressed_src: require('../../assets/icons/Minerals_pressed.png'),
+  //   overview_component: BasicOverviewList,
   //   page_component: MineralsPage,
   //   modal_component: AddMineralModal,
   //   action_label: 'Add Mineral Data',
@@ -194,6 +199,7 @@ export const PET_PAGES = [
   //   label: 'Reaction Textures',
   //   icon_src: require('../../assets/icons/Reactions.png'),
   //   icon_pressed_src: require('../../assets/icons/Reactions_pressed.png'),
+  //   overview_component: BasicOverviewList,
   //   page_component: ReactionTexturesPage,
   //   modal_component: AddReactionTextureModal,
   //   action_label: 'Add a Rection Texture',

@@ -1,10 +1,14 @@
 import {useDispatch} from 'react-redux';
 
-import {isEmpty} from '../../shared/Helpers';
+import {isEmpty, toTitleCase} from '../../shared/Helpers';
 import {useFormHook} from '../form';
 import {PAGE_KEYS} from '../page/page.constants';
 import {editedSpotProperties} from '../spots/spots.slice';
-import {ABBREVIATIONS_WITH_LABELS, LABELS_WITH_ABBREVIATIONS} from './petrology.constants';
+import {
+  ABBREVIATIONS_WITH_LABELS,
+  LABELS_WITH_ABBREVIATIONS,
+  ROCK_FIRST_ORDER_CLASS_FIELDS,
+} from './petrology.constants';
 
 const usePetrology = () => {
   const dispatch = useDispatch();
@@ -47,6 +51,26 @@ const usePetrology = () => {
     const formName = ['pet', 'reactions'];
     return (item.reactions || 'Unknown')
       + (item.based_on && (' - ' + useForm.getLabels(item.based_on, formName).toUpperCase()));
+  };
+
+  const getRockTitle = (rock, type) => {
+    console.log('inrocktite', rock, type);
+    const formName = type === 'igneous' ? ['pet', rock.igneous_rock_class] : ['pet', type];
+    const labelsArr = ROCK_FIRST_ORDER_CLASS_FIELDS[type].reduce((acc, fieldName) => {
+      if (rock[fieldName]) {
+        const mainLabel = useForm.getLabel(fieldName, formName);
+        const choiceLabels = useForm.getLabels(rock[fieldName], formName);
+        return [...acc, toTitleCase(mainLabel) + ' - ' + choiceLabels.toUpperCase()];
+      }
+      else return acc;
+    }, []);
+    if (isEmpty(labelsArr)) {
+      const defaultTitle = type === 'igneous' ? rock.igneous_rock_class
+        : type === 'alteration_or' ? 'Alteration, Ore'
+          : type;
+      return toTitleCase(useForm.getLabel(defaultTitle + ' Rock', formName));
+    }
+    else return labelsArr.join(', ');
   };
 
   const onMineralChange = async (formCurrent, name, value) => {
@@ -96,6 +120,7 @@ const usePetrology = () => {
     deletePetFeature: deletePetFeature,
     getMineralTitle: getMineralTitle,
     getReactionTextureTitle: getReactionTextureTitle,
+    getRockTitle: getRockTitle,
     onMineralChange: onMineralChange,
     savePetFeature: savePetFeature,
   };
