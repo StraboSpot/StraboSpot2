@@ -22,6 +22,7 @@ export const MAIN_MENU_ITEMS = {
     SHORTCUTS: 'Shortcuts',
     // NOTEBOOK_BAR: 'Notebook Bar',
     NAMING_CONVENTIONS: 'Naming Conventions',
+    MISCELLANEOUS: 'Miscellaneous',
     // UNITS: 'Units',
   },
   HELP: {

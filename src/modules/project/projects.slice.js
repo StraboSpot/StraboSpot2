@@ -8,6 +8,7 @@ const initialProjectState = {
   selectedDatasetId: undefined,
   project: {},
   datasets: {},
+  databaseEndpoint: 'https://strabospot.org/db',
   deviceBackUpDirectoryExists: false,
   selectedProject: {
     project: '',
@@ -104,6 +105,12 @@ const projectSlice = createSlice({
     setActiveMeasurementTemplates(state, action) {
       state.project.templates.activeMeasurementTemplates = action.payload;
     },
+    setDatabaseEndpoint(state, action) {
+      if (isEmpty(action.payload)) {
+        action.payload = state.databaseEndpoint;
+      }
+      else state.databaseEndpoint = action.payload;
+    },
     setSelectedDataset(state, action) {
       state.selectedDatasetId = action.payload;
     },
@@ -165,6 +172,7 @@ export const {
   doesBackupDirectoryExist,
   setActiveDatasets,
   setActiveMeasurementTemplates,
+  setDatabaseEndpoint,
   setSelectedDataset,
   setSelectedProject,
   setSelectedTag,

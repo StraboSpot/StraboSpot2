@@ -25,6 +25,7 @@ import {setMenuSelectionPage} from './mainMenuPanel.slice';
 import styles from './mainMenuPanel.styles';
 import MainMenuPanelHeader from './MainMenuPanelHeader';
 import MainMenuPanelList from './MainMenuPanelList';
+import Miscellaneous from '../preferences/Miscellaneous';
 
 const MainMenuPanel = props => {
   const dispatch = useDispatch();
@@ -165,6 +166,11 @@ const MainMenuPanel = props => {
         <View style={styles.mainMenuContainer}>
           <Tags/>
         </View>
+      );
+      break;
+    case MAIN_MENU_ITEMS.PREFERENCES.MISCELLANEOUS:
+      page = (
+        <Miscellaneous/>
       );
       break;
     case MAIN_MENU_ITEMS.HELP.ABOUT:
