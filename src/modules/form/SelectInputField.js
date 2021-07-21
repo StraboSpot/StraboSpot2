@@ -106,8 +106,8 @@ const SelectInputField = (props) => {
             hideDropdown={true}
             searchIcon={false}
             items={props.choices}
-            uniqueKey="value"
-            displayKey="label"
+            uniqueKey='value'
+            displayKey='label'
             onSelectedItemsChange={fieldValueChanged}
             selectedItems={isEmpty(props.value) || typeof props.value === 'object' ? props.value : [props.value]}
             textInputProps={{editable: false}}

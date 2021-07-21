@@ -57,18 +57,43 @@ const styles = StyleSheet.create({
     color: themes.WARNING_COLOR,
     textAlign: 'center',
   },
-  choiceButton: {
-    borderRadius: 10,
-    borderColor: themes.MEDIUMGREY,
+  halfWidthButtonsContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    flexWrap: 'wrap',
+    paddingLeft: 8,
+    paddingRight: 8,
+    paddingTop: 2.5,
+    paddingBottom: 2.5,
+  },
+  halfWidthButtonContainer: {
+    padding: 2,
+    width: '50%',
+  },
+  fullWidthButtonContainer: {
+    alignItems: 'center',
+    padding: 10,
+    paddingTop: 2.5,
+    paddingBottom: 2.5,
   },
   formButton: {
-    height: 80,
-    width: 110,
-    borderRadius: 10,
+    borderRadius: 5,
     borderColor: themes.MEDIUMGREY,
+    height: 60,
+    width: '100%',
   },
-  formButtonContainer: {
-    padding: 2.5,
+  formButtonSmall: {
+    borderRadius: 5,
+    borderColor: themes.MEDIUMGREY,
+    height: 40,
+    width: '100%',
+  },
+  formButtonLarge: {
+    borderRadius: 5,
+    borderColor: themes.MEDIUMGREY,
+    height: 80,
+    width: '100%',
   },
   formButtonTitle: {
     color: themes.PRIMARY_TEXT_COLOR,
