@@ -7,6 +7,7 @@ import commonStyles from '../../shared/common.styles';
 import * as themes from '../../shared/styles.constants';
 import FeatureTagsList from '../../shared/ui/FeatureTagsList';
 import {useTagsHook} from '../tags';
+import OtherFeatureLabel from './OtherFeatureLabel';
 
 const OtherFeatureItem = (props) => {
   const spot = useSelector(state => state.spot.selectedSpot);
@@ -23,12 +24,6 @@ const OtherFeatureItem = (props) => {
     else props.editFeature(feature);
   };
 
-  const getTitle = (feature) => {
-    const firstClassTitle = feature.name || 'Unnamed Feature';
-    const secondClassTitle = feature.type?.toUpperCase() || 'UNKNOWN';
-    return firstClassTitle + ' - ' + secondClassTitle;
-  };
-
   return (
     <ListItem
       containerStyle={[commonStyles.listItem,
@@ -37,7 +32,9 @@ const OtherFeatureItem = (props) => {
       onPress={() => editFeature(props.feature)}
     >
       <ListItem.Content style={{overflow: 'hidden'}}>
-        <ListItem.Title style={commonStyles.listItemTitle}>{getTitle(props.feature)}</ListItem.Title>
+        <ListItem.Title style={commonStyles.listItemTitle}>
+          <OtherFeatureLabel item={props.feature}/>
+        </ListItem.Title>
         <FeatureTagsList spotId={spot.properties.id} featureId={props.feature.id}/>
       </ListItem.Content>
       <ListItem.Chevron/>

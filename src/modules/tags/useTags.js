@@ -7,8 +7,11 @@ import {useDispatch, useSelector} from 'react-redux';
 import {deepFindFeatureById, getNewId, isEmpty, truncateText} from '../../shared/Helpers';
 import {Form, useFormHook} from '../form';
 import {MODAL_KEYS} from '../home/home.constants';
+import MeasurementLabel from '../measurements/MeasurementLabel';
+import OtherFeatureLabel from '../other-features/OtherFeatureLabel';
 import {addedTagToSelectedSpot, setSelectedTag, updatedProject} from '../project/projects.slice';
 import {setSelectedAttributes} from '../spots/spots.slice';
+import ThreeDStructureLabel from '../three-d-structures/ThreeDStructureLabel';
 import {tagsStyles} from './index';
 
 const useTags = () => {
@@ -142,20 +145,50 @@ const useTags = () => {
     const spotFeatures = tag.features;
     if (isEmpty(spotFeatures)) return [];
     for (const [spotId, features] of Object.entries(spotFeatures)) {
-      features.forEach(feature => {
-        const featureLabel = getFeatureLabel(spotId, feature);
-        allTaggedFeatures.push({id: feature, label: featureLabel, spotId: spotId});
+      features.forEach(featureId => {
+        const feature = getFeature(spotId, featureId);
+        feature.parentSpotId = spotId;
+        feature.label = getFeatureLabel(feature);
+        allTaggedFeatures.push(feature);
       });
     }
     return allTaggedFeatures;
   };
 
-  const getFeatureLabel = (spotId, featureId) => {
+  const getFeature = (spotId, featureId) => {
     const spot = spots[spotId];
     if (!isEmpty(spot) && !isEmpty(spot.properties)) {
       let foundFeature = deepFindFeatureById(spot.properties, featureId);
-      return foundFeature && (foundFeature.label || foundFeature.name_of_experiment || 'Unknown Name');
+      return JSON.parse(JSON.stringify(foundFeature));
     }
+  };
+
+  const getFeatureDisplayComponent = (featureType, spotFeature) => {
+    switch (featureType) {
+      case 'orientation_data':
+        return <MeasurementLabel item={spotFeature}/>;
+      case '_3d_structures':
+        return <ThreeDStructureLabel item={spotFeature}/>;
+      case 'other_features':
+        return <OtherFeatureLabel item={spotFeature}/>;
+      default:
+        return <Text>{spotFeature.label}</Text>;
+    }
+  };
+
+  const getFeatureLabel = (feature) => {
+    return feature && (feature.label || feature.name_of_experiment || 'Unknown Name');
+  };
+
+  const getFeatureTagsAtSpotGeologicUnitFirst = (featuresAtSpot) => {
+    if (isEmpty(selectedSpot)) return [];
+    let spotId = selectedSpot.properties.id;
+    let featureIds = featuresAtSpot.map(feature => feature.id);
+    let tagsWithFeaturesAtSpot = projectTags.filter(tag => tag.features && !isEmpty(tag.features[spotId])
+      && tag.features[spotId].some(featureId => featureIds.includes(featureId)));
+    const tagsGeologicUnit = tagsWithFeaturesAtSpot.filter(tag => tag.type === 'geologic_unit');
+    const tagsOther = tagsWithFeaturesAtSpot.filter(tag => tag.type !== 'geologic_unit');
+    return [...tagsGeologicUnit, ...tagsOther];
   };
 
   const getLabel = (key) => {
@@ -318,6 +351,8 @@ const useTags = () => {
     deleteFeatureTags: deleteFeatureTags,
     filterTagsByTagType: filterTagsByTagType,
     getAllTaggedFeatures: getAllTaggedFeatures,
+    getFeatureDisplayComponent: getFeatureDisplayComponent,
+    getFeatureTagsAtSpotGeologicUnitFirst: getFeatureTagsAtSpotGeologicUnitFirst,
     getLabel: getLabel,
     getTagsAtFeature: getTagsAtFeature,
     getTagsAtSpot: getTagsAtSpot,

@@ -23,7 +23,6 @@ const TagDetail = (props) => {
                           //         To handle the navigation issue from 0 tagged features to non zero tagged features.
   }, [selectedTag]);
 
-
   const renderSpotListItem = (spotId) => {
     const spot = useSpots.getSpotById(spotId);
     if (!isEmpty(spot)) {
@@ -46,21 +45,24 @@ const TagDetail = (props) => {
     }
   };
 
-  const renderSpotFeatureItem = (spotFeature) => {
-    const spot = useSpots.getSpotById(spotFeature.spotId);
+  const renderSpotFeatureItem = (feature) => {
+    const spot = useSpots.getSpotById(feature.parentSpotId);
+    const featureType = deepFindFeatureTypeById(spot.properties, feature.id);
     if (!isEmpty(spot)) {
       return (
         <ListItem
           containerStyle={commonStyles.listItem}
-          onPress={() => props.openSpot(spot)}
+          onPress={() => props.openFeatureDetail(spot, feature, featureType)}
         >
           <Avatar
-            source={useSpots.getSpotDataIconSource(deepFindFeatureTypeById(spot.properties,spotFeature.id))}
+            source={useSpots.getSpotDataIconSource(featureType)}
             placeholderStyle={{backgroundColor: 'transparent'}}
             size={20}
           />
           <ListItem.Content>
-            <ListItem.Title style={commonStyles.listItemTitle}>{spotFeature.label}</ListItem.Title>
+            <ListItem.Title style={commonStyles.listItemTitle}>
+              {useTags.getFeatureDisplayComponent(featureType, feature)}
+            </ListItem.Title>
             <ListItem.Subtitle>{spot.properties.name}</ListItem.Subtitle>
           </ListItem.Content>
           <ListItem.Chevron/>

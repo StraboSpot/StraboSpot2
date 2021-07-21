@@ -15,7 +15,7 @@ import Overview from '../page/Overview';
 import {NOTEBOOK_PAGES, PAGE_KEYS} from '../page/page.constants';
 import {setMultipleFeaturesTaggingEnabled} from '../project/projects.slice';
 import {useSpotsHook} from '../spots';
-import {setSelectedAttributes, setSelectedSpot} from '../spots/spots.slice';
+import {setSelectedSpot} from '../spots/spots.slice';
 import NotebookFooter from './notebook-footer/NotebookFooter';
 import NotebookHeader from './notebook-header/NotebookHeader';
 import {setNotebookPageVisible} from './notebook.slice';
@@ -49,7 +49,6 @@ const NotebookPanel = (props) => {
   }, [isNotebookPanelVisible]);
 
   useEffect(() => {
-    dispatch(setSelectedAttributes([]));
     dispatch(setMultipleFeaturesTaggingEnabled(false));
   }, [pageVisible, spot]);
 

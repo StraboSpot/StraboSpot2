@@ -173,10 +173,13 @@ const useSpots = () => {
     return activeSpots;
   };
 
-  const getAllFeaturesFromAllSpots = () => {
+  const getAllFeaturesFromSpot = (spotToEvaluate) => {
+    let spotsToEvaluate = [];
     let allFeatures = [];
-    let featureElements = ['orientation_data', 'other_features', 'samples', '_3d_structures'];
-    Object.values(spots).forEach(spot => {
+    if (isEmpty(spotToEvaluate)) spotsToEvaluate = Object.values(spots);
+    else spotsToEvaluate = [spotToEvaluate];
+    let featureElements = ['orientation_data', 'other_features', '_3d_structures'];
+    spotsToEvaluate.forEach(spot => {
       featureElements.map(featureElement => {
         if (spot.properties[featureElement]) {
           let featuresCopy = JSON.parse(JSON.stringify(spot.properties[featureElement]));
@@ -328,7 +331,7 @@ const useSpots = () => {
     createSpot: createSpot,
     deleteSpot: deleteSpot,
     getActiveSpotsObj: getActiveSpotsObj,
-    getAllFeaturesFromAllSpots: getAllFeaturesFromAllSpots,
+    getAllFeaturesFromSpot: getAllFeaturesFromSpot,
     getImageBasemaps: getImageBasemaps,
     getMappableSpots: getMappableSpots,
     getRootSpot: getRootSpot,

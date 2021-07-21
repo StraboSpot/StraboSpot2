@@ -3,12 +3,14 @@ import {View} from 'react-native';
 
 import {useDispatch} from 'react-redux';
 
+import SectionDivider from '../../shared/ui/SectionDivider';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
 import {MODAL_KEYS} from '../home/home.constants';
 import {setModalVisible} from '../home/home.slice';
 import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
 import {addedTagToSelectedSpot} from '../project/projects.slice';
 import {TagDetailModal, TagsAtSpotList} from '../tags';
+import FeatureTagsAtSpotList from './FeatureTagsAtSpotList';
 
 const TagsNotebook = (props) => {
   console.log('PROPS in TAGS NOTEBOOK', props);
@@ -25,11 +27,15 @@ const TagsNotebook = (props) => {
       <ReturnToOverviewButton/>
       <View style={{flex: 1}}>
         <SectionDividerWithRightButton
-          dividerText={'Tags'}
+          dividerText={'Spot Tags'}
           buttonTitle={'Assign/Remove'}
           onPress={() => dispatch(setModalVisible({modal: MODAL_KEYS.NOTEBOOK.TAGS}))}
         />
         <TagsAtSpotList openMainMenu={props.openMainMenu}/>
+        <SectionDivider
+          dividerText={'Feature Tags'}
+        />
+        <FeatureTagsAtSpotList openMainMenu={props.openMainMenu}/>
       </View>
       <TagDetailModal
         isVisible={isDetailModalVisibile}

@@ -62,7 +62,6 @@ const MeasurementsPage = (props) => {
       setSelectedAttitudes(selectedAttributes);
       setIsDetailView(true);
     }
-    else setSelectedAttitudes([]);
   }, [selectedAttributes, spot]);
 
   // Create a new measurement on grabbing new compass measurements

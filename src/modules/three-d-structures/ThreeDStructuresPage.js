@@ -11,7 +11,6 @@ import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRig
 import uiStyles from '../../shared/ui/ui.styles';
 import {useFormHook} from '../form';
 import BasicPageDetail from '../page/BasicPageDetail';
-import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
 import {setSelectedAttributes} from '../spots/spots.slice';
 import ThreeDStructureItem from './ThreeDStructureItem';
 
@@ -43,7 +42,7 @@ const ThreeDStructuresPage = (props) => {
       setSelected3dStructure(selectedAttributes[0]);
       setIsDetailView(true);
     }
-    else setSelected3dStructure({});
+    //else setSelected3dStructure({});
   }, [selectedAttributes, spot]);
 
   const add3dStructure = (type) => {

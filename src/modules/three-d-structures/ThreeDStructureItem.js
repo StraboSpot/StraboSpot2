@@ -4,14 +4,12 @@ import {ListItem} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
-import {toTitleCase} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
 import FeatureTagsList from '../../shared/ui/FeatureTagsList';
-import {useFormHook} from '../form';
 import {useTagsHook} from '../tags';
+import ThreeDStructureLabel from './ThreeDStructureLabel';
 
 function ThreeDStructureItem(props) {
-  const [useForm] = useFormHook();
   const [useTags] = useTagsHook();
   const spot = useSelector(state => state.spot.selectedSpot);
   const isMultipleFeaturesTaggingEnabled = useSelector(state => state.project.isMultipleFeaturesTaggingEnabled);
@@ -26,13 +24,6 @@ function ThreeDStructureItem(props) {
     else props.edit3dStructure(feature);
   };
 
-  const getTitle = (threeDStructure) => {
-    const firstClassTitle = toTitleCase(threeDStructure.type || '3D Structure');
-    const secondClassTitle = useForm.getLabel(threeDStructure.feature_type,
-      ['_3d_structures', threeDStructure.type]).toUpperCase();
-    return firstClassTitle + ' - ' + secondClassTitle;
-  };
-
   return (
     <ListItem
       containerStyle={[commonStyles.listItem,
@@ -41,7 +32,9 @@ function ThreeDStructureItem(props) {
       onPress={() => editFeature(props.item)}
     >
       <ListItem.Content style={{overflow: 'hidden'}}>
-        <ListItem.Title style={commonStyles.listItemTitle}>{getTitle(props.item)}</ListItem.Title>
+        <ListItem.Title style={commonStyles.listItemTitle}>
+          <ThreeDStructureLabel item={props.item}/>
+        </ListItem.Title>
         <FeatureTagsList spotId={spot.properties.id} featureId={props.item.id}/>
       </ListItem.Content>
       <ListItem.Chevron/>

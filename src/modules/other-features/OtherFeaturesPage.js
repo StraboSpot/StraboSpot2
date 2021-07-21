@@ -4,7 +4,7 @@ import {FlatList, View} from 'react-native';
 import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {getNewId} from '../../shared/Helpers';
+import {getNewId, isEmpty} from '../../shared/Helpers';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import NotebookContentTopSection from '../../shared/ui/NotebookContentTopSection';
@@ -25,14 +25,12 @@ const OtherFeaturesPage = () => {
     return () => dispatch(setSelectedAttributes([]));
   }, []);
 
-/*  useEffect(() => {
+  useEffect(() => {
     if (!isEmpty(selectedAttributes) && !isMultipleFeaturesTaggingEnabled) {
-      //setSelectedFeature(selectedAttributes[0]);
-      dispatch(setSelectedAttributes([]));
-      //setIsFeatureDetailVisible(true);
+      setSelectedFeature(selectedAttributes[0]);
+      setIsFeatureDetailVisible(true);
     }
-    else setSelectedFeature({id: getNewId()});
-  }, [spot]);*/
+  }, [selectedAttributes, spot]);
 
   const addFeature = () => {
     setSelectedFeature({id: getNewId()});

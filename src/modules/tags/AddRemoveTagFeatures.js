@@ -23,6 +23,7 @@ const AddRemoveTagFeatures = () => {
     const spotId = feature.parentSpotId;
     const spot = spots[spotId];
     const selectedTagCopy = JSON.parse(JSON.stringify(selectedTag));
+    const featureType = deepFindFeatureTypeById(spot.properties,feature.id);
 
     if (!isEmpty(spot) && !isEmpty(spot.properties)) {
       return (
@@ -31,12 +32,14 @@ const AddRemoveTagFeatures = () => {
           onPress={() => useTags.addRemoveSpotFeatureFromTag(selectedTagCopy, feature, spotId)}
         >
           <Avatar
-            source={useSpots.getSpotDataIconSource(deepFindFeatureTypeById(spot.properties,feature.id))}
+            source={useSpots.getSpotDataIconSource(featureType)}
             placeholderStyle={{backgroundColor: 'transparent'}}
             size={20}
           />
           <ListItem.Content>
-            <ListItem.Title style={commonStyles.listItemTitle}>{feature.label || 'Unknown Name'}</ListItem.Title>
+            <ListItem.Title style={commonStyles.listItemTitle}>
+              {useTags.getFeatureDisplayComponent(featureType, feature)}
+            </ListItem.Title>
             <ListItem.Subtitle>{spot.properties.name || spotId}</ListItem.Subtitle>
           </ListItem.Content>
           <ListItem.CheckBox
@@ -59,7 +62,7 @@ const AddRemoveTagFeatures = () => {
       />
       <View style={{...commonStyles.buttonContainer, flex: 1}}>
         <FlatList
-          data={useSpots.getAllFeaturesFromAllSpots()}
+          data={useSpots.getAllFeaturesFromSpot()}
           renderItem={({item}) => renderSpotFeatureItem(item)}
         />
       </View>
