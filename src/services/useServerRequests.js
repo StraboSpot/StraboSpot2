@@ -29,13 +29,13 @@ const useServerRequests = () => {
           ),
         },
       ));
-      let responseJson = await response.json();
-      return responseJson;
-    }
-    catch (error) {
-      console.error(error);
-      Alert.alert(`${error}`);
-    }
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.log('RESPONSE TEXT', errorText)
+        Alert.alert('Server Error!', 'The server is temporarily unable to service your request due to' +
+          ' maintenance downtime or capacity\n' + 'problems. Please try again later.')
+      }
+      else return await response.json();
   };
 
   const request = async (method, urlPart, login, ...otherParams) => {
