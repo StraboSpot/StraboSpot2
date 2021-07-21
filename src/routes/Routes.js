@@ -22,7 +22,7 @@ const Routes = () => {
   NetInfo.configure({
     reachabilityUrl: 'https://clients3.google.com/generate_204',
     reachabilityTest: async (response) => {
-      console.log('Response Status', response.status);
+      // console.log('Response Status', response.status);
       return response.status === 204;
     },
     reachabilityLongTimeout: 5 * 1000, // 60s

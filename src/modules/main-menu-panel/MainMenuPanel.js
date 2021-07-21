@@ -87,49 +87,6 @@ const MainMenuPanel = props => {
         </View>
       );
       break;
-    case MAIN_MENU_ITEMS.PREFERENCES.SHORTCUTS:
-      page = (
-        <View style={styles.mainMenuContainer}>
-          <ShortcutMenu
-            toggleSwitch={(switchName) => toggleSwitch(switchName)}
-            shortcutSwitchPosition={switchPosition}
-          />
-        </View>
-      );
-      break;
-    case MAIN_MENU_ITEMS.PREFERENCES.NAMING_CONVENTIONS:
-      page = (
-        <View style={styles.mainMenuContainer}>
-          <NamingConventions/>
-        </View>
-      );
-      break;
-    case MAIN_MENU_ITEMS.MAPS.MANAGE_OFFLINE_MAPS:
-      page = (
-        <View style={styles.mainMenuContainer}>
-          <ManageOfflineMapsMenu
-            closeMainMenuPanel={props.closeMainMenuPanel}
-            zoomToCenterOfflineTile={props.zoomToCenterOfflineTile}/>
-        </View>
-      );
-      break;
-    case MAIN_MENU_ITEMS.MAPS.IMAGE_BASEMAPS :
-      page = (
-        <View style={styles.mainMenuContainer}>
-          <ImageBaseMaps/>
-        </View>
-      );
-      break;
-    case MAIN_MENU_ITEMS.MAPS.CUSTOM:
-      page = (
-        <View style={styles.mainMenuContainer}>
-          <CustomMapsMenu
-            zoomToCustomMap={props.zoomToCustomMap}
-            // openSidePanel={(view, map) => props.openSidePanel(view, map)}
-          />
-        </View>
-      );
-      break;
     case MAIN_MENU_ITEMS.ATTRIBUTES.SPOTS_LIST:
       page = (
         <View style={styles.mainMenuContainer}>
@@ -165,6 +122,49 @@ const MainMenuPanel = props => {
       page = (
         <View style={styles.mainMenuContainer}>
           <Tags/>
+        </View>
+      );
+      break;
+    case MAIN_MENU_ITEMS.MAPS.CUSTOM:
+      page = (
+        <View style={styles.mainMenuContainer}>
+          <CustomMapsMenu
+            zoomToCustomMap={props.zoomToCustomMap}
+            // openSidePanel={(view, map) => props.openSidePanel(view, map)}
+          />
+        </View>
+      );
+      break;
+    case MAIN_MENU_ITEMS.MAPS.IMAGE_BASEMAPS :
+      page = (
+        <View style={styles.mainMenuContainer}>
+          <ImageBaseMaps/>
+        </View>
+      );
+      break;
+    case MAIN_MENU_ITEMS.MAPS.MANAGE_OFFLINE_MAPS:
+      page = (
+        <View style={styles.mainMenuContainer}>
+          <ManageOfflineMapsMenu
+            closeMainMenuPanel={props.closeMainMenuPanel}
+            zoomToCenterOfflineTile={props.zoomToCenterOfflineTile}/>
+        </View>
+      );
+      break;
+    case MAIN_MENU_ITEMS.PREFERENCES.SHORTCUTS:
+      page = (
+        <View style={styles.mainMenuContainer}>
+          <ShortcutMenu
+            toggleSwitch={(switchName) => toggleSwitch(switchName)}
+            shortcutSwitchPosition={switchPosition}
+          />
+        </View>
+      );
+      break;
+    case MAIN_MENU_ITEMS.PREFERENCES.NAMING_CONVENTIONS:
+      page = (
+        <View style={styles.mainMenuContainer}>
+          <NamingConventions/>
         </View>
       );
       break;

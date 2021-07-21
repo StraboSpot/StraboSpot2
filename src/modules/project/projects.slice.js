@@ -108,7 +108,7 @@ const projectSlice = createSlice({
     },
     setDatabaseEndpoint(state, action) {
       if (isEmpty(action.payload)) {
-        action.payload = state.databaseEndpoint;
+        state.databaseEndpoint = initialProjectState.databaseEndpoint;
       }
       else state.databaseEndpoint = action.payload;
     },

@@ -57,6 +57,7 @@ const Miscellaneous = () => {
     }
     else {
       await formRef.current.setFieldValue(name, trimmedValue);
+      await formRef.current.submitForm();
       dispatch(setDatabaseEndpoint(formRef.current.values.database));
     }
   };
@@ -124,32 +125,7 @@ const Miscellaneous = () => {
       }}
       initialValues={{}}
     >
-      {({...props}) => {
-        console.log('MISC PROPS IN FORMIK', props);
-        return (
-          <View>
-            <ListItem style={commonStyles.listItemFormField}>
-              <ListItem.Content>
-                <Field
-                  onMyChange={onMyChange}
-                  placeholder={isEmpty(databaseEndpoint) ? 'http://strabospot.org/db' : databaseEndpoint}
-                  component={TextInputField}
-                  key={'database_endpoint'}
-                  name={'database'}
-                  label={'Specify Database Endpoint'}
-                  onShowFieldInfo={(a, b) => console.log(a, b)}
-                >
-                </Field>
-              </ListItem.Content>
-            </ListItem>
-            <View style={{margin: 10}}>
-              <Text style={commonStyles.dialogText}>Note: {'\n\n'}If using StraboSpot Offline the URL must be an "http:"
-                URL and NOT an "https:" URL. Also, make sure that there is a trailing "/db".
-              </Text>
-            </View>
-          </View>
-        );
-      }}
+      {renderEndpointFieldContent}
     </Formik>
   );
 };
