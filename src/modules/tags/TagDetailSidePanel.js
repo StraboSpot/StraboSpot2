@@ -9,7 +9,7 @@ import {isEmpty} from '../../shared/Helpers';
 import {SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import SidePanelHeader from '../main-menu-panel/sidePanel/SidePanelHeader';
-import {setSelectedSpot} from '../spots/spots.slice';
+import {setSelectedSpot, setSelectedAttributes} from '../spots/spots.slice';
 import {TagDetail, TagDetailModal} from '../tags';
 
 const TagDetailSidePanel = (props) => {
@@ -18,6 +18,12 @@ const TagDetailSidePanel = (props) => {
   const selectedTag = useSelector(state => state.project.selectedTag);
   const [isDetailModalVisibile, setIsDetailModalVisible] = useState(false);
   const [isColorPickerModalVisibile, setIsColorPickerModalVisible] = useState(false);
+
+  const openFeatureDetail = (spot, feature, featureType) => {
+    dispatch(setSelectedSpot(spot));
+    dispatch(setSelectedAttributes([feature]));
+    props.openNotebookPanel(featureType);
+  };
 
   return (
     <React.Fragment>
@@ -50,12 +56,16 @@ const TagDetailSidePanel = (props) => {
 
       <View style={{flex: 1}}>
         <TagDetail
+          openFeatureDetail={(spot, feature, featureType) => openFeatureDetail(spot, feature, featureType)}
           openSpot={(spot) => {
             dispatch(setSelectedSpot(spot));
             props.openNotebookPanel();
           }}
           addRemoveSpots={() => {
             dispatch(setSidePanelVisible({bool: true, view: SIDE_PANEL_VIEWS.TAG_ADD_REMOVE_SPOTS}));
+          }}
+          addRemoveFeatures={() => {
+            dispatch(setSidePanelVisible({bool: true, view: SIDE_PANEL_VIEWS.TAG_ADD_REMOVE_FEATURES}));
           }}
           setIsDetailModalVisible={() => setIsDetailModalVisible(true)}
         />

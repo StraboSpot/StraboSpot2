@@ -1,13 +1,23 @@
 import React from 'react';
 import {FlatList} from 'react-native';
 
+import {useSelector} from 'react-redux';
+
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
+import {useSpotsHook} from '../spots';
 import {useTagsHook} from '../tags';
 import TagsList from './TagsList';
 
-const TagsAtSpotList = (props) => {
+const FeatureTagsAtSpotList = (props) => {
   const [useTags] = useTagsHook();
+  const [useSpots] = useSpotsHook();
+  const selectedSpot = useSelector(state => state.spot.selectedSpot);
+
+  const getFeatureTagsAtSpot = () => {
+    let featuresAtSpot = useSpots.getAllFeaturesFromSpot(selectedSpot);
+    return useTags.getFeatureTagsAtSpotGeologicUnitFirst(featuresAtSpot);
+  };
 
   const renderTag = (tag) => {
     return (
@@ -19,7 +29,7 @@ const TagsAtSpotList = (props) => {
     <React.Fragment>
       <FlatList
         keyExtractor={item => item.id.toString()}
-        data={useTags.getTagsAtSpotGeologicUnitFirst()}
+        data={getFeatureTagsAtSpot()}
         renderItem={({item}) => renderTag(item)}
         ItemSeparatorComponent={FlatListItemSeparator}
         ListEmptyComponent={<ListEmptyText text='No Tags'/>}
@@ -28,4 +38,4 @@ const TagsAtSpotList = (props) => {
   );
 };
 
-export default TagsAtSpotList;
+export default FeatureTagsAtSpotList;

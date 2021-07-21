@@ -44,7 +44,7 @@ const MeasurementDetail = (props) => {
     console.log('UE for selectedAttitudes changed in MeasurementDetail', props.selectedAttitudes);
     if (isEmpty(props.selectedAttitudes)) props.closeDetailView();
     else {
-      if (isEmpty(selectedMeasurement) && props.selectedAttitudes[0]) {
+      if (props.selectedAttitudes[0]) {
         switchSelectedMeasurement(props.selectedAttitudes[0]);
       }
       else if (isAddingAssociatedMeasurementAfterSave) {

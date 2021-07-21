@@ -4,6 +4,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import {getNewId, isEmpty, getNewCopyId} from '../../shared/Helpers';
 import {setModalVisible} from '../home/home.slice';
+import {PAGE_KEYS} from '../page/page.constants';
 import {addedSpotsIdsToDataset, deletedSpotIdFromDataset, updatedProject} from '../project/projects.slice';
 import useProjectHook from '../project/useProject';
 import {useTagsHook} from '../tags';
@@ -173,6 +174,26 @@ const useSpots = () => {
     return activeSpots;
   };
 
+  const getAllFeaturesFromSpot = (spotToEvaluate) => {
+    let spotsToEvaluate = [];
+    let allFeatures = [];
+    if (isEmpty(spotToEvaluate)) spotsToEvaluate = Object.values(spots);
+    else spotsToEvaluate = [spotToEvaluate];
+    let featureElements = [PAGE_KEYS.MEASUREMENTS, PAGE_KEYS.OTHER_FEATURES, PAGE_KEYS.THREE_D_STRUCTURES];
+    spotsToEvaluate.forEach(spot => {
+      featureElements.map(featureElement => {
+        if (spot.properties[featureElement]) {
+          let featuresCopy = JSON.parse(JSON.stringify(spot.properties[featureElement]));
+          featuresCopy.map(featureCopy => {
+            featureCopy.parentSpotId = spot.properties.id;
+          });
+          allFeatures = allFeatures.concat(featuresCopy);
+        }
+      });
+    });
+    return JSON.parse(JSON.stringify(allFeatures)).slice(0,25);
+  };
+
   const getImageBasemaps = () => {
     return Object.values(getActiveSpotsObj()).reduce((acc, spot) => {
       const imageBasemaps = spot.properties.images
@@ -311,6 +332,7 @@ const useSpots = () => {
     createSpot: createSpot,
     deleteSpot: deleteSpot,
     getActiveSpotsObj: getActiveSpotsObj,
+    getAllFeaturesFromSpot: getAllFeaturesFromSpot,
     getImageBasemaps: getImageBasemaps,
     getMappableSpots: getMappableSpots,
     getRootSpot: getRootSpot,

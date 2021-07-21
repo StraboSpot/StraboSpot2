@@ -6,17 +6,18 @@ import {useDispatch, useSelector} from 'react-redux';
 import {getNewId, isEmpty, toTitleCase} from '../../shared/Helpers';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
+import NotebookContentTopSection from '../../shared/ui/NotebookContentTopSection';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
 import uiStyles from '../../shared/ui/ui.styles';
 import {useFormHook} from '../form';
 import BasicPageDetail from '../page/BasicPageDetail';
-import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
 import {setSelectedAttributes} from '../spots/spots.slice';
 import ThreeDStructureItem from './ThreeDStructureItem';
 
 const ThreeDStructuresPage = (props) => {
   const dispatch = useDispatch();
   const selectedAttributes = useSelector(state => state.spot.selectedAttributes);
+  const isMultipleFeaturesTaggingEnabled = useSelector(state => state.project.isMultipleFeaturesTaggingEnabled);
   const spot = useSelector(state => state.spot.selectedSpot);
 
   const [selected3dStructure, setSelected3dStructure] = useState({});
@@ -37,11 +38,11 @@ const ThreeDStructuresPage = (props) => {
 
   useEffect(() => {
     console.log('UE Rendered ThreeDStructuresPage\nSpot:', spot, '\nSelectedAttributes:', selectedAttributes);
-    if (!isEmpty(selectedAttributes)) {
+    if (!isEmpty(selectedAttributes) && !isMultipleFeaturesTaggingEnabled) {
       setSelected3dStructure(selectedAttributes[0]);
       setIsDetailView(true);
     }
-    else setSelected3dStructure({});
+    //else setSelected3dStructure({});
   }, [selectedAttributes, spot]);
 
   const add3dStructure = (type) => {
@@ -51,6 +52,7 @@ const ThreeDStructuresPage = (props) => {
   };
 
   const edit3dStructure = (threeDStructure) => {
+    dispatch(setSelectedAttributes([threeDStructure]));
     setSelected3dStructure(threeDStructure);
     setIsDetailView(true);
   };
@@ -75,6 +77,7 @@ const ThreeDStructuresPage = (props) => {
           dividerText={sectionTitle}
           buttonTitle={'Add'}
           onPress={() => add3dStructure(sectionKey)}
+          disabled={isMultipleFeaturesTaggingEnabled}
         />
       </View>
     );
@@ -105,8 +108,8 @@ const ThreeDStructuresPage = (props) => {
   return (
     <React.Fragment>
       {!isDetailView && (
-        <View style={{flex: 1}}>
-          <ReturnToOverviewButton/>
+        <View>
+          <NotebookContentTopSection/>
           {renderSections()}
         </View>
       )}
