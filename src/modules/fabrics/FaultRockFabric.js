@@ -51,6 +51,7 @@ const FaultRockFabric = (props) => {
       <LittleSpacer/>
       <ChoiceButtons {...{
         choiceFieldKey: spatialConfigKey,
+        size: 'small',
         onPress: onSpatialConfigSelected,
         ...props,
       }}/>

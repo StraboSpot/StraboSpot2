@@ -115,6 +115,7 @@ const AddMineralModal = (props) => {
           choices: choices,
           formRef: formRef,
           onPress: onIgOrMetSelected,
+          size: 'small',
         }}/>
         {!isEmpty(formRef.current?.values[igOrMetKey]) && formRef.current?.values[igOrMetKey] === 'ig_min' && (
           <MainButtons {...{

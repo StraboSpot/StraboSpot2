@@ -11,31 +11,28 @@ const MainButtons = (props) => {
   const [useForm] = useFormHook();
 
   const mainButttonsText = (key) => (
-    <React.Fragment>
-      <View style={{flex: 1, alignItems: 'center'}}>
-        <Text
-          style={props.formRef.current?.values[key] ? formStyles.formButtonSelectedTitle : formStyles.formButtonTitle}>
-          {useForm.getLabel(key, props.formName)}
+    <View style={{flex: 1, alignItems: 'center'}}>
+      <Text
+        style={props.formRef.current?.values[key] ? formStyles.formButtonSelectedTitle : formStyles.formButtonTitle}>
+        {useForm.getLabel(key, props.formName)}
+      </Text>
+      {props.formRef.current?.values[key] && (
+        <Text style={[formStyles.formButtonSelectedTitle, {fontWeight: 'bold'}]}>
+          {truncateText(useForm.getLabels(props.formRef.current.values[key], props.formName), 23)}
         </Text>
-        {props.formRef.current?.values[key] && (
-          <Text style={{...formStyles.formButtonSelectedTitle, fontWeight: 'bold'}}>
-            {truncateText(useForm.getLabels(props.formRef.current.values[key], props.formName), 23)}
-          </Text>
-        )}
-      </View>
-    </React.Fragment>
+      )}
+    </View>
   );
 
   return (
-    <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center', flexWrap: 'wrap'}}>
+    <View style={formStyles.halfWidthButtonsContainer}>
       {props.mainKeys.map((k) => {
         return (
           <Button
-            containerStyle={formStyles.formButtonContainer}
-            buttonStyle={{
-              ...formStyles.formButton,
+            containerStyle={formStyles.halfWidthButtonContainer}
+            buttonStyle={[formStyles.formButtonLarge, {
               backgroundColor: props.formRef.current?.values[k] ? REACT_NATIVE_ELEMENTS_BLUE : SECONDARY_BACKGROUND_COLOR,
-            }}
+            }]}
             title={() => mainButttonsText(k)}
             type={'outline'}
             onPress={() => props.setChoicesViewKey(k)}
