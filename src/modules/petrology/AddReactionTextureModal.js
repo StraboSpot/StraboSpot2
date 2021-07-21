@@ -1,16 +1,17 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {FlatList, Platform, View} from 'react-native';
+import {FlatList, Platform, Text, View} from 'react-native';
 
 import {Formik} from 'formik';
 import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {getNewId} from '../../shared/Helpers';
+import {getNewId, isEmpty} from '../../shared/Helpers';
 import SaveButton from '../../shared/SaveButton';
 import {PRIMARY_ACCENT_COLOR} from '../../shared/styles.constants';
 import DragAnimation from '../../shared/ui/DragAmination';
+import LittleSpacer from '../../shared/ui/LittleSpacer';
 import Modal from '../../shared/ui/modal/Modal';
-import {Form, useFormHook} from '../form';
+import {ChoiceButtons, Form, formStyles, useFormHook} from '../form';
 import {setModalValues} from '../home/home.slice';
 import {PAGE_KEYS} from '../page/page.constants';
 import usePetrologyHook from './usePetrology';
@@ -26,13 +27,39 @@ const AddReactionTextureModal = () => {
   const [useForm] = useFormHook();
   const usePetrology = usePetrologyHook();
 
+  // Relevant keys for quick-entry modal
+  const firstKeys = ['reactions'];
+  const basedOnKey = 'based_on';
+  const baseOnOtherKey = 'other_based_on';
+  const lastKeys = ['notes'];
+
+  // Relevant fields for quick-entry modal
   const petKey = PAGE_KEYS.REACTIONS;
   const formName = ['pet', petKey];
   const survey = useForm.getSurvey(formName);
+  const choices = useForm.getChoices(formName);
+  const firstKeysFields = firstKeys.map(k => survey.find(f => f.name === k));
+  const basedOnOtherField = survey.find(f => f.name === baseOnOtherKey);
+  const lastKeysFields = lastKeys.map(k => survey.find(f => f.name === k));
 
   useEffect(() => {
     return () => dispatch(setModalValues({}));
   }, []);
+
+  const onMultiChoiceSelected = (fieldKey, choiceName) => {
+    const fieldValues = formRef.current?.values[fieldKey] || [];
+    if (fieldValues.includes(choiceName)) {
+      const fieldValuesFiltered = fieldValues.filter(n => n !== choiceName);
+      formRef.current?.setFieldValue(fieldKey, fieldValuesFiltered);
+    }
+    else formRef.current?.setFieldValue(fieldKey, [...fieldValues, choiceName]);
+
+    // Remove relevant values
+    const relevantFields = useForm.getRelevantFields(survey, fieldKey);
+    relevantFields.map(f => {
+      if (f.name !== fieldKey && formRef.current?.values[f.name]) formRef.current?.setFieldValue(f.name, undefined);
+    });
+  };
 
   const renderAddReactionTextureModalContent = () => {
     return (
@@ -77,6 +104,39 @@ const AddReactionTextureModal = () => {
         <Form
           {...{
             formName: formName,
+            surveyFragment: firstKeysFields,
+            ...formProps,
+          }}
+        />
+        <Text style={{paddingLeft: 10, paddingRight: 10, textAlign: 'center'}}>{
+          survey.find(f => f.name === 'reactions').hint}
+        </Text>
+        <LittleSpacer/>
+        <View style={{...formStyles.fieldLabelContainer, paddingLeft: 10}}>
+          <Text style={formStyles.fieldLabel}>{survey.find(f => f.name === basedOnKey).label}</Text>
+        </View>
+        <ChoiceButtons {...{
+          choiceFieldKey: basedOnKey,
+          survey: survey,
+          choices: choices,
+          formRef: formRef,
+          onPress: (choice) => onMultiChoiceSelected(basedOnKey, choice),
+        }}/>
+        {!isEmpty(formRef.current?.values[basedOnKey]) && formRef.current?.values[basedOnKey].includes('other') && (
+          <React.Fragment>
+            <LittleSpacer/>
+            <Form {...{
+              formName: formName,
+              surveyFragment: [basedOnOtherField],
+              ...formProps,
+            }}/>
+          </React.Fragment>
+        )}
+        <LittleSpacer/>
+        <Form
+          {...{
+            formName: formName,
+            surveyFragment: lastKeysFields,
             ...formProps,
           }}
         />
