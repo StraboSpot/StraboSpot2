@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Switch, View} from 'react-native';
+import {Alert, Switch, View} from 'react-native';
 import {Field, Formik} from 'formik';
 import {useDispatch, useSelector} from 'react-redux';
 import {TextInputField} from '../form';
@@ -23,8 +23,9 @@ const Miscellaneous = () => {
   const [useServerRequests] = useServerRequestsHook();
 
   useEffect(() => {
-    const dbUrl = useServerRequests.getDbUrl();
-    setDbUrl(dbUrl);
+    const databaseEndpoint = useServerRequests.getDbUrl();
+    console.log(databaseEndpoint)
+    setDbUrl(databaseEndpoint);
   }, []);
 
   useEffect(() => {
