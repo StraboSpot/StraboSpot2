@@ -38,11 +38,11 @@ const ThreeDStructuresPage = (props) => {
 
   useEffect(() => {
     console.log('UE Rendered ThreeDStructuresPage\nSpot:', spot, '\nSelectedAttributes:', selectedAttributes);
-    if (!isEmpty(selectedAttributes) && !isMultipleFeaturesTaggingEnabled) {
+    if (isEmpty(selectedAttributes)) setSelected3dStructure({});
+    else if (!isMultipleFeaturesTaggingEnabled) {
       setSelected3dStructure(selectedAttributes[0]);
       setIsDetailView(true);
     }
-    //else setSelected3dStructure({});
   }, [selectedAttributes, spot]);
 
   const add3dStructure = (type) => {

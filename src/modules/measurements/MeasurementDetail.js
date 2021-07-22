@@ -43,14 +43,12 @@ const MeasurementDetail = (props) => {
   useEffect(() => {
     console.log('UE for selectedAttitudes changed in MeasurementDetail', props.selectedAttitudes);
     if (isEmpty(props.selectedAttitudes)) props.closeDetailView();
-    else {
-      if (props.selectedAttitudes[0]) {
-        switchSelectedMeasurement(props.selectedAttitudes[0]);
-      }
-      else if (isAddingAssociatedMeasurementAfterSave) {
-        setIsAddingAssociatedMeasurementAfterSave(false);
-        addAssociatedMeasurement();
-      }
+    else if (isEmpty(selectedMeasurement) && props.selectedAttitudes[0]) {
+      switchSelectedMeasurement(props.selectedAttitudes[0]);
+    }
+    else if (isAddingAssociatedMeasurementAfterSave) {
+      setIsAddingAssociatedMeasurementAfterSave(false);
+      addAssociatedMeasurement();
     }
   }, [props.selectedAttitudes]);
 
@@ -331,7 +329,7 @@ const MeasurementDetail = (props) => {
       props.selectedAttitudes, '\nSelected Individual Measurement:', selectedMeasurement);
     return (
       <View>
-        <SectionDivider dividerText='Feature Type'/>
+        <SectionDivider dividerText="Feature Type"/>
         <View style={{flex: 1}}>
           <Formik
             innerRef={formRef}
