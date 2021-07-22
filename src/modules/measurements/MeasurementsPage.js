@@ -181,7 +181,7 @@ const MeasurementsPage = (props) => {
           )}
           {!multiSelectMode && (
             <View style={{flexDirection: 'row'}}>
-              {modalVisible && (
+              {!modalVisible && (
                 <Button
                   titleStyle={styles.measurementsSectionDividerButtonText}
                   title={'Add'}
