@@ -9,22 +9,27 @@ import {formStyles, useFormHook} from '../form';
 const ChoiceButtons = (props) => {
   const [useForm] = useFormHook();
 
+  const buttonStyle = props.size === 'small' ? formStyles.formButtonSmall
+    : props.size === 'large' ? formStyles.formButtonLarge
+      : formStyles.formButton;
+
   return (
-    <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center', flexWrap: 'wrap'}}>
+    <View style={formStyles.halfWidthButtonsContainer}>
       {useForm.getChoicesByKey(props.survey, props.choices, props.choiceFieldKey).map(choice => {
         return (
           <Button
-            containerStyle={formStyles.formButtonContainer}
-            buttonStyle={{
-              ...formStyles.choiceButton,
+            containerStyle={formStyles.halfWidthButtonContainer}
+            buttonStyle={[buttonStyle, {
               backgroundColor: props.formRef.current?.values[props.choiceFieldKey]?.includes(
                 choice.name) ? REACT_NATIVE_ELEMENTS_BLUE : SECONDARY_BACKGROUND_COLOR,
-            }}
-            titleStyle={{
-              ...props.formRef.current?.values[props.choiceFieldKey]?.includes(
-                choice.name) ? formStyles.formButtonSelectedTitle : formStyles.formButtonTitle, fontSize: 11,
-            }}
+            }]}
             title={choice.label}
+            titleProps={{
+              style: props.formRef.current?.values[props.choiceFieldKey]?.includes(
+                choice.name) ? formStyles.formButtonSelectedTitle : formStyles.formButtonTitle,
+              numberOfLines: 2,
+              ellipsizeMode: 'tail',
+            }}
             type={'outline'}
             onPress={() => props.onPress(choice.name)}
           />

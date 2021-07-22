@@ -3,7 +3,7 @@ import {Alert} from 'react-native';
 import {useSelector} from 'react-redux';
 
 const useServerRequests = () => {
-  const baseUrl = 'https://strabospot.org/db';
+  const baseUrl = useSelector(state => state.project.databaseEndpoint);
   const mapWarperApi = 'http://mapwarper.net/api/v1/maps/';
   const straboMyMapsApi = 'https://strabospot.org/geotiff/bbox/';
   const tilehost = 'http://tiles.strabospot.org/';
@@ -16,7 +16,6 @@ const useServerRequests = () => {
 
   const authenticateUser = async (username, password) => {
     const authenticationBaseUrl = baseUrl.slice(0, baseUrl.lastIndexOf('/')); //URL to send authentication API call
-    try {
       let response = await timeoutPromise(30000, fetch(authenticationBaseUrl + '/userAuthenticate',
         {
           method: 'POST',
@@ -30,13 +29,13 @@ const useServerRequests = () => {
           ),
         },
       ));
-      let responseJson = await response.json();
-      return responseJson;
-    }
-    catch (error) {
-      console.error(error);
-      Alert.alert(`${error}`);
-    }
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.log('RESPONSE TEXT', errorText)
+        Alert.alert('Server Error!', 'The server is temporarily unable to service your request due to' +
+          ' maintenance downtime or capacity\n' + 'problems. Please try again later.')
+      }
+      else return await response.json();
   };
 
   const request = async (method, urlPart, login, ...otherParams) => {
@@ -71,6 +70,10 @@ const useServerRequests = () => {
   const getDatasetSpots = (datasetId, encodedLogin) => {
     return request('GET', '/datasetSpots/' + datasetId, encodedLogin);
   };
+
+  const getDbUrl = () => {
+    return baseUrl;
+  }
 
   const downloadImage = (imageId, encodedLogin) => {
     return request('GET', '/image/' + imageId, encodedLogin, {responseType: 'blob'});
@@ -268,6 +271,7 @@ const useServerRequests = () => {
     getDatasets: getDatasets,
     getDatasetSpots: getDatasetSpots,
     getDataset: getDataset,
+    getDbUrl: getDbUrl,
     getMapWarperBbox: getMapWarperBbox,
     getMyMapsBbox: getMyMapsBbox,
     getProfile: getProfile,

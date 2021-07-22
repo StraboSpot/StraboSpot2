@@ -10,15 +10,14 @@ const BoolButton = (props) => {
 
   return (
     <Button
-      containerStyle={{...formStyles.formButtonContainer, alignItems: 'center'}}
-      buttonStyle={{
-        ...formStyles.choiceButton,
+      containerStyle={formStyles.fullWidthButtonContainer}
+      buttonStyle={[formStyles.formButtonSmall, {
         backgroundColor: props.formRef.current?.values[props.fieldKey] === props.selectedKey ? REACT_NATIVE_ELEMENTS_BLUE
           : SECONDARY_BACKGROUND_COLOR,
-      }}
-      titleStyle={{
-        ...props.formRef.current?.values[props.fieldKey] === props.selectedKey ? formStyles.formButtonSelectedTitle
-          : formStyles.formButtonTitle, fontSize: 11, paddingLeft: 30, paddingRight: 30,
+      }]}
+      titleProps={{
+        style: props.formRef.current?.values[props.fieldKey] === props.selectedKey ? formStyles.formButtonSelectedTitle
+          : formStyles.formButtonTitle,
       }}
       title={useForm.getLabel(props.fieldKey, props.formName)}
       type={'outline'}
