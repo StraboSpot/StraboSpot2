@@ -10,6 +10,7 @@ const initialProjectState = {
   datasets: {},
   databaseEndpoint: 'https://strabospot.org/db',
   deviceBackUpDirectoryExists: false,
+  isTestingMode: false,
   selectedProject: {
     project: '',
     source: '',
@@ -108,7 +109,7 @@ const projectSlice = createSlice({
     },
     setDatabaseEndpoint(state, action) {
       if (isEmpty(action.payload)) {
-        action.payload = state.databaseEndpoint;
+        state.databaseEndpoint = initialProjectState.databaseEndpoint;
       }
       else state.databaseEndpoint = action.payload;
     },
@@ -122,6 +123,9 @@ const projectSlice = createSlice({
     },
     setSelectedTag(state, action) {
       state.selectedTag = action.payload;
+    },
+    setTestingMode (state, action) {
+      state.isTestingMode = action.payload;
     },
     setMultipleFeaturesTaggingEnabled(state, action) {
       state.isMultipleFeaturesTaggingEnabled = action.payload;
@@ -180,6 +184,7 @@ export const {
   setSelectedDataset,
   setSelectedProject,
   setSelectedTag,
+  setTestingMode,
   setMultipleFeaturesTaggingEnabled,
   setUseContinuousTagging,
   setUseMeasurementTemplates,

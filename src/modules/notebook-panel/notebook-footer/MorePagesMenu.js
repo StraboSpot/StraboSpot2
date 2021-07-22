@@ -15,6 +15,17 @@ import footerStyles from './notebookFooter.styles';
 const MorePagesMenu = (props) => {
   const dispatch = useDispatch();
   const notebookPagesOn = useSelector(state => state.notebook.notebookPagesOn);
+  const isTestingMode = useSelector(state => state.project.isTestingMode);
+
+  const mainPagesToShow = [...PRIMARY_PAGES, ...SECONDARY_PAGES].reduce((acc, page) => {
+    return (!page.testing || (isTestingMode && page?.testing)) ? [...acc, page] : acc
+  }, [])
+  const petPagesToShow = PET_PAGES.reduce((acc, page) => {
+    return (!page.testing || (isTestingMode && page?.testing)) ? [...acc, page] : acc
+  }, [])
+  const sedPagesToShow = SED_PAGES.reduce((acc, page) => {
+    return (!page.testing || (isTestingMode && page?.testing)) ? [...acc, page] : acc
+  }, [])
 
   const switchPage = (key) => {
     dispatch(setNotebookPageVisible(key));
@@ -69,24 +80,23 @@ const MorePagesMenu = (props) => {
     >
       <DialogContent>
         <ScrollView>
-          {[...PRIMARY_PAGES, ...SECONDARY_PAGES].map(
-            (page, i, arr) => renderMenuItem(page, i < arr.length - 1))}
-          {!isEmpty(PET_PAGES) && (
+          {mainPagesToShow.map((page, i, arr) => renderMenuItem(page, i < arr.length - 1))}
+          {!isEmpty(petPagesToShow) && (
             <React.Fragment>
               <SectionDivider
                 dividerText={'Ig/Met'}
                 style={footerStyles.morePagesSectionDivider}
               />
-              {PET_PAGES.map((page, i, arr) => renderMenuItem(page, i < arr.length - 1))}
+              {petPagesToShow.map((page, i, arr) => renderMenuItem(page, i < arr.length - 1))}
             </React.Fragment>
           )}
-          {!isEmpty(SED_PAGES) && (
+          {!isEmpty(sedPagesToShow) && (
             <React.Fragment>
               <SectionDivider
                 dividerText={'Sedimentology'}
                 style={footerStyles.morePagesSectionDivider}
               />
-              {SED_PAGES.map((page, i, arr) => renderMenuItem(page, i < arr.length - 1))}
+              {sedPagesToShow.map((page, i, arr) => renderMenuItem(page, i < arr.length - 1))}
             </React.Fragment>
           )}
         </ScrollView>
