@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View} from 'react-native';
+import {FlatList} from 'react-native';
 
 import {useDispatch} from 'react-redux';
 
@@ -25,18 +25,22 @@ const TagsNotebook = (props) => {
   return (
     <React.Fragment>
       <ReturnToOverviewButton/>
-      <View style={{flex: 1}}>
-        <SectionDividerWithRightButton
-          dividerText={'Spot Tags'}
-          buttonTitle={'Assign/Remove'}
-          onPress={() => dispatch(setModalVisible({modal: MODAL_KEYS.NOTEBOOK.TAGS}))}
-        />
-        <TagsAtSpotList openMainMenu={props.openMainMenu}/>
-        <SectionDivider
-          dividerText={'Feature Tags'}
-        />
-        <FeatureTagsAtSpotList openMainMenu={props.openMainMenu}/>
-      </View>
+      <FlatList
+        ListHeaderComponent={
+          <React.Fragment>
+            <SectionDividerWithRightButton
+              dividerText={'Spot Tags'}
+              buttonTitle={'Assign/Remove'}
+              onPress={() => dispatch(setModalVisible({modal: MODAL_KEYS.NOTEBOOK.TAGS}))}
+            />
+            <TagsAtSpotList openMainMenu={props.openMainMenu}/>
+            <SectionDivider
+              dividerText={'Feature Tags'}
+            />
+            <FeatureTagsAtSpotList openMainMenu={props.openMainMenu}/>
+          </React.Fragment>
+        }
+      />
       <TagDetailModal
         isVisible={isDetailModalVisibile}
         closeModal={closeTagDetailModal}
