@@ -19,7 +19,6 @@ const Miscellaneous = () => {
   const formRef = useRef('null');
   const [dbUrl, setDbUrl] = useState('');
 
-
   const [useServerRequests] = useServerRequestsHook();
 
   useEffect(() => {

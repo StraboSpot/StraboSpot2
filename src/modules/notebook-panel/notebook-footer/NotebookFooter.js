@@ -11,13 +11,17 @@ import MorePagesMenu from './MorePagesMenu';
 import footerStyle from './notebookFooter.styles';
 
 const NotebookFooter = (props) => {
+  const isTestingMode = useSelector(state => state.project.isTestingMode);
   const notebookPagesOn = useSelector(state => state.notebook.notebookPagesOn);
   const notebookPageVisible = useSelector(state => (
     !isEmpty(state.notebook.visibleNotebookPagesStack) && state.notebook.visibleNotebookPagesStack.slice(-1)[0]
   ));
   const [isMorePagesMenuVisible, setIsMorePagesMenuVisible] = useState(false);
 
-  const notebookPagesValidOn = notebookPagesOn.filter(i => NOTEBOOK_PAGES.map(p => p.key).includes(i));
+  const notebookPagesValidOn = notebookPagesOn.filter(i => {
+    const page = NOTEBOOK_PAGES.find(p => p.key === i);
+    return !page.testing || (isTestingMode && page?.testing);
+  });
 
   const getPageIcon = (key) => {
     const page = NOTEBOOK_PAGES.find(p => p.key === key);
@@ -39,7 +43,7 @@ const NotebookFooter = (props) => {
           containerStyle={{alignSelf: 'center'}}
           buttonStyle={{padding: 15}}
           title={'MORE'}
-          type='clear'
+          type="clear"
           titleStyle={footerStyle.morePagesButton}
           onPress={() => setIsMorePagesMenuVisible(true)}
         />
