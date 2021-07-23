@@ -12,7 +12,7 @@ import {
 } from '../modules/home/home.slice';
 import {addedCustomMapsFromBackup} from '../modules/maps/maps.slice';
 import {addedMapsFromDevice} from '../modules/maps/offline-maps/offlineMaps.slice';
-import {addedDatasets, addedProject} from '../modules/project/projects.slice';
+import {addedDatasets, addedProject, setSelectedProject} from '../modules/project/projects.slice';
 import {addedSpotsFromDevice} from '../modules/spots/spots.slice';
 import {isEmpty} from '../shared/Helpers';
 import useDeviceHook from './useDevice';
@@ -39,31 +39,87 @@ const useImport = () => {
     try {
       const checkDirSuccess = await useDevice.doesDeviceBackupDirExist(fileName + '/maps');
       console.log('Found map zips folder', checkDirSuccess);
-      await useDevice.doesDeviceDirectoryExist(devicePath + appDirectoryTiles);
-      await useDevice.doesDeviceDirectoryExist(devicePath + zipsDirectory);
-      const fileEntries = await RNFS.readdir(devicePath + appDirectoryForDistributedBackups + '/' + fileName + '/maps');
+      if (checkDirSuccess) {
+        await useDevice.doesDeviceDirectoryExist(devicePath + appDirectoryTiles);
+        await useDevice.doesDeviceDirectoryExist(devicePath + zipsDirectory);
+        const fileEntries = await RNFS.readdir(
+          devicePath + appDirectoryForDistributedBackups + '/' + fileName + '/maps');
 
-      if (fileEntries) {
-        await Promise.all(
-          fileEntries.map(async fileEntry => {
-            const source = devicePath + appDirectoryForDistributedBackups + '/' + fileName + '/maps/' + fileEntry;
-            const dest = devicePath + zipsDirectory + '/' + fileEntry;
-            await RNFS.copyFile(source, dest).then(() => {
-              console.log(`File ${fileEntry} Copied`);
-            })
-              .catch(async err => {
-                console.error('Error copying maps.', err);
-                await RNFS.unlink(dest);
-                console.log(`${fileEntry} removed`);
-                await RNFS.copyFile(source, dest);
+        if (fileEntries) {
+          dispatch(addedStatusMessage('Importing maps...'));
+          await Promise.all(
+            fileEntries.map(async fileEntry => {
+              const source = devicePath + appDirectoryForDistributedBackups + '/' + fileName + '/maps/' + fileEntry;
+              const dest = devicePath + zipsDirectory + '/' + fileEntry;
+              await RNFS.copyFile(source, dest).then(() => {
                 console.log(`File ${fileEntry} Copied`);
-              });
-          }),
-        );
+              })
+                .catch(async err => {
+                  console.error('Error copying maps.', err);
+                  await RNFS.unlink(dest);
+                  console.log(`${fileEntry} removed`);
+                  await RNFS.copyFile(source, dest);
+                  console.log(`File ${fileEntry} Copied`);
+                });
+            }),
+          );
+        }
+        return true;
+      }
+      else {
+        return false;
       }
     }
     catch (err) {
       console.error('Error Copying Maps for Distribution', err);
+    }
+  };
+
+  const checkForMaps = async (dataFile, selectedProject) => {
+    let progress;
+    const {mapNamesDb, otherMapsDb} = dataFile;
+    dispatch(addedStatusMessage('Checking for maps to import...'));
+    if (!isEmpty(otherMapsDb)) {
+      dispatch(removedLastStatusMessage());
+      dispatch(addedCustomMapsFromBackup(otherMapsDb));
+      dispatch(addedStatusMessage('Added custom maps.'));
+    }
+    else {
+      dispatch(removedLastStatusMessage());
+      dispatch(addedStatusMessage('No custom maps to import.'));
+    }
+    dispatch(addedStatusMessage('Checking for map tiles to import...'));
+    if (!isEmpty(mapNamesDb)) {
+      const mapsFolderExists = await copyZipMapsForDistribution(selectedProject.fileName, dataFile);
+      if (mapsFolderExists) {
+        dispatch(removedLastStatusMessage());
+        dispatch(addedStatusMessage('Finished importing maps.'));
+        console.log('Finished importing maps.');
+        await unzipFile(selectedProject.fileName);
+        console.log('Finished unzipping all files');
+        dispatch(addedStatusMessage(`Finished copying and ${'\n'}unzipping all files`));
+        dispatch(addedStatusMessage('Moving Maps...'));
+        progress = await moveFiles(dataFile);
+        console.log('fileCount', progress);
+        // dispatch(addedCustomMapsFromBackup(otherMapsDb));
+        dispatch(addedMapsFromDevice({mapType: 'offlineMaps', maps: mapNamesDb}));
+        dispatch(removedLastStatusMessage());
+        batch(() => {
+          dispatch(addedStatusMessage('---------------------'));
+          dispatch(addedStatusMessage(`Map tiles imported: ${progress.fileCount}`));
+          dispatch(addedStatusMessage(`Map tiles installed: ${progress.neededTiles}`));
+          dispatch(addedStatusMessage(`Map tiles already installed: ${progress.notNeededTiles}`));
+          dispatch(addedStatusMessage('Finished moving tiles'));
+        });
+      }
+      else {
+        dispatch(removedLastStatusMessage());
+        dispatch(addedStatusMessage('No map tiles to import.'));
+      }
+    }
+    else {
+      dispatch(removedLastStatusMessage());
+      dispatch(addedStatusMessage('No maps to import.'));
     }
   };
 
@@ -141,7 +197,6 @@ const useImport = () => {
   };
 
   const loadProjectFromDevice = async (selectedProject) => {
-    let progress;
     dispatch(setLoadingStatus({view: 'modal', bool: true}));
     dispatch(addedStatusMessage(`Importing ${selectedProject.fileName}...`));
     console.log('SELECTED PROJECT', selectedProject);
@@ -155,33 +210,11 @@ const useImport = () => {
       dispatch(addedDatasets(projectDb.datasets));
       dispatch(removedLastStatusMessage());
       dispatch(addedStatusMessage(`${selectedProject.fileName}\nProject loaded.`));
-      if (!isEmpty(mapNamesDb) || !isEmpty(otherMapsDb)) {
-        dispatch(addedStatusMessage('Importing maps...'));
-        await copyZipMapsForDistribution(selectedProject.fileName, dataFile);
-        dispatch(removedLastStatusMessage());
-        dispatch(addedStatusMessage('Finished importing maps.'));
-        console.log('Finished importing maps.');
-        await unzipFile(selectedProject.fileName);
-        console.log('Finished unzipping all files');
-        dispatch(addedStatusMessage(`Finished copying and ${'\n'}unzipping all files`));
-        dispatch(addedStatusMessage('Moving Maps...'));
-        progress = await moveFiles(dataFile);
-        console.log('fileCount', progress);
-        dispatch(addedCustomMapsFromBackup(otherMapsDb));
-        dispatch(addedMapsFromDevice({mapType: 'offlineMaps', maps: mapNamesDb}));
-        dispatch(removedLastStatusMessage());
-        batch(() => {
-          dispatch(addedStatusMessage('---------------------'));
-          dispatch(addedStatusMessage(`Map tiles imported: ${progress.fileCount}`));
-          dispatch(addedStatusMessage(`Map tiles installed: ${progress.neededTiles}`));
-          dispatch(addedStatusMessage(`Map tiles already installed: ${progress.notNeededTiles}`));
-          dispatch(addedStatusMessage('Finished moving tiles'));
-        });
-      }
-      else dispatch(addedStatusMessage('No maps to import.'));
+      await checkForMaps(dataFile, selectedProject);
       dispatch(addedStatusMessage('Importing image files...'));
       await copyImages(selectedProject.fileName);
       dispatch(setLoadingStatus({view: 'modal', bool: false}));
+      dispatch(setSelectedProject({project: '', source: ''}));
       return Promise.resolve({project: dataFile.projectDb.project});
     }
   };
@@ -207,6 +240,10 @@ const useImport = () => {
           dispatch(removedLastStatusMessage());
           dispatch(addedStatusMessage('No image files.'));
         }
+      }
+      else {
+        dispatch(removedLastStatusMessage());
+        dispatch(addedStatusMessage('No image files.'));
       }
     }
     catch (err) {
