@@ -10,7 +10,7 @@ import * as themes from '../../shared/styles.constants';
 import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import {Form, useFormHook} from '../form';
 import usePetrologyHook from '../petrology/usePetrology';
-import {editedSpotProperties} from '../spots/spots.slice';
+import {editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
 import {useTagsHook} from '../tags';
 import {PAGE_KEYS} from './page.constants';
 
@@ -72,6 +72,7 @@ const BasicPageDetail = (props) => {
       editedPageData = editedPageData.filter(f => f.id !== props.selectedFeature.id);
       dispatch(editedSpotProperties({field: pageKey, value: editedPageData}));
     }
+    dispatch(setSelectedAttributes([]));
     props.closeDetailView();
   };
 
