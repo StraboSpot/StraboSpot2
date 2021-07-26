@@ -65,10 +65,10 @@ const DatasetList = () => {
         containerStyle={commonStyles.listItem}
       >
         <Icon
-          name="edit"
+          name='edit'
           type={'material'}
           size={20}
-          color="darkgrey"
+          color='darkgrey'
           onPress={() => editDataset(dataset.id, dataset.name)}
         />
         <ListItem.Content>
@@ -126,10 +126,10 @@ const DatasetList = () => {
             icon={
               <Icon
                 iconStyle={{paddingRight: 10}}
-                name="trash"
+                name='trash'
                 type={'font-awesome'}
                 size={20}
-                color="red"
+                color='red'
               />
             }
           />

@@ -1,51 +1,30 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {Alert, Switch, View} from 'react-native';
+import React, {useRef, useState} from 'react';
+import {Alert, Switch, Text} from 'react-native';
+
 import {Field, Formik} from 'formik';
+import {Input, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
-import {TextInputField} from '../form';
-import {ListItem} from 'react-native-elements';
+
 import commonStyles from '../../shared/common.styles';
-import {setDatabaseEndpoint, setTestingMode} from '../project/projects.slice';
 import {isEmpty} from '../../shared/Helpers';
-import useServerRequestsHook from '../../services/useServerRequests';
+import StandardModal from '../../shared/ui/StandardModal';
+import {TextInputField} from '../form';
+import {setDatabaseEndpoint, setTestingMode} from '../project/projects.slice';
 
 const Miscellaneous = () => {
-  const testingModePassword = 'Strab0R0cks';
   const dispatch = useDispatch();
   const databaseEndpoint = useSelector(state => state.project.databaseEndpoint);
+  const isTestingMode = useSelector(state => state.project.isTestingMode);
 
-  const [switchValue, setSwitchValue] = useState(false);
+  const [password, setPassword] = useState('');
+  const [isTestingModalVisible, setIsTestingModalVisible] = useState(false);
+  const [switchValue, setSwitchValue] = useState(isTestingMode);
 
   const formRef = useRef('null');
-  const [dbUrl, setDbUrl] = useState('');
 
-  const [useServerRequests] = useServerRequestsHook();
-
-  useEffect(() => {
-    const databaseEndpoint = useServerRequests.getDbUrl();
-    console.log(databaseEndpoint)
-    setDbUrl(databaseEndpoint);
-  }, []);
-
-  useEffect(() => {
-    switchValue ?
-      Alert.prompt(
-        'Enter Password',
-        null,
-        [
-          {
-            text: 'Go',
-            onPress: verifyPassword
-          },
-          {
-            text: 'Cancel',
-            onPress: () => setSwitchValue(false),
-            style: 'cancel'
-          }
-        ],
-        'secure-text')
-      : dispatch(setTestingMode(false));
-  }, [switchValue])
+  const defaultEndpoint = 'http://strabospot.org/db';
+  const initialValues = {database_endpoint: isEmpty(databaseEndpoint) ? defaultEndpoint : databaseEndpoint};
+  const testingModePassword = '123';
 
   const onMyChange = async (name, value) => {
     const trimmedValue = value.trim();
@@ -53,18 +32,46 @@ const Miscellaneous = () => {
       await formRef.current.setFieldValue(name, trimmedValue);
       await formRef.current.submitForm();
       console.log('Saving naming convention preferences to Project ...', formRef.current.values);
-      dispatch(setDatabaseEndpoint(formRef.current.values.database));
+      dispatch(setDatabaseEndpoint(formRef.current.values.database_endpoint));
     }
     else {
       await formRef.current.setFieldValue(name, trimmedValue);
       await formRef.current.submitForm();
-      dispatch(setDatabaseEndpoint(formRef.current.values.database));
+      dispatch(setDatabaseEndpoint(formRef.current.values.database_endpoint));
     }
   };
 
-  const onSwitchChange = () => {
-    setSwitchValue(!switchValue);
+  const onSwitchChange = (value) => {
+    setSwitchValue(value);
+    if (value) setIsTestingModalVisible(true);
+    else {
+      dispatch(setTestingMode(false));
+      setPassword('');
+      setIsTestingModalVisible(false);
+    }
   };
+
+  const renderPrompt = () => (
+    <StandardModal
+      visible={isTestingModalVisible}
+      dialogTitle={'Enter Password'}
+      footerButtonsVisible={true}
+      onPress={() => verifyPassword()}
+      close={() => {
+        setSwitchValue(false);
+        setIsTestingModalVisible(false);
+      }}
+    >
+      <Text style={commonStyles.dialogContentImportantText}>
+        Data saved under pages that are in testing may NOT be compatible with future versions of StraboSpot.
+      </Text>
+      <Input
+        placeholder='Password'
+        secureTextEntry={true}
+        onChangeText={value => setPassword(value)}
+      />
+    </StandardModal>
+  );
 
   const renderInfoAlert = (label, ip) => {
     console.log(label, ip);
@@ -75,43 +82,40 @@ const Miscellaneous = () => {
     );
   };
 
-  const renderEndpointFieldContent = () => {
-    return (
-      <View>
-        <ListItem style={commonStyles.listItemFormField}>
-          <ListItem.Content>
-            <Field
-              onMyChange={onMyChange}
-              placeholder={isEmpty(databaseEndpoint) ? 'http://strabospot.org/db' : databaseEndpoint}
-              component={TextInputField}
-              key={'database_endpoint'}
-              name={'database'}
-              label={'Specify Database Endpoint'}
-              onShowFieldInfo={renderInfoAlert}
-            >
-            </Field>
-          </ListItem.Content>
-        </ListItem>
-        <ListItem style={commonStyles.listItem}>
-          <ListItem.Content>
-            <ListItem.Title style={commonStyles.listItemTitle}>Testing Mode</ListItem.Title>
-          </ListItem.Content>
-          <Switch
-            value={switchValue}
-            onChange={onSwitchChange}
-          />
-        </ListItem>
-      </View>
-    );
-  };
+  const renderEndpointFieldContent = () => (
+    <ListItem style={commonStyles.listItemFormField}>
+      <ListItem.Content>
+        <Field
+          onMyChange={onMyChange}
+          component={TextInputField}
+          key={'database_endpoint'}
+          name={'database_endpoint'}
+          label={'Specify Database Endpoint'}
+          onShowFieldInfo={renderInfoAlert}
+        />
+      </ListItem.Content>
+    </ListItem>
+  );
 
-  const verifyPassword = (password) => {
+  const renderTestingModeField = () => (
+    <ListItem style={commonStyles.listItem}>
+      <ListItem.Content>
+        <ListItem.Title style={commonStyles.listItemTitle}>Testing Mode</ListItem.Title>
+      </ListItem.Content>
+      <Switch
+        value={switchValue}
+        onValueChange={(value) => onSwitchChange(value)}
+      />
+    </ListItem>
+  );
+
+  const verifyPassword = () => {
     if (password === testingModePassword) {
-      console.log('You Win')
       dispatch(setTestingMode(true));
+      setIsTestingModalVisible(false);
     }
     else {
-      Alert.alert('Wrong Password', 'Try again to see cool stuff!')
+      Alert.alert('Wrong Password', 'Try again.');
       setSwitchValue(false);
     }
   };
@@ -119,13 +123,14 @@ const Miscellaneous = () => {
   return (
     <Formik
       innerRef={formRef}
-      onSubmit={(values, actions) => {
-        console.log('Submitting Form', values);
-        console.log(actions);
-      }}
-      initialValues={{}}
+      onSubmit={(values, actions) => console.log('Submitting Form', values)}
+      initialValues={initialValues}
     >
-      {renderEndpointFieldContent}
+      <React.Fragment>
+        {renderEndpointFieldContent()}
+        {renderTestingModeField()}
+        {renderPrompt()}
+      </React.Fragment>
     </Formik>
   );
 };

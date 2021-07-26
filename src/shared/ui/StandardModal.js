@@ -30,6 +30,12 @@ const StandardModal = (props) => {
             textStyle={styles.dialogTitleText}
             title={props.dialogTitle}/>
         }
+        footer={props.footerButtonsVisible && (
+          <DialogFooter>
+            <DialogButton text={'OK'} onPress={props.onPress}/>
+            <DialogButton text={'Cancel'} onPress={props.close}/>
+          </DialogFooter>
+        )}
       >
         <DialogContent style={styles.dialogContent}>
           {props.children}
