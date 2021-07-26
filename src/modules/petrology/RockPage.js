@@ -58,12 +58,12 @@ const RockPage = (props) => {
       : ALTERATION_ORE_SECTIONS;
 
   useEffect(() => {
-    console.log('UE', props.page.label, 'Spot', spot);
-    if (!isEmpty(selectedAttributes)) {
+    console.log('UE Rendered RockPage\nSpot:', spot, '\nSelectedAttributes:', selectedAttributes);
+    if (isEmpty(selectedAttributes)) setSelectedRock({});
+    else {
       setSelectedRock(selectedAttributes[0]);
       setIsDetailView(true);
     }
-    else setSelectedRock({});
     getSpotsWithRockType();
   }, [selectedAttributes, spot]);
 

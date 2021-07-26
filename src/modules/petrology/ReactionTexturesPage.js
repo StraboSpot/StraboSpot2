@@ -32,12 +32,12 @@ const ReactionTexturesPage = (props) => {
   }, []);
 
   useEffect(() => {
-    console.log('UE', props.page.label, 'Spot', spot);
-    if (!isEmpty(selectedAttributes)) {
+    console.log('UE Rendered ReactionTexturesPage\nSpot:', spot, '\nSelectedAttributes:', selectedAttributes);
+    if (isEmpty(selectedAttributes)) setSelectedReaction({});
+    else {
       setSelectedReaction(selectedAttributes[0]);
       setIsDetailView(true);
     }
-    else setSelectedReaction({});
   }, [selectedAttributes, spot]);
 
   const addReaction = () => {

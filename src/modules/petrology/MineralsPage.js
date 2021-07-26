@@ -38,12 +38,12 @@ const MineralsPage = (props) => {
   }, []);
 
   useEffect(() => {
-    console.log('UE', props.page.label, 'Spot', spot);
-    if (!isEmpty(selectedAttributes)) {
+    console.log('UE Rendered MineralsPage\nSpot:', spot, '\nSelectedAttributes:', selectedAttributes);
+    if (isEmpty(selectedAttributes)) setSelectedMineral({});
+    else {
       setSelectedMineral(selectedAttributes[0]);
       setIsDetailView(true);
     }
-    else setSelectedMineral({});
     getSpotsWithMinerals();
   }, [selectedAttributes, spot]);
 

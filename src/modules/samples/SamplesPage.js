@@ -26,11 +26,11 @@ const SamplesPage = (props) => {
 
   useEffect(() => {
     console.log('UE Rendered SamplesPage\nSpot:', spot, '\nSelectedAttributes:', selectedAttributes);
-    if (!isEmpty(selectedAttributes)) {
+    if (isEmpty(selectedAttributes)) setSelectedSample({});
+    else {
       setSelectedSample(selectedAttributes[0]);
       setIsDetailView(true);
     }
-    else setSelectedSample({});
   }, [selectedAttributes, spot]);
 
   const editSample = (sample) => {

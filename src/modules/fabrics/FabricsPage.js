@@ -36,11 +36,11 @@ const FabricsPage = (props) => {
 
   useEffect(() => {
     console.log('UE Rendered FabricsPage\nSpot:', spot, '\nSelectedAttributes:', selectedAttributes);
-    if (!isEmpty(selectedAttributes)) {
+    if (isEmpty(selectedAttributes)) setSelectedFabric({});
+    else {
       setSelectedFabric(selectedAttributes[0]);
       setIsDetailView(true);
     }
-    else setSelectedFabric({});
   }, [selectedAttributes, spot]);
 
   const addFabric = (type) => {
@@ -103,7 +103,6 @@ const FabricsPage = (props) => {
         closeDetailView={() => setIsDetailView(false)}
         page={props.page}
         selectedFeature={selectedFabric}
-        groupKey={'pet'}
       />
     );
   };
