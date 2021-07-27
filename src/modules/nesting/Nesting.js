@@ -1,10 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import {FlatList, Text, View} from 'react-native';
 
-import {Avatar, Icon, ListItem} from 'react-native-elements';
+import {Icon} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
-import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import * as SharedUI from '../../shared/ui';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
@@ -13,16 +12,14 @@ import imageStyles from '../images/images.styles';
 import useImagesHook from '../images/useImages';
 import {PAGE_KEYS} from '../page/page.constants';
 import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
-import {useSpotsHook} from '../spots';
+import {SpotsListItem} from '../spots';
 import {setSelectedSpot} from '../spots/spots.slice';
-import {useTagsHook} from '../tags';
 import useNestingHook from './useNesting';
 
-const Nesting = (props) => {
+const Nesting = () => {
   const dispatch = useDispatch();
+
   const [useNesting] = useNestingHook();
-  const [useSpots] = useSpotsHook();
-  const [useTags] = useTagsHook();
   const [useImages] = useImagesHook();
 
   const notebookPageVisible = useSelector(state => (
@@ -40,25 +37,6 @@ const Nesting = (props) => {
 
   const goToSpotNesting = (spot) => {
     dispatch(setSelectedSpot(spot));
-  };
-
-  const renderDataIcons = (spot) => {
-    const keysFound = useSpots.getSpotDataKeys(spot);
-    if (!isEmpty(useTags.getTagsAtSpot(spot.properties.id))) keysFound.push('tags');
-
-    return (
-      <React.Fragment>
-        {keysFound.map(key => {
-          return (
-            <Avatar
-              source={useSpots.getSpotDataIconSource(key)}
-              placeholderStyle={{backgroundColor: 'transparent'}}
-              size={20}
-            />
-          );
-        })}
-      </React.Fragment>
-    );
   };
 
   const renderItem = (spot) => {
@@ -80,24 +58,12 @@ const Nesting = (props) => {
   };
 
   const renderName = (spot) => {
-    const children = useNesting.getChildrenGenerationsSpots(spot, 10);
-    const numSubspots = children.flat().length;
     return (
-      <ListItem
-        key={spot.properties.id}
+      <SpotsListItem
+        doShowSubspots={true}
+        spot={spot}
         onPress={() => goToSpotNesting(spot)}
-        containerStyle={commonStyles.listItem}
-      >
-        <Avatar source={useSpots.getSpotGemometryIconSource(spot)}
-                placeholderStyle={{backgroundColor: 'transparent'}}
-                size={20}/>
-        <ListItem.Content>
-          <ListItem.Title style={commonStyles.listItemTitle}>{spot.properties.name}</ListItem.Title>
-          <ListItem.Subtitle>[{numSubspots} subspot{numSubspots !== 1 && 's'}]</ListItem.Subtitle>
-        </ListItem.Content>
-        {renderDataIcons(spot)}
-        <ListItem.Chevron/>
-      </ListItem>
+      />
     );
   };
 

@@ -10,14 +10,15 @@ import CustomMapsMenu from '../maps/custom-maps/ManageCustomMaps';
 import ImageBaseMaps from '../maps/ImageBasemaps';
 import ManageOfflineMapsMenu from '../maps/offline-maps/ManageOfflineMaps';
 import {PAGE_KEYS} from '../page/page.constants';
+import Miscellaneous from '../preferences/Miscellaneous';
 import NamingConventions from '../preferences/naming-conventions/NamingConventions';
 import ShortcutMenu from '../preferences/shortcuts-menu/ShortcutsMenu';
 import ActiveProject from '../project/ActiveProjectPanel';
 import MyStraboSpot from '../project/MyStraboSpot';
 import UploadBackupAndExport from '../project/UploadBackupExport';
 import SamplesMenuItem from '../samples/SamplesMenuItem';
+import {SpotsList} from '../spots';
 import {setSelectedAttributes, setSelectedSpot} from '../spots/spots.slice';
-import SpotsList from '../spots/SpotsList';
 import Tags from '../tags/Tags';
 import About from './About';
 import {MAIN_MENU_ITEMS} from './mainMenu.constants';
@@ -25,7 +26,6 @@ import {setMenuSelectionPage} from './mainMenuPanel.slice';
 import styles from './mainMenuPanel.styles';
 import MainMenuPanelHeader from './MainMenuPanelHeader';
 import MainMenuPanelList from './MainMenuPanelList';
-import Miscellaneous from '../preferences/Miscellaneous';
 
 const MainMenuPanel = props => {
   const dispatch = useDispatch();

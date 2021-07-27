@@ -2,13 +2,12 @@ import {useEffect} from 'react';
 
 import {useDispatch, useSelector} from 'react-redux';
 
-import {getNewId, isEmpty, getNewCopyId} from '../../shared/Helpers';
+import {getNewCopyId, getNewId, isEmpty} from '../../shared/Helpers';
 import {setModalVisible} from '../home/home.slice';
-import {PAGE_KEYS} from '../page/page.constants';
+import {NOTEBOOK_PAGES, PAGE_KEYS, PET_PAGES, SED_PAGES} from '../page/page.constants';
 import {addedSpotsIdsToDataset, deletedSpotIdFromDataset, updatedProject} from '../project/projects.slice';
 import useProjectHook from '../project/useProject';
 import {useTagsHook} from '../tags';
-import {GENERAL_KEYS_ICONS, SED_KEYS_ICONS} from './spot.constants';
 import {addedSpot, deletedSpot, setSelectedSpot} from './spots.slice';
 
 const useSpots = () => {
@@ -191,7 +190,7 @@ const useSpots = () => {
         }
       });
     });
-    return JSON.parse(JSON.stringify(allFeatures)).slice(0,25);
+    return JSON.parse(JSON.stringify(allFeatures)).slice(0, 25);
   };
 
   const getImageBasemaps = () => {
@@ -248,22 +247,52 @@ const useSpots = () => {
   };
 
   const getSpotDataIconSource = (iconKey) => {
-    const iconSources = {...GENERAL_KEYS_ICONS, ...SED_KEYS_ICONS};
-    if (iconSources[iconKey]) return iconSources[iconKey];
+    const page = NOTEBOOK_PAGES.find(p => p.key === iconKey);
+    return page && page.icon_src ? page.icon_src : require('../../assets/icons/QuestionMark_pressed.png');
   };
 
-  const getSpotDataKeys = (spot) => {
-    let keysFound = Object.keys(spot.properties).filter(key => {
-      return Object.keys(GENERAL_KEYS_ICONS).includes(key) && !isEmpty(spot.properties[key]);
-    });
-    if (spot.properties.sed) {
-      const sedKeysFound = Object.keys(spot.properties.sed).filter(key => {
-        return Object.keys(SED_KEYS_ICONS).includes(key) && !isEmpty(spot.properties.sed[key]);
-      });
-      keysFound = [...keysFound, ...sedKeysFound];
-    }
-    // console.log('Keys Found', keysFound);
-    return keysFound;
+  // Return the keys for the Spot pages that are populated with data
+  const getPopulatedPagesKeys = (spot) => {
+    const populatedPagesKeys = NOTEBOOK_PAGES.reduce((acc, page) => {
+      let isPopulated = false;
+      switch (page.key) {
+        case PAGE_KEYS.TAGS:
+          if (!isEmpty(useTags.getTagsAtSpot(spot.properties.id))) isPopulated = true;
+          break;
+        case PAGE_KEYS.THREE_D_STRUCTURES:
+          if (spot.properties[PAGE_KEYS.THREE_D_STRUCTURES]
+            && !isEmpty(spot.properties[PAGE_KEYS.THREE_D_STRUCTURES].filter(s => s.type !== 'fabric'))) {
+            isPopulated = true;
+          }
+          break;
+        case PAGE_KEYS.FABRICS:
+          if (spot.properties[PAGE_KEYS.FABRICS] || (spot.properties[PAGE_KEYS.THREE_D_STRUCTURES]
+            && !isEmpty(spot.properties[PAGE_KEYS.THREE_D_STRUCTURES].filter(s => s.type === 'fabric')))) {
+            isPopulated = true;
+          }
+          break;
+        case PAGE_KEYS.DATA:
+          if (!isEmpty(spot.properties?.data?.urls) || !isEmpty(spot.properties?.data?.tables)) {
+            isPopulated = true;
+          }
+          break;
+        case PAGE_KEYS.ROCK_TYPE_ALTERATION_ORE:
+        case PAGE_KEYS.ROCK_TYPE_IGNEOUS:
+        case PAGE_KEYS.ROCK_TYPE_METAMORPHIC:
+          if ((spot.properties.pet && spot.properties.pet[page.key])
+            || spot?.properties?.pet?.rock_type?.includes(page.key)) isPopulated = true;
+          break;
+        default:
+          if (spot.properties && (spot.properties[page.key]
+            || (PET_PAGES.find(p => p.key === page.key) && spot.properties.pet && spot.properties.pet[page.key])
+            || (SED_PAGES.find(p => p.key === page.key) && spot.properties.sed && spot.properties.sed[page.key]))) {
+            isPopulated = true;
+          }
+      }
+      return isPopulated ? [...acc, page.key] : acc;
+    }, []);
+    console.log('populated pages keys', populatedPagesKeys);
+    return populatedPagesKeys;
   };
 
   const getSpotGemometryIconSource = (spot) => {
@@ -335,11 +364,11 @@ const useSpots = () => {
     getAllFeaturesFromSpot: getAllFeaturesFromSpot,
     getImageBasemaps: getImageBasemaps,
     getMappableSpots: getMappableSpots,
+    getPopulatedPagesKeys: getPopulatedPagesKeys,
     getRootSpot: getRootSpot,
     getSpotById: getSpotById,
     getSpotByImageId: getSpotByImageId,
     getSpotDataIconSource: getSpotDataIconSource,
-    getSpotDataKeys: getSpotDataKeys,
     getSpotGemometryIconSource: getSpotGemometryIconSource,
     getSpotsByIds: getSpotsByIds,
     getSpotsSortedReverseChronologically: getSpotsSortedReverseChronologically,

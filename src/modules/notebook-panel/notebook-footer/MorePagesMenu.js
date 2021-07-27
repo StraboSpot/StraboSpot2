@@ -18,14 +18,14 @@ const MorePagesMenu = (props) => {
   const isTestingMode = useSelector(state => state.project.isTestingMode);
 
   const mainPagesToShow = [...PRIMARY_PAGES, ...SECONDARY_PAGES].reduce((acc, page) => {
-    return (!page.testing || (isTestingMode && page?.testing)) ? [...acc, page] : acc
-  }, [])
+    return (!page.testing || (isTestingMode && page?.testing)) ? [...acc, page] : acc;
+  }, []);
   const petPagesToShow = PET_PAGES.reduce((acc, page) => {
-    return (!page.testing || (isTestingMode && page?.testing)) ? [...acc, page] : acc
-  }, [])
+    return (!page.testing || (isTestingMode && page?.testing)) ? [...acc, page] : acc;
+  }, []);
   const sedPagesToShow = SED_PAGES.reduce((acc, page) => {
-    return (!page.testing || (isTestingMode && page?.testing)) ? [...acc, page] : acc
-  }, [])
+    return (!page.testing || (isTestingMode && page?.testing)) ? [...acc, page] : acc;
+  }, []);
 
   const switchPage = (key) => {
     dispatch(setNotebookPageVisible(key));
