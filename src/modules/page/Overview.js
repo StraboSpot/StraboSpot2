@@ -45,7 +45,7 @@ const Overview = (props) => {
       };
       return [...acc, sectionOverview];
     }
-    else return [acc];
+    else return acc;
   }, []);
 
   useEffect(() => {
