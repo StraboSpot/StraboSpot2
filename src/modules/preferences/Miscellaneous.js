@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Alert, Switch, Text} from 'react-native';
 
 import {Field, Formik} from 'formik';
@@ -16,15 +16,27 @@ const Miscellaneous = () => {
   const databaseEndpoint = useSelector(state => state.project.databaseEndpoint);
   const isTestingMode = useSelector(state => state.project.isTestingMode);
 
-  const [password, setPassword] = useState('');
+  const [isErrorMessage, setIsErrorMessage] = useState(false);
   const [isTestingModalVisible, setIsTestingModalVisible] = useState(false);
+  const [password, setPassword] = useState('');
   const [switchValue, setSwitchValue] = useState(isTestingMode);
 
   const formRef = useRef('null');
 
   const defaultEndpoint = 'http://strabospot.org/db';
   const initialValues = {database_endpoint: isEmpty(databaseEndpoint) ? defaultEndpoint : databaseEndpoint};
-  const testingModePassword = '123';
+  const testingModePassword = 'Strab0R0cks';
+  const errorMessage = 'Wrong Password!';
+
+  useEffect(() => {
+    if (isEmpty(password)) setIsErrorMessage(false);
+  }, [password]);
+
+  const closeModal = () => {
+    setSwitchValue(false);
+    setIsTestingModalVisible(false);
+    setIsErrorMessage(false);
+  };
 
   const onMyChange = async (name, value) => {
     const trimmedValue = value.trim();
@@ -46,9 +58,12 @@ const Miscellaneous = () => {
     if (value) setIsTestingModalVisible(true);
     else {
       dispatch(setTestingMode(false));
-      setPassword('');
       setIsTestingModalVisible(false);
     }
+  };
+
+  const userEntry = (value) => {
+    setPassword(value);
   };
 
   const renderPrompt = () => (
@@ -56,11 +71,8 @@ const Miscellaneous = () => {
       visible={isTestingModalVisible}
       dialogTitle={'Enter Password'}
       footerButtonsVisible={true}
-      onPress={() => verifyPassword()}
-      close={() => {
-        setSwitchValue(false);
-        setIsTestingModalVisible(false);
-      }}
+      onPress={verifyPassword}
+      close={closeModal}
     >
       <Text style={commonStyles.dialogContentImportantText}>
         Data saved under pages that are in testing may NOT be compatible with future versions of StraboSpot.
@@ -68,7 +80,9 @@ const Miscellaneous = () => {
       <Input
         placeholder='Password'
         secureTextEntry={true}
-        onChangeText={value => setPassword(value)}
+        defaultValue={''}
+        onChangeText={userEntry}
+        errorMessage={isErrorMessage && errorMessage}
       />
     </StandardModal>
   );
@@ -114,10 +128,7 @@ const Miscellaneous = () => {
       dispatch(setTestingMode(true));
       setIsTestingModalVisible(false);
     }
-    else {
-      Alert.alert('Wrong Password', 'Try again.');
-      setSwitchValue(false);
-    }
+    else setIsErrorMessage(true);
   };
 
   return (
