@@ -114,6 +114,7 @@ const UrlData = (props) => {
   return (
     <View>
       <FlatList
+        listKey={'urls'}
         keyExtractor={(index) => index}
         data={props.spot.properties?.data?.urls}
         renderItem={({item, index}) => renderUrlListItem(item, index)}

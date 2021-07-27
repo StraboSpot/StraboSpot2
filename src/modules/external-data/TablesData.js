@@ -105,13 +105,16 @@ function TablesData(props) {
   return (
     <View>
       {props.loading ? <Loading style={externalDataStyles.loadingSpinner}/>
-        : <FlatList
-          keyExtractor={(index) => index}
-          data={props.spot.properties?.data?.tables}
-          renderItem={({item}) => renderTableListItem(item)}
-          ItemSeparatorComponent={FlatListItemSeparator}
-          ListEmptyComponent={<ListEmptyText text={'No tables saved'}/>}
-        />}
+        : (
+          <FlatList
+            listKey={'tables'}
+            keyExtractor={(index) => index}
+            data={props.spot.properties?.data?.tables}
+            renderItem={({item}) => renderTableListItem(item)}
+            ItemSeparatorComponent={FlatListItemSeparator}
+            ListEmptyComponent={<ListEmptyText text={'No tables saved'}/>}
+          />
+        )}
       {!loading && renderTable()}
     </View>
   );
