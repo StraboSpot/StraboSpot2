@@ -16,13 +16,13 @@ const useSpots = () => {
 
   const dispatch = useDispatch();
   const selectedDatasetId = useSelector(state => state.project.selectedDatasetId);
-  const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const datasets = useSelector(state => state.project.datasets);
   const preferences = useSelector(state => state.project.project.preferences) || {};
+  const tags = useSelector(state => state.project.project.tags || []);
+  const useContinuousTagging = useSelector(state => state.project.project.useContinuousTagging);
+  const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const spots = useSelector(state => state.spot.spots);
-  const useContinuousTagging = useSelector(state => state.project.project.useContinuousTagging);
-  const tags = useSelector(state => state.project.project.tags || []);
 
   useEffect(() => {
     // console.log('datasets in useSpots UE', datasets);
@@ -216,41 +216,6 @@ const useSpots = () => {
     });
   };
 
-  // Find the rootSpot for a given image id.
-  const getRootSpot = (imageId) => {
-    let rootSpot, imageFound = false;
-    const allSpots = getActiveSpotsObj();
-    for (let index in allSpots) {
-      let currentSpot = allSpots[index];
-      let spotImages = currentSpot.properties.images;
-      for (let imageIndex in spotImages) {
-        let currentImage = spotImages[imageIndex];
-        if (currentImage.id === imageId) imageFound = true;
-      }
-      if (imageFound) {
-        rootSpot = currentSpot;
-        break;
-      }
-    }
-    if (rootSpot && rootSpot.properties.image_basemap) return getRootSpot(rootSpot.properties.image_basemap);
-    return rootSpot;
-  };
-
-  const getSpotById = (spotId) => {
-    return spots[spotId];
-  };
-
-  const getSpotByImageId = (imageId) => {
-    return Object.values(getActiveSpotsObj()).find(spot => {
-      return spot.properties.images && spot.properties.images.find(image => image.id === imageId);
-    });
-  };
-
-  const getSpotDataIconSource = (iconKey) => {
-    const page = NOTEBOOK_PAGES.find(p => p.key === iconKey);
-    return page && page.icon_src ? page.icon_src : require('../../assets/icons/QuestionMark_pressed.png');
-  };
-
   // Return the keys for the Spot pages that are populated with data
   const getPopulatedPagesKeys = (spot) => {
     const populatedPagesKeys = NOTEBOOK_PAGES.reduce((acc, page) => {
@@ -291,8 +256,43 @@ const useSpots = () => {
       }
       return isPopulated ? [...acc, page.key] : acc;
     }, []);
-    console.log('populated pages keys', populatedPagesKeys);
+    // console.log('populated pages keys', populatedPagesKeys);
     return populatedPagesKeys;
+  };
+
+  // Find the rootSpot for a given image id.
+  const getRootSpot = (imageId) => {
+    let rootSpot, imageFound = false;
+    const allSpots = getActiveSpotsObj();
+    for (let index in allSpots) {
+      let currentSpot = allSpots[index];
+      let spotImages = currentSpot.properties.images;
+      for (let imageIndex in spotImages) {
+        let currentImage = spotImages[imageIndex];
+        if (currentImage.id === imageId) imageFound = true;
+      }
+      if (imageFound) {
+        rootSpot = currentSpot;
+        break;
+      }
+    }
+    if (rootSpot && rootSpot.properties.image_basemap) return getRootSpot(rootSpot.properties.image_basemap);
+    return rootSpot;
+  };
+
+  const getSpotById = (spotId) => {
+    return spots[spotId];
+  };
+
+  const getSpotByImageId = (imageId) => {
+    return Object.values(getActiveSpotsObj()).find(spot => {
+      return spot.properties.images && spot.properties.images.find(image => image.id === imageId);
+    });
+  };
+
+  const getSpotDataIconSource = (iconKey) => {
+    const page = NOTEBOOK_PAGES.find(p => p.key === iconKey);
+    return page && page.icon_src ? page.icon_src : require('../../assets/icons/QuestionMark_pressed.png');
   };
 
   const getSpotGemometryIconSource = (spot) => {
