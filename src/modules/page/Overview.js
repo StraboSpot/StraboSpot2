@@ -14,8 +14,9 @@ import {Form, useFormHook} from '../form';
 import {setModalVisible} from '../home/home.slice';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import notebookStyles from '../notebook-panel/notebookPanel.styles';
+import {useSpotsHook} from '../spots';
 import {editedSpotProperties} from '../spots/spots.slice';
-import {NOTEBOOK_PAGES, PAGE_KEYS, PET_PAGES, PRIMARY_PAGES} from './page.constants';
+import {NOTEBOOK_PAGES, PRIMARY_PAGES} from './page.constants';
 
 const Overview = (props) => {
   const dispatch = useDispatch();
@@ -27,47 +28,16 @@ const Overview = (props) => {
   const formRef = useRef(null);
 
   const [useForm] = useFormHook();
+  const [useSpots] = useSpotsHook();
 
   useEffect(() => {
     dispatch(setModalVisible({modal: null}));
   }, []);
 
-  const sections = NOTEBOOK_PAGES.reduce((acc, page) => {
-    let isSectionOverviewVisible = false;
+  const visiblePagesKeys = [...new Set([...PRIMARY_PAGES.map(p => p.key), ...useSpots.getPopulatedPagesKeys(spot)])];
+  const sections = visiblePagesKeys.reduce((acc, key) => {
+    const page = NOTEBOOK_PAGES.find(p => p.key === key);
     if (page.overview_component) {
-      if (PRIMARY_PAGES.find(p => p.key === page.key)) isSectionOverviewVisible = true;
-      switch (page.key) {
-        case PAGE_KEYS.THREE_D_STRUCTURES:
-          if (spot.properties[PAGE_KEYS.THREE_D_STRUCTURES]
-            && !isEmpty(spot.properties[PAGE_KEYS.THREE_D_STRUCTURES].filter(s => s.type !== 'fabric'))) {
-            isSectionOverviewVisible = true;
-          }
-          break;
-        case PAGE_KEYS.FABRICS:
-          if (spot.properties[PAGE_KEYS.FABRICS] || (spot.properties[PAGE_KEYS.THREE_D_STRUCTURES]
-            && !isEmpty(spot.properties[PAGE_KEYS.THREE_D_STRUCTURES].filter(s => s.type === 'fabric')))) {
-            isSectionOverviewVisible = true;
-          }
-          break;
-        case PAGE_KEYS.DATA:
-          if (!isEmpty(spot.properties?.data?.urls) || !isEmpty(spot.properties?.data?.tables)) {
-            isSectionOverviewVisible = true;
-          }
-          break;
-        case PAGE_KEYS.ROCK_TYPE_ALTERATION_ORE:
-        case PAGE_KEYS.ROCK_TYPE_IGNEOUS:
-        case PAGE_KEYS.ROCK_TYPE_METAMORPHIC:
-          if ((spot.properties.pet && spot.properties.pet[page.key])
-            || spot?.properties?.pet?.rock_type?.includes(page.key)) isSectionOverviewVisible = true;
-          break;
-        default:
-          if (spot.properties && (spot.properties[page.key]
-            || (PET_PAGES.find(p => p.key === page.key) && spot.properties.pet && spot.properties.pet[page.key]))) {
-            isSectionOverviewVisible = true;
-          }
-      }
-    }
-    if (isSectionOverviewVisible) {
       const SectionOverview = page.overview_component;
       const sectionOverview = {
         title: page,
@@ -75,7 +45,7 @@ const Overview = (props) => {
       };
       return [...acc, sectionOverview];
     }
-    else return acc;
+    else return [acc];
   }, []);
 
   useEffect(() => {
@@ -243,8 +213,8 @@ const Overview = (props) => {
           </View>
           <View>
             <Button
-              title='Edit'
-              type='clear'
+              title="Edit"
+              type="clear"
               disabled={!isTraceSurfaceFeatureEnabled}
               disabledTitleStyle={notebookStyles.traceSurfaceFeatureDisabledText}
               onPress={() => setIsTraceSurfaceFeatureEdit(true)}/>
