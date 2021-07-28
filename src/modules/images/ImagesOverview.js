@@ -24,7 +24,7 @@ const ImagesOverview = () => {
             resizeMode={'contain'}
             source={{uri: useImages.getLocalImageURI(image.id)}}
             style={imageStyles.notebookImage}
-            PlaceholderContent={<ActivityIndicator/>}
+            PlaceholderContent={<Text>Image Not {'\n'}Available...</Text>}
             onPress={() => useImages.editImage(image)}
           />
           <View style={{alignSelf: 'flex-start', flexDirection: 'column', flex: 1, paddingLeft: 10}}>

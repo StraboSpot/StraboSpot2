@@ -60,8 +60,7 @@ const useImages = () => {
     try {
       const imageURI = getLocalImageURI(imageId);
       console.log('Looking on device for image at URI:', imageURI, '...');
-      const isValidURI = await RNFS.exists(imageURI);
-      return isValidURI;
+      return await RNFS.exists(imageURI);
     }
     catch (err) {
       console.error('Error Checking if Image Exists on Device.');
