@@ -116,7 +116,7 @@ const useTags = () => {
   };
 
   const deleteFeatureTags = (features) => {
-    if (features.length == 0) return;
+    if (features.length === 0) return;
     let tagsToUpdate = [];
     let featureIds = features.map(feature => feature.id);
     projectTags.map(tag => {
@@ -127,6 +127,8 @@ const useTags = () => {
         allOtherFeatureIds = copyTag.features[selectedSpot.properties.id].filter(
           featureId => !featureIds.includes(featureId));
         copyTag.features[selectedSpot.properties.id] = allOtherFeatureIds;
+        if (isEmpty(copyTag.features[selectedSpot.properties.id])) delete copyTag.features[selectedSpot.properties.id];
+        if (isEmpty(copyTag.features)) delete copyTag.features;
         tagsToUpdate.push(copyTag);
       }
     });
@@ -148,9 +150,12 @@ const useTags = () => {
     for (const [spotId, features] of Object.entries(spotFeatures)) {
       features.forEach(featureId => {
         const feature = getFeature(spotId, featureId);
-        feature.parentSpotId = spotId;
-        feature.label = getFeatureLabel(feature);
-        allTaggedFeatures.push(feature);
+        if (feature) {
+          feature.parentSpotId = spotId;
+          feature.label = getFeatureLabel(feature);
+          allTaggedFeatures.push(feature);
+        }
+        else console.log('Where did the feature', featureId, 'go in Spot', spotId, '?');
       });
     }
     return allTaggedFeatures;
@@ -294,7 +299,7 @@ const useTags = () => {
         return Promise.resolve();
       }
     }
- catch (e) {
+    catch (e) {
       console.log('Error submitting form', e);
       return Promise.reject();
     }

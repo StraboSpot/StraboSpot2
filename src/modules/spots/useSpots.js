@@ -5,7 +5,12 @@ import {useDispatch, useSelector} from 'react-redux';
 import {getNewCopyId, getNewId, isEmpty} from '../../shared/Helpers';
 import {setModalVisible} from '../home/home.slice';
 import {NOTEBOOK_PAGES, PAGE_KEYS, PET_PAGES, SED_PAGES} from '../page/page.constants';
-import {addedSpotsIdsToDataset, deletedSpotIdFromDataset, updatedProject} from '../project/projects.slice';
+import {
+  addedSpotsIdsToDataset,
+  deletedSpotIdFromDataset,
+  deletedSpotIdFromTags,
+  updatedProject,
+} from '../project/projects.slice';
 import useProjectHook from '../project/useProject';
 import {useTagsHook} from '../tags';
 import {addedSpot, deletedSpot, setSelectedSpot} from './spots.slice';
@@ -152,6 +157,7 @@ const useSpots = () => {
 
   const deleteSpot = (spotId) => {
     console.log('Deleting Spot ID', spotId, '...');
+    dispatch(deletedSpotIdFromTags(spotId));
     dispatch(deletedSpotIdFromDataset(spotId));
     dispatch(deletedSpot(spotId));
     dispatch(setModalVisible({modal: null}));

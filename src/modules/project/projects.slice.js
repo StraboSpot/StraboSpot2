@@ -68,8 +68,8 @@ const projectSlice = createSlice({
     addedNeededImagesToDataset(state, action) {
       const {datasetId, images} = action.payload;
       const imagesInDataset = state.datasets[datasetId].images
-      ? {...state.datasets[datasetId].images, ...images}
-      : images;
+        ? {...state.datasets[datasetId].images, ...images}
+        : images;
       state.datasets = {...state.datasets, [datasetId]: {...state.datasets[datasetId], images: imagesInDataset}};
     },
     addedTagToSelectedSpot(state, action) {
@@ -87,6 +87,25 @@ const projectSlice = createSlice({
       const {[action.payload]: deletedDataset, ...datasetsList} = state.datasets;  // Delete key with action.id from object
       state.datasets = datasetsList;
       state.activeDatasetsIds = state.activeDatasetsIds.filter(activeDatasetId => activeDatasetId !== action.payload);
+    },
+    deletedSpotIdFromTags(state, action) {
+      const spotId = action.payload;
+      if (!isEmpty(state.project.tags)) {
+        const updatedTags = state.project.tags.map(tag => {
+          let updatedTag = JSON.parse(JSON.stringify(tag));
+          if (updatedTag.spots?.includes(spotId)) {
+            updatedTag.spots = updatedTag.spots.filter(id => id !== spotId);
+            if (isEmpty(updatedTag.spots)) delete updatedTag.spots;
+          }
+          if (updatedTag.features && updatedTag.features[spotId]) {
+            delete updatedTag.features[spotId];
+            if (isEmpty(updatedTag.features)) delete updatedTag.features;
+          }
+          return updatedTag;
+        });
+        state.project.tags = updatedTags;
+        state.selectedTag = updatedTags.find(tag => tag.id === state.selectedTag.id) || {};
+      }
     },
     deletedSpotIdFromDataset(state, action) {
       const spotId = action.payload;
@@ -124,7 +143,7 @@ const projectSlice = createSlice({
     setSelectedTag(state, action) {
       state.selectedTag = action.payload;
     },
-    setTestingMode (state, action) {
+    setTestingMode(state, action) {
       state.isTestingMode = action.payload;
     },
     setMultipleFeaturesTaggingEnabled(state, action) {
@@ -177,6 +196,7 @@ export const {
   clearedProject,
   deletedDataset,
   deletedSpotIdFromDataset,
+  deletedSpotIdFromTags,
   doesBackupDirectoryExist,
   setActiveDatasets,
   setActiveMeasurementTemplates,
