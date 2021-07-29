@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Animated, FlatList, Keyboard, TextInput, View} from 'react-native';
 
-import {Avatar, Button, ListItem} from 'react-native-elements';
+import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
@@ -14,7 +14,7 @@ import {setModalVisible} from '../home/home.slice';
 import Overview from '../page/Overview';
 import {NOTEBOOK_PAGES, PAGE_KEYS} from '../page/page.constants';
 import {setMultipleFeaturesTaggingEnabled} from '../project/projects.slice';
-import {useSpotsHook} from '../spots';
+import {SpotsListItem, useSpotsHook} from '../spots';
 import {setSelectedSpot} from '../spots/spots.slice';
 import NotebookFooter from './notebook-footer/NotebookFooter';
 import NotebookHeader from './notebook-header/NotebookHeader';
@@ -52,7 +52,8 @@ const NotebookPanel = (props) => {
     dispatch(setMultipleFeaturesTaggingEnabled(false));
   }, [pageVisible, spot]);
 
-  const handleKeyboardDidShowNotebook = (event) => Helpers.handleKeyboardDidShow(event, TextInputState, textInputAnimate);
+  const handleKeyboardDidShowNotebook = (event) => Helpers.handleKeyboardDidShow(event, TextInputState,
+    textInputAnimate);
 
   const handleKeyboardDidHideNotebook = () => Helpers.handleKeyboardDidHide(textInputAnimate);
 
@@ -107,7 +108,12 @@ const NotebookPanel = (props) => {
         <FlatList
           keyExtractor={(item) => item.properties.id.toString()}
           data={spotsList}
-          renderItem={({item}) => renderSpotName(item)}
+          renderItem={({item}) => (
+            <SpotsListItem
+              doShowTags={true}
+              spot={item}
+              onPress={() => dispatch(setSelectedSpot(item))}
+            />)}
           ItemSeparatorComponent={FlatListItemSeparator}
           ListEmptyComponent={<ListEmptyText text={'No Spots in Active Datasets'}/>}
         />
@@ -117,22 +123,6 @@ const NotebookPanel = (props) => {
           titleStyle={commonStyles.standardButtonText}
           onPress={props.closeNotebookPanel}/>
       </View>
-    );
-  };
-
-  const renderSpotName = (item) => {
-    return (
-      <ListItem
-        key={item.properties.id}
-        onPress={() => dispatch(setSelectedSpot(item))}
-      >
-        <Avatar source={useSpots.getSpotGemometryIconSource(item)}
-                placeholderStyle={{backgroundColor: 'transparent'}}
-                size={20}/>
-        <ListItem.Content>
-          <ListItem.Title>{item.properties.name}</ListItem.Title>
-        </ListItem.Content>
-      </ListItem>
     );
   };
 

@@ -129,7 +129,7 @@ export const SECONDARY_PAGES = [
     page_component: FabricsPage,
     modal_component: AddFabricModal,
     action_label: 'Add a Fabric',
-    testing: true
+    testing: true,
   }, {
     key: PAGE_KEYS.OTHER_FEATURES,
     label: 'Other Features',
@@ -170,7 +170,7 @@ export const PET_PAGES = [
     page_component: RockAlterationOrePage,
     modal_component: AddRockModal,
     action_label: 'Add an Alteration, Ore Rock',
-    testing: true
+    testing: true,
   }, {
     key: PAGE_KEYS.ROCK_TYPE_IGNEOUS,
     label: 'Igneous Rocks',
@@ -180,7 +180,7 @@ export const PET_PAGES = [
     page_component: RockIgneousPage,
     modal_component: AddRockModal,
     action_label: 'Add an Igneous Rock',
-    testing: true
+    testing: true,
   }, {
     key: PAGE_KEYS.ROCK_TYPE_METAMORPHIC,
     label: 'Metamorphic Rocks',
@@ -190,7 +190,7 @@ export const PET_PAGES = [
     page_component: RockMetamorphicPage,
     modal_component: AddRockModal,
     action_label: 'Add a Metamorphic Rock',
-    testing: true
+    testing: true,
   }, {
     key: PAGE_KEYS.MINERALS,
     label: 'Minerals',
@@ -200,7 +200,7 @@ export const PET_PAGES = [
     page_component: MineralsPage,
     modal_component: AddMineralModal,
     action_label: 'Add Mineral Data',
-    testing: true
+    testing: true,
   }, {
     key: PAGE_KEYS.REACTIONS,
     label: 'Reaction Textures',
@@ -210,7 +210,7 @@ export const PET_PAGES = [
     page_component: ReactionTexturesPage,
     modal_component: AddReactionTextureModal,
     action_label: 'Add a Reaction Texture',
-    testing: true
+    testing: true,
   }, {
     key: PAGE_KEYS.TERNARY,
     label: 'Ternary',
@@ -218,7 +218,7 @@ export const PET_PAGES = [
     icon_src: require('../../assets/icons/Ternary.png'),
     icon_pressed_src: require('../../assets/icons/Ternary_pressed.png'),
     page_component: TernaryPage,
-    testing: true
+    testing: true,
   },
 ];
 

@@ -9,7 +9,7 @@ import {deepFindFeatureTypeById, isEmpty} from '../../shared/Helpers';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
-import {useSpotsHook} from '../spots';
+import {SpotsListItem, useSpotsHook} from '../spots';
 import {useTagsHook} from '../tags';
 
 const TagDetail = (props) => {
@@ -23,28 +23,6 @@ const TagDetail = (props) => {
                           //         To handle the navigation issue from 0 tagged features to non zero tagged features.
   }, [selectedTag]);
 
-  const renderSpotListItem = (spotId) => {
-    const spot = useSpots.getSpotById(spotId);
-    if (!isEmpty(spot)) {
-      return (
-        <ListItem
-          containerStyle={commonStyles.listItem}
-          onPress={() => props.openSpot(spot)}
-        >
-          <Avatar
-            source={useSpots.getSpotGemometryIconSource(spot)}
-            placeholderStyle={{backgroundColor: 'transparent'}}
-            size={20}
-          />
-          <ListItem.Content>
-            <ListItem.Title style={commonStyles.listItemTitle}>{spot.properties.name}</ListItem.Title>
-          </ListItem.Content>
-          <ListItem.Chevron/>
-        </ListItem>
-      );
-    }
-  };
-
   const renderSpotFeatureItem = (feature) => {
     const spot = useSpots.getSpotById(feature.parentSpotId);
     const featureType = deepFindFeatureTypeById(spot.properties, feature.id);
@@ -52,6 +30,7 @@ const TagDetail = (props) => {
       return (
         <ListItem
           containerStyle={commonStyles.listItem}
+          key={spot.properties.id}
           onPress={() => props.openFeatureDetail(spot, feature, featureType)}
         >
           <Avatar
@@ -90,7 +69,12 @@ const TagDetail = (props) => {
             listKey={1}
             keyExtractor={(item) => item.toString()}
             data={selectedTag.spots}
-            renderItem={({item}) => renderSpotListItem(item)}
+            renderItem={({item}) => (
+              <SpotsListItem
+                doShowTags={true}
+                spot={useSpots.getSpotById(item)}
+                onPress={props.openSpot}
+              />)}
             ItemSeparatorComponent={FlatListItemSeparator}
             ListEmptyComponent={<ListEmptyText text={'No Spots'}/>}
           />

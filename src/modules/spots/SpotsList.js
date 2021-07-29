@@ -16,6 +16,7 @@ const SpotsList = (props) => {
   const recentViews = useSelector(state => state.spot.recentViews);
   const sortedView = useSelector(state => state.mainMenu.sortedView);
   const spots = useSelector(state => state.spot.spots);
+  const spotsInMapExtent = useSelector(state => state.map.spotsInMapExtent);
 
   const renderNoSpotsText = () => {
     return <ListEmptyText text={'No Spots in Active Datasets'}/>;
@@ -25,7 +26,7 @@ const SpotsList = (props) => {
     let sortedSpots = useSpots.getSpotsSortedReverseChronologically();
     let noSpotsText = 'No Spots';
     if (sortedView === SORTED_VIEWS.MAP_EXTENT) {
-      sortedSpots = props.spotsInMapExtent;
+      sortedSpots = spotsInMapExtent;
       if (isEmpty(sortedSpots)) noSpotsText = 'No Spots in current map extent';
     }
     else if (sortedView === SORTED_VIEWS.RECENT_VIEWS) {
@@ -42,8 +43,9 @@ const SpotsList = (props) => {
             renderItem={({item}) => (
               <SpotsListItem
                 doShowTags={true}
+                isCheckedList={props.isCheckedList}
+                onPress={props.onPress}
                 spot={item}
-                onPress={props.openSpotInNotebook}
               />)}
             ItemSeparatorComponent={FlatListItemSeparator}
             ListEmptyComponent={<ListEmptyText text={noSpotsText}/>}

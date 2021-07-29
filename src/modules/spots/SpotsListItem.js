@@ -2,6 +2,7 @@ import React from 'react';
 import {FlatList} from 'react-native';
 
 import {Avatar, ListItem} from 'react-native-elements';
+import {useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
@@ -13,6 +14,17 @@ const SpotsListItem = (props) => {
   const [useNesting] = useNestingHook();
   const [useSpots] = useSpotsHook();
   const [useTags] = useTagsHook();
+
+  const selectedTag = useSelector((state) => state.project.selectedTag);
+
+  const renderCheckboxes = () => {
+    return (
+      <ListItem.CheckBox
+        checked={selectedTag.spots && selectedTag.spots.includes(props.spot.properties.id)}
+        onPress={() => useTags.addRemoveSpotFromTag(props.spot.properties.id, selectedTag)}
+      />
+    );
+  };
 
   const renderSpotDataIcons = () => (
     <FlatList
@@ -57,8 +69,12 @@ const SpotsListItem = (props) => {
         {props.doShowTags && renderTags()}
         {props.doShowSubspots && renderSubspots()}
       </ListItem.Content>
-      {renderSpotDataIcons()}
-      <ListItem.Chevron/>
+      {props.isCheckedList ? renderCheckboxes() : (
+        <React.Fragment>
+          {renderSpotDataIcons()}
+          <ListItem.Chevron/>
+        </React.Fragment>
+      )}
     </ListItem>
   );
 };

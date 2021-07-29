@@ -90,10 +90,7 @@ const MainMenuPanel = props => {
     case MAIN_MENU_ITEMS.ATTRIBUTES.SPOTS_LIST:
       page = (
         <View style={styles.mainMenuContainer}>
-          <SpotsList
-            openSpotInNotebook={openSpotInNotebook}
-            spotsInMapExtent={spotsInMapExtent}
-          />
+          <SpotsList onPress={openSpotInNotebook}/>
         </View>
       );
       break;
