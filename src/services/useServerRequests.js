@@ -1,5 +1,6 @@
 import {Alert} from 'react-native';
 
+import * as Sentry from '@sentry/react-native';
 import {useSelector} from 'react-redux';
 
 const useServerRequests = () => {
@@ -31,9 +32,9 @@ const useServerRequests = () => {
       ));
       if (!response.ok) {
         const errorText = await response.text();
-        console.log('RESPONSE TEXT', errorText)
-        Alert.alert('Server Error!', 'The server is temporarily unable to service your request due to' +
-          ' maintenance downtime or capacity\n' + 'problems. Please try again later.')
+        console.log('RESPONSE TEXT', errorText);
+        Alert.alert('Server Error!', 'The server is temporarily unable to service your request due to'
+          + ' maintenance downtime or capacity\n' + 'problems. Please try again later.');
       }
       else return await response.json();
   };
@@ -73,7 +74,7 @@ const useServerRequests = () => {
 
   const getDbUrl = () => {
     return baseUrl;
-  }
+  };
 
   const downloadImage = (imageId, encodedLogin) => {
     return request('GET', '/image/' + imageId, encodedLogin, {responseType: 'blob'});
@@ -140,6 +141,7 @@ const useServerRequests = () => {
 
   const handleError = async (response) => {
     const errorMessage = JSON.parse(await response.text());
+    Sentry.captureMessage(`ERROR in useServerRequests: ${errorMessage.Error}`);
     return Promise.reject(errorMessage.Error);
   };
 
