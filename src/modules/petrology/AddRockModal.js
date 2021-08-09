@@ -13,6 +13,7 @@ import Modal from '../../shared/ui/modal/Modal';
 import {Form, useFormHook} from '../form';
 import {setModalValues} from '../home/home.slice';
 import {PAGE_KEYS} from '../page/page.constants';
+import AddRockIgneousModal from './AddRockIgneousModal';
 import usePetrologyHook from './usePetrology';
 
 const AddRockModal = (props) => {
@@ -23,14 +24,14 @@ const AddRockModal = (props) => {
   const [choicesViewKey, setChoicesViewKey] = useState(null);
   const [survey, setSurvey] = useState({});
   const [choices, setChoices] = useState({});
-
+  const [petKey, setPetKey] = useState(
+    props.modalKey === PAGE_KEYS.ROCK_TYPE_IGNEOUS ? modalValues.igneous_rock_class || 'plutonic'
+      : props.modalKey);
   const formRef = useRef(null);
 
   const [useForm] = useFormHook();
   const usePetrology = usePetrologyHook();
 
-  const petKey = props.modalKey === PAGE_KEYS.ROCK_TYPE_IGNEOUS ? modalValues.igneous_rock_class || 'plutonic'
-    : props.modalKey;
 
   useEffect(() => {
     return () => dispatch(setModalValues({}));
@@ -87,12 +88,25 @@ const AddRockModal = (props) => {
   const renderForm = (formProps) => {
     return (
       <React.Fragment>
-        <Form
-          {...{
-            formName: ['pet', petKey],
-            ...formProps,
-          }}
-        />
+        {props.modalKey === PAGE_KEYS.ROCK_TYPE_IGNEOUS && (
+          <AddRockIgneousModal
+            formRef={formRef}
+            survey={survey}
+            choices={choices}
+            setChoicesViewKey={setChoicesViewKey}
+            formName={['pet', petKey]}
+            formProps={formProps}
+            setPetKey={setPetKey}
+          />
+        )}
+        {props.modalKey !== PAGE_KEYS.ROCK_TYPE_IGNEOUS && (
+          <Form
+            {...{
+              formName: ['pet', petKey],
+              ...formProps,
+            }}
+          />
+        )}
       </React.Fragment>
     );
   };
