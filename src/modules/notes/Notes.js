@@ -6,6 +6,7 @@ import {ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
+import SaveButton from '../../shared/SaveButton';
 import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import uiStyles from '../../shared/ui/ui.styles';
 import {TextInputField} from '../form';
@@ -15,7 +16,6 @@ import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import {PAGE_KEYS} from '../page/page.constants';
 import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
 import {editedSpotProperties, setSelectedSpotNotesTimestamp} from '../spots/spots.slice';
-import SaveButton from '../../shared/SaveButton';
 
 const Notes = (props) => {
   const [useMaps] = useMapsHook();

@@ -48,12 +48,15 @@ const AddFabricModal = (props) => {
   }, [modalValues]);
 
   const onFabricTypePress = (i) => {
-    setSelectedTypeIndex(i);
-    const type = types[i];
-    formRef.current?.setFieldValue('type', type);
-    const formName = ['fabrics', type];
-    setSurvey(useForm.getSurvey(formName));
-    setChoices(useForm.getChoices(formName));
+    if (i !== selectedTypeIndex) {
+      setSelectedTypeIndex(i);
+      formRef.current?.resetForm();
+      const type = types[i];
+      formRef.current?.setFieldValue('type', type);
+      const formName = ['fabrics', type];
+      setSurvey(useForm.getSurvey(formName));
+      setChoices(useForm.getChoices(formName));
+    }
   };
 
   const renderForm = (formProps) => {
