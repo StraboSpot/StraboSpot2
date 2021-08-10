@@ -2,21 +2,19 @@ import React, {useEffect, useRef, useState} from 'react';
 import {FlatList, Platform, Text, View} from 'react-native';
 
 import {Formik} from 'formik';
-import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {getNewId, isEmpty} from '../../shared/Helpers';
 import SaveButton from '../../shared/SaveButton';
-import {PRIMARY_ACCENT_COLOR} from '../../shared/styles.constants';
 import DragAnimation from '../../shared/ui/DragAmination';
 import LittleSpacer from '../../shared/ui/LittleSpacer';
 import Modal from '../../shared/ui/modal/Modal';
 import {ChoiceButtons, Form, formStyles, useFormHook} from '../form';
-import {setModalValues} from '../home/home.slice';
+import {setModalValues, setModalVisible} from '../home/home.slice';
 import {PAGE_KEYS} from '../page/page.constants';
 import usePetrologyHook from './usePetrology';
 
-const AddReactionTextureModal = () => {
+const AddReactionTextureModal = (props) => {
   const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
 
@@ -63,7 +61,11 @@ const AddReactionTextureModal = () => {
 
   const renderAddReactionTextureModalContent = () => {
     return (
-      <Modal>
+      <Modal
+        close={() => choicesViewKey ? setChoicesViewKey(null) : dispatch(setModalVisible({modal: null}))}
+        buttonTitleRight={choicesViewKey && 'Done'}
+        onPress={props.onPress}
+      >
         <React.Fragment>
           <FlatList
             bounces={false}
@@ -84,19 +86,10 @@ const AddReactionTextureModal = () => {
             }
           />
         </React.Fragment>
-        {choicesViewKey ? renderDoneButton() : renderSaveButton()}
+        {!choicesViewKey && <SaveButton title={'Save Reaction Texture'} onPress={saveReactionTexture}/>}
       </Modal>
     );
   };
-
-  const renderDoneButton = () => (
-    <Button
-      titleStyle={{color: PRIMARY_ACCENT_COLOR}}
-      title={'Done'}
-      type={'save'}
-      onPress={() => setChoicesViewKey(null)}
-    />
-  );
 
   const renderForm = (formProps) => {
     return (
@@ -143,13 +136,6 @@ const AddReactionTextureModal = () => {
       </React.Fragment>
     );
   };
-
-  const renderSaveButton = () => (
-    <SaveButton
-      title={'Save Reaction Texture'}
-      onPress={saveReactionTexture}
-    />
-  );
 
   const renderSubform = (formProps) => {
     const relevantFields = useForm.getRelevantFields(survey, choicesViewKey);
