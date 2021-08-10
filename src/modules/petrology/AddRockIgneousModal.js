@@ -1,21 +1,16 @@
 import React, {useEffect, useState} from 'react';
 
 import {ButtonGroup} from 'react-native-elements';
-import {useDispatch} from 'react-redux';
 
-import {getNewId} from '../../shared/Helpers';
+import {getNewId, isEmpty} from '../../shared/Helpers';
 import {PRIMARY_TEXT_COLOR} from '../../shared/styles.constants';
-import {Form, useFormHook} from '../form';
-import {setModalValues} from '../home/home.slice';
+import {Form, MainButtons, useFormHook} from '../form';
 import {IGNEOUS_ROCK_TYPES} from './petrology.constants';
 
 const AddRockIgneousModal = (props) => {
-  const dispatch = useDispatch();
-
-  const [selectedTypeIndex, setSelectedTypeIndex] = useState(null);
-  const [formName, setFormName] = useState(props.formName);
-  const [survey, setSurvey] = useState(props.survey);
-  const [choices, setChoices] = useState(props.choices);
+  const [selectedTypeIndex, setSelectedTypeIndex] = useState(0);
+  const [formName, setFormName] = useState([]);
+  const [survey, setSurvey] = useState({});
 
   const [useForm] = useFormHook();
 
@@ -24,22 +19,62 @@ const AddRockIgneousModal = (props) => {
   useEffect(() => {
     const type = props.formName[1];
     setSelectedTypeIndex(types.indexOf(type));
-    return () => dispatch(setModalValues({}));
+    setFormName(props.formName);
+    setSurvey(useForm.getSurvey(props.formName));
   }, []);
 
   const onIgneousRockTypePress = (i) => {
     if (i !== selectedTypeIndex) {
       setSelectedTypeIndex(i);
-      const type = types[i];
       props.formRef.current?.resetForm();
-      props.formRef.current?.setFieldValue('id', getNewId());
-      props.formRef.current?.setFieldValue('igneous_rock_class', type);
+      const type = types[i];
+      props.setPetKey(type);
       const formNameSwitched = ['pet', type];
+      props.formRef.current?.setValues({id: getNewId(), igneous_rock_class: type});
       setFormName(formNameSwitched);
-      props.setPetKey(formNameSwitched);
       setSurvey(useForm.getSurvey(formNameSwitched));
-      setChoices(useForm.getChoices(formNameSwitched));
+      props.setSurvey(useForm.getSurvey(formNameSwitched));
+      props.setChoices(useForm.getChoices(formNameSwitched));
     }
+  };
+
+  const renderSpecificIgneousRock = () => {
+    // Relevant keys for quick-entry modal
+    let firstKeys, mainButttonsKeys, lastKeys;
+    if (types[selectedTypeIndex] === 'plutonic') {
+      firstKeys = ['plutonic_rock_type'];
+      mainButttonsKeys = ['occurence_plutonic', 'texture_plutonic', 'color_index_pluton', 'alteration_plutonic'];
+      lastKeys = ['pluton_characteristic_size_of', 'notes_plutonic'];
+    }
+    else {
+      firstKeys = ['volcanic_rock_type'];
+      mainButttonsKeys = ['occurence_volcanic', 'texture_volcanic', 'color_index_volc', 'alteration_volcanic'];
+      lastKeys = ['vol_characteristic_size_of_cry', 'notes_volcanic'];
+    }
+
+    // Relevant fields for quick-entry modal
+    const lastKeysFields = lastKeys.map(k => survey.find(f => f.name === k));
+
+    return (
+      <React.Fragment>
+        <MainButtons {...{
+          mainKeys: firstKeys,
+          formName: formName,
+          formRef: props.formRef,
+          setChoicesViewKey: props.setChoicesViewKey,
+        }}/>
+        <MainButtons {...{
+          mainKeys: mainButttonsKeys,
+          formName: formName,
+          formRef: props.formRef,
+          setChoicesViewKey: props.setChoicesViewKey,
+        }}/>
+        <Form {...{
+          surveyFragment: lastKeysFields,
+          ...props.formProps,
+        }}/>
+      </React.Fragment>
+    );
   };
 
   return (
@@ -52,16 +87,7 @@ const AddRockIgneousModal = (props) => {
         buttonStyle={{padding: 5}}
         textStyle={{color: PRIMARY_TEXT_COLOR}}
       />
-      <Form
-        {...{
-          formRef: props.formRef,
-          formName: formName,
-          survey: survey,
-          choices: choices,
-          setChoicesViewKey: props.setChoicesViewKey,
-          ...props.formProps,
-        }}
-      />
+      {!isEmpty(survey) && renderSpecificIgneousRock()}
     </React.Fragment>
   );
 };

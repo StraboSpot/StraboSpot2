@@ -25,11 +25,12 @@ const MainButtons = (props) => {
   );
 
   return (
-    <View style={formStyles.halfWidthButtonsContainer}>
+    <View
+      style={props.mainKeys.length === 1 ? formStyles.fullWidthButtonContainer : formStyles.halfWidthButtonsContainer}>
       {props.mainKeys.map((k) => {
         return (
           <Button
-            containerStyle={formStyles.halfWidthButtonContainer}
+            containerStyle={props.mainKeys.length === 1 ? formStyles.fullWidthButtonContainer : formStyles.halfWidthButtonContainer}
             buttonStyle={[formStyles.formButtonLarge, {
               backgroundColor: props.formRef.current?.values[k] ? REACT_NATIVE_ELEMENTS_BLUE : SECONDARY_BACKGROUND_COLOR,
             }]}

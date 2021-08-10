@@ -2,16 +2,14 @@ import React, {useEffect, useRef, useState} from 'react';
 import {FlatList, Platform, View} from 'react-native';
 
 import {Formik} from 'formik';
-import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {getNewId, isEmpty} from '../../shared/Helpers';
 import SaveButton from '../../shared/SaveButton';
-import {PRIMARY_ACCENT_COLOR} from '../../shared/styles.constants';
 import DragAnimation from '../../shared/ui/DragAmination';
 import Modal from '../../shared/ui/modal/Modal';
 import {Form, useFormHook} from '../form';
-import {setModalValues} from '../home/home.slice';
+import {setModalValues, setModalVisible} from '../home/home.slice';
 import {PAGE_KEYS} from '../page/page.constants';
 import AddRockIgneousModal from './AddRockIgneousModal';
 import usePetrologyHook from './usePetrology';
@@ -47,10 +45,13 @@ const AddRockModal = (props) => {
     setChoices(useForm.getChoices(formName));
   }, [modalValues]);
 
-
   const renderAddRockModalContent = () => {
     return (
-      <Modal>
+      <Modal
+        close={() => choicesViewKey ? setChoicesViewKey(null) : dispatch(setModalVisible({modal: null}))}
+        buttonTitleRight={choicesViewKey && 'Done'}
+        onPress={props.onPress}
+      >
         <React.Fragment>
           <FlatList
             bounces={false}
@@ -71,19 +72,10 @@ const AddRockModal = (props) => {
             }
           />
         </React.Fragment>
-        {choicesViewKey ? renderDoneButton() : renderSaveButton()}
+        {!choicesViewKey && <SaveButton title={'Save Rock'} onPress={saveRock}/>}
       </Modal>
     );
   };
-
-  const renderDoneButton = () => (
-    <Button
-      titleStyle={{color: PRIMARY_ACCENT_COLOR}}
-      title={'Done'}
-      type={'save'}
-      onPress={() => setChoicesViewKey(null)}
-    />
-  );
 
   const renderForm = (formProps) => {
     return (
@@ -97,6 +89,8 @@ const AddRockModal = (props) => {
             formName={['pet', petKey]}
             formProps={formProps}
             setPetKey={setPetKey}
+            setSurvey={setSurvey}
+            setChoices={setChoices}
           />
         )}
         {props.modalKey !== PAGE_KEYS.ROCK_TYPE_IGNEOUS && (
@@ -110,13 +104,6 @@ const AddRockModal = (props) => {
       </React.Fragment>
     );
   };
-
-  const renderSaveButton = () => (
-    <SaveButton
-      title={'Save Rock'}
-      onPress={saveRock}
-    />
-  );
 
   const renderSubform = (formProps) => {
     const relevantFields = useForm.getRelevantFields(survey, choicesViewKey);
