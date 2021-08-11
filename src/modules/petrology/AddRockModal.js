@@ -13,6 +13,7 @@ import {setModalValues, setModalVisible} from '../home/home.slice';
 import {PAGE_KEYS} from '../page/page.constants';
 import AddRockAlterationOreModal from './AddRockAlterationOreModal';
 import AddRockIgneousModal from './AddRockIgneousModal';
+import AddRockMetamorphicModal from './AddRockMetamorphicModal';
 import {IGNEOUS_ROCK_TYPES} from './petrology.constants';
 import usePetrologyHook from './usePetrology';
 
@@ -107,11 +108,13 @@ const AddRockModal = (props) => {
           />
         )}
         {petKey === PAGE_KEYS.ROCK_TYPE_METAMORPHIC && (
-          <Form
-            {...{
-              formName: ['pet', petKey],
-              ...formProps,
-            }}
+          <AddRockMetamorphicModal
+            formRef={formRef}
+            survey={survey}
+            choices={choices}
+            setChoicesViewKey={setChoicesViewKey}
+            formName={['pet', petKey]}
+            formProps={formProps}
           />
         )}
       </React.Fragment>
