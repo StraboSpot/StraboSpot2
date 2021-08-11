@@ -20,7 +20,7 @@ const FaultRockFabric = (props) => {
   // Relevant fields for quick-entry modal
   const survey = useForm.getSurvey(props.formName);
   const firstKeysFields = firstKeys.map(k => survey.find(f => f.name === k));
-  const spatialConfigDescriptionField = props.survey.find(f => f.name === spatialConfigDescriptionKey);
+  const spatialConfigDescriptionField = survey.find(f => f.name === spatialConfigDescriptionKey);
   const lastKeysFields = lastKeys.map(k => survey.find(f => f.name === k));
 
   const onSpatialConfigSelected = (choiceName) => {

@@ -10,7 +10,6 @@ import {IGNEOUS_ROCK_TYPES} from './petrology.constants';
 const AddRockIgneousModal = (props) => {
   const [selectedTypeIndex, setSelectedTypeIndex] = useState(0);
   const [formName, setFormName] = useState([]);
-  const [survey, setSurvey] = useState({});
 
   const [useForm] = useFormHook();
 
@@ -20,7 +19,6 @@ const AddRockIgneousModal = (props) => {
     const type = props.formName[1];
     setSelectedTypeIndex(types.indexOf(type));
     setFormName(props.formName);
-    setSurvey(useForm.getSurvey(props.formName));
   }, []);
 
   const onIgneousRockTypePress = (i) => {
@@ -32,7 +30,6 @@ const AddRockIgneousModal = (props) => {
       const formNameSwitched = ['pet', type];
       props.formRef.current?.setValues({id: getNewId(), igneous_rock_class: type});
       setFormName(formNameSwitched);
-      setSurvey(useForm.getSurvey(formNameSwitched));
       props.setSurvey(useForm.getSurvey(formNameSwitched));
       props.setChoices(useForm.getChoices(formNameSwitched));
     }
@@ -53,7 +50,7 @@ const AddRockIgneousModal = (props) => {
     }
 
     // Relevant fields for quick-entry modal
-    const lastKeysFields = lastKeys.map(k => survey.find(f => f.name === k));
+    const lastKeysFields = lastKeys.map(k => props.survey.find(f => f.name === k)).filter(k => !isEmpty(k));
 
     return (
       <React.Fragment>
@@ -69,10 +66,12 @@ const AddRockIgneousModal = (props) => {
           formRef: props.formRef,
           setChoicesViewKey: props.setChoicesViewKey,
         }}/>
-        <Form {...{
-          surveyFragment: lastKeysFields,
-          ...props.formProps,
-        }}/>
+        {!isEmpty(lastKeysFields) && (
+          <Form {...{
+            surveyFragment: lastKeysFields,
+            ...props.formProps,
+          }}/>
+        )}
       </React.Fragment>
     );
   };
@@ -87,7 +86,7 @@ const AddRockIgneousModal = (props) => {
         buttonStyle={{padding: 5}}
         textStyle={{color: PRIMARY_TEXT_COLOR}}
       />
-      {!isEmpty(survey) && renderSpecificIgneousRock()}
+      {!isEmpty(props.survey) && renderSpecificIgneousRock()}
     </React.Fragment>
   );
 };

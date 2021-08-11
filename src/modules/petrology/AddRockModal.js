@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
 import {FlatList, Platform, View} from 'react-native';
 
 import {Formik} from 'formik';
@@ -11,7 +11,9 @@ import Modal from '../../shared/ui/modal/Modal';
 import {Form, useFormHook} from '../form';
 import {setModalValues, setModalVisible} from '../home/home.slice';
 import {PAGE_KEYS} from '../page/page.constants';
+import AddRockAlterationOreModal from './AddRockAlterationOreModal';
 import AddRockIgneousModal from './AddRockIgneousModal';
+import {IGNEOUS_ROCK_TYPES} from './petrology.constants';
 import usePetrologyHook from './usePetrology';
 
 const AddRockModal = (props) => {
@@ -22,28 +24,29 @@ const AddRockModal = (props) => {
   const [choicesViewKey, setChoicesViewKey] = useState(null);
   const [survey, setSurvey] = useState({});
   const [choices, setChoices] = useState({});
-  const [petKey, setPetKey] = useState(
-    props.modalKey === PAGE_KEYS.ROCK_TYPE_IGNEOUS ? modalValues.igneous_rock_class || 'plutonic'
-      : props.modalKey);
+  const [petKey, setPetKey] = useState(null);
   const formRef = useRef(null);
 
   const [useForm] = useFormHook();
   const usePetrology = usePetrologyHook();
 
+  useLayoutEffect(() => {
+    const petKeyUpdated = props.modalKey === PAGE_KEYS.ROCK_TYPE_IGNEOUS ? modalValues.igneous_rock_class || 'plutonic'
+      : props.modalKey;
+    setPetKey(petKeyUpdated);
+    const initialValues = !isEmpty(modalValues) ? modalValues
+      : props.modalKey === PAGE_KEYS.ROCK_TYPE_IGNEOUS ? {id: getNewId(), igneous_rock_class: petKeyUpdated}
+        : {id: getNewId()};
+    formRef.current?.setValues(initialValues);
+    const formName = ['pet', petKeyUpdated];
+    setSurvey(useForm.getSurvey(formName));
+    setChoices(useForm.getChoices(formName));
+    setChoicesViewKey(null);
+  }, [modalValues, props.modalKey]);
 
   useEffect(() => {
     return () => dispatch(setModalValues({}));
   }, []);
-
-  useEffect(() => {
-    const initialValues = !isEmpty(modalValues) ? modalValues
-      : props.modalKey === PAGE_KEYS.ROCK_TYPE_IGNEOUS ? {id: getNewId(), igneous_rock_class: petKey}
-        : {id: getNewId()};
-    formRef.current?.setValues(initialValues);
-    const formName = ['pet', petKey];
-    setSurvey(useForm.getSurvey(formName));
-    setChoices(useForm.getChoices(formName));
-  }, [modalValues]);
 
   const renderAddRockModalContent = () => {
     return (
@@ -80,7 +83,7 @@ const AddRockModal = (props) => {
   const renderForm = (formProps) => {
     return (
       <React.Fragment>
-        {props.modalKey === PAGE_KEYS.ROCK_TYPE_IGNEOUS && (
+        {Object.keys(IGNEOUS_ROCK_TYPES).includes(petKey) && (
           <AddRockIgneousModal
             formRef={formRef}
             survey={survey}
@@ -93,7 +96,17 @@ const AddRockModal = (props) => {
             setChoices={setChoices}
           />
         )}
-        {props.modalKey !== PAGE_KEYS.ROCK_TYPE_IGNEOUS && (
+        {petKey === PAGE_KEYS.ROCK_TYPE_ALTERATION_ORE && (
+          <AddRockAlterationOreModal
+            formRef={formRef}
+            survey={survey}
+            choices={choices}
+            setChoicesViewKey={setChoicesViewKey}
+            formName={['pet', petKey]}
+            formProps={formProps}
+          />
+        )}
+        {petKey === PAGE_KEYS.ROCK_TYPE_METAMORPHIC && (
           <Form
             {...{
               formName: ['pet', petKey],
