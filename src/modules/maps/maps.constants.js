@@ -25,7 +25,7 @@ export const MAP_MODES = {
   EDIT: 'edit',
 };
 
-const DEFAULT_MAPS = [
+export const DEFAULT_MAPS = [
   {
     title: 'Mapbox Topo',
     id: 'mapbox.outdoors',
