@@ -9,6 +9,7 @@ import useDeviceHook from '../../../services/useDevice';
 import useServerRequesteHook from '../../../services/useServerRequests';
 import {isEmpty} from '../../../shared/Helpers';
 import {addedStatusMessage, removedLastStatusMessage} from '../../home/home.slice';
+import {DEFAULT_MAPS} from '../maps.constants';
 import {setCurrentBasemap} from '../maps.slice';
 import {setOfflineMap} from './offlineMaps.slice';
 
@@ -292,10 +293,16 @@ const useMapsOffline = () => {
     dispatch(setCurrentBasemap(tempCurrentBasemap));
   };
 
-  const updateMapTileCount = async () => {
+  const getMapNameFromId = (map) => {
+    const mapObj = DEFAULT_MAPS.find(mapType => mapType.id === map);
+    return mapObj.title;
+  };
+
+  const updateMapTileCount = async (mapId) => {
     try {
       let mapName;
-      let tileCount = await RNFS.readDir(tileCacheDirectory + '/' + currentBasemap.id + '/tiles');
+      let basemap = mapId ? mapId : currentBasemap.id;
+      let tileCount = await RNFS.readDir(tileCacheDirectory + '/' + basemap + '/tiles');
       tileCount = tileCount.length;
 
       let currentOfflineMaps = Object.values(offlineMaps);
@@ -305,17 +312,17 @@ const useMapsOffline = () => {
         currentOfflineMaps = [];
       }
 
-      const customMap = Object.values(customMaps).filter(map => currentBasemap.id === map.id);
+      const customMap = Object.values(customMaps).filter(map => basemap === map.id);
       console.log(customMap);
       if (source === 'strabo_spot_mapbox' || source === 'osm' || source === 'macrostrat') mapName = currentMapName;
       else mapName = customMap[0].title;
 
       let newOfflineMapsData = [];
       let thisMap = {};
-      thisMap.id = currentBasemap.id;
-      thisMap.name = mapName;
+      thisMap.id = basemap;
+      thisMap.name = mapId ? getMapNameFromId(mapId) : mapName;
       thisMap.count = tileCount;
-      thisMap.source = source;
+      thisMap.source = !mapId ? source : undefined;
       // thisMap.mapId = new Date().valueOf();
       thisMap.mapId = zipUID;
       thisMap.date = new Date().toLocaleString();
@@ -325,7 +332,7 @@ const useMapsOffline = () => {
       //loop over offlineMapsData and add any other maps (not current)
       for (let i = 0; i < currentOfflineMaps.length; i++) {
         if (currentOfflineMaps[i].id) {
-          if (currentOfflineMaps[i].id !== currentBasemap.id) {
+          if (currentOfflineMaps[i].id !== basemap) {
             //Add it to new array for Redux Storage
             newOfflineMapsData.push(currentOfflineMaps[i]);
           }
@@ -333,10 +340,8 @@ const useMapsOffline = () => {
       }
 
       const mapSavedObject = Object.assign({}, ...newOfflineMapsData.map(map => ({[map.id]: map})));
-      console.log('Map to save to Redux', mapSavedObject);
-
       await dispatch(setOfflineMap(mapSavedObject));
-      console.log('Saved offlineMaps to Redux.');
+      console.log('Map to save to Redux', mapSavedObject);
     }
     catch (err) {
       console.error('Error updating map object', err);
