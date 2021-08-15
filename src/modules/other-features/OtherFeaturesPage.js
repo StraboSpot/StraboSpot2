@@ -26,7 +26,10 @@ const OtherFeaturesPage = () => {
   }, []);
 
   useEffect(() => {
-    if (isEmpty(selectedAttributes)) setSelectedFeature({});
+    if (isEmpty(selectedAttributes)) {
+      setSelectedFeature({});
+      setIsFeatureDetailVisible(false);
+    }
     else if (!isMultipleFeaturesTaggingEnabled) {
       setSelectedFeature(selectedAttributes[0]);
       setIsFeatureDetailVisible(true);
