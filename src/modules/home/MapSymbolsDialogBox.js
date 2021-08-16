@@ -1,5 +1,5 @@
 import React from 'react';
-import {FlatList, Platform, Dimensions, Switch, View} from 'react-native';
+import {Dimensions, FlatList, Platform, Switch, View} from 'react-native';
 
 import {ButtonGroup, ListItem} from 'react-native-elements';
 import Dialog, {DialogContent, DialogTitle} from 'react-native-popup-dialog';
@@ -30,8 +30,7 @@ const MapSymbolsDialog = (props) => {
   const [useMeasurements] = useMeasurementsHook();
 
   const getSymbolTitle = (symbol) => {
-    const label = toTitleCase(useMeasurements.getLabel(symbol));
-    return label.endsWith('y') ? label.slice(0, -1) + 'ies' : label + 's';
+    return toTitleCase(useMeasurements.getLabel(symbol));
   };
 
   const renderSymbolsList = ({item, index}) => {
