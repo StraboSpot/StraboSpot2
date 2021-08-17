@@ -42,6 +42,7 @@ const homeConfig = {
   blacklist: ['statusMessages', 'imageProgress', 'isOnline', 'loading', 'modalValues', 'modalVisible', 'isStatusMessagesModalVisible',
     'isErrorMessagesModalVisible', 'isProjectLoadSelectionModalVisible', 'isOfflineMapModalVisible',
     'isInfoModalVisible', 'isImageModalVisible', 'isMainMenuPanelVisible', 'isProjectLoadComplete'],
+  whitelist: ['isSignedIn'],
 };
 
 const notebookConfig = {
