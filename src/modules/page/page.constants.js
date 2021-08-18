@@ -9,6 +9,7 @@ import ImagesOverview from '../images/ImagesOverview';
 import ImagesViewPage from '../images/ImagesViewPage';
 import MeasurementsOverview from '../measurements/MeasurementsOverview';
 import MeasurementsPage from '../measurements/MeasurementsPage';
+import Metadata from '../metadata/Metadata';
 import Nesting from '../nesting/Nesting';
 import NotesPage from '../notes/Notes';
 import NotesOverview from '../notes/NotesOverview';
@@ -44,6 +45,7 @@ export const PAGE_KEYS = {
   INTERPRETATIONS: 'interpretations',
   LITHOLOGIES: 'lithologies',
   MEASUREMENTS: 'orientation_data',
+  METADATA: 'metadata',
   MINERALS: 'minerals',
   NESTING: 'nesting',
   NOTES: 'notes',
@@ -157,7 +159,11 @@ export const SUBPAGES = [
     key: PAGE_KEYS.NESTING,
     label: 'Nesting',
     page_component: Nesting,
-  },
+}, {
+  key: PAGE_KEYS.METADATA,
+    label: 'Metadata',
+    page_component: Metadata,
+},
 ];
 
 export const PET_PAGES = [
