@@ -17,51 +17,63 @@ const useServerRequests = () => {
 
   const authenticateUser = async (username, password) => {
     const authenticationBaseUrl = baseUrl.slice(0, baseUrl.lastIndexOf('/')); //URL to send authentication API call
-      let response = await timeoutPromise(30000, fetch(authenticationBaseUrl + '/userAuthenticate',
-        {
-          method: 'POST',
-          headers: {
-            // TODO: ?? does not work when Accept is uncommented ??
-            // Accept: 'application/json; charset=UTF-8',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(
-            {email: username, password: password},
-          ),
+    let response = await timeoutPromise(30000, fetch(authenticationBaseUrl + '/userAuthenticate',
+      {
+        method: 'POST',
+        headers: {
+          // TODO: ?? does not work when Accept is uncommented ??
+          // Accept: 'application/json; charset=UTF-8',
+          'Content-Type': 'application/json',
         },
-      ));
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.log('RESPONSE TEXT', errorText);
-        Alert.alert('Server Error!', 'The server is temporarily unable to service your request due to'
-          + ' maintenance downtime or capacity\n' + 'problems. Please try again later.');
-      }
-      else return await response.json();
+        body: JSON.stringify(
+          {email: username, password: password},
+        ),
+      },
+    ));
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.log('RESPONSE TEXT', errorText);
+      Alert.alert('Server Error!', 'The server is temporarily unable to service your request due to'
+        + ' maintenance downtime or capacity\n' + 'problems. Please try again later.');
+    }
+    else return await response.json();
   };
 
   const request = async (method, urlPart, login, ...otherParams) => {
-    const response = await timeoutPromise(10000, fetch(baseUrl + urlPart, {
-      method: method,
-      headers: {
-        Authorization: 'Basic ' + login + '/',
-        'Content-Type': 'application/json',
-      },
-      // body: JSON.stringify({data: data}),
-      ...otherParams,
-    }));
-    return handleResponse(response);
+    try {
+      const response = await timeoutPromise(10000, fetch(baseUrl + urlPart, {
+        method: method,
+        headers: {
+          Authorization: 'Basic ' + login + '/',
+          'Content-Type': 'application/json',
+        },
+        // body: JSON.stringify({data: data}),
+        ...otherParams,
+      }));
+      return handleResponse(response);
+    }
+    catch (err) {
+      console.error('Error Fetching', err);
+      Alert.alert('Error', `${err.toString()}`);
+    }
   };
 
   const post = async (urlPart, login, data) => {
-    const response = await fetch(baseUrl + urlPart, {
-      method: 'POST',
-      body: JSON.stringify(data),
-      headers: {
-        Authorization: 'Basic ' + login,
-        'Content-Type': 'application/json',
-      },
-    });
-    return handleResponse(response);
+    try {
+      const response = await fetch(baseUrl + urlPart, {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+          Authorization: 'Basic ' + login,
+          'Content-Type': 'application/json',
+        },
+      });
+      return handleResponse(response);
+    }
+    catch (err) {
+      console.error('Error Posting', err);
+      Alert.alert('Error', `${err.toString()}`);
+    }
   };
 
   const getDataset = (datasetId) => {
@@ -135,7 +147,7 @@ const useServerRequests = () => {
   };
 
   const getMapTilesFromHost = async (zipUrl) => {
-    const response = await timeoutPromise(30000,fetch(zipUrl));
+    const response = await timeoutPromise(30000, fetch(zipUrl));
     return await response.json();
   };
 

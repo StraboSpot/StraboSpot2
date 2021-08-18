@@ -39,10 +39,10 @@ const compassConfig = {
 const homeConfig = {
   key: 'home',
   storage: AsyncStorage,
-  blacklist: ['statusMessages', 'imageProgress', 'isOnline', 'loading', 'modalValues', 'modalVisible', 'isStatusMessagesModalVisible',
+  blacklist: ['statusMessages', 'imageProgress', 'loading', 'modalValues', 'modalVisible', 'isStatusMessagesModalVisible',
     'isErrorMessagesModalVisible', 'isProjectLoadSelectionModalVisible', 'isOfflineMapModalVisible',
     'isInfoModalVisible', 'isImageModalVisible', 'isMainMenuPanelVisible', 'isProjectLoadComplete'],
-  whitelist: ['isSignedIn'],
+  whitelist: ['isSignedIn', 'isOnline'],
 };
 
 const notebookConfig = {

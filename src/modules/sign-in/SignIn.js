@@ -78,7 +78,7 @@ const SignIn = (props) => {
     try {
       const userAuthResponse = await serverRequests.authenticateUser(username, password);
       // login with provider
-      if (userAuthResponse.valid === 'true') {
+      if (userAuthResponse?.valid === 'true') {
         const encodedLogin = Base64.encode(username + ':' + password);
         updateUserResponse(encodedLogin).then((userState) => {
           console.log(`${username} is successfully logged in!`);
@@ -192,7 +192,7 @@ const SignIn = (props) => {
           zIndex: -1,
         }}>
           <IconButton
-            source={isOnline ? onlineIcon : offlineIcon}
+            source={isOnline.isInternetReachable ? onlineIcon : offlineIcon}
           />
         </View>
         <View>
