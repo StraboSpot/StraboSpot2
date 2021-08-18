@@ -30,6 +30,7 @@ const SignIn = (props) => {
   const [textInputAnimate] = useState(new Animated.Value(0));
 
   const dispatch = useDispatch();
+  const currentProject = useSelector(state => state.project.project);
   const isOnline = useSelector(state => state.home.isOnline);
   const user = useSelector(state => state.user);
 
@@ -68,6 +69,7 @@ const SignIn = (props) => {
     });
     if (!isEmpty(user.name)) await dispatch({type: 'CLEAR_STORE'});
     console.log('Loading user: GUEST');
+    isEmpty(currentProject) && dispatch(setProjectLoadSelectionModalVisible(true));
     await navigation.navigate('HomeScreen');
   };
 
@@ -112,7 +114,7 @@ const SignIn = (props) => {
           containerStyle={{marginTop: 30}}
           onPress={() => signIn()}
           buttonStyle={styles.buttonStyle}
-          disabled={!isOnline}
+          disabled={username === '' || password === ''}
           title={'Sign In'}
         />
         <Button
@@ -127,7 +129,7 @@ const SignIn = (props) => {
           containerStyle={{marginTop: 10}}
           onPress={() => createAccount()}
           buttonStyle={styles.buttonStyle}
-          disabled={!isOnline}
+          // disabled={!isOnline}
           title={'Create an Account'}
         />
         <Button
