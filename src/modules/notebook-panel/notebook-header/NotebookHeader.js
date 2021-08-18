@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
-import {Image, TextInput, View} from 'react-native';
+import {TextInput, View} from 'react-native';
 
 import * as turf from '@turf/turf';
-import {Button} from 'react-native-elements';
+import {Button, Image} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {isEmpty, toTitleCase} from '../../../shared/Helpers';
@@ -154,6 +154,7 @@ const NotebookHeader = (props) => {
       <Image
         source={useSpots.getSpotGemometryIconSource(spot)}
         style={headerStyles.headerImage}
+        onPress={() => dispatch(setNotebookPageVisible(PAGE_KEYS.METADATA))}
       />
       <View style={headerStyles.headerSpotNameAndCoordsContainer}>
         <TextInput
