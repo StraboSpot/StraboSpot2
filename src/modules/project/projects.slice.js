@@ -8,7 +8,10 @@ const initialProjectState = {
   selectedDatasetId: undefined,
   project: {},
   datasets: {},
-  databaseEndpoint: 'https://strabospot.org/db',
+  databaseEndpoint: {
+    url: null,
+    isSelected: false,
+  },
   deviceBackUpDirectoryExists: false,
   isTestingMode: false,
   selectedProject: {

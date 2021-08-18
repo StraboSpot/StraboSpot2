@@ -23,8 +23,7 @@ const Miscellaneous = () => {
 
   const formRef = useRef('null');
 
-  const defaultEndpoint = 'http://strabospot.org/db';
-  const initialValues = {database_endpoint: isEmpty(databaseEndpoint) ? defaultEndpoint : databaseEndpoint};
+  const initialValues = {database_endpoint: databaseEndpoint.url};
   const testingModePassword = 'Strab0R0cks';
   const errorMessage = 'Wrong Password!';
 
@@ -48,12 +47,12 @@ const Miscellaneous = () => {
       await formRef.current.setFieldValue(name, trimmedValue);
       await formRef.current.submitForm();
       console.log('Saving naming convention preferences to Project ...', formRef.current.values);
-      dispatch(setDatabaseEndpoint(formRef.current.values.database_endpoint));
+      dispatch(setDatabaseEndpoint({...databaseEndpoint, url: formRef.current.values.database_endpoint}));
     }
     else {
       await formRef.current.setFieldValue(name, trimmedValue);
       await formRef.current.submitForm();
-      dispatch(setDatabaseEndpoint(formRef.current.values.database_endpoint));
+      dispatch(setDatabaseEndpoint(formRef.current.values.database_endpoint.databaseEndpoint.url));
     }
   };
 

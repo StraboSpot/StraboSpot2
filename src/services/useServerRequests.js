@@ -4,7 +4,10 @@ import * as Sentry from '@sentry/react-native';
 import {useSelector} from 'react-redux';
 
 const useServerRequests = () => {
-  const baseUrl = useSelector(state => state.project.databaseEndpoint);
+  const databaseEndpoint = useSelector(state => state.project.databaseEndpoint);
+  const baseUrl = databaseEndpoint.url && databaseEndpoint.isSelected
+    ? databaseEndpoint.url
+    : 'https://strabospot.org/db';
   const mapWarperApi = 'http://mapwarper.net/api/v1/maps/';
   const straboMyMapsApi = 'https://strabospot.org/geotiff/bbox/';
   const tilehost = 'http://tiles.strabospot.org/';
