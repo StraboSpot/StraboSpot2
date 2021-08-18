@@ -96,7 +96,7 @@ const useProject = () => {
       useContinuousTagging: false,
     };
     dispatch(addedProjectDescription(currentProject));
-    const defaultDataset = await createDataset();
+    const defaultDataset = createDataset();
     dispatch(addedDataset(defaultDataset));
   };
 

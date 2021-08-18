@@ -26,15 +26,18 @@ const projectSlice = createSlice({
   reducers: {
     addedCustomFeatureTypes(state, action) {
       state.project.other_features = action.payload;
+      state.project.modified_timestamp = Date.now();
     },
     addedDataset(state, action) {
       state.datasets = {...state.datasets, [action.payload.id]: action.payload};
+      state.project.modified_timestamp = Date.now();
     },
     addedDatasets(state, action) {
       state.datasets = action.payload;
     },
     addedMeasurementTemplates(state, action) {
       state.project.templates.measurementTemplates = action.payload;
+      state.project.modified_timestamp = Date.now();
     },
     addedProject(state, action) {
       if (!action.payload.description) action.payload.description = {};
@@ -48,9 +51,7 @@ const projectSlice = createSlice({
           activeMeasurementTemplates: [],
         };
       }
-      if (!action.payload.useContinuousTagging) {
-        action.payload.useContinuousTagging = false;
-      }
+      if (!action.payload.useContinuousTagging) action.payload.useContinuousTagging = false;
       state.project = action.payload;
     },
     addedProjectDescription(state, action) {
@@ -58,22 +59,30 @@ const projectSlice = createSlice({
     },
     addedSpotsIdsToDataset(state, action) {
       const {datasetId, spotIds} = action.payload;
+      const timestamp = Date.now();
       const spotIdsInDataset = state.datasets[datasetId].spotIds
         ? [...state.datasets[action.payload.datasetId].spotIds, ...spotIds]
         : spotIds;
       const spotIdsUnique = [...new Set(spotIdsInDataset)];
-      const dataset = {...state.datasets[datasetId], spotIds: spotIdsUnique};
+      const dataset = {...state.datasets[datasetId], modified_timestamp: timestamp, spotIds: spotIdsUnique};
       state.datasets = {...state.datasets, [datasetId]: dataset};
+      state.project.modified_timestamp = timestamp;
     },
     addedNeededImagesToDataset(state, action) {
       const {datasetId, images} = action.payload;
+      const timestamp = Date.now();
       const imagesInDataset = state.datasets[datasetId].images
         ? {...state.datasets[datasetId].images, ...images}
         : images;
-      state.datasets = {...state.datasets, [datasetId]: {...state.datasets[datasetId], images: imagesInDataset}};
+      state.datasets = {
+        ...state.datasets,
+        [datasetId]: {...state.datasets[datasetId], modified_timestamp: timestamp, images: imagesInDataset},
+      };
+      state.project.modified_timestamp = timestamp;
     },
     addedTagToSelectedSpot(state, action) {
       state.addTagToSelectedSpot = action.payload;
+      state.project.modified_timestamp = Date.now();
     },
     clearedDatasets(state) {
       state.datasets = {};
@@ -87,6 +96,7 @@ const projectSlice = createSlice({
       const {[action.payload]: deletedDataset, ...datasetsList} = state.datasets;  // Delete key with action.id from object
       state.datasets = datasetsList;
       state.activeDatasetsIds = state.activeDatasetsIds.filter(activeDatasetId => activeDatasetId !== action.payload);
+      state.project.modified_timestamp = Date.now();
     },
     deletedSpotIdFromTags(state, action) {
       const spotId = action.payload;
@@ -104,16 +114,19 @@ const projectSlice = createSlice({
           return updatedTag;
         });
         state.project.tags = updatedTags;
+        state.project.modified_timestamp = Date.now();
         state.selectedTag = updatedTags.find(tag => tag.id === state.selectedTag.id) || {};
       }
     },
     deletedSpotIdFromDataset(state, action) {
       const spotId = action.payload;
+      const timestamp = Date.now();
       const updatedDatatsets = Object.entries(state.datasets).reduce((acc, [datasetId, dataset]) => {
         const remainingSpotIds = dataset.spotIds?.filter(id => id !== spotId) || [];
-        return {...acc, [datasetId]: {...dataset, spotIds: remainingSpotIds}};
+        return {...acc, [datasetId]: {...dataset, modified_timestamp: timestamp, spotIds: remainingSpotIds}};
       }, {});
       state.datasets = updatedDatatsets;
+      state.project.modified_timestamp = timestamp;
     },
     doesBackupDirectoryExist(state, action) {
       state.deviceBackUpDirectoryExists = action.payload;
@@ -156,28 +169,24 @@ const projectSlice = createSlice({
       state.project.useContinuousTagging = action.payload;
     },
     updatedDatasetProperties(state, action) {
+      const timestamp = Date.now();
       console.log('UpdatedDataset', action.payload);
       state.datasets[action.payload.id].name = action.payload.name;
+      state.datasets[action.payload.id].modified_timestamp = timestamp;
+      state.project.modified_timestamp = timestamp;
     },
     updatedDatasets(state, action) {
       state.datasets = action.payload;
     },
     updatedProject(state, action) {
       const {field, value} = action.payload;
-      if (field === 'description') {
-        state.project.description = value;
-      }
-      if (field === 'preferences') {
-        state.project.preferences = value;
-      }
-      else {
-        if (field === 'tags' && !isEmpty(state.selectedTag)) {
-          state.selectedTag = value.find(tag => tag.id === state.selectedTag.id);
-        }
+      if (field === 'description') state.project.description = value;
+      else if (field === 'preferences') state.project.preferences = value;
+      else if (field === 'tags' && !isEmpty(state.selectedTag)) {
+        state.selectedTag = value.find(tag => tag.id === state.selectedTag.id);
       }
       state.project[field] = value;
       state.project.modified_timestamp = Date.now();
-      state.project.date = new Date().toISOString();
     },
   },
 });
