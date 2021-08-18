@@ -7,6 +7,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
+import SectionDivider from '../../shared/ui/SectionDivider';
 import StandardModal from '../../shared/ui/StandardModal';
 import {TextInputField} from '../form';
 import {setDatabaseEndpoint, setTestingMode} from '../project/projects.slice';
@@ -19,7 +20,6 @@ const Miscellaneous = () => {
   const [isErrorMessage, setIsErrorMessage] = useState(false);
   const [isTestingModalVisible, setIsTestingModalVisible] = useState(false);
   const [password, setPassword] = useState('');
-  const [switchValue, setSwitchValue] = useState(isTestingMode);
 
   const formRef = useRef('null');
 
@@ -32,8 +32,12 @@ const Miscellaneous = () => {
     if (isEmpty(password)) setIsErrorMessage(false);
   }, [password]);
 
+  useEffect(() => {
+    isTestingMode ? setIsTestingModalVisible(true) : setIsTestingModalVisible(false);
+  }, [isTestingMode]);
+
   const closeModal = () => {
-    setSwitchValue(false);
+    dispatch(setTestingMode(false));
     setIsTestingModalVisible(false);
     setIsErrorMessage(false);
   };
@@ -53,13 +57,12 @@ const Miscellaneous = () => {
     }
   };
 
-  const onSwitchChange = (value) => {
-    setSwitchValue(value);
-    if (value) setIsTestingModalVisible(true);
-    else {
-      dispatch(setTestingMode(false));
-      setIsTestingModalVisible(false);
-    }
+  const onEndpointSwitchChange = (value) => {
+    dispatch(setDatabaseEndpoint({...databaseEndpoint, isSelected: value}));
+  };
+
+  const onTestingSwitchChange = (value) => {
+    dispatch(setTestingMode(value));
   };
 
   const userEntry = (value) => {
@@ -97,30 +100,50 @@ const Miscellaneous = () => {
   };
 
   const renderEndpointFieldContent = () => (
-    <ListItem style={commonStyles.listItemFormField}>
-      <ListItem.Content>
-        <Field
-          onMyChange={onMyChange}
-          component={TextInputField}
-          key={'database_endpoint'}
-          name={'database_endpoint'}
-          label={'Specify Database Endpoint'}
-          onShowFieldInfo={renderInfoAlert}
+    <React.Fragment>
+      <SectionDivider dividerText={'Custom Database Endpoint'}/>
+      <ListItem containerStyle={commonStyles.listItem}>
+        <ListItem.Content>
+          <ListItem.Title style={commonStyles.listItemTitle}>Use Custom Endpoint?</ListItem.Title>
+        </ListItem.Content>
+        <Switch
+          value={databaseEndpoint.isSelected}
+          onValueChange={onEndpointSwitchChange}
         />
-      </ListItem.Content>
-    </ListItem>
+      </ListItem>
+      {databaseEndpoint.isSelected && (
+        <ListItem containerStyle={commonStyles.listItemFormField}>
+          <ListItem.Content>
+            <Field
+              autoCapitalize={'none'}
+              onMyChange={onMyChange}
+              component={TextInputField}
+              key={'database_endpoint'}
+              name={'database_endpoint'}
+              placeholder={'http://'}
+              onShowFieldInfo={renderInfoAlert}
+              keyboardType={'url'}
+            />
+          </ListItem.Content>
+        </ListItem>
+      )}
+    </React.Fragment>
+
   );
 
   const renderTestingModeField = () => (
-    <ListItem style={commonStyles.listItem}>
-      <ListItem.Content>
-        <ListItem.Title style={commonStyles.listItemTitle}>Testing Mode</ListItem.Title>
-      </ListItem.Content>
-      <Switch
-        value={switchValue}
-        onValueChange={(value) => onSwitchChange(value)}
-      />
-    </ListItem>
+    <React.Fragment>
+      <SectionDivider dividerText={'Testing Mode'}/>
+      <ListItem containerStyle={commonStyles.listItem}>
+        <ListItem.Content>
+          <ListItem.Title style={commonStyles.listItemTitle}>Use Testing Mode?</ListItem.Title>
+        </ListItem.Content>
+        <Switch
+          value={isTestingMode}
+          onValueChange={onTestingSwitchChange}
+        />
+      </ListItem>
+    </React.Fragment>
   );
 
   const verifyPassword = () => {
@@ -136,6 +159,7 @@ const Miscellaneous = () => {
       innerRef={formRef}
       onSubmit={(values, actions) => console.log('Submitting Form', values)}
       initialValues={initialValues}
+      enableReinitialize
     >
       <React.Fragment>
         {renderEndpointFieldContent()}
