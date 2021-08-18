@@ -14,11 +14,11 @@ import ListEmptyText from '../../shared/ui/ListEmptyText';
 import modalStyle from '../../shared/ui/modal/modal.style';
 import {SelectInputField} from '../form';
 import {MODAL_KEYS} from '../home/home.constants';
+import {setModalVisible} from '../home/home.slice';
 import useMapsHook from '../maps/useMaps';
 import {TAG_TYPES} from '../project/project.constants';
 import {addedTagToSelectedSpot} from '../project/projects.slice';
 import {TagDetailModal, useTagsHook} from '../tags';
-import {setModalVisible} from '../home/home.slice';
 
 const TagsModal = (props) => {
   const dispatch = useDispatch();

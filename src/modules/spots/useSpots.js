@@ -7,7 +7,7 @@ import {setModalVisible} from '../home/home.slice';
 import {NOTEBOOK_PAGES, PAGE_KEYS, PET_PAGES, SED_PAGES} from '../page/page.constants';
 import {
   addedSpotsIdsToDataset,
-  deletedSpotIdFromDataset,
+  deletedSpotIdFromDatasets,
   deletedSpotIdFromTags,
   updatedProject,
 } from '../project/projects.slice';
@@ -158,7 +158,7 @@ const useSpots = () => {
   const deleteSpot = (spotId) => {
     console.log('Deleting Spot ID', spotId, '...');
     dispatch(deletedSpotIdFromTags(spotId));
-    dispatch(deletedSpotIdFromDataset(spotId));
+    dispatch(deletedSpotIdFromDatasets(spotId));
     dispatch(deletedSpot(spotId));
     dispatch(setModalVisible({modal: null}));
   };

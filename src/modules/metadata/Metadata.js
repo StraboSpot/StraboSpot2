@@ -1,5 +1,5 @@
 import React, {useRef} from 'react';
-import {FlatList, View} from 'react-native';
+import {Alert, FlatList, View} from 'react-native';
 
 import {Field, Formik} from 'formik';
 import {ListItem} from 'react-native-elements';
@@ -11,18 +11,36 @@ import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {DateInputField, NumberInputField, TextInputField, useFormHook} from '../form';
 import {setNotebookPageVisibleToPrev} from '../notebook-panel/notebook.slice';
+import {addedSpotsIdsToDataset, deletedSpotIdFromDataset} from '../project/projects.slice';
 import {addedSpot} from '../spots/spots.slice';
 
 const Metadata = () => {
   const [useForm] = useFormHook();
 
   const dispatch = useDispatch();
+  const datasets = useSelector(state => state.project.datasets);
   const spot = useSelector(state => state.spot.selectedSpot);
 
   const metadataFormRef = useRef(null);
 
   const cancelFormAndGo = () => {
     dispatch(setNotebookPageVisibleToPrev());
+  };
+
+  const handleDatasetChecked = (datasetChecked) => {
+    const datasetsWithThisSpot = Object.values(datasets).reduce((acc, dataset) => {
+      return dataset.spotIds.includes(spot.properties.id) ? [...acc, dataset.id] : acc;
+    }, []);
+
+    if (datasetsWithThisSpot.length === 1 && datasetsWithThisSpot.includes(datasetChecked.id)) {
+      Alert.alert('Unable to Remove Spot from Dataset', 'One dataset must remain checked.');
+    }
+    else {
+      if (datasetChecked.spotIds.includes(spot.properties.id)) {
+        dispatch(deletedSpotIdFromDataset({datasetId: datasetChecked.id, spotId: spot.properties.id}));
+      }
+      else dispatch(addedSpotsIdsToDataset({datasetId: datasetChecked.id, spotIds: [spot.properties.id]}));
+    }
   };
 
   const renderCancelSaveButtons = () => {
@@ -99,6 +117,38 @@ const Metadata = () => {
     );
   };
 
+  const renderDatasetItem = (dataset) => {
+    const isChecked = dataset.spotIds.includes(spot.properties.id);
+    return (
+      <ListItem key={dataset.id.toString()} containerStyle={commonStyles.listItem}>
+        <ListItem.Content>
+          <ListItem.Title style={commonStyles.listItemTitle}>{dataset.name}</ListItem.Title>
+          <ListItem.Subtitle>
+            {dataset.spotIds
+              ? `(${dataset.spotIds.length} spot${dataset.spotIds.length !== 1 ? 's' : ''})`
+              : '(0 spots)'}
+          </ListItem.Subtitle>
+        </ListItem.Content>
+        <ListItem.CheckBox
+          checked={isChecked}
+          onPress={() => handleDatasetChecked(dataset)}
+        />
+      </ListItem>
+    );
+  };
+
+  const renderDatasets = () => {
+    return (
+      <React.Fragment>
+        <SectionDivider dividerText={'Datasets'}/>
+        <FlatList
+          data={Object.values(datasets)}
+          renderItem={({item}) => renderDatasetItem(item)}
+        />
+      </React.Fragment>
+    );
+  };
+
   const saveForm = async () => {
     try {
       await metadataFormRef.current.submitForm();
@@ -136,6 +186,7 @@ const Metadata = () => {
           <React.Fragment>
             <SectionDivider dividerText='Metadata'/>
             {renderMetadataForm()}
+            {renderDatasets()}
           </React.Fragment>
         }
       />

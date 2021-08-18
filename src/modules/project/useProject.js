@@ -23,7 +23,7 @@ import {
   addedProjectDescription,
   clearedDatasets,
   deletedDataset,
-  deletedSpotIdFromDataset,
+  deletedSpotIdFromDatasets,
   setActiveDatasets,
   setSelectedDataset,
   setSelectedProject,
@@ -110,7 +110,7 @@ const useProject = () => {
         let spotsDeletedCount = 0;
         console.log(datasets[id].spotIds.length, 'Spot(s) in Dataset to Delete.');
         await Promise.all(datasets[id].spotIds.map(spotId => {
-            dispatch(deletedSpotIdFromDataset(spotId));
+            dispatch(deletedSpotIdFromDatasets(spotId));
             dispatch(deletedSpot(spotId));
             spotsDeletedCount++;
             console.log('Deleted', spotsDeletedCount, 'Spot(s)');
