@@ -124,7 +124,7 @@ const ManageOfflineMaps = (props) => {
             <ListItem.Title style={styles.itemSubTextStyle}>{`(${item.count} tiles)`}</ListItem.Title>
           </View>
           <View style={styles.itemSubContainer}>
-            {isOnline && <Button
+            {isOnline.isInternetReachable && <Button
               onPress={() => toggleOfflineMap(item)}
               titleStyle={commonStyles.viewMapsButtonText}
               type={'clear'}
@@ -158,7 +158,7 @@ const ManageOfflineMaps = (props) => {
     <React.Fragment>
       <Button
         title={'Download tiles of current map'}
-        disabled={!isOnline || Object.values(offlineMaps).some(map => map.isOfflineMapVisible === true)}
+        disabled={!isOnline.isInternetReachable || Object.values(offlineMaps).some(map => map.isOfflineMapVisible === true)}
         onPress={() => {
           props.closeMainMenuPanel();
           dispatch(setOfflineMapsModalVisible(true));

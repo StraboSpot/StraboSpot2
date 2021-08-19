@@ -39,7 +39,7 @@ const useProject = () => {
   const selectedDatasetId = useSelector(state => state.project.selectedDatasetId);
   const selectedProject = useSelector(state => state.project.selectedProject || {});
   const user = useSelector(state => state.user);
-  const isOnline = useSelector(state => state.home.isOnline);
+  // const isOnline = useSelector(state => state.home.isOnline);
 
   const [serverRequests] = useServerRequests();
   const useDownload = useDownloadHook();
@@ -195,9 +195,9 @@ const useProject = () => {
     return Promise.resolve();
   };
 
-  const setSwitchValue = async (val, dataset) => {
+  const setSwitchValue = async (val, dataset) => { //TODO look at setSwitchValue to see if condition is needed.
     try {
-      if (isOnline && !isEmpty(user.name) && val) {
+      if (!isEmpty(user.name) && val) {
         dispatch(setActiveDatasets({bool: val, dataset: dataset.id}));
         dispatch(setSelectedDataset(dataset.id));
       }

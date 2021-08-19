@@ -46,7 +46,7 @@ const BackUpOverwriteModal = (props) => {
               style={styles.dialogButton}
               textStyle={styles.dialogButtonText}
             />
-            {isOnline && <DialogButton
+            {isOnline.isConnected && <DialogButton
               text={'Backup Project to Server'}
               onPress={() => props.onPress(ProjectActions.BACKUP_TO_SERVER)}
               style={styles.dialogButton}

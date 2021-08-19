@@ -169,8 +169,8 @@ const Map = React.forwardRef((props, ref) => {
   useEffect(() => {
     console.log('UE3 Map [user]');
     console.log('Updating DOM on first render');
-    if (isOnline && !currentBasemap) useMaps.setBasemap().catch(console.error);
-    else if (isOnline && currentBasemap) {
+    if (isOnline.isInternetReachable && !currentBasemap) useMaps.setBasemap().catch(console.error);
+    else if (isOnline.isInternetReachable && currentBasemap) {
       console.log('ITS IN THIS ONE!!!! -isOnline && currentBasemap');
       // Alert.alert('Online Basemap', `${JSON.stringify(currentBasemap.id)}`);
       useMaps.setBasemap(currentBasemap.id).catch(error => {
@@ -183,7 +183,7 @@ const Map = React.forwardRef((props, ref) => {
         // Sentry.captureException(error);
       });
     }
-    else if (!isOnline && isOnline !== null && currentBasemap) {
+    else if (!isOnline.isInternetReachable && isOnline.isInternetReachable !== null && currentBasemap) {
       console.log('ITS IN THIS ONE!!!! -!isOnline && isOnline !== null && currentBasemap');
       useOfflineMaps.switchToOfflineMap().catch(error => console.log('Error Setting Offline Basemap', error));
     }
@@ -1346,7 +1346,7 @@ const Map = React.forwardRef((props, ref) => {
   };
 
   const zoomToCustomMap = (bbox) => {
-    if (bbox && isOnline) {
+    if (bbox && isOnline.isInternetReachable) {
       const bboxArr = bbox.split(',');
       cameraRef.current.fitBounds([Number(bboxArr[0]), Number(bboxArr[1])], [Number(bboxArr[2]), Number(bboxArr[3])],
         100, 2500);

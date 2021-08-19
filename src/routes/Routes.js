@@ -35,7 +35,7 @@ const Routes = () => {
       console.log('Connection type', networkState.type);
       console.log('Is connected?', networkState.isConnected);
       console.log('Is internet reachable?', networkState.isInternetReachable);
-      dispatch(setOnlineStatus(networkState.isConnected && networkState.isInternetReachable));
+      dispatch(setOnlineStatus(networkState));
     });
     return () => {
       console.log('Network Test unsubscribed');

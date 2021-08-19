@@ -48,7 +48,7 @@ const MapActionsDialog = props => {
         {/*  textStyle={styles.dialogText}*/}
         {/*  onPress={() => props.onPress('zoomToOfflineMap')}*/}
         {/*/>*/}
-        {isOnline ? (
+        {isOnline.isInternetReachable && (
           <DialogButton
             style={styles.dialogContent}
             text={

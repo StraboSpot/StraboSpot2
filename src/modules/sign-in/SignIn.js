@@ -129,7 +129,6 @@ const SignIn = (props) => {
           containerStyle={{marginTop: 10}}
           onPress={() => createAccount()}
           buttonStyle={styles.buttonStyle}
-          // disabled={!isOnline}
           title={'Create an Account'}
         />
         <Button

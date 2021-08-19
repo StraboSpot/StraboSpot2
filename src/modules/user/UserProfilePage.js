@@ -70,7 +70,7 @@ const UserProfile = (props) => {
     }
     console.log({...newValues, image: avatar.uri});
     dispatch(setUserData(newValues));
-    if (isOnline) upload(newValues).catch(err => console.error('Error:', err));
+    if (isOnline.isInternetReachable) upload(newValues).catch(err => console.error('Error:', err));
   };
 
   const saveImage = async () => {

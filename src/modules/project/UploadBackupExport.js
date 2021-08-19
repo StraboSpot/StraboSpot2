@@ -57,15 +57,14 @@ const UploadBackAndExport = (props) => {
     return (
       <View>
         <Button
-          // title={isOnline ? 'Upload project to StraboSpot' : 'Need to be ONLINE to upload'}
-          title={'Upload project to StraboSpot'}
+          title={isOnline.isConnected ? 'Upload project to StraboSpot' : 'Need to be connected to server'}
           buttonStyle={commonStyles.standardButton}
           titleStyle={commonStyles.standardButtonText}
           onPress={() => {
             dispatch(setSelectedProject({source: '', project: ''}));
             dispatch(setUploadModalVisible(true));
           }}
-          // disabled={!isOnline}
+          disabled={!isOnline.isConnected}
         />
         <Button
           title={'Backup project to device'}

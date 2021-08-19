@@ -32,7 +32,7 @@ const BaseMapDialog = props => {
 
   const conditions = ['http', 'https'];
 
-  const checkForCustomMaps = () => {
+  const checkForOfflineCustomMaps = () => {
     return Object.values(offlineMaps).some(map => {
       return map.source === 'map_warper' || map.source === 'strabospot_mymaps';
     });
@@ -52,7 +52,7 @@ const BaseMapDialog = props => {
       onTouchOutside={props.onTouchOutside}
     >
       <DialogContent>
-        {isOnline && (
+        {isOnline.isConnected && isOnline.isInternetReachable && (
           <View style={!isEmpty(customMaps) && {borderBottomWidth: 1}}>
             <SectionDivider dividerText={'Default Basemaps'}/>
             {BASEMAPS.map((map, i) => {
@@ -73,7 +73,7 @@ const BaseMapDialog = props => {
             })}
           </View>
         )}
-        {!isOnline && (
+        {!isOnline.isInternetReachable && (
           <View style={!isEmpty(customMaps) && {borderBottomWidth: 1}}>
             <SectionDivider dividerText={'Offline Default Basemaps'}/>
             {Object.values(offlineMaps).map((map, i) => {
@@ -97,7 +97,7 @@ const BaseMapDialog = props => {
             })}
           </View>
         )}
-        {!isOnline && checkForCustomMaps() && (
+        {!isOnline.isInternetReachable && checkForOfflineCustomMaps() && (
           <View style={!isEmpty(offlineMaps) && {borderBottomWidth: 1}}>
             <SectionDivider dividerText={'Offline Custom Basemaps'}/>
             {Object.values(offlineMaps).map((map, i) => {
@@ -126,7 +126,7 @@ const BaseMapDialog = props => {
           </View>
         )}
         <View>
-          {!isEmpty(customMaps) && customMapsArr.some(map => !map.overlay) && isOnline && (
+          {!isEmpty(customMaps) && customMapsArr.some(map => !map.overlay) && isOnline.isInternetReachable && (
             <ScrollView style={{maxHeight: 400}}>
               <SectionDivider dividerText={'Custom Basemaps'}/>
               {customMapsArr.map((customMap, i) => {
@@ -147,7 +147,7 @@ const BaseMapDialog = props => {
                           <ListItem.Title style={commonStyles.listItemTitle}>{customMap.title}</ListItem.Title>
                         </View>
                       </ListItem.Content>
-                      {isOnline && currentBasemap && customMap.id === currentBasemap.id
+                      {isOnline.isInternetReachable && currentBasemap && customMap.id === currentBasemap.id
                       && conditions.some(el => currentBasemap.url[0].includes(el))
                       && <Icon type={'ionicon'} color={themes.BLUE} name={'checkmark-outline'}/>}
                     </ListItem>

@@ -40,8 +40,9 @@ const ManageCustomMaps = (props) => {
           <ListItem.Subtitle>({mapTypeName(item.source)} - {item.id})</ListItem.Subtitle>
         </ListItem.Content>
         <Icon
-          disabled={!isOnline}
-          name={isOnline ? 'map-outline' : 'cloud-offline'}
+          disabled={!isOnline.isInternetReachable}
+          disabledStyle={{backgroundColor: 'transparent'}}
+          name={isOnline.isInternetReachable ? 'map-outline' : 'cloud-offline'}
           type={'ionicon'}
           color={PRIMARY_ACCENT_COLOR}
           onPress={async () => {

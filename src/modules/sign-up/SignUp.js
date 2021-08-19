@@ -92,14 +92,15 @@ const SignUp = (props) => {
   }, []);
 
   useEffect(() => {
-    if (isOnline === null) {
-      NetInfo.fetch().then(state => {
-        dispatch(setOnlineStatus(state.isConnected));
-      })
-        .catch(err => {
-          throw (err);
-        });
-    }
+    // if (isOnline === null) {
+    //   NetInfo.fetch().then(state => {
+    //     dispatch(setOnlineStatus(state));
+    //   })
+    //     .catch(err => {
+    //       throw (err);
+    //     });
+    // }
+    console.log('IsConnected in SignUp', isOnline)
   }, [isOnline]);
 
   const handleKeyboardDidShowSignUp = (event) => Helpers.handleKeyboardDidShow(event, TextInputState, textInputAnimate);
@@ -194,7 +195,7 @@ const SignUp = (props) => {
           title='Sign Up'
           buttonStyle={styles.buttonStyle}
           containerStyle={styles.buttonContainer}
-          disabled={!isOnline}
+          disabled={!isOnline.isInternetReachable}
           onPress={signUp}
         />
         <Button
@@ -217,7 +218,7 @@ const SignUp = (props) => {
           zIndex: -1,
         }}>
           <IconButton
-            source={isOnline ? online : offline}
+            source={isOnline.isInternetReachable ? online : offline}
           />
         </View>
         <View>
