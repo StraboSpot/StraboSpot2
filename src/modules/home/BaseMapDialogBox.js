@@ -77,7 +77,7 @@ const BaseMapDialog = props => {
           <View style={!isEmpty(customMaps) && {borderBottomWidth: 1}}>
             <SectionDivider dividerText={'Offline Default Basemaps'}/>
             {Object.values(offlineMaps).map((map, i) => {
-              if (map.source === 'strabo_spot_mapbox') {
+              if (map.source === 'strabo_spot_mapbox' || map.id === 'mapbox.outdoors' || map.id === 'mapbox.satellite') {
                 return (
                   <ListItem
                     key={map.id}

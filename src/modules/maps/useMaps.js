@@ -312,7 +312,7 @@ const useMaps = () => {
     let newBasemap = {};
     let bbox = '';
     if (!mapId) mapId = 'mapbox.outdoors';
-    newBasemap = await BASEMAPS.find(basemap => basemap.id === mapId);
+    newBasemap = BASEMAPS.find(basemap => basemap.id === mapId);
     if (newBasemap === undefined) {
       newBasemap = await Object.values(customMaps).find(basemap => {
         console.log(basemap);

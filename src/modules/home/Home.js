@@ -66,6 +66,7 @@ const {State: TextInputState} = TextInput;
 
 const Home = () => {
   const offlineIcon = require('../../assets/icons/ConnectionStatusButton_offline.png');
+  const accessPointIcon = require('../../assets/icons/wireless-access-point-icon-11.png');
   const platform = Platform.OS === 'ios' ? 'window' : 'screen';
   const deviceDimensions = Dimensions.get(platform);
   const homeMenuPanelWidth = 300;
@@ -581,6 +582,25 @@ const Home = () => {
     );
   };
 
+  const connectionStatusIcon = () => {
+    if (!isOnline.isConnected && !isOnline.isInternetReachable) {
+      return (
+        <Image
+          source={offlineIcon}
+          style={uiStyles.offlineIcon}
+        />
+      );
+    }
+    else if (isOnline.isConnected && !isOnline.isInternetReachable) {
+     return (
+       <Image
+         source={accessPointIcon}
+         style={uiStyles.accessPointIcon}
+       />
+     );
+    }
+  };
+
   return (
     <View style={homeStyles.container}>
       <Map
@@ -592,12 +612,7 @@ const Home = () => {
         isSelectingForTagging={isSelectingForTagging}
       />
       <View style={{...uiStyles.offlineImageIconContainer}}>
-        {!isOnline && (
-          <Image
-            source={offlineIcon}
-            style={uiStyles.offlineIcon}
-          />
-        )}
+        {connectionStatusIcon()}
       </View>
       {vertexStartCoords && <VertexDrag/>}
       <ToastPopup toastRef={toastRef}/>

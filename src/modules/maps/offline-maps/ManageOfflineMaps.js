@@ -95,7 +95,7 @@ const ManageOfflineMaps = (props) => {
       mapFiles.map(map => useMapsOffline.updateMapTileCount(map));
     }
     catch (err) {
-      Alert.alert(`${err}`);
+      console.error(`${err}`);
     }
   };
 
