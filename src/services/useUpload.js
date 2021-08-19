@@ -1,3 +1,5 @@
+import {Alert} from 'react-native';
+
 import RNFS from 'react-native-fs';
 import ImageResizer from 'react-native-image-resizer';
 import KeepAwake from 'react-native-keep-awake';
@@ -12,6 +14,7 @@ import {
   setUploadModalVisible,
 } from '../modules/home/home.slice';
 import useImagesHook from '../modules/images/useImages';
+import {deletedSpotIdFromDataset} from '../modules/project/projects.slice';
 import useProjectHook from '../modules/project/useProject';
 import useSpotsHook from '../modules/spots/useSpots';
 import {isEmpty} from '../shared/Helpers';
@@ -164,6 +167,14 @@ const useUpload = () => {
       console.error(dataset.name + ': Error Uploading Project Spots.', err);
       dispatch(removedLastStatusMessage());
       dispatch(addedStatusMessage(`${dataset.name}: Error Uploading Spots.\n\n ${err}\n`));
+      // Added this below to handle spots that were getting added to 2 datasets, which the server will not accept
+      if (err.startsWith('Spot(s) already exist in another dataset')) {
+        const spotId = parseInt(err.split(')')[1].split('(')[1].split(')')[0], 10);
+        console.log('duppes', spotId);
+        dispatch(deletedSpotIdFromDataset({datasetId: dataset.id, spotId: spotId}));
+        Alert.alert('Fixed Spot in Another Dataset Error',
+          'Spot removed from ' + dataset.name + '. Please try uploading again.');
+      }
       throw Error;
     }
   };
