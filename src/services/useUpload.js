@@ -1,3 +1,5 @@
+import {Alert} from 'react-native';
+
 import RNFS from 'react-native-fs';
 import ImageResizer from 'react-native-image-resizer';
 import KeepAwake from 'react-native-keep-awake';
@@ -12,6 +14,7 @@ import {
   setUploadModalVisible,
 } from '../modules/home/home.slice';
 import useImagesHook from '../modules/images/useImages';
+import {deletedSpotIdFromDataset} from '../modules/project/projects.slice';
 import useProjectHook from '../modules/project/useProject';
 import useSpotsHook from '../modules/spots/useSpots';
 import {isEmpty} from '../shared/Helpers';
@@ -135,20 +138,22 @@ const useUpload = () => {
   const uploadSpots = async (dataset) => {
     let spots;
     if (dataset.spotIds) {
-      spots = await useSpots.getSpotsByIds(dataset.spotIds);
+      spots = useSpots.getSpotsByIds(dataset.spotIds);
       spots.forEach(spotValue => useProject.checkValidDateTime(spotValue));
     }
-    if (isEmpty(spots)) {
-      console.log(dataset.name + ': No Spots to Upload.');
-      dispatch(addedStatusMessage(dataset.name + ': No Spots to Upload.'));
-    }
-    else {
-      try {
+    try {
+      if (isEmpty(spots)) {
+        console.log(dataset.name + ': No Spots to Upload.');
+        dispatch(addedStatusMessage(dataset.name + ': No Spots to Upload.'));
+        await useServerRequests.deleteAllSpotsInDataset(dataset.id, user.encoded_login);
+        console.log(dataset.name + ': Finished Removing All Spots from Dataset on Server.');
+      }
+      else {
         const spotCollection = {
           type: 'FeatureCollection',
           features: Object.values(spots),
         };
-        console.log(dataset.name + ': Uploading Spots...');
+        console.log(dataset.name + ': Uploading Spots...', spotCollection);
         dispatch(addedStatusMessage(dataset.name + ': Uploading Spots...'));
         await useServerRequests.updateDatasetSpots(dataset.id, spotCollection, user.encoded_login);
         console.log(dataset.name + ': Finished Uploading Spots.');
@@ -156,12 +161,21 @@ const useUpload = () => {
         dispatch(addedStatusMessage(dataset.name + ': Finished Uploading Spots.'));
         await uploadImages(Object.values(spots), dataset.name);
       }
-      catch (err) {
-        console.error(dataset.name + ': Error Uploading Project Spots.', err);
-        dispatch(removedLastStatusMessage());
-        dispatch(addedStatusMessage(`${dataset.name}: Error Uploading Spots.\n\n ${err}\n`));
-        throw Error;
+
+    }
+    catch (err) {
+      console.error(dataset.name + ': Error Uploading Project Spots.', err);
+      dispatch(removedLastStatusMessage());
+      dispatch(addedStatusMessage(`${dataset.name}: Error Uploading Spots.\n\n ${err}\n`));
+      // Added this below to handle spots that were getting added to 2 datasets, which the server will not accept
+      if (err.startsWith('Spot(s) already exist in another dataset')) {
+        const spotId = parseInt(err.split(')')[1].split('(')[1].split(')')[0], 10);
+        console.log('duppes', spotId);
+        dispatch(deletedSpotIdFromDataset({datasetId: dataset.id, spotId: spotId}));
+        Alert.alert('Fixed Spot in Another Dataset Error',
+          'Spot removed from ' + dataset.name + '. Please try uploading again.');
       }
+      throw Error;
     }
   };
 
@@ -220,7 +234,7 @@ const useUpload = () => {
         const response = await useServerRequests.verifyImageExistence(imageProps.id, user.encoded_login);
         if (response
           && ((response.modified_timestamp && imageProps.modified_timestamp
-            && imageProps.modified_timestamp > response.modified_timestamp)
+              && imageProps.modified_timestamp > response.modified_timestamp)
             || (!response.modified_timestamp && imageProps.modified_timestamp))) {
           imagesToUpload.push(imageProps);
         }

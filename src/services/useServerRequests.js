@@ -79,6 +79,10 @@ const useServerRequests = () => {
     }
   };
 
+  const deleteAllSpotsInDataset = (datasetId, encodedLogin) => {
+    return request('DELETE', '/datasetSpots/' + datasetId, encodedLogin);
+  };
+
   const getDataset = (datasetId) => {
     return request('GET', '/dataset/' + datasetId);
   };
@@ -161,9 +165,8 @@ const useServerRequests = () => {
   };
 
   const handleResponse = response => {
-    if (response.ok) {
-      return response.json();
-    }
+    if (response.ok && response.status === 204) return response.text();
+    else if (response.ok) return response.json();
     else return handleError(response);
   };
 
@@ -283,6 +286,7 @@ const useServerRequests = () => {
   const serverRequests = {
     addDatasetToProject: addDatasetToProject,
     authenticateUser: authenticateUser,
+    deleteAllSpotsInDataset: deleteAllSpotsInDataset,
     downloadImage: downloadImage,
     getMyProjects: getMyProjects,
     getDatasets: getDatasets,
