@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Alert, Animated, ImageBackground, Keyboard, Text, TextInput, View} from 'react-native';
 
-import {useNetInfo} from '@react-native-community/netinfo';
 import {useNavigation} from '@react-navigation/native';
 import * as Sentry from '@sentry/react-native';
 import {Base64} from 'js-base64';
@@ -23,8 +22,6 @@ const {State: TextInputState} = TextInput;
 
 const SignIn = (props) => {
 
-  const onlineIcon = require('../../assets/icons/ConnectionStatusButton_connected.png');
-  const offlineIcon = require('../../assets/icons/ConnectionStatusButton_offline.png');
   const [username, setUsername] = useState(__DEV__ ? USERNAME_TEST : '');
   const [password, setPassword] = useState(__DEV__ ? PASSWORD_TEST : '');
   const [userProfile, setUserProfile] = useState({});
@@ -36,13 +33,13 @@ const SignIn = (props) => {
   const user = useSelector(state => state.user);
 
   const useConnectionStatus = useConnectionStatusHook();
-  const netInfo = useNetInfo();
   const navigation = useNavigation();
   const [serverRequests] = useServerRequests();
 
   useEffect(() => {
-    console.log(netInfo)
-    if (isEmpty(isOnline)) {
+    const netInfo = useConnectionStatus.getNetInfo();
+    console.log(netInfo);
+    if (isEmpty(isOnline) || netInfo.isInternetReachable !== null) {
       dispatch(setOnlineStatus(netInfo));
     }
   }, [isOnline]);
@@ -92,7 +89,7 @@ const SignIn = (props) => {
         const encodedLogin = Base64.encode(username + ':' + password);
         updateUserResponse(encodedLogin).then((userState) => {
           console.log(`${username} is successfully logged in!`);
-          dispatch(setProjectLoadSelectionModalVisible(true));
+          isEmpty(currentProject) && dispatch(setProjectLoadSelectionModalVisible(true));
           dispatch(setSignedInStatus(true));
           setUsername('');
           setPassword('');
@@ -205,24 +202,24 @@ const SignIn = (props) => {
           <Animated.View style={[styles.signInContainer, {transform: [{translateY: textInputAnimate}]}]}>
             <TextInput
               style={styles.input}
-              placeholder='Username'
-              autoCapitalize='none'
+              placeholder="Username"
+              autoCapitalize="none"
               autoCorrect={false}
-              placeholderTextColor='#6a777e'
+              placeholderTextColor="#6a777e"
               onChangeText={val => setUsername(val.toLowerCase())}
               value={username}
-              keyboardType='email-address'
-              returnKeyType='go'
+              keyboardType="email-address"
+              returnKeyType="go"
             />
             <TextInput
               style={styles.input}
-              placeholder='Password'
-              autoCapitalize='none'
+              placeholder="Password"
+              autoCapitalize="none"
               secureTextEntry={true}
-              placeholderTextColor='#6a777e'
+              placeholderTextColor="#6a777e"
               onChangeText={val => setPassword(val)}
               value={password}
-              returnKeyType='go'
+              returnKeyType="go"
               onSubmitEditing={signIn}
             />
             {renderButtons()}
