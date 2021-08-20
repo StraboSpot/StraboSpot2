@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
-import {Alert, Animated, ImageBackground, Keyboard, KeyboardAvoidingView, Text, TextInput, View} from 'react-native';
+import {Alert, Animated, ImageBackground, Keyboard, Text, TextInput, View} from 'react-native';
 
-import NetInfo from '@react-native-community/netinfo';
+import {useNetInfo} from '@react-native-community/netinfo';
 import {useNavigation} from '@react-navigation/native';
 import * as Sentry from '@sentry/react-native';
 import {Base64} from 'js-base64';
@@ -9,11 +9,12 @@ import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {PASSWORD_TEST, USERNAME_TEST} from '../../../Config';
+import useConnectionStatusHook from '../../services/useConnectionStatus';
 import useServerRequests from '../../services/useServerRequests';
 import {VERSION_NUMBER} from '../../shared/app.constants';
-import {isEmpty, readDataUrl} from '../../shared/Helpers';
 import * as Helpers from '../../shared/Helpers';
-import IconButton from '../../shared/ui/IconButton';
+import {isEmpty, readDataUrl} from '../../shared/Helpers';
+import uiStyles from '../../shared/ui/ui.styles';
 import {setOnlineStatus, setProjectLoadSelectionModalVisible, setSignedInStatus} from '../home/home.slice';
 import {setUserData} from '../user/userProfile.slice';
 import styles from './signIn.styles';
@@ -34,8 +35,17 @@ const SignIn = (props) => {
   const isOnline = useSelector(state => state.home.isOnline);
   const user = useSelector(state => state.user);
 
+  const useConnectionStatus = useConnectionStatusHook();
+  const netInfo = useNetInfo();
   const navigation = useNavigation();
   const [serverRequests] = useServerRequests();
+
+  useEffect(() => {
+    console.log(netInfo)
+    if (isEmpty(isOnline)) {
+      dispatch(setOnlineStatus(netInfo));
+    }
+  }, [isOnline]);
 
   useEffect(() => {
     console.log('UserProfile', userProfile);
@@ -184,15 +194,8 @@ const SignIn = (props) => {
   return (
     <ImageBackground source={require('../../assets/images/background.jpg')} style={styles.backgroundImage}>
       <View style={styles.container}>
-        <View style={{
-          position: 'absolute',
-          right: 0,
-          top: 40,
-          zIndex: -1,
-        }}>
-          <IconButton
-            source={isOnline.isInternetReachable ? onlineIcon : offlineIcon}
-          />
+        <View style={uiStyles.offlineImageIconContainer}>
+          {useConnectionStatus.connectionStatusIcon()}
         </View>
         <View>
           <View style={styles.titleContainer}>
@@ -202,24 +205,24 @@ const SignIn = (props) => {
           <Animated.View style={[styles.signInContainer, {transform: [{translateY: textInputAnimate}]}]}>
             <TextInput
               style={styles.input}
-              placeholder="Username"
-              autoCapitalize="none"
+              placeholder='Username'
+              autoCapitalize='none'
               autoCorrect={false}
-              placeholderTextColor="#6a777e"
+              placeholderTextColor='#6a777e'
               onChangeText={val => setUsername(val.toLowerCase())}
               value={username}
-              keyboardType="email-address"
-              returnKeyType="go"
+              keyboardType='email-address'
+              returnKeyType='go'
             />
             <TextInput
               style={styles.input}
-              placeholder="Password"
-              autoCapitalize="none"
+              placeholder='Password'
+              autoCapitalize='none'
               secureTextEntry={true}
-              placeholderTextColor="#6a777e"
+              placeholderTextColor='#6a777e'
               onChangeText={val => setPassword(val)}
               value={password}
-              returnKeyType="go"
+              returnKeyType='go'
               onSubmitEditing={signIn}
             />
             {renderButtons()}
