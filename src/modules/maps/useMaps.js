@@ -309,28 +309,33 @@ const useMaps = () => {
   };
 
   const setBasemap = async (mapId) => {
-    let newBasemap = {};
-    let bbox = '';
-    if (!mapId) mapId = 'mapbox.outdoors';
-    newBasemap = BASEMAPS.find(basemap => basemap.id === mapId);
-    if (newBasemap === undefined) {
-      newBasemap = await Object.values(customMaps).find(basemap => {
-        console.log(basemap);
-        return basemap.id === mapId;
-      });
-      if (newBasemap.source === 'map_warper') {
-        const mapwarperData = await useServerRequests.getMapWarperBbox(mapId);
-        bbox = mapwarperData.data.attributes.bbox;
+    try {
+      let newBasemap = {};
+      let bbox = '';
+      if (!mapId) mapId = 'mapbox.outdoors';
+      newBasemap = BASEMAPS.find(basemap => basemap.id === mapId);
+      if (newBasemap === undefined) {
+        newBasemap = await Object.values(customMaps).find(basemap => {
+          console.log(basemap);
+          return basemap.id === mapId;
+        });
+        if (newBasemap.source === 'map_warper') {
+          const mapwarperData = await useServerRequests.getMapWarperBbox(mapId);
+          bbox = mapwarperData.data.attributes.bbox;
+        }
+        else if (newBasemap.source === 'strabospot_mymaps') {
+          const myMapsbbox = await useServerRequests.getMyMapsBbox(mapId);
+          if (bbox) bbox = myMapsbbox.data.bbox;
+        }
+        newBasemap = {...newBasemap, bbox: bbox};
       }
-      else if (newBasemap.source === 'strabospot_mymaps') {
-        const myMapsbbox = await useServerRequests.getMyMapsBbox(mapId);
-        bbox = myMapsbbox.data.bbox;
-      }
-      newBasemap = {...newBasemap, bbox: bbox};
+      console.log('Setting current basemap to a default basemap...');
+      dispatch(setCurrentBasemap(newBasemap));
+      return newBasemap;
     }
-    console.log('Setting current basemap to a default basemap...');
-    dispatch(setCurrentBasemap(newBasemap));
-    return newBasemap;
+    catch (err) {
+      console.warn('Error is setBasemap', err);
+    }
   };
 
   const setCustomMapSwitchValue = (value, map) => {

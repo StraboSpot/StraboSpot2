@@ -1351,7 +1351,13 @@ const Map = React.forwardRef((props, ref) => {
       cameraRef.current.fitBounds([Number(bboxArr[0]), Number(bboxArr[1])], [Number(bboxArr[2]), Number(bboxArr[3])],
         100, 2500);
     }
-    else console.error('Error: not able to get Custom Map bbox coords...');
+    else {
+      console.error('Error: not able to get Custom Map bbox coords...');
+      dispatch(clearedStatusMessages());
+      dispatch(addedStatusMessage('Error: not able to get Custom Map bbox coords...'));
+      dispatch(setErrorMessagesModalVisible(true));
+
+    }
   };
 
   const toggleUserLocation = (value) => {
