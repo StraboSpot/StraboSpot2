@@ -132,6 +132,7 @@ const Metadata = () => {
         <ListItem.CheckBox
           checked={isChecked}
           onPress={() => handleDatasetChecked(dataset)}
+          disabled={true}     // Disabled changing datasets until server can handle it
         />
       </ListItem>
     );
