@@ -171,21 +171,17 @@ const useServerRequests = () => {
   };
 
   const timeoutPromise = async (ms, promise) => {
-    return new Promise((resolve, reject) => {
-      const timeout = setTimeout(() => {
-        // Alert.alert('There was an error getting your request');
-        reject(new Error('Network timeout'));
-      }, ms);
-      promise.then((res) => {
-          clearTimeout(timeout);
-          resolve(res);
-        },
-        (err) => {
-          clearTimeout(timeout);
-          reject(err);
-        },
-      );
-    });
+    const timeoutPromiseException = (err) => {
+      const timeoutError = Symbol();
+      if (err === timeoutError) throw new Error('Network timeout');
+      else throw err;
+    };
+
+    let timer;
+    return Promise.race([
+      promise,
+      new Promise((_r, rej) => timer = setTimeout(rej, ms, timeoutPromiseException)),
+    ]).finally(() => clearTimeout(timer));
   };
 
   // Register user
