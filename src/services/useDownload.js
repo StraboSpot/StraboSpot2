@@ -180,13 +180,14 @@ const useDownload = () => {
       console.log('Starting Dataset Spots Download!');
       dispatch(addedStatusMessage('Downloading Spots in datasets...'));
       dispatch(addedStatusMessage('Gathering Needed Images...'));
-      return await Promise.all(
-        Object.values(datasets).map(async dataset => {
-          const datasetSpots = await downloadSpots(dataset, user.encoded_login);
-          console.log(dataset.name, ':', 'Finished downloading and saving Spots', datasetSpots);
-          return {dataset: dataset, spots: datasetSpots};
-        }),
-      );
+
+      // Synchronous download
+      return await Object.values(datasets).reduce(async (previousPromise, dataset, i) => {
+        await previousPromise;
+        const datasetSpots = await downloadSpots(dataset, user.encoded_login);
+        console.log(dataset.name, ':', 'Finished downloading and saving Spots', datasetSpots);
+        return {dataset: dataset, spots: datasetSpots};
+      }, Promise.resolve());
     }
   };
 
