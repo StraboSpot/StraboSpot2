@@ -87,7 +87,7 @@ const UserProfile = (props) => {
       console.error(err);
       setImageDialogVisible(false);
       dispatch(clearedStatusMessages());
-      dispatch(addedStatusMessage('Error saving image profile...'));
+      dispatch(addedStatusMessage('Error saving image profile...' + err));
       dispatch(setErrorMessagesModalVisible(true));
     }
   };

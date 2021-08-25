@@ -69,7 +69,7 @@ const useExport = () => {
     catch (err) {
       console.error('Error Exporting Data!', err);
       dispatch(removedLastStatusMessage());
-      dispatch(addedStatusMessage('Error Exporting Project Data.'));
+      dispatch(addedStatusMessage('Error Exporting Project Data.' + err));
     }
   };
 
@@ -107,7 +107,7 @@ const useExport = () => {
     catch (err) {
       console.error('Error Backing Up Images!');
       dispatch(removedLastStatusMessage());
-      dispatch(addedStatusMessage('Error Exporting Images!'));
+      dispatch(addedStatusMessage('Error Exporting Images!' + err));
     }
   };
 
@@ -141,7 +141,7 @@ const useExport = () => {
     catch (err) {
       console.error('Error Exporting Offline Maps.');
       dispatch(removedLastStatusMessage());
-      dispatch(addedStatusMessage('Error Exporting Offline Maps!'));
+      dispatch(addedStatusMessage('Error Exporting Offline Maps!' + err));
     }
   };
 
@@ -164,7 +164,7 @@ const useExport = () => {
     catch (err) {
       console.error('Error Exporting Other Maps', err);
       dispatch(removedLastStatusMessage());
-      dispatch(addedStatusMessage('Error Exporting Custom Maps!'));
+      dispatch(addedStatusMessage('Error Exporting Custom Maps!' + err));
     }
   };
 

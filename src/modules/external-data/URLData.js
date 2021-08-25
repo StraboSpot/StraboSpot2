@@ -106,7 +106,7 @@ const UrlData = (props) => {
     catch (err) {
       console.error('Error saving edits', err);
       dispatch(clearedStatusMessages());
-      dispatch(addedStatusMessage('Please make sure you enter a valid url.'));
+      dispatch(addedStatusMessage('Please make sure you enter a valid url.' + err));
       dispatch(setErrorMessagesModalVisible(true));
     }
   };

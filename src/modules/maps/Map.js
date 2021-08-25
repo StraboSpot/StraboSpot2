@@ -177,7 +177,7 @@ const Map = React.forwardRef((props, ref) => {
         console.log('Error Setting Basemap', error);
         // Sentry.captureMessage('Something went wrong', error);
         dispatch(clearedStatusMessages());
-        dispatch(addedStatusMessage('Error setting custom basemap.\n Setting basemap Mapbox Topo.'));
+        dispatch(addedStatusMessage('Error setting custom basemap.\n Setting basemap Mapbox Topo.' + error));
         dispatch(setErrorMessagesModalVisible(true));
         // useMaps.setBasemap();
         // Sentry.captureException(error);

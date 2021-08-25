@@ -76,45 +76,46 @@ const useDownload = () => {
     catch (err) {
       console.error('Error Downloading Project Properties.', err);
       dispatch(removedLastStatusMessage());
-      dispatch(addedStatusMessage('Error Downloading Project Properties.'));
+      dispatch(addedStatusMessage('Error Downloading Project Properties.' + err));
       throw Error;
     }
   };
 
   const downloadSpots = async (dataset, encodedLogin) => {
     try {
-      console.log(`Downloading Spots for ${dataset.name}...`);
+      console.log(dataset.name, ':', 'Downloading Spots...');
       const downloadDatasetInfo = await useServerRequests.getDatasetSpots(dataset.id, encodedLogin);
-      console.log('Finished Downloading Spots.');
+      console.log(dataset.name, ':', 'Finished Downloading Spots.');
       dispatch(removedLastStatusMessage());
-      dispatch(addedStatusMessage('Finished Downloading Spots.'));
+      dispatch(addedStatusMessage(`Finished Downloading Spots for ${dataset.name}.`));
       if (!isEmpty(downloadDatasetInfo) && downloadDatasetInfo.features) {
         const spotsOnServer = downloadDatasetInfo.features;
-        console.log(spotsOnServer);
+        console.log(dataset.name, ':', 'Spots Downloaded', spotsOnServer);
         dispatch(addedSpots(spotsOnServer));
         const spotIds = Object.values(spotsOnServer).map(spot => spot.properties.id);
         dispatch(addedSpotsIdsToDataset({datasetId: dataset.id, spotIds: spotIds}));
         await gatherNeededImages(spotsOnServer, dataset);
       }
+      console.log(dataset.name, ':', 'downloadDatasetInfo', downloadDatasetInfo);
       return downloadDatasetInfo;
     }
     catch (err) {
-      console.error('Error Downloading Spots.', err);
-      dispatch(addedStatusMessage('Error Downloading Spots.'));
+      console.error(dataset.name, ':', 'Error Downloading Spots.', err);
+      dispatch(addedStatusMessage('Error Downloading Spots.' + err));
       throw Error;
     }
   };
 
   const gatherNeededImages = async (spotsOnServer, dataset) => {
     try {
-      console.log('Gathering Needed Images...', dataset.name);
+      console.log(dataset.name, ':', 'Gathering Needed Images...');
       const spotImages = await useImages.gatherNeededImages(spotsOnServer);
-      console.log('Images needed', spotImages.neededImagesIds.length, 'of', spotImages?.imageIds.length, 'for',
-        dataset.name);
+      console.log(dataset.name, ':', 'Images needed', spotImages.neededImagesIds.length, 'of',
+        spotImages?.imageIds.length);
       dispatch(addedNeededImagesToDataset({datasetId: dataset.id, images: spotImages}));
     }
     catch (err) {
-      console.error('Error Gathering Images. Error:', err);
+      console.error(dataset.name, ':', 'Error Gathering Images. Error:', err);
     }
   };
 
@@ -180,9 +181,9 @@ const useDownload = () => {
       dispatch(addedStatusMessage('Downloading Spots in datasets...'));
       dispatch(addedStatusMessage('Gathering Needed Images...'));
       return await Promise.all(
-        await Object.values(datasets).map(async dataset => {
+        Object.values(datasets).map(async dataset => {
           const datasetSpots = await downloadSpots(dataset, user.encoded_login);
-          console.log(`Finished downloading ${dataset.name}'s spots:`, datasetSpots);
+          console.log(dataset.name, ':', 'Finished downloading and saving Spots', datasetSpots);
           return {dataset: dataset, spots: datasetSpots};
         }),
       );
@@ -200,14 +201,14 @@ const useDownload = () => {
     try {
       await downloadProject(selectedProject);
       await downloadDatasets(selectedProject);
-      console.log('Download Complete!');
+      console.log('Download Complete! Spots Downloaded:', spotsDownloaded);
       dispatch(addedStatusMessage('------------------'));
       dispatch(addedStatusMessage('Downloading Datasets Complete!'));
       dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
       dispatch(setLoadingStatus({view: 'modal', bool: false}));
     }
     catch (err) {
-      console.error('Error Initializing Download.', err);
+      console.error('Error Initializing Download.');
       dispatch(addedStatusMessage('Download Failed!'));
       dispatch(setLoadingStatus({view: 'modal', bool: false}));
     }

@@ -53,7 +53,7 @@ const useUpload = () => {
     }
     catch (err) {
       dispatch(addedStatusMessage('----------'));
-      dispatch(addedStatusMessage('Upload Failed!'));
+      dispatch(addedStatusMessage('Upload Failed!' + err));
       console.error('Upload Failed!', err);
     }
     dispatch(setLoadingStatus({view: 'modal', bool: false}));
@@ -78,7 +78,7 @@ const useUpload = () => {
     catch (err) {
       console.error(dataset.name + ': Error Uploading Dataset Properties...', err);
       dispatch(removedLastStatusMessage());
-      dispatch(addedStatusMessage(dataset.name + ': Error Uploading Dataset Properties.'));
+      dispatch(addedStatusMessage(dataset.name + ': Error Uploading Dataset Properties.' + err));
       throw Error;
     }
     await uploadSpots(dataset);
@@ -129,7 +129,7 @@ const useUpload = () => {
     catch (err) {
       console.error('Error Uploading Project Properties.', err);
       dispatch(removedLastStatusMessage());
-      dispatch(addedStatusMessage('Error Uploading Project Properties.'));
+      dispatch(addedStatusMessage('Error Uploading Project Properties.' + err));
       throw Error;
     }
   };
