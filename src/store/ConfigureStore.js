@@ -107,7 +107,7 @@ const defalutMiddlewareOptions = {
 
 const store = configureStore({
   reducer: persistedReducer,
-  middleware: [...getDefaultMiddleware(defalutMiddlewareOptions), loggerMiddleware],
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware(defalutMiddlewareOptions).concat(loggerMiddleware),
 });
 
 export default store;
