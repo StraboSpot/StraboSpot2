@@ -122,7 +122,7 @@ const Map = React.forwardRef((props, ref) => {
     Logger.setLogCallback((log) => {
       const {message} = log;
       // console.log('LOGGER MESSAGE IN MAPS.JS', message);
-      if (message.match(/Requesting.+failed.+MGLNativeNetworkManager/) || message.match(/offline/)) {
+      if (message.match(/Requesting.+failed.+MGLNativeNetworkManager/) || message.match(/offline/) || message.match(/You're calling `setMaxZoom` after the `MapView` was destroyed, were you invoking it after `onDestroy()`?/)) {
         return true; // true means we've processed the log
       }
       return false;
