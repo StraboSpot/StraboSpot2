@@ -10,12 +10,13 @@ import {name as appName} from './app.json';
 // });
 
 LogBox.ignoreLogs([
-  'Require cycle:',
-  'Remote debugger',
-  'Warning:',
-  'Module RNSimpleCompass requires main queue setup since it overrides `init` but doesn\'t implement `requiresMainQueueSetup`.',
-  'Sending `zipArchiveProgressEvent` with no listeners registered.',
-  'currentlyFocusedField is deprecated and will be removed in a future release. Use currentlyFocusedInput',
+    'Require cycle:',
+    'Remote debugger',
+    'Warning:',
+    'Module RNSimpleCompass requires main queue setup since it overrides `init` but doesn\'t implement `requiresMainQueueSetup`.',
+    'Sending `zipArchiveProgressEvent` with no listeners registered.',
+    'currentlyFocusedField is deprecated and will be removed in a future release. Use currentlyFocusedInput',
+    'Mapbox error You\'re calling ',
 ]);
 
 AppRegistry.registerComponent(appName, () => App);

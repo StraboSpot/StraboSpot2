@@ -367,7 +367,9 @@ const useMapsOffline = () => {
           ]);
       }
     }
-    else if (isEmpty(offlineMaps)) Alert.alert('No Offline Maps Available!');
+    // else if (!isEmpty(isOnline) && !isOnline.isInternetReachable &&  isEmpty(offlineMaps)) {
+    //   Alert.alert('No Offline Maps Available!', 'Mapbox will use cached version of map.');
+    // }
   };
 
   return {

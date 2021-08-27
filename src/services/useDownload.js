@@ -202,15 +202,15 @@ const useDownload = () => {
     try {
       await downloadProject(selectedProject);
       await downloadDatasets(selectedProject);
-      console.log('Download Complete! Spots Downloaded:', spotsDownloaded);
+      console.log('Download Complete! Spots Downloaded!');
       dispatch(addedStatusMessage('------------------'));
       dispatch(addedStatusMessage('Downloading Datasets Complete!'));
       dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
       dispatch(setLoadingStatus({view: 'modal', bool: false}));
     }
     catch (err) {
-      console.error('Error Initializing Download.');
-      dispatch(addedStatusMessage('Download Failed!'));
+      console.error('Error Initializing Download.', err);
+      dispatch(addedStatusMessage('Download Failed!', err));
       dispatch(setLoadingStatus({view: 'modal', bool: false}));
     }
   };
