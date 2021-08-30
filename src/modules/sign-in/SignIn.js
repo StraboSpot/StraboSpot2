@@ -22,15 +22,14 @@ const {State: TextInputState} = TextInput;
 
 const SignIn = (props) => {
 
-  const [username, setUsername] = useState(__DEV__ ? USERNAME_TEST : '');
-  const [password, setPassword] = useState(__DEV__ ? PASSWORD_TEST : '');
-  const [userProfile, setUserProfile] = useState({});
-  const [textInputAnimate] = useState(new Animated.Value(0));
-
   const dispatch = useDispatch();
   const currentProject = useSelector(state => state.project.project);
   const isOnline = useSelector(state => state.home.isOnline);
   const user = useSelector(state => state.user);
+
+  const [username, setUsername] = useState(__DEV__ ? USERNAME_TEST : '');
+  const [password, setPassword] = useState(__DEV__ ? PASSWORD_TEST : '');
+  const [textInputAnimate] = useState(new Animated.Value(0));
 
   const useConnectionStatus = useConnectionStatusHook();
   const navigation = useNavigation();
@@ -43,16 +42,6 @@ const SignIn = (props) => {
       dispatch(setOnlineStatus(netInfo));
     }
   }, [isOnline]);
-
-  useEffect(() => {
-    console.log('UserProfile', userProfile);
-    dispatch(setUserData(userProfile));
-    if (!isEmpty(userProfile)) {
-      Sentry.configureScope(scope => {
-        scope.setUser({'username': userProfile.name, 'email': userProfile.email});
-      });
-    }
-  }, [userProfile]);
 
   useEffect(() => {
     console.log('useEffect Form SignIn');
@@ -74,7 +63,7 @@ const SignIn = (props) => {
     Sentry.configureScope((scope) => {
       scope.setUser({'id': 'GUEST'});
     });
-    if (!isEmpty(user.name)) await dispatch({type: 'CLEAR_STORE'});
+    if (!isEmpty(user.name)) dispatch({type: 'CLEAR_STORE'});
     console.log('Loading user: GUEST');
     isEmpty(currentProject) && dispatch(setProjectLoadSelectionModalVisible(true));
     await navigation.navigate('HomeScreen');
@@ -86,11 +75,14 @@ const SignIn = (props) => {
       const userAuthResponse = await serverRequests.authenticateUser(username, password);
       // login with provider
       if (userAuthResponse?.valid === 'true') {
+            Sentry.configureScope(scope => {
+              scope.setUser({'username': user.name, 'email': user.email});
+            });
         const encodedLogin = Base64.encode(username + ':' + password);
         updateUserResponse(encodedLogin).then((userState) => {
           console.log(`${username} is successfully logged in!`);
           isEmpty(currentProject) && dispatch(setProjectLoadSelectionModalVisible(true));
-          dispatch(setSignedInStatus(true));
+          // dispatch(setSignedInStatus(true));
           setUsername('');
           setPassword('');
           navigation.navigate('HomeScreen');
@@ -174,10 +166,9 @@ const SignIn = (props) => {
       console.log('userProfileImage', userProfileImage);
       if (!isEmpty(userProfileImage)) {
         const profileImage = await getUserImage(userProfileImage);
-        setUserProfile(prevState => ({...userProfileRes, image: profileImage, encoded_login: encodedLogin}));
+        dispatch(setUserData({...userProfileRes, image: profileImage, encoded_login: encodedLogin}));
       }
-      else setUserProfile(prevState => ({...userProfileRes, image: null, encoded_login: encodedLogin}));
-      console.log(userProfile);
+      else  dispatch(setUserData({...userProfileRes, image: null, encoded_login: encodedLogin}));
     }
     catch (err) {
       console.log('SIGN IN ERROR', err);

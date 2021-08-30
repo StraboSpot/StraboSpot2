@@ -38,7 +38,7 @@ const UserProfile = (props) => {
     else {
       setIsLogoutModalVisible(false);
       setTimeout(() => { // Added timeOut cause state of modal wasn't changing fast enough
-        dispatch(setSignedInStatus(false));
+        // dispatch(setSignedInStatus(false));
         dispatch(setMainMenuPanelVisible(false));
         dispatch({type: REDUX.CLEAR_STORE});
         props.logout();

@@ -11,7 +11,7 @@ const initialHomeState = {
     modal: false,
     home: false,
   },
-  isSignedIn: false,
+  // isSignedIn: false,
   modalValues: {},
   modalVisible: null,
   isBackupModalVisible: false,
@@ -89,9 +89,9 @@ const homeSlice = createSlice({
     setProjectLoadSelectionModalVisible(state, action) {
       state.isProjectLoadSelectionModalVisible = action.payload;
     },
-    setSignedInStatus(state, action) {
-      state.isSignedIn = action.payload;
-    },
+    // setSignedInStatus(state, action) {
+    //   state.isSignedIn = action.payload;
+    // },
     setStatusMessagesModalVisible(state, action) {
       state.isStatusMessagesModalVisible = action.payload;
     },
@@ -121,7 +121,7 @@ export const {
   setOnlineStatus,
   setProjectLoadComplete,
   setProjectLoadSelectionModalVisible,
-  setSignedInStatus,
+  // setSignedInStatus,
   setStatusMessagesModalVisible,
   shortcutSwitchPosition,
   setUploadModalVisible,

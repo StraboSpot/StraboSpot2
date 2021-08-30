@@ -49,12 +49,12 @@ const Routes = () => {
   };
 
   const AppScreens = () => {
-    const isSignedIn = useSelector(state => state.home.isSignedIn);
+    // const isSignedIn = useSelector(state => state.home.isSignedIn);
     const user = useSelector(state => state.user);
     const currentProject = useSelector(state => state.project.project);
     return (
       <AppStack.Navigator
-        initialRouteName={isSignedIn && user.name && !isEmpty(currentProject) ? 'HomeScreen' : 'SignIn'}>
+        initialRouteName={user.name && !isEmpty(currentProject) ? 'HomeScreen' : 'SignIn'}>
         <Stack.Screen
           name={'SignIn'}
           component={SignIn}

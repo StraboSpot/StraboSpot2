@@ -229,7 +229,7 @@ const InitialProjectLoadModal = (props) => {
             titleStyle={{...commonStyles.standardButtonText, fontSize: 10}}
             onPress={() => {
               if (user.name) dispatch({type: REDUX.CLEAR_STORE});
-              dispatch(setSignedInStatus(false));
+              // dispatch(setSignedInStatus(false));
               setVisibleInitialSection('none');
               navigation.navigate('SignIn');
             }}
