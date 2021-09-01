@@ -24,7 +24,7 @@
     "@react-native-picker/picker": "1.16.7",
     "@react-navigation/native": "5.9.4",
     "@react-navigation/stack": "5.14.5",
-    "@reduxjs/toolkit": "1.6.0",
+    "@reduxjs/toolkit": "1.6.1",
     "@sentry/react-native": "3.0.1",
     "@terrylinla/react-native-sketch-canvas": "0.8.0",
     "@turf/turf": "6.5.0",
@@ -60,7 +60,7 @@
     "react-native-vector-icons": "8.1.0",
     "react-native-zip-archive": "6.0.3",
     "react-redux": "7.2.4",
-    "redux": "4.1.0",
+    "redux": "4.1.1",
     "redux-logger": "3.0.6",
     "redux-persist": "6.0.0",
     "uuid": "8.3.2"
