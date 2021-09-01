@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 
-import {Picker} from '@react-native-community/picker';
+import {Picker} from '@react-native-picker/picker';
 import {Button, Header} from 'react-native-elements';
 import RNFS from 'react-native-fs';
 import * as loading from 'react-native-indicators';
