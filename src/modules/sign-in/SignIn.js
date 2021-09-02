@@ -14,7 +14,7 @@ import {VERSION_NUMBER} from '../../shared/app.constants';
 import * as Helpers from '../../shared/Helpers';
 import {isEmpty, readDataUrl} from '../../shared/Helpers';
 import uiStyles from '../../shared/ui/ui.styles';
-import {setOnlineStatus, setProjectLoadSelectionModalVisible, setSignedInStatus} from '../home/home.slice';
+import {setOnlineStatus, setProjectLoadSelectionModalVisible} from '../home/home.slice';
 import {setUserData} from '../user/userProfile.slice';
 import styles from './signIn.styles';
 
