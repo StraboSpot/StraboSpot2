@@ -166,9 +166,10 @@ const useImages = () => {
       console.log('RES', response);
       if (response.didCancel) useHome.toggleLoading(false);
       else {
+        let imageAsset = response.assets[0];
         useHome.toggleLoading(true);
-        response = await resizeImageIfNecessary(response);
-        const savedPhoto = await saveFile(response);
+        imageAsset = await resizeImageIfNecessary(imageAsset);
+        const savedPhoto = await saveFile(imageAsset);
         console.log('Saved Photo in getImagesFromCameraRoll:', savedPhoto);
         dispatch(editedSpotImages([savedPhoto]));
         useHome.toggleLoading(false);
@@ -270,7 +271,8 @@ const useImages = () => {
           if (response.didCancel) resolve('cancelled');
           else if (response.error) reject();
           else {
-            const createResizedImageProps = [response.uri, response.height, response.width, 'JPEG', 100, 0];
+            const imageAsset = response.assets[0];
+            const createResizedImageProps = [imageAsset.uri, imageAsset.height, imageAsset.width, 'JPEG', 100, 0];
             const resizedImage = await ImageResizer.createResizedImage(...createResizedImageProps);
             console.log('resizedImage', resizedImage);
             resolve(saveFile(resizedImage));
