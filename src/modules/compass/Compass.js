@@ -70,7 +70,7 @@ const Compass = (props) => {
   const CompassEvents = new NativeEventEmitter(NativeModules.Compass);
 
   useEffect(() => {
-    const buttonClick = new Sound('button_click.mp3', Sound.MAIN_BUNDLE, (error) => {
+    const buttonClick = new Sound('compass_button_click.mp3', Sound.MAIN_BUNDLE, (error) => {
       if (error) console.log('Failed to load sound', error);
     });
     setButtonSound(buttonClick);
@@ -190,7 +190,10 @@ const Compass = (props) => {
     }
     try {
       if (isCompassMeasurement) {
-        buttonSound.play();
+        buttonSound.play((success) => {
+          if (success) console.log('successfully finished playing compass sound');
+          else console.log('compass sound failed due to audio decoding errors');
+        });
         console.log('Compass measurements', compassData, sliderValue);
         dispatch(setCompassMeasurements(compassData.quality ? compassData
           : {...compassData, quality: sliderValue.toString()}));
