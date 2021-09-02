@@ -1,6 +1,6 @@
 {
   "name": "StraboSpot2",
-  "version": "1.7.3",
+  "version": "1.8.0",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -9,8 +9,8 @@
     "test": "jest",
     "lint": "eslint .",
     "lint:fix": "eslint --fix --ext .js,.jsx .",
-    "upload-sourcemaps": "sentry-cli releases files org.StraboSpot2-1.7.3 upload-sourcemaps ./main.jsbundle",
-    "build:ios": "react-native bundle --entry-file='index.js' --bundle-output='./ios/main.jsbundle' --dev=false --platform='ios'"
+    "upload-sourcemaps": "sentry-cli releases files org.StraboSpot2-1.8.0 upload-sourcemaps ./main.jsbundle",
+    "build:ios": "react-native bundle --entry-file='index.js' --bundle-output='./main.jsbundle' --dev=false --platform='ios'"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "1.15.7",
