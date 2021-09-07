@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import {
   Alert,
   Animated,
@@ -64,6 +64,8 @@ const Compass = (props) => {
   const [toggles, setToggles] = useState(compassMeasurementTypes);
   const [buttonSound, setButtonSound] = useState(null);
 
+  const appState = useRef(AppState.currentState);
+
   const [useMaps] = useMapsHook();
   const [useMeasurements] = useMeasurementsHook();
 
@@ -77,14 +79,15 @@ const Compass = (props) => {
   }, []);
 
   useEffect(() => {
-    AppState.addEventListener('change', handleAppStateChange);
+    const subscription = AppState.addEventListener('change', handleAppStateChange);
     if (Platform.OS === 'android') {
       setUpdateIntervalForType(SensorTypes.accelerometer, 300);
       setUpdateIntervalForType(SensorTypes.magnetometer, 300);
       subscribeToAccelerometer().catch(e => console.log('Error with Accelerometer', e));
     }
     return () => {
-      AppState.removeEventListener('change', handleAppStateChange);
+      subscription.remove();
+      console.log('%cAppState has been Removed', 'color: green');
       unsubscribe();
     };
   }, []);
@@ -205,12 +208,10 @@ const Compass = (props) => {
     }
   };
 
-  const handleAppStateChange = (state) => {
-    if (state === 'active') Platform.OS === 'ios' ? displayCompassData() : subscribeToAccelerometer();
-    else if (state === 'background' || state === 'inactive') {
-      dispatch(setModalVisible({modal: null}));
-      unsubscribe();
-    }
+  const handleAppStateChange = (nextAppState) => {
+    if (nextAppState === 'background' || nextAppState === 'inactive') dispatch(setModalVisible({modal: null}));
+    appState.current = nextAppState;
+    console.log('AppState', appState.current);
   };
 
   const matrixRotation = res => {
@@ -444,7 +445,7 @@ const Compass = (props) => {
 
   const unsubscribe = () => {
     if (Platform.OS === 'ios') {
-      CompassEvents.removeListener('rotationMatrix', matrixRotation);
+      CompassEvents.addListener('rotationMatrix', matrixRotation).remove();
       console.log('%cEnded Compass observation and rotationMatrix listener.', 'color: red');
     }
     else unsubscribeFromAccelerometer();

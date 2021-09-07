@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Animated, ImageBackground, Keyboard, Text, TextInput, View} from 'react-native';
 
-import NetInfo from '@react-native-community/netinfo';
 import {Button, CheckBox, Input} from 'react-native-elements';
 import {SlideAnimation} from 'react-native-popup-dialog';
 import {useDispatch, useSelector} from 'react-redux';
@@ -85,8 +84,8 @@ const SignUp = (props) => {
     Keyboard.addListener('keyboardDidShow', handleKeyboardDidShowSignUp);
     Keyboard.addListener('keyboardDidHide', handleKeyboardDidHideSignUp);
     return function cleanup() {
-      Keyboard.removeListener('keyboardDidShow', handleKeyboardDidShowSignUp);
-      Keyboard.removeListener('keyboardDidHide', handleKeyboardDidHideSignUp);
+      Keyboard.addListener('keyboardDidShow', handleKeyboardDidShowSignUp).remove();
+      Keyboard.addListener('keyboardDidHide', handleKeyboardDidHideSignUp).remove();
       console.log('Home Keyboard Listeners Removed');
     };
   }, []);

@@ -37,13 +37,13 @@ const NotebookPanel = (props) => {
 
   useEffect(() => {
     if (isNotebookPanelVisible) {
-      console.log('NB Keyboard Listeners Added');
       Keyboard.addListener('keyboardDidShow', handleKeyboardDidShowNotebook);
       Keyboard.addListener('keyboardDidHide', handleKeyboardDidHideNotebook);
+      console.log('NB Keyboard Listeners Added');
     }
-    return function cleanup() {
-      Keyboard.removeListener('keyboardDidShow', handleKeyboardDidShowNotebook);
-      Keyboard.removeListener('keyboardDidHide', handleKeyboardDidHideNotebook);
+    return () => {
+      Keyboard.addListener('keyboardDidShow', handleKeyboardDidShowNotebook).remove();
+      Keyboard.addListener('keyboardDidHide', handleKeyboardDidHideNotebook).remove();
       console.log('NB Keyboard Listeners Removed');
     };
   }, [isNotebookPanelVisible]);
