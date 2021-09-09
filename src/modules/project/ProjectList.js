@@ -36,10 +36,10 @@ const ProjectList = (props) => {
   const useImport = useImportHook();
 
   useEffect(() => {
-    const subscription = AppState.addEventListener('change', handleStateChange);
+    AppState.addEventListener('change', handleStateChange);
     return () => {
-      subscription.remove();
-      console.log('Event Listeners removed');
+      AppState.removeEventListener('change');
+      console.log('Listners removed');
     };
   }, []);
 

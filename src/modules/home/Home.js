@@ -163,8 +163,8 @@ const Home = () => {
     Keyboard.addListener('keyboardDidShow', handleKeyboardDidShowHome);
     Keyboard.addListener('keyboardDidHide', handleKeyboardDidHideHome);
     return function cleanup() {
-      Keyboard.addListener('keyboardDidShow', handleKeyboardDidShowHome).remove();
-      Keyboard.addListener('keyboardDidHide', handleKeyboardDidHideHome).remove();
+      Keyboard.removeListener('keyboardDidShow', handleKeyboardDidShowHome);
+      Keyboard.removeListener('keyboardDidHide', handleKeyboardDidHideHome);
       console.log('Home Keyboard Listeners Removed');
     };
   }, [modalVisible]);

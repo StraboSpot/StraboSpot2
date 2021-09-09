@@ -35,8 +35,8 @@
     "password-validator": "5.1.1",
     "proj4": "2.7.5",
     "prop-types": "15.7.2",
-    "react": "17.0.2",
-    "react-native": "0.65.1",
+    "react": "17.0.1",
+    "react-native": "0.64.1",
     "react-native-document-picker": "5.0.4",
     "react-native-easy-toast": "2.0.0",
     "react-native-elements": "3.4.2",
@@ -74,9 +74,8 @@
     "eslint": "7.14.0",
     "eslint-plugin-import": "^2.23.2",
     "jest": "^26.6.3",
-    "metro-react-native-babel-preset": "0.66.0",
-    "react-native-codegen": "0.0.7",
-    "react-test-renderer": "17.0.2"
+    "metro-react-native-babel-preset": "^0.64.0",
+    "react-test-renderer": "17.0.1"
   },
   "jest": {
     "preset": "react-native"
