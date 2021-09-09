@@ -1,5 +1,5 @@
 import React from 'react';
-import {View} from 'react-native';
+import {Text, View} from 'react-native';
 
 import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
@@ -9,6 +9,7 @@ import commonStyles from '../../shared/common.styles';
 import {BLUE} from '../../shared/styles.constants';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import Spacer from '../../shared/ui/Spacer';
+import uiStyles from '../../shared/ui/ui.styles';
 import {
   addedStatusMessage,
   clearedStatusMessages,
@@ -23,6 +24,7 @@ const UploadBackAndExport = (props) => {
   const dispatch = useDispatch();
   const isOnline = useSelector(state => state.home.isOnline);
   const activeDatasets = useSelector(state => state.project.activeDatasetsIds);
+  const user = useSelector(state => state.user);
 
   const useDevice = useDeviceHook();
 
@@ -56,7 +58,7 @@ const UploadBackAndExport = (props) => {
   const renderUploadAndBackupButtons = () => {
     return (
       <View>
-        <Button
+        {user.encoded_login ? <Button
           title={isOnline.isConnected ? 'Upload project to StraboSpot' : 'Need to be connected to server'}
           buttonStyle={commonStyles.standardButton}
           titleStyle={commonStyles.standardButtonText}
@@ -66,6 +68,9 @@ const UploadBackAndExport = (props) => {
           }}
           disabled={!isOnline.isConnected}
         />
+          : <View style={uiStyles.spacer}>
+          <Text style={commonStyles.dialogContentImportantText}>If you are attempting to upload the project, check to see if you are logged in</Text>
+          </View>}
         <Button
           title={'Backup project to device'}
           buttonStyle={commonStyles.standardButton}
