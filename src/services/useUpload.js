@@ -53,7 +53,7 @@ const useUpload = () => {
     }
     catch (err) {
       dispatch(addedStatusMessage('----------'));
-      dispatch(addedStatusMessage('Upload Failed!' + err));
+      dispatch(addedStatusMessage('Upload Failed!' ));
       console.error('Upload Failed!', err);
     }
     dispatch(setLoadingStatus({view: 'modal', bool: false}));
@@ -129,7 +129,9 @@ const useUpload = () => {
     catch (err) {
       console.error('Error Uploading Project Properties.', err);
       dispatch(removedLastStatusMessage());
-      dispatch(addedStatusMessage('Error Uploading Project Properties.' + err));
+      let errMessage = 'Error Uploading Project Properties.';
+      errMessage = err ? errMessage + '\n\n' + err : errMessage;
+      dispatch(addedStatusMessage(errMessage));
       throw Error;
     }
   };
