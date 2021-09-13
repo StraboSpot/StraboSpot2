@@ -77,7 +77,7 @@ const MineralsPage = (props) => {
   };
 
   const getSpotsWithMinerals = () => {
-    const allSpotsWithPet = useSpots.getSpotsWithPetrology();
+    const allSpotsWithPet = useSpots.getSpotsWithKey('pet');
     setSpotsWithMinerals(allSpotsWithPet.filter(s => s.properties.id !== spot.properties.id
       && s.properties.pet && s.properties.pet[props.page.key]));
   };

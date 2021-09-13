@@ -10,6 +10,7 @@ import * as themes from '../../shared/styles.constants';
 import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import {Form, useFormHook} from '../form';
 import usePetrologyHook from '../petrology/usePetrology';
+import useSedHook from '../sed/useSed';
 import {editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
 import {useTagsHook} from '../tags';
 import {PAGE_KEYS} from './page.constants';
@@ -20,6 +21,7 @@ const BasicPageDetail = (props) => {
   const [useTags] = useTagsHook();
   const [useForm] = useFormHook();
   const usePetrology = usePetrologyHook();
+  const useSed = useSedHook();
 
   const formRef = useRef(null);
 
@@ -67,6 +69,7 @@ const BasicPageDetail = (props) => {
   const deleteFeature = () => {
     useTags.deleteFeatureTags([props.selectedFeature]);
     if (groupKey === 'pet') usePetrology.deletePetFeature(pageKey, spot, props.selectedFeature);
+    else if (groupKey === 'sed') useSed.deleteSedFeature(pageKey, spot, props.selectedFeature);
     else {
       let editedPageData = pageData ? JSON.parse(JSON.stringify(pageData)) : [];
       editedPageData = editedPageData.filter(f => f.id !== props.selectedFeature.id);
@@ -151,6 +154,7 @@ const BasicPageDetail = (props) => {
 
   const saveForm = async (formCurrent) => {
     if (groupKey === 'pet') await usePetrology.savePetFeature(pageKey, spot, formCurrent);
+    else if (groupKey === 'sed') await useSed.saveSedFeature(pageKey, spot, formCurrent);
     else await saveFeature(formCurrent);
     await formCurrent.resetForm();
     props.closeDetailView();

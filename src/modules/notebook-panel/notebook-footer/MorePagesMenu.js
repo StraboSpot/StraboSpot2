@@ -26,6 +26,7 @@ const MorePagesMenu = (props) => {
   const sedPagesToShow = SED_PAGES.reduce((acc, page) => {
     return (!page.testing || (isTestingMode && page?.testing)) ? [...acc, page] : acc;
   }, []);
+  const petPagesToShowWithSedRocks = [...petPagesToShow.slice(0,3), sedPagesToShow[0], ...petPagesToShow.slice(3, petPagesToShow.length)];
 
   const switchPage = (key) => {
     dispatch(setNotebookPageVisible(key));
@@ -84,21 +85,21 @@ const MorePagesMenu = (props) => {
           {!isEmpty(petPagesToShow) && (
             <React.Fragment>
               <SectionDivider
-                dividerText={'Ig/Met'}
+                dividerText={'Rocks & Minerals'}
                 style={footerStyles.morePagesSectionDivider}
               />
-              {petPagesToShow.map((page, i, arr) => renderMenuItem(page, i < arr.length - 1))}
+              {petPagesToShowWithSedRocks.map((page, i, arr) => renderMenuItem(page, i < arr.length - 1))}
             </React.Fragment>
           )}
-          {!isEmpty(sedPagesToShow) && (
-            <React.Fragment>
-              <SectionDivider
-                dividerText={'Sedimentology'}
-                style={footerStyles.morePagesSectionDivider}
-              />
-              {sedPagesToShow.map((page, i, arr) => renderMenuItem(page, i < arr.length - 1))}
-            </React.Fragment>
-          )}
+          {/*{!isEmpty(sedPagesToShow) && (*/}
+          {/*  <React.Fragment>*/}
+          {/*    <SectionDivider*/}
+          {/*      dividerText={'Sedimentology'}*/}
+          {/*      style={footerStyles.morePagesSectionDivider}*/}
+          {/*    />*/}
+          {/*    {sedPagesToShow.map((page, i, arr) => renderMenuItem(page, i < arr.length - 1))}*/}
+          {/*  </React.Fragment>*/}
+          {/*)}*/}
         </ScrollView>
       </DialogContent>
     </Dialog>

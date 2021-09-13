@@ -18,6 +18,7 @@ import rockTypeVolcanic from './pet/rock-type-igneous-volcanic.json';
 import rockTypeMetamorphic from './pet/rock-type-metamorphic.json';
 import projectDescription from './project-description.json';
 import sample from './sample.json';
+import rockTypeSedimentary from './sed/rock-type-sedimentary.json';
 import surfaceFeature from './surface-feature.json';
 import tags from './tags.json';
 import fabric from './three-d-structures/fabric.json';
@@ -90,6 +91,9 @@ const forms = {
   },
   project: {
     tags: tags,
+  },
+  sed: {
+    lithologies: rockTypeSedimentary,
   },
 };
 

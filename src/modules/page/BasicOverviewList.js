@@ -9,13 +9,14 @@ import ListEmptyText from '../../shared/ui/ListEmptyText';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import {setSelectedAttributes} from '../spots/spots.slice';
 import BasicListItem from './BasicListItem';
-import {PAGE_KEYS, PET_PAGES} from './page.constants';
+import {PAGE_KEYS, PET_PAGES, SED_PAGES} from './page.constants';
 
 const BasicOverviewList = (props) => {
   const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
 
   const isPet = PET_PAGES.find(p => p.key === props.page.key);
+  const isSed = SED_PAGES.find(p => p.key === props.page.key);
 
   const getData = () => {
     let data = spot.properties[props.page.key] || [];
@@ -26,6 +27,7 @@ const BasicOverviewList = (props) => {
       && spot.properties.pet?.rock_type?.includes(props.page.key) ? spot.properties.pet : {};
       if (!isEmpty(deprecatedRockData)) data = [spot.properties.pet, ...data];
     }
+    else if (isSed && spot.properties.sed) data = spot.properties.sed[props.page.key] || [];
     return data;
   };
 

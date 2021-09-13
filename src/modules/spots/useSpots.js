@@ -347,8 +347,8 @@ const useSpots = () => {
     }));
   };
 
-  const getSpotsWithPetrology = () => {
-    return Object.values(getActiveSpotsObj()).filter(spot => !isEmpty(spot.properties.pet));
+  const getSpotsWithKey = (key) => {
+    return Object.values(getActiveSpotsObj()).filter(spot => !isEmpty(spot.properties[key]));
   };
 
   const getSpotsWithSamples = () => {
@@ -380,7 +380,7 @@ const useSpots = () => {
     getSpotsSortedReverseChronologically: getSpotsSortedReverseChronologically,
     getSpotsWithImages: getSpotsWithImages,
     getSpotsWithImagesSortedReverseChronologically: getSpotsWithImagesSortedReverseChronologically,
-    getSpotsWithPetrology: getSpotsWithPetrology,
+    getSpotsWithKey: getSpotsWithKey,
     getSpotsWithSamples: getSpotsWithSamples,
     getSpotsWithSamplesSortedReverseChronologically: getSpotsWithSamplesSortedReverseChronologically,
   }];

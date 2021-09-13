@@ -35,7 +35,8 @@ const RockPage = (props) => {
 
   const preFormRef = useRef(null);
 
-  const petData = spot.properties.pet || {};
+  const groupKey = props.page.key === PAGE_KEYS.ROCK_TYPE_SEDIMENTARY ? 'sed' : 'pet';
+  const rockData = spot.properties[groupKey] || {};
 
   const IGNEOUS_SECTIONS = {
     PLUTONIC: {title: 'Plutonic Rocks', key: 'plutonic'},
@@ -53,9 +54,14 @@ const RockPage = (props) => {
     DEPRECATED: {title: 'Alteration, Ore Rocks (Deprecated Version)', key: null},
   };
 
+  const SEDIMENTARY_SECTIONS = {
+    SEDIMENTARY: {title: 'Sedimentary Rocks', key: PAGE_KEYS.ROCK_TYPE_SEDIMENTARY},
+  };
+
   const pageSections = props.page.key === PAGE_KEYS.ROCK_TYPE_IGNEOUS ? IGNEOUS_SECTIONS
     : props.page.key === PAGE_KEYS.ROCK_TYPE_METAMORPHIC ? METAMORPHIC_SECTIONS
-      : ALTERATION_ORE_SECTIONS;
+      : props.page.key === PAGE_KEYS.ROCK_TYPE_ALTERATION_ORE ? ALTERATION_ORE_SECTIONS
+        : SEDIMENTARY_SECTIONS;
 
   useEffect(() => {
     console.log('UE Rendered RockPage\nSpot:', spot, '\nSelectedAttributes:', selectedAttributes);
@@ -86,32 +92,32 @@ const RockPage = (props) => {
     const spotToCopy = useSpots.getSpotById(spotId);
 
     const copyPetDataContinued = () => {
-      let updatedPetData = JSON.parse(JSON.stringify(petData));
-      if (spotToCopy?.properties?.pet?.rock_type) {
+      let updatedPetData = JSON.parse(JSON.stringify(rockData));
+      if (groupKey === 'pet' && spotToCopy?.properties?.pet?.rock_type) {
         const survey = useForm.getSurvey(['pet_deprecated', props.page.key]);
         const fieldNames = survey.reduce((acc, field) => field.name ? [...acc, field.name] : acc, []);
         const petDataToCopyFiltered = Object.entries(spotToCopy.properties.pet).reduce((acc, [key, value]) => {
           return fieldNames.includes(key) ? {...acc, [key]: value} : acc;
         }, {});
-        const petDataFiltered = Object.entries(petData).reduce((acc, [key, value]) => {
+        const petDataFiltered = Object.entries(rockData).reduce((acc, [key, value]) => {
           return fieldNames.includes(key) ? acc : {...acc, [key]: value};
         }, {});
-        const updatedRockType = petData.rock_type ? [...new Set([...petData.rock_type, props.page.key])]
+        const updatedRockType = rockData.rock_type ? [...new Set([...rockData.rock_type, props.page.key])]
           : [props.page.key];
         updatedPetData = {...petDataFiltered, ...petDataToCopyFiltered, rock_type: updatedRockType};
       }
-      if (spotToCopy.properties.pet[props.page.key]) {
-        const copyDataWithNewIds = spotToCopy.properties.pet[props.page.key].map(r => ({...r, id: getNewCopyId()}));
-        updatedPetData[props.page.key] = petData[props.page.key] ? [...petData[props.page.key], ...copyDataWithNewIds] : spotToCopy.properties.pet[props.page.key];
+      if (spotToCopy.properties[groupKey] && spotToCopy.properties[groupKey][props.page.key]) {
+        const copyDataWithNewIds = spotToCopy.properties[groupKey][props.page.key].map(r => ({...r, id: getNewCopyId()}));
+        updatedPetData[props.page.key] = [...rockData[props.page.key] || [], ...copyDataWithNewIds];
       }
-      dispatch(editedSpotProperties({field: 'pet', value: updatedPetData}));
+      dispatch(editedSpotProperties({field: groupKey, value: updatedPetData}));
     };
 
     if (!isEmpty(spotToCopy)) {
       const title = props.page.label;
       console.log('Copying ' + title + ' data from Spot:', spotToCopy);
-      if (spotToCopy?.properties?.pet?.rock_type?.includes(props.page.key)
-        && petData?.rock_type?.includes(props.page.key)) {
+      if (groupKey === 'pet' && spotToCopy?.properties?.pet?.rock_type?.includes(props.page.key)
+        && rockData?.rock_type?.includes(props.page.key)) {
         Alert.alert('Overwrite Existing Data',
           'Are you sure you want to overwrite any current ' + title + ' rock data '
           + 'with the ' + title + ' rock data from ' + spotToCopy.properties.name + '?',
@@ -135,9 +141,10 @@ const RockPage = (props) => {
   };
 
   const getSpotsWithRockType = () => {
-    const allSpotsWithPet = useSpots.getSpotsWithPetrology();
-    setSpotsWithRockType(allSpotsWithPet.filter(s => s.properties.id !== spot.properties.id
-      && (s.properties?.pet?.rock_type?.includes(props.page.key) || s.properties?.pet[props.page.key])));
+    const allActiveSpotsWithGroupKey = useSpots.getSpotsWithKey(groupKey);
+    setSpotsWithRockType(allActiveSpotsWithGroupKey.filter(s => s.properties.id !== spot.properties.id
+      && (s.properties[groupKey]
+        && (s.properties[groupKey].rock_type?.includes(props.page.key) || s.properties[groupKey][props.page.key]))));
   };
 
   const renderCopySelect = () => {
@@ -188,10 +195,11 @@ const RockPage = (props) => {
 
   const renderSections = () => {
     const rocksGrouped = Object.values(pageSections).reduce((acc, {title, key}) => {
-      const data = key ? spot?.properties?.pet && spot?.properties?.pet[props.page.key]
-        && spot?.properties?.pet[props.page.key].filter(
+      const data = key ? spot?.properties[groupKey] && spot?.properties[groupKey][props.page.key]
+        && spot?.properties[groupKey][props.page.key].filter(
           rock => key === props.page.key || rock.igneous_rock_class === key) || []
-        : spot?.properties?.pet?.rock_type?.includes(props.page.key) ? [spot.properties?.pet]
+        : spot?.properties[groupKey] && spot?.properties[groupKey].rock_type?.includes(props.page.key)
+          ? [spot.properties[groupKey]]
           : [];
       return !key && isEmpty(data) ? acc : [...acc, {title: title, data: data.reverse()}];
     }, []);
@@ -217,7 +225,7 @@ const RockPage = (props) => {
         closeDetailView={() => setIsDetailView(false)}
         page={props.page}
         selectedFeature={selectedRock}
-        groupKey={'pet'}
+        groupKey={groupKey}
       />
     );
   };
