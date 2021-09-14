@@ -37,6 +37,7 @@ const useMaps = () => {
   const dispatch = useDispatch();
   const project = useSelector(state => state.project.project);
   const isMainMenuPanelVisible = useSelector(state => state.home.isMainMenuPanelVisible);
+  const isOnline = useSelector(state => state.home.isOnline);
   const selectedSymbols = useSelector(state => state.map.symbolsOn) || [];
   const isAllSymbolsOn = useSelector(state => state.map.isAllSymbolsOn);
 
@@ -143,7 +144,8 @@ const useMaps = () => {
       [imageBasemapProps.width, 0]);
     const topRight = convertCoordinateProjections(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION,
       [imageBasemapProps.width, imageBasemapProps.height]);
-    const topLeft = convertCoordinateProjections(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION, [0, imageBasemapProps.height]);
+    const topLeft = convertCoordinateProjections(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION,
+      [0, imageBasemapProps.height]);
     let coordQuad = [topLeft, topRight, bottomRight, bottomLeft];
     console.log('The coordinates identified for image-basemap :', coordQuad);
     return coordQuad;
@@ -319,15 +321,17 @@ const useMaps = () => {
           console.log(basemap);
           return basemap.id === mapId;
         });
-        if (newBasemap.source === 'map_warper') {
-          const mapwarperData = await useServerRequests.getMapWarperBbox(mapId);
-          bbox = mapwarperData.data.attributes.bbox;
+        if (isOnline.isInternetReachable) {
+          if (newBasemap.source === 'map_warper') {
+            const mapwarperData = await useServerRequests.getMapWarperBbox(mapId);
+            bbox = mapwarperData.data.attributes.bbox;
+          }
+          else if (newBasemap.source === 'strabospot_mymaps') {
+            const myMapsbbox = await useServerRequests.getMyMapsBbox(mapId);
+            if (!isEmpty(myMapsbbox)) bbox = myMapsbbox.data.bbox;
+          }
+          newBasemap = {...newBasemap, bbox: bbox};
         }
-        else if (newBasemap.source === 'strabospot_mymaps') {
-          const myMapsbbox = await useServerRequests.getMyMapsBbox(mapId);
-          if (bbox) bbox = myMapsbbox.data.bbox;
-        }
-        newBasemap = {...newBasemap, bbox: bbox};
       }
       console.log('Setting current basemap to a default basemap...');
       dispatch(setCurrentBasemap(newBasemap));

@@ -54,6 +54,8 @@ const Map = React.forwardRef((props, ref) => {
   const useOfflineMaps = useOfflineMapsHook();
 
   const currentBasemap = useSelector(state => state.map.currentBasemap);
+  const customBasemap = useSelector(state => state.map.customMaps);
+  const offlineMaps = useSelector(state => state.offlineMap.offlineMaps);
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const activeDatasetsIds = useSelector(state => state.project.activeDatasetsIds);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
@@ -183,8 +185,14 @@ const Map = React.forwardRef((props, ref) => {
         // Sentry.captureException(error);
       });
     }
-    else if (!isOnline.isInternetReachable && isOnline.isInternetReachable !== null && currentBasemap) {
+    else if (!isEmpty(
+      isOnline) && !isOnline.isInternetReachable && isOnline.isInternetReachable !== null && currentBasemap) {
       console.log('ITS IN THIS ONE!!!! -!isOnline && isOnline !== null && currentBasemap');
+      Object.values(customBasemap).map(map => {
+        if (offlineMaps[map.id]?.id !== map.id) {
+          useMaps.setCustomMapSwitchValue(false, map);
+        }
+      });
       useOfflineMaps.switchToOfflineMap().catch(error => console.log('Error Setting Offline Basemap', error));
     }
     if (!currentImageBasemap) setCurrentLocationAsCenter();
@@ -1354,7 +1362,7 @@ const Map = React.forwardRef((props, ref) => {
     else {
       console.error('Error: not able to get Custom Map bbox coords...');
       dispatch(clearedStatusMessages());
-      dispatch(addedStatusMessage('Error: not able to get Custom Map bbox coords...'));
+      dispatch(addedStatusMessage('Not able to zoom to custom map while offline.'));
       dispatch(setErrorMessagesModalVisible(true));
 
     }
