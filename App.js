@@ -17,7 +17,7 @@ Sentry.init({
   enableNative: true,
   debug: __DEV__,
   release: RELEASE_NAME,
-  dist: BUNDLE_ID,
+  dist: RELEASE_NAME,
   autoSessionTracking: true,
   environment: __DEV__ ? 'development' : 'production',
   deactivateStacktraceMerging: true,

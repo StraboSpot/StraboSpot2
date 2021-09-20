@@ -5,8 +5,8 @@ import {VERSION_NUMBER} from '../../shared/app.constants';
 
 const About = (props) => {
   return (
-    <View>
-      <Text style={{fontSize: 24}}>{VERSION_NUMBER}</Text>
+    <View style={{alignItems: 'center', flex: 1, justifyContent: 'center'}}>
+      <Text style={{fontSize: 24}}>Version: {VERSION_NUMBER}</Text>
     </View>
   );
 };
