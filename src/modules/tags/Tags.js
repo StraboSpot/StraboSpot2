@@ -16,7 +16,7 @@ import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import {setSelectedTag, setUseContinuousTagging} from '../project/projects.slice';
 import {TagDetailModal, useTagsHook} from '../tags';
 
-const Tags = () => {
+const Tags = (props) => {
   const [useTags] = useTagsHook();
   const dispatch = useDispatch();
   const tags = useSelector(state => state.project.project.tags || []);
@@ -25,8 +25,7 @@ const Tags = () => {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isDetailModalVisible, setIsDetailModalVisible] = useState(false);
 
-  const SECTIONS = [
-    {title: 'Geologic Units', key: 'geologic_unit'},
+  const SECTIONS = props.type === 'geologic_unit' ? [{title: 'Geologic Units', key: 'geologic_unit'}] : [
     {title: 'Concepts', key: 'concept'},
     {title: 'Documentation', key: 'documentation'},
     {title: 'Rosetta', key: 'rosetta'},
@@ -81,7 +80,8 @@ const Tags = () => {
   const renderTagsListByMapExtent = () => {
     const spotIds = spotsInMapExtent.map(spot => spot.properties.id);
     const tagsInMapExtent = tags.filter(tag => {
-      return tag.spots && !isEmpty(tag.spots.find(spotId => spotIds.includes(spotId)));
+      return tag.spots && !isEmpty(tag.spots.find(spotId => spotIds.includes(spotId)))
+      && props.type === 'geologic_unit' ? tag.type === 'geologic_unit' : tag.type !== 'geologic_unit';
     });
     console.log('tagsInMapExtent', tagsInMapExtent);
 
@@ -91,7 +91,7 @@ const Tags = () => {
         data={tagsInMapExtent}
         renderItem={({item}) => renderTag(item)}
         ItemSeparatorComponent={FlatListItemSeparator}
-        ListEmptyComponent={<ListEmptyText text='No Spots with tags in current map extent'/>}
+        ListEmptyComponent={<ListEmptyText text={'No Spots with tags in current map extent'}/>}
       />
     );
   };

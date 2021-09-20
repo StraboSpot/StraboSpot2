@@ -3,26 +3,29 @@ import {FlatList} from 'react-native';
 
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
+import {PAGE_KEYS} from '../page/page.constants';
 import {useTagsHook} from '../tags';
 import TagsList from './TagsList';
 
 const TagsAtSpotList = (props) => {
   const [useTags] = useTagsHook();
 
+  const data = props.page.key === PAGE_KEYS.GEOLOGIC_UNITS ? useTags.getGeologicUnitTagsAtSpot()
+    : useTags.getNonGeologicUnitTagsAtSpot();
+  const listEmptyText = props.page.key === PAGE_KEYS.GEOLOGIC_UNITS ? 'No Geologic Units' : 'No Tags';
+
   const renderTag = (tag) => {
-    return (
-      <TagsList tag={tag} openMainMenu={props.openMainMenu}/>
-    );
+    return <TagsList tag={tag} openMainMenu={props.openMainMenu}/>;
   };
 
   return (
     <React.Fragment>
       <FlatList
         keyExtractor={item => item.id.toString()}
-        data={useTags.getTagsAtSpotGeologicUnitFirst()}
+        data={data}
         renderItem={({item}) => renderTag(item)}
         ItemSeparatorComponent={FlatListItemSeparator}
-        ListEmptyComponent={<ListEmptyText text='No Tags'/>}
+        ListEmptyComponent={<ListEmptyText text={listEmptyText}/>}
       />
     </React.Fragment>
   );

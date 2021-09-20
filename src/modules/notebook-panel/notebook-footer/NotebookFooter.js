@@ -43,7 +43,7 @@ const NotebookFooter = (props) => {
           containerStyle={{alignSelf: 'center'}}
           buttonStyle={{padding: 15}}
           title={'MORE'}
-          type="clear"
+          type={'clear'}
           titleStyle={footerStyle.morePagesButton}
           onPress={() => setIsMorePagesMenuVisible(true)}
         />

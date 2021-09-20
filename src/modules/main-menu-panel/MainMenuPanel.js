@@ -116,6 +116,13 @@ const MainMenuPanel = props => {
         </View>
       );
       break;
+    case MAIN_MENU_ITEMS.ATTRIBUTES.GEOLOGIC_UNITS:
+      page = (
+        <View style={styles.mainMenuContainer}>
+          <Tags type={'geologic_unit'}/>
+        </View>
+      );
+      break;
     case MAIN_MENU_ITEMS.ATTRIBUTES.TAGS:
       page = (
         <View style={styles.mainMenuContainer}>

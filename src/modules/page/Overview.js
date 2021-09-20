@@ -213,8 +213,8 @@ const Overview = (props) => {
           </View>
           <View>
             <Button
-              title="Edit"
-              type="clear"
+              title={'Edit'}
+              type={'clear'}
               disabled={!isTraceSurfaceFeatureEnabled}
               disabledTitleStyle={notebookStyles.traceSurfaceFeatureDisabledText}
               onPress={() => setIsTraceSurfaceFeatureEdit(true)}/>

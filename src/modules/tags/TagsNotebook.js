@@ -33,11 +33,13 @@ const TagsNotebook = (props) => {
               buttonTitle={'Assign/Remove'}
               onPress={() => dispatch(setModalVisible({modal: MODAL_KEYS.NOTEBOOK.TAGS}))}
             />
-            <TagsAtSpotList openMainMenu={props.openMainMenu}/>
-            <SectionDivider
-              dividerText={'Feature Tags'}
-            />
-            <FeatureTagsAtSpotList openMainMenu={props.openMainMenu}/>
+            <TagsAtSpotList page={props.page} openMainMenu={props.openMainMenu}/>
+          </React.Fragment>
+        }
+        ListFooterComponent={
+          <React.Fragment>
+            <SectionDivider dividerText={'Feature Tags'}/>
+            <FeatureTagsAtSpotList page={props.page} openMainMenu={props.openMainMenu}/>
           </React.Fragment>
         }
       />
