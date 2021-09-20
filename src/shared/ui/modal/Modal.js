@@ -29,8 +29,8 @@ const Modal = (props) => {
     Keyboard.addListener('keyboardDidShow', handleKeyboardDidShow);
     Keyboard.addListener('keyboardDidHide', handleKeyboardDidHide);
     return function cleanup() {
-      Keyboard.removeListener('keyboardDidShow', handleKeyboardDidShow);
-      Keyboard.removeListener('keyboardDidHide', handleKeyboardDidHide);
+      Keyboard.addListener('keyboardDidShow', handleKeyboardDidShow).remove();
+      Keyboard.addListener('keyboardDidHide', handleKeyboardDidHide).remove();
     };
   }, []);
 
