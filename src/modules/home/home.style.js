@@ -20,8 +20,13 @@ const homeStyles = StyleSheet.create({
     textAlign: 'center',
   },
   mapboxAttributionPosition: {
-    bottom: 0,
-    right: 200,
+    left: 160,
+    bottom: -10,
+  },
+  mapboxLogoPosition: {
+    // right: 60,
+    left: 70,
+    bottom: -10,
   },
   toastContainer: {
     alignItems: 'center',
@@ -131,8 +136,8 @@ const homeStyles = StyleSheet.create({
   currentZoomContainer: {
     zIndex: 1,
     position: 'absolute',
-    bottom: 30,
-    left: 75,
+    bottom: 40,
+    left: 70,
   },
   currentZoomTextBlack: {
     color: themes.BLACK,

@@ -87,7 +87,8 @@ function Basemap(props) {
         style={{flex: 1}}
         animated={true}
         localizeLabels={true}
-        logoEnabled={false}
+        logoEnabled={true}
+        logoPosition={homeStyles.mapboxLogoPosition}
         rotateEnabled={false}
         pitchEnable={false}
         attributionEnabled={true}
