@@ -90,6 +90,9 @@ const UploadBackAndExport = (props) => {
       </View>
 
       <View style={{flex: 1, justifyContent: 'flex-end', paddingBottom: 15}}>
+        <View style={{padding: 10,}}>
+          <Text style={uiStyles.sectionDividerText}>Help documents can be found in the Menu -> Help -> Documentation</Text>
+        </View>
         <Button
           title={'View/Edit Files on Device'}
           type={'outline'}
