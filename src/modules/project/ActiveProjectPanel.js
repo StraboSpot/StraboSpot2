@@ -113,8 +113,11 @@ const ActiveProjectPanel = () => {
           </View>
           {/*Active Datasets*/}
           <View style={{flex: 1, flexGrow: 1, overflow: 'hidden'}}>
-            <SectionDivider dividerText={'Active Datasets'}/>
+            <SectionDivider dividerText={'Active Datasets*'}/>
             <ActiveDatasetsList/>
+          </View>
+          <View style={{alignItems: 'center', paddingBottom: 10}}>
+            <Text style={commonStyles.standardDescriptionText}>*New Spots will be added to the checked dataset.</Text>
           </View>
           <View style={{flex: 1, flexGrow: 1, overflow: 'hidden'}}>
             <SectionDivider dividerText={'Custom Feature Types'}/>
@@ -124,22 +127,21 @@ const ActiveProjectPanel = () => {
 
         {/*Footer*/}
         <View style={{padding: 10}}>
-          <View style={{alignItems: 'center', paddingBottom: 10}}>
-            <Text style={commonStyles.standardDescriptionText}>New Spots will be added to the checked dataset.</Text>
-          </View>
-          {user.name && <View>
-            <Button
-              title={'Download server version of project'}
-              titleStyle={commonStyles.standardButtonText}
-              type={'outline'}
-              onPress={() => setIsWarningModalVisible(true)}
-            />
-            <View style={{alignItems: 'center', paddingTop: 10}}>
-              <Text style={commonStyles.standardDescriptionText}>
-                This will overwrite anything that has not been uploaded to the server
-              </Text>
+          {user.name && (
+            <View>
+              <Button
+                title={'Download server version of project'}
+                titleStyle={commonStyles.standardButtonText}
+                type={'outline'}
+                onPress={() => setIsWarningModalVisible(true)}
+              />
+              <View style={{alignItems: 'center', paddingTop: 10}}>
+                <Text style={commonStyles.standardDescriptionText}>
+                  This will overwrite anything that has not been uploaded to the server
+                </Text>
+              </View>
             </View>
-          </View>}
+          )}
         </View>
 
       </View>
