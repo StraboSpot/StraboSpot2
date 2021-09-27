@@ -145,8 +145,8 @@ const projectSlice = createSlice({
     },
     setActiveDatasets(state, action) {
       const {bool, dataset} = action.payload;
-      if (bool) state.activeDatasetsIds = [...state.activeDatasetsIds, dataset];
-      else state.activeDatasetsIds = state.activeDatasetsIds.filter(data => data !== dataset);
+      if (bool) state.activeDatasetsIds = [...new Set([...state.activeDatasetsIds, dataset])];
+      else state.activeDatasetsIds = state.activeDatasetsIds.filter(id => id !== dataset);
     },
     setActiveMeasurementTemplates(state, action) {
       state.project.templates.activeMeasurementTemplates = action.payload;
