@@ -182,7 +182,7 @@ const useSpots = () => {
   const getAllFeaturesFromSpot = (spotToEvaluate) => {
     let spotsToEvaluate = [];
     let allFeatures = [];
-    if (isEmpty(spotToEvaluate)) spotsToEvaluate = Object.values(spots);
+    if (isEmpty(spotToEvaluate)) spotsToEvaluate = Object.values(getActiveSpotsObj());
     else spotsToEvaluate = [spotToEvaluate];
     let featureElements = [PAGE_KEYS.MEASUREMENTS, PAGE_KEYS.OTHER_FEATURES, PAGE_KEYS.THREE_D_STRUCTURES];
     spotsToEvaluate.forEach(spot => {
