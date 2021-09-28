@@ -1,5 +1,6 @@
 import {useEffect} from 'react';
 
+import * as Sentry from '@sentry/react-native';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {getNewCopyId, getNewId, isEmpty} from '../../shared/Helpers';
@@ -287,7 +288,8 @@ const useSpots = () => {
   };
 
   const getSpotById = (spotId) => {
-    return spots[spotId];
+    if (spots[spotId]) return spots[spotId];
+    else Sentry.captureMessage(`Missing Spot ${spotId}`);
   };
 
   const getSpotByImageId = (imageId) => {
@@ -302,22 +304,20 @@ const useSpots = () => {
   };
 
   const getSpotGemometryIconSource = (spot) => {
-    if (spot.geometry && spot.geometry.type) {
-      if (spot.geometry.type === 'Point') {
-        if (spot.properties.image_basemap) return require('../../assets/icons/ImagePoint_pressed.png');
-        else if (spot.properties.strat_section) return require('../../assets/icons/StratPoint_pressed.png');
-        else return require('../../assets/icons/Point_pressed.png');
-      }
-      else if (spot.geometry.type === 'LineString') {
-        if (spot.properties.image_basemap) return require('../../assets/icons/ImageLine_pressed.png');
-        else if (spot.properties.strat_section) return require('../../assets/icons/StratLine_pressed.png');
-        else return require('../../assets/icons/Line_pressed.png');
-      }
-      else if (spot.geometry.type === 'Polygon') {
-        if (spot.properties.image_basemap) return require('../../assets/icons/ImagePolygon_pressed.png');
-        else if (spot.properties.strat_section) return require('../../assets/icons/StratPolygon_pressed.png');
-        else return require('../../assets/icons/Polygon_pressed.png');
-      }
+    if (spot?.geometry?.type === 'Point') {
+      if (spot.properties?.image_basemap) return require('../../assets/icons/ImagePoint_pressed.png');
+      else if (spot.properties?.strat_section) return require('../../assets/icons/StratPoint_pressed.png');
+      else return require('../../assets/icons/Point_pressed.png');
+    }
+    else if (spot?.geometry?.type === 'LineString') {
+      if (spot.properties?.image_basemap) return require('../../assets/icons/ImageLine_pressed.png');
+      else if (spot.properties?.strat_section) return require('../../assets/icons/StratLine_pressed.png');
+      else return require('../../assets/icons/Line_pressed.png');
+    }
+    else if (spot?.geometry?.type === 'Polygon') {
+      if (spot.properties?.image_basemap) return require('../../assets/icons/ImagePolygon_pressed.png');
+      else if (spot.properties?.strat_section) return require('../../assets/icons/StratPolygon_pressed.png');
+      else return require('../../assets/icons/Polygon_pressed.png');
     }
     else return require('../../assets/icons/QuestionMark_pressed.png');
   };

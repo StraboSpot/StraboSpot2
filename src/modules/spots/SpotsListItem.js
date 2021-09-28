@@ -57,7 +57,7 @@ const SpotsListItem = (props) => {
   return (
     <ListItem
       containerStyle={commonStyles.listItem}
-      key={props.spot.properties.id}
+      keyExtractor={(item, index) => item?.properties?.id?.toString() ||  index.toString()}
       onPress={() => props.onPress(props.spot)}
     >
       <Avatar source={useSpots.getSpotGemometryIconSource(props.spot)}
@@ -65,14 +65,14 @@ const SpotsListItem = (props) => {
               size={20}
       />
       <ListItem.Content>
-        <ListItem.Title style={commonStyles.listItemTitle}>{props.spot.properties.name}</ListItem.Title>
-        {props.doShowTags && renderTags()}
-        {props.doShowSubspots && renderSubspots()}
+        <ListItem.Title style={commonStyles.listItemTitle}>{props?.spot?.properties?.name}</ListItem.Title>
+        {props.doShowTags && props.spot && renderTags()}
+        {props.doShowSubspots && props.spot && renderSubspots()}
       </ListItem.Content>
       {props.isCheckedList ? renderCheckboxes() : (
         <React.Fragment>
-          {renderSpotDataIcons()}
-          <ListItem.Chevron/>
+          {props.spot && renderSpotDataIcons()}
+          {props.spot && <ListItem.Chevron/>}
         </React.Fragment>
       )}
     </ListItem>
