@@ -232,22 +232,17 @@ const useTags = () => {
     return projectTags.filter(tag => tag.spots && tag.spots.includes(spotId));
   };
 
-  const renderFeatureTagsCount = (tag) => {
-    if (!isEmpty(tag.features)) {
-      let countOfFeatureTags = 0;
-      for (const [spotId, features] of Object.entries(tag.features)) {
-        countOfFeatureTags = countOfFeatureTags + features.length;
-      }
-      return `(${countOfFeatureTags})`;
+  const getTagFeaturesCount = (tag) => {
+    if (isEmpty(tag.features)) return 0;
+    else {
+      const validSpots = Object.keys(tag.features).filter(spotIds => spots[spotIds]);
+      return validSpots.reduce((acc, spotId) => acc + tag.features[spotId].length, 0);
     }
-    else return '(0)';
   };
 
-  const renderSpotCount = (tag) => {
-    if (tag.spots) {
-      return `(${tag.spots.length})`;
-    }
-    else return '(0)';
+  const getTagSpotstCount = (tag) => {
+    const validSpots = tag.spots.filter(spotIds => spots[spotIds]);
+    return validSpots.length;
   };
 
   const renderTagInfo = () => {
@@ -373,8 +368,8 @@ const useTags = () => {
     getNonGeologicUnitTagsAtSpot: getNonGeologicUnitTagsAtSpot,
     getTagsAtFeature: getTagsAtFeature,
     getTagsAtSpot: getTagsAtSpot,
-    renderFeatureTagsCount: renderFeatureTagsCount,
-    renderSpotCount: renderSpotCount,
+    getTagFeaturesCount: getTagFeaturesCount,
+    getTagSpotstCount: getTagSpotstCount,
     renderTagInfo: renderTagInfo,
     renderTagForm: renderTagForm,
     saveForm: saveForm,

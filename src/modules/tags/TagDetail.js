@@ -16,7 +16,10 @@ const TagDetail = (props) => {
   const [useSpots] = useSpotsHook();
   const [useTags] = useTagsHook();
   const selectedTag = useSelector(state => state.project.selectedTag);
+  const spots = useSelector(state => state.spot.spots);
   const [refresh, setRefresh] = useState(false);
+
+  // selectedTag.spots.map((x, index) => console.log(index, x, useSpots.getSpotById(x)));
 
   useEffect(() => {
     setRefresh(!refresh); // #TODO : Current hack to render two different FlatListComponents when selectedTag Changes.
@@ -50,6 +53,17 @@ const TagDetail = (props) => {
     }
   };
 
+  const renderSpotItem = (id) => {
+    const spot = useSpots.getSpotById(id);
+    return (
+      <SpotsListItem
+        doShowTags={true}
+        spot={spot}
+        onPress={props.openSpot}
+      />
+    );
+  };
+
   return (
     <FlatList
       ListHeaderComponent={
@@ -68,13 +82,8 @@ const TagDetail = (props) => {
           <FlatList
             listKey={1}
             keyExtractor={(item) => item.toString()}
-            data={selectedTag.spots}
-            renderItem={({item}) => (
-              <SpotsListItem
-                doShowTags={true}
-                spot={useSpots.getSpotById(item)}
-                onPress={props.openSpot}
-              />)}
+            data={selectedTag.spots.filter(spotId => spots[spotId])}
+            renderItem={({item}) => renderSpotItem(item)}
             ItemSeparatorComponent={FlatListItemSeparator}
             ListEmptyComponent={<ListEmptyText text={'No Spots'}/>}
           />

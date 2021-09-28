@@ -52,6 +52,8 @@ const Tags = (props) => {
   };
 
   const renderTag = (tag) => {
+    const tagSpotCount = useTags.getTagSpotstCount(tag);
+    const tagFeatureCount = useTags.getTagFeaturesCount(tag);
     return (
       <ListItem
         containerStyle={commonStyles.listItem}
@@ -70,7 +72,7 @@ const Tags = (props) => {
           <ListItem.Title style={commonStyles.listItemTitle}>{getTagTitle(tag)}</ListItem.Title>
         </ListItem.Content>
         <ListItem.Content right>
-          <ListItem.Title>{useTags.renderSpotCount(tag) + ' ' + useTags.renderFeatureTagsCount(tag)}</ListItem.Title>
+          <ListItem.Title>({tagSpotCount}) ({tagFeatureCount})</ListItem.Title>
         </ListItem.Content>
         <ListItem.Chevron/>
       </ListItem>
