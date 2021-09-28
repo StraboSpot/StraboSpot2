@@ -74,8 +74,8 @@ export const PRIMARY_PAGES = [
   {
     key: PAGE_KEYS.GEOLOGIC_UNITS,
     label: 'Geologic Units',
-    icon_src: require('../../assets/icons/Tag.png'),
-    icon_pressed_src: require('../../assets/icons/Tag_pressed.png'),
+    icon_src: require('../../assets/icons/SedDiagenesis.png'),
+    icon_pressed_src: require('../../assets/icons/SedDiagenesis_pressed.png'),
     overview_component: TagsAtSpotList,
     page_component: TagsNotebook,
     modal_component: TagsNotebookModal,
