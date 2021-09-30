@@ -24,15 +24,14 @@
     {
       "type": "calculate",
       "name": "__version__",
-      "calculation": "'vWFGAeJowj9MxuUJKpg3CT'"
+      "calculation": "'vqnVekzwerzFjUgy2BLhk2'"
     }
   ],
   "choices": [
     {
       "list_name": "qn1ps78",
       "name": "rock_unit",
-      "label": "rock unit",
-      "order": "0"
+      "label": "rock unit"
     },
     {
       "list_name": "qn1ps78",
@@ -84,15 +83,22 @@
     },
     {
       "list_name": "qn1ps78",
+      "name": "strat_interval",
+      "label": "strat interval",
+      "order": "9"
+    },
+    {
+      "list_name": "qn1ps78",
       "name": "other",
       "label": "other",
-      "order": "9"
+      "order": "10"
     }
   ],
   "settings": [
     {
       "id_string": "surface_feature",
-      "version": "vWFGAeJowj9MxuUJKpg3CT"
+      "form_title": "Surface Feature",
+      "version": "2 (2021-09-30 16:28:27)"
     }
   ]
 }
