@@ -196,6 +196,7 @@ const RockPage = (props) => {
   const renderSections = () => {
     const rocksGrouped = Object.values(pageSections).reduce((acc, {title, key}) => {
       const data = key ? spot?.properties[groupKey] && spot?.properties[groupKey][props.page.key]
+        && Array.isArray(spot?.properties[groupKey][props.page.key])
         && spot?.properties[groupKey][props.page.key].filter(
           rock => key === props.page.key || rock.igneous_rock_class === key) || []
         : spot?.properties[groupKey] && spot?.properties[groupKey].rock_type?.includes(props.page.key)

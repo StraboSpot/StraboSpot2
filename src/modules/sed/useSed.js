@@ -42,7 +42,7 @@ const useSed = () => {
       console.log('Saving', key, 'data to Spot ...');
       let editedFeatureData = formCurrent.values;
       let editedSedData = spot.properties.sed ? JSON.parse(JSON.stringify(spot.properties.sed)) : {};
-      if (!editedSedData[key]) editedSedData[key] = [];
+      if (!editedSedData[key] || !Array.isArray(editedSedData[key])) editedSedData[key] = [];
       editedSedData[key] = editedSedData[key].filter(type => type.id !== editedFeatureData.id);
       editedSedData[key].push(editedFeatureData);
       dispatch(editedSpotProperties({field: 'sed', value: editedSedData}));

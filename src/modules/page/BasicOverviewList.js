@@ -28,6 +28,7 @@ const BasicOverviewList = (props) => {
       if (!isEmpty(deprecatedRockData)) data = [spot.properties.pet, ...data];
     }
     else if (isSed && spot.properties.sed) data = spot.properties.sed[props.page.key] || [];
+    if (!Array.isArray(data)) data = [];
     return data;
   };
 

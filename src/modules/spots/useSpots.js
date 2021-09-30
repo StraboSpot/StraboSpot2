@@ -254,6 +254,11 @@ const useSpots = () => {
           if ((spot.properties.pet && spot.properties.pet[page.key])
             || spot?.properties?.pet?.rock_type?.includes(page.key)) isPopulated = true;
           break;
+        case PAGE_KEYS.ROCK_TYPE_SEDIMENTARY:
+          if (spot.properties.sed && spot.properties.sed[page.key] && Array.isArray(spot.properties.sed[page.key])) {
+            isPopulated = true;
+          }
+          break;
         default:
           if (spot.properties && (spot.properties[page.key]
             || (PET_PAGES.find(p => p.key === page.key) && spot.properties.pet && spot.properties.pet[page.key])
