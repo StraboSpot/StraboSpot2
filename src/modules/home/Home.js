@@ -3,7 +3,7 @@ import {Alert, Animated, Dimensions, Keyboard, Platform, Text, TextInput, View} 
 
 import {useNavigation} from '@react-navigation/native';
 import * as Sentry from '@sentry/react-native';
-import {Button, Image} from 'react-native-elements';
+import {Button} from 'react-native-elements';
 import {FlatListSlider} from 'react-native-flatlist-slider';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -565,6 +565,7 @@ const Home = () => {
         openNotebookPanel={(pageView) => openNotebookPanel(pageView)}
         zoomToCenterOfflineTile={() => mapComponentRef.current.zoomToCenterOfflineTile()}
         zoomToCustomMap={(bbox) => mapComponentRef.current.zoomToCustomMap(bbox)}
+        toggleHomeDrawer={()=>toggleHomeDrawerButton()}
       />
     </Animated.View>
   );

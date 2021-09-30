@@ -51,7 +51,8 @@ const MainMenuPanel = props => {
   };
 
   const setVisibleMenu = (name) => {
-    dispatch(setMenuSelectionPage({name: name}));
+    if (name === MAIN_MENU_ITEMS.HELP.CLOSE_MENU) props.toggleHomeDrawer();
+    else dispatch(setMenuSelectionPage({name: name}));
   };
 
   const toggleSwitch = (switchName) => {
