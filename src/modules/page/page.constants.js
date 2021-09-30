@@ -42,7 +42,7 @@ export const PAGE_KEYS = {
   FABRICS: 'fabrics',
   FOSSILS: 'fossils',
   GEOGRAPHY: 'geography',
-  GEOLOGIC_UNITS: 'geologic_units',
+  GEOLOGIC_UNITS: 'geologic_unit',
   IMAGES: 'images',
   INTERPRETATIONS: 'interpretations',
   MEASUREMENTS: 'orientation_data',
@@ -74,8 +74,8 @@ export const PRIMARY_PAGES = [
   {
     key: PAGE_KEYS.GEOLOGIC_UNITS,
     label: 'Geologic Units',
-    icon_src: require('../../assets/icons/SedDiagenesis.png'),
-    icon_pressed_src: require('../../assets/icons/SedDiagenesis_pressed.png'),
+    icon_src: require('../../assets/icons/GeologicUnit.png'),
+    icon_pressed_src: require('../../assets/icons/GeologicUnit_pressed.png'),
     overview_component: TagsAtSpotList,
     page_component: TagsNotebook,
     modal_component: TagsNotebookModal,
@@ -111,7 +111,7 @@ export const PRIMARY_PAGES = [
     overview_component: TagsAtSpotList,
     page_component: TagsNotebook,
     modal_component: TagsNotebookModal,
-    action_label: 'Add Tags',
+    action_label: 'Add Spot Tags',
   }, {
     key: PAGE_KEYS.SAMPLES,
     label: 'Samples',
