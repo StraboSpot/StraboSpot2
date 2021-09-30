@@ -350,9 +350,9 @@ PODS:
     - React-RCTImage
   - RNSensors (7.3.3):
     - React-Core
-  - RNSentry (3.0.1):
+  - RNSentry (3.1.1):
     - React-Core
-    - Sentry (= 7.2.6)
+    - Sentry (= 7.3.0)
   - RNSketchCanvas (0.8.0):
     - React
   - RNSound (0.11.1):
@@ -369,9 +369,9 @@ PODS:
   - RNZipArchive/Core (6.0.3):
     - React-Core
     - SSZipArchive (= 2.2.3)
-  - Sentry (7.2.6):
-    - Sentry/Core (= 7.2.6)
-  - Sentry/Core (7.2.6)
+  - Sentry (7.3.0):
+    - Sentry/Core (= 7.3.0)
+  - Sentry/Core (7.3.0)
   - SSZipArchive (2.2.3)
   - Yoga (1.14.0)
 
@@ -599,12 +599,12 @@ SPEC CHECKSUMS:
   RNReanimated: 9c13c86454bfd54dab7505c1a054470bfecd2563
   RNScreens: eb0dfb2d6b21d2d7f980ad46b14eb306d2f1062e
   RNSensors: 7baffb62308e167902b28e5f74e072804bfc1ad1
-  RNSentry: 701496f68e915395d2871a2b402a03df4d6ee51f
+  RNSentry: 49abc89b0190b4c8afe0fa5d065f98e36cb53233
   RNSketchCanvas: 9c28adb5381543ed55cc98ce6de46479cb3cb12c
   RNSound: 27e8268bdb0a1f191f219a33267f7e0445e8d62f
   RNVectorIcons: 31cebfcf94e8cf8686eb5303ae0357da64d7a5a4
   RNZipArchive: 924d63f15f2838837f8379ee6e9955d8ff4736c4
-  Sentry: be2f8f7a63e5274cc83d0813e40c1680119c0153
+  Sentry: 9a4e621430e2dae4477d791f2f7e905720b6efbf
   SSZipArchive: 62d4947b08730e4cda640473b0066d209ff033c9
   Yoga: a7de31c64fe738607e7a3803e3f591a4b1df7393
 
