@@ -52,7 +52,7 @@ const Tags = (props) => {
   };
 
   const renderTag = (tag) => {
-    const tagSpotCount = useTags.getTagSpotstCount(tag);
+    const tagSpotCount = useTags.getTagSpotsCount(tag);
     const tagFeatureCount = useTags.getTagFeaturesCount(tag);
     return (
       <ListItem

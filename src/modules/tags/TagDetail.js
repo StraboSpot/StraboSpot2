@@ -82,7 +82,7 @@ const TagDetail = (props) => {
           <FlatList
             listKey={1}
             keyExtractor={(item) => item.toString()}
-            data={selectedTag.spots.filter(spotId => spots[spotId])}
+            data={selectedTag.spots && selectedTag.spots.filter(spotId => spots[spotId])}
             renderItem={({item}) => renderSpotItem(item)}
             ItemSeparatorComponent={FlatListItemSeparator}
             ListEmptyComponent={<ListEmptyText text={'No Spots'}/>}

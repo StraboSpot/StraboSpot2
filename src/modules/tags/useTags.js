@@ -233,15 +233,12 @@ const useTags = () => {
   };
 
   const getTagFeaturesCount = (tag) => {
-    if (isEmpty(tag.features)) return 0;
-    else {
-      const validSpots = Object.keys(tag.features).filter(spotIds => spots[spotIds]);
-      return validSpots.reduce((acc, spotId) => acc + tag.features[spotId].length, 0);
-    }
+    const validSpots = isEmpty(tag.features) ? [] : Object.keys(tag.features).filter(spotIds => spots[spotIds]);
+    return validSpots.reduce((acc, spotId) => acc + tag.features[spotId].length, 0);
   };
 
-  const getTagSpotstCount = (tag) => {
-    const validSpots = tag.spots.filter(spotIds => spots[spotIds]);
+  const getTagSpotsCount = (tag) => {
+    const validSpots = isEmpty(tag.spots) ? [] : tag.spots.filter(spotIds => spots[spotIds]);
     return validSpots.length;
   };
 
@@ -369,7 +366,7 @@ const useTags = () => {
     getTagsAtFeature: getTagsAtFeature,
     getTagsAtSpot: getTagsAtSpot,
     getTagFeaturesCount: getTagFeaturesCount,
-    getTagSpotstCount: getTagSpotstCount,
+    getTagSpotsCount: getTagSpotsCount,
     renderTagInfo: renderTagInfo,
     renderTagForm: renderTagForm,
     saveForm: saveForm,
