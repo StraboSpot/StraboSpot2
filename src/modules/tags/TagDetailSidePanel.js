@@ -6,10 +6,11 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import ColorPickerModal from '../../shared/ColorPickerModal';
 import {isEmpty} from '../../shared/Helpers';
-import {SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.constants';
+import {MAIN_MENU_ITEMS, SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import SidePanelHeader from '../main-menu-panel/sidePanel/SidePanelHeader';
-import {setSelectedSpot, setSelectedAttributes} from '../spots/spots.slice';
+import {PAGE_KEYS} from '../page/page.constants';
+import {setSelectedAttributes, setSelectedSpot} from '../spots/spots.slice';
 import {TagDetail, TagDetailModal} from '../tags';
 
 const TagDetailSidePanel = (props) => {
@@ -31,7 +32,8 @@ const TagDetailSidePanel = (props) => {
         <View style={{flex: 1}}>
           <SidePanelHeader
             backButton={() => dispatch(setSidePanelVisible({bool: false}))}
-            title={'Tags'}
+            title={selectedTag.type === PAGE_KEYS.GEOLOGIC_UNITS ? MAIN_MENU_ITEMS.ATTRIBUTES.GEOLOGIC_UNITS
+              : MAIN_MENU_ITEMS.ATTRIBUTES.TAGS}
             headerTitle={!isEmpty(selectedTag) && selectedTag.name}
           />
         </View>

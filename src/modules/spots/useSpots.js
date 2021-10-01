@@ -228,9 +228,16 @@ const useSpots = () => {
     const populatedPagesKeys = NOTEBOOK_PAGES.reduce((acc, page) => {
       let isPopulated = false;
       switch (page.key) {
-        case PAGE_KEYS.TAGS:
-          if (!isEmpty(useTags.getTagsAtSpot(spot.properties.id))) isPopulated = true;
+        case PAGE_KEYS.TAGS: {
+          const tagsAtSpot = useTags.getTagsAtSpot(spot.properties.id);
+          if (!isEmpty(tagsAtSpot.filter(t => t.type !== PAGE_KEYS.GEOLOGIC_UNITS))) isPopulated = true;
           break;
+        }
+        case PAGE_KEYS.GEOLOGIC_UNITS: {
+          const tagsAtSpot = useTags.getTagsAtSpot(spot.properties.id);
+          if (!isEmpty(tagsAtSpot.filter(t => t.type === PAGE_KEYS.GEOLOGIC_UNITS))) isPopulated = true;
+          break;
+        }
         case PAGE_KEYS.THREE_D_STRUCTURES:
           if (spot.properties[PAGE_KEYS.THREE_D_STRUCTURES]
             && !isEmpty(spot.properties[PAGE_KEYS.THREE_D_STRUCTURES].filter(s => s.type !== 'fabric'))) {

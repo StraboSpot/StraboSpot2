@@ -16,25 +16,30 @@ import {SelectInputField} from '../form';
 import {MODAL_KEYS} from '../home/home.constants';
 import {setModalVisible} from '../home/home.slice';
 import useMapsHook from '../maps/useMaps';
+import {PAGE_KEYS} from '../page/page.constants';
 import {TAG_TYPES} from '../project/project.constants';
 import {addedTagToSelectedSpot} from '../project/projects.slice';
 import {TagDetailModal, useTagsHook} from '../tags';
 
 const TagsModal = (props) => {
-  const dispatch = useDispatch();
   const [useMaps] = useMapsHook();
   const [useTags] = useTagsHook();
-  const selectedSpot = useSelector(state => state.spot.selectedSpot);
-  const selectedSpotsForTagging = useSelector(state => state.spot.intersectedSpotsForTagging);
+
+  const dispatch = useDispatch();
+  const isMultipleFeaturesTaggingEnabled = useSelector(state => state.project.isMultipleFeaturesTaggingEnabled);
   const modalVisible = useSelector(state => state.home.modalVisible);
+  const pageVisible = useSelector(state => state.notebook.visibleNotebookPagesStack.slice(-1)[0]);
+  const selectedFeature = useSelector(state => state.spot.selectedAttributes[0]);
+  const selectedSpot = useSelector(state => state.spot.selectedSpot);
+  const selectedSpotFeaturesForTagging = useSelector(state => state.spot.selectedAttributes || []);
+  const selectedSpotsForTagging = useSelector(state => state.spot.intersectedSpotsForTagging);
   const tags = useSelector(state => state.project.project.tags) || [];
+
+  const formRef = useRef(null);
+
   const [checkedTagsTemp, setCheckedTagsTemp] = useState([]);
   const [isDetailModalVisible, setIsDetailModalVisible] = useState(false);
   const [searchText, setSearchText] = useState('');
-  const isMultipleFeaturesTaggingEnabled = useSelector(state => state.project.isMultipleFeaturesTaggingEnabled);
-  const selectedSpotFeaturesForTagging = useSelector(state => state.spot.selectedAttributes || []);
-  const selectedFeature = useSelector(state => state.spot.selectedAttributes[0]);
-  const formRef = useRef(null);
 
   const checkTags = (tag) => {
     const checkedTagsIds = checkedTagsTemp.map(checkedTag => checkedTag.id);
@@ -51,12 +56,9 @@ const TagsModal = (props) => {
   };
 
   const getRelevantTags = () => {
-    if (isEmpty(searchText)) {
-      return JSON.parse(JSON.stringify(tags));
-    }
-    else {
-      return searchTagsByType(searchText);
-    }
+    return pageVisible === PAGE_KEYS.GEOLOGIC_UNITS ? searchTagsByType(PAGE_KEYS.GEOLOGIC_UNITS)
+      : isEmpty(searchText) ? JSON.parse(JSON.stringify(tags.filter(t => t.type !== PAGE_KEYS.GEOLOGIC_UNITS)))
+        : searchTagsByType(searchText);
   };
 
   const save = async () => {
@@ -80,7 +82,7 @@ const TagsModal = (props) => {
   const renderSpotTagsList = () => {
     return (
       <React.Fragment>
-        {!isEmpty(tags) && (
+        {!isEmpty(tags) && pageVisible !== PAGE_KEYS.GEOLOGIC_UNITS && (
           <Formik
             initialValues={{}}
             validate={(fieldValues) => setSearchText(fieldValues.searchText)}
@@ -97,7 +99,8 @@ const TagsModal = (props) => {
                     name={'searchText'}
                     key={'searchText'}
                     label={'Tag Type'}
-                    choices={TAG_TYPES.map(tagType => ({label: useTags.getLabel(tagType), value: tagType}))}
+                    choices={TAG_TYPES.filter(t => t !== PAGE_KEYS.GEOLOGIC_UNITS).map(
+                      tagType => ({label: useTags.getLabel(tagType), value: tagType}))}
                     single={true}
                   />
                 </ListItem.Content>
@@ -120,8 +123,10 @@ const TagsModal = (props) => {
   const renderTagItem = (tag) => {
     let isAlreadyChecked = false;
     if (isMultipleFeaturesTaggingEnabled) {
-      isAlreadyChecked = tag.features && tag.features[selectedSpot.properties.id] && !isEmpty(selectedSpotFeaturesForTagging)
-      && selectedSpotFeaturesForTagging.every(element => tag.features[selectedSpot.properties.id].includes(element.id));
+      isAlreadyChecked = tag.features && tag.features[selectedSpot.properties.id] && !isEmpty(
+          selectedSpotFeaturesForTagging)
+        && selectedSpotFeaturesForTagging.every(
+          element => tag.features[selectedSpot.properties.id].includes(element.id));
     }
     return (
       <ListItem
@@ -156,7 +161,8 @@ const TagsModal = (props) => {
               ? tag.features && tag.features[selectedSpot.properties.id] && selectedFeature
               && tag.features[selectedSpot.properties.id].includes(selectedFeature.id) : isAlreadyChecked
             }
-            onPress={() => !isMultipleFeaturesTaggingEnabled ? useTags.addRemoveTag(tag, selectedSpot, props.isFeatureLevelTagging)
+            onPress={() => !isMultipleFeaturesTaggingEnabled ? useTags.addRemoveTag(tag, selectedSpot,
+                props.isFeatureLevelTagging)
               : useTags.addRemoveTag(tag, selectedSpot, props.isFeatureLevelTagging, isAlreadyChecked)}
           />
         )}
@@ -189,7 +195,8 @@ const TagsModal = (props) => {
           : <Text style={modalStyle.textStyle}>No Tags</Text>}
       </View>
       {renderSpotTagsList()}
-      {(!isEmpty(tags) && modalVisible !== MODAL_KEYS.NOTEBOOK.TAGS && modalVisible !== MODAL_KEYS.OTHER.FEATURE_TAGS) && (
+      {(!isEmpty(
+        tags) && modalVisible !== MODAL_KEYS.NOTEBOOK.TAGS && modalVisible !== MODAL_KEYS.OTHER.FEATURE_TAGS) && (
         <SaveButton
           buttonStyle={{backgroundColor: 'red'}}
           title={'Save tag(s)'}

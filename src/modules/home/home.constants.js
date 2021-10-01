@@ -24,6 +24,7 @@ export const MODAL_KEYS = {
   OTHER: {
     ADD_TAGS_TO_SPOTS: 'AddTagsToSpots',
     FEATURE_TAGS: 'FeatureTags',
+    GEOLOGIC_UNITS: 'geologic_unit',
     MEASUREMENT_TEMPLATES_PLANAR: 'ChoosePlanarTemplate',
     MEASUREMENT_TEMPLATES_LINEAR: 'ChooseLinearTemplate',
     MEASUREMENT_PLANAR_TEMPLATE_FORM: 'DefinePlanarTemplate',
@@ -88,7 +89,7 @@ const OTHER_MODALS = [
     modal_component: AddTagsToSpotsShortcutModal,
   },{
     key: MODAL_KEYS.OTHER.FEATURE_TAGS,
-    label: 'Feature Tags',
+    label: 'Add Feature Tags',
     modal_component: FeatureTagsModal,
   }, {
     key: MODAL_KEYS.OTHER.MEASUREMENT_TEMPLATES_PLANAR,

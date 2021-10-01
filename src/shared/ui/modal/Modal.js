@@ -7,6 +7,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import compassStyles from '../../../modules/compass/compass.styles';
 import {MODAL_KEYS, MODALS, NOTEBOOK_MODELS, SHORTCUT_MODALS} from '../../../modules/home/home.constants';
 import {setModalVisible} from '../../../modules/home/home.slice';
+import {NOTEBOOK_PAGES, PAGE_KEYS} from '../../../modules/page/page.constants';
 import commonStyles from '../../common.styles';
 import * as Helpers from '../../Helpers';
 import {isEmpty} from '../../Helpers';
@@ -18,6 +19,7 @@ const {State: TextInputState} = TextInput;
 const Modal = (props) => {
   const dispatch = useDispatch();
   const modalVisible = useSelector(state => state.home.modalVisible);
+  const pageVisible = useSelector(state => state.notebook.visibleNotebookPagesStack.slice(-1)[0]);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
 
   const [textInputAnimate] = useState(new Animated.Value(0));
@@ -38,6 +40,13 @@ const Modal = (props) => {
 
   const handleKeyboardDidHide = () => Helpers.handleKeyboardDidHide(textInputAnimate);
 
+  const getTitle = () => {
+    if (pageVisible === PAGE_KEYS.GEOLOGIC_UNITS) {
+      return NOTEBOOK_PAGES.find(p => p.key === PAGE_KEYS.GEOLOGIC_UNITS).action_label;
+    }
+    else return modalInfo && (modalInfo.action_label || modalInfo.label);
+  };
+
   const renderModalHeader = () => {
     return (
       <View style={modalStyle.modalTop}>
@@ -50,9 +59,7 @@ const Modal = (props) => {
           />
         </View>
         <View>
-          <Text style={modalStyle.modalTitle}>
-            {modalInfo && (modalInfo.action_label || modalInfo.label)}
-          </Text>
+          <Text style={modalStyle.modalTitle}>{getTitle()}</Text>
         </View>
         <View style={{flex: 1, alignItems: 'flex-end'}}>
           <Button

@@ -9,6 +9,7 @@ import {deepFindFeatureTypeById, isEmpty} from '../../shared/Helpers';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
+import {PAGE_KEYS} from '../page/page.constants';
 import {SpotsListItem, useSpotsHook} from '../spots';
 import {useTagsHook} from '../tags';
 
@@ -64,18 +65,31 @@ const TagDetail = (props) => {
     );
   };
 
+  const renderTaggedFeaturesList = () => {
+    return (
+      <FlatList
+        listKey={2}
+        keyExtractor={(item) => item.toString()}
+        data={useTags.getAllTaggedFeatures(selectedTag)}
+        renderItem={({item}) => renderSpotFeatureItem(item)}
+        ItemSeparatorComponent={FlatListItemSeparator}
+        ListEmptyComponent={<ListEmptyText text={'No Features'}/>}
+      />
+    );
+  };
+
   return (
     <FlatList
       ListHeaderComponent={
         <React.Fragment>
           <SectionDividerWithRightButton
-            dividerText={'Tag Info'}
+            dividerText={selectedTag.type === PAGE_KEYS.GEOLOGIC_UNITS ? 'Info' : 'Tag Info'}
             buttonTitle={'View/Edit'}
             onPress={props.setIsDetailModalVisible}
           />
           {selectedTag && useTags.renderTagInfo()}
           <SectionDividerWithRightButton
-            dividerText={'Tagged Spots'}
+            dividerText={selectedTag.type === PAGE_KEYS.GEOLOGIC_UNITS ? 'Spots' : 'Tagged Spots'}
             buttonTitle={'Add/Remove'}
             onPress={props.addRemoveSpots}
           />
@@ -87,30 +101,15 @@ const TagDetail = (props) => {
             ItemSeparatorComponent={FlatListItemSeparator}
             ListEmptyComponent={<ListEmptyText text={'No Spots'}/>}
           />
-          <SectionDividerWithRightButton
-            dividerText={'Tagged Features'}
-            buttonTitle={'Add/Remove'}
-            onPress={props.addRemoveFeatures}
-          />
-          {!refresh && (
-            <FlatList
-              listKey={2}
-              keyExtractor={(item) => item.toString()}
-              data={useTags.getAllTaggedFeatures(selectedTag)}
-              renderItem={({item}) => renderSpotFeatureItem(item)}
-              ItemSeparatorComponent={FlatListItemSeparator}
-              ListEmptyComponent={<ListEmptyText text={'No Features'}/>}
-            />
-          )}
-          {refresh && (
-            <FlatList
-              listKey={2}
-              keyExtractor={(item) => item.toString()}
-              data={useTags.getAllTaggedFeatures(selectedTag)}
-              renderItem={({item}) => renderSpotFeatureItem(item)}
-              ItemSeparatorComponent={FlatListItemSeparator}
-              ListEmptyComponent={<ListEmptyText text={'No Features'}/>}
-            />
+          {selectedTag.type !== PAGE_KEYS.GEOLOGIC_UNITS && (
+            <React.Fragment>
+              <SectionDividerWithRightButton
+                dividerText={'Tagged Features'}
+                buttonTitle={'Add/Remove'}
+                onPress={props.addRemoveFeatures}
+              />
+              {refresh ? renderTaggedFeaturesList() : renderTaggedFeaturesList()}
+            </React.Fragment>
           )}
         </React.Fragment>
       }
