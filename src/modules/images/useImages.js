@@ -7,6 +7,7 @@ import ImageResizer from 'react-native-image-resizer';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {getNewId} from '../../shared/Helpers';
+import {setLoadingStatus} from '../home/home.slice';
 import useHomeHook from '../home/useHome';
 import {setCurrentImageBasemap} from '../maps/maps.slice';
 import {
@@ -149,32 +150,35 @@ const useImages = () => {
     return Platform.OS === 'ios' ? imageURI : 'file://' + imageURI;
   };
 
-  const resizeImageIfNecessary = async (imageData) => {
-    let height = imageData.height;
-    let width = imageData.width;
-    const tempImageURI = Platform.OS === 'ios' ? imageData.uri || imageData.path : imageData.uri || 'file://' + imageData.path;
-    if (!height || !width) ({height, width} = await getImageHeightAndWidth(tempImageURI));
-    let resizedImage, createResizedImageProps = {};
-    createResizedImageProps = (height > 4096 || width > 4096) ? [tempImageURI, 4096, 4096, 'JPEG', 100, 0]
-      : [tempImageURI, width, height, 'JPEG', 100, 0];
-    resizedImage = await ImageResizer.createResizedImage(...createResizedImageProps);
-    return resizedImage;
-  };
-
   const getImagesFromCameraRoll = async () => {
-    launchImageLibrary({}, async response => {
-      console.log('RES', response);
-      if (response.didCancel) useHome.toggleLoading(false);
-      else {
-        let imageAsset = response.assets[0];
-        useHome.toggleLoading(true);
-        imageAsset = await resizeImageIfNecessary(imageAsset);
-        const savedPhoto = await saveFile(imageAsset);
-        console.log('Saved Photo in getImagesFromCameraRoll:', savedPhoto);
-        dispatch(editedSpotImages([savedPhoto]));
-        useHome.toggleLoading(false);
-      }
-    });
+    try {
+      launchImageLibrary({selectionLimit: 0}, async response => {
+        dispatch(setLoadingStatus({view: 'home', bool: true}));
+        console.log('RES', response);
+        if (response.didCancel) dispatch(setLoadingStatus({view: 'home', bool: false}));
+        else if (response.errorCode === 'others') {
+          console.error(response.errorMessage('Error Here'));
+          dispatch(setLoadingStatus({view: 'home', bool: false}));
+        }
+        else {
+          let imageAsset = response.assets;
+          await Promise.all(
+            imageAsset.map(async image => {
+              const resizedImage = await resizeImageIfNecessary(image);
+              const savedPhoto = await saveFile(resizedImage);
+              console.log('Saved Photo in getImagesFromCameraRoll:', savedPhoto);
+              dispatch(editedSpotImages([savedPhoto]));
+            }),
+          );
+          dispatch(setLoadingStatus({view: 'home', bool: false}));
+        }
+      });
+    }
+    catch (err) {
+      console.error('Error saving image');
+      dispatch(setLoadingStatus({view: 'home', bool: false}));
+    }
+
   };
 
   const getImageHeightAndWidth = (imageURI) => {
@@ -205,6 +209,18 @@ const useImages = () => {
       console.error('Error creating thumbnails', err);
       throw Error(err);
     }
+  };
+
+  const resizeImageIfNecessary = async (imageData) => {
+    let height = imageData.height;
+    let width = imageData.width;
+    const tempImageURI = Platform.OS === 'ios' ? imageData.uri || imageData.path : imageData.uri || 'file://' + imageData.path;
+    if (!height || !width) ({height, width} = await getImageHeightAndWidth(tempImageURI));
+    let resizedImage, createResizedImageProps = {};
+    createResizedImageProps = (height > 4096 || width > 4096) ? [tempImageURI, 4096, 4096, 'JPEG', 100, 0]
+      : [tempImageURI, width, height, 'JPEG', 100, 0];
+    resizedImage = await ImageResizer.createResizedImage(...createResizedImageProps);
+    return resizedImage;
   };
 
   const saveFile = async (imageData) => {
