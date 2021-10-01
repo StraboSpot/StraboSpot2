@@ -13,6 +13,7 @@ import SectionDivider from '../../shared/ui/SectionDivider';
 import uiStyles from '../../shared/ui/ui.styles';
 import {SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
+import {PAGE_KEYS} from '../page/page.constants';
 import {setSelectedTag, setUseContinuousTagging} from '../project/projects.slice';
 import {TagDetailModal, useTagsHook} from '../tags';
 
@@ -25,7 +26,7 @@ const Tags = (props) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isDetailModalVisible, setIsDetailModalVisible] = useState(false);
 
-  const SECTIONS = props.type === 'geologic_unit' ? [{title: 'Geologic Units', key: 'geologic_unit'}] : [
+  const SECTIONS = props.type === PAGE_KEYS.GEOLOGIC_UNITS ? [{title: 'Geologic Units', key: 'geologic_unit'}] : [
     {title: 'Concepts', key: 'concept'},
     {title: 'Documentation', key: 'documentation'},
     {title: 'Rosetta', key: 'rosetta'},
@@ -54,6 +55,8 @@ const Tags = (props) => {
   const renderTag = (tag) => {
     const tagSpotCount = useTags.getTagSpotsCount(tag);
     const tagFeatureCount = useTags.getTagFeaturesCount(tag);
+    const title = props.type === PAGE_KEYS.GEOLOGIC_UNITS ? tagSpotCount
+      : '(' + tagSpotCount + ') (' + tagFeatureCount + ')';
     return (
       <ListItem
         containerStyle={commonStyles.listItem}
@@ -72,7 +75,7 @@ const Tags = (props) => {
           <ListItem.Title style={commonStyles.listItemTitle}>{getTagTitle(tag)}</ListItem.Title>
         </ListItem.Content>
         <ListItem.Content right>
-          <ListItem.Title>({tagSpotCount}) ({tagFeatureCount})</ListItem.Title>
+          <ListItem.Title>{title}</ListItem.Title>
         </ListItem.Content>
         <ListItem.Chevron/>
       </ListItem>
