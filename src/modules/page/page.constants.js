@@ -187,7 +187,6 @@ export const PET_PAGES = [
     page_component: RockAlterationOrePage,
     modal_component: AddRockModal,
     action_label: 'Add an Alteration, Ore Rock',
-    testing: true,
   }, {
     key: PAGE_KEYS.ROCK_TYPE_IGNEOUS,
     label: 'Igneous Rocks',
@@ -197,7 +196,6 @@ export const PET_PAGES = [
     page_component: RockIgneousPage,
     modal_component: AddRockModal,
     action_label: 'Add an Igneous Rock',
-    testing: true,
   }, {
     key: PAGE_KEYS.ROCK_TYPE_METAMORPHIC,
     label: 'Metamorphic Rocks',
@@ -207,7 +205,6 @@ export const PET_PAGES = [
     page_component: RockMetamorphicPage,
     modal_component: AddRockModal,
     action_label: 'Add a Metamorphic Rock',
-    testing: true,
   }, {
     key: PAGE_KEYS.MINERALS,
     label: 'Minerals',
@@ -217,7 +214,6 @@ export const PET_PAGES = [
     page_component: MineralsPage,
     modal_component: AddMineralModal,
     action_label: 'Add Mineral Data',
-    testing: true,
   }, {
     key: PAGE_KEYS.REACTIONS,
     label: 'Reaction Textures',
@@ -249,7 +245,6 @@ export const SED_PAGES = [
     page_component: RockSedimentaryPage,
     modal_component: AddRockModal,
     action_label: 'Add a Sedimentary Rock',
-    testing: true,
     // }, {
     //   key: PAGE_KEYS.BEDDING,
     //   label: 'Bedding',
