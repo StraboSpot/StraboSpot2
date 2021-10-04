@@ -7,14 +7,13 @@ import SectionDivider from '../../shared/ui/SectionDivider';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
 import {MODAL_KEYS} from '../home/home.constants';
 import {setModalVisible} from '../home/home.slice';
-import {PAGE_KEYS,PRIMARY_PAGES} from '../page/page.constants';
+import {PAGE_KEYS} from '../page/page.constants';
 import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
 import {addedTagToSelectedSpot} from '../project/projects.slice';
 import {TagDetailModal, TagsAtSpotList} from '../tags';
 import FeatureTagsAtSpotList from './FeatureTagsAtSpotList';
 
 const TagsNotebook = (props) => {
-  console.log('PROPS in TAGS NOTEBOOK', props);
   const dispatch = useDispatch();
   const pageVisible = useSelector(state => state.notebook.visibleNotebookPagesStack.slice(-1)[0]);
 
@@ -49,6 +48,7 @@ const TagsNotebook = (props) => {
       <TagDetailModal
         isVisible={isDetailModalVisibile}
         closeModal={closeTagDetailModal}
+        type={props?.page?.key === PAGE_KEYS.GEOLOGIC_UNITS && PAGE_KEYS.GEOLOGIC_UNITS}
       />
     </React.Fragment>
   );

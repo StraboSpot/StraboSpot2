@@ -18,7 +18,7 @@ import {setModalVisible} from '../home/home.slice';
 import useMapsHook from '../maps/useMaps';
 import {PAGE_KEYS} from '../page/page.constants';
 import {TAG_TYPES} from '../project/project.constants';
-import {addedTagToSelectedSpot} from '../project/projects.slice';
+import {addedTagToSelectedSpot, setSelectedTag} from '../project/projects.slice';
 import {TagDetailModal, useTagsHook} from '../tags';
 
 const TagsModal = (props) => {
@@ -40,6 +40,11 @@ const TagsModal = (props) => {
   const [checkedTagsTemp, setCheckedTagsTemp] = useState([]);
   const [isDetailModalVisible, setIsDetailModalVisible] = useState(false);
   const [searchText, setSearchText] = useState('');
+
+  const addTag = () => {
+    dispatch(setSelectedTag({}));
+    setIsDetailModalVisible(true);
+  };
 
   const checkTags = (tag) => {
     const checkedTagsIds = checkedTagsTemp.map(checkedTag => checkedTag.id);
@@ -177,12 +182,12 @@ const TagsModal = (props) => {
 
   return (
     <React.Fragment>
-      {(modalVisible !== MODAL_KEYS.NOTEBOOK.TAGS && modalVisible !== MODAL_KEYS.OTHER.FEATURE_TAGS) && (
+      {modalVisible !== MODAL_KEYS.NOTEBOOK.TAGS && modalVisible !== MODAL_KEYS.OTHER.FEATURE_TAGS && (
         <View style={modalStyle.textContainer}>
           <AddButton
             title={'Create New Tag'}
             type={'outline'}
-            onPress={() => setIsDetailModalVisible(true)}
+            onPress={addTag}
           />
           <TagDetailModal
             isVisible={isDetailModalVisible}

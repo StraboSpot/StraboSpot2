@@ -164,6 +164,7 @@ const Tags = (props) => {
       <TagDetailModal
         isVisible={isDetailModalVisible}
         closeModal={() => setIsDetailModalVisible(false)}
+        type={props.type}
       />
     </View>
   );

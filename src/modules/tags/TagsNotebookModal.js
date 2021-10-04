@@ -9,12 +9,14 @@ import DragAnimation from '../../shared/ui/DragAmination';
 import Modal from '../../shared/ui/modal/Modal';
 import modalStyle from '../../shared/ui/modal/modal.style';
 import {MODAL_KEYS} from '../home/home.constants';
+import {PAGE_KEYS} from '../page/page.constants';
 import {addedTagToSelectedSpot} from '../project/projects.slice';
 import {TagDetailModal, TagsModal, useTagsHook} from '../tags';
 
 const TagsNotebookModal = (props) => {
   const dispatch = useDispatch();
   const modalVisible = useSelector(state => state.home.modalVisible);
+  const pageVisible = useSelector(state => state.notebook.visibleNotebookPagesStack.slice(-1)[0]);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
 
   const [isDetailModalVisible, setIsDetailModalVisible] = useState(false);
@@ -51,11 +53,13 @@ const TagsNotebookModal = (props) => {
         <TagDetailModal
           isVisible={isDetailModalVisible}
           closeModal={closeTagDetailModal}
+          type={pageVisible === PAGE_KEYS.GEOLOGIC_UNITS && PAGE_KEYS.GEOLOGIC_UNITS}
         />
       </React.Fragment>
     );
   };
-  if (modalVisible ===  MODAL_KEYS.NOTEBOOK.TAGS || modalVisible === MODAL_KEYS.OTHER.FEATURE_TAGS && !isEmpty(selectedSpot)) {
+  if ((modalVisible === MODAL_KEYS.NOTEBOOK.TAGS || modalVisible === MODAL_KEYS.OTHER.FEATURE_TAGS)
+    && !isEmpty(selectedSpot)) {
     if (Platform.OS === 'android') return renderTagsModalContent();
     else return <DragAnimation>{renderTagsModalContent()}</DragAnimation>;
   }

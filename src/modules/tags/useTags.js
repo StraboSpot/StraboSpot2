@@ -263,7 +263,7 @@ const useTags = () => {
     );
   };
 
-  const renderTagForm = () => {
+  const renderTagForm = (type) => {
     return (
       <View style={{flex: 1}}>
         <Formik
@@ -271,7 +271,7 @@ const useTags = () => {
           onSubmit={() => console.log('Submitting form...')}
           validate={(values) => useForm.validateForm({formName: formName, values: values})}
           component={(formProps) => Form({formName: formName, ...formProps})}
-          initialValues={selectedTag}
+          initialValues={isEmpty(selectedTag) && type ? {type: type} : selectedTag}
           validateOnChange={false}
           enableReinitialize={true}
         />
