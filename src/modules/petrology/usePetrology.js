@@ -102,7 +102,7 @@ const usePetrology = () => {
       else {
         let editedFeatureData = formCurrent.values;
         let editedPetData = spot.properties.pet ? JSON.parse(JSON.stringify(spot.properties.pet)) : {};
-        if (!editedPetData[key]) editedPetData[key] = [];
+        if (!editedPetData[key] || !Array.isArray(editedPetData[key])) editedPetData[key] = [];
         editedPetData[key] = editedPetData[key].filter(type => type.id !== editedFeatureData.id);
         editedPetData[key].push(editedFeatureData);
         dispatch(editedSpotProperties({field: 'pet', value: editedPetData}));

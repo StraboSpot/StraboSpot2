@@ -15,7 +15,7 @@ const TernaryPage = (props) => {
 
   const gatherTernaryValues = () => {
     let ternaryTemp = {};
-    if (spot.properties.pet && spot.properties.pet.minerals) {
+    if (spot.properties.pet && spot.properties.pet.minerals && Array.isArray(spot.properties.pet.minerals)) {
       console.log('Calculating ternary values...');
       Object.entries(TERNARY_MINERALS).forEach(([key, mineralClass]) => {
         const foundMinerals = spot.properties.pet.minerals.filter((mineral) => {
