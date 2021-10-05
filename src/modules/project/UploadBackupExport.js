@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, View} from 'react-native';
+import {Alert, Linking, Text, View} from 'react-native';
 
 import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
@@ -55,28 +55,47 @@ const UploadBackAndExport = (props) => {
     }
   };
 
+  const openURL = async () => {
+    const url = 'https://strabospot.org/files/helpFiles/Moving_Project_Backups_Out_of%20StraboSpot2.pdf';
+    const canOpen = await Linking.canOpenURL(url);
+    canOpen ? await Linking.openURL(url) : Alert.alert('Need to be online');
+  };
+
   const renderUploadAndBackupButtons = () => {
     return (
       <View>
         {user.encoded_login ? <Button
-          title={isOnline.isConnected ? 'Upload project to StraboSpot' : 'Need to be connected to server'}
-          buttonStyle={commonStyles.standardButton}
-          titleStyle={commonStyles.standardButtonText}
-          onPress={() => {
-            dispatch(setSelectedProject({source: '', project: ''}));
-            dispatch(setUploadModalVisible(true));
-          }}
-          disabled={!isOnline.isConnected}
-        />
-          : <View style={uiStyles.spacer}>
-          <Text style={commonStyles.dialogContentImportantText}>If you are attempting to upload the project, check to see if you are logged in</Text>
-          </View>}
+            title={isOnline.isConnected ? 'Upload project to StraboSpot' : 'Need to be connected to server'}
+            buttonStyle={commonStyles.standardButton}
+            titleStyle={commonStyles.standardButtonText}
+            onPress={() => {
+              dispatch(setSelectedProject({source: '', project: ''}));
+              dispatch(setUploadModalVisible(true));
+            }}
+            disabled={!isOnline.isConnected}
+          />
+          : (
+            <View style={uiStyles.spacer}>
+              <Text style={commonStyles.dialogContentImportantText}>If you are attempting to upload the project,
+                check to see if you are logged in
+              </Text>
+            </View>
+          )}
         <Button
           title={'Backup project to device'}
           buttonStyle={commonStyles.standardButton}
           titleStyle={commonStyles.standardButtonText}
           onPress={() => checkforActiveDatasets()}
         />
+        <View style={{padding: 10}}>
+          <Text style={commonStyles.dialogContentImportantText}>IMPORTANT!</Text>
+          <Text style={{...commonStyles.dialogContentImportantText, margin: 10, lineHeight: 20}}>After backing up, to
+            preserve your data please copy
+            your project backups out of the StraboSpot2/ProjectBackups folder to a different folder in the iOS app
+            Files/On My IPad! If online, you can find detailed instructions
+            <Text style={{color: BLUE}} onPress={openURL}> here</Text>.
+          </Text>
+        </View>
       </View>
     );
   };
@@ -90,8 +109,10 @@ const UploadBackAndExport = (props) => {
       </View>
 
       <View style={{flex: 1, justifyContent: 'flex-end', paddingBottom: 15}}>
-        <View style={{padding: 10,}}>
-          <Text style={uiStyles.sectionDividerText}>Help documents can be found in the Menu -> Help -> Documentation</Text>
+        <View style={{padding: 10, alignItems: 'center'}}>
+          <Text style={{...uiStyles.sectionDividerText, textAlign: 'center'}}>Additional help documents can be found in
+            the Menu -> Help ->
+            Documentation</Text>
         </View>
         <Button
           title={'View/Edit Files on Device'}
