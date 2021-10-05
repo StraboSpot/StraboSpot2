@@ -578,6 +578,7 @@ const Home = () => {
           createDefaultGeom={() => mapComponentRef.current.createDefaultGeom()}
           openMainMenu={() => toggleHomeDrawerButton()}
           zoomToSpot={() => mapComponentRef.current.zoomToSpot()}
+          toast={(message) => toastRef.current.show(message)}
         />
       </Animated.View>
     );
