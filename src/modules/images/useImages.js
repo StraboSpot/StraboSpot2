@@ -151,34 +151,48 @@ const useImages = () => {
   };
 
   const getImagesFromCameraRoll = async () => {
-    try {
-      launchImageLibrary({selectionLimit: 0}, async response => {
+    return new Promise((res, rej) => {
+      try {
+        let imageCount = 0;
         dispatch(setLoadingStatus({view: 'home', bool: true}));
-        console.log('RES', response);
-        if (response.didCancel) dispatch(setLoadingStatus({view: 'home', bool: false}));
-        else if (response.errorCode === 'others') {
-          console.error(response.errorMessage('Error Here'));
-          dispatch(setLoadingStatus({view: 'home', bool: false}));
-        }
-        else {
-          let imageAsset = response.assets;
-          await Promise.all(
-            imageAsset.map(async image => {
-              const resizedImage = await resizeImageIfNecessary(image);
-              const savedPhoto = await saveFile(resizedImage);
-              console.log('Saved Photo in getImagesFromCameraRoll:', savedPhoto);
-              dispatch(editedSpotImages([savedPhoto]));
-            }),
-          );
-          dispatch(setLoadingStatus({view: 'home', bool: false}));
-        }
-      });
-    }
-    catch (err) {
-      console.error('Error saving image');
-      dispatch(setLoadingStatus({view: 'home', bool: false}));
-    }
-
+        launchImageLibrary({}, async response => {
+          console.log('RES', response);
+          if (response.didCancel) dispatch(setLoadingStatus({view: 'home', bool: false}));
+          else if (response.errorCode === 'others') {
+            console.error(response.errorMessage('Error Here'));
+            dispatch(setLoadingStatus({view: 'home', bool: false}));
+          }
+          else {
+            let imageAsset = response.assets;
+            const imageAssetsLength = response.assets.length;
+            // dispatch(clearedStatusMessages());
+            // dispatch(addedStatusMessage(`You selected ${imageAssetsLength} image to save:`));
+            // dispatch(setStatusMessagesModalVisible(true));
+            await Promise.all(
+              imageAsset.map(async image => {
+                imageCount++;
+                const resizedImage = await resizeImageIfNecessary(image);
+                const savedPhoto = await saveFile(resizedImage);
+                console.log('Saved Photo in getImagesFromCameraRoll:', savedPhoto);
+                dispatch(editedSpotImages([savedPhoto]));
+                // dispatch(removedLastStatusMessage());
+                // dispatch(addedStatusMessage(`Image/s saved ${imageCount}`));
+                console.log(1)
+              }),
+              console.log(2)
+            );
+            console.log(3)
+            res(imageCount);
+            dispatch(setLoadingStatus({view: 'home', bool: false}));
+          }
+        });
+      }
+      catch (err) {
+        console.error('Error saving image');
+        dispatch(setLoadingStatus({view: 'home', bool: false}));
+        rej('Error saving image.');
+      }
+    })
   };
 
   const getImageHeightAndWidth = (imageURI) => {

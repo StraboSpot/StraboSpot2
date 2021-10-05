@@ -13,7 +13,7 @@ import {imageStyles, useImagesHook} from '../images';
 import {setCurrentImageBasemap} from '../maps/maps.slice';
 import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
 
-const ImagesViewPage = () => {
+const ImagesViewPage = (props) => {
   const navigation = useNavigation();
   const [useImages] = useImagesHook();
 
@@ -22,12 +22,26 @@ const ImagesViewPage = () => {
 
   const toastRef = useRef(null);
 
-  const takePhoto = async () => {
-    const imagesSavedLength = await useImages.launchCameraFromNotebook();
-    imagesSavedLength > 0 && toastRef.current.show(
-      imagesSavedLength + ' photo' + (imagesSavedLength === 1 ? '' : 's') + ' saved');
+  // useEffect(() => {
+  //   resizeImagesToThumbnails().catch(error => console.error('Error in ImagesViewPage UE', error));
+  // }, []);
+
+  const getImagesFromCameraRoll = async () => {
+    useImages.getImagesFromCameraRoll().then((res) => {
+      props.toast(`${res} image saved!`);
+    });
   };
 
+  // const resizeImagesToThumbnails = async () => {
+  //   const resizeImages = await images && useImages.resizeSpotImagesForThumbnail(images);
+  //   setImageThumbnails(resizeImages);
+  // };
+
+  const takePhoto = async () => {
+    const imagesSavedLength = await useImages.launchCameraFromNotebook();
+    imagesSavedLength > 0 && props.toast(
+      imagesSavedLength + ' photo' + (imagesSavedLength === 1 ? '' : 's') + ' saved');
+  };
   const renderImage = (image) => {
     return (
       <Card containerStyle={imageStyles.cardContainer}>
@@ -88,7 +102,7 @@ const ImagesViewPage = () => {
             titleStyle={commonStyles.standardButtonText}
             buttonStyle={imageStyles.buttonContainer}
             type={'outline'}
-            onPress={() => useImages.getImagesFromCameraRoll()}
+            onPress={() => getImagesFromCameraRoll()}
           />
           <ButtonRounded
             icon={
