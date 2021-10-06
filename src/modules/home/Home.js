@@ -119,6 +119,7 @@ const Home = () => {
   });
   const [mapMode, setMapMode] = useState(MAP_MODES.VIEW);
   const [animation, setAnimation] = useState(new Animated.Value(notebookPanelWidth));
+  const [distance, setDistance] = useState(0);
   const [MainMenuPanelAnimation] = useState(new Animated.Value(-homeMenuPanelWidth));
   const [mainMenuSidePanelAnimation] = useState(new Animated.Value(-mainMenuSidePanelWidth));
   const [leftsideIconAnimationValue, setLeftsideIconAnimationValue] = useState(new Animated.Value(0));
@@ -199,6 +200,10 @@ const Home = () => {
     }
   }, [projectLoadComplete]);
 
+  useEffect(() => {
+    if (mapMode !== MAP_MODES.DRAW.MEASURE) mapComponentRef.current.endMapMeasurement();
+  }, [mapMode]);
+
   const cancelEdits = async () => {
     await mapComponentRef.current.cancelEdits();
     setMapMode(MAP_MODES.VIEW);
@@ -265,6 +270,9 @@ const Home = () => {
         setIsSelectingForStereonet(true);
         setDraw(MAP_MODES.DRAW.FREEHANDPOLYGON).catch(console.error);
         break;
+      case 'mapMeasurement':
+        setDraw(MAP_MODES.DRAW.MEASURE).catch(console.error);
+        break;
     }
   };
 
@@ -302,7 +310,6 @@ const Home = () => {
       console.error('Error at endDraw()', err);
       dispatch(setLoadingStatus({view: 'home', bool: false}));
     }
-
   };
 
   const goToCurrentLocation = async () => {
@@ -565,7 +572,7 @@ const Home = () => {
         openNotebookPanel={(pageView) => openNotebookPanel(pageView)}
         zoomToCenterOfflineTile={() => mapComponentRef.current.zoomToCenterOfflineTile()}
         zoomToCustomMap={(bbox) => mapComponentRef.current.zoomToCustomMap(bbox)}
-        toggleHomeDrawer={()=>toggleHomeDrawerButton()}
+        toggleHomeDrawer={() => toggleHomeDrawerButton()}
       />
     </Animated.View>
   );
@@ -593,6 +600,7 @@ const Home = () => {
         endDraw={endDraw}
         isSelectingForStereonet={isSelectingForStereonet}
         isSelectingForTagging={isSelectingForTagging}
+        setDistance={d => setDistance(d)}
       />
       <View style={{...uiStyles.offlineImageIconContainer}}>
         {useConnectionStatus.connectionStatusIcon()}
@@ -609,6 +617,8 @@ const Home = () => {
         endDraw={() => endDraw()}
         rightsideIconAnimation={rightsideIconAnimation}
         toastRef={toastRef}
+        distance={distance}
+        endMeasurement={() => setMapMode(MAP_MODES.VIEW)}
       />
       <LeftSideButtons
         toggleHomeDrawer={() => toggleHomeDrawerButton()}

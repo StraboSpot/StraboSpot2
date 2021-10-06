@@ -68,6 +68,12 @@ const MapActionsDialog = props => {
           textStyle={styles.dialogText}
           onPress={() => props.onPress('stereonet')}
         />
+        <DialogButton
+          style={styles.dialogContent}
+          text='Measure Distance'
+          textStyle={styles.dialogText}
+          onPress={() => props.onPress('mapMeasurement')}
+        />
       </DialogContent>
     </Dialog>
   );

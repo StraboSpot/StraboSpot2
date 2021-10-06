@@ -96,6 +96,7 @@ const Map = React.forwardRef((props, ref) => {
     zoomToSpot: false,
     zoom: 14,
     freehandSketchMode: false,
+    measureFeatures: [],
   };
 
   const [editingModeData, setEditingModeData] = useState(initialEditingModeData);
@@ -185,13 +186,11 @@ const Map = React.forwardRef((props, ref) => {
         // Sentry.captureException(error);
       });
     }
-    else if (!isEmpty(
-      isOnline) && !isOnline.isInternetReachable && isOnline.isInternetReachable !== null && currentBasemap) {
+    else if (!isEmpty(isOnline) && !isOnline.isInternetReachable && isOnline.isInternetReachable !== null
+      && currentBasemap) {
       console.log('ITS IN THIS ONE!!!! -!isOnline && isOnline !== null && currentBasemap');
       Object.values(customBasemap).map(map => {
-        if (offlineMaps[map.id]?.id !== map.id) {
-          useMaps.setCustomMapSwitchValue(false, map);
-        }
+        if (offlineMaps[map.id]?.id !== map.id) useMaps.setCustomMapSwitchValue(false, map);
       });
       useOfflineMaps.switchToOfflineMap().catch(error => console.log('Error Setting Offline Basemap', error));
     }
@@ -285,6 +284,73 @@ const Map = React.forwardRef((props, ref) => {
     }
     else console.warn('Error getting the center of the map');
     setDefaultGeomType();
+  };
+
+  const doMapMeasurement = async (e) => {
+    let distance;
+    const {screenPointX, screenPointY} = e.properties;
+
+    // Used to draw a line between points
+    const linestring = {
+      'type': 'Feature',
+      'geometry': {
+        'type': 'LineString',
+        'coordinates': [],
+      },
+    };
+
+    const featureAtPoint = await getFeatureInRect(screenPointX, screenPointY, ['measureLayerPoints']);
+    // console.log('Feature at pressed point:', featureAtPoint);
+
+    let measureFeaturesTemp = [...mapProps.measureFeatures];
+
+    // Remove the linestring from the group so we can redraw it based on the points collection.
+    if (measureFeaturesTemp.length > 1) measureFeaturesTemp.pop();
+
+    // Clear the distance container to populate it with a new value.
+    // props.setDistance(0);
+
+    // If a feature was clicked, remove it from the map.
+    if (!isEmpty(featureAtPoint)) {
+      const id = featureAtPoint.properties.id;
+      measureFeaturesTemp = measureFeaturesTemp.filter(point => point.properties.id !== id);
+    }
+    else {
+      const point = {
+        'type': 'Feature',
+        'geometry': {
+          'type': 'Point',
+          'coordinates': e.geometry.coordinates,
+        },
+        'properties': {
+          'id': String(new Date().getTime()),
+        },
+      };
+      measureFeaturesTemp.push(point);
+    }
+
+    if (measureFeaturesTemp.length > 1) {
+      linestring.geometry.coordinates = measureFeaturesTemp.map(point => point.geometry.coordinates);
+      measureFeaturesTemp.push(linestring);
+
+      distance = turf.length(linestring);
+      props.setDistance(distance);
+      // console.log(`Total distance: ${distance.toLocaleString()}km`);
+    }
+    // console.log('Measure Features', measureFeaturesTemp);
+
+    setMapPropsMutable(m => ({
+      ...m,
+      measureFeatures: [...measureFeaturesTemp],
+    }));
+  };
+
+  const endMapMeasurement = () => {
+    props.setDistance(0);
+    setMapPropsMutable(m => ({
+      ...m,
+      measureFeatures: [],
+    }));
   };
 
   const moveVertex = async () => {
@@ -426,11 +492,10 @@ const Map = React.forwardRef((props, ref) => {
 
   // Mapbox: Handle map press
   const onMapPress = async (e) => {
-    if (props.mapMode !== MAP_MODES.DRAW.FREEHANDPOLYGON && props.mapMode !== MAP_MODES.DRAW.FREEHANDLINE) {
-      console.log('props', props);
-      // console.log('mapProps', mapProps); // Commented out because it throws an error about circular structure in JSON
-      console.log('Map press detected:', e);
-      console.log('Map mode:', props.mapMode);
+    console.log('Map press detected:', e);
+    console.log('Map mode:', props.mapMode);
+    if (props.mapMode === MAP_MODES.DRAW.MEASURE) doMapMeasurement(e);
+    else if (props.mapMode !== MAP_MODES.DRAW.FREEHANDPOLYGON && props.mapMode !== MAP_MODES.DRAW.FREEHANDLINE) {
       // Select/Unselect a feature
       if (props.mapMode === MAP_MODES.VIEW) {
         console.log('Selecting or unselect a feature ...');
@@ -1302,9 +1367,8 @@ const Map = React.forwardRef((props, ref) => {
 
     return (
       <Dialog
-        dialogTitle={<DialogTitle title='Select a Geometry Type'/>}
+        dialogTitle={<DialogTitle title={'Select a Geometry Type'}/>}
         onDismiss={() => {
-
         }}
         visible={showSetInCurrentViewModal}
         dialogStyle={{borderRadius: 30}}
@@ -1316,7 +1380,7 @@ const Map = React.forwardRef((props, ref) => {
           {buttons.map(button =>
             <Button
               title={button}
-              type='outline'
+              type={'outline'}
               onPress={() => updateDefaultGeomType(button)}
               key={button}
             />,
@@ -1382,6 +1446,7 @@ const Map = React.forwardRef((props, ref) => {
       clearSelectedSpots: clearSelectedSpots,
       createDefaultGeom: createDefaultGeom,
       endDraw: endDraw,
+      endMapMeasurement: endMapMeasurement,
       getCurrentBasemap: getCurrentBasemap,
       getCurrentZoom: getCurrentZoom,
       getExtentString: getExtentString,

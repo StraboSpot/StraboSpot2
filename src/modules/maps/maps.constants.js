@@ -21,6 +21,7 @@ export const MAP_MODES = {
     FREEHANDPOLYGON: 'freehandpolygon',
     FREEHANDLINE: 'freehandline',
     POINTLOCATION: 'pointLocation',
+    MEASURE: 'measure',
   },
   EDIT: 'edit',
 };

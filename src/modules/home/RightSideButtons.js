@@ -124,23 +124,45 @@ const RightSideButtons = (props) => {
           style={[homeStyles.drawToolsContainer, props.rightsideIconAnimation]}>
           {!isEmpty(selectedDatasetId)
           && [MAP_MODES.DRAW.POINT, MAP_MODES.DRAW.LINE, MAP_MODES.DRAW.FREEHANDLINE, MAP_MODES.DRAW.FREEHANDPOLYGON,
-            MAP_MODES.DRAW.POLYGON].includes(props.mapMode)
+            MAP_MODES.DRAW.POLYGON, MAP_MODES.DRAW.MEASURE].includes(props.mapMode)
           && (
             <View style={homeStyles.selectedDatasetContainer}>
-              <Text style={{textAlign: 'center'}}>Selected Dataset:</Text>
-              <Text style={{textAlign: 'center', fontWeight: 'bold'}}>{truncateText(
-                useProject.getSelectedDatasetFromId().name, 20)}
-              </Text>
+              {props.mapMode === MAP_MODES.DRAW.MEASURE ? (
+                  <Text style={{textAlign: 'center'}}>Total Distance: {props.distance.toFixed(3)}km</Text>
+                )
+                : (
+                  <React.Fragment>
+                    <Text style={{textAlign: 'center'}}>Selected Dataset:</Text>
+                    <Text style={{textAlign: 'center', fontWeight: 'bold'}}>{truncateText(
+                      useProject.getSelectedDatasetFromId().name, 20)}
+                    </Text>
+                  </React.Fragment>
+                )}
               <View style={commonStyles.buttonContainer}>
-                {props.mapMode !== MAP_MODES.DRAW.POINT ? <Button
-                    containerStyle={{alignContent: 'center'}}
-                    buttonStyle={homeStyles.drawToolsButtons}
-                    titleStyle={homeStyles.drawToolsTitle}
-                    title={'End Draw'}
-                    type={'clear'}
-                    onPress={props.endDraw}
-                  />
-                  : <Text style={{textAlign: 'center'}}>Place a point on the map</Text>}
+                {props.mapMode === MAP_MODES.DRAW.POINT ? (
+                    <Text style={{textAlign: 'center'}}>Place a point on the map</Text>
+                  )
+                  : props.mapMode === MAP_MODES.DRAW.MEASURE ? (
+                      <Button
+                        containerStyle={{alignContent: 'center'}}
+                        buttonStyle={homeStyles.drawToolsButtons}
+                        titleStyle={homeStyles.drawToolsTitle}
+                        title={'End Measurement'}
+                        type={'clear'}
+                        onPress={props.endMeasurement}
+                      />
+                    )
+                    : (
+                      <Button
+                        containerStyle={{alignContent: 'center'}}
+                        buttonStyle={homeStyles.drawToolsButtons}
+                        titleStyle={homeStyles.drawToolsTitle}
+                        title={'End Draw'}
+                        type={'clear'}
+                        onPress={props.endDraw}
+                      />
+                    )
+                }
               </View>
             </View>
           )}
