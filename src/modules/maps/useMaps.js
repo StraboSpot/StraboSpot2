@@ -28,7 +28,7 @@ import {
   setMapSymbols,
 } from './maps.slice';
 
-const useMaps = () => {
+const useMaps = (mapRef) => {
   const [useServerRequests] = useServerRequestsHook();
   const [useSpots] = useSpotsHook();
   const currentBasemap = useSelector(state => state.map.currentBasemap);
@@ -40,6 +40,7 @@ const useMaps = () => {
   const isOnline = useSelector(state => state.home.isOnline);
   const selectedSymbols = useSelector(state => state.map.symbolsOn) || [];
   const isAllSymbolsOn = useSelector(state => state.map.isAllSymbolsOn);
+  const spots = useSelector(state => state.spot.spots);
 
   useEffect(() => {
     console.log('isMainMenuPanelVisible:', isMainMenuPanelVisible);
@@ -50,6 +51,7 @@ const useMaps = () => {
     if (basemap.source === 'osm') tileUrl = tileUrl + basemap.tilePath;
     if (basemap.source === 'map_warper' || basemap.source === 'strabospot_mymaps') tileUrl = tileUrl + basemap.id + '/' + basemap.tilePath;
     else tileUrl = tileUrl + basemap.id + basemap.tilePath + (basemap.key ? '?access_token=' + basemap.key : '');
+    console.log('Tile URL', tileUrl);
     return tileUrl;
   };
 
@@ -136,6 +138,29 @@ const useMaps = () => {
     dispatch(setSidePanelVisible({view: SIDE_PANEL_VIEWS.MANAGE_CUSTOM_MAP, bool: true}));
   };
 
+  // All Spots mapped on curent map
+  const getAllMappedSpots = () => {
+    const spotsWithGeometry = useSpots.getMappableSpots();      // Spots with geometry
+    // Filter out Spots on an strat section
+    let mappedSpots = spotsWithGeometry.filter(spot => !spot.properties.strat_section);
+    // Filter out Spots on an image_basemap
+    if (!currentImageBasemap) mappedSpots = mappedSpots.filter(spot => !spot.properties.image_basemap);
+    // console.log('All Mapped Spots on this map', mappedSpots);
+    return mappedSpots;
+  };
+
+  const getClosestSpotDistanceAndIndex = (distancesFromSpot) => {
+    var minDistance = Number.MAX_VALUE;
+    var minIndex = -1;
+    for (var j = 0; j < distancesFromSpot.length; j++) {
+      if (minDistance > distancesFromSpot[j]) { // trying to get the minimum distance
+        minDistance = distancesFromSpot[j];
+        minIndex = j;
+      } // else we can ignore that feature.
+    }
+    return [minDistance, minIndex];
+  };
+
   // Identify the coordinate span for the for the image basemap.
   const getCoordQuad = (imageBasemapProps) => {
     // identify the [lat,lng] corners of the image basemap
@@ -171,21 +196,149 @@ const useMaps = () => {
     );
   };
 
-  // All Spots mapped on curent map
-  const getAllMappedSpots = () => {
-    const spotsWithGeometry = useSpots.getMappableSpots();      // Spots with geometry
-    // Filter out Spots on an strat section
-    let mappedSpots = spotsWithGeometry.filter(spot => !spot.properties.strat_section);
-    // Filter out Spots on an image_basemap
-    if (!currentImageBasemap) mappedSpots = mappedSpots.filter(spot => !spot.properties.image_basemap);
-    // console.log('All Mapped Spots on this map', mappedSpots);
-    return mappedSpots;
+  const getDistancesFromSpot = async (screenPointX, screenPointY, featuresInRect) => {
+    const dummyFeature = {
+      'type': 'Feature',
+      'properties': {},
+      'geometry': {
+        'type': 'Point',
+        'coordinates': [screenPointX, screenPointY],
+      },
+    };
+    var distances = [];
+    var screenCoords = [];
+    for (var i = 0; i < featuresInRect.length; i++) {
+      if (featuresInRect[i].geometry.type === 'Polygon' || featuresInRect[i].geometry.type === 'LineString'
+        || featuresInRect[i].geometry.type === 'MultiLineString' || featuresInRect[i].geometry.type === 'MultiPolygon') {
+        // trying to get a distance that is closest from the vertices of a polygon or line
+        // to the dummy feature with screenX and screenY
+        var explodedFeatures = turf.explode(featuresInRect[i]);
+        var explodedFeaturesDistancesFromSpot = await getDistancesFromSpot(screenPointX, screenPointY,
+          explodedFeatures.features);
+        const [distance, indexWithMinimumIndex] = getClosestSpotDistanceAndIndex(explodedFeaturesDistancesFromSpot);
+        distances[i] = distance;
+      }
+      else {
+        var eachFeature = JSON.parse(JSON.stringify(featuresInRect[i]));
+        screenCoords = await mapRef.current.getPointInView(eachFeature.geometry.coordinates);
+        eachFeature.geometry.coordinates = screenCoords;
+        distances[i] = turf.distance(dummyFeature, eachFeature);
+      }
+    }
+    return distances;
+  };
+
+  // Get the feature from the draw layer where the screen was pressed
+  const getDrawFeatureAtPress = async (screenPointX, screenPoint, drawFeaturesCopy) => {
+    // console.log('mapMode in getDrawFeatureAtPress', props.mapMode);
+    let drawFeatureFound = await getFeatureInRect(screenPointX, screenPoint, ['pointLayerDraw']);
+    if (!isEmpty(drawFeatureFound)) {
+      console.log('drawFeatureFound', drawFeatureFound, 'mapPropsMutable.drawFeatures', drawFeaturesCopy);
+      // In getFeatureInRect the function queryRenderedFeaturesInRect returns a feature with coordinates
+      // truncated to 5 decimal places so get the matching feature with full coordinates using a temp Id
+      drawFeatureFound = drawFeaturesCopy.find(
+        feature => feature.properties.tempEditId === drawFeatureFound.properties.tempEditId);
+      console.log('Got draw feature at press: ', drawFeatureFound, 'in Spot: ',
+        spots[drawFeatureFound.properties.id]);
+    }
+    return Promise.resolve(...[drawFeatureFound]);
+  };
+
+  // Get the feature within a bounding box from a given layer, returning only the first one if there is more than one
+  const getFeatureInRect = async (screenPointX, screenPointY, layers) => {
+    const r = 30; // half the width (in pixels?) of bounding box to create
+    const bbox = [screenPointY + r, screenPointX + r, screenPointY - r, screenPointX - r];
+    const featureCollectionInRect = await mapRef.current.queryRenderedFeaturesInRect(bbox, null, layers);
+    const featuresInRect = featureCollectionInRect.features;
+    let featureFound = {};
+    if (featuresInRect.length > 1) {
+      const distances = await getDistancesFromSpot(screenPointX, screenPointY, featuresInRect);
+      const [distance, indexWithMinimumIndex] = getClosestSpotDistanceAndIndex(distances);
+      featureFound = featuresInRect[indexWithMinimumIndex];
+    }
+    else if (featuresInRect.length === 1) featureFound = featuresInRect[0];
+    else console.log('No feature found where pressed.');
+    return Promise.resolve(featureFound);
+  };
+
+  const getMeasureFeatures = async (e, measureFeaturesTemp, setDistance) => {
+    let distance;
+    const {screenPointX, screenPointY} = e.properties;
+
+    // Used to draw a line between points
+    const linestring = {
+      'type': 'Feature',
+      'geometry': {
+        'type': 'LineString',
+        'coordinates': [],
+      },
+    };
+
+    const featureAtPoint = await getFeatureInRect(screenPointX, screenPointY, ['measureLayerPoints']);
+    // console.log('Feature at pressed point:', featureAtPoint);
+
+    // Remove the linestring from the group so we can redraw it based on the points collection.
+    if (measureFeaturesTemp.length > 1) measureFeaturesTemp.pop();
+
+    // Clear the distance container to populate it with a new value.
+    // props.setDistance(0);
+
+    // If a feature was clicked, remove it from the map.
+    if (!isEmpty(featureAtPoint)) {
+      const id = featureAtPoint.properties.id;
+      measureFeaturesTemp = measureFeaturesTemp.filter(point => point.properties.id !== id);
+    }
+    else {
+      const point = {
+        'type': 'Feature',
+        'geometry': {
+          'type': 'Point',
+          'coordinates': e.geometry.coordinates,
+        },
+        'properties': {
+          'id': String(new Date().getTime()),
+        },
+      };
+      measureFeaturesTemp.push(point);
+    }
+
+    if (measureFeaturesTemp.length > 1) {
+      linestring.geometry.coordinates = measureFeaturesTemp.map(point => point.geometry.coordinates);
+      measureFeaturesTemp.push(linestring);
+
+      distance = turf.length(linestring);
+      setDistance(distance);
+      // console.log(`Total distance: ${distance.toLocaleString()}km`);
+    }
+    // console.log('Measure Features', measureFeaturesTemp);
+
+    return measureFeaturesTemp;
+  };
+
+  // Get the Spot where screen was pressed
+  const getSpotAtPress = async (screenPointX, screenPoint) => {
+    // console.log('mapMode in getSpotAtPress', props.mapMode);
+    const spotLayers = ['pointLayerNotSelected', 'lineLayerNotSelected', 'lineLayerNotSelectedDotted',
+      'lineLayerNotSelectedDashed', 'lineLayerNotSelectedDotDashed', 'polygonLayerNotSelected', 'pointLayerSelected',
+      'lineLayerSelected', 'lineLayerSelectedDotted', 'lineLayerSelectedDashed', 'lineLayerSelectedDotDashed',
+      'polygonLayerSelected'];
+    let spotFound = await getFeatureInRect(screenPointX, screenPoint, spotLayers);
+    if (!isEmpty(spotFound)) {
+      // In getFeatureInRect the function queryRenderedFeaturesInRect returns a feature with coordinates
+      // truncated to 5 decimal places so get the matching feature with full coordinates using a temp Id
+      // spotFound = spots[spotFound.properties.id];
+      // spotFound = [...mapProps.spotsNotSelected, ...mapProps.spotsSelected].find(
+      //   spot => spot.properties.id === spotFound.properties.id);
+      spotFound = useSpots.getSpotById(spotFound.properties.id);
+      console.log('Got Spot at press: ', spotFound);
+    }
+    return Promise.resolve(...[spotFound]);
   };
 
   // Spots with mulitple measurements become mulitple features, one feature for each measurement
-  const getSpotsAsFeatures = (spots) => {
+  const getSpotsAsFeatures = (spotsToFeatures) => {
     let mappedFeatures = [];
-    spots.map(spot => {
+    spotsToFeatures.map(spot => {
       if ((spot.geometry.type === 'Point' || spot.geometry.type === 'MultiPoint') && spot.properties.orientation_data) {
         spot.properties.orientation_data.map((orientation, i) => {
           const feature = JSON.parse(JSON.stringify(spot));
@@ -256,6 +409,22 @@ const useMaps = () => {
     dispatch(addedStatusMessage(`${message} \n\n${err}`));
     dispatch(setOfflineMapsModalVisible(false));
     dispatch(setErrorMessagesModalVisible(true));
+  };
+
+  // This method is required when the draw features at press returns empty
+  // We explode the features and identify the closest vertex from the screen point (x,y) on the spot
+  // returns an array of vertex and its index.
+  const identifyClosestVertexOnSpotPress = async (spotFound, screenPointX, screenPointY, editingModeData) => {
+    let editedSpot = editingModeData.spotsEdited.find(spot => spot.properties.id === spotFound.properties.id);
+    spotFound = editedSpot ? editedSpot : spotFound;
+    let spotFoundCopy = JSON.parse(JSON.stringify(spotFound));
+    if (currentImageBasemap) spotFoundCopy = convertImagePixelsToLatLong(spotFoundCopy);
+    const explodedFeatures = turf.explode(spotFoundCopy).features;
+    const distances = await getDistancesFromSpot(screenPointX, screenPointY, explodedFeatures);
+    const [distance, closestVertexIndex] = getClosestSpotDistanceAndIndex(distances);
+    // in case of imagebasemap, return the original non converted vertex.
+    if (currentImageBasemap) return [turf.explode(spotFound).features[closestVertexIndex], closestVertexIndex];
+    else return [explodedFeatures[closestVertexIndex], closestVertexIndex];
   };
 
   const isGeoMap = (map) => {
@@ -360,16 +529,16 @@ const useMaps = () => {
     dispatch(setCurrentBasemap(map));
   };
 
-  const zoomToSpots = async (spots, map, camera) => {
-    var spotsCopy = spots.map(spot => JSON.parse(JSON.stringify(spot)));
+  const zoomToSpots = async (spotsToZoomTo, map, camera) => {
+    var spotsCopy = spotsToZoomTo.map(spot => JSON.parse(JSON.stringify(spot)));
     if (currentImageBasemap) spotsCopy.map(spot => convertImagePixelsToLatLong(spot));
     if (camera) {
       try {
-        if (spots.length === 1) {
+        if (spotsToZoomTo.length === 1) {
           const centroid = turf.centroid(spotsCopy[0]);
           camera.flyTo(turf.getCoord(centroid));
         }
-        else if (spots.length > 1) {
+        else if (spotsToZoomTo.length > 1) {
           const features = turf.featureCollection(spotsCopy);
           const [minX, minY, maxX, maxY] = turf.bbox(features);  //bbox extent in minX, minY, maxX, maxY order
           camera.fitBounds([maxX, minY], [minX, maxY], 100, 2500);
@@ -392,8 +561,13 @@ const useMaps = () => {
     getCoordQuad: getCoordQuad,
     getCurrentLocation: getCurrentLocation,
     getDisplayedSpots: getDisplayedSpots,
+    getDrawFeatureAtPress: getDrawFeatureAtPress,
+    getFeatureInRect: getFeatureInRect,
+    getMeasureFeatures: getMeasureFeatures,
+    getSpotAtPress: getSpotAtPress,
     getSpotsAsFeatures: getSpotsAsFeatures,
     handleError: handleError,
+    identifyClosestVertexOnSpotPress: identifyClosestVertexOnSpotPress,
     isGeoMap: isGeoMap,
     isOnGeoMap: isOnGeoMap,
     saveCustomMap: saveCustomMap,
