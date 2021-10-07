@@ -1,7 +1,7 @@
 module.exports = {
   root: true,
   extends: ['@react-native-community', 'plugin:import/errors', 'plugin:import/warnings'],
-  plugins: ['import'],
+  plugins: ['import', 'react-hooks'],
   rules: {
     'prettier/prettier': 'off',
     'brace-style': ['error', 'stroustrup', {allowSingleLine: true}],
@@ -27,6 +27,8 @@ module.exports = {
         },
       },
     ],
+    'react-hooks/rules-of-hooks': 'error', // Checks rules of Hooks
+    'react-hooks/exhaustive-deps': 'warn', // Checks effect dependencies
   },
   settings: {
     'import/ignore': ['react-native'],
