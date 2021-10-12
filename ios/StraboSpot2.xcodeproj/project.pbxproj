@@ -23,6 +23,8 @@
 		D688C0D323834799004931BF /* Compass.m in Sources */ = {isa = PBXBuildFile; fileRef = D688C0D223834798004931BF /* Compass.m */; };
 		D688C0DF2385D3FC004931BF /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D688C0DE2385D3FC004931BF /* Launch Screen.storyboard */; };
 		D6A11FEA255EBD7D00DBF5D1 /* Dummy.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6AA1AF324D31CB4006219E2 /* Dummy.swift */; };
+		D6CF9E9A2715F80D0093837E /* Airdrop-from-iPad-to-iPad.pdf in Resources */ = {isa = PBXBuildFile; fileRef = D6CF9E992715F80D0093837E /* Airdrop-from-iPad-to-iPad.pdf */; };
+		D6CF9E9C2715FA850093837E /* Moving-Project-Backups-Out-of-StraboSpot2.pdf in Resources */ = {isa = PBXBuildFile; fileRef = D6CF9E9B2715FA850093837E /* Moving-Project-Backups-Out-of-StraboSpot2.pdf */; };
 		D6EFEBF126E1537E00D45DB6 /* compass_button_click.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = D6EFEBEA26E145B800D45DB6 /* compass_button_click.mp3 */; };
 /* End PBXBuildFile section */
 
@@ -70,6 +72,8 @@
 		D688C0D223834798004931BF /* Compass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Compass.m; sourceTree = "<group>"; };
 		D688C0DE2385D3FC004931BF /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		D6AA1AF324D31CB4006219E2 /* Dummy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dummy.swift; sourceTree = "<group>"; };
+		D6CF9E992715F80D0093837E /* Airdrop-from-iPad-to-iPad.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "Airdrop-from-iPad-to-iPad.pdf"; sourceTree = "<group>"; };
+		D6CF9E9B2715FA850093837E /* Moving-Project-Backups-Out-of-StraboSpot2.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "Moving-Project-Backups-Out-of-StraboSpot2.pdf"; sourceTree = "<group>"; };
 		D6EFEBEA26E145B800D45DB6 /* compass_button_click.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = compass_button_click.mp3; path = "../../Strabo Resources/compass_button_click.mp3"; sourceTree = "<group>"; };
 		D6EFEBEF26E1534D00D45DB6 /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; name = assets; path = ../src/assets; sourceTree = "<group>"; };
 		D6F13FFF25CE078E00BD5624 /* StraboSpot2.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = StraboSpot2.entitlements; path = StraboSpot2/StraboSpot2.entitlements; sourceTree = "<group>"; };
@@ -187,6 +191,8 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				D6CF9E9B2715FA850093837E /* Moving-Project-Backups-Out-of-StraboSpot2.pdf */,
+				D6CF9E992715F80D0093837E /* Airdrop-from-iPad-to-iPad.pdf */,
 				D6EFEBEF26E1534D00D45DB6 /* assets */,
 				D6EFEBEA26E145B800D45DB6 /* compass_button_click.mp3 */,
 				D62C055E2679A5CC0001AEA5 /* main.jsbundle */,
@@ -371,8 +377,10 @@
 			files = (
 				D6EFEBF126E1537E00D45DB6 /* compass_button_click.mp3 in Resources */,
 				D62C055F2679A5CC0001AEA5 /* main.jsbundle in Resources */,
+				D6CF9E9C2715FA850093837E /* Moving-Project-Backups-Out-of-StraboSpot2.pdf in Resources */,
 				D688C0DF2385D3FC004931BF /* Launch Screen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				D6CF9E9A2715F80D0093837E /* Airdrop-from-iPad-to-iPad.pdf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -814,7 +822,7 @@
 					"\"${PODS_ROOT}/CocoaLibEvent/lib\"",
 					"\"${PODS_ROOT}/OpenSSL-Universal/ios/lib\"",
 				);
-				MARKETING_VERSION = 1.11.0;
+				MARKETING_VERSION = 1.12.0;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -854,7 +862,7 @@
 				INFOPLIST_FILE = StraboSpot2/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.6;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks /usr/lib/swift $(inherited)";
-				MARKETING_VERSION = 1.11.0;
+				MARKETING_VERSION = 1.12.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
