@@ -19,6 +19,8 @@ target 'StraboSpot2' do
 #  post_install do |installer|
 #     flipper_post_install(installer)
 #   end
+ pod 'RNPDF', :path => '../node_modules/react-native-view-pdf'
+
  post_install do |installer|
 #      flipper_post_install(installer)
     $RNMBGL.post_install(installer)
