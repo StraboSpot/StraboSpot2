@@ -30,12 +30,12 @@ const App = () => {
   return (
     <Provider store={store}>
       <PersistGate loading={<Loading/>} persistor={persistor}>
-        <Sentry.TouchEventBoundary>
+        {/*<Sentry.TouchEventBoundary>*/}
           <Routes/>
-        </Sentry.TouchEventBoundary>
+        {/*</Sentry.TouchEventBoundary>*/}
       </PersistGate>
     </Provider>
   );
 };
 
-export default App;
+export default Sentry.wrap(App);

@@ -35,7 +35,8 @@ const Documentation = (props) => {
 
   const toggleOverlay = (pdfLabel) => {
     setDoc(pdfLabel);
-    Platform.OS === 'ios' ? setVisible(!visible) : Alert.alert('Currently not available on Android', `Visit ${helpUrl}`);
+    Platform.OS === 'ios' ? setVisible(!visible) : Alert.alert('Currently not available on Android',
+      `Visit ${helpUrl}`);
     // setVisible(!visible);
   };
 
@@ -51,11 +52,10 @@ const Documentation = (props) => {
   };
 
   const findFile = () => {
-    // let file;
-    const file = files.find((pdf, index) =>  {
+    const file = files.find((pdf, index) => {
       if (pdf.label === doc) return pdf.file;
     });
-    return file &&  file.file;
+    return file && file.file;
   };
 
   const viewPDF = () => {
@@ -78,7 +78,7 @@ const Documentation = (props) => {
         {/*<WebView source={doc}/>*/}
         <PDFView
           fadeInDuration={250.0}
-          style={{ flex: 1}}
+          style={{flex: 1}}
           resource={findFile()}
           resourceType={resourceType}
           onLoad={() => console.log(`PDF rendered from ${resourceType}`)}
@@ -107,19 +107,19 @@ const Documentation = (props) => {
     <View style={styles.bottomButton}>
       {isOnline && (
         <Button
-        title={'StraboSpot Help Center'}
-        type={'clear'}
-        onPress={() => viewOnlineHelp(helpUrl)}
-        icon={
-          <Icon
-            name={'globe-outline'}
-            type={'ionicon'}
-            iconStyle={{paddingRight: 10}}
-            size={20}
-            color={BLUE}
-          />
-        }
-      />
+          title={'StraboSpot Help Center'}
+          type={'clear'}
+          onPress={() => viewOnlineHelp(helpUrl)}
+          icon={
+            <Icon
+              name={'globe-outline'}
+              type={'ionicon'}
+              iconStyle={{paddingRight: 10}}
+              size={20}
+              color={BLUE}
+            />
+          }
+        />
       )}
     </View>
   );
