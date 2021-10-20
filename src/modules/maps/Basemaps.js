@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Text, View} from 'react-native';
+import {Dimensions, Text, View} from 'react-native';
 
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import * as turf from '@turf/turf';
@@ -93,7 +93,6 @@ function Basemap(props) {
         pitchEnable={false}
         attributionEnabled={true}
         attributionPosition={homeStyles.mapboxAttributionPosition}
-        compassEnabled={true}
         onPress={props.onMapPress}
         onLongPress={props.onMapLongPress}
         scrollEnabled={props.allowMapViewMove}
@@ -119,18 +118,18 @@ function Basemap(props) {
           // followUserMode='normal'
         />
 
-        {!props.imageBasemap && <MapboxGL.RasterSource
-          id={props.basemap.id}
-          tileUrlTemplates={[useMaps.buildTileUrl(props.basemap)]}
-          maxZoomLevel={props.basemap.maxZoom}
-          tileSize={256}
-        >
-          <MapboxGL.RasterLayer
-            id={props.basemap.id}
-            sourceID={props.basemap.id}
-            style={{rasterOpacity: 1}}
-          />
-        </MapboxGL.RasterSource>}
+        {/*{!props.imageBasemap && <MapboxGL.RasterSource*/}
+        {/*  id={props.basemap.id}*/}
+        {/*  tileUrlTemplates={[useMaps.buildTileUrl(props.basemap)]}*/}
+        {/*  maxZoomLevel={props.basemap.maxZoom}*/}
+        {/*  tileSize={256}*/}
+        {/*>*/}
+        {/*  <MapboxGL.RasterLayer*/}
+        {/*    id={props.basemap.id}*/}
+        {/*    sourceID={props.basemap.id}*/}
+        {/*    style={{rasterOpacity: 1}}*/}
+        {/*  />*/}
+        {/*</MapboxGL.RasterSource>}*/}
 
         {/* Custom Overlay Layer */}
         {Object.values(customMaps).map(customMap => {
@@ -166,8 +165,7 @@ function Basemap(props) {
             id={'imageBasemap'}
             coordinates={props.coordQuad}
             url={useImages.getLocalImageURI(props.imageBasemap.id)}>
-            <MapboxGL.RasterLayer id={'imageBasemapLayer'}
-                                  style={{rasterOpacity: 1}}/>
+            <MapboxGL.RasterLayer id={'imageBasemapLayer'}/>
           </MapboxGL.Animated.ImageSource>
         )}
 

@@ -76,7 +76,7 @@ export const MAP_PROVIDERS = {
     mime: 'image/png',
     tilePath: '/tiles/256/{z}/{x}/{y}',
     url: ['https://api.mapbox.com/styles/v1/'],
-    maxZoom: 20,
+    // maxZoom: 20,
   },
   osm: {
     attributions: '© <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors.',
@@ -88,7 +88,7 @@ export const MAP_PROVIDERS = {
       'https://b.tile.openstreetmap.org/',
       'https://c.tile.openstreetmap.org/',
     ],
-    maxZoom: 16,                  // http://wiki.openstreetmap.org/wiki/Zoom_levels
+    // maxZoom: 20,                  // http://wiki.openstreetmap.org/wiki/Zoom_levels
   },
   macrostrat: {
     attributions: '© <a href="https://macrostrat.org/#about">Macrostrat</a>',
@@ -101,7 +101,7 @@ export const MAP_PROVIDERS = {
     attributions: '© <a href="http://mapwarper.net/home/about">Map Warper</a>',
     imageType: 'png',
     mime: 'image/png',
-    tilePath: '{z}/{x}/{y}.png',
+    tilePath: '/{z}/{x}/{y}.png',
     url: ['https://www.strabospot.org/mwproxy/'],
   },
   strabo_spot_mapbox: {
@@ -110,13 +110,13 @@ export const MAP_PROVIDERS = {
     mime: 'image/png',
     tilePath: '/{z}/{x}/{y}.png',
     url: ['http://tiles.strabospot.org/v5/'],
-    maxZoom: 19,                   // https://www.mapbox.com/help/define-mapbox-satellite/
+    // maxZoom: 19,                   // https://www.mapbox.com/help/define-mapbox-satellite/
   },
   strabospot_mymaps: {
     attributions: '<a href="https://www.strabospot.org">StraboSpot Contributed</a>',
     imageType: 'png',
     mime: 'image/png',
-    tilePath: '{z}/{x}/{y}.png',
+    tilePath: '/{z}/{x}/{y}.png',
     url: ['https://strabospot.org/geotiff/tiles/'],
     maxZoom: 25,
   },
@@ -127,11 +127,6 @@ export const BASEMAPS = DEFAULT_MAPS.map(map => {
   return {...map, ...MAP_PROVIDERS[map.source]};
 });
 console.log('BASEMAPS', BASEMAPS);
-
-export const CUSTOMBASEMAPS = CUSTOM_MAP_TYPES.map(map => {
-  return {...map, ...MAP_PROVIDERS[map.source]};
-});
-console.log('CUSTOMBASEMAPS', BASEMAPS);
 
 export const MAP_SYMBOLS = {
   'default_point': require('../../assets/symbols/point.png'),
