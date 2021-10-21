@@ -12,11 +12,11 @@ const BoolButton = (props) => {
     <Button
       containerStyle={formStyles.fullWidthButtonContainer}
       buttonStyle={[formStyles.formButtonSmall, {
-        backgroundColor: props.formRef.current?.values[props.fieldKey] === props.selectedKey ? REACT_NATIVE_ELEMENTS_BLUE
+        backgroundColor: props.formProps?.values[props.fieldKey] === props.selectedKey ? REACT_NATIVE_ELEMENTS_BLUE
           : SECONDARY_BACKGROUND_COLOR,
       }]}
       titleProps={{
-        style: props.formRef.current?.values[props.fieldKey] === props.selectedKey ? formStyles.formButtonSelectedTitle
+        style: props.formProps?.values[props.fieldKey] === props.selectedKey ? formStyles.formButtonSelectedTitle
           : formStyles.formButtonTitle,
       }}
       title={useForm.getLabel(props.fieldKey, props.formName)}

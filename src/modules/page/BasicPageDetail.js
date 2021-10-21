@@ -110,13 +110,10 @@ const BasicPageDetail = (props) => {
           onReset={() => console.log('Resetting form...')}
           validate={(values) => useForm.validateForm({formName: formName, values: values})}
           children={(formProps) => (
-            <Form
-              {...formProps}
-              {...{
-                formName: formName,
-                onMyChange: props.onChange && ((name, value) => props.onChange(formRef.current, name, value)),
-              }}
-            />
+            <Form {...{...formProps,
+              formName: formName,
+              onMyChange: props.page.key === PAGE_KEYS.MINERALS && ((name, value) => usePetrology.onMineralChange(formRef.current, name, value)),
+            }}/>
           )}
           initialValues={props.selectedFeature}
           validateOnChange={false}

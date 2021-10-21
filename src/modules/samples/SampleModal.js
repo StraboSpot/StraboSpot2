@@ -88,20 +88,13 @@ const SampleModal = (props) => {
     const renderForm = (formProps) => {
       return (
         <React.Fragment>
-          <Form {...{
-            formName: props.formName,
-            surveyFragment: firstKeysFields,
-            ...props.formProps,
-          }}
-          />
-          <FormSlider {...{
-            fieldKey: inplacenessKey,
-            formRef: formRef,
-            survey: survey,
-            choices: choices,
-            labels: ['In Place', 'Float'],
-            ...formProps,
-          }}
+          <Form {...{formName: props.formName, surveyFragment: firstKeysFields, ...props.formProps}}/>
+          <FormSlider
+            fieldKey={inplacenessKey}
+            formProps={props.formProps}
+            survey={survey}
+            choices={choices}
+            labels={['In Place', 'Float']}
           />
           <ButtonGroup
             selectedIndex={formRef.current?.values[orientedKey] === 'yes' ? 0
@@ -113,12 +106,7 @@ const SampleModal = (props) => {
             buttonStyle={{padding: 5}}
             textStyle={{color: PRIMARY_TEXT_COLOR}}
           />
-          <Form {...{
-            formName: props.formName,
-            surveyFragment: lastKeysFields,
-            ...props.formProps,
-          }}
-          />
+          <Form {...{formName: props.formName, surveyFragment: lastKeysFields,...props.formProps}}/>
         </React.Fragment>
       );
     };

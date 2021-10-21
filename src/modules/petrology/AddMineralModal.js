@@ -100,47 +100,39 @@ const AddMineralModal = (props) => {
   const renderForm = (formProps) => {
     return (
       <React.Fragment>
-        <Form
-          {...{
-            formName: formName,
-            onMyChange: (name, value) => usePetrology.onMineralChange(formRef.current, name, value),
-            surveyFragment: firstKeysFields,
-            ...formProps,
-          }}
-        />
-        <LittleSpacer/>
-        <ChoiceButtons {...{
-          choiceFieldKey: igOrMetKey,
-          survey: survey,
-          choices: choices,
-          formRef: formRef,
-          onPress: onIgOrMetSelected,
-          size: 'small',
+        <Form {...{
+          formName: formName,
+          onMyChange: (name, value) => usePetrology.onMineralChange(formProps, name, value),
+          surveyFragment: firstKeysFields,
+          ...formProps,
         }}/>
-        {!isEmpty(formRef.current?.values[igOrMetKey]) && formRef.current?.values[igOrMetKey] === 'ig_min' && (
-          <MainButtons {...{
-            mainKeys: igButttonsKeys,
-            formName: formName,
-            formRef: formRef,
-            setChoicesViewKey: setChoicesViewKey,
-          }}/>
+        <LittleSpacer/>
+        <ChoiceButtons
+          choiceFieldKey={igOrMetKey}
+          survey={survey}
+          choices={choices}
+          onPress={onIgOrMetSelected}
+          size={'small'}
+          formProps={formProps}
+        />
+        {!isEmpty(formProps.values[igOrMetKey]) && formProps.values[igOrMetKey] === 'ig_min' && (
+          <MainButtons
+            mainKeys={igButttonsKeys}
+            formName={formName}
+            setChoicesViewKey={setChoicesViewKey}
+            formProps={formProps}
+          />
         )}
-        {!isEmpty(formRef.current?.values[igOrMetKey]) && formRef.current?.values[igOrMetKey] === 'met_min' && (
-          <MainButtons {...{
-            mainKeys: metButttonsKeys,
-            formName: formName,
-            formRef: formRef,
-            setChoicesViewKey: setChoicesViewKey,
-          }}/>
+        {!isEmpty(formProps.values[igOrMetKey]) && formProps.values[igOrMetKey] === 'met_min' && (
+          <MainButtons
+            mainKeys={metButttonsKeys}
+            formName={formName}
+            setChoicesViewKey={setChoicesViewKey}
+            formProps={formProps}
+          />
         )}
         <LittleSpacer/>
-        <Form
-          {...{
-            formName: formName,
-            surveyFragment: lastKeysFields,
-            ...formProps,
-          }}
-        />
+        <Form {...{formName: formName, surveyFragment: lastKeysFields, ...formProps}}/>
       </React.Fragment>
     );
   };
@@ -174,14 +166,7 @@ const AddMineralModal = (props) => {
 
   const renderSubform = (formProps) => {
     const relevantFields = useForm.getRelevantFields(survey, choicesViewKey);
-    return (
-      <Form
-        {...{
-          formName: formName,
-          surveyFragment: relevantFields, ...formProps,
-        }}
-      />
-    );
+    return <Form {...{formName: formName, surveyFragment: relevantFields, ...formProps}}/>;
   };
 
   const saveMineral = () => {

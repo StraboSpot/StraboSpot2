@@ -24,11 +24,8 @@ const FormSlider = (props) => {
       </ListItem>
       <View style={{backgroundColor: SECONDARY_BACKGROUND_COLOR, padding: 10, paddingTop: 0}}>
         <Slider
-          onSlidingComplete={(value) => {
-            props.formRef.current?.setFieldValue(props.fieldKey,
-              choices.map(c => c.name)[value])
-          }}
-          value={choices.map(c => c.name).indexOf(props.formRef.current?.values[props.fieldKey]) || undefined}
+          onSlidingComplete={(value) => props.formProps?.setFieldValue(props.fieldKey, choices.map(c => c.name)[value])}
+          value={choices.map(c => c.name).indexOf(props.formProps?.values[props.fieldKey]) || undefined}
           step={1}
           maximumValue={choices.length - 1}
           minimumValue={props.hasNoneChoice ? -1 : 0}

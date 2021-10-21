@@ -336,9 +336,7 @@ const MeasurementDetail = (props) => {
             onSubmit={() => console.log('Submitting form...')}
             onReset={() => console.log('Resetting form...')}
             validate={(values) => useForm.validateForm({formName: formName, values: values})}
-            children={(formProps) => (
-              <Form {...formProps} {...{formName: formName, onMyChange: onMyChange}}/>
-            )}
+            children={(formProps) => <Form {...{...formProps, formName: formName, onMyChange: onMyChange}}/>}
             initialValues={selectedMeasurement}
             validateOnChange={true}
             enableReinitialize={true}

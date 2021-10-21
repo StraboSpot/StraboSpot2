@@ -19,24 +19,10 @@ const MetamRockFabric = (props) => {
 
   return (
     <React.Fragment>
-      <Form {...{
-        formName: props.formName,
-        surveyFragment: firstKeysFields,
-        ...props.formProps,
-      }}/>
+      <Form {...{formName: props.formName, surveyFragment: firstKeysFields, ...props.formProps}}/>
       <MainButtons {...{mainKeys: mainButttonsKeys, ...props}}/>
-      <Form {...{
-        formName: props.formName,
-        surveyFragment: lastKeysFields,
-        ...props.formProps,
-      }}/>
-      <FormSlider {...{
-        fieldKey: tectoniteTypesKey,
-        hasNoneChoice: true,
-        hasRotatedLabels: true,
-        ...props,
-      }}
-      />
+      <Form {...{formName: props.formName, surveyFragment: lastKeysFields, ...props.formProps}}/>
+      <FormSlider {...{fieldKey: tectoniteTypesKey, hasNoneChoice: true, hasRotatedLabels: true, ...props}}/>
     </React.Fragment>
   );
 };

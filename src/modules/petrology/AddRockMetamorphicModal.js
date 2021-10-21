@@ -26,14 +26,14 @@ const AddRockMetamorphicModal = (props) => {
   const lastKeysFields = lastKeys.map(k => props.survey.find(f => f.name === k));
 
   const addFacies = (faciesPressed) => {
-    const currentFacies = JSON.parse(JSON.stringify(props.formRef.current.values?.facies || []));
+    const currentFacies = JSON.parse(JSON.stringify(props.formProps.values?.facies || []));
     const updatedFacies = currentFacies.includes(faciesPressed) ? currentFacies.filter(f => f !== faciesPressed)
       : [...currentFacies, faciesPressed];
     if (isEmpty(updatedFacies)) {
-      const {facies, ...valuesNew} = props.formRef.current.values;
-      props.formRef.current?.setValues(valuesNew);
+      const {facies, ...valuesNew} = props.formProps.values;
+      props.formProps.setValues(valuesNew);
     }
-    else props.formRef.current.setFieldValue('facies', updatedFacies);
+    else props.formProps.setFieldValue('facies', updatedFacies);
   };
 
   const renderModalHeader = () => {
@@ -59,7 +59,7 @@ const AddRockMetamorphicModal = (props) => {
     return (
       <View style={{flex: 1, alignItems: 'center'}}>
         <Text
-          style={props.formRef.current?.values?.facies?.includes(key) ? formStyles.formButtonSelectedTitle
+          style={props.formProps?.values?.facies?.includes(key) ? formStyles.formButtonSelectedTitle
             : formStyles.formButtonTitle}>
           {useForm.getLabel(key, props.formName)}
         </Text>
@@ -72,7 +72,7 @@ const AddRockMetamorphicModal = (props) => {
       <Button
         containerStyle={{padding: 2.5}}
         buttonStyle={[formStyles.formButtonLarge, {
-          backgroundColor: props.formRef.current?.values?.facies?.includes(faciesProps.faciesKey)
+          backgroundColor: props.formProps?.values?.facies?.includes(faciesProps.faciesKey)
             ? REACT_NATIVE_ELEMENTS_BLUE : SECONDARY_BACKGROUND_COLOR,
           height: '100%',
         }]}
@@ -152,34 +152,31 @@ const AddRockMetamorphicModal = (props) => {
 
   return (
     <React.Fragment>
-      <MainButtons {...{
-        mainKeys: firstKeys,
-        formName: props.formName,
-        formRef: props.formRef,
-        setChoicesViewKey: props.setChoicesViewKey,
-      }}/>
-      <MainButtons {...{
-        mainKeys: secondKeys,
-        formName: props.formName,
-        formRef: props.formRef,
-        setChoicesViewKey: props.setChoicesViewKey,
-      }}/>
-      <MainButtons {...{
-        mainKeys: thirdKeys,
-        formName: props.formName,
-        formRef: props.formRef,
-        setChoicesViewKey: () => setIsFaciesModalVisible(true),
-      }}/>
-      <MainButtons {...{
-        mainKeys: fourthKeys,
-        formName: props.formName,
-        formRef: props.formRef,
-        setChoicesViewKey: props.setChoicesViewKey,
-      }}/>
-      <Form {...{
-        surveyFragment: lastKeysFields,
-        ...props.formProps,
-      }}/>
+      <MainButtons
+        mainKeys={firstKeys}
+        formName={props.formName}
+        formProps={props.formProps}
+        setChoicesViewKey={props.setChoicesViewKey}
+      />
+      <MainButtons
+        mainKeys={secondKeys}
+        formName={props.formName}
+        formProps={props.formProps}
+        setChoicesViewKey={props.setChoicesViewKey}
+      />
+      <MainButtons
+        mainKeys={thirdKeys}
+        formName={props.formName}
+        formProps={props.formProps}
+        setChoicesViewKey={() => setIsFaciesModalVisible(true)}
+      />
+      <MainButtons
+        mainKeys={fourthKeys}
+        formName={props.formName}
+        formProps={props.formProps}
+        setChoicesViewKey={props.setChoicesViewKey}
+      />
+      <Form {...{surveyFragment: lastKeysFields, ...props.formProps}}/>
       {isFaciesModalVisible && renderFaciesModal()}
     </React.Fragment>
   );

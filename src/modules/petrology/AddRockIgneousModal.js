@@ -24,11 +24,11 @@ const AddRockIgneousModal = (props) => {
   const onIgneousRockTypePress = (i) => {
     if (i !== selectedTypeIndex) {
       setSelectedTypeIndex(i);
-      props.formRef.current?.resetForm();
+      props.formProps.resetForm();
       const type = types[i];
       props.setPetKey(type);
       const formNameSwitched = ['pet', type];
-      props.formRef.current?.setValues({id: getNewId(), igneous_rock_class: type});
+      props.formProps.setValues({id: getNewId(), igneous_rock_class: type});
       setFormName(formNameSwitched);
       props.setSurvey(useForm.getSurvey(formNameSwitched));
       props.setChoices(useForm.getChoices(formNameSwitched));
@@ -54,24 +54,19 @@ const AddRockIgneousModal = (props) => {
 
     return (
       <React.Fragment>
-        <MainButtons {...{
-          mainKeys: firstKeys,
-          formName: formName,
-          formRef: props.formRef,
-          setChoicesViewKey: props.setChoicesViewKey,
-        }}/>
-        <MainButtons {...{
-          mainKeys: mainButttonsKeys,
-          formName: formName,
-          formRef: props.formRef,
-          setChoicesViewKey: props.setChoicesViewKey,
-        }}/>
-        {!isEmpty(lastKeysFields) && (
-          <Form {...{
-            surveyFragment: lastKeysFields,
-            ...props.formProps,
-          }}/>
-        )}
+        <MainButtons
+          mainKeys={firstKeys}
+          formName={formName}
+          formProps={props.formProps}
+          setChoicesViewKey={props.setChoicesViewKey}
+        />
+        <MainButtons
+          mainKeys={mainButttonsKeys}
+          formName={formName}
+          formProps={props.formProps}
+          setChoicesViewKey={props.setChoicesViewKey}
+        />
+        {!isEmpty(lastKeysFields) && <Form {...{surveyFragment: lastKeysFields, ...props.formProps}}/>}
       </React.Fragment>
     );
   };

@@ -72,7 +72,6 @@ const AddFabricModal = (props) => {
         />
         {types[selectedTypeIndex] === 'fault_rock' && (
           <FaultRockFabric
-            formRef={formRef}
             survey={survey}
             choices={choices}
             setChoicesViewKey={setChoicesViewKey}
@@ -82,7 +81,6 @@ const AddFabricModal = (props) => {
         )}
         {types[selectedTypeIndex] === 'igneous_rock' && (
           <IgneousRockFabric
-            formRef={formRef}
             survey={survey}
             choices={choices}
             setChoicesViewKey={setChoicesViewKey}
@@ -92,7 +90,6 @@ const AddFabricModal = (props) => {
         )}
         {types[selectedTypeIndex] === 'metamorphic_rock' && (
           <MetamRockFabric
-            formRef={formRef}
             survey={survey}
             choices={choices}
             setChoicesViewKey={setChoicesViewKey}
@@ -139,10 +136,7 @@ const AddFabricModal = (props) => {
   const renderSubform = (formProps) => {
     const relevantFields = useForm.getRelevantFields(survey, choicesViewKey);
     return (
-      <Form {...{
-        formName: ['fabrics', formRef.current?.values?.type],
-        surveyFragment: relevantFields, ...formProps,
-      }}/>
+      <Form {...{formName: ['fabrics', formRef.current?.values?.type], surveyFragment: relevantFields, ...formProps}}/>
     );
   };
 

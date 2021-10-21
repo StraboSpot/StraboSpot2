@@ -24,28 +24,23 @@ const FaultRockFabric = (props) => {
   const lastKeysFields = lastKeys.map(k => survey.find(f => f.name === k));
 
   const onSpatialConfigSelected = (choiceName) => {
-    const spatialConfigValues = props.formRef.current?.values[spatialConfigKey] || [];
+    const spatialConfigValues = props.formProps.values[spatialConfigKey] || [];
     if (spatialConfigValues.includes(choiceName)) {
       const spatialConfigValuesFiltered = spatialConfigValues.filter(n => n !== choiceName);
-      props.formRef.current?.setFieldValue(spatialConfigKey, spatialConfigValuesFiltered);
+      props.formProps.setFieldValue(spatialConfigKey, spatialConfigValuesFiltered);
     }
-    else props.formRef.current?.setFieldValue(spatialConfigKey, [...spatialConfigValues, choiceName]);
+    else props.formProps.setFieldValue(spatialConfigKey, [...spatialConfigValues, choiceName]);
   };
 
   const onKinIndPresentSelected = () => {
-    const kinIndPresentValue = props.formRef.current?.values[kinIndPresentKey];
-    if (kinIndPresentValue !== 'yes_kin') props.formRef.current?.setFieldValue(kinIndPresentKey, 'yes_kin');
+    const kinIndPresentValue = props.formProps.values[kinIndPresentKey];
+    if (kinIndPresentValue !== 'yes_kin') props.formProps.setFieldValue(kinIndPresentKey, 'yes_kin');
     props.setChoicesViewKey(kinIndPresentKey);
   };
 
   return (
     <React.Fragment>
-      <Form {...{
-        formName: props.formName,
-        surveyFragment: firstKeysFields,
-        ...props.formProps,
-      }}
-      />
+      <Form {...{formName: props.formName, surveyFragment: firstKeysFields, ...props.formProps}}/>
       <LittleSpacer/>
       <MainButtons {...{mainKeys: mainButttonsKeys, ...props}}/>
       <LittleSpacer/>
@@ -55,12 +50,8 @@ const FaultRockFabric = (props) => {
         onPress: onSpatialConfigSelected,
         ...props,
       }}/>
-      {!isEmpty(props.formRef.current?.values[spatialConfigKey]) && (
-        <Form {...{
-          formName: props.formName,
-          surveyFragment: [spatialConfigDescriptionField],
-          ...props.formProps,
-        }}/>
+      {!isEmpty(props.formProps.values[spatialConfigKey]) && (
+        <Form {...{formName: props.formName, surveyFragment: [spatialConfigDescriptionField], ...props.formProps}}/>
       )}
       <LittleSpacer/>
       <BoolButton {...{
@@ -71,20 +62,9 @@ const FaultRockFabric = (props) => {
       }}
       />
       <LittleSpacer/>
-      <Form {...{
-        formName: props.formName,
-        surveyFragment: lastKeysFields,
-        ...props.formProps,
-      }}
-      />
+      <Form {...{formName: props.formName, surveyFragment: lastKeysFields, ...props.formProps}}/>
       <LittleSpacer/>
-      <FormSlider {...{
-        fieldKey: tectoniteTypesKey,
-        hasNoneChoice: true,
-        hasRotatedLabels: true,
-        ...props,
-      }}
-      />
+      <FormSlider {...{fieldKey: tectoniteTypesKey, hasNoneChoice: true, hasRotatedLabels: true, ...props}}/>
     </React.Fragment>
   );
 };

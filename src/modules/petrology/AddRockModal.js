@@ -91,7 +91,6 @@ const AddRockModal = (props) => {
       <React.Fragment>
         {Object.keys(IGNEOUS_ROCK_TYPES).includes(rockKey) && (
           <AddRockIgneousModal
-            formRef={formRef}
             survey={survey}
             choices={choices}
             setChoicesViewKey={setChoicesViewKey}
@@ -104,7 +103,6 @@ const AddRockModal = (props) => {
         )}
         {rockKey === PAGE_KEYS.ROCK_TYPE_ALTERATION_ORE && (
           <AddRockAlterationOreModal
-            formRef={formRef}
             survey={survey}
             choices={choices}
             setChoicesViewKey={setChoicesViewKey}
@@ -114,7 +112,6 @@ const AddRockModal = (props) => {
         )}
         {rockKey === PAGE_KEYS.ROCK_TYPE_METAMORPHIC && (
           <AddRockMetamorphicModal
-            formRef={formRef}
             survey={survey}
             choices={choices}
             setChoicesViewKey={setChoicesViewKey}
@@ -124,7 +121,6 @@ const AddRockModal = (props) => {
         )}
         {rockKey === PAGE_KEYS.ROCK_TYPE_SEDIMENTARY && (
           <AddRockSedimentaryModal
-            formRef={formRef}
             survey={survey}
             choices={choices}
             setChoicesViewKey={setChoicesViewKey}
@@ -139,12 +135,7 @@ const AddRockModal = (props) => {
   const renderSubform = (formProps) => {
     const relevantFields = useForm.getRelevantFields(survey, choicesViewKey);
     return (
-      <Form
-        {...{
-          formName: [groupKey, rockKey],
-          surveyFragment: relevantFields, ...formProps,
-        }}
-      />
+      <Form {...{formName: [groupKey, rockKey], surveyFragment: relevantFields, ...formProps}}/>
     );
   };
 

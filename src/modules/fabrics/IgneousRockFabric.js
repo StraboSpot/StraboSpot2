@@ -18,17 +18,9 @@ const IgneousRockFabric = (props) => {
 
   return (
     <React.Fragment>
-      <Form {...{
-        formName: props.formName,
-        surveyFragment: firstKeysFields,
-        ...props.formProps,
-      }}/>
+      <Form {...{formName: props.formName, surveyFragment: firstKeysFields, ...props.formProps}}/>
       <MainButtons {...{mainKeys: mainButttonsKeys, ...props}}/>
-      <Form {...{
-        formName: props.formName,
-        surveyFragment: lastKeysFields,
-        ...props.formProps,
-      }}/>
+      <Form {...{formName: props.formName, surveyFragment: lastKeysFields, ...props.formProps}}/>
     </React.Fragment>
   );
 };

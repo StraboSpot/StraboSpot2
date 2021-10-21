@@ -94,13 +94,7 @@ const AddReactionTextureModal = (props) => {
   const renderForm = (formProps) => {
     return (
       <React.Fragment>
-        <Form
-          {...{
-            formName: formName,
-            surveyFragment: firstKeysFields,
-            ...formProps,
-          }}
-        />
+        <Form {...{formName: formName, surveyFragment: firstKeysFields, ...formProps}}/>
         <Text style={{paddingLeft: 10, paddingRight: 10, textAlign: 'center'}}>{
           survey.find(f => f.name === 'reactions').hint}
         </Text>
@@ -108,45 +102,28 @@ const AddReactionTextureModal = (props) => {
         <View style={{...formStyles.fieldLabelContainer, paddingLeft: 10}}>
           <Text style={formStyles.fieldLabel}>{survey.find(f => f.name === basedOnKey).label}</Text>
         </View>
-        <ChoiceButtons {...{
-          choiceFieldKey: basedOnKey,
-          survey: survey,
-          choices: choices,
-          formRef: formRef,
-          onPress: (choice) => onMultiChoiceSelected(basedOnKey, choice),
-        }}/>
+        <ChoiceButtons
+          choiceFieldKey={basedOnKey}
+          survey={survey}
+          choices={choices}
+          formProps={formProps}
+          onPress={(choice) => onMultiChoiceSelected(basedOnKey, choice)}
+        />
         {!isEmpty(formRef.current?.values[basedOnKey]) && formRef.current?.values[basedOnKey].includes('other') && (
           <React.Fragment>
             <LittleSpacer/>
-            <Form {...{
-              formName: formName,
-              surveyFragment: [basedOnOtherField],
-              ...formProps,
-            }}/>
+            <Form {...{formName: formName, surveyFragment: [basedOnOtherField], ...formProps}}/>
           </React.Fragment>
         )}
         <LittleSpacer/>
-        <Form
-          {...{
-            formName: formName,
-            surveyFragment: lastKeysFields,
-            ...formProps,
-          }}
-        />
+        <Form {...{formName: formName, surveyFragment: lastKeysFields, ...formProps}}/>
       </React.Fragment>
     );
   };
 
   const renderSubform = (formProps) => {
     const relevantFields = useForm.getRelevantFields(survey, choicesViewKey);
-    return (
-      <Form
-        {...{
-          formName: formName,
-          surveyFragment: relevantFields, ...formProps,
-        }}
-      />
-    );
+    return <Form {...{formName: formName, surveyFragment: relevantFields, ...formProps}}/>;
   };
 
   const saveReactionTexture = () => {

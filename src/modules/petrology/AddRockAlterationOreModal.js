@@ -13,22 +13,19 @@ const AddRockAlterationOreModal = (props) => {
 
   return (
     <React.Fragment>
-      <MainButtons {...{
-        mainKeys: firstKeys,
-        formName: props.formName,
-        formRef: props.formRef,
-        setChoicesViewKey: props.setChoicesViewKey,
-      }}/>
-      <MainButtons {...{
-        mainKeys: secondKeys,
-        formName: props.formName,
-        formRef: props.formRef,
-        setChoicesViewKey: props.setChoicesViewKey,
-      }}/>
-      <Form {...{
-        surveyFragment: lastKeysFields,
-        ...props.formProps,
-      }}/>
+      <MainButtons
+        mainKeys={firstKeys}
+        formName={props.formName}
+        formProps={props.formProps}
+        setChoicesViewKey={props.setChoicesViewKey}
+      />
+      <MainButtons
+        mainKeys={secondKeys}
+        formName={props.formName}
+        formProps={props.formProps}
+        setChoicesViewKey={props.setChoicesViewKey}
+      />
+      <Form {...{surveyFragment: lastKeysFields, ...props.formProps}}/>
     </React.Fragment>
   );
 };
