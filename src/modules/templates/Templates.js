@@ -62,10 +62,6 @@ const Templates = (props) => {
       setIsTemplateInUse(templates[templateKey] && templates[templateKey].isInUse);
       setTemplatesForKey((templates[templateKey] && templates[templateKey].templates) || []);
       setActiveTemplatesForKey((templates[templateKey] && templates[templateKey].active) || []);
-      if (templates[templateKey] && templates[templateKey].isInUse && templates[templateKey].active
-        && templates[templateKey].active[0] && templates[templateKey].active[0].values) {
-        props.updateFormValues(templates[templateKey].active[0].values);
-      }
     }
   }, [templates]);
 
@@ -281,7 +277,8 @@ const Templates = (props) => {
       title = 'Planar';
     }
     else if (type === 'linear_orientation') {
-      activeTemplate = activeTemplatesForKey?.find(template => template.values?.type === type || template.type === type);
+      activeTemplate = activeTemplatesForKey?.find(
+        template => template.values?.type === type || template.type === type);
       title = 'Linear';
     }
 

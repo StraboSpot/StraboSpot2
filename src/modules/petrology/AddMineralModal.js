@@ -22,6 +22,7 @@ import usePetrologyHook from './usePetrology';
 const AddMineralModal = (props) => {
   const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
+  const templates = useSelector(state => state.project.project?.templates) || {};
 
   const [choicesViewKey, setChoicesViewKey] = useState(null);
   const [initialValues, setInitialValues] = useState({id: getNewId()});
@@ -51,8 +52,12 @@ const AddMineralModal = (props) => {
   let tempValues = {};
 
   useEffect(() => {
+    if (templates[petKey] && templates[petKey].isInUse && templates[petKey].active
+      && templates[petKey].active[0] && templates[petKey].active[0].values) {
+      formRef.current?.setValues({...templates[petKey].active[0].values, id: getNewId()});
+    }
     return () => dispatch(setModalValues({}));
-  }, []);
+  }, [templates]);
 
   const addMineral = (mineralInfo) => {
     setInitialValues({
@@ -120,7 +125,6 @@ const AddMineralModal = (props) => {
           <Templates
             isShowTemplates={isShowTemplatesList}
             setIsShowTemplates={bool => setIsShowTemplatesList(bool)}
-            updateFormValues={values => setInitialValues({...values, id: getNewId()})}
           />
         )}
         {!isShowTemplatesList && renderAddMineral()}
@@ -179,7 +183,6 @@ const AddMineralModal = (props) => {
                 innerRef={formRef}
                 initialValues={initialValues}
                 onSubmit={(values) => console.log('Submitting form...', values)}
-                enableReinitialize={true}
               >
                 {(formProps) => (
                   <View style={{flex: 1}}>
