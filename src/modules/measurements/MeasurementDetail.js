@@ -35,6 +35,8 @@ const MeasurementDetail = (props) => {
   const [formName, setFormName] = useState([]);
   const [isAddingAssociatedMeasurementAfterSave, setIsAddingAssociatedMeasurementAfterSave] = useState(false);
 
+  const isTemplate = props.hasOwnProperty('saveTemplate');
+
   useLayoutEffect(() => {
     return () => confirmLeavePage();
   }, []);
@@ -149,7 +151,7 @@ const MeasurementDetail = (props) => {
   };
 
   const confirmLeavePage = () => {
-    if (formRef.current && formRef.current.dirty) {
+    if (!isTemplate && formRef.current && formRef.current.dirty) {
       const formCurrent = formRef.current;
       Alert.alert('Unsaved Changes',
         'Would you like to save your data before continuing?',
@@ -318,7 +320,7 @@ const MeasurementDetail = (props) => {
       <View>
         <SaveAndCloseButton
           cancel={() => cancelFormAndGo()}
-          save={() => saveFormAndGo()}
+          save={() => isTemplate ? saveTemplate(formRef.current) : saveFormAndGo()}
         />
       </View>
     );
@@ -329,7 +331,7 @@ const MeasurementDetail = (props) => {
       props.selectedAttitudes, '\nSelected Individual Measurement:', selectedMeasurement);
     return (
       <View>
-        <SectionDivider dividerText="Feature Type"/>
+        <SectionDivider dividerText={'Feature Type'}/>
         <View style={{flex: 1}}>
           <Formik
             innerRef={formRef}
@@ -498,10 +500,21 @@ const MeasurementDetail = (props) => {
     }
   };
 
+  const saveTemplate = async (formCurrent) => {
+    await formCurrent.submitForm();
+    if (useForm.hasErrors(formCurrent)) {
+      useForm.showErrors(formCurrent);
+      console.log('Found validation errors.');
+      throw Error;
+    }
+    let formValues = {...formCurrent.values};
+    props.saveTemplate(formValues);
+  };
+
   // Switch the selected measurement
   const switchSelectedMeasurement = (measurement) => {
     dispatch(setSelectedMeasurement(measurement));
-    const formCategory = props.selectedAttitudes.length === 1 ? 'measurement' : 'measurement_bulk';
+    let formCategory = props.selectedAttitudes.length === 1 && !isTemplate ? 'measurement' : 'measurement_bulk';
     setFormName([formCategory, measurement.type]);
   };
 
@@ -519,8 +532,8 @@ const MeasurementDetail = (props) => {
           <FlatList
             ListHeaderComponent={
               <View>
-                {selectedMeasurement && props.selectedAttitudes.length === 1 && renderAssociatedMeasurements()}
-                {selectedMeasurement && props.selectedAttitudes.length > 1 && renderMultiMeasurementsBar()}
+                {!isTemplate && selectedMeasurement && props.selectedAttitudes.length === 1 && renderAssociatedMeasurements()}
+                {!isTemplate && selectedMeasurement && props.selectedAttitudes.length > 1 && renderMultiMeasurementsBar()}
                 {selectedMeasurement && selectedMeasurement.type && (selectedMeasurement.type === 'planar_orientation'
                   || selectedMeasurement.type === 'tabular_orientation') && renderPlanarTabularSwitches()}
                 <View>
@@ -529,9 +542,9 @@ const MeasurementDetail = (props) => {
                 {props.selectedAttitudes.length === 1 && (
                   <Button
                     titleStyle={{color: WARNING_COLOR}}
-                    title={'Delete Measurement'}
+                    title={isTemplate ? 'Delete Measurement Template' : 'Delete Measurement'}
                     type={'clear'}
-                    onPress={() => confirmDeleteMeasurement()}
+                    onPress={() => isTemplate ? props.deleteTemplate() : confirmDeleteMeasurement()}
                   />
                 )}
               </View>

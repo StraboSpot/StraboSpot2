@@ -1,5 +1,4 @@
 import CompassModal from '../compass/CompassModal';
-import MeasurementTemplatesModal from '../compass/MeasurementTemplatesModal';
 import ShortcutNotesModal from '../notes/ShortcutNotesModal';
 import {NOTEBOOK_PAGES, PAGE_KEYS} from '../page/page.constants';
 import SampleModal from '../samples/SampleModal';
@@ -25,10 +24,6 @@ export const MODAL_KEYS = {
     ADD_TAGS_TO_SPOTS: 'AddTagsToSpots',
     FEATURE_TAGS: 'FeatureTags',
     GEOLOGIC_UNITS: 'geologic_unit',
-    MEASUREMENT_TEMPLATES_PLANAR: 'ChoosePlanarTemplate',
-    MEASUREMENT_TEMPLATES_LINEAR: 'ChooseLinearTemplate',
-    MEASUREMENT_PLANAR_TEMPLATE_FORM: 'DefinePlanarTemplate',
-    MEASUREMENT_LINEAR_TEMPLATE_FORM: 'DefineLinearTemplate',
   },
 };
 
@@ -87,27 +82,10 @@ const OTHER_MODALS = [
     key: MODAL_KEYS.OTHER.ADD_TAGS_TO_SPOTS,
     label: 'Add Tags To Spots',
     modal_component: AddTagsToSpotsShortcutModal,
-  },{
+  }, {
     key: MODAL_KEYS.OTHER.FEATURE_TAGS,
     label: 'Add Feature Tags',
     modal_component: FeatureTagsModal,
-  }, {
-    key: MODAL_KEYS.OTHER.MEASUREMENT_TEMPLATES_PLANAR,
-    label: 'Choose a Planar Template',
-    modal_component: MeasurementTemplatesModal,
-  }, {
-    key: MODAL_KEYS.OTHER.MEASUREMENT_TEMPLATES_LINEAR,
-    label: 'Choose a Linear Template',
-    modal_component: MeasurementTemplatesModal,
-  }, {
-    key: MODAL_KEYS.OTHER.MEASUREMENT_PLANAR_TEMPLATE_FORM,
-    label: 'Define Planar Template',
-    modal_component: MeasurementTemplatesModal,
-  }, {
-    key: MODAL_KEYS.OTHER.MEASUREMENT_LINEAR_TEMPLATE_FORM,
-    label: 'Define Linear Template',
-    modal_component: MeasurementTemplatesModal,
-    props: {type: 'linear_orientation'},
   },
 ];
 

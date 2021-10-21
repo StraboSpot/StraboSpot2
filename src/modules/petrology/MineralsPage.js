@@ -123,7 +123,7 @@ const MineralsPage = (props) => {
         <FlatList
           data={mineralDataSorted}
           renderItem={({item}) => <BasicListItem page={props.page} item={item} editItem={editMineral}/>}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={(item, index) => item.id?.toString() || index.toString()}
           ItemSeparatorComponent={FlatListItemSeparator}
           ListEmptyComponent={<ListEmptyText text={'There are no minerals at this Spot.'}/>}
         />

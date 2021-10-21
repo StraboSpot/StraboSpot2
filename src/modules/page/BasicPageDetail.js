@@ -18,6 +18,7 @@ import {PAGE_KEYS} from './page.constants';
 const BasicPageDetail = (props) => {
   const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
+
   const [useTags] = useTagsHook();
   const [useForm] = useFormHook();
   const usePetrology = usePetrologyHook();
@@ -35,13 +36,15 @@ const BasicPageDetail = (props) => {
     ? toTitleCase(props.selectedFeature.igneous_rock_class.replace('_', ' ') + ' Rock')
     : props.page.label_singular || toTitleCase(props.page.label).slice(0, -1);
 
+  const isTemplate = props.hasOwnProperty('saveTemplate');
+
   useLayoutEffect(() => {
     return () => confirmLeavePage();
   }, []);
 
   useEffect(() => {
     console.log('UE BasicPageDetail Selected Feature', title, props.selectedFeature);
-    if (isEmpty(props.selectedFeature)) props.closeDetailView();
+    if (!isTemplate && isEmpty(props.selectedFeature)) props.closeDetailView();
   }, [props.selectedFeature]);
 
   const cancelForm = async () => {
@@ -50,7 +53,7 @@ const BasicPageDetail = (props) => {
   };
 
   const confirmLeavePage = () => {
-    if (formRef.current && formRef.current.dirty) {
+    if (!isTemplate && formRef.current && formRef.current.dirty) {
       const formCurrent = formRef.current;
       Alert.alert('Unsaved Changes',
         'Would you like to save your data before continuing?',
@@ -121,9 +124,9 @@ const BasicPageDetail = (props) => {
         />
         <Button
           titleStyle={{color: themes.RED}}
-          title={'Delete ' + title}
+          title={'Delete ' + title + (isTemplate && ' Template')}
           type={'clear'}
-          onPress={() => deleteFeatureConfirm()}
+          onPress={() => isTemplate ? props.deleteTemplate() : deleteFeatureConfirm()}
         />
       </View>
     );
@@ -157,13 +160,24 @@ const BasicPageDetail = (props) => {
     props.closeDetailView();
   };
 
+  const saveTemplate = async (formCurrent) => {
+    await formCurrent.submitForm();
+    if (useForm.hasErrors(formCurrent)) {
+      useForm.showErrors(formCurrent);
+      console.log('Found validation errors.');
+      throw Error;
+    }
+    let formValues = {...formCurrent.values};
+    props.saveTemplate(formValues);
+  };
+
   return (
     <React.Fragment>
-      {!isEmpty(props.selectedFeature) && (
+      {(isTemplate || !isEmpty(props.selectedFeature)) && (
         <React.Fragment>
           <SaveAndCloseButton
             cancel={cancelForm}
-            save={() => saveForm(formRef.current)}
+            save={() => isTemplate ? saveTemplate(formRef.current) : saveForm(formRef.current)}
           />
           <FlatList ListHeaderComponent={renderFormFields()}/>
         </React.Fragment>

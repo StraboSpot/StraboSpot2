@@ -38,22 +38,24 @@ const projectSlice = createSlice({
     addedDatasets(state, action) {
       state.datasets = action.payload;
     },
-    addedMeasurementTemplates(state, action) {
-      state.project.templates.measurementTemplates = action.payload;
-      state.project.modified_timestamp = Date.now();
+    addedNeededImagesToDataset(state, action) {
+      const {datasetId, images} = action.payload;
+      const timestamp = Date.now();
+      const imagesInDataset = state.datasets[datasetId].images
+        ? {...state.datasets[datasetId].images, ...images}
+        : images;
+      state.datasets = {
+        ...state.datasets,
+        [datasetId]: {...state.datasets[datasetId], modified_timestamp: timestamp, images: imagesInDataset},
+      };
+      state.project.modified_timestamp = timestamp;
     },
     addedProject(state, action) {
       if (!action.payload.description) action.payload.description = {};
       if (!action.payload.description.project_name) action.payload.description.project_name = 'Unnamed';
       if (!action.payload.other_features) action.payload.other_features = DEFAULT_GEOLOGIC_TYPES;
       if (!action.payload.relationship_types) action.payload.relationship_types = DEFAULT_RELATIONSHIP_TYPES;
-      if (!action.payload.templates) {
-        action.payload.templates = {
-          useMeasurementTemplates: false,
-          measurementTemplates: [],
-          activeMeasurementTemplates: [],
-        };
-      }
+      if (!action.payload.templates) action.payload.templates = {};
       if (!action.payload.useContinuousTagging) action.payload.useContinuousTagging = false;
       state.project = action.payload;
     },
@@ -71,20 +73,17 @@ const projectSlice = createSlice({
       state.datasets = {...state.datasets, [datasetId]: dataset};
       state.project.modified_timestamp = timestamp;
     },
-    addedNeededImagesToDataset(state, action) {
-      const {datasetId, images} = action.payload;
-      const timestamp = Date.now();
-      const imagesInDataset = state.datasets[datasetId].images
-        ? {...state.datasets[datasetId].images, ...images}
-        : images;
-      state.datasets = {
-        ...state.datasets,
-        [datasetId]: {...state.datasets[datasetId], modified_timestamp: timestamp, images: imagesInDataset},
-      };
-      state.project.modified_timestamp = timestamp;
-    },
     addedTagToSelectedSpot(state, action) {
       state.addTagToSelectedSpot = action.payload;
+      state.project.modified_timestamp = Date.now();
+    },
+    addedTemplates(state, action) {
+      const {key, templates} = action.payload;
+      if (key === 'measurementTemplates') state.project.templates.measurementTemplates = templates;
+      else {
+        if (!state.project.templates[key]) state.project.templates[key] = {};
+        state.project.templates[key].templates = templates;
+      }
       state.project.modified_timestamp = Date.now();
     },
     clearedDatasets(state) {
@@ -148,8 +147,14 @@ const projectSlice = createSlice({
       if (bool) state.activeDatasetsIds = [...new Set([...state.activeDatasetsIds, dataset])];
       else state.activeDatasetsIds = state.activeDatasetsIds.filter(id => id !== dataset);
     },
-    setActiveMeasurementTemplates(state, action) {
-      state.project.templates.activeMeasurementTemplates = action.payload;
+    setActiveTemplates(state, action) {
+      const {key, templates} = action.payload;
+      if (key === 'measurementTemplates') state.project.templates.activeMeasurementTemplates = templates;
+      else {
+        if (!state.project.templates[key]) state.project.templates[key] = {};
+        state.project.templates[key].active = templates;
+      }
+      state.project.modified_timestamp = Date.now();
     },
     setDatabaseEndpoint(state, action) {
       if (isEmpty(action.payload)) {
@@ -174,11 +179,17 @@ const projectSlice = createSlice({
     setMultipleFeaturesTaggingEnabled(state, action) {
       state.isMultipleFeaturesTaggingEnabled = action.payload;
     },
-    setUseMeasurementTemplates(state, action) {
-      state.project.templates.useMeasurementTemplates = action.payload;
-    },
     setUseContinuousTagging(state, action) {
       state.project.useContinuousTagging = action.payload;
+    },
+    setUseTemplate(state, action) {
+      const {key, bool} = action.payload;
+      if (key === 'measurementTemplates') state.project.templates.useMeasurementTemplates = bool;
+      else {
+        if (!state.project.templates[key]) state.project.templates[key] = {};
+        state.project.templates[key].isInUse = bool;
+      }
+      state.project.modified_timestamp = Date.now();
     },
     updatedDatasetProperties(state, action) {
       const timestamp = Date.now();
@@ -207,12 +218,12 @@ export const {
   addedCustomFeatureTypes,
   addedDataset,
   addedDatasets,
-  addedMeasurementTemplates,
   addedProject,
   addedProjectDescription,
   addedNeededImagesToDataset,
   addedSpotsIdsToDataset,
   addedTagToSelectedSpot,
+  addedTemplates,
   clearedDatasets,
   clearedProject,
   deletedDataset,
@@ -221,7 +232,7 @@ export const {
   deletedSpotIdFromTags,
   doesBackupDirectoryExist,
   setActiveDatasets,
-  setActiveMeasurementTemplates,
+  setActiveTemplates,
   setDatabaseEndpoint,
   setSelectedDataset,
   setSelectedProject,
@@ -229,7 +240,7 @@ export const {
   setTestingMode,
   setMultipleFeaturesTaggingEnabled,
   setUseContinuousTagging,
-  setUseMeasurementTemplates,
+  setUseTemplate,
   updatedDatasetProperties,
   updatedDatasets,
   updatedProject,

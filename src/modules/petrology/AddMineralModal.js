@@ -14,6 +14,7 @@ import Modal from '../../shared/ui/modal/Modal';
 import {ChoiceButtons, Form, MainButtons, useFormHook} from '../form';
 import {setModalValues, setModalVisible} from '../home/home.slice';
 import {PAGE_KEYS} from '../page/page.constants';
+import Templates from '../templates/Templates';
 import MineralsByRockClass from './MineralsByRockClass';
 import MineralsGlossary from './MineralsGlossary';
 import usePetrologyHook from './usePetrology';
@@ -25,6 +26,7 @@ const AddMineralModal = (props) => {
   const [choicesViewKey, setChoicesViewKey] = useState(null);
   const [initialValues, setInitialValues] = useState({id: getNewId()});
   const [selectedTypeIndex, setSelectedTypeIndex] = useState(null);
+  const [isShowTemplatesList, setIsShowTemplatesList] = useState(false);
 
   const [useForm] = useFormHook();
   const usePetrology = usePetrologyHook();
@@ -46,13 +48,26 @@ const AddMineralModal = (props) => {
   const firstKeysFields = firstKeys.map(k => survey.find(f => f.name === k));
   const lastKeysFields = lastKeys.map(k => survey.find(f => f.name === k));
 
+  let tempValues = {};
+
   useEffect(() => {
     return () => dispatch(setModalValues({}));
   }, []);
 
   const addMineral = (mineralInfo) => {
-    setInitialValues({id: getNewId(), mineral_abbrev: mineralInfo.Abbreviation, full_mineral_name: mineralInfo.Label});
+    setInitialValues({
+      ...tempValues,
+      id: getNewId(),
+      mineral_abbrev: mineralInfo.Abbreviation,
+      full_mineral_name: mineralInfo.Label,
+    });
     setSelectedTypeIndex(null);
+  };
+
+  const onCloseModalPressed = () => {
+    if (choicesViewKey) setChoicesViewKey(null);
+    else if (isShowTemplatesList) setIsShowTemplatesList(false);
+    else dispatch(setModalVisible({modal: null}));
   };
 
   const onIgOrMetSelected = (choiceName) => {
@@ -73,13 +88,10 @@ const AddMineralModal = (props) => {
     else setSelectedTypeIndex(i);
   };
 
-  const renderAddMineralModalContent = () => {
+  const renderAddMineral = () => {
+    tempValues = formRef.current?.values || {};
     return (
-      <Modal
-        close={() => choicesViewKey ? setChoicesViewKey(null) : dispatch(setModalVisible({modal: null}))}
-        buttonTitleRight={choicesViewKey && 'Done'}
-        onPress={props.onPress}
-      >
+      <React.Fragment>
         {!choicesViewKey && (
           <ButtonGroup
             selectedIndex={selectedTypeIndex}
@@ -93,6 +105,25 @@ const AddMineralModal = (props) => {
         {isEmpty(selectedTypeIndex) && renderForms()}
         {selectedTypeIndex === 0 && <MineralsByRockClass addMineral={addMineral}/>}
         {selectedTypeIndex === 1 && <MineralsGlossary addMineral={addMineral}/>}
+      </React.Fragment>
+    );
+  };
+
+  const renderAddMineralModalContent = () => {
+    return (
+      <Modal
+        close={onCloseModalPressed}
+        buttonTitleRight={(choicesViewKey || isShowTemplatesList) && 'Done'}
+        onPress={props.onPress}
+      >
+        {!choicesViewKey && (
+          <Templates
+            isShowTemplates={isShowTemplatesList}
+            setIsShowTemplates={bool => setIsShowTemplatesList(bool)}
+            updateFormValues={values => setInitialValues({...values, id: getNewId()})}
+          />
+        )}
+        {!isShowTemplatesList && renderAddMineral()}
       </Modal>
     );
   };
