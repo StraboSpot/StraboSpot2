@@ -46,6 +46,30 @@ const useMaps = (mapRef) => {
     console.log('isMainMenuPanelVisible:', isMainMenuPanelVisible);
   }, [isMainMenuPanelVisible]);
 
+  const buildStyleURL = map => {
+    const tileURL = map.url[0] + map.id + map.tilePath;
+    const customBaseMapStyleURL = {
+      version: 8,
+      sources: {
+        [map.id]: {
+          type: 'raster',
+          tiles: [tileURL],
+          tileSize: 256,
+          attributions: MAP_PROVIDERS[map.source].attributions,
+        },
+      },
+      glyphs: 'mapbox://fonts/mapbox/{fontstack}/{range}.pbf',
+      layers: [{
+        id: map.id,
+        type: 'raster',
+        source: map.id,
+        minzoom: 0,
+        maxzoom: MAP_PROVIDERS[map.source].maxZoom,
+      }],
+    };
+    return customBaseMapStyleURL;
+  };
+
   const buildTileUrl = (basemap) => {
     let tileUrl = basemap.url[0];
     if (basemap.source === 'osm') tileUrl = tileUrl + basemap.tilePath;
@@ -490,6 +514,8 @@ const useMaps = (mapRef) => {
           console.log(basemap);
           return basemap.id === mapId;
         });
+        const styleURL = buildStyleURL(newBasemap);
+        console.log(styleURL);
         if (isOnline.isInternetReachable) {
           if (newBasemap.source === 'map_warper') {
             const mapwarperData = await useServerRequests.getMapWarperBbox(mapId);
@@ -499,7 +525,7 @@ const useMaps = (mapRef) => {
             const myMapsbbox = await useServerRequests.getMyMapsBbox(mapId);
             if (!isEmpty(myMapsbbox)) bbox = myMapsbbox.data.bbox;
           }
-          newBasemap = {...newBasemap, bbox: bbox};
+          newBasemap = {...styleURL, bbox: bbox};
         }
       }
       console.log('Setting current basemap to a default basemap...');
