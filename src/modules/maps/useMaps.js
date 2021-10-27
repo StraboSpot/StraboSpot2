@@ -47,8 +47,12 @@ const useMaps = (mapRef) => {
   }, [isMainMenuPanelVisible]);
 
   const buildStyleURL = map => {
-    const tileURL = map.url[0] + map.id + map.tilePath;
+    let tileURL;
+    if (map.source === 'map_warper' || map.source === 'strabospot_mymaps') tileURL = map.url[0] + map.id + '/' + map.tilePath;
+    else tileURL =  map.url[0] + map.id + map.tilePath;
     const customBaseMapStyleURL = {
+      source: map.source,
+      id: map.id,
       version: 8,
       sources: {
         [map.id]: {
@@ -75,7 +79,7 @@ const useMaps = (mapRef) => {
     if (basemap.source === 'osm') tileUrl = tileUrl + basemap.tilePath;
     if (basemap.source === 'map_warper' || basemap.source === 'strabospot_mymaps') tileUrl = tileUrl + basemap.id + '/' + basemap.tilePath;
     else tileUrl = tileUrl + basemap.id + basemap.tilePath + (basemap.key ? '?access_token=' + basemap.key : '');
-    console.log('Tile URL', tileUrl);
+    // console.log('TILE URL', tileUrl);
     return tileUrl;
   };
 
@@ -506,6 +510,7 @@ const useMaps = (mapRef) => {
   const setBasemap = async (mapId) => {
     try {
       let newBasemap = {};
+      let styleURL = {};
       let bbox = '';
       if (!mapId) mapId = 'mapbox.outdoors';
       newBasemap = BASEMAPS.find(basemap => basemap.id === mapId);
@@ -514,8 +519,8 @@ const useMaps = (mapRef) => {
           console.log(basemap);
           return basemap.id === mapId;
         });
-        const styleURL = buildStyleURL(newBasemap);
-        console.log(styleURL);
+        styleURL = buildStyleURL(newBasemap);
+        console.log('Mapbox StyleURL for basemap', styleURL);
         if (isOnline.isInternetReachable) {
           if (newBasemap.source === 'map_warper') {
             const mapwarperData = await useServerRequests.getMapWarperBbox(mapId);
@@ -526,6 +531,8 @@ const useMaps = (mapRef) => {
             if (!isEmpty(myMapsbbox)) bbox = myMapsbbox.data.bbox;
           }
           newBasemap = {...styleURL, bbox: bbox};
+          dispatch(setCurrentBasemap(newBasemap));
+          return newBasemap;
         }
       }
       console.log('Setting current basemap to a default basemap...');
@@ -578,6 +585,7 @@ const useMaps = (mapRef) => {
   };
 
   return [{
+    buildStyleURL: buildStyleURL,
     buildTileUrl: buildTileUrl,
     convertCoordinateProjections: convertCoordinateProjections,
     convertFeatureGeometryToImagePixels: convertFeatureGeometryToImagePixels,

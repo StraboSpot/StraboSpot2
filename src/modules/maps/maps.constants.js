@@ -101,7 +101,7 @@ export const MAP_PROVIDERS = {
     attributions: '© <a href="http://mapwarper.net/home/about">Map Warper</a>',
     imageType: 'png',
     mime: 'image/png',
-    tilePath: '/{z}/{x}/{y}.png',
+    tilePath: '{z}/{x}/{y}.png',
     url: ['https://www.strabospot.org/mwproxy/'],
   },
   strabo_spot_mapbox: {
@@ -116,15 +116,33 @@ export const MAP_PROVIDERS = {
     attributions: '<a href="https://www.strabospot.org">StraboSpot Contributed</a>',
     imageType: 'png',
     mime: 'image/png',
-    tilePath: '/{z}/{x}/{y}.png',
+    tilePath: '{z}/{x}/{y}.png',
     url: ['https://strabospot.org/geotiff/tiles/'],
     maxZoom: 25,
   },
 };
 
 export const BASEMAPS = DEFAULT_MAPS.map(map => {
-  if (map.source === 'strabo_spot_mapbox') map.key = MAPBOX_KEY;
-  return {...map, ...MAP_PROVIDERS[map.source]};
+  const tileUrl = map.source === 'osm' ? MAP_PROVIDERS[map.source].url[0] + MAP_PROVIDERS[map.source].tilePath
+    : MAP_PROVIDERS[map.source].url[0] + map.id + MAP_PROVIDERS[map.source].tilePath;
+  map.version = 8;
+  map.sources = {
+    [map.id]: {
+      type: 'raster',
+      tiles: [tileUrl],
+      tileSize: 256,
+      attribution: MAP_PROVIDERS[map.source].attributions,
+    },
+  };
+  map.glyphs = 'mapbox://fonts/mapbox/{fontstack}/{range}.pbf';
+  map.layers = [{
+    id: map.id,
+    type: 'raster',
+    source: map.id,
+    minzoom: 0,
+    maxzoom: MAP_PROVIDERS[map.source].maxZoom,
+  }];
+  return map;
 });
 console.log('BASEMAPS', BASEMAPS);
 

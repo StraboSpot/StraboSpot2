@@ -113,11 +113,7 @@ const BaseMapDialog = props => {
     <ListItem
       containerStyle={styles.dialogContent}
       key={customMap.id}
-      onPress={async () => {
-        const baseMap = await useMaps.setBasemap(customMap.id);
-        props.close();
-        setTimeout(() => props.zoomToCustomMap(baseMap.bbox), 1000);
-      }}>
+      onPress={() => setBaseMap(customMap)}>
       <ListItem.Content style={{}}>
         <ListItem.Title style={commonStyles.listItemTitle}>{customMap.title || customMap.name} -
           ({customMap.source})</ListItem.Title>
@@ -133,8 +129,8 @@ const BaseMapDialog = props => {
     <ListItem
       key={map.id}
       containerStyle={styles.dialogContent}
-      onPress={() => isOnline.isInternetReachable ? useMaps.setBasemap(map.id) : useMapsOffline.setOfflineMapTiles(
-        map)}>
+      onPress={() => isOnline.isInternetReachable ? useMaps.setBasemap(map.id) : useMapsOffline.setOfflineMapTiles(map)}
+    >
       <ListItem.Content>
         <ListItem.Title style={commonStyles.listItemTitle}>{map.title || map.name}</ListItem.Title>
         {!isOnline.isInternetReachable
@@ -168,6 +164,15 @@ const BaseMapDialog = props => {
       />
     </ListItem>
   );
+
+  const setBaseMap = async (customMap) => {
+    if (isOnline) {
+      const baseMap = await useMaps.setBasemap(customMap.id);
+      props.close();
+      setTimeout(() => props.zoomToCustomMap(baseMap.bbox), 1000);
+    }
+    else useMapsOffline.setOfflineMapTiles(customMap);
+  };
 
   return (
     <Dialog

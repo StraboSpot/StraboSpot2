@@ -1,4 +1,4 @@
-import {useEffect} from 'react';
+import {useEffect, useState} from 'react';
 import {Alert} from 'react-native';
 
 import RNFS from 'react-native-fs';
@@ -9,8 +9,9 @@ import useDeviceHook from '../../../services/useDevice';
 import useServerRequesteHook from '../../../services/useServerRequests';
 import {isEmpty} from '../../../shared/Helpers';
 import {addedStatusMessage, removedLastStatusMessage} from '../../home/home.slice';
-import {DEFAULT_MAPS} from '../maps.constants';
+import {DEFAULT_MAPS, MAP_PROVIDERS} from '../maps.constants';
 import {setCurrentBasemap} from '../maps.slice';
+import useMapsHook from '../useMaps';
 import {setOfflineMap} from './offlineMaps.slice';
 
 const useMapsOffline = () => {
@@ -18,6 +19,8 @@ const useMapsOffline = () => {
   let fileCount = 0;
   let neededTiles = 0;
   let notNeededTiles = 0;
+
+  const [tilePath, setTilePath] = useState('');
 
   const dispatch = useDispatch();
   const currentBasemap = useSelector(state => state.map.currentBasemap);
@@ -33,8 +36,10 @@ const useMapsOffline = () => {
   const tileCacheDirectory = devicePath + tilesDirectory + '/TileCache';
   const tileTempDirectory = devicePath + tilesDirectory + '/TileTemp';
   const tileZipsDirectory = devicePath + tilesDirectory + '/TileZips';
+  const url = 'file://' + tileCacheDirectory + '/';
 
   const useDevice = useDeviceHook();
+  const [useMaps] = useMapsHook();
   const [useServerRequests] = useServerRequesteHook();
 
   useEffect(() => {
@@ -275,22 +280,15 @@ const useMapsOffline = () => {
     }
   };
 
-  const setOfflineMapTiles = async (map) => {
-    let tempCurrentBasemap, tilePath;
-    console.log('Switch To Offline Map: ', map);
-    const url = 'file://' + tileCacheDirectory + '/';
-
+  const buildOfflineTilePath = (map) => {
+    let tilePath;
     // let tileJSON = 'file://' + tileCacheDirectory + '/' + map.id + '/tiles/{z}_{x}_{y}.png';
     if (map.source === 'map_warper') {
-      tilePath = 'tiles/{z}_{x}_{y}.png';
+      return tilePath = 'tiles/{z}_{x}_{y}.png';
     }
     else {
-      tilePath = '/tiles/{z}_{x}_{y}.png';
+      return tilePath = '/tiles/{z}_{x}_{y}.png';
     }
-
-    tempCurrentBasemap = {...map, url: [url], tilePath: tilePath};
-    console.log('tempCurrentBasemap: ', tempCurrentBasemap);
-    dispatch(setCurrentBasemap(tempCurrentBasemap));
   };
 
   const getMapNameFromId = (map) => {
@@ -318,15 +316,41 @@ const useMapsOffline = () => {
       else mapName = customMap[0].title;
 
       let newOfflineMapsData = [];
-      let thisMap = {};
-      thisMap.id = basemap;
-      thisMap.name = mapId ? getMapNameFromId(mapId) : mapName;
-      thisMap.count = tileCount;
-      thisMap.source = !mapId ? source : undefined;
-      // thisMap.mapId = new Date().valueOf();
-      thisMap.mapId = zipUID;
-      thisMap.date = new Date().toLocaleString();
-      thisMap.isOfflineMapVisible = false;
+      let thisMap = {
+        id: basemap,
+        name: mapId ? getMapNameFromId(mapId) : mapName,
+        count: tileCount,
+        source: !mapId ? source : undefined,
+        mapId: zipUID,
+        date: new Date().toLocaleString(),
+        isOfflineMapVisible: false,
+        version: 8,
+        sources: {
+          'raster-tiles': {
+            type: 'raster',
+            tiles: ['file://' + tileCacheDirectory + '/' + basemap + '/tiles/{z}_{x}_{y}.png'],
+            tileSize: 256,
+            attribution: MAP_PROVIDERS[source].attributions,
+          },
+        },
+        glyphs: 'mapbox://fonts/mapbox/{fontstack}/{range}.pbf',
+        layers: [{
+          id: basemap,
+          type: 'raster',
+          source: 'raster-tiles',
+          minzoom: 0,
+          maxzoom: MAP_PROVIDERS[source].maxZoom,
+        }],
+      };
+      // thisMap.id = basemap;
+      // thisMap.name = mapId ? getMapNameFromId(mapId) : mapName;
+      // thisMap.count = tileCount;
+      // thisMap.source = !mapId ? source : undefined;
+      // // thisMap.mapId = new Date().valueOf();
+      // thisMap.mapId = zipUID;
+      // thisMap.date = new Date().toLocaleString();
+      // thisMap.isOfflineMapVisible = false;
+      //
       newOfflineMapsData.push(thisMap);
 
       //loop over offlineMapsData and add any other maps (not current)
@@ -346,6 +370,17 @@ const useMapsOffline = () => {
     catch (err) {
       console.error('Error updating map object', err);
     }
+  };
+
+
+  const setOfflineMapTiles = async (map) => {
+    let tempCurrentBasemap;
+    console.log('Switch To Offline Map: ', map);
+    const tilePath = await buildOfflineTilePath(map);
+    setTilePath(tilePath);
+    const mapStyleURL = await useMaps.buildStyleURL({source: map.source, id: map.id, tilePath: tilePath, url: [url]});
+    console.log('tempCurrentBasemap: ', mapStyleURL);
+    dispatch(setCurrentBasemap(mapStyleURL));
   };
 
   const switchToOfflineMap = async (mapId) => {
