@@ -60,6 +60,7 @@ const Metadata = () => {
         initialValues={spot.properties}
         onSubmit={(values) => console.log('Submitting form...', values)}
         innerRef={metadataFormRef}
+        enableReinitialize={true}
       >
         {(formProps) => (
           <View>
@@ -185,7 +186,7 @@ const Metadata = () => {
       <FlatList
         ListHeaderComponent={
           <React.Fragment>
-            <SectionDivider dividerText='Metadata'/>
+            <SectionDivider dividerText={'Metadata'}/>
             {renderMetadataForm()}
             {renderDatasets()}
           </React.Fragment>
