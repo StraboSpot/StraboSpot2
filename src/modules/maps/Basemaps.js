@@ -3,6 +3,7 @@ import {Dimensions, Text, View} from 'react-native';
 
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import * as turf from '@turf/turf';
+import ScaleBar from 'react-native-map-scale-bar';
 import {useSelector} from 'react-redux';
 
 import {isEmpty} from '../../shared/Helpers';
@@ -22,9 +23,11 @@ function Basemap(props) {
   const [symbols, setSymbol] = useState(MAP_SYMBOLS);
   const [useImages] = useImagesHook();
   const [useMaps] = useMapsHook();
-  const [currentZoom, setCurrentZoom] = useState(undefined);
+  const [currentZoom, setCurrentZoom] = useState(0);
+  const [center, setCenter] = useState([0, 0]);
   const [doesImageExist, setDoesImageExist] = useState(false);
 
+  // const tileUrl = useMaps.buildTileUrl(props.basemap);
 
   useEffect(() => {
     console.log('UE Basemap [props.imageBasemap]');
@@ -63,9 +66,10 @@ function Basemap(props) {
     return defaultCenterCoordinates();
   };
 
-  const mapZoomLevel = async () => {
-    const zoom = await mapRef.current.getZoom();
-    setCurrentZoom(zoom);
+  const mapZoomAndScale = async () => {
+    console.log('HELLO TEST')
+   setCurrentZoom(await mapRef.current.getZoom());
+   setCenter(await mapRef.current.getCenter());
   };
 
   const onRegionDidChange = () => {
@@ -85,6 +89,7 @@ function Basemap(props) {
         id={props.imageBasemap ? props.imageBasemap.id : props.basemap.id}
         ref={mapRef}
         style={{flex: 1}}
+        styleURL={JSON.stringify(props.basemap)}
         animated={true}
         localizeLabels={true}
         logoEnabled={true}
@@ -97,8 +102,8 @@ function Basemap(props) {
         onLongPress={props.onMapLongPress}
         scrollEnabled={props.allowMapViewMove}
         zoomEnabled={props.allowMapViewMove}
-        onDidFinishLoadingMap={() => mapZoomLevel()}
-        onRegionIsChanging={(args) => mapZoomLevel()}
+        onDidFinishLoadingMap={mapZoomAndScale}
+        onRegionIsChanging={mapZoomAndScale}
         onRegionDidChange={() => onRegionDidChange()}
       >
 
@@ -348,6 +353,13 @@ function Basemap(props) {
         </MapboxGL.ShapeSource>
 
       </MapboxGL.MapView>
+      <View style={homeStyles.scaleBarContainer}>
+        <ScaleBar
+          bottom={0}
+          zoom={currentZoom}
+          latitude={center[1]}
+        />
+      </View>
     </View>
   );
 }
