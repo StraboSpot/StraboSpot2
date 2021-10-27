@@ -7,7 +7,6 @@ import {ScaleAnimation} from 'react-native-popup-dialog/src';
 import {useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
-import {isEmpty} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
@@ -30,7 +29,6 @@ const BaseMapDialog = props => {
   const currentBasemap = useSelector(state => state.map.currentBasemap);
   const isOnline = useSelector(state => state.home.isOnline);
   const offlineMaps = useSelector(state => state.offlineMap.offlineMaps);
-  const customMapsArr = Object.values(customMaps);
 
   const conditions = ['http', 'https'];
 
@@ -166,7 +164,7 @@ const BaseMapDialog = props => {
   );
 
   const setBaseMap = async (customMap) => {
-    if (isOnline) {
+    if (isOnline.isInternetReachable) {
       const baseMap = await useMaps.setBasemap(customMap.id);
       props.close();
       setTimeout(() => props.zoomToCustomMap(baseMap.bbox), 1000);

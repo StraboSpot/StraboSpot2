@@ -49,10 +49,11 @@ const useMaps = (mapRef) => {
   const buildStyleURL = map => {
     let tileURL;
     if (map.source === 'map_warper' || map.source === 'strabospot_mymaps') tileURL = map.url[0] + map.id + '/' + map.tilePath;
-    else tileURL =  map.url[0] + map.id + map.tilePath;
+    else tileURL = map.url[0] + map.id + map.tilePath;
     const customBaseMapStyleURL = {
       source: map.source,
       id: map.id,
+      bbox: map?.bbox,
       version: 8,
       sources: {
         [map.id]: {
@@ -175,6 +176,19 @@ const useMaps = (mapRef) => {
     if (!currentImageBasemap) mappedSpots = mappedSpots.filter(spot => !spot.properties.image_basemap);
     // console.log('All Mapped Spots on this map', mappedSpots);
     return mappedSpots;
+  };
+
+  const getBboxCoords = async (map) => {
+    let bbox;
+    if (map.source === 'map_warper') {
+      const mapwarperData = await useServerRequests.getMapWarperBbox(map.id);
+      bbox = mapwarperData.data.attributes.bbox;
+    }
+    else if (map.source === 'strabospot_mymaps') {
+      const myMapsbbox = await useServerRequests.getMyMapsBbox(map.id);
+      if (!isEmpty(myMapsbbox)) bbox = myMapsbbox.data.bbox;
+    }
+    return bbox;
   };
 
   const getClosestSpotDistanceAndIndex = (distancesFromSpot) => {
@@ -473,7 +487,8 @@ const useMaps = (mapRef) => {
       mapId = map.id.split('/').slice(3).join('/');
     }
     const providerInfo = getProviderInfo(map.source);
-    customMap = {...map, ...providerInfo, id: mapId, key: map.accessToken, source: map.source};
+    const bbox = await getBboxCoords(map);
+    customMap = {...map, ...providerInfo, id: mapId, key: map.accessToken, source: map.source, bbox: bbox};
     const tileUrl = buildTileUrl(customMap);
     let testTileUrl = tileUrl.replace(/({z}\/{x}\/{y})/, '0/0/0');
     if (map.source === 'map_warper') testTileUrl = 'https://strabospot.org/map_warper_check/' + map.id;
@@ -481,6 +496,7 @@ const useMaps = (mapRef) => {
     console.log('Custom Map:', customMap, 'Test Tile URL:', testTileUrl);
 
     const testUrlResponse = await useServerRequests.testCustomMapUrl(testTileUrl);
+    console.log(testUrlResponse);
     if (testUrlResponse) {
       if (map.overlay && map.id === currentBasemap.id) {
         console.log(('Setting Basemap to Mapbox Topo...'));
@@ -510,7 +526,6 @@ const useMaps = (mapRef) => {
   const setBasemap = async (mapId) => {
     try {
       let newBasemap = {};
-      let styleURL = {};
       let bbox = '';
       if (!mapId) mapId = 'mapbox.outdoors';
       newBasemap = BASEMAPS.find(basemap => basemap.id === mapId);
@@ -519,20 +534,11 @@ const useMaps = (mapRef) => {
           console.log(basemap);
           return basemap.id === mapId;
         });
-        styleURL = buildStyleURL(newBasemap);
-        console.log('Mapbox StyleURL for basemap', styleURL);
-        if (isOnline.isInternetReachable) {
-          if (newBasemap.source === 'map_warper') {
-            const mapwarperData = await useServerRequests.getMapWarperBbox(mapId);
-            bbox = mapwarperData.data.attributes.bbox;
-          }
-          else if (newBasemap.source === 'strabospot_mymaps') {
-            const myMapsbbox = await useServerRequests.getMyMapsBbox(mapId);
-            if (!isEmpty(myMapsbbox)) bbox = myMapsbbox.data.bbox;
-          }
-          newBasemap = {...styleURL, bbox: bbox};
-          dispatch(setCurrentBasemap(newBasemap));
-          return newBasemap;
+        newBasemap = buildStyleURL(newBasemap);
+        console.log('Mapbox StyleURL for basemap', newBasemap);
+        if (isOnline.isInternetReachable && !newBasemap.bbox) {
+          bbox = await getBboxCoords(newBasemap);
+          newBasemap = {...newBasemap, bbox: bbox};
         }
       }
       console.log('Setting current basemap to a default basemap...');

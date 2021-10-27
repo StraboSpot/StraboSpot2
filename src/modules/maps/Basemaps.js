@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Dimensions, Text, View} from 'react-native';
+import {Text, View} from 'react-native';
 
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import * as turf from '@turf/turf';
@@ -67,9 +67,8 @@ function Basemap(props) {
   };
 
   const mapZoomAndScale = async () => {
-    console.log('HELLO TEST')
-   setCurrentZoom(await mapRef.current.getZoom());
-   setCenter(await mapRef.current.getCenter());
+    setCurrentZoom(await mapRef.current.getZoom());
+    setCenter(await mapRef.current.getCenter());
   };
 
   const onRegionDidChange = () => {

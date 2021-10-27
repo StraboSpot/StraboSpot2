@@ -102,7 +102,7 @@ const useServerRequests = () => {
   const getMapWarperBbox = async (mapId) => {
     const response = await fetch(mapWarperApi + mapId);
     const responseJson = await response.json();
-    console.log('MAPWARPER MAP RES', responseJson);
+    console.log('MAP_WARPER MAP RES', responseJson);
     return responseJson;
   };
 
@@ -225,10 +225,7 @@ const useServerRequests = () => {
   const testCustomMapUrl = async (url) => {
     try {
       const response = await fetch(url);
-      console.log(response);
-      if (response.ok) {
-        return response.ok;
-      }
+      return response.ok;
     }
     catch (e) {
       console.log('ERROR', e);
@@ -283,9 +280,8 @@ const useServerRequests = () => {
 
   const zipURLStatus = async (zipId) => {
     try {
-      let responseJson = {};
       const response = await timeoutPromise(30000, fetch(tilehost + 'asyncstatus/' + zipId));
-      responseJson = await response.json();
+      const responseJson = await response.json();
       console.log(responseJson);
       if (responseJson.error) throw Error(responseJson.error);
       return responseJson;

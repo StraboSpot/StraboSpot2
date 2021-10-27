@@ -46,7 +46,7 @@ const AddCustomMaps = () => {
         opacity: 1,
         overlay: false,
         id: '',
-        source: 'map_warper',
+        source: '',
         accessToken: MBAccessToken,
       });
     }
