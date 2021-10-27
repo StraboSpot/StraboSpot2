@@ -49,6 +49,7 @@
     "react-native-image-resizer": "1.4.5",
     "react-native-indicators": "0.17.0",
     "react-native-keep-awake": "4.0.0",
+    "react-native-map-scale-bar": "github:StraboSpot/react-native-map-scale-bar",
     "react-native-multiple-select": "0.5.7",
     "react-native-popup-dialog": "0.18.3",
     "react-native-progress": "5.0.0",
