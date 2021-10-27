@@ -171,7 +171,7 @@ const useServerRequests = () => {
       try {
         const errorMessage = JSON.parse(await response.text());
         Sentry.captureMessage(`ERROR in useServerRequests: ${errorMessage.Error}`);
-        return Promise.reject();
+        return Promise.reject(errorMessage?.Error || 'Unknown Error');
       }
       catch (err) {
         console.log(err);

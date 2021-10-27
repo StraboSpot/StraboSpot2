@@ -170,7 +170,7 @@ const useUpload = () => {
       dispatch(removedLastStatusMessage());
       dispatch(addedStatusMessage(`${dataset.name}: Error Uploading Spots.\n\n ${err}\n`));
       // Added this below to handle spots that were getting added to 2 datasets, which the server will not accept
-      if (err.startsWith('Spot(s) already exist in another dataset')) {
+      if (err?.startsWith('Spot(s) already exist in another dataset')) {
         const spotId = parseInt(err.split(')')[1].split('(')[1].split(')')[0], 10);
         console.log('duppes', spotId);
         dispatch(deletedSpotIdFromDataset({datasetId: dataset.id, spotId: spotId}));
