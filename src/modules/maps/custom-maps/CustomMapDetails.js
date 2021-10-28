@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Alert, FlatList, Platform, Switch, View} from 'react-native';
+import {Alert, FlatList, Platform, Switch, Text, View} from 'react-native';
 
 import {Button, Icon, ListItem, Input} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
@@ -24,6 +24,7 @@ import SidePanelHeader from '../../main-menu-panel/sidePanel/SidePanelHeader';
 import {CUSTOM_MAP_TYPES} from '../maps.constants';
 import {selectedCustomMapToEdit} from '../maps.slice';
 import useMapHook from '../useMaps';
+import customMapStyles from './customMaps.styles';
 
 const AddCustomMaps = () => {
   const MBKeyboardType = Platform.OS === 'ios' ? 'url' : 'default';
@@ -102,6 +103,14 @@ const AddCustomMaps = () => {
     setEditableCustomMapData(e => ({...e, source: source}));
   };
 
+  const validate = () => {
+    console.log(editableCustomMapData);
+    if (editableCustomMapData.source === 'map_warper') {
+      if (!isNaN(editableCustomMapData.id)) console.log('Valid');
+      else console.log('Not Valid');
+    }
+  };
+
   const renderCustomMapName = (item) => {
     const radioSelected = <Icon name={'radiobox-marked'} type={'material-community'} color={BLUE}/>;
     const radioUnslected = <Icon name={'radiobox-blank'} type={'material-community'} color={DARKGREY}/>;
@@ -134,7 +143,9 @@ const AddCustomMaps = () => {
               defaultValue={editableCustomMapData.id}
               onChangeText={text => setEditableCustomMapData(e => ({...e, id: text}))}
               placeholder={'Style URL'}
-              errorMessage={editableCustomMapData && isEmpty(editableCustomMapData.id) && 'Map ID is required'}
+              // onBlur={validate}
+              errorMessage={editableCustomMapData && isEmpty(editableCustomMapData.id) && 'Style URL is required'}
+              errorStyle={customMapStyles.requiredMessage}
             />
           )}
           {editableCustomMapData?.source === 'map_warper' && (
@@ -146,7 +157,9 @@ const AddCustomMaps = () => {
               defaultValue={editableCustomMapData.id}
               onChangeText={text => setEditableCustomMapData(e => ({...e, id: text}))}
               placeholder={'Map ID'}
+              // onBlur={validate}
               errorMessage={editableCustomMapData && isEmpty(editableCustomMapData.id) && 'Map ID is required'}
+              errorStyle={customMapStyles.requiredMessage}
             />
           )}
           {editableCustomMapData?.source === 'strabospot_mymaps' && (
@@ -159,6 +172,7 @@ const AddCustomMaps = () => {
               onChangeText={text => setEditableCustomMapData(e => ({...e, id: text}))}
               placeholder={'Strabo My Maps ID'}
               errorMessage={editableCustomMapData && isEmpty(editableCustomMapData.id) && 'Map ID is required'}
+              errorStyle={customMapStyles.requiredMessage}
             />
           )}
         </View>
@@ -175,6 +189,8 @@ const AddCustomMaps = () => {
         renderItem={({item, index}) => renderCustomMapName(item, index)}
         ItemSeparatorComponent={FlatListItemSeparator}
       />
+      {editableCustomMapData?.source === '' &&
+      <Text style={customMapStyles.requiredMessage}>Map type is required</Text>}
     </View>
   );
 
@@ -189,6 +205,7 @@ const AddCustomMaps = () => {
           onChangeText={text => setEditableCustomMapData({...editableCustomMapData, title: text})}
           defaultValue={editableCustomMapData && editableCustomMapData.title}
           errorMessage={editableCustomMapData && isEmpty(editableCustomMapData.title) && 'Title is required'}
+          errorStyle={customMapStyles.requiredMessage}
         />
       </React.Fragment>
     );
