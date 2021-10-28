@@ -173,16 +173,21 @@ const Templates = (props) => {
     );
   };
 
-  const renderTemplate = (template) => {
+  const renderTemplateListItem = (template) => {
+    const isActive = activeTemplatesForKey.map(t => t.id).includes(template.id);
     return (
       <View>
-        <ListItem onPress={() => setAsTemplate(template)} containerStyle={commonStyles.listItem}>
+        <ListItem
+          onPress={() => setAsTemplate(template)}
+          containerStyle={isActive ? commonStyles.listItemInverse : commonStyles.listItem}
+        >
           <ListItem.Content>
-            <ListItem.Title
-              style={commonStyles.listItemTitle}>{template.name}</ListItem.Title>
+            <ListItem.Title style={isActive ? commonStyles.listItemTitleInverse : commonStyles.listItemTitle}>
+              {template.name}
+            </ListItem.Title>
           </ListItem.Content>
           <Button
-            titleStyle={commonStyles.standardButtonText}
+            titleStyle={isActive ? commonStyles.standardButtonTextInverse : commonStyles.standardButtonText}
             title={'Edit'}
             type={'save'}
             onPress={() => editTemplate(template)}
@@ -192,7 +197,7 @@ const Templates = (props) => {
     );
   };
 
-  const renderTemplates = () => {
+  const renderTemplatesList = () => {
     let relevantTemplates = [];
     if (templateType === 'planar_orientation') {
       relevantTemplates = !isEmpty(templatesForKey)
@@ -243,7 +248,6 @@ const Templates = (props) => {
             }
           />
         )}
-        {!displayForm && renderTemplates()}
       </React.Fragment>
     );
   };
@@ -392,7 +396,9 @@ const Templates = (props) => {
 
   return (
     <React.Fragment>
-      {props.isShowTemplates ? renderTemplatesList() : renderTemplateToggle()}
+      {props.isShowTemplates && displayForm ? <FlatList ListHeaderComponent={renderFormFields()}/>
+        : props.isShowTemplates ? renderTemplatesList()
+          : renderTemplateToggle()}
     </React.Fragment>
   );
 };

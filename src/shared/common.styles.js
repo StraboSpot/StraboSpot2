@@ -106,6 +106,10 @@ const commonStyles = StyleSheet.create({
     color: themes.PRIMARY_ACCENT_COLOR,
     fontSize: themes.MEDIUM_TEXT_SIZE,
   },
+  standardButtonTextInverse: {
+    color: themes.SECONDARY_BACKGROUND_COLOR,
+    fontSize: themes.MEDIUM_TEXT_SIZE,
+  },
   standardDescriptionText: {
     color: themes.PRIMARY_TEXT_COLOR,
     fontSize: themes.SMALL_TEXT_SIZE,
