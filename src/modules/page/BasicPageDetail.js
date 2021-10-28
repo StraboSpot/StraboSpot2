@@ -113,9 +113,11 @@ const BasicPageDetail = (props) => {
           onReset={() => console.log('Resetting form...')}
           validate={(values) => useForm.validateForm({formName: formName, values: values})}
           children={(formProps) => (
-            <Form {...{...formProps,
+            <Form {...{
+              ...formProps,
               formName: formName,
-              onMyChange: props.page.key === PAGE_KEYS.MINERALS && ((name, value) => usePetrology.onMineralChange(formRef.current, name, value)),
+              onMyChange: props.page.key === PAGE_KEYS.MINERALS && ((name, value) => usePetrology.onMineralChange(
+                formRef.current, name, value)),
             }}/>
           )}
           initialValues={props.selectedFeature}
@@ -124,7 +126,7 @@ const BasicPageDetail = (props) => {
         />
         <Button
           titleStyle={{color: themes.RED}}
-          title={'Delete ' + title + (isTemplate && ' Template')}
+          title={'Delete ' + title + (isTemplate ? ' Template' : '')}
           type={'clear'}
           onPress={() => isTemplate ? props.deleteTemplate() : deleteFeatureConfirm()}
         />
