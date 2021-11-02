@@ -216,7 +216,7 @@ const Templates = (props) => {
         <FlatList
           data={relevantTemplates}
           keyExtractor={(item) => item.id.toString()}
-          renderItem={({item}) => renderTemplate(item)}
+          renderItem={({item}) => renderTemplateListItem(item)}
           ItemSeparatorComponent={FlatListItemSeparator}
           ListEmptyComponent={<ListEmptyText text={'There are no templates defined yet.'}/>}
         />
@@ -232,22 +232,6 @@ const Templates = (props) => {
           type={'clear'}
           onPress={() => createNewOrEditTemplate('new')}
         />
-      </React.Fragment>
-    );
-  };
-
-  const renderTemplatesList = () => {
-    return (
-      <React.Fragment>
-        {displayForm && (
-          <FlatList
-            ListHeaderComponent={
-              <View>
-                {renderFormFields()}
-              </View>
-            }
-          />
-        )}
       </React.Fragment>
     );
   };
