@@ -534,11 +534,19 @@ const useMaps = (mapRef) => {
           console.log(basemap);
           return basemap.id === mapId;
         });
-        newBasemap = buildStyleURL(newBasemap);
-        console.log('Mapbox StyleURL for basemap', newBasemap);
-        if (isOnline.isInternetReachable && !newBasemap.bbox) {
-          bbox = await getBboxCoords(newBasemap);
-          newBasemap = {...newBasemap, bbox: bbox};
+        if (newBasemap) {
+          newBasemap = buildStyleURL(newBasemap);
+          console.log('Mapbox StyleURL for basemap', newBasemap);
+          if (isOnline.isInternetReachable && !newBasemap.bbox) {
+            bbox = await getBboxCoords(newBasemap);
+            newBasemap = {...newBasemap, bbox: bbox};
+          }
+        }
+        else {
+          dispatch(clearedStatusMessages());
+          dispatch(addedStatusMessage(`Map ${mapId} not found. Setting basemap to Mapbox Topo.`))
+          dispatch(setErrorMessagesModalVisible(true));
+          setBasemap(null);
         }
       }
       console.log('Setting current basemap to a default basemap...');

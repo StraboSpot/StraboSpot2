@@ -68,9 +68,11 @@ const BaseMapDialog = props => {
 
   const renderCustomBasemapsList = () => {
     let sectionTitle = 'Custom Basemaps';
-    let customMasToDisplay = Object.values(customMaps).filter((customMap) => !customMap.overlay);
+    let customMapsToDisplay = Object.values(customMaps).filter((customMap) => !customMap.overlay);
     if (!isOnline.isInternetReachable) {
-      customMasToDisplay = customMasToDisplay.filter((customMap) => offlineMaps[customMap.id]);
+      customMapsToDisplay = Object.values(offlineMaps).filter((map) => {
+        if (map.source === 'map_warper' || map.source === 'strabospot_mymaps') return offlineMaps[map.id];
+      });
       sectionTitle = 'Offline Custom Basemaps';
     }
     return (
@@ -78,7 +80,7 @@ const BaseMapDialog = props => {
         <SectionDivider dividerText={sectionTitle}/>
         <FlatList
           keyExtractor={item => item.id}
-          data={Object.values(customMasToDisplay)}
+          data={Object.values(customMapsToDisplay)}
           renderItem={({item}) => renderCustomMapItem(item)}
           ItemSeparatorComponent={FlatListItemSeparator}
           ListEmptyComponent={<ListEmptyText text={`No ${sectionTitle}`}/>}
