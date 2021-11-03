@@ -11,10 +11,10 @@ import {setCompassMeasurements} from './compass.slice';
 const CompassModal = (props) => {
   const dispatch = useDispatch();
 
-  const [isShowTemplatesList, setIsShowTemplatesList] = useState(false);
+  const [isShowTemplates, setIsShowTemplates] = useState(false);
 
   const closeCompassModal = () => {
-    if (isShowTemplatesList) setIsShowTemplatesList(false);
+    if (isShowTemplates) setIsShowTemplates(false);
     else {
       dispatch(setModalVisible({modal: null}));
       dispatch(setCompassMeasurements({}));
@@ -25,13 +25,13 @@ const CompassModal = (props) => {
     <Modal
       close={closeCompassModal}
       onPress={props.onPress}
-      buttonTitleRight={isShowTemplatesList && 'Done'}
+      buttonTitleRight={isShowTemplates && ''}
     >
       <Templates
-        isShowTemplates={isShowTemplatesList}
-        setIsShowTemplates={bool => setIsShowTemplatesList(bool)}
+        isShowTemplates={isShowTemplates}
+        setIsShowTemplates={bool => setIsShowTemplates(bool)}
       />
-      {!isShowTemplatesList && <Compass goToCurrentLocation={props.goToCurrentLocation}/>}
+      {!isShowTemplates && <Compass goToCurrentLocation={props.goToCurrentLocation}/>}
     </Modal>
   );
 };

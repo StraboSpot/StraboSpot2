@@ -29,6 +29,7 @@ const modalStyle = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
+    minHeight: 40,
   },
   textStyle: {
     fontSize: themes.MODAL_TEXT_SIZE,

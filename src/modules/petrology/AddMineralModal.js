@@ -27,7 +27,7 @@ const AddMineralModal = (props) => {
   const [choicesViewKey, setChoicesViewKey] = useState(null);
   const [initialValues, setInitialValues] = useState({id: getNewId()});
   const [selectedTypeIndex, setSelectedTypeIndex] = useState(null);
-  const [isShowTemplatesList, setIsShowTemplatesList] = useState(false);
+  const [isShowTemplates, setIsShowTemplates] = useState(false);
 
   const [useForm] = useFormHook();
   const usePetrology = usePetrologyHook();
@@ -54,7 +54,7 @@ const AddMineralModal = (props) => {
   useEffect(() => {
     if (templates[petKey] && templates[petKey].isInUse && templates[petKey].active
       && templates[petKey].active[0] && templates[petKey].active[0].values) {
-      formRef.current?.setValues({...templates[petKey].active[0].values, id: getNewId()});
+      setInitialValues({...templates[petKey].active[0].values, id: getNewId()});
     }
     return () => dispatch(setModalValues({}));
   }, [templates]);
@@ -71,7 +71,7 @@ const AddMineralModal = (props) => {
 
   const onCloseModalPressed = () => {
     if (choicesViewKey) setChoicesViewKey(null);
-    else if (isShowTemplatesList) setIsShowTemplatesList(false);
+    else if (isShowTemplates) setIsShowTemplates(false);
     else dispatch(setModalVisible({modal: null}));
   };
 
@@ -118,16 +118,16 @@ const AddMineralModal = (props) => {
     return (
       <Modal
         close={onCloseModalPressed}
-        buttonTitleRight={(choicesViewKey || isShowTemplatesList) && 'Done'}
+        buttonTitleRight={choicesViewKey ? 'Done' : isShowTemplates ? '' : null}
         onPress={props.onPress}
       >
         {!choicesViewKey && (
           <Templates
-            isShowTemplates={isShowTemplatesList}
-            setIsShowTemplates={bool => setIsShowTemplatesList(bool)}
+            isShowTemplates={isShowTemplates}
+            setIsShowTemplates={bool => setIsShowTemplates(bool)}
           />
         )}
-        {!isShowTemplatesList && renderAddMineral()}
+        {!isShowTemplates && renderAddMineral()}
       </Modal>
     );
   };
@@ -183,6 +183,7 @@ const AddMineralModal = (props) => {
                 innerRef={formRef}
                 initialValues={initialValues}
                 onSubmit={(values) => console.log('Submitting form...', values)}
+                enableReinitialize={true}
               >
                 {(formProps) => (
                   <View style={{flex: 1}}>

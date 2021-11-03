@@ -23,18 +23,20 @@ const Templates = (props) => {
   const modalVisible = useSelector(state => state.home.modalVisible);
   const templates = useSelector(state => state.project.project?.templates) || {};
 
-  const [displayForm, setDisplayForm] = useState(false);
+  const [activeTemplatesForKey, setActiveTemplatesForKey] = useState([]);
+  const [isShowForm, setIsShowForm] = useState(false);
+  const [isShowNameInput, setIsShowNameInput] = useState(false);
   const [isTemplateInUse, setIsTemplateInUse] = useState(null);
   const [name, setName] = useState('');
   const [selectedTemplate, setSelectedTemplate] = useState({values: {}});
-  const [activeTemplatesForKey, setActiveTemplatesForKey] = useState([]);
   const [templateType, setTemplateType] = useState(null);
   const [templatesForKey, setTemplatesForKey] = useState([]);
 
   const measurementKey = 'measurementTemplates';
   const templateKey = modalVisible === MODAL_KEYS.NOTEBOOK.MEASUREMENTS
   || modalVisible === MODAL_KEYS.SHORTCUTS.MEASUREMENT ? measurementKey
-    : modalVisible;
+    : modalVisible === MODAL_KEYS.NOTEBOOK.ROCK_TYPE_IGNEOUS ? props.rockKey
+      : modalVisible;
 
   useEffect(() => {
     if (templateKey === measurementKey) {
@@ -63,7 +65,7 @@ const Templates = (props) => {
       setTemplatesForKey((templates[templateKey] && templates[templateKey].templates) || []);
       setActiveTemplatesForKey((templates[templateKey] && templates[templateKey].active) || []);
     }
-  }, [templates]);
+  }, [templates, templateKey]);
 
   const clearTemplate = () => {
     if (templateType === 'planar_orientation') {
@@ -81,17 +83,23 @@ const Templates = (props) => {
   };
 
   const closeTemplates = () => {
-    setDisplayForm(false);
+    setIsShowForm(false);
     props.setIsShowTemplates(false);
   };
 
-  const createNewOrEditTemplate = (mode) => {
-    setDisplayForm(true);
-    if (mode === 'new') {
-      setName('');
-      if (templateKey === measurementKey) setSelectedTemplate({values: {type: templateType}});
-      else setSelectedTemplate({values: {}});
+  const continueToTemplateForm = () => {
+    setIsShowNameInput(false);
+    setIsShowForm(true);
+  };
+
+  const createNewTemplate = () => {
+    setIsShowNameInput(true);
+    setName('');
+    if (templateKey === measurementKey) setSelectedTemplate({values: {type: templateType}});
+    else if (modalVisible === MODAL_KEYS.NOTEBOOK.ROCK_TYPE_IGNEOUS) {
+      setSelectedTemplate({values: {igneous_rock_class: templateType}});
     }
+    else setSelectedTemplate({values: {}});
   };
 
   const deleteTemplate = (template) => {
@@ -121,27 +129,18 @@ const Templates = (props) => {
   };
 
   const editTemplate = (template) => {
+    setIsShowNameInput(true);
     setSelectedTemplate(template);
     setName(template.name);
-    createNewOrEditTemplate('edit');
   };
 
   const renderFormFields = () => {
     return (
-      <View style={{flex: 1}}>
-        <View style={[commonStyles.listItemFormField, {backgroundColor: themes.SECONDARY_BACKGROUND_COLOR}]}>
-          <View style={formStyles.fieldLabelContainer}>
-            <Text style={formStyles.fieldLabel}>{'Template Name'}</Text>
-          </View>
-          <TextInput
-            style={formStyles.fieldValue}
-            onChangeText={value => setName(value)}
-            value={name}
-            autoFocus={isEmpty(name)}
-          />
-        </View>
-        {templateKey === measurementKey ? renderMeasurementsForm() : renderNonMeasurementsForm()}
-      </View>
+      <FlatList ListHeaderComponent={
+        <View style={{flex: 1}}>
+          {templateKey === measurementKey ? renderMeasurementsForm() : renderNonMeasurementsForm()}
+        </View>}
+      />
     );
   };
 
@@ -151,7 +150,7 @@ const Templates = (props) => {
     else if (!values.type && selectedTemplate.type) values.type = selectedTemplate.type;
     return (
       <MeasurementDetail
-        closeDetailView={() => setDisplayForm(false)}
+        closeDetailView={() => setIsShowForm(false)}
         selectedAttitudes={[values]}
         saveTemplate={saveTemplate}
         deleteTemplate={deleteTemplateConfirm}
@@ -160,10 +159,10 @@ const Templates = (props) => {
   };
 
   const renderNonMeasurementsForm = () => {
-    const page = NOTEBOOK_PAGES.find(p => p.key === templateKey);
+    const page = NOTEBOOK_PAGES.find(p => p.key === modalVisible);
     return (
       <BasicPageDetail
-        closeDetailView={() => setDisplayForm(false)}
+        closeDetailView={() => setIsShowForm(false)}
         selectedFeature={selectedTemplate.values}
         page={page}
         groupKey={'pet'}
@@ -199,17 +198,19 @@ const Templates = (props) => {
 
   const renderTemplatesList = () => {
     let relevantTemplates = [];
+    let title = toTitleCase(templateKey);
     if (templateType === 'planar_orientation') {
       relevantTemplates = !isEmpty(templatesForKey)
-        && templatesForKey.filter(template => template.values?.type === templateType
-          || template.values?.type === 'tabular_orientation' || template.type === templateType);
+        && templatesForKey.filter(
+          t => t.values?.type === templateType || t.values?.type === 'tabular_orientation' || t.type === templateType);
+      title = 'Planar';
     }
     else if (templateType === 'linear_orientation') {
-      relevantTemplates = !isEmpty(templatesForKey)
-        && templatesForKey.filter(template => template.values?.type === templateType || template.type === templateType);
+      relevantTemplates = !isEmpty(templatesForKey) && templatesForKey.filter(
+        t => t.values?.type === templateType || t.type === templateType);
+      title = 'Linear';
     }
     else if (!isEmpty(templatesForKey)) relevantTemplates = templatesForKey;
-    console.log('relevant templates', relevantTemplates);
 
     return (
       <React.Fragment>
@@ -220,18 +221,59 @@ const Templates = (props) => {
           ItemSeparatorComponent={FlatListItemSeparator}
           ListEmptyComponent={<ListEmptyText text={'There are no templates defined yet.'}/>}
         />
+        {!isEmpty(relevantTemplates) && (
+          <Button
+            titleStyle={commonStyles.standardButtonText}
+            title={'Clear Selected Template'}
+            type={'clear'}
+            onPress={clearTemplate}
+          />
+        )}
         <Button
           titleStyle={commonStyles.standardButtonText}
-          title={'Clear Template'}
+          title={'Define New ' + title + ' Template'}
           type={'clear'}
-          onPress={() => clearTemplate()}
+          onPress={createNewTemplate}
         />
         <Button
           titleStyle={commonStyles.standardButtonText}
-          title={'Define New Template'}
+          title={'Done'}
           type={'clear'}
-          onPress={() => createNewOrEditTemplate('new')}
+          onPress={closeTemplates}
         />
+      </React.Fragment>
+    );
+  };
+
+  const renderTemplateNameInput = () => {
+    return (
+      <React.Fragment>
+        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <Button
+            titleStyle={commonStyles.standardButtonText}
+            title={'Cancel'}
+            type={'clear'}
+            onPress={() => setIsShowNameInput(false)}
+          />
+          <Button
+            titleStyle={commonStyles.standardButtonText}
+            title={'Continue'}
+            type={'clear'}
+            disabled={isEmpty(name)}
+            onPress={() => continueToTemplateForm()}
+          />
+        </View>
+        <View style={[commonStyles.listItemFormField, {backgroundColor: themes.SECONDARY_BACKGROUND_COLOR}]}>
+          <View style={formStyles.fieldLabelContainer}>
+            <Text style={formStyles.fieldLabel}>{'Template Name'}</Text>
+          </View>
+          <TextInput
+            style={formStyles.fieldValue}
+            onChangeText={value => setName(value)}
+            value={name}
+            autoFocus={isEmpty(name)}
+          />
+        </View>
       </React.Fragment>
     );
   };
@@ -260,15 +302,15 @@ const Templates = (props) => {
     const page = MODALS.find(p => p.key === modalVisible);
     let title = page.label_singular || toTitleCase(page.label).slice(0, -1) || 'Unknown';
     if (type === 'planar_orientation') {
-      activeTemplate = activeTemplatesForKey?.find(template => template.values?.type === type
-        || template.values?.type === 'tabular_orientation' || template.type === type);
+      activeTemplate = activeTemplatesForKey?.find(
+        t => t.values?.type === type || t.values?.type === 'tabular_orientation' || t.type === type);
       title = 'Planar';
     }
     else if (type === 'linear_orientation') {
-      activeTemplate = activeTemplatesForKey?.find(
-        template => template.values?.type === type || template.type === type);
+      activeTemplate = activeTemplatesForKey?.find(t => t.values?.type === type || t.type === type);
       title = 'Linear';
     }
+    else if (modalVisible === MODAL_KEYS.NOTEBOOK.ROCK_TYPE_IGNEOUS) title = toTitleCase(type);
 
     return (
       <View>
@@ -380,9 +422,10 @@ const Templates = (props) => {
 
   return (
     <React.Fragment>
-      {props.isShowTemplates && displayForm ? <FlatList ListHeaderComponent={renderFormFields()}/>
-        : props.isShowTemplates ? renderTemplatesList()
-          : renderTemplateToggle()}
+      {props.isShowTemplates && isShowNameInput ? renderTemplateNameInput()
+        : props.isShowTemplates && isShowForm ? renderFormFields()
+          : props.isShowTemplates ? renderTemplatesList()
+            : renderTemplateToggle()}
     </React.Fragment>
   );
 };

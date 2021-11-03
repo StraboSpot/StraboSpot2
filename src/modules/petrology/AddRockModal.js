@@ -12,6 +12,7 @@ import {Form, useFormHook} from '../form';
 import {setModalValues, setModalVisible} from '../home/home.slice';
 import {PAGE_KEYS} from '../page/page.constants';
 import useSedHook from '../sed/useSed';
+import Templates from '../templates/Templates';
 import AddRockAlterationOreModal from './AddRockAlterationOreModal';
 import AddRockIgneousModal from './AddRockIgneousModal';
 import AddRockMetamorphicModal from './AddRockMetamorphicModal';
@@ -23,10 +24,13 @@ const AddRockModal = (props) => {
   const dispatch = useDispatch();
   const modalValues = useSelector(state => state.home.modalValues);
   const spot = useSelector(state => state.spot.selectedSpot);
+  const templates = useSelector(state => state.project.project?.templates) || {};
 
   const [choicesViewKey, setChoicesViewKey] = useState(null);
   const [survey, setSurvey] = useState({});
   const [choices, setChoices] = useState({});
+  const [initialValues, setInitialValues] = useState({id: getNewId()});
+  const [isShowTemplates, setIsShowTemplates] = useState(false);
   const [rockKey, setRockKey] = useState(null);
   const formRef = useRef(null);
 
@@ -37,51 +41,79 @@ const AddRockModal = (props) => {
   const groupKey = props.modalKey === PAGE_KEYS.ROCK_TYPE_SEDIMENTARY ? 'sed' : 'pet';
 
   useLayoutEffect(() => {
-    const rockKeyUpdated = props.modalKey === PAGE_KEYS.ROCK_TYPE_IGNEOUS ? modalValues.igneous_rock_class || 'plutonic'
+    const rockKeyUpdated = props.modalKey === PAGE_KEYS.ROCK_TYPE_IGNEOUS
+      ? rockKey || modalValues.igneous_rock_class || 'plutonic'
       : props.modalKey;
     setRockKey(rockKeyUpdated);
-    const initialValues = !isEmpty(modalValues) ? modalValues
-      : props.modalKey === PAGE_KEYS.ROCK_TYPE_IGNEOUS ? {id: getNewId(), igneous_rock_class: rockKeyUpdated}
-        : {id: getNewId()};
-    formRef.current?.setValues(initialValues);
+    if (templates[rockKeyUpdated] && templates[rockKeyUpdated].isInUse
+      && templates[rockKeyUpdated].active && templates[rockKeyUpdated].active[0]
+      && templates[rockKeyUpdated].active[0].values) {
+      setInitialValues({...templates[rockKeyUpdated].active[0].values, id: getNewId()});
+    }
+    else {
+      const initialValuesTemp = !isEmpty(modalValues) ? modalValues
+        : props.modalKey === PAGE_KEYS.ROCK_TYPE_IGNEOUS ? {id: getNewId(), igneous_rock_class: rockKeyUpdated}
+          : {id: getNewId()};
+      setInitialValues(initialValuesTemp);
+    }
     const formName = [groupKey, rockKeyUpdated];
     setSurvey(useForm.getSurvey(formName));
     setChoices(useForm.getChoices(formName));
     setChoicesViewKey(null);
-  }, [modalValues, props.modalKey]);
+  }, [modalValues, props.modalKey, templates]);
 
   useEffect(() => {
     return () => dispatch(setModalValues({}));
   }, []);
 
+  const onCloseModalPressed = () => {
+    if (choicesViewKey) setChoicesViewKey(null);
+    else if (isShowTemplates) setIsShowTemplates(false);
+    else dispatch(setModalVisible({modal: null}));
+  };
+
+  const renderAddRock = () => {
+    return (
+      <React.Fragment>
+        <FlatList
+          bounces={false}
+          ListHeaderComponent={
+            <View style={{flex: 1}}>
+              <Formik
+                innerRef={formRef}
+                initialValues={initialValues}
+                onSubmit={(values) => console.log('Submitting form...', values)}
+                enableReinitialize={true}
+              >
+                {(formProps) => (
+                  <View style={{flex: 1}}>
+                    {choicesViewKey ? renderSubform(formProps) : renderForm(formProps)}
+                  </View>
+                )}
+              </Formik>
+            </View>
+          }
+        />
+        {!choicesViewKey && <SaveButton title={'Save Rock'} onPress={saveRock}/>}
+      </React.Fragment>
+    );
+  };
+
   const renderAddRockModalContent = () => {
     return (
       <Modal
-        close={() => choicesViewKey ? setChoicesViewKey(null) : dispatch(setModalVisible({modal: null}))}
-        buttonTitleRight={choicesViewKey && 'Done'}
+        close={onCloseModalPressed}
+        buttonTitleRight={choicesViewKey ? 'Done' : isShowTemplates ? '' : null}
         onPress={props.onPress}
       >
-        <React.Fragment>
-          <FlatList
-            bounces={false}
-            ListHeaderComponent={
-              <View style={{flex: 1}}>
-                <Formik
-                  innerRef={formRef}
-                  initialValues={{}}
-                  onSubmit={(values) => console.log('Submitting form...', values)}
-                >
-                  {(formProps) => (
-                    <View style={{flex: 1}}>
-                      {choicesViewKey ? renderSubform(formProps) : renderForm(formProps)}
-                    </View>
-                  )}
-                </Formik>
-              </View>
-            }
+        {!choicesViewKey && (
+          <Templates
+            isShowTemplates={isShowTemplates}
+            setIsShowTemplates={bool => setIsShowTemplates(bool)}
+            rockKey={rockKey}
           />
-        </React.Fragment>
-        {!choicesViewKey && <SaveButton title={'Save Rock'} onPress={saveRock}/>}
+        )}
+        {!isShowTemplates && renderAddRock()}
       </Modal>
     );
   };

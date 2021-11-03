@@ -64,7 +64,7 @@ const Modal = (props) => {
         <View style={{flex: 1, alignItems: 'flex-end'}}>
           <Button
             titleStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 16}}
-            title={props.buttonTitleRight || 'Close'}
+            title={props.buttonTitleRight === '' ? '' : props.buttonTitleRight || 'Close'}
             type={'clear'}
             onPress={props.close || (() => dispatch(setModalVisible({modal: null})))}
           />
