@@ -221,6 +221,12 @@ const Templates = (props) => {
           ItemSeparatorComponent={FlatListItemSeparator}
           ListEmptyComponent={<ListEmptyText text={'There are no templates defined yet.'}/>}
         />
+        <Button
+          titleStyle={commonStyles.standardButtonText}
+          title={'Done'}
+          type={'clear'}
+          onPress={closeTemplates}
+        />
         {!isEmpty(relevantTemplates) && (
           <Button
             titleStyle={commonStyles.standardButtonText}
