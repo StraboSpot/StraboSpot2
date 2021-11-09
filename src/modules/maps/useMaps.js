@@ -63,14 +63,25 @@ const useMaps = (mapRef) => {
           attributions: MAP_PROVIDERS[map.source].attributions,
         },
       },
+      sprite: 'mapbox://sprites/mapbox/bright-v8',
       glyphs: 'mapbox://fonts/mapbox/{fontstack}/{range}.pbf',
-      layers: [{
-        id: map.id,
-        type: 'raster',
-        source: map.id,
-        minzoom: 0,
-        maxzoom: MAP_PROVIDERS[map.source].maxZoom,
-      }],
+      layers: [
+        {
+          'id': 'background',
+          'type': 'background',
+          'paint': {
+            'background-color': 'white',
+          },
+        },
+        {
+          id: map.id,
+          type: 'raster',
+          source: map.id,
+          minzoom: 0,
+          maxzoom: MAP_PROVIDERS[map.source].maxZoom,
+        },
+
+      ],
     };
     return customBaseMapStyleURL;
   };
@@ -544,7 +555,7 @@ const useMaps = (mapRef) => {
         }
         else {
           dispatch(clearedStatusMessages());
-          dispatch(addedStatusMessage(`Map ${mapId} not found. Setting basemap to Mapbox Topo.`))
+          dispatch(addedStatusMessage(`Map ${mapId} not found. Setting basemap to Mapbox Topo.`));
           dispatch(setErrorMessagesModalVisible(true));
           setBasemap(null);
         }
