@@ -241,12 +241,6 @@ const Templates = (props) => {
           type={'clear'}
           onPress={createNewTemplate}
         />
-        <Button
-          titleStyle={commonStyles.standardButtonText}
-          title={'Done'}
-          type={'clear'}
-          onPress={closeTemplates}
-        />
       </React.Fragment>
     );
   };
@@ -303,28 +297,32 @@ const Templates = (props) => {
   };
 
   const renderTemplateSelection = (type) => {
-    let activeTemplate = templates[type] && templates[type].active && !isEmpty(templates[type].active)
-      && templates[type].active[0] || {};
+    let activeTemplates = templates[type] && templates[type].active && !isEmpty(templates[type].active)
+      && templates[type].active || [];
     const page = MODALS.find(p => p.key === modalVisible);
-    let title = page.label_singular || toTitleCase(page.label).slice(0, -1) || 'Unknown';
+    let label = page.label_singular || toTitleCase(page.label).slice(0, -1) || 'Unknown';
     if (type === 'planar_orientation') {
-      activeTemplate = activeTemplatesForKey?.find(
+      activeTemplates = activeTemplatesForKey?.find(
         t => t.values?.type === type || t.values?.type === 'tabular_orientation' || t.type === type);
-      title = 'Planar';
+      activeTemplates = isEmpty(activeTemplates) ? [] : [activeTemplates];
+      label = 'Planar';
     }
     else if (type === 'linear_orientation') {
-      activeTemplate = activeTemplatesForKey?.find(t => t.values?.type === type || t.type === type);
-      title = 'Linear';
+      activeTemplates = activeTemplatesForKey?.find(t => t.values?.type === type || t.type === type);
+      activeTemplates = isEmpty(activeTemplates) ? [] : [activeTemplates];
+      label = 'Linear';
     }
-    else if (modalVisible === MODAL_KEYS.NOTEBOOK.ROCK_TYPE_IGNEOUS) title = toTitleCase(type);
+    else if (modalVisible === MODAL_KEYS.NOTEBOOK.ROCK_TYPE_IGNEOUS) label = toTitleCase(type);
+
+    const title = templateKey === measurementKey ? 'Select ' + label + ' Template' : 'Select ' + label + ' Template(s)';
 
     return (
       <View>
-        {isEmpty(activeTemplate) ? (
+        {isEmpty(activeTemplates) ? (
             <ListItem containerStyle={{padding: 0, flex: 1, width: '100%', justifyContent: 'center'}}>
               <Button
                 titleStyle={commonStyles.standardButtonText}
-                title={'Select ' + title + ' Template'}
+                title={title}
                 type={'clear'}
                 onPress={() => {
                   props.setIsShowTemplates(true);
@@ -334,22 +332,28 @@ const Templates = (props) => {
             </ListItem>
           )
           : (
-            <ListItem containerStyle={{padding: 0, paddingLeft: 10, paddingRight: 10}}>
-              <ListItem.Content>
-                <ListItem.Title style={commonStyles.listItemTitle}>
-                  {activeTemplate.name}
-                </ListItem.Title>
-              </ListItem.Content>
-              <Button
-                titleStyle={commonStyles.standardButtonText}
-                title={'Change'}
-                type={'clear'}
-                onPress={() => {
-                  props.setIsShowTemplates(true);
-                  setTemplateType(type);
-                }}
-              />
-            </ListItem>
+            <FlatList
+              data={activeTemplates}
+              keyExtractor={(item) => item.id.toString()}
+              renderItem={({item}) =>
+                <ListItem containerStyle={{padding: 0, paddingLeft: 10, paddingRight: 10}}>
+                  <ListItem.Content>
+                    <ListItem.Title style={commonStyles.listItemTitle}>
+                      {item.name}
+                    </ListItem.Title>
+                  </ListItem.Content>
+                  <Button
+                    titleStyle={commonStyles.standardButtonText}
+                    title={'Change'}
+                    type={'clear'}
+                    onPress={() => {
+                      props.setIsShowTemplates(true);
+                      setTemplateType(type);
+                    }}
+                  />
+                </ListItem>
+              }
+            />
           )}
       </View>
     );
@@ -357,11 +361,11 @@ const Templates = (props) => {
 
   const renderTemplateToggle = () => {
     return (
-      <View style={{borderBottomWidth: 1}}>
+      <View>
         <ListItem containerStyle={{padding: 0, paddingLeft: 10, paddingRight: 10}}>
           <ListItem.Content>
             <ListItem.Title style={commonStyles.listItemTitle}>
-              {'Use a Template?'}
+              {'Use Template(s)?'}
             </ListItem.Title>
           </ListItem.Content>
           <Switch
@@ -404,9 +408,9 @@ const Templates = (props) => {
   };
 
   const setAsTemplate = (template) => {
+    let activeTemplatesForKeyCopy = !isEmpty(activeTemplatesForKey) ? JSON.parse(JSON.stringify(activeTemplatesForKey))
+      : [];
     if (templateKey === measurementKey) {
-      let activeTemplatesForKeyCopy = !isEmpty(activeTemplatesForKey) ? JSON.parse(
-        JSON.stringify(activeTemplatesForKey)) : [];
       const type = template.values.type || template.type;
       let activeTemplatesForKeyCopyFiltered = activeTemplatesForKeyCopy.filter(t => t.type !== type
         && t.values.type !== type);
@@ -417,8 +421,14 @@ const Templates = (props) => {
       activeTemplatesForKeyCopyFiltered.push(template);
       dispatch(setActiveTemplates({key: templateKey, templates: activeTemplatesForKeyCopyFiltered}));
     }
-    else dispatch(setActiveTemplates({key: templateKey, templates: [template]}));
-    closeTemplates();
+    else {
+      const foundTemplate = activeTemplatesForKeyCopy.find(t => t.id === template.id);
+      if (foundTemplate) {
+        const templatesUpdated = activeTemplatesForKeyCopy.filter(t => t.id !== template.id);
+        dispatch(setActiveTemplates({key: templateKey, templates: templatesUpdated}));
+      }
+      else dispatch(setActiveTemplates({key: templateKey, templates: [...activeTemplatesForKeyCopy, template]}));
+    }
   };
 
   const toggleUseTemplateSwitch = (value) => {

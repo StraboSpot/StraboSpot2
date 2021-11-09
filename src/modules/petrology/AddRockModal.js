@@ -2,10 +2,12 @@ import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
 import {FlatList, Platform, View} from 'react-native';
 
 import {Formik} from 'formik';
+import {ButtonGroup} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {getNewId, isEmpty} from '../../shared/Helpers';
+import {getNewId, isEmpty, toTitleCase} from '../../shared/Helpers';
 import SaveButton from '../../shared/SaveButton';
+import {PRIMARY_TEXT_COLOR} from '../../shared/styles.constants';
 import DragAnimation from '../../shared/ui/DragAmination';
 import Modal from '../../shared/ui/modal/Modal';
 import {Form, useFormHook} from '../form';
@@ -17,7 +19,7 @@ import AddRockAlterationOreModal from './AddRockAlterationOreModal';
 import AddRockIgneousModal from './AddRockIgneousModal';
 import AddRockMetamorphicModal from './AddRockMetamorphicModal';
 import AddRockSedimentaryModal from './AddRockSedimentaryModal';
-import {IGNEOUS_ROCK_TYPES} from './petrology.constants';
+import {IGNEOUS_ROCK_CLASSES} from './petrology.constants';
 import usePetrologyHook from './usePetrology';
 
 const AddRockModal = (props) => {
@@ -31,6 +33,7 @@ const AddRockModal = (props) => {
   const [choices, setChoices] = useState({});
   const [initialValues, setInitialValues] = useState({id: getNewId()});
   const [isShowTemplates, setIsShowTemplates] = useState(false);
+  const [selectedTypeIndex, setSelectedTypeIndex] = useState(0);
   const [rockKey, setRockKey] = useState(null);
   const formRef = useRef(null);
 
@@ -38,11 +41,14 @@ const AddRockModal = (props) => {
   const usePetrology = usePetrologyHook();
   const useSed = useSedHook();
 
+  const areMultipleTemplates = templates[rockKey] && templates[rockKey].isInUse && templates[rockKey].active
+    && templates[rockKey].active.length > 1;
   const groupKey = props.modalKey === PAGE_KEYS.ROCK_TYPE_SEDIMENTARY ? 'sed' : 'pet';
+  const types = Object.values(IGNEOUS_ROCK_CLASSES);
 
   useLayoutEffect(() => {
     const rockKeyUpdated = props.modalKey === PAGE_KEYS.ROCK_TYPE_IGNEOUS
-      ? rockKey || modalValues.igneous_rock_class || 'plutonic'
+      ? rockKey || modalValues.igneous_rock_class || IGNEOUS_ROCK_CLASSES.plutonic
       : props.modalKey;
     setRockKey(rockKeyUpdated);
     if (templates[rockKeyUpdated] && templates[rockKeyUpdated].isInUse
@@ -60,7 +66,7 @@ const AddRockModal = (props) => {
     setSurvey(useForm.getSurvey(formName));
     setChoices(useForm.getChoices(formName));
     setChoicesViewKey(null);
-  }, [modalValues, props.modalKey, templates]);
+  }, [modalValues, props.modalKey, templates, selectedTypeIndex]);
 
   useEffect(() => {
     return () => dispatch(setModalValues({}));
@@ -72,29 +78,43 @@ const AddRockModal = (props) => {
     else dispatch(setModalVisible({modal: null}));
   };
 
+  const onIgneousRockTypePress = (i) => {
+    if (i !== selectedTypeIndex) {
+      setSelectedTypeIndex(i);
+      const type = types[i];
+      setRockKey(type);
+      const formNameSwitched = ['pet', type];
+      setSurvey(useForm.getSurvey(formNameSwitched));
+      setChoices(useForm.getChoices(formNameSwitched));
+    }
+  };
+
   const renderAddRock = () => {
+    const saveRockTitle = 'Save Rock' + (areMultipleTemplates ? 's' : '');
     return (
       <React.Fragment>
-        <FlatList
-          bounces={false}
-          ListHeaderComponent={
-            <View style={{flex: 1}}>
-              <Formik
-                innerRef={formRef}
-                initialValues={initialValues}
-                onSubmit={(values) => console.log('Submitting form...', values)}
-                enableReinitialize={true}
-              >
-                {(formProps) => (
-                  <View style={{flex: 1}}>
-                    {choicesViewKey ? renderSubform(formProps) : renderForm(formProps)}
-                  </View>
-                )}
-              </Formik>
-            </View>
-          }
-        />
-        {!choicesViewKey && <SaveButton title={'Save Rock'} onPress={saveRock}/>}
+        {!areMultipleTemplates && (
+          <FlatList
+            bounces={false}
+            ListHeaderComponent={
+              <View style={{flex: 1}}>
+                <Formik
+                  innerRef={formRef}
+                  initialValues={initialValues}
+                  onSubmit={(values) => console.log('Submitting form...', values)}
+                  enableReinitialize={true}
+                >
+                  {(formProps) => (
+                    <View style={{flex: 1}}>
+                      {choicesViewKey ? renderSubform(formProps) : renderForm(formProps)}
+                    </View>
+                  )}
+                </Formik>
+              </View>
+            }
+          />
+        )}
+        {!choicesViewKey && <SaveButton title={saveRockTitle} onPress={saveRock}/>}
       </React.Fragment>
     );
   };
@@ -106,6 +126,16 @@ const AddRockModal = (props) => {
         buttonTitleRight={choicesViewKey ? 'Done' : isShowTemplates ? '' : null}
         onPress={props.onPress}
       >
+        {Object.values(IGNEOUS_ROCK_CLASSES).includes(rockKey) && !choicesViewKey && !isShowTemplates && (
+          <ButtonGroup
+            selectedIndex={selectedTypeIndex}
+            onPress={onIgneousRockTypePress}
+            buttons={Object.values(IGNEOUS_ROCK_CLASSES).map(v => toTitleCase(v))}
+            containerStyle={{height: 40, borderRadius: 10}}
+            buttonStyle={{padding: 5}}
+            textStyle={{color: PRIMARY_TEXT_COLOR}}
+          />
+        )}
         {!choicesViewKey && (
           <Templates
             isShowTemplates={isShowTemplates}
@@ -121,7 +151,7 @@ const AddRockModal = (props) => {
   const renderForm = (formProps) => {
     return (
       <React.Fragment>
-        {Object.keys(IGNEOUS_ROCK_TYPES).includes(rockKey) && (
+        {Object.values(IGNEOUS_ROCK_CLASSES).includes(rockKey) && (
           <AddRockIgneousModal
             survey={survey}
             choices={choices}
@@ -172,9 +202,19 @@ const AddRockModal = (props) => {
   };
 
   const saveRock = () => {
-    if (groupKey === 'pet') usePetrology.savePetFeature(props.modalKey, spot, formRef.current);
-    else if (groupKey === 'sed') useSed.saveSedFeature(props.modalKey, spot, formRef.current);
-    dispatch(setModalValues({...formRef.current.values, id: getNewId()}));
+    if (areMultipleTemplates) {
+      if (groupKey === 'pet') {
+        usePetrology.savePetFeatureValuesFromTemplates(props.modalKey, spot, templates[rockKey].active);
+      }
+      else if (groupKey === 'sed') {
+        usePetrology.saveSedFeatureValuesFromTemplates(props.modalKey, spot, templates[rockKey].active);
+      }
+    }
+    else {
+      if (groupKey === 'pet') usePetrology.savePetFeature(props.modalKey, spot, formRef.current);
+      else if (groupKey === 'sed') useSed.saveSedFeature(props.modalKey, spot, formRef.current);
+      dispatch(setModalValues({...formRef.current.values, id: getNewId()}));
+    }
   };
 
   if (Platform.OS === 'android') return renderAddRockModalContent();

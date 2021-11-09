@@ -20,6 +20,7 @@ import {PAGE_KEYS} from '../page/page.constants';
 import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
 import {editedSpotProperties} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
+import {IGNEOUS_ROCK_CLASSES} from './petrology.constants';
 
 const RockPage = (props) => {
   const dispatch = useDispatch();
@@ -39,8 +40,8 @@ const RockPage = (props) => {
   const rockData = spot.properties[groupKey] || {};
 
   const IGNEOUS_SECTIONS = {
-    PLUTONIC: {title: 'Plutonic Rocks', key: 'plutonic'},
-    VOLCANIC: {title: 'Volcanic Rocks', key: 'volcanic'},
+    PLUTONIC: {title: 'Plutonic Rocks', key: IGNEOUS_ROCK_CLASSES.plutonic},
+    VOLCANIC: {title: 'Volcanic Rocks', key: IGNEOUS_ROCK_CLASSES.volcanic},
     DEPRECATED: {title: 'Igneous Rocks (Deprecated Version)', key: null},
   };
 

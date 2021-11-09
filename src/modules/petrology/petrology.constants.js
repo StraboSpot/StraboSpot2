@@ -1326,7 +1326,7 @@ export const ROCK_FIRST_ORDER_CLASS_FIELDS = {
   alteration_or: ['ore_type'],
 };
 
-export const IGNEOUS_ROCK_TYPES = {
-  plutonic: 'Plutonic',
-  volcanic: 'Volcanic',
+export const IGNEOUS_ROCK_CLASSES = {
+  plutonic: 'plutonic',
+  volcanic: 'volcanic',
 };

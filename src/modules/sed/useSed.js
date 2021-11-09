@@ -1,6 +1,6 @@
 import {useDispatch} from 'react-redux';
 
-import {isEmpty, toTitleCase} from '../../shared/Helpers';
+import {getNewId, isEmpty, toTitleCase} from '../../shared/Helpers';
 import {useFormHook} from '../form';
 import {editedSpotProperties} from '../spots/spots.slice';
 import {ROCK_SECOND_ORDER_TYPE_FIELDS} from './sed.constants';
@@ -54,10 +54,18 @@ const useSed = () => {
     }
   };
 
+  const saveSedFeatureValuesFromTemplates = (key, spot, activeTemplates) => {
+    let editedSedData = spot.properties.sed ? JSON.parse(JSON.stringify(spot.properties.sed)) : {};
+    if (!editedSedData[key] || !Array.isArray(editedSedData[key])) editedSedData[key] = [];
+    activeTemplates.forEach((t) => editedSedData[key].push({...t.values, id: getNewId()}));
+    dispatch(editedSpotProperties({field: 'sed', value: editedSedData}));
+  };
+
   return {
     deleteSedFeature: deleteSedFeature,
     getRockTitle: getRockTitle,
     saveSedFeature: saveSedFeature,
+    saveSedFeatureValuesFromTemplates: saveSedFeatureValuesFromTemplates
   };
 };
 

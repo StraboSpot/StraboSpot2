@@ -49,6 +49,8 @@ const AddMineralModal = (props) => {
   const firstKeysFields = firstKeys.map(k => survey.find(f => f.name === k));
   const lastKeysFields = lastKeys.map(k => survey.find(f => f.name === k));
 
+  const areMultipleTemplates = templates[petKey] && templates[petKey].isInUse && templates[petKey].active
+    && templates[petKey].active.length > 1;
   let tempValues = {};
 
   useEffect(() => {
@@ -97,7 +99,7 @@ const AddMineralModal = (props) => {
     tempValues = formRef.current?.values || {};
     return (
       <React.Fragment>
-        {!choicesViewKey && (
+        {!choicesViewKey && !areMultipleTemplates && (
           <ButtonGroup
             selectedIndex={selectedTypeIndex}
             onPress={onViewTypePress}
@@ -173,28 +175,31 @@ const AddMineralModal = (props) => {
   };
 
   const renderForms = () => {
+    const saveMineralTitle = 'Save Mineral' + (areMultipleTemplates ? 's' : '');
     return (
       <React.Fragment>
-        <FlatList
-          bounces={false}
-          ListHeaderComponent={
-            <View style={{flex: 1}}>
-              <Formik
-                innerRef={formRef}
-                initialValues={initialValues}
-                onSubmit={(values) => console.log('Submitting form...', values)}
-                enableReinitialize={true}
-              >
-                {(formProps) => (
-                  <View style={{flex: 1}}>
-                    {choicesViewKey ? renderSubform(formProps) : renderForm(formProps)}
-                  </View>
-                )}
-              </Formik>
-            </View>
-          }
-        />
-        {!choicesViewKey && <SaveButton title={'Save Mineral'} onPress={saveMineral}/>}
+        {!areMultipleTemplates && (
+          <FlatList
+            bounces={false}
+            ListHeaderComponent={
+              <View style={{flex: 1}}>
+                <Formik
+                  innerRef={formRef}
+                  initialValues={initialValues}
+                  onSubmit={(values) => console.log('Submitting form...', values)}
+                  enableReinitialize={true}
+                >
+                  {(formProps) => (
+                    <View style={{flex: 1}}>
+                      {choicesViewKey ? renderSubform(formProps) : renderForm(formProps)}
+                    </View>
+                  )}
+                </Formik>
+              </View>
+            }
+          />
+        )}
+        {!choicesViewKey && <SaveButton title={saveMineralTitle} onPress={saveMineral}/>}
       </React.Fragment>
     );
   };
@@ -205,7 +210,8 @@ const AddMineralModal = (props) => {
   };
 
   const saveMineral = () => {
-    usePetrology.savePetFeature(petKey, spot, formRef.current);
+    if (areMultipleTemplates) usePetrology.savePetFeatureValuesFromTemplates(petKey, spot, templates[petKey].active);
+    else usePetrology.savePetFeature(petKey, spot, formRef.current);
     formRef.current?.setFieldValue('id', getNewId());
   };
 
