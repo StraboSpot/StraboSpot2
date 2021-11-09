@@ -1,6 +1,6 @@
 {
   "name": "StraboSpot2",
-  "version": "1.13.0",
+  "version": "1.13.1",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -9,7 +9,7 @@
     "test": "jest",
     "lint": "eslint .",
     "lint:fix": "eslint --fix --ext .js,.jsx .",
-    "upload-sourcemaps": "sentry-cli releases files org.StraboSpot2-1.13.0 upload-sourcemaps ./main.jsbundle ./main.jsbundle.map --dist org.StraboSpot2-1.13.0",
+    "upload-sourcemaps": "sentry-cli releases files org.StraboSpot2-1.13.1 upload-sourcemaps ./main.jsbundle ./main.jsbundle.map --dist org.StraboSpot2-1.13.1  ",
     "build:ios": "react-native bundle --entry-file='index.js' --bundle-output='./main.jsbundle' --sourcemap-output='./main.jsbundle.map'  --dev=false --platform='ios' "
   },
   "dependencies": {
@@ -27,6 +27,7 @@
     "@reduxjs/toolkit": "1.6.1",
     "@sentry/cli": "1.69.1",
     "@sentry/react-native": "3.1.1",
+    "@sentry/tracing": "^6.14.1",
     "@terrylinla/react-native-sketch-canvas": "0.8.0",
     "@turf/turf": "6.5.0",
     "formik": "2.2.9",
