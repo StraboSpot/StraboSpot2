@@ -11,7 +11,7 @@ const AddRockIgneousModal = (props) => {
   const renderSpecificIgneousRock = () => {
     // Relevant keys for quick-entry modal
     let firstKeys, mainButttonsKeys, lastKeys;
-    if (igneousRockClass === IGNEOUS_ROCK_CLASSES.plutonic) {
+    if (igneousRockClass === IGNEOUS_ROCK_CLASSES.PLUTONIC) {
       firstKeys = ['plutonic_rock_type'];
       mainButttonsKeys = ['occurence_plutonic', 'texture_plutonic', 'color_index_pluton', 'alteration_plutonic'];
       lastKeys = ['pluton_characteristic_size_of', 'notes_plutonic'];

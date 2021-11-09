@@ -48,7 +48,7 @@ const AddRockModal = (props) => {
 
   useLayoutEffect(() => {
     const rockKeyUpdated = props.modalKey === PAGE_KEYS.ROCK_TYPE_IGNEOUS
-      ? rockKey || modalValues.igneous_rock_class || IGNEOUS_ROCK_CLASSES.plutonic
+      ? rockKey || modalValues.igneous_rock_class || IGNEOUS_ROCK_CLASSES.PLUTONIC
       : props.modalKey;
     setRockKey(rockKeyUpdated);
     if (templates[rockKeyUpdated] && templates[rockKeyUpdated].isInUse

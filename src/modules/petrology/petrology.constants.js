@@ -1327,6 +1327,6 @@ export const ROCK_FIRST_ORDER_CLASS_FIELDS = {
 };
 
 export const IGNEOUS_ROCK_CLASSES = {
-  plutonic: 'plutonic',
-  volcanic: 'volcanic',
+  PLUTONIC: 'plutonic',
+  VOLCANIC: 'volcanic',
 };

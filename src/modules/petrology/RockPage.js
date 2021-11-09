@@ -40,8 +40,8 @@ const RockPage = (props) => {
   const rockData = spot.properties[groupKey] || {};
 
   const IGNEOUS_SECTIONS = {
-    PLUTONIC: {title: 'Plutonic Rocks', key: IGNEOUS_ROCK_CLASSES.plutonic},
-    VOLCANIC: {title: 'Volcanic Rocks', key: IGNEOUS_ROCK_CLASSES.volcanic},
+    PLUTONIC: {title: 'Plutonic Rocks', key: IGNEOUS_ROCK_CLASSES.PLUTONIC},
+    VOLCANIC: {title: 'Volcanic Rocks', key: IGNEOUS_ROCK_CLASSES.VOLCANIC},
     DEPRECATED: {title: 'Igneous Rocks (Deprecated Version)', key: null},
   };
 
