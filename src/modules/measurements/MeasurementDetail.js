@@ -72,7 +72,7 @@ const MeasurementDetail = (props) => {
 
   // Set compass measurement type on changing the selected measurement type
   useEffect(() => {
-    if (!isEmpty(selectedMeasurement) && selectedMeasurement.type) {
+    if (!isTemplate && !isEmpty(selectedMeasurement) && selectedMeasurement.type) {
       if (selectedMeasurement.type === 'planar_orientation' || selectedMeasurement.type === 'tabular_orientation') {
         dispatch(setCompassMeasurementTypes([COMPASS_TOGGLE_BUTTONS.PLANAR]));
       }
