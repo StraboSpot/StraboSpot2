@@ -30,6 +30,7 @@
     "@sentry/tracing": "6.14.1",
     "@terrylinla/react-native-sketch-canvas": "0.8.0",
     "@turf/turf": "6.5.0",
+    "@welldone-software/why-did-you-render": "^6.2.3",
     "formik": "2.2.9",
     "js-base64": "3.6.1",
     "lodash.isequal": "4.5.0",
