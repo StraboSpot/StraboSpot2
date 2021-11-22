@@ -115,7 +115,7 @@ const RightSideButtons = (props) => {
           source={isNotebookPanelVisible
             ? require('../../assets/icons/NotebookViewButton_pressed.png')
             : require('../../assets/icons/NotebookViewButton.png')}
-          onPress={() => props.toggleNotebookPanel()}
+          onPress={props.toggleNotebookPanel}
         />
       </Animated.View>
       {!currentImageBasemap && !isNotebookPanelVisible && renderShortcutIcons()}

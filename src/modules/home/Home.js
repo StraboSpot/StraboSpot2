@@ -610,7 +610,7 @@ const Home = () => {
       <RightSideButtons
         closeNotebookPanel={closeNotebookPanel}
         openNotebookPanel={openNotebookPanel}
-        toggleNotebookPanel={() => toggleNotebookPanel()}
+        toggleNotebookPanel={toggleNotebookPanel}
         clickHandler={name => clickHandler(name)}
         drawButtonsVisible={buttons.drawButtonsVisible}
         mapMode={mapMode}

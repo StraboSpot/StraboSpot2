@@ -20,8 +20,6 @@ const useMapsOffline = () => {
   let neededTiles = 0;
   let notNeededTiles = 0;
 
-  const [tilePath, setTilePath] = useState('');
-
   const dispatch = useDispatch();
   const currentBasemap = useSelector(state => state.map.currentBasemap);
   const customMaps = useSelector(state => state.map.customMaps);
@@ -377,7 +375,6 @@ const useMapsOffline = () => {
     let tempCurrentBasemap;
     console.log('Switch To Offline Map: ', map);
     const tilePath = await buildOfflineTilePath(map);
-    setTilePath(tilePath);
     const mapStyleURL = await useMaps.buildStyleURL({source: map.source, id: map.id, tilePath: tilePath, url: [url]});
     console.log('tempCurrentBasemap: ', mapStyleURL);
     dispatch(setCurrentBasemap(mapStyleURL));
@@ -393,7 +390,6 @@ const useMapsOffline = () => {
       }
       else {
         const firstAvailableOfflineMap = Object.values(offlineMaps)[0];
-
         Alert.alert(
           'Not Available',
           'Selected map is not available for offline use.  '
