@@ -9,6 +9,7 @@ import SectionDivider from '../../shared/ui/SectionDivider';
 import {Form, useFormHook} from '../form';
 import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import SidePanelHeader from '../main-menu-panel/sidePanel/SidePanelHeader';
+import DailyNotesSection from './description/DailyNotesSection';
 import {updatedProject} from './projects.slice';
 
 const ProjectDescription = (props) => {
@@ -92,6 +93,7 @@ const ProjectDescription = (props) => {
             enableReinitialize={true}  // Update values if preferences change while form open, like when number incremented
           />
         </View>
+        <DailyNotesSection/>
         <View style={{flex: 1}}>
           <Formik
             initialValues={project.preferences || {}}

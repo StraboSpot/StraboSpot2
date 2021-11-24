@@ -1,6 +1,7 @@
 import CompassModal from '../compass/CompassModal';
 import ShortcutNotesModal from '../notes/ShortcutNotesModal';
 import {NOTEBOOK_PAGES, PAGE_KEYS} from '../page/page.constants';
+import DailyNotesModal from '../project/description/DailyNotesModal';
 import SampleModal from '../samples/SampleModal';
 import {AddTagsToSpotsShortcutModal} from '../tags';
 import FeatureTagsModal from '../tags/FeatureTagsModal';
@@ -24,6 +25,7 @@ export const MODAL_KEYS = {
     ADD_TAGS_TO_SPOTS: 'AddTagsToSpots',
     FEATURE_TAGS: 'FeatureTags',
     GEOLOGIC_UNITS: 'geologic_unit',
+    DAILY_NOTES: 'daily_setup',
   },
 };
 
@@ -86,6 +88,10 @@ const OTHER_MODALS = [
     key: MODAL_KEYS.OTHER.FEATURE_TAGS,
     label: 'Add Feature Tags',
     modal_component: FeatureTagsModal,
+  }, {
+    key: MODAL_KEYS.OTHER.DAILY_NOTES,
+    label: 'Daily Notes',
+    modal_component: DailyNotesModal,
   },
 ];
 
