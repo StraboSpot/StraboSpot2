@@ -88,7 +88,7 @@ export const MAP_PROVIDERS = {
       'https://b.tile.openstreetmap.org/',
       'https://c.tile.openstreetmap.org/',
     ],
-    // maxZoom: 20,                  // http://wiki.openstreetmap.org/wiki/Zoom_levels
+    // maxZoom: 16,                  // http://wiki.openstreetmap.org/wiki/Zoom_levels
   },
   macrostrat: {
     attributions: '© <a href="https://macrostrat.org/#about">Macrostrat</a>',
