@@ -507,7 +507,6 @@ const useMaps = (mapRef) => {
     console.log('Custom Map:', customMap, 'Test Tile URL:', testTileUrl);
 
     const testUrlResponse = await useServerRequests.testCustomMapUrl(testTileUrl);
-    console.log(testUrlResponse);
     if (testUrlResponse) {
       if (map.overlay && map.id === currentBasemap.id) {
         console.log(('Setting Basemap to Mapbox Topo...'));

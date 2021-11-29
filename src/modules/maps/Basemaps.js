@@ -27,8 +27,6 @@ function Basemap(props) {
   const [center, setCenter] = useState([0, 0]);
   const [doesImageExist, setDoesImageExist] = useState(false);
 
-  // const tileUrl = useMaps.buildTileUrl(props.basemap);
-
   useEffect(() => {
     console.log('UE Basemap [props.imageBasemap]');
     if (props.imageBasemap && props.imageBasemap.id) checkImageExistance().catch(console.error);
@@ -36,6 +34,14 @@ function Basemap(props) {
 
   const checkImageExistance = async () => {
     return useImages.doesImageExistOnDevice(props.imageBasemap.id).then((doesExist) => setDoesImageExist(doesExist));
+  };
+
+  useEffect(() => {
+    getCenter();
+  }, [currentZoom]);
+
+  const getCenter = async () => {
+    setCenter(await mapRef.current.getCenter());
   };
 
   // Add symbology to properties of map features (not to Spots themselves) since data-driven styling
@@ -66,9 +72,9 @@ function Basemap(props) {
     return defaultCenterCoordinates();
   };
 
-  const mapZoomAndScale = async () => {
-    setCurrentZoom(await mapRef.current.getZoom());
-    setCenter(await mapRef.current.getCenter());
+  const mapZoomLevel = async () => {
+    const zoom = await mapRef.current.getZoom();
+    setCurrentZoom(zoom);
   };
 
   const onRegionDidChange = () => {
@@ -101,9 +107,9 @@ function Basemap(props) {
         onLongPress={props.onMapLongPress}
         scrollEnabled={props.allowMapViewMove}
         zoomEnabled={props.allowMapViewMove}
-        onDidFinishLoadingMap={mapZoomAndScale}
-        onRegionIsChanging={mapZoomAndScale}
-        onRegionDidChange={() => onRegionDidChange()}
+        onDidFinishLoadingMap={mapZoomLevel}
+        onRegionIsChanging={mapZoomLevel}
+        onRegionDidChange={onRegionDidChange}
       >
 
         {/* Blue dot for user location */}
@@ -169,7 +175,8 @@ function Basemap(props) {
             id={'imageBasemap'}
             coordinates={props.coordQuad}
             url={useImages.getLocalImageURI(props.imageBasemap.id)}>
-            <MapboxGL.RasterLayer id={'imageBasemapLayer'}/>
+            <MapboxGL.RasterLayer id={'imageBasemapLayer'}
+                                  style={{rasterOpacity: 1}}/>
           </MapboxGL.Animated.ImageSource>
         )}
 
@@ -350,15 +357,14 @@ function Basemap(props) {
             style={useMapSymbology.getMapSymbology().lineMeasure}
           />
         </MapboxGL.ShapeSource>
-
+        <View style={homeStyles.scaleBarContainer}>
+          <ScaleBar
+            bottom={0}
+            zoom={currentZoom}
+            latitude={center[1]}
+          />
+        </View>
       </MapboxGL.MapView>
-      <View style={homeStyles.scaleBarContainer}>
-        <ScaleBar
-          bottom={0}
-          zoom={currentZoom}
-          latitude={center[1]}
-        />
-      </View>
     </View>
   );
 }

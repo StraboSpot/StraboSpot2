@@ -146,6 +146,17 @@ export const BASEMAPS = DEFAULT_MAPS.map(map => {
 });
 console.log('BASEMAPS', BASEMAPS);
 
+// export const BASEMAPS = DEFAULT_MAPS.map(map => {
+//   if (map.source === 'strabo_spot_mapbox') map.key = MAPBOX_KEY;
+//   return {...map, ...MAP_PROVIDERS[map.source]};
+// });
+// console.log('BASEMAPS', BASEMAPS);
+
+export const CUSTOMBASEMAPS = CUSTOM_MAP_TYPES.map(map => {
+  return {...map, ...MAP_PROVIDERS[map.source]};
+});
+console.log('CUSTOMBASEMAPS', BASEMAPS);
+
 export const MAP_SYMBOLS = {
   'default_point': require('../../assets/symbols/point.png'),
 
