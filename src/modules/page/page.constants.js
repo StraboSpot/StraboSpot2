@@ -30,6 +30,7 @@ import SamplesOverview from '../samples/SamplesOverview';
 import SamplesPage from '../samples/SamplesPage';
 import {TagsAtSpotList, TagsNotebookModal} from '../tags';
 import TagsNotebook from '../tags/TagsNotebook';
+import AddThreeDStructureModal from '../three-d-structures/AddThreeDStructureModal';
 import ThreeDStructuresOverview from '../three-d-structures/ThreeDStructuresOverview';
 import ThreeDStructuresPage from '../three-d-structures/ThreeDStructuresPage';
 import BasicOverviewList from './BasicOverviewList';
@@ -133,6 +134,8 @@ export const SECONDARY_PAGES = [
     icon_pressed_src: require('../../assets/icons/3DStructure_pressed.png'),
     overview_component: ThreeDStructuresOverview,
     page_component: ThreeDStructuresPage,
+    modal_component: AddThreeDStructureModal,
+    action_label: 'Add a 3D Structure',
   }, {
     key: PAGE_KEYS.FABRICS,
     label: 'Fabrics',
