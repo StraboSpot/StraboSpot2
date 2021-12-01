@@ -10,6 +10,7 @@ import NotebookContentTopSection from '../../shared/ui/NotebookContentTopSection
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
 import uiStyles from '../../shared/ui/ui.styles';
 import {useFormHook} from '../form';
+import {setModalValues, setModalVisible} from '../home/home.slice';
 import BasicPageDetail from '../page/BasicPageDetail';
 import {setSelectedAttributes} from '../spots/spots.slice';
 import ThreeDStructureItem from './ThreeDStructureItem';
@@ -47,8 +48,8 @@ const ThreeDStructuresPage = (props) => {
 
   const add3dStructure = (type) => {
     const new3dStructure = {id: getNewId(), type: type};
-    setSelected3dStructure(new3dStructure);
-    setIsDetailView(true);
+    dispatch(setModalValues(new3dStructure));
+    dispatch(setModalVisible({modal: props.page.key}));
   };
 
   const edit3dStructure = (threeDStructure) => {
