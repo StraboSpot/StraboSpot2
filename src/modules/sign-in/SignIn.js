@@ -9,6 +9,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import {PASSWORD_TEST, USERNAME_TEST} from '../../../Config';
 import useConnectionStatusHook from '../../services/useConnectionStatus';
+import useDeviceHook from '../../services/useDevice';
 import useServerRequests from '../../services/useServerRequests';
 import {VERSION_NUMBER} from '../../shared/app.constants';
 import * as Helpers from '../../shared/Helpers';
@@ -32,8 +33,13 @@ const SignIn = (props) => {
   const [textInputAnimate] = useState(new Animated.Value(0));
 
   const useConnectionStatus = useConnectionStatusHook();
+  const useDevice = useDeviceHook();
   const navigation = useNavigation();
   const [serverRequests] = useServerRequests();
+
+  useEffect(() => {
+    useDevice.createProjectDirectories().catch(err => console.error('Error creating app directories', err));
+  }, []);
 
   useEffect(() => {
     const netInfo = useConnectionStatus.getNetInfo();
@@ -193,24 +199,24 @@ const SignIn = (props) => {
           <Animated.View style={[styles.signInContainer, {transform: [{translateY: textInputAnimate}]}]}>
             <TextInput
               style={styles.input}
-              placeholder="Username"
-              autoCapitalize="none"
+              placeholder='Username'
+              autoCapitalize='none'
               autoCorrect={false}
-              placeholderTextColor="#6a777e"
+              placeholderTextColor='#6a777e'
               onChangeText={val => setUsername(val.toLowerCase())}
               value={username}
-              keyboardType="email-address"
-              returnKeyType="go"
+              keyboardType='email-address'
+              returnKeyType='go'
             />
             <TextInput
               style={styles.input}
-              placeholder="Password"
-              autoCapitalize="none"
+              placeholder='Password'
+              autoCapitalize='none'
               secureTextEntry={true}
-              placeholderTextColor="#6a777e"
+              placeholderTextColor='#6a777e'
               onChangeText={val => setPassword(val)}
               value={password}
-              returnKeyType="go"
+              returnKeyType='go'
               onSubmitEditing={signIn}
             />
             {renderButtons()}

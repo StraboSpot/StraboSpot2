@@ -21,6 +21,27 @@ const useDevice = () => {
     }
   };
 
+  const createProjectDirectories = async () => {
+      await RNFS.mkdir(APP_DIRECTORIES.APP_DIR);
+      console.log('App Directory Created');
+      await RNFS.mkdir(APP_DIRECTORIES.BACKUP_DIR);
+      console.log('Backup Directory Created');
+      await RNFS.mkdir(APP_DIRECTORIES.TILES_DIRECTORY);
+      console.log('Tiles Directory Created');
+  };
+
+  const createAppDirectory = (directory) => {
+    return RNFS.mkdir(directory)
+      .then(() => {
+        console.log('Directory:', directory, 'CREATED!');
+        return true;
+      })
+      .catch(err => {
+        console.error('Unable to create directory', directory, 'ERROR:', err);
+        throw Error(err);
+      });
+  };
+
   const deleteOfflineMap = async (map) => {
     console.log('Deleting Map Here');
     console.log('map: ', map.id);
@@ -54,18 +75,7 @@ const useDevice = () => {
       if (checkDirSuccess) {
         console.log('Directory', directory, 'exists.', checkDirSuccess);
       }
-      else {
-        // If directory does not exist then one is created
-        return RNFS.mkdir(directory)
-          .then(() => {
-            console.log('Directory:', directory, 'CREATED!');
-            return true;
-          })
-          .catch(err => {
-            console.error('Unable to create directory', directory, 'ERROR:', err);
-            throw Error(err);
-          });
-      }
+      else createAppDirectory(directory);  // If directory does not exist then one is created
       console.log(checkDirSuccess);
       return checkDirSuccess;
     }
@@ -154,6 +164,7 @@ const useDevice = () => {
 
   return {
     copyFiles: copyFiles,
+    createProjectDirectories: createProjectDirectories,
     deleteOfflineMap: deleteOfflineMap,
     doesDeviceBackupDirExist: doesDeviceBackupDirExist,
     doesDeviceDirectoryExist: doesDeviceDirectoryExist,
