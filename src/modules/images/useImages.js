@@ -49,7 +49,7 @@ const useImages = () => {
       const localImageFile = getLocalImageURI(imageId);
       const fileExists = await RNFS.exists(localImageFile);
       if (fileExists) await RNFS.unlink(localImageFile);
-      if (currentImageBasemap && currentImageBasemap.id == imageId) dispatch(setCurrentImageBasemap(undefined));
+      if (currentImageBasemap && currentImageBasemap.id === imageId) dispatch(setCurrentImageBasemap(undefined));
       return true;
     }
   };
@@ -151,7 +151,6 @@ const useImages = () => {
   const getImagesFromCameraRoll = async () => {
     return new Promise((res, rej) => {
       try {
-        let imageCount = 0;
         dispatch(setLoadingStatus({view: 'home', bool: true}));
         launchImageLibrary({}, async response => {
           console.log('RES', response);
@@ -162,7 +161,7 @@ const useImages = () => {
           }
           else {
             let imageAsset = response.assets;
-            const imageAssetsLength = response.assets.length;
+            // const imageAssetsLength = response.assets.length;
             // dispatch(clearedStatusMessages());
             // dispatch(addedStatusMessage(`You selected ${imageAssetsLength} image to save:`));
             // dispatch(setStatusMessagesModalVisible(true));
@@ -175,11 +174,11 @@ const useImages = () => {
                 dispatch(editedSpotImages([savedPhoto]));
                 // dispatch(removedLastStatusMessage());
                 // dispatch(addedStatusMessage(`Image/s saved ${imageCount}`));
-                console.log(1)
+                // console.log(1);
               }),
-              console.log(2)
+              // console.log(2)
             );
-            console.log(3)
+            // console.log(3);
             res(imageCount);
             dispatch(setLoadingStatus({view: 'home', bool: false}));
           }
@@ -190,7 +189,7 @@ const useImages = () => {
         dispatch(setLoadingStatus({view: 'home', bool: false}));
         rej('Error saving image.');
       }
-    })
+    });
   };
 
   const getImageHeightAndWidth = (imageURI) => {

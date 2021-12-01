@@ -105,7 +105,7 @@ const SaveMapsModal = (props) => {
 
   const doUnzip = async () => {
     try {
-      setIsLoadingWave(true)
+      setIsLoadingWave(true);
       setPercentDone(0);
       await useMapsOffline.doUnzip();
     }
@@ -126,7 +126,7 @@ const SaveMapsModal = (props) => {
           setIsLoadingWave(false);
           dispatch(removedLastStatusMessage());
           dispatch(addedStatusMessage('Downloading...'));
-          console.log('UPLOAD HAS BEGUN! JobId: ' + jobId);
+          console.log('DOWNLOAD HAS BEGUN! JobId: ' + jobId);
         },
         progress: (res) => {
           console.log(((res.bytesWritten / res.contentLength) * 100).toFixed(2));
@@ -258,12 +258,12 @@ const SaveMapsModal = (props) => {
                   selectedValue={downloadZoom}
                   style={styles.picker}
                 >
-                  {zoomLevels.map(i => {
+                  {zoomLevels.map(zoom => {
                     return (
                       <Picker.Item
-                        key={i}
-                        value={i}
-                        label={i.toString()}
+                        key={zoom}
+                        value={zoom}
+                        label={zoom.toString()}
                       />
                     );
                   })}
