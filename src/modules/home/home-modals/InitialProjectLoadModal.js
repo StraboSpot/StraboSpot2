@@ -20,7 +20,6 @@ import ProjectTypesButtons from '../../project/ProjectTypesButtons';
 import {clearedSpots} from '../../spots/spots.slice';
 import userStyles from '../../user/user.styles';
 import useUserProfileHook from '../../user/useUserProfile';
-import {setSignedInStatus} from '../home.slice';
 import homeStyles from '../home.style';
 
 const InitialProjectLoadModal = (props) => {
@@ -37,16 +36,8 @@ const InitialProjectLoadModal = (props) => {
   const useUserProfile = useUserProfileHook();
 
   useEffect(() => {
-    doesBackupDirExist().then(exists => console.log('doesBackupDirExist: ', exists));
-  }, []);
-
-  useEffect(() => {
     console.log('UE InitialProjectLoadModal [isOnline]', isOnline);
   }, [isOnline]);
-
-  const doesBackupDirExist = async () => {
-    return await useDevice.doesDeviceBackupDirExist();
-  };
 
   const goBack = () => {
     if (visibleProjectSection === 'activeDatasetsList') {
