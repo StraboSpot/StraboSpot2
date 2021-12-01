@@ -88,7 +88,7 @@ export const MAP_PROVIDERS = {
       'https://b.tile.openstreetmap.org/',
       'https://c.tile.openstreetmap.org/',
     ],
-    // maxZoom: 16,                  // http://wiki.openstreetmap.org/wiki/Zoom_levels
+    maxZoom: 16,                  // http://wiki.openstreetmap.org/wiki/Zoom_levels
   },
   macrostrat: {
     attributions: '© <a href="https://macrostrat.org/#about">Macrostrat</a>',
@@ -110,7 +110,7 @@ export const MAP_PROVIDERS = {
     mime: 'image/png',
     tilePath: '/{z}/{x}/{y}.png',
     url: ['http://tiles.strabospot.org/v5/'],
-    // maxZoom: 19,                   // https://www.mapbox.com/help/define-mapbox-satellite/
+    maxZoom: 19,                   // https://www.mapbox.com/help/define-mapbox-satellite/
   },
   strabospot_mymaps: {
     attributions: '<a href="https://www.strabospot.org">StraboSpot Contributed</a>',
@@ -140,7 +140,6 @@ export const BASEMAPS = DEFAULT_MAPS.map(map => {
     type: 'raster',
     source: map.id,
     minzoom: 0,
-    maxzoom: MAP_PROVIDERS[map.source].maxZoom,
   }];
   return map;
 });

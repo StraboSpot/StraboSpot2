@@ -123,23 +123,9 @@ function Basemap(props) {
           zoomLevel={props.imageBasemap ? 14 : props.zoom}
           centerCoordinate={evaluateCenterCoordinates()}
           animationDuration={0}
-          maxZoomLevel={25}
           // followUserLocation={true}   // Can't follow user location if want to zoom to extent of Spots
           // followUserMode='normal'
         />
-
-        {/*{!props.imageBasemap && <MapboxGL.RasterSource*/}
-        {/*  id={props.basemap.id}*/}
-        {/*  tileUrlTemplates={[useMaps.buildTileUrl(props.basemap)]}*/}
-        {/*  maxZoomLevel={props.basemap.maxZoom}*/}
-        {/*  tileSize={256}*/}
-        {/*>*/}
-        {/*  <MapboxGL.RasterLayer*/}
-        {/*    id={props.basemap.id}*/}
-        {/*    sourceID={props.basemap.id}*/}
-        {/*    style={{rasterOpacity: 1}}*/}
-        {/*  />*/}
-        {/*</MapboxGL.RasterSource>}*/}
 
         {/* Custom Overlay Layer */}
         {Object.values(customMaps).map(customMap => {
