@@ -1,6 +1,6 @@
 import RNFS from 'react-native-fs';
 import {unzip} from 'react-native-zip-archive';
-import {batch, useDispatch} from 'react-redux';
+import {batch, useDispatch, useSelector} from 'react-redux';
 
 import {
   addedStatusMessage,
@@ -10,10 +10,10 @@ import {
   setLoadingStatus,
   setErrorMessagesModalVisible,
 } from '../modules/home/home.slice';
-import {addedCustomMapsFromBackup} from '../modules/maps/maps.slice';
+import {addedCustomMapsFromBackup, clearedMaps} from '../modules/maps/maps.slice';
 import {addedMapsFromDevice} from '../modules/maps/offline-maps/offlineMaps.slice';
-import {addedDatasets, addedProject, setSelectedProject} from '../modules/project/projects.slice';
-import {addedSpotsFromDevice} from '../modules/spots/spots.slice';
+import {addedDatasets, addedProject, clearedDatasets, setSelectedProject} from '../modules/project/projects.slice';
+import {addedSpotsFromDevice, clearedSpots} from '../modules/spots/spots.slice';
 import {isEmpty} from '../shared/Helpers';
 import {APP_DIRECTORIES} from './device.constants';
 import useDeviceHook from './useDevice';
@@ -116,6 +116,15 @@ const useImport = () => {
     }
   };
 
+  const destroyOldProject = () => {
+    batch(() => {
+      dispatch(clearedSpots());
+      dispatch(clearedDatasets());
+      dispatch(clearedMaps());
+    });
+    console.log('Destroy batch complete');
+  };
+
   const unzipFile = async () => {
     try {
       const checkDirSuccess = await useDevice.doesDeviceDirectoryExist(APP_DIRECTORIES.TILE_TEMP);
@@ -193,6 +202,8 @@ const useImport = () => {
     dispatch(setLoadingStatus({view: 'modal', bool: true}));
     dispatch(addedStatusMessage(`Importing ${selectedProject.fileName}...`));
     console.log('SELECTED PROJECT', selectedProject);
+    if (!isEmpty(project)) destroyOldProject();
+    console.log('Old project destroyed', project);
     const dirExists = await useDevice.doesDeviceBackupDirExist(selectedProject.fileName);
     if (dirExists) {
       const dataFile = await readDeviceJSONFile(selectedProject.fileName);
