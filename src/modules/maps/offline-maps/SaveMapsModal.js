@@ -9,11 +9,13 @@ import {Dialog, DialogContent, SlideAnimation} from 'react-native-popup-dialog';
 import ProgressBar from 'react-native-progress/Bar';
 import {useDispatch, useSelector} from 'react-redux';
 
+import {APP_DIRECTORIES} from '../../../services/device.constants';
 import useDeviceHook from '../../../services/useDevice';
 import useServerRequestHook from '../../../services/useServerRequests';
 import {toNumberFixedValue} from '../../../shared/Helpers';
 import * as themes from '../../../shared/styles.constants';
 import {addedStatusMessage, clearedStatusMessages, removedLastStatusMessage} from '../../home/home.slice';
+import {MAP_PROVIDERS} from '../maps.constants';
 import useMapsOfflineHook from './useMapsOffline';
 
 const SaveMapsModal = (props) => {
@@ -21,18 +23,12 @@ const SaveMapsModal = (props) => {
   const useMapsOffline = useMapsOfflineHook();
   const [useServerRequests] = useServerRequestHook();
 
-  const tilehost = 'http://tiles.strabospot.org';
-  const devicePath = RNFS.DocumentDirectoryPath;
-  let tilesDirectory = '/StraboSpotTiles';
-  let tileZipsDirectory = devicePath + tilesDirectory + '/TileZips';
-  let tileTempDirectory = devicePath + tilesDirectory + '/TileTemp';
-
   const currentBasemap = useSelector(state => state.map.currentBasemap);
   const statusMessages = useSelector(state => state.home.statusMessages);
   const dispatch = useDispatch();
 
   const currentMapName = currentBasemap && currentBasemap.title;
-  const maxZoom = currentBasemap && currentBasemap.maxZoom;
+  const maxZoom = currentBasemap && MAP_PROVIDERS[currentBasemap.source]?.maxZoom;
   let progressStatus = '';
 
   const [tileCount, setTileCount] = useState(0);
@@ -120,10 +116,10 @@ const SaveMapsModal = (props) => {
 
   const downloadZip = async (zipUID) => {
     try {
-      const downloadZipURL = tilehost + '/ziptemp/' + zipUID + '/' + zipUID + '.zip';
+      const downloadZipURL = APP_DIRECTORIES.TILE_HOST + '/ziptemp/' + zipUID + '/' + zipUID + '.zip';
       const downloadOptions = {
         fromUrl: downloadZipURL,
-        toFile: tileZipsDirectory + '/' + zipUID + '.zip',
+        toFile: APP_DIRECTORIES.TILE_ZIP + zipUID + '.zip',
         begin: (response) => {
           const jobId = response.jobId;
           setShowLoadingBar(true);
@@ -140,8 +136,8 @@ const SaveMapsModal = (props) => {
       };
 
       //first try to delete from temp directories
-      await useDevice.doesDeviceDirectoryExist(tileZipsDirectory);
-      await useDevice.doesDeviceDirectoryExist(tileTempDirectory);
+      await useDevice.doesDeviceDirectoryExist(APP_DIRECTORIES.TILE_ZIP);
+      await useDevice.doesDeviceDirectoryExist(APP_DIRECTORIES.TILE_TEMP);
       await useMapsOffline.checkTileZipFileExistance();
       const res = await useServerRequests.timeoutPromise(60000, RNFS.downloadFile(downloadOptions).promise);
       if (res.statusCode === 200) {

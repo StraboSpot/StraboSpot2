@@ -18,12 +18,11 @@ import {deletedSpotIdFromDataset} from '../modules/project/projects.slice';
 import useProjectHook from '../modules/project/useProject';
 import useSpotsHook from '../modules/spots/useSpots';
 import {isEmpty} from '../shared/Helpers';
+import {APP_DIRECTORIES} from './device.constants';
 import useServerRequestsHook from './useServerRequests';
 
 const useUpload = () => {
-  const devicePath = RNFS.DocumentDirectoryPath;
-  const appDirectory = '/StraboSpot';
-  const tempImagesDownsizedDirectory = devicePath + appDirectory + '/TempImages';
+  const tempImagesDownsizedDirectory = APP_DIRECTORIES.APP_DIR + '/TempImages';
 
   const dispatch = useDispatch();
   const project = useSelector(state => state.project.project);

@@ -6,6 +6,7 @@ import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import ImageResizer from 'react-native-image-resizer';
 import {useDispatch, useSelector} from 'react-redux';
 
+import {APP_DIRECTORIES} from '../../services/device.constants';
 import {getNewId} from '../../shared/Helpers';
 import {setLoadingStatus} from '../home/home.slice';
 import useHomeHook from '../home/useHome';
@@ -19,9 +20,6 @@ import {
 } from '../spots/spots.slice';
 
 const useImages = () => {
-  const devicePath = RNFS.DocumentDirectoryPath;
-  const appDirectory = '/StraboSpot';
-  const imagesDirectory = devicePath + appDirectory + '/Images';
   // const testUrl = 'https://strabospot.org/testimages/images.json';
   // const missingImage = require('../../assets/images/noimage.jpg');
 
@@ -146,7 +144,7 @@ const useImages = () => {
   };
 
   const getLocalImageURI = (id) => {
-    const imageURI = imagesDirectory + '/' + id + '.jpg';
+    const imageURI = APP_DIRECTORIES.IMAGES + id + '.jpg';
     return Platform.OS === 'ios' ? imageURI : 'file://' + imageURI;
   };
 
@@ -246,7 +244,7 @@ const useImages = () => {
     let imageId = getNewId();
     let imageURI = getLocalImageURI(imageId);
     try {
-      await RNFS.mkdir(imagesDirectory);
+      await RNFS.mkdir(APP_DIRECTORIES.IMAGES);
       await RNFS.copyFile(tempImageURI, imageURI);
       console.log(imageCount, 'File saved to:', imageURI);
       imageCount++;

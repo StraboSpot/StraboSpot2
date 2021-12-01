@@ -1,6 +1,7 @@
 import RNFS from 'react-native-fs';
 import {batch, useDispatch, useSelector} from 'react-redux';
 
+import {APP_DIRECTORIES} from '../../services/device.constants';
 import useDownloadHook from '../../services/useDownload';
 import useImportHook from '../../services/useImport';
 import useServerRequests from '../../services/useServerRequests';
@@ -30,9 +31,6 @@ import {
 } from './projects.slice';
 
 const useProject = () => {
-  const devicePath = RNFS.DocumentDirectoryPath;
-  const appDirectoryForDistributedBackups = '/ProjectBackups';
-
   const dispatch = useDispatch();
   const activeDatasetsIds = useSelector(state => state.project.activeDatasetsIds);
   const datasets = useSelector(state => state.project.datasets);
@@ -141,9 +139,9 @@ const useProject = () => {
 
   const doesDeviceBackupDirExist = async (subDirectory) => {
     if (subDirectory !== undefined) {
-      return await RNFS.exists(devicePath + appDirectoryForDistributedBackups + '/' + subDirectory);
+      return await RNFS.exists(APP_DIRECTORIES.BACKUP_DIR + subDirectory);
     }
-    else return await RNFS.exists(devicePath + appDirectoryForDistributedBackups);
+    else return await RNFS.exists(APP_DIRECTORIES.BACKUP_DIR);
   };
 
   const getActiveDatasets = () => {
@@ -158,10 +156,10 @@ const useProject = () => {
   };
 
   const getAllDeviceProjects = async () => {
-    const deviceProject = await RNFS.exists(devicePath + appDirectoryForDistributedBackups).then(res => {
+    const deviceProject = await RNFS.exists(APP_DIRECTORIES.BACKUP_DIR).then(res => {
       console.log('/StraboProjects exists:', res);
       if (res) {
-        return RNFS.readdir(devicePath + appDirectoryForDistributedBackups).then(files => {
+        return RNFS.readdir(APP_DIRECTORIES.BACKUP_DIR).then(files => {
           let id = 0;
           if (!isEmpty(files)) {
             const deviceFiles = files.map(file => {

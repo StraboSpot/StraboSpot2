@@ -5,6 +5,7 @@ import RNFS from 'react-native-fs';
 import {unzip} from 'react-native-zip-archive';
 import {useDispatch, useSelector} from 'react-redux';
 
+import {APP_DIRECTORIES} from '../../../services/device.constants';
 import useDeviceHook from '../../../services/useDevice';
 import useServerRequesteHook from '../../../services/useServerRequests';
 import {isEmpty} from '../../../shared/Helpers';
@@ -28,13 +29,7 @@ const useMapsOffline = () => {
 
   const source = currentBasemap && currentBasemap.source;
   const currentMapName = currentBasemap && currentBasemap.title;
-
-  const devicePath = RNFS.DocumentDirectoryPath;
-  const tilesDirectory = '/StraboSpotTiles';
-  const tileCacheDirectory = devicePath + tilesDirectory + '/TileCache';
-  const tileTempDirectory = devicePath + tilesDirectory + '/TileTemp';
-  const tileZipsDirectory = devicePath + tilesDirectory + '/TileZips';
-  const url = 'file://' + tileCacheDirectory + '/';
+  const url = 'file://' + APP_DIRECTORIES.TILE_CACHE;
 
   const useDevice = useDeviceHook();
   const [useMaps] = useMapsHook();
@@ -74,7 +69,7 @@ const useMapsOffline = () => {
   };
 
   const getMapCenterTile = async (mapid) => {
-    if (devicePath) {
+    if (APP_DIRECTORIES.ROOT_PATH) {
       const entries = await useDevice.readDirectoryForMapTiles(mapid);
       // loop over tiles to get center tiles
       let maxZoom = 0;
@@ -124,11 +119,11 @@ const useMapsOffline = () => {
 
   const checkTileZipFileExistance = async () => {
     try {
-      let fileExists = await RNFS.exists(tileZipsDirectory + '/' + zipUID + '.zip');
+      let fileExists = await RNFS.exists(APP_DIRECTORIES.TILE_ZIP + zipUID + '.zip');
       console.log('file Exists:', fileExists ? 'YES' : 'NO');
       if (fileExists) {
         //delete
-        await RNFS.unlink(tileZipsDirectory + '/' + zipUID + '.zip');
+        await RNFS.unlink(APP_DIRECTORIES.TILE_ZIP + zipUID + '.zip');
       }
       // else await RNFS.mkdir(tileZipsDirectory);
     }
@@ -139,13 +134,13 @@ const useMapsOffline = () => {
 
   const checkIfTileZipFolderExists = async () => {
     try {
-      let folderExists = await RNFS.exists(tileZipsDirectory);
+      let folderExists = await RNFS.exists(APP_DIRECTORIES.TILE_ZIP);
       console.log('Folder Exists:', folderExists ? 'YES' : 'NO');
       if (folderExists) {
         //delete
-        await RNFS.unlink(tileZipsDirectory + '/' + zipUID);
+        await RNFS.unlink(APP_DIRECTORIES.TILE_ZIP + zipUID);
       }
-      else await RNFS.mkdir(tileZipsDirectory);
+      else await RNFS.mkdir(APP_DIRECTORIES.TILE_ZIP);
     }
     catch (err) {
       console.error('Error checking if zip Tile Temp Directory exists', err);
@@ -156,8 +151,8 @@ const useMapsOffline = () => {
     try {
       dispatch(removedLastStatusMessage());
       dispatch(addedStatusMessage('Preparing to install tiles...'));
-      const sourcePath = tileZipsDirectory + '/' + zipUID + '.zip';
-      await unzip(sourcePath, tileTempDirectory);
+      const sourcePath = APP_DIRECTORIES.TILE_ZIP + zipUID + '.zip';
+      await unzip(sourcePath, APP_DIRECTORIES.TILE_TEMP);
       console.log('unzip completed');
       console.log('move done.');
     }
@@ -173,7 +168,7 @@ const useMapsOffline = () => {
       let startZipURL = 'unset';
       const layerID = currentBasemap.id;
       const layerSource = currentBasemap.source;
-      const tilehost = 'http://tiles.strabospot.org';
+      const tilehost = APP_DIRECTORIES.TILE_HOST;
 
       if (layerSource === 'map_warper' || layerSource === 'mapbox_styles' || layerSource === 'strabospot_mymaps') {
         //configure advanced URL for custom map types here.
@@ -235,14 +230,13 @@ const useMapsOffline = () => {
   const moveFiles = async (zipUID) => {
     try {
       let result;
-      let folderExists = await RNFS.exists(tileCacheDirectory + '/' + currentBasemap.id);
+      let folderExists = await RNFS.exists(APP_DIRECTORIES.TILE_CACHE + currentBasemap.id);
       if (!folderExists) {
-        console.log('FOLDER DOESN\'T EXIST! ' + currentBasemap.id);
-        await RNFS.mkdir(tileCacheDirectory + '/' + currentBasemap.id);
-        await RNFS.mkdir(tileCacheDirectory + '/' + currentBasemap.id + '/tiles');
+        console.log('FOLDER DOESN\'T EXIST! ', APP_DIRECTORIES.TILE_CACHE + currentBasemap.id);
+        await RNFS.mkdir(APP_DIRECTORIES.TILE_CACHE + currentBasemap.id + '/tiles');
       }
       //now move files to correct location
-      result = await RNFS.readDir(tileTempDirectory + '/' + zipUID + '/tiles');
+      result = await RNFS.readDir(APP_DIRECTORIES.TILE_TEMP + zipUID + '/tiles');
       return result;
     }
     catch (err) {
@@ -254,12 +248,12 @@ const useMapsOffline = () => {
   const moveTile = async (tile, zipID) => {
     let zipId = zipUID ?? zipID;
     fileCount++;
-    let fileExists = await RNFS.exists(tileCacheDirectory + '/' + currentBasemap.id + '/tiles/' + tile.name);
+    let fileExists = await RNFS.exists(APP_DIRECTORIES.TILE_CACHE + currentBasemap.id + '/tiles/' + tile.name);
     // console.log('foo exists: ', tile.name + ' ' + fileExists);
     if (!fileExists) {
       neededTiles++;
-      await RNFS.moveFile(tileTempDirectory + '/' + zipId + '/tiles/' + tile.name,
-        tileCacheDirectory + '/' + currentBasemap.id + '/tiles/' + tile.name);
+      await RNFS.moveFile(APP_DIRECTORIES.TILE_TEMP + zipId + '/tiles/' + tile.name,
+        APP_DIRECTORIES.TILE_CACHE + currentBasemap.id + '/tiles/' + tile.name);
       console.log('Tile moved');
     }
     else notNeededTiles++;
@@ -298,7 +292,7 @@ const useMapsOffline = () => {
     try {
       let mapName;
       let basemap = mapId ? mapId : currentBasemap.id;
-      let tileCount = await RNFS.readDir(tileCacheDirectory + '/' + basemap + '/tiles');
+      let tileCount = await RNFS.readDir(APP_DIRECTORIES.TILE_CACHE + basemap + '/tiles');
       tileCount = tileCount.length;
 
       let currentOfflineMaps = Object.values(offlineMaps);
@@ -326,7 +320,7 @@ const useMapsOffline = () => {
         sources: {
           'raster-tiles': {
             type: 'raster',
-            tiles: ['file://' + tileCacheDirectory + '/' + basemap + '/tiles/{z}_{x}_{y}.png'],
+            tiles: ['file://' + APP_DIRECTORIES.TILE_CACHE + basemap + '/tiles/{z}_{x}_{y}.png'],
             tileSize: 256,
             attribution: MAP_PROVIDERS[source].attributions,
           },

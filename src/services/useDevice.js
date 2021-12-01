@@ -5,19 +5,10 @@ import {useDispatch} from 'react-redux';
 
 import {deletedOfflineMap} from '../modules/maps/offline-maps/offlineMaps.slice';
 import {doesBackupDirectoryExist} from '../modules/project/projects.slice';
+import {APP_DIRECTORIES} from './device.constants';
 
 
 const useDevice = () => {
-  const devicePath = RNFS.DocumentDirectoryPath;
-  const appDirectoryForDistributedBackups = '/ProjectBackups';
-  const appDirectory = '/StraboSpot';
-  const sharedDocumentsPathIOS = 'shareddocuments://'; // To access Files.app on iOS
-  const imagesDirectory = appDirectory + '/Images';
-  const tilesDirectory = devicePath + '/StraboSpotTiles';
-  const tileCacheDirectory = tilesDirectory + '/TileCache';
-  const tileTempDirectory = devicePath + tilesDirectory + '/TileTemp';
-  const zipsDirectory = devicePath + tilesDirectory + '/TileZips';
-
   const dispatch = useDispatch();
 
   const copyFiles = async (source, target) => {
@@ -35,22 +26,22 @@ const useDevice = () => {
     console.log('map: ', map.id);
     // console.log('directory: ', tileCacheDirectory + '/' + map.id);
     const mapId = map.id === 'mapwarper' ? map.name : map.id;
-    let folderExists = await RNFS.exists(tileCacheDirectory + '/' + mapId);
+    let folderExists = await RNFS.exists(APP_DIRECTORIES.TILE_CACHE + mapId);
     const zipFileExists = await RNFS.exists(
-      zipsDirectory + '/' + map.mapId + '.zip',
+      APP_DIRECTORIES.TILE_ZIP + map.mapId + '.zip',
     );
     const tileTempFileExists = await RNFS.exists(
-      tileTempDirectory + '/' + map.mapId,
+      APP_DIRECTORIES.TILE_TEMP + '/' + map.mapId,
     );
     console.log(folderExists, zipFileExists, tileTempFileExists);
     //first, delete folder with tiles
     if (folderExists || zipFileExists || tileTempFileExists) {
-      await RNFS.unlink(tileCacheDirectory + '/' + mapId);
+      await RNFS.unlink(APP_DIRECTORIES.TILE_CACHE + mapId);
       if (zipFileExists) {
-        await RNFS.unlink(zipsDirectory + '/' + map.mapId + '.zip');
+        await RNFS.unlink(APP_DIRECTORIES.TILE_ZIP + map.mapId + '.zip');
       }
       if (tileTempFileExists) {
-        await RNFS.unlink(tileTempDirectory + '/' + map.mapId);
+        await RNFS.unlink(APP_DIRECTORIES.TILE_TEMP + map.mapId);
       }
     }
     dispatch(deletedOfflineMap(map.id));
@@ -85,27 +76,27 @@ const useDevice = () => {
   };
 
   const doesDeviceFileExist = async (id, extension) => {
-    const imageExists = await RNFS.exists(devicePath + imagesDirectory + '/' + id + extension);
+    const imageExists = await RNFS.exists(APP_DIRECTORIES.IMAGES + id + extension);
     console.log('Image Exists:', imageExists);
     return imageExists;
   };
 
   const doesDeviceBackupDirExist = async (subDirectory) => {
     if (subDirectory !== undefined) {
-      return await RNFS.exists(devicePath + appDirectoryForDistributedBackups + '/' + subDirectory);
+      return await RNFS.exists(APP_DIRECTORIES.BACKUP_DIR + subDirectory);
     }
     else {
-      const exists = await RNFS.exists(devicePath + appDirectoryForDistributedBackups);
+      const exists = await RNFS.exists(APP_DIRECTORIES.BACKUP_DIR);
       dispatch(doesBackupDirectoryExist(exists));
       return exists;
     }
   };
 
   const openURL = async (url) => {
-    console.log(url + devicePath + appDirectoryForDistributedBackups);
+    console.log(url + APP_DIRECTORIES.BACKUP_DIR);
     try {
       if (url === 'ProjectBackups') {
-        url = sharedDocumentsPathIOS + devicePath + appDirectoryForDistributedBackups + url;
+        url = APP_DIRECTORIES.SHARED_DOCUMENTS_PATH_IOS + APP_DIRECTORIES.BACKUP_DIR + url;
       }
       const initialUrl = await Linking.canOpenURL(url);
       console.log(initialUrl);
@@ -120,7 +111,7 @@ const useDevice = () => {
   };
 
   const makeDirectory = (directory) => {
-    return RNFS.mkdir(devicePath + directory)
+    return RNFS.mkdir(APP_DIRECTORIES.ROOT_PATH + directory)
       .then(() => 'DIRECTORY HAS BEEN CREATED')
       .catch(err => {
         console.error('Unable to create directory', directory, 'ERROR:', err);
@@ -131,10 +122,10 @@ const useDevice = () => {
   const readDirectoryForMapTiles = async (mapId) => {
     try {
       let tiles = [];
-      const exists = await RNFS.exists(tileCacheDirectory + '/' + mapId + '/tiles');
-      console.log('Map Tiles Dir Exists:', exists);
+      const exists = await RNFS.exists(APP_DIRECTORIES.TILE_CACHE + mapId + '/tiles');
+      console.log('Map tiles cache tiles directory:', exists);
       if (exists) {
-        tiles = await RNFS.readdir(tileCacheDirectory + '/' + mapId + '/tiles');
+        tiles = await RNFS.readdir(APP_DIRECTORIES.TILE_CACHE + mapId + '/tiles');
         // console.log('Tiles', tiles);
       }
       return tiles;
@@ -145,10 +136,10 @@ const useDevice = () => {
   };
 
   const readDirectoryForMaps = async () => {
-    const exists = await RNFS.exists(tilesDirectory);
-    console.log('Offline maps directoy exists? ', exists);
+    const exists = await RNFS.exists(APP_DIRECTORIES.TILES_DIRECTORY);
+    console.log('Offline maps directory exists? ', exists);
     if (exists) {
-      const files = await RNFS.readdir(tileCacheDirectory);
+      const files = await RNFS.readdir(APP_DIRECTORIES.TILE_CACHE);
       console.log(files);
       return files;
     }

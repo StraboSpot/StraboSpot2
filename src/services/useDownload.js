@@ -25,6 +25,7 @@ import {
 } from '../modules/project/projects.slice';
 import {addedSpots, clearedSpots} from '../modules/spots/spots.slice';
 import {isEmpty} from '../shared/Helpers';
+import {APP_DIRECTORIES} from './device.constants';
 import useDeviceHook from './useDevice';
 import useServerRequestsHook from './useServerRequests';
 
@@ -34,9 +35,6 @@ const useDownload = () => {
   let savedImagesCount = 0;
   let imageCount = 0;
 
-  const devicePath = RNFS.DocumentDirectoryPath;
-  const appDirectory = '/StraboSpot';
-  const imagesDirectoryPath = devicePath + appDirectory + '/Images';
   // const testUrl = 'https://strabospot.org/testimages/images.json';
   // const missingImage = require('../../assets/images/noimage.jpg');
 
@@ -124,19 +122,19 @@ const useDownload = () => {
       const imageURI = 'https://strabospot.org/pi/';
       return RNFS.downloadFile({
         fromUrl: imageURI + imageId,
-        toFile: imagesDirectoryPath + '/' + imageId + '.jpg',
+        toFile: APP_DIRECTORIES.IMAGES + imageId + '.jpg',
         begin: res => console.log('IMAGE DOWNLOAD HAS BEGUN', res.jobId),
       }).promise.then(res => {
           console.log('Image Info', res);
           if (res.statusCode === 200) {
             imageCount++;
-            console.log(imageCount, `File ${imageId} saved to: ${imagesDirectoryPath}`);
+            console.log(imageCount, `File ${imageId} saved to: ${APP_DIRECTORIES.IMAGES}`);
           }
           else {
             imageCount++;
             imagesFailedCount++;
             console.log('Error on', imageId);
-            return RNFS.unlink(imagesDirectoryPath + '/' + imageId + '.jpg').then(() => {
+            return RNFS.unlink(APP_DIRECTORIES.IMAGES + imageId + '.jpg').then(() => {
               console.log(`Failed image ${imageId} removed`);
             });
           }
@@ -224,7 +222,7 @@ const useDownload = () => {
       dispatch(addedStatusMessage('Downloading Needed Images...'));
       if (!isEmpty(neededImageIds)) {
         // Check path first, if doesn't exist, then create
-        await useDevice.doesDeviceDirectoryExist(imagesDirectoryPath);
+        await useDevice.doesDeviceDirectoryExist(APP_DIRECTORIES.IMAGES);
         await Promise.all(
           neededImageIds.map(async imageId => {
             await downloadAndSaveImagesToDevice(imageId);
