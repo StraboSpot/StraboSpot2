@@ -16,6 +16,7 @@ import {toNumberFixedValue} from '../../../shared/Helpers';
 import * as themes from '../../../shared/styles.constants';
 import {addedStatusMessage, clearedStatusMessages, removedLastStatusMessage} from '../../home/home.slice';
 import {MAP_PROVIDERS} from '../maps.constants';
+import styles from './offlineMaps.styles';
 import useMapsOfflineHook from './useMapsOffline';
 
 const SaveMapsModal = (props) => {
@@ -223,28 +224,42 @@ const SaveMapsModal = (props) => {
         setShowComplete(false);
       }}
       visible={props.visible}
-      dialogStyle={{borderRadius: 30}}
+      dialogStyle={styles.dialogBoxStyle}
       dialogAnimation={new SlideAnimation({
         slideFrom: 'top',
       })}
     >
-      <DialogContent style={{height: 410}}>
-        <View style={styles.modalContainer}>
+      <DialogContent style={{height: 400, margin: 0}}>
+        <View style={styles.saveModalContainer}>
           <Header
             backgroundColor={themes.PRIMARY_BACKGROUND_COLOR}
-            containerStyle={{width: 400}}
+            containerStyle={{width: 300}}
             centerComponent={
               <View>
                 <View style={{justifyContent: 'center'}}>
-                  <Text style={{fontSize: 30}}>{currentMapName}</Text>
+                  <Text style={{fontSize: 25}}>{currentMapName}</Text>
                 </View>
+              </View>
+            }
+            rightComponent={
+              <View style={{position: 'absolute', bottom: 15, left: 30 }}>
+                <Button
+                  icon={{
+                    name: 'close',
+                    size: 25,
+                    color: 'black',
+                  }}
+                  type={'clear'}
+                  // containerStyle={{marginTop: 15}}
+                  onPress={props.close}
+                />
               </View>
             }
           />
           <View style={{flex: 1}}>
             <View style={{flex: 1}}>
               {showMainMenu && (
-                <View style={{paddingTop: 20, paddingBottom: 20}}>
+                <View style={{marginTop: 20}}>
                   <Text style={{textAlign: 'center'}}>
                     Select max zoom level to download:
                   </Text>
@@ -325,12 +340,7 @@ const SaveMapsModal = (props) => {
                     // buttonStyle={{borderRadius: 30, paddingRight: 50, paddingLeft: 50}}
                     title={`Download ${tileCount} Tiles`}
                   />
-                  <Button
-                    title={'Close'}
-                    type={'clear'}
-                    containerStyle={{marginTop: 15}}
-                    onPress={props.close}
-                  />
+
                 </View>
               )}
               {showComplete && (
@@ -356,26 +366,5 @@ const SaveMapsModal = (props) => {
     </Dialog>
   );
 };
-
-const styles = StyleSheet.create({
-  modalContainer: {
-    flex: 1,
-    width: 300,
-    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
-    borderRadius: 20,
-    alignItems: 'center',
-  },
-  buttonText: {
-    paddingLeft: 10,
-    paddingRight: 15,
-  },
-  picker: {
-    flex: 1,
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
-  },
-});
 
 export default SaveMapsModal;
