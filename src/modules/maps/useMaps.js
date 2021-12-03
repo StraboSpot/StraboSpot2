@@ -78,9 +78,7 @@ const useMaps = (mapRef) => {
           type: 'raster',
           source: map.id,
           minzoom: 0,
-          maxzoom: MAP_PROVIDERS[map.source].maxZoom,
         },
-
       ],
     };
     return customBaseMapStyleURL;

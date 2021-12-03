@@ -331,18 +331,8 @@ const useMapsOffline = () => {
           type: 'raster',
           source: 'raster-tiles',
           minzoom: 0,
-          maxzoom: MAP_PROVIDERS[source].maxZoom,
         }],
       };
-      // thisMap.id = basemap;
-      // thisMap.name = mapId ? getMapNameFromId(mapId) : mapName;
-      // thisMap.count = tileCount;
-      // thisMap.source = !mapId ? source : undefined;
-      // // thisMap.mapId = new Date().valueOf();
-      // thisMap.mapId = zipUID;
-      // thisMap.date = new Date().toLocaleString();
-      // thisMap.isOfflineMapVisible = false;
-      //
       newOfflineMapsData.push(thisMap);
 
       //loop over offlineMapsData and add any other maps (not current)
