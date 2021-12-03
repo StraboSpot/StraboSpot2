@@ -6,6 +6,9 @@ const type = Platform.OS === 'ios' ? 'screen' : 'window';
 const height = Dimensions.get(type).height;
 
 const commonStyles = StyleSheet.create({
+  alignItemsCenter: {
+    alignItems: 'center',
+  },
   buttonContainer: {
     paddingTop: 10,
   },

@@ -7,9 +7,23 @@ const styles = StyleSheet.create({
     padding: 10,
     marginTop: 10,
   },
-  dialogBoxStyle: {
+  button: {
     borderRadius: 30,
-    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
+    paddingRight: 50,
+    paddingLeft: 50,
+  },
+  closeButton: {
+    position: 'absolute',
+    right: 15,
+  },
+  dialogTitleContainer: {
+    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
+  },
+  dialogTitle: {
+    justifyContent: 'center',
+    flexDirection: 'row',
+    paddingTop: 30,
+    paddingBottom: 10,
   },
   modalButtonText: {
     paddingLeft: 10,
@@ -32,14 +46,6 @@ const styles = StyleSheet.create({
   itemSubTextStyle: {
     fontSize: 14,
   },
-  saveModalContainer: {
-    flex: 1,
-    width: 300,
-    // backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
-    // borderRadius: 20,
-    // alignItems: 'center',
-  },
-
   picker: {
     flex: 1,
     position: 'absolute',
@@ -47,6 +53,11 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
   },
+  saveModalContainer: {
+    flex: 1,
+    width: 300,
+  },
+
 });
 
 export default styles;

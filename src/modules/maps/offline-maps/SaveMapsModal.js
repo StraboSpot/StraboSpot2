@@ -12,6 +12,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {APP_DIRECTORIES} from '../../../services/device.constants';
 import useDeviceHook from '../../../services/useDevice';
 import useServerRequestHook from '../../../services/useServerRequests';
+import commonStyles from '../../../shared/common.styles';
 import {toNumberFixedValue} from '../../../shared/Helpers';
 import * as themes from '../../../shared/styles.constants';
 import {addedStatusMessage, clearedStatusMessages, removedLastStatusMessage} from '../../home/home.slice';
@@ -219,43 +220,35 @@ const SaveMapsModal = (props) => {
 
   return (
     <Dialog
+      dialogTitle={
+        <View style={styles.dialogTitleContainer}>
+          <View style={styles.dialogTitle}>
+            <Text style={{fontSize: 25}}>{currentMapName}</Text>
+          </View>
+          <View style={styles.closeButton}>
+            <Button
+              title={'Close'}
+              titleStyle={{fontSize: themes.MEDIUM_TEXT_SIZE}}
+              type={'clear'}
+              onPress={props.close}
+            />
+          </View>
+        </View>
+      }
       onDismiss={() => {
         setShowMainMenu(true);
         setShowComplete(false);
       }}
+      height={400}
       visible={props.visible}
-      dialogStyle={styles.dialogBoxStyle}
+      dialogStyle={commonStyles.dialogBox}
       dialogAnimation={new SlideAnimation({
         slideFrom: 'top',
       })}
     >
-      <DialogContent style={{height: 400, margin: 0}}>
+      <DialogContent
+        style={commonStyles.dialogContent}>
         <View style={styles.saveModalContainer}>
-          <Header
-            backgroundColor={themes.PRIMARY_BACKGROUND_COLOR}
-            containerStyle={{width: 300}}
-            centerComponent={
-              <View>
-                <View style={{justifyContent: 'center'}}>
-                  <Text style={{fontSize: 25}}>{currentMapName}</Text>
-                </View>
-              </View>
-            }
-            rightComponent={
-              <View style={{position: 'absolute', bottom: 15, left: 30 }}>
-                <Button
-                  icon={{
-                    name: 'close',
-                    size: 25,
-                    color: 'black',
-                  }}
-                  type={'clear'}
-                  // containerStyle={{marginTop: 15}}
-                  onPress={props.close}
-                />
-              </View>
-            }
-          />
           <View style={{flex: 1}}>
             <View style={{flex: 1}}>
               {showMainMenu && (
@@ -303,10 +296,11 @@ const SaveMapsModal = (props) => {
                 </View>
               )}
               {showLoadingMenu && (
-                <View style={{height: 40, justifyContent: 'center'}}>
+                <View style={commonStyles.alignItemsCenter}>
                   <Text style={{fontSize: 15}}>{statusMessages}</Text>
-                  {statusMessages.includes('Installing tiles...') && !statusMessages.includes('Downloading Tiles...') && (
-                    <View>
+                  {statusMessages.includes('Installing tiles...') && !statusMessages.includes(
+                    'Downloading Tiles...') && (
+                    <View style={commonStyles.alignItemsCenter}>
                       <Text style={{fontSize: 15}}>Installing: {tilesToInstall}</Text>
                       <Text style={{fontSize: 15}}>Already Installed: {installedTiles}</Text>
                     </View>
@@ -314,40 +308,35 @@ const SaveMapsModal = (props) => {
                 </View>
               )}
               {isError && (
-                <View style={{justifyContent: 'center'}}>
+                <View style={commonStyles.alignItemsCenter}>
                   <Text style={{fontSize: 20, textAlign: 'center'}}>Something Went Wrong!</Text>
                   <Text style={{fontSize: 20, paddingTop: 30, textAlign: 'center'}}>{errorMessage}</Text>
                 </View>
               )}
               {showComplete && (
-                <View style={{height: 40, justifyContent: 'center'}}>
-                  <Text style={{fontSize: 20}}>Success!</Text>
+                <View style={commonStyles.alignItemsCenter}>
+                  <Text style={{fontSize: 20, padding: 20}}>Success!</Text>
                 </View>
               )}
               {showComplete && (
-                <View style={{height: 40, justifyContent: 'center'}}>
+                <View style={commonStyles.alignItemsCenter}>
                   <Text>Your map has been successfully downloaded to this device.</Text>
                 </View>
               )}
             </View>
-            <View style={{flex: 2}}>
+            <View style={{flex: 1}}>
               {showMainMenu && (
-                <View>
-                  <Button
-                    onPress={() => saveMap()}
-                    type={'clear'}
-                    containerStyle={{marginTop: 15}}
-                    // buttonStyle={{borderRadius: 30, paddingRight: 50, paddingLeft: 50}}
-                    title={`Download ${tileCount} Tiles`}
-                  />
-
-                </View>
+                <Button
+                  onPress={() => saveMap()}
+                  type={'clear'}
+                  title={`Download ${tileCount} Tiles`}
+                />
               )}
               {showComplete && (
                 <Button
                   onPress={props.close}
                   type={'clear'}
-                  buttonStyle={{borderRadius: 30, paddingRight: 50, paddingLeft: 50}}
+                  buttonStyle={styles.button}
                   title={'Continue'}
                 />
               )}
@@ -355,7 +344,7 @@ const SaveMapsModal = (props) => {
                 <Button
                   onPress={props.close}
                   type={'clear'}
-                  buttonStyle={{borderRadius: 30, paddingRight: 50, paddingLeft: 50}}
+                  buttonStyle={styles.button}
                   title={'Close'}
                 />
               )}
