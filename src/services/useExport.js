@@ -169,7 +169,7 @@ const useExport = () => {
       dispatch(addedStatusMessage('Backing up Project to Device...'));
       dispatch(setLoadingStatus({view: 'modal', bool: true}));
       dispatch(setStatusMessagesModalVisible(true));
-      const hasBackupDir = await useDevice.doesDeviceBackupDirExist(APP_DIRECTORIES.BACKUP_DIR);
+      const hasBackupDir = await useDevice.doesDeviceBackupDirExist();
       console.log('Has Backup Dir?: ', hasBackupDir);
       if (hasBackupDir) await backupProjectToDevice(fileName);
       else {

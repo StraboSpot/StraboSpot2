@@ -16,7 +16,7 @@ export const APP_DIRECTORIES = {
   APP_DIR: appDirectory,
   BACKUP_DIR:  appDirectoryForDistributedBackups,
   SHARED_DOCUMENTS_PATH_IOS: sharedDocumentsPathIOS,
-  IMAGES: devicePath + imagesDirectory,
+  IMAGES: imagesDirectory,
   TILE_CACHE: tileCacheDirectory,
   TILES_DIRECTORY: tilesDirectory,
   TILE_HOST: tilehost,

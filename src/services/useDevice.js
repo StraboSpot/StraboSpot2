@@ -121,7 +121,7 @@ const useDevice = () => {
   };
 
   const makeDirectory = (directory) => {
-    return RNFS.mkdir(APP_DIRECTORIES.ROOT_PATH + directory)
+    return RNFS.mkdir(directory)
       .then(() => 'DIRECTORY HAS BEEN CREATED')
       .catch(err => {
         console.error('Unable to create directory', directory, 'ERROR:', err);
