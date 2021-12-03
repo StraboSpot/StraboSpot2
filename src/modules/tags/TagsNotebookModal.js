@@ -63,6 +63,7 @@ const TagsNotebookModal = (props) => {
     if (Platform.OS === 'android') return renderTagsModalContent();
     else return <DragAnimation>{renderTagsModalContent()}</DragAnimation>;
   }
+  else return null;
 };
 
 export default TagsNotebookModal;

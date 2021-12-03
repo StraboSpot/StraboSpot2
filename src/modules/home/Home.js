@@ -346,7 +346,7 @@ const Home = () => {
 
   const renderFloatingView = () => {
     const modal = MODALS.find(m => m.key === modalVisible);
-    if (modal && modal.modal_component) {
+    if (modal?.modal_component ) {
       const ModalDisplayed = modal.modal_component;
       if (modalVisible && !Object.keys(MODAL_KEYS.SHORTCUTS).find(s => s.key === modalVisible)) {
         return <ModalDisplayed modalKey={modal.key} onPress={modalHandler} goToCurrentLocation={goToCurrentLocation}/>;
