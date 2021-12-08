@@ -108,7 +108,8 @@ const RockPage = (props) => {
         updatedPetData = {...petDataFiltered, ...petDataToCopyFiltered, rock_type: updatedRockType};
       }
       if (spotToCopy.properties[groupKey] && spotToCopy.properties[groupKey][props.page.key]) {
-        const copyDataWithNewIds = spotToCopy.properties[groupKey][props.page.key].map(r => ({...r, id: getNewCopyId()}));
+        const copyDataWithNewIds = spotToCopy.properties[groupKey][props.page.key].map(
+          r => ({...r, id: getNewCopyId()}));
         updatedPetData[props.page.key] = [...rockData[props.page.key] || [], ...copyDataWithNewIds];
       }
       dispatch(editedSpotProperties({field: groupKey, value: updatedPetData}));
@@ -149,6 +150,10 @@ const RockPage = (props) => {
   };
 
   const renderCopySelect = () => {
+    // Sort reverse chronologically
+    const spotsWithRockTypeSorted = spotsWithRockType.sort(((a, b) => {
+      return new Date(b.properties.date) - new Date(a.properties.date);
+    }));
     const label = 'Copy ' + props.page.label + ' Data From:';
     return (
       <Formik
@@ -166,7 +171,7 @@ const RockPage = (props) => {
               name={'spot_id_for_pet_copy'}
               key={'spot_id_for_pet_copy'}
               label={label}
-              choices={spotsWithRockType.map(s => ({label: s.properties.name, value: s.properties.id}))}
+              choices={spotsWithRockTypeSorted.map(s => ({label: s.properties.name, value: s.properties.id}))}
               single={true}
             />
           </ListItem.Content>
