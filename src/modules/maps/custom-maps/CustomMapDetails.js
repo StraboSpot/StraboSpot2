@@ -18,6 +18,7 @@ import {
   setErrorMessagesModalVisible,
   setLoadingStatus,
   setStatusMessagesModalVisible,
+  setWarningModalVisible,
 } from '../../home/home.slice';
 import {setMenuSelectionPage, setSidePanelVisible} from '../../main-menu-panel/mainMenuPanel.slice';
 import SidePanelHeader from '../../main-menu-panel/sidePanel/SidePanelHeader';
@@ -100,6 +101,11 @@ const AddCustomMaps = () => {
 
   const selectMap = (source) => {
     console.log(source);
+    if (source === 'map_warper') {
+      dispatch(clearedStatusMessages());
+      dispatch(addedStatusMessage('Map Warper is temporarily unavailable. \n\nYou are able to save a map but it will not display. We have reached out to the author and hope for a resolution soon.'));
+      dispatch(setWarningModalVisible(true));
+    }
     setEditableCustomMapData(e => ({...e, source: source}));
   };
 
@@ -189,8 +195,8 @@ const AddCustomMaps = () => {
         renderItem={({item, index}) => renderCustomMapName(item, index)}
         ItemSeparatorComponent={FlatListItemSeparator}
       />
-      {editableCustomMapData?.source === '' &&
-      <Text style={customMapStyles.requiredMessage}>Map type is required</Text>}
+      {editableCustomMapData?.source === ''
+      && <Text style={customMapStyles.requiredMessage}>Map type is required</Text>}
     </View>
   );
 
