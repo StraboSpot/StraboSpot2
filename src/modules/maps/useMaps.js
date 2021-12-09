@@ -49,7 +49,7 @@ const useMaps = (mapRef) => {
   const buildStyleURL = map => {
     let tileURL;
     if (map.source === 'map_warper' || map.source === 'strabospot_mymaps') tileURL = map.url[0] + map.id + '/' + map.tilePath;
-    else tileURL = map.url[0] + map.id + map.tilePath;
+    else tileURL = map.url[0] + map.id + map.tilePath + '?access_token=' + map.key;
     const customBaseMapStyleURL = {
       source: map.source,
       id: map.id,
@@ -545,7 +545,7 @@ const useMaps = (mapRef) => {
         if (newBasemap) {
           newBasemap = buildStyleURL(newBasemap);
           console.log('Mapbox StyleURL for basemap', newBasemap);
-          if (isOnline.isInternetReachable && !newBasemap.bbox) {
+          if (isOnline.isInternetReachable && !newBasemap.bbox && (newBasemap.source === 'map_warper' || newBasemap.source === 'strabospot_mymaps')) {
             bbox = await getBboxCoords(newBasemap);
             newBasemap = {...newBasemap, bbox: bbox};
           }
