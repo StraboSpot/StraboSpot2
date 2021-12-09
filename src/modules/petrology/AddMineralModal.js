@@ -7,7 +7,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import {getNewId, isEmpty} from '../../shared/Helpers';
 import SaveButton from '../../shared/SaveButton';
-import {PRIMARY_TEXT_COLOR, SMALL_TEXT_SIZE} from '../../shared/styles.constants';
+import {PRIMARY_ACCENT_COLOR, PRIMARY_TEXT_COLOR, SMALL_TEXT_SIZE} from '../../shared/styles.constants';
 import DragAnimation from '../../shared/ui/DragAmination';
 import LittleSpacer from '../../shared/ui/LittleSpacer';
 import Modal from '../../shared/ui/modal/Modal';
@@ -106,6 +106,7 @@ const AddMineralModal = (props) => {
             buttons={['Look up by Rock Class', 'Look up in Glossary']}
             containerStyle={{height: 50, borderRadius: 10}}
             buttonStyle={{padding: 5}}
+            selectedButtonStyle={{backgroundColor: PRIMARY_ACCENT_COLOR}}
             textStyle={{color: PRIMARY_TEXT_COLOR, fontSize: SMALL_TEXT_SIZE, textAlign: 'center'}}
           />
         )}

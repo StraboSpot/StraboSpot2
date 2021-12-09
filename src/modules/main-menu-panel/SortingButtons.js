@@ -3,6 +3,7 @@ import React from 'react';
 import {ButtonGroup} from 'react-native-elements';
 import {connect, useDispatch, useSelector} from 'react-redux';
 
+import {PRIMARY_ACCENT_COLOR} from '../../shared/styles.constants';
 import {SORTED_VIEWS} from './mainMenu.constants';
 import {setSelectedButtonIndex, setSortedView} from './mainMenuPanel.slice';
 
@@ -35,6 +36,7 @@ const SortingButtons = (props) => {
         buttons={['Reverse\nChronological', 'Map Extent', 'Recent\n Views']}
         containerStyle={{height: 50}}
         buttonStyle={{padding: 5}}
+        selectedButtonStyle={{backgroundColor: PRIMARY_ACCENT_COLOR}}
         textStyle={{fontSize: 12}}
         onPress={(selected) => updateIndex(selected)}
       />

@@ -7,7 +7,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import {getNewId, isEmpty, toTitleCase} from '../../shared/Helpers';
 import SaveButton from '../../shared/SaveButton';
-import {PRIMARY_TEXT_COLOR} from '../../shared/styles.constants';
+import {PRIMARY_ACCENT_COLOR, PRIMARY_TEXT_COLOR} from '../../shared/styles.constants';
 import DragAnimation from '../../shared/ui/DragAmination';
 import Modal from '../../shared/ui/modal/Modal';
 import {Form, useFormHook} from '../form';
@@ -133,6 +133,7 @@ const AddRockModal = (props) => {
             buttons={Object.values(IGNEOUS_ROCK_CLASSES).map(v => toTitleCase(v))}
             containerStyle={{height: 40, borderRadius: 10}}
             buttonStyle={{padding: 5}}
+            selectedButtonStyle={{backgroundColor: PRIMARY_ACCENT_COLOR}}
             textStyle={{color: PRIMARY_TEXT_COLOR}}
           />
         )}

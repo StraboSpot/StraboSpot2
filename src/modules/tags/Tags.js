@@ -6,6 +6,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
+import {PRIMARY_ACCENT_COLOR} from '../../shared/styles.constants';
 import AddButton from '../../shared/ui/AddButton';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
@@ -136,6 +137,7 @@ const Tags = (props) => {
           buttons={['Categorized', 'Map Extent']}
           containerStyle={{height: 50}}
           buttonStyle={{padding: 5}}
+          selectedButtonStyle={{backgroundColor: PRIMARY_ACCENT_COLOR}}
           textStyle={{fontSize: 12}}
         />
       )}

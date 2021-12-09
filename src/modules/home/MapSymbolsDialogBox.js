@@ -8,6 +8,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import {isEmpty, toTitleCase} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
+import {PRIMARY_ACCENT_COLOR} from '../../shared/styles.constants';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import {setAllSymbolsToggled, setIsShowSpotLabelsOn, setSymbolsDisplayed, setTagTypeForColor} from '../maps/maps.slice';
 import styles from '../measurements/measurements.styles';
@@ -112,7 +113,7 @@ const MapSymbolsDialog = (props) => {
             selectedIndex={tagTypeForColor === 'geologic_unit' ? 0 : 1}
             buttons={['Geologic Unit', 'Conceptual']}
             containerStyle={styles.measurementDetailSwitches}
-            selectedButtonStyle={{backgroundColor: themes.PRIMARY_ACCENT_COLOR}}
+            selectedButtonStyle={{backgroundColor: PRIMARY_ACCENT_COLOR}}
             textStyle={{color: themes.PRIMARY_ACCENT_COLOR}}
           />
         )}
