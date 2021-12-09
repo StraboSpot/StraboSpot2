@@ -13,7 +13,9 @@ import Modal from '../../shared/ui/modal/Modal';
 import {Form, useFormHook} from '../form';
 import {setModalValues, setModalVisible} from '../home/home.slice';
 import {editedSpotProperties} from '../spots/spots.slice';
-import AddFold from './AddFold';
+import AddOther from './AddOther';
+import AddTensor from './AddTensor';
+import {AddFold, FoldGeometryChoices} from './fold';
 import {THREE_D_STRUCTURE_TYPES} from './threeDStructures.constants';
 
 const AddThreeDStructureModal = (props) => {
@@ -80,7 +82,7 @@ const AddThreeDStructureModal = (props) => {
           />
         )}
         {types[selectedTypeIndex] === THREE_D_STRUCTURE_TYPES.TENSOR && (
-          <AddFold
+          <AddTensor
             survey={survey}
             choices={choices}
             setChoicesViewKey={setChoicesViewKey}
@@ -89,7 +91,7 @@ const AddThreeDStructureModal = (props) => {
           />
         )}
         {types[selectedTypeIndex] === THREE_D_STRUCTURE_TYPES.OTHER && (
-          <AddFold
+          <AddOther
             survey={survey}
             choices={choices}
             setChoicesViewKey={setChoicesViewKey}
@@ -128,16 +130,21 @@ const AddThreeDStructureModal = (props) => {
             }
           />
         </React.Fragment>
-        {!choicesViewKey && <SaveButton title={'Save Fabric'} onPress={save3DStructure}/>}
+        {!choicesViewKey && <SaveButton title={'Save 3D Structure'} onPress={save3DStructure}/>}
       </Modal>
     );
   };
 
   const renderSubform = (formProps) => {
-    const relevantFields = useForm.getRelevantFields(survey, choicesViewKey);
-    return (
-      <Form {...{formName: ['fabrics', formRef.current?.values?.type], surveyFragment: relevantFields, ...formProps}}/>
-    );
+    if (choicesViewKey === 'fold_geometry') {
+      return <FoldGeometryChoices formProps={formProps} survey={survey} choices={choices}/>;
+    }
+    else {
+      const relevantFields = useForm.getRelevantFields(survey, choicesViewKey);
+      return (
+        <Form {...{formName: [groupKey, formRef.current?.values?.type], surveyFragment: relevantFields, ...formProps}}/>
+      );
+    }
   };
 
   const save3DStructure = async () => {

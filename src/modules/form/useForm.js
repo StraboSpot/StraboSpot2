@@ -22,6 +22,19 @@ const useForm = () => {
     else return {};
   };
 
+  // Get the fields relevant to a given group, including the group field itself
+  const getGroupFields = (survey, groupKey) => {
+    let inGroup = false;
+    let relevantGroupFields = survey.reduce((acc, f) => {
+      if (f.name === groupKey) inGroup = true;
+      if (inGroup && f.type !== 'end_group') return [...acc, f];
+      else if (f.type === 'end_group') inGroup = false;
+      return acc;
+    }, []);
+    // console.log('Relevant Group Fields', relevantGroupFields);
+    return relevantGroupFields;
+  };
+
   // Get a label for a given key with the option of giving a form category and name
   const getLabel = (key, [category, name]) => {
     if (key) {
@@ -160,6 +173,7 @@ const useForm = () => {
   return [{
     getChoices: getChoices,
     getChoicesByKey: getChoicesByKey,
+    getGroupFields: getGroupFields,
     getLabel: getLabel,
     getLabels: getLabels,
     getRelevantFields: getRelevantFields,

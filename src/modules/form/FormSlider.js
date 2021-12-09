@@ -1,5 +1,5 @@
 import React from 'react';
-import {View} from 'react-native';
+import {Text, View} from 'react-native';
 
 import {ListItem} from 'react-native-elements';
 
@@ -33,7 +33,17 @@ const FormSlider = (props) => {
             : props.hasNoneChoice ? ['None', ...choices.map(c => c.label)]
               : choices.map(c => c.label)}
           rotateLabels={props.hasRotatedLabels}
+          isHideLabels={props.isHideLabels}
         />
+        {props.showSliderValue && (
+          <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center'}}>
+            <Text>
+              {props.formProps.values[props.fieldKey]
+                ? choices.find(c => c.name === props.formProps.values[props.fieldKey]).label
+                : 'Undefined'}
+            </Text>
+          </View>
+        )}
       </View>
     </React.Fragment>
   );

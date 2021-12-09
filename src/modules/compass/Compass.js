@@ -14,7 +14,7 @@ import {
   View,
 } from 'react-native';
 
-import {ListItem} from 'react-native-elements';
+import {Button, ListItem} from 'react-native-elements';
 import {accelerometer, SensorTypes, setUpdateIntervalForType} from 'react-native-sensors';
 import Sound from 'react-native-sound';
 import {useDispatch, useSelector} from 'react-redux';
@@ -23,6 +23,7 @@ import commonStyles from '../../shared/common.styles';
 import {isEmpty, mod, roundToDecimalPlaces, toDegrees, toRadians} from '../../shared/Helpers';
 import modalStyle from '../../shared/ui/modal/modal.style';
 import Slider from '../../shared/ui/Slider';
+import {formStyles} from '../form';
 import {MODAL_KEYS} from '../home/home.constants';
 import {setModalVisible} from '../home/home.slice';
 import useMapsHook from '../maps/useMaps';
@@ -30,6 +31,7 @@ import useMeasurementsHook from '../measurements/useMeasurements';
 import {COMPASS_TOGGLE_BUTTONS} from './compass.constants';
 import {setCompassMeasurements, setCompassMeasurementTypes} from './compass.slice';
 import compassStyles from './compass.styles';
+import ManualMeasurement from './ManualMeasurement';
 
 const Compass = (props) => {
   const dispatch = useDispatch();
@@ -58,6 +60,7 @@ const Compass = (props) => {
   const [trendSpinValue] = useState(new Animated.Value(0));
   const [toggles, setToggles] = useState(compassMeasurementTypes);
   const [buttonSound, setButtonSound] = useState(null);
+  const [isManualMeasurement, setIsManualMeasurement] = useState(null);
 
   const [useMaps] = useMapsHook();
   const [useMeasurements] = useMeasurementsHook();
@@ -110,6 +113,11 @@ const Compass = (props) => {
     console.log('compassMeasurementTypes', compassMeasurementTypes);
     setToggles(compassMeasurementTypes);
   }, [compassMeasurementTypes]);
+
+  const addFoldMeasurement = (data) => {
+    props.setFoldMeasurements({...data, quality: sliderValue.toString()});
+    props.closeCompass();
+  };
 
   const calculateOrientation = () => {
     const x = accelerometerData.x;
@@ -190,8 +198,11 @@ const Compass = (props) => {
           else console.log('compass sound failed due to audio decoding errors');
         });
         console.log('Compass measurements', compassData, sliderValue);
-        dispatch(setCompassMeasurements(compassData.quality ? compassData
-          : {...compassData, quality: sliderValue.toString()}));
+        if (props.setFoldMeasurements) addFoldMeasurement(compassData);
+        else {
+          dispatch(setCompassMeasurements(compassData.quality ? compassData
+            : {...compassData, quality: sliderValue.toString()}));
+        }
       }
       else dispatch(setCompassMeasurements({...compassData, manual: true}));
     }
@@ -383,19 +394,43 @@ const Compass = (props) => {
     <React.Fragment>
       <View>
         <View style={compassStyles.compassContainer}>
-          <TouchableOpacity style={modalStyle.textContainer} onPress={() => grabMeasurements()}>
-            <Text style={[modalStyle.textStyle, {'paddingTop': 5}]}>
-              Tap compass to
-              {modalVisible === MODAL_KEYS.SHORTCUTS.MEASUREMENT && ' record a new \nmeasurement in a NEW Spot'}
-              {modalVisible === MODAL_KEYS.NOTEBOOK.MEASUREMENTS
-              && (isEmpty(selectedMeasurement) ? ' record \na new measurement \nor tap HERE to record manually'
-                : ' edit current measurement')
-              }
-            </Text>
-          </TouchableOpacity>
-          {renderCompass()}
+          {props.setFoldMeasurements && (
+            <React.Fragment>
+              <Button
+                buttonStyle={formStyles.formButtonSmall}
+                titleProps={formStyles.formButtonTitle}
+                title={isManualMeasurement ? 'Switch to Compass Input' : 'Switch to Manual Input'}
+                type={'clear'}
+                onPress={() => setIsManualMeasurement(!isManualMeasurement)}
+              />
+              {!isManualMeasurement && (
+                <Text style={[modalStyle.textStyle, {'paddingTop': 5}]}>Tap compass to record a new measurement</Text>
+              )}
+            </React.Fragment>
+          )}
+          {modalVisible === MODAL_KEYS.SHORTCUTS.MEASUREMENT || modalVisible === MODAL_KEYS.NOTEBOOK.MEASUREMENTS && (
+            <TouchableOpacity style={modalStyle.textContainer} onPress={() => grabMeasurements()}>
+              <Text style={[modalStyle.textStyle, {'paddingTop': 5}]}>
+                Tap compass to
+                {modalVisible === MODAL_KEYS.SHORTCUTS.MEASUREMENT && ' record a new \nmeasurement in a NEW Spot'}
+                {modalVisible === MODAL_KEYS.NOTEBOOK.MEASUREMENTS
+                  && (isEmpty(selectedMeasurement) ? ' record \na new measurement \nor tap HERE to record manually'
+                    : ' edit current measurement')
+                }
+              </Text>
+            </TouchableOpacity>
+          )}
+          {isManualMeasurement ? (
+              <ManualMeasurement
+                addFoldMeasurement={addFoldMeasurement}
+                setFoldMeasurements={props.setFoldMeasurements}
+                toggles={toggles}
+              />
+            )
+            : renderCompass()
+          }
         </View>
-        {renderToggles()}
+        {!props.setFoldMeasurements && renderToggles()}
         <View style={compassStyles.sliderContainer}>
           <Text style={compassStyles.sliderHeading}>Quality of Measurement</Text>
           {renderSlider()}

@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   sliderTextContainer: {
-    width: '100%',
+    flex: 1,
     justifyContent: 'space-between',
     flexDirection: 'row',
   },
