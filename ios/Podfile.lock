@@ -1,5 +1,6 @@
 PODS:
   - boost-for-react-native (1.63.0)
+  - CocoaAsyncSocket (7.6.5)
   - DoubleConversion (1.1.6)
   - FBLazyVector (0.64.1)
   - FBReactNativeSpec (0.64.1):
@@ -9,10 +10,73 @@ PODS:
     - React-Core (= 0.64.1)
     - React-jsi (= 0.64.1)
     - ReactCommon/turbomodule/core (= 0.64.1)
+  - Flipper (0.123.0):
+    - Flipper-Folly (~> 2.6)
+    - Flipper-RSocket (~> 1.4)
+  - Flipper-Boost-iOSX (1.76.0.1.11)
+  - Flipper-DoubleConversion (3.1.7)
+  - Flipper-Fmt (7.1.7)
+  - Flipper-Folly (2.6.10):
+    - Flipper-Boost-iOSX
+    - Flipper-DoubleConversion
+    - Flipper-Fmt (= 7.1.7)
+    - Flipper-Glog
+    - libevent (~> 2.1.12)
+    - OpenSSL-Universal (= 1.1.1100)
+  - Flipper-Glog (0.3.9)
+  - Flipper-PeerTalk (0.0.4)
+  - Flipper-RSocket (1.4.3):
+    - Flipper-Folly (~> 2.6)
+  - FlipperKit (0.123.0):
+    - FlipperKit/Core (= 0.123.0)
+  - FlipperKit/Core (0.123.0):
+    - Flipper (~> 0.123.0)
+    - FlipperKit/CppBridge
+    - FlipperKit/FBCxxFollyDynamicConvert
+    - FlipperKit/FBDefines
+    - FlipperKit/FKPortForwarding
+    - SocketRocket (~> 0.6.0)
+  - FlipperKit/CppBridge (0.123.0):
+    - Flipper (~> 0.123.0)
+  - FlipperKit/FBCxxFollyDynamicConvert (0.123.0):
+    - Flipper-Folly (~> 2.6)
+  - FlipperKit/FBDefines (0.123.0)
+  - FlipperKit/FKPortForwarding (0.123.0):
+    - CocoaAsyncSocket (~> 7.6)
+    - Flipper-PeerTalk (~> 0.0.4)
+  - FlipperKit/FlipperKitHighlightOverlay (0.123.0)
+  - FlipperKit/FlipperKitLayoutHelpers (0.123.0):
+    - FlipperKit/Core
+    - FlipperKit/FlipperKitHighlightOverlay
+    - FlipperKit/FlipperKitLayoutTextSearchable
+  - FlipperKit/FlipperKitLayoutIOSDescriptors (0.123.0):
+    - FlipperKit/Core
+    - FlipperKit/FlipperKitHighlightOverlay
+    - FlipperKit/FlipperKitLayoutHelpers
+    - YogaKit (~> 1.18)
+  - FlipperKit/FlipperKitLayoutPlugin (0.123.0):
+    - FlipperKit/Core
+    - FlipperKit/FlipperKitHighlightOverlay
+    - FlipperKit/FlipperKitLayoutHelpers
+    - FlipperKit/FlipperKitLayoutIOSDescriptors
+    - FlipperKit/FlipperKitLayoutTextSearchable
+    - YogaKit (~> 1.18)
+  - FlipperKit/FlipperKitLayoutTextSearchable (0.123.0)
+  - FlipperKit/FlipperKitNetworkPlugin (0.123.0):
+    - FlipperKit/Core
+  - FlipperKit/FlipperKitReactPlugin (0.123.0):
+    - FlipperKit/Core
+  - FlipperKit/FlipperKitUserDefaultsPlugin (0.123.0):
+    - FlipperKit/Core
+  - FlipperKit/SKIOSNetworkPlugin (0.123.0):
+    - FlipperKit/Core
+    - FlipperKit/FlipperKitNetworkPlugin
   - glog (0.3.5)
+  - libevent (2.1.12)
   - Mapbox-iOS-SDK (5.9.0):
     - MapboxMobileEvents (= 0.10.2)
   - MapboxMobileEvents (0.10.2)
+  - OpenSSL-Universal (1.1.1100)
   - RCT-Folly (2020.01.13.00):
     - boost-for-react-native
     - DoubleConversion
@@ -208,6 +272,8 @@ PODS:
   - React-jsinspector (0.64.1)
   - react-native-document-picker (5.0.4):
     - React-Core
+  - react-native-flipper (0.123.0):
+    - React-Core
   - react-native-geolocation (2.0.2):
     - React
   - react-native-get-random-values (1.7.0):
@@ -318,7 +384,7 @@ PODS:
     - React-Core
   - RNPDF (0.11.1):
     - React
-  - RNReanimated (2.2.0):
+  - RNReanimated (2.2.2):
     - DoubleConversion
     - FBLazyVector
     - FBReactNativeSpec
@@ -374,13 +440,35 @@ PODS:
   - Sentry (7.3.0):
     - Sentry/Core (= 7.3.0)
   - Sentry/Core (7.3.0)
+  - SocketRocket (0.6.0)
   - SSZipArchive (2.2.3)
   - Yoga (1.14.0)
+  - YogaKit (1.18.1):
+    - Yoga (~> 1.14)
 
 DEPENDENCIES:
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
   - FBReactNativeSpec (from `../node_modules/react-native/React/FBReactNativeSpec`)
+  - Flipper (= 0.123.0)
+  - Flipper-DoubleConversion (= 3.1.7)
+  - Flipper-Folly (= 2.6.10)
+  - Flipper-Glog (= 0.3.9)
+  - Flipper-PeerTalk (= 0.0.4)
+  - Flipper-RSocket (= 1.4.3)
+  - FlipperKit (= 0.123.0)
+  - FlipperKit/Core (= 0.123.0)
+  - FlipperKit/CppBridge (= 0.123.0)
+  - FlipperKit/FBCxxFollyDynamicConvert (= 0.123.0)
+  - FlipperKit/FBDefines (= 0.123.0)
+  - FlipperKit/FKPortForwarding (= 0.123.0)
+  - FlipperKit/FlipperKitHighlightOverlay (= 0.123.0)
+  - FlipperKit/FlipperKitLayoutPlugin (= 0.123.0)
+  - FlipperKit/FlipperKitLayoutTextSearchable (= 0.123.0)
+  - FlipperKit/FlipperKitNetworkPlugin (= 0.123.0)
+  - FlipperKit/FlipperKitReactPlugin (= 0.123.0)
+  - FlipperKit/FlipperKitUserDefaultsPlugin (= 0.123.0)
+  - FlipperKit/SKIOSNetworkPlugin (= 0.123.0)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
   - RCT-Folly (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCTRequired (from `../node_modules/react-native/Libraries/RCTRequired`)
@@ -396,6 +484,7 @@ DEPENDENCIES:
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - react-native-document-picker (from `../node_modules/react-native-document-picker`)
+  - react-native-flipper (from `../node_modules/react-native-flipper`)
   - "react-native-geolocation (from `../node_modules/@react-native-community/geolocation`)"
   - react-native-get-random-values (from `../node_modules/react-native-get-random-values`)
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
@@ -438,10 +527,24 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - boost-for-react-native
+    - CocoaAsyncSocket
+    - Flipper
+    - Flipper-Boost-iOSX
+    - Flipper-DoubleConversion
+    - Flipper-Fmt
+    - Flipper-Folly
+    - Flipper-Glog
+    - Flipper-PeerTalk
+    - Flipper-RSocket
+    - FlipperKit
+    - libevent
     - Mapbox-iOS-SDK
     - MapboxMobileEvents
+    - OpenSSL-Universal
     - Sentry
+    - SocketRocket
     - SSZipArchive
+    - YogaKit
 
 EXTERNAL SOURCES:
   DoubleConversion:
@@ -476,6 +579,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
   react-native-document-picker:
     :path: "../node_modules/react-native-document-picker"
+  react-native-flipper:
+    :path: "../node_modules/react-native-flipper"
   react-native-geolocation:
     :path: "../node_modules/@react-native-community/geolocation"
   react-native-get-random-values:
@@ -555,12 +660,24 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   boost-for-react-native: 39c7adb57c4e60d6c5479dd8623128eb5b3f0f2c
+  CocoaAsyncSocket: 065fd1e645c7abab64f7a6a2007a48038fdc6a99
   DoubleConversion: cf9b38bf0b2d048436d9a82ad2abe1404f11e7de
   FBLazyVector: 7b423f9e248eae65987838148c36eec1dbfe0b53
   FBReactNativeSpec: ae2e5d4100a678c92ad0dc3f4277c6b2404a69b3
+  Flipper: 04d9d2e38f410e3a5153178115913208aade7cbe
+  Flipper-Boost-iOSX: fd1e2b8cbef7e662a122412d7ac5f5bea715403c
+  Flipper-DoubleConversion: 57ffbe81ef95306cc9e69c4aa3aeeeeb58a6a28c
+  Flipper-Fmt: 60cbdd92fc254826e61d669a5d87ef7015396a9b
+  Flipper-Folly: 584845625005ff068a6ebf41f857f468decd26b3
+  Flipper-Glog: 05579840e2750ec907ee2f81544f41ad76a7cae4
+  Flipper-PeerTalk: 116d8f857dc6ef55c7a5a75ea3ceaafe878aadc9
+  Flipper-RSocket: d9d9ade67cbecf6ac10730304bf5607266dd2541
+  FlipperKit: 6ff8327c15058e9e220f27f150431a50cd41c4cf
   glog: 73c2498ac6884b13ede40eda8228cb1eee9d9d62
+  libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   Mapbox-iOS-SDK: a5915700ec84bc1a7f8b3e746d474789e35b7956
   MapboxMobileEvents: 2bc0ca2eedb627b73cf403258dce2b2fa98074a6
+  OpenSSL-Universal: ebc357f1e6bc71fa463ccb2fe676756aff50e88c
   RCT-Folly: ec7a233ccc97cc556cf7237f0db1ff65b986f27c
   RCTRequired: ec2ebc96b7bfba3ca5c32740f5a0c6a014a274d2
   RCTTypeSafety: 22567f31e67c3e088c7ac23ea46ab6d4779c0ea5
@@ -573,6 +690,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 124e8f99992490d0d13e0649d950d3e1aae06fe9
   React-jsinspector: 500a59626037be5b3b3d89c5151bc3baa9abf1a9
   react-native-document-picker: 1a7518132d4a06b67f459be9bb1464a567d2b3b4
+  react-native-flipper: 33bba1cad647f4d56403012993f201e10518b78c
   react-native-geolocation: c956aeb136625c23e0dce0467664af2c437888c9
   react-native-get-random-values: 237bffb1c7e05fb142092681531810a29ba53015
   react-native-image-picker: a6e56460d34905c849ada551db30897dc7f3d535
@@ -602,7 +720,7 @@ SPEC CHECKSUMS:
   RNFS: 3ab21fa6c56d65566d1fb26c2228e2b6132e5e32
   RNGestureHandler: a479ebd5ed4221a810967000735517df0d2db211
   RNPDF: f3632664e220ca9a095965fcada03c437aa5c95a
-  RNReanimated: 9c13c86454bfd54dab7505c1a054470bfecd2563
+  RNReanimated: 241c586663f44f19a53883c63375fdd041253960
   RNScreens: eb0dfb2d6b21d2d7f980ad46b14eb306d2f1062e
   RNSensors: 7baffb62308e167902b28e5f74e072804bfc1ad1
   RNSentry: 49abc89b0190b4c8afe0fa5d065f98e36cb53233
@@ -611,9 +729,11 @@ SPEC CHECKSUMS:
   RNVectorIcons: 31cebfcf94e8cf8686eb5303ae0357da64d7a5a4
   RNZipArchive: 924d63f15f2838837f8379ee6e9955d8ff4736c4
   Sentry: 9a4e621430e2dae4477d791f2f7e905720b6efbf
+  SocketRocket: fccef3f9c5cedea1353a9ef6ada904fde10d6608
   SSZipArchive: 62d4947b08730e4cda640473b0066d209ff033c9
   Yoga: a7de31c64fe738607e7a3803e3f591a4b1df7393
+  YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: ba5b1db13768844701423e80f188b2f0cffb0106
+PODFILE CHECKSUM: e3a64bcdbdd00af20e02cce9a66b18ee75a9f168
 
 COCOAPODS: 1.10.2

@@ -4,25 +4,34 @@ require_relative '../node_modules/@react-native-community/cli-platform-ios/nativ
 
 platform :ios, '12.1'
 
+# used for automatic bumping
+flipperkit_version = '0.123.0'
+
 target 'StraboSpot2' do
   config = use_native_modules!
     inherit! :complete
 
-  use_react_native!(:path => config["reactNativePath"])
-  ReactNativeMapboxGLIOSVersion = '~> 6.1'
+use_react_native!(
+   :path => config[:reactNativePath],
+   # to enable hermes on iOS, change `false` to `true` and then install pods
+   :hermes_enabled => false
+)
+ReactNativeMapboxGLIOSVersion = '~> 6.1'
 
   # Enables Flipper.
   #
   # Note that if you have use_frameworks! enabled, Flipper will not work and
   # you should disable these next few lines.
-#   use_flipper!({ 'Flipper-Folly' => '2.6', 'Flipper' => '0.91.2' })
+  use_flipper!({ 'Flipper' => flipperkit_version, 'Flipper-Folly' => '2.6.10', 'Flipper-RSocket' => '1.4.3', 'Flipper-DoubleConversion' => '3.1.7', 'Flipper-Glog' => '0.3.9', 'Flipper-PeerTalk' => '0.0.4' })
 #  post_install do |installer|
 #     flipper_post_install(installer)
 #   end
  pod 'RNPDF', :path => '../node_modules/react-native-view-pdf'
 
  post_install do |installer|
-#      flipper_post_install(installer)
+     flipper_post_install(installer)
+ react_native_post_install(installer)
+#     __apply_Xcode_12_5_M1_post_install_workaround(installer)
     $RNMBGL.post_install(installer)
   end
 end
