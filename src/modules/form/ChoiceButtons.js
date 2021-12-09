@@ -3,7 +3,7 @@ import {View} from 'react-native';
 
 import {Button} from 'react-native-elements';
 
-import {REACT_NATIVE_ELEMENTS_BLUE, SECONDARY_BACKGROUND_COLOR} from '../../shared/styles.constants';
+import {PRIMARY_ACCENT_COLOR, SECONDARY_BACKGROUND_COLOR} from '../../shared/styles.constants';
 import {formStyles, useFormHook} from '../form';
 
 const ChoiceButtons = (props) => {
@@ -21,7 +21,7 @@ const ChoiceButtons = (props) => {
             containerStyle={formStyles.halfWidthButtonContainer}
             buttonStyle={[buttonStyle, {
               backgroundColor: props.formProps?.values[props.choiceFieldKey]?.includes(choice.name)
-                ? REACT_NATIVE_ELEMENTS_BLUE
+                ? PRIMARY_ACCENT_COLOR
                 : SECONDARY_BACKGROUND_COLOR,
             }]}
             title={choice.label}

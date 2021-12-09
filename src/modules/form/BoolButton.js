@@ -2,7 +2,7 @@ import React from 'react';
 
 import {Button} from 'react-native-elements';
 
-import {REACT_NATIVE_ELEMENTS_BLUE, SECONDARY_BACKGROUND_COLOR} from '../../shared/styles.constants';
+import {PRIMARY_ACCENT_COLOR, SECONDARY_BACKGROUND_COLOR} from '../../shared/styles.constants';
 import {formStyles, useFormHook} from '../form';
 
 const BoolButton = (props) => {
@@ -12,7 +12,7 @@ const BoolButton = (props) => {
     <Button
       containerStyle={formStyles.fullWidthButtonContainer}
       buttonStyle={[formStyles.formButtonSmall, {
-        backgroundColor: props.formProps?.values[props.fieldKey] === props.selectedKey ? REACT_NATIVE_ELEMENTS_BLUE
+        backgroundColor: props.formProps?.values[props.fieldKey] === props.selectedKey ? PRIMARY_ACCENT_COLOR
           : SECONDARY_BACKGROUND_COLOR,
       }]}
       titleProps={{

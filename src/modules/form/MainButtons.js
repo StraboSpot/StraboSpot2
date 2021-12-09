@@ -4,7 +4,7 @@ import {Text, View} from 'react-native';
 import {Button} from 'react-native-elements';
 
 import {truncateText} from '../../shared/Helpers';
-import {REACT_NATIVE_ELEMENTS_BLUE, SECONDARY_BACKGROUND_COLOR} from '../../shared/styles.constants';
+import {PRIMARY_ACCENT_COLOR, SECONDARY_BACKGROUND_COLOR} from '../../shared/styles.constants';
 import {formStyles, useFormHook} from '../form';
 
 const MainButtons = (props) => {
@@ -32,7 +32,7 @@ const MainButtons = (props) => {
           <Button
             containerStyle={props.mainKeys.length === 1 ? formStyles.fullWidthButtonContainer : formStyles.halfWidthButtonContainer}
             buttonStyle={[formStyles.formButtonLarge, {
-              backgroundColor: props.formProps?.values[k] ? REACT_NATIVE_ELEMENTS_BLUE : SECONDARY_BACKGROUND_COLOR,
+              backgroundColor: props.formProps?.values[k] ? PRIMARY_ACCENT_COLOR : SECONDARY_BACKGROUND_COLOR,
             }]}
             title={() => mainButttonsText(k)}
             type={'outline'}

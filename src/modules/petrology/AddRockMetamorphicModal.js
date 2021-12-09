@@ -6,7 +6,7 @@ import {Overlay} from 'react-native-elements/dist/overlay/Overlay';
 
 import {isEmpty} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
-import {REACT_NATIVE_ELEMENTS_BLUE, SECONDARY_BACKGROUND_COLOR} from '../../shared/styles.constants';
+import {PRIMARY_ACCENT_COLOR, SECONDARY_BACKGROUND_COLOR} from '../../shared/styles.constants';
 import modalStyle from '../../shared/ui/modal/modal.style';
 import {Form, formStyles, MainButtons, useFormHook} from '../form';
 
@@ -73,7 +73,7 @@ const AddRockMetamorphicModal = (props) => {
         containerStyle={{padding: 2.5}}
         buttonStyle={[formStyles.formButtonLarge, {
           backgroundColor: props.formProps?.values?.facies?.includes(faciesProps.faciesKey)
-            ? REACT_NATIVE_ELEMENTS_BLUE : SECONDARY_BACKGROUND_COLOR,
+            ? PRIMARY_ACCENT_COLOR : SECONDARY_BACKGROUND_COLOR,
           height: '100%',
         }]}
         type={'outline'}
