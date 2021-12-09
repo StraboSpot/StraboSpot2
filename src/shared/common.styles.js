@@ -41,8 +41,11 @@ const commonStyles = StyleSheet.create({
     height: 40,
     backgroundColor: 'white',
   },
-  dialogWarning: {
+  dialogError: {
     backgroundColor: 'red',
+  },
+  dialogWarning: {
+    backgroundColor: 'yellow',
   },
   dialogText: {
     paddingTop: 10,

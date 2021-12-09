@@ -127,7 +127,7 @@ const UserProfile = (props) => {
       <StandardModal
         visible={isLogoutModalVisible}
         dialogTitle={'Log Out?'}
-        dialogTitleStyle={commonStyles.dialogWarning}>
+        dialogTitleStyle={commonStyles.dialogError}>
         <Text style={commonStyles.dialogConfirmText}>
           Logging out will
           <Text style={commonStyles.dialogContentImportantText}> ERASE </Text>

@@ -69,7 +69,7 @@ const ActiveProjectPanel = () => {
     return (
       <StandardModal
         visible={isWarningModalVisible}
-        dialogTitleStyle={commonStyles.dialogWarning}
+        dialogTitleStyle={commonStyles.dialogError}
         dialogTitle={'Warning!'}
       >
         <View style={[commonStyles.dialogContent]}>
