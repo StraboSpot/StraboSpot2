@@ -18,6 +18,7 @@ const initialHomeState = {
   isBackupOverwriteModalVisible: false,
   isStatusMessagesModalVisible: false,
   isErrorMessagesModalVisible: false,
+  isWarningMessagesModalVisible: false,
   isProjectLoadSelectionModalVisible: false,
   isOfflineMapModalVisible: false,
   isInfoModalVisible: false,
@@ -101,6 +102,9 @@ const homeSlice = createSlice({
     setUploadModalVisible(state, action) {
       state.isUploadModalVisible = action.payload;
     },
+    setWarningModalVisible(state, action) {
+      state.isWarningMessagesModalVisible = action.payload;
+    }
   },
 });
 
@@ -125,6 +129,7 @@ export const {
   setStatusMessagesModalVisible,
   shortcutSwitchPosition,
   setUploadModalVisible,
+  setWarningModalVisible,
 } = homeSlice.actions;
 
 export default homeSlice.reducer;

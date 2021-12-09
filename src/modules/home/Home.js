@@ -42,13 +42,14 @@ import {TagAddRemoveFeatures, TagAddRemoveSpots, TagDetailSidePanel} from '../ta
 import UserProfile from '../user/UserProfilePage';
 import BackupModal from './home-modals/BackupModal';
 import BackUpOverwriteModal from './home-modals/BackUpOverwriteModal';
+import ErrorModal from './home-modals/ErrorModal';
 import InfoModal from './home-modals/InfoModal';
 import InitialProjectLoadModal from './home-modals/InitialProjectLoadModal';
 import StatusModal from './home-modals/StatusModal';
 import UploadModal from './home-modals/UploadModal';
+import WarningModal from './home-modals/WarningModal';
 import {MODAL_KEYS, MODALS} from './home.constants';
 import {
-  setErrorMessagesModalVisible,
   setImageModalVisible,
   setLoadingStatus,
   setMainMenuPanelVisible,
@@ -56,7 +57,6 @@ import {
   setOfflineMapsModalVisible,
   setProjectLoadComplete,
   setProjectLoadSelectionModalVisible,
-  setStatusMessagesModalVisible,
 } from './home.slice';
 import homeStyles from './home.style';
 import LeftSideButtons from './LeftSideButtons';
@@ -86,7 +86,6 @@ const Home = () => {
   const dispatch = useDispatch();
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const customMaps = useSelector(state => state.map.customMaps);
-  const isErrorMessagesModalVisible = useSelector(state => state.home.isErrorMessagesModalVisible);
   const isHomeLoading = useSelector(state => state.home.loading.home);
   const isImageModalVisible = useSelector(state => state.home.isImageModalVisible);
   const isMainMenuPanelVisible = useSelector(state => state.home.isMainMenuPanelVisible);
@@ -353,30 +352,6 @@ const Home = () => {
       }
       else return <ModalDisplayed modalKey={modal.key} onPress={modalHandler}/>;
     }
-  };
-
-  const renderErrorMessageDialogBox = () => {
-    return (
-      <StatusDialogBox
-        dialogTitle={'Error...'}
-        style={commonStyles.dialogWarning}
-        visible={isErrorMessagesModalVisible}
-      >
-        <Text style={commonStyles.dialogStatusMessageText}>{statusMessages.join('\n')}</Text>
-        <Button
-          title={'OK'}
-          type={'clear'}
-          onPress={() => {
-            if (openMenu === 'Active Project') {
-              dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
-              setOpenMenu('');
-              dispatch(setStatusMessagesModalVisible(false));
-            }
-            dispatch(setErrorMessagesModalVisible(false));
-          }}
-        />
-      </StatusDialogBox>
-    );
   };
 
   const renderOfflineMapViewLabel = () => {
@@ -656,8 +631,10 @@ const Home = () => {
         visible={isProjectLoadSelectionModalVisible}
         closeModal={() => closeInitialProjectLoadModal()}
       />
+      <ErrorModal />
       <StatusModal openUrl={openStraboSpotURL}/>
       <UploadModal toggleHomeDrawer={() => toggleHomeDrawerButton()}/>
+      <WarningModal />
       {/*------------------------*/}
       {isHomeLoading && <LoadingSpinner/>}
       {renderNotebookPanel()}
@@ -666,7 +643,6 @@ const Home = () => {
       {renderSaveAndCancelDrawButtons()}
       {isMainMenuPanelVisible && toggleSidePanel()}
       {modalVisible && renderFloatingView()}
-      {renderErrorMessageDialogBox()}
       {isOfflineMapModalVisible && renderSaveMapsModal()}
     </View>
   );
