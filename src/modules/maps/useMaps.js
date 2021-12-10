@@ -41,6 +41,7 @@ const useMaps = (mapRef) => {
   const selectedSymbols = useSelector(state => state.map.symbolsOn) || [];
   const isAllSymbolsOn = useSelector(state => state.map.isAllSymbolsOn);
   const spots = useSelector(state => state.spot.spots);
+  const userMapboxToken = useSelector(state => state.user.mapboxToken);
 
   useEffect(() => {
     console.log('isMainMenuPanelVisible:', isMainMenuPanelVisible);
@@ -88,7 +89,7 @@ const useMaps = (mapRef) => {
     let tileUrl = basemap.url[0];
     if (basemap.source === 'osm') tileUrl = tileUrl + basemap.tilePath;
     if (basemap.source === 'map_warper' || basemap.source === 'strabospot_mymaps') tileUrl = tileUrl + basemap.id + '/' + basemap.tilePath;
-    else tileUrl = tileUrl + basemap.id + basemap.tilePath + (basemap.key ? '?access_token=' + basemap.key : '');
+    else tileUrl = tileUrl + basemap.id + basemap.tilePath + '?access_token=' + basemap.key;
     // console.log('TILE URL', tileUrl);
     return tileUrl;
   };
@@ -188,16 +189,20 @@ const useMaps = (mapRef) => {
   };
 
   const getBboxCoords = async (map) => {
-    let bbox;
-    if (map.source === 'map_warper') {
-      const mapwarperData = await useServerRequests.getMapWarperBbox(map.id);
-      bbox = mapwarperData.data.attributes.bbox;
+    try {
+      if (map.source === 'map_warper') {
+        const mapwarperData = await useServerRequests.getMapWarperBbox(map.id);
+        return mapwarperData.data.attributes.bbox;
+      }
+      else if (map.source === 'strabospot_mymaps') {
+        const myMapsbbox = await useServerRequests.getMyMapsBbox(map.id);
+        if (!isEmpty(myMapsbbox)) return myMapsbbox.data.bbox;
+      }
+      return;
     }
-    else if (map.source === 'strabospot_mymaps') {
-      const myMapsbbox = await useServerRequests.getMyMapsBbox(map.id);
-      if (!isEmpty(myMapsbbox)) bbox = myMapsbbox.data.bbox;
+    catch (err) {
+      console.error('Error', err);
     }
-    return bbox;
   };
 
   const getClosestSpotDistanceAndIndex = (distancesFromSpot) => {
@@ -491,13 +496,13 @@ const useMaps = (mapRef) => {
   const saveCustomMap = async (map) => {
     let mapId = map.id;
     let customMap = {};
+    let bbox = '';
     // Pull out mapbox styles map id
     if (map.source === 'mapbox_styles' && map.id.includes('mapbox://styles/')) {
       mapId = map.id.split('/').slice(3).join('/');
     }
     const providerInfo = getProviderInfo(map.source);
-    const bbox = await getBboxCoords(map);
-    customMap = {...map, ...providerInfo, id: mapId, key: map.accessToken, source: map.source, bbox: bbox};
+    customMap = {...map, ...providerInfo, id: mapId, key: userMapboxToken, source: map.source};
     const tileUrl = buildTileUrl(customMap);
     let testTileUrl = tileUrl.replace(/({z}\/{x}\/{y})/, '0/0/0');
     if (map.source === 'map_warper') testTileUrl = 'https://strabospot.org/map_warper_check/' + map.id;
@@ -505,19 +510,24 @@ const useMaps = (mapRef) => {
     console.log('Custom Map:', customMap, 'Test Tile URL:', testTileUrl);
 
     const testUrlResponse = await useServerRequests.testCustomMapUrl(testTileUrl);
+    console.log('RES', testUrlResponse);
     if (testUrlResponse) {
+      if (!customMap.bbox) bbox = await getBboxCoords(map);
       if (map.overlay && map.id === currentBasemap.id) {
         console.log(('Setting Basemap to Mapbox Topo...'));
         setBasemap(null);
       }
       if (project.other_maps) {
         const otherMapsInProject = project.other_maps;
-        dispatch(updatedProject({field: 'other_maps', value: [...otherMapsInProject, customMap]}));
+        if (customMap.source !== 'mapbox_styles') delete customMap.key;
+        dispatch(updatedProject(
+          {field: 'other_maps', value: [...otherMapsInProject,  customMap]}));
       }
       else dispatch(updatedProject({field: 'other_maps', value: [map]}));
-      dispatch(addedCustomMap(customMap));
+      dispatch(addedCustomMap(bbox ? {...customMap, bbox: bbox} : customMap));
       return customMap;
     }
+    else throw (customMap.id);
   };
 
   // Create a point feature at the current location

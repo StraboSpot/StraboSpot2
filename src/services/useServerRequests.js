@@ -108,9 +108,7 @@ const useServerRequests = () => {
 
   const getMyMapsBbox = async (mapId) => {
     const response = await fetch(straboMyMapsApi + mapId);
-    const responseJson = await response.json();
-    console.log('MY MAPS RES', responseJson);
-    return responseJson;
+    return handleResponse(response);
   };
 
   const getProfileImage = async (encodedLogin) => {
@@ -160,13 +158,18 @@ const useServerRequests = () => {
 
   const handleError = async (response) => {
     console.log('RESPONSE', response);
+    const responseJSON = await response.json();
+    console.log('RESPONSEJSON', responseJSON);
     if (response.status === 401) {
       const msg401 = 'This server could not verify that you are authorized to access the document requested. Either '
         + 'you supplied the wrong credentials (e.g., bad password), or your browser doesn\'t understand how to supply '
         + 'the credentials required.';
       return Promise.reject(msg401);
     }
-    else if (response.status === 404) return Promise.reject('The requested URL was not found on this server.');
+    else if (response.status === 404) {
+      if (responseJSON.error) return Promise.reject(responseJSON.error);
+      return Promise.reject('The requested URL was not found on this server.');
+    }
     else {
       try {
         const errorMessage = JSON.parse(await response.text());

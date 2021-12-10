@@ -49,33 +49,34 @@ const AddCustomMaps = () => {
         overlay: false,
         id: '',
         source: '',
-        accessToken: MBAccessToken,
+        key: MBAccessToken,
       });
     }
   }, [customMapToEdit]);
 
   const addMap = async () => {
-    dispatch(clearedStatusMessages());
-    dispatch(setStatusMessagesModalVisible(true));
-    dispatch(setLoadingStatus({view: 'modal', bool: true}));
-    dispatch(addedStatusMessage('Saving Custom Map...'));
-    const customMap = await useMaps.saveCustomMap(editableCustomMapData);
-    console.log(customMap);
-    if (customMap !== undefined) {
-      dispatch(setSidePanelVisible({view: null, bool: false}));
-      dispatch(setMenuSelectionPage({name: undefined}));
-      dispatch(removedLastStatusMessage());
-      dispatch(setLoadingStatus({view: 'modal', bool: false}));
-      dispatch(addedStatusMessage('Success!'));
-      dispatch(addedStatusMessage(`\nMap ${customMap.title} has been added or updated!`));
-    }
-    else {
-      dispatch(setLoadingStatus({view: 'modal', bool: false}));
-      dispatch(setStatusMessagesModalVisible(false));
+    try {
       dispatch(clearedStatusMessages());
-      dispatch(addedStatusMessage(
-        'Something Went Wrong \n\nCheck the id and map type of the map you are trying to save.'));
-      dispatch(setErrorMessagesModalVisible(true));
+      dispatch(setStatusMessagesModalVisible(true));
+      dispatch(setLoadingStatus({view: 'modal', bool: true}));
+      dispatch(addedStatusMessage('Saving Custom Map...'));
+      const customMap = await useMaps.saveCustomMap(editableCustomMapData);
+      console.log(customMap);
+        dispatch(setSidePanelVisible({view: null, bool: false}));
+        dispatch(setMenuSelectionPage({name: undefined}));
+        dispatch(removedLastStatusMessage());
+        dispatch(setLoadingStatus({view: 'modal', bool: false}));
+        dispatch(addedStatusMessage('Success!'));
+        dispatch(addedStatusMessage(`\nMap ${customMap.title} has been added or updated!`));
+    }
+    catch (err) {
+      console.error('Error saving custom map', err);
+        dispatch(setLoadingStatus({view: 'modal', bool: false}));
+        dispatch(setStatusMessagesModalVisible(false));
+        dispatch(clearedStatusMessages());
+        dispatch(addedStatusMessage(
+          `Something Went Wrong \n\nCheck the id:\n\n ${err} \n\n and/or the map type you are trying to save.`));
+        dispatch(setErrorMessagesModalVisible(true));
     }
   };
 
