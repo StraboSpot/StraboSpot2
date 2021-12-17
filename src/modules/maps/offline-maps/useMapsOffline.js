@@ -358,8 +358,8 @@ const useMapsOffline = () => {
   const setOfflineMapTiles = async (map) => {
     let tempCurrentBasemap;
     console.log('Switch To Offline Map: ', map);
-    const tilePath = await buildOfflineTilePath(map);
-    const mapStyleURL = await useMaps.buildStyleURL({source: map.source, id: map.id, tilePath: tilePath, url: [url]});
+    const tilePath = buildOfflineTilePath(map);
+    const mapStyleURL = useMaps.buildStyleURL({source: map.source, id: map.id, tilePath: tilePath, url: [url]});
     console.log('tempCurrentBasemap: ', mapStyleURL);
     dispatch(setCurrentBasemap(mapStyleURL));
   };

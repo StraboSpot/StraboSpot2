@@ -47,7 +47,7 @@ const ManageCustomMaps = (props) => {
           color={PRIMARY_ACCENT_COLOR}
           onPress={async () => {
             const baseMap = await useMaps.setBasemap(item.id);
-            setTimeout(() => props.zoomToCustomMap(baseMap.bbox), 1000);
+            baseMap.bbox && setTimeout(() => props.zoomToCustomMap(baseMap.bbox), 1000);
           }}
         />
         <ListItem.Chevron/>

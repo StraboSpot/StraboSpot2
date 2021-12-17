@@ -50,7 +50,7 @@ const useMaps = (mapRef) => {
   const buildStyleURL = map => {
     let tileURL;
     if (map.source === 'map_warper' || map.source === 'strabospot_mymaps') tileURL = map.url[0] + map.id + '/' + map.tilePath;
-    else tileURL = map.url[0] + map.id + map.tilePath + '?access_token=' + map.key;
+    else tileURL = map.url[0] + map.id + map.tilePath + (map.url[0].includes('https://') ? '?access_token=' + userMapboxToken : '');
     const customBaseMapStyleURL = {
       source: map.source,
       id: map.id,
@@ -501,6 +501,10 @@ const useMaps = (mapRef) => {
     if (map.source === 'mapbox_styles' && map.id.includes('mapbox://styles/')) {
       mapId = map.id.split('/').slice(3).join('/');
     }
+    // else if (map.source === 'mapbox_styles') {
+    //   console.log(map.id);
+    //   mapId = map.id.split('/')[1];
+    // }
     const providerInfo = getProviderInfo(map.source);
     customMap = {...map, ...providerInfo, id: mapId, key: userMapboxToken, source: map.source};
     const tileUrl = buildTileUrl(customMap);
@@ -521,7 +525,7 @@ const useMaps = (mapRef) => {
         const otherMapsInProject = project.other_maps;
         if (customMap.source !== 'mapbox_styles') delete customMap.key;
         dispatch(updatedProject(
-          {field: 'other_maps', value: [...otherMapsInProject,  customMap]}));
+          {field: 'other_maps', value: [...otherMapsInProject, customMap]}));
       }
       else dispatch(updatedProject({field: 'other_maps', value: [map]}));
       dispatch(addedCustomMap(bbox ? {...customMap, bbox: bbox} : customMap));
