@@ -6,6 +6,7 @@ import {Button, Image} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {isEmpty, toTitleCase} from '../../../shared/Helpers';
+import {PRIMARY_TEXT_COLOR} from '../../../shared/styles.constants';
 import IconButton from '../../../shared/ui/IconButton';
 import {LABEL_DICTIONARY} from '../../form';
 import useMapsHook from '../../maps/useMaps';
@@ -106,7 +107,7 @@ const NotebookHeader = (props) => {
       <Button
         type='clear'
         title={getSpotCoordText()}
-        titleStyle={{textAlign: 'left'}}
+        titleStyle={{textAlign: 'left', color: PRIMARY_TEXT_COLOR}}
         buttonStyle={{padding: 0, justifyContent: 'flex-start'}}
         onPress={() => dispatch(setNotebookPageVisible(PAGE_KEYS.GEOGRAPHY))}
       />
@@ -120,7 +121,7 @@ const NotebookHeader = (props) => {
           <Button
             type='clear'
             title={'Set To Current Location'}
-            titleStyle={{fontSize: 14}}
+            titleStyle={{fontSize: 14, color: PRIMARY_TEXT_COLOR}}
             buttonStyle={{padding: 0, paddingRight: 15}}
             onPress={setToCurrentLocation}
           />
@@ -128,7 +129,7 @@ const NotebookHeader = (props) => {
         <Button
           type='clear'
           title={'Set in Current View'}
-          titleStyle={{fontSize: 14}}
+          titleStyle={{fontSize: 14, color: PRIMARY_TEXT_COLOR}}
           buttonStyle={{padding: 0}}
           onPress={() => {
             props.createDefaultGeom();
