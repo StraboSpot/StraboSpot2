@@ -66,6 +66,15 @@ const ManageOfflineMaps = (props) => {
     );
   };
 
+  const getTitle = (map) => {
+    let name = map.name;
+    if (!map.name) {
+      console.log('No Name');
+      return map.id;
+    }
+    else return name;
+  };
+
   const readDirectoryForMaps = async () => {
     try {
       let availableMapObj = {};
@@ -120,7 +129,7 @@ const ManageOfflineMaps = (props) => {
       >
         <ListItem.Content>
           <View style={styles.itemContainer}>
-            <ListItem.Title style={commonStyles.listItemTitle}>{`${item.name}`}</ListItem.Title>
+            <ListItem.Title style={commonStyles.listItemTitle}>{`${getTitle(item)}`}</ListItem.Title>
             <ListItem.Title style={styles.itemSubTextStyle}>{`(${item.count} tiles)`}</ListItem.Title>
           </View>
           <View style={styles.itemSubContainer}>
@@ -158,7 +167,8 @@ const ManageOfflineMaps = (props) => {
     <React.Fragment>
       <Button
         title={'Download tiles of current map'}
-        disabled={!isOnline.isInternetReachable || Object.values(offlineMaps).some(map => map.isOfflineMapVisible === true)}
+        disabled={!isOnline.isInternetReachable || Object.values(offlineMaps).some(
+          map => map.isOfflineMapVisible === true)}
         onPress={() => {
           props.closeMainMenuPanel();
           dispatch(setOfflineMapsModalVisible(true));
