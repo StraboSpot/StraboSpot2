@@ -66,7 +66,6 @@ const useMaps = (mapRef) => {
           type: 'raster',
           tiles: [tileURL],
           tileSize: 256,
-          attributions: MAP_PROVIDERS[map.source].attributions,
         },
       },
       sprite: 'mapbox://sprites/mapbox/bright-v8',

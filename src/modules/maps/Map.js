@@ -807,7 +807,10 @@ const Map = React.forwardRef((props, ref) => {
       return tileCountThisScope.count;
     }
     catch (err) {
-      console.log('Error fetching data from tile count service.', err);
+      console.error(err);
+      dispatch(clearedStatusMessages());
+      dispatch(addedStatusMessage('Error fetching data from tile count service.'));
+      dispatch(setErrorMessagesModalVisible(true));
     }
   };
 
