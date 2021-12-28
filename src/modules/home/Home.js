@@ -254,6 +254,7 @@ const Home = () => {
         break;
       case 'saveMap':
         dispatch(setOfflineMapsModalVisible(!isOfflineMapModalVisible));
+        toggleHomeDrawerButton();
         break;
       case 'addTag':
         console.log(`${name}`, ' was clicked');

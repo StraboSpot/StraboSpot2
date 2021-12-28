@@ -18,17 +18,17 @@ const Routes = () => {
 
   const Stack = createStackNavigator();
   const AppStack = createStackNavigator();
-
-  NetInfo.configure({
-    reachabilityUrl: 'https://clients3.google.com/generate_204',
-    reachabilityTest: async (response) => {
-      // console.log('Response Status', response.status);
-      return response.status === 204;
-    },
-    reachabilityLongTimeout: 5 * 1000, // 60s
-    reachabilityShortTimeout: 5 * 1000, // 5s
-    reachabilityRequestTimeout: 15 * 1000, // 15s
-  });
+  //
+  // NetInfo.configure({
+  //   reachabilityUrl: 'https://clients3.google.com/generate_204',
+  //   reachabilityTest: async (response) => {
+  //     // console.log('Response Status', response.status);
+  //     return response.status === 204;
+  //   },
+  //   reachabilityLongTimeout: 5 * 1000, // 60s
+  //   reachabilityShortTimeout: 5 * 1000, // 5s
+  //   reachabilityRequestTimeout: 15 * 1000, // 15s
+  // });
 
   useEffect(() => {
     const unsubscribe = NetInfo.addEventListener((networkState) => {

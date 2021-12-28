@@ -169,9 +169,7 @@ const BaseMapDialog = props => {
     if (isOnline.isInternetReachable) {
       const baseMap = await useMaps.setBasemap(customMap.id);
       props.close();
-      if (customMap.bbox && (customMap.source === 'map_warper' || customMap.source === 'strabospot_mymaps')) {
-        setTimeout(() => props.zoomToCustomMap(baseMap.bbox), 1000);
-      }
+      customMap.bbox && setTimeout(() => props.zoomToCustomMap(baseMap.bbox), 1000);
     }
     else useMapsOffline.setOfflineMapTiles(customMap);
   };

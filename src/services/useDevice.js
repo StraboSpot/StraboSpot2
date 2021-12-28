@@ -22,12 +22,12 @@ const useDevice = () => {
   };
 
   const createProjectDirectories = async () => {
-      await RNFS.mkdir(APP_DIRECTORIES.APP_DIR);
-      console.log('App Directory Created');
-      await RNFS.mkdir(APP_DIRECTORIES.BACKUP_DIR);
-      console.log('Backup Directory Created');
-      await RNFS.mkdir(APP_DIRECTORIES.TILES_DIRECTORY);
-      console.log('Tiles Directory Created');
+    await RNFS.mkdir(APP_DIRECTORIES.APP_DIR);
+    console.log('App Directory Created');
+    await RNFS.mkdir(APP_DIRECTORIES.BACKUP_DIR);
+    console.log('Backup Directory Created');
+    await RNFS.mkdir(APP_DIRECTORIES.TILES_DIRECTORY);
+    console.log('Tiles Directory Created');
   };
 
   const createAppDirectory = (directory) => {
