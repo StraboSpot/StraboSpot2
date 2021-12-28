@@ -49,8 +49,13 @@ const useMaps = (mapRef) => {
 
   const buildStyleURL = map => {
     let tileURL;
+    let mapID = map.id;
     if (map.source === 'map_warper' || map.source === 'strabospot_mymaps') tileURL = map.url[0] + map.id + '/' + map.tilePath;
-    else tileURL = map.url[0] + map.id + map.tilePath + (map.url[0].includes('https://') ? '?access_token=' + userMapboxToken : '');
+    else {
+      tileURL = map.url[0] + (map.source === 'mapbox_styles' && map.url[0].includes('file://') ? mapID.split(
+        '/')[1] : mapID) + map.tilePath + (map.url[0].includes(
+        'https://') ? '?access_token=' + userMapboxToken : '');
+    }
     const customBaseMapStyleURL = {
       source: map.source,
       id: map.id,
@@ -89,7 +94,7 @@ const useMaps = (mapRef) => {
     let tileUrl = basemap.url[0];
     if (basemap.source === 'osm') tileUrl = tileUrl + basemap.tilePath;
     if (basemap.source === 'map_warper' || basemap.source === 'strabospot_mymaps') tileUrl = tileUrl + basemap.id + '/' + basemap.tilePath;
-    else tileUrl = tileUrl + basemap.id + basemap.tilePath + '?access_token=' + basemap.key;
+    else tileUrl = tileUrl + basemap.id + basemap.tilePath + '?access_token=' + userMapboxToken;
     // console.log('TILE URL', tileUrl);
     return tileUrl;
   };
@@ -99,7 +104,11 @@ const useMaps = (mapRef) => {
     console.log('map: ', mapId);
     const projectCopy = {...project};
     const customMapsCopy = {...customMaps};
-    delete customMapsCopy[mapId];
+    if (mapId.includes('/')) {
+      const mapboxStylesId = mapId.split('/');
+      delete customMapsCopy[mapboxStylesId[1]];
+    }
+    else delete customMapsCopy[mapId];
     if (projectCopy.other_maps) {
       const filteredCustomMaps = projectCopy.other_maps.filter(map => map.id !== mapId);
       dispatch(addedProject({...projectCopy, other_maps: filteredCustomMaps})); // Deletes map from project
@@ -496,17 +505,13 @@ const useMaps = (mapRef) => {
   const saveCustomMap = async (map) => {
     let mapId = map.id;
     let customMap = {};
+    const providerInfo = getProviderInfo(map.source);
     let bbox = '';
     // Pull out mapbox styles map id
     if (map.source === 'mapbox_styles' && map.id.includes('mapbox://styles/')) {
       mapId = map.id.split('/').slice(3).join('/');
     }
-    // else if (map.source === 'mapbox_styles') {
-    //   console.log(map.id);
-    //   mapId = map.id.split('/')[1];
-    // }
-    const providerInfo = getProviderInfo(map.source);
-    customMap = {...map, ...providerInfo, id: mapId, key: userMapboxToken, source: map.source};
+    customMap = {...map, ...providerInfo, id: mapId, source: map.source};
     const tileUrl = buildTileUrl(customMap);
     let testTileUrl = tileUrl.replace(/({z}\/{x}\/{y})/, '0/0/0');
     if (map.source === 'map_warper') testTileUrl = 'https://strabospot.org/map_warper_check/' + map.id;

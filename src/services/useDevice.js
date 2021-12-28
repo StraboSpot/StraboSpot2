@@ -43,28 +43,20 @@ const useDevice = () => {
   };
 
   const deleteOfflineMap = async (map) => {
-    console.log('Deleting Map Here');
-    console.log('map: ', map.id);
-    // console.log('directory: ', tileCacheDirectory + '/' + map.id);
-    const mapId = map.id === 'mapwarper' ? map.name : map.id;
-    let folderExists = await RNFS.exists(APP_DIRECTORIES.TILE_CACHE + mapId);
-    const zipFileExists = await RNFS.exists(
-      APP_DIRECTORIES.TILE_ZIP + map.mapId + '.zip',
-    );
-    const tileTempFileExists = await RNFS.exists(
-      APP_DIRECTORIES.TILE_TEMP + '/' + map.mapId,
-    );
-    console.log(folderExists, zipFileExists, tileTempFileExists);
+    let mapID = map.id;
+    console.log(`Deleting Map, ${map.name}, with ID of ${map.id} Here`);
+    mapID === 'mapwarper' ? map.name : map.id;
+    map.source === 'mapbox_styles' && mapID.includes('/') ? mapID = mapID.split('/')[1] : mapID;
+
+    const cacheFolderExists = await RNFS.exists(APP_DIRECTORIES.TILE_CACHE + mapID);
+    const zipFileExists = await RNFS.exists(APP_DIRECTORIES.TILE_ZIP + map.mapId + '.zip');
+    const tileTempFileExists = await RNFS.exists(APP_DIRECTORIES.TILE_TEMP + '/' + map.mapId);
+    console.log(cacheFolderExists, zipFileExists, tileTempFileExists);
     //first, delete folder with tiles
-    if (folderExists || zipFileExists || tileTempFileExists) {
-      await RNFS.unlink(APP_DIRECTORIES.TILE_CACHE + mapId);
-      if (zipFileExists) {
-        await RNFS.unlink(APP_DIRECTORIES.TILE_ZIP + map.mapId + '.zip');
-      }
-      if (tileTempFileExists) {
-        await RNFS.unlink(APP_DIRECTORIES.TILE_TEMP + map.mapId);
-      }
-    }
+    if (cacheFolderExists) await RNFS.unlink(APP_DIRECTORIES.TILE_CACHE + mapID);
+    // Deleting supporting folders
+    if (zipFileExists) await RNFS.unlink(APP_DIRECTORIES.TILE_ZIP + map.mapId + '.zip');
+    if (tileTempFileExists) await RNFS.unlink(APP_DIRECTORIES.TILE_TEMP + map.mapId);
     dispatch(deletedOfflineMap(map.id));
     console.log(`Deleted ${map.name} offline map from device.`);
   };
@@ -132,6 +124,7 @@ const useDevice = () => {
   const readDirectoryForMapTiles = async (mapId) => {
     try {
       let tiles = [];
+      mapId = mapId.includes('/') ? mapId.split('/')[1] : mapId;
       const exists = await RNFS.exists(APP_DIRECTORIES.TILE_CACHE + mapId + '/tiles');
       console.log('Map tiles cache tiles directory:', exists);
       if (exists) {
