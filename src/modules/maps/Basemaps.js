@@ -204,6 +204,12 @@ function Basemap(props) {
             filter={['==', ['geometry-type'], 'Polygon']}
             style={useMapSymbology.getMapSymbology().polygon}
           />
+          <MapboxGL.LineLayer
+            id={'polygonLayerNotSelectedBorder'}
+            minZoomLevel={1}
+            filter={['==', ['geometry-type'], 'Polygon']}
+            style={useMapSymbology.getMapSymbology().line}
+          />
 
           {/* Need 4 different lines for the different types of line dashes since
            lineDasharray is not suppported with data-driven styling*/}
@@ -250,6 +256,12 @@ function Basemap(props) {
             minZoomLevel={1}
             filter={['==', ['geometry-type'], 'Polygon']}
             style={useMapSymbology.getMapSymbology().polygonSelected}
+          />
+          <MapboxGL.LineLayer
+            id={'polygonLayerSelectedBorder'}
+            minZoomLevel={1}
+            filter={['==', ['geometry-type'], 'Polygon']}
+            style={useMapSymbology.getMapSymbology().line}
           />
 
           {/* Need 4 different lines for the different types of line dashes since
