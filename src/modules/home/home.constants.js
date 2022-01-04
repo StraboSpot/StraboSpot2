@@ -14,6 +14,7 @@ export const MODAL_KEYS = {
     return p.modal_component ? {...acc, [key]: p.key} : acc;
   }, {}),
   SHORTCUTS: {
+    GEOLOGIC_UNITS: 'geologic_units',
     MEASUREMENT: 'measurement',
     SAMPLE: 'sample',
     NOTE: 'note',
@@ -33,6 +34,14 @@ export const NOTEBOOK_MODELS = NOTEBOOK_PAGES.reduce((acc, p) => p.modal_compone
 
 export const SHORTCUT_MODALS = [
   {
+    key: MODAL_KEYS.SHORTCUTS.GEOLOGIC_UNITS,
+    label: 'Geologic Units',
+    action_label: 'Add Geologic Unit',
+    icon_src: require('../../assets/icons/GeologicUnitButtonShortcut.png'),
+    icon_pressed_src: require('../../assets/icons/GeologicUnitButtonShortcut_pressed.png'),
+    modal_component: TagsShortcutModal,
+    notebook_modal_key: MODAL_KEYS.NOTEBOOK.TAGS,
+  }, {
     key: MODAL_KEYS.SHORTCUTS.TAG,
     label: 'Tag',
     action_label: 'Add Tags',

@@ -61,14 +61,15 @@ const TagsModal = (props) => {
   };
 
   const getRelevantTags = () => {
-    return pageVisible === PAGE_KEYS.GEOLOGIC_UNITS ? searchTagsByType(PAGE_KEYS.GEOLOGIC_UNITS)
+    return pageVisible === PAGE_KEYS.GEOLOGIC_UNITS || modalVisible === MODAL_KEYS.SHORTCUTS.GEOLOGIC_UNITS
+      ? searchTagsByType(PAGE_KEYS.GEOLOGIC_UNITS)
       : isEmpty(searchText) ? JSON.parse(JSON.stringify(tags.filter(t => t.type !== PAGE_KEYS.GEOLOGIC_UNITS)))
         : searchTagsByType(searchText);
   };
 
   const save = async () => {
     let tagsToUpdate = [];
-    if (modalVisible === (MODAL_KEYS.SHORTCUTS.TAG)) {
+    if (modalVisible === MODAL_KEYS.SHORTCUTS.TAG || modalVisible === MODAL_KEYS.SHORTCUTS.GEOLOGIC_UNITS) {
       useMaps.setPointAtCurrentLocation().then(spot => {
         checkedTagsTemp.map(tag => {
           if (isEmpty(tag.spots)) tag.spots = [];
@@ -87,32 +88,34 @@ const TagsModal = (props) => {
   const renderSpotTagsList = () => {
     return (
       <React.Fragment>
-        {!isEmpty(tags) && pageVisible !== PAGE_KEYS.GEOLOGIC_UNITS && (
-          <Formik
-            initialValues={{}}
-            validate={(fieldValues) => setSearchText(fieldValues.searchText)}
-            onSubmit={(values) => console.log('Submitting form...', values)}
-            innerRef={formRef}
-          >
-            {() => (
-              <ListItem containerStyle={commonStyles.listItemFormField}>
-                <ListItem.Content>
-                  <Field
-                    component={(formProps) => (
-                      SelectInputField({setFieldValue: formProps.form.setFieldValue, ...formProps.field, ...formProps})
-                    )}
-                    name={'searchText'}
-                    key={'searchText'}
-                    label={'Tag Type'}
-                    choices={TAG_TYPES.filter(t => t !== PAGE_KEYS.GEOLOGIC_UNITS).map(
-                      tagType => ({label: useTags.getLabel(tagType), value: tagType}))}
-                    single={true}
-                  />
-                </ListItem.Content>
-              </ListItem>
-            )}
-          </Formik>
-        )}
+        {!isEmpty(tags) && pageVisible !== PAGE_KEYS.GEOLOGIC_UNITS
+          && modalVisible !== MODAL_KEYS.SHORTCUTS.GEOLOGIC_UNITS && (
+            <Formik
+              initialValues={{}}
+              validate={(fieldValues) => setSearchText(fieldValues.searchText)}
+              onSubmit={(values) => console.log('Submitting form...', values)}
+              innerRef={formRef}
+            >
+              {() => (
+                <ListItem containerStyle={commonStyles.listItemFormField}>
+                  <ListItem.Content>
+                    <Field
+                      component={(formProps) => (
+                        SelectInputField(
+                          {setFieldValue: formProps.form.setFieldValue, ...formProps.field, ...formProps})
+                      )}
+                      name={'searchText'}
+                      key={'searchText'}
+                      label={'Tag Type'}
+                      choices={TAG_TYPES.filter(t => t !== PAGE_KEYS.GEOLOGIC_UNITS).map(
+                        tagType => ({label: useTags.getLabel(tagType), value: tagType}))}
+                      single={true}
+                    />
+                  </ListItem.Content>
+                </ListItem>
+              )}
+            </Formik>
+          )}
         <FlatList
           keyExtractor={item => item.id.toString()}
           data={getRelevantTags().sort((tagA, tagB) => tagA.name.localeCompare(tagB.name))}  // alphabetize by name
@@ -138,6 +141,7 @@ const TagsModal = (props) => {
         containerStyle={commonStyles.listItem}
         key={tag.id}
         onPress={() => (modalVisible !== MODAL_KEYS.SHORTCUTS.TAG
+          && modalVisible !== MODAL_KEYS.SHORTCUTS.GEOLOGIC_UNITS
           && modalVisible !== MODAL_KEYS.OTHER.ADD_TAGS_TO_SPOTS)
           ? useTags.addRemoveTag(tag, selectedSpot)
           : checkTags(tag)}
@@ -151,10 +155,12 @@ const TagsModal = (props) => {
         {(!props.isFeatureLevelTagging) && (
           <ListItem.CheckBox
             checked={(modalVisible && modalVisible !== MODAL_KEYS.SHORTCUTS.TAG
+              && modalVisible !== MODAL_KEYS.SHORTCUTS.GEOLOGIC_UNITS
               && modalVisible !== MODAL_KEYS.OTHER.ADD_TAGS_TO_SPOTS)
               ? tag && tag.spots && tag.spots.includes(selectedSpot.properties.id)
               : checkedTagsTemp.map(checkedTag => checkedTag.id).includes(tag.id)}
             onPress={() => (modalVisible !== MODAL_KEYS.SHORTCUTS.TAG
+              && modalVisible !== MODAL_KEYS.SHORTCUTS.GEOLOGIC_UNITS
               && modalVisible !== MODAL_KEYS.OTHER.ADD_TAGS_TO_SPOTS)
               ? useTags.addRemoveTag(tag, selectedSpot)
               : checkTags(tag)}
@@ -192,6 +198,7 @@ const TagsModal = (props) => {
           <TagDetailModal
             isVisible={isDetailModalVisible}
             closeModal={closeTagDetailModal}
+            type={modalVisible === MODAL_KEYS.SHORTCUTS.GEOLOGIC_UNITS && PAGE_KEYS.GEOLOGIC_UNITS}
           />
         </View>
       )}
@@ -200,15 +207,15 @@ const TagsModal = (props) => {
           : <Text style={modalStyle.textStyle}>No Tags</Text>}
       </View>
       {renderSpotTagsList()}
-      {(!isEmpty(
-        tags) && modalVisible !== MODAL_KEYS.NOTEBOOK.TAGS && modalVisible !== MODAL_KEYS.OTHER.FEATURE_TAGS) && (
-        <SaveButton
-          buttonStyle={{backgroundColor: 'red'}}
-          title={'Save tag(s)'}
-          onPress={() => save()}
-          disabled={isEmpty(checkedTagsTemp)}
-        />
-      )}
+      {(!isEmpty(tags) && modalVisible !== MODAL_KEYS.NOTEBOOK.TAGS && modalVisible !== MODAL_KEYS.OTHER.FEATURE_TAGS)
+        && (
+          <SaveButton
+            buttonStyle={{backgroundColor: 'red'}}
+            title={'Save tag(s)'}
+            onPress={() => save()}
+            disabled={isEmpty(checkedTagsTemp)}
+          />
+        )}
     </React.Fragment>
   );
 };
