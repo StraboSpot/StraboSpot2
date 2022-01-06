@@ -15,6 +15,7 @@ const modalStyle = StyleSheet.create({
     borderRadius: 20,
     overflow: 'hidden',
     zIndex: 1,
+    padding: 0,
   },
   modalPosition: {
     position: 'absolute',
@@ -24,6 +25,8 @@ const modalStyle = StyleSheet.create({
   },
   modalTitle: {
     fontWeight: 'bold',
+    fontSize: 18,
+    textAlign: 'center',
   },
   modalTop: {
     alignItems: 'center',

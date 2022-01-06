@@ -1,30 +1,24 @@
 import React, {useEffect, useState} from 'react';
-import {Animated, Keyboard, Text, TextInput, View} from 'react-native';
+import {Animated, Keyboard, TextInput} from 'react-native';
 
 import {Avatar, Button, ListItem, Overlay} from 'react-native-elements';
-import {useDispatch, useSelector} from 'react-redux';
+import {useSelector} from 'react-redux';
 
 import compassStyles from '../../../modules/compass/compass.styles';
-import {MODAL_KEYS, MODALS, NOTEBOOK_MODELS, SHORTCUT_MODALS} from '../../../modules/home/home.constants';
-import {setModalVisible} from '../../../modules/home/home.slice';
-import {NOTEBOOK_PAGES, PAGE_KEYS} from '../../../modules/page/page.constants';
+import {MODAL_KEYS, NOTEBOOK_MODELS, SHORTCUT_MODALS} from '../../../modules/home/home.constants';
 import commonStyles from '../../common.styles';
 import * as Helpers from '../../Helpers';
 import {isEmpty} from '../../Helpers';
-import * as themes from '../../styles.constants';
 import modalStyle from './modal.style';
+import ModalHeader from './ModalHeader';
 
 const {State: TextInputState} = TextInput;
 
 const Modal = (props) => {
-  const dispatch = useDispatch();
   const modalVisible = useSelector(state => state.home.modalVisible);
-  const pageVisible = useSelector(state => state.notebook.visibleNotebookPagesStack.slice(-1)[0]);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
 
   const [textInputAnimate] = useState(new Animated.Value(0));
-
-  const modalInfo = MODALS.find(p => p.key === modalVisible);
 
   useEffect(() => {
     console.log('useEffect Form []');
@@ -39,39 +33,6 @@ const Modal = (props) => {
   const handleKeyboardDidShow = (event) => Helpers.handleKeyboardDidShow(event, TextInputState, textInputAnimate);
 
   const handleKeyboardDidHide = () => Helpers.handleKeyboardDidHide(textInputAnimate);
-
-  const getTitle = () => {
-    if (pageVisible === PAGE_KEYS.GEOLOGIC_UNITS) {
-      return NOTEBOOK_PAGES.find(p => p.key === PAGE_KEYS.GEOLOGIC_UNITS).action_label;
-    }
-    else return modalInfo && (modalInfo.action_label || modalInfo.label);
-  };
-
-  const renderModalHeader = () => {
-    return (
-      <View style={modalStyle.modalTop}>
-        <View style={{flex: 1, alignItems: 'flex-start'}}>
-          <Button
-            titleStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 16}}
-            title={props.buttonTitleLeft}
-            type={'clear'}
-            onPress={props.cancel}
-          />
-        </View>
-        <View>
-          <Text style={modalStyle.modalTitle}>{getTitle()}</Text>
-        </View>
-        <View style={{flex: 1, alignItems: 'flex-end'}}>
-          <Button
-            titleStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 16}}
-            title={props.buttonTitleRight === '' ? '' : props.buttonTitleRight || 'Close'}
-            type={'clear'}
-            onPress={props.close || (() => dispatch(setModalVisible({modal: null})))}
-          />
-        </View>
-      </View>
-    );
-  };
 
   const renderModalBottom = () => {
     const shortcutModal = SHORTCUT_MODALS.find(m => m.key === modalVisible);
@@ -113,7 +74,7 @@ const Modal = (props) => {
   if (modalVisible === MODAL_KEYS.NOTEBOOK.MEASUREMENTS || modalVisible === MODAL_KEYS.SHORTCUTS.MEASUREMENT) {
     return (
       <Overlay overlayStyle={[modalStyle.modalContainer, modalStyle.modalPosition]}>
-        {renderModalHeader()}
+        <ModalHeader {...props}/>
         {props.children}
         {!isEmpty(selectedSpot) && renderModalBottom()}
       </Overlay>
@@ -124,7 +85,7 @@ const Modal = (props) => {
       style={[modalStyle.modalContainer, modalStyle.modalPosition, props.style,
         {transform: [{translateY: textInputAnimate}]}]}
     >
-      {renderModalHeader()}
+      <ModalHeader {...props}/>
       {props.children}
       {!isEmpty(selectedSpot) && renderModalBottom()}
     </Animated.View>

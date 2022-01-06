@@ -1,13 +1,13 @@
 import React, {useState} from 'react';
-import {Text, View} from 'react-native';
+import {Dimensions, Text, View} from 'react-native';
 
 import {Button} from 'react-native-elements';
 import {Overlay} from 'react-native-elements/dist/overlay/Overlay';
 
 import {isEmpty} from '../../shared/Helpers';
-import * as themes from '../../shared/styles.constants';
 import {PRIMARY_ACCENT_COLOR, SECONDARY_BACKGROUND_COLOR} from '../../shared/styles.constants';
 import modalStyle from '../../shared/ui/modal/modal.style';
+import ModalHeader from '../../shared/ui/modal/ModalHeader';
 import {Form, formStyles, MainButtons, useFormHook} from '../form';
 
 const AddRockMetamorphicModal = (props) => {
@@ -34,25 +34,6 @@ const AddRockMetamorphicModal = (props) => {
       props.formProps.setValues(valuesNew);
     }
     else props.formProps.setFieldValue('facies', updatedFacies);
-  };
-
-  const renderModalHeader = () => {
-    return (
-      <View style={modalStyle.modalTop}>
-        <View style={{flex: 1, alignItems: 'flex-start'}}/>
-        <View>
-          <Text style={modalStyle.modalTitle}>Facies</Text>
-        </View>
-        <View style={{flex: 1, alignItems: 'flex-end'}}>
-          <Button
-            titleStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 16}}
-            title={'Done'}
-            type={'clear'}
-            onPress={() => setIsFaciesModalVisible(false)}
-          />
-        </View>
-      </View>
-    );
   };
 
   const faciesButtonText = (key) => {
@@ -84,10 +65,20 @@ const AddRockMetamorphicModal = (props) => {
   };
 
   const renderFaciesModal = () => {
+    const {width, height} = Dimensions.get('window');
+    const faciesModalWidth = width > 520 ? 500 : '90%';
     return (
-      <Overlay overlayStyle={{width: '80%', height: '80%'}} isVisible={true}>
-        {renderModalHeader()}
+      <Overlay
+        overlayStyle={[modalStyle.modalContainer, modalStyle.modalPosition, {width: faciesModalWidth, left: 20}]}
+        isVisible={true}
+      >
+        <ModalHeader
+          buttonTitleRight={'Done'}
+          title={'Facies'}
+          close={() => setIsFaciesModalVisible(false)}
+        />
         <View style={{flex: 1}}>
+
           <View style={{flex: 5, flexDirection: 'row', paddingRight: 5}}>
             <View style={{width: 20, alignItems: 'center', justifyContent: 'center'}}>
               <Text style={[formStyles.formButtonTitle, {transform: [{rotate: '-90deg'}], width: 60}]}>Pressure</Text>
@@ -137,7 +128,7 @@ const AddRockMetamorphicModal = (props) => {
           <View style={{height: 30, alignItems: 'center', justifyContent: 'center'}}>
             <Text style={formStyles.formButtonTitle}>Temperature</Text>
           </View>
-          <View style={{flexDirection: 'row', height: 80}}>
+          <View style={{flexDirection: 'row', height: 80, paddingBottom: 10}}>
             <View style={{width: '50%'}}>
               <FaciesButton faciesKey={'ultra_high_pre'}/>
             </View>

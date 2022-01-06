@@ -1,38 +1,18 @@
 import React from 'react';
-import {Text, View} from 'react-native';
 
 import {Button} from 'react-native-elements';
 import {Overlay} from 'react-native-elements/dist/overlay/Overlay';
 
 import {isEmpty} from '../../../shared/Helpers';
-import * as themes from '../../../shared/styles.constants';
 import {WARNING_COLOR} from '../../../shared/styles.constants';
 import modalStyle from '../../../shared/ui/modal/modal.style';
+import ModalHeader from '../../../shared/ui/modal/ModalHeader';
 import Compass from '../../compass/Compass';
 import {useFormHook} from '../../form';
 import {FOLD_MEASUREMENTS_GROUP_KEYS} from './';
 
 const FoldMeasurementsModal = (props) => {
   const [useForm] = useFormHook();
-
-  const renderModalHeader = () => {
-    return (
-      <View style={modalStyle.modalTop}>
-        <View style={{flex: 1, alignItems: 'flex-start'}}/>
-        <View>
-          <Text style={modalStyle.modalTitle}>{props.foldMeasurementsGroupField.label}</Text>
-        </View>
-        <View style={{flex: 1, alignItems: 'flex-end'}}>
-          <Button
-            titleStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 16}}
-            title={'Done'}
-            type={'clear'}
-            onPress={() => props.setIsFoldMeasurementsModalVisible(false)}
-          />
-        </View>
-      </View>
-    );
-  };
 
   const setFoldMeasurements = (compassData) => {
     let renamedCompassData = {};
@@ -69,7 +49,11 @@ const FoldMeasurementsModal = (props) => {
 
   return (
     <Overlay overlayStyle={[modalStyle.modalContainer, modalStyle.modalPosition]} isVisible={true}>
-      {renderModalHeader()}
+      <ModalHeader
+        buttonTitleRight={'Done'}
+        title={props.foldMeasurementsGroupField.label}
+        close={() => props.setIsFoldMeasurementsModalVisible(false)}
+      />
       <Compass
         setFoldMeasurements={setFoldMeasurements}
         closeCompass={() => props.setIsFoldMeasurementsModalVisible(false)}
