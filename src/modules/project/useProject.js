@@ -10,15 +10,16 @@ import {
   addedStatusMessage,
   clearedStatusMessages,
   removedLastStatusMessage,
-  setBackupModalVisible, setBackupOverwriteModalVisible,
+  setBackupModalVisible,
+  setBackupOverwriteModalVisible,
   setLoadingStatus,
   setStatusMessagesModalVisible,
   setUploadModalVisible,
 } from '../home/home.slice';
 import {clearedMaps} from '../maps/maps.slice';
 import {clearedSpots, deletedSpot} from '../spots/spots.slice';
-import {DEFAULT_GEOLOGIC_TYPES, DEFAULT_RELATIONSHIP_TYPES} from './project.constants';
 import * as ProjectActions from './project.constants';
+import {DEFAULT_GEOLOGIC_TYPES, DEFAULT_RELATIONSHIP_TYPES} from './project.constants';
 import {
   addedDataset,
   addedProjectDescription,
@@ -234,6 +235,7 @@ const useProject = () => {
   const projectHelpers = {
     addDataset: addDataset,
     checkValidDateTime: checkValidDateTime,
+    createDataset: createDataset,
     createProject: createProject,
     destroyDataset: destroyDataset,
     destroyOldProject: destroyOldProject,

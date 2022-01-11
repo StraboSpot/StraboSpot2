@@ -1,15 +1,19 @@
 import {useEffect} from 'react';
+import {Alert} from 'react-native';
 
 import * as Sentry from '@sentry/react-native';
-import {useDispatch, useSelector} from 'react-redux';
+import {batch, useDispatch, useSelector} from 'react-redux';
 
 import {getNewCopyId, getNewId, isEmpty} from '../../shared/Helpers';
 import {setModalVisible} from '../home/home.slice';
 import {NOTEBOOK_PAGES, PAGE_KEYS, PET_PAGES, SED_PAGES} from '../page/page.constants';
 import {
+  addedDataset,
   addedSpotsIdsToDataset,
   deletedSpotIdFromDatasets,
   deletedSpotIdFromTags,
+  setActiveDatasets,
+  setSelectedDataset,
   updatedProject,
 } from '../project/projects.slice';
 import useProjectHook from '../project/useProject';
@@ -149,7 +153,16 @@ const useSpots = () => {
     console.log('Creating new Spot:', newSpot);
     await dispatch(addedSpot(newSpot));
     // const currentDataset = Object.values(datasets).find(dataset => dataset.current);
-    const currentDataset = datasets[selectedDatasetId];
+    let currentDataset = datasets[selectedDatasetId];
+    if (isEmpty(currentDataset)) {
+      Alert.alert('No Active Dataset Selected. Created a new Default Dataset for new Spot.');
+      currentDataset = useProject.createDataset();
+      batch(() => {
+        dispatch(addedDataset(currentDataset));
+        dispatch(setActiveDatasets({bool: true, dataset: currentDataset.id}));
+        dispatch(setSelectedDataset(currentDataset.id));
+      });
+    }
     console.log('Active Dataset', currentDataset);
     await dispatch(addedSpotsIdsToDataset({datasetId: currentDataset.id, spotIds: [newSpot.properties.id]}));
     console.log('Finished creating new Spot. All Spots: ', spots);
