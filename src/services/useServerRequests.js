@@ -58,6 +58,7 @@ const useServerRequests = () => {
     catch (err) {
       console.error('Error Fetching', err);
       Alert.alert('Error', `${err.toString()}`);
+      throw Error('Unable to Get Project from Server.');
     }
   };
 
@@ -194,14 +195,14 @@ const useServerRequests = () => {
     const timeoutPromiseException = (err) => {
       const timeoutError = Symbol();
       if (err === timeoutError) throw new Error('Network timeout');
-      else throw err;
+      else throw 'Unable to Reach Server.';
     };
 
     let timer;
     return Promise.race([
       promise,
-      new Promise((_r, rej) => timer = setTimeout(rej, ms, timeoutPromiseException)),
-    ]).finally(() => clearTimeout(timer));
+      new Promise((_r, rej) => timer = setTimeout(rej, ms))])
+      .catch(timeoutPromiseException).finally(() => clearTimeout(timer));
   };
 
   // Register user

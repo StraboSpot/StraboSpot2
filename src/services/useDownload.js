@@ -74,7 +74,7 @@ const useDownload = () => {
     catch (err) {
       console.error('Error Downloading Project Properties.', err);
       dispatch(removedLastStatusMessage());
-      dispatch(addedStatusMessage('Error Downloading Project Properties.' + err));
+      dispatch(addedStatusMessage('Error Downloading Project Properties. ' + err));
       throw Error;
     }
   };
