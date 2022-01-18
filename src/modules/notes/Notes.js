@@ -24,9 +24,7 @@ const Notes = (props) => {
   const initialNote = useSelector(state => state.spot.selectedSpot?.properties?.notes || null);
   const formRef = useRef(null);
 
-  const initialNotesValues = {
-    note: initialNote,
-  };
+  const initialNotesValues = {note: initialNote};
 
   useLayoutEffect(() => {
     return () => confirmLeavePage();
@@ -61,7 +59,7 @@ const Notes = (props) => {
       await currentForm.submitForm();
       await saveNote(currentForm.values.note, pageTransition);
       await currentForm.resetForm();
-      await props.goToCurrentLocation();
+      if (props.goToCurrentLocation) await props.goToCurrentLocation();
     }
     catch (err) {
       console.log('Error submitting form', err);
@@ -76,8 +74,7 @@ const Notes = (props) => {
 
   return (
     <View style={{flex: 1}}>
-      {modalVisible === MODAL_KEYS.SHORTCUTS.NOTE
-        ? (
+      {modalVisible === MODAL_KEYS.SHORTCUTS.NOTE ? (
           <View style={uiStyles.alignItemsToCenter}>
             <Text>Saving a note will create</Text>
             <Text>a new spot.</Text>
@@ -113,8 +110,7 @@ const Notes = (props) => {
           </ListItem>
         )}
       </Formik>
-      {modalVisible === MODAL_KEYS.SHORTCUTS.NOTE
-      && (
+      {modalVisible === MODAL_KEYS.SHORTCUTS.NOTE && (
         <SaveButton
           title={'Save Note'}
           onPress={() => saveForm(formRef.current, false)}
