@@ -430,11 +430,11 @@ PODS:
     - React-Core
   - RNVectorIcons (8.1.0):
     - React-Core
-  - RNZipArchive (6.0.3):
+  - RNZipArchive (6.0.6):
     - React-Core
-    - RNZipArchive/Core (= 6.0.3)
+    - RNZipArchive/Core (= 6.0.6)
     - SSZipArchive (= 2.2.3)
-  - RNZipArchive/Core (6.0.3):
+  - RNZipArchive/Core (6.0.6):
     - React-Core
     - SSZipArchive (= 2.2.3)
   - Sentry (7.3.0):
@@ -727,7 +727,7 @@ SPEC CHECKSUMS:
   RNSketchCanvas: 9c28adb5381543ed55cc98ce6de46479cb3cb12c
   RNSound: 27e8268bdb0a1f191f219a33267f7e0445e8d62f
   RNVectorIcons: 31cebfcf94e8cf8686eb5303ae0357da64d7a5a4
-  RNZipArchive: 924d63f15f2838837f8379ee6e9955d8ff4736c4
+  RNZipArchive: 9e6af1bebc9c7ddb42893bc4e70804321227c3ec
   Sentry: 9a4e621430e2dae4477d791f2f7e905720b6efbf
   SocketRocket: fccef3f9c5cedea1353a9ef6ada904fde10d6608
   SSZipArchive: 62d4947b08730e4cda640473b0066d209ff033c9
