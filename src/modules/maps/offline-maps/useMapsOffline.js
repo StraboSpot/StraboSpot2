@@ -1,10 +1,11 @@
-import {useEffect, useState} from 'react';
+import {useEffect} from 'react';
 import {Alert} from 'react-native';
 
 import RNFS from 'react-native-fs';
 import {unzip} from 'react-native-zip-archive';
 import {useDispatch, useSelector} from 'react-redux';
 
+import {MAPBOX_KEY} from '../../../MapboxConfig';
 import {APP_DIRECTORIES} from '../../../services/device.constants';
 import useDeviceHook from '../../../services/useDevice';
 import useServerRequesteHook from '../../../services/useServerRequests';
@@ -14,7 +15,6 @@ import {DEFAULT_MAPS, MAP_PROVIDERS} from '../maps.constants';
 import {setCurrentBasemap} from '../maps.slice';
 import useMapsHook from '../useMaps';
 import {setOfflineMap} from './offlineMaps.slice';
-import {MAPBOX_KEY} from '../../../MapboxConfig';
 
 const useMapsOffline = () => {
   let zipUID;
@@ -168,7 +168,7 @@ const useMapsOffline = () => {
     try {
       let layer, id, username;
       let startZipURL = 'unset';
-      let layerID = currentBasemap.id;
+      let mapKey = currentBasemap.id;
       const layerSource = currentBasemap.source;
       const tilehost = APP_DIRECTORIES.TILE_HOST;
 
@@ -177,12 +177,8 @@ const useMapsOffline = () => {
         //first, figure out what kind of map we are downloading...
 
         let downloadMap = {};
-        if (layerSource === 'mapbox_styles') {
-          layerID = layerID.split('/')[1];
-        }
-        if (customMaps[layerID].id === currentBasemap.id) {
-          downloadMap = customMaps[layerID];
-        }
+        if (mapKey.includes('/')) mapKey = mapKey.split('/')[1];
+        if (customMaps[mapKey].id === currentBasemap.id) downloadMap = customMaps[mapKey];
 
         console.log('DownloadMap: ', downloadMap);
 
@@ -239,7 +235,7 @@ const useMapsOffline = () => {
       let folderExists = await RNFS.exists(APP_DIRECTORIES.TILE_CACHE + mapID);
       if (!folderExists) {
         console.log('FOLDER DOESN\'T EXIST! ', APP_DIRECTORIES.TILE_CACHE + mapID);
-        await RNFS.mkdir(APP_DIRECTORIES.TILE_CACHE + mapID+ '/tiles');
+        await RNFS.mkdir(APP_DIRECTORIES.TILE_CACHE + mapID + '/tiles');
       }
       //now move files to correct location
       result = await RNFS.readDir(APP_DIRECTORIES.TILE_TEMP + zipUID + '/tiles');
@@ -297,7 +293,7 @@ const useMapsOffline = () => {
       const mapName = Object.keys(customMaps).find(map => {
         if (map === mapID) customMaps[map].title;
       });
-      return mapName
+      return mapName;
     }
     return mapObj.title;
   };
@@ -364,7 +360,8 @@ const useMapsOffline = () => {
         }
       }
 
-      const mapSavedObject = Object.assign({}, ...newOfflineMapsData.map(map => (map.source === 'mapbox_styles' ?  {[map.id.split('/')[1]]: map} :  {[map.id]: map})));
+      const mapSavedObject = Object.assign({}, ...newOfflineMapsData.map(map => (map.source === 'mapbox_styles'
+        ? {[map.id.split('/')[1]]: map} : {[map.id]: map})));
       await dispatch(setOfflineMap(mapSavedObject));
       console.log('Map to save to Redux', mapSavedObject);
     }
@@ -375,7 +372,6 @@ const useMapsOffline = () => {
 
 
   const setOfflineMapTiles = async (map) => {
-    let tempCurrentBasemap;
     console.log('Switch To Offline Map: ', map);
     const tilePath = buildOfflineTilePath(map);
     const mapStyleURL = useMaps.buildStyleURL({source: map.source, id: map.id, tilePath: tilePath, url: [url]});

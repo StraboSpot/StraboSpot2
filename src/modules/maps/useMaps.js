@@ -586,10 +586,13 @@ const useMaps = (mapRef) => {
 
   const setCustomMapSwitchValue = (value, map) => {
     console.log('value', value, 'id', map.mapId);
-    const customMapsCopy = {...customMaps};
-    // customMapsCopy[map.id].isViewable = value;
-    dispatch(addedCustomMap({...customMapsCopy[map.id], isViewable: value}));
-    if (!customMapsCopy[map.id].overlay) viewCustomMap(map);
+    const customMapsCopy = JSON.parse(JSON.stringify(customMaps));
+    let mapKey = map.id;
+    if (mapKey.includes('/')) mapKey = mapKey.split('/')[1];
+    if (customMapsCopy[mapKey]) {
+      dispatch(addedCustomMap({...customMapsCopy[mapKey], isViewable: value}));
+      if (!customMapsCopy[mapKey].overlay) viewCustomMap(map);
+    }
   };
 
   const setSelectedSpotOnMap = (spotToSetAsSelected) => {
