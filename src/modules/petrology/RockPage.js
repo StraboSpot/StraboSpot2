@@ -86,7 +86,7 @@ const RockPage = (props) => {
     if (!rock.id) {
       let editedSedData = JSON.parse(JSON.stringify(spot.properties.sed));
       rock = {...rock, id: getNewUUID()};
-      editedSedData[props.page.key].splice(i, 1, rock);
+      editedSedData[pageKey].splice(i, 1, rock);
       dispatch(editedSpotProperties({field: 'sed', value: editedSedData}));
     }
     batch(() => {
