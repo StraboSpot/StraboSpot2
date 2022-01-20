@@ -28,7 +28,7 @@ const BasicPageDetail = (props) => {
 
   const groupKey = props.groupKey || 'general';
   const pageKey = props.page.key === PAGE_KEYS.FABRICS && props.selectedFeature.type === 'fabric' ? '_3d_structures'
-    : props.page.key;
+    : props.page.key === PAGE_KEYS.ROCK_TYPE_SEDIMENTARY ? PAGE_KEYS.LITHOLOGIES : props.page.key;
   const pageData = props.groupKey && spot.properties[groupKey] ? spot.properties[groupKey][pageKey] || []
     : spot.properties[pageKey] || [];
   const title = groupKey === 'pet' && pageKey === PAGE_KEYS.ROCK_TYPE_IGNEOUS

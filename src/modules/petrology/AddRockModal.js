@@ -44,12 +44,13 @@ const AddRockModal = (props) => {
   const areMultipleTemplates = templates[rockKey] && templates[rockKey].isInUse && templates[rockKey].active
     && templates[rockKey].active.length > 1;
   const groupKey = props.modalKey === PAGE_KEYS.ROCK_TYPE_SEDIMENTARY ? 'sed' : 'pet';
+  const pageKey = props.modalKey === PAGE_KEYS.ROCK_TYPE_SEDIMENTARY ? PAGE_KEYS.LITHOLOGIES : props.modalKey;
   const types = Object.values(IGNEOUS_ROCK_CLASSES);
 
   useLayoutEffect(() => {
-    const rockKeyUpdated = props.modalKey === PAGE_KEYS.ROCK_TYPE_IGNEOUS
+    const rockKeyUpdated = pageKey === PAGE_KEYS.ROCK_TYPE_IGNEOUS
       ? rockKey || modalValues.igneous_rock_class || IGNEOUS_ROCK_CLASSES.PLUTONIC
-      : props.modalKey;
+      : pageKey;
     setRockKey(rockKeyUpdated);
     if (templates[rockKeyUpdated] && templates[rockKeyUpdated].isInUse
       && templates[rockKeyUpdated].active && templates[rockKeyUpdated].active[0]
@@ -58,7 +59,7 @@ const AddRockModal = (props) => {
     }
     else {
       const initialValuesTemp = !isEmpty(modalValues) ? modalValues
-        : props.modalKey === PAGE_KEYS.ROCK_TYPE_IGNEOUS ? {id: getNewId(), igneous_rock_class: rockKeyUpdated}
+        : pageKey === PAGE_KEYS.ROCK_TYPE_IGNEOUS ? {id: getNewId(), igneous_rock_class: rockKeyUpdated}
           : {id: getNewId()};
       setInitialValues(initialValuesTemp);
     }
@@ -66,7 +67,7 @@ const AddRockModal = (props) => {
     setSurvey(useForm.getSurvey(formName));
     setChoices(useForm.getChoices(formName));
     setChoicesViewKey(null);
-  }, [modalValues, props.modalKey, templates, selectedTypeIndex]);
+  }, [modalValues, pageKey, templates, selectedTypeIndex]);
 
   useEffect(() => {
     return () => dispatch(setModalValues({}));
@@ -182,7 +183,7 @@ const AddRockModal = (props) => {
             formProps={formProps}
           />
         )}
-        {rockKey === PAGE_KEYS.ROCK_TYPE_SEDIMENTARY && (
+        {rockKey === PAGE_KEYS.LITHOLOGIES && (
           <AddRockSedimentaryModal
             survey={survey}
             choices={choices}
@@ -202,18 +203,18 @@ const AddRockModal = (props) => {
     );
   };
 
-  const saveRock = () => {
+  const saveRock = async () => {
     if (areMultipleTemplates) {
       if (groupKey === 'pet') {
-        usePetrology.savePetFeatureValuesFromTemplates(props.modalKey, spot, templates[rockKey].active);
+        usePetrology.savePetFeatureValuesFromTemplates(pageKey, spot, templates[rockKey].active);
       }
       else if (groupKey === 'sed') {
-        usePetrology.saveSedFeatureValuesFromTemplates(props.modalKey, spot, templates[rockKey].active);
+        useSed.saveSedFeatureValuesFromTemplates(pageKey, spot, templates[rockKey].active);
       }
     }
     else {
-      if (groupKey === 'pet') usePetrology.savePetFeature(props.modalKey, spot, formRef.current);
-      else if (groupKey === 'sed') useSed.saveSedFeature(props.modalKey, spot, formRef.current);
+      if (groupKey === 'pet') await usePetrology.savePetFeature(pageKey, spot, formRef.current);
+      else if (groupKey === 'sed') await useSed.saveSedFeature(pageKey, spot, formRef.current);
       dispatch(setModalValues({...formRef.current.values, id: getNewId()}));
     }
   };

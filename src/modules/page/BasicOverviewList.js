@@ -28,6 +28,8 @@ const BasicOverviewList = (props) => {
       if (!isEmpty(deprecatedRockData)) data = [spot.properties.pet, ...data];
     }
     else if (isSed && spot.properties.sed) data = spot.properties.sed[props.page.key] || [];
+    else if (props.page.key === PAGE_KEYS.ROCK_TYPE_SEDIMENTARY) data = spot.properties.sed[PAGE_KEYS.LITHOLOGIES] || [];
+
     if (!Array.isArray(data)) data = [];
     return data;
   };

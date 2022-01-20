@@ -22,6 +22,7 @@ const BasicListItem = (props) => {
       case PAGE_KEYS.ROCK_TYPE_METAMORPHIC:
         return usePetrology.getRockTitle(props.item, props.page.key);
       case PAGE_KEYS.ROCK_TYPE_SEDIMENTARY:
+      case PAGE_KEYS.LITHOLOGIES:
         return useSed.getRockTitle(props.item);
       default:
         return 'Unknown';

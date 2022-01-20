@@ -18,7 +18,7 @@ import rockTypeVolcanic from './pet/rock-type-igneous-volcanic.json';
 import rockTypeMetamorphic from './pet/rock-type-metamorphic.json';
 import projectDescription from './project-description.json';
 import sample from './sample.json';
-import rockTypeSedimentary from './sed/rock-type-sedimentary.json';
+import lithology from './sed/lithologies-lithology.json';
 import surfaceFeature from './surface-feature.json';
 import tags from './tags.json';
 import fabric from './three-d-structures/fabric.json';
@@ -31,6 +31,16 @@ import userProfile from './user-profile.json';
 const getMeasurementSurveyForBulkInput = (form) => {
   const fieldsToExclude = ['label', 'strike', 'dip_direction', 'dip', 'trend', 'plunge', 'rake', 'rake_calculated'];
   return form.filter(field => !fieldsToExclude.includes(field.name));
+};
+
+// Modify Sed Lithology form to use in Sed Rocks page
+const getSedimentaryRockForm = () => {
+  const modifiedSurvey = lithology.survey.map(f => {
+    if (f.name === 'group_dh9oi63') return {...f, label: 'Sedimentary Rock'};
+    else if (f.name === 'primary_lithology') return {...f, label: 'Sedimentary Rock Type'};
+    else return f;
+  });
+  return {...lithology, survey: modifiedSurvey};
 };
 
 const forms = {
@@ -93,7 +103,7 @@ const forms = {
     tags: tags,
   },
   sed: {
-    lithologies: rockTypeSedimentary,
+    lithologies: getSedimentaryRockForm(),
   },
 };
 

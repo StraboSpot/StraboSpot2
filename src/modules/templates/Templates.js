@@ -15,7 +15,7 @@ import {formStyles} from '../form';
 import {MODAL_KEYS, MODALS} from '../home/home.constants';
 import MeasurementDetail from '../measurements/MeasurementDetail';
 import BasicPageDetail from '../page/BasicPageDetail';
-import {NOTEBOOK_PAGES} from '../page/page.constants';
+import {PET_PAGES, SED_PAGES} from '../page/page.constants';
 import {addedTemplates, setActiveTemplates, setUseTemplate} from '../project/projects.slice';
 
 const Templates = (props) => {
@@ -32,10 +32,12 @@ const Templates = (props) => {
   const [templateType, setTemplateType] = useState(null);
   const [templatesForKey, setTemplatesForKey] = useState([]);
 
+  const page = MODALS.find(p => p.key === modalVisible);
   const measurementKey = 'measurementTemplates';
   const templateKey = modalVisible === MODAL_KEYS.NOTEBOOK.MEASUREMENTS
   || modalVisible === MODAL_KEYS.SHORTCUTS.MEASUREMENT ? measurementKey
-    : modalVisible === MODAL_KEYS.NOTEBOOK.ROCK_TYPE_IGNEOUS ? props.rockKey
+    : modalVisible === MODAL_KEYS.NOTEBOOK.ROCK_TYPE_IGNEOUS
+    || modalVisible === MODAL_KEYS.NOTEBOOK.ROCK_TYPE_SEDIMENTARY ? props.rockKey
       : modalVisible;
 
   useEffect(() => {
@@ -108,7 +110,6 @@ const Templates = (props) => {
     dispatch(addedTemplates({key: templateKey, templates: updatedTemplates}));
   };
 
-
   const deleteTemplateConfirm = () => {
     Alert.alert(
       'Delete Template',
@@ -159,13 +160,15 @@ const Templates = (props) => {
   };
 
   const renderNonMeasurementsForm = () => {
-    const page = NOTEBOOK_PAGES.find(p => p.key === modalVisible);
+    const isPet = PET_PAGES.find(p => p.key === page.key);
+    const isSed = SED_PAGES.find(p => p.key === page.key);
+    const groupKey = isPet ? 'pet' : isSed ? 'sed' : 'general';
     return (
       <BasicPageDetail
         closeDetailView={() => setIsShowForm(false)}
         selectedFeature={selectedTemplate.values}
         page={page}
-        groupKey={'pet'}
+        groupKey={groupKey}
         saveTemplate={saveTemplate}
         deleteTemplate={deleteTemplateConfirm}
       />
@@ -197,18 +200,20 @@ const Templates = (props) => {
   };
 
   const renderTemplatesList = () => {
+    let label = modalVisible === MODAL_KEYS.NOTEBOOK.ROCK_TYPE_IGNEOUS ? toTitleCase(templateKey)  + ' Rock'
+      : page.label_singular || toTitleCase(page.label).slice(0, -1) || 'Unknown';
+
     let relevantTemplates = [];
-    let title = toTitleCase(templateKey);
     if (templateType === 'planar_orientation') {
       relevantTemplates = !isEmpty(templatesForKey)
         && templatesForKey.filter(
           t => t.values?.type === templateType || t.values?.type === 'tabular_orientation' || t.type === templateType);
-      title = 'Planar';
+      label = 'Planar';
     }
     else if (templateType === 'linear_orientation') {
       relevantTemplates = !isEmpty(templatesForKey) && templatesForKey.filter(
         t => t.values?.type === templateType || t.type === templateType);
-      title = 'Linear';
+      label = 'Linear';
     }
     else if (!isEmpty(templatesForKey)) relevantTemplates = templatesForKey;
 
@@ -237,7 +242,7 @@ const Templates = (props) => {
         )}
         <Button
           titleStyle={commonStyles.standardButtonText}
-          title={'Define New ' + title + ' Template'}
+          title={'Define New ' + label + ' Template'}
           type={'clear'}
           onPress={createNewTemplate}
         />
@@ -299,7 +304,6 @@ const Templates = (props) => {
   const renderTemplateSelection = (type) => {
     let activeTemplates = templates[type] && templates[type].active && !isEmpty(templates[type].active)
       && templates[type].active || [];
-    const page = MODALS.find(p => p.key === modalVisible);
     let label = page.label_singular || toTitleCase(page.label).slice(0, -1) || 'Unknown';
     if (type === 'planar_orientation') {
       activeTemplates = activeTemplatesForKey?.find(
