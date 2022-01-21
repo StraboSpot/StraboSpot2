@@ -128,6 +128,11 @@ const Map = React.forwardRef((props, ref) => {
       if (message.match(/Requesting.+failed.+MGLNativeNetworkManager/) || message.match(/offline/)) {
         return true; // true means we've processed the log
       }
+      // expected warnings - see https://github.com/mapbox/mapbox-gl-native/issues/15341#issuecomment-522889062
+      if (message.match('Request failed due to a permanent error: Canceled')
+        || message.match('Request failed due to a permanent error: Socket Closed')) {
+        return true;
+      }
       return false;
     });
     // if (!currentImageBasemap) setCurrentLocationAsCenter().catch(err => console.error('Error', err));
