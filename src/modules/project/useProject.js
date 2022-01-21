@@ -11,7 +11,7 @@ import {
   clearedStatusMessages,
   removedLastStatusMessage,
   setBackupModalVisible,
-  setBackupOverwriteModalVisible,
+  setBackupOverwriteModalVisible, setErrorMessagesModalVisible,
   setLoadingStatus,
   setStatusMessagesModalVisible,
   setUploadModalVisible,
@@ -229,6 +229,10 @@ const useProject = () => {
     }
     catch (err) {
       console.error('Error switching project in useProject', err);
+      dispatch(setStatusMessagesModalVisible(false));
+      dispatch(clearedStatusMessages());
+      dispatch(addedStatusMessage('Error switching project!'));
+      dispatch(setErrorMessagesModalVisible(true));
     }
   };
 
