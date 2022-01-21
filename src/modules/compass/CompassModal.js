@@ -18,6 +18,7 @@ const CompassModal = (props) => {
     else {
       dispatch(setModalVisible({modal: null}));
       dispatch(setCompassMeasurements({}));
+      props.showCompassDataModal(false);
     }
   };
 
@@ -31,7 +32,15 @@ const CompassModal = (props) => {
         isShowTemplates={isShowTemplates}
         setIsShowTemplates={bool => setIsShowTemplates(bool)}
       />
-      {!isShowTemplates && <Compass goToCurrentLocation={props.goToCurrentLocation}/>}
+      {!isShowTemplates
+      && (
+        <Compass
+          goToCurrentLocation={props.goToCurrentLocation}
+          showCompassDataModal={props.showCompassDataModal}
+          compassData={props.compassData}
+          compassDataButtonTitle={props.compassDataButtonTitle}
+        />
+      )}
     </Modal>
   );
 };

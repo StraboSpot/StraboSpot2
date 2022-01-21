@@ -4,13 +4,17 @@ import * as themes from '../../shared/styles.constants';
 
 const styles = StyleSheet.create({
   buttonContainer: {
-    paddingBottom: 10,
+    flex: 1,
+    // paddingBottom: 10,
+    flexWrap: 'wrap',
+    height: 100,
   },
   buttonTitleStyle: {
     color: themes.PRIMARY_ACCENT_COLOR,
     fontSize: 16,
   },
   compassContainer: {
+    // flex: 1,
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
   },
   compassImage: {

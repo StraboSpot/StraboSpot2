@@ -66,6 +66,10 @@ class Compass: RCTEventEmitter {
                   if (self.matrixArray.count > 5){
                     self.matrixArray.removeFirst();
                   }
+            print("MATRIX ROTATION")
+            print(rotationMatrix)
+            print("MATRIX ARRAY")
+            print(self.matrixArray)
 
             let m21Avg = self.matrixArray.map{$0.m21}.reduce(0,+) / Double(self.matrixArray.count)
             let m22Avg = self.matrixArray.map{$0.m22}.reduce(0,+) / Double(self.matrixArray.count)
@@ -93,6 +97,16 @@ class Compass: RCTEventEmitter {
                             "trend": trend,
                             "plunge": plunge,
                             "heading": heading,
+                            "m11": rotationMatrix.m11,
+                            "m12": rotationMatrix.m12,
+                            "m13": rotationMatrix.m13,
+                            "m21": m21Avg,
+                            "m22": m22Avg,
+                            "m23": m23Avg,
+                            "m31": m31Avg,
+                            "m32": m32Avg,
+                            "m33": m33Avg,
+
                             ])
           })
       }

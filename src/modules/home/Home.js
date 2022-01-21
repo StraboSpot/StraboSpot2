@@ -13,6 +13,7 @@ import commonStyles from '../../shared/common.styles';
 import * as Helpers from '../../shared/Helpers';
 import {animatePanels, isEmpty} from '../../shared/Helpers';
 import LoadingSpinner from '../../shared/ui/Loading';
+import Spacer from '../../shared/ui/Spacer';
 import StatusDialogBox from '../../shared/ui/StatusDialogBox';
 import ToastPopup from '../../shared/ui/Toast';
 import uiStyles from '../../shared/ui/ui.styles';
@@ -128,6 +129,8 @@ const Home = () => {
   const [imageSlideshowData, setImageSlideshowData] = useState([]);
   const [homeTextInputAnimate] = useState(new Animated.Value(0));
   const mapComponentRef = useRef(null);
+  const [showCompassMetadataView, setShowCompassMetadataView] = useState(false);
+  const [compassData, setCompassData] = useState({});
   const toastRef = useRef(null);
 
   useEffect(() => {
@@ -344,12 +347,59 @@ const Home = () => {
 
   const openStraboSpotURL = () => useDevice.openURL('https://www.strabospot.org/login');
 
+  const showCompassMetadataModal = () => {
+    setShowCompassMetadataView(!showCompassMetadataView);
+  };
+
+  const renderCompassData = () => (
+    <View style={{
+      position: 'absolute',
+      left: 320,
+      bottom: 100,
+      backgroundColor: 'white',
+      width: 200,
+      padding: 10,
+      borderBottomRightRadius: 20,
+      borderTopRightRadius: 20,
+    }}>
+      <View style={uiStyles.headerContainer}>
+        <Text style={commonStyles.dialogTitleText}>Compass Data</Text>
+      </View>
+      {Platform.OS === 'android' && <View>
+        <Text>Accelerometer:</Text>
+        <Text> x: {compassData.accelX}</Text>
+        <Text> y: {compassData.accelY}</Text>
+        <Text> z: {compassData.accelZ}</Text>
+        <Spacer/>
+        <Text>Magnetometer:</Text>
+        <Text> x: {compassData.magX}</Text>
+        <Text> y: {compassData.magY}</Text>
+        <Text> z: {compassData.magZ}</Text>
+      <Spacer/>
+      </View>}
+        <Text>Heading: {compassData.heading}</Text>
+      <Text>Strike: {compassData.strike}</Text>
+      <Text>Dip: {compassData.dip}</Text>
+      <Text>Plunge: {compassData.plunge}</Text>
+      <Text>Trend: {compassData.trend}</Text>
+    </View>
+  );
+
   const renderFloatingView = () => {
     const modal = MODALS.find(m => m.key === modalVisible);
-    if (modal?.modal_component ) {
+    if (modal?.modal_component) {
       const ModalDisplayed = modal.modal_component;
       if (modalVisible && !Object.keys(MODAL_KEYS.SHORTCUTS).find(s => s.key === modalVisible)) {
-        return <ModalDisplayed modalKey={modal.key} onPress={modalHandler} goToCurrentLocation={goToCurrentLocation}/>;
+        return (
+          <ModalDisplayed
+            modalKey={modal.key}
+            onPress={modalHandler}
+            goToCurrentLocation={goToCurrentLocation}
+            showCompassDataModal={showCompassMetadataModal}
+            compassDataButtonTitle={showCompassMetadataView ? 'Hide Compass Data' : 'Show Compass Data'}
+            compassData={(data) => {showCompassMetadataView && setCompassData(data);}}
+          />
+        );
       }
       else return <ModalDisplayed modalKey={modal.key} onPress={modalHandler}/>;
     }
@@ -626,16 +676,17 @@ const Home = () => {
       {/*Modals for Home Page*/}
       <BackupModal/>
       <BackUpOverwriteModal onPress={(action) => useProject.switchProject(action)}/>
+      {showCompassMetadataView && renderCompassData()}
       <InfoModal/>
       <InitialProjectLoadModal
         openMainMenu={() => toggleHomeDrawerButton()}
         visible={isProjectLoadSelectionModalVisible}
         closeModal={() => closeInitialProjectLoadModal()}
       />
-      <ErrorModal />
+      <ErrorModal/>
       <StatusModal openUrl={openStraboSpotURL}/>
       <UploadModal toggleHomeDrawer={() => toggleHomeDrawerButton()}/>
-      <WarningModal />
+      <WarningModal/>
       {/*------------------------*/}
       {isHomeLoading && <LoadingSpinner/>}
       {renderNotebookPanel()}

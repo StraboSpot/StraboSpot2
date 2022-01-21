@@ -9,7 +9,10 @@ const styles = StyleSheet.create({
     tintColor: 'red',
   },
   alignItemsToCenter: {
+    // width: 300,
     alignItems: 'center',
+    // flex: 2,
+    // flexWrap: 'wrap'
   },
   backdrop: {
     position: 'absolute',
