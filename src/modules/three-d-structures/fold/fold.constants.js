@@ -59,5 +59,27 @@ export const FOLD_ICONS = {
       'class_3': require('../../../assets/icons/FoldShape3_pressed.png'),
     },
   },
+  Hinge_Shape: {
+    DEFAULT: {
+      'angular': require('../../../assets/icons/HingeShape_Angular.png'),
+      'blunt': require('../../../assets/icons/HingeShape_Blunt.png'),
+      'chevron': require('../../../assets/icons/HingeShape_Chevron.png'),
+      'circular': require('../../../assets/icons/HingeShape_Circular.png'),
+      'rounded': require('../../../assets/icons/HingeShape_Rounded.png'),
+      'sharp': require('../../../assets/icons/HingeShape_Sharp.png'),
+      'subangular': require('../../../assets/icons/HingeShape_Subangular.png'),
+      'subrounded': require('../../../assets/icons/HingeShape_Subrounded.png'),
+    },
+    PRESSED: {
+      'angular': require('../../../assets/icons/HingeShape_Angular_pressed.png'),
+      'blunt': require('../../../assets/icons/HingeShape_Blunt_pressed.png'),
+      'chevron': require('../../../assets/icons/HingeShape_Chevron_pressed.png'),
+      'circular': require('../../../assets/icons/HingeShape_Circular_pressed.png'),
+      'rounded': require('../../../assets/icons/HingeShape_Rounded_pressed.png'),
+      'sharp': require('../../../assets/icons/HingeShape_Sharp_pressed.png'),
+      'subangular': require('../../../assets/icons/HingeShape_Subangular_pressed.png'),
+      'subrounded': require('../../../assets/icons/HingeShape_Subrounded_pressed.png'),
+    },
+  },
 };
 
