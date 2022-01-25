@@ -43,6 +43,10 @@ const BasicPageDetail = (props) => {
   }, []);
 
   useEffect(() => {
+    return () => dispatch(setSelectedAttributes([]));
+  }, []);
+
+  useEffect(() => {
     console.log('UE BasicPageDetail Selected Feature', title, props.selectedFeature);
     if (!isTemplate && isEmpty(props.selectedFeature)) props.closeDetailView();
   }, [props.selectedFeature]);
@@ -156,6 +160,7 @@ const BasicPageDetail = (props) => {
 
   const saveForm = async (formCurrent) => {
     if (groupKey === 'pet') await usePetrology.savePetFeature(pageKey, spot, formCurrent);
+    else if (groupKey === 'sed' && pageKey === 'bedding') await useSed.saveSedBedFeature(pageKey, spot, formCurrent);
     else if (groupKey === 'sed') await useSed.saveSedFeature(pageKey, spot, formCurrent);
     else await saveFeature(formCurrent);
     await formCurrent.resetForm();

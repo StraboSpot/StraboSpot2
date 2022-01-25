@@ -28,6 +28,11 @@ import TernaryPage from '../petrology/TernaryPage';
 import SampleModal from '../samples/SampleModal';
 import SamplesOverview from '../samples/SamplesOverview';
 import SamplesPage from '../samples/SamplesPage';
+import BasicSedPage from '../sed/BasicSedPage';
+import BeddingPage from '../sed/BeddingPage';
+import IntervalOverview from '../sed/IntervalOverview';
+import IntervalPage from '../sed/IntervalPage';
+import StratSectionPage from '../sed/StratSectionPage';
 import {TagsAtSpotList, TagsNotebookModal} from '../tags';
 import TagsNotebook from '../tags/TagsNotebook';
 import AddThreeDStructureModal from '../three-d-structures/AddThreeDStructureModal';
@@ -46,6 +51,7 @@ export const PAGE_KEYS = {
   GEOLOGIC_UNITS: 'geologic_unit',
   IMAGES: 'images',
   INTERPRETATIONS: 'interpretations',
+  INTERVAL: 'interval',
   LITHOLOGIES: 'lithologies',
   MEASUREMENTS: 'orientation_data',
   METADATA: 'metadata',
@@ -60,6 +66,7 @@ export const PAGE_KEYS = {
   ROCK_TYPE_METAMORPHIC: 'metamorphic',
   ROCK_TYPE_SEDIMENTARY: 'sedimentary',
   SAMPLES: 'samples',
+  STRAT_SECTION: 'strat_section',
   STRUCTURES: 'structures',
   TAGS: 'tags',
   TERNARY: 'ternary',
@@ -249,36 +256,70 @@ export const SED_PAGES = [
     page_component: RockSedimentaryPage,
     modal_component: AddRockModal,
     action_label: 'Add a Sedimentary Rock',
-    // }, {
-    //   key: PAGE_KEYS.BEDDING,
-    //   label: 'Bedding',
-    //   icon_src: require('../../assets/icons/SedBedding.png'),
-    //   icon_pressed_src: require('../../assets/icons/SedBedding_pressed.png'),
-    //   page_component: PlaceholderPage,
-    // }, {
-    //   key: PAGE_KEYS.STRUCTURES,
-    //   label: 'Structures',
-    //   icon_src: require('../../assets/icons/SedStructure.png'),
-    //   icon_pressed_src: require('../../assets/icons/SedStructure_pressed.png'),
-    //   page_component: PlaceholderPage,
-    // }, {
-    //   key: PAGE_KEYS.DIAGENESIS,
-    //   label: 'Diagenesis',
-    //   icon_src: require('../../assets/icons/SedDiagenesis.png'),
-    //   icon_pressed_src: require('../../assets/icons/SedDiagenesis_pressed.png'),
-    //   page_component: PlaceholderPage,
-    // }, {
-    //   key: PAGE_KEYS.FOSSILS,
-    //   label: 'Fossils',
-    //   icon_src: require('../../assets/icons/SedFossil.png'),
-    //   icon_pressed_src: require('../../assets/icons/SedFossil_pressed.png'),
-    //   page_component: PlaceholderPage,
-    // }, {
-    //   key: PAGE_KEYS.INTERPRETATIONS,
-    //   label: 'Interpretations',
-    //   icon_src: require('../../assets/icons/SedInterpretation.png'),
-    //   icon_pressed_src: require('../../assets/icons/SedInterpretation_pressed.png'),
-    //   page_component: PlaceholderPage,
+  }, {
+    key: PAGE_KEYS.STRAT_SECTION,
+    label: 'Strat Section (SS1)',
+    label_singular: 'Strat Section (SS1)',
+    icon_src: require('../../assets/icons/SedStratColumn.png'),
+    icon_pressed_src: require('../../assets/icons/SedStratColumn_pressed.png'),
+    overview_component: BasicOverviewList,
+    page_component: StratSectionPage,
+  }, {
+    key: PAGE_KEYS.INTERVAL,
+    label: 'Interval (SS1)',
+    label_singular: 'Interval (SS1)',
+    icon_src: require('../../assets/icons/SedStratColumn.png'),
+    icon_pressed_src: require('../../assets/icons/SedStratColumn_pressed.png'),
+    overview_component: IntervalOverview,
+    page_component: IntervalPage,
+  }, {
+    key: PAGE_KEYS.LITHOLOGIES,
+    label: 'Lithologies (SS1)',
+    label_singular: 'Lithology (SS1)',
+    icon_src: require('../../assets/icons/SedLithologies.png'),
+    icon_pressed_src: require('../../assets/icons/SedLithologies_pressed.png'),
+    overview_component: BasicOverviewList,
+    page_component: BasicSedPage,
+  }, {
+    key: PAGE_KEYS.BEDDING,
+    label: 'Bedding (SS1)',
+    label_singular: 'Bedding (SS1)',
+    icon_src: require('../../assets/icons/SedBedding.png'),
+    icon_pressed_src: require('../../assets/icons/SedBedding_pressed.png'),
+    page_component: BeddingPage,
+    overview_component: BasicOverviewList,
+  }, {
+    key: PAGE_KEYS.STRUCTURES,
+    label: 'Structures (SS1)',
+    label_singular: 'Structure (SS1)',
+    icon_src: require('../../assets/icons/SedStructure.png'),
+    icon_pressed_src: require('../../assets/icons/SedStructure_pressed.png'),
+    overview_component: BasicOverviewList,
+    page_component: BasicSedPage,
+  }, {
+    key: PAGE_KEYS.DIAGENESIS,
+    label: 'Diagenesis (SS1)',
+    label_singular: 'Diagenesis (SS1)',
+    icon_src: require('../../assets/icons/SedDiagenesis.png'),
+    icon_pressed_src: require('../../assets/icons/SedDiagenesis_pressed.png'),
+    overview_component: BasicOverviewList,
+    page_component: BasicSedPage,
+  }, {
+    key: PAGE_KEYS.FOSSILS,
+    label: 'Fossils (SS1)',
+    label_singular: 'Fossil (SS1)',
+    icon_src: require('../../assets/icons/SedFossil.png'),
+    icon_pressed_src: require('../../assets/icons/SedFossil_pressed.png'),
+    overview_component: BasicOverviewList,
+    page_component: BasicSedPage,
+  }, {
+    key: PAGE_KEYS.INTERPRETATIONS,
+    label: 'Interpretations (SS1)',
+    label_singular: 'Interpretation (SS1)',
+    icon_src: require('../../assets/icons/SedInterpretation.png'),
+    icon_pressed_src: require('../../assets/icons/SedInterpretation_pressed.png'),
+    overview_component: BasicOverviewList,
+    page_component: BasicSedPage,
   },
 ];
 

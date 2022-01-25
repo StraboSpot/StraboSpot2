@@ -278,6 +278,18 @@ const useSpots = () => {
           if (spot.properties.sed && spot.properties.sed[PAGE_KEYS.LITHOLOGIES]
             && Array.isArray(spot.properties.sed[PAGE_KEYS.LITHOLOGIES])) isPopulated = true;
           break;
+        case PAGE_KEYS.INTERVAL:
+          if (spot.properties.sed && (spot.properties.sed.character
+            || (spot.properties.sed[page.key] && !isEmpty(spot.properties.sed[page.key])))) {
+            isPopulated = true;
+          }
+          break;
+        case PAGE_KEYS.BEDDING:
+          if (spot.properties.sed && spot.properties.sed[page.key] && spot.properties.sed[page.key].beds
+            && Array.isArray(spot.properties.sed[page.key].beds)) {
+            isPopulated = true;
+          }
+          break;
         case PAGE_KEYS.LITHOLOGIES:
           if (spot.properties.sed && spot.properties.sed[page.key] && Array.isArray(spot.properties.sed[page.key])) {
             isPopulated = true;

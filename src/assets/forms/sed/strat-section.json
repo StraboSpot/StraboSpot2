@@ -1,0 +1,608 @@
+{
+  "survey": [
+    {
+      "type": "start",
+      "name": "start",
+      "label": "",
+      "required": "",
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "end",
+      "name": "end",
+      "label": "",
+      "required": "",
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "section_well_name",
+      "label": "Section/Well Name",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_one gz3ra74",
+      "name": "column_profile",
+      "label": "Column Profile",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "acknowledge",
+      "name": "misc_labels",
+      "label": "Show Labels for Misc Lithologies",
+      "required": false,
+      "relevant": "${column_profile} = 'clastic' or ${column_profile} = 'carbonate' or ${column_profile} = 'mixed_clastic'",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "acknowledge",
+      "name": "display_lithology_patterns",
+      "label": "Display Lithology Patterns",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_one zc89y27",
+      "name": "column_y_axis_units",
+      "label": "Column Y-Axis Units",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_one pu1qb77",
+      "name": "section_type",
+      "label": "Section Type",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "what_core_repository",
+      "label": "What Core Repository?",
+      "required": false,
+      "relevant": "${section_type} = 'core'",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "type_of_corer",
+      "label": "Type of corer",
+      "required": false,
+      "relevant": "${section_type} = 'core'",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "depth_from_surface_to_start_of",
+      "label": "Depth from surface to start of core",
+      "required": false,
+      "relevant": "${section_type} = 'core'",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "total_core_length",
+      "label": "Total core length",
+      "required": false,
+      "relevant": "${section_type} = 'core'",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "location_locality",
+      "label": "Location/Locality",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "basin",
+      "label": "Basin",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "age",
+      "label": "Age",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_multiple io1jz71",
+      "name": "purpose",
+      "label": "Purpose",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "other_purpose",
+      "label": "Other Purpose",
+      "required": false,
+      "relevant": "selected(${purpose}, 'other')",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "project_description",
+      "label": "Project Description",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "dates_of_work",
+      "label": "Dates of Work",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_multiple oy67z09",
+      "name": "scale_of_interest",
+      "label": "Scale of Interest",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "other_scale_of_interest",
+      "label": "Other Scale of Interest",
+      "required": false,
+      "relevant": "selected(${scale_of_interest}, 'other')",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_one gy5ky31",
+      "name": "obs_interval_bed_obs_scale",
+      "label": "Observation Interval (average bed/observation scale)",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_one ao6ek37",
+      "name": "how_is_section_georeferenced",
+      "label": "How is the Section Georeferenced?",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "strat_section_notes",
+      "label": "Notes",
+      "required": false,
+      "relevant": "",
+      "appearance": "multiline",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "calculate",
+      "name": "__version__",
+      "label": "",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "'vABoyibvTTxS8wqHZcbXuC'",
+      "$given_name": ""
+    },
+    {
+      "type": "calculate",
+      "name": "_version_",
+      "label": "",
+      "required": "",
+      "relevant": "",
+      "appearance": "",
+      "calculation": "'vz2UUddY9Aevi5TxvE3MNX'",
+      "$given_name": "__version__"
+    }
+  ],
+  "choices": [
+    {
+      "list_name": "gz3ra74",
+      "name": "clastic",
+      "label": "clastic",
+      "order": ""
+    },
+    {
+      "list_name": "gz3ra74",
+      "name": "carbonate",
+      "label": "carbonate",
+      "order": 1
+    },
+    {
+      "list_name": "gz3ra74",
+      "name": "mixed_clastic",
+      "label": "mixed clastic-carbonate",
+      "order": 2
+    },
+    {
+      "list_name": "gz3ra74",
+      "name": "basic_lithologies",
+      "label": "basic lithologies",
+      "order": 3
+    },
+    {
+      "list_name": "gz3ra74",
+      "name": "weathering_pro",
+      "label": "weathering profile",
+      "order": 4
+    },
+    {
+      "list_name": "zc89y27",
+      "name": "cm",
+      "label": "cm",
+      "order": ""
+    },
+    {
+      "list_name": "zc89y27",
+      "name": "m",
+      "label": "m",
+      "order": ""
+    },
+    {
+      "list_name": "zc89y27",
+      "name": "in",
+      "label": "in",
+      "order": ""
+    },
+    {
+      "list_name": "zc89y27",
+      "name": "ft",
+      "label": "ft",
+      "order": ""
+    },
+    {
+      "list_name": "pu1qb77",
+      "name": "outcrop",
+      "label": "outcrop",
+      "order": ""
+    },
+    {
+      "list_name": "pu1qb77",
+      "name": "core",
+      "label": "core",
+      "order": ""
+    },
+    {
+      "list_name": "pu1qb77",
+      "name": "well_log",
+      "label": "well log",
+      "order": ""
+    },
+    {
+      "list_name": "pu1qb77",
+      "name": "composite",
+      "label": "composite",
+      "order": ""
+    },
+    {
+      "list_name": "io1jz71",
+      "name": "geochronology",
+      "label": "geochronology",
+      "order": ""
+    },
+    {
+      "list_name": "io1jz71",
+      "name": "facies_arch",
+      "label": "facies architecture",
+      "order": ""
+    },
+    {
+      "list_name": "io1jz71",
+      "name": "res_char",
+      "label": "reservoir characterization",
+      "order": ""
+    },
+    {
+      "list_name": "io1jz71",
+      "name": "pleasure",
+      "label": "pleasure",
+      "order": ""
+    },
+    {
+      "list_name": "io1jz71",
+      "name": "education",
+      "label": "education",
+      "order": ""
+    },
+    {
+      "list_name": "io1jz71",
+      "name": "historical",
+      "label": "historical",
+      "order": ""
+    },
+    {
+      "list_name": "io1jz71",
+      "name": "sequence_strat",
+      "label": "sequence stratrigraphy",
+      "order": ""
+    },
+    {
+      "list_name": "io1jz71",
+      "name": "correlation",
+      "label": "correlation",
+      "order": ""
+    },
+    {
+      "list_name": "io1jz71",
+      "name": "basin_analysis",
+      "label": "basin analysis",
+      "order": ""
+    },
+    {
+      "list_name": "io1jz71",
+      "name": "taphonomy",
+      "label": "taphonomy",
+      "order": ""
+    },
+    {
+      "list_name": "io1jz71",
+      "name": "geochemical",
+      "label": "geochemical",
+      "order": ""
+    },
+    {
+      "list_name": "io1jz71",
+      "name": "provenance",
+      "label": "provenance",
+      "order": ""
+    },
+    {
+      "list_name": "io1jz71",
+      "name": "petrographic",
+      "label": "petrographic",
+      "order": ""
+    },
+    {
+      "list_name": "io1jz71",
+      "name": "petrophysical",
+      "label": "petrophysical",
+      "order": ""
+    },
+    {
+      "list_name": "io1jz71",
+      "name": "other",
+      "label": "other",
+      "order": ""
+    },
+    {
+      "list_name": "oy67z09",
+      "name": "local_section",
+      "label": "local section",
+      "order": ""
+    },
+    {
+      "list_name": "oy67z09",
+      "name": "single_outcrop",
+      "label": "single outcrop",
+      "order": 1
+    },
+    {
+      "list_name": "oy67z09",
+      "name": "multi_outcrop",
+      "label": "multiple outcrop",
+      "order": 2
+    },
+    {
+      "list_name": "oy67z09",
+      "name": "single_core",
+      "label": "single core",
+      "order": 3
+    },
+    {
+      "list_name": "oy67z09",
+      "name": "multiple_core",
+      "label": "multiple core",
+      "order": 4
+    },
+    {
+      "list_name": "oy67z09",
+      "name": "single_basin",
+      "label": "single basin",
+      "order": 5
+    },
+    {
+      "list_name": "oy67z09",
+      "name": "regional_study",
+      "label": "regional study",
+      "order": 6
+    },
+    {
+      "list_name": "oy67z09",
+      "name": "multi_basins",
+      "label": "multiple basins",
+      "order": 7
+    },
+    {
+      "list_name": "oy67z09",
+      "name": "lak",
+      "label": "lake",
+      "order": 8
+    },
+    {
+      "list_name": "oy67z09",
+      "name": "ice",
+      "label": "ice",
+      "order": 9
+    },
+    {
+      "list_name": "oy67z09",
+      "name": "peat",
+      "label": "peat",
+      "order": 10
+    },
+    {
+      "list_name": "oy67z09",
+      "name": "marine",
+      "label": "marine",
+      "order": 11
+    },
+    {
+      "list_name": "oy67z09",
+      "name": "natura",
+      "label": "natural",
+      "order": 12
+    },
+    {
+      "list_name": "oy67z09",
+      "name": "excavated",
+      "label": "excavated",
+      "order": 13
+    },
+    {
+      "list_name": "oy67z09",
+      "name": "surface",
+      "label": "surface",
+      "order": 14
+    },
+    {
+      "list_name": "oy67z09",
+      "name": "archeological",
+      "label": "archaeological",
+      "order": 15
+    },
+    {
+      "list_name": "oy67z09",
+      "name": "other",
+      "label": "other",
+      "order": 16
+    },
+    {
+      "list_name": "gy5ky31",
+      "name": "mm",
+      "label": "mm",
+      "order": ""
+    },
+    {
+      "list_name": "gy5ky31",
+      "name": "cm",
+      "label": "cm",
+      "order": ""
+    },
+    {
+      "list_name": "gy5ky31",
+      "name": "dm",
+      "label": "dm",
+      "order": ""
+    },
+    {
+      "list_name": "gy5ky31",
+      "name": "m",
+      "label": "m",
+      "order": ""
+    },
+    {
+      "list_name": "gy5ky31",
+      "name": "10m",
+      "label": "10m",
+      "order": ""
+    },
+    {
+      "list_name": "gy5ky31",
+      "name": "100s_m",
+      "label": "100s m",
+      "order": ""
+    },
+    {
+      "list_name": "gy5ky31",
+      "name": "km",
+      "label": "km",
+      "order": ""
+    },
+    {
+      "list_name": "ao6ek37",
+      "name": "point_at_secti",
+      "label": "point at section base",
+      "order": ""
+    },
+    {
+      "list_name": "ao6ek37",
+      "name": "point_at_sect",
+      "label": "point at section/core top",
+      "order": ""
+    },
+    {
+      "list_name": "ao6ek37",
+      "name": "points_through",
+      "label": "points throughout section (line/trace on map)",
+      "order": ""
+    },
+    {
+      "list_name": "ao6ek37",
+      "name": "image_spot",
+      "label": "image spot",
+      "order": ""
+    }
+  ],
+  "settings": [
+    {
+      "id_string": "SS1 Copy",
+      "version": "2 (2021-1-11)"
+    }
+  ]
+}

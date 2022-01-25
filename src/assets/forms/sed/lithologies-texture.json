@@ -1,0 +1,652 @@
+{
+  "survey": [
+    {
+      "type": "begin_group",
+      "name": "group_ha0qn59",
+      "label": "Texture",
+      "required": false,
+      "read_only": "",
+      "relevant": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_one br57a34",
+      "name": "mud_silt_grain_size",
+      "label": "Mudstone/Siltstone Grain Size",
+      "required": false,
+      "read_only": false,
+      "relevant": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_one yt6dh35",
+      "name": "sand_grain_size",
+      "label": "Sandstone Grain Size",
+      "required": false,
+      "read_only": false,
+      "relevant": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_one hx7uv11",
+      "name": "congl_grain_size",
+      "label": "Conglomerate Grain Size",
+      "required": false,
+      "read_only": false,
+      "relevant": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_one hx7uv11",
+      "name": "breccia_grain_size",
+      "label": "Breccia Grain Size",
+      "required": false,
+      "read_only": false,
+      "relevant": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_multiple ww4nv53",
+      "name": "grain_size_range",
+      "label": "Grain Size Range",
+      "required": false,
+      "read_only": false,
+      "relevant": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "decimal",
+      "name": "clay_percent",
+      "label": "Clay percent",
+      "required": false,
+      "read_only": false,
+      "relevant": "selected(${grain_size_range}, 'clay')",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "decimal",
+      "name": "silt_percent",
+      "label": "Silt percent",
+      "required": false,
+      "read_only": false,
+      "relevant": "selected(${grain_size_range}, 'silt')",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "decimal",
+      "name": "sand_very_fine_percent",
+      "label": "Sand - very fine percent",
+      "required": false,
+      "read_only": false,
+      "relevant": "selected(${grain_size_range}, 'sand_very_fin')",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "decimal",
+      "name": "sand_fine_lower_percent",
+      "label": "Sand - fine lower percent",
+      "required": false,
+      "read_only": false,
+      "relevant": "selected(${grain_size_range}, 'sand_fine_low')",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "decimal",
+      "name": "sand_fine_upper_percent",
+      "label": "Sand - fine upper percent",
+      "required": false,
+      "read_only": false,
+      "relevant": "selected(${grain_size_range}, 'sand_fine_upp')",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "decimal",
+      "name": "sand_medium_lower_percent",
+      "label": "Sand - medium lower percent",
+      "required": false,
+      "read_only": false,
+      "relevant": "selected(${grain_size_range}, 'sand_medium_l')",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "decimal",
+      "name": "sand_medium_upper_percent",
+      "label": "Sand - medium upper percent",
+      "required": false,
+      "read_only": false,
+      "relevant": "selected(${grain_size_range}, 'sand_medium_u')",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "decimal",
+      "name": "sand_coarse_lower_percent",
+      "label": "Sand - coarse lower percent",
+      "required": false,
+      "read_only": false,
+      "relevant": "selected(${grain_size_range}, 'sand_coarse_l')",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "decimal",
+      "name": "sand_coarse_upper_percent",
+      "label": "Sand - coarse upper percent",
+      "required": false,
+      "read_only": false,
+      "relevant": "selected(${grain_size_range}, 'sand_coarse_u')",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "decimal",
+      "name": "sand_very_coarse_percent",
+      "label": "Sand - very coarse percent",
+      "required": false,
+      "read_only": false,
+      "relevant": "selected(${grain_size_range}, 'sand_very_coa')",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "decimal",
+      "name": "granule_percent",
+      "label": "Granule percent",
+      "required": false,
+      "read_only": false,
+      "relevant": "selected(${grain_size_range}, 'granule')",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "decimal",
+      "name": "pebble_percent",
+      "label": "Pebble percent",
+      "required": false,
+      "read_only": false,
+      "relevant": "selected(${grain_size_range}, 'pebble')",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "decimal",
+      "name": "cobble_percent",
+      "label": "Cobble percent",
+      "required": false,
+      "read_only": false,
+      "relevant": "selected(${grain_size_range}, 'cobble')",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "decimal",
+      "name": "boulder_percent",
+      "label": "Boulder percent",
+      "required": false,
+      "read_only": false,
+      "relevant": "selected(${grain_size_range}, 'boulder')",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "decimal",
+      "name": "maximum_clast_size_cm",
+      "label": "Maximum Clast Size (cm)",
+      "required": false,
+      "read_only": false,
+      "relevant": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "decimal",
+      "name": "minimum_clast_size_cm",
+      "label": "Minimum Clast Size (cm)",
+      "required": false,
+      "read_only": false,
+      "relevant": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "decimal",
+      "name": "average_clast_size_cm",
+      "label": "Average Clast Size (cm)",
+      "required": false,
+      "read_only": false,
+      "relevant": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_multiple fz52a24",
+      "name": "matrix_size",
+      "label": "Matrix Size",
+      "required": false,
+      "read_only": false,
+      "relevant": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_multiple en1dw51",
+      "name": "character",
+      "label": "Character",
+      "required": false,
+      "read_only": false,
+      "relevant": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_multiple dq8tl80",
+      "name": "sorting",
+      "label": "Sorting",
+      "required": false,
+      "read_only": false,
+      "relevant": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_multiple hs69g66",
+      "name": "rounding",
+      "label": "Rounding",
+      "required": false,
+      "read_only": false,
+      "relevant": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_multiple tz12z20",
+      "name": "shape",
+      "label": "Shape",
+      "required": false,
+      "read_only": false,
+      "relevant": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "other_shape",
+      "label": "Other Shape",
+      "required": false,
+      "read_only": "",
+      "relevant": "selected(${shape}, 'other')",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "notes",
+      "label": "Notes",
+      "required": false,
+      "read_only": false,
+      "relevant": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "end_group",
+      "name": "",
+      "label": "",
+      "required": "",
+      "read_only": "",
+      "relevant": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "calculate",
+      "name": "__version__",
+      "label": "",
+      "required": false,
+      "read_only": false,
+      "relevant": "",
+      "calculation": "'vpSRWLYg7xtLSMswzEzCvi'",
+      "$given_name": ""
+    },
+    {
+      "type": "calculate",
+      "name": "_version_",
+      "label": "",
+      "required": false,
+      "read_only": "",
+      "relevant": "",
+      "calculation": "'vgSJ65Wgsw4aosJiNG5H9J'",
+      "$given_name": "__version__"
+    },
+    {
+      "type": "calculate",
+      "name": "_version__001",
+      "label": "",
+      "required": "",
+      "read_only": "",
+      "relevant": "",
+      "calculation": "'vjs6HiwTBSoqnBbKxDDfPM'",
+      "$given_name": "__version__"
+    }
+  ],
+  "choices": [
+    {
+      "list_name": "br57a34",
+      "name": "clay",
+      "label": "clay"
+    },
+    {
+      "list_name": "br57a34",
+      "name": "silt",
+      "label": "silt"
+    },
+    {
+      "list_name": "yt6dh35",
+      "name": "sand_very_fin",
+      "label": "sand- very fine"
+    },
+    {
+      "list_name": "yt6dh35",
+      "name": "sand_fine_low",
+      "label": "sand- fine lower"
+    },
+    {
+      "list_name": "yt6dh35",
+      "name": "sand_fine_upp",
+      "label": "sand- fine upper"
+    },
+    {
+      "list_name": "yt6dh35",
+      "name": "sand_medium_l",
+      "label": "sand- medium lower"
+    },
+    {
+      "list_name": "yt6dh35",
+      "name": "sand_medium_u",
+      "label": "sand- medium upper"
+    },
+    {
+      "list_name": "yt6dh35",
+      "name": "sand_coarse_l",
+      "label": "sand- coarse lower"
+    },
+    {
+      "list_name": "yt6dh35",
+      "name": "sand_coarse_u",
+      "label": "sand- coarse upper"
+    },
+    {
+      "list_name": "yt6dh35",
+      "name": "sand_very_coa",
+      "label": "sand- very coarse"
+    },
+    {
+      "list_name": "hx7uv11",
+      "name": "granule",
+      "label": "granule"
+    },
+    {
+      "list_name": "hx7uv11",
+      "name": "pebble",
+      "label": "pebble"
+    },
+    {
+      "list_name": "hx7uv11",
+      "name": "cobble",
+      "label": "cobble"
+    },
+    {
+      "list_name": "hx7uv11",
+      "name": "boulder",
+      "label": "boulder"
+    },
+    {
+      "list_name": "ww4nv53",
+      "name": "clay",
+      "label": "clay"
+    },
+    {
+      "list_name": "ww4nv53",
+      "name": "silt",
+      "label": "silt"
+    },
+    {
+      "list_name": "ww4nv53",
+      "name": "sand_very_fin",
+      "label": "sand- very fine"
+    },
+    {
+      "list_name": "ww4nv53",
+      "name": "sand_fine_low",
+      "label": "sand- fine lower"
+    },
+    {
+      "list_name": "ww4nv53",
+      "name": "sand_fine_upp",
+      "label": "sand- fine upper"
+    },
+    {
+      "list_name": "ww4nv53",
+      "name": "sand_medium_l",
+      "label": "sand- medium lower"
+    },
+    {
+      "list_name": "ww4nv53",
+      "name": "sand_medium_u",
+      "label": "sand- medium upper"
+    },
+    {
+      "list_name": "ww4nv53",
+      "name": "sand_coarse_l",
+      "label": "sand- coarse lower"
+    },
+    {
+      "list_name": "ww4nv53",
+      "name": "sand_coarse_u",
+      "label": "sand- coarse upper"
+    },
+    {
+      "list_name": "ww4nv53",
+      "name": "sand_very_coa",
+      "label": "sand- very coarse"
+    },
+    {
+      "list_name": "ww4nv53",
+      "name": "granule",
+      "label": "granule"
+    },
+    {
+      "list_name": "ww4nv53",
+      "name": "pebble",
+      "label": "pebble"
+    },
+    {
+      "list_name": "ww4nv53",
+      "name": "cobble",
+      "label": "cobble"
+    },
+    {
+      "list_name": "ww4nv53",
+      "name": "boulder",
+      "label": "boulder"
+    },
+    {
+      "list_name": "fz52a24",
+      "name": "clay",
+      "label": "clay"
+    },
+    {
+      "list_name": "fz52a24",
+      "name": "silt",
+      "label": "silt"
+    },
+    {
+      "list_name": "fz52a24",
+      "name": "sand",
+      "label": "sand"
+    },
+    {
+      "list_name": "fz52a24",
+      "name": "granule",
+      "label": "granule"
+    },
+    {
+      "list_name": "fz52a24",
+      "name": "pebble",
+      "label": "pebble"
+    },
+    {
+      "list_name": "fz52a24",
+      "name": "cement",
+      "label": "cement"
+    },
+    {
+      "list_name": "fz52a24",
+      "name": "none",
+      "label": "none"
+    },
+    {
+      "list_name": "en1dw51",
+      "name": "grain-supporte",
+      "label": "grain-supported"
+    },
+    {
+      "list_name": "en1dw51",
+      "name": "matrix-support",
+      "label": "matrix-supported"
+    },
+    {
+      "list_name": "en1dw51",
+      "name": "imbrication",
+      "label": "imbrication"
+    },
+    {
+      "list_name": "en1dw51",
+      "name": "granule",
+      "label": "alignment"
+    },
+    {
+      "list_name": "dq8tl80",
+      "name": "v_well_sorted",
+      "label": "very well sorted"
+    },
+    {
+      "list_name": "dq8tl80",
+      "name": "well_sorted",
+      "label": "well sorted"
+    },
+    {
+      "list_name": "dq8tl80",
+      "name": "mod_sorted",
+      "label": "moderately sorted"
+    },
+    {
+      "list_name": "dq8tl80",
+      "name": "poorly_sorted",
+      "label": "poorly sorted"
+    },
+    {
+      "list_name": "dq8tl80",
+      "name": "v_poorly_sorte",
+      "label": "very poorly sorted"
+    },
+    {
+      "list_name": "hs69g66",
+      "name": "well_rounded",
+      "label": "well-rounded"
+    },
+    {
+      "list_name": "hs69g66",
+      "name": "rounded",
+      "label": "rounded"
+    },
+    {
+      "list_name": "hs69g66",
+      "name": "subrounded",
+      "label": "subrounded"
+    },
+    {
+      "list_name": "hs69g66",
+      "name": "subangular",
+      "label": "subangular"
+    },
+    {
+      "list_name": "hs69g66",
+      "name": "angular",
+      "label": "angular"
+    },
+    {
+      "list_name": "hs69g66",
+      "name": "very_angular",
+      "label": "very angular"
+    },
+    {
+      "list_name": "tz12z20",
+      "name": "spherical",
+      "label": "spherical"
+    },
+    {
+      "list_name": "tz12z20",
+      "name": "equant",
+      "label": "equant"
+    },
+    {
+      "list_name": "tz12z20",
+      "name": "tabular",
+      "label": "tabular"
+    },
+    {
+      "list_name": "tz12z20",
+      "name": "disk_chip_like",
+      "label": "disk/chip-like"
+    },
+    {
+      "list_name": "tz12z20",
+      "name": "prolate",
+      "label": "prolate"
+    },
+    {
+      "list_name": "tz12z20",
+      "name": "bladed",
+      "label": "bladed"
+    },
+    {
+      "list_name": "tz12z20",
+      "name": "rod_like",
+      "label": "rod-like"
+    },
+    {
+      "list_name": "tz12z20",
+      "name": "skeletal",
+      "label": "skeletal"
+    },
+    {
+      "list_name": "tz12z20",
+      "name": "non_skeletal",
+      "label": "non-skeletal"
+    },
+    {
+      "list_name": "tz12z20",
+      "name": "other",
+      "label": "other"
+    }
+  ],
+  "settings": [
+    {
+      "id_string": "SS1 Copy",
+      "version": "2 (2021-1-11)"
+    }
+  ]
+}

@@ -1,0 +1,297 @@
+{
+  "survey": [
+    {
+      "type": "select_multiple cs0rc13",
+      "name": "bedding_plane_features",
+      "label": "Bedding plane features",
+      "required": false,
+      "relevant": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "other_bedding_plane_feature",
+      "label": "Other Bedding Plane Feature",
+      "required": false,
+      "relevant": "selected(${bedding_plane_features}, 'other')",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "bedding_plane_features_scale",
+      "label": "Bedding Plane Features Scale",
+      "required": false,
+      "relevant": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "bedding_plane_features_orientation",
+      "label": "Bedding Plane Features Orientation",
+      "required": false,
+      "relevant": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_multiple bd2tc58",
+      "name": "bedform_type",
+      "label": "Bedform Type",
+      "required": false,
+      "relevant": "selected(${bedding_plane_features}, 'bedforms')",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "other_bedform_type",
+      "label": "Other Bedform Type",
+      "required": false,
+      "relevant": "selected(${bedform_type}, 'other')",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "bedform_scale",
+      "label": "Bedform Scale",
+      "required": false,
+      "relevant": "selected(${bedding_plane_features}, 'bedforms')",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "crest_orientation_azimuth_0_360",
+      "label": "Crest Orientation (Azimuth, 0-360)",
+      "required": false,
+      "relevant": "selected(${bedding_plane_features}, 'bedforms')",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "notes",
+      "label": "Notes",
+      "required": false,
+      "relevant": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "calculate",
+      "name": "__version__",
+      "label": "",
+      "required": false,
+      "relevant": "",
+      "calculation": "'vYDde4CEYDYojkqNX2ot2w'",
+      "$given_name": ""
+    },
+    {
+      "type": "calculate",
+      "name": "_version_",
+      "label": "",
+      "required": "",
+      "relevant": "",
+      "calculation": "'vH7pu28EJEWp6YG7d2m5ic'",
+      "$given_name": "__version__"
+    }
+  ],
+  "choices": [
+    {
+      "list_name": "cs0rc13",
+      "name": "bedforms",
+      "label": "bedforms",
+      "order": ""
+    },
+    {
+      "list_name": "cs0rc13",
+      "name": "sole_marks",
+      "label": "sole marks",
+      "order": ""
+    },
+    {
+      "list_name": "cs0rc13",
+      "name": "flute_cast",
+      "label": "flute cast",
+      "order": ""
+    },
+    {
+      "list_name": "cs0rc13",
+      "name": "groove_cast",
+      "label": "groove cast",
+      "order": ""
+    },
+    {
+      "list_name": "cs0rc13",
+      "name": "tool_marks",
+      "label": "tool marks",
+      "order": ""
+    },
+    {
+      "list_name": "cs0rc13",
+      "name": "gutter_cast",
+      "label": "gutter cast",
+      "order": ""
+    },
+    {
+      "list_name": "cs0rc13",
+      "name": "load_cast",
+      "label": "load cast",
+      "order": ""
+    },
+    {
+      "list_name": "cs0rc13",
+      "name": "parting_lineat",
+      "label": "parting lineation",
+      "order": ""
+    },
+    {
+      "list_name": "cs0rc13",
+      "name": "mudcracks",
+      "label": "mudcracks",
+      "order": ""
+    },
+    {
+      "list_name": "cs0rc13",
+      "name": "syneresis_crac",
+      "label": "syneresis cracks",
+      "order": ""
+    },
+    {
+      "list_name": "cs0rc13",
+      "name": "evaporite_mold",
+      "label": "evaporite molds",
+      "order": ""
+    },
+    {
+      "list_name": "cs0rc13",
+      "name": "raindrop_impre",
+      "label": "raindrop impressions",
+      "order": ""
+    },
+    {
+      "list_name": "cs0rc13",
+      "name": "glacial_striat",
+      "label": "glacial striations",
+      "order": ""
+    },
+    {
+      "list_name": "cs0rc13",
+      "name": "hardground_fir",
+      "label": "hardground/firmground",
+      "order": ""
+    },
+    {
+      "list_name": "cs0rc13",
+      "name": "other",
+      "label": "other",
+      "order": ""
+    },
+    {
+      "list_name": "bd2tc58",
+      "name": "wave_ripples",
+      "label": "wave ripples",
+      "order": ""
+    },
+    {
+      "list_name": "bd2tc58",
+      "name": "current_ripple",
+      "label": "current ripples",
+      "order": 1
+    },
+    {
+      "list_name": "bd2tc58",
+      "name": "dunes",
+      "label": "dunes",
+      "order": 2
+    },
+    {
+      "list_name": "bd2tc58",
+      "name": "antidunes",
+      "label": "antidunes",
+      "order": 3
+    },
+    {
+      "list_name": "bd2tc58",
+      "name": "2d_crests",
+      "label": "2D crests",
+      "order": 4
+    },
+    {
+      "list_name": "bd2tc58",
+      "name": "3d_crests",
+      "label": "3D crests",
+      "order": 5
+    },
+    {
+      "list_name": "bd2tc58",
+      "name": "lunate",
+      "label": "lunate",
+      "order": 6
+    },
+    {
+      "list_name": "bd2tc58",
+      "name": "cuspate",
+      "label": "cuspate",
+      "order": 7
+    },
+    {
+      "list_name": "bd2tc58",
+      "name": "linguoid",
+      "label": "linguoid",
+      "order": 8
+    },
+    {
+      "list_name": "bd2tc58",
+      "name": "bifurcations",
+      "label": "bifurcations",
+      "order": 9
+    },
+    {
+      "list_name": "bd2tc58",
+      "name": "ladderback",
+      "label": "ladderback",
+      "order": 10
+    },
+    {
+      "list_name": "bd2tc58",
+      "name": "interference_r",
+      "label": "interference ripples",
+      "order": 11
+    },
+    {
+      "list_name": "bd2tc58",
+      "name": "adhesion_struc",
+      "label": "adhesion structures",
+      "order": 12
+    },
+    {
+      "list_name": "bd2tc58",
+      "name": "swales",
+      "label": "swales",
+      "order": 13
+    },
+    {
+      "list_name": "bd2tc58",
+      "name": "hummock_swale",
+      "label": "hummocks and swales",
+      "order": 14
+    },
+    {
+      "list_name": "bd2tc58",
+      "name": "other",
+      "label": "other",
+      "order": ""
+    }
+  ],
+  "settings": [
+    {
+      "id_string": "SS1 Copy",
+      "version": "2 (2021-1-25)"
+    }
+  ]
+}

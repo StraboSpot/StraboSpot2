@@ -1,0 +1,373 @@
+{
+  "survey": [
+    {
+      "type": "begin_group",
+      "name": "group_ei1uf86",
+      "label": "Process Interpretation",
+      "required": false,
+      "relevant": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_one lp9ir83",
+      "name": "energy",
+      "label": "Energy",
+      "required": false,
+      "relevant": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "other_energy",
+      "label": "Other Energy",
+      "required": false,
+      "relevant": "${energy} = 'other'",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_multiple nr37l64",
+      "name": "sediment_transport",
+      "label": "Sediment Transport",
+      "required": false,
+      "relevant": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "other_sediment_transport",
+      "label": "Other Sediment Transport",
+      "required": false,
+      "relevant": "selected(${sediment_transport}, 'other')",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_one fe1pj82",
+      "name": "fluidization",
+      "label": "Fluidization",
+      "required": false,
+      "relevant": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "other_fluidization",
+      "label": "Other Fluidization",
+      "required": false,
+      "relevant": "${fluidization} = 'other'",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_multiple kk8ql20",
+      "name": "miscellaneous",
+      "label": "Miscellaneous",
+      "required": false,
+      "relevant": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "other_miscellaneous",
+      "label": "Other Misc. Process",
+      "required": false,
+      "relevant": "selected(${miscellaneous}, 'other')",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "notes",
+      "label": "Notes",
+      "required": false,
+      "relevant": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "end_group",
+      "name": "",
+      "label": "",
+      "required": "",
+      "relevant": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "calculate",
+      "name": "__version__",
+      "label": "",
+      "required": false,
+      "relevant": "",
+      "calculation": "'v3efDpNuEsJwE9rfyRJUwq'",
+      "$given_name": ""
+    },
+    {
+      "type": "calculate",
+      "name": "_version_",
+      "label": "",
+      "required": false,
+      "relevant": "",
+      "calculation": "'vSDNywBR9vKgBhd6QsPBTb'",
+      "$given_name": "__version__"
+    },
+    {
+      "type": "calculate",
+      "name": "_version__001",
+      "label": "",
+      "required": "",
+      "relevant": "",
+      "calculation": "'v5mKHRj3G5rHrqH9pqTgPr'",
+      "$given_name": "__version__"
+    }
+  ],
+  "choices": [
+    {
+      "list_name": "lp9ir83",
+      "name": "high_energy",
+      "label": "high energy"
+    },
+    {
+      "list_name": "lp9ir83",
+      "name": "low_energy",
+      "label": "low energy"
+    },
+    {
+      "list_name": "lp9ir83",
+      "name": "variable_energ",
+      "label": "variable energy"
+    },
+    {
+      "list_name": "lp9ir83",
+      "name": "other",
+      "label": "Other"
+    },
+    {
+      "list_name": "nr37l64",
+      "name": "waves",
+      "label": "waves"
+    },
+    {
+      "list_name": "nr37l64",
+      "name": "current",
+      "label": "current"
+    },
+    {
+      "list_name": "nr37l64",
+      "name": "combined_flow",
+      "label": "combined flow"
+    },
+    {
+      "list_name": "nr37l64",
+      "name": "bed_load",
+      "label": "bed load"
+    },
+    {
+      "list_name": "nr37l64",
+      "name": "suspended_load",
+      "label": "suspended load"
+    },
+    {
+      "list_name": "nr37l64",
+      "name": "turbidity_curr",
+      "label": "turbidity current"
+    },
+    {
+      "list_name": "nr37l64",
+      "name": "debris_flow",
+      "label": "debris flow"
+    },
+    {
+      "list_name": "nr37l64",
+      "name": "density_flow",
+      "label": "density flow"
+    },
+    {
+      "list_name": "nr37l64",
+      "name": "mud_slurry",
+      "label": "mud slurry"
+    },
+    {
+      "list_name": "nr37l64",
+      "name": "hypopycnal_flo",
+      "label": "hypopycnal flow"
+    },
+    {
+      "list_name": "nr37l64",
+      "name": "hyperpycnal_fl",
+      "label": "hyperpycnal flow"
+    },
+    {
+      "list_name": "nr37l64",
+      "name": "mass_transport",
+      "label": "mass transport"
+    },
+    {
+      "list_name": "nr37l64",
+      "name": "tides",
+      "label": "tides"
+    },
+    {
+      "list_name": "nr37l64",
+      "name": "tidal_rhythmit",
+      "label": "tidal rhythmite"
+    },
+    {
+      "list_name": "nr37l64",
+      "name": "tidal_bundle",
+      "label": "tidal bundle"
+    },
+    {
+      "list_name": "nr37l64",
+      "name": "wind",
+      "label": "wind"
+    },
+    {
+      "list_name": "nr37l64",
+      "name": "ice",
+      "label": "ice"
+    },
+    {
+      "list_name": "nr37l64",
+      "name": "pyroclastic_fl",
+      "label": "pyroclastic flow"
+    },
+    {
+      "list_name": "nr37l64",
+      "name": "ground_surge",
+      "label": "ground surge"
+    },
+    {
+      "list_name": "nr37l64",
+      "name": "base_surge",
+      "label": "base surge"
+    },
+    {
+      "list_name": "nr37l64",
+      "name": "other",
+      "label": "other"
+    },
+    {
+      "list_name": "fe1pj82",
+      "name": "liquefaction",
+      "label": "liquefaction"
+    },
+    {
+      "list_name": "fe1pj82",
+      "name": "granular",
+      "label": "granular"
+    },
+    {
+      "list_name": "fe1pj82",
+      "name": "mass_flow",
+      "label": "mass flow"
+    },
+    {
+      "list_name": "fe1pj82",
+      "name": "other",
+      "label": "other"
+    },
+    {
+      "list_name": "kk8ql20",
+      "name": "ice_rafting",
+      "label": "ice rafting"
+    },
+    {
+      "list_name": "kk8ql20",
+      "name": "till",
+      "label": "till"
+    },
+    {
+      "list_name": "kk8ql20",
+      "name": "moraine",
+      "label": "moraine"
+    },
+    {
+      "list_name": "kk8ql20",
+      "name": "storm",
+      "label": "storm"
+    },
+    {
+      "list_name": "kk8ql20",
+      "name": "hemipelagic",
+      "label": "hemipelagic"
+    },
+    {
+      "list_name": "kk8ql20",
+      "name": "desiccation",
+      "label": "desiccation"
+    },
+    {
+      "list_name": "kk8ql20",
+      "name": "river",
+      "label": "river"
+    },
+    {
+      "list_name": "kk8ql20",
+      "name": "earthquake",
+      "label": "earthquake"
+    },
+    {
+      "list_name": "kk8ql20",
+      "name": "flood",
+      "label": "flood"
+    },
+    {
+      "list_name": "kk8ql20",
+      "name": "impact",
+      "label": "impact"
+    },
+    {
+      "list_name": "kk8ql20",
+      "name": "evaporation",
+      "label": "evaporation"
+    },
+    {
+      "list_name": "kk8ql20",
+      "name": "bio_precipitat",
+      "label": "bio-precipitation"
+    },
+    {
+      "list_name": "kk8ql20",
+      "name": "oxidation_redu",
+      "label": "oxidation/reduction"
+    },
+    {
+      "list_name": "kk8ql20",
+      "name": "pedogenic",
+      "label": "pedogenic"
+    },
+    {
+      "list_name": "kk8ql20",
+      "name": "biomediated",
+      "label": "biomediated"
+    },
+    {
+      "list_name": "kk8ql20",
+      "name": "microbial",
+      "label": "microbial"
+    },
+    {
+      "list_name": "kk8ql20",
+      "name": "bedform_migrat",
+      "label": "bedform migration"
+    },
+    {
+      "list_name": "kk8ql20",
+      "name": "other",
+      "label": "other"
+    }
+  ],
+  "settings": [
+    {
+      "id_string": "SS1 Copy",
+      "version": "2 (2021-1-25)"
+    }
+  ]
+}

@@ -22,8 +22,18 @@ const BasicListItem = (props) => {
       case PAGE_KEYS.ROCK_TYPE_METAMORPHIC:
         return usePetrology.getRockTitle(props.item, props.page.key);
       case PAGE_KEYS.ROCK_TYPE_SEDIMENTARY:
-      case PAGE_KEYS.LITHOLOGIES:
         return useSed.getRockTitle(props.item);
+      case PAGE_KEYS.LITHOLOGIES:
+        return 'Lithology ' + (props.index + 1) + ': ' + useSed.getRockTitle(props.item);
+      case PAGE_KEYS.STRAT_SECTION:
+        return useSed.getStratSectionTitle(props.item);
+      case PAGE_KEYS.BEDDING:
+        return 'Lithology ' + (props.index + 1) + ': ' + useSed.getBeddingTitle(props.item);
+      case PAGE_KEYS.STRUCTURES:
+      case PAGE_KEYS.DIAGENESIS:
+      case PAGE_KEYS.FOSSILS:
+      case PAGE_KEYS.INTERPRETATIONS:
+        return 'Lithology ' + (props.index + 1);
       default:
         return 'Unknown';
     }

@@ -1,0 +1,90 @@
+{
+  "survey": [
+    {
+      "type": "select_one ny3eb23",
+      "name": "bioturbation_index",
+      "label": "Bioturbation Index",
+      "required": false,
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "notes",
+      "label": "Notes",
+      "required": false,
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "calculate",
+      "name": "__version__",
+      "label": "",
+      "required": false,
+      "calculation": "'v3aztknQxg4sDfKs2JM2kF'",
+      "$given_name": ""
+    },
+    {
+      "type": "calculate",
+      "name": "_version_",
+      "label": "",
+      "required": false,
+      "calculation": "'vc4CusmkPTkFp2A3rCAZhE'",
+      "$given_name": "__version__"
+    },
+    {
+      "type": "calculate",
+      "name": "_version__001",
+      "label": "",
+      "required": false,
+      "calculation": "'vFbWv3X6bRMxEoeN8s7ADo'",
+      "$given_name": "__version__"
+    },
+    {
+      "type": "calculate",
+      "name": "_version__002",
+      "label": "",
+      "required": "",
+      "calculation": "'vVbVW7CM9LMfLidnaTT84W'",
+      "$given_name": "__version__"
+    }
+  ],
+  "choices": [
+    {
+      "list_name": "ny3eb23",
+      "name": "1_sparse",
+      "label": "1 (sparse bioturbation, bedding distinct)"
+    },
+    {
+      "list_name": "ny3eb23",
+      "name": "2_uncommon",
+      "label": "2 (uncommon bioturbation, bedding distinct)"
+    },
+    {
+      "list_name": "ny3eb23",
+      "name": "3_moderate",
+      "label": "3 (moderate bioturbation, bedding distinct, overlap rare)"
+    },
+    {
+      "list_name": "ny3eb23",
+      "name": "4_common",
+      "label": "4 (common bioturbation, bedding indistinct, common overlap)"
+    },
+    {
+      "list_name": "ny3eb23",
+      "name": "5_abundant",
+      "label": "5 (abundant bioturbation, bedding completely disturbed (just visible))"
+    },
+    {
+      "list_name": "ny3eb23",
+      "name": "6_complete",
+      "label": "6 (complete bioturbation, total homogenization of sediment)"
+    }
+  ],
+  "settings": [
+    {
+      "id_string": "SS1 Copy",
+      "version": "2 (2021-1-25)"
+    }
+  ]
+}

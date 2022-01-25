@@ -1,0 +1,1212 @@
+{
+  "survey": [
+    {
+      "type": "begin_group",
+      "name": "group_gt2ct74",
+      "label": "Cement",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_multiple yh9fg32",
+      "name": "cement_composition",
+      "label": "Cement Mineralogy",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "other_cement_composition",
+      "label": "Other Cement Mineralogy",
+      "required": false,
+      "relevant": "selected(${cement_composition}, 'other')",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "end_group",
+      "name": "",
+      "label": "",
+      "required": "",
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "begin_group",
+      "name": "group_ev2xo78",
+      "label": "Veins",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_one gc5or38",
+      "name": "vein_type",
+      "label": "Vein Type",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "decimal",
+      "name": "vein_width",
+      "label": "Vein Width (cm)",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "decimal",
+      "name": "vein_length",
+      "label": "Vein Length (cm)",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "vein_orientation",
+      "label": "Vein Orientation",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_one au3vr50",
+      "name": "vein_mineralogy",
+      "label": "Vein Mineralogy",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "other_vein_mineralogy",
+      "label": "Other Vein Mineralogy",
+      "required": false,
+      "relevant": "${vein_mineralogy} = 'other'",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "end_group",
+      "name": "",
+      "label": "",
+      "required": "",
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "begin_group",
+      "name": "group_yv3js78",
+      "label": "Fractures",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_one ly8ju48",
+      "name": "fracture_type",
+      "label": "Fracture Type",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "decimal",
+      "name": "fracture_width",
+      "label": "Fracture Width (cm)",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "decimal",
+      "name": "fracture_length",
+      "label": "Fracture Length (cm)",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "fracture_orientation",
+      "label": "Fracture Orientation",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_one nn7vg12",
+      "name": "fracture_mineralogy",
+      "label": "Fracture Mineralogy",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "other_fracture_mineralogy",
+      "label": "Other Fracture Mineralogy",
+      "required": false,
+      "relevant": "${fracture_mineralogy} = 'other'",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "end_group",
+      "name": "",
+      "label": "",
+      "required": "",
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "begin_group",
+      "name": "group_at4ct37",
+      "label": "Nodules/Concretions",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_one fr9ga56",
+      "name": "nodules_concretions_size",
+      "label": "Nodules/Concretions Size",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "decimal",
+      "name": "min",
+      "label": "Min",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "decimal",
+      "name": "max",
+      "label": "Max",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "decimal",
+      "name": "average",
+      "label": "Average",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_multiple zb73n93",
+      "name": "nodules_concretions_shape",
+      "label": "Nodules/Concretions Shape",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "other_nodules_concretion_shape",
+      "label": "Other Nodule/Concretions Shape",
+      "required": false,
+      "relevant": "selected(${nodules_concretions_shape}, 'other')",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "decimal",
+      "name": "spacing",
+      "label": "Spacing",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_one gx9jq81",
+      "name": "nodules_concretions_type",
+      "label": "Nodules/Concretions Type",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "other_nodules_concretions_type",
+      "label": "Other Nodules/Concretions Type",
+      "required": false,
+      "relevant": "${nodules_concretions_type} = 'other'",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_multiple hl0ww19",
+      "name": "nodules_concretions_comp",
+      "label": "Nodules/Concretions Composition",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "other_nodules_concretion_comp",
+      "label": "Other Nodules/Concretions Composition",
+      "required": false,
+      "relevant": "selected(${nodules_concretions_comp}, 'other')",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "end_group",
+      "name": "",
+      "label": "",
+      "required": "",
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "begin_group",
+      "name": "group_ad9rf56",
+      "label": "Replacement",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_one pa4pi89",
+      "name": "replacement_type",
+      "label": "Replacement Type",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "other_replacement_type",
+      "label": "Other Replacement Type",
+      "required": false,
+      "relevant": "${replacement_type} = 'other'",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "end_group",
+      "name": "",
+      "label": "",
+      "required": "",
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "begin_group",
+      "name": "group_xx6ql18",
+      "label": "Recrystallization",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_one vo7bl50",
+      "name": "recrystallization_type",
+      "label": "Recrystallization Type",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "other_recrystallization_type",
+      "label": "Other Recrystallization Type",
+      "required": false,
+      "relevant": "${recrystallization_type} = 'other'",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "end_group",
+      "name": "",
+      "label": "",
+      "required": "",
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "begin_group",
+      "name": "group_eo6zt13",
+      "label": "Other Diagenetic Features",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_multiple wy5gx26",
+      "name": "other_diagenetic_features",
+      "label": "Other Diagenetic Features",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "other_features",
+      "label": "Other Features",
+      "required": false,
+      "relevant": "selected(${other_diagenetic_features}, 'other')",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "end_group",
+      "name": "",
+      "label": "",
+      "required": "",
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "begin_group",
+      "name": "group_fn8sm12",
+      "label": "Porosity type",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_multiple lo0dl30",
+      "name": "fabric_selective",
+      "label": "Fabric Selective",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "other_fabric_selective",
+      "label": "Other Fabric Selective",
+      "required": false,
+      "relevant": "selected(${fabric_selective}, 'other')",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_multiple ts4kt62",
+      "name": "non_selective",
+      "label": "Non-Frabric Selective",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "other_non_selective",
+      "label": "Other Non-Fabric Selective",
+      "required": false,
+      "relevant": "selected(${non_selective}, 'other')",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "end_group",
+      "name": "",
+      "label": "",
+      "required": "",
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "begin_group",
+      "name": "group_do4yt24",
+      "label": "Carbonate Desiccation and Dissolution",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_multiple st8ub31",
+      "name": "carbonate_desicc_and_diss",
+      "label": "Carbonate Desiccation and Dissolution Type",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "other_carbonate_desicc_diss",
+      "label": "Other Carbonate Desiccation and Dissolution Type",
+      "required": false,
+      "relevant": "selected(${carbonate_desicc_and_diss}, 'other')",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "end_group",
+      "name": "",
+      "label": "",
+      "required": "",
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "notes",
+      "label": "Notes",
+      "required": false,
+      "relevant": "",
+      "appearance": "multiline",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "calculate",
+      "name": "__version__",
+      "label": "",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "'vHuq2thZa9XX4LED572LE7'",
+      "$given_name": ""
+    },
+    {
+      "type": "calculate",
+      "name": "_version_",
+      "label": "",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "'vt2b43PSX2VzkSMDYuKHRZ'",
+      "$given_name": "__version__"
+    },
+    {
+      "type": "calculate",
+      "name": "_version__001",
+      "label": "",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "'vkX2FzeZaPfpXj9mLk8Yfg'",
+      "$given_name": "__version__"
+    },
+    {
+      "type": "calculate",
+      "name": "_version__002",
+      "label": "",
+      "required": "",
+      "relevant": "",
+      "appearance": "",
+      "calculation": "'vWFjuPvDLM4kjUESPYcR4y'",
+      "$given_name": "__version__"
+    }
+  ],
+  "choices": [
+    {
+      "list_name": "yh9fg32",
+      "name": "calcite",
+      "label": "calcite",
+      "order": ""
+    },
+    {
+      "list_name": "yh9fg32",
+      "name": "dolomite",
+      "label": "dolomite",
+      "order": 1
+    },
+    {
+      "list_name": "yh9fg32",
+      "name": "silica",
+      "label": "silica",
+      "order": 2
+    },
+    {
+      "list_name": "yh9fg32",
+      "name": "iron_oxides",
+      "label": "iron oxides",
+      "order": 3
+    },
+    {
+      "list_name": "yh9fg32",
+      "name": "evaporite_min",
+      "label": "evaporite minerals",
+      "order": 4
+    },
+    {
+      "list_name": "yh9fg32",
+      "name": "clay",
+      "label": "clay",
+      "order": 5
+    },
+    {
+      "list_name": "yh9fg32",
+      "name": "other",
+      "label": "other",
+      "order": 6
+    },
+    {
+      "list_name": "gc5or38",
+      "name": "parallel",
+      "label": "parallel",
+      "order": ""
+    },
+    {
+      "list_name": "gc5or38",
+      "name": "oblique",
+      "label": "oblique",
+      "order": ""
+    },
+    {
+      "list_name": "gc5or38",
+      "name": "perpendicular",
+      "label": "perpendicular",
+      "order": ""
+    },
+    {
+      "list_name": "gc5or38",
+      "name": "en_echelon",
+      "label": "en echelon",
+      "order": ""
+    },
+    {
+      "list_name": "au3vr50",
+      "name": "calcite",
+      "label": "calcite",
+      "order": ""
+    },
+    {
+      "list_name": "au3vr50",
+      "name": "quartz",
+      "label": "quartz",
+      "order": ""
+    },
+    {
+      "list_name": "au3vr50",
+      "name": "iron_oxides",
+      "label": "iron oxides",
+      "order": ""
+    },
+    {
+      "list_name": "au3vr50",
+      "name": "evaporite_min",
+      "label": "evaporite minerals",
+      "order": ""
+    },
+    {
+      "list_name": "au3vr50",
+      "name": "other",
+      "label": "other",
+      "order": ""
+    },
+    {
+      "list_name": "ly8ju48",
+      "name": "parallel",
+      "label": "parallel",
+      "order": ""
+    },
+    {
+      "list_name": "ly8ju48",
+      "name": "oblique",
+      "label": "oblique",
+      "order": ""
+    },
+    {
+      "list_name": "ly8ju48",
+      "name": "perpendicular",
+      "label": "perpendicular",
+      "order": ""
+    },
+    {
+      "list_name": "ly8ju48",
+      "name": "en_echelon",
+      "label": "en echelon",
+      "order": ""
+    },
+    {
+      "list_name": "nn7vg12",
+      "name": "calcite",
+      "label": "calcite",
+      "order": ""
+    },
+    {
+      "list_name": "nn7vg12",
+      "name": "quartz",
+      "label": "quartz",
+      "order": ""
+    },
+    {
+      "list_name": "nn7vg12",
+      "name": "iron_oxides",
+      "label": "iron oxides",
+      "order": ""
+    },
+    {
+      "list_name": "nn7vg12",
+      "name": "evaporite_min",
+      "label": "evaporite minerals",
+      "order": ""
+    },
+    {
+      "list_name": "nn7vg12",
+      "name": "other",
+      "label": "other",
+      "order": ""
+    },
+    {
+      "list_name": "fr9ga56",
+      "name": "mm",
+      "label": "mm",
+      "order": ""
+    },
+    {
+      "list_name": "fr9ga56",
+      "name": "cm",
+      "label": "cm",
+      "order": ""
+    },
+    {
+      "list_name": "fr9ga56",
+      "name": "dm",
+      "label": "dm",
+      "order": ""
+    },
+    {
+      "list_name": "fr9ga56",
+      "name": "m",
+      "label": "m",
+      "order": ""
+    },
+    {
+      "list_name": "zb73n93",
+      "name": "spherical",
+      "label": "spherical",
+      "order": ""
+    },
+    {
+      "list_name": "zb73n93",
+      "name": "pods",
+      "label": "pod",
+      "order": 1
+    },
+    {
+      "list_name": "zb73n93",
+      "name": "elongate",
+      "label": "elongate",
+      "order": 2
+    },
+    {
+      "list_name": "zb73n93",
+      "name": "other",
+      "label": "masses",
+      "order": 3
+    },
+    {
+      "list_name": "zb73n93",
+      "name": "pipes",
+      "label": "pipes",
+      "order": 4
+    },
+    {
+      "list_name": "zb73n93",
+      "name": "irregular",
+      "label": "irregular",
+      "order": 6
+    },
+    {
+      "list_name": "zb73n93",
+      "name": "other",
+      "label": "other",
+      "order": 7
+    },
+    {
+      "list_name": "gx9jq81",
+      "name": "septarian",
+      "label": "septarian",
+      "order": ""
+    },
+    {
+      "list_name": "gx9jq81",
+      "name": "solid",
+      "label": "solid",
+      "order": ""
+    },
+    {
+      "list_name": "gx9jq81",
+      "name": "rinded",
+      "label": "rinded",
+      "order": ""
+    },
+    {
+      "list_name": "gx9jq81",
+      "name": "layered",
+      "label": "layered",
+      "order": ""
+    },
+    {
+      "list_name": "gx9jq81",
+      "name": "other",
+      "label": "other",
+      "order": ""
+    },
+    {
+      "list_name": "hl0ww19",
+      "name": "calcite",
+      "label": "calcite",
+      "order": ""
+    },
+    {
+      "list_name": "hl0ww19",
+      "name": "dolomite",
+      "label": "dolomite",
+      "order": 1
+    },
+    {
+      "list_name": "hl0ww19",
+      "name": "pyrite",
+      "label": "pyrite",
+      "order": 2
+    },
+    {
+      "list_name": "hl0ww19",
+      "name": "iron_oxide",
+      "label": "iron oxide",
+      "order": 3
+    },
+    {
+      "list_name": "hl0ww19",
+      "name": "silica",
+      "label": "silica",
+      "order": 4
+    },
+    {
+      "list_name": "hl0ww19",
+      "name": "gypsum_anhydri",
+      "label": "gypsum/anhydrite",
+      "order": 5
+    },
+    {
+      "list_name": "hl0ww19",
+      "name": "apatite",
+      "label": "apatite",
+      "order": 6
+    },
+    {
+      "list_name": "hl0ww19",
+      "name": "siderite",
+      "label": "siderite",
+      "order": 7
+    },
+    {
+      "list_name": "hl0ww19",
+      "name": "kaolinite",
+      "label": "kaolinite",
+      "order": 8
+    },
+    {
+      "list_name": "hl0ww19",
+      "name": "cu_carbonate",
+      "label": "copper carbonate",
+      "order": 9
+    },
+    {
+      "list_name": "hl0ww19",
+      "name": "other",
+      "label": "other",
+      "order": 11
+    },
+    {
+      "list_name": "pa4pi89",
+      "name": "fossil_selecti",
+      "label": "fossil selective",
+      "order": ""
+    },
+    {
+      "list_name": "pa4pi89",
+      "name": "local",
+      "label": "local",
+      "order": ""
+    },
+    {
+      "list_name": "pa4pi89",
+      "name": "extensive",
+      "label": "extensive",
+      "order": ""
+    },
+    {
+      "list_name": "pa4pi89",
+      "name": "petrified_wood",
+      "label": "petrified wood",
+      "order": ""
+    },
+    {
+      "list_name": "pa4pi89",
+      "name": "other",
+      "label": "other",
+      "order": ""
+    },
+    {
+      "list_name": "vo7bl50",
+      "name": "selective",
+      "label": "selective",
+      "order": ""
+    },
+    {
+      "list_name": "vo7bl50",
+      "name": "local",
+      "label": "local",
+      "order": ""
+    },
+    {
+      "list_name": "vo7bl50",
+      "name": "extensive",
+      "label": "extensive",
+      "order": ""
+    },
+    {
+      "list_name": "vo7bl50",
+      "name": "recrystallized",
+      "label": "recrystallized \"foam",
+      "order": ""
+    },
+    {
+      "list_name": "vo7bl50",
+      "name": "other",
+      "label": "other",
+      "order": ""
+    },
+    {
+      "list_name": "wy5gx26",
+      "name": "stylolites",
+      "label": "stylolites",
+      "order": ""
+    },
+    {
+      "list_name": "wy5gx26",
+      "name": "liesegang_band",
+      "label": "liesegang banding/chemical reaction front",
+      "order": ""
+    },
+    {
+      "list_name": "wy5gx26",
+      "name": "dendrites",
+      "label": "dendrites",
+      "order": ""
+    },
+    {
+      "list_name": "wy5gx26",
+      "name": "intergranular",
+      "label": "intergranular",
+      "order": ""
+    },
+    {
+      "list_name": "wy5gx26",
+      "name": "weathering_hor",
+      "label": "weathering horizon",
+      "order": ""
+    },
+    {
+      "list_name": "wy5gx26",
+      "name": "hardground",
+      "label": "hardground",
+      "order": ""
+    },
+    {
+      "list_name": "wy5gx26",
+      "name": "oil_staining",
+      "label": "oil staining",
+      "order": ""
+    },
+    {
+      "list_name": "wy5gx26",
+      "name": "random_cumulat",
+      "label": "random cumulates",
+      "order": ""
+    },
+    {
+      "list_name": "wy5gx26",
+      "name": "bttm_grth_tex",
+      "label": "bottom growth textures",
+      "order": ""
+    },
+    {
+      "list_name": "wy5gx26",
+      "name": "other",
+      "label": "other",
+      "order": ""
+    },
+    {
+      "list_name": "lo0dl30",
+      "name": "interparticle",
+      "label": "interparticle",
+      "order": ""
+    },
+    {
+      "list_name": "lo0dl30",
+      "name": "intraparticle",
+      "label": "intraparticle",
+      "order": ""
+    },
+    {
+      "list_name": "lo0dl30",
+      "name": "intercrystal",
+      "label": "intercrystal",
+      "order": ""
+    },
+    {
+      "list_name": "lo0dl30",
+      "name": "moldic",
+      "label": "moldic",
+      "order": ""
+    },
+    {
+      "list_name": "lo0dl30",
+      "name": "fenestral",
+      "label": "fenestral",
+      "order": ""
+    },
+    {
+      "list_name": "lo0dl30",
+      "name": "shelter",
+      "label": "shelter",
+      "order": ""
+    },
+    {
+      "list_name": "lo0dl30",
+      "name": "growth_framewo",
+      "label": "growth-framework",
+      "order": ""
+    },
+    {
+      "list_name": "lo0dl30",
+      "name": "boring",
+      "label": "boring",
+      "order": ""
+    },
+    {
+      "list_name": "lo0dl30",
+      "name": "burrow",
+      "label": "burrow",
+      "order": ""
+    },
+    {
+      "list_name": "lo0dl30",
+      "name": "shrinkage",
+      "label": "shrinkage",
+      "order": ""
+    },
+    {
+      "list_name": "lo0dl30",
+      "name": "breccia",
+      "label": "breccia",
+      "order": ""
+    },
+    {
+      "list_name": "lo0dl30",
+      "name": "other",
+      "label": "other",
+      "order": ""
+    },
+    {
+      "list_name": "ts4kt62",
+      "name": "fracture",
+      "label": "fracture",
+      "order": ""
+    },
+    {
+      "list_name": "ts4kt62",
+      "name": "channel",
+      "label": "channel",
+      "order": ""
+    },
+    {
+      "list_name": "ts4kt62",
+      "name": "vug",
+      "label": "vug",
+      "order": ""
+    },
+    {
+      "list_name": "ts4kt62",
+      "name": "cavern",
+      "label": "cavern/cavities",
+      "order": ""
+    },
+    {
+      "list_name": "ts4kt62",
+      "name": "other",
+      "label": "other",
+      "order": ""
+    },
+    {
+      "list_name": "st8ub31",
+      "name": "karst_pipes",
+      "label": "karst",
+      "order": ""
+    },
+    {
+      "list_name": "st8ub31",
+      "name": "grykes",
+      "label": "grykes",
+      "order": 1
+    },
+    {
+      "list_name": "st8ub31",
+      "name": "fissures",
+      "label": "fissures",
+      "order": 2
+    },
+    {
+      "list_name": "st8ub31",
+      "name": "pavement",
+      "label": "pavement",
+      "order": 3
+    },
+    {
+      "list_name": "st8ub31",
+      "name": "caliche",
+      "label": "caliche",
+      "order": 4
+    },
+    {
+      "list_name": "st8ub31",
+      "name": "geopetal",
+      "label": "geopetal",
+      "order": 5
+    },
+    {
+      "list_name": "st8ub31",
+      "name": "sheet_cracks",
+      "label": "sheet cracks",
+      "order": 6
+    },
+    {
+      "list_name": "st8ub31",
+      "name": "collapse_struc",
+      "label": "collapse structures",
+      "order": 7
+    },
+    {
+      "list_name": "st8ub31",
+      "name": "caves",
+      "label": "caves",
+      "order": 8
+    },
+    {
+      "list_name": "st8ub31",
+      "name": "stylolites",
+      "label": "stylolites",
+      "order": 9
+    },
+    {
+      "list_name": "st8ub31",
+      "name": "other",
+      "label": "other",
+      "order": 10
+    }
+  ],
+  "settings": [
+    {
+      "id_string": "SS1 Copy",
+      "version": "2 (2021-1-25)"
+    }
+  ]
+}

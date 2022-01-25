@@ -135,7 +135,9 @@ const useForm = () => {
           let parsedMaxConstraint = fieldModel.constraint.match(regexMax);
           if (parsedMaxConstraint) {
             let max = parseFloat(parsedMaxConstraint[1]);
-            if (!isEmpty(max) && !(values[key] <= max)) errors[key] = fieldModel.constraint_message;
+            if (!isEmpty(max) && !(values[key] <= max)) {
+              errors[key] = fieldModel.constraint_message || 'Value over max of ' + max;
+            }
           }
           else {
             // Look for < in constraint
@@ -143,7 +145,9 @@ const useForm = () => {
             parsedMaxConstraint = fieldModel.constraint.match(regexMax);
             if (parsedMaxConstraint) {
               let max = parseFloat(parsedMaxConstraint[1]);
-              if (!isEmpty(max) && !(values[key] < max)) errors[key] = fieldModel.constraint_message;
+              if (!isEmpty(max) && !(values[key] < max)) {
+                errors[key] = fieldModel.constraint_message  || 'Value over max of ' + max;
+              }
             }
           }
           // Min constraint
@@ -152,7 +156,9 @@ const useForm = () => {
           let parsedMinConstraint = fieldModel.constraint.match(regexMin);
           if (parsedMinConstraint) {
             let min = parseFloat(parsedMinConstraint[1]);
-            if (!isEmpty(min) && !(values[key] >= min)) errors[key] = fieldModel.constraint_message;
+            if (!isEmpty(min) && !(values[key] >= min)) {
+              errors[key] = fieldModel.constraint_message || 'Value below min of ' + min;
+            }
           }
           else {
             // Look for < in constraint
@@ -160,7 +166,9 @@ const useForm = () => {
             parsedMinConstraint = fieldModel.constraint.match(regexMin);
             if (parsedMinConstraint) {
               let min = parseFloat(parsedMinConstraint[1]);
-              if (!isEmpty(min) && !(values[key] > min)) errors[key] = fieldModel.constraint_message;
+              if (!isEmpty(min) && !(values[key] > min)) {
+                errors[key] = fieldModel.constraint_message || 'Value below min of ' + min;
+              }
             }
           }
         }
