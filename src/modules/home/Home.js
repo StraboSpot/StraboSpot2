@@ -349,7 +349,13 @@ const Home = () => {
     if (modal?.modal_component ) {
       const ModalDisplayed = modal.modal_component;
       if (modalVisible && !Object.keys(MODAL_KEYS.SHORTCUTS).find(s => s.key === modalVisible)) {
-        return <ModalDisplayed modalKey={modal.key} onPress={modalHandler} goToCurrentLocation={goToCurrentLocation}/>;
+        return (
+          <ModalDisplayed
+            modalKey={modal.key}
+            onPress={modalHandler}
+            goToCurrentLocation={goToCurrentLocation}
+          />
+        );
       }
       else return <ModalDisplayed modalKey={modal.key} onPress={modalHandler}/>;
     }

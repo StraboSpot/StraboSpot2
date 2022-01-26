@@ -6,6 +6,7 @@ const {width, height} = Dimensions.get('window');
 
 const modalStyle = StyleSheet.create({
   modalContainer: {
+    flex: 1,
     width: 250,
     maxWidth: width,
     maxHeight: height - 100,
@@ -20,6 +21,12 @@ const modalStyle = StyleSheet.create({
   modalPosition: {
     position: 'absolute',
     left: 70,
+    bottom: 20,
+    borderRadius: 20,
+  },
+  sideModalPosition: {
+    position: 'absolute',
+    left: 100,
     bottom: 20,
     borderRadius: 20,
   },

@@ -13,6 +13,11 @@ const styles = StyleSheet.create({
   compassContainer: {
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
   },
+  compassMatrixDataText: {
+    borderWidth: 1,
+    padding: 5,
+    // textAlign: 'center',
+  },
   compassImage: {
     marginTop: 15,
     height: 175,
@@ -23,6 +28,12 @@ const styles = StyleSheet.create({
   compassImageContainer: {
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  compassDataModalPosition: {
+    position: 'absolute',
+    left: '30%',
+    top: 20,
+    borderRadius: 20,
   },
   sliderContainer: {
     flex: 1,
