@@ -96,7 +96,7 @@ const MorePagesMenu = (props) => {
           {!isEmpty(sedPagesToShowWithoutSedRocks) && (
             <React.Fragment>
               <SectionDivider
-                dividerText={'Sedimentology'}
+                dividerText={'Sedimentology\n*Under Development*'}
                 style={footerStyles.morePagesSectionDivider}
               />
               {sedPagesToShowWithoutSedRocks.map((page, i, arr) => renderMenuItem(page, i < arr.length - 1))}
