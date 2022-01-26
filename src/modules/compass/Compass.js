@@ -14,7 +14,6 @@ import {
   View,
 } from 'react-native';
 
-import LPF from 'lpf';
 import {Button, ListItem} from 'react-native-elements';
 import {accelerometer, SensorTypes, setUpdateIntervalForType, magnetometer} from 'react-native-sensors';
 import Sound from 'react-native-sound';
@@ -43,7 +42,6 @@ const Compass = (props) => {
   const selectedMeasurement = useSelector(state => state.spot.selectedMeasurement);
 
   const [accelerometerData, setAccelerometerData] = useState({x: 0, y: 0, z: 0, timestamp: null});
-  // const [accelerometerSubscription, setAccelerometerSubscription] = useState(null);
   const [compassData, setCompassData] = useState({
     accelX: 0,
     accelY: 0,
@@ -59,7 +57,6 @@ const Compass = (props) => {
     quality: null,
   });
   const [magnetometerData, setMagnetometerData] = useState(null);
-  // const [magnetometerSubscription, setMagnetometerSubscription] = useState(null);
   const [showData, setShowData] = useState(true);
   const [sliderValue, setSliderValue] = useState(5);
   const [strikeSpinValue] = useState(new Animated.Value(0));
@@ -84,8 +81,6 @@ const Compass = (props) => {
   useEffect(() => {
     AppState.addEventListener('change', handleAppStateChange);
     if (Platform.OS === 'android') {
-      LPF.init([]);
-      LPF.smoothing = 0.2;
       setUpdateIntervalForType(SensorTypes.accelerometer, 100);
       setUpdateIntervalForType(SensorTypes.magnetometer, 100);
       subscribeToSensors().catch(e => console.log('Error with Sensors', e));
@@ -99,7 +94,7 @@ const Compass = (props) => {
   // Update compass data on accelerometer data changed
   useEffect(() => {
     displayCompassData();
-  }, [accelerometerData , compassHeading]);
+  }, [accelerometerData]);
 
   // Create a new measurement on grabbing new compass measurements from shortcut modal
   useEffect(() => {
@@ -385,7 +380,7 @@ const Compass = (props) => {
   const renderTrendSymbol = () => {
     let image = require('../../assets/images/compass/trendLine.png');
     const spin = trendSpinValue.interpolate({
-      inputRange: [0, compassData.trend],
+      inputRange: [0, compassData.trend ? compassData.trend : 0],
       outputRange: ['0deg', compassData.trend + 'deg'],
     });
     // First set up animation
