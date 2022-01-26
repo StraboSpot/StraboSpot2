@@ -250,8 +250,8 @@ export const SED_PAGES = [
   {
     key: PAGE_KEYS.ROCK_TYPE_SEDIMENTARY,
     label: 'Sedimentary Rocks',
-    icon_src: require('../../assets/icons/SedLithologies.png'),
-    icon_pressed_src: require('../../assets/icons/SedLithologies_pressed.png'),
+    icon_src: require('../../assets/icons/Sedimentary.png'),
+    icon_pressed_src: require('../../assets/icons/Sedimentary_pressed.png'),
     overview_component: BasicOverviewList,
     page_component: RockSedimentaryPage,
     modal_component: AddRockModal,
@@ -268,8 +268,8 @@ export const SED_PAGES = [
     key: PAGE_KEYS.INTERVAL,
     label: 'Interval (SS1)',
     label_singular: 'Interval (SS1)',
-    icon_src: require('../../assets/icons/SedStratColumn.png'),
-    icon_pressed_src: require('../../assets/icons/SedStratColumn_pressed.png'),
+    icon_src: require('../../assets/icons/SedInterval.png'),
+    icon_pressed_src: require('../../assets/icons/SedInterval_pressed.png'),
     overview_component: IntervalOverview,
     page_component: IntervalPage,
   }, {
