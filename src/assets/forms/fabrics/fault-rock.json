@@ -15,117 +15,9 @@
       "required": "false"
     },
     {
-      "type": "select_one ej9ja31",
-      "name": "inco_nofol",
-      "label": "Incohesive, non-foliated fabric",
-      "required": "false",
-      "appearance": "horizontal-compact"
-    },
-    {
-      "type": "text",
-      "name": "inco_nofo_char",
-      "label": "Characterize fabric",
-      "required": "false",
-      "appearance": "multiline",
-      "relevant": "${inco_nofol} != '' and ${inco_nofol} != 'other'"
-    },
-    {
-      "type": "text",
-      "name": "oth_inco_nofol",
-      "label": "Other incohesive, non-foliated fabric characterization",
-      "required": "false",
-      "appearance": "multiline",
-      "relevant": "${inco_nofol} = 'other'"
-    },
-    {
-      "type": "select_one hn4ya89",
-      "name": "inco_fol",
-      "label": "Incohesive, foliated fabric",
-      "required": "false",
-      "appearance": "horizontal-compact"
-    },
-    {
-      "type": "text",
-      "name": "inco_fo_char",
-      "label": "Characterize fabric",
-      "required": "false",
-      "appearance": "multiline",
-      "relevant": "${inco_fol} != '' and ${inco_fol} != 'other_incoh_fo'"
-    },
-    {
-      "type": "text",
-      "name": "other_inco_fol",
-      "label": "Other incohesive, foliated fabric characterization",
-      "required": "false",
-      "appearance": "multiline",
-      "relevant": "${inco_fol} = 'other_incoh_fo'"
-    },
-    {
-      "type": "select_one dt8ce19",
-      "name": "co_nofol",
-      "label": "Cohesive, non-foliated fabric",
-      "required": "false",
-      "appearance": "horizontal-compact"
-    },
-    {
-      "type": "text",
-      "name": "co_nofo_char",
-      "label": "Characterize fabric",
-      "required": "false",
-      "appearance": "multiline",
-      "relevant": "${co_nofol} != '' and ${co_nofol} != 'other'"
-    },
-    {
-      "type": "text",
-      "name": "other_rand_choes",
-      "label": "Other cohesive, non-foliated fabric characterization",
-      "required": "false",
-      "appearance": "multiline",
-      "relevant": "${co_nofol} = 'other'"
-    },
-    {
-      "type": "select_one oo1yw77",
-      "name": "co_fol",
-      "label": "Cohesive, foliated fabric",
-      "required": "false",
-      "appearance": "horizontal-compact"
-    },
-    {
-      "type": "text",
-      "name": "co_fo_char",
-      "label": "Characterize fabric",
-      "required": "false",
-      "appearance": "multiline",
-      "relevant": "${co_fol} != 'other' and ${co_fol} != ''"
-    },
-    {
-      "type": "text",
-      "name": "other_fol_cohes",
-      "label": "Other cohesive, foliated fabric characterization",
-      "required": "false",
-      "appearance": "multiline",
-      "relevant": "${co_fol} = 'other'"
-    },
-    {
-      "type": "select_one au84l98",
-      "name": "tectonite_type",
-      "label": "Tectonite classification",
-      "required": "false",
-      "appearance": "horizontal-compact"
-    },
-    {
-      "type": "text",
-      "name": "other_char_tec",
-      "label": "Other tectonite characterization",
-      "hint": "Describe the tectonite",
-      "required": "false",
-      "appearance": "multiline",
-      "relevant": "${tectonite_type} = 'other'"
-    },
-    {
       "type": "select_multiple lg33p50",
       "name": "structural_fabric",
-      "label": "Additional fabric(s)",
+      "label": "Add structural fabric(s)",
       "required": "false",
       "appearance": "horizontal-compact"
     },
@@ -258,150 +150,35 @@
       "relevant": "${spatial_config} != ''"
     },
     {
-      "type": "select_one if8go18",
-      "name": "kin_ind_present",
-      "label": "Kinematic indicators present?",
+      "type": "select_one au84l98",
+      "name": "tectonite_type",
+      "label": "Tectonite classification",
       "required": "false",
       "appearance": "horizontal-compact"
     },
     {
+      "type": "text",
+      "name": "other_char_tec",
+      "label": "Other tectonite characterization",
+      "hint": "Describe the tectonite",
+      "required": "false",
+      "appearance": "multiline",
+      "relevant": "${tectonite_type} = 'other'"
+    },
+    {
       "type": "select_multiple lw8uh27",
       "name": "kinematic_fab",
-      "label": "Kinematic fabrics",
+      "label": "Kinematic indicator(s)?",
       "required": "false",
-      "appearance": "horizontal-compact",
-      "relevant": "${kin_ind_present} = 'yes_kin'"
+      "appearance": "horizontal-compact"
     },
     {
       "type": "text",
-      "name": "grain_shape_char",
-      "label": "Characterize oblique grain shape fabric",
-      "hint": "E.g. what mineral(s) define the grain shape fabric",
+      "name": "kin_ind_char",
+      "label": "Characterize kinematic indicator(s)",
       "required": "false",
       "appearance": "multiline",
-      "relevant": "selected(${kinematic_fab}, 'oblique_fabric')"
-    },
-    {
-      "type": "text",
-      "name": "asym_fold_char",
-      "label": "Characterize asymmetric folds",
-      "hint": "E.g. what is being folded, fold classification, etc.",
-      "required": "false",
-      "appearance": "multiline",
-      "relevant": "selected(${kinematic_fab}, 'asymm_fold')"
-    },
-    {
-      "type": "text",
-      "name": "asym_clst_char",
-      "label": "Characterize asymmetric clast(s)",
-      "hint": "E.g. what is the clast mineralogy",
-      "required": "false",
-      "appearance": "multiline",
-      "relevant": "selected(${kinematic_fab}, 'asymm_clast')"
-    },
-    {
-      "type": "text",
-      "name": "mica_fish_char",
-      "label": "Characterize mica fish",
-      "hint": "E.g. what type of mica",
-      "required": "false",
-      "appearance": "multiline",
-      "relevant": "selected(${kinematic_fab}, 'mica_fish')"
-    },
-    {
-      "type": "text",
-      "name": "book_slip_char",
-      "label": "Characterize bookshelf slip",
-      "hint": "E.g. what phases record bookshelf slip",
-      "required": "false",
-      "appearance": "multiline",
-      "relevant": "selected(${kinematic_fab}, 'bookshelf_slip')"
-    },
-    {
-      "type": "text",
-      "name": "s_c_char",
-      "label": "Characterize S-C fabric",
-      "hint": "E.g. what phases define S and C surfaces, etc.",
-      "required": "false",
-      "appearance": "multiline",
-      "relevant": "selected(${kinematic_fab}, 's_c')"
-    },
-    {
-      "type": "text",
-      "name": "riedel_char",
-      "label": "Characterize Riedel fracture/shear",
-      "required": "false",
-      "appearance": "multiline",
-      "relevant": "selected(${kinematic_fab}, 'riedel_shear')"
-    },
-    {
-      "type": "text",
-      "name": "sig_gash_char",
-      "label": "Characterize sigmoidal tension gash(es)",
-      "required": "false",
-      "appearance": "multiline",
-      "relevant": "selected(${kinematic_fab}, 'sigmoidal_gash')"
-    },
-    {
-      "type": "text",
-      "name": "drag_fold_char",
-      "label": "Characterize drag folds",
-      "hint": "E.g. what is being folded and how",
-      "required": "false",
-      "appearance": "multiline",
-      "relevant": "selected(${kinematic_fab}, 'drag_folds')"
-    },
-    {
-      "type": "text",
-      "name": "off_def_char",
-      "label": "Characterize offset or deflected markers",
-      "hint": "E.g. what is offset and how",
-      "required": "false",
-      "appearance": "multiline",
-      "relevant": "selected(${kinematic_fab}, 'offset_deflect')"
-    },
-    {
-      "type": "text",
-      "name": "minor_off_char",
-      "label": "Characterize minor offset",
-      "hint": "E.g. what is offset and how",
-      "required": "false",
-      "appearance": "multiline",
-      "relevant": "selected(${kinematic_fab}, 'minor_offset')"
-    },
-    {
-      "type": "text",
-      "name": "crescent_frac",
-      "label": "Characterize crescentic fractures",
-      "required": "false",
-      "appearance": "multiline",
-      "relevant": "selected(${kinematic_fab}, 'crescentic_fra')"
-    },
-    {
-      "type": "text",
-      "name": "slick_char",
-      "label": "Characterize slickenfibers",
-      "hint": "E.g. mineralogy, etc.",
-      "required": "false",
-      "appearance": "multiline",
-      "relevant": "selected(${kinematic_fab}, 'slickenfibers')"
-    },
-    {
-      "type": "text",
-      "name": "fib_grow_char",
-      "label": "Characterize fiber growth",
-      "hint": "E.g. mineralogy, etc.",
-      "required": "false",
-      "appearance": "multiline",
-      "relevant": "selected(${kinematic_fab}, 'fiber_growth')"
-    },
-    {
-      "type": "text",
-      "name": "goug_fill_char",
-      "label": "Characterize gouge fill",
-      "required": "false",
-      "appearance": "multiline",
-      "relevant": "selected(${kinematic_fab}, 'gouge_fill')"
+      "relevant": "${kinematic_fab} != ''"
     },
     {
       "type": "text",
@@ -418,7 +195,7 @@
       "hint": "e.g. top-NW, dextral, etc.",
       "required": "false",
       "appearance": "multiline",
-      "relevant": "${kin_ind_present} = 'yes_kin'"
+      "relevant": "${kinematic_fab} != ''"
     },
     {
       "type": "text",
@@ -436,172 +213,11 @@
     {
       "type": "calculate",
       "name": "_version_",
-      "calculation": "'vUHzHBiHrEnUvkQC4kraky'",
+      "calculation": "'v7BLUpLvgfHctk2H5BVCP2'",
       "$given_name": "__version__"
     }
   ],
   "choices": [
-    {
-      "list_name": "ej9ja31",
-      "name": "fault_breccia",
-      "label": "fault breccia"
-    },
-    {
-      "list_name": "ej9ja31",
-      "name": "fault_gouge",
-      "label": "fault gouge"
-    },
-    {
-      "list_name": "ej9ja31",
-      "name": "other",
-      "label": "other"
-    },
-    {
-      "list_name": "hn4ya89",
-      "name": "foliated_gouge",
-      "label": "foliated gouge"
-    },
-    {
-      "list_name": "hn4ya89",
-      "name": "other_incoh_fo",
-      "label": "other"
-    },
-    {
-      "list_name": "dt8ce19",
-      "name": "pseudotach",
-      "label": "pseudotachylite"
-    },
-    {
-      "list_name": "dt8ce19",
-      "name": "crush_breccia",
-      "label": "crush breccia"
-    },
-    {
-      "list_name": "dt8ce19",
-      "name": "protocata",
-      "label": "protocataclasite"
-    },
-    {
-      "list_name": "dt8ce19",
-      "name": "cata",
-      "label": "cataclasite"
-    },
-    {
-      "list_name": "dt8ce19",
-      "name": "ultracata",
-      "label": "ultracataclasite"
-    },
-    {
-      "list_name": "dt8ce19",
-      "name": "other",
-      "label": "other"
-    },
-    {
-      "list_name": "oo1yw77",
-      "name": "fol_pseudotach",
-      "label": "pseudotachylite"
-    },
-    {
-      "list_name": "oo1yw77",
-      "name": "fol_crush_brec",
-      "label": "crush breccia",
-      "order": "1"
-    },
-    {
-      "list_name": "oo1yw77",
-      "name": "fol_protocata",
-      "label": "protocataclasite",
-      "order": "2"
-    },
-    {
-      "list_name": "oo1yw77",
-      "name": "fol_cata",
-      "label": "cataclasite",
-      "order": "3"
-    },
-    {
-      "list_name": "oo1yw77",
-      "name": "fol_ultracata",
-      "label": "ultracataclasite",
-      "order": "4"
-    },
-    {
-      "list_name": "oo1yw77",
-      "name": "protomyl",
-      "label": "protomylonite",
-      "order": "5"
-    },
-    {
-      "list_name": "oo1yw77",
-      "name": "mylonite",
-      "label": "mylonite",
-      "order": "6"
-    },
-    {
-      "list_name": "oo1yw77",
-      "name": "ultramyl",
-      "label": "ultramylonite",
-      "order": "7"
-    },
-    {
-      "list_name": "oo1yw77",
-      "name": "blastomyl",
-      "label": "blastomylonite",
-      "order": "8"
-    },
-    {
-      "list_name": "oo1yw77",
-      "name": "other",
-      "label": "other",
-      "order": "9"
-    },
-    {
-      "list_name": "au84l98",
-      "name": "s",
-      "label": "S only"
-    },
-    {
-      "list_name": "au84l98",
-      "name": "s>>l",
-      "label": "S >> L",
-      "order": "1"
-    },
-    {
-      "list_name": "au84l98",
-      "name": "s>l",
-      "label": "S > L",
-      "order": "2"
-    },
-    {
-      "list_name": "au84l98",
-      "name": "sl",
-      "label": "S = L",
-      "order": "3"
-    },
-    {
-      "list_name": "au84l98",
-      "name": "l>s",
-      "label": "L > S",
-      "order": "4"
-    },
-    {
-      "list_name": "au84l98",
-      "name": "l>>s",
-      "label": "L >> S",
-      "order": "5"
-    },
-    {
-      "list_name": "au84l98",
-      "name": "l",
-      "label": "L only",
-      "order": "6"
-    },
-    {
-      "list_name": "au84l98",
-      "name": "other",
-      "label": "other",
-      "order": "7"
-    },
     {
       "list_name": "lg33p50",
       "name": "folding",
@@ -758,14 +374,51 @@
       "label": "other"
     },
     {
-      "list_name": "if8go18",
-      "name": "yes_kin",
-      "label": "Yes"
+      "list_name": "au84l98",
+      "name": "s",
+      "label": "S only"
     },
     {
-      "list_name": "if8go18",
-      "name": "no_kin",
-      "label": "No"
+      "list_name": "au84l98",
+      "name": "s>>l",
+      "label": "S >> L",
+      "order": "1"
+    },
+    {
+      "list_name": "au84l98",
+      "name": "s>l",
+      "label": "S > L",
+      "order": "2"
+    },
+    {
+      "list_name": "au84l98",
+      "name": "sl",
+      "label": "S = L",
+      "order": "3"
+    },
+    {
+      "list_name": "au84l98",
+      "name": "l>s",
+      "label": "L > S",
+      "order": "4"
+    },
+    {
+      "list_name": "au84l98",
+      "name": "l>>s",
+      "label": "L >> S",
+      "order": "5"
+    },
+    {
+      "list_name": "au84l98",
+      "name": "l",
+      "label": "L only",
+      "order": "6"
+    },
+    {
+      "list_name": "au84l98",
+      "name": "other",
+      "label": "other",
+      "order": "7"
     },
     {
       "list_name": "lw8uh27",
@@ -865,7 +518,8 @@
   ],
   "settings": [
     {
-      "version": "vUHzHBiHrEnUvkQC4kraky"
+      "form_title": "Fabrics - Fault and shear zone (11/21)",
+      "version": "1 (2022-01-26 21:39:58)"
     }
   ]
 }
