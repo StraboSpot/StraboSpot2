@@ -26,7 +26,7 @@ const BasicSedPage = (props) => {
   const [selectedAttribute, setSelectedAttribute] = useState({});
   const [selectedTypeIndex, setSelectedTypeIndex] = useState(0);
 
-  const attributes = spot.properties?.sed[props.page.key] || {};
+  const attributes = spot.properties?.sed[props.page.key] || [];
 
   useEffect(() => {
     console.log('UE Rendered ' + props.page.label + ' Page\nSpot:', spot);
