@@ -20,7 +20,7 @@ const CompassModal = (props) => {
 
   const [isShowTemplates, setIsShowTemplates] = useState(false);
   const [compassData, setCompassData] = useState({});
-  const [showCompassMetadataView, setShowCompassMetadataView] = useState(false);
+  const [showCompassRawDataView, setShowCompassRawDataView] = useState(false);
 
   const closeCompassModal = () => {
     if (isShowTemplates) setIsShowTemplates(false);
@@ -32,7 +32,7 @@ const CompassModal = (props) => {
   };
 
   const showCompassMetadataModal = (value) => {
-    setShowCompassMetadataView(!value ? value : !showCompassMetadataView);
+    setShowCompassRawDataView(!value ? value : !showCompassRawDataView);
   };
 
   const renderCompassData = () => (
@@ -106,16 +106,15 @@ const CompassModal = (props) => {
           <Compass
             goToCurrentLocation={props.goToCurrentLocation}
             showCompassDataModal={showCompassMetadataModal}
-            compassData={(data) => {showCompassMetadataView && setCompassData(data);}}
-            compassDataButtonTitle={!showCompassMetadataView && 'Show Compass Data'}
+            setCompassRawDataToDisplay={(data) => {showCompassRawDataView && setCompassData(data);}}
           />
         )}
         <Overlay
-          isVisible={showCompassMetadataView}
+          isVisible={showCompassRawDataView}
           overlayStyle={[{...modalStyle.modalContainer, width: 400}, compassStyles.compassDataModalPosition]}
           onBackdropPress={() => showCompassMetadataModal(false)}
         >
-          {showCompassMetadataView && renderCompassData()}
+          {showCompassRawDataView && renderCompassData()}
         </Overlay>
       </View>
 

@@ -514,12 +514,14 @@ const Compass = (props) => {
         <Text style={compassStyles.sliderHeading}>Quality of Measurement</Text>
         {renderSlider()}
       </View>
-      <Button
-        title={props.compassDataButtonTitle}
-        type={'clear'}
-        onPress={props.showCompassDataModal}
-        compassData={props.compassData(compassData)}
-      />
+      {props.setCompassRawDataToDisplay && (
+        <Button
+          title={'Show Compass Data'}
+          type={'clear'}
+          onPress={props.showCompassDataModal}
+          compassData={props.setCompassRawDataToDisplay(compassData)}
+        />
+      )}
     </React.Fragment>
   );
 };
