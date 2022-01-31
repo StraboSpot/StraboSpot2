@@ -18,6 +18,11 @@ const styles = StyleSheet.create({
     padding: 5,
     // textAlign: 'center',
   },
+  compassMatrixHeader: {
+      textAlign: 'center',
+    fontWeight: 'bold',
+    marginBottom: 5
+  },
   compassImage: {
     marginTop: 15,
     height: 175,

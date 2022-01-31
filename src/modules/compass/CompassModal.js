@@ -62,16 +62,19 @@ const CompassModal = (props) => {
           <Text style={{textAlign: 'center', padding: 10, fontSize: 20}}>Matrix Rotation</Text>
           <View style={{flexDirection: 'row'}}>
             <View style={{flex: 1}}>
+              <Text style={compassStyles.compassMatrixHeader}>North</Text>
               <Text style={compassStyles.compassMatrixDataText}>M11: {compassData.M11}</Text>
               <Text style={compassStyles.compassMatrixDataText}>M21: {compassData.M21} </Text>
               <Text style={compassStyles.compassMatrixDataText}>M31: {compassData.M31}</Text>
             </View>
             <View style={{flex: 1}}>
+              <Text style={compassStyles.compassMatrixHeader}>West</Text>
               <Text style={compassStyles.compassMatrixDataText}>M12: {compassData.M12}</Text>
               <Text style={compassStyles.compassMatrixDataText}>M22: {compassData.M22} </Text>
               <Text style={compassStyles.compassMatrixDataText}>M32: {compassData.M32}</Text>
             </View>
             <View style={{flex: 1}}>
+              <Text style={compassStyles.compassMatrixHeader}>Up</Text>
               <Text style={compassStyles.compassMatrixDataText}>M13: {compassData.M13}</Text>
               <Text style={compassStyles.compassMatrixDataText}>M23: {compassData.M23} </Text>
               <Text style={compassStyles.compassMatrixDataText}>M33: {compassData.M33}</Text>
