@@ -9,21 +9,20 @@ import {PRIMARY_ACCENT_COLOR, SECONDARY_BACKGROUND_COLOR} from '../../../shared/
 import {COMPASS_TOGGLE_BUTTONS} from '../../compass/compass.constants';
 import {setCompassMeasurementTypes} from '../../compass/compass.slice';
 import {formStyles, useFormHook} from '../../form';
-import {FOLD_MEASUREMENTS_GROUP_KEYS} from './';
 
-const FoldMeasurementsButtons = (props) => {
+const ThreeDStructuresMeasurementsButtons = (props) => {
   const dispatch = useDispatch();
 
   const [useForm] = useFormHook();
 
-  const groupFields = Object.keys(FOLD_MEASUREMENTS_GROUP_KEYS).map(k => props.survey.find(f => f.name === k));
+  const groupFields = Object.keys(props.measurementsKeys).map(k => props.survey.find(f => f.name === k));
 
-  const addFoldMeasurement = (groupField) => {
-    props.setIsFoldMeasurementsModalVisible(true);
-    props.setFoldMeasurementsGroupField(groupField);
-    if (groupField.name === 'group_xf0sv21') dispatch(setCompassMeasurementTypes([COMPASS_TOGGLE_BUTTONS.LINEAR]));
-    else dispatch(setCompassMeasurementTypes([COMPASS_TOGGLE_BUTTONS.PLANAR]));
-    // dispatch(setModalVisible({modal: MODAL_KEYS.NOTEBOOK.MEASUREMENT}));
+  const addMeasurement = (groupField) => {
+    props.setIsMeasurementsModalVisible(true);
+    props.setMeasurementsGroupField(groupField);
+    const groupKeys = props.measurementsKeys[groupField.name];
+    if (groupKeys.hasOwnProperty('strike')) dispatch(setCompassMeasurementTypes([COMPASS_TOGGLE_BUTTONS.PLANAR]));
+    else dispatch(setCompassMeasurementTypes([COMPASS_TOGGLE_BUTTONS.LINEAR]));
   };
 
   const isGroupEmpty = (groupField) => {
@@ -34,8 +33,8 @@ const FoldMeasurementsButtons = (props) => {
   const buttonText = (field) => {
     const getValueText = () => {
       const values = props.formProps.values;
-      const groupKeys = FOLD_MEASUREMENTS_GROUP_KEYS[field.name];
-      if (Object.keys(groupKeys).includes('strike')) {
+      const groupKeys = props.measurementsKeys[field.name];
+      if (groupKeys.hasOwnProperty('strike')) {
         const strike = values[groupKeys.strike];
         const dip = values[groupKeys.dip];
         return (isEmpty(strike) ? '?' : padWithLeadingZeros(strike, 3)) + '/'
@@ -79,7 +78,7 @@ const FoldMeasurementsButtons = (props) => {
             }]}
             title={() => buttonText(field)}
             type={'outline'}
-            onPress={() => addFoldMeasurement(field)}
+            onPress={() => addMeasurement(field)}
           />
         );
       })}
@@ -87,4 +86,4 @@ const FoldMeasurementsButtons = (props) => {
   );
 };
 
-export default FoldMeasurementsButtons;
+export default ThreeDStructuresMeasurementsButtons;

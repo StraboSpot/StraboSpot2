@@ -118,8 +118,8 @@ const Compass = (props) => {
     setToggles(compassMeasurementTypes);
   }, [compassMeasurementTypes]);
 
-  const addFoldMeasurement = (data) => {
-    props.setFoldMeasurements({...data, quality: sliderValue.toString()});
+  const addAttributeMeasurement = (data) => {
+    props.setAttributeMeasurements({...data, quality: sliderValue.toString()});
     props.closeCompass();
   };
 
@@ -214,7 +214,7 @@ const Compass = (props) => {
           else console.log('compass sound failed due to audio decoding errors');
         });
         console.log('Compass measurements', compassData, sliderValue);
-        if (props.setFoldMeasurements) addFoldMeasurement(compassData);
+        if (props.setAttributeMeasurements) addAttributeMeasurement(compassData);
         else {
           dispatch(setCompassMeasurements(compassData.quality ? compassData
             : {...compassData, quality: sliderValue.toString()}));
@@ -471,7 +471,7 @@ const Compass = (props) => {
     <React.Fragment>
       {/*<View style={{flexDirection: 'row'}}>*/}
       <View style={compassStyles.compassContainer}>
-        {props.setFoldMeasurements && (
+        {props.setAttributeMeasurements && (
           <React.Fragment>
             <Button
               buttonStyle={formStyles.formButtonSmall}
@@ -500,8 +500,8 @@ const Compass = (props) => {
         {/*<Text>Heading: {degree(compassHeading)}</Text>*/}
         {isManualMeasurement ? (
             <ManualMeasurement
-              addFoldMeasurement={addFoldMeasurement}
-              setFoldMeasurements={props.setFoldMeasurements}
+              addAttributeMeasurement={addAttributeMeasurement}
+              setAttributeMeasurements={props.setAttributeMeasurements}
               toggles={toggles}
             />
           )
@@ -509,7 +509,7 @@ const Compass = (props) => {
         }
       </View>
 
-      {!props.setFoldMeasurements && renderToggles()}
+      {!props.setAttributeMeasurements && renderToggles()}
       <View style={compassStyles.sliderContainer}>
         <Text style={compassStyles.sliderHeading}>Quality of Measurement</Text>
         {renderSlider()}

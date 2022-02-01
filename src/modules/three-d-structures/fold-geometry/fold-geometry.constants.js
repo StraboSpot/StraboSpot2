@@ -1,25 +1,5 @@
 export const FOLD_GEOMETRY_KEYS = ['fold_attitude', 'fold_shape', 'Hinge_Shape'];
 
-export const FOLD_MEASUREMENTS_GROUP_KEYS = {
-  group_xf0sv21: {
-    trend: 'Trend',
-    plunge: 'Plunge',
-    quality: 'Measurement_Quality',
-  },
-  group_kx3ya56: {
-    strike: 'Strike',
-    dip_direction: 'Azimuthal_Dip_Direction',
-    dip: 'Dip',
-    quality: 'Measurement_Quality_001',
-  },
-  group_fold_foliation: {
-    strike: 'fold_fol_strike',
-    dip_direction: 'fold_fol_dip_direction',
-    dip: 'fold_fol_dip',
-    quality: 'fold_fol_quality',
-  },
-};
-
 export const FOLD_ICONS = {
   fold_attitude: {
     DEFAULT: {

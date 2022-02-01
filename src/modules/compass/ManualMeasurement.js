@@ -86,8 +86,8 @@ const ManualMeasurement = (props) => {
                 <FlatListItemSeparator/>
               </React.Fragment>
             )}
-            {props.setFoldMeasurements && (
-              <SaveButton title={'Add to Fold'} onPress={() => props.addFoldMeasurement(formProps.values)}/>
+            {props.setAttributeMeasurements && (
+              <SaveButton title={'Add to Attribute'} onPress={() => props.addAttributeMeasurement(formProps.values)}/>
             )}
           </View>
         )}

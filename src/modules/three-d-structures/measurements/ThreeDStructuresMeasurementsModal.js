@@ -9,28 +9,22 @@ import modalStyle from '../../../shared/ui/modal/modal.style';
 import ModalHeader from '../../../shared/ui/modal/ModalHeader';
 import Compass from '../../compass/Compass';
 import {useFormHook} from '../../form';
-import {FOLD_MEASUREMENTS_GROUP_KEYS} from './';
 
-const FoldMeasurementsModal = (props) => {
+const ThreeDStructuresMeasurementsModal = (props) => {
   const [useForm] = useFormHook();
 
-  const setFoldMeasurements = (compassData) => {
+  const setMeasurements = (compassData) => {
     let renamedCompassData = {};
     if (isEmpty(compassData)) {
       let updatedFormData = JSON.parse(JSON.stringify(props.formProps.values));
-      Object.keys(FOLD_MEASUREMENTS_GROUP_KEYS).forEach(groupKey => {
-        if (props.foldMeasurementsGroupField.name === groupKey) {
-          Object.values(FOLD_MEASUREMENTS_GROUP_KEYS[groupKey]).forEach(k => {
-            if (isEmpty(compassData) && updatedFormData[k]) delete updatedFormData[k];
-          });
-        }
+      Object.values(props.measurementsGroup).forEach(k => {
+        if (isEmpty(compassData) && updatedFormData[k]) delete updatedFormData[k];
       });
       props.formProps.setValues(updatedFormData);
-      props.setIsFoldMeasurementsModalVisible(false);
+      props.setIsThreeDStructuresMeasurementsModalVisible(false);
     }
     else {
-      const groupKeys = FOLD_MEASUREMENTS_GROUP_KEYS[props.foldMeasurementsGroupField.name];
-      Object.entries(groupKeys).forEach(([compassFieldKey, foldFieldKey]) => {
+      Object.entries(props.measurementsGroup).forEach(([compassFieldKey, foldFieldKey]) => {
         if (!isEmpty(compassData[compassFieldKey])) {
           // Convert quality to choice names for fold group, assumes qualities listed highest to lowest
           if (compassFieldKey === 'quality') {
@@ -51,21 +45,21 @@ const FoldMeasurementsModal = (props) => {
     <Overlay overlayStyle={[modalStyle.modalContainer, modalStyle.modalPosition]} isVisible={true}>
       <ModalHeader
         buttonTitleRight={'Done'}
-        title={props.foldMeasurementsGroupField.label}
-        close={() => props.setIsFoldMeasurementsModalVisible(false)}
+        title={props.measurementsGroupLabel}
+        close={() => props.setIsThreeDStructuresMeasurementsModalVisible(false)}
       />
       <Compass
-        setFoldMeasurements={setFoldMeasurements}
-        closeCompass={() => props.setIsFoldMeasurementsModalVisible(false)}
+        setAttributeMeasurements={setMeasurements}
+        closeCompass={() => props.setIsThreeDStructuresMeasurementsModalVisible(false)}
       />
       <Button
         titleStyle={{color: WARNING_COLOR}}
         title={'Clear Measurement'}
         type={'clear'}
-        onPress={() => setFoldMeasurements({})}
+        onPress={() => setMeasurements({})}
       />
     </Overlay>
   );
 };
 
-export default FoldMeasurementsModal;
+export default ThreeDStructuresMeasurementsModal;

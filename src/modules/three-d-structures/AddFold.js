@@ -1,7 +1,12 @@
 import React, {useState} from 'react';
 
-import {Form, FormSlider, MainButtons, useFormHook} from '../../form';
-import {FoldGeometryButtons, FoldMeasurementsButtons, FoldMeasurementsModal} from './';
+import {Form, FormSlider, MainButtons, useFormHook} from '../form';
+import {FoldGeometryButtons} from './fold-geometry';
+import {
+  FOLD_MEASUREMENTS_KEYS,
+  ThreeDStructuresMeasurementsButtons,
+  ThreeDStructuresMeasurementsModal,
+} from './measurements';
 
 const AddFold = (props) => {
   const [useForm] = useFormHook();
@@ -23,10 +28,11 @@ const AddFold = (props) => {
     <React.Fragment>
       <Form {...{formName: props.formName, surveyFragment: firstKeysFields, ...props.formProps}}/>
       <MainButtons {...{mainKeys: mainButttonsKeys, ...props}}/>
-      <FoldMeasurementsButtons
+      <ThreeDStructuresMeasurementsButtons
         formProps={props.formProps}
-        setFoldMeasurementsGroupField={setFoldMeasurementsGroupField}
-        setIsFoldMeasurementsModalVisible={setIsFoldMeasurementsModalVisible}
+        measurementsKeys={FOLD_MEASUREMENTS_KEYS}
+        setMeasurementsGroupField={setFoldMeasurementsGroupField}
+        setIsMeasurementsModalVisible={setIsFoldMeasurementsModalVisible}
         survey={survey}
       />
       <FoldGeometryButtons {...props}/>
@@ -40,11 +46,12 @@ const AddFold = (props) => {
       />
       <FormSlider {...{fieldKey: vergenceKey, hasNoneChoice: true, hasRotatedLabels: true, ...props}}/>
       {isFoldMeasurementsModalVisible && (
-        <FoldMeasurementsModal
-          foldMeasurementsGroupField={foldMeasurementsGroupField}
+        <ThreeDStructuresMeasurementsModal
+          measurementsGroup={FOLD_MEASUREMENTS_KEYS[foldMeasurementsGroupField.name]}
+          measurementsGroupLabel={foldMeasurementsGroupField.label}
           formName={props.formName}
           formProps={props.formProps}
-          setIsFoldMeasurementsModalVisible={setIsFoldMeasurementsModalVisible}
+          setIsThreeDStructuresMeasurementsModalVisible={setIsFoldMeasurementsModalVisible}
         />
       )}
     </React.Fragment>

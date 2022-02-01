@@ -13,9 +13,10 @@ import Modal from '../../shared/ui/modal/Modal';
 import {Form, useFormHook} from '../form';
 import {setModalValues, setModalVisible} from '../home/home.slice';
 import {editedSpotProperties} from '../spots/spots.slice';
+import AddFold from './AddFold';
 import AddOther from './AddOther';
 import AddTensor from './AddTensor';
-import {AddFold, FoldGeometryChoices} from './fold';
+import {FoldGeometryChoices} from './fold-geometry';
 import {THREE_D_STRUCTURE_TYPES} from './threeDStructures.constants';
 
 const AddThreeDStructureModal = (props) => {
