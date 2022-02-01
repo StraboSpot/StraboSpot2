@@ -120,6 +120,10 @@ const AddThreeDStructureModal = (props) => {
                   innerRef={formRef}
                   initialValues={{}}
                   onSubmit={(values) => console.log('Submitting form...', values)}
+                  validate={(values) => (
+                    useForm.validateForm({formName: [groupKey, types[selectedTypeIndex]], values: values}))
+                  }
+                  validateOnChange={false}
                 >
                   {(formProps) => (
                     <View style={{flex: 1}}>
