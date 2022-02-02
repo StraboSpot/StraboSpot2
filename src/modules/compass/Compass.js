@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 
 import {Button, ListItem} from 'react-native-elements';
-import {accelerometer, SensorTypes, setUpdateIntervalForType} from 'react-native-sensors';
+import {accelerometer, SensorTypes, setUpdateIntervalForType, magnetometer} from 'react-native-sensors';
 import Sound from 'react-native-sound';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -34,6 +34,7 @@ import {setCompassMeasurements, setCompassMeasurementTypes} from './compass.slic
 import compassStyles from './compass.styles';
 
 const Compass = (props) => {
+  let accelerometerSubscription, magnetometerSubscription;
   const dispatch = useDispatch();
   const compassMeasurementTypes = useSelector(state => state.compass.measurementTypes);
   const compassMeasurements = useSelector(state => state.compass.measurements);
@@ -44,25 +45,31 @@ const Compass = (props) => {
     state => state.project.project?.templates?.activeMeasurementTemplates) || [];
 
   const [accelerometerData, setAccelerometerData] = useState({x: 0, y: 0, z: 0, timestamp: null});
-  const [accelerometerSubscription, setAccelerometerSubscription] = useState(null);
   const [compassData, setCompassData] = useState({
-    heading: null,
-    strike: null,
-    dip_direction: null,
-    dip: null,
-    trend: null,
-    plunge: null,
-    rake: null,
+    accelX: 0,
+    accelY: 0,
+    accelZ: 0,
+    magX: 0,
+    magY: 0,
+    magZ: 0,
+    heading: 0,
+    strike: 0,
+    dip_direction: 0,
+    dip: 0,
+    trend: 0,
+    plunge: 0,
+    rake: 0,
     rake_calculated: 'yes',
-    quality: null,
+    quality: 0,
   });
-  const [magnetometer, setMagnetometer] = useState(0);
-  // const [showData, setShowData] = useState(false);
+  // const [magnetometerData, setMagnetometerData] = useState(null);
+  // const [showData, setShowData] = useState(true);
   const [sliderValue, setSliderValue] = useState(5);
   const [strikeSpinValue] = useState(new Animated.Value(0));
   const [trendSpinValue] = useState(new Animated.Value(0));
   const [toggles, setToggles] = useState(compassMeasurementTypes);
   const [buttonSound, setButtonSound] = useState(null);
+  const [compassHeading, setCompassHeading] = useState(0);
 
   const [useMaps] = useMapsHook();
   const [useMeasurements] = useMeasurementsHook();
@@ -79,9 +86,9 @@ const Compass = (props) => {
   useEffect(() => {
     AppState.addEventListener('change', handleAppStateChange);
     if (Platform.OS === 'android') {
-      setUpdateIntervalForType(SensorTypes.accelerometer, 300);
-      setUpdateIntervalForType(SensorTypes.magnetometer, 300);
-      subscribeToAccelerometer().catch(e => console.log('Error with Accelerometer', e));
+      // setUpdateIntervalForType(SensorTypes.accelerometer, 100);
+      // setUpdateIntervalForType(SensorTypes.magnetometer, 100);
+      subscribeToSensors().catch(e => console.log('Error with Sensors', e));
     }
     return () => {
       AppState.removeEventListener('change', handleAppStateChange);
@@ -92,7 +99,8 @@ const Compass = (props) => {
   // Update compass data on accelerometer data changed
   useEffect(() => {
     displayCompassData();
-  }, [accelerometerData]);
+    console.log(compassData)
+  }, [accelerometerData, compassData]);
 
   // Create a new measurement on grabbing new compass measurements from shortcut modal
   useEffect(() => {
@@ -116,12 +124,51 @@ const Compass = (props) => {
     setToggles(compassMeasurementTypes);
   }, [compassMeasurementTypes]);
 
-  const calculateOrientation = () => {
+  const calculateAndroidOrientation = (res) => {
+    // console.log(res)
+    if (res) {
+      setCompassData({
+        ...compassData,
+        // accelX: accelerometerData.x,
+        // accelY: accelerometerData.y,
+        // accelZ: accelerometerData. z,
+        // magX: compassHeading?.x,
+        // magY: compassHeading?.y,
+        // magZ: compassHeading?.z,
+        M11: roundToDecimalPlaces(res?.M11, 3),
+        M12: roundToDecimalPlaces(res?.M12, 3),
+        M13: roundToDecimalPlaces(res?.M13, 3),
+        M21: roundToDecimalPlaces(res?.M21, 3),
+        M22: roundToDecimalPlaces(res?.M22, 3),
+        M23: roundToDecimalPlaces(res?.M23, 3),
+        M31: roundToDecimalPlaces(res?.M31, 3),
+        M32: roundToDecimalPlaces(res?.M32, 3),
+        M33: roundToDecimalPlaces(res?.M33, 3),
+        // heading: roundToDecimalPlaces(compassHeading, 4),
+        // heading: degree(actualHeading),
+        // strike: roundToDecimalPlaces(strike, 0),
+        // dip_direction: roundToDecimalPlaces(dipdir, 0),
+        // dip: roundToDecimalPlaces(dip, 0),
+        // trend: roundToDecimalPlaces(trend, 0),
+        // plunge: roundToDecimalPlaces(plunge, 0),
+        // rake: roundToDecimalPlaces(rake, 0),
+        // rake_calculated: 'yes',
+        // quality: sliderValue.toString(),
+      });
+    }
+  };
+
+  const calculateOrientation = (res) => {
     const x = accelerometerData.x;
     const y = accelerometerData.y;
     const z = accelerometerData.z;
-    let actualHeading = mod(magnetometer - 270, 360);  // ToDo: adjust for declination
-
+    // let actualHeading = magnetometerData ? mod(magnetometerData.z , 360) : 0;  // ToDo: adjust for declination
+    let actualHeading = angle(compassHeading);
+    // console.log(magnetometerData);
+    // console.log(actualHeading)
+    // console.log('accelX', accelerometerData.x );
+    // console.log('accelY', accelerometerData.y );
+    // console.log('accelZ', accelerometerData.z );
     // Calculate base values given the x, y, and z from the device. The x-axis runs side-to-side across
     // the mobile phone screen, or the laptop keyboard, and is positive towards the right side. The y-axis
     // runs front-to-back across the mobile phone screen, or the laptop keyboard, and is positive towards as
@@ -162,7 +209,23 @@ const Compass = (props) => {
     rake = toDegrees(R);
 
     setCompassData({
-      heading: roundToDecimalPlaces(actualHeading, 4),
+      accelX: x,
+      accelY: y,
+      accelZ: z,
+      magX: compassHeading?.x,
+      magY: compassHeading?.y,
+      magZ: compassHeading?.z,
+      // M11: roundToDecimalPlaces(res?.M11, 3),
+      // M12: roundToDecimalPlaces(res?.M12, 3),
+      // M13: roundToDecimalPlaces(res?.M13, 3),
+      // M21: roundToDecimalPlaces(res?.M21, 3),
+      // M22: roundToDecimalPlaces(res?.M22, 3),
+      // M23: roundToDecimalPlaces(res?.M23, 3),
+      // M31: roundToDecimalPlaces(res?.M31, 3),
+      // M32: roundToDecimalPlaces(res?.M32, 3),
+      // M33: roundToDecimalPlaces(res?.M33, 3),
+      // heading: roundToDecimalPlaces(compassHeading, 4),
+      heading: degree(actualHeading),
       strike: roundToDecimalPlaces(strike, 0),
       dip_direction: roundToDecimalPlaces(dipdir, 0),
       dip: roundToDecimalPlaces(dip, 0),
@@ -180,7 +243,8 @@ const Compass = (props) => {
       NativeModules.Compass.myDeviceRotation();
       CompassEvents.addListener('rotationMatrix', matrixRotation);
     }
-    else calculateOrientation();
+    // else calculateOrientation();
+    else subscribeToSensors();
   };
 
   const grabMeasurements = async (isCompassMeasurement) => {
@@ -203,10 +267,27 @@ const Compass = (props) => {
   };
 
   const handleAppStateChange = (state) => {
-    if (state === 'active') Platform.OS === 'ios' ? displayCompassData() : subscribeToAccelerometer();
+    if (state === 'active') Platform.OS === 'ios' ? displayCompassData() : subscribeToSensors();
     else if (state === 'background' || state === 'inactive') {
       dispatch(setModalVisible({modal: null}));
       unsubscribe();
+    }
+  };
+
+  const androidMatrixRotation = res => {
+    if (res) {
+      setCompassData({
+        ...compassData,
+        M11: roundToDecimalPlaces(res.M11, 3),
+        M12: roundToDecimalPlaces(res.M12, 3),
+        M13: roundToDecimalPlaces(res.M13, 3),
+        M21: roundToDecimalPlaces(res.M21, 3),
+        M22: roundToDecimalPlaces(res.M22, 3),
+        M23: roundToDecimalPlaces(res.M23, 3),
+        M31: roundToDecimalPlaces(res.M31, 3),
+        M32: roundToDecimalPlaces(res.M32, 3),
+        M33: roundToDecimalPlaces(res.M33, 3),
+      });
     }
   };
 
@@ -396,7 +477,7 @@ const Compass = (props) => {
   const renderTrendSymbol = () => {
     let image = require('../../assets/images/compass/trendLine.png');
     const spin = trendSpinValue.interpolate({
-      inputRange: [0, compassData.trend],
+      inputRange: [0, compassData.trend ? compassData.trend : 0],
       outputRange: ['0deg', compassData.trend + 'deg'],
     });
     // First set up animation
@@ -422,10 +503,69 @@ const Compass = (props) => {
     );
   };
 
-  const subscribeToAccelerometer = async () => {
-    const accelerometerSubscriptionTemp = await accelerometer.subscribe((data) => setAccelerometerData(data));
-    setAccelerometerSubscription(accelerometerSubscriptionTemp);
-    console.log('Began accelerometer subscription.');
+  const angle = magnetometer => {
+    let angle = 0;
+    if (magnetometer) {
+      let {x, y} = magnetometer;
+      if (Math.atan2(y, x) >= 0) {
+        angle = Math.atan2(y, x) * (180 / Math.PI);
+      }
+      else {
+        angle = (Math.atan2(y, x) + 2 * Math.PI) * (180 / Math.PI);
+      }
+    }
+    // console.log('ANGLE', angle);
+    return Math.round(angle);
+  };
+
+  const degree = magnetometer => {
+    return magnetometer - 90 >= 0
+      ? magnetometer - 90
+      : magnetometer + 271;
+  };
+
+  const direction = degree => {
+    if (degree >= 22.5 && degree < 67.5) {
+      return 'NE';
+    }
+    else if (degree >= 67.5 && degree < 112.5) {
+      return 'E';
+    }
+    else if (degree >= 112.5 && degree < 157.5) {
+      return 'SE';
+    }
+    else if (degree >= 157.5 && degree < 202.5) {
+      return 'S';
+    }
+    else if (degree >= 202.5 && degree < 247.5) {
+      return 'SW';
+    }
+    else if (degree >= 247.5 && degree < 292.5) {
+      return 'W';
+    }
+    else if (degree >= 292.5 && degree < 337.5) {
+      return 'NW';
+    }
+    else {
+      return 'N';
+    }
+  };
+
+  const subscribeToSensors = async () => {
+    const compassEventEmitter = new NativeEventEmitter(NativeModules.AndroidCompass);
+    compassEventEmitter.addListener('androidCompassData', calculateAndroidOrientation);
+    NativeModules.AndroidCompass.start();
+    // accelerometerSubscription = await accelerometer.subscribe((data) => {
+    //   //   // console.log('Acc Data', data);
+    //   setAccelerometerData(data);
+    // });
+    // console.log(accelerometerSubscription);
+    // magnetometerSubscription = await magnetometer.subscribe((data) => {
+    //   setCompassHeading(data);
+    //   // console.log('Magnetometer Data', data);
+    // });
+    // console.log(magnetometerSubscription);
+    console.log('Began accelerometer and magnetometer subscription.');
   };
 
   const toggleSwitch = (switchType) => {
@@ -444,14 +584,15 @@ const Compass = (props) => {
       CompassEvents.removeListener('rotationMatrix', matrixRotation);
       console.log('%cEnded Compass observation and rotationMatrix listener.', 'color: red');
     }
-    else unsubscribeFromAccelerometer();
+    else unsubscribeFromSensors();
     console.log('%cHeading subscription cancelled', 'color: red');
   };
 
-  const unsubscribeFromAccelerometer = () => {
+  const unsubscribeFromSensors = () => {
     if (accelerometerSubscription) accelerometerSubscription.unsubscribe();
-    setAccelerometerSubscription(null);
-    console.log('Ended accelerometer subscription.');
+    if (magnetometerSubscription) magnetometerSubscription.unsubscribe();
+    NativeModules.AndroidCompass.stop();
+    console.log('%cEnded accelerometer and magnetometer subscription.', 'color: red');
   };
 
   return (
@@ -464,8 +605,8 @@ const Compass = (props) => {
               Tap compass to
               {modalVisible === MODAL_KEYS.SHORTCUTS.MEASUREMENT && ' record a new \nmeasurement in a NEW Spot'}
               {modalVisible === MODAL_KEYS.NOTEBOOK.MEASUREMENTS
-              && (isEmpty(selectedMeasurement) ? ' record \na new measurement \nor tap HERE to record manually'
-                : ' edit current measurement')
+                && (isEmpty(selectedMeasurement) ? ' record \na new measurement \nor tap HERE to record manually'
+                  : ' edit current measurement')
               }
             </Text>
           </TouchableOpacity>
@@ -477,9 +618,14 @@ const Compass = (props) => {
           {renderSlider()}
         </View>
       </View>
-      {/*<View style={compassStyles.buttonContainer}>*/}
-      {/*{showData && renderDataView()}*/}
-      {/*</View>*/}
+      {props.setCompassRawDataToDisplay && (
+        <Button
+          title={'Show Compass Data'}
+          type={'clear'}
+          onPress={props.showCompassDataModal}
+          compassData={props.setCompassRawDataToDisplay(compassData)}
+        />
+      )}
     </React.Fragment>
   );
 };
