@@ -75,15 +75,19 @@ const spotSlice = createSlice({
       });
       tempImages = [...tempImages, ...updatedSpotObj];
       state.selectedSpot.properties.images = tempImages;
+      state.selectedSpot.properties.modified_timestamp = Date.now();
       state.spots = {...state.spots, [state.selectedSpot.properties.id]: state.selectedSpot};
     },
     editedSpotProperties(state, action) {
       const {field, value} = action.payload;
       if (!isEmpty(value) && !isEqual(value, state.selectedSpot.properties[field])) {
         state.selectedSpot.properties[field] = value;
-        state.modified_timestamp = Date.now();
+        state.selectedSpot.properties.modified_timestamp = Date.now();
       }
-      else if (isEmpty(value)) delete state.selectedSpot.properties[field];
+      else if (isEmpty(value)) {
+        delete state.selectedSpot.properties[field];
+        state.selectedSpot.properties.modified_timestamp = Date.now();
+      }
       state.spots = {...state.spots, [state.selectedSpot.properties.id]: state.selectedSpot};
     },
     setIntersectedSpotsForTagging(state, action) {

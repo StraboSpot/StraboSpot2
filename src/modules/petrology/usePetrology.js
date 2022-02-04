@@ -1,6 +1,6 @@
 import {useDispatch} from 'react-redux';
 
-import {isEmpty, toTitleCase} from '../../shared/Helpers';
+import {getNewId, isEmpty, toTitleCase} from '../../shared/Helpers';
 import {useFormHook} from '../form';
 import {PAGE_KEYS} from '../page/page.constants';
 import {editedSpotProperties} from '../spots/spots.slice';
@@ -102,7 +102,7 @@ const usePetrology = () => {
       else {
         let editedFeatureData = formCurrent.values;
         let editedPetData = spot.properties.pet ? JSON.parse(JSON.stringify(spot.properties.pet)) : {};
-        if (!editedPetData[key]) editedPetData[key] = [];
+        if (!editedPetData[key] || !Array.isArray(editedPetData[key])) editedPetData[key] = [];
         editedPetData[key] = editedPetData[key].filter(type => type.id !== editedFeatureData.id);
         editedPetData[key].push(editedFeatureData);
         dispatch(editedSpotProperties({field: 'pet', value: editedPetData}));
@@ -115,6 +115,14 @@ const usePetrology = () => {
     }
   };
 
+  const savePetFeatureValuesFromTemplates = (key, spot, activeTemplates) => {
+    let editedPetData = spot.properties.pet ? JSON.parse(JSON.stringify(spot.properties.pet)) : {};
+    if (!editedPetData[key] || !Array.isArray(editedPetData[key])) editedPetData[key] = [];
+    activeTemplates.forEach((t) => editedPetData[key].push({...t.values, id: getNewId()}));
+    console.log('editedPetData', editedPetData);
+    dispatch(editedSpotProperties({field: 'pet', value: editedPetData}));
+  };
+
   return {
     deletePetFeature: deletePetFeature,
     getMineralTitle: getMineralTitle,
@@ -122,6 +130,7 @@ const usePetrology = () => {
     getRockTitle: getRockTitle,
     onMineralChange: onMineralChange,
     savePetFeature: savePetFeature,
+    savePetFeatureValuesFromTemplates: savePetFeatureValuesFromTemplates,
   };
 };
 

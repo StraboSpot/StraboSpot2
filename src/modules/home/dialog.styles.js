@@ -1,6 +1,9 @@
-import {StyleSheet} from 'react-native';
+import {Dimensions, Platform, StyleSheet} from 'react-native';
 
 import * as themes from '../../shared/styles.constants';
+
+const platform = Platform.OS === 'ios' ? 'window' : 'screen';
+const deviceDimensions = Dimensions.get(platform);
 
 const styles = StyleSheet.create({
   customBaseMapListContainer: {
@@ -9,10 +12,12 @@ const styles = StyleSheet.create({
     paddingTop: 10,
   },
   dialogBox: {
+    paddingBottom: 30,
     position: 'absolute',
     bottom: 10,
     left: 10,
     width: 300,
+    maxHeight: deviceDimensions.height * 0.95,
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
     borderRadius: 20,
   },

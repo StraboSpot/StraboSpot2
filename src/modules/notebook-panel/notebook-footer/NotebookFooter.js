@@ -20,6 +20,7 @@ const NotebookFooter = (props) => {
 
   const notebookPagesValidOn = notebookPagesOn.filter(i => {
     const page = NOTEBOOK_PAGES.find(p => p.key === i);
+    if (!page) return false;
     return !page.testing || (isTestingMode && page?.testing);
   });
 
@@ -43,7 +44,7 @@ const NotebookFooter = (props) => {
           containerStyle={{alignSelf: 'center'}}
           buttonStyle={{padding: 15}}
           title={'MORE'}
-          type="clear"
+          type={'clear'}
           titleStyle={footerStyle.morePagesButton}
           onPress={() => setIsMorePagesMenuVisible(true)}
         />

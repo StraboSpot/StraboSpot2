@@ -1,9 +1,13 @@
 import {Alert} from 'react-native';
 
+import * as Sentry from '@sentry/react-native';
 import {useSelector} from 'react-redux';
 
 const useServerRequests = () => {
-  const baseUrl = useSelector(state => state.project.databaseEndpoint);
+  const databaseEndpoint = useSelector(state => state.project.databaseEndpoint);
+  const baseUrl = databaseEndpoint.url && databaseEndpoint.isSelected
+    ? databaseEndpoint.url
+    : 'https://strabospot.org/db';
   const mapWarperApi = 'http://mapwarper.net/api/v1/maps/';
   const straboMyMapsApi = 'https://strabospot.org/geotiff/bbox/';
   const tilehost = 'http://tiles.strabospot.org/';
@@ -16,51 +20,68 @@ const useServerRequests = () => {
 
   const authenticateUser = async (username, password) => {
     const authenticationBaseUrl = baseUrl.slice(0, baseUrl.lastIndexOf('/')); //URL to send authentication API call
-      let response = await timeoutPromise(30000, fetch(authenticationBaseUrl + '/userAuthenticate',
-        {
-          method: 'POST',
-          headers: {
-            // TODO: ?? does not work when Accept is uncommented ??
-            // Accept: 'application/json; charset=UTF-8',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(
-            {email: username, password: password},
-          ),
+    let response = await timeoutPromise(30000, fetch(authenticationBaseUrl + '/userAuthenticate',
+      {
+        method: 'POST',
+        headers: {
+          // TODO: ?? does not work when Accept is uncommented ??
+          // Accept: 'application/json; charset=UTF-8',
+          'Content-Type': 'application/json',
         },
-      ));
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.log('RESPONSE TEXT', errorText)
-        Alert.alert('Server Error!', 'The server is temporarily unable to service your request due to' +
-          ' maintenance downtime or capacity\n' + 'problems. Please try again later.')
-      }
-      else return await response.json();
+        body: JSON.stringify(
+          {email: username, password: password},
+        ),
+      },
+    ));
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.log('RESPONSE TEXT', errorText);
+      Alert.alert('Server Error!', 'The server is temporarily unable to service your request due to'
+        + ' maintenance downtime or capacity\n' + 'problems. Please try again later.');
+    }
+    else return await response.json();
   };
 
   const request = async (method, urlPart, login, ...otherParams) => {
-    const response = await timeoutPromise(10000, fetch(baseUrl + urlPart, {
-      method: method,
-      headers: {
-        Authorization: 'Basic ' + login + '/',
-        'Content-Type': 'application/json',
-      },
-      // body: JSON.stringify({data: data}),
-      ...otherParams,
-    }));
-    return handleResponse(response);
+    try {
+      const response = await timeoutPromise(10000, fetch(baseUrl + urlPart, {
+        method: method,
+        headers: {
+          Authorization: 'Basic ' + login + '/',
+          'Content-Type': 'application/json',
+        },
+        // body: JSON.stringify({data: data}),
+        ...otherParams,
+      }));
+      return handleResponse(response);
+    }
+    catch (err) {
+      console.error('Error Fetching', err);
+      Alert.alert('Error', `${err.toString()}`);
+      throw Error('Unable to Get Project from Server.');
+    }
   };
 
   const post = async (urlPart, login, data) => {
-    const response = await fetch(baseUrl + urlPart, {
-      method: 'POST',
-      body: JSON.stringify(data),
-      headers: {
-        Authorization: 'Basic ' + login,
-        'Content-Type': 'application/json',
-      },
-    });
-    return handleResponse(response);
+    try {
+      const response = await fetch(baseUrl + urlPart, {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+          Authorization: 'Basic ' + login,
+          'Content-Type': 'application/json',
+        },
+      });
+      return handleResponse(response);
+    }
+    catch (err) {
+      console.error('Error Posting', err);
+      Alert.alert('Error', `${err.toString()}`);
+    }
+  };
+
+  const deleteAllSpotsInDataset = (datasetId, encodedLogin) => {
+    return request('DELETE', '/datasetSpots/' + datasetId, encodedLogin);
   };
 
   const getDataset = (datasetId) => {
@@ -73,7 +94,7 @@ const useServerRequests = () => {
 
   const getDbUrl = () => {
     return baseUrl;
-  }
+  };
 
   const downloadImage = (imageId, encodedLogin) => {
     return request('GET', '/image/' + imageId, encodedLogin, {responseType: 'blob'});
@@ -82,15 +103,13 @@ const useServerRequests = () => {
   const getMapWarperBbox = async (mapId) => {
     const response = await fetch(mapWarperApi + mapId);
     const responseJson = await response.json();
-    console.log('MAPWARPER MAP RES', responseJson);
+    console.log('MAP_WARPER MAP RES', responseJson);
     return responseJson;
   };
 
   const getMyMapsBbox = async (mapId) => {
     const response = await fetch(straboMyMapsApi + mapId);
-    const responseJson = await response.json();
-    console.log('MY MAPS RES', responseJson);
-    return responseJson;
+    return handleResponse(response);
   };
 
   const getProfileImage = async (encodedLogin) => {
@@ -134,38 +153,56 @@ const useServerRequests = () => {
   };
 
   const getMapTilesFromHost = async (zipUrl) => {
-    const response = await timeoutPromise(30000,fetch(zipUrl));
+    const response = await timeoutPromise(30000, fetch(zipUrl));
     return await response.json();
   };
 
   const handleError = async (response) => {
-    const errorMessage = JSON.parse(await response.text());
-    return Promise.reject(errorMessage.Error);
+    console.log('RESPONSE', response);
+    const responseJSON = await response.json();
+    console.log('RESPONSEJSON', responseJSON);
+    if (response.status === 401) {
+      const msg401 = 'This server could not verify that you are authorized to access the document requested. Either '
+        + 'you supplied the wrong credentials (e.g., bad password), or your browser doesn\'t understand how to supply '
+        + 'the credentials required.';
+      return Promise.reject(msg401);
+    }
+    else if (response.status === 404) {
+      if (responseJSON.error) return Promise.reject(responseJSON.error);
+      return Promise.reject('The requested URL was not found on this server.');
+    }
+    else {
+      try {
+        const errorMessage = JSON.parse(await response.text());
+        Sentry.captureMessage(`ERROR in useServerRequests: ${errorMessage.Error}`);
+        return Promise.reject(errorMessage?.Error || 'Unknown Error');
+      }
+      catch (err) {
+        console.log(err);
+        Sentry.captureMessage(`ERROR in useServerRequests: ${JSON.stringify(response)}`);
+        return Promise.reject('Unable to parse response. ' + err);
+      }
+    }
   };
 
   const handleResponse = response => {
-    if (response.ok) {
-      return response.json();
-    }
+    if (response.ok && response.status === 204) return response.text();
+    else if (response.ok) return response.json();
     else return handleError(response);
   };
 
   const timeoutPromise = async (ms, promise) => {
-    return new Promise((resolve, reject) => {
-      const timeout = setTimeout(() => {
-        // Alert.alert('There was an error getting your request');
-        reject(new Error('Network timeout'));
-      }, ms);
-      promise.then((res) => {
-          clearTimeout(timeout);
-          resolve(res);
-        },
-        (err) => {
-          clearTimeout(timeout);
-          reject(err);
-        },
-      );
-    });
+    const timeoutPromiseException = (err) => {
+      const timeoutError = Symbol();
+      if (err === timeoutError) throw new Error('Network timeout');
+      else throw 'Unable to Reach Server.';
+    };
+
+    let timer;
+    return Promise.race([
+      promise,
+      new Promise((_r, rej) => timer = setTimeout(rej, ms))])
+      .catch(timeoutPromiseException).finally(() => clearTimeout(timer));
   };
 
   // Register user
@@ -192,10 +229,7 @@ const useServerRequests = () => {
   const testCustomMapUrl = async (url) => {
     try {
       const response = await fetch(url);
-      console.log(response);
-      if (response.ok) {
-        return response.ok;
-      }
+      return response.ok;
     }
     catch (e) {
       console.log('ERROR', e);
@@ -250,9 +284,8 @@ const useServerRequests = () => {
 
   const zipURLStatus = async (zipId) => {
     try {
-      let responseJson = {};
       const response = await timeoutPromise(30000, fetch(tilehost + 'asyncstatus/' + zipId));
-      responseJson = await response.json();
+      const responseJson = await response.json();
       console.log(responseJson);
       if (responseJson.error) throw Error(responseJson.error);
       return responseJson;
@@ -266,6 +299,7 @@ const useServerRequests = () => {
   const serverRequests = {
     addDatasetToProject: addDatasetToProject,
     authenticateUser: authenticateUser,
+    deleteAllSpotsInDataset: deleteAllSpotsInDataset,
     downloadImage: downloadImage,
     getMyProjects: getMyProjects,
     getDatasets: getDatasets,

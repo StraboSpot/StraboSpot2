@@ -6,7 +6,7 @@ import {ListItem} from 'react-native-elements';
 import {batch, useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
-import {getNewCopyId, getNewId, isEmpty} from '../../shared/Helpers';
+import {getNewUUID, isEmpty} from '../../shared/Helpers';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SectionDivider from '../../shared/ui/SectionDivider';
@@ -20,6 +20,7 @@ import {PAGE_KEYS} from '../page/page.constants';
 import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
 import {editedSpotProperties} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
+import {IGNEOUS_ROCK_CLASSES} from './petrology.constants';
 
 const RockPage = (props) => {
   const dispatch = useDispatch();
@@ -35,11 +36,13 @@ const RockPage = (props) => {
 
   const preFormRef = useRef(null);
 
-  const petData = spot.properties.pet || {};
+  const groupKey = props.page.key === PAGE_KEYS.ROCK_TYPE_SEDIMENTARY ? 'sed' : 'pet';
+  const pageKey = props.page.key === PAGE_KEYS.ROCK_TYPE_SEDIMENTARY ? PAGE_KEYS.LITHOLOGIES : props.page.key;
+  const rockData = spot.properties[groupKey] || {};
 
   const IGNEOUS_SECTIONS = {
-    PLUTONIC: {title: 'Plutonic Rocks', key: 'plutonic'},
-    VOLCANIC: {title: 'Volcanic Rocks', key: 'volcanic'},
+    PLUTONIC: {title: 'Plutonic Rocks', key: IGNEOUS_ROCK_CLASSES.PLUTONIC},
+    VOLCANIC: {title: 'Volcanic Rocks', key: IGNEOUS_ROCK_CLASSES.VOLCANIC},
     DEPRECATED: {title: 'Igneous Rocks (Deprecated Version)', key: null},
   };
 
@@ -53,9 +56,14 @@ const RockPage = (props) => {
     DEPRECATED: {title: 'Alteration, Ore Rocks (Deprecated Version)', key: null},
   };
 
-  const pageSections = props.page.key === PAGE_KEYS.ROCK_TYPE_IGNEOUS ? IGNEOUS_SECTIONS
-    : props.page.key === PAGE_KEYS.ROCK_TYPE_METAMORPHIC ? METAMORPHIC_SECTIONS
-      : ALTERATION_ORE_SECTIONS;
+  const SEDIMENTARY_SECTIONS = {
+    SEDIMENTARY: {title: 'Sedimentary Rocks', key: PAGE_KEYS.LITHOLOGIES},
+  };
+
+  const pageSections = pageKey === PAGE_KEYS.ROCK_TYPE_IGNEOUS ? IGNEOUS_SECTIONS
+    : pageKey === PAGE_KEYS.ROCK_TYPE_METAMORPHIC ? METAMORPHIC_SECTIONS
+      : pageKey === PAGE_KEYS.ROCK_TYPE_ALTERATION_ORE ? ALTERATION_ORE_SECTIONS
+        : SEDIMENTARY_SECTIONS;
 
   useEffect(() => {
     console.log('UE Rendered RockPage\nSpot:', spot, '\nSelectedAttributes:', selectedAttributes);
@@ -68,13 +76,19 @@ const RockPage = (props) => {
   }, [selectedAttributes, spot]);
 
   const addRock = (sectionKey) => {
-    let newRock = props.page.key === PAGE_KEYS.ROCK_TYPE_IGNEOUS ? {id: getNewId(), igneous_rock_class: sectionKey}
-      : {id: getNewId()};
+    let newRock = pageKey === PAGE_KEYS.ROCK_TYPE_IGNEOUS ? {id: getNewUUID(), igneous_rock_class: sectionKey}
+      : {id: getNewUUID()};
     dispatch(setModalValues(newRock));
     dispatch(setModalVisible({modal: props.page.key}));
   };
 
-  const editRock = (rock) => {
+  const editRock = (rock, i) => {
+    if (!rock.id) {
+      let editedSedData = JSON.parse(JSON.stringify(spot.properties.sed));
+      rock = {...rock, id: getNewUUID()};
+      editedSedData[pageKey].splice(i, 1, rock);
+      dispatch(editedSpotProperties({field: 'sed', value: editedSedData}));
+    }
     batch(() => {
       setIsDetailView(true);
       setSelectedRock(rock);
@@ -86,32 +100,33 @@ const RockPage = (props) => {
     const spotToCopy = useSpots.getSpotById(spotId);
 
     const copyPetDataContinued = () => {
-      let updatedPetData = JSON.parse(JSON.stringify(petData));
-      if (spotToCopy?.properties?.pet?.rock_type) {
-        const survey = useForm.getSurvey(['pet_deprecated', props.page.key]);
+      let updatedPetData = JSON.parse(JSON.stringify(rockData));
+      if (groupKey === 'pet' && spotToCopy?.properties?.pet?.rock_type) {
+        const survey = useForm.getSurvey(['pet_deprecated', pageKey]);
         const fieldNames = survey.reduce((acc, field) => field.name ? [...acc, field.name] : acc, []);
         const petDataToCopyFiltered = Object.entries(spotToCopy.properties.pet).reduce((acc, [key, value]) => {
           return fieldNames.includes(key) ? {...acc, [key]: value} : acc;
         }, {});
-        const petDataFiltered = Object.entries(petData).reduce((acc, [key, value]) => {
+        const petDataFiltered = Object.entries(rockData).reduce((acc, [key, value]) => {
           return fieldNames.includes(key) ? acc : {...acc, [key]: value};
         }, {});
-        const updatedRockType = petData.rock_type ? [...new Set([...petData.rock_type, props.page.key])]
-          : [props.page.key];
+        const updatedRockType = rockData.rock_type ? [...new Set([...rockData.rock_type, pageKey])]
+          : [pageKey];
         updatedPetData = {...petDataFiltered, ...petDataToCopyFiltered, rock_type: updatedRockType};
       }
-      if (spotToCopy.properties.pet[props.page.key]) {
-        const copyDataWithNewIds = spotToCopy.properties.pet[props.page.key].map(r => ({...r, id: getNewCopyId()}));
-        updatedPetData[props.page.key] = petData[props.page.key] ? [...petData[props.page.key], ...copyDataWithNewIds] : spotToCopy.properties.pet[props.page.key];
+      if (spotToCopy.properties[groupKey] && spotToCopy.properties[groupKey][pageKey]) {
+        const copyDataWithNewIds = spotToCopy.properties[groupKey][pageKey].map(
+          r => ({...r, id: getNewUUID()}));
+        updatedPetData[pageKey] = [...rockData[pageKey] || [], ...copyDataWithNewIds];
       }
-      dispatch(editedSpotProperties({field: 'pet', value: updatedPetData}));
+      dispatch(editedSpotProperties({field: groupKey, value: updatedPetData}));
     };
 
     if (!isEmpty(spotToCopy)) {
       const title = props.page.label;
       console.log('Copying ' + title + ' data from Spot:', spotToCopy);
-      if (spotToCopy?.properties?.pet?.rock_type?.includes(props.page.key)
-        && petData?.rock_type?.includes(props.page.key)) {
+      if (groupKey === 'pet' && spotToCopy?.properties?.pet?.rock_type?.includes(pageKey)
+        && rockData?.rock_type?.includes(pageKey)) {
         Alert.alert('Overwrite Existing Data',
           'Are you sure you want to overwrite any current ' + title + ' rock data '
           + 'with the ' + title + ' rock data from ' + spotToCopy.properties.name + '?',
@@ -135,12 +150,17 @@ const RockPage = (props) => {
   };
 
   const getSpotsWithRockType = () => {
-    const allSpotsWithPet = useSpots.getSpotsWithPetrology();
-    setSpotsWithRockType(allSpotsWithPet.filter(s => s.properties.id !== spot.properties.id
-      && (s.properties?.pet?.rock_type?.includes(props.page.key) || s.properties?.pet[props.page.key])));
+    const allActiveSpotsWithGroupKey = useSpots.getSpotsWithKey(groupKey);
+    setSpotsWithRockType(allActiveSpotsWithGroupKey.filter(s => s.properties.id !== spot.properties.id
+      && (s.properties[groupKey]
+        && (s.properties[groupKey].rock_type?.includes(pageKey) || s.properties[groupKey][pageKey]))));
   };
 
   const renderCopySelect = () => {
+    // Sort reverse chronologically
+    const spotsWithRockTypeSorted = spotsWithRockType.sort(((a, b) => {
+      return new Date(b.properties.date) - new Date(a.properties.date);
+    }));
     const label = 'Copy ' + props.page.label + ' Data From:';
     return (
       <Formik
@@ -158,7 +178,7 @@ const RockPage = (props) => {
               name={'spot_id_for_pet_copy'}
               key={'spot_id_for_pet_copy'}
               label={label}
-              choices={spotsWithRockType.map(s => ({label: s.properties.name, value: s.properties.id}))}
+              choices={spotsWithRockTypeSorted.map(s => ({label: s.properties.name, value: s.properties.id}))}
               single={true}
             />
           </ListItem.Content>
@@ -188,10 +208,12 @@ const RockPage = (props) => {
 
   const renderSections = () => {
     const rocksGrouped = Object.values(pageSections).reduce((acc, {title, key}) => {
-      const data = key ? spot?.properties?.pet && spot?.properties?.pet[props.page.key]
-        && spot?.properties?.pet[props.page.key].filter(
-          rock => key === props.page.key || rock.igneous_rock_class === key) || []
-        : spot?.properties?.pet?.rock_type?.includes(props.page.key) ? [spot.properties?.pet]
+      const data = key ? spot?.properties[groupKey] && spot?.properties[groupKey][pageKey]
+        && Array.isArray(spot?.properties[groupKey][pageKey])
+        && spot?.properties[groupKey][pageKey].filter(
+          rock => key === pageKey || rock.igneous_rock_class === key) || []
+        : spot?.properties[groupKey] && spot?.properties[groupKey].rock_type?.includes(pageKey)
+          ? [spot.properties[groupKey]]
           : [];
       return !key && isEmpty(data) ? acc : [...acc, {title: title, data: data.reverse()}];
     }, []);
@@ -201,7 +223,13 @@ const RockPage = (props) => {
         keyExtractor={(item, index) => item + index}
         sections={rocksGrouped}
         renderSectionHeader={({section: {title}}) => renderSectionHeader(title)}
-        renderItem={({item}) => <BasicListItem item={item} page={props.page} editItem={editRock}/>}
+        renderItem={({item, index}) => (
+          <BasicListItem
+            item={item}
+            page={props.page}
+            editItem={itemToEdit => editRock(itemToEdit, index)}
+          />
+        )}
         renderSectionFooter={({section}) => {
           return section.data.length === 0 && <ListEmptyText text={'No ' + section.title}/>;
         }}
@@ -217,7 +245,7 @@ const RockPage = (props) => {
         closeDetailView={() => setIsDetailView(false)}
         page={props.page}
         selectedFeature={selectedRock}
-        groupKey={'pet'}
+        groupKey={groupKey}
       />
     );
   };

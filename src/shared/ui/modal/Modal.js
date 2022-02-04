@@ -1,70 +1,38 @@
 import React, {useEffect, useState} from 'react';
-import {Animated, Keyboard, Text, TextInput, View} from 'react-native';
+import {Animated, Keyboard, TextInput} from 'react-native';
 
 import {Avatar, Button, ListItem, Overlay} from 'react-native-elements';
-import {useDispatch, useSelector} from 'react-redux';
+import {useSelector} from 'react-redux';
 
 import compassStyles from '../../../modules/compass/compass.styles';
-import {MODAL_KEYS, MODALS, NOTEBOOK_MODELS, SHORTCUT_MODALS} from '../../../modules/home/home.constants';
-import {setModalVisible} from '../../../modules/home/home.slice';
+import {MODAL_KEYS, NOTEBOOK_MODELS, SHORTCUT_MODALS} from '../../../modules/home/home.constants';
 import commonStyles from '../../common.styles';
 import * as Helpers from '../../Helpers';
 import {isEmpty} from '../../Helpers';
-import * as themes from '../../styles.constants';
 import modalStyle from './modal.style';
+import ModalHeader from './ModalHeader';
 
 const {State: TextInputState} = TextInput;
 
 const Modal = (props) => {
-  const dispatch = useDispatch();
   const modalVisible = useSelector(state => state.home.modalVisible);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
 
   const [textInputAnimate] = useState(new Animated.Value(0));
-
-  const modalInfo = MODALS.find(p => p.key === modalVisible);
 
   useEffect(() => {
     console.log('useEffect Form []');
     Keyboard.addListener('keyboardDidShow', handleKeyboardDidShow);
     Keyboard.addListener('keyboardDidHide', handleKeyboardDidHide);
     return function cleanup() {
-      Keyboard.removeListener('keyboardDidShow', handleKeyboardDidShow);
-      Keyboard.removeListener('keyboardDidHide', handleKeyboardDidHide);
+      Keyboard.addListener('keyboardDidShow', handleKeyboardDidShow).remove();
+      Keyboard.addListener('keyboardDidHide', handleKeyboardDidHide).remove();
     };
   }, []);
 
   const handleKeyboardDidShow = (event) => Helpers.handleKeyboardDidShow(event, TextInputState, textInputAnimate);
 
   const handleKeyboardDidHide = () => Helpers.handleKeyboardDidHide(textInputAnimate);
-
-  const renderModalHeader = () => {
-    return (
-      <View style={modalStyle.modalTop}>
-        <View style={{flex: 1, alignItems: 'flex-start'}}>
-          <Button
-            titleStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 16}}
-            title={props.buttonTitleLeft}
-            type={'clear'}
-            onPress={props.cancel}
-          />
-        </View>
-        <View>
-          <Text style={modalStyle.modalTitle}>
-            {modalInfo && (modalInfo.action_label || modalInfo.label)}
-          </Text>
-        </View>
-        <View style={{flex: 1, alignItems: 'flex-end'}}>
-          <Button
-            titleStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 16}}
-            title={props.buttonTitleRight || 'Close'}
-            type={'clear'}
-            onPress={props.close || (() => dispatch(setModalVisible({modal: null})))}
-          />
-        </View>
-      </View>
-    );
-  };
 
   const renderModalBottom = () => {
     const shortcutModal = SHORTCUT_MODALS.find(m => m.key === modalVisible);
@@ -106,7 +74,7 @@ const Modal = (props) => {
   if (modalVisible === MODAL_KEYS.NOTEBOOK.MEASUREMENTS || modalVisible === MODAL_KEYS.SHORTCUTS.MEASUREMENT) {
     return (
       <Overlay overlayStyle={[modalStyle.modalContainer, modalStyle.modalPosition]}>
-        {renderModalHeader()}
+        <ModalHeader {...props}/>
         {props.children}
         {!isEmpty(selectedSpot) && renderModalBottom()}
       </Overlay>
@@ -117,7 +85,7 @@ const Modal = (props) => {
       style={[modalStyle.modalContainer, modalStyle.modalPosition, props.style,
         {transform: [{translateY: textInputAnimate}]}]}
     >
-      {renderModalHeader()}
+      <ModalHeader {...props}/>
       {props.children}
       {!isEmpty(selectedSpot) && renderModalBottom()}
     </Animated.View>

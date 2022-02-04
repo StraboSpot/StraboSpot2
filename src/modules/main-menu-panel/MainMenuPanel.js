@@ -21,6 +21,7 @@ import {SpotsList} from '../spots';
 import {setSelectedAttributes, setSelectedSpot} from '../spots/spots.slice';
 import Tags from '../tags/Tags';
 import About from './About';
+import Documentation from './Documentation';
 import {MAIN_MENU_ITEMS} from './mainMenu.constants';
 import {setMenuSelectionPage} from './mainMenuPanel.slice';
 import styles from './mainMenuPanel.styles';
@@ -50,7 +51,8 @@ const MainMenuPanel = props => {
   };
 
   const setVisibleMenu = (name) => {
-    dispatch(setMenuSelectionPage({name: name}));
+    if (name === MAIN_MENU_ITEMS.HELP.CLOSE_MENU) props.toggleHomeDrawer();
+    else dispatch(setMenuSelectionPage({name: name}));
   };
 
   const toggleSwitch = (switchName) => {
@@ -90,10 +92,7 @@ const MainMenuPanel = props => {
     case MAIN_MENU_ITEMS.ATTRIBUTES.SPOTS_LIST:
       page = (
         <View style={styles.mainMenuContainer}>
-          <SpotsList
-            openSpotInNotebook={openSpotInNotebook}
-            spotsInMapExtent={spotsInMapExtent}
-          />
+          <SpotsList onPress={openSpotInNotebook}/>
         </View>
       );
       break;
@@ -115,6 +114,13 @@ const MainMenuPanel = props => {
             spotsInMapExtent={spotsInMapExtent}
             openNotebookPanel={(notebookPage) => props.openNotebookPanel(notebookPage)}
           />
+        </View>
+      );
+      break;
+    case MAIN_MENU_ITEMS.ATTRIBUTES.GEOLOGIC_UNITS:
+      page = (
+        <View style={styles.mainMenuContainer}>
+          <Tags type={'geologic_unit'}/>
         </View>
       );
       break;
@@ -175,8 +181,15 @@ const MainMenuPanel = props => {
       break;
     case MAIN_MENU_ITEMS.HELP.ABOUT:
       page = (
-        <View style={[styles.mainMenuContainer, {alignItems: 'center', justifyContent: 'center'}]}>
+        <View style={styles.mainMenuContainer}>
           <About/>
+        </View>
+      );
+      break;
+    case MAIN_MENU_ITEMS.HELP.DOCUMENTATION:
+      page = (
+        <View style={styles.mainMenuContainer}>
+          <Documentation/>
         </View>
       );
       break;

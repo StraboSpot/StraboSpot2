@@ -21,11 +21,12 @@ export const MAP_MODES = {
     FREEHANDPOLYGON: 'freehandpolygon',
     FREEHANDLINE: 'freehandline',
     POINTLOCATION: 'pointLocation',
+    MEASURE: 'measure',
   },
   EDIT: 'edit',
 };
 
-const DEFAULT_MAPS = [
+export const DEFAULT_MAPS = [
   {
     title: 'Mapbox Topo',
     id: 'mapbox.outdoors',
@@ -75,7 +76,7 @@ export const MAP_PROVIDERS = {
     mime: 'image/png',
     tilePath: '/tiles/256/{z}/{x}/{y}',
     url: ['https://api.mapbox.com/styles/v1/'],
-    maxZoom: 20,
+    // maxZoom: 20,
   },
   osm: {
     attributions: '© <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors.',
@@ -122,10 +123,33 @@ export const MAP_PROVIDERS = {
 };
 
 export const BASEMAPS = DEFAULT_MAPS.map(map => {
-  if (map.source === 'strabo_spot_mapbox') map.key = MAPBOX_KEY;
-  return {...map, ...MAP_PROVIDERS[map.source]};
+  const tileUrl = map.source === 'osm' ? MAP_PROVIDERS[map.source].url[0] + MAP_PROVIDERS[map.source].tilePath
+    : MAP_PROVIDERS[map.source].url[0] + map.id + MAP_PROVIDERS[map.source].tilePath;
+  map.version = 8;
+  map.sources = {
+    [map.id]: {
+      type: 'raster',
+      tiles: [tileUrl],
+      tileSize: 256,
+      attribution: MAP_PROVIDERS[map.source].attributions,
+    },
+  };
+  map.glyphs = 'mapbox://fonts/mapbox/{fontstack}/{range}.pbf';
+  map.layers = [{
+    id: map.id,
+    type: 'raster',
+    source: map.id,
+    minzoom: 0,
+  }];
+  return map;
 });
 console.log('BASEMAPS', BASEMAPS);
+
+// export const BASEMAPS = DEFAULT_MAPS.map(map => {
+//   if (map.source === 'strabo_spot_mapbox') map.key = MAPBOX_KEY;
+//   return {...map, ...MAP_PROVIDERS[map.source]};
+// });
+// console.log('BASEMAPS', BASEMAPS);
 
 export const CUSTOMBASEMAPS = CUSTOM_MAP_TYPES.map(map => {
   return {...map, ...MAP_PROVIDERS[map.source]};

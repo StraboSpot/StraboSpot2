@@ -21,17 +21,17 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
 import {isEmpty, mod, roundToDecimalPlaces, toDegrees, toRadians} from '../../shared/Helpers';
-import * as themes from '../../shared/styles.constants';
 import modalStyle from '../../shared/ui/modal/modal.style';
 import Slider from '../../shared/ui/Slider';
+import {formStyles} from '../form';
 import {MODAL_KEYS} from '../home/home.constants';
 import {setModalVisible} from '../home/home.slice';
 import useMapsHook from '../maps/useMaps';
 import useMeasurementsHook from '../measurements/useMeasurements';
-import {setUseMeasurementTemplates} from '../project/projects.slice';
 import {COMPASS_TOGGLE_BUTTONS} from './compass.constants';
 import {setCompassMeasurements, setCompassMeasurementTypes} from './compass.slice';
 import compassStyles from './compass.styles';
+import ManualMeasurement from './ManualMeasurement';
 
 const Compass = (props) => {
   let accelerometerSubscription, magnetometerSubscription;
@@ -40,9 +40,6 @@ const Compass = (props) => {
   const compassMeasurements = useSelector(state => state.compass.measurements);
   const modalVisible = useSelector(state => state.home.modalVisible);
   const selectedMeasurement = useSelector(state => state.spot.selectedMeasurement);
-  const useMeasurementTemplates = useSelector(state => state.project.project?.templates?.useMeasurementTemplates);
-  const activeMeasurementTemplates = useSelector(
-    state => state.project.project?.templates?.activeMeasurementTemplates) || [];
 
   const [accelerometerData, setAccelerometerData] = useState({x: 0, y: 0, z: 0, timestamp: null});
   const [compassData, setCompassData] = useState({
@@ -69,6 +66,7 @@ const Compass = (props) => {
   const [trendSpinValue] = useState(new Animated.Value(0));
   const [toggles, setToggles] = useState(compassMeasurementTypes);
   const [buttonSound, setButtonSound] = useState(null);
+  const [isManualMeasurement, setIsManualMeasurement] = useState(null);
   const [compassHeading, setCompassHeading] = useState(0);
 
   const [useMaps] = useMapsHook();
@@ -78,7 +76,7 @@ const Compass = (props) => {
     : NativeModules.AndroidCompass);
 
   useEffect(() => {
-    const buttonClick = new Sound('button_click.mp3', Sound.MAIN_BUNDLE, (error) => {
+    const buttonClick = new Sound('compass_button_click.mp3', Sound.MAIN_BUNDLE, (error) => {
       if (error) console.log('Failed to load sound', error);
     });
     setButtonSound(buttonClick);
@@ -143,6 +141,11 @@ const Compass = (props) => {
     console.log('compassMeasurementTypes', compassMeasurementTypes);
     setToggles(compassMeasurementTypes);
   }, [compassMeasurementTypes]);
+
+  const addFoldMeasurement = (data) => {
+    props.setFoldMeasurements({...data, quality: sliderValue.toString()});
+    props.closeCompass();
+  };
 
   const calculateOrientation = (res) => {
     const x = accelerometerData.x;
@@ -225,7 +228,7 @@ const Compass = (props) => {
 
   const displayCompassData = () => {
     if (Platform.OS === 'ios') {
-      console.log('%cSUBSCRIBING to native compass data', 'color: red');
+      console.log('%cSUBSCRIBING to iOS  native compass data!', 'color: red');
       NativeModules.Compass.myDeviceRotation();
       CompassEvents.addListener('rotationMatrix', matrixRotation);
     }
@@ -243,10 +246,16 @@ const Compass = (props) => {
     }
     try {
       if (isCompassMeasurement) {
-        buttonSound.play();
+        buttonSound.play((success) => {
+          if (success) console.log('successfully finished playing compass sound');
+          else console.log('compass sound failed due to audio decoding errors');
+        });
         console.log('Compass measurements', compassData, sliderValue);
-        dispatch(setCompassMeasurements(compassData.quality ? compassData
-          : {...compassData, quality: sliderValue.toString()}));
+        if (props.setFoldMeasurements) addFoldMeasurement(compassData);
+        else {
+          dispatch(setCompassMeasurements(compassData.quality ? compassData
+            : {...compassData, quality: sliderValue.toString()}));
+        }
       }
       else dispatch(setCompassMeasurements({...compassData, manual: true}));
     }
@@ -292,6 +301,21 @@ const Compass = (props) => {
         dip: res.dip,
         trend: res.trend,
         plunge: res.plunge,
+        accelX: accelerometerData.x,
+        accelY: accelerometerData.y,
+        accelZ: accelerometerData.z,
+        magX: magnetometerData?.x,
+        magY: magnetometerData?.y,
+        magZ: magnetometerData?.z,
+        M11: roundToDecimalPlaces(res.M11, 3),
+        M12: roundToDecimalPlaces(res.M12,3),
+        M13: roundToDecimalPlaces(res.M13,3),
+        M21: roundToDecimalPlaces(res.M21,3),
+        M22: roundToDecimalPlaces(res.M22,3),
+        M23: roundToDecimalPlaces(res.M23,3),
+        M31: roundToDecimalPlaces(res.M31,3),
+        M32: roundToDecimalPlaces(res.M32,3),
+        M33: roundToDecimalPlaces(res.M33,3),
       });
     }
     else Alert.alert('Having trouble getting compass data from device!');
@@ -318,92 +342,7 @@ const Compass = (props) => {
     else if (planerToggleOn && compassData.strike !== null) return renderStrikeDipSymbol();
   };
 
-  // const renderDataView = () => {
-  //   return (
-  //     <View style={uiStyles.alignItemsToCenter}>
-  //       <Text>Heading: {compassData.heading}</Text>
-  //       <Text>Strike: {compassData.strike}</Text>
-  //       <Text>Dip: {compassData.dip}</Text>
-  //       <Text>Trend: {compassData.trend}</Text>
-  //       <Text>Plunge: {compassData.plunge}</Text>
-  //     </View>
-  //   );
-  // };
-
-  const renderMeasurementTemplates = () => {
-    return (
-      <React.Fragment>
-        <View style={{borderBottomWidth: 1}}>
-          <ListItem containerStyle={commonStyles.listItem}>
-            <ListItem.Content>
-              <ListItem.Title
-                style={{fontSize: 12, color: themes.PRIMARY_TEXT_COLOR}}>{'Use measurement type templates'}
-              </ListItem.Title>
-            </ListItem.Content>
-            <Switch onValueChange={(value) => dispatch(setUseMeasurementTemplates(value))}
-                    value={useMeasurementTemplates}/>
-          </ListItem>
-        </View>
-        {useMeasurementTemplates && (
-          <View style={{borderBottomWidth: 1}}>
-            {isEmpty(activeMeasurementTemplates[0]) ? (
-                <Button
-                  titleStyle={commonStyles.standardButtonText}
-                  title={'Select Planar Template'}
-                  type={'clear'}
-                  onPress={() => dispatch(setModalVisible({modal: MODAL_KEYS.OTHER.MEASUREMENT_TEMPLATES_PLANAR}))}
-                />
-              )
-              : (
-                <ListItem containerStyle={commonStyles.listItem}>
-                  <ListItem.Content>
-                    <ListItem.Title
-                      style={commonStyles.listItemTitle}>{activeMeasurementTemplates[0].name}
-                    </ListItem.Title>
-                  </ListItem.Content>
-                  <Button
-                    titleStyle={commonStyles.standardButtonText}
-                    title={'Change'}
-                    type={'clear'}
-                    onPress={() => dispatch(
-                      setModalVisible({modal: MODAL_KEYS.OTHER.MEASUREMENT_TEMPLATES_PLANAR}))}
-                  />
-                </ListItem>
-              )}
-          </View>
-        )}
-        {useMeasurementTemplates && (
-          <View style={{borderBottomWidth: 1}}>
-            {isEmpty(activeMeasurementTemplates[1]) ? (
-                <Button
-                  titleStyle={commonStyles.standardButtonText}
-                  title={'Select Linear Template'}
-                  type={'clear'}
-                  onPress={() => dispatch(setModalVisible({modal: MODAL_KEYS.OTHER.MEASUREMENT_TEMPLATES_LINEAR}))}
-                />
-              )
-              : (
-                <ListItem containerStyle={commonStyles.listItem}>
-                  <ListItem.Content>
-                    <ListItem.Title
-                      style={commonStyles.listItemTitle}>{activeMeasurementTemplates[1].name}</ListItem.Title>
-                  </ListItem.Content>
-                  <Button
-                    titleStyle={commonStyles.standardButtonText}
-                    title={'Change'}
-                    type={'clear'}
-                    onPress={() => dispatch(
-                      setModalVisible({modal: MODAL_KEYS.OTHER.MEASUREMENT_TEMPLATES_LINEAR}))}
-                  />
-                </ListItem>
-              )}
-          </View>
-
-        )}
-      </React.Fragment>);
-  };
-
-  const renderSlider = () => {
+ const renderSlider = () => {
     return (
       <Slider
         onSlidingComplete={(value) => setSliderValue(value)}
@@ -545,11 +484,8 @@ const Compass = (props) => {
   };
 
   const subscribeToSensors = async () => {
-    // const compassEventEmitter = new NativeEventEmitter(NativeModules.AndroidCompass);
-    // compassEventEmitter.addListener('androidCompassData', calculateAndroidOrientation);
-    // NativeModules.AndroidCompass.start();
     // accelerometerSubscription = await accelerometer.subscribe((data) => {
-    //   //   // console.log('Acc Data', data);
+    // //   // console.log('Acc Data', data);
     //   setAccelerometerData(data);
     // });
     // console.log(accelerometerSubscription);
@@ -557,7 +493,7 @@ const Compass = (props) => {
     //   setCompassHeading(data);
     //   // console.log('Magnetometer Data', data);
     // });
-    // console.log(magnetometerSubscription);
+    // // console.log(magnetometerSubscription);
     console.log('Began accelerometer and magnetometer subscription.');
   };
 
@@ -592,9 +528,23 @@ const Compass = (props) => {
 
   return (
     <React.Fragment>
-      <View>
-        {renderMeasurementTemplates()}
-        <View style={compassStyles.compassContainer}>
+      {/*<View style={{flexDirection: 'row'}}>*/}
+      <View style={compassStyles.compassContainer}>
+        {props.setFoldMeasurements && (
+          <React.Fragment>
+            <Button
+              buttonStyle={formStyles.formButtonSmall}
+              titleProps={formStyles.formButtonTitle}
+              title={isManualMeasurement ? 'Switch to Compass Input' : 'Switch to Manual Input'}
+              type={'clear'}
+              onPress={() => setIsManualMeasurement(!isManualMeasurement)}
+            />
+            {!isManualMeasurement && (
+              <Text style={[modalStyle.textStyle, {'paddingTop': 5}]}>Tap compass to record a new measurement</Text>
+            )}
+          </React.Fragment>
+        )}
+        {modalVisible === MODAL_KEYS.SHORTCUTS.MEASUREMENT || modalVisible === MODAL_KEYS.NOTEBOOK.MEASUREMENTS && (
           <TouchableOpacity style={modalStyle.textContainer} onPress={() => grabMeasurements()}>
             <Text style={[modalStyle.textStyle, {'paddingTop': 5}]}>
               Tap compass to
@@ -605,13 +555,23 @@ const Compass = (props) => {
               }
             </Text>
           </TouchableOpacity>
-          {renderCompass()}
-        </View>
-        {renderToggles()}
-        <View style={compassStyles.sliderContainer}>
-          <Text style={compassStyles.sliderHeading}>Quality of Measurement</Text>
-          {renderSlider()}
-        </View>
+        )}
+        {/*<Text>Heading: {degree(compassHeading)}</Text>*/}
+        {isManualMeasurement ? (
+            <ManualMeasurement
+              addFoldMeasurement={addFoldMeasurement}
+              setFoldMeasurements={props.setFoldMeasurements}
+              toggles={toggles}
+            />
+          )
+          : renderCompass()
+        }
+      </View>
+
+      {!props.setFoldMeasurements && renderToggles()}
+      <View style={compassStyles.sliderContainer}>
+        <Text style={compassStyles.sliderHeading}>Quality of Measurement</Text>
+        {renderSlider()}
       </View>
       {props.setCompassRawDataToDisplay && (
         <Button

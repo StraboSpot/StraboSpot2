@@ -6,6 +6,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import useUploadHook from '../../../services/useUpload';
 import commonStyles from '../../../shared/common.styles';
 import {isEmpty, truncateText} from '../../../shared/Helpers';
+import Spacer from '../../../shared/ui/Spacer';
 import UploadDialogBox from '../../project/UploadDialogBox';
 import useProjectHook from '../../project/useProject';
 import {setUploadModalVisible} from '../home.slice';
@@ -13,6 +14,7 @@ import {setUploadModalVisible} from '../home.slice';
 const UploadModal = (props) => {
   const dispatch = useDispatch();
   const currentProject = useSelector(state => state.project.project);
+  const endPoint = useSelector(state => state.project.databaseEndpoint);
   const isUploadModalVisible = useSelector(state => state.home.isUploadModalVisible);
   const useUpload = useUploadHook();
   const [useProject] = useProjectHook();
@@ -28,6 +30,13 @@ const UploadModal = (props) => {
       }}
     >
       <View>
+        <View>
+          <Text style={commonStyles.dialogContentImportantText}>Uploading to:</Text>
+          <Text style={commonStyles.dialogContentImportantText}>
+            {endPoint.isSelected ? endPoint.url : 'https://strabospot.org/db'}
+          </Text>
+        </View>
+        <Spacer/>
         <Text>
           <Text style={commonStyles.dialogContentImportantText}>{!isEmpty(
             currentProject) && currentProject.description.project_name} </Text>

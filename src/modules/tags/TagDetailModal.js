@@ -75,7 +75,7 @@ const TagDetailModal = (props) => {
         <FlatList
           ListHeaderComponent={
             <React.Fragment>
-              {useTags.renderTagForm()}
+              {useTags.renderTagForm(props.type)}
               <Button
                 titleStyle={{color: themes.RED}}
                 title={'Delete Tag'}

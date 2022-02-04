@@ -39,7 +39,6 @@ import useOfflineMapsHook from './offline-maps/useMapsOffline';
 import useMapFeaturesHook from './useMapFeatures';
 import useMapsHook from './useMaps';
 import useMapSymbology from './useMapSymbology';
-// import * as Sentry from '@sentry/react-native';
 
 MapboxGL.setAccessToken(MAPBOX_KEY);
 
@@ -47,13 +46,14 @@ const Map = React.forwardRef((props, ref) => {
   const dispatch = useDispatch();
 
   const [useImages] = useImagesHook();
-  const [useMaps] = useMapsHook();
   const [useSymbology] = useMapSymbology();
   const [useMapFeatures] = useMapFeaturesHook();
   const [useSpots] = useSpotsHook();
   const useOfflineMaps = useOfflineMapsHook();
 
   const currentBasemap = useSelector(state => state.map.currentBasemap);
+  const customBasemap = useSelector(state => state.map.customMaps);
+  const offlineMaps = useSelector(state => state.offlineMap.offlineMaps);
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const activeDatasetsIds = useSelector(state => state.project.activeDatasetsIds);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
@@ -94,6 +94,7 @@ const Map = React.forwardRef((props, ref) => {
     zoomToSpot: false,
     zoom: 14,
     freehandSketchMode: false,
+    measureFeatures: [],
   };
 
   const [editingModeData, setEditingModeData] = useState(initialEditingModeData);
@@ -105,6 +106,8 @@ const Map = React.forwardRef((props, ref) => {
 
   const mapRef = useRef(null);
   const cameraRef = useRef(null);
+
+  const [useMaps] = useMapsHook(mapRef);
 
   // Props that needed to pass to the map component
   const mapProps = {
@@ -124,6 +127,11 @@ const Map = React.forwardRef((props, ref) => {
       // console.log('LOGGER MESSAGE IN MAPS.JS', message);
       if (message.match(/Requesting.+failed.+MGLNativeNetworkManager/) || message.match(/offline/)) {
         return true; // true means we've processed the log
+      }
+      // expected warnings - see https://github.com/mapbox/mapbox-gl-native/issues/15341#issuecomment-522889062
+      if (message.match('Request failed due to a permanent error: Canceled')
+        || message.match('Request failed due to a permanent error: Socket Closed')) {
+        return true;
       }
       return false;
     });
@@ -169,22 +177,26 @@ const Map = React.forwardRef((props, ref) => {
   useEffect(() => {
     console.log('UE3 Map [user]');
     console.log('Updating DOM on first render');
-    if (isOnline && !currentBasemap) useMaps.setBasemap().catch(console.error);
-    else if (isOnline && currentBasemap) {
+    if (isOnline.isInternetReachable && !currentBasemap) useMaps.setBasemap().catch(console.error);
+    else if (isOnline.isInternetReachable && currentBasemap) {
       console.log('ITS IN THIS ONE!!!! -isOnline && currentBasemap');
       // Alert.alert('Online Basemap', `${JSON.stringify(currentBasemap.id)}`);
       useMaps.setBasemap(currentBasemap.id).catch(error => {
         console.log('Error Setting Basemap', error);
         // Sentry.captureMessage('Something went wrong', error);
         dispatch(clearedStatusMessages());
-        dispatch(addedStatusMessage('Error setting custom basemap.\n Setting basemap Mapbox Topo.'));
+        dispatch(addedStatusMessage('Error setting custom basemap.\n Setting basemap Mapbox Topo.' + error));
         dispatch(setErrorMessagesModalVisible(true));
         // useMaps.setBasemap();
         // Sentry.captureException(error);
       });
     }
-    else if (!isOnline && isOnline !== null && currentBasemap) {
+    else if (!isEmpty(isOnline) && !isOnline.isInternetReachable && isOnline.isInternetReachable !== null
+      && currentBasemap) {
       console.log('ITS IN THIS ONE!!!! -!isOnline && isOnline !== null && currentBasemap');
+      Object.values(customBasemap).map(map => {
+        if (offlineMaps[map.id]?.id !== map.id) useMaps.setCustomMapSwitchValue(false, map);
+      });
       useOfflineMaps.switchToOfflineMap().catch(error => console.log('Error Setting Offline Basemap', error));
     }
     if (!currentImageBasemap) setCurrentLocationAsCenter();
@@ -277,6 +289,14 @@ const Map = React.forwardRef((props, ref) => {
     }
     else console.warn('Error getting the center of the map');
     setDefaultGeomType();
+  };
+
+  const endMapMeasurement = () => {
+    props.setDistance(0);
+    setMapPropsMutable(m => ({
+      ...m,
+      measureFeatures: [],
+    }));
   };
 
   const moveVertex = async () => {
@@ -400,34 +420,21 @@ const Map = React.forwardRef((props, ref) => {
     dispatch(clearedSelectedSpots());
   };
 
-  // This method is required when the draw features at press returns empty
-  // We explode the features and identify the closest vertex from the screen point (x,y) on the spot
-  // returns an array of vertex and its index.
-  const identifyClosestVertexOnSpotPress = async (spotFound, screenPointX, screenPointY) => {
-    let editedSpot = editingModeData.spotsEdited.find(spot => spot.properties.id === spotFound.properties.id);
-    spotFound = editedSpot ? editedSpot : spotFound;
-    let spotFoundCopy = JSON.parse(JSON.stringify(spotFound));
-    if (currentImageBasemap) spotFoundCopy = useMaps.convertImagePixelsToLatLong(spotFoundCopy);
-    const explodedFeatures = turf.explode(spotFoundCopy).features;
-    const distances = await getDistancesFromSpot(screenPointX, screenPointY, explodedFeatures);
-    const [distance, closestVertexIndex] = getClosestSpotDistanceAndIndex(distances);
-    // in case of imagebasemap, return the original non converted vertex.
-    if (currentImageBasemap) return [turf.explode(spotFound).features[closestVertexIndex], closestVertexIndex];
-    else return [explodedFeatures[closestVertexIndex], closestVertexIndex];
-  };
-
   // Mapbox: Handle map press
   const onMapPress = async (e) => {
-    if (props.mapMode !== MAP_MODES.DRAW.FREEHANDPOLYGON && props.mapMode !== MAP_MODES.DRAW.FREEHANDLINE) {
-      console.log('props', props);
-      // console.log('mapProps', mapProps); // Commented out because it throws an error about circular structure in JSON
-      console.log('Map press detected:', e);
-      console.log('Map mode:', props.mapMode);
+    console.log('Map press detected:', e);
+    console.log('Map mode:', props.mapMode);
+    if (props.mapMode === MAP_MODES.DRAW.MEASURE) {
+      const updatedMeasureFeatures = await useMaps.getMeasureFeatures(e, [...mapProps.measureFeatures],
+        props.setDistance);
+      setMapPropsMutable(m => ({...m, measureFeatures: updatedMeasureFeatures}));
+    }
+    else if (props.mapMode !== MAP_MODES.DRAW.FREEHANDPOLYGON && props.mapMode !== MAP_MODES.DRAW.FREEHANDLINE) {
       // Select/Unselect a feature
       if (props.mapMode === MAP_MODES.VIEW) {
         console.log('Selecting or unselect a feature ...');
         const {screenPointX, screenPointY} = e.properties;
-        const spotFound = await getSpotAtPress(screenPointX, screenPointY);
+        const spotFound = await useMaps.getSpotAtPress(screenPointX, screenPointY);
         if (!isEmpty(spotFound)) useMaps.setSelectedSpotOnMap(spotFound);
         else clearSelectedSpots();
       }
@@ -492,7 +499,7 @@ const Map = React.forwardRef((props, ref) => {
         // If so, check to see if point pressed was at another vertex of the selected feature
         //     If not edit vertex coords to those of pressed point
         //     If so switch selected vertex to vertex at pressed point
-        const spotFound = await getSpotAtPress(screenPointX, screenPointY);
+        const spotFound = await useMaps.getSpotAtPress(screenPointX, screenPointY);
         // #114, while editing, click on a different spot to edit, should immediately identify it as the selected spot and hence update the notebook panel.
         if (!isEmpty(spotFound)) useMaps.setSelectedSpotOnMap(spotFound);
         if (isEmpty(editingModeData.spotEditing)) {
@@ -504,7 +511,8 @@ const Map = React.forwardRef((props, ref) => {
           let isVertexIdentifiedAtSpotPress = false;
           if (isEmpty(spotFound)) clearSelectedFeatureToEdit();
           else {
-            let vertexSelected = await getDrawFeatureAtPress(screenPointX, screenPointY);
+            let vertexSelected = await useMaps.getDrawFeatureAtPress(screenPointX, screenPointY,
+              [...mapPropsMutable.drawFeatures]);
             if (!isEmpty(vertexSelected)) {
               // When draw features identifies a vertex that is not on the spot found, mark it undefined so that,
               // we can calculate a vertex on the spot found that is closest to the press.
@@ -512,7 +520,8 @@ const Map = React.forwardRef((props, ref) => {
             }
             if (isEmpty(vertexSelected)) {
               // draw features did not return anything.. generally a scenario of selecting a vertex on a spot press.
-              closestVertexDetails = await identifyClosestVertexOnSpotPress(spotFound, screenPointX, screenPointY);
+              closestVertexDetails = await useMaps.identifyClosestVertexOnSpotPress(spotFound, screenPointX,
+                screenPointY, editingModeData);
               vertexSelected = closestVertexDetails[0];
               isVertexIdentifiedAtSpotPress = true;
             }
@@ -803,7 +812,10 @@ const Map = React.forwardRef((props, ref) => {
       return tileCountThisScope.count;
     }
     catch (err) {
-      console.log('Error fetching data from tile count service.', err);
+      console.error(err);
+      dispatch(clearedStatusMessages());
+      dispatch(addedStatusMessage('Error fetching data from tile count service.'));
+      dispatch(setErrorMessagesModalVisible(true));
     }
   };
 
@@ -989,14 +1001,16 @@ const Map = React.forwardRef((props, ref) => {
   const onMapLongPress = async (e) => {
     console.log('Map long press detected:', e);
     const {screenPointX, screenPointY} = e.properties;
-    const spotToEdit = await getSpotAtPress(screenPointX, screenPointY);
+    const spotToEdit = await useMaps.getSpotAtPress(screenPointX, screenPointY);
     const mappableSpots = useSpots.getMappableSpots();
     if (props.mapMode === MAP_MODES.VIEW && !isEmpty(mappableSpots)) {
       let closestVertexDetails = {};
-      let closestVertexToSelect = await getDrawFeatureAtPress(screenPointX, screenPointY);
+      let closestVertexToSelect = await useMaps.getDrawFeatureAtPress(screenPointX, screenPointY,
+        [...mapPropsMutable.drawFeatures]);
       if (isEmpty(closestVertexToSelect)) {
         // draw features did not return anything.. generally a scenario of selecting a vertex on a spot long press.
-        closestVertexDetails = await identifyClosestVertexOnSpotPress(spotToEdit, screenPointX, screenPointY);
+        closestVertexDetails = await useMaps.identifyClosestVertexOnSpotPress(spotToEdit, screenPointX, screenPointY,
+          editingModeData);
         closestVertexToSelect = closestVertexDetails[0];
         startEditing(spotToEdit, closestVertexToSelect, closestVertexDetails[1]);
       }
@@ -1006,7 +1020,8 @@ const Map = React.forwardRef((props, ref) => {
       else if (!isEmpty(editingModeData.spotEditing)) {
         let spotEditingCopy = JSON.parse(JSON.stringify(editingModeData.spotEditing));
         if (turf.getType(spotEditingCopy) === 'LineString' || turf.getType(spotEditingCopy) === 'Polygon') {
-          const vertexSelected = await getDrawFeatureAtPress(screenPointX, screenPointY);
+          const vertexSelected = await useMaps.getDrawFeatureAtPress(screenPointX, screenPointY,
+            [...mapPropsMutable.drawFeatures]);
           if (spotEditingCopy.properties.id === spotToEdit.properties.id) {
             let vertexAdded = {};
             if (isEmpty(vertexSelected)) {
@@ -1115,103 +1130,6 @@ const Map = React.forwardRef((props, ref) => {
     else console.log('No Spots to edit. No action taken.');
   };
 
-  // Get the Spot where screen was pressed
-  const getSpotAtPress = async (screenPointX, screenPoint) => {
-    console.log('mapMode in getSpotAtPress', props.mapMode);
-    const spotLayers = ['pointLayerNotSelected', 'lineLayerNotSelected', 'lineLayerNotSelectedDotted',
-      'lineLayerNotSelectedDashed', 'lineLayerNotSelectedDotDashed', 'polygonLayerNotSelected', 'pointLayerSelected',
-      'lineLayerSelected', 'lineLayerSelectedDotted', 'lineLayerSelectedDashed', 'lineLayerSelectedDotDashed',
-      'polygonLayerSelected'];
-    let spotFound = await getFeatureInRect(screenPointX, screenPoint, spotLayers);
-    if (!isEmpty(spotFound)) {
-      // In getFeatureInRect the function queryRenderedFeaturesInRect returns a feature with coordinates
-      // truncated to 5 decimal places so get the matching feature with full coordinates using a temp Id
-      // spotFound = spots[spotFound.properties.id];
-      // spotFound = [...mapProps.spotsNotSelected, ...mapProps.spotsSelected].find(
-      //   spot => spot.properties.id === spotFound.properties.id);
-      spotFound = useSpots.getSpotById(spotFound.properties.id);
-      console.log('Got Spot at press: ', spotFound);
-    }
-    return Promise.resolve(...[spotFound]);
-  };
-
-  // Get the feature from the draw layer where the screen was pressed
-  const getDrawFeatureAtPress = async (screenPointX, screenPoint) => {
-    console.log('mapMode in getDrawFeatureAtPress', props.mapMode);
-    let drawFeatureFound = await getFeatureInRect(screenPointX, screenPoint, ['pointLayerDraw']);
-    if (!isEmpty(drawFeatureFound)) {
-      console.log('drawFeatureFound', drawFeatureFound, 'mapPropsMutable.drawFeatures', mapPropsMutable.drawFeatures);
-      // In getFeatureInRect the function queryRenderedFeaturesInRect returns a feature with coordinates
-      // truncated to 5 decimal places so get the matching feature with full coordinates using a temp Id
-      const drawFeaturesCopy = [...mapPropsMutable.drawFeatures];
-      drawFeatureFound = drawFeaturesCopy.find(
-        feature => feature.properties.tempEditId === drawFeatureFound.properties.tempEditId);
-      console.log('Got draw feature at press: ', drawFeatureFound, 'in Spot: ',
-        spots[drawFeatureFound.properties.id]);
-    }
-    return Promise.resolve(...[drawFeatureFound]);
-  };
-
-  // Get the feature within a bounding box from a given layer, returning only the first one if there is more than one
-  const getFeatureInRect = async (screenPointX, screenPointY, layers) => {
-    const r = 30; // half the width (in pixels?) of bounding box to create
-    const bbox = [screenPointY + r, screenPointX + r, screenPointY - r, screenPointX - r];
-    const featureCollectionInRect = await mapRef.current.queryRenderedFeaturesInRect(bbox, null, layers);
-    const featuresInRect = featureCollectionInRect.features;
-    let featureFound = {};
-    if (featuresInRect.length > 1) {
-      const distances = await getDistancesFromSpot(screenPointX, screenPointY, featuresInRect);
-      const [distance, indexWithMinimumIndex] = getClosestSpotDistanceAndIndex(distances);
-      featureFound = featuresInRect[indexWithMinimumIndex];
-    }
-    else if (featuresInRect.length === 1) featureFound = featuresInRect[0];
-    else console.log('No feature found where pressed.');
-    return Promise.resolve(featureFound);
-  };
-
-  const getDistancesFromSpot = async (screenPointX, screenPointY, featuresInRect) => {
-    const dummyFeature = {
-      'type': 'Feature',
-      'properties': {},
-      'geometry': {
-        'type': 'Point',
-        'coordinates': [screenPointX, screenPointY],
-      },
-    };
-    var distances = [];
-    var screenCoords = [];
-    for (var i = 0; i < featuresInRect.length; i++) {
-      if (featuresInRect[i].geometry.type === 'Polygon' || featuresInRect[i].geometry.type === 'LineString'
-        || featuresInRect[i].geometry.type === 'MultiLineString' || featuresInRect[i].geometry.type === 'MultiPolygon') {
-        // trying to get a distance that is closest from the vertices of a polygon or line
-        // to the dummy feature with screenX and screenY
-        var explodedFeatures = turf.explode(featuresInRect[i]);
-        var explodedFeaturesDistancesFromSpot = await getDistancesFromSpot(screenPointX, screenPointY,
-          explodedFeatures.features);
-        const [distance, indexWithMinimumIndex] = getClosestSpotDistanceAndIndex(explodedFeaturesDistancesFromSpot);
-        distances[i] = distance;
-      }
-      else {
-        var eachFeature = JSON.parse(JSON.stringify(featuresInRect[i]));
-        screenCoords = await mapRef.current.getPointInView(eachFeature.geometry.coordinates);
-        eachFeature.geometry.coordinates = screenCoords;
-        distances[i] = turf.distance(dummyFeature, eachFeature);
-      }
-    }
-    return distances;
-  };
-
-  const getClosestSpotDistanceAndIndex = (distancesFromSpot) => {
-    var minDistance = Number.MAX_VALUE;
-    var minIndex = -1;
-    for (var j = 0; j < distancesFromSpot.length; j++) {
-      if (minDistance > distancesFromSpot[j]) { // trying to get the minimum distance
-        minDistance = distancesFromSpot[j];
-        minIndex = j;
-      } // else we can ignore that feature.
-    }
-    return [minDistance, minIndex];
-  };
   // Add a new vertex to a polygon by creating a new feature for each possible place to insert the
   // new vertex into the feature polygon coordiantes then taking the union of those features
   const addVertexToPolygon = (polygon, newVertexGeom) => {
@@ -1294,9 +1212,8 @@ const Map = React.forwardRef((props, ref) => {
 
     return (
       <Dialog
-        dialogTitle={<DialogTitle title='Select a Geometry Type'/>}
+        dialogTitle={<DialogTitle title={'Select a Geometry Type'}/>}
         onDismiss={() => {
-
         }}
         visible={showSetInCurrentViewModal}
         dialogStyle={{borderRadius: 30}}
@@ -1308,7 +1225,7 @@ const Map = React.forwardRef((props, ref) => {
           {buttons.map(button =>
             <Button
               title={button}
-              type='outline'
+              type={'outline'}
               onPress={() => updateDefaultGeomType(button)}
               key={button}
             />,
@@ -1346,12 +1263,18 @@ const Map = React.forwardRef((props, ref) => {
   };
 
   const zoomToCustomMap = (bbox) => {
-    if (bbox && isOnline) {
+    if (bbox && isOnline.isInternetReachable) {
       const bboxArr = bbox.split(',');
       cameraRef.current.fitBounds([Number(bboxArr[0]), Number(bboxArr[1])], [Number(bboxArr[2]), Number(bboxArr[3])],
         100, 2500);
     }
-    else console.error('Error: not able to get Custom Map bbox coords...');
+    else {
+      console.error('Error: not able to get Custom Map bbox coords...');
+      dispatch(clearedStatusMessages());
+      dispatch(addedStatusMessage('Not able to zoom to custom map while offline.'));
+      dispatch(setErrorMessagesModalVisible(true));
+
+    }
   };
 
   const toggleUserLocation = (value) => {
@@ -1368,6 +1291,7 @@ const Map = React.forwardRef((props, ref) => {
       clearSelectedSpots: clearSelectedSpots,
       createDefaultGeom: createDefaultGeom,
       endDraw: endDraw,
+      endMapMeasurement: endMapMeasurement,
       getCurrentBasemap: getCurrentBasemap,
       getCurrentZoom: getCurrentZoom,
       getExtentString: getExtentString,

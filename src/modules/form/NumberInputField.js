@@ -38,6 +38,7 @@ const NumberInputField = ({
         value={getDisplayValue()}
         placeholder={props.placeholder}
         keyboardType={'numeric'}
+        editable={props.editable}
       />
       {errors[name] && <Text style={formStyles.fieldError}>{errors[name]}</Text>}
     </React.Fragment>

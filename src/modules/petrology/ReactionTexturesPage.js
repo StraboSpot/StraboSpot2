@@ -53,7 +53,9 @@ const ReactionTexturesPage = (props) => {
   };
 
   const getExistingMineralsText = () => {
-    if (!spot.properties.pet || isEmpty(spot.properties.pet.minerals)) return 'No Minerals at this Spot';
+    if (!spot.properties.pet || isEmpty(spot.properties.pet.minerals) || !Array.isArray(spot.properties.pet.minerals)) {
+      return 'No Minerals at this Spot';
+    }
     else {
       const existingMinerals = spot.properties.pet.minerals.map(mineral => usePetrology.getMineralTitle(mineral));
       const existingMineralsSorted = existingMinerals.slice().sort((a, b) => a.localeCompare(b));

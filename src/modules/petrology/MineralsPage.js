@@ -77,7 +77,7 @@ const MineralsPage = (props) => {
   };
 
   const getSpotsWithMinerals = () => {
-    const allSpotsWithPet = useSpots.getSpotsWithPetrology();
+    const allSpotsWithPet = useSpots.getSpotsWithKey('pet');
     setSpotsWithMinerals(allSpotsWithPet.filter(s => s.properties.id !== spot.properties.id
       && s.properties.pet && s.properties.pet[props.page.key]));
   };
@@ -109,6 +109,10 @@ const MineralsPage = (props) => {
   };
 
   const renderMineralsList = () => {
+    let mineralData = spot.properties.pet && spot.properties.pet[props.page.key] || [];
+    if (!Array.isArray(mineralData)) mineralData = [];
+    const mineralDataSorted = mineralData.slice().sort(
+      (a, b) => usePetrology.getMineralTitle(a).localeCompare(usePetrology.getMineralTitle(b)));
     return (
       <React.Fragment>
         <SectionDividerWithRightButton
@@ -117,11 +121,9 @@ const MineralsPage = (props) => {
           onPress={addMineral}
         />
         <FlatList
-          data={spot.properties.pet && spot.properties.pet[props.page.key]
-          && spot.properties.pet[props.page.key].slice().sort(
-            (a, b) => usePetrology.getMineralTitle(a).localeCompare(usePetrology.getMineralTitle(b)))}
+          data={mineralDataSorted}
           renderItem={({item}) => <BasicListItem page={props.page} item={item} editItem={editMineral}/>}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={(item, index) => item.id?.toString() || index.toString()}
           ItemSeparatorComponent={FlatListItemSeparator}
           ListEmptyComponent={<ListEmptyText text={'There are no minerals at this Spot.'}/>}
         />

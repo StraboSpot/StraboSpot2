@@ -93,6 +93,15 @@ class Compass: RCTEventEmitter {
                             "trend": trend,
                             "plunge": plunge,
                             "heading": heading,
+                            "M11": rotationMatrix.m11,
+                            "M12": rotationMatrix.m12,
+                            "M13": rotationMatrix.m13,
+                            "M21": rotationMatrix.m21,
+                            "M22": rotationMatrix.m22,
+                            "M23": rotationMatrix.m23,
+                            "M31": rotationMatrix.m31,
+                            "M32": rotationMatrix.m32,
+                            "M33": rotationMatrix.m33,
                             ])
           })
       }

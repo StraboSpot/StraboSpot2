@@ -11,16 +11,10 @@ import {
 } from '../modules/home/home.slice';
 import useProjectHook from '../modules/project/useProject';
 import {isEmpty} from '../shared/Helpers';
+import {APP_DIRECTORIES} from './device.constants';
 import useDeviceHook from './useDevice';
 
 const useExport = () => {
-  const devicePath = RNFS.DocumentDirectoryPath;
-  const appDirectoryTiles = '/StraboSpotTiles';
-  const appDirectoryForDistributedBackups = '/ProjectBackups';
-  const appDirectory = '/StraboSpot';
-  const imagesDirectory = appDirectory + '/Images';
-  const zipsDirectory = appDirectoryTiles + '/TileZips';
-
   const dispatch = useDispatch();
   const dbs = useSelector(state => state);
 
@@ -60,7 +54,7 @@ const useExport = () => {
     try {
       dispatch(addedStatusMessage('Exporting Project Data...'));
       console.log(dataForExport);
-      await exportData(devicePath + appDirectoryForDistributedBackups + '/' + filename, dataForExport,
+      await exportData(APP_DIRECTORIES.BACKUP_DIR + filename, dataForExport,
         'data.json');
       console.log('Finished Exporting Project Data', dataForExport);
       dispatch(removedLastStatusMessage());
@@ -69,7 +63,7 @@ const useExport = () => {
     catch (err) {
       console.error('Error Exporting Data!', err);
       dispatch(removedLastStatusMessage());
-      dispatch(addedStatusMessage('Error Exporting Project Data.'));
+      dispatch(addedStatusMessage('Error Exporting Project Data.' + err));
     }
   };
 
@@ -77,7 +71,7 @@ const useExport = () => {
     try {
       console.log('data:', data);
       await useDevice.doesDeviceDirectoryExist(
-        devicePath + appDirectoryForDistributedBackups + '/' + fileName + '/Images');
+        APP_DIRECTORIES.BACKUP_DIR + fileName + '/Images');
       dispatch(addedStatusMessage('Exporting Images...'));
       if (data.spotsDb) {
         console.log('Spots Exist!');
@@ -107,7 +101,7 @@ const useExport = () => {
     catch (err) {
       console.error('Error Backing Up Images!');
       dispatch(removedLastStatusMessage());
-      dispatch(addedStatusMessage('Error Exporting Images!'));
+      dispatch(addedStatusMessage('Error Exporting Images!' + err));
     }
   };
 
@@ -120,7 +114,7 @@ const useExport = () => {
       if (!isEmpty(maps)) {
         console.log('Maps exist.', maps);
         await useDevice.doesDeviceDirectoryExist(
-          devicePath + appDirectoryForDistributedBackups + '/' + fileName + '/maps');
+          APP_DIRECTORIES.BACKUP_DIR + fileName + '/maps');
         await Promise.all(
           Object.values(maps).map(async map => {
             const mapId = await moveDistributedMap(map.mapId, fileName);
@@ -141,7 +135,7 @@ const useExport = () => {
     catch (err) {
       console.error('Error Exporting Offline Maps.');
       dispatch(removedLastStatusMessage());
-      dispatch(addedStatusMessage('Error Exporting Offline Maps!'));
+      dispatch(addedStatusMessage('Error Exporting Offline Maps!' + err));
     }
   };
 
@@ -150,7 +144,7 @@ const useExport = () => {
       console.log(configDb);
       dispatch(addedStatusMessage('Exporting Custom Maps...'));
       if (!isEmpty(configDb.other_maps)) {
-        await exportData(devicePath + appDirectoryForDistributedBackups + '/' + exportedFileName, configDb.other_maps,
+        await exportData(APP_DIRECTORIES.BACKUP_DIR + exportedFileName, configDb.other_maps,
           '/other_maps.json');
         console.log('Other Maps Exported');
         dispatch(removedLastStatusMessage());
@@ -164,7 +158,7 @@ const useExport = () => {
     catch (err) {
       console.error('Error Exporting Other Maps', err);
       dispatch(removedLastStatusMessage());
-      dispatch(addedStatusMessage('Error Exporting Custom Maps!'));
+      dispatch(addedStatusMessage('Error Exporting Custom Maps!' + err));
     }
   };
 
@@ -175,11 +169,11 @@ const useExport = () => {
       dispatch(addedStatusMessage('Backing up Project to Device...'));
       dispatch(setLoadingStatus({view: 'modal', bool: true}));
       dispatch(setStatusMessagesModalVisible(true));
-      const hasBackupDir = await useDevice.doesDeviceBackupDirExist(devicePath + appDirectoryForDistributedBackups);
+      const hasBackupDir = await useDevice.doesDeviceBackupDirExist();
       console.log('Has Backup Dir?: ', hasBackupDir);
       if (hasBackupDir) await backupProjectToDevice(fileName);
       else {
-        await useDevice.makeDirectory(appDirectoryForDistributedBackups);
+        await useDevice.makeDirectory(APP_DIRECTORIES.BACKUP_DIR);
         await backupProjectToDevice(fileName);
       }
       dispatch(addedStatusMessage('---------------'));
@@ -196,8 +190,8 @@ const useExport = () => {
       const imageExists = await useDevice.doesDeviceFileExist(image_id, '.jpg');
       if (imageExists) {
         imageCount++;
-        await useDevice.copyFiles(devicePath + imagesDirectory + '/' + image_id + '.jpg',
-          devicePath + appDirectoryForDistributedBackups + '/' + fileName + '/Images/' + image_id + '.jpg');
+        await useDevice.copyFiles(APP_DIRECTORIES.IMAGES + image_id + '.jpg',
+          APP_DIRECTORIES.BACKUP_DIR + fileName + '/Images/' + image_id + '.jpg');
         imageSuccess++;
       }
     }
@@ -209,12 +203,12 @@ const useExport = () => {
 
   const moveDistributedMap = async (mapId, fileName) => {
     console.log('Moving Map:', mapId);
-    return RNFS.exists(devicePath + zipsDirectory + '/' + mapId + '.zip')
+    return RNFS.exists(APP_DIRECTORIES.TILE_ZIP + mapId + '.zip')
       .then(exists => {
         if (exists) {
           console.log(mapId + '.zip exists?', exists);
-          return RNFS.copyFile(devicePath + zipsDirectory + '/' + mapId + '.zip',
-            devicePath + appDirectoryForDistributedBackups + '/' + fileName + '/maps/' + mapId.toString() + '.zip').then(
+          return RNFS.copyFile(APP_DIRECTORIES.TILE_ZIP + mapId + '.zip',
+            APP_DIRECTORIES.BACKUP_DIR + fileName + '/maps/' + mapId.toString() + '.zip').then(
             () => {
               console.log('Map Copied.');
               return Promise.resolve(mapId);

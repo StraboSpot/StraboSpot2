@@ -3,10 +3,11 @@ import {Alert, Animated, Dimensions, Keyboard, Platform, Text, TextInput, View} 
 
 import {useNavigation} from '@react-navigation/native';
 import * as Sentry from '@sentry/react-native';
-import {Button, Image} from 'react-native-elements';
+import {Button} from 'react-native-elements';
 import {FlatListSlider} from 'react-native-flatlist-slider';
 import {useDispatch, useSelector} from 'react-redux';
 
+import useConnectionStatusHook from '../../services/useConnectionStatus';
 import useDeviceHook from '../../services/useDevice';
 import commonStyles from '../../shared/common.styles';
 import * as Helpers from '../../shared/Helpers';
@@ -41,13 +42,14 @@ import {TagAddRemoveFeatures, TagAddRemoveSpots, TagDetailSidePanel} from '../ta
 import UserProfile from '../user/UserProfilePage';
 import BackupModal from './home-modals/BackupModal';
 import BackUpOverwriteModal from './home-modals/BackUpOverwriteModal';
+import ErrorModal from './home-modals/ErrorModal';
 import InfoModal from './home-modals/InfoModal';
 import InitialProjectLoadModal from './home-modals/InitialProjectLoadModal';
 import StatusModal from './home-modals/StatusModal';
 import UploadModal from './home-modals/UploadModal';
+import WarningModal from './home-modals/WarningModal';
 import {MODAL_KEYS, MODALS} from './home.constants';
 import {
-  setErrorMessagesModalVisible,
   setImageModalVisible,
   setLoadingStatus,
   setMainMenuPanelVisible,
@@ -55,7 +57,6 @@ import {
   setOfflineMapsModalVisible,
   setProjectLoadComplete,
   setProjectLoadSelectionModalVisible,
-  setStatusMessagesModalVisible,
 } from './home.slice';
 import homeStyles from './home.style';
 import LeftSideButtons from './LeftSideButtons';
@@ -65,13 +66,13 @@ import useHomeHook from './useHome';
 const {State: TextInputState} = TextInput;
 
 const Home = () => {
-  const offlineIcon = require('../../assets/icons/ConnectionStatusButton_offline.png');
   const platform = Platform.OS === 'ios' ? 'window' : 'screen';
   const deviceDimensions = Dimensions.get(platform);
   const homeMenuPanelWidth = 300;
   const mainMenuSidePanelWidth = 300;
   const notebookPanelWidth = 400;
 
+  const useConnectionStatus = useConnectionStatusHook();
   const [useHome] = useHomeHook();
   const [useImages] = useImagesHook();
   const [useMaps] = useMapsHook();
@@ -85,7 +86,6 @@ const Home = () => {
   const dispatch = useDispatch();
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const customMaps = useSelector(state => state.map.customMaps);
-  const isErrorMessagesModalVisible = useSelector(state => state.home.isErrorMessagesModalVisible);
   const isHomeLoading = useSelector(state => state.home.loading.home);
   const isImageModalVisible = useSelector(state => state.home.isImageModalVisible);
   const isMainMenuPanelVisible = useSelector(state => state.home.isMainMenuPanelVisible);
@@ -118,6 +118,7 @@ const Home = () => {
   });
   const [mapMode, setMapMode] = useState(MAP_MODES.VIEW);
   const [animation, setAnimation] = useState(new Animated.Value(notebookPanelWidth));
+  const [distance, setDistance] = useState(0);
   const [MainMenuPanelAnimation] = useState(new Animated.Value(-homeMenuPanelWidth));
   const [mainMenuSidePanelAnimation] = useState(new Animated.Value(-mainMenuSidePanelWidth));
   const [leftsideIconAnimationValue, setLeftsideIconAnimationValue] = useState(new Animated.Value(0));
@@ -134,14 +135,12 @@ const Home = () => {
   }, [selectedProject]);
 
   useEffect(() => {
+    console.log('Initializing Home page');
     if (user.email && user.name) {
       Sentry.configureScope((scope) => {
         scope.setUser({'email': user.email, 'username': user.name});
       });
-      // Sentry.captureMessage(`Hello there, ${user.name}`);
     }
-    useDevice.doesDeviceBackupDirExist().catch(err => console.log('Error checking if backup dir exists!', err));
-    console.log('Initializing Home page');
   }, [user]);
 
   useEffect(() => {
@@ -198,6 +197,10 @@ const Home = () => {
     }
   }, [projectLoadComplete]);
 
+  useEffect(() => {
+    if (mapMode !== MAP_MODES.DRAW.MEASURE) mapComponentRef.current.endMapMeasurement();
+  }, [mapMode]);
+
   const cancelEdits = async () => {
     await mapComponentRef.current.cancelEdits();
     setMapMode(MAP_MODES.VIEW);
@@ -251,6 +254,7 @@ const Home = () => {
         break;
       case 'saveMap':
         dispatch(setOfflineMapsModalVisible(!isOfflineMapModalVisible));
+        toggleHomeDrawerButton();
         break;
       case 'addTag':
         console.log(`${name}`, ' was clicked');
@@ -263,6 +267,9 @@ const Home = () => {
         mapComponentRef.current.clearSelectedSpots();
         setIsSelectingForStereonet(true);
         setDraw(MAP_MODES.DRAW.FREEHANDPOLYGON).catch(console.error);
+        break;
+      case 'mapMeasurement':
+        setDraw(MAP_MODES.DRAW.MEASURE).catch(console.error);
         break;
     }
   };
@@ -301,7 +308,6 @@ const Home = () => {
       console.error('Error at endDraw()', err);
       dispatch(setLoadingStatus({view: 'home', bool: false}));
     }
-
   };
 
   const goToCurrentLocation = async () => {
@@ -340,37 +346,19 @@ const Home = () => {
 
   const renderFloatingView = () => {
     const modal = MODALS.find(m => m.key === modalVisible);
-    if (modal && modal.modal_component) {
+    if (modal?.modal_component ) {
       const ModalDisplayed = modal.modal_component;
-      if (modalVisible && !Object.keys(MODAL_KEYS.SHORTCUTS).find(s=>s.key === modalVisible)) {
-        return <ModalDisplayed modalKey={modal.key} onPress={modalHandler} goToCurrentLocation={goToCurrentLocation}/>;
+      if (modalVisible && !Object.keys(MODAL_KEYS.SHORTCUTS).find(s => s.key === modalVisible)) {
+        return (
+          <ModalDisplayed
+            modalKey={modal.key}
+            onPress={modalHandler}
+            goToCurrentLocation={goToCurrentLocation}
+          />
+        );
       }
       else return <ModalDisplayed modalKey={modal.key} onPress={modalHandler}/>;
     }
-  };
-
-  const renderErrorMessageDialogBox = () => {
-    return (
-      <StatusDialogBox
-        dialogTitle={'Error...'}
-        style={commonStyles.dialogWarning}
-        visible={isErrorMessagesModalVisible}
-      >
-        <Text style={commonStyles.dialogStatusMessageText}>{statusMessages.join('\n')}</Text>
-        <Button
-          title={'OK'}
-          type={'clear'}
-          onPress={() => {
-            if (openMenu === 'Active Project') {
-              dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
-              setOpenMenu('');
-              dispatch(setStatusMessagesModalVisible(false));
-            }
-            dispatch(setErrorMessagesModalVisible(false));
-          }}
-        />
-      </StatusDialogBox>
-    );
   };
 
   const renderOfflineMapViewLabel = () => {
@@ -564,6 +552,7 @@ const Home = () => {
         openNotebookPanel={(pageView) => openNotebookPanel(pageView)}
         zoomToCenterOfflineTile={() => mapComponentRef.current.zoomToCenterOfflineTile()}
         zoomToCustomMap={(bbox) => mapComponentRef.current.zoomToCustomMap(bbox)}
+        toggleHomeDrawer={() => toggleHomeDrawerButton()}
       />
     </Animated.View>
   );
@@ -576,6 +565,7 @@ const Home = () => {
           createDefaultGeom={() => mapComponentRef.current.createDefaultGeom()}
           openMainMenu={() => toggleHomeDrawerButton()}
           zoomToSpot={() => mapComponentRef.current.zoomToSpot()}
+          toast={(message) => toastRef.current.show(message)}
         />
       </Animated.View>
     );
@@ -590,27 +580,25 @@ const Home = () => {
         endDraw={endDraw}
         isSelectingForStereonet={isSelectingForStereonet}
         isSelectingForTagging={isSelectingForTagging}
+        setDistance={d => setDistance(d)}
       />
       <View style={{...uiStyles.offlineImageIconContainer}}>
-        {!isOnline && (
-          <Image
-            source={offlineIcon}
-            style={uiStyles.offlineIcon}
-          />
-        )}
+        {useConnectionStatus.connectionStatusIcon()}
       </View>
       {vertexStartCoords && <VertexDrag/>}
       <ToastPopup toastRef={toastRef}/>
       <RightSideButtons
         closeNotebookPanel={closeNotebookPanel}
         openNotebookPanel={openNotebookPanel}
-        toggleNotebookPanel={() => toggleNotebookPanel()}
+        toggleNotebookPanel={toggleNotebookPanel}
         clickHandler={name => clickHandler(name)}
         drawButtonsVisible={buttons.drawButtonsVisible}
         mapMode={mapMode}
         endDraw={() => endDraw()}
         rightsideIconAnimation={rightsideIconAnimation}
         toastRef={toastRef}
+        distance={distance}
+        endMeasurement={() => setMapMode(MAP_MODES.VIEW)}
       />
       <LeftSideButtons
         toggleHomeDrawer={() => toggleHomeDrawerButton()}
@@ -650,17 +638,18 @@ const Home = () => {
         visible={isProjectLoadSelectionModalVisible}
         closeModal={() => closeInitialProjectLoadModal()}
       />
+      <ErrorModal />
       <StatusModal openUrl={openStraboSpotURL}/>
       <UploadModal toggleHomeDrawer={() => toggleHomeDrawerButton()}/>
+      <WarningModal />
       {/*------------------------*/}
       {isHomeLoading && <LoadingSpinner/>}
       {renderNotebookPanel()}
       {MainMenu}
-      {isOnline && toggleOfflineMapLabel() && renderOfflineMapViewLabel()}
+      {isOnline.isInternetReachable && toggleOfflineMapLabel() && renderOfflineMapViewLabel()}
       {renderSaveAndCancelDrawButtons()}
       {isMainMenuPanelVisible && toggleSidePanel()}
       {modalVisible && renderFloatingView()}
-      {renderErrorMessageDialogBox()}
       {isOfflineMapModalVisible && renderSaveMapsModal()}
     </View>
   );

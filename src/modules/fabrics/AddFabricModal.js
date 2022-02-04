@@ -7,7 +7,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import {getNewId, isEmpty} from '../../shared/Helpers';
 import SaveButton from '../../shared/SaveButton';
-import {PRIMARY_TEXT_COLOR} from '../../shared/styles.constants';
+import {PRIMARY_ACCENT_COLOR, PRIMARY_TEXT_COLOR} from '../../shared/styles.constants';
 import DragAnimation from '../../shared/ui/DragAmination';
 import Modal from '../../shared/ui/modal/Modal';
 import {Form, useFormHook} from '../form';
@@ -48,12 +48,15 @@ const AddFabricModal = (props) => {
   }, [modalValues]);
 
   const onFabricTypePress = (i) => {
-    setSelectedTypeIndex(i);
-    const type = types[i];
-    formRef.current?.setFieldValue('type', type);
-    const formName = ['fabrics', type];
-    setSurvey(useForm.getSurvey(formName));
-    setChoices(useForm.getChoices(formName));
+    if (i !== selectedTypeIndex) {
+      setSelectedTypeIndex(i);
+      formRef.current?.resetForm();
+      const type = types[i];
+      formRef.current?.setFieldValue('type', type);
+      const formName = ['fabrics', type];
+      setSurvey(useForm.getSurvey(formName));
+      setChoices(useForm.getChoices(formName));
+    }
   };
 
   const renderForm = (formProps) => {
@@ -65,11 +68,11 @@ const AddFabricModal = (props) => {
           buttons={Object.values(FABRIC_TYPES)}
           containerStyle={{height: 40, borderRadius: 10}}
           buttonStyle={{padding: 5}}
+          selectedButtonStyle={{backgroundColor: PRIMARY_ACCENT_COLOR}}
           textStyle={{color: PRIMARY_TEXT_COLOR}}
         />
         {types[selectedTypeIndex] === 'fault_rock' && (
           <FaultRockFabric
-            formRef={formRef}
             survey={survey}
             choices={choices}
             setChoicesViewKey={setChoicesViewKey}
@@ -79,7 +82,6 @@ const AddFabricModal = (props) => {
         )}
         {types[selectedTypeIndex] === 'igneous_rock' && (
           <IgneousRockFabric
-            formRef={formRef}
             survey={survey}
             choices={choices}
             setChoicesViewKey={setChoicesViewKey}
@@ -89,7 +91,6 @@ const AddFabricModal = (props) => {
         )}
         {types[selectedTypeIndex] === 'metamorphic_rock' && (
           <MetamRockFabric
-            formRef={formRef}
             survey={survey}
             choices={choices}
             setChoicesViewKey={setChoicesViewKey}
@@ -136,10 +137,7 @@ const AddFabricModal = (props) => {
   const renderSubform = (formProps) => {
     const relevantFields = useForm.getRelevantFields(survey, choicesViewKey);
     return (
-      <Form {...{
-        formName: ['fabrics', formRef.current?.values?.type],
-        surveyFragment: relevantFields, ...formProps,
-      }}/>
+      <Form {...{formName: ['fabrics', formRef.current?.values?.type], surveyFragment: relevantFields, ...formProps}}/>
     );
   };
 

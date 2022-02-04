@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 
-import {Picker} from '@react-native-community/picker';
+import {Picker} from '@react-native-picker/picker';
 import {Button, Header} from 'react-native-elements';
 import RNFS from 'react-native-fs';
 import * as loading from 'react-native-indicators';
@@ -9,11 +9,15 @@ import {Dialog, DialogContent, SlideAnimation} from 'react-native-popup-dialog';
 import ProgressBar from 'react-native-progress/Bar';
 import {useDispatch, useSelector} from 'react-redux';
 
+import {APP_DIRECTORIES} from '../../../services/device.constants';
 import useDeviceHook from '../../../services/useDevice';
 import useServerRequestHook from '../../../services/useServerRequests';
+import commonStyles from '../../../shared/common.styles';
 import {toNumberFixedValue} from '../../../shared/Helpers';
 import * as themes from '../../../shared/styles.constants';
 import {addedStatusMessage, clearedStatusMessages, removedLastStatusMessage} from '../../home/home.slice';
+import {MAP_PROVIDERS} from '../maps.constants';
+import styles from './offlineMaps.styles';
 import useMapsOfflineHook from './useMapsOffline';
 
 const SaveMapsModal = (props) => {
@@ -21,18 +25,12 @@ const SaveMapsModal = (props) => {
   const useMapsOffline = useMapsOfflineHook();
   const [useServerRequests] = useServerRequestHook();
 
-  const tilehost = 'http://tiles.strabospot.org';
-  const devicePath = RNFS.DocumentDirectoryPath;
-  let tilesDirectory = '/StraboSpotTiles';
-  let tileZipsDirectory = devicePath + tilesDirectory + '/TileZips';
-  let tileTempDirectory = devicePath + tilesDirectory + '/TileTemp';
-
   const currentBasemap = useSelector(state => state.map.currentBasemap);
   const statusMessages = useSelector(state => state.home.statusMessages);
   const dispatch = useDispatch();
 
   const currentMapName = currentBasemap && currentBasemap.title;
-  const maxZoom = currentBasemap && currentBasemap.maxZoom;
+  const maxZoom = currentBasemap && MAP_PROVIDERS[currentBasemap.source]?.maxZoom;
   let progressStatus = '';
 
   const [tileCount, setTileCount] = useState(0);
@@ -109,7 +107,7 @@ const SaveMapsModal = (props) => {
 
   const doUnzip = async () => {
     try {
-      setIsLoadingWave(true)
+      setIsLoadingWave(true);
       setPercentDone(0);
       await useMapsOffline.doUnzip();
     }
@@ -120,17 +118,17 @@ const SaveMapsModal = (props) => {
 
   const downloadZip = async (zipUID) => {
     try {
-      const downloadZipURL = tilehost + '/ziptemp/' + zipUID + '/' + zipUID + '.zip';
+      const downloadZipURL = APP_DIRECTORIES.TILE_HOST + '/ziptemp/' + zipUID + '/' + zipUID + '.zip';
       const downloadOptions = {
         fromUrl: downloadZipURL,
-        toFile: tileZipsDirectory + '/' + zipUID + '.zip',
+        toFile: APP_DIRECTORIES.TILE_ZIP + zipUID + '.zip',
         begin: (response) => {
           const jobId = response.jobId;
           setShowLoadingBar(true);
           setIsLoadingWave(false);
           dispatch(removedLastStatusMessage());
           dispatch(addedStatusMessage('Downloading...'));
-          console.log('UPLOAD HAS BEGUN! JobId: ' + jobId);
+          console.log('DOWNLOAD HAS BEGUN! JobId: ' + jobId);
         },
         progress: (res) => {
           console.log(((res.bytesWritten / res.contentLength) * 100).toFixed(2));
@@ -140,8 +138,8 @@ const SaveMapsModal = (props) => {
       };
 
       //first try to delete from temp directories
-      await useDevice.doesDeviceDirectoryExist(tileZipsDirectory);
-      await useDevice.doesDeviceDirectoryExist(tileTempDirectory);
+      await useDevice.doesDeviceDirectoryExist(APP_DIRECTORIES.TILE_ZIP);
+      await useDevice.doesDeviceDirectoryExist(APP_DIRECTORIES.TILE_TEMP);
       await useMapsOffline.checkTileZipFileExistance();
       const res = await useServerRequests.timeoutPromise(60000, RNFS.downloadFile(downloadOptions).promise);
       if (res.statusCode === 200) {
@@ -222,33 +220,39 @@ const SaveMapsModal = (props) => {
 
   return (
     <Dialog
+      dialogTitle={
+        <View style={styles.dialogTitleContainer}>
+          <View style={styles.dialogTitle}>
+            <Text style={{fontSize: 25}}>{currentMapName}</Text>
+          </View>
+          <View style={styles.closeButton}>
+            <Button
+              title={'Close'}
+              titleStyle={{fontSize: themes.MEDIUM_TEXT_SIZE}}
+              type={'clear'}
+              onPress={props.close}
+            />
+          </View>
+        </View>
+      }
       onDismiss={() => {
         setShowMainMenu(true);
         setShowComplete(false);
       }}
+      height={400}
       visible={props.visible}
-      dialogStyle={{borderRadius: 30}}
+      dialogStyle={commonStyles.dialogBox}
       dialogAnimation={new SlideAnimation({
         slideFrom: 'top',
       })}
     >
-      <DialogContent style={{height: 410}}>
-        <View style={styles.modalContainer}>
-          <Header
-            backgroundColor={themes.PRIMARY_BACKGROUND_COLOR}
-            containerStyle={{width: 400}}
-            centerComponent={
-              <View>
-                <View style={{justifyContent: 'center'}}>
-                  <Text style={{fontSize: 30}}>{currentMapName}</Text>
-                </View>
-              </View>
-            }
-          />
+      <DialogContent
+        style={commonStyles.dialogContent}>
+        <View style={styles.saveModalContainer}>
           <View style={{flex: 1}}>
             <View style={{flex: 1}}>
               {showMainMenu && (
-                <View style={{paddingTop: 20, paddingBottom: 20}}>
+                <View style={{marginTop: 20}}>
                   <Text style={{textAlign: 'center'}}>
                     Select max zoom level to download:
                   </Text>
@@ -262,12 +266,12 @@ const SaveMapsModal = (props) => {
                   selectedValue={downloadZoom}
                   style={styles.picker}
                 >
-                  {zoomLevels.map(i => {
+                  {zoomLevels.map(zoom => {
                     return (
                       <Picker.Item
-                        key={i}
-                        value={i}
-                        label={i.toString()}
+                        key={zoom}
+                        value={zoom}
+                        label={zoom.toString()}
                       />
                     );
                   })}
@@ -292,10 +296,11 @@ const SaveMapsModal = (props) => {
                 </View>
               )}
               {showLoadingMenu && (
-                <View style={{height: 40, justifyContent: 'center'}}>
+                <View style={commonStyles.alignItemsCenter}>
                   <Text style={{fontSize: 15}}>{statusMessages}</Text>
-                  {statusMessages.includes('Installing tiles...') && !statusMessages.includes('Downloading Tiles...') && (
-                    <View>
+                  {statusMessages.includes('Installing tiles...') && !statusMessages.includes(
+                    'Downloading Tiles...') && (
+                    <View style={commonStyles.alignItemsCenter}>
                       <Text style={{fontSize: 15}}>Installing: {tilesToInstall}</Text>
                       <Text style={{fontSize: 15}}>Already Installed: {installedTiles}</Text>
                     </View>
@@ -303,45 +308,35 @@ const SaveMapsModal = (props) => {
                 </View>
               )}
               {isError && (
-                <View style={{justifyContent: 'center'}}>
+                <View style={commonStyles.alignItemsCenter}>
                   <Text style={{fontSize: 20, textAlign: 'center'}}>Something Went Wrong!</Text>
                   <Text style={{fontSize: 20, paddingTop: 30, textAlign: 'center'}}>{errorMessage}</Text>
                 </View>
               )}
               {showComplete && (
-                <View style={{height: 40, justifyContent: 'center'}}>
-                  <Text style={{fontSize: 20}}>Success!</Text>
+                <View style={commonStyles.alignItemsCenter}>
+                  <Text style={{fontSize: 20, padding: 20}}>Success!</Text>
                 </View>
               )}
               {showComplete && (
-                <View style={{height: 40, justifyContent: 'center'}}>
+                <View style={commonStyles.alignItemsCenter}>
                   <Text>Your map has been successfully downloaded to this device.</Text>
                 </View>
               )}
             </View>
-            <View style={{flex: 2}}>
+            <View style={{flex: 1}}>
               {showMainMenu && (
-                <View>
-                  <Button
-                    onPress={() => saveMap()}
-                    type={'clear'}
-                    containerStyle={{marginTop: 15}}
-                    // buttonStyle={{borderRadius: 30, paddingRight: 50, paddingLeft: 50}}
-                    title={`Download ${tileCount} Tiles`}
-                  />
-                  <Button
-                    title={'Close'}
-                    type={'clear'}
-                    containerStyle={{marginTop: 15}}
-                    onPress={props.close}
-                  />
-                </View>
+                <Button
+                  onPress={() => saveMap()}
+                  type={'clear'}
+                  title={`Download ${tileCount} Tiles`}
+                />
               )}
               {showComplete && (
                 <Button
                   onPress={props.close}
                   type={'clear'}
-                  buttonStyle={{borderRadius: 30, paddingRight: 50, paddingLeft: 50}}
+                  buttonStyle={styles.button}
                   title={'Continue'}
                 />
               )}
@@ -349,7 +344,7 @@ const SaveMapsModal = (props) => {
                 <Button
                   onPress={props.close}
                   type={'clear'}
-                  buttonStyle={{borderRadius: 30, paddingRight: 50, paddingLeft: 50}}
+                  buttonStyle={styles.button}
                   title={'Close'}
                 />
               )}
@@ -360,26 +355,5 @@ const SaveMapsModal = (props) => {
     </Dialog>
   );
 };
-
-const styles = StyleSheet.create({
-  modalContainer: {
-    flex: 1,
-    width: 300,
-    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
-    borderRadius: 20,
-    alignItems: 'center',
-  },
-  buttonText: {
-    paddingLeft: 10,
-    paddingRight: 15,
-  },
-  picker: {
-    flex: 1,
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
-  },
-});
 
 export default SaveMapsModal;

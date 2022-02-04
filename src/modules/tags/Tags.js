@@ -6,6 +6,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
+import {PRIMARY_ACCENT_COLOR} from '../../shared/styles.constants';
 import AddButton from '../../shared/ui/AddButton';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
@@ -13,10 +14,11 @@ import SectionDivider from '../../shared/ui/SectionDivider';
 import uiStyles from '../../shared/ui/ui.styles';
 import {SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
+import {PAGE_KEYS} from '../page/page.constants';
 import {setSelectedTag, setUseContinuousTagging} from '../project/projects.slice';
 import {TagDetailModal, useTagsHook} from '../tags';
 
-const Tags = () => {
+const Tags = (props) => {
   const [useTags] = useTagsHook();
   const dispatch = useDispatch();
   const tags = useSelector(state => state.project.project.tags || []);
@@ -25,8 +27,7 @@ const Tags = () => {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isDetailModalVisible, setIsDetailModalVisible] = useState(false);
 
-  const SECTIONS = [
-    {title: 'Geologic Units', key: 'geologic_unit'},
+  const SECTIONS = props.type === PAGE_KEYS.GEOLOGIC_UNITS ? [{title: 'Geologic Units', key: 'geologic_unit'}] : [
     {title: 'Concepts', key: 'concept'},
     {title: 'Documentation', key: 'documentation'},
     {title: 'Rosetta', key: 'rosetta'},
@@ -53,6 +54,10 @@ const Tags = () => {
   };
 
   const renderTag = (tag) => {
+    const tagSpotCount = useTags.getTagSpotsCount(tag);
+    const tagFeatureCount = useTags.getTagFeaturesCount(tag);
+    const title = props.type === PAGE_KEYS.GEOLOGIC_UNITS ? tagSpotCount
+      : '(' + tagSpotCount + ') (' + tagFeatureCount + ')';
     return (
       <ListItem
         containerStyle={commonStyles.listItem}
@@ -71,7 +76,7 @@ const Tags = () => {
           <ListItem.Title style={commonStyles.listItemTitle}>{getTagTitle(tag)}</ListItem.Title>
         </ListItem.Content>
         <ListItem.Content right>
-          <ListItem.Title>{useTags.renderSpotCount(tag) + ' ' + useTags.renderFeatureTagsCount(tag)}</ListItem.Title>
+          <ListItem.Title>{title}</ListItem.Title>
         </ListItem.Content>
         <ListItem.Chevron/>
       </ListItem>
@@ -81,7 +86,8 @@ const Tags = () => {
   const renderTagsListByMapExtent = () => {
     const spotIds = spotsInMapExtent.map(spot => spot.properties.id);
     const tagsInMapExtent = tags.filter(tag => {
-      return tag.spots && !isEmpty(tag.spots.find(spotId => spotIds.includes(spotId)));
+      return tag.spots && !isEmpty(tag.spots.find(spotId => spotIds.includes(spotId)))
+      && props.type === 'geologic_unit' ? tag.type === 'geologic_unit' : tag.type !== 'geologic_unit';
     });
     console.log('tagsInMapExtent', tagsInMapExtent);
 
@@ -91,7 +97,7 @@ const Tags = () => {
         data={tagsInMapExtent}
         renderItem={({item}) => renderTag(item)}
         ItemSeparatorComponent={FlatListItemSeparator}
-        ListEmptyComponent={<ListEmptyText text='No Spots with tags in current map extent'/>}
+        ListEmptyComponent={<ListEmptyText text={'No Spots with tags in current map extent'}/>}
       />
     );
   };
@@ -131,6 +137,7 @@ const Tags = () => {
           buttons={['Categorized', 'Map Extent']}
           containerStyle={{height: 50}}
           buttonStyle={{padding: 5}}
+          selectedButtonStyle={{backgroundColor: PRIMARY_ACCENT_COLOR}}
           textStyle={{fontSize: 12}}
         />
       )}
@@ -159,6 +166,7 @@ const Tags = () => {
       <TagDetailModal
         isVisible={isDetailModalVisible}
         closeModal={() => setIsDetailModalVisible(false)}
+        type={props.type}
       />
     </View>
   );

@@ -403,6 +403,14 @@ const useMapSymbology = (props) => {
       circleStrokeColor: 'white',
       circleStrokeWidth: 2,
     },
+    pointMeasure: {
+      circleRadius: 5,
+      circleColor: 'black',
+    },
+    lineMeasure: {
+      lineColor: 'black',
+      lineWidth: 3,
+    },
   };
 
   const getMapSymbology = () => {

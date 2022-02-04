@@ -11,6 +11,7 @@ export const MAIN_MENU_ITEMS = {
     SPOTS_LIST: 'Spots List',
     IMAGE_GALLERY: 'Image Gallery',
     SAMPLES: 'Samples',
+    GEOLOGIC_UNITS: 'Geologic Units',
     TAGS: 'Tags',
   },
   MAPS: {
@@ -27,7 +28,8 @@ export const MAIN_MENU_ITEMS = {
   },
   HELP: {
     ABOUT: 'About Strabo',
-    // DOCUMENTATION: 'Documentation',
+    DOCUMENTATION: 'Documentation',
+    CLOSE_MENU: 'Close Menu',
   },
 };
 

@@ -9,6 +9,7 @@ import ImagesOverview from '../images/ImagesOverview';
 import ImagesViewPage from '../images/ImagesViewPage';
 import MeasurementsOverview from '../measurements/MeasurementsOverview';
 import MeasurementsPage from '../measurements/MeasurementsPage';
+import Metadata from '../metadata/Metadata';
 import Nesting from '../nesting/Nesting';
 import NotesPage from '../notes/Notes';
 import NotesOverview from '../notes/NotesOverview';
@@ -22,12 +23,19 @@ import ReactionTexturesPage from '../petrology/ReactionTexturesPage';
 import RockAlterationOrePage from '../petrology/RockAlterationOrePage';
 import RockIgneousPage from '../petrology/RockIgneousPage';
 import RockMetamorphicPage from '../petrology/RockMetamorphicPage';
+import RockSedimentaryPage from '../petrology/RockSedimentaryPage';
 import TernaryPage from '../petrology/TernaryPage';
 import SampleModal from '../samples/SampleModal';
 import SamplesOverview from '../samples/SamplesOverview';
 import SamplesPage from '../samples/SamplesPage';
+import BasicSedPage from '../sed/BasicSedPage';
+import BeddingPage from '../sed/BeddingPage';
+import IntervalOverview from '../sed/IntervalOverview';
+import IntervalPage from '../sed/IntervalPage';
+import StratSectionPage from '../sed/StratSectionPage';
 import {TagsAtSpotList, TagsNotebookModal} from '../tags';
 import TagsNotebook from '../tags/TagsNotebook';
+import AddThreeDStructureModal from '../three-d-structures/AddThreeDStructureModal';
 import ThreeDStructuresOverview from '../three-d-structures/ThreeDStructuresOverview';
 import ThreeDStructuresPage from '../three-d-structures/ThreeDStructuresPage';
 import BasicOverviewList from './BasicOverviewList';
@@ -40,10 +48,13 @@ export const PAGE_KEYS = {
   FABRICS: 'fabrics',
   FOSSILS: 'fossils',
   GEOGRAPHY: 'geography',
+  GEOLOGIC_UNITS: 'geologic_unit',
   IMAGES: 'images',
   INTERPRETATIONS: 'interpretations',
+  INTERVAL: 'interval',
   LITHOLOGIES: 'lithologies',
   MEASUREMENTS: 'orientation_data',
+  METADATA: 'metadata',
   MINERALS: 'minerals',
   NESTING: 'nesting',
   NOTES: 'notes',
@@ -53,7 +64,9 @@ export const PAGE_KEYS = {
   ROCK_TYPE_ALTERATION_ORE: 'alteration_or',
   ROCK_TYPE_IGNEOUS: 'igneous',
   ROCK_TYPE_METAMORPHIC: 'metamorphic',
+  ROCK_TYPE_SEDIMENTARY: 'sedimentary',
   SAMPLES: 'samples',
+  STRAT_SECTION: 'strat_section',
   STRUCTURES: 'structures',
   TAGS: 'tags',
   TERNARY: 'ternary',
@@ -68,6 +81,15 @@ export const OVERVIEW_PAGE = {
 
 export const PRIMARY_PAGES = [
   {
+    key: PAGE_KEYS.GEOLOGIC_UNITS,
+    label: 'Geologic Units',
+    icon_src: require('../../assets/icons/GeologicUnit.png'),
+    icon_pressed_src: require('../../assets/icons/GeologicUnit_pressed.png'),
+    overview_component: TagsAtSpotList,
+    page_component: TagsNotebook,
+    modal_component: TagsNotebookModal,
+    action_label: 'Add Geologic Units',
+  }, {
     key: PAGE_KEYS.NOTES,
     label: 'Notes',
     icon_src: require('../../assets/icons/Note.png'),
@@ -98,7 +120,7 @@ export const PRIMARY_PAGES = [
     overview_component: TagsAtSpotList,
     page_component: TagsNotebook,
     modal_component: TagsNotebookModal,
-    action_label: 'Add Tags',
+    action_label: 'Add Spot Tags',
   }, {
     key: PAGE_KEYS.SAMPLES,
     label: 'Samples',
@@ -120,6 +142,8 @@ export const SECONDARY_PAGES = [
     icon_pressed_src: require('../../assets/icons/3DStructure_pressed.png'),
     overview_component: ThreeDStructuresOverview,
     page_component: ThreeDStructuresPage,
+    modal_component: AddThreeDStructureModal,
+    action_label: 'Add a 3D Structure',
   }, {
     key: PAGE_KEYS.FABRICS,
     label: 'Fabrics',
@@ -129,7 +153,7 @@ export const SECONDARY_PAGES = [
     page_component: FabricsPage,
     modal_component: AddFabricModal,
     action_label: 'Add a Fabric',
-    testing: true
+    testing: true,
   }, {
     key: PAGE_KEYS.OTHER_FEATURES,
     label: 'Other Features',
@@ -157,6 +181,10 @@ export const SUBPAGES = [
     key: PAGE_KEYS.NESTING,
     label: 'Nesting',
     page_component: Nesting,
+  }, {
+    key: PAGE_KEYS.METADATA,
+    label: 'Metadata',
+    page_component: Metadata,
   },
 ];
 
@@ -170,7 +198,6 @@ export const PET_PAGES = [
     page_component: RockAlterationOrePage,
     modal_component: AddRockModal,
     action_label: 'Add an Alteration, Ore Rock',
-    testing: true
   }, {
     key: PAGE_KEYS.ROCK_TYPE_IGNEOUS,
     label: 'Igneous Rocks',
@@ -180,7 +207,6 @@ export const PET_PAGES = [
     page_component: RockIgneousPage,
     modal_component: AddRockModal,
     action_label: 'Add an Igneous Rock',
-    testing: true
   }, {
     key: PAGE_KEYS.ROCK_TYPE_METAMORPHIC,
     label: 'Metamorphic Rocks',
@@ -190,7 +216,6 @@ export const PET_PAGES = [
     page_component: RockMetamorphicPage,
     modal_component: AddRockModal,
     action_label: 'Add a Metamorphic Rock',
-    testing: true
   }, {
     key: PAGE_KEYS.MINERALS,
     label: 'Minerals',
@@ -200,7 +225,6 @@ export const PET_PAGES = [
     page_component: MineralsPage,
     modal_component: AddMineralModal,
     action_label: 'Add Mineral Data',
-    testing: true
   }, {
     key: PAGE_KEYS.REACTIONS,
     label: 'Reaction Textures',
@@ -210,7 +234,7 @@ export const PET_PAGES = [
     page_component: ReactionTexturesPage,
     modal_component: AddReactionTextureModal,
     action_label: 'Add a Reaction Texture',
-    testing: true
+    testing: true,
   }, {
     key: PAGE_KEYS.TERNARY,
     label: 'Ternary',
@@ -218,48 +242,85 @@ export const PET_PAGES = [
     icon_src: require('../../assets/icons/Ternary.png'),
     icon_pressed_src: require('../../assets/icons/Ternary_pressed.png'),
     page_component: TernaryPage,
-    testing: true
+    testing: true,
   },
 ];
 
 export const SED_PAGES = [
-  // {
-  //   key: PAGE_KEYS.LITHOLOGIES,
-  //   label: 'Lithologies',
-  //   icon_src: require('../../assets/icons/SedLithologies.png'),
-  //   icon_pressed_src: require('../../assets/icons/SedLithologies_pressed.png'),
-  //   page_component: PlaceholderPage,
-  // }, {
-  //   key: PAGE_KEYS.BEDDING,
-  //   label: 'Bedding',
-  //   icon_src: require('../../assets/icons/SedBedding.png'),
-  //   icon_pressed_src: require('../../assets/icons/SedBedding_pressed.png'),
-  //   page_component: PlaceholderPage,
-  // }, {
-  //   key: PAGE_KEYS.STRUCTURES,
-  //   label: 'Structures',
-  //   icon_src: require('../../assets/icons/SedStructure.png'),
-  //   icon_pressed_src: require('../../assets/icons/SedStructure_pressed.png'),
-  //   page_component: PlaceholderPage,
-  // }, {
-  //   key: PAGE_KEYS.DIAGENESIS,
-  //   label: 'Diagenesis',
-  //   icon_src: require('../../assets/icons/SedDiagenesis.png'),
-  //   icon_pressed_src: require('../../assets/icons/SedDiagenesis_pressed.png'),
-  //   page_component: PlaceholderPage,
-  // }, {
-  //   key: PAGE_KEYS.FOSSILS,
-  //   label: 'Fossils',
-  //   icon_src: require('../../assets/icons/SedFossil.png'),
-  //   icon_pressed_src: require('../../assets/icons/SedFossil_pressed.png'),
-  //   page_component: PlaceholderPage,
-  // }, {
-  //   key: PAGE_KEYS.INTERPRETATIONS,
-  //   label: 'Interpretations',
-  //   icon_src: require('../../assets/icons/SedInterpretation.png'),
-  //   icon_pressed_src: require('../../assets/icons/SedInterpretation_pressed.png'),
-  //   page_component: PlaceholderPage,
-  // },
+  {
+    key: PAGE_KEYS.ROCK_TYPE_SEDIMENTARY,
+    label: 'Sedimentary Rocks',
+    icon_src: require('../../assets/icons/Sedimentary.png'),
+    icon_pressed_src: require('../../assets/icons/Sedimentary_pressed.png'),
+    overview_component: BasicOverviewList,
+    page_component: RockSedimentaryPage,
+    modal_component: AddRockModal,
+    action_label: 'Add a Sedimentary Rock',
+  }, {
+    key: PAGE_KEYS.STRAT_SECTION,
+    label: 'Strat Section (SS1)',
+    label_singular: 'Strat Section (SS1)',
+    icon_src: require('../../assets/icons/SedStratColumn.png'),
+    icon_pressed_src: require('../../assets/icons/SedStratColumn_pressed.png'),
+    overview_component: BasicOverviewList,
+    page_component: StratSectionPage,
+  }, {
+    key: PAGE_KEYS.INTERVAL,
+    label: 'Interval (SS1)',
+    label_singular: 'Interval (SS1)',
+    icon_src: require('../../assets/icons/SedInterval.png'),
+    icon_pressed_src: require('../../assets/icons/SedInterval_pressed.png'),
+    overview_component: IntervalOverview,
+    page_component: IntervalPage,
+  }, {
+    key: PAGE_KEYS.LITHOLOGIES,
+    label: 'Lithologies (SS1)',
+    label_singular: 'Lithology (SS1)',
+    icon_src: require('../../assets/icons/SedLithologies.png'),
+    icon_pressed_src: require('../../assets/icons/SedLithologies_pressed.png'),
+    overview_component: BasicOverviewList,
+    page_component: BasicSedPage,
+  }, {
+    key: PAGE_KEYS.BEDDING,
+    label: 'Bedding (SS1)',
+    label_singular: 'Bedding (SS1)',
+    icon_src: require('../../assets/icons/SedBedding.png'),
+    icon_pressed_src: require('../../assets/icons/SedBedding_pressed.png'),
+    page_component: BeddingPage,
+    overview_component: BasicOverviewList,
+  }, {
+    key: PAGE_KEYS.STRUCTURES,
+    label: 'Structures (SS1)',
+    label_singular: 'Structure (SS1)',
+    icon_src: require('../../assets/icons/SedStructure.png'),
+    icon_pressed_src: require('../../assets/icons/SedStructure_pressed.png'),
+    overview_component: BasicOverviewList,
+    page_component: BasicSedPage,
+  }, {
+    key: PAGE_KEYS.DIAGENESIS,
+    label: 'Diagenesis (SS1)',
+    label_singular: 'Diagenesis (SS1)',
+    icon_src: require('../../assets/icons/SedDiagenesis.png'),
+    icon_pressed_src: require('../../assets/icons/SedDiagenesis_pressed.png'),
+    overview_component: BasicOverviewList,
+    page_component: BasicSedPage,
+  }, {
+    key: PAGE_KEYS.FOSSILS,
+    label: 'Fossils (SS1)',
+    label_singular: 'Fossil (SS1)',
+    icon_src: require('../../assets/icons/SedFossil.png'),
+    icon_pressed_src: require('../../assets/icons/SedFossil_pressed.png'),
+    overview_component: BasicOverviewList,
+    page_component: BasicSedPage,
+  }, {
+    key: PAGE_KEYS.INTERPRETATIONS,
+    label: 'Interpretations (SS1)',
+    label_singular: 'Interpretation (SS1)',
+    icon_src: require('../../assets/icons/SedInterpretation.png'),
+    icon_pressed_src: require('../../assets/icons/SedInterpretation_pressed.png'),
+    overview_component: BasicOverviewList,
+    page_component: BasicSedPage,
+  },
 ];
 
 export const NOTEBOOK_PAGES = [OVERVIEW_PAGE, ...PRIMARY_PAGES, ...SECONDARY_PAGES, ...SUBPAGES, ...PET_PAGES, ...SED_PAGES];

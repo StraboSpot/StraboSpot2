@@ -5,11 +5,15 @@ import RNFS from 'react-native-fs';
 import {unzip} from 'react-native-zip-archive';
 import {useDispatch, useSelector} from 'react-redux';
 
+import {MAPBOX_KEY} from '../../../MapboxConfig';
+import {APP_DIRECTORIES} from '../../../services/device.constants';
 import useDeviceHook from '../../../services/useDevice';
 import useServerRequesteHook from '../../../services/useServerRequests';
 import {isEmpty} from '../../../shared/Helpers';
 import {addedStatusMessage, removedLastStatusMessage} from '../../home/home.slice';
+import {DEFAULT_MAPS, MAP_PROVIDERS} from '../maps.constants';
 import {setCurrentBasemap} from '../maps.slice';
+import useMapsHook from '../useMaps';
 import {setOfflineMap} from './offlineMaps.slice';
 
 const useMapsOffline = () => {
@@ -23,17 +27,14 @@ const useMapsOffline = () => {
   const customMaps = useSelector(state => state.map.customMaps);
   const isOnline = useSelector(state => state.home.isOnline);
   const offlineMaps = useSelector(state => state.offlineMap.offlineMaps);
+  const user = useSelector(state => state.user);
 
   const source = currentBasemap && currentBasemap.source;
   const currentMapName = currentBasemap && currentBasemap.title;
-
-  const devicePath = RNFS.DocumentDirectoryPath;
-  const tilesDirectory = '/StraboSpotTiles';
-  const tileCacheDirectory = devicePath + tilesDirectory + '/TileCache';
-  const tileTempDirectory = devicePath + tilesDirectory + '/TileTemp';
-  const tileZipsDirectory = devicePath + tilesDirectory + '/TileZips';
+  const url = 'file://' + APP_DIRECTORIES.TILE_CACHE;
 
   const useDevice = useDeviceHook();
+  const [useMaps] = useMapsHook();
   const [useServerRequests] = useServerRequesteHook();
 
   useEffect(() => {
@@ -70,7 +71,7 @@ const useMapsOffline = () => {
   };
 
   const getMapCenterTile = async (mapid) => {
-    if (devicePath) {
+    if (APP_DIRECTORIES.ROOT_PATH) {
       const entries = await useDevice.readDirectoryForMapTiles(mapid);
       // loop over tiles to get center tiles
       let maxZoom = 0;
@@ -120,11 +121,11 @@ const useMapsOffline = () => {
 
   const checkTileZipFileExistance = async () => {
     try {
-      let fileExists = await RNFS.exists(tileZipsDirectory + '/' + zipUID + '.zip');
+      let fileExists = await RNFS.exists(APP_DIRECTORIES.TILE_ZIP + zipUID + '.zip');
       console.log('file Exists:', fileExists ? 'YES' : 'NO');
       if (fileExists) {
         //delete
-        await RNFS.unlink(tileZipsDirectory + '/' + zipUID + '.zip');
+        await RNFS.unlink(APP_DIRECTORIES.TILE_ZIP + zipUID + '.zip');
       }
       // else await RNFS.mkdir(tileZipsDirectory);
     }
@@ -135,13 +136,13 @@ const useMapsOffline = () => {
 
   const checkIfTileZipFolderExists = async () => {
     try {
-      let folderExists = await RNFS.exists(tileZipsDirectory);
+      let folderExists = await RNFS.exists(APP_DIRECTORIES.TILE_ZIP);
       console.log('Folder Exists:', folderExists ? 'YES' : 'NO');
       if (folderExists) {
         //delete
-        await RNFS.unlink(tileZipsDirectory + '/' + zipUID);
+        await RNFS.unlink(APP_DIRECTORIES.TILE_ZIP + zipUID);
       }
-      else await RNFS.mkdir(tileZipsDirectory);
+      else await RNFS.mkdir(APP_DIRECTORIES.TILE_ZIP);
     }
     catch (err) {
       console.error('Error checking if zip Tile Temp Directory exists', err);
@@ -152,8 +153,8 @@ const useMapsOffline = () => {
     try {
       dispatch(removedLastStatusMessage());
       dispatch(addedStatusMessage('Preparing to install tiles...'));
-      const sourcePath = tileZipsDirectory + '/' + zipUID + '.zip';
-      await unzip(sourcePath, tileTempDirectory);
+      const sourcePath = APP_DIRECTORIES.TILE_ZIP + zipUID + '.zip';
+      await unzip(sourcePath, APP_DIRECTORIES.TILE_TEMP);
       console.log('unzip completed');
       console.log('move done.');
     }
@@ -167,19 +168,17 @@ const useMapsOffline = () => {
     try {
       let layer, id, username;
       let startZipURL = 'unset';
-      const layerID = currentBasemap.id;
+      let mapKey = currentBasemap.id;
       const layerSource = currentBasemap.source;
-      const tilehost = 'http://tiles.strabospot.org';
+      const tilehost = APP_DIRECTORIES.TILE_HOST;
 
       if (layerSource === 'map_warper' || layerSource === 'mapbox_styles' || layerSource === 'strabospot_mymaps') {
         //configure advanced URL for custom map types here.
         //first, figure out what kind of map we are downloading...
 
         let downloadMap = {};
-
-        if (customMaps[layerID].id === currentBasemap.id) {
-          downloadMap = customMaps[layerID];
-        }
+        if (mapKey.includes('/')) mapKey = mapKey.split('/')[1];
+        if (customMaps[mapKey].id === currentBasemap.id) downloadMap = customMaps[mapKey];
 
         console.log('DownloadMap: ', downloadMap);
 
@@ -188,7 +187,7 @@ const useMapsOffline = () => {
           const parts = downloadMap.id.split('/');
           username = parts[0];
           id = parts[1];
-          const accessToken = downloadMap.key;
+          const accessToken = user.mapboxToken && !isEmpty(user.mapboxToken) ? user.mapboxToken : MAPBOX_KEY;
           startZipURL = tilehost + '/asynczip?layer=' + layer + '&extent=' + extentString + '&zoom=' + downloadZoom + '&username=' + username + '&id=' + id + '&access_token=' + accessToken;
         }
         else if (downloadMap.source === 'Map Warper' || downloadMap.source === 'map_warper') {
@@ -204,7 +203,7 @@ const useMapsOffline = () => {
       }
       else {
         layer = currentBasemap.id;
-        startZipURL = tilehost + '/asynczip?layer=' + layerID + '&extent=' + extentString + '&zoom=' + downloadZoom;
+        startZipURL = tilehost + '/asynczip?layer=' + layer + '&extent=' + extentString + '&zoom=' + downloadZoom;
       }
 
       console.log('startZipURL: ', startZipURL);
@@ -231,14 +230,15 @@ const useMapsOffline = () => {
   const moveFiles = async (zipUID) => {
     try {
       let result;
-      let folderExists = await RNFS.exists(tileCacheDirectory + '/' + currentBasemap.id);
+      let mapID = currentBasemap.id;
+      if (currentBasemap.source === 'mapbox_styles') mapID = currentBasemap.id.split('/')[1];
+      let folderExists = await RNFS.exists(APP_DIRECTORIES.TILE_CACHE + mapID);
       if (!folderExists) {
-        console.log('FOLDER DOESN\'T EXIST! ' + currentBasemap.id);
-        await RNFS.mkdir(tileCacheDirectory + '/' + currentBasemap.id);
-        await RNFS.mkdir(tileCacheDirectory + '/' + currentBasemap.id + '/tiles');
+        console.log('FOLDER DOESN\'T EXIST! ', APP_DIRECTORIES.TILE_CACHE + mapID);
+        await RNFS.mkdir(APP_DIRECTORIES.TILE_CACHE + mapID + '/tiles');
       }
       //now move files to correct location
-      result = await RNFS.readDir(tileTempDirectory + '/' + zipUID + '/tiles');
+      result = await RNFS.readDir(APP_DIRECTORIES.TILE_TEMP + zipUID + '/tiles');
       return result;
     }
     catch (err) {
@@ -248,14 +248,16 @@ const useMapsOffline = () => {
   };
 
   const moveTile = async (tile, zipID) => {
+    let mapID = currentBasemap.id;
+    if (currentBasemap.source === 'mapbox_styles') mapID = currentBasemap.id.split('/')[1];
     let zipId = zipUID ?? zipID;
     fileCount++;
-    let fileExists = await RNFS.exists(tileCacheDirectory + '/' + currentBasemap.id + '/tiles/' + tile.name);
+    let fileExists = await RNFS.exists(APP_DIRECTORIES.TILE_CACHE + mapID + '/tiles/' + tile.name);
     // console.log('foo exists: ', tile.name + ' ' + fileExists);
     if (!fileExists) {
       neededTiles++;
-      await RNFS.moveFile(tileTempDirectory + '/' + zipId + '/tiles/' + tile.name,
-        tileCacheDirectory + '/' + currentBasemap.id + '/tiles/' + tile.name);
+      await RNFS.moveFile(APP_DIRECTORIES.TILE_TEMP + zipId + '/tiles/' + tile.name,
+        APP_DIRECTORIES.TILE_CACHE + mapID + '/tiles/' + tile.name);
       console.log('Tile moved');
     }
     else notNeededTiles++;
@@ -274,28 +276,35 @@ const useMapsOffline = () => {
     }
   };
 
-  const setOfflineMapTiles = async (map) => {
-    let tempCurrentBasemap, tilePath;
-    console.log('Switch To Offline Map: ', map);
-    const url = 'file://' + tileCacheDirectory + '/';
-
+  const buildOfflineTilePath = (map) => {
+    let tilePath;
     // let tileJSON = 'file://' + tileCacheDirectory + '/' + map.id + '/tiles/{z}_{x}_{y}.png';
     if (map.source === 'map_warper') {
-      tilePath = 'tiles/{z}_{x}_{y}.png';
+      return tilePath = 'tiles/{z}_{x}_{y}.png';
     }
     else {
-      tilePath = '/tiles/{z}_{x}_{y}.png';
+      return tilePath = '/tiles/{z}_{x}_{y}.png';
     }
-
-    tempCurrentBasemap = {...map, url: [url], tilePath: tilePath};
-    console.log('tempCurrentBasemap: ', tempCurrentBasemap);
-    dispatch(setCurrentBasemap(tempCurrentBasemap));
   };
 
-  const updateMapTileCount = async () => {
+  const getMapNameFromId = (mapID) => {
+    const mapObj = DEFAULT_MAPS.find(mapType => mapType.id === mapID);
+    if (!mapObj) {
+      const mapName = Object.keys(customMaps).find(map => {
+        if (map === mapID) customMaps[map].title;
+      });
+      return mapName;
+    }
+    return mapObj.title;
+  };
+
+  const updateMapTileCount = async (mapId) => {
     try {
       let mapName;
-      let tileCount = await RNFS.readDir(tileCacheDirectory + '/' + currentBasemap.id + '/tiles');
+      let basemap = mapId ? mapId : currentBasemap.id;
+      let mapID = basemap;
+      if (currentBasemap.source === 'mapbox_styles') mapID = currentBasemap.id.split('/')[1];
+      let tileCount = await RNFS.readDir(APP_DIRECTORIES.TILE_CACHE + mapID + '/tiles');
       tileCount = tileCount.length;
 
       let currentOfflineMaps = Object.values(offlineMaps);
@@ -305,42 +314,69 @@ const useMapsOffline = () => {
         currentOfflineMaps = [];
       }
 
-      const customMap = Object.values(customMaps).filter(map => currentBasemap.id === map.id);
+      const customMap = Object.values(customMaps).filter(map => {
+        const customMapID = map.source === 'mapbox_styles' ? map.id.split('/')[1] : map.id;
+        return mapID === customMapID;
+      });
       console.log(customMap);
       if (source === 'strabo_spot_mapbox' || source === 'osm' || source === 'macrostrat') mapName = currentMapName;
       else mapName = customMap[0].title;
 
       let newOfflineMapsData = [];
-      let thisMap = {};
-      thisMap.id = currentBasemap.id;
-      thisMap.name = mapName;
-      thisMap.count = tileCount;
-      thisMap.source = source;
-      // thisMap.mapId = new Date().valueOf();
-      thisMap.mapId = zipUID;
-      thisMap.date = new Date().toLocaleString();
-      thisMap.isOfflineMapVisible = false;
+      let thisMap = {
+        id: basemap,
+        name: mapId ? getMapNameFromId(mapId) : mapName,
+        count: tileCount,
+        source: !mapId ? source : undefined,
+        mapId: zipUID,
+        date: new Date().toLocaleString(),
+        isOfflineMapVisible: false,
+        version: 8,
+        sources: {
+          'raster-tiles': {
+            type: 'raster',
+            tiles: ['file://' + APP_DIRECTORIES.TILE_CACHE + mapID + '/tiles/{z}_{x}_{y}.png'],
+            tileSize: 256,
+            attribution: MAP_PROVIDERS[source].attributions,
+          },
+        },
+        glyphs: 'mapbox://fonts/mapbox/{fontstack}/{range}.pbf',
+        layers: [{
+          id: basemap,
+          type: 'raster',
+          source: 'raster-tiles',
+          minzoom: 0,
+        }],
+      };
       newOfflineMapsData.push(thisMap);
 
       //loop over offlineMapsData and add any other maps (not current)
       for (let i = 0; i < currentOfflineMaps.length; i++) {
         if (currentOfflineMaps[i].id) {
-          if (currentOfflineMaps[i].id !== currentBasemap.id) {
+          if (currentOfflineMaps[i].id !== basemap) {
             //Add it to new array for Redux Storage
             newOfflineMapsData.push(currentOfflineMaps[i]);
           }
         }
       }
 
-      const mapSavedObject = Object.assign({}, ...newOfflineMapsData.map(map => ({[map.id]: map})));
-      console.log('Map to save to Redux', mapSavedObject);
-
+      const mapSavedObject = Object.assign({}, ...newOfflineMapsData.map(map => (map.source === 'mapbox_styles'
+        ? {[map.id.split('/')[1]]: map} : {[map.id]: map})));
       await dispatch(setOfflineMap(mapSavedObject));
-      console.log('Saved offlineMaps to Redux.');
+      console.log('Map to save to Redux', mapSavedObject);
     }
     catch (err) {
       console.error('Error updating map object', err);
     }
+  };
+
+
+  const setOfflineMapTiles = async (map) => {
+    console.log('Switch To Offline Map: ', map);
+    const tilePath = buildOfflineTilePath(map);
+    const mapStyleURL = useMaps.buildStyleURL({source: map.source, id: map.id, tilePath: tilePath, url: [url]});
+    console.log('tempCurrentBasemap: ', mapStyleURL);
+    dispatch(setCurrentBasemap(mapStyleURL));
   };
 
   const switchToOfflineMap = async (mapId) => {
@@ -353,7 +389,6 @@ const useMapsOffline = () => {
       }
       else {
         const firstAvailableOfflineMap = Object.values(offlineMaps)[0];
-
         Alert.alert(
           'Not Available',
           'Selected map is not available for offline use.  '
@@ -362,7 +397,9 @@ const useMapsOffline = () => {
           ]);
       }
     }
-    else if (isEmpty(offlineMaps)) Alert.alert('No Offline Maps Available!');
+    // else if (!isEmpty(isOnline) && !isOnline.isInternetReachable &&  isEmpty(offlineMaps)) {
+    //   Alert.alert('No Offline Maps Available!', 'Mapbox will use cached version of map.');
+    // }
   };
 
   return {

@@ -25,6 +25,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginLeft: 10,
   },
+  requiredMessage: {
+    margin: 5,
+    color: themes.RED,
+    fontSize: themes.SMALL_TEXT_SIZE,
+  },
 });
 
 export default styles;

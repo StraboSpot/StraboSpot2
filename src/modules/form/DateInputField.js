@@ -16,7 +16,9 @@ const DateInputField = ({
   const [isDatePickerModalVisible, setIsDatePickerModalVisible] = useState(false);
   const [date, setDate] = useState(Date.parse(value) ? new Date(value) : new Date());
 
-  let title = value && moment(value).format('MM/DD/YYYY');
+  let title = value ? props.isShowTime ? moment(value).format('MM/DD/YYYY, h:mm:ss a')
+      : moment(value).format('MM/DD/YYYY')
+    : undefined;
 
   const changeDate = (event, selectedDate) => {
     Platform.OS === 'ios' ? setDate(selectedDate) : saveDate(event, selectedDate);
@@ -94,11 +96,19 @@ const DateInputField = ({
           <Text style={formStyles.fieldLabel}>{props.label}</Text>
         </View>
       )}
-      <Text
-        style={{...formStyles.fieldValue, paddingTop: 5, paddingBottom: 5}}
-        onPress={() => setIsDatePickerModalVisible(true)}>
-        {title}
-      </Text>
+      {props.isDisplayOnly ? (
+          <Text style={{...formStyles.fieldValue, paddingTop: 5, paddingBottom: 5}}>
+            {title}
+          </Text>
+        )
+        : (
+          <Text
+            style={{...formStyles.fieldValue, paddingTop: 5, paddingBottom: 5}}
+            onPress={() => setIsDatePickerModalVisible(true)}
+          >
+            {title}
+          </Text>
+        )}
       {errors[name] && <Text style={formStyles.fieldError}>{errors[name]}</Text>}
       {Platform.OS === 'ios' ? renderDatePickerDialogBox() : isDatePickerModalVisible && renderDatePicker()}
     </React.Fragment>

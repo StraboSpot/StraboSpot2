@@ -27,8 +27,11 @@
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>shareddocuments</string>
+		<string>file</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<key>LSSupportsOpeningDocumentsInPlace</key>
 	<true/>
 	<key>MGLMapboxMetricsEnabledSettingShownInApp</key>
 	<string>YES</string>

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Alert, FlatList, Platform, Switch, View} from 'react-native';
+import {Alert, FlatList, Platform, Switch, Text, View} from 'react-native';
 
 import {Button, Icon, ListItem, Input} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
@@ -18,12 +18,14 @@ import {
   setErrorMessagesModalVisible,
   setLoadingStatus,
   setStatusMessagesModalVisible,
+  setWarningModalVisible,
 } from '../../home/home.slice';
 import {setMenuSelectionPage, setSidePanelVisible} from '../../main-menu-panel/mainMenuPanel.slice';
 import SidePanelHeader from '../../main-menu-panel/sidePanel/SidePanelHeader';
 import {CUSTOM_MAP_TYPES} from '../maps.constants';
 import {selectedCustomMapToEdit} from '../maps.slice';
 import useMapHook from '../useMaps';
+import customMapStyles from './customMaps.styles';
 
 const AddCustomMaps = () => {
   const MBKeyboardType = Platform.OS === 'ios' ? 'url' : 'default';
@@ -46,34 +48,35 @@ const AddCustomMaps = () => {
         opacity: 1,
         overlay: false,
         id: '',
-        source: 'map_warper',
-        accessToken: MBAccessToken,
+        source: '',
+        key: MBAccessToken,
       });
     }
   }, [customMapToEdit]);
 
   const addMap = async () => {
-    dispatch(clearedStatusMessages());
-    dispatch(setStatusMessagesModalVisible(true));
-    dispatch(setLoadingStatus({view: 'modal', bool: true}));
-    dispatch(addedStatusMessage('Saving Custom Map...'));
-    const customMap = await useMaps.saveCustomMap(editableCustomMapData);
-    console.log(customMap);
-    if (customMap !== undefined) {
-      dispatch(setSidePanelVisible({view: null, bool: false}));
-      dispatch(setMenuSelectionPage({name: undefined}));
-      dispatch(removedLastStatusMessage());
-      dispatch(setLoadingStatus({view: 'modal', bool: false}));
-      dispatch(addedStatusMessage('Success!'));
-      dispatch(addedStatusMessage(`\nMap ${customMap.title} has been added or updated!`));
-    }
-    else {
-      dispatch(setLoadingStatus({view: 'modal', bool: false}));
-      dispatch(setStatusMessagesModalVisible(false));
+    try {
       dispatch(clearedStatusMessages());
-      dispatch(addedStatusMessage(
-        'Something Went Wrong \n\nCheck the id and map type of the map you are trying to save.'));
-      dispatch(setErrorMessagesModalVisible(true));
+      dispatch(setStatusMessagesModalVisible(true));
+      dispatch(setLoadingStatus({view: 'modal', bool: true}));
+      dispatch(addedStatusMessage('Saving Custom Map...'));
+      const customMap = await useMaps.saveCustomMap(editableCustomMapData);
+      console.log(customMap);
+        dispatch(setSidePanelVisible({view: null, bool: false}));
+        dispatch(setMenuSelectionPage({name: undefined}));
+        dispatch(removedLastStatusMessage());
+        dispatch(setLoadingStatus({view: 'modal', bool: false}));
+        dispatch(addedStatusMessage('Success!'));
+        dispatch(addedStatusMessage(`\nMap ${customMap.title} has been added or updated!`));
+    }
+    catch (err) {
+      console.error('Error saving custom map', err);
+        dispatch(setLoadingStatus({view: 'modal', bool: false}));
+        dispatch(setStatusMessagesModalVisible(false));
+        dispatch(clearedStatusMessages());
+        dispatch(addedStatusMessage(
+          `Something Went Wrong \n\nCheck the id:\n\n ${err} \n\n and/or the map type you are trying to save.`));
+        dispatch(setErrorMessagesModalVisible(true));
     }
   };
 
@@ -99,7 +102,20 @@ const AddCustomMaps = () => {
 
   const selectMap = (source) => {
     console.log(source);
+    if (source === 'map_warper') {
+      dispatch(clearedStatusMessages());
+      dispatch(addedStatusMessage('Map Warper is temporarily unavailable. \n\nYou are able to save a map but it will not display. We have reached out to the author and hope for a resolution soon.'));
+      dispatch(setWarningModalVisible(true));
+    }
     setEditableCustomMapData(e => ({...e, source: source}));
+  };
+
+  const validate = () => {
+    console.log(editableCustomMapData);
+    if (editableCustomMapData.source === 'map_warper') {
+      if (!isNaN(editableCustomMapData.id)) console.log('Valid');
+      else console.log('Not Valid');
+    }
   };
 
   const renderCustomMapName = (item) => {
@@ -134,7 +150,9 @@ const AddCustomMaps = () => {
               defaultValue={editableCustomMapData.id}
               onChangeText={text => setEditableCustomMapData(e => ({...e, id: text}))}
               placeholder={'Style URL'}
-              errorMessage={editableCustomMapData && isEmpty(editableCustomMapData.id) && 'Map ID is required'}
+              // onBlur={validate}
+              errorMessage={editableCustomMapData && isEmpty(editableCustomMapData.id) && 'Style URL is required'}
+              errorStyle={customMapStyles.requiredMessage}
             />
           )}
           {editableCustomMapData?.source === 'map_warper' && (
@@ -146,7 +164,9 @@ const AddCustomMaps = () => {
               defaultValue={editableCustomMapData.id}
               onChangeText={text => setEditableCustomMapData(e => ({...e, id: text}))}
               placeholder={'Map ID'}
+              // onBlur={validate}
               errorMessage={editableCustomMapData && isEmpty(editableCustomMapData.id) && 'Map ID is required'}
+              errorStyle={customMapStyles.requiredMessage}
             />
           )}
           {editableCustomMapData?.source === 'strabospot_mymaps' && (
@@ -159,6 +179,7 @@ const AddCustomMaps = () => {
               onChangeText={text => setEditableCustomMapData(e => ({...e, id: text}))}
               placeholder={'Strabo My Maps ID'}
               errorMessage={editableCustomMapData && isEmpty(editableCustomMapData.id) && 'Map ID is required'}
+              errorStyle={customMapStyles.requiredMessage}
             />
           )}
         </View>
@@ -175,6 +196,8 @@ const AddCustomMaps = () => {
         renderItem={({item, index}) => renderCustomMapName(item, index)}
         ItemSeparatorComponent={FlatListItemSeparator}
       />
+      {editableCustomMapData?.source === ''
+      && <Text style={customMapStyles.requiredMessage}>Map type is required</Text>}
     </View>
   );
 
@@ -189,6 +212,7 @@ const AddCustomMaps = () => {
           onChangeText={text => setEditableCustomMapData({...editableCustomMapData, title: text})}
           defaultValue={editableCustomMapData && editableCustomMapData.title}
           errorMessage={editableCustomMapData && isEmpty(editableCustomMapData.title) && 'Title is required'}
+          errorStyle={customMapStyles.requiredMessage}
         />
       </React.Fragment>
     );

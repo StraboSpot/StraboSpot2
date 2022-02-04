@@ -65,10 +65,10 @@ const DatasetList = () => {
         containerStyle={commonStyles.listItem}
       >
         <Icon
-          name='edit'
+          name={'edit'}
           type={'material'}
           size={20}
-          color='darkgrey'
+          color={'darkgrey'}
           onPress={() => editDataset(dataset.id, dataset.name)}
         />
         <ListItem.Content>
@@ -82,15 +82,16 @@ const DatasetList = () => {
           value={activeDatasetsIds.some(activeDatasetId => activeDatasetId === dataset.id)}
           disabled={isDisabled(dataset.id)}
         />
-        <View
-        >
-          {dataset.images?.imageIds && <Icon
-            name={spotIds && 'image-outline'}
-            type={spotIds && 'ionicon'}
-            size={20}
-            containerStyle={{paddingBottom: 5}}
-          />}
-          {<Icon
+        <View>
+          {dataset.images?.imageIds && (
+            <Icon
+              name={spotIds && 'image-outline'}
+              type={spotIds && 'ionicon'}
+              size={20}
+              containerStyle={{paddingBottom: 5}}
+            />
+          )}
+          <Icon
             name={spotIds ? (needImages ? 'checkmark-outline' : 'download-circle-outline') : 'image-off-outline'}
             type={spotIds ? (needImages ? 'ionicon' : 'material-community') : 'material-community'}
             size={20}
@@ -98,7 +99,7 @@ const DatasetList = () => {
             disabled={needImages}
             disabledStyle={{backgroundColor: 'transparent'}}
             onPress={() => useDownload.initializeDownloadImages(dataset?.images?.neededImagesIds, dataset)}
-          />}
+          />
         </View>
       </ListItem>
     );
@@ -126,10 +127,10 @@ const DatasetList = () => {
             icon={
               <Icon
                 iconStyle={{paddingRight: 10}}
-                name='trash'
+                name={'trash'}
                 type={'font-awesome'}
                 size={20}
-                color='red'
+                color={'red'}
               />
             }
           />

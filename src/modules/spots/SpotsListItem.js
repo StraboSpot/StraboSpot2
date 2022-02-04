@@ -2,6 +2,7 @@ import React from 'react';
 import {FlatList} from 'react-native';
 
 import {Avatar, ListItem} from 'react-native-elements';
+import {useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
@@ -13,6 +14,17 @@ const SpotsListItem = (props) => {
   const [useNesting] = useNestingHook();
   const [useSpots] = useSpotsHook();
   const [useTags] = useTagsHook();
+
+  const selectedTag = useSelector((state) => state.project.selectedTag);
+
+  const renderCheckboxes = () => {
+    return (
+      <ListItem.CheckBox
+        checked={selectedTag.spots && selectedTag.spots.includes(props.spot.properties.id)}
+        onPress={() => useTags.addRemoveSpotFromTag(props.spot.properties.id, selectedTag)}
+      />
+    );
+  };
 
   const renderSpotDataIcons = () => (
     <FlatList
@@ -45,7 +57,7 @@ const SpotsListItem = (props) => {
   return (
     <ListItem
       containerStyle={commonStyles.listItem}
-      key={props.spot.properties.id}
+      keyExtractor={(item, index) => item?.properties?.id?.toString() ||  index.toString()}
       onPress={() => props.onPress(props.spot)}
     >
       <Avatar source={useSpots.getSpotGemometryIconSource(props.spot)}
@@ -53,12 +65,16 @@ const SpotsListItem = (props) => {
               size={20}
       />
       <ListItem.Content>
-        <ListItem.Title style={commonStyles.listItemTitle}>{props.spot.properties.name}</ListItem.Title>
-        {props.doShowTags && renderTags()}
-        {props.doShowSubspots && renderSubspots()}
+        <ListItem.Title style={commonStyles.listItemTitle}>{props?.spot?.properties?.name}</ListItem.Title>
+        {props.doShowTags && props.spot && renderTags()}
+        {props.doShowSubspots && props.spot && renderSubspots()}
       </ListItem.Content>
-      {renderSpotDataIcons()}
-      <ListItem.Chevron/>
+      {props.isCheckedList ? renderCheckboxes() : (
+        <React.Fragment>
+          {props.spot && renderSpotDataIcons()}
+          {props.spot && <ListItem.Chevron/>}
+        </React.Fragment>
+      )}
     </ListItem>
   );
 };

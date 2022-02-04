@@ -48,9 +48,7 @@ const useTags = () => {
 
   const addTag = () => {
     dispatch(setSelectedTag({}));
-    if (modalVisible === MODAL_KEYS.NOTEBOOK.TAGS) {
-      dispatch(addedTagToSelectedSpot(true));
-    }
+    if (modalVisible === MODAL_KEYS.NOTEBOOK.TAGS) dispatch(addedTagToSelectedSpot(true));
     else dispatch(addedTagToSelectedSpot(false));
   };
 
@@ -116,7 +114,7 @@ const useTags = () => {
   };
 
   const deleteFeatureTags = (features) => {
-    if (features.length == 0) return;
+    if (features.length === 0) return;
     let tagsToUpdate = [];
     let featureIds = features.map(feature => feature.id);
     projectTags.map(tag => {
@@ -127,6 +125,8 @@ const useTags = () => {
         allOtherFeatureIds = copyTag.features[selectedSpot.properties.id].filter(
           featureId => !featureIds.includes(featureId));
         copyTag.features[selectedSpot.properties.id] = allOtherFeatureIds;
+        if (isEmpty(copyTag.features[selectedSpot.properties.id])) delete copyTag.features[selectedSpot.properties.id];
+        if (isEmpty(copyTag.features)) delete copyTag.features;
         tagsToUpdate.push(copyTag);
       }
     });
@@ -148,9 +148,12 @@ const useTags = () => {
     for (const [spotId, features] of Object.entries(spotFeatures)) {
       features.forEach(featureId => {
         const feature = getFeature(spotId, featureId);
-        feature.parentSpotId = spotId;
-        feature.label = getFeatureLabel(feature);
-        allTaggedFeatures.push(feature);
+        if (feature) {
+          feature.parentSpotId = spotId;
+          feature.label = getFeatureLabel(feature);
+          allTaggedFeatures.push(feature);
+        }
+        else console.log('Where did the feature', featureId, 'go in Spot', spotId, '?');
       });
     }
     return allTaggedFeatures;
@@ -181,20 +184,37 @@ const useTags = () => {
     return feature && (feature.label || feature.name_of_experiment || 'Unknown Name');
   };
 
-  const getFeatureTagsAtSpotGeologicUnitFirst = (featuresAtSpot) => {
+  const getFeatureTagsAtSpot = (featuresAtSpot) => {
     if (isEmpty(selectedSpot)) return [];
     let spotId = selectedSpot.properties.id;
     let featureIds = featuresAtSpot.map(feature => feature.id);
-    let tagsWithFeaturesAtSpot = projectTags.filter(tag => tag.features && !isEmpty(tag.features[spotId])
+    return projectTags.filter(tag => tag.features && !isEmpty(tag.features[spotId])
       && tag.features[spotId].some(featureId => featureIds.includes(featureId)));
-    const tagsGeologicUnit = tagsWithFeaturesAtSpot.filter(tag => tag.type === 'geologic_unit');
-    const tagsOther = tagsWithFeaturesAtSpot.filter(tag => tag.type !== 'geologic_unit');
-    return [...tagsGeologicUnit, ...tagsOther];
+  };
+
+  const getGeologicUnitFeatureTagsAtSpot = (featuresAtSpot) => {
+    const featureTagsAtSpot = getFeatureTagsAtSpot(featuresAtSpot);
+    return featureTagsAtSpot.filter(tag => tag.type === 'geologic_unit');
+  };
+
+  const getGeologicUnitTagsAtSpot = (spotId) => {
+    const tagsAtSpot = getTagsAtSpot(spotId);
+    return tagsAtSpot.filter(tag => tag.type === 'geologic_unit');
   };
 
   const getLabel = (key) => {
     if (key) return useForm.getLabel(key, formName);
     return 'No Type Specified';
+  };
+
+  const getNonGeologicUnitFeatureTagsAtSpot = (featuresAtSpot) => {
+    const featureTagsAtSpot = getFeatureTagsAtSpot(featuresAtSpot);
+    return featureTagsAtSpot.filter(tag => tag.type !== 'geologic_unit');
+  };
+
+  const getNonGeologicUnitTagsAtSpot = (spotId) => {
+    const tagsAtSpot = getTagsAtSpot(spotId);
+    return tagsAtSpot.filter(tag => tag.type !== 'geologic_unit');
   };
 
   // to display all tags at given feature.
@@ -212,29 +232,14 @@ const useTags = () => {
     return projectTags.filter(tag => tag.spots && tag.spots.includes(spotId));
   };
 
-  const getTagsAtSpotGeologicUnitFirst = (spotId) => {
-    const tagsAtSpot = getTagsAtSpot(spotId);
-    const tagsGeologicUnit = tagsAtSpot.filter(tag => tag.type === 'geologic_unit');
-    const tagsOther = tagsAtSpot.filter(tag => tag.type !== 'geologic_unit');
-    return [...tagsGeologicUnit, ...tagsOther];
+  const getTagFeaturesCount = (tag) => {
+    const validSpots = isEmpty(tag.features) ? [] : Object.keys(tag.features).filter(spotIds => spots[spotIds]);
+    return validSpots.reduce((acc, spotId) => acc + tag.features[spotId].length, 0);
   };
 
-  const renderFeatureTagsCount = (tag) => {
-    if (!isEmpty(tag.features)) {
-      let countOfFeatureTags = 0;
-      for (const [spotId, features] of Object.entries(tag.features)) {
-        countOfFeatureTags = countOfFeatureTags + features.length;
-      }
-      return `(${countOfFeatureTags})`;
-    }
-    else return '(0)';
-  };
-
-  const renderSpotCount = (tag) => {
-    if (tag.spots) {
-      return `(${tag.spots.length})`;
-    }
-    else return '(0)';
+  const getTagSpotsCount = (tag) => {
+    const validSpots = isEmpty(tag.spots) ? [] : tag.spots.filter(spotIds => spots[spotIds]);
+    return validSpots.length;
   };
 
   const renderTagInfo = () => {
@@ -258,7 +263,7 @@ const useTags = () => {
     );
   };
 
-  const renderTagForm = () => {
+  const renderTagForm = (type) => {
     return (
       <View style={{flex: 1}}>
         <Formik
@@ -266,7 +271,7 @@ const useTags = () => {
           onSubmit={() => console.log('Submitting form...')}
           validate={(values) => useForm.validateForm({formName: formName, values: values})}
           component={(formProps) => Form({formName: formName, ...formProps})}
-          initialValues={selectedTag}
+          initialValues={isEmpty(selectedTag) && type ? {type: type} : selectedTag}
           validateOnChange={false}
           enableReinitialize={true}
         />
@@ -294,7 +299,7 @@ const useTags = () => {
         return Promise.resolve();
       }
     }
- catch (e) {
+    catch (e) {
       console.log('Error submitting form', e);
       return Promise.reject();
     }
@@ -353,13 +358,15 @@ const useTags = () => {
     filterTagsByTagType: filterTagsByTagType,
     getAllTaggedFeatures: getAllTaggedFeatures,
     getFeatureDisplayComponent: getFeatureDisplayComponent,
-    getFeatureTagsAtSpotGeologicUnitFirst: getFeatureTagsAtSpotGeologicUnitFirst,
+    getGeologicUnitFeatureTagsAtSpot: getGeologicUnitFeatureTagsAtSpot,
+    getGeologicUnitTagsAtSpot: getGeologicUnitTagsAtSpot,
     getLabel: getLabel,
+    getNonGeologicUnitFeatureTagsAtSpot: getNonGeologicUnitFeatureTagsAtSpot,
+    getNonGeologicUnitTagsAtSpot: getNonGeologicUnitTagsAtSpot,
     getTagsAtFeature: getTagsAtFeature,
     getTagsAtSpot: getTagsAtSpot,
-    getTagsAtSpotGeologicUnitFirst: getTagsAtSpotGeologicUnitFirst,
-    renderFeatureTagsCount: renderFeatureTagsCount,
-    renderSpotCount: renderSpotCount,
+    getTagFeaturesCount: getTagFeaturesCount,
+    getTagSpotsCount: getTagSpotsCount,
     renderTagInfo: renderTagInfo,
     renderTagForm: renderTagForm,
     saveForm: saveForm,

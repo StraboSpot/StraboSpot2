@@ -13,7 +13,7 @@ const IconButton = props => {
     >
       <Image
         containerStyle={props.containerStyle}
-        style={uiStyles.imageIcon}
+        style={[uiStyles.imageIcon, props.imageStyle]}
         source={props.source}
       />
     </Pressable>

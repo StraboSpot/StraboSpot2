@@ -4,10 +4,12 @@ import {ListItem} from 'react-native-elements';
 
 import commonStyles from '../../shared/common.styles';
 import usePetrologyHook from '../petrology/usePetrology';
+import useSedHook from '../sed/useSed';
 import {PAGE_KEYS} from './page.constants';
 
 const BasicListItem = (props) => {
   const usePetrology = usePetrologyHook();
+  const useSed = useSedHook();
 
   const getTitle = () => {
     switch (props.page.key) {
@@ -19,6 +21,19 @@ const BasicListItem = (props) => {
       case PAGE_KEYS.ROCK_TYPE_IGNEOUS:
       case PAGE_KEYS.ROCK_TYPE_METAMORPHIC:
         return usePetrology.getRockTitle(props.item, props.page.key);
+      case PAGE_KEYS.ROCK_TYPE_SEDIMENTARY:
+        return useSed.getRockTitle(props.item);
+      case PAGE_KEYS.LITHOLOGIES:
+        return 'Lithology ' + (props.index + 1) + ': ' + useSed.getRockTitle(props.item);
+      case PAGE_KEYS.STRAT_SECTION:
+        return useSed.getStratSectionTitle(props.item);
+      case PAGE_KEYS.BEDDING:
+        return 'Lithology ' + (props.index + 1) + ': ' + useSed.getBeddingTitle(props.item);
+      case PAGE_KEYS.STRUCTURES:
+      case PAGE_KEYS.DIAGENESIS:
+      case PAGE_KEYS.FOSSILS:
+      case PAGE_KEYS.INTERPRETATIONS:
+        return 'Lithology ' + (props.index + 1);
       default:
         return 'Unknown';
     }

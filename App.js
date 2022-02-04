@@ -17,7 +17,7 @@ Sentry.init({
   enableNative: true,
   debug: __DEV__,
   release: RELEASE_NAME,
-  dist: BUNDLE_ID,
+  dist: RELEASE_NAME,
   autoSessionTracking: true,
   environment: __DEV__ ? 'development' : 'production',
   deactivateStacktraceMerging: true,
@@ -30,12 +30,12 @@ const App = () => {
   return (
     <Provider store={store}>
       <PersistGate loading={<Loading/>} persistor={persistor}>
-        <Sentry.TouchEventBoundary>
+        {/*<Sentry.TouchEventBoundary>*/}
           <Routes/>
-        </Sentry.TouchEventBoundary>
+        {/*</Sentry.TouchEventBoundary>*/}
       </PersistGate>
     </Provider>
   );
 };
 
-export default App;
+export default Sentry.wrap(App);

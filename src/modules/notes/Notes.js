@@ -6,6 +6,7 @@ import {ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
+import SaveButton from '../../shared/SaveButton';
 import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import uiStyles from '../../shared/ui/ui.styles';
 import {TextInputField} from '../form';
@@ -15,7 +16,6 @@ import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import {PAGE_KEYS} from '../page/page.constants';
 import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
 import {editedSpotProperties, setSelectedSpotNotesTimestamp} from '../spots/spots.slice';
-import SaveButton from '../../shared/SaveButton';
 
 const Notes = (props) => {
   const [useMaps] = useMapsHook();
@@ -24,9 +24,7 @@ const Notes = (props) => {
   const initialNote = useSelector(state => state.spot.selectedSpot?.properties?.notes || null);
   const formRef = useRef(null);
 
-  const initialNotesValues = {
-    note: initialNote,
-  };
+  const initialNotesValues = {note: initialNote};
 
   useLayoutEffect(() => {
     return () => confirmLeavePage();
@@ -61,7 +59,7 @@ const Notes = (props) => {
       await currentForm.submitForm();
       await saveNote(currentForm.values.note, pageTransition);
       await currentForm.resetForm();
-      await props.goToCurrentLocation();
+      if (props.goToCurrentLocation) await props.goToCurrentLocation();
     }
     catch (err) {
       console.log('Error submitting form', err);
@@ -76,8 +74,7 @@ const Notes = (props) => {
 
   return (
     <View style={{flex: 1}}>
-      {modalVisible === MODAL_KEYS.SHORTCUTS.NOTE
-        ? (
+      {modalVisible === MODAL_KEYS.SHORTCUTS.NOTE ? (
           <View style={uiStyles.alignItemsToCenter}>
             <Text>Saving a note will create</Text>
             <Text>a new spot.</Text>
@@ -113,8 +110,7 @@ const Notes = (props) => {
           </ListItem>
         )}
       </Formik>
-      {modalVisible === MODAL_KEYS.SHORTCUTS.NOTE
-      && (
+      {modalVisible === MODAL_KEYS.SHORTCUTS.NOTE && (
         <SaveButton
           title={'Save Note'}
           onPress={() => saveForm(formRef.current, false)}

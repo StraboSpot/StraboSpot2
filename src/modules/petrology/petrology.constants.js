@@ -1325,3 +1325,8 @@ export const ROCK_FIRST_ORDER_CLASS_FIELDS = {
   metamorphic: ['metamorphic_rock_type'],
   alteration_or: ['ore_type'],
 };
+
+export const IGNEOUS_ROCK_CLASSES = {
+  PLUTONIC: 'plutonic',
+  VOLCANIC: 'volcanic',
+};

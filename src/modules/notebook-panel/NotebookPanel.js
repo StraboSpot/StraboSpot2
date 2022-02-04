@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Animated, FlatList, Keyboard, TextInput, View} from 'react-native';
 
-import {Avatar, Button, ListItem} from 'react-native-elements';
+import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
@@ -14,7 +14,7 @@ import {setModalVisible} from '../home/home.slice';
 import Overview from '../page/Overview';
 import {NOTEBOOK_PAGES, PAGE_KEYS} from '../page/page.constants';
 import {setMultipleFeaturesTaggingEnabled} from '../project/projects.slice';
-import {useSpotsHook} from '../spots';
+import {SpotsListItem, useSpotsHook} from '../spots';
 import {setSelectedSpot} from '../spots/spots.slice';
 import NotebookFooter from './notebook-footer/NotebookFooter';
 import NotebookHeader from './notebook-header/NotebookHeader';
@@ -52,20 +52,24 @@ const NotebookPanel = (props) => {
     dispatch(setMultipleFeaturesTaggingEnabled(false));
   }, [pageVisible, spot]);
 
-  const handleKeyboardDidShowNotebook = (event) => Helpers.handleKeyboardDidShow(event, TextInputState, textInputAnimate);
+  const handleKeyboardDidShowNotebook = (event) => Helpers.handleKeyboardDidShow(event, TextInputState,
+    textInputAnimate);
 
   const handleKeyboardDidHideNotebook = () => Helpers.handleKeyboardDidHide(textInputAnimate);
 
   const openPage = (key) => {
     dispatch(setNotebookPageVisible(key));
     const page = NOTEBOOK_PAGES.find(p => p.key === key);
-    if (page.modal_component) dispatch(setModalVisible({modal: page.key}));
+    if (page.key === PAGE_KEYS.GEOLOGIC_UNITS) dispatch(setModalVisible({modal: PAGE_KEYS.TAGS}));
+    else if (page.modal_component) dispatch(setModalVisible({modal: page.key}));
     else dispatch(setModalVisible({modal: null}));
   };
 
   const renderNotebookContent = () => {
     const page = NOTEBOOK_PAGES.find(p => p.key === (pageVisible || PAGE_KEYS.OVERVIEW));
     const Page = page?.page_component || Overview;
+    let pageProps = {page: page, openMainMenu: props.openMainMenu};
+    if (page.key === PAGE_KEYS.IMAGES) pageProps = {...pageProps,  toast: props.toast};
     return (
       <React.Fragment>
         <Animated.View style={{flex: 1, transform: [{translateY: textInputAnimate}]}}>
@@ -77,7 +81,7 @@ const NotebookPanel = (props) => {
             />
           </View>
           <View style={{...notebookStyles.centerContainer}}>
-            <Page page={page} openMainMenu={props.openMainMenu}/>
+            <Page {...pageProps}/>
           </View>
         </Animated.View>
         <View style={notebookStyles.footerContainer}>
@@ -107,7 +111,12 @@ const NotebookPanel = (props) => {
         <FlatList
           keyExtractor={(item) => item.properties.id.toString()}
           data={spotsList}
-          renderItem={({item}) => renderSpotName(item)}
+          renderItem={({item}) => (
+            <SpotsListItem
+              doShowTags={true}
+              spot={item}
+              onPress={() => dispatch(setSelectedSpot(item))}
+            />)}
           ItemSeparatorComponent={FlatListItemSeparator}
           ListEmptyComponent={<ListEmptyText text={'No Spots in Active Datasets'}/>}
         />
@@ -117,22 +126,6 @@ const NotebookPanel = (props) => {
           titleStyle={commonStyles.standardButtonText}
           onPress={props.closeNotebookPanel}/>
       </View>
-    );
-  };
-
-  const renderSpotName = (item) => {
-    return (
-      <ListItem
-        key={item.properties.id}
-        onPress={() => dispatch(setSelectedSpot(item))}
-      >
-        <Avatar source={useSpots.getSpotGemometryIconSource(item)}
-                placeholderStyle={{backgroundColor: 'transparent'}}
-                size={20}/>
-        <ListItem.Content>
-          <ListItem.Title>{item.properties.name}</ListItem.Title>
-        </ListItem.Content>
-      </ListItem>
     );
   };
 

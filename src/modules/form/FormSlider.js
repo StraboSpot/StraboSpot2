@@ -1,5 +1,5 @@
 import React from 'react';
-import {View} from 'react-native';
+import {Text, View} from 'react-native';
 
 import {ListItem} from 'react-native-elements';
 
@@ -24,11 +24,8 @@ const FormSlider = (props) => {
       </ListItem>
       <View style={{backgroundColor: SECONDARY_BACKGROUND_COLOR, padding: 10, paddingTop: 0}}>
         <Slider
-          onSlidingComplete={(value) => {
-            props.formRef.current?.setFieldValue(props.fieldKey,
-              choices.map(c => c.name)[value])
-          }}
-          value={choices.map(c => c.name).indexOf(props.formRef.current?.values[props.fieldKey]) || undefined}
+          onSlidingComplete={(value) => props.formProps?.setFieldValue(props.fieldKey, choices.map(c => c.name)[value])}
+          value={choices.map(c => c.name).indexOf(props.formProps?.values[props.fieldKey]) || undefined}
           step={1}
           maximumValue={choices.length - 1}
           minimumValue={props.hasNoneChoice ? -1 : 0}
@@ -36,7 +33,17 @@ const FormSlider = (props) => {
             : props.hasNoneChoice ? ['None', ...choices.map(c => c.label)]
               : choices.map(c => c.label)}
           rotateLabels={props.hasRotatedLabels}
+          isHideLabels={props.isHideLabels}
         />
+        {props.showSliderValue && (
+          <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center'}}>
+            <Text>
+              {props.formProps.values[props.fieldKey]
+                ? choices.find(c => c.name === props.formProps.values[props.fieldKey]).label
+                : 'Undefined'}
+            </Text>
+          </View>
+        )}
       </View>
     </React.Fragment>
   );

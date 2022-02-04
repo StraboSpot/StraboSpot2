@@ -119,7 +119,7 @@ const ProjectList = (props) => {
         key={props.source === 'device' ? item.id : item.id}
         onPress={() => selectProject(item)}
         containerStyle={commonStyles.listItem}
-        disabled={!isOnline && props.source !== 'device'}
+        disabled={!isOnline.isConnected && props.source !== 'device'}
         disabledStyle={{backgroundColor: 'lightgrey'}}
       >
         <ListItem.Content>

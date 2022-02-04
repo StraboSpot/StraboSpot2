@@ -9,41 +9,23 @@ import {deepFindFeatureTypeById, isEmpty} from '../../shared/Helpers';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
-import {useSpotsHook} from '../spots';
+import {PAGE_KEYS} from '../page/page.constants';
+import {SpotsListItem, useSpotsHook} from '../spots';
 import {useTagsHook} from '../tags';
 
 const TagDetail = (props) => {
   const [useSpots] = useSpotsHook();
   const [useTags] = useTagsHook();
   const selectedTag = useSelector(state => state.project.selectedTag);
+  const spots = useSelector(state => state.spot.spots);
   const [refresh, setRefresh] = useState(false);
+
+  // selectedTag.spots.map((x, index) => console.log(index, x, useSpots.getSpotById(x)));
 
   useEffect(() => {
     setRefresh(!refresh); // #TODO : Current hack to render two different FlatListComponents when selectedTag Changes.
                           //         To handle the navigation issue from 0 tagged features to non zero tagged features.
   }, [selectedTag]);
-
-  const renderSpotListItem = (spotId) => {
-    const spot = useSpots.getSpotById(spotId);
-    if (!isEmpty(spot)) {
-      return (
-        <ListItem
-          containerStyle={commonStyles.listItem}
-          onPress={() => props.openSpot(spot)}
-        >
-          <Avatar
-            source={useSpots.getSpotGemometryIconSource(spot)}
-            placeholderStyle={{backgroundColor: 'transparent'}}
-            size={20}
-          />
-          <ListItem.Content>
-            <ListItem.Title style={commonStyles.listItemTitle}>{spot.properties.name}</ListItem.Title>
-          </ListItem.Content>
-          <ListItem.Chevron/>
-        </ListItem>
-      );
-    }
-  };
 
   const renderSpotFeatureItem = (feature) => {
     const spot = useSpots.getSpotById(feature.parentSpotId);
@@ -52,6 +34,7 @@ const TagDetail = (props) => {
       return (
         <ListItem
           containerStyle={commonStyles.listItem}
+          key={spot.properties.id}
           onPress={() => props.openFeatureDetail(spot, feature, featureType)}
         >
           <Avatar
@@ -71,53 +54,62 @@ const TagDetail = (props) => {
     }
   };
 
+  const renderSpotItem = (id) => {
+    const spot = useSpots.getSpotById(id);
+    return (
+      <SpotsListItem
+        doShowTags={true}
+        spot={spot}
+        onPress={props.openSpot}
+      />
+    );
+  };
+
+  const renderTaggedFeaturesList = () => {
+    return (
+      <FlatList
+        listKey={2}
+        keyExtractor={(item) => item.toString()}
+        data={useTags.getAllTaggedFeatures(selectedTag)}
+        renderItem={({item}) => renderSpotFeatureItem(item)}
+        ItemSeparatorComponent={FlatListItemSeparator}
+        ListEmptyComponent={<ListEmptyText text={'No Features'}/>}
+      />
+    );
+  };
+
   return (
     <FlatList
       ListHeaderComponent={
         <React.Fragment>
           <SectionDividerWithRightButton
-            dividerText={'Tag Info'}
+            dividerText={selectedTag.type === PAGE_KEYS.GEOLOGIC_UNITS ? 'Info' : 'Tag Info'}
             buttonTitle={'View/Edit'}
             onPress={props.setIsDetailModalVisible}
           />
           {selectedTag && useTags.renderTagInfo()}
           <SectionDividerWithRightButton
-            dividerText={'Tagged Spots'}
+            dividerText={selectedTag.type === PAGE_KEYS.GEOLOGIC_UNITS ? 'Spots' : 'Tagged Spots'}
             buttonTitle={'Add/Remove'}
             onPress={props.addRemoveSpots}
           />
           <FlatList
             listKey={1}
             keyExtractor={(item) => item.toString()}
-            data={selectedTag.spots}
-            renderItem={({item}) => renderSpotListItem(item)}
+            data={selectedTag.spots && selectedTag.spots.filter(spotId => spots[spotId])}
+            renderItem={({item}) => renderSpotItem(item)}
             ItemSeparatorComponent={FlatListItemSeparator}
             ListEmptyComponent={<ListEmptyText text={'No Spots'}/>}
           />
-          <SectionDividerWithRightButton
-            dividerText={'Tagged Features'}
-            buttonTitle={'Add/Remove'}
-            onPress={props.addRemoveFeatures}
-          />
-          {!refresh && (
-            <FlatList
-              listKey={2}
-              keyExtractor={(item) => item.toString()}
-              data={useTags.getAllTaggedFeatures(selectedTag)}
-              renderItem={({item}) => renderSpotFeatureItem(item)}
-              ItemSeparatorComponent={FlatListItemSeparator}
-              ListEmptyComponent={<ListEmptyText text={'No Features'}/>}
-            />
-          )}
-          {refresh && (
-            <FlatList
-              listKey={2}
-              keyExtractor={(item) => item.toString()}
-              data={useTags.getAllTaggedFeatures(selectedTag)}
-              renderItem={({item}) => renderSpotFeatureItem(item)}
-              ItemSeparatorComponent={FlatListItemSeparator}
-              ListEmptyComponent={<ListEmptyText text={'No Features'}/>}
-            />
+          {selectedTag.type !== PAGE_KEYS.GEOLOGIC_UNITS && (
+            <React.Fragment>
+              <SectionDividerWithRightButton
+                dividerText={'Tagged Features'}
+                buttonTitle={'Add/Remove'}
+                onPress={props.addRemoveFeatures}
+              />
+              {refresh ? renderTaggedFeaturesList() : renderTaggedFeaturesList()}
+            </React.Fragment>
           )}
         </React.Fragment>
       }

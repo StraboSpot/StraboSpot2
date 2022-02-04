@@ -1,11 +1,11 @@
-import React from 'react';
-import {ActivityIndicator, Button, FlatList, Switch, Text, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {Button, FlatList, Switch, Text, View} from 'react-native';
 
-import {Image} from 'react-native-elements';
+import {Icon, Image} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
-import {truncateText} from '../../shared/Helpers';
+import {isEmpty, truncateText} from '../../shared/Helpers';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import {setCurrentImageBasemap} from '../maps/maps.slice';
 import imageStyles from './images.styles';
@@ -13,8 +13,41 @@ import useImagesHook from './useImages';
 
 const ImagesOverview = () => {
   const [useImages] = useImagesHook();
+
   const dispatch = useDispatch();
   const images = useSelector(state => state.spot.selectedSpot.properties.images);
+  const spot = useSelector(state => state.spot.selectedSpot);
+
+  const [imageThumbnails, setImageThumbnails] = useState({});
+  const [isError, setIsError] = useState(false);
+
+  useEffect(() => {
+    getImageThumbnailURIs().catch(err => console.error(err));
+  }, []);
+
+  const getImageThumbnailURIs = async () => {
+    try {
+      if (images) {
+        const imageThumbnailURIsTemp = await useImages.getImageThumbnailURIs([spot]);
+        if (!isEmpty(imageThumbnailURIsTemp)) {
+          setImageThumbnails(imageThumbnailURIsTemp);
+          setIsError(false);
+        }
+      }
+
+    }
+    catch (err) {
+      console.error('Error in getImageThumbnailURIs', err);
+      setIsError(true);
+    }
+  };
+
+  const renderError = () => (
+    <View style={{paddingTop: 75}}>
+      <Icon name={'alert-circle-outline'} type={'ionicon'} size={100}/>
+      <Text style={[commonStyles.noValueText, {paddingTop: 50}]}>Problem getting thumbnail images...</Text>
+    </View>
+  );
 
   const renderImage = (image) => {
     return (
@@ -22,9 +55,9 @@ const ImagesOverview = () => {
         <View style={imageStyles.imageContainer}>
           <Image
             resizeMode={'contain'}
-            source={{uri: useImages.getLocalImageURI(image.id)}}
+            source={{uri: imageThumbnails[image.id]}}
             style={imageStyles.notebookImage}
-            PlaceholderContent={<ActivityIndicator/>}
+            PlaceholderContent={<Text>Image Not {'\n'}Available...</Text>}
             onPress={() => useImages.editImage(image)}
           />
           <View style={{alignSelf: 'flex-start', flexDirection: 'column', flex: 1, paddingLeft: 10}}>
@@ -62,13 +95,21 @@ const ImagesOverview = () => {
     );
   };
 
+  const renderImages = () => {
+    return (
+      <FlatList
+        data={images}
+        renderItem={({item}) => renderImage(item)}
+        keyExtractor={(item) => item.id.toString()}
+        ListEmptyComponent={<ListEmptyText text={'No Images'}/>}
+      />
+    );
+  };
+
   return (
-    <FlatList
-      data={images}
-      renderItem={({item}) => renderImage(item)}
-      keyExtractor={(item) => item.id.toString()}
-      ListEmptyComponent={<ListEmptyText text={'No Images'}/>}
-    />
+    <React.Fragment>
+      {isError ? renderError() : renderImages()}
+    </React.Fragment>
   );
 };
 

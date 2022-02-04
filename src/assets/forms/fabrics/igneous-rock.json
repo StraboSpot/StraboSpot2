@@ -12,31 +12,20 @@
       "type": "text",
       "name": "label",
       "label": "Label",
-      "hint": "If a label is not specified a default label will be given.",
       "required": "false"
     },
     {
       "type": "select_multiple xo3br71",
       "name": "planar_fab",
-      "label": "Planar magmatic fabric(s)",
-      "required": "false",
-      "appearance": "horizontal-compact"
+      "label": "Planar fabric",
+      "required": "false"
     },
     {
       "type": "select_multiple ch0pi55",
       "name": "def_mag_fol",
-      "label": "What defines the magmatic foliation?",
+      "label": "What defines the planar fabric?",
       "required": "false",
-      "appearance": "horizontal-compact",
-      "relevant": "selected(${planar_fab}, 'foliation')"
-    },
-    {
-      "type": "select_multiple ch0pi55",
-      "name": "def_mag_lay",
-      "label": "What defines the magmatic layering?",
-      "required": "false",
-      "appearance": "horizontal-compact",
-      "relevant": "selected(${planar_fab}, 'layer')"
+      "relevant": "${planar_fab} != ''"
     },
     {
       "type": "text",
@@ -44,16 +33,16 @@
       "label": "Mineral alignment",
       "hint": "Mineral(s) that are aligned:",
       "required": "false",
-      "appearance": "multiline",
-      "relevant": "selected(${def_mag_fol}, 'min_align')"
+      "relevant": "selected(${def_mag_fol}, 'min_align')",
+      "appearance": "multiline"
     },
     {
       "type": "select_one ct7fo58",
       "name": "lay_contact",
       "label": "Layering contact",
       "required": "false",
-      "appearance": "horizontal-compact",
-      "relevant": "selected(${def_mag_fol}, 'comp_layer') or selected(${def_mag_lay}, 'comp_layer')"
+      "relevant": "selected(${def_mag_fol}, 'comp_layer')",
+      "appearance": "horizontal-compact"
     },
     {
       "type": "text",
@@ -61,47 +50,45 @@
       "label": "Compositional layering",
       "hint": "Minerals that define compositional layering:",
       "required": "false",
-      "appearance": "multiline",
-      "relevant": "selected(${def_mag_fol}, 'comp_layer') or selected(${def_mag_lay}, 'comp_layer')"
+      "relevant": "selected(${def_mag_fol}, 'comp_layer')",
+      "appearance": "multiline"
     },
     {
       "type": "text",
       "name": "char_enclave",
       "label": "Characterize enclaves",
       "required": "false",
-      "appearance": "multiline",
-      "relevant": "selected(${def_mag_fol}, 'enclaves') or selected(${def_mag_lay}, 'enclaves')"
+      "relevant": "selected(${def_mag_fol}, 'enclaves')",
+      "appearance": "multiline"
     },
     {
       "type": "text",
       "name": "char_xeno",
       "label": "Characterize xenoliths",
       "required": "false",
-      "appearance": "multiline",
-      "relevant": "selected(${def_mag_fol}, 'xenoliths') or selected(${def_mag_lay}, 'xenoliths')"
+      "relevant": "selected(${def_mag_fol}, 'xenoliths')",
+      "appearance": "multiline"
     },
     {
       "type": "text",
       "name": "char_plan",
       "label": "Characterize what defines the planar fabric",
       "required": "false",
-      "appearance": "multiline",
-      "relevant": "selected(${def_mag_fol}, 'other') or selected(${def_mag_lay}, 'other')"
+      "relevant": "selected(${def_mag_fol}, 'other')",
+      "appearance": "multiline"
     },
     {
       "type": "select_multiple pc7pj90",
       "name": "lin_fab",
-      "label": "Linear magmatic fabric(s)",
-      "required": "false",
-      "appearance": "horizontal-compact"
+      "label": "Linear fabric",
+      "required": "false"
     },
     {
       "type": "select_multiple mn6df98",
       "name": "def_lin_fab",
-      "label": "What defines the linear magmatic fabric?",
+      "label": "What defines the linear fabric?",
       "required": "false",
-      "appearance": "horizontal-compact",
-      "relevant": "${lin_fab} != '' and not(selected(${lin_fab}, 'none'))"
+      "relevant": "${lin_fab} != ''"
     },
     {
       "type": "text",
@@ -109,308 +96,214 @@
       "label": "Mineral alignment",
       "hint": "Mineral(s) that are aligned:",
       "required": "false",
-      "appearance": "multiline",
-      "relevant": "selected(${def_lin_fab}, 'mineral_alignm')"
+      "relevant": "selected(${def_lin_fab}, 'mineral_alignm')",
+      "appearance": "multiline"
     },
     {
       "type": "text",
       "name": "lin_enclave",
       "label": "Characterize enclaves",
       "required": "false",
-      "appearance": "multiline",
-      "relevant": "selected(${def_lin_fab}, 'enclaves')"
+      "relevant": "selected(${def_lin_fab}, 'enclaves')",
+      "appearance": "multiline"
     },
     {
       "type": "text",
       "name": "lin_xeno",
       "label": "Characterize xenoliths",
       "required": "false",
-      "appearance": "multiline",
-      "relevant": "selected(${def_lin_fab}, 'xenoliths')"
+      "relevant": "selected(${def_lin_fab}, 'xenoliths')",
+      "appearance": "multiline"
     },
     {
       "type": "text",
       "name": "lin_other",
       "label": "Characterize what defines the linear fabric",
       "required": "false",
-      "appearance": "multiline",
-      "relevant": "selected(${def_lin_fab}, 'other')"
-    },
-    {
-      "type": "select_one au6oa62",
-      "name": "mag_tectonite",
-      "label": "Magmatic fabric strength classification",
-      "required": "false",
-      "appearance": "horizontal-compact",
-      "relevant": "${planar_fab} != '' or ${lin_fab} != ''"
+      "relevant": "selected(${def_lin_fab}, 'other')",
+      "appearance": "multiline"
     },
     {
       "type": "select_multiple lg33p50",
       "name": "add_mag_fab",
       "label": "Other magmatic fabric(s)",
-      "required": "false",
-      "appearance": "horizontal-compact"
+      "required": "false"
     },
     {
       "type": "text",
       "name": "mag_commingle",
       "label": "Characterize commingling",
       "required": "false",
-      "appearance": "multiline",
-      "relevant": "selected(${add_mag_fab}, 'commingle')"
+      "relevant": "selected(${add_mag_fab}, 'commingle')",
+      "appearance": "multiline"
     },
     {
       "type": "text",
       "name": "mag_fold",
       "label": "Characterize folding",
       "required": "false",
-      "appearance": "multiline",
-      "relevant": "selected(${add_mag_fab}, 'folding')"
+      "relevant": "selected(${add_mag_fab}, 'folding')",
+      "appearance": "multiline"
     },
     {
       "type": "text",
       "name": "mag_boudin",
       "label": "Characterize boudinage",
       "required": "false",
-      "appearance": "multiline",
-      "relevant": "selected(${add_mag_fab}, 'boudinage')"
+      "relevant": "selected(${add_mag_fab}, 'boudinage')",
+      "appearance": "multiline"
     },
     {
       "type": "text",
       "name": "mag_mullion",
       "label": "Characterize mullions",
       "required": "false",
-      "appearance": "multiline",
-      "relevant": "selected(${add_mag_fab}, 'mullions')"
+      "relevant": "selected(${add_mag_fab}, 'mullions')",
+      "appearance": "multiline"
     },
     {
       "type": "text",
-      "name": "other_mag_fab",
+      "name": "other_fab_char",
       "label": "Characterize other magmatic fabric",
       "required": "false",
-      "appearance": "multiline",
-      "relevant": "selected(${add_mag_fab}, 'other')"
+      "relevant": "selected(${add_mag_fab}, 'other')",
+      "appearance": "multiline"
     },
     {
       "type": "select_multiple jl3uv38",
       "name": "magmatic_str",
       "label": "Magmatic structures",
+      "required": "false"
+    },
+    {
+      "type": "select_one ek0xc79",
+      "name": "inj_str_type",
+      "label": "Injection structure type",
       "required": "false",
-      "appearance": "horizontal-compact"
+      "relevant": "selected(${magmatic_str}, 'inj_str')"
+    },
+    {
+      "type": "text",
+      "name": "vein_min",
+      "label": "Mineral(s) that define vein or dike",
+      "required": "false",
+      "relevant": "selected(${magmatic_str}, 'vein_dike')"
+    },
+    {
+      "type": "text",
+      "name": "vein_arr_min",
+      "label": "Mineral(s) that define vein or dike array",
+      "required": "false",
+      "relevant": "selected(${magmatic_str}, 'vein_dike_arr')"
     },
     {
       "type": "text",
       "name": "char_mag_str",
       "label": "Characterize magmatic structure(s)",
       "required": "false",
-      "appearance": "multiline",
-      "relevant": "not(selected(${magmatic_str}, 'no_mag_str')) and ${magmatic_str} != ''"
+      "relevant": "${magmatic_str} != ''",
+      "appearance": "multiline"
     },
     {
-      "type": "select_multiple yl2ro14",
-      "name": "solid_state_str",
-      "label": "Solid-state structures",
-      "required": "false",
-      "appearance": "horizontal-compact"
+      "type": "select_multiple hb9pq45",
+      "name": "grow_vert_ind",
+      "label": "Growth and/or younging or paleovertical indicator(s)?",
+      "required": "false"
     },
     {
-      "type": "text",
-      "name": "char_ss_fab",
-      "label": "Characterize solid-state fabric",
+      "type": "select_multiple qx5bu93",
+      "name": "growth_young_ind",
+      "label": "Growth and/or younging indicator(s)",
       "required": "false",
-      "appearance": "multiline",
-      "relevant": "selected(${solid_state_str}, 'ss_fab')"
-    },
-    {
-      "type": "text",
-      "name": "char_ss_sz",
-      "label": "Characterize shear zone",
-      "required": "false",
-      "appearance": "multiline",
-      "relevant": "selected(${solid_state_str}, 'sz') or selected(${solid_state_str}, 'anneal_sz')"
+      "relevant": "selected(${grow_vert_ind}, 'grow_young_ind')"
     },
     {
       "type": "text",
-      "name": "other_ss_str",
-      "label": "Characterize other solid-state structure",
+      "name": "char_contact",
+      "label": "Characterize contacts",
       "required": "false",
-      "appearance": "multiline",
-      "relevant": "selected(${solid_state_str}, 'other_ss_str')"
-    },
-    {
-      "type": "select_multiple ze21n57",
-      "name": "addition_fab",
-      "label": "Additional fabric(s) at this spot?",
-      "hint": "Does this spot contain additional fabrics?",
-      "required": "false",
-      "appearance": "horizontal-compact"
-    },
-    {
-      "type": "select_multiple ao63x29",
-      "name": "str_fab",
-      "label": "Structural fabric(s)",
-      "required": "false",
-      "appearance": "horizontal-compact",
-      "relevant": "selected(${addition_fab}, 'structural')"
+      "relevant": "selected(${growth_young_ind}, 'asymmetric_chi')",
+      "appearance": "multiline"
     },
     {
       "type": "text",
-      "name": "fold_char",
-      "label": "Characterize folding",
+      "name": "char_grading",
+      "label": "Characterize grading",
       "required": "false",
-      "appearance": "multiline",
-      "relevant": "selected(${str_fab}, 'folding')"
+      "relevant": "selected(${growth_young_ind}, 'mineral_gradin')",
+      "appearance": "multiline"
     },
     {
       "type": "text",
-      "name": "fracture_char",
-      "label": "Characterize fractures",
+      "name": "char_xcut",
+      "label": "Characterize cross-cutting layers",
       "required": "false",
-      "appearance": "multiline",
-      "relevant": "selected(${str_fab}, 'fractures')"
+      "relevant": "selected(${growth_young_ind}, 'cross_cutting_')",
+      "appearance": "multiline"
     },
     {
       "type": "text",
-      "name": "fault_char",
-      "label": "Characterize fault(s)",
+      "name": "char_indent",
+      "label": "Characterize indentation",
       "required": "false",
-      "appearance": "multiline",
-      "relevant": "selected(${str_fab}, 'fault')"
+      "relevant": "selected(${growth_young_ind}, 'mineral_indent')",
+      "appearance": "multiline"
     },
     {
       "type": "text",
-      "name": "env_surf_char",
-      "label": "Characterize enveloping surface",
+      "name": "grow_young_char",
+      "label": "Characterize growth and/or younging indicator(s)",
       "required": "false",
-      "appearance": "multiline",
-      "relevant": "selected(${str_fab}, 'envelop_surf')"
+      "relevant": "selected(${growth_young_ind}, 'other')",
+      "appearance": "multiline"
     },
     {
-      "type": "select_one co05o15",
-      "name": "mullion_type",
-      "label": "Type of mullion",
+      "type": "select_multiple od9sr94",
+      "name": "paleovert_ind",
+      "label": "Paleovertical indicator(s)",
       "required": "false",
-      "appearance": "horizontal-compact",
-      "relevant": "selected(${str_fab}, 'mullions')"
-    },
-    {
-      "type": "text",
-      "name": "other_mul_char",
-      "label": "Characterize other mullion",
-      "required": "false",
-      "appearance": "multiline",
-      "relevant": "${mullion_type} = 'other_mul'"
-    },
-    {
-      "type": "select_one kx6sa18",
-      "name": "boudin_type",
-      "label": "Type of boudin",
-      "required": "false",
-      "appearance": "horizontal-compact",
-      "relevant": "selected(${str_fab}, 'boudinage')"
+      "relevant": "selected(${grow_vert_ind}, 'paleovertical')"
     },
     {
       "type": "text",
-      "name": "other_boud_char",
-      "label": "Characterize other boudin",
+      "name": "char_paleovert",
+      "label": "Characterize paleovertical indicator(s)",
       "required": "false",
-      "appearance": "multiline",
-      "relevant": "${boudin_type} = 'other_boudin'"
+      "appearance": "multiline"
+    },
+    {
+      "type": "select_multiple lw8uh27",
+      "name": "mag_kin_fab",
+      "label": "Kinematic indicator(s)?",
+      "hint": "Indicators of hypersolidus magmatic flow",
+      "required": "false"
     },
     {
       "type": "text",
-      "name": "oth_str_fab_ch",
-      "label": "Characterize other structural fabric",
+      "name": "char_mag_kin_fab",
+      "label": "Characterize kinematic indicator(s)",
       "required": "false",
-      "appearance": "multiline",
-      "relevant": "selected(${str_fab}, 'other_str_fab')"
-    },
-    {
-      "type": "select_one hl6tf09",
-      "name": "vein_vein_arr",
-      "label": "Single vein(s) or vein array?",
-      "required": "false",
-      "appearance": "horizontal-compact",
-      "relevant": "selected(${addition_fab}, 'vein_vein_arra')"
+      "appearance": "multiline"
     },
     {
       "type": "text",
-      "name": "other_vein_char",
-      "label": "Other vein characterization",
-      "hint": "Characterize veining",
+      "name": "sense_of_shear",
+      "label": "Sense of shear?",
+      "hint": "e.g. top-NW, dextral, etc.",
       "required": "false",
-      "appearance": "multiline",
-      "relevant": "${vein_vein_arr} = 'other_vein'"
+      "appearance": "multiline"
     },
     {
       "type": "text",
-      "name": "vein_min",
-      "label": "Mineral(s) that define vein",
+      "name": "p_t_d_history",
+      "label": "P-T-d history",
       "required": "false",
-      "appearance": "multiline",
-      "relevant": "${vein_vein_arr} = 'single_vein'"
-    },
-    {
-      "type": "text",
-      "name": "vein_char",
-      "label": "Vein characterization",
-      "required": "false",
-      "appearance": "multiline",
-      "relevant": "${vein_vein_arr} = 'single_vein'"
-    },
-    {
-      "type": "text",
-      "name": "vein_arr_char",
-      "label": "Vein array characterization",
-      "required": "false",
-      "appearance": "multiline",
-      "relevant": "${vein_vein_arr} = 'vein_array'"
-    },
-    {
-      "type": "text",
-      "name": "vein_arr_min",
-      "label": "Mineral(s) that define vein array",
-      "required": "false",
-      "appearance": "multiline",
-      "relevant": "${vein_vein_arr} = 'vein_array'"
-    },
-    {
-      "type": "text",
-      "name": "alter_zone_char",
-      "label": "Describe alteration zone",
-      "required": "false",
-      "appearance": "multiline",
-      "relevant": "selected(${addition_fab}, 'alter_zone')"
-    },
-    {
-      "type": "text",
-      "name": "alter_zone_min",
-      "label": "Mineral(s) that define alteration zone",
-      "hint": "Add minerals in the alteration zone",
-      "required": "false",
-      "appearance": "multiline",
-      "relevant": "selected(${addition_fab}, 'alter_zone')"
-    },
-    {
-      "type": "text",
-      "name": "other_fab_char",
-      "label": "Other fabric characterization",
-      "required": "false",
-      "appearance": "multiline",
-      "relevant": "selected(${addition_fab}, 'other')"
-    },
-    {
-      "type": "select_one au6oa62",
-      "name": "ss_tectonite",
-      "label": "Tectonite (solid-state) classification",
-      "required": "false",
-      "appearance": "horizontal-compact",
-      "relevant": "not(selected(${solid_state_str}, 'no_ss_str'))"
+      "appearance": "multiline"
     },
     {
       "type": "text",
       "name": "mag_interp_note",
-      "label": "Interpretations and notes",
+      "label": "Interpretatons and notes",
       "required": "false",
       "appearance": "multiline"
     },
@@ -423,16 +316,11 @@
     {
       "type": "calculate",
       "name": "_version_",
-      "calculation": "'vnMHofPR2DThpUhZEEpC5Z'",
+      "calculation": "'v8tEsudhum88P4FUEQP9hE'",
       "$given_name": "__version__"
     }
   ],
   "choices": [
-    {
-      "list_name": "xo3br71",
-      "name": "no_p_fab",
-      "label": "none"
-    },
     {
       "list_name": "xo3br71",
       "name": "foliation",
@@ -492,11 +380,6 @@
     },
     {
       "list_name": "pc7pj90",
-      "name": "none",
-      "label": "none"
-    },
-    {
-      "list_name": "pc7pj90",
       "name": "lineation",
       "label": "lineation",
       "order": "1"
@@ -526,58 +409,6 @@
       "list_name": "mn6df98",
       "name": "other",
       "label": "other"
-    },
-    {
-      "list_name": "au6oa62",
-      "name": "s",
-      "label": "S only"
-    },
-    {
-      "list_name": "au6oa62",
-      "name": "s>>l",
-      "label": "S >> L",
-      "order": "1"
-    },
-    {
-      "list_name": "au6oa62",
-      "name": "s>l",
-      "label": "S > L",
-      "order": "2"
-    },
-    {
-      "list_name": "au6oa62",
-      "name": "ls",
-      "label": "S = L",
-      "order": "3"
-    },
-    {
-      "list_name": "au6oa62",
-      "name": "l>s",
-      "label": "L > S",
-      "order": "4"
-    },
-    {
-      "list_name": "au6oa62",
-      "name": "l>>s",
-      "label": "L >> S",
-      "order": "5"
-    },
-    {
-      "list_name": "au6oa62",
-      "name": "l",
-      "label": "L only",
-      "order": "6"
-    },
-    {
-      "list_name": "au6oa62",
-      "name": "other_tec",
-      "label": "other",
-      "order": "7"
-    },
-    {
-      "list_name": "lg33p50",
-      "name": "no_add_mag_fab",
-      "label": "none"
     },
     {
       "list_name": "lg33p50",
@@ -611,37 +442,49 @@
     },
     {
       "list_name": "jl3uv38",
-      "name": "no_mag_str",
-      "label": "none"
-    },
-    {
-      "list_name": "jl3uv38",
       "name": "trough",
-      "label": "trough",
-      "order": "1"
+      "label": "trough"
     },
     {
       "list_name": "jl3uv38",
       "name": "tube",
       "label": "tube",
+      "order": "1"
+    },
+    {
+      "list_name": "jl3uv38",
+      "name": "diapir",
+      "label": "diapir",
       "order": "2"
     },
     {
       "list_name": "jl3uv38",
       "name": "plume_str",
       "label": "plume structure",
-      "order": "4"
+      "order": "3"
     },
     {
       "list_name": "jl3uv38",
       "name": "pipe",
       "label": "pipe",
+      "order": "4"
+    },
+    {
+      "list_name": "jl3uv38",
+      "name": "inj_str",
+      "label": "injection structure",
       "order": "5"
     },
     {
       "list_name": "jl3uv38",
       "name": "vein_dike",
-      "label": "veins or dikes",
+      "label": "vein or dike",
+      "order": "6"
+    },
+    {
+      "list_name": "jl3uv38",
+      "name": "vein_dike_arr",
+      "label": "vein or dike array",
       "order": "7"
     },
     {
@@ -657,158 +500,119 @@
       "order": "9"
     },
     {
-      "list_name": "yl2ro14",
-      "name": "no_ss_str",
-      "label": "none"
+      "list_name": "ek0xc79",
+      "name": "magmatic",
+      "label": "magmatic"
     },
     {
-      "list_name": "yl2ro14",
-      "name": "ss_fab",
-      "label": "solid-state fabric",
+      "list_name": "ek0xc79",
+      "name": "solid_state",
+      "label": "solid state"
+    },
+    {
+      "list_name": "ek0xc79",
+      "name": "solid_state_ov",
+      "label": "solid state overprinting magmatic"
+    },
+    {
+      "list_name": "hb9pq45",
+      "name": "grow_young_ind",
+      "label": "growth and/or younging"
+    },
+    {
+      "list_name": "hb9pq45",
+      "name": "paleovertical",
+      "label": "paleovertical"
+    },
+    {
+      "list_name": "qx5bu93",
+      "name": "asymmetric_chi",
+      "label": "asymmetric chilled vs. hybrid contacts"
+    },
+    {
+      "list_name": "qx5bu93",
+      "name": "mineral_gradin",
+      "label": "mineral grading",
       "order": "1"
     },
     {
-      "list_name": "yl2ro14",
-      "name": "sz",
-      "label": "shear zone",
+      "list_name": "qx5bu93",
+      "name": "cross_cutting_",
+      "label": "cross-cutting layers",
       "order": "2"
     },
     {
-      "list_name": "yl2ro14",
-      "name": "anneal_sz",
-      "label": "annealed shear zone",
+      "list_name": "qx5bu93",
+      "name": "mineral_indent",
+      "label": "mineral(s) indenting enclaves",
       "order": "3"
     },
     {
-      "list_name": "yl2ro14",
-      "name": "other_ss_str",
-      "label": "other",
-      "order": "4"
-    },
-    {
-      "list_name": "ze21n57",
-      "name": "structural",
-      "label": "structural"
-    },
-    {
-      "list_name": "ze21n57",
-      "name": "vein_vein_arra",
-      "label": "veining/vein array"
-    },
-    {
-      "list_name": "ze21n57",
-      "name": "alter_zone",
-      "label": "alteration zone"
-    },
-    {
-      "list_name": "ze21n57",
+      "list_name": "qx5bu93",
       "name": "other",
       "label": "other"
     },
     {
-      "list_name": "ao63x29",
-      "name": "folding",
-      "label": "folding"
+      "list_name": "od9sr94",
+      "name": "tubes",
+      "label": "tubes"
     },
     {
-      "list_name": "ao63x29",
-      "name": "fractures",
-      "label": "fractures"
+      "list_name": "od9sr94",
+      "name": "layer_indentat",
+      "label": "layer indentation "
     },
     {
-      "list_name": "ao63x29",
-      "name": "fault",
-      "label": "fault"
-    },
-    {
-      "list_name": "ao63x29",
-      "name": "envelop_surf",
-      "label": "enveloping surface"
-    },
-    {
-      "list_name": "ao63x29",
-      "name": "boudinage",
-      "label": "boudinage"
-    },
-    {
-      "list_name": "ao63x29",
-      "name": "mullions",
-      "label": "mullions"
-    },
-    {
-      "list_name": "ao63x29",
-      "name": "other_str_fab",
+      "list_name": "od9sr94",
+      "name": "other",
       "label": "other"
     },
     {
-      "list_name": "co05o15",
-      "name": "fold_bed",
-      "label": "fold or bedding"
+      "list_name": "lw8uh27",
+      "name": "imbricate_min",
+      "label": "imbricate minerals"
     },
     {
-      "list_name": "co05o15",
-      "name": "clvg_mul",
-      "label": "cleavage"
+      "list_name": "lw8uh27",
+      "name": "asymm_fold",
+      "label": "asymmetric folds",
+      "order": "1"
     },
     {
-      "list_name": "co05o15",
-      "name": "irregular",
-      "label": "irregular"
+      "list_name": "lw8uh27",
+      "name": "asymm_clast",
+      "label": "asymmetric clast",
+      "order": "2"
     },
     {
-      "list_name": "co05o15",
-      "name": "other_mul",
-      "label": "other mullion"
+      "list_name": "lw8uh27",
+      "name": "s_c",
+      "label": "magmatic S-C structures",
+      "order": "3"
     },
     {
-      "list_name": "kx6sa18",
-      "name": "sb_boud",
-      "label": "shear band boudins"
+      "list_name": "lw8uh27",
+      "name": "riedel_shears",
+      "label": "Riedel shears",
+      "order": "4"
     },
     {
-      "list_name": "kx6sa18",
-      "name": "drawn_boudin",
-      "label": "drawn boudins"
+      "list_name": "lw8uh27",
+      "name": "offset_deflect",
+      "label": "offset or deflected marker",
+      "order": "5"
     },
     {
-      "list_name": "kx6sa18",
-      "name": "torn_boudin",
-      "label": "torn boudins"
-    },
-    {
-      "list_name": "kx6sa18",
-      "name": "gash_boudin",
-      "label": "gash boudins"
-    },
-    {
-      "list_name": "kx6sa18",
-      "name": "domino_boudin",
-      "label": "domino boudins"
-    },
-    {
-      "list_name": "kx6sa18",
-      "name": "other_boudin",
-      "label": "other"
-    },
-    {
-      "list_name": "hl6tf09",
-      "name": "single_vein",
-      "label": "single vein(s)"
-    },
-    {
-      "list_name": "hl6tf09",
-      "name": "vein_array",
-      "label": "vein array"
-    },
-    {
-      "list_name": "hl6tf09",
-      "name": "other_vein",
-      "label": "other"
+      "list_name": "lw8uh27",
+      "name": "other_kin",
+      "label": "other",
+      "order": "6"
     }
   ],
   "settings": [
     {
-      "version": "vnMHofPR2DThpUhZEEpC5Z"
+      "form_title": "Fabrics - Igneous (11/21)",
+      "version": "1 (2022-01-26 21:31:22)"
     }
   ]
 }

@@ -31,6 +31,10 @@ const offlineMapsSlice = createSlice({
       console.log(toggleFalse);
       state.offlineMaps[mapId] = {...state.offlineMaps[mapId], isOfflineMapVisible: viewable};
     },
+    updateOfflineMaps(state, action) {
+      // if (!isEmpty(Object.values(state.offlineMaps))) state.offlineMaps = {...state.offlineMaps, ...action.payload};
+      state.offlineMaps = action.payload;
+    },
   },
 });
 
@@ -39,6 +43,7 @@ export const {
   deletedOfflineMap,
   setOfflineMap,
   setOfflineMapVisible,
+  updateOfflineMaps,
 } = offlineMapsSlice.actions;
 
 export default offlineMapsSlice.reducer;

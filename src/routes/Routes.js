@@ -18,24 +18,24 @@ const Routes = () => {
 
   const Stack = createStackNavigator();
   const AppStack = createStackNavigator();
-
-  NetInfo.configure({
-    reachabilityUrl: 'https://clients3.google.com/generate_204',
-    reachabilityTest: async (response) => {
-      // console.log('Response Status', response.status);
-      return response.status === 204;
-    },
-    reachabilityLongTimeout: 5 * 1000, // 60s
-    reachabilityShortTimeout: 5 * 1000, // 5s
-    reachabilityRequestTimeout: 15 * 1000, // 15s
-  });
+  //
+  // NetInfo.configure({
+  //   reachabilityUrl: 'https://clients3.google.com/generate_204',
+  //   reachabilityTest: async (response) => {
+  //     // console.log('Response Status', response.status);
+  //     return response.status === 204;
+  //   },
+  //   reachabilityLongTimeout: 5 * 1000, // 60s
+  //   reachabilityShortTimeout: 5 * 1000, // 5s
+  //   reachabilityRequestTimeout: 15 * 1000, // 15s
+  // });
 
   useEffect(() => {
     const unsubscribe = NetInfo.addEventListener((networkState) => {
       console.log('Connection type', networkState.type);
       console.log('Is connected?', networkState.isConnected);
       console.log('Is internet reachable?', networkState.isInternetReachable);
-      dispatch(setOnlineStatus(networkState.isConnected && networkState.isInternetReachable));
+      dispatch(setOnlineStatus(networkState));
     });
     return () => {
       console.log('Network Test unsubscribed');
@@ -49,12 +49,12 @@ const Routes = () => {
   };
 
   const AppScreens = () => {
-    const isSignedIn = useSelector(state => state.home.isSignedIn);
+    // const isSignedIn = useSelector(state => state.home.isSignedIn);
     const user = useSelector(state => state.user);
     const currentProject = useSelector(state => state.project.project);
     return (
       <AppStack.Navigator
-        initialRouteName={isSignedIn && user.name && !isEmpty(currentProject) ? 'HomeScreen' : 'SignIn'}>
+        initialRouteName={user.name && !isEmpty(currentProject) ? 'HomeScreen' : 'SignIn'}>
         <Stack.Screen
           name={'SignIn'}
           component={SignIn}

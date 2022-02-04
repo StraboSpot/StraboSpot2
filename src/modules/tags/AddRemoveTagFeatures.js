@@ -6,6 +6,8 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
 import {deepFindFeatureTypeById, isEmpty} from '../../shared/Helpers';
+import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
+import ListEmptyText from '../../shared/ui/ListEmptyText';
 import {SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import SidePanelHeader from '../main-menu-panel/sidePanel/SidePanelHeader';
@@ -23,7 +25,7 @@ const AddRemoveTagFeatures = () => {
     const spotId = feature.parentSpotId;
     const spot = spots[spotId];
     const selectedTagCopy = JSON.parse(JSON.stringify(selectedTag));
-    const featureType = deepFindFeatureTypeById(spot.properties,feature.id);
+    const featureType = deepFindFeatureTypeById(spot.properties, feature.id);
 
     if (!isEmpty(spot) && !isEmpty(spot.properties)) {
       return (
@@ -64,6 +66,8 @@ const AddRemoveTagFeatures = () => {
         <FlatList
           data={useSpots.getAllFeaturesFromSpot()}
           renderItem={({item}) => renderSpotFeatureItem(item)}
+          ItemSeparatorComponent={FlatListItemSeparator}
+          ListEmptyComponent={<ListEmptyText text={'No Features in Active Datasets'}/>}
         />
       </View>
     </React.Fragment>

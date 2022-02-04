@@ -1,4 +1,4 @@
-import React, {useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {FlatList, Switch, Text, View} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
@@ -13,20 +13,55 @@ import {imageStyles, useImagesHook} from '../images';
 import {setCurrentImageBasemap} from '../maps/maps.slice';
 import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
 
-const ImagesViewPage = () => {
+const ImagesViewPage = (props) => {
   const navigation = useNavigation();
   const [useImages] = useImagesHook();
 
   const dispatch = useDispatch();
   const images = useSelector(state => state.spot.selectedSpot.properties.images);
+  const spot = useSelector(state => state.spot.selectedSpot);
 
   const toastRef = useRef(null);
 
+  const [imageThumbnails, setImageThumbnails] = useState({});
+  const [isError, setIsError] = useState(false);
+
+  useEffect(() => {
+    getImageThumbnailURIs().catch(err => console.error(err));
+  }, [images]);
+
+  const getImagesFromCameraRoll = async () => {
+      useImages.getImagesFromCameraRoll().then((res) => {
+        props.toast(`${res} image saved!`);
+      });
+  };
+
+  const getImageThumbnailURIs = async () => {
+    try {
+      if (images) {
+        const imageThumbnailURIsTemp = await useImages.getImageThumbnailURIs([spot]);
+        setImageThumbnails(imageThumbnailURIsTemp);
+        setIsError(false);
+      }
+    }
+    catch (err) {
+      console.error('Error in getImageThumbnailURIs', err);
+      setIsError(true);
+    }
+  };
+
   const takePhoto = async () => {
     const imagesSavedLength = await useImages.launchCameraFromNotebook();
-    imagesSavedLength > 0 && toastRef.current.show(
+    imagesSavedLength > 0 && props.toast(
       imagesSavedLength + ' photo' + (imagesSavedLength === 1 ? '' : 's') + ' saved');
   };
+
+  const renderError = () => (
+    <View style={{paddingTop: 75}}>
+      <Icon name={'alert-circle-outline'} type={'ionicon'} size={100}/>
+      <Text style={[commonStyles.noValueText, {paddingTop: 50}]}>Problem getting thumbnail images...</Text>
+    </View>
+  );
 
   const renderImage = (image) => {
     return (
@@ -34,7 +69,7 @@ const ImagesViewPage = () => {
         <Card.Title style={{fontSize: 12}}>{image.title ?? image.id}</Card.Title>
         <Card.Image
           resizeMode={'contain'}
-          source={{uri: useImages.getLocalImageURI(image.id)}}
+          source={{uri: imageThumbnails[image.id]}}
           onPress={() => useImages.editImage(image)}
         />
 
@@ -57,65 +92,73 @@ const ImagesViewPage = () => {
     );
   };
 
-  return (
-    <View style={{flex: 1}}>
-      <ReturnToOverviewButton/>
-      <View style={{alignItems: 'center', flex: 1}}>
-        <View style={imageStyles.buttonsContainer}>
-          <ButtonRounded
-            icon={
-              <Icon
-                name={'camera-outline'}
-                type={'ionicon'}
-                iconStyle={imageStyles.icon}
-                color={commonStyles.iconColor.color}/>
-            }
-            title={'Take'}
-            titleStyle={commonStyles.standardButtonText}
-            buttonStyle={imageStyles.buttonContainer}
-            type={'outline'}
-            onPress={takePhoto}
-          />
-          <ButtonRounded
-            icon={
-              <Icon
-                name={'images-outline'}
-                type={'ionicon'}
-                iconStyle={imageStyles.icon}
-                color={commonStyles.iconColor.color}/>
-            }
-            title={'Import'}
-            titleStyle={commonStyles.standardButtonText}
-            buttonStyle={imageStyles.buttonContainer}
-            type={'outline'}
-            onPress={() => useImages.getImagesFromCameraRoll()}
-          />
-          <ButtonRounded
-            icon={
-              <Icon
-                name={'images-outline'}
-                type={'ionicon'}
-                iconStyle={imageStyles.icon}
-                color={commonStyles.iconColor.color}/>
-            }
-            title={'Sketch'}
-            titleStyle={commonStyles.standardButtonText}
-            buttonStyle={imageStyles.buttonContainer}
-            type={'outline'}
-            onPress={() => navigation.navigate('Sketch')}
-          />
+  const renderImages = () => {
+    return (
+      <View style={{flex: 1}}>
+        <ReturnToOverviewButton/>
+        <View style={{alignItems: 'center', flex: 1}}>
+          <View style={imageStyles.buttonsContainer}>
+            <ButtonRounded
+              icon={
+                <Icon
+                  name={'camera-outline'}
+                  type={'ionicon'}
+                  iconStyle={imageStyles.icon}
+                  color={commonStyles.iconColor.color}/>
+              }
+              title={'Take'}
+              titleStyle={commonStyles.standardButtonText}
+              buttonStyle={imageStyles.buttonContainer}
+              type={'outline'}
+              onPress={takePhoto}
+            />
+            <ButtonRounded
+              icon={
+                <Icon
+                  name={'images-outline'}
+                  type={'ionicon'}
+                  iconStyle={imageStyles.icon}
+                  color={commonStyles.iconColor.color}/>
+              }
+              title={'Import'}
+              titleStyle={commonStyles.standardButtonText}
+              buttonStyle={imageStyles.buttonContainer}
+              type={'outline'}
+              onPress={() => getImagesFromCameraRoll()}
+            />
+            <ButtonRounded
+              icon={
+                <Icon
+                  name={'images-outline'}
+                  type={'ionicon'}
+                  iconStyle={imageStyles.icon}
+                  color={commonStyles.iconColor.color}/>
+              }
+              title={'Sketch'}
+              titleStyle={commonStyles.standardButtonText}
+              buttonStyle={imageStyles.buttonContainer}
+              type={'outline'}
+              onPress={() => navigation.navigate('Sketch')}
+            />
+          </View>
+          <View style={{padding: 5, flex: 1}}>
+            <FlatList
+              data={images}
+              renderItem={({item}) => renderImage(item)}
+              numColumns={2}
+              ListEmptyComponent={<ListEmptyText text={'No Images'}/>}
+            />
+          </View>
         </View>
-        <View style={{padding: 5, flex: 1}}>
-          <FlatList
-            data={images}
-            renderItem={({item}) => renderImage(item)}
-            numColumns={2}
-            ListEmptyComponent={<ListEmptyText text={'No Images'}/>}
-          />
-        </View>
+        <ToastPopup toastRef={toastRef}/>
       </View>
-      <ToastPopup toastRef={toastRef}/>
-    </View>
+    );
+  };
+
+  return (
+    <React.Fragment>
+      {isError ? renderError() : renderImages()}
+    </React.Fragment>
   );
 };
 

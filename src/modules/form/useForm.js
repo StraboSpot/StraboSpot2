@@ -22,6 +22,19 @@ const useForm = () => {
     else return {};
   };
 
+  // Get the fields relevant to a given group, including the group field itself
+  const getGroupFields = (survey, groupKey) => {
+    let inGroup = false;
+    let relevantGroupFields = survey.reduce((acc, f) => {
+      if (f.name === groupKey) inGroup = true;
+      if (inGroup && f.type !== 'end_group') return [...acc, f];
+      else if (f.type === 'end_group') inGroup = false;
+      return acc;
+    }, []);
+    // console.log('Relevant Group Fields', relevantGroupFields);
+    return relevantGroupFields;
+  };
+
   // Get a label for a given key with the option of giving a form category and name
   const getLabel = (key, [category, name]) => {
     if (key) {
@@ -122,7 +135,9 @@ const useForm = () => {
           let parsedMaxConstraint = fieldModel.constraint.match(regexMax);
           if (parsedMaxConstraint) {
             let max = parseFloat(parsedMaxConstraint[1]);
-            if (!isEmpty(max) && !(values[key] <= max)) errors[key] = fieldModel.constraint_message;
+            if (!isEmpty(max) && !(values[key] <= max)) {
+              errors[key] = fieldModel.constraint_message || 'Value over max of ' + max;
+            }
           }
           else {
             // Look for < in constraint
@@ -130,7 +145,9 @@ const useForm = () => {
             parsedMaxConstraint = fieldModel.constraint.match(regexMax);
             if (parsedMaxConstraint) {
               let max = parseFloat(parsedMaxConstraint[1]);
-              if (!isEmpty(max) && !(values[key] < max)) errors[key] = fieldModel.constraint_message;
+              if (!isEmpty(max) && !(values[key] < max)) {
+                errors[key] = fieldModel.constraint_message  || 'Value over max of ' + max;
+              }
             }
           }
           // Min constraint
@@ -139,7 +156,9 @@ const useForm = () => {
           let parsedMinConstraint = fieldModel.constraint.match(regexMin);
           if (parsedMinConstraint) {
             let min = parseFloat(parsedMinConstraint[1]);
-            if (!isEmpty(min) && !(values[key] >= min)) errors[key] = fieldModel.constraint_message;
+            if (!isEmpty(min) && !(values[key] >= min)) {
+              errors[key] = fieldModel.constraint_message || 'Value below min of ' + min;
+            }
           }
           else {
             // Look for < in constraint
@@ -147,7 +166,9 @@ const useForm = () => {
             parsedMinConstraint = fieldModel.constraint.match(regexMin);
             if (parsedMinConstraint) {
               let min = parseFloat(parsedMinConstraint[1]);
-              if (!isEmpty(min) && !(values[key] > min)) errors[key] = fieldModel.constraint_message;
+              if (!isEmpty(min) && !(values[key] > min)) {
+                errors[key] = fieldModel.constraint_message || 'Value below min of ' + min;
+              }
             }
           }
         }
@@ -160,6 +181,7 @@ const useForm = () => {
   return [{
     getChoices: getChoices,
     getChoicesByKey: getChoicesByKey,
+    getGroupFields: getGroupFields,
     getLabel: getLabel,
     getLabels: getLabels,
     getRelevantFields: getRelevantFields,

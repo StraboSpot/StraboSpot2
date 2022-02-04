@@ -3,6 +3,11 @@ import {Platform, StyleSheet} from 'react-native';
 import * as themes from '../styles.constants';
 
 const styles = StyleSheet.create({
+  accessPointIcon:{
+    height: 30,
+    width: 30,
+    tintColor: 'red',
+  },
   alignItemsToCenter: {
     alignItems: 'center',
   },
@@ -86,7 +91,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   sliderTextContainer: {
-    width: '100%',
+    flex: 1,
     justifyContent: 'space-between',
     flexDirection: 'row',
   },

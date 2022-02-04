@@ -37,6 +37,8 @@ const TextInputField = ({
         placeholder={props.placeholder}
         multiline={props.appearance === 'multiline' || props.appearance === 'full'}
         autoFocus={props.autoFocus}
+        autoCapitalize={props.autoCapitalize}
+        keyboardType={props.keyboardType}
       />
       {errors[name] && <Text style={formStyles.fieldError}>{errors[name]}</Text>}
     </React.Fragment>

@@ -7,6 +7,28 @@ const styles = StyleSheet.create({
     padding: 10,
     marginTop: 10,
   },
+  button: {
+    borderRadius: 30,
+    paddingRight: 50,
+    paddingLeft: 50,
+  },
+  closeButton: {
+    position: 'absolute',
+    right: 15,
+  },
+  dialogTitleContainer: {
+    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
+  },
+  dialogTitle: {
+    justifyContent: 'center',
+    flexDirection: 'row',
+    paddingTop: 30,
+    paddingBottom: 10,
+  },
+  modalButtonText: {
+    paddingLeft: 10,
+    paddingRight: 15,
+  },
   itemContainer: {
     width: '100%',
     flexDirection: 'row',
@@ -24,6 +46,18 @@ const styles = StyleSheet.create({
   itemSubTextStyle: {
     fontSize: 14,
   },
+  picker: {
+    flex: 1,
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
+  saveModalContainer: {
+    flex: 1,
+    width: 300,
+  },
+
 });
 
 export default styles;

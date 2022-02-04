@@ -7,13 +7,14 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import {getNewId, isEmpty} from '../../shared/Helpers';
 import SaveButton from '../../shared/SaveButton';
-import {PRIMARY_TEXT_COLOR} from '../../shared/styles.constants';
+import {PRIMARY_ACCENT_COLOR, PRIMARY_TEXT_COLOR, SMALL_TEXT_SIZE} from '../../shared/styles.constants';
 import DragAnimation from '../../shared/ui/DragAmination';
 import LittleSpacer from '../../shared/ui/LittleSpacer';
 import Modal from '../../shared/ui/modal/Modal';
 import {ChoiceButtons, Form, MainButtons, useFormHook} from '../form';
 import {setModalValues, setModalVisible} from '../home/home.slice';
 import {PAGE_KEYS} from '../page/page.constants';
+import Templates from '../templates/Templates';
 import MineralsByRockClass from './MineralsByRockClass';
 import MineralsGlossary from './MineralsGlossary';
 import usePetrologyHook from './usePetrology';
@@ -21,10 +22,12 @@ import usePetrologyHook from './usePetrology';
 const AddMineralModal = (props) => {
   const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
+  const templates = useSelector(state => state.project.project?.templates) || {};
 
   const [choicesViewKey, setChoicesViewKey] = useState(null);
   const [initialValues, setInitialValues] = useState({id: getNewId()});
   const [selectedTypeIndex, setSelectedTypeIndex] = useState(null);
+  const [isShowTemplates, setIsShowTemplates] = useState(false);
 
   const [useForm] = useFormHook();
   const usePetrology = usePetrologyHook();
@@ -46,13 +49,32 @@ const AddMineralModal = (props) => {
   const firstKeysFields = firstKeys.map(k => survey.find(f => f.name === k));
   const lastKeysFields = lastKeys.map(k => survey.find(f => f.name === k));
 
+  const areMultipleTemplates = templates[petKey] && templates[petKey].isInUse && templates[petKey].active
+    && templates[petKey].active.length > 1;
+  let tempValues = {};
+
   useEffect(() => {
+    if (templates[petKey] && templates[petKey].isInUse && templates[petKey].active
+      && templates[petKey].active[0] && templates[petKey].active[0].values) {
+      setInitialValues({...templates[petKey].active[0].values, id: getNewId()});
+    }
     return () => dispatch(setModalValues({}));
-  }, []);
+  }, [templates]);
 
   const addMineral = (mineralInfo) => {
-    setInitialValues({id: getNewId(), mineral_abbrev: mineralInfo.Abbreviation, full_mineral_name: mineralInfo.Label});
+    setInitialValues({
+      ...tempValues,
+      id: getNewId(),
+      mineral_abbrev: mineralInfo.Abbreviation,
+      full_mineral_name: mineralInfo.Label,
+    });
     setSelectedTypeIndex(null);
+  };
+
+  const onCloseModalPressed = () => {
+    if (choicesViewKey) setChoicesViewKey(null);
+    else if (isShowTemplates) setIsShowTemplates(false);
+    else dispatch(setModalVisible({modal: null}));
   };
 
   const onIgOrMetSelected = (choiceName) => {
@@ -73,26 +95,42 @@ const AddMineralModal = (props) => {
     else setSelectedTypeIndex(i);
   };
 
-  const renderAddMineralModalContent = () => {
+  const renderAddMineral = () => {
+    tempValues = formRef.current?.values || {};
     return (
-      <Modal
-        close={() => choicesViewKey ? setChoicesViewKey(null) : dispatch(setModalVisible({modal: null}))}
-        buttonTitleRight={choicesViewKey && 'Done'}
-        onPress={props.onPress}
-      >
-        {!choicesViewKey && (
+      <React.Fragment>
+        {!choicesViewKey && !areMultipleTemplates && (
           <ButtonGroup
             selectedIndex={selectedTypeIndex}
             onPress={onViewTypePress}
-            buttons={['Look up by\nRock Class', 'Look up in\nGlossary']}
-            containerStyle={{height: 45, borderRadius: 10}}
+            buttons={['Look up by Rock Class', 'Look up in Glossary']}
+            containerStyle={{height: 50, borderRadius: 10}}
             buttonStyle={{padding: 5}}
-            textStyle={{color: PRIMARY_TEXT_COLOR}}
+            selectedButtonStyle={{backgroundColor: PRIMARY_ACCENT_COLOR}}
+            textStyle={{color: PRIMARY_TEXT_COLOR, fontSize: SMALL_TEXT_SIZE, textAlign: 'center'}}
           />
         )}
         {isEmpty(selectedTypeIndex) && renderForms()}
         {selectedTypeIndex === 0 && <MineralsByRockClass addMineral={addMineral}/>}
         {selectedTypeIndex === 1 && <MineralsGlossary addMineral={addMineral}/>}
+      </React.Fragment>
+    );
+  };
+
+  const renderAddMineralModalContent = () => {
+    return (
+      <Modal
+        close={onCloseModalPressed}
+        buttonTitleRight={choicesViewKey ? 'Done' : isShowTemplates ? '' : null}
+        onPress={props.onPress}
+      >
+        {!choicesViewKey && (
+          <Templates
+            isShowTemplates={isShowTemplates}
+            setIsShowTemplates={bool => setIsShowTemplates(bool)}
+          />
+        )}
+        {!isShowTemplates && renderAddMineral()}
       </Modal>
     );
   };
@@ -100,92 +138,81 @@ const AddMineralModal = (props) => {
   const renderForm = (formProps) => {
     return (
       <React.Fragment>
-        <Form
-          {...{
-            formName: formName,
-            onMyChange: (name, value) => usePetrology.onMineralChange(formRef.current, name, value),
-            surveyFragment: firstKeysFields,
-            ...formProps,
-          }}
-        />
-        <LittleSpacer/>
-        <ChoiceButtons {...{
-          choiceFieldKey: igOrMetKey,
-          survey: survey,
-          choices: choices,
-          formRef: formRef,
-          onPress: onIgOrMetSelected,
-          size: 'small',
+        <Form {...{
+          formName: formName,
+          onMyChange: (name, value) => usePetrology.onMineralChange(formProps, name, value),
+          surveyFragment: firstKeysFields,
+          ...formProps,
         }}/>
-        {!isEmpty(formRef.current?.values[igOrMetKey]) && formRef.current?.values[igOrMetKey] === 'ig_min' && (
-          <MainButtons {...{
-            mainKeys: igButttonsKeys,
-            formName: formName,
-            formRef: formRef,
-            setChoicesViewKey: setChoicesViewKey,
-          }}/>
+        <LittleSpacer/>
+        <ChoiceButtons
+          choiceFieldKey={igOrMetKey}
+          survey={survey}
+          choices={choices}
+          onPress={onIgOrMetSelected}
+          size={'small'}
+          formProps={formProps}
+        />
+        {!isEmpty(formProps.values[igOrMetKey]) && formProps.values[igOrMetKey] === 'ig_min' && (
+          <MainButtons
+            mainKeys={igButttonsKeys}
+            formName={formName}
+            setChoicesViewKey={setChoicesViewKey}
+            formProps={formProps}
+          />
         )}
-        {!isEmpty(formRef.current?.values[igOrMetKey]) && formRef.current?.values[igOrMetKey] === 'met_min' && (
-          <MainButtons {...{
-            mainKeys: metButttonsKeys,
-            formName: formName,
-            formRef: formRef,
-            setChoicesViewKey: setChoicesViewKey,
-          }}/>
+        {!isEmpty(formProps.values[igOrMetKey]) && formProps.values[igOrMetKey] === 'met_min' && (
+          <MainButtons
+            mainKeys={metButttonsKeys}
+            formName={formName}
+            setChoicesViewKey={setChoicesViewKey}
+            formProps={formProps}
+          />
         )}
         <LittleSpacer/>
-        <Form
-          {...{
-            formName: formName,
-            surveyFragment: lastKeysFields,
-            ...formProps,
-          }}
-        />
+        <Form {...{formName: formName, surveyFragment: lastKeysFields, ...formProps}}/>
       </React.Fragment>
     );
   };
 
   const renderForms = () => {
+    const saveMineralTitle = 'Save Mineral' + (areMultipleTemplates ? 's' : '');
     return (
       <React.Fragment>
-        <FlatList
-          bounces={false}
-          ListHeaderComponent={
-            <View style={{flex: 1}}>
-              <Formik
-                innerRef={formRef}
-                initialValues={initialValues}
-                onSubmit={(values) => console.log('Submitting form...', values)}
-                enableReinitialize={true}
-              >
-                {(formProps) => (
-                  <View style={{flex: 1}}>
-                    {choicesViewKey ? renderSubform(formProps) : renderForm(formProps)}
-                  </View>
-                )}
-              </Formik>
-            </View>
-          }
-        />
-        {!choicesViewKey && <SaveButton title={'Save Mineral'} onPress={saveMineral}/>}
+        {!areMultipleTemplates && (
+          <FlatList
+            bounces={false}
+            ListHeaderComponent={
+              <View style={{flex: 1}}>
+                <Formik
+                  innerRef={formRef}
+                  initialValues={initialValues}
+                  onSubmit={(values) => console.log('Submitting form...', values)}
+                  enableReinitialize={true}
+                >
+                  {(formProps) => (
+                    <View style={{flex: 1}}>
+                      {choicesViewKey ? renderSubform(formProps) : renderForm(formProps)}
+                    </View>
+                  )}
+                </Formik>
+              </View>
+            }
+          />
+        )}
+        {!choicesViewKey && <SaveButton title={saveMineralTitle} onPress={saveMineral}/>}
       </React.Fragment>
     );
   };
 
   const renderSubform = (formProps) => {
     const relevantFields = useForm.getRelevantFields(survey, choicesViewKey);
-    return (
-      <Form
-        {...{
-          formName: formName,
-          surveyFragment: relevantFields, ...formProps,
-        }}
-      />
-    );
+    return <Form {...{formName: formName, surveyFragment: relevantFields, ...formProps}}/>;
   };
 
   const saveMineral = () => {
-    usePetrology.savePetFeature(petKey, spot, formRef.current);
+    if (areMultipleTemplates) usePetrology.savePetFeatureValuesFromTemplates(petKey, spot, templates[petKey].active);
+    else usePetrology.savePetFeature(petKey, spot, formRef.current);
     formRef.current?.setFieldValue('id', getNewId());
   };
 

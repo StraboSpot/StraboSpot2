@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import {Alert, Animated, ImageBackground, Keyboard, KeyboardAvoidingView, Text, TextInput, View} from 'react-native';
+import {Alert, Animated, ImageBackground, Keyboard, Text, TextInput, View} from 'react-native';
 
-import NetInfo from '@react-native-community/netinfo';
 import {useNavigation} from '@react-navigation/native';
 import * as Sentry from '@sentry/react-native';
 import {Base64} from 'js-base64';
@@ -9,12 +8,14 @@ import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {PASSWORD_TEST, USERNAME_TEST} from '../../../Config';
+import useConnectionStatusHook from '../../services/useConnectionStatus';
+import useDeviceHook from '../../services/useDevice';
 import useServerRequests from '../../services/useServerRequests';
 import {VERSION_NUMBER} from '../../shared/app.constants';
-import {isEmpty, readDataUrl} from '../../shared/Helpers';
 import * as Helpers from '../../shared/Helpers';
-import IconButton from '../../shared/ui/IconButton';
-import {setOnlineStatus, setProjectLoadSelectionModalVisible, setSignedInStatus} from '../home/home.slice';
+import {isEmpty, readDataUrl} from '../../shared/Helpers';
+import uiStyles from '../../shared/ui/ui.styles';
+import {setOnlineStatus, setProjectLoadSelectionModalVisible} from '../home/home.slice';
 import {setUserData} from '../user/userProfile.slice';
 import styles from './signIn.styles';
 
@@ -22,29 +23,31 @@ const {State: TextInputState} = TextInput;
 
 const SignIn = (props) => {
 
-  const onlineIcon = require('../../assets/icons/ConnectionStatusButton_connected.png');
-  const offlineIcon = require('../../assets/icons/ConnectionStatusButton_offline.png');
-  const [username, setUsername] = useState(__DEV__ ? USERNAME_TEST : '');
-  const [password, setPassword] = useState(__DEV__ ? PASSWORD_TEST : '');
-  const [userProfile, setUserProfile] = useState({});
-  const [textInputAnimate] = useState(new Animated.Value(0));
-
   const dispatch = useDispatch();
+  const currentProject = useSelector(state => state.project.project);
   const isOnline = useSelector(state => state.home.isOnline);
   const user = useSelector(state => state.user);
 
+  const [username, setUsername] = useState(__DEV__ ? USERNAME_TEST : '');
+  const [password, setPassword] = useState(__DEV__ ? PASSWORD_TEST : '');
+  const [textInputAnimate] = useState(new Animated.Value(0));
+
+  const useConnectionStatus = useConnectionStatusHook();
+  const useDevice = useDeviceHook();
   const navigation = useNavigation();
   const [serverRequests] = useServerRequests();
 
   useEffect(() => {
-    console.log('UserProfile', userProfile);
-    dispatch(setUserData(userProfile));
-    if (!isEmpty(userProfile)) {
-      Sentry.configureScope(scope => {
-        scope.setUser({'username': userProfile.name, 'email': userProfile.email});
-      });
+    useDevice.createProjectDirectories().catch(err => console.error('Error creating app directories', err));
+  }, []);
+
+  useEffect(() => {
+    const netInfo = useConnectionStatus.getNetInfo();
+    console.log(netInfo);
+    if (isEmpty(isOnline) || netInfo.isInternetReachable !== null) {
+      dispatch(setOnlineStatus(netInfo));
     }
-  }, [userProfile]);
+  }, [isOnline]);
 
   useEffect(() => {
     console.log('useEffect Form SignIn');
@@ -66,8 +69,9 @@ const SignIn = (props) => {
     Sentry.configureScope((scope) => {
       scope.setUser({'id': 'GUEST'});
     });
-    if (!isEmpty(user.name)) await dispatch({type: 'CLEAR_STORE'});
+    if (!isEmpty(user.name)) dispatch({type: 'CLEAR_STORE'});
     console.log('Loading user: GUEST');
+    isEmpty(currentProject) && dispatch(setProjectLoadSelectionModalVisible(true));
     await navigation.navigate('HomeScreen');
   };
 
@@ -76,12 +80,15 @@ const SignIn = (props) => {
     try {
       const userAuthResponse = await serverRequests.authenticateUser(username, password);
       // login with provider
-      if (userAuthResponse.valid === 'true') {
+      if (userAuthResponse?.valid === 'true') {
+            Sentry.configureScope(scope => {
+              scope.setUser({'username': user.name, 'email': user.email});
+            });
         const encodedLogin = Base64.encode(username + ':' + password);
         updateUserResponse(encodedLogin).then((userState) => {
           console.log(`${username} is successfully logged in!`);
-          dispatch(setProjectLoadSelectionModalVisible(true));
-          dispatch(setSignedInStatus(true));
+          isEmpty(currentProject) && dispatch(setProjectLoadSelectionModalVisible(true));
+          // dispatch(setSignedInStatus(true));
           setUsername('');
           setPassword('');
           navigation.navigate('HomeScreen');
@@ -112,7 +119,7 @@ const SignIn = (props) => {
           containerStyle={{marginTop: 30}}
           onPress={() => signIn()}
           buttonStyle={styles.buttonStyle}
-          disabled={!isOnline}
+          disabled={username === '' || password === ''}
           title={'Sign In'}
         />
         <Button
@@ -127,7 +134,6 @@ const SignIn = (props) => {
           containerStyle={{marginTop: 10}}
           onPress={() => createAccount()}
           buttonStyle={styles.buttonStyle}
-          disabled={!isOnline}
           title={'Create an Account'}
         />
         <Button
@@ -166,10 +172,9 @@ const SignIn = (props) => {
       console.log('userProfileImage', userProfileImage);
       if (!isEmpty(userProfileImage)) {
         const profileImage = await getUserImage(userProfileImage);
-        setUserProfile(prevState => ({...userProfileRes, image: profileImage, encoded_login: encodedLogin}));
+        dispatch(setUserData({...userProfileRes, image: profileImage, encoded_login: encodedLogin}));
       }
-      else setUserProfile(prevState => ({...userProfileRes, image: null, encoded_login: encodedLogin}));
-      console.log(userProfile);
+      else  dispatch(setUserData({...userProfileRes, image: null, encoded_login: encodedLogin}));
     }
     catch (err) {
       console.log('SIGN IN ERROR', err);
@@ -183,15 +188,8 @@ const SignIn = (props) => {
   return (
     <ImageBackground source={require('../../assets/images/background.jpg')} style={styles.backgroundImage}>
       <View style={styles.container}>
-        <View style={{
-          position: 'absolute',
-          right: 0,
-          top: 40,
-          zIndex: -1,
-        }}>
-          <IconButton
-            source={isOnline ? onlineIcon : offlineIcon}
-          />
+        <View style={uiStyles.offlineImageIconContainer}>
+          {useConnectionStatus.connectionStatusIcon()}
         </View>
         <View>
           <View style={styles.titleContainer}>
@@ -201,24 +199,24 @@ const SignIn = (props) => {
           <Animated.View style={[styles.signInContainer, {transform: [{translateY: textInputAnimate}]}]}>
             <TextInput
               style={styles.input}
-              placeholder="Username"
-              autoCapitalize="none"
+              placeholder='Username'
+              autoCapitalize='none'
               autoCorrect={false}
-              placeholderTextColor="#6a777e"
+              placeholderTextColor='#6a777e'
               onChangeText={val => setUsername(val.toLowerCase())}
               value={username}
-              keyboardType="email-address"
-              returnKeyType="go"
+              keyboardType='email-address'
+              returnKeyType='go'
             />
             <TextInput
               style={styles.input}
-              placeholder="Password"
-              autoCapitalize="none"
+              placeholder='Password'
+              autoCapitalize='none'
               secureTextEntry={true}
-              placeholderTextColor="#6a777e"
+              placeholderTextColor='#6a777e'
               onChangeText={val => setPassword(val)}
               value={password}
-              returnKeyType="go"
+              returnKeyType='go'
               onSubmitEditing={signIn}
             />
             {renderButtons()}

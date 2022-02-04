@@ -70,7 +70,7 @@ const UserProfile = (props) => {
     }
     console.log({...newValues, image: avatar.uri});
     dispatch(setUserData(newValues));
-    if (isOnline) upload(newValues).catch(err => console.error('Error:', err));
+    if (isOnline.isInternetReachable) upload(newValues).catch(err => console.error('Error:', err));
   };
 
   const saveImage = async () => {
@@ -87,7 +87,7 @@ const UserProfile = (props) => {
       console.error(err);
       setImageDialogVisible(false);
       dispatch(clearedStatusMessages());
-      dispatch(addedStatusMessage('Error saving image profile...'));
+      dispatch(addedStatusMessage('Error saving image profile...' + err));
       dispatch(setErrorMessagesModalVisible(true));
     }
   };

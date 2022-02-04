@@ -6,7 +6,9 @@ import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import ImageResizer from 'react-native-image-resizer';
 import {useDispatch, useSelector} from 'react-redux';
 
+import {APP_DIRECTORIES} from '../../services/device.constants';
 import {getNewId} from '../../shared/Helpers';
+import {setLoadingStatus} from '../home/home.slice';
 import useHomeHook from '../home/useHome';
 import {setCurrentImageBasemap} from '../maps/maps.slice';
 import {
@@ -18,9 +20,6 @@ import {
 } from '../spots/spots.slice';
 
 const useImages = () => {
-  const devicePath = RNFS.DocumentDirectoryPath;
-  const appDirectory = '/StraboSpot';
-  const imagesDirectory = devicePath + appDirectory + '/Images';
   // const testUrl = 'https://strabospot.org/testimages/images.json';
   // const missingImage = require('../../assets/images/noimage.jpg');
 
@@ -50,7 +49,7 @@ const useImages = () => {
       const localImageFile = getLocalImageURI(imageId);
       const fileExists = await RNFS.exists(localImageFile);
       if (fileExists) await RNFS.unlink(localImageFile);
-      if (currentImageBasemap && currentImageBasemap.id == imageId) dispatch(setCurrentImageBasemap(undefined));
+      if (currentImageBasemap && currentImageBasemap.id === imageId) dispatch(setCurrentImageBasemap(undefined));
       return true;
     }
   };
@@ -60,8 +59,7 @@ const useImages = () => {
     try {
       const imageURI = getLocalImageURI(imageId);
       console.log('Looking on device for image at URI:', imageURI, '...');
-      const isValidURI = await RNFS.exists(imageURI);
-      return isValidURI;
+      return await RNFS.exists(imageURI);
     }
     catch (err) {
       console.error('Error Checking if Image Exists on Device.');
@@ -146,33 +144,50 @@ const useImages = () => {
   };
 
   const getLocalImageURI = (id) => {
-    const imageURI = imagesDirectory + '/' + id + '.jpg';
+    const imageURI = APP_DIRECTORIES.IMAGES + id + '.jpg';
     return Platform.OS === 'ios' ? imageURI : 'file://' + imageURI;
   };
 
-  const resizeImageIfNecessary = async (imageData) => {
-    let height = imageData.height;
-    let width = imageData.width;
-    const tempImageURI = Platform.OS === 'ios' ? imageData.uri || imageData.path : imageData.uri || 'file://' + imageData.path;
-    if (!height || !width) ({height, width} = await getImageHeightAndWidth(tempImageURI));
-    let resizedImage, createResizedImageProps = {};
-    createResizedImageProps = (height > 4096 || width > 4096) ? [tempImageURI, 4096, 4096, 'JPEG', 100, 0]
-      : [tempImageURI, width, height, 'JPEG', 100, 0];
-    resizedImage = await ImageResizer.createResizedImage(...createResizedImageProps);
-    return resizedImage;
-  };
-
   const getImagesFromCameraRoll = async () => {
-    launchImageLibrary({}, async response => {
-      console.log('RES', response);
-      if (response.didCancel) useHome.toggleLoading(false);
-      else {
-        useHome.toggleLoading(true);
-        response = await resizeImageIfNecessary(response);
-        const savedPhoto = await saveFile(response);
-        console.log('Saved Photo in getImagesFromCameraRoll:', savedPhoto);
-        dispatch(editedSpotImages([savedPhoto]));
-        useHome.toggleLoading(false);
+    return new Promise((res, rej) => {
+      try {
+        dispatch(setLoadingStatus({view: 'home', bool: true}));
+        launchImageLibrary({}, async response => {
+          console.log('RES', response);
+          if (response.didCancel) dispatch(setLoadingStatus({view: 'home', bool: false}));
+          else if (response.errorCode === 'others') {
+            console.error(response.errorMessage('Error Here'));
+            dispatch(setLoadingStatus({view: 'home', bool: false}));
+          }
+          else {
+            let imageAsset = response.assets;
+            // const imageAssetsLength = response.assets.length;
+            // dispatch(clearedStatusMessages());
+            // dispatch(addedStatusMessage(`You selected ${imageAssetsLength} image to save:`));
+            // dispatch(setStatusMessagesModalVisible(true));
+            await Promise.all(
+              imageAsset.map(async image => {
+                imageCount++;
+                const resizedImage = await resizeImageIfNecessary(image);
+                const savedPhoto = await saveFile(resizedImage);
+                console.log('Saved Photo in getImagesFromCameraRoll:', savedPhoto);
+                dispatch(editedSpotImages([savedPhoto]));
+                // dispatch(removedLastStatusMessage());
+                // dispatch(addedStatusMessage(`Image/s saved ${imageCount}`));
+                // console.log(1);
+              }),
+              // console.log(2)
+            );
+            // console.log(3);
+            res(imageCount);
+            dispatch(setLoadingStatus({view: 'home', bool: false}));
+          }
+        });
+      }
+      catch (err) {
+        console.error('Error saving image');
+        dispatch(setLoadingStatus({view: 'home', bool: false}));
+        rej('Error saving image.');
       }
     });
   };
@@ -207,6 +222,18 @@ const useImages = () => {
     }
   };
 
+  const resizeImageIfNecessary = async (imageData) => {
+    let height = imageData.height;
+    let width = imageData.width;
+    const tempImageURI = Platform.OS === 'ios' ? imageData.uri || imageData.path : imageData.uri || 'file://' + imageData.path;
+    if (!height || !width) ({height, width} = await getImageHeightAndWidth(tempImageURI));
+    let resizedImage, createResizedImageProps = {};
+    createResizedImageProps = (height > 4096 || width > 4096) ? [tempImageURI, 4096, 4096, 'JPEG', 100, 0]
+      : [tempImageURI, width, height, 'JPEG', 100, 0];
+    resizedImage = await ImageResizer.createResizedImage(...createResizedImageProps);
+    return resizedImage;
+  };
+
   const saveFile = async (imageData) => {
     console.log('New image data:', imageData);
     let height = imageData.height;
@@ -216,7 +243,7 @@ const useImages = () => {
     let imageId = getNewId();
     let imageURI = getLocalImageURI(imageId);
     try {
-      await RNFS.mkdir(imagesDirectory);
+      await RNFS.mkdir(APP_DIRECTORIES.IMAGES);
       await RNFS.copyFile(tempImageURI, imageURI);
       console.log(imageCount, 'File saved to:', imageURI);
       imageCount++;
@@ -271,7 +298,8 @@ const useImages = () => {
           if (response.didCancel) resolve('cancelled');
           else if (response.error) reject();
           else {
-            const createResizedImageProps = [response.uri, response.height, response.width, 'JPEG', 100, 0];
+            const imageAsset = response.assets[0];
+            const createResizedImageProps = [imageAsset.uri, imageAsset.height, imageAsset.width, 'JPEG', 100, 0];
             const resizedImage = await ImageResizer.createResizedImage(...createResizedImageProps);
             console.log('resizedImage', resizedImage);
             resolve(saveFile(resizedImage));

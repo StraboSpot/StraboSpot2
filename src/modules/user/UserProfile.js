@@ -9,7 +9,7 @@ import {REDUX} from '../../shared/app.constants';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty, truncateText} from '../../shared/Helpers';
 import StandardModal from '../../shared/ui/StandardModal';
-import {setSignedInStatus} from '../home/home.slice';
+import {setMainMenuPanelVisible, setSignedInStatus} from '../home/home.slice';
 import {MAIN_MENU_ITEMS, SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import {setMenuSelectionPage, setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import userStyles from './user.styles';
@@ -31,13 +31,20 @@ const UserProfile = (props) => {
   };
 
   const doLogOut = () => {
-    setIsLogoutModalVisible(false);
-    setTimeout(() => { // Added timeOut cause state of modal wasn't changing fast enough
-      dispatch(setSignedInStatus(false));
-      dispatch({type: REDUX.CLEAR_STORE});
-      props.logout();
-      navigation.navigate('SignIn', userData);
-    }, 200);
+    if (isEmpty(userData.name)) {
+      dispatch(setMainMenuPanelVisible(false));
+      navigation.navigate('SignIn');
+    }
+    else {
+      setIsLogoutModalVisible(false);
+      setTimeout(() => { // Added timeOut cause state of modal wasn't changing fast enough
+        // dispatch(setSignedInStatus(false));
+        dispatch(setMainMenuPanelVisible(false));
+        dispatch({type: REDUX.CLEAR_STORE});
+        props.logout();
+        navigation.navigate('SignIn', userData);
+      }, 200);
+    }
   };
 
   const renderAvatarImageBlock = () => {
@@ -104,21 +111,13 @@ const UserProfile = (props) => {
   const renderLogOutButton = () => {
     return (
       <View>
-        {isEmpty(userData.name)
-          ? <Button
-            onPress={() => navigation.navigate('SignIn')}
-            title={'Sign In'}
+        <Button
+            onPress={() => isEmpty(userData.name) ? doLogOut() : setIsLogoutModalVisible(true)}
+            title={isEmpty(userData.name) ? 'Sign In' : 'Log out'}
             containerStyle={commonStyles.standardButtonContainer}
             buttonStyle={commonStyles.standardButton}
             titleStyle={commonStyles.standardButtonText}
           />
-          : <Button
-            onPress={() => setIsLogoutModalVisible(true)}
-            title={'Log out'}
-            containerStyle={commonStyles.standardButtonContainer}
-            buttonStyle={commonStyles.standardButton}
-            titleStyle={commonStyles.standardButtonText}
-          />}
       </View>
     );
   };
@@ -128,7 +127,7 @@ const UserProfile = (props) => {
       <StandardModal
         visible={isLogoutModalVisible}
         dialogTitle={'Log Out?'}
-        dialogTitleStyle={commonStyles.dialogWarning}>
+        dialogTitleStyle={commonStyles.dialogError}>
         <Text style={commonStyles.dialogConfirmText}>
           Logging out will
           <Text style={commonStyles.dialogContentImportantText}> ERASE </Text>

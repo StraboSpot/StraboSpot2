@@ -6,18 +6,19 @@ const initialHomeState = {
     imagesDownloadedCount: 0,
     neededImageIds: 0,
   },
-  isOnline: true,
+  isOnline: {},
   loading: {
     modal: false,
     home: false,
   },
-  isSignedIn: false,
+  // isSignedIn: false,
   modalValues: {},
   modalVisible: null,
   isBackupModalVisible: false,
   isBackupOverwriteModalVisible: false,
   isStatusMessagesModalVisible: false,
   isErrorMessagesModalVisible: false,
+  isWarningMessagesModalVisible: false,
   isProjectLoadSelectionModalVisible: false,
   isOfflineMapModalVisible: false,
   isInfoModalVisible: false,
@@ -89,9 +90,9 @@ const homeSlice = createSlice({
     setProjectLoadSelectionModalVisible(state, action) {
       state.isProjectLoadSelectionModalVisible = action.payload;
     },
-    setSignedInStatus(state, action) {
-      state.isSignedIn = action.payload;
-    },
+    // setSignedInStatus(state, action) {
+    //   state.isSignedIn = action.payload;
+    // },
     setStatusMessagesModalVisible(state, action) {
       state.isStatusMessagesModalVisible = action.payload;
     },
@@ -101,6 +102,9 @@ const homeSlice = createSlice({
     setUploadModalVisible(state, action) {
       state.isUploadModalVisible = action.payload;
     },
+    setWarningModalVisible(state, action) {
+      state.isWarningMessagesModalVisible = action.payload;
+    }
   },
 });
 
@@ -121,10 +125,11 @@ export const {
   setOnlineStatus,
   setProjectLoadComplete,
   setProjectLoadSelectionModalVisible,
-  setSignedInStatus,
+  // setSignedInStatus,
   setStatusMessagesModalVisible,
   shortcutSwitchPosition,
   setUploadModalVisible,
+  setWarningModalVisible,
 } = homeSlice.actions;
 
 export default homeSlice.reducer;

@@ -1,0 +1,480 @@
+{
+  "survey": [
+    {
+      "type": "begin_group",
+      "name": "group_ys5jt49",
+      "label": "Sedimentary Surfaces (for line spots only)",
+      "required": false,
+      "relevant": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_one sz3eh26",
+      "name": "geometry",
+      "label": "Geometry",
+      "required": false,
+      "relevant": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "relief",
+      "label": "Relief",
+      "required": false,
+      "relevant": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_one id9jw28",
+      "name": "relief_scale",
+      "label": "Relief Scale",
+      "required": false,
+      "relevant": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "extent",
+      "label": "Extent",
+      "required": false,
+      "relevant": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_one me6zn01",
+      "name": "extent_scale",
+      "label": "Extent Scale",
+      "required": false,
+      "relevant": "${extent} != ''",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_multiple yj8ul45",
+      "name": "type",
+      "label": "Type",
+      "required": false,
+      "relevant": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "other_type",
+      "label": "Other Type",
+      "required": false,
+      "relevant": "selected(${type}, 'other')",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_one ew1qt64",
+      "name": "stratal_termination",
+      "label": "Stratal Termination",
+      "required": false,
+      "relevant": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "end_group",
+      "name": "",
+      "label": "",
+      "required": "",
+      "relevant": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "begin_group",
+      "name": "group_yj4re33",
+      "label": "Sedimentary Surface Interpretation",
+      "required": false,
+      "relevant": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "general_surfaces",
+      "label": "General Surfaces",
+      "required": false,
+      "relevant": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_one xb6oy11",
+      "name": "sequence_stratigraphic_surfaces",
+      "label": "Sequence Stratigraphic Surfaces",
+      "required": false,
+      "relevant": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "other_sequence_stratigraphic_surface",
+      "label": "Other Sequence Stratigraphic Surface",
+      "required": false,
+      "relevant": "${sequence_stratigraphic_surfaces} = 'other_seq_stra'",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "named",
+      "label": "Named",
+      "required": false,
+      "relevant": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "end_group",
+      "name": "",
+      "label": "",
+      "required": "",
+      "relevant": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "notes",
+      "label": "Notes",
+      "required": false,
+      "relevant": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "calculate",
+      "name": "__version__",
+      "label": "",
+      "required": false,
+      "relevant": "",
+      "calculation": "'voNoL4FZvJDQ58onwacDWa'",
+      "$given_name": ""
+    },
+    {
+      "type": "calculate",
+      "name": "_version_",
+      "label": "",
+      "required": false,
+      "relevant": "",
+      "calculation": "'vtzU2NHpbSi7ojPnx3JKvD'",
+      "$given_name": "__version__"
+    },
+    {
+      "type": "calculate",
+      "name": "_version__001",
+      "label": "",
+      "required": "",
+      "relevant": "",
+      "calculation": "'v7co7Eag82f8WuREaVfiEN'",
+      "$given_name": "__version__"
+    }
+  ],
+  "choices": [
+    {
+      "list_name": "sz3eh26",
+      "name": "flat",
+      "label": "Flat",
+      "order": ""
+    },
+    {
+      "list_name": "sz3eh26",
+      "name": "undulatory",
+      "label": "Undulatory",
+      "order": ""
+    },
+    {
+      "list_name": "sz3eh26",
+      "name": "concave_up",
+      "label": "Concave up",
+      "order": ""
+    },
+    {
+      "list_name": "sz3eh26",
+      "name": "concave_down",
+      "label": "Concave down",
+      "order": ""
+    },
+    {
+      "list_name": "sz3eh26",
+      "name": "curved",
+      "label": "Curved",
+      "order": ""
+    },
+    {
+      "list_name": "sz3eh26",
+      "name": "irregular",
+      "label": "Irregular",
+      "order": ""
+    },
+    {
+      "list_name": "id9jw28",
+      "name": "cm",
+      "label": "cm",
+      "order": ""
+    },
+    {
+      "list_name": "id9jw28",
+      "name": "m",
+      "label": "m",
+      "order": ""
+    },
+    {
+      "list_name": "me6zn01",
+      "name": "cm",
+      "label": "cm",
+      "order": ""
+    },
+    {
+      "list_name": "me6zn01",
+      "name": "m",
+      "label": "m",
+      "order": ""
+    },
+    {
+      "list_name": "me6zn01",
+      "name": "km",
+      "label": "km",
+      "order": ""
+    },
+    {
+      "list_name": "yj8ul45",
+      "name": "mineralization",
+      "label": "mineralization",
+      "order": ""
+    },
+    {
+      "list_name": "yj8ul45",
+      "name": "karst",
+      "label": "karst",
+      "order": 1
+    },
+    {
+      "list_name": "yj8ul45",
+      "name": "hardground",
+      "label": "hardground",
+      "order": 2
+    },
+    {
+      "list_name": "yj8ul45",
+      "name": "firmground",
+      "label": "Firmground",
+      "order": 3
+    },
+    {
+      "list_name": "yj8ul45",
+      "name": "burrowed",
+      "label": "burrowed",
+      "order": 4
+    },
+    {
+      "list_name": "yj8ul45",
+      "name": "pedogenic",
+      "label": "pedogenic",
+      "order": 5
+    },
+    {
+      "list_name": "yj8ul45",
+      "name": "weathering",
+      "label": "weathering",
+      "order": 6
+    },
+    {
+      "list_name": "yj8ul45",
+      "name": "lag",
+      "label": "lag",
+      "order": 7
+    },
+    {
+      "list_name": "yj8ul45",
+      "name": "condensed",
+      "label": "condensed",
+      "order": 8
+    },
+    {
+      "list_name": "yj8ul45",
+      "name": "erosional",
+      "label": "erosional",
+      "order": 9
+    },
+    {
+      "list_name": "yj8ul45",
+      "name": "conformable",
+      "label": "conformable",
+      "order": 10
+    },
+    {
+      "list_name": "yj8ul45",
+      "name": "unconformable",
+      "label": "unconformable",
+      "order": 11
+    },
+    {
+      "list_name": "yj8ul45",
+      "name": "ash_tuff",
+      "label": "ash/tuff",
+      "order": 12
+    },
+    {
+      "list_name": "yj8ul45",
+      "name": "fault",
+      "label": "fault exposure",
+      "order": 13
+    },
+    {
+      "list_name": "yj8ul45",
+      "name": "other",
+      "label": "flooding",
+      "order": 14
+    },
+    {
+      "list_name": "yj8ul45",
+      "name": "ravinement",
+      "label": "ravinement",
+      "order": 15
+    },
+    {
+      "list_name": "yj8ul45",
+      "name": "hiatal",
+      "label": "hiatus (hiatal)",
+      "order": 16
+    },
+    {
+      "list_name": "yj8ul45",
+      "name": "reactivation",
+      "label": "reactivation",
+      "order": 17
+    },
+    {
+      "list_name": "yj8ul45",
+      "name": "supersurf",
+      "label": "supersurface",
+      "order": 18
+    },
+    {
+      "list_name": "yj8ul45",
+      "name": "interdune",
+      "label": "interdune",
+      "order": 19
+    },
+    {
+      "list_name": "yj8ul45",
+      "name": "deflation",
+      "label": "deflation",
+      "order": 20
+    },
+    {
+      "list_name": "yj8ul45",
+      "name": "other_surf_typ",
+      "label": "other",
+      "order": 21
+    },
+    {
+      "list_name": "ew1qt64",
+      "name": "onlap",
+      "label": "Onlap",
+      "order": ""
+    },
+    {
+      "list_name": "ew1qt64",
+      "name": "downlap",
+      "label": "Downlap",
+      "order": ""
+    },
+    {
+      "list_name": "ew1qt64",
+      "name": "toplap",
+      "label": "Toplap",
+      "order": ""
+    },
+    {
+      "list_name": "ew1qt64",
+      "name": "offlap",
+      "label": "Offlap",
+      "order": ""
+    },
+    {
+      "list_name": "xb6oy11",
+      "name": "type_1_sequenc",
+      "label": "Type 1 Sequence Boundary",
+      "order": ""
+    },
+    {
+      "list_name": "xb6oy11",
+      "name": "type_2_sequenc",
+      "label": "Type 2 Sequence Boundary",
+      "order": 1
+    },
+    {
+      "list_name": "xb6oy11",
+      "name": "type_3_sequenc",
+      "label": "Type 3 Sequence Boundary (drowning unconformity)",
+      "order": 2
+    },
+    {
+      "list_name": "xb6oy11",
+      "name": "interfluve_exp",
+      "label": "interfluve expression",
+      "order": 3
+    },
+    {
+      "list_name": "xb6oy11",
+      "name": "erosional_expr",
+      "label": "erosional expression",
+      "order": 4
+    },
+    {
+      "list_name": "xb6oy11",
+      "name": "correlative_co",
+      "label": "correlative conformity",
+      "order": 5
+    },
+    {
+      "list_name": "xb6oy11",
+      "name": "parasequence_b",
+      "label": "parasequence boundary",
+      "order": 6
+    },
+    {
+      "list_name": "xb6oy11",
+      "name": "maximum_floodi",
+      "label": "maximum flooding surface",
+      "order": 7
+    },
+    {
+      "list_name": "xb6oy11",
+      "name": "transgressive",
+      "label": "transgressive surface of erosion",
+      "order": 8
+    },
+    {
+      "list_name": "xb6oy11",
+      "name": "subaerial_unco",
+      "label": "subaerial unconformity",
+      "order": 9
+    },
+    {
+      "list_name": "xb6oy11",
+      "name": "other_seq_stra",
+      "label": "other",
+      "order": ""
+    }
+  ],
+  "settings": [
+    {
+      "id_string": "SS1 Copy",
+      "version": "2 (2021-1-25)"
+    }
+  ]
+}

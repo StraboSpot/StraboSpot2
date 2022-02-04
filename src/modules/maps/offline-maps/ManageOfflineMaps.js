@@ -12,7 +12,7 @@ import ListEmptyText from '../../../shared/ui/ListEmptyText';
 import SectionDivider from '../../../shared/ui/SectionDivider';
 import {setOfflineMapsModalVisible} from '../../home/home.slice';
 import useMapsHook from '../useMaps';
-import {setOfflineMap, setOfflineMapVisible} from './offlineMaps.slice';
+import {setOfflineMap, setOfflineMapVisible, updateOfflineMaps} from './offlineMaps.slice';
 import styles from './offlineMaps.styles';
 import useMapsOfflineHook from './useMapsOffline';
 
@@ -31,6 +31,7 @@ const ManageOfflineMaps = (props) => {
 
   useEffect(() => {
     if (!isEmpty(offlineMaps)) readDirectoryForMaps().catch(err => console.log(err));
+    else refreshMapsFromDevice().catch(err => console.log('Error refreshing maps from device', err));
   }, [mainMenuPageVisible]);
 
   useEffect(() => {
@@ -65,12 +66,29 @@ const ManageOfflineMaps = (props) => {
     );
   };
 
+  const getTitle = (map) => {
+    let name = map.name;
+    if (!map.name) {
+      console.log('No Name');
+      return map.id;
+    }
+    else return name;
+  };
+
   const readDirectoryForMaps = async () => {
     try {
+      let availableMapObj = {};
       setLoading(true);
       const ids = await useDevice.readDirectoryForMaps();
-      const availableMapObj = Object.assign({}, ...ids.map(id => ({[offlineMaps[id].id]: offlineMaps[id]})));
-      setAvailableMaps({...availableMaps, ...availableMapObj});
+      ids.map(mapId => {
+        if (offlineMaps[mapId]) {
+          availableMapObj = {...availableMapObj, [offlineMaps[mapId].id]: offlineMaps[mapId]};
+        }
+        else {
+          useMapsOffline.updateMapTileCount(mapId);
+        }
+        dispatch(updateOfflineMaps(availableMapObj));
+      });
       setLoading(false);
     }
     catch (err) {
@@ -80,11 +98,21 @@ const ManageOfflineMaps = (props) => {
     }
   };
 
+  const refreshMapsFromDevice = async () => {
+    try {
+      const mapFiles = await useDevice.readDirectoryForMaps();
+      mapFiles.map(map => useMapsOffline.updateMapTileCount(map));
+    }
+    catch (err) {
+      console.error(`${err}`);
+    }
+  };
+
   const renderMapsList = () => {
     return (
       <FlatList
         keyExtractor={(item) => item.id}
-        data={Object.values(availableMaps)}
+        data={Object.values(offlineMaps)}
         renderItem={({item}) => renderMapsListItem(item)}
         ItemSeparatorComponent={FlatListItemSeparator}
         ListEmptyComponent={<ListEmptyText text={'No Offline Maps. To download a map select area and zoom'
@@ -101,11 +129,11 @@ const ManageOfflineMaps = (props) => {
       >
         <ListItem.Content>
           <View style={styles.itemContainer}>
-            <ListItem.Title style={commonStyles.listItemTitle}>{`${item.name}`}</ListItem.Title>
+            <ListItem.Title style={commonStyles.listItemTitle}>{`${getTitle(item)}`}</ListItem.Title>
             <ListItem.Title style={styles.itemSubTextStyle}>{`(${item.count} tiles)`}</ListItem.Title>
           </View>
-           <View style={styles.itemSubContainer}>
-             {isOnline && <Button
+          <View style={styles.itemSubContainer}>
+            {isOnline.isInternetReachable && <Button
               onPress={() => toggleOfflineMap(item)}
               titleStyle={commonStyles.viewMapsButtonText}
               type={'clear'}
@@ -139,7 +167,8 @@ const ManageOfflineMaps = (props) => {
     <React.Fragment>
       <Button
         title={'Download tiles of current map'}
-        disabled={!isOnline || Object.values(offlineMaps).some(map => map.isOfflineMapVisible === true)}
+        disabled={!isOnline.isInternetReachable || Object.values(offlineMaps).some(
+          map => map.isOfflineMapVisible === true)}
         onPress={() => {
           props.closeMainMenuPanel();
           dispatch(setOfflineMapsModalVisible(true));

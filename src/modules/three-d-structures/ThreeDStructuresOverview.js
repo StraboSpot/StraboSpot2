@@ -13,6 +13,8 @@ const ThreeDStructuresOverview = (props) => {
   const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
 
+  const threeDStructures = spot?.properties?._3d_structures?.filter(d => d.type !== 'fabric') || [];
+
   const on3DStructurePressed = (threeDStructure) => {
     dispatch(setSelectedAttributes([threeDStructure]));
     dispatch(setNotebookPageVisible(props.page.key));
@@ -22,7 +24,7 @@ const ThreeDStructuresOverview = (props) => {
     <React.Fragment>
       <FlatList
         keyExtractor={(item, index) => index.toString()}
-        data={spot?.properties?._3d_structures?.filter(d => d.type !== 'fabric') || []}
+        data={threeDStructures}
         renderItem={({item}) => <ThreeDStructureItem item={item} edit3dStructure={() => on3DStructurePressed(item)}/>}
         ItemSeparatorComponent={FlatListItemSeparator}
         ListEmptyComponent={<ListEmptyText text={'No 3D Structures yet'}/>}

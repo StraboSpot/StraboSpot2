@@ -1,11 +1,21 @@
 import {useEffect} from 'react';
+import {Alert} from 'react-native';
 
-import {useDispatch, useSelector} from 'react-redux';
+import * as Sentry from '@sentry/react-native';
+import {batch, useDispatch, useSelector} from 'react-redux';
 
 import {getNewCopyId, getNewId, isEmpty} from '../../shared/Helpers';
 import {setModalVisible} from '../home/home.slice';
 import {NOTEBOOK_PAGES, PAGE_KEYS, PET_PAGES, SED_PAGES} from '../page/page.constants';
-import {addedSpotsIdsToDataset, deletedSpotIdFromDataset, updatedProject} from '../project/projects.slice';
+import {
+  addedDataset,
+  addedSpotsIdsToDataset,
+  deletedSpotIdFromDatasets,
+  deletedSpotIdFromTags,
+  setActiveDatasets,
+  setSelectedDataset,
+  updatedProject,
+} from '../project/projects.slice';
 import useProjectHook from '../project/useProject';
 import {useTagsHook} from '../tags';
 import {addedSpot, deletedSpot, setSelectedSpot} from './spots.slice';
@@ -143,7 +153,16 @@ const useSpots = () => {
     console.log('Creating new Spot:', newSpot);
     await dispatch(addedSpot(newSpot));
     // const currentDataset = Object.values(datasets).find(dataset => dataset.current);
-    const currentDataset = datasets[selectedDatasetId];
+    let currentDataset = datasets[selectedDatasetId];
+    if (isEmpty(currentDataset)) {
+      Alert.alert('No Active Dataset Selected. Created a new Default Dataset for new Spot.');
+      currentDataset = useProject.createDataset();
+      batch(() => {
+        dispatch(addedDataset(currentDataset));
+        dispatch(setActiveDatasets({bool: true, dataset: currentDataset.id}));
+        dispatch(setSelectedDataset(currentDataset.id));
+      });
+    }
     console.log('Active Dataset', currentDataset);
     await dispatch(addedSpotsIdsToDataset({datasetId: currentDataset.id, spotIds: [newSpot.properties.id]}));
     console.log('Finished creating new Spot. All Spots: ', spots);
@@ -152,7 +171,8 @@ const useSpots = () => {
 
   const deleteSpot = (spotId) => {
     console.log('Deleting Spot ID', spotId, '...');
-    dispatch(deletedSpotIdFromDataset(spotId));
+    dispatch(deletedSpotIdFromTags(spotId));
+    dispatch(deletedSpotIdFromDatasets(spotId));
     dispatch(deletedSpot(spotId));
     dispatch(setModalVisible({modal: null}));
   };
@@ -176,7 +196,7 @@ const useSpots = () => {
   const getAllFeaturesFromSpot = (spotToEvaluate) => {
     let spotsToEvaluate = [];
     let allFeatures = [];
-    if (isEmpty(spotToEvaluate)) spotsToEvaluate = Object.values(spots);
+    if (isEmpty(spotToEvaluate)) spotsToEvaluate = Object.values(getActiveSpotsObj());
     else spotsToEvaluate = [spotToEvaluate];
     let featureElements = [PAGE_KEYS.MEASUREMENTS, PAGE_KEYS.OTHER_FEATURES, PAGE_KEYS.THREE_D_STRUCTURES];
     spotsToEvaluate.forEach(spot => {
@@ -221,9 +241,16 @@ const useSpots = () => {
     const populatedPagesKeys = NOTEBOOK_PAGES.reduce((acc, page) => {
       let isPopulated = false;
       switch (page.key) {
-        case PAGE_KEYS.TAGS:
-          if (!isEmpty(useTags.getTagsAtSpot(spot.properties.id))) isPopulated = true;
+        case PAGE_KEYS.TAGS: {
+          const tagsAtSpot = useTags.getTagsAtSpot(spot.properties.id);
+          if (!isEmpty(tagsAtSpot.filter(t => t.type !== PAGE_KEYS.GEOLOGIC_UNITS))) isPopulated = true;
           break;
+        }
+        case PAGE_KEYS.GEOLOGIC_UNITS: {
+          const tagsAtSpot = useTags.getTagsAtSpot(spot.properties.id);
+          if (!isEmpty(tagsAtSpot.filter(t => t.type === PAGE_KEYS.GEOLOGIC_UNITS))) isPopulated = true;
+          break;
+        }
         case PAGE_KEYS.THREE_D_STRUCTURES:
           if (spot.properties[PAGE_KEYS.THREE_D_STRUCTURES]
             && !isEmpty(spot.properties[PAGE_KEYS.THREE_D_STRUCTURES].filter(s => s.type !== 'fabric'))) {
@@ -246,6 +273,27 @@ const useSpots = () => {
         case PAGE_KEYS.ROCK_TYPE_METAMORPHIC:
           if ((spot.properties.pet && spot.properties.pet[page.key])
             || spot?.properties?.pet?.rock_type?.includes(page.key)) isPopulated = true;
+          break;
+        case PAGE_KEYS.ROCK_TYPE_SEDIMENTARY:
+          if (spot.properties.sed && spot.properties.sed[PAGE_KEYS.LITHOLOGIES]
+            && Array.isArray(spot.properties.sed[PAGE_KEYS.LITHOLOGIES])) isPopulated = true;
+          break;
+        case PAGE_KEYS.INTERVAL:
+          if (spot.properties.sed && (spot.properties.sed.character
+            || (spot.properties.sed[page.key] && !isEmpty(spot.properties.sed[page.key])))) {
+            isPopulated = true;
+          }
+          break;
+        case PAGE_KEYS.BEDDING:
+          if (spot.properties.sed && spot.properties.sed[page.key] && spot.properties.sed[page.key].beds
+            && Array.isArray(spot.properties.sed[page.key].beds)) {
+            isPopulated = true;
+          }
+          break;
+        case PAGE_KEYS.LITHOLOGIES:
+          if (spot.properties.sed && spot.properties.sed[page.key] && Array.isArray(spot.properties.sed[page.key])) {
+            isPopulated = true;
+          }
           break;
         default:
           if (spot.properties && (spot.properties[page.key]
@@ -281,7 +329,8 @@ const useSpots = () => {
   };
 
   const getSpotById = (spotId) => {
-    return spots[spotId];
+    if (spots[spotId]) return spots[spotId];
+    else Sentry.captureMessage(`Missing Spot ${spotId}`);
   };
 
   const getSpotByImageId = (imageId) => {
@@ -296,22 +345,20 @@ const useSpots = () => {
   };
 
   const getSpotGemometryIconSource = (spot) => {
-    if (spot.geometry && spot.geometry.type) {
-      if (spot.geometry.type === 'Point') {
-        if (spot.properties.image_basemap) return require('../../assets/icons/ImagePoint_pressed.png');
-        else if (spot.properties.strat_section) return require('../../assets/icons/StratPoint_pressed.png');
-        else return require('../../assets/icons/Point_pressed.png');
-      }
-      else if (spot.geometry.type === 'LineString') {
-        if (spot.properties.image_basemap) return require('../../assets/icons/ImageLine_pressed.png');
-        else if (spot.properties.strat_section) return require('../../assets/icons/StratLine_pressed.png');
-        else return require('../../assets/icons/Line_pressed.png');
-      }
-      else if (spot.geometry.type === 'Polygon') {
-        if (spot.properties.image_basemap) return require('../../assets/icons/ImagePolygon_pressed.png');
-        else if (spot.properties.strat_section) return require('../../assets/icons/StratPolygon_pressed.png');
-        else return require('../../assets/icons/Polygon_pressed.png');
-      }
+    if (spot?.geometry?.type === 'Point') {
+      if (spot.properties?.image_basemap) return require('../../assets/icons/ImagePoint_pressed.png');
+      else if (spot.properties?.strat_section) return require('../../assets/icons/StratPoint_pressed.png');
+      else return require('../../assets/icons/Point_pressed.png');
+    }
+    else if (spot?.geometry?.type === 'LineString') {
+      if (spot.properties?.image_basemap) return require('../../assets/icons/ImageLine_pressed.png');
+      else if (spot.properties?.strat_section) return require('../../assets/icons/StratLine_pressed.png');
+      else return require('../../assets/icons/Line_pressed.png');
+    }
+    else if (spot?.geometry?.type === 'Polygon') {
+      if (spot.properties?.image_basemap) return require('../../assets/icons/ImagePolygon_pressed.png');
+      else if (spot.properties?.strat_section) return require('../../assets/icons/StratPolygon_pressed.png');
+      else return require('../../assets/icons/Polygon_pressed.png');
     }
     else return require('../../assets/icons/QuestionMark_pressed.png');
   };
@@ -341,8 +388,8 @@ const useSpots = () => {
     }));
   };
 
-  const getSpotsWithPetrology = () => {
-    return Object.values(getActiveSpotsObj()).filter(spot => !isEmpty(spot.properties.pet));
+  const getSpotsWithKey = (key) => {
+    return Object.values(getActiveSpotsObj()).filter(spot => !isEmpty(spot.properties[key]));
   };
 
   const getSpotsWithSamples = () => {
@@ -374,7 +421,7 @@ const useSpots = () => {
     getSpotsSortedReverseChronologically: getSpotsSortedReverseChronologically,
     getSpotsWithImages: getSpotsWithImages,
     getSpotsWithImagesSortedReverseChronologically: getSpotsWithImagesSortedReverseChronologically,
-    getSpotsWithPetrology: getSpotsWithPetrology,
+    getSpotsWithKey: getSpotsWithKey,
     getSpotsWithSamples: getSpotsWithSamples,
     getSpotsWithSamplesSortedReverseChronologically: getSpotsWithSamplesSortedReverseChronologically,
   }];

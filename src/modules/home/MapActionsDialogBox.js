@@ -48,23 +48,14 @@ const MapActionsDialog = props => {
         {/*  textStyle={styles.dialogText}*/}
         {/*  onPress={() => props.onPress('zoomToOfflineMap')}*/}
         {/*/>*/}
-        {isOnline ? (
+        {isOnline.isInternetReachable && (
           <DialogButton
             style={styles.dialogContent}
-            text={
-              isVisible
-                ? 'Not available in offline map view'
-                : 'Save Map for Offline Use'
-            }
-            textStyle={
-              isVisible
-                ? {...styles.dialogText, color: themes.DARKGREY}
-                : styles.dialogText
-            }
+            text={'Save Map for Offline Use'}
+            textStyle={styles.dialogText}
             onPress={() => props.onPress('saveMap')}
-            disabled={isVisible}
           />
-        ) : null}
+        )}
         <DialogButton
           style={styles.dialogContent}
           text='Add Tag(s) to Spot(s)'
@@ -76,6 +67,12 @@ const MapActionsDialog = props => {
           text='Lasso Spots for Stereonet'
           textStyle={styles.dialogText}
           onPress={() => props.onPress('stereonet')}
+        />
+        <DialogButton
+          style={styles.dialogContent}
+          text='Measure Distance'
+          textStyle={styles.dialogText}
+          onPress={() => props.onPress('mapMeasurement')}
         />
       </DialogContent>
     </Dialog>

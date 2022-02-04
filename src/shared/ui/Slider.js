@@ -23,16 +23,18 @@ const slider = (props) => {
           thumbTintColor={props.thumbTintColor || themes.DARKGREY}
         />
       </View>
-      <View style={props.rotateLabels ? {...styles.sliderTextContainer, paddingTop: 10, paddingBottom: 10}
-        : {...styles.sliderTextContainer}}>
-        {props.labels.map(label => {
-          return (
-            <Text style={props.rotateLabels && {transform: [{rotate: '290deg'}], marginLeft: -12}}>
-              {label}
-            </Text>
-          );
-        })}
-      </View>
+      {!props.isHideLabels && (
+        <View style={props.rotateLabels ? {...styles.sliderTextContainer, paddingTop: 10, paddingBottom: 10}
+          : {...styles.sliderTextContainer}}>
+          {props.labels.map(label => {
+            return (
+              <Text style={props.rotateLabels && {transform: [{rotate: '290deg'}], marginLeft: -12}}>
+                {label}
+              </Text>
+            );
+          })}
+        </View>
+      )}
     </React.Fragment>
   );
 };

@@ -9,11 +9,25 @@ import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {DateInputField, NumberInputField, SelectInputField, TextInputField, useFormHook} from '../form';
 import {LABELS_WITH_ABBREVIATIONS} from '../petrology/petrology.constants';
+import AcknowledgeInput from './AcknowledgeInput';
 
 const Form = (props) => {
   const [useForm] = useFormHook();
 
   const survey = props.surveyFragment || useForm.getSurvey(props.formName);
+
+  const renderAcknowledgeInput = (field) => {
+    return (
+      <Field
+        as={AcknowledgeInput}
+        name={field.name}
+        onShowFieldInfo={showFieldInfo}
+        label={field.label}
+        key={field.name}
+        setFieldValue={props.setFieldValue}
+      />
+    );
+  };
 
   const renderDateInput = (field) => {
     return (
@@ -92,17 +106,18 @@ const Form = (props) => {
       <React.Fragment>
         {fieldType === 'begin_group' && renderGroupHeading(field)}
         {(fieldType === 'text' || fieldType === 'integer' || fieldType === 'decimal' || fieldType === 'select_one'
-          || fieldType === 'select_multiple' || fieldType === 'date') && (
+          || fieldType === 'select_multiple' || fieldType === 'date' || fieldType === 'acknowledge') && (
           <React.Fragment>
             {props.surveyFragment && (fieldType === 'select_one' || fieldType === 'select_multiple')
-            && renderSelectInput(field, true)}
+              && renderSelectInput(field, true)}
             <ListItem containerStyle={commonStyles.listItemFormField}>
               <ListItem.Content>
                 {fieldType === 'text' && renderTextInput(field)}
                 {(fieldType === 'integer' || fieldType === 'decimal') && renderNumberInput(field)}
                 {(!props.surveyFragment && (fieldType === 'select_one' || fieldType === 'select_multiple'))
-                && renderSelectInput(field)}
+                  && renderSelectInput(field)}
                 {fieldType === 'date' && renderDateInput(field)}
+                {fieldType === 'acknowledge' && renderAcknowledgeInput(field)}
               </ListItem.Content>
             </ListItem>
           </React.Fragment>

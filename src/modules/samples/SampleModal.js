@@ -7,7 +7,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import {getNewId} from '../../shared/Helpers';
 import SaveButton from '../../shared/SaveButton';
-import {PRIMARY_TEXT_COLOR} from '../../shared/styles.constants';
+import {PRIMARY_ACCENT_COLOR, PRIMARY_TEXT_COLOR} from '../../shared/styles.constants';
 import DragAnimation from '../../shared/ui/DragAmination';
 import Modal from '../../shared/ui/modal/Modal';
 import {Form, FormSlider, useFormHook} from '../form';
@@ -88,20 +88,13 @@ const SampleModal = (props) => {
     const renderForm = (formProps) => {
       return (
         <React.Fragment>
-          <Form {...{
-            formName: props.formName,
-            surveyFragment: firstKeysFields,
-            ...props.formProps,
-          }}
-          />
-          <FormSlider {...{
-            fieldKey: inplacenessKey,
-            formRef: formRef,
-            survey: survey,
-            choices: choices,
-            labels: ['In Place', 'Float'],
-            ...formProps,
-          }}
+          <Form {...{formName: props.formName, surveyFragment: firstKeysFields, ...props.formProps}}/>
+          <FormSlider
+            fieldKey={inplacenessKey}
+            formProps={props.formProps}
+            survey={survey}
+            choices={choices}
+            labels={['In Place', 'Float']}
           />
           <ButtonGroup
             selectedIndex={formRef.current?.values[orientedKey] === 'yes' ? 0
@@ -111,14 +104,10 @@ const SampleModal = (props) => {
             buttons={['Oriented', 'Unoriented']}
             containerStyle={{height: 40, borderRadius: 10}}
             buttonStyle={{padding: 5}}
+            selectedButtonStyle={{backgroundColor: PRIMARY_ACCENT_COLOR}}
             textStyle={{color: PRIMARY_TEXT_COLOR}}
           />
-          <Form {...{
-            formName: props.formName,
-            surveyFragment: lastKeysFields,
-            ...props.formProps,
-          }}
-          />
+          <Form {...{formName: props.formName, surveyFragment: lastKeysFields,...props.formProps}}/>
         </React.Fragment>
       );
     };

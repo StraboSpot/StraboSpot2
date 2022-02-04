@@ -17,7 +17,7 @@ const InfoModal = () => {
   return (
     <StatusDialogBox
       dialogTitle={'Status Info'}
-      style={commonStyles.dialogWarning}
+      style={commonStyles.dialogError}
       visible={isInfoMessagesModalVisible}
       // onTouchOutside={() => dispatch(setInfoMessagesModalVisible(false))}
     >

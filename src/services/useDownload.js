@@ -25,6 +25,7 @@ import {
 } from '../modules/project/projects.slice';
 import {addedSpots, clearedSpots} from '../modules/spots/spots.slice';
 import {isEmpty} from '../shared/Helpers';
+import {APP_DIRECTORIES} from './device.constants';
 import useDeviceHook from './useDevice';
 import useServerRequestsHook from './useServerRequests';
 
@@ -34,9 +35,6 @@ const useDownload = () => {
   let savedImagesCount = 0;
   let imageCount = 0;
 
-  const devicePath = RNFS.DocumentDirectoryPath;
-  const appDirectory = '/StraboSpot';
-  const imagesDirectoryPath = devicePath + appDirectory + '/Images';
   // const testUrl = 'https://strabospot.org/testimages/images.json';
   // const missingImage = require('../../assets/images/noimage.jpg');
 
@@ -76,45 +74,46 @@ const useDownload = () => {
     catch (err) {
       console.error('Error Downloading Project Properties.', err);
       dispatch(removedLastStatusMessage());
-      dispatch(addedStatusMessage('Error Downloading Project Properties.'));
+      dispatch(addedStatusMessage('Error Downloading Project Properties. ' + err));
       throw Error;
     }
   };
 
   const downloadSpots = async (dataset, encodedLogin) => {
     try {
-      console.log(`Downloading Spots for ${dataset.name}...`);
+      console.log(dataset.name, ':', 'Downloading Spots...');
       const downloadDatasetInfo = await useServerRequests.getDatasetSpots(dataset.id, encodedLogin);
-      console.log('Finished Downloading Spots.');
+      console.log(dataset.name, ':', 'Finished Downloading Spots.');
       dispatch(removedLastStatusMessage());
-      dispatch(addedStatusMessage('Finished Downloading Spots.'));
+      dispatch(addedStatusMessage(`Finished Downloading Spots for ${dataset.name}.`));
       if (!isEmpty(downloadDatasetInfo) && downloadDatasetInfo.features) {
         const spotsOnServer = downloadDatasetInfo.features;
-        console.log(spotsOnServer);
+        console.log(dataset.name, ':', 'Spots Downloaded', spotsOnServer);
         dispatch(addedSpots(spotsOnServer));
         const spotIds = Object.values(spotsOnServer).map(spot => spot.properties.id);
         dispatch(addedSpotsIdsToDataset({datasetId: dataset.id, spotIds: spotIds}));
         await gatherNeededImages(spotsOnServer, dataset);
       }
+      console.log(dataset.name, ':', 'downloadDatasetInfo', downloadDatasetInfo);
       return downloadDatasetInfo;
     }
     catch (err) {
-      console.error('Error Downloading Spots.', err);
-      dispatch(addedStatusMessage('Error Downloading Spots.'));
+      console.error(dataset.name, ':', 'Error Downloading Spots.', err);
+      dispatch(addedStatusMessage('Error Downloading Spots.' + err));
       throw Error;
     }
   };
 
   const gatherNeededImages = async (spotsOnServer, dataset) => {
     try {
-      console.log('Gathering Needed Images...', dataset.name);
+      console.log(dataset.name, ':', 'Gathering Needed Images...');
       const spotImages = await useImages.gatherNeededImages(spotsOnServer);
-      console.log('Images needed', spotImages.neededImagesIds.length, 'of', spotImages?.imageIds.length, 'for',
-        dataset.name);
+      console.log(dataset.name, ':', 'Images needed', spotImages.neededImagesIds.length, 'of',
+        spotImages?.imageIds.length);
       dispatch(addedNeededImagesToDataset({datasetId: dataset.id, images: spotImages}));
     }
     catch (err) {
-      console.error('Error Gathering Images. Error:', err);
+      console.error(dataset.name, ':', 'Error Gathering Images. Error:', err);
     }
   };
 
@@ -123,19 +122,19 @@ const useDownload = () => {
       const imageURI = 'https://strabospot.org/pi/';
       return RNFS.downloadFile({
         fromUrl: imageURI + imageId,
-        toFile: imagesDirectoryPath + '/' + imageId + '.jpg',
+        toFile: APP_DIRECTORIES.IMAGES + imageId + '.jpg',
         begin: res => console.log('IMAGE DOWNLOAD HAS BEGUN', res.jobId),
       }).promise.then(res => {
           console.log('Image Info', res);
           if (res.statusCode === 200) {
             imageCount++;
-            console.log(imageCount, `File ${imageId} saved to: ${imagesDirectoryPath}`);
+            console.log(imageCount, `File ${imageId} saved to: ${APP_DIRECTORIES.IMAGES}`);
           }
           else {
             imageCount++;
             imagesFailedCount++;
             console.log('Error on', imageId);
-            return RNFS.unlink(imagesDirectoryPath + '/' + imageId + '.jpg').then(() => {
+            return RNFS.unlink(APP_DIRECTORIES.IMAGES + imageId + '.jpg').then(() => {
               console.log(`Failed image ${imageId} removed`);
             });
           }
@@ -179,13 +178,14 @@ const useDownload = () => {
       console.log('Starting Dataset Spots Download!');
       dispatch(addedStatusMessage('Downloading Spots in datasets...'));
       dispatch(addedStatusMessage('Gathering Needed Images...'));
-      return await Promise.all(
-        await Object.values(datasets).map(async dataset => {
-          const datasetSpots = await downloadSpots(dataset, user.encoded_login);
-          console.log(`Finished downloading ${dataset.name}'s spots:`, datasetSpots);
-          return {dataset: dataset, spots: datasetSpots};
-        }),
-      );
+
+      // Synchronous download
+      return await Object.values(datasets).reduce(async (previousPromise, dataset, i) => {
+        await previousPromise;
+        const datasetSpots = await downloadSpots(dataset, user.encoded_login);
+        console.log(dataset.name, ':', 'Finished downloading and saving Spots', datasetSpots);
+        return {dataset: dataset, spots: datasetSpots};
+      }, Promise.resolve());
     }
   };
 
@@ -200,7 +200,7 @@ const useDownload = () => {
     try {
       await downloadProject(selectedProject);
       await downloadDatasets(selectedProject);
-      console.log('Download Complete!');
+      console.log('Download Complete! Spots Downloaded!');
       dispatch(addedStatusMessage('------------------'));
       dispatch(addedStatusMessage('Downloading Datasets Complete!'));
       dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
@@ -208,7 +208,7 @@ const useDownload = () => {
     }
     catch (err) {
       console.error('Error Initializing Download.', err);
-      dispatch(addedStatusMessage('Download Failed!'));
+      dispatch(addedStatusMessage('Download Failed!', err));
       dispatch(setLoadingStatus({view: 'modal', bool: false}));
     }
   };
@@ -222,7 +222,7 @@ const useDownload = () => {
       dispatch(addedStatusMessage('Downloading Needed Images...'));
       if (!isEmpty(neededImageIds)) {
         // Check path first, if doesn't exist, then create
-        await useDevice.doesDeviceDirectoryExist(imagesDirectoryPath);
+        await useDevice.doesDeviceDirectoryExist(APP_DIRECTORIES.IMAGES);
         await Promise.all(
           neededImageIds.map(async imageId => {
             await downloadAndSaveImagesToDevice(imageId);

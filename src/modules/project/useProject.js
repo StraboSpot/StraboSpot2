@@ -1,6 +1,7 @@
 import RNFS from 'react-native-fs';
 import {batch, useDispatch, useSelector} from 'react-redux';
 
+import {APP_DIRECTORIES} from '../../services/device.constants';
 import useDownloadHook from '../../services/useDownload';
 import useImportHook from '../../services/useImport';
 import useServerRequests from '../../services/useServerRequests';
@@ -9,37 +10,35 @@ import {
   addedStatusMessage,
   clearedStatusMessages,
   removedLastStatusMessage,
-  setBackupModalVisible, setBackupOverwriteModalVisible,
+  setBackupModalVisible,
+  setBackupOverwriteModalVisible, setErrorMessagesModalVisible,
   setLoadingStatus,
   setStatusMessagesModalVisible,
   setUploadModalVisible,
 } from '../home/home.slice';
 import {clearedMaps} from '../maps/maps.slice';
 import {clearedSpots, deletedSpot} from '../spots/spots.slice';
-import {DEFAULT_GEOLOGIC_TYPES, DEFAULT_RELATIONSHIP_TYPES} from './project.constants';
 import * as ProjectActions from './project.constants';
+import {DEFAULT_GEOLOGIC_TYPES, DEFAULT_RELATIONSHIP_TYPES} from './project.constants';
 import {
   addedDataset,
   addedProjectDescription,
   clearedDatasets,
   deletedDataset,
-  deletedSpotIdFromDataset,
+  deletedSpotIdFromDatasets,
   setActiveDatasets,
   setSelectedDataset,
   setSelectedProject,
 } from './projects.slice';
 
 const useProject = () => {
-  const devicePath = RNFS.DocumentDirectoryPath;
-  const appDirectoryForDistributedBackups = '/ProjectBackups';
-
   const dispatch = useDispatch();
   const activeDatasetsIds = useSelector(state => state.project.activeDatasetsIds);
   const datasets = useSelector(state => state.project.datasets);
   const selectedDatasetId = useSelector(state => state.project.selectedDatasetId);
   const selectedProject = useSelector(state => state.project.selectedProject || {});
   const user = useSelector(state => state.user);
-  const isOnline = useSelector(state => state.home.isOnline);
+  // const isOnline = useSelector(state => state.home.isOnline);
 
   const [serverRequests] = useServerRequests();
   const useDownload = useDownloadHook();
@@ -92,11 +91,11 @@ const useProject = () => {
       modified_timestamp: Date.now(),
       other_features: DEFAULT_GEOLOGIC_TYPES,
       relationship_types: DEFAULT_RELATIONSHIP_TYPES,
-      templates: {useMeasurementTemplates: false, activeMeasurementTemplates: [], measurementTemplates: []},
+      templates: {},
       useContinuousTagging: false,
     };
     dispatch(addedProjectDescription(currentProject));
-    const defaultDataset = await createDataset();
+    const defaultDataset = createDataset();
     dispatch(addedDataset(defaultDataset));
   };
 
@@ -110,7 +109,7 @@ const useProject = () => {
         let spotsDeletedCount = 0;
         console.log(datasets[id].spotIds.length, 'Spot(s) in Dataset to Delete.');
         await Promise.all(datasets[id].spotIds.map(spotId => {
-            dispatch(deletedSpotIdFromDataset(spotId));
+            dispatch(deletedSpotIdFromDatasets(spotId));
             dispatch(deletedSpot(spotId));
             spotsDeletedCount++;
             console.log('Deleted', spotsDeletedCount, 'Spot(s)');
@@ -141,9 +140,9 @@ const useProject = () => {
 
   const doesDeviceBackupDirExist = async (subDirectory) => {
     if (subDirectory !== undefined) {
-      return await RNFS.exists(devicePath + appDirectoryForDistributedBackups + '/' + subDirectory);
+      return await RNFS.exists(APP_DIRECTORIES.BACKUP_DIR + subDirectory);
     }
-    else return await RNFS.exists(devicePath + appDirectoryForDistributedBackups);
+    else return await RNFS.exists(APP_DIRECTORIES.BACKUP_DIR);
   };
 
   const getActiveDatasets = () => {
@@ -158,10 +157,10 @@ const useProject = () => {
   };
 
   const getAllDeviceProjects = async () => {
-    const deviceProject = await RNFS.exists(devicePath + appDirectoryForDistributedBackups).then(res => {
+    const deviceProject = await RNFS.exists(APP_DIRECTORIES.BACKUP_DIR).then(res => {
       console.log('/StraboProjects exists:', res);
       if (res) {
-        return RNFS.readdir(devicePath + appDirectoryForDistributedBackups).then(files => {
+        return RNFS.readdir(APP_DIRECTORIES.BACKUP_DIR).then(files => {
           let id = 0;
           if (!isEmpty(files)) {
             const deviceFiles = files.map(file => {
@@ -195,9 +194,9 @@ const useProject = () => {
     return Promise.resolve();
   };
 
-  const setSwitchValue = async (val, dataset) => {
+  const setSwitchValue = async (val, dataset) => { //TODO look at setSwitchValue to see if condition is needed.
     try {
-      if (isOnline && !isEmpty(user.name) && val) {
+      if (!isEmpty(user.name) && val) {
         dispatch(setActiveDatasets({bool: val, dataset: dataset.id}));
         dispatch(setSelectedDataset(dataset.id));
       }
@@ -230,12 +229,17 @@ const useProject = () => {
     }
     catch (err) {
       console.error('Error switching project in useProject', err);
+      dispatch(setStatusMessagesModalVisible(false));
+      dispatch(clearedStatusMessages());
+      dispatch(addedStatusMessage('Error switching project!'));
+      dispatch(setErrorMessagesModalVisible(true));
     }
   };
 
   const projectHelpers = {
     addDataset: addDataset,
     checkValidDateTime: checkValidDateTime,
+    createDataset: createDataset,
     createProject: createProject,
     destroyDataset: destroyDataset,
     destroyOldProject: destroyOldProject,

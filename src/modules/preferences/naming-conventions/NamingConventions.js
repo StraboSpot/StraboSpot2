@@ -26,7 +26,7 @@ const NamingConventions = () => {
       onSubmit={(values) => console.log('Submitting form...', values)}
       validate={(values) => useForm.validateForm({formName: formName, values: values})}
       children={(formProps) => (
-        <Form {...formProps} {...{formName: formName, onMyChange: onMyChange}}/>
+        <Form {...{...formProps, formName: formName, onMyChange: onMyChange}}/>
       )}
       initialValues={preferences}
       validateOnChange={false}

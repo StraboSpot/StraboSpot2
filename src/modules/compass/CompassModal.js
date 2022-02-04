@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {Platform, Text, View} from 'react-native';
 
-import {Button, Overlay} from 'react-native-elements';
+import {Overlay} from 'react-native-elements';
 import {useDispatch} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
@@ -10,7 +10,7 @@ import modalStyle from '../../shared/ui/modal/modal.style';
 import Spacer from '../../shared/ui/Spacer';
 import uiStyles from '../../shared/ui/ui.styles';
 import {setModalVisible} from '../home/home.slice';
-// import Templates from '../templates/Templates';
+import Templates from '../templates/Templates';
 import Compass from './Compass';
 import {setCompassMeasurements} from './compass.slice';
 import compassStyles from './compass.styles';
@@ -99,10 +99,10 @@ const CompassModal = (props) => {
       onPress={props.onPress}
       buttonTitleRight={isShowTemplates && ''}
     >
-      {/*<Templates*/}
-      {/*  isShowTemplates={isShowTemplates}*/}
-      {/*  setIsShowTemplates={bool => setIsShowTemplates(bool)}*/}
-      {/*/>*/}
+      <Templates
+        isShowTemplates={isShowTemplates}
+        setIsShowTemplates={bool => setIsShowTemplates(bool)}
+      />
       <View>
         {!isShowTemplates
         && (

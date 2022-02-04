@@ -6,6 +6,9 @@ const type = Platform.OS === 'ios' ? 'screen' : 'window';
 const height = Dimensions.get(type).height;
 
 const commonStyles = StyleSheet.create({
+  alignItemsCenter: {
+    alignItems: 'center',
+  },
   buttonContainer: {
     paddingTop: 10,
   },
@@ -38,8 +41,11 @@ const commonStyles = StyleSheet.create({
     height: 40,
     backgroundColor: 'white',
   },
-  dialogWarning: {
+  dialogError: {
     backgroundColor: 'red',
+  },
+  dialogWarning: {
+    backgroundColor: 'yellow',
   },
   dialogText: {
     paddingTop: 10,
@@ -104,6 +110,10 @@ const commonStyles = StyleSheet.create({
   },
   standardButtonText: {
     color: themes.PRIMARY_ACCENT_COLOR,
+    fontSize: themes.MEDIUM_TEXT_SIZE,
+  },
+  standardButtonTextInverse: {
+    color: themes.SECONDARY_BACKGROUND_COLOR,
     fontSize: themes.MEDIUM_TEXT_SIZE,
   },
   standardDescriptionText: {

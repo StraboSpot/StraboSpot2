@@ -10,6 +10,7 @@ import * as themes from '../../shared/styles.constants';
 import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import {Form, useFormHook} from '../form';
 import usePetrologyHook from '../petrology/usePetrology';
+import useSedHook from '../sed/useSed';
 import {editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
 import {useTagsHook} from '../tags';
 import {PAGE_KEYS} from './page.constants';
@@ -17,15 +18,17 @@ import {PAGE_KEYS} from './page.constants';
 const BasicPageDetail = (props) => {
   const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
+
   const [useTags] = useTagsHook();
   const [useForm] = useFormHook();
   const usePetrology = usePetrologyHook();
+  const useSed = useSedHook();
 
   const formRef = useRef(null);
 
   const groupKey = props.groupKey || 'general';
   const pageKey = props.page.key === PAGE_KEYS.FABRICS && props.selectedFeature.type === 'fabric' ? '_3d_structures'
-    : props.page.key;
+    : props.page.key === PAGE_KEYS.ROCK_TYPE_SEDIMENTARY ? PAGE_KEYS.LITHOLOGIES : props.page.key;
   const pageData = props.groupKey && spot.properties[groupKey] ? spot.properties[groupKey][pageKey] || []
     : spot.properties[pageKey] || [];
   const title = groupKey === 'pet' && pageKey === PAGE_KEYS.ROCK_TYPE_IGNEOUS
@@ -33,13 +36,19 @@ const BasicPageDetail = (props) => {
     ? toTitleCase(props.selectedFeature.igneous_rock_class.replace('_', ' ') + ' Rock')
     : props.page.label_singular || toTitleCase(props.page.label).slice(0, -1);
 
+  const isTemplate = props.hasOwnProperty('saveTemplate');
+
   useLayoutEffect(() => {
     return () => confirmLeavePage();
   }, []);
 
   useEffect(() => {
+    return () => dispatch(setSelectedAttributes([]));
+  }, []);
+
+  useEffect(() => {
     console.log('UE BasicPageDetail Selected Feature', title, props.selectedFeature);
-    if (isEmpty(props.selectedFeature)) props.closeDetailView();
+    if (!isTemplate && isEmpty(props.selectedFeature)) props.closeDetailView();
   }, [props.selectedFeature]);
 
   const cancelForm = async () => {
@@ -48,7 +57,7 @@ const BasicPageDetail = (props) => {
   };
 
   const confirmLeavePage = () => {
-    if (formRef.current && formRef.current.dirty) {
+    if (!isTemplate && formRef.current && formRef.current.dirty) {
       const formCurrent = formRef.current;
       Alert.alert('Unsaved Changes',
         'Would you like to save your data before continuing?',
@@ -67,6 +76,7 @@ const BasicPageDetail = (props) => {
   const deleteFeature = () => {
     useTags.deleteFeatureTags([props.selectedFeature]);
     if (groupKey === 'pet') usePetrology.deletePetFeature(pageKey, spot, props.selectedFeature);
+    else if (groupKey === 'sed') useSed.deleteSedFeature(pageKey, spot, props.selectedFeature);
     else {
       let editedPageData = pageData ? JSON.parse(JSON.stringify(pageData)) : [];
       editedPageData = editedPageData.filter(f => f.id !== props.selectedFeature.id);
@@ -107,13 +117,12 @@ const BasicPageDetail = (props) => {
           onReset={() => console.log('Resetting form...')}
           validate={(values) => useForm.validateForm({formName: formName, values: values})}
           children={(formProps) => (
-            <Form
-              {...formProps}
-              {...{
-                formName: formName,
-                onMyChange: props.onChange && ((name, value) => props.onChange(formRef.current, name, value)),
-              }}
-            />
+            <Form {...{
+              ...formProps,
+              formName: formName,
+              onMyChange: props.page.key === PAGE_KEYS.MINERALS && ((name, value) => usePetrology.onMineralChange(
+                formRef.current, name, value)),
+            }}/>
           )}
           initialValues={props.selectedFeature}
           validateOnChange={false}
@@ -121,9 +130,9 @@ const BasicPageDetail = (props) => {
         />
         <Button
           titleStyle={{color: themes.RED}}
-          title={'Delete ' + title}
+          title={'Delete ' + title + (isTemplate ? ' Template' : '')}
           type={'clear'}
-          onPress={() => deleteFeatureConfirm()}
+          onPress={() => isTemplate ? props.deleteTemplate() : deleteFeatureConfirm()}
         />
       </View>
     );
@@ -151,18 +160,31 @@ const BasicPageDetail = (props) => {
 
   const saveForm = async (formCurrent) => {
     if (groupKey === 'pet') await usePetrology.savePetFeature(pageKey, spot, formCurrent);
+    else if (groupKey === 'sed' && pageKey === 'bedding') await useSed.saveSedBedFeature(pageKey, spot, formCurrent);
+    else if (groupKey === 'sed') await useSed.saveSedFeature(pageKey, spot, formCurrent);
     else await saveFeature(formCurrent);
     await formCurrent.resetForm();
     props.closeDetailView();
   };
 
+  const saveTemplate = async (formCurrent) => {
+    await formCurrent.submitForm();
+    if (useForm.hasErrors(formCurrent)) {
+      useForm.showErrors(formCurrent);
+      console.log('Found validation errors.');
+      throw Error;
+    }
+    let formValues = {...formCurrent.values};
+    props.saveTemplate(formValues);
+  };
+
   return (
     <React.Fragment>
-      {!isEmpty(props.selectedFeature) && (
+      {(isTemplate || !isEmpty(props.selectedFeature)) && (
         <React.Fragment>
           <SaveAndCloseButton
             cancel={cancelForm}
-            save={() => saveForm(formRef.current)}
+            save={() => isTemplate ? saveTemplate(formRef.current) : saveForm(formRef.current)}
           />
           <FlatList ListHeaderComponent={renderFormFields()}/>
         </React.Fragment>

@@ -1,5 +1,5 @@
 import React from 'react';
-import {ScrollView, Switch, View} from 'react-native';
+import {FlatList, Switch, View} from 'react-native';
 
 import {Icon, ListItem} from 'react-native-elements';
 import Dialog, {DialogContent, DialogTitle} from 'react-native-popup-dialog';
@@ -7,10 +7,11 @@ import {ScaleAnimation} from 'react-native-popup-dialog/src';
 import {useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
-import {isEmpty} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
+import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
+import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SectionDivider from '../../shared/ui/SectionDivider';
-import {BASEMAPS, CUSTOMBASEMAPS} from '../maps/maps.constants';
+import {BASEMAPS} from '../maps/maps.constants';
 import useMapsOfflineHook from '../maps/offline-maps/useMapsOffline';
 import useMapsHook from '../maps/useMaps';
 import styles from './dialog.styles';
@@ -28,14 +29,149 @@ const BaseMapDialog = props => {
   const currentBasemap = useSelector(state => state.map.currentBasemap);
   const isOnline = useSelector(state => state.home.isOnline);
   const offlineMaps = useSelector(state => state.offlineMap.offlineMaps);
-  const customMapsArr = Object.values(customMaps);
 
   const conditions = ['http', 'https'];
 
-  const checkForCustomMaps = () => {
+  const checkForOfflineCustomMaps = () => {
     return Object.values(offlineMaps).some(map => {
       return map.source === 'map_warper' || map.source === 'strabospot_mymaps';
     });
+  };
+
+  const checkMapOverlay = () => {
+    return Object.values(customMaps).some(map => map.overlay === false);
+  };
+
+  const renderDefaultBasemapsList = () => {
+    let sectionTitle = 'Default Basemaps';
+    let mapsToDisplay = BASEMAPS;
+    if (!isOnline.isInternetReachable) {
+      mapsToDisplay = Object.values(offlineMaps).reduce((acc, offlineMap) => {
+        return offlineMap.source === 'strabo_spot_mapbox' || offlineMap.id === 'mapbox.outdoors' || offlineMap.id === 'mapbox.satellite'
+          ? [...acc, offlineMap] : acc;
+      }, []);
+      sectionTitle = 'Offline Default Basemaps';
+    }
+    return (
+      <View>
+        <SectionDivider dividerText={sectionTitle}/>
+        <FlatList
+          keyExtractor={item => item.id}
+          data={mapsToDisplay}
+          renderItem={({item}) => renderDefaultMapItem(item)}
+          ItemSeparatorComponent={FlatListItemSeparator}
+          scrollEnabled={false}
+        />
+      </View>
+    );
+  };
+
+  const renderCustomBasemapsList = () => {
+    let sectionTitle = 'Custom Basemaps';
+    let customMapsToDisplay = Object.values(customMaps).filter((customMap) => !customMap.overlay);
+    if (!isOnline.isInternetReachable) {
+      customMapsToDisplay = Object.values(offlineMaps).filter((map) => {
+        if (map.source === 'map_warper' || map.source === 'strabospot_mymaps') return offlineMaps[map.id];
+      });
+      sectionTitle = 'Offline Custom Basemaps';
+    }
+    return (
+      <View style={{maxHeight: 250}}>
+        <SectionDivider dividerText={sectionTitle}/>
+        <FlatList
+          keyExtractor={item => item.id}
+          data={Object.values(customMapsToDisplay)}
+          renderItem={({item}) => renderCustomMapItem(item)}
+          ItemSeparatorComponent={FlatListItemSeparator}
+          ListEmptyComponent={<ListEmptyText text={`No ${sectionTitle}`}/>}
+        />
+      </View>
+    );
+  };
+
+  const renderCustomMapOverlaysList = () => {
+    let sectionTitle = 'Custom Map Overlays';
+    let customMapOverlaysToDisplay = Object.values(customMaps).filter((customMap) => customMap.overlay);
+    if (!isOnline.isInternetReachable) {
+      customMapOverlaysToDisplay = customMapOverlaysToDisplay.filter((customMap) => offlineMaps[customMap.id]);
+      sectionTitle = 'Offline Custom Overlays';
+    }
+    return (
+      <View style={{maxHeight: 250}}>
+        <SectionDivider dividerText={sectionTitle}/>
+        <FlatList
+          keyExtractor={item => item.id}
+          data={customMapOverlaysToDisplay}
+          renderItem={({item}) => renderMapOverlayItem(item)}
+          ListEmptyComponent={<ListEmptyText text={`No ${sectionTitle}`}/>}
+        />
+      </View>
+    );
+  };
+
+  const renderCustomMapItem = (customMap) => (
+    <ListItem
+      containerStyle={styles.dialogContent}
+      key={customMap.id}
+      onPress={() => setBaseMap(customMap)}>
+      <ListItem.Content style={{}}>
+        <ListItem.Title style={commonStyles.listItemTitle}>{customMap.title || customMap.name} -
+          ({customMap.source})</ListItem.Title>
+        {!isOnline.isInternetReachable
+        && <ListItem.Subtitle style={{paddingTop: 5}}>({customMap.count} tiles)</ListItem.Subtitle>}
+      </ListItem.Content>
+      {currentBasemap && customMap.id === currentBasemap.id
+      && <Icon type={'ionicon'} color={themes.BLUE} name={'checkmark-outline'}/>}
+    </ListItem>
+  );
+
+  const renderDefaultMapItem = (map) => (
+    <ListItem
+      key={map.id}
+      containerStyle={styles.dialogContent}
+      onPress={() => isOnline.isInternetReachable ? useMaps.setBasemap(map.id) : useMapsOffline.setOfflineMapTiles(map)}
+    >
+      <ListItem.Content>
+        <ListItem.Title style={commonStyles.listItemTitle}>{map.title || map.name}</ListItem.Title>
+        {!isOnline.isInternetReachable
+        && <ListItem.Subtitle style={{paddingTop: 5}}>({map.count} tiles)</ListItem.Subtitle>}
+      </ListItem.Content>
+      {currentBasemap && currentBasemap.id && map.id === currentBasemap.id
+      && <Icon type={'ionicon'} color={themes.BLUE} name={'checkmark-outline'}/>}
+    </ListItem>
+  );
+
+  const renderMapOverlayItem = (customMap) => (
+    <ListItem
+      containerStyle={styles.dialogContent}
+      key={customMap.id}
+      // onPress={async () => {
+      //   const baseMap = await useMaps.setBasemap(customMap.id);
+      //   props.close();
+      //   setTimeout(() => props.zoomToCustomMap(baseMap.bbox), 1000);
+      // }}
+    >
+      <ListItem.Content style={{}}>
+        <ListItem.Title style={commonStyles.listItemTitle}>{customMap.title || customMap.name} -
+          ({customMap.source})</ListItem.Title>
+        {!isOnline.isInternetReachable
+        && <ListItem.Subtitle style={{paddingTop: 5}}>({customMap.count} tiles)</ListItem.Subtitle>}
+      </ListItem.Content>
+      <Switch
+        style={{marginRight: 10}}
+        value={customMap.isViewable}
+        onValueChange={(val) => useMaps.setCustomMapSwitchValue(val, customMap)}
+      />
+    </ListItem>
+  );
+
+  const setBaseMap = async (customMap) => {
+    if (isOnline.isInternetReachable) {
+      const baseMap = await useMaps.setBasemap(customMap.id);
+      props.close();
+      customMap.bbox && setTimeout(() => props.zoomToCustomMap(baseMap.bbox), 1000);
+    }
+    else useMapsOffline.setOfflineMapTiles(customMap);
   };
 
   return (
@@ -52,135 +188,12 @@ const BaseMapDialog = props => {
       onTouchOutside={props.onTouchOutside}
     >
       <DialogContent>
-        {isOnline && (
-          <View style={!isEmpty(customMaps) && {borderBottomWidth: 1}}>
-            <SectionDivider dividerText={'Default Basemaps'}/>
-            {BASEMAPS.map((map, i) => {
-              return (
-                <ListItem
-                  key={map.id}
-                  containerStyle={styles.dialogContent}
-                  bottomDivider={i < BASEMAPS.length - 2}
-                  onPress={() => props.onPress(map.id)}>
-                  <ListItem.Content>
-                    <ListItem.Title style={commonStyles.listItemTitle}>{map.title}</ListItem.Title>
-                  </ListItem.Content>
-                  {currentBasemap && currentBasemap.id && map.id === currentBasemap.id
-                  && conditions.some(el => currentBasemap.url[0].includes(el))
-                  && <Icon type={'ionicon'} color={themes.BLUE} name={'checkmark-outline'}/>}
-                </ListItem>
-              );
-            })}
-          </View>
-        )}
-        {!isOnline && (
-          <View style={!isEmpty(customMaps) && {borderBottomWidth: 1}}>
-            <SectionDivider dividerText={'Offline Default Basemaps'}/>
-            {Object.values(offlineMaps).map((map, i) => {
-              if (map.source === 'strabo_spot_mapbox') {
-                return (
-                  <ListItem
-                    key={map.id}
-                    containerStyle={styles.dialogContent}
-                    bottomDivider={i < BASEMAPS.length - 2}
-                    onPress={() => useMapsOffline.setOfflineMapTiles(map)}>
-                    <ListItem.Content>
-                      <ListItem.Title style={commonStyles.listItemTitle}>{useMapsOffline.getMapName(
-                        map)}</ListItem.Title>
-                      <ListItem.Subtitle style={{paddingTop: 5}}>({map.count} tiles)</ListItem.Subtitle>
-                    </ListItem.Content>
-                    {currentBasemap && map.id === currentBasemap.id
-                    && <Icon type={'ionicon'} color={themes.BLUE} name={'checkmark-outline'}/>}
-                  </ListItem>
-                );
-              }
-            })}
-          </View>
-        )}
-        {!isOnline && checkForCustomMaps() && (
-          <View style={!isEmpty(offlineMaps) && {borderBottomWidth: 1}}>
-            <SectionDivider dividerText={'Offline Custom Basemaps'}/>
-            {Object.values(offlineMaps).map((map, i) => {
-              if (map.source === 'map_warper' || map.source === 'strabospot_mymaps') {
-                return (
-                  <ListItem
-                    key={map.id}
-                    bottomDivider={i < CUSTOMBASEMAPS.length - 2}
-                    onPress={() => {
-                      useMapsOffline.setOfflineMapTiles(map);
-                      props.zoomToCenterOfflineTile();
-                    }}
-                  >
-                    <ListItem.Content>
-                      <ListItem.Title style={commonStyles.listItemTitle}>
-                        {useMapsOffline.getMapName(map)}
-                      </ListItem.Title>
-                      <ListItem.Subtitle style={{paddingTop: 5}}>({map.count} tiles)</ListItem.Subtitle>
-                    </ListItem.Content>
-                    {currentBasemap && map.id === currentBasemap.id
-                    && <Icon type={'ionicon'} color={themes.BLUE} name={'checkmark-outline'}/>}
-                  </ListItem>
-                );
-              }
-            })}
-          </View>
-        )}
         <View>
-          {!isEmpty(customMaps) && customMapsArr.some(map => !map.overlay) && isOnline && (
-            <ScrollView style={{maxHeight: 400}}>
-              <SectionDivider dividerText={'Custom Basemaps'}/>
-              {customMapsArr.map((customMap, i) => {
-                return (
-                  !customMap.overlay
-                  && (
-                    <ListItem
-                      containerStyle={styles.customBaseMapListContainer}
-                      bottomDivider={i < customMapsArr.length - 1}
-                      key={customMap.id}
-                      onPress={async () => {
-                        const baseMap = await useMaps.setBasemap(customMap.id);
-                        props.close();
-                        setTimeout(() => props.zoomToCustomMap(baseMap.bbox), 1000);
-                      }}>
-                      <ListItem.Content>
-                        <View style={styles.itemContainer}>
-                          <ListItem.Title style={commonStyles.listItemTitle}>{customMap.title}</ListItem.Title>
-                        </View>
-                      </ListItem.Content>
-                      {isOnline && currentBasemap && customMap.id === currentBasemap.id
-                      && conditions.some(el => currentBasemap.url[0].includes(el))
-                      && <Icon type={'ionicon'} color={themes.BLUE} name={'checkmark-outline'}/>}
-                    </ListItem>
-                  )
-                );
-              })}
-            </ScrollView>
-          )}
+          {renderDefaultBasemapsList()}
+          {renderCustomBasemapsList()}
+          {renderCustomMapOverlaysList()}
+          <View/>
         </View>
-        {!isEmpty(customMaps) && customMapsArr.some(map => map.overlay) && <ScrollView style={{maxHeight: 400}}>
-          <SectionDivider dividerText={'Custom Map Overlays'} style={{}}/>
-          {customMapsArr.map((customMap, i) => {
-            return (
-              customMap.overlay && (
-                <ListItem
-                  containerStyle={styles.customBaseMapListContainer}
-                  bottomDivider={i < customMapsArr.length - 1}
-                  key={customMap.id}>
-                  <ListItem.Content>
-                    <View style={styles.itemContainer}>
-                      <ListItem.Title style={commonStyles.listItemTitle}>{customMap.title}</ListItem.Title>
-                    </View>
-                  </ListItem.Content>
-                  <Switch
-                    style={{marginRight: 10}}
-                    value={customMap.isViewable}
-                    onValueChange={(val) => useMaps.setCustomMapSwitchValue(val, customMap)}
-                  />
-                </ListItem>
-              )
-            );
-          })}
-        </ScrollView>}
       </DialogContent>
     </Dialog>
   );

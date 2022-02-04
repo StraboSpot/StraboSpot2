@@ -12,7 +12,6 @@
       "type": "text",
       "name": "label",
       "label": "Label",
-      "hint": "If a label is not specified a default label will be given.",
       "required": "false"
     },
     {
@@ -70,7 +69,7 @@
       "label": "Mineral(s) that define planar fabric",
       "required": "false",
       "appearance": "numbers",
-      "relevant": "not(selected(${planar_fabric}, 'no_planar')) and ${planar_fabric} != ''"
+      "relevant": "${planar_fabric} != ''"
     },
     {
       "type": "text",
@@ -78,7 +77,7 @@
       "label": "Mineral(s) that define planar fabric",
       "required": "false",
       "appearance": "numbers",
-      "relevant": "not(selected(${planar_fabric}, 'no_planar')) and ${planar_fabric} != ''"
+      "relevant": "${planar_fabric} != ''"
     },
     {
       "type": "text",
@@ -86,7 +85,7 @@
       "label": "Mineral(s) that define planar fabric",
       "required": "false",
       "appearance": "numbers",
-      "relevant": "not(selected(${planar_fabric}, 'no_planar')) and ${planar_fabric} != ''"
+      "relevant": "${planar_fabric} != ''"
     },
     {
       "type": "text",
@@ -94,15 +93,14 @@
       "label": "Mineral(s) that define planar fabric",
       "required": "false",
       "appearance": "numbers",
-      "relevant": "not(selected(${planar_fabric}, 'no_planar')) and ${planar_fabric} != ''"
+      "relevant": "${planar_fabric} != ''"
     },
     {
       "type": "select_one jw6do33",
       "name": "spatial_var",
       "label": "Spatial variability",
       "required": "false",
-      "appearance": "horizontal-compact",
-      "relevant": "not(selected(${planar_fabric}, 'no_planar')) and ${planar_fabric} != ''"
+      "appearance": "horizontal-compact"
     },
     {
       "type": "text",
@@ -143,28 +141,28 @@
       "name": "lin_fab_min_1",
       "label": "Mineral(s) that define the linear fabric",
       "required": "false",
-      "relevant": "not(selected(${linear_fab}, 'no_lin')) and ${linear_fab} != '' and not(selected(${linear_fab}, 'intersect_lin'))"
+      "relevant": "${linear_fab} != '' and not(selected(${linear_fab}, 'intersect_lin'))"
     },
     {
       "type": "text",
       "name": "lin_fab_min_2",
       "label": "Mineral(s) that define the linear fabric",
       "required": "false",
-      "relevant": "not(selected(${linear_fab}, 'no_lin')) and ${linear_fab} != '' and not(selected(${linear_fab}, 'intersect_lin'))"
+      "relevant": "${linear_fab} != '' and not(selected(${linear_fab}, 'intersect_lin'))"
     },
     {
       "type": "text",
       "name": "lin_fab_min_3",
       "label": "Mineral(s) that define the linear fabric",
       "required": "false",
-      "relevant": "not(selected(${linear_fab}, 'no_lin')) and ${linear_fab} != '' and not(selected(${linear_fab}, 'intersect_lin'))"
+      "relevant": "${linear_fab} != '' and not(selected(${linear_fab}, 'intersect_lin'))"
     },
     {
       "type": "text",
       "name": "lin_fab_min_4",
       "label": "Mineral(s) that define the linear fabric",
       "required": "false",
-      "relevant": "not(selected(${linear_fab}, 'no_lin')) and ${linear_fab} != '' and not(selected(${linear_fab}, 'intersect_lin'))"
+      "relevant": "${linear_fab} != '' and not(selected(${linear_fab}, 'intersect_lin'))"
     },
     {
       "type": "select_multiple ps78s13",
@@ -416,157 +414,19 @@
       "relevant": "selected(${additional_fab}, 'other')"
     },
     {
-      "type": "select_one ge6og85",
-      "name": "kinematic_ind",
-      "label": "Kinematic indicators present?",
-      "required": "false"
-    },
-    {
       "type": "select_multiple lw8uh27",
       "name": "kinematic_fab",
-      "label": "Kinematic fabrics",
+      "label": "Kinematic indicator(s)?",
       "required": "false",
-      "appearance": "horizontal-compact",
-      "relevant": "${kinematic_ind} = 'kin_yes'"
+      "appearance": "horizontal-compact"
     },
     {
       "type": "text",
       "name": "ob_grain_char",
-      "label": "Characterize oblique grain shape fabric",
-      "hint": "E.g. what mineral(s) define the grain shape fabric?",
+      "label": "Characterize kinematic indicator(s)",
       "required": "false",
       "appearance": "multiline",
-      "relevant": "selected(${kinematic_fab}, 'oblique_fabric')"
-    },
-    {
-      "type": "text",
-      "name": "asym_fold_char",
-      "label": "Characterize asymmetric folds",
-      "hint": "E.g. what is being folded, fold classification, etc.",
-      "required": "false",
-      "appearance": "multiline",
-      "relevant": "selected(${kinematic_fab}, 'asymm_fold')"
-    },
-    {
-      "type": "text",
-      "name": "asym_clst_char",
-      "label": "Characterize asymmetric clast(s)",
-      "hint": "E.g. what is the clast mineralogy",
-      "required": "false",
-      "appearance": "multiline",
-      "relevant": "selected(${kinematic_fab}, 'asymm_clast')"
-    },
-    {
-      "type": "text",
-      "name": "mica_fish_char",
-      "label": "Characterize mica fish",
-      "hint": "E.g. what type of mica",
-      "required": "false",
-      "appearance": "multiline",
-      "relevant": "selected(${kinematic_fab}, 'mica_fish')"
-    },
-    {
-      "type": "text",
-      "name": "book_slip_char",
-      "label": "Characterize bookshelf slip",
-      "hint": "E.g. what phases record bookshelf slip",
-      "required": "false",
-      "appearance": "multiline",
-      "relevant": "selected(${kinematic_fab}, 'bookshelf_slip')"
-    },
-    {
-      "type": "text",
-      "name": "s_c_char",
-      "label": "Characterize S-C fabric",
-      "hint": "E.g. what phases define S and C surfaces, etc.",
-      "required": "false",
-      "appearance": "multiline",
-      "relevant": "selected(${kinematic_fab}, 's_c')"
-    },
-    {
-      "type": "text",
-      "name": "riedel_char",
-      "label": "Characterize Riedel fracture/shear",
-      "required": "false",
-      "appearance": "multiline",
-      "relevant": "selected(${kinematic_fab}, 'riedel_shear')"
-    },
-    {
-      "type": "text",
-      "name": "sig_gash_char",
-      "label": "Characterize sigmoidal tension gash(es)",
-      "required": "false",
-      "appearance": "multiline",
-      "relevant": "selected(${kinematic_fab}, 'sigmoidal_gash')"
-    },
-    {
-      "type": "text",
-      "name": "drag_fold_char",
-      "label": "Characterize drag folds",
-      "hint": "E.g. what is being folded and along what structure",
-      "required": "false",
-      "appearance": "multiline",
-      "relevant": "selected(${kinematic_fab}, 'drag_folds')"
-    },
-    {
-      "type": "text",
-      "name": "off_def_mark",
-      "label": "Characterize offset or deflected marker",
-      "hint": "E.g. what is offset and how?",
-      "required": "false",
-      "appearance": "multiline",
-      "relevant": "selected(${kinematic_fab}, 'offset_deflect')"
-    },
-    {
-      "type": "text",
-      "name": "minor_off",
-      "label": "Characterize minor offset",
-      "hint": "E.g. what is offset and how?",
-      "required": "false",
-      "appearance": "multiline",
-      "relevant": "selected(${kinematic_fab}, 'minor_offset')"
-    },
-    {
-      "type": "text",
-      "name": "crescent_char",
-      "label": "Characterize crescentic fractures",
-      "required": "false",
-      "appearance": "multiline",
-      "relevant": "selected(${kinematic_fab}, 'crescent_frac')"
-    },
-    {
-      "type": "text",
-      "name": "slick_char",
-      "label": "Characterize slickenfibers",
-      "hint": "E.g. mineralogy, etc.",
-      "required": "false",
-      "appearance": "multiline",
-      "relevant": "selected(${kinematic_fab}, 'slickenfiber')"
-    },
-    {
-      "type": "text",
-      "name": "fib_grow_char",
-      "label": "Characterize fiber growth",
-      "hint": "E.g. mineralogy, etc.",
-      "required": "false",
-      "appearance": "multiline",
-      "relevant": "selected(${kinematic_fab}, 'fiber_growth')"
-    },
-    {
-      "type": "text",
-      "name": "goug_fill_char",
-      "label": "Characterize gouge fill",
-      "required": "false",
-      "appearance": "multiline",
-      "relevant": "selected(${kinematic_fab}, 'gouge_fill')"
-    },
-    {
-      "type": "text",
-      "name": "other_char_kin",
-      "label": "Other indicator characterization",
-      "required": "false",
-      "appearance": "multiline",
-      "relevant": "selected(${kinematic_fab}, 'other_kin')"
+      "relevant": "${kinematic_fab} != ''"
     },
     {
       "type": "text",
@@ -575,7 +435,7 @@
       "hint": "e.g. top-NW, dextral, etc.",
       "required": "false",
       "appearance": "multiline",
-      "relevant": "${kinematic_ind} = 'kin_yes'"
+      "relevant": "${kinematic_fab} != ''"
     },
     {
       "type": "select_one au84l98",
@@ -616,7 +476,7 @@
     {
       "type": "calculate",
       "name": "_version_",
-      "calculation": "'vYhdoxX7Cgcmu2D4FmgcFp'",
+      "calculation": "'vEKbjBmiQ7o9Re4shUTDPF'",
       "$given_name": "__version__"
     }
   ],
@@ -702,12 +562,6 @@
       "name": "other_planar",
       "label": "other",
       "order": "8"
-    },
-    {
-      "list_name": "cs2ki85",
-      "name": "no_planar",
-      "label": "none",
-      "order": "9"
     },
     {
       "list_name": "mj2eg99",
@@ -803,11 +657,6 @@
       "list_name": "sv9wq27",
       "name": "other_lin",
       "label": "other"
-    },
-    {
-      "list_name": "sv9wq27",
-      "name": "no_lin",
-      "label": "none"
     },
     {
       "list_name": "ps78s13",
@@ -1021,16 +870,6 @@
       "label": "other"
     },
     {
-      "list_name": "ge6og85",
-      "name": "kin_yes",
-      "label": "Yes"
-    },
-    {
-      "list_name": "ge6og85",
-      "name": "kin_no",
-      "label": "No"
-    },
-    {
       "list_name": "lw8uh27",
       "name": "oblique_fabric",
       "label": "oblique grain shape fabric"
@@ -1044,7 +883,7 @@
     {
       "list_name": "lw8uh27",
       "name": "asymm_clast",
-      "label": "asymmetric clast (delta, sigma)",
+      "label": "asymmetric clast",
       "order": "2"
     },
     {
@@ -1175,7 +1014,8 @@
   ],
   "settings": [
     {
-      "version": "vYhdoxX7Cgcmu2D4FmgcFp"
+      "form_title": "Fabrics - Metamorphic (11/21)",
+      "version": "1 (2022-01-26 22:11:52)"
     }
   ]
 }
