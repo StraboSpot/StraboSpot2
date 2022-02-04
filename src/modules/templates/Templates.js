@@ -32,13 +32,18 @@ const Templates = (props) => {
   const [templateType, setTemplateType] = useState(null);
   const [templatesForKey, setTemplatesForKey] = useState([]);
 
-  const page = MODALS.find(p => p.key === modalVisible);
+  let page = props.page || {};
+  let templateKey = page.key || undefined;
   const measurementKey = 'measurementTemplates';
-  const templateKey = modalVisible === MODAL_KEYS.NOTEBOOK.MEASUREMENTS
-  || modalVisible === MODAL_KEYS.SHORTCUTS.MEASUREMENT ? measurementKey
-    : modalVisible === MODAL_KEYS.NOTEBOOK.ROCK_TYPE_IGNEOUS
-    || modalVisible === MODAL_KEYS.NOTEBOOK.ROCK_TYPE_SEDIMENTARY ? props.rockKey
-      : modalVisible;
+  if (isEmpty(page) && modalVisible) {
+    page = MODALS.find(p => p.key === modalVisible);
+    templateKey = modalVisible === MODAL_KEYS.NOTEBOOK.MEASUREMENTS
+    || modalVisible === MODAL_KEYS.SHORTCUTS.MEASUREMENT ? measurementKey
+      : modalVisible === MODAL_KEYS.NOTEBOOK.ROCK_TYPE_IGNEOUS
+      || modalVisible === MODAL_KEYS.NOTEBOOK.ROCK_TYPE_SEDIMENTARY ? props.rockKey
+        : page.notebook_modal_key ? page.notebook_modal_key
+          : modalVisible;
+  }
 
   useEffect(() => {
     if (templateKey === measurementKey) {
@@ -115,15 +120,8 @@ const Templates = (props) => {
       'Delete Template',
       'Are you sure you want to delete ' + selectedTemplate.name + '?',
       [
-        {
-          text: 'Cancel',
-          onPress: () => console.log('Cancel Pressed'),
-          style: 'cancel',
-        },
-        {
-          text: 'OK',
-          onPress: () => deleteTemplate(selectedTemplate),
-        },
+        {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+        {text: 'OK', onPress: () => deleteTemplate(selectedTemplate)},
       ],
       {cancelable: false},
     );
@@ -137,10 +135,12 @@ const Templates = (props) => {
 
   const renderFormFields = () => {
     return (
-      <FlatList ListHeaderComponent={
-        <View style={{flex: 1}}>
-          {templateKey === measurementKey ? renderMeasurementsForm() : renderNonMeasurementsForm()}
-        </View>}
+      <FlatList
+        ListHeaderComponent={
+          <View style={{flex: 1}}>
+            {templateKey === measurementKey ? renderMeasurementsForm() : renderNonMeasurementsForm()}
+          </View>
+        }
       />
     );
   };
@@ -200,7 +200,7 @@ const Templates = (props) => {
   };
 
   const renderTemplatesList = () => {
-    let label = modalVisible === MODAL_KEYS.NOTEBOOK.ROCK_TYPE_IGNEOUS ? toTitleCase(templateKey)  + ' Rock'
+    let label = modalVisible === MODAL_KEYS.NOTEBOOK.ROCK_TYPE_IGNEOUS ? toTitleCase(templateKey) + ' Rock'
       : page.label_singular || toTitleCase(page.label).slice(0, -1) || 'Unknown';
 
     let relevantTemplates = [];
@@ -323,7 +323,7 @@ const Templates = (props) => {
     return (
       <View>
         {isEmpty(activeTemplates) ? (
-            <ListItem containerStyle={{padding: 0, flex: 1, width: '100%', justifyContent: 'center'}}>
+            <ListItem containerStyle={{padding: 0, width: '100%', justifyContent: 'center'}}>
               <Button
                 titleStyle={commonStyles.standardButtonText}
                 title={title}

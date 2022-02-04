@@ -9,6 +9,7 @@ import {isEmpty, toTitleCase} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
 import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import {Form, useFormHook} from '../form';
+import NoteForm from '../notes/NoteForm';
 import usePetrologyHook from '../petrology/usePetrology';
 import useSedHook from '../sed/useSed';
 import {editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
@@ -29,8 +30,11 @@ const BasicPageDetail = (props) => {
   const groupKey = props.groupKey || 'general';
   const pageKey = props.page.key === PAGE_KEYS.FABRICS && props.selectedFeature.type === 'fabric' ? '_3d_structures'
     : props.page.key === PAGE_KEYS.ROCK_TYPE_SEDIMENTARY ? PAGE_KEYS.LITHOLOGIES : props.page.key;
-  const pageData = props.groupKey && spot.properties[groupKey] ? spot.properties[groupKey][pageKey] || []
-    : spot.properties[pageKey] || [];
+  let pageData = pageKey === PAGE_KEYS.NOTES ? {} : [];
+  if (spot && spot.properties) {
+    if (spot.properties[groupKey] && spot.properties[groupKey][pageKey]) pageData = spot.properties[groupKey][pageKey];
+    else if (spot.properties[pageKey]) pageData = spot.properties[pageKey];
+  }
   const title = groupKey === 'pet' && pageKey === PAGE_KEYS.ROCK_TYPE_IGNEOUS
   && !props.selectedFeature.rock_type && props.selectedFeature.igneous_rock_class
     ? toTitleCase(props.selectedFeature.igneous_rock_class.replace('_', ' ') + ' Rock')
@@ -138,6 +142,23 @@ const BasicPageDetail = (props) => {
     );
   };
 
+  const renderNotesField = () => {
+    return (
+      <View style={{flex: 1}}>
+        <NoteForm
+          formRef={formRef}
+          initialNotesValues={props.selectedFeature}
+        />
+        <Button
+          titleStyle={{color: themes.RED}}
+          title={'Delete ' + title + (isTemplate ? ' Template' : '')}
+          type={'clear'}
+          onPress={() => isTemplate ? props.deleteTemplate() : deleteFeatureConfirm()}
+        />
+      </View>
+    );
+  };
+
   const saveFeature = async (formCurrent) => {
     try {
       await formCurrent.submitForm();
@@ -186,7 +207,8 @@ const BasicPageDetail = (props) => {
             cancel={cancelForm}
             save={() => isTemplate ? saveTemplate(formRef.current) : saveForm(formRef.current)}
           />
-          <FlatList ListHeaderComponent={renderFormFields()}/>
+          <FlatList
+            ListHeaderComponent={props.page?.key === PAGE_KEYS.NOTES ? renderNotesField() : renderFormFields()}/>
         </React.Fragment>
       )}
     </React.Fragment>
