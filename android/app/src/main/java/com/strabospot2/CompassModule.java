@@ -78,8 +78,8 @@ public class CompassModule extends ReactContextBaseJavaModule implements SensorE
              Sensor gsensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
              Sensor msensor = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
 
-             sensorManager.registerListener(this, gsensor, SensorManager.SENSOR_DELAY_GAME);
-             sensorManager.registerListener(this, msensor, SensorManager.SENSOR_DELAY_GAME);
+             sensorManager.registerListener(this, gsensor, SensorManager.SENSOR_DELAY_NORMAL);
+             sensorManager.registerListener(this, msensor, SensorManager.SENSOR_DELAY_NORMAL);
 
 //             mFilter = filter;
              promise.resolve(true);
@@ -88,14 +88,6 @@ public class CompassModule extends ReactContextBaseJavaModule implements SensorE
              promise.reject("failed_start", e.getMessage());
          }
     }
-
-//    @Override
-//    protected void onPause() {
-//        super.onPause();
-//        sensorManager.unregisterListener(this);
-////        sensorManager.unregisterListener(msensor);
-//        System.out.println("All Sensors Stopped!!");
-//    }
 
     @ReactMethod
     public void stop() {
@@ -129,30 +121,34 @@ public class CompassModule extends ReactContextBaseJavaModule implements SensorE
         synchronized (this) {
             if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
 
-                mGravity[0] = alpha * mGravity[0] + (1 - alpha)
-                        * event.values[0];
-                mGravity[1] = alpha * mGravity[1] + (1 - alpha)
-                        * event.values[1];
-                mGravity[2] = alpha * mGravity[2] + (1 - alpha)
-                        * event.values[2];
+//                 mGravity[0] = alpha * mGravity[0] + (1 - alpha)
+//                         * event.values[0];
+//                 mGravity[1] = alpha * mGravity[1] + (1 - alpha)
+//                         * event.values[1];
+//                 mGravity[2] = alpha * mGravity[2] + (1 - alpha)
+//                         * event.values[2];
+                    mGravity[0] = event.values[0];
+                    mGravity[1] = event.values[1];
+                    mGravity[2] = event.values[2];
             }
 
             if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
 
-                mGeomagnetic[0] = alpha * mGeomagnetic[0] + (1 - alpha)
-                        * event.values[0];
-                mGeomagnetic[1] = alpha * mGeomagnetic[1] + (1 - alpha)
-                        * event.values[1];
-                mGeomagnetic[2] = alpha * mGeomagnetic[2] + (1 - alpha)
-                        * event.values[2];
+//                 mGeomagnetic[0] = alpha * mGeomagnetic[0] + (1 - alpha)
+//                         * event.values[0];
+//                 mGeomagnetic[1] = alpha * mGeomagnetic[1] + (1 - alpha)
+//                         * event.values[1];
+//                 mGeomagnetic[2] = alpha * mGeomagnetic[2] + (1 - alpha)
+//                         * event.values[2];
+                    mGeomagnetic[0] = event.values[0];
+                    mGeomagnetic[1] = event.values[1];
+                    mGeomagnetic[2] = event.values[2];
 
             }
 
-            boolean success = SensorManager.getRotationMatrix(R, I, mGravity, mGeomagnetic);
+            boolean success = SensorManager.getRotationMatrix(R, null, mGravity, mGeomagnetic);
 
             if (success) {
-
-                WritableArray rotationMatrix = new WritableNativeArray();
                 Object[] rotationMatrixObj = {R[0], R[1], R[2], R[4], R[5], R[6], R[7], R[8]};
                 Log.i("CompassModule", "Sensors Started!!!");
 
@@ -187,11 +183,13 @@ public class CompassModule extends ReactContextBaseJavaModule implements SensorE
                 }
 
 //                if (Math.abs(mAzimuth - newAzimuth) > mFilter) {
-//
-//                    mAzimuth = newAzimuth;
 
+//                    mAzimuth = newAzimuth;
                     WritableMap params = Arguments.createMap();
-//                    params.putArray("rotationMatrix", rotationMatrixObj);
+                    params.putDouble("heading", newAzimuth);
+//                     params.putDouble("accelerometerX", mGravity[1]);
+//                     params.putDouble("accelerometerY", mGravity[2]);
+//                     params.putDouble("accelerometerZ", mGravity[0]);
                     params.putDouble("M11", R[0]);
                     params.putDouble("M12", R[1]);
                     params.putDouble("M13", R[2]);
@@ -201,6 +199,7 @@ public class CompassModule extends ReactContextBaseJavaModule implements SensorE
                     params.putDouble("M31", R[6]);
                     params.putDouble("M32", R[7]);
                     params.putDouble("M33", R[8]);
+
 
                     getReactApplicationContext()
                         .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
