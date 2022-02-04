@@ -39,7 +39,6 @@ import {clearedSelectedSpots} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
 import {TagAddRemoveFeatures, TagAddRemoveSpots, TagDetailSidePanel} from '../tags';
 import UserProfile from '../user/UserProfilePage';
-import ABC from './CustomModule';
 import BackupModal from './home-modals/BackupModal';
 import BackUpOverwriteModal from './home-modals/BackUpOverwriteModal';
 import InfoModal from './home-modals/InfoModal';
@@ -200,7 +199,6 @@ const Home = () => {
   }, [projectLoadComplete]);
 
   const cancelEdits = async () => {
-    ABC.show();
     await mapComponentRef.current.cancelEdits();
     setMapMode(MAP_MODES.VIEW);
     setButtons({
