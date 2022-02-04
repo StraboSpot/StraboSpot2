@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {Platform, Text, View} from 'react-native';
 
-import {Overlay} from 'react-native-elements';
+import {Button, Overlay} from 'react-native-elements';
 import {useDispatch} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
