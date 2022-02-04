@@ -74,7 +74,8 @@ const Compass = (props) => {
   const [useMaps] = useMapsHook();
   const [useMeasurements] = useMeasurementsHook();
 
-  const CompassEvents = new NativeEventEmitter(NativeModules.Compass);
+  const CompassEvents = new NativeEventEmitter(Platform.OS === 'ios' ? NativeModules.Compass
+    : NativeModules.AndroidCompass);
 
   useEffect(() => {
     const buttonClick = new Sound('button_click.mp3', Sound.MAIN_BUNDLE, (error) => {
@@ -85,11 +86,11 @@ const Compass = (props) => {
 
   useEffect(() => {
     AppState.addEventListener('change', handleAppStateChange);
-    if (Platform.OS === 'android') {
-      // setUpdateIntervalForType(SensorTypes.accelerometer, 100);
-      // setUpdateIntervalForType(SensorTypes.magnetometer, 100);
-      subscribeToSensors().catch(e => console.log('Error with Sensors', e));
-    }
+    // if (Platform.OS === 'android') {
+    //   // setUpdateIntervalForType(SensorTypes.accelerometer, 100);
+    //   // setUpdateIntervalForType(SensorTypes.magnetometer, 100);
+    //   subscribeToSensors().catch(e => console.log('Error with Sensors', e));
+    // }
     return () => {
       AppState.removeEventListener('change', handleAppStateChange);
       unsubscribe();
@@ -98,9 +99,28 @@ const Compass = (props) => {
 
   // Update compass data on accelerometer data changed
   useEffect(() => {
-    displayCompassData();
-    console.log(compassData)
-  }, [accelerometerData, compassData]);
+    // displayCompassData();
+    // console.log(compassData);
+    if (Platform.OS === 'ios') {
+      console.log('%cSUBSCRIBING to native compass data', 'color: red');
+      NativeModules.Compass.myDeviceRotation();
+      CompassEvents.addListener('rotationMatrix', matrixRotation);
+      return () => {
+        console.log('IOS REMOVE EVENT')
+        CompassEvents.removeListener('rotationMatrix', matrixRotation);
+      }
+    }
+    // else calculateOrientation();
+    else {
+      NativeModules.AndroidCompass.start();
+      CompassEvents.addListener('androidCompassData', androidMatrixRotation);
+      return () => {
+        CompassEvents.removeListener('androidCompassData', androidMatrixRotation);
+        NativeModules.AndroidCompass.stop();
+        console.log('%cUNSUBSCRIBED to native Android compass data', 'color: red');
+      }
+    }
+  }, []);
 
   // Create a new measurement on grabbing new compass measurements from shortcut modal
   useEffect(() => {
@@ -123,40 +143,6 @@ const Compass = (props) => {
     console.log('compassMeasurementTypes', compassMeasurementTypes);
     setToggles(compassMeasurementTypes);
   }, [compassMeasurementTypes]);
-
-  const calculateAndroidOrientation = (res) => {
-    // console.log(res)
-    if (res) {
-      setCompassData({
-        ...compassData,
-        // accelX: accelerometerData.x,
-        // accelY: accelerometerData.y,
-        // accelZ: accelerometerData. z,
-        // magX: compassHeading?.x,
-        // magY: compassHeading?.y,
-        // magZ: compassHeading?.z,
-        M11: roundToDecimalPlaces(res?.M11, 3),
-        M12: roundToDecimalPlaces(res?.M12, 3),
-        M13: roundToDecimalPlaces(res?.M13, 3),
-        M21: roundToDecimalPlaces(res?.M21, 3),
-        M22: roundToDecimalPlaces(res?.M22, 3),
-        M23: roundToDecimalPlaces(res?.M23, 3),
-        M31: roundToDecimalPlaces(res?.M31, 3),
-        M32: roundToDecimalPlaces(res?.M32, 3),
-        M33: roundToDecimalPlaces(res?.M33, 3),
-        // heading: roundToDecimalPlaces(compassHeading, 4),
-        // heading: degree(actualHeading),
-        // strike: roundToDecimalPlaces(strike, 0),
-        // dip_direction: roundToDecimalPlaces(dipdir, 0),
-        // dip: roundToDecimalPlaces(dip, 0),
-        // trend: roundToDecimalPlaces(trend, 0),
-        // plunge: roundToDecimalPlaces(plunge, 0),
-        // rake: roundToDecimalPlaces(rake, 0),
-        // rake_calculated: 'yes',
-        // quality: sliderValue.toString(),
-      });
-    }
-  };
 
   const calculateOrientation = (res) => {
     const x = accelerometerData.x;
@@ -244,7 +230,10 @@ const Compass = (props) => {
       CompassEvents.addListener('rotationMatrix', matrixRotation);
     }
     // else calculateOrientation();
-    else subscribeToSensors();
+    else {
+      NativeModules.AndroidCompass.start();
+      CompassEvents.addListener('androidCompassData', androidMatrixRotation);
+    }
   };
 
   const grabMeasurements = async (isCompassMeasurement) => {
@@ -278,6 +267,10 @@ const Compass = (props) => {
     if (res) {
       setCompassData({
         ...compassData,
+        heading: res.heading,
+        accelX: roundToDecimalPlaces(res.accelerometerX,3),
+        accelY: roundToDecimalPlaces(res.accelerometerY,3),
+        accelZ: roundToDecimalPlaces(res.accelerometerZ,3),
         M11: roundToDecimalPlaces(res.M11, 3),
         M12: roundToDecimalPlaces(res.M12, 3),
         M13: roundToDecimalPlaces(res.M13, 3),
@@ -552,9 +545,9 @@ const Compass = (props) => {
   };
 
   const subscribeToSensors = async () => {
-    const compassEventEmitter = new NativeEventEmitter(NativeModules.AndroidCompass);
-    compassEventEmitter.addListener('androidCompassData', calculateAndroidOrientation);
-    NativeModules.AndroidCompass.start();
+    // const compassEventEmitter = new NativeEventEmitter(NativeModules.AndroidCompass);
+    // compassEventEmitter.addListener('androidCompassData', calculateAndroidOrientation);
+    // NativeModules.AndroidCompass.start();
     // accelerometerSubscription = await accelerometer.subscribe((data) => {
     //   //   // console.log('Acc Data', data);
     //   setAccelerometerData(data);
@@ -584,7 +577,9 @@ const Compass = (props) => {
       CompassEvents.removeListener('rotationMatrix', matrixRotation);
       console.log('%cEnded Compass observation and rotationMatrix listener.', 'color: red');
     }
-    else unsubscribeFromSensors();
+    // else unsubscribeFromSensors();
+    else CompassEvents.removeListener('androidCompassData', androidMatrixRotation);
+    NativeModules.AndroidCompass.stop();
     console.log('%cHeading subscription cancelled', 'color: red');
   };
 

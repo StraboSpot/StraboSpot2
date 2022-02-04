@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {Platform, Text, View} from 'react-native';
 
-import {Overlay} from 'react-native-elements';
+import {Button, Overlay} from 'react-native-elements';
 import {useDispatch} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
@@ -46,7 +46,7 @@ const CompassModal = (props) => {
       <View style={uiStyles.headerContainer}>
         <Text style={commonStyles.dialogTitleText}>Compass Data</Text>
       </View>
-      {Platform.OS === 'android' ? <View style={{marginBottom: 20}}>
+      <View style={{marginBottom: 20}}>
           <Text>Accelerometer:</Text>
           <Text> x: {compassData.accelX}</Text>
           <Text> y: {compassData.accelY}</Text>
@@ -57,32 +57,32 @@ const CompassModal = (props) => {
           <Text> y: {compassData.magY}</Text>
           <Text> z: {compassData.magZ}</Text>
           <Spacer/>
-        </View>
-        : <View>
-          <Text style={{textAlign: 'center', padding: 10, fontSize: 20}}>Matrix Rotation</Text>
-          <View style={{flexDirection: 'row'}}>
-            <View style={{flex: 1}}>
-              <Text style={compassStyles.compassMatrixHeader}>North</Text>
-              <Text style={compassStyles.compassMatrixDataText}>M11: {compassData.M11}</Text>
-              <Text style={compassStyles.compassMatrixDataText}>M21: {compassData.M21} </Text>
-              <Text style={compassStyles.compassMatrixDataText}>M31: {compassData.M31}</Text>
+          <View>
+            <Text style={{textAlign: 'center', padding: 10, fontSize: 20}}>Matrix Rotation</Text>
+            <View style={{flexDirection: 'row'}}>
+              <View style={{flex: 1}}>
+                <Text style={compassStyles.compassMatrixHeader}>{Platform.OS === 'ios' ? 'North' : 'East'}</Text>
+                <Text style={compassStyles.compassMatrixDataText}>M11: {compassData.M11}</Text>
+                <Text style={compassStyles.compassMatrixDataText}>M21: {compassData.M21} </Text>
+                <Text style={compassStyles.compassMatrixDataText}>M31: {compassData.M31}</Text>
+              </View>
+              <View style={{flex: 1}}>
+                <Text style={compassStyles.compassMatrixHeader}>{Platform.OS === 'ios' ? 'West' : 'North'}</Text>
+                <Text style={compassStyles.compassMatrixDataText}>M12: {compassData.M12}</Text>
+                <Text style={compassStyles.compassMatrixDataText}>M22: {compassData.M22} </Text>
+                <Text style={compassStyles.compassMatrixDataText}>M32: {compassData.M32}</Text>
+              </View>
+              <View style={{flex: 1}}>
+                <Text style={compassStyles.compassMatrixHeader}>Up</Text>
+                <Text style={compassStyles.compassMatrixDataText}>M13: {compassData.M13}</Text>
+                <Text style={compassStyles.compassMatrixDataText}>M23: {compassData.M23} </Text>
+                <Text style={compassStyles.compassMatrixDataText}>M33: {compassData.M33}</Text>
+              </View>
             </View>
-            <View style={{flex: 1}}>
-              <Text style={compassStyles.compassMatrixHeader}>West</Text>
-              <Text style={compassStyles.compassMatrixDataText}>M12: {compassData.M12}</Text>
-              <Text style={compassStyles.compassMatrixDataText}>M22: {compassData.M22} </Text>
-              <Text style={compassStyles.compassMatrixDataText}>M32: {compassData.M32}</Text>
-            </View>
-            <View style={{flex: 1}}>
-              <Text style={compassStyles.compassMatrixHeader}>Up</Text>
-              <Text style={compassStyles.compassMatrixDataText}>M13: {compassData.M13}</Text>
-              <Text style={compassStyles.compassMatrixDataText}>M23: {compassData.M23} </Text>
-              <Text style={compassStyles.compassMatrixDataText}>M33: {compassData.M33}</Text>
-            </View>
+            <Spacer/>
           </View>
-          <Spacer/>
         </View>
-      }
+
       <View style={{alignItems: 'center'}}>
         <Text>Heading: {compassData.heading}</Text>
         <Text>Strike: {compassData.strike}</Text>
@@ -115,10 +115,14 @@ const CompassModal = (props) => {
         <Overlay
           isVisible={showCompassRawDataView}
           overlayStyle={[{...modalStyle.modalContainer, width: 400}, compassStyles.compassDataModalPosition]}
-          onBackdropPress={() => showCompassMetadataModal(false)}
         >
           {showCompassRawDataView && renderCompassData()}
+          <Button
+            title={'close'}
+            onPress={() => showCompassMetadataModal(false)}
+          />
         </Overlay>
+
       </View>
 
     </Modal>
