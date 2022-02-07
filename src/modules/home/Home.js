@@ -9,16 +9,14 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import useConnectionStatusHook from '../../services/useConnectionStatus';
 import useDeviceHook from '../../services/useDevice';
-import commonStyles from '../../shared/common.styles';
 import * as Helpers from '../../shared/Helpers';
 import {animatePanels, isEmpty} from '../../shared/Helpers';
 import LoadingSpinner from '../../shared/ui/Loading';
-import StatusDialogBox from '../../shared/ui/StatusDialogBox';
 import ToastPopup from '../../shared/ui/Toast';
 import uiStyles from '../../shared/ui/ui.styles';
 import Preview from '../images/Preview';
 import useImagesHook from '../images/useImages';
-import {MAIN_MENU_ITEMS, SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.constants';
+import {SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import MainMenuPanel from '../main-menu-panel/MainMenuPanel';
 import {setMenuSelectionPage} from '../main-menu-panel/mainMenuPanel.slice';
 import settingPanelStyles from '../main-menu-panel/mainMenuPanel.styles';
@@ -329,7 +327,7 @@ const Home = () => {
     }
     else {
       openNotebookPanel(modalKey);
-      dispatch(setModalVisible({modal: modalKey}));
+      if (modalKey !== PAGE_KEYS.NOTES) dispatch(setModalVisible({modal: modalKey}));
     }
   };
 
@@ -346,7 +344,7 @@ const Home = () => {
 
   const renderFloatingView = () => {
     const modal = MODALS.find(m => m.key === modalVisible);
-    if (modal?.modal_component ) {
+    if (modal?.modal_component) {
       const ModalDisplayed = modal.modal_component;
       if (modalVisible && !Object.keys(MODAL_KEYS.SHORTCUTS).find(s => s.key === modalVisible)) {
         return (
@@ -638,10 +636,10 @@ const Home = () => {
         visible={isProjectLoadSelectionModalVisible}
         closeModal={() => closeInitialProjectLoadModal()}
       />
-      <ErrorModal />
+      <ErrorModal/>
       <StatusModal openUrl={openStraboSpotURL}/>
       <UploadModal toggleHomeDrawer={() => toggleHomeDrawerButton()}/>
-      <WarningModal />
+      <WarningModal/>
       {/*------------------------*/}
       {isHomeLoading && <LoadingSpinner/>}
       {renderNotebookPanel()}
