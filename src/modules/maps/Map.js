@@ -1194,7 +1194,11 @@ const Map = React.forwardRef((props, ref) => {
         }));
       }
       //spot selected is already on the same imagebasemap, zoomToSpot in sync mode.
-      else useMaps.zoomToSpots([selectedSpot], mapRef.current, cameraRef.current);
+      else {
+        const selectedSpotCopy = JSON.parse(JSON.stringify(selectedSpot));
+        const spotInLatLng = useMaps.convertImagePixelsToLatLong(selectedSpotCopy);
+        useMaps.zoomToSpots([spotInLatLng], mapRef.current, cameraRef.current);
+      }
     }
     else {
       // handle other maps

@@ -1,5 +1,5 @@
 import {useEffect} from 'react';
-import {Platform} from 'react-native';
+import {Alert, Platform} from 'react-native';
 
 import Geolocation from '@react-native-community/geolocation';
 import * as turf from '@turf/turf';
@@ -501,6 +501,10 @@ const useMaps = (mapRef) => {
     return !feature.properties.image_basemap && !feature.properties.strat_section;
   };
 
+  const isOnImageBasemap = (feature) => feature.properties?.image_basemap;
+
+  const isOnStratSection = (feature) => feature.properties?.strat_section_id;
+
   const saveCustomMap = async (map) => {
     let mapId = map.id;
     let customMap = {};
@@ -606,25 +610,29 @@ const useMaps = (mapRef) => {
   };
 
   const zoomToSpots = async (spotsToZoomTo, map, camera) => {
-    var spotsCopy = spotsToZoomTo.map(spot => JSON.parse(JSON.stringify(spot)));
-    if (currentImageBasemap) spotsCopy.map(spot => convertImagePixelsToLatLong(spot));
-    if (camera) {
-      try {
-        if (spotsToZoomTo.length === 1) {
-          const centroid = turf.centroid(spotsCopy[0]);
-          camera.flyTo(turf.getCoord(centroid));
-        }
-        else if (spotsToZoomTo.length > 1) {
-          const features = turf.featureCollection(spotsCopy);
-          const [minX, minY, maxX, maxY] = turf.bbox(features);  //bbox extent in minX, minY, maxX, maxY order
-          camera.fitBounds([maxX, minY], [minX, maxY], 100, 2500);
-        }
-      }
-      catch (err) {
-        throw Error('Error Zooming To Extent of Spots', err);
-      }
+    if (spotsToZoomTo.some(s => isOnStratSection(s))) {
+      Alert.alert('Zooming to Strat Section Spots has not been implemented yet.');
     }
-    else throw Error('Error Getting Map Camera');
+    else if (spotsToZoomTo.every(s => isOnGeoMap(s)) || spotsToZoomTo.every(s => isOnImageBasemap(s))) {
+      if (camera) {
+        try {
+          if (spotsToZoomTo.length === 1) {
+            const centroid = turf.centroid(spotsToZoomTo[0]);
+            camera.flyTo(turf.getCoord(centroid));
+          }
+          else if (spotsToZoomTo.length > 1) {
+            const features = turf.featureCollection(spotsToZoomTo);
+            const [minX, minY, maxX, maxY] = turf.bbox(features);  //bbox extent in minX, minY, maxX, maxY order
+            camera.fitBounds([maxX, minY], [minX, maxY], 100, 2500);
+          }
+        }
+        catch (err) {
+          throw Error('Error Zooming To Extent of Spots', err);
+        }
+      }
+      else throw Error('Error Getting Map Camera');
+    }
+    else throw Error('Error Zooming To Extent of Spots');
   };
 
   return [{
