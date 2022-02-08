@@ -94,7 +94,7 @@ function Basemap(props) {
         id={props.imageBasemap ? props.imageBasemap.id : props.basemap.id}
         ref={mapRef}
         style={{flex: 1}}
-        styleURL={JSON.stringify(props.basemap)}
+        styleURL={!props.imageBasemap && JSON.stringify(props.basemap)}
         animated={true}
         localizeLabels={true}
         logoEnabled={true}
