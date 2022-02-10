@@ -77,7 +77,12 @@ class Compass: RCTEventEmitter {
 
                   let ENU_pole = self.cartesianToSpherical(mValue1: -m32Avg, mValue2: m31Avg,mValue3: m33Avg)
                   let ENU_TP = self.cartesianToSpherical(mValue1: -m22Avg, mValue2: m21Avg, mValue3: m23Avg)
-
+            print("ENU_pole");
+            print(ENU_pole);
+            print();
+            print("ENU_tp");
+            print(ENU_TP);
+            
                   let heading = self.mod(value: (data.heading - 270), degrees: 360).rounded(toPlaces: 0)
                   let strikeAndDipData = self.strikeAndDip(array: ENU_pole)
                   let trendAndPlungeData = self.trendAndPlunge(array: ENU_TP)
@@ -93,6 +98,8 @@ class Compass: RCTEventEmitter {
                             "trend": trend,
                             "plunge": plunge,
                             "heading": heading,
+                            "ENU_pole": ENU_pole,
+                            "ENU_tp": ENU_TP,
                             "M11": rotationMatrix.m11,
                             "M12": rotationMatrix.m12,
                             "M13": rotationMatrix.m13,
@@ -132,6 +139,7 @@ class Compass: RCTEventEmitter {
                   theta = atan2(mValue2, mValue1)
               }
           }
+          
           return [rho, phi, theta]
       }
 

@@ -14,6 +14,7 @@ import Templates from '../templates/Templates';
 import Compass from './Compass';
 import {setCompassMeasurements} from './compass.slice';
 import compassStyles from './compass.styles';
+import {isEmpty} from '../../shared/Helpers';
 
 const CompassModal = (props) => {
   const dispatch = useDispatch();
@@ -47,41 +48,51 @@ const CompassModal = (props) => {
         <Text style={commonStyles.dialogTitleText}>Compass Data</Text>
       </View>
       <View style={{marginBottom: 20}}>
-          <Text>Accelerometer:</Text>
-          <Text> x: {compassData.accelX}</Text>
-          <Text> y: {compassData.accelY}</Text>
-          <Text> z: {compassData.accelZ}</Text>
+        {/*<Text>Accelerometer:</Text>*/}
+        {/*<Text> x: {compassData.accelX}</Text>*/}
+        {/*<Text> y: {compassData.accelY}</Text>*/}
+        {/*<Text> z: {compassData.accelZ}</Text>*/}
+        {/*<Spacer/>*/}
+        {/*<Text>Magnetometer:</Text>*/}
+        {/*<Text> x: {compassData.magX}</Text>*/}
+        {/*<Text> y: {compassData.magY}</Text>*/}
+        {/*<Text> z: {compassData.magZ}</Text>*/}
+        <Spacer/>
+        <Text>Strike and Dip</Text>
+        <Text> Rho: {compassData?.ENU_pole[0]}</Text>
+        <Text> Phi: {compassData?.ENU_pole[1]}</Text>
+        <Text> Theta: {compassData?.ENU_pole[2]}</Text>
+        <Spacer/>
+        <Text>Trend and Plunge</Text>
+        <Text> Rho: {compassData?.ENU_tp[0]}</Text>
+        <Text> Phi: {compassData?.ENU_tp[1]}</Text>
+        <Text> Theta: {compassData?.ENU_tp[2]}</Text>
+        <View>
           <Spacer/>
-          <Text>Magnetometer:</Text>
-          <Text> x: {compassData.magX}</Text>
-          <Text> y: {compassData.magY}</Text>
-          <Text> z: {compassData.magZ}</Text>
-          <Spacer/>
-          <View>
-            <Text style={{textAlign: 'center', padding: 10, fontSize: 20}}>Matrix Rotation</Text>
-            <View style={{flexDirection: 'row'}}>
-              <View style={{flex: 1}}>
-                <Text style={compassStyles.compassMatrixHeader}>{Platform.OS === 'ios' ? 'North' : 'East'}</Text>
-                <Text style={compassStyles.compassMatrixDataText}>M11: {compassData.M11}</Text>
-                <Text style={compassStyles.compassMatrixDataText}>M21: {compassData.M21} </Text>
-                <Text style={compassStyles.compassMatrixDataText}>M31: {compassData.M31}</Text>
-              </View>
-              <View style={{flex: 1}}>
-                <Text style={compassStyles.compassMatrixHeader}>{Platform.OS === 'ios' ? 'West' : 'North'}</Text>
-                <Text style={compassStyles.compassMatrixDataText}>M12: {compassData.M12}</Text>
-                <Text style={compassStyles.compassMatrixDataText}>M22: {compassData.M22} </Text>
-                <Text style={compassStyles.compassMatrixDataText}>M32: {compassData.M32}</Text>
-              </View>
-              <View style={{flex: 1}}>
-                <Text style={compassStyles.compassMatrixHeader}>Up</Text>
-                <Text style={compassStyles.compassMatrixDataText}>M13: {compassData.M13}</Text>
-                <Text style={compassStyles.compassMatrixDataText}>M23: {compassData.M23} </Text>
-                <Text style={compassStyles.compassMatrixDataText}>M33: {compassData.M33}</Text>
-              </View>
+          <Text style={{textAlign: 'center', padding: 10, fontSize: 20}}>Matrix Rotation</Text>
+          <View style={{flexDirection: 'row'}}>
+            <View style={{flex: 1}}>
+              <Text style={compassStyles.compassMatrixHeader}>{Platform.OS === 'ios' ? 'North' : 'East'}</Text>
+              <Text style={compassStyles.compassMatrixDataText}>M11: {compassData.M11}</Text>
+              <Text style={compassStyles.compassMatrixDataText}>M21: {compassData.M21} </Text>
+              <Text style={compassStyles.compassMatrixDataText}>M31: {compassData.M31}</Text>
             </View>
-            <Spacer/>
+            <View style={{flex: 1}}>
+              <Text style={compassStyles.compassMatrixHeader}>{Platform.OS === 'ios' ? 'West' : 'North'}</Text>
+              <Text style={compassStyles.compassMatrixDataText}>M12: {compassData.M12}</Text>
+              <Text style={compassStyles.compassMatrixDataText}>M22: {compassData.M22} </Text>
+              <Text style={compassStyles.compassMatrixDataText}>M32: {compassData.M32}</Text>
+            </View>
+            <View style={{flex: 1}}>
+              <Text style={compassStyles.compassMatrixHeader}>Up</Text>
+              <Text style={compassStyles.compassMatrixDataText}>M13: {compassData.M13}</Text>
+              <Text style={compassStyles.compassMatrixDataText}>M23: {compassData.M23} </Text>
+              <Text style={compassStyles.compassMatrixDataText}>M33: {compassData.M33}</Text>
+            </View>
           </View>
+          <Spacer/>
         </View>
+      </View>
 
       <View style={{alignItems: 'center'}}>
         <Text>Heading: {compassData.heading}</Text>
@@ -105,18 +116,20 @@ const CompassModal = (props) => {
       />
       <View>
         {!isShowTemplates
-        && (
-          <Compass
-            goToCurrentLocation={props.goToCurrentLocation}
-            showCompassDataModal={showCompassMetadataModal}
-            setCompassRawDataToDisplay={(data) => {showCompassRawDataView && setCompassData(data);}}
-          />
-        )}
+          && (
+            <Compass
+              goToCurrentLocation={props.goToCurrentLocation}
+              showCompassDataModal={showCompassMetadataModal}
+              setCompassRawDataToDisplay={(data) => {
+                showCompassRawDataView && setCompassData(data);
+              }}
+            />
+          )}
         <Overlay
           isVisible={showCompassRawDataView}
           overlayStyle={[{...modalStyle.modalContainer, width: 400}, compassStyles.compassDataModalPosition]}
         >
-          {showCompassRawDataView && renderCompassData()}
+          {!isEmpty(compassData) && showCompassRawDataView && renderCompassData()}
           <Button
             title={'close'}
             onPress={() => showCompassMetadataModal(false)}
