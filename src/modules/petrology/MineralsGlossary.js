@@ -17,7 +17,7 @@ const MineralsGlossary = (props) => {
     }, []);
   };
 
-  const glossaryChunked = chunk(MINERAL_GLOSSARY_INFO, Math.ceil((MINERAL_GLOSSARY_INFO.length + 1) / 3));
+  const glossaryChunked = chunk(MINERAL_GLOSSARY_INFO, Math.ceil((MINERAL_GLOSSARY_INFO.length + 1) / 2));
 
   const renderMineralInfo = () => {
     return (
