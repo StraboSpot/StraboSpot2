@@ -149,8 +149,12 @@ public class CompassModule extends ReactContextBaseJavaModule implements SensorE
             boolean success = SensorManager.getRotationMatrix(R, null, mGravity, mGeomagnetic);
 
             if (success) {
-                Object[] rotationMatrixObj = {R[0], R[1], R[2], R[4], R[5], R[6], R[7], R[8]};
+//                Number[] rotationMatrixArray = {R[0], R[1], R[2], R[3], R[4], R[5], R[6], R[7], R[8]};
+
                 Log.i("CompassModule", "Sensors Started!!!");
+                MatrixCalculations matrix = new MatrixCalculations(R);
+                double[][] ENUValues = matrix.transposeMatrix();
+                Log.i("Transposed", String.valueOf(ENUValues));
 
                 float[] orientation = new float[3];
                 SensorManager.getOrientation(R, orientation);
@@ -191,13 +195,13 @@ public class CompassModule extends ReactContextBaseJavaModule implements SensorE
 //                     params.putDouble("accelerometerY", mGravity[2]);
 //                     params.putDouble("accelerometerZ", mGravity[0]);
                     params.putDouble("M11", R[0]);
-                    params.putDouble("M12", R[1]);
-                    params.putDouble("M13", R[2]);
-                    params.putDouble("M21", R[3]);
+                    params.putDouble("M12", R[3]);
+                    params.putDouble("M13", R[6]);
+                    params.putDouble("M21", R[1]);
                     params.putDouble("M22", R[4]);
-                    params.putDouble("M23", R[5]);
-                    params.putDouble("M31", R[6]);
-                    params.putDouble("M32", R[7]);
+                    params.putDouble("M23", R[7]);
+                    params.putDouble("M31", R[2]);
+                    params.putDouble("M32", R[5]);
                     params.putDouble("M33", R[8]);
 
 
