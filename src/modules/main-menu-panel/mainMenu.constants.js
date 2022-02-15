@@ -17,6 +17,7 @@ export const MAIN_MENU_ITEMS = {
   MAPS: {
     CUSTOM: 'Custom Maps',
     IMAGE_BASEMAPS: 'Image Basemaps',
+    STRAT_SECTIONS: 'Strat Sections',
     MANAGE_OFFLINE_MAPS: 'Manage Offline Maps',
   },
   PREFERENCES: {

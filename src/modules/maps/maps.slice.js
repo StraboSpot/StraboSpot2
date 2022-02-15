@@ -14,6 +14,7 @@ const initialMapsState = {
   mapSymbols: [],
   tagTypeForColor: undefined,
   isShowSpotLabelsOn: true,
+  stratSection: undefined,
 };
 
 const mapsSlice = createSlice({
@@ -22,7 +23,7 @@ const mapsSlice = createSlice({
   reducers: {
     addedCustomMap(state, action) {
       let mapId = action.payload.id;
-     if (action.payload.source === 'mapbox_styles') mapId = action.payload.id.split('/')[1];
+      if (action.payload.source === 'mapbox_styles') mapId = action.payload.id.split('/')[1];
       const newMapObject = Object.assign({}, {[mapId]: action.payload});
       console.log('Setting custom maps: ', newMapObject);
       state.customMaps = {...state.customMaps, ...newMapObject};
@@ -32,6 +33,9 @@ const mapsSlice = createSlice({
     },
     clearedMaps(state) {
       state.customMaps = {};
+    },
+    clearedStratSection(state) {
+      state.stratSection = undefined;
     },
     clearedVertexes(state) {
       state.vertexStartCoords = undefined;
@@ -54,6 +58,7 @@ const mapsSlice = createSlice({
       state.currentBasemap = action.payload;
     },
     setCurrentImageBasemap(state, action) {
+      state.stratSection = undefined;
       state.currentImageBasemap = action.payload;
     },
     setFreehandFeatureCoords(state, action) {
@@ -68,6 +73,10 @@ const mapsSlice = createSlice({
     },
     setSpotsInMapExtent(state, action) {
       state.spotsInMapExtent = action.payload;
+    },
+    setStratSection(state, action) {
+      state.currentImageBasemap = undefined;
+      state.stratSection = action.payload;
     },
     setSymbolsDisplayed(state, action) {
       console.log('Map Symbols Displayed', action.payload);
@@ -92,6 +101,7 @@ export const {
   addedCustomMap,
   addedCustomMapsFromBackup,
   clearedMaps,
+  clearedStratSection,
   clearedVertexes,
   deletedCustomMap,
   selectedCustomMapToEdit,
@@ -103,6 +113,7 @@ export const {
   setIsShowSpotLabelsOn,
   setSpotsInMapExtent,
   setSymbolsDisplayed,
+  setStratSection,
   setTagTypeForColor,
   setVertexEndCoords,
   setVertexStartCoords,

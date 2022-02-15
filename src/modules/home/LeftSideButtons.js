@@ -17,6 +17,8 @@ const LeftSideButtons = (props) => {
   const isAllSymbolsOn = useSelector(state => state.map.isAllSymbolsOn);
   const isMainMenuPanelVisible = useSelector(state => state.home.isMainMenuPanelVisible);
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
+  const stratSection = useSelector(state => state.map.stratSection);
+
   const [dialogs, setDialogs] = useState({
     mapActionsMenuVisible: false,
     mapSymbolsMenuVisible: false,
@@ -83,7 +85,7 @@ const LeftSideButtons = (props) => {
             />
           )
         }
-        {!currentImageBasemap && (
+        {!currentImageBasemap && !stratSection && (
           <IconButton
             source={require('../../assets/icons/LayersButton.png')}
             onPress={() => toggleDialog('baseMapMenuVisible')}
@@ -117,7 +119,7 @@ const LeftSideButtons = (props) => {
         }}
         onTouchOutside={() => toggleDialog('baseMapMenuVisible')}
       />
-      {!currentImageBasemap && (
+      {!currentImageBasemap && !stratSection && (
         <Animated.View style={[homeStyles.bottomLeftIcons, props.leftsideIconAnimation]}>
           <IconButton
             style={{top: 5}}
@@ -136,6 +138,14 @@ const LeftSideButtons = (props) => {
           <IconButton
             source={require('../../assets/icons/Close.png')}
             onPress={() => props.clickHandler('closeImageBasemap')}
+          />
+        </Animated.View>
+      )}
+      {stratSection && (
+        <Animated.View style={[homeStyles.bottomLeftIcons, props.leftsideIconAnimation]}>
+          <IconButton
+            source={require('../../assets/icons/Close.png')}
+            onPress={() => props.clickHandler('closeStratSection')}
           />
         </Animated.View>
       )}

@@ -24,7 +24,7 @@ import sidePanelStyles from '../main-menu-panel/sidePanel.styles';
 import CustomMapDetails from '../maps/custom-maps/CustomMapDetails';
 import Map from '../maps/Map';
 import {MAP_MODES} from '../maps/maps.constants';
-import {setCurrentImageBasemap} from '../maps/maps.slice';
+import {clearedStratSection, setCurrentImageBasemap} from '../maps/maps.slice';
 import SaveMapsModal from '../maps/offline-maps/SaveMapsModal';
 import useMapsHook from '../maps/useMaps';
 import VertexDrag from '../maps/VertexDrag';
@@ -101,6 +101,7 @@ const Home = () => {
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const sidePanelView = useSelector(state => state.mainMenu.sidePanelView);
   const statusMessages = useSelector(state => state.home.statusMessages);
+  const stratSection = useSelector(state => state.map.stratSection);
   const user = useSelector(state => state.user);
   const vertexStartCoords = useSelector(state => state.map.vertexStartCoords);
 
@@ -142,11 +143,11 @@ const Home = () => {
   }, [user]);
 
   useEffect(() => {
-    if (currentImageBasemap && isMainMenuPanelVisible) toggleHomeDrawerButton();
+    if ((currentImageBasemap || stratSection) && isMainMenuPanelVisible) toggleHomeDrawerButton();
     return function cleanUp() {
-      console.log('currentImageBasemap cleanup UE');
+      console.log('currentImageBasemap and stratSection cleanup UE');
     };
-  }, [currentImageBasemap, customMaps]);
+  }, [currentImageBasemap, customMaps, stratSection]);
 
   useEffect(() => {
     if (isImageModalVisible) populateImageSlideshowData();
@@ -245,6 +246,9 @@ const Home = () => {
         break;
       case 'closeImageBasemap':
         dispatch(setCurrentImageBasemap(undefined));
+        break;
+      case 'closeStratSection':
+        dispatch(clearedStratSection());
         break;
       // Map Actions
       case 'zoom':

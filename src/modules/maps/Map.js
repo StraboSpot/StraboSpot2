@@ -29,16 +29,19 @@ import useSpotsHook from '../spots/useSpots';
 import {MapLayer1, MapLayer2} from './Basemaps';
 import {GEO_LAT_LNG_PROJECTION, LATITUDE, LONGITUDE, MAP_MODES, PIXEL_PROJECTION} from './maps.constants';
 import {
+  clearedStratSection,
   clearedVertexes,
   setCurrentImageBasemap,
   setFreehandFeatureCoords,
   setSpotsInMapExtent,
+  setStratSection,
   setVertexStartCoords,
 } from './maps.slice';
 import useOfflineMapsHook from './offline-maps/useMapsOffline';
+import useStratSectionHook from './strat-section/useStratSection';
+import useMapSymbology from './symbology/useMapSymbology';
 import useMapFeaturesHook from './useMapFeatures';
 import useMapsHook from './useMaps';
-import useMapSymbology from './useMapSymbology';
 
 MapboxGL.setAccessToken(MAPBOX_KEY);
 
@@ -50,9 +53,11 @@ const Map = React.forwardRef((props, ref) => {
   const [useMapFeatures] = useMapFeaturesHook();
   const [useSpots] = useSpotsHook();
   const useOfflineMaps = useOfflineMapsHook();
+  const useStratSection = useStratSectionHook();
 
   const currentBasemap = useSelector(state => state.map.currentBasemap);
   const customBasemap = useSelector(state => state.map.customMaps);
+  const stratSection = useSelector(state => state.map.stratSection);
   const offlineMaps = useSelector(state => state.offlineMap.offlineMaps);
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const activeDatasetsIds = useSelector(state => state.project.activeDatasetsIds);
@@ -150,10 +155,22 @@ const Map = React.forwardRef((props, ref) => {
         ...m,
         coordQuad: calculatedCoordQuad,
         imageBasemap: currentImageBasemap,
+        stratSection: undefined,
       }));
       setMapToggle(!mapToggle);
     }
   }, [currentImageBasemap]);
+
+  useEffect(() => {
+    console.log('UE1 Map [stratSection]');
+    console.log('Changed Strat Section to:', stratSection);
+    setMapPropsMutable(m => ({
+      ...m,
+      imageBasemap: undefined,
+      stratSection: stratSection,
+    }));
+    setMapToggle(!mapToggle);
+  }, [stratSection]);
 
   useEffect(() => {
     console.log('UE2 Map [currentBasemap]');
@@ -199,16 +216,16 @@ const Map = React.forwardRef((props, ref) => {
       });
       useOfflineMaps.switchToOfflineMap().catch(error => console.log('Error Setting Offline Basemap', error));
     }
-    if (!currentImageBasemap) setCurrentLocationAsCenter();
+    if (!currentImageBasemap && !stratSection) setCurrentLocationAsCenter();
     clearVertexes();
   }, [user, isOnline]);
 
   useEffect(() => {
-    console.log(
-      'UE4 Map [props.spots, props.datasets, currentBasemap, currentImageBasemap, selectedSymbols, isAllSymbolsOn]');
+    console.log('UE4 Map [props.spots, props.datasets, currentBasemap, currentImageBasemap, selectedSymbols,' +
+      ' isAllSymbolsOn, stratSection]');
     console.log('Updating Spots, selected Spots, active datasets, basemap or map symbols to display changed');
     setDisplayedSpots((isEmpty(selectedSpot) ? [] : [{...selectedSpot}]));
-  }, [spots, datasets, currentBasemap, currentImageBasemap, selectedSymbols, isAllSymbolsOn]);
+  }, [spots, datasets, currentBasemap, currentImageBasemap, selectedSymbols, isAllSymbolsOn, stratSection]);
 
   useEffect(() => {
     console.log('UE5 Map [selectedSpot]');
@@ -221,7 +238,7 @@ const Map = React.forwardRef((props, ref) => {
       // On turning off the zoomToSpot, if not on imagebasemap,
       // zoomToSpot synchronously to current selected spot.
       // (turning off zoomToSpot, will move the camera to center coordinates, so reset the camera zoom to new selected spot's position.)
-      if (!currentImageBasemap) zoomToSpot();
+      if (!currentImageBasemap && !stratSection) zoomToSpot();
     }
     //conditional call to avoid multiple renders during edit mode.
     if (props.mapMode !== MAP_MODES.EDIT) {
@@ -275,7 +292,7 @@ const Map = React.forwardRef((props, ref) => {
         }
       }
       // copy spot for imagebasemaps needs conversion of coordinates.
-      if (currentImageBasemap) {
+      if (currentImageBasemap || stratSection) {
         defaultFeature = useMaps.convertFeatureGeometryToImagePixels(defaultFeature);
       }
       const selectedSpotCopy = {
@@ -302,7 +319,8 @@ const Map = React.forwardRef((props, ref) => {
   const moveVertex = async () => {
     try { // on imagebasemap, if spot is not point, conversion happens in editSpotCoordinates.
       const newVertexCoords = await mapRef.current.getCoordinateFromView(vertexEndCoords);
-      if (currentImageBasemap && editingModeData.spotEditing && turf.getType(editingModeData.spotEditing) === 'Point') {
+      if ((currentImageBasemap || stratSection) && editingModeData.spotEditing
+        && turf.getType(editingModeData.spotEditing) === 'Point') {
         const vertexCoordinates = useMaps.convertCoordinateProjections(GEO_LAT_LNG_PROJECTION, PIXEL_PROJECTION,
           [newVertexCoords[0], newVertexCoords[1]]);
         console.log('Move vertex to:', vertexCoordinates);
@@ -320,24 +338,11 @@ const Map = React.forwardRef((props, ref) => {
 
   // Set selected and not selected Spots to display when not editing
   const setDisplayedSpots = (selectedSpots) => {
-    if (!currentImageBasemap) {
-      let [selectedDisplayedSpots, notSelectedDisplayedSpots] = useMaps.getDisplayedSpots(selectedSpots);
-      setMapPropsMutable(m => ({
-        ...m,
-        spotsSelected: [...selectedDisplayedSpots],
-        spotsNotSelected: [...notSelectedDisplayedSpots],
-      }));
-    }
-    else {
-      /* setDisplayedSpots, for an image basemap, we always show spots that
-       have image_basemap as the the currentImageBasemapid and all the spots
-       will have coordinates in image pixels. So, we need to convert the image pixels
-       to lat,lng before we display them.
-       */
-      if (!currentImageBasemap) return;
-      const mappableSpots = useMaps.getDisplayedSpots(selectedSpots);
-      let selectedMappableSpotsCopy = JSON.parse(JSON.stringify(mappableSpots[0]));
-      let notSelectedMappableSpotsCopy = JSON.parse(JSON.stringify(mappableSpots[1]));
+    let [selectedDisplayedSpots, notSelectedDisplayedSpots] = useMaps.getDisplayedSpots(selectedSpots);
+    if (currentImageBasemap || stratSection) {
+      // convert the image pixels to lat, lng before we display them
+      let selectedMappableSpotsCopy = JSON.parse(JSON.stringify(selectedDisplayedSpots));
+      let notSelectedMappableSpotsCopy = JSON.parse(JSON.stringify(notSelectedDisplayedSpots));
       selectedMappableSpotsCopy = selectedMappableSpotsCopy.map(spot => useMaps.convertImagePixelsToLatLong(spot));
       notSelectedMappableSpotsCopy = notSelectedMappableSpotsCopy.map(
         spot => useMaps.convertImagePixelsToLatLong(spot));
@@ -345,6 +350,13 @@ const Map = React.forwardRef((props, ref) => {
         ...m,
         spotsSelected: [...selectedMappableSpotsCopy],
         spotsNotSelected: [...notSelectedMappableSpotsCopy],
+      }));
+    }
+    else {
+      setMapPropsMutable(m => ({
+        ...m,
+        spotsSelected: [...selectedDisplayedSpots],
+        spotsNotSelected: [...notSelectedDisplayedSpots],
       }));
     }
   };
@@ -356,7 +368,7 @@ const Map = React.forwardRef((props, ref) => {
     }
     console.log('Set displayed Spots while editing. Editing:', spotEditingTmp, 'Edited:', spotsEditedTmp, 'Not edited:',
       spotsNotEditedTmp);
-    if (!currentImageBasemap) {
+    if (!currentImageBasemap && !stratSection) {
       setMapPropsMutable(m => ({
         ...m,
         spotsSelected: isEmpty(spotEditingTmp) ? [] : [{...spotEditingTmp}],
@@ -400,7 +412,7 @@ const Map = React.forwardRef((props, ref) => {
         },
       };
     });
-    if (currentImageBasemap) { // if imagebasemap, features, need to be converted to getLatLng inOrder to project them.
+    if (currentImageBasemap || stratSection) { // if imagebasemap, features, need to be converted to getLatLng inOrder to project them.
       if (turf.getType(spotToEdit) === 'Polygon' || turf.getType(spotToEdit) === 'LineString') {
         explodedFeatures = explodedFeatures.map(spot => useMaps.convertImagePixelsToLatLong(spot));
       }
@@ -595,9 +607,10 @@ const Map = React.forwardRef((props, ref) => {
       editFeatureVertex: [vertex],
       allowMapViewMove: false,
     }));
-    if (currentImageBasemap && ((isEmpty(editingModeData.spotEditing) || ((!isEmpty(
-      editingModeData.spotEditing) && editingModeData.spotEditing.geometry.type === 'Point')) || (!isEmpty(
-      editingModeData.spotEditing) && editingModeData.spotEditing.properties.name !== vertex.properties.name)))) {
+    if ((currentImageBasemap || stratSection)
+      && ((isEmpty(editingModeData.spotEditing) || ((!isEmpty(editingModeData.spotEditing)
+        && editingModeData.spotEditing.geometry.type === 'Point')) || (!isEmpty(editingModeData.spotEditing)
+        && editingModeData.spotEditing.properties.name !== vertex.properties.name)))) {
       // spotEditing will be empty for Point (may not be empty if the same spot is selected again for edit) and
       // not empty for polygon or linestring, because, only Point can select the vertex on first long press.
       // For polygon or line, long press would identify the spot.
@@ -688,7 +701,7 @@ const Map = React.forwardRef((props, ref) => {
               }));
             }
           }
-          if (currentImageBasemap) {
+          if (currentImageBasemap || stratSection) {
             newCoord = useMaps.convertCoordinateProjections(GEO_LAT_LNG_PROJECTION, PIXEL_PROJECTION, newCoord);
           }
           if (turf.getType(spotEditingCopy) === 'LineString') {
@@ -751,7 +764,7 @@ const Map = React.forwardRef((props, ref) => {
             },
           };
         });
-        if (currentImageBasemap) { // if imagebasemap, features, need to be converted to getLatLng inOrder to project them.
+        if (currentImageBasemap || stratSection) { // if imagebasemap, features, need to be converted to getLatLng inOrder to project them.
           if (turf.getType(spotEditingCopy) === 'Polygon' || turf.getType(spotEditingCopy) === 'LineString') {
             explodedFeatures = explodedFeatures.map(spot => useMaps.convertImagePixelsToLatLong(spot));
           }
@@ -869,9 +882,13 @@ const Map = React.forwardRef((props, ref) => {
           feature = turf.polygon([featureCoordinates]);
         }
         else feature = turf.lineString(featureCoordinates);
-        if (currentImageBasemap) { //create new spot for imagebasemap - needs lat long to pixel conversion.
+        if (currentImageBasemap) { //create new spot for imagebasemap - needs lat long to pixel conversion
           feature = useMaps.convertFeatureGeometryToImagePixels(feature);
           feature.properties.image_basemap = currentImageBasemap.id;
+        }
+        else if (stratSection) { //create new spot for strat section - needs lat long to pixel conversion
+          feature = useMaps.convertFeatureGeometryToImagePixels(feature);
+          feature.properties.strat_section_id = stratSection.strat_section_id;
         }
         if (props.isSelectingForStereonet) {
           await getStereonetForFeature(feature);
@@ -908,9 +925,13 @@ const Map = React.forwardRef((props, ref) => {
       }
       const symbology = useSymbology.getSymbology(newFeature);
       newFeature.properties.symbology = symbology;
-      if (currentImageBasemap) { //create new spot for imagebasemap - needs lat long to pixel conversion.
+      if (currentImageBasemap) { //create new spot for imagebasemap - needs lat long to pixel conversion
         newFeature = useMaps.convertFeatureGeometryToImagePixels(newFeature);
         newFeature.properties.image_basemap = currentImageBasemap.id;
+      }
+      else if (stratSection) { //create new spot for imagebasemap - needs lat long to pixel conversion
+        newFeature = useMaps.convertFeatureGeometryToImagePixels(newFeature);
+        newFeature.properties.strat_section_id = stratSection.strat_section_id;
       }
       if (props.isSelectingForStereonet) {
         await getStereonetForFeature(newFeature);
@@ -972,17 +993,17 @@ const Map = React.forwardRef((props, ref) => {
   const startEditing = (spotToEdit, vertexToEdit, index) => {
     props.startEdit();
     clearEditing();
-    const mappableSpots = useSpots.getMappableSpots();
+    const mappedSpots = useMaps.getAllMappedSpots();
     setEditingModeData(d => ({
       ...d,
       spotEditing: spotToEdit ? spotToEdit : {},
       spotsEdited: [],
-      spotsNotEdited: mappableSpots,
+      spotsNotEdited: mappedSpots,
     }));
     spotToEdit ? console.log('Set Spot to edit:', spotToEdit) : console.log('No Spot selected to edit.');
     // #114, editing a spot should immediately identify it as the selected spot and hence update the notebook panel.
     if (!isEmpty(spotToEdit)) useMaps.setSelectedSpotOnMap(spotToEdit);
-    setDisplayedSpotsWhileEditing(spotToEdit, [], mappableSpots);
+    setDisplayedSpotsWhileEditing(spotToEdit, [], mappedSpots);
     setEditFeatures(spotToEdit);
     // while starting to edit the spot, set the vertex active to move immediately, if available
     if (vertexToEdit) {
@@ -1002,8 +1023,8 @@ const Map = React.forwardRef((props, ref) => {
     console.log('Map long press detected:', e);
     const {screenPointX, screenPointY} = e.properties;
     const spotToEdit = await useMaps.getSpotAtPress(screenPointX, screenPointY);
-    const mappableSpots = useSpots.getMappableSpots();
-    if (props.mapMode === MAP_MODES.VIEW && !isEmpty(mappableSpots)) {
+    const mappedSpots = useMaps.getAllMappedSpots();
+    if (props.mapMode === MAP_MODES.VIEW && !isEmpty(mappedSpots)) {
       let closestVertexDetails = {};
       let closestVertexToSelect = await useMaps.getDrawFeatureAtPress(screenPointX, screenPointY,
         [...mapPropsMutable.drawFeatures]);
@@ -1028,7 +1049,7 @@ const Map = React.forwardRef((props, ref) => {
               console.log('Adding new vertex...');
               // To add a vertex to a line the new point selected must be on the line
               if (turf.getType(spotEditingCopy) === 'LineString' && !isEmpty(spotToEdit)) {
-                if (currentImageBasemap) {
+                if (currentImageBasemap || stratSection) {
                   spotEditingCopy = useMaps.convertImagePixelsToLatLong(spotEditingCopy);
                   [spotEditingCopy, vertexAdded] = addVertexToLine(spotEditingCopy, e.geometry);
                   spotEditingCopy = useMaps.convertFeatureGeometryToImagePixels(spotEditingCopy);
@@ -1044,7 +1065,7 @@ const Map = React.forwardRef((props, ref) => {
                 }));
               }
               else if (turf.getType(spotEditingCopy) === 'Polygon') {
-                if (currentImageBasemap) {
+                if (currentImageBasemap || stratSection) {
                   spotEditingCopy = useMaps.convertImagePixelsToLatLong(spotEditingCopy);
                   spotEditingCopy = addVertexToPolygon(spotEditingCopy, e.geometry);
                   spotEditingCopy = useMaps.convertFeatureGeometryToImagePixels(spotEditingCopy);
@@ -1099,7 +1120,7 @@ const Map = React.forwardRef((props, ref) => {
                 },
               };
             });
-            if (currentImageBasemap) { // if imagebasemap, features, need to be converted to getLatLng inOrder to project them.
+            if (currentImageBasemap || stratSection) { // if imagebasemap, features, need to be converted to getLatLng inOrder to project them.
               if (turf.getType(spotEditingCopy) === 'Polygon' || turf.getType(spotEditingCopy) === 'LineString') {
                 explodedFeatures = explodedFeatures.map(spot => useMaps.convertImagePixelsToLatLong(spot));
               }
@@ -1169,8 +1190,9 @@ const Map = React.forwardRef((props, ref) => {
   const zoomToSpot = () => {
     if (selectedSpot && useMaps.isOnGeoMap(selectedSpot)) {
       // spot selected is on geomap, but currently on imagebasemap mode, turn off imagebasemap mode and zoomToSpot in async mode.
-      if (currentImageBasemap) {
+      if (currentImageBasemap || stratSection) {
         dispatch(setCurrentImageBasemap(undefined));
+        dispatch(clearedStratSection());
         setMapPropsMutable(m => ({
           ...m,
           zoomToSpot: true,
@@ -1179,11 +1201,13 @@ const Map = React.forwardRef((props, ref) => {
       // spot selected is on geomap and mapMode is main-map, zoomToSpot in sync mode.
       else useMaps.zoomToSpots([selectedSpot], mapRef.current, cameraRef.current);
     }
-    else if (!isEmpty(selectedSpot) && selectedSpot.properties.image_basemap) {
-      //spot selected is on imagebasemap, either if not on imagebasemap
+    else if (!isEmpty(selectedSpot)
+      && (selectedSpot.properties.image_basemap || selectedSpot.properties.strat_section_id)) {
+      // spot selected is on an image basemap or strat section, either if not on imagebasemap
       // or not on same imagebasemap as the selectedspot's imagebasemap,
       // then switch to corresponding imagebasemap and zoomToSpot in asyncMode
-      if (!currentImageBasemap || currentImageBasemap.id !== selectedSpot.properties.image_basemap) {
+      if (selectedSpot.properties.image_basemap
+        && (!currentImageBasemap || currentImageBasemap.id !== selectedSpot.properties.image_basemap)) {
         const imageBasemapData = useSpots.getImageBasemaps().find(imgBasemap => {
           return imgBasemap.id === selectedSpot.properties.image_basemap;
         });
@@ -1193,7 +1217,18 @@ const Map = React.forwardRef((props, ref) => {
           zoomToSpot: true,
         }));
       }
-      //spot selected is already on the same imagebasemap, zoomToSpot in sync mode.
+      else if (selectedSpot.properties.strat_section_id
+        && (!stratSection || stratSection.strat_section_id !== selectedSpot.properties.strat_section_id)) {
+        const stratSectionSettings = useStratSection.getStratSectionSettings(selectedSpot.properties.strat_section_id);
+        if (stratSectionSettings) {
+          dispatch(setStratSection(stratSectionSettings));
+          setMapPropsMutable(m => ({
+            ...m,
+            zoomToSpot: true,
+          }));
+        }
+      }
+      //spot selected is already on the same image basemap or strat section, zoomToSpot in sync mode
       else {
         const selectedSpotCopy = JSON.parse(JSON.stringify(selectedSpot));
         const spotInLatLng = useMaps.convertImagePixelsToLatLong(selectedSpotCopy);

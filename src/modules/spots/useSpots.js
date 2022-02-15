@@ -31,6 +31,7 @@ const useSpots = () => {
   const tags = useSelector(state => state.project.project.tags || []);
   const useContinuousTagging = useSelector(state => state.project.project.useContinuousTagging);
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
+  const stratSection = useSelector(state => state.map.stratSection);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const spots = useSelector(state => state.spot.spots);
 
@@ -138,8 +139,9 @@ const useSpots = () => {
     const updatedPreferences = {...preferences, spot_prefix: defaultName, starting_number_for_spot: defaultNumber + 1};
     dispatch(updatedProject({field: 'preferences', value: updatedPreferences}));
 
-    if (currentImageBasemap && newSpot.geometry && newSpot.geometry.type === 'Point') { //newSpot geometry is unavailable when spot is copied.
-      const rootSpot = getRootSpot(currentImageBasemap.id);
+    if ((currentImageBasemap || stratSection) && newSpot.geometry && newSpot.geometry.type === 'Point') { //newSpot geometry is unavailable when spot is copied.
+      const rootSpot = currentImageBasemap ? getRootSpot(currentImageBasemap.id)
+        : getSpotWithThisStratSection(stratSection.strat_section_id);
       if (rootSpot && rootSpot.geometry && rootSpot.geometry.type === 'Point') {
         newSpot.properties.lng = rootSpot.geometry.coordinates[0];
         newSpot.properties.lat = rootSpot.geometry.coordinates[1];
@@ -223,17 +225,10 @@ const useSpots = () => {
     }, []);
   };
 
+  // Get Active Spots with Geometry
   const getMappableSpots = () => {
     const allSpotsCopy = JSON.parse(JSON.stringify(Object.values(getActiveSpotsObj())));
-    if (currentImageBasemap) {
-      return allSpotsCopy.filter(spot => {
-        return spot.geometry
-          && !spot.properties.strat_section_id && spot.properties.image_basemap === currentImageBasemap.id;
-      });
-    }
-    return allSpotsCopy.filter(spot => {
-      return spot.geometry && !spot.properties.strat_section_id && !spot.properties.image_basemap;
-    });
+    return allSpotsCopy.filter(spot => spot.geometry);
   };
 
   // Return the keys for the Spot pages that are populated with data
@@ -347,20 +342,29 @@ const useSpots = () => {
   const getSpotGemometryIconSource = (spot) => {
     if (spot?.geometry?.type === 'Point') {
       if (spot.properties?.image_basemap) return require('../../assets/icons/ImagePoint_pressed.png');
-      else if (spot.properties?.strat_section) return require('../../assets/icons/StratPoint_pressed.png');
+      else if (spot.properties?.strat_section_id) return require('../../assets/icons/StratPoint_pressed.png');
       else return require('../../assets/icons/Point_pressed.png');
     }
     else if (spot?.geometry?.type === 'LineString') {
       if (spot.properties?.image_basemap) return require('../../assets/icons/ImageLine_pressed.png');
-      else if (spot.properties?.strat_section) return require('../../assets/icons/StratLine_pressed.png');
+      else if (spot.properties?.strat_section_id) return require('../../assets/icons/StratLine_pressed.png');
       else return require('../../assets/icons/Line_pressed.png');
     }
     else if (spot?.geometry?.type === 'Polygon') {
       if (spot.properties?.image_basemap) return require('../../assets/icons/ImagePolygon_pressed.png');
-      else if (spot.properties?.strat_section) return require('../../assets/icons/StratPolygon_pressed.png');
+      else if (spot.properties?.strat_section_id) return require('../../assets/icons/StratPolygon_pressed.png');
       else return require('../../assets/icons/Polygon_pressed.png');
     }
     else return require('../../assets/icons/QuestionMark_pressed.png');
+  };
+
+  // Get the Spot that Contains a Specific Strat Section Given the Id of the Strat Section
+  const getSpotWithThisStratSection = (stratSectionId) => {
+    const activeSpots = getActiveSpotsObj();
+    // Comparing int to string so use only 2 equal signs
+    return (
+      Object.values(activeSpots).find(spot => spot?.properties?.sed?.strat_section?.strat_section_id == stratSectionId)
+    );
   };
 
   const getSpotsByIds = (spotIds) => {
@@ -402,6 +406,12 @@ const useSpots = () => {
     }));
   };
 
+  // Get all active Spot that contain a strat section
+  const getSpotsWithStratSection = () => {
+    const activeSpots = getActiveSpotsObj();
+    return Object.values(activeSpots).filter(spot => spot?.properties?.sed?.strat_section);
+  };
+
   return [{
     checkIsSafeDelete: checkIsSafeDelete,
     copySpot: copySpot,
@@ -417,6 +427,7 @@ const useSpots = () => {
     getSpotByImageId: getSpotByImageId,
     getSpotDataIconSource: getSpotDataIconSource,
     getSpotGemometryIconSource: getSpotGemometryIconSource,
+    getSpotWithThisStratSection: getSpotWithThisStratSection,
     getSpotsByIds: getSpotsByIds,
     getSpotsSortedReverseChronologically: getSpotsSortedReverseChronologically,
     getSpotsWithImages: getSpotsWithImages,
@@ -424,6 +435,7 @@ const useSpots = () => {
     getSpotsWithKey: getSpotsWithKey,
     getSpotsWithSamples: getSpotsWithSamples,
     getSpotsWithSamplesSortedReverseChronologically: getSpotsWithSamplesSortedReverseChronologically,
+    getSpotsWithStratSection: getSpotsWithStratSection,
   }];
 };
 

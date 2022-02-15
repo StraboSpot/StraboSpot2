@@ -13,6 +13,7 @@ import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
 import {Form, useFormHook} from '../form';
+import {setStratSection} from '../maps/maps.slice';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import {PAGE_KEYS} from '../page/page.constants';
 import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
@@ -139,7 +140,7 @@ const StratSectionPage = (props) => {
             <FlatListItemSeparator/>
             <ListItem
               containerStyle={commonStyles.listItem} key={'strat_section'}
-              onPress={() => Alert.alert('Notice', 'This feature has not been implemented yet.')}
+              onPress={() => dispatch(setStratSection(stratSection))}
             >
               <Avatar
                 source={require('../../assets/icons/SedStratColumn_transparent.png')}

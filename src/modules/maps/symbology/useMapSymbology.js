@@ -1,10 +1,12 @@
 import {useSelector} from 'react-redux';
 
-import {hexToRgb, isEmpty} from '../../shared/Helpers';
-import useTagsHook from '../tags/useTags';
+import {hexToRgb, isEmpty} from '../../../shared/Helpers';
+import useTagsHook from '../../tags/useTags';
+import useStratSymbologyHook from '../strat-section/useStratSectionSymbology';
 
 const useMapSymbology = (props) => {
   const [useTags] = useTagsHook();
+  const useStratSymbology = useStratSymbologyHook();
   const tagTypeForColor = useSelector(state => state.map.tagTypeForColor);
   const isShowSpotLabelsOn = useSelector(state => state.map.isShowSpotLabelsOn);
 
@@ -256,44 +258,49 @@ const useMapSymbology = (props) => {
   };
 
   const getPolygonSymbology = (feature) => {
-    let color = 'rgba(0, 0, 255, 0.4)';     // default fill color
-    const tagColor = getTagColor(feature);
-    if (tagColor) color = tagColor;
-    // If feature has a surface feature type apply the specified color
-    else if (feature.properties.surface_feature && feature.properties.surface_feature.surface_feature_type) {
-      switch (feature.properties.surface_feature.surface_feature_type) {
-        case 'rock_unit':
-          color = 'rgba(0, 255, 255, 0.4)';   // light blue
-          break;
-        case 'contiguous_outcrop':
-          color = 'rgba(240, 128, 128, 0.4)'; // pink
-          break;
-        case 'geologic_structure':
-          color = 'rgba(0, 255, 255, 0.4)';   // light blue
-          break;
-        case 'geomorphic_feature':
-          color = 'rgba(0, 128, 0, 0.4)';     // green
-          break;
-        case 'anthropogenic_feature':
-          color = 'rgba(128, 0, 128, 0.4)';   // purple
-          break;
-        case 'extent_of_mapping':
-          color = 'rgba(128, 0, 128, 0)';     // no fill
-          break;
-        case 'extent_of_biological_marker':   // green
-          color = 'rgba(0, 128, 0, 0.4)';
-          break;
-        case 'subjected_to_similar_process':
-          color = 'rgba(255, 165, 0,0.4)';    // orange
-          break;
-        case 'gradients':
-          color = 'rgba(255, 165, 0,0.4)';    // orange
-          break;
-      }
+    if (feature.properties.surface_feature && feature.properties.surface_feature.surface_feature_type === 'strat_interval') {
+      return useStratSymbology.getStratIntervalFill(feature.properties);
     }
-    return {
-      'fillColor': color,
-    };
+    else {
+      let color = 'rgba(0, 0, 255, 0.4)';     // default fill color
+      const tagColor = getTagColor(feature);
+      if (tagColor) color = tagColor;
+      // If feature has a surface feature type apply the specified color
+      else if (feature.properties.surface_feature && feature.properties.surface_feature.surface_feature_type) {
+        switch (feature.properties.surface_feature.surface_feature_type) {
+          case 'rock_unit':
+            color = 'rgba(0, 255, 255, 0.4)';   // light blue
+            break;
+          case 'contiguous_outcrop':
+            color = 'rgba(240, 128, 128, 0.4)'; // pink
+            break;
+          case 'geologic_structure':
+            color = 'rgba(0, 255, 255, 0.4)';   // light blue
+            break;
+          case 'geomorphic_feature':
+            color = 'rgba(0, 128, 0, 0.4)';     // green
+            break;
+          case 'anthropogenic_feature':
+            color = 'rgba(128, 0, 128, 0.4)';   // purple
+            break;
+          case 'extent_of_mapping':
+            color = 'rgba(128, 0, 128, 0)';     // no fill
+            break;
+          case 'extent_of_biological_marker':   // green
+            color = 'rgba(0, 128, 0, 0.4)';
+            break;
+          case 'subjected_to_similar_process':
+            color = 'rgba(255, 165, 0,0.4)';    // orange
+            break;
+          case 'gradients':
+            color = 'rgba(255, 165, 0,0.4)';    // orange
+            break;
+        }
+      }
+      return {
+        fillColor: color,
+      };
+    }
   };
 
   const getSymbology = (feature) => {
@@ -354,6 +361,10 @@ const useMapSymbology = (props) => {
       fillColor: ['get', 'fillColor', ['get', 'symbology']],
       fillOutlineColor: 'black',
     },
+    polygonWithPattern: {
+      fillPattern: ['get', 'fillPattern', ['get', 'symbology']],
+      fillOutlineColor: 'black',
+    },
     pointSelected: {
       circleRadius: 35,
       circleColor: 'orange',
@@ -380,6 +391,11 @@ const useMapSymbology = (props) => {
     },
     polygonSelected: {
       fillColor: 'orange',
+      fillOpacity: 0.7,
+    },
+    polygonWithPatternSelected: {
+      fillColor: 'orange',
+      fillPattern: ['get', 'fillPattern', ['get', 'symbology']],
       fillOpacity: 0.7,
     },
     pointDraw: {

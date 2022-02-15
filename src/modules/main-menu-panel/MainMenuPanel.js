@@ -27,6 +27,8 @@ import {setMenuSelectionPage} from './mainMenuPanel.slice';
 import styles from './mainMenuPanel.styles';
 import MainMenuPanelHeader from './MainMenuPanelHeader';
 import MainMenuPanelList from './MainMenuPanelList';
+import StratSectionPage from '../sed/StratSectionPage';
+import StratSectionsList from '../maps/strat-section/StratSectionsList';
 
 const MainMenuPanel = props => {
   const dispatch = useDispatch();
@@ -145,6 +147,13 @@ const MainMenuPanel = props => {
       page = (
         <View style={styles.mainMenuContainer}>
           <ImageBaseMaps/>
+        </View>
+      );
+      break;
+    case MAIN_MENU_ITEMS.MAPS.STRAT_SECTIONS :
+      page = (
+        <View style={styles.mainMenuContainer}>
+          <StratSectionsList/>
         </View>
       );
       break;

@@ -33,6 +33,7 @@ const useMaps = (mapRef) => {
   const [useSpots] = useSpotsHook();
   const currentBasemap = useSelector(state => state.map.currentBasemap);
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
+  const stratSection = useSelector(state => state.map.stratSection);
   const customMaps = useSelector(state => state.map.customMaps);
   const dispatch = useDispatch();
   const project = useSelector(state => state.project.project);
@@ -188,11 +189,20 @@ const useMaps = (mapRef) => {
   // All Spots mapped on curent map
   const getAllMappedSpots = () => {
     const spotsWithGeometry = useSpots.getMappableSpots();      // Spots with geometry
-    // Filter out Spots on an strat section
-    let mappedSpots = spotsWithGeometry.filter(spot => !spot.properties.strat_section);
-    // Filter out Spots on an image_basemap
-    if (!currentImageBasemap) mappedSpots = mappedSpots.filter(spot => !spot.properties.image_basemap);
-    // console.log('All Mapped Spots on this map', mappedSpots);
+    let mappedSpots = {};
+    if (currentImageBasemap) {
+      mappedSpots = spotsWithGeometry.filter(
+        spot => spot.properties.image_basemap && spot.properties.image_basemap === currentImageBasemap.id);
+    }
+    else if (stratSection) {
+      mappedSpots = spotsWithGeometry.filter(
+        spot => spot.properties.strat_section_id && spot.properties.strat_section_id === stratSection.strat_section_id);
+    }
+    else {
+      mappedSpots = spotsWithGeometry.filter(
+        spot => !spot.properties.strat_section_id && !spot.properties.image_basemap);
+    }
+    console.log('All Mapped Spots on this map', mappedSpots);
     return mappedSpots;
   };
 
@@ -383,9 +393,9 @@ const useMaps = (mapRef) => {
   const getSpotAtPress = async (screenPointX, screenPoint) => {
     // console.log('mapMode in getSpotAtPress', props.mapMode);
     const spotLayers = ['pointLayerNotSelected', 'lineLayerNotSelected', 'lineLayerNotSelectedDotted',
-      'lineLayerNotSelectedDashed', 'lineLayerNotSelectedDotDashed', 'polygonLayerNotSelected', 'pointLayerSelected',
-      'lineLayerSelected', 'lineLayerSelectedDotted', 'lineLayerSelectedDashed', 'lineLayerSelectedDotDashed',
-      'polygonLayerSelected'];
+      'lineLayerNotSelectedDashed', 'lineLayerNotSelectedDotDashed', 'polygonLayerNotSelected',
+      'polygonLayerWithPatternNotSelected', 'pointLayerSelected', 'lineLayerSelected', 'lineLayerSelectedDotted',
+      'lineLayerSelectedDashed', 'lineLayerSelectedDotDashed', 'polygonLayerSelected', 'polygonLayerWithPatternSelected'];
     let spotFound = await getFeatureInRect(screenPointX, screenPoint, spotLayers);
     if (!isEmpty(spotFound)) {
       // In getFeatureInRect the function queryRenderedFeaturesInRect returns a feature with coordinates
@@ -482,23 +492,21 @@ const useMaps = (mapRef) => {
     let editedSpot = editingModeData.spotsEdited.find(spot => spot.properties.id === spotFound.properties.id);
     spotFound = editedSpot ? editedSpot : spotFound;
     let spotFoundCopy = JSON.parse(JSON.stringify(spotFound));
-    if (currentImageBasemap) spotFoundCopy = convertImagePixelsToLatLong(spotFoundCopy);
+    if (currentImageBasemap || stratSection) spotFoundCopy = convertImagePixelsToLatLong(spotFoundCopy);
     const explodedFeatures = turf.explode(spotFoundCopy).features;
     const distances = await getDistancesFromSpot(screenPointX, screenPointY, explodedFeatures);
     const [distance, closestVertexIndex] = getClosestSpotDistanceAndIndex(distances);
     // in case of imagebasemap, return the original non converted vertex.
-    if (currentImageBasemap) return [turf.explode(spotFound).features[closestVertexIndex], closestVertexIndex];
+    if (currentImageBasemap || stratSection) {
+      return [turf.explode(spotFound).features[closestVertexIndex], closestVertexIndex];
+    }
     else return [explodedFeatures[closestVertexIndex], closestVertexIndex];
-  };
-
-  const isGeoMap = (map) => {
-    return !map.props.id === 'image_basemap';
   };
 
   // If feature is mapped on geographical map, not an image basemap or strat section
   const isOnGeoMap = (feature) => {
     if (isEmpty(feature)) return false;
-    return !feature.properties.image_basemap && !feature.properties.strat_section;
+    return !feature.properties.image_basemap && !feature.properties.strat_section_id;
   };
 
   const isOnImageBasemap = (feature) => feature.properties?.image_basemap;
@@ -610,10 +618,8 @@ const useMaps = (mapRef) => {
   };
 
   const zoomToSpots = async (spotsToZoomTo, map, camera) => {
-    if (spotsToZoomTo.some(s => isOnStratSection(s))) {
-      Alert.alert('Zooming to Strat Section Spots has not been implemented yet.');
-    }
-    else if (spotsToZoomTo.every(s => isOnGeoMap(s)) || spotsToZoomTo.every(s => isOnImageBasemap(s))) {
+    if (spotsToZoomTo.every(s => isOnGeoMap(s)) || spotsToZoomTo.every(s => isOnImageBasemap(s))
+      || spotsToZoomTo.every(s => isOnStratSection(s))) {
       if (camera) {
         try {
           if (spotsToZoomTo.length === 1) {
@@ -643,6 +649,7 @@ const useMaps = (mapRef) => {
     convertImagePixelsToLatLong: convertImagePixelsToLatLong,
     customMapDetails: customMapDetails,
     deleteMap: deleteMap,
+    getAllMappedSpots: getAllMappedSpots,
     getCoordQuad: getCoordQuad,
     getCurrentLocation: getCurrentLocation,
     getDisplayedSpots: getDisplayedSpots,
@@ -653,7 +660,6 @@ const useMaps = (mapRef) => {
     getSpotsAsFeatures: getSpotsAsFeatures,
     handleError: handleError,
     identifyClosestVertexOnSpotPress: identifyClosestVertexOnSpotPress,
-    isGeoMap: isGeoMap,
     isOnGeoMap: isOnGeoMap,
     saveCustomMap: saveCustomMap,
     setBasemap: setBasemap,

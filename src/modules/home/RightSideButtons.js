@@ -24,6 +24,7 @@ const RightSideButtons = (props) => {
   const modalVisible = useSelector(state => state.home.modalVisible);
   const shortcutSwitchPosition = useSelector(state => state.home.shortcutSwitchPosition);
   const selectedDatasetId = useSelector(state => state.project.selectedDatasetId);
+  const stratSection = useSelector(state => state.map.stratSection);
 
   const [useImages] = useImagesHook();
   const [useMaps] = useMapsHook();
@@ -118,7 +119,7 @@ const RightSideButtons = (props) => {
           onPress={props.toggleNotebookPanel}
         />
       </Animated.View>
-      {!currentImageBasemap && !isNotebookPanelVisible && renderShortcutIcons()}
+      {!currentImageBasemap && !stratSection && !isNotebookPanelVisible && renderShortcutIcons()}
       {props.drawButtonsVisible && (
         <Animated.View
           style={[homeStyles.drawToolsContainer, props.rightsideIconAnimation]}>
@@ -167,7 +168,7 @@ const RightSideButtons = (props) => {
             </View>
           )}
           <View style={{flexDirection: 'row'}}>
-            {currentImageBasemap ? (
+            {(currentImageBasemap || stratSection) ? (
                 <IconButton
                   style={{top: 5}}
                   source={props.mapMode === MAP_MODES.DRAW.POINT

@@ -10,9 +10,11 @@ import {isEmpty} from '../../shared/Helpers';
 import homeStyles from '../home/home.style';
 import useImagesHook from '../images/useImages';
 import FreehandSketch from '../sketch/FreehandSketch';
-import {GEO_LAT_LNG_PROJECTION, MAP_SYMBOLS, PIXEL_PROJECTION} from './maps.constants';
+import {GEO_LAT_LNG_PROJECTION, PIXEL_PROJECTION} from './maps.constants';
+import {STRAT_PATTERNS} from './strat-section/stratSection.constants';
+import {MAP_SYMBOLS} from './symbology/mapSymbology.constants';
+import useMapSymbologyHook from './symbology/useMapSymbology';
 import useMapsHook from './useMaps';
-import useMapSymbologyHook from './useMapSymbology';
 
 function Basemap(props) {
   const customMaps = useSelector(state => state.map.customMaps);
@@ -20,7 +22,7 @@ function Basemap(props) {
 
   const {mapRef, cameraRef} = props.forwardedRef;
   const [useMapSymbology] = useMapSymbologyHook();
-  const [symbols, setSymbol] = useState(MAP_SYMBOLS);
+  const [symbols, setSymbol] = useState({...MAP_SYMBOLS, ...STRAT_PATTERNS});
   const [useImages] = useImagesHook();
   const [useMaps] = useMapsHook();
   const [currentZoom, setCurrentZoom] = useState(0);
@@ -62,7 +64,8 @@ function Basemap(props) {
 
   // Evaluate and return appropriate center coordinates
   const evaluateCenterCoordinates = () => {
-    if (props.zoomToSpot && !isEmpty(selectedSpot)) {
+    if (props.stratSection) return [0, 0];
+    else if (props.zoomToSpot && !isEmpty(selectedSpot)) {
       if (props.imageBasemap && selectedSpot.properties.image_basemap === props.imageBasemap.id) {
         return useMaps.convertCoordinateProjections(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION,
           turf.centroid(selectedSpot).geometry.coordinates);
@@ -91,10 +94,10 @@ function Basemap(props) {
         </Text>
       </View>
       <MapboxGL.MapView
-        id={props.imageBasemap ? props.imageBasemap.id : props.basemap.id}
+        id={props.imageBasemap ? props.imageBasemap.id : props.stratSection ? props.stratSection.strat_section_id : props.basemap.id}
         ref={mapRef}
         style={{flex: 1}}
-        styleURL={!props.imageBasemap && JSON.stringify(props.basemap)}
+        styleURL={!props.imageBasemap && !props.stratSection && JSON.stringify(props.basemap)}
         animated={true}
         localizeLabels={true}
         logoEnabled={true}
@@ -115,12 +118,12 @@ function Basemap(props) {
         {/* Blue dot for user location */}
         <MapboxGL.UserLocation
           animated={false}
-          visible={!props.imageBasemap && props.showUserLocation}
+          visible={!props.imageBasemap && !props.stratSection && props.showUserLocation}
         />
 
         <MapboxGL.Camera
           ref={cameraRef}
-          zoomLevel={props.imageBasemap ? 14 : props.zoom}
+          zoomLevel={props.imageBasemap || props.stratSection ? 14 : props.zoom}
           centerCoordinate={evaluateCenterCoordinates()}
           animationDuration={0}
           // followUserLocation={true}   // Can't follow user location if want to zoom to extent of Spots
@@ -155,6 +158,17 @@ function Basemap(props) {
           </MapboxGL.VectorSource>
         )}
 
+        {/* Strat Section background Layer */}
+        {props.stratSection && (
+          <MapboxGL.VectorSource>
+            <MapboxGL.BackgroundLayer
+              id={'background'}
+              style={{backgroundColor: '#ffffff'}}
+              sourceID={'stratSection'}
+            />
+          </MapboxGL.VectorSource>
+        )}
+
         {/* Image Basemap Layer */}
         {props.imageBasemap && !isEmpty(props.coordQuad) && doesImageExist && (
           <MapboxGL.Animated.ImageSource
@@ -168,11 +182,11 @@ function Basemap(props) {
 
         {/* Sketch Layer */}
         {(props.freehandSketchMode)
-        && (
-          <FreehandSketch>
-            <MapboxGL.RasterLayer id={'sketchLayer'}/>
-          </FreehandSketch>
-        )}
+          && (
+            <FreehandSketch>
+              <MapboxGL.RasterLayer id={'sketchLayer'}/>
+            </FreehandSketch>
+          )}
 
         {/* Colored Halo Around Points Layer */}
         <MapboxGL.ShapeSource
@@ -201,8 +215,14 @@ function Basemap(props) {
           <MapboxGL.FillLayer
             id={'polygonLayerNotSelected'}
             minZoomLevel={1}
-            filter={['==', ['geometry-type'], 'Polygon']}
+            filter={['all', ['==', ['geometry-type'], 'Polygon'], ['!', ['has', 'fillPattern', ['get', 'symbology']]]]}
             style={useMapSymbology.getMapSymbology().polygon}
+          />
+          <MapboxGL.FillLayer
+            id={'polygonLayerWithPatternNotSelected'}
+            minZoomLevel={1}
+            filter={['all', ['==', ['geometry-type'], 'Polygon'], ['has', 'fillPattern', ['get', 'symbology']]]}
+            style={useMapSymbology.getMapSymbology().polygonWithPattern}
           />
           <MapboxGL.LineLayer
             id={'polygonLayerNotSelectedBorder'}
@@ -254,8 +274,14 @@ function Basemap(props) {
           <MapboxGL.FillLayer
             id={'polygonLayerSelected'}
             minZoomLevel={1}
-            filter={['==', ['geometry-type'], 'Polygon']}
+            filter={['all', ['==', ['geometry-type'], 'Polygon'], ['!', ['has', 'fillPattern', ['get', 'symbology']]]]}
             style={useMapSymbology.getMapSymbology().polygonSelected}
+          />
+          <MapboxGL.FillLayer
+            id={'polygonLayerWithPatternSelected'}
+            minZoomLevel={1}
+            filter={['all', ['==', ['geometry-type'], 'Polygon'], ['has', 'fillPattern', ['get', 'symbology']]]}
+            style={useMapSymbology.getMapSymbology().polygonWithPatternSelected}
           />
           <MapboxGL.LineLayer
             id={'polygonLayerSelectedBorder'}
