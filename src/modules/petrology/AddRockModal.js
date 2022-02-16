@@ -49,7 +49,7 @@ const AddRockModal = (props) => {
 
   useLayoutEffect(() => {
     const rockKeyUpdated = pageKey === PAGE_KEYS.ROCK_TYPE_IGNEOUS
-      ? rockKey || modalValues.igneous_rock_class || IGNEOUS_ROCK_CLASSES.PLUTONIC
+      ? modalValues.igneous_rock_class || IGNEOUS_ROCK_CLASSES.PLUTONIC
       : pageKey;
     setRockKey(rockKeyUpdated);
     if (templates[rockKeyUpdated] && templates[rockKeyUpdated].isInUse
@@ -67,7 +67,7 @@ const AddRockModal = (props) => {
     setSurvey(useForm.getSurvey(formName));
     setChoices(useForm.getChoices(formName));
     setChoicesViewKey(null);
-  }, [modalValues, pageKey, templates, selectedTypeIndex]);
+  }, [modalValues, pageKey, templates]);
 
   useEffect(() => {
     return () => dispatch(setModalValues({}));
@@ -83,7 +83,7 @@ const AddRockModal = (props) => {
     if (i !== selectedTypeIndex) {
       setSelectedTypeIndex(i);
       const type = types[i];
-      setRockKey(type);
+      dispatch(setModalValues({id: getNewId(), igneous_rock_class: type}));
       const formNameSwitched = ['pet', type];
       setSurvey(useForm.getSurvey(formNameSwitched));
       setChoices(useForm.getChoices(formNameSwitched));
