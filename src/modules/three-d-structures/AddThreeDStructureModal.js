@@ -145,7 +145,10 @@ const AddThreeDStructureModal = (props) => {
       return <FoldGeometryChoices formProps={formProps} survey={survey} choices={choices}/>;
     }
     else {
-      const relevantFields = useForm.getRelevantFields(survey, choicesViewKey);
+      let relevantFields = useForm.getRelevantFields(survey, choicesViewKey);
+      if (formProps.values.type === 'other' && choicesViewKey === 'feature_type') {
+        relevantFields = [survey.find(f => f.name === choicesViewKey)];
+      }
       return (
         <Form {...{formName: [groupKey, formRef.current?.values?.type], surveyFragment: relevantFields, ...formProps}}/>
       );

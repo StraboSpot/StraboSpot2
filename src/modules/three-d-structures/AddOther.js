@@ -14,6 +14,7 @@ const AddOther = (props) => {
   const [otherMeasurementsGroupField, setOtherMeasurementsGroupField] = useState({});
 
   // Relevant keys for quick-entry modal
+  const labelKey = ['label'];
   const firstKeys = ['feature_type'];
   const boudinageFirstKeys = ['boudinage_geometry', 'boudinage_shape'];
   const boudinageThirdKeys = ['boudinage_competent', 'boudinage_incompetent', 'average_width_of_boudin_neck',
@@ -21,15 +22,19 @@ const AddOther = (props) => {
   const mullionFirstKeys = ['mullion_geometry', 'mullion_symmetry'];
   const mullionThirdKeys = ['mullion_competent_material', 'mullion_incompetent_material', 'mullion_wavelength_m',
     'mullion_layer_thickness_m'];
+  const lobateCuspateKeys = ['approximate_scale_m_lobate', 'lobate_competent_material', 'lobate_incompetent_material'];
   const lastKeys = ['struct_notes'];
 
   // Relevant fields for quick-entry modal
+  const labelField = labelKey.map(k => props.survey.find(f => f.name === k));
   const boudinageKeysFields = boudinageThirdKeys.map(k => props.survey.find(f => f.name === k));
   const mullionKeysFields = mullionThirdKeys.map(k => props.survey.find(f => f.name === k));
+  const lobateCuspateKeysFields = lobateCuspateKeys.map(k => props.survey.find(f => f.name === k));
   const lastKeysFields = lastKeys.map(k => props.survey.find(f => f.name === k));
 
   return (
     <React.Fragment>
+      <Form {...{surveyFragment: labelField, ...props.formProps}}/>
       <MainButtons
         mainKeys={firstKeys}
         formName={props.formName}
@@ -89,6 +94,9 @@ const AddOther = (props) => {
             />
           )}
         </React.Fragment>
+      )}
+      {props.formProps.values.feature_type === 'lobate_cuspate' && (
+        <Form {...{surveyFragment: lobateCuspateKeysFields, ...props.formProps}}/>
       )}
       <LittleSpacer/>
       <Form {...{surveyFragment: lastKeysFields, ...props.formProps}}/>

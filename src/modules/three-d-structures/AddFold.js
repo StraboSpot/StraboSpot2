@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 
+import LittleSpacer from '../../shared/ui/LittleSpacer';
 import {Form, FormSlider, MainButtons, useFormHook} from '../form';
 import {FoldGeometryButtons} from './fold-geometry';
 import {
@@ -15,14 +16,16 @@ const AddFold = (props) => {
   const [foldMeasurementsGroupField, setFoldMeasurementsGroupField] = useState({});
 
   // Relevant keys for quick-entry modal
-  const firstKeys = ['label', 'fold_notes'];
+  const firstKeys = ['label'];
   const mainButttonsKeys = ['feature_type'];
   const tightnessKey = 'tightness';
   const vergenceKey = 'vergence';
+  const lastKeys = ['fold_notes'];
 
   // Relevant fields for quick-entry modal
   const survey = useForm.getSurvey(props.formName);
   const firstKeysFields = firstKeys.map(k => survey.find(f => f.name === k));
+  const lastKeysFields = lastKeys.map(k => survey.find(f => f.name === k));
 
   return (
     <React.Fragment>
@@ -45,6 +48,8 @@ const AddFold = (props) => {
         {...props}
       />
       <FormSlider {...{fieldKey: vergenceKey, hasNoneChoice: true, hasRotatedLabels: true, ...props}}/>
+      <LittleSpacer/>
+      <Form {...{formName: props.formName, surveyFragment: lastKeysFields, ...props.formProps}}/>
       {isFoldMeasurementsModalVisible && (
         <ThreeDStructuresMeasurementsModal
           measurementsGroup={FOLD_MEASUREMENTS_KEYS[foldMeasurementsGroupField.name]}
