@@ -28,6 +28,7 @@ const SpotsListItem = (props) => {
 
   const renderSpotDataIcons = () => (
     <FlatList
+      listKey={new Date().toISOString()}
       keyExtractor={(item, index) => index.toString()}
       data={useSpots.getPopulatedPagesKeys(props.spot)}
       horizontal={false}
