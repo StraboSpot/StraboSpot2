@@ -153,8 +153,7 @@ const useNesting = (props) => {
     // Find parent spots based on strat section
     if (thisSpot.properties.strat_section_id) {
       const parentStratSectionSpot = Object.values(spots).find(spot => {
-        return spot.properties.sed
-          && spot.properties.sed.find(sed => sed.strat_section_id === thisSpot.properties.strat_section_id);
+        return spot.properties?.sed?.strat_section?.strat_section_id === thisSpot.properties.strat_section_id;
       });
       parentSpots.push(parentStratSectionSpot);
     }
