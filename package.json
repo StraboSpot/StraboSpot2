@@ -1,6 +1,6 @@
 {
   "name": "StraboSpot2",
-  "version": "1.17.1",
+  "version": "1.18.2",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -9,7 +9,7 @@
     "test": "jest",
     "lint": "eslint .",
     "lint:fix": "eslint --fix --ext .js,.jsx .",
-    "upload-sourcemaps": "sentry-cli releases files org.StraboSpot2-1.17.1 upload-sourcemaps ./main.jsbundle ./main.jsbundle.map --dist org.StraboSpot2-1.16.1  ",
+    "upload-sourcemaps": "sentry-cli releases files org.StraboSpot2-1.18.2 upload-sourcemaps ./main.jsbundle ./main.jsbundle.map --dist org.StraboSpot2-1.18.2  ",
     "build:ios": "react-native bundle --entry-file='index.js' --bundle-output='./main.jsbundle' --sourcemap-output='./main.jsbundle.map'  --dev=false --platform='ios'"
   },
   "dependencies": {
@@ -59,7 +59,6 @@
     "react-native-reanimated": "2.2.2",
     "react-native-safe-area-context": "3.3.2",
     "react-native-screens": "3.6.0",
-    "react-native-sensors": "7.3.3",
     "react-native-sound": "0.11.1",
     "react-native-table-component": "1.2.1",
     "react-native-vector-icons": "8.1.0",
