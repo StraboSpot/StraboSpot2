@@ -6,22 +6,16 @@ import java.util.*;
 
 public class MatrixCalculations {
 
-    private static double[][] adjustMatrixForDeclination(float[] matrix) {
+    private static double[][] adjustMatrixForDeclination(float[] matrix, float declination) {
         double[][] firstMatrix = {
                 new double[] {matrix[0], matrix[1], matrix[2]},
                 new double[] {matrix[3], matrix[4], matrix[5]},
                 new double[] {matrix[6], matrix[7], matrix[8]}
         };
 
-//        double[][] firstMatrix = {
-//                new double[] {matrix[0][0], matrix[0][1], matrix[0][2]},
-//                new double[] {matrix[1][0], matrix[1][1], matrix[1][2]},
-//                new double[] {matrix[2][0], matrix[2][1], matrix[2][2]}
-//        };
-
         double[][] secondMatrix = {
-                new double[] {Math.cos(9.4), -Math.sin(9.4), 0},
-                new double[] {Math.sin(9.4), Math.cos(9.4), 0},
+                new double[] {Math.cos(declination), -Math.sin(declination), 0},
+                new double[] {Math.sin(declination), Math.cos(declination), 0},
                 new double[] {0, 0, 1}
         };
         double [][] result = new double[firstMatrix.length][secondMatrix.length];
@@ -33,7 +27,6 @@ public class MatrixCalculations {
         }
 
         Log.i("Matrix", "2-D Array: \n[");
-//         // printing a 2-D array using two nested loops
          for (double[] array : result) {
              Log.i("Matrix", "[");
              for (double n : array) {
@@ -52,12 +45,6 @@ public class MatrixCalculations {
         }
         return cell;
     }
-
-    public static float[] convertENUToNWU(float[] ENU) {
-         ENU = new float[] {-ENU[3], -ENU[4], -ENU[5], ENU[0], ENU[1], ENU[2], ENU[6], ENU[7], ENU[8]};
-         return ENU;
-    }
-
 
     public static double[] cartesianToSpherical(double mValue1, double mValue2, double mValue3) {
         double rho = Math.sqrt(Math.pow(mValue1, 2) + Math.pow(mValue2, 2) + Math.pow(mValue3, 2));
@@ -122,19 +109,12 @@ public class MatrixCalculations {
 
 
 
-    public static float[] transposeMatrix(float[] originalMatrix) {
-        double[][] adjustedMatrix = adjustMatrixForDeclination(originalMatrix);
-
-//        Log.i("Matrix", "Original Matrix: " + Arrays.toString(originalMatrix));
-//        Log.i("Matrix", "Adjusted Matrix: " + Arrays.deepToString(adjustedMatrix));
-
-        float[][] originalArray = {{originalMatrix[0], originalMatrix[1], originalMatrix[2]}, {originalMatrix[3], originalMatrix[4], originalMatrix[5]}, {originalMatrix[6], originalMatrix[7], originalMatrix[8]}};
-//         float[][] originalArray2 = {{originalMatrix[3], originalMatrix[4], originalMatrix[5]}, {-originalMatrix[0], -originalMatrix[1], -originalMatrix[2]}, {originalMatrix[6], originalMatrix[7], originalMatrix[8]}};
+    public static float[] transposeMatrix(float[] originalMatrix, float declination) {
+        double[][] adjustedMatrix = adjustMatrixForDeclination(originalMatrix, declination);
 
         float[][] transposedArray = new float[3][3];
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-//                transposedArray[i][j] = (float) adjustedMatrix[j][i];
                 transposedArray[i][j] = (float) adjustedMatrix[j][i];
             }
         }
