@@ -14,6 +14,7 @@ import {
   View,
 } from 'react-native';
 
+import Geolocation from '@react-native-community/geolocation';
 import {Button, ListItem} from 'react-native-elements';
 import {accelerometer, SensorTypes, setUpdateIntervalForType, magnetometer} from 'react-native-sensors';
 import Sound from 'react-native-sound';
@@ -25,7 +26,12 @@ import modalStyle from '../../shared/ui/modal/modal.style';
 import Slider from '../../shared/ui/Slider';
 import {formStyles} from '../form';
 import {MODAL_KEYS} from '../home/home.constants';
-import {setModalVisible} from '../home/home.slice';
+import {
+  addedStatusMessage,
+  clearedStatusMessages,
+  setErrorMessagesModalVisible,
+  setModalVisible,
+} from '../home/home.slice';
 import useMapsHook from '../maps/useMaps';
 import useMeasurementsHook from '../measurements/useMeasurements';
 import {COMPASS_TOGGLE_BUTTONS} from './compass.constants';
@@ -68,6 +74,7 @@ const Compass = (props) => {
   const [buttonSound, setButtonSound] = useState(null);
   const [isManualMeasurement, setIsManualMeasurement] = useState(null);
   const [compassHeading, setCompassHeading] = useState(0);
+  const [declination, setDeclination] = useState(0);
 
   const [useMaps] = useMapsHook();
   const [useMeasurements] = useMeasurementsHook();
@@ -84,6 +91,7 @@ const Compass = (props) => {
 
   useEffect(() => {
     AppState.addEventListener('change', handleAppStateChange);
+    getCurrentLocation().catch(error => console.error('Error getting location', error));
     // if (Platform.OS === 'android') {
     //   // setUpdateIntervalForType(SensorTypes.accelerometer, 100);
     //   // setUpdateIntervalForType(SensorTypes.magnetometer, 100);
@@ -104,9 +112,9 @@ const Compass = (props) => {
       NativeModules.Compass.myDeviceRotation();
       CompassEvents.addListener('rotationMatrix', matrixRotation);
       return () => {
-        console.log('IOS REMOVE EVENT')
+        console.log('IOS REMOVE EVENT');
         CompassEvents.removeListener('rotationMatrix', matrixRotation);
-      }
+      };
     }
     // else calculateOrientation();
     else {
@@ -116,7 +124,7 @@ const Compass = (props) => {
         CompassEvents.removeListener('androidCompassData', androidMatrixRotation);
         NativeModules.AndroidCompass.stop();
         console.log('%cUNSUBSCRIBED to native Android compass data', 'color: red');
-      }
+      };
     }
   }, []);
 
@@ -239,6 +247,28 @@ const Compass = (props) => {
     }
   };
 
+  const getCurrentLocation = async () => {
+    const currentPosition = await useMaps.getCurrentLocation();
+    console.log('CURRENT LOCATION IN COMPASS: ' + currentPosition);
+    if (currentPosition !== null) {
+      getLocationDeclination(currentPosition).catch(error => console.error('Error getting declination', error));
+    }
+  };
+
+  const getLocationDeclination = async (currentLocation) => {
+    try {
+      NativeModules.AndroidCompass.getLocation(currentLocation.longitude, currentLocation.latitude, currentLocation.altitude);
+      // console.log(declination);
+      // setDeclination(getDeclination);
+    }
+    catch (err) {
+      dispatch(setModalVisible({modal: null}));
+      dispatch(clearedStatusMessages());
+      dispatch(addedStatusMessage(err.message));
+      dispatch(setErrorMessagesModalVisible(true));
+    }
+  }
+
   const grabMeasurements = async (isCompassMeasurement) => {
     if (modalVisible === MODAL_KEYS.SHORTCUTS.MEASUREMENT) {
       await useMaps.setPointAtCurrentLocation();
@@ -276,10 +306,20 @@ const Compass = (props) => {
     if (res) {
       setCompassData({
         ...compassData,
-        heading: res.heading,
-        accelX: roundToDecimalPlaces(res.accelerometerX,3),
-        accelY: roundToDecimalPlaces(res.accelerometerY,3),
-        accelZ: roundToDecimalPlaces(res.accelerometerZ,3),
+        heading: roundToDecimalPlaces(res.heading, 0),
+        // accelX: roundToDecimalPlaces(res.accelerometerX,3),
+        // accelY: roundToDecimalPlaces(res.accelerometerY,3),
+        // accelZ: roundToDecimalPlaces(res.accelerometerZ,3),
+        strike: roundToDecimalPlaces(res.strike, 0),
+        dip: roundToDecimalPlaces(res.dip, 0),
+        trend: roundToDecimalPlaces(res.trend, 0),
+        plunge: roundToDecimalPlaces(res.plunge, 0),
+        SD_Rho: roundToDecimalPlaces(res.SD_Rho,4),
+        SD_Phi: roundToDecimalPlaces(res.SD_Phi,4),
+        SD_Theta: roundToDecimalPlaces(res.SD_Theta,4),
+        TP_Rho: roundToDecimalPlaces(res.TP_Rho, 4),
+        TP_Phi: roundToDecimalPlaces(res.TP_Phi,4),
+        TP_Theta: roundToDecimalPlaces(res.TP_Theta,4),
         M11: roundToDecimalPlaces(res.M11, 3),
         M12: roundToDecimalPlaces(res.M12, 3),
         M13: roundToDecimalPlaces(res.M13, 3),

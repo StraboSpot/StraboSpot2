@@ -9,7 +9,7 @@ const modalStyle = StyleSheet.create({
     flex: 1,
     width: 250,
     maxWidth: width,
-    maxHeight: height - 100,
+    maxHeight: height - 10,
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
     borderColor: themes.MEDIUMGREY,
     borderWidth: 0.5,

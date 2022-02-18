@@ -24,7 +24,9 @@ const CompassModal = (props) => {
   const [showCompassRawDataView, setShowCompassRawDataView] = useState(false);
 
   const closeCompassModal = () => {
-    if (isShowTemplates) setIsShowTemplates(false);
+    if (isShowTemplates) {
+      setIsShowTemplates(false);
+    }
     else {
       dispatch(setModalVisible({modal: null}));
       dispatch(setCompassMeasurements({}));
@@ -52,23 +54,21 @@ const CompassModal = (props) => {
         {/*<Text> x: {compassData.accelX}</Text>*/}
         {/*<Text> y: {compassData.accelY}</Text>*/}
         {/*<Text> z: {compassData.accelZ}</Text>*/}
-        {/*<Spacer/>*/}
+        <Text>Strike and Dip:</Text>
+        <Text> Rho: {compassData.SD_Rho}</Text>
+        <Text> Phi: {compassData.SD_Phi}</Text>
+        <Text> Theta: {compassData.SD_Theta}</Text>
+        <Spacer/>
+        <Text>Trend and Plunge:</Text>
+        <Text> Rho: {compassData.TP_Rho}</Text>
+        <Text> Phi: {compassData.TP_Phi}</Text>
+        <Text> Theta: {compassData.TP_Theta}</Text>
         {/*<Text>Magnetometer:</Text>*/}
         {/*<Text> x: {compassData.magX}</Text>*/}
         {/*<Text> y: {compassData.magY}</Text>*/}
         {/*<Text> z: {compassData.magZ}</Text>*/}
         <Spacer/>
-        <Text>Strike and Dip</Text>
-        <Text> Rho: {compassData?.ENU_pole[0]}</Text>
-        <Text> Phi: {compassData?.ENU_pole[1]}</Text>
-        <Text> Theta: {compassData?.ENU_pole[2]}</Text>
-        <Spacer/>
-        <Text>Trend and Plunge</Text>
-        <Text> Rho: {compassData?.ENU_tp[0]}</Text>
-        <Text> Phi: {compassData?.ENU_tp[1]}</Text>
-        <Text> Theta: {compassData?.ENU_tp[2]}</Text>
         <View>
-          <Spacer/>
           <Text style={{textAlign: 'center', padding: 10, fontSize: 20}}>Matrix Rotation</Text>
           <View style={{flexDirection: 'row'}}>
             <View style={{flex: 1}}>
@@ -116,20 +116,22 @@ const CompassModal = (props) => {
       />
       <View>
         {!isShowTemplates
-          && (
-            <Compass
-              goToCurrentLocation={props.goToCurrentLocation}
-              showCompassDataModal={showCompassMetadataModal}
-              setCompassRawDataToDisplay={(data) => {
-                showCompassRawDataView && setCompassData(data);
-              }}
-            />
-          )}
+        && (
+          <Compass
+            goToCurrentLocation={props.goToCurrentLocation}
+            showCompassDataModal={showCompassMetadataModal}
+            setCompassRawDataToDisplay={(data) => {
+             showCompassRawDataView && setCompassData(data);
+            }}
+          />
+        )}
         <Overlay
           isVisible={showCompassRawDataView}
           overlayStyle={[{...modalStyle.modalContainer, width: 400}, compassStyles.compassDataModalPosition]}
         >
-          {!isEmpty(compassData) && showCompassRawDataView && renderCompassData()}
+          <Text style={{textAlign: 'center'}}>M31, -M32, M33</Text>
+          <Text style={{textAlign: 'center'}}>M21, -M22, M23</Text>
+          { !isEmpty(compassData) && showCompassRawDataView && renderCompassData()}
           <Button
             title={'close'}
             onPress={() => showCompassMetadataModal(false)}
