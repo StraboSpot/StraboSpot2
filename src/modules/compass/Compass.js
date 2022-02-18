@@ -365,10 +365,15 @@ const Compass = (props) => {
 
   const renderCompass = () => {
     return (
-      <TouchableOpacity style={compassStyles.compassImageContainer} onPress={() => grabMeasurements(true)}>
-        <Image source={require('../../assets/images/compass/compass.png')} style={compassStyles.compassImage}/>
-        {renderCompassSymbols()}
-      </TouchableOpacity>
+      <View>
+        <View>
+        </View>
+        <TouchableOpacity style={compassStyles.compassImageContainer} onPress={() => grabMeasurements(true)}>
+          <Image source={require('../../assets/images/compass/compass.png')} style={compassStyles.compassImage}/>
+          <Text style={{textAlign: 'center', position: 'absolute', bottom: 40, zIndex: 100}}>{compassData.heading}{'\u00b0'}</Text>
+          {renderCompassSymbols()}
+        </TouchableOpacity>
+      </View>
     );
   };
 
@@ -399,28 +404,36 @@ const Compass = (props) => {
 
   // Render the strike and dip symbol inside the compass
   const renderStrikeDipSymbol = () => {
-    let image = require('../../assets/images/compass/strike-dip-centered.png');
-    const spin = strikeSpinValue.interpolate({
-      inputRange: [0, compassData.strike],
-      outputRange: ['0deg', compassData.strike + 'deg'],
-    });
-    // First set up animation
-    Animated.timing(
-      strikeSpinValue,
-      {
-        duration: 100,
-        toValue: compassData.strike,
-        easing: Easing.linear(),
-        useNativeDriver: true,
-      },
-    ).start();
+    try {
+      let image = require('../../assets/images/compass/strike-dip-centered.png');
+      const spin = strikeSpinValue.interpolate({
+        inputRange: [0, compassData.strike && compassData.strike > 0 ? compassData.strike : 0],
+        outputRange: ['0deg', compassData.strike + 'deg'],
+      });
+      // First set up animation
+      Animated.timing(
+        strikeSpinValue,
+        {
+          duration: 100,
+          toValue: compassData.strike,
+          easing: Easing.linear(),
+          useNativeDriver: true,
+        },
+      ).start();
 
-    return (
-      <Animated.Image
-        key={image}
-        source={image}
-        style={[compassStyles.strikeAndDipLine, {transform: [{rotate: spin}]}]}/>
-    );
+      return (
+        <Animated.Image
+          key={image}
+          source={image}
+          style={[compassStyles.strikeAndDipLine, {transform: [{rotate: spin}]}]}/>
+      );
+    }
+    catch (err) {
+      console.error('Error in renderStrikeAndDipSymbol()', err);
+      dispatch(clearedStatusMessages);
+      dispatch(addedStatusMessage('Error rendering strike or dip symbol'));
+      dispatch(setErrorMessagesModalVisible(true));
+    }
   };
 
   const renderToggleListItem = (value) => {
@@ -449,32 +462,40 @@ const Compass = (props) => {
 
   // Render the strike and dip symbol inside the compass
   const renderTrendSymbol = () => {
-    let image = require('../../assets/images/compass/trendLine.png');
-    const spin = trendSpinValue.interpolate({
-      inputRange: [0, compassData.trend ? compassData.trend : 0],
-      outputRange: ['0deg', compassData.trend + 'deg'],
-    });
-    // First set up animation
-    Animated.timing(
-      trendSpinValue,
-      {
-        duration: 100,
-        toValue: compassData.trend,
-        easing: Easing.linear,
-        useNativeDriver: true,
-      },
-    ).start();
+    try {
+      let image = require('../../assets/images/compass/trendLine.png');
+      const spin = trendSpinValue.interpolate({
+        inputRange: [0, compassData.trend && compassData.trend > 0 ? compassData.trend : 0],
+        outputRange: ['0deg', compassData.trend + 'deg'],
+      });
+      // First set up animation
+      Animated.timing(
+        trendSpinValue,
+        {
+          duration: 100,
+          toValue: compassData.trend,
+          easing: Easing.linear,
+          useNativeDriver: true,
+        },
+      ).start();
 
-    return (
-      <Animated.Image
-        key={image}
-        source={image}
-        style={
-          [compassStyles.trendLine,
-            // {transform: [{rotate: compassData.trend + 'deg'}]}
-            {transform: [{rotate: spin}]},
-          ]}/>
-    );
+      return (
+        <Animated.Image
+          key={image}
+          source={image}
+          style={
+            [compassStyles.trendLine,
+              // {transform: [{rotate: compassData.trend + 'deg'}]}
+              {transform: [{rotate: spin}]},
+            ]}/>
+      );
+    }
+    catch (err) {
+      console.error('Error in renderTrendSymbol()', err);
+      dispatch(clearedStatusMessages);
+      dispatch(addedStatusMessage('Error rendering trend or plunge symbol'));
+      dispatch(setErrorMessagesModalVisible(true));
+    }
   };
 
   const angle = magnetometer => {
