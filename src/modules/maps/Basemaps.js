@@ -12,6 +12,7 @@ import useImagesHook from '../images/useImages';
 import FreehandSketch from '../sketch/FreehandSketch';
 import {GEO_LAT_LNG_PROJECTION, PIXEL_PROJECTION} from './maps.constants';
 import {STRAT_PATTERNS} from './strat-section/stratSection.constants';
+import StratSectionBackground from './strat-section/StratSectionBackground';
 import {MAP_SYMBOLS} from './symbology/mapSymbology.constants';
 import useMapSymbologyHook from './symbology/useMapSymbology';
 import useMapsHook from './useMaps';
@@ -73,6 +74,14 @@ function Basemap(props) {
       else if (!selectedSpot.properties.image_basemap) return turf.centroid(selectedSpot).geometry.coordinates;
     }
     return defaultCenterCoordinates();
+  };
+
+  // Get max X and max Y for strat intervals
+  const getStratIntervalsMaxXY = () => {
+    const intervals = [...props.spotsSelected, ...props.spotsNotSelected].filter(
+      feature => feature?.properties?.surface_feature?.surface_feature_type === 'strat_interval');
+    const bbox = turf.bbox(turf.featureCollection(intervals));  // bbox extent in minX, minY, maxX, maxY orde
+    return [bbox[2], bbox[3]];
   };
 
   const mapZoomLevel = async () => {
@@ -159,15 +168,7 @@ function Basemap(props) {
         )}
 
         {/* Strat Section background Layer */}
-        {props.stratSection && (
-          <MapboxGL.VectorSource>
-            <MapboxGL.BackgroundLayer
-              id={'background'}
-              style={{backgroundColor: '#ffffff'}}
-              sourceID={'stratSection'}
-            />
-          </MapboxGL.VectorSource>
-        )}
+        {props.stratSection && <StratSectionBackground maxXY={getStratIntervalsMaxXY()}/>}
 
         {/* Image Basemap Layer */}
         {props.imageBasemap && !isEmpty(props.coordQuad) && doesImageExist && (
@@ -175,8 +176,10 @@ function Basemap(props) {
             id={'imageBasemap'}
             coordinates={props.coordQuad}
             url={useImages.getLocalImageURI(props.imageBasemap.id)}>
-            <MapboxGL.RasterLayer id={'imageBasemapLayer'}
-                                  style={{rasterOpacity: 1}}/>
+            <MapboxGL.RasterLayer
+              id={'imageBasemapLayer'}
+              style={{rasterOpacity: 1}}
+            />
           </MapboxGL.Animated.ImageSource>
         )}
 

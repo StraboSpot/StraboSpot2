@@ -116,16 +116,16 @@ const useStratSectionSymbology = (props) => {
           else if (grainSize === 'sand_coarse_u') color = 'rgba(255, 235, 0, 1)';   // CMYK 0,8,100,0 USGS Color 91
           else if (grainSize === 'sand_very_coa') color = 'rgba(255, 222, 0, 1)';   // CMYK 0,13,100,0 USGS Color 92
           // Conglomerate
-          else if (featureProperties.sed.lithologies[n].primary_lithology === 'siliciclastic' &&
-            featureProperties.sed.lithologies[n].siliciclastic_type === 'conglomerate') {
+          else if (featureProperties.sed.lithologies[n].primary_lithology === 'siliciclastic'
+            && featureProperties.sed.lithologies[n].siliciclastic_type === 'conglomerate') {
             if (grainSize === 'granule') color = 'rgba(255, 153, 0, 1)';            // CMYK 0,40,100,0 USGS Color 95
             else if (grainSize === 'pebble') color = 'rgba(255, 128, 0, 1)';        // CMYK 0,50,100,0 USGS Color 96
             else if (grainSize === 'cobble') color = 'rgba(255, 102, 0, 1)';        // CMYK 0,60,100,0 USGS Color 97
             else if (grainSize === 'boulder') color = 'rgba(255, 77, 0, 1)';        // CMYK 0,70,100,0 USGS Color 98
           }
           // Breccia
-          else if (featureProperties.sed.lithologies[n].primary_lithology === 'siliciclastic' &&
-            featureProperties.sed.lithologies[n].siliciclastic_type === 'breccia') {
+          else if (featureProperties.sed.lithologies[n].primary_lithology === 'siliciclastic'
+            && featureProperties.sed.lithologies[n].siliciclastic_type === 'breccia') {
             if (grainSize === 'granule') color = 'rgba(230, 0, 0, 1)';              // CMYK 10,100,100,0 USGS Color 95
             else if (grainSize === 'pebble') color = 'rgba(204, 0, 0, 1)';          // CMYK 20,100,100,0 USGS Color 96
             else if (grainSize === 'cobble') color = 'rgba(179, 0, 0, 1)';          // CMYK 30,100,100,0 USGS Color 97
@@ -167,8 +167,19 @@ const useStratSectionSymbology = (props) => {
     }
   };
 
+  const getStratStyle = () => {
+    return {
+      yAxisTickMarkLabels: {
+        textField: ['get', 'label'],
+        textAnchor: 'bottom',
+        textOffset: [-1, 0],
+      },
+    };
+  };
+
   return {
     getStratIntervalFill: getStratIntervalFill,
+    getStratStyle: getStratStyle,
   };
 };
 
