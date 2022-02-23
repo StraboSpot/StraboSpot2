@@ -168,7 +168,9 @@ function Basemap(props) {
         )}
 
         {/* Strat Section background Layer */}
-        {props.stratSection && <StratSectionBackground maxXY={getStratIntervalsMaxXY()}/>}
+        {props.stratSection && (
+          <StratSectionBackground maxXY={getStratIntervalsMaxXY()} stratSection={props.stratSection}/>
+        )}
 
         {/* Image Basemap Layer */}
         {props.imageBasemap && !isEmpty(props.coordQuad) && doesImageExist && (

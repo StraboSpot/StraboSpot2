@@ -1,9 +1,10 @@
 import {Alert} from 'react-native';
 
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 import {getNewId, isEmpty, toTitleCase} from '../../shared/Helpers';
 import {useFormHook} from '../form';
+import {setStratSection} from '../maps/maps.slice';
 import {PAGE_KEYS} from '../page/page.constants';
 import {editedSpotProperties} from '../spots/spots.slice';
 import {
@@ -15,6 +16,7 @@ import {
 
 const useSed = () => {
   const dispatch = useDispatch();
+  const stratSection = useSelector(state => state.map.stratSection);
 
   const [useForm] = useFormHook();
 
@@ -130,6 +132,12 @@ const useSed = () => {
         editedSedData[key].splice(i, 1, editedFeatureData);
       }
       dispatch(editedSpotProperties({field: 'sed', value: editedSedData}));
+
+      // Update strat section for map if matches edited strat section
+      const stratSectionSettings = editedSedData.strat_section || {};
+      if (stratSectionSettings.strat_section_id && stratSection.strat_section_id === stratSectionSettings.strat_section_id) {
+        dispatch(setStratSection(stratSectionSettings));
+      }
     }
     catch (err) {
       Alert.alert('Error Saving', 'Unable to save changes.');

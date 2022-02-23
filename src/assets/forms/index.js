@@ -18,6 +18,7 @@ import rockTypeVolcanic from './pet/rock-type-igneous-volcanic.json';
 import rockTypeMetamorphic from './pet/rock-type-metamorphic.json';
 import projectDescription from './project-description.json';
 import sample from './sample.json';
+import addInterval from './sed/add-interval.json';
 import sedBeddingSharedInterbedded from './sed/bedding-shared-interbedded.json';
 import sedBeddingSharedPackage from './sed/bedding-shared-package.json';
 import sedBedding from './sed/bedding.json';
@@ -121,6 +122,7 @@ const forms = {
     tags: tags,
   },
   sed: {
+    add_interval: addInterval,
     architecture: sedInterpretationsArchitecture,
     bedding: sedBedding,
     bedding_plane: sedStructuresBeddingPlane,

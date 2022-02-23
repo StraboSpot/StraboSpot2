@@ -1,3 +1,8 @@
+export const GRAIN_SIZE_KEYS = ['mud_silt_grain_size', 'sand_grain_size', 'congl_grain_size']; // breccia_grain_size same as congl_grain_size
+export const CARBONATE_KEYS = ['dunham_classification'];
+export const LITHOLOGIES_KEYS = ['primary_lithology'];
+export const BASIC_LITHOLOGIES_LABELS = ['other', 'coal', 'mudstone', 'sandstone', 'conglomerate/breccia', 'limestone/dolostone'];
+
 export const STRAT_PATTERNS = {
   // Limestone / Dolostone / Misc. Lithologies
   limestone: require('../../../assets/symbols/sed/basic/LimeSimple.png'),
