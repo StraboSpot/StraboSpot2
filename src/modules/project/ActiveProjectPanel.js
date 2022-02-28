@@ -48,8 +48,8 @@ const ActiveProjectPanel = () => {
   };
 
   const confirm = async () => {
-    await useDownload.initializeDownload(project);
     setIsWarningModalVisible(false);
+    await useDownload.initializeDownload(project);
   };
 
   const renderAddDatasetModal = () => {
