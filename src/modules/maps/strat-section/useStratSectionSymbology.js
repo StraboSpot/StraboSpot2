@@ -20,13 +20,13 @@ const useStratSectionSymbology = (props) => {
     let fill;
     let color;
     const n = isInterbed ? 1 : 0;
-    if (featureProperties.sed && featureProperties.sed.character) {
+    if (featureProperties.sed && featureProperties.sed.character
+      && featureProperties.sed.character !== 'unexposed_cove' && featureProperties.sed.character !== 'not_measured') {
       const lithologies = featureProperties.sed.lithologies;
       const lithologyField = lithologies[n].primary_lithology;
       const grainSize = getGrainSize(lithologies[n]);
       const stratSectionSettings = useStratSection.getStratSectionSettings(featureProperties.strat_section_id);
       if (featureProperties.sed.lithologies && featureProperties.sed.lithologies[n]) {
-        //$log.log(props.sed.lithologies);
         if (stratSectionSettings.display_lithology_patterns) {
           if (stratSectionSettings.column_profile === 'basic_lithologies') {
             // Limestone / Dolostone / Misc. Lithologies
@@ -58,31 +58,9 @@ const useStratSectionSymbology = (props) => {
           }
         }
       }
+      // Basic Lithologies Column Profile
       if (!fill) {
-        if (featureProperties.sed.character === 'unexposed_cove' || featureProperties.sed.character === 'not_measured') {
-          // const canvas = document.createElement('canvas');
-          // const ctx = canvas.getContext('2d');
-          //
-          // const extent = featureProperties.geometry.getExtent();
-          // const width = 10 / resolution * 2;
-          // const height = (extent[3] - extent[1]) / resolution * 2;
-          // canvas.width = width;
-          // canvas.height = height;
-          //
-          // ctx.beginPath();
-          // ctx.moveTo(0, 0);
-          // ctx.lineTo(width, height);
-          // ctx.moveTo(0, height);
-          // ctx.lineTo(width, 0);
-          // ctx.stroke();
-          //
-          // const pattern = ctx.createPattern(canvas, 'no-repeat');
-          // fill = new ol.style.Fill();
-          // fill.setColor(pattern);
-          color = 'rgba(255, 255, 255, 1)';                                                      // default white
-        }
-        // Basic Lithologies Column Profile
-        else if (stratSectionSettings.column_profile === 'basic_lithologies') {
+        if (stratSectionSettings.column_profile === 'basic_lithologies') {
           // Limestone / Dolostone / Misc. Lithologies
           if (lithologyField === 'limestone') color = 'rgba(77, 255, 222, 1)';           // CMYK 70,0,13,0 USGS Color 820
           else if (lithologyField === 'dolostone') color = 'rgba(77, 255, 179, 1)';       // CMYK 70,0,30,0 USGS Color 840

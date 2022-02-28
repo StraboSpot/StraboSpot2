@@ -11,6 +11,7 @@ import homeStyles from '../home/home.style';
 import useImagesHook from '../images/useImages';
 import FreehandSketch from '../sketch/FreehandSketch';
 import {GEO_LAT_LNG_PROJECTION, PIXEL_PROJECTION} from './maps.constants';
+import CoveredIntervalsXLines from './strat-section/CoveredIntervalsXLines';
 import {STRAT_PATTERNS} from './strat-section/stratSection.constants';
 import StratSectionBackground from './strat-section/StratSectionBackground';
 import {MAP_SYMBOLS} from './symbology/mapSymbology.constants';
@@ -367,6 +368,11 @@ function Basemap(props) {
             style={useMapSymbology.getMapSymbology().pointEdit}
           />
         </MapboxGL.ShapeSource>
+
+        {/* Strat Section X Lines Layer for Covered/Uncovered or Not Measured Intervals */}
+        {props.stratSection && (
+          <CoveredIntervalsXLines spotsDisplayed={[...props.spotsNotSelected, ...props.spotsSelected]}/>
+        )}
 
         {/* Measure Layer */}
         <MapboxGL.ShapeSource
