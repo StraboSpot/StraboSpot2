@@ -81,8 +81,11 @@ function Basemap(props) {
   const getStratIntervalsMaxXY = () => {
     const intervals = [...props.spotsSelected, ...props.spotsNotSelected].filter(
       feature => feature?.properties?.surface_feature?.surface_feature_type === 'strat_interval');
-    const bbox = turf.bbox(turf.featureCollection(intervals));  // bbox extent in minX, minY, maxX, maxY orde
-    return [bbox[2], bbox[3]];
+    if (isEmpty(intervals)) return [0, 0];
+    else {
+      const bbox = turf.bbox(turf.featureCollection(intervals));  // bbox extent in minX, minY, maxX, maxY orde
+      return [bbox[2], bbox[3]];
+    }
   };
 
   const mapZoomLevel = async () => {

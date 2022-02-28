@@ -27,7 +27,7 @@ const useStratSectionSymbology = (props) => {
       const grainSize = getGrainSize(lithologies[n]);
       const stratSectionSettings = useStratSection.getStratSectionSettings(featureProperties.strat_section_id);
       if (featureProperties.sed.lithologies && featureProperties.sed.lithologies[n]) {
-        if (stratSectionSettings.display_lithology_patterns) {
+        if (stratSectionSettings && stratSectionSettings.display_lithology_patterns) {
           if (stratSectionSettings.column_profile === 'basic_lithologies') {
             // Limestone / Dolostone / Misc. Lithologies
             if (lithologyField === 'limestone') fill = 'limestone';
@@ -59,7 +59,7 @@ const useStratSectionSymbology = (props) => {
         }
       }
       // Basic Lithologies Column Profile
-      if (!fill) {
+      if (stratSectionSettings && !fill) {
         if (stratSectionSettings.column_profile === 'basic_lithologies') {
           // Limestone / Dolostone / Misc. Lithologies
           if (lithologyField === 'limestone') color = 'rgba(77, 255, 222, 1)';           // CMYK 70,0,13,0 USGS Color 820
