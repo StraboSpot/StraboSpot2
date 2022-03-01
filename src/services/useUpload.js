@@ -325,9 +325,11 @@ const useUpload = () => {
   const uploadProfile = async (userValues) => {
     try {
       const profileData = {name: userValues.name, password: userValues.password, mapboxToken: userValues.mapboxToken};
-      const formData = new FormData();
-      formData.append('image_file', {uri: userValues.image, name: 'image.jpg', type: 'image/jpeg'});
-      await useServerRequests.uploadProfileImage(formData, user.encoded_login);
+      if (userValues.image) {
+        const formData = new FormData();
+        formData.append('image_file', {uri: userValues.image, name: 'image.jpg', type: 'image/jpeg'});
+        await useServerRequests.uploadProfileImage(formData, user.encoded_login);
+      }
       await useServerRequests.updateProfile(profileData);
     }
     catch (err) {
