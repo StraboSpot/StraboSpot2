@@ -1,5 +1,5 @@
 import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
-import {Animated, Keyboard, TextInput, View} from 'react-native';
+import {Animated, Keyboard, TextInput, Text, View, Image} from 'react-native';
 
 import {Formik} from 'formik';
 import {Avatar, Button, Icon, Overlay} from 'react-native-elements';
@@ -21,6 +21,7 @@ import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import SidePanelHeader from '../main-menu-panel/sidePanel/SidePanelHeader';
 import userStyles from './user.styles';
 import {setUserData} from './userProfile.slice';
+import {isEmpty} from '../../shared/Helpers';
 
 
 
@@ -30,7 +31,7 @@ const UserProfile = (props) => {
   const userData = useSelector(state => state.user);
   const isOnline = useSelector(state => state.home.isOnline);
 
-  const [avatar, setAvatar] = useState({});
+  const [avatar, setAvatar] = useState(userData.image);
   const [isImageDialogVisible, setImageDialogVisible] = useState(false);
 
   const [useForm] = useFormHook();
@@ -43,18 +44,20 @@ const UserProfile = (props) => {
     return () => saveForm();
   }, []);
 
-  const pickImageSource = async (source) => {
+ const pickImageSource = async (source) => {
     if (source === 'gallery') {
       launchImageLibrary({}, async response => {
-        console.log(response);
-        if (response) setAvatar(response);
+        console.log('Profile Image', response);
+        if (response.didCancel) return;
+        if (response) setAvatar(response.assets[0]);
         else return require('../../assets/images/noimage.jpg');
       });
     }
     else {
       launchCamera({}, (response) => {
         console.log('Response = ', response);
-        if (response) setAvatar(response);
+        if (response.didCancel) return;
+        if (response) setAvatar(response.assets[0]);
         else return require('../../assets/images/noimage.jpg');
       });
     }
@@ -68,7 +71,6 @@ const UserProfile = (props) => {
     if (useForm.hasErrors(formCurrent)) {
       console.log(formCurrent.hasErrors());
     }
-    console.log({...newValues, image: avatar.uri});
     dispatch(setUserData(newValues));
     if (isOnline.isInternetReachable) upload(newValues).catch(err => console.error('Error:', err));
   };
@@ -108,7 +110,8 @@ const UserProfile = (props) => {
         <View style={{alignItems: 'center'}}>
           <Avatar
             rounded
-            source={{uri: avatar.uri || userData.image}}
+            renderPlaceholderContent={<Image source={require('../../assets/images/noimage.jpg')} style={{width: '70%', height: '70%'}}/>}
+            source={{uri: avatar?.uri || avatar }}
             size={'xlarge'}
           />
         </View>
@@ -161,9 +164,9 @@ const UserProfile = (props) => {
             containerStyle={userStyles.avatarLabelContainer}
             avatarStyle={userStyles.profilePageAvatarContainer}
             size={200}
-            activeOpacity={0.7}
             rounded={true}
-            source={{uri: userData.image}}
+            renderPlaceholderContent={<Image source={require('../../assets/images/noimage.jpg')} style={{width: '70%', height: '70%'}}/>}
+            source={!isEmpty(userData.image) && {uri: userData.image}}
           />
         </View>
         <View>
@@ -185,7 +188,6 @@ const UserProfile = (props) => {
             enableReinitialize={false}  // Update values if preferences change while form open, like when number incremented
           />
         </View>
-
         {ImageModal()}
       </Animated.View>
     </View>

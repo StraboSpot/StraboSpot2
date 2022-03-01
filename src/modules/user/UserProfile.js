@@ -9,19 +9,29 @@ import {REDUX} from '../../shared/app.constants';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty, truncateText} from '../../shared/Helpers';
 import StandardModal from '../../shared/ui/StandardModal';
-import {setMainMenuPanelVisible, setSignedInStatus} from '../home/home.slice';
+import {setMainMenuPanelVisible} from '../home/home.slice';
 import {MAIN_MENU_ITEMS, SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import {setMenuSelectionPage, setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import userStyles from './user.styles';
 import useUserProfileHook from './useUserProfile';
 
 const UserProfile = (props) => {
+  const defaultAvatar = require('../../assets/images/splash.png');
   const dispatch = useDispatch();
   const userData = useSelector(state => state.user);
   const [isLogoutModalVisible, setIsLogoutModalVisible] = useState(false);
 
   const navigation = useNavigation();
   const useUserProfile = useUserProfileHook();
+
+  const getAvatarSource = () => {
+    if (!isEmpty(userData.image) && typeof userData.image.valueOf() === 'string') return {uri: userData.image};
+    else if (isEmpty(userData.image) || (userData.image && typeof userData.image.valueOf() !== 'string')) {
+      if ((!userData.name || userData.name === '')) return defaultAvatar;
+
+      // return defaultAvatar;
+    }
+  };
 
   const openUploadAndBackupPage = () => {
     setIsLogoutModalVisible(false);
@@ -38,7 +48,6 @@ const UserProfile = (props) => {
     else {
       setIsLogoutModalVisible(false);
       setTimeout(() => { // Added timeOut cause state of modal wasn't changing fast enough
-        // dispatch(setSignedInStatus(false));
         dispatch(setMainMenuPanelVisible(false));
         dispatch({type: REDUX.CLEAR_STORE});
         props.logout();
@@ -47,77 +56,49 @@ const UserProfile = (props) => {
     }
   };
 
-  const renderAvatarImageBlock = () => {
-    if (!isEmpty(userData.name || userData.image)) {
-      if (!isEmpty(userData.image) && typeof userData.image.valueOf() === 'string') {
-        return (
-          <View>
-            <ListItem
-              onPress={() => dispatch(setSidePanelVisible({view: SIDE_PANEL_VIEWS.USER_PROFILE, bool: true}))}
-            >
-              <Avatar
-                source={{uri: userData.image}}
-                size={70}
-                rounded={true}
-              />
-              <ListItem.Content>
-                <ListItem.Title style={userStyles.avatarLabelName}>{userData.name}</ListItem.Title>
-                <ListItem.Subtitle style={userStyles.avatarLabelEmail}>{truncateText(userData.email,
-                  16)}</ListItem.Subtitle>
-              </ListItem.Content>
-              <ListItem.Chevron/>
-            </ListItem>
-          </View>
-        );
-      }
-      else if (isEmpty(userData.image) || (userData.image && typeof userData.image.valueOf() !== 'string')) {
-        return (
-          <View style={userStyles.profileNameAndImageContainer}>
-            <Avatar
-              title={userData.name && userData.name !== '' && useUserProfile.getUserInitials()}
-              titleStyle={userStyles.avatarPlaceholderTitleStyle}
-              source={(!userData.name || userData.name === '') && require('../../assets/images/splash.png')}
-              rounded={true}
-              size={70}
-              onPress={() => console.log('User with no image')}
-            />
-            <View style={userStyles.avatarLabelContainer}>
-              <Text style={userStyles.avatarLabelName}>{userData.name}</Text>
-              <Text style={userStyles.avatarLabelEmail}>{userData.email}</Text>
-            </View>
-          </View>
-        );
-      }
-    }
-    else {
-      return (
-        <View style={userStyles.profileNameAndImageContainer}>
-          <View>
-            <Avatar
-              source={require('../../assets/images/splash.png')}
-              rounded={true}
-              size={70}
-            />
-          </View>
-          <View style={userStyles.avatarLabelContainer}>
-            <Text style={userStyles.avatarLabelName}>Guest</Text>
-          </View>
-        </View>
-      );
-    }
+  const renderAvatarImage = () => {
+    return (
+      <Avatar
+        title={userData.name && userData.name !== '' && useUserProfile.getUserInitials()}
+        containerStyle={{backgroundColor: 'darkgrey'}}
+        titleStyle={userStyles.avatarPlaceholderTitleStyle}
+        source={getAvatarSource()}
+        size={70}
+        rounded={true}
+      />
+    );
+  };
 
+  const renderProfile = () => {
+    return (
+      <View>
+        <ListItem
+          onPress={() => dispatch(setSidePanelVisible({view: SIDE_PANEL_VIEWS.USER_PROFILE, bool: true}))}
+          disabled={isEmpty(userData.name)}
+        >
+          {renderAvatarImage()}
+          <ListItem.Content>
+            <ListItem.Title style={userStyles.avatarLabelName}>{!isEmpty(
+              userData.name) ? userData.name : 'Guest'}</ListItem.Title>
+            <ListItem.Subtitle style={userStyles.avatarLabelEmail}>{!isEmpty(userData.email) && truncateText(
+              userData.email, 16)}</ListItem.Subtitle>
+          </ListItem.Content>
+          {!isEmpty(userData.name) && <ListItem.Chevron/>}
+        </ListItem>
+      </View>
+    );
   };
 
   const renderLogOutButton = () => {
     return (
       <View>
         <Button
-            onPress={() => isEmpty(userData.name) ? doLogOut() : setIsLogoutModalVisible(true)}
-            title={isEmpty(userData.name) ? 'Sign In' : 'Log out'}
-            containerStyle={commonStyles.standardButtonContainer}
-            buttonStyle={commonStyles.standardButton}
-            titleStyle={commonStyles.standardButtonText}
-          />
+          onPress={() => isEmpty(userData.name) ? doLogOut() : setIsLogoutModalVisible(true)}
+          title={isEmpty(userData.name) ? 'Sign In' : 'Log out'}
+          containerStyle={commonStyles.standardButtonContainer}
+          buttonStyle={commonStyles.standardButton}
+          titleStyle={commonStyles.standardButtonText}
+        />
       </View>
     );
   };
@@ -154,7 +135,7 @@ const UserProfile = (props) => {
   return (
     <React.Fragment>
       <View>
-        {renderAvatarImageBlock()}
+        {renderProfile()}
         {renderLogOutButton()}
         {renderLogoutModal()}
       </View>
