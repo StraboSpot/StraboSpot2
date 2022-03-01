@@ -405,6 +405,7 @@ const useMaps = (mapRef) => {
           mappedFeatures.push(JSON.parse(JSON.stringify(feature)));
         });
       }
+      else if (spot.geometry.type === 'GeometryCollection') return null;
       else mappedFeatures.push(JSON.parse(JSON.stringify(spot)));
     });
     return mappedFeatures;

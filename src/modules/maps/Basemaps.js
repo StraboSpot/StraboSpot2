@@ -52,7 +52,8 @@ function Basemap(props) {
   // Add symbology to properties of map features (not to Spots themselves) since data-driven styling
   // doesn't work for colors by tags and more complex styling
   const addSymbology = (features) => {
-    return features.map(feature => {
+    const filtered = features.filter(f => f.geometry.type !== 'GeometryCollection');
+    return filtered.map(feature => {
       const symbology = useMapSymbology.getSymbology(feature);
       if (!isEmpty(symbology)) feature.properties.symbology = symbology;
       return feature;
@@ -81,11 +82,14 @@ function Basemap(props) {
   const getStratIntervalsMaxXY = () => {
     const intervals = [...props.spotsSelected, ...props.spotsNotSelected].filter(
       feature => feature?.properties?.surface_feature?.surface_feature_type === 'strat_interval');
-    if (isEmpty(intervals)) return [0, 0];
-    else {
-      const bbox = turf.bbox(turf.featureCollection(intervals));  // bbox extent in minX, minY, maxX, maxY orde
-      return [bbox[2], bbox[3]];
-    }
+    return intervals.reduce((acc, i) => {
+      const coords = i.geometry.coordinates || i.geometry.geometries.flat();
+      const xs = coords.flat().map(c => c[0]);
+      const maxX = Math.max(...xs);
+      const ys = coords.flat().map(c => c[1]);
+      const maxY = Math.max(...ys);
+      return [Math.max(acc[0], maxX), Math.max(acc[1], maxY)];
+    }, [0, 0]);
   };
 
   const mapZoomLevel = async () => {

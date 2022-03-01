@@ -16,9 +16,9 @@ const useMapFeatures = (props) => {
     try {
       const selectedFeaturesIds = [];
       features.forEach(feature => {
-        if (turf.booleanWithin(feature, drawnPolygon)
+        if (feature.geometry.type !== 'GeometryCollection' && (turf.booleanWithin(feature, drawnPolygon)
           || (feature.geometry.type === 'LineString' && turf.lineIntersect(feature, drawnPolygon).features.length > 0)
-          || (feature.geometry.type === 'Polygon' && turf.booleanOverlap(feature, drawnPolygon))) {
+          || (feature.geometry.type === 'Polygon' && turf.booleanOverlap(feature, drawnPolygon)))) {
           selectedFeaturesIds.push(feature.properties.id);
         }
       });
