@@ -4,6 +4,7 @@ import {Alert, View} from 'react-native';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import Logger from '@react-native-mapbox-gl/maps/javascript/utils/Logger';
 import * as turf from '@turf/turf';
+import proj4 from 'proj4';
 import {Button} from 'react-native-elements';
 import Dialog, {DialogContent, DialogTitle, SlideAnimation} from 'react-native-popup-dialog';
 import {useDispatch, useSelector} from 'react-redux';
@@ -221,8 +222,8 @@ const Map = React.forwardRef((props, ref) => {
   }, [user, isOnline]);
 
   useEffect(() => {
-    console.log('UE4 Map [props.spots, props.datasets, currentBasemap, currentImageBasemap, selectedSymbols,' +
-      ' isAllSymbolsOn, stratSection]');
+    console.log('UE4 Map [props.spots, props.datasets, currentBasemap, currentImageBasemap, selectedSymbols,'
+      + ' isAllSymbolsOn, stratSection]');
     console.log('Updating Spots, selected Spots, active datasets, basemap or map symbols to display changed');
     setDisplayedSpots((isEmpty(selectedSpot) ? [] : [{...selectedSpot}]));
   }, [spots, datasets, currentBasemap, currentImageBasemap, selectedSymbols, isAllSymbolsOn, stratSection]);
@@ -321,7 +322,7 @@ const Map = React.forwardRef((props, ref) => {
       const newVertexCoords = await mapRef.current.getCoordinateFromView(vertexEndCoords);
       if ((currentImageBasemap || stratSection) && editingModeData.spotEditing
         && turf.getType(editingModeData.spotEditing) === 'Point') {
-        const vertexCoordinates = useMaps.convertCoordinateProjections(GEO_LAT_LNG_PROJECTION, PIXEL_PROJECTION,
+        const vertexCoordinates = proj4(GEO_LAT_LNG_PROJECTION, PIXEL_PROJECTION,
           [newVertexCoords[0], newVertexCoords[1]]);
         console.log('Move vertex to:', vertexCoordinates);
         editSpotCoordinates([vertexCoordinates[0], vertexCoordinates[1]]);
@@ -619,8 +620,7 @@ const Map = React.forwardRef((props, ref) => {
       // !isEmpty(editingModeData.spotEditing) && editingModeData.spotEditing.properties.name != vertex.properties.name)), this check is required
       // when a polygon/linestring is selected by a long press first then a different point than the points on polygon/line is selected to edit.
       const coords = vertex.geometry.coordinates;
-      const [lat, lng] = useMaps.convertCoordinateProjections(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION,
-        [coords[0], coords[1]]);
+      const [lat, lng] = proj4(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION, [coords[0], coords[1]]);
       const vertexCoordinates = await mapRef.current.getPointInView([lat, lng]);
       dispatch(setVertexStartCoords(vertexCoordinates));
     }
@@ -701,9 +701,7 @@ const Map = React.forwardRef((props, ref) => {
               }));
             }
           }
-          if (currentImageBasemap || stratSection) {
-            newCoord = useMaps.convertCoordinateProjections(GEO_LAT_LNG_PROJECTION, PIXEL_PROJECTION, newCoord);
-          }
+          if (currentImageBasemap || stratSection) newCoord = proj4(GEO_LAT_LNG_PROJECTION, PIXEL_PROJECTION, newCoord);
           if (turf.getType(spotEditingCopy) === 'LineString') {
             if (!isEmpty(editingModeData.vertexIndex)) {
               spotEditingCopy.geometry.coordinates[editingModeData.vertexIndex] = newCoord;

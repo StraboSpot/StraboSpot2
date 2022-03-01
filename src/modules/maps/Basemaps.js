@@ -3,6 +3,7 @@ import {Text, View} from 'react-native';
 
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import * as turf from '@turf/turf';
+import proj4 from 'proj4';
 import ScaleBar from 'react-native-map-scale-bar';
 import {useSelector} from 'react-redux';
 
@@ -59,7 +60,7 @@ function Basemap(props) {
   };
 
   const defaultCenterCoordinates = () => {
-    return props.imageBasemap ? useMaps.convertCoordinateProjections(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION,
+    return props.imageBasemap ? proj4(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION,
         [(props.imageBasemap.width) / 2, (props.imageBasemap.height) / 2])
       : props.centerCoordinate;
   };
@@ -69,8 +70,7 @@ function Basemap(props) {
     if (props.stratSection) return [0, 0];
     else if (props.zoomToSpot && !isEmpty(selectedSpot)) {
       if (props.imageBasemap && selectedSpot.properties.image_basemap === props.imageBasemap.id) {
-        return useMaps.convertCoordinateProjections(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION,
-          turf.centroid(selectedSpot).geometry.coordinates);
+        return proj4(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION, turf.centroid(selectedSpot).geometry.coordinates);
       }
       else if (!selectedSpot.properties.image_basemap) return turf.centroid(selectedSpot).geometry.coordinates;
     }

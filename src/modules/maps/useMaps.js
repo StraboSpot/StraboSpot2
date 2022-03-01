@@ -1,5 +1,5 @@
 import {useEffect} from 'react';
-import {Alert, Platform} from 'react-native';
+import {Platform} from 'react-native';
 
 import Geolocation from '@react-native-community/geolocation';
 import * as turf from '@turf/turf';
@@ -119,66 +119,47 @@ const useMaps = (mapRef) => {
     console.log('Saved customMaps to Redux.');
   };
 
-  const convertCoordinateProjections = (sourceProjection, targetProjection, coords) => {
-    const [targetX, targetY] = proj4(sourceProjection, targetProjection, coords);
-    return [targetX, targetY];
+  // Convert WGS84 to x,y pixels, assuming x,y are web mercator, or vice versa
+  const convertCoords = (feature, fromProjection, toProjection) => {
+    if (feature.geometry.type === 'Point') {
+      feature.geometry.coordinates = proj4(fromProjection, toProjection, feature.geometry.coordinates);
+    }
+    else if (feature.geometry.type === 'LineString' || feature.geometry.type === 'MultiPoint') {
+      feature.geometry.coordinates = feature.geometry.coordinates.map((pointCoords) => {
+        return proj4(fromProjection, toProjection, pointCoords);
+      });
+    }
+    else if (feature.geometry.type === 'Polygon' || feature.geometry.type === 'MultiLineString') {
+      feature.geometry.coordinates = feature.geometry.coordinates.map((lineCoords) => {
+        return lineCoords.map((pointCoords) => proj4(fromProjection, toProjection, pointCoords));
+      });
+    }
+    else if (feature.geometry.type === 'MultiPolygon') {
+      feature.geometry.coordinates = feature.geometry.coordinates.map((polygonCoords) => {
+        return polygonCoords.map((lineCoords) => {
+          return lineCoords.map((pointCoords) => proj4(fromProjection, toProjection, pointCoords));
+        });
+      });
+    }
+    // Interbedded (Geometry Collections)
+    else if (feature.geometry.type === 'GeometryCollection') {
+      feature.geometry.geometries = feature.geometry.geometries.map((geometry) => {
+        return geometry.coordinates.map((lineCoords) => {
+          return lineCoords.map((pointCoords) => proj4(fromProjection, toProjection, pointCoords));
+        });
+      });
+    }
+    return feature;
   };
 
   // Convert WGS84 to image x,y pixels, assuming x,y are web mercator
   const convertFeatureGeometryToImagePixels = (feature) => {
-    var imageX, imageY;
-    let calculatedCoordinates = [];
-    if (feature.geometry.type === 'Point') {
-      [imageX, imageY] = convertCoordinateProjections(GEO_LAT_LNG_PROJECTION, PIXEL_PROJECTION,
-        feature.geometry.coordinates);
-      feature.geometry.coordinates = [imageX, imageY];
-    }
-    else if (feature.geometry.type === 'Polygon') {
-      for (const subArray of feature.geometry.coordinates) {
-        for (const innerSubArray of subArray) {
-          [imageX, imageY] = convertCoordinateProjections(GEO_LAT_LNG_PROJECTION, PIXEL_PROJECTION, innerSubArray);
-          calculatedCoordinates.push([imageX, imageY]);
-        }
-      }
-      feature.geometry.coordinates = [calculatedCoordinates];
-    }
-    else { // LineString
-      for (const subArray of feature.geometry.coordinates) {
-        [imageX, imageY] = convertCoordinateProjections(GEO_LAT_LNG_PROJECTION, PIXEL_PROJECTION, subArray);
-        calculatedCoordinates.push([imageX, imageY]);
-      }
-      feature.geometry.coordinates = calculatedCoordinates;
-    }
-    return feature;
+    return convertCoords(feature, GEO_LAT_LNG_PROJECTION, PIXEL_PROJECTION);
   };
 
   // Convert image x,y pixels to WGS84, assuming x,y are web mercator
   const convertImagePixelsToLatLong = (feature) => {
-    if (feature.geometry.type === 'Point') {
-      const coords = feature.geometry.coordinates;
-      feature.geometry.coordinates = convertCoordinateProjections(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION,
-        [coords[0], coords[1]]);
-    }
-    else if (feature.geometry.type === 'Polygon') {
-      let calculatedCoordinates = [];
-      for (const subArray of feature.geometry.coordinates) {
-        for (const innerSubArray of subArray) {
-          let [x, y] = convertCoordinateProjections(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION,
-            [innerSubArray[0], innerSubArray[1]]);
-          calculatedCoordinates.push([x, y]);
-        }
-      }
-      feature.geometry.coordinates = [calculatedCoordinates];
-    }
-    else {
-      let calculatedCoordinates = [];
-      for (const subArray of feature.geometry.coordinates) {
-        let [x, y] = convertCoordinateProjections(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION, [subArray[0], subArray[1]]);
-        calculatedCoordinates.push([x, y]);
-      }
-      feature.geometry.coordinates = calculatedCoordinates;
-    }
-    return feature;
+    return convertCoords(feature, PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION);
   };
 
   const customMapDetails = (map) => {
@@ -239,12 +220,10 @@ const useMaps = (mapRef) => {
   const getCoordQuad = (imageBasemapProps) => {
     // identify the [lat,lng] corners of the image basemap
     const bottomLeft = [0, 0];
-    const bottomRight = convertCoordinateProjections(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION,
-      [imageBasemapProps.width, 0]);
-    const topRight = convertCoordinateProjections(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION,
+    const bottomRight = proj4(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION, [imageBasemapProps.width, 0]);
+    const topRight = proj4(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION,
       [imageBasemapProps.width, imageBasemapProps.height]);
-    const topLeft = convertCoordinateProjections(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION,
-      [0, imageBasemapProps.height]);
+    const topLeft = proj4(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION, [0, imageBasemapProps.height]);
     let coordQuad = [topLeft, topRight, bottomRight, bottomLeft];
     console.log('The coordinates identified for image-basemap :', coordQuad);
     return coordQuad;
@@ -644,7 +623,6 @@ const useMaps = (mapRef) => {
   return [{
     buildStyleURL: buildStyleURL,
     buildTileUrl: buildTileUrl,
-    convertCoordinateProjections: convertCoordinateProjections,
     convertFeatureGeometryToImagePixels: convertFeatureGeometryToImagePixels,
     convertImagePixelsToLatLong: convertImagePixelsToLatLong,
     customMapDetails: customMapDetails,

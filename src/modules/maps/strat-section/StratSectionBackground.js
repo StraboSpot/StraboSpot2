@@ -2,6 +2,7 @@ import React from 'react';
 
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import * as turf from '@turf/turf';
+import proj4 from 'proj4';
 
 import {GEO_LAT_LNG_PROJECTION, PIXEL_PROJECTION} from '../maps.constants';
 import useMapsHook from '../useMaps';
@@ -27,8 +28,7 @@ function StratSectionBackground(props) {
   };
 
   const getYAxisTickMarks = () => {
-    const yMaxCoord = useMaps.convertCoordinateProjections(GEO_LAT_LNG_PROJECTION, PIXEL_PROJECTION,
-      [0, props.maxXY[1] + 0.00025]);
+    const yMaxCoord = proj4(GEO_LAT_LNG_PROJECTION, PIXEL_PROJECTION, [0, props.maxXY[1] + 0.00025]);
     const yMax = yMaxCoord[1];
     const tickMarks = [];
     let y = 0;
