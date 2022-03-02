@@ -7,6 +7,7 @@ import {ScaleAnimation} from 'react-native-popup-dialog/src';
 import {useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
+import {truncateText} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
@@ -30,17 +31,17 @@ const BaseMapDialog = props => {
   const isOnline = useSelector(state => state.home.isOnline);
   const offlineMaps = useSelector(state => state.offlineMap.offlineMaps);
 
-  const conditions = ['http', 'https'];
-
-  const checkForOfflineCustomMaps = () => {
-    return Object.values(offlineMaps).some(map => {
-      return map.source === 'map_warper' || map.source === 'strabospot_mymaps';
-    });
-  };
-
-  const checkMapOverlay = () => {
-    return Object.values(customMaps).some(map => map.overlay === false);
-  };
+  // const conditions = ['http', 'https'];
+  //
+  // const checkForOfflineCustomMaps = () => {
+  //   return Object.values(offlineMaps).some(map => {
+  //     return map.source === 'map_warper' || map.source === 'strabospot_mymaps';
+  //   });
+  // };
+  //
+  // const checkMapOverlay = () => {
+  //   return Object.values(customMaps).some(map => map.overlay === false);
+  // };
 
   const renderDefaultBasemapsList = () => {
     let sectionTitle = 'Default Basemaps';
@@ -71,7 +72,12 @@ const BaseMapDialog = props => {
     let customMapsToDisplay = Object.values(customMaps).filter((customMap) => !customMap.overlay);
     if (!isOnline.isInternetReachable) {
       customMapsToDisplay = Object.values(offlineMaps).filter((map) => {
-        if (map.source === 'map_warper' || map.source === 'strabospot_mymaps') return offlineMaps[map.id];
+        if (map.source === 'map_warper' || map.source === 'strabospot_mymaps' || map.source === 'mapbox_styles') return offlineMaps[map.id];
+        if (map?.sources) {
+          // const mapId = map.id.split('/')[1];
+          console.log('Offline Mapbox Map', offlineMaps[map.id]);
+          return offlineMaps[map.id];
+        }
       });
       sectionTitle = 'Offline Custom Basemaps';
     }
@@ -115,8 +121,8 @@ const BaseMapDialog = props => {
       key={customMap.id}
       onPress={() => setBaseMap(customMap)}>
       <ListItem.Content style={{}}>
-        <ListItem.Title style={commonStyles.listItemTitle}>{customMap.title || customMap.name} -
-          ({customMap.source})</ListItem.Title>
+        <ListItem.Title style={commonStyles.listItemTitle}>{customMap.title || customMap.name || truncateText(customMap.id, 16)} -
+          ({customMap.source || customMap.sources['raster-tiles'].type})</ListItem.Title>
         {!isOnline.isInternetReachable
         && <ListItem.Subtitle style={{paddingTop: 5}}>({customMap.count} tiles)</ListItem.Subtitle>}
       </ListItem.Content>

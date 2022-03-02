@@ -6,7 +6,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import useDeviceHook from '../../../services/useDevice';
 import commonStyles from '../../../shared/common.styles';
-import {isEmpty} from '../../../shared/Helpers';
+import {isEmpty, truncateText} from '../../../shared/Helpers';
 import FlatListItemSeparator from '../../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../../shared/ui/ListEmptyText';
 import SectionDivider from '../../../shared/ui/SectionDivider';
@@ -82,7 +82,8 @@ const ManageOfflineMaps = (props) => {
       const ids = await useDevice.readDirectoryForMaps();
       ids.map(mapId => {
         if (offlineMaps[mapId]) {
-          availableMapObj = {...availableMapObj, [offlineMaps[mapId].id]: offlineMaps[mapId]};
+          if (offlineMaps[mapId].source === 'mapbox_styles' && offlineMaps[mapId].source.includes('/')) availableMapObj = {...availableMapObj, [offlineMaps[mapId].split('/')[1]]: offlineMaps[mapId]};
+          else availableMapObj = {...availableMapObj, [offlineMaps[mapId].id]: offlineMaps[mapId]};
         }
         else {
           useMapsOffline.updateMapTileCount(mapId);
@@ -129,7 +130,7 @@ const ManageOfflineMaps = (props) => {
       >
         <ListItem.Content>
           <View style={styles.itemContainer}>
-            <ListItem.Title style={commonStyles.listItemTitle}>{`${getTitle(item)}`}</ListItem.Title>
+            <ListItem.Title style={commonStyles.listItemTitle}>{`${truncateText(getTitle(item), 20)}`}</ListItem.Title>
             <ListItem.Title style={styles.itemSubTextStyle}>{`(${item.count} tiles)`}</ListItem.Title>
           </View>
           <View style={styles.itemSubContainer}>
