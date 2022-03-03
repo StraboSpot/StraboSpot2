@@ -144,9 +144,12 @@ const useMaps = (mapRef) => {
     // Interbedded (Geometry Collections)
     else if (feature.geometry.type === 'GeometryCollection') {
       feature.geometry.geometries = feature.geometry.geometries.map((geometry) => {
-        return geometry.coordinates.map((lineCoords) => {
-          return lineCoords.map((pointCoords) => proj4(fromProjection, toProjection, pointCoords));
-        });
+        return {
+          type: geometry.type,
+          coordinates: geometry.coordinates.map((lineCoords) => {
+            return lineCoords.map((pointCoords) => proj4(fromProjection, toProjection, pointCoords));
+          }),
+        };
       });
     }
     return feature;
@@ -405,7 +408,14 @@ const useMaps = (mapRef) => {
           mappedFeatures.push(JSON.parse(JSON.stringify(feature)));
         });
       }
-      else if (spot.geometry.type === 'GeometryCollection') return null;
+      else if (spot.geometry.type === 'GeometryCollection') {
+        spot.geometry.geometries.forEach((g, i) => {
+          const feature = JSON.parse(JSON.stringify(spot));
+          if (i % 2 === 1) feature.properties.isInterbed = true;
+          feature.geometry = g;
+          mappedFeatures.push(feature);
+        });
+      }
       else mappedFeatures.push(JSON.parse(JSON.stringify(spot)));
     });
     return mappedFeatures;

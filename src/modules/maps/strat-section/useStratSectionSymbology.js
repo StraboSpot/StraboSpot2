@@ -16,10 +16,10 @@ const useStratSectionSymbology = (props) => {
     return lithology.primary_lithology;
   };
 
-  const getStratIntervalFill = (featureProperties, resolution, isInterbed) => {
+  const getStratIntervalFill = (featureProperties) => {
     let fill;
-    let color;
-    const n = isInterbed ? 1 : 0;
+    let color = 'rgba(255, 255, 255, 1)';  // default white
+    const n = featureProperties.isInterbed ? 1 : 0;
     if (featureProperties.sed && featureProperties.sed.character
       && featureProperties.sed.character !== 'unexposed_cove' && featureProperties.sed.character !== 'not_measured') {
       const lithologies = featureProperties.sed.lithologies;
@@ -32,10 +32,10 @@ const useStratSectionSymbology = (props) => {
             // Limestone / Dolostone / Misc. Lithologies
             if (lithologyField === 'limestone') fill = 'limestone';
             else if (lithologyField === 'dolostone') fill = 'dolostone';
-            //else if (lithologyField === 'organic_coal') patterns[grainSize] = loadPattern('misc/SiltBasic');
+            //else if (lithologyField === 'organic_coal') // Solid color - no fill;
             else if (lithologyField === 'evaporite') fill = 'evaporite';
             else if (lithologyField === 'chert') fill = 'chert';
-            //else if (lithologyField === 'ironstone') patterns[grainSize] = loadPattern('misc/SiltBasic');
+            //else if (lithologyField === 'ironstone') // Solid color - no fill;
             else if (lithologyField === 'phosphatic') fill = 'phosphatic';
             else if (lithologyField === 'volcaniclastic') fill = 'volcaniclastic';
 
@@ -45,7 +45,7 @@ const useStratSectionSymbology = (props) => {
             else if (lithologies[n].congl_grain_size) fill = 'conglomerate';
             else if (lithologies[n].breccia_grain_size) fill = 'breccia';
           }
-          else {
+          else if (grainSize) {
             if (lithologyField === 'limestone') fill = 'li_' + grainSize;
             else if (lithologyField === 'dolostone') fill = 'do_' + grainSize;
             else if (lithologyField === 'siliciclastic' && lithologies[n].siliciclastic_type === 'conglomerate') {
@@ -54,7 +54,7 @@ const useStratSectionSymbology = (props) => {
             else if (lithologyField === 'siliciclastic' && lithologies[n].siliciclastic_type === 'breccia') {
               fill = 'brec_' + grainSize;
             }
-            else fill = grainSize;
+            else if (lithologyField !== 'organic_coal' && lithologyField !== 'ironstone') fill = grainSize;
           }
         }
       }
@@ -76,8 +76,6 @@ const useStratSectionSymbology = (props) => {
           else if (lithologies[n].sand_grain_size) color = 'rgba(255, 255, 77, 1)';              // CMYK 0,0,70,0 USGS Color 80
           else if (lithologies[n].congl_grain_size) color = 'rgba(255, 102, 0, 1)';              // CMYK 0,60,100,0 USGS Color 97
           else if (lithologies[n].breccia_grain_size) color = 'rgba(213, 0, 0, 1)';              // CMYK 13,100,100,4
-
-          else color = 'rgba(255, 255, 255, 1)';                                                      // default white
         }
         else {
           // Mudstone/Shale
@@ -129,7 +127,6 @@ const useStratSectionSymbology = (props) => {
           else if (grainSize === 'phosphatic') color = 'rgba(153, 255, 179, 1)';    // CMYK 40,0,30,0
           else if (grainSize === 'volcaniclastic') color = 'rgba(255, 128, 255, 1)';// CMYK 0,50,0,0
           else if (grainSize === 'organic_coal') color = 'rgba(0, 0, 0, 1)';        // CMYK 100,100,100,0 USGS Color 999
-          else color = 'rgba(255, 255, 255, 1)';                                    // default white
         }
       }
     }

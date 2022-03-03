@@ -52,8 +52,7 @@ function Basemap(props) {
   // Add symbology to properties of map features (not to Spots themselves) since data-driven styling
   // doesn't work for colors by tags and more complex styling
   const addSymbology = (features) => {
-    const filtered = features.filter(f => f.geometry.type !== 'GeometryCollection');
-    return filtered.map(feature => {
+    return features.map(feature => {
       const symbology = useMapSymbology.getSymbology(feature);
       if (!isEmpty(symbology)) feature.properties.symbology = symbology;
       return feature;
@@ -83,7 +82,7 @@ function Basemap(props) {
     const intervals = [...props.spotsSelected, ...props.spotsNotSelected].filter(
       feature => feature?.properties?.surface_feature?.surface_feature_type === 'strat_interval');
     return intervals.reduce((acc, i) => {
-      const coords = i.geometry.coordinates || i.geometry.geometries.flat();
+      const coords = i.geometry.coordinates || i.geometry.geometries.map(g => g.coordinates).flat();
       const xs = coords.flat().map(c => c[0]);
       const maxX = Math.max(...xs);
       const ys = coords.flat().map(c => c[1]);
@@ -282,7 +281,7 @@ function Basemap(props) {
         {/* Selected Features Layer */}
         <MapboxGL.ShapeSource
           id={'spotsSelectedSource'}
-          shape={turf.featureCollection(addSymbology(props.spotsSelected))}
+          shape={turf.featureCollection(addSymbology(useMaps.getSpotsAsFeatures(props.spotsSelected)))}
         >
           <MapboxGL.FillLayer
             id={'polygonLayerSelected'}
@@ -330,8 +329,15 @@ function Basemap(props) {
             style={useMapSymbology.getMapSymbology().lineSelectedDotDashed}
           />
 
+        </MapboxGL.ShapeSource>
+
+        {/* Halo Around Selected Point Feature Layer */}
+        <MapboxGL.ShapeSource
+          id={'pointSpotsSelectedSource'}
+          shape={turf.featureCollection(addSymbology(props.spotsSelected))}
+        >
           <MapboxGL.CircleLayer
-            id={'pointLayerSelected'}
+            id={'pointLayerSelectedHalo'}
             minZoomLevel={1}
             filter={['==', ['geometry-type'], 'Point']}
             style={useMapSymbology.getMapSymbology().pointSelected}
