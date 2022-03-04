@@ -48,7 +48,7 @@ const BaseMapDialog = props => {
     let mapsToDisplay = BASEMAPS;
     if (!isOnline.isInternetReachable) {
       mapsToDisplay = Object.values(offlineMaps).reduce((acc, offlineMap) => {
-        return offlineMap.source === 'strabo_spot_mapbox' || offlineMap.id === 'mapbox.outdoors' || offlineMap.id === 'mapbox.satellite'
+        return offlineMap.source === 'strabo_spot_mapbox' || offlineMap.id === 'mapbox.outdoors' || offlineMap.id === 'mapbox.satellite' || offlineMap.id === 'osm'
           ? [...acc, offlineMap] : acc;
       }, []);
       sectionTitle = 'Offline Default Basemaps';
@@ -73,11 +73,6 @@ const BaseMapDialog = props => {
     if (!isOnline.isInternetReachable) {
       customMapsToDisplay = Object.values(offlineMaps).filter((map) => {
         if (map.source === 'map_warper' || map.source === 'strabospot_mymaps' || map.source === 'mapbox_styles') return offlineMaps[map.id];
-        if (map?.sources) {
-          // const mapId = map.id.split('/')[1];
-          console.log('Offline Mapbox Map', offlineMaps[map.id]);
-          return offlineMaps[map.id];
-        }
       });
       sectionTitle = 'Offline Custom Basemaps';
     }
@@ -177,7 +172,10 @@ const BaseMapDialog = props => {
       props.close();
       customMap.bbox && setTimeout(() => props.zoomToCustomMap(baseMap.bbox), 1000);
     }
-    else useMapsOffline.setOfflineMapTiles(customMap);
+    else {
+      await useMapsOffline.setOfflineMapTiles(customMap);
+      offlineMaps[customMap.id].bbox && setTimeout(() => props.zoomToCustomMap(offlineMaps[customMap.id].bbox, 10), 1000);
+    }
   };
 
   return (

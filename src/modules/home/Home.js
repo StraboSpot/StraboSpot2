@@ -608,7 +608,7 @@ const Home = () => {
         clickHandler={(name, value) => clickHandler(name, value)}
         // rightsideIconAnimation={rightsideIconAnimation}
         leftsideIconAnimation={leftsideIconAnimation}
-        zoomToCustomMap={(bbox) => mapComponentRef.current.zoomToCustomMap(bbox)}
+        zoomToCustomMap={(bbox, duration) => mapComponentRef.current.zoomToCustomMap(bbox, duration)}
         zoomToCenterOfflineTile={() => mapComponentRef.current.zoomToCenterOfflineTile()}
       />
       {(imageSlideshowData.length) > 0 && (

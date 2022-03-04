@@ -95,11 +95,11 @@ const useMapsOffline = () => {
         const x = Number(parts[1]);
         const y = Number(parts[2]);
 
-        if (z == maxZoom) {
-          if (xvals.indexOf(x) == -1) {
+        if (z === maxZoom) {
+          if (xvals.indexOf(x) === -1) {
             xvals.push(x);
           }
-          if (yvals.indexOf(y) == -1) {
+          if (yvals.indexOf(y) === -1) {
             yvals.push(y);
           }
         }
@@ -327,6 +327,7 @@ const useMapsOffline = () => {
         id: basemap,
         name: mapId ? getMapNameFromId(mapId) : mapName,
         count: tileCount,
+        bbox: customMap[0].bbox,
         source: !mapId ? source : undefined,
         mapId: zipUID,
         date: new Date().toLocaleString(),
