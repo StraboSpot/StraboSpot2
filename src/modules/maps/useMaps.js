@@ -95,7 +95,6 @@ const useMaps = (mapRef) => {
     if (basemap.source === 'osm') tileUrl = tileUrl + basemap.tilePath;
     if (basemap.source === 'map_warper' || basemap.source === 'strabospot_mymaps') tileUrl = tileUrl + basemap.id + '/' + basemap.tilePath;
     else tileUrl = tileUrl + basemap.id + basemap.tilePath + '?access_token=' + userMapboxToken;
-    // console.log('TILE URL', tileUrl);
     return tileUrl;
   };
 
@@ -115,8 +114,6 @@ const useMaps = (mapRef) => {
     }
     dispatch(deletedCustomMap(customMapsCopy)); // replaces customMaps with updated object
     dispatch(setSidePanelVisible({view: null, bool: false}));
-    dispatch(setMenuSelectionPage({name: undefined}));
-    console.log('Saved customMaps to Redux.');
   };
 
   // Convert WGS84 to x,y pixels, assuming x,y are web mercator, or vice versa
