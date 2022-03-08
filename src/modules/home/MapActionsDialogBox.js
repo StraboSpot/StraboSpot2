@@ -4,19 +4,17 @@ import Dialog, {DialogButton, DialogContent, DialogTitle} from 'react-native-pop
 import {ScaleAnimation} from 'react-native-popup-dialog/src';
 import {useSelector} from 'react-redux';
 
-import * as themes from '../../shared/styles.constants';
-
 // Styles
 import styles from './dialog.styles';
 
-const slideAnimation = new ScaleAnimation({
-  useNativeDriver: true,
-});
+const slideAnimation = new ScaleAnimation({useNativeDriver: true});
 
 const MapActionsDialog = props => {
   const [isVisible, setIsVisible] = useState(false);
+
   const isOnline = useSelector(state => state.home.isOnline);
   const offlineMaps = useSelector(state => state.offlineMap.offlineMaps);
+  const stratSection = useSelector(state => state.map.stratSection);
 
   useEffect(() => {
     setIsVisible(
@@ -31,7 +29,7 @@ const MapActionsDialog = props => {
       visible={props.visible}
       dialogTitle={
         <DialogTitle
-          title='Map Actions'
+          title={'Map Actions'}
           style={styles.dialogTitle}
           textStyle={styles.dialogTitleText}
         />}
@@ -39,7 +37,7 @@ const MapActionsDialog = props => {
     >
       <DialogContent>
         <DialogButton
-          text='Zoom to Extent of Spots'
+          text={'Zoom to Extent of Spots'}
           textStyle={styles.dialogText}
           onPress={() => props.onPress('zoom')}
         />
@@ -58,22 +56,30 @@ const MapActionsDialog = props => {
         )}
         <DialogButton
           style={styles.dialogContent}
-          text='Add Tag(s) to Spot(s)'
+          text={'Add Tag(s) to Spot(s)'}
           textStyle={styles.dialogText}
           onPress={() => props.onPress('addTag')}
         />
         <DialogButton
           style={styles.dialogContent}
-          text='Lasso Spots for Stereonet'
+          text={'Lasso Spots for Stereonet'}
           textStyle={styles.dialogText}
           onPress={() => props.onPress('stereonet')}
         />
         <DialogButton
           style={styles.dialogContent}
-          text='Measure Distance'
+          text={'Measure Distance'}
           textStyle={styles.dialogText}
           onPress={() => props.onPress('mapMeasurement')}
         />
+        {stratSection && (
+          <DialogButton
+            style={styles.dialogContent}
+            text={'Strat Section Settings'}
+            textStyle={styles.dialogText}
+            onPress={() => props.onPress('stratSection')}
+          />
+        )}
       </DialogContent>
     </Dialog>
   );

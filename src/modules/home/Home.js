@@ -34,7 +34,7 @@ import notebookStyles from '../notebook-panel/notebookPanel.styles';
 import {PAGE_KEYS} from '../page/page.constants';
 import ProjectDescription from '../project/ProjectDescription';
 import useProjectHook from '../project/useProject';
-import {clearedSelectedSpots} from '../spots/spots.slice';
+import {clearedSelectedSpots, setSelectedSpot} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
 import {TagAddRemoveFeatures, TagAddRemoveSpots, TagDetailSidePanel} from '../tags';
 import UserProfile from '../user/UserProfilePage';
@@ -272,6 +272,10 @@ const Home = () => {
         break;
       case 'mapMeasurement':
         setDraw(MAP_MODES.DRAW.MEASURE).catch(console.error);
+        break;
+      case 'stratSection':
+        dispatch(setSelectedSpot(useSpots.getSpotWithThisStratSection(stratSection.strat_section_id)));
+        openNotebookPanel(PAGE_KEYS.STRAT_SECTION);
         break;
     }
   };
