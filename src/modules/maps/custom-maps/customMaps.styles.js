@@ -30,6 +30,14 @@ const styles = StyleSheet.create({
     color: themes.RED,
     fontSize: themes.SMALL_TEXT_SIZE,
   },
+  mapTypeInfoContainer: {
+    alignItems: 'center',
+    padding: 10,
+  },
+  mapTypeInfoText: {
+    textAlign: 'center',
+    lineHeight: 20,
+  },
 });
 
 export default styles;

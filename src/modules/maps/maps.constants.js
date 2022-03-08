@@ -1,7 +1,5 @@
 import {Dimensions} from 'react-native';
 
-import {MAPBOX_KEY} from '../../MapboxConfig';
-
 const {width, height} = Dimensions.get('window');
 
 const ASPECT_RATIO = width / height;
@@ -51,11 +49,11 @@ export const CUSTOM_MAP_TYPES = [
     id: 'mapbox.styles',
     source: 'mapbox_styles',
   },
-  {
-    title: 'Map Warper',
-    id: 'map.warper',
-    source: 'map_warper',
-  },
+  // {
+  //   title: 'Map Warper',
+  //   id: 'map.warper',
+  //   source: 'map_warper',
+  // },
   {
     title: 'Strabospot My Maps',
     id: 'strabospot.mymaps',
@@ -144,12 +142,6 @@ export const BASEMAPS = DEFAULT_MAPS.map(map => {
   return map;
 });
 console.log('BASEMAPS', BASEMAPS);
-
-// export const BASEMAPS = DEFAULT_MAPS.map(map => {
-//   if (map.source === 'strabo_spot_mapbox') map.key = MAPBOX_KEY;
-//   return {...map, ...MAP_PROVIDERS[map.source]};
-// });
-// console.log('BASEMAPS', BASEMAPS);
 
 export const CUSTOMBASEMAPS = CUSTOM_MAP_TYPES.map(map => {
   return {...map, ...MAP_PROVIDERS[map.source]};

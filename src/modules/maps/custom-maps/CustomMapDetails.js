@@ -110,13 +110,13 @@ const AddCustomMaps = () => {
     setEditableCustomMapData(e => ({...e, source: source}));
   };
 
-  const validate = () => {
-    console.log(editableCustomMapData);
-    if (editableCustomMapData.source === 'map_warper') {
-      if (!isNaN(editableCustomMapData.id)) console.log('Valid');
-      else console.log('Not Valid');
-    }
-  };
+  // const validate = () => {
+  //   console.log(editableCustomMapData);
+  //   if (editableCustomMapData.source === 'map_warper') {
+  //     if (!isNaN(editableCustomMapData.id)) console.log('Valid');
+  //     else console.log('Not Valid');
+  //   }
+  // };
 
   const renderCustomMapName = (item) => {
     const radioSelected = <Icon name={'radiobox-marked'} type={'material-community'} color={BLUE}/>;
@@ -190,6 +190,11 @@ const AddCustomMaps = () => {
   const renderMapTypeList = () => (
     <View>
       <SectionDivider dividerText={'Map Type'}/>
+      <View style={customMapStyles.mapTypeInfoContainer}>
+        <Text style={customMapStyles.mapTypeInfoText}>
+          If you wish to load a MapWarper map please download the <Text style={{fontWeight: 'bold'}}>.tiff</Text> file from Mapwarper.net and upload it into your Strabo MyMaps account.
+        </Text>
+      </View>
       <FlatList
         keyExtractor={item => item.source}
         data={CUSTOM_MAP_TYPES}
