@@ -25,11 +25,13 @@ const styles = StyleSheet.create({
     height: 65,
   },
   offlineImageIconContainer: {
+    flexDirection: 'row',
     position: 'absolute',
     top: 10,
     width: '100%',
     zIndex: -1,
     alignItems: 'center',
+    justifyContent: 'center',
   },
   offlineIcon: {
     width: 40,

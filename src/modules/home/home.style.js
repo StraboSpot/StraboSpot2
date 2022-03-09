@@ -120,7 +120,6 @@ const homeStyles = StyleSheet.create({
     top: 10,
     right: 0,
   },
-
   // --- Bottom Left Icon (current location) ---
   bottomLeftIcons: {
     position: 'absolute',
@@ -159,7 +158,12 @@ const homeStyles = StyleSheet.create({
   scaleBarContainer: {
     position: 'absolute',
     bottom:15,
-    left: 200
+    left: 200,
+  },
+  batteryLevelContainer: {
+    alignItems: 'flex-end',
+    flexDirection: 'row',
+    paddingLeft: 10,
   },
 
   // --- Modal Style ---
@@ -169,8 +173,8 @@ const homeStyles = StyleSheet.create({
     alignItems: 'center',
   },
   urlText: {
-    fontSize: themes.SMALL_TEXT_SIZE
-  }
+    fontSize: themes.SMALL_TEXT_SIZE,
+  },
 });
 
 export default homeStyles;

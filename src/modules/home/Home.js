@@ -7,6 +7,7 @@ import {Button} from 'react-native-elements';
 import {FlatListSlider} from 'react-native-flatlist-slider';
 import {useDispatch, useSelector} from 'react-redux';
 
+import BatteryInfo from '../../services/BatteryInfo';
 import useConnectionStatusHook from '../../services/useConnectionStatus';
 import useDeviceHook from '../../services/useDevice';
 import * as Helpers from '../../shared/Helpers';
@@ -588,8 +589,9 @@ const Home = () => {
         isSelectingForTagging={isSelectingForTagging}
         setDistance={d => setDistance(d)}
       />
-      <View style={{...uiStyles.offlineImageIconContainer}}>
+      <View style={uiStyles.offlineImageIconContainer}>
         {useConnectionStatus.connectionStatusIcon()}
+        <BatteryInfo/>
       </View>
       {vertexStartCoords && <VertexDrag/>}
       <ToastPopup toastRef={toastRef}/>
