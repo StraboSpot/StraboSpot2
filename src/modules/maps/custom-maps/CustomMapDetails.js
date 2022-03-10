@@ -62,21 +62,21 @@ const AddCustomMaps = () => {
       dispatch(addedStatusMessage('Saving Custom Map...'));
       const customMap = await useMaps.saveCustomMap(editableCustomMapData);
       console.log(customMap);
-        dispatch(setSidePanelVisible({view: null, bool: false}));
-        dispatch(setMenuSelectionPage({name: undefined}));
-        dispatch(removedLastStatusMessage());
-        dispatch(setLoadingStatus({view: 'modal', bool: false}));
-        dispatch(addedStatusMessage('Success!'));
-        dispatch(addedStatusMessage(`\nMap ${customMap.title} has been added or updated!`));
+      dispatch(setSidePanelVisible({view: null, bool: false}));
+      dispatch(setMenuSelectionPage({name: undefined}));
+      dispatch(removedLastStatusMessage());
+      dispatch(setLoadingStatus({view: 'modal', bool: false}));
+      dispatch(addedStatusMessage('Success!'));
+      dispatch(addedStatusMessage(`\nMap ${customMap.title} has been added or updated!`));
     }
     catch (err) {
       console.error('Error saving custom map', err);
-        dispatch(setLoadingStatus({view: 'modal', bool: false}));
-        dispatch(setStatusMessagesModalVisible(false));
-        dispatch(clearedStatusMessages());
-        dispatch(addedStatusMessage(
-          `Something Went Wrong \n\nCheck the id:\n\n ${err} \n\n and/or the map type you are trying to save.`));
-        dispatch(setErrorMessagesModalVisible(true));
+      dispatch(setLoadingStatus({view: 'modal', bool: false}));
+      dispatch(setStatusMessagesModalVisible(false));
+      dispatch(clearedStatusMessages());
+      dispatch(addedStatusMessage(
+        `Something Went Wrong \n\nCheck the id:\n\n ${err} \n\n and/or the map type you are trying to save.`));
+      dispatch(setErrorMessagesModalVisible(true));
     }
   };
 
@@ -109,14 +109,6 @@ const AddCustomMaps = () => {
     }
     setEditableCustomMapData(e => ({...e, source: source}));
   };
-
-  // const validate = () => {
-  //   console.log(editableCustomMapData);
-  //   if (editableCustomMapData.source === 'map_warper') {
-  //     if (!isNaN(editableCustomMapData.id)) console.log('Valid');
-  //     else console.log('Not Valid');
-  //   }
-  // };
 
   const renderCustomMapName = (item) => {
     const radioSelected = <Icon name={'radiobox-marked'} type={'material-community'} color={BLUE}/>;
@@ -174,7 +166,6 @@ const AddCustomMaps = () => {
               inputStyle={{...formStyles.fieldValue, backgroundColor: 'white'}}
               containerStyle={{paddingHorizontal: 0}}
               inputContainerStyle={{borderBottomWidth: 0}}
-              keyboardType={MWKeyboardType}
               defaultValue={editableCustomMapData.id}
               onChangeText={text => setEditableCustomMapData(e => ({...e, id: text}))}
               placeholder={'Strabo My Maps ID'}
@@ -192,7 +183,9 @@ const AddCustomMaps = () => {
       <SectionDivider dividerText={'Map Type'}/>
       <View style={customMapStyles.mapTypeInfoContainer}>
         <Text style={customMapStyles.mapTypeInfoText}>
-          If you wish to save a new MapWarper map please download the <Text style={{fontWeight: 'bold'}}>.tiff</Text> file from Mapwarper.net and upload it into your Strabo MyMaps account.
+          If you wish to save a new MapWarper map please download the <Text
+          style={{fontWeight: 'bold'}}>.tiff</Text> file from Mapwarper.net and upload it into your Strabo MyMaps
+          account.
         </Text>
       </View>
       <FlatList
@@ -202,7 +195,7 @@ const AddCustomMaps = () => {
         ItemSeparatorComponent={FlatListItemSeparator}
       />
       {editableCustomMapData?.source === ''
-      && <Text style={customMapStyles.requiredMessage}>Map type is required</Text>}
+        && <Text style={customMapStyles.requiredMessage}>Map type is required</Text>}
     </View>
   );
 
