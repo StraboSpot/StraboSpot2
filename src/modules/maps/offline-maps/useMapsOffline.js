@@ -327,7 +327,7 @@ const useMapsOffline = () => {
         id: basemap,
         name: mapId ? getMapNameFromId(mapId) : mapName,
         count: tileCount,
-        bbox: customMap[0].bbox,
+        bbox: customMap[0]?.bbox,
         source: !mapId ? source : undefined,
         mapId: zipUID,
         date: new Date().toLocaleString(),
