@@ -590,8 +590,8 @@ const Home = () => {
         setDistance={d => setDistance(d)}
       />
       <View style={uiStyles.offlineImageIconContainer}>
+        {Platform.OS === 'ios' && <BatteryInfo/>}
         {useConnectionStatus.connectionStatusIcon()}
-        <BatteryInfo/>
       </View>
       {vertexStartCoords && <VertexDrag/>}
       <ToastPopup toastRef={toastRef}/>
