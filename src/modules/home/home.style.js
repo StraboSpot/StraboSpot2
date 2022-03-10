@@ -165,6 +165,11 @@ const homeStyles = StyleSheet.create({
     flexDirection: 'row',
     paddingLeft: 10,
   },
+  addIntervalButton: {
+    position: 'absolute',
+    top: 10,
+    right: 60,
+  },
 
   // --- Modal Style ---
   modal: {

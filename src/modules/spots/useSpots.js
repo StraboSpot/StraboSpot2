@@ -133,11 +133,17 @@ const useSpots = () => {
     newSpot.properties.viewed_timestamp = Date.now();
 
     // Set spot name
-    const defaultName = preferences.spot_prefix || 'Unnamed';
-    const defaultNumber = preferences.starting_number_for_spot || Object.keys(spots).length + 1;
-    newSpot.properties.name = defaultName + defaultNumber;
-    const updatedPreferences = {...preferences, spot_prefix: defaultName, starting_number_for_spot: defaultNumber + 1};
-    dispatch(updatedProject({field: 'preferences', value: updatedPreferences}));
+    if (!newSpot.properties.name) {
+      const defaultName = preferences.spot_prefix || 'Unnamed';
+      const defaultNumber = preferences.starting_number_for_spot || Object.keys(spots).length + 1;
+      newSpot.properties.name = defaultName + defaultNumber;
+      const updatedPreferences = {
+        ...preferences,
+        spot_prefix: defaultName,
+        starting_number_for_spot: defaultNumber + 1,
+      };
+      dispatch(updatedProject({field: 'preferences', value: updatedPreferences}));
+    }
 
     if ((currentImageBasemap || stratSection) && newSpot.geometry && newSpot.geometry.type === 'Point') { //newSpot geometry is unavailable when spot is copied.
       const rootSpot = currentImageBasemap ? getRootSpot(currentImageBasemap.id)
@@ -223,6 +229,14 @@ const useSpots = () => {
         }, []) || [];
       return [...acc, ...imageBasemaps];
     }, []);
+  };
+
+  // Get Interval Spots on a given Strat Section
+  const getIntervalSpotsThisStratSection = (stratSectionId) => {
+    return Object.values(getActiveSpotsObj()).filter(s => {
+      return s.properties.strat_section_id === stratSectionId
+        && s.properties.surface_feature?.surface_feature_type === 'strat_interval';
+    });
   };
 
   // Get Active Spots with Geometry
@@ -420,6 +434,7 @@ const useSpots = () => {
     getActiveSpotsObj: getActiveSpotsObj,
     getAllFeaturesFromSpot: getAllFeaturesFromSpot,
     getImageBasemaps: getImageBasemaps,
+    getIntervalSpotsThisStratSection: getIntervalSpotsThisStratSection,
     getMappableSpots: getMappableSpots,
     getPopulatedPagesKeys: getPopulatedPagesKeys,
     getRootSpot: getRootSpot,

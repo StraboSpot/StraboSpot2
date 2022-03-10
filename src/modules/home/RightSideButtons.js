@@ -13,7 +13,7 @@ import {MAP_MODES} from '../maps/maps.constants';
 import useMapsHook from '../maps/useMaps';
 import useProjectHook from '../project/useProject';
 import {clearedSelectedSpots} from '../spots/spots.slice';
-import {SHORTCUT_MODALS} from './home.constants';
+import {MODAL_KEYS, SHORTCUT_MODALS} from './home.constants';
 import {setModalVisible} from './home.slice';
 import homeStyles from './home.style';
 
@@ -110,6 +110,17 @@ const RightSideButtons = (props) => {
 
   return (
     <React.Fragment>
+      {stratSection && (
+        <Animated.View
+          style={[homeStyles.addIntervalButton, props.rightsideIconAnimation]}>
+          <IconButton
+            source={isNotebookPanelVisible
+              ? require('../../assets/icons/SedAddIntervalButton_pressed.png')
+              : require('../../assets/icons/SedAddIntervalButton.png')}
+            onPress={() => dispatch(setModalVisible({modal: MODAL_KEYS.OTHER.ADD_INTERVAL}))}
+          />
+        </Animated.View>
+      )}
       <Animated.View
         style={[homeStyles.notebookButton, props.rightsideIconAnimation]}>
         <IconButton
@@ -124,49 +135,49 @@ const RightSideButtons = (props) => {
         <Animated.View
           style={[homeStyles.drawToolsContainer, props.rightsideIconAnimation]}>
           {!isEmpty(selectedDatasetId)
-          && [MAP_MODES.DRAW.POINT, MAP_MODES.DRAW.LINE, MAP_MODES.DRAW.FREEHANDLINE, MAP_MODES.DRAW.FREEHANDPOLYGON,
-            MAP_MODES.DRAW.POLYGON, MAP_MODES.DRAW.MEASURE].includes(props.mapMode)
-          && (
-            <View style={homeStyles.selectedDatasetContainer}>
-              {props.mapMode === MAP_MODES.DRAW.MEASURE ? (
-                  <Text style={{textAlign: 'center'}}>Total Distance: {props.distance.toFixed(3)}km</Text>
-                )
-                : (
-                  <React.Fragment>
-                    <Text style={{textAlign: 'center'}}>Selected Dataset:</Text>
-                    <Text style={{textAlign: 'center', fontWeight: 'bold'}}>{truncateText(
-                      useProject.getSelectedDatasetFromId().name, 20)}
-                    </Text>
-                  </React.Fragment>
-                )}
-              <View style={commonStyles.buttonContainer}>
-                {props.mapMode === MAP_MODES.DRAW.POINT ? (
-                    <Text style={{textAlign: 'center'}}>Place a point on the map</Text>
+            && [MAP_MODES.DRAW.POINT, MAP_MODES.DRAW.LINE, MAP_MODES.DRAW.FREEHANDLINE, MAP_MODES.DRAW.FREEHANDPOLYGON,
+              MAP_MODES.DRAW.POLYGON, MAP_MODES.DRAW.MEASURE].includes(props.mapMode)
+            && (
+              <View style={homeStyles.selectedDatasetContainer}>
+                {props.mapMode === MAP_MODES.DRAW.MEASURE ? (
+                    <Text style={{textAlign: 'center'}}>Total Distance: {props.distance.toFixed(3)}km</Text>
                   )
-                  : props.mapMode === MAP_MODES.DRAW.MEASURE ? (
-                      <Button
-                        containerStyle={{alignContent: 'center'}}
-                        buttonStyle={homeStyles.drawToolsButtons}
-                        titleStyle={homeStyles.drawToolsTitle}
-                        title={'End Measurement'}
-                        type={'clear'}
-                        onPress={props.endMeasurement}
-                      />
+                  : (
+                    <React.Fragment>
+                      <Text style={{textAlign: 'center'}}>Selected Dataset:</Text>
+                      <Text style={{textAlign: 'center', fontWeight: 'bold'}}>
+                        {truncateText(useProject.getSelectedDatasetFromId().name, 20)}
+                      </Text>
+                    </React.Fragment>
+                  )}
+                <View style={commonStyles.buttonContainer}>
+                  {props.mapMode === MAP_MODES.DRAW.POINT ? (
+                      <Text style={{textAlign: 'center'}}>Place a point on the map</Text>
                     )
-                    : (
-                      <Button
-                        containerStyle={{alignContent: 'center'}}
-                        buttonStyle={homeStyles.drawToolsButtons}
-                        titleStyle={homeStyles.drawToolsTitle}
-                        title={'End Draw'}
-                        type={'clear'}
-                        onPress={props.endDraw}
-                      />
-                    )
-                }
+                    : props.mapMode === MAP_MODES.DRAW.MEASURE ? (
+                        <Button
+                          containerStyle={{alignContent: 'center'}}
+                          buttonStyle={homeStyles.drawToolsButtons}
+                          titleStyle={homeStyles.drawToolsTitle}
+                          title={'End Measurement'}
+                          type={'clear'}
+                          onPress={props.endMeasurement}
+                        />
+                      )
+                      : (
+                        <Button
+                          containerStyle={{alignContent: 'center'}}
+                          buttonStyle={homeStyles.drawToolsButtons}
+                          titleStyle={homeStyles.drawToolsTitle}
+                          title={'End Draw'}
+                          type={'clear'}
+                          onPress={props.endDraw}
+                        />
+                      )
+                  }
+                </View>
               </View>
-            </View>
-          )}
+            )}
           <View style={{flexDirection: 'row'}}>
             {(currentImageBasemap || stratSection) ? (
                 <IconButton

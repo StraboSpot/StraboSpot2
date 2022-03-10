@@ -1,4 +1,5 @@
 import CompassModal from '../compass/CompassModal';
+import AddIntervalModal from '../maps/strat-section/AddIntervalModal';
 import ShortcutNotesModal from '../notes/ShortcutNotesModal';
 import {NOTEBOOK_PAGES, PAGE_KEYS} from '../page/page.constants';
 import DailyNotesModal from '../project/description/DailyNotesModal';
@@ -27,6 +28,7 @@ export const MODAL_KEYS = {
     FEATURE_TAGS: 'FeatureTags',
     GEOLOGIC_UNITS: 'geologic_unit',
     DAILY_NOTES: 'daily_setup',
+    ADD_INTERVAL: 'add_interval',
   },
 };
 
@@ -101,6 +103,10 @@ const OTHER_MODALS = [
     key: MODAL_KEYS.OTHER.DAILY_NOTES,
     label: 'Daily Notes',
     modal_component: DailyNotesModal,
+  },{
+    key: MODAL_KEYS.OTHER.ADD_INTERVAL,
+    label: 'Add Interval',
+    modal_component: AddIntervalModal,
   },
 ];
 

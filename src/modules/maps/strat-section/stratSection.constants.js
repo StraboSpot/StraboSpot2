@@ -1,3 +1,5 @@
+import * as forms from '../../../assets/forms';
+
 export const GRAIN_SIZE_KEYS = ['mud_silt_grain_size', 'sand_grain_size', 'congl_grain_size']; // breccia_grain_size same as congl_grain_size
 export const CARBONATE_KEYS = ['dunham_classification'];
 export const LITHOLOGIES_KEYS = ['primary_lithology'];
@@ -69,3 +71,24 @@ export const STRAT_PATTERNS = {
   do_rudstone: require('../../../assets/symbols/sed/dolostone/DoRudBasic.png'),
   do_wackestone: require('../../../assets/symbols/sed/dolostone/DoWaBasic.png'),
 };
+
+export const SED_LABEL_DICTIONARY = ['clastic', 'carbonate', 'lithologies', 'weathering'].reduce((acc, key) => {
+  const survey = forms.default.sed.add_interval.survey;
+  const choices = forms.default.sed.add_interval.choices;
+  const groupFields = survey.filter(field => {
+    if (key === 'clastic') {
+      return field.name === 'mud_silt_grain_size' || field.name === 'sand_grain_size'
+        || field.name === 'congl_grain_size' || field.name === 'breccia_grain_size';
+    }
+    else if (key === 'carbonate') return field.name === 'dunham_classification';
+    else if (key === 'lithologies') return field.name === 'primary_lithology';
+    else if (key === 'weathering') return field.name === 'relative_resistance_weather';
+  });
+  const groupChoices = groupFields.reduce((acc2, field) => {
+    const subgroupChoicesTemp = choices.filter(choice => choice.list_name === field.type.split(' ')[1]);
+    return [...acc2, ...subgroupChoicesTemp];
+  }, []);
+  return {...acc, [key]: [...groupChoices]};
+}, {});
+
+console.log('SED LABEL_DICTIONARY', SED_LABEL_DICTIONARY);
