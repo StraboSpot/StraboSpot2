@@ -107,12 +107,17 @@ const BasicPageDetail = (props) => {
     );
   };
 
-  const renderFormFields = () => {
+  const getFormName = () => {
     let formName = [groupKey, pageKey];
     if (groupKey === 'pet' && props.selectedFeature.rock_type) formName = ['pet_deprecated', pageKey];
     else if (groupKey === 'pet' && pageKey === 'igneous') formName = [groupKey, props.selectedFeature.igneous_rock_class];
     else if (pageKey === '_3d_structures' || pageKey === 'fabrics') formName = [pageKey, props.selectedFeature.type];
     console.log('Rendering form:', formName[0] + '.' + formName[1]);
+    return formName;
+  };
+
+  const renderFormFields = () => {
+    const formName = getFormName();
     return (
       <View style={{flex: 1}}>
         <Formik
@@ -163,7 +168,7 @@ const BasicPageDetail = (props) => {
     try {
       await formCurrent.submitForm();
       if (useForm.hasErrors(formCurrent)) {
-        useForm.showErrors(formCurrent);
+        useForm.showErrors(formCurrent, getFormName());
         throw Error;
       }
       const editedFeatureData = formCurrent.values;
@@ -180,9 +185,11 @@ const BasicPageDetail = (props) => {
   };
 
   const saveForm = async (formCurrent) => {
-    if (groupKey === 'pet') await usePetrology.savePetFeature(pageKey, spot, formCurrent);
-    else if (groupKey === 'sed' && pageKey === 'bedding') await useSed.saveSedBedFeature(pageKey, spot, formCurrent);
-    else if (groupKey === 'sed') await useSed.saveSedFeature(pageKey, spot, formCurrent);
+    if (groupKey === 'pet') await usePetrology.savePetFeature(pageKey, spot, formCurrent, getFormName());
+    else if (groupKey === 'sed' && pageKey === 'bedding') {
+      await useSed.saveSedBedFeature(pageKey, spot, formCurrent, getFormName());
+    }
+    else if (groupKey === 'sed') await useSed.saveSedFeature(pageKey, spot, formCurrent, getFormName());
     else await saveFeature(formCurrent);
     await formCurrent.resetForm();
     props.closeDetailView();
@@ -191,7 +198,7 @@ const BasicPageDetail = (props) => {
   const saveTemplate = async (formCurrent) => {
     await formCurrent.submitForm();
     if (useForm.hasErrors(formCurrent)) {
-      useForm.showErrors(formCurrent);
+      useForm.showErrors(formCurrent, getFormName());
       console.log('Found validation errors.');
       throw Error;
     }

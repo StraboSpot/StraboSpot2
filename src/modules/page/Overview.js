@@ -30,6 +30,9 @@ const Overview = (props) => {
   const [useForm] = useFormHook();
   const [useSpots] = useSpotsHook();
 
+  const formName = spot.geometry && (spot.geometry.type === 'LineString' || spot.geometry.type === 'MultiLineString')
+    ? ['general', 'trace'] : ['general', 'surface_feature'];
+
   useEffect(() => {
     dispatch(setModalVisible({modal: null}));
   }, []);
@@ -84,10 +87,8 @@ const Overview = (props) => {
   };
 
   const renderTraceSurfaceFeatureForm = () => {
-    let formName = ['general', 'surface_feature'];
     let initialValues = spot.properties.trace || spot.properties.surface_feature || {};
     if (spot.geometry && (spot.geometry.type === 'LineString' || spot.geometry.type === 'MultiLineString')) {
-      formName = ['general', 'trace'];
       initialValues = {...initialValues, 'trace_feature': true};
     }
     return (
@@ -136,7 +137,7 @@ const Overview = (props) => {
   const saveForm = async () => {
     return formRef.current.submitForm().then(() => {
       if (useForm.hasErrors(formRef.current)) {
-        useForm.showErrors(formRef.current);
+        useForm.showErrors(formRef.current, formName);
         return Promise.reject();
       }
       console.log('Saving form data to Spot ...');

@@ -26,6 +26,8 @@ const Geography = () => {
   const formRef = useRef(null);
   const geomFormRef = useRef(null);
 
+  const formName = ['general', 'geography'];
+
   const cancelFormAndGo = () => {
     dispatch(setNotebookPageVisibleToPrev());
   };
@@ -51,7 +53,6 @@ const Geography = () => {
   };
 
   const renderFormFields = () => {
-    const formName = ['general', 'geography'];
     console.log('Rendering form: general.geography with', spot.properties);
     return (
       <View style={{flex: 1}}>
@@ -179,7 +180,7 @@ const Geography = () => {
             <View>
               <Button
                 onPress={fillWithCurrentLocation}
-                type='clear'
+                type={'clear'}
                 icon={{
                   name: 'locate',
                   type: 'ionicon',
@@ -298,9 +299,13 @@ const Geography = () => {
   const saveForm = async () => {
     try {
       await geomFormRef.current.submitForm();
+      if (useForm.hasErrors(geomFormRef.current)) {
+        useForm.showErrors(geomFormRef.current);
+        return Promise.reject();
+      }
       await formRef.current.submitForm();
-      if (useForm.hasErrors(geomFormRef.current) || useForm.hasErrors(formRef.current)) {
-        useForm.showErrors(geomFormRef.current, formRef.current);
+      if (useForm.hasErrors(formRef.current)) {
+        useForm.showErrors(formRef.current, formName);
         return Promise.reject();
       }
       else {
@@ -349,7 +354,7 @@ const Geography = () => {
       <FlatList
         ListHeaderComponent={
           <React.Fragment>
-            <SectionDivider dividerText='Geography'/>
+            <SectionDivider dividerText={'Geography'}/>
             {renderGeometryForm()}
             {renderFormFields()}
           </React.Fragment>

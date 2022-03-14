@@ -116,7 +116,7 @@ const AddIntervalModal = () => {
   const saveInterval = async () => {
     await formRef.current.submitForm();
     if (useForm.hasErrors(formRef.current)) {
-      useForm.showErrors(formRef.current, formRef.current);
+      useForm.showErrors(formRef.current, formName);
       return Promise.reject();
     }
     else {

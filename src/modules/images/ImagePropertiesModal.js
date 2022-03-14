@@ -1,12 +1,10 @@
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {FlatList, Switch, Text, View} from 'react-native';
 
 import {Formik} from 'formik';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {PRIMARY_BACKGROUND_COLOR} from '../../shared/styles.constants';
 import Modal from '../../shared/ui/modal/Modal';
-import uiStyles from '../../shared/ui/ui.styles';
 import {Form, useFormHook} from '../form';
 import {editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
 import styles from './images.styles';
@@ -15,12 +13,20 @@ const ImagePropertiesModal = (props) => {
   const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
   const selectedImage = useSelector(state => state.spot.selectedAttributes[0]);
-  const [useForm] = useFormHook();
+
   const [annotated, setAnnotated] = useState(selectedImage.annotated);
+
+  const [useForm] = useFormHook();
+
   const formRef = useRef(null);
 
+  const formName = ['general', 'images'];
+
+  useEffect(() => {
+    return () => dispatch(setSelectedAttributes([]));
+  }, []);
+
   const renderFormFields = () => {
-    const formName = ['general', 'images'];
     console.log('Rendering form:', formName.join('.'), 'with selected image:', selectedImage);
     return (
       <Formik
@@ -35,9 +41,12 @@ const ImagePropertiesModal = (props) => {
   };
 
   const saveFormAndGo = async () => {
-    if (formRef.current !== null) {
+    try {
       await formRef.current.submitForm();
-      if (useForm.hasErrors(formRef.current)) useForm.showErrors(formRef.current);
+      if (useForm.hasErrors(formRef.current)) {
+        useForm.showErrors(formRef.current, formName);
+        throw Error;
+      }
       else {
         const images = JSON.parse(JSON.stringify(spot.properties.images));
         console.log('Saving form data to Spot ...', formRef.current.values);
@@ -46,33 +55,35 @@ const ImagePropertiesModal = (props) => {
         dispatch(setSelectedAttributes([images[i]]));
         dispatch(editedSpotProperties({field: 'images', value: images}));
         props.close();
+        return Promise.resolve();
       }
     }
-    props.close();
+    catch (e) {
+      console.log('Error submitting form', e);
+      return Promise.reject();
+    }
   };
 
   return (
     <Modal
-      title={'Save'}
+      title={'Image Properties'}
       buttonTitleLeft={'Cancel'}
+      buttonTitleRight={'Save'}
       cancel={props.cancel}
-      close={() => saveFormAndGo()}
+      close={saveFormAndGo}
     >
-      <View>
-        <FlatList
-          contentContainerStyle={{paddingBottom: 40}}
-          ListHeaderComponent={renderFormFields()}
-          ListFooterComponent={
-            <View style={styles.switch}>
-              <Text style={{marginLeft: 10, fontSize: 16}}>Use as Image-basemap</Text>
-              <Switch
-                onValueChange={(a) => setAnnotated(a)}
-                value={annotated}
-              />
-            </View>
-          }
-        />
-      </View>
+      <FlatList
+        ListHeaderComponent={renderFormFields()}
+        ListFooterComponent={
+          <View style={styles.switch}>
+            <Text style={{marginLeft: 10, fontSize: 16}}>Use as Image-basemap</Text>
+            <Switch
+              onValueChange={(a) => setAnnotated(a)}
+              value={annotated}
+            />
+          </View>
+        }
+      />
     </Modal>
   );
 };

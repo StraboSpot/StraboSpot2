@@ -36,7 +36,7 @@ const useForm = () => {
   };
 
   // Get a label for a given key with the option of giving a form category and name
-  const getLabel = (key, [category, name]) => {
+  const getLabel = (key, [category, name] = []) => {
     if (key) {
       let dictionary = {};
       if (category && name) dictionary = LABEL_DICTIONARY[category][name];
@@ -105,9 +105,8 @@ const useForm = () => {
     }
   };
 
-  const showErrors = (...formsIn) => {
-    const errors = formsIn.reduce((acc, form) => ({...acc, ...form.errors}), {});
-    const errorMessages = Object.entries(errors).map(([key, value]) => getLabel(key, []) + ': ' + value);
+  const showErrors = (form, formName = []) => {
+    const errorMessages = Object.entries(form.errors).map(([key, value]) => getLabel(key, formName) + ': ' + value);
     Alert.alert('Please Fix the Following Errors', errorMessages.join('\n'));
   };
 
@@ -119,7 +118,7 @@ const useForm = () => {
       const key = fieldModel.name;
       if (values[key] && typeof values[key] === 'string') values[key] = values[key].trim();
       if (isEmpty(values[key]) || !isRelevant(fieldModel, values)) delete values[key];
-      if (isEmpty(values[key]) && (fieldModel.required === 'true' || fieldModel.required)
+      if (isEmpty(values[key]) && (fieldModel.required === 'true' || fieldModel.required === true)
         && isRelevant(fieldModel, values)) errors[key] = 'Required';
       else if (values[key]) {
         if (fieldModel.type === 'integer') values[key] = parseInt(values[key], 10);

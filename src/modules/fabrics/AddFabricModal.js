@@ -145,7 +145,7 @@ const AddFabricModal = (props) => {
     try {
       await formRef.current.submitForm();
       if (useForm.hasErrors(formRef.current)) {
-        useForm.showErrors(formRef.current);
+        useForm.showErrors(formRef.current, ['fabrics', formRef.current?.values?.type]);
         throw Error;
       }
       let editedFabricData = formRef.current.values;

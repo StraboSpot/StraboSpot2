@@ -23,6 +23,8 @@ const NewProjectForm = (props) => {
 
   const formRef = useRef(null);
 
+  const formName = ['general', 'project_description'];
+
   useEffect(() => {
     if (!isEmpty(currentProject)) {
       dispatch(setBackupOverwriteModalVisible(true));
@@ -36,7 +38,6 @@ const NewProjectForm = (props) => {
   };
 
   const renderFormFields = () => {
-    const formName = ['general', 'project_description'];
     console.log('Rendering form:', formName.join('.'), 'with values:', initialValues);
     return (
       <Formik
@@ -56,11 +57,11 @@ const NewProjectForm = (props) => {
     return formRef.current.submitForm().then(async () => {
       console.log('Saved Form');
       if (useForm.hasErrors(formRef.current)) {
-        useForm.showErrors(formRef.current);
+        useForm.showErrors(formRef.current, formName);
         return Promise.reject('There was an error in the form');
       }
       else if (formRef.current.values.project_name === undefined) {
-        useForm.showErrors(formRef.current);
+        useForm.showErrors(formRef.current, formName);
         return Promise.reject('Project name is undefined');
       }
       else {

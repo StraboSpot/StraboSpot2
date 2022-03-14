@@ -87,11 +87,11 @@ const usePetrology = () => {
     else await formCurrent.setFieldValue(name, value);
   };
 
-  const savePetFeature = async (key, spot, formCurrent) => {
+  const savePetFeature = async (key, spot, formCurrent, formName) => {
     try {
       await formCurrent.submitForm();
       if (useForm.hasErrors(formCurrent)) {
-        useForm.showErrors(formCurrent);
+        useForm.showErrors(formCurrent, formName);
         throw Error;
       }
       console.log('Saving', key, 'data to Spot ...');

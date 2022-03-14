@@ -425,7 +425,7 @@ const MeasurementDetail = (props) => {
   const saveForm = async (formCurrent) => {
     await formCurrent.submitForm();
     if (useForm.hasErrors(formCurrent)) {
-      useForm.showErrors(formCurrent);
+      useForm.showErrors(formCurrent, formName);
       console.log('Found validation errors.');
       throw Error;
     }
@@ -503,8 +503,7 @@ const MeasurementDetail = (props) => {
   const saveTemplate = async (formCurrent) => {
     await formCurrent.submitForm();
     if (useForm.hasErrors(formCurrent)) {
-      useForm.showErrors(formCurrent);
-      console.log('Found validation errors.');
+      useForm.showErrors(formCurrent, formName);
       throw Error;
     }
     let formValues = {...formCurrent.values};

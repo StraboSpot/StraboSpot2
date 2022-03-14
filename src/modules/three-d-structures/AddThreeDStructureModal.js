@@ -159,7 +159,7 @@ const AddThreeDStructureModal = (props) => {
     try {
       await formRef.current.submitForm();
       if (useForm.hasErrors(formRef.current)) {
-        useForm.showErrors(formRef.current);
+        useForm.showErrors(formRef.current, [groupKey, types[selectedTypeIndex]]);
         throw Error;
       }
       let edited3DStructureData = formRef.current.values;

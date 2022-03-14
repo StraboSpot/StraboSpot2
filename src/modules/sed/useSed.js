@@ -77,21 +77,21 @@ const useSed = () => {
     else return toTitleCase(mainLabel) + ' - ' + labelsArr.join(', ');
   };
 
-  const getStratSectionTitle = (stratSection) => {
+  const getStratSectionTitle = (inStratSection) => {
     const formName = ['sed', PAGE_KEYS.STRAT_SECTION];
-    const columnProfile = stratSection.column_profile ? useForm.getLabel(stratSection.column_profile, formName)
+    const columnProfile = inStratSection.column_profile ? useForm.getLabel(inStratSection.column_profile, formName)
       : 'Unknown Profile';
-    const columnYUnits = stratSection.column_y_axis_units ? useForm.getLabel(stratSection.column_y_axis_units, formName)
+    const columnYUnits = inStratSection.column_y_axis_units ? useForm.getLabel(inStratSection.column_y_axis_units, formName)
       : 'Unknown Units';
-    return (stratSection.section_well_name || 'Unknown Section/Well Name') + ' - ' + columnProfile
+    return (inStratSection.section_well_name || 'Unknown Section/Well Name') + ' - ' + columnProfile
       + ' (' + columnYUnits + ')';
   };
 
-  const saveSedBedFeature = async (key, spot, formCurrent) => {
-    await saveSedFeature(key, spot, formCurrent, 'beds');
+  const saveSedBedFeature = async (key, spot, formCurrent, formName) => {
+    await saveSedFeature(key, spot, formCurrent, 'beds', formName);
   };
 
-  const saveSedFeature = async (key, spot, formCurrent, subKey) => {
+  const saveSedFeature = async (key, spot, formCurrent, subKey, formName) => {
     if (Object.values(LITHOLOGY_SUBPAGES).includes(key)) key = PAGE_KEYS.LITHOLOGIES;
     else if (Object.values(STRUCTURE_SUBPAGES).includes(key)) key = PAGE_KEYS.STRUCTURES;
     else if (Object.values(INTERPRETATIONS_SUBPAGES).includes(key)) key = PAGE_KEYS.INTERPRETATIONS;
@@ -99,7 +99,7 @@ const useSed = () => {
     try {
       await formCurrent.submitForm();
       if (useForm.hasErrors(formCurrent)) {
-        useForm.showErrors(formCurrent);
+        useForm.showErrors(formCurrent, formName);
         throw Error;
       }
       console.log('Saving', key, 'data to Spot ...');
