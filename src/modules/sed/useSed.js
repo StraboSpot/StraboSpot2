@@ -81,17 +81,17 @@ const useSed = () => {
     const formName = ['sed', PAGE_KEYS.STRAT_SECTION];
     const columnProfile = inStratSection.column_profile ? useForm.getLabel(inStratSection.column_profile, formName)
       : 'Unknown Profile';
-    const columnYUnits = inStratSection.column_y_axis_units ? useForm.getLabel(inStratSection.column_y_axis_units, formName)
-      : 'Unknown Units';
+    const columnYUnits = inStratSection.column_y_axis_units
+      ? useForm.getLabel(inStratSection.column_y_axis_units, formName) : 'Unknown Units';
     return (inStratSection.section_well_name || 'Unknown Section/Well Name') + ' - ' + columnProfile
       + ' (' + columnYUnits + ')';
   };
 
   const saveSedBedFeature = async (key, spot, formCurrent, formName) => {
-    await saveSedFeature(key, spot, formCurrent, 'beds', formName);
+    await saveSedFeature(key, spot, formCurrent, formName, 'beds');
   };
 
-  const saveSedFeature = async (key, spot, formCurrent, subKey, formName) => {
+  const saveSedFeature = async (key, spot, formCurrent, formName, subKey) => {
     if (Object.values(LITHOLOGY_SUBPAGES).includes(key)) key = PAGE_KEYS.LITHOLOGIES;
     else if (Object.values(STRUCTURE_SUBPAGES).includes(key)) key = PAGE_KEYS.STRUCTURES;
     else if (Object.values(INTERPRETATIONS_SUBPAGES).includes(key)) key = PAGE_KEYS.INTERPRETATIONS;
