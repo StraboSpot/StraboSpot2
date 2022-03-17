@@ -134,8 +134,12 @@ const useForm = () => {
       if (isEmpty(values[key]) && (fieldModel.required === 'true' || fieldModel.required === true)
         && isRelevant(fieldModel, values)) errors[key] = 'Required';
       else if (values[key]) {
-        if (fieldModel.type === 'integer') values[key] = parseInt(values[key], 10);
-        else if (fieldModel.type === 'decimal') values[key] = parseFloat(values[key]);
+        if (fieldModel.type === 'integer') {
+          values[key] = isNaN(parseInt(values[key])) ? undefined : parseInt(values[key]);
+        }
+        else if (fieldModel.type === 'decimal') {
+          values[key] = isNaN(parseFloat(values[key])) ? undefined : parseFloat(values[key]);
+        }
         else if (fieldModel.type === 'date') values[key] = values[key];
         if (key === 'end_date'
           && Date.parse(values.start_date) > Date.parse(values.end_date)) errors[key] = fieldModel.constraint_message;
