@@ -27,7 +27,7 @@
       "name": "other_volcanic_rocks",
       "label": "Other",
       "required": "false",
-      "relevant": "selected(${volcanic_rock_type}, 'other')"
+      "relevant": "${volcanic_rock_type} = 'other'"
     },
     {
       "type": "select_one ez5mj87",
@@ -41,7 +41,7 @@
       "name": "other_occurance_volcanic",
       "label": "Other",
       "required": "false",
-      "relevant": "selected(${occurence_volcanic}, 'other')"
+      "relevant": "${occurence_volcanic} = 'other'"
     },
     {
       "type": "select_multiple jx1rw50",
@@ -115,22 +115,9 @@
       "type": "end_group"
     },
     {
-      "type": "text",
-      "name": "notes_igneous",
-      "label": "Notes",
-      "required": "false",
-      "appearance": "multiline"
-    },
-    {
       "type": "calculate",
       "name": "__version__",
-      "calculation": "'vhTUMmHgusebX9ChQ2VzW6'"
-    },
-    {
-      "type": "calculate",
-      "name": "_version_",
-      "calculation": "'vn9KwmeK6scUrCCSkxpesX'",
-      "$given_name": "__version__"
+      "calculation": "'v6Pa7P3JF6uJDxeZHtipH8'"
     }
   ],
   "choices": [
@@ -444,7 +431,8 @@
   ],
   "settings": [
     {
-      "version": "3 (2021-04-13 00:50:21)"
+      "form_title": "Rock Type Igneous - Volcanic (10/2020)",
+      "version": "4 (2022-03-17 20:42:22)"
     }
   ]
 }
