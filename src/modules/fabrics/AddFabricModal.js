@@ -33,6 +33,7 @@ const AddFabricModal = (props) => {
   const formRef = useRef(null);
 
   const types = Object.keys(FABRIC_TYPES);
+  const groupKey = 'fabrics';
 
   useEffect(() => {
     return () => dispatch(setModalValues({}));
@@ -42,9 +43,10 @@ const AddFabricModal = (props) => {
     const initialValues = isEmpty(modalValues) ? {id: getNewId(), type: 'fault_rock'} : modalValues;
     formRef.current?.setValues(initialValues);
     setSelectedTypeIndex(types.indexOf(initialValues.type));
-    const defaultFormName = ['fabrics', initialValues.type];
-    setSurvey(useForm.getSurvey(initialValues.type ? ['fabrics', initialValues.type] : defaultFormName));
-    setChoices(useForm.getChoices(initialValues.type ? ['fabrics', initialValues.type] : defaultFormName));
+    const formName = [groupKey, initialValues.type];
+    formRef.current?.setStatus({formName: formName});
+    setSurvey(useForm.getSurvey(formName));
+    setChoices(useForm.getChoices(formName));
   }, [modalValues]);
 
   const onFabricTypePress = (i) => {
@@ -53,7 +55,8 @@ const AddFabricModal = (props) => {
       formRef.current?.resetForm();
       const type = types[i];
       formRef.current?.setFieldValue('type', type);
-      const formName = ['fabrics', type];
+      const formName = [groupKey, type];
+      formRef.current?.setStatus({formName: formName});
       setSurvey(useForm.getSurvey(formName));
       setChoices(useForm.getChoices(formName));
     }
@@ -76,7 +79,7 @@ const AddFabricModal = (props) => {
             survey={survey}
             choices={choices}
             setChoicesViewKey={setChoicesViewKey}
-            formName={['fabrics', types[selectedTypeIndex]]}
+            formName={formProps.status.formName}
             formProps={formProps}
           />
         )}
@@ -85,7 +88,7 @@ const AddFabricModal = (props) => {
             survey={survey}
             choices={choices}
             setChoicesViewKey={setChoicesViewKey}
-            formName={['fabrics', types[selectedTypeIndex]]}
+            formName={formProps.status.formName}
             formProps={formProps}
           />
         )}
@@ -94,7 +97,7 @@ const AddFabricModal = (props) => {
             survey={survey}
             choices={choices}
             setChoicesViewKey={setChoicesViewKey}
-            formName={['fabrics', types[selectedTypeIndex]]}
+            formName={formProps.status.formName}
             formProps={formProps}
           />
         )}
@@ -103,6 +106,7 @@ const AddFabricModal = (props) => {
   };
 
   const renderNotebookFabricModalContent = () => {
+    const formName = [groupKey, types[selectedTypeIndex]];
     return (
       <Modal
         close={() => choicesViewKey ? setChoicesViewKey(null) : dispatch(setModalVisible({modal: null}))}
@@ -118,6 +122,8 @@ const AddFabricModal = (props) => {
                   innerRef={formRef}
                   initialValues={{}}
                   onSubmit={(values) => console.log('Submitting form...', values)}
+                  validate={(values) => useForm.validateForm({formName: formName, values: values})}
+                  validateOnChange={false}
                 >
                   {(formProps) => (
                     <View style={{flex: 1}}>
@@ -137,22 +143,18 @@ const AddFabricModal = (props) => {
   const renderSubform = (formProps) => {
     const relevantFields = useForm.getRelevantFields(survey, choicesViewKey);
     return (
-      <Form {...{formName: ['fabrics', formRef.current?.values?.type], surveyFragment: relevantFields, ...formProps}}/>
+      <Form {...{formName: [groupKey, formRef.current?.values?.type], surveyFragment: relevantFields, ...formProps}}/>
     );
   };
 
   const saveFabric = async () => {
     try {
       await formRef.current.submitForm();
-      if (useForm.hasErrors(formRef.current)) {
-        useForm.showErrors(formRef.current, ['fabrics', formRef.current?.values?.type]);
-        throw Error;
-      }
-      let editedFabricData = formRef.current.values;
+      const editedFabricData = useForm.showErrors(formRef.current);
       console.log('Saving fabic data to Spot ...');
       let editedFabricsData = spot.properties.fabrics ? JSON.parse(JSON.stringify(spot.properties.fabrics)) : [];
       editedFabricsData.push({...editedFabricData, id: getNewId()});
-      dispatch(editedSpotProperties({field: 'fabrics', value: editedFabricsData}));
+      dispatch(editedSpotProperties({field: groupKey, value: editedFabricsData}));
     }
     catch (err) {
       console.log('Error submitting form', err);

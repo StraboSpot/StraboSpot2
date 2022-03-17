@@ -154,16 +154,10 @@ const Metadata = () => {
   const saveForm = async () => {
     try {
       await metadataFormRef.current.submitForm();
-      if (useForm.hasErrors(metadataFormRef.current)) {
-        useForm.showErrors(metadataFormRef.current);
-        return Promise.reject();
-      }
-      else {
-        console.log('Saving form data to Spot ...');
-        let editedSpotProperties = metadataFormRef.current.values;
-        dispatch(addedSpot({...spot, properties: editedSpotProperties}));
-        return Promise.resolve();
-      }
+      const editedSpotProperties = useForm.showErrors(metadataFormRef.current);
+      console.log('Saving form data to Spot ...');
+      dispatch(addedSpot({...spot, properties: editedSpotProperties}));
+      return Promise.resolve();
     }
     catch (e) {
       console.log('Error submitting form', e);

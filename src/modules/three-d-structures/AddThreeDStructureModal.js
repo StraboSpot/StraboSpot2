@@ -45,6 +45,7 @@ const AddThreeDStructureModal = (props) => {
     formRef.current?.setValues(initialValues);
     setSelectedTypeIndex(types.indexOf(initialValues.type));
     const formName = [groupKey, initialValues.type];
+    formRef.current?.setStatus({formName: formName});
     setSurvey(useForm.getSurvey(formName));
     setChoices(useForm.getChoices(formName));
   }, [modalValues]);
@@ -56,6 +57,7 @@ const AddThreeDStructureModal = (props) => {
       const type = types[i];
       formRef.current?.setFieldValue('type', type);
       const formName = [groupKey, type];
+      formRef.current?.setStatus({formName: formName});
       setSurvey(useForm.getSurvey(formName));
       setChoices(useForm.getChoices(formName));
     }
@@ -78,7 +80,7 @@ const AddThreeDStructureModal = (props) => {
             survey={survey}
             choices={choices}
             setChoicesViewKey={setChoicesViewKey}
-            formName={[groupKey, types[selectedTypeIndex]]}
+            formName={formProps.status.formName}
             formProps={formProps}
           />
         )}
@@ -87,7 +89,7 @@ const AddThreeDStructureModal = (props) => {
             survey={survey}
             choices={choices}
             setChoicesViewKey={setChoicesViewKey}
-            formName={[groupKey, types[selectedTypeIndex]]}
+            formName={formProps.status.formName}
             formProps={formProps}
           />
         )}
@@ -96,7 +98,7 @@ const AddThreeDStructureModal = (props) => {
             survey={survey}
             choices={choices}
             setChoicesViewKey={setChoicesViewKey}
-            formName={[groupKey, types[selectedTypeIndex]]}
+            formName={formProps.status.formName}
             formProps={formProps}
           />
         )}
@@ -105,6 +107,7 @@ const AddThreeDStructureModal = (props) => {
   };
 
   const renderNotebookThreeDStructureModalContent = () => {
+    const formName = [groupKey, types[selectedTypeIndex]];
     return (
       <Modal
         close={() => choicesViewKey ? setChoicesViewKey(null) : dispatch(setModalVisible({modal: null}))}
@@ -120,9 +123,7 @@ const AddThreeDStructureModal = (props) => {
                   innerRef={formRef}
                   initialValues={{}}
                   onSubmit={(values) => console.log('Submitting form...', values)}
-                  validate={(values) => (
-                    useForm.validateForm({formName: [groupKey, types[selectedTypeIndex]], values: values}))
-                  }
+                  validate={(values) => useForm.validateForm({formName: formName, values: values})}
                   validateOnChange={false}
                 >
                   {(formProps) => (
@@ -158,11 +159,7 @@ const AddThreeDStructureModal = (props) => {
   const save3DStructure = async () => {
     try {
       await formRef.current.submitForm();
-      if (useForm.hasErrors(formRef.current)) {
-        useForm.showErrors(formRef.current, [groupKey, types[selectedTypeIndex]]);
-        throw Error;
-      }
-      let edited3DStructureData = formRef.current.values;
+      const edited3DStructureData = useForm.showErrors(formRef.current);
       console.log('Saving 3D Structure data to Spot ...');
       let edited3DStructuresData = spot.properties[groupKey] ? JSON.parse(JSON.stringify(spot.properties[groupKey]))
         : [];

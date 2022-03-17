@@ -115,8 +115,6 @@ const OtherFeatureDetail = (props) => {
           onSubmit={(values) => console.log('Submitting form...', values)}
           validate={validateFeature}
           innerRef={formRef}
-          validateOnMount={true}
-          validateOnChange={true}
           enableReinitialize={true}
         >
           {() => (
@@ -203,17 +201,14 @@ const OtherFeatureDetail = (props) => {
   const saveForm = async (formCurrent) => {
     try {
       await formCurrent.submitForm();
-      if (useForm.hasErrors(formCurrent) || !formCurrent.values.name || !formCurrent.values.type) {
-        useForm.showErrors(formCurrent);
-        throw Error;
-      }
+      let formValues = useForm.showErrors(formRef.current || formCurrent, isEmpty(formRef));
       let featureToEdit;
       let otherFeatures = spot.properties.other_features;
-      if (!formCurrent.values.label) label = formCurrent.values.name;
-      else label = formCurrent.values.label;
-      name = formCurrent.values.name;
-      description = formCurrent.values.description;
-      type = formCurrent.values.type;
+      if (!formValues.label) label = formValues.name;
+      else label = formValues.label;
+      name = formValues.name;
+      description = formValues.description;
+      type = formValues.type;
       if (otherFeatures && otherFeatures.length > 0) {
         let existingFeatures = otherFeatures.filter(feature => feature.id === props.selectedFeature.id);
         if (!isEmpty(existingFeatures)) {

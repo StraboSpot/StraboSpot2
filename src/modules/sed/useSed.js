@@ -87,23 +87,19 @@ const useSed = () => {
       + ' (' + columnYUnits + ')';
   };
 
-  const saveSedBedFeature = async (key, spot, formCurrent, formName) => {
-    await saveSedFeature(key, spot, formCurrent, formName, 'beds');
+  const saveSedBedFeature = async (key, spot, formCurrent, isLeavingPage) => {
+    await saveSedFeature(key, spot, formCurrent, isLeavingPage, 'beds');
   };
 
-  const saveSedFeature = async (key, spot, formCurrent, formName, subKey) => {
+  const saveSedFeature = async (key, spot, formCurrent, isLeavingPage, subKey) => {
     if (Object.values(LITHOLOGY_SUBPAGES).includes(key)) key = PAGE_KEYS.LITHOLOGIES;
     else if (Object.values(STRUCTURE_SUBPAGES).includes(key)) key = PAGE_KEYS.STRUCTURES;
     else if (Object.values(INTERPRETATIONS_SUBPAGES).includes(key)) key = PAGE_KEYS.INTERPRETATIONS;
 
     try {
       await formCurrent.submitForm();
-      if (useForm.hasErrors(formCurrent)) {
-        useForm.showErrors(formCurrent, formName);
-        throw Error;
-      }
+      let editedFeatureData = useForm.showErrors(formCurrent, isLeavingPage);
       console.log('Saving', key, 'data to Spot ...');
-      let editedFeatureData = formCurrent.values;
       let editedSedData = spot.properties.sed ? JSON.parse(JSON.stringify(spot.properties.sed)) : {};
       if (subKey) {
         if (!editedSedData[key]) editedSedData[key] = {};

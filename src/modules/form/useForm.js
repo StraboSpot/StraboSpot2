@@ -105,9 +105,22 @@ const useForm = () => {
     }
   };
 
-  const showErrors = (form, formName = []) => {
-    const errorMessages = Object.entries(form.errors).map(([key, value]) => getLabel(key, formName) + ': ' + value);
-    Alert.alert('Please Fix the Following Errors', errorMessages.join('\n'));
+  // Remove errors from data, if any, and show alert. Throw error if not leaving page.
+  const showErrors = (form, isLeavingPage) => {
+    let formValues = {...form.values};
+    const errors = form.errors;
+    const formName = form.status?.formName || [];
+    if (hasErrors(form)) {
+      const errorMessages = Object.entries(errors).map(([key, value]) => {
+        if (form.initialValues[key]) formValues[key] = form.initialValues[key];
+        else delete formValues[key];
+        return getLabel(key, formName) + ': ' + value;
+      });
+      Alert.alert('Error Saving', 'Errors found in following fields. Unable to save these changes.'
+        + ' Please fix the following errors.\n\n' + errorMessages.join('\n'));
+      if (!isLeavingPage) throw Error('Found validation errors.');  // If we don't want user to leave the page throw Error
+    }
+    return formValues;
   };
 
   const validateForm = ({formName, values}) => {
@@ -124,8 +137,8 @@ const useForm = () => {
         if (fieldModel.type === 'integer') values[key] = parseInt(values[key], 10);
         else if (fieldModel.type === 'decimal') values[key] = parseFloat(values[key]);
         else if (fieldModel.type === 'date') values[key] = values[key];
-        if (key === 'end_date' && Date.parse(values.start_date) > Date.parse(
-          values.end_date)) errors[key] = fieldModel.constraint_message;
+        if (key === 'end_date'
+          && Date.parse(values.start_date) > Date.parse(values.end_date)) errors[key] = fieldModel.constraint_message;
         if (fieldModel.constraint) {
           // Max constraint
           // Look for <= in constraint, followed by a space and then any number of digits (- preceding the digits is optional)

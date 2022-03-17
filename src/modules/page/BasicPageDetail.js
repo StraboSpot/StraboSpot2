@@ -134,7 +134,7 @@ const BasicPageDetail = (props) => {
             }}/>
           )}
           initialValues={props.selectedFeature}
-          validateOnChange={false}
+          initialStatus={{formName: formName}}
           enableReinitialize={true}
         />
         <Button
@@ -167,11 +167,7 @@ const BasicPageDetail = (props) => {
   const saveFeature = async (formCurrent) => {
     try {
       await formCurrent.submitForm();
-      if (useForm.hasErrors(formCurrent)) {
-        useForm.showErrors(formCurrent, getFormName());
-        throw Error;
-      }
-      const editedFeatureData = formCurrent.values;
+      const editedFeatureData = useForm.showErrors(formRef.current || formCurrent, isEmpty(formRef));
       console.log('Saving', props.page.label, 'data', editedFeatureData, 'to Spot', pageData);
       let editedPageData = pageData ? JSON.parse(JSON.stringify(pageData)) : [];
       editedPageData = editedPageData.filter(f => f.id !== editedFeatureData.id);
@@ -185,11 +181,15 @@ const BasicPageDetail = (props) => {
   };
 
   const saveForm = async (formCurrent) => {
-    if (groupKey === 'pet') await usePetrology.savePetFeature(pageKey, spot, formCurrent, getFormName());
-    else if (groupKey === 'sed' && pageKey === 'bedding') {
-      await useSed.saveSedBedFeature(pageKey, spot, formCurrent, getFormName());
+    if (groupKey === 'pet') {
+      await usePetrology.savePetFeature(pageKey, spot, formRef.current || formCurrent, isEmpty(formRef));
     }
-    else if (groupKey === 'sed') await useSed.saveSedFeature(pageKey, spot, formCurrent, getFormName());
+    else if (groupKey === 'sed' && pageKey === 'bedding') {
+      await useSed.saveSedBedFeature(pageKey, spot, formRef.current || formCurrent, isEmpty(formRef));
+    }
+    else if (groupKey === 'sed') {
+      await useSed.saveSedFeature(pageKey, spot, formRef.current || formCurrent, isEmpty(formRef));
+    }
     else await saveFeature(formCurrent);
     await formCurrent.resetForm();
     props.closeDetailView();
@@ -197,12 +197,7 @@ const BasicPageDetail = (props) => {
 
   const saveTemplate = async (formCurrent) => {
     await formCurrent.submitForm();
-    if (useForm.hasErrors(formCurrent)) {
-      useForm.showErrors(formCurrent, getFormName());
-      console.log('Found validation errors.');
-      throw Error;
-    }
-    let formValues = {...formCurrent.values};
+    const formValues = useForm.showErrors(formRef.current || formCurrent, isEmpty(formRef));
     props.saveTemplate(formValues);
   };
 

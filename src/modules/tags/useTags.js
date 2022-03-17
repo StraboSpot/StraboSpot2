@@ -272,7 +272,7 @@ const useTags = () => {
           validate={(values) => useForm.validateForm({formName: formName, values: values})}
           component={(formProps) => Form({formName: formName, ...formProps})}
           initialValues={isEmpty(selectedTag) && type ? {type: type} : selectedTag}
-          validateOnChange={false}
+          initialStatus={{formName: formName}}
           enableReinitialize={true}
         />
       </View>
@@ -282,22 +282,17 @@ const useTags = () => {
   const saveForm = async () => {
     try {
       await formRef.current.submitForm();
-      if (useForm.hasErrors(formRef.current)) {
-        useForm.showErrors(formRef.current, formName);
-        return Promise.reject();
+      const formValues = useForm.showErrors(formRef.current);
+      console.log('Saving tag data to Project ...');
+      console.log('Form values', formValues);
+      let updatedTag = formValues;
+      if (!updatedTag.id) updatedTag.id = getNewId();
+      if (addTagToSelectedSpot) {
+        if (!updatedTag.spots) updatedTag.spots = [];
+        updatedTag.spots.push(selectedSpot.properties.id);
       }
-      else {
-        console.log('Saving tag data to Project ...');
-        console.log('Form values', formRef.current.values);
-        let updatedTag = formRef.current.values;
-        if (!updatedTag.id) updatedTag.id = getNewId();
-        if (addTagToSelectedSpot) {
-          if (!updatedTag.spots) updatedTag.spots = [];
-          updatedTag.spots.push(selectedSpot.properties.id);
-        }
-        saveTag(updatedTag);
-        return Promise.resolve();
-      }
+      saveTag(updatedTag);
+      return Promise.resolve();
     }
     catch (e) {
       console.log('Error submitting form', e);

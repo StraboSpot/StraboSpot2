@@ -41,6 +41,10 @@ const MeasurementDetail = (props) => {
     return () => confirmLeavePage();
   }, []);
 
+  useEffect(() => {
+    return () => clearSelectedMeasurements();
+  }, []);
+
   // Update selected Measurement on selected Attitudes changed or return to Measurements page if no selected Attitude
   useEffect(() => {
     console.log('UE for selectedAttitudes changed in MeasurementDetail', props.selectedAttitudes);
@@ -121,7 +125,7 @@ const MeasurementDetail = (props) => {
 
   const cancelFormAndGo = () => {
     dispatch(setSelectedMeasurement({}));
-    formRef.current.resetForm();
+    formRef.current?.resetForm();
     if (isEmptyMeasurement(props.selectedAttitudes[0])) {
       const aOs = props.selectedAttitudes[0].associated_orientation || [];
       useMeasurements.deleteMeasurements([...aOs, props.selectedAttitudes[0]]);
@@ -162,8 +166,7 @@ const MeasurementDetail = (props) => {
         }, {
           text: 'Yes',
           onPress: async () => {
-            const saved = await saveForm(formCurrent);
-            console.log(saved);
+            await saveForm(formCurrent);
             clearSelectedMeasurements();
           },
         }],
@@ -274,35 +277,35 @@ const MeasurementDetail = (props) => {
       <View>
         {/* Primary measurement */}
         {selectedMeasurement && props.selectedAttitudes && props.selectedAttitudes[0]
-        && props.selectedAttitudes[0].associated_orientation && (
-          <React.Fragment>
-            <MeasurementItem
-              item={props.selectedAttitudes[0]}
-              selectedIds={[selectedMeasurement.id]}
-              isAssociatedItem={false}
-              isAssociatedList={true}
-              onPress={() => onSwitchSelectedMeasurement(props.selectedAttitudes[0])}
-            />
-            <FlatListItemSeparator/>
-          </React.Fragment>
-        )}
+          && props.selectedAttitudes[0].associated_orientation && (
+            <React.Fragment>
+              <MeasurementItem
+                item={props.selectedAttitudes[0]}
+                selectedIds={[selectedMeasurement.id]}
+                isAssociatedItem={false}
+                isAssociatedList={true}
+                onPress={() => onSwitchSelectedMeasurement(props.selectedAttitudes[0])}
+              />
+              <FlatListItemSeparator/>
+            </React.Fragment>
+          )}
 
         {/* Associated measurements */}
         {selectedMeasurement && props.selectedAttitudes && props.selectedAttitudes[0] && props.selectedAttitudes[0].associated_orientation
-        && (props.selectedAttitudes[0].associated_orientation.map((item, i) =>
-            <React.Fragment>
-              <MeasurementItem
-                item={item}
-                selectedIds={[selectedMeasurement.id]}
-                isAssociatedItem={true}
-                isAssociatedList={true}
-                onPress={() => onSwitchSelectedMeasurement(item)}
-                key={item.id}
-              />
-              <FlatListItemSeparator/>
-            </React.Fragment>,
-          )
-        )}
+          && (props.selectedAttitudes[0].associated_orientation.map((item, i) =>
+              <React.Fragment>
+                <MeasurementItem
+                  item={item}
+                  selectedIds={[selectedMeasurement.id]}
+                  isAssociatedItem={true}
+                  isAssociatedList={true}
+                  onPress={() => onSwitchSelectedMeasurement(item)}
+                  key={item.id}
+                />
+                <FlatListItemSeparator/>
+              </React.Fragment>,
+            )
+          )}
 
         {/* Button to add an associated measurement */}
         <Button
@@ -335,13 +338,13 @@ const MeasurementDetail = (props) => {
         <View style={{flex: 1}}>
           <Formik
             innerRef={formRef}
-            onSubmit={() => console.log('Submitting form...')}
+            onSubmit={values => console.log('Submitting form...', values)}
             onReset={() => console.log('Resetting form...')}
             validate={(values) => useForm.validateForm({formName: formName, values: values})}
             children={(formProps) => <Form {...{...formProps, formName: formName, onMyChange: onMyChange}}/>}
             initialValues={selectedMeasurement}
-            validateOnChange={true}
             enableReinitialize={true}
+            initialStatus={{formName: formName}}
           />
         </View>
       </View>
@@ -423,51 +426,51 @@ const MeasurementDetail = (props) => {
   };
 
   const saveForm = async (formCurrent) => {
-    await formCurrent.submitForm();
-    if (useForm.hasErrors(formCurrent)) {
-      useForm.showErrors(formCurrent, formName);
-      console.log('Found validation errors.');
-      throw Error;
-    }
-    console.log('Saving form data to Spot ...');
-    let orientationDataCopy = JSON.parse(JSON.stringify(spot.properties.orientation_data));
-    let formValues = {...formCurrent.values};
-    let editedSelectedMeasurements = [];
-    let idsOfMeasurementsToEdit = [formValues.id];
-    if (props.selectedAttitudes.length > 1) {
-      const fieldsToExclude = ['id', 'associated_orientation', 'label', 'strike', 'dip_direction', 'dip',
-        'trend', 'plunge', 'rake', 'rake_calculated'];
-      fieldsToExclude.forEach(key => delete formValues[key]);
-      if (formCurrent.values.id === props.selectedAttitudes[0].id) {
-        idsOfMeasurementsToEdit = props.selectedAttitudes.map(measurement => measurement.id);
+    try {
+      await formCurrent.submitForm();
+      let formValues = useForm.showErrors(formRef.current || formCurrent, isEmpty(formRef));
+      console.log('Saving form data to Spot ...');
+      let orientationDataCopy = JSON.parse(JSON.stringify(spot.properties.orientation_data));
+      let editedSelectedMeasurements = [];
+      let idsOfMeasurementsToEdit = [formValues.id];
+      if (props.selectedAttitudes.length > 1) {
+        const fieldsToExclude = ['id', 'associated_orientation', 'label', 'strike', 'dip_direction', 'dip',
+          'trend', 'plunge', 'rake', 'rake_calculated'];
+        fieldsToExclude.forEach(key => delete formValues[key]);
+        if (formCurrent.values.id === props.selectedAttitudes[0].id) {
+          idsOfMeasurementsToEdit = props.selectedAttitudes.map(measurement => measurement.id);
+        }
+        else {
+          idsOfMeasurementsToEdit = props.selectedAttitudes.reduce(
+            (acc, measurement) => [...acc, ...measurement.associated_orientation.map(
+              associatedOrientation => associatedOrientation.id)], []);
+        }
       }
-      else {
-        idsOfMeasurementsToEdit = props.selectedAttitudes.reduce(
-          (acc, measurement) => [...acc, ...measurement.associated_orientation.map(
-            associatedOrientation => associatedOrientation.id)], []);
-      }
-    }
 
-    orientationDataCopy.forEach((measurement, i) => {
-      if (idsOfMeasurementsToEdit.includes(measurement.id)) {
-        orientationDataCopy[i] = props.selectedAttitudes.length === 1 ? formValues : {...measurement, ...formValues};
-        editedSelectedMeasurements.push(orientationDataCopy[i]);
-      }
-      else if (measurement.associated_orientation) {
-        measurement.associated_orientation.forEach((associatedMeasurement, j) => {
-          if (idsOfMeasurementsToEdit.includes(associatedMeasurement.id)) {
-            orientationDataCopy[i].associated_orientation[j] = props.selectedAttitudes.length === 1 ? formValues
-              : {...associatedMeasurement, ...formValues};
-            editedSelectedMeasurements.push(orientationDataCopy[i]);
-          }
-        });
-      }
-    });
-    dispatch(setSelectedAttributes(editedSelectedMeasurements));
-    dispatch(editedSpotProperties({field: 'orientation_data', value: orientationDataCopy}));
-    await formCurrent.resetForm();
-    console.log('Finished saving form data to Spot');
-    return 'Saved!';
+      orientationDataCopy.forEach((measurement, i) => {
+        if (idsOfMeasurementsToEdit.includes(measurement.id)) {
+          orientationDataCopy[i] = props.selectedAttitudes.length === 1 ? formValues : {...measurement, ...formValues};
+          editedSelectedMeasurements.push(orientationDataCopy[i]);
+        }
+        else if (measurement.associated_orientation) {
+          measurement.associated_orientation.forEach((associatedMeasurement, j) => {
+            if (idsOfMeasurementsToEdit.includes(associatedMeasurement.id)) {
+              orientationDataCopy[i].associated_orientation[j] = props.selectedAttitudes.length === 1 ? formValues
+                : {...associatedMeasurement, ...formValues};
+              editedSelectedMeasurements.push(orientationDataCopy[i]);
+            }
+          });
+        }
+      });
+      dispatch(setSelectedAttributes(editedSelectedMeasurements));
+      dispatch(editedSpotProperties({field: 'orientation_data', value: orientationDataCopy}));
+      await formCurrent.resetForm();
+      console.log('Finished saving form data to Spot');
+    }
+    catch (e) {
+      console.log('Error submitting form.', e);
+      return Promise.reject();
+    }
   };
 
   const saveFormAndGo = async () => {
@@ -502,11 +505,7 @@ const MeasurementDetail = (props) => {
 
   const saveTemplate = async (formCurrent) => {
     await formCurrent.submitForm();
-    if (useForm.hasErrors(formCurrent)) {
-      useForm.showErrors(formCurrent, formName);
-      throw Error;
-    }
-    let formValues = {...formCurrent.values};
+    const formValues = useForm.showErrors(formRef.current || formCurrent, isEmpty(formRef));
     props.saveTemplate(formValues);
   };
 

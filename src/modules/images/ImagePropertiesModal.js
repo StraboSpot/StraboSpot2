@@ -20,9 +20,8 @@ const ImagePropertiesModal = (props) => {
 
   const formRef = useRef(null);
 
-  const formName = ['general', 'images'];
-
   const renderFormFields = () => {
+    const formName = ['general', 'images'];
     console.log('Rendering form:', formName.join('.'), 'with selected image:', selectedImage);
     return (
       <Formik
@@ -31,7 +30,7 @@ const ImagePropertiesModal = (props) => {
         validate={(values) => useForm.validateForm({formName: formName, values: values})}
         component={(formProps) => Form({formName: formName, ...formProps})}
         initialValues={selectedImage}
-        validateOnChange={false}
+        initialStatus={{formName: formName}}
       />
     );
   };
@@ -39,20 +38,15 @@ const ImagePropertiesModal = (props) => {
   const saveFormAndGo = async () => {
     try {
       await formRef.current.submitForm();
-      if (useForm.hasErrors(formRef.current)) {
-        useForm.showErrors(formRef.current, formName);
-        throw Error;
-      }
-      else {
-        const images = JSON.parse(JSON.stringify(spot.properties.images));
-        console.log('Saving form data to Spot ...', formRef.current.values);
-        let i = images.findIndex(img => img.id === formRef.current.values.id);
-        images[i] = {...formRef.current.values, annotated: annotated};
-        dispatch(setSelectedAttributes([images[i]]));
-        dispatch(editedSpotProperties({field: 'images', value: images}));
-        props.close();
-        return Promise.resolve();
-      }
+      const formValues = useForm.showErrors(formRef.current);
+      const images = JSON.parse(JSON.stringify(spot.properties.images));
+      console.log('Saving form data to Spot ...', formValues);
+      let i = images.findIndex(img => img.id === formValues.id);
+      images[i] = {...formValues, annotated: annotated};
+      dispatch(setSelectedAttributes([images[i]]));
+      dispatch(editedSpotProperties({field: 'images', value: images}));
+      props.close();
+      return Promise.resolve();
     }
     catch (e) {
       console.log('Error submitting form', e);

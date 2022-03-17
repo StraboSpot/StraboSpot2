@@ -87,20 +87,16 @@ const usePetrology = () => {
     else await formCurrent.setFieldValue(name, value);
   };
 
-  const savePetFeature = async (key, spot, formCurrent, formName) => {
+  const savePetFeature = async (key, spot, formCurrent, isLeavingPage) => {
     try {
       await formCurrent.submitForm();
-      if (useForm.hasErrors(formCurrent)) {
-        useForm.showErrors(formCurrent, formName);
-        throw Error;
-      }
+      const editedFeatureData = useForm.showErrors(formCurrent, isLeavingPage);
       console.log('Saving', key, 'data to Spot ...');
-      if (formCurrent.values.rock_type && (key === PAGE_KEYS.ROCK_TYPE_IGNEOUS
+      if (editedFeatureData.rock_type && (key === PAGE_KEYS.ROCK_TYPE_IGNEOUS
         || key === PAGE_KEYS.ROCK_TYPE_METAMORPHIC || key === PAGE_KEYS.ROCK_TYPE_ALTERATION_ORE)) {
-        dispatch(editedSpotProperties({field: 'pet', value: formCurrent.values}));
+        dispatch(editedSpotProperties({field: 'pet', value: editedFeatureData}));
       }
       else {
-        let editedFeatureData = formCurrent.values;
         let editedPetData = spot.properties.pet ? JSON.parse(JSON.stringify(spot.properties.pet)) : {};
         if (!editedPetData[key] || !Array.isArray(editedPetData[key])) editedPetData[key] = [];
         editedPetData[key] = editedPetData[key].filter(type => type.id !== editedFeatureData.id);

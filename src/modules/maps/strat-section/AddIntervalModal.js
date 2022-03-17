@@ -16,6 +16,7 @@ import useStratSectionHook from './useStratSection';
 
 const AddIntervalModal = () => {
   const dispatch = useDispatch();
+  const preferences = useSelector(state => state.project.project.preferences) || {};
   const stratSection = useSelector(state => state.map.stratSection);
 
   const [useForm] = useFormHook();
@@ -28,7 +29,59 @@ const AddIntervalModal = () => {
 
   const formName = ['sed', 'add_interval'];
 
-  const initialValues = {thickness_units: stratSection.column_y_axis_units};
+  // const initialValues = {thickness_units: stratSection.column_y_axis_units};
+
+  // Set default interval name if prefix or Spot number set
+  const getInitialIntervalName = () => {
+    const prefix = preferences.spot_prefix || '';
+    const number = preferences.starting_number_for_spot || '';
+    // if (!isEmpty(number)) {
+    //   const updatedPreferences = {
+    //     ...preferences,
+    //     starting_number_for_spot: number + 1,
+    //   };
+    //   dispatch(updatedProject({field: 'preferences', value: updatedPreferences}));
+    // }
+    return {intervalName: prefix + number};
+    // vm.intervalToInsertAfter = {};
+  };
+
+  const getInitialValues = () => {
+    const initialValues = {};
+    if (stratSection.column_profile && stratSection.column_profile === 'clastic') {
+      initialValues.interval_type = 'bed';
+      initialValues.primary_lithology = 'siliciclastic';
+    }
+    else if (stratSection.column_profile && stratSection.column_profile === 'carbonate') {
+      initialValues.interval_type = 'bed';
+    }
+    else if (stratSection.column_profile && stratSection.column_profile === 'mixed_clastic') {
+      initialValues.interval_type = 'bed';
+    }
+    else if (stratSection.column_profile && stratSection.column_profile === 'basic_lithologies') {
+      initialValues.interval_type = 'bed';
+    }
+    if (stratSection.column_y_axis_units) {
+      initialValues.thickness_units = stratSection.column_y_axis_units;
+      initialValues.package_thickness_units = stratSection.column_y_axis_units;
+      initialValues.interbed_thickness_units = stratSection.column_y_axis_units;
+    }
+
+    // Testing Data
+    /*      vm.intervalName = 'Interval Inserting';
+     initialValues.interval_thickness = 2;
+     // initialValues.character = 'bed';
+     initialValues.primary_lithology = 'volcaniclastic';
+     initialValues.interval_type = 'interbedded';
+     //   initialValues.siliciclastic_type = 'claystone';
+     initialValues.primary_lithology_1 = 'chert';
+     initialValues.interbed_proportion = 30;
+     initialValues.interbed_proportion_change = 'no_change';
+     initialValues.avg_thickness = 5;
+     initialValues.avg_thickness_1 = 8;*/
+
+    return initialValues;
+  };
 
   const close = () => {
     dispatch(setModalValues({}));
@@ -59,7 +112,7 @@ const AddIntervalModal = () => {
   const renderAddIntervalNameField = () => {
     return (
       <Formik
-        initialValues={{}}
+        initialValues={getInitialIntervalName()}
         onSubmit={() => console.log('Submitting form...')}
         innerRef={nameFormRef}
         validateOnChange={false}
@@ -89,8 +142,8 @@ const AddIntervalModal = () => {
         onReset={() => console.log('Resetting form...')}
         validate={(values) => useForm.validateForm({formName: formName, values: values})}
         children={(formProps) => <Form {...{...formProps, formName: formName}}/>}
-        initialValues={initialValues}
-        validateOnChange={false}
+        initialValues={getInitialValues()}
+        initialStatus={{formName: formName}}
         enableReinitialize={false}
       />
     );
@@ -115,23 +168,17 @@ const AddIntervalModal = () => {
 
   const saveInterval = async () => {
     await formRef.current.submitForm();
-    if (useForm.hasErrors(formRef.current)) {
-      useForm.showErrors(formRef.current, formName);
-      return Promise.reject();
-    }
-    else {
-      const intervalData = formRef.current?.values;
-      if (doUnitsFieldsMatch(intervalData)) {
-        const newInterval = useStratSection.createInterval(stratSection.strat_section_id, intervalData);
-        if (nameFormRef.current?.values?.intervalName) newInterval.properties.name = nameFormRef.current.values.intervalName;
-        // if (vm.intervalToCopy && vm.intervalToCopy.properties && vm.intervalToCopy.properties.sed) {
-        //   newInterval = copyRestOfInterval(newInterval);
-        // }
-        const newSpot = await useSpots.createSpot({type: 'Feature', ...newInterval});
-        useMaps.setSelectedSpotOnMap(newSpot);
-        dispatch(setModalValues({}));
-        dispatch(setModalVisible({modal: null}));
-      }
+    const intervalData = useForm.showErrors(formRef.current);
+    if (doUnitsFieldsMatch(intervalData)) {
+      const newInterval = useStratSection.createInterval(stratSection.strat_section_id, intervalData);
+      if (nameFormRef.current?.values?.intervalName) newInterval.properties.name = nameFormRef.current.values.intervalName;
+      // if (vm.intervalToCopy && vm.intervalToCopy.properties && vm.intervalToCopy.properties.sed) {
+      //   newInterval = copyRestOfInterval(newInterval);
+      // }
+      const newSpot = await useSpots.createSpot({type: 'Feature', ...newInterval});
+      useMaps.setSelectedSpotOnMap(newSpot);
+      dispatch(setModalValues({}));
+      dispatch(setModalVisible({modal: null}));
     }
   };
 

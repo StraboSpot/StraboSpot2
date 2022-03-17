@@ -30,9 +30,6 @@ const Overview = (props) => {
   const [useForm] = useFormHook();
   const [useSpots] = useSpotsHook();
 
-  const formName = spot.geometry && (spot.geometry.type === 'LineString' || spot.geometry.type === 'MultiLineString')
-    ? ['general', 'trace'] : ['general', 'surface_feature'];
-
   useEffect(() => {
     dispatch(setModalVisible({modal: null}));
   }, []);
@@ -87,6 +84,8 @@ const Overview = (props) => {
   };
 
   const renderTraceSurfaceFeatureForm = () => {
+    const formName = spot.geometry && (spot.geometry.type === 'LineString' || spot.geometry.type === 'MultiLineString')
+      ? ['general', 'trace'] : ['general', 'surface_feature'];
     let initialValues = spot.properties.trace || spot.properties.surface_feature || {};
     if (spot.geometry && (spot.geometry.type === 'LineString' || spot.geometry.type === 'MultiLineString')) {
       initialValues = {...initialValues, 'trace_feature': true};
@@ -103,7 +102,7 @@ const Overview = (props) => {
                 validate={(values) => useForm.validateForm({formName: formName, values: values})}
                 component={(formProps) => Form({formName: formName, ...formProps})}
                 initialValues={initialValues}
-                validateOnChange={false}
+                initialStatus={{formName: formName}}
                 enableReinitialize={true}
               />
             </View>
@@ -135,25 +134,24 @@ const Overview = (props) => {
   };
 
   const saveForm = async () => {
-    return formRef.current.submitForm().then(() => {
-      if (useForm.hasErrors(formRef.current)) {
-        useForm.showErrors(formRef.current, formName);
-        return Promise.reject();
-      }
+    try {
+      await formRef.current.submitForm();
+      const formValues = useForm.showErrors(formRef.current);
       console.log('Saving form data to Spot ...');
       if (spot.geometry.type === 'LineString' || spot.geometry.type === 'MultiLineString') {
-        const traceValues = {...formRef.current.values, 'trace_feature': true};
+        const traceValues = {...formValues, 'trace_feature': true};
         dispatch(editedSpotProperties({field: 'trace', value: traceValues}));
       }
       else if (spot.geometry.type === 'Polygon' || spot.geometry.type === 'MultiPolygon'
         || spot.geometry.type === 'GeometryCollection') {
-        dispatch(editedSpotProperties({field: 'surface_feature', value: formRef.current.values}));
+        dispatch(editedSpotProperties({field: 'surface_feature', value: formValues}));
       }
       return Promise.resolve();
-    }, (e) => {
+    }
+    catch (e) {
       console.log('Error submitting form', e);
       return Promise.reject();
-    });
+    }
   };
 
   const saveFormAndGo = () => {
@@ -178,7 +176,7 @@ const Overview = (props) => {
     };
 
     if (isTraceSurfaceFeatureEnabled && ((spot.properties.hasOwnProperty('trace')
-      && !isEmpty(Object.keys(spot.properties.trace).filter(t => t !== 'trace_feature')))
+        && !isEmpty(Object.keys(spot.properties.trace).filter(t => t !== 'trace_feature')))
       || spot.properties.hasOwnProperty('surface_feature'))) {
       let featureTypeText = spot.geometry.type === 'LineString' || spot.geometry.type === 'MultiLineString'
         ? 'Trace' : 'Surface';
@@ -203,10 +201,10 @@ const Overview = (props) => {
         <View style={notebookStyles.traceSurfaceFeatureContainer}>
           <View style={notebookStyles.traceSurfaceFeatureToggleContainer}>
             {(spot.geometry.type === 'LineString' || spot.geometry.type === 'MultiLineString')
-            && <Text style={notebookStyles.traceSurfaceFeatureToggleText}>This is a trace feature</Text>}
+              && <Text style={notebookStyles.traceSurfaceFeatureToggleText}>This is a trace feature</Text>}
             {(spot.geometry.type === 'Polygon' || spot.geometry.type === 'MultiPolygon'
-              || spot.geometry.type === 'GeometryCollection')
-            && <Text style={notebookStyles.traceSurfaceFeatureToggleText}>This is a surface feature</Text>}
+                || spot.geometry.type === 'GeometryCollection')
+              && <Text style={notebookStyles.traceSurfaceFeatureToggleText}>This is a surface feature</Text>}
             <Switch
               onValueChange={toggleTraceSurfaceFeature}
               value={isTraceSurfaceFeatureEnabled}
