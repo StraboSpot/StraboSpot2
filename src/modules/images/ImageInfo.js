@@ -1,21 +1,28 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {ActivityIndicator, Alert, View} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
 import {Image} from 'react-native-elements';
+import {useDispatch} from 'react-redux';
 
 import IconButton from '../../shared/ui/IconButton';
+import {setSelectedAttributes} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
 import ImagePropertiesModal from './ImagePropertiesModal';
 import styles from './images.styles';
 import useImagesHook from './useImages';
 
 const ImageInfo = (props) => {
+  const dispatch = useDispatch();
   const [isImagePropertiesModalVisible, setIsImagePropertiesModalVisible] = useState(false);
   const [imageProps] = useState(props.route.params.imageId);
   const [useImages] = useImagesHook();
   const [useSpots] = useSpotsHook();
   const navigation = useNavigation();
+
+  useEffect(() => {
+    return () => dispatch(setSelectedAttributes([]));
+  }, []);
 
   const clickHandler = (name) => {
     console.log(name);

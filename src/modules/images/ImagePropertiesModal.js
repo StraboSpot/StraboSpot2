@@ -22,10 +22,6 @@ const ImagePropertiesModal = (props) => {
 
   const formName = ['general', 'images'];
 
-  useEffect(() => {
-    return () => dispatch(setSelectedAttributes([]));
-  }, []);
-
   const renderFormFields = () => {
     console.log('Rendering form:', formName.join('.'), 'with selected image:', selectedImage);
     return (
