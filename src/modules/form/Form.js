@@ -96,6 +96,7 @@ const Form = (props) => {
         placeholder={field.hint}
         onShowFieldInfo={showFieldInfo}
         showExpandedChoices={isExpanded}
+        errors={props.errors}
       />
     );
   };

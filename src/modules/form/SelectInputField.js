@@ -106,8 +106,8 @@ const SelectInputField = (props) => {
             hideDropdown={true}
             searchIcon={false}
             items={props.choices}
-            uniqueKey='value'
-            displayKey='label'
+            uniqueKey={'value'}
+            displayKey={'label'}
             onSelectedItemsChange={fieldValueChanged}
             selectedItems={isEmpty(props.value) || typeof props.value === 'object' ? props.value : [props.value]}
             textInputProps={{editable: false}}
@@ -126,6 +126,8 @@ const SelectInputField = (props) => {
             tagTextColor={themes.PRIMARY_TEXT_COLOR}
           />
         </View>
+        {props.errors && props.errors[props.name]
+          && <Text style={formStyles.fieldError}>{props.errors[props.name]}</Text>}
       </React.Fragment>
     );
   };
