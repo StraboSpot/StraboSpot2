@@ -28,6 +28,7 @@ const NotebookPanel = (props) => {
   const isNotebookPanelVisible = useSelector(state => state.notebook.isNotebookPanelVisible);
   const pageVisible = useSelector(state => state.notebook.visibleNotebookPagesStack.slice(-1)[0]);
   const recentlyViewedSpotIds = useSelector(state => state.spot.recentViews);
+  const modalVisible = useSelector(state => state.home.modalVisible);
   const spot = useSelector(state => state.spot.selectedSpot);
   const spots = useSelector(state => state.spot.spots);
 
@@ -100,6 +101,7 @@ const NotebookPanel = (props) => {
   };
 
   const renderRecentSpotsList = () => {
+    modalVisible !== null && dispatch(setModalVisible({modal: null}));
     let spotsList = recentlyViewedSpotIds.reduce((obj, key) => {
       if (spots && spots.hasOwnProperty(key)) obj.push(spots[key]);
       return obj;
