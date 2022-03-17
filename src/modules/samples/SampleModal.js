@@ -123,7 +123,7 @@ const SampleModal = (props) => {
               enableReinitialize={true}
             >
               {(formProps) => (
-                <View style={{flex: 1}}>
+                <View style={{}}>
                   {renderForm(formProps)}
                 </View>
               )}
