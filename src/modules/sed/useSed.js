@@ -136,7 +136,6 @@ const useSed = () => {
       }
     }
     catch (err) {
-      Alert.alert('Error Saving', 'Unable to save changes.');
       console.log('Error saving', key, err);
       throw Error;
     }

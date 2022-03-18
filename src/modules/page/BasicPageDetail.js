@@ -167,7 +167,7 @@ const BasicPageDetail = (props) => {
   const saveFeature = async (formCurrent) => {
     try {
       await formCurrent.submitForm();
-      const editedFeatureData = useForm.showErrors(formRef.current || formCurrent, isEmpty(formRef));
+      const editedFeatureData = useForm.showErrors(formRef.current || formCurrent, isEmpty(formRef.current));
       console.log('Saving', props.page.label, 'data', editedFeatureData, 'to Spot', pageData);
       let editedPageData = pageData ? JSON.parse(JSON.stringify(pageData)) : [];
       editedPageData = editedPageData.filter(f => f.id !== editedFeatureData.id);
@@ -182,13 +182,13 @@ const BasicPageDetail = (props) => {
 
   const saveForm = async (formCurrent) => {
     if (groupKey === 'pet') {
-      await usePetrology.savePetFeature(pageKey, spot, formRef.current || formCurrent, isEmpty(formRef));
+      await usePetrology.savePetFeature(pageKey, spot, formRef.current || formCurrent, isEmpty(formRef.current));
     }
     else if (groupKey === 'sed' && pageKey === 'bedding') {
-      await useSed.saveSedBedFeature(pageKey, spot, formRef.current || formCurrent, isEmpty(formRef));
+      await useSed.saveSedBedFeature(pageKey, spot, formRef.current || formCurrent, isEmpty(formRef.current));
     }
     else if (groupKey === 'sed') {
-      await useSed.saveSedFeature(pageKey, spot, formRef.current || formCurrent, isEmpty(formRef));
+      await useSed.saveSedFeature(pageKey, spot, formRef.current || formCurrent, isEmpty(formRef.current));
     }
     else await saveFeature(formCurrent);
     await formCurrent.resetForm();
@@ -197,7 +197,7 @@ const BasicPageDetail = (props) => {
 
   const saveTemplate = async (formCurrent) => {
     await formCurrent.submitForm();
-    const formValues = useForm.showErrors(formRef.current || formCurrent, isEmpty(formRef));
+    const formValues = useForm.showErrors(formRef.current || formCurrent, isEmpty(formRef.current));
     props.saveTemplate(formValues);
   };
 

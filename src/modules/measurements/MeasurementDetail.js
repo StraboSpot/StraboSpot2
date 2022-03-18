@@ -428,7 +428,7 @@ const MeasurementDetail = (props) => {
   const saveForm = async (formCurrent) => {
     try {
       await formCurrent.submitForm();
-      let formValues = useForm.showErrors(formRef.current || formCurrent, isEmpty(formRef));
+      let formValues = useForm.showErrors(formRef.current || formCurrent, isEmpty(formRef.current));
       console.log('Saving form data to Spot ...');
       let orientationDataCopy = JSON.parse(JSON.stringify(spot.properties.orientation_data));
       let editedSelectedMeasurements = [];
@@ -505,7 +505,7 @@ const MeasurementDetail = (props) => {
 
   const saveTemplate = async (formCurrent) => {
     await formCurrent.submitForm();
-    const formValues = useForm.showErrors(formRef.current || formCurrent, isEmpty(formRef));
+    const formValues = useForm.showErrors(formRef.current || formCurrent, isEmpty(formRef.current));
     props.saveTemplate(formValues);
   };
 

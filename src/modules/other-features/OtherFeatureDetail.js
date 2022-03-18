@@ -201,7 +201,7 @@ const OtherFeatureDetail = (props) => {
   const saveForm = async (formCurrent) => {
     try {
       await formCurrent.submitForm();
-      let formValues = useForm.showErrors(formRef.current || formCurrent, isEmpty(formRef));
+      let formValues = useForm.showErrors(formRef.current || formCurrent, isEmpty(formRef.current));
       let featureToEdit;
       let otherFeatures = spot.properties.other_features;
       if (!formValues.label) label = formValues.name;
