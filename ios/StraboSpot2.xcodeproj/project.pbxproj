@@ -828,7 +828,7 @@
 					"\"${PODS_ROOT}/CocoaLibEvent/lib\"",
 					"\"${PODS_ROOT}/OpenSSL-Universal/ios/lib\"",
 				);
-				MARKETING_VERSION = 1.19.5;
+				MARKETING_VERSION = 1.20.0;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -868,7 +868,7 @@
 				INFOPLIST_FILE = StraboSpot2/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.6;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks /usr/lib/swift $(inherited)";
-				MARKETING_VERSION = 1.19.5;
+				MARKETING_VERSION = 1.20.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
