@@ -10,6 +10,7 @@ import DragAnimation from '../../../shared/ui/DragAmination';
 import Modal from '../../../shared/ui/modal/Modal';
 import {Form, TextInputField, useFormHook} from '../../form';
 import {setModalValues, setModalVisible} from '../../home/home.slice';
+import {updatedProject} from '../../project/projects.slice';
 import useSpotsHook from '../../spots/useSpots';
 import useMapsHook from '../useMaps';
 import useStratSectionHook from './useStratSection';
@@ -28,23 +29,6 @@ const AddIntervalModal = () => {
   const nameFormRef = useRef(null);
 
   const formName = ['sed', 'add_interval'];
-
-  // const initialValues = {thickness_units: stratSection.column_y_axis_units};
-
-  // Set default interval name if prefix or Spot number set
-  const getInitialIntervalName = () => {
-    const prefix = preferences.spot_prefix || '';
-    const number = preferences.starting_number_for_spot || '';
-    // if (!isEmpty(number)) {
-    //   const updatedPreferences = {
-    //     ...preferences,
-    //     starting_number_for_spot: number + 1,
-    //   };
-    //   dispatch(updatedProject({field: 'preferences', value: updatedPreferences}));
-    // }
-    return {intervalName: prefix + number};
-    // vm.intervalToInsertAfter = {};
-  };
 
   const getInitialValues = () => {
     const initialValues = {};
@@ -110,12 +94,14 @@ const AddIntervalModal = () => {
   };
 
   const renderAddIntervalNameField = () => {
+    const initialIntervalName = {
+      intervalName: (preferences.spot_prefix || '') + (preferences.starting_number_for_spot || ''),
+    };
     return (
       <Formik
-        initialValues={getInitialIntervalName()}
+        initialValues={initialIntervalName}
         onSubmit={() => console.log('Submitting form...')}
         innerRef={nameFormRef}
-        validateOnChange={false}
         enableReinitialize={false}
       >
         {() => (
@@ -179,6 +165,13 @@ const AddIntervalModal = () => {
       useMaps.setSelectedSpotOnMap(newSpot);
       dispatch(setModalValues({}));
       dispatch(setModalVisible({modal: null}));
+      if (preferences.starting_number_for_spot) {
+        const updatedPreferences = {
+          ...preferences,
+          starting_number_for_spot: preferences.starting_number_for_spot + 1,
+        };
+        dispatch(updatedProject({field: 'preferences', value: updatedPreferences}));
+      }
     }
   };
 
