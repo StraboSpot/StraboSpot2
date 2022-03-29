@@ -123,25 +123,31 @@ export const MAP_PROVIDERS = {
 };
 
 export const BASEMAPS = DEFAULT_MAPS.map(map => {
-  const tileUrl = map.source === 'osm' ? MAP_PROVIDERS[map.source].url[0] + MAP_PROVIDERS[map.source].tilePath
-    : MAP_PROVIDERS[map.source].url[0] + map.id + MAP_PROVIDERS[map.source].tilePath;
-  map.version = 8;
-  map.sources = {
-    [map.id]: {
+  try {
+    const tileUrl = map.source === 'osm' ? MAP_PROVIDERS[map.source].url[0] + MAP_PROVIDERS[map.source].tilePath
+      : MAP_PROVIDERS[map.source].url[0] + map.id + MAP_PROVIDERS[map.source].tilePath;
+    map.version = 8;
+    map.sources = {
+      [map.id]: {
+        type: 'raster',
+        tiles: [tileUrl],
+        tileSize: 256,
+        attribution: MAP_PROVIDERS[map.source].attributions,
+      },
+    };
+    map.glyphs = 'mapbox://fonts/mapbox/{fontstack}/{range}.pbf';
+    map.layers = [{
+      id: map.id,
       type: 'raster',
-      tiles: [tileUrl],
-      tileSize: 256,
-      attribution: MAP_PROVIDERS[map.source].attributions,
-    },
-  };
-  map.glyphs = 'mapbox://fonts/mapbox/{fontstack}/{range}.pbf';
-  map.layers = [{
-    id: map.id,
-    type: 'raster',
-    source: map.id,
-    minzoom: 0,
-  }];
-  return map;
+      source: map.id,
+      minzoom: 0,
+    }];
+    return map;
+  }
+  catch (err) {
+    console.error("Error loading basemaps in maps.constants", err);
+  }
+
 });
 console.log('BASEMAPS', BASEMAPS);
 
