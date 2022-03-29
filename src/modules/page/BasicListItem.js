@@ -20,6 +20,7 @@ const BasicListItem = (props) => {
       case PAGE_KEYS.ROCK_TYPE_ALTERATION_ORE:
       case PAGE_KEYS.ROCK_TYPE_IGNEOUS:
       case PAGE_KEYS.ROCK_TYPE_METAMORPHIC:
+      case PAGE_KEYS.ROCK_TYPE_FAULT:
         return usePetrology.getRockTitle(props.item, props.page.key);
       case PAGE_KEYS.ROCK_TYPE_SEDIMENTARY:
         return useSed.getRockTitle(props.item);

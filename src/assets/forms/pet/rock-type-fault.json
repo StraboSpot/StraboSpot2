@@ -1,0 +1,115 @@
+{
+  "survey": [
+    {
+      "type": "start",
+      "name": "start"
+    },
+    {
+      "type": "end",
+      "name": "end"
+    },
+    {
+      "type": "text",
+      "name": "label",
+      "label": "Label",
+      "hint": "If a label is not specified a default label will be given.",
+      "required": "false"
+    },
+    {
+      "type": "select_multiple gu8yk54",
+      "name": "fault_rock",
+      "label": "Fault and shear zone rock types",
+      "required": "false",
+      "appearance": "horizontal-compact"
+    },
+    {
+      "type": "text",
+      "name": "other_fault_rock",
+      "label": "Characterize other rock type",
+      "required": "false",
+      "relevant": "${fault_rock} != ''"
+    },
+    {
+      "type": "text",
+      "name": "interp_note",
+      "label": "Notes",
+      "required": "false",
+      "appearance": "multiline"
+    },
+    {
+      "type": "calculate",
+      "name": "__version__",
+      "required": "false",
+      "calculation": "'vWMK6YMJe6VLDvaKGpDKzA'"
+    },
+    {
+      "type": "calculate",
+      "name": "_version_",
+      "calculation": "'vwuvyvJb6zLo7wEUbfZdWL'",
+      "$given_name": "__version__"
+    }
+  ],
+  "choices": [
+    {
+      "list_name": "gu8yk54",
+      "name": "fault_breccia",
+      "label": "breccia"
+    },
+    {
+      "list_name": "gu8yk54",
+      "name": "fault_gouge",
+      "label": "gouge"
+    },
+    {
+      "list_name": "gu8yk54",
+      "name": "pseudotach",
+      "label": "pseudotachylite"
+    },
+    {
+      "list_name": "gu8yk54",
+      "name": "protocata",
+      "label": "protocataclasite"
+    },
+    {
+      "list_name": "gu8yk54",
+      "name": "cata",
+      "label": "cataclasite"
+    },
+    {
+      "list_name": "gu8yk54",
+      "name": "ultracata",
+      "label": "ultracataclasite"
+    },
+    {
+      "list_name": "gu8yk54",
+      "name": "protomyl",
+      "label": "protomylonite"
+    },
+    {
+      "list_name": "gu8yk54",
+      "name": "mylonite",
+      "label": "mylonite"
+    },
+    {
+      "list_name": "gu8yk54",
+      "name": "ultramyl",
+      "label": "ultramylonite"
+    },
+    {
+      "list_name": "gu8yk54",
+      "name": "blastomyl",
+      "label": "blastomylonite"
+    },
+    {
+      "list_name": "gu8yk54",
+      "name": "other",
+      "label": "other"
+    }
+  ],
+  "settings": [
+    {
+      "form_title": "Rock Type - Fault and shear zone (11/21)",
+      "version": "2 (2022-03-29 18:18:34)"
+    }
+  ]
+}

@@ -1324,6 +1324,7 @@ export const ROCK_FIRST_ORDER_CLASS_FIELDS = {
   igneous: ['plutonic_rock_type', 'volcanic_rock_type'],
   metamorphic: ['metamorphic_rock_type'],
   alteration_or: ['ore_type'],
+  fault: ['fault_rock'],
 };
 
 export const IGNEOUS_ROCK_CLASSES = {

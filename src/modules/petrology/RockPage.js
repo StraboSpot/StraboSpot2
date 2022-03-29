@@ -60,10 +60,15 @@ const RockPage = (props) => {
     SEDIMENTARY: {title: 'Sedimentary Rocks', key: PAGE_KEYS.LITHOLOGIES},
   };
 
+  const FAULT_SECTIONS = {
+    FAULT: {title: 'Fault & Sheer Zone Rocks', key: PAGE_KEYS.ROCK_TYPE_FAULT},
+  };
+
   const pageSections = pageKey === PAGE_KEYS.ROCK_TYPE_IGNEOUS ? IGNEOUS_SECTIONS
     : pageKey === PAGE_KEYS.ROCK_TYPE_METAMORPHIC ? METAMORPHIC_SECTIONS
       : pageKey === PAGE_KEYS.ROCK_TYPE_ALTERATION_ORE ? ALTERATION_ORE_SECTIONS
-        : SEDIMENTARY_SECTIONS;
+        : pageKey === PAGE_KEYS.ROCK_TYPE_FAULT ? FAULT_SECTIONS
+          : SEDIMENTARY_SECTIONS;
 
   useEffect(() => {
     console.log('UE Rendered RockPage\nSpot:', spot, '\nSelectedAttributes:', selectedAttributes);

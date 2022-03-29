@@ -13,6 +13,7 @@ import rockTypeMetamorphicDeprecated from './pet/deprecated/rock-type-metamorphi
 import minerals from './pet/minerals.json';
 import reactionTextures from './pet/reaction-textures.json';
 import rockTypeAlterationOre from './pet/rock-type-alteration-ore.json';
+import rockTypeFault from './pet/rock-type-fault.json';
 import rockTypePlutonic from './pet/rock-type-igneous-plutonic.json';
 import rockTypeVolcanic from './pet/rock-type-igneous-volcanic.json';
 import rockTypeMetamorphic from './pet/rock-type-metamorphic.json';
@@ -104,6 +105,7 @@ const forms = {
   },
   pet: {
     alteration_or: rockTypeAlterationOre,
+    fault: rockTypeFault,
     metamorphic: rockTypeMetamorphic,
     minerals: minerals,
     plutonic: rockTypePlutonic,

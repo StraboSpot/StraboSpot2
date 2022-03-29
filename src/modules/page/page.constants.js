@@ -21,6 +21,7 @@ import AddRockModal from '../petrology/AddRockModal';
 import MineralsPage from '../petrology/MineralsPage';
 import ReactionTexturesPage from '../petrology/ReactionTexturesPage';
 import RockAlterationOrePage from '../petrology/RockAlterationOrePage';
+import RockFaultPage from '../petrology/RockFaultPage';
 import RockIgneousPage from '../petrology/RockIgneousPage';
 import RockMetamorphicPage from '../petrology/RockMetamorphicPage';
 import RockSedimentaryPage from '../petrology/RockSedimentaryPage';
@@ -62,6 +63,7 @@ export const PAGE_KEYS = {
   OVERVIEW: 'overview',
   REACTIONS: 'reactions',
   ROCK_TYPE_ALTERATION_ORE: 'alteration_or',
+  ROCK_TYPE_FAULT: 'fault',
   ROCK_TYPE_IGNEOUS: 'igneous',
   ROCK_TYPE_METAMORPHIC: 'metamorphic',
   ROCK_TYPE_SEDIMENTARY: 'sedimentary',
@@ -198,6 +200,15 @@ export const PET_PAGES = [
     page_component: RockAlterationOrePage,
     modal_component: AddRockModal,
     action_label: 'Add an Alteration, Ore Rock',
+  }, {
+    key: PAGE_KEYS.ROCK_TYPE_FAULT,
+    label: 'Fault & Shear Zone Rocks',
+    icon_src: require('../../assets/icons/Fault.png'),
+    icon_pressed_src: require('../../assets/icons/Fault_pressed.png'),
+    overview_component: BasicOverviewList,
+    page_component: RockFaultPage,
+    modal_component: AddRockModal,
+    action_label: 'Add a Fault or Shear Zone Rock',
   }, {
     key: PAGE_KEYS.ROCK_TYPE_IGNEOUS,
     label: 'Igneous Rocks',

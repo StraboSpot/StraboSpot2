@@ -16,6 +16,7 @@ import {PAGE_KEYS} from '../page/page.constants';
 import useSedHook from '../sed/useSed';
 import Templates from '../templates/Templates';
 import AddRockAlterationOreModal from './AddRockAlterationOreModal';
+import AddRockFaultModal from './AddRockFaultModal';
 import AddRockIgneousModal from './AddRockIgneousModal';
 import AddRockMetamorphicModal from './AddRockMetamorphicModal';
 import AddRockSedimentaryModal from './AddRockSedimentaryModal';
@@ -48,6 +49,7 @@ const AddRockModal = (props) => {
   const types = Object.values(IGNEOUS_ROCK_CLASSES);
 
   useLayoutEffect(() => {
+    console.log('ULE AddRockModal [modalValues, pageKey, templates]', modalValues, pageKey, templates);
     const rockKeyUpdated = pageKey === PAGE_KEYS.ROCK_TYPE_IGNEOUS
       ? modalValues.igneous_rock_class || IGNEOUS_ROCK_CLASSES.PLUTONIC
       : pageKey;
@@ -70,6 +72,7 @@ const AddRockModal = (props) => {
   }, [modalValues, pageKey, templates]);
 
   useEffect(() => {
+    console.log('ULE AddRockModal []');
     return () => dispatch(setModalValues({}));
   }, []);
 
@@ -167,6 +170,15 @@ const AddRockModal = (props) => {
         )}
         {rockKey === PAGE_KEYS.ROCK_TYPE_ALTERATION_ORE && (
           <AddRockAlterationOreModal
+            survey={survey}
+            choices={choices}
+            setChoicesViewKey={setChoicesViewKey}
+            formName={[groupKey, rockKey]}
+            formProps={formProps}
+          />
+        )}
+        {rockKey === PAGE_KEYS.ROCK_TYPE_FAULT && (
+          <AddRockFaultModal
             survey={survey}
             choices={choices}
             setChoicesViewKey={setChoicesViewKey}
