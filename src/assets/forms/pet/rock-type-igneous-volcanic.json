@@ -73,7 +73,7 @@
     {
       "type": "integer",
       "name": "vol_characteristic_size_of_cry",
-      "label": "Characteristic size of crystals, mm",
+      "label": "Characteristic size of crystals (mm)",
       "required": "false"
     },
     {
@@ -117,7 +117,7 @@
     {
       "type": "calculate",
       "name": "__version__",
-      "calculation": "'v6Pa7P3JF6uJDxeZHtipH8'"
+      "calculation": "'vBbASXiRx9NNvotZWQumEm'"
     }
   ],
   "choices": [
@@ -432,7 +432,7 @@
   "settings": [
     {
       "form_title": "Rock Type Igneous - Volcanic (10/2020)",
-      "version": "4 (2022-03-17 20:42:22)"
+      "version": "4 (2022-03-23 15:49:07)"
     }
   ]
 }

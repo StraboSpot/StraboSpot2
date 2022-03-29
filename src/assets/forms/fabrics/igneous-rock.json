@@ -126,7 +126,7 @@
     {
       "type": "select_multiple lg33p50",
       "name": "add_mag_fab",
-      "label": "Other magmatic fabric(s)",
+      "label": "Other magmatic fabrics",
       "required": "false"
     },
     {
@@ -199,7 +199,7 @@
     {
       "type": "text",
       "name": "char_mag_str",
-      "label": "Characterize magmatic structure(s)",
+      "label": "Characterize magmatic structures",
       "required": "false",
       "relevant": "${magmatic_str} != ''",
       "appearance": "multiline"
@@ -207,13 +207,13 @@
     {
       "type": "select_multiple hb9pq45",
       "name": "grow_vert_ind",
-      "label": "Growth and/or younging or paleovertical indicator(s)?",
+      "label": "Growth and/or younging or paleovertical indicators",
       "required": "false"
     },
     {
       "type": "select_multiple qx5bu93",
       "name": "growth_young_ind",
-      "label": "Growth and/or younging indicator(s)",
+      "label": "Growth and/or younging indicators",
       "required": "false",
       "relevant": "selected(${grow_vert_ind}, 'grow_young_ind')"
     },
@@ -252,7 +252,7 @@
     {
       "type": "text",
       "name": "grow_young_char",
-      "label": "Characterize growth and/or younging indicator(s)",
+      "label": "Characterize growth and/or younging indicators",
       "required": "false",
       "relevant": "selected(${growth_young_ind}, 'other')",
       "appearance": "multiline"
@@ -260,36 +260,36 @@
     {
       "type": "select_multiple od9sr94",
       "name": "paleovert_ind",
-      "label": "Paleovertical indicator(s)",
+      "label": "Paleovertical indicators",
       "required": "false",
       "relevant": "selected(${grow_vert_ind}, 'paleovertical')"
     },
     {
       "type": "text",
       "name": "char_paleovert",
-      "label": "Characterize paleovertical indicator(s)",
+      "label": "Characterize paleovertical indicators",
       "required": "false",
       "appearance": "multiline"
     },
     {
       "type": "select_multiple lw8uh27",
       "name": "mag_kin_fab",
-      "label": "Kinematic indicator(s)?",
+      "label": "Kinematic indicators",
       "hint": "Indicators of hypersolidus magmatic flow",
       "required": "false"
     },
     {
       "type": "text",
       "name": "char_mag_kin_fab",
-      "label": "Characterize kinematic indicator(s)",
+      "label": "Characterize kinematic indicators",
       "required": "false",
       "appearance": "multiline"
     },
     {
       "type": "text",
       "name": "sense_of_shear",
-      "label": "Sense of shear?",
-      "hint": "e.g. top-NW, dextral, etc.",
+      "label": "Sense of shear",
+      "hint": "e.g., top-NW, dextral, etc.",
       "required": "false",
       "appearance": "multiline"
     },
@@ -316,7 +316,7 @@
     {
       "type": "calculate",
       "name": "_version_",
-      "calculation": "'v8tEsudhum88P4FUEQP9hE'",
+      "calculation": "'vcTSCqFPzg3icRPYRfvjqo'",
       "$given_name": "__version__"
     }
   ],
@@ -612,7 +612,7 @@
   "settings": [
     {
       "form_title": "Fabrics - Igneous (11/21)",
-      "version": "1 (2022-01-26 21:31:22)"
+      "version": "2 (2022-03-01 15:37:09)"
     }
   ]
 }

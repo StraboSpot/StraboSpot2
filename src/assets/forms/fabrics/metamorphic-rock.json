@@ -24,8 +24,7 @@
     {
       "type": "text",
       "name": "specify",
-      "label": "Specify grain size distribution",
-      "hint": "Describe the grain size distribution",
+      "label": "Describe grain size distribution",
       "required": "false",
       "appearance": "multiline",
       "relevant": "${grain_size} = 'other' or ${grain_size} = 'bimodal'"
@@ -33,15 +32,14 @@
     {
       "type": "select_multiple cs2ki85",
       "name": "planar_fabric",
-      "label": "Planar fabric(s)",
+      "label": "Planar fabrics",
       "required": "false",
       "appearance": "horizontal-compact"
     },
     {
       "type": "select_one mj2eg99",
       "name": "cleavage",
-      "label": "Cleavage",
-      "hint": "Describe cleavage type:",
+      "label": "Characterize the cleavage type",
       "required": "false",
       "appearance": "horizontal-compact",
       "relevant": "selected(${planar_fabric}, 'cleavage')"
@@ -49,7 +47,7 @@
     {
       "type": "text",
       "name": "clvg_char",
-      "label": "Characterize the cleavage",
+      "label": "Characterize other cleavage",
       "required": "false",
       "appearance": "multiline",
       "relevant": "${cleavage} = 'other_clvg'"
@@ -57,8 +55,7 @@
     {
       "type": "text",
       "name": "other_planar",
-      "label": "Other characterization",
-      "hint": "Characterize the planar fabric",
+      "label": "Characterize other planar fabric",
       "required": "false",
       "appearance": "multiline",
       "relevant": "selected(${planar_fabric}, 'other_planar')"
@@ -105,7 +102,7 @@
     {
       "type": "text",
       "name": "length_scale",
-      "label": "Length scale?",
+      "label": "Length scale",
       "hint": "What is the length scale of spacing?",
       "required": "false",
       "appearance": "multiline",
@@ -114,15 +111,14 @@
     {
       "type": "select_multiple sv9wq27",
       "name": "linear_fab",
-      "label": "Linear fabric(s)",
+      "label": "Linear fabrics",
       "required": "false",
       "appearance": "horizontal-compact"
     },
     {
       "type": "text",
       "name": "other_char_lin",
-      "label": "Other characterization",
-      "hint": "Characterize the linear fabric",
+      "label": "Characterize other linear fabric",
       "required": "false",
       "appearance": "multiline",
       "relevant": "selected(${linear_fab}, 'other_lin')"
@@ -131,7 +127,7 @@
       "type": "text",
       "name": "int_lin_char",
       "label": "Intersection lineation characterization",
-      "hint": "e.g. what intersecting planes define the lineation",
+      "hint": "e.g., what intersecting planes define the lineation",
       "required": "false",
       "appearance": "multiline",
       "relevant": "selected(${linear_fab}, 'intersect_lin')"
@@ -167,7 +163,7 @@
     {
       "type": "select_multiple ps78s13",
       "name": "other_met_fab",
-      "label": "Other metamorphic fabric(s)?",
+      "label": "Other metamorphic fabrics",
       "required": "false",
       "appearance": "horizontal-compact"
     },
@@ -175,7 +171,7 @@
       "type": "text",
       "name": "metasomatic",
       "label": "Characterize metasomatic fabric",
-      "hint": "E.g. mineralogy, reactions, spatial extent",
+      "hint": "e.g., mineralogy, reactions, spatial extent",
       "required": "false",
       "appearance": "multiline",
       "relevant": "selected(${other_met_fab}, 'metasom')"
@@ -184,7 +180,7 @@
       "type": "text",
       "name": "migmatitic",
       "label": "Characterize migmatitic fabric",
-      "hint": "E.g. mineralogy of leucosome and melanosome, diatexite vs. metatexite, etc.",
+      "hint": "e.g., mineralogy of leucosome and melanosome, diatexite vs. metatexite, etc.",
       "required": "false",
       "appearance": "multiline",
       "relevant": "selected(${other_met_fab}, 'migmatite')"
@@ -193,7 +189,7 @@
       "type": "text",
       "name": "porphyroclast",
       "label": "Characterize porphyroclastic fabric",
-      "hint": "E.g. size, shape, composition, of porphyroclasts",
+      "hint": "e.g., size, shape, composition, of porphyroclasts",
       "required": "false",
       "appearance": "multiline",
       "relevant": "selected(${other_met_fab}, 'porphyroclast')"
@@ -202,7 +198,7 @@
       "type": "text",
       "name": "porphyroblast",
       "label": "Characterize porphyroblastic fabric",
-      "hint": "E.g. size, shape, composition, of porphyroblasts",
+      "hint": "e.g., size, shape, composition, of porphyroblasts",
       "required": "false",
       "appearance": "multiline",
       "relevant": "selected(${other_met_fab}, 'porphyroblast')"
@@ -211,7 +207,7 @@
       "type": "text",
       "name": "poikiloblastic",
       "label": "Characterize poikiloblastic fabric",
-      "hint": "E.g. size, shape, composition, of porphyroblast(s) and mineral inclusions",
+      "hint": "e.g., size, shape, composition, of porphyroblasts and mineral inclusions",
       "required": "false",
       "appearance": "multiline",
       "relevant": "selected(${other_met_fab}, 'poikiloblast')"
@@ -219,8 +215,7 @@
     {
       "type": "text",
       "name": "other_fab_char",
-      "label": "Other characterization",
-      "hint": "Characterize other metamorphic fabric",
+      "label": "Characterize other metamorphic fabric",
       "required": "false",
       "appearance": "multiline",
       "relevant": "selected(${other_met_fab}, 'other_met_fab')"
@@ -228,15 +223,14 @@
     {
       "type": "select_multiple io9by25",
       "name": "additional_fab",
-      "label": "Additional fabric(s) at this spot?",
-      "hint": "Does this spot contain additional fabrics?",
+      "label": "Additional fabrics",
       "required": "false",
       "appearance": "horizontal-compact"
     },
     {
       "type": "select_multiple lg33p50",
       "name": "structural_fab",
-      "label": "Structural fabric(s)",
+      "label": "Structural fabrics",
       "required": "false",
       "appearance": "horizontal-compact",
       "relevant": "selected(${additional_fab}, 'structural')"
@@ -260,7 +254,7 @@
     {
       "type": "text",
       "name": "char_fault",
-      "label": "Characterize fault(s)",
+      "label": "Characterize faults",
       "required": "false",
       "appearance": "multiline",
       "relevant": "selected(${structural_fab}, 'fault')"
@@ -340,15 +334,14 @@
     {
       "type": "select_one jy6bn49",
       "name": "vein_array",
-      "label": "Single vein(s) or vein array?",
+      "label": "Single vein or vein array?",
       "required": "false",
       "relevant": "selected(${additional_fab}, 'vein_vein_arra')"
     },
     {
       "type": "text",
       "name": "other_char_vein",
-      "label": "Other characterization",
-      "hint": "Characterize veining:",
+      "label": "Characterize other veining",
       "required": "false",
       "appearance": "multiline",
       "relevant": "${vein_array} = 'other_vein'"
@@ -364,8 +357,7 @@
     {
       "type": "text",
       "name": "char_vein",
-      "label": "Vein characterization",
-      "hint": "Characterize veining:",
+      "label": "Characterize vein",
       "required": "false",
       "appearance": "multiline",
       "relevant": "${vein_array} = 'single_vein'"
@@ -381,8 +373,7 @@
     {
       "type": "text",
       "name": "char_vein_array",
-      "label": "Vein array characterization",
-      "hint": "Characterize vein array:",
+      "label": "Characterize vein array",
       "required": "false",
       "appearance": "multiline",
       "relevant": "${vein_array} = 'vein_array'"
@@ -390,7 +381,7 @@
     {
       "type": "text",
       "name": "other_char_alter",
-      "label": "Describe the alteration zone",
+      "label": "Characterize the alteration zone",
       "hint": "Spatial variability and extent? Thickness? Appearance?",
       "required": "false",
       "appearance": "multiline",
@@ -416,14 +407,14 @@
     {
       "type": "select_multiple lw8uh27",
       "name": "kinematic_fab",
-      "label": "Kinematic indicator(s)?",
+      "label": "Kinematic indicators",
       "required": "false",
       "appearance": "horizontal-compact"
     },
     {
       "type": "text",
       "name": "ob_grain_char",
-      "label": "Characterize kinematic indicator(s)",
+      "label": "Characterize other kinematic indicators",
       "required": "false",
       "appearance": "multiline",
       "relevant": "${kinematic_fab} != ''"
@@ -431,8 +422,8 @@
     {
       "type": "text",
       "name": "sense_of_shear",
-      "label": "Sense of shear?",
-      "hint": "e.g. top-NW, dextral, etc.",
+      "label": "Sense of shear",
+      "hint": "e.g., top-NW, dextral, etc.",
       "required": "false",
       "appearance": "multiline",
       "relevant": "${kinematic_fab} != ''"
@@ -447,8 +438,7 @@
     {
       "type": "text",
       "name": "other_char_tec",
-      "label": "Other tectonite characterization",
-      "hint": "Characterize the tectonite:",
+      "label": "Characterize other tectonite",
       "required": "false",
       "appearance": "multiline",
       "relevant": "${tectonite_type} = 'other_tec'"
@@ -476,7 +466,7 @@
     {
       "type": "calculate",
       "name": "_version_",
-      "calculation": "'vEKbjBmiQ7o9Re4shUTDPF'",
+      "calculation": "'vZRPKYoP4tNFLbpXFtSGaC'",
       "$given_name": "__version__"
     }
   ],
@@ -1015,7 +1005,7 @@
   "settings": [
     {
       "form_title": "Fabrics - Metamorphic (11/21)",
-      "version": "1 (2022-01-26 22:11:52)"
+      "version": "2 (2022-03-01 15:42:52)"
     }
   ]
 }
