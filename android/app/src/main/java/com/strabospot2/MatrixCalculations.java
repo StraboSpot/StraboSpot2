@@ -25,16 +25,6 @@ public class MatrixCalculations {
                 result[row][col] = multiplyMatricesCell(firstMatrix, secondMatrix, row, col);
             }
         }
-
-        Log.i("Matrix", "2-D Array: \n[");
-         for (double[] array : result) {
-             Log.i("Matrix", "[");
-             for (double n : array) {
-                 Log.i("Matrix", n + " "); // printing each item
-             }
-             Log.i("Matrix", "]"); // printing new line
-         }
-         Log.i("Matrix", "]\n");
         return result;
     }
 
@@ -80,15 +70,14 @@ public class MatrixCalculations {
         double strikeDeg = 0;
         double dipDeg = 0;
 
-        if (phi <= Math.PI/2) {
-            strikeDeg = mod((360 - theta * (180 / Math.PI)));
+        if (phi <= Math.PI / 2) {
+            strikeDeg = mod(360 - theta * (180 / Math.PI));
             dipDeg = Math.round(phi * (180 / Math.PI));
-        }
-        else {
-            strikeDeg = (360 - (theta + Math.PI) * (180 / Math.PI))%360;
+        } else {
+            strikeDeg = mod(360 - (theta + Math.PI) * (180 / Math.PI));
             dipDeg = Math.round((Math.PI - phi) * (180 / Math.PI));
         }
-        return new double[] {strikeDeg, dipDeg};
+        return new double[]{strikeDeg, dipDeg};
     }
 
     public static double[] trendAndPlunge(double[] ENU_tp) {
@@ -104,9 +93,11 @@ public class MatrixCalculations {
     }
 
     private static double mod(double value) {
-        return (value % (double) 360) % (double) 360;
+        double a = value;
+        double b = (a % 360) + 360;
+        double c = b % 360;
+        return c;
     }
-
 
 
     public static float[] transposeMatrix(float[] originalMatrix, float declination) {
@@ -118,7 +109,25 @@ public class MatrixCalculations {
                 transposedArray[i][j] = (float) adjustedMatrix[j][i];
             }
         }
+
+
 //
+//         Log.i("Matrix", "Printing Matrix without transpose:");
+//         for (int i = 0; i < 3; i++) {
+//             for (int j = 0; j < 3; j++) {
+//                 Log.i("Matrix", array2d[i][j] + " ");
+//             }
+//             Log.i("Matrix", "");//new line
+//         }
+
+//                 Log.i("Transposed", "Printing Matrix with transpose:");
+//                 for (int i = 0; i < 3; i++) {
+//                     for (int j = 0; j < 3; j++) {
+//                         Log.i("Transposed", i + " " + transposedArray[i][j] + " ");
+//                     }
+//                     Log.i("Transposed", "");//new line
+//                 }
+
 //         Log.i("Matrix", "2-D Array: \n[");
 //         // printing a 2-D array using two nested loops
 //         for (float[] array : transposedArray) {
@@ -130,36 +139,7 @@ public class MatrixCalculations {
 //         }
 //         Log.i("Matrix", "]\n");
 
-
-//         double[] ENU_pole = cartesianToSpherical(transposedArray[2][1], transposedArray[2][0], transposedArray[2][2]);  //[M32, M31, M33]
-//         double[] ENU_tp = cartesianToSpherical(transposedArray[1][1], transposedArray[1][0], transposedArray[1][2]);   //[M21, M22, M23]
-//           double[] NWU_pole = cartesianToSpherical(originalArray[2][1], originalArray[2][0], originalArray[2][2]);  //[M32, M31, M33]
-//           double[] NWU_tp = cartesianToSpherical(originalArray[1][1], originalArray[1][0], originalArray[1][2]);   //[M21, M22, M23]
-//         double[] NWU_pole2 = cartesianToSpherical(originalArray2[2][1], originalArray2[2][0], originalArray2[2][2]);  //[M32, M31, M33]
-//         double[] NWU_tp2 = cartesianToSpherical(originalArray2[1][1], originalArray2[1][0], originalArray2[1][2]);   //[M21, M22, M23]
-//         double[] NWU_pole = cartesianToSpherical(transposedArray[2][0], -transposedArray[2][1], transposedArray[2][2]); //[M31, M32, M33]
-//         double[] NWU_tp = cartesianToSpherical(transposedArray[1][0], -transposedArray[1][1], transposedArray[1][2]);   //[M21, M22, M23]
-//         Log.d("Transposed", "ENU_pole" + Arrays.toString(ENU_pole));
-//         Log.d("Transposed", "ENU_tp" + Arrays.toString(ENU_tp));
-
-//        Log.i("Transposed", "Printing Matrix without transpose:");
-//        for(int i=0;i<3;i++) {
-//            for (int j = 0; j < 3; j++) {
-//                Log.i("Transposed", i + " " +array2d[i][j] + " ");
-//            }
-//            Log.i("Transposed", "");//new line
-//        }
-//
-//
-//         Log.i("Transposed", "Printing Matrix with transpose:");
-//         for (int i = 0; i < 3; i++) {
-//             for (int j = 0; j < 3; j++) {
-//                 Log.i("Transposed", i + " " + transposedArray[i][j] + " ");
-//             }
-//             Log.i("Transposed", "");//new line
-//         }
-//         return new double[][]{ENU_pole, ENU_tp};
-        return new float[]{transposedArray[0][0], transposedArray[0][1], transposedArray[0][2], transposedArray[1][0], transposedArray[1][1], transposedArray[1][2], transposedArray[2][0], transposedArray[2][1], transposedArray[2][2]};
+       return new float[]{transposedArray[0][0], transposedArray[0][1], transposedArray[0][2], transposedArray[1][0], transposedArray[1][1], transposedArray[1][2], transposedArray[2][0], transposedArray[2][1], transposedArray[2][2]};
     }
 }
 
