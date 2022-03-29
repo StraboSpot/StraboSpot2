@@ -14,9 +14,7 @@ import {
   View,
 } from 'react-native';
 
-import Geolocation from '@react-native-community/geolocation';
 import {Button, ListItem} from 'react-native-elements';
-import {accelerometer, SensorTypes, setUpdateIntervalForType, magnetometer} from 'react-native-sensors';
 import Sound from 'react-native-sound';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -250,6 +248,8 @@ const Compass = (props) => {
   const getCurrentLocation = async () => {
     const currentPosition = await useMaps.getCurrentLocation();
     console.log('CURRENT LOCATION IN COMPASS: ' + currentPosition);
+    const isCompassAvailable = await NativeModules.AndroidCompass.hasCompass();
+    console.log('Is Compass Available?', isCompassAvailable);
     if (currentPosition !== null) {
       getLocationDeclination(currentPosition).catch(error => console.error('Error getting declination', error));
     }
@@ -366,11 +366,19 @@ const Compass = (props) => {
   const renderCompass = () => {
     return (
       <View>
-        <View>
+        <Text style={{textAlign: 'center'}}>Heading {compassData.heading}{'\u00b0'}</Text>
+        <View style={{flexDirection: 'row', justifyContent: 'space-evenly'}}>
+          <View>
+            <Text>Trend: {compassData.trend}</Text>
+            <Text>Plunge: {compassData.plunge}</Text>
+          </View>
+          <View>
+            <Text>Strike: {compassData.strike}</Text>
+            <Text>Dip: {compassData.dip}</Text>
+          </View>
         </View>
         <TouchableOpacity style={compassStyles.compassImageContainer} onPress={() => grabMeasurements(true)}>
           <Image source={require('../../assets/images/compass/compass.png')} style={compassStyles.compassImage}/>
-          <Text style={{textAlign: 'center', position: 'absolute', bottom: 40, zIndex: 100}}>{compassData.heading}{'\u00b0'}</Text>
           {renderCompassSymbols()}
         </TouchableOpacity>
       </View>
@@ -407,7 +415,7 @@ const Compass = (props) => {
     try {
       let image = require('../../assets/images/compass/strike-dip-centered.png');
       const spin = strikeSpinValue.interpolate({
-        inputRange: [0, compassData.strike && compassData.strike > 0 ? compassData.strike : 0],
+        inputRange: [0, compassData.strike ? compassData.strike : 0],
         outputRange: ['0deg', compassData.strike + 'deg'],
       });
       // First set up animation
@@ -465,7 +473,7 @@ const Compass = (props) => {
     try {
       let image = require('../../assets/images/compass/trendLine.png');
       const spin = trendSpinValue.interpolate({
-        inputRange: [0, compassData.trend && compassData.trend > 0 ? compassData.trend : 0],
+        inputRange: [0, compassData.trend ? compassData.trend : 0],
         outputRange: ['0deg', compassData.trend + 'deg'],
       });
       // First set up animation
