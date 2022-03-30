@@ -35,7 +35,8 @@ const StratSectionPage = (props) => {
   const useSed = useSedHook();
 
   useEffect(() => {
-    console.log('UE Rendered StratSectionPage\nSpot:', spot);
+    console.log('UE StratSectionPage []');
+    console.log('Spot:', spot);
     console.log('Strat Section:', stratSection);
   }, []);
 
@@ -123,7 +124,7 @@ const StratSectionPage = (props) => {
           </ListItem.Content>
           <Switch
             value={!isEmpty(stratSection)}
-            onValueChange={() => Alert.alert('Notice', 'This feature has not been implemented yet.')}
+            onValueChange={() => useSed.toggleStratSection(spot)}
           />
         </ListItem>
       </View>

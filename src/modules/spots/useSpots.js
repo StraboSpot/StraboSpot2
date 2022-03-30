@@ -36,7 +36,7 @@ const useSpots = () => {
   const spots = useSelector(state => state.spot.spots);
 
   useEffect(() => {
-    // console.log('datasets in useSpots UE', datasets);
+    console.log('UE useSpots [datasets]', datasets);
   }, [datasets]);
 
   const checkIsSafeDelete = (spotToDelete) => {
@@ -389,6 +389,13 @@ const useSpots = () => {
     return foundSpots;
   };
 
+  // Get all the Spots mapped on a specific strat section
+  const getSpotsMappedOnGivenStratSection = (stratSectionId) => {
+    return Object.values(spots).reduce((acc, s) => {
+      return s.properties?.strat_section_id == stratSectionId ? [...acc, s] : acc;
+    }, []);
+  };
+
   // Reverse chronologically sort active Spots
   const getSpotsSortedReverseChronologically = () => {
     return Object.values(getActiveSpotsObj()).sort(((a, b) => {
@@ -444,6 +451,7 @@ const useSpots = () => {
     getSpotGemometryIconSource: getSpotGemometryIconSource,
     getSpotWithThisStratSection: getSpotWithThisStratSection,
     getSpotsByIds: getSpotsByIds,
+    getSpotsMappedOnGivenStratSection: getSpotsMappedOnGivenStratSection,
     getSpotsSortedReverseChronologically: getSpotsSortedReverseChronologically,
     getSpotsWithImages: getSpotsWithImages,
     getSpotsWithImagesSortedReverseChronologically: getSpotsWithImagesSortedReverseChronologically,

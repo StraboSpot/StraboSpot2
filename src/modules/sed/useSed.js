@@ -2,10 +2,11 @@ import {Alert} from 'react-native';
 
 import {useDispatch, useSelector} from 'react-redux';
 
-import {getNewId, isEmpty, toTitleCase} from '../../shared/Helpers';
+import {getNewId, getNewUUID, isEmpty, toTitleCase} from '../../shared/Helpers';
 import {useFormHook} from '../form';
 import {setStratSection} from '../maps/maps.slice';
 import {PAGE_KEYS} from '../page/page.constants';
+import {useSpotsHook} from '../spots';
 import {editedSpotProperties} from '../spots/spots.slice';
 import {
   INTERPRETATIONS_SUBPAGES,
@@ -19,6 +20,16 @@ const useSed = () => {
   const stratSection = useSelector(state => state.map.stratSection);
 
   const [useForm] = useFormHook();
+  const [useSpots] = useSpotsHook();
+
+  const createNewStratSection = (spot) => {
+    let editedSedData = spot.properties.sed ? JSON.parse(JSON.stringify(spot.properties.sed)) : {};
+    editedSedData.strat_section = {};
+    editedSedData.strat_section.strat_section_id = getNewUUID();
+    editedSedData.strat_section.column_profile = 'clastic';
+    editedSedData.strat_section.column_y_axis_units = 'm';
+    dispatch(editedSpotProperties({field: 'sed', value: editedSedData}));
+  };
 
   const deleteSedFeature = (key, spot, selectedFeature) => {
     if (Object.values(LITHOLOGY_SUBPAGES).includes(key)) key = PAGE_KEYS.LITHOLOGIES;
@@ -43,6 +54,12 @@ const useSed = () => {
       editedSedData[key] = editedSedData[key].filter(type => type.id !== selectedFeature.id);
       if (isEmpty(editedSedData[key])) delete editedSedData[key];
     }
+    dispatch(editedSpotProperties({field: 'sed', value: editedSedData}));
+  };
+
+  const deleteStratSection = (spot) => {
+    let editedSedData = spot.properties.sed ? JSON.parse(JSON.stringify(spot.properties.sed)) : {};
+    delete editedSedData.strat_section;
     dispatch(editedSpotProperties({field: 'sed', value: editedSedData}));
   };
 
@@ -148,6 +165,32 @@ const useSed = () => {
     dispatch(editedSpotProperties({field: 'sed', value: editedSedData}));
   };
 
+  const toggleStratSection = (spot) => {
+    if (!spot.properties?.sed?.strat_section) createNewStratSection(spot);
+    else {
+      const spotsMappedOnThisStratSection = useSpots.getSpotsMappedOnGivenStratSection(
+        spot.properties.sed.strat_section.strat_section_id);
+      if (spotsMappedOnThisStratSection.length > 0) {
+        Alert.alert('Strat Section In Use', 'There are ' + spotsMappedOnThisStratSection.length
+          + ' Spot(s) mapped on this Spot. Delete these Spots before removing the strat section.');
+      }
+      else {
+        Alert.alert(
+          'Delete Strat Section?',
+          'Are you sure you want to delete this strat section?',
+          [{
+            text: 'Cancel',
+            onPress: () => console.log('Cancel Pressed'),
+            style: 'cancel',
+          }, {
+            text: 'OK',
+            onPress: () => deleteStratSection(spot),
+          }],
+          {cancelable: false},
+        );
+      }
+    }
+  };
 
   return {
     deleteSedFeature: deleteSedFeature,
@@ -158,6 +201,7 @@ const useSed = () => {
     saveSedBedFeature: saveSedBedFeature,
     saveSedFeature: saveSedFeature,
     saveSedFeatureValuesFromTemplates: saveSedFeatureValuesFromTemplates,
+    toggleStratSection: toggleStratSection,
   };
 };
 
