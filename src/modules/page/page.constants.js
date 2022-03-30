@@ -203,8 +203,8 @@ export const PET_PAGES = [
   }, {
     key: PAGE_KEYS.ROCK_TYPE_FAULT,
     label: 'Fault & Shear Zone Rocks',
-    icon_src: require('../../assets/icons/Fault.png'),
-    icon_pressed_src: require('../../assets/icons/Fault_pressed.png'),
+    icon_src: require('../../assets/icons/FaultRock.png'),
+    icon_pressed_src: require('../../assets/icons/FaultRock_pressed.png'),
     overview_component: BasicOverviewList,
     page_component: RockFaultPage,
     modal_component: AddRockModal,
