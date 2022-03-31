@@ -2,16 +2,16 @@ import React from 'react';
 
 import {useNetInfo} from '@react-native-community/netinfo';
 import {Image} from 'react-native-elements';
-import {useSelector, useDispatch} from 'react-redux';
+import {useSelector} from 'react-redux';
 
 import uiStyles from '../shared/ui/ui.styles';
 
 const useConnectionStatus = () => {
   const netInfo = useNetInfo();
 
-  const onlineIcon = require('../assets/icons/ConnectionStatusButton_connected.png');
+  const onlineIcon = require('../assets/icons/ConnectionStatusButton_online.png');
   const offlineIcon = require('../assets/icons/ConnectionStatusButton_offline.png');
-  const accessPointIcon = require('../assets/icons/wireless-access-point-icon-11.png');
+  const accessPointIcon = require('../assets/icons/ConnectionStatusButton_connected.png');
 
   const isOnline = useSelector(state => state.home.isOnline);
 
@@ -19,9 +19,9 @@ const useConnectionStatus = () => {
     return netInfo;
   };
 
-const isInternetReachable = () => {
-  return netInfo.isInternetReachable;
-}
+  const isInternetReachable = () => {
+    return netInfo.isInternetReachable;
+  };
 
   const connectionStatusIcon = () => {
     if (!isOnline.isConnected && !isOnline.isInternetReachable) {

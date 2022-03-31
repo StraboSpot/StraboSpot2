@@ -115,8 +115,8 @@ const RightSideButtons = (props) => {
           style={[homeStyles.addIntervalButton, props.rightsideIconAnimation]}>
           <IconButton
             source={isNotebookPanelVisible
-              ? require('../../assets/icons/SedAddIntervalButton_pressed.png')
-              : require('../../assets/icons/SedAddIntervalButton.png')}
+              ? require('../../assets/icons/AddIntervalButton_pressed.png')
+              : require('../../assets/icons/AddIntervalButton.png')}
             onPress={() => dispatch(setModalVisible({modal: MODAL_KEYS.OTHER.ADD_INTERVAL}))}
           />
         </Animated.View>

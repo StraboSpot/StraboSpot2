@@ -6,7 +6,6 @@ const styles = StyleSheet.create({
   accessPointIcon:{
     height: 30,
     width: 30,
-    tintColor: 'red',
   },
   alignItemsToCenter: {
     alignItems: 'center',
