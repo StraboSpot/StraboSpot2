@@ -22,7 +22,7 @@
     "@react-native-community/slider": "3.0.3",
     "@react-native-mapbox-gl/maps": "8.3.0",
     "@react-native-picker/picker": "1.16.7",
-    "@react-navigation/native": "6.0.2",
+    "@react-navigation/native": "6.0.8",
     "@react-navigation/stack": "6.0.7",
     "@reduxjs/toolkit": "1.6.1",
     "@sentry/cli": "1.69.1",
