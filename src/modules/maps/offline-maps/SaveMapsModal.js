@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {Text, View} from 'react-native';
 
 import {Picker} from '@react-native-picker/picker';
-import {Button, Header} from 'react-native-elements';
+import {Button} from 'react-native-elements';
 import RNFS from 'react-native-fs';
 import * as loading from 'react-native-indicators';
 import {Dialog, DialogContent, SlideAnimation} from 'react-native-popup-dialog';
@@ -49,7 +49,9 @@ const SaveMapsModal = (props) => {
   const [extentString, setExtentString] = useState('');
 
   useEffect(() => {
+    console.log('UE SaveMapsModal []');
     return function cleanUp() {
+      console.log('UE CLEANUP SaveMapsModal');
       setInstalledTiles(0);
       setTilesToInstall(0);
       setPercentDone(0);
@@ -57,6 +59,7 @@ const SaveMapsModal = (props) => {
   }, []);
 
   useEffect(() => {
+    console.log('UE SaveMapsModal [props.map]', props.map);
     if (props.map) {
       props.map.getCurrentZoom().then((zoom) => {
         let initialZoom = [];
@@ -78,7 +81,7 @@ const SaveMapsModal = (props) => {
   }, [props.map]);
 
   useEffect(() => {
-    console.log('downloadZoom in UE', downloadZoom);
+    console.log('UE SaveMapsModal [downloadZoom]', downloadZoom);
     console.log('extentString is UE', extentString);
     if (downloadZoom > 0) {
       updateCount().then(() => {
@@ -89,7 +92,7 @@ const SaveMapsModal = (props) => {
   }, [downloadZoom]);
 
   useEffect(() => {
-    console.log('progressStatus', progressStatus);
+    console.log('UE SaveMapsModal [progressStatus]', progressStatus);
   }, [progressStatus]);
 
   const checkZipStatus = async (zipId) => {

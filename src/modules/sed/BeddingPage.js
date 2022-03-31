@@ -36,7 +36,7 @@ const BeddingPage = (props) => {
   const bedding = spot.properties?.sed?.bedding || {};
 
   useEffect(() => {
-    console.log('UE Rendered BeddingPage\nSpot:', spot);
+    console.log('UE BeddingPage [selectedAttributes, spot]', selectedAttributes, spot);
     console.log('Bedding:', bedding);
     if (!isEmpty(selectedAttributes)) {
       setSelectedAttribute(selectedAttributes[0]);
@@ -45,6 +45,7 @@ const BeddingPage = (props) => {
   }, [selectedAttributes, spot]);
 
   useLayoutEffect(() => {
+    console.log('ULE BeddingPage []');
     return () => confirmLeavePage();
   }, []);
 

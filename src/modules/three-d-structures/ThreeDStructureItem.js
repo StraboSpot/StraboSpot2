@@ -16,11 +16,14 @@ function ThreeDStructureItem(props) {
   const [featureSelectedForTagging, setFeatureSelectedForTagging] = useState(false);
 
   useEffect(() => {
+    console.log('UE ThreeDStructureItem [isMultipleFeaturesTaggingEnabled]', isMultipleFeaturesTaggingEnabled);
     if (!isMultipleFeaturesTaggingEnabled) setFeatureSelectedForTagging(false);
   }, [isMultipleFeaturesTaggingEnabled]);
 
   const editFeature = (feature) => {
-    if (isMultipleFeaturesTaggingEnabled) setFeatureSelectedForTagging(useTags.setFeaturesSelectedForMultiTagging(feature));
+    if (isMultipleFeaturesTaggingEnabled) {
+      setFeatureSelectedForTagging(useTags.setFeaturesSelectedForMultiTagging(feature));
+    }
     else props.edit3dStructure(feature);
   };
 

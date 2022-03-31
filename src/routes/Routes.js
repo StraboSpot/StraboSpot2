@@ -31,6 +31,7 @@ const Routes = () => {
   // });
 
   useEffect(() => {
+    console.log('UE Routes []');
     const unsubscribe = NetInfo.addEventListener((networkState) => {
       console.log('Connection type', networkState.type);
       console.log('Is connected?', networkState.isConnected);

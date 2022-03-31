@@ -22,6 +22,7 @@ const ImagesOverview = () => {
   const [isError, setIsError] = useState(false);
 
   useEffect(() => {
+    console.log('UE ImagesOverview []');
     getImageThumbnailURIs().catch(err => console.error(err));
   }, []);
 

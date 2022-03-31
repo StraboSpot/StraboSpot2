@@ -21,14 +21,15 @@ const Sketch = (props) => {
   const [useImages] = useImagesHook();
   const [useMaps] = useMapsHook();
 
-
   const [imageId, setImageId] = useState(null);
 
   useEffect(() => {
+    console.log('UE Sketch [imageId]', imageId);
     if (props.route.params?.imageId) setImageId(props.route.params.imageId);
   }, [imageId]);
 
   useEffect(() => {
+    console.log('UE Sketch []');
     createSpot().catch(e => console.error(e));
   }, []);
 
@@ -46,8 +47,8 @@ const Sketch = (props) => {
         const savedSketch = await useImages.saveFile({'path': path});
         dispatch(editedSpotImages([{...savedSketch, image_type: 'sketch'}]));
         Alert.alert(modalVisible === MODAL_KEYS.SHORTCUTS.SKETCH
-          ? `Sketch saved to NEW spot, ${selectedSpot.properties.name}!`
-          : `Sketch saved to ${selectedSpot.properties.name}!`,
+            ? `Sketch saved to NEW spot, ${selectedSpot.properties.name}!`
+            : `Sketch saved to ${selectedSpot.properties.name}!`,
           null,
           [{
             text: 'OK', onPress: () => {

@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Alert, FlatList, Platform, Switch, Text, View} from 'react-native';
 
-import {Button, Icon, ListItem, Input} from 'react-native-elements';
+import {Button, Icon, Input, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../../shared/common.styles';
@@ -41,6 +41,7 @@ const AddCustomMaps = () => {
   let sliderValuePercent = editableCustomMapData && Math.round(editableCustomMapData.opacity * 100).toFixed(0);
 
   useEffect(() => {
+    console.log('UE AddCustomMaps [customMapToEdit]', customMapToEdit);
     if (!isEmpty(customMapToEdit)) setEditableCustomMapData(customMapToEdit);
     else {
       setEditableCustomMapData({

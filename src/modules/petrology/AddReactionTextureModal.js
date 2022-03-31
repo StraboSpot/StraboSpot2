@@ -41,6 +41,7 @@ const AddReactionTextureModal = (props) => {
   const lastKeysFields = lastKeys.map(k => survey.find(f => f.name === k));
 
   useEffect(() => {
+    console.log('UE AddReactionTextureModal []');
     return () => dispatch(setModalValues({}));
   }, []);
 

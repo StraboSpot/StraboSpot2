@@ -128,6 +128,7 @@ const Map = React.forwardRef((props, ref) => {
   };
 
   useEffect(() => {
+    console.log('UE Map []');
     Logger.setLogCallback((log) => {
       const {message} = log;
       // console.log('LOGGER MESSAGE IN MAPS.JS', message);
@@ -145,8 +146,7 @@ const Map = React.forwardRef((props, ref) => {
   }, []);
 
   useEffect(() => {
-    console.log('UE1 Map [currentImageBasemap]');
-    console.log('Changed image basemap to:', currentImageBasemap);
+    console.log('UE Map [currentImageBasemap]', currentImageBasemap);
     if (currentImageBasemap && (!currentImageBasemap.height || !currentImageBasemap.width)) {
       useImages.setImageHeightAndWidth(currentImageBasemap).catch(console.error);
     }
@@ -163,8 +163,7 @@ const Map = React.forwardRef((props, ref) => {
   }, [currentImageBasemap]);
 
   useEffect(() => {
-    console.log('UE1 Map [stratSection]');
-    console.log('Changed Strat Section to:', stratSection);
+    console.log('UE Map [stratSection]', stratSection);
     setMapPropsMutable(m => ({
       ...m,
       imageBasemap: undefined,
@@ -174,8 +173,7 @@ const Map = React.forwardRef((props, ref) => {
   }, [stratSection]);
 
   useEffect(() => {
-    console.log('UE2 Map [currentBasemap]');
-    console.log('Changed current basemap to:', currentBasemap);
+    console.log('UE Map [currentBasemap, isZoomToCenterOffline]', currentBasemap, isZoomToCenterOffline);
     const getCenter = async () => {
       const center = mapRef && mapRef.current ? await mapRef.current.getCenter() : initialMapPropsMutable.centerCoordinate;
       const zoom = mapRef && mapRef.current ? await mapRef.current.getZoom() : initialMapPropsMutable.zoom;
@@ -193,8 +191,7 @@ const Map = React.forwardRef((props, ref) => {
   }, [currentBasemap, isZoomToCenterOffline]);
 
   useEffect(() => {
-    console.log('UE3 Map [user]');
-    console.log('Updating DOM on first render');
+    console.log('UE Map [user, isOnline]', user, isOnline);
     if (isOnline.isInternetReachable && !currentBasemap) useMaps.setBasemap().catch(console.error);
     else if (isOnline.isInternetReachable && currentBasemap) {
       console.log('ITS IN THIS ONE!!!! -isOnline && currentBasemap');
@@ -222,14 +219,14 @@ const Map = React.forwardRef((props, ref) => {
   }, [user, isOnline]);
 
   useEffect(() => {
-    console.log('UE4 Map [props.spots, props.datasets, currentBasemap, currentImageBasemap, selectedSymbols,'
-      + ' isAllSymbolsOn, stratSection]');
-    console.log('Updating Spots, selected Spots, active datasets, basemap or map symbols to display changed');
+    console.log(
+      'UE Map [spots, datasets, currentBasemap, currentImageBasemap, selectedSymbols, isAllSymbolsOn, stratSection]',
+      spots, datasets, currentBasemap, currentImageBasemap, selectedSymbols, isAllSymbolsOn, stratSection);
     setDisplayedSpots((isEmpty(selectedSpot) ? [] : [{...selectedSpot}]));
   }, [spots, datasets, currentBasemap, currentImageBasemap, selectedSymbols, isAllSymbolsOn, stratSection]);
 
   useEffect(() => {
-    console.log('UE5 Map [selectedSpot]');
+    console.log('UE Map [selectedSpot, activeDatasetsIds]', selectedSpot, activeDatasetsIds);
     // On change of selected spot, reset the zoomToSpot
     if (mapProps.zoomToSpot) {
       setMapPropsMutable(m => ({
@@ -248,19 +245,17 @@ const Map = React.forwardRef((props, ref) => {
   }, [selectedSpot, activeDatasetsIds]);
 
   useEffect(() => {
-    console.log('UE6 Map [vertexEndCoords]');
-    console.log('Updating DOM on vertexEndsCoords changed');
+    console.log('UE Map [vertexEndCoords]', vertexEndCoords);
     if (!isEmpty(vertexEndCoords && props.mapMode === MAP_MODES.EDIT)) moveVertex();
   }, [vertexEndCoords]);
 
   useEffect(() => {
-    console.log('UE7 Map [mapPropsMutable.drawFeature]');
-    // console.log('MapPropsMutable in useEffect', mapPropsMutable);
+    console.log('UE Map [mapPropsMutable.drawFeatures]', mapPropsMutable.drawFeatures);
     if (props.mapMode === MAP_MODES.DRAW.POINT && mapPropsMutable.drawFeatures.length === 1) props.endDraw();
   }, [mapPropsMutable.drawFeatures]);
 
   useEffect(() => {
-    console.log('UE9 Map [defaultGeomType]');
+    console.log('UE Map [defaultGeomType]', defaultGeomType);
     if (defaultGeomType) createDefaultGeomContinued();
   }, [defaultGeomType]);
 
@@ -1301,7 +1296,7 @@ const Map = React.forwardRef((props, ref) => {
 
   const zoomToCustomMap = (bbox, duration) => {
     const animationDuration = duration;
-    if (bbox ) {
+    if (bbox) {
       const bboxArr = bbox.split(',');
       cameraRef.current.fitBounds([Number(bboxArr[0]), Number(bboxArr[1])], [Number(bboxArr[2]), Number(bboxArr[3])],
         100, animationDuration || 1500);

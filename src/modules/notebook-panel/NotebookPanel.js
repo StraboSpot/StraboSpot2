@@ -37,6 +37,7 @@ const NotebookPanel = (props) => {
   const [textInputAnimate] = useState(new Animated.Value(0));
 
   useEffect(() => {
+    console.log('UE NotebookPanel [isNotebookPanelVisible]', isNotebookPanelVisible);
     if (isNotebookPanelVisible) {
       console.log('NB Keyboard Listeners Added');
       Keyboard.addListener('keyboardDidShow', handleKeyboardDidShowNotebook);
@@ -50,6 +51,7 @@ const NotebookPanel = (props) => {
   }, [isNotebookPanelVisible]);
 
   useEffect(() => {
+    console.log('UE NotebookPanel [pageVisible, spot]', pageVisible, spot);
     dispatch(setMultipleFeaturesTaggingEnabled(false));
   }, [pageVisible, spot]);
 
@@ -70,7 +72,7 @@ const NotebookPanel = (props) => {
     const page = NOTEBOOK_PAGES.find(p => p.key === (pageVisible || PAGE_KEYS.OVERVIEW));
     const Page = page?.page_component || Overview;
     let pageProps = {page: page, openMainMenu: props.openMainMenu};
-    if (page.key === PAGE_KEYS.IMAGES) pageProps = {...pageProps,  toast: props.toast};
+    if (page.key === PAGE_KEYS.IMAGES) pageProps = {...pageProps, toast: props.toast};
     return (
       <React.Fragment>
         <Animated.View style={{flex: 1, transform: [{translateY: textInputAnimate}]}}>
@@ -109,7 +111,7 @@ const NotebookPanel = (props) => {
     if (isEmpty(spotsList)) spotsList = useSpots.getSpotsSortedReverseChronologically();
     return (
       <View style={notebookStyles.centerContainer}>
-        <SectionDivider dividerText='Recent Spots'/>
+        <SectionDivider dividerText={'Recent Spots'}/>
         <FlatList
           keyExtractor={(item) => item.properties.id.toString()}
           data={spotsList}

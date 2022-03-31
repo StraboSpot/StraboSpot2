@@ -21,11 +21,12 @@ const SamplesPage = (props) => {
   const [selectedSample, setSelectedSample] = useState({});
 
   useEffect(() => {
+    console.log('UE SamplesPage []');
     return () => dispatch(setSelectedAttributes([]));
   }, []);
 
   useEffect(() => {
-    console.log('UE Rendered SamplesPage\nSpot:', spot, '\nSelectedAttributes:', selectedAttributes);
+    console.log('UE SamplesPage [selectedAttributes, spot]', selectedAttributes, spot);
     if (isEmpty(selectedAttributes)) setSelectedSample({});
     else {
       setSelectedSample(selectedAttributes[0]);

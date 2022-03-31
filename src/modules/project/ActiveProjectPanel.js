@@ -32,6 +32,7 @@ const ActiveProjectPanel = () => {
   const selectedDatasetId = useSelector(state => state.project.selectedDatasetId);
 
   useEffect(() => {
+    console.log('UE ActiveProjectPanel [datasets]', datasets);
     if (Object.values(datasets).length > 0 && !isEmpty(Object.values(datasets)[0])) {
       if (activeDatasetsIds.length === 0) {
         dispatch(setActiveDatasets({bool: true, dataset: Object.values(datasets)[0].id}));

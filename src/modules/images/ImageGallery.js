@@ -33,6 +33,7 @@ const ImageGallery = (props) => {
   const [isError, setIsError] = useState(false);
 
   useEffect(() => {
+    console.log('UE ImageGallery []');
     getImageThumbnailURIs().catch(err => console.error(err));
   }, []);
 

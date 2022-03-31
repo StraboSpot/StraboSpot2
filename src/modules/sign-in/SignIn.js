@@ -38,10 +38,12 @@ const SignIn = (props) => {
   const [serverRequests] = useServerRequests();
 
   useEffect(() => {
+    console.log('UE SignIn []');
     useDevice.createProjectDirectories().catch(err => console.error('Error creating app directories', err));
   }, []);
 
   useEffect(() => {
+    console.log('UE SignIn [isOnline]', isOnline);
     const netInfo = useConnectionStatus.getNetInfo();
     console.log(netInfo);
     if (isEmpty(isOnline) || netInfo.isInternetReachable !== null) {
@@ -50,7 +52,7 @@ const SignIn = (props) => {
   }, [isOnline]);
 
   useEffect(() => {
-    console.log('useEffect Form SignIn');
+    console.log('UE SignIn []');
     console.log('Home Keyboard Listeners Added');
     Keyboard.addListener('keyboardDidShow', handleKeyboardDidShowSignIn);
     Keyboard.addListener('keyboardDidHide', handleKeyboardDidHideSignIn);
@@ -81,9 +83,9 @@ const SignIn = (props) => {
       const userAuthResponse = await serverRequests.authenticateUser(username, password);
       // login with provider
       if (userAuthResponse?.valid === 'true') {
-            Sentry.configureScope(scope => {
-              scope.setUser({'username': user.name, 'email': user.email});
-            });
+        Sentry.configureScope(scope => {
+          scope.setUser({'username': user.name, 'email': user.email});
+        });
         const encodedLogin = Base64.encode(username + ':' + password);
         updateUserResponse(encodedLogin).then((userState) => {
           console.log(`${username} is successfully logged in!`);
@@ -174,7 +176,7 @@ const SignIn = (props) => {
         const profileImage = await getUserImage(userProfileImage);
         dispatch(setUserData({...userProfileRes, image: profileImage, encoded_login: encodedLogin}));
       }
-      else  dispatch(setUserData({...userProfileRes, image: null, encoded_login: encodedLogin}));
+      else dispatch(setUserData({...userProfileRes, image: null, encoded_login: encodedLogin}));
     }
     catch (err) {
       console.log('SIGN IN ERROR', err);
@@ -199,24 +201,24 @@ const SignIn = (props) => {
           <Animated.View style={[styles.signInContainer, {transform: [{translateY: textInputAnimate}]}]}>
             <TextInput
               style={styles.input}
-              placeholder='Username'
-              autoCapitalize='none'
+              placeholder={'Username'}
+              autoCapitalize={'none'}
               autoCorrect={false}
-              placeholderTextColor='#6a777e'
+              placeholderTextColor={'#6a777e'}
               onChangeText={val => setUsername(val.toLowerCase())}
               value={username}
-              keyboardType='email-address'
-              returnKeyType='go'
+              keyboardType={'email-address'}
+              returnKeyType={'go'}
             />
             <TextInput
               style={styles.input}
-              placeholder='Password'
-              autoCapitalize='none'
+              placeholder={'Password'}
+              autoCapitalize={'none'}
               secureTextEntry={true}
-              placeholderTextColor='#6a777e'
+              placeholderTextColor={'#6a777e'}
               onChangeText={val => setPassword(val)}
               value={password}
-              returnKeyType='go'
+              returnKeyType={'go'}
               onSubmitEditing={signIn}
             />
             {renderButtons()}

@@ -31,6 +31,7 @@ const Overview = (props) => {
   const [useSpots] = useSpotsHook();
 
   useEffect(() => {
+    console.log('UE Overview []');
     dispatch(setModalVisible({modal: null}));
   }, []);
 
@@ -49,6 +50,7 @@ const Overview = (props) => {
   }, []);
 
   useEffect(() => {
+    console.log('UE Overview [spot]', spot);
     setIsTraceSurfaceFeatureEnabled((spot.properties.hasOwnProperty('trace') && spot.properties.trace.trace_feature)
       || spot.properties.hasOwnProperty('surface_feature'));
     setIsTraceSurfaceFeatureEdit(false);

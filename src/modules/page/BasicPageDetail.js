@@ -43,15 +43,17 @@ const BasicPageDetail = (props) => {
   const isTemplate = props.hasOwnProperty('saveTemplate');
 
   useLayoutEffect(() => {
+    console.log('ULE BasicPageDetail []');
     return () => confirmLeavePage();
   }, []);
 
   useEffect(() => {
+    console.log('UE BasicPageDetail []');
     return () => dispatch(setSelectedAttributes([]));
   }, []);
 
   useEffect(() => {
-    console.log('UE BasicPageDetail Selected Feature', title, props.selectedFeature);
+    console.log('UE BasicPageDetail [props.selectedFeature]', props.selectedFeature);
     if (!isTemplate && isEmpty(props.selectedFeature)) props.closeDetailView();
   }, [props.selectedFeature]);
 

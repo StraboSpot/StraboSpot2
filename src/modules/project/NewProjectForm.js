@@ -24,6 +24,7 @@ const NewProjectForm = (props) => {
   const formRef = useRef(null);
 
   useEffect(() => {
+    console.log('UE NewProjectForm []');
     if (!isEmpty(currentProject)) {
       dispatch(setBackupOverwriteModalVisible(true));
     }

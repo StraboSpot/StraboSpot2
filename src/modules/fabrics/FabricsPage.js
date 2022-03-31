@@ -31,11 +31,12 @@ const FabricsPage = (props) => {
   };
 
   useEffect(() => {
+    console.log('UE FabricsPage []');
     return () => dispatch(setSelectedAttributes([]));
   }, []);
 
   useEffect(() => {
-    console.log('UE Rendered FabricsPage\nSpot:', spot, '\nSelectedAttributes:', selectedAttributes);
+    console.log('UE FabricsPage [selectedAttributes, spot]', selectedAttributes, spot);
     if (isEmpty(selectedAttributes)) setSelectedFabric({});
     else {
       setSelectedFabric(selectedAttributes[0]);

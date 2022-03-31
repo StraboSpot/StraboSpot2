@@ -46,6 +46,7 @@ const Templates = (props) => {
   }
 
   useEffect(() => {
+    console.log('UE Templates [templates, templateKey]', templates, templateKey);
     if (templateKey === measurementKey) {
       setIsTemplateInUse(templates.useMeasurementTemplates);
       setTemplatesForKey(templates.measurementTemplates);

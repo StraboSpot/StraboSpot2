@@ -33,6 +33,7 @@ const OtherFeatureDetail = (props) => {
   const formRef = useRef(null);
 
   useLayoutEffect(() => {
+    console.log('ULE OtherFeatureDetail []');
     return () => confirmLeavePage();
   }, []);
 

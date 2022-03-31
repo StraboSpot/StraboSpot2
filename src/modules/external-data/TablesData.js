@@ -19,17 +19,19 @@ function TablesData(props) {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    console.log('UE TablesData [selectedTable]', selectedTable);
     !isEmpty(selectedTable) && isTableVisible && setLoading(false);
   }, [selectedTable]);
 
   useEffect(() => {
+    console.log('UE TablesData [isTableVisible]', isTableVisible);
     !isTableVisible && setSelectedTable({});
   }, [isTableVisible]);
 
   const renderTable = () => {
     return (
       <Overlay
-        animationType='slide'
+        animationType={'slide'}
         overlayStyle={externalDataStyles.overlayContainer}
         visible={isTableVisible}
       >
@@ -78,10 +80,10 @@ function TablesData(props) {
                 type={'clear'}
                 icon={
                   <Icon
-                    name='trash'
+                    name={'trash'}
                     type={'font-awesome'}
                     size={20}
-                    color='darkgrey'
+                    color={'darkgrey'}
                     containerStyle={externalDataStyles.iconContainer}
                   />
                 }

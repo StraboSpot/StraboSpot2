@@ -30,17 +30,18 @@ const ManageOfflineMaps = (props) => {
   const useMapsOffline = useMapsOfflineHook();
 
   useEffect(() => {
+    console.log('UE ManageOfflineMaps [mainMenuPageVisible]', mainMenuPageVisible);
     if (!isEmpty(offlineMaps)) readDirectoryForMaps().catch(err => console.log(err));
     else refreshMapsFromDevice().catch(err => console.log('Error refreshing maps from device', err));
   }, [mainMenuPageVisible]);
 
   useEffect(() => {
-    console.log('Offline Maps Updated:', offlineMaps);
+    console.log('UE ManageOfflineMaps [offlineMaps]', offlineMaps);
     setAvailableMaps(offlineMaps);
   }, [offlineMaps]);
 
   useEffect(() => {
-    console.log('Is Online: ', isOnline);
+    console.log('UE ManageOfflineMaps [isOnline]', isOnline);
   }, [isOnline]);
 
   const confirmDeleteMap = async (map) => {
@@ -82,7 +83,9 @@ const ManageOfflineMaps = (props) => {
       const ids = await useDevice.readDirectoryForMaps();
       ids.map(mapId => {
         if (offlineMaps[mapId]) {
-          if (offlineMaps[mapId].source === 'mapbox_styles' && offlineMaps[mapId].source.includes('/')) availableMapObj = {...availableMapObj, [offlineMaps[mapId].split('/')[1]]: offlineMaps[mapId]};
+          if (offlineMaps[mapId].source === 'mapbox_styles' && offlineMaps[mapId].source.includes('/')) {
+            availableMapObj = {...availableMapObj, [offlineMaps[mapId].split('/')[1]]: offlineMaps[mapId]};
+          }
           else availableMapObj = {...availableMapObj, [offlineMaps[mapId].id]: offlineMaps[mapId]};
         }
         else {
@@ -117,7 +120,7 @@ const ManageOfflineMaps = (props) => {
         renderItem={({item}) => renderMapsListItem(item)}
         ItemSeparatorComponent={FlatListItemSeparator}
         ListEmptyComponent={<ListEmptyText text={'No Offline Maps. To download a map select area and zoom'
-        + ' level on map then select "Download tiles of current map"'}/>}
+          + ' level on map then select "Download tiles of current map"'}/>}
       />
     );
   };

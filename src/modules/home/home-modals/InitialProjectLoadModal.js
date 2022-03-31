@@ -6,7 +6,6 @@ import {Avatar, Button} from 'react-native-elements';
 import {Dialog, DialogContent, DialogTitle, SlideAnimation} from 'react-native-popup-dialog';
 import {useDispatch, useSelector} from 'react-redux';
 
-import useDeviceHook from '../../../services/useDevice';
 import {REDUX} from '../../../shared/app.constants';
 import commonStyles from '../../../shared/common.styles';
 import {isEmpty} from '../../../shared/Helpers';
@@ -32,7 +31,6 @@ const InitialProjectLoadModal = (props) => {
   const [visibleProjectSection, setVisibleProjectSection] = useState('activeDatasetsList');
   const [visibleInitialSection, setVisibleInitialSection] = useState('none');
 
-  const useDevice = useDeviceHook();
   const useUserProfile = useUserProfileHook();
 
   useEffect(() => {

@@ -21,6 +21,7 @@ const ProjectTypesButtons = (props) => {
   const useDevice = useDeviceHook();
 
   useEffect(() => {
+    console.log('UE ProjectTypesButtons []');
     const exists = doesBackupDirExist();
   }, []);
 
@@ -32,6 +33,7 @@ const ProjectTypesButtons = (props) => {
       setBackupFiles(files);
     }
   };
+
   return (
     <View>
       <Button

@@ -14,12 +14,11 @@ import Loading from '../../shared/ui/Loading';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {
   clearedStatusMessages,
-  setStatusMessagesModalVisible,
   setBackupOverwriteModalVisible,
+  setStatusMessagesModalVisible,
 } from '../home/home.slice';
 import {doesBackupDirectoryExist, setSelectedProject} from './projects.slice';
 import useProjectHook from './useProject';
-
 
 const ProjectList = (props) => {
   const currentProject = useSelector(state => state.project.project);
@@ -36,6 +35,7 @@ const ProjectList = (props) => {
   const useImport = useImportHook();
 
   useEffect(() => {
+    console.log('UE ProjectList []');
     AppState.addEventListener('change', handleStateChange);
     return () => {
       AppState.removeEventListener('change');
@@ -44,6 +44,7 @@ const ProjectList = (props) => {
   }, []);
 
   useEffect(() => {
+    console.log('UE ProjectList [props.source]', props.source);
     getAllProjects().then(() => console.log('OK got projects'));
   }, [props.source]);
 

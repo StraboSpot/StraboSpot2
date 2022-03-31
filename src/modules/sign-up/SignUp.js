@@ -2,14 +2,14 @@ import React, {useEffect, useState} from 'react';
 import {Animated, ImageBackground, Keyboard, Text, TextInput, View} from 'react-native';
 
 import NetInfo from '@react-native-community/netinfo';
-import {Button, CheckBox, Input} from 'react-native-elements';
+import {Button, CheckBox} from 'react-native-elements';
 import {SlideAnimation} from 'react-native-popup-dialog';
 import {useDispatch, useSelector} from 'react-redux';
 
 import useServerRequests from '../../services/useServerRequests';
 import {VERSION_NUMBER} from '../../shared/app.constants';
-import {isEmpty, validate} from '../../shared/Helpers';
 import * as Helpers from '../../shared/Helpers';
+import {validate} from '../../shared/Helpers';
 import IconButton from '../../shared/ui/IconButton';
 import Loading from '../../shared/ui/Loading';
 import StatusDialog from '../../shared/ui/StatusDialogBox';
@@ -24,46 +24,46 @@ const SignUp = (props) => {
   const initialState = {
     firstName: {
       value: '',
-        valid: false,
-        validationRules: {
+      valid: false,
+      validationRules: {
         notEmpty: false,
       },
       touched: false,
     },
     lastName: {
       value: '',
-        valid: false,
-        validationRules: {
+      valid: false,
+      validationRules: {
         notEmpty: false,
       },
       touched: false,
     },
     password: {
       value: '',
-        valid: false,
-        validationRules: {
+      valid: false,
+      validationRules: {
         characterValidator: false,
       },
       touched: false,
-        showPassword: false,
+      showPassword: false,
     },
     confirmPassword: {
       value: '',
-        valid: false,
-        validationRules: {
+      valid: false,
+      validationRules: {
         equalTo: 'password',
       },
       touched: false,
     },
     email: {
       value: '',
-        valid: false,
-        validationRules: {
+      valid: false,
+      validationRules: {
         isEmail: true,
       },
       touched: false,
     },
-  }
+  };
   const online = require('../../assets/icons/ConnectionStatusButton_connected.png');
   const offline = require('../../assets/icons/ConnectionStatusButton_offline.png');
 
@@ -80,7 +80,7 @@ const SignUp = (props) => {
   const [userData, setUserData] = useState(initialState);
 
   useEffect(() => {
-    console.log('useEffect Form SignIn');
+    console.log('UE SignUp []');
     console.log('Home Keyboard Listeners Added');
     Keyboard.addListener('keyboardDidShow', handleKeyboardDidShowSignUp);
     Keyboard.addListener('keyboardDidHide', handleKeyboardDidHideSignUp);
@@ -92,6 +92,7 @@ const SignUp = (props) => {
   }, []);
 
   useEffect(() => {
+    // console.log('UE SignUp [isOnline]', isOnline);
     // if (isOnline === null) {
     //   NetInfo.fetch().then(state => {
     //     dispatch(setOnlineStatus(state));
@@ -100,7 +101,7 @@ const SignUp = (props) => {
     //       throw (err);
     //     });
     // }
-    console.log('IsConnected in SignUp', isOnline)
+    console.log('IsConnected in SignUp', isOnline);
   }, [isOnline]);
 
   const handleKeyboardDidShowSignUp = (event) => Helpers.handleKeyboardDidShow(event, TextInputState, textInputAnimate);

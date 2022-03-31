@@ -18,7 +18,7 @@ const ManageCustomMaps = (props) => {
   const [useMaps] = useMapHook();
 
   useEffect(() => {
-    console.log('Is Online in ManageCustomMaps');
+    console.log('UE ManageCustomMaps [isOnline]', isOnline);
   }, [isOnline]);
 
   const mapTypeName = (source) => {

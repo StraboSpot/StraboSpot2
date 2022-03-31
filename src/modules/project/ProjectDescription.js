@@ -29,7 +29,7 @@ const ProjectDescription = (props) => {
   };
 
   useLayoutEffect(() => {
-    console.log('UE ProjectDescription []');
+    console.log('ULE ProjectDescription []');
     console.log('Project Description', projectDescription);
     console.log('Project Preferences', publicRef.current);
     return () => saveForm();

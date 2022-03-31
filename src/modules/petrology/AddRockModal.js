@@ -72,7 +72,7 @@ const AddRockModal = (props) => {
   }, [modalValues, pageKey, templates]);
 
   useEffect(() => {
-    console.log('ULE AddRockModal []');
+    console.log('UE AddRockModal []');
     return () => dispatch(setModalValues({}));
   }, []);
 

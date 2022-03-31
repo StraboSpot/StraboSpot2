@@ -71,7 +71,7 @@ const RockPage = (props) => {
           : SEDIMENTARY_SECTIONS;
 
   useEffect(() => {
-    console.log('UE Rendered RockPage\nSpot:', spot, '\nSelectedAttributes:', selectedAttributes);
+    console.log('UE RockPage [selectedAttributes, spot]', selectedAttributes, spot);
     if (isEmpty(selectedAttributes)) setSelectedRock({});
     else {
       setSelectedRock(selectedAttributes[0]);

@@ -23,6 +23,7 @@ const TagDetail = (props) => {
   // selectedTag.spots.map((x, index) => console.log(index, x, useSpots.getSpotById(x)));
 
   useEffect(() => {
+    console.log('UE TagDetail [selectedTag]', selectedTag);
     setRefresh(!refresh); // #TODO : Current hack to render two different FlatListComponents when selectedTag Changes.
                           //         To handle the navigation issue from 0 tagged features to non zero tagged features.
   }, [selectedTag]);

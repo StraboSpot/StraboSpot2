@@ -28,11 +28,12 @@ const ReactionTexturesPage = (props) => {
   const usePetrology = usePetrologyHook();
 
   useEffect(() => {
+    console.log('UE ReactionTexturesPage []');
     return () => dispatch(setSelectedAttributes([]));
   }, []);
 
   useEffect(() => {
-    console.log('UE Rendered ReactionTexturesPage\nSpot:', spot, '\nSelectedAttributes:', selectedAttributes);
+    console.log('UE ReactionTexturesPage [selectedAttributes, spot]', selectedAttributes, spot);
     if (isEmpty(selectedAttributes)) setSelectedReaction({});
     else {
       setSelectedReaction(selectedAttributes[0]);
@@ -95,8 +96,8 @@ const ReactionTexturesPage = (props) => {
         />
         <FlatList
           data={spot.properties.pet && spot.properties.pet[props.page.key]
-          && spot.properties.pet[props.page.key].slice().sort(
-            (a, b) => (a[props.page.key] || 'Unknown').localeCompare((b[props.page.key] || 'Unknown')))}
+            && spot.properties.pet[props.page.key].slice().sort(
+              (a, b) => (a[props.page.key] || 'Unknown').localeCompare((b[props.page.key] || 'Unknown')))}
           renderItem={({item}) => <BasicListItem page={props.page} item={item} editItem={editReaction}/>}
           keyExtractor={(item) => item.id.toString()}
           ItemSeparatorComponent={FlatListItemSeparator}

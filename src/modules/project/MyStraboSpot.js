@@ -19,10 +19,13 @@ const MyStraboSpot = props => {
     const useDevice = useDeviceHook();
 
     useEffect(() => {
+      console.log('UE MyStraboSpot []');
+
       async function dirExists() {
         const exists = await useDevice.doesDeviceBackupDirExist();
         console.log('Backup Directory Exists: ', exists);
       }
+
       dirExists().catch('Error Checking If Backup Dir Exists');
     }, []);
 
@@ -81,20 +84,20 @@ const MyStraboSpot = props => {
     return (
       <React.Fragment>
         <View style={{alignItems: 'flex-start'}}>
-          {showSection !== 'none'
-          && <Button
-            title={'Back to My StraboSpot'}
-            titleStyle={commonStyles.standardButtonText}
-            type={'clear'}
-            onPress={() => setShowSection('none')}
-            icon={{
-              name: 'chevron-back-outline',
-              type: 'ionicon',
-              size: 20,
-              color: BLUE,
-            }}
-          />
-          }
+          {showSection !== 'none' && (
+            <Button
+              title={'Back to My StraboSpot'}
+              titleStyle={commonStyles.standardButtonText}
+              type={'clear'}
+              onPress={() => setShowSection('none')}
+              icon={{
+                name: 'chevron-back-outline',
+                type: 'ionicon',
+                size: 20,
+                color: BLUE,
+              }}
+            />
+          )}
         </View>
         {renderSectionView()}
       </React.Fragment>

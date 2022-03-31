@@ -34,11 +34,12 @@ const ThreeDStructuresPage = (props) => {
   };
 
   useEffect(() => {
+    console.log('UE ThreeDStructuresPage []');
     return () => dispatch(setSelectedAttributes([]));
   }, []);
 
   useEffect(() => {
-    console.log('UE Rendered ThreeDStructuresPage\nSpot:', spot, '\nSelectedAttributes:', selectedAttributes);
+    console.log('UE ThreeDStructuresPage [selectedAttributes, spot]', selectedAttributes, spot);
     if (isEmpty(selectedAttributes)) setSelected3dStructure({});
     else if (!isMultipleFeaturesTaggingEnabled) {
       setSelected3dStructure(selectedAttributes[0]);

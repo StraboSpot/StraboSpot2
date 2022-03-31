@@ -33,7 +33,7 @@ function Basemap(props) {
   const [doesImageExist, setDoesImageExist] = useState(false);
 
   useEffect(() => {
-    console.log('UE Basemap [props.imageBasemap]');
+    console.log('UE Basemap [props.imageBasemap]', props.imageBasemap);
     if (props.imageBasemap && props.imageBasemap.id) checkImageExistance().catch(console.error);
   }, [props.imageBasemap]);
 
@@ -42,6 +42,7 @@ function Basemap(props) {
   };
 
   useEffect(() => {
+    console.log('UE Basemap [currentZoom]', currentZoom);
     getCenter();
   }, [currentZoom]);
 

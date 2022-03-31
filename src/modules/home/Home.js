@@ -131,11 +131,11 @@ const Home = () => {
   const toastRef = useRef(null);
 
   useEffect(() => {
-    console.log('Selected Project', selectedProject);
+    console.log('UE Home [selectedProject]', selectedProject);
   }, [selectedProject]);
 
   useEffect(() => {
-    console.log('Initializing Home page');
+    console.log('UE Home [user]', user);
     if (user.email && user.name) {
       Sentry.configureScope((scope) => {
         scope.setUser({'email': user.email, 'username': user.name});
@@ -144,6 +144,8 @@ const Home = () => {
   }, [user]);
 
   useEffect(() => {
+    console.log('UE Home [currentImageBasemap, customMaps, stratSection]', currentImageBasemap, customMaps,
+      stratSection);
     if ((currentImageBasemap || stratSection) && isMainMenuPanelVisible) toggleHomeDrawerButton();
     return function cleanUp() {
       console.log('currentImageBasemap and stratSection cleanup UE');
@@ -151,12 +153,13 @@ const Home = () => {
   }, [currentImageBasemap, customMaps, stratSection]);
 
   useEffect(() => {
+    console.log('UE Home [isImageModalVisible]', isImageModalVisible);
     if (isImageModalVisible) populateImageSlideshowData();
     else setImageSlideshowData([]);
   }, [isImageModalVisible]);
 
   useEffect(() => {
-    console.log('useEffect Form []');
+    console.log('UE Home [modalVisible]', modalVisible);
     console.log('Home Keyboard Listeners Added');
     Keyboard.addListener('keyboardDidShow', handleKeyboardDidShowHome);
     Keyboard.addListener('keyboardDidHide', handleKeyboardDidHideHome);
@@ -190,6 +193,7 @@ const Home = () => {
   };
 
   useEffect(() => {
+    console.log('UE Home [projectLoadComplete]', projectLoadComplete);
     if (projectLoadComplete) {
       mapComponentRef.current.zoomToSpotsExtent();
       dispatch(setProjectLoadComplete(false));
@@ -198,6 +202,7 @@ const Home = () => {
   }, [projectLoadComplete]);
 
   useEffect(() => {
+    console.log('UE Home [mapMode]', mapMode);
     if (mapMode !== MAP_MODES.DRAW.MEASURE) mapComponentRef.current.endMapMeasurement();
   }, [mapMode]);
 

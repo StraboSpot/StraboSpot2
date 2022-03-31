@@ -45,11 +45,12 @@ const SampleModal = (props) => {
     const lastKeysFields = lastKeys.map(k => survey.find(f => f.name === k));
 
     useLayoutEffect(() => {
+      console.log('ULE SampleModal []');
       return () => confirmLeavePage();
     }, []);
 
     useEffect(() => {
-      console.log('UE SamplesModal Updating Default Sample Name on Spot Changed...');
+      console.log('UE SampleModal [spot]', spot);
       setNamePrefix(preferences.sample_prefix || 'Unnamed');
       setStartingNumber(preferences.starting_sample_number || (spot.properties?.samples?.length + 1) || 1);
     }, [spot]);
@@ -107,7 +108,7 @@ const SampleModal = (props) => {
             selectedButtonStyle={{backgroundColor: PRIMARY_ACCENT_COLOR}}
             textStyle={{color: PRIMARY_TEXT_COLOR}}
           />
-          <Form {...{formName: props.formName, surveyFragment: lastKeysFields,...props.formProps}}/>
+          <Form {...{formName: props.formName, surveyFragment: lastKeysFields, ...props.formProps}}/>
         </React.Fragment>
       );
     };

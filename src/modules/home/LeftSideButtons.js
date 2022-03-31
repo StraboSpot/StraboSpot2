@@ -31,7 +31,7 @@ const LeftSideButtons = (props) => {
   let timeout;
 
   useEffect(() => {
-    console.log('User Location button is:', userLocationButtonOn);
+    console.log('UE LeftSideButtons [userLocationButtonOn]', userLocationButtonOn);
     if (userLocationButtonOn) startLocationReminderTimer();
     return () => clearTimeout(timeout);
   }, [userLocationButtonOn]);

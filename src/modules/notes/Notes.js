@@ -31,6 +31,7 @@ const Notes = (props) => {
   const page = PRIMARY_PAGES.find(p => p.key === PAGE_KEYS.NOTES);
 
   useLayoutEffect(() => {
+    console.log('ULE Notes [templates]', templates);
     if (isEmpty(initialNote) && templates.notes && templates.notes.isInUse && !isEmpty(templates.notes.active)) {
       const templatesNotes = templates.notes.active.map(t => t.values.note).join('\n');
       setInitialNotesValues({note: templatesNotes});

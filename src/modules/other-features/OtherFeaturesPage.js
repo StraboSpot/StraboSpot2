@@ -22,10 +22,12 @@ const OtherFeaturesPage = () => {
   const selectedAttributes = useSelector(state => state.spot.selectedAttributes);
 
   useEffect(() => {
+    console.log('UE OtherFeaturesPage []');
     return () => dispatch(setSelectedAttributes([]));
   }, []);
 
   useEffect(() => {
+    console.log('UE OtherFeaturesPage [selectedAttributes, spot]', selectedAttributes, spot);
     if (isEmpty(selectedAttributes)) setSelectedFeature({});
     else if (!isMultipleFeaturesTaggingEnabled) {
       setSelectedFeature(selectedAttributes[0]);

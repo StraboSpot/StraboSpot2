@@ -1,5 +1,5 @@
-import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
-import {Animated, Keyboard, TextInput, Text, View, Image} from 'react-native';
+import React, {useLayoutEffect, useRef, useState} from 'react';
+import {Animated, Image, View} from 'react-native';
 
 import {Formik} from 'formik';
 import {Avatar, Button, Icon, Overlay} from 'react-native-elements';
@@ -8,22 +8,14 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import useUploadHook from '../../services/useUpload';
 import commonStyles from '../../shared/common.styles';
-import * as Helpers from '../../shared/Helpers';
+import {isEmpty} from '../../shared/Helpers';
 import {Form} from '../form';
 import useFormHook from '../form/useForm';
-import {
-  addedStatusMessage,
-  clearedStatusMessages,
-  setErrorMessagesModalVisible,
-  setStatusMessagesModalVisible,
-} from '../home/home.slice';
+import {addedStatusMessage, clearedStatusMessages, setErrorMessagesModalVisible} from '../home/home.slice';
 import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import SidePanelHeader from '../main-menu-panel/sidePanel/SidePanelHeader';
 import userStyles from './user.styles';
 import {setUserData} from './userProfile.slice';
-import {isEmpty} from '../../shared/Helpers';
-
-
 
 const UserProfile = (props) => {
   const formRef = useRef(null);
@@ -40,11 +32,11 @@ const UserProfile = (props) => {
   const formName = ['general', 'user_profile'];
 
   useLayoutEffect(() => {
-    console.log('UE userProfile []');
+    console.log('UE UserProfile []');
     return () => saveForm();
   }, []);
 
- const pickImageSource = async (source) => {
+  const pickImageSource = async (source) => {
     if (source === 'gallery') {
       launchImageLibrary({}, async response => {
         console.log('Profile Image', response);
@@ -110,8 +102,9 @@ const UserProfile = (props) => {
         <View style={{alignItems: 'center'}}>
           <Avatar
             rounded
-            renderPlaceholderContent={<Image source={require('../../assets/images/noimage.jpg')} style={{width: '70%', height: '70%'}}/>}
-            source={{uri: avatar?.uri || avatar }}
+            renderPlaceholderContent={<Image source={require('../../assets/images/noimage.jpg')}
+                                             style={{width: '70%', height: '70%'}}/>}
+            source={{uri: avatar?.uri || avatar}}
             size={'xlarge'}
           />
         </View>
@@ -165,7 +158,8 @@ const UserProfile = (props) => {
             avatarStyle={userStyles.profilePageAvatarContainer}
             size={200}
             rounded={true}
-            renderPlaceholderContent={<Image source={require('../../assets/images/noimage.jpg')} style={{width: '70%', height: '70%'}}/>}
+            renderPlaceholderContent={<Image source={require('../../assets/images/noimage.jpg')}
+                                             style={{width: '70%', height: '70%'}}/>}
             source={!isEmpty(userData.image) && {uri: userData.image}}
           />
         </View>

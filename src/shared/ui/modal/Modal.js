@@ -21,7 +21,7 @@ const Modal = (props) => {
   const [textInputAnimate] = useState(new Animated.Value(0));
 
   useEffect(() => {
-    console.log('useEffect Form []');
+    console.log('UE Modal []');
     Keyboard.addListener('keyboardDidShow', handleKeyboardDidShow);
     Keyboard.addListener('keyboardDidHide', handleKeyboardDidHide);
     return function cleanup() {

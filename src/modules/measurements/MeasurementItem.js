@@ -18,11 +18,14 @@ const MeasurementItem = (props) => {
   const [featureSelectedForTagging, setFeatureSelectedForTagging] = useState(false);
 
   useEffect(() => {
+    console.log('UE MeasurementItem [isMultipleFeaturesTaggingEnabled]', isMultipleFeaturesTaggingEnabled);
     if (!isMultipleFeaturesTaggingEnabled) setFeatureSelectedForTagging(false);
   }, [isMultipleFeaturesTaggingEnabled]);
 
   const onMeasurementPress = () => {
-    if (isMultipleFeaturesTaggingEnabled) setFeatureSelectedForTagging(useTags.setFeaturesSelectedForMultiTagging(props.item));
+    if (isMultipleFeaturesTaggingEnabled) {
+      setFeatureSelectedForTagging(useTags.setFeaturesSelectedForMultiTagging(props.item));
+    }
     else props.onPress();
   };
 
@@ -43,7 +46,7 @@ const MeasurementItem = (props) => {
             <ListItem.Title
               style={props.selectedIds.includes(props.item.id) ? commonStyles.listItemTitleInverse
                 : commonStyles.listItemTitle}
-             >
+            >
               <MeasurementLabel item={props.item}/>
             </ListItem.Title>
             <FeatureTagsList spotId={spot.properties.id} featureId={props.item.id}/>

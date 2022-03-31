@@ -15,7 +15,7 @@ import {
   setOfflineMapsModalVisible,
 } from '../home/home.slice';
 import {SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.constants';
-import {setMenuSelectionPage, setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
+import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import {addedProject, updatedProject} from '../project/projects.slice';
 import {setSelectedSpot} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
@@ -45,7 +45,7 @@ const useMaps = (mapRef) => {
   const userMapboxToken = useSelector(state => state.user.mapboxToken);
 
   useEffect(() => {
-    console.log('isMainMenuPanelVisible:', isMainMenuPanelVisible);
+    console.log('UE useMaps [isMainMenuPanelVisible]', isMainMenuPanelVisible);
   }, [isMainMenuPanelVisible]);
 
   const buildStyleURL = map => {

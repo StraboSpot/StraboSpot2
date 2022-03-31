@@ -54,6 +54,7 @@ const AddMineralModal = (props) => {
   let tempValues = {};
 
   useEffect(() => {
+    console.log('UE AddMineralModal [templates]', templates);
     if (templates[petKey] && templates[petKey].isInUse && templates[petKey].active
       && templates[petKey].active[0] && templates[petKey].active[0].values) {
       setInitialValues({...templates[petKey].active[0].values, id: getNewId()});

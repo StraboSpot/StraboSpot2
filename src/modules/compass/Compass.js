@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 
 import {Button, ListItem} from 'react-native-elements';
-import {accelerometer, SensorTypes, setUpdateIntervalForType, magnetometer} from 'react-native-sensors';
+import {accelerometer, magnetometer, SensorTypes, setUpdateIntervalForType} from 'react-native-sensors';
 import Sound from 'react-native-sound';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -72,6 +72,7 @@ const Compass = (props) => {
   const CompassEvents = new NativeEventEmitter(NativeModules.Compass);
 
   useEffect(() => {
+    console.log('UE Compass []');
     const buttonClick = new Sound('compass_button_click.mp3', Sound.MAIN_BUNDLE, (error) => {
       if (error) console.log('Failed to load sound', error);
     });
@@ -79,6 +80,7 @@ const Compass = (props) => {
   }, []);
 
   useEffect(() => {
+    console.log('UE Compass []');
     AppState.addEventListener('change', handleAppStateChange);
     if (Platform.OS === 'android') {
       setUpdateIntervalForType(SensorTypes.accelerometer, 100);
@@ -93,11 +95,13 @@ const Compass = (props) => {
 
   // Update compass data on accelerometer data changed
   useEffect(() => {
+    console.log('UE Compass [accelerometerData]', accelerometerData);
     displayCompassData();
   }, [accelerometerData]);
 
   // Create a new measurement on grabbing new compass measurements from shortcut modal
   useEffect(() => {
+    console.log('UE Compass [compassMeasurements]', compassMeasurements);
     if (!isEmpty(compassMeasurements) && modalVisible === MODAL_KEYS.SHORTCUTS.MEASUREMENT) {
       console.log('New compass measurement recorded in Measurements.', compassMeasurements);
       useMeasurements.createNewMeasurement();
@@ -107,6 +111,7 @@ const Compass = (props) => {
 
   // Update quality slider on active measurement changed
   useEffect(() => {
+    console.log('UE Compass [selectedMeasurement]', selectedMeasurement);
     if (!isEmpty(selectedMeasurement) && selectedMeasurement.quality) {
       setSliderValue(parseInt(selectedMeasurement.quality, 10));
     }
@@ -114,7 +119,7 @@ const Compass = (props) => {
 
   // Update compass on measurement type changed
   useEffect(() => {
-    console.log('compassMeasurementTypes', compassMeasurementTypes);
+    console.log('UE Compass [compassMeasurementTypes]', compassMeasurementTypes);
     setToggles(compassMeasurementTypes);
   }, [compassMeasurementTypes]);
 
@@ -181,7 +186,7 @@ const Compass = (props) => {
       magY: compassHeading?.y,
       magZ: compassHeading?.z,
       // heading: roundToDecimalPlaces(compassHeading, 4),
-      heading: degree(actualHeading) ,
+      heading: degree(actualHeading),
       strike: roundToDecimalPlaces(strike, 0),
       dip_direction: roundToDecimalPlaces(dipdir, 0),
       dip: roundToDecimalPlaces(dip, 0),
@@ -250,14 +255,14 @@ const Compass = (props) => {
         magY: magnetometerData?.y,
         magZ: magnetometerData?.z,
         M11: roundToDecimalPlaces(res.M11, 3),
-        M12: roundToDecimalPlaces(res.M12,3),
-        M13: roundToDecimalPlaces(res.M13,3),
-        M21: roundToDecimalPlaces(res.M21,3),
-        M22: roundToDecimalPlaces(res.M22,3),
-        M23: roundToDecimalPlaces(res.M23,3),
-        M31: roundToDecimalPlaces(res.M31,3),
-        M32: roundToDecimalPlaces(res.M32,3),
-        M33: roundToDecimalPlaces(res.M33,3),
+        M12: roundToDecimalPlaces(res.M12, 3),
+        M13: roundToDecimalPlaces(res.M13, 3),
+        M21: roundToDecimalPlaces(res.M21, 3),
+        M22: roundToDecimalPlaces(res.M22, 3),
+        M23: roundToDecimalPlaces(res.M23, 3),
+        M31: roundToDecimalPlaces(res.M31, 3),
+        M32: roundToDecimalPlaces(res.M32, 3),
+        M33: roundToDecimalPlaces(res.M33, 3),
       });
     }
     else Alert.alert('Having trouble getting compass data from device!');
@@ -284,7 +289,7 @@ const Compass = (props) => {
     else if (planerToggleOn && compassData.strike !== null) return renderStrikeDipSymbol();
   };
 
- const renderSlider = () => {
+  const renderSlider = () => {
     return (
       <Slider
         onSlidingComplete={(value) => setSliderValue(value)}
@@ -429,7 +434,7 @@ const Compass = (props) => {
 
   const subscribeToSensors = async () => {
     accelerometerSubscription = await accelerometer.subscribe((data) => {
-    //   // console.log('Acc Data', data);
+      // console.log('Acc Data', data);
       setAccelerometerData(data);
     });
     console.log(accelerometerSubscription);
@@ -491,8 +496,8 @@ const Compass = (props) => {
               Tap compass to
               {modalVisible === MODAL_KEYS.SHORTCUTS.MEASUREMENT && ' record a new \nmeasurement in a NEW Spot'}
               {modalVisible === MODAL_KEYS.NOTEBOOK.MEASUREMENTS
-              && (isEmpty(selectedMeasurement) ? ' record \na new measurement \nor tap HERE to record manually'
-                : ' edit current measurement')
+                && (isEmpty(selectedMeasurement) ? ' record \na new measurement \nor tap HERE to record manually'
+                  : ' edit current measurement')
               }
             </Text>
           </TouchableOpacity>

@@ -38,7 +38,7 @@ const useMapsOffline = () => {
   const [useServerRequests] = useServerRequesteHook();
 
   useEffect(() => {
-
+    console.log('UE useMapsOffline [isOnline]', isOnline);
   }, [isOnline]);
 
   const getMapName = (map) => {

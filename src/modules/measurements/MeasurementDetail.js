@@ -38,16 +38,18 @@ const MeasurementDetail = (props) => {
   const isTemplate = props.hasOwnProperty('saveTemplate');
 
   useLayoutEffect(() => {
+    console.log('ULE MeasurementDetail []');
     return () => confirmLeavePage();
   }, []);
 
   useEffect(() => {
+    console.log('UE MeasurementDetail []');
     return () => clearSelectedMeasurements();
   }, []);
 
   // Update selected Measurement on selected Attitudes changed or return to Measurements page if no selected Attitude
   useEffect(() => {
-    console.log('UE for selectedAttitudes changed in MeasurementDetail', props.selectedAttitudes);
+    console.log('UE MeasurementDetail [props.selectedAttitudes]', props.selectedAttitudes);
     if (isEmpty(props.selectedAttitudes)) props.closeDetailView();
     else if (isEmpty(selectedMeasurement) && props.selectedAttitudes[0]) {
       switchSelectedMeasurement(props.selectedAttitudes[0]);
@@ -60,6 +62,7 @@ const MeasurementDetail = (props) => {
 
   // Update field values for measurements on grabbing new compass measurements
   useEffect(() => {
+    console.log('UE MeasurementDetail [compassMeasurements]', compassMeasurements);
     if (!isEmpty(compassMeasurements)) {
       console.log('New compass measurement recorded AND DETAIL OPEN.', compassMeasurements);
       if (!isEmpty(selectedMeasurement) && selectedMeasurement.type) {
@@ -76,6 +79,7 @@ const MeasurementDetail = (props) => {
 
   // Set compass measurement type on changing the selected measurement type
   useEffect(() => {
+    console.log('UE MeasurementDetail [selectedMeasurement]', selectedMeasurement);
     if (!isTemplate && !isEmpty(selectedMeasurement) && selectedMeasurement.type) {
       if (selectedMeasurement.type === 'planar_orientation' || selectedMeasurement.type === 'tabular_orientation') {
         dispatch(setCompassMeasurementTypes([COMPASS_TOGGLE_BUTTONS.PLANAR]));

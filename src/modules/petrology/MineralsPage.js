@@ -34,11 +34,12 @@ const MineralsPage = (props) => {
   const usePetrology = usePetrologyHook();
 
   useEffect(() => {
+    console.log('UE MineralsPage []');
     return () => dispatch(setSelectedAttributes([]));
   }, []);
 
   useEffect(() => {
-    console.log('UE Rendered MineralsPage\nSpot:', spot, '\nSelectedAttributes:', selectedAttributes);
+    console.log('UE MineralsPage [selectedAttributes, spot]', selectedAttributes, spot);
     if (isEmpty(selectedAttributes)) setSelectedMineral({});
     else {
       setSelectedMineral(selectedAttributes[0]);

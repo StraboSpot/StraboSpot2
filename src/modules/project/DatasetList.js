@@ -29,8 +29,7 @@ const DatasetList = () => {
   const selectedDatasetId = useSelector(state => state.project.selectedDatasetId);
 
   useEffect(() => {
-    console.log('In Dataset List UE');
-    console.log('DATASET WITH IMAGES', datasets);
+    console.log('UE DatasetList [datasets]', datasets);
   }, [datasets]);
 
   const editDataset = (id, name) => {
@@ -156,7 +155,7 @@ const DatasetList = () => {
       >
         <Text style={{textAlign: 'center'}}>Are you sure you want to delete Dataset
           {selectedDataset && selectedDataset.name
-          && <Text style={styles.dialogContentImportantText}>{'\n' + selectedDataset.name}</Text>}
+            && <Text style={styles.dialogContentImportantText}>{'\n' + selectedDataset.name}</Text>}
           ?
         </Text>
         <Text style={styles.dialogConfirmText}>

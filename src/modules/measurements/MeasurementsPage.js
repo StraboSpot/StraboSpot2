@@ -53,20 +53,22 @@ const MeasurementsPage = (props) => {
   };
 
   useEffect(() => {
+    console.log('UE MeasurementsPage []');
     return () => dispatch(setSelectedAttributes([]));
   }, []);
 
   useEffect(() => {
-    console.log('UE Rendered MeasurementsPage\nSpot:', spot, '\nSelectedAttributes:', selectedAttributes);
-   if (isEmpty(selectedAttributes)) setSelectedAttitudes([]);
-   else if (!isMultipleFeaturesTaggingEnabled) {
-     setSelectedAttitudes(selectedAttributes);
-     setIsDetailView(true);
-   }
+    console.log('UE MeasurementsPage [selectedAttributes, spot]', selectedAttributes, spot);
+    if (isEmpty(selectedAttributes)) setSelectedAttitudes([]);
+    else if (!isMultipleFeaturesTaggingEnabled) {
+      setSelectedAttitudes(selectedAttributes);
+      setIsDetailView(true);
+    }
   }, [selectedAttributes, spot]);
 
   // Create a new measurement on grabbing new compass measurements
   useEffect(() => {
+    console.log('UE MeasurementsPage [compassMeasurements]', compassMeasurements);
     if (!isEmpty(compassMeasurements) && !isDetailView) {
       console.log('New compass measurement recorded in Measurements.', compassMeasurements);
       if (compassMeasurements.manual) dispatch(setModalVisible({modal: false}));

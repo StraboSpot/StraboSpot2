@@ -36,10 +36,12 @@ const AddFabricModal = (props) => {
   const groupKey = 'fabrics';
 
   useEffect(() => {
+    console.log('UE AddFabricModal []');
     return () => dispatch(setModalValues({}));
   }, []);
 
   useEffect(() => {
+    console.log('UE AddFabricModal [modalValues]', modalValues);
     const initialValues = isEmpty(modalValues) ? {id: getNewId(), type: 'fault_rock'} : modalValues;
     formRef.current?.setValues(initialValues);
     setSelectedTypeIndex(types.indexOf(initialValues.type));

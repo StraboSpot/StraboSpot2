@@ -17,6 +17,7 @@ const MapActionsDialog = props => {
   const stratSection = useSelector(state => state.map.stratSection);
 
   useEffect(() => {
+    console.log('UE MapActionsDialog [offlineMaps]', offlineMaps);
     setIsVisible(
       Object.values(offlineMaps).some(map => map.isOfflineMapVisible === true),
     );

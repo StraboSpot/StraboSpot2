@@ -37,10 +37,12 @@ const AddThreeDStructureModal = (props) => {
   const groupKey = '_3d_structures';
 
   useEffect(() => {
+    console.log('UE AddThreeDStructureModal []');
     return () => dispatch(setModalValues({}));
   }, []);
 
   useEffect(() => {
+    console.log('UE AddThreeDStructureModal [modalValues]', modalValues);
     const initialValues = isEmpty(modalValues) ? {id: getNewId(), type: THREE_D_STRUCTURE_TYPES.FOLD} : modalValues;
     formRef.current?.setValues(initialValues);
     setSelectedTypeIndex(types.indexOf(initialValues.type));

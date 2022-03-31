@@ -31,7 +31,7 @@ const Nesting = () => {
   const [childrenGenerations, setChildrenGenerations] = useState();
 
   useEffect(() => {
-    console.log('UE Nesting [spots]');
+    console.log('UE Nesting [spots, selectedSpot]', spots, selectedSpot);
     if (notebookPageVisible === PAGE_KEYS.NESTING) updateNest();
   }, [spots, selectedSpot]);
 
@@ -169,7 +169,7 @@ const Nesting = () => {
   return (
     <View style={{flex: 1}}>
       <ReturnToOverviewButton/>
-      <SectionDivider dividerText='Nesting'/>
+      <SectionDivider dividerText="Nesting"/>
       <FlatList
         ListHeaderComponent={renderGenerations('Parents')}
         ListFooterComponent={renderGenerations('Children')}

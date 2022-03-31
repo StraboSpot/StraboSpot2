@@ -1,11 +1,10 @@
-import React, {useEffect, useState} from 'react';
-import {Alert, Text, View} from 'react-native';
+import React, {useEffect} from 'react';
+import {Text, View} from 'react-native';
 
-import {useBatteryLevel, useBatteryLevelIsLow, usePowerState} from 'react-native-device-info';
+import {useBatteryLevel, usePowerState} from 'react-native-device-info';
 import {Icon} from 'react-native-elements';
 import {useDispatch} from 'react-redux';
 
-import WarningModal from '../modules/home/home-modals/WarningModal';
 import {addedStatusMessage, clearedStatusMessages, setWarningModalVisible} from '../modules/home/home.slice';
 import homeStyles from '../modules/home/home.style';
 import {roundToDecimalPlaces, toNumberFixedValue} from '../shared/Helpers';
@@ -14,11 +13,10 @@ const BatteryInfo = () => {
   const batteryLevel = roundToDecimalPlaces(useBatteryLevel(), 2);
   const powerState = usePowerState();
 
-  const [lowBattery, setLowBattery] = useState(false);
-
   const dispatch = useDispatch();
 
   useEffect(() => {
+    console.log('UE BatteryInfo [batteryLevel]', batteryLevel);
     lowBatteryLevel();
   }, [batteryLevel]);
 
@@ -46,7 +44,7 @@ const BatteryInfo = () => {
     dispatch(clearedStatusMessages());
     dispatch(
       addedStatusMessage(
-        `Battery level is at ${batteryLevel * 100}%!  Please find another source of power soon!`
+        `Battery level is at ${batteryLevel * 100}%!  Please find another source of power soon!`,
       ));
     dispatch(setWarningModalVisible(true));
   };

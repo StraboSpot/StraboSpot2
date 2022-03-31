@@ -27,13 +27,14 @@ const ImagesViewPage = (props) => {
   const [isError, setIsError] = useState(false);
 
   useEffect(() => {
+    console.log('UE ImagesViewPage [images]', images);
     getImageThumbnailURIs().catch(err => console.error(err));
   }, [images]);
 
   const getImagesFromCameraRoll = async () => {
-      useImages.getImagesFromCameraRoll().then((res) => {
-        props.toast(`${res} image saved!`);
-      });
+    useImages.getImagesFromCameraRoll().then((res) => {
+      props.toast(`${res} image saved!`);
+    });
   };
 
   const getImageThumbnailURIs = async () => {

@@ -28,10 +28,12 @@ const Miscellaneous = () => {
   const errorMessage = 'Wrong Password!';
 
   useEffect(() => {
+    console.log('UE Miscellaneous [password]', password);
     if (isEmpty(password)) setIsErrorMessage(false);
   }, [password]);
 
   useEffect(() => {
+    console.log('UE Miscellaneous [isTestingMode]', isTestingMode);
     isTestingMode ? setIsTestingModalVisible(true) : setIsTestingModalVisible(false);
   }, [isTestingMode]);
 
@@ -80,7 +82,7 @@ const Miscellaneous = () => {
         Data saved under pages that are in testing may NOT be compatible with future versions of StraboSpot.
       </Text>
       <Input
-        placeholder='Password'
+        placeholder="Password"
         secureTextEntry={true}
         defaultValue={''}
         onChangeText={userEntry}

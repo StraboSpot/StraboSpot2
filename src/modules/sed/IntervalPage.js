@@ -29,7 +29,8 @@ const IntervalPage = (props) => {
   const formName = ['sed', 'interval'];
 
   useLayoutEffect(() => {
-    console.log('UE Rendered IntervalPage\nSpot:', spot);
+    console.log('ULE IntervalPage []');
+    console.log('Spot:', spot);
     console.log('Interval:', interval);
     console.log('Character:', character);
 

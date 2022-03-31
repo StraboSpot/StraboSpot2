@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {ActivityIndicator, Alert, View} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
@@ -21,6 +21,7 @@ const ImageInfo = (props) => {
   const navigation = useNavigation();
 
   useEffect(() => {
+    console.log('UE ImageInfo []');
     return () => dispatch(setSelectedAttributes([]));
   }, []);
 
