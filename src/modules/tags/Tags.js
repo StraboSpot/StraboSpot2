@@ -45,6 +45,11 @@ const Tags = (props) => {
     return tag.name || '';
   };
 
+  const getButtonTitle = () => {
+    if (props.type === PAGE_KEYS.GEOLOGIC_UNITS) return ['Alphabetical', 'Map Extent'];
+    return ['Categorized', 'Map Extent'];
+  };
+
   const renderSectionHeader = (title) => {
     return (
       <View style={uiStyles.sectionHeaderBackground}>
@@ -134,7 +139,7 @@ const Tags = (props) => {
         <ButtonGroup
           selectedIndex={selectedIndex}
           onPress={(index) => setSelectedIndex(index)}
-          buttons={['Categorized', 'Map Extent']}
+          buttons={getButtonTitle()}
           containerStyle={{height: 50}}
           buttonStyle={{padding: 5}}
           selectedButtonStyle={{backgroundColor: PRIMARY_ACCENT_COLOR}}
