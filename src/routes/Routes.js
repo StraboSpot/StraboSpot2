@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
 
-import NetInfo from '@react-native-community/netinfo';
+import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {useDispatch, useSelector} from 'react-redux';
@@ -14,8 +14,10 @@ import Sketch from '../modules/sketch/Sketch';
 import {isEmpty} from '../shared/Helpers';
 
 const Routes = () => {
-  const dispatch = useDispatch();
+  const isOnline = useSelector(state => state.home.isOnline);
 
+  const dispatch = useDispatch();
+  const netInfo = useNetInfo();
   const Stack = createStackNavigator();
   const AppStack = createStackNavigator();
   //
@@ -32,17 +34,11 @@ const Routes = () => {
 
   useEffect(() => {
     console.log('UE Routes []');
-    const unsubscribe = NetInfo.addEventListener((networkState) => {
-      console.log('Connection type', networkState.type);
-      console.log('Is connected?', networkState.isConnected);
-      console.log('Is internet reachable?', networkState.isInternetReachable);
-      dispatch(setOnlineStatus(networkState));
-    });
-    return () => {
-      console.log('Network Test unsubscribed');
-      unsubscribe();
-    };
-  }, []);
+    console.log('NetInfo', netInfo);
+    if (isEmpty(isOnline) || netInfo.isInternetReachable !== null && netInfo.isConnected !== null) {
+      dispatch(setOnlineStatus(netInfo));
+    }
+  }, [isOnline, netInfo]);
 
   const navigationOptions = {
     gestureEnabled: false,

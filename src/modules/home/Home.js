@@ -659,7 +659,7 @@ const Home = () => {
       {isHomeLoading && <LoadingSpinner/>}
       {renderNotebookPanel()}
       {MainMenu}
-      {isOnline.isInternetReachable && toggleOfflineMapLabel() && renderOfflineMapViewLabel()}
+      {toggleOfflineMapLabel() && renderOfflineMapViewLabel()}
       {renderSaveAndCancelDrawButtons()}
       {isMainMenuPanelVisible && toggleSidePanel()}
       {modalVisible && renderFloatingView()}

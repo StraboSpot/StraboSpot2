@@ -19,6 +19,10 @@ const useConnectionStatus = () => {
     return netInfo;
   };
 
+const isInternetReachable = () => {
+  return netInfo.isInternetReachable;
+}
+
   const connectionStatusIcon = () => {
     if (!isOnline.isConnected && !isOnline.isInternetReachable) {
       return (
@@ -49,6 +53,7 @@ const useConnectionStatus = () => {
   return {
     connectionStatusIcon: connectionStatusIcon,
     getNetInfo: getNetInfo,
+    isInternetReachable: isInternetReachable,
   };
 };
 
