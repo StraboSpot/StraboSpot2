@@ -413,11 +413,13 @@ function Basemap(props) {
           />
         </MapboxGL.ShapeSource>
         <View style={homeStyles.scaleBarContainer}>
-          <ScaleBar
-            bottom={0}
-            zoom={currentZoom}
-            latitude={center[1]}
-          />
+          {!props.stratSection && !props.imageBasemap && (
+            <ScaleBar
+              bottom={0}
+              zoom={currentZoom}
+              latitude={center[1]}
+            />
+          )}
         </View>
       </MapboxGL.MapView>
     </View>
