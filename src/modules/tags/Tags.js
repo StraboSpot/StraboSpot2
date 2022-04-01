@@ -89,11 +89,20 @@ const Tags = (props) => {
   };
 
   const renderTagsListByMapExtent = () => {
+    let tagsInMapExtent;
     const spotIds = spotsInMapExtent.map(spot => spot.properties.id);
-    const tagsInMapExtent = tags.filter(tag => {
-      return tag.spots && !isEmpty(tag.spots.find(spotId => spotIds.includes(spotId)))
-      && props.type === 'geologic_unit' ? tag.type === 'geologic_unit' : tag.type !== 'geologic_unit';
-    });
+    if (props.type === PAGE_KEYS.GEOLOGIC_UNITS) {
+      tagsInMapExtent = tags.filter(tag => {
+        return tag.spots && !isEmpty(
+          tag.spots.find(spotId => spotIds.includes(spotId))) && tag.type === PAGE_KEYS.GEOLOGIC_UNITS;
+      });
+    }
+    else {
+      tagsInMapExtent = tags.filter(tag => {
+        return tag.spots && !isEmpty(tag.spots.find(spotId => spotIds.includes(spotId)))
+          && tag.type !== 'geologic_unit';
+      });
+    }
     console.log('tagsInMapExtent', tagsInMapExtent);
 
     return (
