@@ -68,7 +68,7 @@ function Basemap(props) {
 
   // Evaluate and return appropriate center coordinates
   const evaluateCenterCoordinates = () => {
-    if (props.stratSection) return [0, 0];
+    if (props.stratSection) return [.001, .0007];
     else if (props.zoomToSpot && !isEmpty(selectedSpot)) {
       if (props.imageBasemap && selectedSpot.properties.image_basemap === props.imageBasemap.id) {
         return proj4(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION, turf.centroid(selectedSpot).geometry.coordinates);
@@ -94,7 +94,13 @@ function Basemap(props) {
 
   const mapZoomLevel = async () => {
     const zoom = await mapRef.current.getZoom();
-    setCurrentZoom(zoom);
+    setCurrentZoom(zoom.toFixed(1));
+  };
+
+  const setInitialZoomLevel = () => {
+    if (props.imageBasemaps) return 14;
+    if (props.stratSection) return 18;
+    return props.zoom;
   };
 
   const onRegionDidChange = () => {
@@ -107,7 +113,7 @@ function Basemap(props) {
       <View style={homeStyles.currentZoomContainer}>
         <Text style={props.basemap.id === 'mapbox.satellite' ? homeStyles.currentZoomTextWhite
           : homeStyles.currentZoomTextBlack}>
-          Zoom: {currentZoom && currentZoom.toFixed(1)}
+          Zoom: {currentZoom}
         </Text>
       </View>
       <MapboxGL.MapView
@@ -140,7 +146,7 @@ function Basemap(props) {
 
         <MapboxGL.Camera
           ref={cameraRef}
-          zoomLevel={props.imageBasemap || props.stratSection ? 14 : props.zoom}
+          zoomLevel={setInitialZoomLevel()}
           centerCoordinate={evaluateCenterCoordinates()}
           animationDuration={0}
           // followUserLocation={true}   // Can't follow user location if want to zoom to extent of Spots
