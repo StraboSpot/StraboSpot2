@@ -52,7 +52,7 @@ const DateInputField = ({
           mode={'date'}
           value={date}
           onChange={changeDate}
-          display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+          display={Platform.OS === 'ios' ? 'inline' : 'default'}
           neutralButtonLabel='clear'
         />
       </View>
