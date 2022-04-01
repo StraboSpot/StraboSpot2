@@ -126,7 +126,7 @@ function Basemap(props) {
         logoEnabled={true}
         logoPosition={homeStyles.mapboxLogoPosition}
         rotateEnabled={false}
-        pitchEnable={false}
+        pitchEnabled={!(props.stratSection || props.imageBasemap)}
         attributionEnabled={true}
         attributionPosition={homeStyles.mapboxAttributionPosition}
         onPress={props.onMapPress}
