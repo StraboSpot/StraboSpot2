@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Dimensions} from 'react-native';
+import {Dimensions, Platform} from 'react-native';
 
 import {PanGestureHandler, State} from 'react-native-gesture-handler';
 import AnimatedPoint from 'react-native-reanimated';
@@ -13,6 +13,8 @@ const {cond, eq, add, call, set, Value, event} = AnimatedPoint;
 const {height, width} = Dimensions.get('window');
 
 const VertexDrag = () => {
+  const selectedVertexOffsetY = Platform.OS === 'ios' ? 10 : -14;
+
   const dispatch = useDispatch();
   const vertexStartCoords = useSelector(state => state.map.vertexStartCoords); // See note at bottom.
   const [dragX, setDragX] = useState(new Value(0));
@@ -72,7 +74,7 @@ const VertexDrag = () => {
           style={[
             mapStyles.vertexEditPoint,
             {
-              bottom: vertexStartCoords ? height - vertexStartCoords[1] - 10 : 0,
+              bottom: vertexStartCoords ? height - vertexStartCoords[1] - selectedVertexOffsetY : 0,
               left: vertexStartCoords ? vertexStartCoords[0] - 10 : 0,
             },
             {
