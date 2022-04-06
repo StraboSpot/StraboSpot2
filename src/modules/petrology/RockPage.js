@@ -61,7 +61,7 @@ const RockPage = (props) => {
   };
 
   const FAULT_SECTIONS = {
-    FAULT: {title: 'Fault & Sheer Zone Rocks', key: PAGE_KEYS.ROCK_TYPE_FAULT},
+    FAULT: {title: 'Fault & Shear Zone Rocks', key: PAGE_KEYS.ROCK_TYPE_FAULT},
   };
 
   const pageSections = pageKey === PAGE_KEYS.ROCK_TYPE_IGNEOUS ? IGNEOUS_SECTIONS
