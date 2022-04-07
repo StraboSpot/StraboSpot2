@@ -84,6 +84,7 @@ const Form = (props) => {
       delete choice.name;
       return choice;
     });
+    const subkeyValue = props.subkey && props.values && props.values[props.subkey] && props.values[props.subkey][field.name];
     return (
       <Field
         as={SelectInputField}
@@ -97,6 +98,8 @@ const Form = (props) => {
         onShowFieldInfo={showFieldInfo}
         showExpandedChoices={isExpanded}
         errors={props.errors}
+        subkey={props.subkey}
+        subkeyValue={subkeyValue}
       />
     );
   };

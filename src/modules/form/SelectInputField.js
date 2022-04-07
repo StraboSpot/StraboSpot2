@@ -14,11 +14,13 @@ const SelectInputField = (props) => {
   const placeholderText = props.name === 'spot_id_for_pet_copy' ? '-- None --' : `-- Select ${props.label} --`;
 
   const fieldValueChanged = (value) => {
+    const key = props.subkey ? props.subkey + '.' + props.name : props.name;
+    const currentValue = props.subkeyValue  ? props.subkeyValue : props.value;
     if (props.single) {
-      if (value[0] === props.value) props.setFieldValue(props.name, undefined);
-      else props.setFieldValue(props.name, value[0]);
+      if (value[0] === currentValue) props.setFieldValue(key, undefined);
+      else props.setFieldValue(key, value[0]);
     }
-    else props.setFieldValue(props.name, isEmpty(value) ? undefined : value);
+    else props.setFieldValue(key, isEmpty(value) ? undefined : value);
   };
 
   const getChoiceLabel = (value) => {
@@ -31,6 +33,7 @@ const SelectInputField = (props) => {
   const renderChoiceItem = (item) => {
     const radioSelected = <Icon name={'radiobox-marked'} type={'material-community'} color={PRIMARY_ACCENT_COLOR}/>;
     const radioUnslected = <Icon name={'radiobox-blank'} type={'material-community'} color={DARKGREY}/>;
+    const value = props.subkeyValue ? props.subkeyValue : props.value;
     return (
       <React.Fragment>
         <ListItem containerStyle={commonStyles.listItemFormField}>
@@ -39,7 +42,7 @@ const SelectInputField = (props) => {
           </ListItem.Content>
           {props.single && (
             <ListItem.CheckBox
-              checked={props.value === item.value}
+              checked={value === item.value}
               checkedIcon={radioSelected}
               uncheckedIcon={radioUnslected}
               onPress={() => fieldValueChanged([item.value])}

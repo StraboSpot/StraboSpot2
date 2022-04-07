@@ -1,4 +1,3 @@
-import CompassModal from '../compass/CompassModal';
 import DataOverview from '../external-data/DataOverview';
 import ExternalData from '../external-data/ExternalData';
 import AddFabricModal from '../fabrics/AddFabricModal';
@@ -7,6 +6,7 @@ import FabricsPage from '../fabrics/FabricsPage';
 import Geography from '../geography/Geography';
 import ImagesOverview from '../images/ImagesOverview';
 import ImagesViewPage from '../images/ImagesViewPage';
+import AddMeasurementModal from '../measurements/AddMeasurementModal';
 import MeasurementsOverview from '../measurements/MeasurementsOverview';
 import MeasurementsPage from '../measurements/MeasurementsPage';
 import Metadata from '../metadata/Metadata';
@@ -105,7 +105,7 @@ export const PRIMARY_PAGES = [
     icon_pressed_src: require('../../assets/icons/Measurement_pressed.png'),
     overview_component: MeasurementsOverview,
     page_component: MeasurementsPage,
-    modal_component: CompassModal,
+    modal_component: AddMeasurementModal,
   }, {
     key: PAGE_KEYS.IMAGES,
     label: 'Photos & Sketches',
