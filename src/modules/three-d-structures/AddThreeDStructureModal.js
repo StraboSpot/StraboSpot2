@@ -66,46 +66,48 @@ const AddThreeDStructureModal = (props) => {
   };
 
   const renderForm = (formProps) => {
-    return (
-      <React.Fragment>
-        <ButtonGroup
-          selectedIndex={selectedTypeIndex}
-          onPress={on3DStructureTypePress}
-          buttons={Object.values(THREE_D_STRUCTURE_TYPES).map(v => toTitleCase(v))}
-          containerStyle={{height: 40, borderRadius: 10}}
-          buttonStyle={{padding: 5}}
-          selectedButtonStyle={{backgroundColor: PRIMARY_ACCENT_COLOR}}
-          textStyle={{color: PRIMARY_TEXT_COLOR}}
-        />
-        {types[selectedTypeIndex] === THREE_D_STRUCTURE_TYPES.FOLD && (
-          <AddFold
-            survey={survey}
-            choices={choices}
-            setChoicesViewKey={setChoicesViewKey}
-            formName={formProps.status.formName}
-            formProps={formProps}
+    if (formProps && formProps.status && formProps.status.formName) {
+      return (
+        <React.Fragment>
+          <ButtonGroup
+            selectedIndex={selectedTypeIndex}
+            onPress={on3DStructureTypePress}
+            buttons={Object.values(THREE_D_STRUCTURE_TYPES).map(v => toTitleCase(v))}
+            containerStyle={{height: 40, borderRadius: 10}}
+            buttonStyle={{padding: 5}}
+            selectedButtonStyle={{backgroundColor: PRIMARY_ACCENT_COLOR}}
+            textStyle={{color: PRIMARY_TEXT_COLOR}}
           />
-        )}
-        {types[selectedTypeIndex] === THREE_D_STRUCTURE_TYPES.TENSOR && (
-          <AddTensor
-            survey={survey}
-            choices={choices}
-            setChoicesViewKey={setChoicesViewKey}
-            formName={formProps.status.formName}
-            formProps={formProps}
-          />
-        )}
-        {types[selectedTypeIndex] === THREE_D_STRUCTURE_TYPES.OTHER && (
-          <AddOther
-            survey={survey}
-            choices={choices}
-            setChoicesViewKey={setChoicesViewKey}
-            formName={formProps.status.formName}
-            formProps={formProps}
-          />
-        )}
-      </React.Fragment>
-    );
+          {types[selectedTypeIndex] === THREE_D_STRUCTURE_TYPES.FOLD && (
+            <AddFold
+              survey={survey}
+              choices={choices}
+              setChoicesViewKey={setChoicesViewKey}
+              formName={formProps.status.formName}
+              formProps={formProps}
+            />
+          )}
+          {types[selectedTypeIndex] === THREE_D_STRUCTURE_TYPES.TENSOR && (
+            <AddTensor
+              survey={survey}
+              choices={choices}
+              setChoicesViewKey={setChoicesViewKey}
+              formName={formProps.status.formName}
+              formProps={formProps}
+            />
+          )}
+          {types[selectedTypeIndex] === THREE_D_STRUCTURE_TYPES.OTHER && (
+            <AddOther
+              survey={survey}
+              choices={choices}
+              setChoicesViewKey={setChoicesViewKey}
+              formName={formProps.status.formName}
+              formProps={formProps}
+            />
+          )}
+        </React.Fragment>
+      );
+    }
   };
 
   const renderNotebookThreeDStructureModalContent = () => {
