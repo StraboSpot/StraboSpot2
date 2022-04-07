@@ -1,5 +1,5 @@
 import React from 'react';
-import {FlatList, Text, View} from 'react-native';
+import {Text, View} from 'react-native';
 
 import {Icon, ListItem} from 'react-native-elements';
 import MultiSelect from 'react-native-multiple-select';
@@ -8,7 +8,6 @@ import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
 import {DARKGREY, PRIMARY_ACCENT_COLOR} from '../../shared/styles.constants';
-import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import {formStyles} from '../form';
 
 const SelectInputField = (props) => {
@@ -68,12 +67,7 @@ const SelectInputField = (props) => {
             {renderFieldLabel()}
           </ListItem.Content>
         </ListItem>
-        <FlatList
-          keyExtractor={item => item.value}
-          data={props.choices}
-          renderItem={({item, index}) => renderChoiceItem(item, index)}
-          ItemSeparatorComponent={FlatListItemSeparator}
-        />
+        {props.choices.map((item, index) => renderChoiceItem(item, index))}
       </React.Fragment>
     );
   };
