@@ -68,7 +68,7 @@ function Basemap(props) {
 
   // Evaluate and return appropriate center coordinates
   const evaluateCenterCoordinates = () => {
-    if (props.stratSection) return [.001, .0007];
+    if (props.stratSection) return [0.001, 0.0007];
     else if (props.zoomToSpot && !isEmpty(selectedSpot)) {
       if (props.imageBasemap && selectedSpot.properties.image_basemap === props.imageBasemap.id) {
         return proj4(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION, turf.centroid(selectedSpot).geometry.coordinates);
