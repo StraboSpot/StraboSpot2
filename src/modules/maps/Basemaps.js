@@ -110,11 +110,12 @@ function Basemap(props) {
 
   return (
     <View style={{flex: 1}}>
-      <View style={homeStyles.currentZoomContainer}>
-        <Text style={props.basemap.id === 'mapbox.satellite' ? homeStyles.currentZoomTextWhite
-          : homeStyles.currentZoomTextBlack}>
-          Zoom: {currentZoom}
-        </Text>
+      <View style={homeStyles.zoomAndScaleBarContainer}>
+          <Text style={props.basemap.id === 'mapbox.satellite' ? homeStyles.currentZoomTextWhite
+            : homeStyles.currentZoomTextBlack}>
+            Zoom: {currentZoom}
+          </Text>
+        <ScaleBar  zoom={currentZoom} latitude={center[1]}/>
       </View>
       <MapboxGL.MapView
         id={props.imageBasemap ? props.imageBasemap.id : props.stratSection ? props.stratSection.strat_section_id : props.basemap.id}
@@ -412,15 +413,6 @@ function Basemap(props) {
             style={useMapSymbology.getMapSymbology().lineMeasure}
           />
         </MapboxGL.ShapeSource>
-        <View style={homeStyles.scaleBarContainer}>
-          {!props.stratSection && !props.imageBasemap && (
-            <ScaleBar
-              bottom={0}
-              zoom={currentZoom}
-              latitude={center[1]}
-            />
-          )}
-        </View>
       </MapboxGL.MapView>
     </View>
   );

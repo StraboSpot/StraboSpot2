@@ -1,4 +1,4 @@
-import {StyleSheet} from 'react-native';
+import {Platform, StyleSheet} from 'react-native';
 
 import * as themes from '../../shared/styles.constants';
 
@@ -20,13 +20,12 @@ const homeStyles = StyleSheet.create({
     textAlign: 'center',
   },
   mapboxAttributionPosition: {
-    left: 160,
-    bottom: -10,
+    left: 165,
+    bottom: Platform.OS === 'ios' ? -15 : 7,
   },
   mapboxLogoPosition: {
-    // right: 60,
     left: 70,
-    bottom: -10,
+    bottom: Platform.OS === 'ios' ? -15 : 7,
   },
   toastContainer: {
     alignItems: 'center',
@@ -132,20 +131,12 @@ const homeStyles = StyleSheet.create({
     top: 10,
     zIndex: -1,
   },
-  currentZoomContainer: {
-    zIndex: 1,
-    position: 'absolute',
-    bottom: 40,
-    left: 70,
-  },
   currentZoomTextBlack: {
     color: themes.BLACK,
     fontSize: 14,
     textShadowColor: themes.LIGHTGREY,
     textShadowRadius: 5,
-    marginLeft: 10,
-    // marginBottom: 20,
-    // fontWeight: 'bold',
+    marginRight: 20,
   },
   currentZoomTextWhite: {
     color: themes.LIGHTGREY,
@@ -154,11 +145,6 @@ const homeStyles = StyleSheet.create({
     textShadowRadius: 5,
     marginLeft: 10,
     // fontWeight: 'bold',
-  },
-  scaleBarContainer: {
-    position: 'absolute',
-    bottom:15,
-    left: 200,
   },
   batteryLevelContainer: {
     alignItems: 'flex-end',
@@ -179,6 +165,15 @@ const homeStyles = StyleSheet.create({
   },
   urlText: {
     fontSize: themes.SMALL_TEXT_SIZE,
+  },
+
+  zoomAndScaleBarContainer: {
+    zIndex: 1,
+    position: 'absolute',
+    bottom: 35,
+    left: 70,
+    flexDirection: 'row',
+    alignItems: 'flex-end',
   },
 });
 
