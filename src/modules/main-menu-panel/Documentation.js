@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {Alert, FlatList, Linking, Platform, View} from 'react-native';
+import React, {useState} from 'react';
+import {Alert, FlatList, Linking, Platform, Text, View} from 'react-native';
 
 import {Button, Icon, ListItem, Overlay} from 'react-native-elements';
 import PDFView from 'react-native-view-pdf';
@@ -24,20 +24,18 @@ const Documentation = (props) => {
     {
       label: 'airdrop',
       name: 'How to Airdrop backup files to other iPads',
-      file: Platform.OS === 'ios' ? 'Airdrop-from-iPad-to-iPad.pdf' : '/sdcard/Download/Airdrop-from-iPad-to-iPad.pdf',
+      file: Platform.OS === 'ios' ? 'Airdrop-from-iPad-to-iPad.pdf' : null,
     },
     {
       label: 'moveFiles',
       name: 'Moving backups out of StraboSpot 2 folder ',
-      file: Platform.OS === 'ios' ? 'Moving-Project-Backups-Out-of-StraboSpot2.pdf' : '/sdcard/Download/Moving-Project-Backups-Out-of-StraboSpot2.pdf',
+      file: Platform.OS === 'ios' ? 'Moving-Project-Backups-Out-of-StraboSpot2.pdf' : null,
     },
   ];
 
   const toggleOverlay = (pdfLabel) => {
     setDoc(pdfLabel);
-    Platform.OS === 'ios' ? setVisible(!visible) : Alert.alert('Currently not available on Android',
-      `Visit ${helpUrl}`);
-    // setVisible(!visible);
+    setVisible(!visible);
   };
 
   const viewOnlineHelp = async (path) => {
@@ -126,8 +124,11 @@ const Documentation = (props) => {
 
   return (
     <View style={{flex: 1}}>
-      <SectionDivider dividerText={'FAQ\'s'}/>
-      {renderFAQitems()}
+      <View style={{flex: 1, alignItems: 'center'}}>
+        <SectionDivider dividerText={'FAQ\'s'}/>
+        {Platform.OS === 'ios' ? renderFAQitems()
+          : <Text style={commonStyles.noValueText}>Not available for Android yet</Text>}
+      </View>
       {renderHelpLink()}
       {viewPDF()}
     </View>
