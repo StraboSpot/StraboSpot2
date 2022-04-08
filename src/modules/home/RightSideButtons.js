@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Animated, Text, View} from 'react-native';
+import {Animated, Platform, Text, View} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
 import {Button} from 'react-native-elements';
@@ -64,6 +64,40 @@ const RightSideButtons = (props) => {
         return props.mapMode === MAP_MODES.DRAW.FREEHANDPOLYGON
           ? require('../../assets/icons/PolygonFreehandButton_pressed.png')
           : require('../../assets/icons/PolygonFreehandButton.png');
+    }
+  };
+
+  const onLongPress = (type) => {
+    if (Platform.OS === 'ios') {
+      switch (type) {
+        case 'point':
+          setPointIconType(prevState => ({
+              ...prevState,
+              point: pointIconType.point === MAP_MODES.DRAW.POINT
+                ? MAP_MODES.DRAW.POINTLOCATION
+                : MAP_MODES.DRAW.POINT,
+            }),
+          );
+          break;
+        case 'line':
+          setPointIconType(prevState => ({
+              ...prevState,
+              line: pointIconType.line === MAP_MODES.DRAW.LINE
+                ? MAP_MODES.DRAW.FREEHANDLINE
+                : MAP_MODES.DRAW.LINE,
+            }),
+          );
+          break;
+        case 'polygon':
+          setPointIconType(prevState => ({
+              ...prevState,
+              polygon: pointIconType.polygon === MAP_MODES.DRAW.POLYGON
+                ? MAP_MODES.DRAW.FREEHANDPOLYGON
+                : MAP_MODES.DRAW.POLYGON,
+            }),
+          );
+          break;
+      }
     }
   };
 
@@ -197,15 +231,7 @@ const RightSideButtons = (props) => {
                     if (pointIconType.point === MAP_MODES.DRAW.POINT) props.clickHandler(MAP_MODES.DRAW.POINT);
                     else props.clickHandler(MAP_MODES.DRAW.POINTLOCATION);
                   }}
-                  onLongPress={() => {
-                    setPointIconType(prevState => ({
-                        ...prevState,
-                        point: pointIconType.point === MAP_MODES.DRAW.POINT
-                          ? MAP_MODES.DRAW.POINTLOCATION
-                          : MAP_MODES.DRAW.POINT,
-                      }),
-                    );
-                  }}
+                  onLongPress={() => onLongPress('point')}
                 />)}
             <IconButton
               style={{top: 5}}
@@ -214,13 +240,7 @@ const RightSideButtons = (props) => {
                 if (pointIconType.line === MAP_MODES.DRAW.LINE) props.clickHandler(MAP_MODES.DRAW.LINE);
                 else props.clickHandler(MAP_MODES.DRAW.FREEHANDLINE);
               }}
-              onLongPress={() => setPointIconType(prevState => ({
-                  ...prevState,
-                  line: pointIconType.line === MAP_MODES.DRAW.LINE
-                    ? MAP_MODES.DRAW.FREEHANDLINE
-                    : MAP_MODES.DRAW.LINE,
-                }),
-              )}
+              onLongPress={() => onLongPress('line')}
             />
             <IconButton
               style={{top: 5}}
@@ -229,16 +249,7 @@ const RightSideButtons = (props) => {
                 if (pointIconType.polygon === MAP_MODES.DRAW.POLYGON) props.clickHandler(MAP_MODES.DRAW.POLYGON);
                 else props.clickHandler(MAP_MODES.DRAW.FREEHANDPOLYGON);
               }}
-              onLongPress={() => {
-                setPointIconType(prevState => ({
-                    ...prevState,
-                    polygon: pointIconType.polygon === MAP_MODES.DRAW.POLYGON
-                      ? MAP_MODES.DRAW.FREEHANDPOLYGON
-                      : MAP_MODES.DRAW.POLYGON,
-                  }),
-                );
-              }
-              }
+              onLongPress={() => onLongPress('polygon')}
             />
           </View>
         </Animated.View>
