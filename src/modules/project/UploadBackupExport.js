@@ -1,5 +1,5 @@
 import React from 'react';
-import {Alert, Linking, Text, View} from 'react-native';
+import {Alert, Linking, Platform, Text, View} from 'react-native';
 
 import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
@@ -87,15 +87,20 @@ const UploadBackAndExport = (props) => {
           titleStyle={commonStyles.standardButtonText}
           onPress={() => checkforActiveDatasets()}
         />
-        <View style={{padding: 10}}>
-          <Text style={commonStyles.dialogContentImportantText}>IMPORTANT!</Text>
-          <Text style={{...commonStyles.dialogContentImportantText, margin: 10, lineHeight: 20}}>After backing up, to
-            preserve your data please copy
-            your project backups out of the StraboSpot2/ProjectBackups folder to a different folder in the iOS app
-            Files/On My IPad! If online, you can find detailed instructions
-            <Text style={{color: BLUE}} onPress={openURL}> here</Text>.
-          </Text>
-        </View>
+        {Platform.OS === 'ios'
+          && (
+            <View style={{padding: 10}}>
+              <Text style={commonStyles.dialogContentImportantText}>IMPORTANT!</Text>
+              <Text style={{...commonStyles.dialogContentImportantText, margin: 10, lineHeight: 20}}>After backing up,
+                to
+                preserve your data please copy
+                your project backups out of the StraboSpot2/ProjectBackups folder to a different folder in the iOS app
+                Files/On My IPad! If online, you can find detailed instructions
+                <Text style={{color: BLUE}} onPress={openURL}> here</Text>.
+              </Text>
+            </View>
+          )
+        }
       </View>
     );
   };
@@ -108,27 +113,32 @@ const UploadBackAndExport = (props) => {
         {renderUploadAndBackupButtons()}
       </View>
 
-      <View style={{flex: 1, justifyContent: 'flex-end', paddingBottom: 15}}>
-        <View style={{padding: 10, alignItems: 'center'}}>
-          <Text style={{...uiStyles.sectionDividerText, textAlign: 'center'}}>Additional help documents can be found in
-            the Menu -> Help ->
-            Documentation</Text>
-        </View>
-        <Button
-          title={'View/Edit Files on Device'}
-          type={'outline'}
-          containerStyle={commonStyles.buttonPadding}
-          buttonStyle={commonStyles.standardButton}
-          titleStyle={commonStyles.standardButtonText}
-          onPress={() => useDevice.openURL('ProjectBackups')}
-          iconContainerStyle={{paddingRight: 10}}
-          icon={{
-            name: 'file-tray-full-outline',
-            type: 'ionicon',
-            color: BLUE,
-          }}
-        />
-      </View>
+      {Platform.OS === 'ios'
+        && (
+          <View style={{flex: 1, justifyContent: 'flex-end', paddingBottom: 15}}>
+            <View style={{padding: 10, alignItems: 'center'}}>
+              <Text style={{...uiStyles.sectionDividerText, textAlign: 'center'}}>Additional help documents can be found
+                in
+                the Menu -> Help ->
+                Documentation</Text>
+            </View>
+            <Button
+              title={'View/Edit Files on Device'}
+              type={'outline'}
+              containerStyle={commonStyles.buttonPadding}
+              buttonStyle={commonStyles.standardButton}
+              titleStyle={commonStyles.standardButtonText}
+              onPress={() => useDevice.openURL('ProjectBackups')}
+              iconContainerStyle={{paddingRight: 10}}
+              icon={{
+                name: 'file-tray-full-outline',
+                type: 'ionicon',
+                color: BLUE,
+              }}
+            />}
+          </View>
+        )
+      }
       {/*<Divider sectionText={'export'}/>*/}
       {/*{renderExportButtons()}*/}
       {/*<Divider sectionText={'restore project from backup'}/>*/}
