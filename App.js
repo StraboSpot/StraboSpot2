@@ -1,6 +1,7 @@
 import 'react-native-gesture-handler';
 import React from 'react';
 
+import {useNetInfo} from '@react-native-community/netinfo';
 import * as Sentry from '@sentry/react-native';
 import {Provider} from 'react-redux';
 import {persistStore} from 'redux-persist';
@@ -24,6 +25,7 @@ Sentry.init({
 });
 
 const App = () => {
+  const netInfo = useNetInfo();
   const persistor = persistStore(store);
   // const persistorPurge = persistStore(store).purge(); // Use this to clear persistStore completely
 
@@ -31,7 +33,7 @@ const App = () => {
     <Provider store={store}>
       <PersistGate loading={<Loading/>} persistor={persistor}>
         {/*<Sentry.TouchEventBoundary>*/}
-          <Routes/>
+          <Routes netInfo={netInfo}/>
         {/*</Sentry.TouchEventBoundary>*/}
       </PersistGate>
     </Provider>

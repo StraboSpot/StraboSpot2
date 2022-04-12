@@ -8,7 +8,7 @@ import {FlatListSlider} from 'react-native-flatlist-slider';
 import {useDispatch, useSelector} from 'react-redux';
 
 import BatteryInfo from '../../services/BatteryInfo';
-import useConnectionStatusHook from '../../services/useConnectionStatus';
+import ConnectionStatus from '../../services/ConnectionStatus';
 import useDeviceHook from '../../services/useDevice';
 import * as Helpers from '../../shared/Helpers';
 import {animatePanels, isEmpty} from '../../shared/Helpers';
@@ -71,7 +71,6 @@ const Home = () => {
   const mainMenuSidePanelWidth = 300;
   const notebookPanelWidth = 400;
 
-  const useConnectionStatus = useConnectionStatusHook();
   const [useHome] = useHomeHook();
   const [useImages] = useImagesHook();
   const [useMaps] = useMapsHook();
@@ -594,9 +593,9 @@ const Home = () => {
         isSelectingForTagging={isSelectingForTagging}
         setDistance={d => setDistance(d)}
       />
-      <View style={uiStyles.offlineImageIconContainer}>
+      <View style={uiStyles.iconContainer}>
         {Platform.OS === 'ios' && <BatteryInfo/>}
-        {useConnectionStatus.connectionStatusIcon()}
+        <ConnectionStatus />
       </View>
       {vertexStartCoords && <VertexDrag/>}
       <ToastPopup toastRef={toastRef}/>

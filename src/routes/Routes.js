@@ -14,7 +14,6 @@ import Sketch from '../modules/sketch/Sketch';
 import {isEmpty} from '../shared/Helpers';
 
 const Routes = () => {
-  const isOnline = useSelector(state => state.home.isOnline);
 
   const dispatch = useDispatch();
   const netInfo = useNetInfo();
@@ -34,11 +33,10 @@ const Routes = () => {
 
   useEffect(() => {
     console.log('UE Routes []');
-    console.log('NetInfo', netInfo);
-    if (isEmpty(isOnline) || netInfo.isInternetReachable !== null && netInfo.isConnected !== null) {
+    if (netInfo.isInternetReachable !== null && netInfo.isConnected !== null) {
       dispatch(setOnlineStatus(netInfo));
     }
-  }, [isOnline, netInfo]);
+  }, [netInfo]);
 
   const navigationOptions = {
     gestureEnabled: false,

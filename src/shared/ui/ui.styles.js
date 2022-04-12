@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
     width: 65,
     height: 65,
   },
-  offlineImageIconContainer: {
+  iconContainer: {
     flexDirection: 'row',
     position: 'absolute',
     top: 10,

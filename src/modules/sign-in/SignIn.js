@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Alert, Animated, ImageBackground, Keyboard, Text, TextInput, View} from 'react-native';
+import {Alert, Animated, ImageBackground, Keyboard, Platform, Text, TextInput, View} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
 import * as Sentry from '@sentry/react-native';
@@ -8,7 +8,8 @@ import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {PASSWORD_TEST, USERNAME_TEST} from '../../../Config';
-import useConnectionStatusHook from '../../services/useConnectionStatus';
+import BatteryInfo from '../../services/BatteryInfo';
+import ConnectionStatus from '../../services/ConnectionStatus';
 import useDeviceHook from '../../services/useDevice';
 import useServerRequests from '../../services/useServerRequests';
 import {VERSION_NUMBER} from '../../shared/app.constants';
@@ -32,7 +33,6 @@ const SignIn = (props) => {
   const [password, setPassword] = useState(__DEV__ ? PASSWORD_TEST : '');
   const [textInputAnimate] = useState(new Animated.Value(0));
 
-  const useConnectionStatus = useConnectionStatusHook();
   const useDevice = useDeviceHook();
   const navigation = useNavigation();
   const [serverRequests] = useServerRequests();
@@ -41,15 +41,6 @@ const SignIn = (props) => {
     console.log('UE SignIn []');
     useDevice.createProjectDirectories().catch(err => console.error('Error creating app directories', err));
   }, []);
-
-  useEffect(() => {
-    console.log('UE SignIn [isOnline]', isOnline);
-    const netInfo = useConnectionStatus.getNetInfo();
-    console.log(netInfo);
-    if (isEmpty(isOnline) || netInfo.isInternetReachable !== null) {
-      dispatch(setOnlineStatus(netInfo));
-    }
-  }, [isOnline]);
 
   useEffect(() => {
     console.log('UE SignIn []');
@@ -190,8 +181,9 @@ const SignIn = (props) => {
   return (
     <ImageBackground source={require('../../assets/images/background.jpg')} style={styles.backgroundImage}>
       <View style={styles.container}>
-        <View style={uiStyles.offlineImageIconContainer}>
-          {useConnectionStatus.connectionStatusIcon()}
+        <View style={uiStyles.iconContainer}>
+          {Platform.OS === 'ios' && <BatteryInfo/>}
+          <ConnectionStatus/>
         </View>
         <View>
           <View style={styles.titleContainer}>
