@@ -1,6 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {Alert, Animated, Dimensions, Keyboard, Platform, Text, TextInput, View} from 'react-native';
 
+import NetInfo from '@react-native-community/netinfo';
 import {useNavigation} from '@react-navigation/native';
 import * as Sentry from '@sentry/react-native';
 import {Button} from 'react-native-elements';
@@ -54,6 +55,7 @@ import {
   setMainMenuPanelVisible,
   setModalVisible,
   setOfflineMapsModalVisible,
+  setOnlineStatus,
   setProjectLoadComplete,
   setProjectLoadSelectionModalVisible,
 } from './home.slice';
@@ -128,6 +130,16 @@ const Home = () => {
   const [homeTextInputAnimate] = useState(new Animated.Value(0));
   const mapComponentRef = useRef(null);
   const toastRef = useRef(null);
+
+  useEffect(() => {
+    return () => {
+      NetInfo.fetch() // fetches internet connection cause logging out clears Redux.
+        .then(res => {
+          console.log(res);
+          dispatch(setOnlineStatus(res));
+        });
+    };
+  }, [isOnline]);
 
   useEffect(() => {
     console.log('UE Home [selectedProject]', selectedProject);
