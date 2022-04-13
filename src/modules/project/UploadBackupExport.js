@@ -135,7 +135,7 @@ const UploadBackAndExport = (props) => {
                 type: 'ionicon',
                 color: BLUE,
               }}
-            />}
+            />
           </View>
         )
       }
