@@ -29,7 +29,6 @@ const ProjectTypesButtons = (props) => {
     const exists = await useDevice.doesDeviceBackupDirExist();
     if (exists) {
       const files = await RNFS.readDir(APP_DIRECTORIES.BACKUP_DIR);
-      console.log(files);
       setBackupFiles(files);
     }
   };

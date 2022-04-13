@@ -51,7 +51,7 @@ const UserProfile = (props) => {
         dispatch(setMainMenuPanelVisible(false));
         dispatch({type: REDUX.CLEAR_STORE});
         props.logout();
-        navigation.navigate('SignIn', userData);
+        navigation.navigate('SignIn');
       }, 200);
     }
   };

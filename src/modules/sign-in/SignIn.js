@@ -16,7 +16,7 @@ import {VERSION_NUMBER} from '../../shared/app.constants';
 import * as Helpers from '../../shared/Helpers';
 import {isEmpty, readDataUrl} from '../../shared/Helpers';
 import uiStyles from '../../shared/ui/ui.styles';
-import {setOnlineStatus, setProjectLoadSelectionModalVisible} from '../home/home.slice';
+import {setProjectLoadSelectionModalVisible} from '../home/home.slice';
 import {setUserData} from '../user/userProfile.slice';
 import styles from './signIn.styles';
 
@@ -26,7 +26,6 @@ const SignIn = (props) => {
 
   const dispatch = useDispatch();
   const currentProject = useSelector(state => state.project.project);
-  const isOnline = useSelector(state => state.home.isOnline);
   const user = useSelector(state => state.user);
 
   const [username, setUsername] = useState(__DEV__ ? USERNAME_TEST : '');
