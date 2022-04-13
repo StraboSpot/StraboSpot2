@@ -1,4 +1,4 @@
-import {Animated, Dimensions, Easing, Platform, UIManager} from 'react-native';
+import {Animated, Dimensions, Easing, findNodeHandle, Platform, UIManager} from 'react-native';
 
 import 'react-native-get-random-values';
 import {v4 as uuidv4} from 'uuid';
@@ -143,7 +143,8 @@ export const handleKeyboardDidHide = (textInputAnimate) => {
 
 export const handleKeyboardDidShow = (event, TextInputState, textInputAnimate) => {
   const keyboardHeight = event.endCoordinates.height;
-  const currentlyFocusedField = TextInputState.currentlyFocusedField();
+  const currentlyFocusedField = TextInputState.currentlyFocusedInput
+    ? findNodeHandle(TextInputState.currentlyFocusedInput()) : TextInputState.currentlyFocusedField();
   if (currentlyFocusedField === null) return null;
   else {
     UIManager.measure(currentlyFocusedField, (originX, originY, width, height, pageX, pageY) => {
