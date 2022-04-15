@@ -9,11 +9,10 @@ import {getNewUUID, isEmpty, toTitleCase} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
-import {COMPASS_TOGGLE_BUTTONS} from '../compass/compass.constants';
-import {setCompassMeasurementTypes} from '../compass/compass.slice';
 import {formStyles} from '../form';
 import {MODAL_KEYS, MODALS} from '../home/home.constants';
 import MeasurementDetail from '../measurements/MeasurementDetail';
+import {MEASUREMENT_KEYS} from '../measurements/measurements.constants';
 import BasicPageDetail from '../page/BasicPageDetail';
 import {PET_PAGES, SED_PAGES} from '../page/page.constants';
 import {addedTemplates, setActiveTemplates, setUseTemplate} from '../project/projects.slice';
@@ -21,7 +20,7 @@ import {addedTemplates, setActiveTemplates, setUseTemplate} from '../project/pro
 const Templates = (props) => {
   const dispatch = useDispatch();
   const modalVisible = useSelector(state => state.home.modalVisible);
-  const templates = useSelector(state => state.project.project?.templates) || {};
+  const templates = useSelector(state => state.project.project?.templates);
 
   const [activeTemplatesForKey, setActiveTemplatesForKey] = useState([]);
   const [isShowForm, setIsShowForm] = useState(false);
@@ -29,12 +28,12 @@ const Templates = (props) => {
   const [isTemplateInUse, setIsTemplateInUse] = useState(null);
   const [name, setName] = useState('');
   const [selectedTemplate, setSelectedTemplate] = useState({values: {}});
-  const [templateType, setTemplateType] = useState(null);
   const [templatesForKey, setTemplatesForKey] = useState([]);
+  const [templateType, setTemplateType] = useState(null);
 
   let page = props.page || {};
-  let templateKey = page.key || undefined;
   const measurementKey = 'measurementTemplates';
+  let templateKey = page.key || undefined;
   if (isEmpty(page) && modalVisible) {
     page = MODALS.find(p => p.key === modalVisible);
     templateKey = modalVisible === MODAL_KEYS.NOTEBOOK.MEASUREMENTS
@@ -48,25 +47,19 @@ const Templates = (props) => {
   useEffect(() => {
     console.log('UE Templates [templates, templateKey]', templates, templateKey);
     if (templateKey === measurementKey) {
-      setIsTemplateInUse(templates.useMeasurementTemplates);
-      setTemplatesForKey(templates.measurementTemplates);
-      setActiveTemplatesForKey(templates.activeMeasurementTemplates);
-      if (templates.useMeasurementTemplates && !isEmpty(templates.activeMeasurementTemplates)) {
-        const activePlanarTabularTemplates = templates.activeMeasurementTemplates.filter(
-          template => template.values?.type === 'planar_orientation' || template.values?.type === 'tabular_orientation'
-            || template.type === 'planar_orientation');
-        const activeLinearTemplates = templates.activeMeasurementTemplates.filter(
-          template => template.values?.type === 'linear_orientation' || template.type === 'linear_orientation');
-        if (!isEmpty(activeLinearTemplates) && !isEmpty(activePlanarTabularTemplates)) {
-          dispatch(setCompassMeasurementTypes([COMPASS_TOGGLE_BUTTONS.LINEAR, COMPASS_TOGGLE_BUTTONS.PLANAR]));
-        }
-        else if (!isEmpty(activeLinearTemplates)) {
-          dispatch(setCompassMeasurementTypes([COMPASS_TOGGLE_BUTTONS.LINEAR]));
-        }
-        else if (!isEmpty(activePlanarTabularTemplates)) {
-          dispatch(setCompassMeasurementTypes([COMPASS_TOGGLE_BUTTONS.PLANAR]));
-        }
+      setIsTemplateInUse(templates.useMeasurementTemplates || false);
+      let activeTemplatesTemp = templates.activeMeasurementTemplates || [];
+      let templatesForKeyTemp = templates.measurementTemplates || [];
+      if (props.typeKey === 'planar_orientation' || props.typeKey === 'tabular_orientation') {
+        activeTemplatesTemp = getPlanarTemplates(activeTemplatesTemp);
+        templatesForKeyTemp = getPlanarTemplates(templatesForKeyTemp);
       }
+      else if (props.typeKey === 'linear_orientation') {
+        activeTemplatesTemp = getLinearTemplates(activeTemplatesTemp);
+        templatesForKeyTemp = getLinearTemplates(templatesForKeyTemp);
+      }
+      setTemplatesForKey(templatesForKeyTemp);
+      setActiveTemplatesForKey(activeTemplatesTemp);
     }
     else {
       setIsTemplateInUse(templates[templateKey] && templates[templateKey].isInUse);
@@ -77,13 +70,11 @@ const Templates = (props) => {
 
   const clearTemplate = () => {
     if (templateType === 'planar_orientation') {
-      const activeLinearTemplates = activeTemplatesForKey.filter(template => template.values?.type !== templateType
-        && template.values?.type !== 'tabular_orientation' && template.type !== templateType);
+      const activeLinearTemplates = getLinearTemplates(activeTemplatesForKey);
       dispatch(setActiveTemplates({key: templateKey, templates: activeLinearTemplates}));
     }
     else if (templateType === 'linear_orientation') {
-      const activePlanarTabularTemplates = activeTemplatesForKey.filter(
-        template => template.values?.type !== templateType && template.type !== templateType);
+      const activePlanarTabularTemplates = getPlanarTemplates(activeTemplatesForKey);
       dispatch(setActiveTemplates({key: templateKey, templates: activePlanarTabularTemplates}));
     }
     else dispatch(setActiveTemplates({key: templateKey, templates: []}));
@@ -134,9 +125,16 @@ const Templates = (props) => {
     setName(template.name);
   };
 
+  const getPlanarTemplates = (templatesToFilter) => templatesToFilter.filter(
+    t => t.values?.type === 'planar_orientation' || t.values?.type === 'tabular_orientation' || t.type === 'planar_orientation');
+
+  const getLinearTemplates = (templatesToFilter) => templatesToFilter.filter(
+    t => t.values?.type === 'linear_orientation' || t.type === 'linear_orientation');
+
   const renderFormFields = () => {
     return (
       <FlatList
+        listKey={'form' + measurementKey}
         ListHeaderComponent={
           <View style={{flex: 1}}>
             {templateKey === measurementKey ? renderMeasurementsForm() : renderNonMeasurementsForm()}
@@ -204,23 +202,20 @@ const Templates = (props) => {
     let label = modalVisible === MODAL_KEYS.NOTEBOOK.ROCK_TYPE_IGNEOUS ? toTitleCase(templateKey) + ' Rock'
       : page.label_singular || toTitleCase(page.label).slice(0, -1) || 'Unknown';
 
-    let relevantTemplates = [];
+    let relevantTemplates = templatesForKey;
     if (templateType === 'planar_orientation') {
-      relevantTemplates = !isEmpty(templatesForKey)
-        && templatesForKey.filter(
-          t => t.values?.type === templateType || t.values?.type === 'tabular_orientation' || t.type === templateType);
+      relevantTemplates = getPlanarTemplates(relevantTemplates);
       label = 'Planar';
     }
     else if (templateType === 'linear_orientation') {
-      relevantTemplates = !isEmpty(templatesForKey) && templatesForKey.filter(
-        t => t.values?.type === templateType || t.type === templateType);
+      relevantTemplates = getLinearTemplates(relevantTemplates);
       label = 'Linear';
     }
-    else if (!isEmpty(templatesForKey)) relevantTemplates = templatesForKey;
 
     return (
       <React.Fragment>
         <FlatList
+          listKey={JSON.stringify(relevantTemplates)}
           data={relevantTemplates}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({item}) => renderTemplateListItem(item)}
@@ -286,12 +281,15 @@ const Templates = (props) => {
 
   const renderTemplatesSelected = () => {
     if (templateKey === measurementKey) {
-      return (
-        <React.Fragment>
-          {renderTemplateSelection('planar_orientation')}
-          {renderTemplateSelection('linear_orientation')}
-        </React.Fragment>
-      );
+      if (!props.typeKey || (props.typeKey && props.typeKey === MEASUREMENT_KEYS.PLANAR_LINEAR)) {
+        return (
+          <React.Fragment>
+            {renderTemplateSelection('planar_orientation')}
+            {renderTemplateSelection('linear_orientation')}
+          </React.Fragment>
+        );
+      }
+      else return renderTemplateSelection(props.typeKey);
     }
     else {
       return (
@@ -303,18 +301,14 @@ const Templates = (props) => {
   };
 
   const renderTemplateSelection = (type) => {
-    let activeTemplates = templates[type] && templates[type].active && !isEmpty(templates[type].active)
-      && templates[type].active || [];
+    let activeTemplates = activeTemplatesForKey;
     let label = page.label_singular || toTitleCase(page.label).slice(0, -1) || 'Unknown';
-    if (type === 'planar_orientation') {
-      activeTemplates = activeTemplatesForKey?.find(
-        t => t.values?.type === type || t.values?.type === 'tabular_orientation' || t.type === type);
-      activeTemplates = isEmpty(activeTemplates) ? [] : [activeTemplates];
+    if (type === 'planar_orientation' || type === 'tabular_orientation') {
+      activeTemplates = getPlanarTemplates(activeTemplatesForKey);
       label = 'Planar';
     }
     else if (type === 'linear_orientation') {
-      activeTemplates = activeTemplatesForKey?.find(t => t.values?.type === type || t.type === type);
-      activeTemplates = isEmpty(activeTemplates) ? [] : [activeTemplates];
+      activeTemplates = getLinearTemplates(activeTemplatesForKey);
       label = 'Linear';
     }
     else if (modalVisible === MODAL_KEYS.NOTEBOOK.ROCK_TYPE_IGNEOUS) label = toTitleCase(type);
@@ -340,6 +334,7 @@ const Templates = (props) => {
             <FlatList
               data={activeTemplates}
               keyExtractor={(item) => item.id.toString()}
+              listKey={'templates' + type}
               renderItem={({item}) =>
                 <ListItem containerStyle={{padding: 0, paddingLeft: 10, paddingRight: 10}}>
                   <ListItem.Content>
@@ -415,25 +410,12 @@ const Templates = (props) => {
   const setAsTemplate = (template) => {
     let activeTemplatesForKeyCopy = !isEmpty(activeTemplatesForKey) ? JSON.parse(JSON.stringify(activeTemplatesForKey))
       : [];
-    if (templateKey === measurementKey) {
-      const type = template.values.type || template.type;
-      let activeTemplatesForKeyCopyFiltered = activeTemplatesForKeyCopy.filter(t => t.type !== type
-        && t.values.type !== type);
-      if (type === 'planar_orientation' || type === 'tabular_orientation') {
-        activeTemplatesForKeyCopyFiltered = activeTemplatesForKeyCopy.filter(t => t.type !== 'planar_orientation'
-          && t.values.type !== 'planar_orientation' && t.values.type !== 'tabular_orientation');
-      }
-      activeTemplatesForKeyCopyFiltered.push(template);
-      dispatch(setActiveTemplates({key: templateKey, templates: activeTemplatesForKeyCopyFiltered}));
+    const foundTemplate = activeTemplatesForKeyCopy.find(t => t.id === template.id);
+    if (foundTemplate) {
+      const templatesUpdated = activeTemplatesForKeyCopy.filter(t => t.id !== template.id);
+      dispatch(setActiveTemplates({key: templateKey, templates: templatesUpdated}));
     }
-    else {
-      const foundTemplate = activeTemplatesForKeyCopy.find(t => t.id === template.id);
-      if (foundTemplate) {
-        const templatesUpdated = activeTemplatesForKeyCopy.filter(t => t.id !== template.id);
-        dispatch(setActiveTemplates({key: templateKey, templates: templatesUpdated}));
-      }
-      else dispatch(setActiveTemplates({key: templateKey, templates: [...activeTemplatesForKeyCopy, template]}));
-    }
+    else dispatch(setActiveTemplates({key: templateKey, templates: [...activeTemplatesForKeyCopy, template]}));
   };
 
   const toggleUseTemplateSwitch = (value) => {
