@@ -14,7 +14,7 @@ import {addedStatusMessage, removedLastStatusMessage} from '../../home/home.slic
 import {DEFAULT_MAPS, MAP_PROVIDERS} from '../maps.constants';
 import {setCurrentBasemap} from '../maps.slice';
 import useMapsHook from '../useMaps';
-import {setOfflineMap} from './offlineMaps.slice';
+import {addMapFromDevice, setOfflineMap} from './offlineMaps.slice';
 
 const useMapsOffline = () => {
   let zipUID;
@@ -40,6 +40,42 @@ const useMapsOffline = () => {
   useEffect(() => {
     console.log('UE useMapsOffline [isOnline]', isOnline);
   }, [isOnline]);
+
+  const addMapFromDeviceToRedux = async (mapId) => {
+
+    let tileCount = await RNFS.readDir(APP_DIRECTORIES.TILE_CACHE + mapId + '/tiles');
+    tileCount = tileCount.length;
+
+    let map = {
+      id: mapId,
+      name: getMapNameFromId(mapId),
+      count: tileCount,
+      bbox: undefined,
+      source: !mapId ? source : undefined,
+      mapId: zipUID,
+      date: new Date().toLocaleString(),
+      isOfflineMapVisible: false,
+      version: 8,
+      sources: {
+        'raster-tiles': {
+          type: 'raster',
+          tiles: ['file://' + APP_DIRECTORIES.TILE_CACHE + mapId + '/tiles/{z}_{x}_{y}.png'],
+          tileSize: 256,
+        },
+      },
+      glyphs: 'mapbox://fonts/mapbox/{fontstack}/{range}.pbf',
+      layers: [{
+        id: mapId,
+        type: 'raster',
+        source: 'raster-tiles',
+        minzoom: 0,
+      }],
+    };
+    console.log(map);
+    const mapSavedObject = Object.assign({}, map.source === 'mapbox_styles'
+      ? {[map.id.split('/')[1]]: map} : {[map.id]: map});
+    dispatch(addMapFromDevice(mapSavedObject));
+  };
 
   const getMapName = (map) => {
     if (map.id === 'mapbox.outdoors' || map.id === 'mapbox.satellite' || map.id === 'osm'
@@ -404,6 +440,7 @@ const useMapsOffline = () => {
   };
 
   return {
+    addMapFromDeviceToRedux: addMapFromDeviceToRedux,
     checkTileZipFileExistance: checkTileZipFileExistance,
     checkIfTileZipFolderExists: checkIfTileZipFolderExists,
     doUnzip: doUnzip,

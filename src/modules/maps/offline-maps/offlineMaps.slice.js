@@ -17,6 +17,9 @@ const offlineMapsSlice = createSlice({
     deletedOfflineMap(state, action) {
       delete state.offlineMaps[action.payload];
     },
+    addMapFromDevice(state, action) {
+      state.offlineMaps = {...state.offlineMaps, ...action.payload};
+    },
     setOfflineMap(state, action) {
       console.log('Setting offline maps: ', action.payload);
       if (isEmpty(action.payload)) state.offlineMaps = initialOfflineMapsState.offlineMaps;
@@ -33,12 +36,13 @@ const offlineMapsSlice = createSlice({
     },
     updateOfflineMaps(state, action) {
       // if (!isEmpty(Object.values(state.offlineMaps))) state.offlineMaps = {...state.offlineMaps, ...action.payload};
-      state.offlineMaps = action.payload;
+      state.offlineMaps = {...state.offlineMaps, ...action.payload};
     },
   },
 });
 
 export const {
+  addMapFromDevice,
   addedMapsFromDevice,
   deletedOfflineMap,
   setOfflineMap,
