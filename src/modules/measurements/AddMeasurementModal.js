@@ -14,6 +14,7 @@ import Modal from '../../shared/ui/modal/Modal';
 import {setCompassMeasurementTypes} from '../compass/compass.slice';
 import {Form, useFormHook} from '../form';
 import {setModalValues, setModalVisible} from '../home/home.slice';
+import {editedSpotProperties} from '../spots/spots.slice';
 import Templates from '../templates/Templates';
 import AddLine from './AddLine';
 import AddPlane from './AddPlane';
@@ -55,7 +56,7 @@ const AddMeasurementModal = (props) => {
     // Set the initial form values if not multiple templates
     if (gotRelevantTemplates.length <= 1 || (typeObj.key === MEASUREMENT_KEYS.PLANAR_LINEAR
       && getPlanarTemplates(gotRelevantTemplates).length <= 1
-      && getLinearTemplates(gotRelevantTemplates).length <= 1)) {
+      || getLinearTemplates(gotRelevantTemplates).length <= 1)) {
       let initialValuesTemp = {
         id: getNewUUID(),
         type: typeObj.key === MEASUREMENT_KEYS.PLANAR_LINEAR ? MEASUREMENT_KEYS.PLANAR : typeObj.key,
@@ -121,6 +122,7 @@ const AddMeasurementModal = (props) => {
       setSelectedTypeIndex(i);
       formRef.current?.resetForm();
       const typeObj = MEASUREMENT_TYPES[i];
+      setMeasurementTypeForForm(typeObj.form_keys[0]);
       const formType = typeObj.form_keys[0];
       const formName = [groupKey, formType];
       setSurvey(useForm.getSurvey(formName));
@@ -304,7 +306,7 @@ const AddMeasurementModal = (props) => {
         }
         else relevantTemplates.forEach(t => editedMeasurementsData.push({...t.values, id: getNewUUID()}));
         console.log('editedPetData', editedMeasurementsData);
-        // dispatch(editedSpotProperties({field: 'orientation_data', value: editedMeasurementsData}));
+        dispatch(editedSpotProperties({field: 'orientation_data', value: editedMeasurementsData}));
       }
       else {
         await formRef.current.submitForm();
@@ -318,7 +320,7 @@ const AddMeasurementModal = (props) => {
         editedMeasurementsData.push({...editedMeasurementData, id: getNewUUID()});
         console.log('editedMeasurementData', editedMeasurementData);
         console.log('Saving Measurement data to Spot ...', editedMeasurementsData);
-        // dispatch(editedSpotProperties({field: 'orientation_data', value: editedMeasurementsData}));
+        dispatch(editedSpotProperties({field: 'orientation_data', value: editedMeasurementsData}));
       }
     }
     catch (err) {

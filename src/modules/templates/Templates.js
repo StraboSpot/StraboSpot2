@@ -45,7 +45,7 @@ const Templates = (props) => {
   }
 
   useEffect(() => {
-    console.log('UE Templates [templates, templateKey]', templates, templateKey);
+    console.log('UE Templates [templates, templateKey, props.typeKey]', templates, templateKey, props.typeKey);
     if (templateKey === measurementKey) {
       setIsTemplateInUse(templates.useMeasurementTemplates || false);
       let activeTemplatesTemp = templates.activeMeasurementTemplates || [];
@@ -66,7 +66,7 @@ const Templates = (props) => {
       setTemplatesForKey((templates[templateKey] && templates[templateKey].templates) || []);
       setActiveTemplatesForKey((templates[templateKey] && templates[templateKey].active) || []);
     }
-  }, [templates, templateKey]);
+  }, [templates, templateKey, props.typeKey]);
 
   const clearTemplate = () => {
     if (templateType === 'planar_orientation') {
