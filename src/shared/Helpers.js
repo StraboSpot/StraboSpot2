@@ -147,22 +147,30 @@ export const handleKeyboardDidShow = (event, TextInputState, textInputAnimate) =
     ? findNodeHandle(TextInputState.currentlyFocusedInput()) : TextInputState.currentlyFocusedField();
   if (currentlyFocusedField === null) return null;
   else {
-    UIManager.measure(currentlyFocusedField, (originX, originY, width, height, pageX, pageY) => {
-      const fieldHeight = height + 30;
-      const fieldTop = pageY;
-      const gap = (windowHeight - keyboardHeight) - (fieldTop + fieldHeight);
-      if (gap >= 0) {
-        return;
-      }
-      Animated.timing(
-        textInputAnimate,
-        {
-          toValue: gap,
-          duration: 200,
-          useNativeDriver: true,
-        },
-      ).start();
-    });
+    UIManager.measure(currentlyFocusedField,
+      (
+        originX,
+        originY,
+        width,
+        height,
+        pageX,
+        pageY,
+      ) => {
+        const fieldHeight = height + 30;
+        const fieldTop = pageY;
+        const gap = (windowHeight - keyboardHeight) - (fieldTop + fieldHeight);
+        if (gap >= 0) {
+          return;
+        }
+        Animated.timing(
+          textInputAnimate,
+          {
+            toValue: gap,
+            duration: 200,
+            useNativeDriver: true,
+          },
+        ).start();
+      });
   }
 };
 
