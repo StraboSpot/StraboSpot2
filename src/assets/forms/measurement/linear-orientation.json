@@ -12,6 +12,7 @@
       "type": "text",
       "name": "label",
       "label": "Label",
+      "hint": "label",
       "required": "false"
     },
     {

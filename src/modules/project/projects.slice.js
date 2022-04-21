@@ -149,7 +149,10 @@ const projectSlice = createSlice({
     },
     setActiveTemplates(state, action) {
       const {key, templates} = action.payload;
-      if (key === 'measurementTemplates') state.project.templates.activeMeasurementTemplates = templates;
+      if (key === 'measurementTemplates') {
+        if (!state.project.templates.activeMeasurementTemplates) state.project.templates.activeMeasurementTemplates = [];
+        state.project.templates.activeMeasurementTemplates = templates;
+      }
       else {
         if (!state.project.templates[key]) state.project.templates[key] = {};
         state.project.templates[key].active = templates;
