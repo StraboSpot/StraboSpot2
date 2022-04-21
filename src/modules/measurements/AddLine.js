@@ -20,7 +20,10 @@ const AddLine = (props) => {
   if (props.isPlanarLinear) {
     updatedProps = {
       ...updatedProps,
-      formProps: {...updatedProps.formProps, values: updatedProps.formProps.values.associated_orientation || {}},
+      formProps: {
+        ...updatedProps.formProps,
+        values: (updatedProps.formProps.values.associated_orientation && updatedProps.formProps.values.associated_orientation[0]) || {},
+      },
     };
   }
 

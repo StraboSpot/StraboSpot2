@@ -59,20 +59,22 @@ const AddMeasurementModal = (props) => {
         t => typeObj.form_keys.includes(t.values?.type || t.type)) || [];
     setRelevantTemplates(gotRelevantTemplates);
 
+    let initialValuesTemp = {
+      id: getNewUUID(),
+      type: typeObj.key === MEASUREMENT_KEYS.PLANAR_LINEAR ? MEASUREMENT_KEYS.PLANAR : typeObj.key,
+    };
+
     // Set the initial form values if not multiple templates
     if (gotRelevantTemplates.length <= 1 || (typeObj.key === MEASUREMENT_KEYS.PLANAR_LINEAR
       && getPlanarTemplates(gotRelevantTemplates).length <= 1
       || getLinearTemplates(gotRelevantTemplates).length <= 1)) {
-      let initialValuesTemp = {
-        id: getNewUUID(),
-        type: typeObj.key === MEASUREMENT_KEYS.PLANAR_LINEAR ? MEASUREMENT_KEYS.PLANAR : typeObj.key,
-      };
       if (typeObj.key === MEASUREMENT_KEYS.PLANAR_LINEAR) {
         if (getPlanarTemplates(gotRelevantTemplates).length === 1) {
           initialValuesTemp = {...initialValuesTemp, ...getPlanarTemplates(gotRelevantTemplates)[0].values};
         }
         if (getLinearTemplates(gotRelevantTemplates).length === 1) {
-          initialValuesTemp.associated_orientation = {
+          if (!initialValuesTemp.associated_orientation) initialValuesTemp.associated_orientation = [];
+          initialValuesTemp.associated_orientation[0] = {
             ...getLinearTemplates(gotRelevantTemplates)[0].values,
             id: getNewUUID(),
             type: MEASUREMENT_KEYS.LINEAR,
@@ -82,14 +84,14 @@ const AddMeasurementModal = (props) => {
       else if (gotRelevantTemplates.length === 1) {
         initialValuesTemp = {...initialValuesTemp, ...gotRelevantTemplates[0].values};
       }
-
-      setInitialValues(initialValuesTemp);
-      setMeasurementTypeForForm(initialValuesTemp.type);
-      const formName = [groupKey, initialValuesTemp.type];
-      formRef.current?.setStatus({formName: formName});
-      setSurvey(useForm.getSurvey(formName));
-      setChoices(useForm.getChoices(formName));
     }
+    setInitialValues(initialValuesTemp);
+    setMeasurementTypeForForm(initialValuesTemp.type);
+    const formName = [groupKey, initialValuesTemp.type];
+    formRef.current?.setStatus({formName: formName});
+    setSurvey(useForm.getSurvey(formName));
+    setChoices(useForm.getChoices(formName));
+
   }, [compassMeasurementTypes, templates]);
 
   useEffect(() => {
@@ -206,7 +208,7 @@ const AddMeasurementModal = (props) => {
                   <AddLine
                     survey={assocSurvey}
                     choices={assocChoices}
-                    setChoicesViewKey={onSetChoicesAssocViewKey}
+                    setChoicesViewKey={typeKey === MEASUREMENT_KEYS.PLANAR_LINEAR ? onSetChoicesAssocViewKey : onSetChoicesViewKey}
                     formName={[groupKey, MEASUREMENT_KEYS.LINEAR]}
                     formProps={formProps}
                     isManualMeasurement={isManualMeasurement}
@@ -294,8 +296,7 @@ const AddMeasurementModal = (props) => {
     // If plane with associated line copy label from plane data to line data
     if (typeKey === MEASUREMENT_KEYS.PLANAR_LINEAR) {
       if (formRef.current?.values?.label) {
-        if (!formRef.current.values.associated_orientation) formRef.current.values.associated_orientation = [];
-        formRef.current.setFieldValue('associated_orientation.label', formRef.current.values.label);
+        formRef.current.setFieldValue('associated_orientation[0].label', formRef.current.values.label);
       }
     }
     try {
@@ -305,7 +306,7 @@ const AddMeasurementModal = (props) => {
       if (typeKey === MEASUREMENT_KEYS.PLANAR_LINEAR && editedMeasurementData.associated_orientation) {
         useForm.validateForm({
           formName: [groupKey, MEASUREMENT_KEYS.LINEAR],
-          values: editedMeasurementData.associated_orientation,
+          values: editedMeasurementData.associated_orientation[0],
         });
       }
       const spotToUpdate = modalVisible === MODAL_KEYS.SHORTCUTS.MEASUREMENT ? await useMaps.setPointAtCurrentLocation()
@@ -313,8 +314,8 @@ const AddMeasurementModal = (props) => {
       let editedMeasurementsData = spotToUpdate.properties.orientation_data
         ? JSON.parse(JSON.stringify(spotToUpdate.properties.orientation_data)) : [];
       if (editedMeasurementData.associated_orientation) {
-        editedMeasurementData.associated_orientation.id = getNewUUID();
-        editedMeasurementData.associated_orientation.type = MEASUREMENT_KEYS.LINEAR;
+        editedMeasurementData.associated_orientation[0].id = getNewUUID();
+        editedMeasurementData.associated_orientation[0].type = MEASUREMENT_KEYS.LINEAR;
       }
 
       // If multiple templates then make all linear measurements associated to every planar and tabular meausurement
@@ -323,10 +324,10 @@ const AddMeasurementModal = (props) => {
           let planarTabularTemplates = getPlanarTemplates(relevantTemplates);
           if (planarTabularTemplates.length === 0) planarTabularTemplates = [editedMeasurementData];
           let linearTemplates = getLinearTemplates(relevantTemplates);
-          if (linearTemplates.length === 0) linearTemplates = [editedMeasurementData.associated_orientation];
+          if (linearTemplates.length === 0) linearTemplates = editedMeasurementData.associated_orientation;
           planarTabularTemplates.forEach((t) => {
             const associatedMeasurements = linearTemplates.map(
-              lT => ({...lT.values, ...editedMeasurementData.associated_orientation, id: getNewUUID()}));
+              lT => ({...lT.values, ...editedMeasurementData.associated_orientation[0], id: getNewUUID()}));
             editedMeasurementsData.push(
               {
                 ...t.values,
@@ -340,7 +341,7 @@ const AddMeasurementModal = (props) => {
           relevantTemplates.forEach(
             t => editedMeasurementsData.push({...t.values, ...editedMeasurementData, id: getNewUUID()}));
         }
-        console.log('editedPetData', editedMeasurementsData);
+        console.log('editedMeasurementData', editedMeasurementsData);
         dispatch(editedSpotProperties({field: 'orientation_data', value: editedMeasurementsData}));
       }
       else {
@@ -369,8 +370,7 @@ const AddMeasurementModal = (props) => {
     });
     if (typeKey === MEASUREMENT_KEYS.PLANAR_LINEAR) {
       linearCompassFields.forEach(compassFieldKey => {
-        if (!formRef.current.values.associated_orientation) formRef.current.values.associated_orientation = [];
-        formRef.current.setFieldValue('associated_orientation.' + [compassFieldKey], compassData[compassFieldKey]);
+        formRef.current.setFieldValue('associated_orientation[0]' + [compassFieldKey], compassData[compassFieldKey]);
       });
     }
     saveMeasurement().catch(console.error);

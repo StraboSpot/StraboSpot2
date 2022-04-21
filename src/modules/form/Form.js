@@ -50,9 +50,9 @@ const Form = (props) => {
     return (
       <Field
         component={TextInputField}
-        name={props.subkey ? props.subkey + '.' + field.name : field.name}
+        name={props.subkey ? props.subkey + '[0].' + field.name : field.name}
         label={field.label}
-        key={props.subkey ? props.subkey + '.' + field.name : field.name}
+        key={props.subkey ? props.subkey + '[0].' + field.name : field.name}
         appearance={field.appearance}
         placeholder={field.hint}
         onMyChange={props.onMyChange}
@@ -65,9 +65,9 @@ const Form = (props) => {
     return (
       <Field
         component={NumberInputField}
-        name={props.subkey ? props.subkey + '.' + field.name : field.name}
+        name={props.subkey ? props.subkey + '[0].' + field.name : field.name}
         label={field.label}
-        key={props.subkey ? props.subkey + '.' + field.name : field.name}
+        key={props.subkey ? props.subkey + '[0].' + field.name : field.name}
         placeholder={field.hint}
         onMyChange={props.onMyChange}
         onShowFieldInfo={showFieldInfo}
@@ -87,9 +87,9 @@ const Form = (props) => {
     return (
       <Field
         as={SelectInputField}
-        name={props.subkey ? props.subkey + '.' + field.name : field.name}
+        name={props.subkey ? props.subkey + '[0].' + field.name : field.name}
         label={field.label}
-        key={props.subkey ? props.subkey + '.' + field.name : field.name}
+        key={props.subkey ? props.subkey + '[0].' + field.name : field.name}
         choices={fieldChoicesCopy}
         setFieldValue={props.setFieldValue}
         single={fieldType === 'select_one'}

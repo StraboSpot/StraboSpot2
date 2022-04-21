@@ -35,7 +35,7 @@ const AddManualMeasurements = (props) => {
     console.log('UE AddManualMeasurements [sliderValue]', sliderValue);
     props.formProps.setFieldValue(qualityKey, sliderValue.toString());
     if (props.measurementType === MEASUREMENT_KEYS.PLANAR_LINEAR) {
-      props.formProps.setFieldValue('associated_orientation.' + qualityKey, sliderValue.toString());
+      props.formProps.setFieldValue('associated_orientation[0].' + qualityKey, sliderValue.toString());
     }
   }, [sliderValue]);
 
