@@ -1,5 +1,6 @@
 import CompassModal from '../compass/CompassModal';
 import AddIntervalModal from '../maps/strat-section/AddIntervalModal';
+import AddMeasurementModal from '../measurements/AddMeasurementModal';
 import ShortcutNotesModal from '../notes/ShortcutNotesModal';
 import {NOTEBOOK_PAGES, PAGE_KEYS} from '../page/page.constants';
 import DailyNotesModal from '../project/description/DailyNotesModal';
@@ -57,7 +58,7 @@ export const SHORTCUT_MODALS = [
     action_label: 'Take a Measurement',
     icon_src: require('../../assets/icons/MeasurementButtonShortcut.png'),
     icon_pressed_src: require('../../assets/icons/MeasurementButtonShortcut_pressed.png'),
-    modal_component: CompassModal,
+    modal_component: AddMeasurementModal,
     notebook_modal_key: MODAL_KEYS.NOTEBOOK.MEASUREMENTS,
   }, {
     key: MODAL_KEYS.SHORTCUTS.SAMPLE,

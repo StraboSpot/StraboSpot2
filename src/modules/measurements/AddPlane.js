@@ -26,7 +26,9 @@ const AddPlane = (props) => {
 
   return (
     <React.Fragment>
-      <Form {...{formName: props.formName, surveyFragment: firstKeysFields, ...props.formProps}}/>
+      {!props.isManualMeasurement && (
+        <Form {...{formName: props.formName, surveyFragment: firstKeysFields, ...props.formProps}}/>
+      )}
       <MainButtons {...{mainKeys: mainButttonsKeys, ...props}}/>
       {featureType && (
         <React.Fragment>

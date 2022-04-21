@@ -17,19 +17,30 @@ const AddLine = (props) => {
   const lastKeysFields = lastKeys.map(k => survey.find(f => f.name === k));
 
   let updatedProps = {...props};
-  if (props.subkey) {
+  if (props.isPlanarLinear) {
     updatedProps = {
       ...updatedProps,
-      formProps: {...updatedProps.formProps, values: updatedProps.formProps.values[props.subkey] || {}},
+      formProps: {...updatedProps.formProps, values: updatedProps.formProps.values.associated_orientation || {}},
     };
   }
 
   return (
     <React.Fragment>
-      <Form {...{formName: props.formName, surveyFragment: firstKeysFields, ...updatedProps.formProps}}/>
-      <MainButtons {...{mainKeys: mainButttonsKeys, ...updatedProps}}/>
+      {!props.isManualMeasurement && !props.isPlanarLinear && (
+        <Form {...{formName: props.formName, surveyFragment: firstKeysFields, ...updatedProps.formProps}}/>
+      )}
+      <MainButtons {...{
+        mainKeys: mainButttonsKeys,
+        subkey: props.isPlanarLinear && 'associated_orientation',
+        ...updatedProps,
+      }}/>
       <LittleSpacer/>
-      <Form {...{formName: props.formName, surveyFragment: lastKeysFields, ...updatedProps.formProps}}/>
+      <Form {...{
+        formName: props.formName,
+        surveyFragment: lastKeysFields,
+        subkey: props.isPlanarLinear && 'associated_orientation',
+        ...updatedProps.formProps,
+      }}/>
     </React.Fragment>
   );
 };

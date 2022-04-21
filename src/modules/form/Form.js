@@ -50,9 +50,9 @@ const Form = (props) => {
     return (
       <Field
         component={TextInputField}
-        name={field.name}
+        name={props.subkey ? props.subkey + '.' + field.name : field.name}
         label={field.label}
-        key={field.name}
+        key={props.subkey ? props.subkey + '.' + field.name : field.name}
         appearance={field.appearance}
         placeholder={field.hint}
         onMyChange={props.onMyChange}
@@ -65,9 +65,9 @@ const Form = (props) => {
     return (
       <Field
         component={NumberInputField}
-        name={field.name}
+        name={props.subkey ? props.subkey + '.' + field.name : field.name}
         label={field.label}
-        key={field.name}
+        key={props.subkey ? props.subkey + '.' + field.name : field.name}
         placeholder={field.hint}
         onMyChange={props.onMyChange}
         onShowFieldInfo={showFieldInfo}
@@ -84,13 +84,12 @@ const Form = (props) => {
       delete choice.name;
       return choice;
     });
-    const subkeyValue = props.subkey && props.values && props.values[props.subkey] && props.values[props.subkey][field.name];
     return (
       <Field
         as={SelectInputField}
-        name={field.name}
+        name={props.subkey ? props.subkey + '.' + field.name : field.name}
         label={field.label}
-        key={field.name}
+        key={props.subkey ? props.subkey + '.' + field.name : field.name}
         choices={fieldChoicesCopy}
         setFieldValue={props.setFieldValue}
         single={fieldType === 'select_one'}
@@ -98,8 +97,6 @@ const Form = (props) => {
         onShowFieldInfo={showFieldInfo}
         showExpandedChoices={isExpanded}
         errors={props.errors}
-        subkey={props.subkey}
-        subkeyValue={subkeyValue}
       />
     );
   };
