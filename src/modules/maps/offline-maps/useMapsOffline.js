@@ -14,7 +14,7 @@ import {addedStatusMessage, removedLastStatusMessage} from '../../home/home.slic
 import {DEFAULT_MAPS, MAP_PROVIDERS} from '../maps.constants';
 import {setCurrentBasemap} from '../maps.slice';
 import useMapsHook from '../useMaps';
-import {addMapFromDevice, setOfflineMap} from './offlineMaps.slice';
+import {addMapFromDevice, clearedMapsFromRedux, setOfflineMap} from './offlineMaps.slice';
 
 const useMapsOffline = () => {
   let zipUID;
@@ -407,6 +407,23 @@ const useMapsOffline = () => {
     }
   };
 
+  const getSavedMapsFromDevice = async () => {
+    try {
+      dispatch(clearedMapsFromRedux());
+      const files = await useDevice.readDirectoryForMapFiles();
+      console.log('B Map Tiles', files);
+      if (!isEmpty(files)) {
+        files.map(async file => {
+          await addMapFromDeviceToRedux(file);
+        });
+      }
+      return files;
+    }
+    catch (err) {
+      console.log('Error getting saved maps from device', err);
+    }
+  };
+
 
   const setOfflineMapTiles = async (map) => {
     console.log('Switch To Offline Map: ', map);
@@ -450,6 +467,7 @@ const useMapsOffline = () => {
     initializeSaveMap: initializeSaveMap,
     moveFiles: moveFiles,
     moveTile: moveTile,
+    getSavedMapsFromDevice: getSavedMapsFromDevice,
     saveZipMap: saveZipMap,
     setOfflineMapTiles: setOfflineMapTiles,
     updateMapTileCount: updateMapTileCount,

@@ -12,7 +12,7 @@ import ListEmptyText from '../../../shared/ui/ListEmptyText';
 import SectionDivider from '../../../shared/ui/SectionDivider';
 import {setOfflineMapsModalVisible} from '../../home/home.slice';
 import useMapsHook from '../useMaps';
-import {setOfflineMap, setOfflineMapVisible, updateOfflineMaps} from './offlineMaps.slice';
+import {setOfflineMap, setOfflineMapVisible} from './offlineMaps.slice';
 import styles from './offlineMaps.styles';
 import useMapsOfflineHook from './useMapsOffline';
 
@@ -34,8 +34,8 @@ const ManageOfflineMaps = (props) => {
   useEffect(() => {
     console.log('UE ManageOfflineMaps [mainMenuPageVisible]', mainMenuPageVisible);
     setLoading(true);
-    if (!isEmpty(offlineMaps)) readDirectoryForMaps().catch(err => console.log(err));
-    else refreshMapsFromDevice().catch(err => console.log('Error refreshing maps from device', err));
+    useMapsOffline.getSavedMapsFromDevice();
+    setLoading(false);
   }, []);
 
   useEffect(() => {
@@ -94,48 +94,6 @@ const ManageOfflineMaps = (props) => {
       return map.id;
     }
     else return name;
-  };
-
-  const readDirectoryForMaps = async () => {
-    try {
-      let availableMapObj = {};
-      const ids = await useDevice.readDirectoryForMaps();
-      if (!isEmpty(ids)) {
-        ids.map(async mapId => {
-          if (offlineMaps[mapId]) {
-            const mapTilesOnDevice = await useDevice.readDirectoryForMapTiles(mapId);
-            console.log(`For ${mapId} there are ${mapTilesOnDevice.length} on device`);
-
-            const updatedMapTileCount = {...offlineMaps[mapId], count: mapTilesOnDevice.length};
-              if (offlineMaps[mapId].source === 'mapbox_styles' && offlineMaps[mapId].source.includes('/')) {
-                availableMapObj = {...availableMapObj, [offlineMaps[mapId].split('/')[1]]: offlineMaps[mapId]};
-              }
-              else availableMapObj = {...availableMapObj, [offlineMaps[mapId].id]: updatedMapTileCount};
-            dispatch(updateOfflineMaps(availableMapObj));
-          }
-          else {
-            // await useMapsOffline.updateMapTileCount(mapId);
-            await useMapsOffline.addMapFromDeviceToRedux(mapId);
-          }
-          setLoading(false);
-        });
-      }
-    }
-    catch (err) {
-      console.error('Error reading directory for maps', err);
-      dispatch(setOfflineMap({}));
-      setLoading(false);
-    }
-  };
-
-  const refreshMapsFromDevice = async () => {
-    try {
-      const mapFiles = await useDevice.readDirectoryForMaps();
-      mapFiles.map(map => useMapsOffline.updateMapTileCount(map));
-    }
-    catch (err) {
-      console.error(`${err}`);
-    }
   };
 
   const renderMapsList = () => {
