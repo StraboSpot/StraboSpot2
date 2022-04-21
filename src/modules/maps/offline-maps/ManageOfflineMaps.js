@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
-import {Alert, FlatList, Text, View} from 'react-native';
+import {Alert, Animated, FlatList, Text, View} from 'react-native';
 
-import {Button, ListItem} from 'react-native-elements';
+import {Button, Icon, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import useDeviceHook from '../../../services/useDevice';
@@ -17,6 +17,8 @@ import styles from './offlineMaps.styles';
 import useMapsOfflineHook from './useMapsOffline';
 
 const ManageOfflineMaps = (props) => {
+  const animatedPulse = new Animated.Value(0);
+
   const [availableMaps, setAvailableMaps] = useState({});
   const [loading, setLoading] = useState(false);
 
@@ -35,6 +37,23 @@ const ManageOfflineMaps = (props) => {
     if (!isEmpty(offlineMaps)) readDirectoryForMaps().catch(err => console.log(err));
     else refreshMapsFromDevice().catch(err => console.log('Error refreshing maps from device', err));
   }, []);
+
+  useEffect(() => {
+    Animated.sequence([
+      // increase size
+      Animated.timing(animatedPulse, {
+        useNativeDriver: true,
+        toValue: 1.5,
+        duration: 500,
+      }),
+      // decrease size
+      Animated.timing(animatedPulse, {
+        useNativeDriver: true,
+        toValue: 1,
+        duration: 500,
+      }),
+    ]).start();
+  }, [animatedPulse]);
 
   useEffect(() => {
     console.log('UE ManageOfflineMaps [offlineMaps]', offlineMaps);
@@ -141,14 +160,31 @@ const ManageOfflineMaps = (props) => {
         <ListItem.Content>
           <View style={styles.itemContainer}>
             <ListItem.Title style={commonStyles.listItemTitle}>{`${truncateText(getTitle(item), 20)}`}</ListItem.Title>
-            <ListItem.Title style={styles.itemSubTextStyle}>{`(${item.count} tiles)`}</ListItem.Title>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              {
+                item.count === 0
+                && (
+                  <Animated.View style={{transform: [{scale: animatedPulse}]}}>
+                    <Icon
+                      containerStyle={{margin: 5}}
+                      name='alert'
+                      type='material-community'
+                      size={17}
+                      color={'red'}
+                    />
+                  </Animated.View>
+                )
+              }
+              <ListItem.Title style={styles.itemSubTextStyle}>{`(${item.count} tiles)`}</ListItem.Title>
+            </View>
           </View>
           <View style={styles.itemSubContainer}>
             {isOnline.isInternetReachable && <Button
               onPress={() => toggleOfflineMap(item)}
+              disabled={item.count === 0}
               titleStyle={commonStyles.viewMapsButtonText}
               type={'clear'}
-              title={item.isOfflineMapVisible ? 'Stop viewing offline maps' : 'View offline map'}
+              title={item.isOfflineMapVisible ? 'Stop viewing offline maps' : item.count === 0 ? 'No tiles to view' : 'View offline map'}
             />}
             <Button
               onPress={() => confirmDeleteMap(item)}
