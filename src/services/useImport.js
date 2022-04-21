@@ -134,10 +134,14 @@ const useImport = () => {
         console.log(fileEntries);
         await Promise.all(
           fileEntries.map(async file => {
-            const source = APP_DIRECTORIES.TILE_ZIP + file;
-            const dest = APP_DIRECTORIES.TILE_TEMP;
-            await unzip(source, dest);
-            console.log('unzip completed');
+            const fileExtension = file.substring(file.lastIndexOf('.') + 1);
+            if (fileExtension === 'zip') {
+              const source = APP_DIRECTORIES.TILE_ZIP + file;
+              const dest = APP_DIRECTORIES.TILE_TEMP;
+              await unzip(source, dest);
+              console.log('unzip completed', file, 'to destination:', dest);
+            }
+            else {console.log('its not a zip file');}
           }),
         );
       }
