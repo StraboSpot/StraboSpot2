@@ -8,7 +8,6 @@ const initialSpotState = {
   selectedAttributes: [],
   selectedMeasurement: {},
   selectedSpot: {},
-  selectedSpots: [],
   spots: {},
 };
 
@@ -22,7 +21,6 @@ const spotSlice = createSlice({
         && state.selectedSpot.properties.id === action.payload.properties.id) state.selectedSpot = action.payload;
       action.payload.properties.modified_timestamp = Date.now();
       state.selectedSpot = action.payload;
-      state.selectedSpots = !isEmpty(state.selectedSpot) ? [state.selectedSpot] : [];
       state.spots = {...state.spots, [action.payload.properties.id]: action.payload};
     },
     addedSpots(state, action) {
@@ -34,12 +32,10 @@ const spotSlice = createSlice({
       state.spots = action.payload;
     },
     clearedSelectedSpots(state) {
-      state.selectedSpots = [];
       state.selectedSpot = {};
     },
     clearedSpots(state) {
       state.selectedSpot = {};
-      state.selectedSpots = [];
       state.spots = {};
       state.recentViews = [];
     },
@@ -48,7 +44,6 @@ const spotSlice = createSlice({
       console.log('DELETED Spot:', action.payload, deletedSpot);
       console.log('Remaining Spots:', remainingSpots);
       state.selectedSpot = {};
-      state.selectedSpots = [];
       state.spots = remainingSpots;
       state.recentViews = state.recentViews.filter(id => id !== action.payload);
     },
@@ -105,7 +100,6 @@ const spotSlice = createSlice({
       if (index !== -1) recentViewsArr.splice(index, 1);
       recentViewsArr.unshift(action.payload.properties.id);
       if (state.recentViews.length > 20) recentViewsArr.shift();
-      state.selectedSpots = action.payload;
       state.selectedSpot = action.payload;
       state.recentViews = recentViewsArr;
       state.selectedAttributes = [];
