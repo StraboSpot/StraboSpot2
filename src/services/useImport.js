@@ -83,7 +83,7 @@ const useImport = () => {
     }
     dispatch(addedStatusMessage('Checking for map tiles to import...'));
     if (!isEmpty(mapNamesDb)) {
-      const mapsFolderExists = await copyZipMapsForDistribution(selectedProject.fileName, dataFile);
+      const mapsFolderExists = await copyZipMapsForDistribution(selectedProject.fileName);
       if (mapsFolderExists) {
         dispatch(removedLastStatusMessage());
         dispatch(addedStatusMessage('Finished importing maps.'));
@@ -166,14 +166,17 @@ const useImport = () => {
   const moveFiles = async (dataFile, zipId) => {
     console.log(dataFile.mapNamesDb);
     await Promise.all(
-      await Object.values(dataFile.mapNamesDb).map(async map => {
-      const checkSuccess = await useDevice.doesDeviceDirectoryExist(APP_DIRECTORIES.TILE_CACHE + map.id + '/tiles/');
+      Object.values(dataFile.mapNamesDb).map(async map => {
+        const checkSuccess = await useDevice.doesDeviceDirectoryExist(APP_DIRECTORIES.TILE_CACHE + map.id + '/tiles/');
         if (checkSuccess) {
           console.log('dir exists');
           const files = await RNFS.readdir(APP_DIRECTORIES.TILE_TEMP);
           const zipId = files.find(zipId => zipId === map.mapId);
-          const fileEntries = await RNFS.readdir(APP_DIRECTORIES.TILE_TEMP + zipId + '/tiles');
-          await moveTile(fileEntries, zipId, map);
+          if (zipId) {
+            const fileEntries = await RNFS.readdir(APP_DIRECTORIES.TILE_TEMP + zipId + '/tiles');
+            await moveTile(fileEntries, zipId, map);
+          }
+          else console.log('Map file not found');
         }
       }),
     );

@@ -63,11 +63,14 @@ const useDevice = () => {
 
   const doesDeviceDirectoryExist = async (directory) => {
     try {
-      const checkDirSuccess = await RNFS.exists(directory);
+      let checkDirSuccess = false;
+      checkDirSuccess = await RNFS.exists(directory);
+      console.log(checkDirSuccess)
       if (checkDirSuccess) {
         console.log('Directory', directory, 'exists.', checkDirSuccess);
       }
-      else createAppDirectory(directory);  // If directory does not exist then one is created
+      // If directory does not exist then one is created
+      else checkDirSuccess = await createAppDirectory(directory);
       console.log(checkDirSuccess);
       return checkDirSuccess;
     }
@@ -138,7 +141,7 @@ const useDevice = () => {
     }
   };
 
-  const readDirectoryForMaps = async () => {
+  const readDirectoryForMapFiles = async () => {
     const exists = await RNFS.exists(APP_DIRECTORIES.TILES_DIRECTORY);
     console.log('Offline maps directory exists? ', exists);
     if (exists) {
@@ -165,7 +168,7 @@ const useDevice = () => {
     openURL: openURL,
     makeDirectory: makeDirectory,
     readDirectoryForMapTiles: readDirectoryForMapTiles,
-    readDirectoryForMaps: readDirectoryForMaps,
+    readDirectoryForMapFiles: readDirectoryForMapFiles,
     writeFileToDevice: writeFileToDevice,
   };
 };
