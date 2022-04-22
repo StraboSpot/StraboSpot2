@@ -71,11 +71,13 @@ const Compass = (props) => {
 
   useEffect(() => {
     console.log('UE Compass []');
-    displayCompassData();
+    modalVisible === 'orientation_data' && displayCompassData();
     AppState.addEventListener('change', handleAppStateChange);
     return () => {
-      AppState.removeEventListener('change', handleAppStateChange);
       unsubscribe();
+      AppState.addEventListener(
+        'change',
+        () => console.log('APP STATE EVENT REMOVED IN COMPASS')).remove();
     };
   }, []);
 
@@ -133,8 +135,7 @@ const Compass = (props) => {
   };
 
   const handleAppStateChange = (state) => {
-    if (state === 'active') Platform.OS === 'ios' && displayCompassData();
-    else if (state === 'background' || state === 'inactive') {
+    if (state === 'background' || state === 'inactive') {
       dispatch(setModalVisible({modal: null}));
       unsubscribe();
     }
@@ -255,7 +256,6 @@ const Compass = (props) => {
       CompassEvents.addListener('rotationMatrix', matrixRotation).remove();
       console.log('%cEnded Compass observation and rotationMatrix listener.', 'color: red');
     }
-    console.log('%cHeading subscription cancelled', 'color: red');
   };
 
   return (
