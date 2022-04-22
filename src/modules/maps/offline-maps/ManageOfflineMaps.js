@@ -6,19 +6,18 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import useDeviceHook from '../../../services/useDevice';
 import commonStyles from '../../../shared/common.styles';
-import {isEmpty, truncateText} from '../../../shared/Helpers';
+import {truncateText} from '../../../shared/Helpers';
 import FlatListItemSeparator from '../../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../../shared/ui/ListEmptyText';
 import SectionDivider from '../../../shared/ui/SectionDivider';
 import {setOfflineMapsModalVisible} from '../../home/home.slice';
 import useMapsHook from '../useMaps';
-import {setOfflineMap, setOfflineMapVisible} from './offlineMaps.slice';
+import {setOfflineMapVisible} from './offlineMaps.slice';
 import styles from './offlineMaps.styles';
 import useMapsOfflineHook from './useMapsOffline';
 
 const ManageOfflineMaps = (props) => {
-  const animatedPulse = new Animated.Value(0);
-
+  const animatedPulse = new Animated.Value(1);
   const [availableMaps, setAvailableMaps] = useState({});
   const [loading, setLoading] = useState(false);
 
@@ -43,8 +42,8 @@ const ManageOfflineMaps = (props) => {
       // increase size
       Animated.timing(animatedPulse, {
         useNativeDriver: true,
-        toValue: 1.5,
-        duration: 500,
+        toValue: 2,
+        duration: 750,
       }),
       // decrease size
       Animated.timing(animatedPulse, {
