@@ -1,4 +1,3 @@
-import CompassModal from '../compass/CompassModal';
 import AddIntervalModal from '../maps/strat-section/AddIntervalModal';
 import AddMeasurementModal from '../measurements/AddMeasurementModal';
 import ShortcutNotesModal from '../notes/ShortcutNotesModal';

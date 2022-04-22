@@ -1,17 +1,22 @@
 import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
-import {FlatList, Platform} from 'react-native';
+import {FlatList, Platform, Text, View} from 'react-native';
 
 import {Formik} from 'formik';
-import {Button, ButtonGroup} from 'react-native-elements';
+import {Button, ButtonGroup, Overlay} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import commonStyles from '../../shared/common.styles';
 import {getNewUUID, isEmpty} from '../../shared/Helpers';
 import SaveButton from '../../shared/SaveButton';
 import {PRIMARY_ACCENT_COLOR, PRIMARY_TEXT_COLOR} from '../../shared/styles.constants';
 import DragAnimation from '../../shared/ui/DragAmination';
 import Modal from '../../shared/ui/modal/Modal';
+import modalStyle from '../../shared/ui/modal/modal.style';
+import Spacer from '../../shared/ui/Spacer';
+import uiStyles from '../../shared/ui/ui.styles';
 import Compass from '../compass/Compass';
 import {setCompassMeasurementTypes} from '../compass/compass.slice';
+import compassStyles from '../compass/compass.styles';
 import {Form, formStyles, useFormHook} from '../form';
 import {MODAL_KEYS} from '../home/home.constants';
 import {setModalValues, setModalVisible} from '../home/home.slice';
@@ -33,12 +38,14 @@ const AddMeasurementModal = (props) => {
   const [assocChoicesViewKey, setAssocChoicesViewKey] = useState(null);
   const [choices, setChoices] = useState({});
   const [choicesViewKey, setChoicesViewKey] = useState(null);
+  const [compassData, setCompassData] = useState({});
   const [initialValues, setInitialValues] = useState({id: getNewUUID()});
   const [isManualMeasurement, setIsManualMeasurement] = useState(Platform.OS === 'android');
   const [isShowTemplates, setIsShowTemplates] = useState(false);
   const [measurementTypeForForm, setMeasurementTypeForForm] = useState(null);
   const [relevantTemplates, setRelevantTemplates] = useState([]);
   const [selectedTypeIndex, setSelectedTypeIndex] = useState(0);
+  const [showCompassRawDataView, setShowCompassRawDataView] = useState(false);
   const [survey, setSurvey] = useState({});
 
   const [useForm] = useFormHook();
@@ -149,6 +156,51 @@ const AddMeasurementModal = (props) => {
     setAssocChoicesViewKey(null);
   };
 
+  const renderCompassData = () => (
+    <View style={{
+      backgroundColor: 'white',
+      padding: 20,
+      borderBottomRightRadius: 20,
+      borderTopRightRadius: 20,
+      zIndex: 100,
+    }}>
+      <View style={uiStyles.headerContainer}>
+        <Text style={commonStyles.dialogTitleText}>Compass Data</Text>
+      </View>
+      <View>
+        <Text style={{textAlign: 'center', padding: 10, fontSize: 20}}>Matrix Rotation</Text>
+        <View style={{flexDirection: 'row'}}>
+          <View style={{flex: 1}}>
+            <Text style={compassStyles.compassMatrixHeader}>North</Text>
+            <Text style={compassStyles.compassMatrixDataText}>M11: {compassData.M11}</Text>
+            <Text style={compassStyles.compassMatrixDataText}>M21: {compassData.M21} </Text>
+            <Text style={compassStyles.compassMatrixDataText}>M31: {compassData.M31}</Text>
+          </View>
+          <View style={{flex: 1}}>
+            <Text style={compassStyles.compassMatrixHeader}>West</Text>
+            <Text style={compassStyles.compassMatrixDataText}>M12: {compassData.M12}</Text>
+            <Text style={compassStyles.compassMatrixDataText}>M22: {compassData.M22} </Text>
+            <Text style={compassStyles.compassMatrixDataText}>M32: {compassData.M32}</Text>
+          </View>
+          <View style={{flex: 1}}>
+            <Text style={compassStyles.compassMatrixHeader}>Up</Text>
+            <Text style={compassStyles.compassMatrixDataText}>M13: {compassData.M13}</Text>
+            <Text style={compassStyles.compassMatrixDataText}>M23: {compassData.M23} </Text>
+            <Text style={compassStyles.compassMatrixDataText}>M33: {compassData.M33}</Text>
+          </View>
+        </View>
+        <Spacer/>
+      </View>
+      <View style={{alignItems: 'center'}}>
+        <Text>Heading: {compassData.heading}</Text>
+        <Text>Strike: {compassData.strike}</Text>
+        <Text>Dip: {compassData.dip}</Text>
+        <Text>Plunge: {compassData.plunge}</Text>
+        <Text>Trend: {compassData.trend}</Text>
+      </View>
+    </View>
+  );
+
   const renderForm = (formProps) => {
     const assocFormName = [groupKey, 'linear_orientation'];
     const assocSurvey = useForm.getSurvey(assocFormName);
@@ -188,7 +240,14 @@ const AddMeasurementModal = (props) => {
               />
             )}
             {isManualMeasurement ? <AddManualMeasurements formProps={formProps} measurementType={typeKey}/>
-              : <Compass setMeasurements={setMeasurements} formValues={formProps.values}/>}
+              : <Compass
+                setMeasurements={setMeasurements}
+                formValues={formProps.values}
+                showCompassDataModal={showCompassMetadataModal}
+                setCompassRawDataToDisplay={(data) => {
+                  showCompassRawDataView && setCompassData(data);
+                }}
+              />}
             {measurementTypeForForm === MEASUREMENT_KEYS.PLANAR
               && getPlanarTemplates(relevantTemplates).length <= 1 && (
                 <React.Fragment>
@@ -216,6 +275,13 @@ const AddMeasurementModal = (props) => {
                   />
                 </React.Fragment>
               )}
+            <Overlay
+              isVisible={showCompassRawDataView}
+              overlayStyle={[{...modalStyle.modalContainer, width: 400}, compassStyles.compassDataModalPosition]}
+              onBackdropPress={() => showCompassMetadataModal(false)}
+            >
+              {showCompassRawDataView && renderCompassData()}
+            </Overlay>
           </React.Fragment>
         )}
       </React.Fragment>
@@ -374,6 +440,10 @@ const AddMeasurementModal = (props) => {
       });
     }
     saveMeasurement().catch(console.error);
+  };
+
+  const showCompassMetadataModal = (value) => {
+    setShowCompassRawDataView(!value ? value : !showCompassRawDataView);
   };
 
   if (Platform.OS === 'android') return renderMeasurementModalContent();
