@@ -32,7 +32,7 @@ const NotebookHeader = (props) => {
         let lng = spot.geometry.coordinates[0];
         let lat = spot.geometry.coordinates[1];
         if (spot.properties.image_basemap || spot.properties.strat_section_id) {
-          let pixelDetails = lng.toFixed(6) + ' X, ' + lat.toFixed(6) + ' Y';
+          let pixelDetails = toFixedIfNecessary(lng, 6) + ' X, ' + toFixedIfNecessary(lat, 6) + ' Y';
           if (isEmpty(spot.properties.lat) || isEmpty(spot.properties.lng)) {
             const rootSpot = spot.properties.image_basemap ? useSpots.getRootSpot(spot.properties.image_basemap)
               : useSpots.getSpotWithThisStratSection(spot.properties.strat_section_id);
@@ -69,8 +69,8 @@ const NotebookHeader = (props) => {
     const degreeSymbol = '\u00B0';
     let latitudeCardinal = Math.sign(lat) >= 0 ? 'N' : 'S';
     let longitudeCardinal = Math.sign(lng) >= 0 ? 'E' : 'W';
-    return lng.toFixed(6) + degreeSymbol + ' ' + longitudeCardinal + ', '
-      + lat.toFixed(6) + degreeSymbol + ' ' + latitudeCardinal;
+    return toFixedIfNecessary(lng, 6) + degreeSymbol + ' ' + longitudeCardinal + ', '
+      + toFixedIfNecessary(lat, 6) + degreeSymbol + ' ' + latitudeCardinal;
   };
 
   const getTraceText = () => {
@@ -150,6 +150,10 @@ const NotebookHeader = (props) => {
     dispatch(addedSpot(editedSpot));
     dispatch(setSelectedSpot(editedSpot));
   };
+
+  const toFixedIfNecessary = ( value, dp ) => {
+    return +parseFloat(value).toFixed( dp );
+  }
 
   return (
     <React.Fragment>
