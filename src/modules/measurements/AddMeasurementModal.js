@@ -240,14 +240,14 @@ const AddMeasurementModal = (props) => {
               />
             )}
             {isManualMeasurement ? <AddManualMeasurements formProps={formProps} measurementType={typeKey}/>
-              : <Compass
-                setMeasurements={setMeasurements}
-                formValues={formProps.values}
-                showCompassDataModal={showCompassMetadataModal}
-                setCompassRawDataToDisplay={(data) => {
-                  showCompassRawDataView && setCompassData(data);
-                }}
-              />}
+              : (
+                <Compass
+                  setMeasurements={setMeasurements}
+                  formValues={formProps.values}
+                  showCompassDataModal={showCompassMetadataModal}
+                  setCompassRawDataToDisplay={(data) => showCompassRawDataView && setCompassData(data)}
+                />
+              )}
             {measurementTypeForForm === MEASUREMENT_KEYS.PLANAR
               && getPlanarTemplates(relevantTemplates).length <= 1 && (
                 <React.Fragment>
@@ -422,7 +422,7 @@ const AddMeasurementModal = (props) => {
     }
   };
 
-  const setMeasurements = (compassData) => {
+  const setMeasurements = (data) => {
     const typeKey = MEASUREMENT_TYPES[selectedTypeIndex]
     && MEASUREMENT_TYPES[selectedTypeIndex].key === MEASUREMENT_KEYS.PLANAR_LINEAR ? MEASUREMENT_KEYS.PLANAR_LINEAR
       : measurementTypeForForm;
@@ -430,13 +430,13 @@ const AddMeasurementModal = (props) => {
     const linearCompassFields = ['trend', 'plunge', 'rake', 'quality'];
     const compassFields = measurementTypeForForm === MEASUREMENT_KEYS.PLANAR ? planarCompassFields : linearCompassFields;
     compassFields.forEach(compassFieldKey => {
-      if (!isEmpty(compassData[compassFieldKey])) {
-        formRef.current.setFieldValue(compassFieldKey, compassData[compassFieldKey]);
+      if (!isEmpty(data[compassFieldKey])) {
+        formRef.current.setFieldValue(compassFieldKey, data[compassFieldKey]);
       }
     });
     if (typeKey === MEASUREMENT_KEYS.PLANAR_LINEAR) {
       linearCompassFields.forEach(compassFieldKey => {
-        formRef.current.setFieldValue('associated_orientation[0]' + [compassFieldKey], compassData[compassFieldKey]);
+        formRef.current.setFieldValue('associated_orientation[0]' + [compassFieldKey], data[compassFieldKey]);
       });
     }
     saveMeasurement().catch(console.error);
