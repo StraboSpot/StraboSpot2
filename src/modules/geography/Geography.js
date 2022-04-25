@@ -73,7 +73,7 @@ const Geography = () => {
     // Get the array of coordinates as a string
     const getCoordArray = () => {
       if (spot.geometry.coordinates) {
-        var coordString = JSON.stringify(spot.geometry.coordinates);
+        const coordString = JSON.stringify(spot.geometry.coordinates);
         return '[' + coordString.replace(/^\[+|\]+$/g, '') + ']';         // Remove extra [ and ] from start and end
       }
       else return '[multiple geometries]';
@@ -90,6 +90,12 @@ const Geography = () => {
       if (values.longitude) {
         values.longitude = parseFloat(values.longitude);
         if (values.longitude < -180 || values.longitude > 180) errors.longitude = 'Longitude must be between -180 and 180';
+      }
+      if (values.x_pixels && typeof (values.x_pixels) === 'string') {
+        values.x_pixels = parseFloat(values.x_pixels);
+      }
+      if (values.y_pixels && typeof (values.y_pixels) === 'string') {
+        values.y_pixels = parseFloat(values.y_pixels);
       }
       console.log('Values after geometry validation:', values);
       return errors;
