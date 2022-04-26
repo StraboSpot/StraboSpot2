@@ -21,7 +21,7 @@ import {Form, formStyles, useFormHook} from '../form';
 import {MODAL_KEYS} from '../home/home.constants';
 import {setModalValues, setModalVisible} from '../home/home.slice';
 import useMapsHook from '../maps/useMaps';
-import {editedSpotProperties} from '../spots/spots.slice';
+import {editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
 import Templates from '../templates/Templates';
 import AddLine from './AddLine';
 import AddManualMeasurements from './AddManualMeasurements';
@@ -32,6 +32,7 @@ const AddMeasurementModal = (props) => {
   const dispatch = useDispatch();
   const compassMeasurementTypes = useSelector(state => state.compass.measurementTypes);
   const modalVisible = useSelector(state => state.home.modalVisible);
+  const selectedAttributes = useSelector(state => state.spot.selectedAttributes);
   const spot = useSelector(state => state.spot.selectedSpot);
   const templates = useSelector(state => state.project.project?.templates) || {};
 
@@ -212,7 +213,7 @@ const AddMeasurementModal = (props) => {
       : measurementTypeForForm;
     return (
       <React.Fragment>
-        {!isShowTemplates && (
+        {!isShowTemplates && isEmpty(selectedAttributes) && (
           <ButtonGroup
             selectedIndex={selectedTypeIndex}
             onPress={onMeasurementTypePress}
@@ -367,7 +368,7 @@ const AddMeasurementModal = (props) => {
     }
     try {
       await formRef.current.submitForm();
-      const editedMeasurementData = useForm.showErrors(formRef.current);
+      let editedMeasurementData = useForm.showErrors(formRef.current);
       // If plane with associated line validate associated line data
       if (typeKey === MEASUREMENT_KEYS.PLANAR_LINEAR && editedMeasurementData.associated_orientation) {
         useForm.validateForm({
@@ -379,7 +380,16 @@ const AddMeasurementModal = (props) => {
         : spot;
       let editedMeasurementsData = spotToUpdate.properties.orientation_data
         ? JSON.parse(JSON.stringify(spotToUpdate.properties.orientation_data)) : [];
-      if (editedMeasurementData.associated_orientation) {
+
+      // If already a measurement but adding a new associated measurement
+      if (selectedAttributes?.length > 0) {
+        const newAssocMeasurement = JSON.parse(JSON.stringify(editedMeasurementData));
+        editedMeasurementData = JSON.parse(JSON.stringify(selectedAttributes[0]));
+        if (!editedMeasurementData.associated_orientation) editedMeasurementData.associated_orientation = [];
+        editedMeasurementData.associated_orientation.push(newAssocMeasurement);
+      }
+      // If adding planar with an associated measurement from the Quick Entry Modal
+      else if (editedMeasurementData.associated_orientation) {
         editedMeasurementData.associated_orientation[0].id = getNewUUID();
         editedMeasurementData.associated_orientation[0].type = MEASUREMENT_KEYS.LINEAR;
       }
@@ -411,10 +421,18 @@ const AddMeasurementModal = (props) => {
         dispatch(editedSpotProperties({field: 'orientation_data', value: editedMeasurementsData}));
       }
       else {
-        editedMeasurementsData.push({...editedMeasurementData, id: getNewUUID()});
+        if (selectedAttributes?.length > 0) {
+          editedMeasurementsData = editedMeasurementsData.filter(d => d.id !== editedMeasurementData.id);
+          editedMeasurementsData.push(editedMeasurementData);
+        }
+        else editedMeasurementsData.push({...editedMeasurementData, id: getNewUUID()});
         console.log('editedMeasurementData', editedMeasurementData);
         console.log('Saving Measurement data to Spot ...', editedMeasurementsData);
         dispatch(editedSpotProperties({field: 'orientation_data', value: editedMeasurementsData}));
+      }
+      if (selectedAttributes?.length > 0) {
+        dispatch(setSelectedAttributes([editedMeasurementData]));
+        onCloseButton();
       }
     }
     catch (err) {
@@ -430,9 +448,7 @@ const AddMeasurementModal = (props) => {
     const linearCompassFields = ['trend', 'plunge', 'rake', 'quality'];
     const compassFields = measurementTypeForForm === MEASUREMENT_KEYS.PLANAR ? planarCompassFields : linearCompassFields;
     compassFields.forEach(compassFieldKey => {
-      if (!isEmpty(data[compassFieldKey])) {
-        formRef.current.setFieldValue(compassFieldKey, data[compassFieldKey]);
-      }
+      if (!isEmpty(data[compassFieldKey])) formRef.current.setFieldValue(compassFieldKey, data[compassFieldKey]);
     });
     if (typeKey === MEASUREMENT_KEYS.PLANAR_LINEAR) {
       linearCompassFields.forEach(compassFieldKey => {

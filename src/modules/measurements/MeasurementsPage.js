@@ -27,10 +27,10 @@ const MeasurementsPage = (props) => {
   const compassMeasurements = useSelector(state => state.compass.measurements);
   const selectedAttributes = useSelector(state => state.spot.selectedAttributes);
   const isMultipleFeaturesTaggingEnabled = useSelector(state => state.project.isMultipleFeaturesTaggingEnabled);
+
   const [isDetailView, setIsDetailView] = useState(false);
   const [multiSelectMode, setMultiSelectMode] = useState();
   const [selectedFeaturesTemp, setSelectedFeaturesTemp] = useState([]);
-  const [selectedAttitudes, setSelectedAttitudes] = useState({});
 
   const [useMeasurements] = useMeasurementsHook();
 
@@ -59,11 +59,7 @@ const MeasurementsPage = (props) => {
 
   useEffect(() => {
     console.log('UE MeasurementsPage [selectedAttributes, spot]', selectedAttributes, spot);
-    if (isEmpty(selectedAttributes)) setSelectedAttitudes([]);
-    else if (!isMultipleFeaturesTaggingEnabled) {
-      setSelectedAttitudes(selectedAttributes);
-      setIsDetailView(true);
-    }
+    if (!isMultipleFeaturesTaggingEnabled && selectedAttributes?.length > 0) {setIsDetailView(true)}
   }, [selectedAttributes, spot]);
 
   // Create a new measurement on grabbing new compass measurements
@@ -108,7 +104,7 @@ const MeasurementsPage = (props) => {
   const editMeasurement = (measurements) => {
     batch(() => {
       setIsDetailView(true);
-      setSelectedAttitudes(measurements);
+      dispatch(setSelectedAttributes(measurements));
       if (measurements.length > 1) dispatch(setModalVisible({modal: null}));
     });
   };
@@ -252,7 +248,6 @@ const MeasurementsPage = (props) => {
       <MeasurementDetail
         closeDetailView={() => setIsDetailView(false)}
         page={props.page}
-        selectedAttitudes={selectedAttitudes}
       />
     );
   };

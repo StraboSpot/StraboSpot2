@@ -34,7 +34,6 @@ const Compass = (props) => {
   const compassMeasurementTypes = useSelector(state => state.compass.measurementTypes);
   const compassMeasurements = useSelector(state => state.compass.measurements);
   const modalVisible = useSelector(state => state.home.modalVisible);
-  const selectedMeasurement = useSelector(state => state.spot.selectedMeasurement);
 
   const [compassData, setCompassData] = useState({
     accelX: 0,
@@ -90,14 +89,6 @@ const Compass = (props) => {
       dispatch(setCompassMeasurements({}));
     }
   }, [compassMeasurements]);
-
-  // Update quality slider on active measurement changed
-  useEffect(() => {
-    console.log('UE Compass [selectedMeasurement]', selectedMeasurement);
-    if (!isEmpty(selectedMeasurement) && selectedMeasurement.quality) {
-      setSliderValue(parseInt(selectedMeasurement.quality, 10));
-    }
-  }, [selectedMeasurement]);
 
   const addAttributeMeasurement = (data) => {
     props.setAttributeMeasurements({...data, quality: sliderValue.toString()});

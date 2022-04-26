@@ -6,7 +6,7 @@ import {Button, ButtonGroup, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
-import {getNewId, isEmpty, roundToDecimalPlaces, toDegrees, toRadians} from '../../shared/Helpers';
+import {isEmpty, roundToDecimalPlaces, toDegrees, toRadians} from '../../shared/Helpers';
 import {PRIMARY_ACCENT_COLOR, WARNING_COLOR} from '../../shared/styles.constants';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
@@ -16,7 +16,7 @@ import {setCompassMeasurements, setCompassMeasurementTypes} from '../compass/com
 import {Form, useFormHook} from '../form';
 import {MODAL_KEYS} from '../home/home.constants';
 import {setModalVisible} from '../home/home.slice';
-import {editedSpotProperties, setSelectedAttributes, setSelectedMeasurement} from '../spots/spots.slice';
+import {editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
 import MeasurementItem from './MeasurementItem';
 import styles from './measurements.styles';
 import useMeasurementsHook from './useMeasurements';
@@ -24,7 +24,7 @@ import useMeasurementsHook from './useMeasurements';
 const MeasurementDetail = (props) => {
   const dispatch = useDispatch();
   const compassMeasurements = useSelector(state => state.compass.measurements);
-  const selectedMeasurement = useSelector(state => state.spot.selectedMeasurement);
+  const selectedAttributes = useSelector(state => state.spot.selectedAttributes);
   const spot = useSelector(state => state.spot.selectedSpot);
 
   const [useForm] = useFormHook();
@@ -34,6 +34,7 @@ const MeasurementDetail = (props) => {
 
   const [formName, setFormName] = useState([]);
   const [isAddingAssociatedMeasurementAfterSave, setIsAddingAssociatedMeasurementAfterSave] = useState(false);
+  const [selectedMeasurement, setSelectedMeasurement] = useState(null);
 
   const isTemplate = props.hasOwnProperty('saveTemplate');
 
@@ -42,23 +43,16 @@ const MeasurementDetail = (props) => {
     return () => confirmLeavePage();
   }, []);
 
-  useEffect(() => {
-    console.log('UE MeasurementDetail []');
-    return () => clearSelectedMeasurements();
-  }, []);
-
   // Update selected Measurement on selected Attitudes changed or return to Measurements page if no selected Attitude
   useEffect(() => {
-    console.log('UE MeasurementDetail [props.selectedAttitudes]', props.selectedAttitudes);
-    if (isEmpty(props.selectedAttitudes)) props.closeDetailView();
-    else if (isEmpty(selectedMeasurement) && props.selectedAttitudes[0]) {
-      switchSelectedMeasurement(props.selectedAttitudes[0]);
-    }
-    else if (isAddingAssociatedMeasurementAfterSave) {
+    console.log('UE MeasurementDetail [selectedAttributes]', selectedAttributes);
+    if (isAddingAssociatedMeasurementAfterSave) {
       setIsAddingAssociatedMeasurementAfterSave(false);
       addAssociatedMeasurement();
     }
-  }, [props.selectedAttitudes]);
+    else if (selectedAttributes?.length > 0) switchSelectedMeasurement(selectedAttributes[0]);
+    else props.closeDetailView();
+  }, [selectedAttributes]);
 
   // Update field values for measurements on grabbing new compass measurements
   useEffect(() => {
@@ -89,31 +83,16 @@ const MeasurementDetail = (props) => {
   }, [selectedMeasurement]);
 
   const addAssociatedMeasurement = () => {
-    const types = props.selectedAttitudes[0].type === 'linear_orientation' ? [COMPASS_TOGGLE_BUTTONS.PLANAR] : [COMPASS_TOGGLE_BUTTONS.LINEAR];
-    const type = props.selectedAttitudes[0].type === 'linear_orientation' ? 'planar_orientation' : 'linear_orientation';
+    const types = selectedAttributes[0].type === 'linear_orientation' ? [COMPASS_TOGGLE_BUTTONS.PLANAR]
+      : [COMPASS_TOGGLE_BUTTONS.LINEAR];
     dispatch(setCompassMeasurementTypes(types));
     dispatch(setModalVisible({modal: MODAL_KEYS.NOTEBOOK.MEASUREMENTS}));
-
-    const newId = getNewId();
-    const newAssociatedMeasurement = {type: type, id: newId};
-    const selectedMeasurementCopy = JSON.parse(JSON.stringify(props.selectedAttitudes[0]));
-    if (!selectedMeasurementCopy.associated_orientation) selectedMeasurementCopy.associated_orientation = [];
-    selectedMeasurementCopy.associated_orientation.push(newAssociatedMeasurement);
-
-    console.log('Saving form data to Spot ...');
-    let orientationDataCopy = JSON.parse(JSON.stringify(spot.properties.orientation_data));
-    orientationDataCopy.forEach((measurement, i) => {
-      if (measurement.id === selectedMeasurementCopy.id) orientationDataCopy[i] = selectedMeasurementCopy;
-    });
-    dispatch(editedSpotProperties({field: 'orientation_data', value: orientationDataCopy}));
-    dispatch(setSelectedAttributes([selectedMeasurementCopy]));
-    switchSelectedMeasurement(newAssociatedMeasurement);
   };
 
   const calcTrendPlunge = (value) => {
     console.log('Calculating trend and plunge...');
-    const strike = props.selectedAttitudes[0].strike;
-    const dip = props.selectedAttitudes[0].dip;
+    const strike = selectedAttributes[0].strike;
+    const dip = selectedAttributes[0].dip;
     const rake = value;
     let trend;
     const beta = toDegrees(Math.atan(Math.tan(toRadians(rake)) * Math.cos(toRadians(dip))));
@@ -128,18 +107,13 @@ const MeasurementDetail = (props) => {
   };
 
   const cancelFormAndGo = () => {
-    dispatch(setSelectedMeasurement({}));
+    setSelectedMeasurement({});
     formRef.current?.resetForm();
-    if (isEmptyMeasurement(props.selectedAttitudes[0])) {
-      const aOs = props.selectedAttitudes[0].associated_orientation || [];
-      useMeasurements.deleteMeasurements([...aOs, props.selectedAttitudes[0]]);
+    if (isEmptyMeasurement(selectedAttributes[0])) {
+      const aOs = selectedAttributes[0].associated_orientation || [];
+      useMeasurements.deleteMeasurements([...aOs, selectedAttributes[0]]);
     }
     props.closeDetailView();
-  };
-
-  const clearSelectedMeasurements = () => {
-    dispatch(setSelectedMeasurement({}));
-    dispatch(setSelectedAttributes([]));
   };
 
   const confirmDeleteMeasurement = () => {
@@ -166,18 +140,17 @@ const MeasurementDetail = (props) => {
         [{
           text: 'No',
           style: 'cancel',
-          onPress: () => dispatch(setSelectedMeasurement({})),
         }, {
           text: 'Yes',
           onPress: async () => {
             await saveForm(formCurrent);
-            clearSelectedMeasurements();
+            dispatch(setSelectedAttributes([]));
           },
         }],
         {cancelable: false},
       );
     }
-    else clearSelectedMeasurements();
+    else dispatch(setSelectedAttributes([]));
   };
 
   // Delete a single measurement
@@ -224,8 +197,8 @@ const MeasurementDetail = (props) => {
   const onMyChange = async (name, value) => {
     //console.log(name, 'changed to', value);
     if (name === 'rake' && !isEmpty(value) && selectedMeasurement.type === 'linear_orientation'
-      && props.selectedAttitudes[0].id !== selectedMeasurement.id && !isEmpty(props.selectedAttitudes[0].strike)
-      && !isEmpty(props.selectedAttitudes[0].dip) && value >= 0 && value <= 180) calcTrendPlunge(value);
+      && selectedAttributes[0].id !== selectedMeasurement.id && !isEmpty(selectedAttributes[0].strike)
+      && !isEmpty(selectedAttributes[0].dip) && value >= 0 && value <= 180) calcTrendPlunge(value);
     await formRef.current.setFieldValue(name, value);
   };
 
@@ -256,7 +229,7 @@ const MeasurementDetail = (props) => {
     if ((i === 0 && currentType === 'tabular_orientation') || (i === 1 && currentType === 'planar_orientation')) {
       const newType = currentType === 'tabular_orientation' ? 'planar_orientation' : 'tabular_orientation';
       const typeText = newType === 'tabular_orientation' ? 'Tabular Zone' : 'Planar Orientation';
-      const alertTextEnd = props.selectedAttitudes.length === 1 ? 'this measurement to a ' + typeText + '? You will '
+      const alertTextEnd = selectedAttributes.length === 1 ? 'this measurement to a ' + typeText + '? You will '
         + 'lose all data for this measurement not relevant to ' + typeText + '.'
         : 'these measurements to ' + typeText + '? You will lose all data for these measurements not relevant to '
         + typeText + '.';
@@ -274,29 +247,29 @@ const MeasurementDetail = (props) => {
   };
 
   const renderAssociatedMeasurements = () => {
-    const addButtonText = props.selectedAttitudes && props.selectedAttitudes[0]
-    && props.selectedAttitudes[0].type === 'linear_orientation' ? '+ Add Associated Plane' : '+ Add Associated Line';
+    const addButtonText = selectedAttributes && selectedAttributes[0]
+    && selectedAttributes[0].type === 'linear_orientation' ? '+ Add Associated Plane' : '+ Add Associated Line';
     console.log('selected id', selectedMeasurement.id);
     return (
       <View>
         {/* Primary measurement */}
-        {selectedMeasurement && props.selectedAttitudes && props.selectedAttitudes[0]
-          && props.selectedAttitudes[0].associated_orientation && (
+        {selectedMeasurement && selectedAttributes && selectedAttributes[0]
+          && selectedAttributes[0].associated_orientation && (
             <React.Fragment>
               <MeasurementItem
-                item={props.selectedAttitudes[0]}
+                item={selectedAttributes[0]}
                 selectedIds={[selectedMeasurement.id]}
                 isAssociatedItem={false}
                 isAssociatedList={true}
-                onPress={() => onSwitchSelectedMeasurement(props.selectedAttitudes[0])}
+                onPress={() => onSwitchSelectedMeasurement(selectedAttributes[0])}
               />
               <FlatListItemSeparator/>
             </React.Fragment>
           )}
 
         {/* Associated measurements */}
-        {selectedMeasurement && props.selectedAttitudes && props.selectedAttitudes[0] && props.selectedAttitudes[0].associated_orientation
-          && (props.selectedAttitudes[0].associated_orientation.map((item, i) =>
+        {selectedMeasurement && selectedAttributes && selectedAttributes[0] && selectedAttributes[0].associated_orientation
+          && (selectedAttributes[0].associated_orientation.map((item, i) =>
               <React.Fragment>
                 <MeasurementItem
                   item={item}
@@ -335,7 +308,7 @@ const MeasurementDetail = (props) => {
 
   const renderFormFields = () => {
     console.log('Rendering Form:', formName[0] + '.' + formName[1], '\nSelected Measurements:',
-      props.selectedAttitudes, '\nSelected Individual Measurement:', selectedMeasurement);
+      selectedAttributes, '\nSelected Individual Measurement:', selectedMeasurement);
     return (
       <View>
         <SectionDivider dividerText={'Feature Type'}/>
@@ -356,27 +329,27 @@ const MeasurementDetail = (props) => {
   };
 
   const renderMultiMeasurementsBar = () => {
-    const mainText = props.selectedAttitudes[0].type === 'linear_orientation' ? 'Multiple Lines' : 'Multiple Planes';
-    const propertyText = props.selectedAttitudes[0].type === 'linear_orientation' ? 'Plunge -> Trend' : 'Strike/Dip';
-    const hasAssociated = props.selectedAttitudes[0].associated_orientation && props.selectedAttitudes[0].associated_orientation.length > 0;
-    const mainText2 = hasAssociated && props.selectedAttitudes[0].associated_orientation[0].type === 'linear_orientation' ? 'Multiple Lines' : 'Multiple Planes';
-    const propertyText2 = hasAssociated && props.selectedAttitudes[0].associated_orientation[0].type === 'linear_orientation' ? 'Plunge -> Trend' : 'Strike/Dip';
+    const mainText = selectedAttributes[0].type === 'linear_orientation' ? 'Multiple Lines' : 'Multiple Planes';
+    const propertyText = selectedAttributes[0].type === 'linear_orientation' ? 'Plunge -> Trend' : 'Strike/Dip';
+    const hasAssociated = selectedAttributes[0].associated_orientation && selectedAttributes[0].associated_orientation.length > 0;
+    const mainText2 = hasAssociated && selectedAttributes[0].associated_orientation[0].type === 'linear_orientation' ? 'Multiple Lines' : 'Multiple Planes';
+    const propertyText2 = hasAssociated && selectedAttributes[0].associated_orientation[0].type === 'linear_orientation' ? 'Plunge -> Trend' : 'Strike/Dip';
 
     return (
       <View>
         <ListItem
-          containerStyle={selectedMeasurement.id === props.selectedAttitudes[0].id && commonStyles.listItemInverse}
-          onPress={() => onSwitchSelectedMeasurement(props.selectedAttitudes[0])}
+          containerStyle={selectedMeasurement.id === selectedAttributes[0].id && commonStyles.listItemInverse}
+          onPress={() => onSwitchSelectedMeasurement(selectedAttributes[0])}
           pad={5}>
           <ListItem.Content>
             <ListItem.Title
-              style={selectedMeasurement.id === props.selectedAttitudes[0].id ? commonStyles.listItemTitleInverse
+              style={selectedMeasurement.id === selectedAttributes[0].id ? commonStyles.listItemTitleInverse
                 : commonStyles.listItemTitle}>{mainText}
             </ListItem.Title>
           </ListItem.Content>
           <ListItem.Content>
             <ListItem.Title
-              style={selectedMeasurement.id === props.selectedAttitudes[0].id ? commonStyles.listItemTitleInverse
+              style={selectedMeasurement.id === selectedAttributes[0].id ? commonStyles.listItemTitleInverse
                 : commonStyles.listItemTitle}
             >
               {propertyText}
@@ -385,13 +358,13 @@ const MeasurementDetail = (props) => {
         </ListItem>
         {hasAssociated && (
           <ListItem
-            containerStyle={selectedMeasurement.id === props.selectedAttitudes[0].associated_orientation[0].id && commonStyles.listItemInverse}
-            onPress={() => onSwitchSelectedMeasurement(props.selectedAttitudes[0].associated_orientation[0])}
+            containerStyle={selectedMeasurement.id === selectedAttributes[0].associated_orientation[0].id && commonStyles.listItemInverse}
+            onPress={() => onSwitchSelectedMeasurement(selectedAttributes[0].associated_orientation[0])}
             pad={5}
           >
             <ListItem.Content>
               <ListItem.Title
-                style={selectedMeasurement.id === props.selectedAttitudes[0].associated_orientation[0].id
+                style={selectedMeasurement.id === selectedAttributes[0].associated_orientation[0].id
                   ? commonStyles.listItemTitleInverse : commonStyles.listItemTitle}
               >
                 {mainText2}
@@ -399,7 +372,7 @@ const MeasurementDetail = (props) => {
             </ListItem.Content>
             <ListItem.Content>
               <ListItem.Title
-                style={selectedMeasurement.id === props.selectedAttitudes[0].associated_orientation[0].id
+                style={selectedMeasurement.id === selectedAttributes[0].associated_orientation[0].id
                   ? commonStyles.listItemTitleInverse : commonStyles.listItemTitle}
               >
                 {propertyText2}
@@ -437,15 +410,15 @@ const MeasurementDetail = (props) => {
       let orientationDataCopy = JSON.parse(JSON.stringify(spot.properties.orientation_data));
       let editedSelectedMeasurements = [];
       let idsOfMeasurementsToEdit = [formValues.id];
-      if (props.selectedAttitudes.length > 1) {
+      if (selectedAttributes.length > 1) {
         const fieldsToExclude = ['id', 'associated_orientation', 'label', 'strike', 'dip_direction', 'dip',
           'trend', 'plunge', 'rake', 'rake_calculated'];
         fieldsToExclude.forEach(key => delete formValues[key]);
-        if (formCurrent.values.id === props.selectedAttitudes[0].id) {
-          idsOfMeasurementsToEdit = props.selectedAttitudes.map(measurement => measurement.id);
+        if (formCurrent.values.id === selectedAttributes[0].id) {
+          idsOfMeasurementsToEdit = selectedAttributes.map(measurement => measurement.id);
         }
         else {
-          idsOfMeasurementsToEdit = props.selectedAttitudes.reduce(
+          idsOfMeasurementsToEdit = selectedAttributes.reduce(
             (acc, measurement) => [...acc, ...measurement.associated_orientation.map(
               associatedOrientation => associatedOrientation.id)], []);
         }
@@ -453,13 +426,13 @@ const MeasurementDetail = (props) => {
 
       orientationDataCopy.forEach((measurement, i) => {
         if (idsOfMeasurementsToEdit.includes(measurement.id)) {
-          orientationDataCopy[i] = props.selectedAttitudes.length === 1 ? formValues : {...measurement, ...formValues};
+          orientationDataCopy[i] = selectedAttributes.length === 1 ? formValues : {...measurement, ...formValues};
           editedSelectedMeasurements.push(orientationDataCopy[i]);
         }
         else if (measurement.associated_orientation) {
           measurement.associated_orientation.forEach((associatedMeasurement, j) => {
             if (idsOfMeasurementsToEdit.includes(associatedMeasurement.id)) {
-              orientationDataCopy[i].associated_orientation[j] = props.selectedAttitudes.length === 1 ? formValues
+              orientationDataCopy[i].associated_orientation[j] = selectedAttributes.length === 1 ? formValues
                 : {...associatedMeasurement, ...formValues};
               editedSelectedMeasurements.push(orientationDataCopy[i]);
             }
@@ -515,8 +488,8 @@ const MeasurementDetail = (props) => {
 
   // Switch the selected measurement
   const switchSelectedMeasurement = (measurement) => {
-    dispatch(setSelectedMeasurement(measurement));
-    let formCategory = props.selectedAttitudes.length === 1 && !isTemplate ? 'measurement' : 'measurement_bulk';
+    setSelectedMeasurement(measurement);
+    let formCategory = selectedAttributes.length === 1 && !isTemplate ? 'measurement' : 'measurement_bulk';
     setFormName([formCategory, measurement.type]);
   };
 
@@ -534,14 +507,14 @@ const MeasurementDetail = (props) => {
           <FlatList
             ListHeaderComponent={
               <View>
-                {!isTemplate && selectedMeasurement && props.selectedAttitudes.length === 1 && renderAssociatedMeasurements()}
-                {!isTemplate && selectedMeasurement && props.selectedAttitudes.length > 1 && renderMultiMeasurementsBar()}
+                {!isTemplate && selectedMeasurement && selectedAttributes.length === 1 && renderAssociatedMeasurements()}
+                {!isTemplate && selectedMeasurement && selectedAttributes.length > 1 && renderMultiMeasurementsBar()}
                 {selectedMeasurement && selectedMeasurement.type && (selectedMeasurement.type === 'planar_orientation'
                   || selectedMeasurement.type === 'tabular_orientation') && renderPlanarTabularSwitches()}
                 <View>
                   {!isEmpty(formName) && renderFormFields()}
                 </View>
-                {props.selectedAttitudes.length === 1 && (
+                {selectedAttributes.length === 1 && (
                   <Button
                     titleStyle={{color: WARNING_COLOR}}
                     title={isTemplate ? 'Delete Measurement Template' : 'Delete Measurement'}

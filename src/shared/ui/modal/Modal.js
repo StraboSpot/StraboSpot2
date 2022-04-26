@@ -16,6 +16,7 @@ const {State: TextInputState} = TextInput;
 
 const Modal = (props) => {
   const modalVisible = useSelector(state => state.home.modalVisible);
+  const selectedAttributes = useSelector(state => state.spot.selectedAttributes);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
 
   const [textInputAnimate] = useState(new Animated.Value(0));
@@ -76,7 +77,7 @@ const Modal = (props) => {
       <Overlay overlayStyle={[modalStyle.modalContainer, modalStyle.modalPosition, props.style]}>
         <ModalHeader {...props}/>
         {props.children}
-        {!isEmpty(selectedSpot) && renderModalBottom()}
+        {!isEmpty(selectedSpot) && isEmpty(selectedAttributes) && renderModalBottom()}
       </Overlay>
     );
   }
