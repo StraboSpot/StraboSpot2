@@ -59,7 +59,7 @@ const mainMenuConfig = {
 const spotsConfig = {
   key: 'spot',
   storage: AsyncStorage,
-  blacklist: ['selectedMeasurement', 'selectedAttributes'],
+  blacklist: ['selectedAttributes'],
 };
 
 const loggerMiddleware = createLogger({

@@ -6,7 +6,6 @@ const initialSpotState = {
   intersectedSpotsForTagging: [],
   recentViews: [],
   selectedAttributes: [],
-  selectedMeasurement: {},
   selectedSpot: {},
   spots: {},
 };
@@ -91,9 +90,6 @@ const spotSlice = createSlice({
     setSelectedAttributes(state, action) {
       state.selectedAttributes = action.payload;
     },
-    setSelectedMeasurement(state, action) {
-      state.selectedMeasurement = action.payload;
-    },
     setSelectedSpot(state, action) {
       let recentViewsArr = Object.assign([], state.recentViews);
       const index = recentViewsArr.indexOf(action.payload.properties.id);
@@ -123,7 +119,6 @@ export const {
   editedSpotProperties,
   setIntersectedSpotsForTagging,
   setSelectedAttributes,
-  setSelectedMeasurement,
   setSelectedSpot,
   setSelectedSpotNotesTimestamp,
 } = spotSlice.actions;
