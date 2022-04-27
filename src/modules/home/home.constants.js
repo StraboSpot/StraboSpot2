@@ -38,7 +38,7 @@ export const SHORTCUT_MODALS = [
   {
     key: MODAL_KEYS.SHORTCUTS.GEOLOGIC_UNITS,
     label: 'Geologic Units',
-    action_label: 'Add Geologic Unit',
+    action_label: 'Shortcut Mode: \nAdd Geologic Unit',
     icon_src: require('../../assets/icons/GeologicUnitButtonShortcut.png'),
     icon_pressed_src: require('../../assets/icons/GeologicUnitButtonShortcut_pressed.png'),
     modal_component: TagsShortcutModal,
@@ -46,7 +46,7 @@ export const SHORTCUT_MODALS = [
   }, {
     key: MODAL_KEYS.SHORTCUTS.TAG,
     label: 'Tag',
-    action_label: 'Add Tags',
+    action_label: 'Shortcut Mode: \nAdd Tags',
     icon_src: require('../../assets/icons/TagButtonShortcut.png'),
     icon_pressed_src: require('../../assets/icons/TagButtonShortcut_pressed.png'),
     modal_component: TagsShortcutModal,
@@ -54,7 +54,7 @@ export const SHORTCUT_MODALS = [
   }, {
     key: MODAL_KEYS.SHORTCUTS.MEASUREMENT,
     label: 'Measurement',
-    action_label: 'Take a Measurement',
+    action_label: 'Shortcut Mode: \nTake a Measurement',
     icon_src: require('../../assets/icons/MeasurementButtonShortcut.png'),
     icon_pressed_src: require('../../assets/icons/MeasurementButtonShortcut_pressed.png'),
     modal_component: AddMeasurementModal,
@@ -62,7 +62,7 @@ export const SHORTCUT_MODALS = [
   }, {
     key: MODAL_KEYS.SHORTCUTS.SAMPLE,
     label: 'Sample',
-    action_label: 'Add a Sample',
+    action_label: 'Shortcut Mode: \nAdd a Sample',
     icon_src: require('../../assets/icons/SampleButtonShortcut.png'),
     icon_pressed_src: require('../../assets/icons/SampleButtonShortcut_pressed.png'),
     modal_component: SampleModal,
@@ -70,7 +70,7 @@ export const SHORTCUT_MODALS = [
   }, {
     key: MODAL_KEYS.SHORTCUTS.NOTE,
     label: 'Note',
-    action_label: 'Add a Note',
+    action_label: 'Shortcut Mode: \nAdd a Note',
     icon_src: require('../../assets/icons/NoteButtonShortcut.png'),
     icon_pressed_src: require('../../assets/icons/NoteButtonShortcut_pressed.png'),
     modal_component: ShortcutNotesModal,
