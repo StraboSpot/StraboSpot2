@@ -209,9 +209,15 @@ const useImages = () => {
       await Promise.all(spotsWithImages.map(async (spot) => {
         await Promise.all(spot.properties.images.map(async (image) => {
           const imageUri = getLocalImageURI(image.id);
-          const createResizedImageProps = [imageUri, 200, 200, 'JPEG', 100, 0];
-          const resizedImage = await ImageResizer.createResizedImage(...createResizedImageProps);
-          imageThumbnailURIs = {...imageThumbnailURIs, [image.id]: resizedImage.uri};
+          const exists = await RNFS.exists(imageUri);
+          if (exists) {
+            const createResizedImageProps = [imageUri, 200, 200, 'JPEG', 100, 0];
+            const resizedImage = await ImageResizer.createResizedImage(...createResizedImageProps);
+            imageThumbnailURIs = { ...imageThumbnailURIs, [image.id]: resizedImage.uri };
+          }
+          else {
+            imageThumbnailURIs = { ...imageThumbnailURIs, [image.id]: undefined };
+          }
         }));
       }));
       return imageThumbnailURIs;

@@ -7,9 +7,12 @@ import {useDispatch, useSelector} from 'react-redux';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty, truncateText} from '../../shared/Helpers';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
-import {setCurrentImageBasemap} from '../maps/maps.slice';
+import { addedStatusMessage, clearedStatusMessages, setErrorMessagesModalVisible } from '../home/home.slice';
+import { setCurrentImageBasemap } from '../maps/maps.slice';
 import imageStyles from './images.styles';
 import useImagesHook from './useImages';
+
+const placeholderImage = require('../../assets/images/noimage.jpg');
 
 const ImagesOverview = () => {
   const [useImages] = useImagesHook();
@@ -24,7 +27,7 @@ const ImagesOverview = () => {
   useEffect(() => {
     console.log('UE ImagesOverview []');
     getImageThumbnailURIs().catch(err => console.error(err));
-  }, []);
+  }, [spot]);
 
   const getImageThumbnailURIs = async () => {
     try {
@@ -43,12 +46,14 @@ const ImagesOverview = () => {
     }
   };
 
-  const renderError = () => (
-    <View style={{paddingTop: 75}}>
-      <Icon name={'alert-circle-outline'} type={'ionicon'} size={100}/>
-      <Text style={[commonStyles.noValueText, {paddingTop: 50}]}>Problem getting thumbnail images...</Text>
-    </View>
-  );
+  const handlePress = (image) => {
+    if (imageThumbnails[image.id]) useImages.editImage(image);
+    else {
+      dispatch(clearedStatusMessages());
+      dispatch(addedStatusMessage('The selected image was not found on the device.'));
+      dispatch(setErrorMessagesModalVisible(true));
+    }
+  };
 
   const renderImage = (image) => {
     return (
@@ -56,10 +61,10 @@ const ImagesOverview = () => {
         <View style={imageStyles.imageContainer}>
           <Image
             resizeMode={'contain'}
-            source={{uri: imageThumbnails[image.id]}}
+            source={imageThumbnails[image.id] ? { uri: imageThumbnails[image.id] } : placeholderImage}
             style={imageStyles.notebookImage}
-            PlaceholderContent={<Text>Image Not {'\n'}Available...</Text>}
-            onPress={() => useImages.editImage(image)}
+            transition
+            onPress={() => handlePress(image)}
           />
           <View style={{alignSelf: 'flex-start', flexDirection: 'column', flex: 1, paddingLeft: 10}}>
             {image.title && (
